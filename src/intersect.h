@@ -35,7 +35,7 @@
 #ifndef PCB_INTERSECT_H
 #define PCB_INTERSECT_H
 
-#include "global.h"
+#include "global_objs.h"
 
 double ComputeIntersectionArea(BoxListTypePtr boxlist);	/* will sort boxlist */
 double ComputeUnionArea(BoxListTypePtr boxlist);

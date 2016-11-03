@@ -39,7 +39,7 @@
  */
 
 
-struct pcb_rat_s {								/* holds a connection (rat) */
+struct pcb_connection_s {				/* holds a connection (rat) */
 	Coord X, Y;										/* coordinate of connection */
 	long int type;								/* type of object in ptr1 - 3 */
 	void *ptr1, *ptr2;						/* the object of the connection */

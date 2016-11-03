@@ -41,11 +41,7 @@
 #include <math.h>
 #include <ctype.h>
 
-#include "global_typedefs.h"
-#include "global_objs.h"
-#include "attrib.h"
-#include "list_common.h"
-#include "hid.h"
+#include "vtroutestyle.h"
 
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))

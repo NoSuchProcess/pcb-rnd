@@ -1,6 +1,8 @@
 #ifndef PCB_HID_ACTIONS_H
 #define PCB_HID_ACTIONS_H
 
+#include "hid.h"
+
 /* These are called from main_act.c */
 void print_actions(void);
 void dump_actions(void);

@@ -7,6 +7,7 @@
 #include "error.h"
 #include "drc.h"
 #include "global_typedefs.h"
+#include "attrib.h"
 
 typedef struct HID_Attr_Val_s  HID_Attr_Val;
 typedef struct HID_Attribute_s HID_Attribute;

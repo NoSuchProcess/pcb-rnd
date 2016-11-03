@@ -25,7 +25,8 @@
  *
  */
 
-#include "global.h"
+#include "config.h"
+#include "global_objs.h"
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
@@ -376,6 +377,7 @@ void ResetStackAndVisibility(void)
 	int comp_group;
 	pcb_cardinal_t i;
 
+	assert(PCB->Data->LayerN <= MAX_LAYER);
 	for (i = 0; i < max_copper_layer + 2; i++) {
 		if (i < max_copper_layer)
 			LayerStack[i] = i;

@@ -71,21 +71,21 @@ typedef struct {
 	ANYOBJECTFIELDS;
 } AnyObjectType, *AnyObjectTypePtr;
 
-typedef struct {								/* a line/polygon point */
-	Coord X, Y, X2, Y2;						/* so Point type can be cast as BoxType */
+struct pcb_point_s {   /* a line/polygon point */
+	Coord X, Y, X2, Y2;   /* so Point type can be cast as BoxType */
 	long int ID;
-} PointType, *PointTypePtr;
+};
 
 /* Lines, rats, pads, etc.  */
 typedef struct {
 	ANYLINEFIELDS;
 } AnyLineObjectType, *AnyLineObjectTypePtr;
 
-typedef struct line_st {								/* holds information about one line */
+struct pcb_line_s {            /* holds information about one line */
 	ANYLINEFIELDS;
 	char *Number;
-	gdl_elem_t link;  /* a line is in a list: either on a layer or in an element */
-} LineType, *LineTypePtr;
+	gdl_elem_t link;             /* a line is in a list: either on a layer or in an element */
+};
 
 typedef struct text_st {
 	ANYOBJECTFIELDS;
@@ -111,20 +111,20 @@ struct polygon_st {							/* holds information about a polygon */
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
-typedef struct arc_st {								/* holds information about arcs */
+struct pcb_arc_s {       /* holds information about arcs */
 	ANYOBJECTFIELDS;
 	Coord Thickness, Clearance;
 	Coord Width, Height,					/* length of axis */
 	  X, Y;												/* center coordinates */
 	Angle StartAngle, Delta;			/* the two limiting angles in degrees */
 	gdl_elem_t link;              /* an arc is in a list: either on a layer or in an element */
-} ArcType, *ArcTypePtr;
+};
 
-typedef struct rat_st {								/* a rat-line */
+struct pcb_rat_line_s {          /* a rat-line */
 	ANYLINEFIELDS;
-	pcb_cardinal_t group1, group2;			/* the layer group each point is on */
-	gdl_elem_t link;              /* an arc is in a list on a design */
-} RatType, *RatTypePtr;
+	pcb_cardinal_t group1, group2; /* the layer group each point is on */
+	gdl_elem_t link;               /* an arc is in a list on a design */
+};
 
 struct pad_st {									/* a SMD pad */
 	ANYLINEFIELDS;
@@ -163,14 +163,13 @@ typedef struct symbol_st {								/* a single symbol */
 	  Delta;											/* distance to next symbol */
 } SymbolType, *SymbolTypePtr;
 
-typedef struct font_st {								/* complete set of symbols */
-	Coord MaxHeight,							/* maximum cell width and height */
+struct pcb_font_s {        /* complete set of symbols */
+	Coord MaxHeight,         /* maximum cell width and height */
 	  MaxWidth;
-	BoxType DefaultSymbol;				/* the default symbol is a filled box */
+	BoxType DefaultSymbol;   /* the default symbol is a filled box */
 	SymbolType Symbol[MAX_FONTPOSITION + 1];
 	pcb_bool Valid;
-} FontType, *FontTypePtr;
-
+};
 
 /* TODO: this could be replaced with pcb_obj_t */
 typedef struct onpoint_st {

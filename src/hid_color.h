@@ -1,6 +1,8 @@
 #ifndef PCB_HID_COLOR_H
 #define PCB_HID_COLOR_H
 
+#include "hid.h"
+
 /* HID internal interfaces.  These may ONLY be called from the HID
    modules, not from the common PCB code.  */
 

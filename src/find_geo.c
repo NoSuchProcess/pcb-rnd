@@ -522,7 +522,7 @@ pcb_bool IsLineInPolygon(LineTypePtr Line, PolygonTypePtr Polygon)
 			&& Box->X2 >= Polygon->Clipped->contours->xmin - Bloat
 			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
 		if (!(lp = LinePoly(Line, Line->Thickness + Bloat)))
-			return FALSE;							/* error */
+			return pcb_false;							/* error */
 		return isects(lp, Polygon, pcb_true);
 	}
 	return pcb_false;
@@ -560,7 +560,7 @@ pcb_bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
 
 	/* first check un-bloated case */
 	if (isects(P1->Clipped, P2, pcb_false))
-		return TRUE;
+		return pcb_true;
 
 	/* now the difficult case of bloated */
 	if (Bloat > 0) {

@@ -39,8 +39,9 @@
  */
 
 #include "config.h"
+#include "global_objs.h"
+#include "board.h"
 #include "conf_core.h"
-#include "global.h"
 #include "layer.h"
 #include "create.h"
 #include "data.h"

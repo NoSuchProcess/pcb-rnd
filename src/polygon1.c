@@ -50,6 +50,8 @@
 #include "heap.h"
 #include "compat_cc.h"
 #include "pcb-printf.h"
+#include "polyarea.h"
+#include "global_objs.h"
 
 #define ROUND(a) (long)((a) > 0 ? ((a) + 0.5) : ((a) - 0.5))
 
@@ -893,7 +895,7 @@ static r_dir_t count_contours_i_am_inside(const BoxType * b, void *cl)
 }
 
 /* cntr_in_M_POLYAREA
-returns poly is inside outfst ? TRUE : FALSE */
+returns poly is inside outfst ? pcb_true : pcb_false */
 static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, BOOLp test)
 {
 	POLYAREA *outer = outfst;
@@ -925,10 +927,10 @@ static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, BOOLp test)
 			break;
 		case 1:										/* Found we are inside this piece, and not any of its holes */
 			heap_destroy(&heap);
-			return TRUE;
+			return pcb_true;
 		case 2:										/* Found inside a hole in the smallest polygon so far. No need to check the other polygons */
 			heap_destroy(&heap);
-			return FALSE;
+			return pcb_false;
 		default:
 			printf("Something strange here\n");
 			break;
@@ -936,7 +938,7 @@ static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, BOOLp test)
 	}
 	while (1);
 	heap_destroy(&heap);
-	return FALSE;
+	return pcb_false;
 }																/* cntr_in_M_POLYAREA */
 
 #ifdef DEBUG
@@ -1009,7 +1011,7 @@ static BOOLp label_contour(PLINE * a)
 	print_labels(a);
 	DEBUGP("\n\n");
 #endif
-	return FALSE;
+	return pcb_false;
 }																/* label_contour */
 
 static BOOLp cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, BOOLp test)
@@ -1020,7 +1022,7 @@ static BOOLp cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, BOOLp test)
 	}
 	else if (cntr_in_M_POLYAREA(poly, ppl, test)) {
 		if (test)
-			return TRUE;
+			return pcb_true;
 		poly->Flags.status = INSIDE;
 	}
 	else {
@@ -1028,7 +1030,7 @@ static BOOLp cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, BOOLp test)
 			return pcb_false;
 		poly->Flags.status = OUTSIDE;
 	}
-	return FALSE;
+	return pcb_false;
 }																/* cntr_label_POLYAREA */
 
 static BOOLp M_POLYAREA_label_separated(PLINE * afst, POLYAREA * b, BOOLp touch)
@@ -1037,9 +1039,9 @@ static BOOLp M_POLYAREA_label_separated(PLINE * afst, POLYAREA * b, BOOLp touch)
 
 	for (curc = afst; curc != NULL; curc = curc->next) {
 		if (cntr_label_POLYAREA(curc, b, touch) && touch)
-			return TRUE;
+			return pcb_true;
 	}
-	return FALSE;
+	return pcb_false;
 }
 
 static BOOLp M_POLYAREA_label(POLYAREA * afst, POLYAREA * b, BOOLp touch)
@@ -1052,11 +1054,11 @@ static BOOLp M_POLYAREA_label(POLYAREA * afst, POLYAREA * b, BOOLp touch)
 		for (curc = a->contours; curc != NULL; curc = curc->next)
 			if (cntr_label_POLYAREA(curc, b, touch)) {
 				if (touch)
-					return TRUE;
+					return pcb_true;
 			}
 	}
 	while (!touch && (a = a->f) != afst);
-	return FALSE;
+	return pcb_false;
 }
 
 /****************************************************************/
@@ -1290,7 +1292,7 @@ static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
 				}
 
 				/* Remove hole from the contour */
-				remove_contour(pa_info->pa, prev, info.result, TRUE);
+				remove_contour(pa_info->pa, prev, info.result, pcb_true);
 
 				/* Add hole as the next on the list to be processed in this very function */
 				info.result->next = *src;
@@ -1345,13 +1347,13 @@ static int XorS_Rule(VNODE * cur, DIRECTION * initdir)
 {
 	if (cur->Flags.status == INSIDE) {
 		*initdir = BACKW;
-		return TRUE;
+		return pcb_true;
 	}
 	if (cur->Flags.status == OUTSIDE) {
 		*initdir = FORW;
-		return TRUE;
+		return pcb_true;
 	}
-	return FALSE;
+	return pcb_false;
 }
 
 static int IsectJ_Rule(char p, VNODE * v, DIRECTION * cdir)
@@ -1370,33 +1372,33 @@ static int XorJ_Rule(char p, VNODE * v, DIRECTION * cdir)
 {
 	if (v->Flags.status == INSIDE) {
 		*cdir = BACKW;
-		return TRUE;
+		return pcb_true;
 	}
 	if (v->Flags.status == OUTSIDE) {
 		*cdir = FORW;
-		return TRUE;
+		return pcb_true;
 	}
-	return FALSE;
+	return pcb_false;
 }
 
 static int SubJ_Rule(char p, VNODE * v, DIRECTION * cdir)
 {
 	if (p == 'B' && v->Flags.status == INSIDE) {
 		*cdir = BACKW;
-		return TRUE;
+		return pcb_true;
 	}
 	if (p == 'A' && v->Flags.status == OUTSIDE) {
 		*cdir = FORW;
-		return TRUE;
+		return pcb_true;
 	}
 	if (v->Flags.status == SHARED2) {
 		if (p == 'A')
 			*cdir = FORW;
 		else
 			*cdir = BACKW;
-		return TRUE;
+		return pcb_true;
 	}
-	return FALSE;
+	return pcb_false;
 }
 
 /* return the edge that comes next.
@@ -1413,8 +1415,8 @@ static int jump(VNODE ** cur, DIRECTION * cdir, J_Rule rule)
 
 	if (!(*cur)->cvc_prev) {			/* not a cross-vertex */
 		if (*cdir == FORW ? (*cur)->Flags.mark : (*cur)->prev->Flags.mark)
-			return FALSE;
-		return TRUE;
+			return pcb_false;
+		return pcb_true;
 	}
 #ifdef DEBUG_JUMP
 	DEBUGP("jump entering node at %$mD\n", (*cur)->point[0], (*cur)->point[1]);
@@ -1439,12 +1441,12 @@ static int jump(VNODE ** cur, DIRECTION * cdir, J_Rule rule)
 #endif
 				*cur = d->parent;
 				*cdir = newone;
-				return TRUE;
+				return pcb_true;
 			}
 		}
 	}
 	while ((d = d->prev) != start);
-	return FALSE;
+	return pcb_false;
 }
 
 static int Gather(VNODE * start, PLINE ** result, J_Rule v_rule, DIRECTION initdir)
@@ -1498,7 +1500,7 @@ static void Collect1(jmp_buf * e, VNODE * cur, DIRECTION dir, POLYAREA ** contou
 	}
 	if (!p)
 		return;
-	poly_PreContour(p, TRUE);
+	poly_PreContour(p, pcb_true);
 	if (p->Count > 2) {
 #ifdef DEBUG_GATHER
 		DEBUGP("adding contour with %d vertices and direction %c\n", p->Count, p->Flags.orient ? 'F' : 'B');
@@ -1562,7 +1564,7 @@ cntr_Collect(jmp_buf * e, PLINE ** A, POLYAREA ** contours, PLINE ** holes,
 				*A = tmprev->next;
 				tmprev->next = NULL;
 				PutContour(e, tmprev, contours, holes, owner, NULL, NULL);
-				return TRUE;
+				return pcb_true;
 			}
 			break;
 		case PBO_XOR:
@@ -1573,7 +1575,7 @@ cntr_Collect(jmp_buf * e, PLINE ** A, POLYAREA ** contours, PLINE ** holes,
 				tmprev->next = NULL;
 				poly_InvContour(tmprev);
 				PutContour(e, tmprev, contours, holes, owner, NULL, NULL);
-				return TRUE;
+				return pcb_true;
 			}
 			/* break; *//* Fall through (I think this is correct! pcjc2) */
 		case PBO_UNITE:
@@ -1584,12 +1586,12 @@ cntr_Collect(jmp_buf * e, PLINE ** A, POLYAREA ** contours, PLINE ** holes,
 				*A = tmprev->next;
 				tmprev->next = NULL;
 				PutContour(e, tmprev, contours, holes, owner, parent, parent_contour);
-				return TRUE;
+				return pcb_true;
 			}
 			break;
 		}
 	}
-	return FALSE;
+	return pcb_false;
 }																/* cntr_Collect */
 
 static void M_B_AREA_Collect(jmp_buf * e, POLYAREA * bfst, POLYAREA ** contours, PLINE ** holes, int action)
@@ -1761,7 +1763,7 @@ static r_dir_t find_inside_m_pa(const BoxType * b, void *cl)
 	/* Don't look at contours marked as being intersected */
 	if (check->Flags.status == ISECTED)
 		return R_DIR_NOT_FOUND;
-	if (cntr_in_M_POLYAREA(check, info->want_inside, FALSE)) {
+	if (cntr_in_M_POLYAREA(check, info->want_inside, pcb_false)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
@@ -1823,13 +1825,13 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 					 && (a->contours->xmax <= box.X2)
 					 && (a->contours->ymax <= box.Y2)) &&
 					/* Then test properly */
-					cntr_in_M_POLYAREA(a->contours, bpa, FALSE)) {
+					cntr_in_M_POLYAREA(a->contours, bpa, pcb_false)) {
 
 				/* Delete this contour, all children -> holes queue */
 
 				/* Delete the outer contour */
 				curc = a->contours;
-				remove_contour(a, NULL, curc, FALSE);	/* Rtree deleted in poly_Free below */
+				remove_contour(a, NULL, curc, pcb_false);	/* Rtree deleted in poly_Free below */
 				/* a->contours now points to the remaining holes */
 				poly_DelContour(&curc);
 
@@ -1881,7 +1883,7 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 				}
 
 				/* Remove hole from the contour */
-				remove_contour(a, prev, info.result, TRUE);
+				remove_contour(a, prev, info.result, pcb_true);
 				poly_DelContour(&info.result);
 			}
 			/* End check for deleted holes */
@@ -1912,7 +1914,7 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 			next = curc->next;
 
 			if (del_outside)
-				del_contour = curc->Flags.status != ISECTED && !cntr_in_M_POLYAREA(curc, bpa, FALSE);
+				del_contour = curc->Flags.status != ISECTED && !cntr_in_M_POLYAREA(curc, bpa, pcb_false);
 
 			/* Skip intersected contours */
 			if (curc->Flags.status == ISECTED) {
@@ -2033,14 +2035,14 @@ BOOLp Touching(POLYAREA * a, POLYAREA * b)
 #endif
 		M_POLYAREA_intersect(&e, a, b, pcb_false);
 
-		if (M_POLYAREA_label(a, b, TRUE))
-			return TRUE;
-		if (M_POLYAREA_label(b, a, TRUE))
-			return TRUE;
+		if (M_POLYAREA_label(a, b, pcb_true))
+			return pcb_true;
+		if (M_POLYAREA_label(b, a, pcb_true))
+			return pcb_true;
 	}
 	else if (code == TOUCHES)
-		return TRUE;
-	return FALSE;
+		return pcb_true;
+	return pcb_false;
 }
 
 /* the main clipping routines */
@@ -2099,17 +2101,17 @@ int poly_Boolean_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** res, int action)
 #endif
 
 		/* intersect needs to make a list of the contours in a and b which are intersected */
-		M_POLYAREA_intersect(&e, a, b, TRUE);
+		M_POLYAREA_intersect(&e, a, b, pcb_true);
 
 		/* We could speed things up a lot here if we only processed the relevant contours */
 		/* NB: Relevant parts of a are labeled below */
-		M_POLYAREA_label(b, a, FALSE);
+		M_POLYAREA_label(b, a, pcb_false);
 
 		*res = a;
 		M_POLYAREA_update_primary(&e, res, &holes, action, b);
 		M_POLYAREA_separate_isected(&e, res, &holes, &a_isected);
-		M_POLYAREA_label_separated(a_isected, b, FALSE);
-		M_POLYAREA_Collect_separated(&e, a_isected, res, &holes, action, FALSE);
+		M_POLYAREA_label_separated(a_isected, b, pcb_false);
+		M_POLYAREA_Collect_separated(&e, a_isected, res, &holes, action, pcb_false);
 		M_B_AREA_Collect(&e, b, res, &holes, action);
 		poly_Free(&b);
 
@@ -2174,12 +2176,12 @@ int poly_AndSubtract_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** aandb, POLYA
 		if (!poly_Valid(b))
 			return -1;
 #endif
-		M_POLYAREA_intersect(&e, a, b, TRUE);
+		M_POLYAREA_intersect(&e, a, b, pcb_true);
 
-		M_POLYAREA_label(a, b, FALSE);
-		M_POLYAREA_label(b, a, FALSE);
+		M_POLYAREA_label(a, b, pcb_false);
+		M_POLYAREA_label(b, a, pcb_false);
 
-		M_POLYAREA_Collect(&e, a, aandb, &holes, PBO_ISECT, FALSE);
+		M_POLYAREA_Collect(&e, a, aandb, &holes, PBO_ISECT, pcb_false);
 		InsertHoles(&e, *aandb, &holes);
 		assert(poly_Valid(*aandb));
 		/* delete holes if any left */
@@ -2190,7 +2192,7 @@ int poly_AndSubtract_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** aandb, POLYA
 		holes = NULL;
 		clear_marks(a);
 		clear_marks(b);
-		M_POLYAREA_Collect(&e, a, aminusb, &holes, PBO_SUB, FALSE);
+		M_POLYAREA_Collect(&e, a, aminusb, &holes, PBO_SUB, pcb_false);
 		InsertHoles(&e, *aminusb, &holes);
 		poly_Free(&a);
 		poly_Free(&b);
@@ -2248,7 +2250,7 @@ void poly_IniContour(PLINE * c)
 	c->head.next = c->head.prev = &c->head;
 	c->xmin = c->ymin = 0x7fffffff;
 	c->xmax = c->ymax = 0x80000000;
-	c->is_round = FALSE;
+	c->is_round = pcb_false;
 	c->cx = 0;
 	c->cy = 0;
 	c->radius = 0;
@@ -2427,7 +2429,7 @@ BOOLp poly_CopyContour(PLINE ** dst, PLINE * src)
 	*dst = NULL;
 	*dst = poly_NewContour(src->head.point);
 	if (*dst == NULL)
-		return FALSE;
+		return pcb_false;
 
 	(*dst)->Count = src->Count;
 	(*dst)->Flags.orient = src->Flags.orient;
@@ -2437,12 +2439,12 @@ BOOLp poly_CopyContour(PLINE ** dst, PLINE * src)
 
 	for (cur = src->head.next; cur != &src->head; cur = cur->next) {
 		if ((newnode = poly_CreateNode(cur->point)) == NULL)
-			return FALSE;
+			return pcb_false;
 		/* newnode->Flags = cur->Flags; */
 		poly_InclVertex((*dst)->head.prev, newnode);
 	}
 	(*dst)->tree = (rtree_t *) make_edge_tree(*dst);
-	return TRUE;
+	return pcb_true;
 }
 
 /**********************************************************************/
@@ -2454,7 +2456,7 @@ BOOLp poly_Copy0(POLYAREA ** dst, const POLYAREA * src)
 	if (src != NULL)
 		*dst = (POLYAREA *) calloc(1, sizeof(POLYAREA));
 	if (*dst == NULL)
-		return FALSE;
+		return pcb_false;
 	(*dst)->contour_tree = r_create_tree(NULL, 0, 0);
 
 	return poly_Copy1(*dst, src);
@@ -2469,11 +2471,11 @@ BOOLp poly_Copy1(POLYAREA * dst, const POLYAREA * src)
 
 	for (cur = src->contours; cur != NULL; cur = cur->next) {
 		if (!poly_CopyContour(last, cur))
-			return FALSE;
+			return pcb_false;
 		r_insert_entry(dst->contour_tree, (BoxTypePtr) * last, 0);
 		last = &(*last)->next;
 	}
-	return TRUE;
+	return pcb_true;
 }
 
 void poly_M_Incl(POLYAREA ** list, POLYAREA * a)
@@ -2494,14 +2496,14 @@ BOOLp poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst)
 
 	*dst = NULL;
 	if (src == NULL)
-		return FALSE;
+		return pcb_false;
 	do {
 		if ((di = poly_Create()) == NULL || !poly_Copy1(di, src))
-			return FALSE;
+			return pcb_false;
 		poly_M_Incl(dst, di);
 	}
 	while ((src = src->f) != srcfst);
-	return TRUE;
+	return pcb_true;
 }
 
 BOOLp poly_InclContour(POLYAREA * p, PLINE * c)
@@ -2509,22 +2511,22 @@ BOOLp poly_InclContour(POLYAREA * p, PLINE * c)
 	PLINE *tmp;
 
 	if ((c == NULL) || (p == NULL))
-		return FALSE;
+		return pcb_false;
 	if (c->Flags.orient == PLF_DIR) {
 		if (p->contours != NULL)
-			return FALSE;
+			return pcb_false;
 		p->contours = c;
 	}
 	else {
 		if (p->contours == NULL)
-			return FALSE;
+			return pcb_false;
 		/* link at front of hole list */
 		tmp = p->contours->next;
 		p->contours->next = c;
 		c->next = tmp;
 	}
 	r_insert_entry(p->contour_tree, (BoxTypePtr) c, 0);
-	return TRUE;
+	return pcb_true;
 }
 
 typedef struct pip {
@@ -2578,7 +2580,7 @@ int poly_InsideContour(PLINE * c, Vector p)
 	BoxType ray;
 
 	if (!cntrbox_pointin(c, p))
-		return FALSE;
+		return pcb_false;
 	info.f = 0;
 	info.p[0] = ray.X1 = p[0];
 	info.p[1] = ray.Y1 = p[1];
@@ -2594,15 +2596,15 @@ BOOLp poly_CheckInside(POLYAREA * p, Vector v0)
 	PLINE *cur;
 
 	if ((p == NULL) || (v0 == NULL) || (p->contours == NULL))
-		return FALSE;
+		return pcb_false;
 	cur = p->contours;
 	if (poly_InsideContour(cur, v0)) {
 		for (cur = cur->next; cur != NULL; cur = cur->next)
 			if (poly_InsideContour(cur, v0))
-				return FALSE;
-		return TRUE;
+				return pcb_false;
+		return pcb_true;
 	}
-	return FALSE;
+	return pcb_false;
 }
 
 BOOLp poly_M_CheckInside(POLYAREA * p, Vector v0)
@@ -2610,14 +2612,14 @@ BOOLp poly_M_CheckInside(POLYAREA * p, Vector v0)
 	POLYAREA *cur;
 
 	if ((p == NULL) || (v0 == NULL))
-		return FALSE;
+		return pcb_false;
 	cur = p;
 	do {
 		if (poly_CheckInside(cur, v0))
-			return TRUE;
+			return pcb_true;
 	}
 	while ((cur = cur->f) != p);
-	return FALSE;
+	return pcb_false;
 }
 
 static double dot(Vector A, Vector B)
@@ -2831,12 +2833,12 @@ static BOOLp inside_sector(VNODE * pn, Vector p2)
 	p_n = vect_det2(pdir, ndir) >= 0;
 
 	if ((p_n && p_c && n_c) || ((!p_n) && (p_c || n_c)))
-		return TRUE;
+		return pcb_true;
 	else
-		return FALSE;
+		return pcb_false;
 }																/* inside_sector */
 
-/* returns TRUE if bad contour */
+/* returns pcb_true if bad contour */
 BOOLp poly_ChkContour(PLINE * a)
 {
 	VNODE *a1, *a2, *hit1, *hit2;
@@ -2850,7 +2852,7 @@ BOOLp poly_ChkContour(PLINE * a)
 		do {
 			if (!node_neighbours(a1, a2) && (icnt = vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2)) > 0) {
 				if (icnt > 1)
-					return TRUE;
+					return pcb_true;
 
 				if (vect_dist2(i1, a1->point) < EPSILON)
 					hit1 = a1;
@@ -2868,33 +2870,33 @@ BOOLp poly_ChkContour(PLINE * a)
 
 				if ((hit1 == NULL) && (hit2 == NULL)) {
 					/* If the intersection didn't land on an end-point of either
-					 * line, we know the lines cross and we return TRUE.
+					 * line, we know the lines cross and we return pcb_true.
 					 */
-					return TRUE;
+					return pcb_true;
 				}
 				else if (hit1 == NULL) {
 					/* An end-point of the second line touched somewhere along the
 					   length of the first line. Check where the second line leads. */
 					if (inside_sector(hit2, a1->point) != inside_sector(hit2, a1->next->point))
-						return TRUE;
+						return pcb_true;
 				}
 				else if (hit2 == NULL) {
 					/* An end-point of the first line touched somewhere along the
 					   length of the second line. Check where the first line leads. */
 					if (inside_sector(hit1, a2->point) != inside_sector(hit1, a2->next->point))
-						return TRUE;
+						return pcb_true;
 				}
 				else {
 					/* Both lines intersect at an end-point. Check where they lead. */
 					if (inside_sector(hit1, hit2->prev->point) != inside_sector(hit1, hit2->next->point))
-						return TRUE;
+						return pcb_true;
 				}
 			}
 		}
 		while ((a2 = a2->next) != &a->head);
 	}
 	while ((a1 = a1->next) != &a->head);
-	return FALSE;
+	return pcb_false;
 }
 
 void poly_bbox(POLYAREA * p, BoxType * b)
@@ -2926,7 +2928,7 @@ BOOLp poly_Valid(POLYAREA * p)
 	PLINE *c;
 
 	if ((p == NULL) || (p->contours == NULL))
-		return FALSE;
+		return pcb_false;
 
 	if (p->contours->Flags.orient == PLF_INV || poly_ChkContour(p->contours)) {
 #ifndef NDEBUG
@@ -2943,7 +2945,7 @@ BOOLp poly_Valid(POLYAREA * p)
 		}
 		while ((v = v->next) != &p->contours->head);
 #endif
-		return FALSE;
+		return pcb_false;
 	}
 	for (c = p->contours->next; c != NULL; c = c->next) {
 		if (c->Flags.orient == PLF_DIR || poly_ChkContour(c) || !poly_ContourInContour(p->contours, c)) {
@@ -2963,10 +2965,10 @@ BOOLp poly_Valid(POLYAREA * p)
 			}
 			while ((v = v->next) != &c->head);
 #endif
-			return FALSE;
+			return pcb_false;
 		}
 	}
-	return TRUE;
+	return pcb_true;
 }
 
 

@@ -31,6 +31,12 @@
 
 #include "config.h"
 
+enum {
+	NETLIST_INPUT = 0,						/* index of the original netlist as imported */
+	NETLIST_EDITED = 1,						/* index of the netlist produced by applying netlist patches on [NETLIST_INPUT] */
+	NUM_NETLISTS									/* so that we know how many netlists we are dealing with */
+};
+
 #include "const.h"
 #include "macro.h"
 #include <stdio.h>
@@ -42,6 +48,7 @@
 #include <ctype.h>
 
 #include "global_typedefs.h"
+#include "vtroutestyle.h"
 #include "global_objs.h"
 #include "layer.h"
 #include "library.h"
@@ -58,7 +65,7 @@
 #include "vtonpoint.h"
 #include "hid.h"
 #include "polyarea.h"
-#include "vtroutestyle.h"
+
 
 	/* The PCBType struct holds information about board layout most of which is
 	   |  saved with the layout.  A new PCB layout struct is first initialized
@@ -115,5 +122,7 @@ struct pcb_board_s {
 };
 
 void FreePCBMemory(PCBTypePtr);
+
+extern PCBTypePtr PCB;
 
 #endif

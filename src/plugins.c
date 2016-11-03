@@ -32,6 +32,7 @@
 #include "config.h"
 #include "genvector/gds_char.h"
 #include "compat_misc.h"
+#include "hid.h"
 
 plugin_info_t *plugins = NULL;
 

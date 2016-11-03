@@ -27,13 +27,6 @@
 
 typedef int BOOLp;
 
-#ifndef FALSE
-enum {
-	FALSE = 0,
-	TRUE = 1
-};
-#endif
-
 #define PLF_DIR 1
 #define PLF_INV 0
 #define PLF_MARK 1

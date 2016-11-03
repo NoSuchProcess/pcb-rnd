@@ -29,7 +29,7 @@
 #define PCB_PLUG_IO_H
 
 #include "library.h"
-#include "global.h"
+#include "global_typedefs.h"
 #include "conf.h"
 
 typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not all formats support all things */

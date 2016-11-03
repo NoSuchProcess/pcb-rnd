@@ -62,6 +62,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "layer.h"
+#include "polyarea.h"
 
 /* --------------------------------------------------------------------------- */
 

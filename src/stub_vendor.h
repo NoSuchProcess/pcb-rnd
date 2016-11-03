@@ -24,7 +24,7 @@
 #define PCB_STUB_VENDOR_H
 
 #include "config.h"
-#include "global.h"
+#include "global_typedefs.h"
 
 extern int (*stub_vendorDrillMap)(int);
 extern pcb_bool (*stub_vendorIsElementMappable)(ElementTypePtr);

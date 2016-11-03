@@ -32,6 +32,7 @@
 
 #include "global.h"
 #include "dbus-pcbmain.h"
+#include "hid.h"
 
 typedef struct _IOWatchHandler IOWatchHandler;
 typedef struct _TimeoutHandler TimeoutHandler;

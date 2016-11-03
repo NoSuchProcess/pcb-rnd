@@ -289,7 +289,7 @@ doIsBad:
 	LocateError(&x, &y);
 	BuildObjectList(&object_count, &object_id_list, &object_type_list);
 	violation = pcb_drc_violation_new(message, _("Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short."), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																		FALSE,	/* MEASUREMENT OF ERROR UNKNOWN */
+																		pcb_false,	/* MEASUREMENT OF ERROR UNKNOWN */
 																		0,	/* MAGNITUDE OF ERROR UNKNOWN */
 																		PCB->Bloat, object_count, object_id_list, object_type_list);
 	append_drc_violation(violation);
@@ -401,7 +401,7 @@ int DRCAll(void)
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Line width is too thin"), _("Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
 																					line->Thickness, PCB->minWid, object_count, object_id_list, object_type_list);
 				append_drc_violation(violation);
 				pcb_drc_violation_free(violation);
@@ -432,7 +432,7 @@ int DRCAll(void)
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Arc width is too thin"), _("Process specifications dictate a minimum feature-width\n" "that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
 																					arc->Thickness, PCB->minWid, object_count, object_id_list, object_type_list);
 				append_drc_violation(violation);
 				pcb_drc_violation_free(violation);
@@ -463,7 +463,7 @@ int DRCAll(void)
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Pin annular ring too small"), _("Annular rings that are too small may erode during etching,\n" "resulting in a broken connection"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
 																					(pin->Thickness - pin->DrillingHole) / 2,
 																					PCB->minRing, object_count, object_id_list, object_type_list);
 				append_drc_violation(violation);
@@ -486,7 +486,7 @@ int DRCAll(void)
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Pin drill size is too small"), _("Process rules dictate the minimum drill size which can be used"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
 																					pin->DrillingHole, PCB->minDrill, object_count, object_id_list, object_type_list);
 				append_drc_violation(violation);
 				pcb_drc_violation_free(violation);
@@ -517,7 +517,7 @@ int DRCAll(void)
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Pad is too thin"), _("Pads which are too thin may erode during etching,\n" "resulting in a broken or unreliable connection"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
 																					pad->Thickness, PCB->minWid, object_count, object_id_list, object_type_list);
 				append_drc_violation(violation);
 				pcb_drc_violation_free(violation);
@@ -548,7 +548,7 @@ int DRCAll(void)
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Via annular ring too small"), _("Annular rings that are too small may erode during etching,\n" "resulting in a broken connection"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
 																					(via->Thickness - via->DrillingHole) / 2,
 																					PCB->minRing, object_count, object_id_list, object_type_list);
 				append_drc_violation(violation);
@@ -571,7 +571,7 @@ int DRCAll(void)
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Via drill size is too small"), _("Process rules dictate the minimum drill size which can be used"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
 																					via->DrillingHole, PCB->minDrill, object_count, object_id_list, object_type_list);
 				append_drc_violation(violation);
 				pcb_drc_violation_free(violation);
@@ -606,7 +606,7 @@ int DRCAll(void)
 				LocateError(&x, &y);
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 				violation = pcb_drc_violation_new(_("Silk line is too thin"), _("Process specifications dictate a minimum silkscreen feature-width\n" "that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
 																					line->Thickness, PCB->minSlk, object_count, object_id_list, object_type_list);
 				append_drc_violation(violation);
 				pcb_drc_violation_free(violation);
@@ -658,7 +658,7 @@ int DRCAll(void)
 				pcb_snprintf(buffer, buflen, title, name, tmpcnt);
 
 				violation = pcb_drc_violation_new(buffer, _("Process specifications dictate a minimum silkscreen\n" "feature-width that can reliably be reproduced"), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																					TRUE,	/* MEASUREMENT OF ERROR KNOWN */
+																					pcb_true,	/* MEASUREMENT OF ERROR KNOWN */
 																					0,	/* MINIMUM OFFENDING WIDTH UNKNOWN */
 																					PCB->minSlk, object_count, object_id_list, object_type_list);
 				free(buffer);
@@ -740,7 +740,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 			LocateError(&x, &y);
 			BuildObjectList(&object_count, &object_id_list, &object_type_list);
 			violation = pcb_drc_violation_new(_("Potential for broken trace"), _("Insufficient overlap between objects can lead to broken tracks\n" "due to registration errors with old wheel style photo-plotters."), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																				FALSE,	/* MEASUREMENT OF ERROR UNKNOWN */
+																				pcb_false,	/* MEASUREMENT OF ERROR UNKNOWN */
 																				0,	/* MAGNITUDE OF ERROR UNKNOWN */
 																				PCB->Shrink, object_count, object_id_list, object_type_list);
 			append_drc_violation(violation);
@@ -784,7 +784,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 		LocateError(&x, &y);
 		BuildObjectList(&object_count, &object_id_list, &object_type_list);
 		violation = pcb_drc_violation_new(_("Copper areas too close"), _("Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short."), x, y, 0,	/* ANGLE OF ERROR UNKNOWN */
-																			FALSE,	/* MEASUREMENT OF ERROR UNKNOWN */
+																			pcb_false,	/* MEASUREMENT OF ERROR UNKNOWN */
 																			0,	/* MAGNITUDE OF ERROR UNKNOWN */
 																			PCB->Bloat, object_count, object_id_list, object_type_list);
 		append_drc_violation(violation);

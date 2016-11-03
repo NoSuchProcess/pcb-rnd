@@ -30,6 +30,7 @@
 #define	PCB_DRAW_H
 
 #include "global.h"
+#include "hid.h"
 
 /* ---------------------------------------------------------------------------
  * some useful values of our widgets

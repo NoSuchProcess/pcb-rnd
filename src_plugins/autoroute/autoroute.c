@@ -3163,7 +3163,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 			b = shrink_box(&b, MIN(b.X2 - b.X1, b.Y2 - b.Y1) / 5);
 		nextpoint = closest_point_in_box(&lastpoint, &b);
 		if (AutoRouteParameters.last_smooth)
-			RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, TRUE);
+			RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, pcb_true);
 		else
 			last_x = RD_DrawManhattanLine(rd, &target->sbox, &path->sbox,
 																		lastpoint, nextpoint, halfwidth, path->group, subnet, is_bad, last_x);
@@ -3207,7 +3207,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 		/* knee is placed in lastpath box */
 		/* should never cause line to leave union of lastpath/path boxes */
 		if (AutoRouteParameters.last_smooth)
-			RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, TRUE);
+			RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, pcb_true);
 		else
 			last_x = RD_DrawManhattanLine(rd, &lastpath->sbox, &path->sbox,
 																		lastpoint, nextpoint, halfwidth, path->group, subnet, is_bad, last_x);
@@ -3238,7 +3238,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 					add_clearance(&lastpoint, &b);
 #else
 				if (AutoRouteParameters.last_smooth)
-					RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, TRUE);
+					RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, pcb_true);
 				else
 #endif
 					last_x = RD_DrawManhattanLine(rd, &b, &b, nextpoint, lastpoint, halfwidth, path->group, subnet, is_bad, last_x);

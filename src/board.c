@@ -27,6 +27,9 @@
 #include "board.h"
 #include "attrib.h"
 #include "library.h"
+#include "data.h"
+
+PCBTypePtr PCB;									/* pointer to layout struct */
 
 /* ---------------------------------------------------------------------------
  * free memory used by PCB

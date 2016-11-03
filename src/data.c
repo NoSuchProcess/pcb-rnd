@@ -30,6 +30,8 @@
 
 #include "board.h"
 #include "data.h"
+#include "mymem.h"
+#include "rtree.h"
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers
@@ -37,7 +39,6 @@
 
 CrosshairType Crosshair;				/* information about cursor settings */
 MarkType Marked;								/* a cross-hair mark */
-PCBTypePtr PCB;									/* pointer to layout struct */
 
 int LayerStack[MAX_LAYER];			/* determines the layer draw order */
 
@@ -171,4 +172,81 @@ void pcb_loop_all(void *ctx,
 	pcb_loop_layers(ctx, lacb, lcb, acb, tcb, pocb);
 	pcb_loop_elements(ctx, ecb, elcb, eacb, etcb, epicb, epacb);
 	pcb_loop_vias(ctx, vcb);
+}
+
+/* ---------------------------------------------------------------------------
+ * free memory used by data struct
+ */
+void FreeDataMemory(DataType * data)
+{
+	LayerTypePtr layer;
+	int i;
+
+	if (data == NULL)
+		return;
+
+	VIA_LOOP(data);
+	{
+		free(via->Name);
+	}
+	END_LOOP;
+	list_map0(&data->Via, PinType, RemoveFreeVia);
+	ELEMENT_LOOP(data);
+	{
+		FreeElementMemory(element);
+	}
+	END_LOOP;
+	list_map0(&data->Element, ElementType, RemoveFreeElement);
+	list_map0(&data->Rat, RatType, RemoveFreeRat);
+
+	for (layer = data->Layer, i = 0; i < MAX_LAYER + 2; layer++, i++) {
+		FreeAttributeListMemory(&layer->Attributes);
+		TEXT_LOOP(layer);
+		{
+			free(text->TextString);
+		}
+		END_LOOP;
+		if (layer->Name)
+			free((char*)layer->Name);
+		LINE_LOOP(layer);
+		{
+			if (line->Number)
+				free(line->Number);
+		}
+		END_LOOP;
+
+		list_map0(&layer->Line, LineType, RemoveFreeLine);
+		list_map0(&layer->Arc,  ArcType,  RemoveFreeArc);
+		list_map0(&layer->Text, TextType, RemoveFreeText);
+		POLYGON_LOOP(layer);
+		{
+			FreePolygonMemory(polygon);
+		}
+		END_LOOP;
+		list_map0(&layer->Polygon, PolygonType, RemoveFreePolygon);
+		if (layer->line_tree)
+			r_destroy_tree(&layer->line_tree);
+		if (layer->arc_tree)
+			r_destroy_tree(&layer->arc_tree);
+		if (layer->text_tree)
+			r_destroy_tree(&layer->text_tree);
+		if (layer->polygon_tree)
+			r_destroy_tree(&layer->polygon_tree);
+	}
+
+	if (data->element_tree)
+		r_destroy_tree(&data->element_tree);
+	for (i = 0; i < MAX_ELEMENTNAMES; i++)
+		if (data->name_tree[i])
+			r_destroy_tree(&data->name_tree[i]);
+	if (data->via_tree)
+		r_destroy_tree(&data->via_tree);
+	if (data->pin_tree)
+		r_destroy_tree(&data->pin_tree);
+	if (data->pad_tree)
+		r_destroy_tree(&data->pad_tree);
+	if (data->rat_tree)
+		r_destroy_tree(&data->rat_tree);
+	/* clear struct */
+	memset(data, 0, sizeof(DataType));
 }

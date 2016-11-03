@@ -24,20 +24,20 @@
 #define GLOBAL_TYPEDEFS_H
 #include "config.h"
 
-enum {
-	NETLIST_INPUT = 0,						/* index of the original netlist as imported */
-	NETLIST_EDITED = 1,						/* index of the netlist produced by applying netlist patches on [NETLIST_INPUT] */
-	NUM_NETLISTS									/* so that we know how many netlists we are dealing with */
-};
-
 typedef struct pcb_board_s PCBType, *PCBTypePtr;
+typedef struct pcb_data_s  DataType, *DataTypePtr;
 typedef struct pcb_layer_group_s  LayerGroupType, *LayerGroupTypePtr;
 typedef struct pcb_layer_s LayerType, *LayerTypePtr;
 typedef struct pcb_buffer_s BufferType, *BufferTypePtr;
 typedef struct pcb_net_s NetType, *NetTypePtr;
-typedef struct pcb_rat_s  ConnectionType, *ConnectionTypePtr;
+typedef struct pcb_connection_s  ConnectionType, *ConnectionTypePtr;
 typedef struct pcb_box_s BoxType, *BoxTypePtr;
 typedef struct pcb_boxlist_s  BoxListType, *BoxListTypePtr;
+typedef struct pcb_font_s  FontType, *FontTypePtr;
+typedef struct pcb_line_s LineType, *LineTypePtr;
+typedef struct pcb_arc_s ArcType, *ArcTypePtr;
+typedef struct pcb_point_s PointType, *PointTypePtr;
+typedef struct pcb_rat_line_s RatType, *RatTypePtr;
 
 typedef struct polygon_st PolygonType, *PolygonTypePtr;
 typedef struct pad_st PadType, *PadTypePtr;
@@ -46,8 +46,6 @@ typedef struct rtree rtree_t;
 typedef struct rats_patch_line_s rats_patch_line_t;
 typedef struct element_st ElementType, *ElementTypePtr, **ElementTypeHandle;
 
-
-typedef struct data_st  DataType, *DataTypePtr;
 typedef struct plug_io_s plug_io_t;
 
 typedef unsigned int pcb_cardinal_t;

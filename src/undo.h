@@ -29,7 +29,7 @@
 #ifndef	PCB_UNDO_H
 #define	PCB_UNDO_H
 
-#include "global.h"
+#include "library.h"
 
 #define DRAW_FLAGS	(PCB_FLAG_RAT | PCB_FLAG_SELECTED \
 			| PCB_FLAG_HIDENAME | PCB_FLAG_HOLE | PCB_FLAG_OCTAGON | PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE)

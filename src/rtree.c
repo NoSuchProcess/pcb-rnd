@@ -36,11 +36,15 @@
  */
 #include "config.h"
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 #include <setjmp.h>
 
 #include "compat_cc.h"
 #include "rtree.h"
+#include "global_objs.h"
+#include "macro.h"
 
 #define SLOW_ASSERTS
 /* All rectangles are closed on the bottom left and open on the

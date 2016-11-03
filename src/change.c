@@ -436,7 +436,7 @@ static ObjectFunctionType ChangeAngleFunctions = {
 
 /* ---------------------------------------------------------------------------
  * changes the thermal on a via
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeViaThermal(PinTypePtr Via)
 {
@@ -455,7 +455,7 @@ static void *ChangeViaThermal(PinTypePtr Via)
 
 /* ---------------------------------------------------------------------------
  * changes the thermal on a pin
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangePinThermal(ElementTypePtr element, PinTypePtr Pin)
 {
@@ -474,7 +474,7 @@ static void *ChangePinThermal(ElementTypePtr element, PinTypePtr Pin)
 
 /* ---------------------------------------------------------------------------
  * changes the size of a via
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeViaSize(PinTypePtr Via)
 {
@@ -504,7 +504,7 @@ static void *ChangeViaSize(PinTypePtr Via)
 
 /* ---------------------------------------------------------------------------
  * changes the drilling hole of a via
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeVia2ndSize(PinTypePtr Via)
 {
@@ -532,7 +532,7 @@ static void *ChangeVia2ndSize(PinTypePtr Via)
 
 /* ---------------------------------------------------------------------------
  * changes the clearance size of a via
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeViaClearSize(PinTypePtr Via)
 {
@@ -565,7 +565,7 @@ static void *ChangeViaClearSize(PinTypePtr Via)
 
 /* ---------------------------------------------------------------------------
  * changes the size of a pin
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangePinSize(ElementTypePtr Element, PinTypePtr Pin)
 {
@@ -593,7 +593,7 @@ static void *ChangePinSize(ElementTypePtr Element, PinTypePtr Pin)
 
 /* ---------------------------------------------------------------------------
  * changes the clearance size of a pin
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangePinClearSize(ElementTypePtr Element, PinTypePtr Pin)
 {
@@ -624,7 +624,7 @@ static void *ChangePinClearSize(ElementTypePtr Element, PinTypePtr Pin)
 
 /* ---------------------------------------------------------------------------
  * changes the size of a pad
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangePadSize(ElementTypePtr Element, PadTypePtr Pad)
 {
@@ -651,7 +651,7 @@ static void *ChangePadSize(ElementTypePtr Element, PadTypePtr Pad)
 
 /* ---------------------------------------------------------------------------
  * changes the clearance size of a pad
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangePadClearSize(ElementTypePtr Element, PadTypePtr Pad)
 {
@@ -682,7 +682,7 @@ static void *ChangePadClearSize(ElementTypePtr Element, PadTypePtr Pad)
 
 /* ---------------------------------------------------------------------------
  * changes the drilling hole of all pins of an element
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeElement2ndSize(ElementTypePtr Element)
 {
@@ -719,7 +719,7 @@ static void *ChangeElement2ndSize(ElementTypePtr Element)
 
 /* ---------------------------------------------------------------------------
  * changes ring dia of all pins of an element
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeElement1stSize(ElementTypePtr Element)
 {
@@ -754,7 +754,7 @@ static void *ChangeElement1stSize(ElementTypePtr Element)
 
 /* ---------------------------------------------------------------------------
  * changes the clearance of all pins of an element
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeElementClearSize(ElementTypePtr Element)
 {
@@ -815,7 +815,7 @@ static void *ChangeElementClearSize(ElementTypePtr Element)
 
 /* ---------------------------------------------------------------------------
  * changes the drilling hole of a pin
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangePin2ndSize(ElementTypePtr Element, PinTypePtr Pin)
 {
@@ -843,7 +843,7 @@ static void *ChangePin2ndSize(ElementTypePtr Element, PinTypePtr Pin)
 
 /* ---------------------------------------------------------------------------
  * changes the size of a line
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeLineSize(LayerTypePtr Layer, LineTypePtr Line)
 {
@@ -868,7 +868,7 @@ static void *ChangeLineSize(LayerTypePtr Layer, LineTypePtr Line)
 
 /* ---------------------------------------------------------------------------
  * changes the clearance size of a line
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeLineClearSize(LayerTypePtr Layer, LineTypePtr Line)
 {
@@ -915,7 +915,7 @@ static void *ChangePolygonClearSize(LayerTypePtr Layer, PolygonTypePtr poly)
 
 /* ---------------------------------------------------------------------------
  * changes the size of an arc
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeArcSize(LayerTypePtr Layer, ArcTypePtr Arc)
 {
@@ -940,7 +940,7 @@ static void *ChangeArcSize(LayerTypePtr Layer, ArcTypePtr Arc)
 
 /* ---------------------------------------------------------------------------
  * changes the clearance size of an arc
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
 {
@@ -970,7 +970,7 @@ static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
 
 /* ---------------------------------------------------------------------------
  * changes the radius of an arc (is_primary 0=width or 1=height or 2=both)
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeArcRadius(LayerTypePtr Layer, ArcTypePtr Arc)
 {
@@ -1010,7 +1010,7 @@ static void *ChangeArcRadius(LayerTypePtr Layer, ArcTypePtr Arc)
 
 /* ---------------------------------------------------------------------------
  * changes the angle of an arc (is_primary 0=start or 1=end)
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeArcAngle(LayerTypePtr Layer, ArcTypePtr Arc)
 {
@@ -1054,7 +1054,7 @@ static void *ChangeArcAngle(LayerTypePtr Layer, ArcTypePtr Arc)
 
 /* ---------------------------------------------------------------------------
  * changes the scaling factor of a text object
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeTextSize(LayerTypePtr Layer, TextTypePtr Text)
 {
@@ -1080,7 +1080,7 @@ static void *ChangeTextSize(LayerTypePtr Layer, TextTypePtr Text)
 
 /* ---------------------------------------------------------------------------
  * changes the scaling factor of an element's outline
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeElementSize(ElementTypePtr Element)
 {
@@ -1121,7 +1121,7 @@ static void *ChangeElementSize(ElementTypePtr Element)
 
 /* ---------------------------------------------------------------------------
  * changes the scaling factor of a elementname object
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeElementNameSize(ElementTypePtr Element)
 {
@@ -1336,7 +1336,7 @@ pcb_bool ChangeLayoutName(char *Name)
 
 /* ---------------------------------------------------------------------------
  * changes the side of the board an element is on
- * returns TRUE if done
+ * returns pcb_true if done
  */
 pcb_bool ChangeElementSide(ElementTypePtr Element, Coord yoff)
 {
@@ -2680,7 +2680,7 @@ void ChangePCBSize(Coord Width, Coord Height)
 
 /* ---------------------------------------------------------------------------
  * changes the mask size of a pad
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangePadMaskSize(ElementTypePtr Element, PadTypePtr Pad)
 {
@@ -2703,7 +2703,7 @@ static void *ChangePadMaskSize(ElementTypePtr Element, PadTypePtr Pad)
 
 /* ---------------------------------------------------------------------------
  * changes the mask size of a pin
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangePinMaskSize(ElementTypePtr Element, PinTypePtr Pin)
 {
@@ -2726,7 +2726,7 @@ static void *ChangePinMaskSize(ElementTypePtr Element, PinTypePtr Pin)
 
 /* ---------------------------------------------------------------------------
  * changes the mask size of a via
- * returns TRUE if changed
+ * returns pcb_true if changed
  */
 static void *ChangeViaMaskSize(PinTypePtr Via)
 {

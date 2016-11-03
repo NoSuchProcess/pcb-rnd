@@ -27,6 +27,8 @@
 #ifndef PCB_DRC_H
 #define PCB_DRC_H
 
+#include "unit.h"
+
 struct drc_violation_st {
 	char *title;
 	char *explanation;

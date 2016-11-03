@@ -21,8 +21,11 @@
  */
 
 #include "config.h"
-#include "global.h"
+#include <stdlib.h>
+#include "global_objs.h"
 #include "stub_mincut.h"
+#include "const.h"
+#include "flag.h"
 
 static void stub_rat_proc_shorts_dummy(void)
 {

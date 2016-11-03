@@ -11,6 +11,7 @@
 
 #include "error.h"
 #include "event.h"
+#include "global_typedefs.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
@@ -417,12 +418,12 @@ cleanup:
 int hid_parse_command(const char *str_)
 {
 	event(EVENT_CLI_ENTER, "s", str_);
-	return hid_parse_actionstring(str_, FALSE);
+	return hid_parse_actionstring(str_, pcb_false);
 }
 
 int hid_parse_actions(const char *str_)
 {
-	return hid_parse_actionstring(str_, TRUE);
+	return hid_parse_actionstring(str_, pcb_true);
 }
 
 void hid_actions_init(void)

@@ -29,6 +29,7 @@
 #ifndef	PCB_DATA_H
 #define	PCB_DATA_H
 
+#include "globalconst.h"
 #include "global_typedefs.h"
 #include "global_objs.h"
 #include "global_element.h"
@@ -46,16 +47,17 @@
 
 /* Generic container object that can hold subcircuits with layer-global
    objects (e.g. vias and rats) and layer-locals (lines, arcs) */
-struct data_st {
+struct pcb_data_s {
 	int LayerN;                        /* number of layers in this board */
 	pinlist_t Via;
 	elementlist_t Element;
-	ratlist_t Rat;
+/**/
 	rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;
 	PCBType *pcb;
 	LayerType Layer[MAX_LAYER + 2];    /* add 2 silkscreen layers */
 	plug_io_t *loader;
+	ratlist_t Rat;
 };
 
 
@@ -65,8 +67,6 @@ struct data_st {
 extern CrosshairType Crosshair;
 
 extern MarkType Marked;
-
-extern PCBTypePtr PCB;
 
 #define max_group (PCB->Data->LayerN)
 #define max_copper_layer (PCB->Data->LayerN)
@@ -128,5 +128,7 @@ void pcb_loop_all(void *ctx,
 	pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb,
 	pcb_via_cb_t vcb
 );
+
+void FreeDataMemory(DataTypePtr);
 
 #endif

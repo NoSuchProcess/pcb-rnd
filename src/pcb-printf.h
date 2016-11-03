@@ -80,6 +80,7 @@
 #define	PCB_PCB_PRINTF_H
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <genvector/gds_char.h>
 #include "unit.h"
 

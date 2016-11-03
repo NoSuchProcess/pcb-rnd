@@ -24,6 +24,8 @@
  *
  */
 
+#include "global_objs.h"
+
 char *pcbflags_to_string(FlagType flags);
 FlagType string_to_pcbflags(const char *flagstring, int (*error) (const char *msg));
 

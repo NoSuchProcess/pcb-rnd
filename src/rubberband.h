@@ -30,7 +30,7 @@
 #ifndef	PCB_RUBBERBAND_H
 #define	PCB_RUBBERBAND_H
 
-#include "global.h"
+#include "global_objs.h"
 
 /* ---------------------------------------------------------------------------
  * some types for cursor drawing, setting of block and lines

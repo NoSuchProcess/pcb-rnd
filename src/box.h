@@ -35,6 +35,8 @@
 #define PCB_BOX_H
 
 #include <assert.h>
+#include "global_typedefs.h"
+#include "global_objs.h"
 #include "global.h"
 
 struct pcb_boxlist_s {

@@ -68,7 +68,6 @@ pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr);
 ElementTypePtr GetElementMemory(DataTypePtr);
 void FreePolygonMemory(PolygonTypePtr);
 void FreeElementMemory(ElementTypePtr);
-void FreeDataMemory(DataTypePtr);
 char *StripWhiteSpaceAndDup(const char *);
 
 void RemoveFreeArc(ArcType * data);

@@ -36,7 +36,7 @@
 #ifndef PCB_RTREE_H
 #define PCB_RTREE_H
 
-#include "global.h"
+#include "global_typedefs.h"
 
 struct rtree {
 	struct rtree_node *root;

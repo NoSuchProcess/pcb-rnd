@@ -776,7 +776,7 @@ NetListListType CollectSubnets(pcb_bool SelectedOnly)
 			}
 		}
 		END_LOOP;
-		/* Note that AndRats is *FALSE* here! */
+		/* Note that AndRats is *pcb_false* here! */
 		GatherSubnets(Nets, SelectedOnly, pcb_false);
 	}
 	END_LOOP;

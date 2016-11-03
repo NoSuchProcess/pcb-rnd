@@ -29,7 +29,7 @@
 #ifndef	PCB_ACTION_HELPER_H
 #define	PCB_ACTION_HELPER_H
 
-#include "global.h"
+#include "global_typedefs.h"
 
 #define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_VIA | PCB_TYPE_POLYGON
 

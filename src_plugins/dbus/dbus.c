@@ -41,6 +41,7 @@
 #include "hid_actions.h"
 #include "event.h"
 #include "compat_misc.h"
+#include "hid.h"
 
 /* For lrealpath */
 #include "compat_lrealpath.h"

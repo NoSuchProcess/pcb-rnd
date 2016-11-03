@@ -27,7 +27,7 @@
 #define PCB_RATS_PATCH_H
 
 #include <stdio.h>
-#include "global_typedefs.h"
+#include "board.h"
 
 typedef enum {
 	RATP_ADD_CONN,

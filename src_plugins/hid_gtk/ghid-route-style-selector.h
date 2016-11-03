@@ -6,6 +6,7 @@
 #include <gtk/gtk.h>
 
 #include "global.h"
+#include "route_style.h"
 
 G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_ROUTE_STYLE_SELECTOR_TYPE            (ghid_route_style_selector_get_type ())

@@ -30,7 +30,8 @@
     - statistics of values of a property
 */
 
-#include "global.h"
+#include <limits.h>
+#include "global_typedefs.h"
 #include <genht/htsp.h>
 
 typedef enum {

@@ -29,7 +29,7 @@
 #ifndef	PCB_SET_H
 #define	PCB_SET_H
 
-#include "global.h"
+#include "global_typedefs.h"
 
 void SetTextScale(int);
 void SetGrid(Coord, pcb_bool);

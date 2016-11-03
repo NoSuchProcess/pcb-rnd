@@ -240,7 +240,7 @@ static POLYAREA *biggest(POLYAREA * p)
 POLYAREA *ContourToPoly(PLINE * contour)
 {
 	POLYAREA *p;
-	poly_PreContour(contour, TRUE);
+	poly_PreContour(contour, pcb_true);
 	assert(contour->Flags.orient == PLF_DIR);
 	if (!(p = poly_Create()))
 		return NULL;
@@ -277,7 +277,7 @@ static POLYAREA *original_poly(PolygonType * p)
 
 		/* Is current point last in contour? If so process it. */
 		if (n == p->PointN - 1 || (hole < p->HoleIndexN && n == p->HoleIndex[hole] - 1)) {
-			poly_PreContour(contour, TRUE);
+			poly_PreContour(contour, pcb_true);
 
 			/* make sure it is a positive contour (outer) or negative (hole) */
 			if (contour->Flags.orient != (hole ? PLF_INV : PLF_DIR))
@@ -436,7 +436,7 @@ POLYAREA *CirclePoly(Coord x, Coord y, Coord radius)
 	if ((contour = poly_NewContour(v)) == NULL)
 		return NULL;
 	frac_circle(contour, x, y, v, 1);
-	contour->is_round = TRUE;
+	contour->is_round = pcb_true;
 	contour->cx = x;
 	contour->cy = y;
 	contour->radius = radius;
@@ -795,7 +795,7 @@ static int SubtractPin(DataType * d, PinType * pin, LayerType * l, PolygonType *
 			return -1;
 	}
 
-	return Subtract(np, p, TRUE);
+	return Subtract(np, p, pcb_true);
 }
 
 static int SubtractLine(LineType * line, PolygonType * p)

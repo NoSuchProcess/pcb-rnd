@@ -23,6 +23,8 @@
 #ifndef LIST_PIN_H
 #define LIST_PIN_H
 
+#include "global_objs.h"
+
 /* List of Pins */
 #define TDL(x)      pinlist_ ## x
 #define TDL_LIST_T  pinlist_t

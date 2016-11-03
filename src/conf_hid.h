@@ -1,6 +1,7 @@
 #ifndef PCB_CONF_HID_H
 #define PCB_CONF_HID_H
 
+#include "error.h"
 #include "conf.h"
 
 typedef struct conf_hid_callbacks_s {

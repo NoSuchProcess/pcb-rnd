@@ -2,6 +2,7 @@
 #define PCB_CONF_CORE_H
 
 #include "conf.h"
+#include "globalconst.h"
 
 /* NOTE: this struct has a strict format because a code generator needs to
    read it. Please always keep the format (preferably even whitespace style).

@@ -768,7 +768,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 
 	type = SearchObjectByID(PCB->Data, &ptr1b, &ptr2b, &ptr3b, Entry->ID, Entry->Kind);
 	if (type == PCB_TYPE_NONE)
-		return FALSE;
+		return pcb_false;
 
 	obj = (AnyObjectType *) ptr2;
 	obj2 = (AnyObjectType *) ptr2b;

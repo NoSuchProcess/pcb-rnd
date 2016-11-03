@@ -148,6 +148,7 @@ PCBTypePtr CreateNewPCB_(pcb_bool SetDefaultNames)
 	PCB = ptr;
 	hid_action("RouteStylesChanged");
 	PCB = save;
+
 	ptr->Zoom = conf_core.editor.zoom;
 	ptr->MaxWidth = conf_core.design.max_width;
 	ptr->MaxHeight = conf_core.design.max_height;

@@ -30,13 +30,13 @@
 #ifndef	PCB_CLIP_H
 #define	PCB_CLIP_H
 
-#include "global.h"
+#include "global_typedefs.h"
 
 /* ---------------------------------------------------------------------------
  * prototypes
  */
 
-/* Clip X,Y to the given bounding box, plus a margin.  Returns TRUE if
+/* Clip X,Y to the given bounding box, plus a margin.  Returns pcb_true if
    there is something left to be drawn.  */
 pcb_bool ClipLine(double minx, double miny, double maxx, double maxy,
 							double *x1, double *y1, double *x2, double *y2, double margin);

@@ -1,6 +1,8 @@
 #ifndef PCB_HID_INIT_H
 #define PCB_HID_INIT_H
 
+#include "hid.h"
+
 /* NULL terminated list of all static HID structures.  Built by
    hid_register_hid, used by hid_find_*() and hid_enumerate().  The
    order in this list is the same as the order of hid_register_hid
