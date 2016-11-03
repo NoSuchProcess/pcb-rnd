@@ -32,6 +32,17 @@
 
 #include "global.h"
 
+/* ---------------------------------------------------------------------------
+ * some types for cursor drawing, setting of block and lines
+ * as well as for merging of elements
+ */
+typedef struct {								/* rubberband lines for element moves */
+	LayerTypePtr Layer;						/* layer that holds the line */
+	LineTypePtr Line;							/* the line itself */
+	PointTypePtr MovedPoint;			/* and finally the point */
+} RubberbandType, *RubberbandTypePtr;
+
+
 void LookupRubberbandLines(int, void *, void *, void *);
 void LookupRatLines(int, void *, void *, void *);
 

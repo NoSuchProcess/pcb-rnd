@@ -1,3 +1,11 @@
+#ifndef PCB_ELEMENT_H
+#define PCB_ELEMENT_H
+
+#include "list_pin.h"
+#include "list_pad.h"
+#include "list_line.h"
+#include "list_arc.h"
+
 struct element_st {
 	ANYOBJECTFIELDS;
 	TextType Name[MAX_ELEMENTNAMES];	/* the elements names; */
@@ -15,3 +23,5 @@ struct element_st {
 };
 
 #include "list_element.h"
+
+#endif

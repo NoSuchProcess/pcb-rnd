@@ -1,3 +1,6 @@
+#ifndef PCB_VTOP_H
+#define PCB_VTOP_H
+
 #include <stdlib.h>
 #include <string.h>
 #include "global_objs.h"
@@ -62,3 +65,5 @@
 
 /* clean up #defines */
 #include <genvector/genvector_undef.h>
+
+#endif

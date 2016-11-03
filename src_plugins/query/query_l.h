@@ -12,8 +12,8 @@
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 1
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -92,25 +92,13 @@ typedef unsigned int flex_uint32_t;
 
 #endif /* ! FLEXINT_H */
 
-#ifdef __cplusplus
-
-/* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
-
-#else	/* ! __cplusplus */
-
-/* C99 requires __STDC__ to be defined as 1. */
-#if defined (__STDC__)
-
-#define YY_USE_CONST
-
-#endif	/* defined (__STDC__) */
-#endif	/* ! __cplusplus */
-
-#ifdef YY_USE_CONST
+/* TODO: this is always defined, so inline it */
 #define yyconst const
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define yynoreturn __attribute__((__noreturn__))
 #else
-#define yyconst
+#define yynoreturn
 #endif
 
 /* Size of default input buffer. */
@@ -131,14 +119,14 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-extern int qry_leng;
-
-extern FILE *qry_in, *qry_out;
-
 #ifndef YY_TYPEDEF_YY_SIZE_T
 #define YY_TYPEDEF_YY_SIZE_T
 typedef size_t yy_size_t;
 #endif
+
+extern int qry_leng;
+
+extern FILE *qry_in, *qry_out;
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -152,7 +140,7 @@ struct yy_buffer_state
 	/* Size of input buffer in bytes, not including room for EOB
 	 * characters.
 	 */
-	yy_size_t yy_buf_size;
+	int yy_buf_size;
 
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
@@ -180,7 +168,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -212,6 +200,9 @@ void qry_free (void *  );
 extern int qry_lineno;
 
 extern char *qry_text;
+#ifdef yytext_ptr
+#undef yytext_ptr
+#endif
 #define yytext_ptr qry_text
 
 #ifdef YY_HEADER_EXPORT_START_CONDITIONS
@@ -246,19 +237,19 @@ void qry_set_extra (YY_EXTRA_TYPE user_defined  );
 
 FILE *qry_get_in (void );
 
-void qry_set_in  (FILE * in_str  );
+void qry_set_in  (FILE * _in_str  );
 
 FILE *qry_get_out (void );
 
-void qry_set_out  (FILE * out_str  );
+void qry_set_out  (FILE * _out_str  );
 
-int qry_get_leng (void );
+			int qry_get_leng (void );
 
 char *qry_get_text (void );
 
 int qry_get_lineno (void );
 
-void qry_set_lineno (int line_number  );
+void qry_set_lineno (int _line_number  );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -327,6 +318,6 @@ extern int qry_lex (void);
 #line 116 "query_l.l"
 
 
-#line 331 "query_l.h"
+#line 322 "query_l.h"
 #undef qry_IN_HEADER
 #endif /* qry_HEADER_H */

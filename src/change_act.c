@@ -38,6 +38,7 @@
 
 #include "action_helper.h"
 #include "hid_actions.h"
+#include "crosshair.h"
 #include "change.h"
 #include "draw.h"
 #include "search.h"

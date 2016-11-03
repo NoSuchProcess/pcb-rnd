@@ -1,3 +1,5 @@
+#ifndef PCB_VTROUTESTYLE_H
+#define PCB_VTROUTESTYLE_H
 #include <stdlib.h>
 #include <string.h>
 #include "unit.h"
@@ -72,3 +74,5 @@ typedef struct {
 
 /* clean up #defines */
 #include <genvector/genvector_undef.h>
+
+#endif

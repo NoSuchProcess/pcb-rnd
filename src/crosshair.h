@@ -30,6 +30,67 @@
 #define	PCB_CROSSHAIR_H
 
 #include "global.h"
+#include "rubberband.h"
+
+typedef struct {								/* current marked line */
+	PointType Point1,							/* start- and end-position */
+	  Point2;
+	long int State;
+	pcb_bool draw;
+} AttachedLineType, *AttachedLineTypePtr;
+
+typedef struct {								/* currently marked block */
+	PointType Point1,							/* start- and end-position */
+	  Point2;
+	long int State;
+	pcb_bool otherway;
+} AttachedBoxType, *AttachedBoxTypePtr;
+
+typedef struct {								/* currently attached object */
+	Coord X, Y;										/* saved position when PCB_MODE_MOVE */
+	BoxType BoundingBox;
+	long int Type,								/* object type */
+	  State;
+	void *Ptr1,										/* three pointers to data, see */
+	 *Ptr2,												/* search.c */
+	 *Ptr3;
+	pcb_cardinal_t RubberbandN,					/* number of lines in array */
+	  RubberbandMax;
+	RubberbandTypePtr Rubberband;
+} AttachedObjectType, *AttachedObjectTypePtr;
+
+typedef struct {
+	pcb_bool status;
+	Coord X, Y;
+} MarkType, *MarkTypePtr;
+
+enum crosshair_shape {
+	Basic_Crosshair_Shape = 0,		/*  4-ray */
+	Union_Jack_Crosshair_Shape,		/*  8-ray */
+	Dozen_Crosshair_Shape,				/* 12-ray */
+	Crosshair_Shapes_Number
+};
+
+typedef struct {								/* holds cursor information */
+	hidGC GC,											/* GC for cursor drawing */
+	  AttachGC;										/* and for displaying buffer contents */
+	Coord X, Y,										/* position in PCB coordinates */
+	  MinX, MinY,									/* lowest and highest coordinates */
+	  MaxX, MaxY;
+	AttachedLineType AttachedLine;	/* data of new lines... */
+	AttachedBoxType AttachedBox;
+	PolygonType AttachedPolygon;
+	AttachedObjectType AttachedObject;	/* data of attached objects */
+	enum crosshair_shape shape;		/* shape of crosshair */
+	vtop_t onpoint_objs;
+	vtop_t old_onpoint_objs;
+
+	/* list of object IDs that could have been dragged so that they can be cycled */
+	long int *drags;
+	int drags_len, drags_current;
+	Coord dragx, dragy;						/* the point where drag started */
+} CrosshairType, *CrosshairTypePtr;
+
 
 /* ---------------------------------------------------------------------------
  * all possible states of an attached object

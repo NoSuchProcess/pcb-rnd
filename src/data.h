@@ -29,13 +29,38 @@
 #ifndef	PCB_DATA_H
 #define	PCB_DATA_H
 
-#include "global.h"
+#include "global_typedefs.h"
+#include "global_objs.h"
+#include "global_element.h"
+#include "list_common.h"
+#include "list_line.h"
+#include "list_arc.h"
+#include "list_text.h"
+#include "list_poly.h"
+#include "list_pad.h"
+#include "list_pin.h"
+#include "list_rat.h"
+#include "layer.h"
+#include "crosshair.h"
+
+/* Generic container object that can hold subcircuits with layer-global
+   objects (e.g. vias and rats) and layer-locals (lines, arcs) */
+struct data_st {
+	int LayerN;                        /* number of layers in this board */
+	pinlist_t Via;
+	elementlist_t Element;
+	ratlist_t Rat;
+	rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
+	 *rat_tree;
+	struct PCBType *pcb;
+	LayerType Layer[MAX_LAYER + 2];    /* add 2 silkscreen layers */
+	plug_io_t *loader;
+};
+
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers
  */
-
-
 extern CrosshairType Crosshair;
 
 extern MarkType Marked;

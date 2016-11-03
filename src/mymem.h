@@ -34,6 +34,7 @@
 
 #include <stdlib.h>
 #include "global.h"
+#include "rubberband.h"
 
 /* ---------------------------------------------------------------------------
  * number of additional objects that are allocated with one system call

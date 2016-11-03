@@ -25,7 +25,31 @@
  *
  */
 
-/* prototypes for layer manipulation */
+#ifndef PCB_LAYER_H
+#define PCB_LAYER_H
+
+/* ----------------------------------------------------------------------
+ * layer group. A layer group identifies layers which are always switched
+ * on/off together.
+ */
+struct pcb_layer_group_s {
+	pcb_cardinal_t Number[MAX_LAYER],      /* number of entries per groups */
+	  Entries[MAX_LAYER][MAX_LAYER + 2];
+};
+
+struct pcb_layer_s {              /* holds information about one layer */
+	const char *Name;               /* layer name */
+	linelist_t Line;
+	textlist_t Text;
+	polylist_t Polygon;
+	arclist_t Arc;
+	rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
+	pcb_bool On;                   /* visible flag */
+	const char *Color;             /* color */
+	const char *SelectedColor;
+	AttributeListType Attributes;
+	int no_drc;                    /* whether to ignore the layer when checking the design rules */
+};
 
 /* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
 pcb_bool IsLayerEmpty(LayerTypePtr);
@@ -155,3 +179,5 @@ int pcb_layer_rename(int layer, const char *lname);
 
 /* Needs to be called once at the end, when all layers has been added */
 void pcb_layers_finalize();
+
+#endif
