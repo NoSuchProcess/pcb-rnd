@@ -20,7 +20,6 @@
 #include <math.h>
 
 #include "config.h"
-#include "config.h"
 #include "board.h"
 #include "data.h"
 #include "macro.h"

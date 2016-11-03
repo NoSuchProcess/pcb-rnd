@@ -34,7 +34,6 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "config.h"
 #include "board.h"
 #include "build_run.h"
 #include "action_helper.h"

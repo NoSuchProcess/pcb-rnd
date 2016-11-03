@@ -11,7 +11,6 @@
 #include <assert.h>							/* not used */
 #include <time.h>
 
-#include "config.h"
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
@@ -30,7 +29,6 @@
 #include "draw_fab.h"
 #include "hid_init.h"
 #include "hid_attrib.h"
-#include "hid_helper.h"
 #include "hid_flags.h"
 #include "hid_actions.h"
 #include "conf_core.h"

@@ -35,11 +35,8 @@
 #include <math.h>
 #include <dirent.h>
 #include <sys/stat.h>
-
 #include <time.h>
 
-#include "config.h"
-#include "config.h"
 #include "data.h"
 #include "misc.h"
 #include "error.h"

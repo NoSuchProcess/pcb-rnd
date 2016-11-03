@@ -24,7 +24,6 @@
  */
 
 #include "config.h"
-#include "config.h"
 #include "plugins.h"
 #include "plug_io.h"
 #include "write.h"

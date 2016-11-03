@@ -7,7 +7,6 @@
 #include <string.h>
 #include <time.h>
 
-#include "config.h"
 #include "build_run.h"
 #include "board.h"
 #include "data.h"

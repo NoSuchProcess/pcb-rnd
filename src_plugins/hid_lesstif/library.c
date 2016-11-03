@@ -9,7 +9,6 @@
 #include <string.h>
 
 #include "compat_misc.h"
-#include "config.h"
 #include "data.h"
 #include "misc.h"
 #include "set.h"

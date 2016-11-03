@@ -26,7 +26,6 @@
  */
 #include "config.h"
 #include "board.h"
-#include "config.h"
 #include "data.h"
 #include "action_helper.h"
 #include "change.h"

@@ -32,7 +32,6 @@
 #include <genvector/gds_char.h>
 #include <stdio.h>
 #include "config.h"
-#include "config.h"
 #include "data.h"
 #include "action_helper.h"
 #include "change.h"

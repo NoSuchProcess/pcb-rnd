@@ -29,7 +29,6 @@
 #include <stroke.h>
 #include "math_helper.h"
 #include "board.h"
-#include "config.h"
 #include "conf.h"
 #include "conf_core.h"
 #include "data.h"

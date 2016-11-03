@@ -29,8 +29,6 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "config.h"
-
 #include "const.h"
 #include "create.h"
 #include "data.h"
@@ -41,7 +39,6 @@
 #include "misc.h"
 #include "mymem.h"
 #include "polygon.h"
-#include "rats.h"
 #include "search.h"
 #include "set.h"
 #include "undo.h"

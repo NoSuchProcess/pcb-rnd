@@ -5,13 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
 #include "board.h"
 #include "hid.h"
 #include "data.h"
 #include "misc.h"
 #include "layer.h"
-#include "hid.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "compat_misc.h"

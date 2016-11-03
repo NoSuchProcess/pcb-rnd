@@ -31,10 +31,7 @@
 #include "conf_core.h"
 
 #include <locale.h>
-#include "config.h"
-
 #include <time.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

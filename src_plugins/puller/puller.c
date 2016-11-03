@@ -47,8 +47,6 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "config.h"
-
 #include <math.h>
 #include <memory.h>
 #include <limits.h>

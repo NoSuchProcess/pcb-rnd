@@ -10,7 +10,6 @@
 
 
 #include "compat_misc.h"
-#include "config.h"
 #include "data.h"
 #include "build_run.h"
 #include "crosshair.h"

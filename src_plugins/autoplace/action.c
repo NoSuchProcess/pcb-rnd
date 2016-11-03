@@ -26,7 +26,6 @@
  */
 
 #include "config.h"
-#include "config.h"
 #include "autoplace.h"
 #include "plugins.h"
 #include "set.h"

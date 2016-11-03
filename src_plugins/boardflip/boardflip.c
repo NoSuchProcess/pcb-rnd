@@ -28,7 +28,6 @@
 #include <math.h>
 
 #include "config.h"
-#include "config.h"
 #include "board.h"
 #include "rats.h"
 #include "polygon.h"

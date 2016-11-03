@@ -34,10 +34,8 @@
 #include <math.h>
 #include <dirent.h>
 #include <sys/stat.h>
-
 #include <time.h>
 
-#include "config.h"
 #include "math_helper.h"
 #include "board.h"
 #include "config.h"

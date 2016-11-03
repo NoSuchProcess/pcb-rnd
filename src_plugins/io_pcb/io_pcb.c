@@ -24,7 +24,6 @@
  */
 
 #include "config.h"
-#include "config.h"
 #include "plugins.h"
 #include "parse_common.h"
 #include "file.h"

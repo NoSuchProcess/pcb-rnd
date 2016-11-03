@@ -19,7 +19,6 @@
 #include <unistd.h>
 #endif
 
-#include "config.h"
 #include "data.h"
 #include "action_helper.h"
 #include "crosshair.h"

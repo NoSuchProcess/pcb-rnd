@@ -41,8 +41,6 @@
 
 #include "board.h"
 #include "data.h"
-#include "config.h"
-#include "config.h"
 #include "rats.h"
 #include "error.h"
 #include "find.h"

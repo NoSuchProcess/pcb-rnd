@@ -27,7 +27,6 @@
 
 #include "config.h"
 #include "board.h"
-#include "config.h"
 #include "plugins.h"
 #include "plug_io.h"
 #include "plug_import.h"

@@ -56,7 +56,6 @@
 
 #include "gui.h"
 #include "win_place.h"
-#include "config.h"
 #include "buffer.h"
 #include "data.h"
 #include "set.h"

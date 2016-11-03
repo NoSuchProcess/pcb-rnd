@@ -26,7 +26,6 @@
  */
 
 #include "config.h"
-#include "config.h"
 #include "autoroute.h"
 #include "action_helper.h"
 #include "plugins.h"

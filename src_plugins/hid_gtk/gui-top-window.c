@@ -92,7 +92,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "paths.h"
 #include "gui-icons-mode-buttons.data"
 #include "gui-icons-misc.data"
-#include "gui.h"
 #include "win_place.h"
 #include "hid_attrib.h"
 #include "hid_actions.h"

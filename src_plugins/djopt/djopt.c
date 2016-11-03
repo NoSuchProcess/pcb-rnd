@@ -26,8 +26,6 @@
 
 #include "config.h"
 #include "conf_core.h"
-
-#include "config.h"
 #include "board.h"
 
 #include <memory.h>

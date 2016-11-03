@@ -169,9 +169,7 @@
  */
 
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -180,7 +178,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "config.h"
 #include "math_helper.h"
 #include "macro.h"
 #include "board.h"
@@ -197,7 +194,6 @@
 #include "hid_flags.h"
 #include "hid_helper.h"
 #include "hid.h"
-#include "draw.h"
 #include "hid_init.h"
 #include "plugins.h"
 

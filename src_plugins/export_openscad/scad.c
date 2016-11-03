@@ -39,8 +39,6 @@
 
 #include "board.h"
 #include "math_helper.h"
-#include "config.h"
-#include "config.h"
 #include "data.h"
 #include "misc.h"
 #include "error.h"

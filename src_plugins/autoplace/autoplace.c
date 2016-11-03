@@ -40,9 +40,7 @@
 #include <memory.h>
 #include <stdlib.h>
 
-#include "config.h"
 #include "board.h"
-
 #include "autoplace.h"
 #include "box.h"
 #include "compat_misc.h"

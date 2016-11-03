@@ -35,8 +35,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
-
 #include "win_place.h"
 
 #include "create.h"
