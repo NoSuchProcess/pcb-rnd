@@ -42,6 +42,7 @@
 #include "list_rat.h"
 #include "layer.h"
 #include "crosshair.h"
+#include "buffer.h"
 
 /* Generic container object that can hold subcircuits with layer-global
    objects (e.g. vias and rats) and layer-locals (lines, arcs) */

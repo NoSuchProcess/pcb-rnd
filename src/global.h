@@ -64,48 +64,11 @@
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
 
-typedef struct {
-	Coord x, y;
-	Coord width, height;
-} RectangleType, *RectangleTypePtr;
-
 /* ---------------------------------------------------------------------------
  * the basic object types supported by PCB
  */
 
 #include "global_element.h"
-
-struct rtree {
-	struct rtree_node *root;
-	int size;											/* number of entries in tree */
-};
-
-typedef struct {								/* holds drill information */
-	Coord DrillSize;							/* this drill's diameter */
-	pcb_cardinal_t ElementN,						/* the number of elements using this drill size */
-	  ElementMax,									/* max number of elements from malloc() */
-	  PinCount,										/* number of pins drilled this size */
-	  ViaCount,										/* number of vias drilled this size */
-	  UnplatedCount,							/* number of these holes that are unplated */
-	  PinN,												/* number of drill coordinates in the list */
-	  PinMax;											/* max number of coordinates from malloc() */
-	PinTypePtr *Pin;							/* coordinates to drill */
-	ElementTypePtr *Element;			/* a pointer to an array of element pointers */
-} DrillType, *DrillTypePtr;
-
-typedef struct {								/* holds a range of Drill Infos */
-	pcb_cardinal_t DrillN,							/* number of drill sizes */
-	  DrillMax;										/* max number from malloc() */
-	DrillTypePtr Drill;						/* plated holes */
-} DrillInfoType, *DrillInfoTypePtr;
-
-typedef struct {								/* information about the paste buffer */
-	Coord X, Y;										/* offset */
-	BoxType BoundingBox;
-	DataTypePtr Data;							/* data; not all members of PCBType */
-	/* are used */
-} BufferType, *BufferTypePtr;
-
 
 /* ----------------------------------------------------------------------
  * pointer to low-level copy, move and rotate functions

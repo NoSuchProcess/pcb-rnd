@@ -33,6 +33,7 @@ enum {
 typedef struct pcb_board_s PCBType, *PCBTypePtr;
 typedef struct pcb_layer_group_s  LayerGroupType, *LayerGroupTypePtr;
 typedef struct pcb_layer_s LayerType, *LayerTypePtr;
+typedef struct pcb_buffer_s BufferType, *BufferTypePtr;
 
 typedef struct BoxType BoxType, *BoxTypePtr;
 typedef struct polygon_st PolygonType, *PolygonTypePtr;

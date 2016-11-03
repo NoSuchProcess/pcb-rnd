@@ -38,6 +38,11 @@
 
 #include "global.h"
 
+struct rtree {
+	struct rtree_node *root;
+	int size;											/* number of entries in tree */
+};
+
 /* callback direction to the search engine */
 typedef enum r_dir_e {
 	R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */

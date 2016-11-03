@@ -13,9 +13,9 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h hid.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- create.h rtree.h undo.h move.h draw.h set.h polygon.h rtree.h plugins.h \
- hid_actions.h dolists.h
+ rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h create.h rtree.h undo.h move.h draw.h set.h polygon.h rtree.h \
+ plugins.h hid_actions.h dolists.h
 ../src_plugins/autoplace/action.o: ../src_plugins/autoplace/action.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -45,9 +45,9 @@
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h ../src_plugins/autoplace/autoplace.h \
  box.h global.h misc_util.h compat_misc.h compat_nls.h data.h crosshair.h \
- rubberband.h draw.h error.h layer.h intersect.h rtree.h macro.h mirror.h \
- misc.h ../src_3rd/genvector/gds_char.h mymem.h move.h mymem.h rats.h \
- remove.h rotate.h
+ rubberband.h buffer.h draw.h error.h layer.h intersect.h rtree.h macro.h \
+ mirror.h misc.h ../src_3rd/genvector/gds_char.h mymem.h move.h mymem.h \
+ rats.h remove.h rotate.h
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -80,7 +80,7 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h macro.h \
+ global.h data.h crosshair.h rubberband.h buffer.h macro.h \
  ../src_plugins/autoroute/autoroute.h box.h misc_util.h create.h draw.h \
  error.h find.h heap.h rtree.h misc.h mymem.h \
  ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h \
@@ -128,8 +128,8 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h hid.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- create.h rtree.h undo.h plugins.h hid_actions.h dolists.h
+ rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h create.h rtree.h undo.h plugins.h hid_actions.h dolists.h
 ../src_plugins/dbus/dbus-pcbmain.o: ../src_plugins/dbus/dbus-pcbmain.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -157,7 +157,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h plugins.h hid_actions.h event.h compat_misc.h \
+ rubberband.h buffer.h plugins.h hid_actions.h event.h compat_misc.h \
  compat_lrealpath.h dolists.h
 ../src_plugins/diag/diag.o: ../src_plugins/diag/diag.c ../config.h \
  global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
@@ -172,8 +172,8 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h layer.h ../src_plugins/diag/diag_conf.h action_helper.h \
- hid_actions.h plugins.h conf.h pcb-printf.h \
+ rubberband.h buffer.h layer.h ../src_plugins/diag/diag_conf.h \
+ action_helper.h hid_actions.h plugins.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
@@ -211,9 +211,9 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h hid.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- create.h rtree.h undo.h rats.h error.h move.h draw.h set.h plugins.h \
- hid_actions.h dolists.h
+ rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h create.h rtree.h undo.h rats.h error.h move.h draw.h set.h \
+ plugins.h hid_actions.h dolists.h
 ../src_plugins/distaligntext/distaligntext.o: \
  ../src_plugins/distaligntext/distaligntext.c ../config.h global.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -228,9 +228,9 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h hid.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- create.h rtree.h undo.h rats.h error.h move.h draw.h set.h plugins.h \
- hid_actions.h conf_core.h conf.h pcb-printf.h \
+ rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h create.h rtree.h undo.h rats.h error.h move.h draw.h set.h \
+ plugins.h hid_actions.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -252,10 +252,10 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h create.h remove.h move.h draw.h \
- undo.h flag_str.h find.h layer.h pcb-printf.h plugins.h hid_flags.h \
- hid_actions.h ../src_plugins/djopt/djopt_conf.h conf.h dolists.h \
- ../src_plugins/djopt/djopt_conf_fields.h
+ global.h data.h crosshair.h rubberband.h buffer.h create.h remove.h \
+ move.h draw.h undo.h flag_str.h find.h layer.h pcb-printf.h plugins.h \
+ hid_flags.h hid_actions.h ../src_plugins/djopt/djopt_conf.h conf.h \
+ dolists.h ../src_plugins/djopt/djopt_conf_fields.h
 ../src_plugins/export_bboard/bboard.o: \
  ../src_plugins/export_bboard/bboard.c ../config.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -270,9 +270,10 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h error.h \
- buffer.h create.h layer.h plugins.h compat_misc.h misc_util.h hid.h \
- hid_attrib.h hid_nogui.h hid_draw_helpers.h hid_init.h hid_helper.h
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ error.h buffer.h create.h layer.h plugins.h compat_misc.h misc_util.h \
+ hid.h hid_attrib.h hid_nogui.h hid_draw_helpers.h hid_init.h \
+ hid_helper.h
 ../src_plugins/export_bom/bom.o: ../src_plugins/export_bom/bom.c \
  ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -291,7 +292,7 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h error.h misc.h mymem.h \
+ global.h data.h crosshair.h rubberband.h buffer.h error.h misc.h mymem.h \
  pcb-printf.h plugins.h compat_misc.h hid.h hid_nogui.h hid_attrib.h \
  hid_helper.h hid_init.h
 ../src_plugins/export_dsn/dsn.o: ../src_plugins/export_dsn/dsn.c \
@@ -307,11 +308,11 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h error.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- rats.h buffer.h change.h draw.h set.h undo.h pcb-printf.h create.h \
- polygon.h rtree.h compat_misc.h layer.h hid.h hid_draw_helpers.h \
- hid_nogui.h hid_actions.h hid_init.h hid_attrib.h hid_helper.h plugins.h \
- dolists.h
+ rubberband.h buffer.h error.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h rats.h buffer.h change.h draw.h set.h undo.h pcb-printf.h \
+ create.h polygon.h rtree.h compat_misc.h layer.h hid.h \
+ hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h hid_attrib.h \
+ hid_helper.h plugins.h dolists.h
 ../src_plugins/export_dxf/dxf.o: ../src_plugins/export_dxf/dxf.c \
  ../config.h macro.h global.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h attrib.h \
@@ -325,8 +326,8 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h error.h \
- draw.h hid_draw_helpers.h pcb-printf.h compat_misc.h layer.h \
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ error.h draw.h hid_draw_helpers.h pcb-printf.h compat_misc.h layer.h \
  hid_attrib.h hid_flags.h hid_helper.h hid.h hid_init.h plugins.h
 ../src_plugins/export_gcode/curve.o: ../src_plugins/export_gcode/curve.c \
  ../src_plugins/export_gcode/potracelib.h \
@@ -357,9 +358,9 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- plugins.h global.h error.h data.h crosshair.h rubberband.h misc.h \
- mymem.h rats.h hid_helper.h layer.h compat_misc.h hid.h hid_nogui.h \
- hid_draw_helpers.h ../src_plugins/export_gcode/gcode.h \
+ plugins.h global.h error.h data.h crosshair.h rubberband.h buffer.h \
+ misc.h mymem.h rats.h hid_helper.h layer.h compat_misc.h hid.h \
+ hid_nogui.h hid_draw_helpers.h ../src_plugins/export_gcode/gcode.h \
  ../src_plugins/export_gcode/bitmap.h \
  ../src_plugins/export_gcode/potracelib.h \
  ../src_plugins/export_gcode/curve.h \
@@ -399,9 +400,9 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h error.h \
- draw.h layer.h pcb-printf.h plugins.h hid_helper.h compat_misc.h hid.h \
- hid_nogui.h hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h \
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ error.h draw.h layer.h pcb-printf.h plugins.h hid_helper.h compat_misc.h \
+ hid.h hid_nogui.h hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h \
  conf_core.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
@@ -418,13 +419,14 @@
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h global.h rats.h error.h \
- find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h pcb-printf.h \
- netlist.h conf_core.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- hid.h hid_nogui.h hid_helper.h hid_attrib.h hid_init.h plugins.h
+ vtroutestyle.h board.h library.h rubberband.h buffer.h global.h rats.h \
+ error.h find.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ pcb-printf.h netlist.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h list_conf.h hid.h hid_nogui.h hid_helper.h \
+ hid_attrib.h hid_init.h plugins.h
 ../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -438,9 +440,10 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h plugins.h \
- compat_misc.h hid.h ../src_plugins/export_lpr/../export_ps/ps.h \
- hid_nogui.h hid_init.h hid_attrib.h hid_actions.h
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ plugins.h compat_misc.h hid.h \
+ ../src_plugins/export_lpr/../export_ps/ps.h hid_nogui.h hid_init.h \
+ hid_attrib.h hid_actions.h
 ../src_plugins/export_nelma/nelma.o: ../src_plugins/export_nelma/nelma.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -454,9 +457,10 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h error.h data.h crosshair.h global.h \
- rubberband.h layer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- rats.h plugins.h hid_helper.h hid.h hid_nogui.h hid_draw_helpers.h \
- hid_init.h hid_attrib.h hid_flags.h hid_color.h dolists.h
+ rubberband.h buffer.h layer.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h rats.h plugins.h hid_helper.h hid.h hid_nogui.h \
+ hid_draw_helpers.h hid_init.h hid_attrib.h hid_flags.h hid_color.h \
+ dolists.h
 ../src_plugins/export_openscad/scad.o: \
  ../src_plugins/export_openscad/scad.c ../config.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -471,8 +475,8 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h error.h \
- buffer.h create.h conf_core.h conf.h pcb-printf.h \
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ error.h buffer.h create.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -493,8 +497,8 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h error.h \
- buffer.h mirror.h create.h misc_util.h hid.h hid_nogui.h \
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ error.h buffer.h mirror.h create.h misc_util.h hid.h hid_nogui.h \
  hid_draw_helpers.h hid_init.h ../src_plugins/export_openscad/scad.h
 ../src_plugins/export_openscad/scadproto.o: \
  ../src_plugins/export_openscad/scadproto.c ../config.h global.h const.h \
@@ -510,9 +514,9 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h error.h \
- buffer.h create.h hid.h hid_nogui.h hid_draw_helpers.h hid_init.h \
- ../src_plugins/export_openscad/scad.h
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ error.h buffer.h create.h hid.h hid_nogui.h hid_draw_helpers.h \
+ hid_init.h ../src_plugins/export_openscad/scad.h
 ../src_plugins/export_png/png.o: ../src_plugins/export_png/png.c \
  ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -531,10 +535,10 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h error.h misc.h mymem.h layer.h \
- misc_util.h compat_misc.h plugins.h hid.h hid_nogui.h hid_draw_helpers.h \
- ../src_plugins/export_png/png.h hid_init.h hid_attrib.h hid_color.h \
- hid_helper.h hid_flags.h dolists.h
+ global.h data.h crosshair.h rubberband.h buffer.h error.h misc.h mymem.h \
+ layer.h misc_util.h compat_misc.h plugins.h hid.h hid_nogui.h \
+ hid_draw_helpers.h ../src_plugins/export_png/png.h hid_init.h \
+ hid_attrib.h hid_color.h hid_helper.h hid_flags.h dolists.h
 ../src_plugins/export_ps/eps.o: ../src_plugins/export_ps/eps.c \
  ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -553,7 +557,7 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h layer.h misc.h mymem.h \
+ global.h data.h crosshair.h rubberband.h buffer.h layer.h misc.h mymem.h \
  pcb-printf.h hid.h hid_nogui.h hid_draw_helpers.h \
  ../src_plugins/export_ps/ps.h hid_init.h hid_attrib.h hid_helper.h \
  hid_flags.h hid_color.h
@@ -570,11 +574,11 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h layer.h \
- error.h draw.h pcb-printf.h plugins.h hid_helper.h hid.h hid_nogui.h \
- hid_draw_helpers.h ../src_plugins/export_ps/ps.h draw_fab.h hid_init.h \
- hid_attrib.h hid_flags.h hid_actions.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ layer.h error.h draw.h pcb-printf.h plugins.h hid_helper.h hid.h \
+ hid_nogui.h hid_draw_helpers.h ../src_plugins/export_ps/ps.h draw_fab.h \
+ hid_init.h hid_attrib.h hid_flags.h hid_actions.h conf_core.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h compat_nls.h \
@@ -597,9 +601,10 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h error.h misc.h mymem.h layer.h \
- misc_util.h compat_misc.h plugins.h hid.h hid_nogui.h hid_draw_helpers.h \
- hid_init.h hid_attrib.h hid_color.h hid_helper.h hid_flags.h dolists.h
+ global.h data.h crosshair.h rubberband.h buffer.h error.h misc.h mymem.h \
+ layer.h misc_util.h compat_misc.h plugins.h hid.h hid_nogui.h \
+ hid_draw_helpers.h hid_init.h hid_attrib.h hid_color.h hid_helper.h \
+ hid_flags.h dolists.h
 ../src_plugins/export_test/export_test.o: \
  ../src_plugins/export_test/export_test.c ../config.h conf_core.h conf.h \
  global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
@@ -618,7 +623,7 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h error.h misc.h mymem.h \
+ global.h data.h crosshair.h rubberband.h buffer.h error.h misc.h mymem.h \
  pcb-printf.h plugins.h hid.h hid_nogui.h hid_attrib.h hid_helper.h \
  hid_init.h
 ../src_plugins/export_xy/xy.o: ../src_plugins/export_xy/xy.c ../config.h \
@@ -638,7 +643,7 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h error.h misc.h mymem.h \
+ global.h data.h crosshair.h rubberband.h buffer.h error.h misc.h mymem.h \
  pcb-printf.h plugins.h compat_misc.h hid.h hid_nogui.h hid_attrib.h \
  hid_helper.h hid_init.h
 ../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
@@ -659,9 +664,9 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h create.h rubberband.h data.h crosshair.h draw.h flag.h layer.h \
- misc.h mymem.h move.h remove.h rtree.h flag_str.h undo.h pcb-printf.h \
- plugins.h hid_actions.h compat_misc.h dolists.h
+ global.h create.h rubberband.h data.h crosshair.h buffer.h draw.h flag.h \
+ layer.h misc.h mymem.h move.h remove.h rtree.h flag_str.h undo.h \
+ pcb-printf.h plugins.h hid_actions.h compat_misc.h dolists.h
 ../src_plugins/fp_fs/fp_fs.o: ../src_plugins/fp_fs/fp_fs.c ../config.h \
  mymem.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -675,13 +680,13 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h rubberband.h data.h crosshair.h \
- paths.h plugins.h plug_footprint.h vtlibrary.h compat_fs.h compat_misc.h \
- error.h misc.h ../src_3rd/genvector/gds_char.h mymem.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/genvector/vtp0.h list_conf.h conf.h conf_core.h compat_nls.h \
- compat_inc.h
+ buffer.h paths.h plugins.h plug_footprint.h vtlibrary.h compat_fs.h \
+ compat_misc.h error.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ conf.h conf_core.h compat_nls.h compat_inc.h
 ../src_plugins/fp_wget/fp_wget.o: ../src_plugins/fp_wget/fp_wget.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -729,9 +734,9 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h hid.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h layer.h \
- pcb-printf.h plugins.h compat_misc.h hid_draw_helpers.h hid_nogui.h \
- hid_actions.h hid_init.h dolists.h
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ layer.h pcb-printf.h plugins.h compat_misc.h hid_draw_helpers.h \
+ hid_nogui.h hid_actions.h hid_init.h dolists.h
 ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.o: \
  ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.c \
  ../src_plugins/hid_gtk/gtkhid.h conf_hid.h conf.h global.h ../config.h \
@@ -753,8 +758,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -782,8 +788,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -810,8 +817,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -839,8 +847,9 @@
  ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/hid_gtk/gui.h \
  global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -865,7 +874,7 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -896,8 +905,9 @@
  ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/hid_gtk/gtkhid.h \
  conf_hid.h ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -922,7 +932,7 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -976,8 +986,8 @@
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h crosshair.h rubberband.h clip.h \
  layer.h ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h hid_cfg_input.h \
- ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h misc.h \
- mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h buffer.h \
+ misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
@@ -1005,8 +1015,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  action_helper.h crosshair.h rubberband.h error.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
- ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h misc.h \
- mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h buffer.h \
+ misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
@@ -1038,8 +1048,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1066,8 +1077,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1098,8 +1110,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1118,7 +1131,7 @@
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h \
+ vtroutestyle.h board.h library.h rubberband.h buffer.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
@@ -1154,8 +1167,9 @@
  error.h search.h misc_util.h draw.h layer.h pcb-printf.h undo.h set.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1181,7 +1195,7 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -1211,8 +1225,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1240,7 +1255,7 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  conf_hid.h ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h \
  hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
- crosshair.h rubberband.h misc.h mymem.h \
+ crosshair.h rubberband.h buffer.h misc.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -1268,8 +1283,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h crosshair.h rubberband.h data.h crosshair.h misc.h mymem.h \
- action_helper.h set.h pcb-printf.h misc_util.h compat_nls.h \
+ global.h crosshair.h rubberband.h data.h crosshair.h buffer.h misc.h \
+ mymem.h action_helper.h set.h pcb-printf.h misc_util.h compat_nls.h \
  ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
@@ -1299,7 +1314,7 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  global.h ../src_plugins/hid_gtk/win_place.h ../src_plugins/hid_gtk/gui.h \
  hid.h hid_cfg.h hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h \
- hid_cfg.h data.h crosshair.h rubberband.h misc.h mymem.h \
+ hid_cfg.h data.h crosshair.h rubberband.h buffer.h misc.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -1329,8 +1344,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1358,8 +1374,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  global.h ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1386,8 +1403,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  global.h ../src_plugins/hid_gtk/gui.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1416,7 +1434,7 @@
  ../src_plugins/hid_gtk/ghid-route-style-selector.h global.h \
  ../src_plugins/hid_gtk/gtkhid.h conf_hid.h ../src_plugins/hid_gtk/gui.h \
  hid.h hid_cfg.h hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h \
- hid_cfg.h data.h crosshair.h rubberband.h misc.h mymem.h \
+ hid_cfg.h data.h crosshair.h rubberband.h buffer.h misc.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1450,8 +1468,9 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/hid_gtk/gui.h global.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
- rubberband.h misc.h mymem.h ../src_plugins/hid_gtk/ghid-coord-entry.h \
- unit.h ../src_plugins/hid_gtk/ghid-main-menu.h \
+ rubberband.h buffer.h misc.h mymem.h \
+ ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
+ ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h \
  ../src_plugins/hid_gtk/gui-pinout-preview.h \
@@ -1476,7 +1495,7 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h global.h \
- rubberband.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
+ rubberband.h buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
  ../src_plugins/hid_gtk/ghid-coord-entry.h unit.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/hid_gtk/ghid-layer-selector.h \
@@ -1504,8 +1523,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- compat_misc.h global.h data.h crosshair.h rubberband.h crosshair.h \
- layer.h misc.h mymem.h pcb-printf.h hid.h \
+ compat_misc.h global.h data.h crosshair.h rubberband.h buffer.h \
+ crosshair.h layer.h misc.h mymem.h pcb-printf.h hid.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h hid_attrib.h hid_actions.h \
  hid_init.h ../src_plugins/hid_lesstif/stdarg.h misc_util.h compat_nls.h
@@ -1528,8 +1547,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- compat_misc.h global.h data.h crosshair.h rubberband.h misc.h mymem.h \
- set.h buffer.h vtptr.h plug_footprint.h vtlibrary.h hid.h \
+ compat_misc.h global.h data.h crosshair.h rubberband.h buffer.h misc.h \
+ mymem.h set.h buffer.h vtptr.h plug_footprint.h vtlibrary.h hid.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h \
  ../src_plugins/hid_lesstif/stdarg.h
@@ -1551,9 +1570,9 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h action_helper.h crosshair.h \
- layer.h mymem.h misc.h mymem.h pcb-printf.h clip.h event.h error.h \
- plugins.h hid.h hid_nogui.h hid_draw_helpers.h hid_cfg.h \
+ global.h data.h crosshair.h rubberband.h buffer.h action_helper.h \
+ crosshair.h layer.h mymem.h misc.h mymem.h pcb-printf.h clip.h event.h \
+ error.h plugins.h hid.h hid_nogui.h hid_draw_helpers.h hid_cfg.h \
  ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h hid_attrib.h hid_helper.h \
  hid_init.h hid_color.h hid_extents.h hid_flags.h hid_actions.h \
@@ -1577,7 +1596,7 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h error.h misc.h mymem.h \
+ global.h data.h crosshair.h rubberband.h buffer.h error.h misc.h mymem.h \
  pcb-printf.h layer.h hid.h hid_cfg.h hid_cfg_action.h hid_cfg.h \
  hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h \
  ../src_plugins/hid_lesstif/lesstif.h mymem.h paths.h hid_actions.h \
@@ -1599,9 +1618,9 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h find.h rats.h select.h undo.h remove.h crosshair.h draw.h \
- hid.h hid_actions.h ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ rubberband.h buffer.h find.h rats.h select.h undo.h remove.h crosshair.h \
+ draw.h hid.h hid_actions.h ../src_plugins/hid_lesstif/lesstif.h \
+ hid_cfg_input.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/htip.h \
  hid_cfg.h ../src_plugins/hid_lesstif/stdarg.h
@@ -1626,9 +1645,10 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- compat_misc.h global.h data.h crosshair.h rubberband.h set.h misc.h \
- mymem.h mymem.h pcb-printf.h hid.h ../src_plugins/hid_lesstif/lesstif.h \
- hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h hid_flags.h \
+ compat_misc.h global.h data.h crosshair.h rubberband.h buffer.h set.h \
+ misc.h mymem.h mymem.h pcb-printf.h hid.h \
+ ../src_plugins/hid_lesstif/lesstif.h hid_cfg_input.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h hid_flags.h \
  ../src_plugins/hid_lesstif/stdarg.h misc_util.h
 ../src_plugins/import_dsn/dsn.o: ../src_plugins/import_dsn/dsn.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
@@ -1643,11 +1663,11 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h error.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- rats.h buffer.h change.h draw.h set.h undo.h pcb-printf.h create.h \
- polygon.h rtree.h compat_misc.h compat_nls.h hid.h hid_draw_helpers.h \
- hid_nogui.h hid_actions.h hid_init.h hid_attrib.h hid_helper.h plugins.h \
- dolists.h
+ rubberband.h buffer.h error.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h rats.h buffer.h change.h draw.h set.h undo.h pcb-printf.h \
+ create.h polygon.h rtree.h compat_misc.h compat_nls.h hid.h \
+ hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h hid_attrib.h \
+ hid_helper.h plugins.h dolists.h
 ../src_plugins/import_edif/edif.o: ../src_plugins/import_edif/edif.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -1661,7 +1681,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h error.h plugins.h compat_misc.h compat_nls.h
+ rubberband.h buffer.h error.h plugins.h compat_misc.h compat_nls.h
 ../src_plugins/import_edif/import_edif.o: \
  ../src_plugins/import_edif/import_edif.c ../config.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -1676,7 +1696,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h plugins.h plug_import.h conf.h pcb-printf.h \
+ rubberband.h buffer.h plugins.h plug_import.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
@@ -1701,8 +1721,8 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h plug_import.h conf_core.h \
- error.h misc.h mymem.h rubberband.h data.h crosshair.h rats_patch.h \
- compat_misc.h compat_nls.h
+ error.h misc.h mymem.h rubberband.h data.h crosshair.h buffer.h \
+ rats_patch.h compat_misc.h compat_nls.h
 ../src_plugins/import_sch/import_sch.o: \
  ../src_plugins/import_sch/import_sch.c ../config.h conf_core.h conf.h \
  global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
@@ -1721,9 +1741,9 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h data.h crosshair.h rubberband.h action_helper.h change.h \
- error.h undo.h plugins.h misc.h mymem.h compat_fs.h pcb-printf.h \
- remove.h rats.h hid_actions.h \
+ global.h data.h crosshair.h rubberband.h buffer.h action_helper.h \
+ change.h error.h undo.h plugins.h misc.h mymem.h compat_fs.h \
+ pcb-printf.h remove.h rats.h hid_actions.h \
  ../src_plugins/import_sch/import_sch_conf.h conf.h misc_util.h \
  compat_nls.h dolists.h \
  ../src_plugins/import_sch/import_sch_conf_fields.h
@@ -1745,7 +1765,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h ../src_plugins/io_kicad/write.h \
- data.h crosshair.h rubberband.h ../src_plugins/io_kicad/read.h
+ data.h crosshair.h rubberband.h buffer.h ../src_plugins/io_kicad/read.h
 ../src_plugins/io_kicad/read.o: ../src_plugins/io_kicad/read.c \
  ../src_3rd/gensexpr/gsxl.h ../src_3rd/gensexpr/gensexpr_impl.h \
  ../src_3rd/gensexpr/gsx_parse.h ../src_3rd/liblihata/genht/htsi.h \
@@ -1766,8 +1786,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h error.h data.h crosshair.h \
- rubberband.h ../src_plugins/io_kicad/read.h global.h layer.h const.h \
- netlist.h create.h polygon.h rtree.h misc.h mymem.h misc_util.h \
+ rubberband.h buffer.h ../src_plugins/io_kicad/read.h global.h layer.h \
+ const.h netlist.h create.h polygon.h rtree.h misc.h mymem.h misc_util.h \
  conf_core.h move.h macro.h
 ../src_plugins/io_kicad/uniq_name.o: ../src_plugins/io_kicad/uniq_name.c \
  ../src_3rd/liblihata/genht/hash.h ../src_plugins/io_kicad/uniq_name.h \
@@ -1792,8 +1812,8 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  error.h ../src_plugins/io_kicad/uniq_name.h \
  ../src_3rd/liblihata/genht/htsp.h data.h crosshair.h rubberband.h \
- ../src_plugins/io_kicad/write.h global.h layer.h const.h netlist.h \
- misc.h mymem.h
+ buffer.h ../src_plugins/io_kicad/write.h global.h layer.h const.h \
+ netlist.h misc.h mymem.h
 ../src_plugins/io_kicad_legacy/io_kicad_legacy.o: \
  ../src_plugins/io_kicad_legacy/io_kicad_legacy.c ../config.h global.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -1813,7 +1833,8 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_plugins/io_kicad_legacy/write.h data.h crosshair.h rubberband.h
+ ../src_plugins/io_kicad_legacy/write.h data.h crosshair.h rubberband.h \
+ buffer.h
 ../src_plugins/io_kicad_legacy/write.o: \
  ../src_plugins/io_kicad_legacy/write.c plug_io.h global.h ../config.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -1834,7 +1855,7 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  error.h ../src_plugins/io_kicad_legacy/../io_kicad/uniq_name.h \
  ../src_3rd/liblihata/genht/htsp.h data.h crosshair.h rubberband.h \
- ../src_plugins/io_kicad_legacy/write.h global.h layer.h const.h \
+ buffer.h ../src_plugins/io_kicad_legacy/write.h global.h layer.h const.h \
  netlist.h misc.h mymem.h
 ../src_plugins/io_lihata/common.o: ../src_plugins/io_lihata/common.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
@@ -1849,7 +1870,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h macro.h ../src_plugins/io_lihata/common.h
+ rubberband.h buffer.h macro.h ../src_plugins/io_lihata/common.h
 ../src_plugins/io_lihata/io_lihata.o: \
  ../src_plugins/io_lihata/io_lihata.c ../config.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -1888,7 +1909,7 @@
  vtroutestyle.h board.h layer.h library.h global_element.h list_element.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h plugins.h plug_io.h conf.h pcb-printf.h \
+ rubberband.h buffer.h plugins.h plug_io.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h flag_str.h compat_misc.h macro.h \
  error.h misc.h mymem.h misc_util.h layer.h create.h vtptr.h \
@@ -1909,7 +1930,7 @@
  vtroutestyle.h board.h layer.h library.h global_element.h list_element.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h plugins.h plug_io.h conf.h pcb-printf.h \
+ rubberband.h buffer.h plugins.h plug_io.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h flag_str.h compat_misc.h \
  rats_patch.h hid_actions.h misc_util.h macro.h layer.h \
@@ -1958,12 +1979,12 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  global.h buffer.h change.h create.h rubberband.h crosshair.h data.h \
- crosshair.h error.h ../src_plugins/io_pcb/file.h plug_io.h hid.h layer.h \
- misc.h mymem.h move.h mymem.h ../src_plugins/io_pcb/parse_common.h \
- pcb-printf.h polygon.h rtree.h rats.h remove.h set.h flag_str.h \
- compat_fs.h paths.h rats_patch.h hid_actions.h hid_flags.h \
- ../src_plugins/io_pcb/flags.h ../src_plugins/io_pcb/attribs.h \
- route_style.h
+ crosshair.h buffer.h error.h ../src_plugins/io_pcb/file.h plug_io.h \
+ hid.h layer.h misc.h mymem.h move.h mymem.h \
+ ../src_plugins/io_pcb/parse_common.h pcb-printf.h polygon.h rtree.h \
+ rats.h remove.h set.h flag_str.h compat_fs.h paths.h rats_patch.h \
+ hid_actions.h hid_flags.h ../src_plugins/io_pcb/flags.h \
+ ../src_plugins/io_pcb/attribs.h route_style.h
 ../src_plugins/io_pcb/flags.o: ../src_plugins/io_pcb/flags.c flag_str.h \
  global_objs.h ../src_3rd/genlist/gendlist.h ../config.h attrib.h flag.h \
  globalconst.h global_typedefs.h pcb_bool.h unit.h polyarea.h \
@@ -2006,8 +2027,8 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  global.h ../src_plugins/io_pcb/flags.h crosshair.h rubberband.h data.h \
- crosshair.h error.h ../src_plugins/io_pcb/file.h plug_io.h mymem.h \
- misc.h mymem.h flag_str.h ../src_plugins/io_pcb/parse_common.h \
+ crosshair.h buffer.h error.h ../src_plugins/io_pcb/file.h plug_io.h \
+ mymem.h misc.h mymem.h flag_str.h ../src_plugins/io_pcb/parse_common.h \
  ../src_plugins/io_pcb/parse_y.h create.h plug_footprint.h vtlibrary.h \
  ../src_plugins/io_pcb/attribs.h compat_misc.h compat_cc.h
 ../src_plugins/io_pcb/parse_y.o: ../src_plugins/io_pcb/parse_y.c \
@@ -2028,8 +2049,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h layer.h create.h rubberband.h data.h crosshair.h error.h \
- ../src_plugins/io_pcb/file.h plug_io.h mymem.h misc.h mymem.h \
+ global.h layer.h create.h rubberband.h data.h crosshair.h buffer.h \
+ error.h ../src_plugins/io_pcb/file.h plug_io.h mymem.h misc.h mymem.h \
  ../src_plugins/io_pcb/parse_l.h polygon.h rtree.h remove.h rtree.h \
  flag_str.h thermal.h rats_patch.h ../src_plugins/io_pcb/flags.h \
  route_style.h compat_misc.h ../src_plugins/io_pcb/parse_y.h
@@ -2046,13 +2067,14 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h hid.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- create.h rtree.h undo.h rats.h polygon.h rtree.h remove.h error.h set.h \
- pcb-printf.h plugins.h hid_actions.h layer.h conf_core.h conf.h \
- pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/genvector/vtp0.h list_conf.h misc_util.h dolists.h
+ rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h create.h rtree.h undo.h rats.h polygon.h rtree.h remove.h \
+ error.h set.h pcb-printf.h plugins.h hid_actions.h layer.h conf_core.h \
+ conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ misc_util.h dolists.h
 ../src_plugins/lib_gensexpr/lib_gensexpr.o: \
  ../src_plugins/lib_gensexpr/lib_gensexpr.c plugins.h
 ../src_plugins/lib_legacy_func/lib_legacy_func.o: \
@@ -2069,7 +2091,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h action_helper.h change.h error.h undo.h plugins.h
+ rubberband.h buffer.h action_helper.h change.h error.h undo.h plugins.h
 ../src_plugins/loghid/loghid.o: ../src_plugins/loghid/loghid.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -2087,8 +2109,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h data.h crosshair.h rubberband.h action_helper.h change.h error.h \
- undo.h plugins.h hid_init.h hid_attrib.h dolists.h
+ conf.h data.h crosshair.h rubberband.h buffer.h action_helper.h change.h \
+ error.h undo.h plugins.h hid_init.h hid_attrib.h dolists.h
 ../src_plugins/mincut/pcb-mincut/graph.o: \
  ../src_plugins/mincut/pcb-mincut/graph.c \
  ../src_plugins/mincut/pcb-mincut/graph.h \
@@ -2112,7 +2134,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h create.h global.h rubberband.h data.h \
- crosshair.h draw.h error.h plug_io.h conf.h pcb-printf.h \
+ crosshair.h buffer.h draw.h error.h plug_io.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
@@ -2143,8 +2165,9 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h data.h crosshair.h rubberband.h action_helper.h change.h error.h \
- undo.h plugins.h hid_actions.h plug_footprint.h vtlibrary.h dolists.h
+ conf.h data.h crosshair.h rubberband.h buffer.h action_helper.h change.h \
+ error.h undo.h plugins.h hid_actions.h plug_footprint.h vtlibrary.h \
+ dolists.h
 ../src_plugins/polycombine/polycombine.o: \
  ../src_plugins/polycombine/polycombine.c ../config.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -2159,8 +2182,8 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h macro.h create.h remove.h hid.h error.h rtree.h polygon.h \
- rtree.h polyarea.h flag_str.h find.h misc.h \
+ rubberband.h buffer.h macro.h create.h remove.h hid.h error.h rtree.h \
+ polygon.h rtree.h polyarea.h flag_str.h find.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h draw.h undo.h plugins.h \
  hid_actions.h dolists.h
 ../src_plugins/polystitch/polystitch.o: \
@@ -2177,9 +2200,9 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h macro.h create.h remove.h hid.h error.h rtree.h draw.h \
- set.h polygon.h rtree.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- plugins.h hid_actions.h dolists.h
+ rubberband.h buffer.h macro.h create.h remove.h hid.h error.h rtree.h \
+ draw.h set.h polygon.h rtree.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h plugins.h hid_actions.h dolists.h
 ../src_plugins/propedit/propedit.o: ../src_plugins/propedit/propedit.c \
  plugins.h ../src_plugins/propedit/props.h global.h ../config.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -2225,7 +2248,7 @@
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h \
+ vtroutestyle.h board.h library.h rubberband.h buffer.h \
  ../src_plugins/propedit/props.h global.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_plugins/propedit/propsel.h change.h misc.h \
@@ -2249,9 +2272,9 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- global.h create.h rubberband.h data.h crosshair.h draw.h misc.h mymem.h \
- move.h pcb-printf.h remove.h rtree.h flag_str.h undo.h layer.h plugins.h \
- hid_actions.h misc_util.h dolists.h
+ global.h create.h rubberband.h data.h crosshair.h buffer.h draw.h misc.h \
+ mymem.h move.h pcb-printf.h remove.h rtree.h flag_str.h undo.h layer.h \
+ plugins.h hid_actions.h misc_util.h dolists.h
 ../src_plugins/query/basic_fnc.o: ../src_plugins/query/basic_fnc.c \
  global.h ../config.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -2265,7 +2288,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h ../src_plugins/query/query_access.h \
+ rubberband.h buffer.h ../src_plugins/query/query_access.h \
  ../src_plugins/query/query.h obj_any.h ../src_3rd/liblihata/genht/htsi.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genregex/regex_se.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
@@ -2290,7 +2313,7 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf.h data.h crosshair.h \
- rubberband.h action_helper.h change.h error.h undo.h plugins.h \
+ rubberband.h buffer.h action_helper.h change.h error.h undo.h plugins.h \
  hid_init.h hid_actions.h compat_misc.h ../src_plugins/query/query.h \
  obj_any.h ../src_3rd/genregex/regex_se.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
@@ -2308,7 +2331,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h ../src_plugins/query/query_access.h \
+ rubberband.h buffer.h ../src_plugins/query/query_access.h \
  ../src_plugins/query/query.h obj_any.h ../src_3rd/liblihata/genht/htsi.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genregex/regex_se.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
@@ -2345,7 +2368,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h ../src_plugins/query/query.h obj_any.h \
+ rubberband.h buffer.h ../src_plugins/query/query.h obj_any.h \
  ../src_3rd/liblihata/genht/htsi.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
@@ -2399,7 +2422,7 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h action_helper.h change.h error.h undo.h misc.h \
+ rubberband.h buffer.h action_helper.h change.h error.h undo.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h set.h plugins.h hid_actions.h \
  conf_core.h conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -2420,9 +2443,9 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h hid.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- create.h rtree.h undo.h error.h change.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h create.h rtree.h undo.h error.h change.h conf_core.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h
@@ -2445,12 +2468,12 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_plugins/report/report.h global.h crosshair.h rubberband.h data.h \
- crosshair.h drill.h error.h search.h misc_util.h misc.h mymem.h mymem.h \
- rats.h rtree.h flag_str.h macro.h undo.h find.h draw.h pcb-printf.h \
- plugins.h hid_actions.h misc_util.h ../src_plugins/report/report_conf.h \
- conf.h compat_misc.h compat_nls.h layer.h \
- ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
- ../src_3rd/genregex/regex.h dolists.h \
+ crosshair.h buffer.h drill.h error.h search.h misc_util.h misc.h mymem.h \
+ mymem.h rats.h rtree.h flag_str.h macro.h undo.h find.h draw.h \
+ pcb-printf.h plugins.h hid_actions.h misc_util.h \
+ ../src_plugins/report/report_conf.h conf.h compat_misc.h compat_nls.h \
+ layer.h ../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h dolists.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/shand_cmd/command.o: ../src_plugins/shand_cmd/command.c \
  ../config.h conf_core.h conf.h global.h const.h macro.h \
@@ -2471,8 +2494,9 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  global.h action_helper.h buffer.h ../src_plugins/shand_cmd/command.h \
- data.h crosshair.h rubberband.h error.h plug_io.h mymem.h misc.h mymem.h \
- rats.h set.h plugins.h hid_actions.h compat_misc.h dolists.h
+ data.h crosshair.h rubberband.h buffer.h error.h plug_io.h mymem.h \
+ misc.h mymem.h rats.h set.h plugins.h hid_actions.h compat_misc.h \
+ dolists.h
 ../src_plugins/smartdisperse/smartdisperse.o: \
  ../src_plugins/smartdisperse/smartdisperse.c \
  ../src_3rd/liblihata/genht/htpi.h ../src_3rd/liblihata/genht/ht.h \
@@ -2488,9 +2512,9 @@
  vtroutestyle.h board.h layer.h library.h global_element.h list_element.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h hid.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- create.h rtree.h undo.h rats.h error.h move.h draw.h set.h plugins.h \
- hid_actions.h compat_nls.h dolists.h
+ rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h create.h rtree.h undo.h rats.h error.h move.h draw.h set.h \
+ plugins.h hid_actions.h compat_nls.h dolists.h
 ../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
  ../config.h global.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -2508,7 +2532,7 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- conf.h conf_core.h data.h crosshair.h rubberband.h crosshair.h \
+ conf.h conf_core.h data.h crosshair.h rubberband.h buffer.h crosshair.h \
  stub_stroke.h rotate.h undo.h set.h error.h misc.h mymem.h plugins.h \
  compat_nls.h
 ../src_plugins/teardrops/teardrops.o: \
@@ -2525,8 +2549,8 @@
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h global.h \
- rubberband.h hid.h misc.h ../src_3rd/genvector/gds_char.h mymem.h \
- create.h rtree.h undo.h plugins.h hid_actions.h dolists.h
+ rubberband.h buffer.h hid.h misc.h ../src_3rd/genvector/gds_char.h \
+ mymem.h create.h rtree.h undo.h plugins.h hid_actions.h dolists.h
 ../src_plugins/toporouter/toporouter.o: \
  ../src_plugins/toporouter/toporouter.c \
  ../src_plugins/toporouter/toporouter.h data.h global_typedefs.h \
@@ -2540,7 +2564,7 @@
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h macro.h \
+ vtroutestyle.h board.h library.h rubberband.h buffer.h macro.h \
  ../src_plugins/toporouter/../autoroute/autoroute.h global.h box.h \
  misc_util.h create.h draw.h error.h find.h heap.h rtree.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h mymem.h polygon.h rtree.h rats.h \
@@ -2565,10 +2589,10 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h change.h data.h crosshair.h rubberband.h \
- draw.h error.h global.h set.h undo.h ../src_plugins/vendordrill/vendor.h \
- stub_vendor.h plugins.h hid_flags.h hid_actions.h hid_cfg.h \
- ../src_plugins/vendordrill/vendor_conf.h conf.h compat_misc.h \
- compat_nls.h ../src_3rd/liblihata/tree.h dolists.h \
+ buffer.h draw.h error.h global.h set.h undo.h \
+ ../src_plugins/vendordrill/vendor.h stub_vendor.h plugins.h hid_flags.h \
+ hid_actions.h hid_cfg.h ../src_plugins/vendordrill/vendor_conf.h conf.h \
+ compat_misc.h compat_nls.h ../src_3rd/liblihata/tree.h dolists.h \
  ../src_plugins/vendordrill/vendor_conf_fields.h
 ../src_3rd/gensexpr/gsx_parse.o: ../src_3rd/gensexpr/gsx_parse.c \
  ../src_3rd/gensexpr/gsx_parse.h
@@ -2749,8 +2773,8 @@ change.o: change.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- crosshair.h rubberband.h data.h draw.h misc.h mymem.h mirror.h polygon.h \
- rtree.h select.h undo.h hid_actions.h compat_nls.h
+ crosshair.h rubberband.h data.h buffer.h draw.h misc.h mymem.h mirror.h \
+ polygon.h rtree.h select.h undo.h hid_actions.h compat_nls.h
 change_act.o: change_act.c ../config.h conf_core.h conf.h global.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -2768,7 +2792,7 @@ change_act.o: change_act.c ../config.h conf_core.h conf.h global.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h funchash_core.h funchash.h \
+ data.h crosshair.h rubberband.h buffer.h funchash_core.h funchash.h \
  funchash_core_list.h action_helper.h hid_actions.h change.h draw.h \
  search.h misc_util.h misc.h mymem.h set.h undo.h compat_misc.h \
  compat_nls.h
@@ -2858,8 +2882,8 @@ conf_act.o: conf_act.c global.h ../config.h const.h macro.h \
  vtroutestyle.h board.h layer.h library.h global_element.h list_element.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
- ../src_3rd/liblihata/genht/hash.h data.h crosshair.h rubberband.h conf.h \
- pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/genht/hash.h data.h crosshair.h rubberband.h \
+ buffer.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -2919,8 +2943,8 @@ copy.o: copy.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- create.h rubberband.h data.h crosshair.h draw.h misc.h mymem.h move.h \
- polygon.h rtree.h select.h undo.h compat_misc.h
+ create.h rubberband.h data.h crosshair.h buffer.h draw.h misc.h mymem.h \
+ move.h polygon.h rtree.h select.h undo.h compat_misc.h
 create.o: create.c ../config.h conf_core.h conf.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -2938,9 +2962,9 @@ create.o: create.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- create.h rubberband.h data.h crosshair.h misc.h mymem.h rtree.h search.h \
- misc_util.h undo.h plug_io.h stub_vendor.h hid_actions.h paths.h \
- compat_misc.h compat_nls.h
+ create.h rubberband.h data.h crosshair.h buffer.h misc.h mymem.h rtree.h \
+ search.h misc_util.h undo.h plug_io.h stub_vendor.h hid_actions.h \
+ paths.h compat_misc.h compat_nls.h
 crosshair.o: crosshair.c ../config.h conf_core.h conf.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -2958,8 +2982,8 @@ crosshair.o: crosshair.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- box.h misc_util.h crosshair.h rubberband.h data.h draw.h line.h rtree.h \
- search.h polygon.h misc.h mymem.h hid_actions.h compat_misc.h \
+ box.h misc_util.h crosshair.h rubberband.h data.h buffer.h draw.h line.h \
+ rtree.h search.h polygon.h misc.h mymem.h hid_actions.h compat_misc.h \
  compat_nls.h
 data.o: data.c ../config.h data.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
@@ -2972,7 +2996,7 @@ data.o: data.c ../config.h data.h global_typedefs.h pcb_bool.h unit.h \
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h
+ vtroutestyle.h board.h library.h rubberband.h buffer.h
 draw.o: draw.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -2990,8 +3014,8 @@ draw.o: draw.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h draw.h misc.h mymem.h rotate.h rtree.h \
- draw_fab.h hid_helper.h
+ data.h crosshair.h rubberband.h buffer.h draw.h misc.h mymem.h rotate.h \
+ rtree.h draw_fab.h hid_helper.h
 draw_fab.o: draw_fab.c ../config.h data.h global_typedefs.h pcb_bool.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
  globalconst.h polyarea.h global_element.h list_pin.h \
@@ -3003,8 +3027,9 @@ draw_fab.o: draw_fab.c ../config.h data.h global_typedefs.h pcb_bool.h \
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h draw.h drill.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h draw_fab.h polygon.h rtree.h
+ vtroutestyle.h board.h library.h rubberband.h buffer.h draw.h drill.h \
+ misc.h ../src_3rd/genvector/gds_char.h mymem.h draw_fab.h polygon.h \
+ rtree.h
 drill.o: drill.c ../config.h data.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
  globalconst.h polyarea.h global_element.h list_pin.h \
@@ -3016,7 +3041,7 @@ drill.o: drill.c ../config.h data.h global_typedefs.h pcb_bool.h unit.h \
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h mymem.h
+ vtroutestyle.h board.h library.h rubberband.h buffer.h mymem.h drill.h
 error.o: error.c ../config.h global.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h attrib.h \
  flag.h globalconst.h polyarea.h rats_patch.h list_common.h list_line.h \
@@ -3029,7 +3054,7 @@ error.o: error.c ../config.h global.h const.h macro.h global_typedefs.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h rubberband.h \
- plug_io.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ buffer.h plug_io.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -3052,10 +3077,9 @@ file_act.o: file_act.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h action_helper.h set.h plug_io.h \
- plug_import.h buffer.h misc.h mymem.h remove.h create.h draw.h find.h \
- search.h misc_util.h hid_actions.h hid_attrib.h compat_misc.h \
- compat_nls.h
+ data.h crosshair.h rubberband.h buffer.h action_helper.h set.h plug_io.h \
+ plug_import.h misc.h mymem.h remove.h create.h draw.h find.h search.h \
+ misc_util.h hid_actions.h hid_attrib.h compat_misc.h compat_nls.h
 find.o: find.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -3073,8 +3097,8 @@ find.o: find.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h draw.h find.h misc.h mymem.h rtree.h \
- polygon.h search.h misc_util.h set.h undo.h rats.h plug_io.h \
+ data.h crosshair.h rubberband.h buffer.h draw.h find.h misc.h mymem.h \
+ rtree.h polygon.h search.h misc_util.h set.h undo.h rats.h plug_io.h \
  hid_actions.h compat_misc.h find_geo.c find_lookup.c compat_nls.h \
  find_drc.c find_misc.c find_clear.c find_debug.c find_print.c
 find_act.o: find_act.c ../config.h conf_core.h conf.h global.h const.h \
@@ -3094,7 +3118,7 @@ find_act.o: find_act.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h find.h compat_nls.h
+ data.h crosshair.h rubberband.h buffer.h find.h compat_nls.h
 flag.o: flag.c flag.h globalconst.h ../config.h
 flag_str.o: flag_str.c ../config.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -3132,10 +3156,10 @@ gui_act.o: gui_act.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h action_helper.h undo.h funchash_core.h \
- funchash.h funchash_core_list.h draw.h search.h misc_util.h find.h set.h \
- misc.h mymem.h stub_stroke.h hid_actions.h hid_init.h route_style.h \
- compat_nls.h
+ data.h crosshair.h rubberband.h buffer.h action_helper.h undo.h \
+ funchash_core.h funchash.h funchash_core_list.h draw.h search.h \
+ misc_util.h find.h set.h misc.h mymem.h stub_stroke.h hid_actions.h \
+ hid_init.h route_style.h compat_nls.h
 heap.o: heap.c ../config.h heap.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -3272,7 +3296,7 @@ hid_extents.o: hid_extents.c ../config.h global.h const.h macro.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h rubberband.h \
- hid_draw_helpers.h hid_helper.h
+ buffer.h hid_draw_helpers.h hid_helper.h
 hid_flags.o: hid_flags.c ../config.h data.h global_typedefs.h pcb_bool.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
  globalconst.h polyarea.h global_element.h list_pin.h \
@@ -3284,7 +3308,7 @@ hid_flags.o: hid_flags.c ../config.h data.h global_typedefs.h pcb_bool.h \
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h misc.h \
+ vtroutestyle.h board.h library.h rubberband.h buffer.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -3302,7 +3326,7 @@ hid_helper.o: hid_helper.c ../config.h data.h global_typedefs.h \
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h misc.h \
+ vtroutestyle.h board.h library.h rubberband.h buffer.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h hid_helper.h hid_attrib.h \
  compat_misc.h
 hid_init.o: hid_init.c ../config.h global.h const.h macro.h \
@@ -3367,8 +3391,8 @@ insert.o: insert.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- create.h rubberband.h crosshair.h data.h draw.h line.h misc.h mymem.h \
- polygon.h rtree.h search.h misc_util.h select.h set.h undo.h
+ create.h rubberband.h crosshair.h data.h buffer.h draw.h line.h misc.h \
+ mymem.h polygon.h rtree.h search.h misc_util.h select.h set.h undo.h
 intersect.o: intersect.c ../config.h intersect.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -3394,7 +3418,7 @@ layer.o: layer.c global.h ../config.h const.h macro.h global_typedefs.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h rubberband.h \
- conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ buffer.h conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -3416,7 +3440,8 @@ line.o: line.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h find.h line.h misc.h mymem.h rtree.h
+ data.h crosshair.h rubberband.h buffer.h find.h line.h misc.h mymem.h \
+ rtree.h
 list_arc.o: list_arc.c global_objs.h ../src_3rd/genlist/gendlist.h \
  ../config.h attrib.h flag.h globalconst.h global_typedefs.h pcb_bool.h \
  unit.h polyarea.h list_arc.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -3518,7 +3543,7 @@ main_act.o: main_act.c ../config.h action_helper.h global.h const.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h hid_actions.h hid_attrib.h hid_init.h \
- data.h crosshair.h rubberband.h conf_core.h conf.h pcb-printf.h \
+ data.h crosshair.h rubberband.h buffer.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
@@ -3534,7 +3559,7 @@ mirror.o: mirror.c ../config.h data.h global_typedefs.h pcb_bool.h unit.h \
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h mirror.h misc.h \
+ vtroutestyle.h board.h library.h rubberband.h buffer.h mirror.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h polygon.h rtree.h
 misc.o: misc.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -3553,9 +3578,9 @@ misc.o: misc.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- box.h misc_util.h crosshair.h rubberband.h data.h plug_io.h misc.h \
- mymem.h move.h polygon.h rtree.h rotate.h set.h undo.h compat_misc.h \
- hid_actions.h hid_init.h
+ box.h misc_util.h crosshair.h rubberband.h data.h buffer.h plug_io.h \
+ misc.h mymem.h move.h polygon.h rtree.h rotate.h set.h undo.h \
+ compat_misc.h hid_actions.h hid_init.h
 misc_util.o: misc_util.c ../config.h misc_util.h pcb_bool.h unit.h
 move.o: move.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
@@ -3574,9 +3599,9 @@ move.o: move.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- create.h rubberband.h data.h crosshair.h draw.h misc.h mymem.h move.h \
- polygon.h rtree.h search.h misc_util.h select.h undo.h hid_actions.h \
- compat_misc.h compat_nls.h
+ create.h rubberband.h data.h crosshair.h buffer.h draw.h misc.h mymem.h \
+ move.h polygon.h rtree.h search.h misc_util.h select.h undo.h \
+ hid_actions.h compat_misc.h compat_nls.h
 mymem.o: mymem.c ../config.h data.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
  globalconst.h polyarea.h global_element.h list_pin.h \
@@ -3588,7 +3613,7 @@ mymem.o: mymem.c ../config.h data.h global_typedefs.h pcb_bool.h unit.h \
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h mymem.h rtree.h
+ vtroutestyle.h board.h library.h rubberband.h buffer.h mymem.h rtree.h
 netlist.o: netlist.c ../config.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
  action_helper.h global.h const.h macro.h global_typedefs.h pcb_bool.h \
@@ -3603,7 +3628,7 @@ netlist.o: netlist.c ../config.h ../src_3rd/genregex/regex_sei.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h rubberband.h \
- plug_io.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ buffer.h plug_io.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -3623,7 +3648,7 @@ netlist_act.o: netlist_act.c ../config.h ../src_3rd/genregex/regex_sei.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h data.h crosshair.h rubberband.h \
- plug_io.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ buffer.h plug_io.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
@@ -3651,10 +3676,10 @@ object_act.o: object_act.c ../config.h conf_core.h conf.h global.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h action_helper.h change.h undo.h \
+ data.h crosshair.h rubberband.h buffer.h action_helper.h change.h undo.h \
  funchash_core.h funchash.h funchash_core_list.h search.h misc_util.h \
- move.h draw.h mirror.h rotate.h set.h copy.h misc.h mymem.h buffer.h \
- remove.h create.h compat_misc.h compat_nls.h
+ move.h draw.h mirror.h rotate.h set.h copy.h misc.h mymem.h remove.h \
+ create.h compat_misc.h compat_nls.h
 paths.o: paths.c ../config.h paths.h error.h conf.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -3787,9 +3812,9 @@ polygon.o: polygon.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- box.h misc_util.h create.h rubberband.h crosshair.h data.h draw.h \
- polygon.h rtree.h remove.h search.h set.h thermal.h mymem.h undo.h \
- misc.h compat_nls.h
+ box.h misc_util.h create.h rubberband.h crosshair.h data.h buffer.h \
+ draw.h polygon.h rtree.h remove.h search.h set.h thermal.h mymem.h \
+ undo.h misc.h compat_nls.h
 polygon1.o: polygon1.c rtree.h global.h ../config.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -3821,9 +3846,9 @@ polygon_act.o: polygon_act.c ../config.h conf_core.h conf.h global.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h action_helper.h undo.h funchash_core.h \
- funchash.h funchash_core_list.h polygon.h rtree.h draw.h search.h \
- misc_util.h compat_nls.h
+ data.h crosshair.h rubberband.h buffer.h action_helper.h undo.h \
+ funchash_core.h funchash.h funchash_core_list.h polygon.h rtree.h draw.h \
+ search.h misc_util.h compat_nls.h
 rats.o: rats.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -3841,9 +3866,9 @@ rats.o: rats.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- create.h rubberband.h data.h crosshair.h draw.h find.h misc.h mymem.h \
- polygon.h rtree.h rats.h search.h misc_util.h undo.h stub_mincut.h \
- route_style.h compat_misc.h netlist.h compat_nls.h
+ create.h rubberband.h data.h crosshair.h buffer.h draw.h find.h misc.h \
+ mymem.h polygon.h rtree.h rats.h search.h misc_util.h undo.h \
+ stub_mincut.h route_style.h compat_misc.h netlist.h compat_nls.h
 rats_act.o: rats_act.c ../config.h conf_core.h conf.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -3861,9 +3886,9 @@ rats_act.o: rats_act.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h action_helper.h undo.h set.h misc.h \
- mymem.h find.h remove.h funchash_core.h funchash.h funchash_core_list.h \
- compat_nls.h rats.h draw.h
+ data.h crosshair.h rubberband.h buffer.h action_helper.h undo.h set.h \
+ misc.h mymem.h find.h remove.h funchash_core.h funchash.h \
+ funchash_core_list.h compat_nls.h rats.h draw.h
 rats_patch.o: rats_patch.c rats_patch.h global_typedefs.h ../config.h \
  pcb_bool.h unit.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
@@ -3895,8 +3920,8 @@ remove.o: remove.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h draw.h misc.h mymem.h move.h polygon.h \
- rtree.h remove.h select.h undo.h
+ data.h crosshair.h rubberband.h buffer.h draw.h misc.h mymem.h move.h \
+ polygon.h rtree.h remove.h select.h undo.h
 remove_act.o: remove_act.c ../config.h data.h global_typedefs.h \
  pcb_bool.h unit.h global_objs.h ../src_3rd/genlist/gendlist.h attrib.h \
  flag.h globalconst.h polyarea.h global_element.h list_pin.h \
@@ -3908,8 +3933,8 @@ remove_act.o: remove_act.c ../config.h data.h global_typedefs.h \
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h action_helper.h set.h \
- remove.h funchash_core.h funchash.h funchash_core_list.h
+ vtroutestyle.h board.h library.h rubberband.h buffer.h action_helper.h \
+ set.h remove.h funchash_core.h funchash.h funchash_core_list.h
 rotate.o: rotate.c ../config.h data.h global_typedefs.h pcb_bool.h unit.h \
  global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
  globalconst.h polyarea.h global_element.h list_pin.h \
@@ -3921,7 +3946,7 @@ rotate.o: rotate.c ../config.h data.h global_typedefs.h pcb_bool.h unit.h \
  list_rat.h layer.h crosshair.h global.h const.h macro.h rats_patch.h \
  vtonpoint.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid.h error.h drc.h \
- vtroutestyle.h board.h library.h rubberband.h draw.h misc.h \
+ vtroutestyle.h board.h library.h rubberband.h buffer.h draw.h misc.h \
  ../src_3rd/genvector/gds_char.h mymem.h polygon.h rtree.h rotate.h \
  search.h misc_util.h select.h set.h undo.h conf_core.h conf.h \
  pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
@@ -3971,8 +3996,9 @@ rubberband.o: rubberband.c ../config.h create.h global.h const.h macro.h \
  vtroutestyle.h board.h layer.h library.h global_element.h list_element.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/liblihata/genht/ht_inlines.h \
- ../src_3rd/liblihata/genht/hash.h rubberband.h data.h crosshair.h misc.h \
- ../src_3rd/genvector/gds_char.h mymem.h polygon.h rtree.h
+ ../src_3rd/liblihata/genht/hash.h rubberband.h data.h crosshair.h \
+ buffer.h misc.h ../src_3rd/genvector/gds_char.h mymem.h polygon.h \
+ rtree.h
 search.o: search.c ../config.h conf_core.h conf.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -3990,8 +4016,8 @@ search.o: search.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- box.h misc_util.h data.h crosshair.h rubberband.h find.h polygon.h \
- rtree.h search.h misc.h mymem.h
+ box.h misc_util.h data.h crosshair.h rubberband.h buffer.h find.h \
+ polygon.h rtree.h search.h misc.h mymem.h
 select.o: select.c ../config.h conf_core.h conf.h global.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -4009,8 +4035,8 @@ select.o: select.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h draw.h search.h misc_util.h select.h \
- undo.h rats.h misc.h mymem.h find.h compat_misc.h compat_nls.h \
+ data.h crosshair.h rubberband.h buffer.h draw.h search.h misc_util.h \
+ select.h undo.h rats.h misc.h mymem.h find.h compat_misc.h compat_nls.h \
  ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h
 select_act.o: select_act.c ../config.h conf_core.h conf.h global.h \
@@ -4030,9 +4056,9 @@ select_act.o: select_act.c ../config.h conf_core.h conf.h global.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h action_helper.h undo.h funchash_core.h \
- funchash.h funchash_core_list.h select.h set.h buffer.h draw.h remove.h \
- copy.h hid_attrib.h compat_misc.h compat_nls.h
+ data.h crosshair.h rubberband.h buffer.h action_helper.h undo.h \
+ funchash_core.h funchash.h funchash_core_list.h select.h set.h draw.h \
+ remove.h copy.h hid_attrib.h compat_misc.h compat_nls.h
 set.o: set.c ../config.h conf_core.h conf.h global.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h global_objs.h \
  ../src_3rd/genlist/gendlist.h attrib.h flag.h globalconst.h polyarea.h \
@@ -4131,7 +4157,7 @@ undo_act.o: undo_act.c ../config.h conf_core.h conf.h global.h const.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- data.h crosshair.h rubberband.h action_helper.h funchash_core.h \
+ data.h crosshair.h rubberband.h buffer.h action_helper.h funchash_core.h \
  funchash.h funchash_core_list.h undo.h polygon.h rtree.h set.h search.h \
  misc_util.h draw.h misc.h mymem.h
 unit.o: unit.c ../config.h global.h const.h macro.h global_typedefs.h \

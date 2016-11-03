@@ -26,10 +26,17 @@
 
 /* prototypes for buffer handling routines */
 
-#ifndef	PCB_BUFFER_H
-#define	PCB_BUFFER_H
+#ifndef PCB_BUFFER_H
+#define PCB_BUFFER_H
 
 #include "global.h"
+
+struct pcb_buffer_s {								/* information about the paste buffer */
+	Coord X, Y;										/* offset */
+	BoxType BoundingBox;
+	DataTypePtr Data;							/* data; not all members of PCBType */
+	/* are used */
+};
 
 /* ---------------------------------------------------------------------------
  * prototypes

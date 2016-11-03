@@ -25,7 +25,33 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
+#ifndef PCB_DRILL_H
+#define PCB_DRILL_H
+
+typedef struct {								/* holds drill information */
+	Coord DrillSize;							/* this drill's diameter */
+	pcb_cardinal_t ElementN,						/* the number of elements using this drill size */
+	  ElementMax,									/* max number of elements from malloc() */
+	  PinCount,										/* number of pins drilled this size */
+	  ViaCount,										/* number of vias drilled this size */
+	  UnplatedCount,							/* number of these holes that are unplated */
+	  PinN,												/* number of drill coordinates in the list */
+	  PinMax;											/* max number of coordinates from malloc() */
+	PinTypePtr *Pin;							/* coordinates to drill */
+	ElementTypePtr *Element;			/* a pointer to an array of element pointers */
+} DrillType, *DrillTypePtr;
+
+typedef struct {								/* holds a range of Drill Infos */
+	pcb_cardinal_t DrillN,							/* number of drill sizes */
+	  DrillMax;										/* max number from malloc() */
+	DrillTypePtr Drill;						/* plated holes */
+} DrillInfoType, *DrillInfoTypePtr;
 
 DrillInfoTypePtr GetDrillInfo(DataTypePtr);
 void FreeDrillInfo(DrillInfoTypePtr);
 void RoundDrillInfo(DrillInfoTypePtr, int);
+DrillTypePtr GetDrillInfoDrillMemory(DrillInfoTypePtr);
+PinTypeHandle GetDrillPinMemory(DrillTypePtr);
+ElementTypeHandle GetDrillElementMemory(DrillTypePtr);
+
+#endif

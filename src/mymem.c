@@ -411,61 +411,6 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr Menu)
 }
 
 /* ---------------------------------------------------------------------------
- * get next slot for a DrillElement, allocates memory if necessary
- */
-ElementTypeHandle GetDrillElementMemory(DrillTypePtr Drill)
-{
-	ElementTypePtr *element;
-
-	element = Drill->Element;
-
-	/* realloc new memory if necessary and clear it */
-	if (Drill->ElementN >= Drill->ElementMax) {
-		Drill->ElementMax += STEP_ELEMENT;
-		element = (ElementTypePtr *) realloc(element, Drill->ElementMax * sizeof(ElementTypeHandle));
-		Drill->Element = element;
-		memset(element + Drill->ElementN, 0, STEP_ELEMENT * sizeof(ElementTypeHandle));
-	}
-	return (element + Drill->ElementN++);
-}
-
-/* ---------------------------------------------------------------------------
- * get next slot for a DrillPoint, allocates memory if necessary
- */
-PinTypeHandle GetDrillPinMemory(DrillTypePtr Drill)
-{
-	PinTypePtr *pin;
-
-	pin = Drill->Pin;
-
-	/* realloc new memory if necessary and clear it */
-	if (Drill->PinN >= Drill->PinMax) {
-		Drill->PinMax += STEP_POINT;
-		pin = (PinTypePtr *) realloc(pin, Drill->PinMax * sizeof(PinTypeHandle));
-		Drill->Pin = pin;
-		memset(pin + Drill->PinN, 0, STEP_POINT * sizeof(PinTypeHandle));
-	}
-	return (pin + Drill->PinN++);
-}
-
-/* ---------------------------------------------------------------------------
- * get next slot for a Drill, allocates memory if necessary
- */
-DrillTypePtr GetDrillInfoDrillMemory(DrillInfoTypePtr DrillInfo)
-{
-	DrillTypePtr drill = DrillInfo->Drill;
-
-	/* realloc new memory if necessary and clear it */
-	if (DrillInfo->DrillN >= DrillInfo->DrillMax) {
-		DrillInfo->DrillMax += STEP_DRILL;
-		drill = (DrillTypePtr) realloc(drill, DrillInfo->DrillMax * sizeof(DrillType));
-		DrillInfo->Drill = drill;
-		memset(drill + DrillInfo->DrillN, 0, STEP_DRILL * sizeof(DrillType));
-	}
-	return (drill + DrillInfo->DrillN++);
-}
-
-/* ---------------------------------------------------------------------------
  * frees memory used by a polygon
  */
 void FreePolygonMemory(PolygonType * polygon)
