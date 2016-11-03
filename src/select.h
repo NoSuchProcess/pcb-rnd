@@ -30,6 +30,7 @@
 #define	PCB_SELECT_H
 
 #include "global.h"
+#include "operation.h"
 
 #define SELECT_TYPES	\
 	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLYGON | PCB_TYPE_ELEMENT |	\

@@ -23,6 +23,8 @@
 
 
 #include "global.h"
+#include "global_element.h"
+
 #undef LIST_ELEMENT_H
 #define LIST_ELEMENT_NOINSTANT
 #define TDL_DONT_UNDEF

@@ -25,44 +25,22 @@
  *
  */
 
-/* definition of types */
-#ifndef	PCB_GLOBAL_H
-#define	PCB_GLOBAL_H
+#include "global_element.h"
 
-#include "config.h"
-
-#include "const.h"
-#include "macro.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include <stdarg.h>
-#include <math.h>
-#include <ctype.h>
-
-#include "global_typedefs.h"
-#include "global_objs.h"
-#include "attrib.h"
-#include "rats_patch.h"
-#include "list_common.h"
-#include "hid.h"
-#include "polyarea.h"
-#include "vtroutestyle.h"
-
-#define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
-#define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
-
-/* Make sure to catch usage of non-portable functions in debug mode */
-#ifndef NDEBUG
-#	undef strdup
-#	undef strndup
-#	undef snprintf
-#	undef round
-#	define strdup      never_use_strdup__use_pcb_strdup
-#	define strndup     never_use_strndup__use_pcb_strndup
-#	define snprintf    never_use_snprintf__use_pcb_snprintf
-#	define round       never_use_round__use_pcb_round
-#endif
-
-#endif /* PCB_GLOBAL_H  */
+/* ----------------------------------------------------------------------
+ * pointer to low-level copy, move and rotate functions
+ */
+typedef struct {
+	void *(*Line) (LayerTypePtr, LineTypePtr);
+	void *(*Text) (LayerTypePtr, TextTypePtr);
+	void *(*Polygon) (LayerTypePtr, PolygonTypePtr);
+	void *(*Via) (PinTypePtr);
+	void *(*Element) (ElementTypePtr);
+	void *(*ElementName) (ElementTypePtr);
+	void *(*Pin) (ElementTypePtr, PinTypePtr);
+	void *(*Pad) (ElementTypePtr, PadTypePtr);
+	void *(*LinePoint) (LayerTypePtr, LineTypePtr, PointTypePtr);
+	void *(*Point) (LayerTypePtr, PolygonTypePtr, PointTypePtr);
+	void *(*Arc) (LayerTypePtr, ArcTypePtr);
+	void *(*Rat) (RatTypePtr);
+} ObjectFunctionType, *ObjectFunctionTypePtr;

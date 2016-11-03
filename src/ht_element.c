@@ -1,5 +1,6 @@
 #include "global.h"
 #include "list_element.h"
+#include "global_element.h"
 
 #define HT(x) htep_ ## x
 #include <genht/ht.c>

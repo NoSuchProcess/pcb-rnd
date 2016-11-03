@@ -23,6 +23,7 @@
 #include "propsel.h"
 #include "compat_misc.h"
 #include "pcb-printf.h"
+#include <genht/hash.h>
 /*#define HT_INVALID_VALUE ((pcb_propval_t){PCB_PROPT_invalid, {0}})*/
 #define HT(x) htprop_ ## x
 #include <genht/ht.c>
