@@ -49,23 +49,6 @@ do { \
 } while(0) \
 
 /* ---------------------------------------------------------------------------
- * get next slot for a rubberband connection, allocates memory if necessary
- */
-RubberbandTypePtr GetRubberbandMemory(void)
-{
-	RubberbandTypePtr ptr = Crosshair.AttachedObject.Rubberband;
-
-	/* realloc new memory if necessary and clear it */
-	if (Crosshair.AttachedObject.RubberbandN >= Crosshair.AttachedObject.RubberbandMax) {
-		Crosshair.AttachedObject.RubberbandMax += STEP_RUBBERBAND;
-		ptr = (RubberbandTypePtr) realloc(ptr, Crosshair.AttachedObject.RubberbandMax * sizeof(RubberbandType));
-		Crosshair.AttachedObject.Rubberband = ptr;
-		memset(ptr + Crosshair.AttachedObject.RubberbandN, 0, STEP_RUBBERBAND * sizeof(RubberbandType));
-	}
-	return (ptr + Crosshair.AttachedObject.RubberbandN++);
-}
-
-/* ---------------------------------------------------------------------------
  * get next slot for a pin, allocates memory if necessary
  */
 PinType *GetPinMemory(ElementType * element)

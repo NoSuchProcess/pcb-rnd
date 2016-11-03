@@ -491,3 +491,21 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		break;
 	}
 }
+
+/* ---------------------------------------------------------------------------
+ * get next slot for a rubberband connection, allocates memory if necessary
+ */
+RubberbandTypePtr GetRubberbandMemory(void)
+{
+	RubberbandTypePtr ptr = Crosshair.AttachedObject.Rubberband;
+
+	/* realloc new memory if necessary and clear it */
+	if (Crosshair.AttachedObject.RubberbandN >= Crosshair.AttachedObject.RubberbandMax) {
+		Crosshair.AttachedObject.RubberbandMax += STEP_RUBBERBAND;
+		ptr = (RubberbandTypePtr) realloc(ptr, Crosshair.AttachedObject.RubberbandMax * sizeof(RubberbandType));
+		Crosshair.AttachedObject.Rubberband = ptr;
+		memset(ptr + Crosshair.AttachedObject.RubberbandN, 0, STEP_RUBBERBAND * sizeof(RubberbandType));
+	}
+	return (ptr + Crosshair.AttachedObject.RubberbandN++);
+}
+

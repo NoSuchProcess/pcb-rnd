@@ -54,7 +54,6 @@
  * some memory types
  */
 
-RubberbandTypePtr GetRubberbandMemory(void);
 PinTypePtr GetPinMemory(ElementTypePtr);
 PadTypePtr GetPadMemory(ElementTypePtr);
 PinTypePtr GetViaMemory(DataTypePtr);
@@ -68,6 +67,7 @@ pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr);
 ElementTypePtr GetElementMemory(DataTypePtr);
 void FreePolygonMemory(PolygonTypePtr);
 void FreeElementMemory(ElementTypePtr);
+
 char *StripWhiteSpaceAndDup(const char *);
 
 void RemoveFreeArc(ArcType * data);

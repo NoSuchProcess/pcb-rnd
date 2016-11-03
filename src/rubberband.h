@@ -45,5 +45,6 @@ typedef struct {								/* rubberband lines for element moves */
 
 void LookupRubberbandLines(int, void *, void *, void *);
 void LookupRatLines(int, void *, void *, void *);
+RubberbandTypePtr GetRubberbandMemory(void);
 
 #endif
