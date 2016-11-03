@@ -81,4 +81,18 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 void FreeLibraryMemory(LibraryTypePtr);
 void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx);
 
+#define MENU_LOOP(top)	do {	\
+	pcb_cardinal_t	l;			\
+	LibraryMenuTypePtr menu;		\
+	for (l = (top)->MenuN-1; l != -1; l--)	\
+	{					\
+		menu = &(top)->Menu[l]
+
+#define ENTRY_LOOP(top) do	{	\
+	pcb_cardinal_t	n;			\
+	LibraryEntryTypePtr entry;		\
+	for (n = (top)->EntryN-1; n != -1; n--)	\
+	{					\
+		entry = &(top)->Entry[n]
+
 #endif

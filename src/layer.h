@@ -124,6 +124,29 @@ char *LayerGroupsToString(LayerGroupTypePtr);
 
 #define LAYER_IS_OUTLINE(idx) (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[idx].Name, "outline") == 0)
 
+#define GROUP_LOOP(data, group) do { 	\
+	pcb_cardinal_t entry; \
+        for (entry = 0; entry < ((PCBTypePtr)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
+        { \
+		LayerTypePtr layer;		\
+		pcb_cardinal_t number; 		\
+		number = ((PCBTypePtr)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
+		if (number >= max_copper_layer)	\
+		  continue;			\
+		layer = &data->Layer[number];
+
+#define LAYER_LOOP(data, ml) do { \
+        pcb_cardinal_t n; \
+	for (n = 0; n < ml; n++) \
+	{ \
+	   LayerTypePtr layer = (&data->Layer[(n)]);
+
+
+#define LAYER_IS_EMPTY(layer) LAYER_IS_EMPTY_((layer))
+#define LAYER_IS_EMPTY_(layer) \
+ ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (polylist_length(&layer->Polygon) == 0) && (textlist_length(&layer->Text) == 0))
+
+
 /************ NEW API - new code should use these **************/
 
 /* Layer type bitfield */

@@ -346,49 +346,8 @@
 		if (layer->On)				\
 			POLYGON_LOOP(layer)
 
-#define POINTER_LOOP(top) do	{	\
-	pcb_cardinal_t	n;			\
-	void	**ptr;				\
-	for (n = (top)->PtrN-1; n != -1; n--)	\
-	{					\
-		ptr = &(top)->Ptr[n]
-
-#define MENU_LOOP(top)	do {	\
-	pcb_cardinal_t	l;			\
-	LibraryMenuTypePtr menu;		\
-	for (l = (top)->MenuN-1; l != -1; l--)	\
-	{					\
-		menu = &(top)->Menu[l]
-
-#define ENTRY_LOOP(top) do	{	\
-	pcb_cardinal_t	n;			\
-	LibraryEntryTypePtr entry;		\
-	for (n = (top)->EntryN-1; n != -1; n--)	\
-	{					\
-		entry = &(top)->Entry[n]
-
-#define GROUP_LOOP(data, group) do { 	\
-	pcb_cardinal_t entry; \
-        for (entry = 0; entry < ((PCBTypePtr)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
-        { \
-		LayerTypePtr layer;		\
-		pcb_cardinal_t number; 		\
-		number = ((PCBTypePtr)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
-		if (number >= max_copper_layer)	\
-		  continue;			\
-		layer = &data->Layer[number];
-
-#define LAYER_LOOP(data, ml) do { \
-        pcb_cardinal_t n; \
-	for (n = 0; n < ml; n++) \
-	{ \
-	   LayerTypePtr layer = (&data->Layer[(n)]);
-
-
-#define LAYER_IS_EMPTY(layer) LAYER_IS_EMPTY_((layer))
-#define LAYER_IS_EMPTY_(layer) \
- ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (polylist_length(&layer->Polygon) == 0) && (textlist_length(&layer->Text) == 0))
-#endif
 
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
+
+#endif

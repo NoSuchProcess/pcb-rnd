@@ -37,3 +37,9 @@ void **GetPointerMemory(PointerListTypePtr);
 void FreePointerListMemory(PointerListTypePtr);
 
 
+#define POINTER_LOOP(top) do	{	\
+	pcb_cardinal_t	n;			\
+	void	**ptr;				\
+	for (n = (top)->PtrN-1; n != -1; n--)	\
+	{					\
+		ptr = &(top)->Ptr[n]
