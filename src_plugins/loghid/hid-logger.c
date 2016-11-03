@@ -1,6 +1,7 @@
 /*
  * a HID mostly for debugging.
  */
+#include "config.h"
 #include "hid-logger.h"
 #include "pcb-printf.h"
 #include "global_objs.h"

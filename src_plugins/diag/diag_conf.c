@@ -20,6 +20,7 @@
  *
  */
 
+#include "config.h"
 #include "conf.h"
 
 void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefix)

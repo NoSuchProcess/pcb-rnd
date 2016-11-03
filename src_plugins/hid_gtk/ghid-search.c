@@ -27,6 +27,7 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <genlist/gendlist.h>
+#include "config.h"
 #include "gui.h"
 #include "create.h"
 #include "compat_misc.h"

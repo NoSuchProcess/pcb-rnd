@@ -23,6 +23,7 @@
 /* Specify default output formatting style to be more compact than 
    the canonical lihata export style */
 
+#include "config.h"
 #include "write_style.h"
 
 #define PB_BEGIN     {"*", 2, 2}

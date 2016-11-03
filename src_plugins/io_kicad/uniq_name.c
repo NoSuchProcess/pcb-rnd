@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <genht/hash.h>
+#include "config.h"
 #include "uniq_name.h"
 #include "compat_misc.h"
 

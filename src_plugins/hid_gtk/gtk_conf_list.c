@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
+#include "config.h"
 #include "gtk_conf_list.h"
 #include "compat_misc.h"
 

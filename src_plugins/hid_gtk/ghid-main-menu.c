@@ -9,6 +9,7 @@
 #include <gtk/gtk.h>
 #include <liblihata/tree.h>
 
+#include "config.h"
 #include "gtkhid.h"
 #include "gui.h"
 #include "pcb-printf.h"

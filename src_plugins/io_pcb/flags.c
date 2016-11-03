@@ -24,6 +24,7 @@
  *
  */
 
+#include "config.h"
 #include "flag_str.h"
 #include "flags.h"
 #include "const.h"

@@ -53,6 +53,7 @@
  *
  */
 
+#include "config.h"
 #include "toporouter.h"
 #include "pcb-printf.h"
 #include "compat_nls.h"

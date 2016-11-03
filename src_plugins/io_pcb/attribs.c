@@ -20,6 +20,7 @@
  *
  */
 
+#include "config.h"
 #include "conf.h"
 #include "board.h"
 #include "misc.h"

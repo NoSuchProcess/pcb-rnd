@@ -10,6 +10,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include "config.h"
 #include "gtkhid.h"
 #include "gui.h"
 #include "compat_nls.h"

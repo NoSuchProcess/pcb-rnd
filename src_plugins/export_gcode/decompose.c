@@ -9,6 +9,7 @@
 #include <string.h>
 #include <limits.h>
 
+#include "config.h"
 #include "potracelib.h"
 #include "curve.h"
 #include "lists.h"

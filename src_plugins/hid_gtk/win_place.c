@@ -20,6 +20,7 @@
  *
  */
 
+#include "config.h"
 #include "win_place.h"
 
 #define CONF_PREFIX "plugins/hid_gtk/window_geometry/"

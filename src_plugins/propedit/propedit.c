@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include "plugins.h"
+#include "config.h"
 #include "props.h"
 #include "propsel.h"
 #include "hid_actions.h"

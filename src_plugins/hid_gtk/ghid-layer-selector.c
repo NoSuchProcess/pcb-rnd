@@ -11,6 +11,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "config.h"
 #include "gtkhid.h"
 #include "gui.h"
 #include "pcb-printf.h"

@@ -29,6 +29,7 @@
 #include <gensexpr/gsxl.h>
 #include <genht/htsi.h>
 #include "compat_misc.h"
+#include "config.h"
 #include "board.h"
 #include "plug_io.h"
 #include "error.h"
