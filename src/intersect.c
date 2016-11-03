@@ -35,6 +35,7 @@
 #include <assert.h>
 
 #include "intersect.h"
+#include "box.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

@@ -66,23 +66,6 @@ RubberbandTypePtr GetRubberbandMemory(void)
 }
 
 /* ---------------------------------------------------------------------------
- * get next slot for a box, allocates memory if necessary
- */
-BoxTypePtr GetBoxMemory(BoxListTypePtr Boxes)
-{
-	BoxTypePtr box = Boxes->Box;
-
-	/* realloc new memory if necessary and clear it */
-	if (Boxes->BoxN >= Boxes->BoxMax) {
-		Boxes->BoxMax = STEP_POINT + (2 * Boxes->BoxMax);
-		box = (BoxTypePtr) realloc(box, Boxes->BoxMax * sizeof(BoxType));
-		Boxes->Box = box;
-		memset(box + Boxes->BoxN, 0, (Boxes->BoxMax - Boxes->BoxN) * sizeof(BoxType));
-	}
-	return (box + Boxes->BoxN++);
-}
-
-/* ---------------------------------------------------------------------------
  * get next slot for a pin, allocates memory if necessary
  */
 PinType *GetPinMemory(ElementType * element)
@@ -354,17 +337,6 @@ void FreePolygonMemory(PolygonType * polygon)
 	poly_FreeContours(&polygon->NoHoles);
 
 	reset_obj_mem(PolygonType, polygon);
-}
-
-/* ---------------------------------------------------------------------------
- * frees memory used by a box list
- */
-void FreeBoxListMemory(BoxListTypePtr Boxlist)
-{
-	if (Boxlist) {
-		free(Boxlist->Box);
-		memset(Boxlist, 0, sizeof(BoxListType));
-	}
 }
 
 /* ---------------------------------------------------------------------------

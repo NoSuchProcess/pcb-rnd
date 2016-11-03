@@ -88,13 +88,6 @@ typedef struct {
 	void *(*Rat) (RatTypePtr);
 } ObjectFunctionType, *ObjectFunctionTypePtr;
 
-typedef struct {
-	pcb_cardinal_t BoxN,								/* the number of boxes contained */
-	  BoxMax;											/* max boxes from malloc */
-	BoxTypePtr Box;
-
-} BoxListType, *BoxListTypePtr;
-
 /* ---------------------------------------------------------------------------
  * Macros called by various action routines to show usage or to report
  * a syntax error and fail

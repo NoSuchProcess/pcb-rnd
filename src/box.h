@@ -37,6 +37,12 @@
 #include <assert.h>
 #include "global.h"
 
+struct pcb_boxlist_s {
+	pcb_cardinal_t BoxN,								/* the number of boxes contained */
+	  BoxMax;											/* max boxes from malloc */
+	BoxTypePtr Box;
+};
+
 #include "misc_util.h"
 
 typedef enum { NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3, NE = 4, SE = 5, SW = 6, NW = 7, ALL = 8
@@ -202,5 +208,8 @@ static inline PCB_FUNC_UNUSED double dist2_to_box(const CheapPointType * p, cons
 	CheapPointType r = closest_point_in_box(p, b);
 	return Distance(r.X, r.Y, p->X, p->Y);
 }
+
+BoxTypePtr GetBoxMemory(BoxListTypePtr);
+void FreeBoxListMemory(BoxListTypePtr);
 
 #endif /* __BOX_H_INCLUDED__ */

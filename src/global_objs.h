@@ -34,6 +34,12 @@
 #include "global_typedefs.h"
 #include "polyarea.h"
 
+struct pcb_box_s {								/* a bounding box */
+	Coord X1, Y1;									/* upper left */
+	Coord X2, Y2;									/* and lower right corner */
+};
+
+
 /* ---------------------------------------------------------------------------
  * Do not change the following definitions even if they're not very
  * nice.  It allows us to have functions act on these "base types" and
@@ -58,11 +64,6 @@
                         Clearance;      \
 	PointType	Point1,		\
 			Point2
-
-struct BoxType {								/* a bounding box */
-	Coord X1, Y1;									/* upper left */
-	Coord X2, Y2;									/* and lower right corner */
-};
 
 /* All on-pcb objects (elements, lines, pads, vias, rats, etc) are
    based on this. */

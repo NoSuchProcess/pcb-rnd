@@ -36,9 +36,9 @@ typedef struct pcb_layer_s LayerType, *LayerTypePtr;
 typedef struct pcb_buffer_s BufferType, *BufferTypePtr;
 typedef struct pcb_net_s NetType, *NetTypePtr;
 typedef struct pcb_rat_s  ConnectionType, *ConnectionTypePtr;
+typedef struct pcb_box_s BoxType, *BoxTypePtr;
+typedef struct pcb_boxlist_s  BoxListType, *BoxListTypePtr;
 
-
-typedef struct BoxType BoxType, *BoxTypePtr;
 typedef struct polygon_st PolygonType, *PolygonTypePtr;
 typedef struct pad_st PadType, *PadTypePtr;
 typedef struct pin_st PinType, *PinTypePtr, **PinTypeHandle;

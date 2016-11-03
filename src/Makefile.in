@@ -20,6 +20,7 @@ put /local/pcb/OBJS [@
 	action_helper.o
 	action_act.o
 	attrib.o
+	box.o
 	buffer.o
 	change.o
 	change_act.o
