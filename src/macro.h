@@ -389,3 +389,6 @@
 #define LAYER_IS_EMPTY_(layer) \
  ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (polylist_length(&layer->Polygon) == 0) && (textlist_length(&layer->Text) == 0))
 #endif
+
+#define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))

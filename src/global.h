@@ -36,9 +36,6 @@
 
 #include "vtroutestyle.h"
 
-#define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
-#define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
-
 /* Make sure to catch usage of non-portable functions in debug mode */
 #ifndef NDEBUG
 #	undef strdup
