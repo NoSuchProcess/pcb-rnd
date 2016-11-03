@@ -31,6 +31,7 @@
 
 #include "global.h"
 
+#include "const.h"
 #include "create.h"
 #include "data.h"
 #include "draw.h"

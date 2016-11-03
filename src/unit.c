@@ -25,6 +25,7 @@
  *
  */
 #include "config.h"
+#include "const.h"
 #include <stdlib.h>
 #include <ctype.h>
 #include <locale.h>

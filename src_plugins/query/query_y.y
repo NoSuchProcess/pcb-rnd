@@ -24,6 +24,7 @@
 /* Query language - compiler: grammar */
 
 #include <assert.h>
+#include "const.h"
 #include "global.h"
 #include "unit.h"
 #include "query.h"

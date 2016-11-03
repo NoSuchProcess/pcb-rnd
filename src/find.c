@@ -59,6 +59,7 @@
 #include <setjmp.h>
 #include <assert.h>
 
+#include "const.h"
 #include "conf_core.h"
 #include "data.h"
 #include "draw.h"

@@ -27,6 +27,7 @@
 #include "query.h"
 #include "query_y.h"
 #include "query_exec.h"
+#include "const.h"
 #include "set.h"
 #include "draw.h"
 #include "select.h"

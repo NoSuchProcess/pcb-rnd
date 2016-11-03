@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "const.h"
 #include "global.h"
 #include "flag_str.h"
 #include "compat_misc.h"

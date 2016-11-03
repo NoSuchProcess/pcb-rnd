@@ -31,8 +31,6 @@
 
 #include "config.h"
 
-#include "const.h"
-
 #include "vtroutestyle.h"
 
 /* Make sure to catch usage of non-portable functions in debug mode */

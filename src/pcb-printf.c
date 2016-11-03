@@ -34,6 +34,7 @@
 
 #include <locale.h>
 #include <ctype.h>
+#include "const.h"
 #include "config.h"
 #include "global.h"
 
