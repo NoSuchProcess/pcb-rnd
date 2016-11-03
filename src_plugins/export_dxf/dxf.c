@@ -181,6 +181,7 @@
 #include <unistd.h>
 
 #include "config.h"
+#include "math_helper.h"
 #include "macro.h"
 #include "board.h"
 #include "config.h"

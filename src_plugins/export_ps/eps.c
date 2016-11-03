@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "config.h"
+#include "math_helper.h"
 #include "board.h"
 #include "data.h"
 #include "layer.h"

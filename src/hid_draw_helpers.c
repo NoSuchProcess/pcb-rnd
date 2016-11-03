@@ -1,4 +1,5 @@
 #include "const.h"
+#include "math_helper.h"
 #include "global_objs.h"
 #include "hid.h"
 #include "polygon.h"

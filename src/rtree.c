@@ -41,6 +41,7 @@
 #include <assert.h>
 #include <setjmp.h>
 
+#include "math_helper.h"
 #include "compat_cc.h"
 #include "rtree.h"
 #include "global_objs.h"

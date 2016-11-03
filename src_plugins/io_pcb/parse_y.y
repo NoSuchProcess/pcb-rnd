@@ -60,12 +60,6 @@
 #include "route_style.h"
 #include "compat_misc.h"
 
-#ifdef HAVE_LIBDMALLOC
-# include <dmalloc.h> /* see http://dmalloc.com */
-#endif
-
-
-
 static	LayerTypePtr	Layer;
 static	PolygonTypePtr	Polygon;
 static	SymbolTypePtr	Symbol;

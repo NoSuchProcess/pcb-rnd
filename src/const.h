@@ -39,32 +39,6 @@
 #define	SOLDER_LAYER		0
 #define	COMPONENT_LAYER		1
 
-/* ---------------------------------------------------------------------------
- * some math constants
- */
-#ifndef	M_PI
-#define	M_PI			3.14159265358979323846
-#endif
-#ifndef M_SQRT1_2
-#define M_SQRT1_2 		0.707106781	/* 1/sqrt(2) */
-#endif
-#define	PCB_M180			(M_PI/180.0)
-#define PCB_RAD_TO_DEG		(180.0/M_PI)
-#define	PCB_TAN_22_5_DEGREE_2	0.207106781	/* 0.5*tan(22.5) */
-#define PCB_COS_22_5_DEGREE		0.923879533	/* cos(22.5) */
-#define	PCB_TAN_30_DEGREE		0.577350269	/* tan(30) */
-#define	PCB_TAN_60_DEGREE		1.732050808	/* tan(60) */
-#define PCB_LN_2_OVER_2		0.346573590
-
-/* PCB/physical unit conversions */
-#define PCB_COORD_TO_MIL(n)	((n) / 25400.0)
-#define PCB_MIL_TO_COORD(n)	((n) * 25400.0)
-#define PCB_COORD_TO_MM(n)	((n) / 1000000.0)
-#define PCB_MM_TO_COORD(n)	((n) * 1000000.0)
-#define PCB_COORD_TO_INCH(n)	(PCB_COORD_TO_MIL(n) / 1000.0)
-#define PCB_INCH_TO_COORD(n)	(PCB_MIL_TO_COORD(n) * 1000.0)
-#define PCB_COORD_TO_DECIMIL(n)    (PCB_COORD_TO_MIL(n) * 10.0)
-#define PCB_DECIMIL_TO_COORD(n)    (PCB_MIL_TO_COORD(n) / 10.0)
 
 /* These need to be carefully written to avoid overflows, and return
    a Coord type.  */

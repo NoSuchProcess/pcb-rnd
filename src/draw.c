@@ -31,6 +31,7 @@
 #include "config.h"
 
 #include "conf_core.h"
+#include "math_helper.h"
 #include "board.h"
 #include "data.h"
 #include "draw.h"

@@ -55,11 +55,11 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 #include <setjmp.h>
 #include <assert.h>
 
 #include "const.h"
+#include "math_helper.h"
 #include "conf_core.h"
 #include "data.h"
 #include "draw.h"

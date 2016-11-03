@@ -36,6 +36,7 @@
 #include "conf_core.h"
 
 #include "board.h"
+#include "math_helper.h"
 #include "create.h"
 #include "data.h"
 #include "error.h"

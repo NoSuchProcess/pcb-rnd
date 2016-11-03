@@ -43,10 +43,10 @@
 #include	<stdlib.h>
 #include	<stdio.h>
 #include	<setjmp.h>
-#include	<math.h>
 #include	<string.h>
 
 #include "rtree.h"
+#include "math_helper.h"
 #include "heap.h"
 #include "compat_cc.h"
 #include "pcb-printf.h"

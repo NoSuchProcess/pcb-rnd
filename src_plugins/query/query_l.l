@@ -23,7 +23,6 @@
 
 /* Query language - compiler: lexical analyzer */
 
-#include "global.h"
 #include "unit.h"
 #include "query.h"
 #include "query_y.h"

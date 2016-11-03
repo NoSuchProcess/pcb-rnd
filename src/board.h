@@ -125,4 +125,7 @@ void FreePCBMemory(PCBTypePtr);
 
 extern PCBTypePtr PCB;
 
+#define	SWAP_X(x)		(SWAP_SIGN_X(x))
+#define	SWAP_Y(y)		(PCB->MaxHeight +SWAP_SIGN_Y(y))
+
 #endif

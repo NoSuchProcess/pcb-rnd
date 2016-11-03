@@ -73,7 +73,7 @@ extern int qry_debug;
 
 union YYSTYPE
 {
-#line 96 "query_y.y" /* yacc.c:1909  */
+#line 95 "query_y.y" /* yacc.c:1909  */
 
 	char *s;
 	Coord c;

@@ -35,6 +35,7 @@
 #define PCB_BOX_H
 
 #include <assert.h>
+#include "math_helper.h"
 #include "global_typedefs.h"
 #include "global_objs.h"
 #include "config.h"

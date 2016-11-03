@@ -36,7 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
+#include "math_helper.h"
 #include "vector.h"
 #include "macro.h"
 

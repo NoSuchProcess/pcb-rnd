@@ -31,7 +31,6 @@
 #include "conf_core.h"
 
 #include <stdlib.h>
-#include <math.h>
 
 #include "action_helper.h"
 #include "buffer.h"
@@ -55,6 +54,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "layer.h"
+#include "math_helper.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

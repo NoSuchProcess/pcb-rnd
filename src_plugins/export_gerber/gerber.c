@@ -11,6 +11,7 @@
 #include <time.h>
 
 #include "config.h"
+#include "math_helper.h"
 #include "board.h"
 #include "config.h"
 #include "data.h"

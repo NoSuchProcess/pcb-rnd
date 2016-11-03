@@ -25,7 +25,6 @@
 
 #include <assert.h>
 #include "const.h"
-#include "global.h"
 #include "unit.h"
 #include "query.h"
 #include "query_l.h"

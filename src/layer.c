@@ -26,6 +26,7 @@
  */
 
 #include "config.h"
+#include "math_helper.h"
 #include "global_objs.h"
 #include "board.h"
 #include "data.h"

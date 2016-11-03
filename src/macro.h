@@ -39,27 +39,6 @@
 #define	SWAP_IDENT			conf_core.editor.show_solder_side
 #endif
 
-#define	SWAP_SIGN_X(x)		(x)
-#define	SWAP_SIGN_Y(y)		(-(y))
-#define	SWAP_ANGLE(a)		(-(a))
-#define	SWAP_DELTA(d)		(-(d))
-#define	SWAP_X(x)		(SWAP_SIGN_X(x))
-#define	SWAP_Y(y)		(PCB->MaxHeight +SWAP_SIGN_Y(y))
-
-/* ---------------------------------------------------------------------------
- * misc macros, some might already be defined by <limits.h>
- */
-#ifndef	MIN
-#define	MIN(a,b)		((a) < (b) ? (a) : (b))
-#define	MAX(a,b)		((a) > (b) ? (a) : (b))
-#endif
-#ifndef SGN
-#define SGN(a)			((a) >0 ? 1 : ((a) == 0 ? 0 : -1))
-#endif
-#define SGNZ(a)                 ((a) >=0 ? 1 : -1)
-#define MAKEMIN(a,b)            if ((b) < (a)) (a) = (b)
-#define MAKEMAX(a,b)            if ((b) > (a)) (a) = (b)
-
 #define	ENTRIES(x)		(sizeof((x))/sizeof((x)[0]))
 #define	UNKNOWN(a)		((a) && *(a) ? (a) : "(unknown)")
 #define NSTRCMP(a, b)		((a) ? ((b) ? strcmp((a),(b)) : 1) : -1)
@@ -67,7 +46,6 @@
 #define	EMPTY_STRING_P(a)	((a) ? (a)[0]==0 : 1)
 #define XOR(a,b)		(((a) && !(b)) || (!(a) && (b)))
 #define SQUARE(x)		((float) (x) * (float) (x))
-#define TO_RADIANS(degrees)	(PCB_M180 * (degrees))
 
 /* ---------------------------------------------------------------------------
  * returns the object ID
@@ -346,8 +324,5 @@
 		if (layer->On)				\
 			POLYGON_LOOP(layer)
 
-
-#define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
-#define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
 
 #endif

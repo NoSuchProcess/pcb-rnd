@@ -30,6 +30,7 @@
 
 #include "config.h"
 #include "conf_core.h"
+#include "math_helper.h"
 
 #include "create.h"
 #include "board.h"

@@ -33,6 +33,7 @@
 #include <math.h>
 
 #include "report.h"
+#include "math_helper.h"
 #include "crosshair.h"
 #include "board.h"
 #include "data.h"

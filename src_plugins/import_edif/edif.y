@@ -26,7 +26,7 @@
 
 #include <ctype.h>
 
-#include "global.h"
+#include "math_helper.h"
 #include "board.h"
 #include "data.h"
 #include "library.h"

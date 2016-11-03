@@ -26,6 +26,7 @@
 #include "conf_core.h"
 
 #include "config.h"
+#include "math_helper.h"
 #include "crosshair.h"
 #include "data.h"
 #include "misc.h"

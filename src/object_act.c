@@ -28,6 +28,7 @@
 #include "conf_core.h"
 
 #include "data.h"
+#include "math_helper.h"
 #include "board.h"
 #include "action_helper.h"
 #include "change.h"

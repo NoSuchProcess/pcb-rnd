@@ -38,6 +38,7 @@
 #include <time.h>
 
 #include "board.h"
+#include "math_helper.h"
 #include "config.h"
 #include "config.h"
 #include "data.h"

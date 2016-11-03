@@ -315,7 +315,7 @@ extern int qry_lex (void);
 #undef YY_DECL
 #endif
 
-#line 116 "query_l.l"
+#line 115 "query_l.l"
 
 
 #line 322 "query_l.h"

@@ -120,5 +120,17 @@ double unit_to_factor(const Unit * unit);
 Coord unit_to_coord(const Unit *, double);
 Increments *get_increments_struct(const char *suffix);
 
+/* PCB/physical unit conversions */
+#define PCB_COORD_TO_MIL(n)	((n) / 25400.0)
+#define PCB_MIL_TO_COORD(n)	((n) * 25400.0)
+#define PCB_COORD_TO_MM(n)	((n) / 1000000.0)
+#define PCB_MM_TO_COORD(n)	((n) * 1000000.0)
+#define PCB_COORD_TO_INCH(n)	(PCB_COORD_TO_MIL(n) / 1000.0)
+#define PCB_INCH_TO_COORD(n)	(PCB_MIL_TO_COORD(n) * 1000.0)
+#define PCB_COORD_TO_DECIMIL(n)    (PCB_COORD_TO_MIL(n) * 10.0)
+#define PCB_DECIMIL_TO_COORD(n)    (PCB_MIL_TO_COORD(n) / 10.0)
+
+#define	SWAP_ANGLE(a)		(-(a))
+#define	SWAP_DELTA(d)		(-(d))
 
 #endif

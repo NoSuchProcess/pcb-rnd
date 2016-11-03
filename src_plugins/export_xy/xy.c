@@ -8,6 +8,7 @@
 #include <time.h>
 
 #include "config.h"
+#include "math_helper.h"
 #include "board.h"
 #include "data.h"
 #include "error.h"
