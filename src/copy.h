@@ -29,7 +29,7 @@
 #ifndef	PCB_COPY_H
 #define	PCB_COPY_H
 
-#include "global.h"
+#include "config.h"
 
 /* ---------------------------------------------------------------------------
  * some defines

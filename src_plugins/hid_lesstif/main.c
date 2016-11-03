@@ -18,7 +18,7 @@
 #include <unistd.h>
 #endif
 
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "action_helper.h"
 #include "crosshair.h"

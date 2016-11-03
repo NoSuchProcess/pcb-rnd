@@ -35,7 +35,7 @@
 #include "dbus-pcbmain.h"
 #include "dbus-introspect.h"
 #include "board.h"
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "plugins.h"
 #include "hid_actions.h"

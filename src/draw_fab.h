@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 
-#include "global.h"
+#include "config.h"
 
 int DrawFab_overhang(void);
 void DrawFab(hidGC gc);

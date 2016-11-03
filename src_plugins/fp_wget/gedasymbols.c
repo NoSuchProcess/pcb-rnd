@@ -4,7 +4,7 @@
 #include <genvector/gds_char.h>
 #include <genht/htsp.h>
 #include <genht/hash.h>
-#include "global.h"
+#include "config.h"
 #include "wget_common.h"
 #include "gedasymbols.h"
 #include "plugins.h"

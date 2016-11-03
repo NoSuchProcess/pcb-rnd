@@ -1,4 +1,4 @@
-#include "global.h"
+#include "config.h"
 #include "gedasymbols.h"
 #include "plugins.h"
 

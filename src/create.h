@@ -29,7 +29,7 @@
 #ifndef	PCB_CREATE_H
 #define	PCB_CREATE_H
 
-#include "global.h"
+#include "config.h"
 #include "rubberband.h"
 #include "library.h"
 

@@ -29,7 +29,7 @@
 #ifndef	PCB_CHANGE_H
 #define	PCB_CHANGE_H
 
-#include "global.h"
+#include "config.h"
 
 /* ---------------------------------------------------------------------------
  * some defines

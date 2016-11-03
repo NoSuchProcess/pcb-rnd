@@ -53,7 +53,7 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "global.h"
+#include "config.h"
 
 #include <assert.h>
 #include <setjmp.h>

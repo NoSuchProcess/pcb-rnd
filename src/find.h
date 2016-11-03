@@ -30,7 +30,7 @@
 #define	PCB_FIND_H
 
 #include <stdio.h>							/* needed to define 'FILE *' */
-#include "global.h"
+#include "config.h"
 
 typedef enum {
 	FCT_COPPER = 1,								/* copper connection */

@@ -29,7 +29,7 @@
 #ifndef	PCB_DRAW_H
 #define	PCB_DRAW_H
 
-#include "global.h"
+#include "config.h"
 #include "hid.h"
 
 /* ---------------------------------------------------------------------------

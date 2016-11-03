@@ -29,7 +29,7 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "global.h"
+#include "config.h"
 
 #include "gui.h"
 #include "win_place.h"

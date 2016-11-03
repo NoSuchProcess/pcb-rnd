@@ -680,7 +680,7 @@ char *pcb_text;
 #include <unistd.h>
 #endif
 
-#include "global.h"
+#include "config.h"
 #include "flags.h"
 
 #ifdef HAVE_LIBDMALLOC
@@ -690,7 +690,7 @@ char *pcb_text;
 
 
 
-#include "global.h"
+#include "config.h"
 #include "crosshair.h"
 #include "data.h"
 #include "error.h"

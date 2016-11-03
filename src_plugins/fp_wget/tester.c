@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "global.h"
+#include "config.h"
 #include "gedasymbols.h"
 
 #undef strdup

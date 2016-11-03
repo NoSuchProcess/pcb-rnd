@@ -24,7 +24,7 @@
 
 #include "config.h"
 #include "board.h"
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "hid.h"
 #include "misc.h"

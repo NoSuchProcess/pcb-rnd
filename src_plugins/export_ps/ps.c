@@ -11,7 +11,7 @@
 #include <assert.h>							/* not used */
 #include <time.h>
 
-#include "global.h"
+#include "config.h"
 #include "board.h"
 #include "data.h"
 #include "misc.h"

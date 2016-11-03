@@ -38,7 +38,7 @@
 #include <stdarg.h>
 #include <fcntl.h>
 
-#include "global.h"
+#include "config.h"
 
 #include "data.h"
 #include "error.h"

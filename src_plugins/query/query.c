@@ -23,7 +23,7 @@
 /* Query language - common code for the compiled tree and plugin administration */
 
 #include "config.h"
-#include "global.h"
+#include "config.h"
 #include <genht/hash.h>
 #include <genht/htsi.h>
 #include "conf.h"

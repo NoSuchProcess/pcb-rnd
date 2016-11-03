@@ -23,7 +23,7 @@
  *
  */
 
-#include "global.h"
+#include "config.h"
 #include "board.h"
 #include "data.h"
 #include "config.h"

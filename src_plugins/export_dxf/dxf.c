@@ -183,7 +183,7 @@
 #include "config.h"
 #include "macro.h"
 #include "board.h"
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "misc.h"
 #include "error.h"

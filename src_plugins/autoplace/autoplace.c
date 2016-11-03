@@ -40,7 +40,7 @@
 #include <memory.h>
 #include <stdlib.h>
 
-#include "global.h"
+#include "config.h"
 #include "board.h"
 
 #include "autoplace.h"

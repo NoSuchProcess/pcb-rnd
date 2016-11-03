@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "global.h"
+#include "config.h"
 #include "hid.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

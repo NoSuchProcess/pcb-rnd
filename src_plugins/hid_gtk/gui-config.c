@@ -34,7 +34,7 @@
 #include "hid.h"
 #include "gtkhid.h"
 
-#include "global.h"
+#include "config.h"
 #include "action_helper.h"
 #include "change.h"
 #include "plug_io.h"

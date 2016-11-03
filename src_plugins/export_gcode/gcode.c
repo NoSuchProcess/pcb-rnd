@@ -44,7 +44,7 @@
 
 #include <time.h>
 
-#include "global.h"
+#include "config.h"
 #include "board.h"
 #include "error.h"
 #include "data.h"

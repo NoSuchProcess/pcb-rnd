@@ -10,7 +10,7 @@
 
 
 #include "compat_misc.h"
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "crosshair.h"
 #include "layer.h"

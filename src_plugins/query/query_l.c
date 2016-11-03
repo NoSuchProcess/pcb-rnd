@@ -615,7 +615,7 @@ char *qry_text;
 
 /* Query language - compiler: lexical analyzer */
 
-#include "global.h"
+#include "config.h"
 #include "unit.h"
 #include "query.h"
 #include "query_y.h"

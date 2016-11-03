@@ -23,7 +23,7 @@
 /* Query language - access to / extract core data */
 
 #include <math.h>
-#include "global.h"
+#include "config.h"
 #include "board.h"
 #include "data.h"
 #include "query_access.h"

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "global.h"
+#include "config.h"
 #include "board.h"
 #include "hid.h"
 #include "data.h"

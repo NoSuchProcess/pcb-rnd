@@ -42,7 +42,7 @@
 #include "conf_core.h"
 
 #include <locale.h>
-#include "global.h"
+#include "config.h"
 
 #include <dirent.h>
 #include <time.h>

@@ -38,7 +38,7 @@
 
 /* mtspace data structures are built on r-trees. */
 
-#include "global.h"
+#include "config.h"
 #include "vector.h"							/* for vector_t in mtspace_query_rect prototype */
 
 typedef struct mtspace mtspace_t;

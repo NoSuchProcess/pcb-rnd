@@ -28,7 +28,7 @@
 #ifndef PCB_PLUG_IMPORT_H
 #define PCB_PLUG_IMPORT_H
 
-#include "global.h"
+#include "config.h"
 #include "conf.h"
 
 /**************************** API definition *********************************/

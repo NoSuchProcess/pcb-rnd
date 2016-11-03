@@ -28,7 +28,7 @@
 #include "config.h"
 #include <stroke.h>
 #include "board.h"
-#include "global.h"
+#include "config.h"
 #include "conf.h"
 #include "conf_core.h"
 #include "data.h"

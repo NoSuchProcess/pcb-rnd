@@ -30,7 +30,7 @@
 #include <dbus/dbus.h>
 #include <stdio.h>
 
-#include "global.h"
+#include "config.h"
 #include "dbus-pcbmain.h"
 #include "hid.h"
 

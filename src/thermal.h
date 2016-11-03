@@ -37,7 +37,7 @@
 #define	PCB_THERMAL_H
 
 #include <stdlib.h>
-#include "global.h"
+#include "config.h"
 #include "mymem.h"
 
 POLYAREA *ThermPoly(PCBTypePtr, PinTypePtr, pcb_cardinal_t);

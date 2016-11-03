@@ -33,7 +33,7 @@
 #include "config.h"
 
 #include <stdlib.h>
-#include "global.h"
+#include "config.h"
 #include "rubberband.h"
 
 /* ---------------------------------------------------------------------------

@@ -31,7 +31,7 @@
 #ifndef	PCB_LEX_H
 #define	PCB_LEX_H
 
-#include "global.h"
+#include "config.h"
 #include "plug_io.h"
 
 int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest);

@@ -29,7 +29,7 @@
 #ifndef	PCB_REMOVE_H
 #define	PCB_REMOVE_H
 
-#include "global.h"
+#include "config.h"
 
 /* ---------------------------------------------------------------------------
  * some constants

@@ -27,7 +27,7 @@
 #include <math.h>
 #include "compat_misc.h"
 #include "compat_inc.h"
-#include "global.h"
+#include "config.h"
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif

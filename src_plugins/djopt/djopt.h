@@ -27,7 +27,7 @@
 #ifndef	PCB_DJOPT_H
 #define	PCB_DJOPT_H
 
-#include "global.h"
+#include "config.h"
 
 int ActionDJopt(int, char **, Coord, Coord);
 int djopt_set_auto_only(int, char **, Coord, Coord);

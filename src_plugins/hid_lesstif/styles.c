@@ -9,7 +9,7 @@
 #include <string.h>
 
 #include "compat_misc.h"
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "set.h"
 #include "misc.h"

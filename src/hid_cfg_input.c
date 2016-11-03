@@ -30,7 +30,7 @@
 #include <genht/hash.h>
 #include <genvector/gds_char.h>
 
-#include "global.h"
+#include "config.h"
 #include "hid.h"
 #include "hid_cfg.h"
 #include "hid_cfg_input.h"

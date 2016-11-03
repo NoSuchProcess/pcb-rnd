@@ -102,7 +102,7 @@
 
 #include "board.h"
 #include "config.h"
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "hid.h"
 #include "misc.h"

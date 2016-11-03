@@ -23,7 +23,7 @@
 #include "config.h"
 
 #include "compat_dl.h"
-#include "global.h"
+#include "config.h"
 
 #ifdef USE_LOADLIBRARY
 #include <windows.h>

@@ -30,7 +30,7 @@
 #define	PCB_MISC_H
 
 #include <stdlib.h>
-#include "global.h"
+#include "config.h"
 #include <genvector/gds_char.h>
 #include "mymem.h"
 

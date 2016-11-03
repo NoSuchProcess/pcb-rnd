@@ -31,7 +31,7 @@
 #include "conf_core.h"
 
 #include <locale.h>
-#include "global.h"
+#include "config.h"
 
 #include <time.h>
 

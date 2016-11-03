@@ -24,7 +24,7 @@
    A document is built for the merge-save. */
 
 #include <stdio.h>
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "macro.h"
 #include "common.h"

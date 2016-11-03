@@ -9,7 +9,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include "global.h"
+#include "config.h"
 #include "conf_core.h"
 #include "gtkhid.h"
 #include "gui.h"

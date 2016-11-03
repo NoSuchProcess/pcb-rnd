@@ -34,7 +34,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "global.h"
+#include "config.h"
 #include "board.h"
 #include "action_helper.h"
 #include "buffer.h"

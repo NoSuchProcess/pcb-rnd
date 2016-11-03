@@ -28,7 +28,7 @@
 #define PCB_NETLIST_H
 
 /* generic netlist operations */
-#include "global.h"
+#include "config.h"
 #include "library.h"
 #include "route_style.h"
 

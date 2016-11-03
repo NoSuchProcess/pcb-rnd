@@ -25,7 +25,7 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "global.h"
+#include "config.h"
 #include "crosshair.h"
 #include "data.h"
 #include "misc.h"

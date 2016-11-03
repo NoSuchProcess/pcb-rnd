@@ -5,7 +5,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include "global.h"
+#include "config.h"
 #include "route_style.h"
 
 G_BEGIN_DECLS										/* keep c++ happy */

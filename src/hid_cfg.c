@@ -27,7 +27,7 @@
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
-#include "global.h"
+#include "config.h"
 #include "hid_cfg.h"
 #include "error.h"
 #include "paths.h"

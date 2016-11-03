@@ -29,7 +29,7 @@
 #ifndef	PCB_SELECT_H
 #define	PCB_SELECT_H
 
-#include "global.h"
+#include "config.h"
 #include "operation.h"
 
 #define SELECT_TYPES	\

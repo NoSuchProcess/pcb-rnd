@@ -23,7 +23,7 @@
 /* Query language - execution */
 
 #include <stdio.h>
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "query.h"
 #include "query_exec.h"

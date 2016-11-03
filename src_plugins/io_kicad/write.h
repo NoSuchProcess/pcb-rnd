@@ -27,7 +27,7 @@
 
 #include "config.h"
 #include <stdio.h>
-#include "global.h"
+#include "config.h"
 #include "data.h"
 
 int io_kicad_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data);

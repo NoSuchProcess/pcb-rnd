@@ -21,7 +21,7 @@
  */
 
 #include "config.h"
-#include "global.h"
+#include "config.h"
 #include "hid_cfg_action.h"
 #include "hid_actions.h"
 

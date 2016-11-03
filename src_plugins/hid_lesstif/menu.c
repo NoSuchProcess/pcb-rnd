@@ -9,7 +9,7 @@
 #include <ctype.h>
 #include <assert.h>
 
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "error.h"
 #include "misc.h"

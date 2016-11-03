@@ -22,7 +22,7 @@
 
 
 
-#include "global.h"
+#include "config.h"
 #include "global_element.h"
 
 #undef LIST_ELEMENT_H

@@ -26,7 +26,7 @@
  */
 
 #include "config.h"
-#include "global.h"
+#include "config.h"
 #include "autoplace.h"
 #include "plugins.h"
 #include "set.h"

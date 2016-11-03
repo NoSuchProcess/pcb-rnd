@@ -31,7 +31,7 @@
 #ifndef PCB_RATS_H
 #define PCB_RATS_H
 
-#include "global.h"
+#include "config.h"
 #include "netlist.h"
 
 /* ---------------------------------------------------------------------------

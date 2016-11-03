@@ -28,7 +28,7 @@
 #include "plugins.h"
 
 /* for the action */
-#include "global.h"
+#include "config.h"
 #include "config.h"
 #include "genvector/gds_char.h"
 #include "compat_misc.h"

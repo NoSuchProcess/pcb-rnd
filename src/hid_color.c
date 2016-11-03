@@ -1,5 +1,5 @@
 #include "config.h"
-#include "global.h"
+#include "config.h"
 #include "hid_color.h"
 #include <genht/hash.h>
 #include "compat_misc.h"

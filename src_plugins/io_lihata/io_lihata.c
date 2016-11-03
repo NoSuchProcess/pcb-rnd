@@ -21,7 +21,7 @@
  */
 
 #include "config.h"
-#include "global.h"
+#include "config.h"
 #include "plugins.h"
 #include "plug_io.h"
 #include "read.h"

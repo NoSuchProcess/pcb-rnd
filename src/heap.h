@@ -34,7 +34,7 @@
 #ifndef PCB_HEAP_H
 #define PCB_HEAP_H
 
-#include "global.h"
+#include "config.h"
 
 /* type of heap costs */
 typedef double cost_t;

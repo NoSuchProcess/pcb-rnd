@@ -49,7 +49,7 @@
 
 #include <genvector/gds_char.h>
 
-#include "global.h"
+#include "config.h"
 
 #include "error.h"
 #include "mymem.h"

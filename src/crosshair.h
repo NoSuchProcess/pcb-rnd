@@ -29,7 +29,7 @@
 #ifndef	PCB_CROSSHAIR_H
 #define	PCB_CROSSHAIR_H
 
-#include "global.h"
+#include "config.h"
 #include "rubberband.h"
 #include "vtonpoint.h"
 #include "hid.h"

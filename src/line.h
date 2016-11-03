@@ -30,7 +30,7 @@
 #ifndef	PCB_LINE_H
 #define	PCB_LINE_H
 
-#include "global.h"
+#include "config.h"
 
 /* ---------------------------------------------------------------------------
  * prototypes

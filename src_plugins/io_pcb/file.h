@@ -31,7 +31,7 @@
 #define	PCB_FILE_H
 
 #include <stdio.h>							/* needed to define 'FILE *' */
-#include "global.h"
+#include "config.h"
 #include "board.h"
 #include "plug_io.h"
 

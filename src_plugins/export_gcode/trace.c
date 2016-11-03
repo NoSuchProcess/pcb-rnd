@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "global.h"
+#include "config.h"
 #include "potracelib.h"
 #include "curve.h"
 #include "lists.h"

@@ -36,7 +36,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include <string.h>
 #include <time.h>
 
-#include "global.h"
+#include "config.h"
 #include "board.h"
 #include "data.h"
 #include "error.h"

@@ -32,7 +32,7 @@
 #include <string.h>
 
 #include "const.h"
-#include "global.h"
+#include "config.h"
 #include "flag_str.h"
 #include "compat_misc.h"
 #include "macro.h"

@@ -36,7 +36,7 @@
 
 #include "config.h"
 
-#include "global.h"
+#include "config.h"
 
 #include <assert.h>
 #include <setjmp.h>

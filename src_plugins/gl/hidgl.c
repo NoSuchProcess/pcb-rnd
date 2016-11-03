@@ -50,7 +50,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include "error.h"
-#include "global.h"
+#include "config.h"
 #include "mymem.h"
 #include "clip.h"
 

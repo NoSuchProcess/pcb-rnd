@@ -35,7 +35,7 @@
 #ifndef PCB_AUTOROUTE_H
 #define PCB_AUTOROUTE_H
 
-#include "global.h"
+#include "config.h"
 #include "board.h"
 
 pcb_bool AutoRoute(pcb_bool);

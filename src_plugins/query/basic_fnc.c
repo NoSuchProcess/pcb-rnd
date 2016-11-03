@@ -19,7 +19,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "query_access.h"
 #include "query_exec.h"

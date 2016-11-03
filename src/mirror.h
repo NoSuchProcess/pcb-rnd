@@ -29,7 +29,7 @@
 #ifndef	PCB_MIRROR_H
 #define	PCB_MIRROR_H
 
-#include "global.h"
+#include "config.h"
 
 /* ---------------------------------------------------------------------------
  * some useful macros and defines

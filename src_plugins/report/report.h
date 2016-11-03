@@ -27,7 +27,7 @@
 #ifndef PCB_REPORT_H
 #define PCB_REPORT_H
 
-#include "global.h"
+#include "config.h"
 
 #define REPORT_TYPES \
 	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLYGON | PCB_TYPE_ELEMENT | \

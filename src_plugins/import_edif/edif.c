@@ -99,7 +99,7 @@
 
 #include <ctype.h>
 
-#include "global.h"
+#include "config.h"
 #include "board.h"
 #include "data.h"
 #include "library.h"

@@ -29,7 +29,7 @@
 #ifndef	PCB_INSERT_H
 #define	PCB_INSERT_H
 
-#include "global.h"
+#include "config.h"
 
 #define	INSERT_TYPES	(PCB_TYPE_POLYGON | PCB_TYPE_LINE | PCB_TYPE_RATLINE)
 

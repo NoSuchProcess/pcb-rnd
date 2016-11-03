@@ -29,7 +29,7 @@
 #ifndef	PCB_POLYGON_H
 #define	PCB_POLYGON_H
 
-#include "global.h"
+#include "config.h"
 #include "rtree.h"
 
 /* Implementation constants */

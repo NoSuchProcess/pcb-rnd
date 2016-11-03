@@ -46,7 +46,7 @@
 #include "remove.h"
 #include "thermal.h"
 #include "undo.h"
-#include "global.h"
+#include "config.h"
 
 #include "gts.h"
 

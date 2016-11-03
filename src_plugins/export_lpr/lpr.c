@@ -10,7 +10,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "global.h"
+#include "config.h"
 #include "data.h"
 #include "misc.h"
 #include "plugins.h"

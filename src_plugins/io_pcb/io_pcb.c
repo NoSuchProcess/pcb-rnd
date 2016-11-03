@@ -24,7 +24,7 @@
  */
 
 #include "config.h"
-#include "global.h"
+#include "config.h"
 #include "plugins.h"
 #include "parse_common.h"
 #include "file.h"

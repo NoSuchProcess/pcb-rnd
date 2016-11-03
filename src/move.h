@@ -29,7 +29,7 @@
 #ifndef	PCB_MOVE_H
 #define	PCB_MOVE_H
 
-#include "global.h"
+#include "config.h"
 
 /* ---------------------------------------------------------------------------
  * some useful transformation macros and constants

@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "global.h"
+#include "config.h"
 
 #include "const.h"
 #include "create.h"

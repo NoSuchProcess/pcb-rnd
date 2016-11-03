@@ -29,7 +29,7 @@
 #ifndef	PCB_COMMAND_H
 #define	PCB_COMMAND_H
 
-#include "global.h"
+#include "config.h"
 
 void ExecuteUserCommand(char *);
 void CallActionProc(char *action, char **arg, int argc);
