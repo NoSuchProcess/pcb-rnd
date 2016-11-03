@@ -147,6 +147,14 @@ char *LayerGroupsToString(LayerGroupTypePtr);
  ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (polylist_length(&layer->Polygon) == 0) && (textlist_length(&layer->Text) == 0))
 
 
+/* ---------------------------------------------------------------------------
+ * the layer-numbers of the two additional special layers
+ * 'component' and 'solder'. The offset of MAX_LAYER is not added
+ */
+#define	SOLDER_LAYER		0
+#define	COMPONENT_LAYER		1
+
+
 /************ NEW API - new code should use these **************/
 
 /* Layer type bitfield */

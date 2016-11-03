@@ -32,14 +32,6 @@
 #include <limits.h>
 #include <math.h>
 
-/* ---------------------------------------------------------------------------
- * the layer-numbers of the two additional special layers
- * 'component' and 'solder'. The offset of MAX_LAYER is not added
- */
-#define	SOLDER_LAYER		0
-#define	COMPONENT_LAYER		1
-
-
 /* These need to be carefully written to avoid overflows, and return
    a Coord type.  */
 #define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((Coord)((COORD) * ((double)(TEXTSCALE) / 100.0)))
