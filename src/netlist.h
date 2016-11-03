@@ -30,6 +30,7 @@
 /* generic netlist operations */
 #include "global.h"
 #include "library.h"
+#include "route_style.h"
 
 struct pcb_net_s {								/* holds a net of connections */
 	pcb_cardinal_t ConnectionN,					/* the number of connections contained */

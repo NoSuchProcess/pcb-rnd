@@ -25,6 +25,8 @@
  *
  */
 
+#include "vtroutestyle.h"
+
 /* Parse a single route string into one RouteStyleTypePtr slot. Returns 0 on success.  */
 int ParseRoutingString1(char **str, RouteStyleTypePtr routeStyle, const char *default_unit);
 

@@ -44,11 +44,8 @@
 #include "global_typedefs.h"
 #include "global_objs.h"
 #include "attrib.h"
-#include "rats_patch.h"
 #include "list_common.h"
 #include "hid.h"
-#include "polyarea.h"
-#include "vtroutestyle.h"
 
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
