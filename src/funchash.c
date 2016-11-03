@@ -27,6 +27,7 @@
 #include <genht/htpi.h>
 #include <genht/hash.h>
 #include "funchash_core.h"
+#include "config.h"
 #include "macro.h"
 
 #define action_entry(x) { #x, F_ ## x},

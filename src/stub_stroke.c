@@ -20,6 +20,7 @@
  *
  */
 #include "error.h"
+#include "config.h"
 #include "pcb_bool.h"
 
 pcb_bool mid_stroke = pcb_false;

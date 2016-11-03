@@ -36,7 +36,6 @@
 #include <ctype.h>
 #include "const.h"
 #include "config.h"
-#include "config.h"
 
 #include "pcb-printf.h"
 

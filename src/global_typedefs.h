@@ -45,6 +45,7 @@ typedef struct pin_st PinType, *PinTypePtr, **PinTypeHandle;
 typedef struct rtree rtree_t;
 typedef struct rats_patch_line_s rats_patch_line_t;
 typedef struct element_st ElementType, *ElementTypePtr, **ElementTypeHandle;
+typedef struct pcb_text_s  TextType, *TextTypePtr;
 
 typedef struct plug_io_s plug_io_t;
 

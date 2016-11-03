@@ -1,3 +1,4 @@
+#include "config.h"
 #include "const.h"
 #include "conf.h"
 #include "conf_core.h"

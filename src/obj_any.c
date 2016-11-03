@@ -23,5 +23,6 @@
 /* object model - type+union that can represent any object */
 
 #define TDL_DONT_UNDEF
+#include "config.h"
 #include "obj_any.h"
 #include <genlist/gentdlist_impl.c>

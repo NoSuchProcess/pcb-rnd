@@ -41,15 +41,13 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <math.h>
 #include <assert.h>
 #include "compat_fs.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "globalconst.h"
 
 #include <genvector/gds_char.h>
-
-#include "config.h"
 
 #include "error.h"
 #include "mymem.h"

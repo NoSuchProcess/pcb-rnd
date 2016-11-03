@@ -27,6 +27,7 @@
 #warning TODO: remove this in favor of vtptr
 
 #include "global_typedefs.h"
+#include "config.h"
 #include "ptrlist.h"
 #include <stdlib.h>
 #include <string.h>

@@ -36,7 +36,6 @@
 #include <memory.h>
 #include <ctype.h>
 #include <signal.h>
-#include <math.h>
 
 #include "board.h"
 #include "box.h"

@@ -26,7 +26,6 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
-#include "config.h"
 #include "conf.h"
 #include "conf_core.h"
 #include "error.h"

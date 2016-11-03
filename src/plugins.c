@@ -29,7 +29,6 @@
 
 /* for the action */
 #include "config.h"
-#include "config.h"
 #include "genvector/gds_char.h"
 #include "compat_misc.h"
 #include "hid.h"

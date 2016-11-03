@@ -27,6 +27,7 @@
 #include <genht/hash.h>
 #include <liblihata/tree.h>
 #include <stdarg.h>
+#include "config.h"
 #include "conf.h"
 #include "conf_core.h"
 #include "conf_hid.h"
@@ -38,7 +39,6 @@
 #include "paths.h"
 #include "compat_fs.h"
 #include "compat_misc.h"
-#include "error.h"
 
 /* conf list node's name */
 const char *conf_list_name = "pcb-rnd-conf-v1";

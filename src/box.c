@@ -28,6 +28,7 @@
 
 #define STEP_POINT 100
 #include <string.h>
+#include "config.h"
 #include "box.h"
 
 /* ---------------------------------------------------------------------------

@@ -28,6 +28,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "config.h"
 #include "library.h"
 #include "macro.h"
 

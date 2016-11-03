@@ -87,7 +87,7 @@ struct pcb_line_s {            /* holds information about one line */
 	gdl_elem_t link;             /* a line is in a list: either on a layer or in an element */
 };
 
-typedef struct text_st {
+struct pcb_text_s {
 	ANYOBJECTFIELDS;
 	int Scale;										/* text scaling in percent */
 	Coord X, Y;										/* origin */
@@ -95,7 +95,7 @@ typedef struct text_st {
 	char *TextString;							/* string */
 	void *Element;
 	gdl_elem_t link;              /* a text is in a list of a layer or an element */
-} TextType, *TextTypePtr;
+};
 
 struct polygon_st {							/* holds information about a polygon */
 	ANYOBJECTFIELDS;

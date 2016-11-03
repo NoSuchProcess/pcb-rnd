@@ -45,6 +45,7 @@
 #include	<setjmp.h>
 #include	<string.h>
 
+#include "config.h"
 #include "rtree.h"
 #include "math_helper.h"
 #include "heap.h"

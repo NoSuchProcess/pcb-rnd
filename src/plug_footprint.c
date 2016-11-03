@@ -32,7 +32,6 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 #include "conf_core.h"
-#include "plugins.h"
 #include "error.h"
 #include "compat_misc.h"
 

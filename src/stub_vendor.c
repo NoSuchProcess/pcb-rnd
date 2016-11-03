@@ -20,6 +20,7 @@
  *
  */
 
+#include "config.h"
 #include "stub_vendor.h"
 
 static int stub_vendorDrillMap_dummy(int dia)

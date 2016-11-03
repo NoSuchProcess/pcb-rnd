@@ -23,7 +23,7 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
-
+#include "config.h"
 #include "board.h"
 #include "attrib.h"
 #include "library.h"

@@ -30,7 +30,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <locale.h>
-#include "config.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "unit.h"

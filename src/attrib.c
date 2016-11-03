@@ -27,6 +27,7 @@
 /* attribute lists */
 #include <stdlib.h>
 #include <string.h>
+#include "config.h"
 #include "compat_misc.h"
 #include "attrib.h"
 

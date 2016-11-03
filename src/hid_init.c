@@ -5,7 +5,6 @@
 #include <string.h>
 #include <strings.h>
 
-#include "config.h"
 #include "hid.h"
 #include "hid_nogui.h"
 
@@ -14,7 +13,6 @@
    includes. */
 #include "compat_dl.h"
 
-#include "config.h"
 #include "misc.h"
 #include "plugins.h"
 #include "hid_attrib.h"

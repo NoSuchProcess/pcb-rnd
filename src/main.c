@@ -28,7 +28,6 @@
 /* main program, initializes some stuff and handles user input
  */
 #include "config.h"
-#include "conf_core.h"
 
 #include <stdlib.h>
 #include <string.h>

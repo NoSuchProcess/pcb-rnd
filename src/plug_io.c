@@ -42,11 +42,8 @@
 #include "conf_core.h"
 
 #include <locale.h>
-#include "config.h"
-
 #include <dirent.h>
 #include <time.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

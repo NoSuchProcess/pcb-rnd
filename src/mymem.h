@@ -31,10 +31,8 @@
 #define	PCB_MYMEM_H
 
 #include "config.h"
-
 #include <stdlib.h>
-#include "config.h"
-#include "rubberband.h"
+#include "global_typedefs.h"
 
 /* ---------------------------------------------------------------------------
  * number of additional objects that are allocated with one system call
@@ -48,7 +46,6 @@
 #define	STEP_UNDOLIST		500
 #define	STEP_POLYGONPOINT	10
 #define	STEP_POLYGONHOLEINDEX	10
-#define	STEP_RUBBERBAND		100
 
 /* ---------------------------------------------------------------------------
  * some memory types

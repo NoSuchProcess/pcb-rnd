@@ -27,7 +27,6 @@
 #include <ctype.h>
 #include "config.h"
 #include "const.h"
-#include "config.h"
 #include "pcb-printf.h"
 #include "genvector/gds_char.h"
 #include "route_style.h"

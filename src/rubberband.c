@@ -23,9 +23,9 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
-
-
 /* functions used by 'rubberband moves' */
+
+#define	STEP_RUBBERBAND		100
 
 #include "config.h"
 

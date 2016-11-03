@@ -24,7 +24,6 @@
  */
 
 #include "config.h"
-#include "config.h"
 #include "hid.h"
 #include "plug_footprint.h"
 

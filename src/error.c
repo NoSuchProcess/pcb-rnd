@@ -35,10 +35,7 @@
 #include <stdarg.h>
 #include <signal.h>
 #include <string.h>
-#include <stdarg.h>
 #include <fcntl.h>
-
-#include "config.h"
 
 #include "data.h"
 #include "error.h"

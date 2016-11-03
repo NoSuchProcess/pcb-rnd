@@ -1,6 +1,5 @@
 #include <string.h>
 #include "config.h"
-#include "config.h"
 #include "hid_color.h"
 #include <genht/hash.h>
 #include "compat_misc.h"

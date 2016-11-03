@@ -1,5 +1,4 @@
 #include "config.h"
-#include "config.h"
 #include "hid_attrib.h"
 #include "misc.h"
 #include "misc_util.h"
