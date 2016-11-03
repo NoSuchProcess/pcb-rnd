@@ -1603,8 +1603,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 	}
-	if (featureTally >= 0 && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
-
+	required = BV(0) | BV(3) | BV(6) | BV(8);
+	if (((featureTally & required) == required) && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
 		CreateNewLineInElement(newModule, X1, Y1, X2, Y2, Thickness);
 		pcb_printf("\tnew fp_line on layer created\n");
 	}
@@ -1754,7 +1754,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 	}
-	if (featureTally >= 0) { /* need start, end, layer, thickness at a minimum */
+        required = BV(0) | BV(6) | BV(8);
+        if (((featureTally & required) == required) && newModule != NULL) {
+		/* need start, layer, thickness at a minimum */
 		width = height = Distance(centreX, centreY, endX, endY); /* calculate radius of arc */
 		if (width < 1) { /* degenerate case */
 			startAngle = 0;
@@ -1772,10 +1774,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 
 		}
+		CreateNewArcInElement(newModule, moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness);
 
-		if (featureTally >= 0 && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
-			CreateNewArcInElement(newModule, moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness);
-		}
 	}
 
 /* ********************************************************** */
@@ -1787,11 +1787,13 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				}
 			} 
 		}
-		SetElementBoundingBox(PCB->Data, newModule, &PCB->Font);
-		return 0; 
 
-	/* required = 1; BV(2) | BV(3) | BV(4) | BV(7) | BV(8);
-	if ((tally & required) == required) {  */ /* has location, layer, size and stroke thickness at a minimum */
+		if (newModule != NULL) {
+			SetElementBoundingBox(PCB->Data, newModule, &PCB->Font);
+			return 0; 
+		} else {
+			return -1;
+		}
 	} else {
 		return -1;
 	}
