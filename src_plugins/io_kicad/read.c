@@ -45,7 +45,7 @@
 #include "conf_core.h"
 #include "move.h"
 #include "macro.h"
-
+#include "obj_all.h"
 
 typedef struct {
 	PCBTypePtr PCB;

@@ -31,6 +31,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "polygon.h"
+#include "obj_all.h"
 
 static char *str_sub(const char *val, char sepi, char sepo)
 {

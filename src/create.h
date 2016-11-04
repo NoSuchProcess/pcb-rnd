@@ -50,7 +50,6 @@ PinTypePtr CreateNewVia(DataTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, c
 LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
 LineTypePtr CreateNewLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
 RatTypePtr CreateNewRat(DataTypePtr, Coord, Coord, Coord, Coord, pcb_cardinal_t, pcb_cardinal_t, Coord, FlagType);
-ArcTypePtr CreateNewArcOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Angle, Angle, Coord, Coord, FlagType);
 PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr, Coord, Coord, Coord, Coord, FlagType);
 TextTypePtr CreateNewText(LayerTypePtr, FontTypePtr, Coord, Coord, unsigned, int, char *, FlagType);
 PolygonTypePtr CreateNewPolygon(LayerTypePtr, FlagType);
@@ -77,7 +76,6 @@ long int CreateIDGet(void);
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_via(DataType *Data, PinType *Via);
 void pcb_add_line_on_layer(LayerType *Layer, LineType *Line);
-void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc);
 void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon);
 void pcb_add_text_on_layer(LayerType *ly, TextType *text, FontType *PCBFont);
 

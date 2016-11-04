@@ -59,6 +59,7 @@
 #include "flags.h"
 #include "route_style.h"
 #include "compat_misc.h"
+#include "obj_all.h"
 
 static	LayerTypePtr	Layer;
 static	PolygonTypePtr	Polygon;

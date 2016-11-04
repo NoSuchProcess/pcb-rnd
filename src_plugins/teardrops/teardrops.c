@@ -27,6 +27,7 @@
 #include "undo.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "obj_all.h"
 
 #define MIN_LINE_LENGTH 700
 #define MAX_DISTANCE 700

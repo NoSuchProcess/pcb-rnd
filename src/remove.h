@@ -39,7 +39,6 @@
 	PCB_TYPE_POLYGON_POINT | PCB_TYPE_POLYGON | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
 
 void *RemoveLine(LayerTypePtr, LineTypePtr);
-void *RemoveArc(LayerTypePtr, ArcTypePtr);
 void *RemovePolygon(LayerTypePtr, PolygonTypePtr);
 void *RemoveText(LayerTypePtr, TextTypePtr);
 void *RemoveElement(ElementTypePtr);
