@@ -23,6 +23,8 @@
 #ifndef PCB_OBJ_LINE_LIST_H
 #define PCB_OBJ_LINE_LIST_H
 
+#include "obj_line.h"
+
 /* List of Lines */
 #define TDL(x)      linelist_ ## x
 #define TDL_LIST_T  linelist_t

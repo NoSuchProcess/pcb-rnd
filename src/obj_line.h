@@ -29,6 +29,14 @@
 #ifndef PCB_OBJ_LINE_H
 #define PCB_OBJ_LINE_H
 
+#include "global_objs.h"
+
+struct pcb_line_s {            /* holds information about one line */
+	ANYLINEFIELDS;
+	char *Number;
+	gdl_elem_t link;             /* a line is in a list: either on a layer or in an element */
+};
+
 /* crosshair: */
 typedef struct {								/* current marked line */
 	PointType Point1,							/* start- and end-position */
