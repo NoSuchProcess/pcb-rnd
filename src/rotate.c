@@ -61,8 +61,6 @@ static void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointT
 /* ----------------------------------------------------------------------
  * some local identifiers
  */
-static Coord CenterX, CenterY;	/* center of rotation */
-static unsigned Number;					/* number of rotations */
 static pcb_opfunc_t RotateFunctions = {
 	NULL,
 	RotateText,
@@ -155,7 +153,7 @@ static void *RotateText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 	EraseText(Layer, Text);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
-	RotateTextLowLevel(Text, CenterX, CenterY, Number);
+	RotateTextLowLevel(Text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
@@ -246,7 +244,7 @@ static void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr L
 	}
 	else
 		r_delete_entry(PCB->Data->rat_tree, (BoxTypePtr) Line);
-	RotatePointLowLevel(Point, CenterX, CenterY, Number);
+	RotatePointLowLevel(Point, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	SetLineBoundingBox(Line);
 	if (Layer) {
 		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
@@ -268,7 +266,7 @@ static void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	EraseArc(Arc);
 	r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
-	RotateArcLowLevel(Arc, CenterX, CenterY, Number);
+	RotateArcLowLevel(Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
 	DrawArc(Layer, Arc);
 	Draw();
@@ -281,7 +279,7 @@ static void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 static void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	EraseElement(Element);
-	RotateElementLowLevel(PCB->Data, Element, CenterX, CenterY, Number);
+	RotateElementLowLevel(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	DrawElement(Element);
 	Draw();
 	return (Element);
@@ -296,7 +294,7 @@ static void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 	ELEMENTTEXT_LOOP(Element);
 	{
 		r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
-		RotateTextLowLevel(text, CenterX, CenterY, Number);
+		RotateTextLowLevel(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 		r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
 	}
 	END_LOOP;
@@ -332,16 +330,17 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 	pcb_opctx_t ctx;
 
 	/* setup default  global identifiers */
-	Number = Steps;
-	CenterX = X;
-	CenterY = Y;
+	ctx.rotate.pcb = PCB;
+	ctx.rotate.number = Steps;
+	ctx.rotate.center_x = X;
+	ctx.rotate.center_y = Y;
 
 	/* move all the rubberband lines... and reset the counter */
 	ptr = Crosshair.AttachedObject.Rubberband;
 	while (Crosshair.AttachedObject.RubberbandN) {
 		changed = pcb_true;
 		CLEAR_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);
-		AddObjectToRotateUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, CenterX, CenterY, Steps);
+		AddObjectToRotateUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
 		EraseLine(ptr->Line);
 		if (ptr->Layer) {
 			RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
@@ -349,7 +348,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 		}
 		else
 			r_delete_entry(PCB->Data->rat_tree, (BoxType *) ptr->Line);
-		RotatePointLowLevel(ptr->MovedPoint, CenterX, CenterY, Steps);
+		RotatePointLowLevel(ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
 		SetLineBoundingBox(ptr->Line);
 		if (ptr->Layer) {
 			r_insert_entry(ptr->Layer->line_tree, (BoxType *) ptr->Line, 0);
@@ -363,7 +362,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 		Crosshair.AttachedObject.RubberbandN--;
 		ptr++;
 	}
-	AddObjectToRotateUndoList(Type, Ptr1, Ptr2, Ptr3, CenterX, CenterY, Number);
+	AddObjectToRotateUndoList(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
 	ptr2 = ObjectOperation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);
 	if (changed) {

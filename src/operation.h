@@ -31,6 +31,10 @@
 #include "global_typedefs.h"
 #include "global_element.h"
 
+/* Each object operation gets an operation-context with some operation-specific
+   configuration, and the board to operate on. Optionally this is the place to
+   hold temporary states of a multi-call operation too. */
+
 typedef struct {
 	PCBType *pcb;
 	int extraflg;
@@ -86,6 +90,12 @@ typedef struct {
 	pcb_bool bulk;                /* don't draw if part of a bulk operation */
 } pcb_opctx_remove_t;
 
+typedef struct {
+	PCBType *pcb;
+	Coord center_x, center_y;    /* center of rotation */
+	unsigned number;             /* number of rotations */
+} pcb_opctx_rotate_t;
+
 typedef union {
 	pcb_opctx_buffer_t buffer;
 	pcb_opctx_chgname_t chgname;
@@ -96,6 +106,7 @@ typedef union {
 	pcb_opctx_insert_t insert;
 	pcb_opctx_move_t move;
 	pcb_opctx_remove_t remove;
+	pcb_opctx_rotate_t rotate;
 } pcb_opctx_t;
 
 /* pointer to low-level operation (copy, move and rotate) functions */
