@@ -57,8 +57,6 @@ ElementTypePtr CreateNewElement(DataTypePtr, ElementTypePtr,
 																FontTypePtr, FlagType, char *, char *, char *, Coord, Coord, pcb_uint8_t, int, FlagType, pcb_bool);
 LineTypePtr CreateNewLineInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Coord);
 ArcTypePtr CreateNewArcInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Angle, Angle, Coord);
-PinTypePtr CreateNewPin(ElementTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, char *, char *, FlagType);
-PadTypePtr CreateNewPad(ElementTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, Coord, char *, char *, FlagType);
 LineTypePtr CreateNewLineInSymbol(SymbolTypePtr, Coord, Coord, Coord, Coord, Coord);
 void CreateDefaultFont(PCBTypePtr);
 RubberbandTypePtr CreateNewRubberbandEntry(LayerTypePtr, LineTypePtr, PointTypePtr);

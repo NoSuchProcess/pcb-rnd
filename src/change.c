@@ -49,17 +49,12 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-static void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-static void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangeElement1stSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElement2ndSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr);
-static void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-static void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
@@ -68,9 +63,6 @@ static void *ClrElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
 static void *SetElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ClrElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
-static void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-static void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-static void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangePolyClear(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 
 /* ---------------------------------------------------------------------------
@@ -381,64 +373,6 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 };
 
 /* ---------------------------------------------------------------------------
- * changes the size of a pad
- * returns pcb_true if changed
- */
-static void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Thickness + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
-		return (NULL);
-	if (value <= MAX_PADSIZE && value >= MIN_PADSIZE && value != Pad->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-		AddObjectToMaskSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-		ErasePad(Pad);
-		r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
-		Pad->Mask += value - Pad->Thickness;
-		Pad->Thickness = value;
-		/* SetElementBB updates all associated rtrees */
-		SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-		DrawPad(Pad);
-		return (Pad);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the clearance size of a pad
- * returns pcb_true if changed
- */
-static void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Clearance + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
-		return (NULL);
-	value = MIN(MAX_LINESIZE, value);
-	if (value < 0)
-		value = 0;
-	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
-		value = 0;
-	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)
-		value = PCB->Bloat * 2 + 2;
-	if (value == Pad->Clearance)
-		return NULL;
-	AddObjectToClearSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-	ErasePad(Pad);
-	r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
-	Pad->Clearance = value;
-	/* SetElementBB updates all associated rtrees */
-	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-	DrawPad(Pad);
-	return Pad;
-}
-
-/* ---------------------------------------------------------------------------
  * changes the drilling hole of all pins of an element
  * returns pcb_true if changed
  */
@@ -658,42 +592,6 @@ static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* ---------------------------------------------------------------------------
- * changes the name of a pad
- */
-static void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
-{
-	char *old = Pad->Name;
-
-	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad)) {
-		ErasePadName(Pad);
-		Pad->Name = ctx->chgname.new_name;
-		DrawPadName(Pad);
-	}
-	else
-		Pad->Name = ctx->chgname.new_name;
-	return (old);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the number of a pad
- */
-static void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
-{
-	char *old = Pad->Number;
-
-	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad)) {
-		ErasePadName(Pad);
-		Pad->Number = ctx->chgname.new_name;
-		DrawPadName(Pad);
-	}
-	else
-		Pad->Number = ctx->chgname.new_name;
-	return (old);
-}
-
-/* ---------------------------------------------------------------------------
  * changes the layout-name of an element
  */
 char *ChangeElementText(PCBType * pcb, DataType * data, ElementTypePtr Element, int which, char *new_name)
@@ -898,49 +796,6 @@ static void *ClrElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
 	}
 	END_LOOP;
 	return (result);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the square flag of a pad
- */
-static void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
-		return (NULL);
-	ErasePad(Pad);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, pcb_false);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-	AddObjectToFlagUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-	TOGGLE_FLAG(PCB_FLAG_SQUARE, Pad);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, pcb_true);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-	DrawPad(Pad);
-	return (Pad);
-}
-
-/* ---------------------------------------------------------------------------
- * sets the square flag of a pad
- */
-static void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
-{
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || TEST_FLAG(PCB_FLAG_SQUARE, Pad))
-		return (NULL);
-
-	return (ChangePadSquare(ctx, Element, Pad));
-}
-
-
-/* ---------------------------------------------------------------------------
- * clears the square flag of a pad
- */
-static void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
-{
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || !TEST_FLAG(PCB_FLAG_SQUARE, Pad))
-		return (NULL);
-
-	return (ChangePadSquare(ctx, Element, Pad));
 }
 
 /* ---------------------------------------------------------------------------
@@ -1902,27 +1757,3 @@ void ChangePCBSize(Coord Width, Coord Height)
 	if (gui != NULL)
 		hid_action("PCBChanged");
 }
-
-/* ---------------------------------------------------------------------------
- * changes the mask size of a pad
- * returns pcb_true if changed
- */
-static void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Mask + ctx->chgsize.delta;
-
-	value = MAX(value, 0);
-	if (value == Pad->Mask && ctx->chgsize.absolute == 0)
-		value = Pad->Thickness;
-	if (value != Pad->Mask) {
-		AddObjectToMaskSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-		ErasePad(Pad);
-		r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
-		Pad->Mask = value;
-		SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-		DrawPad(Pad);
-		return (Pad);
-	}
-	return (NULL);
-}
-

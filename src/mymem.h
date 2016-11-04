@@ -51,7 +51,6 @@
  * some memory types
  */
 
-PadTypePtr GetPadMemory(ElementTypePtr);
 RatTypePtr GetRatMemory(DataTypePtr);
 PolygonTypePtr GetPolygonMemory(LayerTypePtr);
 PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr);
@@ -63,7 +62,6 @@ void FreeElementMemory(ElementTypePtr);
 char *StripWhiteSpaceAndDup(const char *);
 
 void RemoveFreePolygon(PolygonType * data);
-void RemoveFreePad(PadType * data);
 void RemoveFreeElement(ElementType * data);
 void RemoveFreeRat(RatType * data);
 

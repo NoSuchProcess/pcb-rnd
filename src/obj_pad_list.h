@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -20,7 +20,24 @@
  *
  */
 
-#define TDL_DONT_UNDEF
-#include "global_objs.h"
-#include "list_pad.h"
-#include <genlist/gentdlist_impl.c>
+#ifndef PCB_OBJ_PAD_LIST_H
+#define PCB_OBJ_PAD_LIST_H
+
+#include "obj_pad.h"
+
+/* List of Pads */
+#define TDL(x)      padlist_ ## x
+#define TDL_LIST_T  padlist_t
+#define TDL_ITEM_T  PadType
+#define TDL_FIELD   link
+#define TDL_SIZE_T  size_t
+#define TDL_FUNC
+
+#define padlist_foreach(list, iterator, loop_elem) \
+	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
+
+
+#include <genlist/gentdlist_impl.h>
+#include <genlist/gentdlist_undef.h>
+
+#endif

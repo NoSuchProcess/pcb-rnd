@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
- *  Copyright (C) 1994,1995,1996,2006 Thomas Nau
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,33 +24,27 @@
  *
  */
 
-/* prototypes for misc routines - PCB data type dependent ones */
+/* Drawing primitive: pins and vias */
 
-#ifndef	PCB_MISC_H
-#define	PCB_MISC_H
+#ifndef PCB_OBJ_PAD_H
+#define PCB_OBJ_PAD_H
 
-#include <stdlib.h>
-#include "config.h"
-#include "mymem.h"
+PadType *GetPadMemory(ElementType * element);
+void RemoveFreePad(PadType * data);
 
-
-void r_delete_element(DataTypePtr, ElementTypePtr);
-void SetPolygonBoundingBox(PolygonTypePtr);
-void SetElementBoundingBox(DataTypePtr, ElementTypePtr, FontTypePtr);
-void CountHoles(int *, int *, const BoxType *);
-BoxTypePtr GetDataBoundingBox(DataTypePtr);
-void SetFontInfo(FontTypePtr);
-
-BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
-
-char *UniqueElementName(DataTypePtr, char *);
-void AttachForCopy(Coord, Coord);
-
-/* Return a relative rotation for an element, useful only for
-   comparing two similar footprints.  */
-int ElementOrientation(ElementType * e);
-
-char *EvaluateFilename(const char *, const char *, const char *, const char *);
+PadTypePtr CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags);
+void SetPadBoundingBox(PadTypePtr Pad);
 
 
-#endif /* PCB_MISC_H */
+#define PAD_LOOP(element) do {                                      \
+	PadType *pad;                                                     \
+	gdl_iterator_t __it__;                                            \
+	padlist_foreach(&(element)->Pad, &__it__, pad) {
+
+#define	ALLPAD_LOOP(top)    \
+	ELEMENT_LOOP(top);        \
+		PAD_LOOP(element)
+
+
+#endif
+

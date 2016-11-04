@@ -142,6 +142,64 @@ PinTypePtr CreateNewVia(DataTypePtr Data, Coord X, Coord Y, Coord Thickness, Coo
 	return (Via);
 }
 
+/* creates a new pin in an element */
+PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags)
+{
+	PinTypePtr pin = GetPinMemory(Element);
+
+	/* copy values */
+	pin->X = X;
+	pin->Y = Y;
+	pin->Thickness = Thickness;
+	pin->Clearance = Clearance;
+	pin->Mask = Mask;
+	pin->Name = pcb_strdup_null(Name);
+	pin->Number = pcb_strdup_null(Number);
+	pin->Flags = Flags;
+	CLEAR_FLAG(PCB_FLAG_WARN, pin);
+	SET_FLAG(PCB_FLAG_PIN, pin);
+	pin->ID = CreateIDGet();
+	pin->Element = Element;
+
+	/*
+	 * If there is no vendor drill map installed, this will simply
+	 * return DrillingHole.
+	 */
+	pin->DrillingHole = stub_vendorDrillMap(DrillingHole);
+
+	/* Unless we should not map drills on this element, map them! */
+	if (stub_vendorIsElementMappable(Element)) {
+		if (pin->DrillingHole < MIN_PINORVIASIZE) {
+			Message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
+							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
+			pin->DrillingHole = DrillingHole;
+		}
+		else if (pin->DrillingHole > MAX_PINORVIASIZE) {
+			Message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is above the maximum allowed size\n"),
+							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
+			pin->DrillingHole = DrillingHole;
+		}
+		else if (!TEST_FLAG(PCB_FLAG_HOLE, pin)
+						 && (pin->DrillingHole > pin->Thickness - MIN_PINORVIACOPPER)) {
+			Message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
+							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
+			pin->DrillingHole = DrillingHole;
+		}
+	}
+	else {
+		pin->DrillingHole = DrillingHole;
+	}
+
+	if (pin->DrillingHole != DrillingHole) {
+		Message(PCB_MSG_DEFAULT, _("%m+Mapped pin drill hole to %$mS from %$mS per vendor table\n"),
+						conf_core.editor.grid_unit->allow, pin->DrillingHole, DrillingHole);
+	}
+
+	return (pin);
+}
+
+
+
 void pcb_add_via(DataType *Data, PinType *Via)
 {
 	SetPinBoundingBox(Via);

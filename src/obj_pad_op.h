@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
- *  Copyright (C) 1994,1995,1996,2006 Thomas Nau
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,33 +24,19 @@
  *
  */
 
-/* prototypes for misc routines - PCB data type dependent ones */
+/*** Standard operations on pads ***/
 
-#ifndef	PCB_MISC_H
-#define	PCB_MISC_H
+#include "operation.h"
 
-#include <stdlib.h>
-#include "config.h"
-#include "mymem.h"
-
-
-void r_delete_element(DataTypePtr, ElementTypePtr);
-void SetPolygonBoundingBox(PolygonTypePtr);
-void SetElementBoundingBox(DataTypePtr, ElementTypePtr, FontTypePtr);
-void CountHoles(int *, int *, const BoxType *);
-BoxTypePtr GetDataBoundingBox(DataTypePtr);
-void SetFontInfo(FontTypePtr);
-
-BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
-
-char *UniqueElementName(DataTypePtr, char *);
-void AttachForCopy(Coord, Coord);
-
-/* Return a relative rotation for an element, useful only for
-   comparing two similar footprints.  */
-int ElementOrientation(ElementType * e);
-
-char *EvaluateFilename(const char *, const char *, const char *, const char *);
+void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad);
+void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad);
+void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad);
+void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad);
+void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad);
+void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad);
+void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad);
+void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad);
 
 
-#endif /* PCB_MISC_H */
+
+

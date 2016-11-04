@@ -2,7 +2,6 @@
 #define PCB_ELEMENT_H
 
 #include "global_objs.h"
-#include "list_pad.h"
 #include "obj_all_list.h"
 
 struct element_st {

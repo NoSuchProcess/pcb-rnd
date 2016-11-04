@@ -51,25 +51,6 @@ do { \
 } while(0) \
 
 /* ---------------------------------------------------------------------------
- * get next slot for a pad, allocates memory if necessary
- */
-PadType *GetPadMemory(ElementType * element)
-{
-	PadType *new_obj;
-
-	new_obj = calloc(sizeof(PadType), 1);
-	padlist_append(&element->Pad, new_obj);
-
-	return new_obj;
-}
-
-void RemoveFreePad(PadType * data)
-{
-	padlist_remove(data);
-	free(data);
-}
-
-/* ---------------------------------------------------------------------------
  * get next slot for a Rat, allocates memory if necessary
  */
 RatType *GetRatMemory(DataType * data)

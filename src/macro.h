@@ -120,11 +120,6 @@
 	{							\
 		textstring = (element)->Name[n].TextString
 
-#define PAD_LOOP(element) do {                                      \
-  PadType *pad;                                                     \
-  gdl_iterator_t __it__;                                            \
-  padlist_foreach(&(element)->Pad, &__it__, pad) {
-
 #define ELEMENTLINE_LOOP(element) do {                              \
   LineType *line;                                                   \
   gdl_iterator_t __it__;                                            \
@@ -148,10 +143,6 @@
 		point = &(polygon)->Points[n]
 
 #define ENDALL_LOOP }} while (0); }} while(0)
-
-#define	ALLPAD_LOOP(top) \
-	ELEMENT_LOOP(top); \
-	  PAD_LOOP(element)
 
 #define	ALLPOLYGON_LOOP(top)	do {		\
 	pcb_cardinal_t		l;			\
