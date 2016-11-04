@@ -39,6 +39,29 @@ typedef struct {
 
 typedef struct {
 	PCBType *pcb;
+	int is_primary;  /* whether the primary parameter should be changed */
+	Coord delta;     /* change of size */
+	Coord absolute;  /* Absolute size */
+} pcb_opctx_chgsize_t;
+
+typedef struct {
+	PCBType *pcb;
+	int is_primary;           /* whether the primary parameter should be changed */
+	Angle delta, absolute;    /* same as above, but for angles */
+} pcb_opctx_chgangle_t;
+
+typedef struct {
+	PCBType *pcb;
+	char *new_name;
+} pcb_opctx_chgname_t;
+
+typedef struct {
+	PCBType *pcb;
+	int style;
+} pcb_opctx_chgtherm_t;
+
+typedef struct {
+	PCBType *pcb;
 } pcb_opctx_copy_t;
 
 typedef struct {
@@ -46,9 +69,13 @@ typedef struct {
 } pcb_opctx_move_t;
 
 typedef union {
+	pcb_opctx_buffer_t buffer;
+	pcb_opctx_chgname_t chgname;
+	pcb_opctx_chgsize_t chgsize;
+	pcb_opctx_chgangle_t chgangle;
+	pcb_opctx_chgtherm_t chgtherm;
 	pcb_opctx_copy_t copy;
 	pcb_opctx_move_t move;
-	pcb_opctx_buffer_t buffer;
 } pcb_opctx_t;
 
 /* pointer to low-level operation (copy, move and rotate) functions */

@@ -116,13 +116,6 @@ static void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static Coord Delta;							/* change of size */
-static Coord Absolute;					/* Absolute size */
-static int is_primary;					/* whether the primary parameter should be changed */
-static char *NewName;						/* new name */
-
-static Angle ADelta, AAbsolute;				/* same as above, but for angles */
-
 static pcb_opfunc_t ChangeSizeFunctions = {
 	ChangeLineSize,
 	ChangeTextSize,
@@ -437,10 +430,10 @@ static void *ChangeViaThermal(pcb_opctx_t *ctx, PinTypePtr Via)
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	if (!Delta)										/* remove the thermals */
+	if (!ctx->chgtherm.style)										/* remove the thermals */
 		CLEAR_THERM(INDEXOFCURRENT, Via);
 	else
-		ASSIGN_THERM(INDEXOFCURRENT, Delta, Via);
+		ASSIGN_THERM(INDEXOFCURRENT, ctx->chgtherm.style, Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
 	DrawVia(Via);
@@ -456,10 +449,10 @@ static void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr element, PinTypeP
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
 	AddObjectToFlagUndoList(PCB_TYPE_PIN, element, Pin, Pin);
-	if (!Delta)										/* remove the thermals */
+	if (!ctx->chgtherm.style)										/* remove the thermals */
 		CLEAR_THERM(INDEXOFCURRENT, Pin);
 	else
-		ASSIGN_THERM(INDEXOFCURRENT, Delta, Pin);
+		ASSIGN_THERM(INDEXOFCURRENT, ctx->chgtherm.style, Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
 	DrawPin(Pin);
@@ -472,7 +465,7 @@ static void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr element, PinTypeP
  */
 static void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr Via)
 {
-	Coord value = Absolute ? Absolute : Via->Thickness + Delta;
+	Coord value = ctx->chgsize.absolute ? ctx->chgsize.absolute : Via->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
@@ -502,7 +495,7 @@ static void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr Via)
  */
 static void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr Via)
 {
-	Coord value = (Absolute) ? Absolute : Via->DrillingHole + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->DrillingHole + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
@@ -530,16 +523,16 @@ static void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr Via)
  */
 static void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr Via)
 {
-	Coord value = (Absolute) ? Absolute : Via->Clearance + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, value);
 	if (value < 0)
 		value = 0;
-	if (Delta < 0 && value < PCB->Bloat * 2)
+	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
 		value = 0;
-	if ((Delta > 0 || Absolute) && value < PCB->Bloat * 2)
+	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)
 		value = PCB->Bloat * 2 + 2;
 	if (Via->Clearance == value)
 		return NULL;
@@ -563,7 +556,7 @@ static void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr Via)
  */
 static void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
-	Coord value = (Absolute) ? Absolute : Pin->Thickness + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -591,16 +584,16 @@ static void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr 
  */
 static void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
-	Coord value = (Absolute) ? Absolute : Pin->Clearance + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, value);
 	if (value < 0)
 		value = 0;
-	if (Delta < 0 && value < PCB->Bloat * 2)
+	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
 		value = 0;
-	if ((Delta > 0 || Absolute) && value < PCB->Bloat * 2)
+	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)
 		value = PCB->Bloat * 2 + 2;
 	if (Pin->Clearance == value)
 		return NULL;
@@ -622,7 +615,7 @@ static void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTyp
  */
 static void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
-	Coord value = (Absolute) ? Absolute : Pad->Thickness + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
@@ -649,16 +642,16 @@ static void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr 
  */
 static void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
-	Coord value = (Absolute) ? Absolute : Pad->Clearance + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, value);
 	if (value < 0)
 		value = 0;
-	if (Delta < 0 && value < PCB->Bloat * 2)
+	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
 		value = 0;
-	if ((Delta > 0 || Absolute) && value < PCB->Bloat * 2)
+	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)
 		value = PCB->Bloat * 2 + 2;
 	if (value == Pad->Clearance)
 		return NULL;
@@ -687,7 +680,7 @@ static void *ChangeElement2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 		return (NULL);
 	PIN_LOOP(Element);
 	{
-		value = (Absolute) ? Absolute : pin->DrillingHole + Delta;
+		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pin->DrillingHole + ctx->chgsize.delta;
 		if (value <= MAX_PINORVIASIZE &&
 				value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->DrillingHole) {
@@ -724,7 +717,7 @@ static void *ChangeElement1stSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 		return (NULL);
 	PIN_LOOP(Element);
 	{
-		value = (Absolute) ? Absolute : pin->DrillingHole + Delta;
+		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pin->DrillingHole + ctx->chgsize.delta;
 		if (value <= MAX_PINORVIASIZE && value >= pin->DrillingHole + MIN_PINORVIACOPPER && value != pin->Thickness) {
 			changed = pcb_true;
 			AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
@@ -759,7 +752,7 @@ static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 		return (NULL);
 	PIN_LOOP(Element);
 	{
-		value = (Absolute) ? Absolute : pin->Clearance + Delta;
+		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pin->Clearance + ctx->chgsize.delta;
 		if (value <= MAX_PINORVIASIZE &&
 				value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->Clearance) {
@@ -780,7 +773,7 @@ static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 
 	PAD_LOOP(Element);
 	{
-		value = (Absolute) ? Absolute : pad->Clearance + Delta;
+		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pad->Clearance + ctx->chgsize.delta;
 		if (value <= MAX_PINORVIASIZE && value >= MIN_PINORVIAHOLE && value != pad->Clearance) {
 			changed = pcb_true;
 			AddObjectToClearSizeUndoList(PCB_TYPE_PAD, Element, pad, pad);
@@ -813,7 +806,7 @@ static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr Element)
  */
 static void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
-	Coord value = (Absolute) ? Absolute : Pin->DrillingHole + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->DrillingHole + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -841,7 +834,7 @@ static void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypeP
  */
 static void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
-	Coord value = (Absolute) ? Absolute : Line->Thickness + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
 		return (NULL);
@@ -866,7 +859,7 @@ static void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Li
  */
 static void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
-	Coord value = (Absolute) ? Absolute : Line->Clearance + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
@@ -913,7 +906,7 @@ static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, Polygo
  */
 static void *ChangeArcSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
-	Coord value = (Absolute) ? Absolute : Arc->Thickness + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
 		return (NULL);
@@ -938,7 +931,7 @@ static void *ChangeArcSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
  */
 static void *ChangeArcClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
-	Coord value = (Absolute) ? Absolute : Arc->Clearance + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
@@ -974,18 +967,18 @@ static void *ChangeArcRadius(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Ar
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
 		return (NULL);
 
-	switch(is_primary) {
+	switch(ctx->chgsize.is_primary) {
 		case 0: dst = &Arc->Width; break;
 		case 1: dst = &Arc->Height; break;
 		case 2:
-			is_primary = 0; a0 = ChangeArcRadius(ctx, Layer, Arc);
-			is_primary = 1; a1 = ChangeArcRadius(ctx, Layer, Arc);
+			ctx->chgsize.is_primary = 0; a0 = ChangeArcRadius(ctx, Layer, Arc);
+			ctx->chgsize.is_primary = 1; a1 = ChangeArcRadius(ctx, Layer, Arc);
 			if ((a0 != NULL) || (a1 != NULL))
 				return Arc;
 			return NULL;
 	}
 
-	value = (Absolute) ? Absolute : (*dst) + Delta;
+	value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : (*dst) + ctx->chgsize.delta;
 	value = MIN(MAX_ARCSIZE, MAX(value, MIN_ARCSIZE));
 	if (value != *dst) {
 		AddObjectToChangeRadiiUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
@@ -1014,18 +1007,18 @@ static void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
 		return (NULL);
 
-	switch(is_primary) {
+	switch(ctx->chgangle.is_primary) {
 		case 0: dst = &Arc->StartAngle; break;
 		case 1: dst = &Arc->Delta; break;
 		case 2:
-			is_primary = 0; a0 = ChangeArcAngle(ctx, Layer, Arc);
-			is_primary = 1; a1 = ChangeArcAngle(ctx, Layer, Arc);
+			ctx->chgangle.is_primary = 0; a0 = ChangeArcAngle(ctx, Layer, Arc);
+			ctx->chgangle.is_primary = 1; a1 = ChangeArcAngle(ctx, Layer, Arc);
 			if ((a0 != NULL) || (a1 != NULL))
 				return Arc;
 			return NULL;
 	}
 
-	value = (AAbsolute) ? AAbsolute : (*dst) + ADelta;
+	value = (ctx->chgangle.absolute) ? ctx->chgangle.absolute : (*dst) + ctx->chgangle.delta;
 	value = fmod(value, 360.0);
 	if (value < 0)
 		value += 360;
@@ -1052,8 +1045,8 @@ static void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc
  */
 static void *ChangeTextSize(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
-	int value = Absolute ? PCB_COORD_TO_MIL(Absolute)
-		: Text->Scale + PCB_COORD_TO_MIL(Delta);
+	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
+		: Text->Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
 		return (NULL);
@@ -1087,7 +1080,7 @@ static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 		EraseElement(Element);
 	ELEMENTLINE_LOOP(Element);
 	{
-		value = (Absolute) ? Absolute : line->Thickness + Delta;
+		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : line->Thickness + ctx->chgsize.delta;
 		if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != line->Thickness) {
 			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_LINE, Element, line, line);
 			line->Thickness = value;
@@ -1097,7 +1090,7 @@ static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 	END_LOOP;
 	ARC_LOOP(Element);
 	{
-		value = (Absolute) ? Absolute : arc->Thickness + Delta;
+		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : arc->Thickness + ctx->chgsize.delta;
 		if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != arc->Thickness) {
 			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_ARC, Element, arc, arc);
 			arc->Thickness = value;
@@ -1119,8 +1112,8 @@ static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr Element)
  */
 static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
-	int value = Absolute ? PCB_COORD_TO_MIL(Absolute)
-		: DESCRIPTION_TEXT(Element).Scale + PCB_COORD_TO_MIL(Delta);
+	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
+		: DESCRIPTION_TEXT(Element).Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
@@ -1150,11 +1143,11 @@ static void *ChangeViaName(pcb_opctx_t *ctx, PinTypePtr Via)
 
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via)) {
 		ErasePinName(Via);
-		Via->Name = NewName;
+		Via->Name = ctx->chgname.new_name;
 		DrawPinName(Via);
 	}
 	else
-		Via->Name = NewName;
+		Via->Name = ctx->chgname.new_name;
 	return (old);
 }
 
@@ -1168,11 +1161,11 @@ static void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr 
 	Element = Element;						/* get rid of 'unused...' warnings */
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin)) {
 		ErasePinName(Pin);
-		Pin->Name = NewName;
+		Pin->Name = ctx->chgname.new_name;
 		DrawPinName(Pin);
 	}
 	else
-		Pin->Name = NewName;
+		Pin->Name = ctx->chgname.new_name;
 	return (old);
 }
 
@@ -1186,11 +1179,11 @@ static void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr 
 	Element = Element;						/* get rid of 'unused...' warnings */
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad)) {
 		ErasePadName(Pad);
-		Pad->Name = NewName;
+		Pad->Name = ctx->chgname.new_name;
 		DrawPadName(Pad);
 	}
 	else
-		Pad->Name = NewName;
+		Pad->Name = ctx->chgname.new_name;
 	return (old);
 }
 
@@ -1204,11 +1197,11 @@ static void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr P
 	Element = Element;						/* get rid of 'unused...' warnings */
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin)) {
 		ErasePinName(Pin);
-		Pin->Number = NewName;
+		Pin->Number = ctx->chgname.new_name;
 		DrawPinName(Pin);
 	}
 	else
-		Pin->Number = NewName;
+		Pin->Number = ctx->chgname.new_name;
 	return (old);
 }
 
@@ -1222,11 +1215,11 @@ static void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr P
 	Element = Element;						/* get rid of 'unused...' warnings */
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad)) {
 		ErasePadName(Pad);
-		Pad->Number = NewName;
+		Pad->Number = ctx->chgname.new_name;
 		DrawPadName(Pad);
 	}
 	else
-		Pad->Number = NewName;
+		Pad->Number = ctx->chgname.new_name;
 	return (old);
 }
 
@@ -1238,7 +1231,7 @@ static void *ChangeLineName(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Li
 	char *old = Line->Number;
 
 	Layer = Layer;
-	Line->Number = NewName;
+	Line->Number = ctx->chgname.new_name;
 	return (old);
 }
 
@@ -1275,13 +1268,13 @@ static void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 	if (TEST_FLAG(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
 	if (NAME_INDEX() == NAMEONPCB_INDEX) {
-		if (conf_core.editor.unique_names && UniqueElementName(PCB->Data, NewName) != NewName) {
-			Message(PCB_MSG_DEFAULT, _("Error: The name \"%s\" is not unique!\n"), NewName);
+		if (conf_core.editor.unique_names && UniqueElementName(PCB->Data, ctx->chgname.new_name) != ctx->chgname.new_name) {
+			Message(PCB_MSG_DEFAULT, _("Error: The name \"%s\" is not unique!\n"), ctx->chgname.new_name);
 			return ((char *) -1);
 		}
 	}
 
-	return ChangeElementText(PCB, PCB->Data, Element, NAME_INDEX(), NewName);
+	return ChangeElementText(PCB, PCB->Data, Element, NAME_INDEX(), ctx->chgname.new_name);
 }
 
 static void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr Element)
@@ -1306,7 +1299,7 @@ static void *ChangeTextName(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Te
 		return (NULL);
 	EraseText(Layer, Text);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	Text->TextString = NewName;
+	Text->TextString = ctx->chgname.new_name;
 
 	/* calculate size of the bounding box */
 	SetTextBoundingBox(&PCB->Font, Text);
@@ -1655,8 +1648,8 @@ static void *ChangeViaSquare(pcb_opctx_t *ctx, PinTypePtr Via)
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, NULL, Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, NULL, Via, Via);
-	ASSIGN_SQUARE(Absolute, Via);
-	if (Absolute == 0)
+	ASSIGN_SQUARE(ctx->chgsize.absolute, Via);
+	if (ctx->chgsize.absolute == 0)
 		CLEAR_FLAG(PCB_FLAG_SQUARE, Via);
 	else
 		SET_FLAG(PCB_FLAG_SQUARE, Via);
@@ -1678,8 +1671,8 @@ static void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePt
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-	ASSIGN_SQUARE(Absolute, Pin);
-	if (Absolute == 0)
+	ASSIGN_SQUARE(ctx->chgsize.absolute, Pin);
+	if (ctx->chgsize.absolute == 0)
 		CLEAR_FLAG(PCB_FLAG_SQUARE, Pin);
 	else
 		SET_FLAG(PCB_FLAG_SQUARE, Pin);
@@ -1866,7 +1859,6 @@ pcb_bool ChangeSelectedElementSide(void)
 {
 	pcb_bool change = pcb_false;
 
-	/* setup identifiers */
 	if (PCB->PinOn && PCB->ElementOn)
 		ELEMENT_LOOP(PCB->Data);
 	{
@@ -1891,7 +1883,9 @@ pcb_bool ChangeSelectedThermals(int types, int therm_style)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
-	Delta = therm_style;
+	ctx.chgtherm.pcb = PCB;
+	ctx.chgtherm.style = therm_style;
+
 	change = SelectedOperation(&ChangeThermalFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
@@ -1908,10 +1902,11 @@ pcb_bool ChangeSelectedSize(int types, Coord Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
-	
-	/* setup identifiers */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
+
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
+	ctx.chgsize.delta = Difference;
 
 	change = SelectedOperation(&ChangeSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -1930,9 +1925,11 @@ pcb_bool ChangeSelectedClearSize(int types, Coord Difference, pcb_bool fixIt)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
-	/* setup identifiers */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
+	ctx.chgsize.delta = Difference;
+
 	if (conf_core.editor.show_mask)
 		change = SelectedOperation(&ChangeMaskSizeFunctions, &ctx, pcb_false, types);
 	else
@@ -1953,9 +1950,11 @@ pcb_bool ChangeSelected2ndSize(int types, Coord Difference, pcb_bool fixIt)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
-	/* setup identifiers */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
+	ctx.chgsize.delta = Difference;
+
 	change = SelectedOperation(&Change2ndSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
@@ -1972,6 +1971,8 @@ pcb_bool ChangeSelectedJoin(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	change = SelectedOperation(&ChangeJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -1990,6 +1991,8 @@ pcb_bool SetSelectedJoin(int types)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	change = SelectedOperation(&SetJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
@@ -2007,6 +2010,8 @@ pcb_bool ClrSelectedJoin(int types)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	change = SelectedOperation(&ClrJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
@@ -2023,6 +2028,8 @@ pcb_bool ChangeSelectedNonetlist(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	change = SelectedOperation(&ChangeNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -2042,6 +2049,8 @@ pcb_bool SetSelectedNonetlist(int types)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	change = SelectedOperation(&SetNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
@@ -2058,6 +2067,8 @@ pcb_bool ClrSelectedNonetlist(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	change = SelectedOperation(&ClrNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -2077,6 +2088,8 @@ pcb_bool ChangeSelectedSquare(int types)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	change = SelectedOperation(&ChangeSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
@@ -2094,10 +2107,10 @@ pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
-	/* setup identifiers */
-	AAbsolute = (fixIt) ? Difference : 0;
-	ADelta = Difference;
-	is_primary = is_start;
+	ctx.chgangle.pcb = PCB;
+	ctx.chgangle.is_primary = is_start;
+	ctx.chgangle.absolute = (fixIt) ? Difference : 0;
+	ctx.chgangle.delta = Difference;
 
 	change = SelectedOperation(&ChangeAngleFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -2116,10 +2129,10 @@ pcb_bool ChangeSelectedRadius(int types, int is_start, Angle Difference, pcb_boo
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
-	/* setup identifiers */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
-	is_primary = is_start;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = is_start;
+	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
+	ctx.chgsize.delta = Difference;
 
 	change = SelectedOperation(&ChangeRadiusFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -2139,6 +2152,8 @@ pcb_bool SetSelectedSquare(int types)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	change = SelectedOperation(&SetSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
@@ -2155,6 +2170,8 @@ pcb_bool ClrSelectedSquare(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	change = SelectedOperation(&ClrSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -2173,6 +2190,8 @@ pcb_bool ChangeSelectedOctagon(int types)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	change = SelectedOperation(&ChangeOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
@@ -2190,6 +2209,8 @@ pcb_bool SetSelectedOctagon(int types)
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	change = SelectedOperation(&SetOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
@@ -2206,6 +2227,8 @@ pcb_bool ClrSelectedOctagon(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	change = SelectedOperation(&ClrOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
@@ -2268,9 +2291,11 @@ pcb_bool ChangeObjectSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Di
 	pcb_bool change;
 	pcb_opctx_t ctx;
 
-	/* setup identifier */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
+	ctx.chgsize.delta = Difference;
+
 	change = (ObjectOperation(&ChangeSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
@@ -2288,9 +2313,11 @@ pcb_bool ChangeObject1stSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord
 	pcb_bool change;
 	pcb_opctx_t ctx;
 
-	/* setup identifier */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
+	ctx.chgsize.delta = Difference;
+
 	change = (ObjectOperation(&Change1stSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
@@ -2308,10 +2335,11 @@ pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 	pcb_bool change;
 	pcb_opctx_t ctx;
 
-	/* setup identifier */
-	Absolute = (fixIt) ? r : 0;
-	Delta = r;
-	is_primary = is_x;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = is_x;
+	ctx.chgsize.absolute = (fixIt) ? r : 0;
+	ctx.chgsize.delta = r;
+
 	change = (ObjectOperation(&ChangeRadiusFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
@@ -2321,7 +2349,7 @@ pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 }
 
 /* ---------------------------------------------------------------------------
- * changes the angles of the passed object (e.g. arc start/delta)
+ * changes the angles of the passed object (e.g. arc start/ctx->chgsize.delta)
  * Returns pcb_true if anything is changed
  */
 pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, Angle a, pcb_bool fixIt)
@@ -2329,10 +2357,11 @@ pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
 	pcb_bool change;
 	pcb_opctx_t ctx;
 
-	/* setup identifier */
-	AAbsolute = (fixIt) ? a : 0;
-	ADelta = a;
-	is_primary = is_start;
+	ctx.chgangle.pcb = PCB;
+	ctx.chgangle.is_primary = is_start;
+	ctx.chgangle.absolute = (fixIt) ? a : 0;
+	ctx.chgangle.delta = a;
+
 	change = (ObjectOperation(&ChangeAngleFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
@@ -2351,9 +2380,11 @@ pcb_bool ChangeObjectClearSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coo
 	pcb_bool change;
 	pcb_opctx_t ctx;
 
-	/* setup identifier */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
+	ctx.chgsize.delta = Difference;
+
 	if (conf_core.editor.show_mask)
 		change = (ObjectOperation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	else
@@ -2375,7 +2406,9 @@ pcb_bool ChangeObjectThermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int t
 	pcb_bool change;
 	pcb_opctx_t ctx;
 
-	Delta = Absolute = therm_type;
+	ctx.chgtherm.pcb = PCB;
+	ctx.chgtherm.style = therm_type;
+
 	change = (ObjectOperation(&ChangeThermalFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
@@ -2393,9 +2426,11 @@ pcb_bool ChangeObject2ndSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord
 	pcb_bool change;
 	pcb_opctx_t ctx;
 
-	/* setup identifier */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
+	ctx.chgsize.delta = Difference;
+
 	change = (ObjectOperation(&Change2ndSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
@@ -2414,9 +2449,11 @@ pcb_bool ChangeObjectMaskSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
 	pcb_bool change;
 	pcb_opctx_t ctx;
 
-	/* setup identifier */
-	Absolute = (fixIt) ? Difference : 0;
-	Delta = Difference;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.absolute = (fixIt) ? Difference : 0;
+	ctx.chgsize.delta = Difference;
+
 	change = (ObjectOperation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
@@ -2437,8 +2474,9 @@ void *ChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 	void *result;
 	pcb_opctx_t ctx;
 
-	/* setup identifier */
-	NewName = Name;
+	ctx.chgname.pcb = PCB;
+	ctx.chgname.new_name = Name;
+
 	result = ObjectOperation(&ChangeNameFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	Draw();
 	return (result);
@@ -2456,8 +2494,9 @@ void *ChangeObjectPinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Nam
 	void *result;
 	pcb_opctx_t ctx;
 
-	/* setup identifier */
-	NewName = Name;
+	ctx.chgname.pcb = PCB;
+	ctx.chgname.new_name = Name;
+
 	result = ObjectOperation(&ChangePinnumFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	Draw();
 	return (result);
@@ -2470,6 +2509,8 @@ void *ChangeObjectPinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Nam
 pcb_bool ChangeObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ChangeJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
@@ -2487,6 +2528,8 @@ pcb_bool SetObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	if (ObjectOperation(&SetJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2502,6 +2545,8 @@ pcb_bool SetObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 pcb_bool ClrObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ClrJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
@@ -2519,6 +2564,8 @@ pcb_bool ChangeObjectNonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	if (ObjectOperation(&ChangeNonetlistFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2535,7 +2582,9 @@ pcb_bool ChangeObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int st
 {
 	pcb_opctx_t ctx;
 
-	Absolute = style;
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.absolute = style;
+
 	if (ObjectOperation(&ChangeSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2551,6 +2600,8 @@ pcb_bool ChangeObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int st
 pcb_bool SetObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&SetSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
@@ -2568,6 +2619,8 @@ pcb_bool ClrObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	if (ObjectOperation(&ClrSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2583,6 +2636,8 @@ pcb_bool ClrObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 pcb_bool ChangeObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ChangeOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
@@ -2600,6 +2655,8 @@ pcb_bool SetObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
+	ctx.chgsize.pcb = PCB;
+
 	if (ObjectOperation(&SetOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2615,6 +2672,8 @@ pcb_bool SetObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 pcb_bool ClrObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ClrOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
@@ -2728,10 +2787,10 @@ void ChangePCBSize(Coord Width, Coord Height)
  */
 static void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
-	Coord value = (Absolute) ? Absolute : Pad->Mask + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Mask + ctx->chgsize.delta;
 
 	value = MAX(value, 0);
-	if (value == Pad->Mask && Absolute == 0)
+	if (value == Pad->Mask && ctx->chgsize.absolute == 0)
 		value = Pad->Thickness;
 	if (value != Pad->Mask) {
 		AddObjectToMaskSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
@@ -2751,10 +2810,10 @@ static void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadType
  */
 static void *ChangePinMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
-	Coord value = (Absolute) ? Absolute : Pin->Mask + Delta;
+	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Mask + ctx->chgsize.delta;
 
 	value = MAX(value, 0);
-	if (value == Pin->Mask && Absolute == 0)
+	if (value == Pin->Mask && ctx->chgsize.absolute == 0)
 		value = Pin->Thickness;
 	if (value != Pin->Mask) {
 		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
@@ -2776,7 +2835,7 @@ static void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	Coord value;
 
-	value = (Absolute) ? Absolute : Via->Mask + Delta;
+	value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Mask + ctx->chgsize.delta;
 	value = MAX(value, 0);
 	if (value != Via->Mask) {
 		AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
