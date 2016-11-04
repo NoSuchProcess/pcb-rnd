@@ -8,6 +8,7 @@
 	- Arc insert missing (mainline too)
 	- insert drag&drop strangeness (mainline too)
 	- mirror buffer left/right with arcs in it -> rtree assert in debug mode
+	- place text over a poly, press 'j' on it to join them; the text is deleted and/or undo kills it! (mainline too)
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
