@@ -37,6 +37,7 @@
    pcb_false otherwise, to stop the user from doing normally dangerous
    things.  */
 void CreateBeLenient(pcb_bool);
+extern pcb_bool pcb_create_be_lenient;
 
 DataTypePtr CreateNewBuffer(void);
 void pcb_colors_from_settings(PCBTypePtr);

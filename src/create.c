@@ -55,7 +55,7 @@
 /* current object ID; incremented after each creation of an object */
 static long int ID = 1;
 
-static pcb_bool be_lenient = pcb_false;
+pcb_bool pcb_create_be_lenient = pcb_false;
 
 /* ----------------------------------------------------------------------
  * some local prototypes
@@ -68,7 +68,7 @@ static void AddTextToElement(TextTypePtr, FontTypePtr, Coord, Coord, unsigned, c
 
 void CreateBeLenient(pcb_bool v)
 {
-	be_lenient = v;
+	pcb_create_be_lenient = v;
 }
 
 /* ---------------------------------------------------------------------------
@@ -218,7 +218,7 @@ CreateNewVia(DataTypePtr Data,
 {
 	PinTypePtr Via;
 
-	if (!be_lenient) {
+	if (!pcb_create_be_lenient) {
 		VIA_LOOP(Data);
 		{
 			if (Distance(X, Y, via->X, via->Y) <= via->DrillingHole / 2 + DrillingHole / 2) {
