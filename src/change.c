@@ -44,32 +44,22 @@
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
+#include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *ChangePinMaskSize(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
 static void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-static void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
 static void *ChangeElement1stSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElement2ndSize(pcb_opctx_t *ctx, ElementTypePtr);
-static void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr);
-static void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr);
-static void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr);
-static void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr);
-static void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
 static void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-static void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
 static void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-static void *ChangeViaName(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
@@ -78,21 +68,9 @@ static void *ClrElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
 static void *SetElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ClrElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
-static void *ChangeViaSquare(pcb_opctx_t *ctx, PinTypePtr);
-static void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *SetPinSquare(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *ClrPinSquare(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *ChangePinOctagon(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *SetPinOctagon(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *ClrPinOctagon(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *ChangeViaOctagon(pcb_opctx_t *ctx, PinTypePtr);
-static void *SetViaOctagon(pcb_opctx_t *ctx, PinTypePtr);
-static void *ClrViaOctagon(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-static void *ChangeViaThermal(pcb_opctx_t *ctx, PinTypePtr);
-static void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
 static void *ChangePolyClear(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 
 /* ---------------------------------------------------------------------------
@@ -402,195 +380,6 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 	NULL
 };
 
-
-/* ---------------------------------------------------------------------------
- * changes the thermal on a via
- * returns pcb_true if changed
- */
-static void *ChangeViaThermal(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
-	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	if (!ctx->chgtherm.style)										/* remove the thermals */
-		CLEAR_THERM(INDEXOFCURRENT, Via);
-	else
-		ASSIGN_THERM(INDEXOFCURRENT, ctx->chgtherm.style, Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
-	DrawVia(Via);
-	return Via;
-}
-
-/* ---------------------------------------------------------------------------
- * changes the thermal on a pin
- * returns pcb_true if changed
- */
-static void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr element, PinTypePtr Pin)
-{
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_false);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
-	AddObjectToFlagUndoList(PCB_TYPE_PIN, element, Pin, Pin);
-	if (!ctx->chgtherm.style)										/* remove the thermals */
-		CLEAR_THERM(INDEXOFCURRENT, Pin);
-	else
-		ASSIGN_THERM(INDEXOFCURRENT, ctx->chgtherm.style, Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_true);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
-	DrawPin(Pin);
-	return Pin;
-}
-
-/* ---------------------------------------------------------------------------
- * changes the size of a via
- * returns pcb_true if changed
- */
-static void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	Coord value = ctx->chgsize.absolute ? ctx->chgsize.absolute : Via->Thickness + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
-		return (NULL);
-	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIASIZE && value >= Via->DrillingHole + MIN_PINORVIACOPPER && value != Via->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
-		EraseVia(Via);
-		r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Via, Via);
-		if (Via->Mask) {
-			AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
-			Via->Mask += value - Via->Thickness;
-		}
-		Via->Thickness = value;
-		SetPinBoundingBox(Via);
-		r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-		DrawVia(Via);
-		return (Via);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the drilling hole of a via
- * returns pcb_true if changed
- */
-static void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->DrillingHole + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
-		return (NULL);
-	if (value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, Via) || value <= Via->Thickness - MIN_PINORVIACOPPER)
-			&& value != Via->DrillingHole) {
-		AddObjectTo2ndSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
-		EraseVia(Via);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-		Via->DrillingHole = value;
-		if (TEST_FLAG(PCB_FLAG_HOLE, Via)) {
-			AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
-			Via->Thickness = value;
-		}
-		ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-		DrawVia(Via);
-		return (Via);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the clearance size of a via
- * returns pcb_true if changed
- */
-static void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Clearance + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
-		return (NULL);
-	value = MIN(MAX_LINESIZE, value);
-	if (value < 0)
-		value = 0;
-	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
-		value = 0;
-	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)
-		value = PCB->Bloat * 2 + 2;
-	if (Via->Clearance == value)
-		return NULL;
-	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	AddObjectToClearSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	EraseVia(Via);
-	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
-	Via->Clearance = value;
-	SetPinBoundingBox(Via);
-	r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	DrawVia(Via);
-	Via->Element = NULL;
-	return (Via);
-}
-
-
-/* ---------------------------------------------------------------------------
- * changes the size of a pin
- * returns pcb_true if changed
- */
-static void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Thickness + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
-		return (NULL);
-	if (!TEST_FLAG(PCB_FLAG_HOLE, Pin) && value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIASIZE && value >= Pin->DrillingHole + MIN_PINORVIACOPPER && value != Pin->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-		ErasePin(Pin);
-		r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-		Pin->Mask += value - Pin->Thickness;
-		Pin->Thickness = value;
-		/* SetElementBB updates all associated rtrees */
-		SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-		DrawPin(Pin);
-		return (Pin);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the clearance size of a pin
- * returns pcb_true if changed
- */
-static void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Clearance + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
-		return (NULL);
-	value = MIN(MAX_LINESIZE, value);
-	if (value < 0)
-		value = 0;
-	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
-		value = 0;
-	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)
-		value = PCB->Bloat * 2 + 2;
-	if (Pin->Clearance == value)
-		return NULL;
-	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	AddObjectToClearSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-	ErasePin(Pin);
-	r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
-	Pin->Clearance = value;
-	/* SetElementBB updates all associated rtrees */
-	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	DrawPin(Pin);
-	return (Pin);
-}
-
 /* ---------------------------------------------------------------------------
  * changes the size of a pad
  * returns pcb_true if changed
@@ -783,34 +572,6 @@ static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* ---------------------------------------------------------------------------
- * changes the drilling hole of a pin
- * returns pcb_true if changed
- */
-static void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->DrillingHole + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
-		return (NULL);
-	if (value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, Pin) || value <= Pin->Thickness - MIN_PINORVIACOPPER)
-			&& value != Pin->DrillingHole) {
-		AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-		ErasePin(Pin);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-		Pin->DrillingHole = value;
-		if (TEST_FLAG(PCB_FLAG_HOLE, Pin)) {
-			AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-			Pin->Thickness = value;
-		}
-		ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-		DrawPin(Pin);
-		return (Pin);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
  * Handle attempts to change the clearance of a polygon.
  */
 static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr poly)
@@ -897,41 +658,6 @@ static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* ---------------------------------------------------------------------------
- * changes the name of a via
- */
-static void *ChangeViaName(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	char *old = Via->Name;
-
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via)) {
-		ErasePinName(Via);
-		Via->Name = ctx->chgname.new_name;
-		DrawPinName(Via);
-	}
-	else
-		Via->Name = ctx->chgname.new_name;
-	return (old);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the name of a pin
- */
-static void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	char *old = Pin->Name;
-
-	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin)) {
-		ErasePinName(Pin);
-		Pin->Name = ctx->chgname.new_name;
-		DrawPinName(Pin);
-	}
-	else
-		Pin->Name = ctx->chgname.new_name;
-	return (old);
-}
-
-/* ---------------------------------------------------------------------------
  * changes the name of a pad
  */
 static void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
@@ -946,24 +672,6 @@ static void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr 
 	}
 	else
 		Pad->Name = ctx->chgname.new_name;
-	return (old);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the number of a pin
- */
-static void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	char *old = Pin->Number;
-
-	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin)) {
-		ErasePinName(Pin);
-		Pin->Number = ctx->chgname.new_name;
-		DrawPinName(Pin);
-	}
-	else
-		Pin->Number = ctx->chgname.new_name;
 	return (old);
 }
 
@@ -1233,191 +941,6 @@ static void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr P
 		return (NULL);
 
 	return (ChangePadSquare(ctx, Element, Pad));
-}
-
-
-/* ---------------------------------------------------------------------------
- * changes the square flag of a via
- */
-static void *ChangeViaSquare(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
-		return (NULL);
-	EraseVia(Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, pcb_false);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, NULL, Via);
-	AddObjectToFlagUndoList(PCB_TYPE_VIA, NULL, Via, Via);
-	ASSIGN_SQUARE(ctx->chgsize.absolute, Via);
-	if (ctx->chgsize.absolute == 0)
-		CLEAR_FLAG(PCB_FLAG_SQUARE, Via);
-	else
-		SET_FLAG(PCB_FLAG_SQUARE, Via);
-	SetPinBoundingBox(Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, pcb_true);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, NULL, Via);
-	DrawVia(Via);
-	return (Via);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the square flag of a pin
- */
-static void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
-		return (NULL);
-	ErasePin(Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-	ASSIGN_SQUARE(ctx->chgsize.absolute, Pin);
-	if (ctx->chgsize.absolute == 0)
-		CLEAR_FLAG(PCB_FLAG_SQUARE, Pin);
-	else
-		SET_FLAG(PCB_FLAG_SQUARE, Pin);
-	SetPinBoundingBox(Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	DrawPin(Pin);
-	return (Pin);
-}
-
-/* ---------------------------------------------------------------------------
- * sets the square flag of a pin
- */
-static void *SetPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_SQUARE, Pin))
-		return (NULL);
-
-	return (ChangePinSquare(ctx, Element, Pin));
-}
-
-/* ---------------------------------------------------------------------------
- * clears the square flag of a pin
- */
-static void *ClrPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_SQUARE, Pin))
-		return (NULL);
-
-	return (ChangePinSquare(ctx, Element, Pin));
-}
-
-/* ---------------------------------------------------------------------------
- * changes the octagon flag of a via
- */
-static void *ChangeViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
-		return (NULL);
-	EraseVia(Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	TOGGLE_FLAG(PCB_FLAG_OCTAGON, Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	DrawVia(Via);
-	return (Via);
-}
-
-/* ---------------------------------------------------------------------------
- * sets the octagon flag of a via
- */
-static void *SetViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || TEST_FLAG(PCB_FLAG_OCTAGON, Via))
-		return (NULL);
-
-	return (ChangeViaOctagon(ctx, Via));
-}
-
-/* ---------------------------------------------------------------------------
- * clears the octagon flag of a via
- */
-static void *ClrViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || !TEST_FLAG(PCB_FLAG_OCTAGON, Via))
-		return (NULL);
-
-	return (ChangeViaOctagon(ctx, Via));
-}
-
-/* ---------------------------------------------------------------------------
- * changes the octagon flag of a pin
- */
-static void *ChangePinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
-		return (NULL);
-	ErasePin(Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-	TOGGLE_FLAG(PCB_FLAG_OCTAGON, Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	DrawPin(Pin);
-	return (Pin);
-}
-
-/* ---------------------------------------------------------------------------
- * sets the octagon flag of a pin
- */
-static void *SetPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
-		return (NULL);
-
-	return (ChangePinOctagon(ctx, Element, Pin));
-}
-
-/* ---------------------------------------------------------------------------
- * clears the octagon flag of a pin
- */
-static void *ClrPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
-		return (NULL);
-
-	return (ChangePinOctagon(ctx, Element, Pin));
-}
-
-/* ---------------------------------------------------------------------------
- * changes the hole flag of a via
- */
-pcb_bool ChangeHole(PinTypePtr Via)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
-		return (pcb_false);
-	EraseVia(Via);
-	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	TOGGLE_FLAG(PCB_FLAG_HOLE, Via);
-
-	if (TEST_FLAG(PCB_FLAG_HOLE, Via)) {
-		/* A tented via becomes an minimally untented hole.  An untented
-		   via retains its mask clearance.  */
-		if (Via->Mask > Via->Thickness) {
-			Via->Mask = (Via->DrillingHole + (Via->Mask - Via->Thickness));
-		}
-		else if (Via->Mask < Via->DrillingHole) {
-			Via->Mask = Via->DrillingHole + 2 * MASKFRAME;
-		}
-	}
-	else {
-		Via->Mask = (Via->Thickness + (Via->Mask - Via->DrillingHole));
-	}
-
-	SetPinBoundingBox(Via);
-	r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	DrawVia(Via);
-	Draw();
-	return (pcb_true);
 }
 
 /* ---------------------------------------------------------------------------
@@ -2403,48 +1926,3 @@ static void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadType
 	return (NULL);
 }
 
-/* ---------------------------------------------------------------------------
- * changes the mask size of a pin
- * returns pcb_true if changed
- */
-static void *ChangePinMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Mask + ctx->chgsize.delta;
-
-	value = MAX(value, 0);
-	if (value == Pin->Mask && ctx->chgsize.absolute == 0)
-		value = Pin->Thickness;
-	if (value != Pin->Mask) {
-		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-		ErasePin(Pin);
-		r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
-		Pin->Mask = value;
-		SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-		DrawPin(Pin);
-		return (Pin);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the mask size of a via
- * returns pcb_true if changed
- */
-static void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	Coord value;
-
-	value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Mask + ctx->chgsize.delta;
-	value = MAX(value, 0);
-	if (value != Via->Mask) {
-		AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
-		EraseVia(Via);
-		r_delete_entry(PCB->Data->via_tree, &Via->BoundingBox);
-		Via->Mask = value;
-		SetPinBoundingBox(Via);
-		r_insert_entry(PCB->Data->via_tree, &Via->BoundingBox, 0);
-		DrawVia(Via);
-		return (Via);
-	}
-	return (NULL);
-}

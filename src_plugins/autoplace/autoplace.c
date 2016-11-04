@@ -59,6 +59,7 @@
 #include "rats.h"
 #include "remove.h"
 #include "rotate.h"
+#include "obj_pinvia.h"
 
 #warning TODO: remove this in favor of vtptr
 #include "ptrlist.h"

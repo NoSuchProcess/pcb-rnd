@@ -47,6 +47,7 @@
 #include "hid_actions.h"
 #include "djopt_conf.h"
 #include "obj_line.h"
+#include "obj_pinvia.h"
 
 conf_djopt_t conf_djopt;
 

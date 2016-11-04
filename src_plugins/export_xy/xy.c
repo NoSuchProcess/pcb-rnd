@@ -16,6 +16,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "compat_misc.h"
+#include "obj_pinvia.h"
 
 #include "hid.h"
 #include "hid_nogui.h"

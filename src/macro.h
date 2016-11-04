@@ -94,11 +94,6 @@
  */
 #define END_LOOP  }} while (0)
 
-#define VIA_LOOP(top) do {                                          \
-  PinType *via;                                                     \
-  gdl_iterator_t __it__;                                            \
-  pinlist_foreach(&(top)->Via, &__it__, via) {
-
 #define DRILL_LOOP(top) do             {               \
         pcb_cardinal_t        n;                                      \
         DrillTypePtr    drill;                                  \
@@ -124,11 +119,6 @@
 	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)		\
 	{							\
 		textstring = (element)->Name[n].TextString
-
-#define PIN_LOOP(element) do {                                      \
-  PinType *pin;                                                     \
-  gdl_iterator_t __it__;                                            \
-  pinlist_foreach(&(element)->Pin, &__it__, pin) {
 
 #define PAD_LOOP(element) do {                                      \
   PadType *pad;                                                     \
@@ -158,10 +148,6 @@
 		point = &(polygon)->Points[n]
 
 #define ENDALL_LOOP }} while (0); }} while(0)
-
-#define	ALLPIN_LOOP(top)	\
-        ELEMENT_LOOP(top); \
-	        PIN_LOOP(element)\
 
 #define	ALLPAD_LOOP(top) \
 	ELEMENT_LOOP(top); \

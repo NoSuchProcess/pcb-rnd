@@ -48,7 +48,6 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr);
 static void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr);
 
@@ -150,22 +149,6 @@ CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, p
 
 	SetElementBoundingBox(Data, Dest, &PCB->Font);
 	return (Dest);
-}
-
-/* ---------------------------------------------------------------------------
- * copies a via
- */
-static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	PinTypePtr via;
-
-	via = CreateNewVia(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
-										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND));
-	if (!via)
-		return (via);
-	DrawVia(via);
-	AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
-	return (via);
 }
 
 /* ---------------------------------------------------------------------------

@@ -74,7 +74,6 @@ put /local/pcb/OBJS [@
 	list_conf.o
 	list_element.o
 	list_pad.o
-	list_pin.o
 	list_poly.o
 	list_rat.o
 	main.o
@@ -93,6 +92,8 @@ put /local/pcb/OBJS [@
 	obj_line.o
 	obj_line_drcenf.o
 	obj_line_list.o
+	obj_pinvia.o
+	obj_pinvia_list.o
 	obj_text.o
 	obj_text_list.o
 	paths.o

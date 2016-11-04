@@ -22,5 +22,5 @@
 
 #define TDL_DONT_UNDEF
 #include "global_objs.h"
-#include "list_pin.h"
+#include "obj_pinvia_list.h"
 #include <genlist/gentdlist_impl.c>

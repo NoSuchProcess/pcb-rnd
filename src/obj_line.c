@@ -46,6 +46,7 @@
 #include "create.h"
 #include "compat_misc.h"
 #include "rotate.h"
+#include "obj_pinvia.h"
 
 #include "obj_line.h"
 #include "obj_line_op.h"

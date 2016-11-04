@@ -1,7 +1,7 @@
 #ifndef PCB_ELEMENT_H
 #define PCB_ELEMENT_H
 
-#include "list_pin.h"
+#include "global_objs.h"
 #include "list_pad.h"
 #include "obj_all_list.h"
 

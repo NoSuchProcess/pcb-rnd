@@ -20,10 +20,10 @@
  *
  */
 
-#ifndef LIST_PIN_H
-#define LIST_PIN_H
+#ifndef PCB_OBJ_PINVIA_LIST_H
+#define PCB_OBJ_PINVIA_LIST_H
 
-#include "global_objs.h"
+#include "obj_pinvia.h"
 
 /* List of Pins */
 #define TDL(x)      pinlist_ ## x
@@ -35,7 +35,6 @@
 
 #define pinlist_foreach(list, iterator, loop_elem) \
 	gdl_foreach_((&((list)->lst)), (iterator), (loop_elem))
-
 
 #include <genlist/gentdlist_impl.h>
 #include <genlist/gentdlist_undef.h>

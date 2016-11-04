@@ -51,6 +51,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "polygon.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "obj_pinvia.h"
 
 #include "action_helper.h"
 #include "hid.h"

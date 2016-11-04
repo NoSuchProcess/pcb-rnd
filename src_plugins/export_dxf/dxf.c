@@ -196,6 +196,7 @@
 #include "hid.h"
 #include "hid_init.h"
 #include "plugins.h"
+#include "obj_pinvia.h"
 
 /*!
  * \brief List with string data.

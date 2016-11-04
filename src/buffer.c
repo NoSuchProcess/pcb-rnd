@@ -53,11 +53,9 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *AddViaToBuffer(pcb_opctx_t *ctx, PinTypePtr);
 static void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr);
 static void *AddPolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
-static void *MoveViaToBuffer(pcb_opctx_t *ctx, PinTypePtr);
 static void *MoveRatToBuffer(pcb_opctx_t *ctx, RatTypePtr);
 static void *MovePolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *MoveElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
@@ -84,15 +82,6 @@ MoveLineToBuffer,
 		MoveTextToBuffer,
 		MovePolygonToBuffer, MoveViaToBuffer, MoveElementToBuffer, NULL, NULL, NULL, NULL, NULL, MoveArcToBuffer, MoveRatToBuffer};
 
-
-/* ---------------------------------------------------------------------------
- * copies a via to paste buffer
- */
-static void *AddViaToBuffer(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	return (CreateNewVia(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance,
-											 Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
-}
 
 /* ---------------------------------------------------------------------------
  * copies a rat-line to paste buffer
@@ -155,26 +144,6 @@ static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr Element)
 		END_LOOP;
 	}
 	return (element);
-}
-
-/* ---------------------------------------------------------------------------
- * moves a via to paste buffer without allocating memory for the name
- */
-static void *MoveViaToBuffer(pcb_opctx_t *ctx, PinType * via)
-{
-	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_VIA, via, via);
-
-	r_delete_entry(ctx->buffer.src->via_tree, (BoxType *) via);
-	pinlist_remove(via);
-	pinlist_append(&ctx->buffer.dst->Via, via);
-
-	CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, via);
-
-	if (!ctx->buffer.dst->via_tree)
-		ctx->buffer.dst->via_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(ctx->buffer.dst->via_tree, (BoxType *) via, 0);
-	ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_VIA, via, via);
-	return via;
 }
 
 /* ---------------------------------------------------------------------------

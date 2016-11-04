@@ -49,6 +49,7 @@
 #include "compat_nls.h"
 #include "obj_all_op.h"
 #include "obj_line.h"
+#include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

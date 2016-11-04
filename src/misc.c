@@ -61,34 +61,6 @@ static void GetGridLockCoordinates(int, void *, void *, void *, Coord *, Coord *
 /* Local variables */
 
 /* ---------------------------------------------------------------------------
- * sets the bounding box of a pin or via
- */
-void SetPinBoundingBox(PinTypePtr Pin)
-{
-	Coord width;
-
-	if ((GET_SQUARE(Pin) > 1) && (TEST_FLAG(PCB_FLAG_SQUARE, Pin))) {
-		POLYAREA *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
-		poly_bbox(p, &Pin->BoundingBox);
-		poly_Free(&p);
-	}
-
-	/* the bounding box covers the extent of influence
-	 * so it must include the clearance values too
-	 */
-	width = MAX(Pin->Clearance + PIN_SIZE(Pin), Pin->Mask) / 2;
-
-	/* Adjust for our discrete polygon approximation */
-	width = (double) width *POLY_CIRC_RADIUS_ADJ + 0.5;
-
-	Pin->BoundingBox.X1 = Pin->X - width;
-	Pin->BoundingBox.Y1 = Pin->Y - width;
-	Pin->BoundingBox.X2 = Pin->X + width;
-	Pin->BoundingBox.Y2 = Pin->Y + width;
-	close_box(&Pin->BoundingBox);
-}
-
-/* ---------------------------------------------------------------------------
  * sets the bounding box of a pad
  */
 void SetPadBoundingBox(PadTypePtr Pad)

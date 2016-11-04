@@ -31,6 +31,7 @@
 #include "mymem.h"
 #include "drill.h"
 #include "macro.h"
+#include "obj_pinvia.h"
 
 /*
  * some local prototypes

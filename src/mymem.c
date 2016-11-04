@@ -51,25 +51,6 @@ do { \
 } while(0) \
 
 /* ---------------------------------------------------------------------------
- * get next slot for a pin, allocates memory if necessary
- */
-PinType *GetPinMemory(ElementType * element)
-{
-	PinType *new_obj;
-
-	new_obj = calloc(sizeof(PinType), 1);
-	pinlist_append(&element->Pin, new_obj);
-
-	return new_obj;
-}
-
-void RemoveFreePin(PinType * data)
-{
-	pinlist_remove(data);
-	free(data);
-}
-
-/* ---------------------------------------------------------------------------
  * get next slot for a pad, allocates memory if necessary
  */
 PadType *GetPadMemory(ElementType * element)
@@ -85,25 +66,6 @@ PadType *GetPadMemory(ElementType * element)
 void RemoveFreePad(PadType * data)
 {
 	padlist_remove(data);
-	free(data);
-}
-
-/* ---------------------------------------------------------------------------
- * get next slot for a via, allocates memory if necessary
- */
-PinType *GetViaMemory(DataType * data)
-{
-	PinType *new_obj;
-
-	new_obj = calloc(sizeof(PinType), 1);
-	pinlist_append(&data->Via, new_obj);
-
-	return new_obj;
-}
-
-void RemoveFreeVia(PinType * data)
-{
-	pinlist_remove(data);
 	free(data);
 }
 

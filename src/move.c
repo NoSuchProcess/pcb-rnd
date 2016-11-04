@@ -53,13 +53,13 @@
 #include "box.h"
 #include "obj_all_op.h"
 #include "obj_line.h"
+#include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
 static void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr);
-static void *MoveVia(pcb_opctx_t *ctx, PinTypePtr);
 static void *MovePolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
 static void *MoveRatToLayer(pcb_opctx_t *ctx, RatTypePtr);
@@ -202,25 +202,6 @@ static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 	if (didDraw)
 		Draw();
 	return (Element);
-}
-
-/* ---------------------------------------------------------------------------
- * moves a via
- */
-static void *MoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	MOVE_VIA_LOWLEVEL(Via, ctx->move.dx, ctx->move.dy);
-	if (PCB->ViaOn)
-		EraseVia(Via);
-	r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	if (PCB->ViaOn) {
-		DrawVia(Via);
-		Draw();
-	}
-	return (Via);
 }
 
 /* ---------------------------------------------------------------------------

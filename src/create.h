@@ -46,7 +46,6 @@ PCBTypePtr CreateNewPCB();
 /* Called after PCB->Data->LayerN is set.  Returns zero if no errors,
    else nonzero.  */
 int CreateNewPCBPost(PCBTypePtr, int /* set defaults */ );
-PinTypePtr CreateNewVia(DataTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, const char *, FlagType);
 LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
 LineTypePtr CreateNewLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
 RatTypePtr CreateNewRat(DataTypePtr, Coord, Coord, Coord, Coord, pcb_cardinal_t, pcb_cardinal_t, Coord, FlagType);
@@ -73,7 +72,6 @@ void CreateIDReset(void);
 long int CreateIDGet(void);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_via(DataType *Data, PinType *Via);
 void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon);
 
 #endif

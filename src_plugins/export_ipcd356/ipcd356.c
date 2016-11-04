@@ -48,6 +48,7 @@
 #include "pcb-printf.h"
 #include "netlist.h"
 #include "conf_core.h"
+#include "obj_pinvia.h"
 
 #include "hid.h"
 #include "hid_nogui.h"

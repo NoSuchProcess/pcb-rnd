@@ -42,6 +42,7 @@
 #include "polygon.h"
 #include "rtree.h"
 #include "obj_line.h"
+#include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

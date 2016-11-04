@@ -48,6 +48,7 @@
 #include "vendor_conf.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "obj_pinvia.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 

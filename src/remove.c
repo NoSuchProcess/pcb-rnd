@@ -44,15 +44,14 @@
 #include "select.h"
 #include "undo.h"
 #include "obj_all_op.h"
+#include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr);
 static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr);
 static void *DestroyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr);
-static void *RemoveVia(pcb_opctx_t *ctx, PinTypePtr);
 static void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr);
 static void *DestroyPolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
 static void *RemovePolygonContour(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, pcb_cardinal_t);
@@ -102,18 +101,6 @@ void RemovePCB(PCBTypePtr Ptr)
 	ClearUndoList(pcb_true);
 	FreePCBMemory(Ptr);
 	free(Ptr);
-}
-
-/* ---------------------------------------------------------------------------
- * destroys a via
- */
-static void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	r_delete_entry(ctx->remove.destroy_target->via_tree, (BoxTypePtr) Via);
-	free(Via->Name);
-
-	RemoveFreeVia(Via);
-	return NULL;
 }
 
 /* ---------------------------------------------------------------------------
@@ -209,22 +196,6 @@ static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 		r_delete_entry(ctx->remove.destroy_target->rat_tree, &Rat->BoundingBox);
 
 	RemoveFreeRat(Rat);
-	return NULL;
-}
-
-
-/* ---------------------------------------------------------------------------
- * removes a via
- */
-static void *RemoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
-{
-	/* erase from screen and memory */
-	if (PCB->ViaOn) {
-		EraseVia(Via);
-		if (!ctx->remove.bulk)
-			Draw();
-	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	return NULL;
 }
 

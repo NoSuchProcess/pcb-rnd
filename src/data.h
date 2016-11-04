@@ -35,7 +35,6 @@
 #include "global_element.h"
 #include "list_poly.h"
 #include "list_pad.h"
-#include "list_pin.h"
 #include "list_rat.h"
 #include "layer.h"
 #include "crosshair.h"
