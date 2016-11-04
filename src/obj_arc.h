@@ -44,6 +44,13 @@ void ChangeArcRadii(LayerTypePtr Layer, ArcTypePtr a, Coord new_width, Coord new
 /*** Operations ***/
 void *AddArcToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
 void *MoveArcToBuffer(pcb_opctx_t *ctx, LayerType *layer, ArcType *arc);
+void *ChangeArcSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *ChangeArcClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *ChangeArcRadius(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *ChangeArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *SetArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *ClrArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
 
 
 #define ARC_LOOP(element) do {                                      \

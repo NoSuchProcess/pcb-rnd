@@ -64,8 +64,6 @@ static void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
-static void *ChangeArcSize(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
-static void *ChangeArcClearSize(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 static void *ChangeTextSize(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr);
@@ -103,15 +101,10 @@ static void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
 static void *ChangeLineJoin(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *SetLineJoin(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
-static void *ChangeArcJoin(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
-static void *SetArcJoin(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
-static void *ClrArcJoin(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 static void *ChangeTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *SetTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *ClrTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *ChangePolyClear(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
-static void *ChangeArcRadius(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
-static void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -901,145 +894,6 @@ static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, Polygo
 }
 
 /* ---------------------------------------------------------------------------
- * changes the size of an arc
- * returns pcb_true if changed
- */
-static void *ChangeArcSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Thickness + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
-		return (NULL);
-	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Arc->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
-		EraseArc(Arc);
-		r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		Arc->Thickness = value;
-		SetArcBoundingBox(Arc);
-		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		DrawArc(Layer, Arc);
-		return (Arc);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the clearance size of an arc
- * returns pcb_true if changed
- */
-static void *ChangeArcClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Clearance + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
-		return (NULL);
-	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
-	if (value != Arc->Clearance) {
-		AddObjectToClearSizeUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
-		EraseArc(Arc);
-		r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		Arc->Clearance = value;
-		if (Arc->Clearance == 0) {
-			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Arc);
-			Arc->Clearance = PCB_MIL_TO_COORD(10);
-		}
-		SetArcBoundingBox(Arc);
-		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		DrawArc(Layer, Arc);
-		return (Arc);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the radius of an arc (is_primary 0=width or 1=height or 2=both)
- * returns pcb_true if changed
- */
-static void *ChangeArcRadius(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	Coord value, *dst;
-	void *a0, *a1;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
-		return (NULL);
-
-	switch(ctx->chgsize.is_primary) {
-		case 0: dst = &Arc->Width; break;
-		case 1: dst = &Arc->Height; break;
-		case 2:
-			ctx->chgsize.is_primary = 0; a0 = ChangeArcRadius(ctx, Layer, Arc);
-			ctx->chgsize.is_primary = 1; a1 = ChangeArcRadius(ctx, Layer, Arc);
-			if ((a0 != NULL) || (a1 != NULL))
-				return Arc;
-			return NULL;
-	}
-
-	value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : (*dst) + ctx->chgsize.delta;
-	value = MIN(MAX_ARCSIZE, MAX(value, MIN_ARCSIZE));
-	if (value != *dst) {
-		AddObjectToChangeRadiiUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
-		EraseArc(Arc);
-		r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		*dst = value;
-		SetArcBoundingBox(Arc);
-		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		DrawArc(Layer, Arc);
-		return (Arc);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the angle of an arc (is_primary 0=start or 1=end)
- * returns pcb_true if changed
- */
-static void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	Angle value, *dst;
-	void *a0, *a1;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
-		return (NULL);
-
-	switch(ctx->chgangle.is_primary) {
-		case 0: dst = &Arc->StartAngle; break;
-		case 1: dst = &Arc->Delta; break;
-		case 2:
-			ctx->chgangle.is_primary = 0; a0 = ChangeArcAngle(ctx, Layer, Arc);
-			ctx->chgangle.is_primary = 1; a1 = ChangeArcAngle(ctx, Layer, Arc);
-			if ((a0 != NULL) || (a1 != NULL))
-				return Arc;
-			return NULL;
-	}
-
-	value = (ctx->chgangle.absolute) ? ctx->chgangle.absolute : (*dst) + ctx->chgangle.delta;
-	value = fmod(value, 360.0);
-	if (value < 0)
-		value += 360;
-
-	if (value != *dst) {
-		AddObjectToChangeAnglesUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
-		EraseArc(Arc);
-		r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		*dst = value;
-		SetArcBoundingBox(Arc);
-		r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		DrawArc(Layer, Arc);
-		return (Arc);
-	}
-	return (NULL);
-}
-
-
-/* ---------------------------------------------------------------------------
  * changes the scaling factor of a text object
  * returns pcb_true if changed
  */
@@ -1387,48 +1241,6 @@ static void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
 	return ChangeLineJoin(ctx, Layer, Line);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the clearance flag of an arc
- */
-static void *ChangeArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
-		return (NULL);
-	EraseArc(Arc);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Arc)) {
-		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_false);
-	}
-	AddObjectToFlagUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
-	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Arc);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Arc)) {
-		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_true);
-	}
-	DrawArc(Layer, Arc);
-	return (Arc);
-}
-
-/* ---------------------------------------------------------------------------
- * sets the clearance flag of an arc
- */
-static void *SetArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
-		return (NULL);
-	return ChangeArcJoin(ctx, Layer, Arc);
-}
-
-/* ---------------------------------------------------------------------------
- * clears the clearance flag of an arc
- */
-static void *ClrArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
-		return (NULL);
-	return ChangeArcJoin(ctx, Layer, Arc);
 }
 
 /* ---------------------------------------------------------------------------
