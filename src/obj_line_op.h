@@ -24,7 +24,7 @@
  *
  */
 
-/*** Standard operations on arc ***/
+/*** Standard operations on line ***/
 
 #include "operation.h"
 
