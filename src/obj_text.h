@@ -29,6 +29,17 @@
 #ifndef PCB_OBJ_TEXT_H
 #define PCB_OBJ_TEXT_H
 
+struct pcb_text_s {
+	ANYOBJECTFIELDS;
+	int Scale;                    /* text scaling in percent */
+	Coord X, Y;                   /* origin */
+	pcb_uint8_t Direction;
+	char *TextString;             /* string */
+	void *Element;
+	gdl_elem_t link;              /* a text is in a list of a layer or an element */
+};
+
+
 TextTypePtr GetTextMemory(LayerType * layer);
 void RemoveFreeText(TextType * data);
 

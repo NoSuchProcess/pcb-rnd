@@ -81,16 +81,6 @@ typedef struct {
 	ANYLINEFIELDS;
 } AnyLineObjectType, *AnyLineObjectTypePtr;
 
-struct pcb_text_s {
-	ANYOBJECTFIELDS;
-	int Scale;										/* text scaling in percent */
-	Coord X, Y;										/* origin */
-	pcb_uint8_t Direction;
-	char *TextString;							/* string */
-	void *Element;
-	gdl_elem_t link;              /* a text is in a list of a layer or an element */
-};
-
 struct polygon_st {							/* holds information about a polygon */
 	ANYOBJECTFIELDS;
 	pcb_cardinal_t PointN,							/* number of points in polygon */
