@@ -75,6 +75,9 @@ typedef struct {
 
 typedef struct {
 	PCBType *pcb;
+	Coord dx, dy;         /* used by local routines as offset */
+	LayerTypePtr dst_layer;
+	pcb_bool more_to_come;
 } pcb_opctx_move_t;
 
 typedef union {
