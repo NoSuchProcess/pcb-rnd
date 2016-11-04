@@ -52,18 +52,18 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *RotateText(LayerTypePtr, TextTypePtr);
-static void *RotateArc(LayerTypePtr, ArcTypePtr);
-static void *RotateElement(ElementTypePtr);
-static void *RotateElementName(ElementTypePtr);
-static void *RotateLinePoint(LayerTypePtr, LineTypePtr, PointTypePtr);
+static void *RotateText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr);
+static void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr);
+static void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
 
 /* ----------------------------------------------------------------------
  * some local identifiers
  */
 static Coord CenterX, CenterY;	/* center of rotation */
 static unsigned Number;					/* number of rotations */
-static ObjectFunctionType RotateFunctions = {
+static pcb_opfunc_t RotateFunctions = {
 	NULL,
 	RotateText,
 	NULL,
@@ -150,7 +150,7 @@ void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Nu
 /* ---------------------------------------------------------------------------
  * rotates a text object and redraws it
  */
-static void *RotateText(LayerTypePtr Layer, TextTypePtr Text)
+static void *RotateText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	EraseText(Layer, Text);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
@@ -237,7 +237,7 @@ void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Co
 /* ---------------------------------------------------------------------------
  * rotates a line's point
  */
-static void *RotateLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
+static void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
 {
 	EraseLine(Line);
 	if (Layer) {
@@ -264,7 +264,7 @@ static void *RotateLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr 
 /* ---------------------------------------------------------------------------
  * rotates an arc
  */
-static void *RotateArc(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	EraseArc(Arc);
 	r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
@@ -278,7 +278,7 @@ static void *RotateArc(LayerTypePtr Layer, ArcTypePtr Arc)
 /* ---------------------------------------------------------------------------
  * rotates an element
  */
-static void *RotateElement(ElementTypePtr Element)
+static void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	EraseElement(Element);
 	RotateElementLowLevel(PCB->Data, Element, CenterX, CenterY, Number);
@@ -290,7 +290,7 @@ static void *RotateElement(ElementTypePtr Element)
 /* ----------------------------------------------------------------------
  * rotates the name of an element
  */
-static void *RotateElementName(ElementTypePtr Element)
+static void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	EraseElementName(Element);
 	ELEMENTTEXT_LOOP(Element);
@@ -329,6 +329,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 	RubberbandTypePtr ptr;
 	void *ptr2;
 	pcb_bool changed = pcb_false;
+	pcb_opctx_t ctx;
 
 	/* setup default  global identifiers */
 	Number = Steps;
@@ -363,7 +364,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 		ptr++;
 	}
 	AddObjectToRotateUndoList(Type, Ptr1, Ptr2, Ptr3, CenterX, CenterY, Number);
-	ptr2 = ObjectOperation(&RotateFunctions, Type, Ptr1, Ptr2, Ptr3);
+	ptr2 = ObjectOperation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);
 	if (changed) {
 		Draw();

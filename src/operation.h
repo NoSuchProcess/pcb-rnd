@@ -25,22 +25,39 @@
  *
  */
 
+#ifndef PCB_OPERATION_H
+#define PCB_OPERATION_H
+
+#include "global_typedefs.h"
 #include "global_element.h"
 
-/* ----------------------------------------------------------------------
- * pointer to low-level copy, move and rotate functions
- */
 typedef struct {
-	void *(*Line) (LayerTypePtr, LineTypePtr);
-	void *(*Text) (LayerTypePtr, TextTypePtr);
-	void *(*Polygon) (LayerTypePtr, PolygonTypePtr);
-	void *(*Via) (PinTypePtr);
-	void *(*Element) (ElementTypePtr);
-	void *(*ElementName) (ElementTypePtr);
-	void *(*Pin) (ElementTypePtr, PinTypePtr);
-	void *(*Pad) (ElementTypePtr, PadTypePtr);
-	void *(*LinePoint) (LayerTypePtr, LineTypePtr, PointTypePtr);
-	void *(*Point) (LayerTypePtr, PolygonTypePtr, PointTypePtr);
-	void *(*Arc) (LayerTypePtr, ArcTypePtr);
-	void *(*Rat) (RatTypePtr);
-} ObjectFunctionType, *ObjectFunctionTypePtr;
+	PCBType *pcb;
+} pcb_opctx_copy_t;
+
+typedef struct {
+	PCBType *pcb;
+} pcb_opctx_move_t;
+
+typedef union {
+	pcb_opctx_copy_t copy;
+	pcb_opctx_move_t move;
+} pcb_opctx_t;
+
+/* pointer to low-level operation (copy, move and rotate) functions */
+typedef struct {
+	void *(*Line)(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+	void *(*Text)(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+	void *(*Polygon)(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
+	void *(*Via)(pcb_opctx_t *ctx, PinTypePtr);
+	void *(*Element)(pcb_opctx_t *ctx, ElementTypePtr);
+	void *(*ElementName)(pcb_opctx_t *ctx, ElementTypePtr);
+	void *(*Pin)(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+	void *(*Pad)(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+	void *(*LinePoint)(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
+	void *(*Point)(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
+	void *(*Arc)(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+	void *(*Rat)(pcb_opctx_t *ctx, RatTypePtr);
+} pcb_opfunc_t;
+
+#endif

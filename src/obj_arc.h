@@ -27,6 +27,7 @@
 /* Drawing primitive: (elliptical) arc */
 
 #include "global_typedefs.h"
+#include "operation.h"
 
 /*** Memory ***/
 ArcTypePtr GetArcMemory(LayerTypePtr);
@@ -41,8 +42,8 @@ void ChangeArcRadii(LayerTypePtr Layer, ArcTypePtr a, Coord new_width, Coord new
 
 
 /*** Operations ***/
-void *AddArcToBuffer(LayerTypePtr Layer, ArcTypePtr Arc);
-void *MoveArcToBuffer(LayerType *layer, ArcType *arc);
+void *AddArcToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *MoveArcToBuffer(pcb_opctx_t *ctx, LayerType *layer, ArcType *arc);
 
 
 #define ARC_LOOP(element) do {                                      \

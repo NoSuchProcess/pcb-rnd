@@ -438,67 +438,68 @@ long int *ListBlock(BoxTypePtr Box, int *len)
 /* ----------------------------------------------------------------------
  * performs several operations on the passed object
  */
-void *ObjectOperation(ObjectFunctionTypePtr F, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+#warning TODO: maybe move this to operation.c
+void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	switch (Type) {
 	case PCB_TYPE_LINE:
 		if (F->Line)
-			return (F->Line((LayerTypePtr) Ptr1, (LineTypePtr) Ptr2));
+			return (F->Line(ctx, (LayerTypePtr) Ptr1, (LineTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_ARC:
 		if (F->Arc)
-			return (F->Arc((LayerTypePtr) Ptr1, (ArcTypePtr) Ptr2));
+			return (F->Arc(ctx, (LayerTypePtr) Ptr1, (ArcTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_LINE_POINT:
 		if (F->LinePoint)
-			return (F->LinePoint((LayerTypePtr) Ptr1, (LineTypePtr) Ptr2, (PointTypePtr) Ptr3));
+			return (F->LinePoint(ctx, (LayerTypePtr) Ptr1, (LineTypePtr) Ptr2, (PointTypePtr) Ptr3));
 		break;
 
 	case PCB_TYPE_TEXT:
 		if (F->Text)
-			return (F->Text((LayerTypePtr) Ptr1, (TextTypePtr) Ptr2));
+			return (F->Text(ctx, (LayerTypePtr) Ptr1, (TextTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_POLYGON:
 		if (F->Polygon)
-			return (F->Polygon((LayerTypePtr) Ptr1, (PolygonTypePtr) Ptr2));
+			return (F->Polygon(ctx, (LayerTypePtr) Ptr1, (PolygonTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_POLYGON_POINT:
 		if (F->Point)
-			return (F->Point((LayerTypePtr) Ptr1, (PolygonTypePtr) Ptr2, (PointTypePtr) Ptr3));
+			return (F->Point(ctx, (LayerTypePtr) Ptr1, (PolygonTypePtr) Ptr2, (PointTypePtr) Ptr3));
 		break;
 
 	case PCB_TYPE_VIA:
 		if (F->Via)
-			return (F->Via((PinTypePtr) Ptr1));
+			return (F->Via(ctx, (PinTypePtr) Ptr1));
 		break;
 
 	case PCB_TYPE_ELEMENT:
 		if (F->Element)
-			return (F->Element((ElementTypePtr) Ptr1));
+			return (F->Element(ctx, (ElementTypePtr) Ptr1));
 		break;
 
 	case PCB_TYPE_PIN:
 		if (F->Pin)
-			return (F->Pin((ElementTypePtr) Ptr1, (PinTypePtr) Ptr2));
+			return (F->Pin(ctx, (ElementTypePtr) Ptr1, (PinTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_PAD:
 		if (F->Pad)
-			return (F->Pad((ElementTypePtr) Ptr1, (PadTypePtr) Ptr2));
+			return (F->Pad(ctx, (ElementTypePtr) Ptr1, (PadTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_ELEMENT_NAME:
 		if (F->ElementName)
-			return (F->ElementName((ElementTypePtr) Ptr1));
+			return (F->ElementName(ctx, (ElementTypePtr) Ptr1));
 		break;
 
 	case PCB_TYPE_RATLINE:
 		if (F->Rat)
-			return (F->Rat((RatTypePtr) Ptr1));
+			return (F->Rat(ctx, (RatTypePtr) Ptr1));
 		break;
 	}
 	return (NULL);
@@ -510,7 +511,7 @@ void *ObjectOperation(ObjectFunctionTypePtr F, int Type, void *Ptr1, void *Ptr2,
  * resets the selected flag if requested
  * returns pcb_true if anything has changed
  */
-pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
+pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type)
 {
 	pcb_bool changed = pcb_false;
 
@@ -523,7 +524,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 				AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
 				CLEAR_FLAG(PCB_FLAG_SELECTED, line);
 			}
-			F->Line(layer, line);
+			F->Line(ctx, layer, line);
 			changed = pcb_true;
 		}
 	}
@@ -538,7 +539,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 				AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
 				CLEAR_FLAG(PCB_FLAG_SELECTED, arc);
 			}
-			F->Arc(layer, arc);
+			F->Arc(ctx, layer, arc);
 			changed = pcb_true;
 		}
 	}
@@ -553,7 +554,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 				AddObjectToFlagUndoList(PCB_TYPE_TEXT, layer, text, text);
 				CLEAR_FLAG(PCB_FLAG_SELECTED, text);
 			}
-			F->Text(layer, text);
+			F->Text(ctx, layer, text);
 			changed = pcb_true;
 		}
 	}
@@ -568,7 +569,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 				AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
 				CLEAR_FLAG(PCB_FLAG_SELECTED, polygon);
 			}
-			F->Polygon(layer, polygon);
+			F->Polygon(ctx, layer, polygon);
 			changed = pcb_true;
 		}
 	}
@@ -583,7 +584,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
 				CLEAR_FLAG(PCB_FLAG_SELECTED, element);
 			}
-			F->Element(element);
+			F->Element(ctx, element);
 			changed = pcb_true;
 		}
 	}
@@ -596,7 +597,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, &ELEMENT_TEXT(PCB, element), &ELEMENT_TEXT(PCB, element));
 				CLEAR_FLAG(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element));
 			}
-			F->ElementName(element);
+			F->ElementName(ctx, element);
 			changed = pcb_true;
 		}
 	}
@@ -612,7 +613,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 					AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
 					CLEAR_FLAG(PCB_FLAG_SELECTED, pin);
 				}
-				F->Pin(element, pin);
+				F->Pin(ctx, element, pin);
 				changed = pcb_true;
 			}
 		}
@@ -630,7 +631,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 					AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
 					CLEAR_FLAG(PCB_FLAG_SELECTED, pad);
 				}
-				F->Pad(element, pad);
+				F->Pad(ctx, element, pad);
 				changed = pcb_true;
 			}
 		}
@@ -647,7 +648,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
 				CLEAR_FLAG(PCB_FLAG_SELECTED, via);
 			}
-			F->Via(via);
+			F->Via(ctx, via);
 			changed = pcb_true;
 		}
 	}
@@ -661,7 +662,7 @@ pcb_bool SelectedOperation(ObjectFunctionTypePtr F, pcb_bool Reset, int type)
 				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
 				CLEAR_FLAG(PCB_FLAG_SELECTED, line);
 			}
-			F->Rat(line);
+			F->Rat(ctx, line);
 			changed = pcb_true;
 		}
 	}

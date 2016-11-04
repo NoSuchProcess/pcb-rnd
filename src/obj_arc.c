@@ -36,6 +36,7 @@
 #include "polygon.h"
 #include "box.h"
 #include "undo.h"
+#include "obj_arc.h"
 
 #include "create.h"
 
@@ -178,7 +179,7 @@ void RemoveFreeArc(ArcType * data)
 }
 
 /* copies an arc to buffer */
-void *AddArcToBuffer(LayerTypePtr Layer, ArcTypePtr Arc)
+void *AddArcToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	LayerTypePtr layer = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, Layer)];
 
@@ -188,7 +189,7 @@ void *AddArcToBuffer(LayerTypePtr Layer, ArcTypePtr Arc)
 }
 
 /* moves an arc to buffer */
-void *MoveArcToBuffer(LayerType * layer, ArcType * arc)
+void *MoveArcToBuffer(pcb_opctx_t *ctx, LayerType * layer, ArcType * arc)
 {
 	LayerType *lay = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, layer)];
 

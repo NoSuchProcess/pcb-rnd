@@ -47,18 +47,18 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *CopyVia(PinTypePtr);
-static void *CopyLine(LayerTypePtr, LineTypePtr);
-static void *CopyArc(LayerTypePtr, ArcTypePtr);
-static void *CopyText(LayerTypePtr, TextTypePtr);
-static void *CopyPolygon(LayerTypePtr, PolygonTypePtr);
-static void *CopyElement(ElementTypePtr);
+static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr);
+static void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *CopyArc(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *CopyText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
+static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
 static Coord DeltaX, DeltaY;		/* movement vector */
-static ObjectFunctionType CopyFunctions = {
+static pcb_opfunc_t CopyFunctions = {
 	CopyLine,
 	CopyText,
 	CopyPolygon,
@@ -158,7 +158,7 @@ CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, p
 /* ---------------------------------------------------------------------------
  * copies a via
  */
-static void *CopyVia(PinTypePtr Via)
+static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	PinTypePtr via;
 
@@ -174,7 +174,7 @@ static void *CopyVia(PinTypePtr Via)
 /* ---------------------------------------------------------------------------
  * copies a line
  */
-static void *CopyLine(LayerTypePtr Layer, LineTypePtr Line)
+static void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	LineTypePtr line;
 
@@ -194,7 +194,7 @@ static void *CopyLine(LayerTypePtr Layer, LineTypePtr Line)
 /* ---------------------------------------------------------------------------
  * copies an arc
  */
-static void *CopyArc(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *CopyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	ArcTypePtr arc;
 
@@ -211,7 +211,7 @@ static void *CopyArc(LayerTypePtr Layer, ArcTypePtr Arc)
 /* ---------------------------------------------------------------------------
  * copies a text
  */
-static void *CopyText(LayerTypePtr Layer, TextTypePtr Text)
+static void *CopyText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	TextTypePtr text;
 
@@ -225,7 +225,7 @@ static void *CopyText(LayerTypePtr Layer, TextTypePtr Text)
 /* ---------------------------------------------------------------------------
  * copies a polygon
  */
-static void *CopyPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
+static void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	PolygonTypePtr polygon;
 
@@ -244,7 +244,7 @@ static void *CopyPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 /* ---------------------------------------------------------------------------
  * copies an element onto the PCB.  Then does a draw.
  */
-static void *CopyElement(ElementTypePtr Element)
+static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 
 #ifdef DEBUG
@@ -279,6 +279,7 @@ pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
 {
 	pcb_cardinal_t i;
 	pcb_bool changed = pcb_false;
+	pcb_opctx_t ctx;
 
 #ifdef DEBUG
 	printf("Entering CopyPastebufferToLayout.....\n");
@@ -295,22 +296,22 @@ pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
 			changed = changed || (!LAYER_IS_EMPTY(sourcelayer));
 			LINE_LOOP(sourcelayer);
 			{
-				CopyLine(destlayer, line);
+				CopyLine(&ctx, destlayer, line);
 			}
 			END_LOOP;
 			ARC_LOOP(sourcelayer);
 			{
-				CopyArc(destlayer, arc);
+				CopyArc(&ctx, destlayer, arc);
 			}
 			END_LOOP;
 			TEXT_LOOP(sourcelayer);
 			{
-				CopyText(destlayer, text);
+				CopyText(&ctx, destlayer, text);
 			}
 			END_LOOP;
 			POLYGON_LOOP(sourcelayer);
 			{
-				CopyPolygon(destlayer, polygon);
+				CopyPolygon(&ctx, destlayer, polygon);
 			}
 			END_LOOP;
 		}
@@ -324,7 +325,7 @@ pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
 			printf("In CopyPastebufferToLayout, pasting element %s\n", element->Name[1].TextString);
 #endif
 			if (FRONT(element) || PCB->InvisibleObjectsOn) {
-				CopyElement(element);
+				CopyElement(&ctx, element);
 				changed = pcb_true;
 			}
 		}
@@ -336,7 +337,7 @@ pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
 		changed |= (pinlist_length(&(PASTEBUFFER->Data->Via)) != 0);
 		VIA_LOOP(PASTEBUFFER->Data);
 		{
-			CopyVia(via);
+			CopyVia(&ctx, via);
 		}
 		END_LOOP;
 	}
@@ -361,13 +362,14 @@ pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
 void *CopyObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord DY)
 {
 	void *ptr;
+	pcb_opctx_t ctx;
 
 	/* setup movement vector */
 	DeltaX = DX;
 	DeltaY = DY;
 
 	/* the subroutines add the objects to the undo-list */
-	ptr = ObjectOperation(&CopyFunctions, Type, Ptr1, Ptr2, Ptr3);
+	ptr = ObjectOperation(&CopyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	IncrementUndoSerialNumber();
 	return (ptr);
 }

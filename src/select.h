@@ -39,9 +39,12 @@
 pcb_bool SelectObject(void);
 pcb_bool SelectBlock(BoxTypePtr, pcb_bool);
 long int *ListBlock(BoxTypePtr Box, int *len);
-pcb_bool SelectedOperation(ObjectFunctionTypePtr, pcb_bool, int);
-void *ObjectOperation(ObjectFunctionTypePtr, int, void *, void *, void *);
+
+void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type);
+
 pcb_bool SelectConnection(pcb_bool);
+
 
 typedef enum {
 	SM_REGEX = 0,

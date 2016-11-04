@@ -48,70 +48,70 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *ChangePinSize(ElementTypePtr, PinTypePtr);
-static void *ChangePinClearSize(ElementTypePtr, PinTypePtr);
-static void *ChangePinMaskSize(ElementTypePtr, PinTypePtr);
-static void *ChangePadSize(ElementTypePtr, PadTypePtr);
-static void *ChangePadClearSize(ElementTypePtr, PadTypePtr);
-static void *ChangePadMaskSize(ElementTypePtr, PadTypePtr);
-static void *ChangePin2ndSize(ElementTypePtr, PinTypePtr);
-static void *ChangeElement1stSize(ElementTypePtr);
-static void *ChangeElement2ndSize(ElementTypePtr);
-static void *ChangeViaSize(PinTypePtr);
-static void *ChangeVia2ndSize(PinTypePtr);
-static void *ChangeViaClearSize(PinTypePtr);
-static void *ChangeViaMaskSize(PinTypePtr);
-static void *ChangeLineSize(LayerTypePtr, LineTypePtr);
-static void *ChangeLineClearSize(LayerTypePtr, LineTypePtr);
-static void *ChangePolygonClearSize(LayerTypePtr, PolygonTypePtr);
-static void *ChangeArcSize(LayerTypePtr, ArcTypePtr);
-static void *ChangeArcClearSize(LayerTypePtr, ArcTypePtr);
-static void *ChangeTextSize(LayerTypePtr, TextTypePtr);
-static void *ChangeElementSize(ElementTypePtr);
-static void *ChangeElementNameSize(ElementTypePtr);
-static void *ChangeElementClearSize(ElementTypePtr);
-static void *ChangePinName(ElementTypePtr, PinTypePtr);
-static void *ChangePadName(ElementTypePtr, PadTypePtr);
-static void *ChangePinNum(ElementTypePtr, PinTypePtr);
-static void *ChangePadNum(ElementTypePtr, PadTypePtr);
-static void *ChangeViaName(PinTypePtr);
-static void *ChangeLineName(LayerTypePtr, LineTypePtr);
-static void *ChangeElementName(ElementTypePtr);
-static void *ChangeElementNonetlist(ElementTypePtr);
-static void *ChangeTextName(LayerTypePtr, TextTypePtr);
-static void *ChangeElementSquare(ElementTypePtr);
-static void *SetElementSquare(ElementTypePtr);
-static void *ClrElementSquare(ElementTypePtr);
-static void *ChangeElementOctagon(ElementTypePtr);
-static void *SetElementOctagon(ElementTypePtr);
-static void *ClrElementOctagon(ElementTypePtr);
-static void *ChangeViaSquare(PinTypePtr);
-static void *ChangePinSquare(ElementTypePtr, PinTypePtr);
-static void *SetPinSquare(ElementTypePtr, PinTypePtr);
-static void *ClrPinSquare(ElementTypePtr, PinTypePtr);
-static void *ChangePinOctagon(ElementTypePtr, PinTypePtr);
-static void *SetPinOctagon(ElementTypePtr, PinTypePtr);
-static void *ClrPinOctagon(ElementTypePtr, PinTypePtr);
-static void *ChangeViaOctagon(PinTypePtr);
-static void *SetViaOctagon(PinTypePtr);
-static void *ClrViaOctagon(PinTypePtr);
-static void *ChangePadSquare(ElementTypePtr, PadTypePtr);
-static void *SetPadSquare(ElementTypePtr, PadTypePtr);
-static void *ClrPadSquare(ElementTypePtr, PadTypePtr);
-static void *ChangeViaThermal(PinTypePtr);
-static void *ChangePinThermal(ElementTypePtr, PinTypePtr);
-static void *ChangeLineJoin(LayerTypePtr, LineTypePtr);
-static void *SetLineJoin(LayerTypePtr, LineTypePtr);
-static void *ClrLineJoin(LayerTypePtr, LineTypePtr);
-static void *ChangeArcJoin(LayerTypePtr, ArcTypePtr);
-static void *SetArcJoin(LayerTypePtr, ArcTypePtr);
-static void *ClrArcJoin(LayerTypePtr, ArcTypePtr);
-static void *ChangeTextJoin(LayerTypePtr, TextTypePtr);
-static void *SetTextJoin(LayerTypePtr, TextTypePtr);
-static void *ClrTextJoin(LayerTypePtr, TextTypePtr);
-static void *ChangePolyClear(LayerTypePtr, PolygonTypePtr);
-static void *ChangeArcRadius(LayerTypePtr, ArcTypePtr);
-static void *ChangeArcAngle(LayerTypePtr, ArcTypePtr);
+static void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ChangePinMaskSize(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+static void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+static void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+static void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ChangeElement1stSize(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ChangeElement2ndSize(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr);
+static void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr);
+static void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr);
+static void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr);
+static void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
+static void *ChangeArcSize(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *ChangeArcClearSize(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *ChangeTextSize(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+static void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+static void *ChangeViaName(pcb_opctx_t *ctx, PinTypePtr);
+static void *ChangeLineName(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ChangeTextName(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *ChangeElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
+static void *SetElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ClrElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ChangeElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
+static void *SetElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ClrElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
+static void *ChangeViaSquare(pcb_opctx_t *ctx, PinTypePtr);
+static void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *SetPinSquare(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ClrPinSquare(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ChangePinOctagon(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *SetPinOctagon(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ClrPinOctagon(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ChangeViaOctagon(pcb_opctx_t *ctx, PinTypePtr);
+static void *SetViaOctagon(pcb_opctx_t *ctx, PinTypePtr);
+static void *ClrViaOctagon(pcb_opctx_t *ctx, PinTypePtr);
+static void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+static void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+static void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+static void *ChangeViaThermal(pcb_opctx_t *ctx, PinTypePtr);
+static void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
+static void *ChangeLineJoin(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *SetLineJoin(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *ChangeArcJoin(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *SetArcJoin(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *ClrArcJoin(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *ChangeTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *SetTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *ClrTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *ChangePolyClear(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
+static void *ChangeArcRadius(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -123,7 +123,7 @@ static char *NewName;						/* new name */
 
 static Angle ADelta, AAbsolute;				/* same as above, but for angles */
 
-static ObjectFunctionType ChangeSizeFunctions = {
+static pcb_opfunc_t ChangeSizeFunctions = {
 	ChangeLineSize,
 	ChangeTextSize,
 	ChangePolyClear,
@@ -138,7 +138,7 @@ static ObjectFunctionType ChangeSizeFunctions = {
 	NULL
 };
 
-static ObjectFunctionType Change1stSizeFunctions = {
+static pcb_opfunc_t Change1stSizeFunctions = {
 	ChangeLineSize,
 	ChangeTextSize,
 	ChangePolyClear,
@@ -153,7 +153,7 @@ static ObjectFunctionType Change1stSizeFunctions = {
 	NULL
 };
 
-static ObjectFunctionType Change2ndSizeFunctions = {
+static pcb_opfunc_t Change2ndSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -168,7 +168,7 @@ static ObjectFunctionType Change2ndSizeFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeThermalFunctions = {
+static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -183,7 +183,7 @@ static ObjectFunctionType ChangeThermalFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeClearSizeFunctions = {
+static pcb_opfunc_t ChangeClearSizeFunctions = {
 	ChangeLineClearSize,
 	NULL,
 	ChangePolygonClearSize,				/* just to tell the user not to :-) */
@@ -198,7 +198,7 @@ static ObjectFunctionType ChangeClearSizeFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeNameFunctions = {
+static pcb_opfunc_t ChangeNameFunctions = {
 	ChangeLineName,
 	ChangeTextName,
 	NULL,
@@ -213,7 +213,7 @@ static ObjectFunctionType ChangeNameFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangePinnumFunctions = {
+static pcb_opfunc_t ChangePinnumFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -228,7 +228,7 @@ static ObjectFunctionType ChangePinnumFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeSquareFunctions = {
+static pcb_opfunc_t ChangeSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -243,7 +243,7 @@ static ObjectFunctionType ChangeSquareFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeNonetlistFunctions = {
+static pcb_opfunc_t ChangeNonetlistFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -258,7 +258,7 @@ static ObjectFunctionType ChangeNonetlistFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeJoinFunctions = {
+static pcb_opfunc_t ChangeJoinFunctions = {
 	ChangeLineJoin,
 	ChangeTextJoin,
 	NULL,
@@ -273,7 +273,7 @@ static ObjectFunctionType ChangeJoinFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeOctagonFunctions = {
+static pcb_opfunc_t ChangeOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -288,7 +288,7 @@ static ObjectFunctionType ChangeOctagonFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeMaskSizeFunctions = {
+static pcb_opfunc_t ChangeMaskSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -307,7 +307,7 @@ static ObjectFunctionType ChangeMaskSizeFunctions = {
 	NULL
 };
 
-static ObjectFunctionType SetSquareFunctions = {
+static pcb_opfunc_t SetSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -322,7 +322,7 @@ static ObjectFunctionType SetSquareFunctions = {
 	NULL
 };
 
-static ObjectFunctionType SetJoinFunctions = {
+static pcb_opfunc_t SetJoinFunctions = {
 	SetLineJoin,
 	SetTextJoin,
 	NULL,
@@ -337,7 +337,7 @@ static ObjectFunctionType SetJoinFunctions = {
 	NULL
 };
 
-static ObjectFunctionType SetOctagonFunctions = {
+static pcb_opfunc_t SetOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -352,7 +352,7 @@ static ObjectFunctionType SetOctagonFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ClrSquareFunctions = {
+static pcb_opfunc_t ClrSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -367,7 +367,7 @@ static ObjectFunctionType ClrSquareFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ClrJoinFunctions = {
+static pcb_opfunc_t ClrJoinFunctions = {
 	ClrLineJoin,
 	ClrTextJoin,
 	NULL,
@@ -382,7 +382,7 @@ static ObjectFunctionType ClrJoinFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ClrOctagonFunctions = {
+static pcb_opfunc_t ClrOctagonFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -397,7 +397,7 @@ static ObjectFunctionType ClrOctagonFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeRadiusFunctions = {
+static pcb_opfunc_t ChangeRadiusFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -412,7 +412,7 @@ static ObjectFunctionType ChangeRadiusFunctions = {
 	NULL
 };
 
-static ObjectFunctionType ChangeAngleFunctions = {
+static pcb_opfunc_t ChangeAngleFunctions = {
 	NULL,
 	NULL,
 	NULL,
@@ -432,7 +432,7 @@ static ObjectFunctionType ChangeAngleFunctions = {
  * changes the thermal on a via
  * returns pcb_true if changed
  */
-static void *ChangeViaThermal(PinTypePtr Via)
+static void *ChangeViaThermal(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
@@ -451,7 +451,7 @@ static void *ChangeViaThermal(PinTypePtr Via)
  * changes the thermal on a pin
  * returns pcb_true if changed
  */
-static void *ChangePinThermal(ElementTypePtr element, PinTypePtr Pin)
+static void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr element, PinTypePtr Pin)
 {
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
@@ -470,7 +470,7 @@ static void *ChangePinThermal(ElementTypePtr element, PinTypePtr Pin)
  * changes the size of a via
  * returns pcb_true if changed
  */
-static void *ChangeViaSize(PinTypePtr Via)
+static void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	Coord value = Absolute ? Absolute : Via->Thickness + Delta;
 
@@ -500,7 +500,7 @@ static void *ChangeViaSize(PinTypePtr Via)
  * changes the drilling hole of a via
  * returns pcb_true if changed
  */
-static void *ChangeVia2ndSize(PinTypePtr Via)
+static void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	Coord value = (Absolute) ? Absolute : Via->DrillingHole + Delta;
 
@@ -528,7 +528,7 @@ static void *ChangeVia2ndSize(PinTypePtr Via)
  * changes the clearance size of a via
  * returns pcb_true if changed
  */
-static void *ChangeViaClearSize(PinTypePtr Via)
+static void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	Coord value = (Absolute) ? Absolute : Via->Clearance + Delta;
 
@@ -561,7 +561,7 @@ static void *ChangeViaClearSize(PinTypePtr Via)
  * changes the size of a pin
  * returns pcb_true if changed
  */
-static void *ChangePinSize(ElementTypePtr Element, PinTypePtr Pin)
+static void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	Coord value = (Absolute) ? Absolute : Pin->Thickness + Delta;
 
@@ -589,7 +589,7 @@ static void *ChangePinSize(ElementTypePtr Element, PinTypePtr Pin)
  * changes the clearance size of a pin
  * returns pcb_true if changed
  */
-static void *ChangePinClearSize(ElementTypePtr Element, PinTypePtr Pin)
+static void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	Coord value = (Absolute) ? Absolute : Pin->Clearance + Delta;
 
@@ -620,7 +620,7 @@ static void *ChangePinClearSize(ElementTypePtr Element, PinTypePtr Pin)
  * changes the size of a pad
  * returns pcb_true if changed
  */
-static void *ChangePadSize(ElementTypePtr Element, PadTypePtr Pad)
+static void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
 	Coord value = (Absolute) ? Absolute : Pad->Thickness + Delta;
 
@@ -647,7 +647,7 @@ static void *ChangePadSize(ElementTypePtr Element, PadTypePtr Pad)
  * changes the clearance size of a pad
  * returns pcb_true if changed
  */
-static void *ChangePadClearSize(ElementTypePtr Element, PadTypePtr Pad)
+static void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
 	Coord value = (Absolute) ? Absolute : Pad->Clearance + Delta;
 
@@ -678,7 +678,7 @@ static void *ChangePadClearSize(ElementTypePtr Element, PadTypePtr Pad)
  * changes the drilling hole of all pins of an element
  * returns pcb_true if changed
  */
-static void *ChangeElement2ndSize(ElementTypePtr Element)
+static void *ChangeElement2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	pcb_bool changed = pcb_false;
 	Coord value;
@@ -715,7 +715,7 @@ static void *ChangeElement2ndSize(ElementTypePtr Element)
  * changes ring dia of all pins of an element
  * returns pcb_true if changed
  */
-static void *ChangeElement1stSize(ElementTypePtr Element)
+static void *ChangeElement1stSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	pcb_bool changed = pcb_false;
 	Coord value;
@@ -750,7 +750,7 @@ static void *ChangeElement1stSize(ElementTypePtr Element)
  * changes the clearance of all pins of an element
  * returns pcb_true if changed
  */
-static void *ChangeElementClearSize(ElementTypePtr Element)
+static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	pcb_bool changed = pcb_false;
 	Coord value;
@@ -811,7 +811,7 @@ static void *ChangeElementClearSize(ElementTypePtr Element)
  * changes the drilling hole of a pin
  * returns pcb_true if changed
  */
-static void *ChangePin2ndSize(ElementTypePtr Element, PinTypePtr Pin)
+static void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	Coord value = (Absolute) ? Absolute : Pin->DrillingHole + Delta;
 
@@ -839,7 +839,7 @@ static void *ChangePin2ndSize(ElementTypePtr Element, PinTypePtr Pin)
  * changes the size of a line
  * returns pcb_true if changed
  */
-static void *ChangeLineSize(LayerTypePtr Layer, LineTypePtr Line)
+static void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	Coord value = (Absolute) ? Absolute : Line->Thickness + Delta;
 
@@ -864,7 +864,7 @@ static void *ChangeLineSize(LayerTypePtr Layer, LineTypePtr Line)
  * changes the clearance size of a line
  * returns pcb_true if changed
  */
-static void *ChangeLineClearSize(LayerTypePtr Layer, LineTypePtr Line)
+static void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	Coord value = (Absolute) ? Absolute : Line->Clearance + Delta;
 
@@ -893,7 +893,7 @@ static void *ChangeLineClearSize(LayerTypePtr Layer, LineTypePtr Line)
 /* ---------------------------------------------------------------------------
  * Handle attempts to change the clearance of a polygon.
  */
-static void *ChangePolygonClearSize(LayerTypePtr Layer, PolygonTypePtr poly)
+static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr poly)
 {
 	static int shown_this_message = 0;
 	if (!shown_this_message) {
@@ -911,7 +911,7 @@ static void *ChangePolygonClearSize(LayerTypePtr Layer, PolygonTypePtr poly)
  * changes the size of an arc
  * returns pcb_true if changed
  */
-static void *ChangeArcSize(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *ChangeArcSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	Coord value = (Absolute) ? Absolute : Arc->Thickness + Delta;
 
@@ -936,7 +936,7 @@ static void *ChangeArcSize(LayerTypePtr Layer, ArcTypePtr Arc)
  * changes the clearance size of an arc
  * returns pcb_true if changed
  */
-static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *ChangeArcClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	Coord value = (Absolute) ? Absolute : Arc->Clearance + Delta;
 
@@ -966,7 +966,7 @@ static void *ChangeArcClearSize(LayerTypePtr Layer, ArcTypePtr Arc)
  * changes the radius of an arc (is_primary 0=width or 1=height or 2=both)
  * returns pcb_true if changed
  */
-static void *ChangeArcRadius(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *ChangeArcRadius(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	Coord value, *dst;
 	void *a0, *a1;
@@ -978,8 +978,8 @@ static void *ChangeArcRadius(LayerTypePtr Layer, ArcTypePtr Arc)
 		case 0: dst = &Arc->Width; break;
 		case 1: dst = &Arc->Height; break;
 		case 2:
-			is_primary = 0; a0 = ChangeArcRadius(Layer, Arc);
-			is_primary = 1; a1 = ChangeArcRadius(Layer, Arc);
+			is_primary = 0; a0 = ChangeArcRadius(ctx, Layer, Arc);
+			is_primary = 1; a1 = ChangeArcRadius(ctx, Layer, Arc);
 			if ((a0 != NULL) || (a1 != NULL))
 				return Arc;
 			return NULL;
@@ -1006,7 +1006,7 @@ static void *ChangeArcRadius(LayerTypePtr Layer, ArcTypePtr Arc)
  * changes the angle of an arc (is_primary 0=start or 1=end)
  * returns pcb_true if changed
  */
-static void *ChangeArcAngle(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	Angle value, *dst;
 	void *a0, *a1;
@@ -1018,8 +1018,8 @@ static void *ChangeArcAngle(LayerTypePtr Layer, ArcTypePtr Arc)
 		case 0: dst = &Arc->StartAngle; break;
 		case 1: dst = &Arc->Delta; break;
 		case 2:
-			is_primary = 0; a0 = ChangeArcAngle(Layer, Arc);
-			is_primary = 1; a1 = ChangeArcAngle(Layer, Arc);
+			is_primary = 0; a0 = ChangeArcAngle(ctx, Layer, Arc);
+			is_primary = 1; a1 = ChangeArcAngle(ctx, Layer, Arc);
 			if ((a0 != NULL) || (a1 != NULL))
 				return Arc;
 			return NULL;
@@ -1050,7 +1050,7 @@ static void *ChangeArcAngle(LayerTypePtr Layer, ArcTypePtr Arc)
  * changes the scaling factor of a text object
  * returns pcb_true if changed
  */
-static void *ChangeTextSize(LayerTypePtr Layer, TextTypePtr Text)
+static void *ChangeTextSize(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	int value = Absolute ? PCB_COORD_TO_MIL(Absolute)
 		: Text->Scale + PCB_COORD_TO_MIL(Delta);
@@ -1076,7 +1076,7 @@ static void *ChangeTextSize(LayerTypePtr Layer, TextTypePtr Text)
  * changes the scaling factor of an element's outline
  * returns pcb_true if changed
  */
-static void *ChangeElementSize(ElementTypePtr Element)
+static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	Coord value;
 	pcb_bool changed = pcb_false;
@@ -1117,7 +1117,7 @@ static void *ChangeElementSize(ElementTypePtr Element)
  * changes the scaling factor of a elementname object
  * returns pcb_true if changed
  */
-static void *ChangeElementNameSize(ElementTypePtr Element)
+static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	int value = Absolute ? PCB_COORD_TO_MIL(Absolute)
 		: DESCRIPTION_TEXT(Element).Scale + PCB_COORD_TO_MIL(Delta);
@@ -1144,7 +1144,7 @@ static void *ChangeElementNameSize(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * changes the name of a via
  */
-static void *ChangeViaName(PinTypePtr Via)
+static void *ChangeViaName(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	char *old = Via->Name;
 
@@ -1161,7 +1161,7 @@ static void *ChangeViaName(PinTypePtr Via)
 /* ---------------------------------------------------------------------------
  * changes the name of a pin
  */
-static void *ChangePinName(ElementTypePtr Element, PinTypePtr Pin)
+static void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	char *old = Pin->Name;
 
@@ -1179,7 +1179,7 @@ static void *ChangePinName(ElementTypePtr Element, PinTypePtr Pin)
 /* ---------------------------------------------------------------------------
  * changes the name of a pad
  */
-static void *ChangePadName(ElementTypePtr Element, PadTypePtr Pad)
+static void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
 	char *old = Pad->Name;
 
@@ -1197,7 +1197,7 @@ static void *ChangePadName(ElementTypePtr Element, PadTypePtr Pad)
 /* ---------------------------------------------------------------------------
  * changes the number of a pin
  */
-static void *ChangePinNum(ElementTypePtr Element, PinTypePtr Pin)
+static void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	char *old = Pin->Number;
 
@@ -1215,7 +1215,7 @@ static void *ChangePinNum(ElementTypePtr Element, PinTypePtr Pin)
 /* ---------------------------------------------------------------------------
  * changes the number of a pad
  */
-static void *ChangePadNum(ElementTypePtr Element, PadTypePtr Pad)
+static void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
 	char *old = Pad->Number;
 
@@ -1233,7 +1233,7 @@ static void *ChangePadNum(ElementTypePtr Element, PadTypePtr Pad)
 /* ---------------------------------------------------------------------------
  * changes the name of a line
  */
-static void *ChangeLineName(LayerTypePtr Layer, LineTypePtr Line)
+static void *ChangeLineName(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	char *old = Line->Number;
 
@@ -1270,7 +1270,7 @@ char *ChangeElementText(PCBType * pcb, DataType * data, ElementTypePtr Element, 
 	return old;
 }
 
-static void *ChangeElementName(ElementTypePtr Element)
+static void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
@@ -1284,7 +1284,7 @@ static void *ChangeElementName(ElementTypePtr Element)
 	return ChangeElementText(PCB, PCB->Data, Element, NAME_INDEX(), NewName);
 }
 
-static void *ChangeElementNonetlist(ElementTypePtr Element)
+static void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
@@ -1298,7 +1298,7 @@ static void *ChangeElementNonetlist(ElementTypePtr Element)
  * the one for the new string is allocated
  * returns pcb_true if the string has been changed
  */
-static void *ChangeTextName(LayerTypePtr Layer, TextTypePtr Text)
+static void *ChangeTextName(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	char *old = Text->TextString;
 
@@ -1357,7 +1357,7 @@ pcb_bool ChangeLayerName(LayerTypePtr Layer, char *Name)
 /* ---------------------------------------------------------------------------
  * changes the clearance flag of a line
  */
-static void *ChangeLineJoin(LayerTypePtr Layer, LineTypePtr Line)
+static void *ChangeLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
 		return (NULL);
@@ -1379,27 +1379,27 @@ static void *ChangeLineJoin(LayerTypePtr Layer, LineTypePtr Line)
 /* ---------------------------------------------------------------------------
  * sets the clearance flag of a line
  */
-static void *SetLineJoin(LayerTypePtr Layer, LineTypePtr Line)
+static void *SetLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
-	return ChangeLineJoin(Layer, Line);
+	return ChangeLineJoin(ctx, Layer, Line);
 }
 
 /* ---------------------------------------------------------------------------
  * clears the clearance flag of a line
  */
-static void *ClrLineJoin(LayerTypePtr Layer, LineTypePtr Line)
+static void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
-	return ChangeLineJoin(Layer, Line);
+	return ChangeLineJoin(ctx, Layer, Line);
 }
 
 /* ---------------------------------------------------------------------------
  * changes the clearance flag of an arc
  */
-static void *ChangeArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *ChangeArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
 		return (NULL);
@@ -1421,27 +1421,27 @@ static void *ChangeArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
 /* ---------------------------------------------------------------------------
  * sets the clearance flag of an arc
  */
-static void *SetArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *SetArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
-	return ChangeArcJoin(Layer, Arc);
+	return ChangeArcJoin(ctx, Layer, Arc);
 }
 
 /* ---------------------------------------------------------------------------
  * clears the clearance flag of an arc
  */
-static void *ClrArcJoin(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *ClrArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
-	return ChangeArcJoin(Layer, Arc);
+	return ChangeArcJoin(ctx, Layer, Arc);
 }
 
 /* ---------------------------------------------------------------------------
  * changes the clearance flag of a text
  */
-static void *ChangeTextJoin(LayerTypePtr Layer, TextTypePtr Text)
+static void *ChangeTextJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
 		return (NULL);
@@ -1463,27 +1463,27 @@ static void *ChangeTextJoin(LayerTypePtr Layer, TextTypePtr Text)
 /* ---------------------------------------------------------------------------
  * sets the clearance flag of a text
  */
-static void *SetTextJoin(LayerTypePtr Layer, TextTypePtr Text)
+static void *SetTextJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
-	return ChangeTextJoin(Layer, Text);
+	return ChangeTextJoin(ctx, Layer, Text);
 }
 
 /* ---------------------------------------------------------------------------
  * clears the clearance flag of a text
  */
-static void *ClrTextJoin(LayerTypePtr Layer, TextTypePtr Text)
+static void *ClrTextJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
-	return ChangeTextJoin(Layer, Text);
+	return ChangeTextJoin(ctx, Layer, Text);
 }
 
 /* ---------------------------------------------------------------------------
  * changes the square flag of all pins on an element
  */
-static void *ChangeElementSquare(ElementTypePtr Element)
+static void *ChangeElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	void *ans = NULL;
 
@@ -1491,12 +1491,12 @@ static void *ChangeElementSquare(ElementTypePtr Element)
 		return (NULL);
 	PIN_LOOP(Element);
 	{
-		ans = ChangePinSquare(Element, pin);
+		ans = ChangePinSquare(ctx, Element, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(Element);
 	{
-		ans = ChangePadSquare(Element, pad);
+		ans = ChangePadSquare(ctx, Element, pad);
 	}
 	END_LOOP;
 	return (ans);
@@ -1505,7 +1505,7 @@ static void *ChangeElementSquare(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * sets the square flag of all pins on an element
  */
-static void *SetElementSquare(ElementTypePtr Element)
+static void *SetElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	void *ans = NULL;
 
@@ -1513,12 +1513,12 @@ static void *SetElementSquare(ElementTypePtr Element)
 		return (NULL);
 	PIN_LOOP(Element);
 	{
-		ans = SetPinSquare(Element, pin);
+		ans = SetPinSquare(ctx, Element, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(Element);
 	{
-		ans = SetPadSquare(Element, pad);
+		ans = SetPadSquare(ctx, Element, pad);
 	}
 	END_LOOP;
 	return (ans);
@@ -1527,7 +1527,7 @@ static void *SetElementSquare(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * clears the square flag of all pins on an element
  */
-static void *ClrElementSquare(ElementTypePtr Element)
+static void *ClrElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	void *ans = NULL;
 
@@ -1535,12 +1535,12 @@ static void *ClrElementSquare(ElementTypePtr Element)
 		return (NULL);
 	PIN_LOOP(Element);
 	{
-		ans = ClrPinSquare(Element, pin);
+		ans = ClrPinSquare(ctx, Element, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(Element);
 	{
-		ans = ClrPadSquare(Element, pad);
+		ans = ClrPadSquare(ctx, Element, pad);
 	}
 	END_LOOP;
 	return (ans);
@@ -1549,7 +1549,7 @@ static void *ClrElementSquare(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * changes the octagon flags of all pins of an element
  */
-static void *ChangeElementOctagon(ElementTypePtr Element)
+static void *ChangeElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	void *result = NULL;
 
@@ -1557,7 +1557,7 @@ static void *ChangeElementOctagon(ElementTypePtr Element)
 		return (NULL);
 	PIN_LOOP(Element);
 	{
-		ChangePinOctagon(Element, pin);
+		ChangePinOctagon(ctx, Element, pin);
 		result = Element;
 	}
 	END_LOOP;
@@ -1567,7 +1567,7 @@ static void *ChangeElementOctagon(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * sets the octagon flags of all pins of an element
  */
-static void *SetElementOctagon(ElementTypePtr Element)
+static void *SetElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	void *result = NULL;
 
@@ -1575,7 +1575,7 @@ static void *SetElementOctagon(ElementTypePtr Element)
 		return (NULL);
 	PIN_LOOP(Element);
 	{
-		SetPinOctagon(Element, pin);
+		SetPinOctagon(ctx, Element, pin);
 		result = Element;
 	}
 	END_LOOP;
@@ -1585,7 +1585,7 @@ static void *SetElementOctagon(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * clears the octagon flags of all pins of an element
  */
-static void *ClrElementOctagon(ElementTypePtr Element)
+static void *ClrElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	void *result = NULL;
 
@@ -1593,7 +1593,7 @@ static void *ClrElementOctagon(ElementTypePtr Element)
 		return (NULL);
 	PIN_LOOP(Element);
 	{
-		ClrPinOctagon(Element, pin);
+		ClrPinOctagon(ctx, Element, pin);
 		result = Element;
 	}
 	END_LOOP;
@@ -1603,7 +1603,7 @@ static void *ClrElementOctagon(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * changes the square flag of a pad
  */
-static void *ChangePadSquare(ElementTypePtr Element, PadTypePtr Pad)
+static void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
@@ -1621,33 +1621,33 @@ static void *ChangePadSquare(ElementTypePtr Element, PadTypePtr Pad)
 /* ---------------------------------------------------------------------------
  * sets the square flag of a pad
  */
-static void *SetPadSquare(ElementTypePtr Element, PadTypePtr Pad)
+static void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || TEST_FLAG(PCB_FLAG_SQUARE, Pad))
 		return (NULL);
 
-	return (ChangePadSquare(Element, Pad));
+	return (ChangePadSquare(ctx, Element, Pad));
 }
 
 
 /* ---------------------------------------------------------------------------
  * clears the square flag of a pad
  */
-static void *ClrPadSquare(ElementTypePtr Element, PadTypePtr Pad)
+static void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || !TEST_FLAG(PCB_FLAG_SQUARE, Pad))
 		return (NULL);
 
-	return (ChangePadSquare(Element, Pad));
+	return (ChangePadSquare(ctx, Element, Pad));
 }
 
 
 /* ---------------------------------------------------------------------------
  * changes the square flag of a via
  */
-static void *ChangeViaSquare(PinTypePtr Via)
+static void *ChangeViaSquare(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
@@ -1670,7 +1670,7 @@ static void *ChangeViaSquare(PinTypePtr Via)
 /* ---------------------------------------------------------------------------
  * changes the square flag of a pin
  */
-static void *ChangePinSquare(ElementTypePtr Element, PinTypePtr Pin)
+static void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -1693,29 +1693,29 @@ static void *ChangePinSquare(ElementTypePtr Element, PinTypePtr Pin)
 /* ---------------------------------------------------------------------------
  * sets the square flag of a pin
  */
-static void *SetPinSquare(ElementTypePtr Element, PinTypePtr Pin)
+static void *SetPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
 
-	return (ChangePinSquare(Element, Pin));
+	return (ChangePinSquare(ctx, Element, Pin));
 }
 
 /* ---------------------------------------------------------------------------
  * clears the square flag of a pin
  */
-static void *ClrPinSquare(ElementTypePtr Element, PinTypePtr Pin)
+static void *ClrPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
 
-	return (ChangePinSquare(Element, Pin));
+	return (ChangePinSquare(ctx, Element, Pin));
 }
 
 /* ---------------------------------------------------------------------------
  * changes the octagon flag of a via
  */
-static void *ChangeViaOctagon(PinTypePtr Via)
+static void *ChangeViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
@@ -1733,29 +1733,29 @@ static void *ChangeViaOctagon(PinTypePtr Via)
 /* ---------------------------------------------------------------------------
  * sets the octagon flag of a via
  */
-static void *SetViaOctagon(PinTypePtr Via)
+static void *SetViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || TEST_FLAG(PCB_FLAG_OCTAGON, Via))
 		return (NULL);
 
-	return (ChangeViaOctagon(Via));
+	return (ChangeViaOctagon(ctx, Via));
 }
 
 /* ---------------------------------------------------------------------------
  * clears the octagon flag of a via
  */
-static void *ClrViaOctagon(PinTypePtr Via)
+static void *ClrViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || !TEST_FLAG(PCB_FLAG_OCTAGON, Via))
 		return (NULL);
 
-	return (ChangeViaOctagon(Via));
+	return (ChangeViaOctagon(ctx, Via));
 }
 
 /* ---------------------------------------------------------------------------
  * changes the octagon flag of a pin
  */
-static void *ChangePinOctagon(ElementTypePtr Element, PinTypePtr Pin)
+static void *ChangePinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -1773,23 +1773,23 @@ static void *ChangePinOctagon(ElementTypePtr Element, PinTypePtr Pin)
 /* ---------------------------------------------------------------------------
  * sets the octagon flag of a pin
  */
-static void *SetPinOctagon(ElementTypePtr Element, PinTypePtr Pin)
+static void *SetPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
 
-	return (ChangePinOctagon(Element, Pin));
+	return (ChangePinOctagon(ctx, Element, Pin));
 }
 
 /* ---------------------------------------------------------------------------
  * clears the octagon flag of a pin
  */
-static void *ClrPinOctagon(ElementTypePtr Element, PinTypePtr Pin)
+static void *ClrPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
 
-	return (ChangePinOctagon(Element, Pin));
+	return (ChangePinOctagon(ctx, Element, Pin));
 }
 
 /* ---------------------------------------------------------------------------
@@ -1846,7 +1846,7 @@ pcb_bool ChangePaste(PadTypePtr Pad)
 /* ---------------------------------------------------------------------------
  * changes the CLEARPOLY flag of a polygon
  */
-static void *ChangePolyClear(LayerTypePtr Layer, PolygonTypePtr Polygon)
+static void *ChangePolyClear(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Polygon))
 		return (NULL);
@@ -1889,9 +1889,10 @@ pcb_bool ChangeSelectedElementSide(void)
 pcb_bool ChangeSelectedThermals(int types, int therm_style)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
 	Delta = therm_style;
-	change = SelectedOperation(&ChangeThermalFunctions, pcb_false, types);
+	change = SelectedOperation(&ChangeThermalFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -1906,12 +1907,13 @@ pcb_bool ChangeSelectedThermals(int types, int therm_style)
 pcb_bool ChangeSelectedSize(int types, Coord Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
-
+	pcb_opctx_t ctx;
+	
 	/* setup identifiers */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
 
-	change = SelectedOperation(&ChangeSizeFunctions, pcb_false, types);
+	change = SelectedOperation(&ChangeSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -1926,14 +1928,15 @@ pcb_bool ChangeSelectedSize(int types, Coord Difference, pcb_bool fixIt)
 pcb_bool ChangeSelectedClearSize(int types, Coord Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
 	/* setup identifiers */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
 	if (conf_core.editor.show_mask)
-		change = SelectedOperation(&ChangeMaskSizeFunctions, pcb_false, types);
+		change = SelectedOperation(&ChangeMaskSizeFunctions, &ctx, pcb_false, types);
 	else
-		change = SelectedOperation(&ChangeClearSizeFunctions, pcb_false, types);
+		change = SelectedOperation(&ChangeClearSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -1948,11 +1951,12 @@ pcb_bool ChangeSelectedClearSize(int types, Coord Difference, pcb_bool fixIt)
 pcb_bool ChangeSelected2ndSize(int types, Coord Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
 	/* setup identifiers */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
-	change = SelectedOperation(&Change2ndSizeFunctions, pcb_false, types);
+	change = SelectedOperation(&Change2ndSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -1967,8 +1971,9 @@ pcb_bool ChangeSelected2ndSize(int types, Coord Difference, pcb_bool fixIt)
 pcb_bool ChangeSelectedJoin(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&ChangeJoinFunctions, pcb_false, types);
+	change = SelectedOperation(&ChangeJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -1983,8 +1988,9 @@ pcb_bool ChangeSelectedJoin(int types)
 pcb_bool SetSelectedJoin(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&SetJoinFunctions, pcb_false, types);
+	change = SelectedOperation(&SetJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -1999,8 +2005,9 @@ pcb_bool SetSelectedJoin(int types)
 pcb_bool ClrSelectedJoin(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&ClrJoinFunctions, pcb_false, types);
+	change = SelectedOperation(&ClrJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2015,8 +2022,9 @@ pcb_bool ClrSelectedJoin(int types)
 pcb_bool ChangeSelectedNonetlist(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&ChangeNonetlistFunctions, pcb_false, types);
+	change = SelectedOperation(&ChangeNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2032,8 +2040,9 @@ pcb_bool ChangeSelectedNonetlist(int types)
 pcb_bool SetSelectedNonetlist(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&SetNonetlistFunctions, pcb_false, types);
+	change = SelectedOperation(&SetNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2048,8 +2057,9 @@ pcb_bool SetSelectedNonetlist(int types)
 pcb_bool ClrSelectedNonetlist(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&ClrNonetlistFunctions, pcb_false, types);
+	change = SelectedOperation(&ClrNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2065,8 +2075,9 @@ pcb_bool ClrSelectedNonetlist(int types)
 pcb_bool ChangeSelectedSquare(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&ChangeSquareFunctions, pcb_false, types);
+	change = SelectedOperation(&ChangeSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2081,13 +2092,14 @@ pcb_bool ChangeSelectedSquare(int types)
 pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
 	/* setup identifiers */
 	AAbsolute = (fixIt) ? Difference : 0;
 	ADelta = Difference;
 	is_primary = is_start;
 
-	change = SelectedOperation(&ChangeAngleFunctions, pcb_false, types);
+	change = SelectedOperation(&ChangeAngleFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2102,13 +2114,14 @@ pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool
 pcb_bool ChangeSelectedRadius(int types, int is_start, Angle Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
 	/* setup identifiers */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
 	is_primary = is_start;
 
-	change = SelectedOperation(&ChangeRadiusFunctions, pcb_false, types);
+	change = SelectedOperation(&ChangeRadiusFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2124,8 +2137,9 @@ pcb_bool ChangeSelectedRadius(int types, int is_start, Angle Difference, pcb_boo
 pcb_bool SetSelectedSquare(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&SetSquareFunctions, pcb_false, types);
+	change = SelectedOperation(&SetSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2140,8 +2154,9 @@ pcb_bool SetSelectedSquare(int types)
 pcb_bool ClrSelectedSquare(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&ClrSquareFunctions, pcb_false, types);
+	change = SelectedOperation(&ClrSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2156,8 +2171,9 @@ pcb_bool ClrSelectedSquare(int types)
 pcb_bool ChangeSelectedOctagon(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&ChangeOctagonFunctions, pcb_false, types);
+	change = SelectedOperation(&ChangeOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2172,8 +2188,9 @@ pcb_bool ChangeSelectedOctagon(int types)
 pcb_bool SetSelectedOctagon(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&SetOctagonFunctions, pcb_false, types);
+	change = SelectedOperation(&SetOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2188,8 +2205,9 @@ pcb_bool SetSelectedOctagon(int types)
 pcb_bool ClrSelectedOctagon(int types)
 {
 	pcb_bool change = pcb_false;
+	pcb_opctx_t ctx;
 
-	change = SelectedOperation(&ClrOctagonFunctions, pcb_false, types);
+	change = SelectedOperation(&ClrOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2248,11 +2266,12 @@ pcb_bool ChangeSelectedPaste(void)
 pcb_bool ChangeObjectSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
+	pcb_opctx_t ctx;
 
 	/* setup identifier */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
-	change = (ObjectOperation(&ChangeSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	change = (ObjectOperation(&ChangeSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2267,11 +2286,12 @@ pcb_bool ChangeObjectSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Di
 pcb_bool ChangeObject1stSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
+	pcb_opctx_t ctx;
 
 	/* setup identifier */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
-	change = (ObjectOperation(&Change1stSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	change = (ObjectOperation(&Change1stSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2286,12 +2306,13 @@ pcb_bool ChangeObject1stSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord
 pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, Coord r, pcb_bool fixIt)
 {
 	pcb_bool change;
+	pcb_opctx_t ctx;
 
 	/* setup identifier */
 	Absolute = (fixIt) ? r : 0;
 	Delta = r;
 	is_primary = is_x;
-	change = (ObjectOperation(&ChangeRadiusFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	change = (ObjectOperation(&ChangeRadiusFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2306,12 +2327,13 @@ pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, Angle a, pcb_bool fixIt)
 {
 	pcb_bool change;
+	pcb_opctx_t ctx;
 
 	/* setup identifier */
 	AAbsolute = (fixIt) ? a : 0;
 	ADelta = a;
 	is_primary = is_start;
-	change = (ObjectOperation(&ChangeAngleFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	change = (ObjectOperation(&ChangeAngleFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2327,14 +2349,15 @@ pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
 pcb_bool ChangeObjectClearSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
+	pcb_opctx_t ctx;
 
 	/* setup identifier */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
 	if (conf_core.editor.show_mask)
-		change = (ObjectOperation(&ChangeMaskSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+		change = (ObjectOperation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	else
-		change = (ObjectOperation(&ChangeClearSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+		change = (ObjectOperation(&ChangeClearSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2350,9 +2373,10 @@ pcb_bool ChangeObjectClearSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coo
 pcb_bool ChangeObjectThermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type)
 {
 	pcb_bool change;
+	pcb_opctx_t ctx;
 
 	Delta = Absolute = therm_type;
-	change = (ObjectOperation(&ChangeThermalFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	change = (ObjectOperation(&ChangeThermalFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2367,11 +2391,12 @@ pcb_bool ChangeObjectThermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int t
 pcb_bool ChangeObject2ndSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt, pcb_bool incundo)
 {
 	pcb_bool change;
+	pcb_opctx_t ctx;
 
 	/* setup identifier */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
-	change = (ObjectOperation(&Change2ndSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	change = (ObjectOperation(&Change2ndSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
 		if (incundo)
@@ -2387,11 +2412,12 @@ pcb_bool ChangeObject2ndSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord
 pcb_bool ChangeObjectMaskSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
+	pcb_opctx_t ctx;
 
 	/* setup identifier */
 	Absolute = (fixIt) ? Difference : 0;
 	Delta = Difference;
-	change = (ObjectOperation(&ChangeMaskSizeFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	change = (ObjectOperation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -2409,9 +2435,11 @@ pcb_bool ChangeObjectMaskSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
 void *ChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 {
 	void *result;
+	pcb_opctx_t ctx;
+
 	/* setup identifier */
 	NewName = Name;
-	result = ObjectOperation(&ChangeNameFunctions, Type, Ptr1, Ptr2, Ptr3);
+	result = ObjectOperation(&ChangeNameFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	Draw();
 	return (result);
 }
@@ -2426,9 +2454,11 @@ void *ChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 void *ChangeObjectPinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 {
 	void *result;
+	pcb_opctx_t ctx;
+
 	/* setup identifier */
 	NewName = Name;
-	result = ObjectOperation(&ChangePinnumFunctions, Type, Ptr1, Ptr2, Ptr3);
+	result = ObjectOperation(&ChangePinnumFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	Draw();
 	return (result);
 }
@@ -2439,7 +2469,9 @@ void *ChangeObjectPinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Nam
  */
 pcb_bool ChangeObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (ObjectOperation(&ChangeJoinFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	pcb_opctx_t ctx;
+
+	if (ObjectOperation(&ChangeJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2453,7 +2485,9 @@ pcb_bool ChangeObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  */
 pcb_bool SetObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (ObjectOperation(&SetJoinFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	pcb_opctx_t ctx;
+
+	if (ObjectOperation(&SetJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2467,7 +2501,9 @@ pcb_bool SetObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  */
 pcb_bool ClrObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (ObjectOperation(&ClrJoinFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	pcb_opctx_t ctx;
+
+	if (ObjectOperation(&ClrJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2481,7 +2517,9 @@ pcb_bool ClrObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  */
 pcb_bool ChangeObjectNonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (ObjectOperation(&ChangeNonetlistFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	pcb_opctx_t ctx;
+
+	if (ObjectOperation(&ChangeNonetlistFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2495,8 +2533,10 @@ pcb_bool ChangeObjectNonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  */
 pcb_bool ChangeObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int style)
 {
+	pcb_opctx_t ctx;
+
 	Absolute = style;
-	if (ObjectOperation(&ChangeSquareFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	if (ObjectOperation(&ChangeSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2510,7 +2550,9 @@ pcb_bool ChangeObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int st
  */
 pcb_bool SetObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (ObjectOperation(&SetSquareFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	pcb_opctx_t ctx;
+
+	if (ObjectOperation(&SetSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2524,7 +2566,9 @@ pcb_bool SetObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  */
 pcb_bool ClrObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (ObjectOperation(&ClrSquareFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	pcb_opctx_t ctx;
+
+	if (ObjectOperation(&ClrSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2538,7 +2582,9 @@ pcb_bool ClrObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  */
 pcb_bool ChangeObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (ObjectOperation(&ChangeOctagonFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	pcb_opctx_t ctx;
+
+	if (ObjectOperation(&ChangeOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2552,7 +2598,9 @@ pcb_bool ChangeObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  */
 pcb_bool SetObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (ObjectOperation(&SetOctagonFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	pcb_opctx_t ctx;
+
+	if (ObjectOperation(&SetOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2566,7 +2614,9 @@ pcb_bool SetObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  */
 pcb_bool ClrObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	if (ObjectOperation(&ClrOctagonFunctions, Type, Ptr1, Ptr2, Ptr3) != NULL) {
+	pcb_opctx_t ctx;
+
+	if (ObjectOperation(&ClrOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		Draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
@@ -2676,7 +2726,7 @@ void ChangePCBSize(Coord Width, Coord Height)
  * changes the mask size of a pad
  * returns pcb_true if changed
  */
-static void *ChangePadMaskSize(ElementTypePtr Element, PadTypePtr Pad)
+static void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 {
 	Coord value = (Absolute) ? Absolute : Pad->Mask + Delta;
 
@@ -2699,7 +2749,7 @@ static void *ChangePadMaskSize(ElementTypePtr Element, PadTypePtr Pad)
  * changes the mask size of a pin
  * returns pcb_true if changed
  */
-static void *ChangePinMaskSize(ElementTypePtr Element, PinTypePtr Pin)
+static void *ChangePinMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 {
 	Coord value = (Absolute) ? Absolute : Pin->Mask + Delta;
 
@@ -2722,7 +2772,7 @@ static void *ChangePinMaskSize(ElementTypePtr Element, PinTypePtr Pin)
  * changes the mask size of a via
  * returns pcb_true if changed
  */
-static void *ChangeViaMaskSize(PinTypePtr Via)
+static void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	Coord value;
 

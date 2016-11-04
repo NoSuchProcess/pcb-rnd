@@ -48,39 +48,45 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *DestroyVia(PinTypePtr);
-static void *DestroyRat(RatTypePtr);
-static void *DestroyLine(LayerTypePtr, LineTypePtr);
-static void *DestroyArc(LayerTypePtr, ArcTypePtr);
-static void *DestroyText(LayerTypePtr, TextTypePtr);
-static void *DestroyPolygon(LayerTypePtr, PolygonTypePtr);
-static void *DestroyElement(ElementTypePtr);
-static void *RemoveVia(PinTypePtr);
-static void *RemoveRat(RatTypePtr);
-static void *DestroyPolygonPoint(LayerTypePtr, PolygonTypePtr, PointTypePtr);
-static void *RemovePolygonContour(LayerTypePtr, PolygonTypePtr, pcb_cardinal_t);
-static void *RemovePolygonPoint(LayerTypePtr, PolygonTypePtr, PointTypePtr);
-static void *RemoveLinePoint(LayerTypePtr, LineTypePtr, PointTypePtr);
+static void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr);
+static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr);
+static void *DestroyLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *DestroyArc(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *DestroyText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *DestroyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
+static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr);
+static void *RemoveVia(pcb_opctx_t *ctx, PinTypePtr);
+static void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr);
+static void *DestroyPolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
+static void *RemovePolygonContour(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, pcb_cardinal_t);
+static void *RemovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
+static void *RemoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
+
+static void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element);
+static void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
+static void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+static void *RemoveText_op(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text);
+static void *RemovePolygon_op(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
 
 /* ---------------------------------------------------------------------------
  * some local types
  */
-static ObjectFunctionType RemoveFunctions = {
-	RemoveLine,
-	RemoveText,
-	RemovePolygon,
+static pcb_opfunc_t RemoveFunctions = {
+	RemoveLine_op,
+	RemoveText_op,
+	RemovePolygon_op,
 	RemoveVia,
-	RemoveElement,
+	RemoveElement_op,
 	NULL,
 	NULL,
 	NULL,
 	RemoveLinePoint,
 	RemovePolygonPoint,
-	RemoveArc,
+	RemoveArc_op,
 	RemoveRat
 };
 
-static ObjectFunctionType DestroyFunctions = {
+static pcb_opfunc_t DestroyFunctions = {
 	DestroyLine,
 	DestroyText,
 	DestroyPolygon,
@@ -111,7 +117,7 @@ void RemovePCB(PCBTypePtr Ptr)
 /* ---------------------------------------------------------------------------
  * destroys a via
  */
-static void *DestroyVia(PinTypePtr Via)
+static void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	r_delete_entry(DestroyTarget->via_tree, (BoxTypePtr) Via);
 	free(Via->Name);
@@ -123,7 +129,7 @@ static void *DestroyVia(PinTypePtr Via)
 /* ---------------------------------------------------------------------------
  * destroys a line from a layer
  */
-static void *DestroyLine(LayerTypePtr Layer, LineTypePtr Line)
+static void *DestroyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
 	free(Line->Number);
@@ -135,7 +141,7 @@ static void *DestroyLine(LayerTypePtr Layer, LineTypePtr Line)
 /* ---------------------------------------------------------------------------
  * destroys an arc from a layer
  */
-static void *DestroyArc(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *DestroyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
 
@@ -147,7 +153,7 @@ static void *DestroyArc(LayerTypePtr Layer, ArcTypePtr Arc)
 /* ---------------------------------------------------------------------------
  * destroys a polygon from a layer
  */
-static void *DestroyPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
+static void *DestroyPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	r_delete_entry(Layer->polygon_tree, (BoxTypePtr) Polygon);
 	FreePolygonMemory(Polygon);
@@ -160,7 +166,7 @@ static void *DestroyPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 /* ---------------------------------------------------------------------------
  * removes a polygon-point from a polygon and destroys the data
  */
-static void *DestroyPolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point)
+static void *DestroyPolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point)
 {
 	pcb_cardinal_t point_idx;
 	pcb_cardinal_t i;
@@ -174,7 +180,7 @@ static void *DestroyPolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, Poi
 	contour_points = contour_end - contour_start;
 
 	if (contour_points <= 3)
-		return RemovePolygonContour(Layer, Polygon, contour);
+		return RemovePolygonContour(ctx, Layer, Polygon, contour);
 
 	r_delete_entry(Layer->polygon_tree, (BoxType *) Polygon);
 
@@ -197,7 +203,7 @@ static void *DestroyPolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, Poi
 /* ---------------------------------------------------------------------------
  * destroys a text from a layer
  */
-static void *DestroyText(LayerTypePtr Layer, TextTypePtr Text)
+static void *DestroyText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	free(Text->TextString);
 	r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
@@ -210,7 +216,7 @@ static void *DestroyText(LayerTypePtr Layer, TextTypePtr Text)
 /* ---------------------------------------------------------------------------
  * destroys a element
  */
-static void *DestroyElement(ElementTypePtr Element)
+static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	if (DestroyTarget->element_tree)
 		r_delete_entry(DestroyTarget->element_tree, (BoxType *) Element);
@@ -244,7 +250,7 @@ static void *DestroyElement(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * destroys a rat
  */
-static void *DestroyRat(RatTypePtr Rat)
+static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 {
 	if (DestroyTarget->rat_tree)
 		r_delete_entry(DestroyTarget->rat_tree, &Rat->BoundingBox);
@@ -257,7 +263,7 @@ static void *DestroyRat(RatTypePtr Rat)
 /* ---------------------------------------------------------------------------
  * removes a via
  */
-static void *RemoveVia(PinTypePtr Via)
+static void *RemoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	/* erase from screen and memory */
 	if (PCB->ViaOn) {
@@ -272,7 +278,7 @@ static void *RemoveVia(PinTypePtr Via)
 /* ---------------------------------------------------------------------------
  * removes a rat
  */
-static void *RemoveRat(RatTypePtr Rat)
+static void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 {
 	/* erase from screen and memory */
 	if (PCB->RatOn) {
@@ -313,7 +319,7 @@ static r_dir_t remove_point(const BoxType * b, void *cl)
 /* ---------------------------------------------------------------------------
  * removes a line point, or a line if the selected point is the end
  */
-static void *RemoveLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
+static void *RemoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
 {
 	PointType other;
 	struct rlp_info info;
@@ -325,16 +331,16 @@ static void *RemoveLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr 
 	info.point = Point;
 	if (setjmp(info.env) == 0) {
 		r_search(Layer->line_tree, (const BoxType *) Point, NULL, remove_point, &info, NULL);
-		return RemoveLine(Layer, Line);
+		return RemoveLine_op(ctx, Layer, Line);
 	}
 	MoveObject(PCB_TYPE_LINE_POINT, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);
-	return (RemoveLine(Layer, Line));
+	return (RemoveLine_op(ctx, Layer, Line));
 }
 
 /* ---------------------------------------------------------------------------
  * removes a line from a layer
  */
-void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
+static void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	/* erase from screen */
 	if (Layer->On) {
@@ -346,10 +352,17 @@ void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
 	return NULL;
 }
 
+void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
+{
+	pcb_opctx_t ctx;
+	return RemoveLine_op(&ctx, Layer, Line);
+}
+
+
 /* ---------------------------------------------------------------------------
  * removes an arc from a layer
  */
-void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	/* erase from screen */
 	if (Layer->On) {
@@ -361,10 +374,17 @@ void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
 	return NULL;
 }
 
+void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
+{
+	pcb_opctx_t ctx;
+	return RemoveArc_op(&ctx, Layer, Arc);
+}
+
+
 /* ---------------------------------------------------------------------------
  * removes a text from a layer
  */
-void *RemoveText(LayerTypePtr Layer, TextTypePtr Text)
+static void *RemoveText_op(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	/* erase from screen */
 	if (Layer->On) {
@@ -376,10 +396,16 @@ void *RemoveText(LayerTypePtr Layer, TextTypePtr Text)
 	return NULL;
 }
 
+void *RemoveText(LayerTypePtr Layer, TextTypePtr Text)
+{
+	pcb_opctx_t ctx;
+	return RemoveText_op(&ctx, Layer, Text);
+}
+
 /* ---------------------------------------------------------------------------
  * removes a polygon from a layer
  */
-void *RemovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
+static void *RemovePolygon_op(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	/* erase from screen */
 	if (Layer->On) {
@@ -391,11 +417,17 @@ void *RemovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 	return NULL;
 }
 
+void *RemovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
+{
+	pcb_opctx_t ctx;
+	return RemovePolygon_op(&ctx, Layer, Polygon);
+}
+
 /* ---------------------------------------------------------------------------
  * removes a contour from a polygon.
  * If removing the outer contour, it removes the whole polygon.
  */
-static void *RemovePolygonContour(LayerTypePtr Layer, PolygonTypePtr Polygon, pcb_cardinal_t contour)
+static void *RemovePolygonContour(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon, pcb_cardinal_t contour)
 {
 	pcb_cardinal_t contour_start, contour_end, contour_points;
 	pcb_cardinal_t i;
@@ -439,7 +471,7 @@ static void *RemovePolygonContour(LayerTypePtr Layer, PolygonTypePtr Polygon, pc
 /* ---------------------------------------------------------------------------
  * removes a polygon-point from a polygon
  */
-static void *RemovePolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point)
+static void *RemovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point)
 {
 	pcb_cardinal_t point_idx;
 	pcb_cardinal_t i;
@@ -453,7 +485,7 @@ static void *RemovePolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, Poin
 	contour_points = contour_end - contour_start;
 
 	if (contour_points <= 3)
-		return RemovePolygonContour(Layer, Polygon, contour);
+		return RemovePolygonContour(ctx, Layer, Polygon, contour);
 
 	if (Layer->On)
 		ErasePolygon(Polygon);
@@ -489,7 +521,7 @@ static void *RemovePolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, Poin
 /* ---------------------------------------------------------------------------
  * removes an element
  */
-void *RemoveElement(ElementTypePtr Element)
+static void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	/* erase from screen */
 	if ((PCB->ElementOn || PCB->PinOn) && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
@@ -501,14 +533,21 @@ void *RemoveElement(ElementTypePtr Element)
 	return NULL;
 }
 
+void *RemoveElement(ElementTypePtr Element)
+{
+	pcb_opctx_t ctx;
+	return RemoveElement_op(&ctx, Element);
+}
+
 /* ----------------------------------------------------------------------
  * removes all selected and visible objects
  * returns pcb_true if any objects have been removed
  */
 pcb_bool RemoveSelected(void)
 {
+	pcb_opctx_t ctx;
 	Bulk = pcb_true;
-	if (SelectedOperation(&RemoveFunctions, pcb_false, PCB_TYPEMASK_ALL)) {
+	if (SelectedOperation(&RemoveFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL)) {
 		IncrementUndoSerialNumber();
 		Draw();
 		Bulk = pcb_false;
@@ -524,7 +563,8 @@ pcb_bool RemoveSelected(void)
  */
 void *RemoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	void *ptr = ObjectOperation(&RemoveFunctions, Type, Ptr1, Ptr2, Ptr3);
+	pcb_opctx_t ctx;
+	void *ptr = ObjectOperation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (ptr);
 }
 
@@ -535,13 +575,14 @@ void *RemoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 pcb_bool DeleteRats(pcb_bool selected)
 {
+	pcb_opctx_t ctx;
 	pcb_bool changed = pcb_false;
 	Bulk = pcb_true;
 	RAT_LOOP(PCB->Data);
 	{
 		if ((!selected) || TEST_FLAG(PCB_FLAG_SELECTED, line)) {
 			changed = pcb_true;
-			RemoveRat(line);
+			RemoveRat(&ctx, line);
 		}
 	}
 	END_LOOP;
@@ -559,6 +600,7 @@ pcb_bool DeleteRats(pcb_bool selected)
  */
 void *DestroyObject(DataTypePtr Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
+	pcb_opctx_t ctx;
 	DestroyTarget = Target;
-	return (ObjectOperation(&DestroyFunctions, Type, Ptr1, Ptr2, Ptr3));
+	return (ObjectOperation(&DestroyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }

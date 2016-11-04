@@ -46,9 +46,9 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *InsertPointIntoLine(LayerTypePtr, LineTypePtr);
-static void *InsertPointIntoPolygon(LayerTypePtr, PolygonTypePtr);
-static void *InsertPointIntoRat(RatTypePtr);
+static void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *InsertPointIntoPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
+static void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -57,7 +57,7 @@ static Coord InsertX, InsertY;	/* used by local routines as offset */
 static pcb_cardinal_t InsertAt;
 static pcb_bool InsertLast;
 static pcb_bool Forcible;
-static ObjectFunctionType InsertFunctions = {
+static pcb_opfunc_t InsertFunctions = {
 	InsertPointIntoLine,
 	NULL,
 	InsertPointIntoPolygon,
@@ -75,7 +75,7 @@ static ObjectFunctionType InsertFunctions = {
 /* ---------------------------------------------------------------------------
  * inserts a point into a rat-line
  */
-static void *InsertPointIntoRat(RatTypePtr Rat)
+static void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 {
 	LineTypePtr newone;
 
@@ -100,7 +100,7 @@ static void *InsertPointIntoRat(RatTypePtr Rat)
 /* ---------------------------------------------------------------------------
  * inserts a point into a line
  */
-static void *InsertPointIntoLine(LayerTypePtr Layer, LineTypePtr Line)
+static void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	LineTypePtr line;
 	Coord X, Y;
@@ -136,7 +136,7 @@ static void *InsertPointIntoLine(LayerTypePtr Layer, LineTypePtr Line)
 /* ---------------------------------------------------------------------------
  * inserts a point into a polygon
  */
-static void *InsertPointIntoPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
+static void *InsertPointIntoPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	PointType save;
 	pcb_cardinal_t n;
@@ -186,6 +186,7 @@ static void *InsertPointIntoPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * Ptr3, Coord DX, Coord DY, pcb_bool Force, pcb_bool insert_last)
 {
 	void *ptr;
+	pcb_opctx_t ctx;
 
 	/* setup offset */
 	InsertX = DX;
@@ -195,7 +196,7 @@ void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * P
 	Forcible = Force;
 
 	/* the operation insert the points to the undo-list */
-	ptr = ObjectOperation(&InsertFunctions, Type, Ptr1, Ptr2, Ptr3);
+	ptr = ObjectOperation(&InsertFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	if (ptr != NULL)
 		IncrementUndoSerialNumber();
 	return (ptr);

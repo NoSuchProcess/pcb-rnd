@@ -55,20 +55,20 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *MoveElementName(ElementTypePtr);
-static void *MoveElement(ElementTypePtr);
-static void *MoveVia(PinTypePtr);
-static void *MoveLine(LayerTypePtr, LineTypePtr);
-static void *MoveArc(LayerTypePtr, ArcTypePtr);
-static void *MoveText(LayerTypePtr, TextTypePtr);
-static void *MovePolygon(LayerTypePtr, PolygonTypePtr);
-static void *MoveLinePoint(LayerTypePtr, LineTypePtr, PointTypePtr);
-static void *MovePolygonPoint(LayerTypePtr, PolygonTypePtr, PointTypePtr);
-static void *MoveLineToLayer(LayerTypePtr, LineTypePtr);
-static void *MoveArcToLayer(LayerTypePtr, ArcTypePtr);
-static void *MoveRatToLayer(RatTypePtr);
-static void *MoveTextToLayer(LayerTypePtr, TextTypePtr);
-static void *MovePolygonToLayer(LayerTypePtr, PolygonTypePtr);
+static void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr);
+static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr);
+static void *MoveVia(pcb_opctx_t *ctx, PinTypePtr);
+static void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *MoveArc(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *MoveText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *MovePolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
+static void *MoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
+static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
+static void *MoveLineToLayer(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
+static void *MoveArcToLayer(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+static void *MoveRatToLayer(pcb_opctx_t *ctx, RatTypePtr);
+static void *MoveTextToLayer(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
+static void *MovePolygonToLayer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -76,7 +76,7 @@ static void *MovePolygonToLayer(LayerTypePtr, PolygonTypePtr);
 static Coord DeltaX, DeltaY;		/* used by local routines as offset */
 static LayerTypePtr Dest;
 static pcb_bool MoreToCome;
-static ObjectFunctionType MoveFunctions = {
+static pcb_opfunc_t MoveFunctions = {
 	MoveLine,
 	MoveText,
 	MovePolygon,
@@ -154,7 +154,7 @@ void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coo
 /* ----------------------------------------------------------------------
  * moves all names of an element to a new position
  */
-static void *MoveElementName(ElementTypePtr Element)
+static void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	if (PCB->ElementOn && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElementName(Element);
@@ -187,7 +187,7 @@ static void *MoveElementName(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * moves an element
  */
-static void *MoveElement(ElementTypePtr Element)
+static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	pcb_bool didDraw = pcb_false;
 
@@ -215,7 +215,7 @@ static void *MoveElement(ElementTypePtr Element)
 /* ---------------------------------------------------------------------------
  * moves a via
  */
-static void *MoveVia(PinTypePtr Via)
+static void *MoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
@@ -234,7 +234,7 @@ static void *MoveVia(PinTypePtr Via)
 /* ---------------------------------------------------------------------------
  * moves a line
  */
-static void *MoveLine(LayerTypePtr Layer, LineTypePtr Line)
+static void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	if (Layer->On)
 		EraseLine(Line);
@@ -253,7 +253,7 @@ static void *MoveLine(LayerTypePtr Layer, LineTypePtr Line)
 /* ---------------------------------------------------------------------------
  * moves an arc
  */
-static void *MoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
+static void *MoveArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	r_delete_entry(Layer->arc_tree, (BoxType *) Arc);
@@ -274,7 +274,7 @@ static void *MoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
 /* ---------------------------------------------------------------------------
  * moves a text object
  */
-static void *MoveText(LayerTypePtr Layer, TextTypePtr Text)
+static void *MoveText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	r_delete_entry(Layer->text_tree, (BoxType *) Text);
@@ -307,7 +307,7 @@ void MovePolygonLowLevel(PolygonTypePtr Polygon, Coord DeltaX, Coord DeltaY)
 /* ---------------------------------------------------------------------------
  * moves a polygon
  */
-static void *MovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
+static void *MovePolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	if (Layer->On) {
 		ErasePolygon(Polygon);
@@ -326,7 +326,7 @@ static void *MovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 /* ---------------------------------------------------------------------------
  * moves one end of a line
  */
-static void *MoveLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
+static void *MoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
 {
 	if (Layer) {
 		if (Layer->On)
@@ -362,7 +362,7 @@ static void *MoveLinePoint(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Po
 /* ---------------------------------------------------------------------------
  * moves a polygon-point
  */
-static void *MovePolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point)
+static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point)
 {
 	if (Layer->On) {
 		ErasePolygon(Polygon);
@@ -383,7 +383,7 @@ static void *MovePolygonPoint(LayerTypePtr Layer, PolygonTypePtr Polygon, PointT
 /* ---------------------------------------------------------------------------
  * moves a line between layers; lowlevel routines
  */
-static void *MoveLineToLayerLowLevel(LayerType * Source, LineType * line, LayerType * Destination)
+static void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, LineType * line, LayerType * Destination)
 {
 	r_delete_entry(Source->line_tree, (BoxType *) line);
 
@@ -399,7 +399,7 @@ static void *MoveLineToLayerLowLevel(LayerType * Source, LineType * line, LayerT
 /* ---------------------------------------------------------------------------
  * moves an arc between layers; lowlevel routines
  */
-static void *MoveArcToLayerLowLevel(LayerType * Source, ArcType * arc, LayerType * Destination)
+static void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, ArcType * arc, LayerType * Destination)
 {
 	r_delete_entry(Source->arc_tree, (BoxType *) arc);
 
@@ -416,7 +416,7 @@ static void *MoveArcToLayerLowLevel(LayerType * Source, ArcType * arc, LayerType
 /* ---------------------------------------------------------------------------
  * moves an arc between layers
  */
-static void *MoveArcToLayer(LayerType * Layer, ArcType * Arc)
+static void *MoveArcToLayer(pcb_opctx_t *ctx, LayerType * Layer, ArcType * Arc)
 {
 	ArcTypePtr newone;
 
@@ -434,7 +434,7 @@ static void *MoveArcToLayer(LayerType * Layer, ArcType * Arc)
 	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	if (Layer->On)
 		EraseArc(Arc);
-	newone = (ArcTypePtr) MoveArcToLayerLowLevel(Layer, Arc, Dest);
+	newone = (ArcTypePtr) MoveArcToLayerLowLevel(ctx, Layer, Arc, Dest);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Dest, Arc);
 	if (Dest->On)
 		DrawArc(Dest, newone);
@@ -445,7 +445,7 @@ static void *MoveArcToLayer(LayerType * Layer, ArcType * Arc)
 /* ---------------------------------------------------------------------------
  * moves a line between layers
  */
-static void *MoveRatToLayer(RatType * Rat)
+static void *MoveRatToLayer(pcb_opctx_t *ctx, RatType * Rat)
 {
 	LineTypePtr newone;
 	/*Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
@@ -493,7 +493,7 @@ static r_dir_t moveline_callback(const BoxType * b, void *cl)
 	longjmp(i->env, 1);
 }
 
-static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
+static void *MoveLineToLayer(pcb_opctx_t *ctx, LayerType * Layer, LineType * Line)
 {
 	struct via_info info;
 	BoxType sb;
@@ -515,7 +515,7 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 	if (Layer->On)
 		EraseLine(Line);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	newone = (LineTypePtr) MoveLineToLayerLowLevel(Layer, Line, Dest);
+	newone = (LineTypePtr) MoveLineToLayerLowLevel(ctx, Layer, Line, Dest);
 	Line = NULL;
 	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Dest, newone);
 	if (Dest->On)
@@ -556,7 +556,7 @@ static void *MoveLineToLayer(LayerType * Layer, LineType * Line)
 /* ---------------------------------------------------------------------------
  * moves a text object between layers; lowlevel routines
  */
-static void *MoveTextToLayerLowLevel(LayerType * Source, TextType * text, LayerType * Destination)
+static void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, TextType * text, LayerType * Destination)
 {
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Source, text);
 	r_delete_entry(Source->text_tree, (BoxType *) text);
@@ -582,7 +582,7 @@ static void *MoveTextToLayerLowLevel(LayerType * Source, TextType * text, LayerT
 /* ---------------------------------------------------------------------------
  * moves a text object between layers
  */
-static void *MoveTextToLayer(LayerType * layer, TextType * text)
+static void *MoveTextToLayer(pcb_opctx_t *ctx, LayerType * layer, TextType * text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, text)) {
 		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
@@ -592,7 +592,7 @@ static void *MoveTextToLayer(LayerType * layer, TextType * text)
 		AddObjectToMoveToLayerUndoList(PCB_TYPE_TEXT, layer, text, text);
 		if (layer->On)
 			EraseText(layer, text);
-		text = MoveTextToLayerLowLevel(layer, text, Dest);
+		text = MoveTextToLayerLowLevel(ctx, layer, text, Dest);
 		if (Dest->On)
 			DrawText(Dest, text);
 		if (layer->On || Dest->On)
@@ -604,7 +604,7 @@ static void *MoveTextToLayer(LayerType * layer, TextType * text)
 /* ---------------------------------------------------------------------------
  * moves a polygon between layers; lowlevel routines
  */
-static void *MovePolygonToLayerLowLevel(LayerType * Source, PolygonType * polygon, LayerType * Destination)
+static void *MovePolygonToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, PolygonType * polygon, LayerType * Destination)
 {
 	r_delete_entry(Source->polygon_tree, (BoxType *) polygon);
 
@@ -642,7 +642,7 @@ r_dir_t mptl_pin_callback(const BoxType * b, void *cl)
 /* ---------------------------------------------------------------------------
  * moves a polygon between layers
  */
-static void *MovePolygonToLayer(LayerType * Layer, PolygonType * Polygon)
+static void *MovePolygonToLayer(pcb_opctx_t *ctx, LayerType * Layer, PolygonType * Polygon)
 {
 	PolygonTypePtr newone;
 	struct mptlc d;
@@ -664,7 +664,7 @@ static void *MovePolygonToLayer(LayerType * Layer, PolygonType * Polygon)
 	r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
 	d.type = PCB_TYPE_VIA;
 	r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
-	newone = (struct polygon_st *) MovePolygonToLayerLowLevel(Layer, Polygon, Dest);
+	newone = (struct polygon_st *) MovePolygonToLayerLowLevel(ctx, Layer, Polygon, Dest);
 	InitClip(PCB->Data, Dest, newone);
 	if (Dest->On) {
 		DrawPolygon(Dest, newone);
@@ -680,11 +680,13 @@ static void *MovePolygonToLayer(LayerType * Layer, PolygonType * Polygon)
 void *MoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord DY)
 {
 	void *result;
+	pcb_opctx_t ctx;
+
 	/* setup offset */
 	DeltaX = DX;
 	DeltaY = DY;
 	AddObjectToMoveUndoList(Type, Ptr1, Ptr2, Ptr3, DX, DY);
-	result = ObjectOperation(&MoveFunctions, Type, Ptr1, Ptr2, Ptr3);
+	result = ObjectOperation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (result);
 }
 
@@ -695,6 +697,7 @@ void *MoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord D
 void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord DY)
 {
 	RubberbandTypePtr ptr;
+	pcb_opctx_t ctx;
 	void *ptr2;
 
 	pcb_draw_inhibit_inc();
@@ -718,13 +721,13 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
 		/* first clear any marks that we made in the line flags */
 		CLEAR_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);
 		AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
-		MoveLinePoint(ptr->Layer, ptr->Line, ptr->MovedPoint);
+		MoveLinePoint(&ctx, ptr->Layer, ptr->Line, ptr->MovedPoint);
 		Crosshair.AttachedObject.RubberbandN--;
 		ptr++;
 	}
 
 	AddObjectToMoveUndoList(Type, Ptr1, Ptr2, Ptr3, DX, DY);
-	ptr2 = ObjectOperation(&MoveFunctions, Type, Ptr1, Ptr2, Ptr3);
+	ptr2 = ObjectOperation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	IncrementUndoSerialNumber();
 
 	pcb_draw_inhibit_dec();
@@ -740,11 +743,12 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
 void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, LayerTypePtr Target, pcb_bool enmasse)
 {
 	void *result;
+	pcb_opctx_t ctx;
 
 	/* setup global identifiers */
 	Dest = Target;
 	MoreToCome = enmasse;
-	result = ObjectOperation(&MoveToLayerFunctions, Type, Ptr1, Ptr2, Ptr3);
+	result = ObjectOperation(&MoveToLayerFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	IncrementUndoSerialNumber();
 	return (result);
 }
@@ -756,11 +760,12 @@ void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, LayerTypeP
 pcb_bool MoveSelectedObjectsToLayer(LayerTypePtr Target)
 {
 	pcb_bool changed;
+	pcb_opctx_t ctx;
 
 	/* setup global identifiers */
 	Dest = Target;
 	MoreToCome = pcb_true;
-	changed = SelectedOperation(&MoveToLayerFunctions, pcb_true, PCB_TYPEMASK_ALL);
+	changed = SelectedOperation(&MoveToLayerFunctions, &ctx, pcb_true, PCB_TYPEMASK_ALL);
 	/* passing pcb_true to above operation causes Undoserial to auto-increment */
 	return (changed);
 }
