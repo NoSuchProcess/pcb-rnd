@@ -2,9 +2,12 @@
 	? all route styles deleted when using 'File>load layout data to paste buffer' 
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	- save as: change format, save as again: it sets back the format to default but the file name is wrong [report:Erich]
-	- rotate line doesn't work (mainline too)
+	- rotate line doesn't work (mainline too); what does line point rotation do?!
 	- rotate arc within a polygon -> doesn't update clip (mainline too)
 	- missing rotate polygon (mainline too)
+	- Arc insert missing (mainline too)
+	- insert drag&drop strangeness (mainline too)
+	- mirror buffer left/right with arcs in it -> rtree assert in debug mode
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -14,6 +17,9 @@
 	- ind: indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
 	- keep numeric format: test all
 	- keep unknown subtrees
+
+- unravel:
+	- figure what to do with draw.h *Erase*() (that might be erasing objects from the screen?)
 
 - replace settings with lihata (conf_*)
 	- TEST:
