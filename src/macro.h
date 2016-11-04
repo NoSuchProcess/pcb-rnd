@@ -190,13 +190,6 @@
 	{ \
 		LINE_LOOP(layer)
 
-#define ALLARC_LOOP(top) do {		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l =0; l < max_copper_layer + 2; l++, layer++)		\
-	{ \
-		ARC_LOOP(layer)
-
 #define	ALLPOLYGON_LOOP(top)	do {		\
 	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
@@ -210,13 +203,6 @@
 	for (l = 0; l < max_copper_layer; l++, layer++)	\
 	{ \
 		LINE_LOOP(layer)
-
-#define COPPERARC_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l =0; l < max_copper_layer; l++, layer++)		\
-	{ \
-		ARC_LOOP(layer)
 
 #define	COPPERPOLYGON_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
@@ -232,14 +218,6 @@
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
 		LINE_LOOP(layer)
-
-#define SILKARC_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	layer += max_copper_layer;			\
-	for (l = 0; l < 2; l++, layer++)		\
-	{ \
-		ARC_LOOP(layer)
 
 #define	SILKPOLYGON_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
@@ -263,14 +241,6 @@
 	{ \
 		if (layer->On)				\
 			LINE_LOOP(layer)
-
-#define	VISIBLEARC_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
-	{ \
-		if (layer->On)				\
-			ARC_LOOP(layer)
 
 #define	VISIBLETEXT_LOOP(board) do	{		\
 	pcb_cardinal_t		l;			\
