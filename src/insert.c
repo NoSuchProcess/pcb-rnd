@@ -53,10 +53,6 @@ static void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr);
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static Coord InsertX, InsertY;	/* used by local routines as offset */
-static pcb_cardinal_t InsertAt;
-static pcb_bool InsertLast;
-static pcb_bool Forcible;
 static pcb_opfunc_t InsertFunctions = {
 	InsertPointIntoLine,
 	NULL,
@@ -80,14 +76,14 @@ static void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 	LineTypePtr newone;
 
 	newone = CreateDrawnLineOnLayer(CURRENT, Rat->Point1.X, Rat->Point1.Y,
-																	InsertX, InsertY, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
+																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (!newone)
 		return newone;
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
 	EraseRat(Rat);
 	DrawLine(CURRENT, newone);
 	newone = CreateDrawnLineOnLayer(CURRENT, Rat->Point2.X, Rat->Point2.Y,
-																	InsertX, InsertY, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
+																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (newone) {
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
 		DrawLine(CURRENT, newone);
@@ -105,17 +101,17 @@ static void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypeP
 	LineTypePtr line;
 	Coord X, Y;
 
-	if (((Line->Point1.X == InsertX) && (Line->Point1.Y == InsertY)) ||
-			((Line->Point2.X == InsertX) && (Line->Point2.Y == InsertY)))
+	if (((Line->Point1.X == ctx->insert.x) && (Line->Point1.Y == ctx->insert.y)) ||
+			((Line->Point2.X == ctx->insert.x) && (Line->Point2.Y == ctx->insert.y)))
 		return (NULL);
 	X = Line->Point2.X;
 	Y = Line->Point2.Y;
-	AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, Layer, Line, &Line->Point2, InsertX - X, InsertY - Y);
+	AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, Layer, Line, &Line->Point2, ctx->insert.x - X, ctx->insert.y - Y);
 	EraseLine(Line);
 	r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	Line->Point2.X = InsertX;
-	Line->Point2.Y = InsertY;
+	Line->Point2.X = ctx->insert.x;
+	Line->Point2.Y = ctx->insert.y;
 	SetLineBoundingBox(Line);
 	r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
@@ -123,7 +119,7 @@ static void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypeP
 	/* we must create after playing with Line since creation may
 	 * invalidate the line pointer
 	 */
-	if ((line = CreateDrawnLineOnLayer(Layer, InsertX, InsertY, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
+	if ((line = CreateDrawnLineOnLayer(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
 		DrawLine(Layer, line);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, line);
@@ -142,14 +138,14 @@ static void *InsertPointIntoPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, Polygo
 	pcb_cardinal_t n;
 	LineType line;
 
-	if (!Forcible) {
+	if (!ctx->insert.forcible) {
 		/*
 		 * first make sure adding the point is sensible
 		 */
 		line.Thickness = 0;
-		line.Point1 = Polygon->Points[prev_contour_point(Polygon, InsertAt)];
-		line.Point2 = Polygon->Points[InsertAt];
-		if (IsPointOnLine((float) InsertX, (float) InsertY, 0.0, &line))
+		line.Point1 = Polygon->Points[prev_contour_point(Polygon, ctx->insert.idx)];
+		line.Point2 = Polygon->Points[ctx->insert.idx];
+		if (IsPointOnLine((float) ctx->insert.x, (float) ctx->insert.y, 0.0, &line))
 			return (NULL);
 	}
 	/*
@@ -157,27 +153,27 @@ static void *InsertPointIntoPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, Polygo
 	 */
 	ErasePolygon(Polygon);
 	r_delete_entry(Layer->polygon_tree, (BoxTypePtr) Polygon);
-	save = *CreateNewPointInPolygon(Polygon, InsertX, InsertY);
-	for (n = Polygon->PointN - 1; n > InsertAt; n--)
+	save = *CreateNewPointInPolygon(Polygon, ctx->insert.x, ctx->insert.y);
+	for (n = Polygon->PointN - 1; n > ctx->insert.idx; n--)
 		Polygon->Points[n] = Polygon->Points[n - 1];
 
 	/* Shift up indices of any holes */
 	for (n = 0; n < Polygon->HoleIndexN; n++)
-		if (Polygon->HoleIndex[n] > InsertAt || (InsertLast && Polygon->HoleIndex[n] == InsertAt))
+		if (Polygon->HoleIndex[n] > ctx->insert.idx || (ctx->insert.last && Polygon->HoleIndex[n] == ctx->insert.idx))
 			Polygon->HoleIndex[n]++;
 
-	Polygon->Points[InsertAt] = save;
+	Polygon->Points[ctx->insert.idx] = save;
 	SetChangedFlag(pcb_true);
-	AddObjectToInsertPointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[InsertAt]);
+	AddObjectToInsertPointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
 
 	SetPolygonBoundingBox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (BoxType *) Polygon, 0);
 	InitClip(PCB->Data, Layer, Polygon);
-	if (Forcible || !RemoveExcessPolygonPoints(Layer, Polygon)) {
+	if (ctx->insert.forcible || !RemoveExcessPolygonPoints(Layer, Polygon)) {
 		DrawPolygon(Layer, Polygon);
 		Draw();
 	}
-	return (&Polygon->Points[InsertAt]);
+	return (&Polygon->Points[ctx->insert.idx]);
 }
 
 /* ---------------------------------------------------------------------------
@@ -188,12 +184,12 @@ void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * P
 	void *ptr;
 	pcb_opctx_t ctx;
 
-	/* setup offset */
-	InsertX = DX;
-	InsertY = DY;
-	InsertAt = *Ptr3;
-	InsertLast = insert_last;
-	Forcible = Force;
+	ctx.insert.pcb = PCB;
+	ctx.insert.x = DX;
+	ctx.insert.y = DY;
+	ctx.insert.idx = *Ptr3;
+	ctx.insert.last = insert_last;
+	ctx.insert.forcible = Force;
 
 	/* the operation insert the points to the undo-list */
 	ptr = ObjectOperation(&InsertFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);

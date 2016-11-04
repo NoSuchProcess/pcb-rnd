@@ -67,6 +67,14 @@ typedef struct {
 
 typedef struct {
 	PCBType *pcb;
+	Coord x, y;
+	pcb_cardinal_t idx; /* poly point idx */
+	pcb_bool last;
+	pcb_bool forcible;
+} pcb_opctx_insert_t;
+
+typedef struct {
+	PCBType *pcb;
 } pcb_opctx_move_t;
 
 typedef union {
@@ -76,6 +84,7 @@ typedef union {
 	pcb_opctx_chgangle_t chgangle;
 	pcb_opctx_chgtherm_t chgtherm;
 	pcb_opctx_copy_t copy;
+	pcb_opctx_insert_t insert;
 	pcb_opctx_move_t move;
 } pcb_opctx_t;
 
