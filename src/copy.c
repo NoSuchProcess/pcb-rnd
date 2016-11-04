@@ -57,7 +57,6 @@ static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr);
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static Coord DeltaX, DeltaY;		/* movement vector */
 static pcb_opfunc_t CopyFunctions = {
 	CopyLine,
 	CopyText,
@@ -162,7 +161,7 @@ static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 {
 	PinTypePtr via;
 
-	via = CreateNewVia(PCB->Data, Via->X + DeltaX, Via->Y + DeltaY,
+	via = CreateNewVia(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
 										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND));
 	if (!via)
 		return (via);
@@ -178,10 +177,10 @@ static void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 {
 	LineTypePtr line;
 
-	line = CreateDrawnLineOnLayer(Layer, Line->Point1.X + DeltaX,
-																Line->Point1.Y + DeltaY,
-																Line->Point2.X + DeltaX,
-																Line->Point2.Y + DeltaY, Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND));
+	line = CreateDrawnLineOnLayer(Layer, Line->Point1.X + ctx->copy.DeltaX,
+																Line->Point1.Y + ctx->copy.DeltaY,
+																Line->Point2.X + ctx->copy.DeltaX,
+																Line->Point2.Y + ctx->copy.DeltaY, Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND));
 	if (!line)
 		return (line);
 	if (Line->Number)
@@ -198,8 +197,8 @@ static void *CopyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	ArcTypePtr arc;
 
-	arc = CreateNewArcOnLayer(Layer, Arc->X + DeltaX,
-														Arc->Y + DeltaY, Arc->Width, Arc->Height, Arc->StartAngle,
+	arc = CreateNewArcOnLayer(Layer, Arc->X + ctx->copy.DeltaX,
+														Arc->Y + ctx->copy.DeltaY, Arc->Width, Arc->Height, Arc->StartAngle,
 														Arc->Delta, Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND));
 	if (!arc)
 		return (arc);
@@ -215,8 +214,8 @@ static void *CopyText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 {
 	TextTypePtr text;
 
-	text = CreateNewText(Layer, &PCB->Font, Text->X + DeltaX,
-											 Text->Y + DeltaY, Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, PCB_FLAG_FOUND));
+	text = CreateNewText(Layer, &PCB->Font, Text->X + ctx->copy.DeltaX,
+											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, PCB_FLAG_FOUND));
 	DrawText(Layer, text);
 	AddObjectToCreateUndoList(PCB_TYPE_TEXT, Layer, text, text);
 	return (text);
@@ -231,7 +230,7 @@ static void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Po
 
 	polygon = CreateNewPolygon(Layer, NoFlags());
 	CopyPolygonLowLevel(polygon, Polygon);
-	MovePolygonLowLevel(polygon, DeltaX, DeltaY);
+	MovePolygonLowLevel(polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->polygon_tree, (BoxTypePtr) polygon, 0);
@@ -253,8 +252,8 @@ static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 
 	ElementTypePtr element = CopyElementLowLevel(PCB->Data,
 																							 NULL, Element,
-																							 conf_core.editor.unique_names, DeltaX,
-																							 DeltaY);
+																							 conf_core.editor.unique_names, ctx->copy.DeltaX,
+																							 ctx->copy.DeltaY);
 
 	/* this call clears the polygons */
 	AddObjectToCreateUndoList(PCB_TYPE_ELEMENT, element, element, element);
@@ -286,7 +285,9 @@ pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
 #endif
 
 	/* set movement vector */
-	DeltaX = X - PASTEBUFFER->X, DeltaY = Y - PASTEBUFFER->Y;
+	ctx.copy.pcb = PCB;
+	ctx.copy.DeltaX = X - PASTEBUFFER->X;
+	ctx.copy.DeltaY = Y - PASTEBUFFER->Y;
 
 	/* paste all layers */
 	for (i = 0; i < max_copper_layer + 2; i++) {
@@ -364,9 +365,9 @@ void *CopyObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord D
 	void *ptr;
 	pcb_opctx_t ctx;
 
-	/* setup movement vector */
-	DeltaX = DX;
-	DeltaY = DY;
+	ctx.copy.pcb = PCB;
+	ctx.copy.DeltaX = DX;
+	ctx.copy.DeltaY = DY;
 
 	/* the subroutines add the objects to the undo-list */
 	ptr = ObjectOperation(&CopyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
