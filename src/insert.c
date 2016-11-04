@@ -43,6 +43,8 @@
 #include "set.h"
 #include "undo.h"
 
+#include "obj_line.h"
+
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */

@@ -47,19 +47,18 @@
 #include "funchash_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "obj_all.h"
 #include "obj_all_op.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
 static void *AddViaToBuffer(pcb_opctx_t *ctx, PinTypePtr);
-static void *AddLineToBuffer(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr);
 static void *AddTextToBuffer(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *AddPolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveViaToBuffer(pcb_opctx_t *ctx, PinTypePtr);
-static void *MoveLineToBuffer(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *MoveRatToBuffer(pcb_opctx_t *ctx, RatTypePtr);
 static void *MoveTextToBuffer(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *MovePolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
@@ -105,22 +104,6 @@ static void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr Rat)
 	return (CreateNewRat(ctx->buffer.dst, Rat->Point1.X, Rat->Point1.Y,
 											 Rat->Point2.X, Rat->Point2.Y, Rat->group1,
 											 Rat->group2, Rat->Thickness, MaskFlags(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
-}
-
-/* ---------------------------------------------------------------------------
- * copies a line to buffer
- */
-static void *AddLineToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	LineTypePtr line;
-	LayerTypePtr layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
-
-	line = CreateNewLineOnLayer(layer, Line->Point1.X, Line->Point1.Y,
-															Line->Point2.X, Line->Point2.Y,
-															Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
-	if (line && Line->Number)
-		line->Number = pcb_strdup(Line->Number);
-	return (line);
 }
 
 /* ---------------------------------------------------------------------------
@@ -223,28 +206,6 @@ static void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat)
 		ctx->buffer.dst->rat_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(ctx->buffer.dst->rat_tree, (BoxType *) rat, 0);
 	return rat;
-}
-
-/* ---------------------------------------------------------------------------
- * moves a line to buffer
- */
-static void *MoveLineToBuffer(pcb_opctx_t *ctx, LayerType * layer, LineType * line)
-{
-	LayerTypePtr lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
-
-	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_LINE, layer, line);
-	r_delete_entry(layer->line_tree, (BoxType *) line);
-
-	linelist_remove(line);
-	linelist_append(&(lay->Line), line);
-
-	CLEAR_FLAG(PCB_FLAG_FOUND, line);
-
-	if (!lay->line_tree)
-		lay->line_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(lay->line_tree, (BoxType *) line, 0);
-	ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_LINE, lay, line);
-	return (line);
 }
 
 /* ---------------------------------------------------------------------------

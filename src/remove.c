@@ -50,7 +50,6 @@
  */
 static void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr);
 static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr);
-static void *DestroyLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *DestroyText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *DestroyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr);
@@ -59,10 +58,8 @@ static void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr);
 static void *DestroyPolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
 static void *RemovePolygonContour(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, pcb_cardinal_t);
 static void *RemovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
-static void *RemoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
 
 static void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element);
-static void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
 static void *RemoveText_op(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text);
 static void *RemovePolygon_op(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
 
@@ -118,18 +115,6 @@ static void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 	free(Via->Name);
 
 	RemoveFreeVia(Via);
-	return NULL;
-}
-
-/* ---------------------------------------------------------------------------
- * destroys a line from a layer
- */
-static void *DestroyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
-	free(Line->Number);
-
-	RemoveFreeLine(Line);
 	return NULL;
 }
 
@@ -271,79 +256,6 @@ static void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	return NULL;
-}
-
-struct rlp_info {
-	jmp_buf env;
-	LineTypePtr line;
-	PointTypePtr point;
-};
-static r_dir_t remove_point(const BoxType * b, void *cl)
-{
-	LineType *line = (LineType *) b;
-	struct rlp_info *info = (struct rlp_info *) cl;
-	if (line == info->line)
-		return R_DIR_NOT_FOUND;
-	if ((line->Point1.X == info->point->X)
-			&& (line->Point1.Y == info->point->Y)) {
-		info->line = line;
-		info->point = &line->Point1;
-		longjmp(info->env, 1);
-	}
-	else if ((line->Point2.X == info->point->X)
-					 && (line->Point2.Y == info->point->Y)) {
-		info->line = line;
-		info->point = &line->Point2;
-		longjmp(info->env, 1);
-	}
-	return R_DIR_NOT_FOUND;
-}
-
-/* ---------------------------------------------------------------------------
- * removes a line point, or a line if the selected point is the end
- */
-static void *RemoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
-{
-	PointType other;
-	struct rlp_info info;
-	if (&Line->Point1 == Point)
-		other = Line->Point2;
-	else
-		other = Line->Point1;
-	info.line = Line;
-	info.point = Point;
-	if (setjmp(info.env) == 0) {
-		r_search(Layer->line_tree, (const BoxType *) Point, NULL, remove_point, &info, NULL);
-		return RemoveLine_op(ctx, Layer, Line);
-	}
-	MoveObject(PCB_TYPE_LINE_POINT, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);
-	return (RemoveLine_op(ctx, Layer, Line));
-}
-
-/* ---------------------------------------------------------------------------
- * removes a line from a layer
- */
-static void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	/* erase from screen */
-	if (Layer->On) {
-		EraseLine(Line);
-		if (!ctx->remove.bulk)
-			Draw();
-	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_LINE, Layer, Line, Line);
-	return NULL;
-}
-
-void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
-{
-	pcb_opctx_t ctx;
-
-	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_false;
-	ctx.remove.destroy_target = NULL;
-
-	return RemoveLine_op(&ctx, Layer, Line);
 }
 
 /* ---------------------------------------------------------------------------

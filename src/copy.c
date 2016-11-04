@@ -43,12 +43,12 @@
 #include "undo.h"
 #include "compat_misc.h"
 #include "obj_all_op.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
 static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr);
-static void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *CopyText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr);
@@ -167,26 +167,6 @@ static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 	DrawVia(via);
 	AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 	return (via);
-}
-
-/* ---------------------------------------------------------------------------
- * copies a line
- */
-static void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	LineTypePtr line;
-
-	line = CreateDrawnLineOnLayer(Layer, Line->Point1.X + ctx->copy.DeltaX,
-																Line->Point1.Y + ctx->copy.DeltaY,
-																Line->Point2.X + ctx->copy.DeltaX,
-																Line->Point2.Y + ctx->copy.DeltaY, Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND));
-	if (!line)
-		return (line);
-	if (Line->Number)
-		line->Number = pcb_strdup(Line->Number);
-	DrawLine(Layer, line);
-	AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
-	return (line);
 }
 
 /* ---------------------------------------------------------------------------

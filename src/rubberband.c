@@ -41,6 +41,7 @@
 #include "layer.h"
 #include "polygon.h"
 #include "rtree.h"
+#include "obj_line.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

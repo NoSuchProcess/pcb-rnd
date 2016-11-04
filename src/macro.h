@@ -151,11 +151,6 @@
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {
 
-#define LINE_LOOP(layer) do {                                       \
-  LineType *line;                                                   \
-  gdl_iterator_t __it__;                                            \
-  linelist_foreach(&(layer)->Line, &__it__, line) {
-
 #define TEXT_LOOP(layer) do {                                       \
   TextType *text;                                                   \
   gdl_iterator_t __it__;                                            \
@@ -183,13 +178,6 @@
 	ELEMENT_LOOP(top); \
 	  PAD_LOOP(element)
 
-#define	ALLLINE_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
-	{ \
-		LINE_LOOP(layer)
-
 #define	ALLPOLYGON_LOOP(top)	do {		\
 	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
@@ -197,27 +185,12 @@
 	{ \
 		POLYGON_LOOP(layer)
 
-#define	COPPERLINE_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer; l++, layer++)	\
-	{ \
-		LINE_LOOP(layer)
-
 #define	COPPERPOLYGON_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	LayerTypePtr	layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer; l++, layer++)	\
 	{ \
 		POLYGON_LOOP(layer)
-
-#define	SILKLINE_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	layer += max_copper_layer;			\
-	for (l = 0; l < 2; l++, layer++)		\
-	{ \
-		LINE_LOOP(layer)
 
 #define	SILKPOLYGON_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
@@ -233,14 +206,6 @@
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		TEXT_LOOP(layer)
-
-#define	VISIBLELINE_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
-	{ \
-		if (layer->On)				\
-			LINE_LOOP(layer)
 
 #define	VISIBLETEXT_LOOP(board) do	{		\
 	pcb_cardinal_t		l;			\

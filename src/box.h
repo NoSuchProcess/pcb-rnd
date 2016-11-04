@@ -223,5 +223,6 @@ static inline PCB_FUNC_UNUSED double dist2_to_box(const CheapPointType * p, cons
 
 BoxTypePtr GetBoxMemory(BoxListTypePtr);
 void FreeBoxListMemory(BoxListTypePtr);
+void SetPointBoundingBox(PointTypePtr Pnt);
 
 #endif /* __BOX_H_INCLUDED__ */

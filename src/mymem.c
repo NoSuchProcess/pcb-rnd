@@ -127,25 +127,6 @@ void RemoveFreeRat(RatType * data)
 }
 
 /* ---------------------------------------------------------------------------
- * get next slot for a line, allocates memory if necessary
- */
-LineType *GetLineMemory(LayerType * layer)
-{
-	LineType *new_obj;
-
-	new_obj = calloc(sizeof(LineType), 1);
-	linelist_append(&layer->Line, new_obj);
-
-	return new_obj;
-}
-
-void RemoveFreeLine(LineType * data)
-{
-	linelist_remove(data);
-	free(data);
-}
-
-/* ---------------------------------------------------------------------------
  * get next slot for a text object, allocates memory if necessary
  */
 TextTypePtr GetTextMemory(LayerType * layer)

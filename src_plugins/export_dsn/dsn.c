@@ -62,6 +62,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "hid_attrib.h"
 #include "hid_helper.h"
 #include "plugins.h"
+#include "obj_line.h"
 
 static const char *dsn_cookie = "dsn exporter";
 

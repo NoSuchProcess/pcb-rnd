@@ -48,6 +48,7 @@
 #include "conf_core.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
+#include "obj_line.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
@@ -55,7 +56,6 @@
 static void *RotateText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr);
 static void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr);
-static void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
 
 /* ----------------------------------------------------------------------
  * some local identifiers
@@ -81,34 +81,6 @@ static pcb_opfunc_t RotateFunctions = {
 void RotatePointLowLevel(PointTypePtr Point, Coord X, Coord Y, unsigned Number)
 {
 	ROTATE(Point->X, Point->Y, X, Y, Number);
-}
-
-/* ---------------------------------------------------------------------------
- * rotates a line in 90 degree steps
- */
-void RotateLineLowLevel(LineTypePtr Line, Coord X, Coord Y, unsigned Number)
-{
-	ROTATE(Line->Point1.X, Line->Point1.Y, X, Y, Number);
-	ROTATE(Line->Point2.X, Line->Point2.Y, X, Y, Number);
-	/* keep horizontal, vertical Point2 > Point1 */
-	if (Line->Point1.X == Line->Point2.X) {
-		if (Line->Point1.Y > Line->Point2.Y) {
-			Coord t;
-			t = Line->Point1.Y;
-			Line->Point1.Y = Line->Point2.Y;
-			Line->Point2.Y = t;
-		}
-	}
-	else if (Line->Point1.Y == Line->Point2.Y) {
-		if (Line->Point1.X > Line->Point2.X) {
-			Coord t;
-			t = Line->Point1.X;
-			Line->Point1.X = Line->Point2.X;
-			Line->Point2.X = t;
-		}
-	}
-	/* instead of rotating the bounding box, the call updates both end points too */
-	SetLineBoundingBox(Line);
 }
 
 /* ---------------------------------------------------------------------------
@@ -209,33 +181,6 @@ void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Co
 	/* SetElementBoundingBox reenters the rtree data */
 	SetElementBoundingBox(Data, Element, &PCB->Font);
 	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
-}
-
-/* ---------------------------------------------------------------------------
- * rotates a line's point
- */
-static void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
-{
-	EraseLine(Line);
-	if (Layer) {
-		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
-	}
-	else
-		r_delete_entry(PCB->Data->rat_tree, (BoxTypePtr) Line);
-	RotatePointLowLevel(Point, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	SetLineBoundingBox(Line);
-	if (Layer) {
-		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		DrawLine(Layer, Line);
-	}
-	else {
-		r_insert_entry(PCB->Data->rat_tree, (BoxTypePtr) Line, 0);
-		DrawRat((RatTypePtr) Line);
-	}
-	Draw();
-	return (Line);
 }
 
 /* ---------------------------------------------------------------------------

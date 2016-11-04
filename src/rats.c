@@ -48,6 +48,7 @@
 #include "compat_misc.h"
 #include "netlist.h"
 #include "compat_nls.h"
+#include "obj_line.h"
 
 #warning TODO: remove this in favor of vtptr
 #include "ptrlist.h"

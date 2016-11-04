@@ -61,15 +61,6 @@ static void GetGridLockCoordinates(int, void *, void *, void *, Coord *, Coord *
 /* Local variables */
 
 /* ---------------------------------------------------------------------------
- * sets the bounding box of a point (which is silly)
- */
-void SetPointBoundingBox(PointTypePtr Pnt)
-{
-	Pnt->X2 = Pnt->X + 1;
-	Pnt->Y2 = Pnt->Y + 1;
-}
-
-/* ---------------------------------------------------------------------------
  * sets the bounding box of a pin or via
  */
 void SetPinBoundingBox(PinTypePtr Pin)
@@ -141,25 +132,6 @@ void SetPadBoundingBox(PadTypePtr Pad)
 		Pad->BoundingBox.Y2 = MAX(Pad->Point1.Y, Pad->Point2.Y) + width;
 	}
 	close_box(&Pad->BoundingBox);
-}
-
-/* ---------------------------------------------------------------------------
- * sets the bounding box of a line
- */
-void SetLineBoundingBox(LineTypePtr Line)
-{
-	Coord width = (Line->Thickness + Line->Clearance + 1) / 2;
-
-	/* Adjust for our discrete polygon approximation */
-	width = (double) width *POLY_CIRC_RADIUS_ADJ + 0.5;
-
-	Line->BoundingBox.X1 = MIN(Line->Point1.X, Line->Point2.X) - width;
-	Line->BoundingBox.X2 = MAX(Line->Point1.X, Line->Point2.X) + width;
-	Line->BoundingBox.Y1 = MIN(Line->Point1.Y, Line->Point2.Y) - width;
-	Line->BoundingBox.Y2 = MAX(Line->Point1.Y, Line->Point2.Y) + width;
-	close_box(&Line->BoundingBox);
-	SetPointBoundingBox(&Line->Point1);
-	SetPointBoundingBox(&Line->Point2);
 }
 
 /* ---------------------------------------------------------------------------

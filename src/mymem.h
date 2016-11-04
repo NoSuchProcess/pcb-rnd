@@ -54,7 +54,6 @@
 PinTypePtr GetPinMemory(ElementTypePtr);
 PadTypePtr GetPadMemory(ElementTypePtr);
 PinTypePtr GetViaMemory(DataTypePtr);
-LineTypePtr GetLineMemory(LayerTypePtr);
 RatTypePtr GetRatMemory(DataTypePtr);
 TextTypePtr GetTextMemory(LayerTypePtr);
 PolygonTypePtr GetPolygonMemory(LayerTypePtr);
@@ -66,7 +65,6 @@ void FreeElementMemory(ElementTypePtr);
 
 char *StripWhiteSpaceAndDup(const char *);
 
-void RemoveFreeLine(LineType * data);
 void RemoveFreeText(TextType * data);
 void RemoveFreePolygon(PolygonType * data);
 void RemoveFreePin(PinType * data);

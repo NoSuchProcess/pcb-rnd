@@ -31,7 +31,6 @@
 #include "globalconst.h"
 #include "global_typedefs.h"
 #include "attrib.h"
-#include "list_line.h"
 #include "list_text.h"
 #include "list_poly.h"
 #include "obj_all_list.h"

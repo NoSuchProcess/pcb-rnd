@@ -74,7 +74,6 @@ put /local/pcb/OBJS [@
 	line.o
 	list_conf.o
 	list_element.o
-	list_line.o
 	list_text.o
 	list_pad.o
 	list_pin.o
@@ -93,6 +92,8 @@ put /local/pcb/OBJS [@
 	obj_any.o
 	obj_arc.o
 	obj_arc_list.o
+	obj_line.o
+	obj_line_list.o
 	paths.o
 	pcb-printf.o
 	plugins.o

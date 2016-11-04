@@ -52,6 +52,7 @@
 #include "layer.h"
 #include "box.h"
 #include "obj_all_op.h"
+#include "obj_line.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
@@ -59,12 +60,9 @@
 static void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveVia(pcb_opctx_t *ctx, PinTypePtr);
-static void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *MoveText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *MovePolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
-static void *MoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
 static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
-static void *MoveLineToLayer(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *MoveRatToLayer(pcb_opctx_t *ctx, RatTypePtr);
 static void *MoveTextToLayer(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *MovePolygonToLayer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
@@ -228,25 +226,6 @@ static void *MoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* ---------------------------------------------------------------------------
- * moves a line
- */
-static void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	if (Layer->On)
-		EraseLine(Line);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	r_delete_entry(Layer->line_tree, (BoxType *) Line);
-	MOVE_LINE_LOWLEVEL(Line, ctx->move.dx, ctx->move.dy);
-	r_insert_entry(Layer->line_tree, (BoxType *) Line, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	if (Layer->On) {
-		DrawLine(Layer, Line);
-		Draw();
-	}
-	return (Line);
-}
-
-/* ---------------------------------------------------------------------------
  * moves a text object
  */
 static void *MoveText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
@@ -299,42 +278,6 @@ static void *MovePolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Po
 }
 
 /* ---------------------------------------------------------------------------
- * moves one end of a line
- */
-static void *MoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
-{
-	if (Layer) {
-		if (Layer->On)
-			EraseLine(Line);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		r_delete_entry(Layer->line_tree, &Line->BoundingBox);
-		MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
-		SetLineBoundingBox(Line);
-		r_insert_entry(Layer->line_tree, &Line->BoundingBox, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		if (Layer->On) {
-			DrawLine(Layer, Line);
-			Draw();
-		}
-		return (Line);
-	}
-	else {												/* must be a rat */
-
-		if (PCB->RatOn)
-			EraseRat((RatTypePtr) Line);
-		r_delete_entry(PCB->Data->rat_tree, &Line->BoundingBox);
-		MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
-		SetLineBoundingBox(Line);
-		r_insert_entry(PCB->Data->rat_tree, &Line->BoundingBox, 0);
-		if (PCB->RatOn) {
-			DrawRat((RatTypePtr) Line);
-			Draw();
-		}
-		return (Line);
-	}
-}
-
-/* ---------------------------------------------------------------------------
  * moves a polygon-point
  */
 static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point)
@@ -353,22 +296,6 @@ static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypeP
 		Draw();
 	}
 	return (Point);
-}
-
-/* ---------------------------------------------------------------------------
- * moves a line between layers; lowlevel routines
- */
-static void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, LineType * line, LayerType * Destination)
-{
-	r_delete_entry(Source->line_tree, (BoxType *) line);
-
-	linelist_remove(line);
-	linelist_append(&(Destination->Line), line);
-
-	if (!Destination->line_tree)
-		Destination->line_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Destination->line_tree, (BoxType *) line, 0);
-	return line;
 }
 
 /* ---------------------------------------------------------------------------
@@ -395,89 +322,6 @@ static void *MoveRatToLayer(pcb_opctx_t *ctx, RatType * Rat)
 		EraseRat(Rat);
 	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	DrawLine(ctx->move.dst_layer, newone);
-	Draw();
-	return (newone);
-}
-
-/* ---------------------------------------------------------------------------
- * moves a line between layers
- */
-
-struct via_info {
-	Coord X, Y;
-	jmp_buf env;
-};
-
-static r_dir_t moveline_callback(const BoxType * b, void *cl)
-{
-	struct via_info *i = (struct via_info *) cl;
-	PinTypePtr via;
-
-	if ((via =
-			 CreateNewVia(PCB->Data, i->X, i->Y,
-										conf_core.design.via_thickness, 2 * conf_core.design.clearance, PCB_FLAG_NO, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
-		AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
-		DrawVia(via);
-	}
-	longjmp(i->env, 1);
-}
-
-static void *MoveLineToLayer(pcb_opctx_t *ctx, LayerType * Layer, LineType * Line)
-{
-	struct via_info info;
-	BoxType sb;
-	LineTypePtr newone;
-	void *ptr1, *ptr2, *ptr3;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line)) {
-		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
-		return NULL;
-	}
-	if (ctx->move.dst_layer == Layer && Layer->On) {
-		DrawLine(Layer, Line);
-		Draw();
-	}
-	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
-		return (Line);
-
-	AddObjectToMoveToLayerUndoList(PCB_TYPE_LINE, Layer, Line, Line);
-	if (Layer->On)
-		EraseLine(Line);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	newone = (LineTypePtr) MoveLineToLayerLowLevel(ctx, Layer, Line, ctx->move.dst_layer);
-	Line = NULL;
-	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, ctx->move.dst_layer, newone);
-	if (ctx->move.dst_layer->On)
-		DrawLine(ctx->move.dst_layer, newone);
-	Draw();
-	if (!PCB->ViaOn || ctx->move.more_to_come ||
-			GetLayerGroupNumberByPointer(Layer) ==
-			GetLayerGroupNumberByPointer(ctx->move.dst_layer) || TEST_SILK_LAYER(Layer) || TEST_SILK_LAYER(ctx->move.dst_layer))
-		return (newone);
-	/* consider via at Point1 */
-	sb.X1 = newone->Point1.X - newone->Thickness / 2;
-	sb.X2 = newone->Point1.X + newone->Thickness / 2;
-	sb.Y1 = newone->Point1.Y - newone->Thickness / 2;
-	sb.Y2 = newone->Point1.Y + newone->Thickness / 2;
-	if ((SearchObjectByLocation(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
-															newone->Point1.X, newone->Point1.Y, conf_core.design.via_thickness / 2) == PCB_TYPE_NONE)) {
-		info.X = newone->Point1.X;
-		info.Y = newone->Point1.Y;
-		if (setjmp(info.env) == 0)
-			r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
-	}
-	/* consider via at Point2 */
-	sb.X1 = newone->Point2.X - newone->Thickness / 2;
-	sb.X2 = newone->Point2.X + newone->Thickness / 2;
-	sb.Y1 = newone->Point2.Y - newone->Thickness / 2;
-	sb.Y2 = newone->Point2.Y + newone->Thickness / 2;
-	if ((SearchObjectByLocation(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
-															newone->Point2.X, newone->Point2.Y, conf_core.design.via_thickness / 2) == PCB_TYPE_NONE)) {
-		info.X = newone->Point2.X;
-		info.Y = newone->Point2.Y;
-		if (setjmp(info.env) == 0)
-			r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
-	}
 	Draw();
 	return (newone);
 }

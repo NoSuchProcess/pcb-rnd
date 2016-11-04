@@ -39,6 +39,7 @@
 #include "layer.h"
 #include "conf_core.h"
 #include "misc_util.h"
+#include "obj_line.h"
 
 /*#define DEBUG_POLYAREA*/
 

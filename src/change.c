@@ -61,8 +61,6 @@ static void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr);
-static void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
-static void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *ChangeTextSize(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr);
@@ -73,7 +71,6 @@ static void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
 static void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangeViaName(pcb_opctx_t *ctx, PinTypePtr);
-static void *ChangeLineName(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeTextName(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
@@ -98,9 +95,6 @@ static void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangeViaThermal(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *ChangeLineJoin(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
-static void *SetLineJoin(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
-static void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *ChangeTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *SetTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *ClrTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
@@ -822,61 +816,6 @@ static void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypeP
 }
 
 /* ---------------------------------------------------------------------------
- * changes the size of a line
- * returns pcb_true if changed
- */
-static void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Thickness + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
-		return (NULL);
-	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Line->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
-		EraseLine(Line);
-		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		Line->Thickness = value;
-		SetLineBoundingBox(Line);
-		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		DrawLine(Layer, Line);
-		return (Line);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the clearance size of a line
- * returns pcb_true if changed
- */
-static void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Clearance + ctx->chgsize.delta;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
-		return (NULL);
-	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
-	if (value != Line->Clearance) {
-		AddObjectToClearSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		EraseLine(Line);
-		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
-		Line->Clearance = value;
-		if (Line->Clearance == 0) {
-			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Line);
-			Line->Clearance = PCB_MIL_TO_COORD(10);
-		}
-		SetLineBoundingBox(Line);
-		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		DrawLine(Layer, Line);
-		return (Line);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
  * Handle attempts to change the clearance of a polygon.
  */
 static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr poly)
@@ -1078,21 +1017,8 @@ static void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr P
 }
 
 /* ---------------------------------------------------------------------------
- * changes the name of a line
- */
-static void *ChangeLineName(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	char *old = Line->Number;
-
-	Layer = Layer;
-	Line->Number = ctx->chgname.new_name;
-	return (old);
-}
-
-/* ---------------------------------------------------------------------------
  * changes the layout-name of an element
  */
-
 char *ChangeElementText(PCBType * pcb, DataType * data, ElementTypePtr Element, int which, char *new_name)
 {
 	char *old = Element->Name[which].TextString;
@@ -1199,48 +1125,6 @@ pcb_bool ChangeLayerName(LayerTypePtr Layer, char *Name)
 	CURRENT->Name = Name;
 	hid_action("LayersChanged");
 	return (pcb_true);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the clearance flag of a line
- */
-static void *ChangeLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
-		return (NULL);
-	EraseLine(Line);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Line)) {
-		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, pcb_false);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	}
-	AddObjectToFlagUndoList(PCB_TYPE_LINE, Layer, Line, Line);
-	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Line);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Line)) {
-		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, pcb_true);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	}
-	DrawLine(Layer, Line);
-	return (Line);
-}
-
-/* ---------------------------------------------------------------------------
- * sets the clearance flag of a line
- */
-static void *SetLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
-		return (NULL);
-	return ChangeLineJoin(ctx, Layer, Line);
-}
-
-/* ---------------------------------------------------------------------------
- * clears the clearance flag of a line
- */
-static void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
-		return (NULL);
-	return ChangeLineJoin(ctx, Layer, Line);
 }
 
 /* ---------------------------------------------------------------------------

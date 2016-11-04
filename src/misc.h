@@ -35,8 +35,6 @@
 
 
 void r_delete_element(DataTypePtr, ElementTypePtr);
-void SetLineBoundingBox(LineTypePtr);
-void SetPointBoundingBox(PointTypePtr);
 void SetPinBoundingBox(PinTypePtr);
 void SetPadBoundingBox(PadTypePtr);
 void SetPolygonBoundingBox(PolygonTypePtr);
