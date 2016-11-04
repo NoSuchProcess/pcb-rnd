@@ -33,6 +33,12 @@
 
 typedef struct {
 	PCBType *pcb;
+	int extraflg;
+	DataType *dst, *src;
+} pcb_opctx_buffer_t;
+
+typedef struct {
+	PCBType *pcb;
 } pcb_opctx_copy_t;
 
 typedef struct {
@@ -42,6 +48,7 @@ typedef struct {
 typedef union {
 	pcb_opctx_copy_t copy;
 	pcb_opctx_move_t move;
+	pcb_opctx_buffer_t buffer;
 } pcb_opctx_t;
 
 /* pointer to low-level operation (copy, move and rotate) functions */

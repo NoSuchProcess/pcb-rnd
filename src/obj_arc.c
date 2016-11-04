@@ -40,9 +40,6 @@
 
 #include "create.h"
 
-extern DataTypePtr pcb_buffer_dest, pcb_buffer_src;
-extern int pcb_buffer_extraflg;
-
 ArcTypePtr GetArcMemory(LayerType * layer)
 {
 	ArcType *new_obj;
@@ -181,19 +178,19 @@ void RemoveFreeArc(ArcType * data)
 /* copies an arc to buffer */
 void *AddArcToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 {
-	LayerTypePtr layer = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, Layer)];
+	LayerTypePtr layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
 
 	return (CreateNewArcOnLayer(layer, Arc->X, Arc->Y,
 		Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
-		Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND | pcb_buffer_extraflg)));
+		Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
 
 /* moves an arc to buffer */
 void *MoveArcToBuffer(pcb_opctx_t *ctx, LayerType * layer, ArcType * arc)
 {
-	LayerType *lay = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, layer)];
+	LayerType *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
 
-	RestoreToPolygon(pcb_buffer_src, PCB_TYPE_ARC, layer, arc);
+	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_ARC, layer, arc);
 	r_delete_entry(layer->arc_tree, (BoxType *) arc);
 
 	arclist_remove(arc);
@@ -204,7 +201,7 @@ void *MoveArcToBuffer(pcb_opctx_t *ctx, LayerType * layer, ArcType * arc)
 	if (!lay->arc_tree)
 		lay->arc_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(lay->arc_tree, (BoxType *) arc, 0);
-	ClearFromPolygon(pcb_buffer_dest, PCB_TYPE_ARC, lay, arc);
+	ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_ARC, lay, arc);
 	return (arc);
 }
 
