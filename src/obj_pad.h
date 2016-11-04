@@ -35,6 +35,15 @@ void RemoveFreePad(PadType * data);
 PadTypePtr CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags);
 void SetPadBoundingBox(PadTypePtr Pad);
 
+/* Rather than move the line bounding box, we set it so the point bounding
+ * boxes are updated too.
+ */
+#define	MOVE_PAD_LOWLEVEL(p,dx,dy)              \
+	{                                             \
+		MOVE((p)->Point1.X,(p)->Point1.Y,(dx),(dy)) \
+		MOVE((p)->Point2.X,(p)->Point2.Y,(dx),(dy)) \
+		SetPadBoundingBox ((p));                    \
+	}
 
 #define PAD_LOOP(element) do {                                      \
 	PadType *pad;                                                     \

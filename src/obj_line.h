@@ -62,6 +62,16 @@ void AdjustTwoLine(pcb_bool);
 void FortyFiveLine(AttachedLineTypePtr);
 void EnforceLineDRC(void);
 
+/* Rather than mode the line bounding box, we set it so the point bounding
+ * boxes are updated too.
+ */
+#define	MOVE_LINE_LOWLEVEL(l,dx,dy)							\
+	{									\
+		MOVE((l)->Point1.X,(l)->Point1.Y,(dx),(dy))			\
+		MOVE((l)->Point2.X,(l)->Point2.Y,(dx),(dy))			\
+		SetLineBoundingBox ((l)); \
+	}
+
 
 #define LINE_LOOP(layer) do {                                       \
   LineType *line;                                                   \

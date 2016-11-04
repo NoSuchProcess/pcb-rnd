@@ -39,6 +39,18 @@ PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thicknes
 void pcb_add_via(DataType *Data, PinType *Via);
 void SetPinBoundingBox(PinTypePtr Pin);
 
+#define	MOVE_VIA_LOWLEVEL(v,dx,dy) \
+        { \
+	        MOVE((v)->X,(v)->Y,(dx),(dy)) \
+		MOVE_BOX_LOWLEVEL(&((v)->BoundingBox),(dx),(dy));		\
+	}
+
+#define	MOVE_PIN_LOWLEVEL(p,dx,dy) \
+	{ \
+		MOVE((p)->X,(p)->Y,(dx),(dy)) \
+		MOVE_BOX_LOWLEVEL(&((p)->BoundingBox),(dx),(dy));		\
+	}
+
 
 #define VIA_LOOP(top) do {                                          \
   PinType *via;                                                     \

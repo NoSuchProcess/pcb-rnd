@@ -40,39 +40,6 @@
 		((ys) += (deltay));									\
 	}
 
-#define	MOVE_VIA_LOWLEVEL(v,dx,dy) \
-        { \
-	        MOVE((v)->X,(v)->Y,(dx),(dy)) \
-		MOVE_BOX_LOWLEVEL(&((v)->BoundingBox),(dx),(dy));		\
-	}
-
-#define	MOVE_PIN_LOWLEVEL(p,dx,dy) \
-	{ \
-		MOVE((p)->X,(p)->Y,(dx),(dy)) \
-		MOVE_BOX_LOWLEVEL(&((p)->BoundingBox),(dx),(dy));		\
-	}
-
-/* Rather than mode the line bounding box, we set it so the point bounding
- * boxes are updated too.
- */
-#define	MOVE_LINE_LOWLEVEL(l,dx,dy)							\
-	{									\
-		MOVE((l)->Point1.X,(l)->Point1.Y,(dx),(dy))			\
-		MOVE((l)->Point2.X,(l)->Point2.Y,(dx),(dy))			\
-		SetLineBoundingBox ((l)); \
-	}
-#define	MOVE_PAD_LOWLEVEL(p,dx,dy)	\
-	{									\
-		MOVE((p)->Point1.X,(p)->Point1.Y,(dx),(dy))			\
-		MOVE((p)->Point2.X,(p)->Point2.Y,(dx),(dy))			\
-		SetPadBoundingBox ((p)); \
-	}
-#define	MOVE_TEXT_LOWLEVEL(t,dx,dy)								\
-	{															\
-		MOVE_BOX_LOWLEVEL(&((t)->BoundingBox),(dx),(dy));		\
-		MOVE((t)->X, (t)->Y, (dx), (dy));						\
-	}
-
 #define	MOVE_TYPES	\
 	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT | PCB_TYPE_ELEMENT_NAME |	\
 	PCB_TYPE_POLYGON | PCB_TYPE_POLYGON_POINT | PCB_TYPE_LINE_POINT | PCB_TYPE_ARC)

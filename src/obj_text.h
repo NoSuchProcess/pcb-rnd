@@ -49,6 +49,13 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text);
 void *RemoveText(LayerTypePtr Layer, TextTypePtr Text);
 void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number);
 
+#define	MOVE_TEXT_LOWLEVEL(t,dx,dy)                    \
+	{                                                    \
+		MOVE_BOX_LOWLEVEL(&((t)->BoundingBox),(dx),(dy));  \
+		MOVE((t)->X, (t)->Y, (dx), (dy));                  \
+	}
+
+
 /* Determines if text is actually visible */
 #define TEXT_IS_VISIBLE(b, l, t)      ((l)->On)
 
