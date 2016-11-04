@@ -49,7 +49,6 @@
  */
 static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr);
 static void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
-static void *CopyArc(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 static void *CopyText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr);
@@ -188,23 +187,6 @@ static void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 	DrawLine(Layer, line);
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
 	return (line);
-}
-
-/* ---------------------------------------------------------------------------
- * copies an arc
- */
-static void *CopyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	ArcTypePtr arc;
-
-	arc = CreateNewArcOnLayer(Layer, Arc->X + ctx->copy.DeltaX,
-														Arc->Y + ctx->copy.DeltaY, Arc->Width, Arc->Height, Arc->StartAngle,
-														Arc->Delta, Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND));
-	if (!arc)
-		return (arc);
-	DrawArc(Layer, arc);
-	AddObjectToCreateUndoList(PCB_TYPE_ARC, Layer, arc, arc);
-	return (arc);
 }
 
 /* ---------------------------------------------------------------------------

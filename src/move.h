@@ -39,27 +39,19 @@
 		((xs) += (deltax));									\
 		((ys) += (deltay));									\
 	}
-#define	MOVE_BOX_LOWLEVEL(b,dx,dy)		\
-	{									\
-		MOVE((b)->X1,(b)->Y1,(dx),(dy))	\
-		MOVE((b)->X2,(b)->Y2,(dx),(dy))	\
-	}
+
 #define	MOVE_VIA_LOWLEVEL(v,dx,dy) \
         { \
 	        MOVE((v)->X,(v)->Y,(dx),(dy)) \
 		MOVE_BOX_LOWLEVEL(&((v)->BoundingBox),(dx),(dy));		\
 	}
+
 #define	MOVE_PIN_LOWLEVEL(p,dx,dy) \
 	{ \
 		MOVE((p)->X,(p)->Y,(dx),(dy)) \
 		MOVE_BOX_LOWLEVEL(&((p)->BoundingBox),(dx),(dy));		\
 	}
 
-#define	MOVE_ARC_LOWLEVEL(a,dx,dy) \
-	{ \
-		MOVE((a)->X,(a)->Y,(dx),(dy)) \
-		MOVE_BOX_LOWLEVEL(&((a)->BoundingBox),(dx),(dy));		\
-	}
 /* Rather than mode the line bounding box, we set it so the point bounding
  * boxes are updated too.
  */

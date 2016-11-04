@@ -53,7 +53,6 @@
  * some local prototypes
  */
 static void *RotateText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
-static void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 static void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr);
 static void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
@@ -162,26 +161,6 @@ static void *RotateText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 }
 
 /* ---------------------------------------------------------------------------
- * rotates an arc
- */
-void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number)
-{
-	Coord save;
-
-	/* add Number*90 degrees (i.e., Number quarter-turns) */
-	Arc->StartAngle = NormalizeAngle(Arc->StartAngle + Number * 90);
-	ROTATE(Arc->X, Arc->Y, X, Y, Number);
-
-	/* now change width and height */
-	if (Number == 1 || Number == 3) {
-		save = Arc->Width;
-		Arc->Width = Arc->Height;
-		Arc->Height = save;
-	}
-	RotateBoxLowLevel(&Arc->BoundingBox, X, Y, Number);
-}
-
-/* ---------------------------------------------------------------------------
  * rotate an element in 90 degree steps
  */
 void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number)
@@ -257,20 +236,6 @@ static void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr L
 	}
 	Draw();
 	return (Line);
-}
-
-/* ---------------------------------------------------------------------------
- * rotates an arc
- */
-static void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	EraseArc(Arc);
-	r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
-	RotateArcLowLevel(Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
-	DrawArc(Layer, Arc);
-	Draw();
-	return (Arc);
 }
 
 /* ---------------------------------------------------------------------------

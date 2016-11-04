@@ -29,6 +29,7 @@
 #include "config.h"
 #include "global_objs.h"
 #include "global_element.h"
+#include "compat_nls.h"
 #include "buffer.h"
 #include "board.h"
 #include "data.h"
@@ -36,9 +37,14 @@
 #include "polygon.h"
 #include "box.h"
 #include "undo.h"
+#include "rotate.h"
+#include "move.h"
 #include "obj_arc.h"
-
 #include "create.h"
+
+/* TODO: could be removed if draw.c could be split up */
+#include "draw.h"
+
 
 ArcTypePtr GetArcMemory(LayerType * layer)
 {
@@ -163,6 +169,45 @@ void ChangeArcRadii(LayerTypePtr Layer, ArcTypePtr a, Coord new_width, Coord new
 	SetArcBoundingBox(a);
 	r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
+}
+
+
+/* creates a new arc on a layer */
+ArcType *CreateNewArcOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags)
+{
+	ArcTypePtr Arc;
+
+	ARC_LOOP(Layer);
+	{
+		if (arc->X == X1 && arc->Y == Y1 && arc->Width == width &&
+				NormalizeAngle(arc->StartAngle) == NormalizeAngle(sa) && arc->Delta == dir)
+			return (NULL);						/* prevent stacked arcs */
+	}
+	END_LOOP;
+	Arc = GetArcMemory(Layer);
+	if (!Arc)
+		return (Arc);
+
+	Arc->ID = CreateIDGet();
+	Arc->Flags = Flags;
+	Arc->Thickness = Thickness;
+	Arc->Clearance = Clearance;
+	Arc->X = X1;
+	Arc->Y = Y1;
+	Arc->Width = width;
+	Arc->Height = height;
+	Arc->StartAngle = sa;
+	Arc->Delta = dir;
+	pcb_add_arc_on_layer(Layer, Arc);
+	return (Arc);
+}
+
+void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc)
+{
+	SetArcBoundingBox(Arc);
+	if (!Layer->arc_tree)
+		Layer->arc_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
 }
 
 
@@ -366,4 +411,144 @@ void *ClrArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
 	return ChangeArcJoin(ctx, Layer, Arc);
+}
+
+/* copies an arc */
+void *CopyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
+{
+	ArcTypePtr arc;
+
+	arc = CreateNewArcOnLayer(Layer, Arc->X + ctx->copy.DeltaX,
+														Arc->Y + ctx->copy.DeltaY, Arc->Width, Arc->Height, Arc->StartAngle,
+														Arc->Delta, Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND));
+	if (!arc)
+		return (arc);
+	DrawArc(Layer, arc);
+	AddObjectToCreateUndoList(PCB_TYPE_ARC, Layer, arc, arc);
+	return (arc);
+}
+
+/* moves an arc */
+void *MoveArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
+{
+	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+	r_delete_entry(Layer->arc_tree, (BoxType *) Arc);
+	if (Layer->On) {
+		EraseArc(Arc);
+		MOVE_ARC_LOWLEVEL(Arc, ctx->move.dx, ctx->move.dy);
+		DrawArc(Layer, Arc);
+		Draw();
+	}
+	else {
+		MOVE_ARC_LOWLEVEL(Arc, ctx->move.dx, ctx->move.dy);
+	}
+	r_insert_entry(Layer->arc_tree, (BoxType *) Arc, 0);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+	return (Arc);
+}
+
+/* moves an arc between layers; lowlevel routines */
+void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, ArcType * arc, LayerType * Destination)
+{
+	r_delete_entry(Source->arc_tree, (BoxType *) arc);
+
+	arclist_remove(arc);
+	arclist_append(&Destination->Arc, arc);
+
+	if (!Destination->arc_tree)
+		Destination->arc_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(Destination->arc_tree, (BoxType *) arc, 0);
+	return arc;
+}
+
+
+/* moves an arc between layers */
+void *MoveArcToLayer(pcb_opctx_t *ctx, LayerType * Layer, ArcType * Arc)
+{
+	ArcTypePtr newone;
+
+	if (TEST_FLAG(PCB_FLAG_LOCK, Arc)) {
+		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+		return NULL;
+	}
+	if (ctx->move.dst_layer == Layer && Layer->On) {
+		DrawArc(Layer, Arc);
+		Draw();
+	}
+	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
+		return (Arc);
+	AddObjectToMoveToLayerUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
+	if (Layer->On)
+		EraseArc(Arc);
+	newone = (ArcTypePtr) MoveArcToLayerLowLevel(ctx, Layer, Arc, ctx->move.dst_layer);
+	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, ctx->move.dst_layer, Arc);
+	if (ctx->move.dst_layer->On)
+		DrawArc(ctx->move.dst_layer, newone);
+	Draw();
+	return (newone);
+}
+
+/* destroys an arc from a layer */
+void *DestroyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
+{
+	r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
+
+	RemoveFreeArc(Arc);
+
+	return NULL;
+}
+
+/* removes an arc from a layer */
+void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
+{
+	/* erase from screen */
+	if (Layer->On) {
+		EraseArc(Arc);
+		if (!ctx->remove.bulk)
+			Draw();
+	}
+	MoveObjectToRemoveUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+	return NULL;
+}
+
+void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
+{
+	pcb_opctx_t ctx;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_false;
+	ctx.remove.destroy_target = NULL;
+
+	return RemoveArc_op(&ctx, Layer, Arc);
+}
+
+/* rotates an arc */
+void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number)
+{
+	Coord save;
+
+	/* add Number*90 degrees (i.e., Number quarter-turns) */
+	Arc->StartAngle = NormalizeAngle(Arc->StartAngle + Number * 90);
+	ROTATE(Arc->X, Arc->Y, X, Y, Number);
+
+	/* now change width and height */
+	if (Number == 1 || Number == 3) {
+		save = Arc->Width;
+		Arc->Width = Arc->Height;
+		Arc->Height = save;
+	}
+	RotateBoxLowLevel(&Arc->BoundingBox, X, Y, Number);
+}
+
+/* rotates an arc */
+void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
+{
+	EraseArc(Arc);
+	r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
+	RotateArcLowLevel(Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+	r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
+	DrawArc(Layer, Arc);
+	Draw();
+	return (Arc);
 }

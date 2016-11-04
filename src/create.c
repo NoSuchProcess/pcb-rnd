@@ -53,7 +53,7 @@
  */
 
 /* current object ID; incremented after each creation of an object */
-static long int ID = 1;
+long int ID = 1;
 
 pcb_bool pcb_create_be_lenient = pcb_false;
 
@@ -461,49 +461,6 @@ CreateNewRat(DataTypePtr Data, Coord X1, Coord Y1,
 		Data->rat_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Data->rat_tree, &Line->BoundingBox, 0);
 	return (Line);
-}
-
-/* ---------------------------------------------------------------------------
- * creates a new arc on a layer
- */
-ArcTypePtr
-CreateNewArcOnLayer(LayerTypePtr Layer,
-										Coord X1, Coord Y1,
-										Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags)
-{
-	ArcTypePtr Arc;
-
-	ARC_LOOP(Layer);
-	{
-		if (arc->X == X1 && arc->Y == Y1 && arc->Width == width &&
-				NormalizeAngle(arc->StartAngle) == NormalizeAngle(sa) && arc->Delta == dir)
-			return (NULL);						/* prevent stacked arcs */
-	}
-	END_LOOP;
-	Arc = GetArcMemory(Layer);
-	if (!Arc)
-		return (Arc);
-
-	Arc->ID = ID++;
-	Arc->Flags = Flags;
-	Arc->Thickness = Thickness;
-	Arc->Clearance = Clearance;
-	Arc->X = X1;
-	Arc->Y = Y1;
-	Arc->Width = width;
-	Arc->Height = height;
-	Arc->StartAngle = sa;
-	Arc->Delta = dir;
-	pcb_add_arc_on_layer(Layer, Arc);
-	return (Arc);
-}
-
-void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc)
-{
-	SetArcBoundingBox(Arc);
-	if (!Layer->arc_tree)
-		Layer->arc_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Layer->arc_tree, (BoxTypePtr) Arc, 0);
 }
 
 /* ---------------------------------------------------------------------------

@@ -50,6 +50,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "layer.h"
+#include "box.h"
 #include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
@@ -59,13 +60,11 @@ static void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveVia(pcb_opctx_t *ctx, PinTypePtr);
 static void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
-static void *MoveArc(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 static void *MoveText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *MovePolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *MoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
 static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
 static void *MoveLineToLayer(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
-static void *MoveArcToLayer(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 static void *MoveRatToLayer(pcb_opctx_t *ctx, RatTypePtr);
 static void *MoveTextToLayer(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *MovePolygonToLayer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
@@ -248,27 +247,6 @@ static void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* ---------------------------------------------------------------------------
- * moves an arc
- */
-static void *MoveArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-	r_delete_entry(Layer->arc_tree, (BoxType *) Arc);
-	if (Layer->On) {
-		EraseArc(Arc);
-		MOVE_ARC_LOWLEVEL(Arc, ctx->move.dx, ctx->move.dy);
-		DrawArc(Layer, Arc);
-		Draw();
-	}
-	else {
-		MOVE_ARC_LOWLEVEL(Arc, ctx->move.dx, ctx->move.dy);
-	}
-	r_insert_entry(Layer->arc_tree, (BoxType *) Arc, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-	return (Arc);
-}
-
-/* ---------------------------------------------------------------------------
  * moves a text object
  */
 static void *MoveText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
@@ -391,52 +369,6 @@ static void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, LineT
 		Destination->line_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Destination->line_tree, (BoxType *) line, 0);
 	return line;
-}
-
-/* ---------------------------------------------------------------------------
- * moves an arc between layers; lowlevel routines
- */
-static void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, ArcType * arc, LayerType * Destination)
-{
-	r_delete_entry(Source->arc_tree, (BoxType *) arc);
-
-	arclist_remove(arc);
-	arclist_append(&Destination->Arc, arc);
-
-	if (!Destination->arc_tree)
-		Destination->arc_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Destination->arc_tree, (BoxType *) arc, 0);
-	return arc;
-}
-
-
-/* ---------------------------------------------------------------------------
- * moves an arc between layers
- */
-static void *MoveArcToLayer(pcb_opctx_t *ctx, LayerType * Layer, ArcType * Arc)
-{
-	ArcTypePtr newone;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc)) {
-		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
-		return NULL;
-	}
-	if (ctx->move.dst_layer == Layer && Layer->On) {
-		DrawArc(Layer, Arc);
-		Draw();
-	}
-	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
-		return (Arc);
-	AddObjectToMoveToLayerUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-	if (Layer->On)
-		EraseArc(Arc);
-	newone = (ArcTypePtr) MoveArcToLayerLowLevel(ctx, Layer, Arc, ctx->move.dst_layer);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, ctx->move.dst_layer, Arc);
-	if (ctx->move.dst_layer->On)
-		DrawArc(ctx->move.dst_layer, newone);
-	Draw();
-	return (newone);
 }
 
 /* ---------------------------------------------------------------------------

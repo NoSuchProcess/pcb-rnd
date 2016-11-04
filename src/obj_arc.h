@@ -39,7 +39,10 @@ void SetArcBoundingBox(ArcTypePtr Arc);
 BoxTypePtr GetArcEnds(ArcTypePtr Arc);
 void ChangeArcAngles(LayerTypePtr Layer, ArcTypePtr a, Angle new_sa, Angle new_da);
 void ChangeArcRadii(LayerTypePtr Layer, ArcTypePtr a, Coord new_width, Coord new_height);
-
+void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc);
+ArcType *CreateNewArcOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags);
+void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc);
+void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number);
 
 /*** Operations ***/
 void *AddArcToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
@@ -51,7 +54,19 @@ void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
 void *ChangeArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
 void *SetArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
 void *ClrArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *CopyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *MoveArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, ArcType * arc, LayerType * Destination);
+void *MoveArcToLayer(pcb_opctx_t *ctx, LayerType * Layer, ArcType * Arc);
+void *DestroyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
 
+#define	MOVE_ARC_LOWLEVEL(a,dx,dy) \
+	{ \
+		MOVE((a)->X,(a)->Y,(dx),(dy)) \
+		MOVE_BOX_LOWLEVEL(&((a)->BoundingBox),(dx),(dy));		\
+	}
 
 #define ARC_LOOP(element) do {                                      \
   ArcType *arc;                                                     \

@@ -40,6 +40,7 @@
 #include "global_objs.h"
 #include "config.h"
 #include "macro.h"
+#include "move.h"
 
 struct pcb_boxlist_s {
 	pcb_cardinal_t BoxN,								/* the number of boxes contained */
@@ -93,6 +94,13 @@ typedef enum { NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3, NE = 4, SE = 5, SW = 6,
 #define CENTER_X(b) ((b).X1 + ((b).X2 - (b).X1)/2)
 #define CENTER_Y(b) ((b).Y1 + ((b).Y2 - (b).Y1)/2)
 /* some useful box utilities. */
+
+#define	MOVE_BOX_LOWLEVEL(b,dx,dy)		\
+	{									\
+		MOVE((b)->X1,(b)->Y1,(dx),(dy))	\
+		MOVE((b)->X2,(b)->Y2,(dx),(dy))	\
+	}
+
 
 typedef struct cheap_point {
 	Coord X, Y;

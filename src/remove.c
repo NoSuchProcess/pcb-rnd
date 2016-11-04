@@ -51,7 +51,6 @@
 static void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr);
 static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr);
 static void *DestroyLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
-static void *DestroyArc(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
 static void *DestroyText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *DestroyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr);
@@ -64,7 +63,6 @@ static void *RemoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointT
 
 static void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element);
 static void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-static void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
 static void *RemoveText_op(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text);
 static void *RemovePolygon_op(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
 
@@ -132,18 +130,6 @@ static void *DestroyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 	free(Line->Number);
 
 	RemoveFreeLine(Line);
-	return NULL;
-}
-
-/* ---------------------------------------------------------------------------
- * destroys an arc from a layer
- */
-static void *DestroyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	r_delete_entry(Layer->arc_tree, (BoxTypePtr) Arc);
-
-	RemoveFreeArc(Arc);
-
 	return NULL;
 }
 
@@ -360,34 +346,6 @@ void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
 	return RemoveLine_op(&ctx, Layer, Line);
 }
 
-
-/* ---------------------------------------------------------------------------
- * removes an arc from a layer
- */
-static void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	/* erase from screen */
-	if (Layer->On) {
-		EraseArc(Arc);
-		if (!ctx->remove.bulk)
-			Draw();
-	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
-	return NULL;
-}
-
-void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	pcb_opctx_t ctx;
-
-	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_false;
-	ctx.remove.destroy_target = NULL;
-
-	return RemoveArc_op(&ctx, Layer, Arc);
-}
-
-
 /* ---------------------------------------------------------------------------
  * removes a text from a layer
  */
@@ -588,12 +546,13 @@ pcb_bool RemoveSelected(void)
 void *RemoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
+	void *ptr;
 
 	ctx.remove.pcb = PCB;
 	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 
-	void *ptr = ObjectOperation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	ptr = ObjectOperation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (ptr);
 }
 
