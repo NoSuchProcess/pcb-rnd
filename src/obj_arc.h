@@ -26,8 +26,20 @@
 
 /* Drawing primitive: (elliptical) arc */
 
-#include "global_typedefs.h"
-#include "operation.h"
+#ifndef PCB_OBJ_ARC_H
+#define PCB_OBJ_ARC_H
+
+#include "global_objs.h"
+
+struct pcb_arc_s {       /* holds information about arcs */
+	ANYOBJECTFIELDS;
+	Coord Thickness, Clearance;
+	Coord Width, Height,					/* length of axis */
+	  X, Y;												/* center coordinates */
+	Angle StartAngle, Delta;			/* the two limiting angles in degrees */
+	gdl_elem_t link;              /* an arc is in a list: either on a layer or in an element */
+};
+
 
 /*** Memory ***/
 ArcTypePtr GetArcMemory(LayerTypePtr);
@@ -43,24 +55,6 @@ void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc);
 ArcType *CreateNewArcOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags);
 void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc);
 void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number);
-
-/*** Operations ***/
-void *AddArcToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *MoveArcToBuffer(pcb_opctx_t *ctx, LayerType *layer, ArcType *arc);
-void *ChangeArcSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ChangeArcClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ChangeArcRadius(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ChangeArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *SetArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ClrArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *CopyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *MoveArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, ArcType * arc, LayerType * Destination);
-void *MoveArcToLayer(pcb_opctx_t *ctx, LayerType * Layer, ArcType * Arc);
-void *DestroyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
 
 #define	MOVE_ARC_LOWLEVEL(a,dx,dy) \
 	{ \
@@ -103,3 +97,4 @@ void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
 		if (layer->On)				\
 			ARC_LOOP(layer)
 
+#endif

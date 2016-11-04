@@ -47,7 +47,7 @@
 #include "funchash_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "obj_all.h"
+#include "obj_all_op.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

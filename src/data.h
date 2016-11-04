@@ -34,7 +34,6 @@
 #include "global_objs.h"
 #include "global_element.h"
 #include "list_line.h"
-#include "list_arc.h"
 #include "list_text.h"
 #include "list_poly.h"
 #include "list_pad.h"
@@ -43,6 +42,8 @@
 #include "layer.h"
 #include "crosshair.h"
 #include "buffer.h"
+
+#include "obj_all_list.h"
 
 /* Generic container object that can hold subcircuits with layer-global
    objects (e.g. vias and rats) and layer-locals (lines, arcs) */

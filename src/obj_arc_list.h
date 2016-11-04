@@ -20,8 +20,10 @@
  *
  */
 
-#ifndef LIST_ARC_H
-#define LIST_ARC_H
+#ifndef PCB_OBJ_ARC_LIST_H
+#define PCB_OBJ_ARC_LIST_H
+
+#include "obj_arc.h"
 
 /* List of Arcs */
 #define TDL(x)      arclist_ ## x

@@ -26,6 +26,7 @@
 
 /* Drawing primitive: (elliptical) arc */
 
+
 #include "config.h"
 #include "global_objs.h"
 #include "global_element.h"
@@ -39,11 +40,13 @@
 #include "undo.h"
 #include "rotate.h"
 #include "move.h"
-#include "obj_arc.h"
 #include "create.h"
+#include "obj_arc.h"
+#include "obj_arc_op.h"
 
 /* TODO: could be removed if draw.c could be split up */
 #include "draw.h"
+
 
 
 ArcTypePtr GetArcMemory(LayerType * layer)

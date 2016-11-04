@@ -32,9 +32,9 @@
 #include "global_typedefs.h"
 #include "attrib.h"
 #include "list_line.h"
-#include "list_arc.h"
 #include "list_text.h"
 #include "list_poly.h"
+#include "obj_all_list.h"
 
 /* ----------------------------------------------------------------------
  * layer group. A layer group identifies layers which are always switched

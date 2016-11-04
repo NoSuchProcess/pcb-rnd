@@ -51,7 +51,7 @@
 #include "compat_nls.h"
 #include "layer.h"
 #include "box.h"
-#include "obj_all.h"
+#include "obj_all_op.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

@@ -38,6 +38,7 @@
 #include "line.h"
 #include "misc.h"
 #include "rtree.h"
+#include "obj_all.h"
 
 static double drc_lines(PointTypePtr end, pcb_bool way);
 

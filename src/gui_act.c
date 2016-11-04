@@ -42,6 +42,7 @@
 #include "hid_actions.h"
 #include "hid_init.h"
 #include "compat_nls.h"
+#include "obj_all.h"
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */

@@ -42,7 +42,7 @@
 #include "select.h"
 #include "undo.h"
 #include "compat_misc.h"
-#include "obj_all.h"
+#include "obj_all_op.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

@@ -111,15 +111,6 @@ struct polygon_st {							/* holds information about a polygon */
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
-struct pcb_arc_s {       /* holds information about arcs */
-	ANYOBJECTFIELDS;
-	Coord Thickness, Clearance;
-	Coord Width, Height,					/* length of axis */
-	  X, Y;												/* center coordinates */
-	Angle StartAngle, Delta;			/* the two limiting angles in degrees */
-	gdl_elem_t link;              /* an arc is in a list: either on a layer or in an element */
-};
-
 struct pcb_rat_line_s {          /* a rat-line */
 	ANYLINEFIELDS;
 	pcb_cardinal_t group1, group2; /* the layer group each point is on */

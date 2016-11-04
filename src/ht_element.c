@@ -2,6 +2,7 @@
 #include "config.h"
 #include "global_element.h"
 #include "list_element.h"
+#include "obj_all.h"
 
 #define HT(x) htep_ ## x
 #include <genht/ht.c>
