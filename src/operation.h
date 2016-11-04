@@ -80,6 +80,12 @@ typedef struct {
 	pcb_bool more_to_come;
 } pcb_opctx_move_t;
 
+typedef struct {
+	PCBType *pcb;
+	DataTypePtr destroy_target;
+	pcb_bool bulk;                /* don't draw if part of a bulk operation */
+} pcb_opctx_remove_t;
+
 typedef union {
 	pcb_opctx_buffer_t buffer;
 	pcb_opctx_chgname_t chgname;
@@ -89,6 +95,7 @@ typedef union {
 	pcb_opctx_copy_t copy;
 	pcb_opctx_insert_t insert;
 	pcb_opctx_move_t move;
+	pcb_opctx_remove_t remove;
 } pcb_opctx_t;
 
 /* pointer to low-level operation (copy, move and rotate) functions */

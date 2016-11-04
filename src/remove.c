@@ -101,9 +101,6 @@ static pcb_opfunc_t DestroyFunctions = {
 	DestroyRat
 };
 
-static DataTypePtr DestroyTarget;
-static pcb_bool Bulk = pcb_false;
-
 /* ---------------------------------------------------------------------------
  * remove PCB
  */
@@ -119,7 +116,7 @@ void RemovePCB(PCBTypePtr Ptr)
  */
 static void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 {
-	r_delete_entry(DestroyTarget->via_tree, (BoxTypePtr) Via);
+	r_delete_entry(ctx->remove.destroy_target->via_tree, (BoxTypePtr) Via);
 	free(Via->Name);
 
 	RemoveFreeVia(Via);
@@ -218,26 +215,26 @@ static void *DestroyText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
  */
 static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
-	if (DestroyTarget->element_tree)
-		r_delete_entry(DestroyTarget->element_tree, (BoxType *) Element);
-	if (DestroyTarget->pin_tree) {
+	if (ctx->remove.destroy_target->element_tree)
+		r_delete_entry(ctx->remove.destroy_target->element_tree, (BoxType *) Element);
+	if (ctx->remove.destroy_target->pin_tree) {
 		PIN_LOOP(Element);
 		{
-			r_delete_entry(DestroyTarget->pin_tree, (BoxType *) pin);
+			r_delete_entry(ctx->remove.destroy_target->pin_tree, (BoxType *) pin);
 		}
 		END_LOOP;
 	}
-	if (DestroyTarget->pad_tree) {
+	if (ctx->remove.destroy_target->pad_tree) {
 		PAD_LOOP(Element);
 		{
-			r_delete_entry(DestroyTarget->pad_tree, (BoxType *) pad);
+			r_delete_entry(ctx->remove.destroy_target->pad_tree, (BoxType *) pad);
 		}
 		END_LOOP;
 	}
 	ELEMENTTEXT_LOOP(Element);
 	{
-		if (DestroyTarget->name_tree[n])
-			r_delete_entry(DestroyTarget->name_tree[n], (BoxType *) text);
+		if (ctx->remove.destroy_target->name_tree[n])
+			r_delete_entry(ctx->remove.destroy_target->name_tree[n], (BoxType *) text);
 	}
 	END_LOOP;
 	FreeElementMemory(Element);
@@ -252,8 +249,8 @@ static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
  */
 static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 {
-	if (DestroyTarget->rat_tree)
-		r_delete_entry(DestroyTarget->rat_tree, &Rat->BoundingBox);
+	if (ctx->remove.destroy_target->rat_tree)
+		r_delete_entry(ctx->remove.destroy_target->rat_tree, &Rat->BoundingBox);
 
 	RemoveFreeRat(Rat);
 	return NULL;
@@ -268,7 +265,7 @@ static void *RemoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 	/* erase from screen and memory */
 	if (PCB->ViaOn) {
 		EraseVia(Via);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_VIA, Via, Via, Via);
@@ -283,7 +280,7 @@ static void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 	/* erase from screen and memory */
 	if (PCB->RatOn) {
 		EraseRat(Rat);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
@@ -345,7 +342,7 @@ static void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Lin
 	/* erase from screen */
 	if (Layer->On) {
 		EraseLine(Line);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_LINE, Layer, Line, Line);
@@ -355,6 +352,11 @@ static void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Lin
 void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
 {
 	pcb_opctx_t ctx;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_false;
+	ctx.remove.destroy_target = NULL;
+
 	return RemoveLine_op(&ctx, Layer, Line);
 }
 
@@ -367,7 +369,7 @@ static void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 	/* erase from screen */
 	if (Layer->On) {
 		EraseArc(Arc);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
@@ -377,6 +379,11 @@ static void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc)
 {
 	pcb_opctx_t ctx;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_false;
+	ctx.remove.destroy_target = NULL;
+
 	return RemoveArc_op(&ctx, Layer, Arc);
 }
 
@@ -389,7 +396,7 @@ static void *RemoveText_op(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Tex
 	/* erase from screen */
 	if (Layer->On) {
 		EraseText(Layer, Text);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
@@ -399,6 +406,11 @@ static void *RemoveText_op(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Tex
 void *RemoveText(LayerTypePtr Layer, TextTypePtr Text)
 {
 	pcb_opctx_t ctx;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_false;
+	ctx.remove.destroy_target = NULL;
+
 	return RemoveText_op(&ctx, Layer, Text);
 }
 
@@ -410,7 +422,7 @@ static void *RemovePolygon_op(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypeP
 	/* erase from screen */
 	if (Layer->On) {
 		ErasePolygon(Polygon);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
@@ -420,6 +432,11 @@ static void *RemovePolygon_op(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypeP
 void *RemovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
 	pcb_opctx_t ctx;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_false;
+	ctx.remove.destroy_target = NULL;
+
 	return RemovePolygon_op(&ctx, Layer, Polygon);
 }
 
@@ -437,7 +454,7 @@ static void *RemovePolygonContour(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonT
 
 	if (Layer->On) {
 		ErasePolygon(Polygon);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 
@@ -462,7 +479,7 @@ static void *RemovePolygonContour(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonT
 	/* redraw polygon if necessary */
 	if (Layer->On) {
 		DrawPolygon(Layer, Polygon);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 	return NULL;
@@ -512,7 +529,7 @@ static void *RemovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTyp
 	/* redraw polygon if necessary */
 	if (Layer->On) {
 		DrawPolygon(Layer, Polygon);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 	return NULL;
@@ -526,7 +543,7 @@ static void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element)
 	/* erase from screen */
 	if ((PCB->ElementOn || PCB->PinOn) && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElement(Element);
-		if (!Bulk)
+		if (!ctx->remove.bulk)
 			Draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, Element, Element, Element);
@@ -536,6 +553,11 @@ static void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element)
 void *RemoveElement(ElementTypePtr Element)
 {
 	pcb_opctx_t ctx;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_false;
+	ctx.remove.destroy_target = NULL;
+
 	return RemoveElement_op(&ctx, Element);
 }
 
@@ -546,14 +568,16 @@ void *RemoveElement(ElementTypePtr Element)
 pcb_bool RemoveSelected(void)
 {
 	pcb_opctx_t ctx;
-	Bulk = pcb_true;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_true;
+	ctx.remove.destroy_target = NULL;
+
 	if (SelectedOperation(&RemoveFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL)) {
 		IncrementUndoSerialNumber();
 		Draw();
-		Bulk = pcb_false;
 		return (pcb_true);
 	}
-	Bulk = pcb_false;
 	return (pcb_false);
 }
 
@@ -564,6 +588,11 @@ pcb_bool RemoveSelected(void)
 void *RemoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_false;
+	ctx.remove.destroy_target = NULL;
+
 	void *ptr = ObjectOperation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (ptr);
 }
@@ -577,7 +606,11 @@ pcb_bool DeleteRats(pcb_bool selected)
 {
 	pcb_opctx_t ctx;
 	pcb_bool changed = pcb_false;
-	Bulk = pcb_true;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_true;
+	ctx.remove.destroy_target = NULL;
+
 	RAT_LOOP(PCB->Data);
 	{
 		if ((!selected) || TEST_FLAG(PCB_FLAG_SELECTED, line)) {
@@ -586,7 +619,6 @@ pcb_bool DeleteRats(pcb_bool selected)
 		}
 	}
 	END_LOOP;
-	Bulk = pcb_false;
 	if (changed) {
 		Draw();
 		IncrementUndoSerialNumber();
@@ -601,6 +633,10 @@ pcb_bool DeleteRats(pcb_bool selected)
 void *DestroyObject(DataTypePtr Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
-	DestroyTarget = Target;
+
+	ctx.remove.pcb = PCB;
+	ctx.remove.bulk = pcb_false;
+	ctx.remove.destroy_target = Target;
+
 	return (ObjectOperation(&DestroyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
