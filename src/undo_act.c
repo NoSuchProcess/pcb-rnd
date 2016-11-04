@@ -41,6 +41,7 @@
 #include "draw.h"
 #include "misc.h"
 #include "layer.h"
+#include "obj_all.h"
 
 /* --------------------------------------------------------------------------- */
 

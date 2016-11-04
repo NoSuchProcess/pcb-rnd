@@ -36,7 +36,6 @@
 
 void r_delete_element(DataTypePtr, ElementTypePtr);
 void SetLineBoundingBox(LineTypePtr);
-void SetArcBoundingBox(ArcTypePtr);
 void SetPointBoundingBox(PointTypePtr);
 void SetPinBoundingBox(PinTypePtr);
 void SetPadBoundingBox(PadTypePtr);
@@ -50,9 +49,6 @@ void SetTextBoundingBox(FontTypePtr, TextTypePtr);
 
 BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
 
-BoxTypePtr GetArcEnds(ArcTypePtr);
-void ChangeArcAngles(LayerTypePtr, ArcTypePtr, Angle, Angle);
-void ChangeArcRadii(LayerTypePtr, ArcTypePtr, Coord, Coord);
 char *UniqueElementName(DataTypePtr, char *);
 void AttachForCopy(Coord, Coord);
 

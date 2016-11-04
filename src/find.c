@@ -78,6 +78,8 @@
 #include "compat_misc.h"
 #include "layer.h"
 
+#include "obj_all.h"
+
 #undef DEBUG
 
 /* ---------------------------------------------------------------------------

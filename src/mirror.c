@@ -40,6 +40,7 @@
 #include "mirror.h"
 #include "misc.h"
 #include "polygon.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * mirrors the coordinates of an element

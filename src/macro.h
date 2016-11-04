@@ -141,11 +141,6 @@
   gdl_iterator_t __it__;                                            \
   padlist_foreach(&(element)->Pad, &__it__, pad) {
 
-#define ARC_LOOP(element) do {                                      \
-  ArcType *arc;                                                     \
-  gdl_iterator_t __it__;                                            \
-  linelist_foreach(&(element)->Arc, &__it__, arc) {
-
 #define ELEMENTLINE_LOOP(element) do {                              \
   LineType *line;                                                   \
   gdl_iterator_t __it__;                                            \

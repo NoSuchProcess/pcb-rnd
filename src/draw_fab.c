@@ -35,6 +35,7 @@
 #include "draw.h"
 #include "drill.h"
 #include "draw_fab.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * prints a FAB drawing.

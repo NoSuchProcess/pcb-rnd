@@ -48,6 +48,7 @@
 #include "plugins.h"
 #include "compat_misc.h"
 #include "misc_util.h"
+#include "obj_all.h"
 
 #include "hid.h"
 #include "hid_attrib.h"

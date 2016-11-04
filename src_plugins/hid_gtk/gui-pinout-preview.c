@@ -38,6 +38,7 @@
 #include "mymem.h"
 #include "move.h"
 #include "rotate.h"
+#include "obj_all.h"
 #include "gui-pinout-preview.h"
 
 /* Just define a sensible scale, lets say (for example), 100 pixel per 150 mil */

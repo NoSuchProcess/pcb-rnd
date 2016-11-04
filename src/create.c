@@ -46,6 +46,7 @@
 #include "paths.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

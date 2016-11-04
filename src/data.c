@@ -33,6 +33,7 @@
 #include "mymem.h"
 #include "rtree.h"
 #include "list_common.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers

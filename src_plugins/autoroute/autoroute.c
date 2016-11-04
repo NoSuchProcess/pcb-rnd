@@ -79,6 +79,7 @@
 #include "set.h"
 #include "layer.h"
 #include "compat_nls.h"
+#include "obj_all.h"
 
 #warning TODO: remove this in favor of vtptr
 #include "ptrlist.h"

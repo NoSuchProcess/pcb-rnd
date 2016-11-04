@@ -25,6 +25,7 @@
 /*!
  * \brief Resets all used flags of pins and vias.
  */
+
 pcb_bool ClearFlagOnPinsViasAndPads(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;

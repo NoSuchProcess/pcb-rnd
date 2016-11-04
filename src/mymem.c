@@ -37,6 +37,7 @@
 #include "rtree.h"
 #include "rats_patch.h"
 #include "list_common.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * local prototypes
@@ -141,25 +142,6 @@ LineType *GetLineMemory(LayerType * layer)
 void RemoveFreeLine(LineType * data)
 {
 	linelist_remove(data);
-	free(data);
-}
-
-/* ---------------------------------------------------------------------------
- * get next slot for an arc, allocates memory if necessary
- */
-ArcTypePtr GetArcMemory(LayerType * layer)
-{
-	ArcType *new_obj;
-
-	new_obj = calloc(sizeof(ArcType), 1);
-	arclist_append(&layer->Arc, new_obj);
-
-	return new_obj;
-}
-
-void RemoveFreeArc(ArcType * data)
-{
-	arclist_remove(data);
 	free(data);
 }
 
@@ -349,10 +331,3 @@ LineType *GetElementLineMemory(ElementType *Element)
 	return line;
 }
 
-ArcType *GetElementArcMemory(ElementType *Element)
-{
-	ArcType *arc = calloc(sizeof(ArcType), 1);
-
-	arclist_append(&Element->Arc, arc);
-	return arc;
-}

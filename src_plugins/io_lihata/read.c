@@ -45,6 +45,7 @@
 #include "common.h"
 #include "polygon.h"
 #include "conf_core.h"
+#include "obj_all.h"
 
 #warning TODO: put these in a gloal load-context-struct
 vtptr_t post_ids, post_thermal;

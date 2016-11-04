@@ -17,6 +17,7 @@
 #include "remove.h"
 #include "crosshair.h"
 #include "draw.h"
+#include "obj_all.h"
 
 #include "hid.h"
 #include "hid_actions.h"

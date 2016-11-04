@@ -43,6 +43,7 @@
 #include "rtree.h"
 #include "search.h"
 #include "layer.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

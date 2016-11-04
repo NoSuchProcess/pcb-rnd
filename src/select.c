@@ -44,6 +44,7 @@
 #include "layer.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "obj_all.h"
 
 #include <genregex/regex_sei.h>
 

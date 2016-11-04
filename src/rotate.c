@@ -47,6 +47,7 @@
 #include "undo.h"
 #include "conf_core.h"
 #include "compat_nls.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

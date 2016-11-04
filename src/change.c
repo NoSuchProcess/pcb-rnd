@@ -43,6 +43,7 @@
 #include "undo.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

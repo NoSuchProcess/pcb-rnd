@@ -36,6 +36,7 @@
 #include "const.h"
 #include "netlist.h"
 #include "misc.h"
+#include "obj_all.h"
 
 #define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
 

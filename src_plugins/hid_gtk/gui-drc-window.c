@@ -39,6 +39,7 @@
 #include "gui-drc-window.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
+#include "obj_all.h"
 
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5

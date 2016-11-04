@@ -52,6 +52,7 @@
 #include "set.h"
 #include "undo.h"
 #include "compat_misc.h"
+#include "obj_all.h"
 
 /* forward declarations */
 static char *BumpName(char *);
@@ -676,113 +677,6 @@ BoxTypePtr GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		Message(PCB_MSG_DEFAULT, "Request for bounding box of unsupported type %d\n", Type);
 		return (BoxType *) Ptr2;
 	}
-}
-
-/* ---------------------------------------------------------------------------
- * computes the bounding box of an arc
- */
-void SetArcBoundingBox(ArcTypePtr Arc)
-{
-	double ca1, ca2, sa1, sa2;
-	double minx, maxx, miny, maxy;
-	Angle ang1, ang2;
-	Coord width;
-
-	/* first put angles into standard form:
-	 *  ang1 < ang2, both angles between 0 and 720 */
-	Arc->Delta = PCB_CLAMP(Arc->Delta, -360, 360);
-
-	if (Arc->Delta > 0) {
-		ang1 = NormalizeAngle(Arc->StartAngle);
-		ang2 = NormalizeAngle(Arc->StartAngle + Arc->Delta);
-	}
-	else {
-		ang1 = NormalizeAngle(Arc->StartAngle + Arc->Delta);
-		ang2 = NormalizeAngle(Arc->StartAngle);
-	}
-	if (ang1 > ang2)
-		ang2 += 360;
-	/* Make sure full circles aren't treated as zero-length arcs */
-	if (Arc->Delta == 360 || Arc->Delta == -360)
-		ang2 = ang1 + 360;
-
-	/* calculate sines, cosines */
-	sa1 = sin(PCB_M180 * ang1);
-	ca1 = cos(PCB_M180 * ang1);
-	sa2 = sin(PCB_M180 * ang2);
-	ca2 = cos(PCB_M180 * ang2);
-
-	minx = MIN(ca1, ca2);
-	maxx = MAX(ca1, ca2);
-	miny = MIN(sa1, sa2);
-	maxy = MAX(sa1, sa2);
-
-	/* Check for extreme angles */
-	if ((ang1 <= 0 && ang2 >= 0) || (ang1 <= 360 && ang2 >= 360))
-		maxx = 1;
-	if ((ang1 <= 90 && ang2 >= 90) || (ang1 <= 450 && ang2 >= 450))
-		maxy = 1;
-	if ((ang1 <= 180 && ang2 >= 180) || (ang1 <= 540 && ang2 >= 540))
-		minx = -1;
-	if ((ang1 <= 270 && ang2 >= 270) || (ang1 <= 630 && ang2 >= 630))
-		miny = -1;
-
-	/* Finally, calculate bounds, converting sane geometry into pcb geometry */
-	Arc->BoundingBox.X1 = Arc->X - Arc->Width * maxx;
-	Arc->BoundingBox.X2 = Arc->X - Arc->Width * minx;
-	Arc->BoundingBox.Y1 = Arc->Y + Arc->Height * miny;
-	Arc->BoundingBox.Y2 = Arc->Y + Arc->Height * maxy;
-
-	width = (Arc->Thickness + Arc->Clearance) / 2;
-
-	/* Adjust for our discrete polygon approximation */
-	width = (double) width *MAX(POLY_CIRC_RADIUS_ADJ, (1.0 + POLY_ARC_MAX_DEVIATION)) + 0.5;
-
-	Arc->BoundingBox.X1 -= width;
-	Arc->BoundingBox.X2 += width;
-	Arc->BoundingBox.Y1 -= width;
-	Arc->BoundingBox.Y2 += width;
-	close_box(&Arc->BoundingBox);
-}
-
-BoxTypePtr GetArcEnds(ArcTypePtr Arc)
-{
-	static BoxType box;
-	box.X1 = Arc->X - Arc->Width * cos(Arc->StartAngle * PCB_M180);
-	box.Y1 = Arc->Y + Arc->Height * sin(Arc->StartAngle * PCB_M180);
-	box.X2 = Arc->X - Arc->Width * cos((Arc->StartAngle + Arc->Delta) * PCB_M180);
-	box.Y2 = Arc->Y + Arc->Height * sin((Arc->StartAngle + Arc->Delta) * PCB_M180);
-	return &box;
-}
-
-/* doesn't these belong in change.c ?? */
-void ChangeArcAngles(LayerTypePtr Layer, ArcTypePtr a, Angle new_sa, Angle new_da)
-{
-	if (new_da >= 360) {
-		new_da = 360;
-		new_sa = 0;
-	}
-	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
-	r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
-	AddObjectToChangeAnglesUndoList(PCB_TYPE_ARC, a, a, a);
-	a->StartAngle = new_sa;
-	a->Delta = new_da;
-	SetArcBoundingBox(a);
-	r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
-}
-
-
-void ChangeArcRadii(LayerTypePtr Layer, ArcTypePtr a, Coord new_width, Coord new_height)
-{
-	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
-	r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
-	AddObjectToChangeRadiiUndoList(PCB_TYPE_ARC, a, a, a);
-	a->Width = new_width;
-	a->Height = new_height;
-	SetArcBoundingBox(a);
-	r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
 }
 
 static char *BumpName(char *Name)

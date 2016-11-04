@@ -39,6 +39,7 @@
 #include "rotate.h"
 #include "rtree.h"
 #include "draw_fab.h"
+#include "obj_all.h"
 
 #undef NDEBUG
 #include <assert.h>

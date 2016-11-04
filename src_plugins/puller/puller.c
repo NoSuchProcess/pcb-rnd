@@ -68,6 +68,7 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "misc_util.h"
+#include "obj_all.h"
 
 #define abort1() fprintf(stderr, "abort at line %d\n", __LINE__), abort()
 

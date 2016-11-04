@@ -55,7 +55,6 @@ PinTypePtr GetPinMemory(ElementTypePtr);
 PadTypePtr GetPadMemory(ElementTypePtr);
 PinTypePtr GetViaMemory(DataTypePtr);
 LineTypePtr GetLineMemory(LayerTypePtr);
-ArcTypePtr GetArcMemory(LayerTypePtr);
 RatTypePtr GetRatMemory(DataTypePtr);
 TextTypePtr GetTextMemory(LayerTypePtr);
 PolygonTypePtr GetPolygonMemory(LayerTypePtr);
@@ -67,7 +66,6 @@ void FreeElementMemory(ElementTypePtr);
 
 char *StripWhiteSpaceAndDup(const char *);
 
-void RemoveFreeArc(ArcType * data);
 void RemoveFreeLine(LineType * data);
 void RemoveFreeText(TextType * data);
 void RemoveFreePolygon(PolygonType * data);
@@ -79,7 +77,6 @@ void RemoveFreeRat(RatType * data);
 
 /* Allocate element-objects */
 LineType *GetElementLineMemory(ElementType *Element);
-ArcType *GetElementArcMemory(ElementType *Element);
 
 #ifndef HAVE_LIBDMALLOC
 #define malloc(x) calloc(1,(x))

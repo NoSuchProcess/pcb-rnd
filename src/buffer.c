@@ -48,20 +48,19 @@
 #include "funchash_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
 static void *AddViaToBuffer(PinTypePtr);
 static void *AddLineToBuffer(LayerTypePtr, LineTypePtr);
-static void *AddArcToBuffer(LayerTypePtr, ArcTypePtr);
 static void *AddRatToBuffer(RatTypePtr);
 static void *AddTextToBuffer(LayerTypePtr, TextTypePtr);
 static void *AddPolygonToBuffer(LayerTypePtr, PolygonTypePtr);
 static void *AddElementToBuffer(ElementTypePtr);
 static void *MoveViaToBuffer(PinTypePtr);
 static void *MoveLineToBuffer(LayerTypePtr, LineTypePtr);
-static void *MoveArcToBuffer(LayerTypePtr, ArcTypePtr);
 static void *MoveRatToBuffer(RatTypePtr);
 static void *MoveTextToBuffer(LayerTypePtr, TextTypePtr);
 static void *MovePolygonToBuffer(LayerTypePtr, PolygonTypePtr);
@@ -71,7 +70,9 @@ static void SwapBuffer(BufferTypePtr);
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static DataTypePtr Dest, Source;
+#warning TODO: revise these
+int pcb_buffer_extraflg = 0;
+DataTypePtr pcb_buffer_dest, pcb_buffer_src;
 
 static ObjectFunctionType AddBufferFunctions = {
 	AddLineToBuffer,
@@ -91,15 +92,14 @@ MoveLineToBuffer,
 		MoveTextToBuffer,
 		MovePolygonToBuffer, MoveViaToBuffer, MoveElementToBuffer, NULL, NULL, NULL, NULL, NULL, MoveArcToBuffer, MoveRatToBuffer};
 
-static int ExtraFlag = 0;
 
 /* ---------------------------------------------------------------------------
  * copies a via to paste buffer
  */
 static void *AddViaToBuffer(PinTypePtr Via)
 {
-	return (CreateNewVia(Dest, Via->X, Via->Y, Via->Thickness, Via->Clearance,
-											 Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND | ExtraFlag)));
+	return (CreateNewVia(pcb_buffer_dest, Via->X, Via->Y, Via->Thickness, Via->Clearance,
+											 Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND | pcb_buffer_extraflg)));
 }
 
 /* ---------------------------------------------------------------------------
@@ -107,9 +107,9 @@ static void *AddViaToBuffer(PinTypePtr Via)
  */
 static void *AddRatToBuffer(RatTypePtr Rat)
 {
-	return (CreateNewRat(Dest, Rat->Point1.X, Rat->Point1.Y,
+	return (CreateNewRat(pcb_buffer_dest, Rat->Point1.X, Rat->Point1.Y,
 											 Rat->Point2.X, Rat->Point2.Y, Rat->group1,
-											 Rat->group2, Rat->Thickness, MaskFlags(Rat->Flags, PCB_FLAG_FOUND | ExtraFlag)));
+											 Rat->group2, Rat->Thickness, MaskFlags(Rat->Flags, PCB_FLAG_FOUND | pcb_buffer_extraflg)));
 }
 
 /* ---------------------------------------------------------------------------
@@ -118,26 +118,14 @@ static void *AddRatToBuffer(RatTypePtr Rat)
 static void *AddLineToBuffer(LayerTypePtr Layer, LineTypePtr Line)
 {
 	LineTypePtr line;
-	LayerTypePtr layer = &Dest->Layer[GetLayerNumber(Source, Layer)];
+	LayerTypePtr layer = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, Layer)];
 
 	line = CreateNewLineOnLayer(layer, Line->Point1.X, Line->Point1.Y,
 															Line->Point2.X, Line->Point2.Y,
-															Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND | ExtraFlag));
+															Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND | pcb_buffer_extraflg));
 	if (line && Line->Number)
 		line->Number = pcb_strdup(Line->Number);
 	return (line);
-}
-
-/* ---------------------------------------------------------------------------
- * copies an arc to buffer
- */
-static void *AddArcToBuffer(LayerTypePtr Layer, ArcTypePtr Arc)
-{
-	LayerTypePtr layer = &Dest->Layer[GetLayerNumber(Source, Layer)];
-
-	return (CreateNewArcOnLayer(layer, Arc->X, Arc->Y,
-															Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
-															Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND | ExtraFlag)));
 }
 
 /* ---------------------------------------------------------------------------
@@ -145,10 +133,10 @@ static void *AddArcToBuffer(LayerTypePtr Layer, ArcTypePtr Arc)
  */
 static void *AddTextToBuffer(LayerTypePtr Layer, TextTypePtr Text)
 {
-	LayerTypePtr layer = &Dest->Layer[GetLayerNumber(Source, Layer)];
+	LayerTypePtr layer = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, Layer)];
 
 	return (CreateNewText(layer, &PCB->Font, Text->X, Text->Y,
-												Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, ExtraFlag)));
+												Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, pcb_buffer_extraflg)));
 }
 
 /* ---------------------------------------------------------------------------
@@ -156,7 +144,7 @@ static void *AddTextToBuffer(LayerTypePtr Layer, TextTypePtr Text)
  */
 static void *AddPolygonToBuffer(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
-	LayerTypePtr layer = &Dest->Layer[GetLayerNumber(Source, Layer)];
+	LayerTypePtr layer = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, Layer)];
 	PolygonTypePtr polygon;
 
 	polygon = CreateNewPolygon(layer, Polygon->Flags);
@@ -170,7 +158,7 @@ static void *AddPolygonToBuffer(LayerTypePtr Layer, PolygonTypePtr Polygon)
 		layer->polygon_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(layer->polygon_tree, (BoxType *) polygon, 0);
 
-	CLEAR_FLAG(PCB_FLAG_FOUND | ExtraFlag, polygon);
+	CLEAR_FLAG(PCB_FLAG_FOUND | pcb_buffer_extraflg, polygon);
 	return (polygon);
 }
 
@@ -181,23 +169,23 @@ static void *AddElementToBuffer(ElementTypePtr Element)
 {
 	ElementTypePtr element;
 
-	element = GetElementMemory(Dest);
-	CopyElementLowLevel(Dest, element, Element, pcb_false, 0, 0);
-	CLEAR_FLAG(ExtraFlag, element);
-	if (ExtraFlag) {
+	element = GetElementMemory(pcb_buffer_dest);
+	CopyElementLowLevel(pcb_buffer_dest, element, Element, pcb_false, 0, 0);
+	CLEAR_FLAG(pcb_buffer_extraflg, element);
+	if (pcb_buffer_extraflg) {
 		ELEMENTTEXT_LOOP(element);
 		{
-			CLEAR_FLAG(ExtraFlag, text);
+			CLEAR_FLAG(pcb_buffer_extraflg, text);
 		}
 		END_LOOP;
 		PIN_LOOP(element);
 		{
-			CLEAR_FLAG(PCB_FLAG_FOUND | ExtraFlag, pin);
+			CLEAR_FLAG(PCB_FLAG_FOUND | pcb_buffer_extraflg, pin);
 		}
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			CLEAR_FLAG(PCB_FLAG_FOUND | ExtraFlag, pad);
+			CLEAR_FLAG(PCB_FLAG_FOUND | pcb_buffer_extraflg, pad);
 		}
 		END_LOOP;
 	}
@@ -209,18 +197,18 @@ static void *AddElementToBuffer(ElementTypePtr Element)
  */
 static void *MoveViaToBuffer(PinType * via)
 {
-	RestoreToPolygon(Source, PCB_TYPE_VIA, via, via);
+	RestoreToPolygon(pcb_buffer_src, PCB_TYPE_VIA, via, via);
 
-	r_delete_entry(Source->via_tree, (BoxType *) via);
+	r_delete_entry(pcb_buffer_src->via_tree, (BoxType *) via);
 	pinlist_remove(via);
-	pinlist_append(&Dest->Via, via);
+	pinlist_append(&pcb_buffer_dest->Via, via);
 
 	CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, via);
 
-	if (!Dest->via_tree)
-		Dest->via_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Dest->via_tree, (BoxType *) via, 0);
-	ClearFromPolygon(Dest, PCB_TYPE_VIA, via, via);
+	if (!pcb_buffer_dest->via_tree)
+		pcb_buffer_dest->via_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(pcb_buffer_dest->via_tree, (BoxType *) via, 0);
+	ClearFromPolygon(pcb_buffer_dest, PCB_TYPE_VIA, via, via);
 	return via;
 }
 
@@ -229,16 +217,16 @@ static void *MoveViaToBuffer(PinType * via)
  */
 static void *MoveRatToBuffer(RatType * rat)
 {
-	r_delete_entry(Source->rat_tree, (BoxType *) rat);
+	r_delete_entry(pcb_buffer_src->rat_tree, (BoxType *) rat);
 
 	ratlist_remove(rat);
-	ratlist_append(&Dest->Rat, rat);
+	ratlist_append(&pcb_buffer_dest->Rat, rat);
 
 	CLEAR_FLAG(PCB_FLAG_FOUND, rat);
 
-	if (!Dest->rat_tree)
-		Dest->rat_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Dest->rat_tree, (BoxType *) rat, 0);
+	if (!pcb_buffer_dest->rat_tree)
+		pcb_buffer_dest->rat_tree = r_create_tree(NULL, 0, 0);
+	r_insert_entry(pcb_buffer_dest->rat_tree, (BoxType *) rat, 0);
 	return rat;
 }
 
@@ -247,9 +235,9 @@ static void *MoveRatToBuffer(RatType * rat)
  */
 static void *MoveLineToBuffer(LayerType * layer, LineType * line)
 {
-	LayerTypePtr lay = &Dest->Layer[GetLayerNumber(Source, layer)];
+	LayerTypePtr lay = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, layer)];
 
-	RestoreToPolygon(Source, PCB_TYPE_LINE, layer, line);
+	RestoreToPolygon(pcb_buffer_src, PCB_TYPE_LINE, layer, line);
 	r_delete_entry(layer->line_tree, (BoxType *) line);
 
 	linelist_remove(line);
@@ -260,30 +248,8 @@ static void *MoveLineToBuffer(LayerType * layer, LineType * line)
 	if (!lay->line_tree)
 		lay->line_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(lay->line_tree, (BoxType *) line, 0);
-	ClearFromPolygon(Dest, PCB_TYPE_LINE, lay, line);
+	ClearFromPolygon(pcb_buffer_dest, PCB_TYPE_LINE, lay, line);
 	return (line);
-}
-
-/* ---------------------------------------------------------------------------
- * moves an arc to buffer
- */
-static void *MoveArcToBuffer(LayerType * layer, ArcType * arc)
-{
-	LayerType *lay = &Dest->Layer[GetLayerNumber(Source, layer)];
-
-	RestoreToPolygon(Source, PCB_TYPE_ARC, layer, arc);
-	r_delete_entry(layer->arc_tree, (BoxType *) arc);
-
-	arclist_remove(arc);
-	arclist_append(&lay->Arc, arc);
-
-	CLEAR_FLAG(PCB_FLAG_FOUND, arc);
-
-	if (!lay->arc_tree)
-		lay->arc_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(lay->arc_tree, (BoxType *) arc, 0);
-	ClearFromPolygon(Dest, PCB_TYPE_ARC, lay, arc);
-	return (arc);
 }
 
 /* ---------------------------------------------------------------------------
@@ -291,10 +257,10 @@ static void *MoveArcToBuffer(LayerType * layer, ArcType * arc)
  */
 static void *MoveTextToBuffer(LayerType * layer, TextType * text)
 {
-	LayerType *lay = &Dest->Layer[GetLayerNumber(Source, layer)];
+	LayerType *lay = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, layer)];
 
 	r_delete_entry(layer->text_tree, (BoxType *) text);
-	RestoreToPolygon(Source, PCB_TYPE_TEXT, layer, text);
+	RestoreToPolygon(pcb_buffer_src, PCB_TYPE_TEXT, layer, text);
 
 	textlist_remove(text);
 	textlist_append(&lay->Text, text);
@@ -302,7 +268,7 @@ static void *MoveTextToBuffer(LayerType * layer, TextType * text)
 	if (!lay->text_tree)
 		lay->text_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(lay->text_tree, (BoxType *) text, 0);
-	ClearFromPolygon(Dest, PCB_TYPE_TEXT, lay, text);
+	ClearFromPolygon(pcb_buffer_dest, PCB_TYPE_TEXT, lay, text);
 	return (text);
 }
 
@@ -311,7 +277,7 @@ static void *MoveTextToBuffer(LayerType * layer, TextType * text)
  */
 static void *MovePolygonToBuffer(LayerType * layer, PolygonType * polygon)
 {
-	LayerType *lay = &Dest->Layer[GetLayerNumber(Source, layer)];
+	LayerType *lay = &pcb_buffer_dest->Layer[GetLayerNumber(pcb_buffer_src, layer)];
 
 	r_delete_entry(layer->polygon_tree, (BoxType *) polygon);
 
@@ -335,35 +301,35 @@ static void *MoveElementToBuffer(ElementType * element)
 	 * Delete the element from the source (remove it from trees,
 	 * restore to polygons)
 	 */
-	r_delete_element(Source, element);
+	r_delete_element(pcb_buffer_src, element);
 
 	elementlist_remove(element);
-	elementlist_append(&Dest->Element, element);
+	elementlist_append(&pcb_buffer_dest->Element, element);
 
 	PIN_LOOP(element);
 	{
-		RestoreToPolygon(Source, PCB_TYPE_PIN, element, pin);
+		RestoreToPolygon(pcb_buffer_src, PCB_TYPE_PIN, element, pin);
 		CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(element);
 	{
-		RestoreToPolygon(Source, PCB_TYPE_PAD, element, pad);
+		RestoreToPolygon(pcb_buffer_src, PCB_TYPE_PAD, element, pad);
 		CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, pad);
 	}
 	END_LOOP;
-	SetElementBoundingBox(Dest, element, &PCB->Font);
+	SetElementBoundingBox(pcb_buffer_dest, element, &PCB->Font);
 	/*
 	 * Now clear the from the polygons in the destination
 	 */
 	PIN_LOOP(element);
 	{
-		ClearFromPolygon(Dest, PCB_TYPE_PIN, element, pin);
+		ClearFromPolygon(pcb_buffer_dest, PCB_TYPE_PIN, element, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(element);
 	{
-		ClearFromPolygon(Dest, PCB_TYPE_PAD, element, pad);
+		ClearFromPolygon(pcb_buffer_dest, PCB_TYPE_PAD, element, pad);
 	}
 	END_LOOP;
 
@@ -402,10 +368,10 @@ void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, pcb_bool LeaveS
 	 * may change the 'valid' area for the cursor
 	 */
 	if (!LeaveSelected)
-		ExtraFlag = PCB_FLAG_SELECTED;
+		pcb_buffer_extraflg = PCB_FLAG_SELECTED;
 	notify_crosshair_change(pcb_false);
-	Source = PCB->Data;
-	Dest = Buffer->Data;
+	pcb_buffer_src = PCB->Data;
+	pcb_buffer_dest = Buffer->Data;
 	SelectedOperation(&AddBufferFunctions, pcb_false, PCB_TYPEMASK_ALL);
 
 	/* set origin to passed or current position */
@@ -418,7 +384,7 @@ void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, pcb_bool LeaveS
 		Buffer->Y = Crosshair.Y;
 	}
 	notify_crosshair_change(pcb_true);
-	ExtraFlag = 0;
+	pcb_buffer_extraflg = 0;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1220,8 +1186,8 @@ static void SwapBuffer(BufferTypePtr Buffer)
 void *MoveObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	/* setup local identifiers used by move operations */
-	Dest = Destination;
-	Source = Src;
+	pcb_buffer_dest = Destination;
+	pcb_buffer_src = Src;
 	return (ObjectOperation(&MoveBufferFunctions, Type, Ptr1, Ptr2, Ptr3));
 }
 
@@ -1231,8 +1197,8 @@ void *MoveObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, voi
 void *CopyObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	/* setup local identifiers used by Add operations */
-	Dest = Destination;
-	Source = Src;
+	pcb_buffer_dest = Destination;
+	pcb_buffer_src = Src;
 	return (ObjectOperation(&AddBufferFunctions, Type, Ptr1, Ptr2, Ptr3));
 }
 
