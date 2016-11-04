@@ -72,7 +72,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "plug_io.h"
 #include "find.h"
 #include "insert.h"
-#include "line.h"
 #include "mymem.h"
 #include "misc.h"
 #include "layer.h"
@@ -98,6 +97,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "hid_flags.h"
 #include "route_style.h"
 #include "compat_nls.h"
+#include "obj_line.h"
 
 static pcb_bool ignore_layer_update;
 

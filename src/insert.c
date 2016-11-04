@@ -35,7 +35,6 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "line.h"
 #include "misc.h"
 #include "polygon.h"
 #include "search.h"

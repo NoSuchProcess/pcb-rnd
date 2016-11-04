@@ -29,6 +29,15 @@
 #ifndef PCB_OBJ_LINE_H
 #define PCB_OBJ_LINE_H
 
+/* crosshair: */
+typedef struct {								/* current marked line */
+	PointType Point1,							/* start- and end-position */
+	  Point2;
+	long int State;
+	pcb_bool draw;
+} AttachedLineType, *AttachedLineTypePtr;
+
+
 LineType *GetLineMemory(LayerType * layer);
 void RemoveFreeLine(LineType * data);
 
@@ -38,6 +47,12 @@ void pcb_add_line_on_layer(LayerType *Layer, LineType *Line);
 void SetLineBoundingBox(LineTypePtr Line);
 void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line);
 void RotateLineLowLevel(LineTypePtr Line, Coord X, Coord Y, unsigned Number);
+
+/*** DRC enforcement (obj_line_drcenf.c) ***/
+void AdjustAttachedLine(void);
+void AdjustTwoLine(pcb_bool);
+void FortyFiveLine(AttachedLineTypePtr);
+void EnforceLineDRC(void);
 
 
 #define LINE_LOOP(layer) do {                                       \

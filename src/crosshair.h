@@ -33,13 +33,7 @@
 #include "rubberband.h"
 #include "vtonpoint.h"
 #include "hid.h"
-
-typedef struct {								/* current marked line */
-	PointType Point1,							/* start- and end-position */
-	  Point2;
-	long int State;
-	pcb_bool draw;
-} AttachedLineType, *AttachedLineTypePtr;
+#include "obj_line.h"
 
 typedef struct {								/* currently marked block */
 	PointType Point1,							/* start- and end-position */

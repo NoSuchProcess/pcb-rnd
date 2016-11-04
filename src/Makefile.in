@@ -71,7 +71,6 @@ put /local/pcb/OBJS [@
 	intersect.o
 	layer.o
 	library.o
-	line.o
 	list_conf.o
 	list_element.o
 	list_text.o
@@ -93,6 +92,7 @@ put /local/pcb/OBJS [@
 	obj_arc.o
 	obj_arc_list.o
 	obj_line.o
+	obj_line_drcenf.o
 	obj_line_list.o
 	paths.o
 	pcb-printf.o
