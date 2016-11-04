@@ -62,7 +62,6 @@ static void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
-static void *ChangeTextSize(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr);
@@ -73,7 +72,6 @@ static void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangeViaName(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr);
-static void *ChangeTextName(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *ChangeElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
 static void *SetElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ClrElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
@@ -95,9 +93,6 @@ static void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
 static void *ChangeViaThermal(pcb_opctx_t *ctx, PinTypePtr);
 static void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-static void *ChangeTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
-static void *SetTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
-static void *ClrTextJoin(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *ChangePolyClear(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 
 /* ---------------------------------------------------------------------------
@@ -833,32 +828,6 @@ static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, Polygo
 }
 
 /* ---------------------------------------------------------------------------
- * changes the scaling factor of a text object
- * returns pcb_true if changed
- */
-static void *ChangeTextSize(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
-		: Text->Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
-		return (NULL);
-	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE && value != Text->Scale) {
-		AddObjectToSizeUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
-		EraseText(Layer, Text);
-		r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-		Text->Scale = value;
-		SetTextBoundingBox(&PCB->Font, Text);
-		r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-		DrawText(Layer, Text);
-		return (Text);
-	}
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
  * changes the scaling factor of an element's outline
  * returns pcb_true if changed
  */
@@ -1066,30 +1035,6 @@ static void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* ---------------------------------------------------------------------------
- * sets data of a text object and calculates bounding box
- * memory must have already been allocated
- * the one for the new string is allocated
- * returns pcb_true if the string has been changed
- */
-static void *ChangeTextName(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	char *old = Text->TextString;
-
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
-		return (NULL);
-	EraseText(Layer, Text);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	Text->TextString = ctx->chgname.new_name;
-
-	/* calculate size of the bounding box */
-	SetTextBoundingBox(&PCB->Font, Text);
-	r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	DrawText(Layer, Text);
-	return (old);
-}
-
-/* ---------------------------------------------------------------------------
  * changes the name of a layout; memory has to be already allocated
  */
 pcb_bool ChangeLayoutName(char *Name)
@@ -1125,48 +1070,6 @@ pcb_bool ChangeLayerName(LayerTypePtr Layer, char *Name)
 	CURRENT->Name = Name;
 	hid_action("LayersChanged");
 	return (pcb_true);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the clearance flag of a text
- */
-static void *ChangeTextJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
-		return (NULL);
-	EraseText(Layer, Text);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Text)) {
-		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_false);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	}
-	AddObjectToFlagUndoList(PCB_TYPE_LINE, Layer, Text, Text);
-	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Text);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Text)) {
-		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_true);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	}
-	DrawText(Layer, Text);
-	return (Text);
-}
-
-/* ---------------------------------------------------------------------------
- * sets the clearance flag of a text
- */
-static void *SetTextJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
-		return (NULL);
-	return ChangeTextJoin(ctx, Layer, Text);
-}
-
-/* ---------------------------------------------------------------------------
- * clears the clearance flag of a text
- */
-static void *ClrTextJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
-		return (NULL);
-	return ChangeTextJoin(ctx, Layer, Text);
 }
 
 /* ---------------------------------------------------------------------------

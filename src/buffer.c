@@ -55,12 +55,10 @@
  */
 static void *AddViaToBuffer(pcb_opctx_t *ctx, PinTypePtr);
 static void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr);
-static void *AddTextToBuffer(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *AddPolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveViaToBuffer(pcb_opctx_t *ctx, PinTypePtr);
 static void *MoveRatToBuffer(pcb_opctx_t *ctx, RatTypePtr);
-static void *MoveTextToBuffer(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *MovePolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *MoveElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
 static void SwapBuffer(BufferTypePtr);
@@ -104,17 +102,6 @@ static void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr Rat)
 	return (CreateNewRat(ctx->buffer.dst, Rat->Point1.X, Rat->Point1.Y,
 											 Rat->Point2.X, Rat->Point2.Y, Rat->group1,
 											 Rat->group2, Rat->Thickness, MaskFlags(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
-}
-
-/* ---------------------------------------------------------------------------
- * copies a text to buffer
- */
-static void *AddTextToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	LayerTypePtr layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
-
-	return (CreateNewText(layer, &PCB->Font, Text->X, Text->Y,
-												Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, ctx->buffer.extraflg)));
 }
 
 /* ---------------------------------------------------------------------------
@@ -206,26 +193,6 @@ static void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat)
 		ctx->buffer.dst->rat_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(ctx->buffer.dst->rat_tree, (BoxType *) rat, 0);
 	return rat;
-}
-
-/* ---------------------------------------------------------------------------
- * moves a text to buffer without allocating memory for the name
- */
-static void *MoveTextToBuffer(pcb_opctx_t *ctx, LayerType * layer, TextType * text)
-{
-	LayerType *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
-
-	r_delete_entry(layer->text_tree, (BoxType *) text);
-	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_TEXT, layer, text);
-
-	textlist_remove(text);
-	textlist_append(&lay->Text, text);
-
-	if (!lay->text_tree)
-		lay->text_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(lay->text_tree, (BoxType *) text, 0);
-	ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_TEXT, lay, text);
-	return (text);
 }
 
 /* ---------------------------------------------------------------------------

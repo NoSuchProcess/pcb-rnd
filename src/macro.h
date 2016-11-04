@@ -71,12 +71,6 @@
 #define	VALUE_TEXT(e)		((e)->Name[VALUE_INDEX])
 
 /* ---------------------------------------------------------------------------
- *  Determines if text is actually visible
- */
-#define TEXT_IS_VISIBLE(b, l, t) \
-	((l)->On)
-
-/* ---------------------------------------------------------------------------
  *  Determines if object is on front or back
  */
 #define FRONT(o)	\
@@ -151,11 +145,6 @@
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {
 
-#define TEXT_LOOP(layer) do {                                       \
-  TextType *text;                                                   \
-  gdl_iterator_t __it__;                                            \
-  linelist_foreach(&(layer)->Text, &__it__, text) {
-
 #define POLYGON_LOOP(layer) do {                                    \
   PolygonType *polygon;                                             \
   gdl_iterator_t __it__;                                            \
@@ -199,21 +188,6 @@
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
 		POLYGON_LOOP(layer)
-
-#define	ALLTEXT_LOOP(top)	do {		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
-	{ \
-		TEXT_LOOP(layer)
-
-#define	VISIBLETEXT_LOOP(board) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (board)->Data->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
-	{ \
-                TEXT_LOOP(layer);                                      \
-                  if (TEXT_IS_VISIBLE((board), layer, text))
 
 #define	VISIBLEPOLYGON_LOOP(top) do	{	\
 	pcb_cardinal_t		l;			\

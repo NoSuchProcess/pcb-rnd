@@ -50,7 +50,6 @@
  */
 static void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr);
 static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr);
-static void *DestroyText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *DestroyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr);
 static void *RemoveVia(pcb_opctx_t *ctx, PinTypePtr);
@@ -60,7 +59,6 @@ static void *RemovePolygonContour(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr
 static void *RemovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
 
 static void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element);
-static void *RemoveText_op(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text);
 static void *RemovePolygon_op(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
 
 /* ---------------------------------------------------------------------------
@@ -169,19 +167,6 @@ static void *DestroyPolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTy
 }
 
 /* ---------------------------------------------------------------------------
- * destroys a text from a layer
- */
-static void *DestroyText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	free(Text->TextString);
-	r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
-
-	RemoveFreeText(Text);
-
-	return NULL;
-}
-
-/* ---------------------------------------------------------------------------
  * destroys a element
  */
 static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
@@ -256,32 +241,6 @@ static void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	return NULL;
-}
-
-/* ---------------------------------------------------------------------------
- * removes a text from a layer
- */
-static void *RemoveText_op(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	/* erase from screen */
-	if (Layer->On) {
-		EraseText(Layer, Text);
-		if (!ctx->remove.bulk)
-			Draw();
-	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
-	return NULL;
-}
-
-void *RemoveText(LayerTypePtr Layer, TextTypePtr Text)
-{
-	pcb_opctx_t ctx;
-
-	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_false;
-	ctx.remove.destroy_target = NULL;
-
-	return RemoveText_op(&ctx, Layer, Text);
 }
 
 /* ---------------------------------------------------------------------------

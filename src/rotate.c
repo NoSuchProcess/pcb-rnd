@@ -53,7 +53,6 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *RotateText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr);
 static void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr);
 
@@ -84,26 +83,6 @@ void RotatePointLowLevel(PointTypePtr Point, Coord X, Coord Y, unsigned Number)
 }
 
 /* ---------------------------------------------------------------------------
- * rotates a text in 90 degree steps
- * only the bounding box is rotated, text rotation itself
- * is done by the drawing routines
- */
-void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number)
-{
-	pcb_uint8_t number;
-
-	number = TEST_FLAG(PCB_FLAG_ONSOLDER, Text) ? (4 - Number) & 3 : Number;
-	RotateBoxLowLevel(&Text->BoundingBox, X, Y, Number);
-	ROTATE(Text->X, Text->Y, X, Y, Number);
-
-	/* set new direction, 0..3,
-	 * 0-> to the right, 1-> straight up,
-	 * 2-> to the left, 3-> straight down
-	 */
-	Text->Direction = ((Text->Direction + number) & 0x03);
-}
-
-/* ---------------------------------------------------------------------------
  * rotates a polygon in 90 degree steps
  */
 void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Number)
@@ -114,22 +93,6 @@ void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Nu
 	}
 	END_LOOP;
 	RotateBoxLowLevel(&Polygon->BoundingBox, X, Y, Number);
-}
-
-/* ---------------------------------------------------------------------------
- * rotates a text object and redraws it
- */
-static void *RotateText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	EraseText(Layer, Text);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
-	RotateTextLowLevel(Text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	DrawText(Layer, Text);
-	Draw();
-	return (Text);
 }
 
 /* ---------------------------------------------------------------------------

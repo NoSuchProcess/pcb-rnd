@@ -55,7 +55,6 @@ PinTypePtr GetPinMemory(ElementTypePtr);
 PadTypePtr GetPadMemory(ElementTypePtr);
 PinTypePtr GetViaMemory(DataTypePtr);
 RatTypePtr GetRatMemory(DataTypePtr);
-TextTypePtr GetTextMemory(LayerTypePtr);
 PolygonTypePtr GetPolygonMemory(LayerTypePtr);
 PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr);
 pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr);
@@ -65,7 +64,6 @@ void FreeElementMemory(ElementTypePtr);
 
 char *StripWhiteSpaceAndDup(const char *);
 
-void RemoveFreeText(TextType * data);
 void RemoveFreePolygon(PolygonType * data);
 void RemoveFreePin(PinType * data);
 void RemoveFreePad(PadType * data);

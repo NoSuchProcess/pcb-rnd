@@ -127,25 +127,6 @@ void RemoveFreeRat(RatType * data)
 }
 
 /* ---------------------------------------------------------------------------
- * get next slot for a text object, allocates memory if necessary
- */
-TextTypePtr GetTextMemory(LayerType * layer)
-{
-	TextType *new_obj;
-
-	new_obj = calloc(sizeof(TextType), 1);
-	textlist_append(&layer->Text, new_obj);
-
-	return new_obj;
-}
-
-void RemoveFreeText(TextType * data)
-{
-	textlist_remove(data);
-	free(data);
-}
-
-/* ---------------------------------------------------------------------------
  * get next slot for a polygon object, allocates memory if necessary
  */
 PolygonType *GetPolygonMemory(LayerType * layer)

@@ -49,7 +49,6 @@
  * some local prototypes
  */
 static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr);
-static void *CopyText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr);
 
@@ -167,20 +166,6 @@ static void *CopyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 	DrawVia(via);
 	AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 	return (via);
-}
-
-/* ---------------------------------------------------------------------------
- * copies a text
- */
-static void *CopyText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	TextTypePtr text;
-
-	text = CreateNewText(Layer, &PCB->Font, Text->X + ctx->copy.DeltaX,
-											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, PCB_FLAG_FOUND));
-	DrawText(Layer, text);
-	AddObjectToCreateUndoList(PCB_TYPE_TEXT, Layer, text, text);
-	return (text);
 }
 
 /* ---------------------------------------------------------------------------

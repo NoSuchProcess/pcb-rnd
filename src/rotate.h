@@ -92,7 +92,6 @@ do { \
 
 
 void RotateBoxLowLevel(BoxTypePtr, Coord, Coord, unsigned);
-void RotateTextLowLevel(TextTypePtr, Coord, Coord, unsigned);
 void RotatePolygonLowLevel(PolygonTypePtr, Coord, Coord, unsigned);
 void RotateElementLowLevel(DataTypePtr, ElementTypePtr, Coord, Coord, unsigned);
 void *RotateObject(int, void *, void *, void *, Coord, Coord, unsigned);

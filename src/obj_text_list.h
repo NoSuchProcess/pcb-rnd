@@ -20,8 +20,10 @@
  *
  */
 
-#ifndef LIST_TEXT_H
-#define LIST_TEXT_H
+#ifndef PCB_OBJ_TEXT_LIST_H
+#define PCB_OBJ_TEXT_LIST_H
+
+#include "obj_text.h"
 
 /* List of Text */
 #define TDL(x)      textlist_ ## x

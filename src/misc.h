@@ -43,8 +43,6 @@ void CountHoles(int *, int *, const BoxType *);
 BoxTypePtr GetDataBoundingBox(DataTypePtr);
 void SetFontInfo(FontTypePtr);
 
-void SetTextBoundingBox(FontTypePtr, TextTypePtr);
-
 BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
 
 char *UniqueElementName(DataTypePtr, char *);

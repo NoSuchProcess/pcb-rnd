@@ -332,49 +332,6 @@ void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon)
 }
 
 /* ---------------------------------------------------------------------------
- * creates a new text on a layer
- */
-TextTypePtr
-CreateNewText(LayerTypePtr Layer, FontTypePtr PCBFont,
-							Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags)
-{
-	TextType *text;
-
-	if (TextString == NULL)
-		return NULL;
-
-	text = GetTextMemory(Layer);
-	if (text == NULL)
-		return NULL;
-
-	/* copy values, width and height are set by drawing routine
-	 * because at this point we don't know which symbols are available
-	 */
-	text->X = X;
-	text->Y = Y;
-	text->Direction = Direction;
-	text->Flags = Flags;
-	text->Scale = Scale;
-	text->TextString = pcb_strdup(TextString);
-
-	pcb_add_text_on_layer(Layer, text, PCBFont);
-
-	return (text);
-}
-
-void pcb_add_text_on_layer(LayerType *Layer, TextType *text, FontType *PCBFont)
-{
-	/* calculate size of the bounding box */
-	SetTextBoundingBox(PCBFont, text);
-	text->ID = ID++;
-	if (!Layer->text_tree)
-		Layer->text_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Layer->text_tree, (BoxTypePtr) text, 0);
-}
-
-
-
-/* ---------------------------------------------------------------------------
  * creates a new polygon on a layer
  */
 PolygonTypePtr CreateNewPolygon(LayerTypePtr Layer, FlagType Flags)

@@ -60,11 +60,9 @@
 static void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveVia(pcb_opctx_t *ctx, PinTypePtr);
-static void *MoveText(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *MovePolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
 static void *MoveRatToLayer(pcb_opctx_t *ctx, RatTypePtr);
-static void *MoveTextToLayer(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
 static void *MovePolygonToLayer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 
 /* ---------------------------------------------------------------------------
@@ -226,26 +224,6 @@ static void *MoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* ---------------------------------------------------------------------------
- * moves a text object
- */
-static void *MoveText(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
-{
-	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	r_delete_entry(Layer->text_tree, (BoxType *) Text);
-	if (Layer->On) {
-		EraseText(Layer, Text);
-		MOVE_TEXT_LOWLEVEL(Text, ctx->move.dx, ctx->move.dy);
-		DrawText(Layer, Text);
-		Draw();
-	}
-	else
-		MOVE_TEXT_LOWLEVEL(Text, ctx->move.dx, ctx->move.dy);
-	r_insert_entry(Layer->text_tree, (BoxType *) Text, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	return (Text);
-}
-
-/* ---------------------------------------------------------------------------
  * low level routine to move a polygon
  */
 void MovePolygonLowLevel(PolygonTypePtr Polygon, Coord DX, Coord DY)
@@ -324,54 +302,6 @@ static void *MoveRatToLayer(pcb_opctx_t *ctx, RatType * Rat)
 	DrawLine(ctx->move.dst_layer, newone);
 	Draw();
 	return (newone);
-}
-
-/* ---------------------------------------------------------------------------
- * moves a text object between layers; lowlevel routines
- */
-static void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, TextType * text, LayerType * Destination)
-{
-	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Source, text);
-	r_delete_entry(Source->text_tree, (BoxType *) text);
-
-	textlist_remove(text);
-	textlist_append(&Destination->Text, text);
-
-	if (GetLayerGroupNumberByNumber(solder_silk_layer) == GetLayerGroupNumberByPointer(Destination))
-		SET_FLAG(PCB_FLAG_ONSOLDER, text);
-	else
-		CLEAR_FLAG(PCB_FLAG_ONSOLDER, text);
-
-	/* re-calculate the bounding box (it could be mirrored now) */
-	SetTextBoundingBox(&PCB->Font, text);
-	if (!Destination->text_tree)
-		Destination->text_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Destination->text_tree, (BoxType *) text, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Destination, text);
-
-	return text;
-}
-
-/* ---------------------------------------------------------------------------
- * moves a text object between layers
- */
-static void *MoveTextToLayer(pcb_opctx_t *ctx, LayerType * layer, TextType * text)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, text)) {
-		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
-		return NULL;
-	}
-	if (ctx->move.dst_layer != layer) {
-		AddObjectToMoveToLayerUndoList(PCB_TYPE_TEXT, layer, text, text);
-		if (layer->On)
-			EraseText(layer, text);
-		text = MoveTextToLayerLowLevel(ctx, layer, text, ctx->move.dst_layer);
-		if (ctx->move.dst_layer->On)
-			DrawText(ctx->move.dst_layer, text);
-		if (layer->On || ctx->move.dst_layer->On)
-			Draw();
-	}
-	return text;
 }
 
 /* ---------------------------------------------------------------------------
