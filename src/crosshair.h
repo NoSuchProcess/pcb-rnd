@@ -34,6 +34,7 @@
 #include "vtonpoint.h"
 #include "hid.h"
 #include "obj_line.h"
+#include "obj_poly.h"
 
 typedef struct {								/* currently marked block */
 	PointType Point1,							/* start- and end-position */

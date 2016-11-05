@@ -6,6 +6,7 @@
 
 #include "obj_pinvia.h"
 #include "obj_pad.h"
+#include "obj_poly.h"
 
 static void fill_contour(hidGC gc, PLINE * pl)
 {

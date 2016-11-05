@@ -23,6 +23,8 @@
 #ifndef LIST_POLY_H
 #define LIST_POLY_H
 
+#include "obj_poly.h"
+
 /* List of Lines */
 #define TDL(x)      polylist_ ## x
 #define TDL_LIST_T  polylist_t

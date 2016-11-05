@@ -32,6 +32,22 @@
 #include "global_objs.h"
 #include "obj_common.h"
 
+struct polygon_st  {           /* holds information about a polygon */
+	ANYOBJECTFIELDS;
+	pcb_cardinal_t PointN;       /* number of points in polygon */
+	pcb_cardinal_t PointMax;     /* max number from malloc() */
+	POLYAREA *Clipped;           /* the clipped region of this polygon */
+	PLINE *NoHoles;              /* the polygon broken into hole-less regions */
+	int NoHolesValid;            /* Is the NoHoles polygon up to date? */
+	PointTypePtr Points;         /* data */
+	pcb_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
+	pcb_cardinal_t HoleIndexN;   /* number of holes in polygon */
+	pcb_cardinal_t HoleIndexMax; /* max number from malloc() */
+	gdl_elem_t link;             /* a text is in a list of a layer */
+};
+
+
+
 PolygonType *GetPolygonMemory(LayerType * layer);
 void RemoveFreePolygon(PolygonType * data);
 PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr Polygon);

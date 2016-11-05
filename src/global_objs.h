@@ -34,6 +34,11 @@
 #include "global_typedefs.h"
 #include "polyarea.h"
 
+struct pcb_point_s {   /* a line/polygon point */
+	Coord X, Y, X2, Y2;   /* so Point type can be cast as BoxType */
+	long int ID;
+};
+
 struct pcb_box_s {								/* a bounding box */
 	Coord X1, Y1;									/* upper left */
 	Coord X2, Y2;									/* and lower right corner */
@@ -71,29 +76,10 @@ typedef struct {
 	ANYOBJECTFIELDS;
 } AnyObjectType, *AnyObjectTypePtr;
 
-struct pcb_point_s {   /* a line/polygon point */
-	Coord X, Y, X2, Y2;   /* so Point type can be cast as BoxType */
-	long int ID;
-};
-
 /* Lines, rats, pads, etc.  */
 typedef struct {
 	ANYLINEFIELDS;
 } AnyLineObjectType, *AnyLineObjectTypePtr;
-
-struct polygon_st {							/* holds information about a polygon */
-	ANYOBJECTFIELDS;
-	pcb_cardinal_t PointN,							/* number of points in polygon */
-	  PointMax;										/* max number from malloc() */
-	POLYAREA *Clipped;						/* the clipped region of this polygon */
-	PLINE *NoHoles;								/* the polygon broken into hole-less regions */
-	int NoHolesValid;							/* Is the NoHoles polygon up to date? */
-	PointTypePtr Points;					/* data */
-	pcb_cardinal_t *HoleIndex;					/* Index of hole data within the Points array */
-	pcb_cardinal_t HoleIndexN;					/* number of holes in polygon */
-	pcb_cardinal_t HoleIndexMax;				/* max number from malloc() */
-	gdl_elem_t link;              /* a text is in a list of a layer */
-};
 
 /* This is the extents of a Pin or Via, depending on whether it's a
    hole or not.  */
