@@ -39,7 +39,6 @@
 #include "const.h"
 #include "netlist.h"
 #include "polygon.h"
-#include "misc.h" /* for flag setting */
 #include "misc_util.h" /* for distance calculations */
 #include "conf_core.h"
 #include "move.h"

@@ -3,7 +3,6 @@
 #include <assert.h>
 #include <unistd.h>
 #include <gpmi.h>
-#include "src/misc.h"
 #include "src/misc_util.h"
 #include "src/event.h"
 #include "gpmi_plugin.h"

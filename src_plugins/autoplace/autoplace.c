@@ -52,7 +52,6 @@
 #include "intersect.h"
 #include "rtree.h"
 #include "macro.h"
-#include "misc.h"
 #include "move.h"
 #include "rats.h"
 #include "remove.h"

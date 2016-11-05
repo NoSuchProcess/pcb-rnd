@@ -33,7 +33,6 @@
 #include "error.h"
 #include "conf.h"
 #include "box.h"
-#include "misc.h"
 
 RouteStyleType pcb_custom_route_style;
 

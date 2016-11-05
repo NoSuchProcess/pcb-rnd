@@ -36,7 +36,6 @@
 #include "box.h"
 #include "polygon.h"
 #include "compat_misc.h"
-#include "misc.h"
 
 #include "obj_pad.h"
 #include "obj_pad_list.h"

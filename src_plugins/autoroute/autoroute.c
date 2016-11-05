@@ -65,7 +65,6 @@
 #include "find.h"
 #include "heap.h"
 #include "rtree.h"
-#include "misc.h"
 #include "mtspace.h"
 #include "polygon.h"
 #include "rats.h"

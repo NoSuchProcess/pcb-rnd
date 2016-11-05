@@ -40,7 +40,6 @@
 #include "drill.h"
 #include "error.h"
 #include "search.h"
-#include "misc.h"
 #include "rats.h"
 #include "rtree.h"
 #include "flag_str.h"

@@ -35,7 +35,6 @@
 #include "error.h"
 #include "plug_io.h"
 #include "find.h"
-#include "misc.h"
 #include "polygon.h"
 #include "search.h"
 #include "set.h"

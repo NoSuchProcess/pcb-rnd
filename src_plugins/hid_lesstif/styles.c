@@ -11,7 +11,6 @@
 #include "compat_misc.h"
 #include "data.h"
 #include "set.h"
-#include "misc.h"
 #include "pcb-printf.h"
 
 #include "hid.h"

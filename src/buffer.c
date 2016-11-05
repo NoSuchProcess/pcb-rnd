@@ -35,7 +35,6 @@
 #include "copy.h"
 #include "data.h"
 #include "plug_io.h"
-#include "misc.h"
 #include "misc_util.h"
 #include "polygon.h"
 #include "rotate.h"

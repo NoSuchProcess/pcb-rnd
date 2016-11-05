@@ -38,7 +38,6 @@
 #include "data.h"
 #include "draw.h"
 #include "error.h"
-#include "misc.h"
 #include "move.h"
 #include "polygon.h"
 #include "rtree.h"

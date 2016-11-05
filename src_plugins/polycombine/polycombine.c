@@ -32,7 +32,6 @@
 #include "assert.h"
 #include "flag_str.h"
 #include "find.h"
-#include "misc.h"
 #include "draw.h"
 #include "undo.h"
 #include "plugins.h"

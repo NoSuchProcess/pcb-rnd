@@ -28,7 +28,6 @@
 #include "data.h"
 #include "query_access.h"
 #include "query_exec.h"
-#include "misc.h"
 #include "layer.h"
 #include "fields_sphash.h"
 

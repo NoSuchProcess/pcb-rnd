@@ -36,7 +36,6 @@
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
-#include "misc.h"
 #include "polygon.h"
 #include "select.h"
 #include "undo.h"

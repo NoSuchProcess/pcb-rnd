@@ -38,7 +38,6 @@
 #include <time.h>
 
 #include "data.h"
-#include "misc.h"
 #include "error.h"
 #include "buffer.h"
 

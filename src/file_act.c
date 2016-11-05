@@ -34,7 +34,6 @@
 #include "set.h"
 #include "plug_io.h"
 #include "plug_import.h"
-#include "misc.h"
 #include "remove.h"
 #include "draw.h"
 #include "find.h"

@@ -42,7 +42,6 @@
 #include "rotate.h"
 #include "set.h"
 #include "copy.h"
-#include "misc.h"
 #include "rubberband.h"
 #include "buffer.h"
 #include "remove.h"

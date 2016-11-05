@@ -23,7 +23,6 @@
 #include "config.h"
 #include "conf.h"
 #include "board.h"
-#include "misc.h"
 #include "compat_misc.h"
 
 #define LISTSEP " [[pcb-rnd]] "

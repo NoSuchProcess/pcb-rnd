@@ -65,7 +65,6 @@
 #include "draw.h"
 #include "error.h"
 #include "find.h"
-#include "misc.h"
 #include "rtree.h"
 #include "polygon.h"
 #include "search.h"

@@ -37,7 +37,6 @@
 #include "draw.h"
 #include "search.h"
 #include "polygon.h"
-#include "misc.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

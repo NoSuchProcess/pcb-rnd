@@ -42,7 +42,6 @@
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"
-#include "misc.h"
 #include "rats.h"
 #include "set.h"
 #include "plugins.h"

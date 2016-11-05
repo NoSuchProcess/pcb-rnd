@@ -34,7 +34,6 @@
 #include "draw.h"
 #include "set.h"
 #include "polygon.h"
-#include "misc.h"
 #include "plugins.h"
 #include "hid_actions.h"
 #include "obj_poly.h"

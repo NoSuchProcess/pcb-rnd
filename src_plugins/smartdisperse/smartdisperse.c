@@ -29,7 +29,6 @@
 #include "board.h"
 #include "data.h"
 #include "hid.h"
-#include "misc.h"
 #include "rtree.h"
 #include "undo.h"
 #include "rats.h"

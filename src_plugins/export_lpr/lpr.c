@@ -11,7 +11,6 @@
 #include <assert.h>
 
 #include "data.h"
-#include "misc.h"
 #include "plugins.h"
 #include "compat_misc.h"
 

@@ -8,7 +8,6 @@
 #include "board.h"
 #include "hid.h"
 #include "data.h"
-#include "misc.h"
 #include "layer.h"
 #include "pcb-printf.h"
 #include "plugins.h"

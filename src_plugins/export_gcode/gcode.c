@@ -47,7 +47,6 @@
 #include "board.h"
 #include "error.h"
 #include "data.h"
-#include "misc.h"
 #include "rats.h"
 #include "hid_helper.h"
 #include "layer.h"

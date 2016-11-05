@@ -38,7 +38,6 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "stub_vendor.h"
-#include "misc.h"
 
 #include "obj_pinvia.h"
 #include "obj_pinvia_op.h"

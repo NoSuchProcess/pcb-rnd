@@ -36,7 +36,6 @@
 #include "data.h"
 #include "rats.h"
 #include "draw.h"
-#include "misc.h"
 #include "move.h"
 #include "polygon.h"
 #include "remove.h"

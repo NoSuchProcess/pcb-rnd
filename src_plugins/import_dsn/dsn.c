@@ -39,7 +39,6 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "board.h"
 #include "data.h"
 #include "error.h"
-#include "misc.h"
 #include "rats.h"
 #include "buffer.h"
 #include "change.h"

@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "layout.h"
-#include "src/misc.h"
 #include "src/draw.h"
 #include "src/conf_core.h"
 #include "src/layer.h"

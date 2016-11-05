@@ -10,7 +10,6 @@
 
 #include "compat_misc.h"
 #include "data.h"
-#include "misc.h"
 #include "set.h"
 #include "buffer.h"
 #include "vtptr.h"

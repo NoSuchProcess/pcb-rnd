@@ -39,7 +39,6 @@
 #include "select.h"
 #include "undo.h"
 #include "rats.h"
-#include "misc.h"
 #include "find.h"
 #include "layer.h"
 #include "compat_misc.h"

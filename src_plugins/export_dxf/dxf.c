@@ -183,7 +183,6 @@
 #include "board.h"
 #include "config.h"
 #include "data.h"
-#include "misc.h"
 #include "error.h"
 #include "draw.h"
 #include "hid_draw_helpers.h"

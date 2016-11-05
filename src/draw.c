@@ -35,7 +35,6 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "misc.h"
 #include "rotate.h"
 #include "rtree.h"
 #include "stub_draw_fab.h"

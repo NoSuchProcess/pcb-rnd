@@ -45,7 +45,6 @@
 #include "compat_fs.h"
 #include "compat_misc.h"
 #include "error.h"
-#include "misc.h"
 #include "conf.h"
 #include "conf_core.h"
 #include "compat_nls.h"

@@ -2,7 +2,6 @@
 #include <assert.h>
 #include "layout.h"
 #include "src/change.h"
-#include "src/misc.h"
 #include "src/move.h"
 #include "src/conf_core.h"
 #include "src/layer.h"

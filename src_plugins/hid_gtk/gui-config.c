@@ -39,7 +39,6 @@
 #include "plug_io.h"
 #include "error.h"
 #include "draw.h"
-#include "misc.h"
 #include "pcb-printf.h"
 #include "set.h"
 #include "hid_attrib.h"

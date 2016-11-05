@@ -37,7 +37,6 @@
 #include "compat_misc.h"
 #include "macro.h"
 #include "error.h"
-#include "misc.h"
 #include "misc_util.h"
 #include "layer.h"
 #include "vtptr.h"

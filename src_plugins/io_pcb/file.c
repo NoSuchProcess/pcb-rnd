@@ -45,7 +45,6 @@
 #include "plug_io.h"
 #include "hid.h"
 #include "layer.h"
-#include "misc.h"
 #include "move.h"
 #include "parse_common.h"
 #include "pcb-printf.h"

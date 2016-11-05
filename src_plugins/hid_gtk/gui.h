@@ -32,7 +32,6 @@
 #include "hid_cfg_input.h"
 
 #include "data.h"
-#include "misc.h"
 
 #include <gtk/gtk.h>
 #include "ghid-coord-entry.h"

@@ -11,7 +11,6 @@
 #include "board.h"
 #include "data.h"
 #include "layer.h"
-#include "misc.h"
 #include "pcb-printf.h"
 
 #include "hid.h"

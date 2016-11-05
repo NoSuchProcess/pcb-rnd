@@ -38,7 +38,6 @@
 #include "draw.h"
 #include "flag.h"
 #include "layer.h"
-#include "misc.h"
 #include "move.h"
 #include "remove.h"
 #include "rtree.h"

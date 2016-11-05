@@ -56,7 +56,6 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "misc.h"
 #include "move.h"
 #include "pcb-printf.h"
 #include "remove.h"

@@ -90,7 +90,6 @@ dicer output is used for HIDs which cannot render things with holes
 #include "set.h"
 #include "obj_pinvia_therm.h"
 #include "undo.h"
-#include "misc.h"
 #include "layer.h"
 #include "compat_nls.h"
 #include "obj_all.h"

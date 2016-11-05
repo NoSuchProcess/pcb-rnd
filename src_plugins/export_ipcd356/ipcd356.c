@@ -44,7 +44,6 @@
 #include "rats.h"
 #include "error.h"
 #include "find.h"
-#include "misc.h"
 #include "pcb-printf.h"
 #include "netlist.h"
 #include "conf_core.h"

@@ -32,7 +32,6 @@
 #include "plug_import.h"
 #include "conf_core.h"
 #include "error.h"
-#include "misc.h"
 #include "data.h"
 #include "rats_patch.h"
 #include "compat_misc.h"

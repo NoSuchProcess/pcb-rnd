@@ -40,7 +40,6 @@
 
 #include "board.h"
 #include "data.h"
-#include "misc.h"
 #include "error.h"
 #include "buffer.h"
 #include "misc_util.h"

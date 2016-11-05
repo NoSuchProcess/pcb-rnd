@@ -39,7 +39,6 @@
 #include "draw.h"
 #include "find.h"
 #include "insert.h"
-#include "misc.h"
 #include "move.h"
 #include "polygon.h"
 #include "remove.h"

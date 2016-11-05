@@ -31,7 +31,6 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
-#include "misc.h"
 #include "set.h"
 #include "plugins.h"
 #include "hid_actions.h"

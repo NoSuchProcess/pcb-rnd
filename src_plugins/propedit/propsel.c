@@ -27,7 +27,6 @@
 #include "props.h"
 #include "propsel.h"
 #include "change.h"
-#include "misc.h"
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "undo.h"

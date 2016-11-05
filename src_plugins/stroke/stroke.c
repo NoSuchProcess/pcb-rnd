@@ -38,7 +38,6 @@
 #include "undo.h"
 #include "set.h"
 #include "error.h"
-#include "misc.h"
 #include "plugins.h"
 #include "compat_nls.h"
 

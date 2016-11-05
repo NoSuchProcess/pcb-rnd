@@ -71,7 +71,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "plug_io.h"
 #include "find.h"
 #include "insert.h"
-#include "misc.h"
 #include "layer.h"
 #include "move.h"
 #include "pcb-printf.h"

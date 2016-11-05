@@ -40,7 +40,6 @@
 #include "board.h"
 #include "config.h"
 #include "data.h"
-#include "misc.h"
 #include "error.h"
 #include "buffer.h"
 #include "layer.h"

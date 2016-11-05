@@ -55,7 +55,6 @@
 #include "data.h"
 #include "error.h"
 #include "plug_io.h"
-#include "misc.h"
 #include "remove.h"
 #include "set.h"
 #include "paths.h"

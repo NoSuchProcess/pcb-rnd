@@ -35,7 +35,6 @@
 #include "board.h"
 #include "data.h"
 #include "find.h"
-#include "misc.h"
 #include "rtree.h"
 #include "obj_all.h"
 

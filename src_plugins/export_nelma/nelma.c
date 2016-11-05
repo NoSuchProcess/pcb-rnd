@@ -65,7 +65,6 @@
 #include "error.h"
 #include "data.h"
 #include "layer.h"
-#include "misc.h"
 #include "rats.h"
 #include "plugins.h"
 #include "hid_helper.h"
