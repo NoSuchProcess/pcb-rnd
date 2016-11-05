@@ -53,7 +53,6 @@
 #include <setjmp.h>
 #include <glib.h>
 
-#include "create.h"
 #include "board.h"
 #include "data.h"
 #include "draw.h"

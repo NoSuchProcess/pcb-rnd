@@ -33,7 +33,6 @@
 #include "conf_core.h"
 
 #include "board.h"
-#include "create.h"
 #include "data.h"
 #include "draw.h"
 #include "misc.h"

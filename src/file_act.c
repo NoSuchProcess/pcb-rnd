@@ -36,7 +36,6 @@
 #include "plug_import.h"
 #include "misc.h"
 #include "remove.h"
-#include "create.h"
 #include "draw.h"
 #include "find.h"
 #include "search.h"

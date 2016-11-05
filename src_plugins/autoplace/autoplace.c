@@ -190,7 +190,6 @@ static PointerListType collectSelectedElements()
 }
 
 #if 0														/* only for debugging box lists */
-#include "create.h"
 /* makes a line on the solder layer surrounding all boxes in blist */
 static void showboxes(BoxListTypePtr blist)
 {

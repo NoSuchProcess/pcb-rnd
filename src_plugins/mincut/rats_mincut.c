@@ -30,7 +30,6 @@
 #include <assert.h>
 
 #include "const.h"
-#include "create.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"

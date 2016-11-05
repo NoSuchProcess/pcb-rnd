@@ -34,7 +34,6 @@
 
 #include "board.h"
 #include "math_helper.h"
-#include "create.h"
 #include "data.h"
 #include "misc.h"
 #include "rtree.h"

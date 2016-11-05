@@ -690,11 +690,11 @@ char *pcb_text;
 #include "flag_str.h"
 #include "parse_common.h"
 #include "parse_y.h"
-#include "create.h"
 #include "plug_footprint.h"
 #include "attribs.h"
 #include "compat_misc.h"
 #include "compat_cc.h"
+#include "obj_common.h"
 
 #define YY_NO_INPUT
 

@@ -47,7 +47,6 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "set.h"
 #include "undo.h"
 #include "pcb-printf.h"
-#include "create.h"
 #include "polygon.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

@@ -38,7 +38,6 @@
 
 #include "buffer.h"
 #include "change.h"
-#include "create.h"
 #include "crosshair.h"
 #include "data.h"
 #include "error.h"

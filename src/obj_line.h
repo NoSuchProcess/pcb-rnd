@@ -52,7 +52,10 @@ void RemoveFreeLine(LineType * data);
 
 LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
 LineTypePtr CreateNewLineOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
+
+/* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_line_on_layer(LayerType *Layer, LineType *Line);
+
 void SetLineBoundingBox(LineTypePtr Line);
 void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line);
 void RotateLineLowLevel(LineTypePtr Line, Coord X, Coord Y, unsigned Number);

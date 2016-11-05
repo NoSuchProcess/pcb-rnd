@@ -35,7 +35,6 @@
 #include "data.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "create.h"
 #include "rtree.h"
 #include "math_helper.h"
 #include "box.h"

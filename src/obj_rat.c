@@ -35,7 +35,6 @@
 #include "layer.h"
 #include "conf_core.h"
 #include "undo.h"
-#include "create.h"
 #include "rtree.h"
 
 #include "obj_rat.h"

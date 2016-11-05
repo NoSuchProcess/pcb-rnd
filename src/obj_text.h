@@ -46,7 +46,10 @@ TextTypePtr GetTextMemory(LayerType * layer);
 void RemoveFreeText(TextType * data);
 
 TextTypePtr CreateNewText(LayerTypePtr Layer, FontTypePtr PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags);
+
+/* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_text_on_layer(LayerType *Layer, TextType *text, FontType *PCBFont);
+
 void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text);
 void *RemoveText(LayerTypePtr Layer, TextTypePtr Text);
 void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number);

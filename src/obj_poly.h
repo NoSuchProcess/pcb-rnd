@@ -66,6 +66,7 @@ void MovePolygonLowLevel(PolygonTypePtr Polygon, Coord DX, Coord DY);
 void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Number);
 PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr Dest, PolygonTypePtr Src);
 
+/* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon);
 
 #define POLYGON_LOOP(layer) do {                                    \

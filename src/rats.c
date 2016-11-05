@@ -32,7 +32,6 @@
 #include <assert.h>
 
 #include "board.h"
-#include "create.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"

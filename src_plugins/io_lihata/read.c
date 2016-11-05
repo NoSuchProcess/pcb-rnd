@@ -40,7 +40,6 @@
 #include "misc.h"
 #include "misc_util.h"
 #include "layer.h"
-#include "create.h"
 #include "vtptr.h"
 #include "common.h"
 #include "polygon.h"

@@ -37,7 +37,6 @@
 
 #include "win_place.h"
 
-#include "create.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"

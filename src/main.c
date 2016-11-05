@@ -37,7 +37,6 @@
 #include <locale.h>
 
 #include "board.h"
-#include "create.h"
 #include "error.h"
 #include "plug_io.h"
 #include "set.h"

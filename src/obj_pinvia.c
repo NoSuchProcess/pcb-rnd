@@ -36,7 +36,6 @@
 #include "math_helper.h"
 #include "conf_core.h"
 #include "polygon.h"
-#include "create.h"
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "stub_vendor.h"

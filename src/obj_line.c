@@ -43,7 +43,6 @@
 #include "move.h"
 #include "box.h"
 #include "compat_nls.h"
-#include "create.h"
 #include "compat_misc.h"
 #include "rotate.h"
 #include "obj_pinvia.h"

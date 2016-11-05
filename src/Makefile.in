@@ -37,7 +37,6 @@ put /local/pcb/OBJS [@
 	compat_lrealpath.o
 	compat_misc.o
 	copy.o
-	create.o
 	crosshair.o
 	data.o
 	draw.o
@@ -79,6 +78,7 @@ put /local/pcb/OBJS [@
 	netlist.o
 	netlist_act.o
 	object_act.o
+	obj_common.o
 	obj_any.o
 	obj_arc.o
 	obj_arc_list.o

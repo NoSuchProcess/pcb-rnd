@@ -40,7 +40,6 @@
 #include "compat_misc.h"
 #include "obj_poly.h"
 #include "rotate.h"
-#include "create.h"
 #include "rtree.h"
 #include "remove.h"
 #include "polygon.h"

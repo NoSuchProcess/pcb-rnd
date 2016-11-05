@@ -35,4 +35,16 @@ do { \
 	obj->link = __lnk__; \
 } while(0) \
 
+
+/* pcb_true during file loads, for example to allow overlapping vias.
+   pcb_false otherwise, to stop the user from doing normally dangerous
+   things.  */
+void CreateBeLenient(pcb_bool);
+extern pcb_bool pcb_create_be_lenient;
+
+void CreateIDBump(int min_id);
+void CreateIDReset(void);
+long int CreateIDGet(void);
+
+
 #endif

@@ -53,7 +53,10 @@ void ChangeArcAngles(LayerTypePtr Layer, ArcTypePtr a, Angle new_sa, Angle new_d
 void ChangeArcRadii(LayerTypePtr Layer, ArcTypePtr a, Coord new_width, Coord new_height);
 void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc);
 ArcType *CreateNewArcOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags);
+
+/* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc);
+
 void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number);
 
 #define	MOVE_ARC_LOWLEVEL(a,dx,dy) \

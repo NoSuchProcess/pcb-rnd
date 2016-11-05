@@ -27,7 +27,6 @@
 #include <gtk/gtk.h>
 #include "config.h"
 #include "gui.h"
-#include "create.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "polygon.h"

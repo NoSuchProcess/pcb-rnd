@@ -46,7 +46,6 @@
 #include "rubberband.h"
 #include "buffer.h"
 #include "remove.h"
-#include "create.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "layer.h"

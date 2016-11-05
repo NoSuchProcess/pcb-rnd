@@ -39,7 +39,6 @@
 #include "undo.h"
 #include "rotate.h"
 #include "move.h"
-#include "create.h"
 #include "obj_arc.h"
 #include "obj_arc_op.h"
 

@@ -38,7 +38,6 @@
 #include "layer.h"
 #include "const.h"
 #include "netlist.h"
-#include "create.h"
 #include "polygon.h"
 #include "misc.h" /* for flag setting */
 #include "misc_util.h" /* for distance calculations */

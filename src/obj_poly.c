@@ -37,7 +37,6 @@
 #include "rtree.h"
 #include "compat_nls.h"
 #include "undo.h"
-#include "create.h"
 #include "polygon.h"
 #include "move.h"
 #include "box.h"

@@ -65,7 +65,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "buffer.h"
 #include "change.h"
 #include "copy.h"
-#include "create.h"
 #include "crosshair.h"
 #include "draw.h"
 #include "error.h"

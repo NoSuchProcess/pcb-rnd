@@ -43,7 +43,6 @@
 #include "misc.h"
 #include "error.h"
 #include "buffer.h"
-#include "create.h"
 #include "conf_core.h"
 #include "layer.h"
 #include "plugins.h"
