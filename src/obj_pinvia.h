@@ -52,6 +52,14 @@ PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thicknes
 void pcb_add_via(DataType *Data, PinType *Via);
 void SetPinBoundingBox(PinTypePtr Pin);
 
+/* This is the extents of a Pin or Via, depending on whether it's a
+   hole or not.  */
+#define PIN_SIZE(pinptr) \
+	(TEST_FLAG(PCB_FLAG_HOLE, (pinptr)) \
+	? (pinptr)->DrillingHole \
+	: (pinptr)->Thickness)
+
+
 #define	MOVE_VIA_LOWLEVEL(v,dx,dy) \
         { \
 	        MOVE((v)->X,(v)->Y,(dx),(dy)) \
