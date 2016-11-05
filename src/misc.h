@@ -32,6 +32,6 @@
 #include <stdlib.h>
 #include "config.h"
 
-char *EvaluateFilename(const char *, const char *, const char *, const char *);
+char *EvaluateFilename(const char *, const char *, const char *);
 
 #endif /* PCB_MISC_H */

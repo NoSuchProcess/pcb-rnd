@@ -73,7 +73,7 @@ static int ReadNetlist(const char *filename)
 	}
 	else {
 		used_popen = 1;
-		command = EvaluateFilename(conf_core.rc.rat_command, conf_core.rc.rat_path, filename, NULL);
+		command = EvaluateFilename(conf_core.rc.rat_command, conf_core.rc.rat_path, filename);
 
 		/* open pipe to stdout of command */
 		if (*command == '\0' || (fp = popen(command, "r")) == NULL) {

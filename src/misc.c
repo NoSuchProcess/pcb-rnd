@@ -37,30 +37,13 @@
 #include <ctype.h>
 #include <signal.h>
 
-#include "board.h"
-#include "box.h"
-#include "crosshair.h"
-#include "data.h"
-#include "plug_io.h"
-#include "error.h"
-#include "misc.h"
-#include "move.h"
-#include "polygon.h"
-#include "rtree.h"
-#include "rotate.h"
-#include "rubberband.h"
-#include "set.h"
-#include "undo.h"
-#include "compat_misc.h"
-#include "obj_all.h"
-
 /* ---------------------------------------------------------------------------
  * creates a filename from a template
  * %f is replaced by the filename
  * %p by the searchpath
  */
 #warning TODO: kill this in favor of pcb_strdup_subst
-char *EvaluateFilename(const char *Template, const char *Path, const char *Filename, const char *Parameter)
+char *EvaluateFilename(const char *Template, const char *Path, const char *Filename)
 {
 	gds_t command;
 	const char *p;
@@ -70,7 +53,6 @@ char *EvaluateFilename(const char *Template, const char *Path, const char *Filen
 		printf("\tTemplate: \033[33m%s\033[0m\n", Template);
 		printf("\tPath: \033[33m%s\033[0m\n", Path);
 		printf("\tFilename: \033[33m%s\033[0m\n", Filename);
-		printf("\tParameter: \033[33m%s\033[0m\n", Parameter);
 	}
 
 	gds_init(&command);
@@ -79,9 +61,6 @@ char *EvaluateFilename(const char *Template, const char *Path, const char *Filen
 		/* copy character or add string to command */
 		if (*p == '%' && (*(p + 1) == 'f' || *(p + 1) == 'p' || *(p + 1) == 'a'))
 			switch (*(++p)) {
-			case 'a':
-				gds_append_str(&command, Parameter);
-				break;
 			case 'f':
 				gds_append_str(&command, Filename);
 				break;

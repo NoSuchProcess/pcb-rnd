@@ -253,7 +253,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	  {
 	    used_popen = 1;
 
-	    command = EvaluateFilename(Executable, Path, Filename, NULL);
+	    command = EvaluateFilename(Executable, Path, Filename);
 
 	    /* open pipe to stdout of command */
 	    if (*command == '\0' || (yyin = popen(command, "r")) == NULL)
