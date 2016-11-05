@@ -54,9 +54,6 @@
 #include "compat_misc.h"
 #include "obj_all.h"
 
-/* forward declarations */
-static void GetGridLockCoordinates(int, void *, void *, void *, Coord *, Coord *);
-
 /* ---------------------------------------------------------------------------
  * creates a filename from a template
  * %f is replaced by the filename
@@ -100,117 +97,6 @@ char *EvaluateFilename(const char *Template, const char *Path, const char *Filen
 		printf("EvaluateFilename: \033[32m%s\033[0m\n", command.array);
 
 	return command.array;
-}
-
-/* ---------------------------------------------------------------------------
- * returns a pointer to an objects bounding box;
- * data is valid until the routine is called again
- */
-BoxTypePtr GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
-{
-	switch (Type) {
-	case PCB_TYPE_LINE:
-	case PCB_TYPE_ARC:
-	case PCB_TYPE_TEXT:
-	case PCB_TYPE_POLYGON:
-	case PCB_TYPE_PAD:
-	case PCB_TYPE_PIN:
-	case PCB_TYPE_ELEMENT_NAME:
-		return (BoxType *) Ptr2;
-	case PCB_TYPE_VIA:
-	case PCB_TYPE_ELEMENT:
-		return (BoxType *) Ptr1;
-	case PCB_TYPE_POLYGON_POINT:
-	case PCB_TYPE_LINE_POINT:
-		return (BoxType *) Ptr3;
-	default:
-		Message(PCB_MSG_DEFAULT, "Request for bounding box of unsupported type %d\n", Type);
-		return (BoxType *) Ptr2;
-	}
-}
-
-static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, Coord * x, Coord * y)
-{
-	switch (type) {
-	case PCB_TYPE_VIA:
-		*x = ((PinTypePtr) ptr2)->X;
-		*y = ((PinTypePtr) ptr2)->Y;
-		break;
-	case PCB_TYPE_LINE:
-		*x = ((LineTypePtr) ptr2)->Point1.X;
-		*y = ((LineTypePtr) ptr2)->Point1.Y;
-		break;
-	case PCB_TYPE_TEXT:
-	case PCB_TYPE_ELEMENT_NAME:
-		*x = ((TextTypePtr) ptr2)->X;
-		*y = ((TextTypePtr) ptr2)->Y;
-		break;
-	case PCB_TYPE_ELEMENT:
-		*x = ((ElementTypePtr) ptr2)->MarkX;
-		*y = ((ElementTypePtr) ptr2)->MarkY;
-		break;
-	case PCB_TYPE_POLYGON:
-		*x = ((PolygonTypePtr) ptr2)->Points[0].X;
-		*y = ((PolygonTypePtr) ptr2)->Points[0].Y;
-		break;
-
-	case PCB_TYPE_LINE_POINT:
-	case PCB_TYPE_POLYGON_POINT:
-		*x = ((PointTypePtr) ptr3)->X;
-		*y = ((PointTypePtr) ptr3)->Y;
-		break;
-	case PCB_TYPE_ARC:
-		{
-			BoxTypePtr box;
-
-			box = GetArcEnds((ArcTypePtr) ptr2);
-			*x = box->X1;
-			*y = box->Y1;
-			break;
-		}
-	}
-}
-
-void AttachForCopy(Coord PlaceX, Coord PlaceY)
-{
-	BoxTypePtr box;
-	Coord mx = 0, my = 0;
-
-	Crosshair.AttachedObject.RubberbandN = 0;
-	if (!conf_core.editor.snap_pin) {
-		/* dither the grab point so that the mark, center, etc
-		 * will end up on a grid coordinate
-		 */
-		GetGridLockCoordinates(Crosshair.AttachedObject.Type,
-													 Crosshair.AttachedObject.Ptr1,
-													 Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3, &mx, &my);
-		mx = GridFit(mx, PCB->Grid, PCB->GridOffsetX) - mx;
-		my = GridFit(my, PCB->Grid, PCB->GridOffsetY) - my;
-	}
-	Crosshair.AttachedObject.X = PlaceX - mx;
-	Crosshair.AttachedObject.Y = PlaceY - my;
-	if (!Marked.status || conf_core.editor.local_ref)
-		SetLocalRef(PlaceX - mx, PlaceY - my, pcb_true);
-	Crosshair.AttachedObject.State = STATE_SECOND;
-
-	/* get boundingbox of object and set cursor range */
-	box = GetObjectBoundingBox(Crosshair.AttachedObject.Type,
-														 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
-	SetCrosshairRange(Crosshair.AttachedObject.X - box->X1,
-										Crosshair.AttachedObject.Y - box->Y1,
-										PCB->MaxWidth - (box->X2 - Crosshair.AttachedObject.X),
-										PCB->MaxHeight - (box->Y2 - Crosshair.AttachedObject.Y));
-
-	/* get all attached objects if necessary */
-	if ((conf_core.editor.mode != PCB_MODE_COPY) && conf_core.editor.rubber_band_mode)
-		LookupRubberbandLines(Crosshair.AttachedObject.Type,
-													Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
-	if (conf_core.editor.mode != PCB_MODE_COPY &&
-			(Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
-			 Crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
-			 Crosshair.AttachedObject.Type == PCB_TYPE_LINE || Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
-		LookupRatLines(Crosshair.AttachedObject.Type,
-									 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 }
 
 int ActionListRotations(int argc, const char **argv, Coord x, Coord y)

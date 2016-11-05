@@ -47,9 +47,33 @@
 #include "compat_nls.h"
 #include "obj_all.h"
 
-/* ---------------------------------------------------------------------------
- * some local identifiers
+/* returns a pointer to an objects bounding box;
+ * data is valid until the routine is called again
  */
+BoxTypePtr GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+{
+	switch (Type) {
+	case PCB_TYPE_LINE:
+	case PCB_TYPE_ARC:
+	case PCB_TYPE_TEXT:
+	case PCB_TYPE_POLYGON:
+	case PCB_TYPE_PAD:
+	case PCB_TYPE_PIN:
+	case PCB_TYPE_ELEMENT_NAME:
+		return (BoxType *) Ptr2;
+	case PCB_TYPE_VIA:
+	case PCB_TYPE_ELEMENT:
+		return (BoxType *) Ptr1;
+	case PCB_TYPE_POLYGON_POINT:
+	case PCB_TYPE_LINE_POINT:
+		return (BoxType *) Ptr3;
+	default:
+		Message(PCB_MSG_DEFAULT, "Request for bounding box of unsupported type %d\n", Type);
+		return (BoxType *) Ptr2;
+	}
+}
+
+
 
 /* current object ID; incremented after each creation of an object */
 long int ID = 1;

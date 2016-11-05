@@ -32,6 +32,7 @@
 #include "attrib.h"
 #include "global_typedefs.h"
 
+
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */
 	Coord X, Y, X2, Y2;   /* so Point type can be cast as BoxType */
@@ -43,6 +44,7 @@ struct pcb_box_s {  /* a bounding box */
 	Coord X2, Y2;     /* and lower right corner */
 };
 
+BoxTypePtr GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 
 /* memset object to 0, but keep the link field */
 #define reset_obj_mem(type, obj) \

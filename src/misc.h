@@ -32,12 +32,6 @@
 #include <stdlib.h>
 #include "config.h"
 
-BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
-
-char *UniqueElementName(DataTypePtr, char *);
-void AttachForCopy(Coord, Coord);
-
 char *EvaluateFilename(const char *, const char *, const char *, const char *);
-
 
 #endif /* PCB_MISC_H */
