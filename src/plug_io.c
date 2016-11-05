@@ -691,7 +691,7 @@ void EnableAutosave(void)
 		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
 }
 
-int pcb_build_fn_cb(gds_t *s, const char **input)
+int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 {
 	char buff[20];
 
@@ -745,7 +745,7 @@ int pcb_build_fn_cb(gds_t *s, const char **input)
 
 static char *build_fn(const char *template)
 {
-	return pcb_strdup_subst(template, pcb_build_fn_cb);
+	return pcb_strdup_subst(template, pcb_build_fn_cb, NULL);
 }
 
 /* ---------------------------------------------------------------------------

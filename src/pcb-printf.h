@@ -122,6 +122,6 @@ extern const char *pcb_printf_slot[PCB_PRINTF_SLOT_max];
    on unknown directive (whcih will be copied verbatim). %% will always
    be translated into a single %, without calling cb.
 */
-char *pcb_strdup_subst(const char *template, int (*cb)(gds_t *s, const char **input));
+char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx);
 
 #endif

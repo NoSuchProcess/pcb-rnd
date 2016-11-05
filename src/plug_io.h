@@ -166,6 +166,6 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_
     %N    name of the current pcb
     %T    wall time (Epoch)
 */
-int pcb_build_fn_cb(gds_t *s, const char **input);
+int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input);
 
 #endif

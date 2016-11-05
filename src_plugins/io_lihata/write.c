@@ -761,7 +761,7 @@ int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, con
 
 	if ((fnpat != NULL) && (*fnpat != '\0')) {
 		char *orig_fn;
-		char *pcb_fn = pcb_strdup_subst(fnpat, pcb_build_fn_cb);
+		char *pcb_fn = pcb_strdup_subst(fnpat, pcb_build_fn_cb, NULL);
 		
 		orig_fn = PCB->Filename;
 		PCB->Filename = NULL;

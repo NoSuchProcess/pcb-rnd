@@ -843,7 +843,7 @@ int pcb_append_printf(gds_t *str, const char *fmt, ...)
 }
 
 
-char *pcb_strdup_subst(const char *template, int (*cb)(gds_t *s, const char **input))
+char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx)
 {
 	gds_t s;
 	const char *curr, *next;
@@ -864,7 +864,7 @@ char *pcb_strdup_subst(const char *template, int (*cb)(gds_t *s, const char **in
 				curr = next+1;
 				break;
 			default:
-				if (cb(&s, &next) != 0) {
+				if (cb(ctx, &s, &next) != 0) {
 					/* keep the directive intact */
 					gds_append(&s, '%');
 				}
