@@ -90,7 +90,7 @@ int	yyparse(void);
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename, const char *Parse_parameter);
+static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename);
 
 %}
 
@@ -211,7 +211,7 @@ in	{ return T_IN; }
 /* ---------------------------------------------------------------------------
  * sets up the preprocessor command
  */
-static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename, const char *Parse_parameter)
+static int Parse(FILE *Pipe, const char *Executable, const char *Path, const char *Filename)
 {
 	static	char	*command = NULL;
 	int		returncode;
@@ -253,7 +253,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	  {
 	    used_popen = 1;
 
-	    command = EvaluateFilename(Executable, Path, Filename, Parse_parameter);
+	    command = EvaluateFilename(Executable, Path, Filename, NULL);
 
 	    /* open pipe to stdout of command */
 	    if (*command == '\0' || (yyin = popen(command, "r")) == NULL)
@@ -329,7 +329,7 @@ int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr Ptr, const char *name)
 	if (f == NULL)
 		return -1;
 
-	ret = Parse(f, NULL,NULL,NULL,NULL);
+	ret = Parse(f, NULL,NULL,NULL);
 
 	fp_fclose(f, &st);
 
@@ -369,7 +369,7 @@ int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_r
 	if (settings_dest != CFR_invalid)
 		conf_reset(settings_dest, Filename);
 	setlocale(LC_ALL, "C"); /* make sure numerics are read predictably */
-	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename, NULL);
+	retval = Parse(NULL, conf_core.rc.file_command, conf_core.rc.file_path, Filename);
 	setlocale(LC_ALL, "");
 	if ((settings_dest != CFR_invalid) && (retval == 0)) {
 		/* overwrite settings from the flags, mark them not-to-save */
@@ -440,7 +440,7 @@ int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, const char *Filename)
 	yyElement = NULL;
 
 	yy_settings_dest = CFR_invalid;
-	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename, NULL);
+	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename);
 	if (r == 0) {
 #ifdef DEBUG
 		Message (PCB_MSG_DEBUG, "Found %s in %s\n", Filename, conf_core.rc.font_command);
