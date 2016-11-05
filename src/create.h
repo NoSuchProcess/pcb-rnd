@@ -39,10 +39,6 @@
 void CreateBeLenient(pcb_bool);
 extern pcb_bool pcb_create_be_lenient;
 
-PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr, Coord, Coord, Coord, Coord, FlagType);
-PolygonTypePtr CreateNewPolygon(LayerTypePtr, FlagType);
-PointTypePtr CreateNewPointInPolygon(PolygonTypePtr, Coord, Coord);
-PolygonType *CreateNewHoleInPolygon(PolygonType * polygon);
 ElementTypePtr CreateNewElement(DataTypePtr, ElementTypePtr,
 																FontTypePtr, FlagType, char *, char *, char *, Coord, Coord, pcb_uint8_t, int, FlagType, pcb_bool);
 LineTypePtr CreateNewLineInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Coord);
@@ -54,7 +50,6 @@ void CreateIDBump(int min_id);
 void CreateIDReset(void);
 long int CreateIDGet(void);
 
-/* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon);
+/* *add_on_layer(): Add objects without creating them or making any "sanity modifications" to them */
 
 #endif

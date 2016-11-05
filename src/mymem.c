@@ -42,68 +42,6 @@
 /* ---------------------------------------------------------------------------
  * local prototypes
  */
-/* memset object to 0, but keep the link field */
-#define reset_obj_mem(type, obj) \
-do { \
-	gdl_elem_t __lnk__ = obj->link; \
-	memset(obj, 0, sizeof(type)); \
-	obj->link = __lnk__; \
-} while(0) \
-
-/* ---------------------------------------------------------------------------
- * get next slot for a polygon object, allocates memory if necessary
- */
-PolygonType *GetPolygonMemory(LayerType * layer)
-{
-	PolygonType *new_obj;
-
-	new_obj = calloc(sizeof(PolygonType), 1);
-	polylist_append(&layer->Polygon, new_obj);
-
-	return new_obj;
-}
-
-void RemoveFreePolygon(PolygonType * data)
-{
-	polylist_remove(data);
-	free(data);
-}
-
-/* ---------------------------------------------------------------------------
- * gets the next slot for a point in a polygon struct, allocates memory
- * if necessary
- */
-PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr Polygon)
-{
-	PointTypePtr points = Polygon->Points;
-
-	/* realloc new memory if necessary and clear it */
-	if (Polygon->PointN >= Polygon->PointMax) {
-		Polygon->PointMax += STEP_POLYGONPOINT;
-		points = (PointTypePtr) realloc(points, Polygon->PointMax * sizeof(PointType));
-		Polygon->Points = points;
-		memset(points + Polygon->PointN, 0, STEP_POLYGONPOINT * sizeof(PointType));
-	}
-	return (points + Polygon->PointN++);
-}
-
-/* ---------------------------------------------------------------------------
- * gets the next slot for a point in a polygon struct, allocates memory
- * if necessary
- */
-pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr Polygon)
-{
-	pcb_cardinal_t *holeindex = Polygon->HoleIndex;
-
-	/* realloc new memory if necessary and clear it */
-	if (Polygon->HoleIndexN >= Polygon->HoleIndexMax) {
-		Polygon->HoleIndexMax += STEP_POLYGONHOLEINDEX;
-		holeindex = (pcb_cardinal_t *) realloc(holeindex, Polygon->HoleIndexMax * sizeof(int));
-		Polygon->HoleIndex = holeindex;
-		memset(holeindex + Polygon->HoleIndexN, 0, STEP_POLYGONHOLEINDEX * sizeof(int));
-	}
-	return (holeindex + Polygon->HoleIndexN++);
-}
 
 /* ---------------------------------------------------------------------------
  * get next slot for an element, allocates memory if necessary
@@ -122,24 +60,6 @@ void RemoveFreeElement(ElementType * data)
 {
 	elementlist_remove(data);
 	free(data);
-}
-
-/* ---------------------------------------------------------------------------
- * frees memory used by a polygon
- */
-void FreePolygonMemory(PolygonType * polygon)
-{
-	if (polygon == NULL)
-		return;
-
-	free(polygon->Points);
-	free(polygon->HoleIndex);
-
-	if (polygon->Clipped)
-		poly_Free(&polygon->Clipped);
-	poly_FreeContours(&polygon->NoHoles);
-
-	reset_obj_mem(PolygonType, polygon);
 }
 
 /* ---------------------------------------------------------------------------

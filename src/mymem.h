@@ -44,21 +44,22 @@
 #define	STEP_SELECTORENTRY	128
 #define	STEP_REMOVELIST		500
 #define	STEP_UNDOLIST		500
-#define	STEP_POLYGONPOINT	10
-#define	STEP_POLYGONHOLEINDEX	10
 
 /* ---------------------------------------------------------------------------
  * some memory types
  */
 
-PolygonTypePtr GetPolygonMemory(LayerTypePtr);
-PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr);
-pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr);
+/* memset object to 0, but keep the link field */
+#define reset_obj_mem(type, obj) \
+do { \
+	gdl_elem_t __lnk__ = obj->link; \
+	memset(obj, 0, sizeof(type)); \
+	obj->link = __lnk__; \
+} while(0) \
+
 ElementTypePtr GetElementMemory(DataTypePtr);
-void FreePolygonMemory(PolygonTypePtr);
 void FreeElementMemory(ElementTypePtr);
 
-void RemoveFreePolygon(PolygonType * data);
 void RemoveFreeElement(ElementType * data);
 
 /* Allocate element-objects */

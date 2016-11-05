@@ -31,4 +31,66 @@
 
 #include "global_objs.h"
 
+PolygonType *GetPolygonMemory(LayerType * layer);
+void RemoveFreePolygon(PolygonType * data);
+PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr Polygon);
+pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr Polygon);
+void FreePolygonMemory(PolygonType * polygon);
+
+void SetPolygonBoundingBox(PolygonTypePtr Polygon);
+PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, FlagType Flags);
+PolygonTypePtr CreateNewPolygon(LayerTypePtr Layer, FlagType Flags);
+PointTypePtr CreateNewPointInPolygon(PolygonTypePtr Polygon, Coord X, Coord Y);
+PolygonType *CreateNewHoleInPolygon(PolygonType * Polygon);
+void *RemovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon);
+
+void MovePolygonLowLevel(PolygonTypePtr Polygon, Coord DX, Coord DY);
+void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Number);
+PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr Dest, PolygonTypePtr Src);
+
+void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon);
+
+#define POLYGON_LOOP(layer) do {                                    \
+  PolygonType *polygon;                                             \
+  gdl_iterator_t __it__;                                            \
+  linelist_foreach(&(layer)->Polygon, &__it__, polygon) {
+
+#define	POLYGONPOINT_LOOP(polygon) do	{	\
+	pcb_cardinal_t			n;		\
+	PointTypePtr	point;				\
+	for (n = (polygon)->PointN-1; n != -1; n--)	\
+	{						\
+		point = &(polygon)->Points[n]
+
+#define	ALLPOLYGON_LOOP(top)	do {		\
+	pcb_cardinal_t		l;			\
+	LayerTypePtr	layer = (top)->Layer;		\
+	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
+	{ \
+		POLYGON_LOOP(layer)
+
+#define	COPPERPOLYGON_LOOP(top) do	{		\
+	pcb_cardinal_t		l;			\
+	LayerTypePtr	layer = (top)->Layer;		\
+	for (l = 0; l < max_copper_layer; l++, layer++)	\
+	{ \
+		POLYGON_LOOP(layer)
+
+#define	SILKPOLYGON_LOOP(top) do	{		\
+	pcb_cardinal_t		l;			\
+	LayerTypePtr	layer = (top)->Layer;		\
+	layer += max_copper_layer;			\
+	for (l = 0; l < 2; l++, layer++)		\
+	{ \
+		POLYGON_LOOP(layer)
+
+#define	VISIBLEPOLYGON_LOOP(top) do	{	\
+	pcb_cardinal_t		l;			\
+	LayerTypePtr	layer = (top)->Layer;		\
+	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
+	{ \
+		if (layer->On)				\
+			POLYGON_LOOP(layer)
+
+
 #endif

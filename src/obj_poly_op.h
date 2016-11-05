@@ -27,3 +27,21 @@
 /*** Standard operations on polygons ***/
 
 #include "operation.h"
+
+void *AddPolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
+void *MovePolygonToBuffer(pcb_opctx_t *ctx, LayerType * layer, PolygonType * polygon);
+void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr poly);
+void *ChangePolyClear(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
+void *InsertPointIntoPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
+void *MovePolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
+void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point);
+void *MovePolygonToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, PolygonType * polygon, LayerType * Destination);
+void *MovePolygonToLayer(pcb_opctx_t *ctx, LayerType * Layer, PolygonType * Polygon);
+void *DestroyPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
+void *DestroyPolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point);
+void *RemovePolygon_op(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
+void *RemovePolygonContour(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon, pcb_cardinal_t contour);
+void *RemovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon, PointTypePtr Point);
+void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon);
+
+

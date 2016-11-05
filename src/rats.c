@@ -51,6 +51,7 @@
 #include "obj_line.h"
 #include "obj_pinvia.h"
 #include "obj_rat.h"
+#include "obj_poly.h"
 
 #warning TODO: remove this in favor of vtptr
 #include "ptrlist.h"

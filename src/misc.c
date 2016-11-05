@@ -61,25 +61,6 @@ static void GetGridLockCoordinates(int, void *, void *, void *, Coord *, Coord *
 /* Local variables */
 
 /* ---------------------------------------------------------------------------
- * sets the bounding box of a polygons
- */
-void SetPolygonBoundingBox(PolygonTypePtr Polygon)
-{
-	Polygon->BoundingBox.X1 = Polygon->BoundingBox.Y1 = MAX_COORD;
-	Polygon->BoundingBox.X2 = Polygon->BoundingBox.Y2 = 0;
-	POLYGONPOINT_LOOP(Polygon);
-	{
-		MAKEMIN(Polygon->BoundingBox.X1, point->X);
-		MAKEMIN(Polygon->BoundingBox.Y1, point->Y);
-		MAKEMAX(Polygon->BoundingBox.X2, point->X);
-		MAKEMAX(Polygon->BoundingBox.Y2, point->Y);
-	}
-	/* boxes don't include the lower right corner */
-	close_box(&Polygon->BoundingBox);
-	END_LOOP;
-}
-
-/* ---------------------------------------------------------------------------
  * sets the bounding box of an elements
  */
 void SetElementBoundingBox(DataTypePtr Data, ElementTypePtr Element, FontTypePtr Font)

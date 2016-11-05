@@ -84,19 +84,6 @@ void RotatePointLowLevel(PointTypePtr Point, Coord X, Coord Y, unsigned Number)
 }
 
 /* ---------------------------------------------------------------------------
- * rotates a polygon in 90 degree steps
- */
-void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Number)
-{
-	POLYGONPOINT_LOOP(Polygon);
-	{
-		ROTATE(point->X, point->Y, X, Y, Number);
-	}
-	END_LOOP;
-	RotateBoxLowLevel(&Polygon->BoundingBox, X, Y, Number);
-}
-
-/* ---------------------------------------------------------------------------
  * rotate an element in 90 degree steps
  */
 void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number)

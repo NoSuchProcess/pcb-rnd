@@ -53,9 +53,7 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *AddPolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
-static void *MovePolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *MoveElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
 static void SwapBuffer(BufferTypePtr);
 
@@ -79,29 +77,6 @@ static pcb_opfunc_t AddBufferFunctions = {
 MoveLineToBuffer,
 		MoveTextToBuffer,
 		MovePolygonToBuffer, MoveViaToBuffer, MoveElementToBuffer, NULL, NULL, NULL, NULL, NULL, MoveArcToBuffer, MoveRatToBuffer};
-
-/* ---------------------------------------------------------------------------
- * copies a polygon to buffer
- */
-static void *AddPolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
-{
-	LayerTypePtr layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
-	PolygonTypePtr polygon;
-
-	polygon = CreateNewPolygon(layer, Polygon->Flags);
-	CopyPolygonLowLevel(polygon, Polygon);
-
-	/* Update the polygon r-tree. Unlike similarly named functions for
-	 * other objects, CreateNewPolygon does not do this as it creates a
-	 * skeleton polygon object, which won't have correct bounds.
-	 */
-	if (!layer->polygon_tree)
-		layer->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(layer->polygon_tree, (BoxType *) polygon, 0);
-
-	CLEAR_FLAG(PCB_FLAG_FOUND | ctx->buffer.extraflg, polygon);
-	return (polygon);
-}
 
 /* ---------------------------------------------------------------------------
  * copies a element to buffer
@@ -131,26 +106,6 @@ static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr Element)
 		END_LOOP;
 	}
 	return (element);
-}
-
-/* ---------------------------------------------------------------------------
- * moves a polygon to buffer. Doesn't allocate memory for the points
- */
-static void *MovePolygonToBuffer(pcb_opctx_t *ctx, LayerType * layer, PolygonType * polygon)
-{
-	LayerType *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
-
-	r_delete_entry(layer->polygon_tree, (BoxType *) polygon);
-
-	polylist_remove(polygon);
-	polylist_append(&lay->Polygon, polygon);
-
-	CLEAR_FLAG(PCB_FLAG_FOUND, polygon);
-
-	if (!lay->polygon_tree)
-		lay->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(lay->polygon_tree, (BoxType *) polygon, 0);
-	return (polygon);
 }
 
 /* ---------------------------------------------------------------------------

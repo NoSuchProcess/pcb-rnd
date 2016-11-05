@@ -39,6 +39,8 @@
 #include "crosshair.h"
 #include "compat_nls.h"
 
+#include "obj_poly.h"
+
 /* --------------------------------------------------------------------------- */
 
 static const char morphpolygon_syntax[] = "MorphPolygon(Object|Selected)";

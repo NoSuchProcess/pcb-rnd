@@ -38,6 +38,7 @@
 #include "undo.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "obj_poly.h"
 
 static POLYAREA *original_poly(PolygonType *p, pcb_bool *forward)
 {

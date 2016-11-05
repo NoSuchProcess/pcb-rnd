@@ -47,11 +47,7 @@
 
 #include "obj_line_op.h"
 #include "obj_rat_op.h"
-
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
-static void *InsertPointIntoPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
+#include "obj_poly_op.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -70,53 +66,6 @@ static pcb_opfunc_t InsertFunctions = {
 	NULL,
 	InsertPointIntoRat
 };
-
-/* ---------------------------------------------------------------------------
- * inserts a point into a polygon
- */
-static void *InsertPointIntoPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
-{
-	PointType save;
-	pcb_cardinal_t n;
-	LineType line;
-
-	if (!ctx->insert.forcible) {
-		/*
-		 * first make sure adding the point is sensible
-		 */
-		line.Thickness = 0;
-		line.Point1 = Polygon->Points[prev_contour_point(Polygon, ctx->insert.idx)];
-		line.Point2 = Polygon->Points[ctx->insert.idx];
-		if (IsPointOnLine((float) ctx->insert.x, (float) ctx->insert.y, 0.0, &line))
-			return (NULL);
-	}
-	/*
-	 * second, shift the points up to make room for the new point
-	 */
-	ErasePolygon(Polygon);
-	r_delete_entry(Layer->polygon_tree, (BoxTypePtr) Polygon);
-	save = *CreateNewPointInPolygon(Polygon, ctx->insert.x, ctx->insert.y);
-	for (n = Polygon->PointN - 1; n > ctx->insert.idx; n--)
-		Polygon->Points[n] = Polygon->Points[n - 1];
-
-	/* Shift up indices of any holes */
-	for (n = 0; n < Polygon->HoleIndexN; n++)
-		if (Polygon->HoleIndex[n] > ctx->insert.idx || (ctx->insert.last && Polygon->HoleIndex[n] == ctx->insert.idx))
-			Polygon->HoleIndex[n]++;
-
-	Polygon->Points[ctx->insert.idx] = save;
-	SetChangedFlag(pcb_true);
-	AddObjectToInsertPointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
-
-	SetPolygonBoundingBox(Polygon);
-	r_insert_entry(Layer->polygon_tree, (BoxType *) Polygon, 0);
-	InitClip(PCB->Data, Layer, Polygon);
-	if (ctx->insert.forcible || !RemoveExcessPolygonPoints(Layer, Polygon)) {
-		DrawPolygon(Layer, Polygon);
-		Draw();
-	}
-	return (&Polygon->Points[ctx->insert.idx]);
-}
 
 /* ---------------------------------------------------------------------------
  * inserts point into objects

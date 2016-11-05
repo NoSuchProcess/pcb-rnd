@@ -35,7 +35,6 @@
 
 
 void r_delete_element(DataTypePtr, ElementTypePtr);
-void SetPolygonBoundingBox(PolygonTypePtr);
 void SetElementBoundingBox(DataTypePtr, ElementTypePtr, FontTypePtr);
 void SetFontInfo(FontTypePtr);
 

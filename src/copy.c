@@ -48,7 +48,6 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr);
 
 /* ---------------------------------------------------------------------------
@@ -68,28 +67,6 @@ static pcb_opfunc_t CopyFunctions = {
 	CopyArc,
 	NULL
 };
-
-/* ---------------------------------------------------------------------------
- * copies data from one polygon to another
- * 'Dest' has to exist
- */
-PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr Dest, PolygonTypePtr Src)
-{
-	pcb_cardinal_t hole = 0;
-	pcb_cardinal_t n;
-
-	for (n = 0; n < Src->PointN; n++) {
-		if (hole < Src->HoleIndexN && n == Src->HoleIndex[hole]) {
-			CreateNewHoleInPolygon(Dest);
-			hole++;
-		}
-		CreateNewPointInPolygon(Dest, Src->Points[n].X, Src->Points[n].Y);
-	}
-	SetPolygonBoundingBox(Dest);
-	Dest->Flags = Src->Flags;
-	CLEAR_FLAG(PCB_FLAG_FOUND, Dest);
-	return (Dest);
-}
 
 /* ---------------------------------------------------------------------------
  * copies data from one element to another and creates the destination
@@ -149,25 +126,6 @@ CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, p
 
 	SetElementBoundingBox(Data, Dest, &PCB->Font);
 	return (Dest);
-}
-
-/* ---------------------------------------------------------------------------
- * copies a polygon
- */
-static void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
-{
-	PolygonTypePtr polygon;
-
-	polygon = CreateNewPolygon(Layer, NoFlags());
-	CopyPolygonLowLevel(polygon, Polygon);
-	MovePolygonLowLevel(polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
-	if (!Layer->polygon_tree)
-		Layer->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Layer->polygon_tree, (BoxTypePtr) polygon, 0);
-	InitClip(PCB->Data, Layer, polygon);
-	DrawPolygon(Layer, polygon);
-	AddObjectToCreateUndoList(PCB_TYPE_POLYGON, Layer, polygon, polygon);
-	return (polygon);
 }
 
 /* ---------------------------------------------------------------------------

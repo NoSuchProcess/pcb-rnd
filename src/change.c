@@ -51,7 +51,6 @@
  */
 static void *ChangeElement1stSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElement2ndSize(pcb_opctx_t *ctx, ElementTypePtr);
-static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr);
@@ -63,7 +62,6 @@ static void *ClrElementSquare(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ChangeElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
 static void *SetElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
 static void *ClrElementOctagon(pcb_opctx_t *ctx, ElementTypePtr);
-static void *ChangePolyClear(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -506,23 +504,6 @@ static void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* ---------------------------------------------------------------------------
- * Handle attempts to change the clearance of a polygon.
- */
-static void *ChangePolygonClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr poly)
-{
-	static int shown_this_message = 0;
-	if (!shown_this_message) {
-		gui->confirm_dialog(_("To change the clearance of objects in a polygon, "
-													"change the objects, not the polygon.\n"
-													"Hint: To set a minimum clearance for a group of objects, "
-													"select them all then :MinClearGap(Selected,=10,mil)"), "Ok", NULL);
-		shown_this_message = 1;
-	}
-
-	return (NULL);
-}
-
-/* ---------------------------------------------------------------------------
  * changes the scaling factor of an element's outline
  * returns pcb_true if changed
  */
@@ -811,21 +792,6 @@ pcb_bool ChangePaste(PadTypePtr Pad)
 	DrawPad(Pad);
 	Draw();
 	return (pcb_true);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the CLEARPOLY flag of a polygon
- */
-static void *ChangePolyClear(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Polygon))
-		return (NULL);
-	AddObjectToClearPolyUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon, pcb_true);
-	AddObjectToFlagUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
-	TOGGLE_FLAG(PCB_FLAG_CLEARPOLY, Polygon);
-	InitClip(PCB->Data, Layer, Polygon);
-	DrawPolygon(Layer, Polygon);
-	return (Polygon);
 }
 
 /* ----------------------------------------------------------------------

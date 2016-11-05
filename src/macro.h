@@ -130,48 +130,6 @@
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {
 
-#define POLYGON_LOOP(layer) do {                                    \
-  PolygonType *polygon;                                             \
-  gdl_iterator_t __it__;                                            \
-  linelist_foreach(&(layer)->Polygon, &__it__, polygon) {
-
-#define	POLYGONPOINT_LOOP(polygon) do	{	\
-	pcb_cardinal_t			n;		\
-	PointTypePtr	point;				\
-	for (n = (polygon)->PointN-1; n != -1; n--)	\
-	{						\
-		point = &(polygon)->Points[n]
-
 #define ENDALL_LOOP }} while (0); }} while(0)
-
-#define	ALLPOLYGON_LOOP(top)	do {		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
-	{ \
-		POLYGON_LOOP(layer)
-
-#define	COPPERPOLYGON_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer; l++, layer++)	\
-	{ \
-		POLYGON_LOOP(layer)
-
-#define	SILKPOLYGON_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	layer += max_copper_layer;			\
-	for (l = 0; l < 2; l++, layer++)		\
-	{ \
-		POLYGON_LOOP(layer)
-
-#define	VISIBLEPOLYGON_LOOP(top) do	{	\
-	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
-	{ \
-		if (layer->On)				\
-			POLYGON_LOOP(layer)
 
 #endif
