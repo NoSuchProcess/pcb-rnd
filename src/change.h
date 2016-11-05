@@ -85,8 +85,6 @@ pcb_bool ChangeSelectedPaste(void);
 pcb_bool ChangeSelectedOctagon(int);
 pcb_bool SetSelectedOctagon(int);
 pcb_bool ClrSelectedOctagon(int);
-pcb_bool ChangeSelectedElementSide(void);
-pcb_bool ChangeElementSide(ElementTypePtr, Coord);
 pcb_bool ChangeHole(PinTypePtr);
 pcb_bool ChangePaste(PadTypePtr);
 pcb_bool ChangeObjectSize(int, void *, void *, void *, Coord, pcb_bool);
@@ -113,10 +111,5 @@ pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, Angle a, pcb_bool absolute);
 pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool fixIt);
 pcb_bool ChangeSelectedRadius(int types, int is_start, Angle Difference, pcb_bool fixIt);
-
-/* Change the specified text on an element, either on the board (give
-   PCB, PCB->Data) or in a buffer (give NULL, Buffer->Data).  The old
-   string is returned, and must be properly freed by the caller.  */
-char *ChangeElementText(PCBType * pcb, DataType * data, ElementTypePtr Element, int which, char *new_name);
 
 #endif

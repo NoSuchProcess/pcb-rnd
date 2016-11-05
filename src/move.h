@@ -50,7 +50,6 @@
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-void MoveElementLowLevel(DataTypePtr, ElementTypePtr, Coord, Coord);
 void *MoveObject(int, void *, void *, void *, Coord, Coord);
 void *MoveObjectToLayer(int, void *, void *, void *, LayerTypePtr, pcb_bool);
 void *MoveObjectAndRubberband(int, void *, void *, void *, Coord, Coord);

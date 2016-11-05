@@ -27,3 +27,27 @@
 /*** Standard operations on elements ***/
 
 #include "operation.h"
+
+void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *MoveElementToBuffer(pcb_opctx_t *ctx, ElementType * element);
+void *ClrElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *SetElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ChangeElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ClrElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *SetElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ChangeElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ChangeElement1stSize(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *ChangeElement2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr Element);
+void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr Element);
+

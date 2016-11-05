@@ -57,16 +57,4 @@ do { \
 	obj->link = __lnk__; \
 } while(0) \
 
-ElementTypePtr GetElementMemory(DataTypePtr);
-void FreeElementMemory(ElementTypePtr);
-
-void RemoveFreeElement(ElementType * data);
-
-/* Allocate element-objects */
-LineType *GetElementLineMemory(ElementType *Element);
-
-#ifndef HAVE_LIBDMALLOC
-#define malloc(x) calloc(1,(x))
-#endif
-
 #endif

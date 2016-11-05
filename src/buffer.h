@@ -41,12 +41,10 @@ struct pcb_buffer_s {								/* information about the paste buffer */
 /* ---------------------------------------------------------------------------
  * prototypes
  */
+void SwapBuffer(BufferTypePtr Buffer);
 void SetBufferBoundingBox(BufferTypePtr);
 void ClearBuffer(BufferTypePtr);
 void AddSelectedToBuffer(BufferTypePtr, Coord, Coord, pcb_bool);
-pcb_bool LoadElementToBuffer(BufferTypePtr, const char *);
-pcb_bool ConvertBufferToElement(BufferTypePtr);
-pcb_bool SmashBufferElement(BufferTypePtr);
 pcb_bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt);
 void RotateBuffer(BufferTypePtr, pcb_uint8_t);
 void SelectPasteBuffer(int);

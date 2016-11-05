@@ -51,13 +51,6 @@
 #include "obj_all_op.h"
 
 /* ---------------------------------------------------------------------------
- * some local prototypes
- */
-static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
-static void *MoveElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
-static void SwapBuffer(BufferTypePtr);
-
-/* ---------------------------------------------------------------------------
  * some local identifiers
  */
 static pcb_opfunc_t AddBufferFunctions = {
@@ -73,84 +66,22 @@ static pcb_opfunc_t AddBufferFunctions = {
 	NULL,
 	AddArcToBuffer,
 	AddRatToBuffer
-}, MoveBufferFunctions = {
-MoveLineToBuffer,
-		MoveTextToBuffer,
-		MovePolygonToBuffer, MoveViaToBuffer, MoveElementToBuffer, NULL, NULL, NULL, NULL, NULL, MoveArcToBuffer, MoveRatToBuffer};
+};
 
-/* ---------------------------------------------------------------------------
- * copies a element to buffer
- */
-static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr Element)
-{
-	ElementTypePtr element;
-
-	element = GetElementMemory(ctx->buffer.dst);
-	CopyElementLowLevel(ctx->buffer.dst, element, Element, pcb_false, 0, 0);
-	CLEAR_FLAG(ctx->buffer.extraflg, element);
-	if (ctx->buffer.extraflg) {
-		ELEMENTTEXT_LOOP(element);
-		{
-			CLEAR_FLAG(ctx->buffer.extraflg, text);
-		}
-		END_LOOP;
-		PIN_LOOP(element);
-		{
-			CLEAR_FLAG(PCB_FLAG_FOUND | ctx->buffer.extraflg, pin);
-		}
-		END_LOOP;
-		PAD_LOOP(element);
-		{
-			CLEAR_FLAG(PCB_FLAG_FOUND | ctx->buffer.extraflg, pad);
-		}
-		END_LOOP;
-	}
-	return (element);
-}
-
-/* ---------------------------------------------------------------------------
- * moves a element to buffer without allocating memory for pins/names
- */
-static void *MoveElementToBuffer(pcb_opctx_t *ctx, ElementType * element)
-{
-	/*
-	 * Delete the element from the source (remove it from trees,
-	 * restore to polygons)
-	 */
-	r_delete_element(ctx->buffer.src, element);
-
-	elementlist_remove(element);
-	elementlist_append(&ctx->buffer.dst->Element, element);
-
-	PIN_LOOP(element);
-	{
-		RestoreToPolygon(ctx->buffer.src, PCB_TYPE_PIN, element, pin);
-		CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, pin);
-	}
-	END_LOOP;
-	PAD_LOOP(element);
-	{
-		RestoreToPolygon(ctx->buffer.src, PCB_TYPE_PAD, element, pad);
-		CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, pad);
-	}
-	END_LOOP;
-	SetElementBoundingBox(ctx->buffer.dst, element, &PCB->Font);
-	/*
-	 * Now clear the from the polygons in the destination
-	 */
-	PIN_LOOP(element);
-	{
-		ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_PIN, element, pin);
-	}
-	END_LOOP;
-	PAD_LOOP(element);
-	{
-		ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_PAD, element, pad);
-	}
-	END_LOOP;
-
-	return element;
-}
+static pcb_opfunc_t MoveBufferFunctions = {
+	MoveLineToBuffer,
+	MoveTextToBuffer,
+	MovePolygonToBuffer,
+	MoveViaToBuffer,
+	MoveElementToBuffer,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	MoveArcToBuffer,
+	MoveRatToBuffer
+};
 
 /* ---------------------------------------------------------------------------
  * calculates the bounding box of the buffer
@@ -209,50 +140,7 @@ void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, pcb_bool LeaveS
 	notify_crosshair_change(pcb_true);
 }
 
-/* ---------------------------------------------------------------------------
- * loads element data from file/library into buffer
- * parse the file with disabled 'PCB mode' (see parser)
- * returns pcb_false on error
- * if successful, update some other stuff and reposition the pastebuffer
- */
-pcb_bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
-{
-	ElementTypePtr element;
-
-	ClearBuffer(Buffer);
-	if (!ParseElement(Buffer->Data, Name)) {
-		if (conf_core.editor.show_solder_side)
-			SwapBuffer(Buffer);
-		SetBufferBoundingBox(Buffer);
-		if (elementlist_length(&Buffer->Data->Element)) {
-			element = elementlist_first(&Buffer->Data->Element);
-			Buffer->X = element->MarkX;
-			Buffer->Y = element->MarkY;
-		}
-		else {
-			Buffer->X = 0;
-			Buffer->Y = 0;
-		}
-		return (pcb_true);
-	}
-
-	/* release memory which might have been acquired */
-	ClearBuffer(Buffer);
-	return (pcb_false);
-}
-
-
-/*---------------------------------------------------------------------------
- * Searches for the given element by "footprint" name, and loads it
- * into the buffer.
- */
-
-/* Returns zero on success, non-zero on error.  */
-int LoadFootprintByName(BufferTypePtr Buffer, const char *Footprint)
-{
-	return !LoadElementToBuffer(Buffer, Footprint);
-}
-
+/*---------------------------------------------------------------------------*/
 
 static const char loadfootprint_syntax[] = "LoadFootprint(filename[,refdes,value])";
 
@@ -303,250 +191,6 @@ int LoadFootprint(int argc, const char **argv, Coord x, Coord y)
 	e->Name[2].TextString = value ? pcb_strdup(value) : 0;
 
 	return 0;
-}
-
-/*---------------------------------------------------------------------------
- *
- * break buffer element into pieces
- */
-pcb_bool SmashBufferElement(BufferTypePtr Buffer)
-{
-	ElementTypePtr element;
-	pcb_cardinal_t group;
-	LayerTypePtr clayer, slayer;
-
-	if (elementlist_length(&Buffer->Data->Element) != 1) {
-		Message(PCB_MSG_DEFAULT, _("Error!  Buffer doesn't contain a single element\n"));
-		return (pcb_false);
-	}
-	/*
-	 * At this point the buffer should contain just a single element.
-	 * Now we detach the single element from the buffer and then clear the
-	 * buffer, ready to receive the smashed elements.  As a result of detaching
-	 * it the single element is orphaned from the buffer and thus will not be
-	 * free()'d by FreeDataMemory (called via ClearBuffer).  This leaves it
-	 * around for us to smash bits off it.  It then becomes our responsibility,
-	 * however, to free the single element when we're finished with it.
-	 */
-	element = elementlist_first(&Buffer->Data->Element);
-	elementlist_remove(element);
-	ClearBuffer(Buffer);
-	ELEMENTLINE_LOOP(element);
-	{
-		CreateNewLineOnLayer(&Buffer->Data->SILKLAYER,
-												 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0, NoFlags());
-		if (line)
-			line->Number = pcb_strdup_null(NAMEONPCB_NAME(element));
-	}
-	END_LOOP;
-	ARC_LOOP(element);
-	{
-		CreateNewArcOnLayer(&Buffer->Data->SILKLAYER,
-												arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, NoFlags());
-	}
-	END_LOOP;
-	PIN_LOOP(element);
-	{
-		FlagType f = NoFlags();
-		AddFlags(f, PCB_FLAG_VIA);
-		if (TEST_FLAG(PCB_FLAG_HOLE, pin))
-			AddFlags(f, PCB_FLAG_HOLE);
-
-		CreateNewVia(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
-	}
-	END_LOOP;
-	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? solder_silk_layer : component_silk_layer);
-	clayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
-	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? component_silk_layer : solder_silk_layer);
-	slayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
-	PAD_LOOP(element);
-	{
-		LineTypePtr line;
-		line = CreateNewLineOnLayer(TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? slayer : clayer,
-																pad->Point1.X, pad->Point1.Y,
-																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, NoFlags());
-		if (line)
-			line->Number = pcb_strdup_null(pad->Number);
-	}
-	END_LOOP;
-	FreeElementMemory(element);
-	RemoveFreeElement(element);
-	return (pcb_true);
-}
-
-/*---------------------------------------------------------------------------
- *
- * see if a polygon is a rectangle.  If so, canonicalize it.
- */
-
-static int polygon_is_rectangle(PolygonTypePtr poly)
-{
-	int i, best;
-	PointType temp[4];
-	if (poly->PointN != 4 || poly->HoleIndexN != 0)
-		return 0;
-	best = 0;
-	for (i = 1; i < 4; i++)
-		if (poly->Points[i].X < poly->Points[best].X || poly->Points[i].Y < poly->Points[best].Y)
-			best = i;
-	for (i = 0; i < 4; i++)
-		temp[i] = poly->Points[(i + best) % 4];
-	if (temp[0].X == temp[1].X)
-		memcpy(poly->Points, temp, sizeof(temp));
-	else {
-		/* reverse them */
-		poly->Points[0] = temp[0];
-		poly->Points[1] = temp[3];
-		poly->Points[2] = temp[2];
-		poly->Points[3] = temp[1];
-	}
-	if (poly->Points[0].X == poly->Points[1].X
-			&& poly->Points[1].Y == poly->Points[2].Y
-			&& poly->Points[2].X == poly->Points[3].X && poly->Points[3].Y == poly->Points[0].Y)
-		return 1;
-	return 0;
-}
-
-/*---------------------------------------------------------------------------
- *
- * convert buffer contents into an element
- */
-pcb_bool ConvertBufferToElement(BufferTypePtr Buffer)
-{
-	ElementTypePtr Element;
-	pcb_cardinal_t group;
-	pcb_cardinal_t pin_n = 1;
-	pcb_bool hasParts = pcb_false, crooked = pcb_false;
-	int onsolder;
-	pcb_bool warned = pcb_false;
-
-	if (Buffer->Data->pcb == 0)
-		Buffer->Data->pcb = PCB;
-
-	Element = CreateNewElement(PCB->Data, NULL, &PCB->Font, NoFlags(),
-														 NULL, NULL, NULL, PASTEBUFFER->X,
-														 PASTEBUFFER->Y, 0, 100, MakeFlags(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
-	if (!Element)
-		return (pcb_false);
-	VIA_LOOP(Buffer->Data);
-	{
-		char num[8];
-		if (via->Mask < via->Thickness)
-			via->Mask = via->Thickness + 2 * MASKFRAME;
-		if (via->Name)
-			CreateNewPin(Element, via->X, via->Y, via->Thickness,
-									 via->Clearance, via->Mask, via->DrillingHole,
-									 NULL, via->Name, MaskFlags(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
-		else {
-			sprintf(num, "%d", pin_n++);
-			CreateNewPin(Element, via->X, via->Y, via->Thickness,
-									 via->Clearance, via->Mask, via->DrillingHole,
-									 NULL, num, MaskFlags(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
-		}
-		hasParts = pcb_true;
-	}
-	END_LOOP;
-
-	for (onsolder = 0; onsolder < 2; onsolder++) {
-		int silk_layer;
-		int onsolderflag;
-
-		if ((!onsolder) == (!SWAP_IDENT)) {
-			silk_layer = component_silk_layer;
-			onsolderflag = PCB_FLAG_NO;
-		}
-		else {
-			silk_layer = solder_silk_layer;
-			onsolderflag = PCB_FLAG_ONSOLDER;
-		}
-
-#define MAYBE_WARN() \
-	  if (onsolder && !hasParts && !warned) \
-	    { \
-	      warned = pcb_true; \
-	      Message \
-					(PCB_MSG_WARNING, _("Warning: All of the pads are on the opposite\n" \
-		   "side from the component - that's probably not what\n" \
-		   "you wanted\n")); \
-	    } \
-
-		/* get the component-side SM pads */
-		group = GetLayerGroupNumberByNumber(silk_layer);
-		GROUP_LOOP(Buffer->Data, group);
-		{
-			char num[8];
-			LINE_LOOP(layer);
-			{
-				sprintf(num, "%d", pin_n++);
-				CreateNewPad(Element, line->Point1.X,
-										 line->Point1.Y, line->Point2.X,
-										 line->Point2.Y, line->Thickness,
-										 line->Clearance,
-										 line->Thickness + line->Clearance, NULL, line->Number ? line->Number : num, MakeFlags(onsolderflag));
-				MAYBE_WARN();
-				hasParts = pcb_true;
-			}
-			END_LOOP;
-			POLYGON_LOOP(layer);
-			{
-				Coord x1, y1, x2, y2, w, h, t;
-
-				if (!polygon_is_rectangle(polygon)) {
-					crooked = pcb_true;
-					continue;
-				}
-
-				w = polygon->Points[2].X - polygon->Points[0].X;
-				h = polygon->Points[1].Y - polygon->Points[0].Y;
-				t = (w < h) ? w : h;
-				x1 = polygon->Points[0].X + t / 2;
-				y1 = polygon->Points[0].Y + t / 2;
-				x2 = x1 + (w - t);
-				y2 = y1 + (h - t);
-
-				sprintf(num, "%d", pin_n++);
-				CreateNewPad(Element,
-										 x1, y1, x2, y2, t,
-										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, MakeFlags(PCB_FLAG_SQUARE | onsolderflag));
-				MAYBE_WARN();
-				hasParts = pcb_true;
-			}
-			END_LOOP;
-		}
-		END_LOOP;
-	}
-
-	/* now add the silkscreen. NOTE: elements must have pads or pins too */
-	LINE_LOOP(&Buffer->Data->SILKLAYER);
-	{
-		if (line->Number && !NAMEONPCB_NAME(Element))
-			NAMEONPCB_NAME(Element) = pcb_strdup(line->Number);
-		CreateNewLineInElement(Element, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
-		hasParts = pcb_true;
-	}
-	END_LOOP;
-	ARC_LOOP(&Buffer->Data->SILKLAYER);
-	{
-		CreateNewArcInElement(Element, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
-		hasParts = pcb_true;
-	}
-	END_LOOP;
-	if (!hasParts) {
-		DestroyObject(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
-		Message(PCB_MSG_DEFAULT, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
-		return (pcb_false);
-	}
-	if (crooked)
-		Message(PCB_MSG_DEFAULT, _("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
-	Element->MarkX = Buffer->X;
-	Element->MarkY = Buffer->Y;
-	if (SWAP_IDENT)
-		SET_FLAG(PCB_FLAG_ONSOLDER, Element);
-	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-	ClearBuffer(Buffer);
-	MoveObjectToBuffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
-	SetBufferBoundingBox(Buffer);
-	return (pcb_true);
 }
 
 /* ---------------------------------------------------------------------------
@@ -633,76 +277,6 @@ void RotateBuffer(BufferTypePtr Buffer, pcb_uint8_t Number)
 	/* finally the origin and the bounding box */
 	ROTATE(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
 	RotateBoxLowLevel(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
-}
-
-static void free_rotate(Coord * x, Coord * y, Coord cx, Coord cy, double cosa, double sina)
-{
-	double nx, ny;
-	Coord px = *x - cx;
-	Coord py = *y - cy;
-
-	nx = px * cosa + py * sina;
-	ny = py * cosa - px * sina;
-
-	*x = nx + cx;
-	*y = ny + cy;
-}
-
-void
-FreeRotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, double cosa, double sina, Angle angle)
-{
-	/* solder side objects need a different orientation */
-
-	/* the text subroutine decides by itself if the direction
-	 * is to be corrected
-	 */
-#if 0
-	ELEMENTTEXT_LOOP(Element);
-	{
-		if (Data && Data->name_tree[n])
-			r_delete_entry(Data->name_tree[n], (BoxType *) text);
-		RotateTextLowLevel(text, X, Y, Number);
-	}
-	END_LOOP;
-#endif
-	ELEMENTLINE_LOOP(Element);
-	{
-		free_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
-		free_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
-		SetLineBoundingBox(line);
-	}
-	END_LOOP;
-	PIN_LOOP(Element);
-	{
-		/* pre-delete the pins from the pin-tree before their coordinates change */
-		if (Data)
-			r_delete_entry(Data->pin_tree, (BoxType *) pin);
-		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
-		free_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
-		SetPinBoundingBox(pin);
-	}
-	END_LOOP;
-	PAD_LOOP(Element);
-	{
-		/* pre-delete the pads before their coordinates change */
-		if (Data)
-			r_delete_entry(Data->pad_tree, (BoxType *) pad);
-		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
-		free_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
-		free_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
-		SetLineBoundingBox((LineType *) pad);
-	}
-	END_LOOP;
-	ARC_LOOP(Element);
-	{
-		free_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
-		arc->StartAngle = NormalizeAngle(arc->StartAngle + angle);
-	}
-	END_LOOP;
-
-	free_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
-	SetElementBoundingBox(Data, Element, &PCB->Font);
-	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
 void FreeRotateBuffer(BufferTypePtr Buffer, Angle angle)
@@ -827,14 +401,6 @@ void UninitBuffers(void)
 	}
 }
 
-void pcb_swap_buffers(void)
-{
-	int i;
-
-	for (i = 0; i < MAX_BUFFER; i++)
-		SwapBuffer(&Buffers[i]);
-	SetCrosshairRangeToBuffer();
-}
 
 void MirrorBuffer(BufferTypePtr Buffer)
 {
@@ -895,7 +461,7 @@ void MirrorBuffer(BufferTypePtr Buffer)
 /* ---------------------------------------------------------------------------
  * flip components/tracks from one side to the other
  */
-static void SwapBuffer(BufferTypePtr Buffer)
+void SwapBuffer(BufferTypePtr Buffer)
 {
 	int j, k;
 	pcb_cardinal_t sgroup, cgroup;
@@ -1010,6 +576,15 @@ static void SwapBuffer(BufferTypePtr Buffer)
 		}
 	}
 	SetBufferBoundingBox(Buffer);
+}
+
+void pcb_swap_buffers(void)
+{
+	int i;
+
+	for (i = 0; i < MAX_BUFFER; i++)
+		SwapBuffer(&Buffers[i]);
+	SetCrosshairRangeToBuffer();
 }
 
 /* ----------------------------------------------------------------------

@@ -47,12 +47,6 @@
 #include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
- * some local prototypes
- */
-static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr);
-static void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element);
-
-/* ---------------------------------------------------------------------------
  * some local types
  */
 static pcb_opfunc_t RemoveFunctions = {
@@ -93,66 +87,6 @@ void RemovePCB(PCBTypePtr Ptr)
 	ClearUndoList(pcb_true);
 	FreePCBMemory(Ptr);
 	free(Ptr);
-}
-
-/* ---------------------------------------------------------------------------
- * destroys a element
- */
-static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
-{
-	if (ctx->remove.destroy_target->element_tree)
-		r_delete_entry(ctx->remove.destroy_target->element_tree, (BoxType *) Element);
-	if (ctx->remove.destroy_target->pin_tree) {
-		PIN_LOOP(Element);
-		{
-			r_delete_entry(ctx->remove.destroy_target->pin_tree, (BoxType *) pin);
-		}
-		END_LOOP;
-	}
-	if (ctx->remove.destroy_target->pad_tree) {
-		PAD_LOOP(Element);
-		{
-			r_delete_entry(ctx->remove.destroy_target->pad_tree, (BoxType *) pad);
-		}
-		END_LOOP;
-	}
-	ELEMENTTEXT_LOOP(Element);
-	{
-		if (ctx->remove.destroy_target->name_tree[n])
-			r_delete_entry(ctx->remove.destroy_target->name_tree[n], (BoxType *) text);
-	}
-	END_LOOP;
-	FreeElementMemory(Element);
-
-	RemoveFreeElement(Element);
-
-	return NULL;
-}
-
-/* ---------------------------------------------------------------------------
- * removes an element
- */
-static void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element)
-{
-	/* erase from screen */
-	if ((PCB->ElementOn || PCB->PinOn) && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
-		EraseElement(Element);
-		if (!ctx->remove.bulk)
-			Draw();
-	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, Element, Element, Element);
-	return NULL;
-}
-
-void *RemoveElement(ElementTypePtr Element)
-{
-	pcb_opctx_t ctx;
-
-	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_false;
-	ctx.remove.destroy_target = NULL;
-
-	return RemoveElement_op(&ctx, Element);
 }
 
 /* ----------------------------------------------------------------------

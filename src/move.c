@@ -56,12 +56,6 @@
 #include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
- * some local prototypes
- */
-static void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr);
-static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr);
-
-/* ---------------------------------------------------------------------------
  * some local identifiers
  */
 static pcb_opfunc_t MoveFunctions = {
@@ -79,126 +73,6 @@ static pcb_opfunc_t MoveFunctions = {
 	NULL
 }, MoveToLayerFunctions = {
 MoveLineToLayer, MoveTextToLayer, MovePolygonToLayer, NULL, NULL, NULL, NULL, NULL, NULL, NULL, MoveArcToLayer, MoveRatToLayer};
-
-/* ---------------------------------------------------------------------------
- * moves a element by +-X and +-Y
- */
-void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coord DY)
-{
-	if (Data)
-		r_delete_entry(Data->element_tree, (BoxType *) Element);
-	ELEMENTLINE_LOOP(Element);
-	{
-		MOVE_LINE_LOWLEVEL(line, DX, DY);
-	}
-	END_LOOP;
-	PIN_LOOP(Element);
-	{
-		if (Data) {
-			r_delete_entry(Data->pin_tree, (BoxType *) pin);
-			RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
-		}
-		MOVE_PIN_LOWLEVEL(pin, DX, DY);
-		if (Data) {
-			r_insert_entry(Data->pin_tree, (BoxType *) pin, 0);
-			ClearFromPolygon(Data, PCB_TYPE_PIN, Element, pin);
-		}
-	}
-	END_LOOP;
-	PAD_LOOP(Element);
-	{
-		if (Data) {
-			r_delete_entry(Data->pad_tree, (BoxType *) pad);
-			RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
-		}
-		MOVE_PAD_LOWLEVEL(pad, DX, DY);
-		if (Data) {
-			r_insert_entry(Data->pad_tree, (BoxType *) pad, 0);
-			ClearFromPolygon(Data, PCB_TYPE_PAD, Element, pad);
-		}
-	}
-	END_LOOP;
-	ARC_LOOP(Element);
-	{
-		MOVE_ARC_LOWLEVEL(arc, DX, DY);
-	}
-	END_LOOP;
-	ELEMENTTEXT_LOOP(Element);
-	{
-		if (Data && Data->name_tree[n])
-			r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
-		MOVE_TEXT_LOWLEVEL(text, DX, DY);
-		if (Data && Data->name_tree[n])
-			r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
-	}
-	END_LOOP;
-	MOVE_BOX_LOWLEVEL(&Element->BoundingBox, DX, DY);
-	MOVE_BOX_LOWLEVEL(&Element->VBox, DX, DY);
-	MOVE(Element->MarkX, Element->MarkY, DX, DY);
-	if (Data)
-		r_insert_entry(Data->element_tree, (BoxType *) Element, 0);
-}
-
-/* ----------------------------------------------------------------------
- * moves all names of an element to a new position
- */
-static void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
-{
-	if (PCB->ElementOn && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
-		EraseElementName(Element);
-		ELEMENTTEXT_LOOP(Element);
-		{
-			if (PCB->Data->name_tree[n])
-				r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
-			MOVE_TEXT_LOWLEVEL(text, ctx->move.dx, ctx->move.dy);
-			if (PCB->Data->name_tree[n])
-				r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
-		}
-		END_LOOP;
-		DrawElementName(Element);
-		Draw();
-	}
-	else {
-		ELEMENTTEXT_LOOP(Element);
-		{
-			if (PCB->Data->name_tree[n])
-				r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
-			MOVE_TEXT_LOWLEVEL(text, ctx->move.dx, ctx->move.dy);
-			if (PCB->Data->name_tree[n])
-				r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
-		}
-		END_LOOP;
-	}
-	return (Element);
-}
-
-/* ---------------------------------------------------------------------------
- * moves an element
- */
-static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr Element)
-{
-	pcb_bool didDraw = pcb_false;
-
-	if (PCB->ElementOn && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
-		EraseElement(Element);
-		MoveElementLowLevel(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
-		DrawElementName(Element);
-		DrawElementPackage(Element);
-		didDraw = pcb_true;
-	}
-	else {
-		if (PCB->PinOn)
-			EraseElementPinsAndPads(Element);
-		MoveElementLowLevel(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
-	}
-	if (PCB->PinOn) {
-		DrawElementPinsAndPads(Element);
-		didDraw = pcb_true;
-	}
-	if (didDraw)
-		Draw();
-	return (Element);
-}
 
 /* ---------------------------------------------------------------------------
  * moves the object identified by its data pointers and the type

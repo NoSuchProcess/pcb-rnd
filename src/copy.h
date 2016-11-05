@@ -39,7 +39,6 @@
 	PCB_TYPE_ELEMENT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_POLYGON | PCB_TYPE_ARC)
 
 
-ElementTypePtr CopyElementLowLevel(DataTypePtr, ElementTypePtr, ElementTypePtr, pcb_bool, Coord, Coord);
 pcb_bool CopyPastebufferToLayout(Coord, Coord);
 void *CopyObject(int, void *, void *, void *, Coord, Coord);
 

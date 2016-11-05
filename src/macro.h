@@ -53,24 +53,6 @@
 #define	OBJECT_ID(p)		(((AnyObjectTypePtr) p)->ID)
 
 /* ---------------------------------------------------------------------------
- * access macros for elements name structure
- */
-#define	DESCRIPTION_INDEX	0
-#define	NAMEONPCB_INDEX		1
-#define	VALUE_INDEX		2
-#define	NAME_INDEX()		(conf_core.editor.name_on_pcb ? NAMEONPCB_INDEX :\
-				(conf_core.editor.description ?		\
-				DESCRIPTION_INDEX : VALUE_INDEX))
-#define	ELEMENT_NAME(p,e)	((e)->Name[NAME_INDEX()].TextString)
-#define	DESCRIPTION_NAME(e)	((e)->Name[DESCRIPTION_INDEX].TextString)
-#define	NAMEONPCB_NAME(e)	((e)->Name[NAMEONPCB_INDEX].TextString)
-#define	VALUE_NAME(e)		((e)->Name[VALUE_INDEX].TextString)
-#define	ELEMENT_TEXT(p,e)	((e)->Name[NAME_INDEX()])
-#define	DESCRIPTION_TEXT(e)	((e)->Name[DESCRIPTION_INDEX])
-#define	NAMEONPCB_TEXT(e)	((e)->Name[NAMEONPCB_INDEX])
-#define	VALUE_TEXT(e)		((e)->Name[VALUE_INDEX])
-
-/* ---------------------------------------------------------------------------
  *  Determines if object is on front or back
  */
 #define FRONT(o)	\
@@ -100,35 +82,6 @@
         for (n = 0; (top)->DrillN > 0 && n < (top)->DrillN; n++)                        \
         {                                                       \
                 drill = &(top)->Drill[n]
-
-#define ELEMENT_LOOP(top) do {                                      \
-  ElementType *element;                                             \
-  gdl_iterator_t __it__;                                            \
-  pinlist_foreach(&(top)->Element, &__it__, element) {
-
-#define	ELEMENTTEXT_LOOP(element) do { 	\
-	pcb_cardinal_t	n;				\
-	TextTypePtr	text;				\
-	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)	\
-	{						\
-		text = &(element)->Name[n]
-
-#define	ELEMENTNAME_LOOP(element) do	{ 			\
-	pcb_cardinal_t	n;					\
-	char		*textstring;				\
-	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)		\
-	{							\
-		textstring = (element)->Name[n].TextString
-
-#define ELEMENTLINE_LOOP(element) do {                              \
-  LineType *line;                                                   \
-  gdl_iterator_t __it__;                                            \
-  linelist_foreach(&(element)->Line, &__it__, line) {
-
-#define ELEMENTARC_LOOP(element) do {                               \
-  ArcType *arc;                                                     \
-  gdl_iterator_t __it__;                                            \
-  linelist_foreach(&(element)->Arc, &__it__, arc) {
 
 #define ENDALL_LOOP }} while (0); }} while(0)
 

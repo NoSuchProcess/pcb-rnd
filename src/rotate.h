@@ -93,11 +93,22 @@ do { \
 
 void RotateBoxLowLevel(BoxTypePtr, Coord, Coord, unsigned);
 void RotatePolygonLowLevel(PolygonTypePtr, Coord, Coord, unsigned);
-void RotateElementLowLevel(DataTypePtr, ElementTypePtr, Coord, Coord, unsigned);
 void *RotateObject(int, void *, void *, void *, Coord, Coord, unsigned);
 void RotateScreenObject(Coord, Coord, unsigned);
 
 void RotatePointLowLevel(PointTypePtr Point, Coord X, Coord Y, unsigned Number);
 
+static inline PCB_FUNC_UNUSED void free_rotate(Coord * x, Coord * y, Coord cx, Coord cy, double cosa, double sina)
+{
+	double nx, ny;
+	Coord px = *x - cx;
+	Coord py = *y - cy;
+
+	nx = px * cosa + py * sina;
+	ny = py * cosa - px * sina;
+
+	*x = nx + cx;
+	*y = ny + cy;
+}
 
 #endif

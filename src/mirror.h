@@ -23,22 +23,3 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
-
-/* prototypes to change objects mirror flag */
-
-#ifndef	PCB_MIRROR_H
-#define	PCB_MIRROR_H
-
-#include "config.h"
-
-/* ---------------------------------------------------------------------------
- * some useful macros and defines
- */
-#define	MIRROR(object)	TOGGLE_FLAG(MIRRORFLAG, (object))
-
-#define	MIRROR_TYPES	(PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME)
-
-
-void MirrorElementCoordinates(DataTypePtr, ElementTypePtr, Coord);
-
-#endif

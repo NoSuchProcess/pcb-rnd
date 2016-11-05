@@ -46,11 +46,6 @@
 #include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
- * some local prototypes
- */
-static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr);
-
-/* ---------------------------------------------------------------------------
  * some local identifiers
  */
 static pcb_opfunc_t CopyFunctions = {
@@ -67,96 +62,6 @@ static pcb_opfunc_t CopyFunctions = {
 	CopyArc,
 	NULL
 };
-
-/* ---------------------------------------------------------------------------
- * copies data from one element to another and creates the destination
- * if necessary
- */
-ElementTypePtr
-CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, pcb_bool uniqueName, Coord dx, Coord dy)
-{
-	int i;
-	/* release old memory if necessary */
-	if (Dest)
-		FreeElementMemory(Dest);
-
-	/* both coordinates and flags are the same */
-	Dest = CreateNewElement(Data, Dest, &PCB->Font,
-													MaskFlags(Src->Flags, PCB_FLAG_FOUND),
-													DESCRIPTION_NAME(Src), NAMEONPCB_NAME(Src),
-													VALUE_NAME(Src), DESCRIPTION_TEXT(Src).X + dx,
-													DESCRIPTION_TEXT(Src).Y + dy,
-													DESCRIPTION_TEXT(Src).Direction,
-													DESCRIPTION_TEXT(Src).Scale, MaskFlags(DESCRIPTION_TEXT(Src).Flags, PCB_FLAG_FOUND), uniqueName);
-
-	/* abort on error */
-	if (!Dest)
-		return (Dest);
-
-	ELEMENTLINE_LOOP(Src);
-	{
-		CreateNewLineInElement(Dest, line->Point1.X + dx,
-													 line->Point1.Y + dy, line->Point2.X + dx, line->Point2.Y + dy, line->Thickness);
-	}
-	END_LOOP;
-	PIN_LOOP(Src);
-	{
-		CreateNewPin(Dest, pin->X + dx, pin->Y + dy, pin->Thickness,
-								 pin->Clearance, pin->Mask, pin->DrillingHole, pin->Name, pin->Number, MaskFlags(pin->Flags, PCB_FLAG_FOUND));
-	}
-	END_LOOP;
-	PAD_LOOP(Src);
-	{
-		CreateNewPad(Dest, pad->Point1.X + dx, pad->Point1.Y + dy,
-								 pad->Point2.X + dx, pad->Point2.Y + dy, pad->Thickness,
-								 pad->Clearance, pad->Mask, pad->Name, pad->Number, MaskFlags(pad->Flags, PCB_FLAG_FOUND));
-	}
-	END_LOOP;
-	ARC_LOOP(Src);
-	{
-		CreateNewArcInElement(Dest, arc->X + dx, arc->Y + dy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
-	}
-	END_LOOP;
-
-	for (i = 0; i < Src->Attributes.Number; i++)
-		CreateNewAttribute(&Dest->Attributes, Src->Attributes.List[i].name, Src->Attributes.List[i].value);
-
-	Dest->MarkX = Src->MarkX + dx;
-	Dest->MarkY = Src->MarkY + dy;
-
-	SetElementBoundingBox(Data, Dest, &PCB->Font);
-	return (Dest);
-}
-
-/* ---------------------------------------------------------------------------
- * copies an element onto the PCB.  Then does a draw.
- */
-static void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
-{
-
-#ifdef DEBUG
-	printf("Entered CopyElement, trying to copy element %s\n", Element->Name[1].TextString);
-#endif
-
-	ElementTypePtr element = CopyElementLowLevel(PCB->Data,
-																							 NULL, Element,
-																							 conf_core.editor.unique_names, ctx->copy.DeltaX,
-																							 ctx->copy.DeltaY);
-
-	/* this call clears the polygons */
-	AddObjectToCreateUndoList(PCB_TYPE_ELEMENT, element, element, element);
-	if (PCB->ElementOn && (FRONT(element) || PCB->InvisibleObjectsOn)) {
-		DrawElementName(element);
-		DrawElementPackage(element);
-	}
-	if (PCB->PinOn) {
-		DrawElementPinsAndPads(element);
-	}
-#ifdef DEBUG
-	printf(" ... Leaving CopyElement.\n");
-#endif
-	return (element);
-}
 
 /* ---------------------------------------------------------------------------
  * pastes the contents of the buffer to the layout. Only visible objects

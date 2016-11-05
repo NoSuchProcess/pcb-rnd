@@ -39,10 +39,6 @@
 void CreateBeLenient(pcb_bool);
 extern pcb_bool pcb_create_be_lenient;
 
-ElementTypePtr CreateNewElement(DataTypePtr, ElementTypePtr,
-																FontTypePtr, FlagType, char *, char *, char *, Coord, Coord, pcb_uint8_t, int, FlagType, pcb_bool);
-LineTypePtr CreateNewLineInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Coord);
-ArcTypePtr CreateNewArcInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Angle, Angle, Coord);
 LineTypePtr CreateNewLineInSymbol(SymbolTypePtr, Coord, Coord, Coord, Coord, Coord);
 void CreateDefaultFont(PCBTypePtr);
 

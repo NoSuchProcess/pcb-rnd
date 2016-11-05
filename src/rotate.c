@@ -51,12 +51,6 @@
 #include "obj_line.h"
 #include "obj_pinvia.h"
 
-/* ---------------------------------------------------------------------------
- * some local prototypes
- */
-static void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr);
-static void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr);
-
 /* ----------------------------------------------------------------------
  * some local identifiers
  */
@@ -81,87 +75,6 @@ static pcb_opfunc_t RotateFunctions = {
 void RotatePointLowLevel(PointTypePtr Point, Coord X, Coord Y, unsigned Number)
 {
 	ROTATE(Point->X, Point->Y, X, Y, Number);
-}
-
-/* ---------------------------------------------------------------------------
- * rotate an element in 90 degree steps
- */
-void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number)
-{
-	/* solder side objects need a different orientation */
-
-	/* the text subroutine decides by itself if the direction
-	 * is to be corrected
-	 */
-	ELEMENTTEXT_LOOP(Element);
-	{
-		if (Data && Data->name_tree[n])
-			r_delete_entry(Data->name_tree[n], (BoxType *) text);
-		RotateTextLowLevel(text, X, Y, Number);
-	}
-	END_LOOP;
-	ELEMENTLINE_LOOP(Element);
-	{
-		RotateLineLowLevel(line, X, Y, Number);
-	}
-	END_LOOP;
-	PIN_LOOP(Element);
-	{
-		/* pre-delete the pins from the pin-tree before their coordinates change */
-		if (Data)
-			r_delete_entry(Data->pin_tree, (BoxType *) pin);
-		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
-		ROTATE_PIN_LOWLEVEL(pin, X, Y, Number);
-	}
-	END_LOOP;
-	PAD_LOOP(Element);
-	{
-		/* pre-delete the pads before their coordinates change */
-		if (Data)
-			r_delete_entry(Data->pad_tree, (BoxType *) pad);
-		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
-		ROTATE_PAD_LOWLEVEL(pad, X, Y, Number);
-	}
-	END_LOOP;
-	ARC_LOOP(Element);
-	{
-		RotateArcLowLevel(arc, X, Y, Number);
-	}
-	END_LOOP;
-	ROTATE(Element->MarkX, Element->MarkY, X, Y, Number);
-	/* SetElementBoundingBox reenters the rtree data */
-	SetElementBoundingBox(Data, Element, &PCB->Font);
-	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
-}
-
-/* ---------------------------------------------------------------------------
- * rotates an element
- */
-static void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr Element)
-{
-	EraseElement(Element);
-	RotateElementLowLevel(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	DrawElement(Element);
-	Draw();
-	return (Element);
-}
-
-/* ----------------------------------------------------------------------
- * rotates the name of an element
- */
-static void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
-{
-	EraseElementName(Element);
-	ELEMENTTEXT_LOOP(Element);
-	{
-		r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
-		RotateTextLowLevel(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-		r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
-	}
-	END_LOOP;
-	DrawElementName(Element);
-	Draw();
-	return (Element);
 }
 
 /* ---------------------------------------------------------------------------
