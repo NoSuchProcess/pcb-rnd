@@ -29,8 +29,6 @@
 #ifndef PCB_OBJ_ELEM_H
 #define PCB_OBJ_ELEM_H
 
-#include "global_objs.h"
-
 #include "obj_common.h"
 #include "obj_arc_list.h"
 #include "obj_line_list.h"

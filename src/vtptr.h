@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <string.h>
-#include "global_objs.h"
 
 typedef void *ptr_t;
 

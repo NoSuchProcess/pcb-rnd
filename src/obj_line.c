@@ -29,7 +29,6 @@
 #include "config.h"
 #include <setjmp.h>
 
-#include "global_objs.h"
 #include "const.h"
 #include "undo.h"
 #include "board.h"

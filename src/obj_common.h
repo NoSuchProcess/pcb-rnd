@@ -27,6 +27,23 @@
 #ifndef PCB_OBJ_COMMON_H
 #define PCB_OBJ_COMMON_H
 
+#include <genlist/gendlist.h>
+#include "flag.h"
+#include "attrib.h"
+#include "global_typedefs.h"
+
+/* point and box type - they are so common everything depends on them */
+struct pcb_point_s {    /* a line/polygon point */
+	Coord X, Y, X2, Y2;   /* so Point type can be cast as BoxType */
+	long int ID;
+};
+
+struct pcb_box_s {  /* a bounding box */
+	Coord X1, Y1;     /* upper left */
+	Coord X2, Y2;     /* and lower right corner */
+};
+
+
 /* memset object to 0, but keep the link field */
 #define reset_obj_mem(type, obj) \
 do { \
@@ -45,6 +62,43 @@ extern pcb_bool pcb_create_be_lenient;
 void CreateIDBump(int min_id);
 void CreateIDReset(void);
 long int CreateIDGet(void);
+
+/* ---------------------------------------------------------------------------
+ * Do not change the following definitions even if they're not very
+ * nice.  It allows us to have functions act on these "base types" and
+ * not need to know what kind of actual object they're working on.
+ */
+
+/* Any object that uses the "object flags" defined in const.h, or
+   exists as an object on the pcb, MUST be defined using this as the
+   first fields, either directly or through ANYLINEFIELDS.  */
+#define ANYOBJECTFIELDS			\
+	BoxType		BoundingBox;	\
+	long int	ID;		\
+	FlagType	Flags; \
+	AttributeListType Attributes
+
+	/*  struct LibraryEntryType *net */
+
+/* Lines, pads, and rats all use this so they can be cross-cast.  */
+#define	ANYLINEFIELDS			\
+	ANYOBJECTFIELDS;		\
+	Coord		Thickness,      \
+                        Clearance;      \
+	PointType	Point1,		\
+			Point2
+
+/* All on-pcb objects (elements, lines, pads, vias, rats, etc) are
+   based on this. */
+typedef struct {
+	ANYOBJECTFIELDS;
+} AnyObjectType, *AnyObjectTypePtr;
+
+/* Lines, rats, pads, etc.  */
+typedef struct {
+	ANYLINEFIELDS;
+} AnyLineObjectType, *AnyLineObjectTypePtr;
+
 
 
 #endif

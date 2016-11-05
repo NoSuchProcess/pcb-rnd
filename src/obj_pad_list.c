@@ -21,6 +21,5 @@
  */
 
 #define TDL_DONT_UNDEF
-#include "global_objs.h"
 #include "obj_pad_list.h"
 #include <genlist/gentdlist_impl.c>

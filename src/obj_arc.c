@@ -28,7 +28,6 @@
 
 
 #include "config.h"
-#include "global_objs.h"
 #include "compat_nls.h"
 #include "buffer.h"
 #include "board.h"

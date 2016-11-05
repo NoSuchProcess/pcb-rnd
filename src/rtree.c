@@ -44,7 +44,7 @@
 #include "math_helper.h"
 #include "compat_cc.h"
 #include "rtree.h"
-#include "global_objs.h"
+#include "obj_common.h"
 #include "macro.h"
 
 #define SLOW_ASSERTS

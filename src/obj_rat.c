@@ -27,7 +27,6 @@
 /* Drawing primitive: pins and vias */
 
 #include "config.h"
-#include "global_objs.h"
 
 #include "flag.h"
 #include "board.h"

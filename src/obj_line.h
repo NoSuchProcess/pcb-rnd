@@ -29,7 +29,6 @@
 #ifndef PCB_OBJ_LINE_H
 #define PCB_OBJ_LINE_H
 
-#include "global_objs.h"
 #include "obj_common.h"
 
 struct pcb_line_s {            /* holds information about one line */

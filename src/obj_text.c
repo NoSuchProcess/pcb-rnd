@@ -28,7 +28,6 @@
 
 #include "config.h"
 
-#include "global_objs.h"
 #include "rotate.h"
 #include "layer.h"
 #include "board.h"

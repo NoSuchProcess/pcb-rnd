@@ -29,7 +29,7 @@
 #ifndef PCB_BUFFER_H
 #define PCB_BUFFER_H
 
-#include "global_objs.h"
+#include "obj_common.h"
 
 struct pcb_buffer_s {								/* information about the paste buffer */
 	Coord X, Y;										/* offset */

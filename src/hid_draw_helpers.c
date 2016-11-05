@@ -1,5 +1,4 @@
 #include "config.h"
-#include "global_objs.h"
 #include "hid.h"
 #include "polygon.h"
 #include "macro.h"

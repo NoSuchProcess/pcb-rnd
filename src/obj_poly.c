@@ -28,7 +28,6 @@
 
 
 #include "config.h"
-#include "global_objs.h"
 
 #include "board.h"
 #include "data.h"

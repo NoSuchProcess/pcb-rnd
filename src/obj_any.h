@@ -25,7 +25,7 @@
 #ifndef PCB_OBJ_H
 #define PCB_OBJ_H
 
-#include "global_objs.h"
+#include "obj_common.h"
 #include "global_typedefs.h"
 
 /* Can be used as a bitfield */

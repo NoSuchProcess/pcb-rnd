@@ -27,8 +27,7 @@
 #ifndef PCB_STRFLAGS_H
 #define PCB_STRFLAGS_H
 
-/* for flagtype */
-#include "global_objs.h"
+#include "flag.h"
 
 typedef struct {
 

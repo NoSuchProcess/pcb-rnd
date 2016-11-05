@@ -30,6 +30,7 @@
 #define	PCB_POLYGON_H
 
 #include "config.h"
+#include "flag.h"
 #include "rtree.h"
 #include "math_helper.h"
 #include "polyarea.h"

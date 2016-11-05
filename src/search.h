@@ -29,7 +29,7 @@
 #ifndef	PCB_SEARCH_H
 #define	PCB_SEARCH_H
 
-#include "global_objs.h"
+#include "obj_common.h"
 #include "rats.h"
 #include "misc_util.h"
 

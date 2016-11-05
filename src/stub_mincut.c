@@ -22,7 +22,7 @@
 
 #include "config.h"
 #include <stdlib.h>
-#include "global_objs.h"
+#include "obj_common.h"
 #include "stub_mincut.h"
 #include "obj_pinvia.h"
 #include "obj_pad.h"

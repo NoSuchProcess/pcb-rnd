@@ -49,7 +49,6 @@ enum {
 
 #include "global_typedefs.h"
 #include "vtroutestyle.h"
-#include "global_objs.h"
 #include "layer.h"
 #include "library.h"
 #include "attrib.h"

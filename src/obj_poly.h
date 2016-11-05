@@ -29,7 +29,6 @@
 #ifndef PCB_OBJ_POLY_H
 #define PCB_OBJ_POLY_H
 
-#include "global_objs.h"
 #include "obj_common.h"
 #include "polyarea.h"
 

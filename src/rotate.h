@@ -30,6 +30,7 @@
 #define	PCB_ROTATE_H
 
 #include "config.h"
+#include "global_typedefs.h"
 
 /* ---------------------------------------------------------------------------
  * some useful transformation macros and constants

@@ -52,8 +52,9 @@
 #include "compat_cc.h"
 #include "pcb-printf.h"
 #include "polyarea.h"
-#include "global_objs.h"
+#include "obj_common.h"
 #include "macro.h"
+
 
 #define ROUND(a) (long)((a) > 0 ? ((a) + 0.5) : ((a) - 0.5))
 

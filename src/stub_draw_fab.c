@@ -25,7 +25,6 @@
  */
 #include "config.h"
 #include "stub_draw_fab.h"
-#include "global_objs.h"
 #include "obj_text.h"
 #include "draw.h"
 
