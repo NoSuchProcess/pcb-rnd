@@ -60,6 +60,7 @@
 #include "compat_misc.h"
 #include "compat_cc.h"
 #include "obj_common.h"
+#include "paths.h"
 
 #define YY_NO_INPUT
 

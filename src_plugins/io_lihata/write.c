@@ -41,6 +41,7 @@
 #include "common.h"
 #include "write_style.h"
 #include "io_lihata.h"
+#include "paths.h"
 
 /*#define CFMT "%[9]"*/
 #define CFMT "%.08$$mH"

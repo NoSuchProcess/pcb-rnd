@@ -43,13 +43,10 @@
 
 #include <locale.h>
 #include <dirent.h>
-#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "math_helper.h"
-#include "buffer.h"
 #include "change.h"
 #include "data.h"
 #include "error.h"
@@ -689,82 +686,6 @@ void EnableAutosave(void)
 		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
 }
 
-int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
-{
-	char buff[20];
-
-	switch(**input) {
-		case 'P':
-			sprintf(buff, "%.8i", pcb_getpid());
-			gds_append_str(s, buff);
-			(*input)++;
-			return 0;
-		case 'F':
-			gds_append_str(s, (PCB->Filename != NULL) ? PCB->Filename : "no_file_name");
-			(*input)++;
-			return 0;
-		case 'B':
-			if (PCB->Filename != NULL) {
-				char *bn = strrchr(PCB->Filename, '/');
-				if (bn != NULL)
-					bn++;
-				else
-					bn = PCB->Filename;
-				gds_append_str(s, bn);
-			}
-			else
-				gds_append_str(s, "no_file_name");
-			(*input)++;
-			return 0;
-		case 'D':
-			if (PCB->Filename != NULL) {
-				char *bn = strrchr(PCB->Filename, '/');
-				if (bn != NULL)
-					gds_append_len(s, PCB->Filename, bn-PCB->Filename+1);
-				else
-					gds_append_str(s, "./");
-			}
-			else
-				gds_append_str(s, "./");
-			(*input)++;
-			return 0;
-		case 'N':
-			gds_append_str(s, (PCB->Name != NULL) ? PCB->Name : "no_name");
-			(*input)++;
-			return 0;
-		case 'T':
-			sprintf(buff, "%lu", (unsigned long int)time(NULL));
-			gds_append_str(s, buff);
-			(*input)++;
-			return 0;
-	}
-	return -1;
-}
-
-int pcb_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
-{
-	if ((**input >= 'a') && (**input <= 'z')) {
-		int idx = **input - 'a';
-		pcb_build_argfn_t *ctx = ctx_;
-		if (ctx->params[idx] == NULL)
-			return -1;
-		gds_append_str(s, ctx->params[idx]);
-		(*input)++;
-		return 0;
-	}
-	return pcb_build_fn_cb(NULL, s, input);
-}
-
-static char *build_fn(const char *template)
-{
-	return pcb_strdup_subst(template, pcb_build_fn_cb, NULL);
-}
-
-char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg)
-{
-	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg);
-}
-
 /* ---------------------------------------------------------------------------
  * creates backup file.  The default is to use the pcb file name with
  * a "-" appended (like "foo.pcb-") and if we don't have a pcb file name
@@ -784,7 +705,7 @@ void Backup(void)
 	}
 	else {
 		/* conf_core.rc.backup_name has %.8i which  will be replaced by the process ID */
-		filename = build_fn(conf_core.rc.backup_name);
+		filename = pcb_build_fn(conf_core.rc.backup_name);
 		if (filename == NULL) {
 			fprintf(stderr, "Backup(): can't build file name for a backup\n");
 			exit(1);
@@ -804,7 +725,7 @@ void Backup(void)
  */
 void SaveTMPData(void)
 {
-	char *fn = build_fn(conf_core.rc.emergency_name);
+	char *fn = pcb_build_fn(conf_core.rc.emergency_name);
 	WritePCBFile(fn, pcb_true, DEFAULT_FMT, pcb_true);
 	if (TMPFilename != NULL)
 		free(TMPFilename);

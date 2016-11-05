@@ -1,3 +1,31 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  pcb-rnd, interactive printed circuit board design
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *
+ *  This module, rats.c, was written and is Copyright (C) 1997 by harry eaton
+ *  this module is also subject to the GNU GPL as described below
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+
+/* Resolve paths, build paths using template */
+
+#include "genvector/gds_char.h"
 
 /* Allocate *out and copy the path from in to out, replacing ~ with conf_core.rc.path.home
    If extra_room is non-zero, allocate this many bytes extra for each slot;
@@ -21,3 +49,28 @@ do { \
 		resolve_paths(in, out, __numpath__, extra_room); \
 	} \
 } while(0)
+
+
+/* generic file name template substitution callbacks for pcb_strdup_subst:
+    %P    pid
+    %F    load-time file name of the current pcb
+    %B    basename (load-time file name of the current pcb without path)
+    %D    dirname (load-time file path of the current pcb, without file name, with trailing slash, might be ./)
+    %N    name of the current pcb
+    %T    wall time (Epoch)
+*/
+int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input);
+
+char *pcb_build_fn(const char *template);
+
+
+/* Same as above, but also replaces lower case formatting to the members of
+   the array if they are not NULL; use with pcb_build_argfn() */
+typedef struct {
+	const char *params['z' - 'a' + 1]; /* [0] for 'a' */
+} pcb_build_argfn_t;
+
+char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg);
+
+int pcb_build_argfn_cb(void *ctx, gds_t *s, const char **input);
+

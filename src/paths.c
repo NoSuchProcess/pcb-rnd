@@ -1,9 +1,40 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  pcb-rnd, interactive printed circuit board design
+ *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *
+ *  This module, rats.c, was written and is Copyright (C) 1997 by harry eaton
+ *  this module is also subject to the GNU GPL as described below
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+
+/* Resolve paths, build paths using template */
+#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
 #include "paths.h"
 #include "error.h"
 #include "conf_core.h"
+
+
+#include "board.h"
+#include "compat_misc.h"
 
 void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra_room)
 {
@@ -82,4 +113,80 @@ char *resolve_path_inplace(char *in, unsigned int extra_room)
 	resolve_path(in, &out, extra_room);
 	free(in);
 	return out;
+}
+
+int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
+{
+	char buff[20];
+
+	switch(**input) {
+		case 'P':
+			sprintf(buff, "%.8i", pcb_getpid());
+			gds_append_str(s, buff);
+			(*input)++;
+			return 0;
+		case 'F':
+			gds_append_str(s, (PCB->Filename != NULL) ? PCB->Filename : "no_file_name");
+			(*input)++;
+			return 0;
+		case 'B':
+			if (PCB->Filename != NULL) {
+				char *bn = strrchr(PCB->Filename, '/');
+				if (bn != NULL)
+					bn++;
+				else
+					bn = PCB->Filename;
+				gds_append_str(s, bn);
+			}
+			else
+				gds_append_str(s, "no_file_name");
+			(*input)++;
+			return 0;
+		case 'D':
+			if (PCB->Filename != NULL) {
+				char *bn = strrchr(PCB->Filename, '/');
+				if (bn != NULL)
+					gds_append_len(s, PCB->Filename, bn-PCB->Filename+1);
+				else
+					gds_append_str(s, "./");
+			}
+			else
+				gds_append_str(s, "./");
+			(*input)++;
+			return 0;
+		case 'N':
+			gds_append_str(s, (PCB->Name != NULL) ? PCB->Name : "no_name");
+			(*input)++;
+			return 0;
+		case 'T':
+			sprintf(buff, "%lu", (unsigned long int)time(NULL));
+			gds_append_str(s, buff);
+			(*input)++;
+			return 0;
+	}
+	return -1;
+}
+
+int pcb_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
+{
+	if ((**input >= 'a') && (**input <= 'z')) {
+		int idx = **input - 'a';
+		pcb_build_argfn_t *ctx = ctx_;
+		if (ctx->params[idx] == NULL)
+			return -1;
+		gds_append_str(s, ctx->params[idx]);
+		(*input)++;
+		return 0;
+	}
+	return pcb_build_fn_cb(NULL, s, input);
+}
+
+char *pcb_build_fn(const char *template)
+{
+	return pcb_strdup_subst(template, pcb_build_fn_cb, NULL);
+}
+
+char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg)
+{
+	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg);
 }
