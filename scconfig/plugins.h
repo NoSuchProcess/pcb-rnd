@@ -10,6 +10,7 @@ plugin_def("autoroute",       "the original autorouter",   sbuildin, 1)
 plugin_def("boardflip",       "flip board objects",        sdisable, 0)
 plugin_def("distalign",       "distribute and align objs", sbuildin, 1)
 plugin_def("distaligntext",   "distribute and align text", sbuildin, 1)
+plugin_def("draw_fab",        "fab layer in some exports", sbuildin, 1)
 plugin_def("jostle",          "push lines out of the way", sbuildin, 1)
 plugin_def("polycombine",     "combine selected polygons", sbuildin, 1)
 plugin_def("polystitch",      "stitch polygon at cursor",  sdisable, 0)
@@ -77,3 +78,6 @@ plugin_dep("io_kicad", "lib_gensexpr")
 
 /* for the uniq name lib: */
 plugin_dep("io_kicad_legacy", "io_kicad")
+
+/* for drill.[ch] */
+plugin_dep("draw_fab", "report")

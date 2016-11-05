@@ -23,16 +23,18 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
-
-/* prototypes for printing routines */
-
-#ifndef	PCB_PRINT_H
-#define	PCB_PRINT_H
-
 #include "config.h"
-#include "hid.h"
+#include "stub_draw_fab.h"
 
-int DrawFab_overhang(void);
-void DrawFab(hidGC gc);
+int dummy_DrawFab_overhang(void)
+{
+	return 0;
+}
 
-#endif
+void dummy_DrawFab(hidGC gc)
+{
+}
+
+int (*stub_DrawFab_overhang)(void) = dummy_DrawFab_overhang;
+void (*stub_DrawFab)(hidGC gc) = dummy_DrawFab;
+

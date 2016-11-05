@@ -9,6 +9,7 @@ include {../src_plugins/autoroute/Plug.tmpasm}
 include {../src_plugins/boardflip/Plug.tmpasm}
 include {../src_plugins/distalign/Plug.tmpasm}
 include {../src_plugins/distaligntext/Plug.tmpasm}
+include {../src_plugins/draw_fab/Plug.tmpasm}
 include {../src_plugins/jostle/Plug.tmpasm}
 include {../src_plugins/polycombine/Plug.tmpasm}
 include {../src_plugins/polystitch/Plug.tmpasm}

@@ -33,9 +33,10 @@
 #include "build_run.h"
 #include "data.h"
 #include "draw.h"
-#include "drill.h"
-#include "draw_fab.h"
+#include "../report/drill.h"
 #include "obj_all.h"
+#include "plugins.h"
+#include "stub_draw_fab.h"
 
 /* ---------------------------------------------------------------------------
  * prints a FAB drawing.
@@ -152,7 +153,7 @@ static int count_drill_lines(DrillInfoTypePtr AllDrills)
 }
 
 
-int DrawFab_overhang(void)
+static int DrawFab_overhang(void)
 {
 	DrillInfoTypePtr AllDrills = GetDrillInfo(PCB->Data);
 	int ds = count_drill_lines(AllDrills);
@@ -161,7 +162,7 @@ int DrawFab_overhang(void)
 	return (ds + 2) * TEXT_LINE;
 }
 
-void DrawFab(hidGC gc)
+static void DrawFab(hidGC gc)
 {
 	DrillInfoTypePtr AllDrills;
 	int i, n, yoff, total_drills = 0, ds = 0;
@@ -284,4 +285,15 @@ void DrawFab(hidGC gc)
 	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Author: %s", pcb_author());
 	yoff -= TEXT_LINE;
 	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", UNKNOWN(PCB->Name));
+}
+
+static void hid_draw_fab_uninit(void)
+{
+}
+
+pcb_uninit_t hid_draw_fab_init(void)
+{
+	stub_DrawFab = DrawFab;
+	stub_DrawFab_overhang = DrawFab_overhang;
+	return hid_draw_fab_uninit;
 }

@@ -1,5 +1,8 @@
 put /local/pcb/mod {report}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/report/report.o @]
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/report/report.o
+	$(PLUGDIR)/report/drill.o
+@]
 put /local/pcb/mod/CONF {$(PLUGDIR)/report/report_conf.h}
 
 switch /local/pcb/report/controls

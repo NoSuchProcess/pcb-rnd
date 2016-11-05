@@ -41,8 +41,6 @@ put /local/pcb/OBJS [@
 	crosshair.o
 	data.o
 	draw.o
-	draw_fab.o
-	drill.o
 	error.o
 	event.o
 	file_act.o
@@ -124,6 +122,7 @@ put /local/pcb/OBJS [@
 	select.o
 	select_act.o
 	set.o
+	stub_draw_fab.o
 	stub_mincut.o
 	stub_stroke.o
 	stub_vendor.o

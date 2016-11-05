@@ -54,4 +54,11 @@ DrillTypePtr GetDrillInfoDrillMemory(DrillInfoTypePtr);
 PinTypeHandle GetDrillPinMemory(DrillTypePtr);
 ElementTypeHandle GetDrillElementMemory(DrillTypePtr);
 
+#define DRILL_LOOP(top) do             {                           \
+        pcb_cardinal_t        n;                                   \
+        DrillTypePtr    drill;                                     \
+        for (n = 0; (top)->DrillN > 0 && n < (top)->DrillN; n++)   \
+        {                                                          \
+                drill = &(top)->Drill[n]
+
 #endif

@@ -76,13 +76,6 @@
  */
 #define END_LOOP  }} while (0)
 
-#define DRILL_LOOP(top) do             {               \
-        pcb_cardinal_t        n;                                      \
-        DrillTypePtr    drill;                                  \
-        for (n = 0; (top)->DrillN > 0 && n < (top)->DrillN; n++)                        \
-        {                                                       \
-                drill = &(top)->Drill[n]
-
 #define ENDALL_LOOP }} while (0); }} while(0)
 
 #endif
