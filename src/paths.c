@@ -32,9 +32,11 @@
 #include "error.h"
 #include "conf_core.h"
 
+/* don't include board.h or compat_misc.h because of gsch2pcb-rnd */
+const char *pcb_board_get_filename(void);
+const char *pcb_board_get_name(void);
+int pcb_getpid(void);
 
-#include "board.h"
-#include "compat_misc.h"
 
 void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra_room)
 {
@@ -118,6 +120,9 @@ char *resolve_path_inplace(char *in, unsigned int extra_room)
 int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 {
 	char buff[20];
+	const char *name;
+
+
 
 	switch(**input) {
 		case 'P':
@@ -126,16 +131,18 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 			(*input)++;
 			return 0;
 		case 'F':
-			gds_append_str(s, (PCB->Filename != NULL) ? PCB->Filename : "no_file_name");
+			name = pcb_board_get_filename();
+			gds_append_str(s, (name != NULL) ? name : "no_file_name");
 			(*input)++;
 			return 0;
 		case 'B':
-			if (PCB->Filename != NULL) {
-				char *bn = strrchr(PCB->Filename, '/');
+			name = pcb_board_get_filename();
+			if (name != NULL) {
+				const char *bn = strrchr(name, '/');
 				if (bn != NULL)
 					bn++;
 				else
-					bn = PCB->Filename;
+					bn = name;
 				gds_append_str(s, bn);
 			}
 			else
@@ -143,10 +150,11 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 			(*input)++;
 			return 0;
 		case 'D':
-			if (PCB->Filename != NULL) {
-				char *bn = strrchr(PCB->Filename, '/');
+			name = pcb_board_get_filename();
+			if (name != NULL) {
+				char *bn = strrchr(name, '/');
 				if (bn != NULL)
-					gds_append_len(s, PCB->Filename, bn-PCB->Filename+1);
+					gds_append_len(s, name, bn-name+1);
 				else
 					gds_append_str(s, "./");
 			}
@@ -155,7 +163,8 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 			(*input)++;
 			return 0;
 		case 'N':
-			gds_append_str(s, (PCB->Name != NULL) ? PCB->Name : "no_name");
+			name = pcb_board_get_name();
+			gds_append_str(s, (name != NULL) ? name : "no_name");
 			(*input)++;
 			return 0;
 		case 'T':

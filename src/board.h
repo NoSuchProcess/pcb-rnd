@@ -126,4 +126,8 @@ void CountHoles(int *plated, int *unplated, const BoxType * within_area);
 #define	SWAP_X(x)		(SWAP_SIGN_X(x))
 #define	SWAP_Y(y)		(PCB->MaxHeight +SWAP_SIGN_Y(y))
 
+const char *pcb_board_get_filename(void);
+const char *pcb_board_get_name(void);
+
+
 #endif

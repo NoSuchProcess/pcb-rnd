@@ -221,3 +221,13 @@ void CountHoles(int *plated, int *unplated, const BoxType * within_area)
 	if (unplated != NULL)
 		*unplated = hcs.nunplated;
 }
+
+const char *pcb_board_get_filename(void)
+{
+	return PCB->Filename;
+}
+
+const char *pcb_board_get_name(void)
+{
+	return PCB->Name;
+}
