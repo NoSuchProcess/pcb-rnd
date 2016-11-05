@@ -30,6 +30,7 @@
 #define PCB_OBJ_POLY_H
 
 #include "global_objs.h"
+#include "obj_common.h"
 
 PolygonType *GetPolygonMemory(LayerType * layer);
 void RemoveFreePolygon(PolygonType * data);

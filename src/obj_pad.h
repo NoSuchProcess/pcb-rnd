@@ -29,6 +29,8 @@
 #ifndef PCB_OBJ_PAD_H
 #define PCB_OBJ_PAD_H
 
+#include "obj_common.h"
+
 struct pad_st {                  /* a SMD pad */
 	ANYLINEFIELDS;
 	Coord Mask;

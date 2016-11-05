@@ -43,7 +43,6 @@
 #include "error.h"
 #include "find.h"
 #include "misc.h"
-#include "mymem.h"
 #include "rats.h"
 #include "remove.h"
 #include "search.h"

@@ -23,6 +23,7 @@
 #ifndef PCB_OBJ_ARC_LIST_H
 #define PCB_OBJ_ARC_LIST_H
 
+#include "obj_common.h"
 #include "obj_arc.h"
 
 /* List of Arcs */

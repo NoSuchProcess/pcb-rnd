@@ -68,7 +68,6 @@
 #include "rtree.h"
 #include "misc.h"
 #include "mtspace.h"
-#include "mymem.h"
 #include "polygon.h"
 #include "rats.h"
 #include "remove.h"

@@ -75,7 +75,6 @@ put /local/pcb/OBJS [@
 	misc.o
 	misc_util.o
 	move.o
-	mymem.o
 	netlist.o
 	netlist_act.o
 	object_act.o

@@ -34,7 +34,6 @@
 #include "data.h"
 #include "flag.h"
 #include "list_common.h"
-#include "mymem.h"
 #include "plug_io.h"
 #include "conf_core.h"
 #include "buffer.h"

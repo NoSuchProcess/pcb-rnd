@@ -48,7 +48,6 @@
 #include "layer.h"
 #include "misc.h"
 #include "move.h"
-#include "mymem.h"
 #include "parse_common.h"
 #include "pcb-printf.h"
 #include "polygon.h"

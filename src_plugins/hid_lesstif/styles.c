@@ -12,7 +12,6 @@
 #include "data.h"
 #include "set.h"
 #include "misc.h"
-#include "mymem.h"
 #include "pcb-printf.h"
 
 #include "hid.h"

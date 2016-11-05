@@ -29,6 +29,8 @@
 #ifndef PCB_OBJ_PINVIA_H
 #define PCB_OBJ_PINVIA_H
 
+#include "obj_common.h"
+
 struct pin_st {
 	ANYOBJECTFIELDS;
 	Coord Thickness, Clearance, Mask, DrillingHole;

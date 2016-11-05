@@ -30,7 +30,6 @@
 
 #include "board.h"
 #include "data.h"
-#include "mymem.h"
 #include "rtree.h"
 #include "list_common.h"
 #include "obj_all.h"

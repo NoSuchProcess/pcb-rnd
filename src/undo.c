@@ -70,6 +70,10 @@
 #include "netlist.h"
 #include "obj_all.h"
 
+#define STEP_REMOVELIST 500
+#define STEP_UNDOLIST   500
+
+
 static pcb_bool between_increment_and_restore = pcb_false;
 static pcb_bool added_undo_between_increment_and_restore = pcb_false;
 

@@ -29,10 +29,11 @@
 #include "pcb-printf.h"
 #include "genvector/gds_char.h"
 #include "route_style.h"
-#include "misc.h"
 #include "misc_util.h"
 #include "error.h"
 #include "conf.h"
+#include "box.h"
+#include "misc.h"
 
 RouteStyleType pcb_custom_route_style;
 

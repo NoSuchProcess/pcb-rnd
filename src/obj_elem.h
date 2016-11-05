@@ -29,6 +29,8 @@
 #ifndef PCB_OBJ_ELEM_H
 #define PCB_OBJ_ELEM_H
 
+#include "obj_common.h"
+
 ElementType *GetElementMemory(DataType * data);
 void RemoveFreeElement(ElementType * data);
 void FreeElementMemory(ElementType * element);

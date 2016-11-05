@@ -35,7 +35,6 @@
 #include "copy.h"
 #include "data.h"
 #include "draw.h"
-#include "mymem.h"
 #include "move.h"
 #include "rotate.h"
 #include "obj_all.h"

@@ -41,7 +41,6 @@
 #include "error.h"
 #include "search.h"
 #include "misc.h"
-#include "mymem.h"
 #include "rats.h"
 #include "rtree.h"
 #include "flag_str.h"

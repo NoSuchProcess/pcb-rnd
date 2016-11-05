@@ -24,21 +24,15 @@
  *
  */
 
+#ifndef PCB_OBJ_COMMON_H
+#define PCB_OBJ_COMMON_H
 
-/* memory management functions
- */
+/* memset object to 0, but keep the link field */
+#define reset_obj_mem(type, obj) \
+do { \
+	gdl_elem_t __lnk__ = obj->link; \
+	memset(obj, 0, sizeof(type)); \
+	obj->link = __lnk__; \
+} while(0) \
 
-#include "config.h"
-
-#include <memory.h>
-
-#include "data.h"
-#include "mymem.h"
-#include "rtree.h"
-#include "rats_patch.h"
-#include "list_common.h"
-#include "obj_all.h"
-
-/* ---------------------------------------------------------------------------
- * local prototypes
- */
+#endif

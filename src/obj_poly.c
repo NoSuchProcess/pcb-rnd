@@ -50,7 +50,6 @@
 #include "obj_poly_list.h"
 
 /* TODO: get rid of these: */
-#include "mymem.h"
 #include "draw.h"
 
 #define	STEP_POLYGONPOINT	10

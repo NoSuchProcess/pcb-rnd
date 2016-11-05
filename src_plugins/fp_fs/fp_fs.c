@@ -38,7 +38,6 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "mymem.h"
 #include "data.h"
 #include "paths.h"
 #include "plugins.h"

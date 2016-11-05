@@ -68,6 +68,7 @@ void CreateBeLenient(pcb_bool v)
 /* ---------------------------------------------------------------------------
  * creates a new line in a symbol
  */
+#define STEP_SYMBOLLINE 10
 LineTypePtr CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
 {
 	LineTypePtr line = Symbol->Line;

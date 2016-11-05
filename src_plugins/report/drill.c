@@ -28,10 +28,13 @@
 #include "config.h"
 
 #include "data.h"
-#include "mymem.h"
 #include "drill.h"
 #include "macro.h"
 #include "obj_pinvia.h"
+
+#define STEP_ELEMENT 50
+#define STEP_DRILL   30
+#define STEP_POINT   100
 
 /*
  * some local prototypes

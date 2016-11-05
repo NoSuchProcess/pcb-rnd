@@ -47,7 +47,6 @@
 #include "data.h"
 #include "error.h"
 #include "file.h"
-#include "mymem.h"
 #include "misc.h"
 #include "parse_l.h"
 #include "polygon.h"

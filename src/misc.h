@@ -31,8 +31,6 @@
 
 #include <stdlib.h>
 #include "config.h"
-#include "mymem.h"
-
 
 void r_delete_element(DataTypePtr, ElementTypePtr);
 void SetElementBoundingBox(DataTypePtr, ElementTypePtr, FontTypePtr);

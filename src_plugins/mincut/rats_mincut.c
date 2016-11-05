@@ -37,7 +37,6 @@
 #include "plug_io.h"
 #include "find.h"
 #include "misc.h"
-#include "mymem.h"
 #include "polygon.h"
 #include "search.h"
 #include "set.h"

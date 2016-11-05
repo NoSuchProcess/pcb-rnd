@@ -37,11 +37,12 @@
 #include "error.h"
 #include "plug_io.h"
 #include "find.h"
-#include "mymem.h"
 #include "rats.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "netlist.h"
+
+#define STEP_POINT 100
 
 /*
   int    PCB->NetlistLib[n].MenuN

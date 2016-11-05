@@ -29,6 +29,8 @@
 #ifndef PCB_OBJ_RAT_H
 #define PCB_OBJ_RAT_H
 
+#include "obj_common.h"
+
 struct pcb_rat_line_s {          /* a rat-line */
 	ANYLINEFIELDS;
 	pcb_cardinal_t group1, group2; /* the layer group each point is on */

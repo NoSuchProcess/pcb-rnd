@@ -54,7 +54,6 @@
 #include "macro.h"
 #include "misc.h"
 #include "move.h"
-#include "mymem.h"
 #include "rats.h"
 #include "remove.h"
 #include "rotate.h"

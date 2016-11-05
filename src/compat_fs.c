@@ -50,7 +50,6 @@
 #include <genvector/gds_char.h>
 
 #include "error.h"
-#include "mymem.h"
 
 /* ----------------------------------------------------------------------
  * returns pointer to current working directory.  If 'path' is not

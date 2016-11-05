@@ -56,6 +56,8 @@
 #warning TODO: remove this in favor of vtptr
 #include "ptrlist.h"
 
+#define STEP_POINT 100
+
 #define TRIEDFIRST 0x1
 #define BESTFOUND 0x2
 

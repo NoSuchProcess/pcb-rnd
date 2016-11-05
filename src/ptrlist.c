@@ -32,7 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define STEP_POINT		100
+#define STEP_POINT 100
 
 void **GetPointerMemory(PointerListTypePtr list)
 {

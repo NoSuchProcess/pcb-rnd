@@ -23,7 +23,6 @@
 #include "action_helper.h"
 #include "crosshair.h"
 #include "layer.h"
-#include "mymem.h"
 #include "misc.h"
 #include "pcb-printf.h"
 #include "clip.h"

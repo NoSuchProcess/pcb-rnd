@@ -40,7 +40,6 @@
 #include "heap.h"
 #include "rtree.h"
 #include "misc.h"
-#include "mymem.h"
 #include "polygon.h"
 #include "rats.h"
 #include "remove.h"

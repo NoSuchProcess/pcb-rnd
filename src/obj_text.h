@@ -29,6 +29,8 @@
 #ifndef PCB_OBJ_TEXT_H
 #define PCB_OBJ_TEXT_H
 
+#include "obj_common.h"
+
 struct pcb_text_s {
 	ANYOBJECTFIELDS;
 	int Scale;                    /* text scaling in percent */
