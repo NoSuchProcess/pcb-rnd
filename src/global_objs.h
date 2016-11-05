@@ -95,31 +95,6 @@ struct polygon_st {							/* holds information about a polygon */
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
-struct pcb_rat_line_s {          /* a rat-line */
-	ANYLINEFIELDS;
-	pcb_cardinal_t group1, group2; /* the layer group each point is on */
-	gdl_elem_t link;               /* an arc is in a list on a design */
-};
-
-struct pad_st {									/* a SMD pad */
-	ANYLINEFIELDS;
-	Coord Mask;
-	char *Name, *Number;					/* 'Line' */
-	void *Element;
-	void *Spare;
-	gdl_elem_t link;              /* a pad is in a list (element) */
-};
-
-struct pin_st {
-	ANYOBJECTFIELDS;
-	Coord Thickness, Clearance, Mask, DrillingHole;
-	Coord X, Y;										/* center and diameter */
-	char *Name, *Number;
-	void *Element;
-	void *Spare;
-	gdl_elem_t link;              /* a pin is in a list (element) */
-};
-
 /* This is the extents of a Pin or Via, depending on whether it's a
    hole or not.  */
 #define PIN_SIZE(pinptr) (TEST_FLAG(PCB_FLAG_HOLE, (pinptr)) \

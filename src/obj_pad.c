@@ -24,7 +24,7 @@
  *
  */
 
-/* Drawing primitive: pins and vias */
+/* Drawing primitive: smd pads */
 
 #include "config.h"
 #include "global_objs.h"

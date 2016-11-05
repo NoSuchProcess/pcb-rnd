@@ -23,6 +23,8 @@
 #ifndef PCB_OBJ_RAT_LIST_H
 #define PCB_OBJ_RAT_LIST_H
 
+#include "obj_rat.h"
+
 /* List of Rats */
 #define TDL(x)      ratlist_ ## x
 #define TDL_LIST_T  ratlist_t

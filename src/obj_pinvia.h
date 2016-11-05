@@ -29,6 +29,17 @@
 #ifndef PCB_OBJ_PINVIA_H
 #define PCB_OBJ_PINVIA_H
 
+struct pin_st {
+	ANYOBJECTFIELDS;
+	Coord Thickness, Clearance, Mask, DrillingHole;
+	Coord X, Y;                   /* center and diameter */
+	char *Name, *Number;
+	void *Element;
+	void *Spare;
+	gdl_elem_t link;              /* a pin is in a list (element) */
+};
+
+
 PinType *GetViaMemory(DataType * data);
 void RemoveFreeVia(PinType * data);
 PinType *GetPinMemory(ElementType * element);

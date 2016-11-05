@@ -29,6 +29,13 @@
 #ifndef PCB_OBJ_RAT_H
 #define PCB_OBJ_RAT_H
 
+struct pcb_rat_line_s {          /* a rat-line */
+	ANYLINEFIELDS;
+	pcb_cardinal_t group1, group2; /* the layer group each point is on */
+	gdl_elem_t link;               /* an arc is in a list on a design */
+};
+
+
 RatType *GetRatMemory(DataType *data);
 void RemoveFreeRat(RatType *data);
 

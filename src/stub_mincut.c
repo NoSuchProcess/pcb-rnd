@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include "global_objs.h"
 #include "stub_mincut.h"
+#include "obj_pinvia.h"
+#include "obj_pad.h"
 
 static void stub_rat_proc_shorts_dummy(void)
 {

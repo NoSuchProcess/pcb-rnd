@@ -24,10 +24,20 @@
  *
  */
 
-/* Drawing primitive: pins and vias */
+/* Drawing primitive: smd pads */
 
 #ifndef PCB_OBJ_PAD_H
 #define PCB_OBJ_PAD_H
+
+struct pad_st {                  /* a SMD pad */
+	ANYLINEFIELDS;
+	Coord Mask;
+	char *Name, *Number;           /* 'Line' */
+	void *Element;
+	void *Spare;
+	gdl_elem_t link;               /* a pad is in a list (element) */
+};
+
 
 PadType *GetPadMemory(ElementType * element);
 void RemoveFreePad(PadType * data);

@@ -4,6 +4,9 @@
 #include "polygon.h"
 #include "macro.h"
 
+#include "obj_pinvia.h"
+#include "obj_pad.h"
+
 static void fill_contour(hidGC gc, PLINE * pl)
 {
 	Coord *x, *y, n, i = 0;
