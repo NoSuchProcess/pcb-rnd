@@ -51,7 +51,6 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *InsertPointIntoPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 
 /* ---------------------------------------------------------------------------
@@ -71,42 +70,6 @@ static pcb_opfunc_t InsertFunctions = {
 	NULL,
 	InsertPointIntoRat
 };
-
-/* ---------------------------------------------------------------------------
- * inserts a point into a line
- */
-static void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
-{
-	LineTypePtr line;
-	Coord X, Y;
-
-	if (((Line->Point1.X == ctx->insert.x) && (Line->Point1.Y == ctx->insert.y)) ||
-			((Line->Point2.X == ctx->insert.x) && (Line->Point2.Y == ctx->insert.y)))
-		return (NULL);
-	X = Line->Point2.X;
-	Y = Line->Point2.Y;
-	AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, Layer, Line, &Line->Point2, ctx->insert.x - X, ctx->insert.y - Y);
-	EraseLine(Line);
-	r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	Line->Point2.X = ctx->insert.x;
-	Line->Point2.Y = ctx->insert.y;
-	SetLineBoundingBox(Line);
-	r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	DrawLine(Layer, Line);
-	/* we must create after playing with Line since creation may
-	 * invalidate the line pointer
-	 */
-	if ((line = CreateDrawnLineOnLayer(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
-		AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
-		DrawLine(Layer, line);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, line);
-		/* creation call adds it to the rtree */
-	}
-	Draw();
-	return (line);
-}
 
 /* ---------------------------------------------------------------------------
  * inserts a point into a polygon

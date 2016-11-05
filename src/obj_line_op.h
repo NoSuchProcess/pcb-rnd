@@ -24,19 +24,18 @@
  *
  */
 
-/*** Standard operations on line ***/
+/*** Standard operations on line segments ***/
 
 #include "operation.h"
 
 void *AddLineToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-
 void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
 void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
 void *ChangeLineName(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
 void *ChangeLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
 void *SetLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
 void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-
+void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
 void *MoveLineToBuffer(pcb_opctx_t *ctx, LayerType * layer, LineType * line);
 void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
 void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
