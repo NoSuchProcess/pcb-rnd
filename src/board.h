@@ -114,7 +114,15 @@ struct pcb_board_s {
 
 void FreePCBMemory(PCBTypePtr);
 
-extern PCBTypePtr PCB;
+extern PCBType *PCB; /* the board being edited */
+
+PCBTypePtr CreateNewPCB_(pcb_bool SetDefaultNames);
+PCBTypePtr CreateNewPCB(void);
+
+/* Called after PCB->Data->LayerN is set.  Returns non-zero on error */
+int CreateNewPCBPost(PCBTypePtr pcb, int use_defaults);
+
+void pcb_colors_from_settings(PCBTypePtr);
 
 #define	SWAP_X(x)		(SWAP_SIGN_X(x))
 #define	SWAP_Y(y)		(PCB->MaxHeight +SWAP_SIGN_Y(y))

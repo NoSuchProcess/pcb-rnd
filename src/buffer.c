@@ -809,6 +809,17 @@ void FreeRotateBuffer(BufferTypePtr Buffer, Angle angle)
 	SetBufferBoundingBox(Buffer);
 }
 
+/* ---------------------------------------------------------------------------
+ * creates a new paste buffer
+ */
+DataTypePtr CreateNewBuffer(void)
+{
+	DataTypePtr data;
+	data = (DataTypePtr) calloc(1, sizeof(DataType));
+	data->pcb = (PCBTypePtr) PCB;
+	return data;
+}
+
 
 /* -------------------------------------------------------------------------- */
 

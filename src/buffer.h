@@ -60,6 +60,9 @@ void *CopyObjectToBuffer(DataTypePtr, DataTypePtr, int, void *, void *, void *);
 /* This action is called from ActionElementAddIf() */
 int LoadFootprint(int argc, const char **argv, Coord x, Coord y);
 
+DataTypePtr CreateNewBuffer(void);
+
+
 /* ---------------------------------------------------------------------------
  * access macro for current buffer
  */

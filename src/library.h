@@ -81,6 +81,10 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
 void FreeLibraryMemory(LibraryTypePtr);
 void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx);
 
+LibraryMenuTypePtr CreateNewNet(LibraryTypePtr lib, char *name, const char *style);
+LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr net, char *conn);
+
+
 #define MENU_LOOP(top)	do {	\
 	pcb_cardinal_t	l;			\
 	LibraryMenuTypePtr menu;		\

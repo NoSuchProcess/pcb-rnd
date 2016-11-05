@@ -28,9 +28,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "config.h"
 #include "library.h"
 #include "macro.h"
+#include "compat_misc.h"
 
 #define	STEP_LIBRARYMENU	10
 #define	STEP_LIBRARYENTRY	20
@@ -107,4 +109,36 @@ void FreeLibraryMemory(LibraryTypePtr lib)
 
 	/* clear struct */
 	memset(lib, 0, sizeof(LibraryType));
+}
+
+/* ---------------------------------------------------------------------------
+ * Add a new net to the netlist menu
+ */
+LibraryMenuTypePtr CreateNewNet(LibraryTypePtr lib, char *name, const char *style)
+{
+	LibraryMenuTypePtr menu;
+	char temp[64];
+
+	sprintf(temp, "  %s", name);
+	menu = GetLibraryMenuMemory(lib, NULL);
+	menu->Name = pcb_strdup(temp);
+	menu->flag = 1;								/* net is enabled by default */
+	if (style == NULL || NSTRCMP("(unknown)", style) == 0)
+		menu->Style = NULL;
+	else
+		menu->Style = pcb_strdup(style);
+	return (menu);
+}
+
+/* ---------------------------------------------------------------------------
+ * Add a connection to the net
+ */
+LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr net, char *conn)
+{
+	LibraryEntryTypePtr entry = GetLibraryEntryMemory(net);
+
+	entry->ListEntry = pcb_strdup_null(conn);
+	entry->ListEntry_dontfree = 0;
+
+	return (entry);
 }

@@ -510,3 +510,19 @@ RubberbandTypePtr GetRubberbandMemory(void)
 	return (ptr + Crosshair.AttachedObject.RubberbandN++);
 }
 
+/* ---------------------------------------------------------------------------
+ * adds a new line to the rubberband list of 'Crosshair.AttachedObject'
+ * if Layer == 0  it is a rat line
+ */
+RubberbandTypePtr CreateNewRubberbandEntry(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr MovedPoint)
+{
+	RubberbandTypePtr ptr = GetRubberbandMemory();
+
+	/* we toggle the PCB_FLAG_RUBBEREND of the line to determine if */
+	/* both points are being moved. */
+	TOGGLE_FLAG(PCB_FLAG_RUBBEREND, Line);
+	ptr->Layer = Layer;
+	ptr->Line = Line;
+	ptr->MovedPoint = MovedPoint;
+	return (ptr);
+}

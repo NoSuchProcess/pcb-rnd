@@ -100,3 +100,20 @@ void FreeAttributeListMemory(AttributeListTypePtr list)
 	list->List = NULL;
 	list->Max = 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * Add an attribute to a list.
+ */
+AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, const char *name, const char *value)
+{
+#warning TODO: how is it better than set? check callers, remove this if possible
+	if (list->Number >= list->Max) {
+		list->Max += 10;
+		list->List = (AttributeType *) realloc(list->List, list->Max * sizeof(AttributeType));
+	}
+	list->List[list->Number].name = pcb_strdup_null(name);
+	list->List[list->Number].value = pcb_strdup_null(value);
+	list->Number++;
+	return &list->List[list->Number - 1];
+}
+

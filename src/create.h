@@ -39,15 +39,6 @@
 void CreateBeLenient(pcb_bool);
 extern pcb_bool pcb_create_be_lenient;
 
-DataTypePtr CreateNewBuffer(void);
-void pcb_colors_from_settings(PCBTypePtr);
-PCBTypePtr CreateNewPCB_(pcb_bool);
-PCBTypePtr CreateNewPCB();
-/* Called after PCB->Data->LayerN is set.  Returns zero if no errors,
-   else nonzero.  */
-int CreateNewPCBPost(PCBTypePtr, int /* set defaults */ );
-LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
-LineTypePtr CreateNewLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
 PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr, Coord, Coord, Coord, Coord, FlagType);
 PolygonTypePtr CreateNewPolygon(LayerTypePtr, FlagType);
 PointTypePtr CreateNewPointInPolygon(PolygonTypePtr, Coord, Coord);
@@ -58,11 +49,6 @@ LineTypePtr CreateNewLineInElement(ElementTypePtr, Coord, Coord, Coord, Coord, C
 ArcTypePtr CreateNewArcInElement(ElementTypePtr, Coord, Coord, Coord, Coord, Angle, Angle, Coord);
 LineTypePtr CreateNewLineInSymbol(SymbolTypePtr, Coord, Coord, Coord, Coord, Coord);
 void CreateDefaultFont(PCBTypePtr);
-RubberbandTypePtr CreateNewRubberbandEntry(LayerTypePtr, LineTypePtr, PointTypePtr);
-LibraryMenuTypePtr CreateNewNet(LibraryTypePtr, char *, const char *);
-LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr, char *);
-
-AttributeTypePtr CreateNewAttribute(AttributeListTypePtr list, const char *name, const char *value);
 
 void CreateIDBump(int min_id);
 void CreateIDReset(void);
