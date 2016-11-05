@@ -73,7 +73,6 @@ put /local/pcb/OBJS [@
 	library.o
 	list_conf.o
 	list_element.o
-	list_poly.o
 	main.o
 	main_act.o
 	mirror.o
@@ -94,6 +93,8 @@ put /local/pcb/OBJS [@
 	obj_pad_list.o
 	obj_pinvia.o
 	obj_pinvia_list.o
+	obj_poly.o
+	obj_poly_list.o
 	obj_rat.o
 	obj_rat_list.o
 	obj_text.o

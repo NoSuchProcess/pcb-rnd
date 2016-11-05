@@ -2,5 +2,6 @@
 #include "obj_line.h"
 #include "obj_pad.h"
 #include "obj_pinvia.h"
+#include "obj_poly.h"
 #include "obj_text.h"
 #include "obj_rat.h"

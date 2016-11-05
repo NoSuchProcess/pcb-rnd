@@ -1,9 +1,9 @@
 /*
  *                            COPYRIGHT
  *
- *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
- * 
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -18,9 +18,18 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
+ *  Contact addresses for paper mail and Email:
+ *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
+ *  Thomas.Nau@rz.uni-ulm.de
+ *
  */
 
-#define TDL_DONT_UNDEF
+/* Drawing primitive: polygons */
+
+
+#include "config.h"
 #include "global_objs.h"
-#include "list_poly.h"
-#include <genlist/gentdlist_impl.c>
+
+#include "obj_poly.h"
+#include "obj_poly_op.h"
+#include "obj_poly_list.h"
