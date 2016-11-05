@@ -25,6 +25,8 @@
  */
 #include "config.h"
 #include "stub_draw_fab.h"
+#include "global_objs.h"
+#include "obj_text.h"
 
 int dummy_DrawFab_overhang(void)
 {
@@ -33,6 +35,14 @@ int dummy_DrawFab_overhang(void)
 
 void dummy_DrawFab(hidGC gc)
 {
+	TextType t;
+	t.X = 0;
+	t.Y = 0;
+	t.TextString = "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded";
+	t.Direction = 0;
+	t.Scale = 150;
+	t.Flags = NoFlags();
+	DrawTextLowLevel(&t, 0);
 }
 
 int (*stub_DrawFab_overhang)(void) = dummy_DrawFab_overhang;
