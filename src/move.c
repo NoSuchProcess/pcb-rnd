@@ -31,7 +31,6 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include <setjmp.h>
 #include <stdlib.h>
 
 #include "board.h"
@@ -39,19 +38,11 @@
 #include "draw.h"
 #include "error.h"
 #include "move.h"
-#include "polygon.h"
-#include "rtree.h"
-#include "search.h"
 #include "select.h"
 #include "undo.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
-#include "compat_nls.h"
-#include "layer.h"
-#include "box.h"
 #include "obj_all_op.h"
-#include "obj_line.h"
-#include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

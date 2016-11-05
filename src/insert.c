@@ -33,15 +33,8 @@
 
 #include "board.h"
 #include "data.h"
-#include "draw.h"
-#include "polygon.h"
-#include "search.h"
 #include "select.h"
-#include "set.h"
 #include "undo.h"
-
-/* TODO: REMOVE */
-#include "obj_line.h"
 
 #include "obj_line_op.h"
 #include "obj_rat_op.h"

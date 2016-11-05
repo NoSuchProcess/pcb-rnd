@@ -48,7 +48,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "board.h"
 #include "math_helper.h"
 #include "buffer.h"
 #include "change.h"

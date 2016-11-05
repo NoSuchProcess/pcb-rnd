@@ -37,11 +37,7 @@
 #include "board.h"
 #include "data.h"
 #include "error.h"
-#include "layer.h"
 #include "polygon.h"
-#include "rtree.h"
-#include "obj_line.h"
-#include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

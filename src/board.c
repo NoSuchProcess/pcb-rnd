@@ -32,7 +32,6 @@
 #include "hid_actions.h"
 #include "paths.h"
 #include "rtree.h"
-#include "obj_common.h"
 
 PCBType *PCB;
 

@@ -27,12 +27,9 @@
 #include "genht/htsp.h"
 #include "genht/hash.h"
 
-#include "board.h"
 #include "config.h"
 #include "data.h"
 #include "error.h"
-#include "buffer.h"
-#include "remove.h"
 #include "copy.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

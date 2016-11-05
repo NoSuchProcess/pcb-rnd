@@ -35,13 +35,9 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "move.h"
-#include "polygon.h"
 #include "select.h"
 #include "undo.h"
-#include "compat_misc.h"
 #include "obj_all_op.h"
-#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

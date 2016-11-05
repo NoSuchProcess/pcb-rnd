@@ -27,12 +27,9 @@
 /* Drawing primitive: pins and vias */
 
 #include "config.h"
-#include "const.h"
 #include "board.h"
 #include "data.h"
 #include "undo.h"
-#include "box.h"
-#include "math_helper.h"
 #include "conf_core.h"
 #include "polygon.h"
 #include "compat_nls.h"

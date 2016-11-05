@@ -43,21 +43,16 @@
 #include "config.h"
 
 #include <assert.h>
-#include <memory.h>
 
 #include "board.h"
-#include "buffer.h"
 #include "change.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
 #include "insert.h"
-#include "layer.h"
-#include "move.h"
 #include "polygon.h"
 #include "remove.h"
 #include "rotate.h"
-#include "rtree.h"
 #include "search.h"
 #include "set.h"
 #include "undo.h"
@@ -65,8 +60,6 @@
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "netlist.h"
-#include "obj_all.h"
 
 #define STEP_REMOVELIST 500
 #define STEP_UNDOLIST   500

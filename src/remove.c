@@ -29,21 +29,12 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include <setjmp.h>
-#include <memory.h>
-
 #include "board.h"
-#include "data.h"
-#include "rats.h"
 #include "draw.h"
-#include "move.h"
-#include "polygon.h"
 #include "remove.h"
-#include "rtree.h"
 #include "select.h"
 #include "undo.h"
 #include "obj_all_op.h"
-#include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
  * some local types

@@ -1,7 +1,6 @@
 #include <string.h>
 #include "config.h"
 #include "obj_elem_list.h"
-#include "obj_all.h"
 
 #define HT(x) htep_ ## x
 #include <genht/ht.c>

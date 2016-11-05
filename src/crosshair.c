@@ -31,7 +31,6 @@
 #include "conf_core.h"
 
 #include "board.h"
-#include "box.h"
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
@@ -40,7 +39,6 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "obj_all.h"
 #include "vtonpoint.h"
 
 typedef struct {

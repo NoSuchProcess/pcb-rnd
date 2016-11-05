@@ -28,7 +28,6 @@
 #include "conf_core.h"
 
 #include "data.h"
-#include "math_helper.h"
 #include "board.h"
 #include "action_helper.h"
 #include "change.h"
@@ -37,18 +36,12 @@
 #include "funchash_core.h"
 
 #include "search.h"
-#include "move.h"
 #include "draw.h"
-#include "rotate.h"
 #include "set.h"
 #include "copy.h"
-#include "rubberband.h"
-#include "buffer.h"
 #include "remove.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "layer.h"
-#include "obj_all.h"
 
 /* --------------------------------------------------------------------------- */
 

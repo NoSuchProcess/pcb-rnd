@@ -42,7 +42,6 @@
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "netlist.h"
-#include "obj_pinvia.h"
 
 static int pcb_netlist_swap()
 {

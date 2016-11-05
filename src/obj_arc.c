@@ -29,12 +29,9 @@
 
 #include "config.h"
 #include "compat_nls.h"
-#include "buffer.h"
 #include "board.h"
 #include "data.h"
-#include "rtree.h"
 #include "polygon.h"
-#include "box.h"
 #include "undo.h"
 #include "rotate.h"
 #include "move.h"

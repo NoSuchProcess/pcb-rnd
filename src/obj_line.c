@@ -29,22 +29,15 @@
 #include "config.h"
 #include <setjmp.h>
 
-#include "const.h"
 #include "undo.h"
 #include "board.h"
 #include "data.h"
-#include "rtree.h"
 #include "search.h"
-#include "layer.h"
-#include "math_helper.h"
 #include "polygon.h"
 #include "conf_core.h"
-#include "move.h"
-#include "box.h"
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "rotate.h"
-#include "obj_pinvia.h"
 
 #include "obj_line.h"
 #include "obj_line_op.h"

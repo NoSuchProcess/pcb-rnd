@@ -32,23 +32,18 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "action_helper.h"
 #include "board.h"
-#include "buffer.h"
-#include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 #include "error.h"
 #include "find.h"
 #include "set.h"
 #include "undo.h"
-#include "hid_actions.h"
-#include "route_style.h"
 #include "compat_nls.h"
 
 static int mode_position = 0;

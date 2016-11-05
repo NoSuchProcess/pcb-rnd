@@ -35,15 +35,11 @@
 #include <math.h>
 
 #include "board.h"
-#include "box.h"
 #include "data.h"
 #include "error.h"
 #include "find.h"
 #include "polygon.h"
-#include "rtree.h"
 #include "search.h"
-#include "layer.h"
-#include "obj_all.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

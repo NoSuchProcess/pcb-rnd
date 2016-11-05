@@ -33,7 +33,6 @@
 #include "font.h"
 #include "board.h"
 #include "conf_core.h"
-#include "obj_line.h"
 #include "error.h"
 #include "plug_io.h"
 #include "paths.h"

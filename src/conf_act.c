@@ -26,7 +26,6 @@
 #include "config.h"
 #include "board.h"
 #include "conf_core.h"
-#include "misc_util.h"
 #include "route_style.h"
 #include "error.h"
 #include "hid.h"

@@ -33,14 +33,11 @@
 #include "error.h"
 #include "funchash_core.h"
 
-#include "crosshair.h"
 #include "undo.h"
 #include "polygon.h"
 #include "set.h"
 #include "search.h"
 #include "draw.h"
-#include "layer.h"
-#include "obj_all.h"
 
 /* --------------------------------------------------------------------------- */
 

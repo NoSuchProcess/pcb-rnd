@@ -28,23 +28,11 @@
 
 #include "config.h"
 
-#include <setjmp.h>
-
 #include "conf_core.h"
+#include "global_typedefs.h"
+#include "const.h"
+#include "error.h"
 
-#include "board.h"
-#include "math_helper.h"
-#include "data.h"
-#include "rtree.h"
-#include "search.h"
-#include "undo.h"
-#include "plug_io.h"
-#include "stub_vendor.h"
-#include "hid_actions.h"
-#include "paths.h"
-#include "compat_misc.h"
-#include "compat_nls.h"
-#include "obj_all.h"
 
 /* returns a pointer to an objects bounding box;
  * data is valid until the routine is called again

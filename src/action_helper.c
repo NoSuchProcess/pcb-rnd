@@ -39,7 +39,6 @@
 #include "draw.h"
 #include "find.h"
 #include "insert.h"
-#include "move.h"
 #include "polygon.h"
 #include "remove.h"
 #include "rotate.h"
@@ -52,7 +51,6 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "obj_all.h"
 
 static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, Coord * x, Coord * y)
 {

@@ -29,14 +29,10 @@
 #include "config.h"
 
 #include "rotate.h"
-#include "layer.h"
 #include "board.h"
 #include "data.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "rtree.h"
-#include "math_helper.h"
-#include "box.h"
 #include "undo.h"
 #include "polygon.h"
 

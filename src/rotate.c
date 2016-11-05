@@ -38,8 +38,6 @@
 #include "error.h"
 #include "polygon.h"
 #include "rotate.h"
-#include "rtree.h"
-#include "rubberband.h"
 #include "search.h"
 #include "select.h"
 #include "set.h"
@@ -47,8 +45,6 @@
 #include "conf_core.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
-#include "obj_line.h"
-#include "obj_pinvia.h"
 
 /* ----------------------------------------------------------------------
  * some local identifiers

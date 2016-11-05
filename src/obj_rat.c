@@ -28,10 +28,8 @@
 
 #include "config.h"
 
-#include "flag.h"
 #include "board.h"
 #include "data.h"
-#include "layer.h"
 #include "conf_core.h"
 #include "undo.h"
 #include "rtree.h"

@@ -33,16 +33,13 @@
 #include "conf_core.h"
 
 #include "board.h"
-#include "crosshair.h"
 #include "data.h"
 #include "draw.h"
-#include "polygon.h"
 #include "select.h"
 #include "undo.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
-#include "obj_pinvia.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

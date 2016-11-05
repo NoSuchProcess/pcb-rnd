@@ -36,7 +36,6 @@
 #include "draw.h"
 #include "error.h"
 #include "find.h"
-#include "layer.h"
 #include "polygon.h"
 #include "rats.h"
 #include "search.h"
@@ -46,10 +45,6 @@
 #include "compat_misc.h"
 #include "netlist.h"
 #include "compat_nls.h"
-#include "obj_line.h"
-#include "obj_pinvia.h"
-#include "obj_rat.h"
-#include "obj_poly.h"
 
 #warning TODO: remove this in favor of vtptr
 #include "ptrlist.h"

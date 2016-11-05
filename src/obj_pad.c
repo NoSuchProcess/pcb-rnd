@@ -30,10 +30,7 @@
 
 #include "board.h"
 #include "data.h"
-#include "move.h"
 #include "undo.h"
-#include "math_helper.h"
-#include "box.h"
 #include "polygon.h"
 #include "compat_misc.h"
 

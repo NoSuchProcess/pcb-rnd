@@ -33,7 +33,6 @@
 #include "rtree.h"
 #include "list_common.h"
 #include "obj_all.h"
-#include "math_helper.h"
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers

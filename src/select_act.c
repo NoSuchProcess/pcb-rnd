@@ -25,7 +25,6 @@
  *
  */
 #include "config.h"
-#include "math_helper.h"
 #include "conf_core.h"
 
 #include "board.h"
@@ -36,9 +35,7 @@
 #include "funchash_core.h"
 
 #include "select.h"
-#include "crosshair.h"
 #include "set.h"
-#include "buffer.h"
 #include "draw.h"
 #include "remove.h"
 #include "copy.h"

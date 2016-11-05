@@ -25,11 +25,9 @@
  *
  */
 #include "config.h"
-#include "const.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <locale.h>
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "unit.h"
