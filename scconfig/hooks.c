@@ -23,7 +23,8 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png exporter"},
 	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png exporter"},
 	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png exporter"},
-	{"disable-bison",     "parsgen/bison",                arg_lib_nodes, "$do not regenerate language files"},
+	{"enable-bison",      "/local/pcb/want_bison",        arg_true,      "$enable generating language files"},
+	{"disable-bison",     "/local/pcb/want_bison",        arg_false,     "$disable generating language files"},
 	{"enable-dmalloc",    "/local/pcb/want_dmalloc",      arg_true,      "$compile with lib dmalloc"},
 	{"disable-dmalloc",   "/local/pcb/want_dmalloc",      arg_false,     "$compile without lib dmalloc"},
 
@@ -221,6 +222,7 @@ int hook_postinit()
 #define plugin_dep(plg, on)
 #include "plugins.h"
 
+	put("/local/pcb/want_bison", sfalse);
 	put("/local/pcb/debug", sfalse);
 	put("/local/pcb/symbols", sfalse);
 	put("/local/pcb/coord_bits", "32");
@@ -459,17 +461,19 @@ int hook_detect_target()
 	}
 
 	/* yacc/lex - are we able to regenerate languages? */
-	if (!isfalse(get("parsgen/bison/presents"))) {
+	if (istrue(get("/local/pcb/want_bison"))) {
 		require("parsgen/flex/*", 0, 0);
 		require("parsgen/bison/*", 0, 0);
+		if (!istrue(get("parsgen/flex/presents")) || !istrue(get("parsgen/bison/presents")))
+			put("/local/pcb/want_parsgen", sfalse);
+		else
+			put("/local/pcb/want_parsgen", strue);
 	}
-	else
+	else {
 		report("Bison/flex are disabled, among with parser generation.\n");
-
-	if (!istrue(get("parsgen/flex/presents")) || !istrue(get("parsgen/bison/presents")))
 		put("/local/pcb/want_parsgen", sfalse);
-	else
-		put("/local/pcb/want_parsgen", strue);
+	}
+
 
 	if (get("cc/rdynamic") == NULL)
 		put("cc/rdynamic", "");
