@@ -989,6 +989,20 @@ static int ActionMinClearGap(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
+/* ---------------------------------------------------------------------------  */
+int ActionListRotations(int argc, const char **argv, Coord x, Coord y)
+{
+	ELEMENT_LOOP(PCB->Data);
+	{
+		printf("%d %s\n", ElementOrientation(element), NAMEONPCB_NAME(element));
+	}
+	END_LOOP;
+
+	return 0;
+}
+
+
+
 
 HID_Action object_action_list[] = {
 	{"Attributes", 0, ActionAttributes,
@@ -999,6 +1013,9 @@ HID_Action object_action_list[] = {
 	,
 	{"Flip", N_("Click on Object or Flip Point"), ActionFlip,
 	 flip_help, flip_syntax}
+	,
+	{"ListRotations", 0, ActionListRotations,
+	 0, 0}
 	,
 	{"MoveObject", N_("Select an Object"), ActionMoveObject,
 	 moveobject_help, moveobject_syntax}

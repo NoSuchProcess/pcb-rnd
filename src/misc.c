@@ -99,21 +99,3 @@ char *EvaluateFilename(const char *Template, const char *Path, const char *Filen
 	return command.array;
 }
 
-int ActionListRotations(int argc, const char **argv, Coord x, Coord y)
-{
-	ELEMENT_LOOP(PCB->Data);
-	{
-		printf("%d %s\n", ElementOrientation(element), NAMEONPCB_NAME(element));
-	}
-	END_LOOP;
-
-	return 0;
-}
-
-HID_Action misc_action_list[] = {
-	{"ListRotations", 0, ActionListRotations,
-	 0, 0}
-	,
-};
-
-REGISTER_ACTIONS(misc_action_list, NULL)
