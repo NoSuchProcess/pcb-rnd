@@ -78,8 +78,8 @@ typedef struct {
 	const struct rc {
 		CFT_INTEGER verbose;
 		CFT_INTEGER backup_interval;       /* time between two backups in seconds */
-		CFT_STRING font_command;           /* commands for file loading... */
-		CFT_STRING file_command;
+		CFT_STRING font_command;           /* file name template; if not empty, run this command and read its outout for loading the font; %f is the file name  */
+		CFT_STRING file_command;           /* file name template; if not empty, run this command and read its outout for loading a pcb file; %f is the file name, %p is the conf setting rc.file_path */
 		CFT_STRING file_path;
 		CFT_STRING library_shell;
 		CFT_LIST library_search_paths;
@@ -95,7 +95,7 @@ typedef struct {
 		CFT_STRING script_filename;        /* PCB Actions script to execute on startup */
 		CFT_STRING action_string;          /* PCB Actions string to execute on startup */
 		CFT_STRING rat_path;
-		CFT_STRING rat_command;
+		CFT_STRING rat_command;            /* file name template; if not empty, run this command and read its outout for loading a rats; %f is the file name, %p is the rc.rat_path conf setting */
 
 		CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
 

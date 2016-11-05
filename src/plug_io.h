@@ -168,4 +168,15 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_
 */
 int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input);
 
+
+/* Same as above, but also replaces lower case formatting to the members of
+   the array if they are not NULL; use with pcb_build_argfn() */
+typedef struct {
+	const char *params['z' - 'a' + 1]; /* [0] for 'a' */
+} pcb_build_argfn_t;
+
+char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg);
+
+int pcb_build_argfn_cb(void *ctx, gds_t *s, const char **input);
+
 #endif

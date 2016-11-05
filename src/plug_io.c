@@ -743,9 +743,28 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 	return -1;
 }
 
+int pcb_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
+{
+	if ((**input >= 'a') && (**input <= 'z')) {
+		int idx = **input - 'a';
+		pcb_build_argfn_t *ctx = ctx_;
+		if (ctx->params[idx] == NULL)
+			return -1;
+		gds_append_str(s, ctx->params[idx]);
+		(*input)++;
+		return 0;
+	}
+	return pcb_build_fn_cb(NULL, s, input);
+}
+
 static char *build_fn(const char *template)
 {
 	return pcb_strdup_subst(template, pcb_build_fn_cb, NULL);
+}
+
+char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg)
+{
+	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg);
 }
 
 /* ---------------------------------------------------------------------------

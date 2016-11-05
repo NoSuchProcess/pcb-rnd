@@ -2392,10 +2392,12 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	  }
 	else
 	  {
+	    pcb_build_argfn_t p;
 	    used_popen = 1;
-
-	    command = EvaluateFilename(Executable, Path, Filename);
-
+	    memset(&p, 0, sizeof(p));
+	    p.params['p'-'a'] = Path;
+	    p.params['f'-'a'] = Filename;
+	    command = pcb_build_argfn(Executable, &p);
 	    /* open pipe to stdout of command */
 	    if (*command == '\0' || (pcb_in = popen(command, "r")) == NULL)
 	      {

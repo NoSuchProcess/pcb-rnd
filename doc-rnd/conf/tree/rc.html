@@ -5,8 +5,8 @@
 <tr><th>node name <th> type <td> flags <td> description
 <tr><td> verbose <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> <verbose>
 <tr><td> backup_interval <td><a href="CFN_INTEGER.html"> integer </a><td> 0 <td> time between two backups in seconds
-<tr><td> font_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> commands for file loading...
-<tr><td> file_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <file_command>
+<tr><td> font_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template; if not empty, run this command and read its outout for loading the font; %f is the file name
+<tr><td> file_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template; if not empty, run this command and read its outout for loading a pcb file; %f is the file name, %p is the conf setting rc.file_path
 <tr><td> file_path <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <file_path>
 <tr><td> library_shell <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <library_shell>
 <tr><td> library_search_paths <td><a href="CFN_LIST.html"> list </a><td> 0 <td> <library_search_paths>
@@ -19,7 +19,7 @@
 <tr><td> script_filename <td><a href="CFN_STRING.html"> string </a><td> 0 <td> PCB Actions script to execute on startup
 <tr><td> action_string <td><a href="CFN_STRING.html"> string </a><td> 0 <td> PCB Actions string to execute on startup
 <tr><td> rat_path <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <rat_path>
-<tr><td> rat_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> <rat_command>
+<tr><td> rat_command <td><a href="CFN_STRING.html"> string </a><td> 0 <td> file name template; if not empty, run this command and read its outout for loading a rats; %f is the file name, %p is the rc.rat_path conf setting
 <tr><td> preferred_gui <td><a href="CFN_LIST.html"> list </a><td> 0 <td> if set, try GUI HIDs in this order when no GUI is explicitly selected
 <tr><td> have_regex <td><a href="CFN_BOOLEAN.html"> boolean </a><td> 0 <td> whether we have regex compiled in
 </table></body></html>

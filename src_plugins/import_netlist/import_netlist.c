@@ -72,8 +72,12 @@ static int ReadNetlist(const char *filename)
 		}
 	}
 	else {
+		pcb_build_argfn_t p;
 		used_popen = 1;
-		command = EvaluateFilename(conf_core.rc.rat_command, conf_core.rc.rat_path, filename);
+		memset(&p, 0, sizeof(p));
+		p.params['p'-'a'] = conf_core.rc.rat_path;
+		p.params['f'-'a'] = filename;
+		command = pcb_build_argfn(conf_core.rc.rat_command, &p);
 
 		/* open pipe to stdout of command */
 		if (*command == '\0' || (fp = popen(command, "r")) == NULL) {
