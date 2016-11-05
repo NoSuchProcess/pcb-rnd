@@ -51,7 +51,6 @@
  * some memory types
  */
 
-RatTypePtr GetRatMemory(DataTypePtr);
 PolygonTypePtr GetPolygonMemory(LayerTypePtr);
 PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr);
 pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr);
@@ -63,7 +62,6 @@ char *StripWhiteSpaceAndDup(const char *);
 
 void RemoveFreePolygon(PolygonType * data);
 void RemoveFreeElement(ElementType * data);
-void RemoveFreeRat(RatType * data);
 
 /* Allocate element-objects */
 LineType *GetElementLineMemory(ElementType *Element);

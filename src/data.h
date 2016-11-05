@@ -34,7 +34,6 @@
 #include "global_objs.h"
 #include "global_element.h"
 #include "list_poly.h"
-#include "list_rat.h"
 #include "layer.h"
 #include "crosshair.h"
 #include "buffer.h"

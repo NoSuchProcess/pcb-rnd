@@ -38,6 +38,7 @@
 #include "remove.h"
 #include "funchash_core.h"
 #include "compat_nls.h"
+#include "obj_rat.h"
 
 #include "rats.h"
 #include "draw.h"

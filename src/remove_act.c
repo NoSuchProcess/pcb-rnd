@@ -31,6 +31,7 @@
 #include "set.h"
 #include "remove.h"
 #include "funchash_core.h"
+#include "obj_rat.h"
 
 /* --------------------------------------------------------------------------- */
 

@@ -53,10 +53,8 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr);
 static void *AddPolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
-static void *MoveRatToBuffer(pcb_opctx_t *ctx, RatTypePtr);
 static void *MovePolygonToBuffer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *MoveElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr);
 static void SwapBuffer(BufferTypePtr);
@@ -81,17 +79,6 @@ static pcb_opfunc_t AddBufferFunctions = {
 MoveLineToBuffer,
 		MoveTextToBuffer,
 		MovePolygonToBuffer, MoveViaToBuffer, MoveElementToBuffer, NULL, NULL, NULL, NULL, NULL, MoveArcToBuffer, MoveRatToBuffer};
-
-
-/* ---------------------------------------------------------------------------
- * copies a rat-line to paste buffer
- */
-static void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr Rat)
-{
-	return (CreateNewRat(ctx->buffer.dst, Rat->Point1.X, Rat->Point1.Y,
-											 Rat->Point2.X, Rat->Point2.Y, Rat->group1,
-											 Rat->group2, Rat->Thickness, MaskFlags(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
-}
 
 /* ---------------------------------------------------------------------------
  * copies a polygon to buffer
@@ -144,24 +131,6 @@ static void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr Element)
 		END_LOOP;
 	}
 	return (element);
-}
-
-/* ---------------------------------------------------------------------------
- * moves a rat-line to paste buffer
- */
-static void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat)
-{
-	r_delete_entry(ctx->buffer.src->rat_tree, (BoxType *) rat);
-
-	ratlist_remove(rat);
-	ratlist_append(&ctx->buffer.dst->Rat, rat);
-
-	CLEAR_FLAG(PCB_FLAG_FOUND, rat);
-
-	if (!ctx->buffer.dst->rat_tree)
-		ctx->buffer.dst->rat_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(ctx->buffer.dst->rat_tree, (BoxType *) rat, 0);
-	return rat;
 }
 
 /* ---------------------------------------------------------------------------

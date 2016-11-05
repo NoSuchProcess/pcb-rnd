@@ -62,7 +62,6 @@ static void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr);
 static void *MovePolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
-static void *MoveRatToLayer(pcb_opctx_t *ctx, RatTypePtr);
 static void *MovePolygonToLayer(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 
 /* ---------------------------------------------------------------------------
@@ -255,34 +254,6 @@ static void *MovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypeP
 		Draw();
 	}
 	return (Point);
-}
-
-/* ---------------------------------------------------------------------------
- * moves a line between layers
- */
-static void *MoveRatToLayer(pcb_opctx_t *ctx, RatType * Rat)
-{
-	LineTypePtr newone;
-	/*Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
-	   Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
-	   if PCB_FLAG_VIA
-	   if we're on a pin, add a thermal
-	   else make a via and a wire, but 0-length wire not good
-	   else as before */
-
-	newone = CreateNewLineOnLayer(ctx->move.dst_layer, Rat->Point1.X, Rat->Point1.Y,
-																Rat->Point2.X, Rat->Point2.Y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
-	if (conf_core.editor.clear_line)
-		conf_set_editor(clear_line, 1);
-	if (!newone)
-		return (NULL);
-	AddObjectToCreateUndoList(PCB_TYPE_LINE, ctx->move.dst_layer, newone, newone);
-	if (PCB->RatOn)
-		EraseRat(Rat);
-	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
-	DrawLine(ctx->move.dst_layer, newone);
-	Draw();
-	return (newone);
 }
 
 /* ---------------------------------------------------------------------------

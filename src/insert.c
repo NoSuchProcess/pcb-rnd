@@ -42,14 +42,17 @@
 #include "set.h"
 #include "undo.h"
 
+/* TODO: REMOVE */
 #include "obj_line.h"
+
+#include "obj_line_op.h"
+#include "obj_rat_op.h"
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
 static void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
 static void *InsertPointIntoPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
-static void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -68,31 +71,6 @@ static pcb_opfunc_t InsertFunctions = {
 	NULL,
 	InsertPointIntoRat
 };
-
-/* ---------------------------------------------------------------------------
- * inserts a point into a rat-line
- */
-static void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr Rat)
-{
-	LineTypePtr newone;
-
-	newone = CreateDrawnLineOnLayer(CURRENT, Rat->Point1.X, Rat->Point1.Y,
-																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
-	if (!newone)
-		return newone;
-	AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
-	EraseRat(Rat);
-	DrawLine(CURRENT, newone);
-	newone = CreateDrawnLineOnLayer(CURRENT, Rat->Point2.X, Rat->Point2.Y,
-																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
-	if (newone) {
-		AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
-		DrawLine(CURRENT, newone);
-	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
-	Draw();
-	return (newone);
-}
 
 /* ---------------------------------------------------------------------------
  * inserts a point into a line

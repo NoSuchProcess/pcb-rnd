@@ -24,26 +24,13 @@
  *
  */
 
-/* prototypes for remove routines */
+/*** Standard operations on rat lines ***/
 
-#ifndef	PCB_REMOVE_H
-#define	PCB_REMOVE_H
+#include "operation.h"
 
-#include "config.h"
-
-/* ---------------------------------------------------------------------------
- * some constants
- */
-#define REMOVE_TYPES            \
-	(PCB_TYPE_VIA | PCB_TYPE_LINE_POINT | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT |	\
-	PCB_TYPE_POLYGON_POINT | PCB_TYPE_POLYGON | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
-
-void *RemovePolygon(LayerTypePtr, PolygonTypePtr);
-void *RemoveElement(ElementTypePtr);
-void ClearRemoveList(void);
-void RemovePCB(PCBTypePtr);
-pcb_bool RemoveSelected(void);
-void *RemoveObject(int, void *, void *, void *);
-void *DestroyObject(DataTypePtr, int, void *, void *, void *);
-
-#endif
+void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr Rat);
+void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat);
+void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr Rat);
+void *MoveRatToLayer(pcb_opctx_t *ctx, RatType * Rat);
+void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr Rat);
+void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat);

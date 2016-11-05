@@ -24,26 +24,15 @@
  *
  */
 
-/* prototypes for remove routines */
+/* Drawing primitive: rats */
 
-#ifndef	PCB_REMOVE_H
-#define	PCB_REMOVE_H
+#ifndef PCB_OBJ_RAT_H
+#define PCB_OBJ_RAT_H
 
-#include "config.h"
+RatType *GetRatMemory(DataType *data);
+void RemoveFreeRat(RatType *data);
 
-/* ---------------------------------------------------------------------------
- * some constants
- */
-#define REMOVE_TYPES            \
-	(PCB_TYPE_VIA | PCB_TYPE_LINE_POINT | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT |	\
-	PCB_TYPE_POLYGON_POINT | PCB_TYPE_POLYGON | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
-
-void *RemovePolygon(LayerTypePtr, PolygonTypePtr);
-void *RemoveElement(ElementTypePtr);
-void ClearRemoveList(void);
-void RemovePCB(PCBTypePtr);
-pcb_bool RemoveSelected(void);
-void *RemoveObject(int, void *, void *, void *);
-void *DestroyObject(DataTypePtr, int, void *, void *, void *);
+RatTypePtr CreateNewRat(DataTypePtr Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags);
+pcb_bool DeleteRats(pcb_bool selected);
 
 #endif

@@ -3,3 +3,4 @@
 #include "obj_pad_op.h"
 #include "obj_pinvia_op.h"
 #include "obj_text_op.h"
+#include "obj_rat_op.h"

@@ -49,10 +49,8 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr);
 static void *DestroyPolygon(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
 static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr);
-static void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr);
 static void *DestroyPolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
 static void *RemovePolygonContour(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, pcb_cardinal_t);
 static void *RemovePolygonPoint(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
@@ -184,33 +182,6 @@ static void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 
 	RemoveFreeElement(Element);
 
-	return NULL;
-}
-
-/* ---------------------------------------------------------------------------
- * destroys a rat
- */
-static void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr Rat)
-{
-	if (ctx->remove.destroy_target->rat_tree)
-		r_delete_entry(ctx->remove.destroy_target->rat_tree, &Rat->BoundingBox);
-
-	RemoveFreeRat(Rat);
-	return NULL;
-}
-
-/* ---------------------------------------------------------------------------
- * removes a rat
- */
-static void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat)
-{
-	/* erase from screen and memory */
-	if (PCB->RatOn) {
-		EraseRat(Rat);
-		if (!ctx->remove.bulk)
-			Draw();
-	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	return NULL;
 }
 
@@ -396,35 +367,6 @@ void *RemoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	ptr = ObjectOperation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (ptr);
-}
-
-/* ---------------------------------------------------------------------------
- * DeleteRats - deletes rat lines only
- * can delete all rat lines, or only selected one
- */
-
-pcb_bool DeleteRats(pcb_bool selected)
-{
-	pcb_opctx_t ctx;
-	pcb_bool changed = pcb_false;
-
-	ctx.remove.pcb = PCB;
-	ctx.remove.bulk = pcb_true;
-	ctx.remove.destroy_target = NULL;
-
-	RAT_LOOP(PCB->Data);
-	{
-		if ((!selected) || TEST_FLAG(PCB_FLAG_SELECTED, line)) {
-			changed = pcb_true;
-			RemoveRat(&ctx, line);
-		}
-	}
-	END_LOOP;
-	if (changed) {
-		Draw();
-		IncrementUndoSerialNumber();
-	}
-	return (changed);
 }
 
 /* ---------------------------------------------------------------------------

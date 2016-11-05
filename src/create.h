@@ -48,7 +48,6 @@ PCBTypePtr CreateNewPCB();
 int CreateNewPCBPost(PCBTypePtr, int /* set defaults */ );
 LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
 LineTypePtr CreateNewLineOnLayer(LayerTypePtr, Coord, Coord, Coord, Coord, Coord, Coord, FlagType);
-RatTypePtr CreateNewRat(DataTypePtr, Coord, Coord, Coord, Coord, pcb_cardinal_t, pcb_cardinal_t, Coord, FlagType);
 PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr, Coord, Coord, Coord, Coord, FlagType);
 PolygonTypePtr CreateNewPolygon(LayerTypePtr, FlagType);
 PointTypePtr CreateNewPointInPolygon(PolygonTypePtr, Coord, Coord);

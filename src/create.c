@@ -209,37 +209,6 @@ int CreateNewPCBPost(PCBTypePtr pcb, int use_defaults)
 }
 
 /* ---------------------------------------------------------------------------
- * creates a new rat-line
- */
-RatTypePtr
-CreateNewRat(DataTypePtr Data, Coord X1, Coord Y1,
-						 Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags)
-{
-	RatTypePtr Line = GetRatMemory(Data);
-
-	if (!Line)
-		return (Line);
-
-	Line->ID = ID++;
-	Line->Flags = Flags;
-	SET_FLAG(PCB_FLAG_RAT, Line);
-	Line->Thickness = Thickness;
-	Line->Point1.X = X1;
-	Line->Point1.Y = Y1;
-	Line->Point1.ID = ID++;
-	Line->Point2.X = X2;
-	Line->Point2.Y = Y2;
-	Line->Point2.ID = ID++;
-	Line->group1 = group1;
-	Line->group2 = group2;
-	SetLineBoundingBox((LineTypePtr) Line);
-	if (!Data->rat_tree)
-		Data->rat_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Data->rat_tree, &Line->BoundingBox, 0);
-	return (Line);
-}
-
-/* ---------------------------------------------------------------------------
  * creates a new polygon from the old formats rectangle data
  */
 PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, FlagType Flags)

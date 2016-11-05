@@ -60,6 +60,7 @@
 #include "remove.h"
 #include "rotate.h"
 #include "obj_pinvia.h"
+#include "obj_rat.h"
 
 #warning TODO: remove this in favor of vtptr
 #include "ptrlist.h"

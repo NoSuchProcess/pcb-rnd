@@ -51,25 +51,6 @@ do { \
 } while(0) \
 
 /* ---------------------------------------------------------------------------
- * get next slot for a Rat, allocates memory if necessary
- */
-RatType *GetRatMemory(DataType * data)
-{
-	RatType *new_obj;
-
-	new_obj = calloc(sizeof(RatType), 1);
-	ratlist_append(&data->Rat, new_obj);
-
-	return new_obj;
-}
-
-void RemoveFreeRat(RatType * data)
-{
-	ratlist_remove(data);
-	free(data);
-}
-
-/* ---------------------------------------------------------------------------
  * get next slot for a polygon object, allocates memory if necessary
  */
 PolygonType *GetPolygonMemory(LayerType * layer)

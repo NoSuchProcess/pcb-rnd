@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef LIST_RAT_H
-#define LIST_RAT_H
+#ifndef PCB_OBJ_RAT_LIST_H
+#define PCB_OBJ_RAT_LIST_H
 
 /* List of Rats */
 #define TDL(x)      ratlist_ ## x
