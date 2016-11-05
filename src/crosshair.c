@@ -42,6 +42,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "obj_all.h"
+#include "vtonpoint.h"
 
 typedef struct {
 	int x, y;

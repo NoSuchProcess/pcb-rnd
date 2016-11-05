@@ -106,14 +106,4 @@ struct pcb_font_s {        /* complete set of symbols */
 	pcb_bool Valid;
 };
 
-/* TODO: this could be replaced with pcb_obj_t */
-typedef struct onpoint_st {
-	int type;
-	union {
-		void *any;
-		LineType *line;
-		ArcType *arc;
-	} obj;
-} OnpointType;
-
 #endif

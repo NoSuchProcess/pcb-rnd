@@ -5,6 +5,15 @@
 #include <string.h>
 #include "global_objs.h"
 
+typedef struct onpoint_st {
+	int type;
+	union {
+		void *any;
+		LineType *line;
+		ArcType *arc;
+	} obj;
+} OnpointType;
+
 /* Elem=OnpointType; init=none */
 
 /* all public symbols are wrapped in GVT() - see vt_t(7) */
