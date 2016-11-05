@@ -53,25 +53,25 @@ double vect_dist2(Vector v1, Vector v2);
 /*{if (!Marked.status && side==NORTHWEST) { DrawMark(pcb_true); Marked.status = True; Marked.X = p[0]; Marked.Y = p[1]; DrawMark(False);} }*/
 
 enum {
-	NORTH,
-	NORTHEAST,
-	EAST,
-	SOUTHEAST,
-	SOUTH,
-	SOUTHWEST,
-	WEST,
-	NORTHWEST
+	JNORTH,
+	JNORTHEAST,
+	JEAST,
+	JSOUTHEAST,
+	JSOUTH,
+	JSOUTHWEST,
+	JWEST,
+	JNORTHWEST
 };
 
 const char *dirnames[] = {
-	"NORTH",
-	"NORTHEAST",
-	"EAST",
-	"SOUTHEAST",
-	"SOUTH",
-	"SOUTHWEST",
-	"WEST",
-	"NORTHWEST"
+	"JNORTH",
+	"JNORTHEAST",
+	"JEAST",
+	"JSOUTHEAST",
+	"JSOUTH",
+	"JSOUTHWEST",
+	"JWEST",
+	"JNORTHWEST"
 };
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
@@ -170,22 +170,22 @@ static void POLYAREA_findXmostLine(POLYAREA * a, int side, Vector p, Vector q, i
 	q[0] = q[1] = 0;
 	extra = a->contours->xmax - a->contours->xmin + a->contours->ymax - a->contours->ymin;
 	switch (side) {
-	case NORTH:
+	case JNORTH:
 		p[1] = q[1] = a->contours->ymin - clearance;
 		p[0] = a->contours->xmin - extra;
 		q[0] = a->contours->xmax + extra;
 		break;
-	case SOUTH:
+	case JSOUTH:
 		p[1] = q[1] = a->contours->ymax + clearance;
 		p[0] = a->contours->xmin - extra;
 		q[0] = a->contours->xmax + extra;
 		break;
-	case EAST:
+	case JEAST:
 		p[0] = q[0] = a->contours->xmax + clearance;
 		p[1] = a->contours->ymin - extra;
 		q[1] = a->contours->ymax + extra;
 		break;
-	case WEST:
+	case JWEST:
 		p[0] = q[0] = a->contours->xmin - clearance;
 		p[1] = a->contours->ymin - extra;
 		q[1] = a->contours->ymax + extra;
@@ -198,14 +198,14 @@ static void POLYAREA_findXmostLine(POLYAREA * a, int side, Vector p, Vector q, i
 			VNODE *v;
 
 			switch (side) {
-			case NORTHWEST:
+			case JNORTHWEST:
 				kx = 1;									/* new_x = kx * x + ky * y */
 				ky = 1;
 				dq = -1;								/* extend line in +x, dq*y */
 				ckx = cky = -1;					/* clear line in ckx*clear, cky*clear */
 				minmax = 0;							/* min or max */
 				break;
-			case SOUTHWEST:
+			case JSOUTHWEST:
 				kx = 1;
 				ky = -1;
 				dq = 1;
@@ -213,7 +213,7 @@ static void POLYAREA_findXmostLine(POLYAREA * a, int side, Vector p, Vector q, i
 				cky = 1;
 				minmax = 0;
 				break;
-			case NORTHEAST:
+			case JNORTHEAST:
 				kx = 1;
 				ky = -1;
 				dq = 1;
@@ -221,7 +221,7 @@ static void POLYAREA_findXmostLine(POLYAREA * a, int side, Vector p, Vector q, i
 				cky = -1;
 				minmax = 1;
 				break;
-			case SOUTHEAST:
+			case JSOUTHEAST:
 				kx = ky = 1;
 				dq = -1;
 				ckx = cky = 1;
@@ -261,7 +261,7 @@ static void POLYAREA_findXmostLine(POLYAREA * a, int side, Vector p, Vector q, i
 }
 
 /*!
- * Given a 'side' from the NORTH/SOUTH/etc enum, rotate it by n.
+ * Given a 'side' from the JNORTH/JSOUTH/etc enum, rotate it by n.
  */
 static int rotateSide(int side, int n)
 {
@@ -450,34 +450,34 @@ static r_dir_t jostle_callback(const BoxType * targ, void *private)
 	} while ((n = n->f) != tmp);
 	if (line->Point1.X == line->Point2.X) {	/* | */
 		if (info->box.X2 - smallest->contours->xmax > smallest->contours->xmin - info->box.X1) {
-			side = WEST;
+			side = JWEST;
 		}
 		else {
-			side = EAST;
+			side = JEAST;
 		}
 	}
 	else if (line->Point1.Y == line->Point2.Y) {	/* - */
 		if (info->box.Y2 - smallest->contours->ymax > smallest->contours->ymin - info->box.Y1) {
-			side = NORTH;
+			side = JNORTH;
 		}
 		else {
-			side = SOUTH;
+			side = JSOUTH;
 		}
 	}
 	else if ((line->Point1.X > line->Point2.X) == (line->Point1.Y > line->Point2.Y)) {	/* \ */
 		if (info->box.X2 - smallest->contours->xmax > smallest->contours->xmin - info->box.X1) {
-			side = SOUTHWEST;
+			side = JSOUTHWEST;
 		}
 		else {
-			side = NORTHEAST;
+			side = JNORTHEAST;
 		}
 	}
 	else {												/* / */
 		if (info->box.X2 - smallest->contours->xmax > smallest->contours->xmin - info->box.X1) {
-			side = NORTHWEST;
+			side = JNORTHWEST;
 		}
 		else {
-			side = SOUTHEAST;
+			side = JSOUTHEAST;
 		}
 	}
 	pcb_fprintf(stderr, "\t%s\n", dirnames[side]);
