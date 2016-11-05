@@ -173,6 +173,8 @@ void pcb_trace(const char *Format, ...)
 #endif
 }
 
+const char *pcb_board_get_filename(void) { return NULL; }
+const char *pcb_board_get_name(void) { return NULL; }
 
 /**
  * Build and run a command. No redirection or error handling is
