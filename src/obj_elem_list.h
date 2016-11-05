@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef LIST_ELEMENT_H
-#define LIST_ELEMENT_H
+#ifndef PCB_OBJ_ELEM_LIST_H
+#define PCB_OBJ_ELEM_LIST_H
 
 #include "obj_elem.h"
 

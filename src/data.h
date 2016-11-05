@@ -32,7 +32,6 @@
 #include "globalconst.h"
 #include "global_typedefs.h"
 #include "global_objs.h"
-#include "global_element.h"
 #include "layer.h"
 #include "crosshair.h"
 #include "buffer.h"

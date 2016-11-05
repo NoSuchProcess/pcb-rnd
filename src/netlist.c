@@ -33,7 +33,6 @@
 #include <string.h>
 
 #include "board.h"
-#include "global_element.h"
 #include "error.h"
 #include "plug_io.h"
 #include "find.h"

@@ -1,6 +1,5 @@
 #include <string.h>
 #include "config.h"
-#include "global_element.h"
 #include "obj_elem_list.h"
 #include "obj_all.h"
 

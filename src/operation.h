@@ -29,7 +29,6 @@
 #define PCB_OPERATION_H
 
 #include "global_typedefs.h"
-#include "global_element.h"
 
 /* Each object operation gets an operation-context with some operation-specific
    configuration, and the board to operate on. Optionally this is the place to

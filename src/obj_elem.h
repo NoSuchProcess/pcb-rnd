@@ -29,7 +29,27 @@
 #ifndef PCB_OBJ_ELEM_H
 #define PCB_OBJ_ELEM_H
 
+#include "global_objs.h"
+
 #include "obj_common.h"
+#include "obj_arc_list.h"
+#include "obj_line_list.h"
+#include "obj_pad_list.h"
+#include "obj_pinvia_list.h"
+#include "obj_text.h"
+
+
+struct element_st {
+	ANYOBJECTFIELDS;
+	TextType Name[MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see NAME_INDEX() below */
+	Coord MarkX, MarkY;               /* position mark */
+	pinlist_t Pin;
+	padlist_t Pad;
+	linelist_t Line;
+	arclist_t Arc;
+	BoxType VBox;
+	gdl_elem_t link;
+};
 
 ElementType *GetElementMemory(DataType * data);
 void RemoveFreeElement(ElementType * data);

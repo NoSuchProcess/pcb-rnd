@@ -23,10 +23,10 @@
 
 
 #include "config.h"
-#include "global_element.h"
 
-#undef LIST_ELEMENT_H
-#define LIST_ELEMENT_NOINSTANT
+/* include other lists before TDL_DONT_UNDEF makes them pollute the namespace */
+#include "obj_elem.h"
+
 #define TDL_DONT_UNDEF
 #include "obj_elem_list.h"
 #include <genlist/gentdlist_impl.c>
