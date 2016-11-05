@@ -37,7 +37,6 @@
 #include "data.h"
 #include "draw.h"
 #include "misc.h"
-#include "mirror.h"
 #include "polygon.h"
 #include "select.h"
 #include "undo.h"

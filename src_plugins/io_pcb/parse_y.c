@@ -117,7 +117,7 @@
 #include "remove.h"
 #include "rtree.h"
 #include "flag_str.h"
-#include "thermal.h"
+#include "obj_pinvia_therm.h"
 #include "rats_patch.h"
 #include "flags.h"
 #include "route_style.h"

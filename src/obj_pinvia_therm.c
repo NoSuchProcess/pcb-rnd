@@ -36,7 +36,7 @@
 
 #include "board.h"
 #include "polygon.h"
-#include "thermal.h"
+#include "obj_pinvia_therm.h"
 
 static PCBTypePtr pcb;
 

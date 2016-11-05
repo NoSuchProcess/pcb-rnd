@@ -55,7 +55,6 @@
 #include "insert.h"
 #include "layer.h"
 #include "misc.h"
-#include "mirror.h"
 #include "move.h"
 #include "polygon.h"
 #include "remove.h"

@@ -72,7 +72,6 @@ put /local/pcb/OBJS [@
 	list_conf.o
 	main.o
 	main_act.o
-	mirror.o
 	misc.o
 	misc_util.o
 	move.o
@@ -91,6 +90,7 @@ put /local/pcb/OBJS [@
 	obj_pad.o
 	obj_pad_list.o
 	obj_pinvia.o
+	obj_pinvia_therm.o
 	obj_pinvia_list.o
 	obj_poly.o
 	obj_poly_list.o
@@ -126,7 +126,6 @@ put /local/pcb/OBJS [@
 	stub_mincut.o
 	stub_stroke.o
 	stub_vendor.o
-	thermal.o
 	undo.o
 	undo_act.o
 	unit.o

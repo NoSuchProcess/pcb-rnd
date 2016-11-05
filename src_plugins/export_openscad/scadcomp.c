@@ -43,7 +43,6 @@
 #include "misc.h"
 #include "error.h"
 #include "buffer.h"
-#include "mirror.h"
 #include "create.h"
 #include "misc_util.h"
 

@@ -44,7 +44,7 @@
 #include "polygon.h"
 #include "rats.h"
 #include "remove.h"
-#include "thermal.h"
+#include "obj_pinvia_therm.h"
 #include "undo.h"
 #include "config.h"
 

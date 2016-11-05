@@ -36,7 +36,6 @@
 #include "create.h"
 #include "data.h"
 #include "plug_io.h"
-#include "mirror.h"
 #include "misc.h"
 #include "misc_util.h"
 #include "polygon.h"

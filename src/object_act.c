@@ -39,7 +39,6 @@
 #include "search.h"
 #include "move.h"
 #include "draw.h"
-#include "mirror.h"
 #include "rotate.h"
 #include "set.h"
 #include "copy.h"
