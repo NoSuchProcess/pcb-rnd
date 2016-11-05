@@ -32,6 +32,7 @@
 #include "compat_misc.h"
 #include "hid_actions.h"
 #include "paths.h"
+#include "rtree.h"
 
 PCBType *PCB;
 
@@ -187,3 +188,37 @@ void pcb_colors_from_settings(PCBTypePtr ptr)
 	ptr->Data->Layer[solder_silk_layer].SelectedColor = conf_core.appearance.color.element_selected;
 }
 
+typedef struct {
+	int nplated;
+	int nunplated;
+} HoleCountStruct;
+
+static r_dir_t hole_counting_callback(const BoxType * b, void *cl)
+{
+	PinTypePtr pin = (PinTypePtr) b;
+	HoleCountStruct *hcs = (HoleCountStruct *) cl;
+	if (TEST_FLAG(PCB_FLAG_HOLE, pin))
+		hcs->nunplated++;
+	else
+		hcs->nplated++;
+	return R_DIR_FOUND_CONTINUE;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * counts the number of plated and unplated holes in the design within
+ * a given area of the board. To count for the whole board, pass NULL
+ * within_area.
+ */
+void CountHoles(int *plated, int *unplated, const BoxType * within_area)
+{
+	HoleCountStruct hcs = { 0, 0 };
+
+	r_search(PCB->Data->pin_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
+	r_search(PCB->Data->via_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
+
+	if (plated != NULL)
+		*plated = hcs.nplated;
+	if (unplated != NULL)
+		*unplated = hcs.nunplated;
+}

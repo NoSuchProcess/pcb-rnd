@@ -50,4 +50,6 @@ Coord GetNum(char **s, const char *default_unit);
 char *Concat(const char *, ...);	/* end with NULL */
 int mem_any_set(unsigned char *ptr, int bytes);
 
+char *StripWhiteSpaceAndDup(const char *S);
+
 #endif

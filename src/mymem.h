@@ -58,8 +58,6 @@ ElementTypePtr GetElementMemory(DataTypePtr);
 void FreePolygonMemory(PolygonTypePtr);
 void FreeElementMemory(ElementTypePtr);
 
-char *StripWhiteSpaceAndDup(const char *);
-
 void RemoveFreePolygon(PolygonType * data);
 void RemoveFreeElement(ElementType * data);
 

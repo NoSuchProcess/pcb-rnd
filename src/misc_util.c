@@ -181,3 +181,35 @@ Coord GetNum(char **s, const char *default_unit)
 		(*s)++;
 	return ret_val;
 }
+
+/* ---------------------------------------------------------------------------
+ * strips leading and trailing blanks from the passed string and
+ * returns a pointer to the new 'duped' one or NULL if the old one
+ * holds only white space characters
+ */
+char *StripWhiteSpaceAndDup(const char *S)
+{
+	const char *p1, *p2;
+	char *copy;
+	size_t length;
+
+	if (!S || !*S)
+		return (NULL);
+
+	/* strip leading blanks */
+	for (p1 = S; *p1 && isspace((int) *p1); p1++);
+
+	/* strip trailing blanks and get string length */
+	length = strlen(p1);
+	for (p2 = p1 + length - 1; length && isspace((int) *p2); p2--, length--);
+
+	/* string is not empty -> allocate memory */
+	if (length) {
+		copy = (char *) realloc(NULL, length + 1);
+		strncpy(copy, p1, length);
+		copy[length] = '\0';
+		return (copy);
+	}
+	else
+		return (NULL);
+}

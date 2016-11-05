@@ -126,5 +126,6 @@ void pcb_loop_all(void *ctx,
 
 void FreeDataMemory(DataTypePtr);
 pcb_bool IsDataEmpty(DataTypePtr);
+BoxTypePtr GetDataBoundingBox(DataTypePtr Data);
 
 #endif

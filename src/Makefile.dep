@@ -2384,7 +2384,7 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/hash.h \
  crosshair.h rubberband.h hid.h error.h drc.h buffer.h error.h plug_io.h \
  mymem.h misc.h mymem.h rats.h netlist.h route_style.h set.h plugins.h \
- hid_actions.h compat_misc.h dolists.h
+ hid_actions.h compat_misc.h misc_util.h dolists.h
 ../src_plugins/smartdisperse/smartdisperse.o: \
  ../src_plugins/smartdisperse/smartdisperse.c \
  ../src_3rd/liblihata/genht/htpi.h ../src_3rd/liblihata/genht/ht.h \
@@ -2635,7 +2635,7 @@ board.o: board.c ../config.h board.h const.h macro.h global_typedefs.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- plug_io.h create.h compat_misc.h hid_actions.h paths.h
+ plug_io.h create.h compat_misc.h hid_actions.h paths.h rtree.h
 box.o: box.c ../config.h box.h math_helper.h global_typedefs.h pcb_bool.h \
  unit.h global_objs.h ../src_3rd/genlist/gendlist.h attrib.h flag.h \
  globalconst.h polyarea.h macro.h move.h misc_util.h
@@ -2858,7 +2858,7 @@ data.o: data.c ../config.h board.h const.h macro.h global_typedefs.h \
  data.h global_element.h list_element.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/liblihata/genht/hash.h crosshair.h rubberband.h hid.h error.h \
- drc.h buffer.h mymem.h rtree.h list_common.h obj_all.h
+ drc.h buffer.h mymem.h rtree.h list_common.h obj_all.h math_helper.h
 draw.o: draw.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \

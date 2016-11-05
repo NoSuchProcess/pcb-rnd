@@ -34,6 +34,7 @@
 #include "rtree.h"
 #include "list_common.h"
 #include "obj_all.h"
+#include "math_helper.h"
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers
@@ -267,3 +268,80 @@ pcb_bool IsDataEmpty(DataTypePtr Data)
 		hasNoObjects = hasNoObjects && LAYER_IS_EMPTY(&(Data->Layer[i]));
 	return (hasNoObjects);
 }
+
+/* ---------------------------------------------------------------------------
+ * gets minimum and maximum coordinates
+ * returns NULL if layout is empty
+ */
+BoxTypePtr GetDataBoundingBox(DataTypePtr Data)
+{
+	static BoxType box;
+	/* FIX ME: use r_search to do this much faster */
+
+	/* preset identifiers with highest and lowest possible values */
+	box.X1 = box.Y1 = MAX_COORD;
+	box.X2 = box.Y2 = -MAX_COORD;
+
+	/* now scan for the lowest/highest X and Y coordinate */
+	VIA_LOOP(Data);
+	{
+		box.X1 = MIN(box.X1, via->X - via->Thickness / 2);
+		box.Y1 = MIN(box.Y1, via->Y - via->Thickness / 2);
+		box.X2 = MAX(box.X2, via->X + via->Thickness / 2);
+		box.Y2 = MAX(box.Y2, via->Y + via->Thickness / 2);
+	}
+	END_LOOP;
+	ELEMENT_LOOP(Data);
+	{
+		box.X1 = MIN(box.X1, element->BoundingBox.X1);
+		box.Y1 = MIN(box.Y1, element->BoundingBox.Y1);
+		box.X2 = MAX(box.X2, element->BoundingBox.X2);
+		box.Y2 = MAX(box.Y2, element->BoundingBox.Y2);
+		{
+			TextTypePtr text = &NAMEONPCB_TEXT(element);
+			box.X1 = MIN(box.X1, text->BoundingBox.X1);
+			box.Y1 = MIN(box.Y1, text->BoundingBox.Y1);
+			box.X2 = MAX(box.X2, text->BoundingBox.X2);
+			box.Y2 = MAX(box.Y2, text->BoundingBox.Y2);
+		};
+	}
+	END_LOOP;
+	ALLLINE_LOOP(Data);
+	{
+		box.X1 = MIN(box.X1, line->Point1.X - line->Thickness / 2);
+		box.Y1 = MIN(box.Y1, line->Point1.Y - line->Thickness / 2);
+		box.X1 = MIN(box.X1, line->Point2.X - line->Thickness / 2);
+		box.Y1 = MIN(box.Y1, line->Point2.Y - line->Thickness / 2);
+		box.X2 = MAX(box.X2, line->Point1.X + line->Thickness / 2);
+		box.Y2 = MAX(box.Y2, line->Point1.Y + line->Thickness / 2);
+		box.X2 = MAX(box.X2, line->Point2.X + line->Thickness / 2);
+		box.Y2 = MAX(box.Y2, line->Point2.Y + line->Thickness / 2);
+	}
+	ENDALL_LOOP;
+	ALLARC_LOOP(Data);
+	{
+		box.X1 = MIN(box.X1, arc->BoundingBox.X1);
+		box.Y1 = MIN(box.Y1, arc->BoundingBox.Y1);
+		box.X2 = MAX(box.X2, arc->BoundingBox.X2);
+		box.Y2 = MAX(box.Y2, arc->BoundingBox.Y2);
+	}
+	ENDALL_LOOP;
+	ALLTEXT_LOOP(Data);
+	{
+		box.X1 = MIN(box.X1, text->BoundingBox.X1);
+		box.Y1 = MIN(box.Y1, text->BoundingBox.Y1);
+		box.X2 = MAX(box.X2, text->BoundingBox.X2);
+		box.Y2 = MAX(box.Y2, text->BoundingBox.Y2);
+	}
+	ENDALL_LOOP;
+	ALLPOLYGON_LOOP(Data);
+	{
+		box.X1 = MIN(box.X1, polygon->BoundingBox.X1);
+		box.Y1 = MIN(box.Y1, polygon->BoundingBox.Y1);
+		box.X2 = MAX(box.X2, polygon->BoundingBox.X2);
+		box.Y2 = MAX(box.Y2, polygon->BoundingBox.Y2);
+	}
+	ENDALL_LOOP;
+	return (IsDataEmpty(Data) ? NULL : &box);
+}
+

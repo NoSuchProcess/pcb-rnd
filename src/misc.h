@@ -37,8 +37,6 @@
 void r_delete_element(DataTypePtr, ElementTypePtr);
 void SetPolygonBoundingBox(PolygonTypePtr);
 void SetElementBoundingBox(DataTypePtr, ElementTypePtr, FontTypePtr);
-void CountHoles(int *, int *, const BoxType *);
-BoxTypePtr GetDataBoundingBox(DataTypePtr);
 void SetFontInfo(FontTypePtr);
 
 BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
