@@ -32,18 +32,10 @@
 #include <stdlib.h>
 #include "config.h"
 
-void r_delete_element(DataTypePtr, ElementTypePtr);
-void SetElementBoundingBox(DataTypePtr, ElementTypePtr, FontTypePtr);
-void SetFontInfo(FontTypePtr);
-
 BoxTypePtr GetObjectBoundingBox(int, void *, void *, void *);
 
 char *UniqueElementName(DataTypePtr, char *);
 void AttachForCopy(Coord, Coord);
-
-/* Return a relative rotation for an element, useful only for
-   comparing two similar footprints.  */
-int ElementOrientation(ElementType * e);
 
 char *EvaluateFilename(const char *, const char *, const char *, const char *);
 

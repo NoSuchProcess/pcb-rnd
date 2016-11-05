@@ -68,7 +68,11 @@ ElementTypePtr CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, Elemen
 void SetElementBoundingBox(DataTypePtr Data, ElementTypePtr Element, FontTypePtr Font);
 char *UniqueElementName(DataTypePtr Data, char *Name);
 void r_delete_element(DataType * data, ElementType * element);
+
+/* Return a relative rotation for an element, useful only for
+   comparing two similar footprints.  */
 int ElementOrientation(ElementType * e);
+
 void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coord DY);
 void *RemoveElement(ElementTypePtr Element);
 void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number);

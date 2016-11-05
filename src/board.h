@@ -54,6 +54,7 @@ enum {
 #include "library.h"
 #include "attrib.h"
 #include "rats_patch.h"
+#include "font.h"
 
 	/* The PCBType struct holds information about board layout most of which is
 	   |  saved with the layout.  A new PCB layout struct is first initialized

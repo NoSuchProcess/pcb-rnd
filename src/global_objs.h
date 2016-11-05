@@ -80,24 +80,4 @@ typedef struct {
 	ANYLINEFIELDS;
 } AnyLineObjectType, *AnyLineObjectTypePtr;
 
-/* ---------------------------------------------------------------------------
- * symbol and font related stuff
- */
-typedef struct symbol_st {								/* a single symbol */
-	LineTypePtr Line;
-	pcb_bool Valid;
-	pcb_cardinal_t LineN,								/* number of lines */
-	  LineMax;
-	Coord Width, Height,					/* size of cell */
-	  Delta;											/* distance to next symbol */
-} SymbolType, *SymbolTypePtr;
-
-struct pcb_font_s {        /* complete set of symbols */
-	Coord MaxHeight,         /* maximum cell width and height */
-	  MaxWidth;
-	BoxType DefaultSymbol;   /* the default symbol is a filled box */
-	SymbolType Symbol[MAX_FONTPOSITION + 1];
-	pcb_bool Valid;
-};
-
 #endif

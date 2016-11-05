@@ -43,6 +43,7 @@ put /local/pcb/OBJS [@
 	draw.o
 	error.o
 	event.o
+	font.o
 	file_act.o
 	find.o
 	find_act.o

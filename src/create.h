@@ -39,9 +39,6 @@
 void CreateBeLenient(pcb_bool);
 extern pcb_bool pcb_create_be_lenient;
 
-LineTypePtr CreateNewLineInSymbol(SymbolTypePtr, Coord, Coord, Coord, Coord, Coord);
-void CreateDefaultFont(PCBTypePtr);
-
 void CreateIDBump(int min_id);
 void CreateIDReset(void);
 long int CreateIDGet(void);

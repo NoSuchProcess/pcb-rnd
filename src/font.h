@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  PCB, interactive printed circuit board design
- *  Copyright (C) 1994,1995,1996, 2005 Thomas Nau
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,59 +24,34 @@
  *
  */
 
-/* functions used to create vias, pins ... */
+#ifndef PCB_FONT_H
+#define PCB_FONT_H
 
-#include "config.h"
-
-#include <setjmp.h>
-
-#include "conf_core.h"
-
-#include "board.h"
-#include "math_helper.h"
-#include "create.h"
-#include "data.h"
-#include "misc.h"
-#include "rtree.h"
-#include "search.h"
-#include "undo.h"
-#include "plug_io.h"
-#include "stub_vendor.h"
-#include "hid_actions.h"
-#include "paths.h"
-#include "compat_misc.h"
-#include "compat_nls.h"
-#include "obj_all.h"
+#include "global_typedefs.h"
+#include "box.h"
 
 /* ---------------------------------------------------------------------------
- * some local identifiers
+ * symbol and font related stuff
  */
+typedef struct symbol_st {     /* a single symbol */
+	LineTypePtr Line;
+	pcb_bool Valid;
+	pcb_cardinal_t LineN;       /* number of lines */
+	pcb_cardinal_t LineMax;     /* lines allocated */
+	Coord Width, Height, Delta; /* size of cell, distance to next symbol */
+} SymbolType, *SymbolTypePtr;
 
-/* current object ID; incremented after each creation of an object */
-long int ID = 1;
+struct pcb_font_s {          /* complete set of symbols */
+	Coord MaxHeight, MaxWidth; /* maximum cell width and height */
+	BoxType DefaultSymbol;     /* the default symbol is a filled box */
+	SymbolType Symbol[MAX_FONTPOSITION + 1];
+	pcb_bool Valid;
+};
 
-pcb_bool pcb_create_be_lenient = pcb_false;
+void CreateDefaultFont(PCBTypePtr pcb);
+void SetFontInfo(FontTypePtr Ptr);
 
-/* ---------------------------------------------------------------------------
- *  Set the lenience mode.
- */
-void CreateBeLenient(pcb_bool v)
-{
-	pcb_create_be_lenient = v;
-}
+LineTypePtr CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
 
-void CreateIDBump(int min_id)
-{
-	if (ID < min_id)
-		ID = min_id;
-}
+#endif
 
-void CreateIDReset(void)
-{
-	ID = 1;
-}
-
-long int CreateIDGet(void)
-{
-	return ID++;
-}
