@@ -32,6 +32,7 @@
 #include "config.h"
 #include "rtree.h"
 #include "math_helper.h"
+#include "polyarea.h"
 
 /* Implementation constants */
 

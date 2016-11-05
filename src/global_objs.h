@@ -32,7 +32,6 @@
 #include "flag.h"
 #include "globalconst.h"
 #include "global_typedefs.h"
-#include "polyarea.h"
 
 struct pcb_point_s {   /* a line/polygon point */
 	Coord X, Y, X2, Y2;   /* so Point type can be cast as BoxType */

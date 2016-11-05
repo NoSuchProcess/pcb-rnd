@@ -31,6 +31,7 @@
 
 #include "global_objs.h"
 #include "obj_common.h"
+#include "polyarea.h"
 
 struct polygon_st  {           /* holds information about a polygon */
 	ANYOBJECTFIELDS;
