@@ -20,6 +20,6 @@ struct element_st {
 	gdl_elem_t link;
 };
 
-#include "list_element.h"
+#include "obj_elem_list.h"
 
 #endif

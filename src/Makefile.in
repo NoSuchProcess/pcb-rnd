@@ -72,7 +72,6 @@ put /local/pcb/OBJS [@
 	layer.o
 	library.o
 	list_conf.o
-	list_element.o
 	main.o
 	main_act.o
 	mirror.o
@@ -86,6 +85,8 @@ put /local/pcb/OBJS [@
 	obj_any.o
 	obj_arc.o
 	obj_arc_list.o
+	obj_elem.o
+	obj_elem_list.o
 	obj_line.o
 	obj_line_drcenf.o
 	obj_line_list.o

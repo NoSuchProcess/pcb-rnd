@@ -23,6 +23,8 @@
 #ifndef LIST_ELEMENT_H
 #define LIST_ELEMENT_H
 
+#include "obj_elem.h"
+
 /* List of Elements */
 #define TDL(x)      elementlist_ ## x
 #define TDL_LIST_T  elementlist_t
