@@ -17,7 +17,7 @@ The protocol is designed with the following goals in mind:
 </ul>
 
 
-<H2> Tokens <H2>
+<H2> Tokens </H2>
 <table border=1>
 	<tr><th> token                 <th> description
 	<tr><td> <b>(</b>              <td> start a generic list
@@ -80,22 +80,22 @@ means the 5 characters long string "hello". The maximum size of the base64
 encoded length field is 5, thus the longest binary data that can be
 packed in a single field is 1 gigabyte.
 
-<H2> Examples <H2>
+<H2> Examples </H2>
 
-<H3> empty-argument messages <H3>
+<H3> empty-argument messages </H3>
 <pre>
 hello()\n
 foo()\n
 </pre>
 
-<H3> single-argument messages <H3>
+<H3> single-argument messages </H3>
 Text and binary alternative for the same content:
 <pre>
 hello(world)\n
 hello{F=world}\n
 </pre>
 
-<H3> multi-argument messages <H3>
+<H3> multi-argument messages </H3>
 Text and binary alternative for the same content:
 <pre>
 print(hello world !)\n
@@ -106,7 +106,7 @@ Note: using <b>space</b> between list items; don't space
 before the first or after the last argument. Always emit one space between
 any two list items.
 
-<H3> lists in list <H3>
+<H3> lists in list </H3>
 Text and binary alternatives for the same content:
 <pre>
 line((14.55 3.1) (44.2 0) 5)\n
@@ -126,9 +126,9 @@ other valid variants.
 It is important to note that there are constraints (derived from
 the grammar) on choosing which list items can be encoded in binary:
 <ul>
-	<li> a <b>binary-string</b> can be only on a <i>binary-list<i>
-	<li> a <b>text-string</b> can be only on a <i>generic-list<i>
-	<li> a <b>generic-list</b> can not be only under a <i>binary-list<i>
+	<li> a <b>binary-string</b> can be only on a <i>binary-list</i>
+	<li> a <b>text-string</b> can be only on a <i>generic-list</i>
+	<li> a <b>generic-list</b> can not be only under a <i>binary-list</i>
 </ul>
 Thus if the 3rd argument, (width in this example), must be encoded as a
 <b>binary-string</b>, it will turn it's parent, line's argument list
