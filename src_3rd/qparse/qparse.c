@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "qparse.h"
 
 typedef enum qp_state_e {
 	qp_normal,
@@ -56,7 +57,7 @@ typedef enum qp_state_e {
 			argv = realloc(argv, sizeof(char *) * allocated); \
 		} \
 		buff[buff_used] = '\0'; \
-		argv[argc] = strdup(buff); \
+		argv[argc] = qparse_strdup(buff); \
 		argc++; \
 		*buff = '\0'; \
 		buff_used = 0; \
@@ -139,4 +140,13 @@ void qparse_free(int argc, char **argv_ret[])
 
 	free(*argv_ret);
 	*argv_ret = NULL;
+}
+
+char *qparse_strdup(const char *s)
+{
+	int l = strlen(s);
+	char *o;
+	o = malloc(l+1);
+	memcpy(o, s, l+1);
+	return o;
 }

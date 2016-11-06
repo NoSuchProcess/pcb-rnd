@@ -7,3 +7,5 @@ int qparse(const char *input, char **argv_ret[]);
 /* Free an argv_ret array allocated by qparse. */
 void qparse_free(int argc, char **argv_ret[]);
 
+/* for C89 - that doesn't have strdup()*/
+char *qparse_strdup(const char *s);
