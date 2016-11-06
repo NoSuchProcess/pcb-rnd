@@ -44,6 +44,9 @@
 
 /* TODO: maybe remove this and move lines from draw here? */
 #include "draw.h"
+#include "obj_line_draw.h"
+#include "obj_rat_draw.h"
+#include "obj_pinvia_draw.h"
 
 
 /**** allocation ****/

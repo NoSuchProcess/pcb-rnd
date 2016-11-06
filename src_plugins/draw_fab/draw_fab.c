@@ -38,6 +38,9 @@
 #include "plugins.h"
 #include "stub_draw_fab.h"
 
+#include "obj_text_draw.h"
+
+
 /* ---------------------------------------------------------------------------
  * prints a FAB drawing.
  */

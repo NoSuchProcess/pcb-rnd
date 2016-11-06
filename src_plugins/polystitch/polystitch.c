@@ -37,6 +37,7 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "obj_poly.h"
+#include "obj_poly_draw.h"
 
 static PolygonType *inner_poly, *outer_poly;
 static LayerType *poly_layer;

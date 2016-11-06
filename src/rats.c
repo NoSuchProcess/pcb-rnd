@@ -46,6 +46,8 @@
 #include "netlist.h"
 #include "compat_nls.h"
 
+#include "obj_rat_draw.h"
+
 #warning TODO: remove this in favor of vtptr
 #include "ptrlist.h"
 

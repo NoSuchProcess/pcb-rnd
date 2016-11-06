@@ -42,6 +42,8 @@
 #include "rats.h"
 #include "draw.h"
 
+#include "obj_rat_draw.h"
+
 /* --------------------------------------------------------------------------- */
 
 static const char addrats_syntax[] = "AddRats(AllRats|SelectedRats|Close)";

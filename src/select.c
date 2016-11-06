@@ -42,6 +42,15 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
+#include "obj_elem_draw.h"
+#include "obj_pad_draw.h"
+#include "obj_arc_draw.h"
+#include "obj_pinvia_draw.h"
+#include "obj_line_draw.h"
+#include "obj_poly_draw.h"
+#include "obj_text_draw.h"
+#include "obj_rat_draw.h"
+
 #include <genregex/regex_sei.h>
 
 void pcb_select_element(ElementType *element, pcb_change_flag_t how, int redraw)

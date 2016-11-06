@@ -43,6 +43,7 @@
 /* TODO: remove this if draw.c is moved here: */
 #include "draw.h"
 #include "obj_line_draw.h"
+#include "obj_text_draw.h"
 #include "conf_core.h"
 
 /*** allocation ***/

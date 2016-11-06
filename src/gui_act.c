@@ -43,6 +43,11 @@
 #include "hid_init.h"
 #include "compat_nls.h"
 
+#include "obj_elem_draw.h"
+#include "obj_pinvia_draw.h"
+#include "obj_pad_draw.h"
+
+
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
 static const char display_syntax[] =

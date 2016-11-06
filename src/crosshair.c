@@ -41,6 +41,11 @@
 #include "compat_nls.h"
 #include "vtonpoint.h"
 
+#include "obj_line_draw.h"
+#include "obj_arc_draw.h"
+
+
+
 typedef struct {
 	int x, y;
 } point;

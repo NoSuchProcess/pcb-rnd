@@ -93,6 +93,7 @@ dicer output is used for HIDs which cannot render things with holes
 #include "layer.h"
 #include "compat_nls.h"
 #include "obj_all.h"
+#include "obj_poly_draw.h"
 
 #define ROUND(x) ((long)(((x) >= 0 ? (x) + 0.5  : (x) - 0.5)))
 

@@ -78,38 +78,8 @@ void LightenColor(const char *orig, char buf[8], double factor);
 
 void Draw(void);
 void Redraw(void);
-void DrawVia(PinTypePtr);
-void DrawRat(RatTypePtr);
-void DrawViaName(PinTypePtr);
-void DrawPin(PinTypePtr);
-void DrawPinName(PinTypePtr);
-void DrawPad(PadTypePtr);
-void DrawPadName(PadTypePtr);
-void DrawLine(LayerTypePtr, LineTypePtr);
-void DrawArc(LayerTypePtr, ArcTypePtr);
-void DrawText(LayerTypePtr, TextTypePtr);
-void DrawTextLowLevel(TextTypePtr, Coord);
-void DrawPolygon(LayerTypePtr, PolygonTypePtr);
-void DrawElement(ElementTypePtr);
-void DrawElementName(ElementTypePtr);
-void DrawElementPackage(ElementTypePtr);
-void DrawElementPinsAndPads(ElementTypePtr);
 void DrawObject(int, void *, void *);
 void DrawLayer(LayerTypePtr, const BoxType *);
-void EraseVia(PinTypePtr);
-void EraseRat(RatTypePtr);
-void EraseViaName(PinTypePtr);
-void ErasePad(PadTypePtr);
-void ErasePadName(PadTypePtr);
-void ErasePin(PinTypePtr);
-void ErasePinName(PinTypePtr);
-void EraseLine(LineTypePtr);
-void EraseArc(ArcTypePtr);
-void EraseText(LayerTypePtr, TextTypePtr);
-void ErasePolygon(PolygonTypePtr);
-void EraseElement(ElementTypePtr);
-void EraseElementPinsAndPads(ElementTypePtr);
-void EraseElementName(ElementTypePtr);
 void EraseObject(int, void *, void *);
 
 #endif

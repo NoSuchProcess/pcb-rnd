@@ -61,6 +61,9 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
+#include "obj_elem_draw.h"
+#include "obj_poly_draw.h"
+
 #define STEP_REMOVELIST 500
 #define STEP_UNDOLIST   500
 

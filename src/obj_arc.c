@@ -42,6 +42,8 @@
 
 /* TODO: could be removed if draw.c could be split up */
 #include "draw.h"
+#include "obj_arc_draw.h"
+
 
 ArcTypePtr GetArcMemory(LayerType * layer)
 {

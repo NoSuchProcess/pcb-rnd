@@ -26,6 +26,7 @@
 
 /*** Standard draw of elements ***/
 
+#include "rtree.h"
 r_dir_t draw_element_name_callback(const BoxType * b, void *cl);
 r_dir_t draw_element_mark_callback(const BoxType * b, void *cl);
 r_dir_t draw_element_callback(const BoxType * b, void *cl);

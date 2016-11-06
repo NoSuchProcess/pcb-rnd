@@ -46,6 +46,9 @@
 #include "compat_nls.h"
 #include "obj_all_op.h"
 
+#include "obj_line_draw.h"
+#include "obj_rat_draw.h"
+
 /* ----------------------------------------------------------------------
  * some local identifiers
  */

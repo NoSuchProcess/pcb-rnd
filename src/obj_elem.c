@@ -54,6 +54,7 @@
 /* TODO: remove this: */
 #include "draw.h"
 #include "obj_text_draw.h"
+#include "obj_elem_draw.h"
 
 /*** allocation ***/
 

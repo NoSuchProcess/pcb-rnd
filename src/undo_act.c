@@ -39,6 +39,8 @@
 #include "search.h"
 #include "draw.h"
 
+#include "obj_line_draw.h"
+
 /* --------------------------------------------------------------------------- */
 
 static const char atomic_syntax[] = "Atomic(Save|Restore|Close|Block)";

@@ -44,6 +44,7 @@
 
 /* TODO: consider moving the code from draw.c here and remove this: */
 #include "draw.h"
+#include "obj_rat_draw.h"
 
 /* TODO: merge rats.[ch] too */
 #include "rats.h"
