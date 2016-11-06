@@ -76,7 +76,6 @@ pcb_bool pcb_draw_doing_assy = pcb_false;
 static void DrawEverything(const BoxType *);
 static void DrawPPV(int group, const BoxType *);
 static void DrawLayerGroup(int, const BoxType *);
-static void DrawEMark(ElementTypePtr, Coord, Coord, pcb_bool);
 static void DrawMask(int side, const BoxType *);
 static void DrawRats(const BoxType *);
 static void DrawSilk(int side, const BoxType *);
