@@ -2917,7 +2917,7 @@ draw.o: draw.c ../config.h conf_core.h conf.h global_typedefs.h \
  obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h font.h \
  box.h move.h misc_util.h data.h crosshair.h rubberband.h vtonpoint.h \
  hid.h error.h drc.h buffer.h draw.h rotate.h rtree.h stub_draw_fab.h \
- obj_all.h obj_pinvia_draw.h
+ obj_all.h obj_pad_draw.h obj_pinvia_draw.h
 error.o: error.c ../config.h data.h globalconst.h global_typedefs.h \
  pcb_bool.h unit.h layer.h attrib.h obj_all_list.h obj_arc_list.h \
  obj_common.h ../src_3rd/genlist/gendlist.h flag.h obj_arc.h \
@@ -3439,7 +3439,12 @@ obj_pad.o: obj_pad.c ../config.h board.h const.h macro.h \
  obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h font.h \
  box.h math_helper.h move.h misc_util.h data.h crosshair.h rubberband.h \
  vtonpoint.h hid.h error.h drc.h buffer.h undo.h polygon.h rtree.h \
- compat_misc.h obj_pad_op.h operation.h draw.h
+ compat_misc.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ obj_pad_op.h operation.h draw.h
 obj_pad_list.o: obj_pad_list.c obj_pad_list.h obj_pad.h obj_common.h \
  ../src_3rd/genlist/gendlist.h flag.h globalconst.h ../config.h attrib.h \
  global_typedefs.h pcb_bool.h unit.h ../src_3rd/genlist/gentdlist_impl.h \

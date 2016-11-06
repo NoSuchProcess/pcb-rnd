@@ -33,6 +33,7 @@
 #include "undo.h"
 #include "polygon.h"
 #include "compat_misc.h"
+#include "conf_core.h"
 
 #include "obj_pad.h"
 #include "obj_pad_list.h"
@@ -279,5 +280,134 @@ void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad
 		return (Pad);
 	}
 	return (NULL);
+}
+
+/*** draw ***/
+static void draw_pad_name(PadType * pad)
+{
+	BoxType box;
+	pcb_bool vert;
+	TextType text;
+	char buff[128];
+	const char *pn;
+
+	if (!pad->Name || !pad->Name[0])
+		pn = EMPTY(pad->Number);
+	else
+		pn = conf_core.editor.show_number ? pad->Number : pad->Name;
+
+	if (GET_INTCONN(pad) > 0)
+		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pad));
+	else
+		strcpy(buff, pn);
+	text.TextString = buff;
+
+	/* should text be vertical ? */
+	vert = (pad->Point1.X == pad->Point2.X);
+
+	if (vert) {
+		box.X1 = pad->Point1.X - pad->Thickness / 2;
+		box.Y1 = MAX(pad->Point1.Y, pad->Point2.Y) + pad->Thickness / 2;
+		box.X1 += conf_core.appearance.pinout.text_offset_y;
+		box.Y1 -= conf_core.appearance.pinout.text_offset_x;
+	}
+	else {
+		box.X1 = MIN(pad->Point1.X, pad->Point2.X) - pad->Thickness / 2;
+		box.Y1 = pad->Point1.Y - pad->Thickness / 2;
+		box.X1 += conf_core.appearance.pinout.text_offset_x;
+		box.Y1 += conf_core.appearance.pinout.text_offset_y;
+	}
+
+	gui->set_color(Output.fgGC, PCB->PinNameColor);
+
+	text.Flags = NoFlags();
+	/* Set font height to approx 90% of pin thickness */
+	text.Scale = 90 * pad->Thickness / FONT_CAPHEIGHT;
+	text.X = box.X1;
+	text.Y = box.Y1;
+	text.Direction = vert ? 1 : 0;
+
+	DrawTextLowLevel(&text, 0);
+}
+
+static void _draw_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
+{
+	if (clear && !mask && pad->Clearance <= 0)
+		return;
+
+	if (conf_core.editor.thin_draw || (clear && conf_core.editor.thin_draw_poly))
+		gui->thindraw_pcb_pad(gc, pad, clear, mask);
+	else
+		gui->fill_pcb_pad(gc, pad, clear, mask);
+}
+
+void draw_pad(PadType * pad)
+{
+	const char *color = NULL;
+	char buf[sizeof("#XXXXXX")];
+
+	if (pcb_draw_doing_pinout)
+		gui->set_color(Output.fgGC, PCB->PinColor);
+	else if (TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, pad)) {
+		if (TEST_FLAG(PCB_FLAG_WARN, pad))
+			color = PCB->WarnColor;
+		else if (TEST_FLAG(PCB_FLAG_SELECTED, pad))
+			color = PCB->PinSelectedColor;
+		else
+			color = PCB->ConnectedColor;
+	}
+	else if (FRONT(pad))
+		color = PCB->PinColor;
+	else
+		color = PCB->InvisibleObjectsColor;
+
+	if (TEST_FLAG(PCB_FLAG_ONPOINT, pad)) {
+		assert(color != NULL);
+		LightenColor(color, buf, 1.75);
+		color = buf;
+	}
+
+	if (color != NULL)
+		gui->set_color(Output.fgGC, color);
+
+	_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
+
+	if (pcb_draw_doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, pad))
+		draw_pad_name(pad);
+}
+
+r_dir_t draw_pad_callback(const BoxType * b, void *cl)
+{
+	PadTypePtr pad = (PadTypePtr) b;
+	int *side = cl;
+
+	if (ON_SIDE(pad, *side))
+		draw_pad(pad);
+	return R_DIR_FOUND_CONTINUE;
+}
+
+r_dir_t clear_pad_callback(const BoxType * b, void *cl)
+{
+	PadTypePtr pad = (PadTypePtr) b;
+	int *side = cl;
+	if (ON_SIDE(pad, *side) && pad->Mask)
+		_draw_pad(Output.pmGC, pad, pcb_true, pcb_true);
+	return R_DIR_FOUND_CONTINUE;
+}
+
+/* draws solder paste layer for a given side of the board - only pads get paste */
+void DrawPaste(int side, const BoxType * drawn_area)
+{
+	gui->set_color(Output.fgGC, PCB->ElementColor);
+	ALLPAD_LOOP(PCB->Data);
+	{
+		if (ON_SIDE(pad, side) && !TEST_FLAG(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
+			if (pad->Mask < pad->Thickness)
+				_draw_pad(Output.fgGC, pad, pcb_true, pcb_true);
+			else
+				_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
+		}
+	}
+	ENDALL_LOOP;
 }
 
