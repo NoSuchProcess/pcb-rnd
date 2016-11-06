@@ -292,7 +292,7 @@ void *ChangeTextJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_false);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
-	AddObjectToFlagUndoList(PCB_TYPE_LINE, Layer, Text, Text);
+	AddObjectToFlagUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
 	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Text);
 	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Text)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_true);
