@@ -70,7 +70,7 @@ plugin_header("\nHID plugins:\n")
 plugin_def("hid_batch",       "batch process (no-gui HID)",sbuildin, 1)
 plugin_def("hid_gtk",         "the GTK gui",               sbuildin, 1)
 plugin_def("hid_lesstif",     "the lesstif gui",           sbuildin, 1)
-
+plugin_def("hid_remote",      "remote HID server",         sdisable, 1)
 
 plugin_dep("export_lpr", "export_ps")
 plugin_dep("export_xy", "export_bom")

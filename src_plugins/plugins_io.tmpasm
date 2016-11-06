@@ -24,6 +24,7 @@ include {../src_plugins/export_svg/Plug.tmpasm}
 include {../src_plugins/hid_batch/Plug.tmpasm}
 include {../src_plugins/hid_gtk/Plug.tmpasm}
 include {../src_plugins/hid_lesstif/Plug.tmpasm}
+include {../src_plugins/hid_remote/Plug.tmpasm}
 
 include {../src_plugins/io_lihata/Plug.tmpasm}
 include {../src_plugins/io_pcb/Plug.tmpasm}
