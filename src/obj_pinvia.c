@@ -868,6 +868,17 @@ r_dir_t draw_pin_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
+r_dir_t clear_pin_callback(const BoxType * b, void *cl)
+{
+	PinType *pin = (PinTypePtr) b;
+	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
+		gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
+	else
+		gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
+	return R_DIR_FOUND_CONTINUE;
+}
+
+
 static void draw_via(PinTypePtr via, pcb_bool draw_hole)
 {
 	SetPVColor(via, PCB_TYPE_VIA);

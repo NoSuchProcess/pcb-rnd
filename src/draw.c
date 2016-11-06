@@ -580,16 +580,6 @@ static void DrawPPV(int group, const BoxType * drawn_area)
 		r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
 }
 
-static r_dir_t clearPin_callback(const BoxType * b, void *cl)
-{
-	PinType *pin = (PinTypePtr) b;
-	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
-		gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
-	else
-		gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
-	return R_DIR_FOUND_CONTINUE;
-}
-
 struct poly_info {
 	const BoxType *drawn_area;
 	LayerType *layer;
@@ -660,8 +650,8 @@ static void DrawSilk(int side, const BoxType * drawn_area)
 	}
 
 	gui->use_mask(HID_MASK_CLEAR);
-	r_search(PCB->Data->pin_tree, drawn_area, NULL, clearPin_callback, NULL, NULL);
-	r_search(PCB->Data->via_tree, drawn_area, NULL, clearPin_callback, NULL, NULL);
+	r_search(PCB->Data->pin_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
+	r_search(PCB->Data->via_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
 	r_search(PCB->Data->pad_tree, drawn_area, NULL, clear_pad_callback, &side, NULL);
 
 	if (gui->poly_after) {
@@ -704,8 +694,8 @@ static void DrawMask(int side, const BoxType * screen)
 		gui->use_mask(HID_MASK_CLEAR);
 	}
 
-	r_search(PCB->Data->pin_tree, screen, NULL, clearPin_callback, NULL, NULL);
-	r_search(PCB->Data->via_tree, screen, NULL, clearPin_callback, NULL, NULL);
+	r_search(PCB->Data->pin_tree, screen, NULL, clear_pin_callback, NULL, NULL);
+	r_search(PCB->Data->via_tree, screen, NULL, clear_pin_callback, NULL, NULL);
 	r_search(PCB->Data->pad_tree, screen, NULL, clear_pad_callback, &side, NULL);
 
 	if (thin)

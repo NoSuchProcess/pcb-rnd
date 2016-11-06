@@ -26,6 +26,7 @@
 
 /*** Standard draw on pins and vias ***/
 r_dir_t draw_pin_callback(const BoxType * b, void *cl);
+r_dir_t clear_pin_callback(const BoxType * b, void *cl);
 r_dir_t draw_via_callback(const BoxType * b, void *cl);
 r_dir_t draw_hole_callback(const BoxType * b, void *cl);
 void draw_pin(PinTypePtr pin, pcb_bool draw_hole);
