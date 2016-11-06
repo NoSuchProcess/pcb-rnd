@@ -2917,7 +2917,8 @@ draw.o: draw.c ../config.h conf_core.h conf.h global_typedefs.h \
  obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h font.h \
  box.h move.h misc_util.h data.h crosshair.h rubberband.h vtonpoint.h \
  hid.h error.h drc.h buffer.h draw.h rotate.h rtree.h stub_draw_fab.h \
- obj_all.h obj_pad_draw.h obj_pinvia_draw.h obj_elem_draw.h
+ obj_all.h obj_pad_draw.h obj_pinvia_draw.h obj_elem_draw.h \
+ obj_line_draw.h
 error.o: error.c ../config.h data.h globalconst.h global_typedefs.h \
  pcb_bool.h unit.h layer.h attrib.h obj_all_list.h obj_arc_list.h \
  obj_common.h ../src_3rd/genlist/gendlist.h flag.h obj_arc.h \
@@ -3371,8 +3372,8 @@ obj_elem.o: obj_elem.c ../config.h board.h const.h macro.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf_core.h compat_nls.h \
  compat_misc.h rotate.h remove.h polygon.h rtree.h undo.h obj_pinvia_op.h \
- operation.h obj_pad_op.h obj_pinvia_draw.h obj_pad_draw.h obj_elem_op.h \
- draw.h
+ operation.h obj_pad_op.h obj_pinvia_draw.h obj_pad_draw.h \
+ obj_line_draw.h obj_elem_op.h draw.h
 obj_elem_list.o: obj_elem_list.c ../config.h obj_elem.h obj_common.h \
  ../src_3rd/genlist/gendlist.h flag.h globalconst.h attrib.h \
  global_typedefs.h pcb_bool.h unit.h obj_arc_list.h obj_arc.h \

@@ -43,6 +43,7 @@
 #include "obj_pad_draw.h"
 #include "obj_pinvia_draw.h"
 #include "obj_elem_draw.h"
+#include "obj_line_draw.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -133,49 +134,6 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const BoxTyp
 
 	r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
 	r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
-}
-
-void _draw_line(LineType * line)
-{
-	gui->set_line_cap(Output.fgGC, Trace_Cap);
-	if (conf_core.editor.thin_draw)
-		gui->set_line_width(Output.fgGC, 0);
-	else
-		gui->set_line_width(Output.fgGC, line->Thickness);
-
-	gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
-}
-
-static void draw_line(LayerType * layer, LineType * line)
-{
-	const char *color;
-	char buf[sizeof("#XXXXXX")];
-
-	if (TEST_FLAG(PCB_FLAG_WARN, line))
-		color = PCB->WarnColor;
-	else if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
-		if (TEST_FLAG(PCB_FLAG_SELECTED, line))
-			color = layer->SelectedColor;
-		else
-			color = PCB->ConnectedColor;
-	}
-	else
-		color = layer->Color;
-
-	if (TEST_FLAG(PCB_FLAG_ONPOINT, line)) {
-		assert(color != NULL);
-		LightenColor(color, buf, 1.75);
-		color = buf;
-	}
-
-	gui->set_color(Output.fgGC, color);
-	_draw_line(line);
-}
-
-static r_dir_t line_callback(const BoxType * b, void *cl)
-{
-	draw_line((LayerType *) cl, (LineType *) b);
-	return R_DIR_FOUND_CONTINUE;
 }
 
 static r_dir_t rat_callback(const BoxType * b, void *cl)
@@ -623,7 +581,7 @@ void DrawLayer(LayerTypePtr Layer, const BoxType * screen)
 		return;
 
 	/* draw all visible lines this layer */
-	r_search(Layer->line_tree, screen, NULL, line_callback, Layer, NULL);
+	r_search(Layer->line_tree, screen, NULL, draw_line_callback, Layer, NULL);
 
 	/* draw the layer arcs on screen */
 	r_search(Layer->arc_tree, screen, NULL, arc_callback, Layer, NULL);

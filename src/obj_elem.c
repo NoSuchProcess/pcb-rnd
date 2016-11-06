@@ -44,6 +44,7 @@
 
 #include "obj_pinvia_draw.h"
 #include "obj_pad_draw.h"
+#include "obj_line_draw.h"
 
 #include "obj_elem.h"
 #include "obj_elem_list.h"
