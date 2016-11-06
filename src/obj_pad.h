@@ -46,6 +46,8 @@ void RemoveFreePad(PadType * data);
 
 PadTypePtr CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags);
 void SetPadBoundingBox(PadTypePtr Pad);
+pcb_bool ChangePaste(PadTypePtr Pad);
+
 
 /* Rather than move the line bounding box, we set it so the point bounding
  * boxes are updated too.

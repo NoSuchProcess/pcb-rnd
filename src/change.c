@@ -371,21 +371,6 @@ pcb_bool ChangeLayerName(LayerTypePtr Layer, char *Name)
 	return (pcb_true);
 }
 
-/* ---------------------------------------------------------------------------
- * changes the nopaste flag of a pad
- */
-pcb_bool ChangePaste(PadTypePtr Pad)
-{
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
-		return (pcb_false);
-	ErasePad(Pad);
-	AddObjectToFlagUndoList(PCB_TYPE_PAD, Pad, Pad, Pad);
-	TOGGLE_FLAG(PCB_FLAG_NOPASTE, Pad);
-	DrawPad(Pad);
-	Draw();
-	return (pcb_true);
-}
-
 /* ----------------------------------------------------------------------
  * changes the thermals on all selected and visible pins
  * and/or vias. Returns pcb_true if anything has changed

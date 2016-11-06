@@ -51,6 +51,7 @@ PinTypePtr CreateNewVia(DataTypePtr Data, Coord X, Coord Y, Coord Thickness, Coo
 PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags);
 void pcb_add_via(DataType *Data, PinType *Via);
 void SetPinBoundingBox(PinTypePtr Pin);
+pcb_bool ChangeHole(PinTypePtr Via);
 
 /* This is the extents of a Pin or Via, depending on whether it's a
    hole or not.  */

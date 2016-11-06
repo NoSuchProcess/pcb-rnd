@@ -85,8 +85,6 @@ pcb_bool ChangeSelectedPaste(void);
 pcb_bool ChangeSelectedOctagon(int);
 pcb_bool SetSelectedOctagon(int);
 pcb_bool ClrSelectedOctagon(int);
-pcb_bool ChangeHole(PinTypePtr);
-pcb_bool ChangePaste(PadTypePtr);
 pcb_bool ChangeObjectSize(int, void *, void *, void *, Coord, pcb_bool);
 pcb_bool ChangeObject1stSize(int, void *, void *, void *, Coord, pcb_bool);
 pcb_bool ChangeObjectThermal(int, void *, void *, void *, int);

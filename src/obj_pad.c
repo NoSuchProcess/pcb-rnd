@@ -139,7 +139,18 @@ void SetPadBoundingBox(PadTypePtr Pad)
 	close_box(&Pad->BoundingBox);
 }
 
-
+/* changes the nopaste flag of a pad */
+pcb_bool ChangePaste(PadTypePtr Pad)
+{
+	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
+		return (pcb_false);
+	ErasePad(Pad);
+	AddObjectToFlagUndoList(PCB_TYPE_PAD, Pad, Pad, Pad);
+	TOGGLE_FLAG(PCB_FLAG_NOPASTE, Pad);
+	DrawPad(Pad);
+	Draw();
+	return (pcb_true);
+}
 
 /*** ops ***/
 
