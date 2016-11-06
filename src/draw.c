@@ -58,7 +58,9 @@ OutputType Output;							/* some widgets ... used for drawing */
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static BoxType Block = { MAXINT, MAXINT, -MAXINT, -MAXINT };
+
+/* the minimum box that needs to be redrawn */
+BoxType pcb_draw_invalidated = { MAXINT, MAXINT, -MAXINT, -MAXINT };
 
 static int doing_pinout = 0;
 static pcb_bool doing_assy = pcb_false;
@@ -69,7 +71,6 @@ static pcb_bool doing_assy = pcb_false;
 static void DrawEverything(const BoxType *);
 static void DrawPPV(int group, const BoxType *);
 static void DrawLayerGroup(int, const BoxType *);
-static void AddPart(void *);
 static void SetPVColor(PinTypePtr, int);
 static void DrawEMark(ElementTypePtr, Coord, Coord, pcb_bool);
 static void DrawMask(int side, const BoxType *);
@@ -147,14 +148,14 @@ static void SetPVColor(PinTypePtr Pin, int Type)
 /*---------------------------------------------------------------------------
  *  Adds the update rect to the update region
  */
-static void AddPart(void *b)
+static void pcb_draw_invalidate(void *b)
 {
 	BoxType *box = (BoxType *) b;
 
-	Block.X1 = MIN(Block.X1, box->X1);
-	Block.X2 = MAX(Block.X2, box->X2);
-	Block.Y1 = MIN(Block.Y1, box->Y1);
-	Block.Y2 = MAX(Block.Y2, box->Y2);
+	pcb_draw_invalidated.X1 = MIN(pcb_draw_invalidated.X1, box->X1);
+	pcb_draw_invalidated.X2 = MAX(pcb_draw_invalidated.X2, box->X2);
+	pcb_draw_invalidated.Y1 = MIN(pcb_draw_invalidated.Y1, box->Y1);
+	pcb_draw_invalidated.Y2 = MAX(pcb_draw_invalidated.Y2, box->Y2);
 }
 
 /*
@@ -165,12 +166,12 @@ void Draw(void)
 {
 	if (pcb_draw_inhibit)
 		return;
-	if (Block.X1 <= Block.X2 && Block.Y1 <= Block.Y2)
-		gui->invalidate_lr(Block.X1, Block.X2, Block.Y1, Block.Y2);
+	if (pcb_draw_invalidated.X1 <= pcb_draw_invalidated.X2 && pcb_draw_invalidated.Y1 <= pcb_draw_invalidated.Y2)
+		gui->invalidate_lr(pcb_draw_invalidated.X1, pcb_draw_invalidated.X2, pcb_draw_invalidated.Y1, pcb_draw_invalidated.Y2);
 
 	/* shrink the update block */
-	Block.X1 = Block.Y1 = MAXINT;
-	Block.X2 = Block.Y2 = -MAXINT;
+	pcb_draw_invalidated.X1 = pcb_draw_invalidated.Y1 = MAXINT;
+	pcb_draw_invalidated.X2 = pcb_draw_invalidated.Y2 = -MAXINT;
 }
 
 /* ----------------------------------------------------------------------
@@ -1145,7 +1146,7 @@ static void GatherPVName(PinTypePtr Ptr)
 		box.X2 = box.X1;
 		box.Y2 = box.Y1;
 	}
-	AddPart(&box);
+	pcb_draw_invalidate(&box);
 }
 
 static void GatherPadName(PadTypePtr Pad)
@@ -1173,7 +1174,7 @@ static void GatherPadName(PadTypePtr Pad)
 		box.Y2 = box.Y1;
 	}
 
-	AddPart(&box);
+	pcb_draw_invalidate(&box);
 	return;
 }
 
@@ -1257,7 +1258,7 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
  */
 void DrawVia(PinTypePtr Via)
 {
-	AddPart(Via);
+	pcb_draw_invalidate(Via);
 	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
 		DrawViaName(Via);
 }
@@ -1275,7 +1276,7 @@ void DrawViaName(PinTypePtr Via)
  */
 void DrawPin(PinTypePtr Pin)
 {
-	AddPart(Pin);
+	pcb_draw_invalidate(Pin);
 	if ((!TEST_FLAG(PCB_FLAG_HOLE, Pin) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
 			|| doing_pinout)
 		DrawPinName(Pin);
@@ -1294,7 +1295,7 @@ void DrawPinName(PinTypePtr Pin)
  */
 void DrawPad(PadTypePtr Pad)
 {
-	AddPart(Pad);
+	pcb_draw_invalidate(Pad);
 	if (doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
 		DrawPadName(Pad);
 }
@@ -1312,7 +1313,7 @@ void DrawPadName(PadTypePtr Pad)
  */
 void DrawLine(LayerTypePtr Layer, LineTypePtr Line)
 {
-	AddPart(Line);
+	pcb_draw_invalidate(Line);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1332,7 +1333,7 @@ void DrawRat(RatTypePtr Rat)
 		b.X2 = Rat->Point1.X + w * 2 + w / 2;
 		b.Y1 = Rat->Point1.Y - w * 2 - w / 2;
 		b.Y2 = Rat->Point1.Y + w * 2 + w / 2;
-		AddPart(&b);
+		pcb_draw_invalidate(&b);
 	}
 	else
 		DrawLine(NULL, (LineType *) Rat);
@@ -1343,7 +1344,7 @@ void DrawRat(RatTypePtr Rat)
  */
 void DrawArc(LayerTypePtr Layer, ArcTypePtr Arc)
 {
-	AddPart(Arc);
+	pcb_draw_invalidate(Arc);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1351,7 +1352,7 @@ void DrawArc(LayerTypePtr Layer, ArcTypePtr Arc)
  */
 void DrawText(LayerTypePtr Layer, TextTypePtr Text)
 {
-	AddPart(Text);
+	pcb_draw_invalidate(Text);
 }
 
 
@@ -1360,7 +1361,7 @@ void DrawText(LayerTypePtr Layer, TextTypePtr Text)
  */
 void DrawPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
 {
-	AddPart(Polygon);
+	pcb_draw_invalidate(Polygon);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1423,7 +1424,7 @@ void DrawElementPinsAndPads(ElementTypePtr Element)
  */
 void EraseVia(PinTypePtr Via)
 {
-	AddPart(Via);
+	pcb_draw_invalidate(Via);
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
 		EraseViaName(Via);
 	EraseFlags(&Via->Flags);
@@ -1443,7 +1444,7 @@ void EraseRat(RatTypePtr Rat)
 		b.X2 = Rat->Point1.X + w * 2 + w / 2;
 		b.Y1 = Rat->Point1.Y - w * 2 - w / 2;
 		b.Y2 = Rat->Point1.Y + w * 2 + w / 2;
-		AddPart(&b);
+		pcb_draw_invalidate(&b);
 	}
 	else
 		EraseLine((LineType *) Rat);
@@ -1464,7 +1465,7 @@ void EraseViaName(PinTypePtr Via)
  */
 void ErasePad(PadTypePtr Pad)
 {
-	AddPart(Pad);
+	pcb_draw_invalidate(Pad);
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
 		ErasePadName(Pad);
 	EraseFlags(&Pad->Flags);
@@ -1483,7 +1484,7 @@ void ErasePadName(PadTypePtr Pad)
  */
 void ErasePin(PinTypePtr Pin)
 {
-	AddPart(Pin);
+	pcb_draw_invalidate(Pin);
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
 		ErasePinName(Pin);
 	EraseFlags(&Pin->Flags);
@@ -1502,7 +1503,7 @@ void ErasePinName(PinTypePtr Pin)
  */
 void EraseLine(LineTypePtr Line)
 {
-	AddPart(Line);
+	pcb_draw_invalidate(Line);
 	EraseFlags(&Line->Flags);
 }
 
@@ -1513,7 +1514,7 @@ void EraseArc(ArcTypePtr Arc)
 {
 	if (!Arc->Thickness)
 		return;
-	AddPart(Arc);
+	pcb_draw_invalidate(Arc);
 	EraseFlags(&Arc->Flags);
 }
 
@@ -1522,7 +1523,7 @@ void EraseArc(ArcTypePtr Arc)
  */
 void EraseText(LayerTypePtr Layer, TextTypePtr Text)
 {
-	AddPart(Text);
+	pcb_draw_invalidate(Text);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1530,7 +1531,7 @@ void EraseText(LayerTypePtr Layer, TextTypePtr Text)
  */
 void ErasePolygon(PolygonTypePtr Polygon)
 {
-	AddPart(Polygon);
+	pcb_draw_invalidate(Polygon);
 	EraseFlags(&Polygon->Flags);
 }
 
