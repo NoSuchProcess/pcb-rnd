@@ -55,11 +55,15 @@ do
 done| awk -v import=$import '
 		{
 			rev=int($1)
-			if (((rev >= 3871) && (rev <= 3914)) || ((rev >= 4065) && (rev <= 4068)) || (rev == 4023) || (rev == 4033)) {
+			if (((rev >= 3871) && (rev <= 3914)) || ((rev >= 4065) && (rev <= 4068)) || (rev == 4023) || (rev == 4033) || (rev == 4095) || (rev == 4096) || (rev == 4122)) {
 # old plugins and export plugin import
 				old++
 			}
-			else if ((rev <= import) || (rev == 1022) || (rev == 3539))
+			else if ((rev == 4550) || ((rev <= 4548) && (rev >= 4536)) || ((rev <= 4534) && (rev >= 4530)) || ((rev <= 4528) && (rev >= 4524)) || ((rev <= 4522) && (rev >= 4502)) || ((rev <= 4500) && (rev >= 4493)) || ((rev <= 4491) && (rev >= 4486)) || ((rev <= 4633) && (rev >= 4562))) {
+# unravel
+				old++
+			}
+			else if ((rev <= import) || (rev == 1022) || (rev == 3539) || (rev == 4187))
 				old++
 			else
 				new++
