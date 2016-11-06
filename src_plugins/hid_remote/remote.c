@@ -79,6 +79,8 @@ static int remote_stay;
 static void remote_do_export(HID_Attr_Val * options)
 {
 /* main loop, parser */
+	remote_proto_send_ver();
+	remote_proto_parse();
 }
 
 static void remote_do_exit(HID *hid)

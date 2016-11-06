@@ -51,6 +51,11 @@ size_t base64_write_right(char *buff_start, size_t buff_len, unsigned long int n
 	char *end = buff_start + buff_len;
 	size_t rlen = 0;
 
+	if (num == 0) {
+		*end = int2digit(0);
+		return 1;
+	}
+
 	while(num > 0) {
 		unsigned int digit = num & 0x3F;
 		*end = int2digit(digit);
