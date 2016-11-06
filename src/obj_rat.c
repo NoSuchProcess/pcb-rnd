@@ -34,6 +34,8 @@
 #include "undo.h"
 #include "rtree.h"
 
+#include "obj_line_draw.h"
+
 #include "obj_rat.h"
 #include "obj_rat_list.h"
 #include "obj_rat_op.h"
@@ -214,4 +216,35 @@ void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	return NULL;
+}
+
+/*** draw ***/
+r_dir_t draw_rat_callback(const BoxType * b, void *cl)
+{
+	RatType *rat = (RatType *) b;
+
+	if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
+		if (TEST_FLAG(PCB_FLAG_SELECTED, rat))
+			gui->set_color(Output.fgGC, PCB->RatSelectedColor);
+		else
+			gui->set_color(Output.fgGC, PCB->ConnectedColor);
+	}
+	else
+		gui->set_color(Output.fgGC, PCB->RatColor);
+
+	if (conf_core.appearance.rat_thickness < 20)
+		rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
+	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
+	if (TEST_FLAG(PCB_FLAG_VIA, rat)) {
+		int w = rat->Thickness;
+
+		if (conf_core.editor.thin_draw)
+			gui->set_line_width(Output.fgGC, 0);
+		else
+			gui->set_line_width(Output.fgGC, w);
+		gui->draw_arc(Output.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
+	}
+	else
+		_draw_line((LineType *) rat);
+	return R_DIR_FOUND_CONTINUE;
 }
