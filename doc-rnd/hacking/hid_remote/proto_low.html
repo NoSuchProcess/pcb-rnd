@@ -1,0 +1,135 @@
+<html>
+<body>
+<H1> remote HID protocol, low level </H1>
+
+In this document <b>bold</b> words are tokens and <i>italic</i> words
+are grammatic constructs.
+<p>
+The protocol is designed with the following goals in mind:
+<ul>
+	<li> for simple/text data: compact, text format
+	<li> for simple/text data: easy to read/write manually
+	<li> for text with special characters: avoid quoting and escaping
+	<li> be able to embed binary data without having to recode it (e.g. in base64)
+	<li> to some extent be able to mix simple text and binary fields even within a single message
+	<li> predictable parsing: always know how much memory to allocate in advance
+	<li> minimalism - keep things as simple as possible
+</ul>
+
+
+<H2> Tokens <H2>
+<table border=1>
+	<tr><th> token                 <th> description
+	<tr><td> <b>(</b>              <td> start a generic list
+	<tr><td> <b>)</b>              <td> end a generic list
+	<tr><td> <b>{</b>              <td> start a binary list
+	<tr><td> <b>}</b>              <td> end a binary list
+	<tr><td> <b>space</b>          <td> element separator: space (ASCII dec 32)
+	<tr><td> <b>\n</b>             <td> message separator: newline (ASCII dec 10)
+	<tr><td> <b>text-string</b>    <td> short, alphanumeric string
+	<tr><td> <b>binary-string</b>  <td> long and/or non-alnum string
+</table>
+
+<H2> Grammar </H2>
+The communication is a pair of asynchronous message stream. The message
+format is:
+<pre>
+<b>text-string</b> <i>generic-list</i> <b>\n</b>
+or
+<b>text-string</b> <i>binary-list</i> <b>\n</b>
+</pre>
+<p>
+where text-string is a command and <i>generic-list</i> is a list and holds
+the arguments of. The language has two type of lists: generic and binary.
+A generic list is wrapped in parenthesis <b>()</b> and its children are:
+<ul>
+ <li> <b>text-string</b>,
+ <li> <i>generic-list</i>,
+ <li> <i>binary-list</i>.
+</ul>
+A binary-list is wrapped in braces <b>{}</b> and its children are:
+<ul>
+ <li> <b>binary-string</b>,
+ <li> <i>binary-list</i>.
+</ul>
+<p>
+Any list can be empty. There's no whitespace after the opening token and
+before the closing token, so the empty generic-list and the empty binary-list
+are written as, respectively:
+<pre>
+()
+{}
+</pre>
+Subsequent fields of a list has a single <b>space</b> in between, for
+separation (this is an intentional redundancy for a <i>binary-list</i>).
+<p>
+Note: a <i>generic-list</i> can host text and binary children, but a
+</i>binary list</i> can not host only binary children. This means if a node
+of the parse tree is a binary list, the subtree will contain only binary nodes.
+<p>
+A <b>text-string</b> contains only English alphanumeric characters (A..Z, a..z,
+0..9), underscores (_), plus and minus signs (+, -) and periods (.) and is at
+most 16 characters long.
+<p>
+A binary string encodes the length of the payload in base64 (A..Z, a..z, +, /),
+has a '=' for separator then the payload in binary format. For example
+<pre>
+F=hello
+</pre>
+means the 5 characters long string "hello". The maximum size of the base64
+encoded length field is 5, thus the longest binary data that can be
+packed in a single field is 1 gigabyte.
+
+<H2> Examples <H2>
+
+<H3> empty-argument messages <H3>
+<pre>
+hello()\n
+foo()\n
+</pre>
+
+<H3> single-argument messages <H3>
+Text and binary alternative for the same content:
+<pre>
+hello(world)\n
+hello{F=world}\n
+</pre>
+
+<H3> multi-argument messages <H3>
+Text and binary alternative for the same content:
+<pre>
+print(hello world !)\n
+print{E=hello F=world B=!}\n
+</pre>
+
+Note: using <b>space</b> between list items; don't space
+before the first or after the last argument. Always emit one space between
+any two list items.
+
+<H3> lists in list <H3>
+Text and binary alternatives for the same content:
+<pre>
+line((14.55 3.1) (44.2 0) 5)\n
+line({F=14.55 D=3.1} (44.2 0) 5)\n
+line((14.55 3.1) {E=44.2 B=0} 5)\n
+line({F=14.55 D=3.1} {E=44.2 B=0} 5)\n
+line{{F=14.55 D=3.1} {E=44.2 B=0} B=5}\n
+</pre>
+The subtree assumed in this fictional message is two x;y coordinate pairs
+and a line width. In other words the arguments of line is a list (start
+point), another list (end point) and a scalar (width).
+<p>
+Since all data comply to the <b>text-string</b> token format,
+the first, simplest format is recommended. The other 4 lines demonstrate all
+other valid variants. 
+<p>
+It is important to note that there are constraints (derived from
+the grammar) on choosing which list items can be encoded in binary:
+<ul>
+	<li> a <b>binary-string</b> can be only on a <i>binary-list<i>
+	<li> a <b>text-string</b> can be only on a <i>generic-list<i>
+	<li> a <b>generic-list</b> can not be only under a <i>binary-list<i>
+</ul>
+Thus if the 3rd argument, (width in this example), must be encoded as a
+<b>binary-string</b>, it will turn it's parent, line's argument list
+binary too, which in turn enforces all arguments to be binary.
