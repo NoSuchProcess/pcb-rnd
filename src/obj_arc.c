@@ -35,13 +35,13 @@
 #include "undo.h"
 #include "rotate.h"
 #include "move.h"
+#include "conf_core.h"
+
 #include "obj_arc.h"
 #include "obj_arc_op.h"
 
 /* TODO: could be removed if draw.c could be split up */
 #include "draw.h"
-
-
 
 ArcTypePtr GetArcMemory(LayerType * layer)
 {
@@ -548,4 +548,50 @@ void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc)
 	DrawArc(Layer, Arc);
 	Draw();
 	return (Arc);
+}
+
+/*** draw ***/
+void _draw_arc(ArcType * arc)
+{
+	if (!arc->Thickness)
+		return;
+
+	if (conf_core.editor.thin_draw)
+		gui->set_line_width(Output.fgGC, 0);
+	else
+		gui->set_line_width(Output.fgGC, arc->Thickness);
+	gui->set_line_cap(Output.fgGC, Trace_Cap);
+
+	gui->draw_arc(Output.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+}
+
+void draw_arc(LayerType * layer, ArcType * arc)
+{
+	const char *color;
+	char buf[sizeof("#XXXXXX")];
+
+	if (TEST_FLAG(PCB_FLAG_WARN, arc))
+		color = PCB->WarnColor;
+	else if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
+		if (TEST_FLAG(PCB_FLAG_SELECTED, arc))
+			color = layer->SelectedColor;
+		else
+			color = PCB->ConnectedColor;
+	}
+	else
+		color = layer->Color;
+
+	if (TEST_FLAG(PCB_FLAG_ONPOINT, arc)) {
+		assert(color != NULL);
+		LightenColor(color, buf, 1.75);
+		color = buf;
+	}
+	gui->set_color(Output.fgGC, color);
+	_draw_arc(arc);
+}
+
+r_dir_t draw_arc_callback(const BoxType * b, void *cl)
+{
+	draw_arc((LayerTypePtr) cl, (ArcTypePtr) b);
+	return R_DIR_FOUND_CONTINUE;
 }
