@@ -1,7 +1,8 @@
 #include <gpmi.h>
-#include "src/global.h"
+#include "src/global_typedefs.h"
 #include "src/rtree.h"
 #include "src/data.h"
+#include "src/layer.h"
 #include "src/pcb-printf.h"
 
 #undef snprintf

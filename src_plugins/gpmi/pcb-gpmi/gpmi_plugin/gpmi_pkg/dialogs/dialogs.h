@@ -1,5 +1,6 @@
 #include <gpmi.h>
-#include "src/global.h"
+#include "src/hid.h"
+#include "src/global_typedefs.h"
 #define FROM_PKG
 #include "hid/hid.h"
 #include "src/pcb-printf.h"

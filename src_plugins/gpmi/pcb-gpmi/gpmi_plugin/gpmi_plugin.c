@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <unistd.h>
 #include <gpmi.h>
+#include "src/global_typedefs.h"
 #include "src/misc_util.h"
 #include "src/conf_core.h"
 #include "src/event.h"

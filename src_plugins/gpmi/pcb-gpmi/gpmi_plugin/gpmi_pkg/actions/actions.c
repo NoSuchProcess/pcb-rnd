@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <gpmi.h>
-#include "src/global.h"
+#include "src/global_typedefs.h"
 #include "src/hid.h"
 #include "src/error.h"
 #include "actions.h"

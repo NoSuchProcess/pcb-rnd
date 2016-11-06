@@ -1,5 +1,6 @@
 #include <stdlib.h>
-#include "src/global.h"
+#include "src/board.h"
+#include "src/global_typedefs.h"
 #include "src/hid.h"
 #include "src/data.h"
 #define FROM_PKG

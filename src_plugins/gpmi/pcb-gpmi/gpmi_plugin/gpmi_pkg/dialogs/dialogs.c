@@ -1,6 +1,6 @@
-#include "dialogs.h"
-#include "src/error.h"
 #include "src/hid_attrib.h"
+#include "src/error.h"
+#include "dialogs.h"
 
 extern HID *gui;
 

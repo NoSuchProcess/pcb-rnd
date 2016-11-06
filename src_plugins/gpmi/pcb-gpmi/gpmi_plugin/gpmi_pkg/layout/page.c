@@ -1,4 +1,5 @@
 #include "layout.h"
+#include "src/board.h"
 #include "src/change.h"
 
 int layout_get_page_width()

@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "layout.h"
+#include "src/const.h"
+#include "src/board.h"
 #include "src/undo.h"
 #include "src/conf_core.h"
 #include "src/layer.h"
