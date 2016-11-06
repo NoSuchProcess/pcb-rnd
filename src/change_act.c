@@ -44,6 +44,7 @@
 #include "undo.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "obj_rat_draw.h"
 
 static void ChangeFlag(const char *, const char *, int, const char *);
 static int ActionChangeSize(int argc, const char **argv, Coord x, Coord y);
