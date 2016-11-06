@@ -743,3 +743,16 @@ r_dir_t draw_line_callback(const BoxType * b, void *cl)
 	draw_line((LayerType *) cl, (LineType *) b);
 	return R_DIR_FOUND_CONTINUE;
 }
+
+/* erases a line on a layer */
+void EraseLine(LineTypePtr Line)
+{
+	pcb_draw_invalidate(Line);
+	EraseFlags(&Line->Flags);
+}
+
+void DrawLine(LayerTypePtr Layer, LineTypePtr Line)
+{
+	pcb_draw_invalidate(Line);
+}
+

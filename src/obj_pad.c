@@ -412,3 +412,56 @@ void DrawPaste(int side, const BoxType * drawn_area)
 	ENDALL_LOOP;
 }
 
+static void GatherPadName(PadTypePtr Pad)
+{
+	BoxType box;
+	pcb_bool vert;
+
+	/* should text be vertical ? */
+	vert = (Pad->Point1.X == Pad->Point2.X);
+
+	if (vert) {
+		box.X1 = Pad->Point1.X - Pad->Thickness / 2;
+		box.Y1 = MAX(Pad->Point1.Y, Pad->Point2.Y) + Pad->Thickness / 2;
+		box.X1 += conf_core.appearance.pinout.text_offset_y;
+		box.Y1 -= conf_core.appearance.pinout.text_offset_x;
+		box.X2 = box.X1;
+		box.Y2 = box.Y1;
+	}
+	else {
+		box.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - Pad->Thickness / 2;
+		box.Y1 = Pad->Point1.Y - Pad->Thickness / 2;
+		box.X1 += conf_core.appearance.pinout.text_offset_x;
+		box.Y1 += conf_core.appearance.pinout.text_offset_y;
+		box.X2 = box.X1;
+		box.Y2 = box.Y1;
+	}
+
+	pcb_draw_invalidate(&box);
+	return;
+}
+
+void ErasePad(PadTypePtr Pad)
+{
+	pcb_draw_invalidate(Pad);
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
+		ErasePadName(Pad);
+	EraseFlags(&Pad->Flags);
+}
+
+void ErasePadName(PadTypePtr Pad)
+{
+	GatherPadName(Pad);
+}
+
+void DrawPad(PadTypePtr Pad)
+{
+	pcb_draw_invalidate(Pad);
+	if (pcb_draw_doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
+		DrawPadName(Pad);
+}
+
+void DrawPadName(PadTypePtr Pad)
+{
+	GatherPadName(Pad);
+}

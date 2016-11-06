@@ -30,4 +30,7 @@ r_dir_t clear_pad_callback(const BoxType * b, void *cl);
 
 void draw_pad(PadType * pad);
 void DrawPaste(int side, const BoxType * drawn_area);
-
+void ErasePad(PadTypePtr Pad);
+void ErasePadName(PadTypePtr Pad);
+void DrawPad(PadTypePtr Pad);
+void DrawPadName(PadTypePtr Pad);

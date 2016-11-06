@@ -33,4 +33,13 @@ r_dir_t draw_element_callback(const BoxType * b, void *cl);
 void draw_element_package(ElementType * element);
 void draw_element_name(ElementType * element);
 void draw_element_pins_and_pads(ElementType * element);
+void draw_element(ElementTypePtr element);
 
+void EraseElement(ElementTypePtr Element);
+void EraseElementPinsAndPads(ElementTypePtr Element);
+void EraseElementName(ElementTypePtr Element);
+
+void DrawElement(ElementTypePtr Element);
+void DrawElementName(ElementTypePtr Element);
+void DrawElementPackage(ElementTypePtr Element);
+void DrawElementPinsAndPads(ElementTypePtr Element);

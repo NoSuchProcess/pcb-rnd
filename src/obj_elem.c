@@ -1734,6 +1734,13 @@ void draw_element_package(ElementType * element)
 	END_LOOP;
 }
 
+void draw_element(ElementTypePtr element)
+{
+	draw_element_package(element);
+	draw_element_name(element);
+	draw_element_pins_and_pads(element);
+}
+
 r_dir_t draw_element_callback(const BoxType * b, void *cl)
 {
 	ElementTypePtr element = (ElementTypePtr) b;
@@ -1789,3 +1796,86 @@ r_dir_t draw_element_mark_callback(const BoxType * b, void *cl)
 	DrawEMark(element, element->MarkX, element->MarkY, !FRONT(element));
 	return R_DIR_FOUND_CONTINUE;
 }
+
+void EraseElement(ElementTypePtr Element)
+{
+	ELEMENTLINE_LOOP(Element);
+	{
+		EraseLine(line);
+	}
+	END_LOOP;
+	ARC_LOOP(Element);
+	{
+		EraseArc(arc);
+	}
+	END_LOOP;
+	EraseElementName(Element);
+	EraseElementPinsAndPads(Element);
+	EraseFlags(&Element->Flags);
+}
+
+void EraseElementPinsAndPads(ElementTypePtr Element)
+{
+	PIN_LOOP(Element);
+	{
+		ErasePin(pin);
+	}
+	END_LOOP;
+	PAD_LOOP(Element);
+	{
+		ErasePad(pad);
+	}
+	END_LOOP;
+}
+
+void EraseElementName(ElementTypePtr Element)
+{
+	if (TEST_FLAG(PCB_FLAG_HIDENAME, Element)) {
+		return;
+	}
+	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
+}
+
+void DrawElement(ElementTypePtr Element)
+{
+	DrawElementPackage(Element);
+	DrawElementName(Element);
+	DrawElementPinsAndPads(Element);
+}
+
+void DrawElementName(ElementTypePtr Element)
+{
+	if (TEST_FLAG(PCB_FLAG_HIDENAME, Element))
+		return;
+	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
+}
+
+void DrawElementPackage(ElementTypePtr Element)
+{
+	ELEMENTLINE_LOOP(Element);
+	{
+		DrawLine(NULL, line);
+	}
+	END_LOOP;
+	ARC_LOOP(Element);
+	{
+		DrawArc(NULL, arc);
+	}
+	END_LOOP;
+}
+
+void DrawElementPinsAndPads(ElementTypePtr Element)
+{
+	PAD_LOOP(Element);
+	{
+		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || FRONT(pad) || PCB->InvisibleObjectsOn)
+			DrawPad(pad);
+	}
+	END_LOOP;
+	PIN_LOOP(Element);
+	{
+		DrawPin(pin);
+	}
+	END_LOOP;
+}
+

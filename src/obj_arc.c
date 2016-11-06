@@ -595,3 +595,17 @@ r_dir_t draw_arc_callback(const BoxType * b, void *cl)
 	draw_arc((LayerTypePtr) cl, (ArcTypePtr) b);
 	return R_DIR_FOUND_CONTINUE;
 }
+
+/* erases an arc on a layer */
+void EraseArc(ArcTypePtr Arc)
+{
+	if (!Arc->Thickness)
+		return;
+	pcb_draw_invalidate(Arc);
+	EraseFlags(&Arc->Flags);
+}
+
+void DrawArc(LayerTypePtr Layer, ArcTypePtr Arc)
+{
+	pcb_draw_invalidate(Arc);
+}

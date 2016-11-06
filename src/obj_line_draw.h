@@ -28,4 +28,5 @@
 void _draw_line(LineType * line);
 void draw_line(LayerType * layer, LineType * line);
 r_dir_t draw_line_callback(const BoxType * b, void *cl);
-
+void EraseLine(LineTypePtr Line);
+void DrawLine(LayerTypePtr Layer, LineTypePtr Line);

@@ -32,4 +32,5 @@ struct draw_poly_info {
 };
 
 r_dir_t draw_poly_callback(const BoxType * b, void *cl);
-
+void ErasePolygon(PolygonTypePtr Polygon);
+void DrawPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon);

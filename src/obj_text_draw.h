@@ -28,4 +28,5 @@
 #include "rtree.h"
 r_dir_t draw_text_callback(const BoxType * b, void *cl);
 void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width);
-
+void EraseText(LayerTypePtr Layer, TextTypePtr Text);
+void DrawText(LayerTypePtr Layer, TextTypePtr Text);

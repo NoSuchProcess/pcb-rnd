@@ -933,3 +933,79 @@ r_dir_t draw_hole_callback(const BoxType * b, void *cl)
 	}
 	return R_DIR_FOUND_CONTINUE;
 }
+
+static void GatherPVName(PinTypePtr Ptr)
+{
+	BoxType box;
+	pcb_bool vert = TEST_FLAG(PCB_FLAG_EDGE2, Ptr);
+
+	if (vert) {
+		box.X1 = Ptr->X - Ptr->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+		box.Y1 = Ptr->Y - Ptr->DrillingHole / 2 - conf_core.appearance.pinout.text_offset_x;
+	}
+	else {
+		box.X1 = Ptr->X + Ptr->DrillingHole / 2 + conf_core.appearance.pinout.text_offset_x;
+		box.Y1 = Ptr->Y - Ptr->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+	}
+
+	if (vert) {
+		box.X2 = box.X1;
+		box.Y2 = box.Y1;
+	}
+	else {
+		box.X2 = box.X1;
+		box.Y2 = box.Y1;
+	}
+	pcb_draw_invalidate(&box);
+}
+
+void EraseVia(PinTypePtr Via)
+{
+	pcb_draw_invalidate(Via);
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
+		EraseViaName(Via);
+	EraseFlags(&Via->Flags);
+}
+
+void EraseViaName(PinTypePtr Via)
+{
+	GatherPVName(Via);
+}
+
+void ErasePin(PinTypePtr Pin)
+{
+	pcb_draw_invalidate(Pin);
+	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
+		ErasePinName(Pin);
+	EraseFlags(&Pin->Flags);
+}
+
+void ErasePinName(PinTypePtr Pin)
+{
+	GatherPVName(Pin);
+}
+
+void DrawVia(PinTypePtr Via)
+{
+	pcb_draw_invalidate(Via);
+	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
+		DrawViaName(Via);
+}
+
+void DrawViaName(PinTypePtr Via)
+{
+	GatherPVName(Via);
+}
+
+void DrawPin(PinTypePtr Pin)
+{
+	pcb_draw_invalidate(Pin);
+	if ((!TEST_FLAG(PCB_FLAG_HOLE, Pin) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
+			|| pcb_draw_doing_pinout)
+		DrawPinName(Pin);
+}
+
+void DrawPinName(PinTypePtr Pin)
+{
+	GatherPVName(Pin);
+}

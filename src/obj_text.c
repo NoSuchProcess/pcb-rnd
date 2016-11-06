@@ -557,3 +557,14 @@ r_dir_t draw_text_callback(const BoxType * b, void *cl)
 	DrawTextLowLevel(text, min_silk_line);
 	return R_DIR_FOUND_CONTINUE;
 }
+
+/* erases a text on a layer */
+void EraseText(LayerTypePtr Layer, TextTypePtr Text)
+{
+	pcb_draw_invalidate(Text);
+}
+
+void DrawText(LayerTypePtr Layer, TextTypePtr Text)
+{
+	pcb_draw_invalidate(Text);
+}

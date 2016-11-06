@@ -248,3 +248,41 @@ r_dir_t draw_rat_callback(const BoxType * b, void *cl)
 		_draw_line((LineType *) rat);
 	return R_DIR_FOUND_CONTINUE;
 }
+
+void EraseRat(RatTypePtr Rat)
+{
+	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
+		Coord w = Rat->Thickness;
+
+		BoxType b;
+
+		b.X1 = Rat->Point1.X - w * 2 - w / 2;
+		b.X2 = Rat->Point1.X + w * 2 + w / 2;
+		b.Y1 = Rat->Point1.Y - w * 2 - w / 2;
+		b.Y2 = Rat->Point1.Y + w * 2 + w / 2;
+		pcb_draw_invalidate(&b);
+	}
+	else
+		EraseLine((LineType *) Rat);
+	EraseFlags(&Rat->Flags);
+}
+
+void DrawRat(RatTypePtr Rat)
+{
+	if (conf_core.appearance.rat_thickness < 20)
+		Rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
+	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
+	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
+		Coord w = Rat->Thickness;
+
+		BoxType b;
+
+		b.X1 = Rat->Point1.X - w * 2 - w / 2;
+		b.X2 = Rat->Point1.X + w * 2 + w / 2;
+		b.Y1 = Rat->Point1.Y - w * 2 - w / 2;
+		b.Y2 = Rat->Point1.Y + w * 2 + w / 2;
+		pcb_draw_invalidate(&b);
+	}
+	else
+		DrawLine(NULL, (LineType *) Rat);
+}

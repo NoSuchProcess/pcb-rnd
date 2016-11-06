@@ -674,3 +674,15 @@ r_dir_t draw_poly_callback(const BoxType * b, void *cl)
 
 	return R_DIR_FOUND_CONTINUE;
 }
+
+/* erases a polygon on a layer */
+void ErasePolygon(PolygonTypePtr Polygon)
+{
+	pcb_draw_invalidate(Polygon);
+	EraseFlags(&Polygon->Flags);
+}
+
+void DrawPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon)
+{
+	pcb_draw_invalidate(Polygon);
+}
