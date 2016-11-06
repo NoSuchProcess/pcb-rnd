@@ -750,3 +750,174 @@ void *RemoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 	MoveObjectToRemoveUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	return NULL;
 }
+
+/*** draw ***/
+
+/* setup color for pin or via */
+static void SetPVColor(PinTypePtr Pin, int Type)
+{
+	char *color;
+	char buf[sizeof("#XXXXXX")];
+
+	if (Type == PCB_TYPE_VIA) {
+		if (!pcb_draw_doing_pinout && TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
+			if (TEST_FLAG(PCB_FLAG_WARN, Pin))
+				color = PCB->WarnColor;
+			else if (TEST_FLAG(PCB_FLAG_SELECTED, Pin))
+				color = PCB->ViaSelectedColor;
+			else
+				color = PCB->ConnectedColor;
+
+			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
+				assert(color != NULL);
+				LightenColor(color, buf, 1.75);
+				color = buf;
+			}
+		}
+		else
+			color = PCB->ViaColor;
+	}
+	else {
+		if (!pcb_draw_doing_pinout && TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
+			if (TEST_FLAG(PCB_FLAG_WARN, Pin))
+				color = PCB->WarnColor;
+			else if (TEST_FLAG(PCB_FLAG_SELECTED, Pin))
+				color = PCB->PinSelectedColor;
+			else
+				color = PCB->ConnectedColor;
+
+			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
+				assert(color != NULL);
+				LightenColor(color, buf, 1.75);
+				color = buf;
+			}
+		}
+		else
+			color = PCB->PinColor;
+	}
+
+	gui->set_color(Output.fgGC, color);
+}
+
+static void _draw_pv_name(PinType * pv)
+{
+	BoxType box;
+	pcb_bool vert;
+	TextType text;
+	char buff[128];
+	const char *pn;
+
+	if (!pv->Name || !pv->Name[0])
+		pn = EMPTY(pv->Number);
+	else
+		pn = EMPTY(conf_core.editor.show_number ? pv->Number : pv->Name);
+
+	if (GET_INTCONN(pv) > 0)
+		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pv));
+	else
+		strcpy(buff, pn);
+	text.TextString = buff;
+
+	vert = TEST_FLAG(PCB_FLAG_EDGE2, pv);
+
+	if (vert) {
+		box.X1 = pv->X - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+		box.Y1 = pv->Y - pv->DrillingHole / 2 - conf_core.appearance.pinout.text_offset_x;
+	}
+	else {
+		box.X1 = pv->X + pv->DrillingHole / 2 + conf_core.appearance.pinout.text_offset_x;
+		box.Y1 = pv->Y - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
+	}
+
+	gui->set_color(Output.fgGC, PCB->PinNameColor);
+
+	text.Flags = NoFlags();
+	/* Set font height to approx 56% of pin thickness */
+	text.Scale = 56 * pv->Thickness / FONT_CAPHEIGHT;
+	text.X = box.X1;
+	text.Y = box.Y1;
+	text.Direction = vert ? 1 : 0;
+
+	if (gui->gui)
+		pcb_draw_doing_pinout++;
+	DrawTextLowLevel(&text, 0);
+	if (gui->gui)
+		pcb_draw_doing_pinout--;
+}
+
+static void _draw_pv(PinTypePtr pv, pcb_bool draw_hole)
+{
+	if (conf_core.editor.thin_draw)
+		gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
+	else
+		gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, pcb_false);
+
+	if (!TEST_FLAG(PCB_FLAG_HOLE, pv) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, pv))
+		_draw_pv_name(pv);
+}
+
+void draw_pin(PinTypePtr pin, pcb_bool draw_hole)
+{
+	SetPVColor(pin, PCB_TYPE_PIN);
+	_draw_pv(pin, draw_hole);
+}
+
+r_dir_t draw_pin_callback(const BoxType * b, void *cl)
+{
+	draw_pin((PinType *) b, pcb_false);
+	return R_DIR_FOUND_CONTINUE;
+}
+
+static void draw_via(PinTypePtr via, pcb_bool draw_hole)
+{
+	SetPVColor(via, PCB_TYPE_VIA);
+	_draw_pv(via, draw_hole);
+}
+
+r_dir_t draw_via_callback(const BoxType * b, void *cl)
+{
+	draw_via((PinType *) b, pcb_false);
+	return R_DIR_FOUND_CONTINUE;
+}
+
+r_dir_t draw_hole_callback(const BoxType * b, void *cl)
+{
+	PinTypePtr pv = (PinTypePtr) b;
+	int plated = cl ? *(int *) cl : -1;
+	const char *color;
+	char buf[sizeof("#XXXXXX")];
+
+	if ((plated == 0 && !TEST_FLAG(PCB_FLAG_HOLE, pv)) || (plated == 1 && TEST_FLAG(PCB_FLAG_HOLE, pv)))
+		return R_DIR_FOUND_CONTINUE;
+
+	if (conf_core.editor.thin_draw) {
+		if (!TEST_FLAG(PCB_FLAG_HOLE, pv)) {
+			gui->set_line_cap(Output.fgGC, Round_Cap);
+			gui->set_line_width(Output.fgGC, 0);
+			gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
+		}
+	}
+	else
+		gui->fill_circle(Output.bgGC, pv->X, pv->Y, pv->DrillingHole / 2);
+
+	if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
+		if (TEST_FLAG(PCB_FLAG_WARN, pv))
+			color = PCB->WarnColor;
+		else if (TEST_FLAG(PCB_FLAG_SELECTED, pv))
+			color = PCB->ViaSelectedColor;
+		else
+			color = conf_core.appearance.color.black;
+
+		if (TEST_FLAG(PCB_FLAG_ONPOINT, pv)) {
+			assert(color != NULL);
+			LightenColor(color, buf, 1.75);
+			color = buf;
+		}
+		gui->set_color(Output.fgGC, color);
+
+		gui->set_line_cap(Output.fgGC, Round_Cap);
+		gui->set_line_width(Output.fgGC, 0);
+		gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
+	}
+	return R_DIR_FOUND_CONTINUE;
+}

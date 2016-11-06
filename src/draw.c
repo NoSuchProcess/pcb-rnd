@@ -40,6 +40,8 @@
 #include "stub_draw_fab.h"
 #include "obj_all.h"
 
+#include "obj_pinvia_draw.h"
+
 #undef NDEBUG
 #include <assert.h>
 
@@ -61,8 +63,8 @@ OutputType Output;							/* some widgets ... used for drawing */
 
 BoxType pcb_draw_invalidated = { MAXINT, MAXINT, -MAXINT, -MAXINT };
 
-static int doing_pinout = 0;
-static pcb_bool doing_assy = pcb_false;
+int pcb_draw_doing_pinout = 0;
+pcb_bool pcb_draw_doing_assy = pcb_false;
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
@@ -70,14 +72,14 @@ static pcb_bool doing_assy = pcb_false;
 static void DrawEverything(const BoxType *);
 static void DrawPPV(int group, const BoxType *);
 static void DrawLayerGroup(int, const BoxType *);
-static void SetPVColor(PinTypePtr, int);
 static void DrawEMark(ElementTypePtr, Coord, Coord, pcb_bool);
 static void DrawMask(int side, const BoxType *);
 static void DrawPaste(int side, const BoxType *);
 static void DrawRats(const BoxType *);
 static void DrawSilk(int side, const BoxType *);
 
-static void LightenColor(const char *orig, char buf[8], double factor)
+#warning TODO: this should be cached
+void LightenColor(const char *orig, char buf[8], double factor)
 {
 	unsigned int r, g, b;
 
@@ -93,55 +95,6 @@ static void LightenColor(const char *orig, char buf[8], double factor)
 		b = 0xff;
 	}
 	pcb_snprintf(buf, sizeof("#XXXXXX"), "#%02x%02x%02x", r, g, b);
-}
-
-
-/*--------------------------------------------------------------------------------------
- * setup color for pin or via
- */
-static void SetPVColor(PinTypePtr Pin, int Type)
-{
-	char *color;
-	char buf[sizeof("#XXXXXX")];
-
-	if (Type == PCB_TYPE_VIA) {
-		if (!doing_pinout && TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
-			if (TEST_FLAG(PCB_FLAG_WARN, Pin))
-				color = PCB->WarnColor;
-			else if (TEST_FLAG(PCB_FLAG_SELECTED, Pin))
-				color = PCB->ViaSelectedColor;
-			else
-				color = PCB->ConnectedColor;
-
-			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
-				assert(color != NULL);
-				LightenColor(color, buf, 1.75);
-				color = buf;
-			}
-		}
-		else
-			color = PCB->ViaColor;
-	}
-	else {
-		if (!doing_pinout && TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
-			if (TEST_FLAG(PCB_FLAG_WARN, Pin))
-				color = PCB->WarnColor;
-			else if (TEST_FLAG(PCB_FLAG_SELECTED, Pin))
-				color = PCB->PinSelectedColor;
-			else
-				color = PCB->ConnectedColor;
-
-			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
-				assert(color != NULL);
-				LightenColor(color, buf, 1.75);
-				color = buf;
-			}
-		}
-		else
-			color = PCB->PinColor;
-	}
-
-	gui->set_color(Output.fgGC, color);
 }
 
 /*
@@ -166,87 +119,6 @@ void Draw(void)
 void Redraw(void)
 {
 	gui->invalidate_all();
-}
-
-static void _draw_pv_name(PinType * pv)
-{
-	BoxType box;
-	pcb_bool vert;
-	TextType text;
-	char buff[128];
-	const char *pn;
-
-	if (!pv->Name || !pv->Name[0])
-		pn = EMPTY(pv->Number);
-	else
-		pn = EMPTY(conf_core.editor.show_number ? pv->Number : pv->Name);
-
-	if (GET_INTCONN(pv) > 0)
-		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pv));
-	else
-		strcpy(buff, pn);
-	text.TextString = buff;
-
-	vert = TEST_FLAG(PCB_FLAG_EDGE2, pv);
-
-	if (vert) {
-		box.X1 = pv->X - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
-		box.Y1 = pv->Y - pv->DrillingHole / 2 - conf_core.appearance.pinout.text_offset_x;
-	}
-	else {
-		box.X1 = pv->X + pv->DrillingHole / 2 + conf_core.appearance.pinout.text_offset_x;
-		box.Y1 = pv->Y - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
-	}
-
-	gui->set_color(Output.fgGC, PCB->PinNameColor);
-
-	text.Flags = NoFlags();
-	/* Set font height to approx 56% of pin thickness */
-	text.Scale = 56 * pv->Thickness / FONT_CAPHEIGHT;
-	text.X = box.X1;
-	text.Y = box.Y1;
-	text.Direction = vert ? 1 : 0;
-
-	if (gui->gui)
-		doing_pinout++;
-	DrawTextLowLevel(&text, 0);
-	if (gui->gui)
-		doing_pinout--;
-}
-
-static void _draw_pv(PinTypePtr pv, pcb_bool draw_hole)
-{
-	if (conf_core.editor.thin_draw)
-		gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
-	else
-		gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, pcb_false);
-
-	if (!TEST_FLAG(PCB_FLAG_HOLE, pv) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, pv))
-		_draw_pv_name(pv);
-}
-
-static void draw_pin(PinTypePtr pin, pcb_bool draw_hole)
-{
-	SetPVColor(pin, PCB_TYPE_PIN);
-	_draw_pv(pin, draw_hole);
-}
-
-static r_dir_t pin_callback(const BoxType * b, void *cl)
-{
-	draw_pin((PinType *) b, pcb_false);
-	return R_DIR_FOUND_CONTINUE;
-}
-
-static void draw_via(PinTypePtr via, pcb_bool draw_hole)
-{
-	SetPVColor(via, PCB_TYPE_VIA);
-	_draw_pv(via, draw_hole);
-}
-
-static r_dir_t via_callback(const BoxType * b, void *cl)
-{
-	draw_via((PinType *) b, pcb_false);
-	return R_DIR_FOUND_CONTINUE;
 }
 
 static void draw_pad_name(PadType * pad)
@@ -312,7 +184,7 @@ static void draw_pad(PadType * pad)
 	const char *color = NULL;
 	char buf[sizeof("#XXXXXX")];
 
-	if (doing_pinout)
+	if (pcb_draw_doing_pinout)
 		gui->set_color(Output.fgGC, PCB->PinColor);
 	else if (TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, pad)) {
 		if (TEST_FLAG(PCB_FLAG_WARN, pad))
@@ -338,7 +210,7 @@ static void draw_pad(PadType * pad)
 
 	_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
 
-	if (doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, pad))
+	if (pcb_draw_doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, pad))
 		draw_pad_name(pad);
 }
 
@@ -356,7 +228,7 @@ static void draw_element_name(ElementType * element)
 {
 	if ((conf_core.editor.hide_names && gui->gui) || TEST_FLAG(PCB_FLAG_HIDENAME, element))
 		return;
-	if (doing_pinout || doing_assy)
+	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
 		gui->set_color(Output.fgGC, PCB->ElementColor);
 	else if (TEST_FLAG(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)))
 		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
@@ -392,7 +264,7 @@ static void draw_element_pins_and_pads(ElementType * element)
 {
 	PAD_LOOP(element);
 	{
-		if (doing_pinout || doing_assy || FRONT(pad) || PCB->InvisibleObjectsOn)
+		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || FRONT(pad) || PCB->InvisibleObjectsOn)
 			draw_pad(pad);
 	}
 	END_LOOP;
@@ -411,48 +283,6 @@ static r_dir_t EMark_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t hole_callback(const BoxType * b, void *cl)
-{
-	PinTypePtr pv = (PinTypePtr) b;
-	int plated = cl ? *(int *) cl : -1;
-	const char *color;
-	char buf[sizeof("#XXXXXX")];
-
-	if ((plated == 0 && !TEST_FLAG(PCB_FLAG_HOLE, pv)) || (plated == 1 && TEST_FLAG(PCB_FLAG_HOLE, pv)))
-		return R_DIR_FOUND_CONTINUE;
-
-	if (conf_core.editor.thin_draw) {
-		if (!TEST_FLAG(PCB_FLAG_HOLE, pv)) {
-			gui->set_line_cap(Output.fgGC, Round_Cap);
-			gui->set_line_width(Output.fgGC, 0);
-			gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
-		}
-	}
-	else
-		gui->fill_circle(Output.bgGC, pv->X, pv->Y, pv->DrillingHole / 2);
-
-	if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
-		if (TEST_FLAG(PCB_FLAG_WARN, pv))
-			color = PCB->WarnColor;
-		else if (TEST_FLAG(PCB_FLAG_SELECTED, pv))
-			color = PCB->ViaSelectedColor;
-		else
-			color = conf_core.appearance.color.black;
-
-		if (TEST_FLAG(PCB_FLAG_ONPOINT, pv)) {
-			assert(color != NULL);
-			LightenColor(color, buf, 1.75);
-			color = buf;
-		}
-		gui->set_color(Output.fgGC, color);
-
-		gui->set_line_cap(Output.fgGC, Round_Cap);
-		gui->set_line_width(Output.fgGC, 0);
-		gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
-	}
-	return R_DIR_FOUND_CONTINUE;
-}
-
 static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const BoxType * drawn_area)
 {
 	int plated = -1;
@@ -462,8 +292,8 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const BoxTyp
 	if (!draw_plated && draw_unplated)
 		plated = 0;
 
-	r_search(PCB->Data->pin_tree, drawn_area, NULL, hole_callback, &plated, NULL);
-	r_search(PCB->Data->via_tree, drawn_area, NULL, hole_callback, &plated, NULL);
+	r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
+	r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
 }
 
 static void _draw_line(LineType * line)
@@ -587,7 +417,7 @@ static r_dir_t arc_callback(const BoxType * b, void *cl)
 static void draw_element_package(ElementType * element)
 {
 	/* set color and draw lines, arcs, text and pins */
-	if (doing_pinout || doing_assy)
+	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
 		gui->set_color(Output.fgGC, PCB->ElementColor);
 	else if (TEST_FLAG(PCB_FLAG_SELECTED, element))
 		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
@@ -627,14 +457,14 @@ static void PrintAssembly(int side, const BoxType * drawn_area)
 {
 	int side_group = GetLayerGroupNumberByNumber(max_copper_layer + side);
 
-	doing_assy = pcb_true;
+	pcb_draw_doing_assy = pcb_true;
 	gui->set_draw_faded(Output.fgGC, 1);
 	DrawLayerGroup(side_group, drawn_area);
 	gui->set_draw_faded(Output.fgGC, 0);
 
 	/* draw package */
 	DrawSilk(side, drawn_area);
-	doing_assy = pcb_false;
+	pcb_draw_doing_assy = pcb_false;
 }
 
 static void DrawEverything_holes(const BoxType * drawn_area)
@@ -830,7 +660,7 @@ static void DrawPPV(int group, const BoxType * drawn_area)
 
 	if (PCB->PinOn || !gui->gui) {
 		/* draw element pins */
-		r_search(PCB->Data->pin_tree, drawn_area, NULL, pin_callback, NULL, NULL);
+		r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_pin_callback, NULL, NULL);
 
 		/* draw element pads */
 		if (group == component_group) {
@@ -846,11 +676,11 @@ static void DrawPPV(int group, const BoxType * drawn_area)
 
 	/* draw vias */
 	if (PCB->ViaOn || !gui->gui) {
-		r_search(PCB->Data->via_tree, drawn_area, NULL, via_callback, NULL, NULL);
-		r_search(PCB->Data->via_tree, drawn_area, NULL, hole_callback, NULL, NULL);
+		r_search(PCB->Data->via_tree, drawn_area, NULL, draw_via_callback, NULL, NULL);
+		r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
 	}
-	if (PCB->PinOn || doing_assy)
-		r_search(PCB->Data->pin_tree, drawn_area, NULL, hole_callback, NULL, NULL);
+	if (PCB->PinOn || pcb_draw_doing_assy)
+		r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
 }
 
 static r_dir_t clearPin_callback(const BoxType * b, void *cl)
@@ -1264,7 +1094,7 @@ void DrawPin(PinTypePtr Pin)
 {
 	pcb_draw_invalidate(Pin);
 	if ((!TEST_FLAG(PCB_FLAG_HOLE, Pin) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
-			|| doing_pinout)
+			|| pcb_draw_doing_pinout)
 		DrawPinName(Pin);
 }
 
@@ -1282,7 +1112,7 @@ void DrawPinName(PinTypePtr Pin)
 void DrawPad(PadTypePtr Pad)
 {
 	pcb_draw_invalidate(Pad);
-	if (doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
+	if (pcb_draw_doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
 		DrawPadName(Pad);
 }
 
@@ -1394,7 +1224,7 @@ void DrawElementPinsAndPads(ElementTypePtr Element)
 {
 	PAD_LOOP(Element);
 	{
-		if (doing_pinout || doing_assy || FRONT(pad) || PCB->InvisibleObjectsOn)
+		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || FRONT(pad) || PCB->InvisibleObjectsOn)
 			DrawPad(pad);
 	}
 	END_LOOP;
@@ -1675,9 +1505,9 @@ void hid_expose_callback(HID * hid, BoxType * region, void *item)
 	hid->set_color(Output.bgGC, "drill");
 
 	if (item) {
-		doing_pinout = pcb_true;
+		pcb_draw_doing_pinout = pcb_true;
 		draw_element((ElementType *) item);
-		doing_pinout = pcb_false;
+		pcb_draw_doing_pinout = pcb_false;
 	}
 	else
 		DrawEverything(region);
