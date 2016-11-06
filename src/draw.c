@@ -42,6 +42,7 @@
 
 #include "obj_pad_draw.h"
 #include "obj_pinvia_draw.h"
+#include "obj_elem_draw.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -121,65 +122,6 @@ void Redraw(void)
 	gui->invalidate_all();
 }
 
-static void draw_element_name(ElementType * element)
-{
-	if ((conf_core.editor.hide_names && gui->gui) || TEST_FLAG(PCB_FLAG_HIDENAME, element))
-		return;
-	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		gui->set_color(Output.fgGC, PCB->ElementColor);
-	else if (TEST_FLAG(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)))
-		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
-	else if (FRONT(element)) {
-/* TODO: why do we test for Name's flag here? */
-		if (TEST_FLAG(PCB_FLAG_NONETLIST, element))
-			gui->set_color(Output.fgGC, PCB->ElementColor_nonetlist);
-		else
-			gui->set_color(Output.fgGC, PCB->ElementColor);
-	}
-	else
-		gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
-
-	DrawTextLowLevel(&ELEMENT_TEXT(PCB, element), PCB->minSlk);
-
-}
-
-static r_dir_t name_callback(const BoxType * b, void *cl)
-{
-	TextTypePtr text = (TextTypePtr) b;
-	ElementTypePtr element = (ElementTypePtr) text->Element;
-	int *side = cl;
-
-	if (TEST_FLAG(PCB_FLAG_HIDENAME, element))
-		return R_DIR_NOT_FOUND;
-
-	if (ON_SIDE(element, *side))
-		draw_element_name(element);
-	return R_DIR_NOT_FOUND;
-}
-
-static void draw_element_pins_and_pads(ElementType * element)
-{
-	PAD_LOOP(element);
-	{
-		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || FRONT(pad) || PCB->InvisibleObjectsOn)
-			draw_pad(pad);
-	}
-	END_LOOP;
-	PIN_LOOP(element);
-	{
-		draw_pin(pin, pcb_true);
-	}
-	END_LOOP;
-}
-
-static r_dir_t EMark_callback(const BoxType * b, void *cl)
-{
-	ElementTypePtr element = (ElementTypePtr) b;
-
-	DrawEMark(element, element->MarkX, element->MarkY, !FRONT(element));
-	return R_DIR_FOUND_CONTINUE;
-}
-
 static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const BoxType * drawn_area)
 {
 	int plated = -1;
@@ -193,7 +135,7 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const BoxTyp
 	r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
 }
 
-static void _draw_line(LineType * line)
+void _draw_line(LineType * line)
 {
 	gui->set_line_cap(Output.fgGC, Trace_Cap);
 	if (conf_core.editor.thin_draw)
@@ -266,7 +208,7 @@ static r_dir_t rat_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static void _draw_arc(ArcType * arc)
+void _draw_arc(ArcType * arc)
 {
 	if (!arc->Thickness)
 		return;
@@ -311,45 +253,9 @@ static r_dir_t arc_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static void draw_element_package(ElementType * element)
-{
-	/* set color and draw lines, arcs, text and pins */
-	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		gui->set_color(Output.fgGC, PCB->ElementColor);
-	else if (TEST_FLAG(PCB_FLAG_SELECTED, element))
-		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
-	else if (FRONT(element))
-		gui->set_color(Output.fgGC, PCB->ElementColor);
-	else
-		gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
-
-	/* draw lines, arcs, text and pins */
-	ELEMENTLINE_LOOP(element);
-	{
-		_draw_line(line);
-	}
-	END_LOOP;
-	ARC_LOOP(element);
-	{
-		_draw_arc(arc);
-	}
-	END_LOOP;
-}
-
-static r_dir_t element_callback(const BoxType * b, void *cl)
-{
-	ElementTypePtr element = (ElementTypePtr) b;
-	int *side = cl;
-
-	if (ON_SIDE(element, *side))
-		draw_element_package(element);
-	return R_DIR_FOUND_CONTINUE;
-}
-
 /* ---------------------------------------------------------------------------
  * prints assembly drawing.
  */
-
 static void PrintAssembly(int side, const BoxType * drawn_area)
 {
 	int side_group = GetLayerGroupNumberByNumber(max_copper_layer + side);
@@ -417,8 +323,8 @@ static void DrawEverything(const BoxType * drawn_area)
 			&& gui->set_layer("invisible", SL(INVISIBLE, 0), 0)) {
 		side = SWAP_IDENT ? COMPONENT_LAYER : SOLDER_LAYER;
 		if (PCB->ElementOn) {
-			r_search(PCB->Data->element_tree, drawn_area, NULL, element_callback, &side, NULL);
-			r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, name_callback, &side, NULL);
+			r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
+			r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 			DrawLayer(&(PCB->Data->Layer[max_copper_layer + side]), drawn_area);
 		}
 		r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
@@ -471,7 +377,7 @@ static void DrawEverything(const BoxType * drawn_area)
 	if (gui->gui) {
 		/* Draw element Marks */
 		if (PCB->PinOn)
-			r_search(PCB->Data->element_tree, drawn_area, NULL, EMark_callback, NULL, NULL);
+			r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
 		/* Draw rat lines on top */
 		if (gui->set_layer("rats", SL(RATS, 0), 0)) {
 			DrawRats(drawn_area);
@@ -504,44 +410,6 @@ static void DrawEverything(const BoxType * drawn_area)
 	if (gui->set_layer("fab", SL(FAB, 0), 0)) {
 		stub_DrawFab(Output.fgGC);
 		gui->end_layer();
-	}
-}
-
-static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, pcb_bool invisible)
-{
-	Coord mark_size = EMARK_SIZE;
-	if (!PCB->InvisibleObjectsOn && invisible)
-		return;
-
-	if (pinlist_length(&e->Pin) != 0) {
-		PinType *pin0 = pinlist_first(&e->Pin);
-		if (TEST_FLAG(PCB_FLAG_HOLE, pin0))
-			mark_size = MIN(mark_size, pin0->DrillingHole / 2);
-		else
-			mark_size = MIN(mark_size, pin0->Thickness / 2);
-	}
-
-	if (padlist_length(&e->Pad) != 0) {
-		PadType *pad0 = padlist_first(&e->Pad);
-		mark_size = MIN(mark_size, pad0->Thickness / 2);
-	}
-
-	gui->set_color(Output.fgGC, invisible ? PCB->InvisibleMarkColor : PCB->ElementColor);
-	gui->set_line_cap(Output.fgGC, Trace_Cap);
-	gui->set_line_width(Output.fgGC, 0);
-	gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y - mark_size);
-	gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y - mark_size);
-	gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y + mark_size);
-	gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y + mark_size);
-
-	/*
-	 * If an element is locked, place a "L" on top of the "diamond".
-	 * This provides a nice visual indication that it is locked that
-	 * works even for color blind users.
-	 */
-	if (TEST_FLAG(PCB_FLAG_LOCK, e)) {
-		gui->draw_line(Output.fgGC, X, Y, X + 2 * mark_size, Y);
-		gui->draw_line(Output.fgGC, X, Y, X, Y - 4 * mark_size);
 	}
 }
 
@@ -644,8 +512,8 @@ static void DrawSilk(int side, const BoxType * drawn_area)
 #endif
 		DrawLayer(LAYER_PTR(max_copper_layer + side), drawn_area);
 		/* draw package */
-		r_search(PCB->Data->element_tree, drawn_area, NULL, element_callback, &side, NULL);
-		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, name_callback, &side, NULL);
+		r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
+		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 #if 0
 	}
 
@@ -658,8 +526,8 @@ static void DrawSilk(int side, const BoxType * drawn_area)
 		gui->use_mask(HID_MASK_AFTER);
 		DrawLayer(LAYER_PTR(max_copper_layer + layer), drawn_area);
 		/* draw package */
-		r_search(PCB->Data->element_tree, drawn_area, NULL, element_callback, &side, NULL);
-		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, name_callback, &side, NULL);
+		r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
+		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 	}
 	gui->use_mask(HID_MASK_OFF);
 #endif
@@ -713,6 +581,7 @@ static void DrawRats(const BoxType * drawn_area)
 	 * XXX gtk only allows negative drawing.
 	 * XXX using the mask here is to get rat transparency
 	 */
+#warning TODO: make this a HID struct item instead
 	int can_mask = strcmp(gui->name, "lesstif") == 0;
 
 	if (can_mask)

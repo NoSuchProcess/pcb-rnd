@@ -42,6 +42,9 @@
 #include "obj_pinvia_op.h"
 #include "obj_pad_op.h"
 
+#include "obj_pinvia_draw.h"
+#include "obj_pad_draw.h"
+
 #include "obj_elem.h"
 #include "obj_elem_list.h"
 #include "obj_elem_op.h"
@@ -1648,4 +1651,138 @@ void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 	DrawElementName(Element);
 	Draw();
 	return (Element);
+}
+
+/*** draw ***/
+void draw_element_name(ElementType * element)
+{
+	if ((conf_core.editor.hide_names && gui->gui) || TEST_FLAG(PCB_FLAG_HIDENAME, element))
+		return;
+	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
+		gui->set_color(Output.fgGC, PCB->ElementColor);
+	else if (TEST_FLAG(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)))
+		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
+	else if (FRONT(element)) {
+#warning TODO: why do we test for Names flag here instead of elements flag?
+		if (TEST_FLAG(PCB_FLAG_NONETLIST, element))
+			gui->set_color(Output.fgGC, PCB->ElementColor_nonetlist);
+		else
+			gui->set_color(Output.fgGC, PCB->ElementColor);
+	}
+	else
+		gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
+
+	DrawTextLowLevel(&ELEMENT_TEXT(PCB, element), PCB->minSlk);
+
+}
+
+r_dir_t draw_element_name_callback(const BoxType * b, void *cl)
+{
+	TextTypePtr text = (TextTypePtr) b;
+	ElementTypePtr element = (ElementTypePtr) text->Element;
+	int *side = cl;
+
+	if (TEST_FLAG(PCB_FLAG_HIDENAME, element))
+		return R_DIR_NOT_FOUND;
+
+	if (ON_SIDE(element, *side))
+		draw_element_name(element);
+	return R_DIR_NOT_FOUND;
+}
+
+void draw_element_pins_and_pads(ElementType * element)
+{
+	PAD_LOOP(element);
+	{
+		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || FRONT(pad) || PCB->InvisibleObjectsOn)
+			draw_pad(pad);
+	}
+	END_LOOP;
+	PIN_LOOP(element);
+	{
+		draw_pin(pin, pcb_true);
+	}
+	END_LOOP;
+}
+
+
+void draw_element_package(ElementType * element)
+{
+	/* set color and draw lines, arcs, text and pins */
+	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
+		gui->set_color(Output.fgGC, PCB->ElementColor);
+	else if (TEST_FLAG(PCB_FLAG_SELECTED, element))
+		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
+	else if (FRONT(element))
+		gui->set_color(Output.fgGC, PCB->ElementColor);
+	else
+		gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
+
+	/* draw lines, arcs, text and pins */
+	ELEMENTLINE_LOOP(element);
+	{
+		_draw_line(line);
+	}
+	END_LOOP;
+	ARC_LOOP(element);
+	{
+		_draw_arc(arc);
+	}
+	END_LOOP;
+}
+
+r_dir_t draw_element_callback(const BoxType * b, void *cl)
+{
+	ElementTypePtr element = (ElementTypePtr) b;
+	int *side = cl;
+
+	if (ON_SIDE(element, *side))
+		draw_element_package(element);
+	return R_DIR_FOUND_CONTINUE;
+}
+
+static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, pcb_bool invisible)
+{
+	Coord mark_size = EMARK_SIZE;
+	if (!PCB->InvisibleObjectsOn && invisible)
+		return;
+
+	if (pinlist_length(&e->Pin) != 0) {
+		PinType *pin0 = pinlist_first(&e->Pin);
+		if (TEST_FLAG(PCB_FLAG_HOLE, pin0))
+			mark_size = MIN(mark_size, pin0->DrillingHole / 2);
+		else
+			mark_size = MIN(mark_size, pin0->Thickness / 2);
+	}
+
+	if (padlist_length(&e->Pad) != 0) {
+		PadType *pad0 = padlist_first(&e->Pad);
+		mark_size = MIN(mark_size, pad0->Thickness / 2);
+	}
+
+	gui->set_color(Output.fgGC, invisible ? PCB->InvisibleMarkColor : PCB->ElementColor);
+	gui->set_line_cap(Output.fgGC, Trace_Cap);
+	gui->set_line_width(Output.fgGC, 0);
+	gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y - mark_size);
+	gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y - mark_size);
+	gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y + mark_size);
+	gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y + mark_size);
+
+	/*
+	 * If an element is locked, place a "L" on top of the "diamond".
+	 * This provides a nice visual indication that it is locked that
+	 * works even for color blind users.
+	 */
+	if (TEST_FLAG(PCB_FLAG_LOCK, e)) {
+		gui->draw_line(Output.fgGC, X, Y, X + 2 * mark_size, Y);
+		gui->draw_line(Output.fgGC, X, Y, X, Y - 4 * mark_size);
+	}
+}
+
+r_dir_t draw_element_mark_callback(const BoxType * b, void *cl)
+{
+	ElementTypePtr element = (ElementTypePtr) b;
+
+	DrawEMark(element, element->MarkX, element->MarkY, !FRONT(element));
+	return R_DIR_FOUND_CONTINUE;
 }
