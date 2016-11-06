@@ -26,11 +26,14 @@
 
 /*** Standard draw of polygons ***/
 
+/* Include rtree.h for these */
+#ifdef PCB_RTREE_H
 struct draw_poly_info {
 	const BoxType *drawn_area;
 	LayerType *layer;
 };
-
 r_dir_t draw_poly_callback(const BoxType * b, void *cl);
+#endif
+
 void ErasePolygon(PolygonTypePtr Polygon);
 void DrawPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon);

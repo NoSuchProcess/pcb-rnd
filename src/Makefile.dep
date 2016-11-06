@@ -228,7 +228,7 @@
  font.h box.h math_helper.h move.h misc_util.h build_run.h data.h \
  crosshair.h rubberband.h vtonpoint.h hid.h error.h drc.h buffer.h draw.h \
  ../src_plugins/draw_fab/../report/drill.h obj_all.h plugins.h \
- stub_draw_fab.h obj_text_draw.h rtree.h
+ stub_draw_fab.h obj_text_draw.h
 ../src_plugins/export_bboard/bboard.o: \
  ../src_plugins/export_bboard/bboard.c ../config.h math_helper.h board.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
@@ -1126,7 +1126,7 @@
  ../src_plugins/hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/hid_gtk/win_place.h \
  ../src_plugins/hid_gtk/gui-drc-window.h hid_actions.h compat_nls.h \
- obj_all.h obj_pinvia_draw.h rtree.h obj_pad_draw.h obj_rat_draw.h \
+ obj_all.h obj_pinvia_draw.h obj_pad_draw.h obj_rat_draw.h \
  obj_line_draw.h obj_arc_draw.h obj_poly_draw.h
 ../src_plugins/hid_gtk/gui-keyref-window.o: \
  ../src_plugins/hid_gtk/gui-keyref-window.c ../config.h \
@@ -2783,7 +2783,7 @@ change_act.o: change_act.c ../config.h conf_core.h conf.h \
  funchash_core_list.h board.h const.h macro.h vtroutestyle.h library.h \
  rats_patch.h font.h box.h math_helper.h move.h misc_util.h \
  action_helper.h hid_actions.h change.h draw.h search.h rats.h netlist.h \
- route_style.h set.h undo.h compat_misc.h compat_nls.h
+ route_style.h set.h undo.h compat_misc.h compat_nls.h obj_rat_draw.h
 clip.o: clip.c ../config.h clip.h global_typedefs.h pcb_bool.h unit.h
 compat_dl.o: compat_dl.c ../config.h compat_dl.h compat_inc.h
 compat_fs.o: compat_fs.c ../config.h compat_inc.h compat_fs.h \
@@ -3053,8 +3053,7 @@ gui_act.o: gui_act.c ../config.h board.h const.h macro.h \
  vtonpoint.h hid.h error.h drc.h buffer.h action_helper.h undo.h \
  funchash_core.h funchash.h funchash_core_list.h draw.h search.h rats.h \
  netlist.h route_style.h find.h set.h stub_stroke.h hid_actions.h \
- hid_init.h compat_nls.h obj_elem_draw.h rtree.h obj_pinvia_draw.h \
- obj_pad_draw.h
+ hid_init.h compat_nls.h obj_elem_draw.h obj_pinvia_draw.h obj_pad_draw.h
 heap.o: heap.c ../config.h heap.h
 hid_actions.o: hid_actions.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
@@ -3760,7 +3759,7 @@ rats_act.o: rats_act.c ../config.h conf_core.h conf.h global_typedefs.h \
  misc_util.h data.h crosshair.h rubberband.h vtonpoint.h hid.h error.h \
  drc.h buffer.h action_helper.h undo.h set.h find.h remove.h \
  funchash_core.h funchash.h funchash_core_list.h compat_nls.h rats.h \
- netlist.h route_style.h draw.h obj_rat_draw.h rtree.h
+ netlist.h route_style.h draw.h obj_rat_draw.h
 rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h const.h \
  macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -3901,7 +3900,7 @@ select.o: select.c ../config.h conf_core.h conf.h global_typedefs.h \
  misc_util.h data.h crosshair.h rubberband.h vtonpoint.h hid.h error.h \
  drc.h buffer.h draw.h search.h rats.h netlist.h route_style.h select.h \
  operation.h undo.h find.h compat_misc.h compat_nls.h obj_elem_draw.h \
- rtree.h obj_pad_draw.h obj_arc_draw.h obj_pinvia_draw.h obj_line_draw.h \
+ obj_pad_draw.h obj_arc_draw.h obj_pinvia_draw.h obj_line_draw.h \
  obj_poly_draw.h obj_text_draw.h obj_rat_draw.h \
  ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h
@@ -3949,7 +3948,7 @@ set.o: set.c ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h \
 stub_draw_fab.o: stub_draw_fab.c ../config.h stub_draw_fab.h hid.h \
  error.h drc.h unit.h global_typedefs.h pcb_bool.h attrib.h obj_text.h \
  obj_common.h ../src_3rd/genlist/gendlist.h flag.h globalconst.h \
- obj_text_draw.h rtree.h
+ obj_text_draw.h
 stub_mincut.o: stub_mincut.c ../config.h stub_mincut.h global_typedefs.h \
  pcb_bool.h unit.h obj_pinvia.h obj_common.h \
  ../src_3rd/genlist/gendlist.h flag.h globalconst.h attrib.h obj_pad.h

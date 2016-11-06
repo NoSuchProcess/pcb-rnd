@@ -25,8 +25,13 @@
  */
 
 /*** Standard draw on pads ***/
+
+
+/* Include rtree.h for these */
+#ifdef PCB_RTREE_H
 r_dir_t draw_pad_callback(const BoxType * b, void *cl);
 r_dir_t clear_pad_callback(const BoxType * b, void *cl);
+#endif
 
 void draw_pad(PadType * pad);
 void DrawPaste(int side, const BoxType * drawn_area);

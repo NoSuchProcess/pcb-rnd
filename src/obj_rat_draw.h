@@ -26,8 +26,10 @@
 
 /*** Standard draw on rats ***/
 
-#include "rtree.h"
+/* Include rtree.h for these */
+#ifdef PCB_RTREE_H
 r_dir_t draw_rat_callback(const BoxType * b, void *cl);
+#endif
 
 void EraseRat(RatTypePtr Rat);
 void DrawRat(RatTypePtr Rat);

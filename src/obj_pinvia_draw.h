@@ -26,11 +26,13 @@
 
 /*** Standard draw on pins and vias ***/
 
-#include "rtree.h"
+/* Include rtree.h for these */
+#ifdef PCB_RTREE_H
 r_dir_t draw_pin_callback(const BoxType * b, void *cl);
 r_dir_t clear_pin_callback(const BoxType * b, void *cl);
 r_dir_t draw_via_callback(const BoxType * b, void *cl);
 r_dir_t draw_hole_callback(const BoxType * b, void *cl);
+#endif
 
 
 void draw_pin(PinTypePtr pin, pcb_bool draw_hole);

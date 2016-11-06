@@ -25,7 +25,11 @@
  */
 
 /*** Standard draw of arcs ***/
+
+/* Include rtree.h for this */
+#ifdef PCB_RTREE_H
 r_dir_t draw_arc_callback(const BoxType * b, void *cl);
+#endif
 
 void _draw_arc(ArcType * arc);
 void draw_arc(LayerType * layer, ArcType * arc);
