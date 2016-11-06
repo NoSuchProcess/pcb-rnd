@@ -21,7 +21,7 @@
 	- keep unknown subtrees
 
 - unravel:
-	- figure what to do with draw.h *Erase*() (that might be erasing objects from the screen?)
+	- replace "outline" and "route" layer name checks with a central layer call
 
 - replace settings with lihata (conf_*)
 	- TEST:
