@@ -8,7 +8,8 @@
 	- Arc insert missing (mainline too)
 	- insert drag&drop strangeness (mainline too)
 	- mirror buffer left/right with arcs in it -> rtree assert in debug mode
-	- place text over a poly, press 'j' on it to join them; the text is deleted and/or undo kills it! (mainline too)
+	- insert point in rat doesn't work - should it,can't we remove the code?
+	- tab changes side, gtk HID doesn't refresh bottom line
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -41,6 +42,7 @@
 		- regex and string cmp match speed vs. select by name
 
 CLEANUP #5
+- src/check_icon.data - is it used?
 - save/load bugs:
 	- gtk load dialog extension filter should reflect known formats
 	- when changing format in the save dialog, the file extension is not modified
