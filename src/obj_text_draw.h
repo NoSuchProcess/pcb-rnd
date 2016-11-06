@@ -23,28 +23,9 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
-#include "config.h"
-#include "stub_draw_fab.h"
-#include "obj_text.h"
-#include "obj_text_draw.h"
 
-int dummy_DrawFab_overhang(void)
-{
-	return 0;
-}
-
-void dummy_DrawFab(hidGC gc)
-{
-	TextType t;
-	t.X = 0;
-	t.Y = 0;
-	t.TextString = "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded";
-	t.Direction = 0;
-	t.Scale = 150;
-	t.Flags = NoFlags();
-	DrawTextLowLevel(&t, 0);
-}
-
-int (*stub_DrawFab_overhang)(void) = dummy_DrawFab_overhang;
-void (*stub_DrawFab)(hidGC gc) = dummy_DrawFab;
+/*** Standard draw of text ***/
+#include "rtree.h"
+r_dir_t draw_text_callback(const BoxType * b, void *cl);
+void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width);
 

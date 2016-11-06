@@ -42,6 +42,7 @@
 
 /* TODO: remove this if draw.[ch] pads are moved */
 #include "draw.h"
+#include "obj_text_draw.h"
 
 /*** allocation ***/
 /* get next slot for a pad, allocates memory if necessary */

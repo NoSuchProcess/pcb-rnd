@@ -2918,7 +2918,8 @@ draw.o: draw.c ../config.h conf_core.h conf.h global_typedefs.h \
  box.h move.h misc_util.h data.h crosshair.h rubberband.h vtonpoint.h \
  hid.h error.h drc.h buffer.h draw.h rotate.h rtree.h stub_draw_fab.h \
  obj_all.h obj_pad_draw.h obj_pinvia_draw.h obj_elem_draw.h \
- obj_line_draw.h obj_arc_draw.h obj_rat_draw.h obj_poly_draw.h
+ obj_line_draw.h obj_arc_draw.h obj_rat_draw.h obj_poly_draw.h \
+ obj_text_draw.h
 error.o: error.c ../config.h data.h globalconst.h global_typedefs.h \
  pcb_bool.h unit.h layer.h attrib.h obj_all_list.h obj_arc_list.h \
  obj_common.h ../src_3rd/genlist/gendlist.h flag.h obj_arc.h \
@@ -3377,7 +3378,7 @@ obj_elem.o: obj_elem.c ../config.h board.h const.h macro.h \
  ../src_3rd/genvector/vtp0.h list_conf.h conf_core.h compat_nls.h \
  compat_misc.h rotate.h remove.h polygon.h rtree.h undo.h obj_pinvia_op.h \
  operation.h obj_pad_op.h obj_pinvia_draw.h obj_pad_draw.h \
- obj_line_draw.h obj_arc_draw.h obj_elem_op.h draw.h
+ obj_line_draw.h obj_arc_draw.h obj_elem_op.h draw.h obj_text_draw.h
 obj_elem_list.o: obj_elem_list.c ../config.h obj_elem.h obj_common.h \
  ../src_3rd/genlist/gendlist.h flag.h globalconst.h attrib.h \
  global_typedefs.h pcb_bool.h unit.h obj_arc_list.h obj_arc.h \
@@ -3450,7 +3451,7 @@ obj_pad.o: obj_pad.c ../config.h board.h const.h macro.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- obj_pad_op.h operation.h draw.h
+ obj_pad_op.h operation.h draw.h obj_text_draw.h
 obj_pad_list.o: obj_pad_list.c obj_pad_list.h obj_pad.h obj_common.h \
  ../src_3rd/genlist/gendlist.h flag.h globalconst.h ../config.h attrib.h \
  global_typedefs.h pcb_bool.h unit.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -3475,7 +3476,8 @@ obj_pinvia.o: obj_pinvia.c ../config.h board.h const.h macro.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h polygon.h rtree.h compat_nls.h \
- compat_misc.h stub_vendor.h obj_pinvia_op.h operation.h draw.h
+ compat_misc.h stub_vendor.h obj_pinvia_op.h operation.h draw.h \
+ obj_text_draw.h
 obj_pinvia_list.o: obj_pinvia_list.c obj_pinvia_list.h obj_pinvia.h \
  obj_common.h ../src_3rd/genlist/gendlist.h flag.h globalconst.h \
  ../config.h attrib.h global_typedefs.h pcb_bool.h unit.h \
@@ -3560,7 +3562,12 @@ obj_text.o: obj_text.c ../config.h rotate.h global_typedefs.h pcb_bool.h \
  obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h font.h \
  box.h math_helper.h move.h misc_util.h data.h crosshair.h rubberband.h \
  vtonpoint.h hid.h error.h drc.h buffer.h compat_misc.h compat_nls.h \
- undo.h polygon.h rtree.h obj_text_op.h operation.h draw.h
+ undo.h polygon.h rtree.h obj_text_op.h operation.h draw.h \
+ obj_line_draw.h conf_core.h conf.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h
 obj_text_list.o: obj_text_list.c obj_text_list.h obj_text.h obj_common.h \
  ../src_3rd/genlist/gendlist.h flag.h globalconst.h ../config.h attrib.h \
  global_typedefs.h pcb_bool.h unit.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -3929,7 +3936,8 @@ set.o: set.c ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h \
  compat_nls.h
 stub_draw_fab.o: stub_draw_fab.c ../config.h stub_draw_fab.h hid.h \
  error.h drc.h unit.h global_typedefs.h pcb_bool.h attrib.h obj_text.h \
- obj_common.h ../src_3rd/genlist/gendlist.h flag.h globalconst.h draw.h
+ obj_common.h ../src_3rd/genlist/gendlist.h flag.h globalconst.h \
+ obj_text_draw.h rtree.h
 stub_mincut.o: stub_mincut.c ../config.h stub_mincut.h global_typedefs.h \
  pcb_bool.h unit.h obj_pinvia.h obj_common.h \
  ../src_3rd/genlist/gendlist.h flag.h globalconst.h attrib.h obj_pad.h
