@@ -275,9 +275,12 @@ Depends: ${misc:Depends}, ${shlibs:Depends}, pcb-rnd-core
 Description: printed circuit board (pcb) design program - object report
  pcb-rnd is a modular, interactive printed circuit board editor.
  .
- This package provides the report action that displays basic information
- about design objects. Unlike propedit, report does not allow the user
- to manipulate any of the data reported.
+ This package used to provide the report action that displays basic
+ information about design objects. Unlike propedit, report does not allow
+ the user to manipulate any of the data reported.
+ .
+ At the moment report is compiled into the core, this package is kept
+ for compatibility and placeholder.
 
 Package: pcb-rnd-shand-cmd
 Architecture: any
