@@ -692,7 +692,7 @@ static int ActionElementSetAttr(int argc, const char **argv, Coord x, Coord y)
 		delete_attr(&e->Attributes, attr);
 	}
 	if (!attr && value) {
-		CreateNewAttribute(&e->Attributes, name, value);
+		AttributePutToList(&e->Attributes, name, value, 0);
 	}
 
 	return 0;

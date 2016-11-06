@@ -2861,7 +2861,7 @@ yyreduce:
   case 200:
 #line 1977 "parse_y.y" /* yacc.c:1646  */
     {
-			  CreateNewAttribute (attr_list, (yyvsp[-2].string), (yyvsp[-1].string) ? (yyvsp[-1].string) : (char *)"");
+			  AttributePutToList(attr_list, (yyvsp[-2].string), (yyvsp[-1].string) ? (yyvsp[-1].string) : (char *)"", 0);
 				free ((yyvsp[-2].string));
 				free ((yyvsp[-1].string));
 			}

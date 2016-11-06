@@ -552,7 +552,7 @@ ElementTypePtr CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, Elemen
 	END_LOOP;
 
 	for (i = 0; i < Src->Attributes.Number; i++)
-		CreateNewAttribute(&Dest->Attributes, Src->Attributes.List[i].name, Src->Attributes.List[i].value);
+		AttributePutToList(&Dest->Attributes, Src->Attributes.List[i].name, Src->Attributes.List[i].value, 0);
 
 	Dest->MarkX = Src->MarkX + dx;
 	Dest->MarkY = Src->MarkY + dy;

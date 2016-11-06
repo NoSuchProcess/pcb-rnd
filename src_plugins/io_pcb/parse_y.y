@@ -1975,7 +1975,7 @@ if the value is interpreted as, for example, a number.
 attribute
 		: T_ATTRIBUTE '(' STRING STRING ')'
 			{
-			  CreateNewAttribute (attr_list, $3, $4 ? $4 : (char *)"");
+			  AttributePutToList(attr_list, $3, $4 ? $4 : (char *)"", 0);
 				free ($3);
 				free ($4);
 			}
