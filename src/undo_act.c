@@ -37,7 +37,6 @@
 #include "polygon.h"
 #include "set.h"
 #include "search.h"
-#include "draw.h"
 
 #include "obj_line_draw.h"
 

@@ -3995,7 +3995,7 @@ undo_act.o: undo_act.c ../config.h conf_core.h conf.h global_typedefs.h \
  misc_util.h data.h crosshair.h rubberband.h vtonpoint.h hid.h error.h \
  drc.h buffer.h action_helper.h funchash_core.h funchash.h \
  funchash_core_list.h undo.h polygon.h rtree.h set.h search.h rats.h \
- netlist.h route_style.h draw.h obj_line_draw.h
+ netlist.h route_style.h obj_line_draw.h
 unit.o: unit.c ../config.h compat_misc.h compat_nls.h unit.h
 vtlibrary.o: vtlibrary.c vtlibrary.h \
  ../src_3rd/genvector/genvector_impl.h \
