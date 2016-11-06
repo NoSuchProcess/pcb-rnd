@@ -32,22 +32,24 @@
 
 extern char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name;
 
-static char *usage_string0 =
+static char *usage_string0a =
 	"usage: gsch2pcb [options] {project | foo.sch [foo1.sch ...]}\n"
 	"\n"
 	"Generate a PCB layout file from a set of gschem schematics.\n"
-	"   gnetlist -g PCB is run to generate foo.net from the schematics.\n" "\n"
+	"   gnetlist -g PCB is run to generate foo.net from the schematics.\n" "\n";
 /* TODO */
 /*  "   gnetlist -g gsch2pcb is run to get PCB elements which\n"
   "   match schematic footprints.  For schematic footprints which don't match\n"
   "   any PCB layout elements, search a set of file element directories in\n"
   "   an attempt to find matching PCB file elements.\n"*/
+static char *usage_string0b =
 	"   Output to foo.pcb if it doesn't exist.  If there is a current foo.pcb,\n"
 	"   output only new elements to foo.new.pcb.\n"
 	"   If any elements with a non-empty element name in the current foo.pcb\n"
 	"   have no matching schematic component, then remove those elements from\n"
 	"   foo.pcb and rename foo.pcb to a foo.pcb.bak sequence.\n"
-	"\n"
+	"\n";
+static char *usage_string0c =
 	"   gnetlist -g pcbpins is run to get a PCB actions file which will rename all\n"
 	"   of the pins in a .pcb file to match pin names from the schematic.\n"
 	"\n"
@@ -57,56 +59,65 @@ static char *usage_string0 =
 	"   Options in a project file are like command line args without the \"-\":\n"
 	"       output-name myproject\n"
 	"\n"
-	"options (may be included in a project file):\n"
+	"options (may be included in a project file):\n";
+static char *usage_string0d =
 	"   -d, --elements-dir D    Search D for PCB file elements.  These defaults\n"
 	"                           are searched if they exist. See the default\n"
 	"                           search paths at the end of this text."
 	"   -c, --elements-dir-clr  Clear the elements dir. Useful before a series\n"
-	"                           if -d's to flush defaults.\n"
+	"                           if -d's to flush defaults.\n";
+static char *usage_string0e =
 	"   -s, --elements-shell S  Use S as a prefix for running parametric footrint\n"
 	"                           generators. It is useful on systems where popen()\n"
 	"                           doesn't do the right thing or the process should\n"
 	"                           be wrapped. Example -s \"/bin/sh -c\"\n"
 	"   -P, --default-pcb       Change the default PCB file's name; this file is\n"
 	"                           inserted on top of the *.new.pcb generated, for\n"
-	"                           PCB default settings\n"
+	"                           PCB default settings\n";
+static char *usage_string0f =
 	"   -o, --output-name N     Use output file names N.net, N.pcb, and N.new.pcb\n"
 	"                           instead of foo.net, ... where foo is the basename\n"
 	"                           of the first command line .sch file.\n"
 	"   -r, --remove-unfound    Don't include references to unfound elements in\n"
 	"                           the generated .pcb files.  Use if you want PCB to\n"
 	"                           be able to load the (incomplete) .pcb file.\n"
-	"                           This is the default behavior.\n"
+	"                           This is the default behavior.\n";
+static char *usage_string0g =
 	"   -k, --keep-unfound      Keep include references to unfound elements in\n"
 	"                           the generated .pcb files.  Use if you want to hand\n"
 	"                           edit or otherwise preprocess the generated .pcb file\n"
-	"                           before running pcb.\n"
+	"                           before running pcb.\n";
+static char *usage_string0h =
 	"   -p, --preserve          Preserve elements in PCB files which are not found\n"
 	"                           in the schematics.  Note that elements with an empty\n"
 	"                           element name (schematic refdes) are never deleted,\n"
-	"                           so you really shouldn't need this option.\n"
+	"                           so you really shouldn't need this option.\n";
+static char *usage_string0i =
 	"   -q, --quiet             Don't tell the user what to do next after running\n"
 	"                           gsch2pcb-rnd.\n" "\n";
 
-static char *usage_string1 =
+static char *usage_string1a =
 	"   --gnetlist backend    A convenience run of extra gnetlist -g commands.\n"
 	"                         Example:  gnetlist partslist3\n"
 	"                         Creates:  myproject.partslist3\n"
 	" --empty-footprint name  See the project.sample file.\n"
-	"\n"
+	"\n";
+static char *usage_string1b =
 	"options (not recognized in a project file):\n"
 	"   --gnetlist-arg arg    Allows additional arguments to be passed to gnetlist.\n"
 	"       --fix-elements    If a schematic component footprint is not equal\n"
 	"                         to its PCB element Description, update the\n"
 	"                         Description instead of replacing the element.\n"
 	"                         Do this the first time gsch2pcb is used with\n"
-	"                         PCB files originally created with gschem2pcb.\n"
+	"                         PCB files originally created with gschem2pcb.\n";
+static char *usage_string1c =
 	"   -v, --verbose         Use -v -v for additional file element debugging.\n"
 	"   -V, --version\n\n"
 	"environment variables:\n"
 	"   GNETLIST              If set, this specifies the name of the gnetlist program\n"
 	"                         to execute.\n"
-	"\n"
+	"\n";
+static char *usage_string1d =
 	"Additional Resources:\n"
 	"\n"
 	"  gnetlist user guide:  http://wiki.geda-project.org/geda:gnetlist_ug\n"
@@ -116,8 +127,19 @@ static char *usage_string1 =
 
 void usage(void)
 {
-	puts(usage_string0);
-	puts(usage_string1);
+	printf("%s", usage_string0a);
+	printf("%s", usage_string0b);
+	printf("%s", usage_string0c);
+	printf("%s", usage_string0d);
+	printf("%s", usage_string0e);
+	printf("%s", usage_string0f);
+	printf("%s", usage_string0g);
+	printf("%s", usage_string0h);
+	printf("%s", usage_string0i);
+	printf("%s", usage_string1a);
+	printf("%s", usage_string1b);
+	printf("%s", usage_string1c);
+	printf("%s", usage_string1d);
 	exit(0);
 }
 
