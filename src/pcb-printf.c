@@ -718,6 +718,21 @@ int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 	return str.used;
 }
 
+int pcb_vsnprintf(char *string, size_t len, const char *fmt, va_list args)
+{
+	gds_t str;
+
+	gds_init(&str);
+
+	str.array = string;
+	str.alloced = len;
+	str.no_realloc = 1;
+
+	pcb_append_vprintf(&str, fmt, args);
+
+	return str.used;
+}
+
 /* \brief Wrapper for pcb_append_vprintf that outputs to a file
  *
  * \param [in] fh   File to output to

@@ -90,6 +90,7 @@ int pcb_fprintf(FILE * f, const char *fmt, ...);
 int pcb_vfprintf(FILE * f, const char *fmt, va_list args);
 int pcb_sprintf(char *string, const char *fmt, ...);
 int pcb_snprintf(char *string, size_t len, const char *fmt, ...);
+int pcb_vsnprintf(char *string, size_t len, const char *fmt, va_list args);
 int pcb_printf(const char *fmt, ...);
 char *pcb_strdup_printf(const char *fmt, ...);
 char *pcb_strdup_vprintf(const char *fmt, va_list args);
