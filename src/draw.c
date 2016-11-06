@@ -1522,7 +1522,6 @@ void EraseArc(ArcTypePtr Arc)
  */
 void EraseText(LayerTypePtr Layer, TextTypePtr Text)
 {
-	r_delete_entry(Layer->text_tree, (BoxTypePtr)Text);
 	AddPart(Text);
 }
 

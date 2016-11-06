@@ -271,6 +271,7 @@ void *ChangeTextName(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
 		return (NULL);
 	EraseText(Layer, Text);
+	r_delete_entry(Layer->text_tree, (BoxTypePtr)Text);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	Text->TextString = ctx->chgname.new_name;
 
@@ -409,6 +410,7 @@ void *RemoveText_op(pcb_opctx_t *ctx, LayerTypePtr Layer, TextTypePtr Text)
 	/* erase from screen */
 	if (Layer->On) {
 		EraseText(Layer, Text);
+		r_delete_entry(Layer->text_tree, (BoxTypePtr)Text);
 		if (!ctx->remove.bulk)
 			Draw();
 	}
