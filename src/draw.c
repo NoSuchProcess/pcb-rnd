@@ -59,7 +59,6 @@ OutputType Output;							/* some widgets ... used for drawing */
  * some local identifiers
  */
 
-/* the minimum box that needs to be redrawn */
 BoxType pcb_draw_invalidated = { MAXINT, MAXINT, -MAXINT, -MAXINT };
 
 static int doing_pinout = 0;
@@ -143,19 +142,6 @@ static void SetPVColor(PinTypePtr Pin, int Type)
 	}
 
 	gui->set_color(Output.fgGC, color);
-}
-
-/*---------------------------------------------------------------------------
- *  Adds the update rect to the update region
- */
-static void pcb_draw_invalidate(void *b)
-{
-	BoxType *box = (BoxType *) b;
-
-	pcb_draw_invalidated.X1 = MIN(pcb_draw_invalidated.X1, box->X1);
-	pcb_draw_invalidated.X2 = MAX(pcb_draw_invalidated.X2, box->X2);
-	pcb_draw_invalidated.Y1 = MIN(pcb_draw_invalidated.Y1, box->Y1);
-	pcb_draw_invalidated.Y2 = MAX(pcb_draw_invalidated.Y2, box->Y2);
 }
 
 /*

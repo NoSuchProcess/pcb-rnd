@@ -56,6 +56,20 @@ do { \
 		pcb_draw_inhibit--; \
 } while(0) \
 
+/* the minimum box that needs to be redrawn */
+extern BoxType pcb_draw_invalidated;
+
+/* Adds the update rect to the invalidated region. This schedules the object
+   for redraw (by Draw()). obj is anything that can be casted to BoxType */
+#define pcb_draw_invalidate(obj) \
+do { \
+	BoxType *box = (BoxType *)obj; \
+	pcb_draw_invalidated.X1 = MIN(pcb_draw_invalidated.X1, box->X1); \
+	pcb_draw_invalidated.X2 = MAX(pcb_draw_invalidated.X2, box->X2); \
+	pcb_draw_invalidated.Y1 = MIN(pcb_draw_invalidated.Y1, box->Y1); \
+	pcb_draw_invalidated.Y2 = MAX(pcb_draw_invalidated.Y2, box->Y2); \
+} while(0)
+
 void Draw(void);
 void Redraw(void);
 void DrawVia(PinTypePtr);
