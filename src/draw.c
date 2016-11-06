@@ -46,6 +46,7 @@
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
 #include "obj_rat_draw.h"
+#include "obj_poly_draw.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -332,52 +333,6 @@ static void DrawPPV(int group, const BoxType * drawn_area)
 		r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
 }
 
-struct poly_info {
-	const BoxType *drawn_area;
-	LayerType *layer;
-};
-
-static r_dir_t poly_callback(const BoxType * b, void *cl)
-{
-	struct poly_info *i = cl;
-	PolygonType *polygon = (PolygonType *) b;
-	static const char *color;
-	char buf[sizeof("#XXXXXX")];
-
-	if (!polygon->Clipped)
-		return R_DIR_NOT_FOUND;
-
-	if (TEST_FLAG(PCB_FLAG_WARN, polygon))
-		color = PCB->WarnColor;
-	else if (TEST_FLAG(PCB_FLAG_SELECTED, polygon))
-		color = i->layer->SelectedColor;
-	else if (TEST_FLAG(PCB_FLAG_FOUND, polygon))
-		color = PCB->ConnectedColor;
-	else if (TEST_FLAG(PCB_FLAG_ONPOINT, polygon)) {
-		assert(color != NULL);
-		LightenColor(color, buf, 1.75);
-		color = buf;
-	}
-	else
-		color = i->layer->Color;
-	gui->set_color(Output.fgGC, color);
-
-	if ((gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))
-		gui->thindraw_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
-	else
-		gui->fill_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
-
-	/* If checking planes, thin-draw any pieces which have been clipped away */
-	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !TEST_FLAG(PCB_FLAG_FULLPOLY, polygon)) {
-		PolygonType poly = *polygon;
-
-		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
-			gui->thindraw_pcb_polygon(Output.fgGC, &poly, i->drawn_area);
-	}
-
-	return R_DIR_FOUND_CONTINUE;
-}
-
 /* ---------------------------------------------------------------------------
  * Draws silk layer.
  */
@@ -495,13 +450,13 @@ static r_dir_t text_callback(const BoxType * b, void *cl)
 
 void DrawLayer(LayerTypePtr Layer, const BoxType * screen)
 {
-	struct poly_info info;
+	struct draw_poly_info info;
 
 	info.drawn_area = screen;
 	info.layer = Layer;
 
 	/* print the non-clearing polys */
-	r_search(Layer->polygon_tree, screen, NULL, poly_callback, &info, NULL);
+	r_search(Layer->polygon_tree, screen, NULL, draw_poly_callback, &info, NULL);
 
 	if (conf_core.editor.check_planes)
 		return;

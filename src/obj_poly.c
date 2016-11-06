@@ -38,9 +38,12 @@
 #include "search.h"
 #include "set.h"
 
+#include "conf_core.h"
+
 #include "obj_poly.h"
 #include "obj_poly_op.h"
 #include "obj_poly_list.h"
+#include "obj_poly_draw.h"
 
 /* TODO: get rid of these: */
 #include "draw.h"
@@ -628,4 +631,46 @@ void *CopyPolygon(pcb_opctx_t *ctx, LayerTypePtr Layer, PolygonTypePtr Polygon)
 	DrawPolygon(Layer, polygon);
 	AddObjectToCreateUndoList(PCB_TYPE_POLYGON, Layer, polygon, polygon);
 	return (polygon);
+}
+
+/*** draw ***/
+r_dir_t draw_poly_callback(const BoxType * b, void *cl)
+{
+	struct draw_poly_info *i = cl;
+	PolygonType *polygon = (PolygonType *) b;
+	static const char *color;
+	char buf[sizeof("#XXXXXX")];
+
+	if (!polygon->Clipped)
+		return R_DIR_NOT_FOUND;
+
+	if (TEST_FLAG(PCB_FLAG_WARN, polygon))
+		color = PCB->WarnColor;
+	else if (TEST_FLAG(PCB_FLAG_SELECTED, polygon))
+		color = i->layer->SelectedColor;
+	else if (TEST_FLAG(PCB_FLAG_FOUND, polygon))
+		color = PCB->ConnectedColor;
+	else if (TEST_FLAG(PCB_FLAG_ONPOINT, polygon)) {
+		assert(color != NULL);
+		LightenColor(color, buf, 1.75);
+		color = buf;
+	}
+	else
+		color = i->layer->Color;
+	gui->set_color(Output.fgGC, color);
+
+	if ((gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))
+		gui->thindraw_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
+	else
+		gui->fill_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
+
+	/* If checking planes, thin-draw any pieces which have been clipped away */
+	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !TEST_FLAG(PCB_FLAG_FULLPOLY, polygon)) {
+		PolygonType poly = *polygon;
+
+		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
+			gui->thindraw_pcb_polygon(Output.fgGC, &poly, i->drawn_area);
+	}
+
+	return R_DIR_FOUND_CONTINUE;
 }
