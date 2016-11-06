@@ -1,0 +1,80 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  pcb-rnd, interactive printed circuit board design
+ *  Copyright (C) 2015 Tibor 'Igor2' Palinkas
+ *
+ *  This module, rats.c, was written and is Copyright (C) 1997 by harry eaton
+ *  this module is also subject to the GNU GPL as described below
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+#include <limits.h>
+#include "base64.h"
+
+static char int2digit(int digit)
+{
+	if (digit < 26) return 'A' + digit;
+	if (digit < 52) return 'a' + digit - 26;
+	if (digit < 62) return '0' + digit - 52;
+	if (digit == 62) return '+';
+	if (digit == 63) return '/';
+	return '\0'; /* error */
+}
+
+static int digit2int(char c)
+{
+	if ((c >= 'A') && (c <= 'Z')) return c - 'A';
+	if ((c >= 'a') && (c <= 'z')) return c - 'a' + 26;
+	if ((c >= '0') && (c <= '9')) return c - 'a' + 52;
+	if (c == '+') return 62;
+	if (c == '/') return 63;
+	return 0;
+}
+
+
+size_t base64_write_right(char *buff_start, size_t buff_len, unsigned long int num)
+{
+	char *end = buff_start + buff_len;
+	size_t rlen = 0;
+
+	while(num > 0) {
+		unsigned int digit = num & 0x3F;
+		*end = int2digit(digit);
+		digit >>= 6;
+		rlen++;
+	}
+
+	return rlen;
+}
+
+int base64_parse_grow(unsigned long int *num, int chr, int term)
+{
+	int digit;
+	if (chr == term)
+		return 1;
+
+	if (*num >= (ULONG_MAX >> 6UL))
+		return -1;
+
+	digit = digit2int(chr);
+	if (digit == 0)
+		return -1;
+
+	(*num) <<= 6UL;
+	(*num) |= digit;
+	return 0;
+}
