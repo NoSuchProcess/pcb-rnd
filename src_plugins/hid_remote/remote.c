@@ -79,7 +79,6 @@ static int remote_stay;
 static void remote_do_export(HID_Attr_Val * options)
 {
 /* main loop, parser */
-	remote_proto_send_ver();
 	remote_proto_parse();
 }
 
@@ -95,24 +94,50 @@ static void remote_parse_arguments(int *argc, char ***argv)
 
 static void remote_invalidate_lr(int l, int r, int t, int b)
 {
+	proto_send_invalidate(l,r, t, b);
 }
 
 static void remote_invalidate_all(void)
 {
+	proto_send_invalidate_all();
 }
 
 static int remote_set_layer(const char *name, int idx, int empty)
 {
+	proto_send_set_layer(name, idx, empty);
 	return 0;
 }
 
+static hid_gc_struct remote_gc[32];
 static hidGC remote_make_gc(void)
 {
-	return 0;
+	int gci = proto_send_make_gc();
+	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
+	if (gci >= max) {
+		Message(PCB_MSG_ERROR, "remote_make_gc(): GC index too high: %d >= %d\n", gci, max);
+		proto_send_del_gc(gci);
+		return NULL;
+	}
+	return remote_gc+gci;
+}
+
+static int gc2idx(hidGC gc)
+{
+	int idx = gc - remote_gc;
+	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
+
+	if ((idx < 0) || (idx >= max)) {
+		Message(PCB_MSG_ERROR, "GC index too high: %d >= %d\n", idx, max);
+		return -1;
+	}
+	return idx;
 }
 
 static void remote_destroy_gc(hidGC gc)
 {
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_del_gc(idx);
 }
 
 static void remote_use_mask(int use_it)
@@ -121,22 +146,44 @@ static void remote_use_mask(int use_it)
 
 static void remote_set_color(hidGC gc, const char *name)
 {
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_set_color(idx, name);
 }
 
+/* r=round, s=square, b=beveled (octagon) */
+static const char *cap_style_names = "rsrb";
 static void remote_set_line_cap(hidGC gc, EndCapStyle style)
 {
+	int idx = gc2idx(gc);
+	int max = strlen(cap_style_names);
+	if (style >= max) {
+		Message(PCB_MSG_ERROR, "can't set invalid cap style: %d >= %d\n", style, max);
+		return -1;
+	}
+	if (idx >= 0)
+		proto_send_set_line_cap(idx, cap_style_names[style]);
 }
 
 static void remote_set_line_width(hidGC gc, Coord width)
 {
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_set_line_width(idx, width);
 }
 
 static void remote_set_draw_xor(hidGC gc, int xor_set)
 {
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_set_draw_xor(idx, xor_set);
 }
 
 static void remote_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_draw_line(idx, x1, y1, x2, y2);
 }
 
 static void remote_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
@@ -324,5 +371,10 @@ pcb_uninit_t hid_hid_remote_init()
 	REGISTER_ACTIONS(remote_action_list, remote_cookie)
 
 	hid_register_hid(&remote_hid);
+
+#warning TODO: wait for a connection?
+	remote_proto_send_ver();
+	remote_proto_send_unit();
+
 	return hid_hid_remote_uninit;
 }
