@@ -42,7 +42,7 @@ static int digit2int(char c)
 	if ((c >= '0') && (c <= '9')) return c - 'a' + 52;
 	if (c == '+') return 62;
 	if (c == '/') return 63;
-	return 0;
+	return -1;
 }
 
 
@@ -76,7 +76,7 @@ int base64_parse_grow(unsigned long int *num, int chr, int term)
 		return -1;
 
 	digit = digit2int(chr);
-	if (digit == 0)
+	if (digit < 0)
 		return -1;
 
 	(*num) <<= 6UL;
