@@ -375,6 +375,7 @@ pcb_uninit_t hid_hid_remote_init()
 #warning TODO: wait for a connection?
 	remote_proto_send_ver();
 	remote_proto_send_unit();
+	remote_proto_send_ready();
 
 	return hid_hid_remote_uninit;
 }

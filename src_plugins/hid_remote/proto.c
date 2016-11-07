@@ -49,6 +49,15 @@ void remote_proto_send_unit()
 	send_end(&pctx);
 }
 
+int remote_proto_send_ready()
+{
+	send_begin(&pctx, "ready");
+	send_open(&pctx, 0);
+	send_close(&pctx);
+	send_end(&pctx);
+	return 0;
+}
+
 void proto_send_invalidate(int l, int r, int t, int b)
 {
 	send_begin(&pctx, "inval");
@@ -153,7 +162,12 @@ void proto_send_draw_line(int gc, Coord x1, Coord y1, Coord x2, Coord y2)
 }
 
 
-void remote_proto_parse()
+int remote_proto_parse()
 {
-	
+	for(;;) {
+		int c = getchar();
+		if (c == EOF)
+			return -1;
+		parse_char(&pctx, c);
+	}
 }
