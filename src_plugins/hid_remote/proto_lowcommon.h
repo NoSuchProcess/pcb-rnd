@@ -27,8 +27,8 @@
 #include <ctype.h>
 
 typedef enum {
-	PST_COMMENT,
 	PST_MSG,
+	PST_COMMENT,
 	PST_CMD,
 	PST_TSTR,
 	PST_BSTR,

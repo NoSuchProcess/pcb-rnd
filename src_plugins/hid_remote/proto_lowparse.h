@@ -130,6 +130,7 @@ static int parse_char(proto_ctx_t *ctx, int c)
 				if (ctx->tcurr != NULL) /* unbalanced: newline before enough closes */
 					return -1;
 				ctx->pst = PST_MSG;
+				break;
 			}
 
 			if (ctx->tcurr == NULL) /* unbalanced: too many closes */
@@ -217,6 +218,7 @@ static int parse_char(proto_ctx_t *ctx, int c)
 			break;
 	}
 
+	return 0;
 
 	error:;
 #warning TODO: free args
