@@ -25,7 +25,9 @@
 
 #include <stdarg.h>
 #include <ctype.h>
-#include "proto_low.h"
+#include "proto_lowcommon.h"
+#include "proto_lowsend.h"
+#include "proto_lowparse.h"
 
 static const int proto_ver = 1;
 static proto_ctx_t pctx;
