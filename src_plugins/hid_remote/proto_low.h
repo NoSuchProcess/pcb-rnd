@@ -138,6 +138,22 @@ static int send_end(proto_ctx_t *ctx)
 	return send_raw(ctx, "\n", 1);
 }
 
+/* Returns whether str needs to be sent as binary */
+static int str_is_bin(const char *str)
+{
+	const char *s;
+	int l;
+	for(s = str, l = 0; *s != '\0'; s++,l++) {
+		if (l > 16)
+			return 1;
+		if (isalnum(*s))
+			continue;
+		if ((*s == '-') || (*s == '+') || (*s == '.') || (*s == '_') || (*s == '#'))
+			continue;
+		return 1;
+	}
+	return 0;
+}
 
 static void remote_proto_parse_char()
 {
