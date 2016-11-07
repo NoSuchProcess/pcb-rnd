@@ -129,3 +129,14 @@ static int send_end(proto_ctx_t *ctx)
 			return -1;
 	return send_raw(ctx, "\n", 1);
 }
+
+/* Returns whether str needs to be sent as binary */
+static int str_is_bin(const char *str)
+{
+	const char *s;
+	int l;
+	for(s = str, l = 0; *s != '\0'; s++,l++)
+		if ((l > 16) && (chr_is_bin(*s)))
+			return 1;
+	return 0;
+}

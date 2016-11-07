@@ -25,7 +25,6 @@
 
 #include <unistd.h>
 #include <stdarg.h>
-#include <ctype.h>
 #include "pcb-printf.h"
 #include "base64.h"
 
