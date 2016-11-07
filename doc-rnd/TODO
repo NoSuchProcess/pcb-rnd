@@ -10,6 +10,7 @@
 	- mirror buffer left/right with arcs in it -> rtree assert in debug mode
 	- insert point in rat doesn't work - should it,can't we remove the code?
 	- tab changes side, gtk HID doesn't refresh bottom line
+	- the invalidate callback gets int coords (mainline too)
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
