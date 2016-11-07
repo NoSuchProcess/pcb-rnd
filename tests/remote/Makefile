@@ -1,0 +1,7 @@
+ROOT=../..
+REM=$(ROOT)/src_plugins/hid_remote
+CFLAGS = -Wall -g -I$(REM) -I$(ROOT)/src -I$(ROOT)
+
+main: main.o
+
+main.o: main.c $(REM)/proto_lowcommon.h $(REM)/proto_lowparse.h $(REM)/proto_lowdbg.h
