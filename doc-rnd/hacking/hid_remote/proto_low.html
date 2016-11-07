@@ -37,11 +37,19 @@ format is:
 <b>text-string</b> <i>generic-list</i> <b>\n</b>
 or
 <b>text-string</b> <i>binary-list</i> <b>\n</b>
+or
+# comment <b>\n</b>
 </pre>
 <p>
 where text-string is a command and <i>generic-list</i> is a list and holds
 the arguments of. The command name can not start with a hash mark ('#') and
-can not be empty. The list is the argument tree of the command.
+can not be empty. The list is the argument tree of the command. 
+<p>
+As a special exception, a line may start with a hash mark ('#') to indicate
+a comment. Characters up to the first newline are ignored.
+<p>
+Optional: a tolerant parser also accepts empty lines and whitespace before
+a message.
 <p>
 The language has two type of lists: generic and binary.
 A generic list is wrapped in parenthesis <b>()</b> and its children are:
