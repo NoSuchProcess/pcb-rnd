@@ -40,7 +40,9 @@ or
 </pre>
 <p>
 where text-string is a command and <i>generic-list</i> is a list and holds
-the arguments of. The language has two type of lists: generic and binary.
+the arguments of. The command name can not start with a hash mark ('#').
+<p>
+The language has two type of lists: generic and binary.
 A generic list is wrapped in parenthesis <b>()</b> and its children are:
 <ul>
  <li> <b>text-string</b>,
@@ -68,8 +70,8 @@ Note: a <i>generic-list</i> can host text and binary children, but a
 of the parse tree is a binary list, the subtree will contain only binary nodes.
 <p>
 A <b>text-string</b> contains only English alphanumeric characters (A..Z, a..z,
-0..9), underscores (_), plus and minus signs (+, -) and periods (.) and is at
-most 16 characters long.
+0..9), underscores (_), plus and minus signs (+, -) periods (.) and 
+the hash mark ('#') and is at most 16 characters long.
 <p>
 A binary string encodes the length of the payload in base64 (A..Z, a..z, +, /),
 has a '=' for separator then the payload in binary format. For example
