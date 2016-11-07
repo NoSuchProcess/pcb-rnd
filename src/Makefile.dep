@@ -1610,6 +1610,31 @@
  board.h const.h macro.h vtroutestyle.h library.h rats_patch.h board.h \
  font.h box.h math_helper.h move.h misc_util.h hid_flags.h \
  ../src_plugins/hid_lesstif/stdarg.h misc_util.h
+../src_plugins/hid_remote/base64.o: ../src_plugins/hid_remote/base64.c \
+ ../src_plugins/hid_remote/base64.h
+../src_plugins/hid_remote/proto.o: ../src_plugins/hid_remote/proto.c \
+ ../src_plugins/hid_remote/proto_lowcommon.h \
+ ../src_plugins/hid_remote/proto_lowsend.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h unit.h ../config.h \
+ ../src_plugins/hid_remote/base64.h \
+ ../src_plugins/hid_remote/proto_lowparse.h
+../src_plugins/hid_remote/remote.o: ../src_plugins/hid_remote/remote.c \
+ ../config.h board.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
+ vtroutestyle.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h attrib.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genlist/gendlist.h \
+ flag.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h board.h \
+ font.h box.h math_helper.h move.h misc_util.h hid.h error.h drc.h data.h \
+ crosshair.h rubberband.h vtonpoint.h hid.h buffer.h layer.h pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h plugins.h compat_misc.h \
+ hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h dolists.h
 ../src_plugins/import_dsn/dsn.o: ../src_plugins/import_dsn/dsn.c \
  ../config.h board.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h ../src_3rd/genvector/genvector_impl.h \
