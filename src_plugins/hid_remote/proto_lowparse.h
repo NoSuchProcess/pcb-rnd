@@ -30,6 +30,12 @@
 
 #define MAX_FIELD_ALLOC 1024*1024
 
+typedef enum {
+	PRES_ERR     = -1,
+	PRES_PROCEED = 0,
+	PRES_GOT_MSG = 1,
+} parse_res_t;
+
 static proto_node_t *list_new(proto_ctx_t *ctx, proto_node_t *parent, int is_bin)
 {
 	proto_node_t *l;
@@ -68,7 +74,7 @@ static proto_node_t *str_new(proto_ctx_t *ctx, proto_node_t *parent, int is_bin)
 static void list_append(proto_ctx_t *ctx, proto_node_t *l)
 {
 	if (ctx->tcurr->data.l.last_child != NULL) {
-		ctx->tcurr->data.l.last_child->data.l.next = l;
+		ctx->tcurr->data.l.last_child->next = l;
 		ctx->tcurr->data.l.last_child = l;
 	}
 	else
@@ -82,7 +88,7 @@ static void pop(proto_ctx_t *ctx)
 	ctx->pst = PST_LIST;
 }
 
-static int parse_char(proto_ctx_t *ctx, int c)
+static parse_res_t parse_char(proto_ctx_t *ctx, int c)
 {
 	switch(ctx->pst) {
 		case PST_MSG:
@@ -130,7 +136,7 @@ static int parse_char(proto_ctx_t *ctx, int c)
 				if (ctx->tcurr != NULL) /* unbalanced: newline before enough closes */
 					return -1;
 				ctx->pst = PST_MSG;
-				break;
+				return PRES_GOT_MSG;
 			}
 
 			if (ctx->tcurr == NULL) /* unbalanced: too many closes */
@@ -155,6 +161,7 @@ static int parse_char(proto_ctx_t *ctx, int c)
 				if (s == NULL)
 					return -1;
 				list_append(ctx, s);
+				ctx->pst = PST_BSTR;
 				goto do_bstr;
 			}
 			else {
@@ -163,8 +170,9 @@ static int parse_char(proto_ctx_t *ctx, int c)
 					return -1;
 				s->data.s.str = malloc(18);
 				list_append(ctx, s);
-				if (s->data.s.str)
+				if (s->data.s.str == NULL)
 					goto error;
+				ctx->pst = PST_TSTR;
 				goto do_tstr;
 			}
 
@@ -172,7 +180,7 @@ static int parse_char(proto_ctx_t *ctx, int c)
 			do_tstr:;
 			if (c == ' ') {
 				ctx->tcurr->data.s.str[ctx->tcurr->data.s.len] = '\0';
-				ctx->pst = PST_LIST;
+				pop(ctx);
 				break;
 			}
 			if ((c == ')') || (c == '}')) {
@@ -205,7 +213,7 @@ static int parse_char(proto_ctx_t *ctx, int c)
 				}
 				ctx->palloc += ctx->tcurr->data.s.len;
 				ctx->tcurr->data.s.str = malloc(ctx->tcurr->data.s.len);
-				if (ctx->tcurr->data.s.str)
+				if (ctx->tcurr->data.s.str == NULL)
 					return -1;
 			}
 			else { /* parsing the actual string */
@@ -218,10 +226,10 @@ static int parse_char(proto_ctx_t *ctx, int c)
 			break;
 	}
 
-	return 0;
+	return PRES_PROCEED;
 
 	error:;
 #warning TODO: free args
-	return -1;
+	return PRES_ERR;
 }
 

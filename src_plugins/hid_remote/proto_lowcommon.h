@@ -43,6 +43,7 @@ struct proto_node_s {
 	unsigned is_bin:1;   /* whether current node is a binary - {} list or len=str */
 	unsigned in_len:1;   /* for parser internal use */
 	proto_node_t *parent;
+	proto_node_t *next;                      /* next sibling on the current level (singly linked list) */
 	union {
 		struct { /* if ->is_list == 0  */
 			unsigned long int len; /* length of the string */
@@ -50,7 +51,6 @@ struct proto_node_s {
 			char *str;
 		} s;
 		struct { /* if ->is_list == 1  */
-			proto_node_t *next;                      /* next sibling on the current level (singly linked list) */
 			proto_node_t *first_child, *last_child;
 		} l;
 	} data;
