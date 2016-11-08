@@ -73,6 +73,7 @@ TSTR -> tstr_append [label="input==text"]
 ######## BSTR
 read_base64 [label="store next digit\nof string length"]
 read_base64 -> BSTR
+bstr_append -> BSTR
 BSTR -> read_base64 [label="before the ="]
 BSTR -> bstr_append [label="after the ="]
 BSTR -> str_fin_pop [label="last char of the string"]
