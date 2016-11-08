@@ -33,7 +33,7 @@
 typedef enum {
 	PRES_ERR     = -1,
 	PRES_PROCEED = 0,
-	PRES_GOT_MSG = 1,
+	PRES_GOT_MSG = 1
 } parse_res_t;
 
 static proto_node_t *list_new(proto_ctx_t *ctx, proto_node_t *parent, int is_bin)
@@ -87,6 +87,22 @@ static void pop(proto_ctx_t *ctx)
 	ctx->tcurr = ctx->tcurr->parent;
 	ctx->pst = PST_LIST;
 }
+
+static void proto_node_free(proto_node_t *n)
+{
+	if (n->is_list) {
+		proto_node_t *ch, *chn;
+		for(ch = n->data.l.first_child; ch != NULL; ch = chn) {
+			chn = ch->next;
+			proto_node_free(ch);
+		}
+	}
+	else
+		free(n->data.s.str);
+
+	free(n);
+}
+
 
 static parse_res_t parse_char(proto_ctx_t *ctx, int c)
 {
@@ -212,7 +228,8 @@ static parse_res_t parse_char(proto_ctx_t *ctx, int c)
 					break;
 				}
 				ctx->palloc += ctx->tcurr->data.s.len;
-				ctx->tcurr->data.s.str = malloc(ctx->tcurr->data.s.len);
+				ctx->tcurr->data.s.str = malloc(ctx->tcurr->data.s.len+1);
+				ctx->tcurr->data.s.str[ctx->tcurr->data.s.len] = '\0';
 				if (ctx->tcurr->data.s.str == NULL)
 					return -1;
 			}
@@ -229,7 +246,8 @@ static parse_res_t parse_char(proto_ctx_t *ctx, int c)
 	return PRES_PROCEED;
 
 	error:;
-#warning TODO: free args
+	proto_node_free(ctx->targ);
+	ctx->targ = ctx->tcurr = NULL;
 	return PRES_ERR;
 }
 
