@@ -1,0 +1,38 @@
+<html>
+<body>
+Protocol parser state machine of the referece implementation:
+<img src="proto_parse.svg">
+Legend:
+<ul>
+	<li> yellow boxes are states
+	<li> blue arrows are optional features for a more tolerant parser
+	<li> round nodes are actions that shall be taken
+	<li> arrow with text: execute aciton or switch state if condition is true
+	<li> arrow without text: do this if no other condition is met and there's new input
+</ul>
+<h3>Notes on the refernece implementation </H3>
+The reference implementation builds a <b>tree of nodes</b> for the arguments.
+Each node is either a list or a text. A node has a pointer to its parent, its
+first child and its next sibling. While parsing list-of-lists, the parser
+keeps a <i>current node</i>. A new node is either added as the last sibling of
+the <i>current node</i> (new argument on a list) or as the first
+child of the <i>current node</i> (first argument of a new list when the list is
+open).
+<p>
+When a list is closed, the parent of the <i>current node</i> becomes the
+new <i>current node</i>.
+<p>
+When parsing a new message, the current node is NULL until the argument list
+is open; the new <i>current node</i> also becomes the argument tree root.
+If the argument tree root is closed, a newline shall follow, because that's
+how a message is terminated.
+<p>
+The <b>binary string</b> part of the state machine has 2 more internal
+states:
+<ul>
+	<li> a boolean indicating whether we are parsing the length or the string (before or after the '=')
+	<li> an integer string length
+</ul>
+
+</body>
+</html>
