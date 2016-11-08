@@ -33,6 +33,13 @@ static const int proto_ver = 1;
 static proto_ctx_t pctx;
 static const char *cfmt = "%.08mm";
 
+static int sends(proto_ctx_t *ctx, const char *s)
+{
+	if (s == NULL)
+		s = "";
+	return sendf(ctx, s);
+}
+
 void remote_proto_send_ver()
 {
 	send_begin(&pctx, "ver");
@@ -84,7 +91,7 @@ int proto_send_set_layer(const char *name, int idx, int empty)
 {
 	send_begin(&pctx, "setly");
 	send_open(&pctx, str_is_bin(name));
-	sendf(&pctx, "%s", name);
+	sends(&pctx, name);
 	sendf(&pctx, "%d", idx);
 	sendf(&pctx, "%d", empty);
 	send_close(&pctx);
@@ -115,7 +122,7 @@ void proto_send_set_color(int gc, const char *name)
 	send_begin(&pctx, "clr");
 	send_open(&pctx, str_is_bin(name));
 	sendf(&pctx, "%d", gc);
-	sendf(&pctx, "%s", name);
+	sends(&pctx, name);
 	send_close(&pctx);
 	send_end(&pctx);
 }
