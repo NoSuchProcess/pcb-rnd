@@ -1,0 +1,16 @@
+msg 'bar'
+ list (text):
+  list (text):
+   str (text): 1/'A'
+   str (text): 1/'B'
+  list (text):
+   str (text): 1/'1'
+   str (text): 1/'2'
+   str (text): 1/'3'
+  list (bin):
+   str (bin): 1/'a'
+   str (bin): 1/'b'
+   list (bin):
+    str (bin): 2/'11'
+    str (bin): 2/'12'
+
