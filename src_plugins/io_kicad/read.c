@@ -2066,6 +2066,6 @@ int io_kicad_read_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf
 
 #warning TODO: free the layer hash
 
-printf("readres=%d\n", readres);
+pcb_trace("readres=%d\n", readres);
 	return readres;
 }
