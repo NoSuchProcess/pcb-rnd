@@ -20,6 +20,8 @@
 
 static const char *remote_cookie = "remote HID";
 
+static HID remote_hid;
+
 typedef struct hid_gc_struct {
 	int nop;
 } hid_gc_struct;
@@ -78,6 +80,14 @@ REGISTER_ACTIONS(remote_action_list, remote_cookie)
 static int remote_stay;
 static void remote_do_export(HID_Attr_Val * options)
 {
+	BoxType region;
+	region.X1 = 0;
+	region.Y1 = 0;
+	region.X2 = PCB->MaxWidth;
+	region.Y2 = PCB->MaxHeight;
+
+	hid_expose_callback(&remote_hid, &region, 0);
+
 /* main loop, parser */
 	remote_proto_parse();
 }
@@ -307,7 +317,6 @@ static void remote_propedit_add_stat(void *pe, const char *propname, void *propc
 
 #include "dolists.h"
 
-static HID remote_hid;
 
 static void hid_hid_remote_uninit()
 {
