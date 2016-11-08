@@ -1,0 +1,78 @@
+digraph parse_state_macine {
+
+MSG [label="MSG:\nmessage lead-in" shape=diamond]
+COMMENT [label="COMMENT:\nskipping comment" shape=diamon]
+CMD [label="CMD:\nparsing command name" shape=diamond]
+TSTR [label="TSTR:\nparsing test string" shape=diamond]
+BSTR [label="BSTR:\nparsing bin string" shape=diamond]
+LIST [label="LIST:\nin list" shape=diamond]
+ERR [label="ERROR:\nbad input" shape=diamond]
+
+######## MSG
+
+msg_append [label="store 1st\ncommand char"]
+
+MSG -> COMMENT [label="input==#" color=blue]
+MSG -> MSG [label="input==\\r\\n\\t\nspace" color=blue]
+MSG -> ERROR [label="input==binary"]
+MSG -> msg_append [label="input==text"]
+msg_append -> CMD
+
+######## COMMENT
+
+COMMENT -> MSG [label="input==\\n" color=blue]
+COMMENT -> COMMENT [color=blue]
+
+
+######## CMD
+cmd_list_new [label="create new list\nmake it arg tree\nroot and current"]
+cmd_list_new -> LIST
+cmd_append [label="append a character\nto command name"]
+cmd_append -> CMD [label="command name length\nis less than 16"]
+cmd_append -> ERROR [label="command name length\nis more than 16"]
+CMD -> list_new [label="input==({"]
+CMD -> ERROR [label="input==binary"]
+CMD -> cmd_append [label="input==text"]
+
+######## LIST
+got_msg [label="message fully parsed\nexecute message"]
+got_msg -> MSG
+pop [label="pop:\ncurrent_list = current_list->parent"]
+pop -> got_msg [label="input=\\n\nand\ncurrent_list == NULL\n(arg root closed)"]
+pop -> ERROR [label="input!=\\n\nand\ncurrent_list == NULL\n(unbalanced parenthesis)"]
+pop -> LIST
+push [label="push:\create new list\nappend it as current's sibling\nmake it current"]
+push->LIST
+new_str [label="create a new bin or text string\nnode and append it to\nthe current list"
+new_str -> tstr_append [label="current is generic list"]
+new_str -> bstr_append [label="current is binary list"]
+
+LIST -> pop [label="input==)}"]
+LIST -> push [label="input==({"]
+LIST -> LIST [label="input==space\n(ignore)"]
+LIST -> new_str [label "input==text"]
+
+######## TSTR
+str_fin [label="finish current string\n"]
+str_fin -> LIST
+str_fin_pop [label="finish current string\n"]
+str_fin_pop -> pop
+tstr_append [label="append to current string\n"]
+tstr_append -> ERROR [label="string length > 16"]
+tstr_append -> TSTR
+TSTR -> str_fin [label="input==space"]
+TSTR -> str_fin_pop [label="input==)}"]
+TSTR -> ERROR [label="input==binary"]
+TSTR -> tstr_append [label="input==text"]
+
+######## BSTR
+read_base64 [label="store next digit\nof string length"]
+read_base64 -> BSTR
+BSTR -> read_base64 [label="before the ="]
+BSTR -> bstr_append [label="after the ="]
+BSTR -> str_fin_pop [label="last char of the string"]
+
+######## ERR
+ERR -> ERR [label="can't recover"]
+
+}
