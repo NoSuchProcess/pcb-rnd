@@ -1,0 +1,147 @@
+<html>
+<body>
+<H1> remote HID protocol, high level </H1>
+
+<H2> reference </H2>
+
+<h3> ver(protver) </h3>
+Sends the protocol version the server will speak. If the client doesn't
+support that version, it should break the connection.
+<p>
+Arguments:
+<ul>
+	<li> protver: an integer value; 1 for the current version
+</ul>
+
+<h3> unit(abbrev) </h3>
+Sends the coordinate unit used in subsequent communication. This is not
+necessarily the unit used for displaying values on the user interface,
+but the unit used to interpret numeric coordinate values sent in commands.
+<p>
+Arguments:
+<ul>
+	<li> abbrev: unit name abbreviation; e.g. mm or nm or mil
+</ul>
+
+<h3> ready() </h3>
+Informs the client that the server is ready to start the session. The
+client needs to answer with a ready() message before the server proceeds.
+<p>
+Arguments: none.
+
+
+
+<h3> inval(x1 x2 y1 y2) </h3>
+Invalidate a rectangular section of the screen; the client should redraw
+this area. Clients implementing their own mechanism to keep track on
+drawing are free to ignore these requests 
+<p>
+Arguments:
+<ul>
+	<li> x1: left coordinate
+	<li> x2: right coordinate
+	<li> y1: top coordinate
+	<li> y2: bottom coordinate
+</ul>
+
+<h3> inval() </h3>
+Same as inval(x1 x2 y1 y2) but invalidates the whole screen.
+<p>
+Arguments: none
+
+<h3> setly(name groups is_empty) </h3>
+Inform the client that the next set of drawing commands are for a specific
+layer.
+<p>
+Arguments:
+<ul>
+	<li> name: name of the layer (can be empty)
+	<li> groups: TODO (will be converted to a list)
+	<li> is_empty: 1 if the layer is empty, 0 if the layer is not empty
+</ul>
+
+<h3> makeGC() </h3>
+Request the client to make a new graphical context. The client should
+allocate a GC and return an integer ID using the madeGC(ID) message.
+The ID uniquely identifies the GC; it should be small positive integer
+(between 0 and 31 for now).
+<p>
+Arguments: none
+
+
+
+
+<h3> delGC(ID) </h3>
+Inform the client that a given GC is not needed anymore. The server
+will not reference the GC again and the GC can be destroyed (but graphics
+drawn on the screen should not be affected). The ID may be reused by the
+client in a subsequent madeGC() message).
+<p>
+Arguments:
+<ul>
+	<li> ID: integer ID of the GC
+</ul>
+
+<h3> clr(gci colorstring) </h3>
+Change the color subsequent drawing commands of a given GC will use.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> colorstring: name of the color, specified in the usual "web" format: #rrggbb (with 3 hex numbers)
+</ul>
+
+<h3> cap(gci style) </h3>
+Set the line ending cap style. Note: the cap extends half-line-width beyond
+the end coordinates, e.g. the end point of a line is the center of the round-cap
+circle.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> style: r for round cap (circle), s for square cap, b for beveled (octagon)
+</ul>
+
+
+<h3> linwid(gci width) </h3>
+Sets line width (pen tip diameter).
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> width: diameter of the circular aperture of the pen in coord units
+</ul>
+
+<h3> setxor(gci state) </h3>
+Sets whether to perform "xor-drawing" for subsequent drawing commands in
+the selected GC.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> xor: 0 means normal drawing, 1 means xor drawing
+</ul>
+
+
+<h3> line(gci x1 y1 x2 y2) </h3>
+Draw a line using the current GC. The line inherits line width, color
+and cap style from the GC.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> x1: 1st endpoint's X coord (in coord units)
+	<li> y1: 1st endpoint's Y coord (in coord units)
+	<li> x2: 2nd endpoint's X coord (in coord units)
+	<li> y2: 2nd endpoint's Y coord (in coord units)
+</ul>
+
+
+<!--
+<h3> () </h3>
+<p>
+Arguments:
+<ul>
+	<li>
+</ul>
+-->
