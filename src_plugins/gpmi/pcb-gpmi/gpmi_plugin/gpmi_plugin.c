@@ -221,7 +221,7 @@ static void plugin_gpmi_uninit(void)
 
 pcb_uninit_t hid_gpmi_init(void)
 {
-	printf("pcb-gpmi hid is loaded.\n");
+	pcb_trace("pcb-gpmi hid is loaded.\n");
 	gpmi_init();
 	load_base_and_cfg();
 	return plugin_gpmi_uninit;

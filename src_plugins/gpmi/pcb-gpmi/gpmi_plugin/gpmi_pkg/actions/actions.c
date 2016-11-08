@@ -87,7 +87,7 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 
 	gpmi_mod_cleanup_insert(ctx->module, cleanup_action, "p", ctx);
 
-	printf("registered.\n");
+	pcb_trace("action %d registered.\n", name);
 	return 0;
 }
 
