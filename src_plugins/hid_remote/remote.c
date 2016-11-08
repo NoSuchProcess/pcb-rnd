@@ -118,7 +118,14 @@ static int remote_set_layer(const char *name, int idx, int empty)
 	return 0;
 }
 
+typedef struct {
+	char color[64];
+	Coord line_width;
+	char cap;
+} remote_gc_cache_t;
 static hid_gc_struct remote_gc[32];
+static remote_gc_cache_t gc_cache[32];
+
 static hidGC remote_make_gc(void)
 {
 	int gci = proto_send_make_gc();
@@ -128,6 +135,7 @@ static hidGC remote_make_gc(void)
 		proto_send_del_gc(gci);
 		return NULL;
 	}
+	memset(&gc_cache[gci], 0, sizeof(remote_gc_cache_t));
 	return remote_gc+gci;
 }
 
@@ -157,8 +165,12 @@ static void remote_use_mask(int use_it)
 static void remote_set_color(hidGC gc, const char *name)
 {
 	int idx = gc2idx(gc);
-	if (idx >= 0)
-		proto_send_set_color(idx, name);
+	if (idx >= 0) {
+		if (strcmp(gc_cache[idx].color, name) != 0) {
+			proto_send_set_color(idx, name);
+			strcpy(gc_cache[idx].color, name);
+		}
+	}
 }
 
 /* r=round, s=square, b=beveled (octagon) */
@@ -167,19 +179,30 @@ static void remote_set_line_cap(hidGC gc, EndCapStyle style)
 {
 	int idx = gc2idx(gc);
 	int max = strlen(cap_style_names);
+
+
 	if (style >= max) {
 		Message(PCB_MSG_ERROR, "can't set invalid cap style: %d >= %d\n", style, max);
 		return -1;
 	}
-	if (idx >= 0)
-		proto_send_set_line_cap(idx, cap_style_names[style]);
+	if (idx >= 0) {
+		char cs = cap_style_names[style];
+		if (cs != gc_cache[idx].cap) {
+			proto_send_set_line_cap(idx, cs);
+			gc_cache[idx].cap = cs;
+		}
+	}
 }
 
 static void remote_set_line_width(hidGC gc, Coord width)
 {
 	int idx = gc2idx(gc);
-	if (idx >= 0)
-		proto_send_set_line_width(idx, width);
+	if (idx >= 0) {
+		if (width != gc_cache[idx].line_width) {
+			proto_send_set_line_width(idx, width);
+			gc_cache[idx].line_width = width;
+		}
+	}
 }
 
 static void remote_set_draw_xor(hidGC gc, int xor_set)
