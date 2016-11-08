@@ -31,6 +31,7 @@ int main()
 				printf("msg '%s'\n", pctx.pcmd);
 				proto_node_print(pctx.targ, 1);
 				printf("\n");
+				proto_node_free(pctx.targ);
 				break;
 			case PRES_PROCEED:
 				break;
