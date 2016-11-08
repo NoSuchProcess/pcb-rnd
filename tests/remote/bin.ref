@@ -1,0 +1,18 @@
+msg 'cmd'
+ list (bin):
+ str (bin): 1/'1'
+ str (bin): 2/'ab'
+ str (bin): 3/'123'
+
+msg 'empty'
+ list (bin):
+ str (bin): 0/'(null)'
+ str (bin): 0/'(null)'
+ str (bin): 0/'(null)'
+
+msg 'nasty'
+ list (bin):
+ str (bin): 3/'{}
+'
+ str (bin): 3/' #='
+

@@ -1,0 +1,6 @@
+msg 'foo'
+ list (text):
+
+msg 'bar'
+ list (bin):
+

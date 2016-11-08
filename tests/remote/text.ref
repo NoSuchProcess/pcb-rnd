@@ -1,0 +1,9 @@
+msg 'cmd'
+ list (text):
+ str (text): 1/'a'
+ str (text): 1/'e'
+ str (text): 1/'_'
+ str (text): 1/'#'
+ str (text): 3/'foo'
+ str (text): 3/'bar'
+
