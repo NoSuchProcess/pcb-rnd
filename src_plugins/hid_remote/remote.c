@@ -190,7 +190,7 @@ static void remote_set_line_cap(hidGC gc, EndCapStyle style)
 
 	if (style >= max) {
 		Message(PCB_MSG_ERROR, "can't set invalid cap style: %d >= %d\n", style, max);
-		return -1;
+		return;
 	}
 	if (idx >= 0) {
 		char cs = cap_style_names[style];
