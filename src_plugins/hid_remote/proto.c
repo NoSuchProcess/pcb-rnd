@@ -214,6 +214,16 @@ void proto_send_draw_poly(int gc, int n_coords, Coord * x, Coord * y)
 	send_end(&pctx);
 }
 
+int proto_send_use_mask(const char *name)
+{
+	send_begin(&pctx, "umask");
+	send_open(&pctx, str_is_bin(name));
+	sends(&pctx, name);
+	send_close(&pctx);
+	send_end(&pctx);
+	return 0;
+}
+
 
 int remote_proto_parse()
 {

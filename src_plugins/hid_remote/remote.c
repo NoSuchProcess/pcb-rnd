@@ -158,9 +158,13 @@ static void remote_destroy_gc(hidGC gc)
 		proto_send_del_gc(idx);
 }
 
-static void remote_use_mask(int use_it)
+static const char *mask_names[] = { "off", "before", "clear", "after" };
+static void remote_use_mask(int mask)
 {
-#warning TODO
+	if ((mask >= 0) && (mask < sizeof(mask_names) / sizeof(mask_names[0])))
+		proto_send_use_mask(mask_names[mask]);
+	else
+		Message(PCB_MSG_ERROR, "Invalid use_mask %d\n", mask);
 }
 
 static void remote_set_color(hidGC gc, const char *name)
