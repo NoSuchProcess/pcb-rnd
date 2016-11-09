@@ -37,6 +37,12 @@
 #include "hid_helper.h"
 #include "plugins.h"
 
+#warning TODO: rename config.h VERSION to PCB_VERSION
+#undef VERSION
+
+#include "hyp_l.h"
+#include "hyp_y.h"
+
 static const char *hyp_cookie = "hyp importer";
 
 static const char load_hyp_syntax[] = "LoadhypFrom(filename)";
@@ -57,7 +63,13 @@ int ActionLoadhypFrom(int argc, const char **argv, Coord x, Coord y)
 	if (fname == NULL)
 		AFAIL(load_hyp);
 
+	hyp_in =  fopen(fname, "r");
+	if (hyp_in == NULL)
+		AFAIL(load_hyp);
 
+	hyp_parse();
+
+	fclose(hyp_in);
 	return 0;
 }
 
@@ -75,6 +87,7 @@ static void hid_hyp_uninit()
 #include "dolists.h"
 pcb_uninit_t hid_import_hyp_init()
 {
+#warning TODO: rather register an importer than an action
 	REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 	return hid_hyp_uninit;
 }
