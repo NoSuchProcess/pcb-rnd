@@ -195,6 +195,25 @@ void proto_send_fill_circle(int gc, Coord cx, Coord cy, Coord radius)
 	send_end(&pctx);
 }
 
+void proto_send_draw_poly(int gc, int n_coords, Coord * x, Coord * y)
+{
+	int n;
+	send_begin(&pctx, "poly");
+	send_open(&pctx, 0);
+	sendf(&pctx, "%d", gc);
+	sendf(&pctx, "%d", n_coords);
+	send_open(&pctx, 0);
+	for(n = 0; n < n_coords; n++) {
+		send_open(&pctx, 0);
+		sendf(&pctx, cfmt, x[n]);
+		sendf(&pctx, cfmt, y[n]);
+		send_close(&pctx);
+	}
+	send_close(&pctx);
+	send_close(&pctx);
+	send_end(&pctx);
+}
+
 
 int remote_proto_parse()
 {

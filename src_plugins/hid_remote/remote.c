@@ -160,6 +160,7 @@ static void remote_destroy_gc(hidGC gc)
 
 static void remote_use_mask(int use_it)
 {
+#warning TODO
 }
 
 static void remote_set_color(hidGC gc, const char *name)
@@ -240,7 +241,9 @@ static void remote_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 
 static void remote_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 {
-#warning TODO
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_draw_poly(idx, n_coords, x, y);
 }
 
 static void remote_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
