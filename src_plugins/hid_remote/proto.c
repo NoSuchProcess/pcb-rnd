@@ -108,10 +108,11 @@ int proto_send_make_gc(void)
 	return 0;
 }
 
-int proto_send_del_gc(void)
+int proto_send_del_gc(int gc)
 {
 	send_begin(&pctx, "delGC");
 	send_open(&pctx, 0);
+	sendf(&pctx, "%d", gc);
 	send_close(&pctx);
 	send_end(&pctx);
 	return 0;
