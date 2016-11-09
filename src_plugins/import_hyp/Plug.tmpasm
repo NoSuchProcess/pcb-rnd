@@ -1,7 +1,12 @@
 put /local/pcb/mod {import_hyp}
-append /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_hyp/hyp.o $(PLUGDIR)/import_hyp/import_hyp.o @]
-put /local/pcb/mod/YACC {$(PLUGDIR)/import_hyp/.y}
-put /local/pcb/mod/LEX  {$(PLUGDIR)/import_hyp/.l}
+append /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/import_hyp/import_hyp.o
+	$(PLUGDIR)/import_hyp/hyp_l.o
+	$(PLUGDIR)/import_hyp/hyp_y.o
+	
+@]
+put /local/pcb/mod/YACC {$(PLUGDIR)/import_hyp/hyp_y}
+put /local/pcb/mod/LEX  {$(PLUGDIR)/import_hyp/hyp_l}
 
 
 switch /local/pcb/import_hyp/controls

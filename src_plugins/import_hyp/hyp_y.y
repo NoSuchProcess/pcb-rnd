@@ -18,14 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
 %code requires {
 #include "hypfile.h"
 }
+*/
 
-%parse-param {class HypFile::Hyp *hyp }
 %error-verbose
 %debug
 %defines
+%name-prefix "hyp_"
+
 
 %union {
     int boolval;
@@ -35,15 +38,9 @@
 }
 
 %{
-#include <cstdlib>
-#include <cstdarg>
-#include <cstdio>
-#include <cstring>
-#include <string>
-#include <sstream>
 #include "parser.h"
 
-void yyerror(HypFile::Hyp *, const char *);
+void yyerror(const char *);
 
 /* YYPRINT and yyprint print values of the tokens when debugging is switched on */
 void yyprint(FILE *, int, YYSTYPE);

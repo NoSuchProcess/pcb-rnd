@@ -23,8 +23,8 @@
 
 %{
 #include <stdlib.h>
-#include "parse.h"
-#include "parser.h"
+#include "hyp_y.h"
+
 
 /* copy a string between quotes */
 char *strunquote(const char *);
@@ -253,40 +253,40 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
  
  /* Booleans */
 
-"YES"|"yes"         {yylval.boolval = 1; return BOOL; }
-"NO"|"no"           {yylval.boolval = 0; return BOOL; }
+"YES"|"yes"         {hyp_lval.boolval = 1; return BOOL; }
+"NO"|"no"           {hyp_lval.boolval = 0; return BOOL; }
 
  /* Floats */
 
                     /* ordinary floating point numbers */
-{SIMPLE_FLOAT}      {yylval.floatval = strtod(yytext, NULL); return FLOAT;}
+{SIMPLE_FLOAT}      {hyp_lval.floatval = strtod(yytext, NULL); return FLOAT;}
 
                     /* floating point numbers with suffix, e,g. pF, nH */
-{FLOAT_YOTTA}       {yylval.floatval = strtod(yytext, NULL) * 1e24; return FLOAT;}
-{FLOAT_ZETA}        {yylval.floatval = strtod(yytext, NULL) * 1e21; return FLOAT;}
-{FLOAT_EXA}         {yylval.floatval = strtod(yytext, NULL) * 1e18; return FLOAT;}
-{FLOAT_PETA}        {yylval.floatval = strtod(yytext, NULL) * 1e15; return FLOAT;}
-{FLOAT_TERA}        {yylval.floatval = strtod(yytext, NULL) * 1e12; return FLOAT;}
-{FLOAT_GIGA}        {yylval.floatval = strtod(yytext, NULL) * 1e9; return FLOAT;}
-{FLOAT_MEGA}        {yylval.floatval = strtod(yytext, NULL) * 1e6; return FLOAT;}
-{FLOAT_KILO}        {yylval.floatval = strtod(yytext, NULL) * 1e3; return FLOAT;}
-{FLOAT_MILLI}       {yylval.floatval = strtod(yytext, NULL) * 1e-3; return FLOAT;}
-{FLOAT_MICRO}       {yylval.floatval = strtod(yytext, NULL) * 1e-6; return FLOAT;}
-{FLOAT_NANO}        {yylval.floatval = strtod(yytext, NULL) * 1e-9; return FLOAT;}
-{FLOAT_PICO}        {yylval.floatval = strtod(yytext, NULL) * 1e-12; return FLOAT;}
-{FLOAT_FEMTO}       {yylval.floatval = strtod(yytext, NULL) * 1e-15; return FLOAT;}
-{FLOAT_ATTO}        {yylval.floatval = strtod(yytext, NULL) * 1e-18; return FLOAT;}
-{FLOAT_ZEPTO}       {yylval.floatval = strtod(yytext, NULL) * 1e-21; return FLOAT;}
-{FLOAT_YOCTO}       {yylval.floatval = strtod(yytext, NULL) * 1e-24; return FLOAT;}
+{FLOAT_YOTTA}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e24; return FLOAT;}
+{FLOAT_ZETA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e21; return FLOAT;}
+{FLOAT_EXA}         {hyp_lval.floatval = strtod(yytext, NULL) * 1e18; return FLOAT;}
+{FLOAT_PETA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e15; return FLOAT;}
+{FLOAT_TERA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e12; return FLOAT;}
+{FLOAT_GIGA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e9; return FLOAT;}
+{FLOAT_MEGA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e6; return FLOAT;}
+{FLOAT_KILO}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e3; return FLOAT;}
+{FLOAT_MILLI}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-3; return FLOAT;}
+{FLOAT_MICRO}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-6; return FLOAT;}
+{FLOAT_NANO}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e-9; return FLOAT;}
+{FLOAT_PICO}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e-12; return FLOAT;}
+{FLOAT_FEMTO}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-15; return FLOAT;}
+{FLOAT_ATTO}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e-18; return FLOAT;}
+{FLOAT_ZEPTO}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-21; return FLOAT;}
+{FLOAT_YOCTO}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-24; return FLOAT;}
 
                     /* floating point numbers in VERSION and PLANE_SEP have no suffix and are followed by optional comments */
 <STATE_FLOAT>{
-{SIMPLE_FLOAT}      {yylval.floatval = strtod(yytext, NULL); BEGIN STATE_COMMENT; return FLOAT;}
+{SIMPLE_FLOAT}      {hyp_lval.floatval = strtod(yytext, NULL); BEGIN STATE_COMMENT; return FLOAT;}
 }
 
                     /* A positive integer is used only in polygon/polyline/polyvoid "ID = posint" */
 <STATE_POSINT>{
-{POSINT}            { BEGIN INITIAL; yylval.intval = atoi(yytext); return POSINT; }
+{POSINT}            { BEGIN INITIAL; hyp_lval.intval = atoi(yytext); return POSINT; }
 }
 
  
@@ -298,7 +298,7 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
                      * NAME= }
                      */
 <STATE_STRING>{
-([A-Z][A-Z1-2_]*{WS}*"="|")"|"}")  { yyless(0); BEGIN INITIAL; yylval.strval = strdup(""); return STRING; } /* emit empty string and reprocess */
+([A-Z][A-Z1-2_]*{WS}*"="|")"|"}")  { yyless(0); BEGIN INITIAL; hyp_lval.strval = strdup(""); return STRING; } /* emit empty string and reprocess */
 }
 
 <*>{
@@ -328,13 +328,13 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
                         else 
                         { 
                           BEGIN INITIAL; 
-                          yylval.strval = strdup(yytext); 
+                          hyp_lval.strval = strdup(yytext); 
                           return STRING;
                         }
                       }
 
                       /* string in double quotes */
-  {QUOTED_STRING}     {BEGIN INITIAL; yylval.strval = strunquote(yytext); return STRING;}
+  {QUOTED_STRING}     {BEGIN INITIAL; hyp_lval.strval = strunquote(yytext); return STRING;}
 
   <<EOF>>             {yyterminate();}
 
