@@ -1634,7 +1634,8 @@
  font.h box.h math_helper.h move.h misc_util.h hid.h error.h drc.h data.h \
  crosshair.h rubberband.h vtonpoint.h hid.h buffer.h layer.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h plugins.h compat_misc.h \
- hid_draw_helpers.h hid_nogui.h hid_actions.h hid_init.h dolists.h
+ ../src_plugins/hid_remote/proto.h hid_draw_helpers.h hid_nogui.h \
+ hid_actions.h hid_init.h dolists.h
 ../src_plugins/import_dsn/dsn.o: ../src_plugins/import_dsn/dsn.c \
  ../config.h board.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h ../src_3rd/genvector/genvector_impl.h \
@@ -1690,6 +1691,15 @@
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h netlist.h route_style.h \
  rats_patch.h plug_io.h
+../src_plugins/import_hyp/hyp_l.o: ../src_plugins/import_hyp/hyp_l.c \
+ ../src_plugins/import_hyp/hyp_y.h
+../src_plugins/import_hyp/hyp_y.o: ../src_plugins/import_hyp/hyp_y.c \
+ ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/lihata.h
+../src_plugins/import_hyp/import_hyp.o: \
+ ../src_plugins/import_hyp/import_hyp.c ../config.h action_helper.h \
+ global_typedefs.h pcb_bool.h unit.h compat_nls.h hid.h error.h drc.h \
+ attrib.h hid_draw_helpers.h hid_nogui.h hid_actions.h hid.h hid_init.h \
+ hid_attrib.h hid_helper.h plugins.h dolists.h
 ../src_plugins/import_netlist/import_netlist.o: \
  ../src_plugins/import_netlist/import_netlist.c ../config.h board.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
