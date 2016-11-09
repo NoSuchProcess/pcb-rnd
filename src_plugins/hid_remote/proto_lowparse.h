@@ -25,7 +25,6 @@
 
 #include <unistd.h>
 #include <stdarg.h>
-#include "pcb-printf.h"
 #include "base64.h"
 
 #define MAX_FIELD_ALLOC 1024*1024
