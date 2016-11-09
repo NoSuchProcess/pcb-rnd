@@ -221,22 +221,33 @@ static void remote_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 static void remote_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
 {
+#warning TODO
 }
 
 static void remote_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_draw_rect(idx, x1, y1, x2, y2, 0);
 }
 
 static void remote_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 {
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_fill_circle(idx, cx, cy, radius);
 }
 
 static void remote_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 {
+#warning TODO
 }
 
 static void remote_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_draw_rect(idx, x1, y1, x2, y2, 1);
 }
 
 static void remote_calibrate(double xval, double yval)

@@ -170,6 +170,31 @@ void proto_send_draw_line(int gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	send_end(&pctx);
 }
 
+void proto_send_draw_rect(int gc, Coord x1, Coord y1, Coord x2, Coord y2)
+{
+	send_begin(&pctx, "rect");
+	send_open(&pctx, 0);
+	sendf(&pctx, "%d", gc);
+	sendf(&pctx, cfmt, x1);
+	sendf(&pctx, cfmt, y1);
+	sendf(&pctx, cfmt, x2);
+	sendf(&pctx, cfmt, y2);
+	send_close(&pctx);
+	send_end(&pctx);
+}
+
+void proto_send_fill_circle(int gc, Coord cx, Coord cy, Coord radius)
+{
+	send_begin(&pctx, "fcirc");
+	send_open(&pctx, 0);
+	sendf(&pctx, "%d", gc);
+	sendf(&pctx, cfmt, cx);
+	sendf(&pctx, cfmt, cy);
+	sendf(&pctx, cfmt, radius);
+	send_close(&pctx);
+	send_end(&pctx);
+}
+
 
 int remote_proto_parse()
 {
