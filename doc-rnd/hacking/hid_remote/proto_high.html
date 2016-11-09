@@ -171,6 +171,21 @@ Arguments:
 	<li> ptlist: an ordered list of (x y) coordinates (all in coord units)
 </ul>
 
+<h3> umask(m) </h3>
+"use mask" m. The server uses this message to make an announcement before it
+starts drawing certain things.
+<p>
+Arguments:
+<ul>
+	<li> m: mask name:
+	<ul>
+		<li> off: flush the buffer and return to non-mask operation.
+		<li> before: Polygons being drawn before clears.
+		<li> clear: Clearances being drawn.
+		<li> after: Polygons being drawn after clears.
+	</ul>
+</ul>
+
 
 <!--
 <h3> () </h3>
