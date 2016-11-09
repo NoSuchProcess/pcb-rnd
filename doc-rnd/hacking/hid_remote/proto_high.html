@@ -136,6 +136,31 @@ Arguments:
 	<li> y2: 2nd endpoint's Y coord (in coord units)
 </ul>
 
+<h3> rect(gci x1 y1 x2 y2 filled) </h3>
+Draw a rectangle. The rectangle inherits only color from the GC.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> x1: 1st corner X coord (in coord units); x1 &lt;= x2
+	<li> y1: 1st corner Y coord (in coord units); y1 &lt;= y2
+	<li> x2: 2nd corner X coord (in coord units)
+	<li> y2: 2nd corner Y coord (in coord units)
+	<li> filled: 1 if the rectangle should be filled; a non-filled rectanlge is a frame of 1 pixel wide lines
+</ul>
+
+
+<h3> fcirc(gci cx cy r) </h3>
+Draw a filled circle. The circle inherits only color from the GC.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> cx1: center X coord (in coord units)
+	<li> cy1: center Y coord (in coord units)
+	<li> r: radius (in coord units)
+</ul>
+
 
 <!--
 <h3> () </h3>
