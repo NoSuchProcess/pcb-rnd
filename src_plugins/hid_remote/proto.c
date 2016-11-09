@@ -170,7 +170,7 @@ void proto_send_draw_line(int gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	send_end(&pctx);
 }
 
-void proto_send_draw_rect(int gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void proto_send_draw_rect(int gc, Coord x1, Coord y1, Coord x2, Coord y2, int is_filled)
 {
 	send_begin(&pctx, "rect");
 	send_open(&pctx, 0);
@@ -179,6 +179,7 @@ void proto_send_draw_rect(int gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	sendf(&pctx, cfmt, y1);
 	sendf(&pctx, cfmt, x2);
 	sendf(&pctx, cfmt, y2);
+	sendf(&pctx, "%d", is_filled);
 	send_close(&pctx);
 	send_end(&pctx);
 }
