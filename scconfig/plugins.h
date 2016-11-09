@@ -42,6 +42,7 @@ plugin_def("import_sch",      "import sch",                sbuildin, 1)
 plugin_def("import_edif",     "import edif",               sbuildin, 1)
 plugin_def("import_netlist",  "import netlist",            sbuildin, 1)
 plugin_def("import_dsn",      "specctra .dsn importer",    sdisable, 0)
+plugin_def("import_hyp",      "hyperlynx .hyp importer",   sdisable, 0)
 
 plugin_header("\nExport plugins:\n")
 plugin_def("export_gcode",    "gcode exporter",            sbuildin, 1)
