@@ -20,6 +20,8 @@
  */
 
 %option noyywrap nodefault yylineno debug
+%option prefix="hyp_"
+
 
 %{
 #include <stdlib.h>
