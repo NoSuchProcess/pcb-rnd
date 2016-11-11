@@ -38,13 +38,6 @@ static const char *cfmt = "%.08mm";
 static proto_node_t *proto_error;
 static proto_node_t *remote_proto_parse(const char *wait_for, int cache_msgs);
 
-static int sends(proto_ctx_t *ctx, const char *s)
-{
-	if (s == NULL)
-		s = "";
-	return sendf(ctx, s);
-}
-
 void remote_proto_send_ver()
 {
 	send_begin(&pctx, "ver");

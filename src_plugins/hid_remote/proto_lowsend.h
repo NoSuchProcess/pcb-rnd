@@ -80,6 +80,14 @@ static int sendf(proto_ctx_t *ctx, const char *fmt, ...)
 	return 0;
 }
 
+#warning TODO: this is unsafe, s can have %
+static int sends(proto_ctx_t *ctx, const char *s)
+{
+	if (s == NULL)
+		s = "";
+	return sendf(ctx, s);
+}
+
 
 static int send_open(proto_ctx_t *ctx, int bin)
 {
