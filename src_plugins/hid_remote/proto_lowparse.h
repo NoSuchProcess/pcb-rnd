@@ -250,3 +250,27 @@ static parse_res_t parse_char(proto_ctx_t *ctx, int c)
 	return PRES_ERR;
 }
 
+/* Helpers */
+static proto_node_t *child1(proto_node_t *lst)
+{
+	if (lst->is_list)
+		return lst->data.l.first_child;
+	return NULL;
+}
+
+static int is_list(proto_node_t *nd)
+{
+	return (nd != NULL) && nd->is_list;
+}
+
+static int is_str(proto_node_t *nd)
+{
+	return (nd != NULL) && !nd->is_list;
+}
+
+static char *str(proto_node_t *nd)
+{
+	if ((nd != NULL) && !nd->is_list)
+		return nd->data.s.str;
+	return NULL;
+}
