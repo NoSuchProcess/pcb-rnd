@@ -1,13 +1,16 @@
 Active user wishes:
 	W1: cschem [Chris]
-	W2: proper primitives [Chris]
-	W3: more generic footprints [Chris, Evan]
+	*W2: proper primitives [Chris]
+	*W3: more generic footprints [Chris, Evan]
 	W4: user doc [Miloh]
-	W5: 3d modeller export [Miloh, Evan]
+	*W5: 3d modeller export [Miloh, Evan]
 	W6: GUI access to object attributes: gtk editor, find/select by attrib [James]
 	W7: programmable drc (star grounding) [James]
 	W8: gl support [Erich, Evan]
 	W9: push & shove [Erich, Evan]
+
+(Items marked with * are blocked until the lihata board format collects
+enough mileage.)
 
 Plan (parallel threads of development):
 
