@@ -396,12 +396,12 @@ to the m4 footprints in pcb. The goal was to fix three problems.
 <ul>
 	<li> 1. Languages: m4 should not be mandatory for footprint generators - the user should be free to choose any language
 	<li> 2. Simplicity: references to m4 should not be hardwired in pcb, gsch2pcb and gsch2pcb.scm, but footprint generation should be generic, transparent and external
-	<li> 3. Unambiguity: gsch2pcb should not be guessing whether to use file elements or call a generator. Instead of complex heuristics, there should eb a simple, distinct syntax for parametric footprints.
+	<li> 3. Unambiguity: gsch2pcb should not be guessing whether to use file elements or call a generator. Instead of complex heuristics, there should be a simple, distinct syntax for parametric footprints.
 </ul>
 <p>
 The new syntax is that if a footprint attribute contains parenthesis, it is
 a parametric footprint, else it is a file footprint. Parametric footprints
-are sort of a function call. The actual syntax is similar to the on in
+are sort of a function call. The actual syntax is similar to the one in
 <a href="http://www.openscad.org"> openscad </a>:
 parameters are separated by commas, and they are either positional (value)
 or named (name=value).
