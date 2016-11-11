@@ -25,6 +25,7 @@
 
 #include <unistd.h>
 #include <stdarg.h>
+#include <string.h>
 #include <ctype.h>
 #include "base64.h"
 
