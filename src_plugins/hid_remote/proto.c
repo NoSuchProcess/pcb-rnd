@@ -35,6 +35,9 @@ static const int proto_ver = 1;
 static proto_ctx_t pctx;
 static const char *cfmt = "%.08mm";
 
+static proto_node_t *proto_error;
+static proto_node_t *remote_proto_parse(const char *wait_for, int cache_msgs);
+
 static int sends(proto_ctx_t *ctx, const char *s)
 {
 	if (s == NULL)
@@ -66,6 +69,9 @@ int remote_proto_send_ready()
 	send_open(&pctx, 0);
 	send_close(&pctx);
 	send_end(&pctx);
+	if (remote_proto_parse("Ready", 0) == proto_error)
+		return -1;
+
 	return 0;
 }
 
@@ -228,13 +234,40 @@ int proto_send_use_mask(const char *name)
 	return 0;
 }
 
+void proto_exec_cmd(const char *cmd, proto_node_t *targ)
+{
 
-int remote_proto_parse()
+}
+
+static proto_node_t *remote_proto_parse(const char *wait_for, int cache_msgs)
 {
 	for(;;) {
 		int c = getchar();
 		if (c == EOF)
-			return -1;
-		parse_char(&pctx, c);
+			return proto_error;
+		switch(parse_char(&pctx, c)) {
+			case PRES_ERR:
+				fprintf(stderr, "Protocol error.\n");
+				return proto_error;
+			case PRES_PROCEED:
+				break;
+			case PRES_GOT_MSG:
+				if ((wait_for != NULL) && (strcmp(wait_for, pctx.pcmd) == 0))
+					return pctx.targ;
+				if (cache_msgs) {
+#warning TODO
+				}
+				else
+					proto_exec_cmd(pctx.pcmd, pctx.targ);
+				proto_node_free(pctx.targ);
+				break;
+		}
 	}
+}
+
+int remote_proto_parse_all()
+{
+	if (remote_proto_parse(NULL, 0) == proto_error)
+		return -1;
+	return 0;
 }

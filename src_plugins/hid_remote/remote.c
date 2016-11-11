@@ -91,7 +91,8 @@ static void remote_do_export(HID_Attr_Val * options)
 	hid_expose_callback(&remote_hid, &region, 0);
 
 /* main loop, parser */
-	remote_proto_parse();
+	if (remote_proto_parse_all() != 0)
+		exit(1);
 }
 
 static void remote_do_exit(HID *hid)
@@ -427,7 +428,8 @@ pcb_uninit_t hid_hid_remote_init()
 #warning TODO: wait for a connection?
 	remote_proto_send_ver();
 	remote_proto_send_unit();
-	remote_proto_send_ready();
+	if (remote_proto_send_ready() != 0)
+		exit(1);
 
 	return hid_hid_remote_uninit;
 }

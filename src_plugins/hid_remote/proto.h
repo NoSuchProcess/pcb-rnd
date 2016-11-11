@@ -42,4 +42,4 @@ void proto_send_fill_circle(int gc, Coord cx, Coord cy, Coord radius);
 void proto_send_draw_poly(int gc, int n_coords, Coord * x, Coord * y);
 int proto_send_use_mask(const char *name);
 
-int remote_proto_parse();
+int remote_proto_parse_all();
