@@ -26,7 +26,6 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <ctype.h>
-#include "pcb-printf.h"
 #include "base64.h"
 
 #define SUBSEQ_MASK (1 << (ctx->depth - 1))
@@ -45,7 +44,7 @@ static int sendf(proto_ctx_t *ctx, const char *fmt, ...)
 	size_t slen, len, payload_len = sizeof(buff) - PREFIX_LEN;
 
 	va_start(ap, fmt);
-	len = pcb_vsnprintf(payload, payload_len, fmt, ap);
+	len = proto_vsnprintf(payload, payload_len, fmt, ap);
 	if (len >= payload_len-1)
 		return -1; /* too long, won't split for now */
 	va_end(ap);
