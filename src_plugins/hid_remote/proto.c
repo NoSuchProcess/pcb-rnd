@@ -122,7 +122,9 @@ int proto_send_make_gc(void)
 	targ = remote_proto_parse("MakeGC", 1);
 	if (targ == proto_error)
 		return -1;
-	gcs = targ->data.l.first_child->data.s.str;
+	gcs = str(child1(targ));
+	if (gcs == NULL)
+		return -1;
 	gci = atoi(gcs);
 	printf("New GC: %s\n", gcs);
 	proto_node_free(targ);
