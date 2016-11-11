@@ -253,8 +253,15 @@ static parse_res_t parse_char(proto_ctx_t *ctx, int c)
 /* Helpers */
 static proto_node_t *child1(proto_node_t *lst)
 {
-	if (lst->is_list)
+	if ((lst != NULL) && (lst->is_list))
 		return lst->data.l.first_child;
+	return NULL;
+}
+
+static proto_node_t *next(proto_node_t *nd)
+{
+	if (nd != NULL)
+		return nd->next;
 	return NULL;
 }
 
