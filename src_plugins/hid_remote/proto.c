@@ -65,13 +65,15 @@ void remote_proto_send_unit()
 
 int remote_proto_send_ready()
 {
+	proto_node_t *targ;
 	send_begin(&pctx, "ready");
 	send_open(&pctx, 0);
 	send_close(&pctx);
 	send_end(&pctx);
-	if (remote_proto_parse("Ready", 0) == proto_error)
+	targ = remote_proto_parse("Ready", 0);
+	if (targ == proto_error)
 		return -1;
-
+	proto_node_free(targ);
 	return 0;
 }
 
@@ -109,11 +111,22 @@ int proto_send_set_layer(const char *name, int idx, int empty)
 
 int proto_send_make_gc(void)
 {
+	proto_node_t *targ;
+	const char *gcs;
+	int gci;
+
 	send_begin(&pctx, "makeGC");
 	send_open(&pctx, 0);
 	send_close(&pctx);
 	send_end(&pctx);
-	return 0;
+	targ = remote_proto_parse("MakeGC", 1);
+	if (targ == proto_error)
+		return -1;
+	gcs = targ->data.l.first_child->data.s.str;
+	gci = atoi(gcs);
+	printf("New GC: %s\n", gcs);
+	proto_node_free(targ);
+	return gci;
 }
 
 int proto_send_del_gc(int gc)
