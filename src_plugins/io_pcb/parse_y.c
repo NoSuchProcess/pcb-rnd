@@ -139,7 +139,7 @@ extern FlagType yy_pcb_flags;
 
 static char *layer_group_string;
 
-static AttributeListTypePtr attr_list;
+static pcb_attribute_list_t *attr_list;
 
 int yyerror(const char *s);
 int yylex();

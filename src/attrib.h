@@ -29,34 +29,34 @@
 #ifndef PCB_ATTRIB_H
 #define PCB_ATTRIB_H
 
-typedef struct AttributeListType AttributeListType, *AttributeListTypePtr;
+typedef struct pcb_attribute_list_s pcb_attribute_list_t;
 
-typedef struct {
+typedef struct pcb_attribute_s {
 	char *name;
 	char *value;
-} AttributeType, *AttributeTypePtr;
+} pcb_attribute_t;
 
-struct AttributeListType {
+struct pcb_attribute_list_s {
 	int Number, Max;
-	AttributeType *List;
+	pcb_attribute_t *List;
 };
 
 /* Returns NULL if the name isn't found, else the value for that named
    attribute.  */
-char *AttributeGetFromList(AttributeListType * list, const char *name);
+char *AttributeGetFromList(pcb_attribute_list_t * list, const char *name);
 /* Adds an attribute to the list.  If the attribute already exists,
    whether it's replaced or a second copy added depends on
    REPLACE.  Returns non-zero if an existing attribute was replaced.  */
-int AttributePutToList(AttributeListType * list, const char *name, const char *value, int replace);
+int AttributePutToList(pcb_attribute_list_t * list, const char *name, const char *value, int replace);
 /* Simplistic version: Takes a pointer to an object, looks up attributes in it.  */
 #define AttributeGet(OBJ,name) AttributeGetFromList (&(OBJ->Attributes), name)
 /* Simplistic version: Takes a pointer to an object, sets attributes in it.  */
 #define AttributePut(OBJ,name,value) AttributePutToList (&(OBJ->Attributes), name, value, 1)
 /* Remove an attribute by name; returns number of items removed  */
-int AttributeRemoveFromList(AttributeListType * list, const char *name);
+int AttributeRemoveFromList(pcb_attribute_list_t * list, const char *name);
 /* Simplistic version of Remove.  */
 #define AttributeRemove(OBJ, name) AttributeRemoveFromList (&(OBJ->Attributes), name)
 
-void FreeAttributeListMemory(AttributeListTypePtr list);
+void FreeAttributeListMemory(pcb_attribute_list_t *list);
 
 #endif

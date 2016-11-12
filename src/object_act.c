@@ -65,7 +65,7 @@ static pcb_element_t *find_element_by_refdes(const char *refdes)
 	return NULL;
 }
 
-static AttributeType *lookup_attr(AttributeListTypePtr list, const char *name)
+static pcb_attribute_t *lookup_attr(pcb_attribute_list_t *list, const char *name)
 {
 	int i;
 	for (i = 0; i < list->Number; i++)
@@ -74,13 +74,13 @@ static AttributeType *lookup_attr(AttributeListTypePtr list, const char *name)
 	return NULL;
 }
 
-static void delete_attr(AttributeListTypePtr list, AttributeType * attr)
+static void delete_attr(pcb_attribute_list_t *list, pcb_attribute_t * attr)
 {
 	int idx = attr - list->List;
 	if (idx < 0 || idx >= list->Number)
 		return;
 	if (list->Number - idx > 1)
-		memmove(attr, attr + 1, (list->Number - idx - 1) * sizeof(AttributeType));
+		memmove(attr, attr + 1, (list->Number - idx - 1) * sizeof(pcb_attribute_t));
 	list->Number--;
 }
 
@@ -658,7 +658,7 @@ static int ActionElementSetAttr(int argc, const char **argv, Coord x, Coord y)
 {
 	pcb_element_t *e = NULL;
 	const char *refdes, *name, *value;
-	AttributeType *attr;
+	pcb_attribute_t *attr;
 
 	if (argc < 2) {
 		AFAIL(elementsetattr);

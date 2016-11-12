@@ -1519,7 +1519,7 @@ static AttrRow *attr_row = 0;
 static int attr_num_rows = 0;
 static int attr_max_rows = 0;
 static Widget attr_dialog = NULL, f_top;
-static AttributeListType *attributes_list;
+static pcb_attribute_list_t *attributes_list;
 
 static void attributes_delete_callback(Widget w, void *v, void *cbs);
 
@@ -1714,7 +1714,7 @@ static void attributes_revert_callback(Widget w, void *v, void *cbs)
 	lesstif_attributes_revert();
 }
 
-void lesstif_attributes_dialog(const char *owner, AttributeListType * attrs_list)
+void lesstif_attributes_dialog(const char *owner, pcb_attribute_list_t * attrs_list)
 {
 	Widget bform, sw, b_ok, b_cancel, b_revert, b_new;
 	Widget sep;
@@ -1801,11 +1801,11 @@ void lesstif_attributes_dialog(const char *owner, AttributeListType * attrs_list
 				free(attributes_list->List[i].value);
 		}
 		if (attributes_list->Max < attr_num_rows) {
-			int sz = attr_num_rows * sizeof(AttributeType);
+			int sz = attr_num_rows * sizeof(pcb_attribute_t);
 			if (attributes_list->List == NULL)
-				attributes_list->List = (AttributeType *) malloc(sz);
+				attributes_list->List = (pcb_attribute_t *) malloc(sz);
 			else
-				attributes_list->List = (AttributeType *) realloc(attributes_list->List, sz);
+				attributes_list->List = (pcb_attribute_t *) realloc(attributes_list->List, sz);
 			attributes_list->Max = attr_num_rows;
 		}
 		for (i = 0; i < attr_num_rows; i++) {

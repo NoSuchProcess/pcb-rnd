@@ -99,7 +99,7 @@ struct pcb_board_s {
 	vtroutestyle_t RouteStyle;
 	LibraryType NetlistLib[NUM_NETLISTS];
 	pcb_ratspatch_line_t *NetlistPatches, *NetlistPatchLast;
-	AttributeListType Attributes;
+	pcb_attribute_list_t Attributes;
 	pcb_data_t *Data;							/* entire database */
 
 	pcb_bool is_footprint;						/* If set, the user has loaded a footprint, not a pcb. */

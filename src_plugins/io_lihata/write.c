@@ -132,7 +132,7 @@ static lht_node_t *build_board_meta(pcb_board_t *pcb)
 	return meta;
 }
 
-static lht_node_t *build_attributes(AttributeListType *lst)
+static lht_node_t *build_attributes(pcb_attribute_list_t *lst)
 {
 	int n;
 	lht_node_t *ln;

@@ -54,7 +54,7 @@ vtptr_t post_ids, post_thermal;
    objects during the load. */
 #define post_id_req(obj) vtptr_append(&post_ids, &((obj)->ID))
 
-static int parse_attributes(AttributeListType *list, lht_node_t *nd)
+static int parse_attributes(pcb_attribute_list_t *list, lht_node_t *nd)
 {
 	lht_node_t *n;
 	lht_dom_iterator_t it;

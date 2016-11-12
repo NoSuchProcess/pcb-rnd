@@ -78,7 +78,7 @@ long int CreateIDGet(void);
 	pcb_box_t		BoundingBox;	\
 	long int	ID;		\
 	FlagType	Flags; \
-	AttributeListType Attributes
+	pcb_attribute_list_t Attributes
 
 	/*  struct LibraryEntryType *net */
 

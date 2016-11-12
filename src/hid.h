@@ -446,7 +446,7 @@ struct hid_st {
 
 	HID_DRC_GUI *drc_gui;
 
-	void (*edit_attributes) (const char *owner, AttributeListType * attrlist_);
+	void (*edit_attributes) (const char *owner, pcb_attribute_list_t * attrlist_);
 
 	/* Debug drawing support. These APIs must be implemented (non NULL),
 	 * but they do not have to be functional. request_debug_draw can

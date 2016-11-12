@@ -57,7 +57,7 @@ do { \
 	pcb_props_add(((map_ctx_t *)ctx)->props, name, type2TYPE_ ## type, v); \
 } while(0)
 
-static void map_attr(void *ctx, const AttributeListType *list)
+static void map_attr(void *ctx, const pcb_attribute_list_t *list)
 {
 	int i, bl = 0;
 	char small[256];
@@ -199,7 +199,7 @@ typedef struct set_ctx_s {
 	int set_cnt;
 } set_ctx_t;
 
-static void set_attr(set_ctx_t *st, AttributeListType *list)
+static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
 {
 	const char *key = st->name+2;
 	const char *orig = AttributeGetFromList(list, key);
@@ -479,7 +479,7 @@ typedef struct del_ctx_s {
 	int del_cnt;
 } del_ctx_t;
 
-static void del_attr(void *ctx, AttributeListType *list)
+static void del_attr(void *ctx, pcb_attribute_list_t *list)
 {
 	del_ctx_t *st = (del_ctx_t *)ctx;
 	if (AttributeRemoveFromList(list, st->key+2))

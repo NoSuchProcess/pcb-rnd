@@ -52,7 +52,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 	pcb_bool On;                   /* visible flag */
 	const char *Color;             /* color */
 	const char *SelectedColor;
-	AttributeListType Attributes;
+	pcb_attribute_list_t Attributes;
 	int no_drc;                    /* whether to ignore the layer when checking the design rules */
 };
 

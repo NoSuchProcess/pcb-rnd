@@ -31,7 +31,7 @@
 #include "compat_misc.h"
 #include "attrib.h"
 
-char *AttributeGetFromList(AttributeListType * list, const char *name)
+char *AttributeGetFromList(pcb_attribute_list_t * list, const char *name)
 {
 	int i;
 	for (i = 0; i < list->Number; i++)
@@ -40,7 +40,7 @@ char *AttributeGetFromList(AttributeListType * list, const char *name)
 	return NULL;
 }
 
-int AttributePutToList(AttributeListType * list, const char *name, const char *value, int replace)
+int AttributePutToList(pcb_attribute_list_t * list, const char *name, const char *value, int replace)
 {
 	int i;
 
@@ -59,7 +59,7 @@ int AttributePutToList(AttributeListType * list, const char *name, const char *v
 	   list.  See if there's room.  */
 	if (list->Number >= list->Max) {
 		list->Max += 10;
-		list->List = (AttributeType *) realloc(list->List, list->Max * sizeof(AttributeType));
+		list->List = (pcb_attribute_t *) realloc(list->List, list->Max * sizeof(pcb_attribute_t));
 	}
 
 	/* Now add the new attribute.  */
@@ -70,7 +70,7 @@ int AttributePutToList(AttributeListType * list, const char *name, const char *v
 	return 0;
 }
 
-int AttributeRemoveFromList(AttributeListType * list, const char *name)
+int AttributeRemoveFromList(pcb_attribute_list_t * list, const char *name)
 {
 	int i, j, found = 0;
 	for (i = 0; i < list->Number; i++)
@@ -88,7 +88,7 @@ int AttributeRemoveFromList(AttributeListType * list, const char *name)
 /* ---------------------------------------------------------------------------
  * frees memory used by an attribute list
  */
-void FreeAttributeListMemory(AttributeListTypePtr list)
+void FreeAttributeListMemory(pcb_attribute_list_t *list)
 {
 	int i;
 

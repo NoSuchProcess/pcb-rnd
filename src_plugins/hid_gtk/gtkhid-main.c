@@ -818,7 +818,7 @@ typedef struct {
 static AttrRow *attr_row = 0;
 static int attr_num_rows = 0;
 static int attr_max_rows = 0;
-static AttributeListType *attributes_list;
+static pcb_attribute_list_t *attributes_list;
 static GtkWidget *attributes_dialog, *attr_table;
 
 static void attributes_delete_callback(GtkWidget * w, void *v);
@@ -912,7 +912,7 @@ static void attributes_delete_callback(GtkWidget * w, void *v)
 	ghid_attr_set_table_size();
 }
 
-static void ghid_attributes(const char *owner, AttributeListType * attrs)
+static void ghid_attributes(const char *owner, pcb_attribute_list_t * attrs)
 {
 	GtkWidget *content_area;
 	int response;
@@ -954,11 +954,11 @@ static void ghid_attributes(const char *owner, AttributeListType * attrs)
 					free(attributes_list->List[i].value);
 			}
 			if (attributes_list->Max < attr_num_rows) {
-				int sz = attr_num_rows * sizeof(AttributeType);
+				int sz = attr_num_rows * sizeof(pcb_attribute_t);
 				if (attributes_list->List == NULL)
-					attributes_list->List = (AttributeType *) malloc(sz);
+					attributes_list->List = (pcb_attribute_t *) malloc(sz);
 				else
-					attributes_list->List = (AttributeType *) realloc(attributes_list->List, sz);
+					attributes_list->List = (pcb_attribute_t *) realloc(attributes_list->List, sz);
 				attributes_list->Max = attr_num_rows;
 			}
 			for (i = 0; i < attr_num_rows; i++) {
