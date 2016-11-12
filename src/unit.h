@@ -33,7 +33,7 @@
 /* typedef ... Coord;				pcb base unit, typedef'd in config.h */
 typedef double Angle;						/* degrees */
 
-enum e_allow {
+enum pcb_allow_e {
 	NO_PRINT = 0,									/* suffixes we can read but not print (i.e., "inch") */
 	ALLOW_NM = 1,
 	ALLOW_UM = 2,
@@ -73,7 +73,7 @@ struct unit {
 	char printf_code;
 	double scale_factor;
 	enum e_family family;
-	enum e_allow allow;
+	enum pcb_allow_e allow;
 	int default_prec;
 	/* used for gui spinboxes */
 	double step_tiny;
@@ -111,7 +111,7 @@ extern Unit Units[];
 extern Increments increments[];
 
 const Unit *get_unit_struct(const char *suffix);
-const Unit *get_unit_struct_by_allow(enum e_allow allow);
+const Unit *get_unit_struct_by_allow(enum pcb_allow_e allow);
 const Unit *get_unit_list(void);
 const Unit *get_unit_by_idx(int idx);
 int get_n_units(void);

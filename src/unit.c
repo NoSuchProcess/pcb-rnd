@@ -186,7 +186,7 @@ const Unit *get_unit_struct(const char *suffix)
 	return NULL;
 }
 
-const Unit *get_unit_struct_by_allow(enum e_allow allow)
+const Unit *get_unit_struct_by_allow(enum pcb_allow_e allow)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i)

@@ -142,7 +142,7 @@ static int inline append_suffix(gds_t *dest, enum e_suffix suffix_type, const ch
  *
  * \return 0 on success, -1 on error
  */
-static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t *printf_spec_, enum e_allow allow,
+static int CoordsToString(gds_t *dest, Coord coord[], int n_coords, const gds_t *printf_spec_, enum pcb_allow_e allow,
 														 enum e_suffix suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
@@ -267,11 +267,11 @@ err:;
 typedef struct {
 	int           score_factor;
 
-	enum e_allow  base;
+	enum pcb_allow_e  base;
 	double        down_limit;
-	enum e_allow  down;
+	enum pcb_allow_e  down;
 	double        up_limit;
-	enum e_allow  up;
+	enum pcb_allow_e  up;
 
 	/* persistent, calculated once */
 	const Unit    *base_unit, *down_unit, *up_unit;
@@ -399,7 +399,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 	char tmp[128]; /* large enough for rendering a long long int */
 	int tmplen, retval = -1, slot_recursion = 0;
 	char *free_fmt = NULL;
-	enum e_allow mask = ALLOW_ALL;
+	enum pcb_allow_e mask = ALLOW_ALL;
 
 	gds_init(&spec);
 
@@ -631,7 +631,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case '+':
-					mask = va_arg(args, enum e_allow);
+					mask = va_arg(args, enum pcb_allow_e);
 					break;
 				default:
 					{
