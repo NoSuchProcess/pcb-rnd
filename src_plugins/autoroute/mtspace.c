@@ -76,7 +76,7 @@ struct vetting {
 	heap_or_vector hi_candidate;
 	pcb_coord_t radius;
 	pcb_coord_t clearance;
-	Cheappcb_point_t desired;
+	pcb_cheap_point_t desired;
 };
 
 #define SPECIAL 823157
@@ -179,15 +179,15 @@ struct query_closure {
 	pcb_box_t *cbox;
 	heap_or_vector checking;
 	heap_or_vector touching;
-	Cheappcb_point_t *desired;
+	pcb_cheap_point_t *desired;
 	pcb_coord_t radius, clearance;
 	jmp_buf env;
 	pcb_bool touch_is_vec;
 };
 
-static inline void heap_append(heap_t * heap, Cheappcb_point_t * desired, pcb_box_t * newone)
+static inline void heap_append(heap_t * heap, pcb_cheap_point_t * desired, pcb_box_t * newone)
 {
-	Cheappcb_point_t p = *desired;
+	pcb_cheap_point_t p = *desired;
 	assert(desired);
 	closest_point_in_box(&p, newone);
 	heap_insert(heap, PCB_ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
@@ -374,7 +374,7 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const pcb_box_t * region,
 															vetting_t * work,
 															vector_t * free_space_vec,
 															vector_t * lo_conflict_space_vec,
-															vector_t * hi_conflict_space_vec, pcb_bool is_odd, pcb_bool with_conflicts, Cheappcb_point_t * desired)
+															vector_t * hi_conflict_space_vec, pcb_bool is_odd, pcb_bool with_conflicts, pcb_cheap_point_t * desired)
 {
 	struct query_closure qc;
 

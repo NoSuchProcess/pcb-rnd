@@ -274,7 +274,7 @@ typedef struct routebox {
 	} flags;
 	/* indicate the direction an expansion box came from */
 	cost_t cost;
-	Cheappcb_point_t cost_point;
+	pcb_cheap_point_t cost_point;
 	/* reference count for homeless routeboxes; free when refcount==0 */
 	int refcount;
 	/* when routing with conflicts, we keep a record of what we're
@@ -316,7 +316,7 @@ typedef struct routedata {
 
 typedef struct edge_struct {
 	routebox_t *rb;								/* path expansion edges are real routeboxen. */
-	Cheappcb_point_t cost_point;
+	pcb_cheap_point_t cost_point;
 	cost_t cost_to_point;					/* from source */
 	cost_t cost;									/* cached edge cost */
 	routebox_t *mincost_target;		/* minimum cost from cost_point to any target */
@@ -569,7 +569,7 @@ static inline cost_t box_area(const pcb_box_t b)
 	return ans * (b.Y2 - b.Y1);
 }
 
-static inline Cheappcb_point_t closest_point_in_routebox(const Cheappcb_point_t * from, const routebox_t * rb)
+static inline pcb_cheap_point_t closest_point_in_routebox(const pcb_cheap_point_t * from, const routebox_t * rb)
 {
 	return closest_point_in_box(from, &rb->sbox);
 }
@@ -1204,7 +1204,7 @@ static void ResetSubnet(routebox_t * net)
 	END_LOOP;
 }
 
-static inline cost_t cost_to_point_on_layer(const Cheappcb_point_t * p1, const Cheappcb_point_t * p2, pcb_cardinal_t point_layer)
+static inline cost_t cost_to_point_on_layer(const pcb_cheap_point_t * p1, const pcb_cheap_point_t * p2, pcb_cardinal_t point_layer)
 {
 	cost_t x_dist = p1->X - p2->X, y_dist = p1->Y - p2->Y, r;
 	x_dist *= x_cost[point_layer];
@@ -1216,7 +1216,7 @@ static inline cost_t cost_to_point_on_layer(const Cheappcb_point_t * p1, const C
 	return r;
 }
 
-static cost_t cost_to_point(const Cheappcb_point_t * p1, pcb_cardinal_t point_layer1, const Cheappcb_point_t * p2, pcb_cardinal_t point_layer2)
+static cost_t cost_to_point(const pcb_cheap_point_t * p1, pcb_cardinal_t point_layer1, const pcb_cheap_point_t * p2, pcb_cardinal_t point_layer2)
 {
 	cost_t r = cost_to_point_on_layer(p1, p2, point_layer1);
 	/* apply via cost penalty if layers differ */
@@ -1228,9 +1228,9 @@ static cost_t cost_to_point(const Cheappcb_point_t * p1, pcb_cardinal_t point_la
 /* return the minimum *cost* from a point to a box on any layer.
  * It's safe to return a smaller than minimum cost
  */
-static cost_t cost_to_layerless_box(const Cheappcb_point_t * p, pcb_cardinal_t point_layer, const pcb_box_t * b)
+static cost_t cost_to_layerless_box(const pcb_cheap_point_t * p, pcb_cardinal_t point_layer, const pcb_box_t * b)
 {
-	Cheappcb_point_t p2 = closest_point_in_box(p, b);
+	pcb_cheap_point_t p2 = closest_point_in_box(p, b);
 	register cost_t c1, c2;
 
 	c1 = p2.X - p->X;
@@ -1245,7 +1245,7 @@ static cost_t cost_to_layerless_box(const Cheappcb_point_t * p, pcb_cardinal_t p
 }
 
 /* get to actual pins/pad target coordinates */
-pcb_bool TargetPoint(Cheappcb_point_t * nextpoint, const routebox_t * target)
+pcb_bool TargetPoint(pcb_cheap_point_t * nextpoint, const routebox_t * target)
 {
 	if (target->type == PIN) {
 		nextpoint->X = target->parent.pin->X;
@@ -1274,10 +1274,10 @@ pcb_bool TargetPoint(Cheappcb_point_t * nextpoint, const routebox_t * target)
  * via costs if the route box is on a different layer.
  * assume routbox is bloated unless it is an expansion area
  */
-static cost_t cost_to_routebox(const Cheappcb_point_t * p, pcb_cardinal_t point_layer, const routebox_t * rb)
+static cost_t cost_to_routebox(const pcb_cheap_point_t * p, pcb_cardinal_t point_layer, const routebox_t * rb)
 {
 	register cost_t trial = 0;
-	Cheappcb_point_t p2 = closest_point_in_routebox(p, rb);
+	pcb_cheap_point_t p2 = closest_point_in_routebox(p, rb);
 	if (!usedGroup[point_layer] || !usedGroup[rb->group])
 		trial = AutoRouteParameters.NewLayerPenalty;
 	if ((p2.X - p->X) * (p2.Y - p->Y) != 0)
@@ -1468,7 +1468,7 @@ static routebox_t *nonhomeless_parent(routebox_t * rb)
 /* some routines to find the minimum *cost* from a cost point to
  * a target (any target) */
 struct mincost_target_closure {
-	const Cheappcb_point_t *CostPoint;
+	const pcb_cheap_point_t *CostPoint;
 	pcb_cardinal_t CostPointLayer;
 	routebox_t *nearest;
 	cost_t nearest_cost;
@@ -1505,7 +1505,7 @@ static pcb_r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
 
 /* target_guess is our guess at what the nearest target is, or NULL if we
  * just plum don't have a clue. */
-static routebox_t *mincost_target_to_point(const Cheappcb_point_t * CostPoint,
+static routebox_t *mincost_target_to_point(const pcb_cheap_point_t * CostPoint,
 																					 pcb_cardinal_t CostPointLayer, pcb_rtree_t * targets, routebox_t * target_guess)
 {
 	struct mincost_target_closure mtc;
@@ -1570,7 +1570,7 @@ static edge_t *CreateEdge2(routebox_t * rb, direction_t expand_dir,
 													 edge_t * previous_edge, pcb_rtree_t * targets, routebox_t * guess)
 {
 	pcb_box_t thisbox;
-	Cheappcb_point_t thiscost, prevcost;
+	pcb_cheap_point_t thiscost, prevcost;
 	cost_t d;
 
 	assert(rb && previous_edge);
@@ -1595,7 +1595,7 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
 														 conflict_t to_site_conflict, conflict_t through_site_conflict, pcb_rtree_t * targets)
 {
 	routebox_t *rb;
-	Cheappcb_point_t costpoint;
+	pcb_cheap_point_t costpoint;
 	cost_t d;
 	edge_t *ne;
 	cost_t scale[3];
@@ -1615,7 +1615,7 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
 	/* for planes, choose a point near the target */
 	if (previous_edge->flags.in_plane) {
 		routebox_t *target;
-		Cheappcb_point_t pnt;
+		pcb_cheap_point_t pnt;
 		/* find a target near this via box */
 		pnt.X = CENTER_X(*area);
 		pnt.Y = CENTER_Y(*area);
@@ -1661,7 +1661,7 @@ static edge_t *CreateEdgeWithConflicts(const pcb_box_t * interior_edge,
 																			 cost_t cost_penalty_to_box, pcb_rtree_t * targets)
 {
 	routebox_t *rb;
-	Cheappcb_point_t costpoint;
+	pcb_cheap_point_t costpoint;
 	cost_t d;
 	edge_t *ne;
 	assert(interior_edge && container && previous_edge && targets);
@@ -2278,7 +2278,7 @@ moveable_edge(vector_t * result, const pcb_box_t * box, direction_t dir,
 		 * these boxes are bigger, so move close to the target
 		 */
 		if (dir == NE || dir == SE || dir == SW || dir == NW) {
-			Cheappcb_point_t p;
+			pcb_cheap_point_t p;
 			p = closest_point_in_box(&nrb->cost_point, &e->mincost_target->sbox);
 			p = closest_point_in_box(&p, &b);
 			nrb->cost += cost_to_point_on_layer(&p, &nrb->cost_point, nrb->group);
@@ -3012,10 +3012,10 @@ RD_DrawLine(routedata_t * rd,
 static pcb_bool
 RD_DrawManhattanLine(routedata_t * rd,
 										 const pcb_box_t * box1, const pcb_box_t * box2,
-										 Cheappcb_point_t start, Cheappcb_point_t end,
+										 pcb_cheap_point_t start, pcb_cheap_point_t end,
 										 pcb_coord_t halfthick, pcb_cardinal_t group, routebox_t * subnet, pcb_bool is_bad, pcb_bool last_was_x)
 {
-	Cheappcb_point_t knee = start;
+	pcb_cheap_point_t knee = start;
 	if (end.X == start.X) {
 		RD_DrawLine(rd, start.X, start.Y, end.X, end.Y, halfthick, group, subnet, is_bad, pcb_false);
 		return pcb_false;
@@ -3050,7 +3050,7 @@ RD_DrawManhattanLine(routedata_t * rd,
 	else {
 		/* draw 45-degree path across knee */
 		pcb_coord_t len45 = MIN(PCB_ABS(start.X - end.X), PCB_ABS(start.Y - end.Y));
-		Cheappcb_point_t kneestart = knee, kneeend = knee;
+		pcb_cheap_point_t kneestart = knee, kneeend = knee;
 		if (kneestart.X == start.X)
 			kneestart.Y += (kneestart.Y > start.Y) ? -len45 : len45;
 		else
@@ -3068,7 +3068,7 @@ RD_DrawManhattanLine(routedata_t * rd,
 
 /* for smoothing, don't pack traces to min clearance gratuitously */
 #if 0
-static void add_clearance(Cheappcb_point_t * nextpoint, const pcb_box_t * b)
+static void add_clearance(pcb_cheap_point_t * nextpoint, const pcb_box_t * b)
 {
 	if (nextpoint->X == b->X1) {
 		if (nextpoint->X + AutoRouteParameters.style->Clearance < (b->X1 + b->X2) / 2)
@@ -3114,7 +3114,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 	pcb_bool last_x = pcb_false;
 	pcb_coord_t halfwidth = HALF_THICK(AutoRouteParameters.style->Thick);
 	pcb_coord_t radius = HALF_THICK(AutoRouteParameters.style->Diameter);
-	Cheappcb_point_t lastpoint, nextpoint;
+	pcb_cheap_point_t lastpoint, nextpoint;
 	routebox_t *lastpath;
 	pcb_box_t b;
 
@@ -3649,7 +3649,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 	{
 		/* we need the test for 'source' because this box may be nonstraight */
 		if (p->flags.source && is_layer_group_active[p->group]) {
-			Cheappcb_point_t cp;
+			pcb_cheap_point_t cp;
 			edge_t *e;
 			pcb_box_t b = shrink_routebox(p);
 
