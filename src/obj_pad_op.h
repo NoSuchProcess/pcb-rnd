@@ -28,14 +28,14 @@
 
 #include "operation.h"
 
-void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad);
-void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad);
-void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad);
-void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad);
-void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad);
-void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad);
-void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad);
-void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad);
+void *ChangePadSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
+void *ChangePadClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
+void *ChangePadName(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
+void *ChangePadNum(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
+void *ChangePadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
+void *SetPadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
+void *ClrPadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
+void *ChangePadMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad);
 
 
 

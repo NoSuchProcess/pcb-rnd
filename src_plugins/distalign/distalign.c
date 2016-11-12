@@ -178,7 +178,7 @@ static int keyword(const char *s)
 /* this macro produces a function in X or Y that switches on 'point' */
 #define COORD(DIR)						\
 static inline Coord		        			\
-coord ## DIR(ElementType *element, int point)			\
+coord ## DIR(pcb_element_t *element, int point)			\
 {								\
 	switch (point) {					\
 	case K_Marks:						\
@@ -201,7 +201,7 @@ COORD(X)
 	COORD(Y)
 
 /* return the element coordinate associated with the given internal point */
-		 static Coord coord(ElementType * element, int dir, int point)
+		 static Coord coord(pcb_element_t * element, int dir, int point)
 {
 	if (dir == K_X)
 		return coordX(element, point);
@@ -210,7 +210,7 @@ COORD(X)
 }
 
 static struct element_by_pos {
-	ElementType *element;
+	pcb_element_t *element;
 	Coord pos;
 	Coord width;
 } *elements_by_pos;
@@ -563,7 +563,7 @@ static int distribute(int argc, const char **argv, Coord x, Coord y)
 
 		/* subtract all the "widths" from the slack */
 		for (i = 0; i < nelements_by_pos; ++i) {
-			ElementType *element = elements_by_pos[i].element;
+			pcb_element_t *element = elements_by_pos[i].element;
 			/* coord doesn't care if I mix Lefts/Tops */
 			w = elements_by_pos[i].width = coord(element, dir, K_Rights) - coord(element, dir, K_Lefts);
 			/* Gaps distribution is on centers, so half of
@@ -577,7 +577,7 @@ static int distribute(int argc, const char **argv, Coord x, Coord y)
 	}
 	/* move all selected elements to the new coordinate */
 	for (i = 0; i < nelements_by_pos; ++i) {
-		ElementType *element = elements_by_pos[i].element;
+		pcb_element_t *element = elements_by_pos[i].element;
 		Coord p, q, dp, dx, dy;
 
 		/* find reference point for this element */

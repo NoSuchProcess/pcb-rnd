@@ -32,7 +32,7 @@ static pcb_bool PrepareNextLoop(FILE * FP);
 /* ---------------------------------------------------------------------------
  * prints all unused pins of an element to file FP
  */
-static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(ElementTypePtr Element, FILE * FP)
+static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element, FILE * FP)
 {
 	pcb_bool first = pcb_true;
 	pcb_cardinal_t number;
@@ -157,7 +157,7 @@ static pcb_bool PrepareNextLoop(FILE * FP)
  * The result is written to file FP
  * Returns pcb_true if operation was aborted
  */
-static pcb_bool PrintElementConnections(ElementTypePtr Element, FILE * FP, pcb_bool AndDraw)
+static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_bool AndDraw)
 {
 	PrintConnectionElementName(Element, FP);
 
@@ -241,7 +241,7 @@ void LookupUnusedPins(FILE * FP)
 /* ---------------------------------------------------------------------------
  * find all connections to pins within one element
  */
-void LookupElementConnections(ElementTypePtr Element, FILE * FP)
+void LookupElementConnections(pcb_element_t *Element, FILE * FP)
 {
 	/* reset all currently marked connections */
 	User = pcb_true;

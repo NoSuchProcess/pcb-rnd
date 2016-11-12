@@ -28,7 +28,7 @@
 /* List of Elements */
 #define TDL(x)      elementlist_ ## x
 #define TDL_LIST_T  elementlist_t
-#define TDL_ITEM_T  ElementType
+#define TDL_ITEM_T  pcb_element_t
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC
@@ -41,10 +41,10 @@
 
 /* Calculate a hash value using the content of the element. The hash value
    represents the actual content of an element */
-unsigned int pcb_element_hash(const ElementType *e);
+unsigned int pcb_element_hash(const pcb_element_t *e);
 
 /* Compare two elements and return 1 if they contain the same objects. */
-int pcb_element_eq(const ElementType *e1, const ElementType *e2);
+int pcb_element_eq(const pcb_element_t *e1, const pcb_element_t *e2);
 
 /* Create a new local variable to be used for deduplication */
 #define elementlist_dedup_initializer(state) htep_t *state = NULL;

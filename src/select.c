@@ -53,7 +53,7 @@
 
 #include <genregex/regex_sei.h>
 
-void pcb_select_element(ElementType *element, pcb_change_flag_t how, int redraw)
+void pcb_select_element(pcb_element_t *element, pcb_change_flag_t how, int redraw)
 {
 	/* select all pins and names of the element */
 	PIN_LOOP(element);
@@ -88,7 +88,7 @@ void pcb_select_element(ElementType *element, pcb_change_flag_t how, int redraw)
 	}
 }
 
-void pcb_select_element_name(ElementType *element, pcb_change_flag_t how, int redraw)
+void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int redraw)
 {
 	/* select all names of the element */
 	ELEMENTTEXT_LOOP(element);
@@ -193,11 +193,11 @@ pcb_bool SelectObject(void)
 		break;
 
 	case PCB_TYPE_ELEMENT_NAME:
-		pcb_select_element_name((ElementType *) ptr1, PCB_CHGFLG_TOGGLE, 1);
+		pcb_select_element_name((pcb_element_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
 		break;
 
 	case PCB_TYPE_ELEMENT:
-		pcb_select_element((ElementType *) ptr1, PCB_CHGFLG_TOGGLE, 1);
+		pcb_select_element((pcb_element_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
 		break;
 	}
 	Draw();
@@ -524,22 +524,22 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_ELEMENT:
 		if (F->Element)
-			return (F->Element(ctx, (ElementTypePtr) Ptr1));
+			return (F->Element(ctx, (pcb_element_t *) Ptr1));
 		break;
 
 	case PCB_TYPE_PIN:
 		if (F->Pin)
-			return (F->Pin(ctx, (ElementTypePtr) Ptr1, (pcb_pin_t *) Ptr2));
+			return (F->Pin(ctx, (pcb_element_t *) Ptr1, (pcb_pin_t *) Ptr2));
 		break;
 
 	case PCB_TYPE_PAD:
 		if (F->Pad)
-			return (F->Pad(ctx, (ElementTypePtr) Ptr1, (pcb_pad_t *) Ptr2));
+			return (F->Pad(ctx, (pcb_element_t *) Ptr1, (pcb_pad_t *) Ptr2));
 		break;
 
 	case PCB_TYPE_ELEMENT_NAME:
 		if (F->ElementName)
-			return (F->ElementName(ctx, (ElementTypePtr) Ptr1));
+			return (F->ElementName(ctx, (pcb_element_t *) Ptr1));
 		break;
 
 	case PCB_TYPE_RATLINE:

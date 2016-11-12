@@ -402,7 +402,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	switch (Type) {
 	case PCB_TYPE_ELEMENT:
 		{
-			ElementTypePtr element = (ElementTypePtr) Ptr1;
+			pcb_element_t *element = (pcb_element_t *) Ptr1;
 
 			/* square pins are handled as if they are round. Speed
 			 * and readability is more important then the few %
@@ -453,7 +453,7 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	switch (Type) {
 	case PCB_TYPE_ELEMENT:
 		{
-			ElementTypePtr element = (ElementTypePtr) Ptr1;
+			pcb_element_t *element = (pcb_element_t *) Ptr1;
 
 			PIN_LOOP(element);
 			{

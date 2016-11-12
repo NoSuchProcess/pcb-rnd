@@ -33,16 +33,16 @@ r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl);
 r_dir_t draw_element_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void draw_element_package(ElementType * element);
-void draw_element_name(ElementType * element);
-void draw_element_pins_and_pads(ElementType * element);
-void draw_element(ElementTypePtr element);
+void draw_element_package(pcb_element_t * element);
+void draw_element_name(pcb_element_t * element);
+void draw_element_pins_and_pads(pcb_element_t * element);
+void draw_element(pcb_element_t *element);
 
-void EraseElement(ElementTypePtr Element);
-void EraseElementPinsAndPads(ElementTypePtr Element);
-void EraseElementName(ElementTypePtr Element);
+void EraseElement(pcb_element_t *Element);
+void EraseElementPinsAndPads(pcb_element_t *Element);
+void EraseElementName(pcb_element_t *Element);
 
-void DrawElement(ElementTypePtr Element);
-void DrawElementName(ElementTypePtr Element);
-void DrawElementPackage(ElementTypePtr Element);
-void DrawElementPinsAndPads(ElementTypePtr Element);
+void DrawElement(pcb_element_t *Element);
+void DrawElementName(pcb_element_t *Element);
+void DrawElementPackage(pcb_element_t *Element);
+void DrawElementPinsAndPads(pcb_element_t *Element);

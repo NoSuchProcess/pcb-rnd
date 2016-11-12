@@ -154,7 +154,7 @@ int LoadFootprint(int argc, const char **argv, Coord x, Coord y)
 	const char *name = ACTION_ARG(0);
 	const char *refdes = ACTION_ARG(1);
 	const char *value = ACTION_ARG(2);
-	ElementTypePtr e;
+	pcb_element_t *e;
 
 	if (!name)
 		AFAIL(loadfootprint);

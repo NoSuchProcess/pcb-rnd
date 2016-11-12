@@ -107,7 +107,7 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
  */
 static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
 {
-	ElementTypePtr element;
+	pcb_element_t *element;
 	gdl_iterator_t it;
 	pcb_pad_t *pad;
 	pcb_pin_t *pin;
@@ -235,7 +235,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 					if (TEST_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2))
 						Message(PCB_MSG_DEFAULT, _
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
-										NAMEONPCB_NAME((ElementTypePtr) LastPoint.ptr1),
+										NAMEONPCB_NAME((pcb_element_t *) LastPoint.ptr1),
 										(LastPoint.type ==
 										 PCB_TYPE_PIN) ? ((pcb_pin_t *) LastPoint.ptr2)->Number : ((pcb_pad_t *) LastPoint.ptr2)->Number);
 					else {
@@ -321,8 +321,8 @@ static pcb_bool CheckShorts(LibraryMenuTypePtr theNet)
 	*menu = theNet;
 	ALLPIN_LOOP(PCB->Data);
 	{
-		ElementType *e = pin->Element;
-/* TODO: should be: !TEST_FLAG(PCB_FLAG_NONETLIST, (ElementType *)pin->Element)*/
+		pcb_element_t *e = pin->Element;
+/* TODO: should be: !TEST_FLAG(PCB_FLAG_NONETLIST, (pcb_element_t *)pin->Element)*/
 		if ((TEST_FLAG(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = pcb_true;
 			if (!pin->Spare) {
@@ -352,8 +352,8 @@ static pcb_bool CheckShorts(LibraryMenuTypePtr theNet)
 	ENDALL_LOOP;
 	ALLPAD_LOOP(PCB->Data);
 	{
-		ElementType *e = pad->Element;
-/* TODO: should be: !TEST_FLAG(PCB_FLAG_NONETLIST, (ElementType *)pad->Element)*/
+		pcb_element_t *e = pad->Element;
+/* TODO: should be: !TEST_FLAG(PCB_FLAG_NONETLIST, (pcb_element_t *)pad->Element)*/
 		if ((TEST_FLAG(PCB_FLAG_DRC, pad)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = pcb_true;
 			if (!pad->Spare) {
@@ -828,7 +828,7 @@ pcb_rat_t *AddNet(void)
 		Message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
-	if (NAMEONPCB_NAME((ElementTypePtr) ptr1) == NULL || *NAMEONPCB_NAME((ElementTypePtr) ptr1) == 0) {
+	if (NAMEONPCB_NAME((pcb_element_t *) ptr1) == NULL || *NAMEONPCB_NAME((pcb_element_t *) ptr1) == 0) {
 		Message(PCB_MSG_DEFAULT, _("You must name the starting element first\n"));
 		return (NULL);
 	}
@@ -843,7 +843,7 @@ pcb_rat_t *AddNet(void)
 		Message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
-	if (NAMEONPCB_NAME((ElementTypePtr) ptr1) == NULL || *NAMEONPCB_NAME((ElementTypePtr) ptr1) == 0) {
+	if (NAMEONPCB_NAME((pcb_element_t *) ptr1) == NULL || *NAMEONPCB_NAME((pcb_element_t *) ptr1) == 0) {
 		Message(PCB_MSG_DEFAULT, _("You must name the ending element first\n"));
 		return (NULL);
 	}
@@ -919,7 +919,7 @@ char *ConnectionName(int type, void *ptr1, void *ptr2)
 	default:
 		return (NULL);
 	}
-	strcpy(name, UNKNOWN(NAMEONPCB_NAME((ElementTypePtr) ptr1)));
+	strcpy(name, UNKNOWN(NAMEONPCB_NAME((pcb_element_t *) ptr1)));
 	strcat(name, "-");
 	strcat(name, UNKNOWN(num));
 	return (name);

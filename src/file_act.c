@@ -300,13 +300,13 @@ static int ActionSaveTo(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	if (strcasecmp(function, "ElementConnections") == 0) {
-		ElementTypePtr element;
+		pcb_element_t *element;
 		void *ptrtmp;
 		FILE *fp;
 		pcb_bool result;
 
 		if ((SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
-			element = (ElementTypePtr) ptrtmp;
+			element = (pcb_element_t *) ptrtmp;
 			if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 				LookupElementConnections(element, fp);
 				fclose(fp);

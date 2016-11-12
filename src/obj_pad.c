@@ -47,7 +47,7 @@
 
 /*** allocation ***/
 /* get next slot for a pad, allocates memory if necessary */
-pcb_pad_t *GetPadMemory(ElementType * element)
+pcb_pad_t *GetPadMemory(pcb_element_t * element)
 {
 	pcb_pad_t *new_obj;
 
@@ -66,7 +66,7 @@ void RemoveFreePad(pcb_pad_t * data)
 
 /*** utility ***/
 /* creates a new pad in an element */
-pcb_pad_t *CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags)
+pcb_pad_t *CreateNewPad(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags)
 {
 	pcb_pad_t *pad = GetPadMemory(Element);
 
@@ -155,7 +155,7 @@ pcb_bool ChangePaste(pcb_pad_t *Pad)
 /*** ops ***/
 
 /* changes the size of a pad */
-void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
+void *ChangePadSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Thickness + ctx->chgsize.delta;
 
@@ -179,7 +179,7 @@ void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 }
 
 /* changes the clearance size of a pad */
-void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
+void *ChangePadClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Clearance + ctx->chgsize.delta;
 
@@ -207,7 +207,7 @@ void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pa
 }
 
 /* changes the name of a pad */
-void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
+void *ChangePadName(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 	char *old = Pad->Name;
 
@@ -223,7 +223,7 @@ void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 }
 
 /* changes the number of a pad */
-void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
+void *ChangePadNum(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 	char *old = Pad->Number;
 
@@ -239,7 +239,7 @@ void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 }
 
 /* changes the square flag of a pad */
-void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
+void *ChangePadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
@@ -255,7 +255,7 @@ void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 }
 
 /* sets the square flag of a pad */
-void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
+void *SetPadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || TEST_FLAG(PCB_FLAG_SQUARE, Pad))
@@ -266,7 +266,7 @@ void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 
 
 /* clears the square flag of a pad */
-void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
+void *ClrPadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || !TEST_FLAG(PCB_FLAG_SQUARE, Pad))
@@ -276,7 +276,7 @@ void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 }
 
 /* changes the mask size of a pad */
-void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
+void *ChangePadMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Mask + ctx->chgsize.delta;
 

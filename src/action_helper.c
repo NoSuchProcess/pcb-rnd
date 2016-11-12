@@ -79,8 +79,8 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		*y = ((TextTypePtr) ptr2)->Y;
 		break;
 	case PCB_TYPE_ELEMENT:
-		*x = ((ElementTypePtr) ptr2)->MarkX;
-		*y = ((ElementTypePtr) ptr2)->MarkY;
+		*x = ((pcb_element_t *) ptr2)->MarkX;
+		*y = ((pcb_element_t *) ptr2)->MarkY;
 		break;
 	case PCB_TYPE_POLYGON:
 		*x = ((pcb_polygon_t *) ptr2)->Points[0].X;
@@ -704,7 +704,7 @@ void NotifyMode(void)
 		{
 			type = SearchScreen(Note.X, Note.Y, PCB_TYPEMASK_LOCK, &ptr1, &ptr2, &ptr3);
 			if (type == PCB_TYPE_ELEMENT) {
-				ElementTypePtr element = (ElementTypePtr) ptr2;
+				pcb_element_t *element = (pcb_element_t *) ptr2;
 
 				TOGGLE_FLAG(PCB_FLAG_LOCK, element);
 				PIN_LOOP(element);
@@ -1079,13 +1079,13 @@ void NotifyMode(void)
 	case PCB_MODE_PASTE_BUFFER:
 		{
 			TextType estr[MAX_ELEMENTNAMES];
-			ElementTypePtr e = 0;
+			pcb_element_t *e = 0;
 
 			if (gui->shift_is_pressed()) {
 				int type = SearchScreen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
 																&ptr3);
 				if (type == PCB_TYPE_ELEMENT) {
-					e = (ElementTypePtr) ptr1;
+					e = (pcb_element_t *) ptr1;
 					if (e) {
 						int i;
 
@@ -1103,7 +1103,7 @@ void NotifyMode(void)
 																&ptr3);
 				if (type == PCB_TYPE_ELEMENT && ptr1) {
 					int i, save_n;
-					e = (ElementTypePtr) ptr1;
+					e = (pcb_element_t *) ptr1;
 
 					save_n = NAME_INDEX();
 

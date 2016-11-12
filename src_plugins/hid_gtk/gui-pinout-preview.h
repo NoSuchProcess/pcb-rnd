@@ -47,7 +47,7 @@ struct _GhidPinoutPreviewClass {
 struct _GhidPinoutPreview {
 	GtkDrawingArea parent_instance;
 
-	ElementType element;					/* element data to display */
+	pcb_element_t element;					/* element data to display */
 	gint x_max, y_max;
 	gint w_pixels, h_pixels;			/* natural size of element preview */
 };
@@ -55,7 +55,7 @@ struct _GhidPinoutPreview {
 
 GType ghid_pinout_preview_get_type(void);
 
-GtkWidget *ghid_pinout_preview_new(ElementType * element);
+GtkWidget *ghid_pinout_preview_new(pcb_element_t * element);
 void ghid_pinout_preview_get_natural_size(GhidPinoutPreview * pinout, int *width, int *height);
 
 #endif /* PCB_HID_GTK_GUI_PINOUT_PREVIEW_H */

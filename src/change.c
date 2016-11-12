@@ -1227,7 +1227,7 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 		break;
 
 	case PCB_TYPE_ELEMENT:
-		name = gui->prompt_for(_("Elementname:"), EMPTY(ELEMENT_NAME(PCB, (ElementTypePtr) Ptr2)));
+		name = gui->prompt_for(_("Elementname:"), EMPTY(ELEMENT_NAME(PCB, (pcb_element_t *) Ptr2)));
 		break;
 	}
 	if (name) {

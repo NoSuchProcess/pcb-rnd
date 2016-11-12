@@ -75,7 +75,7 @@
 const char			*yyfilename;	/* in this file */
 pcb_board_t *	yyPCB;			/* used by parser */
 pcb_data_t *	yyData;
-ElementTypePtr		yyElement;
+pcb_element_t *	yyElement;
 pcb_font_t *	yyFont;
 conf_role_t yy_settings_dest;
 FlagType yy_pcb_flags;

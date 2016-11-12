@@ -27,6 +27,6 @@
 #include "global_typedefs.h"
 
 extern int (*stub_vendorDrillMap)(int);
-extern pcb_bool (*stub_vendorIsElementMappable)(ElementTypePtr);
+extern pcb_bool (*stub_vendorIsElementMappable)(pcb_element_t *);
 
 #endif /* __VENDOR_H__ */

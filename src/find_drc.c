@@ -168,7 +168,7 @@ static void LocateError(Coord * x, Coord * y)
 		}
 	case PCB_TYPE_ELEMENT:
 		{
-			ElementTypePtr element = (ElementTypePtr) thing_ptr3;
+			pcb_element_t *element = (pcb_element_t *) thing_ptr3;
 			*x = element->MarkX;
 			*y = element->MarkY;
 			break;

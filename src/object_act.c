@@ -45,9 +45,9 @@
 
 /* --------------------------------------------------------------------------- */
 
-static ElementType *element_cache = NULL;
+static pcb_element_t *element_cache = NULL;
 
-static ElementType *find_element_by_refdes(const char *refdes)
+static pcb_element_t *find_element_by_refdes(const char *refdes)
 {
 	if (element_cache && NAMEONPCB_NAME(element_cache)
 			&& strcmp(NAMEONPCB_NAME(element_cache), refdes) == 0)
@@ -146,7 +146,7 @@ static int ActionAttributes(int argc, const char **argv, Coord x, Coord y)
 	case F_Element:
 		{
 			int n_found = 0;
-			ElementType *e = NULL;
+			pcb_element_t *e = NULL;
 			ELEMENT_LOOP(PCB->Data);
 			{
 				if (TEST_FLAG(PCB_FLAG_SELECTED, element)) {
@@ -163,7 +163,7 @@ static int ActionAttributes(int argc, const char **argv, Coord x, Coord y)
 				void *ptrtmp;
 				gui->get_coords(_("Click on an element"), &x, &y);
 				if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
-					e = (ElementTypePtr) ptrtmp;
+					e = (pcb_element_t *) ptrtmp;
 				else {
 					Message(PCB_MSG_DEFAULT, _("No element found there\n"));
 					return 1;
@@ -321,7 +321,7 @@ other, not their absolute positions on the board.
 static int ActionFlip(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function = ACTION_ARG(0);
-	ElementTypePtr element;
+	pcb_element_t *element;
 	void *ptrtmp;
 	int err = 0;
 
@@ -329,7 +329,7 @@ static int ActionFlip(int argc, const char **argv, Coord x, Coord y)
 		switch (funchash_get(function, NULL)) {
 		case F_Object:
 			if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
-				element = (ElementTypePtr) ptrtmp;
+				element = (pcb_element_t *) ptrtmp;
 				ChangeElementSide(element, 2 * Crosshair.Y - PCB->MaxHeight);
 				IncrementUndoSerialNumber();
 				Draw();
@@ -480,7 +480,7 @@ static int parse_layout_attribute_units(const char *name, int def)
 
 static int ActionElementList(int argc, const char **argv, Coord x, Coord y)
 {
-	ElementType *e = NULL;
+	pcb_element_t *e = NULL;
 	const char *refdes, *value, *footprint;
 	const char *args[3];
 	const char *function = argv[0];
@@ -588,7 +588,7 @@ static int ActionElementList(int argc, const char **argv, Coord x, Coord y)
 #endif
 		int er, pr, i;
 		Coord mx, my;
-		ElementType *pe;
+		pcb_element_t *pe;
 
 		/* Different footprint, we need to swap them out.  */
 		if (LoadFootprint(argc, args, x, y)) {
@@ -656,7 +656,7 @@ not specified, the given attribute is removed if present.
 
 static int ActionElementSetAttr(int argc, const char **argv, Coord x, Coord y)
 {
-	ElementType *e = NULL;
+	pcb_element_t *e = NULL;
 	const char *refdes, *name, *value;
 	AttributeType *attr;
 

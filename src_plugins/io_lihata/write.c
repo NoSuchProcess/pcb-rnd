@@ -375,7 +375,7 @@ static lht_node_t *build_pcb_text(const char *role, TextType *text)
 	return obj;
 }
 
-static lht_node_t *build_element(ElementType *elem)
+static lht_node_t *build_element(pcb_element_t *elem)
 {
 	char buff[128];
 	pcb_line_t *li;
@@ -485,7 +485,7 @@ static lht_node_t *build_data(pcb_data_t *data)
 {
 	lht_node_t *grp, *ndt;
 	pcb_pin_t *pi;
-	ElementType *el;
+	pcb_element_t *el;
 	gdl_iterator_t it;
 	pcb_rat_t *line;
 

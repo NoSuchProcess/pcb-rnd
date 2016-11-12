@@ -39,14 +39,14 @@
 /*
  * some local prototypes
  */
-static void FillDrill(DrillTypePtr, ElementTypePtr, pcb_pin_t *);
-static void InitializeDrill(DrillTypePtr, pcb_pin_t *, ElementTypePtr);
+static void FillDrill(DrillTypePtr, pcb_element_t *, pcb_pin_t *);
+static void InitializeDrill(DrillTypePtr, pcb_pin_t *, pcb_element_t *);
 
 
-static void FillDrill(DrillTypePtr Drill, ElementTypePtr Element, pcb_pin_t *Pin)
+static void FillDrill(DrillTypePtr Drill, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	pcb_cardinal_t n;
-	ElementTypeHandle ptr;
+	pcb_element_t **ptr;
 	pcb_pin_t ** pin;
 
 	pin = GetDrillPinMemory(Drill);
@@ -67,7 +67,7 @@ static void FillDrill(DrillTypePtr Drill, ElementTypePtr Element, pcb_pin_t *Pin
 		Drill->UnplatedCount++;
 }
 
-static void InitializeDrill(DrillTypePtr drill, pcb_pin_t *pin, ElementTypePtr element)
+static void InitializeDrill(DrillTypePtr drill, pcb_pin_t *pin, pcb_element_t *element)
 {
 	void *ptr;
 
@@ -85,7 +85,7 @@ static void InitializeDrill(DrillTypePtr drill, pcb_pin_t *pin, ElementTypePtr e
 	*((pcb_pin_t **) ptr) = pin;
 	if (element) {
 		ptr = (void *) GetDrillElementMemory(drill);
-		*((ElementTypeHandle) ptr) = element;
+		*((pcb_element_t **) ptr) = element;
 		drill->PinCount = 1;
 	}
 	else
@@ -200,7 +200,7 @@ void RoundDrillInfo(DrillInfoTypePtr d, int roundto)
 
 			d->Drill[i].ElementMax = d->Drill[i].ElementN + d->Drill[i + 1].ElementN;
 			if (d->Drill[i].ElementMax) {
-				d->Drill[i].Element = (ElementTypePtr *) realloc(d->Drill[i].Element, d->Drill[i].ElementMax * sizeof(ElementTypePtr));
+				d->Drill[i].Element = (pcb_element_t **) realloc(d->Drill[i].Element, d->Drill[i].ElementMax * sizeof(pcb_element_t *));
 
 				for (ei = 0; ei < d->Drill[i + 1].ElementN; ei++) {
 					for (ej = 0; ej < d->Drill[i].ElementN; ej++)
@@ -288,18 +288,18 @@ pcb_pin_t ** GetDrillPinMemory(DrillTypePtr Drill)
 /* ---------------------------------------------------------------------------
  * get next slot for a DrillElement, allocates memory if necessary
  */
-ElementTypeHandle GetDrillElementMemory(DrillTypePtr Drill)
+pcb_element_t **GetDrillElementMemory(DrillTypePtr Drill)
 {
-	ElementTypePtr *element;
+	pcb_element_t **element;
 
 	element = Drill->Element;
 
 	/* realloc new memory if necessary and clear it */
 	if (Drill->ElementN >= Drill->ElementMax) {
 		Drill->ElementMax += STEP_ELEMENT;
-		element = (ElementTypePtr *) realloc(element, Drill->ElementMax * sizeof(ElementTypeHandle));
+		element = (pcb_element_t **) realloc(element, Drill->ElementMax * sizeof(pcb_element_t **));
 		Drill->Element = element;
-		memset(element + Drill->ElementN, 0, STEP_ELEMENT * sizeof(ElementTypeHandle));
+		memset(element + Drill->ElementN, 0, STEP_ELEMENT * sizeof(pcb_element_t **));
 	}
 	return (element + Drill->ElementN++);
 }

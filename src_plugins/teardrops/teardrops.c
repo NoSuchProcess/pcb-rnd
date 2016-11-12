@@ -41,7 +41,7 @@ static pcb_pad_t *pad;
 static int layer;
 static int px, py;
 static Coord thickness;
-static ElementType *element;
+static pcb_element_t *element;
 
 static int new_arcs = 0;
 
@@ -207,7 +207,7 @@ static void check_pin(pcb_pin_t * _pin)
 	spot.X2 = px + 10;
 	spot.Y2 = py + 10;
 
-	element = (ElementType *) pin->Element;
+	element = (pcb_element_t *) pin->Element;
 
 	fprintf(stderr, "Pin %s (%s) at %.6f, %.6f (element %s, %s, %s)\n", EMPTY(pin->Number), EMPTY(pin->Name),
 					/* 0.01 * pin->X, 0.01 * pin->Y, */
@@ -252,7 +252,7 @@ static void check_pad(pcb_pad_t * _pad)
 	px = (pad->BoundingBox.X1 + pad->BoundingBox.X2) / 2;
 	py = (pad->BoundingBox.Y1 + pad->BoundingBox.Y2) / 2;
 	thickness = pad->Thickness;
-	element = (ElementType *) pad->Element;
+	element = (pcb_element_t *) pad->Element;
 
 	fprintf(stderr,
 					"Pad %s (%s) at %.6f, %.6f (element %s, %s, %s) \n",

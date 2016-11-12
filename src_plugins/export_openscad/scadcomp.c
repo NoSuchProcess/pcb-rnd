@@ -285,7 +285,7 @@ static int scad_parse_float_triplet(char *s, float *ox, float *oy, float *oz)
 * - adjusts the model position, rotation, scale
 * - processes the model line-by-line and perfoprms variable expansion
 ************************************************************/
-static void scad_export_model(int model_type, ElementType * element, pcb_bool imported, FILE * f, char *line, int size)
+static void scad_export_model(int model_type, pcb_element_t * element, pcb_bool imported, FILE * f, char *line, int size)
 {
 	char *model_rotation, *model_translate, *model_scale, *model_angle;
 	Angle tmp_angle = (Angle) 0;
@@ -349,7 +349,7 @@ static void scad_export_model(int model_type, ElementType * element, pcb_bool im
 
 extern void FreeRotateBuffer(pcb_buffer_t * Buffer, Angle angle);
 
-static int scad_calculate_bbox(ElementType * element, Angle angle, float *w, float *h, float *ox, float *oy)
+static int scad_calculate_bbox(pcb_element_t * element, Angle angle, float *w, float *h, float *ox, float *oy)
 {
 	return 0;
 
@@ -361,7 +361,7 @@ static int scad_calculate_bbox(ElementType * element, Angle angle, float *w, flo
   element_buffer.Data = CreateNewBuffer ();
 
   -- Copy
-  AddElementToBuffer (ElementType *Element)
+  AddElementToBuffer (pcb_element_t *Element)
   if (ON_SIDE(Element,(Settings.ShowBottomSide)?BOTTOM_SIDE:TOP_SIDE))
      MirrorElementCoordinates (element_buffer.Data, element, 0);
 
@@ -374,7 +374,7 @@ static int scad_calculate_bbox(ElementType * element, Angle angle, float *w, flo
 * - identifies the model for the component - primary and overlay
 * - exports both models
 ************************************************************/
-static void scad_export_bbox(ElementType * element)
+static void scad_export_bbox(pcb_element_t * element)
 {
 	char *model_angle, *bbox;
 	Angle tmp_angle = (Angle) 0;
@@ -450,7 +450,7 @@ static void scad_export_bbox(ElementType * element)
 
 }
 
-static void scad_writeout_element(ElementType * element, char *name, int model_type, pcb_bool imported, pcb_bool simple)
+static void scad_writeout_element(pcb_element_t * element, char *name, int model_type, pcb_bool imported, pcb_bool simple)
 {
 	FILE *f = NULL;
 	char line[2048];
@@ -475,7 +475,7 @@ static void scad_writeout_element(ElementType * element, char *name, int model_t
 * - identifies the model for the component - primary and overlay
 * - exports both models
 ************************************************************/
-static void scad_export_element(ElementType * element, pcb_bool simple)
+static void scad_export_element(pcb_element_t * element, pcb_bool simple)
 {
 	char *model_name, *s;
 	pcb_bool imported_model;

@@ -312,7 +312,7 @@ static char *describe_location(Coord X, Coord Y)
 		return NULL;
 
 	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD)
-		elename = (char *) UNKNOWN(NAMEONPCB_NAME((ElementTypePtr) ptr1));
+		elename = (char *) UNKNOWN(NAMEONPCB_NAME((pcb_element_t *) ptr1));
 
 	pinname = ConnectionName(type, ptr1, ptr2);
 

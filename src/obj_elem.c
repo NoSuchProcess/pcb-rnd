@@ -59,24 +59,24 @@
 /*** allocation ***/
 
 /* get next slot for an element, allocates memory if necessary */
-ElementType *GetElementMemory(pcb_data_t * data)
+pcb_element_t *GetElementMemory(pcb_data_t * data)
 {
-	ElementType *new_obj;
+	pcb_element_t *new_obj;
 
-	new_obj = calloc(sizeof(ElementType), 1);
+	new_obj = calloc(sizeof(pcb_element_t), 1);
 	elementlist_append(&data->Element, new_obj);
 
 	return new_obj;
 }
 
-void RemoveFreeElement(ElementType * data)
+void RemoveFreeElement(pcb_element_t * data)
 {
 	elementlist_remove(data);
 	free(data);
 }
 
 /* frees memory used by an element */
-void FreeElementMemory(ElementType * element)
+void FreeElementMemory(pcb_element_t * element)
 {
 	if (element == NULL)
 		return;
@@ -105,10 +105,10 @@ void FreeElementMemory(ElementType * element)
 	list_map0(&element->Arc,  pcb_arc_t,  RemoveFreeArc);
 
 	FreeAttributeListMemory(&element->Attributes);
-	reset_obj_mem(ElementType, element);
+	reset_obj_mem(pcb_element_t, element);
 }
 
-pcb_line_t *GetElementLineMemory(ElementType *Element)
+pcb_line_t *GetElementLineMemory(pcb_element_t *Element)
 {
 	pcb_line_t *line = calloc(sizeof(pcb_line_t), 1);
 	linelist_append(&Element->Line, line);
@@ -124,7 +124,7 @@ pcb_line_t *GetElementLineMemory(ElementType *Element)
  */
 pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name)
 {
-	ElementTypePtr element;
+	pcb_element_t *element;
 
 	ClearBuffer(Buffer);
 	if (!ParseElement(Buffer->Data, Name)) {
@@ -160,7 +160,7 @@ int LoadFootprintByName(pcb_buffer_t *Buffer, const char *Footprint)
 /* break buffer element into pieces */
 pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 {
-	ElementTypePtr element;
+	pcb_element_t *element;
 	pcb_cardinal_t group;
 	pcb_layer_t *clayer, *slayer;
 
@@ -255,7 +255,7 @@ static int polygon_is_rectangle(pcb_polygon_t *poly)
 /* convert buffer contents into an element */
 pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 {
-	ElementTypePtr Element;
+	pcb_element_t *Element;
 	pcb_cardinal_t group;
 	pcb_cardinal_t pin_n = 1;
 	pcb_bool hasParts = pcb_false, crooked = pcb_false;
@@ -391,7 +391,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	return (pcb_true);
 }
 
-void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Coord Y, double cosa, double sina, Angle angle)
+void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, double cosa, double sina, Angle angle)
 {
 	/* solder side objects need a different orientation */
 
@@ -448,7 +448,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X
 }
 
 /* changes the side of the board an element is on; returns pcb_true if done */
-pcb_bool ChangeElementSide(ElementTypePtr Element, Coord yoff)
+pcb_bool ChangeElementSide(pcb_element_t *Element, Coord yoff)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (pcb_false);
@@ -481,7 +481,7 @@ pcb_bool ChangeSelectedElementSide(void)
 }
 
 /* changes the layout-name of an element */
-char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, ElementTypePtr Element, int which, char *new_name)
+char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Element, int which, char *new_name)
 {
 	char *old = Element->Name[which].TextString;
 
@@ -506,7 +506,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, ElementTypePtr Ele
 }
 
 /* copies data from one element to another and creates the destination; if necessary */
-ElementTypePtr CopyElementLowLevel(pcb_data_t *Data, ElementTypePtr Dest, ElementTypePtr Src, pcb_bool uniqueName, Coord dx, Coord dy)
+pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, Coord dx, Coord dy)
 {
 	int i;
 	/* release old memory if necessary */
@@ -562,7 +562,7 @@ ElementTypePtr CopyElementLowLevel(pcb_data_t *Data, ElementTypePtr Dest, Elemen
 }
 
 /* creates an new element; memory is allocated if needed */
-ElementTypePtr CreateNewElement(pcb_data_t *Data, ElementTypePtr Element,
+pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
 	pcb_font_t *PCBFont, FlagType Flags, char *Description, char *NameOnPCB,
 	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
 	int TextScale, FlagType TextFlags, pcb_bool uniqueName)
@@ -595,7 +595,7 @@ ElementTypePtr CreateNewElement(pcb_data_t *Data, ElementTypePtr Element,
 }
 
 /* creates a new arc in an element */
-pcb_arc_t *CreateNewArcInElement(ElementTypePtr Element, Coord X, Coord Y,
+pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, Coord X, Coord Y,
 	Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness)
 {
 	pcb_arc_t *arc = GetElementArcMemory(Element);
@@ -623,7 +623,7 @@ pcb_arc_t *CreateNewArcInElement(ElementTypePtr Element, Coord X, Coord Y,
 }
 
 /* creates a new line for an element */
-pcb_line_t *CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
+pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
 {
 	pcb_line_t *line;
 
@@ -662,7 +662,7 @@ void AddTextToElement(TextTypePtr Text, pcb_font_t *PCBFont, Coord X, Coord Y,
 }
 
 /* mirrors the coordinates of an element; an additional offset is passed */
-void MirrorElementCoordinates(pcb_data_t *Data, ElementTypePtr Element, Coord yoff)
+void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, Coord yoff)
 {
 	r_delete_element(Data, Element);
 	ELEMENTLINE_LOOP(Element);
@@ -716,7 +716,7 @@ void MirrorElementCoordinates(pcb_data_t *Data, ElementTypePtr Element, Coord yo
 }
 
 /* sets the bounding box of an elements */
-void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, pcb_font_t *Font)
+void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font)
 {
 	pcb_box_t *box, *vbox;
 
@@ -902,7 +902,7 @@ char *UniqueElementName(pcb_data_t *Data, char *Name)
 	}
 }
 
-void r_delete_element(pcb_data_t * data, ElementType * element)
+void r_delete_element(pcb_data_t * data, pcb_element_t * element)
 {
 	r_delete_entry(data->element_tree, (pcb_box_t *) element);
 	PIN_LOOP(element);
@@ -928,7 +928,7 @@ void r_delete_element(pcb_data_t * data, ElementType * element)
  * indication of absolute rotation; only relative rotation is
  * meaningful.
  */
-int ElementOrientation(ElementType * e)
+int ElementOrientation(pcb_element_t * e)
 {
 	Coord pin1x, pin1y, pin2x, pin2y, dx, dy;
 	pcb_bool found_pin1 = 0;
@@ -991,7 +991,7 @@ int ElementOrientation(ElementType * e)
 }
 
 /* moves a element by +-X and +-Y */
-void MoveElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord DX, Coord DY)
+void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord DX, Coord DY)
 {
 	if (Data)
 		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
@@ -1047,7 +1047,7 @@ void MoveElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord DX, Coo
 		r_insert_entry(Data->element_tree, (pcb_box_t *) Element, 0);
 }
 
-void *RemoveElement(ElementTypePtr Element)
+void *RemoveElement(pcb_element_t *Element)
 {
 	pcb_opctx_t ctx;
 
@@ -1059,7 +1059,7 @@ void *RemoveElement(ElementTypePtr Element)
 }
 
 /* rotate an element in 90 degree steps */
-void RotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number)
+void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, unsigned Number)
 {
 	/* solder side objects need a different orientation */
 
@@ -1110,9 +1110,9 @@ void RotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Co
 
 /*** ops ***/
 /* copies a element to buffer */
-void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	ElementTypePtr element;
+	pcb_element_t *element;
 
 	element = GetElementMemory(ctx->buffer.dst);
 	CopyElementLowLevel(ctx->buffer.dst, element, Element, pcb_false, 0, 0);
@@ -1138,7 +1138,7 @@ void *AddElementToBuffer(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* moves a element to buffer without allocating memory for pins/names */
-void *MoveElementToBuffer(pcb_opctx_t *ctx, ElementType * element)
+void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 {
 	/*
 	 * Delete the element from the source (remove it from trees,
@@ -1181,7 +1181,7 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, ElementType * element)
 
 
 /* changes the drilling hole of all pins of an element; returns pcb_true if changed */
-void *ChangeElement2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool changed = pcb_false;
 	Coord value;
@@ -1215,7 +1215,7 @@ void *ChangeElement2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* changes ring dia of all pins of an element; returns pcb_true if changed */
-void *ChangeElement1stSize(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool changed = pcb_false;
 	Coord value;
@@ -1247,7 +1247,7 @@ void *ChangeElement1stSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* changes the clearance of all pins of an element; returns pcb_true if changed */
-void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool changed = pcb_false;
 	Coord value;
@@ -1305,7 +1305,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* changes the scaling factor of an element's outline; returns pcb_true if changed */
-void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	Coord value;
 	pcb_bool changed = pcb_false;
@@ -1343,7 +1343,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* changes the scaling factor of a elementname object; returns pcb_true if changed */
-void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
 		: DESCRIPTION_TEXT(Element).Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
@@ -1368,7 +1368,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 
-void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
@@ -1382,7 +1382,7 @@ void *ChangeElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 	return ChangeElementText(PCB, PCB->Data, Element, NAME_INDEX(), ctx->chgname.new_name);
 }
 
-void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ChangeElementNonetlist(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
@@ -1392,7 +1392,7 @@ void *ChangeElementNonetlist(pcb_opctx_t *ctx, ElementTypePtr Element)
 
 
 /* changes the square flag of all pins on an element */
-void *ChangeElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ChangeElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *ans = NULL;
 
@@ -1412,7 +1412,7 @@ void *ChangeElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* sets the square flag of all pins on an element */
-void *SetElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *SetElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *ans = NULL;
 
@@ -1432,7 +1432,7 @@ void *SetElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* clears the square flag of all pins on an element */
-void *ClrElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ClrElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *ans = NULL;
 
@@ -1452,7 +1452,7 @@ void *ClrElementSquare(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* changes the octagon flags of all pins of an element */
-void *ChangeElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ChangeElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *result = NULL;
 
@@ -1468,7 +1468,7 @@ void *ChangeElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* sets the octagon flags of all pins of an element */
-void *SetElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *SetElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *result = NULL;
 
@@ -1484,7 +1484,7 @@ void *SetElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* clears the octagon flags of all pins of an element */
-void *ClrElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *ClrElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *result = NULL;
 
@@ -1500,14 +1500,14 @@ void *ClrElementOctagon(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* copies an element onto the PCB.  Then does a draw. */
-void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 
 #ifdef DEBUG
 	printf("Entered CopyElement, trying to copy element %s\n", Element->Name[1].TextString);
 #endif
 
-	ElementTypePtr element = CopyElementLowLevel(PCB->Data,
+	pcb_element_t *element = CopyElementLowLevel(PCB->Data,
 																							 NULL, Element,
 																							 conf_core.editor.unique_names, ctx->copy.DeltaX,
 																							 ctx->copy.DeltaY);
@@ -1528,7 +1528,7 @@ void *CopyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* moves all names of an element to a new position */
-void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (PCB->ElementOn && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElementName(Element);
@@ -1559,7 +1559,7 @@ void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* moves an element */
-void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool didDraw = pcb_false;
 
@@ -1585,7 +1585,7 @@ void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* destroys a element */
-void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (ctx->remove.destroy_target->element_tree)
 		r_delete_entry(ctx->remove.destroy_target->element_tree, (pcb_box_t *) Element);
@@ -1617,7 +1617,7 @@ void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* removes an element */
-void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	/* erase from screen */
 	if ((PCB->ElementOn || PCB->PinOn) && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
@@ -1630,7 +1630,7 @@ void *RemoveElement_op(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /* rotates an element */
-void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *RotateElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	EraseElement(Element);
 	RotateElementLowLevel(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
@@ -1642,7 +1642,7 @@ void *RotateElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 /* ----------------------------------------------------------------------
  * rotates the name of an element
  */
-void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
+void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	EraseElementName(Element);
 	ELEMENTTEXT_LOOP(Element);
@@ -1658,7 +1658,7 @@ void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 }
 
 /*** draw ***/
-void draw_element_name(ElementType * element)
+void draw_element_name(pcb_element_t * element)
 {
 	if ((conf_core.editor.hide_names && gui->gui) || TEST_FLAG(PCB_FLAG_HIDENAME, element))
 		return;
@@ -1683,7 +1683,7 @@ void draw_element_name(ElementType * element)
 r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) b;
-	ElementTypePtr element = (ElementTypePtr) text->Element;
+	pcb_element_t *element = (pcb_element_t *) text->Element;
 	int *side = cl;
 
 	if (TEST_FLAG(PCB_FLAG_HIDENAME, element))
@@ -1694,7 +1694,7 @@ r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-void draw_element_pins_and_pads(ElementType * element)
+void draw_element_pins_and_pads(pcb_element_t * element)
 {
 	PAD_LOOP(element);
 	{
@@ -1710,7 +1710,7 @@ void draw_element_pins_and_pads(ElementType * element)
 }
 
 
-void draw_element_package(ElementType * element)
+void draw_element_package(pcb_element_t * element)
 {
 	/* set color and draw lines, arcs, text and pins */
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
@@ -1735,7 +1735,7 @@ void draw_element_package(ElementType * element)
 	END_LOOP;
 }
 
-void draw_element(ElementTypePtr element)
+void draw_element(pcb_element_t *element)
 {
 	draw_element_package(element);
 	draw_element_name(element);
@@ -1744,7 +1744,7 @@ void draw_element(ElementTypePtr element)
 
 r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
 {
-	ElementTypePtr element = (ElementTypePtr) b;
+	pcb_element_t *element = (pcb_element_t *) b;
 	int *side = cl;
 
 	if (ON_SIDE(element, *side))
@@ -1752,7 +1752,7 @@ r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, pcb_bool invisible)
+static void DrawEMark(pcb_element_t *e, Coord X, Coord Y, pcb_bool invisible)
 {
 	Coord mark_size = EMARK_SIZE;
 	if (!PCB->InvisibleObjectsOn && invisible)
@@ -1792,13 +1792,13 @@ static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, pcb_bool invisible)
 
 r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
 {
-	ElementTypePtr element = (ElementTypePtr) b;
+	pcb_element_t *element = (pcb_element_t *) b;
 
 	DrawEMark(element, element->MarkX, element->MarkY, !FRONT(element));
 	return R_DIR_FOUND_CONTINUE;
 }
 
-void EraseElement(ElementTypePtr Element)
+void EraseElement(pcb_element_t *Element)
 {
 	ELEMENTLINE_LOOP(Element);
 	{
@@ -1815,7 +1815,7 @@ void EraseElement(ElementTypePtr Element)
 	EraseFlags(&Element->Flags);
 }
 
-void EraseElementPinsAndPads(ElementTypePtr Element)
+void EraseElementPinsAndPads(pcb_element_t *Element)
 {
 	PIN_LOOP(Element);
 	{
@@ -1829,7 +1829,7 @@ void EraseElementPinsAndPads(ElementTypePtr Element)
 	END_LOOP;
 }
 
-void EraseElementName(ElementTypePtr Element)
+void EraseElementName(pcb_element_t *Element)
 {
 	if (TEST_FLAG(PCB_FLAG_HIDENAME, Element)) {
 		return;
@@ -1837,21 +1837,21 @@ void EraseElementName(ElementTypePtr Element)
 	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
 }
 
-void DrawElement(ElementTypePtr Element)
+void DrawElement(pcb_element_t *Element)
 {
 	DrawElementPackage(Element);
 	DrawElementName(Element);
 	DrawElementPinsAndPads(Element);
 }
 
-void DrawElementName(ElementTypePtr Element)
+void DrawElementName(pcb_element_t *Element)
 {
 	if (TEST_FLAG(PCB_FLAG_HIDENAME, Element))
 		return;
 	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
 }
 
-void DrawElementPackage(ElementTypePtr Element)
+void DrawElementPackage(pcb_element_t *Element)
 {
 	ELEMENTLINE_LOOP(Element);
 	{
@@ -1865,7 +1865,7 @@ void DrawElementPackage(ElementTypePtr Element)
 	END_LOOP;
 }
 
-void DrawElementPinsAndPads(ElementTypePtr Element)
+void DrawElementPinsAndPads(pcb_element_t *Element)
 {
 	PAD_LOOP(Element);
 	{

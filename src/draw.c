@@ -506,7 +506,7 @@ void EraseObject(int type, void *lptr, void *ptr)
 		ErasePolygon((pcb_polygon_t *) ptr);
 		break;
 	case PCB_TYPE_ELEMENT:
-		EraseElement((ElementTypePtr) ptr);
+		EraseElement((pcb_element_t *) ptr);
 		break;
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ELEMENT_LINE:
@@ -550,8 +550,8 @@ void DrawObject(int type, void *ptr1, void *ptr2)
 			DrawPolygon((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT:
-		if (PCB->ElementOn && (FRONT((ElementTypePtr) ptr2) || PCB->InvisibleObjectsOn))
-			DrawElement((ElementTypePtr) ptr2);
+		if (PCB->ElementOn && (FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
+			DrawElement((pcb_element_t *) ptr2);
 		break;
 	case PCB_TYPE_RATLINE:
 		if (PCB->RatOn)
@@ -566,8 +566,8 @@ void DrawObject(int type, void *ptr1, void *ptr2)
 			DrawPad((pcb_pad_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT_NAME:
-		if (PCB->ElementOn && (FRONT((ElementTypePtr) ptr2) || PCB->InvisibleObjectsOn))
-			DrawElementName((ElementTypePtr) ptr1);
+		if (PCB->ElementOn && (FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
+			DrawElementName((pcb_element_t *) ptr1);
 		break;
 	}
 }
@@ -590,7 +590,7 @@ void hid_expose_callback(HID * hid, pcb_box_t * region, void *item)
 
 	if (item) {
 		pcb_draw_doing_pinout = pcb_true;
-		draw_element((ElementType *) item);
+		draw_element((pcb_element_t *) item);
 		pcb_draw_doing_pinout = pcb_false;
 	}
 	else

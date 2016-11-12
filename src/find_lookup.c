@@ -571,7 +571,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 		   internal connection group number, they are connected */
 		ic = GET_INTCONN(orig_pin);
 		if ((info.pv.Element != NULL) && (ic > 0)) {
-			ElementType *e = info.pv.Element;
+			pcb_element_t *e = info.pv.Element;
 			PIN_LOOP(e);
 			{
 				if ((orig_pin != pin) && (ic == GET_INTCONN(pin))) {
@@ -1224,7 +1224,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 	   internal connection group number, they are connected */
 	ic = GET_INTCONN(Pad);
 	if ((Pad->Element != NULL) && (ic > 0)) {
-		ElementType *e = Pad->Element;
+		pcb_element_t *e = Pad->Element;
 		pcb_pad_t *orig_pad = Pad;
 		int tlayer = -1;
 

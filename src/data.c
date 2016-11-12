@@ -197,7 +197,7 @@ void FreeDataMemory(pcb_data_t * data)
 		FreeElementMemory(element);
 	}
 	END_LOOP;
-	list_map0(&data->Element, ElementType, RemoveFreeElement);
+	list_map0(&data->Element, pcb_element_t, RemoveFreeElement);
 	list_map0(&data->Rat, pcb_rat_t, RemoveFreeRat);
 
 	for (layer = data->Layer, i = 0; i < MAX_LAYER + 2; layer++, i++) {

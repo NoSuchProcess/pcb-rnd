@@ -54,7 +54,7 @@ typedef struct {
  * some local prototypes
  */
 static void XORPolygon(pcb_polygon_t *, Coord, Coord, int);
-static void XORDrawElement(ElementTypePtr, Coord, Coord);
+static void XORDrawElement(pcb_element_t *, Coord, Coord);
 static void XORDrawBuffer(pcb_buffer_t *);
 static void XORDrawInsertPointObject(void);
 static void XORDrawMoveOrCopyObject(void);
@@ -207,7 +207,7 @@ static void XORDrawAttachedLine(Coord x1, Coord y1, Coord x2, Coord y2, Coord th
 /* ---------------------------------------------------------------------------
  * draws the elements of a loaded circuit which is to be merged in
  */
-static void XORDrawElement(ElementTypePtr Element, Coord DX, Coord DY)
+static void XORDrawElement(pcb_element_t *Element, Coord DX, Coord DY)
 {
 	/* if no silkscreen, draw the bounding box */
 	if (arclist_length(&Element->Arc) == 0 && linelist_length(&Element->Line) == 0) {
@@ -432,7 +432,7 @@ static void XORDrawMoveOrCopyObject(void)
 	case PCB_TYPE_ELEMENT_NAME:
 		{
 			/* locate the element "mark" and draw an association line from crosshair to it */
-			ElementTypePtr element = (ElementTypePtr) Crosshair.AttachedObject.Ptr1;
+			pcb_element_t *element = (pcb_element_t *) Crosshair.AttachedObject.Ptr1;
 
 			gui->draw_line(Crosshair.GC, element->MarkX, element->MarkY, Crosshair.X, Crosshair.Y);
 			/* fall through to move the text as a box outline */
@@ -449,7 +449,7 @@ static void XORDrawMoveOrCopyObject(void)
 	case PCB_TYPE_PAD:
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_ELEMENT:
-		XORDrawElement((ElementTypePtr) Crosshair.AttachedObject.Ptr2, dx, dy);
+		XORDrawElement((pcb_element_t *) Crosshair.AttachedObject.Ptr2, dx, dy);
 		break;
 	}
 
@@ -1028,7 +1028,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3);
 
 	if (ans & PCB_TYPE_ELEMENT) {
-		ElementType *el = (ElementType *) ptr1;
+		pcb_element_t *el = (pcb_element_t *) ptr1;
 		check_snap_object(&snap_data, el->MarkX, el->MarkY, pcb_false);
 	}
 

@@ -118,18 +118,18 @@ const struct {
 };
 
 typedef struct {
-	ElementTypePtr *element;
+	pcb_element_t **element;
 	pcb_cardinal_t elementN;
 } ElementPtrListType;
 
 enum ewhich { SHIFT, ROTATE, EXCHANGE };
 
 typedef struct {
-	ElementTypePtr element;
+	pcb_element_t *element;
 	enum ewhich which;
 	Coord DX, DY;									/* for shift */
 	unsigned rotate;							/* for rotate/flip */
-	ElementTypePtr other;					/* for exchange */
+	pcb_element_t *other;					/* for exchange */
 } PerturbationType;
 
 /* ---------------------------------------------------------------------------
@@ -153,7 +153,7 @@ static void UpdateXY(NetListTypePtr Nets)
 			pcb_connection_t *c = &(Nets->Net[i].Connection[j]);
 			switch (c->type) {
 			case PCB_TYPE_PAD:
-				c->group = TEST_FLAG(PCB_FLAG_ONSOLDER, (ElementTypePtr) c->ptr1)
+				c->group = TEST_FLAG(PCB_FLAG_ONSOLDER, (pcb_element_t *) c->ptr1)
 					? SLayer : CLayer;
 				c->X = ((pcb_pad_t *) c->ptr2)->Point1.X;
 				c->Y = ((pcb_pad_t *) c->ptr2)->Point1.Y;
@@ -180,7 +180,7 @@ static PointerListType collectSelectedElements()
 	ELEMENT_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(PCB_FLAG_SELECTED, element)) {
-			ElementTypePtr *epp = (ElementTypePtr *) GetPointerMemory(&list);
+			pcb_element_t **epp = (pcb_element_t **) GetPointerMemory(&list);
 			*epp = element;
 		}
 	}
@@ -460,7 +460,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 		0, 0, NULL};
 		struct ebox {
 			pcb_box_t box;
-			ElementTypePtr element;
+			pcb_element_t *element;
 		};
 		direction_t dir[4] = { NORTH, EAST, SOUTH, WEST };
 		struct ebox **boxpp, *boxp;
@@ -552,7 +552,7 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 {
 	PerturbationType pt = { 0 };
 	/* pick element to perturb */
-	pt.element = (ElementTypePtr) selected->Ptr[pcb_rand() % selected->PtrN];
+	pt.element = (pcb_element_t *) selected->Ptr[pcb_rand() % selected->PtrN];
 	/* exchange, flip/rotate or shift? */
 	switch (pcb_rand() % ((selected->PtrN > 1) ? 3 : 2)) {
 	case 0:
@@ -588,10 +588,10 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 	case 2:
 		{														/* exchange! */
 			pt.which = EXCHANGE;
-			pt.other = (ElementTypePtr)
+			pt.other = (pcb_element_t *)
 				selected->Ptr[pcb_rand() % (selected->PtrN - 1)];
 			if (pt.other == pt.element)
-				pt.other = (ElementTypePtr) selected->Ptr[selected->PtrN - 1];
+				pt.other = (pcb_element_t *) selected->Ptr[selected->PtrN - 1];
 			/* don't allow exchanging a solderside-side SMD component
 			 * with a non-SMD component. */
 			if ((pinlist_length(&(pt.element->Pin)) != 0 /* non-SMD */  &&

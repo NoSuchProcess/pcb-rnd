@@ -222,7 +222,7 @@ static LibraryMenuTypePtr pcb_netlist_find_net4pin_any(pcb_board_t *pcb, const c
 
 LibraryMenuTypePtr pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *pin)
 {
-	const ElementType *e = pin->Element;
+	const pcb_element_t *e = pin->Element;
 
 	if (e == NULL)
 		return NULL;
@@ -233,7 +233,7 @@ LibraryMenuTypePtr pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *p
 
 LibraryMenuTypePtr pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad)
 {
-	const ElementType *e = pad->Element;
+	const pcb_element_t *e = pad->Element;
 
 	if (e == NULL)
 		return NULL;

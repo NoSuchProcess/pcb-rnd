@@ -54,7 +54,7 @@ static Coord maxy;
  *
  * This is taken almost entirely from ActionDisperseElements, with cleanup
  */
-static void place(ElementType * element)
+static void place(pcb_element_t * element)
 {
 	Coord dx, dy;
 
@@ -101,7 +101,7 @@ static void place(ElementType * element)
  */
 static Coord padDX(pcb_connection_t * conn)
 {
-	ElementType *element = (ElementType *) conn->ptr1;
+	pcb_element_t *element = (pcb_element_t *) conn->ptr1;
 	AnyLineObjectType *line = (AnyLineObjectType *) conn->ptr2;
 
 	return line->BoundingBox.X1 - (element->BoundingBox.X1 + element->BoundingBox.X2) / 2;
@@ -191,8 +191,8 @@ static int smartdisperse(int argc, const char **argv, Coord x, Coord y)
 	NET_LOOP(Nets);
 	{
 		pcb_connection_t *conna, *connb;
-		ElementType *ea, *eb;
-/*    ElementType *epp;*/
+		pcb_element_t *ea, *eb;
+/*    pcb_element_t *epp;*/
 
 		if (net->ConnectionN != 2)
 			continue;
@@ -202,8 +202,8 @@ static int smartdisperse(int argc, const char **argv, Coord x, Coord y)
 		if (!IS_ELEMENT(conna) || !IS_ELEMENT(conna))
 			continue;
 
-		ea = (ElementType *) conna->ptr1;
-		eb = (ElementType *) connb->ptr1;
+		ea = (pcb_element_t *) conna->ptr1;
+		eb = (pcb_element_t *) connb->ptr1;
 
 		/* place this pair if possible */
 		if (is_visited(ea) || is_visited(eb))
@@ -228,12 +228,12 @@ static int smartdisperse(int argc, const char **argv, Coord x, Coord y)
 	{
 		CONNECTION_LOOP(net);
 		{
-			ElementType *element;
+			pcb_element_t *element;
 
 			if (!IS_ELEMENT(connection))
 				continue;
 
-			element = (ElementType *) connection->ptr1;
+			element = (pcb_element_t *) connection->ptr1;
 
 			/* place this one if needed */
 			if (is_visited(element))

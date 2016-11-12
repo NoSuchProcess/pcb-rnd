@@ -53,7 +53,7 @@ static void pinout_set_view(GhidPinoutPreview * pinout)
 }
 
 
-static void pinout_set_data(GhidPinoutPreview * pinout, ElementType * element)
+static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 {
 	if (element == NULL) {
 		FreeElementMemory(&pinout->element);
@@ -172,7 +172,7 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 
 	switch (property_id) {
 	case PROP_ELEMENT_DATA:
-		pinout_set_data(pinout, (ElementType *) g_value_get_pointer(value));
+		pinout_set_data(pinout, (pcb_element_t *) g_value_get_pointer(value));
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
 		break;
@@ -273,7 +273,7 @@ GType ghid_pinout_preview_get_type()
  *
  *  \return  The GhidPinoutPreview created.
  */
-GtkWidget *ghid_pinout_preview_new(ElementType * element)
+GtkWidget *ghid_pinout_preview_new(pcb_element_t * element)
 {
 	GhidPinoutPreview *pinout_preview;
 

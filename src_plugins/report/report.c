@@ -171,7 +171,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 	case PCB_TYPE_PIN:
 		{
 			pcb_pin_t *Pin;
-			ElementTypePtr element;
+			pcb_element_t *element;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
 				__r_dump_tree(PCB->Data->pin_tree->root, 0);
@@ -179,7 +179,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 			}
 #endif
 			Pin = (pcb_pin_t *) ptr2;
-			element = (ElementTypePtr) ptr1;
+			element = (pcb_element_t *) ptr1;
 
 			PIN_LOOP(element);
 			{
@@ -325,7 +325,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 		{
 			Coord len;
 			pcb_pad_t *Pad;
-			ElementTypePtr element;
+			pcb_element_t *element;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
 				__r_dump_tree(PCB->Data->pad_tree->root, 0);
@@ -333,7 +333,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 			}
 #endif
 			Pad = (pcb_pad_t *) ptr2;
-			element = (ElementTypePtr) ptr1;
+			element = (pcb_element_t *) ptr1;
 
 			PAD_LOOP(element);
 			{
@@ -371,14 +371,14 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 		}
 	case PCB_TYPE_ELEMENT:
 		{
-			ElementTypePtr element;
+			pcb_element_t *element;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
 				__r_dump_tree(PCB->Data->element_tree->root, 0);
 				return 0;
 			}
 #endif
-			element = (ElementTypePtr) ptr2;
+			element = (pcb_element_t *) ptr2;
 			report = pcb_strdup_printf("%m+ELEMENT ID# %ld;  Flags:%s\n"
 									"BoundingBox %$mD %$mD.\n"
 									"Descriptive Name \"%s\".\n"

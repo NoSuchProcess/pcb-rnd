@@ -95,12 +95,12 @@ typedef void (*pcb_text_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, T
 typedef void (*pcb_poly_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_polygon_t *poly);
 
 /* element callbacks */
-typedef int (*pcb_element_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, int enter);
-typedef void (*pcb_eline_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_line_t *line);
-typedef void (*pcb_earc_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_arc_t *arc);
-typedef void (*pcb_etext_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, TextType *text);
-typedef void (*pcb_epin_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pin_t *pin);
-typedef void (*pcb_epad_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pad_t *pad);
+typedef int (*pcb_element_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, int enter);
+typedef void (*pcb_eline_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_line_t *line);
+typedef void (*pcb_earc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_arc_t *arc);
+typedef void (*pcb_etext_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, TextType *text);
+typedef void (*pcb_epin_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pin_t *pin);
+typedef void (*pcb_epad_cb_t)(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad);
 
 /* via callbacks */
 typedef void (*pcb_via_cb_t)(void *ctx, pcb_board_t *pcb, pcb_pin_t *via);

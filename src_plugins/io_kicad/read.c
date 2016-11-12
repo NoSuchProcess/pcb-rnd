@@ -999,7 +999,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	unsigned direction = 0; /* default is horizontal */
 	char * end, * textLabel, * text;
 	char * moduleName, * moduleRefdes, * moduleValue, * pinName;
-	ElementTypePtr newModule;
+	pcb_element_t *newModule;
 
 	FlagType Flags = MakeFlags(0); /* start with something bland here */
 	FlagType TextFlags = MakeFlags(0); /* start with something bland here */

@@ -404,7 +404,7 @@ void ghid_log(const char *fmt, ...);
 void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args);
 
 /* gui-pinout-window.c */
-void ghid_pinout_window_show(GHidPort * out, ElementTypePtr Element);
+void ghid_pinout_window_show(GHidPort * out, pcb_element_t *Element);
 
 /* gtkhid-gdk.c AND gtkhid-gl.c */
 int ghid_set_layer(const char *name, int group, int empty);

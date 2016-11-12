@@ -44,11 +44,11 @@ struct pin_st {
 
 pcb_pin_t *GetViaMemory(pcb_data_t * data);
 void RemoveFreeVia(pcb_pin_t * data);
-pcb_pin_t *GetPinMemory(ElementType * element);
+pcb_pin_t *GetPinMemory(pcb_element_t * element);
 void RemoveFreePin(pcb_pin_t * data);
 
 pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags);
-pcb_pin_t *CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags);
+pcb_pin_t *CreateNewPin(pcb_element_t *Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags);
 void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via);
 void SetPinBoundingBox(pcb_pin_t *Pin);
 pcb_bool ChangeHole(pcb_pin_t *Via);

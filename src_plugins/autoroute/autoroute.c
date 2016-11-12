@@ -626,7 +626,7 @@ static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb
 	return lastrb;
 }
 
-static routebox_t *AddPad(PointerListType layergroupboxes[], ElementTypePtr element, pcb_pad_t *pad, RouteStyleType * style)
+static routebox_t *AddPad(PointerListType layergroupboxes[], pcb_element_t *element, pcb_pad_t *pad, RouteStyleType * style)
 {
 	Coord halfthick;
 	routebox_t **rbpp;
@@ -995,7 +995,7 @@ static routedata_t *CreateRouteData()
 					else
 						switch (connection->type) {
 						case PCB_TYPE_PAD:
-							rb = AddPad(layergroupboxes, (ElementType *) connection->ptr1, (pcb_pad_t *) connection->ptr2, rd->styles[j]);
+							rb = AddPad(layergroupboxes, (pcb_element_t *) connection->ptr1, (pcb_pad_t *) connection->ptr2, rd->styles[j]);
 							break;
 						case PCB_TYPE_PIN:
 							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->ptr2, pcb_false, rd->styles[j]);

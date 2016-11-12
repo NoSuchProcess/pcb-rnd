@@ -112,7 +112,7 @@ static HID_Attribute *dsn_get_export_options(int *n)
 
 
 /* this function is mostly ripped from bom.c */
-static pcb_point_t get_centroid(ElementType * element)
+static pcb_point_t get_centroid(pcb_element_t * element)
 {
 	pcb_point_t centroid;
 	double sumx = 0.0, sumy = 0.0;

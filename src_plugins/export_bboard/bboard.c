@@ -385,7 +385,7 @@ static int bboard_parse_offset(char *s, Coord * ox, Coord * oy)
 }
 
 
-static void bboard_export_element_cairo(ElementType * element, pcb_bool onsolder)
+static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsolder)
 {
 	cairo_surface_t *sfc;
 	Coord ex, ey;

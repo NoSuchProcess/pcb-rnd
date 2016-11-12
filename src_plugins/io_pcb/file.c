@@ -371,7 +371,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	gdl_iterator_t eit;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
-	ElementType *element;
+	pcb_element_t *element;
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	elementlist_foreach(&Data->Element, &eit, element) {
@@ -559,7 +559,7 @@ void PreLoadElementPCB()
 void PostLoadElementPCB()
 {
 	pcb_board_t *pcb_save = PCB;
-	ElementTypePtr e;
+	pcb_element_t *e;
 
 	if (!yyPCB)
 		return;

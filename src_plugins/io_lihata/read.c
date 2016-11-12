@@ -336,7 +336,7 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 }
 
 
-static int parse_line(pcb_layer_t *ly, ElementType *el, lht_node_t *obj, int no_id, Coord dx, Coord dy)
+static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int no_id, Coord dx, Coord dy)
 {
 	pcb_line_t *line;
 
@@ -404,7 +404,7 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_arc(pcb_layer_t *ly, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
+static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, Coord dx, Coord dy)
 {
 	pcb_arc_t *arc;
 
@@ -438,7 +438,7 @@ static int parse_arc(pcb_layer_t *ly, ElementType *el, lht_node_t *obj, Coord dx
 
 }
 
-static int parse_polygon(pcb_layer_t *ly, ElementType *el, lht_node_t *obj)
+static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 {
 	pcb_polygon_t *poly = GetPolygonMemory(ly);
 	lht_node_t *geo;
@@ -488,7 +488,7 @@ static int parse_polygon(pcb_layer_t *ly, ElementType *el, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_pcb_text(pcb_layer_t *ly, ElementType *el, lht_node_t *obj)
+static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 {
 	TextType *text;
 	lht_node_t *role;
@@ -580,7 +580,7 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp)
 }
 
 /* If el == NULL and dt != NULL it is a via (for now). */
-static int parse_pin(pcb_data_t *dt, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
+static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, Coord dx, Coord dy)
 {
 	pcb_pin_t *via;
 
@@ -615,7 +615,7 @@ static int parse_pin(pcb_data_t *dt, ElementType *el, lht_node_t *obj, Coord dx,
 	return 0;
 }
 
-static int parse_pad(ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
+static int parse_pad(pcb_element_t *el, lht_node_t *obj, Coord dx, Coord dy)
 {
 	pcb_pad_t *pad;
 
@@ -650,7 +650,7 @@ static int parse_pad(ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 
 static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 {
-	ElementType *elem = GetElementMemory(dt);
+	pcb_element_t *elem = GetElementMemory(dt);
 	lht_node_t *lst, *n;
 	lht_dom_iterator_t it;
 	int onsld;

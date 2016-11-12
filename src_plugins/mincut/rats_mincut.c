@@ -161,7 +161,7 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 	for (n = short_conns, gids = 2; n != NULL; n = n->next, gids++) {
 		char *s;
 		const char *typ;
-		ElementType *parent;
+		pcb_element_t *parent;
 		n->gid = gids;
 		debprintf(" {%d} found %d %d/%p type %d from %d\n", n->gid, n->to_type, n->to->ID, (void *)n->to, n->type, n->from_id);
 		lut_by_oid[n->to->ID] = n;

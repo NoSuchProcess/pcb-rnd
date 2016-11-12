@@ -463,7 +463,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, cons
 static int io_kicad_write_element_index(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
-	ElementType *element;
+	pcb_element_t *element;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 
 	elementlist_dedup_initializer(ededup);
@@ -803,7 +803,7 @@ int io_kicad_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	gdl_iterator_t eit;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
-	ElementType *element;
+	pcb_element_t *element;
 	pcb_box_t *boxResult;
 
 	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc exporting */
@@ -1042,7 +1042,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
 	Coord xPos, yPos;
 
-	ElementType *element;
+	pcb_element_t *element;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char * currentElementName;
 	const char * currentElementRef;

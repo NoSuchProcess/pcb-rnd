@@ -28,12 +28,12 @@ static int stub_vendorDrillMap_dummy(int dia)
 	return dia;
 }
 
-static pcb_bool stub_vendorIsElementMappable_dummy(ElementTypePtr e)
+static pcb_bool stub_vendorIsElementMappable_dummy(pcb_element_t *e)
 {
 	return pcb_false;
 }
 
 int (*stub_vendorDrillMap)(int) = stub_vendorDrillMap_dummy;
-pcb_bool (*stub_vendorIsElementMappable)(ElementTypePtr) = stub_vendorIsElementMappable_dummy;
+pcb_bool (*stub_vendorIsElementMappable)(pcb_element_t *) = stub_vendorIsElementMappable_dummy;
 
 

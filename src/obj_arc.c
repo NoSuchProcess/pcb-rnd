@@ -55,7 +55,7 @@ pcb_arc_t *GetArcMemory(pcb_layer_t * layer)
 	return new_obj;
 }
 
-pcb_arc_t *GetElementArcMemory(ElementType *Element)
+pcb_arc_t *GetElementArcMemory(pcb_element_t *Element)
 {
 	pcb_arc_t *arc = calloc(sizeof(pcb_arc_t), 1);
 

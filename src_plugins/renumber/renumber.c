@@ -57,8 +57,8 @@ static const char renumber_help[] =
 static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 {
 	pcb_bool changed = pcb_false;
-	ElementTypePtr *element_list;
-	ElementTypePtr *locked_element_list;
+	pcb_element_t **element_list;
+	pcb_element_t **locked_element_list;
 	unsigned int i, j, k, cnt, lock_cnt;
 	unsigned int tmpi;
 	size_t sz;
@@ -130,8 +130,8 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 	 * We'll actually renumber things in the 2nd pass.
 	 */
 	numele = elementlist_length(&PCB->Data->Element);
-	element_list = (ElementType **) calloc(numele, sizeof(ElementTypePtr));
-	locked_element_list = (ElementType **) calloc(numele, sizeof(ElementTypePtr));
+	element_list = (pcb_element_t **) calloc(numele, sizeof(pcb_element_t *));
+	locked_element_list = (pcb_element_t **) calloc(numele, sizeof(pcb_element_t *));
 	was = (char **) calloc(numele, sizeof(char *));
 	is = (char **) calloc(numele, sizeof(char *));
 	if (element_list == NULL || locked_element_list == NULL || was == NULL || is == NULL) {

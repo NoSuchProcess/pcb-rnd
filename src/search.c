@@ -58,13 +58,13 @@ static pcb_bool SearchArcByLocation(int, pcb_layer_t **, pcb_arc_t **, pcb_arc_t
 static pcb_bool SearchRatLineByLocation(int, pcb_rat_t **, pcb_rat_t **, pcb_rat_t **);
 static pcb_bool SearchTextByLocation(int, pcb_layer_t **, TextTypePtr *, TextTypePtr *);
 static pcb_bool SearchPolygonByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_polygon_t **);
-static pcb_bool SearchPinByLocation(int, ElementTypePtr *, pcb_pin_t **, pcb_pin_t **);
-static pcb_bool SearchPadByLocation(int, ElementTypePtr *, pcb_pad_t **, pcb_pad_t **, pcb_bool);
+static pcb_bool SearchPinByLocation(int, pcb_element_t **, pcb_pin_t **, pcb_pin_t **);
+static pcb_bool SearchPadByLocation(int, pcb_element_t **, pcb_pad_t **, pcb_pad_t **, pcb_bool);
 static pcb_bool SearchViaByLocation(int, pcb_pin_t **, pcb_pin_t **, pcb_pin_t **);
-static pcb_bool SearchElementNameByLocation(int, ElementTypePtr *, TextTypePtr *, TextTypePtr *, pcb_bool);
+static pcb_bool SearchElementNameByLocation(int, pcb_element_t **, TextTypePtr *, TextTypePtr *, pcb_bool);
 static pcb_bool SearchLinePointByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_point_t **);
 static pcb_bool SearchPointByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_point_t **);
-static pcb_bool SearchElementByLocation(int, ElementTypePtr *, ElementTypePtr *, ElementTypePtr *, pcb_bool);
+static pcb_bool SearchElementByLocation(int, pcb_element_t **, pcb_element_t **, pcb_element_t **, pcb_bool);
 
 /* ---------------------------------------------------------------------------
  * searches a via
@@ -114,7 +114,7 @@ static pcb_bool SearchViaByLocation(int locked, pcb_pin_t ** Via, pcb_pin_t ** D
  * searches a pin
  * starts with the newest element
  */
-static pcb_bool SearchPinByLocation(int locked, ElementTypePtr * Element, pcb_pin_t ** Pin, pcb_pin_t ** Dummy)
+static pcb_bool SearchPinByLocation(int locked, pcb_element_t ** Element, pcb_pin_t ** Pin, pcb_pin_t ** Dummy)
 {
 	struct ans_info info;
 
@@ -154,7 +154,7 @@ static r_dir_t pad_callback(const pcb_box_t * b, void *cl)
  * searches a pad
  * starts with the newest element
  */
-static pcb_bool SearchPadByLocation(int locked, ElementTypePtr * Element, pcb_pad_t ** Pad, pcb_pad_t ** Dummy, pcb_bool BackToo)
+static pcb_bool SearchPadByLocation(int locked, pcb_element_t ** Element, pcb_pad_t ** Pad, pcb_pad_t ** Dummy, pcb_bool BackToo)
 {
 	struct ans_info info;
 
@@ -432,7 +432,7 @@ static r_dir_t name_callback(const pcb_box_t * box, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
-	ElementTypePtr element = (ElementTypePtr) text->Element;
+	pcb_element_t *element = (pcb_element_t *) text->Element;
 	double newarea;
 
 	if (TEST_FLAG(i->locked, text))
@@ -456,7 +456,7 @@ static r_dir_t name_callback(const pcb_box_t * box, void *cl)
  * the search starts with the last element and goes back to the beginning
  */
 static pcb_bool
-SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * Text, TextTypePtr * Dummy, pcb_bool BackToo)
+SearchElementNameByLocation(int locked, pcb_element_t ** Element, TextTypePtr * Text, TextTypePtr * Dummy, pcb_bool BackToo)
 {
 	struct ans_info info;
 
@@ -476,7 +476,7 @@ SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * 
 
 static r_dir_t element_callback(const pcb_box_t * box, void *cl)
 {
-	ElementTypePtr element = (ElementTypePtr) box;
+	pcb_element_t *element = (pcb_element_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 	double newarea;
 
@@ -501,7 +501,7 @@ static r_dir_t element_callback(const pcb_box_t * box, void *cl)
  * if more than one element matches, the smallest one is taken
  */
 static pcb_bool
-SearchElementByLocation(int locked, ElementTypePtr * Element, ElementTypePtr * Dummy1, ElementTypePtr * Dummy2, pcb_bool BackToo)
+SearchElementByLocation(int locked, pcb_element_t ** Element, pcb_element_t ** Dummy1, pcb_element_t ** Dummy2, pcb_bool BackToo)
 {
 	struct ans_info info;
 
@@ -1003,23 +1003,23 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 	if (Type & PCB_TYPE_VIA && SearchViaByLocation(locked, (pcb_pin_t **) Result1, (pcb_pin_t **) Result2, (pcb_pin_t **) Result3))
 		return (PCB_TYPE_VIA);
 
-	if (Type & PCB_TYPE_PIN && SearchPinByLocation(locked, (ElementTypePtr *) pr1, (pcb_pin_t **) pr2, (pcb_pin_t **) pr3))
+	if (Type & PCB_TYPE_PIN && SearchPinByLocation(locked, (pcb_element_t **) pr1, (pcb_pin_t **) pr2, (pcb_pin_t **) pr3))
 		HigherAvail = PCB_TYPE_PIN;
 
 	if (!HigherAvail && Type & PCB_TYPE_PAD &&
-			SearchPadByLocation(locked, (ElementTypePtr *) pr1, (pcb_pad_t **) pr2, (pcb_pad_t **) pr3, pcb_false))
+			SearchPadByLocation(locked, (pcb_element_t **) pr1, (pcb_pad_t **) pr2, (pcb_pad_t **) pr3, pcb_false))
 		HigherAvail = PCB_TYPE_PAD;
 
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT_NAME &&
-			SearchElementNameByLocation(locked, (ElementTypePtr *) pr1, (TextTypePtr *) pr2, (TextTypePtr *) pr3, pcb_false)) {
+			SearchElementNameByLocation(locked, (pcb_element_t **) pr1, (TextTypePtr *) pr2, (TextTypePtr *) pr3, pcb_false)) {
 		pcb_box_t *box = &((TextTypePtr) r2)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_TYPE_ELEMENT_NAME;
 	}
 
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT &&
-			SearchElementByLocation(locked, (ElementTypePtr *) pr1, (ElementTypePtr *) pr2, (ElementTypePtr *) pr3, pcb_false)) {
-		pcb_box_t *box = &((ElementTypePtr) r1)->BoundingBox;
+			SearchElementByLocation(locked, (pcb_element_t **) pr1, (pcb_element_t **) pr2, (pcb_element_t **) pr3, pcb_false)) {
+		pcb_box_t *box = &((pcb_element_t *) r1)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_TYPE_ELEMENT;
 	}
@@ -1106,15 +1106,15 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 		return (PCB_TYPE_NONE);
 
 	if (Type & PCB_TYPE_PAD &&
-			SearchPadByLocation(locked, (ElementTypePtr *) Result1, (pcb_pad_t **) Result2, (pcb_pad_t **) Result3, pcb_true))
+			SearchPadByLocation(locked, (pcb_element_t **) Result1, (pcb_pad_t **) Result2, (pcb_pad_t **) Result3, pcb_true))
 		return (PCB_TYPE_PAD);
 
 	if (Type & PCB_TYPE_ELEMENT_NAME &&
-			SearchElementNameByLocation(locked, (ElementTypePtr *) Result1, (TextTypePtr *) Result2, (TextTypePtr *) Result3, pcb_true))
+			SearchElementNameByLocation(locked, (pcb_element_t **) Result1, (TextTypePtr *) Result2, (TextTypePtr *) Result3, pcb_true))
 		return (PCB_TYPE_ELEMENT_NAME);
 
 	if (Type & PCB_TYPE_ELEMENT &&
-			SearchElementByLocation(locked, (ElementTypePtr *) Result1, (ElementTypePtr *) Result2, (ElementTypePtr *) Result3, pcb_true))
+			SearchElementByLocation(locked, (pcb_element_t **) Result1, (pcb_element_t **) Result2, (pcb_element_t **) Result3, pcb_true))
 		return (PCB_TYPE_ELEMENT);
 
 	return (PCB_TYPE_NONE);
@@ -1303,9 +1303,9 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
  * searches for an element by its board name.
  * The function returns a pointer to the element, NULL if not found
  */
-ElementTypePtr SearchElementByName(pcb_data_t *Base, const char *Name)
+pcb_element_t *SearchElementByName(pcb_data_t *Base, const char *Name)
 {
-	ElementTypePtr result = NULL;
+	pcb_element_t *result = NULL;
 
 	ELEMENT_LOOP(Base);
 	{

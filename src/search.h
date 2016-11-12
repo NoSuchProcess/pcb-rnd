@@ -158,6 +158,6 @@ int SearchObjectByLocation(unsigned, void **, void **, void **, Coord, Coord, Co
 int SearchScreen(Coord, Coord, int, void **, void **, void **);
 int SearchScreenGridSlop(Coord, Coord, int, void **, void **, void **);
 int SearchObjectByID(pcb_data_t *, void **, void **, void **, int, int);
-ElementTypePtr SearchElementByName(pcb_data_t *, const char *);
+pcb_element_t *SearchElementByName(pcb_data_t *, const char *);
 
 #endif

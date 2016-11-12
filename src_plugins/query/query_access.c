@@ -69,34 +69,34 @@ static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_po
 	APPEND(ctx, PCB_OBJ_POLYGON, poly, PCB_PARENT_LAYER, layer);
 }
 
-static int list_element_cb(void *ctx, pcb_board_t *pcb, ElementType *element, int enter)
+static int list_element_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, int enter)
 {
 	if (enter)
 		APPEND(ctx, PCB_OBJ_ELEMENT, element, PCB_PARENT_DATA, pcb->Data);
 	return 0;
 }
 
-static void list_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_line_t *line)
+static void list_eline_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_line_t *line)
 {
 	APPEND(ctx, PCB_OBJ_ELINE, line, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_arc_t *arc)
+static void list_earc_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_arc_t *arc)
 {
 	APPEND(ctx, PCB_OBJ_EARC, arc, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_etext_cb(void *ctx, pcb_board_t *pcb, ElementType *element, TextType *text)
+static void list_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, TextType *text)
 {
 	APPEND(ctx, PCB_OBJ_ETEXT, text, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pin_t *pin)
+static void list_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pin_t *pin)
 {
 	APPEND(ctx, PCB_OBJ_PIN, pin, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pad_t *pad)
+static void list_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad)
 {
 	APPEND(ctx, PCB_OBJ_PAD, pad, PCB_PARENT_ELEMENT, element);
 }
@@ -488,7 +488,7 @@ static int field_via(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	ElementType *p = obj->data.element;
+	pcb_element_t *p = obj->data.element;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
@@ -517,7 +517,7 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_element_from_ptr(ElementType *e, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_element_from_ptr(pcb_element_t *e, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_obj_t tmp;
 	tmp.type = PCB_OBJ_ELEMENT;

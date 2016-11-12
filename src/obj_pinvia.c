@@ -64,7 +64,7 @@ void RemoveFreeVia(pcb_pin_t * data)
 }
 
 /* get next slot for a pin, allocates memory if necessary */
-pcb_pin_t *GetPinMemory(ElementType * element)
+pcb_pin_t *GetPinMemory(pcb_element_t * element)
 {
 	pcb_pin_t *new_obj;
 
@@ -138,7 +138,7 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coo
 }
 
 /* creates a new pin in an element */
-pcb_pin_t *CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags)
+pcb_pin_t *CreateNewPin(pcb_element_t *Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags)
 {
 	pcb_pin_t *pin = GetPinMemory(Element);
 
@@ -273,7 +273,7 @@ void *ChangeViaThermal(pcb_opctx_t *ctx, pcb_pin_t *Via)
 }
 
 /* changes the thermal on a pin */
-void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr element, pcb_pin_t *Pin)
+void *ChangePinThermal(pcb_opctx_t *ctx, pcb_element_t *element, pcb_pin_t *Pin)
 {
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
@@ -341,7 +341,7 @@ void *ChangeVia2ndSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 }
 
 /* changes the drilling hole of a pin */
-void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ChangePin2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->DrillingHole + ctx->chgsize.delta;
 
@@ -397,7 +397,7 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 
 
 /* changes the size of a pin */
-void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ChangePinSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Thickness + ctx->chgsize.delta;
 
@@ -422,7 +422,7 @@ void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 }
 
 /* changes the clearance size of a pin */
-void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ChangePinClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Clearance + ctx->chgsize.delta;
 
@@ -465,7 +465,7 @@ void *ChangeViaName(pcb_opctx_t *ctx, pcb_pin_t *Via)
 }
 
 /* changes the name of a pin */
-void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ChangePinName(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	char *old = Pin->Name;
 
@@ -481,7 +481,7 @@ void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 }
 
 /* changes the number of a pin */
-void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ChangePinNum(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	char *old = Pin->Number;
 
@@ -519,7 +519,7 @@ void *ChangeViaSquare(pcb_opctx_t *ctx, pcb_pin_t *Via)
 }
 
 /* changes the square flag of a pin */
-void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ChangePinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -540,7 +540,7 @@ void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 }
 
 /* sets the square flag of a pin */
-void *SetPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *SetPinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
@@ -549,7 +549,7 @@ void *SetPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 }
 
 /* clears the square flag of a pin */
-void *ClrPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ClrPinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
@@ -592,7 +592,7 @@ void *ClrViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 }
 
 /* changes the octagon flag of a pin */
-void *ChangePinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ChangePinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -608,7 +608,7 @@ void *ChangePinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 }
 
 /* sets the octagon flag of a pin */
-void *SetPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *SetPinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
@@ -617,7 +617,7 @@ void *SetPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 }
 
 /* clears the octagon flag of a pin */
-void *ClrPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ClrPinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
@@ -660,7 +660,7 @@ pcb_bool ChangeHole(pcb_pin_t *Via)
 }
 
 /* changes the mask size of a pin */
-void *ChangePinMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
+void *ChangePinMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Mask + ctx->chgsize.delta;
 

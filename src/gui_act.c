@@ -436,13 +436,13 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 			/* display the pinout of an element */
 		case F_Pinout:
 			{
-				ElementTypePtr element;
+				pcb_element_t *element;
 				void *ptrtmp;
 				Coord x, y;
 
 				gui->get_coords(_("Click on an element"), &x, &y);
 				if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
-					element = (ElementTypePtr) ptrtmp;
+					element = (pcb_element_t *) ptrtmp;
 					gui->show_item(element);
 				}
 				break;
@@ -459,7 +459,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 														 PCB_TYPE_ELEMENT | PCB_TYPE_PIN | PCB_TYPE_PAD |
 														 PCB_TYPE_VIA, (void **) &ptr1, (void **) &ptr2, (void **) &ptr3)) {
 				case PCB_TYPE_ELEMENT:
-					PIN_LOOP((ElementTypePtr) ptr1);
+					PIN_LOOP((pcb_element_t *) ptr1);
 					{
 						if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, pin))
 							ErasePinName(pin);
@@ -469,7 +469,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 						TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, pin);
 					}
 					END_LOOP;
-					PAD_LOOP((ElementTypePtr) ptr1);
+					PAD_LOOP((pcb_element_t *) ptr1);
 					{
 						if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, pad))
 							ErasePadName(pad);
@@ -919,9 +919,9 @@ static int ActionToggleHideName(int argc, const char **argv, Coord x, Coord y)
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					AddObjectToFlagUndoList(type, ptr1, ptr2, ptr3);
-					EraseElementName((ElementTypePtr) ptr2);
-					TOGGLE_FLAG(PCB_FLAG_HIDENAME, (ElementTypePtr) ptr2);
-					DrawElementName((ElementTypePtr) ptr2);
+					EraseElementName((pcb_element_t *) ptr2);
+					TOGGLE_FLAG(PCB_FLAG_HIDENAME, (pcb_element_t *) ptr2);
+					DrawElementName((pcb_element_t *) ptr2);
 					Draw();
 					IncrementUndoSerialNumber();
 				}

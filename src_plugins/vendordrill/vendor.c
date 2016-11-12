@@ -568,7 +568,7 @@ static void process_skips(lht_node_t *res)
 	}
 }
 
-pcb_bool vendorIsElementMappable(ElementTypePtr element)
+pcb_bool vendorIsElementMappable(pcb_element_t *element)
 {
 	int i;
 	int noskip;

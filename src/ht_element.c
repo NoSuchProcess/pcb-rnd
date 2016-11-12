@@ -34,7 +34,7 @@ static inline unsigned h_coord(Coord c)
 
 #define h_str(s) ((s) == NULL ? 0 : strhash(s))
 
-int pcb_pin_eq(const ElementType *e1, const pcb_pin_t *p1, const ElementType *e2, const pcb_pin_t *p2)
+int pcb_pin_eq(const pcb_element_t *e1, const pcb_pin_t *p1, const pcb_element_t *e2, const pcb_pin_t *p2)
 {
 	if (neq(p1, p2, Thickness) || neq(p1, p2, Clearance)) return 0;
 	if (neq(p1, p2, Mask) || neq(p1, p2, DrillingHole)) return 0;
@@ -44,7 +44,7 @@ int pcb_pin_eq(const ElementType *e1, const pcb_pin_t *p1, const ElementType *e2
 	return 1;
 }
 
-unsigned int pcb_pin_hash(const ElementType *e, const pcb_pin_t *p)
+unsigned int pcb_pin_hash(const pcb_element_t *e, const pcb_pin_t *p)
 {
 	return
 		h_coord(p->Thickness) ^ h_coord(p->Clearance) ^
@@ -53,7 +53,7 @@ unsigned int pcb_pin_hash(const ElementType *e, const pcb_pin_t *p)
 		h_str(p->Name) ^ h_str(p->Number);
 }
 
-int pcb_pad_eq(const ElementType *e1, const pcb_pad_t *p1, const ElementType *e2, const pcb_pad_t *p2)
+int pcb_pad_eq(const pcb_element_t *e1, const pcb_pad_t *p1, const pcb_element_t *e2, const pcb_pad_t *p2)
 {
 	if (neq(p1, p2, Thickness) || neq(p1, p2, Clearance)) return 0;
 	if (neqox(e1, p1, e2, p2, Point1.X) || neqoy(e1, p1, e2, p2, Point1.Y)) return 0;
@@ -64,7 +64,7 @@ int pcb_pad_eq(const ElementType *e1, const pcb_pad_t *p1, const ElementType *e2
 	return 1;
 }
 
-unsigned int pcb_pad_hash(const ElementType *e, const pcb_pad_t *p)
+unsigned int pcb_pad_hash(const pcb_element_t *e, const pcb_pad_t *p)
 {
 	return
 		h_coord(p->Thickness) ^ h_coord(p->Clearance) ^
@@ -75,7 +75,7 @@ unsigned int pcb_pad_hash(const ElementType *e, const pcb_pad_t *p)
 }
 
 
-int pcb_line_eq(const ElementType *e1, const pcb_line_t *l1, const ElementType *e2, const pcb_line_t *l2)
+int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element_t *e2, const pcb_line_t *l2)
 {
 	if (neq(l1, l2, Thickness) || neq(l1, l2, Clearance)) return 0;
 	if (neqox(e1, l1, e2, l2, Point1.X) || neqoy(e1, l1, e2, l2, Point1.Y)) return 0;
@@ -85,7 +85,7 @@ int pcb_line_eq(const ElementType *e1, const pcb_line_t *l1, const ElementType *
 }
 
 
-unsigned int pcb_line_hash(const ElementType *e, const pcb_line_t *l)
+unsigned int pcb_line_hash(const pcb_element_t *e, const pcb_line_t *l)
 {
 	return
 		h_coord(l->Thickness) ^ h_coord(l->Clearance) ^
@@ -94,7 +94,7 @@ unsigned int pcb_line_hash(const ElementType *e, const pcb_line_t *l)
 		h_str(l->Number);
 }
 
-int pcb_arc_eq(const ElementType *e1, const pcb_arc_t *a1, const ElementType *e2, const pcb_arc_t *a2)
+int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t *e2, const pcb_arc_t *a2)
 {
 	if (neq(a1, a2, Thickness) || neq(a1, a2, Clearance)) return 0;
 	if (neq(a1, a2, Width) || neq(a1, a2, Height)) return 0;
@@ -104,7 +104,7 @@ int pcb_arc_eq(const ElementType *e1, const pcb_arc_t *a1, const ElementType *e2
 	return 1;
 }
 
-unsigned int pcb_arc_hash(const ElementType *e, const pcb_arc_t *a)
+unsigned int pcb_arc_hash(const pcb_element_t *e, const pcb_arc_t *a)
 {
 	return 
 		h_coord(a->Thickness) ^ h_coord(a->Clearance) ^
@@ -116,7 +116,7 @@ unsigned int pcb_arc_hash(const ElementType *e, const pcb_arc_t *a)
 #undef h_coord
 #undef neq
 
-unsigned int pcb_element_hash(const ElementType *e)
+unsigned int pcb_element_hash(const pcb_element_t *e)
 {
 	unsigned int val = 0;
 	gdl_iterator_t it;
@@ -152,7 +152,7 @@ unsigned int pcb_element_hash(const ElementType *e)
 	return val;
 }
 
-int pcb_element_eq(const ElementType *e1, const ElementType *e2)
+int pcb_element_eq(const pcb_element_t *e1, const pcb_element_t *e2)
 {
 	/* Require the same objects in the same order - bail out at the first mismatch */
 

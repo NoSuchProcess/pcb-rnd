@@ -87,7 +87,7 @@ struct pcb_obj_s {
 		pcb_pad_t      *pad;
 		pcb_pin_t      *pin;
 		pcb_pin_t      *via;
-		ElementType  *element;
+		pcb_element_t  *element;
 		pcb_net_t      *net;
 		pcb_layer_t    *layer;
 	} data;
@@ -97,7 +97,7 @@ struct pcb_obj_s {
 		void         *any;
 		pcb_layer_t    *layer;
 		pcb_data_t     *data;
-		ElementType  *element;
+		pcb_element_t  *element;
 	} parent;
 	gdl_elem_t link;
 };

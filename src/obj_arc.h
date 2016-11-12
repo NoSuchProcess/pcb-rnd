@@ -43,7 +43,7 @@ struct pcb_arc_s {       /* holds information about arcs */
 
 /*** Memory ***/
 pcb_arc_t *GetArcMemory(pcb_layer_t *);
-pcb_arc_t *GetElementArcMemory(ElementType *Element);
+pcb_arc_t *GetElementArcMemory(pcb_element_t *Element);
 void RemoveFreeArc(pcb_arc_t *data);
 
 /*** Utility ***/

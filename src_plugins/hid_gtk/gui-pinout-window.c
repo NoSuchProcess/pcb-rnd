@@ -46,7 +46,7 @@ static void pinout_close_cb(GtkWidget * widget, GtkWidget * top_window)
 }
 
 
-void ghid_pinout_window_show(GHidPort * out, ElementType * element)
+void ghid_pinout_window_show(GHidPort * out, pcb_element_t * element)
 {
 	GtkWidget *button, *vbox, *hbox, *preview, *top_window;
 	gchar *title;
