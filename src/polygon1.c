@@ -66,18 +66,18 @@
 /*********************************************************************/
 
 #define Vcopy(a,b) {(a)[0]=(b)[0];(a)[1]=(b)[1];}
-int vect_equal(Vector v1, Vector v2);
-void vect_init(Vector v, double x, double y);
-void vect_sub(Vector res, Vector v2, Vector v3);
+int vect_equal(pcb_vector_t v1, pcb_vector_t v2);
+void vect_init(pcb_vector_t v, double x, double y);
+void vect_sub(pcb_vector_t res, pcb_vector_t v2, pcb_vector_t v3);
 
-void vect_min(Vector res, Vector v2, Vector v3);
-void vect_max(Vector res, Vector v2, Vector v3);
+void vect_min(pcb_vector_t res, pcb_vector_t v2, pcb_vector_t v3);
+void vect_max(pcb_vector_t res, pcb_vector_t v2, pcb_vector_t v3);
 
-double vect_dist2(Vector v1, Vector v2);
-double vect_det2(Vector v1, Vector v2);
-double vect_len2(Vector v1);
+double vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
+double vect_det2(pcb_vector_t v1, pcb_vector_t v2);
+double vect_len2(pcb_vector_t v1);
 
-int vect_inters2(Vector A, Vector B, Vector C, Vector D, Vector S1, Vector S2);
+int vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
 
 /* note that a vertex v's Flags.status represents the edge defined by
  * v to v->next (i.e. the edge is forward of v)
@@ -182,7 +182,7 @@ node_add
  1 means a new node was created and inserted
  4 means the intersection was not on the dest point
 */
-static VNODE *node_add_single(VNODE * dest, Vector po)
+static VNODE *node_add_single(VNODE * dest, pcb_vector_t po)
 {
 	VNODE *p;
 
@@ -209,7 +209,7 @@ new_descriptor
 static CVCList *new_descriptor(VNODE * a, char poly, char side)
 {
 	CVCList *l = (CVCList *) malloc(sizeof(CVCList));
-	Vector v;
+	pcb_vector_t v;
 	register double ang, dx, dy;
 
 	if (!l)
@@ -343,7 +343,7 @@ node_add_point
  return 1 if new node in b, 2 if new node in a and 3 if new node in both
 */
 
-static VNODE *node_add_single_point(VNODE * a, Vector p)
+static VNODE *node_add_single_point(VNODE * a, pcb_vector_t p)
 {
 	VNODE *next_a, *new_node;
 
@@ -450,7 +450,7 @@ static CVCList *add_descriptors(PLINE * pl, char poly, CVCList * list)
 	return list;
 }
 
-static inline void cntrbox_adjust(PLINE * c, Vector p)
+static inline void cntrbox_adjust(PLINE * c, pcb_vector_t p)
 {
 	c->xmin = min(c->xmin, p[0]);
 	c->xmax = max(c->xmax, p[0] + 1);
@@ -576,7 +576,7 @@ static r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	struct seg *s = (struct seg *) b;
-	Vector s1, s2;
+	pcb_vector_t s1, s2;
 	int cnt;
 	VNODE *new_node;
 
@@ -2218,7 +2218,7 @@ int poly_AndSubtract_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** aandb, POLYA
 	return code;
 }																/* poly_AndSubtract_free */
 
-static inline int cntrbox_pointin(PLINE * c, Vector p)
+static inline int cntrbox_pointin(PLINE * c, pcb_vector_t p)
 {
 	return (p[0] >= c->xmin && p[1] >= c->ymin && p[0] <= c->xmax && p[1] <= c->ymax);
 
@@ -2229,7 +2229,7 @@ static inline int node_neighbours(VNODE * a, VNODE * b)
 	return (a == b) || (a->next == b) || (b->next == a) || (a->next == b->next);
 }
 
-VNODE *poly_CreateNode(Vector v)
+VNODE *poly_CreateNode(pcb_vector_t v)
 {
 	VNODE *res;
 	Coord *c;
@@ -2238,7 +2238,7 @@ VNODE *poly_CreateNode(Vector v)
 	res = (VNODE *) calloc(1, sizeof(VNODE));
 	if (res == NULL)
 		return NULL;
-	/* bzero (res, sizeof (VNODE) - sizeof(Vector)); */
+	/* bzero (res, sizeof (VNODE) - sizeof(pcb_vector_t)); */
 	c = res->point;
 	*c++ = *v++;
 	*c = *v;
@@ -2259,7 +2259,7 @@ void poly_IniContour(PLINE * c)
 	c->radius = 0;
 }
 
-PLINE *poly_NewContour(Vector v)
+PLINE *poly_NewContour(pcb_vector_t v)
 {
 	PLINE *res;
 
@@ -2319,7 +2319,7 @@ void poly_PreContour(PLINE * C, pcb_bool optimize)
 {
 	double area = 0;
 	VNODE *p, *c;
-	Vector p1, p2;
+	pcb_vector_t p1, p2;
 
 	assert(C != NULL);
 
@@ -2534,7 +2534,7 @@ pcb_bool poly_InclContour(POLYAREA * p, PLINE * c)
 
 typedef struct pip {
 	int f;
-	Vector p;
+	pcb_vector_t p;
 	jmp_buf env;
 } pip;
 
@@ -2546,7 +2546,7 @@ static r_dir_t crossing(const pcb_box_t * b, void *cl)
 
 	if (s->v->point[1] <= p->p[1]) {
 		if (s->v->next->point[1] > p->p[1]) {
-			Vector v1, v2;
+			pcb_vector_t v1, v2;
 			pcb_long64_t cross;
 			Vsub2(v1, s->v->next->point, s->v->point);
 			Vsub2(v2, p->p, s->v->point);
@@ -2561,7 +2561,7 @@ static r_dir_t crossing(const pcb_box_t * b, void *cl)
 	}
 	else {
 		if (s->v->next->point[1] <= p->p[1]) {
-			Vector v1, v2;
+			pcb_vector_t v1, v2;
 			pcb_long64_t cross;
 			Vsub2(v1, s->v->next->point, s->v->point);
 			Vsub2(v2, p->p, s->v->point);
@@ -2577,7 +2577,7 @@ static r_dir_t crossing(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-int poly_InsideContour(PLINE * c, Vector p)
+int poly_InsideContour(PLINE * c, pcb_vector_t p)
 {
 	struct pip info;
 	pcb_box_t ray;
@@ -2594,7 +2594,7 @@ int poly_InsideContour(PLINE * c, Vector p)
 	return info.f;
 }
 
-pcb_bool poly_CheckInside(POLYAREA * p, Vector v0)
+pcb_bool poly_CheckInside(POLYAREA * p, pcb_vector_t v0)
 {
 	PLINE *cur;
 
@@ -2610,7 +2610,7 @@ pcb_bool poly_CheckInside(POLYAREA * p, Vector v0)
 	return pcb_false;
 }
 
-pcb_bool poly_M_CheckInside(POLYAREA * p, Vector v0)
+pcb_bool poly_M_CheckInside(POLYAREA * p, pcb_vector_t v0)
 {
 	POLYAREA *cur;
 
@@ -2625,16 +2625,16 @@ pcb_bool poly_M_CheckInside(POLYAREA * p, Vector v0)
 	return pcb_false;
 }
 
-static double dot(Vector A, Vector B)
+static double dot(pcb_vector_t A, pcb_vector_t B)
 {
 	return (double) A[0] * (double) B[0] + (double) A[1] * (double) B[1];
 }
 
 /* Compute whether point is inside a triangle formed by 3 other pints */
 /* Algorithm from http://www.blackpawn.com/texts/pointinpoly/default.html */
-static int point_in_triangle(Vector A, Vector B, Vector C, Vector P)
+static int point_in_triangle(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t P)
 {
-	Vector v0, v1, v2;
+	pcb_vector_t v0, v1, v2;
 	double dot00, dot01, dot02, dot11, dot12;
 	double invDenom;
 	double u, v;
@@ -2664,13 +2664,13 @@ static int point_in_triangle(Vector A, Vector B, Vector C, Vector P)
 }
 
 
-/* Returns the dot product of Vector A->B, and a vector
- * orthogonal to Vector C->D. The result is not normalised, so will be
+/* Returns the dot product of pcb_vector_t A->B, and a vector
+ * orthogonal to pcb_vector_t C->D. The result is not normalised, so will be
  * weighted by the magnitude of the C->D vector.
  */
-static double dot_orthogonal_to_direction(Vector A, Vector B, Vector C, Vector D)
+static double dot_orthogonal_to_direction(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D)
 {
-	Vector l1, l2, l3;
+	pcb_vector_t l1, l2, l3;
 	l1[0] = B[0] - A[0];
 	l1[1] = B[1] - A[1];
 	l2[0] = D[0] - C[0];
@@ -2699,7 +2699,7 @@ static double dot_orthogonal_to_direction(Vector A, Vector B, Vector C, Vector D
  *             Joseph O'Rourke, Cambridge University Press 1998,
  *             ISBN 0-521-64010-5 Pbk, ISBN 0-521-64976-5 Hbk
  */
-static void poly_ComputeInteriorPoint(PLINE * poly, Vector v)
+static void poly_ComputeInteriorPoint(PLINE * poly, pcb_vector_t v)
 {
 	VNODE *pt1, *pt2, *pt3, *q;
 	VNODE *min_q = NULL;
@@ -2761,7 +2761,7 @@ static void poly_ComputeInteriorPoint(PLINE * poly, Vector v)
  */
 int poly_ContourInContour(PLINE * poly, PLINE * inner)
 {
-	Vector point;
+	pcb_vector_t point;
 	assert(poly != NULL);
 	assert(inner != NULL);
 	if (cntrbox_inside(inner, poly)) {
@@ -2821,9 +2821,9 @@ void poly_Free(POLYAREA ** p)
 	free(*p), *p = NULL;
 }
 
-static pcb_bool inside_sector(VNODE * pn, Vector p2)
+static pcb_bool inside_sector(VNODE * pn, pcb_vector_t p2)
 {
-	Vector cdir, ndir, pdir;
+	pcb_vector_t cdir, ndir, pdir;
 	int p_c, n_c, p_n;
 
 	assert(pn != NULL);
@@ -2845,7 +2845,7 @@ static pcb_bool inside_sector(VNODE * pn, Vector p2)
 pcb_bool poly_ChkContour(PLINE * a)
 {
 	VNODE *a1, *a2, *hit1, *hit2;
-	Vector i1, i2;
+	pcb_vector_t i1, i2;
 	int icnt;
 
 	assert(a != NULL);
@@ -2975,13 +2975,13 @@ pcb_bool poly_Valid(POLYAREA * p)
 }
 
 
-Vector vect_zero = { (long) 0, (long) 0 };
+pcb_vector_t vect_zero = { (long) 0, (long) 0 };
 
 /*********************************************************************/
 /*             L o n g   V e c t o r   S t u f f                     */
 /*********************************************************************/
 
-void vect_init(Vector v, double x, double y)
+void vect_init(pcb_vector_t v, double x, double y)
 {
 	v[0] = (long) x;
 	v[1] = (long) y;
@@ -2991,34 +2991,34 @@ void vect_init(Vector v, double x, double y)
 
 #define Vsub(a,b,c) {(a)[0]=(b)[0]-(c)[0];(a)[1]=(b)[1]-(c)[1];}
 
-int vect_equal(Vector v1, Vector v2)
+int vect_equal(pcb_vector_t v1, pcb_vector_t v2)
 {
 	return (v1[0] == v2[0] && v1[1] == v2[1]);
 }																/* vect_equal */
 
 
-void vect_sub(Vector res, Vector v1, Vector v2)
+void vect_sub(pcb_vector_t res, pcb_vector_t v1, pcb_vector_t v2)
 {
 Vsub(res, v1, v2)}							/* vect_sub */
 
-void vect_min(Vector v1, Vector v2, Vector v3)
+void vect_min(pcb_vector_t v1, pcb_vector_t v2, pcb_vector_t v3)
 {
 	v1[0] = (v2[0] < v3[0]) ? v2[0] : v3[0];
 	v1[1] = (v2[1] < v3[1]) ? v2[1] : v3[1];
 }																/* vect_min */
 
-void vect_max(Vector v1, Vector v2, Vector v3)
+void vect_max(pcb_vector_t v1, pcb_vector_t v2, pcb_vector_t v3)
 {
 	v1[0] = (v2[0] > v3[0]) ? v2[0] : v3[0];
 	v1[1] = (v2[1] > v3[1]) ? v2[1] : v3[1];
 }																/* vect_max */
 
-double vect_len2(Vector v)
+double vect_len2(pcb_vector_t v)
 {
 	return ((double) v[0] * v[0] + (double) v[1] * v[1]);	/* why sqrt? only used for compares */
 }
 
-double vect_dist2(Vector v1, Vector v2)
+double vect_dist2(pcb_vector_t v1, pcb_vector_t v2)
 {
 	double dx = v1[0] - v2[0];
 	double dy = v1[1] - v2[1];
@@ -3027,12 +3027,12 @@ double vect_dist2(Vector v1, Vector v2)
 }
 
 /* value has sign of angle between vectors */
-double vect_det2(Vector v1, Vector v2)
+double vect_det2(pcb_vector_t v1, pcb_vector_t v2)
 {
 	return (((double) v1[0] * v2[1]) - ((double) v2[0] * v1[1]));
 }
 
-static double vect_m_dist(Vector v1, Vector v2)
+static double vect_m_dist(pcb_vector_t v1, pcb_vector_t v2)
 {
 	double dx = v1[0] - v2[0];
 	double dy = v1[1] - v2[1];
@@ -3053,7 +3053,7 @@ vect_inters2
  (C) 1997 Michael Leonov, Alexey Nikitin
 */
 
-int vect_inters2(Vector p1, Vector p2, Vector q1, Vector q2, Vector S1, Vector S2)
+int vect_inters2(pcb_vector_t p1, pcb_vector_t p2, pcb_vector_t q1, pcb_vector_t q2, pcb_vector_t S1, pcb_vector_t S2)
 {
 	double s, t, deel;
 	double rpx, rpy, rqx, rqy;
@@ -3075,7 +3075,7 @@ int vect_inters2(Vector p1, Vector p2, Vector q1, Vector q2, Vector S1, Vector S
 
 	if (deel == 0) {							/* parallel */
 		double dc1, dc2, d1, d2, h;	/* Check to see whether p1-p2 and q1-q2 are on the same line */
-		Vector hp1, hq1, hp2, hq2, q1p1, q1q2;
+		pcb_vector_t hp1, hq1, hp2, hq2, q1p1, q1q2;
 
 		Vsub2(q1p1, q1, p1);
 		Vsub2(q1q2, q1, q2);

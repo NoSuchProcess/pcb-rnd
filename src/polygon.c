@@ -252,7 +252,7 @@ static POLYAREA *original_poly(pcb_polygon_t * p)
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
 	pcb_cardinal_t n;
-	Vector v;
+	pcb_vector_t v;
 	int hole = 0;
 
 	if ((np = poly_Create()) == NULL)
@@ -300,7 +300,7 @@ POLYAREA *PolygonToPoly(pcb_polygon_t * p)
 POLYAREA *RectPoly(Coord x1, Coord x2, Coord y1, Coord y2)
 {
 	PLINE *contour = NULL;
-	Vector v;
+	pcb_vector_t v;
 
 	/* Return NULL for zero or negatively sized rectangles */
 	if (x2 <= x1 || y2 <= y1)
@@ -349,7 +349,7 @@ void square_pin_factors(int style, double *xm, double *ym)
 POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style)
 {
 	PLINE *contour = NULL;
-	Vector v;
+	pcb_vector_t v;
 	double xm[8], ym[8];
 
 	square_pin_factors(style, xm, ym);
@@ -398,7 +398,7 @@ POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style)
  * 2 for a half circle
  * or 4 for a quarter circle
  */
-void frac_circle(PLINE * c, Coord X, Coord Y, Vector v, int range)
+void frac_circle(PLINE * c, Coord X, Coord Y, pcb_vector_t v, int range)
 {
 	double e1, e2, t1;
 	int i;
@@ -425,7 +425,7 @@ void frac_circle(PLINE * c, Coord X, Coord Y, Vector v, int range)
 POLYAREA *CirclePoly(Coord x, Coord y, Coord radius)
 {
 	PLINE *contour;
-	Vector v;
+	pcb_vector_t v;
 
 	if (radius <= 0)
 		return NULL;
@@ -445,7 +445,7 @@ POLYAREA *CirclePoly(Coord x, Coord y, Coord radius)
 POLYAREA *RoundRect(Coord x1, Coord x2, Coord y1, Coord y2, Coord t)
 {
 	PLINE *contour = NULL;
-	Vector v;
+	pcb_vector_t v;
 
 	assert(x2 > x1);
 	assert(y2 > y1);
@@ -474,7 +474,7 @@ static POLYAREA *ArcPolyNoIntersect(pcb_arc_t * a, Coord thick)
 {
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
-	Vector v;
+	pcb_vector_t v;
 	pcb_box_t *ends;
 	int i, segs;
 	double ang, da, rx, ry;
@@ -571,7 +571,7 @@ POLYAREA *LinePoly(pcb_line_t * L, Coord thick)
 {
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
-	Vector v;
+	pcb_vector_t v;
 	double d, dx, dy;
 	long half;
 	pcb_line_t _l = *L, *l = &_l;
@@ -628,7 +628,7 @@ POLYAREA *SquarePadPoly(pcb_pad_t * pad, Coord clear)
 {
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
-	Vector v;
+	pcb_vector_t v;
 	double d;
 	double tx, ty;
 	double cx, cy;
@@ -1572,7 +1572,7 @@ pcb_bool isects(POLYAREA * a, pcb_polygon_t *p, pcb_bool fr)
 pcb_bool IsPointInPolygon(Coord X, Coord Y, Coord r, pcb_polygon_t *p)
 {
 	POLYAREA *c;
-	Vector v;
+	pcb_vector_t v;
 	v[0] = X;
 	v[1] = Y;
 	if (poly_CheckInside(p->Clipped, v))
@@ -1597,7 +1597,7 @@ pcb_bool IsPointInPolygon(Coord X, Coord Y, Coord r, pcb_polygon_t *p)
 
 pcb_bool IsPointInPolygonIgnoreHoles(Coord X, Coord Y, pcb_polygon_t *p)
 {
-	Vector v;
+	pcb_vector_t v;
 	v[0] = X;
 	v[1] = Y;
 	return poly_InsideContour(p->Clipped->contours, v);

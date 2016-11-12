@@ -41,7 +41,7 @@
 
 /*#define DEBUG_POLYAREA*/
 
-double vect_dist2(Vector v1, Vector v2);
+double vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
 #define Vcpy2(r,a)              {(r)[0] = (a)[0]; (r)[1] = (a)[1];}
 #define Vswp2(a,b) { long t; \
         t = (a)[0], (a)[0] = (b)[0], (b)[0] = t; \
@@ -161,7 +161,7 @@ static pcb_box_t POLYAREA_boundingBox(POLYAREA * a)
  * as a pair of vectors PQ.\n
  * Make it long so it will intersect everything in the area.
  */
-static void POLYAREA_findXmostLine(POLYAREA * a, int side, Vector p, Vector q, int clearance)
+static void POLYAREA_findXmostLine(POLYAREA * a, int side, pcb_vector_t p, pcb_vector_t q, int clearance)
 {
 	int extra;
 	p[0] = p[1] = 0;
@@ -192,7 +192,7 @@ static void POLYAREA_findXmostLine(POLYAREA * a, int side, Vector p, Vector q, i
 		{
 			int kx, ky, minmax, dq, ckx, cky;
 			Coord mm[2] = { MAX_COORD, -MAX_COORD };
-			Vector mmp[2];
+			pcb_vector_t mmp[2];
 			VNODE *v;
 
 			switch (side) {
@@ -269,7 +269,7 @@ static int rotateSide(int side, int n)
 /*!
  * Wrapper for CreateNewLineOnLayer that takes vectors and deals with Undo
  */
-static pcb_line_t *CreateVectorLineOnLayer(pcb_layer_t * layer, Vector a, Vector b, int thickness, int clearance, pcb_flag_t flags)
+static pcb_line_t *Createpcb_vector_tLineOnLayer(pcb_layer_t * layer, pcb_vector_t a, pcb_vector_t b, int thickness, int clearance, pcb_flag_t flags)
 {
 	pcb_line_t *line;
 
@@ -280,11 +280,11 @@ static pcb_line_t *CreateVectorLineOnLayer(pcb_layer_t * layer, Vector a, Vector
 	return line;
 }
 
-static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, Vector a, Vector b, pcb_line_t * orig, POLYAREA ** expandp)
+static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vector_t b, pcb_line_t * orig, POLYAREA ** expandp)
 {
 	pcb_line_t *line;
 
-	line = CreateVectorLineOnLayer(layer, a, b, orig->Thickness, orig->Clearance, orig->Flags);
+	line = Createpcb_vector_tLineOnLayer(layer, a, b, orig->Thickness, orig->Clearance, orig->Flags);
 	if (line && expandp) {
 		POLYAREA *p = LinePoly(line, line->Thickness + line->Clearance);
 		poly_Boolean_free(*expandp, p, expandp, PBO_UNITE);
@@ -313,9 +313,9 @@ static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, Vector a, Vector b, pcb_l
  */
 static int MakeBypassingLines(POLYAREA * brush, pcb_layer_t * layer, pcb_line_t * line, int side, POLYAREA ** expandp)
 {
-	Vector pA, pB, flatA, flatB, qA, qB;
-	Vector lA, lB;
-	Vector a, b, c, d, junk;
+	pcb_vector_t pA, pB, flatA, flatB, qA, qB;
+	pcb_vector_t lA, lB;
+	pcb_vector_t a, b, c, d, junk;
 	int hits;
 
 	SET_FLAG(PCB_FLAG_DRC, line);			/* will cause sublines to inherit */
@@ -371,7 +371,7 @@ static r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	pcb_line_t *line = (pcb_line_t *) targ;
 	struct info *info = private;
 	POLYAREA *lp, *copy, *tmp, *n, *smallest = NULL;
-	Vector p;
+	pcb_vector_t p;
 	int inside = 0, side, r;
 	double small, big;
 	int nocentroid = 0;

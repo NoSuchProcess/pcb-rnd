@@ -43,7 +43,7 @@ static POLYAREA *original_poly(pcb_polygon_t *p, pcb_bool *forward)
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
 	pcb_cardinal_t n;
-	Vector v;
+	pcb_vector_t v;
 	int hole = 0;
 
 	*forward = pcb_true;

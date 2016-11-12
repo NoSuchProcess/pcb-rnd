@@ -115,7 +115,7 @@ nowrap void cg_perp_line_(const cg_obj_t *i, cg_obj_t *o, int xp, int yp, int le
 nowrap double cg_dist_(int x1, int y1, int x2, int y2);
 
 /* is point on the object? Extend means the object is extended (lines become
-   infinite long, arcs become circles). Vector always returns 1. */
+   infinite long, arcs become circles). pcb_vector_t always returns 1. */
 nowrap int cg_ison_(cg_obj_t *o, int x, int y, int extend);
 nowrap int cg_ison_line_(cg_obj_t *l, int x, int y, int extend);
 nowrap int cg_ison_arc_(cg_obj_t *a, int x, int y, int extend);

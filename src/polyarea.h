@@ -38,15 +38,15 @@
 #endif
 
 
-typedef Coord vertex[2];				/* longing point representation of
+typedef Coord pcb_vertex_t[2];				/* longing point representation of
 																   coordinates */
-typedef vertex Vector;
+typedef pcb_vertex_t pcb_vector_t;
 
-#define VertexEqu(a,b) (memcmp((a),(b),sizeof(Vector))==0)
-#define VertexCpy(a,b) memcpy((a),(b),sizeof(Vector))
+#define VertexEqu(a,b) (memcmp((a),(b),sizeof(pcb_vector_t))==0)
+#define VertexCpy(a,b) memcpy((a),(b),sizeof(pcb_vector_t))
 
 
-extern Vector vect_zero;
+extern pcb_vector_t vect_zero;
 
 enum {
 	err_no_memory = 2,
@@ -71,7 +71,7 @@ struct VNODE {
 	} Flags;
 	CVCList *cvc_prev;
 	CVCList *cvc_next;
-	Vector point;
+	pcb_vector_t point;
 };
 
 typedef struct PLINE PLINE;
@@ -91,7 +91,7 @@ struct PLINE {
 	} Flags;
 };
 
-PLINE *poly_NewContour(Vector v);
+PLINE *poly_NewContour(pcb_vector_t v);
 
 void poly_IniContour(PLINE * c);
 void poly_ClrContour(PLINE * c);	/* clears list of vertices */
@@ -102,7 +102,7 @@ pcb_bool poly_CopyContour(PLINE ** dst, PLINE * src);
 void poly_PreContour(PLINE * c, pcb_bool optimize);	/* prepare contour */
 void poly_InvContour(PLINE * c);	/* invert contour */
 
-VNODE *poly_CreateNode(Vector v);
+VNODE *poly_CreateNode(pcb_vector_t v);
 
 void poly_InclVertex(VNODE * after, VNODE * node);
 void poly_ExclVertex(VNODE * node);
@@ -128,7 +128,7 @@ pcb_bool poly_ExclContour(POLYAREA * p, PLINE * c);
 
 pcb_bool poly_ChkContour(PLINE * a);
 
-pcb_bool poly_CheckInside(POLYAREA * c, Vector v0);
+pcb_bool poly_CheckInside(POLYAREA * c, pcb_vector_t v0);
 pcb_bool Touching(POLYAREA * p1, POLYAREA * p2);
 
 /**********************************************************************/
@@ -138,7 +138,7 @@ pcb_bool Touching(POLYAREA * p1, POLYAREA * p2);
 /* checks whether point lies within contour
 independently of its orientation */
 
-int poly_InsideContour(PLINE * c, Vector v);
+int poly_InsideContour(PLINE * c, pcb_vector_t v);
 int poly_ContourInContour(PLINE * poly, PLINE * inner);
 POLYAREA *poly_Create(void);
 
@@ -154,11 +154,11 @@ enum PolygonBooleanOperation {
 	PBO_XOR
 };
 
-double vect_dist2(Vector v1, Vector v2);
-double vect_det2(Vector v1, Vector v2);
-double vect_len2(Vector v1);
+double vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
+double vect_det2(pcb_vector_t v1, pcb_vector_t v2);
+double vect_len2(pcb_vector_t v1);
 
-int vect_inters2(Vector A, Vector B, Vector C, Vector D, Vector S1, Vector S2);
+int vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
 
 int poly_Boolean(const POLYAREA * a, const POLYAREA * b, POLYAREA ** res, int action);
 int poly_Boolean_free(POLYAREA * a, POLYAREA * b, POLYAREA ** res, int action);

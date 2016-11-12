@@ -50,7 +50,7 @@ struct cent {
 static POLYAREA *diag_line(Coord X, Coord Y, Coord l, Coord w, pcb_bool rt)
 {
 	PLINE *c;
-	Vector v;
+	pcb_vector_t v;
 	Coord x1, x2, y1, y2;
 
 	if (rt) {
@@ -86,7 +86,7 @@ static POLYAREA *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 {
 	POLYAREA *p, *p2;
 	PLINE *c;
-	Vector v;
+	pcb_vector_t v;
 	Coord d, in, out;
 
 	switch (style) {

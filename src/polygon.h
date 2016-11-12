@@ -74,7 +74,7 @@ POLYAREA *LinePoly(pcb_line_t * l, Coord thick);
 POLYAREA *ArcPoly(pcb_arc_t * l, Coord thick);
 POLYAREA *PinPoly(pcb_pin_t * l, Coord thick, Coord clear);
 POLYAREA *BoxPolyBloated(pcb_box_t * box, Coord radius);
-void frac_circle(PLINE *, Coord, Coord, Vector, int);
+void frac_circle(PLINE *, Coord, Coord, pcb_vector_t, int);
 int InitClip(pcb_data_t * d, pcb_layer_t * l, pcb_polygon_t * p);
 void RestoreToPolygon(pcb_data_t *, int, void *, void *);
 void ClearFromPolygon(pcb_data_t *, int, void *, void *);
