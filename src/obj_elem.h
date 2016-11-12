@@ -77,9 +77,9 @@ void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Co
 void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, Coord yoff);
 
 pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
-	pcb_font_t *PCBFont, FlagType Flags, char *Description, char *NameOnPCB,
+	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
 	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
-	int TextScale, FlagType TextFlags, pcb_bool uniqueName);
+	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName);
 
 pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, Coord X, Coord Y,
 	Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness);
@@ -87,7 +87,7 @@ pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, Coord X, Coord Y,
 pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
 
 void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, Coord X, Coord Y,
-	unsigned Direction, char *TextString, int Scale, FlagType Flags);
+	unsigned Direction, char *TextString, int Scale, pcb_flag_t Flags);
 
 
 /* Change the specified text on an element, either on the board (give

@@ -135,7 +135,7 @@ extern	pcb_font_t *	yyFont;
 extern	int				pcb_lineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
 extern	conf_role_t yy_settings_dest;
-extern FlagType yy_pcb_flags;
+extern pcb_flag_t yy_pcb_flags;
 
 static char *layer_group_string;
 
@@ -260,7 +260,7 @@ union YYSTYPE
 	int		integer;
 	double		number;
 	char		*string;
-	FlagType	flagtype;
+	pcb_flag_t	flagtype;
 	PLMeasure	measure;
 
 #line 267 "parse_y.c" /* yacc.c:355  */

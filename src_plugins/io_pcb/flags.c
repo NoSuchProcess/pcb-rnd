@@ -31,7 +31,7 @@
 #include "macro.h"
 
 #define N(x) x, sizeof(x)-1
-static FlagBitsType pcb_flagbits[] = {
+static pcb_flag_bits_t pcb_flagbits[] = {
 	{SHOWNUMBERFLAG, N("shownumber"), 1},
 	{LOCALREFFLAG, N("localref"), 1},
 	{CHECKPLANESFLAG, N("checkplanes"), 1},
@@ -58,12 +58,12 @@ static FlagBitsType pcb_flagbits[] = {
 };
 #undef N
 
-char *pcbflags_to_string(FlagType flags)
+char *pcbflags_to_string(pcb_flag_t flags)
 {
 	return common_flags_to_string(flags, PCB_TYPEMASK_ALL, pcb_flagbits, ENTRIES(pcb_flagbits));
 }
 
-FlagType string_to_pcbflags(const char *flagstring, int (*error) (const char *msg))
+pcb_flag_t string_to_pcbflags(const char *flagstring, int (*error) (const char *msg))
 {
 	return common_string_to_flags(flagstring, error, pcb_flagbits, ENTRIES(pcb_flagbits));
 }

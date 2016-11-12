@@ -73,7 +73,7 @@ void RemoveFreeLine(pcb_line_t * data)
 struct line_info {
 	Coord X1, X2, Y1, Y2;
 	Coord Thickness;
-	FlagType Flags;
+	pcb_flag_t Flags;
 	pcb_line_t test, *ans;
 	jmp_buf env;
 };
@@ -146,7 +146,7 @@ static r_dir_t line_callback(const pcb_box_t * b, void *cl)
 
 
 /* creates a new line on a layer and checks for overlap and extension */
-pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags)
+pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, pcb_flag_t Flags)
 {
 	struct line_info info;
 	pcb_box_t search;
@@ -191,7 +191,7 @@ pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord
 	return CreateNewLineOnLayer(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 }
 
-pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags)
+pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, pcb_flag_t Flags)
 {
 	pcb_line_t *Line;
 

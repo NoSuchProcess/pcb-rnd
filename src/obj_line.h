@@ -49,8 +49,8 @@ typedef struct {								/* current marked line */
 pcb_line_t *GetLineMemory(pcb_layer_t * layer);
 void RemoveFreeLine(pcb_line_t * data);
 
-pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
-pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
+pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, pcb_flag_t Flags);
+pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, pcb_flag_t Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line);

@@ -1689,7 +1689,7 @@ pcb_bool MorphPolygon(pcb_layer_t *layer, pcb_polygon_t *poly)
 {
 	POLYAREA *p, *start;
 	pcb_bool many = pcb_false;
-	FlagType flags;
+	pcb_flag_t flags;
 
 	if (!poly->Clipped || TEST_FLAG(PCB_FLAG_LOCK, poly))
 		return pcb_false;
@@ -1798,7 +1798,7 @@ void debug_polygon(pcb_polygon_t * p)
 /* Convert a POLYAREA (and all linked POLYAREA) to
  * raw PCB polygons on the given layer.
  */
-void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, POLYAREA * Input, FlagType Flags)
+void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, POLYAREA * Input, pcb_flag_t Flags)
 {
 	pcb_polygon_t *Polygon;
 	POLYAREA *pa;

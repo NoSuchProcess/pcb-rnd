@@ -26,8 +26,8 @@
 
 #include "flag.h"
 
-char *pcbflags_to_string(FlagType flags);
-FlagType string_to_pcbflags(const char *flagstring, int (*error) (const char *msg));
+char *pcbflags_to_string(pcb_flag_t flags);
+pcb_flag_t string_to_pcbflags(const char *flagstring, int (*error) (const char *msg));
 
 /* ---------------------------------------------------------------------------
  * PCB flags - kept only for file format compatibility reasons; these bits

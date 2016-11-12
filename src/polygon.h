@@ -85,7 +85,7 @@ pcb_bool IsRectangleInPolygon(Coord, Coord, Coord, Coord, pcb_polygon_t *);
 pcb_bool isects(POLYAREA *, pcb_polygon_t *, pcb_bool);
 pcb_bool MorphPolygon(pcb_layer_t *, pcb_polygon_t *);
 void NoHolesPolygonDicer(pcb_polygon_t * p, const pcb_box_t * clip, void (*emit) (PLINE *, void *), void *user_data);
-void PolyToPolygonsOnLayer(pcb_data_t *, pcb_layer_t *, POLYAREA *, FlagType);
+void PolyToPolygonsOnLayer(pcb_data_t *, pcb_layer_t *, POLYAREA *, pcb_flag_t);
 
 void square_pin_factors(int style, double *xm, double *ym);
 

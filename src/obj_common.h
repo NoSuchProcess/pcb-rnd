@@ -77,7 +77,7 @@ long int CreateIDGet(void);
 #define ANYOBJECTFIELDS			\
 	pcb_box_t		BoundingBox;	\
 	long int	ID;		\
-	FlagType	Flags; \
+	pcb_flag_t	Flags; \
 	pcb_attribute_list_t Attributes
 
 	/*  struct LibraryEntryType *net */

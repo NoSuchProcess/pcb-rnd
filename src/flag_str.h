@@ -42,10 +42,10 @@ typedef struct {
 	   of these.  */
 	int object_types;
 
-} FlagBitsType;
+} pcb_flag_bits_t;
 
 /* All flags natively known by the core */
-extern FlagBitsType pcb_object_flagbits[];
+extern pcb_flag_bits_t pcb_object_flagbits[];
 extern const int pcb_object_flagbits_len;
 
 /* The purpose of this interface is to make the file format able to
@@ -55,22 +55,22 @@ extern const int pcb_object_flagbits_len;
 /* When passed a string, parse it and return an appropriate set of
    flags.  Errors cause error() to be called with a suitable message;
    if error is NULL, errors are ignored.  */
-FlagType string_to_flags(const char *flagstring, int (*error) (const char *msg));
+pcb_flag_t string_to_flags(const char *flagstring, int (*error) (const char *msg));
 
 /* Given a set of flags for a given object type, return a string which
    can be output to a file.  The returned pointer must not be
    freed.  */
-char *flags_to_string(FlagType flags, int object_type);
+char *flags_to_string(pcb_flag_t flags, int object_type);
 
 /* Same as above, but for pcb flags.  */
-FlagType string_to_pcbflags(const char *flagstring, int (*error) (const char *msg));
-char *pcbflags_to_string(FlagType flags);
+pcb_flag_t string_to_pcbflags(const char *flagstring, int (*error) (const char *msg));
+char *pcbflags_to_string(pcb_flag_t flags);
 
 void uninit_strflags_buf(void);
 void uninit_strflags_layerlist(void);
 
 /* io_pcb() needs this for historic reasons */
-FlagType common_string_to_flags(const char *flagstring, int (*error) (const char *msg), FlagBitsType * flagbits, int n_flagbits);
-char *common_flags_to_string(FlagType flags, int object_type, FlagBitsType * flagbits, int n_flagbits);
+pcb_flag_t common_string_to_flags(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits);
+char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits);
 
 #endif

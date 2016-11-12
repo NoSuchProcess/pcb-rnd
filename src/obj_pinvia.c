@@ -85,7 +85,7 @@ void RemoveFreePin(pcb_pin_t * data)
 /*** utility ***/
 
 /* creates a new via */
-pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags)
+pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, pcb_flag_t Flags)
 {
 	pcb_pin_t *Via;
 
@@ -138,7 +138,7 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coo
 }
 
 /* creates a new pin in an element */
-pcb_pin_t *CreateNewPin(pcb_element_t *Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags)
+pcb_pin_t *CreateNewPin(pcb_element_t *Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, pcb_flag_t Flags)
 {
 	pcb_pin_t *pin = GetPinMemory(Element);
 

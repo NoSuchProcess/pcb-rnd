@@ -148,7 +148,7 @@ void SetPolygonBoundingBox(pcb_polygon_t *Polygon)
 }
 
 /* creates a new polygon from the old formats rectangle data */
-pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, FlagType Flags)
+pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_flag_t Flags)
 {
 	pcb_polygon_t *polygon = CreateNewPolygon(Layer, Flags);
 	if (!polygon)
@@ -172,7 +172,7 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon)
 }
 
 /* creates a new polygon on a layer */
-pcb_polygon_t *CreateNewPolygon(pcb_layer_t *Layer, FlagType Flags)
+pcb_polygon_t *CreateNewPolygon(pcb_layer_t *Layer, pcb_flag_t Flags)
 {
 	pcb_polygon_t *polygon = GetPolygonMemory(Layer);
 

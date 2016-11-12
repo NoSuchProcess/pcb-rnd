@@ -106,7 +106,7 @@ union YYSTYPE
 	int		integer;
 	double		number;
 	char		*string;
-	FlagType	flagtype;
+	pcb_flag_t	flagtype;
 	PLMeasure	measure;
 
 #line 113 "parse_y.h" /* yacc.c:1909  */

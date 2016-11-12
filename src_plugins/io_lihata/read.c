@@ -278,7 +278,7 @@ static int post_thermal_assign(vtptr_t *pt)
 		lht_dom_iterator_t it;
 		io_lihata_flag_holder fh;
 		lht_node_t *thr = pt->array[i];
-		FlagType *f = thr->user_data;
+		pcb_flag_t *f = thr->user_data;
 
 		memset(&fh, 0, sizeof(fh));
 		fh.Flags = *f;
@@ -301,7 +301,7 @@ static int post_thermal_assign(vtptr_t *pt)
 /* NOTE: in case of objects with thermal, f must point to the object's
    flags because termals will be filled in at the end, in a 2nd pass and
    we need to store the f pointer. */
-static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
+static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type)
 {
 	io_lihata_flag_holder fh;
 

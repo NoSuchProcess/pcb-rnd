@@ -29,19 +29,19 @@
 #include "config.h"
 #include "flag.h"
 
-/* This just fills in a FlagType with current flags.  */
-FlagType MakeFlags(unsigned int flags)
+/* This just fills in a pcb_flag_t with current flags.  */
+pcb_flag_t MakeFlags(unsigned int flags)
 {
-	FlagType rv;
+	pcb_flag_t rv;
 	memset(&rv, 0, sizeof(rv));
 	rv.f = flags;
 	return rv;
 }
 
 /* This converts old flag bits (from saved PCB files) to new format.  */
-FlagType OldFlags(unsigned int flags)
+pcb_flag_t OldFlags(unsigned int flags)
 {
-	FlagType rv;
+	pcb_flag_t rv;
 	int i, f;
 	memset(&rv, 0, sizeof(rv));
 	/* If we move flag bits around, this is where we map old bits to them.  */
@@ -56,13 +56,13 @@ FlagType OldFlags(unsigned int flags)
 	return rv;
 }
 
-FlagType AddFlags(FlagType flag, unsigned int flags)
+pcb_flag_t AddFlags(pcb_flag_t flag, unsigned int flags)
 {
 	flag.f |= flags;
 	return flag;
 }
 
-FlagType MaskFlags(FlagType flag, unsigned int flags)
+pcb_flag_t MaskFlags(pcb_flag_t flag, unsigned int flags)
 {
 	flag.f &= ~flags;
 	return flag;
@@ -76,7 +76,7 @@ int mem_any_set(unsigned char *ptr, int bytes)
 	return 0;
 }
 
-void EraseFlags(FlagType * f)
+void EraseFlags(pcb_flag_t * f)
 {
 	unknown_flag_t *u, *next;
 	for (u = f->unknowns; u != NULL; u = next) {

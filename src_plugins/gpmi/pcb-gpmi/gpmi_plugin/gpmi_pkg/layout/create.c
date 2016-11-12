@@ -48,10 +48,10 @@ static flag_tr_t flags[] = {
 	{0, 0, 0}
 };
 
-static FlagType get_flags(int in)
+static pcb_flag_t get_flags(int in)
 {
 	flag_tr_t *f;
-	static FlagType out;
+	static pcb_flag_t out;
 
 	out.f = 0;
 	memset(out.t, 0, sizeof(out.t));

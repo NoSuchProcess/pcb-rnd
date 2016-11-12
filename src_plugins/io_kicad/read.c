@@ -177,7 +177,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	int mirrored = 0;
 	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */
-	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
 	if (subtree->str != NULL) {
@@ -349,7 +349,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	char *end;
 	double val;
 	Coord X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
-	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
 	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
@@ -472,7 +472,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 	Coord centreX, centreY, endX, endY, width, height, Thickness, Clearance;
 	Angle startAngle = 0.0;
 	Angle delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
-	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
 	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
@@ -627,7 +627,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	char *end, *name; /* not using via name for now */
 	double val;
 	Coord X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
-	FlagType Flags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
 /*	int PCBLayer = 0;   not used for now; no blind or buried vias currently in pcb-rnd */
 
 	Clearance = Mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
@@ -721,7 +721,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	char *end;
 	double val;
 	Coord X1, Y1, X2, Y2, Thickness, Clearance;
-	FlagType Flags = MakeFlags(PCB_FLAG_CLEARLINE); /* we try clearline flag here */
+	pcb_flag_t Flags = MakeFlags(PCB_FLAG_CLEARLINE); /* we try clearline flag here */
 	int PCBLayer = 0; /* sane default value */
 
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
@@ -1001,8 +1001,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	char * moduleName, * moduleRefdes, * moduleValue, * pinName;
 	pcb_element_t *newModule;
 
-	FlagType Flags = MakeFlags(0); /* start with something bland here */
-	FlagType TextFlags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t TextFlags = MakeFlags(0); /* start with something bland here */
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	moduleName = moduleRefdes = moduleValue = NULL;
@@ -1280,7 +1280,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								 &st->PCB->Font, Flags,
 								 moduleName, moduleRefdes, moduleValue,
 								 moduleX, moduleY, direction,
-								 refdesScaling, TextFlags,  pcb_false); /*FlagType TextFlags, pcb_bool uniqueName) */
+								 refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
 			MoveObject(PCB_TYPE_ELEMENT_NAME, newModule,  &newModule->Name[NAME_INDEX()],  &newModule->Name[NAME_INDEX()], X, Y);
 		}
 	}
@@ -1823,7 +1823,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	unsigned long required;
 
 	pcb_polygon_t *polygon = NULL;
-	FlagType flags = MakeFlags(PCB_FLAG_CLEARPOLY);
+	pcb_flag_t flags = MakeFlags(PCB_FLAG_CLEARPOLY);
 	char *end;
 	double val;
 	Coord X, Y;

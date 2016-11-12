@@ -444,7 +444,7 @@ static void add_line_to_corner(line_s * l, corner_s * c)
 	dprintf("add_line_to_corner %#mD\n", c->x, c->y);
 }
 
-static pcb_line_t *create_pcb_line(int layer, int x1, int y1, int x2, int y2, int thick, int clear, FlagType flags)
+static pcb_line_t *create_pcb_line(int layer, int x1, int y1, int x2, int y2, int thick, int clear, pcb_flag_t flags)
 {
 	char *from, *to;
 	pcb_line_t *nl;

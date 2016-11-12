@@ -269,7 +269,7 @@ static int rotateSide(int side, int n)
 /*!
  * Wrapper for CreateNewLineOnLayer that takes vectors and deals with Undo
  */
-static pcb_line_t *CreateVectorLineOnLayer(pcb_layer_t * layer, Vector a, Vector b, int thickness, int clearance, FlagType flags)
+static pcb_line_t *CreateVectorLineOnLayer(pcb_layer_t * layer, Vector a, Vector b, int thickness, int clearance, pcb_flag_t flags)
 {
 	pcb_line_t *line;
 

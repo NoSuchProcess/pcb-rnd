@@ -69,7 +69,7 @@ void RemoveFreeRat(pcb_rat_t *data)
 
 /*** utility ***/
 /* creates a new rat-line */
-pcb_rat_t *CreateNewRat(pcb_data_t *Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags)
+pcb_rat_t *CreateNewRat(pcb_data_t *Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, pcb_flag_t Flags)
 {
 	pcb_rat_t *Line = GetRatMemory(Data);
 

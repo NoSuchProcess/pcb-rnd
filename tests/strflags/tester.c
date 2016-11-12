@@ -35,7 +35,7 @@
 #include "flags.c"
 #include "compat_misc.c"
 
-static void dump_flag(FlagType * f)
+static void dump_flag(pcb_flag_t * f)
 {
 	int l;
 	printf("F:%08x T:[", f->f);
@@ -81,7 +81,7 @@ int main()
 	while (count < 1000000) {
 		FlagHolder fh;
 		char *str;
-		FlagType new_flags;
+		pcb_flag_t new_flags;
 		int i;
 		int otype;
 
@@ -121,7 +121,7 @@ int main()
 	while (count < 1000000) {
 		FlagHolder fh;
 		char *str;
-		FlagType new_flags;
+		pcb_flag_t new_flags;
 		int i;
 		int otype;
 

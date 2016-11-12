@@ -1,6 +1,6 @@
 /* Because all the macros expect it, that's why.  */
 typedef struct {
-	FlagType Flags;
+	pcb_flag_t Flags;
 } io_lihata_flag_holder;
 
 /* Convert between thermal style index and textual representation */

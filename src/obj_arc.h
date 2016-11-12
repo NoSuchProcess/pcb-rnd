@@ -52,7 +52,7 @@ pcb_box_t *GetArcEnds(pcb_arc_t *Arc);
 void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, Angle new_sa, Angle new_da);
 void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, Coord new_width, Coord new_height);
 void *RemoveArc(pcb_layer_t *Layer, pcb_arc_t *Arc);
-pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags);
+pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, pcb_flag_t Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);

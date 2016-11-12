@@ -55,8 +55,8 @@ pcb_cardinal_t *GetHoleIndexMemoryInPolygon(pcb_polygon_t *Polygon);
 void FreePolygonMemory(pcb_polygon_t * polygon);
 
 void SetPolygonBoundingBox(pcb_polygon_t *Polygon);
-pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, FlagType Flags);
-pcb_polygon_t *CreateNewPolygon(pcb_layer_t *Layer, FlagType Flags);
+pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_flag_t Flags);
+pcb_polygon_t *CreateNewPolygon(pcb_layer_t *Layer, pcb_flag_t Flags);
 pcb_point_t *CreateNewPointInPolygon(pcb_polygon_t *Polygon, Coord X, Coord Y);
 pcb_polygon_t *CreateNewHoleInPolygon(pcb_polygon_t * Polygon);
 void *RemovePolygon(pcb_layer_t *Layer, pcb_polygon_t *Polygon);

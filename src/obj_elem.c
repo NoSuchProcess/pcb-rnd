@@ -196,7 +196,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	END_LOOP;
 	PIN_LOOP(element);
 	{
-		FlagType f = NoFlags();
+		pcb_flag_t f = NoFlags();
 		AddFlags(f, PCB_FLAG_VIA);
 		if (TEST_FLAG(PCB_FLAG_HOLE, pin))
 			AddFlags(f, PCB_FLAG_HOLE);
@@ -563,9 +563,9 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 
 /* creates an new element; memory is allocated if needed */
 pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
-	pcb_font_t *PCBFont, FlagType Flags, char *Description, char *NameOnPCB,
+	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
 	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
-	int TextScale, FlagType TextFlags, pcb_bool uniqueName)
+	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName)
 {
 #ifdef DEBUG
 	printf("Entered CreateNewElement.....\n");
@@ -646,7 +646,7 @@ pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, Coord X1, Coord Y1, C
 /* creates a new textobject as part of an element
    copies the values to the appropriate text object */
 void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, Coord X, Coord Y,
-	unsigned Direction, char *TextString, int Scale, FlagType Flags)
+	unsigned Direction, char *TextString, int Scale, pcb_flag_t Flags)
 {
 	free(Text->TextString);
 	Text->TextString = (TextString && *TextString) ? pcb_strdup(TextString) : NULL;

@@ -44,7 +44,7 @@ struct pcb_pad_s {                  /* a SMD pad */
 pcb_pad_t *GetPadMemory(pcb_element_t * element);
 void RemoveFreePad(pcb_pad_t * data);
 
-pcb_pad_t *CreateNewPad(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags);
+pcb_pad_t *CreateNewPad(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, pcb_flag_t Flags);
 void SetPadBoundingBox(pcb_pad_t *Pad);
 pcb_bool ChangePaste(pcb_pad_t *Pad);
 

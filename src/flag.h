@@ -32,8 +32,8 @@
 /* Nobody should know about the internals of this except the macros in
    macros.h that access it.  This structure must be simple-assignable
    for now.  */
-typedef struct unknown_flag_s unknown_flag_t;
-struct unknown_flag_s {
+typedef struct pcb_unknown_flag_s unknown_flag_t;
+struct pcb_unknown_flag_s {
 	char *str;
 	unknown_flag_t *next;
 };
@@ -44,9 +44,9 @@ typedef struct {
 	unsigned char q;							/* square geometry flag */
 	unsigned char int_conn_grp;
 	unknown_flag_t *unknowns;
-} FlagType, *FlagTypePtr;
+} pcb_flag_t;
 
-extern FlagType no_flags;
+extern pcb_flag_t no_flags;
 
 /* ---------------------------------------------------------------------------
  * object flags
@@ -92,15 +92,15 @@ typedef enum {
 	PCB_FLAG_MINCUT       = 0x20000, /* used by the mincut short find code */
 	PCB_FLAG_ONPOINT      = 0x40000  /*!< crosshair is on line point or arc point */
 /*	PCB_FLAG_NOCOPY     = (PCB_FLAG_FOUND | CONNECTEDFLAG | PCB_FLAG_ONPOINT)*/
-} pcb_flag_t;
+} pcb_flag_values_t;
 
 
 /* For passing modified flags to other functions. */
-FlagType MakeFlags(unsigned int);
-FlagType OldFlags(unsigned int);
-FlagType AddFlags(FlagType, unsigned int);
-FlagType MaskFlags(FlagType, unsigned int);
-void EraseFlags(FlagType *f);
+pcb_flag_t MakeFlags(unsigned int);
+pcb_flag_t OldFlags(unsigned int);
+pcb_flag_t AddFlags(pcb_flag_t, unsigned int);
+pcb_flag_t MaskFlags(pcb_flag_t, unsigned int);
+void EraseFlags(pcb_flag_t *f);
 #define		NoFlags() MakeFlags(0)
 
 /* ---------------------------------------------------------------------------
@@ -128,7 +128,7 @@ do { \
 	} \
 } while(0)
 
-#define FLAGS_EQUAL(F1,F2)	(memcmp (&F1, &F2, sizeof(FlagType)) == 0)
+#define FLAGS_EQUAL(F1,F2)	(memcmp (&F1, &F2, sizeof(pcb_flag_t)) == 0)
 
 #define THERMFLAG(L)		(0xf << (4 *((L) % 2)))
 

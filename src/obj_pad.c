@@ -66,7 +66,7 @@ void RemoveFreePad(pcb_pad_t * data)
 
 /*** utility ***/
 /* creates a new pad in an element */
-pcb_pad_t *CreateNewPad(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags)
+pcb_pad_t *CreateNewPad(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, pcb_flag_t Flags)
 {
 	pcb_pad_t *pad = GetPadMemory(Element);
 

@@ -45,7 +45,7 @@ struct pcb_text_s {
 pcb_text_t *GetTextMemory(pcb_layer_t * layer);
 void RemoveFreeText(pcb_text_t * data);
 
-pcb_text_t *CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags);
+pcb_text_t *CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, pcb_flag_t Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont);

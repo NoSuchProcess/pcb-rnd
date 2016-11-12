@@ -168,11 +168,11 @@ static void WritePCBInfoHeader(FILE * FP)
 	 */
 }
 
-static void conf_update_pcb_flag(FlagType *dest, const char *hash_path, int binflag)
+static void conf_update_pcb_flag(pcb_flag_t *dest, const char *hash_path, int binflag)
 {
 	conf_native_t *n = conf_get_field(hash_path);
 	struct {
-		FlagType Flags;
+		pcb_flag_t Flags;
 	} *tmp = (void *)dest;
 
 	if ((n == NULL) || (n->type != CFN_BOOLEAN) || (n->used < 0) || (!n->val.boolean[0]))
@@ -189,7 +189,7 @@ static void conf_update_pcb_flag(FlagType *dest, const char *hash_path, int binf
 static void WritePCBDataHeader(FILE * FP)
 {
 	int group;
-	FlagType pcb_flags;
+	pcb_flag_t pcb_flags;
 
 	memset(&pcb_flags, 0, sizeof(pcb_flags));
 

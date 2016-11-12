@@ -38,7 +38,7 @@
 
 /* Because all the macros expect it, that's why.  */
 typedef struct {
-	FlagType Flags;
+	pcb_flag_t Flags;
 } FlagHolder;
 
 /* Be careful to list more specific flags first, followed by general
@@ -51,7 +51,7 @@ typedef struct {
  */
 
 #define N(x) x, sizeof(x)-1
-FlagBitsType pcb_object_flagbits[] = {
+pcb_flag_bits_t pcb_object_flagbits[] = {
 	{PCB_FLAG_PIN, N("pin"), PCB_TYPEMASK_ALL},
 	{PCB_FLAG_VIA, N("via"), PCB_TYPEMASK_ALL},
 	{PCB_FLAG_FOUND, N("found"), PCB_TYPEMASK_ALL},
@@ -316,10 +316,10 @@ static int error_ignore(const char *msg)
 	return 0;
 }
 
-static FlagType empty_flags;
+static pcb_flag_t empty_flags;
 
-FlagType
-common_string_to_flags(const char *flagstring, int (*error) (const char *msg), FlagBitsType * flagbits, int n_flagbits)
+pcb_flag_t
+common_string_to_flags(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits)
 {
 	const char *fp, *ep;
 	int flen;
@@ -404,7 +404,7 @@ common_string_to_flags(const char *flagstring, int (*error) (const char *msg), F
 	return rv.Flags;
 }
 
-FlagType string_to_flags(const char *flagstring, int (*error) (const char *msg))
+pcb_flag_t string_to_flags(const char *flagstring, int (*error) (const char *msg))
 {
 	return common_string_to_flags(flagstring, error, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
 }
@@ -421,7 +421,7 @@ FlagType string_to_flags(const char *flagstring, int (*error) (const char *msg))
  * forcibly set when vias are parsed.
  */
 
-char *common_flags_to_string(FlagType flags, int object_type, FlagBitsType * flagbits, int n_flagbits)
+char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits)
 {
 	int len;
 	int i;
@@ -535,7 +535,7 @@ char *common_flags_to_string(FlagType flags, int object_type, FlagBitsType * fla
 	return buf;
 }
 
-char *flags_to_string(FlagType flags, int object_type)
+char *flags_to_string(pcb_flag_t flags, int object_type)
 {
 	return common_flags_to_string(flags, object_type, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
 }

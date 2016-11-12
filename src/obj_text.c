@@ -67,7 +67,7 @@ void RemoveFreeText(pcb_text_t * data)
 /*** utility ***/
 
 /* creates a new text on a layer */
-pcb_text_t *CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags)
+pcb_text_t *CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text;
 

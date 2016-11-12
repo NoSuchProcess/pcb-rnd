@@ -148,7 +148,7 @@ static lht_node_t *build_attributes(pcb_attribute_list_t *lst)
 	return ln;
 }
 
-static lht_node_t *build_flags(FlagType *f, int object_type)
+static lht_node_t *build_flags(pcb_flag_t *f, int object_type)
 {
 	int n, layer, added = 0, thrm = 0;
 	lht_node_t *hsh, *txt, *lst;

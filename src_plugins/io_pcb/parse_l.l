@@ -78,7 +78,7 @@ pcb_data_t *	yyData;
 pcb_element_t *	yyElement;
 pcb_font_t *	yyFont;
 conf_role_t yy_settings_dest;
-FlagType yy_pcb_flags;
+pcb_flag_t yy_pcb_flags;
 
 static int parse_number (void);
 

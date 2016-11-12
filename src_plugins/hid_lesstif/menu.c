@@ -485,9 +485,9 @@ typedef struct {
 	const char *flagname;
 	int oldval;
 	char *xres;
-} WidgetFlagType;
+} Widgetpcb_flag_t;
 
-static WidgetFlagType *wflags = 0;
+static Widgetpcb_flag_t *wflags = 0;
 static int n_wflags = 0;
 static int max_wflags = 0;
 
@@ -495,7 +495,7 @@ static void note_widget_flag(Widget w, char *type, const char *name)
 {
 	if (n_wflags >= max_wflags) {
 		max_wflags += 20;
-		wflags = (WidgetFlagType *) realloc(wflags, max_wflags * sizeof(WidgetFlagType));
+		wflags = (Widgetpcb_flag_t *) realloc(wflags, max_wflags * sizeof(Widgetpcb_flag_t));
 	}
 	wflags[n_wflags].w = w;
 	wflags[n_wflags].flagname = name;

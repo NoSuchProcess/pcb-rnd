@@ -128,7 +128,7 @@ typedef struct {								/* holds information about an operation */
 		RemovedPointType RemovedPoint;
 		RotateType Rotate;
 		MoveToLayer MoveToLayer;
-		FlagType Flags;
+		pcb_flag_t Flags;
 		Coord Size;
 		LayerChangeType LayerChange;
 		ClearPolyType ClearPoly;
@@ -511,13 +511,13 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr1e, *ptr2, *ptr3;
 	int type;
-	FlagType swap;
+	pcb_flag_t swap;
 	int must_redraw;
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		FlagType f1, f2;
+		pcb_flag_t f1, f2;
 		pcb_pin_t *pin = (pcb_pin_t *) ptr2;
 
 		if ((type == PCB_TYPE_ELEMENT) || (type == PCB_TYPE_ELEMENT_NAME))
