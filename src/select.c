@@ -228,6 +228,13 @@ do { \
 	b = tmp; \
 } while(0)
 
+	/* If board view is flipped, box coords need to be flipped too to reflect
+	   the on-screen direction of draw */
+	if (conf_core.editor.view.flip_x)
+		swap(Box->X1, Box->X2);
+	if (conf_core.editor.view.flip_y)
+		swap(Box->Y1, Box->Y2);
+
 	/* Make sure our negative box is canonical: always from bottom-right to top-left
 	   This limits all possible box coordinate orders to two, one for positive and
 	   one for negative. */
@@ -237,10 +244,9 @@ do { \
 		if (Box->Y1 < Box->Y2)
 			swap(Box->Y1, Box->Y2);
 	}
-
 #undef swap
 
-pcb_printf("box: %mm %mm - %mm %mm    [ %d ]\n", Box->X1, Box->Y1, Box->X2, Box->Y2, IS_BOX_NEGATIVE(Box));
+/*pcb_printf("box: %mm %mm - %mm %mm    [ %d ] %d %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, IS_BOX_NEGATIVE(Box), conf_core.editor.view.flip_x, conf_core.editor.view.flip_y);*/
 
 /* append an object to the return list OR set the flag if there's no list */
 #define append(undo_type, p1, obj) \
