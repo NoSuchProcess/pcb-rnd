@@ -1016,7 +1016,7 @@ void NotifyMode(void)
 				{
 					pcb_point_t *points = Crosshair.AttachedPolygon.Points;
 					pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
-					POLYAREA *original, *new_hole, *result;
+					pcb_polyarea_t *original, *new_hole, *result;
 					pcb_flag_t Flags;
 
 					/* do update of position; use the 'PCB_MODE_LINE' mechanism */
@@ -1030,7 +1030,7 @@ void NotifyMode(void)
 
 					/* check if this is the last point of a polygon */
 					if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
-						/* Create POLYAREAs from the original polygon
+						/* Create pcb_polyarea_ts from the original polygon
 						 * and the new hole polygon */
 						original = PolygonToPoly((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2);
 						new_hole = PolygonToPoly(&Crosshair.AttachedPolygon);

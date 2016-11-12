@@ -39,7 +39,7 @@
 #include "misc_util.h"
 #include "obj_line.h"
 
-/*#define DEBUG_POLYAREA*/
+/*#define DEBUG_pcb_polyarea_t*/
 
 double vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
 #define Vcpy2(r,a)              {(r)[0] = (a)[0]; (r)[1] = (a)[1];}
@@ -77,16 +77,16 @@ const char *dirnames[] = {
 static const char jostle_syntax[] = "Jostle(diameter)";
 
 /* DEBUG */
-static void DebugPOLYAREA(POLYAREA * s, char *color)
+static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 {
 	int *x, *y, n, i = 0;
-	PLINE *pl;
-	VNODE *v;
-	POLYAREA *p;
+	pcb_pline_t *pl;
+	pcb_vnode_t *v;
+	pcb_polyarea_t *p;
 	pcb_hid_t *ddraw;
 	pcb_hid_gc_t ddgc;
 
-#ifndef DEBUG_POLYAREA
+#ifndef DEBUG_pcb_polyarea_t
 	return;
 #endif
 	ddraw = gui->request_debug_draw();
@@ -122,16 +122,16 @@ static void DebugPOLYAREA(POLYAREA * s, char *color)
 }
 
 /*!
- * \brief Find the bounding box of a POLYAREA.
+ * \brief Find the bounding box of a pcb_polyarea_t.
  *
- * POLYAREAs linked by ->f/b are outlines.\n
+ * pcb_polyarea_ts linked by ->f/b are outlines.\n
  * n->contours->next would be the start of the inner holes (irrelevant
  * for bounding box).
  */
-static pcb_box_t POLYAREA_boundingBox(POLYAREA * a)
+static pcb_box_t pcb_polyarea_t_boundingBox(pcb_polyarea_t * a)
 {
-	POLYAREA *n;
-	PLINE *pa;
+	pcb_polyarea_t *n;
+	pcb_pline_t *pa;
 	pcb_box_t box;
 	int first = 1;
 
@@ -161,7 +161,7 @@ static pcb_box_t POLYAREA_boundingBox(POLYAREA * a)
  * as a pair of vectors PQ.\n
  * Make it long so it will intersect everything in the area.
  */
-static void POLYAREA_findXmostLine(POLYAREA * a, int side, pcb_vector_t p, pcb_vector_t q, int clearance)
+static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vector_t p, pcb_vector_t q, int clearance)
 {
 	int extra;
 	p[0] = p[1] = 0;
@@ -193,7 +193,7 @@ static void POLYAREA_findXmostLine(POLYAREA * a, int side, pcb_vector_t p, pcb_v
 			int kx, ky, minmax, dq, ckx, cky;
 			Coord mm[2] = { MAX_COORD, -MAX_COORD };
 			pcb_vector_t mmp[2];
-			VNODE *v;
+			pcb_vnode_t *v;
 
 			switch (side) {
 			case JNORTHWEST:
@@ -280,13 +280,13 @@ static pcb_line_t *Createpcb_vector_tLineOnLayer(pcb_layer_t * layer, pcb_vector
 	return line;
 }
 
-static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vector_t b, pcb_line_t * orig, POLYAREA ** expandp)
+static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vector_t b, pcb_line_t * orig, pcb_polyarea_t ** expandp)
 {
 	pcb_line_t *line;
 
 	line = Createpcb_vector_tLineOnLayer(layer, a, b, orig->Thickness, orig->Clearance, orig->Flags);
 	if (line && expandp) {
-		POLYAREA *p = LinePoly(line, line->Thickness + line->Clearance);
+		pcb_polyarea_t *p = LinePoly(line, line->Thickness + line->Clearance);
 		poly_Boolean_free(*expandp, p, expandp, PBO_UNITE);
 	}
 	return line;
@@ -311,7 +311,7 @@ static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vecto
  * points a, b, c, d.  Finally connect the dots and remove the
  * old straight line.
  */
-static int MakeBypassingLines(POLYAREA * brush, pcb_layer_t * layer, pcb_line_t * line, int side, POLYAREA ** expandp)
+static int MakeBypassingLines(pcb_polyarea_t * brush, pcb_layer_t * layer, pcb_line_t * line, int side, pcb_polyarea_t ** expandp)
 {
 	pcb_vector_t pA, pB, flatA, flatB, qA, qB;
 	pcb_vector_t lA, lB;
@@ -324,9 +324,9 @@ static int MakeBypassingLines(POLYAREA * brush, pcb_layer_t * layer, pcb_line_t 
 	lB[0] = line->Point2.X;
 	lB[1] = line->Point2.Y;
 
-	POLYAREA_findXmostLine(brush, side, flatA, flatB, line->Thickness / 2);
-	POLYAREA_findXmostLine(brush, rotateSide(side, 1), pA, pB, line->Thickness / 2);
-	POLYAREA_findXmostLine(brush, rotateSide(side, -1), qA, qB, line->Thickness / 2);
+	pcb_polyarea_t_findXmostLine(brush, side, flatA, flatB, line->Thickness / 2);
+	pcb_polyarea_t_findXmostLine(brush, rotateSide(side, 1), pA, pB, line->Thickness / 2);
+	pcb_polyarea_t_findXmostLine(brush, rotateSide(side, -1), qA, qB, line->Thickness / 2);
 	hits = vect_inters2(lA, lB, qA, qB, a, junk) +
 		vect_inters2(qA, qB, flatA, flatB, b, junk) +
 		vect_inters2(pA, pB, flatA, flatB, c, junk) + vect_inters2(lA, lB, pA, pB, d, junk);
@@ -348,9 +348,9 @@ static int MakeBypassingLines(POLYAREA * brush, pcb_layer_t * layer, pcb_line_t 
 
 struct info {
 	pcb_box_t box;
-	POLYAREA *brush;
+	pcb_polyarea_t *brush;
 	pcb_layer_t *layer;
-	POLYAREA *smallest;
+	pcb_polyarea_t *smallest;
 	/*!< after cutting brush with line, the smallest chunk, which we
 	 * will go around on 'side'.
 	 */
@@ -370,7 +370,7 @@ static r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 {
 	pcb_line_t *line = (pcb_line_t *) targ;
 	struct info *info = private;
-	POLYAREA *lp, *copy, *tmp, *n, *smallest = NULL;
+	pcb_polyarea_t *lp, *copy, *tmp, *n, *smallest = NULL;
 	pcb_vector_t p;
 	int inside = 0, side, r;
 	double small, big;
@@ -496,7 +496,7 @@ static r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 static int jostle(int argc, const char **argv, Coord x, Coord y)
 {
 	pcb_bool rel;
-	POLYAREA *expand;
+	pcb_polyarea_t *expand;
 	float value;
 	struct info info;
 	int found;
@@ -523,8 +523,8 @@ static int jostle(int argc, const char **argv, Coord x, Coord y)
 	}
 	END_LOOP;
 	do {
-		info.box = POLYAREA_boundingBox(info.brush);
-		DebugPOLYAREA(info.brush, NULL);
+		info.box = pcb_polyarea_t_boundingBox(info.brush);
+		Debugpcb_polyarea_t(info.brush, NULL);
 		pcb_fprintf(stderr, "search (%ms,%ms)->(%ms,%ms):\n", info.box.X1, info.box.Y1, info.box.X2, info.box.Y2);
 		info.line = NULL;
 		info.smallest = NULL;

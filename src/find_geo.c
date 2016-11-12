@@ -483,7 +483,7 @@ pcb_bool IsArcInPolygon(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
 	if (Box->X1 <= Polygon->Clipped->contours->xmax + Bloat
 			&& Box->X2 >= Polygon->Clipped->contours->xmin - Bloat
 			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
-		POLYAREA *ap;
+		pcb_polyarea_t *ap;
 
 		if (!(ap = ArcPoly(Arc, Arc->Thickness + Bloat)))
 			return pcb_false;							/* error */
@@ -503,7 +503,7 @@ pcb_bool IsArcInPolygon(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
 pcb_bool IsLineInPolygon(pcb_line_t *Line, pcb_polygon_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Line;
-	POLYAREA *lp;
+	pcb_polyarea_t *lp;
 
 	/* lines with clearance never touch polygons */
 	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, Polygon) && TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
@@ -566,10 +566,10 @@ pcb_bool IsPolygonInPolygon(pcb_polygon_t *P1, pcb_polygon_t *P2)
 
 	/* now the difficult case of bloated */
 	if (Bloat > 0) {
-		PLINE *c;
+		pcb_pline_t *c;
 		for (c = P1->Clipped->contours; c; c = c->next) {
 			pcb_line_t line;
-			VNODE *v = &c->head;
+			pcb_vnode_t *v = &c->head;
 			if (c->xmin - Bloat <= P2->Clipped->contours->xmax &&
 					c->xmax + Bloat >= P2->Clipped->contours->xmin &&
 					c->ymin - Bloat <= P2->Clipped->contours->ymax && c->ymax + Bloat >= P2->Clipped->contours->ymin) {
@@ -633,7 +633,7 @@ static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 	shape2 = GET_SQUARE(PV2);
 
 	if ((shape1 > 1) || (shape2 > 1)) {
-		POLYAREA *pl1, *pl2;
+		pcb_polyarea_t *pl1, *pl2;
 		int ret;
 
 		pl1 = PinPoly(PV1, PIN_SIZE(PV1) + Bloat, 0);
@@ -679,7 +679,7 @@ pcb_bool PinLineIntersect(pcb_pin_t *PV, pcb_line_t *Line)
 
 		{
 			/* shaped pin case */
-			POLYAREA *pl, *lp;
+			pcb_polyarea_t *pl, *lp;
 			int ret;
 
 			pl = PinPoly(PV, PIN_SIZE(PV), 0);

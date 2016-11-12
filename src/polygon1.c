@@ -135,11 +135,11 @@ static void DEBUGP(const char *fmt, ...) { }
 }
 
 #ifdef DEBUG
-static char *theState(VNODE * v);
+static char *theState(pcb_vnode_t * v);
 
-static void pline_dump(VNODE * v)
+static void pline_dump(pcb_vnode_t * v)
 {
-	VNODE *s, *n;
+	pcb_vnode_t *s, *n;
 
 	s = v;
 	do {
@@ -150,16 +150,16 @@ static void pline_dump(VNODE * v)
 	while ((v = v->next) != s);
 }
 
-static void poly_dump(POLYAREA * p)
+static void poly_dump(pcb_polyarea_t * p)
 {
-	POLYAREA *f = p;
-	PLINE *pl;
+	pcb_polyarea_t *f = p;
+	pcb_pline_t *pl;
 
 	do {
 		pl = p->contours;
 		do {
 			pline_dump(&pl->head);
-			fprintf(stderr, "NEXT PLINE\n");
+			fprintf(stderr, "NEXT pcb_pline_t\n");
 		}
 		while ((pl = pl->next) != NULL);
 		fprintf(stderr, "NEXT POLY\n");
@@ -182,9 +182,9 @@ node_add
  1 means a new node was created and inserted
  4 means the intersection was not on the dest point
 */
-static VNODE *node_add_single(VNODE * dest, pcb_vector_t po)
+static pcb_vnode_t *node_add_single(pcb_vnode_t * dest, pcb_vector_t po)
 {
-	VNODE *p;
+	pcb_vnode_t *p;
 
 	if (vect_equal(po, dest->point))
 		return dest;
@@ -206,9 +206,9 @@ static VNODE *node_add_single(VNODE * dest, pcb_vector_t po)
 new_descriptor
   (C) 2006 harry eaton
 */
-static CVCList *new_descriptor(VNODE * a, char poly, char side)
+static pcb_cvc_list_t *new_descriptor(pcb_vnode_t * a, char poly, char side)
 {
-	CVCList *l = (CVCList *) malloc(sizeof(CVCList));
+	pcb_cvc_list_t *l = (pcb_cvc_list_t *) malloc(sizeof(pcb_cvc_list_t));
 	pcb_vector_t v;
 	register double ang, dx, dy;
 
@@ -229,13 +229,13 @@ static CVCList *new_descriptor(VNODE * a, char poly, char side)
 	 */
 	if (vect_equal(v, vect_zero)) {
 		if (side == 'P') {
-			if (a->prev->cvc_prev == (CVCList *) - 1)
+			if (a->prev->cvc_prev == (pcb_cvc_list_t *) - 1)
 				a->prev->cvc_prev = a->prev->cvc_next = NULL;
 			poly_ExclVertex(a->prev);
 			vect_sub(v, a->prev->point, a->point);
 		}
 		else {
-			if (a->next->cvc_prev == (CVCList *) - 1)
+			if (a->next->cvc_prev == (pcb_cvc_list_t *) - 1)
 				a->next->cvc_prev = a->next->cvc_next = NULL;
 			poly_ExclVertex(a->next);
 			vect_sub(v, a->next->point, a->point);
@@ -270,13 +270,13 @@ insert_descriptor
    'N' for next.
    argument start is the head of the list of cvclists
 */
-static CVCList *insert_descriptor(VNODE * a, char poly, char side, CVCList * start)
+static pcb_cvc_list_t *insert_descriptor(pcb_vnode_t * a, char poly, char side, pcb_cvc_list_t * start)
 {
-	CVCList *l, *newone, *big, *small;
+	pcb_cvc_list_t *l, *newone, *big, *small;
 
 	if (!(newone = new_descriptor(a, poly, side)))
 		return NULL;
-	/* search for the CVCList for this point */
+	/* search for the pcb_cvc_list_t for this point */
 	if (!start) {
 		start = newone;							/* return is also new, so we know where start is */
 		start->head = newone;				/* circular list */
@@ -287,7 +287,7 @@ static CVCList *insert_descriptor(VNODE * a, char poly, char side, CVCList * sta
 		do {
 			assert(l->head);
 			if (l->parent->point[0] == a->point[0]
-					&& l->parent->point[1] == a->point[1]) {	/* this CVCList is at our point */
+					&& l->parent->point[1] == a->point[1]) {	/* this pcb_cvc_list_t is at our point */
 				start = l;
 				newone->head = l->head;
 				break;
@@ -343,16 +343,16 @@ node_add_point
  return 1 if new node in b, 2 if new node in a and 3 if new node in both
 */
 
-static VNODE *node_add_single_point(VNODE * a, pcb_vector_t p)
+static pcb_vnode_t *node_add_single_point(pcb_vnode_t * a, pcb_vector_t p)
 {
-	VNODE *next_a, *new_node;
+	pcb_vnode_t *next_a, *new_node;
 
 	next_a = a->next;
 
 	new_node = node_add_single(a, p);
 	assert(new_node != NULL);
 
-	new_node->cvc_prev = new_node->cvc_next = (CVCList *) - 1;
+	new_node->cvc_prev = new_node->cvc_next = (pcb_cvc_list_t *) - 1;
 
 	if (new_node == a || new_node == next_a)
 		return NULL;
@@ -364,9 +364,9 @@ static VNODE *node_add_single_point(VNODE * a, pcb_vector_t p)
 node_label
  (C) 2006 harry eaton
 */
-static unsigned int node_label(VNODE * pn)
+static unsigned int node_label(pcb_vnode_t * pn)
 {
-	CVCList *first_l, *l;
+	pcb_cvc_list_t *first_l, *l;
 	char this_poly;
 	int region = UNKNWN;
 
@@ -431,13 +431,13 @@ static unsigned int node_label(VNODE * pn)
  add_descriptors
  (C) 2006 harry eaton
 */
-static CVCList *add_descriptors(PLINE * pl, char poly, CVCList * list)
+static pcb_cvc_list_t *add_descriptors(pcb_pline_t * pl, char poly, pcb_cvc_list_t * list)
 {
-	VNODE *node = &pl->head;
+	pcb_vnode_t *node = &pl->head;
 
 	do {
 		if (node->cvc_prev) {
-			assert(node->cvc_prev == (CVCList *) - 1 && node->cvc_next == (CVCList *) - 1);
+			assert(node->cvc_prev == (pcb_cvc_list_t *) - 1 && node->cvc_next == (pcb_cvc_list_t *) - 1);
 			list = node->cvc_prev = insert_descriptor(node, poly, 'P', list);
 			if (!node->cvc_prev)
 				return NULL;
@@ -450,7 +450,7 @@ static CVCList *add_descriptors(PLINE * pl, char poly, CVCList * list)
 	return list;
 }
 
-static inline void cntrbox_adjust(PLINE * c, pcb_vector_t p)
+static inline void cntrbox_adjust(pcb_pline_t * c, pcb_vector_t p)
 {
 	c->xmin = min(c->xmin, p[0]);
 	c->xmax = max(c->xmax, p[0] + 1);
@@ -462,8 +462,8 @@ static inline void cntrbox_adjust(PLINE * c, pcb_vector_t p)
 
 typedef struct seg {
 	pcb_box_t box;
-	VNODE *v;
-	PLINE *p;
+	pcb_vnode_t *v;
+	pcb_pline_t *p;
 	int intersected;
 } seg;
 
@@ -472,13 +472,13 @@ typedef struct _insert_node_task insert_node_task;
 struct _insert_node_task {
 	insert_node_task *next;
 	seg *node_seg;
-	VNODE *new_node;
+	pcb_vnode_t *new_node;
 };
 
 typedef struct info {
 	double m, b;
 	pcb_rtree_t *tree;
-	VNODE *v;
+	pcb_vnode_t *v;
 	struct seg *s;
 	jmp_buf *env, sego, *touch;
 	int need_restart;
@@ -486,7 +486,7 @@ typedef struct info {
 } info;
 
 typedef struct contour_info {
-	PLINE *pa;
+	pcb_pline_t *pa;
 	jmp_buf restart;
 	jmp_buf *getout;
 	int need_restart;
@@ -552,7 +552,7 @@ static r_dir_t seg_in_region(const pcb_box_t * b, void *cl)
 }
 
 /* Prepend a deferred node-insertion task to a list */
-static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg * seg, VNODE * new_node)
+static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg * seg, pcb_vnode_t * new_node)
 {
 	insert_node_task *task = (insert_node_task *) malloc(sizeof(*task));
 	task->node_seg = seg;
@@ -578,7 +578,7 @@ static r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 	struct seg *s = (struct seg *) b;
 	pcb_vector_t s1, s2;
 	int cnt;
-	VNODE *new_node;
+	pcb_vnode_t *new_node;
 
 	/* When new nodes are added at the end of a pass due to an intersection
 	 * the segments may be altered. If either segment we're looking at has
@@ -623,10 +623,10 @@ static r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static void *make_edge_tree(PLINE * pb)
+static void *make_edge_tree(pcb_pline_t * pb)
 {
 	struct seg *s;
-	VNODE *bv;
+	pcb_vnode_t *bv;
 	pcb_rtree_t *ans = r_create_tree(NULL, 0, 0);
 	bv = &pb->head;
 	do {
@@ -688,11 +688,11 @@ static r_dir_t get_seg(const pcb_box_t * b, void *cl)
 static r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 {
 	contour_info *c_info = (contour_info *) cl;
-	PLINE *pa = c_info->pa;
-	PLINE *pb = (PLINE *) b;
-	PLINE *rtree_over;
-	PLINE *looping_over;
-	VNODE *av;										/* node iterators */
+	pcb_pline_t *pa = c_info->pa;
+	pcb_pline_t *pb = (pcb_pline_t *) b;
+	pcb_pline_t *rtree_over;
+	pcb_pline_t *looping_over;
+	pcb_vnode_t *av;										/* node iterators */
 	struct info info;
 	pcb_box_t box;
 	jmp_buf restart;
@@ -761,10 +761,10 @@ static r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static int intersect_impl(jmp_buf * jb, POLYAREA * b, POLYAREA * a, int add)
+static int intersect_impl(jmp_buf * jb, pcb_polyarea_t * b, pcb_polyarea_t * a, int add)
 {
-	POLYAREA *t;
-	PLINE *pa;
+	pcb_polyarea_t *t;
+	pcb_pline_t *pa;
 	contour_info c_info;
 	int need_restart = 0;
 	insert_node_task *task;
@@ -780,7 +780,7 @@ static int intersect_impl(jmp_buf * jb, POLYAREA * b, POLYAREA * a, int add)
 		a = t;
 	}
 
-	for (pa = a->contours; pa; pa = pa->next) {	/* Loop over the contours of POLYAREA "a" */
+	for (pa = a->contours; pa; pa = pa->next) {	/* Loop over the contours of pcb_polyarea_t "a" */
 		pcb_box_t sb;
 		jmp_buf out;
 		int retval;
@@ -833,7 +833,7 @@ static int intersect_impl(jmp_buf * jb, POLYAREA * b, POLYAREA * a, int add)
 	return need_restart;
 }
 
-static int intersect(jmp_buf * jb, POLYAREA * b, POLYAREA * a, int add)
+static int intersect(jmp_buf * jb, pcb_polyarea_t * b, pcb_polyarea_t * a, int add)
 {
 	int call_count = 1;
 	while (intersect_impl(jb, b, a, add))
@@ -841,11 +841,11 @@ static int intersect(jmp_buf * jb, POLYAREA * b, POLYAREA * a, int add)
 	return 0;
 }
 
-static void M_POLYAREA_intersect(jmp_buf * e, POLYAREA * afst, POLYAREA * bfst, int add)
+static void M_pcb_polyarea_t_intersect(jmp_buf * e, pcb_polyarea_t * afst, pcb_polyarea_t * bfst, int add)
 {
-	POLYAREA *a = afst, *b = bfst;
-	PLINE *curcA, *curcB;
-	CVCList *the_list = NULL;
+	pcb_polyarea_t *a = afst, *b = bfst;
+	pcb_pline_t *curcA, *curcB;
+	pcb_cvc_list_t *the_list = NULL;
 
 	if (a == NULL || b == NULL)
 		error(err_bad_parm);
@@ -876,9 +876,9 @@ static void M_POLYAREA_intersect(jmp_buf * e, POLYAREA * afst, POLYAREA * bfst, 
 			}
 	}
 	while (add && (a = a->f) != afst);
-}																/* M_POLYAREA_intersect */
+}																/* M_pcb_polyarea_t_intersect */
 
-static inline int cntrbox_inside(PLINE * c1, PLINE * c2)
+static inline int cntrbox_inside(pcb_pline_t * c1, pcb_pline_t * c2)
 {
 	assert(c1 != NULL && c2 != NULL);
 	return ((c1->xmin >= c2->xmin) && (c1->ymin >= c2->ymin) && (c1->xmax <= c2->xmax) && (c1->ymax <= c2->ymax));
@@ -889,19 +889,19 @@ static inline int cntrbox_inside(PLINE * c1, PLINE * c2)
 
 static r_dir_t count_contours_i_am_inside(const pcb_box_t * b, void *cl)
 {
-	PLINE *me = (PLINE *) cl;
-	PLINE *check = (PLINE *) b;
+	pcb_pline_t *me = (pcb_pline_t *) cl;
+	pcb_pline_t *check = (pcb_pline_t *) b;
 
 	if (poly_ContourInContour(check, me))
 		return R_DIR_FOUND_CONTINUE;
 	return R_DIR_NOT_FOUND;
 }
 
-/* cntr_in_M_POLYAREA
+/* cntr_in_M_pcb_polyarea_t
 returns poly is inside outfst ? pcb_true : pcb_false */
-static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, pcb_bool test)
+static int cntr_in_M_pcb_polyarea_t(pcb_pline_t * poly, pcb_polyarea_t * outfst, pcb_bool test)
 {
-	POLYAREA *outer = outfst;
+	pcb_polyarea_t *outer = outfst;
 	heap_t *heap;
 
 	assert(poly != NULL);
@@ -922,7 +922,7 @@ static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, pcb_bool test)
 
 		if (heap_is_empty(heap))
 			break;
-		outer = (POLYAREA *) heap_remove_smallest(heap);
+		outer = (pcb_polyarea_t *) heap_remove_smallest(heap);
 
 		r_search(outer->contour_tree, (pcb_box_t *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
 		switch (cnt) {
@@ -942,11 +942,11 @@ static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, pcb_bool test)
 	while (1);
 	heap_destroy(&heap);
 	return pcb_false;
-}																/* cntr_in_M_POLYAREA */
+}																/* cntr_in_M_pcb_polyarea_t */
 
 #ifdef DEBUG
 
-static char *theState(VNODE * v)
+static char *theState(pcb_vnode_t * v)
 {
 	static char u[] = "UNKNOWN";
 	static char i[] = "INSIDE";
@@ -969,9 +969,9 @@ static char *theState(VNODE * v)
 }
 
 #ifdef DEBUG_ALL_LABELS
-static void print_labels(PLINE * a)
+static void print_labels(pcb_pline_t * a)
 {
-	VNODE *c = &a->head;
+	pcb_vnode_t *c = &a->head;
 
 	do {
 		DEBUGP("%#mD->%#mD labeled %s\n", c->point[0], c->point[1], c->next->point[0], c->next->point[1], theState(c));
@@ -988,10 +988,10 @@ label_contour
  (C) 1997 Alexey Nikitin, Michael Leonov
 */
 
-static pcb_bool label_contour(PLINE * a)
+static pcb_bool label_contour(pcb_pline_t * a)
 {
-	VNODE *cur = &a->head;
-	VNODE *first_labelled = NULL;
+	pcb_vnode_t *cur = &a->head;
+	pcb_vnode_t *first_labelled = NULL;
 	int label = UNKNWN;
 
 	do {
@@ -1017,13 +1017,13 @@ static pcb_bool label_contour(PLINE * a)
 	return pcb_false;
 }																/* label_contour */
 
-static pcb_bool cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, pcb_bool test)
+static pcb_bool cntr_label_pcb_polyarea_t(pcb_pline_t * poly, pcb_polyarea_t * ppl, pcb_bool test)
 {
 	assert(ppl != NULL && ppl->contours != NULL);
 	if (poly->Flags.status == ISECTED) {
 		label_contour(poly);				/* should never get here when pcb_bool is pcb_true */
 	}
-	else if (cntr_in_M_POLYAREA(poly, ppl, test)) {
+	else if (cntr_in_M_pcb_polyarea_t(poly, ppl, test)) {
 		if (test)
 			return pcb_true;
 		poly->Flags.status = INSIDE;
@@ -1034,28 +1034,28 @@ static pcb_bool cntr_label_POLYAREA(PLINE * poly, POLYAREA * ppl, pcb_bool test)
 		poly->Flags.status = OUTSIDE;
 	}
 	return pcb_false;
-}																/* cntr_label_POLYAREA */
+}																/* cntr_label_pcb_polyarea_t */
 
-static pcb_bool M_POLYAREA_label_separated(PLINE * afst, POLYAREA * b, pcb_bool touch)
+static pcb_bool M_pcb_polyarea_t_label_separated(pcb_pline_t * afst, pcb_polyarea_t * b, pcb_bool touch)
 {
-	PLINE *curc = afst;
+	pcb_pline_t *curc = afst;
 
 	for (curc = afst; curc != NULL; curc = curc->next) {
-		if (cntr_label_POLYAREA(curc, b, touch) && touch)
+		if (cntr_label_pcb_polyarea_t(curc, b, touch) && touch)
 			return pcb_true;
 	}
 	return pcb_false;
 }
 
-static pcb_bool M_POLYAREA_label(POLYAREA * afst, POLYAREA * b, pcb_bool touch)
+static pcb_bool M_pcb_polyarea_t_label(pcb_polyarea_t * afst, pcb_polyarea_t * b, pcb_bool touch)
 {
-	POLYAREA *a = afst;
-	PLINE *curc;
+	pcb_polyarea_t *a = afst;
+	pcb_pline_t *curc;
 
 	assert(a != NULL);
 	do {
 		for (curc = a->contours; curc != NULL; curc = curc->next)
-			if (cntr_label_POLYAREA(curc, b, touch)) {
+			if (cntr_label_pcb_polyarea_t(curc, b, touch)) {
 				if (touch)
 					return pcb_true;
 			}
@@ -1067,17 +1067,17 @@ static pcb_bool M_POLYAREA_label(POLYAREA * afst, POLYAREA * b, pcb_bool touch)
 /****************************************************************/
 
 /* routines for temporary storing resulting contours */
-static void InsCntr(jmp_buf * e, PLINE * c, POLYAREA ** dst)
+static void InsCntr(jmp_buf * e, pcb_pline_t * c, pcb_polyarea_t ** dst)
 {
-	POLYAREA *newp;
+	pcb_polyarea_t *newp;
 
 	if (*dst == NULL) {
-		MemGet(*dst, POLYAREA);
+		MemGet(*dst, pcb_polyarea_t);
 		(*dst)->f = (*dst)->b = *dst;
 		newp = *dst;
 	}
 	else {
-		MemGet(newp, POLYAREA);
+		MemGet(newp, pcb_polyarea_t);
 		newp->f = *dst;
 		newp->b = (*dst)->b;
 		newp->f->b = newp->b->f = newp;
@@ -1089,8 +1089,8 @@ static void InsCntr(jmp_buf * e, PLINE * c, POLYAREA ** dst)
 }																/* InsCntr */
 
 static void
-PutContour(jmp_buf * e, PLINE * cntr, POLYAREA ** contours, PLINE ** holes,
-					 POLYAREA * owner, POLYAREA * parent, PLINE * parent_contour)
+PutContour(jmp_buf * e, pcb_pline_t * cntr, pcb_polyarea_t ** contours, pcb_pline_t ** holes,
+					 pcb_polyarea_t * owner, pcb_polyarea_t * parent, pcb_pline_t * parent_contour)
 {
 	assert(cntr != NULL);
 	assert(cntr->Count > 2);
@@ -1124,7 +1124,7 @@ PutContour(jmp_buf * e, PLINE * cntr, POLYAREA ** contours, PLINE ** holes,
 	}
 }																/* PutContour */
 
-static inline void remove_contour(POLYAREA * piece, PLINE * prev_contour, PLINE * contour, int remove_rtree_entry)
+static inline void remove_contour(pcb_polyarea_t * piece, pcb_pline_t * prev_contour, pcb_pline_t * contour, int remove_rtree_entry)
 {
 	if (piece->contours == contour)
 		piece->contours = contour->next;
@@ -1141,14 +1141,14 @@ static inline void remove_contour(POLYAREA * piece, PLINE * prev_contour, PLINE 
 
 struct polyarea_info {
 	pcb_box_t BoundingBox;
-	POLYAREA *pa;
+	pcb_polyarea_t *pa;
 };
 
 static r_dir_t heap_it(const pcb_box_t * b, void *cl)
 {
 	heap_t *heap = (heap_t *) cl;
 	struct polyarea_info *pa_info = (struct polyarea_info *) b;
-	PLINE *p = pa_info->pa->contours;
+	pcb_pline_t *p = pa_info->pa->contours;
 	if (p->Count == 0)
 		return R_DIR_NOT_FOUND;										/* how did this happen? */
 	heap_insert(heap, p->area, pa_info);
@@ -1157,14 +1157,14 @@ static r_dir_t heap_it(const pcb_box_t * b, void *cl)
 
 struct find_inside_info {
 	jmp_buf jb;
-	PLINE *want_inside;
-	PLINE *result;
+	pcb_pline_t *want_inside;
+	pcb_pline_t *result;
 };
 
 static r_dir_t find_inside(const pcb_box_t * b, void *cl)
 {
 	struct find_inside_info *info = (struct find_inside_info *) cl;
-	PLINE *check = (PLINE *) b;
+	pcb_pline_t *check = (pcb_pline_t *) b;
 	/* Do test on check to see if it inside info->want_inside */
 	/* If it is: */
 	if (check->Flags.orient == PLF_DIR) {
@@ -1177,10 +1177,10 @@ static r_dir_t find_inside(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
+static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 {
-	POLYAREA *curc;
-	PLINE *curh, *container;
+	pcb_polyarea_t *curc;
+	pcb_pline_t *curh, *container;
 	heap_t *heap;
 	pcb_rtree_t *tree;
 	int i;
@@ -1270,7 +1270,7 @@ static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
 			/* Need to check if this new hole means we need to kick out any old ones for reprocessing */
 			while (1) {
 				struct find_inside_info info;
-				PLINE *prev;
+				pcb_pline_t *prev;
 
 				info.want_inside = curh;
 
@@ -1323,30 +1323,30 @@ typedef enum {
 } DIRECTION;
 
 /* Start Rule */
-typedef int (*S_Rule) (VNODE *, DIRECTION *);
+typedef int (*S_Rule) (pcb_vnode_t *, DIRECTION *);
 
 /* Jump Rule  */
-typedef int (*J_Rule) (char, VNODE *, DIRECTION *);
+typedef int (*J_Rule) (char, pcb_vnode_t *, DIRECTION *);
 
-static int UniteS_Rule(VNODE * cur, DIRECTION * initdir)
+static int UniteS_Rule(pcb_vnode_t * cur, DIRECTION * initdir)
 {
 	*initdir = FORW;
 	return (NODE_LABEL(cur) == OUTSIDE) || (NODE_LABEL(cur) == SHARED);
 }
 
-static int IsectS_Rule(VNODE * cur, DIRECTION * initdir)
+static int IsectS_Rule(pcb_vnode_t * cur, DIRECTION * initdir)
 {
 	*initdir = FORW;
 	return (NODE_LABEL(cur) == INSIDE) || (NODE_LABEL(cur) == SHARED);
 }
 
-static int SubS_Rule(VNODE * cur, DIRECTION * initdir)
+static int SubS_Rule(pcb_vnode_t * cur, DIRECTION * initdir)
 {
 	*initdir = FORW;
 	return (NODE_LABEL(cur) == OUTSIDE) || (NODE_LABEL(cur) == SHARED2);
 }
 
-static int XorS_Rule(VNODE * cur, DIRECTION * initdir)
+static int XorS_Rule(pcb_vnode_t * cur, DIRECTION * initdir)
 {
 	if (cur->Flags.status == INSIDE) {
 		*initdir = BACKW;
@@ -1359,19 +1359,19 @@ static int XorS_Rule(VNODE * cur, DIRECTION * initdir)
 	return pcb_false;
 }
 
-static int IsectJ_Rule(char p, VNODE * v, DIRECTION * cdir)
+static int IsectJ_Rule(char p, pcb_vnode_t * v, DIRECTION * cdir)
 {
 	assert(*cdir == FORW);
 	return (v->Flags.status == INSIDE || v->Flags.status == SHARED);
 }
 
-static int UniteJ_Rule(char p, VNODE * v, DIRECTION * cdir)
+static int UniteJ_Rule(char p, pcb_vnode_t * v, DIRECTION * cdir)
 {
 	assert(*cdir == FORW);
 	return (v->Flags.status == OUTSIDE || v->Flags.status == SHARED);
 }
 
-static int XorJ_Rule(char p, VNODE * v, DIRECTION * cdir)
+static int XorJ_Rule(char p, pcb_vnode_t * v, DIRECTION * cdir)
 {
 	if (v->Flags.status == INSIDE) {
 		*cdir = BACKW;
@@ -1384,7 +1384,7 @@ static int XorJ_Rule(char p, VNODE * v, DIRECTION * cdir)
 	return pcb_false;
 }
 
-static int SubJ_Rule(char p, VNODE * v, DIRECTION * cdir)
+static int SubJ_Rule(char p, pcb_vnode_t * v, DIRECTION * cdir)
 {
 	if (p == 'B' && v->Flags.status == INSIDE) {
 		*cdir = BACKW;
@@ -1410,10 +1410,10 @@ static int SubJ_Rule(char p, VNODE * v, DIRECTION * cdir)
  *
  * returns pcb_true if an edge is found, pcb_false otherwise
  */
-static int jump(VNODE ** cur, DIRECTION * cdir, J_Rule rule)
+static int jump(pcb_vnode_t ** cur, DIRECTION * cdir, J_Rule rule)
 {
-	CVCList *d, *start;
-	VNODE *e;
+	pcb_cvc_list_t *d, *start;
+	pcb_vnode_t *e;
 	DIRECTION newone;
 
 	if (!(*cur)->cvc_prev) {			/* not a cross-vertex */
@@ -1452,9 +1452,9 @@ static int jump(VNODE ** cur, DIRECTION * cdir, J_Rule rule)
 	return pcb_false;
 }
 
-static int Gather(VNODE * start, PLINE ** result, J_Rule v_rule, DIRECTION initdir)
+static int Gather(pcb_vnode_t * start, pcb_pline_t ** result, J_Rule v_rule, DIRECTION initdir)
 {
-	VNODE *cur = start, *newn;
+	pcb_vnode_t *cur = start, *newn;
 	DIRECTION dir = initdir;
 #ifdef DEBUG_GATHER
 	DEBUGP("gather direction = %d\n", dir);
@@ -1492,9 +1492,9 @@ static int Gather(VNODE * start, PLINE ** result, J_Rule v_rule, DIRECTION initd
 	return err_ok;
 }																/* Gather */
 
-static void Collect1(jmp_buf * e, VNODE * cur, DIRECTION dir, POLYAREA ** contours, PLINE ** holes, J_Rule j_rule)
+static void Collect1(jmp_buf * e, pcb_vnode_t * cur, DIRECTION dir, pcb_polyarea_t ** contours, pcb_pline_t ** holes, J_Rule j_rule)
 {
-	PLINE *p = NULL;							/* start making contour */
+	pcb_pline_t *p = NULL;							/* start making contour */
 	int errc = err_ok;
 	if ((errc = Gather(dir == FORW ? cur : cur->next, &p, j_rule, dir)) != err_ok) {
 		if (p != NULL)
@@ -1519,9 +1519,9 @@ static void Collect1(jmp_buf * e, VNODE * cur, DIRECTION dir, POLYAREA ** contou
 	}
 }
 
-static void Collect(jmp_buf * e, PLINE * a, POLYAREA ** contours, PLINE ** holes, S_Rule s_rule, J_Rule j_rule)
+static void Collect(jmp_buf * e, pcb_pline_t * a, pcb_polyarea_t ** contours, pcb_pline_t ** holes, S_Rule s_rule, J_Rule j_rule)
 {
-	VNODE *cur, *other;
+	pcb_vnode_t *cur, *other;
 	DIRECTION dir;
 
 	cur = &a->head;
@@ -1537,10 +1537,10 @@ static void Collect(jmp_buf * e, PLINE * a, POLYAREA ** contours, PLINE ** holes
 
 
 static int
-cntr_Collect(jmp_buf * e, PLINE ** A, POLYAREA ** contours, PLINE ** holes,
-						 int action, POLYAREA * owner, POLYAREA * parent, PLINE * parent_contour)
+cntr_Collect(jmp_buf * e, pcb_pline_t ** A, pcb_polyarea_t ** contours, pcb_pline_t ** holes,
+						 int action, pcb_polyarea_t * owner, pcb_polyarea_t * parent, pcb_pline_t * parent_contour)
 {
-	PLINE *tmprev;
+	pcb_pline_t *tmprev;
 
 	if ((*A)->Flags.status == ISECTED) {
 		switch (action) {
@@ -1597,10 +1597,10 @@ cntr_Collect(jmp_buf * e, PLINE ** A, POLYAREA ** contours, PLINE ** holes,
 	return pcb_false;
 }																/* cntr_Collect */
 
-static void M_B_AREA_Collect(jmp_buf * e, POLYAREA * bfst, POLYAREA ** contours, PLINE ** holes, int action)
+static void M_B_AREA_Collect(jmp_buf * e, pcb_polyarea_t * bfst, pcb_polyarea_t ** contours, pcb_pline_t ** holes, int action)
 {
-	POLYAREA *b = bfst;
-	PLINE **cur, **next, *tmp;
+	pcb_polyarea_t *b = bfst;
+	pcb_pline_t **cur, **next, *tmp;
 
 	assert(b != NULL);
 	do {
@@ -1647,19 +1647,19 @@ static void M_B_AREA_Collect(jmp_buf * e, POLYAREA * bfst, POLYAREA ** contours,
 }
 
 
-static inline int contour_is_first(POLYAREA * a, PLINE * cur)
+static inline int contour_is_first(pcb_polyarea_t * a, pcb_pline_t * cur)
 {
 	return (a->contours == cur);
 }
 
 
-static inline int contour_is_last(PLINE * cur)
+static inline int contour_is_last(pcb_pline_t * cur)
 {
 	return (cur->next == NULL);
 }
 
 
-static inline void remove_polyarea(POLYAREA ** list, POLYAREA * piece)
+static inline void remove_polyarea(pcb_polyarea_t ** list, pcb_polyarea_t * piece)
 {
 	/* If this item was the start of the list, advance that pointer */
 	if (*list == piece)
@@ -1674,11 +1674,11 @@ static inline void remove_polyarea(POLYAREA ** list, POLYAREA * piece)
 	piece->f = piece->b = piece;
 }
 
-static void M_POLYAREA_separate_isected(jmp_buf * e, POLYAREA ** pieces, PLINE ** holes, PLINE ** isected)
+static void M_pcb_polyarea_separate_isected(jmp_buf * e, pcb_polyarea_t ** pieces, pcb_pline_t ** holes, pcb_pline_t ** isected)
 {
-	POLYAREA *a = *pieces;
-	POLYAREA *anext;
-	PLINE *curc, *next, *prev;
+	pcb_polyarea_t *a = *pieces;
+	pcb_polyarea_t *anext;
+	pcb_pline_t *curc, *next, *prev;
 	int finished;
 
 	if (a == NULL)
@@ -1752,21 +1752,21 @@ static void M_POLYAREA_separate_isected(jmp_buf * e, POLYAREA ** pieces, PLINE *
 
 struct find_inside_m_pa_info {
 	jmp_buf jb;
-	POLYAREA *want_inside;
-	PLINE *result;
+	pcb_polyarea_t *want_inside;
+	pcb_pline_t *result;
 };
 
 static r_dir_t find_inside_m_pa(const pcb_box_t * b, void *cl)
 {
 	struct find_inside_m_pa_info *info = (struct find_inside_m_pa_info *) cl;
-	PLINE *check = (PLINE *) b;
+	pcb_pline_t *check = (pcb_pline_t *) b;
 	/* Don't report for the main contour */
 	if (check->Flags.orient == PLF_DIR)
 		return R_DIR_NOT_FOUND;
 	/* Don't look at contours marked as being intersected */
 	if (check->Flags.status == ISECTED)
 		return R_DIR_NOT_FOUND;
-	if (cntr_in_M_POLYAREA(check, info->want_inside, pcb_false)) {
+	if (cntr_in_M_pcb_polyarea_t(check, info->want_inside, pcb_false)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
@@ -1774,12 +1774,12 @@ static r_dir_t find_inside_m_pa(const pcb_box_t * b, void *cl)
 }
 
 
-static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** holes, int action, POLYAREA * bpa)
+static void M_pcb_polyarea_t_update_primary(jmp_buf * e, pcb_polyarea_t ** pieces, pcb_pline_t ** holes, int action, pcb_polyarea_t * bpa)
 {
-	POLYAREA *a = *pieces;
-	POLYAREA *b;
-	POLYAREA *anext;
-	PLINE *curc, *next, *prev;
+	pcb_polyarea_t *a = *pieces;
+	pcb_polyarea_t *b;
+	pcb_polyarea_t *anext;
+	pcb_pline_t *curc, *next, *prev;
 	pcb_box_t box;
 	/* int inv_inside = 0; */
 	int del_inside = 0;
@@ -1828,7 +1828,7 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 					 && (a->contours->xmax <= box.X2)
 					 && (a->contours->ymax <= box.Y2)) &&
 					/* Then test properly */
-					cntr_in_M_POLYAREA(a->contours, bpa, pcb_false)) {
+					cntr_in_M_pcb_polyarea_t(a->contours, bpa, pcb_false)) {
 
 				/* Delete this contour, all children -> holes queue */
 
@@ -1859,7 +1859,7 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 			/* Loop whilst we find INSIDE contours to delete */
 			while (1) {
 				struct find_inside_m_pa_info info;
-				PLINE *prev;
+				pcb_pline_t *prev;
 
 				info.want_inside = bpa;
 
@@ -1917,7 +1917,7 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 			next = curc->next;
 
 			if (del_outside)
-				del_contour = curc->Flags.status != ISECTED && !cntr_in_M_POLYAREA(curc, bpa, pcb_false);
+				del_contour = curc->Flags.status != ISECTED && !cntr_in_M_pcb_polyarea_t(curc, bpa, pcb_false);
 
 			/* Skip intersected contours */
 			if (curc->Flags.status == ISECTED) {
@@ -1971,9 +1971,9 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 }
 
 static void
-M_POLYAREA_Collect_separated(jmp_buf * e, PLINE * afst, POLYAREA ** contours, PLINE ** holes, int action, pcb_bool maybe)
+M_pcb_polyarea_t_Collect_separated(jmp_buf * e, pcb_pline_t * afst, pcb_polyarea_t ** contours, pcb_pline_t ** holes, int action, pcb_bool maybe)
 {
-	PLINE **cur, **next;
+	pcb_pline_t **cur, **next;
 
 	for (cur = &afst; *cur != NULL; cur = next) {
 		next = &((*cur)->next);
@@ -1983,11 +1983,11 @@ M_POLYAREA_Collect_separated(jmp_buf * e, PLINE * afst, POLYAREA ** contours, PL
 	}
 }
 
-static void M_POLYAREA_Collect(jmp_buf * e, POLYAREA * afst, POLYAREA ** contours, PLINE ** holes, int action, pcb_bool maybe)
+static void M_pcb_polyarea_t_Collect(jmp_buf * e, pcb_polyarea_t * afst, pcb_polyarea_t ** contours, pcb_pline_t ** holes, int action, pcb_bool maybe)
 {
-	POLYAREA *a = afst;
-	POLYAREA *parent = NULL;			/* Quiet compiler warning */
-	PLINE **cur, **next, *parent_contour;
+	pcb_polyarea_t *a = afst;
+	pcb_polyarea_t *parent = NULL;			/* Quiet compiler warning */
+	pcb_pline_t **cur, **next, *parent_contour;
 
 	assert(a != NULL);
 	while ((a = a->f) != afst);
@@ -2024,7 +2024,7 @@ static void M_POLYAREA_Collect(jmp_buf * e, POLYAREA * afst, POLYAREA ** contour
 }
 
 /* determine if two polygons touch or overlap */
-pcb_bool Touching(POLYAREA * a, POLYAREA * b)
+pcb_bool Touching(pcb_polyarea_t * a, pcb_polyarea_t * b)
 {
 	jmp_buf e;
 	int code;
@@ -2036,11 +2036,11 @@ pcb_bool Touching(POLYAREA * a, POLYAREA * b)
 		if (!poly_Valid(b))
 			return -1;
 #endif
-		M_POLYAREA_intersect(&e, a, b, pcb_false);
+		M_pcb_polyarea_t_intersect(&e, a, b, pcb_false);
 
-		if (M_POLYAREA_label(a, b, pcb_true))
+		if (M_pcb_polyarea_t_label(a, b, pcb_true))
 			return pcb_true;
-		if (M_POLYAREA_label(b, a, pcb_true))
+		if (M_pcb_polyarea_t_label(b, a, pcb_true))
 			return pcb_true;
 	}
 	else if (code == TOUCHES)
@@ -2049,9 +2049,9 @@ pcb_bool Touching(POLYAREA * a, POLYAREA * b)
 }
 
 /* the main clipping routines */
-int poly_Boolean(const POLYAREA * a_org, const POLYAREA * b_org, POLYAREA ** res, int action)
+int poly_Boolean(const pcb_polyarea_t * a_org, const pcb_polyarea_t * b_org, pcb_polyarea_t ** res, int action)
 {
-	POLYAREA *a = NULL, *b = NULL;
+	pcb_polyarea_t *a = NULL, *b = NULL;
 
 	if (!poly_M_Copy0(&a, a_org) || !poly_M_Copy0(&b, b_org))
 		return err_no_memory;
@@ -2060,11 +2060,11 @@ int poly_Boolean(const POLYAREA * a_org, const POLYAREA * b_org, POLYAREA ** res
 }																/* poly_Boolean */
 
 /* just like poly_Boolean but frees the input polys */
-int poly_Boolean_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** res, int action)
+int poly_Boolean_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb_polyarea_t ** res, int action)
 {
-	POLYAREA *a = ai, *b = bi;
-	PLINE *a_isected = NULL;
-	PLINE *p, *holes = NULL;
+	pcb_polyarea_t *a = ai, *b = bi;
+	pcb_pline_t *a_isected = NULL;
+	pcb_pline_t *p, *holes = NULL;
 	jmp_buf e;
 	int code;
 
@@ -2104,17 +2104,17 @@ int poly_Boolean_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** res, int action)
 #endif
 
 		/* intersect needs to make a list of the contours in a and b which are intersected */
-		M_POLYAREA_intersect(&e, a, b, pcb_true);
+		M_pcb_polyarea_t_intersect(&e, a, b, pcb_true);
 
 		/* We could speed things up a lot here if we only processed the relevant contours */
 		/* NB: Relevant parts of a are labeled below */
-		M_POLYAREA_label(b, a, pcb_false);
+		M_pcb_polyarea_t_label(b, a, pcb_false);
 
 		*res = a;
-		M_POLYAREA_update_primary(&e, res, &holes, action, b);
-		M_POLYAREA_separate_isected(&e, res, &holes, &a_isected);
-		M_POLYAREA_label_separated(a_isected, b, pcb_false);
-		M_POLYAREA_Collect_separated(&e, a_isected, res, &holes, action, pcb_false);
+		M_pcb_polyarea_t_update_primary(&e, res, &holes, action, b);
+		M_pcb_polyarea_separate_isected(&e, res, &holes, &a_isected);
+		M_pcb_polyarea_t_label_separated(a_isected, b, pcb_false);
+		M_pcb_polyarea_t_Collect_separated(&e, a_isected, res, &holes, action, pcb_false);
 		M_B_AREA_Collect(&e, b, res, &holes, action);
 		poly_Free(&b);
 
@@ -2140,11 +2140,11 @@ int poly_Boolean_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** res, int action)
 	return code;
 }																/* poly_Boolean_free */
 
-static void clear_marks(POLYAREA * p)
+static void clear_marks(pcb_polyarea_t * p)
 {
-	POLYAREA *n = p;
-	PLINE *c;
-	VNODE *v;
+	pcb_polyarea_t *n = p;
+	pcb_pline_t *c;
+	pcb_vnode_t *v;
 
 	do {
 		for (c = n->contours; c; c = c->next) {
@@ -2161,10 +2161,10 @@ static void clear_marks(POLYAREA * p)
 /* compute the intersection and subtraction (divides "a" into two pieces)
  * and frees the input polys. This assumes that bi is a single simple polygon.
  */
-int poly_AndSubtract_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** aandb, POLYAREA ** aminusb)
+int poly_AndSubtract_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb_polyarea_t ** aandb, pcb_polyarea_t ** aminusb)
 {
-	POLYAREA *a = ai, *b = bi;
-	PLINE *p, *holes = NULL;
+	pcb_polyarea_t *a = ai, *b = bi;
+	pcb_pline_t *p, *holes = NULL;
 	jmp_buf e;
 	int code;
 
@@ -2179,12 +2179,12 @@ int poly_AndSubtract_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** aandb, POLYA
 		if (!poly_Valid(b))
 			return -1;
 #endif
-		M_POLYAREA_intersect(&e, a, b, pcb_true);
+		M_pcb_polyarea_t_intersect(&e, a, b, pcb_true);
 
-		M_POLYAREA_label(a, b, pcb_false);
-		M_POLYAREA_label(b, a, pcb_false);
+		M_pcb_polyarea_t_label(a, b, pcb_false);
+		M_pcb_polyarea_t_label(b, a, pcb_false);
 
-		M_POLYAREA_Collect(&e, a, aandb, &holes, PBO_ISECT, pcb_false);
+		M_pcb_polyarea_t_Collect(&e, a, aandb, &holes, PBO_ISECT, pcb_false);
 		InsertHoles(&e, *aandb, &holes);
 		assert(poly_Valid(*aandb));
 		/* delete holes if any left */
@@ -2195,7 +2195,7 @@ int poly_AndSubtract_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** aandb, POLYA
 		holes = NULL;
 		clear_marks(a);
 		clear_marks(b);
-		M_POLYAREA_Collect(&e, a, aminusb, &holes, PBO_SUB, pcb_false);
+		M_pcb_polyarea_t_Collect(&e, a, aminusb, &holes, PBO_SUB, pcb_false);
 		InsertHoles(&e, *aminusb, &holes);
 		poly_Free(&a);
 		poly_Free(&b);
@@ -2218,38 +2218,38 @@ int poly_AndSubtract_free(POLYAREA * ai, POLYAREA * bi, POLYAREA ** aandb, POLYA
 	return code;
 }																/* poly_AndSubtract_free */
 
-static inline int cntrbox_pointin(PLINE * c, pcb_vector_t p)
+static inline int cntrbox_pointin(pcb_pline_t * c, pcb_vector_t p)
 {
 	return (p[0] >= c->xmin && p[1] >= c->ymin && p[0] <= c->xmax && p[1] <= c->ymax);
 
 }
 
-static inline int node_neighbours(VNODE * a, VNODE * b)
+static inline int node_neighbours(pcb_vnode_t * a, pcb_vnode_t * b)
 {
 	return (a == b) || (a->next == b) || (b->next == a) || (a->next == b->next);
 }
 
-VNODE *poly_CreateNode(pcb_vector_t v)
+pcb_vnode_t *poly_CreateNode(pcb_vector_t v)
 {
-	VNODE *res;
+	pcb_vnode_t *res;
 	Coord *c;
 
 	assert(v);
-	res = (VNODE *) calloc(1, sizeof(VNODE));
+	res = (pcb_vnode_t *) calloc(1, sizeof(pcb_vnode_t));
 	if (res == NULL)
 		return NULL;
-	/* bzero (res, sizeof (VNODE) - sizeof(pcb_vector_t)); */
+	/* bzero (res, sizeof (pcb_vnode_t) - sizeof(pcb_vector_t)); */
 	c = res->point;
 	*c++ = *v++;
 	*c = *v;
 	return res;
 }
 
-void poly_IniContour(PLINE * c)
+void poly_IniContour(pcb_pline_t * c)
 {
 	if (c == NULL)
 		return;
-	/* bzero (c, sizeof(PLINE)); */
+	/* bzero (c, sizeof(pcb_pline_t)); */
 	c->head.next = c->head.prev = &c->head;
 	c->xmin = c->ymin = 0x7fffffff;
 	c->xmax = c->ymax = 0x80000000;
@@ -2259,11 +2259,11 @@ void poly_IniContour(PLINE * c)
 	c->radius = 0;
 }
 
-PLINE *poly_NewContour(pcb_vector_t v)
+pcb_pline_t *poly_NewContour(pcb_vector_t v)
 {
-	PLINE *res;
+	pcb_pline_t *res;
 
-	res = (PLINE *) calloc(1, sizeof(PLINE));
+	res = (pcb_pline_t *) calloc(1, sizeof(pcb_pline_t));
 	if (res == NULL)
 		return NULL;
 
@@ -2277,9 +2277,9 @@ PLINE *poly_NewContour(pcb_vector_t v)
 	return res;
 }
 
-void poly_ClrContour(PLINE * c)
+void poly_ClrContour(pcb_pline_t * c)
 {
-	VNODE *cur;
+	pcb_vnode_t *cur;
 
 	assert(c != NULL);
 	while ((cur = c->head.next) != &c->head) {
@@ -2289,9 +2289,9 @@ void poly_ClrContour(PLINE * c)
 	poly_IniContour(c);
 }
 
-void poly_DelContour(PLINE ** c)
+void poly_DelContour(pcb_pline_t ** c)
 {
-	VNODE *cur, *prev;
+	pcb_vnode_t *cur, *prev;
 
 	if (*c == NULL)
 		return;
@@ -2315,10 +2315,10 @@ void poly_DelContour(PLINE ** c)
 	free(*c), *c = NULL;
 }
 
-void poly_PreContour(PLINE * C, pcb_bool optimize)
+void poly_PreContour(pcb_pline_t * C, pcb_bool optimize)
 {
 	double area = 0;
-	VNODE *p, *c;
+	pcb_vnode_t *p, *c;
 	pcb_vector_t p1, p2;
 
 	assert(C != NULL);
@@ -2368,9 +2368,9 @@ static r_dir_t flip_cb(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-void poly_InvContour(PLINE * c)
+void poly_InvContour(pcb_pline_t * c)
 {
-	VNODE *cur, *next;
+	pcb_vnode_t *cur, *next;
 	int r;
 
 	assert(c != NULL);
@@ -2389,7 +2389,7 @@ void poly_InvContour(PLINE * c)
 	}
 }
 
-void poly_ExclVertex(VNODE * node)
+void poly_ExclVertex(pcb_vnode_t * node)
 {
 	assert(node != NULL);
 	if (node->cvc_next) {
@@ -2400,7 +2400,7 @@ void poly_ExclVertex(VNODE * node)
 	node->next->prev = node->prev;
 }
 
-void poly_InclVertex(VNODE * after, VNODE * node)
+void poly_InclVertex(pcb_vnode_t * after, pcb_vnode_t * node)
 {
 	double a, b;
 	assert(after != NULL);
@@ -2417,16 +2417,16 @@ void poly_InclVertex(VNODE * after, VNODE * node)
 	b = (node->point[0] - node->prev->prev->point[0]);
 	b *= (node->prev->point[1] - node->prev->prev->point[1]);
 	if (fabs(a - b) < EPSILON) {
-		VNODE *t = node->prev;
+		pcb_vnode_t *t = node->prev;
 		t->prev->next = node;
 		node->prev = t->prev;
 		free(t);
 	}
 }
 
-pcb_bool poly_CopyContour(PLINE ** dst, PLINE * src)
+pcb_bool poly_CopyContour(pcb_pline_t ** dst, pcb_pline_t * src)
 {
-	VNODE *cur, *newnode;
+	pcb_vnode_t *cur, *newnode;
 
 	assert(src != NULL);
 	*dst = NULL;
@@ -2453,11 +2453,11 @@ pcb_bool poly_CopyContour(PLINE ** dst, PLINE * src)
 /**********************************************************************/
 /* polygon routines */
 
-pcb_bool poly_Copy0(POLYAREA ** dst, const POLYAREA * src)
+pcb_bool poly_Copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src)
 {
 	*dst = NULL;
 	if (src != NULL)
-		*dst = (POLYAREA *) calloc(1, sizeof(POLYAREA));
+		*dst = (pcb_polyarea_t *) calloc(1, sizeof(pcb_polyarea_t));
 	if (*dst == NULL)
 		return pcb_false;
 	(*dst)->contour_tree = r_create_tree(NULL, 0, 0);
@@ -2465,9 +2465,9 @@ pcb_bool poly_Copy0(POLYAREA ** dst, const POLYAREA * src)
 	return poly_Copy1(*dst, src);
 }
 
-pcb_bool poly_Copy1(POLYAREA * dst, const POLYAREA * src)
+pcb_bool poly_Copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src)
 {
-	PLINE *cur, **last = &dst->contours;
+	pcb_pline_t *cur, **last = &dst->contours;
 
 	*last = NULL;
 	dst->f = dst->b = dst;
@@ -2481,7 +2481,7 @@ pcb_bool poly_Copy1(POLYAREA * dst, const POLYAREA * src)
 	return pcb_true;
 }
 
-void poly_M_Incl(POLYAREA ** list, POLYAREA * a)
+void poly_M_Incl(pcb_polyarea_t ** list, pcb_polyarea_t * a)
 {
 	if (*list == NULL)
 		a->f = a->b = a, *list = a;
@@ -2492,10 +2492,10 @@ void poly_M_Incl(POLYAREA ** list, POLYAREA * a)
 	}
 }
 
-pcb_bool poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst)
+pcb_bool poly_M_Copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * srcfst)
 {
-	const POLYAREA *src = srcfst;
-	POLYAREA *di;
+	const pcb_polyarea_t *src = srcfst;
+	pcb_polyarea_t *di;
 
 	*dst = NULL;
 	if (src == NULL)
@@ -2509,9 +2509,9 @@ pcb_bool poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst)
 	return pcb_true;
 }
 
-pcb_bool poly_InclContour(POLYAREA * p, PLINE * c)
+pcb_bool poly_InclContour(pcb_polyarea_t * p, pcb_pline_t * c)
 {
-	PLINE *tmp;
+	pcb_pline_t *tmp;
 
 	if ((c == NULL) || (p == NULL))
 		return pcb_false;
@@ -2577,7 +2577,7 @@ static r_dir_t crossing(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-int poly_InsideContour(PLINE * c, pcb_vector_t p)
+int poly_InsideContour(pcb_pline_t * c, pcb_vector_t p)
 {
 	struct pip info;
 	pcb_box_t ray;
@@ -2594,9 +2594,9 @@ int poly_InsideContour(PLINE * c, pcb_vector_t p)
 	return info.f;
 }
 
-pcb_bool poly_CheckInside(POLYAREA * p, pcb_vector_t v0)
+pcb_bool poly_CheckInside(pcb_polyarea_t * p, pcb_vector_t v0)
 {
-	PLINE *cur;
+	pcb_pline_t *cur;
 
 	if ((p == NULL) || (v0 == NULL) || (p->contours == NULL))
 		return pcb_false;
@@ -2610,9 +2610,9 @@ pcb_bool poly_CheckInside(POLYAREA * p, pcb_vector_t v0)
 	return pcb_false;
 }
 
-pcb_bool poly_M_CheckInside(POLYAREA * p, pcb_vector_t v0)
+pcb_bool poly_M_CheckInside(pcb_polyarea_t * p, pcb_vector_t v0)
 {
-	POLYAREA *cur;
+	pcb_polyarea_t *cur;
 
 	if ((p == NULL) || (v0 == NULL))
 		return pcb_false;
@@ -2699,10 +2699,10 @@ static double dot_orthogonal_to_direction(pcb_vector_t A, pcb_vector_t B, pcb_ve
  *             Joseph O'Rourke, Cambridge University Press 1998,
  *             ISBN 0-521-64010-5 Pbk, ISBN 0-521-64976-5 Hbk
  */
-static void poly_ComputeInteriorPoint(PLINE * poly, pcb_vector_t v)
+static void poly_ComputeInteriorPoint(pcb_pline_t * poly, pcb_vector_t v)
 {
-	VNODE *pt1, *pt2, *pt3, *q;
-	VNODE *min_q = NULL;
+	pcb_vnode_t *pt1, *pt2, *pt3, *q;
+	pcb_vnode_t *min_q = NULL;
 	double dist;
 	double min_dist = 0.0;
 	double dir = (poly->Flags.orient == PLF_DIR) ? 1. : -1;
@@ -2759,7 +2759,7 @@ static void poly_ComputeInteriorPoint(PLINE * poly, pcb_vector_t v)
  *     common points between their contours. (Identical contours
  *     are treated as being inside each other).
  */
-int poly_ContourInContour(PLINE * poly, PLINE * inner)
+int poly_ContourInContour(pcb_pline_t * poly, pcb_pline_t * inner)
 {
 	pcb_vector_t point;
 	assert(poly != NULL);
@@ -2777,25 +2777,25 @@ int poly_ContourInContour(PLINE * poly, PLINE * inner)
 	return 0;
 }
 
-void poly_Init(POLYAREA * p)
+void poly_Init(pcb_polyarea_t * p)
 {
 	p->f = p->b = p;
 	p->contours = NULL;
 	p->contour_tree = r_create_tree(NULL, 0, 0);
 }
 
-POLYAREA *poly_Create(void)
+pcb_polyarea_t *poly_Create(void)
 {
-	POLYAREA *res;
+	pcb_polyarea_t *res;
 
-	if ((res = (POLYAREA *) malloc(sizeof(POLYAREA))) != NULL)
+	if ((res = (pcb_polyarea_t *) malloc(sizeof(pcb_polyarea_t))) != NULL)
 		poly_Init(res);
 	return res;
 }
 
-void poly_FreeContours(PLINE ** pline)
+void poly_FreeContours(pcb_pline_t ** pline)
 {
-	PLINE *pl;
+	pcb_pline_t *pl;
 
 	while ((pl = *pline) != NULL) {
 		*pline = pl->next;
@@ -2803,9 +2803,9 @@ void poly_FreeContours(PLINE ** pline)
 	}
 }
 
-void poly_Free(POLYAREA ** p)
+void poly_Free(pcb_polyarea_t ** p)
 {
-	POLYAREA *cur;
+	pcb_polyarea_t *cur;
 
 	if (*p == NULL)
 		return;
@@ -2821,7 +2821,7 @@ void poly_Free(POLYAREA ** p)
 	free(*p), *p = NULL;
 }
 
-static pcb_bool inside_sector(VNODE * pn, pcb_vector_t p2)
+static pcb_bool inside_sector(pcb_vnode_t * pn, pcb_vector_t p2)
 {
 	pcb_vector_t cdir, ndir, pdir;
 	int p_c, n_c, p_n;
@@ -2842,9 +2842,9 @@ static pcb_bool inside_sector(VNODE * pn, pcb_vector_t p2)
 }																/* inside_sector */
 
 /* returns pcb_true if bad contour */
-pcb_bool poly_ChkContour(PLINE * a)
+pcb_bool poly_ChkContour(pcb_pline_t * a)
 {
-	VNODE *a1, *a2, *hit1, *hit2;
+	pcb_vnode_t *a1, *a2, *hit1, *hit2;
 	pcb_vector_t i1, i2;
 	int icnt;
 
@@ -2902,9 +2902,9 @@ pcb_bool poly_ChkContour(PLINE * a)
 	return pcb_false;
 }
 
-void poly_bbox(POLYAREA * p, pcb_box_t * b)
+void poly_bbox(pcb_polyarea_t * p, pcb_box_t * b)
 {
-	PLINE *n;
+	pcb_pline_t *n;
 	/*int cnt;*/
 
 	n = p->contours;
@@ -2926,17 +2926,17 @@ void poly_bbox(POLYAREA * p, pcb_box_t * b)
 }
 
 
-pcb_bool poly_Valid(POLYAREA * p)
+pcb_bool poly_Valid(pcb_polyarea_t * p)
 {
-	PLINE *c;
+	pcb_pline_t *c;
 
 	if ((p == NULL) || (p->contours == NULL))
 		return pcb_false;
 
 	if (p->contours->Flags.orient == PLF_INV || poly_ChkContour(p->contours)) {
 #ifndef NDEBUG
-		VNODE *v, *n;
-		DEBUGP("Invalid Outer PLINE\n");
+		pcb_vnode_t *v, *n;
+		DEBUGP("Invalid Outer pcb_pline_t\n");
 		if (p->contours->Flags.orient == PLF_INV)
 			DEBUGP("failed orient\n");
 		if (poly_ChkContour(p->contours))
@@ -2953,8 +2953,8 @@ pcb_bool poly_Valid(POLYAREA * p)
 	for (c = p->contours->next; c != NULL; c = c->next) {
 		if (c->Flags.orient == PLF_DIR || poly_ChkContour(c) || !poly_ContourInContour(p->contours, c)) {
 #ifndef NDEBUG
-			VNODE *v, *n;
-			DEBUGP("Invalid Inner PLINE orient = %d\n", c->Flags.orient);
+			pcb_vnode_t *v, *n;
+			DEBUGP("Invalid Inner pcb_pline_t orient = %d\n", c->Flags.orient);
 			if (c->Flags.orient == PLF_DIR)
 				DEBUGP("failed orient\n");
 			if (poly_ChkContour(c))

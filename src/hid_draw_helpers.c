@@ -7,10 +7,10 @@
 #include "obj_pad.h"
 #include "obj_poly.h"
 
-static void fill_contour(pcb_hid_gc_t gc, PLINE * pl)
+static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 {
 	Coord *x, *y, n, i = 0;
-	VNODE *v;
+	pcb_vnode_t *v;
 
 	n = pl->Count;
 	x = (Coord *) malloc(n * sizeof(*x));
@@ -27,9 +27,9 @@ static void fill_contour(pcb_hid_gc_t gc, PLINE * pl)
 	free(y);
 }
 
-static void thindraw_contour(pcb_hid_gc_t gc, PLINE * pl)
+static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 {
-	VNODE *v;
+	pcb_vnode_t *v;
 	Coord last_x, last_y;
 	Coord this_x, this_y;
 
@@ -63,22 +63,22 @@ static void thindraw_contour(pcb_hid_gc_t gc, PLINE * pl)
 	while ((v = v->next) != pl->head.next);
 }
 
-static void fill_contour_cb(PLINE * pl, void *user_data)
+static void fill_contour_cb(pcb_pline_t * pl, void *user_data)
 {
 	pcb_hid_gc_t gc = (pcb_hid_gc_t) user_data;
-	PLINE *local_pl = pl;
+	pcb_pline_t *local_pl = pl;
 
 	fill_contour(gc, pl);
 	poly_FreeContours(&local_pl);
 }
 
-static void fill_clipped_contour(pcb_hid_gc_t gc, PLINE * pl, const pcb_box_t * clip_box)
+static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const pcb_box_t * clip_box)
 {
-	PLINE *pl_copy;
-	POLYAREA *clip_poly;
-	POLYAREA *piece_poly;
-	POLYAREA *clipped_pieces;
-	POLYAREA *draw_piece;
+	pcb_pline_t *pl_copy;
+	pcb_polyarea_t *clip_poly;
+	pcb_polyarea_t *piece_poly;
+	pcb_polyarea_t *clipped_pieces;
+	pcb_polyarea_t *draw_piece;
 	int x;
 
 	clip_poly = RectPoly(clip_box->X1, clip_box->X2, clip_box->Y1, clip_box->Y2);
@@ -147,7 +147,7 @@ void common_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_bo
 			NoHolesPolygonDicer(poly, clip_box, fill_contour_cb, gc);
 	}
 	if (poly->NoHolesValid && poly->NoHoles) {
-		PLINE *pl;
+		pcb_pline_t *pl;
 
 		for (pl = poly->NoHoles; pl != NULL; pl = pl->next) {
 			if (clip_box == NULL)
@@ -167,7 +167,7 @@ void common_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_bo
 	}
 }
 
-static int thindraw_hole_cb(PLINE * pl, void *user_data)
+static int thindraw_hole_cb(pcb_pline_t * pl, void *user_data)
 {
 	pcb_hid_gc_t gc = (pcb_hid_gc_t) user_data;
 	thindraw_contour(gc, pl);

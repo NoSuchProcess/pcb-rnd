@@ -44,12 +44,12 @@ struct cent {
 	Coord x, y;
 	Coord s, c;
 	char style;
-	POLYAREA *p;
+	pcb_polyarea_t *p;
 };
 
-static POLYAREA *diag_line(Coord X, Coord Y, Coord l, Coord w, pcb_bool rt)
+static pcb_polyarea_t *diag_line(Coord X, Coord Y, Coord l, Coord w, pcb_bool rt)
 {
-	PLINE *c;
+	pcb_pline_t *c;
 	pcb_vector_t v;
 	Coord x1, x2, y1, y2;
 
@@ -82,10 +82,10 @@ static POLYAREA *diag_line(Coord X, Coord Y, Coord l, Coord w, pcb_bool rt)
 	return ContourToPoly(c);
 }
 
-static POLYAREA *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
+static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 {
-	POLYAREA *p, *p2;
-	PLINE *c;
+	pcb_polyarea_t *p, *p2;
+	pcb_pline_t *c;
 	pcb_vector_t v;
 	Coord d, in, out;
 
@@ -309,9 +309,9 @@ static POLYAREA *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	}
 }
 
-static POLYAREA *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
+static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 {
-	POLYAREA *p, *p2, *m;
+	pcb_polyarea_t *p, *p2, *m;
 	Coord t = 0.5 * pcb->ThermScale * pin->Clearance;
 	Coord w = pin->Thickness + pin->Clearance;
 
@@ -337,7 +337,7 @@ static POLYAREA *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	case 5:
 		{
 			Coord t = pin->Thickness / 2;
-			POLYAREA *q;
+			pcb_polyarea_t *q;
 			/* cheat by using the square therm's rounded parts */
 			p = square_therm(pin, style);
 			q = RectPoly(pin->X - t, pin->X + t, pin->Y - t, pin->Y + t);
@@ -348,15 +348,15 @@ static POLYAREA *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	}
 }
 
-/* ThermPoly returns a POLYAREA having all of the clearance that when
+/* ThermPoly returns a pcb_polyarea_t having all of the clearance that when
  * subtracted from the plane create the desired thermal fingers.
  * Usually this is 4 disjoint regions.
  *
  */
-POLYAREA *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
+pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 {
 	pcb_arc_t a;
-	POLYAREA *pa, *arc;
+	pcb_polyarea_t *pa, *arc;
 	pcb_cardinal_t style = GET_THERM(laynum, pin);
 
 	if (style == 3)
@@ -371,7 +371,7 @@ POLYAREA *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 	case 1:
 	case 2:
 		{
-			POLYAREA *m;
+			pcb_polyarea_t *m;
 			Coord t = (pin->Thickness + pin->Clearance) / 2;
 			Coord w = 0.5 * pcb->ThermScale * pin->Clearance;
 			pa = CirclePoly(pin->X, pin->Y, t);

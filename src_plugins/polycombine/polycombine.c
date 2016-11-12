@@ -38,10 +38,10 @@
 #include "hid_actions.h"
 #include "obj_poly.h"
 
-static POLYAREA *original_poly(pcb_polygon_t *p, pcb_bool *forward)
+static pcb_polyarea_t *original_poly(pcb_polygon_t *p, pcb_bool *forward)
 {
-	PLINE *contour = NULL;
-	POLYAREA *np = NULL;
+	pcb_pline_t *contour = NULL;
+	pcb_polyarea_t *np = NULL;
 	pcb_cardinal_t n;
 	pcb_vector_t v;
 	int hole = 0;
@@ -94,7 +94,7 @@ typedef struct poly_tree poly_tree;
 struct poly_tree {
 	pcb_polygon_t *polygon;
 	pcb_bool forward;
-	POLYAREA *polyarea;
+	pcb_polyarea_t *polyarea;
 	poly_tree *parent;
 	poly_tree *child;
 	poly_tree *prev;
@@ -127,7 +127,7 @@ struct poly_tree {
  * contours can be assumed not to overlap, we can drill down in this
  * order: P1, P2, P3, P4, P5, P6.
  */
-static pcb_bool PolygonContainsPolygon(POLYAREA *outer, POLYAREA *inner)
+static pcb_bool PolygonContainsPolygon(pcb_polyarea_t *outer, pcb_polyarea_t *inner)
 {
 /*  int contours_isect;*/
 	/* Should check outer contours don't intersect? */
@@ -249,9 +249,9 @@ static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_
 	return to_insert;
 }
 
-static POLYAREA *compute_polygon_recursive(poly_tree * root, POLYAREA * accumulate)
+static pcb_polyarea_t *compute_polygon_recursive(poly_tree * root, pcb_polyarea_t * accumulate)
 {
-	POLYAREA *res;
+	pcb_polyarea_t *res;
 	poly_tree *cur_node;
 	for (cur_node = root; cur_node != NULL; cur_node = cur_node->next) {
 		/* Process this element */
@@ -270,13 +270,13 @@ static POLYAREA *compute_polygon_recursive(poly_tree * root, POLYAREA * accumula
 
 static int polycombine(int argc, const char **argv, Coord x, Coord y)
 {
-	POLYAREA *res;
+	pcb_polyarea_t *res;
 	pcb_bool forward;
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 /*  bool outer;
-    POLYAREA *pa;
-    PLINE *pline;
-    VNODE *node;
+    pcb_polyarea_t *pa;
+    pcb_pline_t *pline;
+    pcb_vnode_t *node;
     pcb_polygon_t *Polygon;*/
 	pcb_layer_t *Layer = NULL;
 	poly_tree *root = NULL;

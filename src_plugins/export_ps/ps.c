@@ -1220,8 +1220,8 @@ static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb
 {
 	/* Ignore clip_box, just draw everything */
 
-	VNODE *v;
-	PLINE *pl;
+	pcb_vnode_t *v;
+	pcb_pline_t *pl;
 	const char *op;
 	int len;
 	double POLYGRID = ps_attribute_list[HA_polygrid].default_val.real_value;

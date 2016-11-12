@@ -209,7 +209,7 @@ void SetPinBoundingBox(pcb_pin_t *Pin)
 	Coord width;
 
 	if ((GET_SQUARE(Pin) > 1) && (TEST_FLAG(PCB_FLAG_SQUARE, Pin))) {
-		POLYAREA *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
+		pcb_polyarea_t *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
 		poly_bbox(p, &Pin->BoundingBox);
 		poly_Free(&p);
 	}

@@ -363,7 +363,7 @@ static r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 				longjmp(i->env, 1);
 		}
 		else if (TEST_FLAG(PCB_FLAG_OCTAGON, &i->pv)) {
-			POLYAREA *oct = OctagonPoly(i->pv.X, i->pv.Y, i->pv.Thickness / 2, GET_SQUARE(&i->pv));
+			pcb_polyarea_t *oct = OctagonPoly(i->pv.X, i->pv.Y, i->pv.Thickness / 2, GET_SQUARE(&i->pv));
 			if (isects(oct, polygon, pcb_true)
 					&& ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PIN, &i->pv, FCT_COPPER))
 				longjmp(i->env, 1);
@@ -678,7 +678,7 @@ static r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 				longjmp(i->env, 1);
 		}
 		else if (TEST_FLAG(PCB_FLAG_OCTAGON, pv)) {
-			POLYAREA *oct = OctagonPoly(pv->X, pv->Y, PIN_SIZE(pv) / 2, GET_SQUARE(pv));
+			pcb_polyarea_t *oct = OctagonPoly(pv->X, pv->Y, PIN_SIZE(pv) / 2, GET_SQUARE(pv));
 			if (isects(oct, &i->polygon, pcb_true) && ADD_PV_TO_LIST(pv, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
 				longjmp(i->env, 1);
 		}

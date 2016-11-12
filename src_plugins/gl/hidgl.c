@@ -511,9 +511,9 @@ void hidgl_fill_polygon(int n_coords, Coord * x, Coord * y)
 	free(vertices);
 }
 
-void tesselate_contour(GLUtesselator * tobj, PLINE * contour, GLdouble * vertices, double scale)
+void tesselate_contour(GLUtesselator * tobj, pcb_pline_t * contour, GLdouble * vertices, double scale)
 {
-	VNODE *vn = &contour->head;
+	pcb_vnode_t *vn = &contour->head;
 	int offset = 0;
 
 	/* If the contour is round, and hidgl_fill_circle would use
@@ -550,7 +550,7 @@ struct do_hole_info {
 static r_dir_t do_hole(const pcb_box_t * b, void *cl)
 {
 	struct do_hole_info *info = cl;
-	PLINE *curc = (PLINE *) b;
+	pcb_pline_t *curc = (pcb_pline_t *) b;
 
 	/* Ignore the outer contour - we draw it first explicitly */
 	if (curc->Flags.orient == PLF_DIR) {
@@ -569,7 +569,7 @@ static int assigned_bits = 0;
 void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, double scale)
 {
 	int vertex_count = 0;
-	PLINE *contour;
+	pcb_pline_t *contour;
 	struct do_hole_info info;
 	int stencil_bit;
 

@@ -33,32 +33,32 @@ Jackson:
 A PCB pcb_polygon_t contains an array of points outlining the polygon.
 This is what is manipulated by the UI and stored in the saved PCB.
 
-A pcb_polygon_t also contains a POLYAREA called 'Clipped' which is
+A pcb_polygon_t also contains a pcb_polyarea_t called 'Clipped' which is
 computed dynamically by InitClip every time a board is loaded.  The
-point array is converted to a POLYAREA by original_poly and then holes
+point array is converted to a pcb_polyarea_t by original_poly and then holes
 are cut in it by clearPoly.  After that it is maintained dynamically
 as parts are added, moved or removed (this is why sometimes bugs can
 be fixed by just re-loading the board).
 
-A POLYAREA consists of a linked list of PLINE structures.  The head of
-that list is POLYAREA.contours.  The first contour is an outline of a
-filled region.  All of the subsequent PLINEs are holes cut out of that
-first contour.  POLYAREAs are in a doubly-linked list and each member
+A pcb_polyarea_t consists of a linked list of pcb_pline_t structures.  The head of
+that list is pcb_polyarea_t.contours.  The first contour is an outline of a
+filled region.  All of the subsequent pcb_pline_ts are holes cut out of that
+first contour.  pcb_polyarea_ts are in a doubly-linked list and each member
 of the list is an independent (non-overlapping) area with its own
-outline and holes.  The function biggest() finds the largest POLYAREA
+outline and holes.  The function biggest() finds the largest pcb_polyarea_t
 so that pcb_polygon_t.Clipped points to that shape.  The rest of the
 polygon still exists, it's just ignored when turning the polygon into
 copper.
 
-The first POLYAREA in pcb_polygon_t.Clipped is what is used for the vast
+The first pcb_polyarea_t in pcb_polygon_t.Clipped is what is used for the vast
 majority of Polygon related tests.  The basic logic for an
-intersection is "is the target shape inside POLYAREA.contours and NOT
-fully enclosed in any of POLYAREA.contours.next... (the holes)".
+intersection is "is the target shape inside pcb_polyarea_t.contours and NOT
+fully enclosed in any of pcb_polyarea_t.contours.next... (the holes)".
 
 The polygon dicer (NoHolesPolygonDicer and r_NoHolesPolygonDicer)
-emits a series of "simple" PLINE shapes.  That is, the PLINE isn't
+emits a series of "simple" pcb_pline_t shapes.  That is, the pcb_pline_t isn't
 linked to any other "holes" oulines).  That's the meaning of the first
-test in r_NoHolesPolygonDicer.  It is testing to see if the PLINE
+test in r_NoHolesPolygonDicer.  It is testing to see if the pcb_pline_t
 contour (the first, making it a solid outline) has a valid next
 pointer (which would point to one or more holes).  The dicer works by
 recursively chopping the polygon in half through the first hole it
@@ -171,7 +171,7 @@ pcb_cardinal_t prev_contour_point(pcb_polygon_t *polygon, pcb_cardinal_t point)
 	return point;
 }
 
-static void add_noholes_polyarea(PLINE * pline, void *user_data)
+static void add_noholes_polyarea(pcb_pline_t * pline, void *user_data)
 {
 	pcb_polygon_t *poly = (pcb_polygon_t *) user_data;
 
@@ -190,10 +190,10 @@ void ComputeNoHoles(pcb_polygon_t * poly)
 	poly->NoHolesValid = 1;
 }
 
-static POLYAREA *biggest(POLYAREA * p)
+static pcb_polyarea_t *biggest(pcb_polyarea_t * p)
 {
-	POLYAREA *n, *top = NULL;
-	PLINE *pl;
+	pcb_polyarea_t *n, *top = NULL;
+	pcb_pline_t *pl;
 	pcb_rtree_t *tree;
 	double big = -1;
 	if (!p)
@@ -235,9 +235,9 @@ static POLYAREA *biggest(POLYAREA * p)
 	return p;
 }
 
-POLYAREA *ContourToPoly(PLINE * contour)
+pcb_polyarea_t *ContourToPoly(pcb_pline_t * contour)
 {
-	POLYAREA *p;
+	pcb_polyarea_t *p;
 	poly_PreContour(contour, pcb_true);
 	assert(contour->Flags.orient == PLF_DIR);
 	if (!(p = poly_Create()))
@@ -247,10 +247,10 @@ POLYAREA *ContourToPoly(PLINE * contour)
 	return p;
 }
 
-static POLYAREA *original_poly(pcb_polygon_t * p)
+static pcb_polyarea_t *original_poly(pcb_polygon_t * p)
 {
-	PLINE *contour = NULL;
-	POLYAREA *np = NULL;
+	pcb_pline_t *contour = NULL;
+	pcb_polyarea_t *np = NULL;
 	pcb_cardinal_t n;
 	pcb_vector_t v;
 	int hole = 0;
@@ -292,14 +292,14 @@ static POLYAREA *original_poly(pcb_polygon_t * p)
 	return biggest(np);
 }
 
-POLYAREA *PolygonToPoly(pcb_polygon_t * p)
+pcb_polyarea_t *PolygonToPoly(pcb_polygon_t * p)
 {
 	return original_poly(p);
 }
 
-POLYAREA *RectPoly(Coord x1, Coord x2, Coord y1, Coord y2)
+pcb_polyarea_t *RectPoly(Coord x1, Coord x2, Coord y1, Coord y2)
 {
-	PLINE *contour = NULL;
+	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
 
 	/* Return NULL for zero or negatively sized rectangles */
@@ -346,9 +346,9 @@ void square_pin_factors(int style, double *xm, double *ym)
 }
 
 
-POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style)
+pcb_polyarea_t *OctagonPoly(Coord x, Coord y, Coord radius, int style)
 {
-	PLINE *contour = NULL;
+	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
 	double xm[8], ym[8];
 
@@ -398,7 +398,7 @@ POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style)
  * 2 for a half circle
  * or 4 for a quarter circle
  */
-void frac_circle(PLINE * c, Coord X, Coord Y, pcb_vector_t v, int range)
+void frac_circle(pcb_pline_t * c, Coord X, Coord Y, pcb_vector_t v, int range)
 {
 	double e1, e2, t1;
 	int i;
@@ -422,9 +422,9 @@ void frac_circle(PLINE * c, Coord X, Coord Y, pcb_vector_t v, int range)
 }
 
 /* create a circle approximation from lines */
-POLYAREA *CirclePoly(Coord x, Coord y, Coord radius)
+pcb_polyarea_t *CirclePoly(Coord x, Coord y, Coord radius)
 {
-	PLINE *contour;
+	pcb_pline_t *contour;
 	pcb_vector_t v;
 
 	if (radius <= 0)
@@ -442,9 +442,9 @@ POLYAREA *CirclePoly(Coord x, Coord y, Coord radius)
 }
 
 /* make a rounded-corner rectangle with radius t beyond x1,x2,y1,y2 rectangle */
-POLYAREA *RoundRect(Coord x1, Coord x2, Coord y1, Coord y2, Coord t)
+pcb_polyarea_t *RoundRect(Coord x1, Coord x2, Coord y1, Coord y2, Coord t)
 {
-	PLINE *contour = NULL;
+	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
 
 	assert(x2 > x1);
@@ -470,10 +470,10 @@ POLYAREA *RoundRect(Coord x1, Coord x2, Coord y1, Coord y2, Coord t)
 }
 
 #define ARC_ANGLE 5
-static POLYAREA *ArcPolyNoIntersect(pcb_arc_t * a, Coord thick)
+static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, Coord thick)
 {
-	PLINE *contour = NULL;
-	POLYAREA *np = NULL;
+	pcb_pline_t *contour = NULL;
+	pcb_polyarea_t *np = NULL;
 	pcb_vector_t v;
 	pcb_box_t *ends;
 	int i, segs;
@@ -539,11 +539,11 @@ static POLYAREA *ArcPolyNoIntersect(pcb_arc_t * a, Coord thick)
 }
 
 #define MIN_CLEARANCE_BEFORE_BISECT 10.
-POLYAREA *ArcPoly(pcb_arc_t * a, Coord thick)
+pcb_polyarea_t *ArcPoly(pcb_arc_t * a, Coord thick)
 {
 	double delta;
 	pcb_arc_t seg1, seg2;
-	POLYAREA *tmp1, *tmp2, *res;
+	pcb_polyarea_t *tmp1, *tmp2, *res;
 
 	delta = (a->Delta < 0) ? -a->Delta : a->Delta;
 
@@ -567,10 +567,10 @@ POLYAREA *ArcPoly(pcb_arc_t * a, Coord thick)
 	return ArcPolyNoIntersect(a, thick);
 }
 
-POLYAREA *LinePoly(pcb_line_t * L, Coord thick)
+pcb_polyarea_t *LinePoly(pcb_line_t * L, Coord thick)
 {
-	PLINE *contour = NULL;
-	POLYAREA *np = NULL;
+	pcb_pline_t *contour = NULL;
+	pcb_polyarea_t *np = NULL;
 	pcb_vector_t v;
 	double d, dx, dy;
 	long half;
@@ -624,10 +624,10 @@ POLYAREA *LinePoly(pcb_line_t * L, Coord thick)
 }
 
 /* make a rounded-corner rectangle */
-POLYAREA *SquarePadPoly(pcb_pad_t * pad, Coord clear)
+pcb_polyarea_t *SquarePadPoly(pcb_pad_t * pad, Coord clear)
 {
-	PLINE *contour = NULL;
-	POLYAREA *np = NULL;
+	pcb_pline_t *contour = NULL;
+	pcb_polyarea_t *np = NULL;
 	pcb_vector_t v;
 	double d;
 	double tx, ty;
@@ -695,9 +695,9 @@ POLYAREA *SquarePadPoly(pcb_pad_t * pad, Coord clear)
 }
 
 /* clear np1 from the polygon */
-static int Subtract(POLYAREA * np1, pcb_polygon_t * p, pcb_bool fnp)
+static int Subtract(pcb_polyarea_t * np1, pcb_polygon_t * p, pcb_bool fnp)
 {
-	POLYAREA *merged = NULL, *np = np1;
+	pcb_polyarea_t *merged = NULL, *np = np1;
 	int x;
 	assert(np);
 	assert(p);
@@ -733,7 +733,7 @@ static int Subtract(POLYAREA * np1, pcb_polygon_t * p, pcb_bool fnp)
 }
 
 /* create a polygon of the pin clearance */
-POLYAREA *PinPoly(pcb_pin_t * pin, Coord thick, Coord clear)
+pcb_polyarea_t *PinPoly(pcb_pin_t * pin, Coord thick, Coord clear)
 {
 	int size;
 
@@ -757,15 +757,15 @@ POLYAREA *PinPoly(pcb_pin_t * pin, Coord thick, Coord clear)
 	return CirclePoly(pin->X, pin->Y, size);
 }
 
-POLYAREA *BoxPolyBloated(pcb_box_t * box, Coord bloat)
+pcb_polyarea_t *BoxPolyBloated(pcb_box_t * box, Coord bloat)
 {
 	return RectPoly(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
 }
 
 /* return the clearance polygon for a pin */
-static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_pin_t * pin)
+static pcb_polyarea_t *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_pin_t * pin)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 	if (TEST_THERM(layernum, pin))
 		np = ThermPoly(pcb, pin, layernum);
 	else
@@ -776,7 +776,7 @@ static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, p
 /* remove the pin clearance from the polygon */
 static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_polygon_t * p)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 	pcb_cardinal_t i;
 
 	if (pin->Clearance == 0)
@@ -798,7 +798,7 @@ static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_pol
 
 static int SubtractLine(pcb_line_t * line, pcb_polygon_t * p)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 
 	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, line))
 		return 0;
@@ -809,7 +809,7 @@ static int SubtractLine(pcb_line_t * line, pcb_polygon_t * p)
 
 static int SubtractArc(pcb_arc_t * arc, pcb_polygon_t * p)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 
 	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, arc))
 		return 0;
@@ -820,7 +820,7 @@ static int SubtractArc(pcb_arc_t * arc, pcb_polygon_t * p)
 
 static int SubtractText(pcb_text_t * text, pcb_polygon_t * p)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 	const pcb_box_t *b = &text->BoundingBox;
 
 	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, text))
@@ -832,7 +832,7 @@ static int SubtractText(pcb_text_t * text, pcb_polygon_t * p)
 
 static int SubtractPad(pcb_pad_t * pad, pcb_polygon_t * p)
 {
-	POLYAREA *np = NULL;
+	pcb_polyarea_t *np = NULL;
 
 	if (pad->Clearance == 0)
 		return 0;
@@ -853,7 +853,7 @@ struct cpInfo {
 	pcb_layer_t *layer;
 	pcb_polygon_t *polygon;
 	pcb_bool solder;
-	POLYAREA *accumulate;
+	pcb_polyarea_t *accumulate;
 	int batch_size;
 	jmp_buf env;
 };
@@ -872,8 +872,8 @@ static r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_polygon_t *polygon;
-	POLYAREA *np;
-	POLYAREA *merged;
+	pcb_polyarea_t *np;
+	pcb_polyarea_t *merged;
 	pcb_cardinal_t i;
 
 	/* don't subtract the object that was put back! */
@@ -948,8 +948,8 @@ static r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_polygon_t *polygon;
-	POLYAREA *np;
-	POLYAREA *merged;
+	pcb_polyarea_t *np;
+	pcb_polyarea_t *merged;
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
@@ -1049,10 +1049,10 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	return r;
 }
 
-static int Unsubtract(POLYAREA * np1, pcb_polygon_t * p)
+static int Unsubtract(pcb_polyarea_t * np1, pcb_polygon_t * p)
 {
-	POLYAREA *merged = NULL, *np = np1;
-	POLYAREA *orig_poly, *clipped_np;
+	pcb_polyarea_t *merged = NULL, *np = np1;
+	pcb_polyarea_t *orig_poly, *clipped_np;
 	int x;
 	assert(np);
 	assert(p && p->Clipped);
@@ -1086,7 +1086,7 @@ fail:
 
 static int UnsubtractPin(pcb_pin_t * pin, pcb_layer_t * l, pcb_polygon_t * p)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 
 	/* overlap a bit to prevent gaps from rounding errors */
 	np = BoxPolyBloated(&pin->BoundingBox, UNSUBTRACT_BLOAT * 400000);
@@ -1102,7 +1102,7 @@ static int UnsubtractPin(pcb_pin_t * pin, pcb_layer_t * l, pcb_polygon_t * p)
 
 static int UnsubtractArc(pcb_arc_t * arc, pcb_layer_t * l, pcb_polygon_t * p)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 
 	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, arc))
 		return 0;
@@ -1120,7 +1120,7 @@ static int UnsubtractArc(pcb_arc_t * arc, pcb_layer_t * l, pcb_polygon_t * p)
 
 static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_polygon_t * p)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 
 	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, line))
 		return 0;
@@ -1138,7 +1138,7 @@ static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_polygon_t * p)
 
 static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_polygon_t * p)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 
 	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, text))
 		return 0;
@@ -1156,7 +1156,7 @@ static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_polygon_t * p)
 
 static int UnsubtractPad(pcb_pad_t * pad, pcb_layer_t * l, pcb_polygon_t * p)
 {
-	POLYAREA *np;
+	pcb_polyarea_t *np;
 
 	/* overlap a bit to prevent notches from rounding errors */
 	np = BoxPolyBloated(&pad->BoundingBox, UNSUBTRACT_BLOAT);
@@ -1366,10 +1366,10 @@ void CopyAttachedPolygonToLayer(void)
  * the search.
  */
 int
-PolygonHoles(pcb_polygon_t * polygon, const pcb_box_t * range, int (*callback) (PLINE * contour, void *user_data), void *user_data)
+PolygonHoles(pcb_polygon_t * polygon, const pcb_box_t * range, int (*callback) (pcb_pline_t * contour, void *user_data), void *user_data)
 {
-	POLYAREA *pa = polygon->Clipped;
-	PLINE *pl;
+	pcb_polyarea_t *pa = polygon->Clipped;
+	pcb_pline_t *pl;
 	/* If this hole is so big the polygon doesn't exist, then it's not
 	 * really a hole.
 	 */
@@ -1556,9 +1556,9 @@ void ClearFromPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 		PlowsPolygon(Data, type, ptr1, ptr2, subtract_plow);
 }
 
-pcb_bool isects(POLYAREA * a, pcb_polygon_t *p, pcb_bool fr)
+pcb_bool isects(pcb_polyarea_t * a, pcb_polygon_t *p, pcb_bool fr)
 {
-	POLYAREA *x;
+	pcb_polyarea_t *x;
 	pcb_bool ans;
 	ans = Touching(a, p->Clipped);
 	/* argument may be register, so we must copy it */
@@ -1571,7 +1571,7 @@ pcb_bool isects(POLYAREA * a, pcb_polygon_t *p, pcb_bool fr)
 
 pcb_bool IsPointInPolygon(Coord X, Coord Y, Coord r, pcb_polygon_t *p)
 {
-	POLYAREA *c;
+	pcb_polyarea_t *c;
 	pcb_vector_t v;
 	v[0] = X;
 	v[1] = Y;
@@ -1605,68 +1605,68 @@ pcb_bool IsPointInPolygonIgnoreHoles(Coord X, Coord Y, pcb_polygon_t *p)
 
 pcb_bool IsRectangleInPolygon(Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_polygon_t *p)
 {
-	POLYAREA *s;
+	pcb_polyarea_t *s;
 	if (!(s = RectPoly(min(X1, X2), max(X1, X2), min(Y1, Y2), max(Y1, Y2))))
 		return pcb_false;
 	return isects(s, p, pcb_true);
 }
 
-/* NB: This function will free the passed POLYAREA.
- *     It must only be passed a single POLYAREA (pa->f == pa->b == pa)
+/* NB: This function will free the passed pcb_polyarea_t.
+ *     It must only be passed a single pcb_polyarea_t (pa->f == pa->b == pa)
  */
-static void r_NoHolesPolygonDicer(POLYAREA * pa, void (*emit) (PLINE *, void *), void *user_data)
+static void r_NoHolesPolygonDicer(pcb_polyarea_t * pa, void (*emit) (pcb_pline_t *, void *), void *user_data)
 {
-	PLINE *p = pa->contours;
+	pcb_pline_t *p = pa->contours;
 
 	if (!pa->contours->next) {		/* no holes */
 		pa->contours = NULL;				/* The callback now owns the contour */
-		/* Don't bother removing it from the POLYAREA's rtree
-		   since we're going to free the POLYAREA below anyway */
+		/* Don't bother removing it from the pcb_polyarea_t's rtree
+		   since we're going to free the pcb_polyarea_t below anyway */
 		emit(p, user_data);
 		poly_Free(&pa);
 		return;
 	}
 	else {
-		POLYAREA *poly2, *left, *right;
+		pcb_polyarea_t *poly2, *left, *right;
 
 		/* make a rectangle of the left region slicing through the middle of the first hole */
 		poly2 = RectPoly(p->xmin, (p->next->xmin + p->next->xmax) / 2, p->ymin, p->ymax);
 		poly_AndSubtract_free(pa, poly2, &left, &right);
 		if (left) {
-			POLYAREA *cur, *next;
+			pcb_polyarea_t *cur, *next;
 			cur = left;
 			do {
 				next = cur->f;
 				cur->f = cur->b = cur;	/* Detach this polygon piece */
 				r_NoHolesPolygonDicer(cur, emit, user_data);
-				/* NB: The POLYAREA was freed by its use in the recursive dicer */
+				/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
 			}
 			while ((cur = next) != left);
 		}
 		if (right) {
-			POLYAREA *cur, *next;
+			pcb_polyarea_t *cur, *next;
 			cur = right;
 			do {
 				next = cur->f;
 				cur->f = cur->b = cur;	/* Detach this polygon piece */
 				r_NoHolesPolygonDicer(cur, emit, user_data);
-				/* NB: The POLYAREA was freed by its use in the recursive dicer */
+				/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
 			}
 			while ((cur = next) != right);
 		}
 	}
 }
 
-void NoHolesPolygonDicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) (PLINE *, void *), void *user_data)
+void NoHolesPolygonDicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) (pcb_pline_t *, void *), void *user_data)
 {
-	POLYAREA *main_contour, *cur, *next;
+	pcb_polyarea_t *main_contour, *cur, *next;
 
 	main_contour = poly_Create();
 	/* copy the main poly only */
 	poly_Copy1(main_contour, p->Clipped);
 	/* clip to the bounding box */
 	if (clip) {
-		POLYAREA *cbox = RectPoly(clip->X1, clip->X2, clip->Y1, clip->Y2);
+		pcb_polyarea_t *cbox = RectPoly(clip->X1, clip->X2, clip->Y1, clip->Y2);
 		poly_Boolean_free(main_contour, cbox, &main_contour, PBO_ISECT);
 	}
 	if (main_contour == NULL)
@@ -1679,7 +1679,7 @@ void NoHolesPolygonDicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) 
 		next = cur->f;
 		cur->f = cur->b = cur;			/* Detach this polygon piece */
 		r_NoHolesPolygonDicer(cur, emit, user_data);
-		/* NB: The POLYAREA was freed by its use in the recursive dicer */
+		/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
 	}
 	while ((cur = next) != main_contour);
 }
@@ -1687,7 +1687,7 @@ void NoHolesPolygonDicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) 
 /* make a polygon split into multiple parts into multiple polygons */
 pcb_bool MorphPolygon(pcb_layer_t *layer, pcb_polygon_t *poly)
 {
-	POLYAREA *p, *start;
+	pcb_polyarea_t *p, *start;
 	pcb_bool many = pcb_false;
 	pcb_flag_t flags;
 
@@ -1713,7 +1713,7 @@ pcb_bool MorphPolygon(pcb_layer_t *layer, pcb_polygon_t *poly)
 	RemovePolygon(layer, poly);
 	inhibit = pcb_true;
 	do {
-		VNODE *v;
+		pcb_vnode_t *v;
 		pcb_polygon_t *newone;
 
 		if (p->contours->area > PCB->IsleArea) {
@@ -1737,7 +1737,7 @@ pcb_bool MorphPolygon(pcb_layer_t *layer, pcb_polygon_t *poly)
 			DrawPolygon(layer, newone);
 		}
 		else {
-			POLYAREA *t = p;
+			pcb_polyarea_t *t = p;
 
 			p = p->f;
 			poly_DelContour(&t->contours);
@@ -1750,9 +1750,9 @@ pcb_bool MorphPolygon(pcb_layer_t *layer, pcb_polygon_t *poly)
 	return many;
 }
 
-void debug_pline(PLINE * pl)
+void debug_pline(pcb_pline_t * pl)
 {
-	VNODE *v;
+	pcb_vnode_t *v;
 	pcb_fprintf(stderr, "\txmin %#mS xmax %#mS ymin %#mS ymax %#mS\n", pl->xmin, pl->xmax, pl->ymin, pl->ymax);
 	v = &pl->head;
 	while (v) {
@@ -1763,11 +1763,11 @@ void debug_pline(PLINE * pl)
 	}
 }
 
-void debug_polyarea(POLYAREA * p)
+void debug_polyarea(pcb_polyarea_t * p)
 {
-	PLINE *pl;
+	pcb_pline_t *pl;
 
-	fprintf(stderr, "POLYAREA %p\n", (void *)p);
+	fprintf(stderr, "pcb_polyarea_t %p\n", (void *)p);
 	for (pl = p->contours; pl; pl = pl->next)
 		debug_pline(pl);
 }
@@ -1775,7 +1775,7 @@ void debug_polyarea(POLYAREA * p)
 void debug_polygon(pcb_polygon_t * p)
 {
 	pcb_cardinal_t i;
-	POLYAREA *pa;
+	pcb_polyarea_t *pa;
 	fprintf(stderr, "POLYGON %p  %d pts\n", (void *)p, p->PointN);
 	for (i = 0; i < p->PointN; i++)
 		pcb_fprintf(stderr, "\t%d: %#mD\n", i, p->Points[i].X, p->Points[i].Y);
@@ -1795,15 +1795,15 @@ void debug_polygon(pcb_polygon_t * p)
 	}
 }
 
-/* Convert a POLYAREA (and all linked POLYAREA) to
+/* Convert a pcb_polyarea_t (and all linked pcb_polyarea_t) to
  * raw PCB polygons on the given layer.
  */
-void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, POLYAREA * Input, pcb_flag_t Flags)
+void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, pcb_polyarea_t * Input, pcb_flag_t Flags)
 {
 	pcb_polygon_t *Polygon;
-	POLYAREA *pa;
-	PLINE *pline;
-	VNODE *node;
+	pcb_polyarea_t *pa;
+	pcb_pline_t *pline;
+	pcb_vnode_t *node;
 	pcb_bool outer;
 
 	if (Input == NULL)

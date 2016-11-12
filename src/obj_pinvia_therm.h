@@ -39,6 +39,6 @@
 #include <stdlib.h>
 #include "config.h"
 
-POLYAREA *ThermPoly(pcb_board_t *, pcb_pin_t *, pcb_cardinal_t);
+pcb_polyarea_t *ThermPoly(pcb_board_t *, pcb_pin_t *, pcb_cardinal_t);
 
 #endif

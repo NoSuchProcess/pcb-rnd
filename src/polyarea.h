@@ -55,30 +55,30 @@ enum {
 };
 
 
-typedef struct CVCList CVCList;
-typedef struct VNODE VNODE;
-struct CVCList {
+typedef struct pcb_cvc_list_s pcb_cvc_list_t;
+typedef struct pcb_vnode_s pcb_vnode_t;
+struct pcb_cvc_list_s {
 	double angle;
-	VNODE *parent;
-	CVCList *prev, *next, *head;
+	pcb_vnode_t *parent;
+	pcb_cvc_list_t *prev, *next, *head;
 	char poly, side;
 };
-struct VNODE {
-	VNODE *next, *prev, *shared;
+struct pcb_vnode_s {
+	pcb_vnode_t *next, *prev, *shared;
 	struct {
 		unsigned int status:3;
 		unsigned int mark:1;
 	} Flags;
-	CVCList *cvc_prev;
-	CVCList *cvc_next;
+	pcb_cvc_list_t *cvc_prev;
+	pcb_cvc_list_t *cvc_next;
 	pcb_vector_t point;
 };
 
-typedef struct PLINE PLINE;
-struct PLINE {
+typedef struct pcb_pline_s pcb_pline_t;
+struct pcb_pline_s {
 	Coord xmin, ymin, xmax, ymax;
-	PLINE *next;
-	VNODE head;
+	pcb_pline_t *next;
+	pcb_vnode_t head;
 	unsigned int Count;
 	double area;
 	pcb_rtree_t *tree;
@@ -91,45 +91,45 @@ struct PLINE {
 	} Flags;
 };
 
-PLINE *poly_NewContour(pcb_vector_t v);
+pcb_pline_t *poly_NewContour(pcb_vector_t v);
 
-void poly_IniContour(PLINE * c);
-void poly_ClrContour(PLINE * c);	/* clears list of vertices */
-void poly_DelContour(PLINE ** c);
+void poly_IniContour(pcb_pline_t * c);
+void poly_ClrContour(pcb_pline_t * c);	/* clears list of vertices */
+void poly_DelContour(pcb_pline_t ** c);
 
-pcb_bool poly_CopyContour(PLINE ** dst, PLINE * src);
+pcb_bool poly_CopyContour(pcb_pline_t ** dst, pcb_pline_t * src);
 
-void poly_PreContour(PLINE * c, pcb_bool optimize);	/* prepare contour */
-void poly_InvContour(PLINE * c);	/* invert contour */
+void poly_PreContour(pcb_pline_t * c, pcb_bool optimize);	/* prepare contour */
+void poly_InvContour(pcb_pline_t * c);	/* invert contour */
 
-VNODE *poly_CreateNode(pcb_vector_t v);
+pcb_vnode_t *poly_CreateNode(pcb_vector_t v);
 
-void poly_InclVertex(VNODE * after, VNODE * node);
-void poly_ExclVertex(VNODE * node);
+void poly_InclVertex(pcb_vnode_t * after, pcb_vnode_t * node);
+void poly_ExclVertex(pcb_vnode_t * node);
 
 /**********************************************************************/
 
-typedef struct POLYAREA POLYAREA;
-struct POLYAREA {
-	POLYAREA *f, *b;
-	PLINE *contours;
+typedef struct pcb_polyarea_s pcb_polyarea_t;
+struct pcb_polyarea_s {
+	pcb_polyarea_t *f, *b;
+	pcb_pline_t *contours;
 	pcb_rtree_t *contour_tree;
 };
 
-pcb_bool poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst);
-void poly_M_Incl(POLYAREA ** list, POLYAREA * a);
+pcb_bool poly_M_Copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * srcfst);
+void poly_M_Incl(pcb_polyarea_t ** list, pcb_polyarea_t * a);
 
-pcb_bool poly_Copy0(POLYAREA ** dst, const POLYAREA * src);
-pcb_bool poly_Copy1(POLYAREA * dst, const POLYAREA * src);
+pcb_bool poly_Copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src);
+pcb_bool poly_Copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src);
 
-pcb_bool poly_InclContour(POLYAREA * p, PLINE * c);
-pcb_bool poly_ExclContour(POLYAREA * p, PLINE * c);
+pcb_bool poly_InclContour(pcb_polyarea_t * p, pcb_pline_t * c);
+pcb_bool poly_ExclContour(pcb_polyarea_t * p, pcb_pline_t * c);
 
 
-pcb_bool poly_ChkContour(PLINE * a);
+pcb_bool poly_ChkContour(pcb_pline_t * a);
 
-pcb_bool poly_CheckInside(POLYAREA * c, pcb_vector_t v0);
-pcb_bool Touching(POLYAREA * p1, POLYAREA * p2);
+pcb_bool poly_CheckInside(pcb_polyarea_t * c, pcb_vector_t v0);
+pcb_bool Touching(pcb_polyarea_t * p1, pcb_polyarea_t * p2);
 
 /**********************************************************************/
 
@@ -138,16 +138,16 @@ pcb_bool Touching(POLYAREA * p1, POLYAREA * p2);
 /* checks whether point lies within contour
 independently of its orientation */
 
-int poly_InsideContour(PLINE * c, pcb_vector_t v);
-int poly_ContourInContour(PLINE * poly, PLINE * inner);
-POLYAREA *poly_Create(void);
+int poly_InsideContour(pcb_pline_t * c, pcb_vector_t v);
+int poly_ContourInContour(pcb_pline_t * poly, pcb_pline_t * inner);
+pcb_polyarea_t *poly_Create(void);
 
-void poly_Free(POLYAREA ** p);
-void poly_Init(POLYAREA * p);
-void poly_FreeContours(PLINE ** pl);
-pcb_bool poly_Valid(POLYAREA * p);
+void poly_Free(pcb_polyarea_t ** p);
+void poly_Init(pcb_polyarea_t * p);
+void poly_FreeContours(pcb_pline_t ** pl);
+pcb_bool poly_Valid(pcb_polyarea_t * p);
 
-enum PolygonBooleanOperation {
+enum pcb_poly_bool_op_e {
 	PBO_UNITE,
 	PBO_ISECT,
 	PBO_SUB,
@@ -160,12 +160,12 @@ double vect_len2(pcb_vector_t v1);
 
 int vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
 
-int poly_Boolean(const POLYAREA * a, const POLYAREA * b, POLYAREA ** res, int action);
-int poly_Boolean_free(POLYAREA * a, POLYAREA * b, POLYAREA ** res, int action);
-int poly_AndSubtract_free(POLYAREA * a, POLYAREA * b, POLYAREA ** aandb, POLYAREA ** aminusb);
-int SavePOLYAREA(POLYAREA * PA, char *fname);
+int poly_Boolean(const pcb_polyarea_t * a, const pcb_polyarea_t * b, pcb_polyarea_t ** res, int action);
+int poly_Boolean_free(pcb_polyarea_t * a, pcb_polyarea_t * b, pcb_polyarea_t ** res, int action);
+int poly_AndSubtract_free(pcb_polyarea_t * a, pcb_polyarea_t * b, pcb_polyarea_t ** aandb, pcb_polyarea_t ** aminusb);
+int Savepcb_polyarea_t(pcb_polyarea_t * PA, char *fname);
 
-/* calculate the bounding box of a POLYAREA and save result in b */
-void poly_bbox(POLYAREA * p, pcb_box_t * b);
+/* calculate the bounding box of a pcb_polyarea_t and save result in b */
+void poly_bbox(pcb_polyarea_t * p, pcb_box_t * b);
 
 #endif /* PCB_POLYAREA_H */
