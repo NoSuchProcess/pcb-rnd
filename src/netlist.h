@@ -66,11 +66,11 @@ void pcb_netlist_style(LibraryMenuType *net, const char *style);
 
 /* Return the net entry for a pin name (slow search). The pin name is
    like "U101-5", so element's refdes, dash, pin number */
-LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pinname);
+LibraryMenuTypePtr pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pinname);
 
 /* Same as pcb_netlist_find_net4pinname but with pin pointer */
-LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, const PinType *pin);
-LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad);
+LibraryMenuTypePtr pcb_netlist_find_net4pin(pcb_board_t *pcb, const PinType *pin);
+LibraryMenuTypePtr pcb_netlist_find_net4pad(pcb_board_t *pcb, const PadType *pad);
 
 
 /* Evaluate to const char * name of the network; lmt is (LibraryMenuType *) */
@@ -83,7 +83,7 @@ LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad);
 /* Return the index of the net or PCB_NETLIST_INVALID_INDEX if the net is not
    on the netlist. NOTE: indices returned are valid only until the first
    netlist change! */
-pcb_cardinal_t pcb_netlist_net_idx(PCBTypePtr pcb, LibraryMenuType *net);
+pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, LibraryMenuType *net);
 
 #define PCB_NETLIST_INVALID_INDEX ((pcb_cardinal_t)(-1))
 

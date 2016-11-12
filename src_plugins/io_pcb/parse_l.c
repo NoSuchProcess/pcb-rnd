@@ -707,7 +707,7 @@ char *pcb_text;
 #endif
 
 const char			*yyfilename;	/* in this file */
-PCBTypePtr		yyPCB;			/* used by parser */
+pcb_board_t *	yyPCB;			/* used by parser */
 DataTypePtr		yyData;
 ElementTypePtr		yyElement;
 FontTypePtr		yyFont;
@@ -2501,7 +2501,7 @@ do { \
 	conf_set(target, path, arr_idx, new_val, pol); \
 } while(0) \
 
-int io_pcb_ParsePCB(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest)
+int io_pcb_ParsePCB(plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int retval;
 	yyPCB = Ptr;

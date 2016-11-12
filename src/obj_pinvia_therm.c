@@ -38,7 +38,7 @@
 #include "polygon.h"
 #include "obj_pinvia_therm.h"
 
-static PCBTypePtr pcb;
+static pcb_board_t *pcb;
 
 struct cent {
 	Coord x, y;
@@ -353,7 +353,7 @@ static POLYAREA *oct_therm(PinTypePtr pin, pcb_cardinal_t style)
  * Usually this is 4 disjoint regions.
  *
  */
-POLYAREA *ThermPoly(PCBTypePtr p, PinTypePtr pin, pcb_cardinal_t laynum)
+POLYAREA *ThermPoly(pcb_board_t *p, PinTypePtr pin, pcb_cardinal_t laynum)
 {
 	ArcType a;
 	POLYAREA *pa, *arc;

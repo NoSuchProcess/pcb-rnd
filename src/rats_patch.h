@@ -55,27 +55,27 @@ struct rats_patch_line_s {
 const char *pcb_netlist_names[NUM_NETLISTS];
 
 /* Allocate and append a patch line to the patch list */
-void rats_patch_append(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2);
+void rats_patch_append(pcb_board_t *pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2);
 
 /* Free the patch list and all memory claimed by patch list items */
-void rats_patch_destroy(PCBTypePtr pcb);
+void rats_patch_destroy(pcb_board_t *pcb);
 
 /* Same as rats_patch_append() but also optimize previous entries so that
    redundant entries are removed */
-void rats_patch_append_optimize(PCBTypePtr pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2);
+void rats_patch_append_optimize(pcb_board_t *pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2);
 
 /* Create [NETLIST_EDITED] from [NETLIST_INPUT] applying the patch */
-void rats_patch_make_edited(PCBTypePtr pcb);
+void rats_patch_make_edited(pcb_board_t *pcb);
 
 /* apply a single patch record on [NETLIST_EDITED]; returns non-zero on failure */
-int rats_patch_apply(PCBTypePtr pcb, rats_patch_line_t * patch);
+int rats_patch_apply(pcb_board_t *pcb, rats_patch_line_t * patch);
 
 /**** exporter ****/
 
 /* Special text exporter:
    save all patch lines as an ordered list of text lines
    if fmt is non-zero, generate pcb savefile compatible lines, else generate a back annotation patch */
-int rats_patch_fexport(PCBTypePtr pcb, FILE * f, int fmt_pcb);
+int rats_patch_fexport(pcb_board_t *pcb, FILE * f, int fmt_pcb);
 
 /* Generic, callback based exporter: */
 
@@ -92,6 +92,6 @@ typedef enum {            /* netn is always the net name, unless specified other
 
 /* Call cb() for each item to output; PCB_PTRE_INFO* is calculated/called only
    if need_info_lines is true; the pcb pointer is used for looking up connections */
-int rats_patch_export(PCBType *pcb, rats_patch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx);
+int rats_patch_export(pcb_board_t *pcb, rats_patch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx);
 
 #endif

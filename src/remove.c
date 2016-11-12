@@ -72,7 +72,7 @@ static pcb_opfunc_t DestroyFunctions = {
 /* ---------------------------------------------------------------------------
  * remove PCB
  */
-void RemovePCB(PCBTypePtr Ptr)
+void RemovePCB(pcb_board_t *Ptr)
 {
 	ClearUndoList(pcb_true);
 	FreePCBMemory(Ptr);

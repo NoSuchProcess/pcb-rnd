@@ -46,7 +46,7 @@ struct pcb_data_s {
 /**/
 	rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	LayerType Layer[MAX_LAYER + 2];    /* add 2 silkscreen layers */
 	plug_io_t *loader;
 	ratlist_t Rat;
@@ -88,22 +88,22 @@ extern pcb_bool Bumped;
    */
 
 /* layer object callbacks */
-typedef int (*pcb_layer_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, int enter);
-typedef void (*pcb_line_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, LineType *line);
-typedef void (*pcb_arc_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc);
-typedef void (*pcb_text_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, TextType *text);
-typedef void (*pcb_poly_cb_t)(void *ctx, PCBType *pcb, LayerType *layer, PolygonType *poly);
+typedef int (*pcb_layer_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, int enter);
+typedef void (*pcb_line_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, LineType *line);
+typedef void (*pcb_arc_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, ArcType *arc);
+typedef void (*pcb_text_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, TextType *text);
+typedef void (*pcb_poly_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, PolygonType *poly);
 
 /* element callbacks */
-typedef int (*pcb_element_cb_t)(void *ctx, PCBType *pcb, ElementType *element, int enter);
-typedef void (*pcb_eline_cb_t)(void *ctx, PCBType *pcb, ElementType *element, LineType *line);
-typedef void (*pcb_earc_cb_t)(void *ctx, PCBType *pcb, ElementType *element, ArcType *arc);
-typedef void (*pcb_etext_cb_t)(void *ctx, PCBType *pcb, ElementType *element, TextType *text);
-typedef void (*pcb_epin_cb_t)(void *ctx, PCBType *pcb, ElementType *element, PinType *pin);
-typedef void (*pcb_epad_cb_t)(void *ctx, PCBType *pcb, ElementType *element, PadType *pad);
+typedef int (*pcb_element_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, int enter);
+typedef void (*pcb_eline_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, LineType *line);
+typedef void (*pcb_earc_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, ArcType *arc);
+typedef void (*pcb_etext_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, TextType *text);
+typedef void (*pcb_epin_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, PinType *pin);
+typedef void (*pcb_epad_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, PadType *pad);
 
 /* via callbacks */
-typedef void (*pcb_via_cb_t)(void *ctx, PCBType *pcb, PinType *via);
+typedef void (*pcb_via_cb_t)(void *ctx, pcb_board_t *pcb, PinType *via);
 
 /* Loop over all layer objects on each layer. Layer is the outer loop. */
 void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb);

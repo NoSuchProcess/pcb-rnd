@@ -41,7 +41,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number, LayerTypePt
 						Coord xOffset, Coord yOffset);
 int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
 						Coord xOffset, Coord yOffset);
-int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout);
-int write_kicad_legacy_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset);
+int write_kicad_legacy_equipotential_netlists(FILE * FP, pcb_board_t *Layout);
+int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, DataTypePtr Data, Coord xOffset, Coord yOffset);
 int write_kicad_legacy_layout_polygons(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,								Coord xOffset, Coord yOffset);
 

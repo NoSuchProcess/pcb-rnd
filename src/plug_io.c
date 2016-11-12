@@ -103,7 +103,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 	}
 }
 
-int ParsePCB(PCBTypePtr Ptr, const char *Filename, const char *fmt, int load_settings)
+int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings)
 {
 	int res = -1;
 
@@ -289,8 +289,8 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 {
 	const char *unit_suffix;
 	char *new_filename;
-	PCBTypePtr newPCB = CreateNewPCB_(pcb_false);
-	PCBTypePtr oldPCB;
+	pcb_board_t *newPCB = CreateNewPCB_(pcb_false);
+	pcb_board_t *oldPCB;
 	conf_role_t settings_dest;
 #ifdef DEBUG
 	double elapsed;

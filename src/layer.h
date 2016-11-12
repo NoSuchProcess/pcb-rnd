@@ -129,11 +129,11 @@ char *LayerGroupsToString(LayerGroupTypePtr);
 
 #define GROUP_LOOP(data, group) do { 	\
 	pcb_cardinal_t entry; \
-        for (entry = 0; entry < ((PCBTypePtr)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
+        for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
         { \
 		LayerTypePtr layer;		\
 		pcb_cardinal_t number; 		\
-		number = ((PCBTypePtr)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
+		number = ((pcb_board_t *)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
 		if (number >= max_copper_layer)	\
 		  continue;			\
 		layer = &data->Layer[number];

@@ -35,41 +35,41 @@
    hold temporary states of a multi-call operation too. */
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	int extraflg;
 	DataType *dst, *src;
 } pcb_opctx_buffer_t;
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	int is_primary;  /* whether the primary parameter should be changed */
 	Coord delta;     /* change of size */
 	Coord absolute;  /* Absolute size */
 } pcb_opctx_chgsize_t;
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	int is_primary;           /* whether the primary parameter should be changed */
 	Angle delta, absolute;    /* same as above, but for angles */
 } pcb_opctx_chgangle_t;
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	char *new_name;
 } pcb_opctx_chgname_t;
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	int style;
 } pcb_opctx_chgtherm_t;
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	Coord DeltaX, DeltaY; /* movement vector */
 } pcb_opctx_copy_t;
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	Coord x, y;
 	pcb_cardinal_t idx; /* poly point idx */
 	pcb_bool last;
@@ -77,20 +77,20 @@ typedef struct {
 } pcb_opctx_insert_t;
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	Coord dx, dy;         /* used by local routines as offset */
 	LayerTypePtr dst_layer;
 	pcb_bool more_to_come;
 } pcb_opctx_move_t;
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	DataTypePtr destroy_target;
 	pcb_bool bulk;                /* don't draw if part of a bulk operation */
 } pcb_opctx_remove_t;
 
 typedef struct {
-	PCBType *pcb;
+	pcb_board_t *pcb;
 	Coord center_x, center_y;    /* center of rotation */
 	unsigned number;             /* number of rotations */
 } pcb_opctx_rotate_t;

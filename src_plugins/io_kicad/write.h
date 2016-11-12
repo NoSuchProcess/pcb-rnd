@@ -41,7 +41,7 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer
 						Coord xOffset, Coord yOffset, pcb_cardinal_t indentation);
 int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
 						Coord xOffset, Coord yOffset, pcb_cardinal_t indentation);
-int write_kicad_equipotential_netlists(FILE * FP, PCBTypePtr Layout, pcb_cardinal_t indentation);
-int write_kicad_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation);
+int write_kicad_equipotential_netlists(FILE * FP, pcb_board_t *Layout, pcb_cardinal_t indentation);
+int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, DataTypePtr Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation);
 int write_kicad_layout_polygons(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,								Coord xOffset, Coord yOffset, pcb_cardinal_t indentation);
 

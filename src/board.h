@@ -55,7 +55,7 @@ enum {
 #include "rats_patch.h"
 #include "font.h"
 
-	/* The PCBType struct holds information about board layout most of which is
+	/* The pcb_board_t struct holds information about board layout most of which is
 	   |  saved with the layout.  A new PCB layout struct is first initialized
 	   |  with values from the user configurable Settings struct and then reset
 	   |  to the saved layout values when a layout is loaded.
@@ -109,17 +109,17 @@ struct pcb_board_s {
 	unsigned netlist_needs_update:1;
 };
 
-void FreePCBMemory(PCBTypePtr);
+void FreePCBMemory(pcb_board_t *);
 
-extern PCBType *PCB; /* the board being edited */
+extern pcb_board_t *PCB; /* the board being edited */
 
-PCBTypePtr CreateNewPCB_(pcb_bool SetDefaultNames);
-PCBTypePtr CreateNewPCB(void);
+pcb_board_t *CreateNewPCB_(pcb_bool SetDefaultNames);
+pcb_board_t *CreateNewPCB(void);
 
 /* Called after PCB->Data->LayerN is set.  Returns non-zero on error */
-int CreateNewPCBPost(PCBTypePtr pcb, int use_defaults);
+int CreateNewPCBPost(pcb_board_t *pcb, int use_defaults);
 
-void pcb_colors_from_settings(PCBTypePtr);
+void pcb_colors_from_settings(pcb_board_t *);
 
 void CountHoles(int *plated, int *unplated, const BoxType * within_area);
 

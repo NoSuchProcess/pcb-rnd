@@ -957,7 +957,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
  * writes netlist data in kicad legacy format for use in a layout .brd file
  */
 
-int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
+int write_kicad_legacy_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
 {
         int n; /* code mostly lifted from netlist.c */ 
 	int netNumber;
@@ -988,7 +988,7 @@ int write_kicad_legacy_equipotential_netlists(FILE * FP, PCBTypePtr Layout)
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
-int write_kicad_legacy_layout_elements(FILE * FP, PCBTypePtr Layout, DataTypePtr Data, Coord xOffset, Coord yOffset)
+int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, DataTypePtr Data, Coord xOffset, Coord yOffset)
 {
 
 	gdl_iterator_t eit;

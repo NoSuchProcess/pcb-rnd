@@ -43,7 +43,7 @@
 /* parses a file with font information and installs it into the provided PCB
  * checks directories given as colon separated list by resource fontPath
  * if the fonts filename doesn't contain a directory component */
-void CreateDefaultFont(PCBTypePtr pcb)
+void CreateDefaultFont(pcb_board_t *pcb)
 {
 	int res = -1;
 	pcb_io_err_inhibit_inc();

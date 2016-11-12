@@ -33,12 +33,12 @@
 #include "paths.h"
 #include "rtree.h"
 
-PCBType *PCB;
+pcb_board_t *PCB;
 
 /* ---------------------------------------------------------------------------
  * free memory used by PCB
  */
-void FreePCBMemory(PCBType * pcb)
+void FreePCBMemory(pcb_board_t * pcb)
 {
 	int i;
 
@@ -59,19 +59,19 @@ void FreePCBMemory(PCBType * pcb)
 	vtroutestyle_uninit(&pcb->RouteStyle);
 	FreeAttributeListMemory(&pcb->Attributes);
 	/* clear struct */
-	memset(pcb, 0, sizeof(PCBType));
+	memset(pcb, 0, sizeof(pcb_board_t));
 }
 
 /* creates a new PCB */
-PCBTypePtr CreateNewPCB_(pcb_bool SetDefaultNames)
+pcb_board_t *CreateNewPCB_(pcb_bool SetDefaultNames)
 {
-	PCBTypePtr ptr, save;
+	pcb_board_t *ptr, *save;
 	int i;
 
 	/* allocate memory, switch all layers on and copy resources */
-	ptr = (PCBTypePtr) calloc(1, sizeof(PCBType));
+	ptr = calloc(1, sizeof(pcb_board_t));
 	ptr->Data = CreateNewBuffer();
-	ptr->Data->pcb = (PCBTypePtr) ptr;
+	ptr->Data->pcb = ptr;
 
 	ptr->ThermStyle = 4;
 	ptr->IsleArea = 2.e8;
@@ -109,9 +109,9 @@ PCBTypePtr CreateNewPCB_(pcb_bool SetDefaultNames)
 	return (ptr);
 }
 
-PCBTypePtr CreateNewPCB(void)
+pcb_board_t *CreateNewPCB(void)
 {
-	PCBTypePtr old, nw;
+	pcb_board_t *old, *nw;
 	int dpcb;
 
 	old = PCB;
@@ -143,7 +143,7 @@ PCBTypePtr CreateNewPCB(void)
 /* This post-processing step adds the top and bottom silk layers to a
  * pre-existing PCB.
  */
-int CreateNewPCBPost(PCBTypePtr pcb, int use_defaults)
+int CreateNewPCBPost(pcb_board_t *pcb, int use_defaults)
 {
 	/* copy default settings */
 	pcb_colors_from_settings(pcb);
@@ -156,7 +156,7 @@ int CreateNewPCBPost(PCBTypePtr pcb, int use_defaults)
  * use this to set PCB colors so the config can reassign PCB colors.
  */
 #warning TODO: indeed, remove this and all the board *color fields
-void pcb_colors_from_settings(PCBTypePtr ptr)
+void pcb_colors_from_settings(pcb_board_t *ptr)
 {
 	int i;
 

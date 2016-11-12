@@ -763,7 +763,7 @@ POLYAREA *BoxPolyBloated(BoxType * box, Coord bloat)
 }
 
 /* return the clearance polygon for a pin */
-static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, PCBTypePtr pcb, PinType * pin)
+static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, PinType * pin)
 {
 	POLYAREA *np;
 	if (TEST_THERM(layernum, pin))
@@ -885,7 +885,7 @@ static r_dir_t pin_sub_callback(const BoxType * b, void *cl)
 		return R_DIR_NOT_FOUND;
 	i = GetLayerNumber(info->data, info->layer);
 	if (TEST_THERM(i, pin)) {
-		np = ThermPoly((PCBTypePtr) (info->data->pcb), pin, i);
+		np = ThermPoly((pcb_board_t *) (info->data->pcb), pin, i);
 		if (!np)
 			return R_DIR_FOUND_CONTINUE;
 	}
@@ -992,8 +992,8 @@ static int Group(DataTypePtr Data, pcb_cardinal_t layer)
 {
 	pcb_cardinal_t i, j;
 	for (i = 0; i < max_group; i++)
-		for (j = 0; j < ((PCBType *) (Data->pcb))->LayerGroups.Number[i]; j++)
-			if (layer == ((PCBType *) (Data->pcb))->LayerGroups.Entries[i][j])
+		for (j = 0; j < ((pcb_board_t *) (Data->pcb))->LayerGroups.Number[i]; j++)
+			if (layer == ((pcb_board_t *) (Data->pcb))->LayerGroups.Entries[i][j])
 				return i;
 	return i;
 }

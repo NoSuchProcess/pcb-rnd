@@ -540,7 +540,7 @@ int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP, const char *old_filename, const c
  * functions for loading elements-as-pcb
  */
 
-extern PCBTypePtr yyPCB;
+extern pcb_board_t *yyPCB;
 extern DataTypePtr yyData;
 extern FontTypePtr yyFont;
 
@@ -558,7 +558,7 @@ void PreLoadElementPCB()
 
 void PostLoadElementPCB()
 {
-	PCBTypePtr pcb_save = PCB;
+	pcb_board_t *pcb_save = PCB;
 	ElementTypePtr e;
 
 	if (!yyPCB)

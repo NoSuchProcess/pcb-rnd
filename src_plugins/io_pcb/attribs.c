@@ -43,7 +43,7 @@ static int path_ok(const char *path)
 	return 1;
 }
 
-static void c2a(PCBType *pcb, lht_node_t *tree, const char *path1)
+static void c2a(pcb_board_t *pcb, lht_node_t *tree, const char *path1)
 {
 	lht_dom_iterator_t it;
 	lht_node_t *n;
@@ -92,14 +92,14 @@ static void c2a(PCBType *pcb, lht_node_t *tree, const char *path1)
 	}
 }
 
-void io_pcb_attrib_c2a(PCBType *pcb)
+void io_pcb_attrib_c2a(pcb_board_t *pcb)
 {
 	lht_node_t *nmain = conf_lht_get_first(CFR_DESIGN);
 
 	c2a(pcb, nmain, "");
 }
 
-void io_pcb_attrib_a2c(PCBType *pcb)
+void io_pcb_attrib_a2c(pcb_board_t *pcb)
 {
 	int n;
 

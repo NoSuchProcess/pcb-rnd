@@ -481,7 +481,7 @@ pcb_bool ChangeSelectedElementSide(void)
 }
 
 /* changes the layout-name of an element */
-char *ChangeElementText(PCBType * pcb, DataType * data, ElementTypePtr Element, int which, char *new_name)
+char *ChangeElementText(pcb_board_t * pcb, DataType * data, ElementTypePtr Element, int which, char *new_name)
 {
 	char *old = Element->Name[which].TextString;
 

@@ -290,12 +290,12 @@ static gboolean preview_expose_event(GtkWidget *w, GdkEventExpose *event)
 	return FALSE;
 }
 
-static PCBType preview_pcb;
+static pcb_board_t preview_pcb;
 
 static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 {
 	GtkWidget *area = gtk_drawing_area_new();
-	PCBType *old_pcb;
+	pcb_board_t *old_pcb;
 	int n, zoom1, fx, fy;
 	Coord cx, cy;
 

@@ -195,7 +195,7 @@ int LoadFootprint(int argc, const char **argv, Coord x, Coord y)
  */
 pcb_bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt)
 {
-	PCBTypePtr newPCB = CreateNewPCB();
+	pcb_board_t *newPCB = CreateNewPCB();
 
 	/* new data isn't added to the undo list */
 	if (!ParsePCB(newPCB, Filename, fmt, CFR_invalid)) {
@@ -340,7 +340,7 @@ DataTypePtr CreateNewBuffer(void)
 {
 	DataTypePtr data;
 	data = (DataTypePtr) calloc(1, sizeof(DataType));
-	data->pcb = (PCBTypePtr) PCB;
+	data->pcb = (pcb_board_t *) PCB;
 	return data;
 }
 

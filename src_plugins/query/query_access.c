@@ -42,66 +42,66 @@ do { \
 	pcb_objlist_append(lst, o); \
 } while(0)
 
-static int list_layer_cb(void *ctx, PCBType *pcb, LayerType *layer, int enter)
+static int list_layer_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, int enter)
 {
 	if (enter)
 		APPEND(ctx, PCB_OBJ_LAYER, layer, PCB_PARENT_DATA, pcb->Data);
 	return 0;
 }
 
-static void list_line_cb(void *ctx, PCBType *pcb, LayerType *layer, LineType *line)
+static void list_line_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, LineType *line)
 {
 	APPEND(ctx, PCB_OBJ_LINE, line, PCB_PARENT_LAYER, layer);
 }
 
-static void list_arc_cb(void *ctx, PCBType *pcb, LayerType *layer, ArcType *arc)
+static void list_arc_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, ArcType *arc)
 {
 	APPEND(ctx, PCB_OBJ_ARC, arc, PCB_PARENT_LAYER, layer);
 }
 
-static void list_text_cb(void *ctx, PCBType *pcb, LayerType *layer, TextType *text)
+static void list_text_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, TextType *text)
 {
 	APPEND(ctx, PCB_OBJ_TEXT, text, PCB_PARENT_LAYER, layer);
 }
 
-static void list_poly_cb(void *ctx, PCBType *pcb, LayerType *layer, PolygonType *poly)
+static void list_poly_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, PolygonType *poly)
 {
 	APPEND(ctx, PCB_OBJ_POLYGON, poly, PCB_PARENT_LAYER, layer);
 }
 
-static int list_element_cb(void *ctx, PCBType *pcb, ElementType *element, int enter)
+static int list_element_cb(void *ctx, pcb_board_t *pcb, ElementType *element, int enter)
 {
 	if (enter)
 		APPEND(ctx, PCB_OBJ_ELEMENT, element, PCB_PARENT_DATA, pcb->Data);
 	return 0;
 }
 
-static void list_eline_cb(void *ctx, PCBType *pcb, ElementType *element, LineType *line)
+static void list_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, LineType *line)
 {
 	APPEND(ctx, PCB_OBJ_ELINE, line, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_earc_cb(void *ctx, PCBType *pcb, ElementType *element, ArcType *arc)
+static void list_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, ArcType *arc)
 {
 	APPEND(ctx, PCB_OBJ_EARC, arc, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_etext_cb(void *ctx, PCBType *pcb, ElementType *element, TextType *text)
+static void list_etext_cb(void *ctx, pcb_board_t *pcb, ElementType *element, TextType *text)
 {
 	APPEND(ctx, PCB_OBJ_ETEXT, text, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_epin_cb(void *ctx, PCBType *pcb, ElementType *element, PinType *pin)
+static void list_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PinType *pin)
 {
 	APPEND(ctx, PCB_OBJ_PIN, pin, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_epad_cb(void *ctx, PCBType *pcb, ElementType *element, PadType *pad)
+static void list_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PadType *pad)
 {
 	APPEND(ctx, PCB_OBJ_PAD, pad, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_via_cb(void *ctx, PCBType *pcb, PinType *via)
+static void list_via_cb(void *ctx, pcb_board_t *pcb, PinType *via)
 {
 	APPEND(ctx, PCB_OBJ_VIA, via, PCB_PARENT_DATA, pcb->Data);
 }

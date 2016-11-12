@@ -189,7 +189,7 @@ void pcb_netlist_style(LibraryMenuType * net, const char *style)
 	net->Style = pcb_strdup_null((char *) style);
 }
 
-LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pin)
+LibraryMenuTypePtr pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pin)
 {
 	int n;
 
@@ -205,7 +205,7 @@ LibraryMenuTypePtr pcb_netlist_find_net4pinname(PCBTypePtr pcb, const char *pin)
 	return NULL;
 }
 
-static LibraryMenuTypePtr pcb_netlist_find_net4pin_any(PCBTypePtr pcb, const char *ename, const char *pname)
+static LibraryMenuTypePtr pcb_netlist_find_net4pin_any(pcb_board_t *pcb, const char *ename, const char *pname)
 {
 	char pinname[256];
 	int len;
@@ -220,7 +220,7 @@ static LibraryMenuTypePtr pcb_netlist_find_net4pin_any(PCBTypePtr pcb, const cha
 	return pcb_netlist_find_net4pinname(pcb, pinname);
 }
 
-LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, const PinType *pin)
+LibraryMenuTypePtr pcb_netlist_find_net4pin(pcb_board_t *pcb, const PinType *pin)
 {
 	const ElementType *e = pin->Element;
 
@@ -231,7 +231,7 @@ LibraryMenuTypePtr pcb_netlist_find_net4pin(PCBTypePtr pcb, const PinType *pin)
 }
 
 
-LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad)
+LibraryMenuTypePtr pcb_netlist_find_net4pad(pcb_board_t *pcb, const PadType *pad)
 {
 	const ElementType *e = pad->Element;
 
@@ -241,7 +241,7 @@ LibraryMenuTypePtr pcb_netlist_find_net4pad(PCBTypePtr pcb, const PadType *pad)
 	return pcb_netlist_find_net4pin_any(pcb, e->Name[NAMEONPCB_INDEX].TextString, pad->Number);
 }
 
-pcb_cardinal_t pcb_netlist_net_idx(PCBTypePtr pcb, LibraryMenuType *net)
+pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, LibraryMenuType *net)
 {
 	LibraryMenuType *first = &pcb->NetlistLib[NETLIST_EDITED].Menu[0];
 	LibraryMenuType *last  = &pcb->NetlistLib[NETLIST_EDITED].Menu[pcb->NetlistLib[NETLIST_EDITED].MenuN-1];

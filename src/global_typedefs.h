@@ -24,7 +24,7 @@
 #define GLOBAL_TYPEDEFS_H
 #include "config.h"
 
-typedef struct pcb_board_s PCBType, *PCBTypePtr;
+typedef struct pcb_board_s pcb_board_t;
 typedef struct pcb_data_s  DataType, *DataTypePtr;
 typedef struct pcb_layer_group_s  LayerGroupType, *LayerGroupTypePtr;
 typedef struct pcb_layer_s LayerType, *LayerTypePtr;

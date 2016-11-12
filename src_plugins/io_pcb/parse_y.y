@@ -65,7 +65,7 @@ static	LibraryMenuTypePtr	Menu;
 static	pcb_bool			LayerFlag[MAX_LAYER + 2];
 
 extern	char			*yytext;		/* defined by LEX */
-extern	PCBTypePtr		yyPCB;
+extern	pcb_board_t *	yyPCB;
 extern	DataTypePtr		yyData;
 extern	ElementTypePtr	yyElement;
 extern	FontTypePtr		yyFont;
@@ -196,7 +196,7 @@ parsepcb
 		  pcbnetlist
 		  pcbnetlistpatch
 			{
-			  PCBTypePtr pcb_save = PCB;
+			  pcb_board_t *pcb_save = PCB;
 			  if ((yy_settings_dest != CFR_invalid) && (layer_group_string != NULL))
 					conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, POL_OVERWRITE);
 			  CreateNewPCBPost (yyPCB, 0);

@@ -219,7 +219,7 @@ static int parse_bool(pcb_bool *res, lht_node_t *nd)
 	return -1;
 }
 
-static int parse_meta(PCBType *pcb, lht_node_t *nd)
+static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *grp;
 
@@ -529,7 +529,7 @@ static int parse_pcb_text(LayerType *ly, ElementType *el, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int layer_id)
+static int parse_data_layer(pcb_board_t *pcb, DataType *dt, lht_node_t *grp, int layer_id)
 {
 	lht_node_t *n, *lst;
 	lht_dom_iterator_t it;
@@ -565,7 +565,7 @@ static int parse_data_layer(PCBType *pcb, DataType *dt, lht_node_t *grp, int lay
 	return 0;
 }
 
-static int parse_data_layers(PCBType *pcb, DataType *dt, lht_node_t *grp)
+static int parse_data_layers(pcb_board_t *pcb, DataType *dt, lht_node_t *grp)
 {
 	int id;
 	lht_node_t *n;
@@ -648,7 +648,7 @@ static int parse_pad(ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 }
 
 
-static int parse_element(PCBType *pcb, DataType *dt, lht_node_t *obj)
+static int parse_element(pcb_board_t *pcb, DataType *dt, lht_node_t *obj)
 {
 	ElementType *elem = GetElementMemory(dt);
 	lht_node_t *lst, *n;
@@ -694,7 +694,7 @@ static int parse_element(PCBType *pcb, DataType *dt, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_data_objects(PCBType *pcb_for_font, DataType *dt, lht_node_t *grp)
+static int parse_data_objects(pcb_board_t *pcb_for_font, DataType *dt, lht_node_t *grp)
 {
 	lht_node_t *n;
 	lht_dom_iterator_t it;
@@ -714,7 +714,7 @@ static int parse_data_objects(PCBType *pcb_for_font, DataType *dt, lht_node_t *g
 	return 0;
 }
 
-static DataType *parse_data(PCBType *pcb, lht_node_t *nd)
+static DataType *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 {
 	DataType *dt;
 	lht_node_t *grp;
@@ -882,7 +882,7 @@ static int parse_netlist_input(LibraryType *lib, lht_node_t *netlist)
 	return 0;
 }
 
-static int parse_netlist_patch(PCBType *pcb, lht_node_t *patches)
+static int parse_netlist_patch(pcb_board_t *pcb, lht_node_t *patches)
 {
 	lht_node_t *np;
 
@@ -922,7 +922,7 @@ static int parse_netlist_patch(PCBType *pcb, lht_node_t *patches)
 	return 0;
 }
 
-static int parse_netlists(PCBType *pcb, lht_node_t *netlists)
+static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 {
 	lht_node_t *sub;
 
@@ -940,7 +940,7 @@ static int parse_netlists(PCBType *pcb, lht_node_t *netlists)
 	return 0;
 }
 
-static int parse_board(PCBType *pcb, lht_node_t *nd)
+static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *sub;
 
@@ -992,7 +992,7 @@ static int parse_board(PCBType *pcb, lht_node_t *nd)
 	return 0;
 }
 
-int io_lihata_parse_pcb(plug_io_t *ctx, PCBTypePtr Ptr, const char *Filename, conf_role_t settings_dest)
+int io_lihata_parse_pcb(plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int res;
 	char *errmsg;
