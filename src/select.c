@@ -222,7 +222,7 @@ static long int *ListBlock_(pcb_box_t *Box, pcb_bool Flag, int *len)
 
 #define swap(a,b) \
 do { \
-	Coord tmp; \
+	pcb_coord_t tmp; \
 	tmp = a; \
 	a = b; \
 	b = tmp; \

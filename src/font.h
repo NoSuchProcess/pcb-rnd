@@ -38,11 +38,11 @@ typedef struct symbol_s {     /* a single symbol */
 	pcb_bool Valid;
 	pcb_cardinal_t LineN;       /* number of lines */
 	pcb_cardinal_t LineMax;     /* lines allocated */
-	Coord Width, Height, Delta; /* size of cell, distance to next symbol */
+	pcb_coord_t Width, Height, Delta; /* size of cell, distance to next symbol */
 } pcb_symbol_t;
 
 struct pcb_font_s {          /* complete set of symbols */
-	Coord MaxHeight, MaxWidth; /* maximum cell width and height */
+	pcb_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
 	pcb_box_t DefaultSymbol;     /* the default symbol is a filled box */
 	pcb_symbol_t Symbol[MAX_FONTPOSITION + 1];
 	pcb_bool Valid;
@@ -51,7 +51,7 @@ struct pcb_font_s {          /* complete set of symbols */
 void CreateDefaultFont(pcb_board_t *pcb);
 void SetFontInfo(pcb_font_t *Ptr);
 
-pcb_line_t *CreateNewLineInSymbol(pcb_symbol_t *Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
+pcb_line_t *CreateNewLineInSymbol(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
 
 #endif
 

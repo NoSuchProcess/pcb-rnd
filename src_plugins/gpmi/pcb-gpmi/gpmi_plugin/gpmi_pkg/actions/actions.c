@@ -30,7 +30,7 @@ const char *action_arg(int argn)
 }
 
 
-static int action_cb(int argc, const char **argv, Coord x, Coord y)
+static int action_cb(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	acontext_t *ctx = (acontext_t *)current_action;
 	int action_argc_old;

@@ -54,7 +54,7 @@ typedef const char * CFT_STRING;
 typedef int          CFT_BOOLEAN;
 typedef long         CFT_INTEGER;
 typedef double       CFT_REAL;
-typedef Coord        CFT_COORD;
+typedef pcb_coord_t        CFT_COORD;
 typedef pcb_unit_t *       CFT_UNIT;
 typedef char *       CFT_COLOR;
 typedef conflist_t   CFT_LIST;
@@ -77,7 +77,7 @@ union confitem_u {
 	int *boolean;
 	long *integer;
 	double *real;
-	Coord *coord;
+	pcb_coord_t *coord;
 	const pcb_unit_t **unit;
 	const char **color;
 	conflist_t *list;

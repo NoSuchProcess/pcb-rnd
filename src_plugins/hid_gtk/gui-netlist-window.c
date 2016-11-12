@@ -217,7 +217,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	pcb_lib_menu_t *node_net;
 	pcb_lib_entry_t *node;
 	pcb_connection_t conn;
-	Coord x, y;
+	pcb_coord_t x, y;
 	static gchar *node_name;
 
 	if (selection_holdoff)				/* PCB is highlighting, user is not selecting */
@@ -918,7 +918,7 @@ void ghid_netlist_window_update(gboolean init_nodes)
 		node_model_update((&PCB->NetlistLib[NETLIST_EDITED])->Menu);
 }
 
-static gint GhidNetlistChanged(int argc, const char **argv, Coord x, Coord y)
+static gint GhidNetlistChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	loading_new_netlist = TRUE;
 	ghid_netlist_window_update(TRUE);
@@ -932,7 +932,7 @@ static const char netlistshow_syntax[] = "NetlistShow(pinname|netname)";
 static const char netlistshow_help[] = "Selects the given pinname or netname in the netlist window. Does not \
 show the window if it isn't already shown.";
 
-static gint GhidNetlistShow(int argc, const char **argv, Coord x, Coord y)
+static gint GhidNetlistShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	ghid_netlist_window_create(gport);
 	if (argc > 0)
@@ -944,7 +944,7 @@ static const char netlistpresent_syntax[] = "NetlistPresent()";
 
 static const char netlistpresent_help[] = "Presents the netlist window.";
 
-static gint GhidNetlistPresent(int argc, const char **argv, Coord x, Coord y)
+static gint GhidNetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	ghid_netlist_window_show(gport, TRUE);
 	return 0;

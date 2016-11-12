@@ -116,8 +116,8 @@ static void real_stroke_finish(void)
 		case 12589:
 		case 14589:
 			{
-				Coord x = (StrokeBox.X1 + StrokeBox.X2) / 2;
-				Coord y = (StrokeBox.Y1 + StrokeBox.Y2) / 2;
+				pcb_coord_t x = (StrokeBox.X1 + StrokeBox.X2) / 2;
+				pcb_coord_t y = (StrokeBox.Y1 + StrokeBox.Y2) / 2;
 				double z;
 				/* XXX: PCB->MaxWidth and PCB->MaxHeight may be the wrong
 				 *      divisors below. The old code WAS broken, but this

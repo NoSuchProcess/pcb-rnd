@@ -49,9 +49,9 @@ static int nextpwrof2(int i);
  * some local types
  */
 typedef struct {
-	Coord left, right;
+	pcb_coord_t left, right;
 	int covered;
-	Coord area;
+	pcb_coord_t area;
 } SegmentTreeNode;
 
 typedef struct {
@@ -60,7 +60,7 @@ typedef struct {
 } SegmentTree;
 
 typedef struct {
-	Coord *p;
+	pcb_coord_t *p;
 	int size;
 } LocationList;
 
@@ -70,11 +70,11 @@ typedef struct {
 static LocationList createSortedYList(pcb_box_list_t *boxlist)
 {
 	LocationList yCoords;
-	Coord last;
+	pcb_coord_t last;
 	int i, n;
 	/* create sorted list of Y coordinates */
 	yCoords.size = 2 * boxlist->BoxN;
-	yCoords.p = (Coord *) calloc(yCoords.size, sizeof(*yCoords.p));
+	yCoords.p = (pcb_coord_t *) calloc(yCoords.size, sizeof(*yCoords.p));
 	for (i = 0; i < boxlist->BoxN; i++) {
 		yCoords.p[2 * i] = boxlist->Box[i].Y1;
 		yCoords.p[2 * i + 1] = boxlist->Box[i].Y2;
@@ -92,7 +92,7 @@ static LocationList createSortedYList(pcb_box_list_t *boxlist)
 /* ---------------------------------------------------------------------------
  * Create an empty segment tree from the given sorted list of uniq y coords.
  */
-static SegmentTree createSegmentTree(Coord * yCoords, int N)
+static SegmentTree createSegmentTree(pcb_coord_t * yCoords, int N)
 {
 	SegmentTree st;
 	int i;
@@ -116,9 +116,9 @@ static SegmentTree createSegmentTree(Coord * yCoords, int N)
 	return st;
 }
 
-void insertSegment(SegmentTree * st, int n, Coord Y1, Coord Y2)
+void insertSegment(SegmentTree * st, int n, pcb_coord_t Y1, pcb_coord_t Y2)
 {
-	Coord discriminant;
+	pcb_coord_t discriminant;
 	if (st->nodes[n].left >= Y1 && st->nodes[n].right <= Y2) {
 		st->nodes[n].covered++;
 	}
@@ -135,9 +135,9 @@ void insertSegment(SegmentTree * st, int n, Coord Y1, Coord Y2)
 		(st->nodes[n].right - st->nodes[n].left) : (n >= st->size / 2) ? 0 : st->nodes[n * 2].area + st->nodes[n * 2 + 1].area;
 }
 
-void deleteSegment(SegmentTree * st, int n, Coord Y1, Coord Y2)
+void deleteSegment(SegmentTree * st, int n, pcb_coord_t Y1, pcb_coord_t Y2)
 {
-	Coord discriminant;
+	pcb_coord_t discriminant;
 	if (st->nodes[n].left >= Y1 && st->nodes[n].right <= Y2) {
 		assert(st->nodes[n].covered);
 		--st->nodes[n].covered;
@@ -183,7 +183,7 @@ double ComputeUnionArea(pcb_box_list_t *boxlist)
 	pcb_cardinal_t i, j;
 	LocationList yCoords;
 	SegmentTree segtree;
-	Coord lastX;
+	pcb_coord_t lastX;
 	double area = 0.0;
 
 	if (boxlist->BoxN == 0)
@@ -254,7 +254,7 @@ static int compareright(const void *ptr1, const void *ptr2)
 
 static int comparepos(const void *ptr1, const void *ptr2)
 {
-	return *((Coord *) ptr1) - *((Coord *) ptr2);
+	return *((pcb_coord_t *) ptr1) - *((pcb_coord_t *) ptr2);
 }
 
 static int nextpwrof2(int n)

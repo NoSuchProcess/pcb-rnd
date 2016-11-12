@@ -124,7 +124,7 @@ numbered paste buffer.
 
 %end-doc */
 
-static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
+static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	if (function) {
@@ -218,7 +218,7 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 
 		case F_Convert:
 			{
-				Coord x, y;
+				pcb_coord_t x, y;
 				Note.Buffer = conf_core.editor.buffer_number;
 				SetBufferNumber(MAX_BUFFER - 1);
 				ClearBuffer(PASTEBUFFER);
@@ -283,7 +283,7 @@ type specified are unselected.
 
 %end-doc */
 
-static int ActionUnselect(int argc, const char **argv, Coord x, Coord y)
+static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	if (function) {

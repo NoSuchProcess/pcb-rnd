@@ -31,8 +31,8 @@
 
 /* These need to be carefully written to avoid overflows, and return
    a Coord type.  */
-#define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((Coord)((COORD) * ((double)(TEXTSCALE) / 100.0)))
-#define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((Coord)((COORD) * (100.0 / (double)(TEXTSCALE))))
+#define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((pcb_coord_t)((COORD) * ((double)(TEXTSCALE) / 100.0)))
+#define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((pcb_coord_t)((COORD) * (100.0 / (double)(TEXTSCALE))))
 
 /* ---------------------------------------------------------------------------
  * modes

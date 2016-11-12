@@ -171,7 +171,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 
 	char *end, *text;
 	double val;
-	Coord X, Y;
+	pcb_coord_t X, Y;
 	int scaling = 100;
 	int textLength = 0;
 	int mirrored = 0;
@@ -348,7 +348,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 
 	char *end;
 	double val;
-	Coord X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
+	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
 	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
@@ -469,7 +469,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 
 	char *end;
 	double val;
-	Coord centreX, centreY, endX, endY, width, height, Thickness, Clearance;
+	pcb_coord_t centreX, centreY, endX, endY, width, height, Thickness, Clearance;
 	pcb_angle_t startAngle = 0.0;
 	pcb_angle_t delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
@@ -626,7 +626,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 
 	char *end, *name; /* not using via name for now */
 	double val;
-	Coord X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
+	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
 	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
 /*	int PCBLayer = 0;   not used for now; no blind or buried vias currently in pcb-rnd */
 
@@ -720,7 +720,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 
 	char *end;
 	double val;
-	Coord X1, Y1, X2, Y2, Thickness, Clearance;
+	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = MakeFlags(PCB_FLAG_CLEARLINE); /* we try clearline flag here */
 	int PCBLayer = 0; /* sane default value */
 
@@ -990,7 +990,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int foundRefdes = 0;
 	int refdesScaling  = 100;
 	unsigned long tally = 0, featureTally, required;
-	Coord moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
+	pcb_coord_t moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
 	pcb_angle_t startAngle = 0.0;
 	pcb_angle_t endAngle = 0.0;
 	pcb_angle_t delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
@@ -1826,7 +1826,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	pcb_flag_t flags = MakeFlags(PCB_FLAG_CLEARPOLY);
 	char *end;
 	double val;
-	Coord X, Y;
+	pcb_coord_t X, Y;
 	int PCBLayer = 0;
 
 	if (subtree->str != NULL) {

@@ -617,7 +617,7 @@ static void gcode_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void gcode_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void gcode_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gc->width = width;
 }
@@ -734,7 +734,7 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void gcode_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void gcode_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	gdImageRectangle(gcode_im,
@@ -744,7 +744,7 @@ static void gcode_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord
 /*      printf("Rect %d %d %d %d\n",x1,y1,x2,y2); */
 }
 
-static void gcode_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void gcode_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	gdImageSetThickness(gcode_im, 0);
@@ -756,10 +756,10 @@ static void gcode_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord
 /*      printf("FillRect %d %d %d %d\n",x1,y1,x2,y2); */
 }
 
-static void gcode_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void gcode_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	if (x1 == x2 && y1 == y2) {
-		Coord w = gc->width / 2;
+		pcb_coord_t w = gc->width / 2;
 		gcode_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		return;
 	}
@@ -770,7 +770,7 @@ static void gcode_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord
 	gdImageLine(gcode_im, pcb_to_gcode(x1), pcb_to_gcode(y1), pcb_to_gcode(x2), pcb_to_gcode(y2), gdBrushed);
 }
 
-static void gcode_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void gcode_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
 
@@ -809,7 +809,7 @@ static void gcode_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coo
 						 pcb_to_gcode(2 * height + gcode_toolradius * 2), sa, ea, gdBrushed);
 }
 
-static void gcode_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void gcode_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	use_gc(gc);
 
@@ -830,7 +830,7 @@ static void gcode_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 	}
 }
 
-static void gcode_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void gcode_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
 	gdPoint *points;

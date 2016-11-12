@@ -297,7 +297,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	GtkWidget *area = gtk_drawing_area_new();
 	pcb_board_t *old_pcb;
 	int n, zoom1, fx, fy;
-	Coord cx, cy;
+	pcb_coord_t cx, cy;
 
 /*
 	void *v;

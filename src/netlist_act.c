@@ -202,7 +202,7 @@ updates the GUI.
 
 typedef void (*NFunc) (pcb_lib_menu_t *, pcb_lib_entry_t *);
 
-static int ActionNetlist(int argc, const char **argv, Coord x, Coord y)
+static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	NFunc func;
 	int i, j;

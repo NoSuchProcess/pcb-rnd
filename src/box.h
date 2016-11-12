@@ -55,11 +55,11 @@ typedef enum { NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3, NE = 4, SE = 5, SW = 6,
 
 /* rotates box 90-degrees cw */
 /* that's a strange rotation! */
-#define ROTATEBOX_CW(box) { Coord t;\
+#define ROTATEBOX_CW(box) { pcb_coord_t t;\
     t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
     (box).X2 = -(box).Y1; (box).Y1 = t;\
 }
-#define ROTATEBOX_TO_NORTH(box, dir) do { Coord t;\
+#define ROTATEBOX_TO_NORTH(box, dir) do { pcb_coord_t t;\
   switch(dir) {\
   case EAST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
@@ -74,7 +74,7 @@ typedef enum { NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3, NE = 4, SE = 5, SW = 6,
   default: assert(0);\
   }\
   } while (0)
-#define ROTATEBOX_FROM_NORTH(box, dir) do { Coord t;\
+#define ROTATEBOX_FROM_NORTH(box, dir) do { pcb_coord_t t;\
   switch(dir) {\
   case WEST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
@@ -103,19 +103,19 @@ typedef enum { NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3, NE = 4, SE = 5, SW = 6,
 
 
 typedef struct cheap_point {
-	Coord X, Y;
+	pcb_coord_t X, Y;
 } Cheappcb_point_t;
 
 
 /* note that boxes are closed on top and left and open on bottom and right. */
 /* this means that top-left corner is in box, *but bottom-right corner is
  * not*.  */
-static inline PCB_FUNC_UNUSED pcb_bool point_in_box(const pcb_box_t * box, Coord X, Coord Y) 
+static inline PCB_FUNC_UNUSED pcb_bool point_in_box(const pcb_box_t * box, pcb_coord_t X, pcb_coord_t Y) 
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X < box->X2) && (Y < box->Y2);
 }
 
-static inline PCB_FUNC_UNUSED pcb_bool point_in_closed_box(const pcb_box_t * box, Coord X, Coord Y)
+static inline PCB_FUNC_UNUSED pcb_bool point_in_closed_box(const pcb_box_t * box, pcb_coord_t X, pcb_coord_t Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X <= box->X2) && (Y <= box->Y2);
 }
@@ -157,7 +157,7 @@ static inline PCB_FUNC_UNUSED pcb_box_t clip_box(const pcb_box_t * box, const pc
 	return r;
 }
 
-static inline PCB_FUNC_UNUSED pcb_box_t shrink_box(const pcb_box_t * box, Coord amount)
+static inline PCB_FUNC_UNUSED pcb_box_t shrink_box(const pcb_box_t * box, pcb_coord_t amount)
 {
 	pcb_box_t r = *box;
 	r.X1 += amount;
@@ -167,7 +167,7 @@ static inline PCB_FUNC_UNUSED pcb_box_t shrink_box(const pcb_box_t * box, Coord 
 	return r;
 }
 
-static inline PCB_FUNC_UNUSED pcb_box_t bloat_box(const pcb_box_t * box, Coord amount)
+static inline PCB_FUNC_UNUSED pcb_box_t bloat_box(const pcb_box_t * box, pcb_coord_t amount)
 {
 	return shrink_box(box, -amount);
 }
@@ -195,7 +195,7 @@ static inline PCB_FUNC_UNUSED pcb_box_t box_corner(const pcb_box_t * box)
 }
 
 /* construct a box that holds a single point */
-static inline PCB_FUNC_UNUSED pcb_box_t point_box(Coord X, Coord Y)
+static inline PCB_FUNC_UNUSED pcb_box_t point_box(pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_box_t r;
 	r.X1 = X;

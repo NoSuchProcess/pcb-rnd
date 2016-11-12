@@ -54,7 +54,7 @@ static const char renumber_help[] =
 
 #define WTF 0
 
-static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
+static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_bool changed = pcb_false;
 	pcb_element_t **element_list;
@@ -352,8 +352,8 @@ static int ActionRenumber(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-int action_renumber_block(int argc, const char **argv, Coord x, Coord y);
-int action_renumber_buffer(int argc, const char **argv, Coord x, Coord y);
+int action_renumber_block(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+int action_renumber_buffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 
 static const char *renumber_cookie = "renumber plugin";

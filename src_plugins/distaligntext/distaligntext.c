@@ -99,7 +99,7 @@ static int keyword(const char *s)
 
 /* this macro produces a function in X or Y that switches on 'point' */
 #define COORD(DIR)						\
-static inline Coord				        	\
+static inline pcb_coord_t				        	\
 coord ## DIR(pcb_text_t *text, int point)		        	\
 {								\
 	switch (point) {					\
@@ -123,7 +123,7 @@ COORD(X)
 /*!
  * Return the text coordinate associated with the given internal point.
  */
-		 static Coord coord(pcb_text_t * text, int dir, int point)
+		 static pcb_coord_t coord(pcb_text_t * text, int dir, int point)
 {
 	if (dir == K_X)
 		return coordX(text, point);
@@ -133,8 +133,8 @@ COORD(X)
 
 static struct text_by_pos {
 	pcb_text_t *text;
-	Coord pos;
-	Coord width;
+	pcb_coord_t pos;
+	pcb_coord_t width;
 	int type;
 } *texts_by_pos;
 
@@ -226,9 +226,9 @@ static void free_texts_by_pos(void)
  * Find the reference coordinate from the specified points of all
  * selected text.
  */
-static Coord reference_coord(int op, int x, int y, int dir, int point, int reference)
+static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int reference)
 {
-	Coord q;
+	pcb_coord_t q;
 	int i, nsel;
 
 	q = 0;
@@ -282,14 +282,14 @@ static Coord reference_coord(int op, int x, int y, int dir, int point, int refer
  *
  * Defaults are Lefts/Tops, First
  */
-static int aligntext(int argc, const char **argv, Coord x, Coord y)
+static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
 	int point;
 	int reference;
 	int gridless;
-	Coord q;
-	Coord p, dp, dx, dy;
+	pcb_coord_t q;
+	pcb_coord_t p, dp, dx, dy;
 	int changed = 0;
 
 	if (argc < 1 || argc > 4) {
@@ -440,13 +440,13 @@ static int aligntext(int argc, const char **argv, Coord x, Coord y)
  * Distributed texts always retain the same relative order they had
  * before they were distributed. \n
  */
-static int distributetext(int argc, const char **argv, Coord x, Coord y)
+static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
 	int point;
 	int refa, refb;
 	int gridless;
-	Coord s, e, slack;
+	pcb_coord_t s, e, slack;
 	int divisor;
 	int changed = 0;
 	int i;
@@ -542,7 +542,7 @@ static int distributetext(int argc, const char **argv, Coord x, Coord y)
 	/* even the gaps instead of the edges or whatnot */
 	/* find the "slack" in the row */
 	if (point == K_Gaps) {
-		Coord w;
+		pcb_coord_t w;
 
 		/* subtract all the "widths" from the slack */
 		for (i = 0; i < ntexts_by_pos; ++i) {
@@ -563,7 +563,7 @@ static int distributetext(int argc, const char **argv, Coord x, Coord y)
 	for (i = 0; i < ntexts_by_pos; ++i) {
 		pcb_text_t *text = texts_by_pos[i].text;
 		int type = texts_by_pos[i].type;
-		Coord p, q, dp, dx, dy;
+		pcb_coord_t p, q, dp, dx, dy;
 
 		/* find reference point for this text */
 		q = s + slack * i / divisor;

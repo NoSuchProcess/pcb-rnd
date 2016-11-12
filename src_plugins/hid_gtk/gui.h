@@ -134,10 +134,10 @@ extern GhidGui _ghidgui, *ghidgui;
 typedef struct {
 	double coord_per_px;					/* Zoom level described as PCB units per screen pixel */
 
-	Coord x0;
-	Coord y0;
-	Coord width;
-	Coord height;
+	pcb_coord_t x0;
+	pcb_coord_t y0;
+	pcb_coord_t width;
+	pcb_coord_t height;
 
 } view_data;
 
@@ -163,8 +163,8 @@ typedef struct {
 	gboolean panning;
 
 	view_data view;
-	Coord pcb_x, pcb_y;						/* PCB coordinates of the mouse pointer */
-	Coord crosshair_x, crosshair_y;	/* PCB coordinates of the crosshair     */
+	pcb_coord_t pcb_x, pcb_y;						/* PCB coordinates of the mouse pointer */
+	pcb_coord_t crosshair_x, crosshair_y;	/* PCB coordinates of the crosshair     */
 } GHidPort;
 
 extern GHidPort ghid_port, *gport;
@@ -323,8 +323,8 @@ void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button,
 																 gboolean active, gboolean pack_start,
 																 gboolean expand, gboolean fill, gint pad,
 																 void (*cb_func) (GtkToggleButton *, gpointer), gpointer data, const gchar * string);
-void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
-											Coord low, Coord high, enum ce_step_size step_size, const pcb_unit_t *u,
+void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t value,
+											pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size, const pcb_unit_t *u,
 											gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
 											gpointer data, const gchar * string_pre, const gchar * string_post);
 void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button,
@@ -332,8 +332,8 @@ void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button,
 											gfloat step1, gint digits, gint width,
 											void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string);
 void ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
-														GtkWidget ** coord_entry, Coord value,
-														Coord low, Coord high, enum ce_step_size, gint width,
+														GtkWidget ** coord_entry, pcb_coord_t value,
+														pcb_coord_t low, pcb_coord_t high, enum ce_step_size, gint width,
 														void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gboolean right_align, const gchar * string);
 void ghid_table_spin_button(GtkWidget * box, gint row, gint column,
 														GtkWidget ** spin_button, gfloat value,
@@ -413,14 +413,14 @@ void ghid_destroy_gc(pcb_hid_gc_t);
 void ghid_use_mask(int use_it);
 void ghid_set_color(pcb_hid_gc_t gc, const char *name);
 void ghid_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
-void ghid_set_line_width(pcb_hid_gc_t gc, Coord width);
+void ghid_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
 void ghid_set_draw_xor(pcb_hid_gc_t gc, int _xor);
-void ghid_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-void ghid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle);
-void ghid_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-void ghid_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius);
-void ghid_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y);
-void ghid_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+void ghid_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+void ghid_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle);
+void ghid_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+void ghid_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
+void ghid_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
+void ghid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 void ghid_invalidate_lr(int left, int right, int top, int bottom);
 void ghid_invalidate_all();
 void ghid_notify_crosshair_change(pcb_bool changes_complete);
@@ -437,16 +437,16 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 pcb_hid_t *ghid_request_debug_draw(void);
 void ghid_flush_debug_draw(void);
 void ghid_finish_debug_draw(void);
-pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, Coord * pcb_x, Coord * pcb_y);
-pcb_bool ghid_pcb_to_event_coords(Coord pcb_x, Coord pcb_y, int *event_x, int *event_y);
+pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y);
+pcb_bool ghid_pcb_to_event_coords(pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y);
 
-void ghid_lead_user_to_location(Coord x, Coord y);
+void ghid_lead_user_to_location(pcb_coord_t x, pcb_coord_t y);
 void ghid_cancel_lead_user(void);
 
 /* gtkhid-main.c */
-void ghid_pan_view_rel(Coord dx, Coord dy);
-void ghid_get_coords(const char *msg, Coord * x, Coord * y);
-gint PCBChanged(int argc, const char **argv, Coord x, Coord y);
+void ghid_pan_view_rel(pcb_coord_t dx, pcb_coord_t dy);
+void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y);
+gint PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 
 
@@ -458,7 +458,7 @@ extern GdkPixmap *XC_clock_source, *XC_clock_mask;
 
 /* Coordinate conversions */
 /* Px converts view->pcb, Vx converts pcb->view */
-static inline int Vx(Coord x)
+static inline int Vx(pcb_coord_t x)
 {
 	double rv;
 	if (conf_core.editor.view.flip_x)
@@ -468,7 +468,7 @@ static inline int Vx(Coord x)
 	return pcb_round(rv);
 }
 
-static inline int Vy(Coord y)
+static inline int Vy(pcb_coord_t y)
 {
 	double rv;
 	if (conf_core.editor.view.flip_y)
@@ -478,28 +478,28 @@ static inline int Vy(Coord y)
 	return pcb_round(rv);
 }
 
-static inline int Vz(Coord z)
+static inline int Vz(pcb_coord_t z)
 {
 	return pcb_round((double)z / gport->view.coord_per_px + 0.5);
 }
 
-static inline Coord Px(int x)
+static inline pcb_coord_t Px(int x)
 {
-	Coord rv = x * gport->view.coord_per_px + gport->view.x0;
+	pcb_coord_t rv = x * gport->view.coord_per_px + gport->view.x0;
 	if (conf_core.editor.view.flip_x)
 		rv = PCB->MaxWidth - (x * gport->view.coord_per_px + gport->view.x0);
 	return rv;
 }
 
-static inline Coord Py(int y)
+static inline pcb_coord_t Py(int y)
 {
-	Coord rv = y * gport->view.coord_per_px + gport->view.y0;
+	pcb_coord_t rv = y * gport->view.coord_per_px + gport->view.y0;
 	if (conf_core.editor.view.flip_y)
 		rv = PCB->MaxHeight - (y * gport->view.coord_per_px + gport->view.y0);
 	return rv;
 }
 
-static inline Coord Pz(int z)
+static inline pcb_coord_t Pz(int z)
 {
 	return (z * gport->view.coord_per_px);
 }
@@ -518,7 +518,7 @@ void ghid_confchg_line_refraction(conf_native_t *cfg);
 void ghid_confchg_all_direction_lines(conf_native_t *cfg);
 void ghid_confchg_fullscreen(conf_native_t *cfg);
 void ghid_confchg_checkbox(conf_native_t *cfg);
-void ghid_draw_grid_local(Coord cx, Coord cy);
+void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy);
 
 void ghid_fullscreen_apply(void);
 

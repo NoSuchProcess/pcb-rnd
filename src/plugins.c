@@ -84,7 +84,7 @@ static const char manageplugins_syntax[] = "ManagePlugins()\n";
 
 static const char manageplugins_help[] = "Manage plugins dialog.";
 
-static int ActionManagePlugins(int argc, const char **argv, Coord x, Coord y)
+static int ActionManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_plugin_info_t *i;
 	int nump = 0, numb = 0;

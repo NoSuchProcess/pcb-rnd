@@ -50,8 +50,8 @@ static void CheckLinePointForRat(pcb_layer_t *, pcb_point_t *);
 static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl);
 
 struct rubber_info {
-	Coord radius;
-	Coord X, Y;
+	pcb_coord_t radius;
+	pcb_coord_t X, Y;
 	pcb_line_t *line;
 	pcb_box_t box;
 	pcb_layer_t *layer;
@@ -62,7 +62,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct rubber_info *i = (struct rubber_info *) cl;
 	double x, y, rad, dist1, dist2;
-	Coord t;
+	pcb_coord_t t;
 	int touches = 0;
 
 	t = line->Thickness / 2;
@@ -177,7 +177,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
  */
 static void CheckPadForRubberbandConnection(pcb_pad_t *Pad)
 {
-	Coord half = Pad->Thickness / 2;
+	pcb_coord_t half = Pad->Thickness / 2;
 	pcb_cardinal_t i, group;
 	struct rubber_info info;
 
@@ -296,7 +296,7 @@ static void CheckPinForRubberbandConnection(pcb_pin_t *Pin)
 {
 	struct rubber_info info;
 	pcb_cardinal_t n;
-	Coord t = Pin->Thickness / 2;
+	pcb_coord_t t = Pin->Thickness / 2;
 
 	info.box.X1 = Pin->X - t;
 	info.box.X2 = Pin->X + t;
@@ -326,7 +326,7 @@ static void CheckLinePointForRubberbandConnection(pcb_layer_t *Layer, pcb_line_t
 {
 	pcb_cardinal_t group;
 	struct rubber_info info;
-	Coord t = Line->Thickness / 2;
+	pcb_coord_t t = Line->Thickness / 2;
 
 	/* lookup layergroup and check all visible lines in this group */
 	info.radius = Exact ? -1 : MAX(Line->Thickness / 2, 1);
@@ -363,7 +363,7 @@ static void CheckPolygonForRubberbandConnection(pcb_layer_t *Layer, pcb_polygon_
 	GROUP_LOOP(PCB->Data, group);
 	{
 		if (layer->On) {
-			Coord thick;
+			pcb_coord_t thick;
 
 			/* the following code just stupidly compares the endpoints
 			 * of the lines

@@ -85,7 +85,7 @@ void RemoveFreePin(pcb_pin_t * data)
 /*** utility ***/
 
 /* creates a new via */
-pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, pcb_flag_t Flags)
+pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
 {
 	pcb_pin_t *Via;
 
@@ -138,7 +138,7 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coo
 }
 
 /* creates a new pin in an element */
-pcb_pin_t *CreateNewPin(pcb_element_t *Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, pcb_flag_t Flags)
+pcb_pin_t *CreateNewPin(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, char *Name, char *Number, pcb_flag_t Flags)
 {
 	pcb_pin_t *pin = GetPinMemory(Element);
 
@@ -206,7 +206,7 @@ void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via)
 /* sets the bounding box of a pin or via */
 void SetPinBoundingBox(pcb_pin_t *Pin)
 {
-	Coord width;
+	pcb_coord_t width;
 
 	if ((GET_SQUARE(Pin) > 1) && (TEST_FLAG(PCB_FLAG_SQUARE, Pin))) {
 		pcb_polyarea_t *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
@@ -291,7 +291,7 @@ void *ChangePinThermal(pcb_opctx_t *ctx, pcb_element_t *element, pcb_pin_t *Pin)
 /* changes the size of a via */
 void *ChangeViaSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	Coord value = ctx->chgsize.absolute ? ctx->chgsize.absolute : Via->Thickness + ctx->chgsize.delta;
+	pcb_coord_t value = ctx->chgsize.absolute ? ctx->chgsize.absolute : Via->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
@@ -318,7 +318,7 @@ void *ChangeViaSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* changes the drilling hole of a via */
 void *ChangeVia2ndSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->DrillingHole + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->DrillingHole + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
@@ -343,7 +343,7 @@ void *ChangeVia2ndSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* changes the drilling hole of a pin */
 void *ChangePin2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->DrillingHole + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->DrillingHole + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -369,7 +369,7 @@ void *ChangePin2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 /* changes the clearance size of a via */
 void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Clearance + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
@@ -399,7 +399,7 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* changes the size of a pin */
 void *ChangePinSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Thickness + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -424,7 +424,7 @@ void *ChangePinSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 /* changes the clearance size of a pin */
 void *ChangePinClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Clearance + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -662,7 +662,7 @@ pcb_bool ChangeHole(pcb_pin_t *Via)
 /* changes the mask size of a pin */
 void *ChangePinMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Mask + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Mask + ctx->chgsize.delta;
 
 	value = MAX(value, 0);
 	if (value == Pin->Mask && ctx->chgsize.absolute == 0)
@@ -682,7 +682,7 @@ void *ChangePinMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin
 /* changes the mask size of a via */
 void *ChangeViaMaskSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	Coord value;
+	pcb_coord_t value;
 
 	value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Mask + ctx->chgsize.delta;
 	value = MAX(value, 0);

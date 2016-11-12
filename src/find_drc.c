@@ -44,11 +44,11 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3);
 static pcb_drc_violation_t
 	* pcb_drc_violation_new(const char *title,
 													const char *explanation,
-													Coord x, Coord y,
+													pcb_coord_t x, pcb_coord_t y,
 													pcb_angle_t angle,
 													pcb_bool have_measured,
-													Coord measured_value,
-													Coord required_value, int object_count, long int *object_id_list, int *object_type_list)
+													pcb_coord_t measured_value,
+													pcb_coord_t required_value, int object_count, long int *object_id_list, int *object_type_list)
 {
 	pcb_drc_violation_t *violation = (pcb_drc_violation_t *) malloc(sizeof(pcb_drc_violation_t));
 
@@ -127,7 +127,7 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 /*----------------------------------------------------------------------------
  * Locate the coordinatates of offending item (thing)
  */
-static void LocateError(Coord * x, Coord * y)
+static void LocateError(pcb_coord_t * x, pcb_coord_t * y)
 {
 	switch (thing_type) {
 	case PCB_TYPE_LINE:
@@ -226,7 +226,7 @@ static int throw_drc_dialog(void)
 static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygon_t *polygon, int type, void *ptr1, void *ptr2)
 {
 	const char *message;
-	Coord x, y;
+	pcb_coord_t x, y;
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;
@@ -321,7 +321,7 @@ doIsBad:
  */
 int DRCAll(void)
 {
-	Coord x, y;
+	pcb_coord_t x, y;
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;
@@ -707,7 +707,7 @@ int DRCAll(void)
  */
 static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 {
-	Coord x, y;
+	pcb_coord_t x, y;
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;
@@ -827,7 +827,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
  */
 static void GotoError(void)
 {
-	Coord X, Y;
+	pcb_coord_t X, Y;
 
 	LocateError(&X, &Y);
 

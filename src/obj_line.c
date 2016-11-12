@@ -71,8 +71,8 @@ void RemoveFreeLine(pcb_line_t * data)
 
 /**** utility ****/
 struct line_info {
-	Coord X1, X2, Y1, Y2;
-	Coord Thickness;
+	pcb_coord_t X1, X2, Y1, Y2;
+	pcb_coord_t Thickness;
 	pcb_flag_t Flags;
 	pcb_line_t test, *ans;
 	jmp_buf env;
@@ -146,7 +146,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 
 
 /* creates a new line on a layer and checks for overlap and extension */
-pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, pcb_flag_t Flags)
+pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
 	struct line_info info;
 	pcb_box_t search;
@@ -191,7 +191,7 @@ pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord
 	return CreateNewLineOnLayer(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 }
 
-pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, pcb_flag_t Flags)
+pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
 	pcb_line_t *Line;
 
@@ -224,7 +224,7 @@ void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line)
 /* sets the bounding box of a line */
 void SetLineBoundingBox(pcb_line_t *Line)
 {
-	Coord width = (Line->Thickness + Line->Clearance + 1) / 2;
+	pcb_coord_t width = (Line->Thickness + Line->Clearance + 1) / 2;
 
 	/* Adjust for our discrete polygon approximation */
 	width = (double) width *POLY_CIRC_RADIUS_ADJ + 0.5;
@@ -280,7 +280,7 @@ void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
 /* changes the size of a line */
 void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Thickness + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
 		return (NULL);
@@ -302,7 +302,7 @@ void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 /*changes the clearance size of a line */
 void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Clearance + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
@@ -459,7 +459,7 @@ void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_line_t
  * moves a line between layers
  */
 struct via_info {
-	Coord X, Y;
+	pcb_coord_t X, Y;
 	jmp_buf env;
 };
 
@@ -618,14 +618,14 @@ void *RemoveLine(pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* rotates a line in 90 degree steps */
-void RotateLineLowLevel(pcb_line_t *Line, Coord X, Coord Y, unsigned Number)
+void RotateLineLowLevel(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	ROTATE(Line->Point1.X, Line->Point1.Y, X, Y, Number);
 	ROTATE(Line->Point2.X, Line->Point2.Y, X, Y, Number);
 	/* keep horizontal, vertical Point2 > Point1 */
 	if (Line->Point1.X == Line->Point2.X) {
 		if (Line->Point1.Y > Line->Point2.Y) {
-			Coord t;
+			pcb_coord_t t;
 			t = Line->Point1.Y;
 			Line->Point1.Y = Line->Point2.Y;
 			Line->Point2.Y = t;
@@ -633,7 +633,7 @@ void RotateLineLowLevel(pcb_line_t *Line, Coord X, Coord Y, unsigned Number)
 	}
 	else if (Line->Point1.Y == Line->Point2.Y) {
 		if (Line->Point1.X > Line->Point2.X) {
-			Coord t;
+			pcb_coord_t t;
 			t = Line->Point1.X;
 			Line->Point1.X = Line->Point2.X;
 			Line->Point2.X = t;
@@ -673,7 +673,7 @@ void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_t *line;
-	Coord X, Y;
+	pcb_coord_t X, Y;
 
 	if (((Line->Point1.X == ctx->insert.x) && (Line->Point1.Y == ctx->insert.y)) ||
 			((Line->Point2.X == ctx->insert.x) && (Line->Point2.Y == ctx->insert.y)))

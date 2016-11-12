@@ -38,7 +38,7 @@
 #endif
 
 
-typedef Coord pcb_vertex_t[2];				/* longing point representation of
+typedef pcb_coord_t pcb_vertex_t[2];				/* longing point representation of
 																   coordinates */
 typedef pcb_vertex_t pcb_vector_t;
 
@@ -76,15 +76,15 @@ struct pcb_vnode_s {
 
 typedef struct pcb_pline_s pcb_pline_t;
 struct pcb_pline_s {
-	Coord xmin, ymin, xmax, ymax;
+	pcb_coord_t xmin, ymin, xmax, ymax;
 	pcb_pline_t *next;
 	pcb_vnode_t head;
 	unsigned int Count;
 	double area;
 	pcb_rtree_t *tree;
 	pcb_bool is_round;
-	Coord cx, cy;
-	Coord radius;
+	pcb_coord_t cx, cy;
+	pcb_coord_t radius;
 	struct {
 		unsigned int status:3;
 		unsigned int orient:1;

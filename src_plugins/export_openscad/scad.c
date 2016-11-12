@@ -289,7 +289,7 @@ static int opt_exp_copper;
 static int opt_outline_type;
 static int opt_copper_color;
 static int opt_mask_color;
-static Coord opt_minimal_drill;
+static pcb_coord_t opt_minimal_drill;
 static int opt_board_cut;
 
 static int lastseq = 0;
@@ -300,8 +300,8 @@ static float scaled_layer_thickness;
 static int n_alloc_outline_segments, n_outline_segments;
 static t_outline_segment *outline_segments;
 
-static void scad_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y);
-static void scad_emit_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y, float thickness);
+static void scad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
+static void scad_emit_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y, float thickness);
 
 
 /* scaling function - all output is in milimeters */
@@ -365,7 +365,7 @@ static void init_outline()
 	n_outline_segments = 0;
 }
 
-static void add_outline_segment(Coord x1, Coord y1, Coord x2, Coord y2)
+static void add_outline_segment(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	if (!n_alloc_outline_segments) {
 		outline_segments = (t_outline_segment *) malloc(sizeof(t_outline_segment) * 50);
@@ -401,12 +401,12 @@ static void add_outline_segment(Coord x1, Coord y1, Coord x2, Coord y2)
 
 
 typedef struct {
-	Coord x;
-	Coord y;
+	pcb_coord_t x;
+	pcb_coord_t y;
 	int marker;
 } t_OutlinePoint;
 
-static int is_same_point(Coord x1, Coord y1, Coord x2, Coord y2)
+static int is_same_point(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	return (abs(x1 - x2) < SCAD_MIN_OUTLINE_DIST)
 		&& (abs(y1 - y2) < SCAD_MIN_OUTLINE_DIST);
@@ -892,7 +892,7 @@ static void scad_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void scad_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void scad_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gc->width = width;
 }
@@ -902,10 +902,10 @@ static void scad_set_draw_xor(pcb_hid_gc_t gc, int xor)
 }
 
 
-static void scad_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void scad_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	Coord x[5];
-	Coord y[5];
+	pcb_coord_t x[5];
+	pcb_coord_t y[5];
 	x[0] = x[4] = x1;
 	y[0] = y[4] = y1;
 	x[1] = x1;
@@ -924,7 +924,7 @@ static void scad_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord 
 *    -- on polyline segment cap is drawn only on beginning
 */
 
-static void scad_emit_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2, int mode)
+static void scad_emit_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int mode)
 {
 	int zero_length;
 	float angle = 0., length = 0.;
@@ -978,7 +978,7 @@ static void scad_emit_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord 
 
 }
 
-static void scad_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void scad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	if (drill_layer)
 		return;
@@ -987,7 +987,7 @@ static void scad_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord 
 }
 
 
-static void scad_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void scad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	int i, n_steps, x, y, ox = 0, oy = 0, sa;
 	float angle;
@@ -1024,7 +1024,7 @@ static void scad_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coor
 *    - as plated or unplated drills it creates vector of holes
 *    - otherwise it is drawn as simple
 */
-static void scad_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void scad_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 /*  int i; */
 	if (outline_layer)
@@ -1058,7 +1058,7 @@ static void scad_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 * Helper function - creates extruded polygon
 */
 
-static void scad_emit_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y, float thickness)
+static void scad_emit_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y, float thickness)
 {
 	int i, n;
 /*  int cw, cx; */
@@ -1091,7 +1091,7 @@ static void scad_emit_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * 
 
 }
 
-static void scad_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void scad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	if (outline_layer)
 		return;
@@ -1099,10 +1099,10 @@ static void scad_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * 
 	scad_emit_polygon(gc, n_coords, x, y, scaled_layer_thickness);
 }
 
-static void scad_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void scad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	Coord x[5];
-	Coord y[5];
+	pcb_coord_t x[5];
+	pcb_coord_t y[5];
 
 	if (scad_output)
 		fprintf(scad_output, "// Fill rect\n");

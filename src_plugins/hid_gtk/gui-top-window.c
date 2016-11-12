@@ -1534,7 +1534,7 @@ static gboolean get_layer_visible_cb(int id)
 	return visible;
 }
 
-gint LayersChanged(int argc, const char **argv, Coord x, Coord y)
+gint LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (!ghidgui || !ghidgui->menu_bar)
 		return 0;
@@ -1570,7 +1570,7 @@ the same as a special layer, the layer is chosen over the special layer.
 
 %end-doc */
 
-static int ToggleView(int argc, const char **argv, Coord x, Coord y)
+static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i, l;
 
@@ -1627,7 +1627,7 @@ visible if it is not already visible
 
 %end-doc */
 
-static int SelectLayer(int argc, const char **argv, Coord x, Coord y)
+static int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int newl;
 	if (argc == 0)
@@ -1718,7 +1718,7 @@ Opens the window which allows editing of the route styles.
 
 %end-doc */
 
-static int AdjustStyle(int argc, const char **argv, Coord x, Coord y)
+static int AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (argc > 1)
 		AFAIL(adjuststyle);
@@ -1741,7 +1741,7 @@ lht compatibility with the lesstif HID.
 
 %end-doc */
 
-static int EditLayerGroups(int argc, const char **argv, Coord x, Coord y)
+static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 
 	if (argc != 0)

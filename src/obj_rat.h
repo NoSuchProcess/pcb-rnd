@@ -41,7 +41,7 @@ struct pcb_rat_line_s {          /* a rat-line */
 pcb_rat_t *GetRatMemory(pcb_data_t *data);
 void RemoveFreeRat(pcb_rat_t *data);
 
-pcb_rat_t *CreateNewRat(pcb_data_t *Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, pcb_flag_t Flags);
+pcb_rat_t *CreateNewRat(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, pcb_coord_t Thickness, pcb_flag_t Flags);
 pcb_bool DeleteRats(pcb_bool selected);
 
 #endif

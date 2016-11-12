@@ -71,7 +71,7 @@ void SetArcBoundingBox(pcb_arc_t *Arc)
 	double ca1, ca2, sa1, sa2;
 	double minx, maxx, miny, maxy;
 	pcb_angle_t ang1, ang2;
-	Coord width;
+	pcb_coord_t width;
 
 	/* first put angles into standard form:
 	 *  ang1 < ang2, both angles between 0 and 720 */
@@ -158,7 +158,7 @@ void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_a
 }
 
 
-void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, Coord new_width, Coord new_height)
+void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height)
 {
 	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
 	r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);
@@ -172,7 +172,7 @@ void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, Coord new_width, Coord new
 
 
 /* creates a new arc on a layer */
-pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, pcb_angle_t sa, pcb_angle_t dir, Coord Thickness, Coord Clearance, pcb_flag_t Flags)
+pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t width, pcb_coord_t height, pcb_angle_t sa, pcb_angle_t dir, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
 	pcb_arc_t *Arc;
 
@@ -253,7 +253,7 @@ void *MoveArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t * arc)
 /* changes the size of an arc */
 void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Thickness + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
 		return (NULL);
@@ -275,7 +275,7 @@ void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 /* changes the clearance size of an arc */
 void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Clearance + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
@@ -302,7 +302,7 @@ void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 /* changes the radius of an arc (is_primary 0=width or 1=height or 2=both) */
 void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	Coord value, *dst;
+	pcb_coord_t value, *dst;
 	void *a0, *a1;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
@@ -523,9 +523,9 @@ void *RemoveArc(pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* rotates an arc */
-void RotateArcLowLevel(pcb_arc_t *Arc, Coord X, Coord Y, unsigned Number)
+void RotateArcLowLevel(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
-	Coord save;
+	pcb_coord_t save;
 
 	/* add Number*90 degrees (i.e., Number quarter-turns) */
 	Arc->StartAngle = NormalizeAngle(Arc->StartAngle + Number * 90);

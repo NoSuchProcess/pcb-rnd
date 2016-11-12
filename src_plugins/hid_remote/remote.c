@@ -35,23 +35,23 @@ static pcb_hid_attribute_t *remote_get_export_options(int *n_ret)
 
 /* ----------------------------------------------------------------------------- */
 
-static int nop(int argc, const char **argv, Coord x, Coord y)
+static int nop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return 0;
 }
 
-static int PCBChanged(int argc, const char **argv, Coord x, Coord y)
+static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return 0;
 }
 
-static int help(int argc, const char **argv, Coord x, Coord y)
+static int help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	print_actions();
 	return 0;
 }
 
-static int info(int argc, const char **argv, Coord x, Coord y)
+static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return 0;
 }
@@ -129,7 +129,7 @@ static int remote_set_layer(const char *name, int idx, int empty)
 
 typedef struct {
 	char color[64];
-	Coord line_width;
+	pcb_coord_t line_width;
 	char cap;
 } remote_gc_cache_t;
 static hid_gc_s remote_gc[32];
@@ -208,7 +208,7 @@ static void remote_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	}
 }
 
-static void remote_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void remote_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0) {
@@ -226,40 +226,40 @@ static void remote_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
 		proto_send_set_draw_xor(idx, xor_set);
 }
 
-static void remote_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void remote_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_line(idx, x1, y1, x2, y2);
 }
 
-static void remote_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t end_angle)
+static void remote_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
 {
 #warning TODO
 }
 
-static void remote_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void remote_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_rect(idx, x1, y1, x2, y2, 0);
 }
 
-static void remote_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void remote_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_fill_circle(idx, cx, cy, radius);
 }
 
-static void remote_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void remote_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_poly(idx, n_coords, x, y);
 }
 
-static void remote_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void remote_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
@@ -285,7 +285,7 @@ static int remote_mod1_is_pressed(void)
 	return 0;
 }
 
-static void remote_get_coords(const char *msg, Coord * x, Coord * y)
+static void remote_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
 }
 

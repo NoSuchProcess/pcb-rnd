@@ -2232,7 +2232,7 @@ static inline int node_neighbours(pcb_vnode_t * a, pcb_vnode_t * b)
 pcb_vnode_t *poly_CreateNode(pcb_vector_t v)
 {
 	pcb_vnode_t *res;
-	Coord *c;
+	pcb_coord_t *c;
 
 	assert(v);
 	res = (pcb_vnode_t *) calloc(1, sizeof(pcb_vnode_t));

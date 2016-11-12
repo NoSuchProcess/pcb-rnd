@@ -40,7 +40,7 @@ static pcb_pin_t *pin;
 static pcb_pad_t *pad;
 static int layer;
 static int px, py;
-static Coord thickness;
+static pcb_coord_t thickness;
 static pcb_element_t *element;
 
 static int new_arcs = 0;
@@ -278,7 +278,7 @@ static void check_pad(pcb_pad_t * _pad)
 	}
 }
 
-static int teardrops(int argc, const char **argv, Coord x, Coord y)
+static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	new_arcs = 0;
 

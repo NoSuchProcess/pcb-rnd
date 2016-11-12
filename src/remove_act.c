@@ -42,7 +42,7 @@ static const char delete_help[] = "Delete stuff.";
 
 %end-doc */
 
-static int ActionDelete(int argc, const char **argv, Coord x, Coord y)
+static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	int id = funchash_get(function, NULL);
@@ -88,7 +88,7 @@ static const char removeselected_help[] = "Removes any selected objects.";
 
 %end-doc */
 
-static int ActionRemoveSelected(int argc, const char **argv, Coord x, Coord y)
+static int ActionRemoveSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (RemoveSelected())
 		SetChangedFlag(pcb_true);

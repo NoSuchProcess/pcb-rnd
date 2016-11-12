@@ -69,7 +69,7 @@ void RemoveFreeRat(pcb_rat_t *data)
 
 /*** utility ***/
 /* creates a new rat-line */
-pcb_rat_t *CreateNewRat(pcb_data_t *Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, pcb_flag_t Flags)
+pcb_rat_t *CreateNewRat(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, pcb_coord_t Thickness, pcb_flag_t Flags)
 {
 	pcb_rat_t *Line = GetRatMemory(Data);
 
@@ -174,8 +174,8 @@ void *InsertPointIntoRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 void *MoveRatToLayer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 {
 	pcb_line_t *newone;
-	/*Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
-	   Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
+	/*pcb_coord_t X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
+	   pcb_coord_t X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
 	   if PCB_FLAG_VIA
 	   if we're on a pin, add a thermal
 	   else make a via and a wire, but 0-length wire not good
@@ -253,7 +253,7 @@ pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 void EraseRat(pcb_rat_t *Rat)
 {
 	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
-		Coord w = Rat->Thickness;
+		pcb_coord_t w = Rat->Thickness;
 
 		pcb_box_t b;
 
@@ -274,7 +274,7 @@ void DrawRat(pcb_rat_t *Rat)
 		Rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
 	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
 	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
-		Coord w = Rat->Thickness;
+		pcb_coord_t w = Rat->Thickness;
 
 		pcb_box_t b;
 

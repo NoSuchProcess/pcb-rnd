@@ -33,8 +33,8 @@
 
 struct pcb_pin_s {
 	PCB_ANYOBJECTFIELDS;
-	Coord Thickness, Clearance, Mask, DrillingHole;
-	Coord X, Y;                   /* center and diameter */
+	pcb_coord_t Thickness, Clearance, Mask, DrillingHole;
+	pcb_coord_t X, Y;                   /* center and diameter */
 	char *Name, *Number;
 	void *Element;
 	void *Spare;
@@ -47,8 +47,8 @@ void RemoveFreeVia(pcb_pin_t * data);
 pcb_pin_t *GetPinMemory(pcb_element_t * element);
 void RemoveFreePin(pcb_pin_t * data);
 
-pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, pcb_flag_t Flags);
-pcb_pin_t *CreateNewPin(pcb_element_t *Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, pcb_flag_t Flags);
+pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags);
+pcb_pin_t *CreateNewPin(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, char *Name, char *Number, pcb_flag_t Flags);
 void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via);
 void SetPinBoundingBox(pcb_pin_t *Pin);
 pcb_bool ChangeHole(pcb_pin_t *Via);

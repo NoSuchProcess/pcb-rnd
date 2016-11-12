@@ -40,7 +40,7 @@
 
 
 struct pcb_connection_s {				/* holds a connection (rat) */
-	Coord X, Y;										/* coordinate of connection */
+	pcb_coord_t X, Y;										/* coordinate of connection */
 	long int type;								/* type of object in ptr1 - 3 */
 	void *ptr1, *ptr2;						/* the object of the connection */
 	pcb_cardinal_t group;								/* the layer group of the connection */

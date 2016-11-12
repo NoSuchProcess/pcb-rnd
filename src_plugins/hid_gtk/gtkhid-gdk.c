@@ -36,9 +36,9 @@ typedef struct render_priv {
 	guint lead_user_timeout;
 	GTimer *lead_user_timer;
 	pcb_bool lead_user;
-	Coord lead_user_radius;
-	Coord lead_user_x;
-	Coord lead_user_y;
+	pcb_coord_t lead_user_radius;
+	pcb_coord_t lead_user_x;
+	pcb_coord_t lead_user_y;
 
 } render_priv;
 
@@ -48,7 +48,7 @@ typedef struct hid_gc_s {
 	GdkGC *gc;
 
 	gchar *colorname;
-	Coord width;
+	pcb_coord_t width;
 	gint cap, join;
 	gchar xor_mask;
 	gint mask_seq;
@@ -130,7 +130,7 @@ static void set_clip(render_priv * priv, GdkGC * gc)
 static inline void ghid_draw_grid_global(void)
 {
 	render_priv *priv = gport->render_priv;
-	Coord x, y, x1, y1, x2, y2, grd;
+	pcb_coord_t x, y, x1, y1, x2, y2, grd;
 	int n, i;
 	static GdkPoint *points = NULL;
 	static int npoints = 0;
@@ -149,12 +149,12 @@ static inline void ghid_draw_grid_global(void)
 	}
 
 	if (x1 > x2) {
-		Coord tmp = x1;
+		pcb_coord_t tmp = x1;
 		x1 = x2;
 		x2 = tmp;
 	}
 	if (y1 > y2) {
-		Coord tmp = y1;
+		pcb_coord_t tmp = y1;
 		y1 = y2;
 		y2 = tmp;
 	}
@@ -187,15 +187,15 @@ static inline void ghid_draw_grid_global(void)
 	}
 }
 
-static void ghid_draw_grid_local_(Coord cx, Coord cy, int radius)
+static void ghid_draw_grid_local_(pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
 	render_priv *priv = gport->render_priv;
 	static GdkPoint *points_base = NULL;
 	static GdkPoint *points_abs = NULL;
 	static int apoints = 0, npoints = 0, old_radius = 0;
-	static Coord last_grid = 0;
+	static pcb_coord_t last_grid = 0;
 	int recalc = 0, n, r2;
-	Coord x, y;
+	pcb_coord_t x, y;
 
 	/* PI is approximated with 3.25 here - allows a minimal overallocation, speeds up calculations */
 	r2 = radius * radius;
@@ -243,9 +243,9 @@ static void ghid_draw_grid_local_(Coord cx, Coord cy, int radius)
 
 
 static int grid_local_have_old = 0, grid_local_old_r = 0;
-static Coord grid_local_old_x, grid_local_old_y;
+static pcb_coord_t grid_local_old_x, grid_local_old_y;
 
-void ghid_draw_grid_local(Coord cx, Coord cy)
+void ghid_draw_grid_local(pcb_coord_t cx, pcb_coord_t cy)
 {
 	if (grid_local_have_old) {
 		ghid_draw_grid_local_(grid_local_old_x, grid_local_old_y, grid_local_old_r);
@@ -536,7 +536,7 @@ void ghid_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 		gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
-void ghid_set_line_width(pcb_hid_gc_t gc, Coord width)
+void ghid_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	render_priv *priv = gport->render_priv;
 
@@ -585,7 +585,7 @@ static int use_gc(pcb_hid_gc_t gc)
 	return 1;
 }
 
-void ghid_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double dx1, dy1, dx2, dy2;
 	render_priv *priv = gport->render_priv;
@@ -602,7 +602,7 @@ void ghid_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	gdk_draw_line(gport->drawable, priv->u_gc, dx1, dy1, dx2, dy2);
 }
 
-void ghid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+void ghid_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	gint vrx, vry;
 	gint w, h, radius;
@@ -637,7 +637,7 @@ void ghid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yra
 							 Vx(cx) - vrx, Vy(cy) - vry, vrx * 2, vry * 2, (start_angle + 180) * 64, delta_angle * 64);
 }
 
-void ghid_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gint w, h, lw;
 	render_priv *priv = gport->render_priv;
@@ -673,7 +673,7 @@ void ghid_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 }
 
 
-void ghid_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+void ghid_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	gint w, h, vr;
 	render_priv *priv = gport->render_priv;
@@ -690,7 +690,7 @@ void ghid_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 	gdk_draw_arc(gport->drawable, priv->u_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
-void ghid_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+void ghid_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	static GdkPoint *points = 0;
 	static int npoints = 0;
@@ -709,7 +709,7 @@ void ghid_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 	gdk_draw_polygon(gport->drawable, priv->u_gc, 1, points, n_coords);
 }
 
-void ghid_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gint w, h, lw, xx, yy;
 	render_priv *priv = gport->render_priv;
@@ -1253,7 +1253,7 @@ void ghid_finish_debug_draw(void)
 	 */
 }
 
-pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, Coord * pcb_x, Coord * pcb_y)
+pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y)
 {
 	*pcb_x = EVENT_TO_PCB_X(event_x);
 	*pcb_y = EVENT_TO_PCB_Y(event_y);
@@ -1261,7 +1261,7 @@ pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, Coord * pcb_x, Coord
 	return pcb_true;
 }
 
-pcb_bool ghid_pcb_to_event_coords(Coord pcb_x, Coord pcb_y, int *event_x, int *event_y)
+pcb_bool ghid_pcb_to_event_coords(pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)
 {
 	*event_x = DRAW_X(pcb_x);
 	*event_y = DRAW_Y(pcb_y);
@@ -1285,9 +1285,9 @@ static void draw_lead_user(render_priv * priv)
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	GtkStyle *style = gtk_widget_get_style(gport->drawing_area);
 	int i;
-	Coord radius = priv->lead_user_radius;
-	Coord width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
-	Coord separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
+	pcb_coord_t radius = priv->lead_user_radius;
+	pcb_coord_t width = PCB_MM_TO_COORD(LEAD_USER_WIDTH);
+	pcb_coord_t separation = PCB_MM_TO_COORD(LEAD_USER_ARC_SEPARATION);
 	static GdkGC *lead_gc = NULL;
 	GdkColor lead_color;
 
@@ -1325,7 +1325,7 @@ static void draw_lead_user(render_priv * priv)
 gboolean lead_user_cb(gpointer data)
 {
 	render_priv *priv = data;
-	Coord step;
+	pcb_coord_t step;
 	double elapsed_time;
 
 	/* Queue a redraw */
@@ -1344,7 +1344,7 @@ gboolean lead_user_cb(gpointer data)
 	return TRUE;
 }
 
-void ghid_lead_user_to_location(Coord x, Coord y)
+void ghid_lead_user_to_location(pcb_coord_t x, pcb_coord_t y)
 {
 	render_priv *priv = gport->render_priv;
 

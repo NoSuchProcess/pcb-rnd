@@ -297,7 +297,7 @@ pcb_polyarea_t *PolygonToPoly(pcb_polygon_t * p)
 	return original_poly(p);
 }
 
-pcb_polyarea_t *RectPoly(Coord x1, Coord x2, Coord y1, Coord y2)
+pcb_polyarea_t *RectPoly(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_coord_t y2)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
@@ -346,7 +346,7 @@ void square_pin_factors(int style, double *xm, double *ym)
 }
 
 
-pcb_polyarea_t *OctagonPoly(Coord x, Coord y, Coord radius, int style)
+pcb_polyarea_t *OctagonPoly(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, int style)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
@@ -398,7 +398,7 @@ pcb_polyarea_t *OctagonPoly(Coord x, Coord y, Coord radius, int style)
  * 2 for a half circle
  * or 4 for a quarter circle
  */
-void frac_circle(pcb_pline_t * c, Coord X, Coord Y, pcb_vector_t v, int range)
+void frac_circle(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, int range)
 {
 	double e1, e2, t1;
 	int i;
@@ -422,7 +422,7 @@ void frac_circle(pcb_pline_t * c, Coord X, Coord Y, pcb_vector_t v, int range)
 }
 
 /* create a circle approximation from lines */
-pcb_polyarea_t *CirclePoly(Coord x, Coord y, Coord radius)
+pcb_polyarea_t *CirclePoly(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius)
 {
 	pcb_pline_t *contour;
 	pcb_vector_t v;
@@ -442,7 +442,7 @@ pcb_polyarea_t *CirclePoly(Coord x, Coord y, Coord radius)
 }
 
 /* make a rounded-corner rectangle with radius t beyond x1,x2,y1,y2 rectangle */
-pcb_polyarea_t *RoundRect(Coord x1, Coord x2, Coord y1, Coord y2, Coord t)
+pcb_polyarea_t *RoundRect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_coord_t y2, pcb_coord_t t)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
@@ -470,7 +470,7 @@ pcb_polyarea_t *RoundRect(Coord x1, Coord x2, Coord y1, Coord y2, Coord t)
 }
 
 #define ARC_ANGLE 5
-static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, Coord thick)
+static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
@@ -539,7 +539,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, Coord thick)
 }
 
 #define MIN_CLEARANCE_BEFORE_BISECT 10.
-pcb_polyarea_t *ArcPoly(pcb_arc_t * a, Coord thick)
+pcb_polyarea_t *ArcPoly(pcb_arc_t * a, pcb_coord_t thick)
 {
 	double delta;
 	pcb_arc_t seg1, seg2;
@@ -567,7 +567,7 @@ pcb_polyarea_t *ArcPoly(pcb_arc_t * a, Coord thick)
 	return ArcPolyNoIntersect(a, thick);
 }
 
-pcb_polyarea_t *LinePoly(pcb_line_t * L, Coord thick)
+pcb_polyarea_t *LinePoly(pcb_line_t * L, pcb_coord_t thick)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
@@ -624,7 +624,7 @@ pcb_polyarea_t *LinePoly(pcb_line_t * L, Coord thick)
 }
 
 /* make a rounded-corner rectangle */
-pcb_polyarea_t *SquarePadPoly(pcb_pad_t * pad, Coord clear)
+pcb_polyarea_t *SquarePadPoly(pcb_pad_t * pad, pcb_coord_t clear)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
@@ -733,7 +733,7 @@ static int Subtract(pcb_polyarea_t * np1, pcb_polygon_t * p, pcb_bool fnp)
 }
 
 /* create a polygon of the pin clearance */
-pcb_polyarea_t *PinPoly(pcb_pin_t * pin, Coord thick, Coord clear)
+pcb_polyarea_t *PinPoly(pcb_pin_t * pin, pcb_coord_t thick, pcb_coord_t clear)
 {
 	int size;
 
@@ -757,7 +757,7 @@ pcb_polyarea_t *PinPoly(pcb_pin_t * pin, Coord thick, Coord clear)
 	return CirclePoly(pin->X, pin->Y, size);
 }
 
-pcb_polyarea_t *BoxPolyBloated(pcb_box_t * box, Coord bloat)
+pcb_polyarea_t *BoxPolyBloated(pcb_box_t * box, pcb_coord_t bloat)
 {
 	return RectPoly(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
 }
@@ -998,7 +998,7 @@ static int Group(pcb_data_t *Data, pcb_cardinal_t layer)
 	return i;
 }
 
-static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polygon, const pcb_box_t * here, Coord expand)
+static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polygon, const pcb_box_t * here, pcb_coord_t expand)
 {
 	int r = 0, seen;
 	pcb_box_t region;
@@ -1225,7 +1225,7 @@ pcb_bool RemoveExcessPolygonPoints(pcb_layer_t *Layer, pcb_polygon_t *Polygon)
  * point of the segment with the lowest distance to the passed
  * coordinates
  */
-pcb_cardinal_t GetLowestDistancePolygonPoint(pcb_polygon_t *Polygon, Coord X, Coord Y)
+pcb_cardinal_t GetLowestDistancePolygonPoint(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y)
 {
 	double mindistance = (double) MAX_COORD * MAX_COORD;
 	pcb_point_t *ptr1, *ptr2;
@@ -1311,7 +1311,7 @@ void ClosePolygon(void)
 		 * if closing the polygon makes sense
 		 */
 		if (!conf_core.editor.all_direction_lines) {
-			Coord dx, dy;
+			pcb_coord_t dx, dy;
 
 			dx = coord_abs(Crosshair.AttachedPolygon.Points[n - 1].X - Crosshair.AttachedPolygon.Points[0].X);
 			dy = coord_abs(Crosshair.AttachedPolygon.Points[n - 1].Y - Crosshair.AttachedPolygon.Points[0].Y);
@@ -1569,7 +1569,7 @@ pcb_bool isects(pcb_polyarea_t * a, pcb_polygon_t *p, pcb_bool fr)
 }
 
 
-pcb_bool IsPointInPolygon(Coord X, Coord Y, Coord r, pcb_polygon_t *p)
+pcb_bool IsPointInPolygon(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t r, pcb_polygon_t *p)
 {
 	pcb_polyarea_t *c;
 	pcb_vector_t v;
@@ -1595,7 +1595,7 @@ pcb_bool IsPointInPolygon(Coord X, Coord Y, Coord r, pcb_polygon_t *p)
 }
 
 
-pcb_bool IsPointInPolygonIgnoreHoles(Coord X, Coord Y, pcb_polygon_t *p)
+pcb_bool IsPointInPolygonIgnoreHoles(pcb_coord_t X, pcb_coord_t Y, pcb_polygon_t *p)
 {
 	pcb_vector_t v;
 	v[0] = X;
@@ -1603,7 +1603,7 @@ pcb_bool IsPointInPolygonIgnoreHoles(Coord X, Coord Y, pcb_polygon_t *p)
 	return poly_InsideContour(p->Clipped->contours, v);
 }
 
-pcb_bool IsRectangleInPolygon(Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_polygon_t *p)
+pcb_bool IsRectangleInPolygon(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_polygon_t *p)
 {
 	pcb_polyarea_t *s;
 	if (!(s = RectPoly(min(X1, X2), max(X1, X2), min(Y1, Y2), max(Y1, Y2))))

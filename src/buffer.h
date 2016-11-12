@@ -32,7 +32,7 @@
 #include "obj_common.h"
 
 struct pcb_buffer_s {								/* information about the paste buffer */
-	Coord X, Y;										/* offset */
+	pcb_coord_t X, Y;										/* offset */
 	pcb_box_t BoundingBox;
 	pcb_data_t *Data;							/* data; not all members of pcb_board_t */
 	/* are used */
@@ -44,7 +44,7 @@ struct pcb_buffer_s {								/* information about the paste buffer */
 void SwapBuffer(pcb_buffer_t *Buffer);
 void SetBufferBoundingBox(pcb_buffer_t *);
 void ClearBuffer(pcb_buffer_t *);
-void AddSelectedToBuffer(pcb_buffer_t *, Coord, Coord, pcb_bool);
+void AddSelectedToBuffer(pcb_buffer_t *, pcb_coord_t, pcb_coord_t, pcb_bool);
 pcb_bool LoadLayoutToBuffer(pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
 void RotateBuffer(pcb_buffer_t *, pcb_uint8_t);
 void SelectPasteBuffer(int);
@@ -56,7 +56,7 @@ void *MoveObjectToBuffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *
 void *CopyObjectToBuffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
 
 /* This action is called from ActionElementAddIf() */
-int LoadFootprint(int argc, const char **argv, Coord x, Coord y);
+int LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 pcb_data_t *CreateNewBuffer(void);
 

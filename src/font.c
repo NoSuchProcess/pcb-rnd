@@ -66,7 +66,7 @@ void SetFontInfo(pcb_font_t *Ptr)
 	pcb_cardinal_t i, j;
 	pcb_symbol_t *symbol;
 	pcb_line_t *line;
-	Coord totalminy = MAX_COORD;
+	pcb_coord_t totalminy = MAX_COORD;
 
 	/* calculate cell with and height (is at least DEFAULT_CELLSIZE)
 	 * maximum cell width and height
@@ -75,7 +75,7 @@ void SetFontInfo(pcb_font_t *Ptr)
 	Ptr->MaxWidth = DEFAULT_CELLSIZE;
 	Ptr->MaxHeight = DEFAULT_CELLSIZE;
 	for (i = 0, symbol = Ptr->Symbol; i <= MAX_FONTPOSITION; i++, symbol++) {
-		Coord minx, miny, maxx, maxy;
+		pcb_coord_t minx, miny, maxx, maxy;
 
 		/* next one if the index isn't used or symbol is empty (SPACE) */
 		if (!symbol->Valid || !symbol->LineN)
@@ -123,7 +123,7 @@ void SetFontInfo(pcb_font_t *Ptr)
 }
 
 /* creates a new line in a symbol */
-pcb_line_t *CreateNewLineInSymbol(pcb_symbol_t *Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
+pcb_line_t *CreateNewLineInSymbol(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
 {
 	pcb_line_t *line = Symbol->Line;
 

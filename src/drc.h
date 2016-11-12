@@ -32,11 +32,11 @@
 struct drc_violation_s {
 	char *title;
 	char *explanation;
-	Coord x, y;
+	pcb_coord_t x, y;
 	pcb_angle_t angle;
 	int have_measured;
-	Coord measured_value;
-	Coord required_value;
+	pcb_coord_t measured_value;
+	pcb_coord_t required_value;
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;

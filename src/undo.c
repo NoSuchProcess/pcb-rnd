@@ -79,18 +79,18 @@ typedef struct {								/* information about a change command */
 } ChangeNameType, *ChangeNameTypePtr;
 
 typedef struct {								/* information about a move command */
-	Coord DX, DY;									/* movement vector */
+	pcb_coord_t DX, DY;									/* movement vector */
 } MoveType, *MoveTypePtr;
 
 typedef struct {								/* information about removed polygon points */
-	Coord X, Y;										/* data */
+	pcb_coord_t X, Y;										/* data */
 	int ID;
 	pcb_cardinal_t Index;								/* index in a polygons array of points */
 	pcb_bool last_in_contour;					/* Whether the point was the last in its contour */
 } RemovedPointType, *RemovedPointTypePtr;
 
 typedef struct {								/* information about rotation */
-	Coord CenterX, CenterY;				/* center of rotation */
+	pcb_coord_t CenterX, CenterY;				/* center of rotation */
 	pcb_cardinal_t Steps;								/* number of steps */
 } RotateType, *RotateTypePtr;
 
@@ -129,7 +129,7 @@ typedef struct {								/* holds information about an operation */
 		RotateType Rotate;
 		MoveToLayer MoveToLayer;
 		pcb_flag_t Flags;
-		Coord Size;
+		pcb_coord_t Size;
 		LayerChangeType LayerChange;
 		ClearPolyType ClearPoly;
 		NetlistChangeType NetlistChange;
@@ -339,7 +339,7 @@ static pcb_bool UndoChange2ndSize(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
-	Coord swap;
+	pcb_coord_t swap;
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
@@ -393,7 +393,7 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
-	Coord old_w, old_h;
+	pcb_coord_t old_w, old_h;
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
@@ -424,7 +424,7 @@ static pcb_bool UndoChangeClearSize(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
-	Coord swap;
+	pcb_coord_t swap;
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
@@ -450,7 +450,7 @@ static pcb_bool UndoChangeMaskSize(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
-	Coord swap;
+	pcb_coord_t swap;
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
@@ -478,7 +478,7 @@ static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3, *ptr1e;
 	int type;
-	Coord swap;
+	pcb_coord_t swap;
 
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
@@ -1194,7 +1194,7 @@ void AddObjectToClearPolyUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 /* ---------------------------------------------------------------------------
  * adds an object to the list of mirrored objects
  */
-void AddObjectToMirrorUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord yoff)
+void AddObjectToMirrorUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t yoff)
 {
 	UndoListTypePtr undo;
 
@@ -1207,7 +1207,7 @@ void AddObjectToMirrorUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coo
 /* ---------------------------------------------------------------------------
  * adds an object to the list of rotated objects
  */
-void AddObjectToRotateUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord CenterX, Coord CenterY, pcb_uint8_t Steps)
+void AddObjectToRotateUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t CenterX, pcb_coord_t CenterY, pcb_uint8_t Steps)
 {
 	UndoListTypePtr undo;
 
@@ -1320,7 +1320,7 @@ void AddObjectToInsertContourUndoList(int Type, pcb_layer_t * Layer, pcb_polygon
 /* ---------------------------------------------------------------------------
  * adds an object to the list of moved objects
  */
-void AddObjectToMoveUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord DY)
+void AddObjectToMoveUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	UndoListTypePtr undo;
 

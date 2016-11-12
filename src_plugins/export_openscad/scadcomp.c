@@ -233,9 +233,9 @@ static void scad_process_line(char *line)
 }
 
 
-static int scad_parse_coord_triplet(char *s, Coord * ox, Coord * oy, Coord * oz)
+static int scad_parse_coord_triplet(char *s, pcb_coord_t * ox, pcb_coord_t * oy, pcb_coord_t * oz)
 {
-	Coord xx = 0, yy = 0, zz = 0;
+	pcb_coord_t xx = 0, yy = 0, zz = 0;
 	int n = 0, ln = 0;
 	char val[32];
 
@@ -289,7 +289,7 @@ static void scad_export_model(int model_type, pcb_element_t * element, pcb_bool 
 {
 	char *model_rotation, *model_translate, *model_scale, *model_angle;
 	pcb_angle_t tmp_angle = (pcb_angle_t) 0;
-	Coord tx, ty, tz;
+	pcb_coord_t tx, ty, tz;
 	float fx, fy, fz;
 
 	int x = element->MarkX, y = element->MarkY;

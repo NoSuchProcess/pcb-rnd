@@ -44,7 +44,7 @@ typedef struct {								/* currently marked block */
 } pcb_attached_box_t;
 
 typedef struct {								/* currently attached object */
-	Coord X, Y;										/* saved position when PCB_MODE_MOVE */
+	pcb_coord_t X, Y;										/* saved position when PCB_MODE_MOVE */
 	pcb_box_t BoundingBox;
 	long int Type,								/* object type */
 	  State;
@@ -58,7 +58,7 @@ typedef struct {								/* currently attached object */
 
 typedef struct {
 	pcb_bool status;
-	Coord X, Y;
+	pcb_coord_t X, Y;
 } pcb_mark_t;
 
 enum crosshair_shape {
@@ -71,7 +71,7 @@ enum crosshair_shape {
 typedef struct {								/* holds cursor information */
 	pcb_hid_gc_t GC,											/* GC for cursor drawing */
 	  AttachGC;										/* and for displaying buffer contents */
-	Coord X, Y,										/* position in PCB coordinates */
+	pcb_coord_t X, Y,										/* position in PCB coordinates */
 	  MinX, MinY,									/* lowest and highest coordinates */
 	  MaxX, MaxY;
 	pcb_attached_line_t AttachedLine;	/* data of new lines... */
@@ -85,7 +85,7 @@ typedef struct {								/* holds cursor information */
 	/* list of object IDs that could have been dragged so that they can be cycled */
 	long int *drags;
 	int drags_len, drags_current;
-	Coord dragx, dragy;						/* the point where drag started */
+	pcb_coord_t dragx, dragy;						/* the point where drag started */
 } pcb_crosshair_t;
 
 
@@ -96,19 +96,19 @@ typedef struct {								/* holds cursor information */
 #define	STATE_SECOND	1
 #define	STATE_THIRD		2
 
-Coord GridFit(Coord x, Coord grid_spacing, Coord grid_offset);
+pcb_coord_t GridFit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset);
 void notify_crosshair_change(pcb_bool changes_complete);
 void notify_mark_change(pcb_bool changes_complete);
 void HideCrosshair(void);
 void RestoreCrosshair(void);
 void DrawAttached(void);
 void DrawMark(void);
-void MoveCrosshairRelative(Coord, Coord);
-pcb_bool MoveCrosshairAbsolute(Coord, Coord);
-void SetCrosshairRange(Coord, Coord, Coord, Coord);
+void MoveCrosshairRelative(pcb_coord_t, pcb_coord_t);
+pcb_bool MoveCrosshairAbsolute(pcb_coord_t, pcb_coord_t);
+void SetCrosshairRange(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
 void InitCrosshair(void);
 void DestroyCrosshair(void);
-void FitCrosshairIntoGrid(Coord, Coord);
-void CenterDisplay(Coord X, Coord Y);
+void FitCrosshairIntoGrid(pcb_coord_t, pcb_coord_t);
+void CenterDisplay(pcb_coord_t X, pcb_coord_t Y);
 
 #endif

@@ -69,7 +69,7 @@ Selects the shortest unselected rat on the board.
 
 %end-doc */
 
-static int ActionAddRats(int argc, const char **argv, Coord x, Coord y)
+static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	pcb_rat_t *shorty;
@@ -144,7 +144,7 @@ All ``found'' objects are marked ``not found''.
 
 %end-doc */
 
-static int ActionConnection(int argc, const char **argv, Coord x, Coord y)
+static int ActionConnection(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	if (function) {
@@ -193,7 +193,7 @@ static const char deleterats_help[] = "Delete rat lines.";
 
 %end-doc */
 
-static int ActionDeleteRats(int argc, const char **argv, Coord x, Coord y)
+static int ActionDeleteRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	if (function) {

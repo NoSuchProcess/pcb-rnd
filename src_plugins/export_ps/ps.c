@@ -42,7 +42,7 @@ static void use_gc(pcb_hid_gc_t gc);
 typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
-	Coord width;
+	pcb_coord_t width;
 	unsigned char r, g, b;
 	int erase;
 	int faded;
@@ -63,8 +63,8 @@ static const char *medias[] = {
 
 typedef struct {
 	const char *name;
-	Coord Width, Height;
-	Coord MarginX, MarginY;
+	pcb_coord_t Width, Height;
+	pcb_coord_t MarginX, MarginY;
 } MediaType, *MediaTypePtr;
 
 /*
@@ -378,12 +378,12 @@ static struct {
 
 	FILE *f;
 	int pagecount;
-	Coord linewidth;
+	pcb_coord_t linewidth;
 	pcb_bool print_group[MAX_LAYER];
 	pcb_bool print_layer[MAX_LAYER];
 	double fade_ratio;
 	pcb_bool multi_file;
-	Coord media_width, media_height, ps_width, ps_height;
+	pcb_coord_t media_width, media_height, ps_width, ps_height;
 
 	const char *filename;
 	pcb_bool drill_helper;
@@ -394,7 +394,7 @@ static struct {
 	pcb_bool automirror;
 	pcb_bool incolor;
 	pcb_bool doing_toc;
-	Coord bloat;
+	pcb_coord_t bloat;
 	pcb_bool invert;
 	int media_idx;
 	pcb_bool drillcopper;
@@ -748,11 +748,11 @@ static void ps_parse_arguments(int *argc, char ***argv)
 	hid_parse_command_line(argc, argv);
 }
 
-static void corner(FILE * fh, Coord x, Coord y, Coord dx, Coord dy)
+static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, pcb_coord_t dx, pcb_coord_t dy)
 {
-	Coord len = PCB_MIL_TO_COORD(2000);
-	Coord len2 = PCB_MIL_TO_COORD(200);
-	Coord thick = 0;
+	pcb_coord_t len = PCB_MIL_TO_COORD(2000);
+	pcb_coord_t len2 = PCB_MIL_TO_COORD(200);
+	pcb_coord_t thick = 0;
 	/*
 	 * Originally 'thick' used thicker lines.  Currently is uses
 	 * Postscript's "device thin" line - i.e. zero width means one
@@ -898,8 +898,8 @@ static int ps_set_layer(const char *name, int group, int empty)
 		 * If users don't want to make smaller boards, or use fewer drill
 		 * sizes, they can always ignore this sheet. */
 		if (SL_TYPE(idx) == SL_FAB) {
-			Coord natural = boffset - PCB_MIL_TO_COORD(500) - PCB->MaxHeight / 2;
-			Coord needed = stub_DrawFab_overhang();
+			pcb_coord_t natural = boffset - PCB_MIL_TO_COORD(500) - PCB->MaxHeight / 2;
+			pcb_coord_t needed = stub_DrawFab_overhang();
 			pcb_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
 			if (needed > natural)
 				pcb_fprintf(global.f, "0 %mi translate\n", needed - natural);
@@ -944,7 +944,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 		if (global.drill_helper)
 			pcb_fprintf(global.f,
 									"/dh { gsave %mi setlinewidth 0 gray %mi 0 360 arc stroke grestore} bind def\n",
-									(Coord) MIN_PINORVIAHOLE, (Coord) (MIN_PINORVIAHOLE * 3 / 2));
+									(pcb_coord_t) MIN_PINORVIAHOLE, (pcb_coord_t) (MIN_PINORVIAHOLE * 3 / 2));
 	}
 #if 0
 	/* Try to outsmart ps2pdf's heuristics for page rotation, by putting
@@ -1010,7 +1010,7 @@ static void ps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void ps_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void ps_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gc->width = width;
 }
@@ -1082,23 +1082,23 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void ps_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void ps_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	pcb_fprintf(global.f, "%mi %mi %mi %mi dr\n", x1, y1, x2, y2);
 }
 
-static void ps_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void ps_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius);
+static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
 
-static void ps_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void ps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 #if 0
 	/* If you're etching your own paste mask, this will reduce the
 	   amount of brass you need to etch by drawing outlines for large
 	   pads.  See also ps_fill_rect.  */
 	if (is_paste && gc->width > 2500 && gc->cap == Square_Cap && (x1 == x2 || y1 == y2)) {
-		Coord t, w;
+		pcb_coord_t t, w;
 		if (x1 > x2) {
 			t = x1;
 			x1 = x2;
@@ -1115,7 +1115,7 @@ static void ps_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2
 	}
 #endif
 	if (x1 == x2 && y1 == y2) {
-		Coord w = gc->width / 2;
+		pcb_coord_t w = gc->width / 2;
 		if (gc->cap == Square_Cap)
 			ps_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		else
@@ -1126,7 +1126,7 @@ static void ps_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2
 	pcb_fprintf(global.f, "%mi %mi %mi %mi t\n", x1, y1, x2, y2);
 }
 
-static void ps_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void ps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
 	if (delta_angle > 0) {
@@ -1145,7 +1145,7 @@ static void ps_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord 
 							sa, ea, -width, height, cx, cy, (double) (global.linewidth + 2 * global.bloat) /(double) width);
 }
 
-static void ps_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	use_gc(gc);
 	if (!gc->erase || !global.is_copper || global.drillcopper) {
@@ -1155,7 +1155,7 @@ static void ps_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 	}
 }
 
-static void ps_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void ps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
 	const char *op = "moveto";
@@ -1168,11 +1168,11 @@ static void ps_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 }
 
 typedef struct {
-	Coord x1, y1, x2, y2;
+	pcb_coord_t x1, y1, x2, y2;
 } lseg_t;
 
 typedef struct {
-	Coord x, y;
+	pcb_coord_t x, y;
 } lpoint_t;
 
 #define minmax(val, min, max) \
@@ -1212,7 +1212,7 @@ do { \
 
 int coord_comp(const void *c1_, const void *c2_)
 {
-	const Coord *c1 = c1_, *c2 = c2_;
+	const pcb_coord_t *c1 = c1_, *c2 = c2_;
 	return *c1 < *c2;
 }
 
@@ -1249,9 +1249,9 @@ static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb
 	while ((pl = pl->next) != NULL);
 
 	if (POLYGRID > 0.1) {
-		Coord y, x, lx, ly, fx, fy, lsegs_xmin, lsegs_xmax, lsegs_ymin, lsegs_ymax;
+		pcb_coord_t y, x, lx, ly, fx, fy, lsegs_xmin, lsegs_xmax, lsegs_ymin, lsegs_ymax;
 		lseg_t *lsegs = malloc(sizeof(lseg_t) * len);
-		Coord *lpoints = malloc(sizeof(Coord) * len);
+		pcb_coord_t *lpoints = malloc(sizeof(pcb_coord_t) * len);
 		int lsegs_used = 0;
 
 		lsegs_xmin = -1000000000;
@@ -1307,7 +1307,7 @@ static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb
 				goto retry1;
 			}
 			if (pts > 1) {
-				qsort(lpoints, pts, sizeof(Coord), coord_comp);
+				qsort(lpoints, pts, sizeof(pcb_coord_t), coord_comp);
 				for (n = 0; n < pts; n += 2)
 					lseg_line(lpoints[n], y, lpoints[n + 1], y);
 			}
@@ -1336,7 +1336,7 @@ static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb
 				goto retry2;
 			}
 			if ((pts > 1)) {
-				qsort(lpoints, pts, sizeof(Coord), coord_comp);
+				qsort(lpoints, pts, sizeof(pcb_coord_t), coord_comp);
 				for (n = 0; n < pts; n += 2)
 					lseg_line(x, lpoints[n], x, lpoints[n + 1]);
 			}
@@ -1351,16 +1351,16 @@ static void ps_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb
 		fprintf(global.f, "fill\n");
 }
 
-static void ps_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	if (x1 > x2) {
-		Coord t = x1;
+		pcb_coord_t t = x1;
 		x1 = x2;
 		x2 = t;
 	}
 	if (y1 > y2) {
-		Coord t = y1;
+		pcb_coord_t t = y1;
 		y1 = y2;
 		y2 = t;
 	}
@@ -1544,7 +1544,7 @@ static void ps_set_crosshair(int x, int y, int action)
 {
 }
 
-static int ActionPSCalib(int argc, const char **argv, Coord x, Coord y)
+static int ActionPSCalib(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	ps_calibrate(0.0, 0.0);
 	return 0;

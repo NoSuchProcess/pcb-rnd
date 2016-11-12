@@ -149,7 +149,7 @@ static pcb_hid_attr_val_t bboard_values[NUM_OPTIONS];
 static const char *bboard_filename = 0;
 static const char *bboard_bgcolor = 0;
 
-Coord bboard_scale_coord(Coord x)
+pcb_coord_t bboard_scale_coord(pcb_coord_t x)
 {
 	return ((x * DPI_SCALE / 254 / 10000) + 0) / 10;
 }
@@ -244,7 +244,7 @@ static void bboard_set_color_cairo(int r, int g, int b)
 }
 
 
-static void bboard_draw_line_cairo(Coord x1, Coord y1, Coord x2, Coord y2, Coord thickness)
+static void bboard_draw_line_cairo(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness)
 {
 	ASSERT_CAIRO;
 
@@ -259,8 +259,8 @@ static void bboard_draw_line_cairo(Coord x1, Coord y1, Coord x2, Coord y2, Coord
 
 #warning TODO: remove x1;y1;x2;y2
 static void
-bboard_draw_arc_cairo(/*Coord x1, Coord y1, Coord x2, Coord y2,*/ Coord x,
-											Coord y, Coord w, Coord h, pcb_angle_t sa, pcb_angle_t a, Coord thickness)
+bboard_draw_arc_cairo(/*pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2,*/ pcb_coord_t x,
+											pcb_coord_t y, pcb_coord_t w, pcb_coord_t h, pcb_angle_t sa, pcb_angle_t a, pcb_coord_t thickness)
 {
 	ASSERT_CAIRO;
 
@@ -281,7 +281,7 @@ bboard_draw_arc_cairo(/*Coord x1, Coord y1, Coord x2, Coord y2,*/ Coord x,
 	cairo_stroke(bboard_cairo_ctx);
 }
 
-static pcb_bool bboard_init_board_cairo(Coord x1, Coord y1, const char *color, int antialias)
+static pcb_bool bboard_init_board_cairo(pcb_coord_t x1, pcb_coord_t y1, const char *color, int antialias)
 {
 	unsigned int r, g, b;
 	float tr = 1.;								/* background transparency */
@@ -355,9 +355,9 @@ static char *bboard_get_model_filename(char *basename, char *value, pcb_bool nes
 }
 
 
-static int bboard_parse_offset(char *s, Coord * ox, Coord * oy)
+static int bboard_parse_offset(char *s, pcb_coord_t * ox, pcb_coord_t * oy)
 {
-	Coord xx = 0, yy = 0;
+	pcb_coord_t xx = 0, yy = 0;
 	int n = 0, ln = 0;
 	char val[32];
 
@@ -388,8 +388,8 @@ static int bboard_parse_offset(char *s, Coord * ox, Coord * oy)
 static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsolder)
 {
 	cairo_surface_t *sfc;
-	Coord ex, ey;
-	Coord ox = 0, oy = 0;
+	pcb_coord_t ex, ey;
+	pcb_coord_t ox = 0, oy = 0;
 	int w, h;
 	pcb_angle_t tmp_angle = 0.0;
 	char *model_angle, *s = 0, *s1, *s2, *fname = NULL;

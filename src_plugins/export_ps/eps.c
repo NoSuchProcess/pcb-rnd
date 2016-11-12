@@ -37,21 +37,21 @@ static void eps_destroy_gc(pcb_hid_gc_t gc);
 static void eps_use_mask(int use_it);
 static void eps_set_color(pcb_hid_gc_t gc, const char *name);
 static void eps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
-static void eps_set_line_width(pcb_hid_gc_t gc, Coord width);
+static void eps_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
 static void eps_set_draw_xor(pcb_hid_gc_t gc, int _xor);
-static void eps_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void eps_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void eps_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle);
-static void eps_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void eps_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius);
-static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y);
+static void eps_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+static void eps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+static void eps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle);
+static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
+static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
 static void eps_calibrate(double xval, double yval);
 static void eps_set_crosshair(int x, int y, int action);
 /*----------------------------------------------------------------------------*/
 
 typedef struct hid_gc_s {
 	pcb_cap_style_t cap;
-	Coord width;
+	pcb_coord_t width;
 	int color;
 	int erase;
 } hid_gc_s;
@@ -59,7 +59,7 @@ typedef struct hid_gc_s {
 static pcb_hid_t eps_hid;
 
 static FILE *f = 0;
-static Coord linewidth = -1;
+static pcb_coord_t linewidth = -1;
 static int lastcap = -1;
 static int lastcolor = -1;
 static int print_group[MAX_LAYER];
@@ -276,7 +276,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	linewidth = -1;
 	lastcap = -1;
 	lastcolor = -1;
-#define Q (Coord) PCB_MIL_TO_COORD(10)
+#define Q (pcb_coord_t) PCB_MIL_TO_COORD(10)
 	pcb_fprintf(f,
 							"/nclip { %mi %mi moveto %mi %mi lineto %mi %mi lineto %mi %mi lineto %mi %mi lineto eoclip newpath } def\n",
 							bounds->X1 - Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y2 + Q,
@@ -463,7 +463,7 @@ static void eps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void eps_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void eps_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gc->width = width;
 }
@@ -502,18 +502,18 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void eps_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void eps_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius);
+static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
 
-static void eps_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void eps_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-static void eps_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void eps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	Coord w = gc->width / 2;
+	pcb_coord_t w = gc->width / 2;
 	if (x1 == x2 && y1 == y2) {
 		if (gc->cap == Square_Cap)
 			eps_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
@@ -527,8 +527,8 @@ static void eps_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y
 		double dx = w * sin(ang);
 		double dy = -w * cos(ang);
 		double deg = ang * 180.0 / M_PI;
-		Coord vx1 = x1 + dx;
-		Coord vy1 = y1 + dy;
+		pcb_coord_t vx1 = x1 + dx;
+		pcb_coord_t vy1 = y1 + dy;
 
 		pcb_fprintf(f, "%mi %mi moveto ", vx1, vy1);
 		pcb_fprintf(f, "%mi %mi %mi %g %g arc\n", x2, y2, w, deg - 90, deg + 90);
@@ -540,7 +540,7 @@ static void eps_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y
 	pcb_fprintf(f, "%mi %mi %mi %mi %s\n", x1, y1, x2, y2, gc->erase ? "tc" : "t");
 }
 
-static void eps_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void eps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
 	if (delta_angle > 0) {
@@ -558,13 +558,13 @@ static void eps_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord
 	pcb_fprintf(f, "%ma %ma %mi %mi %mi %mi %g a\n", sa, ea, -width, height, cx, cy, (double) linewidth / width);
 }
 
-static void eps_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %s\n", cx, cy, radius, gc->erase ? "cc" : "c");
 }
 
-static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
 	const char *op = "moveto";
@@ -576,7 +576,7 @@ static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y
 	fprintf(f, "fill\n");
 }
 
-static void eps_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);

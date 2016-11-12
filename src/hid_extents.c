@@ -61,7 +61,7 @@ static void extents_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 }
 
-static void extents_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void extents_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gc->width = width;
 }
@@ -75,7 +75,7 @@ static void extents_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 #define PEY(y,w) if (box.Y1 > (y)-(w)) box.Y1 = (y)-(w); \
 	if (box.Y2 < (y)+(w)) box.Y2 = (y)+(w)
 
-static void extents_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void extents_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	PEX(x1, gc->width);
 	PEY(y1, gc->width);
@@ -83,14 +83,14 @@ static void extents_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coo
 	PEY(y2, gc->width);
 }
 
-static void extents_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t end_angle)
+static void extents_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
 {
 	/* Naive but good enough.  */
 	PEX(cx, width + gc->width);
 	PEY(cy, height + gc->width);
 }
 
-static void extents_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void extents_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	PEX(x1, gc->width);
 	PEY(y1, gc->width);
@@ -98,13 +98,13 @@ static void extents_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coo
 	PEY(y2, gc->width);
 }
 
-static void extents_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void extents_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	PEX(cx, radius);
 	PEY(cy, radius);
 }
 
-static void extents_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void extents_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
 	for (i = 0; i < n_coords; i++) {
@@ -113,7 +113,7 @@ static void extents_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord
 	}
 }
 
-static void extents_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void extents_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	PEX(x1, 0);
 	PEY(y1, 0);

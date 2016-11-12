@@ -30,7 +30,7 @@
 
 #include "config.h"
 
-/* typedef ... Coord;				pcb base unit, typedef'd in config.h */
+/* typedef ... pcb_coord_t;				pcb base unit, typedef'd in config.h */
 typedef double pcb_angle_t;						/* degrees */
 
 enum pcb_allow_e {
@@ -88,21 +88,21 @@ struct pcb_unit_s {
 struct pcb_increments_s {
 	const char *suffix;
 	/* key g and <shift>g value  */
-	Coord grid;
-	Coord grid_min;
-	Coord grid_max;
+	pcb_coord_t grid;
+	pcb_coord_t grid_min;
+	pcb_coord_t grid_max;
 	/* key s and <shift>s value  */
-	Coord size;
-	Coord size_min;
-	Coord size_max;
+	pcb_coord_t size;
+	pcb_coord_t size_min;
+	pcb_coord_t size_max;
 	/* key l and <shift>l value  */
-	Coord line;
-	Coord line_min;
-	Coord line_max;
+	pcb_coord_t line;
+	pcb_coord_t line_min;
+	pcb_coord_t line_max;
 	/* key k and <shift>k value  */
-	Coord clear;
-	Coord clear_min;
-	Coord clear_max;
+	pcb_coord_t clear;
+	pcb_coord_t clear_min;
+	pcb_coord_t clear_max;
 };
 
 typedef struct pcb_unit_s pcb_unit_t;
@@ -115,9 +115,9 @@ const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);
 const pcb_unit_t *get_unit_list(void);
 const pcb_unit_t *get_unit_by_idx(int idx);
 int get_n_units(void);
-double coord_to_unit(const pcb_unit_t *, Coord);
+double coord_to_unit(const pcb_unit_t *, pcb_coord_t);
 double unit_to_factor(const pcb_unit_t * unit);
-Coord unit_to_coord(const pcb_unit_t *, double);
+pcb_coord_t unit_to_coord(const pcb_unit_t *, double);
 pcb_increments_t *get_increments_struct(const char *suffix);
 pcb_angle_t NormalizeAngle(pcb_angle_t a);
 

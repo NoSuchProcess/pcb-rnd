@@ -53,7 +53,7 @@ Runs the given command, which is a system executable.
 
 %end-doc */
 
-static int ActionExecCommand(int argc, const char **argv, Coord x, Coord y)
+static int ActionExecCommand(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *command;
 
@@ -105,7 +105,7 @@ you may have made.
 
 %end-doc */
 
-static int ActionLoadFrom(int argc, const char **argv, Coord x, Coord y)
+static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function, *name, *format = NULL;
 
@@ -168,7 +168,7 @@ If a name is not given, one is prompted for.
 
 %end-doc */
 
-static int ActionNew(int argc, const char **argv, Coord x, Coord y)
+static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *argument_name = ACTION_ARG(0);
 	char *name = NULL;
@@ -243,7 +243,7 @@ Save the content of the active Buffer to a file. This is the graphical way to cr
 
 %end-doc */
 
-static int ActionSaveTo(int argc, const char **argv, Coord x, Coord y)
+static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function;
 	const char *name;
@@ -336,7 +336,7 @@ save) before quitting.
 
 %end-doc */
 
-static int ActionQuit(int argc, const char **argv, Coord x, Coord y)
+static int ActionQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *force = ACTION_ARG(0);
 	if (force && strcasecmp(force, "force") == 0) {

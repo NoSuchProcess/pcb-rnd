@@ -354,10 +354,10 @@ static pcb_r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 			 || !i->pv.Clearance)) {
 		double wide = MAX(0.5 * i->pv.Thickness + Bloat, 0);
 		if (TEST_FLAG(PCB_FLAG_SQUARE, &i->pv)) {
-			Coord x1 = i->pv.X - (i->pv.Thickness + 1 + Bloat) / 2;
-			Coord x2 = i->pv.X + (i->pv.Thickness + 1 + Bloat) / 2;
-			Coord y1 = i->pv.Y - (i->pv.Thickness + 1 + Bloat) / 2;
-			Coord y2 = i->pv.Y + (i->pv.Thickness + 1 + Bloat) / 2;
+			pcb_coord_t x1 = i->pv.X - (i->pv.Thickness + 1 + Bloat) / 2;
+			pcb_coord_t x2 = i->pv.X + (i->pv.Thickness + 1 + Bloat) / 2;
+			pcb_coord_t y1 = i->pv.Y - (i->pv.Thickness + 1 + Bloat) / 2;
+			pcb_coord_t y2 = i->pv.Y + (i->pv.Thickness + 1 + Bloat) / 2;
 			if (IsRectangleInPolygon(x1, y1, x2, y2, polygon)
 					&& ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PIN, &i->pv, FCT_COPPER))
 				longjmp(i->env, 1);
@@ -668,7 +668,7 @@ static pcb_r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 	if (!TEST_FLAG(TheFlag, pv) && !TEST_FLAG(PCB_FLAG_HOLE, pv) &&
 			(TEST_THERM(i->layer, pv) || !TEST_FLAG(PCB_FLAG_CLEARPOLY, &i->polygon) || !pv->Clearance)) {
 		if (TEST_FLAG(PCB_FLAG_SQUARE, pv)) {
-			Coord x1, x2, y1, y2;
+			pcb_coord_t x1, x2, y1, y2;
 			x1 = pv->X - (PIN_SIZE(pv) + 1 + Bloat) / 2;
 			x2 = pv->X + (PIN_SIZE(pv) + 1 + Bloat) / 2;
 			y1 = pv->Y - (PIN_SIZE(pv) + 1 + Bloat) / 2;

@@ -56,7 +56,7 @@ void pcb_netlist_changed(int force_unfreeze);
 pcb_lib_menu_t *pcb_netnode_to_netname(const char *nodename);
 pcb_lib_menu_t *pcb_netname_to_netname(const char *netname);
 
-int pcb_pin_name_to_xy(pcb_lib_entry_t *pin, Coord *x, Coord *y);
+int pcb_pin_name_to_xy(pcb_lib_entry_t *pin, pcb_coord_t *x, pcb_coord_t *y);
 void pcb_netlist_find(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
 void pcb_netlist_select(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
 void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);

@@ -62,7 +62,7 @@
 #include "obj_poly_draw.h"
 
 
-static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, Coord * x, Coord * y)
+static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
 	switch (type) {
 	case PCB_TYPE_VIA:
@@ -104,10 +104,10 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 	}
 }
 
-static void AttachForCopy(Coord PlaceX, Coord PlaceY)
+static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 {
 	pcb_box_t *box;
-	Coord mx = 0, my = 0;
+	pcb_coord_t mx = 0, my = 0;
 
 	Crosshair.AttachedObject.RubberbandN = 0;
 	if (!conf_core.editor.snap_pin) {
@@ -647,7 +647,7 @@ void NotifyMode(void)
 			case STATE_THIRD:
 				{
 					pcb_arc_t *arc;
-					Coord wx, wy;
+					pcb_coord_t wx, wy;
 					pcb_angle_t sa, dir;
 
 					wx = Note.X - Crosshair.AttachedBox.Point1.X;
@@ -1278,7 +1278,7 @@ void EventMoveCrosshair(int ev_x, int ev_y)
 /* --------------------------------------------------------------------------- */
 /* helper: get route style size for a function and selected object type.
    size_id: 0=main size; 1=2nd size (drill); 2=clearance */
-int get_style_size(int funcid, Coord * out, int type, int size_id)
+int get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 {
 	switch (funcid) {
 	case F_Object:

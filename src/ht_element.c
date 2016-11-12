@@ -24,9 +24,9 @@ static int neqs(const char *s1, const char *s2)
 #define neqox(e1, x1, e2, x2, f) (eoffs(e1, MarkX, x1, f) != eoffs(e2, MarkX, x2, f))
 #define neqoy(e1, y1, e2, y2, f) (eoffs(e1, MarkY, y1, f) != eoffs(e2, MarkY, y2, f))
 
-static inline unsigned h_coord(Coord c)
+static inline unsigned h_coord(pcb_coord_t c)
 {
-	return murmurhash(&(c), sizeof(Coord));
+	return murmurhash(&(c), sizeof(pcb_coord_t));
 }
 
 #define h_coordox(e, c) ((e) == NULL ? h_coord(c) : h_coord(c - e->MarkX))

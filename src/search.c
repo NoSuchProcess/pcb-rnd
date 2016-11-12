@@ -45,7 +45,7 @@
  * some local identifiers
  */
 static double PosX, PosY;				/* search position for subroutines */
-static Coord SearchRadius;
+static pcb_coord_t SearchRadius;
 static pcb_box_t SearchBox;
 static pcb_layer_t *SearchLayer;
 
@@ -522,9 +522,9 @@ SearchElementByLocation(int locked, pcb_element_t ** Element, pcb_element_t ** D
 /* ---------------------------------------------------------------------------
  * checks if a point is on a pin
  */
-pcb_bool IsPointOnPin(Coord X, Coord Y, Coord Radius, pcb_pin_t *pin)
+pcb_bool IsPointOnPin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_t *pin)
 {
-	Coord t = PIN_SIZE(pin) / 2;
+	pcb_coord_t t = PIN_SIZE(pin) / 2;
 	if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
 		pcb_box_t b;
 
@@ -543,7 +543,7 @@ pcb_bool IsPointOnPin(Coord X, Coord Y, Coord Radius, pcb_pin_t *pin)
 /* ---------------------------------------------------------------------------
  * checks if a rat-line end is on a PV
  */
-pcb_bool IsPointOnLineEnd(Coord X, Coord Y, pcb_rat_t *Line)
+pcb_bool IsPointOnLineEnd(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line)
 {
 	if (((X == Line->Point1.X) && (Y == Line->Point1.Y)) || ((X == Line->Point2.X) && (Y == Line->Point2.Y)))
 		return (pcb_true);
@@ -582,7 +582,7 @@ pcb_bool IsPointOnLineEnd(Coord X, Coord Y, pcb_rat_t *Line)
  * Finally, D1 and D2 are orthogonal, so we can sum them easily
  * by Pythagorean theorem.
  */
-pcb_bool IsPointOnLine(Coord X, Coord Y, Coord Radius, pcb_line_t *Line)
+pcb_bool IsPointOnLine(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line)
 {
 	double D1, D2, L;
 
@@ -608,7 +608,7 @@ pcb_bool IsPointOnLine(Coord X, Coord Y, Coord Radius, pcb_line_t *Line)
 	return sqrt(D1 * D1 + D2 * D2) <= Radius + Line->Thickness / 2;
 }
 
-static int is_point_on_line(Coord px, Coord py, Coord lx1, Coord ly1, Coord lx2, Coord ly2)
+static int is_point_on_line(pcb_coord_t px, pcb_coord_t py, pcb_coord_t lx1, pcb_coord_t ly1, pcb_coord_t lx2, pcb_coord_t ly2)
 {
 	/* ohh well... let's hope the optimizer does something clever with inlining... */
 	pcb_line_t l;
@@ -623,7 +623,7 @@ static int is_point_on_line(Coord px, Coord py, Coord lx1, Coord ly1, Coord lx2,
 /* ---------------------------------------------------------------------------
  * checks if a line crosses a rectangle
  */
-pcb_bool IsLineInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_line_t *Line)
+pcb_bool IsLineInRectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_line_t *Line)
 {
 	pcb_line_t line;
 
@@ -668,7 +668,7 @@ pcb_bool IsLineInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_line_t *L
 
 static int /*checks if a point (of null radius) is in a slanted rectangle */ IsPointInQuadrangle(pcb_point_t p[4], pcb_point_t *l)
 {
-	Coord dx, dy, x, y;
+	pcb_coord_t dx, dy, x, y;
 	double prod0, prod1;
 
 	dx = p[1].X - p[0].X;
@@ -742,7 +742,7 @@ pcb_bool IsLineInQuadrangle(pcb_point_t p[4], pcb_line_t *Line)
 /* ---------------------------------------------------------------------------
  * checks if an arc crosses a square
  */
-pcb_bool IsArcInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_arc_t *Arc)
+pcb_bool IsArcInRectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_arc_t *Arc)
 {
 	pcb_line_t line;
 
@@ -785,14 +785,14 @@ pcb_bool IsArcInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_arc_t *Arc
  * Check if a circle of Radius with center at (X, Y) intersects a Pad.
  * Written to enable arbitrary pad directions; for rounded pads, too.
  */
-pcb_bool IsPointInPad(Coord X, Coord Y, Coord Radius, pcb_pad_t *Pad)
+pcb_bool IsPointInPad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pad_t *Pad)
 {
 	double r, Sin, Cos;
-	Coord x;
+	pcb_coord_t x;
 
 	/* Also used from line_callback with line type smaller than pad type;
 	   use the smallest common subset; ->Thickness is still ok. */
-	Coord t2 = (Pad->Thickness + 1) / 2, range;
+	pcb_coord_t t2 = (Pad->Thickness + 1) / 2, range;
 	pcb_any_line_t pad = *(pcb_any_line_t *) Pad;
 
 
@@ -856,9 +856,9 @@ pcb_bool IsPointInPad(Coord X, Coord Y, Coord Radius, pcb_pad_t *Pad)
 	return range < Radius;
 }
 
-pcb_bool IsPointInBox(Coord X, Coord Y, pcb_box_t *box, Coord Radius)
+pcb_bool IsPointInBox(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_coord_t Radius)
 {
-	Coord width, height, range;
+	pcb_coord_t width, height, range;
 
 	/* NB: Assumes box has point1 with numerically lower X and Y coordinates */
 
@@ -901,7 +901,7 @@ pcb_bool IsPointInBox(Coord X, Coord Y, pcb_box_t *box, Coord Radius)
  *       and in the case that the arc thickness is greater than
  *       the radius.
  */
-pcb_bool IsPointOnArc(Coord X, Coord Y, Coord Radius, pcb_arc_t *Arc)
+pcb_bool IsPointOnArc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_arc_t *Arc)
 {
 	/* Calculate angle of point from arc center */
 	double p_dist = Distance(X, Y, Arc->X, Arc->Y);
@@ -930,7 +930,7 @@ pcb_bool IsPointOnArc(Coord X, Coord Y, Coord Radius, pcb_arc_t *Arc)
 
 	/* Check point is outside arc range, check distance from endpoints */
 	if (ang1 >= p_ang || ang2 <= p_ang) {
-		Coord ArcX, ArcY;
+		pcb_coord_t ArcX, ArcY;
 
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
@@ -961,7 +961,7 @@ pcb_bool IsPointOnArc(Coord X, Coord Y, Coord Radius, pcb_arc_t *Arc)
  * Note that if Type includes PCB_TYPE_LOCKED, then the search includes
  * locked items.  Otherwise, locked items are ignored.
  */
-int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void **Result3, Coord X, Coord Y, Coord Radius)
+int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius)
 {
 	void *r1, *r2, *r3;
 	void **pr1 = &r1, **pr2 = &r2, **pr3 = &r3;
@@ -1321,7 +1321,7 @@ pcb_element_t *SearchElementByName(pcb_data_t *Base, const char *Name)
 /* ---------------------------------------------------------------------------
  * searches the cursor position for the type
  */
-int SearchScreen(Coord X, Coord Y, int Type, void **Result1, void **Result2, void **Result3)
+int SearchScreen(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
 {
 	int ans;
 
@@ -1332,7 +1332,7 @@ int SearchScreen(Coord X, Coord Y, int Type, void **Result1, void **Result2, voi
 /* ---------------------------------------------------------------------------
  * searches the cursor position for the type
  */
-int SearchScreenGridSlop(Coord X, Coord Y, int Type, void **Result1, void **Result2, void **Result3)
+int SearchScreenGridSlop(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
 {
 	int ans;
 
@@ -1340,9 +1340,9 @@ int SearchScreenGridSlop(Coord X, Coord Y, int Type, void **Result1, void **Resu
 	return (ans);
 }
 
-int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord by1, Coord bx2, Coord by2)
+int lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2)
 {
-/* TODO: this should be long double if Coord is 64 bits */
+/* TODO: this should be long double if pcb_coord_t is 64 bits */
 	double ua, xi, yi, X1, Y1, X2, Y2, X3, Y3, X4, Y4, tmp;
 	int is_a_pt, is_b_pt;
 

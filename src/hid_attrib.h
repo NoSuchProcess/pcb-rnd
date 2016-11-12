@@ -12,7 +12,7 @@ struct pcb_hid_attr_val_s {
 	int int_value;
 	const char *str_value;
 	double real_value;
-	Coord coord_value;
+	pcb_coord_t coord_value;
 };
 
 enum pcb_hids_t { HID_Label, HID_Integer, HID_Real, HID_String,

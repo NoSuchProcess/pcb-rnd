@@ -78,7 +78,7 @@ void AdjustAttachedLine(void)
  */
 void FortyFiveLine(pcb_attached_line_t *Line)
 {
-	Coord dx, dy, min;
+	pcb_coord_t dx, dy, min;
 	unsigned direction = 0;
 	double m;
 
@@ -149,7 +149,7 @@ void FortyFiveLine(pcb_attached_line_t *Line)
  */
 void AdjustTwoLine(pcb_bool way)
 {
-	Coord dx, dy;
+	pcb_coord_t dx, dy;
 	pcb_attached_line_t *line = &Crosshair.AttachedLine;
 
 	if (Crosshair.AttachedLine.State == STATE_FIRST)
@@ -251,8 +251,8 @@ static pcb_r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 static double drc_lines(pcb_point_t *end, pcb_bool way)
 {
 	double f, s, f2, s2, len, best;
-	Coord dx, dy, temp, last, length;
-	Coord temp2, last2, length2;
+	pcb_coord_t dx, dy, temp, last, length;
+	pcb_coord_t temp2, last2, length2;
 	pcb_line_t line1, line2;
 	pcb_cardinal_t group, comp;
 	struct drc_info info;

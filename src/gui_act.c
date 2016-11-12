@@ -211,7 +211,7 @@ static enum crosshair_shape CrosshairShapeIncrement(enum crosshair_shape shape)
 	return shape;
 }
 
-static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY)
+static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_coord_t childY)
 {
 	const char *function, *str_dir;
 	int id;
@@ -418,7 +418,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 			/* shift grid alignment */
 		case F_ToggleGrid:
 			{
-				Coord oldGrid = PCB->Grid;
+				pcb_coord_t oldGrid = PCB->Grid;
 
 				PCB->Grid = 1;
 				if (MoveCrosshairAbsolute(Crosshair.X, Crosshair.Y))
@@ -438,7 +438,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 			{
 				pcb_element_t *element;
 				void *ptrtmp;
-				Coord x, y;
+				pcb_coord_t x, y;
 
 				gui->get_coords(_("Click on an element"), &x, &y);
 				if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
@@ -452,7 +452,7 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 		case F_PinOrPadName:
 			{
 				void *ptr1, *ptr2, *ptr3;
-				Coord x, y;
+				pcb_coord_t x, y;
 				gui->get_coords(_("Click on an element"), &x, &y);
 
 				switch (SearchScreen(x, y,
@@ -607,7 +607,7 @@ Restores the tool to the last saved tool.
 
 %end-doc */
 
-static int ActionMode(int argc, const char **argv, Coord x, Coord y)
+static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 
@@ -801,7 +801,7 @@ static const char cycledrag_syntax[] = "CycleDrag()\n";
 static const char cycledrag_help[] = "Cycle through which object is being dragged";
 
 #define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (SLOP * pixel_slop)) : ((a)-(b) > -(SLOP * pixel_slop)))
-static int ActionCycleDrag(int argc, const char **argv, Coord x, Coord y)
+static int ActionCycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
@@ -878,7 +878,7 @@ followed by a newline.
 
 %end-doc */
 
-static int ActionMessage(int argc, const char **argv, Coord x, Coord y)
+static int ActionMessage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i;
 
@@ -906,7 +906,7 @@ appear on the silk layer when you print the layout.
 
 %end-doc */
 
-static int ActionToggleHideName(int argc, const char **argv, Coord x, Coord y)
+static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	if (function && PCB->ElementOn) {
@@ -973,7 +973,7 @@ cursor location.
 
 %end-doc */
 
-static int ActionMarkCrosshair(int argc, const char **argv, Coord x, Coord y)
+static int ActionMarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	if (!function || !*function) {
@@ -1011,7 +1011,7 @@ static const char routestyle_help[] = "Copies the indicated routing style into t
 
 %end-doc */
 
-static int ActionRouteStyle(int argc, const char **argv, Coord x, Coord y)
+static int ActionRouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *str = ACTION_ARG(0);
 	RouteStyleType *rts;
@@ -1056,7 +1056,7 @@ static const char createmenu_help[] = "Creates a new menu, popup (only path spec
 
 %end-doc */
 
-static int ActionCreateMenu(int argc, const char **argv, Coord x, Coord y)
+static int ActionCreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (gui == NULL) {
 		Message(PCB_MSG_DEFAULT, "Error: can't create menu, there's no GUI hid loaded\n");
@@ -1080,7 +1080,7 @@ static const char removemenu_help[] = "Recursively removes a new menu, popup (on
 
 %end-doc */
 
-static int ActionRemoveMenu(int argc, const char **argv, Coord x, Coord y)
+static int ActionRemoveMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (gui == NULL) {
 		Message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
@@ -1114,7 +1114,7 @@ current layer to be the layer that item is on, and changes the current
 sizes (thickness, clearance, drill, etc) according to that item.
 
 %end-doc */
-static void set_same_(Coord Thick, Coord Diameter, Coord Hole, Coord Clearance, char *Name)
+static void set_same_(pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name)
 {
 	int known;
 	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, Diameter, Hole, Clearance, Name);
@@ -1129,7 +1129,7 @@ static void set_same_(Coord Thick, Coord Diameter, Coord Hole, Coord Clearance, 
 		pcb_use_route_style_idx(&PCB->RouteStyle, known);
 }
 
-static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
+static int ActionSetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
@@ -1193,7 +1193,7 @@ Switch to another HID.
 
 %end-doc */
 
-static int ActionSwitchHID(int argc, const char **argv, Coord x, Coord y)
+static int ActionSwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_hid_t *ng = hid_find_gui(argv[0]);
 	int chg;
@@ -1219,7 +1219,7 @@ static const char fullscreen_syntax[] = "FullScreen(on|off|toggle)\n";
 
 static const char fullscreen_help[] = "Hide widgets to get edit area full screen";
 
-static int FullScreen(int argc, const char **argv, Coord x, Coord y)
+static int FullScreen(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *op = argv == NULL ? NULL : argv[0];
 

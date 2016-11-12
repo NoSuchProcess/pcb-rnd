@@ -56,16 +56,16 @@ void mtspace_destroy(mtspace_t ** mtspacep);
  * should *not* be bloated; it should be "true".  The feature will fill
  * *at least* a radius of clearance around it;
  */
-void mtspace_add(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t which, Coord clearance);
+void mtspace_add(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t which, pcb_coord_t clearance);
 /* remove a space-filler from the empty space representation.  The given box
  * should *not* be bloated; it should be "true".  The feature will fill
  * *at least* a radius of clearance around it;
  */
-void mtspace_remove(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t which, Coord clearance);
+void mtspace_remove(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t which, pcb_coord_t clearance);
 
 
 vetting_t *mtspace_query_rect(mtspace_t * mtspace, const pcb_box_t * region,
-															Coord radius, Coord clearance,
+															pcb_coord_t radius, pcb_coord_t clearance,
 															vetting_t * work,
 															vector_t * free_space_vec,
 															vector_t * lo_conflict_space_vec,

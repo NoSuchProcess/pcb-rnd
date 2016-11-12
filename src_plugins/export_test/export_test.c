@@ -98,7 +98,7 @@ static int Printexport_test(void)
 {
 #if 0
 	char utcTime[64];
-	Coord x, y;
+	pcb_coord_t x, y;
 	double theta = 0.0;
 	double sumx, sumy;
 	double pin1x = 0.0, pin1y = 0.0, pin1angle = 0.0;

@@ -99,7 +99,7 @@ pcb, an element, or a layer.
 %end-doc */
 
 
-static int ActionAttributes(int argc, const char **argv, Coord x, Coord y)
+static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	const char *layername = ACTION_ARG(1);
@@ -207,10 +207,10 @@ from.
 
 #define GAP PCB_MIL_TO_COORD(100)
 
-static int ActionDisperseElements(int argc, const char **argv, Coord x, Coord y)
+static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
-	Coord minx = GAP, miny = GAP, maxy = GAP, dx, dy;
+	pcb_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
 	int all = 0, bad = 0;
 
 	if (!function || !*function) {
@@ -318,7 +318,7 @@ other, not their absolute positions on the board.
 
 %end-doc */
 
-static int ActionFlip(int argc, const char **argv, Coord x, Coord y)
+static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	pcb_element_t *element;
@@ -365,12 +365,12 @@ units, currently 1/100 mil.
 
 %end-doc */
 
-static int ActionMoveObject(int argc, const char **argv, Coord x, Coord y)
+static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *x_str = ACTION_ARG(0);
 	const char *y_str = ACTION_ARG(1);
 	const char *units = ACTION_ARG(2);
-	Coord nx, ny;
+	pcb_coord_t nx, ny;
 	pcb_bool absolute1, absolute2;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
@@ -411,7 +411,7 @@ or from solder to component, won't automatically flip it.  Use the
 
 %end-doc */
 
-static int ActionMoveToCurrentLayer(int argc, const char **argv, Coord x, Coord y)
+static int ActionMoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	if (function) {
@@ -478,7 +478,7 @@ static int parse_layout_attribute_units(const char *name, int def)
 	return GetValue(as, NULL, NULL, NULL);
 }
 
-static int ActionElementList(int argc, const char **argv, Coord x, Coord y)
+static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_element_t *e = NULL;
 	const char *refdes, *value, *footprint;
@@ -544,7 +544,7 @@ static int ActionElementList(int argc, const char **argv, Coord x, Coord y)
 	e = find_element_by_refdes(refdes);
 
 	if (!e) {
-		Coord nx, ny, d;
+		pcb_coord_t nx, ny, d;
 
 #ifdef DEBUG
 		printf("  ... Footprint not on board, need to add it.\n");
@@ -587,7 +587,7 @@ static int ActionElementList(int argc, const char **argv, Coord x, Coord y)
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
 		int er, pr, i;
-		Coord mx, my;
+		pcb_coord_t mx, my;
 		pcb_element_t *pe;
 
 		/* Different footprint, we need to swap them out.  */
@@ -654,7 +654,7 @@ not specified, the given attribute is removed if present.
 
 %end-doc */
 
-static int ActionElementSetAttr(int argc, const char **argv, Coord x, Coord y)
+static int ActionElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_element_t *e = NULL;
 	const char *refdes, *name, *value;
@@ -723,7 +723,7 @@ that this uses the highest numbered paste buffer.
 
 %end-doc */
 
-static int ActionRipUp(int argc, const char **argv, Coord x, Coord y)
+static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	pcb_bool changed = pcb_false;
@@ -827,13 +827,13 @@ the mask edge.
 
 %end-doc */
 
-static int ActionMinMaskGap(int argc, const char **argv, Coord x, Coord y)
+static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	const char *delta = ACTION_ARG(1);
 	const char *units = ACTION_ARG(2);
 	pcb_bool absolute;
-	Coord value;
+	pcb_coord_t value;
 	int flags;
 
 	if (!function)
@@ -901,13 +901,13 @@ polygon edges.
 
 %end-doc */
 
-static int ActionMinClearGap(int argc, const char **argv, Coord x, Coord y)
+static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ACTION_ARG(0);
 	const char *delta = ACTION_ARG(1);
 	const char *units = ACTION_ARG(2);
 	pcb_bool absolute;
-	Coord value;
+	pcb_coord_t value;
 	int flags;
 
 	if (!function)
@@ -982,7 +982,7 @@ static int ActionMinClearGap(int argc, const char **argv, Coord x, Coord y)
 }
 
 /* ---------------------------------------------------------------------------  */
-int ActionListRotations(int argc, const char **argv, Coord x, Coord y)
+int ActionListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	ELEMENT_LOOP(PCB->Data);
 	{

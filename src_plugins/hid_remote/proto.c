@@ -154,7 +154,7 @@ void proto_send_set_line_cap(int gc, char style)
 	send_end(&pctx);
 }
 
-void proto_send_set_line_width(int gc, Coord width)
+void proto_send_set_line_width(int gc, pcb_coord_t width)
 {
 	send_begin(&pctx, "linwid");
 	send_open(&pctx, 0);
@@ -174,7 +174,7 @@ void proto_send_set_draw_xor(int gc, int xor_set)
 	send_end(&pctx);
 }
 
-void proto_send_draw_line(int gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void proto_send_draw_line(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	send_begin(&pctx, "line");
 	send_open(&pctx, 0);
@@ -187,7 +187,7 @@ void proto_send_draw_line(int gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	send_end(&pctx);
 }
 
-void proto_send_draw_rect(int gc, Coord x1, Coord y1, Coord x2, Coord y2, int is_filled)
+void proto_send_draw_rect(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int is_filled)
 {
 	send_begin(&pctx, "rect");
 	send_open(&pctx, 0);
@@ -201,7 +201,7 @@ void proto_send_draw_rect(int gc, Coord x1, Coord y1, Coord x2, Coord y2, int is
 	send_end(&pctx);
 }
 
-void proto_send_fill_circle(int gc, Coord cx, Coord cy, Coord radius)
+void proto_send_fill_circle(int gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	send_begin(&pctx, "fcirc");
 	send_open(&pctx, 0);
@@ -213,7 +213,7 @@ void proto_send_fill_circle(int gc, Coord cx, Coord cy, Coord radius)
 	send_end(&pctx);
 }
 
-void proto_send_draw_poly(int gc, int n_coords, Coord * x, Coord * y)
+void proto_send_draw_poly(int gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int n;
 	send_begin(&pctx, "poly");

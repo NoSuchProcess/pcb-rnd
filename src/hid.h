@@ -80,7 +80,7 @@ typedef struct {
 	/* Called when the action is triggered.  If this function returns
 	   non-zero, no further actions will be invoked for this key/mouse
 	   event.  */
-	int (*trigger_cb) (int argc, const char **argv, Coord x, Coord y);
+	int (*trigger_cb) (int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 	/* Short description that sometimes accompanies the name.  */
 	const char *description;
 	/* Full allowed syntax; use \n to separate lines.  */
@@ -270,7 +270,7 @@ struct hid_s {
 	   different values each time may be expensive, so grouping items by
 	   line style is helpful.  */
 	void (*set_line_cap) (pcb_hid_gc_t gc_, pcb_cap_style_t style_);
-	void (*set_line_width) (pcb_hid_gc_t gc_, Coord width_);
+	void (*set_line_width) (pcb_hid_gc_t gc_, pcb_coord_t width_);
 	void (*set_draw_xor) (pcb_hid_gc_t gc_, int xor_);
 	/* Blends 20% or so color with 80% background.  Only used for
 	   assembly drawings so far. */
@@ -279,18 +279,18 @@ struct hid_s {
 	/* The usual drawing functions.  "draw" means to use segments of the
 	   given width, whereas "fill" means to fill to a zero-width
 	   outline.  */
-	void (*draw_line) (pcb_hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
-	void (*draw_arc) (pcb_hid_gc_t gc_, Coord cx_, Coord cy_, Coord xradius_, Coord yradius_, pcb_angle_t start_angle_, pcb_angle_t delta_angle_);
-	void (*draw_rect) (pcb_hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
-	void (*fill_circle) (pcb_hid_gc_t gc_, Coord cx_, Coord cy_, Coord radius_);
-	void (*fill_polygon) (pcb_hid_gc_t gc_, int n_coords_, Coord * x_, Coord * y_);
+	void (*draw_line) (pcb_hid_gc_t gc_, pcb_coord_t x1_, pcb_coord_t y1_, pcb_coord_t x2_, pcb_coord_t y2_);
+	void (*draw_arc) (pcb_hid_gc_t gc_, pcb_coord_t cx_, pcb_coord_t cy_, pcb_coord_t xradius_, pcb_coord_t yradius_, pcb_angle_t start_angle_, pcb_angle_t delta_angle_);
+	void (*draw_rect) (pcb_hid_gc_t gc_, pcb_coord_t x1_, pcb_coord_t y1_, pcb_coord_t x2_, pcb_coord_t y2_);
+	void (*fill_circle) (pcb_hid_gc_t gc_, pcb_coord_t cx_, pcb_coord_t cy_, pcb_coord_t radius_);
+	void (*fill_polygon) (pcb_hid_gc_t gc_, int n_coords_, pcb_coord_t * x_, pcb_coord_t * y_);
 	void (*fill_pcb_polygon) (pcb_hid_gc_t gc_, pcb_polygon_t * poly, const pcb_box_t * clip_box);
 	void (*thindraw_pcb_polygon) (pcb_hid_gc_t gc_, pcb_polygon_t * poly, const pcb_box_t * clip_box);
 	void (*fill_pcb_pad) (pcb_hid_gc_t gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
 	void (*thindraw_pcb_pad) (pcb_hid_gc_t gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
 	void (*fill_pcb_pv) (pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
 	void (*thindraw_pcb_pv) (pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
-	void (*fill_rect) (pcb_hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
+	void (*fill_rect) (pcb_hid_gc_t gc_, pcb_coord_t x1_, pcb_coord_t y1_, pcb_coord_t x2_, pcb_coord_t y2_);
 
 
 	/* This is for the printer.  If you call this for the GUI, xval and
@@ -310,7 +310,7 @@ struct hid_s {
 	int (*shift_is_pressed) (void);
 	int (*control_is_pressed) (void);
 	int (*mod1_is_pressed) (void);
-	void (*get_coords) (const char *msg_, Coord * x_, Coord * y_);
+	void (*get_coords) (const char *msg_, pcb_coord_t * x_, pcb_coord_t * y_);
 
 	/* Sets the crosshair, which may differ from the pointer depending
 	   on grid and pad snap.  Note that the HID is responsible for

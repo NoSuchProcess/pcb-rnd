@@ -41,12 +41,12 @@ typedef struct {
 	if (!TEST_FLAG(PCB_FLAG_SELECTED, obj)) return;
 
 #define type2field_String string
-#define type2field_Coord coord
+#define type2field_pcb_coord_t coord
 #define type2field_pcb_angle_t angle
 #define type2field_int i
 
 #define type2TYPE_String PCB_PROPT_STRING
-#define type2TYPE_Coord PCB_PROPT_COORD
+#define type2TYPE_pcb_coord_t PCB_PROPT_COORD
 #define type2TYPE_pcb_angle_t PCB_PROPT_ANGLE
 #define type2TYPE_int PCB_PROPT_INT
 
@@ -92,18 +92,18 @@ static void map_attr(void *ctx, const pcb_attribute_list_t *list)
 static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	map_chk_skip(ctx, line);
-	map_add_prop(ctx, "p/trace/thickness", Coord, line->Thickness);
-	map_add_prop(ctx, "p/trace/clearance", Coord, line->Clearance);
+	map_add_prop(ctx, "p/trace/thickness", pcb_coord_t, line->Thickness);
+	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, line->Clearance);
 	map_attr(ctx, &line->Attributes);
 }
 
 static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
 {
 	map_chk_skip(ctx, arc);
-	map_add_prop(ctx, "p/trace/thickness", Coord, arc->Thickness);
-	map_add_prop(ctx, "p/trace/clearance", Coord, arc->Clearance);
-	map_add_prop(ctx, "p/arc/width",       Coord, arc->Width);
-	map_add_prop(ctx, "p/arc/height",      Coord, arc->Height);
+	map_add_prop(ctx, "p/trace/thickness", pcb_coord_t, arc->Thickness);
+	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, arc->Clearance);
+	map_add_prop(ctx, "p/arc/width",       pcb_coord_t, arc->Width);
+	map_add_prop(ctx, "p/arc/height",      pcb_coord_t, arc->Height);
 	map_add_prop(ctx, "p/arc/angle/start", pcb_angle_t, arc->StartAngle);
 	map_add_prop(ctx, "p/arc/angle/delta", pcb_angle_t, arc->Delta);
 	map_attr(ctx, &arc->Attributes);
@@ -148,17 +148,17 @@ static void map_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 static void map_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pin_t *pin)
 {
 	map_chk_skip(ctx, pin);
-	map_add_prop(ctx, "p/pin/thickness", Coord, pin->Thickness);
-	map_add_prop(ctx, "p/pin/clearance", Coord, pin->Clearance);
-	map_add_prop(ctx, "p/pin/mask",      Coord, pin->Mask);
-	map_add_prop(ctx, "p/pin/hole",      Coord, pin->DrillingHole);
+	map_add_prop(ctx, "p/pin/thickness", pcb_coord_t, pin->Thickness);
+	map_add_prop(ctx, "p/pin/clearance", pcb_coord_t, pin->Clearance);
+	map_add_prop(ctx, "p/pin/mask",      pcb_coord_t, pin->Mask);
+	map_add_prop(ctx, "p/pin/hole",      pcb_coord_t, pin->DrillingHole);
 	map_attr(ctx, &pin->Attributes);
 }
 
 static void map_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad)
 {
 	map_chk_skip(ctx, pad);
-	map_add_prop(ctx, "p/pad/mask",      Coord, pad->Mask);
+	map_add_prop(ctx, "p/pad/mask",      pcb_coord_t, pad->Mask);
 	map_attr(ctx, &pad->Attributes);
 }
 
@@ -167,10 +167,10 @@ static void map_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 static void map_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 {
 	map_chk_skip(ctx, via);
-	map_add_prop(ctx, "p/via/thickness", Coord, via->Thickness);
-	map_add_prop(ctx, "p/via/clearance", Coord, via->Clearance);
-	map_add_prop(ctx, "p/via/mask",      Coord, via->Mask);
-	map_add_prop(ctx, "p/via/hole",      Coord, via->DrillingHole);
+	map_add_prop(ctx, "p/via/thickness", pcb_coord_t, via->Thickness);
+	map_add_prop(ctx, "p/via/clearance", pcb_coord_t, via->Clearance);
+	map_add_prop(ctx, "p/via/mask",      pcb_coord_t, via->Mask);
+	map_add_prop(ctx, "p/via/hole",      pcb_coord_t, via->DrillingHole);
 	map_attr(ctx, &via->Attributes);
 }
 
@@ -192,7 +192,7 @@ void pcb_propsel_map_core(htsp_t *props)
 typedef struct set_ctx_s {
 	const char *name;
 	const char *value;
-	Coord c;
+	pcb_coord_t c;
 	double d;
 	pcb_bool c_absolute, d_absolute, c_valid, d_valid, is_trace, is_attr;
 

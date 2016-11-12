@@ -309,8 +309,8 @@ typedef struct routedata {
 	RouteStyleType **styles; /* [max_styles+1] */
 	/* what is the maximum bloat (clearance+line half-width or
 	 * clearance+via_radius) for any style we've seen? */
-	Coord max_bloat;
-	Coord max_keep;
+	pcb_coord_t max_bloat;
+	pcb_coord_t max_keep;
 	mtspace_t *mtspace;
 } routedata_t;
 
@@ -341,7 +341,7 @@ static struct {
 	/* net style parameters */
 	RouteStyleType *style;
 	/* the present bloat */
-	Coord bloat;
+	pcb_coord_t bloat;
 	/* cost parameters */
 	cost_t ViaCost,								/* additional "length" cost for using a via */
 	  LastConflictPenalty,				/* length mult. for routing over last pass' trace */
@@ -389,7 +389,7 @@ static pcb_box_t edge_to_box(const routebox_t * rb, direction_t expand_dir);
 static void add_or_destroy_edge(struct routeone_state *s, edge_t * e);
 
 static void
-RD_DrawThermal(routedata_t * rd, Coord X, Coord Y, pcb_cardinal_t group, pcb_cardinal_t layer, routebox_t * subnet, pcb_bool is_bad);
+RD_DrawThermal(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_cardinal_t group, pcb_cardinal_t layer, routebox_t * subnet, pcb_bool is_bad);
 static void ResetSubnet(routebox_t * net);
 #ifdef ROUTE_DEBUG
 static int showboxen = -2;
@@ -541,7 +541,7 @@ static void RemoveFromNet(routebox_t * a, enum boxlist which)
 	return;
 }
 
-static void init_const_box(routebox_t * rb, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord clearance)
+static void init_const_box(routebox_t * rb, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t clearance)
 {
 	pcb_box_t *bp = (pcb_box_t *) & rb->box;	/* note discarding const! */
 	assert(!rb->flags.inited);
@@ -574,7 +574,7 @@ static inline Cheappcb_point_t closest_point_in_routebox(const Cheappcb_point_t 
 	return closest_point_in_box(from, &rb->sbox);
 }
 
-static inline pcb_bool point_in_shrunk_box(const routebox_t * box, Coord X, Coord Y)
+static inline pcb_bool point_in_shrunk_box(const routebox_t * box, pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_box_t b = shrink_routebox(box);
 	return point_in_box(&b, X, Y);
@@ -628,7 +628,7 @@ static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb
 
 static routebox_t *AddPad(PointerListType layergroupboxes[], pcb_element_t *element, pcb_pad_t *pad, RouteStyleType * style)
 {
-	Coord halfthick;
+	pcb_coord_t halfthick;
 	routebox_t **rbpp;
 	int layergroup = (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? back : front);
 	assert(0 <= layergroup && layergroup < max_group);
@@ -702,11 +702,11 @@ static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, pc
 }
 
 static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
-																				Coord X1, Coord Y1,
-																				Coord X2, Coord Y2, pcb_cardinal_t layergroup, void *parent, RouteStyleType * style)
+																				pcb_coord_t X1, pcb_coord_t Y1,
+																				pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t layergroup, void *parent, RouteStyleType * style)
 {
 	routebox_t **rbpp;
-	Coord keep = style->Clearance;
+	pcb_coord_t keep = style->Clearance;
 	assert(layergroupboxes && parent);
 	assert(X1 <= X2 && Y1 <= Y2);
 	assert(0 <= layergroup && layergroup < max_group);
@@ -796,7 +796,7 @@ static pcb_r_dir_t __found_one_on_lg(const pcb_box_t * box, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static routebox_t *FindRouteBoxOnLayerGroup(routedata_t * rd, Coord X, Coord Y, pcb_cardinal_t layergroup)
+static routebox_t *FindRouteBoxOnLayerGroup(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_cardinal_t layergroup)
 {
 	struct rb_info info;
 	info.winner = NULL;
@@ -964,8 +964,8 @@ static routedata_t *CreateRouteData()
 						/* dice up non-straight lines into many tiny obstacles */
 						if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
 							pcb_line_t fake_line = *line;
-							Coord dx = (line->Point2.X - line->Point1.X);
-							Coord dy = (line->Point2.Y - line->Point1.Y);
+							pcb_coord_t dx = (line->Point2.X - line->Point1.X);
+							pcb_coord_t dy = (line->Point2.Y - line->Point1.Y);
 							int segs = MAX(PCB_ABS(dx),
 														 PCB_ABS(dy)) / (4 * BLOAT(rd->styles[j]) + 1);
 							int qq;
@@ -1079,8 +1079,8 @@ static routedata_t *CreateRouteData()
 			/* dice up non-straight lines into many tiny obstacles */
 			if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
 				pcb_line_t fake_line = *line;
-				Coord dx = (line->Point2.X - line->Point1.X);
-				Coord dy = (line->Point2.Y - line->Point1.Y);
+				pcb_coord_t dx = (line->Point2.X - line->Point1.X);
+				pcb_coord_t dy = (line->Point2.Y - line->Point1.Y);
 				int segs = MAX(PCB_ABS(dx), PCB_ABS(dy)) / (4 * rd->max_bloat + 1);
 				int qq;
 				segs = PCB_CLAMP(segs, 1, 32);	/* don't go too crazy */
@@ -1297,7 +1297,7 @@ static cost_t cost_to_routebox(const Cheappcb_point_t * p, pcb_cardinal_t point_
 static pcb_box_t bloat_routebox(routebox_t * rb)
 {
 	pcb_box_t r;
-	Coord clearance;
+	pcb_coord_t clearance;
 	assert(__routebox_is_good(rb));
 
 	if (rb->flags.nobloat)
@@ -1526,7 +1526,7 @@ static routebox_t *mincost_target_to_point(const Cheappcb_point_t * CostPoint,
 /* create edge from field values */
 /* mincost_target_guess can be NULL */
 static edge_t *CreateEdge(routebox_t * rb,
-													Coord CostPointX, Coord CostPointY,
+													pcb_coord_t CostPointX, pcb_coord_t CostPointY,
 													cost_t cost_to_point, routebox_t * mincost_target_guess, direction_t expand_dir, pcb_rtree_t * targets)
 {
 	edge_t *e;
@@ -1839,7 +1839,7 @@ static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t gr
 struct E_result {
 	routebox_t *parent;
 	routebox_t *n, *e, *s, *w;
-	Coord keep, bloat;
+	pcb_coord_t keep, bloat;
 	pcb_box_t inflated, orig;
 	int done;
 };
@@ -1855,7 +1855,7 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 	struct E_result *res = (struct E_result *) cl;
 	routebox_t *rb = (routebox_t *) box;
 	pcb_box_t rbox;
-	Coord dn, de, ds, dw, bloat;
+	pcb_coord_t dn, de, ds, dw, bloat;
 
 	/* we don't see conflicts already encountered */
 	if (rb->flags.touched)
@@ -1951,7 +1951,7 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 
 static pcb_bool boink_box(routebox_t * rb, struct E_result *res, direction_t dir)
 {
-	Coord bloat;
+	pcb_coord_t bloat;
 	if (rb->style->Clearance > res->keep)
 		bloat = res->keep - rb->style->Clearance;
 	else
@@ -2409,7 +2409,7 @@ static pcb_r_dir_t __GatherBlockers(const pcb_box_t * box, void *cl)
  * i.e. if dir is SOUTH, then this means fixing up an EAST leftover
  * edge, which would be the southern most edge for that example.
  */
-static inline pcb_box_t previous_edge(Coord last, direction_t i, const pcb_box_t * b)
+static inline pcb_box_t previous_edge(pcb_coord_t last, direction_t i, const pcb_box_t * b)
 {
 	pcb_box_t db = *b;
 	switch (i) {
@@ -2439,8 +2439,8 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 	struct break_info bi;
 	vector_t *edges;
 	heap_t *heap[4];
-	Coord first, last;
-	Coord bloat;
+	pcb_coord_t first, last;
+	pcb_coord_t bloat;
 	direction_t dir;
 	routebox_t fake;
 
@@ -2828,7 +2828,7 @@ routebox_t *FindThermable(pcb_rtree_t * rtree, routebox_t * rb)
  * Route-tracing code: once we've got a path of expansion boxes, trace
  * a line through them to actually create the connection.
  */
-static void RD_DrawThermal(routedata_t * rd, Coord X, Coord Y, pcb_cardinal_t group, pcb_cardinal_t layer, routebox_t * subnet, pcb_bool is_bad)
+static void RD_DrawThermal(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_cardinal_t group, pcb_cardinal_t layer, routebox_t * subnet, pcb_bool is_bad)
 {
 	routebox_t *rb;
 	rb = (routebox_t *) malloc(sizeof(*rb));
@@ -2850,7 +2850,7 @@ static void RD_DrawThermal(routedata_t * rd, Coord X, Coord Y, pcb_cardinal_t gr
 	rb->flags.homeless = 0;
 }
 
-static void RD_DrawVia(routedata_t * rd, Coord X, Coord Y, Coord radius, routebox_t * subnet, pcb_bool is_bad)
+static void RD_DrawVia(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t radius, routebox_t * subnet, pcb_bool is_bad)
 {
 	routebox_t *rb, *first_via = NULL;
 	int i;
@@ -2906,22 +2906,22 @@ static void RD_DrawVia(routedata_t * rd, Coord X, Coord Y, Coord radius, routebo
 
 static void
 RD_DrawLine(routedata_t * rd,
-						Coord X1, Coord Y1, Coord X2,
-						Coord Y2, Coord halfthick, pcb_cardinal_t group, routebox_t * subnet, pcb_bool is_bad, pcb_bool is_45)
+						pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,
+						pcb_coord_t Y2, pcb_coord_t halfthick, pcb_cardinal_t group, routebox_t * subnet, pcb_bool is_bad, pcb_bool is_45)
 {
 	/* we hold the line in a queue to concatenate segments that
 	 * ajoin one another. That reduces the number of things in
 	 * the trees and allows conflict boxes to be larger, both of
 	 * which are really useful.
 	 */
-	static Coord qX1 = -1, qY1, qX2, qY2;
-	static Coord qhthick;
+	static pcb_coord_t qX1 = -1, qY1, qX2, qY2;
+	static pcb_coord_t qhthick;
 	static pcb_cardinal_t qgroup;
 	static pcb_bool qis_45, qis_bad;
 	static routebox_t *qsn;
 
 	routebox_t *rb;
-	Coord ka = AutoRouteParameters.style->Clearance;
+	pcb_coord_t ka = AutoRouteParameters.style->Clearance;
 
 	/* don't draw zero-length segments. */
 	if (X1 == X2 && Y1 == Y2)
@@ -3013,7 +3013,7 @@ static pcb_bool
 RD_DrawManhattanLine(routedata_t * rd,
 										 const pcb_box_t * box1, const pcb_box_t * box2,
 										 Cheappcb_point_t start, Cheappcb_point_t end,
-										 Coord halfthick, pcb_cardinal_t group, routebox_t * subnet, pcb_bool is_bad, pcb_bool last_was_x)
+										 pcb_coord_t halfthick, pcb_cardinal_t group, routebox_t * subnet, pcb_bool is_bad, pcb_bool last_was_x)
 {
 	Cheappcb_point_t knee = start;
 	if (end.X == start.X) {
@@ -3049,7 +3049,7 @@ RD_DrawManhattanLine(routedata_t * rd,
 	}
 	else {
 		/* draw 45-degree path across knee */
-		Coord len45 = MIN(PCB_ABS(start.X - end.X), PCB_ABS(start.Y - end.Y));
+		pcb_coord_t len45 = MIN(PCB_ABS(start.X - end.X), PCB_ABS(start.Y - end.Y));
 		Cheappcb_point_t kneestart = knee, kneeend = knee;
 		if (kneestart.X == start.X)
 			kneestart.Y += (kneestart.Y > start.Y) ? -len45 : len45;
@@ -3112,8 +3112,8 @@ static void add_clearance(Cheappcb_point_t * nextpoint, const pcb_box_t * b)
 static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * target, routebox_t * subnet, pcb_bool is_bad)
 {
 	pcb_bool last_x = pcb_false;
-	Coord halfwidth = HALF_THICK(AutoRouteParameters.style->Thick);
-	Coord radius = HALF_THICK(AutoRouteParameters.style->Diameter);
+	pcb_coord_t halfwidth = HALF_THICK(AutoRouteParameters.style->Thick);
+	pcb_coord_t radius = HALF_THICK(AutoRouteParameters.style->Diameter);
 	Cheappcb_point_t lastpoint, nextpoint;
 	routebox_t *lastpath;
 	pcb_box_t b;
@@ -3349,9 +3349,9 @@ void
 add_via_sites(struct routeone_state *s,
 							struct routeone_via_site_state *vss,
 							mtspace_t * mtspace, routebox_t * within,
-							conflict_t within_conflict_level, edge_t * parent_edge, pcb_rtree_t * targets, Coord shrink, pcb_bool in_plane)
+							conflict_t within_conflict_level, edge_t * parent_edge, pcb_rtree_t * targets, pcb_coord_t shrink, pcb_bool in_plane)
 {
-	Coord radius, clearance;
+	pcb_coord_t radius, clearance;
 	vetting_t *work;
 	pcb_box_t region = shrink_routebox(within);
 	shrink_box(&region, shrink);
@@ -3378,7 +3378,7 @@ do_via_search(edge_t * search, struct routeone_state *s,
 							struct routeone_via_site_state *vss, mtspace_t * mtspace, pcb_rtree_t * targets)
 {
 	int i, j, count = 0;
-	Coord radius, clearance;
+	pcb_coord_t radius, clearance;
 	vetting_t *work;
 	routebox_t *within;
 	conflict_t within_conflict_level;
@@ -4387,7 +4387,7 @@ out:
 
 struct fpin_info {
 	pcb_pin_t *pin;
-	Coord X, Y;
+	pcb_coord_t X, Y;
 	jmp_buf env;
 };
 
@@ -4450,7 +4450,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				assert(layer && layer->On);	/*at least one layer must be on in this group! */
 				assert(p->type != EXPANSION_AREA);
 				if (p->type == LINE) {
-					Coord halfwidth = HALF_THICK(p->style->Thick);
+					pcb_coord_t halfwidth = HALF_THICK(p->style->Thick);
 					double th = halfwidth * 2 + 1;
 					pcb_box_t b;
 					assert(p->parent.line == NULL);
@@ -4464,7 +4464,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 					if (b.Y2 == b.Y1 + 1)
 						b.Y2 = b.Y1;
 					if (p->flags.bl_to_ur) {
-						Coord t;
+						pcb_coord_t t;
 						t = b.X1;
 						b.X1 = b.X2;
 						b.X2 = t;
@@ -4481,7 +4481,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				}
 				else if (p->type == VIA || p->type == VIA_SHADOW) {
 					routebox_t *pp = (p->type == VIA_SHADOW) ? p->parent.via_shadow : p;
-					Coord radius = HALF_THICK(pp->style->Diameter);
+					pcb_coord_t radius = HALF_THICK(pp->style->Diameter);
 					pcb_box_t b = shrink_routebox(p);
 					total_via_count++;
 					assert(pp->type == VIA);
@@ -4700,7 +4700,7 @@ donerouting:
 
 	if (changed)
 		changed = IronDownAllUnfixedPaths(rd);
-	Message(PCB_MSG_DEFAULT, "Total added wire length = %$mS, %d vias added\n", (Coord) total_wire_length, total_via_count);
+	Message(PCB_MSG_DEFAULT, "Total added wire length = %$mS, %d vias added\n", (pcb_coord_t) total_wire_length, total_via_count);
 	DestroyRouteData(&rd);
 	if (changed) {
 		SaveUndoSerialNumber();

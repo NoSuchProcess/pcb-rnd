@@ -49,7 +49,7 @@ static const char load_hyp_syntax[] = "LoadhypFrom(filename)";
 
 static const char load_hyp_help[] = "Loads the specified hyp resource file.";
 
-int ActionLoadhypFrom(int argc, const char **argv, Coord x, Coord y)
+int ActionLoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
 	fname = argc ? argv[0] : 0;

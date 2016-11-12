@@ -227,7 +227,7 @@ static void stitch_them()
 	RemovePolygon(poly_layer, inner_poly);
 }
 
-static int polystitch(int argc, const char **argv, Coord x, Coord y)
+static int polystitch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	find_crosshair_poly(x, y);
 	if (inner_poly) {

@@ -97,7 +97,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	int layer = 0;
 	int currentKicadLayer = 0;
 	int currentGroup = 0;
-	Coord outlineThickness = PCB_MIL_TO_COORD(10); 
+	pcb_coord_t outlineThickness = PCB_MIL_TO_COORD(10); 
 
 	int bottomCount;
 	int *bottomLayers;
@@ -112,8 +112,8 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	int outlineCount;
 	int *outlineLayers;
 
-	Coord LayoutXOffset;
-	Coord LayoutYOffset;
+	pcb_coord_t LayoutXOffset;
+	pcb_coord_t LayoutYOffset;
 
 	/* Kicad expects a layout "sheet" size to be specified in mils, and A4, A3 etc... */
 	int A4HeightMil = 8267;
@@ -502,7 +502,7 @@ static int io_kicad_write_element_index(FILE * FP, pcb_data_t *Data)
 */
 
 
-int write_kicad_layout_vias(FILE * FP, pcb_data_t *Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+int write_kicad_layout_vias(FILE * FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
 	pcb_pin_t *via;
@@ -570,7 +570,7 @@ static int write_kicad_layout_via_drill_size(FILE * FP, pcb_cardinal_t indentati
 }
 
 int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
-																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+																		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
@@ -608,14 +608,14 @@ int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
 }
 
 int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
-																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+																		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
 	pcb_arc_t *arc;
 	pcb_arc_t localArc; /* for converting ellipses to circular arcs */
 	pcb_box_t *boxResult; /* for figuring out arc ends */
 	pcb_cardinal_t currentLayer = number;
-	Coord radius, xStart, yStart, xEnd, yEnd;
+	pcb_coord_t radius, xStart, yStart, xEnd, yEnd;
 	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
 	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
 
@@ -670,21 +670,21 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 }
 
 int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
-																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+																		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
 {
 	pcb_font_t *myfont = &PCB->Font;
-	Coord mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
-	Coord defaultStrokeThickness = 100*2540; /* use 100 mil as default 100% stroked font line thickness */
+	pcb_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
+	pcb_coord_t defaultStrokeThickness = 100*2540; /* use 100 mil as default 100% stroked font line thickness */
 	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */ 
 
-	Coord defaultXSize;
-	Coord defaultYSize;
-	Coord strokeThickness;
+	pcb_coord_t defaultXSize;
+	pcb_coord_t defaultYSize;
+	pcb_coord_t strokeThickness;
 	int rotation;	
-	Coord textOffsetX;
-	Coord textOffsetY;
-	Coord halfStringWidth;
-	Coord halfStringHeight;
+	pcb_coord_t textOffsetX;
+	pcb_coord_t textOffsetY;
+	pcb_coord_t halfStringWidth;
+	pcb_coord_t halfStringHeight;
 	int localFlag;
 
 	gdl_iterator_t it;
@@ -806,7 +806,7 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	pcb_element_t *element;
 	pcb_box_t *boxResult;
 
-	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc exporting */
+	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc exporting */
 
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char * currentElementName;
@@ -1033,14 +1033,14 @@ int write_kicad_equipotential_netlists(FILE * FP, pcb_board_t *Layout, pcb_cardi
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
-int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
 {
 
 	gdl_iterator_t eit;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
-	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
-	Coord xPos, yPos;
+	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
+	pcb_coord_t xPos, yPos;
 
 	pcb_element_t *element;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
@@ -1255,7 +1255,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
  */
 
 int write_kicad_layout_polygons(FILE * FP, pcb_cardinal_t number,
-																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+																		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset, pcb_cardinal_t indentation)
 {
 	int i, j;
 	gdl_iterator_t it;

@@ -103,7 +103,7 @@ static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val
 	return pcb_qry_run(prg, cb, user_ctx);
 }
 
-static int query_action(int argc, const char **argv, Coord x, Coord y)
+static int query_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *cmd = argc > 0 ? argv[0] : 0;
 	select_t sel;

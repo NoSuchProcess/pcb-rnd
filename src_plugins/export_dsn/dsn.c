@@ -65,10 +65,10 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 
 static const char *dsn_cookie = "dsn exporter";
 
-static Coord trackwidth = 8;  /* user options defined in export dialog */
-static Coord clearance = 8;
-static Coord viawidth = 45;
-static Coord viadrill = 25;
+static pcb_coord_t trackwidth = 8;  /* user options defined in export dialog */
+static pcb_coord_t clearance = 8;
+static pcb_coord_t viawidth = 45;
+static pcb_coord_t viadrill = 25;
 
 static pcb_hid_t dsn_hid;
 
@@ -292,9 +292,9 @@ static void print_library(FILE * fp)
 		/* loop thru pins and pads to add to image */
 		PIN_LOOP(element);
 		{
-			Coord ty;
-			Coord pinthickness;
-			Coord lx, ly;  /* hold local pin coordinates */
+			pcb_coord_t ty;
+			pcb_coord_t pinthickness;
+			pcb_coord_t lx, ly;  /* hold local pin coordinates */
 			ty = PCB->MaxHeight - pin->Y;
 			pinthickness = pin->Thickness;
 			if (TEST_FLAG(PCB_FLAG_SQUARE, pin))
@@ -323,8 +323,8 @@ static void print_library(FILE * fp)
 
 		PAD_LOOP(element);
 		{
-			Coord xlen, ylen, xc, yc, p1y, p2y;
-			Coord lx, ly;  /* store local coordinates for pins */
+			pcb_coord_t xlen, ylen, xc, yc, p1y, p2y;
+			pcb_coord_t lx, ly;  /* store local coordinates for pins */
 			p1y = PCB->MaxHeight - pad->Point1.Y;
 			p2y = PCB->MaxHeight - pad->Point2.Y;
 			/* pad dimensions are unusual-
@@ -379,7 +379,7 @@ static void print_library(FILE * fp)
 
 	/* loop thru padstacks and define them all */
 	for (iter = pads; iter; iter = g_list_next(iter)) {
-		Coord dim1, dim2;
+		pcb_coord_t dim1, dim2;
 		padstack = iter->data;
 		fprintf(fp, "    (padstack %s\n", padstack);
 

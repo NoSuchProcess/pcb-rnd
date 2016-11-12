@@ -212,7 +212,7 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type)
 	return hsh;
 }
 
-static lht_node_t *build_line(pcb_line_t *line, int local_id, Coord dx, Coord dy)
+static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pcb_coord_t dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -251,7 +251,7 @@ static lht_node_t *build_rat(pcb_rat_t *rat)
 	return obj;
 }
 
-static lht_node_t *build_arc(pcb_arc_t *arc, Coord dx, Coord dy)
+static lht_node_t *build_arc(pcb_arc_t *arc, pcb_coord_t dx, pcb_coord_t dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -273,7 +273,7 @@ static lht_node_t *build_arc(pcb_arc_t *arc, Coord dx, Coord dy)
 	return obj;
 }
 
-static lht_node_t *build_pin(pcb_pin_t *pin, int is_via, Coord dx, Coord dy)
+static lht_node_t *build_pin(pcb_pin_t *pin, int is_via, pcb_coord_t dx, pcb_coord_t dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -294,7 +294,7 @@ static lht_node_t *build_pin(pcb_pin_t *pin, int is_via, Coord dx, Coord dy)
 	return obj;
 }
 
-static lht_node_t *build_pad(pcb_pad_t *pad, Coord dx, Coord dy)
+static lht_node_t *build_pad(pcb_pad_t *pad, pcb_coord_t dx, pcb_coord_t dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -728,7 +728,7 @@ static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node
 {
 	/* for coords, preserve formatting as long as values match */
 	if (lhtpers_rule_find(io_lihata_out_coords, inmem_node) != NULL) {
-		Coord v1, v2;
+		pcb_coord_t v1, v2;
 		pcb_bool success1, success2;
 
 /*		fprintf(stderr, "SMART d='%s' m='%s'\n", ondisk_value, inmem_node->data.text.value);*/

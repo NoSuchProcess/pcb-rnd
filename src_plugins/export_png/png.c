@@ -68,8 +68,8 @@ static void *brush_cache = NULL;
 
 static double bloat = 0;
 static double scale = 1;
-static Coord x_shift = 0;
-static Coord y_shift = 0;
+static pcb_coord_t x_shift = 0;
+static pcb_coord_t y_shift = 0;
 static int show_solder_side;
 #define SCALE(w)   ((int)((w)/scale + 0.5))
 #define SCALE_X(x) ((int)(((x) - x_shift)/scale))
@@ -81,7 +81,7 @@ static int show_solder_side;
 #define NOT_EDGE_Y(y) ((y) != 0 && (y) != PCB->MaxHeight)
 #define NOT_EDGE(x,y) (NOT_EDGE_X(x) || NOT_EDGE_Y(y))
 
-static void png_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius);
+static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
 
 /* The result of a failed gdImageColorAllocate() call */
 #define BADC -1
@@ -1173,7 +1173,7 @@ static void png_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void png_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void png_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gc->width = width;
 }
@@ -1281,25 +1281,25 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void png_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void png_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	gdImageRectangle(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), gc->color->c);
 }
 
-static void png_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void png_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
 
 	if (x1 > x2) {
-		Coord t = x1;
+		pcb_coord_t t = x1;
 		x2 = x2;
 		x2 = t;
 	}
 	if (y1 > y2) {
-		Coord t = y1;
+		pcb_coord_t t = y1;
 		y2 = y2;
 		y2 = t;
 	}
@@ -1311,10 +1311,10 @@ static void png_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y
 	have_outline |= doing_outline;
 }
 
-static void png_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	if (x1 == x2 && y1 == y2) {
-		Coord w = gc->width / 2;
+		pcb_coord_t w = gc->width / 2;
 		if (gc->cap != Square_Cap)
 			png_fill_circle(gc, x1, y1, w);
 		else
@@ -1370,7 +1370,7 @@ static void png_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y
 	}
 }
 
-static void png_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
 
@@ -1379,8 +1379,8 @@ static void png_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord
 	 * nothing at all or a full circle when passed delta angle of 0 or 360.
 	 */
 	if (delta_angle == 0) {
-		Coord x = (width * cos(start_angle * M_PI / 180));
-		Coord y = (width * sin(start_angle * M_PI / 180));
+		pcb_coord_t x = (width * cos(start_angle * M_PI / 180));
+		pcb_coord_t y = (width * sin(start_angle * M_PI / 180));
 		x = cx - x;
 		y = cy + y;
 		png_fill_circle(gc, x, y, gc->width / 2);
@@ -1426,9 +1426,9 @@ static void png_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord
 	gdImageArc(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * width), SCALE(2 * height), sa, ea, gdBrushed);
 }
 
-static void png_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
-	Coord my_bloat;
+	pcb_coord_t my_bloat;
 
 	use_gc(gc);
 
@@ -1446,7 +1446,7 @@ static void png_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 
 }
 
-static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
 	gdPoint *points;

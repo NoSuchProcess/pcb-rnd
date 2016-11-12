@@ -51,7 +51,7 @@
 
 conf_import_sch_t conf_import_sch;
 
-extern int ActionExecuteFile(int argc, const char **argv, Coord x, Coord y);
+extern int ActionExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 /* ---------------------------------------------------------------- */
 static const char import_syntax[] =
@@ -169,7 +169,7 @@ smallest board dimension.  Dispersion is saved in the
 
 %end-doc */
 
-static int ActionImport(int argc, const char **argv, Coord x, Coord y)
+static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *mode;
 	const char **sources = NULL;
@@ -204,7 +204,7 @@ static int ActionImport(int argc, const char **argv, Coord x, Coord y)
 
 	if (mode && strcasecmp(mode, "setnewpoint") == 0) {
 		const char *xs, *ys, *units;
-		Coord x, y;
+		pcb_coord_t x, y;
 		char buf[50];
 
 		xs = ACTION_ARG(1);

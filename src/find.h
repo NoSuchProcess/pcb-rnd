@@ -68,7 +68,7 @@ pcb_bool ArcPadIntersect(pcb_arc_t *, pcb_pad_t *);
 pcb_bool IsPolygonInPolygon(pcb_polygon_t *, pcb_polygon_t *);
 void LookupElementConnections(pcb_element_t *, FILE *);
 void LookupConnectionsToAllElements(FILE *);
-void LookupConnection(Coord, Coord, pcb_bool, Coord, int);
+void LookupConnection(pcb_coord_t, pcb_coord_t, pcb_bool, pcb_coord_t, int);
 void LookupConnectionByPin(int type, void *ptr1);
 void LookupUnusedPins(FILE *);
 pcb_bool ResetFoundLinesAndPolygons(pcb_bool);

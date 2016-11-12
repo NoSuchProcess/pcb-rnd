@@ -8095,7 +8095,7 @@ gint toporouter_set_pair(toporouter_t * r, toporouter_netlist_t * n1, toporouter
 	return 1;
 }
 
-static int toporouter(int argc, char **argv, Coord x, Coord y)
+static int toporouter(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	toporouter_t *r = toporouter_new();
 	parse_arguments(r, argc, argv);
@@ -8134,7 +8134,7 @@ static int toporouter(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int escape(int argc, char **argv, Coord x, Coord y)
+static int escape(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	guint dir, viax, viay;
 	gdouble pitch, length, dx, dy;

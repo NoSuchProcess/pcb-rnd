@@ -120,7 +120,7 @@ typedef struct hid_gc_s {
 
 typedef struct {
 	int processed;
-	Coord x1, y1, x2, y2;
+	pcb_coord_t x1, y1, x2, y2;
 } t_outline_segment;
 
 extern FILE *scad_output;

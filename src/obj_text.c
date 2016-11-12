@@ -67,7 +67,7 @@ void RemoveFreeText(pcb_text_t * data)
 /*** utility ***/
 
 /* creates a new text on a layer */
-pcb_text_t *CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, pcb_flag_t Flags)
+pcb_text_t *CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text;
 
@@ -111,9 +111,9 @@ void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	int i;
 	int space;
 
-	Coord minx, miny, maxx, maxy, tx;
-	Coord min_final_radius;
-	Coord min_unscaled_radius;
+	pcb_coord_t minx, miny, maxx, maxy, tx;
+	pcb_coord_t min_final_radius;
+	pcb_coord_t min_unscaled_radius;
 	pcb_bool first_time = pcb_true;
 
 	minx = miny = maxx = maxy = tx = 0;
@@ -140,7 +140,7 @@ void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text)
 				 *     of 1/2 because some stupid reason we render our glyphs
 				 *     at half their defined stroke-width.
 				 */
-				Coord unscaled_radius = MAX(min_unscaled_radius, line->Thickness / 4);
+				pcb_coord_t unscaled_radius = MAX(min_unscaled_radius, line->Thickness / 4);
 
 				if (first_time) {
 					minx = maxx = line->Point1.X;
@@ -161,7 +161,7 @@ void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text)
 		}
 		else {
 			pcb_box_t *ds = &FontPtr->DefaultSymbol;
-			Coord w = ds->X2 - ds->X1;
+			pcb_coord_t w = ds->X2 - ds->X1;
 
 			minx = MIN(minx, ds->X1 + tx);
 			miny = MIN(miny, ds->Y1);
@@ -434,7 +434,7 @@ void *RemoveText(pcb_layer_t *Layer, pcb_text_t *Text)
 
 /* rotates a text in 90 degree steps; only the bounding box is rotated,
    text rotation itself is done by the drawing routines */
-void RotateTextLowLevel(pcb_text_t *Text, Coord X, Coord Y, unsigned Number)
+void RotateTextLowLevel(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	pcb_uint8_t number;
 
@@ -468,9 +468,9 @@ void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 /* ---------------------------------------------------------------------------
  * lowlevel drawing routine for text objects
  */
-void DrawTextLowLevel(pcb_text_t *Text, Coord min_line_width)
+void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 {
-	Coord x = 0;
+	pcb_coord_t x = 0;
 	unsigned char *string = (unsigned char *) Text->TextString;
 	pcb_cardinal_t n;
 	pcb_font_t *font = &PCB->Font;
@@ -517,7 +517,7 @@ void DrawTextLowLevel(pcb_text_t *Text, Coord min_line_width)
 		else {
 			/* the default symbol is a filled box */
 			pcb_box_t defaultsymbol = PCB->Font.DefaultSymbol;
-			Coord size = (defaultsymbol.X2 - defaultsymbol.X1) * 6 / 5;
+			pcb_coord_t size = (defaultsymbol.X2 - defaultsymbol.X1) * 6 / 5;
 
 			defaultsymbol.X1 = PCB_SCALE_TEXT(defaultsymbol.X1 + x, Text->Scale);
 			defaultsymbol.Y1 = PCB_SCALE_TEXT(defaultsymbol.Y1, Text->Scale);

@@ -46,7 +46,7 @@ void ActionGetXY(char *);
 
 #define ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
 
-int get_style_size(int funcid, Coord * out, int type, int size_id);
+int get_style_size(int funcid, pcb_coord_t * out, int type, int size_id);
 
 extern int defer_updates;
 extern int defer_needs_update;
@@ -58,7 +58,7 @@ void NotifyMode(void);
 void ClearWarnings(void);
 
 typedef struct {
-	Coord X, Y;
+	pcb_coord_t X, Y;
 	pcb_cardinal_t Buffer;
 	pcb_bool Click;
 	pcb_bool Moving;									/* selected type clicked on */

@@ -140,7 +140,7 @@ static char *reference_pin_names[] = {"1", "2", "A1", "A2", "B1", "B2", 0};
 static int PrintXY(void)
 {
 	char utcTime[64];
-	Coord x, y;
+	pcb_coord_t x, y;
 	double theta = 0.0;
 	double sumx, sumy;
 	double pin1x = 0.0, pin1y = 0.0;

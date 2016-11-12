@@ -28,7 +28,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss);
 
 GtkAccelGroup *ghid_route_style_selector_get_accel_group(GHidRouteStyleSelector * rss);
 
-void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, Coord Hole, Coord Diameter, Coord Clearance);
+void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, pcb_coord_t Thick, pcb_coord_t Hole, pcb_coord_t Diameter, pcb_coord_t Clearance);
 void ghid_route_style_selector_empty(GHidRouteStyleSelector * rss);
 
 G_END_DECLS											/* keep c++ happy */

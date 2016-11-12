@@ -224,7 +224,7 @@ int get_n_units(void)
  *
  * \return The converted measure
  */
-double coord_to_unit(const pcb_unit_t * unit, Coord x)
+double coord_to_unit(const pcb_unit_t * unit, pcb_coord_t x)
 {
 	double base;
 	if (unit == NULL)
@@ -241,7 +241,7 @@ double coord_to_unit(const pcb_unit_t * unit, Coord x)
  *
  * \return The converted measure
  */
-Coord unit_to_coord(const pcb_unit_t * unit, double x)
+pcb_coord_t unit_to_coord(const pcb_unit_t * unit, double x)
 {
 	double base;
 	if (unit == NULL)

@@ -44,7 +44,7 @@ typedef struct {
 
 double GetValue(const char *, const char *, pcb_bool *, pcb_bool *success);
 double GetValueEx(const char *, const char *, pcb_bool *, pcb_unit_list_t, const char *, pcb_bool *success);
-Coord GetNum(char **s, const char *default_unit);
+pcb_coord_t GetNum(char **s, const char *default_unit);
 
 
 char *Concat(const char *, ...);	/* end with NULL */

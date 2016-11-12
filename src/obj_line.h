@@ -49,15 +49,15 @@ typedef struct {								/* current marked line */
 pcb_line_t *GetLineMemory(pcb_layer_t * layer);
 void RemoveFreeLine(pcb_line_t * data);
 
-pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, pcb_flag_t Flags);
-pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, pcb_flag_t Flags);
+pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
+pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line);
 
 void SetLineBoundingBox(pcb_line_t *Line);
 void *RemoveLine(pcb_layer_t *Layer, pcb_line_t *Line);
-void RotateLineLowLevel(pcb_line_t *Line, Coord X, Coord Y, unsigned Number);
+void RotateLineLowLevel(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/
 void AdjustAttachedLine(void);

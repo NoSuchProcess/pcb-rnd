@@ -46,12 +46,12 @@ static void hid_batch_uninit(void)
 		free(prompt);
 }
 
-static int nop(int argc, const char **argv, Coord x, Coord y)
+static int nop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return 0;
 }
 
-static int PCBChanged(int argc, const char **argv, Coord x, Coord y)
+static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (prompt != NULL)
 		free(prompt);
@@ -69,13 +69,13 @@ static int PCBChanged(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int help(int argc, const char **argv, Coord x, Coord y)
+static int help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	print_actions();
 	return 0;
 }
 
-static int info(int argc, const char **argv, Coord x, Coord y)
+static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i, j;
 	int cg, sg;
@@ -199,7 +199,7 @@ static void batch_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 }
 
-static void batch_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void batch_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 }
 
@@ -207,27 +207,27 @@ static void batch_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
 {
 }
 
-static void batch_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void batch_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 }
 
-static void batch_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t end_angle)
+static void batch_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
 {
 }
 
-static void batch_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void batch_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 }
 
-static void batch_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void batch_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 }
 
-static void batch_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void batch_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 }
 
-static void batch_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void batch_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 }
 
@@ -250,7 +250,7 @@ static int batch_mod1_is_pressed(void)
 	return 0;
 }
 
-static void batch_get_coords(const char *msg, Coord * x, Coord * y)
+static void batch_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
 }
 

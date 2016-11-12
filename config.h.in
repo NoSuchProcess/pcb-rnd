@@ -197,7 +197,7 @@ Cons: can't include from here, needs to be included from the bottom of the #incl
 @?/local/pcb/include_stdint@
 
 /* Coordinate type and properties, as detected by scconfig */
-typedef @/local/pcb/coord_type@ Coord;
+typedef @/local/pcb/coord_type@ pcb_coord_t;
 #define COORD_MAX @/local/pcb/coord_max@
 #define coord_abs @/local/pcb/coord_abs@
 

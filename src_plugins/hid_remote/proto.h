@@ -34,12 +34,12 @@ int proto_send_make_gc(void);
 int proto_send_del_gc(int gc);
 void proto_send_set_color(int gc, const char *name);
 void proto_send_set_line_cap(int gc, char style);
-void proto_send_set_line_width(int gc, Coord width);
+void proto_send_set_line_width(int gc, pcb_coord_t width);
 void proto_send_set_draw_xor(int gc, int xor_set);
-void proto_send_draw_line(int gc, Coord x1, Coord y1, Coord x2, Coord y2);
-void proto_send_draw_rect(int gc, Coord x1, Coord y1, Coord x2, Coord y2, int is_filled);
-void proto_send_fill_circle(int gc, Coord cx, Coord cy, Coord radius);
-void proto_send_draw_poly(int gc, int n_coords, Coord * x, Coord * y);
+void proto_send_draw_line(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+void proto_send_draw_rect(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int is_filled);
+void proto_send_fill_circle(int gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
+void proto_send_draw_poly(int gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
 int proto_send_use_mask(const char *name);
 
 int remote_proto_parse_all();

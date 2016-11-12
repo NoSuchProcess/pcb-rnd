@@ -54,7 +54,7 @@
    should search the grid for the gridlines and use them to figure out
    where the symbols are. */
 
-#define CELL_SIZE   ((Coord)(PCB_MIL_TO_COORD (100)))
+#define CELL_SIZE   ((pcb_coord_t)(PCB_MIL_TO_COORD (100)))
 
 #define XYtoSym(x,y) (((x) / CELL_SIZE - 1)  +  (16 * ((y) / CELL_SIZE - 1)))
 
@@ -66,7 +66,7 @@ static const char fontedit_help[] = "Convert the current font to a PCB for editi
 
 %end-doc */
 
-static int FontEdit(int argc, const char **argv, Coord Ux, Coord Uy)
+static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 {
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
@@ -108,9 +108,9 @@ static int FontEdit(int argc, const char **argv, Coord Ux, Coord Uy)
 
 	font = &PCB->Font;
 	for (s = 0; s <= MAX_FONTPOSITION; s++) {
-		Coord ox = (s % 16 + 1) * CELL_SIZE;
-		Coord oy = (s / 16 + 1) * CELL_SIZE;
-		Coord w, miny, maxy, maxx = 0;
+		pcb_coord_t ox = (s % 16 + 1) * CELL_SIZE;
+		pcb_coord_t oy = (s / 16 + 1) * CELL_SIZE;
+		pcb_coord_t w, miny, maxy, maxx = 0;
 
 		symbol = &font->Symbol[s];
 
@@ -155,7 +155,7 @@ static const char fontsave_help[] = "Convert the current PCB back to a font.";
 
 %end-doc */
 
-static int FontSave(int argc, const char **argv, Coord Ux, Coord Uy)
+static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 {
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
@@ -201,9 +201,9 @@ static int FontSave(int argc, const char **argv, Coord Ux, Coord Uy)
 	}
 
 	linelist_foreach(&lwidth->Line, &it, l) {
-		Coord x1 = l->Point1.X;
-		Coord y1 = l->Point1.Y;
-		Coord ox, s;
+		pcb_coord_t x1 = l->Point1.X;
+		pcb_coord_t y1 = l->Point1.Y;
+		pcb_coord_t ox, s;
 
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;

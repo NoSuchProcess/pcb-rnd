@@ -66,7 +66,7 @@ void RemoveFreePad(pcb_pad_t * data)
 
 /*** utility ***/
 /* creates a new pad in an element */
-pcb_pad_t *CreateNewPad(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, pcb_flag_t Flags)
+pcb_pad_t *CreateNewPad(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, char *Name, char *Number, pcb_flag_t Flags)
 {
 	pcb_pad_t *pad = GetPadMemory(Element);
 
@@ -98,9 +98,9 @@ pcb_pad_t *CreateNewPad(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Co
 /* sets the bounding box of a pad */
 void SetPadBoundingBox(pcb_pad_t *Pad)
 {
-	Coord width;
-	Coord deltax;
-	Coord deltay;
+	pcb_coord_t width;
+	pcb_coord_t deltax;
+	pcb_coord_t deltay;
 
 	/* the bounding box covers the extent of influence
 	 * so it must include the clearance values too
@@ -113,7 +113,7 @@ void SetPadBoundingBox(pcb_pad_t *Pad)
 	if (TEST_FLAG(PCB_FLAG_SQUARE, Pad) && deltax != 0 && deltay != 0) {
 		/* slanted square pad */
 		double theta;
-		Coord btx, bty;
+		pcb_coord_t btx, bty;
 
 		/* T is a vector half a thickness long, in the direction of
 		   one of the corners.  */
@@ -157,7 +157,7 @@ pcb_bool ChangePaste(pcb_pad_t *Pad)
 /* changes the size of a pad */
 void *ChangePadSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Thickness + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Thickness + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
@@ -181,7 +181,7 @@ void *ChangePadSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 /* changes the clearance size of a pad */
 void *ChangePadClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Clearance + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Clearance + ctx->chgsize.delta;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
@@ -278,7 +278,7 @@ void *ClrPadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 /* changes the mask size of a pad */
 void *ChangePadMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
-	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Mask + ctx->chgsize.delta;
+	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Mask + ctx->chgsize.delta;
 
 	value = MAX(value, 0);
 	if (value == Pad->Mask && ctx->chgsize.absolute == 0)

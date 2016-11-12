@@ -97,7 +97,7 @@ struct color_struct {
 struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
-	Coord width;
+	pcb_coord_t width;
 	unsigned char r, g, b;
 	int erase;
 	int faded;
@@ -108,7 +108,7 @@ struct hid_gc_s {
 static pcb_hid_t nelma_hid;
 
 static struct color_struct *black = NULL, *white = NULL;
-static Coord linewidth = -1;
+static pcb_coord_t linewidth = -1;
 static gdImagePtr lastbrush = (gdImagePtr) ((void *) -1);
 static int lastcolor = -1;
 
@@ -216,7 +216,7 @@ REGISTER_ATTRIBUTES(nelma_attribute_list, nelma_cookie)
 /* *** Utility funcions **************************************************** */
 
 /* convert from default PCB units to nelma units */
-		 static int pcb_to_nelma(Coord pcb)
+		 static int pcb_to_nelma(pcb_coord_t pcb)
 {
 	return PCB_COORD_TO_INCH(pcb) * nelma_dpi;
 }
@@ -416,7 +416,7 @@ static void nelma_write_layers(FILE * out)
 static void nelma_write_object(FILE * out, pcb_lib_entry_t *pin)
 {
 	int i, idx;
-	Coord px = 0, py = 0;
+	pcb_coord_t px = 0, py = 0;
 	int x, y;
 
 	char *f;
@@ -748,7 +748,7 @@ static void nelma_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void nelma_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void nelma_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gc->width = width;
 }
@@ -865,13 +865,13 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void nelma_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nelma_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	gdImageRectangle(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gc->color->c);
 }
 
-static void nelma_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nelma_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	use_gc(gc);
 	gdImageSetThickness(nelma_im, 0);
@@ -879,10 +879,10 @@ static void nelma_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord
 	gdImageFilledRectangle(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gc->color->c);
 }
 
-static void nelma_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nelma_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	if (x1 == x2 && y1 == y2) {
-		Coord w = gc->width / 2;
+		pcb_coord_t w = gc->width / 2;
 		nelma_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		return;
 	}
@@ -893,7 +893,7 @@ static void nelma_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord
 	gdImageLine(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gdBrushed);
 }
 
-static void nelma_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void nelma_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
 
@@ -931,7 +931,7 @@ static void nelma_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coo
 						 pcb_to_nelma(2 * width), pcb_to_nelma(2 * height), sa, ea, gdBrushed);
 }
 
-static void nelma_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void nelma_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	use_gc(gc);
 
@@ -942,7 +942,7 @@ static void nelma_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 
 }
 
-static void nelma_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void nelma_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
 	gdPoint *points;

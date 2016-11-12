@@ -87,7 +87,7 @@ static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 	return (sa + d - 360) >= alpha;
 }
 
-static void get_arc_ends(Coord * box, pcb_arc_t *arc)
+static void get_arc_ends(pcb_coord_t * box, pcb_arc_t *arc)
 {
 	box[0] = arc->X - arc->Width * cos(PCB_M180 * arc->StartAngle);
 	box[1] = arc->Y + arc->Height * sin(PCB_M180 * arc->StartAngle);
@@ -123,8 +123,8 @@ static void get_arc_ends(Coord * box, pcb_arc_t *arc)
 static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 {
 	double x, y, dx, dy, r1, r2, a, d, l, t, t1, t2, dl;
-	Coord pdx, pdy;
-	Coord box[8];
+	pcb_coord_t pdx, pdy;
+	pcb_coord_t box[8];
 
 	t = 0.5 * Arc1->Thickness + Bloat;
 	t2 = 0.5 * Arc2->Thickness;
@@ -248,8 +248,8 @@ static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
 	else if (l->Point1.X == l->Point2.X)
 		dwy = l->Thickness / 2.0;
 	else {
-		Coord dX = l->Point2.X - l->Point1.X;
-		Coord dY = l->Point2.Y - l->Point1.Y;
+		pcb_coord_t dX = l->Point2.X - l->Point1.X;
+		pcb_coord_t dY = l->Point2.Y - l->Point1.Y;
 		double r = Distance(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
 		dwx = l->Thickness / 2.0 / r * dX;
 		dwy = l->Thickness / 2.0 / r * dY;
@@ -511,8 +511,8 @@ pcb_bool IsLineInPolygon(pcb_line_t *Line, pcb_polygon_t *Polygon)
 	if (!Polygon->Clipped)
 		return pcb_false;
 	if (TEST_FLAG(PCB_FLAG_SQUARE, Line) && (Line->Point1.X == Line->Point2.X || Line->Point1.Y == Line->Point2.Y)) {
-		Coord wid = (Line->Thickness + Bloat + 1) / 2;
-		Coord x1, x2, y1, y2;
+		pcb_coord_t wid = (Line->Thickness + Bloat + 1) / 2;
+		pcb_coord_t x1, x2, y1, y2;
 
 		x1 = MIN(Line->Point1.X, Line->Point2.X) - wid;
 		y1 = MIN(Line->Point1.Y, Line->Point2.Y) - wid;

@@ -238,7 +238,7 @@ static void check2(int srcline, corner_s * c, line_s * l)
 
 #define SWAP(a,b) { a^=b; b^=a; a^=b; }
 
-static int gridsnap(Coord n)
+static int gridsnap(pcb_coord_t n)
 {
 	if (n <= 0)
 		return 0;
@@ -2546,7 +2546,7 @@ RF losses and trace length.
 
 %end-doc */
 
-static int ActionDJopt(int argc, const char **argv, Coord x, Coord y)
+static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *arg = argc > 0 ? argv[0] : NULL;
 	int layn, saved = 0;

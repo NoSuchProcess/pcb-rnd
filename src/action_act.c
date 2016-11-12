@@ -47,7 +47,7 @@ Lines starting with @code{#} are ignored.
 
 %end-doc */
 
-int ActionExecuteFile(int argc, const char **argv, Coord x, Coord y)
+int ActionExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	FILE *fp;
 	const char *fname;

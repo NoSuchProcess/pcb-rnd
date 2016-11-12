@@ -53,15 +53,15 @@ typedef struct {
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void XORPolygon(pcb_polygon_t *, Coord, Coord, int);
-static void XORDrawElement(pcb_element_t *, Coord, Coord);
+static void XORPolygon(pcb_polygon_t *, pcb_coord_t, pcb_coord_t, int);
+static void XORDrawElement(pcb_element_t *, pcb_coord_t, pcb_coord_t);
 static void XORDrawBuffer(pcb_buffer_t *);
 static void XORDrawInsertPointObject(void);
 static void XORDrawMoveOrCopyObject(void);
-static void XORDrawAttachedLine(Coord, Coord, Coord, Coord, Coord);
-static void XORDrawAttachedArc(Coord);
+static void XORDrawAttachedLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
+static void XORDrawAttachedArc(pcb_coord_t);
 
-static void thindraw_moved_pv(pcb_pin_t * pv, Coord x, Coord y)
+static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
 {
 	/* Make a copy of the pin structure, moved to the correct position */
 	pcb_pin_t moved_pv = *pv;
@@ -71,7 +71,7 @@ static void thindraw_moved_pv(pcb_pin_t * pv, Coord x, Coord y)
 	gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &moved_pv, pcb_true, pcb_false);
 }
 
-static void draw_dashed_line(pcb_hid_gc_t GC, Coord x1, Coord y1, Coord x2, Coord y2)
+static void draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 /* TODO: we need a real geo lib... using double here is plain wrong */
 	double dx = x2-x1, dy = y2-y1;
@@ -102,7 +102,7 @@ static void draw_dashed_line(pcb_hid_gc_t GC, Coord x1, Coord y1, Coord x2, Coor
 /* ---------------------------------------------------------------------------
  * creates a tmp polygon with coordinates converted to screen system
  */
-static void XORPolygon(pcb_polygon_t *polygon, Coord dx, Coord dy, int dash_last)
+static void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last)
 {
 	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
@@ -130,13 +130,13 @@ static void XORPolygon(pcb_polygon_t *polygon, Coord dx, Coord dy, int dash_last
 /*-----------------------------------------------------------
  * Draws the outline of an arc
  */
-static void XORDrawAttachedArc(Coord thick)
+static void XORDrawAttachedArc(pcb_coord_t thick)
 {
 	pcb_arc_t arc;
 	pcb_box_t *bx;
-	Coord wx, wy;
+	pcb_coord_t wx, wy;
 	pcb_angle_t sa, dir;
-	Coord wid = thick / 2;
+	pcb_coord_t wid = thick / 2;
 
 	wx = Crosshair.X - Crosshair.AttachedBox.Point1.X;
 	wy = Crosshair.Y - Crosshair.AttachedBox.Point1.Y;
@@ -182,9 +182,9 @@ static void XORDrawAttachedArc(Coord thick)
 /*-----------------------------------------------------------
  * Draws the outline of a line
  */
-static void XORDrawAttachedLine(Coord x1, Coord y1, Coord x2, Coord y2, Coord thick)
+static void XORDrawAttachedLine(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
 {
-	Coord dx, dy, ox, oy;
+	pcb_coord_t dx, dy, ox, oy;
 	double h;
 
 	dx = x2 - x1;
@@ -207,7 +207,7 @@ static void XORDrawAttachedLine(Coord x1, Coord y1, Coord x2, Coord y2, Coord th
 /* ---------------------------------------------------------------------------
  * draws the elements of a loaded circuit which is to be merged in
  */
-static void XORDrawElement(pcb_element_t *Element, Coord DX, Coord DY)
+static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY)
 {
 	/* if no silkscreen, draw the bounding box */
 	if (arclist_length(&Element->Arc) == 0 && linelist_length(&Element->Line) == 0) {
@@ -277,7 +277,7 @@ static void XORDrawElement(pcb_element_t *Element, Coord DX, Coord DY)
 static void XORDrawBuffer(pcb_buffer_t *Buffer)
 {
 	pcb_cardinal_t i;
-	Coord x, y;
+	pcb_coord_t x, y;
 
 	/* set offset */
 	x = Crosshair.X - Buffer->X;
@@ -358,7 +358,7 @@ static void XORDrawMoveOrCopyObject(void)
 {
 	pcb_rubberband_t *ptr;
 	pcb_cardinal_t i;
-	Coord dx = Crosshair.X - Crosshair.AttachedObject.X, dy = Crosshair.Y - Crosshair.AttachedObject.Y;
+	pcb_coord_t dx = Crosshair.X - Crosshair.AttachedObject.X, dy = Crosshair.Y - Crosshair.AttachedObject.Y;
 
 	switch (Crosshair.AttachedObject.Type) {
 	case PCB_TYPE_VIA:
@@ -583,7 +583,7 @@ void DrawAttached(void)
 
 	/* an attached box does not depend on a special mode */
 	if (Crosshair.AttachedBox.State == STATE_SECOND || Crosshair.AttachedBox.State == STATE_THIRD) {
-		Coord x1, y1, x2, y2;
+		pcb_coord_t x1, y1, x2, y2;
 
 		x1 = Crosshair.AttachedBox.Point1.X;
 		y1 = Crosshair.AttachedBox.Point1.Y;
@@ -599,7 +599,7 @@ void DrawAttached(void)
  */
 void DrawMark(void)
 {
-	Coord ms = conf_core.appearance.mark_size;
+	pcb_coord_t ms = conf_core.appearance.mark_size;
 
 	/* Mark is not drawn when it is not set */
 	if (!Marked.status)
@@ -612,7 +612,7 @@ void DrawMark(void)
 /* ---------------------------------------------------------------------------
  * Returns the nearest grid-point to the given Coord
  */
-Coord GridFit(Coord x, Coord grid_spacing, Coord grid_offset)
+pcb_coord_t GridFit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
 {
 	x -= grid_offset;
 	x = grid_spacing * pcb_round((double) x / grid_spacing);
@@ -707,8 +707,8 @@ void RestoreCrosshair(void)
  */
 struct onpoint_search_info {
 	pcb_crosshair_t *crosshair;
-	Coord X;
-	Coord Y;
+	pcb_coord_t X;
+	pcb_coord_t Y;
 };
 
 static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
@@ -742,7 +742,7 @@ static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
 	pcb_arc_t *arc = (pcb_arc_t *) box;
-	Coord p1x, p1y, p2x, p2y;
+	pcb_coord_t p1x, p1y, p2x, p2y;
 
 	p1x = arc->X - arc->Width * cos(TO_RADIANS(arc->StartAngle));
 	p1y = arc->Y + arc->Height * sin(TO_RADIANS(arc->StartAngle));
@@ -810,7 +810,7 @@ static void *onpoint_find(vtop_t *vect, void *obj_ptr)
  * at the given coordinates and adds them to the crosshair's
  * object list along with their respective type.
  */
-static void onpoint_work(pcb_crosshair_t * crosshair, Coord X, Coord Y)
+static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_box_t SearchBox = point_box(X, Y);
 	struct onpoint_search_info info;
@@ -874,7 +874,7 @@ static double square(double x)
 	return x * x;
 }
 
-static double crosshair_sq_dist(pcb_crosshair_t * crosshair, Coord x, Coord y)
+static double crosshair_sq_dist(pcb_crosshair_t * crosshair, pcb_coord_t x, pcb_coord_t y)
 {
 	return square(x - crosshair->X) + square(y - crosshair->Y);
 }
@@ -883,7 +883,7 @@ struct snap_data {
 	pcb_crosshair_t *crosshair;
 	double nearest_sq_dist;
 	pcb_bool nearest_is_grid;
-	Coord x, y;
+	pcb_coord_t x, y;
 };
 
 /* Snap to a given location if it is the closest thing we found so far.
@@ -892,7 +892,7 @@ struct snap_data {
  * pressing the SHIFT key. If the SHIFT key is pressed, the closest object
  * (including grid points), is always preferred.
  */
-static void check_snap_object(struct snap_data *snap_data, Coord x, Coord y, pcb_bool prefer_to_grid)
+static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_coord_t y, pcb_bool prefer_to_grid)
 {
 	double sq_dist;
 
@@ -905,12 +905,12 @@ static void check_snap_object(struct snap_data *snap_data, Coord x, Coord y, pcb
 	}
 }
 
-static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_grid_x, Coord nearest_grid_y)
+static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nearest_grid_x, pcb_coord_t nearest_grid_y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int ans;
 	pcb_line_t *line;
-	Coord try_x, try_y;
+	pcb_coord_t try_x, try_y;
 	double dx, dy;
 	double dist;
 
@@ -988,9 +988,9 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 /* ---------------------------------------------------------------------------
  * recalculates the passed coordinates to fit the current grid setting
  */
-void FitCrosshairIntoGrid(Coord X, Coord Y)
+void FitCrosshairIntoGrid(pcb_coord_t X, pcb_coord_t Y)
 {
-	Coord nearest_grid_x, nearest_grid_y;
+	pcb_coord_t nearest_grid_x, nearest_grid_y;
 	void *ptr1, *ptr2, *ptr3;
 	struct snap_data snap_data;
 	int ans;
@@ -1007,8 +1007,8 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		nearest_grid_y = GridFit(Crosshair.Y, PCB->Grid, PCB->GridOffsetY);
 
 		if (Marked.status && conf_core.editor.orthogonal_moves) {
-			Coord dx = Crosshair.X - Marked.X;
-			Coord dy = Crosshair.Y - Marked.Y;
+			pcb_coord_t dx = Crosshair.X - Marked.X;
+			pcb_coord_t dy = Crosshair.Y - Marked.Y;
 			if (PCB_ABS(dx) > PCB_ABS(dy))
 				nearest_grid_y = Marked.Y;
 			else
@@ -1153,7 +1153,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 /* ---------------------------------------------------------------------------
  * move crosshair relative (has to be switched off)
  */
-void MoveCrosshairRelative(Coord DeltaX, Coord DeltaY)
+void MoveCrosshairRelative(pcb_coord_t DeltaX, pcb_coord_t DeltaY)
 {
 	FitCrosshairIntoGrid(Crosshair.X + DeltaX, Crosshair.Y + DeltaY);
 }
@@ -1162,9 +1162,9 @@ void MoveCrosshairRelative(Coord DeltaX, Coord DeltaY)
  * move crosshair absolute
  * return pcb_true if the crosshair was moved from its existing position
  */
-pcb_bool MoveCrosshairAbsolute(Coord X, Coord Y)
+pcb_bool MoveCrosshairAbsolute(pcb_coord_t X, pcb_coord_t Y)
 {
-	Coord x, y, z;
+	pcb_coord_t x, y, z;
 	x = Crosshair.X;
 	y = Crosshair.Y;
 	FitCrosshairIntoGrid(X, Y);
@@ -1188,7 +1188,7 @@ pcb_bool MoveCrosshairAbsolute(Coord X, Coord Y)
 /* ---------------------------------------------------------------------------
  * sets the valid range for the crosshair cursor
  */
-void SetCrosshairRange(Coord MinX, Coord MinY, Coord MaxX, Coord MaxY)
+void SetCrosshairRange(pcb_coord_t MinX, pcb_coord_t MinY, pcb_coord_t MaxX, pcb_coord_t MaxY)
 {
 	Crosshair.MinX = MAX(0, MinX);
 	Crosshair.MinY = MAX(0, MinY);
@@ -1202,9 +1202,9 @@ void SetCrosshairRange(Coord MinX, Coord MinY, Coord MaxX, Coord MaxY)
 /* ---------------------------------------------------------------------------
  * centers the displayed PCB around the specified point (X,Y)
  */
-void CenterDisplay(Coord X, Coord Y)
+void CenterDisplay(pcb_coord_t X, pcb_coord_t Y)
 {
-	Coord save_grid = PCB->Grid;
+	pcb_coord_t save_grid = PCB->Grid;
 	PCB->Grid = 1;
 	if (MoveCrosshairAbsolute(X, Y))
 		notify_crosshair_change(pcb_true);

@@ -316,7 +316,7 @@ static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 				double x = l->Point1.X - l->Point2.X;
 				double y = l->Point1.Y - l->Point2.Y;
 				double len = sqrt(x*x + y*y);
-				PCB_QRY_RET_INT(res, ((Coord)len));
+				PCB_QRY_RET_INT(res, ((pcb_coord_t)len));
 			}
 			break;
 		default:;
@@ -370,7 +370,7 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 #warning TODO: this breaks for elliptics; see http://tutorial.math.lamar.edu/Classes/CalcII/ArcLength.aspx
 				double r = (a->Width + a->Height)/2;
 				double len = r * M_PI / 180.0 * a->Delta;
-				PCB_QRY_RET_INT(res, ((Coord)len));
+				PCB_QRY_RET_INT(res, ((pcb_coord_t)len));
 			}
 			break;
 		default:;

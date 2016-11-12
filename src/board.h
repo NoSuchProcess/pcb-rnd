@@ -82,15 +82,15 @@ struct pcb_board_s {
 		*RatColor,
 		*InvisibleObjectsColor,
 		*InvisibleMarkColor, *ElementSelectedColor, *RatSelectedColor, *ConnectedColor, *WarnColor, *MaskColor;
-	Coord CursorX,									/* cursor position as saved with layout */
+	pcb_coord_t CursorX,									/* cursor position as saved with layout */
 	  CursorY;
-	Coord Bloat,									/* drc sizes saved with layout */
+	pcb_coord_t Bloat,									/* drc sizes saved with layout */
 	  Shrink, minWid, minSlk, minDrill, minRing;
-	Coord GridOffsetX,						/* as saved with layout */
+	pcb_coord_t GridOffsetX,						/* as saved with layout */
 	  GridOffsetY, MaxWidth,			/* allowed size */
 	  MaxHeight;
 
-	Coord Grid;										/* used grid with offsets */
+	pcb_coord_t Grid;										/* used grid with offsets */
 	double Zoom,									/* zoom factor */
 	  IsleArea,										/* minimum poly island to retain */
 	  ThermScale;									/* scale factor used with thermals */

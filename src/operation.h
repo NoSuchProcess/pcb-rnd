@@ -43,8 +43,8 @@ typedef struct {
 typedef struct {
 	pcb_board_t *pcb;
 	int is_primary;  /* whether the primary parameter should be changed */
-	Coord delta;     /* change of size */
-	Coord absolute;  /* Absolute size */
+	pcb_coord_t delta;     /* change of size */
+	pcb_coord_t absolute;  /* Absolute size */
 } pcb_opctx_chgsize_t;
 
 typedef struct {
@@ -65,12 +65,12 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	Coord DeltaX, DeltaY; /* movement vector */
+	pcb_coord_t DeltaX, DeltaY; /* movement vector */
 } pcb_opctx_copy_t;
 
 typedef struct {
 	pcb_board_t *pcb;
-	Coord x, y;
+	pcb_coord_t x, y;
 	pcb_cardinal_t idx; /* poly point idx */
 	pcb_bool last;
 	pcb_bool forcible;
@@ -78,7 +78,7 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	Coord dx, dy;         /* used by local routines as offset */
+	pcb_coord_t dx, dy;         /* used by local routines as offset */
 	pcb_layer_t *dst_layer;
 	pcb_bool more_to_come;
 } pcb_opctx_move_t;
@@ -91,7 +91,7 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	Coord center_x, center_y;    /* center of rotation */
+	pcb_coord_t center_x, center_y;    /* center of rotation */
 	unsigned number;             /* number of rotations */
 } pcb_opctx_rotate_t;
 

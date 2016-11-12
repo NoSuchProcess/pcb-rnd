@@ -100,7 +100,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 {
 	find_callback_t old_cb;
-	Coord x, y;
+	pcb_coord_t x, y;
 	short_conn_t *n, **lut_by_oid, **lut_by_gid, *next;
 	int gids;
 	gr_t *g;

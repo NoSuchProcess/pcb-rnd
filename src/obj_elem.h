@@ -40,7 +40,7 @@
 struct pcb_element_s {
 	PCB_ANYOBJECTFIELDS;
 	pcb_text_t Name[MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see NAME_INDEX() below */
-	Coord MarkX, MarkY;               /* position mark */
+	pcb_coord_t MarkX, MarkY;               /* position mark */
 	pinlist_t Pin;
 	padlist_t Pad;
 	linelist_t Line;
@@ -59,10 +59,10 @@ pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name);
 int LoadFootprintByName(pcb_buffer_t *Buffer, const char *Footprint);
 pcb_bool SmashBufferElement(pcb_buffer_t *Buffer);
 pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer);
-void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, double cosa, double sina, pcb_angle_t angle);
-pcb_bool ChangeElementSide(pcb_element_t *Element, Coord yoff);
+void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle);
+pcb_bool ChangeElementSide(pcb_element_t *Element, pcb_coord_t yoff);
 pcb_bool ChangeSelectedElementSide(void);
-pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, Coord dx, Coord dy);
+pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, pcb_coord_t dx, pcb_coord_t dy);
 void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font);
 char *UniqueElementName(pcb_data_t *Data, char *Name);
 void r_delete_element(pcb_data_t * data, pcb_element_t * element);
@@ -71,22 +71,22 @@ void r_delete_element(pcb_data_t * data, pcb_element_t * element);
    comparing two similar footprints.  */
 int ElementOrientation(pcb_element_t * e);
 
-void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord DX, Coord DY);
+void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY);
 void *RemoveElement(pcb_element_t *Element);
-void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, unsigned Number);
-void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, Coord yoff);
+void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
+void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff);
 
 pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
 	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
-	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
+	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction,
 	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName);
 
-pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, Coord X, Coord Y,
-	Coord Width, Coord Height, pcb_angle_t angle, pcb_angle_t delta, Coord Thickness);
+pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y,
+	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness);
 
-pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
+pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
 
-void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, Coord X, Coord Y,
+void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
 	unsigned Direction, char *TextString, int Scale, pcb_flag_t Flags);
 
 

@@ -102,7 +102,7 @@ void gpmi_hid_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gpmi_event(h->module, HIDE_set_line_cap, h, gc, style);
 }
 
-void gpmi_hid_set_line_width(pcb_hid_gc_t gc, Coord width)
+void gpmi_hid_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_set_line_width, h, gc, width);
@@ -120,31 +120,31 @@ void gpmi_hid_set_draw_faded(pcb_hid_gc_t gc, int faded)
 	gpmi_event(h->module, HIDE_set_draw_faded, h, gc, faded);
 }
 
-void gpmi_hid_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void gpmi_hid_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_line, h, gc, x1, y1, x2, y2);
 }
 
-void gpmi_hid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+void gpmi_hid_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_arc, h, gc, cx, cy, xradius, yradius, start_angle, delta_angle);
 }
 
-void gpmi_hid_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void gpmi_hid_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_rect, h, gc, x1, y1, x2, y2);
 }
 
-void gpmi_hid_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+void gpmi_hid_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_circle, h, gc, cx, cy, radius);
 }
 
-void gpmi_hid_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord *x, Coord *y)
+void gpmi_hid_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(exporter);
 	/* TODO: need accessor for these */
@@ -156,7 +156,7 @@ void gpmi_hid_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t *poly, const pcb_b
 	/* TODO */
 }
 
-void gpmi_hid_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void gpmi_hid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_rect, h, gc, x1, y1, x2, y2);

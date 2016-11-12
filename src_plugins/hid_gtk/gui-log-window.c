@@ -180,7 +180,7 @@ static const char logshowonappend_help[] = "If true, the log window will be show
 to it.  If false, the log will still be updated, but the window won't \
 be shown.";
 
-static gint GhidLogShowOnAppend(int argc, const char **argv, Coord x, Coord y)
+static gint GhidLogShowOnAppend(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *a = argc == 1 ? argv[0] : "";
 

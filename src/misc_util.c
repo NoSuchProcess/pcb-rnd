@@ -172,10 +172,10 @@ char *Concat(const char *first, ...)
 	return rv;
 }
 
-Coord GetNum(char **s, const char *default_unit)
+pcb_coord_t GetNum(char **s, const char *default_unit)
 {
 	/* Read value */
-	Coord ret_val = GetValueEx(*s, NULL, NULL, NULL, default_unit, NULL);
+	pcb_coord_t ret_val = GetValueEx(*s, NULL, NULL, NULL, default_unit, NULL);
 	/* Advance pointer */
 	while (isalnum(**s) || **s == '.')
 		(*s)++;

@@ -165,7 +165,7 @@ static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 }
 
 /* \brief Helper for edit_button_cb */
-static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkWidget ** entry, Coord min, Coord max)
+static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkWidget ** entry, pcb_coord_t min, pcb_coord_t max)
 {
 	GtkWidget *label_w = gtk_label_new(label);
 	gtk_misc_set_alignment(GTK_MISC(label_w), 1.0, 0.5);
@@ -291,7 +291,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 /* Modify the route style only if there's significant difference (beyond rouding errors) */
 #define rst_modify(changed, dst, src) \
 	do { \
-		Coord __tmp__ = src; \
+		pcb_coord_t __tmp__ = src; \
 		if (abs(dst - __tmp__) > 10) { \
 			changed = 1; \
 			dst = __tmp__; \
@@ -584,12 +584,12 @@ GtkAccelGroup *ghid_route_style_selector_get_accel_group(GHidRouteStyleSelector 
  *  will happen. This function does not emit any signals.
  *
  *  \param [in] rss       The selector to be acted on
- *  \param [in] Thick     Coord to match selection to
- *  \param [in] Hole      Coord to match selection to
- *  \param [in] Diameter  Coord to match selection to
- *  \param [in] Clearance  Coord to match selection to
+ *  \param [in] Thick     pcb_coord_t to match selection to
+ *  \param [in] Hole      pcb_coord_t to match selection to
+ *  \param [in] Diameter  pcb_coord_t to match selection to
+ *  \param [in] Clearance  pcb_coord_t to match selection to
  */
-void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, Coord Thick, Coord Hole, Coord Diameter, Coord Clearance)
+void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, pcb_coord_t Thick, pcb_coord_t Hole, pcb_coord_t Diameter, pcb_coord_t Clearance)
 {
 	GtkTreeIter iter;
 	int target, n;

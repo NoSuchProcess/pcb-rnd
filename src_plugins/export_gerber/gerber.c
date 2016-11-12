@@ -47,30 +47,30 @@ static void gerber_destroy_gc(pcb_hid_gc_t gc);
 static void gerber_use_mask(int use_it);
 static void gerber_set_color(pcb_hid_gc_t gc, const char *name);
 static void gerber_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
-static void gerber_set_line_width(pcb_hid_gc_t gc, Coord width);
+static void gerber_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width);
 static void gerber_set_draw_xor(pcb_hid_gc_t gc, int _xor);
-static void gerber_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void gerber_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle);
-static void gerber_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void gerber_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius);
-static void gerber_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle);
+static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
+static void gerber_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 static void gerber_calibrate(double xval, double yval);
 static void gerber_set_crosshair(int x, int y, int action);
-static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y);
+static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
 
 /*----------------------------------------------------------------------------*/
 /* Utility routines                                                           */
 /*----------------------------------------------------------------------------*/
 
 /* These are for films */
-#define gerberX(pcb, x) ((Coord) (x))
-#define gerberY(pcb, y) ((Coord) ((pcb)->MaxHeight - (y)))
-#define gerberXOffset(pcb, x) ((Coord) (x))
-#define gerberYOffset(pcb, y) ((Coord) (-(y)))
+#define gerberX(pcb, x) ((pcb_coord_t) (x))
+#define gerberY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)))
+#define gerberXOffset(pcb, x) ((pcb_coord_t) (x))
+#define gerberYOffset(pcb, y) ((pcb_coord_t) (-(y)))
 
 /* These are for drills (printed as mils but are really 1/10th mil) */
-#define gerberDrX(pcb, x) ((Coord) (x) * 10)
-#define gerberDrY(pcb, y) ((Coord) ((pcb)->MaxHeight - (y)) * 10)
+#define gerberDrX(pcb, x) ((pcb_coord_t) (x) * 10)
+#define gerberDrY(pcb, y) ((pcb_coord_t) ((pcb)->MaxHeight - (y)) * 10)
 
 /*----------------------------------------------------------------------------*/
 /* Private data structures                                                    */
@@ -102,7 +102,7 @@ typedef enum ApertureShape ApertureShape;
 
 typedef struct aperture {
 	int dCode;										/* The RS-274X D code */
-	Coord width;									/* Size in pcb units */
+	pcb_coord_t width;									/* Size in pcb units */
 	ApertureShape shape;					/* ROUND/SQUARE etc */
 	struct aperture *next;
 } Aperture;
@@ -118,9 +118,9 @@ static int layer_list_max;
 static int layer_list_idx;
 
 typedef struct {
-	Coord diam;
-	Coord x;
-	Coord y;
+	pcb_coord_t diam;
+	pcb_coord_t x;
+	pcb_coord_t y;
 } PendingDrills;
 PendingDrills *pending_drills = NULL;
 int n_pending_drills = 0, max_pending_drills = 0;
@@ -166,7 +166,7 @@ static void resetApertures()
 }
 
 /* Create and add a new aperture to the list */
-static Aperture *addAperture(ApertureList * list, Coord width, ApertureShape shape)
+static Aperture *addAperture(ApertureList * list, pcb_coord_t width, ApertureShape shape)
 {
 	static int aperture_count;
 
@@ -187,7 +187,7 @@ static Aperture *addAperture(ApertureList * list, Coord width, ApertureShape sha
 
 /* Fetch an aperture from the list with the specified
  *  width/shape, creating a new one if none exists */
-static Aperture *findAperture(ApertureList * list, Coord width, ApertureShape shape)
+static Aperture *findAperture(ApertureList * list, pcb_coord_t width, ApertureShape shape)
 {
 	Aperture *search;
 
@@ -216,7 +216,7 @@ static void fprintAperture(FILE * f, Aperture * aptr)
 		break;
 	case OCTAGON:
 		pcb_fprintf(f, "%%AMOCT%d*5,0,8,0,0,%.4mi,22.5*%%\r\n"
-								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (Coord) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
+								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (pcb_coord_t) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
 		break;
 #if 0
 	case THERMAL:
@@ -834,7 +834,7 @@ static void gerber_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void gerber_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void gerber_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gc->width = width;
 }
@@ -902,7 +902,7 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 #endif
 }
 
-static void gerber_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	gerber_draw_line(gc, x1, y1, x1, y2);
 	gerber_draw_line(gc, x1, y1, x2, y1);
@@ -910,12 +910,12 @@ static void gerber_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coor
 	gerber_draw_line(gc, x2, y1, x2, y2);
 }
 
-static void gerber_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	pcb_bool m = pcb_false;
 
 	if (x1 != x2 && y1 != y2 && gc->cap == Square_Cap) {
-		Coord x[5], y[5];
+		pcb_coord_t x[5], y[5];
 		double tx, ty, theta;
 
 		theta = atan2(y2 - y1, x2 - x1);
@@ -973,7 +973,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coor
 
 }
 
-static void gerber_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_bool m = pcb_false;
 	double arcStartX, arcStopX, arcStartY, arcStopY;
@@ -996,10 +996,10 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Co
 	   segments.  Note that most arcs in pcb are circles anyway.  */
 	if (width != height) {
 		double step, angle;
-		Coord max = width > height ? width : height;
-		Coord minr = max - gc->width / 10;
+		pcb_coord_t max = width > height ? width : height;
+		pcb_coord_t minr = max - gc->width / 10;
 		int nsteps;
-		Coord x0, y0, x1, y1;
+		pcb_coord_t x0, y0, x1, y1;
 
 		if (minr >= max)
 			minr = max - 1;
@@ -1047,7 +1047,7 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Co
 	lastY = arcStopY;
 }
 
-static void gerber_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	if (radius <= 0)
 		return;
@@ -1080,12 +1080,12 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius
 	fprintf(f, "D03*\r\n");
 }
 
-static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	pcb_bool m = pcb_false;
 	int i;
 	int firstTime = 1;
-	Coord startX = 0, startY = 0;
+	pcb_coord_t startX = 0, startY = 0;
 
 	if (is_mask && current_mask == HID_MASK_BEFORE)
 		return;
@@ -1131,10 +1131,10 @@ static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord 
 	fprintf(f, "G37*\r\n");
 }
 
-static void gerber_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void gerber_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	Coord x[5];
-	Coord y[5];
+	pcb_coord_t x[5];
+	pcb_coord_t y[5];
 	x[0] = x[4] = x1;
 	y[0] = y[4] = y1;
 	x[1] = x1;

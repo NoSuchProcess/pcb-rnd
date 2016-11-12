@@ -191,7 +191,7 @@ static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vecto
 	default:											/* diagonal case */
 		{
 			int kx, ky, minmax, dq, ckx, cky;
-			Coord mm[2] = { MAX_COORD, -MAX_COORD };
+			pcb_coord_t mm[2] = { MAX_COORD, -MAX_COORD };
 			pcb_vector_t mmp[2];
 			pcb_vnode_t *v;
 
@@ -493,7 +493,7 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	return 0;
 }
 
-static int jostle(int argc, const char **argv, Coord x, Coord y)
+static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_bool rel;
 	pcb_polyarea_t *expand;

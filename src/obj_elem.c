@@ -331,7 +331,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 			END_LOOP;
 			POLYGON_LOOP(layer);
 			{
-				Coord x1, y1, x2, y2, w, h, t;
+				pcb_coord_t x1, y1, x2, y2, w, h, t;
 
 				if (!polygon_is_rectangle(polygon)) {
 					crooked = pcb_true;
@@ -391,7 +391,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	return (pcb_true);
 }
 
-void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, double cosa, double sina, pcb_angle_t angle)
+void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
 {
 	/* solder side objects need a different orientation */
 
@@ -448,7 +448,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X
 }
 
 /* changes the side of the board an element is on; returns pcb_true if done */
-pcb_bool ChangeElementSide(pcb_element_t *Element, Coord yoff)
+pcb_bool ChangeElementSide(pcb_element_t *Element, pcb_coord_t yoff)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (pcb_false);
@@ -506,7 +506,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Ele
 }
 
 /* copies data from one element to another and creates the destination; if necessary */
-pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, Coord dx, Coord dy)
+pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
 	/* release old memory if necessary */
@@ -564,7 +564,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 /* creates an new element; memory is allocated if needed */
 pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
 	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
-	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
+	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction,
 	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName)
 {
 #ifdef DEBUG
@@ -595,8 +595,8 @@ pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
 }
 
 /* creates a new arc in an element */
-pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, Coord X, Coord Y,
-	Coord Width, Coord Height, pcb_angle_t angle, pcb_angle_t delta, Coord Thickness)
+pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y,
+	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness)
 {
 	pcb_arc_t *arc = GetElementArcMemory(Element);
 
@@ -623,7 +623,7 @@ pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, Coord X, Coord Y,
 }
 
 /* creates a new line for an element */
-pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
+pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
 {
 	pcb_line_t *line;
 
@@ -645,7 +645,7 @@ pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, Coord X1, Coord Y1, C
 
 /* creates a new textobject as part of an element
    copies the values to the appropriate text object */
-void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, Coord X, Coord Y,
+void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
 	unsigned Direction, char *TextString, int Scale, pcb_flag_t Flags)
 {
 	free(Text->TextString);
@@ -662,7 +662,7 @@ void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, Coord X, Coord Y,
 }
 
 /* mirrors the coordinates of an element; an additional offset is passed */
-void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, Coord yoff)
+void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff)
 {
 	r_delete_element(Data, Element);
 	ELEMENTLINE_LOOP(Element);
@@ -930,7 +930,7 @@ void r_delete_element(pcb_data_t * data, pcb_element_t * element)
  */
 int ElementOrientation(pcb_element_t * e)
 {
-	Coord pin1x, pin1y, pin2x, pin2y, dx, dy;
+	pcb_coord_t pin1x, pin1y, pin2x, pin2y, dx, dy;
 	pcb_bool found_pin1 = 0;
 	pcb_bool found_pin2 = 0;
 
@@ -991,7 +991,7 @@ int ElementOrientation(pcb_element_t * e)
 }
 
 /* moves a element by +-X and +-Y */
-void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord DX, Coord DY)
+void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY)
 {
 	if (Data)
 		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
@@ -1059,7 +1059,7 @@ void *RemoveElement(pcb_element_t *Element)
 }
 
 /* rotate an element in 90 degree steps */
-void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, unsigned Number)
+void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	/* solder side objects need a different orientation */
 
@@ -1184,7 +1184,7 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool changed = pcb_false;
-	Coord value;
+	pcb_coord_t value;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
@@ -1218,7 +1218,7 @@ void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool changed = pcb_false;
-	Coord value;
+	pcb_coord_t value;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
@@ -1250,7 +1250,7 @@ void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool changed = pcb_false;
-	Coord value;
+	pcb_coord_t value;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
 		return (NULL);
@@ -1307,7 +1307,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 /* changes the scaling factor of an element's outline; returns pcb_true if changed */
 void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	Coord value;
+	pcb_coord_t value;
 	pcb_bool changed = pcb_false;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
@@ -1752,9 +1752,9 @@ pcb_r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static void DrawEMark(pcb_element_t *e, Coord X, Coord Y, pcb_bool invisible)
+static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool invisible)
 {
-	Coord mark_size = EMARK_SIZE;
+	pcb_coord_t mark_size = EMARK_SIZE;
 	if (!PCB->InvisibleObjectsOn && invisible)
 		return;
 

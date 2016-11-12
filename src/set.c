@@ -52,7 +52,7 @@ static int mode_stack[MAX_MODESTACK_DEPTH];
 /* ---------------------------------------------------------------------------
  * sets cursor grid with respect to grid offset values
  */
-void SetGrid(Coord Grid, pcb_bool align)
+void SetGrid(pcb_coord_t Grid, pcb_bool align)
 {
 	if (Grid >= 1 && Grid <= MAX_GRID) {
 		if (align) {
@@ -69,7 +69,7 @@ void SetGrid(Coord Grid, pcb_bool align)
 /* ---------------------------------------------------------------------------
  * sets a new line thickness
  */
-void SetLineSize(Coord Size)
+void SetLineSize(pcb_coord_t Size)
 {
 	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
 		conf_set_design("design/line_thickness", "%$mS", Size);
@@ -81,7 +81,7 @@ void SetLineSize(Coord Size)
 /* ---------------------------------------------------------------------------
  * sets a new via thickness
  */
-void SetViaSize(Coord Size, pcb_bool Force)
+void SetViaSize(pcb_coord_t Size, pcb_bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_thickness", "%$mS", Size);
@@ -91,7 +91,7 @@ void SetViaSize(Coord Size, pcb_bool Force)
 /* ---------------------------------------------------------------------------
  * sets a new via drilling hole
  */
-void SetViaDrillingHole(Coord Size, pcb_bool Force)
+void SetViaDrillingHole(pcb_coord_t Size, pcb_bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_drilling_hole", "%$mS", Size);
@@ -101,7 +101,7 @@ void SetViaDrillingHole(Coord Size, pcb_bool Force)
 /* ---------------------------------------------------------------------------
  * sets a clearance width
  */
-void SetClearanceWidth(Coord Width)
+void SetClearanceWidth(pcb_coord_t Width)
 {
 	if (Width <= MAX_LINESIZE) {
 		conf_set_design("design/clearance", "%$mS", Width);
@@ -251,7 +251,7 @@ void SetMode(int Mode)
 	notify_crosshair_change(pcb_true);
 }
 
-void SetLocalRef(Coord X, Coord Y, pcb_bool Showing)
+void SetLocalRef(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 {
 	static pcb_mark_t old;
 	static int count = 0;

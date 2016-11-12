@@ -79,7 +79,7 @@ static void nogui_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	CRASH("set_line_cap");
 }
 
-static void nogui_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void nogui_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	CRASH("set_line_width");
 }
@@ -93,27 +93,27 @@ static void nogui_set_draw_faded(pcb_hid_gc_t gc, int faded)
 {
 }
 
-static void nogui_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nogui_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	CRASH("draw_line");
 }
 
-static void nogui_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t end_angle)
+static void nogui_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
 {
 	CRASH("draw_arc");
 }
 
-static void nogui_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nogui_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	CRASH("draw_rect");
 }
 
-static void nogui_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void nogui_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	CRASH("fill_circle");
 }
 
-static void nogui_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void nogui_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	CRASH("fill_polygon");
 }
@@ -143,7 +143,7 @@ static void nogui_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pi
 	CRASH("thindraw_pcb_pv");
 }
 
-static void nogui_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nogui_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	CRASH("fill_rect");
 }
@@ -171,7 +171,7 @@ static int nogui_mod1_is_pressed(void)
 	return 0;
 }
 
-static void nogui_get_coords(const char *msg, Coord * x, Coord * y)
+static void nogui_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
 	CRASH("get_coords");
 }

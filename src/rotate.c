@@ -70,7 +70,7 @@ static pcb_opfunc_t RotateFunctions = {
 /* ---------------------------------------------------------------------------
  * rotates a point in 90 degree steps
  */
-void RotatePointLowLevel(pcb_point_t *Point, Coord X, Coord Y, unsigned Number)
+void RotatePointLowLevel(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	ROTATE(Point->X, Point->Y, X, Y, Number);
 }
@@ -78,9 +78,9 @@ void RotatePointLowLevel(pcb_point_t *Point, Coord X, Coord Y, unsigned Number)
 /* ---------------------------------------------------------------------------
  * rotates a box in 90 degree steps
  */
-void RotateBoxLowLevel(pcb_box_t *Box, Coord X, Coord Y, unsigned Number)
+void RotateBoxLowLevel(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
-	Coord x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
+	pcb_coord_t x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
 
 	ROTATE(x1, y1, X, Y, Number);
 	ROTATE(x2, y2, X, Y, Number);
@@ -94,7 +94,7 @@ void RotateBoxLowLevel(pcb_box_t *Box, Coord X, Coord Y, unsigned Number)
  * rotates an objects at the cursor position as identified by its ID
  * the center of rotation is determined by the current cursor location
  */
-void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord Y, unsigned Steps)
+void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 {
 	pcb_rubberband_t *ptr;
 	void *ptr2;
@@ -144,7 +144,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 	return (ptr2);
 }
 
-void RotateScreenObject(Coord X, Coord Y, unsigned Steps)
+void RotateScreenObject(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;

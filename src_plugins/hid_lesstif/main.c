@@ -118,8 +118,8 @@ typedef struct PinoutData {
 	struct PinoutData *prev, *next;
 	Widget form;
 	Window window;
-	Coord left, right, top, bottom;	/* PCB extents of item */
-	Coord x, y;										/* PCB coordinates of upper right corner of window */
+	pcb_coord_t left, right, top, bottom;	/* PCB extents of item */
+	pcb_coord_t x, y;										/* PCB coordinates of upper right corner of window */
 	double zoom;									/* PCB units per screen pixel */
 	int v_width, v_height;				/* pixels */
 	void *item;
@@ -237,7 +237,7 @@ REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 /* Px converts view->pcb, Vx converts pcb->view */
 
 		 static inline int
-		   Vx(Coord x)
+		   Vx(pcb_coord_t x)
 {
 	int rv = (x - view_left_x) / view_zoom + 0.5;
 	if (conf_core.editor.view.flip_x)
@@ -245,7 +245,7 @@ REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 	return rv;
 }
 
-static inline int Vy(Coord y)
+static inline int Vy(pcb_coord_t y)
 {
 	int rv = (y - view_top_y) / view_zoom + 0.5;
 	if (conf_core.editor.view.flip_y)
@@ -253,31 +253,31 @@ static inline int Vy(Coord y)
 	return rv;
 }
 
-static inline int Vz(Coord z)
+static inline int Vz(pcb_coord_t z)
 {
 	return z / view_zoom + 0.5;
 }
 
-static inline Coord Px(int x)
+static inline pcb_coord_t Px(int x)
 {
 	if (conf_core.editor.view.flip_x)
 		x = view_width - x;
 	return x * view_zoom + view_left_x;
 }
 
-static inline Coord Py(int y)
+static inline pcb_coord_t Py(int y)
 {
 	if (conf_core.editor.view.flip_y)
 		y = view_height - y;
 	return y * view_zoom + view_top_y;
 }
 
-static inline Coord Pz(int z)
+static inline pcb_coord_t Pz(int z)
 {
 	return z * view_zoom;
 }
 
-void lesstif_coords_to_pcb(int vx, int vy, Coord * px, Coord * py)
+void lesstif_coords_to_pcb(int vx, int vy, pcb_coord_t * px, pcb_coord_t * py)
 {
 	*px = Px(vx);
 	*py = Py(vy);
@@ -309,7 +309,7 @@ static const char *cur_clip()
 
 /* Called from the core when it's busy doing something and we need to
    indicate that to the user.  */
-static int Busy(int argc, const char **argv, Coord x, Coord y)
+static int Busy(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	static Cursor busy_cursor = 0;
 	if (busy_cursor == 0)
@@ -324,7 +324,7 @@ static int Busy(int argc, const char **argv, Coord x, Coord y)
 
 /* Local actions.  */
 
-static int PointCursor(int argc, const char **argv, Coord x, Coord y)
+static int PointCursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (argc > 0)
 		over_point = 1;
@@ -334,7 +334,7 @@ static int PointCursor(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int PCBChanged(int argc, const char **argv, Coord x, Coord y)
+static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (work_area == 0)
 		return 0;
@@ -388,7 +388,7 @@ Sets the display units to millimeters.
 
 %end-doc */
 
-static int SetUnits(int argc, const char **argv, Coord x, Coord y)
+static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const pcb_unit_t *new_unit;
 	if (argc == 0)
@@ -448,7 +448,7 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-static int ZoomAction(int argc, const char **argv, Coord x, Coord y)
+static int ZoomAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *vp;
 	double v;
@@ -493,7 +493,7 @@ static int ZoomAction(int argc, const char **argv, Coord x, Coord y)
 
 static int pan_thumb_mode;
 
-static int PanAction(int argc, const char **argv, Coord x, Coord y)
+static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int mode;
 
@@ -562,7 +562,7 @@ static int group_showing(int g, int *c)
 	return 0;
 }
 
-static int SwapSides(int argc, const char **argv, Coord x, Coord y)
+static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_shown_side = conf_core.editor.show_solder_side;
 	int comp_group = GetLayerGroupNumberByNumber(component_silk_layer);
@@ -715,7 +715,7 @@ before.
 
 %end-doc */
 
-static int Command(int argc, const char **argv, Coord x, Coord y)
+static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
@@ -735,7 +735,7 @@ It reports the amount of time needed to draw the screen once.
 
 %end-doc */
 
-static int Benchmark(int argc, const char **argv, Coord x, Coord y)
+static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i = 0;
 	time_t start, end;
@@ -768,7 +768,7 @@ static int Benchmark(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int Center(int argc, const char **argv, Coord x, Coord y)
+static int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	x = GridFit(x, PCB->Grid, PCB->GridOffsetX);
 	y = GridFit(y, PCB->Grid, PCB->GridOffsetY);
@@ -821,7 +821,7 @@ The values are percentages of the board size.  Thus, a move of
 
 %end-doc */
 
-static int CursorAction(int argc, const char **argv, Coord x, Coord y)
+static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_unit_list_t extra_units_x = {
 		{"grid", 0, 0},
@@ -1882,7 +1882,7 @@ typedef union {
 	int i;
 	double f;
 	char *s;
-	Coord c;
+	pcb_coord_t c;
 } val_union;
 
 static Boolean
@@ -1901,10 +1901,10 @@ pcb_cvt_string_to_double(Display * d, XrmValue * args, Cardinal * num_args, XrmV
 static Boolean
 pcb_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmValue * from, XrmValue * to, XtPointer * data)
 {
-	static Coord rv;
+	static pcb_coord_t rv;
 	rv = GetValue((char *) from->addr, NULL, NULL, NULL);
 	if (to->addr)
-		*(Coord *) to->addr = rv;
+		*(pcb_coord_t *) to->addr = rv;
 	else
 		to->addr = (XPointer) & rv;
 	to->size = sizeof(rv);
@@ -2041,7 +2041,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 			case HID_Coord:
 				r->resource_type = XmStrCast(XtRPCBCoord);
 				r->default_type = XmStrCast(XtRPCBCoord);
-				r->resource_size = sizeof(Coord);
+				r->resource_size = sizeof(pcb_coord_t);
 				r->default_addr = &(a->default_val.coord_value);
 				rcount++;
 				break;
@@ -2122,7 +2122,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 				break;
 			case HID_Coord:
 				if (a->value)
-					*(Coord *) a->value = v->c;
+					*(pcb_coord_t *) a->value = v->c;
 				else
 					a->default_val.coord_value = v->c;
 				rcount++;
@@ -2170,8 +2170,8 @@ static void draw_grid()
 {
 	static XPoint *points = 0;
 	static int npoints = 0;
-	Coord x1, y1, x2, y2, prevx;
-	Coord x, y;
+	pcb_coord_t x1, y1, x2, y2, prevx;
+	pcb_coord_t x, y;
 	int n;
 	static GC grid_gc = 0;
 
@@ -2240,7 +2240,7 @@ static void draw_grid()
 	}
 }
 
-static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
+static void mark_delta_to_widget(pcb_coord_t dx, pcb_coord_t dy, Widget w)
 {
 	char *buf;
 	double g = coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
@@ -2257,7 +2257,7 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS", UUNIT, prec, dx, prec, dy);
 	else {
 		pcb_angle_t angle = atan2(dy, -dx) * 180 / M_PI;
-		Coord dist = Distance(0, 0, dx, dy);
+		pcb_coord_t dist = Distance(0, 0, dx, dy);
 
 		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS (%.*mS, %.2f\260)", UUNIT, prec, dx, prec, dy, prec, dist, angle);
 	}
@@ -2269,7 +2269,7 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 	free(buf);
 }
 
-static int cursor_pos_to_widget(Coord x, Coord y, Widget w, int prev_state)
+static int cursor_pos_to_widget(pcb_coord_t x, pcb_coord_t y, Widget w, int prev_state)
 {
 	int this_state = prev_state;
 	char *buf = NULL;
@@ -2369,12 +2369,12 @@ static Boolean idle_proc(XtPointer dummy)
 		region.X2 = Px(view_width);
 		region.Y2 = Py(view_height);
 		if (conf_core.editor.view.flip_x) {
-			Coord tmp = region.X1;
+			pcb_coord_t tmp = region.X1;
 			region.X1 = region.X2;
 			region.X2 = tmp;
 		}
 		if (conf_core.editor.view.flip_y) {
-			Coord tmp = region.Y1;
+			pcb_coord_t tmp = region.Y1;
 			region.Y1 = region.Y2;
 			region.Y2 = tmp;
 		}
@@ -2512,8 +2512,8 @@ static Boolean idle_proc(XtPointer dummy)
 	}
 
 	{
-		static Coord old_grid = -1;
-		static Coord old_gx, old_gy;
+		static pcb_coord_t old_grid = -1;
+		static pcb_coord_t old_gx, old_gy;
 		static const pcb_unit_t *old_unit;
 		XmString ms;
 		if (PCB->Grid != old_grid || PCB->GridOffsetX != old_gx || PCB->GridOffsetY != old_gy || conf_core.editor.grid_unit != old_unit) {
@@ -2543,7 +2543,7 @@ static Boolean idle_proc(XtPointer dummy)
 		static const pcb_unit_t *old_grid_unit = NULL;
 		if (view_zoom != old_zoom || conf_core.editor.grid_unit != old_grid_unit) {
 			char *buf = pcb_strdup_printf("%m+%$mS/pix",
-																			 conf_core.editor.grid_unit->allow, (Coord) view_zoom);
+																			 conf_core.editor.grid_unit->allow, (pcb_coord_t) view_zoom);
 			XmString ms;
 
 			old_zoom = view_zoom;
@@ -3031,7 +3031,7 @@ static void lesstif_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void lesstif_set_line_width(pcb_hid_gc_t gc, Coord width)
+static void lesstif_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
 {
 	gc->width = width;
 }
@@ -3043,7 +3043,7 @@ static void lesstif_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
 
 #define ISORT(a,b) if (a>b) { a^=b; b^=a; a^=b; }
 
-static void lesstif_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void lesstif_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double dx1, dy1, dx2, dy2;
 	int vw = Vz(gc->width);
@@ -3083,7 +3083,7 @@ static void lesstif_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coo
 	}
 }
 
-static void lesstif_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
 		return;
@@ -3128,7 +3128,7 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, C
 #endif
 }
 
-static void lesstif_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void lesstif_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	int vw = Vz(gc->width);
 	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
@@ -3161,7 +3161,7 @@ static void lesstif_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coo
 		XDrawRectangle(display, mask_bitmap, mask_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-static void lesstif_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void lesstif_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	if (pinout && use_mask && gc->erase)
 		return;
@@ -3186,7 +3186,7 @@ static void lesstif_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radiu
 		XFillArc(display, mask_bitmap, mask_gc, cx, cy, radius * 2, radius * 2, 0, 360 * 64);
 }
 
-static void lesstif_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void lesstif_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	static XPoint *p = 0;
 	static int maxp = 0;
@@ -3213,7 +3213,7 @@ static void lesstif_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord
 		XFillPolygon(display, mask_bitmap, mask_gc, p, n_coords, Complex, CoordModeOrigin);
 }
 
-static void lesstif_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void lesstif_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	int vw = Vz(gc->width);
 	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
@@ -3266,7 +3266,7 @@ static int lesstif_mod1_is_pressed(void)
 	return alt_pressed;
 }
 
-extern void lesstif_get_coords(const char *msg, Coord * x, Coord * y);
+extern void lesstif_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y);
 
 static void lesstif_set_crosshair(int x, int y, int action)
 {

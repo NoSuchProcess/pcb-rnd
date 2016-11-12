@@ -119,7 +119,7 @@ void FreePolygonMemory(pcb_polygon_t * polygon)
 /*** utility ***/
 
 /* rotates a polygon in 90 degree steps */
-void RotatePolygonLowLevel(pcb_polygon_t *Polygon, Coord X, Coord Y, unsigned Number)
+void RotatePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	POLYGONPOINT_LOOP(Polygon);
 	{
@@ -148,7 +148,7 @@ void SetPolygonBoundingBox(pcb_polygon_t *Polygon)
 }
 
 /* creates a new polygon from the old formats rectangle data */
-pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_flag_t Flags)
+pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_flag_t Flags)
 {
 	pcb_polygon_t *polygon = CreateNewPolygon(Layer, Flags);
 	if (!polygon)
@@ -186,7 +186,7 @@ pcb_polygon_t *CreateNewPolygon(pcb_layer_t *Layer, pcb_flag_t Flags)
 }
 
 /* creates a new point in a polygon */
-pcb_point_t *CreateNewPointInPolygon(pcb_polygon_t *Polygon, Coord X, Coord Y)
+pcb_point_t *CreateNewPointInPolygon(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_point_t *point = GetPointMemoryInPolygon(Polygon);
 
@@ -340,7 +340,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 }
 
 /* low level routine to move a polygon */
-void MovePolygonLowLevel(pcb_polygon_t *Polygon, Coord DX, Coord DY)
+void MovePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 {
 	POLYGONPOINT_LOOP(Polygon);
 	{

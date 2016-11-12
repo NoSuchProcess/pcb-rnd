@@ -221,7 +221,7 @@ int hid_actionl(const char *name, ...)
 
 int hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 {
-	Coord x = 0, y = 0;
+	pcb_coord_t x = 0, y = 0;
 	int i, ret;
 	const pcb_hid_action_t *old_action;
 

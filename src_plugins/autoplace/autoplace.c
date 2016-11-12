@@ -95,8 +95,8 @@ const struct {
 	double gamma;									/* annealing schedule constant */
 	int good_ratio;								/* ratio of moves to good moves for halting */
 	pcb_bool fast;										/* ignore SMD/pin conflicts */
-	Coord large_grid_size;				/* snap perturbations to this grid when T is high */
-	Coord small_grid_size;				/* snap to this grid when T is small. */
+	pcb_coord_t large_grid_size;				/* snap perturbations to this grid when T is high */
+	pcb_coord_t small_grid_size;				/* snap to this grid when T is small. */
 }
 /* wire cost is manhattan distance (in mils), thus 1 inch = 1000 */ CostParameter =
 {
@@ -127,7 +127,7 @@ enum ewhich { SHIFT, ROTATE, EXCHANGE };
 typedef struct {
 	pcb_element_t *element;
 	enum ewhich which;
-	Coord DX, DY;									/* for shift */
+	pcb_coord_t DX, DY;									/* for shift */
 	unsigned rotate;							/* for rotate/flip */
 	pcb_element_t *other;					/* for exchange */
 } PerturbationType;
@@ -214,7 +214,7 @@ struct r_neighbor_info {
 	pcb_box_t trap;
 	direction_t search_dir;
 };
-#define ROTATEBOX(box) { Coord t;\
+#define ROTATEBOX(box) { pcb_coord_t t;\
     t = (box).X1; (box).X1 = - (box).Y1; (box).Y1 = t;\
     t = (box).X2; (box).X2 = - (box).Y2; (box).Y2 = t;\
     t = (box).X1; (box).X1 =   (box).X2; (box).X2 = t;\
@@ -301,7 +301,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	double delta4 = 0;						/* alignment bonus */
 	double delta5 = 0;						/* total area penalty */
 	pcb_cardinal_t i, j;
-	Coord minx, maxx, miny, maxy;
+	pcb_coord_t minx, maxx, miny, maxy;
 	pcb_bool allpads, allsameside;
 	pcb_cardinal_t thegroup;
 	pcb_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
@@ -362,8 +362,8 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		pcb_box_list_t *otherside;
 		pcb_box_t *box;
 		pcb_box_t *lastbox = NULL;
-		Coord thickness;
-		Coord clearance;
+		pcb_coord_t thickness;
+		pcb_coord_t clearance;
 		if (TEST_FLAG(PCB_FLAG_ONSOLDER, element)) {
 			thisside = &solderside;
 			otherside = &componentside;
@@ -518,8 +518,8 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	}
 	/* penalize total area used by this layout */
 	{
-		Coord minX = MAX_COORD, minY = MAX_COORD;
-		Coord maxX = -MAX_COORD, maxY = -MAX_COORD;
+		pcb_coord_t minX = MAX_COORD, minY = MAX_COORD;
+		pcb_coord_t maxX = -MAX_COORD, maxY = -MAX_COORD;
 		ELEMENT_LOOP(PCB->Data);
 		{
 			MAKEMIN(minX, element->VBox.X1);
@@ -557,7 +557,7 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 	switch (pcb_rand() % ((selected->PtrN > 1) ? 3 : 2)) {
 	case 0:
 		{														/* shift! */
-			Coord grid;
+			pcb_coord_t grid;
 			double scaleX = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->MaxWidth / 3);
 			double scaleY = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->MaxHeight / 3);
 			pt.which = SHIFT;
@@ -608,7 +608,7 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 
 void doPerturb(PerturbationType * pt, pcb_bool undo)
 {
-	Coord bbcx, bbcy;
+	pcb_coord_t bbcx, bbcy;
 	/* compute center of element bounding box */
 	bbcx = (pt->element->VBox.X1 + pt->element->VBox.X2) / 2;
 	bbcy = (pt->element->VBox.Y1 + pt->element->VBox.Y2) / 2;
@@ -616,7 +616,7 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 	switch (pt->which) {
 	case SHIFT:
 		{
-			Coord DX = pt->DX, DY = pt->DY;
+			pcb_coord_t DX = pt->DX, DY = pt->DY;
 			if (undo) {
 				DX = -DX;
 				DY = -DY;
@@ -633,7 +633,7 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 			if (b)
 				RotateElementLowLevel(PCB->Data, pt->element, bbcx, bbcy, b);
 			else {
-				Coord y = pt->element->VBox.Y1;
+				pcb_coord_t y = pt->element->VBox.Y1;
 				MirrorElementCoordinates(PCB->Data, pt->element, 0);
 				/* mirroring moves the element.  move it back. */
 				MoveElementLowLevel(PCB->Data, pt->element, 0, y - pt->element->VBox.Y1);
@@ -643,10 +643,10 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 	case EXCHANGE:
 		{
 			/* first exchange positions */
-			Coord x1 = pt->element->VBox.X1;
-			Coord y1 = pt->element->VBox.Y1;
-			Coord x2 = pt->other->BoundingBox.X1;
-			Coord y2 = pt->other->BoundingBox.Y1;
+			pcb_coord_t x1 = pt->element->VBox.X1;
+			pcb_coord_t y1 = pt->element->VBox.Y1;
+			pcb_coord_t x2 = pt->other->BoundingBox.X1;
+			pcb_coord_t y2 = pt->other->BoundingBox.Y1;
 			MoveElementLowLevel(PCB->Data, pt->element, x2 - x1, y2 - y1);
 			MoveElementLowLevel(PCB->Data, pt->other, x1 - x2, y1 - y2);
 			/* then flip both elements if they are on opposite sides */

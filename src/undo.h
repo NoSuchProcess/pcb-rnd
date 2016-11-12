@@ -47,12 +47,12 @@ void AddObjectToRemovePointUndoList(int, void *, void *, pcb_cardinal_t);
 void AddObjectToInsertPointUndoList(int, void *, void *, void *);
 void AddObjectToRemoveContourUndoList(int, pcb_layer_t *, pcb_polygon_t *);
 void AddObjectToInsertContourUndoList(int, pcb_layer_t *, pcb_polygon_t *);
-void AddObjectToMoveUndoList(int, void *, void *, void *, Coord, Coord);
+void AddObjectToMoveUndoList(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
 void AddObjectToChangeNameUndoList(int, void *, void *, void *, char *);
 void AddObjectToChangePinnumUndoList(int, void *, void *, void *, char *);
-void AddObjectToRotateUndoList(int, void *, void *, void *, Coord, Coord, pcb_uint8_t);
+void AddObjectToRotateUndoList(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, pcb_uint8_t);
 void AddObjectToCreateUndoList(int, void *, void *, void *);
-void AddObjectToMirrorUndoList(int, void *, void *, void *, Coord);
+void AddObjectToMirrorUndoList(int, void *, void *, void *, pcb_coord_t);
 void AddObjectToMoveToLayerUndoList(int, void *, void *, void *);
 void AddObjectToFlagUndoList(int, void *, void *, void *);
 void AddObjectToSizeUndoList(int, void *, void *, void *);
@@ -69,9 +69,9 @@ void UnlockUndo(void);
 pcb_bool Undoing(void);
 
 /* Publish actions - these may be useful for other actions */
-int ActionUndo(int argc, const char **argv, Coord x, Coord y);
-int ActionRedo(int argc, const char **argv, Coord x, Coord y);
-int ActionAtomic(int argc, const char **argv, Coord x, Coord y);
+int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+int ActionRedo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+int ActionAtomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 /* ---------------------------------------------------------------------------
  * define supported types of undo operations

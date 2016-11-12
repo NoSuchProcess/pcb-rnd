@@ -7,7 +7,7 @@
 /* Elem=RouteStyle; init=0 */
 
 typedef struct {
-	Coord Thick,       /* line thickness */
+	pcb_coord_t Thick,       /* line thickness */
 	  Diameter,        /* via diameter */
 	  Hole,            /* via drill hole */
 	  Clearance;       /* min. separation from other nets */

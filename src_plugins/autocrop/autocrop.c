@@ -61,7 +61,7 @@
 #include "box.h"
 #include "hid_actions.h"
 
-static void *MyMoveViaLowLevel(pcb_data_t * Data, pcb_pin_t * Via, Coord dx, Coord dy)
+static void *MyMoveViaLowLevel(pcb_data_t * Data, pcb_pin_t * Via, pcb_coord_t dx, pcb_coord_t dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_VIA, Via, Via);
@@ -75,7 +75,7 @@ static void *MyMoveViaLowLevel(pcb_data_t * Data, pcb_pin_t * Via, Coord dx, Coo
 	return Via;
 }
 
-static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_line_t * Line, Coord dx, Coord dy)
+static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_line_t * Line, pcb_coord_t dx, pcb_coord_t dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_LINE, Layer, Line);
@@ -89,7 +89,7 @@ static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_line
 	return Line;
 }
 
-static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_arc_t * Arc, Coord dx, Coord dy)
+static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_arc_t * Arc, pcb_coord_t dx, pcb_coord_t dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_ARC, Layer, Arc);
@@ -103,7 +103,7 @@ static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_arc_t
 	return Arc;
 }
 
-static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_polygon_t * Polygon, Coord dx, Coord dy)
+static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_polygon_t * Polygon, pcb_coord_t dx, pcb_coord_t dy)
 {
 	if (Data) {
 		r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
@@ -117,7 +117,7 @@ static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_p
 	return Polygon;
 }
 
-static void *MyMoveTextLowLevel(pcb_layer_t * Layer, pcb_text_t * Text, Coord dx, Coord dy)
+static void *MyMoveTextLowLevel(pcb_layer_t * Layer, pcb_text_t * Text, pcb_coord_t dx, pcb_coord_t dy)
 {
 	if (Layer)
 		r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
@@ -135,7 +135,7 @@ static void *MyMoveTextLowLevel(pcb_layer_t * Layer, pcb_text_t * Text, Coord dx
  * element move re-clears the poly, followed by the polys moving and
  * re-clearing everything again.
  */
-static void MoveAll(Coord dx, Coord dy)
+static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 {
 	ELEMENT_LOOP(PCB->Data);
 	{
@@ -180,9 +180,9 @@ static void MoveAll(Coord dx, Coord dy)
 	ENDALL_LOOP;
 }
 
-static int autocrop(int argc, const char **argv, Coord x, Coord y)
+static int autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	Coord dx, dy, pad;
+	pcb_coord_t dx, dy, pad;
 	pcb_box_t *box;
 
 	box = GetDataBoundingBox(PCB->Data);	/* handy! */

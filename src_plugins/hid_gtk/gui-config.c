@@ -508,7 +508,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 	 */
 static GtkWidget *config_sizes_vbox, *config_sizes_tab_vbox, *config_text_spin_button;
 
-static Coord new_board_width, new_board_height;
+static pcb_coord_t new_board_width, new_board_height;
 
 static void config_sizes_apply(void)
 {
@@ -535,7 +535,7 @@ static void text_spin_button_cb(GtkSpinButton * spin, void *dst)
 
 static void coord_entry_cb(GHidCoordEntry * ce, void *dst)
 {
-	*(Coord *) dst = ghid_coord_entry_get_value(ce);
+	*(pcb_coord_t *) dst = ghid_coord_entry_get_value(ce);
 }
 
 void config_sizes_save(GtkButton *widget, save_ctx_t *ctx)
@@ -753,14 +753,14 @@ GtkWidget *config_increments_tbl[4][4]; /* [col][row] */
 
 static GtkWidget *config_increments_vbox = NULL, *config_increments_tab_vbox = NULL;
 
-static void increment_tbl_update_cell(GtkLabel *lab, Coord val, const char *fmt)
+static void increment_tbl_update_cell(GtkLabel *lab, pcb_coord_t val, const char *fmt)
 {
 	char s[128];
 	pcb_snprintf(s, sizeof(s), fmt, val);
 	gtk_label_set_text(lab, s);
 }
 
-static void increment_tbl_update_row(int row, Coord edit_in_mm, Coord edit_in_mil)
+static void increment_tbl_update_row(int row, pcb_coord_t edit_in_mm, pcb_coord_t edit_in_mil)
 {
 	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[0][row]), edit_in_mm, "%$mm");
 	increment_tbl_update_cell(GTK_LABEL(config_increments_tbl[1][row]), edit_in_mil, "%$mm");
@@ -779,7 +779,7 @@ static void increment_tbl_update()
 static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 {
 	const char *path = dst;
-	conf_setf(CFR_DESIGN, path, -1, "%mr", (Coord)ghid_coord_entry_get_value(ce));
+	conf_setf(CFR_DESIGN, path, -1, "%mr", (pcb_coord_t)ghid_coord_entry_get_value(ce));
 	increment_tbl_update();
 }
 
@@ -2184,7 +2184,7 @@ static void config_auto_src_show(lht_node_t *nd)
 			break;
 		case CFN_COORD:
 			{
-				Coord coord = 0;
+				pcb_coord_t coord = 0;
 				citem.coord = &coord;
 				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
 				ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), coord);

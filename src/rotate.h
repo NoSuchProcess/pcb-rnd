@@ -37,7 +37,7 @@
  */
 #define	ROTATE(x,y,x0,y0,n)							\
 	{												\
-		Coord	dx = (x)-(x0),					\
+		pcb_coord_t	dx = (x)-(x0),					\
 					dy = (y)-(y0);					\
 													\
 		switch(n & 0x03)									\
@@ -92,18 +92,18 @@ do { \
 #define	ROTATE_TYPES	(PCB_TYPE_ELEMENT | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_ARC)
 
 
-void RotateBoxLowLevel(pcb_box_t *, Coord, Coord, unsigned);
-void RotatePolygonLowLevel(pcb_polygon_t *, Coord, Coord, unsigned);
-void *RotateObject(int, void *, void *, void *, Coord, Coord, unsigned);
-void RotateScreenObject(Coord, Coord, unsigned);
+void RotateBoxLowLevel(pcb_box_t *, pcb_coord_t, pcb_coord_t, unsigned);
+void RotatePolygonLowLevel(pcb_polygon_t *, pcb_coord_t, pcb_coord_t, unsigned);
+void *RotateObject(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, unsigned);
+void RotateScreenObject(pcb_coord_t, pcb_coord_t, unsigned);
 
-void RotatePointLowLevel(pcb_point_t *Point, Coord X, Coord Y, unsigned Number);
+void RotatePointLowLevel(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
-static inline PCB_FUNC_UNUSED void free_rotate(Coord * x, Coord * y, Coord cx, Coord cy, double cosa, double sina)
+static inline PCB_FUNC_UNUSED void free_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina)
 {
 	double nx, ny;
-	Coord px = *x - cx;
-	Coord py = *y - cy;
+	pcb_coord_t px = *x - cx;
+	pcb_coord_t py = *y - cy;
 
 	nx = px * cosa + py * sina;
 	ny = py * cosa - px * sina;

@@ -101,7 +101,7 @@ void hidgl_draw_grid(pcb_box_t * drawn_area)
 {
 	static GLfloat *points = 0;
 	static int npoints = 0;
-	Coord x1, y1, x2, y2, n, i;
+	pcb_coord_t x1, y1, x2, y2, n, i;
 	double x, y;
 
 	if (!Settings.DrawGrid)
@@ -113,13 +113,13 @@ void hidgl_draw_grid(pcb_box_t * drawn_area)
 	y2 = GridFit(MIN(PCB->MaxHeight, drawn_area->Y2), PCB->Grid, PCB->GridOffsetY);
 
 	if (x1 > x2) {
-		Coord tmp = x1;
+		pcb_coord_t tmp = x1;
 		x1 = x2;
 		x2 = tmp;
 	}
 
 	if (y1 > y2) {
-		Coord tmp = y1;
+		pcb_coord_t tmp = y1;
 		y1 = y2;
 		y2 = tmp;
 	}
@@ -163,7 +163,7 @@ int calc_slices(float pix_radius, float sweep_angle)
 
 #define MIN_TRIANGLES_PER_CAP 3
 #define MAX_TRIANGLES_PER_CAP 90
-static void draw_cap(Coord width, Coord x, Coord y, pcb_angle_t angle, double scale)
+static void draw_cap(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_angle_t angle, double scale)
 {
 	float last_capx, last_capy;
 	float capx, capy;
@@ -190,7 +190,7 @@ static void draw_cap(Coord width, Coord x, Coord y, pcb_angle_t angle, double sc
 	}
 }
 
-void hidgl_draw_line(int cap, Coord width, Coord x1, Coord y1, Coord x2, Coord y2, double scale)
+void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, double scale)
 {
 	double angle;
 	float deltax, deltay, length;
@@ -259,7 +259,7 @@ void hidgl_draw_line(int cap, Coord width, Coord x1, Coord y1, Coord x2, Coord y
 
 #define MIN_SLICES_PER_ARC 6
 #define MAX_SLICES_PER_ARC 360
-void hidgl_draw_arc(Coord width, Coord x, Coord y, Coord rx, Coord ry, pcb_angle_t start_angle, pcb_angle_t delta_angle, double scale)
+void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t rx, pcb_coord_t ry, pcb_angle_t start_angle, pcb_angle_t delta_angle, double scale)
 {
 	float last_inner_x, last_inner_y;
 	float last_outer_x, last_outer_y;
@@ -334,7 +334,7 @@ void hidgl_draw_arc(Coord width, Coord x, Coord y, Coord rx, Coord ry, pcb_angle
 					 y + rx * sinf(start_angle_rad + delta_angle_rad), start_angle + delta_angle + 180., scale);
 }
 
-void hidgl_draw_rect(Coord x1, Coord y1, Coord x2, Coord y2)
+void hidgl_draw_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	glBegin(GL_LINE_LOOP);
 	glVertex3f(x1, y1, global_depth);
@@ -345,7 +345,7 @@ void hidgl_draw_rect(Coord x1, Coord y1, Coord x2, Coord y2)
 }
 
 
-void hidgl_fill_circle(Coord vx, Coord vy, Coord vr, double scale)
+void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double scale)
 {
 #define MIN_TRIANGLES_PER_CIRCLE 6
 #define MAX_TRIANGLES_PER_CIRCLE 360
@@ -477,7 +477,7 @@ static void myVertex(GLdouble * vertex_data)
 		printf("Vertex received with unknown type\n");
 }
 
-void hidgl_fill_polygon(int n_coords, Coord * x, Coord * y)
+void hidgl_fill_polygon(int n_coords, pcb_coord_t * x, pcb_coord_t * y)
 {
 	int i;
 	GLUtesselator *tobj;
@@ -643,7 +643,7 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 	free(info.vertices);
 }
 
-void hidgl_fill_rect(Coord x1, Coord y1, Coord x2, Coord y2)
+void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	hidgl_ensure_triangle_space(&buffer, 2);
 	hidgl_add_triangle(&buffer, x1, y1, x1, y2, x2, y2);

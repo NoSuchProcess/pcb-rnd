@@ -35,13 +35,13 @@
 
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */
-	Coord X, Y, X2, Y2;   /* so Point type can be cast as pcb_box_t */
+	pcb_coord_t X, Y, X2, Y2;   /* so Point type can be cast as pcb_box_t */
 	long int ID;
 };
 
 struct pcb_box_s {  /* a bounding box */
-	Coord X1, Y1;     /* upper left */
-	Coord X2, Y2;     /* and lower right corner */
+	pcb_coord_t X1, Y1;     /* upper left */
+	pcb_coord_t X2, Y2;     /* and lower right corner */
 };
 
 pcb_box_t *GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
@@ -85,7 +85,7 @@ long int CreateIDGet(void);
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
 #define	PCB_ANYLINEFIELDS			\
 	PCB_ANYOBJECTFIELDS;		\
-	Coord		Thickness,      \
+	pcb_coord_t		Thickness,      \
                         Clearance;      \
 	pcb_point_t	Point1,		\
 			Point2

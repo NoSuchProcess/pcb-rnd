@@ -395,7 +395,7 @@ pcb_bool ChangeSelectedThermals(int types, int therm_style)
  * changes the size of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedSize(int types, Coord Difference, pcb_bool fixIt)
+pcb_bool ChangeSelectedSize(int types, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -417,7 +417,7 @@ pcb_bool ChangeSelectedSize(int types, Coord Difference, pcb_bool fixIt)
  * changes the clearance size of all selected and visible objects
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedClearSize(int types, Coord Difference, pcb_bool fixIt)
+pcb_bool ChangeSelectedClearSize(int types, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -442,7 +442,7 @@ pcb_bool ChangeSelectedClearSize(int types, Coord Difference, pcb_bool fixIt)
  * changes the 2nd size (drilling hole) of all selected and visible objects
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelected2ndSize(int types, Coord Difference, pcb_bool fixIt)
+pcb_bool ChangeSelected2ndSize(int types, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -783,7 +783,7 @@ pcb_bool ChangeSelectedPaste(void)
  * changes the size of the passed object; element size is silk size
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt)
+pcb_bool ChangeObjectSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -805,7 +805,7 @@ pcb_bool ChangeObjectSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Di
  * changes the size of the passed object; element size is pin ring sizes
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObject1stSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt)
+pcb_bool ChangeObject1stSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -827,7 +827,7 @@ pcb_bool ChangeObject1stSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord
  * changes the radius of the passed object (e.g. arc width/height)
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, Coord r, pcb_bool fixIt)
+pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, pcb_coord_t r, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -872,7 +872,7 @@ pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
  * changes the clearance size of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectClearSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt)
+pcb_bool ChangeObjectClearSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -918,7 +918,7 @@ pcb_bool ChangeObjectThermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int t
  * changes the 2nd size of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObject2ndSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt, pcb_bool incundo)
+pcb_bool ChangeObject2ndSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt, pcb_bool incundo)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -941,7 +941,7 @@ pcb_bool ChangeObject2ndSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord
  * changes the mask size of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectMaskSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord Difference, pcb_bool fixIt)
+pcb_bool ChangeObjectMaskSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -1257,7 +1257,7 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
  * releases the saved pixmap if necessary
  * and adjusts the cursor confinement box
  */
-void ChangePCBSize(Coord Width, Coord Height)
+void ChangePCBSize(pcb_coord_t Width, pcb_coord_t Height)
 {
 	PCB->MaxWidth = Width;
 	PCB->MaxHeight = Height;

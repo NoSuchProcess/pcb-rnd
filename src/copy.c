@@ -61,7 +61,7 @@ static pcb_opfunc_t CopyFunctions = {
  * pastes the contents of the buffer to the layout. Only visible objects
  * are handled by the routine.
  */
-pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
+pcb_bool CopyPastebufferToLayout(pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_cardinal_t i;
 	pcb_bool changed = pcb_false;
@@ -147,7 +147,7 @@ pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
  * the new objects is moved by DX,DY
  * I assume that the appropriate layer ... is switched on
  */
-void *CopyObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord DY)
+void *CopyObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	void *ptr;
 	pcb_opctx_t ctx;

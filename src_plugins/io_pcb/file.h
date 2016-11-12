@@ -38,7 +38,7 @@
 /* This is used by the lexer/parser */
 typedef struct {
 	int ival;
-	Coord bval;
+	pcb_coord_t bval;
 	double dval;
 	char has_units;
 } PLMeasure;

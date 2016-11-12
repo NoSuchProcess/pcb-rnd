@@ -34,7 +34,7 @@
 #warning TODO
 static const char propedit_syntax[] = "propedit()";
 static const char propedit_help[] = "Run the property editor";
-int propedit_action(int argc, const char **argv, Coord x, Coord y)
+int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pe_ctx_t ctx;
 	htsp_entry_t *pe;
@@ -58,7 +58,7 @@ int propedit_action(int argc, const char **argv, Coord x, Coord y)
 
 static const char propset_syntax[] = "propset(name, value)";
 static const char propset_help[] = "Change the named property of all selected objects to/by value";
-int propset_action(int argc, const char **argv, Coord x, Coord y)
+int propset_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int res;
 /*

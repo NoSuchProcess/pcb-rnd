@@ -58,7 +58,7 @@
 #define FLIP(y) (y) = h - (y)
 #define NEG(y) (y) = - (y)
 
-static int boardflip(int argc, const char **argv, Coord x, Coord y)
+static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int h = PCB->MaxHeight;
 	int sides = 0;

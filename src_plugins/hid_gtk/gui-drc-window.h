@@ -47,12 +47,12 @@ struct _GhidDrcViolation {
 
 	char *title;
 	char *explanation;
-	Coord x_coord;
-	Coord y_coord;
+	pcb_coord_t x_coord;
+	pcb_coord_t y_coord;
 	pcb_angle_t angle;
 	pcb_bool have_measured;
-	Coord measured_value;
-	Coord required_value;
+	pcb_coord_t measured_value;
+	pcb_coord_t required_value;
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;

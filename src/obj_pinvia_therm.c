@@ -41,17 +41,17 @@
 static pcb_board_t *pcb;
 
 struct cent {
-	Coord x, y;
-	Coord s, c;
+	pcb_coord_t x, y;
+	pcb_coord_t s, c;
 	char style;
 	pcb_polyarea_t *p;
 };
 
-static pcb_polyarea_t *diag_line(Coord X, Coord Y, Coord l, Coord w, pcb_bool rt)
+static pcb_polyarea_t *diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t l, pcb_coord_t w, pcb_bool rt)
 {
 	pcb_pline_t *c;
 	pcb_vector_t v;
-	Coord x1, x2, y1, y2;
+	pcb_coord_t x1, x2, y1, y2;
 
 	if (rt) {
 		x1 = (l - w) * M_SQRT1_2;
@@ -87,7 +87,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	pcb_polyarea_t *p, *p2;
 	pcb_pline_t *c;
 	pcb_vector_t v;
-	Coord d, in, out;
+	pcb_coord_t d, in, out;
 
 	switch (style) {
 	case 1:
@@ -312,8 +312,8 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 {
 	pcb_polyarea_t *p, *p2, *m;
-	Coord t = 0.5 * pcb->ThermScale * pin->Clearance;
-	Coord w = pin->Thickness + pin->Clearance;
+	pcb_coord_t t = 0.5 * pcb->ThermScale * pin->Clearance;
+	pcb_coord_t w = pin->Thickness + pin->Clearance;
 
 	p = OctagonPoly(pin->X, pin->Y, w, GET_SQUARE(pin));
 	p2 = OctagonPoly(pin->X, pin->Y, pin->Thickness, GET_SQUARE(pin));
@@ -336,7 +336,7 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		/* fix me add thermal style 4 */
 	case 5:
 		{
-			Coord t = pin->Thickness / 2;
+			pcb_coord_t t = pin->Thickness / 2;
 			pcb_polyarea_t *q;
 			/* cheat by using the square therm's rounded parts */
 			p = square_therm(pin, style);
@@ -372,8 +372,8 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 	case 2:
 		{
 			pcb_polyarea_t *m;
-			Coord t = (pin->Thickness + pin->Clearance) / 2;
-			Coord w = 0.5 * pcb->ThermScale * pin->Clearance;
+			pcb_coord_t t = (pin->Thickness + pin->Clearance) / 2;
+			pcb_coord_t w = 0.5 * pcb->ThermScale * pin->Clearance;
 			pa = CirclePoly(pin->X, pin->Y, t);
 			arc = CirclePoly(pin->X, pin->Y, pin->Thickness / 2);
 			/* create a thin ring */

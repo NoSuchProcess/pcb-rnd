@@ -97,7 +97,7 @@ pcb_lib_menu_t *pcb_netname_to_netname(const char *netname)
 	return 0;
 }
 
-int pcb_pin_name_to_xy(pcb_lib_entry_t * pin, Coord *x, Coord *y)
+int pcb_pin_name_to_xy(pcb_lib_entry_t * pin, pcb_coord_t *x, pcb_coord_t *y)
 {
 	pcb_connection_t conn;
 	if (!SeekPad(pin, &conn, pcb_false))
@@ -117,7 +117,7 @@ int pcb_pin_name_to_xy(pcb_lib_entry_t * pin, Coord *x, Coord *y)
 
 void pcb_netlist_find(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
-	Coord x, y;
+	pcb_coord_t x, y;
 	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
 		return;
 	LookupConnection(x, y, 1, 1, PCB_FLAG_FOUND);
@@ -125,7 +125,7 @@ void pcb_netlist_find(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 
 void pcb_netlist_select(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
-	Coord x, y;
+	pcb_coord_t x, y;
 	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
 		return;
 	LookupConnection(x, y, 1, 1, PCB_FLAG_SELECTED);

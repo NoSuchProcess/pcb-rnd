@@ -84,15 +84,15 @@ be prompted to enter one.
 
 %end-doc */
 
-int ActionLoadDsnFrom(int argc, const char **argv, Coord x, Coord y)
+int ActionLoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
 	static char *default_file = NULL;
 	char str[200];
 	FILE *fp;
 	int ret;
-	Coord dim1, dim2, x0 = 0, y0 = 0, x1, y1;
-	Coord linethick = 0, lineclear, viadiam, viadrill;
+	pcb_coord_t dim1, dim2, x0 = 0, y0 = 0, x1, y1;
+	pcb_coord_t linethick = 0, lineclear, viadiam, viadrill;
 	char lname[200];
 	pcb_layer_t *rlayer = NULL;
 	pcb_line_t *line = NULL;

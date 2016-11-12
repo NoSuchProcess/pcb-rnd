@@ -99,7 +99,7 @@ void ghid_port_ranges_scale(void)
  * handles all events from PCB drawing area
  */
 
-void ghid_get_coords(const char *msg, Coord * x, Coord * y)
+void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
 	if (!ghid_port.has_entered && msg)
 		ghid_get_user_xy(msg);
@@ -291,7 +291,7 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 }
 
 
-static char *describe_location(Coord X, Coord Y)
+static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;

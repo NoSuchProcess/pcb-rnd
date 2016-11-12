@@ -214,7 +214,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
  * the objects are re-drawn if AndDraw is pcb_true
  * also the action is marked as undoable if AndDraw is pcb_true
  */
-void LookupConnection(Coord X, Coord Y, pcb_bool AndDraw, Coord Range, int which_flag)
+void LookupConnection(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t Range, int which_flag)
 {
 	void *ptr1, *ptr2, *ptr3;
 	char *name;

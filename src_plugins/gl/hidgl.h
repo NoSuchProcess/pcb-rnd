@@ -62,13 +62,13 @@ hidgl_add_triangle(triangle_buffer * buffer, GLfloat x1, GLfloat y1, GLfloat x2,
 
 void hidgl_draw_grid(pcb_box_t * drawn_area);
 void hidgl_set_depth(float depth);
-void hidgl_draw_line(int cap, Coord width, Coord x1, Coord y1, Coord x2, Coord y2, double scale);
-void hidgl_draw_arc(Coord width, Coord vx, Coord vy, Coord vrx, Coord vry, pcb_angle_t start_angle, pcb_angle_t delta_angle, double scale);
-void hidgl_draw_rect(Coord x1, Coord y1, Coord x2, Coord y2);
-void hidgl_fill_circle(Coord vx, Coord vy, Coord vr, double scale);
-void hidgl_fill_polygon(int n_coords, Coord * x, Coord * y);
+void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, double scale);
+void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vrx, pcb_coord_t vry, pcb_angle_t start_angle, pcb_angle_t delta_angle, double scale);
+void hidgl_draw_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double scale);
+void hidgl_fill_polygon(int n_coords, pcb_coord_t * x, pcb_coord_t * y);
 void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, double scale);
-void hidgl_fill_rect(Coord x1, Coord y1, Coord x2, Coord y2);
+void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 
 void hidgl_init(void);
 int hidgl_stencil_bits(void);

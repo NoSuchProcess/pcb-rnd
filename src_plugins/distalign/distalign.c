@@ -177,7 +177,7 @@ static int keyword(const char *s)
 
 /* this macro produces a function in X or Y that switches on 'point' */
 #define COORD(DIR)						\
-static inline Coord		        			\
+static inline pcb_coord_t		        			\
 coord ## DIR(pcb_element_t *element, int point)			\
 {								\
 	switch (point) {					\
@@ -201,7 +201,7 @@ COORD(X)
 	COORD(Y)
 
 /* return the element coordinate associated with the given internal point */
-		 static Coord coord(pcb_element_t * element, int dir, int point)
+		 static pcb_coord_t coord(pcb_element_t * element, int dir, int point)
 {
 	if (dir == K_X)
 		return coordX(element, point);
@@ -211,8 +211,8 @@ COORD(X)
 
 static struct element_by_pos {
 	pcb_element_t *element;
-	Coord pos;
-	Coord width;
+	pcb_coord_t pos;
+	pcb_coord_t width;
 } *elements_by_pos;
 
 static int nelements_by_pos;
@@ -281,9 +281,9 @@ static void free_elements_by_pos(void)
  * \brief Find the reference coordinate from the specified points of all
  * selected elements.
  */
-static Coord reference_coord(int op, int x, int y, int dir, int point, int reference)
+static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int reference)
 {
-	Coord q;
+	pcb_coord_t q;
 	int nsel;
 
 	q = 0;
@@ -341,13 +341,13 @@ static Coord reference_coord(int op, int x, int y, int dir, int point, int refer
  *
  * Defaults are Marks, First.
  */
-static int align(int argc, const char **argv, Coord x, Coord y)
+static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
 	int point;
 	int reference;
 	int gridless;
-	Coord q;
+	pcb_coord_t q;
 	int changed = 0;
 
 	if (argc < 1 || argc > 4) {
@@ -413,7 +413,7 @@ static int align(int argc, const char **argv, Coord x, Coord y)
 	/* move all selected elements to the new coordinate */
 	ELEMENT_LOOP(PCB->Data);
 	{
-		Coord p, dp, dx, dy;
+		pcb_coord_t p, dp, dx, dy;
 
 		if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
 			continue;
@@ -462,13 +462,13 @@ static int align(int argc, const char **argv, Coord x, Coord y)
  * Distributed elements always retain the same relative order they had
  * before they were distributed. \n
  */
-static int distribute(int argc, const char **argv, Coord x, Coord y)
+static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int dir;
 	int point;
 	int refa, refb;
 	int gridless;
-	Coord s, e, slack;
+	pcb_coord_t s, e, slack;
 	int divisor;
 	int changed = 0;
 	int i;
@@ -559,7 +559,7 @@ static int distribute(int argc, const char **argv, Coord x, Coord y)
 	/* even the gaps instead of the edges or whatnot */
 	/* find the "slack" in the row */
 	if (point == K_Gaps) {
-		Coord w;
+		pcb_coord_t w;
 
 		/* subtract all the "widths" from the slack */
 		for (i = 0; i < nelements_by_pos; ++i) {
@@ -578,7 +578,7 @@ static int distribute(int argc, const char **argv, Coord x, Coord y)
 	/* move all selected elements to the new coordinate */
 	for (i = 0; i < nelements_by_pos; ++i) {
 		pcb_element_t *element = elements_by_pos[i].element;
-		Coord p, q, dp, dx, dy;
+		pcb_coord_t p, q, dp, dx, dy;
 
 		/* find reference point for this element */
 		q = s + slack * i / divisor;

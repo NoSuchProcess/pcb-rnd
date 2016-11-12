@@ -32,18 +32,18 @@
 #include "global_typedefs.h"
 
 void SetTextScale(int);
-void SetGrid(Coord, pcb_bool);
+void SetGrid(pcb_coord_t, pcb_bool);
 void SetZoom(double);
-void SetLineSize(Coord);
-void SetViaSize(Coord, pcb_bool);
-void SetViaDrillingHole(Coord, pcb_bool);
-void SetClearanceWidth(Coord);
+void SetLineSize(pcb_coord_t);
+void SetViaSize(pcb_coord_t, pcb_bool);
+void SetViaDrillingHole(pcb_coord_t, pcb_bool);
+void SetClearanceWidth(pcb_coord_t);
 void SetChangedFlag(pcb_bool);
 void SetBufferNumber(int);
 void SetMode(int);
 void SetCrosshairRangeToBuffer(void);
-void SetLocalRef(Coord, Coord, pcb_bool);
-void RedrawZoom(Coord, Coord);
+void SetLocalRef(pcb_coord_t, pcb_coord_t, pcb_bool);
+void RedrawZoom(pcb_coord_t, pcb_coord_t);
 void SaveMode(void);
 void RestoreMode(void);
 

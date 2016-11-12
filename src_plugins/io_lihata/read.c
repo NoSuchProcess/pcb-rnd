@@ -82,8 +82,8 @@ static int parse_text(char **res, lht_node_t *nd)
 	return 0;
 }
 
-/* Load the Coord value of a text node into res. Return 0 on success */
-static int parse_coord(Coord *res, lht_node_t *nd)
+/* Load the pcb_coord_t value of a text node into res. Return 0 on success */
+static int parse_coord(pcb_coord_t *res, lht_node_t *nd)
 {
 	double tmp;
 	pcb_bool success;
@@ -122,7 +122,7 @@ static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
 	return 0;
 }
 
-/* Load the Coord value of a text node into res. Return 0 on success */
+/* Load the pcb_coord_t value of a text node into res. Return 0 on success */
 static int parse_int(int *res, lht_node_t *nd)
 {
 	long int tmp;
@@ -336,7 +336,7 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type)
 }
 
 
-static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int no_id, Coord dx, Coord dy)
+static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int no_id, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_line_t *line;
 
@@ -404,7 +404,7 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, Coord dx, Coord dy)
+static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_arc_t *arc;
 
@@ -580,7 +580,7 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp)
 }
 
 /* If el == NULL and dt != NULL it is a via (for now). */
-static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, Coord dx, Coord dy)
+static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_pin_t *via;
 
@@ -615,7 +615,7 @@ static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, Coord d
 	return 0;
 }
 
-static int parse_pad(pcb_element_t *el, lht_node_t *obj, Coord dx, Coord dy)
+static int parse_pad(pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coord_t dy)
 {
 	pcb_pad_t *pad;
 
@@ -748,7 +748,7 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "objects");
 	for(obj = lht_dom_first(&it, grp); obj != NULL; obj = lht_dom_next(&it)) {
-		Coord x1, y1, x2, y2, th;
+		pcb_coord_t x1, y1, x2, y2, th;
 		parse_coord(&x1, lht_dom_hash_get(obj, "x1"));
 		parse_coord(&y1, lht_dom_hash_get(obj, "y1"));
 		parse_coord(&x2, lht_dom_hash_get(obj, "x2"));

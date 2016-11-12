@@ -61,7 +61,7 @@ static pcb_opfunc_t InsertFunctions = {
 /* ---------------------------------------------------------------------------
  * inserts point into objects
  */
-void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * Ptr3, Coord DX, Coord DY, pcb_bool Force, pcb_bool insert_last)
+void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * Ptr3, pcb_coord_t DX, pcb_coord_t DY, pcb_bool Force, pcb_bool insert_last)
 {
 	void *ptr;
 	pcb_opctx_t ctx;
@@ -87,7 +87,7 @@ pcb_point_t *AdjustInsertPoint(void)
 {
 	static pcb_point_t InsertedPoint;
 	double m;
-	Coord x, y, m1, m2;
+	pcb_coord_t x, y, m1, m2;
 	pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
 
 	if (Crosshair.AttachedObject.State == STATE_FIRST)

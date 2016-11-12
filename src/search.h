@@ -33,7 +33,7 @@
 #include "rats.h"
 #include "misc_util.h"
 
-int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord by1, Coord bx2, Coord by2);
+int lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2);
 
 #define SLOP 5
 /* ---------------------------------------------------------------------------
@@ -145,18 +145,18 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-pcb_bool IsPointOnLine(Coord, Coord, Coord, pcb_line_t *);
-pcb_bool IsPointOnPin(Coord, Coord, Coord, pcb_pin_t *);
-pcb_bool IsPointOnArc(Coord, Coord, Coord, pcb_arc_t *);
-pcb_bool IsPointOnLineEnd(Coord, Coord, pcb_rat_t *);
-pcb_bool IsLineInRectangle(Coord, Coord, Coord, Coord, pcb_line_t *);
+pcb_bool IsPointOnLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_line_t *);
+pcb_bool IsPointOnPin(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pin_t *);
+pcb_bool IsPointOnArc(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_arc_t *);
+pcb_bool IsPointOnLineEnd(pcb_coord_t, pcb_coord_t, pcb_rat_t *);
+pcb_bool IsLineInRectangle(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_line_t *);
 pcb_bool IsLineInQuadrangle(pcb_point_t p[4], pcb_line_t *Line);
-pcb_bool IsArcInRectangle(Coord, Coord, Coord, Coord, pcb_arc_t *);
-pcb_bool IsPointInPad(Coord, Coord, Coord, pcb_pad_t *);
-pcb_bool IsPointInBox(Coord, Coord, pcb_box_t *, Coord);
-int SearchObjectByLocation(unsigned, void **, void **, void **, Coord, Coord, Coord);
-int SearchScreen(Coord, Coord, int, void **, void **, void **);
-int SearchScreenGridSlop(Coord, Coord, int, void **, void **, void **);
+pcb_bool IsArcInRectangle(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_arc_t *);
+pcb_bool IsPointInPad(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pad_t *);
+pcb_bool IsPointInBox(pcb_coord_t, pcb_coord_t, pcb_box_t *, pcb_coord_t);
+int SearchObjectByLocation(unsigned, void **, void **, void **, pcb_coord_t, pcb_coord_t, pcb_coord_t);
+int SearchScreen(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
+int SearchScreenGridSlop(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
 int SearchObjectByID(pcb_data_t *, void **, void **, void **, int, int);
 pcb_element_t *SearchElementByName(pcb_data_t *, const char *);
 

@@ -104,7 +104,7 @@ void ClearBuffer(pcb_buffer_t *Buffer)
  * copies all selected and visible objects to the paste buffer
  * returns true if any objects have been removed
  */
-void AddSelectedToBuffer(pcb_buffer_t *Buffer, Coord X, Coord Y, pcb_bool LeaveSelected)
+void AddSelectedToBuffer(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
 {
 	pcb_opctx_t ctx;
 
@@ -149,7 +149,7 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 %end-doc */
 
-int LoadFootprint(int argc, const char **argv, Coord x, Coord y)
+int LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *name = ACTION_ARG(0);
 	const char *refdes = ACTION_ARG(1);
@@ -360,7 +360,7 @@ angle is given, the user is prompted for one.
 
 %end-doc */
 
-int ActionFreeRotateBuffer(int argc, const char **argv, Coord x, Coord y)
+int ActionFreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *angle_s;
 
@@ -671,7 +671,7 @@ Selects the given buffer to be the current paste buffer.
 
 %end-doc */
 
-static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
+static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = argc ? argv[0] : "";
 	const char *sbufnum = argc > 1 ? argv[1] : "";
@@ -759,8 +759,8 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 
 		case F_ToLayout:
 			{
-				static Coord oldx = 0, oldy = 0;
-				Coord x, y;
+				static pcb_coord_t oldx = 0, oldy = 0;
+				pcb_coord_t x, y;
 				pcb_bool absolute;
 
 				if (argc == 1) {

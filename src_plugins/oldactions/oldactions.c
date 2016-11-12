@@ -107,7 +107,7 @@ static void dump_lib_any(int level, library_t *l)
 }
 
 
-static int ActionDumpLibrary(int argc, const char **argv, Coord x, Coord y)
+static int ActionDumpLibrary(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	dump_lib_any(0, &library);
 
@@ -122,7 +122,7 @@ static const char bell_syntax[] = "Bell()";
 
 static const char bell_help[] = "Attempt to produce audible notification (e.g. beep the speaker).";
 
-static int ActionBell(int argc, const char **argv, Coord x, Coord y)
+static int ActionBell(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	gui->beep();
 	return 0;
@@ -153,7 +153,7 @@ on one.
 
 %end-doc */
 
-static int Debug(int argc, const char **argv, Coord x, Coord y)
+static int Debug(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i;
 	printf("Debug:");
@@ -174,7 +174,7 @@ passed a 1, does nothing but pretends to fail.
 
 %end-doc */
 
-static int Return(int argc, const char **argv, Coord x, Coord y)
+static int Return(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return atoi(argv[0]);
 }
@@ -198,7 +198,7 @@ optimize hand-routed traces also.
 
 
 
-int djopt_set_auto_only(int argc, const char **argv, Coord x, Coord y)
+int djopt_set_auto_only(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	conf_toggle(CFR_DESIGN, "plugins/djopt/auto_only");
 	return 0;
@@ -224,7 +224,7 @@ loaded first.
 
 %end-doc */
 
-int ActionToggleVendor(int argc, const char **argv, Coord x, Coord y)
+int ActionToggleVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	conf_toggle(CFR_DESIGN, "plugins/vendor/enable");
 	return 0;
@@ -250,7 +250,7 @@ loaded first.
 
 %end-doc */
 
-int ActionEnableVendor(int argc, const char **argv, Coord x, Coord y)
+int ActionEnableVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
 	return 0;
@@ -274,7 +274,7 @@ specified in the currently loaded vendor drill table.
 
 %end-doc */
 
-int ActionDisableVendor(int argc, const char **argv, Coord x, Coord y)
+int ActionDisableVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
 	return 0;

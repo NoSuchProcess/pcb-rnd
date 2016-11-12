@@ -42,10 +42,10 @@
 #include "compat_nls.h"
 
 #define GAP 10000
-static Coord minx;
-static Coord miny;
-static Coord maxx;
-static Coord maxy;
+static pcb_coord_t minx;
+static pcb_coord_t miny;
+static pcb_coord_t maxx;
+static pcb_coord_t maxy;
 
 /*!
  * \brief Place one element.
@@ -56,7 +56,7 @@ static Coord maxy;
  */
 static void place(pcb_element_t * element)
 {
-	Coord dx, dy;
+	pcb_coord_t dx, dy;
 
 	/* figure out how much to move the element */
 	dx = minx - element->BoundingBox.X1;
@@ -99,7 +99,7 @@ static void place(pcb_element_t * element)
  * \brief Return the X location of a connection's pad or pin within its
  * element.
  */
-static Coord padDX(pcb_connection_t * conn)
+static pcb_coord_t padDX(pcb_connection_t * conn)
 {
 	pcb_element_t *element = (pcb_element_t *) conn->ptr1;
 	pcb_any_line_t *line = (pcb_any_line_t *) conn->ptr2;
@@ -113,7 +113,7 @@ static Coord padDX(pcb_connection_t * conn)
  */
 static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 {
-	Coord dxa, dxb;
+	pcb_coord_t dxa, dxb;
 
 	dxa = padDX(conna);
 	dxb = padDX(connb);
@@ -136,7 +136,7 @@ static const char smartdisperse_syntax[] = "SmartDisperse([All|Selected])";
 #define is_visited(element)  htpi_has(&visited, ((void *)(element)))
 
 
-static int smartdisperse(int argc, const char **argv, Coord x, Coord y)
+static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = ARG(0);
 	pcb_netlist_t *Nets;

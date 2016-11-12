@@ -32,9 +32,9 @@ static guint ghid_coord_entry_signals[LAST_SIGNAL] = { 0 };
 struct _GHidCoordEntry {
 	GtkSpinButton parent;
 
-	Coord min_value;
-	Coord max_value;
-	Coord value;
+	pcb_coord_t min_value;
+	pcb_coord_t max_value;
+	pcb_coord_t value;
 
 	enum ce_step_size step_size;
 	const pcb_unit_t *unit;
@@ -226,7 +226,7 @@ GType ghid_coord_entry_get_type(void)
  *
  *  \return a freshly-allocated GHidCoordEntry
  */
-GtkWidget *ghid_coord_entry_new(Coord min_val, Coord max_val, Coord value, const pcb_unit_t * unit, enum ce_step_size step_size)
+GtkWidget *ghid_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_coord_t value, const pcb_unit_t * unit, enum ce_step_size step_size)
 {
 	/* Setup spinbox min/max values */
 	double small_step, big_step;
@@ -271,7 +271,7 @@ GtkWidget *ghid_coord_entry_new(Coord min_val, Coord max_val, Coord value, const
 }
 
 /*! \brief Gets a GHidCoordEntry's value, in pcb coords */
-Coord ghid_coord_entry_get_value(GHidCoordEntry * ce)
+pcb_coord_t ghid_coord_entry_get_value(GHidCoordEntry * ce)
 {
 	return ce->value;
 }
@@ -285,7 +285,7 @@ int ghid_coord_entry_get_value_str(GHidCoordEntry * ce, char *out, int out_len)
 }
 
 /*! \brief Sets a GHidCoordEntry's value, in pcb coords */
-void ghid_coord_entry_set_value(GHidCoordEntry * ce, Coord val)
+void ghid_coord_entry_set_value(GHidCoordEntry * ce, pcb_coord_t val)
 {
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ce), coord_to_unit(ce->unit, val));
 }

@@ -64,7 +64,7 @@ void hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case HID_Coord:
 				if (a->value)
-					*(Coord *) a->value = a->default_val.coord_value;
+					*(pcb_coord_t *) a->value = a->default_val.coord_value;
 				break;
 			case HID_Boolean:
 				if (a->value)
@@ -122,7 +122,7 @@ void hid_parse_command_line(int *argc, char ***argv)
 						break;
 					case HID_Coord:
 						if (a->value)
-							*(Coord *) a->value = GetValue((*argv)[1], NULL, NULL, NULL);
+							*(pcb_coord_t *) a->value = GetValue((*argv)[1], NULL, NULL, NULL);
 						else
 							a->default_val.coord_value = GetValue((*argv)[1], NULL, NULL, NULL);
 						(*argc)--;

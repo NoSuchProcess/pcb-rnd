@@ -67,7 +67,7 @@ MoveLineToLayer, MoveTextToLayer, MovePolygonToLayer, NULL, NULL, NULL, NULL, NU
  * moves the object identified by its data pointers and the type
  * not we don't bump the undo serial number
  */
-void *MoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord DY)
+void *MoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	void *result;
 	pcb_opctx_t ctx;
@@ -84,7 +84,7 @@ void *MoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord D
  * moves the object identified by its data pointers and the type
  * as well as all attached rubberband lines
  */
-void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord DY)
+void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	pcb_rubberband_t *ptr;
 	pcb_opctx_t ctx;
@@ -391,7 +391,7 @@ Creates a new layer.
 
 %end-doc */
 
-int MoveLayerAction(int argc, const char **argv, Coord x, Coord y)
+int MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_index, new_index;
 	int new_top = -1;

@@ -65,7 +65,7 @@ conf_report_t conf_report;
 #define AUSAGE(x) Message (PCB_MSG_INFO, "Usage:\n%s\n", (x##_syntax))
 #define USER_UNITMASK (conf_core.editor.grid_unit->allow)
 
-static int ReportDrills(int argc, const char **argv, Coord x, Coord y)
+static int ReportDrills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	DrillInfoTypePtr AllDrills;
 	pcb_cardinal_t n;
@@ -122,7 +122,7 @@ This is a shortcut for @code{Report(Object)}.
 
 %end-doc */
 
-static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
+static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
@@ -323,7 +323,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 		}
 	case PCB_TYPE_PAD:
 		{
-			Coord len;
+			pcb_coord_t len;
 			pcb_pad_t *Pad;
 			pcb_element_t *element;
 #ifndef NDEBUG
@@ -472,7 +472,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int ReportFoundPins(int argc, const char **argv, Coord x, Coord y)
+static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	gds_t list;
 	int col = 0;
@@ -505,7 +505,7 @@ static int ReportFoundPins(int argc, const char **argv, Coord x, Coord y)
  * e.g. ResetConnections() has been run.
  * Does not add its own changes to the undo system
  */
-static double XYtoNetLength(Coord x, Coord y, int *found)
+static double XYtoNetLength(pcb_coord_t x, pcb_coord_t y, int *found)
 {
 	double length;
 
@@ -546,7 +546,7 @@ static double XYtoNetLength(Coord x, Coord y, int *found)
 	return length;
 }
 
-static int ReportAllNetLengths(int argc, const char **argv, Coord x, Coord y)
+static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int ni;
 	int found;
@@ -608,7 +608,7 @@ static int ReportAllNetLengths(int argc, const char **argv, Coord x, Coord y)
 		if (got_one) {
 			char buf[50];
 			const char *units_name = argv[0];
-			Coord length;
+			pcb_coord_t length;
 
 			if (argc < 1)
 				units_name = conf_core.editor.grid_unit->suffix;
@@ -628,9 +628,9 @@ static int ReportAllNetLengths(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static int ReportNetLength(int argc, const char **argv, Coord x, Coord y)
+static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	Coord length = 0;
+	pcb_coord_t length = 0;
 	char *netname = 0;
 	int found = 0;
 
@@ -722,7 +722,7 @@ got_net_name:
 static int ReportNetLengthByName(const char *tofind, int x, int y)
 {
 	char *netname = 0;
-	Coord length = 0;
+	pcb_coord_t length = 0;
 	int found = 0;
 	int i;
 	pcb_lib_menu_t *net;
@@ -866,7 +866,7 @@ units
 
 %end-doc */
 
-static int Report(int argc, const char **argv, Coord x, Coord y)
+static int Report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if ((argc < 1) || (argc > 2))
 		AUSAGE(report);
