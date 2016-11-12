@@ -42,7 +42,7 @@
 #include "move.h"
 #include "obj_common.h"
 
-struct pcb_boxlist_s {
+struct pcb_box_list_s {
 	pcb_cardinal_t BoxN,								/* the number of boxes contained */
 	  BoxMax;											/* max boxes from malloc */
 	pcb_box_t *Box;
@@ -221,8 +221,8 @@ static inline PCB_FUNC_UNUSED double dist2_to_box(const CheapPointType * p, cons
 	return Distance(r.X, r.Y, p->X, p->Y);
 }
 
-pcb_box_t *GetBoxMemory(BoxListTypePtr);
-void FreeBoxListMemory(BoxListTypePtr);
+pcb_box_t *GetBoxMemory(pcb_box_list_t *);
+void FreeBoxListMemory(pcb_box_list_t *);
 void SetPointBoundingBox(PointTypePtr Pnt);
 
 #endif /* __BOX_H_INCLUDED__ */

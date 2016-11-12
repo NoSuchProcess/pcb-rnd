@@ -190,7 +190,7 @@ static PointerListType collectSelectedElements()
 
 #if 0														/* only for debugging box lists */
 /* makes a line on the solder layer surrounding all boxes in blist */
-static void showboxes(BoxListTypePtr blist)
+static void showboxes(pcb_box_list_t *blist)
 {
 	pcb_cardinal_t i;
 	pcb_layer_t *SLayer = &(PCB->Data->Layer[solder_silk_layer]);
@@ -304,9 +304,9 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 	Coord minx, maxx, miny, maxy;
 	pcb_bool allpads, allsameside;
 	pcb_cardinal_t thegroup;
-	BoxListType bounds = { 0, 0, NULL };	/* save bounding rectangles here */
-	BoxListType solderside = { 0, 0, NULL };	/* solder side component bounds */
-	BoxListType componentside = { 0, 0, NULL };	/* component side bounds */
+	pcb_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
+	pcb_box_list_t solderside = { 0, 0, NULL };	/* solder side component bounds */
+	pcb_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
 	/* make sure the NetList have the proper updated X and Y coords */
 	UpdateXY(Nets);
 	/* wire length term.  approximated by half-perimeter of minimum
@@ -358,8 +358,8 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 
 	ELEMENT_LOOP(PCB->Data);
 	{
-		BoxListTypePtr thisside;
-		BoxListTypePtr otherside;
+		pcb_box_list_t *thisside;
+		pcb_box_list_t *otherside;
 		pcb_box_t *box;
 		pcb_box_t *lastbox = NULL;
 		Coord thickness;

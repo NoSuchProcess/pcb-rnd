@@ -34,7 +34,7 @@
 /* ---------------------------------------------------------------------------
  * get next slot for a box, allocates memory if necessary
  */
-pcb_box_t *GetBoxMemory(BoxListTypePtr Boxes)
+pcb_box_t *GetBoxMemory(pcb_box_list_t *Boxes)
 {
 	pcb_box_t *box = Boxes->Box;
 
@@ -51,11 +51,11 @@ pcb_box_t *GetBoxMemory(BoxListTypePtr Boxes)
 /* ---------------------------------------------------------------------------
  * frees memory used by a box list
  */
-void FreeBoxListMemory(BoxListTypePtr Boxlist)
+void FreeBoxListMemory(pcb_box_list_t *Boxlist)
 {
 	if (Boxlist) {
 		free(Boxlist->Box);
-		memset(Boxlist, 0, sizeof(BoxListType));
+		memset(Boxlist, 0, sizeof(pcb_box_list_t));
 	}
 }
 
