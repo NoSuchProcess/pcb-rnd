@@ -72,6 +72,10 @@ li:pcb-rnd-conf-v1 {
 				flip_x = 0
 				flip_y = 0
 			}
+			ha:selection {
+				disable_negative = 0
+				symmetric_negative = 0
+			}
 			undo_warning_size = 1024
 			fullscreen = 0
 		} # editor

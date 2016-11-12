@@ -235,14 +235,26 @@ do { \
 	if (conf_core.editor.view.flip_y)
 		swap(Box->Y1, Box->Y2);
 
-	/* Make sure our negative box is canonical: always from bottom-right to top-left
-	   This limits all possible box coordinate orders to two, one for positive and
-	   one for negative. */
-	if (IS_BOX_NEGATIVE(Box)) {
-		if (Box->X1 < Box->X2)
+	if (conf_core.editor.selection.disable_negative) {
+		if (Box->X1 > Box->X2)
 			swap(Box->X1, Box->X2);
-		if (Box->Y1 < Box->Y2)
+		if (Box->Y1 > Box->Y2)
 			swap(Box->Y1, Box->Y2);
+	}
+	else {
+		if (conf_core.editor.selection.symmetric_negative) {
+			if (Box->Y1 > Box->Y2)
+				swap(Box->Y1, Box->Y2);
+		}
+		/* Make sure our negative box is canonical: always from bottom-right to top-left
+		   This limits all possible box coordinate orders to two, one for positive and
+		   one for negative. */
+		if (IS_BOX_NEGATIVE(Box)) {
+			if (Box->X1 < Box->X2)
+				swap(Box->X1, Box->X2);
+			if (Box->Y1 < Box->Y2)
+				swap(Box->Y1, Box->Y2);
+		}
 	}
 #undef swap
 

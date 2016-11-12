@@ -62,6 +62,11 @@ typedef struct {
 			CFT_BOOLEAN flip_y;              /* view: flip the board along the Y (vertical) axis */
 		} view;
 
+		struct selection {
+			CFT_BOOLEAN disable_negative;    /* selection box behaviour: diable the negative-direction selection - any selection box will select only what's fully within the box */
+			CFT_BOOLEAN symmetric_negative;  /* selection box behaviour: when set, the selection direction is considered negative only if the box has negative size in the X direction */
+		} selection;
+
 		/* these two would need to be moved in the router plugin.... There are two
 		   reasons to keep them here:
 		   - the original pcb and pcb-rnd file formats already have named/numbered flags for these, so io_pcb needs these
