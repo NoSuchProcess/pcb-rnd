@@ -510,7 +510,7 @@ static lht_node_t *build_data(pcb_data_t *data)
 	return ndt;
 }
 
-static lht_node_t *build_symbol(SymbolType *sym, const char *name)
+static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 {
 	lht_node_t *lst, *ndt;
 	pcb_line_t *li;

@@ -737,7 +737,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 	return dt;
 }
 
-static int parse_symbol(SymbolType *sym, lht_node_t *nd)
+static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 {
 	lht_node_t *grp, *obj;
 	lht_dom_iterator_t it;

@@ -106,7 +106,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 /* creates the bounding box of a text object */
 void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text)
 {
-	SymbolTypePtr symbol = FontPtr->Symbol;
+	pcb_symbol_t *symbol = FontPtr->Symbol;
 	unsigned char *s = (unsigned char *) Text->TextString;
 	int i;
 	int space;

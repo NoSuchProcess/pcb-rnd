@@ -33,25 +33,25 @@
 /* ---------------------------------------------------------------------------
  * symbol and font related stuff
  */
-typedef struct symbol_st {     /* a single symbol */
+typedef struct symbol_s {     /* a single symbol */
 	pcb_line_t *Line;
 	pcb_bool Valid;
 	pcb_cardinal_t LineN;       /* number of lines */
 	pcb_cardinal_t LineMax;     /* lines allocated */
 	Coord Width, Height, Delta; /* size of cell, distance to next symbol */
-} SymbolType, *SymbolTypePtr;
+} pcb_symbol_t;
 
 struct pcb_font_s {          /* complete set of symbols */
 	Coord MaxHeight, MaxWidth; /* maximum cell width and height */
 	pcb_box_t DefaultSymbol;     /* the default symbol is a filled box */
-	SymbolType Symbol[MAX_FONTPOSITION + 1];
+	pcb_symbol_t Symbol[MAX_FONTPOSITION + 1];
 	pcb_bool Valid;
 };
 
 void CreateDefaultFont(pcb_board_t *pcb);
 void SetFontInfo(pcb_font_t *Ptr);
 
-pcb_line_t *CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
+pcb_line_t *CreateNewLineInSymbol(pcb_symbol_t *Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
 
 #endif
 

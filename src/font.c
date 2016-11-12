@@ -64,7 +64,7 @@ void CreateDefaultFont(pcb_board_t *pcb)
 void SetFontInfo(pcb_font_t *Ptr)
 {
 	pcb_cardinal_t i, j;
-	SymbolTypePtr symbol;
+	pcb_symbol_t *symbol;
 	pcb_line_t *line;
 	Coord totalminy = MAX_COORD;
 
@@ -123,7 +123,7 @@ void SetFontInfo(pcb_font_t *Ptr)
 }
 
 /* creates a new line in a symbol */
-pcb_line_t *CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
+pcb_line_t *CreateNewLineInSymbol(pcb_symbol_t *Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
 {
 	pcb_line_t *line = Symbol->Line;
 

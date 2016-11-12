@@ -59,7 +59,7 @@
 
 static	pcb_layer_t *Layer;
 static	pcb_polygon_t *Polygon;
-static	SymbolTypePtr	Symbol;
+static	pcb_symbol_t *Symbol;
 static	int		pin_num;
 static	LibraryMenuTypePtr	Menu;
 static	pcb_bool			LayerFlag[MAX_LAYER + 2];
