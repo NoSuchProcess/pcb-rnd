@@ -31,7 +31,7 @@
 
 #include "obj_common.h"
 
-struct pad_st {                  /* a SMD pad */
+struct pcb_pad_s {                  /* a SMD pad */
 	ANYLINEFIELDS;
 	Coord Mask;
 	char *Name, *Number;           /* 'Line' */

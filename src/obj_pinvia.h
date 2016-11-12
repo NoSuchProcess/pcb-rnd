@@ -31,7 +31,7 @@
 
 #include "obj_common.h"
 
-struct pin_st {
+struct pcb_pin_s {
 	ANYOBJECTFIELDS;
 	Coord Thickness, Clearance, Mask, DrillingHole;
 	Coord X, Y;                   /* center and diameter */
