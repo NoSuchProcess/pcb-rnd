@@ -58,9 +58,9 @@ static pcb_bool SearchArcByLocation(int, pcb_layer_t **, pcb_arc_t **, pcb_arc_t
 static pcb_bool SearchRatLineByLocation(int, pcb_rat_t **, pcb_rat_t **, pcb_rat_t **);
 static pcb_bool SearchTextByLocation(int, pcb_layer_t **, TextTypePtr *, TextTypePtr *);
 static pcb_bool SearchPolygonByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_polygon_t **);
-static pcb_bool SearchPinByLocation(int, ElementTypePtr *, PinTypePtr *, PinTypePtr *);
+static pcb_bool SearchPinByLocation(int, ElementTypePtr *, pcb_pin_t **, pcb_pin_t **);
 static pcb_bool SearchPadByLocation(int, ElementTypePtr *, pcb_pad_t **, pcb_pad_t **, pcb_bool);
-static pcb_bool SearchViaByLocation(int, PinTypePtr *, PinTypePtr *, PinTypePtr *);
+static pcb_bool SearchViaByLocation(int, pcb_pin_t **, pcb_pin_t **, pcb_pin_t **);
 static pcb_bool SearchElementNameByLocation(int, ElementTypePtr *, TextTypePtr *, TextTypePtr *, pcb_bool);
 static pcb_bool SearchLinePointByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_point_t **);
 static pcb_bool SearchPointByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_point_t **);
@@ -79,7 +79,7 @@ struct ans_info {
 static r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 {
 	struct ans_info *i = (struct ans_info *) cl;
-	PinTypePtr pin = (PinTypePtr) box;
+	pcb_pin_t *pin = (pcb_pin_t *) box;
 	AnyObjectType *ptr1 = pin->Element ? pin->Element : pin;
 
 	if (TEST_FLAG(i->locked, ptr1))
@@ -92,7 +92,7 @@ static r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 	return R_DIR_CANCEL; /* found, stop searching */
 }
 
-static pcb_bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * Dummy1, PinTypePtr * Dummy2)
+static pcb_bool SearchViaByLocation(int locked, pcb_pin_t ** Via, pcb_pin_t ** Dummy1, pcb_pin_t ** Dummy2)
 {
 	struct ans_info info;
 
@@ -114,7 +114,7 @@ static pcb_bool SearchViaByLocation(int locked, PinTypePtr * Via, PinTypePtr * D
  * searches a pin
  * starts with the newest element
  */
-static pcb_bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTypePtr * Pin, PinTypePtr * Dummy)
+static pcb_bool SearchPinByLocation(int locked, ElementTypePtr * Element, pcb_pin_t ** Pin, pcb_pin_t ** Dummy)
 {
 	struct ans_info info;
 
@@ -522,7 +522,7 @@ SearchElementByLocation(int locked, ElementTypePtr * Element, ElementTypePtr * D
 /* ---------------------------------------------------------------------------
  * checks if a point is on a pin
  */
-pcb_bool IsPointOnPin(Coord X, Coord Y, Coord Radius, PinTypePtr pin)
+pcb_bool IsPointOnPin(Coord X, Coord Y, Coord Radius, pcb_pin_t *pin)
 {
 	Coord t = PIN_SIZE(pin) / 2;
 	if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
@@ -1000,10 +1000,10 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 			SearchRatLineByLocation(locked, (pcb_rat_t **) Result1, (pcb_rat_t **) Result2, (pcb_rat_t **) Result3))
 		return (PCB_TYPE_RATLINE);
 
-	if (Type & PCB_TYPE_VIA && SearchViaByLocation(locked, (PinTypePtr *) Result1, (PinTypePtr *) Result2, (PinTypePtr *) Result3))
+	if (Type & PCB_TYPE_VIA && SearchViaByLocation(locked, (pcb_pin_t **) Result1, (pcb_pin_t **) Result2, (pcb_pin_t **) Result3))
 		return (PCB_TYPE_VIA);
 
-	if (Type & PCB_TYPE_PIN && SearchPinByLocation(locked, (ElementTypePtr *) pr1, (PinTypePtr *) pr2, (PinTypePtr *) pr3))
+	if (Type & PCB_TYPE_PIN && SearchPinByLocation(locked, (ElementTypePtr *) pr1, (pcb_pin_t **) pr2, (pcb_pin_t **) pr3))
 		HigherAvail = PCB_TYPE_PIN;
 
 	if (!HigherAvail && Type & PCB_TYPE_PAD &&

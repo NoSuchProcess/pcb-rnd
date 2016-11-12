@@ -160,8 +160,8 @@ static void UpdateXY(NetListTypePtr Nets)
 				break;
 			case PCB_TYPE_PIN:
 				c->group = SLayer;			/* any layer will do */
-				c->X = ((PinTypePtr) c->ptr2)->X;
-				c->Y = ((PinTypePtr) c->ptr2)->Y;
+				c->X = ((pcb_pin_t *) c->ptr2)->X;
+				c->Y = ((pcb_pin_t *) c->ptr2)->Y;
 				break;
 			default:
 				Message(PCB_MSG_DEFAULT, "Odd connection type encountered in " "UpdateXY");

@@ -201,7 +201,7 @@ struct drc_info {
 
 static r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr via = (PinTypePtr) b;
+	pcb_pin_t *via = (pcb_pin_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (!TEST_FLAG(PCB_FLAG_FOUND, via) && PinLineIntersect(via, i->line))

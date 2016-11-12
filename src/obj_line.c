@@ -466,7 +466,7 @@ struct via_info {
 static r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 {
 	struct via_info *i = (struct via_info *) cl;
-	PinTypePtr via;
+	pcb_pin_t *via;
 
 	if ((via =
 			 CreateNewVia(PCB->Data, i->X, i->Y,

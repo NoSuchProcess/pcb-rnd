@@ -43,7 +43,7 @@
  * some local prototypes
  */
 static void CheckPadForRubberbandConnection(pcb_pad_t *);
-static void CheckPinForRubberbandConnection(PinTypePtr);
+static void CheckPinForRubberbandConnection(pcb_pin_t *);
 static void CheckLinePointForRubberbandConnection(pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
 static void CheckPolygonForRubberbandConnection(pcb_layer_t *, pcb_polygon_t *);
 static void CheckLinePointForRat(pcb_layer_t *, pcb_point_t *);
@@ -205,7 +205,7 @@ static void CheckPadForRubberbandConnection(pcb_pad_t *Pad)
 struct rinfo {
 	int type;
 	pcb_cardinal_t group;
-	PinTypePtr pin;
+	pcb_pin_t *pin;
 	pcb_pad_t *pad;
 	pcb_point_t *point;
 };
@@ -265,7 +265,7 @@ static void CheckPadForRat(pcb_pad_t *Pad)
 	r_search(PCB->Data->rat_tree, &Pad->BoundingBox, NULL, rat_callback, &info, NULL);
 }
 
-static void CheckPinForRat(PinTypePtr Pin)
+static void CheckPinForRat(pcb_pin_t *Pin)
 {
 	struct rinfo info;
 
@@ -292,7 +292,7 @@ static void CheckLinePointForRat(pcb_layer_t *Layer, pcb_point_t *Point)
  * and readability is more important then the few %
  * of failures that are immediately recognized
  */
-static void CheckPinForRubberbandConnection(PinTypePtr Pin)
+static void CheckPinForRubberbandConnection(pcb_pin_t *Pin)
 {
 	struct rubber_info info;
 	pcb_cardinal_t n;
@@ -438,7 +438,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		break;
 
 	case PCB_TYPE_VIA:
-		CheckPinForRubberbandConnection((PinTypePtr) Ptr1);
+		CheckPinForRubberbandConnection((pcb_pin_t *) Ptr1);
 		break;
 
 	case PCB_TYPE_POLYGON:
@@ -483,7 +483,7 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		break;
 
 	case PCB_TYPE_VIA:
-		CheckPinForRat((PinTypePtr) Ptr1);
+		CheckPinForRat((pcb_pin_t *) Ptr1);
 		break;
 	}
 }

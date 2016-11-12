@@ -496,7 +496,7 @@ void EraseObject(int type, void *lptr, void *ptr)
 	switch (type) {
 	case PCB_TYPE_VIA:
 	case PCB_TYPE_PIN:
-		ErasePin((PinTypePtr) ptr);
+		ErasePin((pcb_pin_t *) ptr);
 		break;
 	case PCB_TYPE_TEXT:
 	case PCB_TYPE_ELEMENT_NAME:
@@ -531,7 +531,7 @@ void DrawObject(int type, void *ptr1, void *ptr2)
 	switch (type) {
 	case PCB_TYPE_VIA:
 		if (PCB->ViaOn)
-			DrawVia((PinTypePtr) ptr2);
+			DrawVia((pcb_pin_t *) ptr2);
 		break;
 	case PCB_TYPE_LINE:
 		if (((pcb_layer_t *) ptr1)->On)
@@ -559,7 +559,7 @@ void DrawObject(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_PIN:
 		if (PCB->PinOn)
-			DrawPin((PinTypePtr) ptr2);
+			DrawPin((pcb_pin_t *) ptr2);
 		break;
 	case PCB_TYPE_PAD:
 		if (PCB->PinOn)

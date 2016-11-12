@@ -110,7 +110,7 @@
 	(((pcb_polygon_t **)PolygonList[(L)].Data)[(I)])
 
 #define	PVLIST_ENTRY(I)	\
-	(((PinTypePtr *)PVList.Data)[(I)])
+	(((pcb_pin_t **)PVList.Data)[(I)])
 
 /* ---------------------------------------------------------------------------
  * some local types

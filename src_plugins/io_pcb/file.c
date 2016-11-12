@@ -295,7 +295,7 @@ static void WritePCBFontData(FILE * FP)
 static void WriteViaData(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t it;
-	PinType *via;
+	pcb_pin_t *via;
 
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
@@ -376,7 +376,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
-		PinType *pin;
+		pcb_pin_t *pin;
 		pcb_pad_t *pad;
 
 		/* only non empty elements */

@@ -61,7 +61,7 @@
 #include "box.h"
 #include "hid_actions.h"
 
-static void *MyMoveViaLowLevel(pcb_data_t * Data, PinType * Via, Coord dx, Coord dy)
+static void *MyMoveViaLowLevel(pcb_data_t * Data, pcb_pin_t * Via, Coord dx, Coord dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_VIA, Via, Via);

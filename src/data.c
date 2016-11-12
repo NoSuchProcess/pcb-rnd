@@ -191,7 +191,7 @@ void FreeDataMemory(pcb_data_t * data)
 		free(via->Name);
 	}
 	END_LOOP;
-	list_map0(&data->Via, PinType, RemoveFreeVia);
+	list_map0(&data->Via, pcb_pin_t, RemoveFreeVia);
 	ELEMENT_LOOP(data);
 	{
 		FreeElementMemory(element);

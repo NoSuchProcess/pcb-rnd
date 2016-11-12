@@ -34,7 +34,7 @@ static inline unsigned h_coord(Coord c)
 
 #define h_str(s) ((s) == NULL ? 0 : strhash(s))
 
-int pcb_pin_eq(const ElementType *e1, const PinType *p1, const ElementType *e2, const PinType *p2)
+int pcb_pin_eq(const ElementType *e1, const pcb_pin_t *p1, const ElementType *e2, const pcb_pin_t *p2)
 {
 	if (neq(p1, p2, Thickness) || neq(p1, p2, Clearance)) return 0;
 	if (neq(p1, p2, Mask) || neq(p1, p2, DrillingHole)) return 0;
@@ -44,7 +44,7 @@ int pcb_pin_eq(const ElementType *e1, const PinType *p1, const ElementType *e2, 
 	return 1;
 }
 
-unsigned int pcb_pin_hash(const ElementType *e, const PinType *p)
+unsigned int pcb_pin_hash(const ElementType *e, const pcb_pin_t *p)
 {
 	return
 		h_coord(p->Thickness) ^ h_coord(p->Clearance) ^
@@ -122,7 +122,7 @@ unsigned int pcb_element_hash(const ElementType *e)
 	gdl_iterator_t it;
 
 	{
-		PinType *p;
+		pcb_pin_t *p;
 		pinlist_foreach(&e->Pin, &it, p) {
 			val ^= pcb_pin_hash(e, p);
 		}
@@ -157,7 +157,7 @@ int pcb_element_eq(const ElementType *e1, const ElementType *e2)
 	/* Require the same objects in the same order - bail out at the first mismatch */
 
 	{
-		PinType *p1, *p2;
+		pcb_pin_t *p1, *p2;
 		p1 = pinlist_first((pinlist_t *)&e1->Pin);
 		p2 = pinlist_first((pinlist_t *)&e2->Pin);
 		for(;;) {

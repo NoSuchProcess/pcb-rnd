@@ -145,7 +145,7 @@ static void map_etext_cb(void *ctx, pcb_board_t *pcb, ElementType *element, Text
 	map_attr(ctx, &text->Attributes);
 }
 
-static void map_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PinType *pin)
+static void map_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pin_t *pin)
 {
 	map_chk_skip(ctx, pin);
 	map_add_prop(ctx, "p/pin/thickness", Coord, pin->Thickness);
@@ -164,7 +164,7 @@ static void map_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_p
 
 
 
-static void map_via_cb(void *ctx, pcb_board_t *pcb, PinType *via)
+static void map_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 {
 	map_chk_skip(ctx, via);
 	map_add_prop(ctx, "p/via/thickness", Coord, via->Thickness);
@@ -352,7 +352,7 @@ static void set_etext_cb(void *ctx, pcb_board_t *pcb, ElementType *element, Text
 	set_text_cb_any(ctx, pcb, PCB_TYPE_ELEMENT_NAME, element, text);
 }
 
-static void set_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PinType *pin)
+static void set_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pin_t *pin)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 6;
@@ -393,7 +393,7 @@ static void set_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_p
 	    ChangeObjectMaskSize(PCB_TYPE_PAD, pad->Element, pad, NULL, st->c, st->c_absolute)) DONE;
 }
 
-static void set_via_cb(void *ctx, pcb_board_t *pcb, PinType *via)
+static void set_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 6;
@@ -528,7 +528,7 @@ static void del_etext_cb(void *ctx, pcb_board_t *pcb, ElementType *element, Text
 	del_attr(ctx, &text->Attributes);
 }
 
-static void del_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PinType *pin)
+static void del_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pin_t *pin)
 {
 	map_chk_skip(ctx, pin);
 	del_attr(ctx, &pin->Attributes);
@@ -540,7 +540,7 @@ static void del_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_p
 	del_attr(ctx, &pad->Attributes);
 }
 
-static void del_via_cb(void *ctx, pcb_board_t *pcb, PinType *via)
+static void del_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 {
 	map_chk_skip(ctx, via);
 	del_attr(ctx, &via->Attributes);

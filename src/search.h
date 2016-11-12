@@ -146,7 +146,7 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
  * prototypes
  */
 pcb_bool IsPointOnLine(Coord, Coord, Coord, pcb_line_t *);
-pcb_bool IsPointOnPin(Coord, Coord, Coord, PinTypePtr);
+pcb_bool IsPointOnPin(Coord, Coord, Coord, pcb_pin_t *);
 pcb_bool IsPointOnArc(Coord, Coord, Coord, pcb_arc_t *);
 pcb_bool IsPointOnLineEnd(Coord, Coord, pcb_rat_t *);
 pcb_bool IsLineInRectangle(Coord, Coord, Coord, Coord, pcb_line_t *);

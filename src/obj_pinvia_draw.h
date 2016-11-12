@@ -35,12 +35,12 @@ r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl);
 #endif
 
 
-void draw_pin(PinTypePtr pin, pcb_bool draw_hole);
-void EraseVia(PinTypePtr Via);
-void EraseViaName(PinTypePtr Via);
-void ErasePin(PinTypePtr Pin);
-void ErasePinName(PinTypePtr Pin);
-void DrawVia(PinTypePtr Via);
-void DrawViaName(PinTypePtr Via);
-void DrawPin(PinTypePtr Pin);
-void DrawPinName(PinTypePtr Pin);
+void draw_pin(pcb_pin_t *pin, pcb_bool draw_hole);
+void EraseVia(pcb_pin_t *Via);
+void EraseViaName(pcb_pin_t *Via);
+void ErasePin(pcb_pin_t *Pin);
+void ErasePinName(pcb_pin_t *Pin);
+void DrawVia(pcb_pin_t *Via);
+void DrawViaName(pcb_pin_t *Via);
+void DrawPin(pcb_pin_t *Pin);
+void DrawPinName(pcb_pin_t *Pin);

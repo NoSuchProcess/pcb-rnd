@@ -730,7 +730,7 @@ static void find_pairs_1(void *me, Extra ** e, int x, int y)
 	r_search(CURRENT->arc_tree, &b, NULL, find_pair_arc_callback, &fpcs, NULL);
 }
 
-static int check_point_in_pin(PinTypePtr pin, int x, int y, End * e)
+static int check_point_in_pin(pcb_pin_t *pin, int x, int y, End * e)
 {
 	int inside_p;
 	int t = (pin->Thickness + 1) / 2;
@@ -752,7 +752,7 @@ static int check_point_in_pin(PinTypePtr pin, int x, int y, End * e)
 static r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
-	PinTypePtr pin = (PinTypePtr) cl;
+	pcb_pin_t *pin = (pcb_pin_t *) cl;
 	Extra *e = LINE2EXTRA(line);
 	int hits;
 
@@ -784,7 +784,7 @@ static r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 static r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
-	PinTypePtr pin = (PinTypePtr) cl;
+	pcb_pin_t *pin = (pcb_pin_t *) cl;
 	Extra *e = ARC2EXTRA(arc);
 	int hits;
 
@@ -1553,7 +1553,7 @@ static r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
 
 static r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
 {
-	const PinTypePtr p = (PinTypePtr) b;
+	const pcb_pin_t *p = (pcb_pin_t *) b;
 	int t2 = (p->Thickness + 1) / 2;
 
 	if (p == start_pinpad || p == end_pinpad)

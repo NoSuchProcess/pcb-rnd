@@ -582,7 +582,7 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp)
 /* If el == NULL and dt != NULL it is a via (for now). */
 static int parse_pin(pcb_data_t *dt, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 {
-	PinType *via;
+	pcb_pin_t *via;
 
 	if (dt != NULL)
 		via = GetViaMemory(dt);

@@ -267,7 +267,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 		switch (conn.type) {
 		case PCB_TYPE_PIN:
 			{
-				PinTypePtr pin = (PinTypePtr) conn.ptr2;
+				pcb_pin_t *pin = (pcb_pin_t *) conn.ptr2;
 				x = pin->X;
 				y = pin->Y;
 				gui->set_crosshair(x, y, 0);

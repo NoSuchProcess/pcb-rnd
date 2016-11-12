@@ -273,7 +273,7 @@ static lht_node_t *build_arc(pcb_arc_t *arc, Coord dx, Coord dy)
 	return obj;
 }
 
-static lht_node_t *build_pin(PinType *pin, int is_via, Coord dx, Coord dy)
+static lht_node_t *build_pin(pcb_pin_t *pin, int is_via, Coord dx, Coord dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -380,7 +380,7 @@ static lht_node_t *build_element(ElementType *elem)
 	char buff[128];
 	pcb_line_t *li;
 	pcb_arc_t *ar;
-	PinType *pi;
+	pcb_pin_t *pi;
 	pcb_pad_t *pa;
 	lht_node_t *obj, *lst;
 
@@ -484,7 +484,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 static lht_node_t *build_data(pcb_data_t *data)
 {
 	lht_node_t *grp, *ndt;
-	PinType *pi;
+	pcb_pin_t *pi;
 	ElementType *el;
 	gdl_iterator_t it;
 	pcb_rat_t *line;

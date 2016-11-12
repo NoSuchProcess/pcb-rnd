@@ -133,12 +133,12 @@ static void nogui_thindraw_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pc
 	CRASH("thindraw_pcb_pad");
 }
 
-static void nogui_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pad, pcb_bool drawHole, pcb_bool mask)
+static void nogui_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pad, pcb_bool drawHole, pcb_bool mask)
 {
 	CRASH("fill_pcb_pv");
 }
 
-static void nogui_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pad, pcb_bool drawHole, pcb_bool mask)
+static void nogui_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pad, pcb_bool drawHole, pcb_bool mask)
 {
 	CRASH("thindraw_pcb_pv");
 }

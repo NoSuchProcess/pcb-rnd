@@ -116,13 +116,13 @@ pcb_bool SelectObject(void)
 	pcb_bool changed = pcb_true;
 
 	type = SearchScreen(Crosshair.X, Crosshair.Y, SELECT_TYPES, &ptr1, &ptr2, &ptr3);
-	if (type == PCB_TYPE_NONE || TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
+	if (type == PCB_TYPE_NONE || TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 		return (pcb_false);
 	switch (type) {
 	case PCB_TYPE_VIA:
 		AddObjectToFlagUndoList(PCB_TYPE_VIA, ptr1, ptr1, ptr1);
-		TOGGLE_FLAG(PCB_FLAG_SELECTED, (PinTypePtr) ptr1);
-		DrawVia((PinTypePtr) ptr1);
+		TOGGLE_FLAG(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr1);
+		DrawVia((pcb_pin_t *) ptr1);
 		break;
 
 	case PCB_TYPE_LINE:
@@ -182,8 +182,8 @@ pcb_bool SelectObject(void)
 
 	case PCB_TYPE_PIN:
 		AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, ptr2, ptr2);
-		TOGGLE_FLAG(PCB_FLAG_SELECTED, (PinTypePtr) ptr2);
-		DrawPin((PinTypePtr) ptr2);
+		TOGGLE_FLAG(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr2);
+		DrawPin((pcb_pin_t *) ptr2);
 		break;
 
 	case PCB_TYPE_PAD:
@@ -519,7 +519,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_VIA:
 		if (F->Via)
-			return (F->Via(ctx, (PinTypePtr) Ptr1));
+			return (F->Via(ctx, (pcb_pin_t *) Ptr1));
 		break;
 
 	case PCB_TYPE_ELEMENT:
@@ -529,7 +529,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_PIN:
 		if (F->Pin)
-			return (F->Pin(ctx, (ElementTypePtr) Ptr1, (PinTypePtr) Ptr2));
+			return (F->Pin(ctx, (ElementTypePtr) Ptr1, (pcb_pin_t *) Ptr2));
 		break;
 
 	case PCB_TYPE_PAD:

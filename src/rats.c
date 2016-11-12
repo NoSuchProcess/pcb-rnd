@@ -110,7 +110,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connect
 	ElementTypePtr element;
 	gdl_iterator_t it;
 	pcb_pad_t *pad;
-	PinType *pin;
+	pcb_pin_t *pin;
 
 	if ((element = SearchElementByName(PCB->Data, ElementName)) == NULL)
 		return pcb_false;
@@ -232,21 +232,21 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 			ENTRY_LOOP(menu);
 			{
 				if (SeekPad(entry, &LastPoint, pcb_false)) {
-					if (TEST_FLAG(PCB_FLAG_DRC, (PinTypePtr) LastPoint.ptr2))
+					if (TEST_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2))
 						Message(PCB_MSG_DEFAULT, _
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
 										NAMEONPCB_NAME((ElementTypePtr) LastPoint.ptr1),
 										(LastPoint.type ==
-										 PCB_TYPE_PIN) ? ((PinTypePtr) LastPoint.ptr2)->Number : ((pcb_pad_t *) LastPoint.ptr2)->Number);
+										 PCB_TYPE_PIN) ? ((pcb_pin_t *) LastPoint.ptr2)->Number : ((pcb_pad_t *) LastPoint.ptr2)->Number);
 					else {
 						connection = GetConnectionMemory(net);
 						*connection = LastPoint;
 						/* indicate expect net */
 						connection->menu = menu;
 						/* mark as visited */
-						SET_FLAG(PCB_FLAG_DRC, (PinTypePtr) LastPoint.ptr2);
+						SET_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2);
 						if (LastPoint.type == PCB_TYPE_PIN)
-							((PinTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
+							((pcb_pin_t *) LastPoint.ptr2)->Spare = (void *) menu;
 						else
 							((pcb_pad_t *) LastPoint.ptr2)->Spare = (void *) menu;
 					}
@@ -260,9 +260,9 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 					/* indicate expect net */
 					connection->menu = menu;
 					/* mark as visited */
-					SET_FLAG(PCB_FLAG_DRC, (PinTypePtr) LastPoint.ptr2);
+					SET_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2);
 					if (LastPoint.type == PCB_TYPE_PIN)
-						((PinTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
+						((pcb_pin_t *) LastPoint.ptr2)->Spare = (void *) menu;
 					else
 						((pcb_pad_t *) LastPoint.ptr2)->Spare = (void *) menu;
 				}
@@ -406,12 +406,12 @@ static pcb_bool GatherSubnets(NetListTypePtr Netl, pcb_bool NoWarn, pcb_bool And
 		RatFindHook(a->Connection[0].type, a->Connection[0].ptr1, a->Connection[0].ptr2, a->Connection[0].ptr2, pcb_false, AndRats);
 		/* now anybody connected to the first point has PCB_FLAG_DRC set */
 		/* so move those to this subnet */
-		CLEAR_FLAG(PCB_FLAG_DRC, (PinTypePtr) a->Connection[0].ptr2);
+		CLEAR_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].ptr2);
 		for (n = m + 1; n < Netl->NetN; n++) {
 			b = &Netl->Net[n];
 			/* There can be only one connection in net b */
-			if (TEST_FLAG(PCB_FLAG_DRC, (PinTypePtr) b->Connection[0].ptr2)) {
-				CLEAR_FLAG(PCB_FLAG_DRC, (PinTypePtr) b->Connection[0].ptr2);
+			if (TEST_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].ptr2)) {
+				CLEAR_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) b->Connection[0].ptr2);
 				TransferNet(Netl, b, a);
 				/* back up since new subnet is now at old index */
 				n--;
@@ -683,7 +683,7 @@ AddAllRats(pcb_bool SelectedOnly,
 	{
 		CONNECTION_LOOP(net);
 		{
-			if (!SelectedOnly || TEST_FLAG(PCB_FLAG_SELECTED, (PinTypePtr) connection->ptr2)) {
+			if (!SelectedOnly || TEST_FLAG(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->ptr2)) {
 				lonesome = GetNetMemory(Nets);
 				onepin = GetConnectionMemory(lonesome);
 				*onepin = *connection;
@@ -768,7 +768,7 @@ NetListListType CollectSubnets(pcb_bool SelectedOnly)
 		Nets = GetNetListMemory(&result);
 		CONNECTION_LOOP(net);
 		{
-			if (!SelectedOnly || TEST_FLAG(PCB_FLAG_SELECTED, (PinTypePtr) connection->ptr2)) {
+			if (!SelectedOnly || TEST_FLAG(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->ptr2)) {
 				lonesome = GetNetMemory(Nets);
 				onepin = GetConnectionMemory(lonesome);
 				*onepin = *connection;
@@ -911,7 +911,7 @@ char *ConnectionName(int type, void *ptr1, void *ptr2)
 
 	switch (type) {
 	case PCB_TYPE_PIN:
-		num = ((PinTypePtr) ptr2)->Number;
+		num = ((pcb_pin_t *) ptr2)->Number;
 		break;
 	case PCB_TYPE_PAD:
 		num = ((pcb_pad_t *) ptr2)->Number;

@@ -61,10 +61,10 @@ static void XORDrawMoveOrCopyObject(void);
 static void XORDrawAttachedLine(Coord, Coord, Coord, Coord, Coord);
 static void XORDrawAttachedArc(Coord);
 
-static void thindraw_moved_pv(PinType * pv, Coord x, Coord y)
+static void thindraw_moved_pv(pcb_pin_t * pv, Coord x, Coord y)
 {
 	/* Make a copy of the pin structure, moved to the correct position */
-	PinType moved_pv = *pv;
+	pcb_pin_t moved_pv = *pv;
 	moved_pv.X += x;
 	moved_pv.Y += y;
 
@@ -363,7 +363,7 @@ static void XORDrawMoveOrCopyObject(void)
 	switch (Crosshair.AttachedObject.Type) {
 	case PCB_TYPE_VIA:
 		{
-			PinTypePtr via = (PinTypePtr) Crosshair.AttachedObject.Ptr1;
+			pcb_pin_t *via = (pcb_pin_t *) Crosshair.AttachedObject.Ptr1;
 			thindraw_moved_pv(via, dx, dy);
 			break;
 		}
@@ -492,7 +492,7 @@ void DrawAttached(void)
 	case PCB_MODE_VIA:
 		{
 			/* Make a dummy via structure to draw from */
-			PinType via;
+			pcb_pin_t via;
 			via.X = Crosshair.X;
 			via.Y = Crosshair.Y;
 			via.Thickness = conf_core.design.via_thickness;
@@ -1087,7 +1087,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE) {
-		PinType *pin = (PinType *) ptr2;
+		pcb_pin_t *pin = (pcb_pin_t *) ptr2;
 		check_snap_object(&snap_data, pin->X, pin->Y, pcb_true);
 	}
 
@@ -1100,7 +1100,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE) {
-		PinType *pin = (PinType *) ptr2;
+		pcb_pin_t *pin = (pcb_pin_t *) ptr2;
 		check_snap_object(&snap_data, pin->X, pin->Y, pcb_true);
 	}
 

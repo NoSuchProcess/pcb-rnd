@@ -485,12 +485,12 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 					break;
 
 				case PCB_TYPE_PIN:
-					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2))
-						ErasePinName((PinTypePtr) ptr2);
+					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2))
+						ErasePinName((pcb_pin_t *) ptr2);
 					else
-						DrawPinName((PinTypePtr) ptr2);
+						DrawPinName((pcb_pin_t *) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, ptr2, ptr3);
-					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2);
+					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					Draw();
@@ -508,12 +508,12 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 					Draw();
 					break;
 				case PCB_TYPE_VIA:
-					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2))
-						EraseViaName((PinTypePtr) ptr2);
+					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2))
+						EraseViaName((pcb_pin_t *) ptr2);
 					else
-						DrawViaName((PinTypePtr) ptr2);
+						DrawViaName((pcb_pin_t *) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_VIA, ptr1, ptr2, ptr3);
-					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (PinTypePtr) ptr2);
+					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					Draw();
@@ -1164,7 +1164,7 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 
 	case PCB_TYPE_VIA:
 		notify_crosshair_change(pcb_false);
-		set_same_(0, ((PinTypePtr) ptr2)->Thickness, ((PinTypePtr) ptr2)->DrillingHole, ((PinTypePtr) ptr2)->Clearance / 2, NULL);
+		set_same_(0, ((pcb_pin_t *) ptr2)->Thickness, ((pcb_pin_t *) ptr2)->DrillingHole, ((pcb_pin_t *) ptr2)->Clearance / 2, NULL);
 		if (conf_core.editor.mode != PCB_MODE_VIA)
 			SetMode(PCB_MODE_VIA);
 		notify_crosshair_change(pcb_true);

@@ -342,7 +342,7 @@ static void draw_octagon_poly(hidGC gc, Coord X, Coord Y, Coord Thickness, Coord
 }
 
 
-void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHole, pcb_bool mask)
+void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
 {
 	Coord w = mask ? pv->Mask : pv->Thickness;
 	Coord r = w / 2;
@@ -381,7 +381,7 @@ void common_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHol
 		gui->fill_circle(bg_gc, pv->X, pv->Y, pv->DrillingHole / 2);
 }
 
-void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHole, pcb_bool mask)
+void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
 {
 	Coord w = mask ? pv->Mask : pv->Thickness;
 	Coord r = w / 2;

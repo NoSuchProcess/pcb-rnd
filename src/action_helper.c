@@ -66,8 +66,8 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 {
 	switch (type) {
 	case PCB_TYPE_VIA:
-		*x = ((PinTypePtr) ptr2)->X;
-		*y = ((PinTypePtr) ptr2)->Y;
+		*x = ((pcb_pin_t *) ptr2)->X;
+		*y = ((pcb_pin_t *) ptr2)->Y;
 		break;
 	case PCB_TYPE_LINE:
 		*x = ((pcb_line_t *) ptr2)->Point1.X;
@@ -513,8 +513,8 @@ void NotifyLine(void)
 			LookupConnection(Crosshair.X, Crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
 		}
 		if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
-			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = ((PinTypePtr) ptr2)->X;
-			Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = ((PinTypePtr) ptr2)->Y;
+			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = ((pcb_pin_t *) ptr2)->X;
+			Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = ((pcb_pin_t *) ptr2)->Y;
 		}
 		else if (type == PCB_TYPE_PAD) {
 			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
@@ -599,13 +599,13 @@ void NotifyMode(void)
 			 */
 			for (test = (SELECT_TYPES | MOVE_TYPES) & ~PCB_TYPE_RATLINE; test; test &= ~type) {
 				type = SearchScreen(Note.X, Note.Y, test, &ptr1, &ptr2, &ptr3);
-				if (!Note.Hit && (type & MOVE_TYPES) && !TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2)) {
+				if (!Note.Hit && (type & MOVE_TYPES) && !TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2)) {
 					Note.Hit = type;
 					Note.ptr1 = ptr1;
 					Note.ptr2 = ptr2;
 					Note.ptr3 = ptr3;
 				}
-				if (!Note.Moving && (type & SELECT_TYPES) && TEST_FLAG(PCB_FLAG_SELECTED, (PinTypePtr) ptr2))
+				if (!Note.Moving && (type & SELECT_TYPES) && TEST_FLAG(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr2))
 					Note.Moving = pcb_true;
 				if ((Note.Hit && Note.Moving) || type == PCB_TYPE_NONE)
 					break;
@@ -615,7 +615,7 @@ void NotifyMode(void)
 
 	case PCB_MODE_VIA:
 		{
-			PinTypePtr via;
+			pcb_pin_t *via;
 
 			if (!PCB->ViaOn) {
 				Message(PCB_MSG_DEFAULT, _("You must turn via visibility on before\n" "you can place vias\n"));
@@ -744,15 +744,15 @@ void NotifyMode(void)
 	case PCB_MODE_THERMAL:
 		{
 			if (((type = SearchScreen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					&& !TEST_FLAG(PCB_FLAG_HOLE, (PinTypePtr) ptr3)) {
+					&& !TEST_FLAG(PCB_FLAG_HOLE, (pcb_pin_t *) ptr3)) {
 				if (gui->shift_is_pressed()) {
-					int tstyle = GET_THERM(INDEXOFCURRENT, (PinTypePtr) ptr3);
+					int tstyle = GET_THERM(INDEXOFCURRENT, (pcb_pin_t *) ptr3);
 					tstyle++;
 					if (tstyle > 5)
 						tstyle = 1;
 					ChangeObjectThermal(type, ptr1, ptr2, ptr3, tstyle);
 				}
-				else if (GET_THERM(INDEXOFCURRENT, (PinTypePtr) ptr3))
+				else if (GET_THERM(INDEXOFCURRENT, (pcb_pin_t *) ptr3))
 					ChangeObjectThermal(type, ptr1, ptr2, ptr3, 0);
 				else
 					ChangeObjectThermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle);
@@ -827,7 +827,7 @@ void NotifyMode(void)
 																		 2 * conf_core.design.clearance,
 																		 MakeFlags(maybe_found_flag |
 																							 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
-				PinTypePtr via;
+				pcb_pin_t *via;
 
 				addedLines++;
 				AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
@@ -1170,7 +1170,7 @@ void NotifyMode(void)
 					SearchScreen(Note.X, Note.Y, types,
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 				if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-					if (conf_core.editor.mode == PCB_MODE_MOVE && TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr)
+					if (conf_core.editor.mode == PCB_MODE_MOVE && TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *)
 																											Crosshair.AttachedObject.Ptr2)) {
 						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 						Crosshair.AttachedObject.Type = PCB_TYPE_NONE;

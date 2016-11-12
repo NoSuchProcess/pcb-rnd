@@ -99,7 +99,7 @@ void FreeElementMemory(ElementType * element)
 	}
 	END_LOOP;
 
-	list_map0(&element->Pin, PinType, RemoveFreePin);
+	list_map0(&element->Pin, pcb_pin_t, RemoveFreePin);
 	list_map0(&element->Pad, pcb_pad_t, RemoveFreePad);
 	list_map0(&element->Line, pcb_line_t, RemoveFreeLine);
 	list_map0(&element->Arc,  pcb_arc_t,  RemoveFreeArc);
@@ -1759,7 +1759,7 @@ static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, pcb_bool invisible)
 		return;
 
 	if (pinlist_length(&e->Pin) != 0) {
-		PinType *pin0 = pinlist_first(&e->Pin);
+		pcb_pin_t *pin0 = pinlist_first(&e->Pin);
 		if (TEST_FLAG(PCB_FLAG_HOLE, pin0))
 			mark_size = MIN(mark_size, pin0->DrillingHole / 2);
 		else

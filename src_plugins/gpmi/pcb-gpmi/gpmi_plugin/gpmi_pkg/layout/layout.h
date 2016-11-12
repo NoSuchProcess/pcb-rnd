@@ -85,8 +85,8 @@ typedef struct layout_object_s {
 		TextType    *t;
 		pcb_polygon_t *p;
 		pcb_arc_t     *a;
-		PinType     *v;
-		PinType     *pin;
+		pcb_pin_t     *v;
+		pcb_pin_t     *pin;
 	} obj;
 	int layer;
 } layout_object_t;
@@ -261,7 +261,7 @@ void fill_pcb_polygon(dctx_t *ctx, pcb_polygon_t *poly, const pcb_box_t *clip_bo
 void thindraw_pcb_polygon(dctx_t *ctx, pcb_polygon_t *poly, const pcb_box_t *clip_box);
 void fill_pcb_pad(dctx_t *ctx, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask);
 void thindraw_pcb_pad(dctx_t *ctx, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask);
-void fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pv, pcb_bool drawHole, pcb_bool mask);
-void thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pv, pcb_bool drawHole, pcb_bool mask);
+void fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask);
+void thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask);
 void fill_rect(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 */

@@ -223,10 +223,10 @@ typedef struct routebox {
 	pcb_box_t box, sbox;
 	union {
 		pcb_pad_t *pad;
-		PinTypePtr pin;
-		PinTypePtr via;
+		pcb_pin_t *pin;
+		pcb_pin_t *via;
 		struct routebox *via_shadow;	/* points to the via in r-tree which
-																	 * points to the PinType in the PCB. */
+																	 * points to the pcb_pin_t in the PCB. */
 		pcb_line_t *line;
 		void *generic;							/* 'other' is polygon, arc, text */
 		struct routebox *expansion_area;	/* previous expansion area in search */
@@ -292,7 +292,7 @@ typedef struct routebox {
 	/* circular lists with connectivity information. */
 	routebox_list same_net, same_subnet, original_subnet, different_net;
 	union {
-		PinType *via;
+		pcb_pin_t *via;
 		pcb_line_t *line;
 	} livedraw_obj;
 } routebox_t;
@@ -584,7 +584,7 @@ static inline pcb_bool point_in_shrunk_box(const routebox_t * box, Coord X, Coor
  * routedata initialization functions.
  */
 
-static routebox_t *AddPin(PointerListType layergroupboxes[], PinTypePtr pin, pcb_bool is_via, RouteStyleType * style)
+static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb_bool is_via, RouteStyleType * style)
 {
 	routebox_t **rbpp, *lastrb = NULL;
 	int i, ht;
@@ -953,7 +953,7 @@ static routedata_t *CreateRouteData()
 				CONNECTION_LOOP(net);
 				{
 					routebox_t *rb = NULL;
-					SET_FLAG(PCB_FLAG_DRC, (PinTypePtr) connection->ptr2);
+					SET_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) connection->ptr2);
 					if (connection->type == PCB_TYPE_LINE) {
 						pcb_line_t *line = (pcb_line_t *) connection->ptr2;
 
@@ -998,10 +998,10 @@ static routedata_t *CreateRouteData()
 							rb = AddPad(layergroupboxes, (ElementType *) connection->ptr1, (pcb_pad_t *) connection->ptr2, rd->styles[j]);
 							break;
 						case PCB_TYPE_PIN:
-							rb = AddPin(layergroupboxes, (PinType *) connection->ptr2, pcb_false, rd->styles[j]);
+							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->ptr2, pcb_false, rd->styles[j]);
 							break;
 						case PCB_TYPE_VIA:
-							rb = AddPin(layergroupboxes, (PinType *) connection->ptr2, pcb_true, rd->styles[j]);
+							rb = AddPin(layergroupboxes, (pcb_pin_t *) connection->ptr2, pcb_true, rd->styles[j]);
 							break;
 						case PCB_TYPE_POLYGON:
 							rb =
@@ -2855,7 +2855,7 @@ static void RD_DrawVia(routedata_t * rd, Coord X, Coord Y, Coord radius, routebo
 	routebox_t *rb, *first_via = NULL;
 	int i;
 	int ka = AutoRouteParameters.style->Clearance;
-	PinType *live_via = NULL;
+	pcb_pin_t *live_via = NULL;
 
 	if (conf_core.editor.live_routing) {
 		live_via = CreateNewVia(PCB->Data, X, Y, radius * 2,
@@ -4386,23 +4386,23 @@ out:
 }
 
 struct fpin_info {
-	PinTypePtr pin;
+	pcb_pin_t *pin;
 	Coord X, Y;
 	jmp_buf env;
 };
 
 static r_dir_t fpin_rect(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pin = (PinTypePtr) b;
+	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct fpin_info *info = (struct fpin_info *) cl;
 	if (pin->X == info->X && pin->Y == info->Y) {
-		info->pin = (PinTypePtr) b;
+		info->pin = (pcb_pin_t *) b;
 		longjmp(info->env, 1);
 	}
 	return R_DIR_NOT_FOUND;
 }
 
-static int FindPin(const pcb_box_t * box, PinTypePtr * pin)
+static int FindPin(const pcb_box_t * box, pcb_pin_t ** pin)
 {
 	struct fpin_info info;
 
@@ -4515,7 +4515,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 		LIST_LOOP(net, same_net, p);
 		{
 			if (p->type == THERMAL) {
-				PinTypePtr pin = NULL;
+				pcb_pin_t *pin = NULL;
 				/* thermals are alread a single point search, no need to shrink */
 				int type = FindPin(&p->box, &pin);
 				if (pin) {

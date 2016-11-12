@@ -410,7 +410,7 @@ struct mptlc {
 r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 {
 	struct mptlc *d = (struct mptlc *) cl;
-	PinTypePtr pin = (PinTypePtr) b;
+	pcb_pin_t *pin = (pcb_pin_t *) b;
 	if (!TEST_THERM(d->snum, pin) || !IsPointInPolygon(pin->X, pin->Y, pin->Thickness + pin->Clearance + 2, d->polygon))
 		return R_DIR_NOT_FOUND;
 	if (d->type == PCB_TYPE_PIN)

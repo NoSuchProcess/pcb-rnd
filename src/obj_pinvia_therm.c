@@ -82,7 +82,7 @@ static POLYAREA *diag_line(Coord X, Coord Y, Coord l, Coord w, pcb_bool rt)
 	return ContourToPoly(c);
 }
 
-static POLYAREA *square_therm(PinTypePtr pin, pcb_cardinal_t style)
+static POLYAREA *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 {
 	POLYAREA *p, *p2;
 	PLINE *c;
@@ -309,7 +309,7 @@ static POLYAREA *square_therm(PinTypePtr pin, pcb_cardinal_t style)
 	}
 }
 
-static POLYAREA *oct_therm(PinTypePtr pin, pcb_cardinal_t style)
+static POLYAREA *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 {
 	POLYAREA *p, *p2, *m;
 	Coord t = 0.5 * pcb->ThermScale * pin->Clearance;
@@ -353,7 +353,7 @@ static POLYAREA *oct_therm(PinTypePtr pin, pcb_cardinal_t style)
  * Usually this is 4 disjoint regions.
  *
  */
-POLYAREA *ThermPoly(pcb_board_t *p, PinTypePtr pin, pcb_cardinal_t laynum)
+POLYAREA *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 {
 	pcb_arc_t a;
 	POLYAREA *pa, *arc;

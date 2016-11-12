@@ -97,7 +97,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 }
 
 /* returns 0 on succes */
-static int proc_short(PinType * pin, pcb_pad_t * pad, int ignore)
+static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 {
 	find_callback_t old_cb;
 	Coord x, y;
@@ -172,11 +172,11 @@ static int proc_short(PinType * pin, pcb_pad_t * pad, int ignore)
 		switch (n->to_type) {
 		case PCB_TYPE_PIN:
 			typ = "pin";
-			parent = ((PinType *) (n->to))->Element;
+			parent = ((pcb_pin_t *) (n->to))->Element;
 			break;
 		case PCB_TYPE_VIA:
 			typ = "via";
-			parent = ((PinType *) (n->to))->Element;
+			parent = ((pcb_pin_t *) (n->to))->Element;
 			break;
 		case PCB_TYPE_PAD:
 			typ = "pad";
@@ -237,7 +237,7 @@ static int proc_short(PinType * pin, pcb_pad_t * pad, int ignore)
 
 		spare = NULL;
 		if (n->to_type == PCB_TYPE_PIN)
-			spare = ((PinType *) n->to)->Spare;
+			spare = ((pcb_pin_t *) n->to)->Spare;
 		if (n->to_type == PCB_TYPE_PAD)
 			spare = ((pcb_pad_t *) n->to)->Spare;
 		if (spare != NULL) {
@@ -338,7 +338,7 @@ static int proc_short(PinType * pin, pcb_pad_t * pad, int ignore)
 typedef struct pinpad_s pinpad_t;
 struct pinpad_s {
 	int ignore;										/* if 1, changed our mind, do not check */
-	PinType *pin;
+	pcb_pin_t *pin;
 	pcb_pad_t *pad;
 	const char *with_net;					/* the name of the net this pin/pad is in short with */
 	pinpad_t *next;
@@ -346,7 +346,7 @@ struct pinpad_s {
 
 static pinpad_t *shorts = NULL;
 
-void rat_found_short(PinType * pin, pcb_pad_t * pad, const char *with_net)
+void rat_found_short(pcb_pin_t * pin, pcb_pad_t * pad, const char *with_net)
 {
 	pinpad_t *pp;
 	pp = malloc(sizeof(pinpad_t));

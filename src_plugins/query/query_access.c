@@ -91,7 +91,7 @@ static void list_etext_cb(void *ctx, pcb_board_t *pcb, ElementType *element, Tex
 	APPEND(ctx, PCB_OBJ_ETEXT, text, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PinType *pin)
+static void list_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pin_t *pin)
 {
 	APPEND(ctx, PCB_OBJ_PIN, pin, PCB_PARENT_ELEMENT, element);
 }
@@ -101,7 +101,7 @@ static void list_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_
 	APPEND(ctx, PCB_OBJ_PAD, pad, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_via_cb(void *ctx, pcb_board_t *pcb, PinType *via)
+static void list_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 {
 	APPEND(ctx, PCB_OBJ_VIA, via, PCB_PARENT_DATA, pcb->Data);
 }
@@ -457,7 +457,7 @@ static int field_rat(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_via(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	PinType *p = obj->data.via;
+	pcb_pin_t *p = obj->data.via;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);

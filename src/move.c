@@ -167,7 +167,7 @@ pcb_bool MoveSelectedObjectsToLayer(pcb_layer_t *Target)
  * moves the selected layers to a new index in the layer list.
  */
 
-static void move_one_thermal(int old_index, int new_index, PinType * pin)
+static void move_one_thermal(int old_index, int new_index, pcb_pin_t * pin)
 {
 	int t1 = 0, i;
 	int oi = old_index, ni = new_index;

@@ -41,7 +41,7 @@ typedef struct pcb_rat_line_s pcb_rat_t;
 
 typedef struct pcb_polygon_s pcb_polygon_t;
 typedef struct pad_st pcb_pad_t;
-typedef struct pin_st PinType, *PinTypePtr, **PinTypeHandle;
+typedef struct pin_st pcb_pin_t;
 typedef struct rtree rtree_t;
 typedef struct rats_patch_line_s rats_patch_line_t;
 typedef struct element_st ElementType, *ElementTypePtr, **ElementTypeHandle;

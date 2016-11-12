@@ -62,7 +62,7 @@ extern find_callback_t find_callback;
 
 pcb_bool LineLineIntersect(pcb_line_t *, pcb_line_t *);
 pcb_bool LineArcIntersect(pcb_line_t *, pcb_arc_t *);
-pcb_bool PinLineIntersect(PinTypePtr, pcb_line_t *);
+pcb_bool PinLineIntersect(pcb_pin_t *, pcb_line_t *);
 pcb_bool LinePadIntersect(pcb_line_t *, pcb_pad_t *);
 pcb_bool ArcPadIntersect(pcb_arc_t *, pcb_pad_t *);
 pcb_bool IsPolygonInPolygon(pcb_polygon_t *, pcb_polygon_t *);

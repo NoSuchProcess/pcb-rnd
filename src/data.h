@@ -99,11 +99,11 @@ typedef int (*pcb_element_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *elemen
 typedef void (*pcb_eline_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_line_t *line);
 typedef void (*pcb_earc_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_arc_t *arc);
 typedef void (*pcb_etext_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, TextType *text);
-typedef void (*pcb_epin_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, PinType *pin);
+typedef void (*pcb_epin_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pin_t *pin);
 typedef void (*pcb_epad_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pad_t *pad);
 
 /* via callbacks */
-typedef void (*pcb_via_cb_t)(void *ctx, pcb_board_t *pcb, PinType *via);
+typedef void (*pcb_via_cb_t)(void *ctx, pcb_board_t *pcb, pcb_pin_t *via);
 
 /* Loop over all layer objects on each layer. Layer is the outer loop. */
 void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb);

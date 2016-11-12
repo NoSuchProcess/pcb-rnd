@@ -30,7 +30,7 @@ static void stub_rat_proc_shorts_dummy(void)
 {
 }
 
-static void stub_rat_found_short_dummy(PinType * pin, pcb_pad_t * pad, const char *with_net)
+static void stub_rat_found_short_dummy(pcb_pin_t * pin, pcb_pad_t * pad, const char *with_net)
 {
 	/* original behavior: just warn at random pins/pads */
 	if (pin != NULL)
@@ -41,5 +41,5 @@ static void stub_rat_found_short_dummy(PinType * pin, pcb_pad_t * pad, const cha
 	stub_rat_proc_shorts_dummy();
 }
 
-void (*stub_rat_found_short)(PinType * pin, pcb_pad_t * pad, const char *with_net) = stub_rat_found_short_dummy;
+void (*stub_rat_found_short)(pcb_pin_t * pin, pcb_pad_t * pad, const char *with_net) = stub_rat_found_short_dummy;
 void (*stub_rat_proc_shorts)(void) = stub_rat_proc_shorts_dummy;

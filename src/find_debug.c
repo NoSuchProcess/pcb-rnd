@@ -113,7 +113,7 @@ static void PrintPadConnections(pcb_cardinal_t Layer, FILE * FP, pcb_bool IsFirs
 static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 {
 	pcb_cardinal_t i;
-	PinTypePtr pv;
+	pcb_pin_t *pv;
 
 	if (!PVList.Number)
 		return;

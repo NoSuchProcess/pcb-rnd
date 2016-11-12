@@ -168,7 +168,7 @@ void gpmi_hid_use_mask(int use_it)
 	gpmi_event(h->module, HIDE_use_mask, h, use_it);
 }
 
-void gpmi_hid_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pad, pcb_bool drawHole, pcb_bool mask)
+void gpmi_hid_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t *pad, pcb_bool drawHole, pcb_bool mask)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_pcb_pv, h, fg_gc, bg_gc, pad, drawHole, mask);

@@ -47,7 +47,7 @@ static inline r_dir_t r_search_pt(rtree_t * rtree, const pcb_point_t * pt,
 
 /* Connection lookup functions */
 
-static pcb_bool ADD_PV_TO_LIST(PinTypePtr Pin, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_PV_TO_LIST(pcb_pin_t *Pin, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(Pin->Element ? PCB_TYPE_PIN : PCB_TYPE_VIA, Pin->Element ? Pin->Element : Pin, Pin, Pin);
@@ -273,7 +273,7 @@ void InitLayoutLookup(void)
 	else
 		TotalV = 0;
 	/* allocate memory for 'new PV to check' list and clear struct */
-	PVList.Data = (void **) calloc(TotalP + TotalV, sizeof(PinTypePtr));
+	PVList.Data = (void **) calloc(TotalP + TotalV, sizeof(pcb_pin_t *));
 	PVList.Size = TotalP + TotalV;
 	PVList.Location = 0;
 	PVList.DrawLocation = 0;
@@ -288,7 +288,7 @@ void InitLayoutLookup(void)
 
 struct pv_info {
 	pcb_cardinal_t layer;
-	PinType pv;
+	pcb_pin_t pv;
 	jmp_buf env;
 };
 
@@ -531,7 +531,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 
 static r_dir_t pv_pv_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pin = (PinTypePtr) b;
+	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pin) && PV_TOUCH_PV(&i->pv, pin)) {
@@ -562,7 +562,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 	save_place = PVList.Location;
 	while (PVList.Location < PVList.Number) {
 		int ic;
-		PinType *orig_pin;
+		pcb_pin_t *orig_pin;
 		/* get pointer to data */
 		orig_pin = (PVLIST_ENTRY(PVList.Location));
 		info.pv = *orig_pin;
@@ -610,7 +610,7 @@ struct lo_info {
 
 static r_dir_t pv_line_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pv = (PinTypePtr) b;
+	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pv) && PinLineIntersect(pv, &i->line)) {
@@ -627,7 +627,7 @@ static r_dir_t pv_line_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t pv_pad_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pv = (PinTypePtr) b;
+	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pv) && IS_PV_ON_PAD(pv, &i->pad)) {
@@ -644,7 +644,7 @@ static r_dir_t pv_pad_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t pv_arc_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pv = (PinTypePtr) b;
+	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pv) && IS_PV_ON_ARC(pv, &i->arc)) {
@@ -661,7 +661,7 @@ static r_dir_t pv_arc_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pv = (PinTypePtr) b;
+	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	/* note that holes in polygons are ok, so they don't generate warnings. */
@@ -693,7 +693,7 @@ static r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t pv_rat_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pv = (PinTypePtr) b;
+	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	/* rats can't cause DRC so there is no early exit */
@@ -817,7 +817,7 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 
 r_dir_t pv_touch_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pin = (PinTypePtr) b;
+	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pin) && PinLineIntersect(pin, &i->line))

@@ -135,14 +135,14 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 	switch (type) {
 	case PCB_TYPE_VIA:
 		{
-			PinTypePtr via;
+			pcb_pin_t *via;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
 				__r_dump_tree(PCB->Data->via_tree->root, 0);
 				return 0;
 			}
 #endif
-			via = (PinTypePtr) ptr2;
+			via = (pcb_pin_t *) ptr2;
 			if (TEST_FLAG(PCB_FLAG_HOLE, via))
 				report = pcb_strdup_printf("%m+VIA ID# %ld; Flags:%s\n"
 										"(X,Y) = %$mD.\n"
@@ -170,7 +170,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 		}
 	case PCB_TYPE_PIN:
 		{
-			PinTypePtr Pin;
+			pcb_pin_t *Pin;
 			ElementTypePtr element;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
@@ -178,7 +178,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 				return 0;
 			}
 #endif
-			Pin = (PinTypePtr) ptr2;
+			Pin = (pcb_pin_t *) ptr2;
 			element = (ElementTypePtr) ptr1;
 
 			PIN_LOOP(element);
@@ -767,8 +767,8 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 		if (SeekPad(net->Entry, &conn, pcb_false)) {
 			switch (conn.type) {
 			case PCB_TYPE_PIN:
-				x = ((PinType *) (conn.ptr2))->X;
-				y = ((PinType *) (conn.ptr2))->Y;
+				x = ((pcb_pin_t *) (conn.ptr2))->X;
+				y = ((pcb_pin_t *) (conn.ptr2))->Y;
 				net_found = 1;
 				break;
 			case PCB_TYPE_PAD:

@@ -623,7 +623,7 @@ static pcb_bool PadPadIntersect(pcb_pad_t *p1, pcb_pad_t *p2)
 	return LinePadIntersect((pcb_line_t *) p1, p2);
 }
 
-static inline pcb_bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
+static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 {
 	double t1, t2;
 	pcb_box_t b1, b2;
@@ -665,7 +665,7 @@ static inline pcb_bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
 	return BoxBoxIntersection(&b1, &b2);
 }
 
-pcb_bool PinLineIntersect(PinTypePtr PV, pcb_line_t *Line)
+pcb_bool PinLineIntersect(pcb_pin_t *PV, pcb_line_t *Line)
 {
 	if (TEST_FLAG(PCB_FLAG_SQUARE, PV)) {
 		int shape = GET_SQUARE(PV);

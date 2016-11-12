@@ -36,7 +36,7 @@
  /* 1 mm */
 /* #define MAX_DISTANCE 1000000 */
 
-static PinType *pin;
+static pcb_pin_t *pin;
 static pcb_pad_t *pad;
 static int layer;
 static int px, py;
@@ -192,7 +192,7 @@ static r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 	return 1;
 }
 
-static void check_pin(PinType * _pin)
+static void check_pin(pcb_pin_t * _pin)
 {
 	pcb_box_t spot;
 
@@ -220,7 +220,7 @@ static void check_pin(PinType * _pin)
 	}
 }
 
-static void check_via(PinType * _pin)
+static void check_via(pcb_pin_t * _pin)
 {
 	pcb_box_t spot;
 

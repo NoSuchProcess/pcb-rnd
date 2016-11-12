@@ -72,7 +72,7 @@ POLYAREA *CirclePoly(Coord x, Coord y, Coord radius);
 POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style);
 POLYAREA *LinePoly(pcb_line_t * l, Coord thick);
 POLYAREA *ArcPoly(pcb_arc_t * l, Coord thick);
-POLYAREA *PinPoly(PinType * l, Coord thick, Coord clear);
+POLYAREA *PinPoly(pcb_pin_t * l, Coord thick, Coord clear);
 POLYAREA *BoxPolyBloated(pcb_box_t * box, Coord radius);
 void frac_circle(PLINE *, Coord, Coord, Vector, int);
 int InitClip(pcb_data_t * d, pcb_layer_t * l, pcb_polygon_t * p);

@@ -197,7 +197,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 			void *ptr1, *ptr2, *ptr3;
 
 			if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-				if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
+				if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 					Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
 				SetChangedFlag(pcb_true);
@@ -272,7 +272,7 @@ static int ActionChangeHole(int argc, const char **argv, Coord x, Coord y)
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && ChangeHole((PinTypePtr) ptr3))
+				if ((type = SearchScreen(x, y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && ChangeHole((pcb_pin_t *) ptr3))
 					IncrementUndoSerialNumber();
 				break;
 			}
@@ -409,7 +409,7 @@ static int ActionChangeSize(int argc, const char **argv, Coord x, Coord y)
 		case F_Object:
 			{
 				if (type != PCB_TYPE_NONE)
-					if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
+					if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				if (tostyle) {
 					if (ChangeObject1stSize(type, ptr1, ptr2, ptr3, value, absolute))
@@ -840,7 +840,7 @@ static int ActionChangeSquare(int argc, const char **argv, Coord x, Coord y)
 				type = SearchScreen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3);
 
 				if (ptr3 != NULL) {
-					int qstyle = GET_SQUARE((PinTypePtr) ptr3);
+					int qstyle = GET_SQUARE((pcb_pin_t *) ptr3);
 					qstyle++;
 					if (qstyle > 17)
 						qstyle = 0;
@@ -1413,7 +1413,7 @@ static int ActionChangeAngle(int argc, const char **argv, Coord x, Coord y)
 		case F_Object:
 			{
 				if (type != PCB_TYPE_NONE) {
-					if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
+					if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					else {
 						if (ChangeObjectAngle(type, ptr1, ptr2, ptr3, which, value, absolute))
@@ -1476,7 +1476,7 @@ static int ActionChangeRadius(int argc, const char **argv, Coord x, Coord y)
 		case F_Object:
 			{
 				if (type != PCB_TYPE_NONE) {
-					if (TEST_FLAG(PCB_FLAG_LOCK, (PinTypePtr) ptr2))
+					if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					else {
 						if (ChangeObjectRadius(type, ptr1, ptr2, ptr3, which, value, absolute))

@@ -125,7 +125,7 @@ static void DrawNewConnections(void)
 	 * sorted array pointers to PV data
 	 */
 	while (PVList.DrawLocation < PVList.Number) {
-		PinTypePtr pv = PVLIST_ENTRY(PVList.DrawLocation);
+		pcb_pin_t *pv = PVLIST_ENTRY(PVList.DrawLocation);
 
 		if (TEST_FLAG(PCB_FLAG_PIN, pv)) {
 			if (PCB->PinOn)
@@ -154,7 +154,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
 		{
-			if (ADD_PV_TO_LIST((PinTypePtr) ptr2, 0, NULL, FCT_START))
+			if (ADD_PV_TO_LIST((pcb_pin_t *) ptr2, 0, NULL, FCT_START))
 				return pcb_true;
 			break;
 		}

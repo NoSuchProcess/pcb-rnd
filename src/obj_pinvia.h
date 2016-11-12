@@ -42,16 +42,16 @@ struct pin_st {
 };
 
 
-PinType *GetViaMemory(pcb_data_t * data);
-void RemoveFreeVia(PinType * data);
-PinType *GetPinMemory(ElementType * element);
-void RemoveFreePin(PinType * data);
+pcb_pin_t *GetViaMemory(pcb_data_t * data);
+void RemoveFreeVia(pcb_pin_t * data);
+pcb_pin_t *GetPinMemory(ElementType * element);
+void RemoveFreePin(pcb_pin_t * data);
 
-PinTypePtr CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags);
-PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags);
-void pcb_add_via(pcb_data_t *Data, PinType *Via);
-void SetPinBoundingBox(PinTypePtr Pin);
-pcb_bool ChangeHole(PinTypePtr Via);
+pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags);
+pcb_pin_t *CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags);
+void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via);
+void SetPinBoundingBox(pcb_pin_t *Pin);
+pcb_bool ChangeHole(pcb_pin_t *Via);
 
 /* This is the extents of a Pin or Via, depending on whether it's a
    hole or not.  */
@@ -75,12 +75,12 @@ pcb_bool ChangeHole(PinTypePtr Via);
 
 
 #define VIA_LOOP(top) do {                                          \
-  PinType *via;                                                     \
+  pcb_pin_t *via;                                                     \
   gdl_iterator_t __it__;                                            \
   pinlist_foreach(&(top)->Via, &__it__, via) {
 
 #define PIN_LOOP(element) do {                                      \
-  PinType *pin;                                                     \
+  pcb_pin_t *pin;                                                     \
   gdl_iterator_t __it__;                                            \
   pinlist_foreach(&(element)->Pin, &__it__, pin) {
 

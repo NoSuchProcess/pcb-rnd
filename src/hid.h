@@ -288,8 +288,8 @@ struct hid_st {
 	void (*thindraw_pcb_polygon) (hidGC gc_, pcb_polygon_t * poly, const pcb_box_t * clip_box);
 	void (*fill_pcb_pad) (hidGC gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
 	void (*thindraw_pcb_pad) (hidGC gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
-	void (*fill_pcb_pv) (hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHole, pcb_bool mask);
-	void (*thindraw_pcb_pv) (hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHole, pcb_bool mask);
+	void (*fill_pcb_pv) (hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
+	void (*thindraw_pcb_pv) (hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
 	void (*fill_rect) (hidGC gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
 
 

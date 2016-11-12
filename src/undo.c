@@ -344,10 +344,10 @@ static pcb_bool UndoChange2ndSize(UndoListTypePtr Entry)
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		swap = ((PinTypePtr) ptr2)->DrillingHole;
+		swap = ((pcb_pin_t *) ptr2)->DrillingHole;
 		if (andDraw)
 			EraseObject(type, ptr1, ptr2);
-		((PinTypePtr) ptr2)->DrillingHole = Entry->Data.Size;
+		((pcb_pin_t *) ptr2)->DrillingHole = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		DrawObject(type, ptr1, ptr2);
 		return (pcb_true);
@@ -429,11 +429,11 @@ static pcb_bool UndoChangeClearSize(UndoListTypePtr Entry)
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		swap = ((PinTypePtr) ptr2)->Clearance;
+		swap = ((pcb_pin_t *) ptr2)->Clearance;
 		RestoreToPolygon(PCB->Data, type, ptr1, ptr2);
 		if (andDraw)
 			EraseObject(type, ptr1, ptr2);
-		((PinTypePtr) ptr2)->Clearance = Entry->Data.Size;
+		((pcb_pin_t *) ptr2)->Clearance = Entry->Data.Size;
 		ClearFromPolygon(PCB->Data, type, ptr1, ptr2);
 		Entry->Data.Size = swap;
 		if (andDraw)
@@ -455,13 +455,13 @@ static pcb_bool UndoChangeMaskSize(UndoListTypePtr Entry)
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type & (PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_PAD)) {
-		swap = (type == PCB_TYPE_PAD ? ((pcb_pad_t *) ptr2)->Mask : ((PinTypePtr) ptr2)->Mask);
+		swap = (type == PCB_TYPE_PAD ? ((pcb_pad_t *) ptr2)->Mask : ((pcb_pin_t *) ptr2)->Mask);
 		if (andDraw)
 			EraseObject(type, ptr1, ptr2);
 		if (type == PCB_TYPE_PAD)
 			((pcb_pad_t *) ptr2)->Mask = Entry->Data.Size;
 		else
-			((PinTypePtr) ptr2)->Mask = Entry->Data.Size;
+			((pcb_pin_t *) ptr2)->Mask = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		if (andDraw)
 			DrawObject(type, ptr1, ptr2);
@@ -490,11 +490,11 @@ static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 	if (type != PCB_TYPE_NONE) {
 		/* Wow! can any object be treated as a pin type for size change?? */
 		/* pins, vias, lines, and arcs can. Text can't but it has it's own mechanism */
-		swap = ((PinTypePtr) ptr2)->Thickness;
+		swap = ((pcb_pin_t *) ptr2)->Thickness;
 		RestoreToPolygon(PCB->Data, type, ptr1, ptr2);
 		if ((andDraw) && (ptr1e != NULL))
 			EraseObject(type, ptr1e, ptr2);
-		((PinTypePtr) ptr2)->Thickness = Entry->Data.Size;
+		((pcb_pin_t *) ptr2)->Thickness = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		ClearFromPolygon(PCB->Data, type, ptr1, ptr2);
 		if (andDraw)
@@ -518,7 +518,7 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
 		FlagType f1, f2;
-		PinTypePtr pin = (PinTypePtr) ptr2;
+		pcb_pin_t *pin = (pcb_pin_t *) ptr2;
 
 		if ((type == PCB_TYPE_ELEMENT) || (type == PCB_TYPE_ELEMENT_NAME))
 			ptr1e = NULL;
@@ -1389,7 +1389,7 @@ void AddObjectToFlagUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_FLAG, OBJECT_ID(Ptr2), Type);
-		undo->Data.Flags = ((PinTypePtr) Ptr2)->Flags;
+		undo->Data.Flags = ((pcb_pin_t *) Ptr2)->Flags;
 	}
 }
 
@@ -1405,7 +1405,7 @@ void AddObjectToSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 		switch (Type) {
 		case PCB_TYPE_PIN:
 		case PCB_TYPE_VIA:
-			undo->Data.Size = ((PinTypePtr) ptr2)->Thickness;
+			undo->Data.Size = ((pcb_pin_t *) ptr2)->Thickness;
 			break;
 		case PCB_TYPE_LINE:
 		case PCB_TYPE_ELEMENT_LINE:
@@ -1438,7 +1438,7 @@ void AddObjectToClearSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 		switch (Type) {
 		case PCB_TYPE_PIN:
 		case PCB_TYPE_VIA:
-			undo->Data.Size = ((PinTypePtr) ptr2)->Clearance;
+			undo->Data.Size = ((pcb_pin_t *) ptr2)->Clearance;
 			break;
 		case PCB_TYPE_LINE:
 			undo->Data.Size = ((pcb_line_t *) ptr2)->Clearance;
@@ -1465,7 +1465,7 @@ void AddObjectToMaskSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 		switch (Type) {
 		case PCB_TYPE_PIN:
 		case PCB_TYPE_VIA:
-			undo->Data.Size = ((PinTypePtr) ptr2)->Mask;
+			undo->Data.Size = ((pcb_pin_t *) ptr2)->Mask;
 			break;
 		case PCB_TYPE_PAD:
 			undo->Data.Size = ((pcb_pad_t *) ptr2)->Mask;
@@ -1484,7 +1484,7 @@ void AddObjectTo2ndSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_CHANGE2NDSIZE, OBJECT_ID(ptr2), Type);
 		if (Type == PCB_TYPE_PIN || Type == PCB_TYPE_VIA)
-			undo->Data.Size = ((PinTypePtr) ptr2)->DrillingHole;
+			undo->Data.Size = ((pcb_pin_t *) ptr2)->DrillingHole;
 	}
 }
 

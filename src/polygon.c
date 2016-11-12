@@ -733,7 +733,7 @@ static int Subtract(POLYAREA * np1, pcb_polygon_t * p, pcb_bool fnp)
 }
 
 /* create a polygon of the pin clearance */
-POLYAREA *PinPoly(PinType * pin, Coord thick, Coord clear)
+POLYAREA *PinPoly(pcb_pin_t * pin, Coord thick, Coord clear)
 {
 	int size;
 
@@ -763,7 +763,7 @@ POLYAREA *BoxPolyBloated(pcb_box_t * box, Coord bloat)
 }
 
 /* return the clearance polygon for a pin */
-static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, PinType * pin)
+static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_pin_t * pin)
 {
 	POLYAREA *np;
 	if (TEST_THERM(layernum, pin))
@@ -774,7 +774,7 @@ static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, P
 }
 
 /* remove the pin clearance from the polygon */
-static int SubtractPin(pcb_data_t * d, PinType * pin, pcb_layer_t * l, pcb_polygon_t * p)
+static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_polygon_t * p)
 {
 	POLYAREA *np;
 	pcb_cardinal_t i;
@@ -869,7 +869,7 @@ static void subtract_accumulated(struct cpInfo *info, pcb_polygon_t *polygon)
 
 static r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pin = (PinTypePtr) b;
+	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_polygon_t *polygon;
 	POLYAREA *np;
@@ -1084,7 +1084,7 @@ fail:
 	return 0;
 }
 
-static int UnsubtractPin(PinType * pin, pcb_layer_t * l, pcb_polygon_t * p)
+static int UnsubtractPin(pcb_pin_t * pin, pcb_layer_t * l, pcb_polygon_t * p)
 {
 	POLYAREA *np;
 
@@ -1400,7 +1400,7 @@ static r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t
 	switch (type) {
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
-		SubtractPin(Data, (PinTypePtr) ptr2, Layer, Polygon);
+		SubtractPin(Data, (pcb_pin_t *) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
@@ -1428,7 +1428,7 @@ static r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Pol
 	switch (type) {
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
-		UnsubtractPin((PinTypePtr) ptr2, Layer, Polygon);
+		UnsubtractPin((pcb_pin_t *) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
 		UnsubtractLine((pcb_line_t *) ptr2, Layer, Polygon);
@@ -1460,7 +1460,7 @@ int
 PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 						 r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, pcb_polygon_t *poly, int type, void *ptr1, void *ptr2))
 {
-	pcb_box_t sb = ((PinTypePtr) ptr2)->BoundingBox;
+	pcb_box_t sb = ((pcb_pin_t *) ptr2)->BoundingBox;
 	int r = 0, seen;
 	struct plow_info info;
 

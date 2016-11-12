@@ -505,7 +505,7 @@ static int io_kicad_write_element_index(FILE * FP, pcb_data_t *Data)
 int write_kicad_layout_vias(FILE * FP, pcb_data_t *Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
-	PinType *via;
+	pcb_pin_t *via;
 	/* write information about vias */
 	pinlist_foreach(&Data->Via, &it, via) {
 		fprintf(FP, "%*s", indentation,"");
@@ -817,7 +817,7 @@ int io_kicad_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
-		PinType *pin;
+		pcb_pin_t *pin;
 		pcb_pad_t *pad;
 
 		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
@@ -1060,7 +1060,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
-		PinType *pin;
+		pcb_pin_t *pin;
 		pcb_pad_t *pad;
 
 		/* elementlist_dedup_skip(ededup, element);  */

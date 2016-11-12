@@ -1203,15 +1203,15 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 		break;
 
 	case PCB_TYPE_VIA:
-		name = gui->prompt_for(_("Vianame:"), EMPTY(((PinTypePtr) Ptr2)->Name));
+		name = gui->prompt_for(_("Vianame:"), EMPTY(((pcb_pin_t *) Ptr2)->Name));
 		break;
 
 	case PCB_TYPE_PIN:
 		if (pinnum)
-			sprintf(msg, _("%s Pin Number:"), EMPTY(((PinTypePtr) Ptr2)->Number));
+			sprintf(msg, _("%s Pin Number:"), EMPTY(((pcb_pin_t *) Ptr2)->Number));
 		else
-			sprintf(msg, _("%s Pin Name:"), EMPTY(((PinTypePtr) Ptr2)->Number));
-		name = gui->prompt_for(msg, EMPTY(((PinTypePtr) Ptr2)->Name));
+			sprintf(msg, _("%s Pin Name:"), EMPTY(((pcb_pin_t *) Ptr2)->Number));
+		name = gui->prompt_for(msg, EMPTY(((pcb_pin_t *) Ptr2)->Name));
 		break;
 
 	case PCB_TYPE_PAD:

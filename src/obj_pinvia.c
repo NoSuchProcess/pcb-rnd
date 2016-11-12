@@ -47,34 +47,34 @@
 /*** allocation ***/
 
 /* get next slot for a via, allocates memory if necessary */
-PinType *GetViaMemory(pcb_data_t * data)
+pcb_pin_t *GetViaMemory(pcb_data_t * data)
 {
-	PinType *new_obj;
+	pcb_pin_t *new_obj;
 
-	new_obj = calloc(sizeof(PinType), 1);
+	new_obj = calloc(sizeof(pcb_pin_t), 1);
 	pinlist_append(&data->Via, new_obj);
 
 	return new_obj;
 }
 
-void RemoveFreeVia(PinType * data)
+void RemoveFreeVia(pcb_pin_t * data)
 {
 	pinlist_remove(data);
 	free(data);
 }
 
 /* get next slot for a pin, allocates memory if necessary */
-PinType *GetPinMemory(ElementType * element)
+pcb_pin_t *GetPinMemory(ElementType * element)
 {
-	PinType *new_obj;
+	pcb_pin_t *new_obj;
 
-	new_obj = calloc(sizeof(PinType), 1);
+	new_obj = calloc(sizeof(pcb_pin_t), 1);
 	pinlist_append(&element->Pin, new_obj);
 
 	return new_obj;
 }
 
-void RemoveFreePin(PinType * data)
+void RemoveFreePin(pcb_pin_t * data)
 {
 	pinlist_remove(data);
 	free(data);
@@ -85,9 +85,9 @@ void RemoveFreePin(PinType * data)
 /*** utility ***/
 
 /* creates a new via */
-PinTypePtr CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags)
+pcb_pin_t *CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags)
 {
-	PinTypePtr Via;
+	pcb_pin_t *Via;
 
 	if (!pcb_create_be_lenient) {
 		VIA_LOOP(Data);
@@ -138,9 +138,9 @@ PinTypePtr CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coo
 }
 
 /* creates a new pin in an element */
-PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags)
+pcb_pin_t *CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags)
 {
-	PinTypePtr pin = GetPinMemory(Element);
+	pcb_pin_t *pin = GetPinMemory(Element);
 
 	/* copy values */
 	pin->X = X;
@@ -195,7 +195,7 @@ PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thicknes
 
 
 
-void pcb_add_via(pcb_data_t *Data, PinType *Via)
+void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via)
 {
 	SetPinBoundingBox(Via);
 	if (!Data->via_tree)
@@ -204,7 +204,7 @@ void pcb_add_via(pcb_data_t *Data, PinType *Via)
 }
 
 /* sets the bounding box of a pin or via */
-void SetPinBoundingBox(PinTypePtr Pin)
+void SetPinBoundingBox(pcb_pin_t *Pin)
 {
 	Coord width;
 
@@ -233,13 +233,13 @@ void SetPinBoundingBox(PinTypePtr Pin)
 
 /*** ops ***/
 /* copies a via to paste buffer */
-void *AddViaToBuffer(pcb_opctx_t *ctx, PinTypePtr Via)
+void *AddViaToBuffer(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	return (CreateNewVia(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
 
 /* moves a via to paste buffer without allocating memory for the name */
-void *MoveViaToBuffer(pcb_opctx_t *ctx, PinType * via)
+void *MoveViaToBuffer(pcb_opctx_t *ctx, pcb_pin_t * via)
 {
 	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_VIA, via, via);
 
@@ -257,7 +257,7 @@ void *MoveViaToBuffer(pcb_opctx_t *ctx, PinType * via)
 }
 
 /* changes the thermal on a via */
-void *ChangeViaThermal(pcb_opctx_t *ctx, PinTypePtr Via)
+void *ChangeViaThermal(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
@@ -273,7 +273,7 @@ void *ChangeViaThermal(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* changes the thermal on a pin */
-void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr element, PinTypePtr Pin)
+void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr element, pcb_pin_t *Pin)
 {
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
@@ -289,7 +289,7 @@ void *ChangePinThermal(pcb_opctx_t *ctx, ElementTypePtr element, PinTypePtr Pin)
 }
 
 /* changes the size of a via */
-void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr Via)
+void *ChangeViaSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	Coord value = ctx->chgsize.absolute ? ctx->chgsize.absolute : Via->Thickness + ctx->chgsize.delta;
 
@@ -316,7 +316,7 @@ void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* changes the drilling hole of a via */
-void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr Via)
+void *ChangeVia2ndSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->DrillingHole + ctx->chgsize.delta;
 
@@ -341,7 +341,7 @@ void *ChangeVia2ndSize(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* changes the drilling hole of a pin */
-void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->DrillingHole + ctx->chgsize.delta;
 
@@ -367,7 +367,7 @@ void *ChangePin2ndSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 
 
 /* changes the clearance size of a via */
-void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr Via)
+void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Clearance + ctx->chgsize.delta;
 
@@ -397,7 +397,7 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr Via)
 
 
 /* changes the size of a pin */
-void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Thickness + ctx->chgsize.delta;
 
@@ -422,7 +422,7 @@ void *ChangePinSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 }
 
 /* changes the clearance size of a pin */
-void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Clearance + ctx->chgsize.delta;
 
@@ -450,7 +450,7 @@ void *ChangePinClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pi
 }
 
 /* changes the name of a via */
-void *ChangeViaName(pcb_opctx_t *ctx, PinTypePtr Via)
+void *ChangeViaName(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	char *old = Via->Name;
 
@@ -465,7 +465,7 @@ void *ChangeViaName(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* changes the name of a pin */
-void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	char *old = Pin->Name;
 
@@ -481,7 +481,7 @@ void *ChangePinName(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 }
 
 /* changes the number of a pin */
-void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	char *old = Pin->Number;
 
@@ -498,7 +498,7 @@ void *ChangePinNum(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 
 
 /* changes the square flag of a via */
-void *ChangeViaSquare(pcb_opctx_t *ctx, PinTypePtr Via)
+void *ChangeViaSquare(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
@@ -519,7 +519,7 @@ void *ChangeViaSquare(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* changes the square flag of a pin */
-void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -540,7 +540,7 @@ void *ChangePinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 }
 
 /* sets the square flag of a pin */
-void *SetPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *SetPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
@@ -549,7 +549,7 @@ void *SetPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 }
 
 /* clears the square flag of a pin */
-void *ClrPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ClrPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
@@ -558,7 +558,7 @@ void *ClrPinSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 }
 
 /* changes the octagon flag of a via */
-void *ChangeViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
+void *ChangeViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (NULL);
@@ -574,7 +574,7 @@ void *ChangeViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* sets the octagon flag of a via */
-void *SetViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
+void *SetViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || TEST_FLAG(PCB_FLAG_OCTAGON, Via))
 		return (NULL);
@@ -583,7 +583,7 @@ void *SetViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* clears the octagon flag of a via */
-void *ClrViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
+void *ClrViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || !TEST_FLAG(PCB_FLAG_OCTAGON, Via))
 		return (NULL);
@@ -592,7 +592,7 @@ void *ClrViaOctagon(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* changes the octagon flag of a pin */
-void *ChangePinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ChangePinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
 		return (NULL);
@@ -608,7 +608,7 @@ void *ChangePinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 }
 
 /* sets the octagon flag of a pin */
-void *SetPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *SetPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
@@ -617,7 +617,7 @@ void *SetPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 }
 
 /* clears the octagon flag of a pin */
-void *ClrPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ClrPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
@@ -626,7 +626,7 @@ void *ClrPinOctagon(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
 }
 
 /* changes the hole flag of a via */
-pcb_bool ChangeHole(PinTypePtr Via)
+pcb_bool ChangeHole(pcb_pin_t *Via)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
 		return (pcb_false);
@@ -660,7 +660,7 @@ pcb_bool ChangeHole(PinTypePtr Via)
 }
 
 /* changes the mask size of a pin */
-void *ChangePinMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin)
+void *ChangePinMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pin_t *Pin)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Mask + ctx->chgsize.delta;
 
@@ -680,7 +680,7 @@ void *ChangePinMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PinTypePtr Pin
 }
 
 /* changes the mask size of a via */
-void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr Via)
+void *ChangeViaMaskSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	Coord value;
 
@@ -700,9 +700,9 @@ void *ChangeViaMaskSize(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* copies a via */
-void *CopyVia(pcb_opctx_t *ctx, PinTypePtr Via)
+void *CopyVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	PinTypePtr via;
+	pcb_pin_t *via;
 
 	via = CreateNewVia(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
 										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND));
@@ -714,7 +714,7 @@ void *CopyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* moves a via */
-void *MoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
+void *MoveVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
@@ -731,7 +731,7 @@ void *MoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* destroys a via */
-void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr Via)
+void *DestroyVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	r_delete_entry(ctx->remove.destroy_target->via_tree, (pcb_box_t *) Via);
 	free(Via->Name);
@@ -741,7 +741,7 @@ void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 }
 
 /* removes a via */
-void *RemoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
+void *RemoveVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	/* erase from screen and memory */
 	if (PCB->ViaOn) {
@@ -756,7 +756,7 @@ void *RemoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 /*** draw ***/
 
 /* setup color for pin or via */
-static void SetPVColor(PinTypePtr Pin, int Type)
+static void SetPVColor(pcb_pin_t *Pin, int Type)
 {
 	char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -801,7 +801,7 @@ static void SetPVColor(PinTypePtr Pin, int Type)
 	gui->set_color(Output.fgGC, color);
 }
 
-static void _draw_pv_name(PinType * pv)
+static void _draw_pv_name(pcb_pin_t * pv)
 {
 	pcb_box_t box;
 	pcb_bool vert;
@@ -847,7 +847,7 @@ static void _draw_pv_name(PinType * pv)
 		pcb_draw_doing_pinout--;
 }
 
-static void _draw_pv(PinTypePtr pv, pcb_bool draw_hole)
+static void _draw_pv(pcb_pin_t *pv, pcb_bool draw_hole)
 {
 	if (conf_core.editor.thin_draw)
 		gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
@@ -858,7 +858,7 @@ static void _draw_pv(PinTypePtr pv, pcb_bool draw_hole)
 		_draw_pv_name(pv);
 }
 
-void draw_pin(PinTypePtr pin, pcb_bool draw_hole)
+void draw_pin(pcb_pin_t *pin, pcb_bool draw_hole)
 {
 	SetPVColor(pin, PCB_TYPE_PIN);
 	_draw_pv(pin, draw_hole);
@@ -866,13 +866,13 @@ void draw_pin(PinTypePtr pin, pcb_bool draw_hole)
 
 r_dir_t draw_pin_callback(const pcb_box_t * b, void *cl)
 {
-	draw_pin((PinType *) b, pcb_false);
+	draw_pin((pcb_pin_t *) b, pcb_false);
 	return R_DIR_FOUND_CONTINUE;
 }
 
 r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl)
 {
-	PinType *pin = (PinTypePtr) b;
+	pcb_pin_t *pin = (pcb_pin_t *) b;
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
 		gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
 	else
@@ -881,7 +881,7 @@ r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl)
 }
 
 
-static void draw_via(PinTypePtr via, pcb_bool draw_hole)
+static void draw_via(pcb_pin_t *via, pcb_bool draw_hole)
 {
 	SetPVColor(via, PCB_TYPE_VIA);
 	_draw_pv(via, draw_hole);
@@ -889,13 +889,13 @@ static void draw_via(PinTypePtr via, pcb_bool draw_hole)
 
 r_dir_t draw_via_callback(const pcb_box_t * b, void *cl)
 {
-	draw_via((PinType *) b, pcb_false);
+	draw_via((pcb_pin_t *) b, pcb_false);
 	return R_DIR_FOUND_CONTINUE;
 }
 
 r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 {
-	PinTypePtr pv = (PinTypePtr) b;
+	pcb_pin_t *pv = (pcb_pin_t *) b;
 	int plated = cl ? *(int *) cl : -1;
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -935,7 +935,7 @@ r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static void GatherPVName(PinTypePtr Ptr)
+static void GatherPVName(pcb_pin_t *Ptr)
 {
 	pcb_box_t box;
 	pcb_bool vert = TEST_FLAG(PCB_FLAG_EDGE2, Ptr);
@@ -960,7 +960,7 @@ static void GatherPVName(PinTypePtr Ptr)
 	pcb_draw_invalidate(&box);
 }
 
-void EraseVia(PinTypePtr Via)
+void EraseVia(pcb_pin_t *Via)
 {
 	pcb_draw_invalidate(Via);
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
@@ -968,12 +968,12 @@ void EraseVia(PinTypePtr Via)
 	EraseFlags(&Via->Flags);
 }
 
-void EraseViaName(PinTypePtr Via)
+void EraseViaName(pcb_pin_t *Via)
 {
 	GatherPVName(Via);
 }
 
-void ErasePin(PinTypePtr Pin)
+void ErasePin(pcb_pin_t *Pin)
 {
 	pcb_draw_invalidate(Pin);
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
@@ -981,24 +981,24 @@ void ErasePin(PinTypePtr Pin)
 	EraseFlags(&Pin->Flags);
 }
 
-void ErasePinName(PinTypePtr Pin)
+void ErasePinName(pcb_pin_t *Pin)
 {
 	GatherPVName(Pin);
 }
 
-void DrawVia(PinTypePtr Via)
+void DrawVia(pcb_pin_t *Via)
 {
 	pcb_draw_invalidate(Via);
 	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
 		DrawViaName(Via);
 }
 
-void DrawViaName(PinTypePtr Via)
+void DrawViaName(pcb_pin_t *Via)
 {
 	GatherPVName(Via);
 }
 
-void DrawPin(PinTypePtr Pin)
+void DrawPin(pcb_pin_t *Pin)
 {
 	pcb_draw_invalidate(Pin);
 	if ((!TEST_FLAG(PCB_FLAG_HOLE, Pin) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
@@ -1006,7 +1006,7 @@ void DrawPin(PinTypePtr Pin)
 		DrawPinName(Pin);
 }
 
-void DrawPinName(PinTypePtr Pin)
+void DrawPinName(pcb_pin_t *Pin)
 {
 	GatherPVName(Pin);
 }

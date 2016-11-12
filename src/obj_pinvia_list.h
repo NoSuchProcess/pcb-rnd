@@ -28,7 +28,7 @@
 /* List of Pins */
 #define TDL(x)      pinlist_ ## x
 #define TDL_LIST_T  pinlist_t
-#define TDL_ITEM_T  PinType
+#define TDL_ITEM_T  pcb_pin_t
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC

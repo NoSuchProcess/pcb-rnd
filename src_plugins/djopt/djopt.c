@@ -86,9 +86,9 @@ typedef struct corner_s {
 	struct corner_s *next;
 	int x, y;
 	int net;
-	PinType *via;
+	pcb_pin_t *via;
 	pcb_pad_t *pad;
-	PinType *pin;
+	pcb_pin_t *pin;
 	int miter;
 	int n_lines;
 	struct line_s **lines;
@@ -737,7 +737,7 @@ static void merge_corners(corner_s * c1, corner_s * c2)
 
 static void move_corner(corner_s * c, int x, int y)
 {
-	PinType *via;
+	pcb_pin_t *via;
 	int i;
 	corner_s *pad;
 
@@ -2237,7 +2237,7 @@ static void pinsnap()
 	corner_s *best_c[MAX_LAYER + 1];
 	int l, got_one;
 	int left = 0, right = 0, top = 0, bottom = 0;
-	PinType *pin;
+	pcb_pin_t *pin;
 	int again = 1;
 
 	int close = 0;

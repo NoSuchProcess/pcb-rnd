@@ -305,7 +305,7 @@ gint toporouter_draw_vertex(gpointer item, gpointer data)
 #if TOPO_OUTPUT_ENABLED
 	drawing_context_t *dc = (drawing_context_t *) data;
 	toporouter_vertex_t *tv;
-	PinType *pin;
+	pcb_pin_t *pin;
 	pcb_pad_t *pad;
 	gdouble blue;
 
@@ -334,7 +334,7 @@ gint toporouter_draw_vertex(gpointer item, gpointer data)
 		/* printf("tv->type = %d\n", tv->type); */
 		if (!dc->mode) {
 			if (tv->bbox) {
-				pin = (PinType *) tv->bbox->data;
+				pin = (pcb_pin_t *) tv->bbox->data;
 				pad = (pcb_pad_t *) tv->bbox->data;
 
 				blue = 0.0f;
@@ -597,12 +597,12 @@ gdouble vertex_net_thickness(toporouter_vertex_t * v)
 	}
 	else {
 		if (box->type == PIN || box->type == VIA) {
-			PinType *pin = (PinType *) box->data;
+			pcb_pin_t *pin = (pcb_pin_t *) box->data;
 			if (TEST_FLAG(PCB_FLAG_SQUARE, pin) || TEST_FLAG(PCB_FLAG_OCTAGON, pin)) {
 				return 0.;
 			}
-/*      return ((PinType *)box->data)->Thickness + 1.;*/
-			return ((PinType *) box->data)->Thickness;
+/*      return ((pcb_pin_t *)box->data)->Thickness + 1.;*/
+			return ((pcb_pin_t *) box->data)->Thickness;
 		}
 		else if (box->type == PAD) {
 			pcb_pad_t *pad = (pcb_pad_t *) box->data;
@@ -644,7 +644,7 @@ gdouble vertex_net_clearance(toporouter_vertex_t * v)
 	}
 	else {
 		/*  if(box->type == PIN || box->type == VIA) 
-		   return ((PinType *)box->data)->Clearance;
+		   return ((pcb_pin_t *)box->data)->Clearance;
 		   else if(box->type == PAD)
 		   return ((pcb_pad_t *)box->data)->Clearance; */
 
@@ -1754,7 +1754,7 @@ static inline gdouble pad_rad(pcb_pad_t * pad)
 	return (lookup_thickness(pad->Name) / 2.) + lookup_clearance(pad->Name);
 }
 
-static inline gdouble pin_rad(PinType * pin)
+static inline gdouble pin_rad(pcb_pin_t * pin)
 {
 	return (lookup_thickness(pin->Name) / 2.) + lookup_clearance(pin->Name);
 }
@@ -2021,7 +2021,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 
 		if (TEST_FLAG(PCB_FLAG_SQUARE, via)) {
 
-			vlist = rect_with_attachments(pin_rad((PinType *) via),
+			vlist = rect_with_attachments(pin_rad((pcb_pin_t *) via),
 																		x - t, y - t, x - t, y + t, x + t, y + t, x + t, y - t, l - r->layers);
 			bbox = toporouter_bbox_create(l - r->layers, vlist, VIA, via);
 			r->bboxes = g_slist_prepend(r->bboxes, bbox);
@@ -2036,7 +2036,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 		}
 		else {
 
-			vlist = rect_with_attachments(pin_rad((PinType *) via),
+			vlist = rect_with_attachments(pin_rad((pcb_pin_t *) via),
 																		x - t, y - t, x - t, y + t, x + t, y + t, x + t, y - t, l - r->layers);
 			bbox = toporouter_bbox_create(l - r->layers, vlist, VIA, via);
 			r->bboxes = g_slist_prepend(r->bboxes, bbox);
@@ -2736,7 +2736,7 @@ void import_clusters(toporouter_t * r)
 					else if (connection->type == PCB_TYPE_PIN) {
 						guint m;
 						for (m = 0; m < groupcount(); m++) {
-							PinType *pin = (PinType *) connection->ptr2;
+							pcb_pin_t *pin = (pcb_pin_t *) connection->ptr2;
 							toporouter_bbox_t *box = toporouter_bbox_locate(r, PIN, pin, connection->X, connection->Y, m);
 							cluster_join_bbox(cluster, box);
 						}
@@ -2748,7 +2748,7 @@ void import_clusters(toporouter_t * r)
 					else if (connection->type == PCB_TYPE_VIA) {
 						guint m;
 						for (m = 0; m < groupcount(); m++) {
-							PinType *pin = (PinType *) connection->ptr2;
+							pcb_pin_t *pin = (pcb_pin_t *) connection->ptr2;
 							toporouter_bbox_t *box = toporouter_bbox_locate(r, VIA, pin, connection->X, connection->Y, m);
 							cluster_join_bbox(cluster, box);
 						}
@@ -8148,7 +8148,7 @@ static int escape(int argc, char **argv, Coord x, Coord y)
 	ALLPAD_LOOP(PCB->Data);
 	{
 		if (TEST_FLAG(PCB_FLAG_SELECTED, pad)) {
-			PinTypePtr via;
+			pcb_pin_t *via;
 			pcb_line_t *line;
 
 			pcb_pad_t *pad0 = element->Pad->data;

@@ -23,5 +23,5 @@
  *
  */
 
-void rat_found_short(PinType * pin, pcb_pad_t * pad, const char *with_net);
+void rat_found_short(pcb_pin_t * pin, pcb_pad_t * pad, const char *with_net);
 void rat_proc_shorts(void);
