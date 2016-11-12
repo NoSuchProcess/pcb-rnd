@@ -367,7 +367,7 @@ common_string_to_flags(const char *flagstring, int (*error) (const char *msg), p
 				}
 			if (!found) {
 				const char *fmt = "Unknown flag: \"%.*s\" ignored";
-				unknown_flag_t *u;
+				pcb_unknown_flag_t *u;
 				char *msg;
 				const char *s;
 
@@ -386,12 +386,12 @@ common_string_to_flags(const char *flagstring, int (*error) (const char *msg), p
 				sprintf(msg, fmt, flen, fp);
 				error(msg);
 
-				u = malloc(sizeof(unknown_flag_t));
+				u = malloc(sizeof(pcb_unknown_flag_t));
 				u->str = pcb_strndup(fp, flen);
 				u->next = NULL;
 				/* need to append, to keep order of flags */
 				if (rv.Flags.unknowns != NULL) {
-					unknown_flag_t *n;
+					pcb_unknown_flag_t *n;
 					for (n = rv.Flags.unknowns; n->next != NULL; n = n->next);
 					n->next = u;
 				}
@@ -427,7 +427,7 @@ char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t 
 	int i;
 	FlagHolder fh, savef;
 	char *buf, *bp;
-	unknown_flag_t *u;
+	pcb_unknown_flag_t *u;
 
 	fh.Flags = flags;
 

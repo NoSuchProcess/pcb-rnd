@@ -32,10 +32,10 @@
 /* Nobody should know about the internals of this except the macros in
    macros.h that access it.  This structure must be simple-assignable
    for now.  */
-typedef struct pcb_unknown_flag_s unknown_flag_t;
+typedef struct pcb_unknown_flag_s pcb_unknown_flag_t;
 struct pcb_unknown_flag_s {
 	char *str;
-	unknown_flag_t *next;
+	pcb_unknown_flag_t *next;
 };
 
 typedef struct {
@@ -43,7 +43,7 @@ typedef struct {
 	unsigned char t[(MAX_LAYER + 1) / 2];	/* thermals */
 	unsigned char q;							/* square geometry flag */
 	unsigned char int_conn_grp;
-	unknown_flag_t *unknowns;
+	pcb_unknown_flag_t *unknowns;
 } pcb_flag_t;
 
 extern pcb_flag_t no_flags;

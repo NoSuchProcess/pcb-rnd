@@ -78,7 +78,7 @@ int mem_any_set(unsigned char *ptr, int bytes)
 
 void EraseFlags(pcb_flag_t * f)
 {
-	unknown_flag_t *u, *next;
+	pcb_unknown_flag_t *u, *next;
 	for (u = f->unknowns; u != NULL; u = next) {
 		free(u->str);
 		next = u->next;
