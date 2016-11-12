@@ -1,0 +1,113 @@
+Name differences between mainline -> pcb_rnd
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#types:
+
+PCBTypePtr -> pcb_board_t *
+PCBType -> pcb_board_t
+DataTypePtr -> pcb_data_t *
+DataType -> pcb_data_t
+LayerGroupTypePtr -> pcb_layer_group_t *
+LayerGroupType -> pcb_layer_group_t
+LayerTypePtr -> pcb_layer_t *
+LayerType -> pcb_layer_t
+BufferTypePtr -> pcb_buffer_t *
+BufferType -> pcb_buffer_t
+NetTypePtr -> pcb_net_t *
+NetType -> pcb_net_t
+ConnectionTypePtr -> pcb_connection_t *
+ConnectionType -> pcb_connection_t
+BoxTypePtr -> pcb_box_t *
+BoxType -> pcb_box_t
+BoxListTypePtr -> pcb_box_list_t *
+BoxListType -> pcb_box_list_t
+FontTypePtr -> pcb_font_t *
+FontType -> pcb_font_t
+LineTypePtr -> pcb_line_t *
+LineType -> pcb_line_t
+AttachedObjectTypePtr -> pcb_attached_obj_t *
+AttachedObjectType -> pcb_attached_obj_t
+AttachedLineTypePtr -> pcb_attached_line_t *
+AttachedLineType -> pcb_attached_line_t
+CrosshairTypePtr -> pcb_crosshair_t *
+CrosshairType -> pcb_crosshair_t
+MarkTypePtr -> pcb_mark_t *
+MarkType -> pcb_mark_t
+ArcTypePtr -> pcb_arc_t *
+ArcType -> pcb_arc_t
+PointTypePtr -> pcb_point_t *
+PointType -> pcb_point_t
+RatTypePtr -> pcb_rat_t *
+RatType -> pcb_rat_t
+PolygonTypePtr -> pcb_polygon_t *
+PolygonType -> pcb_polygon_t
+PadTypePtr -> pcb_pad_t *
+PadType -> pcb_pad_t
+PinTypeType -> pcb_pin_t *
+PinType -> pcb_pin_t
+ElementTypeHandle -> pcb_element_t **
+ElementTypePtr -> pcb_element_t *
+ElementType -> pcb_element_t
+TextTypePtr -> pcb_text_t *
+TextType -> pcb_text_t
+AttributeListTypePtr -> pcb_attribute_list_t *
+AttributeListType -> pcb_attribute_list_t
+AttributeTypePtr -> pcb_attribute_t *
+AttributeType -> pcb_attribute_t
+OutputTypePtr -> pcb_output_t *
+OutputType -> pcb_output_t
+DrcViolationTypePtr -> pcb_drc_violation_t *
+DrcViolationType -> pcb_drc_violation_t
+FlagBitsTypePtr -> pcb_flag_bits_t *
+FlagBitsType -> pcb_flag_bits_t
+FlagTypePtr -> pcb_flag_t *
+FlagType -> pcb_flag_t
+SymbolTypePtr -> pcb_symbol_t *
+SymbolType -> pcb_symbol_t
+FunctionID -> pcb_function_id_t
+EndCapStyle -> pcb_cap_style_t
+hidval -> pcb_hidval_t
+HID_Action -> pcb_hid_action_t
+PCBWatchFlags -> pcb_watch_flags_t
+HID_DRC_GUI -> pcb_hid_drc_gui_t
+HID -> pcb_hid_t
+hid_gc_struct -> hid_gc_s
+hidGC -> pcb_hid_gc_t
+HID_Attr_Val -> pcb_hid_attr_val_t
+HID_Attribute -> pcb_hid_attribute_t
+HID_AttrNode -> pcb_hid_attr_node_t
+LibraryEntryTypePtr -> pcb_lib_entry_t *
+LibraryEntryType -> pcb_lib_entry_t
+LibraryMenuTypePtr -> pcb_lib_menu_t *
+LibraryMenuType -> pcb_lib_menu_t
+LibraryTypePtr -> pcb_lib_t *
+LibraryType -> pcb_lib_t
+UnitList -> pcb_unit_list_t
+unitflags -> pcb_unit_flags_e
+UnitList -> pcb_unit_list_t
+NetListTypePtr -> pcb_netlist_t *
+NetListType -> pcb_netlist_t
+NetListListTypePtr -> pcb_netlist_list_t *
+NetListListType -> pcb_netlist_list_t
+AnyObjectTypePtr -> pcb_any_obj_t *
+AnyObjectType -> pcb_any_obj_t
+AnyLineObjectTypePtr -> pcb_any_line_t *
+AnyLineObjectType -> pcb_any_line_t
+AttachedLineTypePtr -> pcb_attached_line_t
+AttachedLineType -> pcb_attached_line_t *
+Vector -> pcb_vector_t
+vertex -> pcb_vertex_t
+CVCList -> pcb_cvc_list_t
+VNODE -> pcb_vnode_t
+PLINE -> pcb_pline_t
+POLYAREA -> pcb_polyarea_t
+PolygonBooleanOperation -> pcb_poly_bool_op_e
+RubberbandType -> pcb_rubberband_t
+Unit -> pcb_unit_t
+Increments -> pcb_increments_t
+Angle -> pcb_angle_t
+Coord -> pcb_coord_t
+RouteStyleTypePtr -> pcb_route_style_t *
+RouteStyleType -> pcb_route_style_t
+
+
