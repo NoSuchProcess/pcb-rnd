@@ -66,7 +66,7 @@ enum pcb_allow_e {
 enum e_family { METRIC, IMPERIAL };
 enum e_suffix { NO_SUFFIX, SUFFIX, FILE_MODE };
 
-struct unit {
+struct pcb_unit_s {
 	int index;										/* Index into Unit[] list */
 	const char *suffix;
 	const char *in_suffix;				/* internationalized suffix */
@@ -85,7 +85,7 @@ struct unit {
 	const char *alias[1];
 };
 
-struct increments {
+struct pcb_increments_s {
 	const char *suffix;
 	/* key g and <shift>g value  */
 	Coord grid;
@@ -105,8 +105,8 @@ struct increments {
 	Coord clear_max;
 };
 
-typedef struct unit Unit;
-typedef struct increments Increments;
+typedef struct pcb_unit_s Unit;
+typedef struct pcb_increments_s Increments;
 extern Unit Units[];
 extern Increments increments[];
 
