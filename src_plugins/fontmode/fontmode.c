@@ -68,7 +68,7 @@ static const char fontedit_help[] = "Convert the current font to a PCB for editi
 
 static int FontEdit(int argc, const char **argv, Coord Ux, Coord Uy)
 {
-	FontType *font;
+	pcb_font_t *font;
 	SymbolType *symbol;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid;
 	int s, l;
@@ -157,7 +157,7 @@ static const char fontsave_help[] = "Convert the current PCB back to a font.";
 
 static int FontSave(int argc, const char **argv, Coord Ux, Coord Uy)
 {
-	FontTypePtr font;
+	pcb_font_t *font;
 	SymbolTypePtr symbol;
 	int i;
 	LineType *l;

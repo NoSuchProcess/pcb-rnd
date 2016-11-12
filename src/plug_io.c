@@ -154,7 +154,7 @@ int ParseElement(pcb_data_t *Ptr, const char *name)
 	return res;
 }
 
-int ParseFont(FontTypePtr Ptr, char *Filename)
+int ParseFont(pcb_font_t *Ptr, char *Filename)
 {
 	int res = -1;
 	HOOK_CALL(plug_io_t, plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));

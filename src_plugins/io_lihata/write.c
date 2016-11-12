@@ -530,7 +530,7 @@ static lht_node_t *build_symbol(SymbolType *sym, const char *name)
 	return ndt;
 }
 
-static lht_node_t *build_font(FontType *font)
+static lht_node_t *build_font(pcb_font_t *font)
 {
 	lht_node_t *syms, *ndt, *frt;
 	int n;

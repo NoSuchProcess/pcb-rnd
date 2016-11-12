@@ -68,7 +68,7 @@ extern	char			*yytext;		/* defined by LEX */
 extern	pcb_board_t *	yyPCB;
 extern	pcb_data_t *	yyData;
 extern	ElementTypePtr	yyElement;
-extern	FontTypePtr		yyFont;
+extern	pcb_font_t *	yyFont;
 extern	int				pcb_lineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
 extern	conf_role_t yy_settings_dest;

@@ -94,7 +94,7 @@ struct pcb_board_s {
 	double Zoom,									/* zoom factor */
 	  IsleArea,										/* minimum poly island to retain */
 	  ThermScale;									/* scale factor used with thermals */
-	FontType Font;
+	pcb_font_t Font;
 	pcb_layer_group_t LayerGroups;
 	vtroutestyle_t RouteStyle;
 	LibraryType NetlistLib[NUM_NETLISTS];

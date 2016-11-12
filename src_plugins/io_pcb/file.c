@@ -270,7 +270,7 @@ static void WritePCBFontData(FILE * FP)
 {
 	pcb_cardinal_t i, j;
 	LineTypePtr line;
-	FontTypePtr font;
+	pcb_font_t *font;
 
 	for (font = &PCB->Font, i = 0; i <= MAX_FONTPOSITION; i++) {
 		if (!font->Symbol[i].Valid)
@@ -542,7 +542,7 @@ int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP, const char *old_filename, const c
 
 extern pcb_board_t *yyPCB;
 extern pcb_data_t *yyData;
-extern FontTypePtr yyFont;
+extern pcb_font_t *yyFont;
 
 void PreLoadElementPCB()
 {

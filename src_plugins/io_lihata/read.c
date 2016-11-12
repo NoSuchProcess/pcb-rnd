@@ -761,7 +761,7 @@ static int parse_symbol(SymbolType *sym, lht_node_t *nd)
 	return 0;
 }
 
-static int parse_font(FontType *font, lht_node_t *nd)
+static int parse_font(pcb_font_t *font, lht_node_t *nd)
 {
 	lht_node_t *grp, *sym;
 	lht_dom_iterator_t it;

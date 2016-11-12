@@ -63,7 +63,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X
 pcb_bool ChangeElementSide(ElementTypePtr Element, Coord yoff);
 pcb_bool ChangeSelectedElementSide(void);
 ElementTypePtr CopyElementLowLevel(pcb_data_t *Data, ElementTypePtr Dest, ElementTypePtr Src, pcb_bool uniqueName, Coord dx, Coord dy);
-void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, FontTypePtr Font);
+void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, pcb_font_t *Font);
 char *UniqueElementName(pcb_data_t *Data, char *Name);
 void r_delete_element(pcb_data_t * data, ElementType * element);
 
@@ -77,7 +77,7 @@ void RotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Co
 void MirrorElementCoordinates(pcb_data_t *Data, ElementTypePtr Element, Coord yoff);
 
 ElementTypePtr CreateNewElement(pcb_data_t *Data, ElementTypePtr Element,
-	FontTypePtr PCBFont, FlagType Flags, char *Description, char *NameOnPCB,
+	pcb_font_t *PCBFont, FlagType Flags, char *Description, char *NameOnPCB,
 	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
 	int TextScale, FlagType TextFlags, pcb_bool uniqueName);
 
@@ -86,7 +86,7 @@ ArcTypePtr CreateNewArcInElement(ElementTypePtr Element, Coord X, Coord Y,
 
 LineTypePtr CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
 
-void AddTextToElement(TextTypePtr Text, FontTypePtr PCBFont, Coord X, Coord Y,
+void AddTextToElement(TextTypePtr Text, pcb_font_t *PCBFont, Coord X, Coord Y,
 	unsigned Direction, char *TextString, int Scale, FlagType Flags);
 
 

@@ -68,7 +68,7 @@ static void text_at(hidGC gc, int x, int y, int align, const char *fmt, ...)
 	int w = 0, i;
 	TextType t;
 	va_list a;
-	FontTypePtr font = &PCB->Font;
+	pcb_font_t *font = &PCB->Font;
 	va_start(a, fmt);
 	vsprintf(tmp, fmt, a);
 	va_end(a);

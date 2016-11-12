@@ -563,7 +563,7 @@ ElementTypePtr CopyElementLowLevel(pcb_data_t *Data, ElementTypePtr Dest, Elemen
 
 /* creates an new element; memory is allocated if needed */
 ElementTypePtr CreateNewElement(pcb_data_t *Data, ElementTypePtr Element,
-	FontTypePtr PCBFont, FlagType Flags, char *Description, char *NameOnPCB,
+	pcb_font_t *PCBFont, FlagType Flags, char *Description, char *NameOnPCB,
 	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
 	int TextScale, FlagType TextFlags, pcb_bool uniqueName)
 {
@@ -645,7 +645,7 @@ LineTypePtr CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, C
 
 /* creates a new textobject as part of an element
    copies the values to the appropriate text object */
-void AddTextToElement(TextTypePtr Text, FontTypePtr PCBFont, Coord X, Coord Y,
+void AddTextToElement(TextTypePtr Text, pcb_font_t *PCBFont, Coord X, Coord Y,
 	unsigned Direction, char *TextString, int Scale, FlagType Flags)
 {
 	free(Text->TextString);
@@ -716,7 +716,7 @@ void MirrorElementCoordinates(pcb_data_t *Data, ElementTypePtr Element, Coord yo
 }
 
 /* sets the bounding box of an elements */
-void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, FontTypePtr Font)
+void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, pcb_font_t *Font)
 {
 	pcb_box_t *box, *vbox;
 

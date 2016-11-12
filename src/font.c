@@ -61,7 +61,7 @@ void CreateDefaultFont(pcb_board_t *pcb)
 
 /* transforms symbol coordinates so that the left edge of each symbol
  * is at the zero position. The y coordinates are moved so that min(y) = 0 */
-void SetFontInfo(FontTypePtr Ptr)
+void SetFontInfo(pcb_font_t *Ptr)
 {
 	pcb_cardinal_t i, j;
 	SymbolTypePtr symbol;

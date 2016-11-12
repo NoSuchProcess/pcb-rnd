@@ -49,7 +49,7 @@ struct pcb_font_s {          /* complete set of symbols */
 };
 
 void CreateDefaultFont(pcb_board_t *pcb);
-void SetFontInfo(FontTypePtr Ptr);
+void SetFontInfo(pcb_font_t *Ptr);
 
 LineTypePtr CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
 

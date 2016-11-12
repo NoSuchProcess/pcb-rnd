@@ -710,7 +710,7 @@ const char			*yyfilename;	/* in this file */
 pcb_board_t *	yyPCB;			/* used by parser */
 pcb_data_t *	yyData;
 ElementTypePtr		yyElement;
-FontTypePtr		yyFont;
+pcb_font_t *	yyFont;
 conf_role_t yy_settings_dest;
 FlagType yy_pcb_flags;
 
@@ -2575,7 +2575,7 @@ int io_pcb_ParsePCB(plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a font
  */
-int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr Ptr, const char *Filename)
+int io_pcb_ParseFont(plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 {
 	int r = 0;
 	yyPCB = NULL;

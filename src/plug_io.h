@@ -65,7 +65,7 @@ struct plug_io_s {
 	int (*parse_element)(plug_io_t *ctx, pcb_data_t *Ptr, const char *name);
 
 	/* Attempt to load fonts from a file. Return 0 on success. */
-	int (*parse_font)(plug_io_t *ctx, FontTypePtr Ptr, const char *Filename);
+	int (*parse_font)(plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename);
 
 
 	/* Write the buffer to a file. Return 0 on success. */
@@ -93,7 +93,7 @@ extern plug_io_t *plug_io_chain;
 /********** hook wrappers **********/
 int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings);
 int ParseElement(pcb_data_t *Ptr, const char *name);
-int ParseFont(FontTypePtr Ptr, char *Filename);
+int ParseFont(pcb_font_t *Ptr, char *Filename);
 int WriteBuffer(FILE *f, pcb_buffer_t *buff, const char *fmt);
 int WriteElementData(FILE *f, pcb_data_t *e, const char *fmt);
 

@@ -33,7 +33,7 @@ typedef struct pcb_net_s pcb_net_t;
 typedef struct pcb_connection_s pcb_connection_t;
 typedef struct pcb_box_s pcb_box_t;
 typedef struct pcb_box_list_s pcb_box_list_t;
-typedef struct pcb_font_s  FontType, *FontTypePtr;
+typedef struct pcb_font_s pcb_font_t;
 typedef struct pcb_line_s LineType, *LineTypePtr;
 typedef struct pcb_arc_s ArcType, *ArcTypePtr;
 typedef struct pcb_point_s PointType, *PointTypePtr;

@@ -67,7 +67,7 @@ void RemoveFreeText(TextType * data)
 /*** utility ***/
 
 /* creates a new text on a layer */
-TextTypePtr CreateNewText(pcb_layer_t *Layer, FontTypePtr PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags)
+TextTypePtr CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags)
 {
 	TextType *text;
 
@@ -93,7 +93,7 @@ TextTypePtr CreateNewText(pcb_layer_t *Layer, FontTypePtr PCBFont, Coord X, Coor
 	return (text);
 }
 
-void pcb_add_text_on_layer(pcb_layer_t *Layer, TextType *text, FontType *PCBFont)
+void pcb_add_text_on_layer(pcb_layer_t *Layer, TextType *text, pcb_font_t *PCBFont)
 {
 	/* calculate size of the bounding box */
 	SetTextBoundingBox(PCBFont, text);
@@ -104,7 +104,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, TextType *text, FontType *PCBFont
 }
 
 /* creates the bounding box of a text object */
-void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
+void SetTextBoundingBox(pcb_font_t *FontPtr, TextTypePtr Text)
 {
 	SymbolTypePtr symbol = FontPtr->Symbol;
 	unsigned char *s = (unsigned char *) Text->TextString;
@@ -473,7 +473,7 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 	Coord x = 0;
 	unsigned char *string = (unsigned char *) Text->TextString;
 	pcb_cardinal_t n;
-	FontTypePtr font = &PCB->Font;
+	pcb_font_t *font = &PCB->Font;
 
 	while (string && *string) {
 		/* draw lines if symbol is valid and data is present */

@@ -36,6 +36,6 @@
 
 int io_pcb_ParsePCB(plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
 int io_pcb_ParseElement(plug_io_t *ctx, pcb_data_t *, const char *);
-int io_pcb_ParseFont(plug_io_t *ctx, FontTypePtr, const char *);
+int io_pcb_ParseFont(plug_io_t *ctx, pcb_font_t *, const char *);
 
 #endif
