@@ -28,9 +28,9 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl);
-r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl);
-r_dir_t draw_element_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t draw_element_callback(const pcb_box_t * b, void *cl);
 #endif
 
 void draw_element_package(pcb_element_t * element);

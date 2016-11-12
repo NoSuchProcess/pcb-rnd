@@ -407,7 +407,7 @@ struct mptlc {
 	pcb_polygon_t *polygon;
 } mptlc;
 
-r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 {
 	struct mptlc *d = (struct mptlc *) cl;
 	pcb_pin_t *pin = (pcb_pin_t *) b;
@@ -634,7 +634,7 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 }
 
 /*** draw ***/
-r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 {
 	struct pcb_draw_poly_info_s *i = cl;
 	pcb_polygon_t *polygon = (pcb_polygon_t *) b;

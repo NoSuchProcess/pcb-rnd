@@ -1130,7 +1130,7 @@ void NotifyMode(void)
 				break;
 			}
 			if (type == PCB_TYPE_ELEMENT) {
-				RubberbandTypePtr ptr;
+				pcb_rubberband_t *ptr;
 				int i;
 
 				Crosshair.AttachedObject.RubberbandN = 0;

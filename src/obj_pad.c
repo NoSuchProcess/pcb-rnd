@@ -389,7 +389,7 @@ void draw_pad(pcb_pad_t * pad)
 		draw_pad_name(pad);
 }
 
-r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;
@@ -399,7 +399,7 @@ r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;

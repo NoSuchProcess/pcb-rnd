@@ -864,13 +864,13 @@ void draw_pin(pcb_pin_t *pin, pcb_bool draw_hole)
 	_draw_pv(pin, draw_hole);
 }
 
-r_dir_t draw_pin_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_pin_callback(const pcb_box_t * b, void *cl)
 {
 	draw_pin((pcb_pin_t *) b, pcb_false);
 	return R_DIR_FOUND_CONTINUE;
 }
 
-r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
@@ -887,13 +887,13 @@ static void draw_via(pcb_pin_t *via, pcb_bool draw_hole)
 	_draw_pv(via, draw_hole);
 }
 
-r_dir_t draw_via_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_via_callback(const pcb_box_t * b, void *cl)
 {
 	draw_via((pcb_pin_t *) b, pcb_false);
 	return R_DIR_FOUND_CONTINUE;
 }
 
-r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pv = (pcb_pin_t *) b;
 	int plated = cl ? *(int *) cl : -1;

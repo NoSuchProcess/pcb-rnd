@@ -220,7 +220,7 @@ struct r_neighbor_info {
     t = (box).X1; (box).X1 =   (box).X2; (box).X2 = t;\
 }
 /* helper methods for __r_find_neighbor */
-static r_dir_t __r_find_neighbor_reg_in_sea(const pcb_box_t * region, void *cl)
+static pcb_r_dir_t __r_find_neighbor_reg_in_sea(const pcb_box_t * region, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	pcb_box_t query = *region;
@@ -236,7 +236,7 @@ static r_dir_t __r_find_neighbor_reg_in_sea(const pcb_box_t * region, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	pcb_box_t query = *box;

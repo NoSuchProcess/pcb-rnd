@@ -78,7 +78,7 @@ struct line_info {
 	jmp_buf env;
 };
 
-static r_dir_t line_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct line_info *i = (struct line_info *) cl;
@@ -463,7 +463,7 @@ struct via_info {
 	jmp_buf env;
 };
 
-static r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 {
 	struct via_info *i = (struct via_info *) cl;
 	pcb_pin_t *via;
@@ -553,7 +553,7 @@ struct rlp_info {
 	pcb_line_t *line;
 	pcb_point_t *point;
 };
-static r_dir_t remove_point(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t remove_point(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct rlp_info *info = (struct rlp_info *) cl;
@@ -741,7 +741,7 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 	_draw_line(line);
 }
 
-r_dir_t draw_line_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_line_callback(const pcb_box_t * b, void *cl)
 {
 	draw_line((pcb_layer_t *) cl, (pcb_line_t *) b);
 	return R_DIR_FOUND_CONTINUE;

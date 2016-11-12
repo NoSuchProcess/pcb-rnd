@@ -778,7 +778,7 @@ struct rb_info {
 	jmp_buf env;
 };
 
-static r_dir_t __found_one_on_lg(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __found_one_on_lg(const pcb_box_t * box, void *cl)
 {
 	struct rb_info *inf = (struct rb_info *) cl;
 	routebox_t *rb = (routebox_t *) box;
@@ -1473,7 +1473,7 @@ struct mincost_target_closure {
 	routebox_t *nearest;
 	cost_t nearest_cost;
 };
-static r_dir_t __region_within_guess(const pcb_box_t * region, void *cl)
+static pcb_r_dir_t __region_within_guess(const pcb_box_t * region, void *cl)
 {
 	struct mincost_target_closure *mtc = (struct mincost_target_closure *) cl;
 	cost_t cost_to_region;
@@ -1487,7 +1487,7 @@ static r_dir_t __region_within_guess(const pcb_box_t * region, void *cl)
 	return (cost_to_region < mtc->nearest_cost) ? R_DIR_FOUND_CONTINUE : R_DIR_NOT_FOUND;
 }
 
-static r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
 {
 	struct mincost_target_closure *mtc = (struct mincost_target_closure *) cl;
 	routebox_t *guess = (routebox_t *) box;
@@ -1850,7 +1850,7 @@ struct E_result {
  * like it wouldn't be seen. We do this while keep the inflated
  * box as large as possible.
  */
-static r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 {
 	struct E_result *res = (struct E_result *) cl;
 	routebox_t *rb = (routebox_t *) box;
@@ -2385,7 +2385,7 @@ struct break_info {
 	pcb_bool ignore_source;
 };
 
-static r_dir_t __GatherBlockers(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __GatherBlockers(const pcb_box_t * box, void *cl)
 {
 	routebox_t *rb = (routebox_t *) box;
 	struct break_info *bi = (struct break_info *) cl;
@@ -2723,7 +2723,7 @@ struct foib_info {
 	jmp_buf env;
 };
 
-static r_dir_t foib_rect_in_reg(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t foib_rect_in_reg(const pcb_box_t * box, void *cl)
 {
 	struct foib_info *foib = (struct foib_info *) cl;
 	pcb_box_t rbox;
@@ -2760,7 +2760,7 @@ struct therm_info {
 	pcb_box_t query;
 	jmp_buf env;
 };
-static r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
 {
 	routebox_t *rbox = (routebox_t *) box;
 	struct therm_info *ti = (struct therm_info *) cl;
@@ -3514,7 +3514,7 @@ static void show_sources(routebox_t * rb)
 
 #endif
 
-static r_dir_t __conflict_source(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __conflict_source(const pcb_box_t * box, void *cl)
 {
 	routebox_t *rb = (routebox_t *) box;
 	if (rb->flags.touched || rb->flags.fixed)
@@ -4052,7 +4052,7 @@ static void InitAutoRouteParameters(int pass, RouteStyleType * style, pcb_bool w
 }
 
 #ifndef NDEBUG
-r_dir_t bad_boy(const pcb_box_t * b, void *cl)
+pcb_r_dir_t bad_boy(const pcb_box_t * b, void *cl)
 {
 	routebox_t *box = (routebox_t *) b;
 	if (box->type == EXPANSION_AREA)
@@ -4091,7 +4091,7 @@ static void ripout_livedraw_obj(routebox_t * rb)
 	}
 }
 
-static r_dir_t ripout_livedraw_obj_cb(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t ripout_livedraw_obj_cb(const pcb_box_t * b, void *cl)
 {
 	routebox_t *box = (routebox_t *) b;
 	ripout_livedraw_obj(box);
@@ -4391,7 +4391,7 @@ struct fpin_info {
 	jmp_buf env;
 };
 
-static r_dir_t fpin_rect(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t fpin_rect(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct fpin_info *info = (struct fpin_info *) cl;

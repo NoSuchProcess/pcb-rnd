@@ -29,8 +29,8 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl);
-r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl);
 #endif
 
 void draw_pad(pcb_pad_t * pad);

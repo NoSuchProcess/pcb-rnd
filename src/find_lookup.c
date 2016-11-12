@@ -28,10 +28,10 @@
 #include "compat_nls.h"
 #include "board.h"
 
-static inline r_dir_t r_search_pt(pcb_rtree_t * rtree, const pcb_point_t * pt,
+static inline pcb_r_dir_t r_search_pt(pcb_rtree_t * rtree, const pcb_point_t * pt,
 															int radius,
-															r_dir_t (*region_in_search) (const pcb_box_t * region, void *cl),
-															r_dir_t (*rectangle_in_region) (const pcb_box_t * box, void *cl), void *closure,
+															pcb_r_dir_t (*region_in_search) (const pcb_box_t * region, void *cl),
+															pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t * box, void *cl), void *closure,
 															int *num_found)
 {
 	pcb_box_t box;
@@ -292,7 +292,7 @@ struct pv_info {
 	jmp_buf env;
 };
 
-static r_dir_t LOCtoPVline_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPVline_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -304,7 +304,7 @@ static r_dir_t LOCtoPVline_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPVarc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPVarc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -316,7 +316,7 @@ static r_dir_t LOCtoPVarc_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPVpad_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPVpad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -328,7 +328,7 @@ static r_dir_t LOCtoPVpad_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPVrat_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPVrat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -338,7 +338,7 @@ static r_dir_t LOCtoPVrat_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -529,7 +529,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 	return (pcb_false);
 }
 
-static r_dir_t pv_pv_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t pv_pv_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -608,7 +608,7 @@ struct lo_info {
 	jmp_buf env;
 };
 
-static r_dir_t pv_line_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t pv_line_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -625,7 +625,7 @@ static r_dir_t pv_line_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t pv_pad_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t pv_pad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -642,7 +642,7 @@ static r_dir_t pv_pad_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t pv_arc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t pv_arc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -659,7 +659,7 @@ static r_dir_t pv_arc_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -691,7 +691,7 @@ static r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t pv_rat_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t pv_rat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pv = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -815,7 +815,7 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 	return (pcb_false);
 }
 
-r_dir_t pv_touch_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pv_touch_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -825,7 +825,7 @@ r_dir_t pv_touch_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoArcLine_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoArcLine_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -837,7 +837,7 @@ static r_dir_t LOCtoArcLine_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoArcArc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoArcArc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -851,7 +851,7 @@ static r_dir_t LOCtoArcArc_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoArcPad_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoArcPad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -917,7 +917,7 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 	return (pcb_false);
 }
 
-static r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -929,7 +929,7 @@ static r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoLineArc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoLineArc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -943,7 +943,7 @@ static r_dir_t LOCtoLineArc_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -963,7 +963,7 @@ static r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoLinePad_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoLinePad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1045,7 +1045,7 @@ struct rat_info {
 	jmp_buf env;
 };
 
-static r_dir_t LOCtoRat_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoRat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1059,7 +1059,7 @@ static r_dir_t LOCtoRat_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t PolygonToRat_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t PolygonToRat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1073,7 +1073,7 @@ static r_dir_t PolygonToRat_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPad_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1133,7 +1133,7 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t L
 	return (pcb_false);
 }
 
-static r_dir_t LOCtoPadLine_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPadLine_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1145,7 +1145,7 @@ static r_dir_t LOCtoPadLine_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPadArc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPadArc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1159,7 +1159,7 @@ static r_dir_t LOCtoPadArc_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPadPoly_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPadPoly_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1172,7 +1172,7 @@ static r_dir_t LOCtoPadPoly_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1198,7 +1198,7 @@ static r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPadPad_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPadPad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1309,7 +1309,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 	return retv;
 }
 
-static r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1321,7 +1321,7 @@ static r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1335,7 +1335,7 @@ static r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
 	return 0;
 }
 
-static r_dir_t LOCtoPolyPad_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPolyPad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1348,7 +1348,7 @@ static r_dir_t LOCtoPolyPad_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;

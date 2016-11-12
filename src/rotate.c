@@ -96,7 +96,7 @@ void RotateBoxLowLevel(pcb_box_t *Box, Coord X, Coord Y, unsigned Number)
  */
 void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord Y, unsigned Steps)
 {
-	RubberbandTypePtr ptr;
+	pcb_rubberband_t *ptr;
 	void *ptr2;
 	pcb_bool changed = pcb_false;
 	pcb_opctx_t ctx;

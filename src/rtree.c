@@ -396,8 +396,8 @@ void r_destroy_tree(pcb_rtree_t ** rtree)
 }
 
 typedef struct {
-	r_dir_t (*check_it) (const pcb_box_t * region, void *cl);
-	r_dir_t (*found_it) (const pcb_box_t * box, void *cl);
+	pcb_r_dir_t (*check_it) (const pcb_box_t * region, void *cl);
+	pcb_r_dir_t (*found_it) (const pcb_box_t * box, void *cl);
 	void *closure;
 	int cancel;
 } r_arg;
@@ -408,7 +408,7 @@ typedef struct {
  */
 int __r_search(struct rtree_node *node, const pcb_box_t * query, r_arg * arg)
 {
-	r_dir_t res;
+	pcb_r_dir_t res;
 
 	assert(node);
 	/** assert that starting_region is well formed */
@@ -497,10 +497,10 @@ int __r_search(struct rtree_node *node, const pcb_box_t * query, r_arg * arg)
  * to see whether deeper searching is desired
  * Returns how the search ended.
  */
-r_dir_t
+pcb_r_dir_t
 r_search(pcb_rtree_t * rtree, const pcb_box_t * query,
-				 r_dir_t (*check_region) (const pcb_box_t * region, void *cl),
-				 r_dir_t (*found_rectangle) (const pcb_box_t * box, void *cl), void *cl,
+				 pcb_r_dir_t (*check_region) (const pcb_box_t * region, void *cl),
+				 pcb_r_dir_t (*found_rectangle) (const pcb_box_t * box, void *cl), void *cl,
 				 int *num_found)
 {
 	r_arg arg;
@@ -546,7 +546,7 @@ ret:;
 }
 
 /*------ r_region_is_empty ------*/
-static r_dir_t __r_region_is_empty_rect_in_reg(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __r_region_is_empty_rect_in_reg(const pcb_box_t * box, void *cl)
 {
 	jmp_buf *envp = (jmp_buf *) cl;
 	longjmp(*envp, 1);						/* found one! */

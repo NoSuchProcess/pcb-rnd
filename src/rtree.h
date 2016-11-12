@@ -44,11 +44,11 @@ struct pcb_rtree_s {
 };
 
 /* callback direction to the search engine */
-typedef enum r_dir_e {
+typedef enum pcb_r_dir_e {
 	R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */
 	R_DIR_FOUND_CONTINUE = 1,    /* object found or accepted, go on searching */
 	R_DIR_CANCEL                 /* cancel the search and return immediately */
-} r_dir_t;
+} pcb_r_dir_t;
 
 /* create an rtree from the list of boxes.  if 'manage' is pcb_true, then
  * the tree will take ownership of 'boxlist' and free it when the tree
@@ -74,9 +74,9 @@ void r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int manage);
  * abort the search if that is the desired behavior.
  */
 
-r_dir_t r_search(pcb_rtree_t * rtree, const pcb_box_t * starting_region,
-						 r_dir_t (*region_in_search) (const pcb_box_t * region, void *cl),
-						 r_dir_t (*rectangle_in_region) (const pcb_box_t * box, void *cl), void *closure,
+pcb_r_dir_t r_search(pcb_rtree_t * rtree, const pcb_box_t * starting_region,
+						 pcb_r_dir_t (*region_in_search) (const pcb_box_t * region, void *cl),
+						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t * box, void *cl), void *closure,
 						 int *num_found);
 
 /* -- special-purpose searches build upon r_search -- */

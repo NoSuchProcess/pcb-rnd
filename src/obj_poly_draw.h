@@ -32,7 +32,7 @@ struct pcb_draw_poly_info_s {
 	const pcb_box_t *drawn_area;
 	pcb_layer_t *layer;
 };
-r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl);
 #endif
 
 void ErasePolygon(pcb_polygon_t *Polygon);

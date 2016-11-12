@@ -356,7 +356,7 @@ static void XORDrawInsertPointObject(void)
  */
 static void XORDrawMoveOrCopyObject(void)
 {
-	RubberbandTypePtr ptr;
+	pcb_rubberband_t *ptr;
 	pcb_cardinal_t i;
 	Coord dx = Crosshair.X - Crosshair.AttachedObject.X, dy = Crosshair.Y - Crosshair.AttachedObject.Y;
 
@@ -711,7 +711,7 @@ struct onpoint_search_info {
 	Coord Y;
 };
 
-static r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
@@ -737,7 +737,7 @@ static r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 
 #define close_enough(v1, v2) (coord_abs((v1)-(v2)) < 10)
 
-static r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;

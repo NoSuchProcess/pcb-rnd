@@ -274,7 +274,7 @@ static double dist_lsp(int x1, int y1, int x2, int y2, int px, int py)
 /*                                                                           */
 /*****************************************************************************/
 
-static r_dir_t line_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 {
 	/* pcb_layer_t *layer = (pcb_layer_t *)cl; */
 	pcb_line_t *l = (pcb_line_t *) b;
@@ -300,7 +300,7 @@ static r_dir_t line_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t arc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t arc_callback(const pcb_box_t * b, void *cl)
 {
 	/* pcb_layer_t *layer = (pcb_layer_t *) cl; */
 	pcb_arc_t *a = (pcb_arc_t *) b;
@@ -647,7 +647,7 @@ typedef struct {
 
 #define NEAR(a,b) ((a) <= (b) + 2 && (a) >= (b) - 2)
 
-static r_dir_t find_pair_line_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_pair_line_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 #if TRACE1
@@ -682,7 +682,7 @@ static r_dir_t find_pair_line_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t find_pair_arc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_pair_arc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	Extra *e = ARC2EXTRA(arc);
@@ -749,7 +749,7 @@ static int check_point_in_pin(pcb_pin_t *pin, int x, int y, End * e)
 	return 0;
 }
 
-static r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	pcb_pin_t *pin = (pcb_pin_t *) cl;
@@ -781,7 +781,7 @@ static r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	pcb_pin_t *pin = (pcb_pin_t *) cl;
@@ -793,7 +793,7 @@ static r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t check_point_in_pad(pcb_pad_t *pad, int x, int y, End * e)
+static pcb_r_dir_t check_point_in_pad(pcb_pad_t *pad, int x, int y, End * e)
 {
 	int inside_p;
 	int t;
@@ -837,7 +837,7 @@ static r_dir_t check_point_in_pad(pcb_pad_t *pad, int x, int y, End * e)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	pcb_pad_t *pad = (pcb_pad_t *) cl;
@@ -895,7 +895,7 @@ static r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	pcb_pad_t *pad = (pcb_pad_t *) cl;
@@ -1490,7 +1490,7 @@ static int gp_point_2(int x, int y, int t, End * e, int esa, int eda, const char
 	return gp_point_force(x, y, t, e, esa, eda, 0, func);
 }
 
-static r_dir_t gp_line_cb(const pcb_box_t * b, void *cb)
+static pcb_r_dir_t gp_line_cb(const pcb_box_t * b, void *cb)
 {
 	const pcb_line_t *l = (pcb_line_t *) b;
 	Extra *e = LINE2EXTRA(l);
@@ -1509,7 +1509,7 @@ static r_dir_t gp_line_cb(const pcb_box_t * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_arc_cb(const pcb_box_t * b, void *cb)
+static pcb_r_dir_t gp_arc_cb(const pcb_box_t * b, void *cb)
 {
 	const pcb_arc_t *a = (pcb_arc_t *) b;
 	Extra *e = ARC2EXTRA(a);
@@ -1531,7 +1531,7 @@ static r_dir_t gp_arc_cb(const pcb_box_t * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_text_cb(const pcb_box_t * b, void *cb)
+static pcb_r_dir_t gp_text_cb(const pcb_box_t * b, void *cb)
 {
 	const pcb_text_t *t = (pcb_text_t *) b;
 	/* FIXME: drop in the actual text-line endpoints later. */
@@ -1542,7 +1542,7 @@ static r_dir_t gp_text_cb(const pcb_box_t * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
+static pcb_r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
 {
 	int i;
 	const pcb_polygon_t *p = (pcb_polygon_t *) b;
@@ -1551,7 +1551,7 @@ static r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
+static pcb_r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
 {
 	const pcb_pin_t *p = (pcb_pin_t *) b;
 	int t2 = (p->Thickness + 1) / 2;
@@ -1573,7 +1573,7 @@ static r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
+static pcb_r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
 {
 	const pcb_pad_t *p = (pcb_pad_t *) b;
 	int t2 = (p->Thickness + 1) / 2;

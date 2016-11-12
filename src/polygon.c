@@ -867,7 +867,7 @@ static void subtract_accumulated(struct cpInfo *info, pcb_polygon_t *polygon)
 	info->batch_size = 0;
 }
 
-static r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -906,7 +906,7 @@ static r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -923,7 +923,7 @@ static r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -943,7 +943,7 @@ static r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -971,7 +971,7 @@ static r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -1390,10 +1390,10 @@ struct plow_info {
 	void *ptr1, *ptr2;
 	pcb_layer_t *layer;
 	pcb_data_t *data;
-	r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, pcb_polygon_t *, int, void *, void *);
+	pcb_r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, pcb_polygon_t *, int, void *, void *);
 };
 
-static r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Polygon, int type, void *ptr1, void *ptr2)
+static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Polygon, int type, void *ptr1, void *ptr2)
 {
 	if (!Polygon->Clipped)
 		return 0;
@@ -1423,7 +1423,7 @@ static r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Polygon, int type, void *ptr1, void *ptr2)
+static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Polygon, int type, void *ptr1, void *ptr2)
 {
 	switch (type) {
 	case PCB_TYPE_PIN:
@@ -1446,7 +1446,7 @@ static r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Pol
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t plow_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t plow_callback(const pcb_box_t * b, void *cl)
 {
 	struct plow_info *plow = (struct plow_info *) cl;
 	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
@@ -1458,7 +1458,7 @@ static r_dir_t plow_callback(const pcb_box_t * b, void *cl)
 
 int
 PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
-						 r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, pcb_polygon_t *poly, int type, void *ptr1, void *ptr2))
+						 pcb_r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, pcb_polygon_t *poly, int type, void *ptr1, void *ptr2))
 {
 	pcb_box_t sb = ((pcb_pin_t *) ptr2)->BoundingBox;
 	int r = 0, seen;

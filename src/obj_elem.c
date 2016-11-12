@@ -1680,7 +1680,7 @@ void draw_element_name(pcb_element_t * element)
 
 }
 
-r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) b;
 	pcb_element_t *element = (pcb_element_t *) text->Element;
@@ -1742,7 +1742,7 @@ void draw_element(pcb_element_t *element)
 	draw_element_pins_and_pads(element);
 }
 
-r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_element_t *element = (pcb_element_t *) b;
 	int *side = cl;
@@ -1790,7 +1790,7 @@ static void DrawEMark(pcb_element_t *e, Coord X, Coord Y, pcb_bool invisible)
 	}
 }
 
-r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_element_t *element = (pcb_element_t *) b;
 

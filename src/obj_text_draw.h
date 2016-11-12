@@ -29,7 +29,7 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-r_dir_t draw_text_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl);
 #endif
 
 void DrawTextLowLevel(pcb_text_t *Text, Coord min_line_width);

@@ -541,7 +541,7 @@ void DrawTextLowLevel(pcb_text_t *Text, Coord min_line_width)
 }
 
 
-r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_layer_t *layer = cl;
 	pcb_text_t *text = (pcb_text_t *) b;

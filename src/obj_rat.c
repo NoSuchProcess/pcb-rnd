@@ -220,7 +220,7 @@ void *RemoveRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 }
 
 /*** draw ***/
-r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 

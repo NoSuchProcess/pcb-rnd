@@ -86,7 +86,7 @@ void *MoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord D
  */
 void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord DX, Coord DY)
 {
-	RubberbandTypePtr ptr;
+	pcb_rubberband_t *ptr;
 	pcb_opctx_t ctx;
 	void *ptr2;
 

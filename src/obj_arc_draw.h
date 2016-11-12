@@ -28,7 +28,7 @@
 
 /* Include rtree.h for this */
 #ifdef PCB_RTREE_H
-r_dir_t draw_arc_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t draw_arc_callback(const pcb_box_t * b, void *cl);
 #endif
 
 void _draw_arc(pcb_arc_t * arc);

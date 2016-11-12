@@ -63,7 +63,7 @@ void ClosePolygon(void);
 void CopyAttachedPolygonToLayer(void);
 int PolygonHoles(pcb_polygon_t * ptr, const pcb_box_t * range, int (*callback) (pcb_pline_t *, void *user_data), void *user_data);
 int PlowsPolygon(pcb_data_t *, int, void *, void *,
-								 r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, pcb_polygon_t *, int, void *, void *));
+								 pcb_r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, pcb_polygon_t *, int, void *, void *));
 void ComputeNoHoles(pcb_polygon_t * poly);
 pcb_polyarea_t *ContourToPoly(pcb_pline_t *);
 pcb_polyarea_t *PolygonToPoly(pcb_polygon_t *);

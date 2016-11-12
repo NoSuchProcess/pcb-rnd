@@ -535,7 +535,7 @@ static int adjust_tree(pcb_rtree_t * tree, struct seg *s)
  * (C) 2006, harry eaton
  * This prunes the search for boxes that don't intersect the segment.
  */
-static r_dir_t seg_in_region(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t seg_in_region(const pcb_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	double y1, y2;
@@ -572,7 +572,7 @@ static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg *
  * problem. There are efficient algorithms for finding intersections with snap
  * rounding, but I don't have time to implement them right now.
  */
-static r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	struct seg *s = (struct seg *) b;
@@ -656,7 +656,7 @@ static void *make_edge_tree(pcb_pline_t * pb)
 	return (void *) ans;
 }
 
-static r_dir_t get_seg(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t get_seg(const pcb_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	struct seg *s = (struct seg *) b;
@@ -685,7 +685,7 @@ static r_dir_t get_seg(const pcb_box_t * b, void *cl)
  *
  */
 
-static r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 {
 	contour_info *c_info = (contour_info *) cl;
 	pcb_pline_t *pa = c_info->pa;
@@ -718,7 +718,7 @@ static r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 
 	av = &looping_over->head;
 	do {													/* Loop over the nodes in the smaller contour */
-		r_dir_t rres;
+		pcb_r_dir_t rres;
 		/* check this edge for any insertions */
 		double dx;
 		info.v = av;
@@ -887,7 +887,7 @@ static inline int cntrbox_inside(pcb_pline_t * c1, pcb_pline_t * c2)
 /*****************************************************************/
 /* Routines for making labels */
 
-static r_dir_t count_contours_i_am_inside(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t count_contours_i_am_inside(const pcb_box_t * b, void *cl)
 {
 	pcb_pline_t *me = (pcb_pline_t *) cl;
 	pcb_pline_t *check = (pcb_pline_t *) b;
@@ -1144,7 +1144,7 @@ struct polyarea_info {
 	pcb_polyarea_t *pa;
 };
 
-static r_dir_t heap_it(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t heap_it(const pcb_box_t * b, void *cl)
 {
 	heap_t *heap = (heap_t *) cl;
 	struct polyarea_info *pa_info = (struct polyarea_info *) b;
@@ -1161,7 +1161,7 @@ struct find_inside_info {
 	pcb_pline_t *result;
 };
 
-static r_dir_t find_inside(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_inside(const pcb_box_t * b, void *cl)
 {
 	struct find_inside_info *info = (struct find_inside_info *) cl;
 	pcb_pline_t *check = (pcb_pline_t *) b;
@@ -1756,7 +1756,7 @@ struct find_inside_m_pa_info {
 	pcb_pline_t *result;
 };
 
-static r_dir_t find_inside_m_pa(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t find_inside_m_pa(const pcb_box_t * b, void *cl)
 {
 	struct find_inside_m_pa_info *info = (struct find_inside_m_pa_info *) cl;
 	pcb_pline_t *check = (pcb_pline_t *) b;
@@ -2361,7 +2361,7 @@ void poly_PreContour(pcb_pline_t * C, pcb_bool optimize)
 	C->tree = (pcb_rtree_t *) make_edge_tree(C);
 }																/* poly_PreContour */
 
-static r_dir_t flip_cb(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t flip_cb(const pcb_box_t * b, void *cl)
 {
 	struct seg *s = (struct seg *) b;
 	s->v = s->v->prev;
@@ -2539,7 +2539,7 @@ typedef struct pip {
 } pip;
 
 
-static r_dir_t crossing(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t crossing(const pcb_box_t * b, void *cl)
 {
 	struct seg *s = (struct seg *) b;
 	struct pip *p = (struct pip *) cl;

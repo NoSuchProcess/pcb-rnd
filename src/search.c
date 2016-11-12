@@ -76,7 +76,7 @@ struct ans_info {
 	int locked;										/* This will be zero or PCB_FLAG_LOCK */
 };
 
-static r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 {
 	struct ans_info *i = (struct ans_info *) cl;
 	pcb_pin_t *pin = (pcb_pin_t *) box;
@@ -131,7 +131,7 @@ static pcb_bool SearchPinByLocation(int locked, pcb_element_t ** Element, pcb_pi
 	return pcb_false;
 }
 
-static r_dir_t pad_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t pad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -182,7 +182,7 @@ struct line_info {
 	int locked;
 };
 
-static r_dir_t line_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t line_callback(const pcb_box_t * box, void *cl)
 {
 	struct line_info *i = (struct line_info *) cl;
 	pcb_line_t *l = (pcb_line_t *) box;
@@ -214,7 +214,7 @@ static pcb_bool SearchLineByLocation(int locked, pcb_layer_t ** Layer, pcb_line_
 	return pcb_false;
 }
 
-static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -256,7 +256,7 @@ struct arc_info {
 	int locked;
 };
 
-static r_dir_t arc_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t arc_callback(const pcb_box_t * box, void *cl)
 {
 	struct arc_info *i = (struct arc_info *) cl;
 	pcb_arc_t *a = (pcb_arc_t *) box;
@@ -286,7 +286,7 @@ static pcb_bool SearchArcByLocation(int locked, pcb_layer_t ** Layer, pcb_arc_t 
 	return pcb_false;
 }
 
-static r_dir_t text_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t text_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -318,7 +318,7 @@ static pcb_bool SearchTextByLocation(int locked, pcb_layer_t ** Layer, pcb_text_
 	return pcb_false;
 }
 
-static r_dir_t polygon_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t polygon_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_polygon_t *polygon = (pcb_polygon_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -351,11 +351,11 @@ static pcb_bool SearchPolygonByLocation(int locked, pcb_layer_t ** Layer, pcb_po
 	return pcb_false;
 }
 
-static r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct line_info *i = (struct line_info *) cl;
-	r_dir_t ret_val = R_DIR_NOT_FOUND;
+	pcb_r_dir_t ret_val = R_DIR_NOT_FOUND;
 	double d;
 
 	if (TEST_FLAG(i->locked, line))
@@ -428,7 +428,7 @@ static pcb_bool SearchPointByLocation(int locked, pcb_layer_t ** Layer, pcb_poly
 	return (pcb_false);
 }
 
-static r_dir_t name_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -474,7 +474,7 @@ SearchElementNameByLocation(int locked, pcb_element_t ** Element, pcb_text_t ** 
 	return (pcb_false);
 }
 
-static r_dir_t element_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_element_t *element = (pcb_element_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;

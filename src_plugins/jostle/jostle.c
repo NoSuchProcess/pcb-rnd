@@ -366,7 +366,7 @@ struct info {
 /*!
  * Process lines that intersect our 'brush'.
  */
-static r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
+static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 {
 	pcb_line_t *line = (pcb_line_t *) targ;
 	struct info *info = private;

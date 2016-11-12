@@ -547,7 +547,7 @@ struct do_hole_info {
 	double scale;
 };
 
-static r_dir_t do_hole(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t do_hole(const pcb_box_t * b, void *cl)
 {
 	struct do_hole_info *info = cl;
 	pcb_pline_t *curc = (pcb_pline_t *) b;

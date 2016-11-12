@@ -53,7 +53,7 @@ typedef struct {								/* currently attached object */
 	 *Ptr3;
 	pcb_cardinal_t RubberbandN,					/* number of lines in array */
 	  RubberbandMax;
-	RubberbandTypePtr Rubberband;
+	pcb_rubberband_t *Rubberband;
 } pcb_attached_object_t;
 
 typedef struct {

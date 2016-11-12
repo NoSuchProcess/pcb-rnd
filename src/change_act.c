@@ -668,7 +668,7 @@ int ActionChangeName(int argc, const char **argv, Coord x, Coord y)
 					if (QueryInputAndChangeObjectName(type, ptr1, ptr2, ptr3, pinnum)) {
 						SetChangedFlag(pcb_true);
 						if (type == PCB_TYPE_ELEMENT) {
-							RubberbandTypePtr ptr;
+							pcb_rubberband_t *ptr;
 							int i;
 
 							RestoreUndoSerialNumber();

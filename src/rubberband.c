@@ -47,7 +47,7 @@ static void CheckPinForRubberbandConnection(pcb_pin_t *);
 static void CheckLinePointForRubberbandConnection(pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
 static void CheckPolygonForRubberbandConnection(pcb_layer_t *, pcb_polygon_t *);
 static void CheckLinePointForRat(pcb_layer_t *, pcb_point_t *);
-static r_dir_t rubber_callback(const pcb_box_t * b, void *cl);
+static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl);
 
 struct rubber_info {
 	Coord radius;
@@ -57,7 +57,7 @@ struct rubber_info {
 	pcb_layer_t *layer;
 };
 
-static r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct rubber_info *i = (struct rubber_info *) cl;
@@ -210,7 +210,7 @@ struct rinfo {
 	pcb_point_t *point;
 };
 
-static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) box;
 	struct rinfo *i = (struct rinfo *) cl;
@@ -491,16 +491,16 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* ---------------------------------------------------------------------------
  * get next slot for a rubberband connection, allocates memory if necessary
  */
-RubberbandTypePtr GetRubberbandMemory(void)
+pcb_rubberband_t *GetRubberbandMemory(void)
 {
-	RubberbandTypePtr ptr = Crosshair.AttachedObject.Rubberband;
+	pcb_rubberband_t *ptr = Crosshair.AttachedObject.Rubberband;
 
 	/* realloc new memory if necessary and clear it */
 	if (Crosshair.AttachedObject.RubberbandN >= Crosshair.AttachedObject.RubberbandMax) {
 		Crosshair.AttachedObject.RubberbandMax += STEP_RUBBERBAND;
-		ptr = (RubberbandTypePtr) realloc(ptr, Crosshair.AttachedObject.RubberbandMax * sizeof(RubberbandType));
+		ptr = (pcb_rubberband_t *) realloc(ptr, Crosshair.AttachedObject.RubberbandMax * sizeof(pcb_rubberband_t));
 		Crosshair.AttachedObject.Rubberband = ptr;
-		memset(ptr + Crosshair.AttachedObject.RubberbandN, 0, STEP_RUBBERBAND * sizeof(RubberbandType));
+		memset(ptr + Crosshair.AttachedObject.RubberbandN, 0, STEP_RUBBERBAND * sizeof(pcb_rubberband_t));
 	}
 	return (ptr + Crosshair.AttachedObject.RubberbandN++);
 }
@@ -509,9 +509,9 @@ RubberbandTypePtr GetRubberbandMemory(void)
  * adds a new line to the rubberband list of 'Crosshair.AttachedObject'
  * if Layer == 0  it is a rat line
  */
-RubberbandTypePtr CreateNewRubberbandEntry(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint)
+pcb_rubberband_t *CreateNewRubberbandEntry(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint)
 {
-	RubberbandTypePtr ptr = GetRubberbandMemory();
+	pcb_rubberband_t *ptr = GetRubberbandMemory();
 
 	/* we toggle the PCB_FLAG_RUBBEREND of the line to determine if */
 	/* both points are being moved. */

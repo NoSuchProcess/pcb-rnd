@@ -199,7 +199,7 @@ struct drc_info {
 	jmp_buf env;
 };
 
-static r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *via = (pcb_pin_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
@@ -209,7 +209,7 @@ static r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t drcPad_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t drcPad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
@@ -219,7 +219,7 @@ static r_dir_t drcPad_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
@@ -229,7 +229,7 @@ static r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;

@@ -192,7 +192,7 @@ typedef struct {
 	int nunplated;
 } HoleCountStruct;
 
-static r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	HoleCountStruct *hcs = (HoleCountStruct *) cl;

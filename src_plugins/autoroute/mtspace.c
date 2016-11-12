@@ -125,7 +125,7 @@ struct mts_info {
 	jmp_buf env;
 };
 
-static r_dir_t mts_remove_one(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t mts_remove_one(const pcb_box_t * b, void *cl)
 {
 	struct mts_info *info = (struct mts_info *) cl;
 	mtspacebox_t *box = (mtspacebox_t *) b;
@@ -205,7 +205,7 @@ static inline void append(struct query_closure *qc, pcb_box_t * newone)
  * First check if it does intersect, then break it into
  * overlaping regions that don't intersect this box.
  */
-static r_dir_t query_one(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t query_one(const pcb_box_t * box, void *cl)
 {
 	struct query_closure *qc = (struct query_closure *) cl;
 	mtspacebox_t *mtsb = (mtspacebox_t *) box;
