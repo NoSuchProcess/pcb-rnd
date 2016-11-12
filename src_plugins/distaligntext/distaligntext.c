@@ -100,7 +100,7 @@ static int keyword(const char *s)
 /* this macro produces a function in X or Y that switches on 'point' */
 #define COORD(DIR)						\
 static inline Coord				        	\
-coord ## DIR(TextType *text, int point)		        	\
+coord ## DIR(pcb_text_t *text, int point)		        	\
 {								\
 	switch (point) {					\
 	case K_Lefts:						\
@@ -123,7 +123,7 @@ COORD(X)
 /*!
  * Return the text coordinate associated with the given internal point.
  */
-		 static Coord coord(TextType * text, int dir, int point)
+		 static Coord coord(pcb_text_t * text, int dir, int point)
 {
 	if (dir == K_X)
 		return coordX(text, point);
@@ -132,7 +132,7 @@ COORD(X)
 }
 
 static struct text_by_pos {
-	TextType *text;
+	pcb_text_t *text;
 	Coord pos;
 	Coord width;
 	int type;
@@ -169,7 +169,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
 	ELEMENT_LOOP(PCB->Data);
 	{
-		TextType *text;
+		pcb_text_t *text;
 		text = &(element)->Name[NAME_INDEX()];
 		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
 			continue;
@@ -190,7 +190,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	nsel = 0;
 	ELEMENT_LOOP(PCB->Data);
 	{
-		TextType *text;
+		pcb_text_t *text;
 		text = &(element)->Name[NAME_INDEX()];
 		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
 			continue;
@@ -361,7 +361,7 @@ static int aligntext(int argc, const char **argv, Coord x, Coord y)
 	/* selected text part of an element */
 	ELEMENT_LOOP(PCB->Data);
 	{
-		TextType *text;
+		pcb_text_t *text;
 		text = &(element)->Name[NAME_INDEX()];
 		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
 			continue;
@@ -546,7 +546,7 @@ static int distributetext(int argc, const char **argv, Coord x, Coord y)
 
 		/* subtract all the "widths" from the slack */
 		for (i = 0; i < ntexts_by_pos; ++i) {
-			TextType *text = texts_by_pos[i].text;
+			pcb_text_t *text = texts_by_pos[i].text;
 
 			/* coord doesn't care if I mix Lefts/Tops */
 			w = texts_by_pos[i].width = coord(text, dir, K_Rights) - coord(text, dir, K_Lefts);
@@ -561,7 +561,7 @@ static int distributetext(int argc, const char **argv, Coord x, Coord y)
 	}
 	/* move all selected texts to the new coordinate */
 	for (i = 0; i < ntexts_by_pos; ++i) {
-		TextType *text = texts_by_pos[i].text;
+		pcb_text_t *text = texts_by_pos[i].text;
 		int type = texts_by_pos[i].type;
 		Coord p, q, dp, dx, dy;
 

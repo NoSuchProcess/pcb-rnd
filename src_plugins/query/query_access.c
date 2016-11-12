@@ -59,7 +59,7 @@ static void list_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc
 	APPEND(ctx, PCB_OBJ_ARC, arc, PCB_PARENT_LAYER, layer);
 }
 
-static void list_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text)
+static void list_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text)
 {
 	APPEND(ctx, PCB_OBJ_TEXT, text, PCB_PARENT_LAYER, layer);
 }
@@ -86,7 +86,7 @@ static void list_earc_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pc
 	APPEND(ctx, PCB_OBJ_EARC, arc, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, TextType *text)
+static void list_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_text_t *text)
 {
 	APPEND(ctx, PCB_OBJ_ETEXT, text, PCB_PARENT_ELEMENT, element);
 }
@@ -381,7 +381,7 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	TextType *t = obj->data.text;
+	pcb_text_t *t = obj->data.text;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
@@ -594,7 +594,7 @@ static int field_earc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_etext(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	TextType *t = obj->data.text;
+	pcb_text_t *t = obj->data.text;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);

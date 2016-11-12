@@ -28,7 +28,7 @@
 /* List of Text */
 #define TDL(x)      textlist_ ## x
 #define TDL_LIST_T  textlist_t
-#define TDL_ITEM_T  TextType
+#define TDL_ITEM_T  pcb_text_t
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC

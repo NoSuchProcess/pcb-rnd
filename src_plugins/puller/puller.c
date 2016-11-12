@@ -1533,7 +1533,7 @@ static r_dir_t gp_arc_cb(const pcb_box_t * b, void *cb)
 
 static r_dir_t gp_text_cb(const pcb_box_t * b, void *cb)
 {
-	const TextTypePtr t = (TextTypePtr) b;
+	const pcb_text_t *t = (pcb_text_t *) b;
 	/* FIXME: drop in the actual text-line endpoints later. */
 	gp_point(t->BoundingBox.X1, t->BoundingBox.Y1, 0, 0);
 	gp_point(t->BoundingBox.X1, t->BoundingBox.Y2, 0, 0);

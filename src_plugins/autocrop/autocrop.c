@@ -117,7 +117,7 @@ static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_p
 	return Polygon;
 }
 
-static void *MyMoveTextLowLevel(pcb_layer_t * Layer, TextType * Text, Coord dx, Coord dy)
+static void *MyMoveTextLowLevel(pcb_layer_t * Layer, pcb_text_t * Text, Coord dx, Coord dy)
 {
 	if (Layer)
 		r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);

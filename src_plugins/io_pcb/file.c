@@ -441,7 +441,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 	gdl_iterator_t it;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
-	TextType *text;
+	pcb_text_t *text;
 	pcb_polygon_t *polygon;
 
 	/* write information about non empty layers */

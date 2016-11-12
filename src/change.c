@@ -1223,7 +1223,7 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 		break;
 
 	case PCB_TYPE_TEXT:
-		name = gui->prompt_for(_("Enter text:"), EMPTY(((TextTypePtr) Ptr2)->TextString));
+		name = gui->prompt_for(_("Enter text:"), EMPTY(((pcb_text_t *) Ptr2)->TextString));
 		break;
 
 	case PCB_TYPE_ELEMENT:

@@ -82,7 +82,7 @@ typedef struct layout_object_s {
 	layout_object_mask_t type;
 	union {
 		pcb_line_t    *l;
-		TextType    *t;
+		pcb_text_t    *t;
 		pcb_polygon_t *p;
 		pcb_arc_t     *a;
 		pcb_pin_t     *v;

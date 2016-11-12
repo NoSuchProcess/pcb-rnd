@@ -1413,7 +1413,7 @@ void AddObjectToSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 			break;
 		case PCB_TYPE_TEXT:
 		case PCB_TYPE_ELEMENT_NAME:
-			undo->Data.Size = ((TextTypePtr) ptr2)->Scale;
+			undo->Data.Size = ((pcb_text_t *) ptr2)->Scale;
 			break;
 		case PCB_TYPE_PAD:
 			undo->Data.Size = ((pcb_pad_t *) ptr2)->Thickness;

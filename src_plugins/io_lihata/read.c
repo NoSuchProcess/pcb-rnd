@@ -490,7 +490,7 @@ static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 
 static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 {
-	TextType *text;
+	pcb_text_t *text;
 	lht_node_t *role;
 	int tmp;
 

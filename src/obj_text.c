@@ -48,17 +48,17 @@
 
 /*** allocation ***/
 /* get next slot for a text object, allocates memory if necessary */
-TextTypePtr GetTextMemory(pcb_layer_t * layer)
+pcb_text_t *GetTextMemory(pcb_layer_t * layer)
 {
-	TextType *new_obj;
+	pcb_text_t *new_obj;
 
-	new_obj = calloc(sizeof(TextType), 1);
+	new_obj = calloc(sizeof(pcb_text_t), 1);
 	textlist_append(&layer->Text, new_obj);
 
 	return new_obj;
 }
 
-void RemoveFreeText(TextType * data)
+void RemoveFreeText(pcb_text_t * data)
 {
 	textlist_remove(data);
 	free(data);
@@ -67,9 +67,9 @@ void RemoveFreeText(TextType * data)
 /*** utility ***/
 
 /* creates a new text on a layer */
-TextTypePtr CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags)
+pcb_text_t *CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags)
 {
-	TextType *text;
+	pcb_text_t *text;
 
 	if (TextString == NULL)
 		return NULL;
@@ -93,7 +93,7 @@ TextTypePtr CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coor
 	return (text);
 }
 
-void pcb_add_text_on_layer(pcb_layer_t *Layer, TextType *text, pcb_font_t *PCBFont)
+void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont)
 {
 	/* calculate size of the bounding box */
 	SetTextBoundingBox(PCBFont, text);
@@ -104,7 +104,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, TextType *text, pcb_font_t *PCBFo
 }
 
 /* creates the bounding box of a text object */
-void SetTextBoundingBox(pcb_font_t *FontPtr, TextTypePtr Text)
+void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text)
 {
 	SymbolTypePtr symbol = FontPtr->Symbol;
 	unsigned char *s = (unsigned char *) Text->TextString;
@@ -217,7 +217,7 @@ void SetTextBoundingBox(pcb_font_t *FontPtr, TextTypePtr Text)
 
 /*** ops ***/
 /* copies a text to buffer */
-void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
 
@@ -225,7 +225,7 @@ void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 }
 
 /* moves a text to buffer without allocating memory for the name */
-void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, TextType * text)
+void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
 
@@ -243,7 +243,7 @@ void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, TextType * text)
 }
 
 /* changes the scaling factor of a text object */
-void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
 		: Text->Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
@@ -267,7 +267,7 @@ void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 
 /* sets data of a text object and calculates bounding box; memory must have
    already been allocated the one for the new string is allocated */
-void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	char *old = Text->TextString;
 
@@ -287,7 +287,7 @@ void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 }
 
 /* changes the clearance flag of a text */
-void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
 		return (NULL);
@@ -307,7 +307,7 @@ void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 }
 
 /* sets the clearance flag of a text */
-void *SetTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *SetTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
@@ -315,7 +315,7 @@ void *SetTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 }
 
 /* clears the clearance flag of a text */
-void *ClrTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *ClrTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
@@ -323,9 +323,9 @@ void *ClrTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 }
 
 /* copies a text */
-void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	TextTypePtr text;
+	pcb_text_t *text;
 
 	text = CreateNewText(Layer, &PCB->Font, Text->X + ctx->copy.DeltaX,
 											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, PCB_FLAG_FOUND));
@@ -335,7 +335,7 @@ void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 }
 
 /* moves a text object */
-void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
@@ -353,7 +353,7 @@ void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 }
 
 /* moves a text object between layers; lowlevel routines */
-void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, TextType * text, pcb_layer_t * Destination)
+void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t * text, pcb_layer_t * Destination)
 {
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Source, text);
 	r_delete_entry(Source->text_tree, (pcb_box_t *) text);
@@ -377,7 +377,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, TextType *
 }
 
 /* moves a text object between layers */
-void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, TextType * text)
+void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, text)) {
 		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
@@ -397,7 +397,7 @@ void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, TextType * text)
 }
 
 /* destroys a text from a layer */
-void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	free(Text->TextString);
 	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
@@ -408,7 +408,7 @@ void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 }
 
 /* removes a text from a layer */
-void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	/* erase from screen */
 	if (Layer->On) {
@@ -421,7 +421,7 @@ void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 	return NULL;
 }
 
-void *RemoveText(pcb_layer_t *Layer, TextTypePtr Text)
+void *RemoveText(pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_opctx_t ctx;
 
@@ -434,7 +434,7 @@ void *RemoveText(pcb_layer_t *Layer, TextTypePtr Text)
 
 /* rotates a text in 90 degree steps; only the bounding box is rotated,
    text rotation itself is done by the drawing routines */
-void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number)
+void RotateTextLowLevel(pcb_text_t *Text, Coord X, Coord Y, unsigned Number)
 {
 	pcb_uint8_t number;
 
@@ -450,7 +450,7 @@ void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number)
 }
 
 /* rotates a text object and redraws it */
-void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
+void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	EraseText(Layer, Text);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
@@ -468,7 +468,7 @@ void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 /* ---------------------------------------------------------------------------
  * lowlevel drawing routine for text objects
  */
-void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
+void DrawTextLowLevel(pcb_text_t *Text, Coord min_line_width)
 {
 	Coord x = 0;
 	unsigned char *string = (unsigned char *) Text->TextString;
@@ -544,7 +544,7 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_layer_t *layer = cl;
-	TextType *text = (TextType *) b;
+	pcb_text_t *text = (pcb_text_t *) b;
 	int min_silk_line;
 
 	if (TEST_FLAG(PCB_FLAG_SELECTED, text))
@@ -560,12 +560,12 @@ r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 }
 
 /* erases a text on a layer */
-void EraseText(pcb_layer_t *Layer, TextTypePtr Text)
+void EraseText(pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_draw_invalidate(Text);
 }
 
-void DrawText(pcb_layer_t *Layer, TextTypePtr Text)
+void DrawText(pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_draw_invalidate(Text);
 }

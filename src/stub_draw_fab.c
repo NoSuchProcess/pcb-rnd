@@ -35,7 +35,7 @@ int dummy_DrawFab_overhang(void)
 
 void dummy_DrawFab(hidGC gc)
 {
-	TextType t;
+	pcb_text_t t;
 	t.X = 0;
 	t.Y = 0;
 	t.TextString = "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded";

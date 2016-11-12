@@ -109,7 +109,7 @@ static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 	map_attr(ctx, &arc->Attributes);
 }
 
-static void map_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text)
+static void map_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text)
 {
 	map_chk_skip(ctx, text);
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
@@ -138,7 +138,7 @@ static void map_earc_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	map_attr(ctx, &arc->Attributes);
 }
 
-static void map_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, TextType *text)
+static void map_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_text_t *text)
 {
 	map_chk_skip(ctx, text);
 	map_text_cb(ctx, pcb, NULL, text);
@@ -268,7 +268,7 @@ static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 	    ChangeObjectAngle(PCB_TYPE_ARC, layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
 }
 
-static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_or_element, TextType *text)
+static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_or_element, pcb_text_t *text)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 7;
@@ -305,7 +305,7 @@ static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_o
 	}
 }
 
-static void set_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text)
+static void set_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text)
 {
 	set_text_cb_any(ctx, pcb, PCB_TYPE_TEXT, layer, text);
 }
@@ -347,7 +347,7 @@ static void set_earc_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	}
 }
 
-static void set_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, TextType *text)
+static void set_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_text_t *text)
 {
 	set_text_cb_any(ctx, pcb, PCB_TYPE_ELEMENT_NAME, element, text);
 }
@@ -498,7 +498,7 @@ static void del_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 	del_attr(ctx, &arc->Attributes);
 }
 
-static void del_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text)
+static void del_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text)
 {
 	map_chk_skip(ctx, text);
 	del_attr(ctx, &text->Attributes);
@@ -522,7 +522,7 @@ static void del_earc_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	del_attr(ctx, &arc->Attributes);
 }
 
-static void del_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, TextType *text)
+static void del_etext_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_text_t *text)
 {
 	map_chk_skip(ctx, text);
 	del_attr(ctx, &text->Attributes);

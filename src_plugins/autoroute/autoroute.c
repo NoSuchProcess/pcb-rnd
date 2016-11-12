@@ -758,7 +758,7 @@ static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t 
 	return rb;
 }
 
-static void AddText(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, TextTypePtr text, RouteStyleType * style)
+static void AddText(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, pcb_text_t *text, RouteStyleType * style)
 {
 	AddIrregularObstacle(layergroupboxes,
 											 text->BoundingBox.X1, text->BoundingBox.Y1,

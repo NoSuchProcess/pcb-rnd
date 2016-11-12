@@ -159,7 +159,7 @@ pcb_bool SelectObject(void)
 
 	case PCB_TYPE_TEXT:
 		{
-			TextType *text = (TextTypePtr) ptr2;
+			pcb_text_t *text = (pcb_text_t *) ptr2;
 
 			layer = (pcb_layer_t *) ptr1;
 			AddObjectToFlagUndoList(PCB_TYPE_TEXT, ptr1, ptr2, ptr2);
@@ -504,7 +504,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_TEXT:
 		if (F->Text)
-			return (F->Text(ctx, (pcb_layer_t *) Ptr1, (TextTypePtr) Ptr2));
+			return (F->Text(ctx, (pcb_layer_t *) Ptr1, (pcb_text_t *) Ptr2));
 		break;
 
 	case PCB_TYPE_POLYGON:

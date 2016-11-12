@@ -75,8 +75,8 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		break;
 	case PCB_TYPE_TEXT:
 	case PCB_TYPE_ELEMENT_NAME:
-		*x = ((TextTypePtr) ptr2)->X;
-		*y = ((TextTypePtr) ptr2)->Y;
+		*x = ((pcb_text_t *) ptr2)->X;
+		*y = ((pcb_text_t *) ptr2)->Y;
 		break;
 	case PCB_TYPE_ELEMENT:
 		*x = ((pcb_element_t *) ptr2)->MarkX;
@@ -728,7 +728,7 @@ void NotifyMode(void)
 				hid_actionl("Report", "Object", NULL);
 			}
 			else if (type != PCB_TYPE_NONE) {
-				TextTypePtr thing = (TextTypePtr) ptr3;
+				pcb_text_t *thing = (pcb_text_t *) ptr3;
 				TOGGLE_FLAG(PCB_FLAG_LOCK, thing);
 				if (TEST_FLAG(PCB_FLAG_LOCK, thing)
 						&& TEST_FLAG(PCB_FLAG_SELECTED, thing)) {
@@ -928,7 +928,7 @@ void NotifyMode(void)
 
 			if ((string = gui->prompt_for(_("Enter text:"), "")) != NULL) {
 				if (strlen(string) > 0) {
-					TextTypePtr text;
+					pcb_text_t *text;
 					int flag = PCB_FLAG_CLEARLINE;
 
 					if (GetLayerGroupNumberByNumber(INDEXOFCURRENT) == GetLayerGroupNumberByNumber(solder_silk_layer))
@@ -1078,7 +1078,7 @@ void NotifyMode(void)
 
 	case PCB_MODE_PASTE_BUFFER:
 		{
-			TextType estr[MAX_ELEMENTNAMES];
+			pcb_text_t estr[MAX_ELEMENTNAMES];
 			pcb_element_t *e = 0;
 
 			if (gui->shift_is_pressed()) {
@@ -1089,7 +1089,7 @@ void NotifyMode(void)
 					if (e) {
 						int i;
 
-						memcpy(estr, e->Name, MAX_ELEMENTNAMES * sizeof(TextType));
+						memcpy(estr, e->Name, MAX_ELEMENTNAMES * sizeof(pcb_text_t));
 						for (i = 0; i < MAX_ELEMENTNAMES; ++i)
 							estr[i].TextString = estr[i].TextString ? pcb_strdup(estr[i].TextString) : NULL;
 						RemoveElement(e);
@@ -1111,7 +1111,7 @@ void NotifyMode(void)
 						if (i == save_n)
 							EraseElementName(e);
 						r_delete_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]));
-						memcpy(&(e->Name[i]), &(estr[i]), sizeof(TextType));
+						memcpy(&(e->Name[i]), &(estr[i]), sizeof(pcb_text_t));
 						e->Name[i].Element = e;
 						SetTextBoundingBox(&PCB->Font, &(e->Name[i]));
 						r_insert_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]), 0);

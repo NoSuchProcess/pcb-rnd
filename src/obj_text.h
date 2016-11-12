@@ -42,17 +42,17 @@ struct pcb_text_s {
 };
 
 
-TextTypePtr GetTextMemory(pcb_layer_t * layer);
-void RemoveFreeText(TextType * data);
+pcb_text_t *GetTextMemory(pcb_layer_t * layer);
+void RemoveFreeText(pcb_text_t * data);
 
-TextTypePtr CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags);
+pcb_text_t *CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_text_on_layer(pcb_layer_t *Layer, TextType *text, pcb_font_t *PCBFont);
+void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont);
 
-void SetTextBoundingBox(pcb_font_t *FontPtr, TextTypePtr Text);
-void *RemoveText(pcb_layer_t *Layer, TextTypePtr Text);
-void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number);
+void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text);
+void *RemoveText(pcb_layer_t *Layer, pcb_text_t *Text);
+void RotateTextLowLevel(pcb_text_t *Text, Coord X, Coord Y, unsigned Number);
 
 #define	MOVE_TEXT_LOWLEVEL(t,dx,dy)                    \
 	{                                                    \
@@ -65,7 +65,7 @@ void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number);
 #define TEXT_IS_VISIBLE(b, l, t)      ((l)->On)
 
 #define TEXT_LOOP(layer) do {                                       \
-  TextType *text;                                                   \
+  pcb_text_t *text;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(layer)->Text, &__it__, text) {
 

@@ -28,17 +28,17 @@
 
 #include "operation.h"
 
-void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, TextType * text);
-void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *SetTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *ClrTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, TextType * text, pcb_layer_t * Destination);
-void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, TextType * text);
-void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
-void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text);
+void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text);
+void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *SetTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *ClrTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t * text, pcb_layer_t * Destination);
+void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text);
+void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
+void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);

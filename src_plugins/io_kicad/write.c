@@ -688,7 +688,7 @@ int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
 	int localFlag;
 
 	gdl_iterator_t it;
-	TextType *text;
+	pcb_text_t *text;
 	pcb_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */

@@ -353,7 +353,7 @@ static lht_node_t *build_polygon(pcb_polygon_t *poly)
 	return obj;
 }
 
-static lht_node_t *build_pcb_text(const char *role, TextType *text)
+static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -424,7 +424,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int la
 	pcb_line_t *li;
 	pcb_arc_t *ar;
 	pcb_polygon_t *po;
-	TextType *tx;
+	pcb_text_t *tx;
 	char tmp[16];
 	int added = 0;
 

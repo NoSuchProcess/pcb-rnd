@@ -413,14 +413,14 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 	case PCB_TYPE_ELEMENT_NAME:
 		{
 			char laynum[32];
-			TextTypePtr text;
+			pcb_text_t *text;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
 				__r_dump_tree(PCB->Data->name_tree[NAME_INDEX()]->root, 0);
 				return 0;
 			}
 #endif
-			text = (TextTypePtr) ptr2;
+			text = (pcb_text_t *) ptr2;
 
 			if (type == PCB_TYPE_TEXT)
 				sprintf(laynum, "It is on layer %d.", GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1));

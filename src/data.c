@@ -218,7 +218,7 @@ void FreeDataMemory(pcb_data_t * data)
 
 		list_map0(&layer->Line, pcb_line_t, RemoveFreeLine);
 		list_map0(&layer->Arc,  pcb_arc_t,  RemoveFreeArc);
-		list_map0(&layer->Text, TextType, RemoveFreeText);
+		list_map0(&layer->Text, pcb_text_t, RemoveFreeText);
 		POLYGON_LOOP(layer);
 		{
 			FreePolygonMemory(polygon);
@@ -296,7 +296,7 @@ pcb_box_t *GetDataBoundingBox(pcb_data_t *Data)
 		box.X2 = MAX(box.X2, element->BoundingBox.X2);
 		box.Y2 = MAX(box.Y2, element->BoundingBox.Y2);
 		{
-			TextTypePtr text = &NAMEONPCB_TEXT(element);
+			pcb_text_t *text = &NAMEONPCB_TEXT(element);
 			box.X1 = MIN(box.X1, text->BoundingBox.X1);
 			box.Y1 = MIN(box.Y1, text->BoundingBox.Y1);
 			box.X2 = MAX(box.X2, text->BoundingBox.X2);

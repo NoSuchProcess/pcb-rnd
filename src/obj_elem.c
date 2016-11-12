@@ -645,7 +645,7 @@ pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, Coord X1, Coord Y1, C
 
 /* creates a new textobject as part of an element
    copies the values to the appropriate text object */
-void AddTextToElement(TextTypePtr Text, pcb_font_t *PCBFont, Coord X, Coord Y,
+void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, Coord X, Coord Y,
 	unsigned Direction, char *TextString, int Scale, FlagType Flags)
 {
 	free(Text->TextString);
@@ -1682,7 +1682,7 @@ void draw_element_name(pcb_element_t * element)
 
 r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
 {
-	TextTypePtr text = (TextTypePtr) b;
+	pcb_text_t *text = (pcb_text_t *) b;
 	pcb_element_t *element = (pcb_element_t *) text->Element;
 	int *side = cl;
 

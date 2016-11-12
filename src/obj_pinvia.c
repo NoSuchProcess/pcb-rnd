@@ -805,7 +805,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 {
 	pcb_box_t box;
 	pcb_bool vert;
-	TextType text;
+	pcb_text_t text;
 	char buff[128];
 	const char *pn;
 

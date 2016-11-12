@@ -80,7 +80,7 @@ struct pcb_obj_s {
 		AnyObjectType *anyobj;
 		pcb_point_t    *point;
 		pcb_line_t     *line;
-		TextType     *text;
+		pcb_text_t     *text;
 		pcb_polygon_t  *polygon;
 		pcb_arc_t      *arc;
 		pcb_rat_t      *rat;

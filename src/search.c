@@ -56,12 +56,12 @@ static pcb_layer_t *SearchLayer;
 static pcb_bool SearchLineByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_line_t **);
 static pcb_bool SearchArcByLocation(int, pcb_layer_t **, pcb_arc_t **, pcb_arc_t **);
 static pcb_bool SearchRatLineByLocation(int, pcb_rat_t **, pcb_rat_t **, pcb_rat_t **);
-static pcb_bool SearchTextByLocation(int, pcb_layer_t **, TextTypePtr *, TextTypePtr *);
+static pcb_bool SearchTextByLocation(int, pcb_layer_t **, pcb_text_t **, pcb_text_t **);
 static pcb_bool SearchPolygonByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_polygon_t **);
 static pcb_bool SearchPinByLocation(int, pcb_element_t **, pcb_pin_t **, pcb_pin_t **);
 static pcb_bool SearchPadByLocation(int, pcb_element_t **, pcb_pad_t **, pcb_pad_t **, pcb_bool);
 static pcb_bool SearchViaByLocation(int, pcb_pin_t **, pcb_pin_t **, pcb_pin_t **);
-static pcb_bool SearchElementNameByLocation(int, pcb_element_t **, TextTypePtr *, TextTypePtr *, pcb_bool);
+static pcb_bool SearchElementNameByLocation(int, pcb_element_t **, pcb_text_t **, pcb_text_t **, pcb_bool);
 static pcb_bool SearchLinePointByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_point_t **);
 static pcb_bool SearchPointByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_point_t **);
 static pcb_bool SearchElementByLocation(int, pcb_element_t **, pcb_element_t **, pcb_element_t **, pcb_bool);
@@ -288,7 +288,7 @@ static pcb_bool SearchArcByLocation(int locked, pcb_layer_t ** Layer, pcb_arc_t 
 
 static r_dir_t text_callback(const pcb_box_t * box, void *cl)
 {
-	TextTypePtr text = (TextTypePtr) box;
+	pcb_text_t *text = (pcb_text_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
 	if (TEST_FLAG(i->locked, text))
@@ -304,7 +304,7 @@ static r_dir_t text_callback(const pcb_box_t * box, void *cl)
 /* ---------------------------------------------------------------------------
  * searches text on the SearchLayer
  */
-static pcb_bool SearchTextByLocation(int locked, pcb_layer_t ** Layer, TextTypePtr * Text, TextTypePtr * Dummy)
+static pcb_bool SearchTextByLocation(int locked, pcb_layer_t ** Layer, pcb_text_t ** Text, pcb_text_t ** Dummy)
 {
 	struct ans_info info;
 
@@ -430,7 +430,7 @@ static pcb_bool SearchPointByLocation(int locked, pcb_layer_t ** Layer, pcb_poly
 
 static r_dir_t name_callback(const pcb_box_t * box, void *cl)
 {
-	TextTypePtr text = (TextTypePtr) box;
+	pcb_text_t *text = (pcb_text_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 	pcb_element_t *element = (pcb_element_t *) text->Element;
 	double newarea;
@@ -456,7 +456,7 @@ static r_dir_t name_callback(const pcb_box_t * box, void *cl)
  * the search starts with the last element and goes back to the beginning
  */
 static pcb_bool
-SearchElementNameByLocation(int locked, pcb_element_t ** Element, TextTypePtr * Text, TextTypePtr * Dummy, pcb_bool BackToo)
+SearchElementNameByLocation(int locked, pcb_element_t ** Element, pcb_text_t ** Text, pcb_text_t ** Dummy, pcb_bool BackToo)
 {
 	struct ans_info info;
 
@@ -1011,8 +1011,8 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 		HigherAvail = PCB_TYPE_PAD;
 
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT_NAME &&
-			SearchElementNameByLocation(locked, (pcb_element_t **) pr1, (TextTypePtr *) pr2, (TextTypePtr *) pr3, pcb_false)) {
-		pcb_box_t *box = &((TextTypePtr) r2)->BoundingBox;
+			SearchElementNameByLocation(locked, (pcb_element_t **) pr1, (pcb_text_t **) pr2, (pcb_text_t **) pr3, pcb_false)) {
+		pcb_box_t *box = &((pcb_text_t *) r2)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_TYPE_ELEMENT_NAME;
 	}
@@ -1054,7 +1054,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 				return (PCB_TYPE_ARC);
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_TEXT
-					&& SearchTextByLocation(locked, (pcb_layer_t **) Result1, (TextTypePtr *) Result2, (TextTypePtr *) Result3))
+					&& SearchTextByLocation(locked, (pcb_layer_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3))
 				return (PCB_TYPE_TEXT);
 
 			if (Type & PCB_TYPE_POLYGON &&
@@ -1110,7 +1110,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 		return (PCB_TYPE_PAD);
 
 	if (Type & PCB_TYPE_ELEMENT_NAME &&
-			SearchElementNameByLocation(locked, (pcb_element_t **) Result1, (TextTypePtr *) Result2, (TextTypePtr *) Result3, pcb_true))
+			SearchElementNameByLocation(locked, (pcb_element_t **) Result1, (pcb_text_t **) Result2, (pcb_text_t **) Result3, pcb_true))
 		return (PCB_TYPE_ELEMENT_NAME);
 
 	if (Type & PCB_TYPE_ELEMENT &&

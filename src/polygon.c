@@ -818,7 +818,7 @@ static int SubtractArc(pcb_arc_t * arc, pcb_polygon_t * p)
 	return Subtract(np, p, pcb_true);
 }
 
-static int SubtractText(TextType * text, pcb_polygon_t * p)
+static int SubtractText(pcb_text_t * text, pcb_polygon_t * p)
 {
 	POLYAREA *np;
 	const pcb_box_t *b = &text->BoundingBox;
@@ -973,7 +973,7 @@ static r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
 {
-	TextTypePtr text = (TextTypePtr) b;
+	pcb_text_t *text = (pcb_text_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_polygon_t *polygon;
 
@@ -1136,7 +1136,7 @@ static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_polygon_t * p)
 	return 1;
 }
 
-static int UnsubtractText(TextType * text, pcb_layer_t * l, pcb_polygon_t * p)
+static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_polygon_t * p)
 {
 	POLYAREA *np;
 
@@ -1416,7 +1416,7 @@ static r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_TEXT:
-		SubtractText((TextTypePtr) ptr2, Polygon);
+		SubtractText((pcb_text_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
 	}
@@ -1440,7 +1440,7 @@ static r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Pol
 		UnsubtractPad((pcb_pad_t *) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_TEXT:
-		UnsubtractText((TextTypePtr) ptr2, Layer, Polygon);
+		UnsubtractText((pcb_text_t *) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	}
 	return R_DIR_NOT_FOUND;

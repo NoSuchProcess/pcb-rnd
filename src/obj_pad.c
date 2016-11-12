@@ -300,7 +300,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 {
 	pcb_box_t box;
 	pcb_bool vert;
-	TextType text;
+	pcb_text_t text;
 	char buff[128];
 	const char *pn;
 

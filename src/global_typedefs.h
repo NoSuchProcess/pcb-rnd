@@ -45,7 +45,7 @@ typedef struct pcb_pin_s pcb_pin_t;
 typedef struct pcb_rtree_s pcb_rtree_t;
 typedef struct pcb_ratspatch_line_s pcb_ratspatch_line_t;
 typedef struct pcb_element_s pcb_element_t;
-typedef struct pcb_text_s  TextType, *TextTypePtr;
+typedef struct pcb_text_s pcb_text_t;
 
 typedef struct plug_io_s plug_io_t;
 

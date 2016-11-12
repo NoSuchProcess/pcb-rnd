@@ -190,7 +190,7 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 			break;
 		}
 		if (parent != NULL) {
-			TextType *name;
+			pcb_text_t *name;
 			name = &parent->Name[1];
 			if ((name->TextString == NULL) || (*name->TextString == '\0'))
 				sprintf(s, "%s #%ld \\nof #%ld", typ, n->to->ID, parent->ID);

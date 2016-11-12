@@ -39,7 +39,7 @@
 
 struct pcb_element_s {
 	ANYOBJECTFIELDS;
-	TextType Name[MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see NAME_INDEX() below */
+	pcb_text_t Name[MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see NAME_INDEX() below */
 	Coord MarkX, MarkY;               /* position mark */
 	pinlist_t Pin;
 	padlist_t Pad;
@@ -86,7 +86,7 @@ pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, Coord X, Coord Y,
 
 pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
 
-void AddTextToElement(TextTypePtr Text, pcb_font_t *PCBFont, Coord X, Coord Y,
+void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, Coord X, Coord Y,
 	unsigned Direction, char *TextString, int Scale, FlagType Flags);
 
 
@@ -123,7 +123,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Ele
 
 #define	ELEMENTTEXT_LOOP(element) do { 	\
 	pcb_cardinal_t	n;				\
-	TextTypePtr	text;				\
+	pcb_text_t *text;				\
 	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)	\
 	{						\
 		text = &(element)->Name[n]

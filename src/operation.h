@@ -111,7 +111,7 @@ typedef union {
 /* pointer to low-level operation (copy, move and rotate) functions */
 typedef struct {
 	void *(*Line)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_line_t *);
-	void *(*Text)(pcb_opctx_t *ctx, pcb_layer_t *, TextTypePtr);
+	void *(*Text)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_text_t *);
 	void *(*Polygon)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_polygon_t *);
 	void *(*Via)(pcb_opctx_t *ctx, pcb_pin_t *);
 	void *(*Element)(pcb_opctx_t *ctx, pcb_element_t *);
