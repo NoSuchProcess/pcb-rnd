@@ -161,7 +161,7 @@ typedef struct _toporouter_bbox_class_t toporouter_bbox_class_t;
 
 struct _toporouter_edge_t {
 	GtsEdge e;
-	/*NetListType *netlist; */
+	/*pcb_netlist_t *netlist; */
 
 	guint flags;
 

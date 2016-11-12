@@ -43,13 +43,13 @@ typedef struct {								/* holds a list of nets */
 	pcb_cardinal_t NetN,								/* the number of subnets contained */
 	  NetMax;											/* max subnets from malloc */
 	pcb_net_t *Net;
-} NetListType, *NetListTypePtr;
+} pcb_netlist_t;
 
 typedef struct {								/* holds a list of net lists */
 	pcb_cardinal_t NetListN,						/* the number of net lists contained */
 	  NetListMax;									/* max net lists from malloc */
-	NetListTypePtr NetList;
-} NetListListType, *NetListListTypePtr;
+	pcb_netlist_t *NetList;
+} pcb_netlist_list_t;
 
 
 void pcb_netlist_changed(int force_unfreeze);
@@ -87,15 +87,15 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net);
 
 #define PCB_NETLIST_INVALID_INDEX ((pcb_cardinal_t)(-1))
 
-pcb_net_t *GetNetMemory(NetListTypePtr);
-NetListTypePtr GetNetListMemory(NetListListTypePtr);
-void FreeNetListListMemory(NetListListTypePtr);
-void FreeNetListMemory(NetListTypePtr);
+pcb_net_t *GetNetMemory(pcb_netlist_t *);
+pcb_netlist_t *GetNetListMemory(pcb_netlist_list_t *);
+void FreeNetListListMemory(pcb_netlist_list_t *);
+void FreeNetListMemory(pcb_netlist_t *);
 void FreeNetMemory(pcb_net_t *);
 
 #define NETLIST_LOOP(top) do   {                         \
         pcb_cardinal_t        n;                                      \
-        NetListTypePtr   netlist;                               \
+        pcb_netlist_t *  netlist;                               \
         for (n = (top)->NetListN-1; n != -1; n--)               \
         {                                                       \
                 netlist = &(top)->NetList[n]

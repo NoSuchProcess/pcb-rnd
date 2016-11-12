@@ -61,11 +61,11 @@
  */
 static pcb_bool FindPad(const char *, const char *, pcb_connection_t *, pcb_bool);
 static pcb_bool ParseConnection(const char *, char *, char *);
-static pcb_bool DrawShortestRats(NetListTypePtr,
+static pcb_bool DrawShortestRats(pcb_netlist_t *,
 														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr));
-static pcb_bool GatherSubnets(NetListTypePtr, pcb_bool, pcb_bool);
+static pcb_bool GatherSubnets(pcb_netlist_t *, pcb_bool, pcb_bool);
 static pcb_bool CheckShorts(pcb_lib_menu_t *);
-static void TransferNet(NetListTypePtr, pcb_net_t *, pcb_net_t *);
+static void TransferNet(pcb_netlist_t *, pcb_net_t *, pcb_net_t *);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -184,12 +184,12 @@ pcb_bool SeekPad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_bool Same
  * Read the library-netlist build a pcb_true Netlist structure
  */
 
-NetListTypePtr ProcNetlist(pcb_lib_t *net_menu)
+pcb_netlist_t *ProcNetlist(pcb_lib_t *net_menu)
 {
 	pcb_connection_t *connection;
 	pcb_connection_t LastPoint;
 	pcb_net_t *net;
-	static NetListTypePtr Wantlist = NULL;
+	static pcb_netlist_t *Wantlist = NULL;
 
 	if (!net_menu->MenuN)
 		return (NULL);
@@ -201,7 +201,7 @@ NetListTypePtr ProcNetlist(pcb_lib_t *net_menu)
 	SLayer = GetLayerGroupNumberByNumber(solder_silk_layer);
 	CLayer = GetLayerGroupNumberByNumber(component_silk_layer);
 
-	Wantlist = (NetListTypePtr) calloc(1, sizeof(NetListType));
+	Wantlist = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	if (Wantlist) {
 		ALLPIN_LOOP(PCB->Data);
 		{
@@ -289,7 +289,7 @@ NetListTypePtr ProcNetlist(pcb_lib_t *net_menu)
  * copy all connections from one net into another
  * and then remove the first net from its netlist
  */
-static void TransferNet(NetListTypePtr Netl, pcb_net_t *SourceNet, pcb_net_t *DestNet)
+static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *DestNet)
 {
 	pcb_connection_t *conn;
 
@@ -393,7 +393,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
  * initially the netlist has each connection in its own individual net
  * afterwards there can be many fewer nets with multiple connections each
  */
-static pcb_bool GatherSubnets(NetListTypePtr Netl, pcb_bool NoWarn, pcb_bool AndRats)
+static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool AndRats)
 {
 	pcb_net_t *a, *b;
 	pcb_connection_t *conn;
@@ -491,7 +491,7 @@ static pcb_bool GatherSubnets(NetListTypePtr Netl, pcb_bool NoWarn, pcb_bool And
  */
 
 static pcb_bool
-DrawShortestRats(NetListTypePtr Netl,
+DrawShortestRats(pcb_netlist_t *Netl,
 								 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr))
 {
 	pcb_rat_t *line;
@@ -647,7 +647,7 @@ pcb_bool
 AddAllRats(pcb_bool SelectedOnly,
 					 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr))
 {
-	NetListTypePtr Nets, Wantlist;
+	pcb_netlist_t *Nets, *Wantlist;
 	pcb_net_t *lonesome;
 	pcb_connection_t *onepin;
 	pcb_bool changed, Warned = pcb_false;
@@ -666,7 +666,7 @@ AddAllRats(pcb_bool SelectedOnly,
 	/* initialize finding engine */
 	InitConnectionLookup();
 	SaveFindFlag(PCB_FLAG_DRC);
-	Nets = (NetListTypePtr) calloc(1, sizeof(NetListType));
+	Nets = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	/* now we build another netlist (Nets) for each
 	 * net in Wantlist that shows how it actually looks now,
 	 * then fill in any missing connections with rat lines.
@@ -731,10 +731,10 @@ AddAllRats(pcb_bool SelectedOnly,
 /* XXX: This is copied in large part from AddAllRats above; for
  * maintainability, AddAllRats probably wants to be tweaked to use this
  * version of the code so that we don't have duplication. */
-NetListListType CollectSubnets(pcb_bool SelectedOnly)
+pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
 {
-	NetListListType result = { 0, 0, NULL };
-	NetListTypePtr Nets, Wantlist;
+	pcb_netlist_list_t result = { 0, 0, NULL };
+	pcb_netlist_t *Nets, *Wantlist;
 	pcb_net_t *lonesome;
 	pcb_connection_t *onepin;
 

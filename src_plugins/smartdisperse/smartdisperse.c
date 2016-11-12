@@ -139,7 +139,7 @@ static const char smartdisperse_syntax[] = "SmartDisperse([All|Selected])";
 static int smartdisperse(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function = ARG(0);
-	NetListType *Nets;
+	pcb_netlist_t *Nets;
 	htpi_t visited;
 /*  PointerListType stack = { 0, 0, NULL };*/
 	int all;

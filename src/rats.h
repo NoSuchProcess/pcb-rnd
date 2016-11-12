@@ -53,8 +53,8 @@ char *ConnectionName(int, void *, void *);
 pcb_bool AddAllRats(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr));
 pcb_bool SeekPad(pcb_lib_entry_t *, pcb_connection_t *, pcb_bool);
 
-NetListTypePtr ProcNetlist(pcb_lib_t *);
-NetListListType CollectSubnets(pcb_bool);
+pcb_netlist_t *ProcNetlist(pcb_lib_t *);
+pcb_netlist_list_t CollectSubnets(pcb_bool);
 pcb_connection_t *GetConnectionMemory(pcb_net_t *);
 
 #define CONNECTION_LOOP(net) do {                         \

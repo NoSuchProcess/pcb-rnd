@@ -255,7 +255,7 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net)
 /* ---------------------------------------------------------------------------
  * get next slot for a subnet, allocates memory if necessary
  */
-pcb_net_t *GetNetMemory(NetListTypePtr Netlist)
+pcb_net_t *GetNetMemory(pcb_netlist_t *Netlist)
 {
 	pcb_net_t *net = Netlist->Net;
 
@@ -272,16 +272,16 @@ pcb_net_t *GetNetMemory(NetListTypePtr Netlist)
 /* ---------------------------------------------------------------------------
  * get next slot for a net list, allocates memory if necessary
  */
-NetListTypePtr GetNetListMemory(NetListListTypePtr Netlistlist)
+pcb_netlist_t *GetNetListMemory(pcb_netlist_list_t *Netlistlist)
 {
-	NetListTypePtr netlist = Netlistlist->NetList;
+	pcb_netlist_t *netlist = Netlistlist->NetList;
 
 	/* realloc new memory if necessary and clear it */
 	if (Netlistlist->NetListN >= Netlistlist->NetListMax) {
 		Netlistlist->NetListMax += STEP_POINT;
-		netlist = (NetListTypePtr) realloc(netlist, Netlistlist->NetListMax * sizeof(NetListType));
+		netlist = (pcb_netlist_t *) realloc(netlist, Netlistlist->NetListMax * sizeof(pcb_netlist_t));
 		Netlistlist->NetList = netlist;
-		memset(netlist + Netlistlist->NetListN, 0, STEP_POINT * sizeof(NetListType));
+		memset(netlist + Netlistlist->NetListN, 0, STEP_POINT * sizeof(pcb_netlist_t));
 	}
 	return (netlist + Netlistlist->NetListN++);
 }
@@ -289,7 +289,7 @@ NetListTypePtr GetNetListMemory(NetListListTypePtr Netlistlist)
 /* ---------------------------------------------------------------------------
  * frees memory used by a net
  */
-void FreeNetListMemory(NetListTypePtr Netlist)
+void FreeNetListMemory(pcb_netlist_t *Netlist)
 {
 	if (Netlist) {
 		NET_LOOP(Netlist);
@@ -298,14 +298,14 @@ void FreeNetListMemory(NetListTypePtr Netlist)
 		}
 		END_LOOP;
 		free(Netlist->Net);
-		memset(Netlist, 0, sizeof(NetListType));
+		memset(Netlist, 0, sizeof(pcb_netlist_t));
 	}
 }
 
 /* ---------------------------------------------------------------------------
  * frees memory used by a net list
  */
-void FreeNetListListMemory(NetListListTypePtr Netlistlist)
+void FreeNetListListMemory(pcb_netlist_list_t *Netlistlist)
 {
 	if (Netlistlist) {
 		NETLIST_LOOP(Netlistlist);
@@ -314,7 +314,7 @@ void FreeNetListListMemory(NetListListTypePtr Netlistlist)
 		}
 		END_LOOP;
 		free(Netlistlist->NetList);
-		memset(Netlistlist, 0, sizeof(NetListListType));
+		memset(Netlistlist, 0, sizeof(pcb_netlist_list_t));
 	}
 }
 

@@ -851,7 +851,7 @@ static void DumpRouteBox(routebox_t * rb)
 
 static routedata_t *CreateRouteData()
 {
-	NetListListType Nets;
+	pcb_netlist_list_t Nets;
 	PointerListType layergroupboxes[MAX_LAYER];
 	pcb_box_t bbox;
 	routedata_t *rd;

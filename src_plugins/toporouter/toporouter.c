@@ -2697,7 +2697,7 @@ toporouter_netlist_t *netlist_create(toporouter_t * r, char *netlist, char *styl
 
 void import_clusters(toporouter_t * r)
 {
-	NetListListType nets;
+	pcb_netlist_list_t nets;
 	ResetConnections(pcb_false);
 	nets = CollectSubnets(pcb_false);
 	NETLIST_LOOP(&nets);

@@ -72,7 +72,7 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static double ComputeCost(NetListTypePtr Nets, double T0, double T);
+static double ComputeCost(pcb_netlist_t *Nets, double T0, double T);
 
 /* ---------------------------------------------------------------------------
  * some local types
@@ -140,7 +140,7 @@ typedef struct {
  * Update the X, Y and group position information stored in the NetList after
  * elements have possibly been moved, rotated, flipped, etc.
  */
-static void UpdateXY(NetListTypePtr Nets)
+static void UpdateXY(pcb_netlist_t *Nets)
 {
 	pcb_cardinal_t SLayer, CLayer;
 	pcb_cardinal_t i, j;
@@ -292,7 +292,7 @@ static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * b
  *  "Placement and Routing of Electronic Modules" edited by Michael Pecht
  *  Marcel Dekker, Inc. 1993.  ISBN: 0-8247-8916-4 TK7868.P7.P57 1993
  */
-static double ComputeCost(NetListTypePtr Nets, double T0, double T)
+static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 {
 	double W = 0;									/* wire cost */
 	double delta1 = 0;						/* wire congestion penalty function */
@@ -672,7 +672,7 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
  */
 pcb_bool AutoPlaceSelected(void)
 {
-	NetListTypePtr Nets;
+	pcb_netlist_t *Nets;
 	PointerListType Selected = { 0, 0, NULL };
 	PerturbationType pt;
 	double C0, T0;
