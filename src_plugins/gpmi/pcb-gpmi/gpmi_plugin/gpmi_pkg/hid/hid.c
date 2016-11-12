@@ -16,23 +16,23 @@
 #include "hid_callbacks.h"
 
 
-void hid_gpmi_data_set(hid_t *h, void *data)
+void hid_gpmi_data_set(gpmi_hid_t *h, void *data)
 {
 	h->hid->user_context = data;
 }
 
-hid_t *hid_gpmi_data_get(pcb_hid_t *h)
+gpmi_hid_t *hid_gpmi_data_get(pcb_hid_t *h)
 {
 	if (h == NULL)
 		return NULL;
-	return (hid_t *)h->user_context;
+	return (gpmi_hid_t *)h->user_context;
 }
 
-hid_t *hid_create(char *hid_name, char *description)
+gpmi_hid_t *hid_create(char *hid_name, char *description)
 {
-	hid_t *h;
+	gpmi_hid_t *h;
 
-	h      = calloc(sizeof(hid_t), 1);
+	h      = calloc(sizeof(gpmi_hid_t), 1);
 	h->hid = calloc(sizeof(pcb_hid_t), 1);
 
 	common_nogui_init (h->hid);
@@ -76,7 +76,7 @@ hid_t *hid_create(char *hid_name, char *description)
 	return h;
 }
 
-dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
+dynamic char *hid_get_attribute(gpmi_hid_t *hid, int attr_id)
 {
 	const char *res;
 	char buff[128];
@@ -238,7 +238,7 @@ char **hid_string2enum(const char *str, pcb_hid_attr_val_t *def)
 	return e;
 }
 
-int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t type, int min, int max, char *default_val)
+int hid_add_attribute(gpmi_hid_t *hid, char *attr_name, char *help, hid_attr_type_t type, int min, int max, char *default_val)
 {
 	int current = hid->attr_num;
 
@@ -277,7 +277,7 @@ int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t t
 
 static void cleanup_hid_reg(gpmi_module *mod, gpmi_cleanup *cl)
 {
-	hid_t *hid = cl->argv[0].p;
+	gpmi_hid_t *hid = cl->argv[0].p;
 	int n;
 
 	hid_remove_hid(hid->hid);
@@ -298,7 +298,7 @@ static void cleanup_hid_reg(gpmi_module *mod, gpmi_cleanup *cl)
 	free(hid);
 }
 
-int hid_register(hid_t *hid)
+int hid_register(gpmi_hid_t *hid)
 {
 	hid_register_hid(hid->hid);
 

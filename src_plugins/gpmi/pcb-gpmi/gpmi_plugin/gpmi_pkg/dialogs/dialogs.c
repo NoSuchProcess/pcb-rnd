@@ -74,7 +74,7 @@ int dialog_progress(int so_far, int total, const char *message)
 	return gui->progress(so_far, total, message);
 }
 
-int dialog_attribute(hid_t *hid, const char *title, const char *descr)
+int dialog_attribute(gpmi_hid_t *hid, const char *title, const char *descr)
 {
 	if (gui == NULL) {
 		fprintf(stderr, "couldn't find gui for dialog_attribute: \"%s\" \"%s\"\n", title, descr);

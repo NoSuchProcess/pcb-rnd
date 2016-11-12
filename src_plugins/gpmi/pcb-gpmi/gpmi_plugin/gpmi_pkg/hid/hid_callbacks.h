@@ -11,7 +11,7 @@ void gpmi_hid_set_line_width(pcb_hid_gc_t gc, Coord width);
 void gpmi_hid_set_draw_xor(pcb_hid_gc_t gc, int xor);
 void gpmi_hid_set_draw_faded(pcb_hid_gc_t gc, int faded);
 void gpmi_hid_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-void gpmi_hid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle);
+void gpmi_hid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle);
 void gpmi_hid_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
 void gpmi_hid_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius);
 void gpmi_hid_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord *x, Coord *y);

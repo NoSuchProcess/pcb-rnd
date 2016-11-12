@@ -76,4 +76,4 @@ int dialog_progress(int so_far, int total, const char *message);
      hid: widgets
      title: title of the window
      descr: descripting printed in the dialog */
-int dialog_attribute(hid_t *hid, const char *title, const char *descr);
+int dialog_attribute(gpmi_hid_t *hid, const char *title, const char *descr);
