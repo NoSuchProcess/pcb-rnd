@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef void *ptr_t;
+typedef void *pcb_ptr_t;
 
 /* Elem=void *; init=none */
 
@@ -9,7 +9,7 @@ typedef void *ptr_t;
 #define GVT(x) vtptr_ ## x
 
 /* Array elem type - see vt_t(7) */
-#define GVT_ELEM_TYPE ptr_t
+#define GVT_ELEM_TYPE pcb_ptr_t
 
 /* Type that represents array lengths - see vt_t(7) */
 #define GVT_SIZE_TYPE size_t
