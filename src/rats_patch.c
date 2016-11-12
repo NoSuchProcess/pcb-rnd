@@ -41,7 +41,7 @@ const char *pcb_netlist_names[NUM_NETLISTS] = {
 	"edited"
 };
 
-void rats_patch_append(pcb_board_t *pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
+void rats_patch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
 	pcb_ratspatch_line_t *n;
 
@@ -87,9 +87,9 @@ void rats_patch_destroy(pcb_board_t *pcb)
 	}
 }
 
-void rats_patch_append_optimize(pcb_board_t *pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
+void rats_patch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
-	rats_patch_op_t seek_op;
+	pcb_rats_patch_op_t seek_op;
 	pcb_ratspatch_line_t *n;
 
 	switch (op) {

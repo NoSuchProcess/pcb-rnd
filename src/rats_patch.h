@@ -33,10 +33,10 @@ typedef enum {
 	RATP_ADD_CONN,
 	RATP_DEL_CONN,
 	RATP_CHANGE_ATTRIB
-} rats_patch_op_t;
+} pcb_rats_patch_op_t;
 
 struct pcb_ratspatch_line_s {
-	rats_patch_op_t op;
+	pcb_rats_patch_op_t op;
 	char *id;
 	union {
 		char *net_name;
@@ -55,14 +55,14 @@ struct pcb_ratspatch_line_s {
 const char *pcb_netlist_names[NUM_NETLISTS];
 
 /* Allocate and append a patch line to the patch list */
-void rats_patch_append(pcb_board_t *pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2);
+void rats_patch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2);
 
 /* Free the patch list and all memory claimed by patch list items */
 void rats_patch_destroy(pcb_board_t *pcb);
 
 /* Same as rats_patch_append() but also optimize previous entries so that
    redundant entries are removed */
-void rats_patch_append_optimize(pcb_board_t *pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2);
+void rats_patch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2);
 
 /* Create [NETLIST_EDITED] from [NETLIST_INPUT] applying the patch */
 void rats_patch_make_edited(pcb_board_t *pcb);
