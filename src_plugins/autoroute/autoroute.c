@@ -100,7 +100,7 @@
 //#define DEBUG_SHOW_ZIGZAG
 */
 
-static direction_t directionIncrement(direction_t dir)
+static pcb_direction_t directionIncrement(pcb_direction_t dir)
 {
 	switch (dir) {
 	case NORTH:
@@ -288,7 +288,7 @@ typedef struct routebox {
 	/* what pass this this track was laid down on */
 	unsigned char pass;
 	/* the direction this came from, if any */
-	direction_t came_from;
+	pcb_direction_t came_from;
 	/* circular lists with connectivity information. */
 	routebox_list same_net, same_subnet, original_subnet, different_net;
 	union {
@@ -321,7 +321,7 @@ typedef struct edge_struct {
 	cost_t cost;									/* cached edge cost */
 	routebox_t *mincost_target;		/* minimum cost from cost_point to any target */
 	vetting_t *work;							/* for via search edges */
-	direction_t expand_dir;
+	pcb_direction_t expand_dir;
 	struct {
 		/* this indicates that this 'edge' is a via candidate. */
 		unsigned is_via:1;
@@ -384,7 +384,7 @@ static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t gr
 static cost_t edge_cost(const edge_t * e, const cost_t too_big);
 static void best_path_candidate(struct routeone_state *s, edge_t * e, routebox_t * best_target);
 
-static pcb_box_t edge_to_box(const routebox_t * rb, direction_t expand_dir);
+static pcb_box_t edge_to_box(const routebox_t * rb, pcb_direction_t expand_dir);
 
 static void add_or_destroy_edge(struct routeone_state *s, edge_t * e);
 
@@ -1527,7 +1527,7 @@ static routebox_t *mincost_target_to_point(const pcb_cheap_point_t * CostPoint,
 /* mincost_target_guess can be NULL */
 static edge_t *CreateEdge(routebox_t * rb,
 													pcb_coord_t CostPointX, pcb_coord_t CostPointY,
-													cost_t cost_to_point, routebox_t * mincost_target_guess, direction_t expand_dir, pcb_rtree_t * targets)
+													cost_t cost_to_point, routebox_t * mincost_target_guess, pcb_direction_t expand_dir, pcb_rtree_t * targets)
 {
 	edge_t *e;
 	assert(__routebox_is_good(rb));
@@ -1566,7 +1566,7 @@ static edge_t *CreateEdge(routebox_t * rb,
 
 /* create edge, using previous edge to fill in defaults. */
 /* most of the work here is in determining a new cost point */
-static edge_t *CreateEdge2(routebox_t * rb, direction_t expand_dir,
+static edge_t *CreateEdge2(routebox_t * rb, pcb_direction_t expand_dir,
 													 edge_t * previous_edge, pcb_rtree_t * targets, routebox_t * guess)
 {
 	pcb_box_t thisbox;
@@ -1716,7 +1716,7 @@ static cost_t edge_cost(const edge_t * e, const cost_t too_big)
 /* given an edge of a box, return a box containing exactly the points on that
  * edge.  Note that the return box is treated as closed; that is, the bottom and
  * right "edges" consist of points (just barely) not in the (half-open) box. */
-static pcb_box_t edge_to_box(const routebox_t * rb, direction_t expand_dir)
+static pcb_box_t edge_to_box(const routebox_t * rb, pcb_direction_t expand_dir)
 {
 	pcb_box_t b = shrink_routebox(rb);
 	/* narrow box down to just the appropriate edge */
@@ -1745,7 +1745,7 @@ struct broken_boxes {
 	pcb_bool is_valid_left, is_valid_center, is_valid_right;
 };
 
-static struct broken_boxes break_box_edge(const pcb_box_t * original, direction_t which_edge, routebox_t * breaker)
+static struct broken_boxes break_box_edge(const pcb_box_t * original, pcb_direction_t which_edge, routebox_t * breaker)
 {
 	pcb_box_t origbox, breakbox;
 	struct broken_boxes result;
@@ -1949,7 +1949,7 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_bool boink_box(routebox_t * rb, struct E_result *res, direction_t dir)
+static pcb_bool boink_box(routebox_t * rb, struct E_result *res, pcb_direction_t dir)
 {
 	pcb_coord_t bloat;
 	if (rb->style->Clearance > res->keep)
@@ -2132,7 +2132,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
  * It returns 1 for any fixed blocker that is not part
  * of this net and zero otherwise.
  */
-static int blocker_to_heap(heap_t * heap, routebox_t * rb, pcb_box_t * box, direction_t dir)
+static int blocker_to_heap(heap_t * heap, routebox_t * rb, pcb_box_t * box, pcb_direction_t dir)
 {
 	pcb_box_t b = rb->sbox;
 	if (rb->style->Clearance > AutoRouteParameters.style->Clearance)
@@ -2169,7 +2169,7 @@ static int blocker_to_heap(heap_t * heap, routebox_t * rb, pcb_box_t * box, dire
  * (more commonly) create a supper-thin box to provide a
  * home for an expansion edge.
  */
-static routebox_t *CreateBridge(const pcb_box_t * area, routebox_t * parent, direction_t dir)
+static routebox_t *CreateBridge(const pcb_box_t * area, routebox_t * parent, pcb_direction_t dir)
 {
 	routebox_t *rb = (routebox_t *) malloc(sizeof(*rb));
 	memset((void *) rb, 0, sizeof(*rb));
@@ -2197,7 +2197,7 @@ static routebox_t *CreateBridge(const pcb_box_t * area, routebox_t * parent, dir
  * starting box, direction and blocker if any.
  */
 void
-moveable_edge(vector_t * result, const pcb_box_t * box, direction_t dir,
+moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 							routebox_t * rb,
 							routebox_t * blocker, edge_t * e, pcb_rtree_t * targets,
 							struct routeone_state *s, pcb_rtree_t * tree, vector_t * area_vec)
@@ -2381,7 +2381,7 @@ struct break_info {
 	heap_t *heap;
 	routebox_t *parent;
 	pcb_box_t box;
-	direction_t dir;
+	pcb_direction_t dir;
 	pcb_bool ignore_source;
 };
 
@@ -2409,7 +2409,7 @@ static pcb_r_dir_t __GatherBlockers(const pcb_box_t * box, void *cl)
  * i.e. if dir is SOUTH, then this means fixing up an EAST leftover
  * edge, which would be the southern most edge for that example.
  */
-static inline pcb_box_t previous_edge(pcb_coord_t last, direction_t i, const pcb_box_t * b)
+static inline pcb_box_t previous_edge(pcb_coord_t last, pcb_direction_t i, const pcb_box_t * b)
 {
 	pcb_box_t db = *b;
 	switch (i) {
@@ -2441,7 +2441,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 	heap_t *heap[4];
 	pcb_coord_t first, last;
 	pcb_coord_t bloat;
-	direction_t dir;
+	pcb_direction_t dir;
 	routebox_t fake;
 
 	edges = vector_create();
@@ -2597,7 +2597,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 						assert(0);
 						break;
 					}
-					moveable_edge(edges, &db, (direction_t) (dir + 3), rb, NULL, e, targets, s, NULL, NULL);
+					moveable_edge(edges, &db, (pcb_direction_t) (dir + 3), rb, NULL, e, targets, s, NULL, NULL);
 				}
 				else if (dir == NORTH) {	/* north is start, so nothing "before" it */
 					/* save for a possible corner once we've
@@ -2619,7 +2619,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 				 * which it belongs to.
 				 */
 				pcb_box_t db = previous_edge(last, dir, &rb->sbox);
-				moveable_edge(edges, &db, (direction_t) (dir - 1), rb, NULL, e, targets, s, NULL, NULL);
+				moveable_edge(edges, &db, (pcb_direction_t) (dir - 1), rb, NULL, e, targets, s, NULL, NULL);
 			}
 			if (broke.is_valid_center && !blk->flags.source)
 				moveable_edge(edges, &broke.center, dir, rb, blk, e, targets, s, tree, area_vec);
@@ -2673,7 +2673,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 			if (last > 0) {
 				/* expand the leftover from the prior direction */
 				pcb_box_t db = previous_edge(last, dir, &rb->sbox);
-				moveable_edge(edges, &db, (direction_t) (dir - 1), rb, NULL, e, targets, s, NULL, NULL);
+				moveable_edge(edges, &db, (pcb_direction_t) (dir - 1), rb, NULL, e, targets, s, NULL, NULL);
 			}
 			last = -1;
 		}

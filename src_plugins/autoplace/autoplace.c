@@ -212,7 +212,7 @@ static void showboxes(pcb_box_list_t *blist)
 struct r_neighbor_info {
 	const pcb_box_t *neighbor;
 	pcb_box_t trap;
-	direction_t search_dir;
+	pcb_direction_t search_dir;
 };
 #define ROTATEBOX(box) { pcb_coord_t t;\
     t = (box).X1; (box).X1 = - (box).Y1; (box).Y1 = t;\
@@ -260,7 +260,7 @@ static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl
 
 /* main r_find_neighbor routine.  Returns NULL if no neighbor in the
  * requested direction. */
-static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * box, direction_t search_direction)
+static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * box, pcb_direction_t search_direction)
 {
 	struct r_neighbor_info ni;
 	pcb_box_t bbox;
@@ -462,7 +462,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			pcb_box_t box;
 			pcb_element_t *element;
 		};
-		direction_t dir[4] = { NORTH, EAST, SOUTH, WEST };
+		pcb_direction_t dir[4] = { NORTH, EAST, SOUTH, WEST };
 		struct ebox **boxpp, *boxp;
 		pcb_rtree_t *rt_s, *rt_c;
 		int factor;
