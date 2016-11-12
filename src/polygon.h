@@ -52,21 +52,21 @@
 /* Prototypes */
 
 void polygon_init(void);
-pcb_cardinal_t polygon_point_idx(PolygonTypePtr polygon, pcb_point_t *point);
-pcb_cardinal_t polygon_point_contour(PolygonTypePtr polygon, pcb_cardinal_t point);
-pcb_cardinal_t prev_contour_point(PolygonTypePtr polygon, pcb_cardinal_t point);
-pcb_cardinal_t next_contour_point(PolygonTypePtr polygon, pcb_cardinal_t point);
-pcb_cardinal_t GetLowestDistancePolygonPoint(PolygonTypePtr, Coord, Coord);
-pcb_bool RemoveExcessPolygonPoints(pcb_layer_t *, PolygonTypePtr);
+pcb_cardinal_t polygon_point_idx(pcb_polygon_t *polygon, pcb_point_t *point);
+pcb_cardinal_t polygon_point_contour(pcb_polygon_t *polygon, pcb_cardinal_t point);
+pcb_cardinal_t prev_contour_point(pcb_polygon_t *polygon, pcb_cardinal_t point);
+pcb_cardinal_t next_contour_point(pcb_polygon_t *polygon, pcb_cardinal_t point);
+pcb_cardinal_t GetLowestDistancePolygonPoint(pcb_polygon_t *, Coord, Coord);
+pcb_bool RemoveExcessPolygonPoints(pcb_layer_t *, pcb_polygon_t *);
 void GoToPreviousPoint(void);
 void ClosePolygon(void);
 void CopyAttachedPolygonToLayer(void);
-int PolygonHoles(PolygonType * ptr, const pcb_box_t * range, int (*callback) (PLINE *, void *user_data), void *user_data);
+int PolygonHoles(pcb_polygon_t * ptr, const pcb_box_t * range, int (*callback) (PLINE *, void *user_data), void *user_data);
 int PlowsPolygon(pcb_data_t *, int, void *, void *,
-								 r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, PolygonTypePtr, int, void *, void *));
-void ComputeNoHoles(PolygonType * poly);
+								 r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, pcb_polygon_t *, int, void *, void *));
+void ComputeNoHoles(pcb_polygon_t * poly);
 POLYAREA *ContourToPoly(PLINE *);
-POLYAREA *PolygonToPoly(PolygonType *);
+POLYAREA *PolygonToPoly(pcb_polygon_t *);
 POLYAREA *RectPoly(Coord x1, Coord x2, Coord y1, Coord y2);
 POLYAREA *CirclePoly(Coord x, Coord y, Coord radius);
 POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style);
@@ -75,16 +75,16 @@ POLYAREA *ArcPoly(pcb_arc_t * l, Coord thick);
 POLYAREA *PinPoly(PinType * l, Coord thick, Coord clear);
 POLYAREA *BoxPolyBloated(pcb_box_t * box, Coord radius);
 void frac_circle(PLINE *, Coord, Coord, Vector, int);
-int InitClip(pcb_data_t * d, pcb_layer_t * l, PolygonType * p);
+int InitClip(pcb_data_t * d, pcb_layer_t * l, pcb_polygon_t * p);
 void RestoreToPolygon(pcb_data_t *, int, void *, void *);
 void ClearFromPolygon(pcb_data_t *, int, void *, void *);
 
-pcb_bool IsPointInPolygon(Coord, Coord, Coord, PolygonTypePtr);
-pcb_bool IsPointInPolygonIgnoreHoles(Coord, Coord, PolygonTypePtr);
-pcb_bool IsRectangleInPolygon(Coord, Coord, Coord, Coord, PolygonTypePtr);
-pcb_bool isects(POLYAREA *, PolygonTypePtr, pcb_bool);
-pcb_bool MorphPolygon(pcb_layer_t *, PolygonTypePtr);
-void NoHolesPolygonDicer(PolygonType * p, const pcb_box_t * clip, void (*emit) (PLINE *, void *), void *user_data);
+pcb_bool IsPointInPolygon(Coord, Coord, Coord, pcb_polygon_t *);
+pcb_bool IsPointInPolygonIgnoreHoles(Coord, Coord, pcb_polygon_t *);
+pcb_bool IsRectangleInPolygon(Coord, Coord, Coord, Coord, pcb_polygon_t *);
+pcb_bool isects(POLYAREA *, pcb_polygon_t *, pcb_bool);
+pcb_bool MorphPolygon(pcb_layer_t *, pcb_polygon_t *);
+void NoHolesPolygonDicer(pcb_polygon_t * p, const pcb_box_t * clip, void (*emit) (PLINE *, void *), void *user_data);
 void PolyToPolygonsOnLayer(pcb_data_t *, pcb_layer_t *, POLYAREA *, FlagType);
 
 void square_pin_factors(int style, double *xm, double *ym);

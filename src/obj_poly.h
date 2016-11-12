@@ -32,7 +32,7 @@
 #include "obj_common.h"
 #include "polyarea.h"
 
-struct polygon_st  {           /* holds information about a polygon */
+struct pcb_polygon_s  {           /* holds information about a polygon */
 	ANYOBJECTFIELDS;
 	pcb_cardinal_t PointN;       /* number of points in polygon */
 	pcb_cardinal_t PointMax;     /* max number from malloc() */
@@ -48,28 +48,28 @@ struct polygon_st  {           /* holds information about a polygon */
 
 
 
-PolygonType *GetPolygonMemory(pcb_layer_t * layer);
-void RemoveFreePolygon(PolygonType * data);
-pcb_point_t *GetPointMemoryInPolygon(PolygonTypePtr Polygon);
-pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr Polygon);
-void FreePolygonMemory(PolygonType * polygon);
+pcb_polygon_t *GetPolygonMemory(pcb_layer_t * layer);
+void RemoveFreePolygon(pcb_polygon_t * data);
+pcb_point_t *GetPointMemoryInPolygon(pcb_polygon_t *Polygon);
+pcb_cardinal_t *GetHoleIndexMemoryInPolygon(pcb_polygon_t *Polygon);
+void FreePolygonMemory(pcb_polygon_t * polygon);
 
-void SetPolygonBoundingBox(PolygonTypePtr Polygon);
-PolygonTypePtr CreateNewPolygonFromRectangle(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, FlagType Flags);
-PolygonTypePtr CreateNewPolygon(pcb_layer_t *Layer, FlagType Flags);
-pcb_point_t *CreateNewPointInPolygon(PolygonTypePtr Polygon, Coord X, Coord Y);
-PolygonType *CreateNewHoleInPolygon(PolygonType * Polygon);
-void *RemovePolygon(pcb_layer_t *Layer, PolygonTypePtr Polygon);
+void SetPolygonBoundingBox(pcb_polygon_t *Polygon);
+pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, FlagType Flags);
+pcb_polygon_t *CreateNewPolygon(pcb_layer_t *Layer, FlagType Flags);
+pcb_point_t *CreateNewPointInPolygon(pcb_polygon_t *Polygon, Coord X, Coord Y);
+pcb_polygon_t *CreateNewHoleInPolygon(pcb_polygon_t * Polygon);
+void *RemovePolygon(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
 
-void MovePolygonLowLevel(PolygonTypePtr Polygon, Coord DX, Coord DY);
-void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Number);
-PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr Dest, PolygonTypePtr Src);
+void MovePolygonLowLevel(pcb_polygon_t *Polygon, Coord DX, Coord DY);
+void RotatePolygonLowLevel(pcb_polygon_t *Polygon, Coord X, Coord Y, unsigned Number);
+pcb_polygon_t *CopyPolygonLowLevel(pcb_polygon_t *Dest, pcb_polygon_t *Src);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_polygon_on_layer(pcb_layer_t *Layer, PolygonType *polygon);
+void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon);
 
 #define POLYGON_LOOP(layer) do {                                    \
-  PolygonType *polygon;                                             \
+  pcb_polygon_t *polygon;                                             \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(layer)->Polygon, &__it__, polygon) {
 

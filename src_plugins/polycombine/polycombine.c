@@ -38,7 +38,7 @@
 #include "hid_actions.h"
 #include "obj_poly.h"
 
-static POLYAREA *original_poly(PolygonType *p, pcb_bool *forward)
+static POLYAREA *original_poly(pcb_polygon_t *p, pcb_bool *forward)
 {
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
@@ -92,7 +92,7 @@ static POLYAREA *original_poly(PolygonType *p, pcb_bool *forward)
 typedef struct poly_tree poly_tree;
 
 struct poly_tree {
-	PolygonType *polygon;
+	pcb_polygon_t *polygon;
 	pcb_bool forward;
 	POLYAREA *polyarea;
 	poly_tree *parent;
@@ -277,7 +277,7 @@ static int polycombine(int argc, const char **argv, Coord x, Coord y)
     POLYAREA *pa;
     PLINE *pline;
     VNODE *node;
-    PolygonType *Polygon;*/
+    pcb_polygon_t *Polygon;*/
 	pcb_layer_t *Layer = NULL;
 	poly_tree *root = NULL;
 	poly_tree *this_node;

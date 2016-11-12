@@ -121,7 +121,7 @@
 #include "obj_all.h"
 
 static	pcb_layer_t *Layer;
-static	PolygonTypePtr	Polygon;
+static	pcb_polygon_t *Polygon;
 static	SymbolTypePtr	Symbol;
 static	int		pin_num;
 static	LibraryMenuTypePtr	Menu;

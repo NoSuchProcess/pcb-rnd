@@ -118,7 +118,7 @@ static void map_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextTyp
 	map_attr(ctx, &text->Attributes);
 }
 
-static void map_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly)
+static void map_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_polygon_t *poly)
 {
 	map_chk_skip(ctx, poly);
 	map_attr(ctx, &poly->Attributes);
@@ -311,7 +311,7 @@ static void set_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextTyp
 }
 
 
-static void set_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly)
+static void set_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_polygon_t *poly)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 
@@ -504,7 +504,7 @@ static void del_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextTyp
 	del_attr(ctx, &text->Attributes);
 }
 
-static void del_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly)
+static void del_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_polygon_t *poly)
 {
 	map_chk_skip(ctx, poly);
 	del_attr(ctx, &poly->Attributes);

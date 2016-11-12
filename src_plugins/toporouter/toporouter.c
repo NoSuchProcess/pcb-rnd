@@ -2758,7 +2758,7 @@ void import_clusters(toporouter_t * r)
 #endif
 					}
 					else if (connection->type == PCB_TYPE_POLYGON) {
-						PolygonType *polygon = (PolygonType *) connection->ptr2;
+						pcb_polygon_t *polygon = (pcb_polygon_t *) connection->ptr2;
 						toporouter_bbox_t *box =
 							toporouter_bbox_locate(r, POLYGON, polygon, connection->X, connection->Y, connection->group);
 						cluster_join_bbox(cluster, box);

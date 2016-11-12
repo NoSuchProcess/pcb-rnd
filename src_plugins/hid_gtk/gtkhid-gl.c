@@ -520,14 +520,14 @@ void ghid_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 	hidgl_fill_polygon(n_coords, x, y);
 }
 
-void ghid_fill_pcb_polygon(hidGC gc, PolygonType * poly, const pcb_box_t * clip_box)
+void ghid_fill_pcb_polygon(hidGC gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	USE_GC(gc);
 
 	hidgl_fill_pcb_polygon(poly, clip_box, gport->view.coord_per_px);
 }
 
-void ghid_thindraw_pcb_polygon(hidGC gc, PolygonType * poly, const pcb_box_t * clip_box)
+void ghid_thindraw_pcb_polygon(hidGC gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	common_thindraw_pcb_polygon(gc, poly, clip_box);
 	ghid_set_alpha_mult(gc, 0.25);

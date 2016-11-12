@@ -45,7 +45,7 @@
 static void CheckPadForRubberbandConnection(PadTypePtr);
 static void CheckPinForRubberbandConnection(PinTypePtr);
 static void CheckLinePointForRubberbandConnection(pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
-static void CheckPolygonForRubberbandConnection(pcb_layer_t *, PolygonTypePtr);
+static void CheckPolygonForRubberbandConnection(pcb_layer_t *, pcb_polygon_t *);
 static void CheckLinePointForRat(pcb_layer_t *, pcb_point_t *);
 static r_dir_t rubber_callback(const pcb_box_t * b, void *cl);
 
@@ -354,7 +354,7 @@ static void CheckLinePointForRubberbandConnection(pcb_layer_t *Layer, pcb_line_t
  * If one of the endpoints of the line lays inside the passed polygon,
  * the scanned line is added to the 'rubberband' list
  */
-static void CheckPolygonForRubberbandConnection(pcb_layer_t *Layer, PolygonTypePtr Polygon)
+static void CheckPolygonForRubberbandConnection(pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	pcb_cardinal_t group;
 
@@ -443,7 +443,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	case PCB_TYPE_POLYGON:
 		if (GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1) < max_copper_layer)
-			CheckPolygonForRubberbandConnection((pcb_layer_t *) Ptr1, (PolygonTypePtr) Ptr2);
+			CheckPolygonForRubberbandConnection((pcb_layer_t *) Ptr1, (pcb_polygon_t *) Ptr2);
 		break;
 	}
 }

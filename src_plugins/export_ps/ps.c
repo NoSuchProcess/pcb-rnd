@@ -1216,7 +1216,7 @@ int coord_comp(const void *c1_, const void *c2_)
 	return *c1 < *c2;
 }
 
-static void ps_fill_pcb_polygon(hidGC gc, PolygonType * poly, const pcb_box_t * clip_box)
+static void ps_fill_pcb_polygon(hidGC gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	/* Ignore clip_box, just draw everything */
 

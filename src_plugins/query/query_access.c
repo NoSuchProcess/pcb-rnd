@@ -64,7 +64,7 @@ static void list_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextTy
 	APPEND(ctx, PCB_OBJ_TEXT, text, PCB_PARENT_LAYER, layer);
 }
 
-static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly)
+static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_polygon_t *poly)
 {
 	APPEND(ctx, PCB_OBJ_POLYGON, poly, PCB_PARENT_LAYER, layer);
 }
@@ -416,7 +416,7 @@ static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_polygon(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	PolygonType *p = obj->data.polygon;
+	pcb_polygon_t *p = obj->data.polygon;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);

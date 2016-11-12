@@ -316,7 +316,7 @@ static lht_node_t *build_pad(PadType *pad, Coord dx, Coord dy)
 	return obj;
 }
 
-static lht_node_t *build_polygon(PolygonType *poly)
+static lht_node_t *build_polygon(pcb_polygon_t *poly)
 {
 	char buff[128];
 	lht_node_t *obj, *tbl, *geo;
@@ -423,7 +423,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int la
 	lht_node_t *obj, *grp;
 	pcb_line_t *li;
 	pcb_arc_t *ar;
-	PolygonType *po;
+	pcb_polygon_t *po;
 	TextType *tx;
 	char tmp[16];
 	int added = 0;

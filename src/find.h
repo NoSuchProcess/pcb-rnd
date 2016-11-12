@@ -65,7 +65,7 @@ pcb_bool LineArcIntersect(pcb_line_t *, pcb_arc_t *);
 pcb_bool PinLineIntersect(PinTypePtr, pcb_line_t *);
 pcb_bool LinePadIntersect(pcb_line_t *, PadTypePtr);
 pcb_bool ArcPadIntersect(pcb_arc_t *, PadTypePtr);
-pcb_bool IsPolygonInPolygon(PolygonTypePtr, PolygonTypePtr);
+pcb_bool IsPolygonInPolygon(pcb_polygon_t *, pcb_polygon_t *);
 void LookupElementConnections(ElementTypePtr, FILE *);
 void LookupConnectionsToAllElements(FILE *);
 void LookupConnection(Coord, Coord, pcb_bool, Coord, int);
@@ -84,9 +84,9 @@ void RatFindHook(int, void *, void *, void *, pcb_bool, pcb_bool);
 void SaveFindFlag(int);
 void RestoreFindFlag(void);
 int DRCAll(void);
-pcb_bool IsLineInPolygon(pcb_line_t *, PolygonTypePtr);
-pcb_bool IsArcInPolygon(pcb_arc_t *, PolygonTypePtr);
-pcb_bool IsPadInPolygon(PadTypePtr, PolygonTypePtr);
+pcb_bool IsLineInPolygon(pcb_line_t *, pcb_polygon_t *);
+pcb_bool IsArcInPolygon(pcb_arc_t *, pcb_polygon_t *);
+pcb_bool IsPadInPolygon(PadTypePtr, pcb_polygon_t *);
 
 /* find_clear.c */
 pcb_bool ClearFlagOnPinsViasAndPads(pcb_bool AndDraw, int flag);

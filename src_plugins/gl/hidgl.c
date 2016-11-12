@@ -566,7 +566,7 @@ static int dirty_bits = 0;
 static int assigned_bits = 0;
 
 /* FIXME: JUST DRAWS THE FIRST PIECE.. TODO: SUPPORT FOR FULLPOLY POLYGONS */
-void hidgl_fill_pcb_polygon(PolygonType * poly, const pcb_box_t * clip_box, double scale)
+void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, double scale)
 {
 	int vertex_count = 0;
 	PLINE *contour;

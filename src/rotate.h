@@ -93,7 +93,7 @@ do { \
 
 
 void RotateBoxLowLevel(pcb_box_t *, Coord, Coord, unsigned);
-void RotatePolygonLowLevel(PolygonTypePtr, Coord, Coord, unsigned);
+void RotatePolygonLowLevel(pcb_polygon_t *, Coord, Coord, unsigned);
 void *RotateObject(int, void *, void *, void *, Coord, Coord, unsigned);
 void RotateScreenObject(Coord, Coord, unsigned);
 

@@ -297,7 +297,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 		}
 	case PCB_TYPE_POLYGON:
 		{
-			PolygonTypePtr Polygon;
+			pcb_polygon_t *Polygon;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
@@ -305,7 +305,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 				return 0;
 			}
 #endif
-			Polygon = (PolygonTypePtr) ptr2;
+			Polygon = (pcb_polygon_t *) ptr2;
 
 			report = pcb_strdup_printf("%m+POLYGON ID# %ld;  Flags:%s\n"
 									"Its bounding box is %$mD %$mD.\n"

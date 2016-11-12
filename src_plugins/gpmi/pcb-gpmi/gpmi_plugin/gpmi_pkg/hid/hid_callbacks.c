@@ -151,7 +151,7 @@ void gpmi_hid_fill_polygon(hidGC gc, int n_coords, Coord *x, Coord *y)
 	gpmi_event(h->module, HIDE_fill_polygon, h, gc, x, y);
 }
 
-void gpmi_hid_fill_pcb_polygon(hidGC gc, PolygonType *poly, const pcb_box_t *clip_box)
+void gpmi_hid_fill_pcb_polygon(hidGC gc, pcb_polygon_t *poly, const pcb_box_t *clip_box)
 {
 	/* TODO */
 }

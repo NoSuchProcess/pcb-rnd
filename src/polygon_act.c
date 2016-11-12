@@ -43,7 +43,7 @@
 
 /* --------------------------------------------------------------------------- */
 
-static const char morphpolygon_syntax[] = "MorphPolygon(Object|Selected)";
+static const char morphpcb_polygon_syntax[] = "MorphPolygon(Object|Selected)";
 
 static const char morphpolygon_help[] = "Converts dead polygon islands into separate polygons.";
 
@@ -69,7 +69,7 @@ static int ActionMorphPolygon(int argc, const char **argv, Coord x, Coord y)
 
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, PCB_TYPE_POLYGON, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-					MorphPolygon((pcb_layer_t *) ptr1, (PolygonType *) ptr3);
+					MorphPolygon((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr3);
 					Draw();
 					IncrementUndoSerialNumber();
 				}
@@ -93,7 +93,7 @@ static int ActionMorphPolygon(int argc, const char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char polygon_syntax[] = "Polygon(Close|PreviousPoint)";
+static const char pcb_polygon_syntax[] = "Polygon(Close|PreviousPoint)";
 
 static const char polygon_help[] = "Some polygon related stuff.";
 
@@ -139,10 +139,10 @@ static int ActionPolygon(int argc, const char **argv, Coord x, Coord y)
 
 HID_Action polygon_action_list[] = {
 	{"MorphPolygon", 0, ActionMorphPolygon,
-	 morphpolygon_help, morphpolygon_syntax}
+	 morphpolygon_help, morphpcb_polygon_syntax}
 	,
 	{"Polygon", 0, ActionPolygon,
-	 polygon_help, polygon_syntax}
+	 polygon_help, pcb_polygon_syntax}
 };
 
 REGISTER_ACTIONS(polygon_action_list, NULL)

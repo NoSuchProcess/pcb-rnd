@@ -224,7 +224,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 }
 
 /* see if a polygon is a rectangle.  If so, canonicalize it. */
-static int polygon_is_rectangle(PolygonTypePtr poly)
+static int polygon_is_rectangle(pcb_polygon_t *poly)
 {
 	int i, best;
 	pcb_point_t temp[4];

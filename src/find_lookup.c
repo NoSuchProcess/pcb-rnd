@@ -133,7 +133,7 @@ static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, f
 	return pcb_false;
 }
 
-static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, PolygonTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_polygon_t *Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_POLYGON, LAYER_PTR(L), (Ptr), (Ptr));
@@ -249,7 +249,7 @@ void InitLayoutLookup(void)
 		}
 		if (polylist_length(&layer->Polygon)) {
 			PolygonList[i].Size = polylist_length(&layer->Polygon);
-			PolygonList[i].Data = (void **) calloc(PolygonList[i].Size, sizeof(PolygonTypePtr));
+			PolygonList[i].Data = (void **) calloc(PolygonList[i].Size, sizeof(pcb_polygon_t *));
 		}
 
 		/* clear some struct members */
@@ -340,7 +340,7 @@ static r_dir_t LOCtoPVrat_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 {
-	PolygonTypePtr polygon = (PolygonTypePtr) b;
+	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
 	/* if the pin doesn't have a therm and polygon is clearing
@@ -603,7 +603,7 @@ struct lo_info {
 	pcb_line_t line;
 	PadType pad;
 	pcb_arc_t arc;
-	PolygonType polygon;
+	pcb_polygon_t polygon;
 	pcb_rat_t rat;
 	jmp_buf env;
 };
@@ -884,7 +884,7 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 
 		/* handle normal layers */
 		if (layer < max_copper_layer) {
-			PolygonType *polygon;
+			pcb_polygon_t *polygon;
 			gdl_iterator_t it;
 
 			info.layer = layer;
@@ -1017,7 +1017,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 			/* now check all polygons */
 			if (PolysTo) {
 				gdl_iterator_t it;
-				PolygonType *polygon;
+				pcb_polygon_t *polygon;
 
 				polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 					if (!TEST_FLAG(TheFlag, polygon) && IsLineInPolygon(Line, polygon)
@@ -1061,7 +1061,7 @@ static r_dir_t LOCtoRat_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t PolygonToRat_callback(const pcb_box_t * b, void *cl)
 {
-	PolygonTypePtr polygon = (PolygonTypePtr) b;
+	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, polygon) && polygon->Clipped &&
@@ -1161,7 +1161,7 @@ static r_dir_t LOCtoPadArc_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPadPoly_callback(const pcb_box_t * b, void *cl)
 {
-	PolygonTypePtr polygon = (PolygonTypePtr) b;
+	pcb_polygon_t *polygon = (pcb_polygon_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 
@@ -1370,7 +1370,7 @@ static r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
  * looks up LOs that are connected to the given polygon
  * on the given layergroup. All found connections are added to the list
  */
-static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, pcb_cardinal_t LayerGroup)
+static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardinal_t LayerGroup)
 {
 	pcb_cardinal_t entry;
 	struct lo_info info;
@@ -1394,7 +1394,7 @@ static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, pcb_cardina
 		/* handle normal layers */
 		if (layer < max_copper_layer) {
 			gdl_iterator_t it;
-			PolygonType *polygon;
+			pcb_polygon_t *polygon;
 
 			/* check all polygons */
 			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {

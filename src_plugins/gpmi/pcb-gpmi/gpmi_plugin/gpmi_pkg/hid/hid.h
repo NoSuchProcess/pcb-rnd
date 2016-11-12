@@ -35,7 +35,7 @@ typedef enum EndCapStyle_e {
  Beveled_Cap   /* octagon pins or bevel-cornered pads */
 } EndCapStyle;
 
-typedef void *PolygonType;
+typedef void *pcb_polygon_t;
 typedef void *pcb_box_t;
 #endif
 

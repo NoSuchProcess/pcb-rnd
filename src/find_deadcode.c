@@ -98,7 +98,7 @@ static pcb_bool LOTouchesLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup)
 		/* handle normal layers */
 		if (layer < max_copper_layer) {
 			gdl_iterator_t it;
-			PolygonType *polygon;
+			pcb_polygon_t *polygon;
 
 			/* find the first line that touches coordinates */
 

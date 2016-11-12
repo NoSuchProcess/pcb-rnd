@@ -503,7 +503,7 @@ void EraseObject(int type, void *lptr, void *ptr)
 		EraseText((pcb_layer_t *) lptr, (TextTypePtr) ptr);
 		break;
 	case PCB_TYPE_POLYGON:
-		ErasePolygon((PolygonTypePtr) ptr);
+		ErasePolygon((pcb_polygon_t *) ptr);
 		break;
 	case PCB_TYPE_ELEMENT:
 		EraseElement((ElementTypePtr) ptr);
@@ -547,7 +547,7 @@ void DrawObject(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_POLYGON:
 		if (((pcb_layer_t *) ptr1)->On)
-			DrawPolygon((pcb_layer_t *) ptr1, (PolygonTypePtr) ptr2);
+			DrawPolygon((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT:
 		if (PCB->ElementOn && (FRONT((ElementTypePtr) ptr2) || PCB->InvisibleObjectsOn))

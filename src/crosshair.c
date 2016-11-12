@@ -53,7 +53,7 @@ typedef struct {
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void XORPolygon(PolygonTypePtr, Coord, Coord, int);
+static void XORPolygon(pcb_polygon_t *, Coord, Coord, int);
 static void XORDrawElement(ElementTypePtr, Coord, Coord);
 static void XORDrawBuffer(pcb_buffer_t *);
 static void XORDrawInsertPointObject(void);
@@ -102,7 +102,7 @@ static void draw_dashed_line(hidGC GC, Coord x1, Coord y1, Coord x2, Coord y2)
 /* ---------------------------------------------------------------------------
  * creates a tmp polygon with coordinates converted to screen system
  */
-static void XORPolygon(PolygonTypePtr polygon, Coord dx, Coord dy, int dash_last)
+static void XORPolygon(pcb_polygon_t *polygon, Coord dx, Coord dy, int dash_last)
 {
 	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
@@ -386,7 +386,7 @@ static void XORDrawMoveOrCopyObject(void)
 
 	case PCB_TYPE_POLYGON:
 		{
-			PolygonTypePtr polygon = (PolygonTypePtr) Crosshair.AttachedObject.Ptr2;
+			pcb_polygon_t *polygon = (pcb_polygon_t *) Crosshair.AttachedObject.Ptr2;
 
 			/* the tmp polygon has n+1 points because the first
 			 * and the last one are set to the same coordinates
@@ -411,11 +411,11 @@ static void XORDrawMoveOrCopyObject(void)
 
 	case PCB_TYPE_POLYGON_POINT:
 		{
-			PolygonTypePtr polygon;
+			pcb_polygon_t *polygon;
 			pcb_point_t *point;
 			pcb_cardinal_t point_idx, prev, next;
 
-			polygon = (PolygonTypePtr) Crosshair.AttachedObject.Ptr2;
+			polygon = (pcb_polygon_t *) Crosshair.AttachedObject.Ptr2;
 			point = (pcb_point_t *) Crosshair.AttachedObject.Ptr3;
 			point_idx = polygon_point_idx(polygon, point);
 

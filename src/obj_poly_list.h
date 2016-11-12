@@ -28,7 +28,7 @@
 /* List of Lines */
 #define TDL(x)      polylist_ ## x
 #define TDL_LIST_T  polylist_t
-#define TDL_ITEM_T  PolygonType
+#define TDL_ITEM_T  pcb_polygon_t
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC

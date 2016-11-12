@@ -471,7 +471,7 @@ pcb_bool LineArcIntersect(pcb_line_t *Line, pcb_arc_t *Arc)
  * - check the two end points of the arc. If none of them matches
  * - check all segments of the polygon against the arc.
  */
-pcb_bool IsArcInPolygon(pcb_arc_t *Arc, PolygonTypePtr Polygon)
+pcb_bool IsArcInPolygon(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Arc;
 
@@ -500,7 +500,7 @@ pcb_bool IsArcInPolygon(pcb_arc_t *Arc, PolygonTypePtr Polygon)
  * - check the two end points of the line. If none of them matches
  * - check all segments of the polygon against the line.
  */
-pcb_bool IsLineInPolygon(pcb_line_t *Line, PolygonTypePtr Polygon)
+pcb_bool IsLineInPolygon(pcb_line_t *Line, pcb_polygon_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Line;
 	POLYAREA *lp;
@@ -535,7 +535,7 @@ pcb_bool IsLineInPolygon(pcb_line_t *Line, PolygonTypePtr Polygon)
  *
  * The polygon is assumed to already have been proven non-clearing
  */
-pcb_bool IsPadInPolygon(PadTypePtr pad, PolygonTypePtr polygon)
+pcb_bool IsPadInPolygon(PadTypePtr pad, pcb_polygon_t *polygon)
 {
 	return IsLineInPolygon((pcb_line_t *) pad, polygon);
 }
@@ -546,7 +546,7 @@ pcb_bool IsPadInPolygon(PadTypePtr pad, PolygonTypePtr polygon)
  * First check all points out of P1 against P2 and vice versa.
  * If both fail check all lines of P1 against the ones of P2
  */
-pcb_bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
+pcb_bool IsPolygonInPolygon(pcb_polygon_t *P1, pcb_polygon_t *P2)
 {
 	if (!P1->Clipped || !P2->Clipped)
 		return pcb_false;

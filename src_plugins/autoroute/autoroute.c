@@ -727,7 +727,7 @@ static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
 	return *rbpp;
 }
 
-static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t layer, PolygonTypePtr polygon, RouteStyleType * style)
+static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t layer, pcb_polygon_t *polygon, RouteStyleType * style)
 {
 	int is_not_rectangle = 1;
 	int layergroup = GetLayerGroupNumberByNumber(layer);
@@ -1007,7 +1007,7 @@ static routedata_t *CreateRouteData()
 							rb =
 								AddPolygon(layergroupboxes,
 													 GetLayerNumber(PCB->Data, (pcb_layer_t *) connection->ptr1),
-													 (struct polygon_st *) connection->ptr2, rd->styles[j]);
+													 (struct pcb_polygon_s *) connection->ptr2, rd->styles[j]);
 							break;
 						}
 					assert(rb);

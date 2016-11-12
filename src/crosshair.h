@@ -76,7 +76,7 @@ typedef struct {								/* holds cursor information */
 	  MaxX, MaxY;
 	AttachedLineType AttachedLine;	/* data of new lines... */
 	pcb_attached_box_t AttachedBox;
-	PolygonType AttachedPolygon;
+	pcb_polygon_t AttachedPolygon;
 	pcb_attached_object_t AttachedObject;	/* data of attached objects */
 	enum crosshair_shape shape;		/* shape of crosshair */
 	vtop_t onpoint_objs;

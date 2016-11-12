@@ -350,7 +350,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 							PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", MakeFlags(PCB_FLAG_CLEARLINE));
 
 	{
-		PolygonType *v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer,
+		pcb_polygon_t *v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer,
 			PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
 			PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
 			MakeFlags(PCB_FLAG_CLEARPOLY));

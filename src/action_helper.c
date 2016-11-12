@@ -83,8 +83,8 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		*y = ((ElementTypePtr) ptr2)->MarkY;
 		break;
 	case PCB_TYPE_POLYGON:
-		*x = ((PolygonTypePtr) ptr2)->Points[0].X;
-		*y = ((PolygonTypePtr) ptr2)->Points[0].Y;
+		*x = ((pcb_polygon_t *) ptr2)->Points[0].X;
+		*y = ((pcb_polygon_t *) ptr2)->Points[0].Y;
 		break;
 
 	case PCB_TYPE_LINE_POINT:
@@ -226,7 +226,7 @@ either round or, if the octagon flag is set, octagonal.
 static pcb_point_t InsertedPoint;
 pcb_layer_t *lastLayer;
 static struct {
-	PolygonTypePtr poly;
+	pcb_polygon_t *poly;
 	pcb_line_t line;
 } fake;
 
@@ -901,7 +901,7 @@ void NotifyMode(void)
 		if (Crosshair.AttachedBox.State == STATE_THIRD &&
 				Crosshair.AttachedBox.Point1.X != Crosshair.AttachedBox.Point2.X &&
 				Crosshair.AttachedBox.Point1.Y != Crosshair.AttachedBox.Point2.Y) {
-			PolygonTypePtr polygon;
+			pcb_polygon_t *polygon;
 
 			int flags = PCB_FLAG_CLEARPOLY;
 			if (conf_core.editor.full_poly)
@@ -1001,7 +1001,7 @@ void NotifyMode(void)
 					break; /* don't start doing anything if clicket out of polys */
 				}
 
-				if (TEST_FLAG(PCB_FLAG_LOCK, (PolygonTypePtr)
+				if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_polygon_t *)
 											Crosshair.AttachedObject.Ptr2)) {
 					Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
@@ -1032,7 +1032,7 @@ void NotifyMode(void)
 					if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
 						/* Create POLYAREAs from the original polygon
 						 * and the new hole polygon */
-						original = PolygonToPoly((PolygonType *) Crosshair.AttachedObject.Ptr2);
+						original = PolygonToPoly((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2);
 						new_hole = PolygonToPoly(&Crosshair.AttachedPolygon);
 
 						/* Subtract the hole from the original polygon shape */
@@ -1042,7 +1042,7 @@ void NotifyMode(void)
 						 * and place them on the page. Delete the original polygon.
 						 */
 						SaveUndoSerialNumber();
-						Flags = ((PolygonType *) Crosshair.AttachedObject.Ptr2)->Flags;
+						Flags = ((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2)->Flags;
 						PolyToPolygonsOnLayer(PCB->Data, (pcb_layer_t *) Crosshair.AttachedObject.Ptr1, result, Flags);
 						RemoveObject(PCB_TYPE_POLYGON,
 												 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
@@ -1051,7 +1051,7 @@ void NotifyMode(void)
 						Draw();
 
 						/* reset state of attached line */
-						memset(&Crosshair.AttachedPolygon, 0, sizeof(PolygonType));
+						memset(&Crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
 						Crosshair.AttachedLine.State = STATE_FIRST;
 						Crosshair.AttachedObject.State = STATE_FIRST;
 						addedLines = 0;
@@ -1215,7 +1215,7 @@ void NotifyMode(void)
 										 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 
 			if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-				if (TEST_FLAG(PCB_FLAG_LOCK, (PolygonTypePtr)
+				if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_polygon_t *)
 											Crosshair.AttachedObject.Ptr2)) {
 					Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
@@ -1224,7 +1224,7 @@ void NotifyMode(void)
 				else {
 					/* get starting point of nearest segment */
 					if (Crosshair.AttachedObject.Type == PCB_TYPE_POLYGON) {
-						fake.poly = (PolygonTypePtr) Crosshair.AttachedObject.Ptr2;
+						fake.poly = (pcb_polygon_t *) Crosshair.AttachedObject.Ptr2;
 						polyIndex = GetLowestDistancePolygonPoint(fake.poly, Note.X, Note.Y);
 						fake.line.Point1 = fake.poly->Points[polyIndex];
 						fake.line.Point2 = fake.poly->Points[prev_contour_point(fake.poly, polyIndex)];

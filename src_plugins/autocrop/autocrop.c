@@ -103,7 +103,7 @@ static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_arc_t
 	return Arc;
 }
 
-static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, PolygonType * Polygon, Coord dx, Coord dy)
+static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_polygon_t * Polygon, Coord dx, Coord dy)
 {
 	if (Data) {
 		r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);

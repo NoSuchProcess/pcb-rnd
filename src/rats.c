@@ -497,7 +497,7 @@ DrawShortestRats(NetListTypePtr Netl,
 	pcb_rat_t *line;
 	register float distance, temp;
 	register pcb_connection_t *conn1, *conn2, *firstpoint, *secondpoint;
-	PolygonTypePtr polygon;
+	pcb_polygon_t *polygon;
 	pcb_bool changed = pcb_false;
 	pcb_bool havepoints;
 	pcb_cardinal_t n, m, j;
@@ -569,7 +569,7 @@ DrawShortestRats(NetListTypePtr Netl,
 					 * via in the Net to make that connection.
 					 */
 					if (conn1->type == PCB_TYPE_POLYGON &&
-							(polygon = (PolygonTypePtr) conn1->ptr2) &&
+							(polygon = (pcb_polygon_t *) conn1->ptr2) &&
 							!(distance == 0 &&
 								firstpoint && firstpoint->type == PCB_TYPE_VIA) && IsPointInPolygonIgnoreHoles(conn2->X, conn2->Y, polygon)) {
 						distance = 0;
@@ -579,7 +579,7 @@ DrawShortestRats(NetListTypePtr Netl,
 						havepoints = pcb_true;
 					}
 					else if (conn2->type == PCB_TYPE_POLYGON &&
-									 (polygon = (PolygonTypePtr) conn2->ptr2) &&
+									 (polygon = (pcb_polygon_t *) conn2->ptr2) &&
 									 !(distance == 0 &&
 										 firstpoint && firstpoint->type == PCB_TYPE_VIA) && IsPointInPolygonIgnoreHoles(conn1->X, conn1->Y, polygon)) {
 						distance = 0;

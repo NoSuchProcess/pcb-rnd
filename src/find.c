@@ -107,7 +107,7 @@
 	(((pcb_rat_t **)RatList.Data)[(I)])
 
 #define	POLYGONLIST_ENTRY(L,I)	\
-	(((PolygonTypePtr *)PolygonList[(L)].Data)[(I)])
+	(((pcb_polygon_t **)PolygonList[(L)].Data)[(I)])
 
 #define	PVLIST_ENTRY(I)	\
 	(((PinTypePtr *)PVList.Data)[(I)])
@@ -157,7 +157,7 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToPVList(void);
 static pcb_bool LookupLOConnectionsToLine(pcb_line_t *, pcb_cardinal_t, pcb_bool);
 static pcb_bool LookupLOConnectionsToPad(PadTypePtr, pcb_cardinal_t);
-static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr, pcb_cardinal_t);
+static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *, pcb_cardinal_t);
 static pcb_bool IsRatPointOnLineEnd(pcb_point_t *, pcb_line_t *);

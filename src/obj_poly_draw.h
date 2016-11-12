@@ -35,5 +35,5 @@ struct draw_poly_info {
 r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void ErasePolygon(PolygonTypePtr Polygon);
-void DrawPolygon(pcb_layer_t *Layer, PolygonTypePtr Polygon);
+void ErasePolygon(pcb_polygon_t *Polygon);
+void DrawPolygon(pcb_layer_t *Layer, pcb_polygon_t *Polygon);

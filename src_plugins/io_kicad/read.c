@@ -1822,7 +1822,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	unsigned long tally = 0;
 	unsigned long required;
 
-	PolygonTypePtr polygon = NULL;
+	pcb_polygon_t *polygon = NULL;
 	FlagType flags = MakeFlags(PCB_FLAG_CLEARPOLY);
 	char *end;
 	double val;

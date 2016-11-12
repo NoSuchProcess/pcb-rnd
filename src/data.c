@@ -224,7 +224,7 @@ void FreeDataMemory(pcb_data_t * data)
 			FreePolygonMemory(polygon);
 		}
 		END_LOOP;
-		list_map0(&layer->Polygon, PolygonType, RemoveFreePolygon);
+		list_map0(&layer->Polygon, pcb_polygon_t, RemoveFreePolygon);
 		if (layer->line_tree)
 			r_destroy_tree(&layer->line_tree);
 		if (layer->arc_tree)

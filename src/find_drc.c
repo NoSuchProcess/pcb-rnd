@@ -146,7 +146,7 @@ static void LocateError(Coord * x, Coord * y)
 		}
 	case PCB_TYPE_POLYGON:
 		{
-			PolygonTypePtr polygon = (PolygonTypePtr) thing_ptr3;
+			pcb_polygon_t *polygon = (pcb_polygon_t *) thing_ptr3;
 			*x = (polygon->Clipped->contours->xmin + polygon->Clipped->contours->xmax) / 2;
 			*y = (polygon->Clipped->contours->ymin + polygon->Clipped->contours->ymax) / 2;
 			break;
@@ -223,7 +223,7 @@ static int throw_drc_dialog(void)
 }
 
 /* DRC clearance callback */
-static r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, PolygonTypePtr polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygon_t *polygon, int type, void *ptr1, void *ptr2)
 {
 	const char *message;
 	Coord x, y;
