@@ -68,12 +68,12 @@ const char *layer_type_to_file_name(int idx, int style)
 		nlayers = PCB->LayerGroups.Number[group];
 		single_name = PCB->Data->Layer[idx].Name;
 		if (group == GetLayerGroupNumberByNumber(component_silk_layer)) {
-			if (style == FNS_first || (style == FNS_single && nlayers == 2))
+			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
 				return single_name;
 			return "top";
 		}
 		else if (group == GetLayerGroupNumberByNumber(solder_silk_layer)) {
-			if (style == FNS_first || (style == FNS_single && nlayers == 2))
+			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
 				return single_name;
 			return "bottom";
 		}
@@ -83,7 +83,7 @@ const char *layer_type_to_file_name(int idx, int style)
 		}
 		else {
 			static char buf[20];
-			if (style == FNS_first || (style == FNS_single && nlayers == 1))
+			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 1))
 				return single_name;
 			sprintf(buf, "group%d", group);
 			return buf;

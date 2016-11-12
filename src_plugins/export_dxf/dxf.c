@@ -4510,7 +4510,7 @@ static int dxf_set_layer(const char *name, int group) {
 			sext = ".dxf";
 			break;
 		}
-		strcpy(dxf_filesuffix, layer_type_to_file_name(idx, FNS_first));
+		strcpy(dxf_filesuffix, layer_type_to_file_name(idx, PCB_FNS_first));
 		strcat(dxf_filesuffix, sext);
 		fp = fopen(dxf_filename, "w");
 		if (fp == NULL) {

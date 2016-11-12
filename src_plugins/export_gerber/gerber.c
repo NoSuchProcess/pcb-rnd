@@ -471,13 +471,13 @@ static void assign_file_suffix(char *dest, int idx)
 	switch (name_style) {
 	default:
 	case NAME_STYLE_FIXED:
-		fns_style = FNS_fixed;
+		fns_style = PCB_FNS_fixed;
 		break;
 	case NAME_STYLE_SINGLE:
-		fns_style = FNS_single;
+		fns_style = PCB_FNS_single;
 		break;
 	case NAME_STYLE_FIRST:
-		fns_style = FNS_first;
+		fns_style = PCB_FNS_first;
 		break;
 	case NAME_STYLE_EAGLE:
 		assign_eagle_file_suffix(dest, idx);
