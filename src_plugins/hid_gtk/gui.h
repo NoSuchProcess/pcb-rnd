@@ -290,7 +290,7 @@ int ghid_attribute_dialog(HID_Attribute *, int, HID_Attr_Val *, const char *, co
 /* gui-drc-window.c */
 void ghid_drc_window_show(gboolean raise);
 void ghid_drc_window_reset_message(void);
-void ghid_drc_window_append_violation(DrcViolationType * violation);
+void ghid_drc_window_append_violation(pcb_drc_violation_t * violation);
 void ghid_drc_window_append_messagev(const char *fmt, va_list va);
 int ghid_drc_window_throw_dialog(void);
 

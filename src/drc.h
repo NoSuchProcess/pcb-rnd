@@ -29,7 +29,7 @@
 
 #include "unit.h"
 
-struct drc_violation_st {
+struct drc_violation_s {
 	char *title;
 	char *explanation;
 	Coord x, y;
@@ -42,6 +42,6 @@ struct drc_violation_st {
 	int *object_type_list;
 };
 
-typedef struct drc_violation_st DrcViolationType, *DrcViolationTypePtr;
+typedef struct drc_violation_s pcb_drc_violation_t;
 
 #endif

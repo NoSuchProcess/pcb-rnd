@@ -62,7 +62,7 @@ struct _GhidDrcViolation {
 
 GType ghid_drc_violation_get_type(void);
 
-GhidDrcViolation *ghid_drc_violation_new(DrcViolationType * violation, GdkDrawable * pixmap);
+GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation, GdkDrawable * pixmap);
 
 
 #define GHID_TYPE_VIOLATION_RENDERER           (ghid_violation_renderer_get_type())

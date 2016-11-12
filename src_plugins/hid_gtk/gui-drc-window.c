@@ -450,7 +450,7 @@ GType ghid_drc_violation_get_type()
 }
 
 
-GhidDrcViolation *ghid_drc_violation_new(DrcViolationType * violation, GdkDrawable * pixmap)
+GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation, GdkDrawable * pixmap)
 {
 	object_list obj_list;
 
@@ -783,7 +783,7 @@ void ghid_drc_window_show(gboolean raise)
 	gtk_widget_show_all(drc_window);
 }
 
-void ghid_drc_window_append_violation(DrcViolationType * violation)
+void ghid_drc_window_append_violation(pcb_drc_violation_t * violation)
 {
 	GhidDrcViolation *violation_obj;
 	GtkTreeIter iter;

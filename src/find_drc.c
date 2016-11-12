@@ -41,7 +41,7 @@
 static void GotoError(void);
 static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3);
 
-static DrcViolationType
+static pcb_drc_violation_t
 	* pcb_drc_violation_new(const char *title,
 													const char *explanation,
 													Coord x, Coord y,
@@ -50,7 +50,7 @@ static DrcViolationType
 													Coord measured_value,
 													Coord required_value, int object_count, long int *object_id_list, int *object_type_list)
 {
-	DrcViolationType *violation = (DrcViolationType *) malloc(sizeof(DrcViolationType));
+	pcb_drc_violation_t *violation = (pcb_drc_violation_t *) malloc(sizeof(pcb_drc_violation_t));
 
 	violation->title = pcb_strdup(title);
 	violation->explanation = pcb_strdup(explanation);
@@ -67,7 +67,7 @@ static DrcViolationType
 	return violation;
 }
 
-static void pcb_drc_violation_free(DrcViolationType * violation)
+static void pcb_drc_violation_free(pcb_drc_violation_t * violation)
 {
 	free(violation->title);
 	free(violation->explanation);
@@ -179,7 +179,7 @@ static void LocateError(Coord * x, Coord * y)
 }
 
 
-static void append_drc_violation(DrcViolationType * violation)
+static void append_drc_violation(pcb_drc_violation_t * violation)
 {
 	if (gui->drc_gui != NULL) {
 		gui->drc_gui->append_drc_violation(violation);
@@ -230,7 +230,7 @@ static r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygon_t 
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;
-	DrcViolationType *violation;
+	pcb_drc_violation_t *violation;
 
 	pcb_line_t *line = (pcb_line_t *) ptr2;
 	pcb_arc_t *arc = (pcb_arc_t *) ptr2;
@@ -325,7 +325,7 @@ int DRCAll(void)
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;
-	DrcViolationType *violation;
+	pcb_drc_violation_t *violation;
 	int tmpcnt;
 	int nopastecnt = 0;
 
@@ -711,7 +711,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	int object_count;
 	long int *object_id_list;
 	int *object_type_list;
-	DrcViolationType *violation;
+	pcb_drc_violation_t *violation;
 
 	if (PCB->Shrink != 0) {
 		Bloat = -PCB->Shrink;

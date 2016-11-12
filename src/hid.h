@@ -130,7 +130,7 @@ typedef struct {
 	int log_drc_overview;
 	int log_drc_violations;
 	void (*reset_drc_dialog_message) (void);
-	void (*append_drc_violation) (DrcViolationType * violation);
+	void (*append_drc_violation) (pcb_drc_violation_t * violation);
 	int (*throw_drc_dialog) (void);
 } HID_DRC_GUI;
 
