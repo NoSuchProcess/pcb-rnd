@@ -13,6 +13,7 @@
 	- the invalidate callback gets int coords (mainline too)
 	- selection bugs:
 		- north-east to south-west selection box fails to select, if a poly or line is fully within the box
+		- selection-direction inverts on solder side?
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
