@@ -28,9 +28,9 @@
 #include "plug_io.h"
 #include "write.h"
 
-static plug_io_t io_kicad_legacy;
+static pcb_plug_io_t io_kicad_legacy;
 
-int io_kicad_legacy_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
+int io_kicad_legacy_fmt(pcb_plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 {
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
@@ -64,7 +64,7 @@ pcb_uninit_t hid_io_kicad_legacy_init(void)
 	io_kicad_legacy.description = "Kicad, legacy format";
 	io_kicad_legacy.save_preference_prio = 90;
 
-	HOOK_REGISTER(plug_io_t, plug_io_chain, &io_kicad_legacy);
+	HOOK_REGISTER(pcb_plug_io_t, plug_io_chain, &io_kicad_legacy);
 
 	/* TODO: Alloc plugin-globals here. */
 

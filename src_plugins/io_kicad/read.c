@@ -2026,7 +2026,7 @@ static int kicad_parse_pcb(read_state_t *st)
 	return kicad_foreach_dispatch(st, st->dom.root->children, disp);
 }
 	
-int io_kicad_read_pcb(plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
+int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int c, readres = 0;
 	read_state_t st;

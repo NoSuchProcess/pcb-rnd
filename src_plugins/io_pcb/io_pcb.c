@@ -28,10 +28,10 @@
 #include "parse_common.h"
 #include "file.h"
 
-static plug_io_t io_pcb[3];
+static pcb_plug_io_t io_pcb[3];
 static io_pcb_ctx_t ctx[3];
 
-int io_pcb_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
+int io_pcb_fmt(pcb_plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 {
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
@@ -49,7 +49,7 @@ static void hid_io_pcb_uninit(void)
 	pcb_lex_destroy();
 
 	for(n = 0; n < 3; n++)
-		HOOK_UNREGISTER(plug_io_t, plug_io_chain, &(io_pcb[n]));
+		HOOK_UNREGISTER(pcb_plug_io_t, plug_io_chain, &(io_pcb[n]));
 }
 
 pcb_uninit_t hid_io_pcb_init(void)
@@ -71,7 +71,7 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb[0].default_fmt = "pcb";
 	io_pcb[0].description = "geda/pcb - mainline (centimils)";
 	io_pcb[0].save_preference_prio = 100;
-	HOOK_REGISTER(plug_io_t, plug_io_chain, &(io_pcb[0]));
+	HOOK_REGISTER(pcb_plug_io_t, plug_io_chain, &(io_pcb[0]));
 
 	ctx[1].write_coord_fmt = pcb_printf_slot[9];
 	io_pcb[1].plugin_data = &ctx[1];
@@ -82,7 +82,7 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb[1].default_fmt = "pcb";
 	io_pcb[1].description = "geda/pcb - readable units";
 	io_pcb[1].save_preference_prio = 99;
-	HOOK_REGISTER(plug_io_t, plug_io_chain, &(io_pcb[1]));
+	HOOK_REGISTER(pcb_plug_io_t, plug_io_chain, &(io_pcb[1]));
 
 	ctx[2].write_coord_fmt = "%$$mn";
 	io_pcb[2].plugin_data = &ctx[2];
@@ -93,7 +93,7 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb[2].default_fmt = "pcb";
 	io_pcb[2].description = "geda/pcb - nanometer";
 	io_pcb[2].save_preference_prio = 98;
-	HOOK_REGISTER(plug_io_t, plug_io_chain, &(io_pcb[2]));
+	HOOK_REGISTER(pcb_plug_io_t, plug_io_chain, &(io_pcb[2]));
 
 	return hid_io_pcb_uninit;
 }

@@ -366,7 +366,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 /* ---------------------------------------------------------------------------
  * writes element data
  */
-int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
+int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
 	pcb_line_t *line;
@@ -499,7 +499,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 /* ---------------------------------------------------------------------------
  * writes the buffer to file
  */
-int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
+int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 {
 	pcb_cardinal_t i;
 
@@ -514,7 +514,7 @@ int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	pcb_cardinal_t i;
 

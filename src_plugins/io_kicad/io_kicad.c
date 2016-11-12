@@ -29,9 +29,9 @@
 #include "write.h"
 #include "read.h"
 
-static plug_io_t io_kicad;
+static pcb_plug_io_t io_kicad;
 
-int io_kicad_fmt(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
+int io_kicad_fmt(pcb_plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
 {
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
@@ -64,7 +64,7 @@ pcb_uninit_t hid_io_kicad_init(void)
 	io_kicad.description = "Kicad, s-expression";
 	io_kicad.save_preference_prio = 92;
 
-	HOOK_REGISTER(plug_io_t, plug_io_chain, &io_kicad);
+	HOOK_REGISTER(pcb_plug_io_t, plug_io_chain, &io_kicad);
 
 	/* TODO: Alloc plugin-globals here. */
 

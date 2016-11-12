@@ -68,7 +68,7 @@
 /* for opendir */
 #include "compat_inc.h"
 
-plug_io_t *plug_io_chain = NULL;
+pcb_plug_io_t *plug_io_chain = NULL;
 int pcb_io_err_inhibit = 0;
 
 static void plug_io_err(int res, const char *what, const char *filename)
@@ -131,7 +131,7 @@ int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_s
 		}
 	}
 	else /* try all parsers until we find one that works */
-		HOOK_CALL_DO(plug_io_t, plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings), if (Ptr->Data->loader == NULL) Ptr->Data->loader = self);
+		HOOK_CALL_DO(pcb_plug_io_t, plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings), if (Ptr->Data->loader == NULL) Ptr->Data->loader = self);
 
 	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);
@@ -148,7 +148,7 @@ int ParseElement(pcb_data_t *Ptr, const char *name)
 	int res = -1;
 
 	Ptr->loader = NULL;
-	HOOK_CALL_DO(plug_io_t, plug_io_chain, parse_element, res, == 0, (self, Ptr, name), Ptr->loader = self);
+	HOOK_CALL_DO(pcb_plug_io_t, plug_io_chain, parse_element, res, == 0, (self, Ptr, name), Ptr->loader = self);
 
 	plug_io_err(res, "load element", name);
 	return res;
@@ -157,7 +157,7 @@ int ParseElement(pcb_data_t *Ptr, const char *name)
 int ParseFont(pcb_font_t *Ptr, char *Filename)
 {
 	int res = -1;
-	HOOK_CALL(plug_io_t, plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
+	HOOK_CALL(pcb_plug_io_t, plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
 
 	plug_io_err(res, "load font", Filename);
 	return res;
@@ -188,7 +188,7 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_
 		} \
 	} while(0)
 
-	HOOK_CALL_ALL(plug_io_t, plug_io_chain, fmt_support_prio, cb_append, (self, typ, is_wr, (fmt == NULL ? self->default_fmt : fmt)));
+	HOOK_CALL_ALL(pcb_plug_io_t, plug_io_chain, fmt_support_prio, cb_append, (self, typ, is_wr, (fmt == NULL ? self->default_fmt : fmt)));
 
 	if (len > 0)
 		qsort(available, len, sizeof(available[0]), find_prio_cmp);
@@ -198,7 +198,7 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_
 }
 
 /* Find the plugin that offers the highest write prio for the format */
-static plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
+static pcb_plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
 {
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int len;
@@ -220,7 +220,7 @@ static plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
 int WriteBuffer(FILE *f, pcb_buffer_t *buff, const char *fmt)
 {
 	int res, newfmt = 0;
-	plug_io_t *p = find_writer(PCB_IOT_BUFFER, fmt);
+	pcb_plug_io_t *p = find_writer(PCB_IOT_BUFFER, fmt);
 
 	if (p != NULL) {
 		res = p->write_buffer(p, f, buff);
@@ -237,7 +237,7 @@ int WriteBuffer(FILE *f, pcb_buffer_t *buff, const char *fmt)
 int WriteElementData(FILE *f, pcb_data_t *e, const char *fmt)
 {
 	int res, newfmt = 0;
-	plug_io_t *p = e->loader;
+	pcb_plug_io_t *p = e->loader;
 
 	if ((p == NULL) || ((fmt != NULL) && (*fmt != '\0'))) {
 		p = find_writer(PCB_IOT_FOOTPRINT, fmt);
@@ -257,7 +257,7 @@ int WriteElementData(FILE *f, pcb_data_t *e, const char *fmt)
 static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_filename, const char *fmt, pcb_bool emergency)
 {
 	int res, newfmt = 0;
-	plug_io_t *p = PCB->Data->loader;
+	pcb_plug_io_t *p = PCB->Data->loader;
 
 	if ((p == NULL) || ((fmt != NULL) && (*fmt != '\0'))) {
 		p = find_writer(PCB_IOT_PCB, fmt);

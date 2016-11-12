@@ -20,4 +20,4 @@
  *
  */
 
-int io_lihata_write_pcb(plug_io_t *ctx, FILE * FP);
+int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP);

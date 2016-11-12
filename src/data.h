@@ -48,7 +48,7 @@ struct pcb_data_s {
 	 *rat_tree;
 	pcb_board_t *pcb;
 	pcb_layer_t Layer[MAX_LAYER + 2];    /* add 2 silkscreen layers */
-	plug_io_t *loader;
+	pcb_plug_io_t *loader;
 	ratlist_t Rat;
 };
 

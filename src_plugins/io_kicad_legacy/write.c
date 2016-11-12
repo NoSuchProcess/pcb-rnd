@@ -52,7 +52,7 @@ static int io_kicad_legacy_write_element_index(FILE * FP, pcb_data_t *Data);
 static int write_kicad_legacy_layout_via_drill_size(FILE * FP);
 
 /* writes the buffer to file */
-int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
+int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 {
 	/*fputs("io_kicad_legacy_write_buffer()", FP); */
 
@@ -76,7 +76,7 @@ int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
 	/* this is the first step in exporting a layout;
 	 * creating a kicd module containing the elements used in the layout
@@ -749,7 +749,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a .mod library
  */
-int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
+int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
 
 

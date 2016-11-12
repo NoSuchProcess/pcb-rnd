@@ -2455,7 +2455,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a single element file
  */
-int io_pcb_ParseElement(plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
+int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 {
 	FILE *f;
 	int ret;
@@ -2501,7 +2501,7 @@ do { \
 	conf_set(target, path, arr_idx, new_val, pol); \
 } while(0) \
 
-int io_pcb_ParsePCB(plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
+int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int retval;
 	yyPCB = Ptr;
@@ -2575,7 +2575,7 @@ int io_pcb_ParsePCB(plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a font
  */
-int io_pcb_ParseFont(plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
+int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 {
 	int r = 0;
 	yyPCB = NULL;

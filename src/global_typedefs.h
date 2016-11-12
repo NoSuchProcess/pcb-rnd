@@ -47,7 +47,7 @@ typedef struct pcb_ratspatch_line_s pcb_ratspatch_line_t;
 typedef struct pcb_element_s pcb_element_t;
 typedef struct pcb_text_s pcb_text_t;
 
-typedef struct plug_io_s plug_io_t;
+typedef struct pcb_plug_io_s pcb_plug_io_t;
 
 typedef unsigned int pcb_cardinal_t;
 typedef unsigned char pcb_uint8_t;   /* Don't use in new code. */

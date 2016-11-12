@@ -40,8 +40,8 @@ typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not a
 } plug_iot_t;
 
 /**************************** API definition *********************************/
-struct plug_io_s {
-	plug_io_t *next;
+struct pcb_plug_io_s {
+	pcb_plug_io_t *next;
 	void *plugin_data;
 
 	/* Check if the plugin supports format fmt, for writing (if wr != 0) or for
@@ -53,26 +53,26 @@ struct plug_io_s {
 	         one; for ordering plugins in that case, the format-neutral
 	         save_preference_prio field is used.
 	   */
-	int (*fmt_support_prio)(plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt);
+	int (*fmt_support_prio)(pcb_plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt);
 
 	/* Attempt to load a pcb design from Filename to Ptr.
 	   Conf subtree at settings_dest is replaced by settings loaded from the
 	   file unless it's CFR_invalid.
 	   Return 0 on success. */
-	int (*parse_pcb)(plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
+	int (*parse_pcb)(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
-	int (*parse_element)(plug_io_t *ctx, pcb_data_t *Ptr, const char *name);
+	int (*parse_element)(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name);
 
 	/* Attempt to load fonts from a file. Return 0 on success. */
-	int (*parse_font)(plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename);
+	int (*parse_font)(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename);
 
 
 	/* Write the buffer to a file. Return 0 on success. */
-	int (*write_buffer)(plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
+	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
 
 	/* Write element data to a file. Return 0 on success. */
-	int (*write_element)(plug_io_t *ctx, FILE *f, pcb_data_t *e);
+	int (*write_element)(pcb_plug_io_t *ctx, FILE *f, pcb_data_t *e);
 
 	/* Write PCB to f; there's a copy of the file we are going to
 	   "overwrite", named in old_filename and the new file name we are
@@ -80,14 +80,14 @@ struct plug_io_s {
 	   into a pipe. If emergency is true, do the safest save possible,
 	   don't mind formatting and extras.
 	   Return 0 on success. */
-	int (*write_pcb)(plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency);
+	int (*write_pcb)(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency);
 
 	const char *default_fmt;
 	const char *description;
 
 	int save_preference_prio; /* all available save plugins are sorted by this before presenting them to the user to choose one */
 };
-extern plug_io_t *plug_io_chain;
+extern pcb_plug_io_t *plug_io_chain;
 
 
 /********** hook wrappers **********/
@@ -129,7 +129,7 @@ void RemoveTMPData(void);
 /* A list of format plugins available for a given purpose */
 typedef struct {
 	int len;
-	const plug_io_t *plug[PCB_IO_MAX_FORMATS+1];
+	const pcb_plug_io_t *plug[PCB_IO_MAX_FORMATS+1];
 	char *digest[PCB_IO_MAX_FORMATS+1];           /* string that contains the format identifier and the description */
 } pcb_io_formats_t;
 
@@ -152,7 +152,7 @@ do { \
    highest prio first. If fmt is NULL, use the default fmt for each plugin.
    Return the length of the array. */
 typedef struct {
-	plug_io_t *plug;
+	pcb_plug_io_t *plug;
 	int prio;
 } pcb_find_io_t;
 int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt);
