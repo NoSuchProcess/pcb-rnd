@@ -88,6 +88,12 @@ static void remote_do_export(HID_Attr_Val * options)
 	region.X2 = PCB->MaxWidth;
 	region.Y2 = PCB->MaxHeight;
 
+#warning TODO: wait for a connection?
+	remote_proto_send_ver();
+	remote_proto_send_unit();
+	if (remote_proto_send_ready() != 0)
+		exit(1);
+
 	hid_expose_callback(&remote_hid, &region, 0);
 
 /* main loop, parser */
@@ -425,11 +431,6 @@ pcb_uninit_t hid_hid_remote_init()
 
 	hid_register_hid(&remote_hid);
 
-#warning TODO: wait for a connection?
-	remote_proto_send_ver();
-	remote_proto_send_unit();
-	if (remote_proto_send_ready() != 0)
-		exit(1);
 
 	return hid_hid_remote_uninit;
 }
