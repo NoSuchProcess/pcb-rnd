@@ -1016,7 +1016,7 @@ static void draw_dozen_cross(GdkGC * xor_gc, gint x, gint y)
 
 static void draw_crosshair(GdkGC * xor_gc, gint x, gint y)
 {
-	static enum crosshair_shape prev = Basic_Crosshair_Shape;
+	static enum pcb_crosshair_shape_e prev = Basic_Crosshair_Shape;
 
 	draw_right_cross(xor_gc, x, y);
 	if (prev == Union_Jack_Crosshair_Shape)

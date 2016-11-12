@@ -659,7 +659,7 @@ static void draw_dozen_cross(gint x, gint y, gint z)
 
 static void draw_crosshair(gint x, gint y, gint z)
 {
-	static enum crosshair_shape prev = Basic_Crosshair_Shape;
+	static enum pcb_crosshair_shape_e prev = Basic_Crosshair_Shape;
 
 	draw_right_cross(x, y, z);
 	if (prev == Union_Jack_Crosshair_Shape)

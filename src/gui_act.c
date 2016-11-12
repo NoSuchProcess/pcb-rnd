@@ -192,7 +192,7 @@ are affected.
 
 %end-doc */
 
-static enum crosshair_shape CrosshairShapeIncrement(enum crosshair_shape shape)
+static enum pcb_crosshair_shape_e CrosshairShapeIncrement(enum pcb_crosshair_shape_e shape)
 {
 	switch (shape) {
 	case Basic_Crosshair_Shape:

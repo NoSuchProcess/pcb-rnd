@@ -61,7 +61,7 @@ typedef struct {
 	pcb_coord_t X, Y;
 } pcb_mark_t;
 
-enum crosshair_shape {
+enum pcb_crosshair_shape_e {
 	Basic_Crosshair_Shape = 0,		/*  4-ray */
 	Union_Jack_Crosshair_Shape,		/*  8-ray */
 	Dozen_Crosshair_Shape,				/* 12-ray */
@@ -78,7 +78,7 @@ typedef struct {								/* holds cursor information */
 	pcb_attached_box_t AttachedBox;
 	pcb_polygon_t AttachedPolygon;
 	pcb_attached_object_t AttachedObject;	/* data of attached objects */
-	enum crosshair_shape shape;		/* shape of crosshair */
+	enum pcb_crosshair_shape_e shape;		/* shape of crosshair */
 	vtop_t onpoint_objs;
 	vtop_t old_onpoint_objs;
 
