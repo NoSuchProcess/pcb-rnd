@@ -66,7 +66,7 @@ pcb_bool IsLayerGroupEmpty(int);
 
 /************ OLD API - new code should not use these **************/
 
-int ParseGroupString(const char *, LayerGroupTypePtr, int /* LayerN */ );
+int ParseGroupString(const char *, pcb_layer_group_t *, int /* LayerN */ );
 
 int GetLayerNumber(pcb_data_t *, LayerTypePtr);
 int GetLayerGroupNumberByPointer(LayerTypePtr);
@@ -87,7 +87,7 @@ void RestoreStackAndVisibility(void);
 int MoveLayerToGroup(int layer, int group);
 
 /* Returns pointer to private buffer */
-char *LayerGroupsToString(LayerGroupTypePtr);
+char *LayerGroupsToString(pcb_layer_group_t *);
 
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[LayerStack[(n)]])
 #define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])

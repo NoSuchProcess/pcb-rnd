@@ -69,7 +69,7 @@ pcb_bool IsLayerGroupEmpty(int num)
  * parses the group definition string which is a colon separated list of
  * comma separated layer numbers (1,2,b:4,6,8,t)
  */
-int ParseGroupString(const char *s, LayerGroupTypePtr LayerGroup, int LayerN)
+int ParseGroupString(const char *s, pcb_layer_group_t *LayerGroup, int LayerN)
 {
 	int group, member, layer;
 	pcb_bool c_set = pcb_false,						/* flags for the two special layers to */
@@ -77,7 +77,7 @@ int ParseGroupString(const char *s, LayerGroupTypePtr LayerGroup, int LayerN)
 	int groupnum[MAX_LAYER + 2];
 
 	/* clear struct */
-	memset(LayerGroup, 0, sizeof(LayerGroupType));
+	memset(LayerGroup, 0, sizeof(pcb_layer_group_t));
 
 	/* Clear assignments */
 	for (layer = 0; layer < MAX_LAYER + 2; layer++)
@@ -149,7 +149,7 @@ int ParseGroupString(const char *s, LayerGroupTypePtr LayerGroup, int LayerN)
 
 	/* reset structure on error */
 error:
-	memset(LayerGroup, 0, sizeof(LayerGroupType));
+	memset(LayerGroup, 0, sizeof(pcb_layer_group_t));
 	return (1);
 }
 
@@ -496,7 +496,7 @@ int MoveLayerToGroup(int layer, int group)
 	return group;
 }
 
-char *LayerGroupsToString(LayerGroupTypePtr lg)
+char *LayerGroupsToString(pcb_layer_group_t *lg)
 {
 #if MAX_LAYER < 9998
 	/* Allows for layer numbers 0..9999 */

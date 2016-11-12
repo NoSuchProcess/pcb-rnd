@@ -95,7 +95,7 @@ struct pcb_board_s {
 	  IsleArea,										/* minimum poly island to retain */
 	  ThermScale;									/* scale factor used with thermals */
 	FontType Font;
-	LayerGroupType LayerGroups;
+	pcb_layer_group_t LayerGroups;
 	vtroutestyle_t RouteStyle;
 	LibraryType NetlistLib[NUM_NETLISTS];
 	rats_patch_line_t *NetlistPatches, *NetlistPatchLast;

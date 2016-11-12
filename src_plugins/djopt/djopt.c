@@ -2463,7 +2463,7 @@ static void padcleaner()
 static void grok_layer_groups()
 {
 	int i, j, f;
-	LayerGroupType *l = &(PCB->LayerGroups);
+	pcb_layer_group_t *l = &(PCB->LayerGroups);
 
 	solder_layer = component_layer = -1;
 	for (i = 0; i < max_copper_layer; i++) {
