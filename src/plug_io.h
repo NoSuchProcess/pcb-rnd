@@ -37,7 +37,7 @@ typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not a
 	PCB_IOT_FOOTPRINT  = 2,
 	PCB_IOT_FONT       = 4,
 	PCB_IOT_BUFFER     = 8
-} plug_iot_t;
+} pcb_plug_iot_t;
 
 /**************************** API definition *********************************/
 struct pcb_plug_io_s {
@@ -53,7 +53,7 @@ struct pcb_plug_io_s {
 	         one; for ordering plugins in that case, the format-neutral
 	         save_preference_prio field is used.
 	   */
-	int (*fmt_support_prio)(pcb_plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt);
+	int (*fmt_support_prio)(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt);
 
 	/* Attempt to load a pcb design from Filename to Ptr.
 	   Conf subtree at settings_dest is replaced by settings loaded from the
@@ -137,7 +137,7 @@ typedef struct {
    list in out. If do_digest is non-zero, fill in the digest field. Returns
    number of suitable io plugins. Call pcb_io_list_free() on out when it is not
    needed anymore. */
-int pcb_io_list(pcb_io_formats_t *out, plug_iot_t typ, int wr, int do_digest);
+int pcb_io_list(pcb_io_formats_t *out, pcb_plug_iot_t typ, int wr, int do_digest);
 void pcb_io_list_free(pcb_io_formats_t *out);
 
 extern int pcb_io_err_inhibit;
@@ -155,6 +155,6 @@ typedef struct {
 	pcb_plug_io_t *plug;
 	int prio;
 } pcb_find_io_t;
-int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt);
+int pcb_find_io(pcb_find_io_t *available, int avail_len, pcb_plug_iot_t typ, int is_wr, const char *fmt);
 
 #endif

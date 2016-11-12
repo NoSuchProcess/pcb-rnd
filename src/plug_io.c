@@ -171,7 +171,7 @@ static int find_prio_cmp(const void *p1, const void *p2)
 	return -1;
 }
 
-int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_wr, const char *fmt)
+int pcb_find_io(pcb_find_io_t *available, int avail_len, pcb_plug_iot_t typ, int is_wr, const char *fmt)
 {
 	int len = 0;
 
@@ -198,7 +198,7 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, plug_iot_t typ, int is_
 }
 
 /* Find the plugin that offers the highest write prio for the format */
-static pcb_plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
+static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 {
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int len;
@@ -837,7 +837,7 @@ int WritePipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 }
 
 
-int pcb_io_list(pcb_io_formats_t *out, plug_iot_t typ, int wr, int do_digest)
+int pcb_io_list(pcb_io_formats_t *out, pcb_plug_iot_t typ, int wr, int do_digest)
 {
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int n;

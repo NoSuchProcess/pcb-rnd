@@ -31,7 +31,7 @@
 static pcb_plug_io_t io_pcb[3];
 static io_pcb_ctx_t ctx[3];
 
-int io_pcb_fmt(pcb_plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
+int io_pcb_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;

@@ -30,7 +30,7 @@
 static pcb_plug_io_t io_lihata;
 conf_io_lihata_t conf_io_lihata;
 
-int io_lihata_fmt(pcb_plug_io_t *ctx, plug_iot_t typ, int wr, const char *fmt)
+int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
