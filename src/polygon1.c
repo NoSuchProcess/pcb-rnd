@@ -477,7 +477,7 @@ struct _insert_node_task {
 
 typedef struct info {
 	double m, b;
-	rtree_t *tree;
+	pcb_rtree_t *tree;
 	VNODE *v;
 	struct seg *s;
 	jmp_buf *env, sego, *touch;
@@ -500,7 +500,7 @@ typedef struct contour_info {
  * This replaces the segment in the tree with the two new segments after
  * a vertex has been added
  */
-static int adjust_tree(rtree_t * tree, struct seg *s)
+static int adjust_tree(pcb_rtree_t * tree, struct seg *s)
 {
 	struct seg *q;
 
@@ -627,7 +627,7 @@ static void *make_edge_tree(PLINE * pb)
 {
 	struct seg *s;
 	VNODE *bv;
-	rtree_t *ans = r_create_tree(NULL, 0, 0);
+	pcb_rtree_t *ans = r_create_tree(NULL, 0, 0);
 	bv = &pb->head;
 	do {
 		s = (seg *) malloc(sizeof(struct seg));
@@ -1182,7 +1182,7 @@ static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
 	POLYAREA *curc;
 	PLINE *curh, *container;
 	heap_t *heap;
-	rtree_t *tree;
+	pcb_rtree_t *tree;
 	int i;
 	int num_polyareas = 0;
 	struct polyarea_info *all_pa_info, *pa_info;
@@ -2309,7 +2309,7 @@ void poly_DelContour(PLINE ** c)
 	}
 	/* FIXME -- strict aliasing violation.  */
 	if ((*c)->tree) {
-		rtree_t *r = (*c)->tree;
+		pcb_rtree_t *r = (*c)->tree;
 		r_destroy_tree(&r);
 	}
 	free(*c), *c = NULL;
@@ -2358,7 +2358,7 @@ void poly_PreContour(PLINE * C, pcb_bool optimize)
 	C->area = PCB_ABS(area);
 	if (C->Count > 2)
 		C->Flags.orient = ((area < 0) ? PLF_INV : PLF_DIR);
-	C->tree = (rtree_t *) make_edge_tree(C);
+	C->tree = (pcb_rtree_t *) make_edge_tree(C);
 }																/* poly_PreContour */
 
 static r_dir_t flip_cb(const pcb_box_t * b, void *cl)
@@ -2446,7 +2446,7 @@ pcb_bool poly_CopyContour(PLINE ** dst, PLINE * src)
 		/* newnode->Flags = cur->Flags; */
 		poly_InclVertex((*dst)->head.prev, newnode);
 	}
-	(*dst)->tree = (rtree_t *) make_edge_tree(*dst);
+	(*dst)->tree = (pcb_rtree_t *) make_edge_tree(*dst);
 	return pcb_true;
 }
 

@@ -44,7 +44,7 @@ struct pcb_data_s {
 	pinlist_t Via;
 	elementlist_t Element;
 /**/
-	rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
+	pcb_rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;
 	pcb_board_t *pcb;
 	pcb_layer_t Layer[MAX_LAYER + 2];    /* add 2 silkscreen layers */

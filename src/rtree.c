@@ -341,14 +341,14 @@ static void adjust_bounds(struct rtree_node *node)
  * it, so don't free the box list until you've called r_destroy_tree.
  * if you set 'manage' to pcb_true, r_destroy_tree will free your boxlist.
  */
-rtree_t *r_create_tree(const pcb_box_t * boxlist[], int N, int manage)
+pcb_rtree_t *r_create_tree(const pcb_box_t * boxlist[], int N, int manage)
 {
-	rtree_t *rtree;
+	pcb_rtree_t *rtree;
 	struct rtree_node *node;
 	int i;
 
 	assert(N >= 0);
-	rtree = (rtree_t *) calloc(1, sizeof(*rtree));
+	rtree = (pcb_rtree_t *) calloc(1, sizeof(*rtree));
 	/* start with a single empty leaf node */
 	node = (struct rtree_node *) calloc(1, sizeof(*node));
 	node->flags.is_leaf = 1;
@@ -387,7 +387,7 @@ static void __r_destroy_tree(struct rtree_node *node)
 }
 
 /* free the memory associated with an rtree. */
-void r_destroy_tree(rtree_t ** rtree)
+void r_destroy_tree(pcb_rtree_t ** rtree)
 {
 
 	__r_destroy_tree((*rtree)->root);
@@ -498,7 +498,7 @@ int __r_search(struct rtree_node *node, const pcb_box_t * query, r_arg * arg)
  * Returns how the search ended.
  */
 r_dir_t
-r_search(rtree_t * rtree, const pcb_box_t * query,
+r_search(pcb_rtree_t * rtree, const pcb_box_t * query,
 				 r_dir_t (*check_region) (const pcb_box_t * region, void *cl),
 				 r_dir_t (*found_rectangle) (const pcb_box_t * box, void *cl), void *cl,
 				 int *num_found)
@@ -553,7 +553,7 @@ static r_dir_t __r_region_is_empty_rect_in_reg(const pcb_box_t * box, void *cl)
 }
 
 /* return 0 if there are any rectangles in the given region. */
-int r_region_is_empty(rtree_t * rtree, const pcb_box_t * region)
+int r_region_is_empty(pcb_rtree_t * rtree, const pcb_box_t * region)
 {
 	jmp_buf env;
 	int r;
@@ -885,7 +885,7 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 	}
 }
 
-void r_insert_entry(rtree_t * rtree, const pcb_box_t * which, int man)
+void r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int man)
 {
 	assert(which);
 	assert(which->X1 <= which->X2);
@@ -989,7 +989,7 @@ pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
 	return pcb_true;
 }
 
-pcb_bool r_delete_entry(rtree_t * rtree, const pcb_box_t * box)
+pcb_bool r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * box)
 {
 	pcb_bool r;
 

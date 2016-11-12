@@ -260,7 +260,7 @@ static r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl)
 
 /* main r_find_neighbor routine.  Returns NULL if no neighbor in the
  * requested direction. */
-static const pcb_box_t *r_find_neighbor(rtree_t * rtree, const pcb_box_t * box, direction_t search_direction)
+static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * box, direction_t search_direction)
 {
 	struct r_neighbor_info ni;
 	pcb_box_t bbox;
@@ -464,7 +464,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 		};
 		direction_t dir[4] = { NORTH, EAST, SOUTH, WEST };
 		struct ebox **boxpp, *boxp;
-		rtree_t *rt_s, *rt_c;
+		pcb_rtree_t *rt_s, *rt_c;
 		int factor;
 		ELEMENT_LOOP(PCB->Data);
 		{

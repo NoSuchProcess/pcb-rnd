@@ -194,7 +194,7 @@ static POLYAREA *biggest(POLYAREA * p)
 {
 	POLYAREA *n, *top = NULL;
 	PLINE *pl;
-	rtree_t *tree;
+	pcb_rtree_t *tree;
 	double big = -1;
 	if (!p)
 		return NULL;

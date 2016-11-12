@@ -81,7 +81,7 @@ struct PLINE {
 	VNODE head;
 	unsigned int Count;
 	double area;
-	rtree_t *tree;
+	pcb_rtree_t *tree;
 	pcb_bool is_round;
 	Coord cx, cy;
 	Coord radius;
@@ -113,7 +113,7 @@ typedef struct POLYAREA POLYAREA;
 struct POLYAREA {
 	POLYAREA *f, *b;
 	PLINE *contours;
-	rtree_t *contour_tree;
+	pcb_rtree_t *contour_tree;
 };
 
 pcb_bool poly_M_Copy0(POLYAREA ** dst, const POLYAREA * srcfst);

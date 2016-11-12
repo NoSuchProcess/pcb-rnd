@@ -300,7 +300,7 @@ typedef struct routebox {
 typedef struct routedata {
 	int max_styles;
 	/* one rtree per layer *group */
-	rtree_t *layergrouptree[MAX_LAYER];	/* no silkscreen layers here =) */
+	pcb_rtree_t *layergrouptree[MAX_LAYER];	/* no silkscreen layers here =) */
 	/* root pointer into connectivity information */
 	routebox_t *first_net;
 	/* default routing style */
@@ -1506,7 +1506,7 @@ static r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
 /* target_guess is our guess at what the nearest target is, or NULL if we
  * just plum don't have a clue. */
 static routebox_t *mincost_target_to_point(const Cheappcb_point_t * CostPoint,
-																					 pcb_cardinal_t CostPointLayer, rtree_t * targets, routebox_t * target_guess)
+																					 pcb_cardinal_t CostPointLayer, pcb_rtree_t * targets, routebox_t * target_guess)
 {
 	struct mincost_target_closure mtc;
 	assert(target_guess == NULL || target_guess->flags.target);	/* this is a target, right? */
@@ -1527,7 +1527,7 @@ static routebox_t *mincost_target_to_point(const Cheappcb_point_t * CostPoint,
 /* mincost_target_guess can be NULL */
 static edge_t *CreateEdge(routebox_t * rb,
 													Coord CostPointX, Coord CostPointY,
-													cost_t cost_to_point, routebox_t * mincost_target_guess, direction_t expand_dir, rtree_t * targets)
+													cost_t cost_to_point, routebox_t * mincost_target_guess, direction_t expand_dir, pcb_rtree_t * targets)
 {
 	edge_t *e;
 	assert(__routebox_is_good(rb));
@@ -1567,7 +1567,7 @@ static edge_t *CreateEdge(routebox_t * rb,
 /* create edge, using previous edge to fill in defaults. */
 /* most of the work here is in determining a new cost point */
 static edge_t *CreateEdge2(routebox_t * rb, direction_t expand_dir,
-													 edge_t * previous_edge, rtree_t * targets, routebox_t * guess)
+													 edge_t * previous_edge, pcb_rtree_t * targets, routebox_t * guess)
 {
 	pcb_box_t thisbox;
 	Cheappcb_point_t thiscost, prevcost;
@@ -1592,7 +1592,7 @@ static edge_t *CreateEdge2(routebox_t * rb, direction_t expand_dir,
 /* create via edge, using previous edge to fill in defaults. */
 static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
 														 routebox_t * parent, edge_t * previous_edge,
-														 conflict_t to_site_conflict, conflict_t through_site_conflict, rtree_t * targets)
+														 conflict_t to_site_conflict, conflict_t through_site_conflict, pcb_rtree_t * targets)
 {
 	routebox_t *rb;
 	Cheappcb_point_t costpoint;
@@ -1658,7 +1658,7 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
  */
 static edge_t *CreateEdgeWithConflicts(const pcb_box_t * interior_edge,
 																			 routebox_t * container, edge_t * previous_edge,
-																			 cost_t cost_penalty_to_box, rtree_t * targets)
+																			 cost_t cost_penalty_to_box, pcb_rtree_t * targets)
 {
 	routebox_t *rb;
 	Cheappcb_point_t costpoint;
@@ -1990,7 +1990,7 @@ static pcb_bool boink_box(routebox_t * rb, struct E_result *res, direction_t dir
  * looks past the clearance to see these targets even though they
  * weren't actually touched in the expansion.
  */
-struct E_result *Expand(rtree_t * rtree, edge_t * e, const pcb_box_t * box)
+struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 {
 	static struct E_result ans;
 	int noshrink;									/* bit field of which edges to not shrink */
@@ -2199,8 +2199,8 @@ static routebox_t *CreateBridge(const pcb_box_t * area, routebox_t * parent, dir
 void
 moveable_edge(vector_t * result, const pcb_box_t * box, direction_t dir,
 							routebox_t * rb,
-							routebox_t * blocker, edge_t * e, rtree_t * targets,
-							struct routeone_state *s, rtree_t * tree, vector_t * area_vec)
+							routebox_t * blocker, edge_t * e, pcb_rtree_t * targets,
+							struct routeone_state *s, pcb_rtree_t * tree, vector_t * area_vec)
 {
 	pcb_box_t b;
 	assert(box_is_good(box));
@@ -2433,7 +2433,7 @@ static inline pcb_box_t previous_edge(Coord last, direction_t i, const pcb_box_t
  * targets as they are found, and putting any moveable edges
  * in the return vector.
  */
-vector_t *BreakManyEdges(struct routeone_state * s, rtree_t * targets, rtree_t * tree,
+vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_rtree_t * tree,
 												 vector_t * area_vec, struct E_result * ans, routebox_t * rb, edge_t * e)
 {
 	struct break_info bi;
@@ -2741,7 +2741,7 @@ static r_dir_t foib_rect_in_reg(const pcb_box_t * box, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static routebox_t *FindOneInBox(rtree_t * rtree, routebox_t * rb)
+static routebox_t *FindOneInBox(pcb_rtree_t * rtree, routebox_t * rb)
 {
 	struct foib_info foib;
 	pcb_box_t r;
@@ -2810,7 +2810,7 @@ static r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
 }
 
 /* check for a pin or via target that a polygon can just use a thermal to connect to */
-routebox_t *FindThermable(rtree_t * rtree, routebox_t * rb)
+routebox_t *FindThermable(pcb_rtree_t * rtree, routebox_t * rb)
 {
 	struct therm_info info;
 
@@ -3269,7 +3269,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 /* create a fake "edge" used to defer via site searching. */
 static void
 CreateSearchEdge(struct routeone_state *s, vetting_t * work, edge_t * parent,
-								 routebox_t * rb, conflict_t conflict, rtree_t * targets, pcb_bool in_plane)
+								 routebox_t * rb, conflict_t conflict, pcb_rtree_t * targets, pcb_bool in_plane)
 {
 	routebox_t *target;
 	pcb_box_t b;
@@ -3349,7 +3349,7 @@ void
 add_via_sites(struct routeone_state *s,
 							struct routeone_via_site_state *vss,
 							mtspace_t * mtspace, routebox_t * within,
-							conflict_t within_conflict_level, edge_t * parent_edge, rtree_t * targets, Coord shrink, pcb_bool in_plane)
+							conflict_t within_conflict_level, edge_t * parent_edge, pcb_rtree_t * targets, Coord shrink, pcb_bool in_plane)
 {
 	Coord radius, clearance;
 	vetting_t *work;
@@ -3375,7 +3375,7 @@ add_via_sites(struct routeone_state *s,
 
 void
 do_via_search(edge_t * search, struct routeone_state *s,
-							struct routeone_via_site_state *vss, mtspace_t * mtspace, rtree_t * targets)
+							struct routeone_via_site_state *vss, mtspace_t * mtspace, pcb_rtree_t * targets)
 {
 	int i, j, count = 0;
 	Coord radius, clearance;
@@ -3527,7 +3527,7 @@ static r_dir_t __conflict_source(const pcb_box_t * box, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static void source_conflicts(rtree_t * tree, routebox_t * rb)
+static void source_conflicts(pcb_rtree_t * tree, routebox_t * rb)
 {
 	if (!AutoRouteParameters.with_conflicts)
 		return;
@@ -3550,7 +3550,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 	int seen, i;
 	const pcb_box_t **target_list;
 	int num_targets;
-	rtree_t *targets;
+	pcb_rtree_t *targets;
 	/* vector of source edges for filtering */
 	vector_t *source_vec;
 	/* working vector */

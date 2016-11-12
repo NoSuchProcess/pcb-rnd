@@ -60,7 +60,7 @@ typedef struct mtspacebox {
 struct mtspace {
 	/* rtrees keeping track of regions expanded by their required clearance. */
 	/* one for fixed, even, and odd */
-	rtree_t *ftree, *etree, *otree;
+	pcb_rtree_t *ftree, *etree, *otree;
 };
 
 typedef union {
@@ -121,7 +121,7 @@ void mtspace_destroy(mtspace_t ** mtspacep)
 struct mts_info {
 	Coord clearance;
 	pcb_box_t box;
-	rtree_t *tree;
+	pcb_rtree_t *tree;
 	jmp_buf env;
 };
 
@@ -140,7 +140,7 @@ static r_dir_t mts_remove_one(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-rtree_t *which_tree(mtspace_t * mtspace, mtspace_type_t which)
+pcb_rtree_t *which_tree(mtspace_t * mtspace, mtspace_type_t which)
 {
 	switch (which) {
 	case FIXED:
@@ -295,7 +295,7 @@ static r_dir_t query_one(const pcb_box_t * box, void *cl)
  * it returns pcb_true if it has exhausted the region vector/heap and never
  * found an empty area.
  */
-static void qloop(struct query_closure *qc, rtree_t * tree, heap_or_vector res, pcb_bool is_vec)
+static void qloop(struct query_closure *qc, pcb_rtree_t * tree, heap_or_vector res, pcb_bool is_vec)
 {
 	pcb_box_t *cbox;
 	int n;

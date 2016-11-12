@@ -28,7 +28,7 @@
 #include "compat_nls.h"
 #include "board.h"
 
-static inline r_dir_t r_search_pt(rtree_t * rtree, const pcb_point_t * pt,
+static inline r_dir_t r_search_pt(pcb_rtree_t * rtree, const pcb_point_t * pt,
 															int radius,
 															r_dir_t (*region_in_search) (const pcb_box_t * region, void *cl),
 															r_dir_t (*rectangle_in_region) (const pcb_box_t * box, void *cl), void *closure,

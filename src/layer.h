@@ -48,7 +48,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 	textlist_t Text;
 	polylist_t Polygon;
 	arclist_t Arc;
-	rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
+	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
 	pcb_bool On;                   /* visible flag */
 	const char *Color;             /* color */
 	const char *SelectedColor;
