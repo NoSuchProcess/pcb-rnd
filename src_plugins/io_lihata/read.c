@@ -461,7 +461,7 @@ static int parse_polygon(pcb_layer_t *ly, ElementType *el, lht_node_t *obj)
 			poly->PointN += cnt->data.table.rows;
 		}
 		poly->PointMax = poly->PointN;
-		poly->Points = malloc(sizeof(PointType) * poly->PointMax);
+		poly->Points = malloc(sizeof(pcb_point_t) * poly->PointMax);
 		poly->HoleIndexMax = poly->HoleIndexN = c-1;
 		if (poly->HoleIndexN > 0)
 			poly->HoleIndex = malloc(sizeof(pcb_cardinal_t) * poly->HoleIndexMax);

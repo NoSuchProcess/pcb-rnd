@@ -87,7 +87,7 @@ long int CreateIDGet(void);
 	ANYOBJECTFIELDS;		\
 	Coord		Thickness,      \
                         Clearance;      \
-	PointType	Point1,		\
+	pcb_point_t	Point1,		\
 			Point2
 
 /* All on-pcb objects (elements, lines, pads, vias, rats, etc) are

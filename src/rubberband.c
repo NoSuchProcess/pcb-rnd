@@ -44,9 +44,9 @@
  */
 static void CheckPadForRubberbandConnection(PadTypePtr);
 static void CheckPinForRubberbandConnection(PinTypePtr);
-static void CheckLinePointForRubberbandConnection(pcb_layer_t *, pcb_line_t *, PointTypePtr, pcb_bool);
+static void CheckLinePointForRubberbandConnection(pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
 static void CheckPolygonForRubberbandConnection(pcb_layer_t *, PolygonTypePtr);
-static void CheckLinePointForRat(pcb_layer_t *, PointTypePtr);
+static void CheckLinePointForRat(pcb_layer_t *, pcb_point_t *);
 static r_dir_t rubber_callback(const pcb_box_t * b, void *cl);
 
 struct rubber_info {
@@ -207,7 +207,7 @@ struct rinfo {
 	pcb_cardinal_t group;
 	PinTypePtr pin;
 	PadTypePtr pad;
-	PointTypePtr point;
+	pcb_point_t *point;
 };
 
 static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
@@ -274,7 +274,7 @@ static void CheckPinForRat(PinTypePtr Pin)
 	r_search(PCB->Data->rat_tree, &Pin->BoundingBox, NULL, rat_callback, &info, NULL);
 }
 
-static void CheckLinePointForRat(pcb_layer_t *Layer, PointTypePtr Point)
+static void CheckLinePointForRat(pcb_layer_t *Layer, pcb_point_t *Point)
 {
 	struct rinfo info;
 	info.group = GetLayerGroupNumberByPointer(Layer);
@@ -322,7 +322,7 @@ static void CheckPinForRubberbandConnection(PinTypePtr Pin)
  * If one of the endpoints of the line lays * inside the passed line,
  * the scanned line is added to the 'rubberband' list
  */
-static void CheckLinePointForRubberbandConnection(pcb_layer_t *Layer, pcb_line_t *Line, PointTypePtr LinePoint, pcb_bool Exact)
+static void CheckLinePointForRubberbandConnection(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, pcb_bool Exact)
 {
 	pcb_cardinal_t group;
 	struct rubber_info info;
@@ -434,7 +434,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	case PCB_TYPE_LINE_POINT:
 		if (GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1) < max_copper_layer)
-			CheckLinePointForRubberbandConnection((pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (PointTypePtr) Ptr3, pcb_true);
+			CheckLinePointForRubberbandConnection((pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
 		break;
 
 	case PCB_TYPE_VIA:
@@ -479,7 +479,7 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		}
 
 	case PCB_TYPE_LINE_POINT:
-		CheckLinePointForRat((pcb_layer_t *) Ptr1, (PointTypePtr) Ptr3);
+		CheckLinePointForRat((pcb_layer_t *) Ptr1, (pcb_point_t *) Ptr3);
 		break;
 
 	case PCB_TYPE_VIA:
@@ -509,7 +509,7 @@ RubberbandTypePtr GetRubberbandMemory(void)
  * adds a new line to the rubberband list of 'Crosshair.AttachedObject'
  * if Layer == 0  it is a rat line
  */
-RubberbandTypePtr CreateNewRubberbandEntry(pcb_layer_t *Layer, pcb_line_t *Line, PointTypePtr MovedPoint)
+RubberbandTypePtr CreateNewRubberbandEntry(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint)
 {
 	RubberbandTypePtr ptr = GetRubberbandMemory();
 

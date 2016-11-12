@@ -70,7 +70,7 @@ static pcb_opfunc_t RotateFunctions = {
 /* ---------------------------------------------------------------------------
  * rotates a point in 90 degree steps
  */
-void RotatePointLowLevel(PointTypePtr Point, Coord X, Coord Y, unsigned Number)
+void RotatePointLowLevel(pcb_point_t *Point, Coord X, Coord Y, unsigned Number)
 {
 	ROTATE(Point->X, Point->Y, X, Y, Number);
 }

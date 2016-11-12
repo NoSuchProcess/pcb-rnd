@@ -28,7 +28,7 @@
 #include "compat_nls.h"
 #include "board.h"
 
-static inline r_dir_t r_search_pt(rtree_t * rtree, const PointType * pt,
+static inline r_dir_t r_search_pt(rtree_t * rtree, const pcb_point_t * pt,
 															int radius,
 															r_dir_t (*region_in_search) (const pcb_box_t * region, void *cl),
 															r_dir_t (*rectangle_in_region) (const pcb_box_t * box, void *cl), void *closure,
@@ -1041,7 +1041,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 
 struct rat_info {
 	pcb_cardinal_t layer;
-	PointTypePtr Point;
+	pcb_point_t *Point;
 	jmp_buf env;
 };
 
@@ -1096,7 +1096,7 @@ static r_dir_t LOCtoPad_callback(const pcb_box_t * b, void *cl)
  * the notation that is used is:
  * Xij means Xj at line i
  */
-static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr Point, pcb_cardinal_t LayerGroup)
+static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t LayerGroup)
 {
 	pcb_cardinal_t entry;
 	struct rat_info info;

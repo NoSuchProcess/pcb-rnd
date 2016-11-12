@@ -442,7 +442,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 	case PCB_TYPE_LINE_POINT:
 	case PCB_TYPE_POLYGON_POINT:
 		{
-			PointTypePtr point = (PointTypePtr) ptr2;
+			pcb_point_t *point = (pcb_point_t *) ptr2;
 			report = pcb_strdup_printf("%m+POINT ID# %ld.\n"
 									"Located at (X,Y) = %$mD.\n"
 									"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,

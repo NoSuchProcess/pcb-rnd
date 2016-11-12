@@ -104,7 +104,7 @@ typedef enum { NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3, NE = 4, SE = 5, SW = 6,
 
 typedef struct cheap_point {
 	Coord X, Y;
-} CheapPointType;
+} Cheappcb_point_t;
 
 
 /* note that boxes are closed on top and left and open on bottom and right. */
@@ -130,9 +130,9 @@ static inline PCB_FUNC_UNUSED pcb_bool box_intersect(const pcb_box_t * a, const 
 	return (a->X1 < b->X2) && (b->X1 < a->X2) && (a->Y1 < b->Y2) && (b->Y1 < a->Y2);
 }
 
-static inline PCB_FUNC_UNUSED CheapPointType closest_point_in_box(const CheapPointType * from, const pcb_box_t * box)
+static inline PCB_FUNC_UNUSED Cheappcb_point_t closest_point_in_box(const Cheappcb_point_t * from, const pcb_box_t * box)
 {
-	CheapPointType r;
+	Cheappcb_point_t r;
 	assert(box->X1 < box->X2 && box->Y1 < box->Y2);
 	r.X = (from->X < box->X1) ? box->X1 : (from->X > box->X2 - 1) ? box->X2 - 1 : from->X;
 	r.Y = (from->Y < box->Y1) ? box->Y1 : (from->Y > box->Y2 - 1) ? box->Y2 - 1 : from->Y;
@@ -215,14 +215,14 @@ static inline PCB_FUNC_UNUSED void close_box(pcb_box_t * r)
 /* return the square of the minimum distance from a point to some point
  * inside a box.  The box is half-closed!  That is, the top-left corner
  * is considered in the box, but the bottom-right corner is not. */
-static inline PCB_FUNC_UNUSED double dist2_to_box(const CheapPointType * p, const pcb_box_t * b)
+static inline PCB_FUNC_UNUSED double dist2_to_box(const Cheappcb_point_t * p, const pcb_box_t * b)
 {
-	CheapPointType r = closest_point_in_box(p, b);
+	Cheappcb_point_t r = closest_point_in_box(p, b);
 	return Distance(r.X, r.Y, p->X, p->Y);
 }
 
 pcb_box_t *GetBoxMemory(pcb_box_list_t *);
 void FreeBoxListMemory(pcb_box_list_t *);
-void SetPointBoundingBox(PointTypePtr Pnt);
+void SetPointBoundingBox(pcb_point_t *Pnt);
 
 #endif /* __BOX_H_INCLUDED__ */

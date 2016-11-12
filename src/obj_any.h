@@ -78,7 +78,7 @@ struct pcb_obj_s {
 	union {
 		void         *any;
 		AnyObjectType *anyobj;
-		PointType    *point;
+		pcb_point_t    *point;
 		pcb_line_t     *line;
 		TextType     *text;
 		PolygonType  *polygon;

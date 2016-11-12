@@ -97,7 +97,7 @@ void RotatePolygonLowLevel(PolygonTypePtr, Coord, Coord, unsigned);
 void *RotateObject(int, void *, void *, void *, Coord, Coord, unsigned);
 void RotateScreenObject(Coord, Coord, unsigned);
 
-void RotatePointLowLevel(PointTypePtr Point, Coord X, Coord Y, unsigned Number);
+void RotatePointLowLevel(pcb_point_t *Point, Coord X, Coord Y, unsigned Number);
 
 static inline PCB_FUNC_UNUSED void free_rotate(Coord * x, Coord * y, Coord cx, Coord cy, double cosa, double sina)
 {

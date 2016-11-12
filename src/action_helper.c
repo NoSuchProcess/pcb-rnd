@@ -89,8 +89,8 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 
 	case PCB_TYPE_LINE_POINT:
 	case PCB_TYPE_POLYGON_POINT:
-		*x = ((PointTypePtr) ptr3)->X;
-		*y = ((PointTypePtr) ptr3)->Y;
+		*x = ((pcb_point_t *) ptr3)->X;
+		*y = ((pcb_point_t *) ptr3)->Y;
 		break;
 	case PCB_TYPE_ARC:
 		{
@@ -223,7 +223,7 @@ either round or, if the octagon flag is set, octagonal.
 /* ---------------------------------------------------------------------------
  * some local identifiers
  */
-static PointType InsertedPoint;
+static pcb_point_t InsertedPoint;
 pcb_layer_t *lastLayer;
 static struct {
 	PolygonTypePtr poly;
@@ -452,7 +452,7 @@ static void AdjustAttachedBox(void)
  */
 void AdjustAttachedObjects(void)
 {
-	PointTypePtr pnt;
+	pcb_point_t *pnt;
 	switch (conf_core.editor.mode) {
 		/* update at least an attached block (selection) */
 	case PCB_MODE_NO:
@@ -948,7 +948,7 @@ void NotifyMode(void)
 
 	case PCB_MODE_POLYGON:
 		{
-			PointTypePtr points = Crosshair.AttachedPolygon.Points;
+			pcb_point_t *points = Crosshair.AttachedPolygon.Points;
 			pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
 
 			/* do update of position; use the 'PCB_MODE_LINE' mechanism */
@@ -1014,7 +1014,7 @@ void NotifyMode(void)
 				/* second notify, insert new point into object */
 			case STATE_SECOND:
 				{
-					PointTypePtr points = Crosshair.AttachedPolygon.Points;
+					pcb_point_t *points = Crosshair.AttachedPolygon.Points;
 					pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
 					POLYAREA *original, *new_hole, *result;
 					FlagType Flags;

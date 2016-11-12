@@ -471,7 +471,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 			pcb_cardinal_t hole = 0;
 			fprintf(FP, "\tPolygon(%s)\n\t(", F2S(polygon, PCB_TYPE_POLYGON));
 			for (p = 0; p < polygon->PointN; p++) {
-				PointTypePtr point = &polygon->Points[p];
+				pcb_point_t *point = &polygon->Points[p];
 
 				if (hole < polygon->HoleIndexN && p == polygon->HoleIndex[hole]) {
 					if (hole > 0)

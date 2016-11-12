@@ -39,7 +39,7 @@ struct polygon_st  {           /* holds information about a polygon */
 	POLYAREA *Clipped;           /* the clipped region of this polygon */
 	PLINE *NoHoles;              /* the polygon broken into hole-less regions */
 	int NoHolesValid;            /* Is the NoHoles polygon up to date? */
-	PointTypePtr Points;         /* data */
+	pcb_point_t *Points;         /* data */
 	pcb_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
 	pcb_cardinal_t HoleIndexN;   /* number of holes in polygon */
 	pcb_cardinal_t HoleIndexMax; /* max number from malloc() */
@@ -50,14 +50,14 @@ struct polygon_st  {           /* holds information about a polygon */
 
 PolygonType *GetPolygonMemory(pcb_layer_t * layer);
 void RemoveFreePolygon(PolygonType * data);
-PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr Polygon);
+pcb_point_t *GetPointMemoryInPolygon(PolygonTypePtr Polygon);
 pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr Polygon);
 void FreePolygonMemory(PolygonType * polygon);
 
 void SetPolygonBoundingBox(PolygonTypePtr Polygon);
 PolygonTypePtr CreateNewPolygonFromRectangle(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, FlagType Flags);
 PolygonTypePtr CreateNewPolygon(pcb_layer_t *Layer, FlagType Flags);
-PointTypePtr CreateNewPointInPolygon(PolygonTypePtr Polygon, Coord X, Coord Y);
+pcb_point_t *CreateNewPointInPolygon(PolygonTypePtr Polygon, Coord X, Coord Y);
 PolygonType *CreateNewHoleInPolygon(PolygonType * Polygon);
 void *RemovePolygon(pcb_layer_t *Layer, PolygonTypePtr Polygon);
 
@@ -75,7 +75,7 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, PolygonType *polygon);
 
 #define	POLYGONPOINT_LOOP(polygon) do	{	\
 	pcb_cardinal_t			n;		\
-	PointTypePtr	point;				\
+	pcb_point_t *point;				\
 	for (n = (polygon)->PointN-1; n != -1; n--)	\
 	{						\
 		point = &(polygon)->Points[n]

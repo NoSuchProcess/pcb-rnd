@@ -37,7 +37,7 @@
 #include "obj_poly.h"
 
 typedef struct {								/* currently marked block */
-	PointType Point1,							/* start- and end-position */
+	pcb_point_t Point1,							/* start- and end-position */
 	  Point2;
 	long int State;
 	pcb_bool otherway;

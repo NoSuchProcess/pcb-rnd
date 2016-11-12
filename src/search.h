@@ -150,7 +150,7 @@ pcb_bool IsPointOnPin(Coord, Coord, Coord, PinTypePtr);
 pcb_bool IsPointOnArc(Coord, Coord, Coord, pcb_arc_t *);
 pcb_bool IsPointOnLineEnd(Coord, Coord, RatTypePtr);
 pcb_bool IsLineInRectangle(Coord, Coord, Coord, Coord, pcb_line_t *);
-pcb_bool IsLineInQuadrangle(PointType p[4], pcb_line_t *Line);
+pcb_bool IsLineInQuadrangle(pcb_point_t p[4], pcb_line_t *Line);
 pcb_bool IsArcInRectangle(Coord, Coord, Coord, Coord, pcb_arc_t *);
 pcb_bool IsPointInPad(Coord, Coord, Coord, PadTypePtr);
 pcb_bool IsPointInBox(Coord, Coord, pcb_box_t *, Coord);

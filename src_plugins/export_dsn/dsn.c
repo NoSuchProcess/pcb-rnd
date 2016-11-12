@@ -112,9 +112,9 @@ static HID_Attribute *dsn_get_export_options(int *n)
 
 
 /* this function is mostly ripped from bom.c */
-static PointType get_centroid(ElementType * element)
+static pcb_point_t get_centroid(ElementType * element)
 {
-	PointType centroid;
+	pcb_point_t centroid;
 	double sumx = 0.0, sumy = 0.0;
 	int pin_cnt = 0;
 
@@ -254,7 +254,7 @@ static void print_placement(FILE * fp)
 	ELEMENT_LOOP(PCB->Data);
 	{
 		char *ename;
-		PointType ecentroid = get_centroid(element);
+		pcb_point_t ecentroid = get_centroid(element);
 		char *side = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? "back" : "front";
 		ename = NAMEONPCB_NAME(element);
 		if (ename != NULL)
@@ -287,7 +287,7 @@ static void print_library(FILE * fp)
 	{
 		int partside = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? g_list_length(layerlist) - 1 : 0;
 		int partsidesign = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? -1 : 1;
-		PointType centroid = get_centroid(element);
+		pcb_point_t centroid = get_centroid(element);
 		fprintf(fp, "    (image %ld\n", element->ID); /* map every element by ID */
 		/* loop thru pins and pads to add to image */
 		PIN_LOOP(element);

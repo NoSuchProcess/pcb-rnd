@@ -37,7 +37,7 @@
 #include "find.h"
 #include "rtree.h"
 
-static double drc_lines(PointTypePtr end, pcb_bool way);
+static double drc_lines(pcb_point_t *end, pcb_bool way);
 
 /* ---------------------------------------------------------------------------
  * Adjust the attached line to 45 degrees if necessary
@@ -248,7 +248,7 @@ static r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
  * It returns the straight-line length of the best answer, and
  * changes the position of the input end point to the best answer.
  */
-static double drc_lines(PointTypePtr end, pcb_bool way)
+static double drc_lines(pcb_point_t *end, pcb_bool way)
 {
 	double f, s, f2, s2, len, best;
 	Coord dx, dy, temp, last, length;
@@ -257,7 +257,7 @@ static double drc_lines(PointTypePtr end, pcb_bool way)
 	pcb_cardinal_t group, comp;
 	struct drc_info info;
 	pcb_bool two_lines, x_is_long, blocker;
-	PointType ans;
+	pcb_point_t ans;
 
 	f = 1.0;
 	s = 0.5;
@@ -409,13 +409,13 @@ static double drc_lines(PointTypePtr end, pcb_bool way)
 	return best;
 }
 
-static void drc_line(PointTypePtr end)
+static void drc_line(pcb_point_t *end)
 {
 	struct drc_info info;
 	pcb_cardinal_t group, comp;
 	pcb_line_t line;
 	AttachedLineType aline;
-	static PointType last_good; /* internal state of last good endpoint - we cna do thsi cheat, because... */
+	static pcb_point_t last_good; /* internal state of last good endpoint - we cna do thsi cheat, because... */
 
 	/* ... we hardwire the assumption on how a line is drawn: it starts out as a 0 long segment, which is valid: */
 	if ((Crosshair.AttachedLine.Point1.X == Crosshair.X) && (Crosshair.AttachedLine.Point1.Y == Crosshair.Y)) {
@@ -471,7 +471,7 @@ static void drc_line(PointTypePtr end)
 
 void EnforceLineDRC(void)
 {
-	PointType r45, rs;
+	pcb_point_t r45, rs;
 	pcb_bool shift;
 	double r1, r2;
 

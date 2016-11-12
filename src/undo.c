@@ -706,7 +706,7 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 {
 	pcb_layer_t *layer;
 	PolygonTypePtr polygon;
-	PointTypePtr pnt;
+	pcb_point_t *pnt;
 	int type;
 	pcb_cardinal_t point_idx;
 	pcb_cardinal_t hole;

@@ -62,7 +62,7 @@ void FreeBoxListMemory(pcb_box_list_t *Boxlist)
 /* ---------------------------------------------------------------------------
  * sets the bounding box of a point (which is silly)
  */
-void SetPointBoundingBox(PointTypePtr Pnt)
+void SetPointBoundingBox(pcb_point_t *Pnt)
 {
 	Pnt->X2 = Pnt->X + 1;
 	Pnt->Y2 = Pnt->Y + 1;

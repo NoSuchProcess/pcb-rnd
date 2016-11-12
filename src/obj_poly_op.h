@@ -34,14 +34,14 @@ void *ChangePolygonClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePt
 void *ChangePolyClear(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon);
 void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon);
 void *MovePolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon);
-void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon, PointTypePtr Point);
+void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon, pcb_point_t *Point);
 void *MovePolygonToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, PolygonType * polygon, pcb_layer_t * Destination);
 void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, PolygonType * Polygon);
 void *DestroyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon);
-void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon, PointTypePtr Point);
+void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon, pcb_point_t *Point);
 void *RemovePolygon_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon);
 void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon, pcb_cardinal_t contour);
-void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon, PointTypePtr Point);
+void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon, pcb_point_t *Point);
 void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePtr Polygon);
 
 

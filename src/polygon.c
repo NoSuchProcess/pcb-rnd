@@ -114,11 +114,11 @@ void polygon_init(void)
 	rotate_circle_seg[3] = cos_ang;
 }
 
-pcb_cardinal_t polygon_point_idx(PolygonTypePtr polygon, PointTypePtr point)
+pcb_cardinal_t polygon_point_idx(PolygonTypePtr polygon, pcb_point_t *point)
 {
 	assert(point >= polygon->Points);
 	assert(point <= polygon->Points + polygon->PointN);
-	return ((char *) point - (char *) polygon->Points) / sizeof(PointType);
+	return ((char *) point - (char *) polygon->Points) / sizeof(pcb_point_t);
 }
 
 /* Find contour number: 0 for outer, 1 for first hole etc.. */
@@ -1196,7 +1196,7 @@ int InitClip(pcb_data_t *Data, pcb_layer_t *layer, PolygonType * p)
  */
 pcb_bool RemoveExcessPolygonPoints(pcb_layer_t *Layer, PolygonTypePtr Polygon)
 {
-	PointTypePtr p;
+	pcb_point_t *p;
 	pcb_cardinal_t n, prev, next;
 	pcb_line_t line;
 	pcb_bool changed = pcb_false;
@@ -1228,7 +1228,7 @@ pcb_bool RemoveExcessPolygonPoints(pcb_layer_t *Layer, PolygonTypePtr Polygon)
 pcb_cardinal_t GetLowestDistancePolygonPoint(PolygonTypePtr Polygon, Coord X, Coord Y)
 {
 	double mindistance = (double) MAX_COORD * MAX_COORD;
-	PointTypePtr ptr1, ptr2;
+	pcb_point_t *ptr1, *ptr2;
 	pcb_cardinal_t n, result = 0;
 
 	/* we calculate the distance to each segment and choose the
@@ -1287,7 +1287,7 @@ void GoToPreviousPoint(void)
 		/* back-up one point */
 	default:
 		{
-			PointTypePtr points = Crosshair.AttachedPolygon.Points;
+			pcb_point_t *points = Crosshair.AttachedPolygon.Points;
 			pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN - 2;
 
 			Crosshair.AttachedPolygon.PointN--;

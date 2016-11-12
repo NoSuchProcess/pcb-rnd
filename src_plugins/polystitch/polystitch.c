@@ -42,7 +42,7 @@
 static PolygonType *inner_poly, *outer_poly;
 static pcb_layer_t *poly_layer;
 
-static double ATAN2(PointType a, PointType b)
+static double ATAN2(pcb_point_t a, pcb_point_t b)
 {
 	if (a.X == b.X && a.Y == b.Y)
 		return 0;
@@ -140,7 +140,7 @@ static void check_windings()
 	if (iw * ow > 0) {
 		/* Wound in same direction, must reverse one.  */
 		for (i = 0, j = inner_poly->PointN - 1; i < j; i++, j--) {
-			PointType x = inner_poly->Points[i];
+			pcb_point_t x = inner_poly->Points[i];
 			inner_poly->Points[i] = inner_poly->Points[j];
 			inner_poly->Points[j] = x;
 		}
@@ -153,13 +153,13 @@ static void check_windings()
  */
 static void rotate_points(PolygonType * poly, int n)
 {
-	PointType *np;
+	pcb_point_t *np;
 	int n2 = poly->PointN - n;
 
-	np = (PointType *) malloc(poly->PointN * sizeof(PointType));
-	memcpy(np, poly->Points + n, n2 * sizeof(PointType));
-	memcpy(np + n2, poly->Points, n * sizeof(PointType));
-	memcpy(poly->Points, np, poly->PointN * sizeof(PointType));
+	np = (pcb_point_t *) malloc(poly->PointN * sizeof(pcb_point_t));
+	memcpy(np, poly->Points + n, n2 * sizeof(pcb_point_t));
+	memcpy(np + n2, poly->Points, n * sizeof(pcb_point_t));
+	memcpy(poly->Points, np, poly->PointN * sizeof(pcb_point_t));
 	free(np);
 }
 

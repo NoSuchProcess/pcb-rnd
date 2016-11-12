@@ -91,7 +91,7 @@ static int boardflip(int argc, const char **argv, Coord x, Coord y)
 			i = 0;
 			j = polygon->PointN - 1;
 			while (i < j) {
-				PointType p = polygon->Points[i];
+				pcb_point_t p = polygon->Points[i];
 				polygon->Points[i] = polygon->Points[j];
 				polygon->Points[j] = p;
 				i++;

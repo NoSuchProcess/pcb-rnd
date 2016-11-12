@@ -37,13 +37,13 @@
 typedef struct {								/* rubberband lines for element moves */
 	pcb_layer_t *Layer;						/* layer that holds the line */
 	pcb_line_t *Line;							/* the line itself */
-	PointTypePtr MovedPoint;			/* and finally the point */
+	pcb_point_t *MovedPoint;			/* and finally the point */
 } RubberbandType, *RubberbandTypePtr;
 
 
 void LookupRubberbandLines(int, void *, void *, void *);
 void LookupRatLines(int, void *, void *, void *);
 RubberbandTypePtr GetRubberbandMemory(void);
-RubberbandTypePtr CreateNewRubberbandEntry(pcb_layer_t *Layer, pcb_line_t *Line, PointTypePtr MovedPoint);
+RubberbandTypePtr CreateNewRubberbandEntry(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint);
 
 #endif

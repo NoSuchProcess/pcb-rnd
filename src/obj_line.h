@@ -39,7 +39,7 @@ struct pcb_line_s {            /* holds information about one line */
 
 /* crosshair: */
 typedef struct {								/* current marked line */
-	PointType Point1,							/* start- and end-position */
+	pcb_point_t Point1,							/* start- and end-position */
 	  Point2;
 	long int State;
 	pcb_bool draw;

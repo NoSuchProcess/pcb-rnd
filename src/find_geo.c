@@ -231,7 +231,7 @@ static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 /* ---------------------------------------------------------------------------
  * Tests if point is same as line end point
  */
-static pcb_bool IsRatPointOnLineEnd(PointTypePtr Point, pcb_line_t *Line)
+static pcb_bool IsRatPointOnLineEnd(pcb_point_t *Point, pcb_line_t *Line)
 {
 	if ((Point->X == Line->Point1.X && Point->Y == Line->Point1.Y)
 			|| (Point->X == Line->Point2.X && Point->Y == Line->Point2.Y))
@@ -239,7 +239,7 @@ static pcb_bool IsRatPointOnLineEnd(PointTypePtr Point, pcb_line_t *Line)
 	return (pcb_false);
 }
 
-static void form_slanted_rectangle(PointType p[4], pcb_line_t *l)
+static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
 /* writes vertices of a squared line */
 {
 	double dwx = 0, dwy = 0;
@@ -324,14 +324,14 @@ pcb_bool LineLineIntersect(pcb_line_t *Line1, pcb_line_t *Line2)
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
 	if (TEST_FLAG(PCB_FLAG_SQUARE, Line1)) {	/* pretty reckless recursion */
-		PointType p[4];
+		pcb_point_t p[4];
 		form_slanted_rectangle(p, Line1);
 		return IsLineInQuadrangle(p, Line2);
 	}
 	/* here come only round Line1 because IsLineInQuadrangle()
 	   calls LineLineIntersect() with first argument rounded */
 	if (TEST_FLAG(PCB_FLAG_SQUARE, Line2)) {
-		PointType p[4];
+		pcb_point_t p[4];
 		form_slanted_rectangle(p, Line2);
 		return IsLineInQuadrangle(p, Line1);
 	}

@@ -343,7 +343,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 static void XORDrawInsertPointObject(void)
 {
 	pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
-	PointTypePtr point = (PointTypePtr) Crosshair.AttachedObject.Ptr3;
+	pcb_point_t *point = (pcb_point_t *) Crosshair.AttachedObject.Ptr3;
 
 	if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 		gui->draw_line(Crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
@@ -398,10 +398,10 @@ static void XORDrawMoveOrCopyObject(void)
 	case PCB_TYPE_LINE_POINT:
 		{
 			pcb_line_t *line;
-			PointTypePtr point;
+			pcb_point_t *point;
 
 			line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
-			point = (PointTypePtr) Crosshair.AttachedObject.Ptr3;
+			point = (pcb_point_t *) Crosshair.AttachedObject.Ptr3;
 			if (point == &line->Point1)
 				XORDrawAttachedLine(point->X + dx, point->Y + dy, line->Point2.X, line->Point2.Y, line->Thickness);
 			else
@@ -412,11 +412,11 @@ static void XORDrawMoveOrCopyObject(void)
 	case PCB_TYPE_POLYGON_POINT:
 		{
 			PolygonTypePtr polygon;
-			PointTypePtr point;
+			pcb_point_t *point;
 			pcb_cardinal_t point_idx, prev, next;
 
 			polygon = (PolygonTypePtr) Crosshair.AttachedObject.Ptr2;
-			point = (PointTypePtr) Crosshair.AttachedObject.Ptr3;
+			point = (pcb_point_t *) Crosshair.AttachedObject.Ptr3;
 			point_idx = polygon_point_idx(polygon, point);
 
 			/* get previous and following point */
@@ -457,7 +457,7 @@ static void XORDrawMoveOrCopyObject(void)
 	i = Crosshair.AttachedObject.RubberbandN;
 	ptr = Crosshair.AttachedObject.Rubberband;
 	while (i) {
-		PointTypePtr point1, point2;
+		pcb_point_t *point1, *point2;
 
 		if (TEST_FLAG(PCB_FLAG_VIA, ptr->Line)) {
 			/* this is a rat going to a polygon.  do not draw for rubberband */ ;
@@ -1109,7 +1109,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 
 	if (ans != PCB_TYPE_NONE) {
-		PointType *pnt = (PointType *) ptr3;
+		pcb_point_t *pnt = (pcb_point_t *) ptr3;
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
 	}
 
@@ -1124,7 +1124,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_POLYGON_POINT, &ptr1, &ptr2, &ptr3);
 
 	if (ans != PCB_TYPE_NONE) {
-		PointType *pnt = (PointType *) ptr3;
+		pcb_point_t *pnt = (pcb_point_t *) ptr3;
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
 	}
 

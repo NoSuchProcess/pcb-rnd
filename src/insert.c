@@ -83,9 +83,9 @@ void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * P
 /* ---------------------------------------------------------------------------
  *  adjusts the insert point to make 45 degree lines as necessary
  */
-PointTypePtr AdjustInsertPoint(void)
+pcb_point_t *AdjustInsertPoint(void)
 {
-	static PointType InsertedPoint;
+	static pcb_point_t InsertedPoint;
 	double m;
 	Coord x, y, m1, m2;
 	pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;

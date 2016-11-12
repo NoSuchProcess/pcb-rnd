@@ -408,7 +408,7 @@ void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* moves one end of a line */
-void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, PointTypePtr Point)
+void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	if (Layer) {
 		if (Layer->On)
@@ -551,7 +551,7 @@ void *DestroyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 struct rlp_info {
 	jmp_buf env;
 	pcb_line_t *line;
-	PointTypePtr point;
+	pcb_point_t *point;
 };
 static r_dir_t remove_point(const pcb_box_t * b, void *cl)
 {
@@ -575,9 +575,9 @@ static r_dir_t remove_point(const pcb_box_t * b, void *cl)
 }
 
 /* removes a line point, or a line if the selected point is the end */
-void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, PointTypePtr Point)
+void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
-	PointType other;
+	pcb_point_t other;
 	struct rlp_info info;
 	if (&Line->Point1 == Point)
 		other = Line->Point2;
@@ -645,7 +645,7 @@ void RotateLineLowLevel(pcb_line_t *Line, Coord X, Coord Y, unsigned Number)
 
 
 /* rotates a line's point */
-void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, PointTypePtr Point)
+void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	EraseLine(Line);
 	if (Layer) {

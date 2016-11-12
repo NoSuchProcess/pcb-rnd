@@ -52,7 +52,7 @@
 /* Prototypes */
 
 void polygon_init(void);
-pcb_cardinal_t polygon_point_idx(PolygonTypePtr polygon, PointTypePtr point);
+pcb_cardinal_t polygon_point_idx(PolygonTypePtr polygon, pcb_point_t *point);
 pcb_cardinal_t polygon_point_contour(PolygonTypePtr polygon, pcb_cardinal_t point);
 pcb_cardinal_t prev_contour_point(PolygonTypePtr polygon, pcb_cardinal_t point);
 pcb_cardinal_t next_contour_point(PolygonTypePtr polygon, pcb_cardinal_t point);

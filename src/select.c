@@ -499,7 +499,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_LINE_POINT:
 		if (F->LinePoint)
-			return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (PointTypePtr) Ptr3));
+			return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3));
 		break;
 
 	case PCB_TYPE_TEXT:
@@ -514,7 +514,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_POLYGON_POINT:
 		if (F->Point)
-			return (F->Point(ctx, (pcb_layer_t *) Ptr1, (PolygonTypePtr) Ptr2, (PointTypePtr) Ptr3));
+			return (F->Point(ctx, (pcb_layer_t *) Ptr1, (PolygonTypePtr) Ptr2, (pcb_point_t *) Ptr3));
 		break;
 
 	case PCB_TYPE_VIA:
