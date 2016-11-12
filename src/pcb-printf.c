@@ -110,7 +110,7 @@ do { \
 } while(0)
 
 /* append a suffix, with or without space */
-static int inline append_suffix(gds_t *dest, enum e_suffix suffix_type, const char *suffix)
+static int inline append_suffix(gds_t *dest, enum pcb_suffix_e suffix_type, const char *suffix)
 {
 	switch (suffix_type) {
 	case NO_SUFFIX:
@@ -143,12 +143,12 @@ static int inline append_suffix(gds_t *dest, enum e_suffix suffix_type, const ch
  * \return 0 on success, -1 on error
  */
 static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum pcb_allow_e allow,
-														 enum e_suffix suffix_type)
+														 enum pcb_suffix_e suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
 	double *value, value_local[32];
-	enum e_family family;
+	enum pcb_family_e family;
 	const char *suffix;
 	int i, n, retval = -1, trunc0 = 0;
 	const char *printf_spec = printf_spec_->array;
@@ -327,7 +327,7 @@ static inline int try_human_coord(pcb_coord_t coord, const pcb_unit_t *unit, dou
 }
 
 /* Same as CoordsToString but take only one coord and print it in human readable format */
-static int CoordsToHumanString(gds_t *dest, pcb_coord_t coord, const gds_t *printf_spec_, enum e_suffix suffix_type)
+static int CoordsToHumanString(gds_t *dest, pcb_coord_t coord, const gds_t *printf_spec_, enum pcb_suffix_e suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
@@ -405,7 +405,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 
 	new_fmt:;
 	while (*fmt) {
-		enum e_suffix suffix = NO_SUFFIX;
+		enum pcb_suffix_e suffix = NO_SUFFIX;
 
 		if (*fmt == '%') {
 			const char *ext_unit = "";

@@ -63,8 +63,8 @@ enum pcb_allow_e {
 	ALLOW_ALL = ~0
 };
 
-enum e_family { METRIC, IMPERIAL };
-enum e_suffix { NO_SUFFIX, SUFFIX, FILE_MODE };
+enum pcb_family_e { METRIC, IMPERIAL };
+enum pcb_suffix_e { NO_SUFFIX, SUFFIX, FILE_MODE };
 
 struct pcb_unit_s {
 	int index;										/* Index into Unit[] list */
@@ -72,7 +72,7 @@ struct pcb_unit_s {
 	const char *in_suffix;				/* internationalized suffix */
 	char printf_code;
 	double scale_factor;
-	enum e_family family;
+	enum pcb_family_e family;
 	enum pcb_allow_e allow;
 	int default_prec;
 	/* used for gui spinboxes */
