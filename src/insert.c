@@ -94,7 +94,7 @@ pcb_point_t *AdjustInsertPoint(void)
 		return NULL;
 	Crosshair.AttachedObject.Ptr3 = &InsertedPoint;
 	if (gui->shift_is_pressed()) {
-		AttachedLineType myline;
+		pcb_attached_line_t myline;
 		/* only force 45 degree for nearest point */
 		if (Distance(Crosshair.X, Crosshair.Y, line->Point1.X, line->Point1.Y) <
 				Distance(Crosshair.X, Crosshair.Y, line->Point2.X, line->Point2.Y))

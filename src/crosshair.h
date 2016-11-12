@@ -74,7 +74,7 @@ typedef struct {								/* holds cursor information */
 	Coord X, Y,										/* position in PCB coordinates */
 	  MinX, MinY,									/* lowest and highest coordinates */
 	  MaxX, MaxY;
-	AttachedLineType AttachedLine;	/* data of new lines... */
+	pcb_attached_line_t AttachedLine;	/* data of new lines... */
 	pcb_attached_box_t AttachedBox;
 	pcb_polygon_t AttachedPolygon;
 	pcb_attached_object_t AttachedObject;	/* data of attached objects */

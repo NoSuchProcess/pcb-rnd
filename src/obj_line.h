@@ -43,7 +43,7 @@ typedef struct {								/* current marked line */
 	  Point2;
 	long int State;
 	pcb_bool draw;
-} AttachedLineType, *AttachedLineTypePtr;
+} pcb_attached_line_t;
 
 
 pcb_line_t *GetLineMemory(pcb_layer_t * layer);
@@ -62,7 +62,7 @@ void RotateLineLowLevel(pcb_line_t *Line, Coord X, Coord Y, unsigned Number);
 /*** DRC enforcement (obj_line_drcenf.c) ***/
 void AdjustAttachedLine(void);
 void AdjustTwoLine(pcb_bool);
-void FortyFiveLine(AttachedLineType *);
+void FortyFiveLine(pcb_attached_line_t *);
 void EnforceLineDRC(void);
 
 /* Rather than mode the line bounding box, we set it so the point bounding

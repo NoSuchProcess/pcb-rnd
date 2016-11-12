@@ -44,7 +44,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way);
  */
 void AdjustAttachedLine(void)
 {
-	AttachedLineType *line = &Crosshair.AttachedLine;
+	pcb_attached_line_t *line = &Crosshair.AttachedLine;
 
 	/* I need at least one point */
 	if (line->State == STATE_FIRST)
@@ -76,7 +76,7 @@ void AdjustAttachedLine(void)
  *          5 3
  *           4
  */
-void FortyFiveLine(AttachedLineType *Line)
+void FortyFiveLine(pcb_attached_line_t *Line)
 {
 	Coord dx, dy, min;
 	unsigned direction = 0;
@@ -150,7 +150,7 @@ void FortyFiveLine(AttachedLineType *Line)
 void AdjustTwoLine(pcb_bool way)
 {
 	Coord dx, dy;
-	AttachedLineType *line = &Crosshair.AttachedLine;
+	pcb_attached_line_t *line = &Crosshair.AttachedLine;
 
 	if (Crosshair.AttachedLine.State == STATE_FIRST)
 		return;
@@ -414,7 +414,7 @@ static void drc_line(pcb_point_t *end)
 	struct drc_info info;
 	pcb_cardinal_t group, comp;
 	pcb_line_t line;
-	AttachedLineType aline;
+	pcb_attached_line_t aline;
 	static pcb_point_t last_good; /* internal state of last good endpoint - we cna do thsi cheat, because... */
 
 	/* ... we hardwire the assumption on how a line is drawn: it starts out as a 0 long segment, which is valid: */
