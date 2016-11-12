@@ -439,8 +439,8 @@ static int netlist_sort_offset = 0;
 
 static int netlist_sort(const void *va, const void *vb)
 {
-	const LibraryMenuType *am = (const LibraryMenuType *) va;
-	const LibraryMenuType *bm = (const LibraryMenuType *) vb;
+	const pcb_lib_menu_t *am = (const pcb_lib_menu_t *) va;
+	const pcb_lib_menu_t *bm = (const pcb_lib_menu_t *) vb;
 	const char *a = am->Name;
 	const char *b = bm->Name;
 	if (*a == '~')
@@ -452,14 +452,14 @@ static int netlist_sort(const void *va, const void *vb)
 
 static int netnode_sort(const void *va, const void *vb)
 {
-	const LibraryEntryType *am = (const LibraryEntryType *) va;
-	const LibraryEntryType *bm = (const LibraryEntryType *) vb;
+	const pcb_lib_entry_t *am = (const pcb_lib_entry_t *) va;
+	const pcb_lib_entry_t *bm = (const pcb_lib_entry_t *) vb;
 	const char *a = am->ListEntry;
 	const char *b = bm->ListEntry;
 	return string_cmp(a, b);
 }
 
-void sort_library(LibraryTypePtr lib)
+void sort_library(pcb_lib_t *lib)
 {
 	int i;
 	qsort(lib->Menu, lib->MenuN, sizeof(lib->Menu[0]), netlist_sort);

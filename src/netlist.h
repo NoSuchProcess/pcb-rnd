@@ -53,37 +53,37 @@ typedef struct {								/* holds a list of net lists */
 
 
 void pcb_netlist_changed(int force_unfreeze);
-LibraryMenuTypePtr pcb_netnode_to_netname(const char *nodename);
-LibraryMenuTypePtr pcb_netname_to_netname(const char *netname);
+pcb_lib_menu_t *pcb_netnode_to_netname(const char *nodename);
+pcb_lib_menu_t *pcb_netname_to_netname(const char *netname);
 
-int pcb_pin_name_to_xy(LibraryEntryType *pin, Coord *x, Coord *y);
-void pcb_netlist_find(LibraryMenuType *net, LibraryEntryType *pin);
-void pcb_netlist_select(LibraryMenuType *net, LibraryEntryType *pin);
-void pcb_netlist_rats(LibraryMenuType *net, LibraryEntryType *pin);
-void pcb_netlist_norats(LibraryMenuType *net, LibraryEntryType *pin);
-void pcb_netlist_clear(LibraryMenuType *net, LibraryEntryType *pin);
-void pcb_netlist_style(LibraryMenuType *net, const char *style);
+int pcb_pin_name_to_xy(pcb_lib_entry_t *pin, Coord *x, Coord *y);
+void pcb_netlist_find(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
+void pcb_netlist_select(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
+void pcb_netlist_rats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
+void pcb_netlist_norats(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
+void pcb_netlist_clear(pcb_lib_menu_t *net, pcb_lib_entry_t *pin);
+void pcb_netlist_style(pcb_lib_menu_t *net, const char *style);
 
 /* Return the net entry for a pin name (slow search). The pin name is
    like "U101-5", so element's refdes, dash, pin number */
-LibraryMenuTypePtr pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pinname);
+pcb_lib_menu_t *pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pinname);
 
 /* Same as pcb_netlist_find_net4pinname but with pin pointer */
-LibraryMenuTypePtr pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *pin);
-LibraryMenuTypePtr pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad);
+pcb_lib_menu_t *pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *pin);
+pcb_lib_menu_t *pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad);
 
 
-/* Evaluate to const char * name of the network; lmt is (LibraryMenuType *) */
+/* Evaluate to const char * name of the network; lmt is (pcb_lib_menu_t *) */
 #define pcb_netlist_name(lmt) ((const char *)((lmt)->Name+2))
 
-/* Evaluate to 0 or 1 depending on whether the net is marked with *; lmt is (LibraryMenuType *) */
+/* Evaluate to 0 or 1 depending on whether the net is marked with *; lmt is (pcb_lib_menu_t *) */
 #define pcb_netlist_is_bad(lmt) (((lmt)->Name[0]) == '*')
 
 
 /* Return the index of the net or PCB_NETLIST_INVALID_INDEX if the net is not
    on the netlist. NOTE: indices returned are valid only until the first
    netlist change! */
-pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, LibraryMenuType *net);
+pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net);
 
 #define PCB_NETLIST_INVALID_INDEX ((pcb_cardinal_t)(-1))
 

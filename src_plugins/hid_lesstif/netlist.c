@@ -36,7 +36,7 @@ static int LesstifNetlistChanged(int argc, const char **argv, Coord x, Coord y);
 
 static void pick_net(int pick)
 {
-	LibraryMenuType *menu = PCB->NetlistLib[NETLIST_EDITED].Menu + pick;
+	pcb_lib_menu_t *menu = PCB->NetlistLib[NETLIST_EDITED].Menu + pick;
 	int i;
 
 	if (pick == last_pick)
@@ -59,7 +59,7 @@ static void netlist_select(Widget w, void *v, XmListCallbackStruct * cbs)
 {
 	XmString str;
 	int pos = cbs->item_position;
-	LibraryMenuTypePtr net = &(PCB->NetlistLib[NETLIST_EDITED].Menu[pos - 1]);
+	pcb_lib_menu_t *net = &(PCB->NetlistLib[NETLIST_EDITED].Menu[pos - 1]);
 	char *name = net->Name;
 	if (name[0] == ' ') {
 		name[0] = '*';
@@ -82,9 +82,9 @@ static void netlist_extend(Widget w, void *v, XmListCallbackStruct * cbs)
 		pick_net(cbs->item_position - 1);
 }
 
-typedef void (*Std_Nbcb_Func) (LibraryMenuTypePtr, int);
+typedef void (*Std_Nbcb_Func) (pcb_lib_menu_t *, int);
 
-static void nbcb_rat_on(LibraryMenuTypePtr net, int pos)
+static void nbcb_rat_on(pcb_lib_menu_t *net, int pos)
 {
 	XmString str;
 	char *name = net->Name;
@@ -95,7 +95,7 @@ static void nbcb_rat_on(LibraryMenuTypePtr net, int pos)
 	XmStringFree(str);
 }
 
-static void nbcb_rat_off(LibraryMenuTypePtr net, int pos)
+static void nbcb_rat_off(pcb_lib_menu_t *net, int pos)
 {
 	XmString str;
 	char *name = net->Name;
@@ -109,9 +109,9 @@ static void nbcb_rat_off(LibraryMenuTypePtr net, int pos)
 
 /* Select on the layout the current net treeview selection
  */
-static void nbcb_select_common(LibraryMenuTypePtr net, int pos, int select_flag)
+static void nbcb_select_common(pcb_lib_menu_t *net, int pos, int select_flag)
 {
-	LibraryEntryType *entry;
+	pcb_lib_entry_t *entry;
 	pcb_connection_t conn;
 	int i;
 
@@ -129,17 +129,17 @@ static void nbcb_select_common(LibraryMenuTypePtr net, int pos, int select_flag)
 	Draw();
 }
 
-static void nbcb_select(LibraryMenuTypePtr net, int pos)
+static void nbcb_select(pcb_lib_menu_t *net, int pos)
 {
 	nbcb_select_common(net, pos, 1);
 }
 
-static void nbcb_deselect(LibraryMenuTypePtr net, int pos)
+static void nbcb_deselect(pcb_lib_menu_t *net, int pos)
 {
 	nbcb_select_common(net, pos, 0);
 }
 
-static void nbcb_find(LibraryMenuTypePtr net, int pos)
+static void nbcb_find(pcb_lib_menu_t *net, int pos)
 {
 	char *name = net->Name + 2;
 	hid_actionl("netlist", "find", name, NULL);
@@ -154,7 +154,7 @@ static void nbcb_std_callback(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStr
 	if (v == nbcb_find)
 		hid_actionl("connection", "reset", NULL);
 	for (i = 0; i < posc; i++) {
-		LibraryMenuTypePtr net = &(PCB->NetlistLib[NETLIST_EDITED].Menu[posl[i] - 1]);
+		pcb_lib_menu_t *net = &(PCB->NetlistLib[NETLIST_EDITED].Menu[posl[i] - 1]);
 		v(net, posl[i]);
 	}
 	stdarg_n = 0;
@@ -198,7 +198,7 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 
 static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 {
-	LibraryMenuType *menu = PCB->NetlistLib[NETLIST_EDITED].Menu + last_pick;
+	pcb_lib_menu_t *menu = PCB->NetlistLib[NETLIST_EDITED].Menu + last_pick;
 	const char *name = menu->Entry[cbs->item_position - 1].ListEntry;
 	char *ename, *pname;
 
@@ -378,7 +378,7 @@ static int LesstifNetlistShow(int argc, const char **argv, Coord x, Coord y)
 		return 0;
 
 	if (argc == 1) {
-		LibraryMenuTypePtr net;
+		pcb_lib_menu_t *net;
 
 		net = pcb_netnode_to_netname(argv[0]);
 		if (net) {

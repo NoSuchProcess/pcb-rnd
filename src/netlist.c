@@ -66,7 +66,7 @@ void pcb_netlist_changed(int force_unfreeze)
 	}
 }
 
-LibraryMenuTypePtr pcb_netnode_to_netname(const char *nodename)
+pcb_lib_menu_t *pcb_netnode_to_netname(const char *nodename)
 {
 	int i, j;
 	/*printf("nodename [%s]\n", nodename); */
@@ -81,7 +81,7 @@ LibraryMenuTypePtr pcb_netnode_to_netname(const char *nodename)
 	return 0;
 }
 
-LibraryMenuTypePtr pcb_netname_to_netname(const char *netname)
+pcb_lib_menu_t *pcb_netname_to_netname(const char *netname)
 {
 	int i;
 
@@ -97,7 +97,7 @@ LibraryMenuTypePtr pcb_netname_to_netname(const char *netname)
 	return 0;
 }
 
-int pcb_pin_name_to_xy(LibraryEntryType * pin, Coord *x, Coord *y)
+int pcb_pin_name_to_xy(pcb_lib_entry_t * pin, Coord *x, Coord *y)
 {
 	pcb_connection_t conn;
 	if (!SeekPad(pin, &conn, pcb_false))
@@ -115,7 +115,7 @@ int pcb_pin_name_to_xy(LibraryEntryType * pin, Coord *x, Coord *y)
 	return 1;
 }
 
-void pcb_netlist_find(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_find(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
 	Coord x, y;
 	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
@@ -123,7 +123,7 @@ void pcb_netlist_find(LibraryMenuType * net, LibraryEntryType * pin)
 	LookupConnection(x, y, 1, 1, PCB_FLAG_FOUND);
 }
 
-void pcb_netlist_select(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_select(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
 	Coord x, y;
 	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
@@ -131,14 +131,14 @@ void pcb_netlist_select(LibraryMenuType * net, LibraryEntryType * pin)
 	LookupConnection(x, y, 1, 1, PCB_FLAG_SELECTED);
 }
 
-void pcb_netlist_rats(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_rats(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
 	net->Name[0] = ' ';
 	net->flag = 1;
 	pcb_netlist_changed(0);
 }
 
-void pcb_netlist_norats(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_norats(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
 	net->Name[0] = '*';
 	net->flag = 0;
@@ -148,9 +148,9 @@ void pcb_netlist_norats(LibraryMenuType * net, LibraryEntryType * pin)
 /* The primary purpose of this action is to remove the netlist
    completely so that a new one can be loaded, usually via a gsch2pcb
    style script.  */
-void pcb_netlist_clear(LibraryMenuType * net, LibraryEntryType * pin)
+void pcb_netlist_clear(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 {
-	LibraryType *netlist = (LibraryType *) & PCB->NetlistLib;
+	pcb_lib_t *netlist = (pcb_lib_t *) & PCB->NetlistLib;
 	int ni, pi;
 
 	if (net == 0) {
@@ -183,21 +183,21 @@ void pcb_netlist_clear(LibraryMenuType * net, LibraryEntryType * pin)
 	pcb_netlist_changed(0);
 }
 
-void pcb_netlist_style(LibraryMenuType * net, const char *style)
+void pcb_netlist_style(pcb_lib_menu_t * net, const char *style)
 {
 	free(net->Style);
 	net->Style = pcb_strdup_null((char *) style);
 }
 
-LibraryMenuTypePtr pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pin)
+pcb_lib_menu_t *pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pin)
 {
 	int n;
 
 	for (n = 0; n < pcb->NetlistLib[NETLIST_EDITED].MenuN; n++) {
-		LibraryMenuTypePtr menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
+		pcb_lib_menu_t *menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
 		int p;
 		for (p = 0; p < menu->EntryN; p++) {
-			LibraryEntryTypePtr entry = &menu->Entry[p];
+			pcb_lib_entry_t *entry = &menu->Entry[p];
 			if (strcmp(entry->ListEntry, pin) == 0)
 				return menu;
 		}
@@ -205,7 +205,7 @@ LibraryMenuTypePtr pcb_netlist_find_net4pinname(pcb_board_t *pcb, const char *pi
 	return NULL;
 }
 
-static LibraryMenuTypePtr pcb_netlist_find_net4pin_any(pcb_board_t *pcb, const char *ename, const char *pname)
+static pcb_lib_menu_t *pcb_netlist_find_net4pin_any(pcb_board_t *pcb, const char *ename, const char *pname)
 {
 	char pinname[256];
 	int len;
@@ -220,7 +220,7 @@ static LibraryMenuTypePtr pcb_netlist_find_net4pin_any(pcb_board_t *pcb, const c
 	return pcb_netlist_find_net4pinname(pcb, pinname);
 }
 
-LibraryMenuTypePtr pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *pin)
+pcb_lib_menu_t *pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *pin)
 {
 	const pcb_element_t *e = pin->Element;
 
@@ -231,7 +231,7 @@ LibraryMenuTypePtr pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *p
 }
 
 
-LibraryMenuTypePtr pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad)
+pcb_lib_menu_t *pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad)
 {
 	const pcb_element_t *e = pad->Element;
 
@@ -241,10 +241,10 @@ LibraryMenuTypePtr pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *p
 	return pcb_netlist_find_net4pin_any(pcb, e->Name[NAMEONPCB_INDEX].TextString, pad->Number);
 }
 
-pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, LibraryMenuType *net)
+pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net)
 {
-	LibraryMenuType *first = &pcb->NetlistLib[NETLIST_EDITED].Menu[0];
-	LibraryMenuType *last  = &pcb->NetlistLib[NETLIST_EDITED].Menu[pcb->NetlistLib[NETLIST_EDITED].MenuN-1];
+	pcb_lib_menu_t *first = &pcb->NetlistLib[NETLIST_EDITED].Menu[0];
+	pcb_lib_menu_t *last  = &pcb->NetlistLib[NETLIST_EDITED].Menu[pcb->NetlistLib[NETLIST_EDITED].MenuN-1];
 	
 	if ((net < first) || (net > last))
 		return PCB_NETLIST_INVALID_INDEX;

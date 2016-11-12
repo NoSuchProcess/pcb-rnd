@@ -391,7 +391,7 @@ int IPCD356_Netlist(void)
 	FILE *fp;
 	char nodename[256];
 	char net[256];
-	LibraryMenuType *netname;
+	pcb_lib_menu_t *netname;
 	IPCD356_AliasList *aliaslist;
 
 	if (IPCD356_SanityCheck()) {	/* Check for invalid names + numbers. */

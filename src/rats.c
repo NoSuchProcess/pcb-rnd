@@ -64,7 +64,7 @@ static pcb_bool ParseConnection(const char *, char *, char *);
 static pcb_bool DrawShortestRats(NetListTypePtr,
 														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr));
 static pcb_bool GatherSubnets(NetListTypePtr, pcb_bool, pcb_bool);
-static pcb_bool CheckShorts(LibraryMenuTypePtr);
+static pcb_bool CheckShorts(pcb_lib_menu_t *);
 static void TransferNet(NetListTypePtr, pcb_net_t *, pcb_net_t *);
 
 /* ---------------------------------------------------------------------------
@@ -153,7 +153,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connect
  * parse a netlist menu entry and locate the corresponding pad
  * returns pcb_true if found, and fills in Connection information
  */
-pcb_bool SeekPad(LibraryEntryType * entry, pcb_connection_t * conn, pcb_bool Same)
+pcb_bool SeekPad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_bool Same)
 {
 	int j;
 	char ElementName[256];
@@ -184,7 +184,7 @@ pcb_bool SeekPad(LibraryEntryType * entry, pcb_connection_t * conn, pcb_bool Sam
  * Read the library-netlist build a pcb_true Netlist structure
  */
 
-NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
+NetListTypePtr ProcNetlist(pcb_lib_t *net_menu)
 {
 	pcb_connection_t *connection;
 	pcb_connection_t LastPoint;
@@ -309,7 +309,7 @@ static void TransferNet(NetListTypePtr Netl, pcb_net_t *SourceNet, pcb_net_t *De
 	memset(&Netl->Net[Netl->NetN], 0, sizeof(pcb_net_t));
 }
 
-static pcb_bool CheckShorts(LibraryMenuTypePtr theNet)
+static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 {
 	pcb_bool newone, warn = pcb_false;
 	PointerListTypePtr generic = (PointerListTypePtr) calloc(1, sizeof(PointerListType));
@@ -344,7 +344,7 @@ static pcb_bool CheckShorts(LibraryMenuTypePtr theNet)
 				menu = GetPointerMemory(generic);
 				*menu = pin->Spare;
 				Message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
-								&theNet->Name[2], &((LibraryMenuTypePtr) (pin->Spare))->Name[2]);
+								&theNet->Name[2], &((pcb_lib_menu_t *) (pin->Spare))->Name[2]);
 				stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 			}
 		}
@@ -375,7 +375,7 @@ static pcb_bool CheckShorts(LibraryMenuTypePtr theNet)
 				menu = GetPointerMemory(generic);
 				*menu = pad->Spare;
 				Message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
-								&theNet->Name[2], &((LibraryMenuTypePtr) (pad->Spare))->Name[2]);
+								&theNet->Name[2], &((pcb_lib_menu_t *) (pad->Spare))->Name[2]);
 				stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 			}
 		}
@@ -815,8 +815,8 @@ pcb_rat_t *AddNet(void)
 	char ratname[20];
 	int found;
 	void *ptr1, *ptr2, *ptr3;
-	LibraryMenuTypePtr menu;
-	LibraryEntryTypePtr entry;
+	pcb_lib_menu_t *menu;
+	pcb_lib_entry_t *entry;
 
 	if (Crosshair.AttachedLine.Point1.X == Crosshair.AttachedLine.Point2.X
 			&& Crosshair.AttachedLine.Point1.Y == Crosshair.AttachedLine.Point2.Y)

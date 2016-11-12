@@ -297,9 +297,9 @@ static void nelma_write_materials(FILE * out)
 
 static void nelma_write_nets(FILE * out)
 {
-	LibraryType netlist;
-	LibraryMenuTypePtr net;
-	LibraryEntryTypePtr pin;
+	pcb_lib_t netlist;
+	pcb_lib_menu_t *net;
+	pcb_lib_entry_t *pin;
 
 	int n, m, i, idx;
 
@@ -341,9 +341,9 @@ static void nelma_write_nets(FILE * out)
 
 static void nelma_write_layer(FILE * out, int z, int h, const char *name, int full, const char *mat)
 {
-	LibraryType netlist;
-	LibraryMenuTypePtr net;
-	LibraryEntryTypePtr pin;
+	pcb_lib_t netlist;
+	pcb_lib_menu_t *net;
+	pcb_lib_entry_t *pin;
 
 	int n, m;
 
@@ -413,7 +413,7 @@ static void nelma_write_layers(FILE * out)
 		}
 }
 
-static void nelma_write_object(FILE * out, LibraryEntryTypePtr pin)
+static void nelma_write_object(FILE * out, pcb_lib_entry_t *pin)
 {
 	int i, idx;
 	Coord px = 0, py = 0;
@@ -451,9 +451,9 @@ static void nelma_write_object(FILE * out, LibraryEntryTypePtr pin)
 
 static void nelma_write_objects(FILE * out)
 {
-	LibraryType netlist;
-	LibraryMenuTypePtr net;
-	LibraryEntryTypePtr pin;
+	pcb_lib_t netlist;
+	pcb_lib_menu_t *net;
+	pcb_lib_entry_t *pin;
 
 	int n, m;
 

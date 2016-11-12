@@ -63,7 +63,7 @@ void AddObjectToChangeAnglesUndoList(int, void *, void *, void *);
 void AddObjectToChangeRadiiUndoList(int, void *, void *, void *);
 void AddObjectToClearPolyUndoList(int, void *, void *, void *, pcb_bool);
 void AddLayerChangeToUndoList(int, int);
-void AddNetlistLibToUndoList(LibraryTypePtr);
+void AddNetlistLibToUndoList(pcb_lib_t *);
 void LockUndo(void);
 void UnlockUndo(void);
 pcb_bool Undoing(void);

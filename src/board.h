@@ -97,7 +97,7 @@ struct pcb_board_s {
 	pcb_font_t Font;
 	pcb_layer_group_t LayerGroups;
 	vtroutestyle_t RouteStyle;
-	LibraryType NetlistLib[NUM_NETLISTS];
+	pcb_lib_t NetlistLib[NUM_NETLISTS];
 	pcb_ratspatch_line_t *NetlistPatches, *NetlistPatchLast;
 	pcb_attribute_list_t Attributes;
 	pcb_data_t *Data;							/* entire database */

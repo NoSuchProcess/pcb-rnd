@@ -111,7 +111,7 @@ int RevertPCB(void);
 int SaveBufferElements(const char *, const char *fmt);
 void pcb_sort_netlist(void);
 void PrintQuotedString(FILE *, const char *);
-void sort_library(LibraryTypePtr lib);
+void sort_library(pcb_lib_t *lib);
 void set_some_route_style();
 int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency);
 int WritePipe(const char *, pcb_bool, const char *fmt);

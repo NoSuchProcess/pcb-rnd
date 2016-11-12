@@ -48,7 +48,7 @@ static int pcb_netlist_swap()
 	char *pins[3] = { NULL, NULL, NULL };
 	int next = 0, n;
 	int ret = -1;
-	LibraryMenuTypePtr nets[2];
+	pcb_lib_menu_t *nets[2];
 
 	ELEMENT_LOOP(PCB->Data);
 	{
@@ -113,9 +113,9 @@ quit:;
 static int pcb_netlist_add(const char *netname, const char *pinname)
 {
 	int ni, pi;
-	LibraryType *netlist = &PCB->NetlistLib[NETLIST_EDITED];
-	LibraryMenuType *net = NULL;
-	LibraryEntryType *pin = NULL;
+	pcb_lib_t *netlist = &PCB->NetlistLib[NETLIST_EDITED];
+	pcb_lib_menu_t *net = NULL;
+	pcb_lib_entry_t *pin = NULL;
 
 	for (ni = 0; ni < netlist->MenuN; ni++)
 		if (strcmp(netlist->Menu[ni].Name + 2, netname) == 0) {
@@ -200,14 +200,14 @@ updates the GUI.
 
 %end-doc */
 
-typedef void (*NFunc) (LibraryMenuType *, LibraryEntryType *);
+typedef void (*NFunc) (pcb_lib_menu_t *, pcb_lib_entry_t *);
 
 static int ActionNetlist(int argc, const char **argv, Coord x, Coord y)
 {
 	NFunc func;
 	int i, j;
-	LibraryMenuType *net;
-	LibraryEntryType *pin;
+	pcb_lib_menu_t *net;
+	pcb_lib_entry_t *pin;
 	int net_found = 0;
 	int pin_found = 0;
 	int use_re = 0;

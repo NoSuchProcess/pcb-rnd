@@ -30,13 +30,13 @@
 
 #include "global_typedefs.h"
 
-typedef struct LibraryEntryTpye_s  LibraryEntryType, *LibraryEntryTypePtr;
-typedef struct LibraryMenuType_s   LibraryMenuType, *LibraryMenuTypePtr;
+typedef struct pcb_lib_entry_s  pcb_lib_entry_t;
+typedef struct pcb_lib_menu_s   pcb_lib_menu_t;
 
 /* ---------------------------------------------------------------------------
  * structure used by library routines
  */
-struct LibraryEntryTpye_s {
+struct pcb_lib_entry_s {
 	const char *ListEntry;				/* the string for the selection box */
 	int ListEntry_dontfree;       /* do not free(ListEntry) if non-zero */
 	/* This used to contain some char *AllocatedMemory, possibly with
@@ -58,13 +58,13 @@ struct LibraryEntryTpye_s {
    CreateLibraryEntry.  These "internal" entries are used for
    electrical paths that aren't yet assigned to a real net.  */
 
-struct LibraryMenuType_s {
+struct pcb_lib_menu_s {
 	char *Name,										/* name of the menu entry */
 	 *directory,									/* Directory name library elements are from */
 	 *Style;											/* routing style */
 	pcb_cardinal_t EntryN,							/* number of objects */
 	  EntryMax;										/* number of reserved memory locations */
-	LibraryEntryTypePtr Entry;		/* the entries */
+	pcb_lib_entry_t *Entry;		/* the entries */
 	char flag;										/* used by the netlist window to enable/disable nets */
 	char internal;								/* if set, this is an internal-only entry, not
 																   part of the global netlist. */
@@ -73,28 +73,28 @@ struct LibraryMenuType_s {
 typedef struct {
 	pcb_cardinal_t MenuN;								/* number of objects */
 	pcb_cardinal_t MenuMax;							/* number of reserved memory locations */
-	LibraryMenuTypePtr Menu;			/* the entries */
-} LibraryType, *LibraryTypePtr;
+	pcb_lib_menu_t *Menu;			/* the entries */
+} pcb_lib_t;
 
-LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr, int *idx);
-LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr);
-void FreeLibraryMemory(LibraryTypePtr);
-void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx);
+pcb_lib_menu_t *GetLibraryMenuMemory(pcb_lib_t *, int *idx);
+pcb_lib_entry_t *GetLibraryEntryMemory(pcb_lib_menu_t *);
+void FreeLibraryMemory(pcb_lib_t *);
+void DeleteLibraryMenuMemory(pcb_lib_t *lib, int menuidx);
 
-LibraryMenuTypePtr CreateNewNet(LibraryTypePtr lib, char *name, const char *style);
-LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr net, char *conn);
+pcb_lib_menu_t *CreateNewNet(pcb_lib_t *lib, char *name, const char *style);
+pcb_lib_entry_t *CreateNewConnection(pcb_lib_menu_t *net, char *conn);
 
 
 #define MENU_LOOP(top)	do {	\
 	pcb_cardinal_t	l;			\
-	LibraryMenuTypePtr menu;		\
+	pcb_lib_menu_t *menu;		\
 	for (l = (top)->MenuN-1; l != -1; l--)	\
 	{					\
 		menu = &(top)->Menu[l]
 
 #define ENTRY_LOOP(top) do	{	\
 	pcb_cardinal_t	n;			\
-	LibraryEntryTypePtr entry;		\
+	pcb_lib_entry_t *entry;		\
 	for (n = (top)->EntryN-1; n != -1; n--)	\
 	{					\
 		entry = &(top)->Entry[n]

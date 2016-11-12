@@ -65,8 +65,8 @@ static GtkTreeSelection *node_selection;
 
 static gboolean selection_holdoff;
 
-static LibraryMenuType *selected_net;
-static LibraryMenuType *node_selected_net;
+static pcb_lib_menu_t *selected_net;
+static pcb_lib_menu_t *node_selected_net;
 
 
 /* The Netlist window displays all the layout nets in a left treeview
@@ -104,7 +104,7 @@ static LibraryMenuType *node_selected_net;
 */
 
 
-/* -------- The netlist nodes (LibraryEntryType) data model ----------
+/* -------- The netlist nodes (pcb_lib_entry_t) data model ----------
    |  Each time a net is selected in the left treeview, this node model
    |  is recreated containing all the nodes (pins/pads) that are connected
    |  to the net.  Loading the new model will update the right treeview with
@@ -113,14 +113,14 @@ static LibraryMenuType *node_selected_net;
    |  The terminology is a bit confusing because the PCB netlist data
    |  structures are generic structures used for library elements, netlist
    |  data, and possibly other things also.  The mapping is that
-   |  the layout netlist data structure is a LibraryType which
-   |  contains an allocated array of LibraryMenuType structs.  Each of these
+   |  the layout netlist data structure is a pcb_lib_t which
+   |  contains an allocated array of pcb_lib_menu_t structs.  Each of these
    |  structs represents a net in the netlist and contains an array
-   |  of LibraryEntryType structs which represent the nodes connecting to
+   |  of pcb_lib_entry_t structs which represent the nodes connecting to
    |  the net.  So we have:
    |
    |                      Nets              Nodes
-   |       LibraryType    LibraryMenuType   LibraryEntryType
+   |       pcb_lib_t    pcb_lib_menu_t   pcb_lib_entry_t
    | -------------------------------------------------------
    |  PCB->NetlistLib------Menu[0]-----------Entry[0]
    |                     |                   Entry[1]
@@ -136,18 +136,18 @@ static LibraryMenuType *node_selected_net;
    | names would be nodes C101-1, R101-2, etc
 */
 
-LibraryEntryType *node_get_node_from_name(gchar * node_name, LibraryMenuType ** node_net);
+pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** node_net);
 
 enum {
 	NODE_NAME_COLUMN,							/* Name to show in the treeview         */
-	NODE_LIBRARY_COLUMN,					/* Pointer to this node (LibraryEntryType)      */
+	NODE_LIBRARY_COLUMN,					/* Pointer to this node (pcb_lib_entry_t)      */
 	N_NODE_COLUMNS
 };
 
-/* Given a net in the netlist (a LibraryMenuType) put all the Entry[]
+/* Given a net in the netlist (a pcb_lib_menu_t) put all the Entry[]
    |  names (the nodes) into a newly created node tree model.
 */
-static GtkTreeModel *node_model_create(LibraryMenuType * menu)
+static GtkTreeModel *node_model_create(pcb_lib_menu_t * menu)
 {
 	GtkListStore *store;
 	GtkTreeIter iter;
@@ -173,7 +173,7 @@ static GtkTreeModel *node_model_create(LibraryMenuType * menu)
    |  Create a new model containing the nodes of the given net, insert
    |  the model into the treeview and unref the old model.
 */
-static void node_model_update(LibraryMenuType * menu)
+static void node_model_update(pcb_lib_menu_t * menu)
 {
 	GtkTreeModel *model;
 
@@ -195,7 +195,7 @@ static void node_model_update(LibraryMenuType * menu)
 		g_object_unref(G_OBJECT(model));
 }
 
-static void toggle_pin_selected(LibraryEntryType * entry)
+static void toggle_pin_selected(pcb_lib_entry_t * entry)
 {
 	pcb_connection_t conn;
 
@@ -214,8 +214,8 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	LibraryMenuType *node_net;
-	LibraryEntryType *node;
+	pcb_lib_menu_t *node_net;
+	pcb_lib_entry_t *node;
 	pcb_connection_t conn;
 	Coord x, y;
 	static gchar *node_name;
@@ -249,7 +249,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	}
 
 	/* From the treeview row, extract the node pointer stored there and
-	   |  we've got a pointer to the LibraryEntryType (node) the row
+	   |  we've got a pointer to the pcb_lib_entry_t (node) the row
 	   |  represents.
 	 */
 	gtk_tree_model_get(model, &iter, NODE_LIBRARY_COLUMN, &node, -1);
@@ -287,7 +287,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 }
 
 
-/* -------- The net (LibraryMenuType) data model ----------
+/* -------- The net (pcb_lib_menu_t) data model ----------
  */
 /* TODO: the enable and disable all nets.  Can't seem to get how that's
    |  supposed to work, but it'll take updating the NET_ENABLED_COLUMN in
@@ -300,7 +300,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 enum {
 	NET_ENABLED_COLUMN,						/* If enabled will be ' ', if disable '*'       */
 	NET_NAME_COLUMN,							/* Name to show in the treeview */
-	NET_LIBRARY_COLUMN,						/* Pointer to this net (LibraryMenuType)        */
+	NET_LIBRARY_COLUMN,						/* Pointer to this net (pcb_lib_menu_t)        */
 	N_NET_COLUMNS
 };
 
@@ -415,7 +415,7 @@ static void net_selection_double_click_cb(GtkTreeView * treeview, GtkTreePath * 
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gchar *str;
-	LibraryMenuType *menu;
+	pcb_lib_menu_t *menu;
 
 	model = gtk_tree_view_get_model(treeview);
 	if (gtk_tree_model_get_iter(model, &iter, path)) {
@@ -446,7 +446,7 @@ static void net_selection_changed_cb(GtkTreeSelection * selection, gpointer data
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	LibraryMenuType *net;
+	pcb_lib_menu_t *net;
 
 	if (selection_holdoff)				/* PCB is highlighting, user is not selecting */
 		return;
@@ -457,7 +457,7 @@ static void net_selection_changed_cb(GtkTreeSelection * selection, gpointer data
 		return;
 	}
 
-	/* Get a pointer, net, to the LibraryMenuType of the newly selected
+	/* Get a pointer, net, to the pcb_lib_menu_t of the newly selected
 	   |  netlist row, and create a new node model from the net entries
 	   |  and insert that model into the node view.  Delete old entry model.
 	 */
@@ -471,7 +471,7 @@ static void netlist_disable_all_cb(GtkToggleButton * button, gpointer data)
 {
 	GtkTreeIter iter;
 	gboolean active = gtk_toggle_button_get_active(button);
-	LibraryMenuType *menu;
+	pcb_lib_menu_t *menu;
 
 	/* Get each net iter and change the NET_ENABLED_COLUMN to a "*" or ""
 	   |  to flag it as disabled or enabled based on toggle button state.
@@ -490,7 +490,7 @@ static void netlist_disable_all_cb(GtkToggleButton * button, gpointer data)
  */
 static void netlist_select_cb(GtkWidget * widget, gpointer data)
 {
-	LibraryEntryType *entry;
+	pcb_lib_entry_t *entry;
 	pcb_connection_t conn;
 	gint i;
 	gboolean select_flag = GPOINTER_TO_INT(data);
@@ -558,16 +558,16 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 }
 
  /**/ typedef struct {
-	LibraryEntryType *ret_val;
-	LibraryMenuType *node_net;
+	pcb_lib_entry_t *ret_val;
+	pcb_lib_menu_t *node_net;
 	const gchar *node_name;
 	pcb_bool found;
 } node_get_node_from_name_state;
 
 static gboolean node_get_node_from_name_helper(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data)
 {
-	LibraryMenuType *net;
-	LibraryEntryType *node;
+	pcb_lib_menu_t *net;
+	pcb_lib_entry_t *node;
 	node_get_node_from_name_state *state = data;
 
 	gtk_tree_model_get(net_model, iter, NET_LIBRARY_COLUMN, &net, -1);
@@ -587,7 +587,7 @@ static gboolean node_get_node_from_name_helper(GtkTreeModel * model, GtkTreePath
 	return FALSE;
 }
 
-LibraryEntryType *node_get_node_from_name(gchar * node_name, LibraryMenuType ** node_net)
+pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** node_net)
 {
 	node_get_node_from_name_state state;
 
@@ -774,15 +774,15 @@ void ghid_netlist_window_show(GHidPort * out, gboolean raise)
 struct ggnfnn_task {
 	gboolean enabled_only;
 	const gchar *node_name;
-	LibraryMenuType *found_net;
+	pcb_lib_menu_t *found_net;
 	GtkTreeIter iter;
 };
 
 static gboolean hunt_named_node(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data)
 {
 	struct ggnfnn_task *task = (struct ggnfnn_task *) data;
-	LibraryMenuType *net;
-	LibraryEntryType *node;
+	pcb_lib_menu_t *net;
+	pcb_lib_entry_t *node;
 	gchar *str;
 	gint j;
 	gboolean is_disabled;
@@ -811,7 +811,7 @@ static gboolean hunt_named_node(GtkTreeModel * model, GtkTreePath * path, GtkTre
 	return FALSE;
 }
 
-LibraryMenuType *ghid_get_net_from_node_name(const gchar * node_name, gboolean enabled_only)
+pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, gboolean enabled_only)
 {
 	GtkTreePath *path;
 	struct ggnfnn_task task;
@@ -820,7 +820,7 @@ LibraryMenuType *ghid_get_net_from_node_name(const gchar * node_name, gboolean e
 		return NULL;
 
 	/* Have to force the netlist window created because we need the treeview
-	   |  models constructed so we can find the LibraryMenuType pointer the
+	   |  models constructed so we can find the pcb_lib_menu_t pointer the
 	   |  caller wants.
 	 */
 	ghid_netlist_window_create(gport);
@@ -860,7 +860,7 @@ void ghid_netlist_highlight_node(const gchar * node_name)
 {
 	GtkTreePath *path;
 	GtkTreeIter iter;
-	LibraryMenuType *net;
+	pcb_lib_menu_t *net;
 	gchar *name;
 
 	if (!node_name)

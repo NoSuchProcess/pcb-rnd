@@ -113,8 +113,8 @@ typedef struct {
 } AngleChangeType;
 
 typedef struct {								/* information about netlist lib changes */
-	LibraryTypePtr old;
-	LibraryTypePtr lib;
+	pcb_lib_t *old;
+	pcb_lib_t *lib;
 } NetlistChangeType, *NetlistChangeTypePtr;
 
 typedef struct {								/* holds information about an operation */
@@ -833,7 +833,7 @@ static pcb_bool UndoNetlistChange(UndoListTypePtr Entry)
 {
 	NetlistChangeTypePtr l = &Entry->Data.NetlistChange;
 	unsigned int i, j;
-	LibraryTypePtr lib, saved;
+	pcb_lib_t *lib, *saved;
 
 	lib = l->lib;
 	saved = l->old;
@@ -1537,11 +1537,11 @@ void AddLayerChangeToUndoList(int old_index, int new_index)
 /* ---------------------------------------------------------------------------
  * adds a netlist change to the undo list
  */
-void AddNetlistLibToUndoList(LibraryTypePtr lib)
+void AddNetlistLibToUndoList(pcb_lib_t *lib)
 {
 	UndoListTypePtr undo;
 	unsigned int i, j;
-	LibraryTypePtr old;
+	pcb_lib_t *old;
 
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_NETLISTCHANGE, 0, 0);
@@ -1549,11 +1549,11 @@ void AddNetlistLibToUndoList(LibraryTypePtr lib)
 		undo->Data.NetlistChange.lib = lib;
 
 		/* and what the old data is that we'll need to restore */
-		undo->Data.NetlistChange.old = (LibraryTypePtr) malloc(sizeof(LibraryTypePtr));
+		undo->Data.NetlistChange.old = (pcb_lib_t *) malloc(sizeof(pcb_lib_t *));
 		old = undo->Data.NetlistChange.old;
 		old->MenuN = lib->MenuN;
 		old->MenuMax = lib->MenuMax;
-		old->Menu = (LibraryMenuTypePtr) malloc(old->MenuMax * sizeof(LibraryMenuType));
+		old->Menu = (pcb_lib_menu_t *) malloc(old->MenuMax * sizeof(pcb_lib_menu_t));
 		if (old->Menu == NULL) {
 			fprintf(stderr, "malloc() failed in AddNetlistLibToUndoList\n");
 			exit(1);
@@ -1571,7 +1571,7 @@ void AddNetlistLibToUndoList(LibraryTypePtr lib)
 			old->Menu[i].Style = lib->Menu[i].Style ? pcb_strdup(lib->Menu[i].Style) : NULL;
 
 
-			old->Menu[i].Entry = (LibraryEntryTypePtr) malloc(old->Menu[i].EntryMax * sizeof(LibraryEntryType));
+			old->Menu[i].Entry = (pcb_lib_entry_t *) malloc(old->Menu[i].EntryMax * sizeof(pcb_lib_entry_t));
 			if (old->Menu[i].Entry == NULL) {
 				fprintf(stderr, "malloc() failed in AddNetlistLibToUndoList\n");
 				exit(1);

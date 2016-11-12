@@ -148,7 +148,7 @@ static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do
 	}
 }
 
-static void netlist_free(LibraryTypePtr dst)
+static void netlist_free(pcb_lib_t *dst)
 {
 	int n, p;
 
@@ -156,10 +156,10 @@ static void netlist_free(LibraryTypePtr dst)
 		return;
 
 	for (n = 0; n < dst->MenuN; n++) {
-		LibraryMenuTypePtr dmenu = &dst->Menu[n];
+		pcb_lib_menu_t *dmenu = &dst->Menu[n];
 		free(dmenu->Name);
 		for (p = 0; p < dmenu->EntryN; p++) {
-			LibraryEntryTypePtr dentry = &dmenu->Entry[p];
+			pcb_lib_entry_t *dentry = &dmenu->Entry[p];
 			free((char*)dentry->ListEntry);
 		}
 		free(dmenu->Entry);
@@ -168,24 +168,24 @@ static void netlist_free(LibraryTypePtr dst)
 	dst->Menu = NULL;
 }
 
-static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
+static void netlist_copy(pcb_lib_t *dst, pcb_lib_t *src)
 {
 	int n, p;
 	dst->MenuMax = dst->MenuN = src->MenuN;
 	if (src->MenuN != 0) {
-		dst->Menu = calloc(sizeof(LibraryMenuType), dst->MenuN);
+		dst->Menu = calloc(sizeof(pcb_lib_menu_t), dst->MenuN);
 		for (n = 0; n < src->MenuN; n++) {
-			LibraryMenuTypePtr smenu = &src->Menu[n];
-			LibraryMenuTypePtr dmenu = &dst->Menu[n];
+			pcb_lib_menu_t *smenu = &src->Menu[n];
+			pcb_lib_menu_t *dmenu = &dst->Menu[n];
 /*		fprintf(stderr, "Net %d name='%s': ", n, smenu->Name+2);*/
 			dmenu->Name = pcb_strdup(smenu->Name);
 			dmenu->EntryMax = dmenu->EntryN = smenu->EntryN;
-			dmenu->Entry = calloc(sizeof(LibraryEntryType), dmenu->EntryN);
+			dmenu->Entry = calloc(sizeof(pcb_lib_entry_t), dmenu->EntryN);
 			dmenu->flag = smenu->flag;
 			dmenu->internal = smenu->internal;
 			for (p = 0; p < smenu->EntryN; p++) {
-			LibraryEntryTypePtr sentry = &smenu->Entry[p];
-				LibraryEntryTypePtr dentry = &dmenu->Entry[p];
+			pcb_lib_entry_t *sentry = &smenu->Entry[p];
+				pcb_lib_entry_t *dentry = &dmenu->Entry[p];
 				dentry->ListEntry = pcb_strdup(sentry->ListEntry);
 				dentry->ListEntry_dontfree = 0;
 /*			fprintf (stderr, " '%s'/%p", dentry->ListEntry, dentry->ListEntry);*/
@@ -203,16 +203,16 @@ int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t * patch, int de
 	int n;
 
 	for (n = 0; n < pcb->NetlistLib[NETLIST_EDITED].MenuN; n++) {
-		LibraryMenuTypePtr menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
+		pcb_lib_menu_t *menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
 		if (strcmp(menu->Name + 2, patch->arg1.net_name) == 0) {
 			int p;
 			for (p = 0; p < menu->EntryN; p++) {
-				LibraryEntryTypePtr entry = &menu->Entry[p];
+				pcb_lib_entry_t *entry = &menu->Entry[p];
 /*				fprintf (stderr, "C'%s'/%p '%s'/%p\n", entry->ListEntry, entry->ListEntry, patch->id, patch->id);*/
 				if (strcmp(entry->ListEntry, patch->id) == 0) {
 					if (del) {
 						/* want to delete and it's on the list */
-						memmove(&menu->Entry[p], &menu->Entry[p + 1], (menu->EntryN - p - 1) * sizeof(LibraryEntryType));
+						memmove(&menu->Entry[p], &menu->Entry[p + 1], (menu->EntryN - p - 1) * sizeof(pcb_lib_entry_t));
 						menu->EntryN--;
 						return 0;
 					}
@@ -232,7 +232,7 @@ int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t * patch, int de
 
 	/* couldn't find the net: create it */
 	{
-		LibraryMenuType *net = NULL;
+		pcb_lib_menu_t *net = NULL;
 		net = CreateNewNet(&pcb->NetlistLib[NETLIST_EDITED], patch->arg1.net_name, NULL);
 		if (net == NULL)
 			return 1;
@@ -266,12 +266,12 @@ void rats_patch_make_edited(pcb_board_t *pcb)
 		rats_patch_apply(pcb, n);
 }
 
-static LibraryMenuTypePtr rats_patch_find_net(pcb_board_t *pcb, const char *netname, int listidx)
+static pcb_lib_menu_t *rats_patch_find_net(pcb_board_t *pcb, const char *netname, int listidx)
 {
 	int n;
 
 	for (n = 0; n < pcb->NetlistLib[listidx].MenuN; n++) {
-		LibraryMenuTypePtr menu = &pcb->NetlistLib[listidx].Menu[n];
+		pcb_lib_menu_t *menu = &pcb->NetlistLib[listidx].Menu[n];
 		if (strcmp(menu->Name + 2, netname) == 0)
 			return menu;
 	}
@@ -292,7 +292,7 @@ int rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool need
 			case RATP_ADD_CONN:
 			case RATP_DEL_CONN:
 				if (htsp_get(seen, n->arg1.net_name) == NULL) {
-					LibraryMenuTypePtr net;
+					pcb_lib_menu_t *net;
 					int p;
 
 					net = rats_patch_find_net(pcb, n->arg1.net_name, NETLIST_INPUT);
@@ -301,7 +301,7 @@ int rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool need
 						htsp_set(seen, n->arg1.net_name, net);
 						cb(ctx, PCB_RPE_INFO_BEGIN, n->arg1.net_name, NULL, NULL);
 						for (p = 0; p < net->EntryN; p++) {
-							LibraryEntryTypePtr entry = &net->Entry[p];
+							pcb_lib_entry_t *entry = &net->Entry[p];
 							cb(ctx, PCB_RPE_INFO_TERMINAL, n->arg1.net_name, NULL, entry->ListEntry);
 						}
 						cb(ctx, PCB_RPE_INFO_END, n->arg1.net_name, NULL, NULL);

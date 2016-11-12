@@ -61,7 +61,7 @@ static	pcb_layer_t *Layer;
 static	pcb_polygon_t *Polygon;
 static	pcb_symbol_t *Symbol;
 static	int		pin_num;
-static	LibraryMenuTypePtr	Menu;
+static	pcb_lib_menu_t *Menu;
 static	pcb_bool			LayerFlag[MAX_LAYER + 2];
 
 extern	char			*yytext;		/* defined by LEX */
@@ -1863,7 +1863,7 @@ net
 			/* name style pin pin ... */
 		: T_NET '(' STRING STRING ')' '('
 			{
-				Menu = CreateNewNet((LibraryTypePtr)&yyPCB->NetlistLib, $3, $4);
+				Menu = CreateNewNet((pcb_lib_t *)&yyPCB->NetlistLib, $3, $4);
 				free ($3);
 				free ($4);
 			}

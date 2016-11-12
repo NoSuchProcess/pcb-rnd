@@ -80,7 +80,7 @@ long int CreateIDGet(void);
 	pcb_flag_t	Flags; \
 	pcb_attribute_list_t Attributes
 
-	/*  struct LibraryEntryType *net */
+	/*  struct pcb_lib_entry_t *net */
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
 #define	ANYLINEFIELDS			\

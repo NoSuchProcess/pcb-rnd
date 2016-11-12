@@ -583,7 +583,7 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 }
 
 /* Build a plain old netlist */
-static lht_node_t *build_netlist(LibraryType *netlist, const char *name, int *nonempty)
+static lht_node_t *build_netlist(pcb_lib_t *netlist, const char *name, int *nonempty)
 {
 	lht_node_t *nl, *pl, *pn, *nnet;
 	pcb_cardinal_t n, p;
@@ -595,7 +595,7 @@ static lht_node_t *build_netlist(LibraryType *netlist, const char *name, int *no
 
 	nl = lht_dom_node_alloc(LHT_LIST, name);
 	for (n = 0; n < netlist->MenuN; n++) {
-		LibraryMenuTypePtr menu = &netlist->Menu[n];
+		pcb_lib_menu_t *menu = &netlist->Menu[n];
 		const char *netname = &menu->Name[2];
 		const char *style = menu->Style;
 
@@ -608,7 +608,7 @@ static lht_node_t *build_netlist(LibraryType *netlist, const char *name, int *no
 
 		/* grow the connection list */
 		for (p = 0; p < menu->EntryN; p++) {
-			LibraryEntryTypePtr entry = &menu->Entry[p];
+			pcb_lib_entry_t *entry = &menu->Entry[p];
 			const char *pin = entry->ListEntry;
 			pn = lht_dom_node_alloc(LHT_TEXT, "");
 			pn->data.text.value = pcb_strdup(pin);
@@ -682,7 +682,7 @@ static lht_node_t *build_net_patch(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, 
 }
 
 
-static lht_node_t *build_netlists(pcb_board_t *pcb, LibraryType *netlists, pcb_ratspatch_line_t *pat, int num_netlists)
+static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_lib_t *netlists, pcb_ratspatch_line_t *pat, int num_netlists)
 {
 	lht_node_t *nls;
 	int n, nonempty = 0;

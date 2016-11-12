@@ -53,8 +53,8 @@ static int ReadNetlist(const char *filename)
 	char inputline[MAX_NETLIST_LINE_LENGTH + 1];
 	char temp[MAX_NETLIST_LINE_LENGTH + 1];
 	FILE *fp;
-	LibraryMenuTypePtr menu = NULL;
-	LibraryEntryTypePtr entry;
+	pcb_lib_menu_t *menu = NULL;
+	pcb_lib_entry_t *entry;
 	int i, j, lines, kind;
 	pcb_bool continued;
 	int used_popen = 0;

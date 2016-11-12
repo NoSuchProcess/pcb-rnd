@@ -981,7 +981,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, s
 		MENU_LOOP(&(PCB->NetlistLib[NETLIST_EDITED]));
 		{
 			pcb_cardinal_t i;
-			LibraryEntryType *entry;
+			pcb_lib_entry_t *entry;
 			pcb_connection_t conn;
 
 			/* Name[0] and Name[1] are special purpose, not the actual name */

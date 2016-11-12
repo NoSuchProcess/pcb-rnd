@@ -845,7 +845,7 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 	return 0;
 }
 
-static int parse_netlist_input(LibraryType *lib, lht_node_t *netlist)
+static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 {
 	lht_node_t *nnet;
 	if (netlist->type != LHT_LIST)
@@ -853,7 +853,7 @@ static int parse_netlist_input(LibraryType *lib, lht_node_t *netlist)
 
 	for(nnet = netlist->data.list.first; nnet != NULL; nnet = nnet->next) {
 		lht_node_t *nconn, *nstyle, *nt;
-		LibraryMenuType *net;
+		pcb_lib_menu_t *net;
 		const char *style = NULL;
 
 		if (nnet->type != LHT_HASH)

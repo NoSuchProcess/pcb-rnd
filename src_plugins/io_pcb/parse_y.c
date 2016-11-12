@@ -124,7 +124,7 @@ static	pcb_layer_t *Layer;
 static	pcb_polygon_t *Polygon;
 static	pcb_symbol_t *Symbol;
 static	int		pin_num;
-static	LibraryMenuTypePtr	Menu;
+static	pcb_lib_menu_t *Menu;
 static	pcb_bool			LayerFlag[MAX_LAYER + 2];
 
 extern	char			*yytext;		/* defined by LEX */
@@ -2824,7 +2824,7 @@ yyreduce:
   case 183:
 #line 1865 "parse_y.y" /* yacc.c:1646  */
     {
-				Menu = CreateNewNet((LibraryTypePtr)&yyPCB->NetlistLib, (yyvsp[-3].string), (yyvsp[-2].string));
+				Menu = CreateNewNet((pcb_lib_t *)&yyPCB->NetlistLib, (yyvsp[-3].string), (yyvsp[-2].string));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}

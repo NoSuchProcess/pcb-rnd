@@ -40,25 +40,25 @@
 /* ---------------------------------------------------------------------------
  * get next slot for a library menu, allocates memory if necessary
  */
-LibraryMenuTypePtr GetLibraryMenuMemory(LibraryTypePtr lib, int *idx)
+pcb_lib_menu_t *GetLibraryMenuMemory(pcb_lib_t *lib, int *idx)
 {
-	LibraryMenuTypePtr menu = lib->Menu;
+	pcb_lib_menu_t *menu = lib->Menu;
 
 	/* realloc new memory if necessary and clear it */
 	if (lib->MenuN >= lib->MenuMax) {
 		lib->MenuMax += STEP_LIBRARYMENU;
-		menu = (LibraryMenuTypePtr) realloc(menu, lib->MenuMax * sizeof(LibraryMenuType));
+		menu = (pcb_lib_menu_t *) realloc(menu, lib->MenuMax * sizeof(pcb_lib_menu_t));
 		lib->Menu = menu;
-		memset(menu + lib->MenuN, 0, STEP_LIBRARYMENU * sizeof(LibraryMenuType));
+		memset(menu + lib->MenuN, 0, STEP_LIBRARYMENU * sizeof(pcb_lib_menu_t));
 	}
 	if (idx != NULL)
 		*idx = lib->MenuN;
 	return (menu + lib->MenuN++);
 }
 
-void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx)
+void DeleteLibraryMenuMemory(pcb_lib_t *lib, int menuidx)
 {
-	LibraryMenuTypePtr menu = lib->Menu;
+	pcb_lib_menu_t *menu = lib->Menu;
 
 	if (menu[menuidx].Name != NULL)
 		free(menu[menuidx].Name);
@@ -66,22 +66,22 @@ void DeleteLibraryMenuMemory(LibraryTypePtr lib, int menuidx)
 		free(menu[menuidx].directory);
 
 	lib->MenuN--;
-	memmove(menu + menuidx, menu + menuidx + 1, sizeof(LibraryMenuType) * (lib->MenuN - menuidx));
+	memmove(menu + menuidx, menu + menuidx + 1, sizeof(pcb_lib_menu_t) * (lib->MenuN - menuidx));
 }
 
 /* ---------------------------------------------------------------------------
  * get next slot for a library entry, allocates memory if necessary
  */
-LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr Menu)
+pcb_lib_entry_t *GetLibraryEntryMemory(pcb_lib_menu_t *Menu)
 {
-	LibraryEntryTypePtr entry = Menu->Entry;
+	pcb_lib_entry_t *entry = Menu->Entry;
 
 	/* realloc new memory if necessary and clear it */
 	if (Menu->EntryN >= Menu->EntryMax) {
 		Menu->EntryMax += STEP_LIBRARYENTRY;
-		entry = (LibraryEntryTypePtr) realloc(entry, Menu->EntryMax * sizeof(LibraryEntryType));
+		entry = (pcb_lib_entry_t *) realloc(entry, Menu->EntryMax * sizeof(pcb_lib_entry_t));
 		Menu->Entry = entry;
-		memset(entry + Menu->EntryN, 0, STEP_LIBRARYENTRY * sizeof(LibraryEntryType));
+		memset(entry + Menu->EntryN, 0, STEP_LIBRARYENTRY * sizeof(pcb_lib_entry_t));
 	}
 	return (entry + Menu->EntryN++);
 }
@@ -90,7 +90,7 @@ LibraryEntryTypePtr GetLibraryEntryMemory(LibraryMenuTypePtr Menu)
 /* ---------------------------------------------------------------------------
  * releases the memory that's allocated by the library
  */
-void FreeLibraryMemory(LibraryTypePtr lib)
+void FreeLibraryMemory(pcb_lib_t *lib)
 {
 	MENU_LOOP(lib);
 	{
@@ -108,15 +108,15 @@ void FreeLibraryMemory(LibraryTypePtr lib)
 	free(lib->Menu);
 
 	/* clear struct */
-	memset(lib, 0, sizeof(LibraryType));
+	memset(lib, 0, sizeof(pcb_lib_t));
 }
 
 /* ---------------------------------------------------------------------------
  * Add a new net to the netlist menu
  */
-LibraryMenuTypePtr CreateNewNet(LibraryTypePtr lib, char *name, const char *style)
+pcb_lib_menu_t *CreateNewNet(pcb_lib_t *lib, char *name, const char *style)
 {
-	LibraryMenuTypePtr menu;
+	pcb_lib_menu_t *menu;
 	char temp[64];
 
 	sprintf(temp, "  %s", name);
@@ -133,9 +133,9 @@ LibraryMenuTypePtr CreateNewNet(LibraryTypePtr lib, char *name, const char *styl
 /* ---------------------------------------------------------------------------
  * Add a connection to the net
  */
-LibraryEntryTypePtr CreateNewConnection(LibraryMenuTypePtr net, char *conn)
+pcb_lib_entry_t *CreateNewConnection(pcb_lib_menu_t *net, char *conn)
 {
-	LibraryEntryTypePtr entry = GetLibraryEntryMemory(net);
+	pcb_lib_entry_t *entry = GetLibraryEntryMemory(net);
 
 	entry->ListEntry = pcb_strdup_null(conn);
 	entry->ListEntry_dontfree = 0;

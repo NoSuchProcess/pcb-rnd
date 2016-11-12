@@ -44,16 +44,16 @@ struct pcb_connection_s {				/* holds a connection (rat) */
 	long int type;								/* type of object in ptr1 - 3 */
 	void *ptr1, *ptr2;						/* the object of the connection */
 	pcb_cardinal_t group;								/* the layer group of the connection */
-	LibraryMenuType *menu;				/* the netmenu this *SHOULD* belong too */
+	pcb_lib_menu_t *menu;				/* the netmenu this *SHOULD* belong too */
 };
 
 pcb_rat_t *AddNet(void);
 char *ConnectionName(int, void *, void *);
 
 pcb_bool AddAllRats(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr));
-pcb_bool SeekPad(LibraryEntryTypePtr, pcb_connection_t *, pcb_bool);
+pcb_bool SeekPad(pcb_lib_entry_t *, pcb_connection_t *, pcb_bool);
 
-NetListTypePtr ProcNetlist(LibraryTypePtr);
+NetListTypePtr ProcNetlist(pcb_lib_t *);
 NetListListType CollectSubnets(pcb_bool);
 pcb_connection_t *GetConnectionMemory(pcb_net_t *);
 

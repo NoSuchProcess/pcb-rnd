@@ -725,7 +725,7 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 	Coord length = 0;
 	int found = 0;
 	int i;
-	LibraryMenuType *net;
+	pcb_lib_menu_t *net;
 	pcb_connection_t conn;
 	int net_found = 0;
 	int use_re = 0;

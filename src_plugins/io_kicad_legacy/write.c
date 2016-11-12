@@ -961,8 +961,8 @@ int write_kicad_legacy_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
 {
         int n; /* code mostly lifted from netlist.c */ 
 	int netNumber;
-	LibraryMenuTypePtr menu;
-	LibraryEntryTypePtr netlist;
+	pcb_lib_menu_t *menu;
+	pcb_lib_entry_t *netlist;
 	
 	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
 	fputs("$EQUIPOT\n",FP);
@@ -1000,8 +1000,8 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 	pcb_element_t *element;
 	unm_t group1; /* group used to deal with missing names and provide unique ones if needed */
 	const char * currentElementName;
-	LibraryMenuTypePtr current_pin_menu;
-	LibraryMenuTypePtr current_pad_menu;
+	pcb_lib_menu_t *current_pin_menu;
+	pcb_lib_menu_t *current_pad_menu;
 
 	int silkLayer = 21;  /* hard coded default, 20 is bottom silk */ 
 	int copperLayer = 15; /* hard coded default, 0 is bottom copper */

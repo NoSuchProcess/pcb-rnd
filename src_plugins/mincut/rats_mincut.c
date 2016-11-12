@@ -241,7 +241,7 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 		if (n->to_type == PCB_TYPE_PAD)
 			spare = ((pcb_pad_t *) n->to)->Spare;
 		if (spare != NULL) {
-			void *net = &(((LibraryMenuTypePtr) spare)->Name[2]);
+			void *net = &(((pcb_lib_menu_t *) spare)->Name[2]);
 			debprintf(" net=%s\n", net);
 			if (S == NULL) {
 				debprintf(" -> became S\n");
@@ -380,7 +380,7 @@ void rat_proc_shorts(void)
 		if (!bad_gr) {
 			/* check if the rest of the shorts affect the same nets - ignore them if so */
 			for (i = n->next; i != NULL; i = i->next) {
-				LibraryMenuType *spn, *spi;
+				pcb_lib_menu_t *spn, *spi;
 				spn = (n->pin != NULL) ? n->pin->Spare : n->pad->Spare;
 				spi = (i->pin != NULL) ? i->pin->Spare : i->pad->Spare;
 

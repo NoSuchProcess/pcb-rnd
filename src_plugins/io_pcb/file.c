@@ -333,14 +333,14 @@ static void WritePCBNetlistData(FILE * FP)
 		fprintf(FP, "NetList()\n(\n");
 
 		for (n = 0; n < PCB->NetlistLib[NETLIST_INPUT].MenuN; n++) {
-			LibraryMenuTypePtr menu = &PCB->NetlistLib[NETLIST_INPUT].Menu[n];
+			pcb_lib_menu_t *menu = &PCB->NetlistLib[NETLIST_INPUT].Menu[n];
 			fprintf(FP, "\tNet(");
 			PrintQuotedString(FP, &menu->Name[2]);
 			fprintf(FP, " ");
 			PrintQuotedString(FP, (char *) UNKNOWN(menu->Style));
 			fprintf(FP, ")\n\t(\n");
 			for (p = 0; p < menu->EntryN; p++) {
-				LibraryEntryTypePtr entry = &menu->Entry[p];
+				pcb_lib_entry_t *entry = &menu->Entry[p];
 				fprintf(FP, "\t\tConnect(");
 				PrintQuotedString(FP, entry->ListEntry);
 				fprintf(FP, ")\n");
