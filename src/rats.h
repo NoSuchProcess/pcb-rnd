@@ -55,7 +55,7 @@ pcb_bool SeekPad(LibraryEntryTypePtr, ConnectionTypePtr, pcb_bool);
 
 NetListTypePtr ProcNetlist(LibraryTypePtr);
 NetListListType CollectSubnets(pcb_bool);
-ConnectionTypePtr GetConnectionMemory(NetTypePtr);
+ConnectionTypePtr GetConnectionMemory(pcb_net_t *);
 
 #define CONNECTION_LOOP(net) do {                         \
         pcb_cardinal_t        n;                                      \

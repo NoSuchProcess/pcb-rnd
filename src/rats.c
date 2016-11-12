@@ -65,7 +65,7 @@ static pcb_bool DrawShortestRats(NetListTypePtr,
 														 void (*)(register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr));
 static pcb_bool GatherSubnets(NetListTypePtr, pcb_bool, pcb_bool);
 static pcb_bool CheckShorts(LibraryMenuTypePtr);
-static void TransferNet(NetListTypePtr, NetTypePtr, NetTypePtr);
+static void TransferNet(NetListTypePtr, pcb_net_t *, pcb_net_t *);
 
 /* ---------------------------------------------------------------------------
  * some local identifiers
@@ -188,7 +188,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 {
 	ConnectionTypePtr connection;
 	ConnectionType LastPoint;
-	NetTypePtr net;
+	pcb_net_t *net;
 	static NetListTypePtr Wantlist = NULL;
 
 	if (!net_menu->MenuN)
@@ -289,7 +289,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
  * copy all connections from one net into another
  * and then remove the first net from its netlist
  */
-static void TransferNet(NetListTypePtr Netl, NetTypePtr SourceNet, NetTypePtr DestNet)
+static void TransferNet(NetListTypePtr Netl, pcb_net_t *SourceNet, pcb_net_t *DestNet)
 {
 	ConnectionTypePtr conn;
 
@@ -306,7 +306,7 @@ static void TransferNet(NetListTypePtr Netl, NetTypePtr SourceNet, NetTypePtr De
 	/* remove SourceNet from its netlist */
 	*SourceNet = Netl->Net[--(Netl->NetN)];
 	/* zero out old garbage */
-	memset(&Netl->Net[Netl->NetN], 0, sizeof(NetType));
+	memset(&Netl->Net[Netl->NetN], 0, sizeof(pcb_net_t));
 }
 
 static pcb_bool CheckShorts(LibraryMenuTypePtr theNet)
@@ -395,7 +395,7 @@ static pcb_bool CheckShorts(LibraryMenuTypePtr theNet)
  */
 static pcb_bool GatherSubnets(NetListTypePtr Netl, pcb_bool NoWarn, pcb_bool AndRats)
 {
-	NetTypePtr a, b;
+	pcb_net_t *a, *b;
 	ConnectionTypePtr conn;
 	pcb_cardinal_t m, n;
 	pcb_bool Warned = pcb_false;
@@ -501,7 +501,7 @@ DrawShortestRats(NetListTypePtr Netl,
 	pcb_bool changed = pcb_false;
 	pcb_bool havepoints;
 	pcb_cardinal_t n, m, j;
-	NetTypePtr next, subnet, theSubnet = NULL;
+	pcb_net_t *next, *subnet, *theSubnet = NULL;
 
 	/* This is just a sanity check, to make sure we're passed
 	 * *something*.
@@ -648,7 +648,7 @@ AddAllRats(pcb_bool SelectedOnly,
 					 void (*funcp) (register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr))
 {
 	NetListTypePtr Nets, Wantlist;
-	NetTypePtr lonesome;
+	pcb_net_t *lonesome;
 	ConnectionTypePtr onepin;
 	pcb_bool changed, Warned = pcb_false;
 
@@ -735,7 +735,7 @@ NetListListType CollectSubnets(pcb_bool SelectedOnly)
 {
 	NetListListType result = { 0, 0, NULL };
 	NetListTypePtr Nets, Wantlist;
-	NetTypePtr lonesome;
+	pcb_net_t *lonesome;
 	ConnectionTypePtr onepin;
 
 	/* the netlist library has the text form
@@ -928,7 +928,7 @@ char *ConnectionName(int type, void *ptr1, void *ptr2)
 /* ---------------------------------------------------------------------------
  * get next slot for a connection, allocates memory if necessary
  */
-ConnectionTypePtr GetConnectionMemory(NetTypePtr Net)
+ConnectionTypePtr GetConnectionMemory(pcb_net_t *Net)
 {
 	ConnectionTypePtr con = Net->Connection;
 

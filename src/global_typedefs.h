@@ -29,7 +29,7 @@ typedef struct pcb_data_s pcb_data_t;
 typedef struct pcb_layer_group_s pcb_layer_group_t;
 typedef struct pcb_layer_s pcb_layer_t;
 typedef struct pcb_buffer_s pcb_buffer_t;
-typedef struct pcb_net_s NetType, *NetTypePtr;
+typedef struct pcb_net_s pcb_net_t;
 typedef struct pcb_connection_s  ConnectionType, *ConnectionTypePtr;
 typedef struct pcb_box_s BoxType, *BoxTypePtr;
 typedef struct pcb_boxlist_s  BoxListType, *BoxListTypePtr;

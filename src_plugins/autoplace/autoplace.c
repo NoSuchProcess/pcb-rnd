@@ -314,7 +314,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 	 * all-SMD nets by making the rectangle a cube and weighting
 	 * the "layer height" of the net. */
 	for (i = 0; i < Nets->NetN; i++) {
-		NetTypePtr n = &Nets->Net[i];
+		pcb_net_t *n = &Nets->Net[i];
 		if (n->ConnectionN < 2)
 			continue;									/* no cost to go nowhere */
 		minx = maxx = n->Connection[0].X;

@@ -88,7 +88,7 @@ struct pcb_obj_s {
 		PinType      *pin;
 		PinType      *via;
 		ElementType  *element;
-		NetType      *net;
+		pcb_net_t      *net;
 		pcb_layer_t    *layer;
 	} data;
 

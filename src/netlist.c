@@ -255,16 +255,16 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, LibraryMenuType *net)
 /* ---------------------------------------------------------------------------
  * get next slot for a subnet, allocates memory if necessary
  */
-NetTypePtr GetNetMemory(NetListTypePtr Netlist)
+pcb_net_t *GetNetMemory(NetListTypePtr Netlist)
 {
-	NetTypePtr net = Netlist->Net;
+	pcb_net_t *net = Netlist->Net;
 
 	/* realloc new memory if necessary and clear it */
 	if (Netlist->NetN >= Netlist->NetMax) {
 		Netlist->NetMax += STEP_POINT;
-		net = (NetTypePtr) realloc(net, Netlist->NetMax * sizeof(NetType));
+		net = (pcb_net_t *) realloc(net, Netlist->NetMax * sizeof(pcb_net_t));
 		Netlist->Net = net;
-		memset(net + Netlist->NetN, 0, STEP_POINT * sizeof(NetType));
+		memset(net + Netlist->NetN, 0, STEP_POINT * sizeof(pcb_net_t));
 	}
 	return (net + Netlist->NetN++);
 }
@@ -321,10 +321,10 @@ void FreeNetListListMemory(NetListListTypePtr Netlistlist)
 /* ---------------------------------------------------------------------------
  * frees memory used by a subnet
  */
-void FreeNetMemory(NetTypePtr Net)
+void FreeNetMemory(pcb_net_t *Net)
 {
 	if (Net) {
 		free(Net->Connection);
-		memset(Net, 0, sizeof(NetType));
+		memset(Net, 0, sizeof(pcb_net_t));
 	}
 }

@@ -42,7 +42,7 @@ struct pcb_net_s {								/* holds a net of connections */
 typedef struct {								/* holds a list of nets */
 	pcb_cardinal_t NetN,								/* the number of subnets contained */
 	  NetMax;											/* max subnets from malloc */
-	NetTypePtr Net;
+	pcb_net_t *Net;
 } NetListType, *NetListTypePtr;
 
 typedef struct {								/* holds a list of net lists */
@@ -87,11 +87,11 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, LibraryMenuType *net);
 
 #define PCB_NETLIST_INVALID_INDEX ((pcb_cardinal_t)(-1))
 
-NetTypePtr GetNetMemory(NetListTypePtr);
+pcb_net_t *GetNetMemory(NetListTypePtr);
 NetListTypePtr GetNetListMemory(NetListListTypePtr);
 void FreeNetListListMemory(NetListListTypePtr);
 void FreeNetListMemory(NetListTypePtr);
-void FreeNetMemory(NetTypePtr);
+void FreeNetMemory(pcb_net_t *);
 
 #define NETLIST_LOOP(top) do   {                         \
         pcb_cardinal_t        n;                                      \
@@ -102,7 +102,7 @@ void FreeNetMemory(NetTypePtr);
 
 #define NET_LOOP(top) do   {                             \
         pcb_cardinal_t        n;                                      \
-        NetTypePtr   net;                                       \
+        pcb_net_t *  net;                                       \
         for (n = (top)->NetN-1; n != -1; n--)                   \
         {                                                       \
                 net = &(top)->Net[n]
