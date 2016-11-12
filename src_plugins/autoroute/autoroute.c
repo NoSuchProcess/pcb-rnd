@@ -1006,7 +1006,7 @@ static routedata_t *CreateRouteData()
 						case PCB_TYPE_POLYGON:
 							rb =
 								AddPolygon(layergroupboxes,
-													 GetLayerNumber(PCB->Data, (LayerType *) connection->ptr1),
+													 GetLayerNumber(PCB->Data, (pcb_layer_t *) connection->ptr1),
 													 (struct polygon_st *) connection->ptr2, rd->styles[j]);
 							break;
 						}
@@ -1319,7 +1319,7 @@ static BoxType bloat_routebox(routebox_t * rb)
 static void showbox(BoxType b, pcb_dimension_t thickness, int group)
 {
 	LineTypePtr line;
-	LayerTypePtr SLayer = LAYER_PTR(group);
+	pcb_layer_t *SLayer = LAYER_PTR(group);
 	if (showboxen < -1)
 		return;
 	if (showboxen != -1 && showboxen != group)
@@ -2985,7 +2985,7 @@ RD_DrawLine(routedata_t * rd,
 	r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
 
 	if (conf_core.editor.live_routing) {
-		LayerType *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
+		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
 		LineType *line = CreateNewLineOnLayer(layer, qX1, qY1, qX2, qY2,
 																					2 * qhthick, 0, MakeFlags(0));
 		rb->livedraw_obj.line = line;
@@ -4079,7 +4079,7 @@ pcb_bool no_expansion_boxes(routedata_t * rd)
 static void ripout_livedraw_obj(routebox_t * rb)
 {
 	if (rb->type == LINE && rb->livedraw_obj.line) {
-		LayerType *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
+		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
 		EraseLine(rb->livedraw_obj.line);
 		DestroyObject(PCB->Data, PCB_TYPE_LINE, layer, rb->livedraw_obj.line, NULL);
 		rb->livedraw_obj.line = NULL;
@@ -4431,7 +4431,7 @@ static int FindPin(const BoxType * box, PinTypePtr * pin)
 pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 {
 	pcb_bool changed = pcb_false;
-	LayerTypePtr layer;
+	pcb_layer_t *layer;
 	routebox_t *net, *p;
 	int i;
 	LIST_LOOP(rd->first_net, different_net, net);

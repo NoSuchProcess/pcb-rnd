@@ -79,7 +79,7 @@ typedef struct {
 typedef struct {
 	pcb_board_t *pcb;
 	Coord dx, dy;         /* used by local routines as offset */
-	LayerTypePtr dst_layer;
+	pcb_layer_t *dst_layer;
 	pcb_bool more_to_come;
 } pcb_opctx_move_t;
 
@@ -110,17 +110,17 @@ typedef union {
 
 /* pointer to low-level operation (copy, move and rotate) functions */
 typedef struct {
-	void *(*Line)(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr);
-	void *(*Text)(pcb_opctx_t *ctx, LayerTypePtr, TextTypePtr);
-	void *(*Polygon)(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr);
+	void *(*Line)(pcb_opctx_t *ctx, pcb_layer_t *, LineTypePtr);
+	void *(*Text)(pcb_opctx_t *ctx, pcb_layer_t *, TextTypePtr);
+	void *(*Polygon)(pcb_opctx_t *ctx, pcb_layer_t *, PolygonTypePtr);
 	void *(*Via)(pcb_opctx_t *ctx, PinTypePtr);
 	void *(*Element)(pcb_opctx_t *ctx, ElementTypePtr);
 	void *(*ElementName)(pcb_opctx_t *ctx, ElementTypePtr);
 	void *(*Pin)(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
 	void *(*Pad)(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
-	void *(*LinePoint)(pcb_opctx_t *ctx, LayerTypePtr, LineTypePtr, PointTypePtr);
-	void *(*Point)(pcb_opctx_t *ctx, LayerTypePtr, PolygonTypePtr, PointTypePtr);
-	void *(*Arc)(pcb_opctx_t *ctx, LayerTypePtr, ArcTypePtr);
+	void *(*LinePoint)(pcb_opctx_t *ctx, pcb_layer_t *, LineTypePtr, PointTypePtr);
+	void *(*Point)(pcb_opctx_t *ctx, pcb_layer_t *, PolygonTypePtr, PointTypePtr);
+	void *(*Arc)(pcb_opctx_t *ctx, pcb_layer_t *, ArcTypePtr);
 	void *(*Rat)(pcb_opctx_t *ctx, RatTypePtr);
 } pcb_opfunc_t;
 

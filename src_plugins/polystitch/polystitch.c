@@ -40,7 +40,7 @@
 #include "obj_poly_draw.h"
 
 static PolygonType *inner_poly, *outer_poly;
-static LayerType *poly_layer;
+static pcb_layer_t *poly_layer;
 
 static double ATAN2(PointType a, PointType b)
 {

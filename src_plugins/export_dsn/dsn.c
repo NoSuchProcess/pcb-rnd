@@ -169,7 +169,7 @@ static void print_structure(FILE * fp)
 	}
 
 	for (group = 0; group < max_group; group++) {
-		LayerType *first_layer;
+		pcb_layer_t *first_layer;
 		if (group == top_group || group == bot_group)
 			continue;
 
@@ -213,7 +213,7 @@ static void print_structure(FILE * fp)
 	fprintf(fp, "  (structure\n");
 
 	for (GList * iter = layerlist; iter; iter = g_list_next(iter)) {
-		LayerType *layer = iter->data;
+		pcb_layer_t *layer = iter->data;
 		char *layeropts = pcb_strdup("(type signal)");
 		/* see if layer has same name as a net and make it a power layer */
 		/* loop thru all nets */
@@ -306,7 +306,7 @@ static void print_library(FILE * fp)
 
 			if (!pin->Number) { /* if pin is null just make it a keepout */
 				for (GList * iter = layerlist; iter; iter = g_list_next(iter)) {
-					LayerType *lay = iter->data;
+					pcb_layer_t *lay = iter->data;
 					pcb_fprintf(fp, "      (keepout \"\" (circle \"%s\" %.6mm %.6mm %.6mm))\n", lay->Name, pinthickness, lx, ly);
 				}
 			}
@@ -345,7 +345,7 @@ static void print_library(FILE * fp)
 			padstack = pcb_strdup_printf("Smd_rect_%mIx%mI", xlen, ylen);
 
 			if (!pad->Number) {				/* if pad is null just make it a keepout */
-				LayerType *lay;
+				pcb_layer_t *lay;
 				lay = g_list_nth_data(layerlist, partside);
 				pcb_fprintf(fp, "      (keepout \"\" (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
 										lay->Name, lx - xlen / 2, ly - ylen / 2, lx + xlen / 2, ly + ylen / 2);
@@ -387,7 +387,7 @@ static void print_library(FILE * fp)
 		if (sscanf(padstack, "Smd_rect_%ldx%ld", &dim1, &dim2) == 2) {	/* then pad is smd */
 			pcb_fprintf(fp,
 									"      (shape (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
-									((LayerType *) (g_list_first(layerlist)->data))->Name, dim1 / -2, dim2 / -2, dim1 / 2, dim2 / 2);
+									((pcb_layer_t *) (g_list_first(layerlist)->data))->Name, dim1 / -2, dim2 / -2, dim1 / 2, dim2 / 2);
 		}
 		else if (sscanf(padstack, "Th_square_%ld", &dim1) == 1) {
 			pcb_fprintf(fp, "      (shape (rect signal %.6mm %.6mm %.6mm %.6mm))\n", dim1 / -2, dim1 / -2, dim1 / 2, dim1 / 2);
@@ -453,7 +453,7 @@ static void print_network(FILE * fp)
 static void print_wires(FILE * fp)
 {
 	GList *iter;
-	LayerType *lay;
+	pcb_layer_t *lay;
 	fprintf(fp, "    (wiring\n");
 
 	for (iter = layerlist; iter; iter = g_list_next(iter)) {

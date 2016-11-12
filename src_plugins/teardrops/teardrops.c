@@ -58,7 +58,7 @@ int distance_between_points(int x1, int y1, int x2, int y2)
 
 static r_dir_t check_line_callback(const BoxType * box, void *cl)
 {
-	LayerType *lay = &PCB->Data->Layer[layer];
+	pcb_layer_t *lay = &PCB->Data->Layer[layer];
 	LineType *l = (LineType *) box;
 	int x1, x2, y1, y2;
 	double a, b, c, x, r, t;
@@ -215,7 +215,7 @@ static void check_pin(PinType * _pin)
 					EMPTY(NAMEONPCB_NAME(element)), EMPTY(VALUE_NAME(element)), EMPTY(DESCRIPTION_NAME(element)));
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
-		LayerType *l = &(PCB->Data->Layer[layer]);
+		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
 		r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
 }
@@ -237,7 +237,7 @@ static void check_via(PinType * _pin)
 	fprintf(stderr, "Via at %.6f, %.6f\n", PCB_COORD_TO_MM(pin->X), PCB_COORD_TO_MM(pin->Y));
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
-		LayerType *l = &(PCB->Data->Layer[layer]);
+		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
 		r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
 }
@@ -273,7 +273,7 @@ static void check_pad(PadType * _pad)
 	/*           EMPTY (DESCRIPTION_NAME (element))); */
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
-		LayerType *l = &(PCB->Data->Layer[layer]);
+		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
 		r_search(l->line_tree, &(pad->BoundingBox), NULL, check_line_callback, l, NULL);
 	}
 }

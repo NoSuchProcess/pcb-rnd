@@ -32,6 +32,6 @@ r_dir_t draw_line_callback(const BoxType * b, void *cl);
 #endif
 
 void _draw_line(LineType * line);
-void draw_line(LayerType * layer, LineType * line);
+void draw_line(pcb_layer_t * layer, LineType * line);
 void EraseLine(LineTypePtr Line);
-void DrawLine(LayerTypePtr Layer, LineTypePtr Line);
+void DrawLine(pcb_layer_t *Layer, LineTypePtr Line);

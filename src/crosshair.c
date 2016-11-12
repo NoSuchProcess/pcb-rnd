@@ -286,7 +286,7 @@ static void XORDrawBuffer(BufferTypePtr Buffer)
 	/* draw all visible layers */
 	for (i = 0; i < max_copper_layer + 2; i++)
 		if (PCB->Data->Layer[i].On) {
-			LayerTypePtr layer = &Buffer->Data->Layer[i];
+			pcb_layer_t *layer = &Buffer->Data->Layer[i];
 
 			LINE_LOOP(layer);
 			{
@@ -829,7 +829,7 @@ static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 	info.Y = Y;
 
 	for (i = 0; i < max_copper_layer; i++) {
-		LayerType *layer = &PCB->Data->Layer[i];
+		pcb_layer_t *layer = &PCB->Data->Layer[i];
 		/* Only find points of arcs and lines on currently visible layers. */
 		if (!layer->On)
 			continue;
@@ -1044,14 +1044,14 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	if (ans != PCB_TYPE_NONE &&
 			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
 		PadTypePtr pad = (PadTypePtr) ptr2;
-		LayerType *desired_layer;
+		pcb_layer_t *desired_layer;
 		pcb_cardinal_t desired_group;
 		pcb_cardinal_t SLayer, CLayer;
 		int found_our_layer = pcb_false;
 
 		desired_layer = CURRENT;
 		if (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT) {
-			desired_layer = (LayerType *) Crosshair.AttachedObject.Ptr1;
+			desired_layer = (pcb_layer_t *) Crosshair.AttachedObject.Ptr1;
 		}
 
 		/* find layer groups of the component side and solder side */

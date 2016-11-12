@@ -89,13 +89,13 @@ struct pcb_obj_s {
 		PinType      *via;
 		ElementType  *element;
 		NetType      *net;
-		LayerType    *layer;
+		pcb_layer_t    *layer;
 	} data;
 
 	pcb_parenttype_t parent_type;
 	union {
 		void         *any;
-		LayerType    *layer;
+		pcb_layer_t    *layer;
 		pcb_data_t     *data;
 		ElementType  *element;
 	} parent;

@@ -71,7 +71,7 @@ static void WritePCBDataHeader(FILE *);
 static void WritePCBFontData(FILE *);
 static void WriteViaData(FILE *, pcb_data_t *);
 static void WritePCBRatData(FILE *);
-static void WriteLayerData(FILE *, pcb_cardinal_t, LayerTypePtr);
+static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
 
 /* ---------------------------------------------------------------------------
  * Flag helper functions
@@ -436,7 +436,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 /* ---------------------------------------------------------------------------
  * writes layer data
  */
-static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, LayerTypePtr layer)
+static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 {
 	gdl_iterator_t it;
 	LineType *line;

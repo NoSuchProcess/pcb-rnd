@@ -201,7 +201,7 @@ int ActionUndo(int argc, const char **argv, Coord x, Coord y)
 					SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 0);
 					ptr2 = (LineTypePtr) ptrtmp;
-					lastLayer = (LayerTypePtr) ptr1;
+					lastLayer = (pcb_layer_t *) ptr1;
 				}
 				notify_crosshair_change(pcb_true);
 				return 0;

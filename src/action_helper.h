@@ -50,7 +50,7 @@ int get_style_size(int funcid, Coord * out, int type, int size_id);
 
 extern int defer_updates;
 extern int defer_needs_update;
-extern LayerTypePtr lastLayer;
+extern pcb_layer_t *lastLayer;
 
 void NotifyLine(void);
 void NotifyBlock(void);

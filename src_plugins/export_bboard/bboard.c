@@ -205,7 +205,7 @@ static int bboard_validate_layer(const char *name, int group, int skipsolder)
 		return 0;
 }
 
-static void bboard_get_layer_color(LayerType * layer, int *clr_r, int *clr_g, int *clr_b)
+static void bboard_get_layer_color(pcb_layer_t * layer, int *clr_r, int *clr_g, int *clr_b)
 {
 	char *clr;
 	unsigned int r, g, b;
@@ -496,7 +496,7 @@ static void bboard_do_export(HID_Attr_Val * options)
 {
 	int i;
 	int clr_r, clr_g, clr_b;
-	LayerType *layer;
+	pcb_layer_t *layer;
 
 
 	if (!options) {

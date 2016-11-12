@@ -32,6 +32,6 @@ r_dir_t draw_arc_callback(const BoxType * b, void *cl);
 #endif
 
 void _draw_arc(ArcType * arc);
-void draw_arc(LayerType * layer, ArcType * arc);
+void draw_arc(pcb_layer_t * layer, ArcType * arc);
 void EraseArc(ArcTypePtr Arc);
-void DrawArc(LayerTypePtr Layer, ArcTypePtr Arc);
+void DrawArc(pcb_layer_t *Layer, ArcTypePtr Arc);

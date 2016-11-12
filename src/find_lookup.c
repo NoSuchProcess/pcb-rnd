@@ -237,7 +237,7 @@ void InitLayoutLookup(void)
 
 	/* initialize line arc and polygon data */
 	for (i = 0; i < max_copper_layer; i++) {
-		LayerTypePtr layer = LAYER_PTR(i);
+		pcb_layer_t *layer = LAYER_PTR(i);
 
 		if (linelist_length(&layer->Line)) {
 			LineList[i].Size = linelist_length(&layer->Line);

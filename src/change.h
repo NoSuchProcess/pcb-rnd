@@ -67,7 +67,7 @@
         (PCB_TYPE_PIN | PCB_TYPE_VIA | PCB_TYPE_PAD)
 
 pcb_bool ChangeLayoutName(char *);
-pcb_bool ChangeLayerName(LayerTypePtr, char *);
+pcb_bool ChangeLayerName(pcb_layer_t *, char *);
 pcb_bool ChangeSelectedSize(int, Coord, pcb_bool);
 pcb_bool ChangeSelectedClearSize(int, Coord, pcb_bool);
 pcb_bool ChangeSelected2ndSize(int, Coord, pcb_bool);

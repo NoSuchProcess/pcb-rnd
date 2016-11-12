@@ -52,7 +52,7 @@
 /**** allocation ****/
 
 /* get next slot for a line, allocates memory if necessary */
-LineType *GetLineMemory(LayerType * layer)
+LineType *GetLineMemory(pcb_layer_t * layer)
 {
 	LineType *new_obj;
 
@@ -146,7 +146,7 @@ static r_dir_t line_callback(const BoxType * b, void *cl)
 
 
 /* creates a new line on a layer and checks for overlap and extension */
-LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags)
+LineTypePtr CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags)
 {
 	struct line_info info;
 	BoxType search;
@@ -191,7 +191,7 @@ LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord
 	return CreateNewLineOnLayer(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 }
 
-LineTypePtr CreateNewLineOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags)
+LineTypePtr CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags)
 {
 	LineTypePtr Line;
 
@@ -213,7 +213,7 @@ LineTypePtr CreateNewLineOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X
 	return (Line);
 }
 
-void pcb_add_line_on_layer(LayerType *Layer, LineType *Line)
+void pcb_add_line_on_layer(pcb_layer_t *Layer, LineType *Line)
 {
 	SetLineBoundingBox(Line);
 	if (!Layer->line_tree)
@@ -244,10 +244,10 @@ void SetLineBoundingBox(LineTypePtr Line)
 /*** ops ***/
 
 /* copies a line to buffer */
-void *AddLineToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *AddLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	LineTypePtr line;
-	LayerTypePtr layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
+	pcb_layer_t *layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
 
 	line = CreateNewLineOnLayer(layer, Line->Point1.X, Line->Point1.Y,
 															Line->Point2.X, Line->Point2.Y,
@@ -258,9 +258,9 @@ void *AddLineToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* moves a line to buffer */
-void *MoveLineToBuffer(pcb_opctx_t *ctx, LayerType * layer, LineType * line)
+void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, LineType * line)
 {
-	LayerTypePtr lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
+	pcb_layer_t *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
 
 	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_LINE, layer, line);
 	r_delete_entry(layer->line_tree, (BoxType *) line);
@@ -278,7 +278,7 @@ void *MoveLineToBuffer(pcb_opctx_t *ctx, LayerType * layer, LineType * line)
 }
 
 /* changes the size of a line */
-void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Thickness + ctx->chgsize.delta;
 
@@ -300,7 +300,7 @@ void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /*changes the clearance size of a line */
-void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Clearance + ctx->chgsize.delta;
 
@@ -327,7 +327,7 @@ void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line
 }
 
 /* changes the name of a line */
-void *ChangeLineName(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *ChangeLineName(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	char *old = Line->Number;
 
@@ -337,7 +337,7 @@ void *ChangeLineName(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* changes the clearance flag of a line */
-void *ChangeLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *ChangeLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
 		return (NULL);
@@ -357,7 +357,7 @@ void *ChangeLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* sets the clearance flag of a line */
-void *SetLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *SetLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
@@ -365,7 +365,7 @@ void *SetLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* clears the clearance flag of a line */
-void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *ClrLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
@@ -373,7 +373,7 @@ void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* copies a line */
-void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *CopyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	LineTypePtr line;
 
@@ -391,7 +391,7 @@ void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* moves a line */
-void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	if (Layer->On)
 		EraseLine(Line);
@@ -408,7 +408,7 @@ void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 }
 
 /* moves one end of a line */
-void *MoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
+void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line, PointTypePtr Point)
 {
 	if (Layer) {
 		if (Layer->On)
@@ -442,7 +442,7 @@ void *MoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, Poin
 }
 
 /* moves a line between layers; lowlevel routines */
-void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, LineType * line, LayerType * Destination)
+void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, LineType * line, pcb_layer_t * Destination)
 {
 	r_delete_entry(Source->line_tree, (BoxType *) line);
 
@@ -477,7 +477,7 @@ static r_dir_t moveline_callback(const BoxType * b, void *cl)
 	longjmp(i->env, 1);
 }
 
-void *MoveLineToLayer(pcb_opctx_t *ctx, LayerType * Layer, LineType * Line)
+void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, LineType * Line)
 {
 	struct via_info info;
 	BoxType sb;
@@ -538,7 +538,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, LayerType * Layer, LineType * Line)
 }
 
 /* destroys a line from a layer */
-void *DestroyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *DestroyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
 	free(Line->Number);
@@ -575,7 +575,7 @@ static r_dir_t remove_point(const BoxType * b, void *cl)
 }
 
 /* removes a line point, or a line if the selected point is the end */
-void *RemoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
+void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line, PointTypePtr Point)
 {
 	PointType other;
 	struct rlp_info info;
@@ -594,7 +594,7 @@ void *RemoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, Po
 }
 
 /* removes a line from a layer */
-void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *RemoveLine_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	/* erase from screen */
 	if (Layer->On) {
@@ -606,7 +606,7 @@ void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
 	return NULL;
 }
 
-void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line)
+void *RemoveLine(pcb_layer_t *Layer, LineTypePtr Line)
 {
 	pcb_opctx_t ctx;
 
@@ -645,7 +645,7 @@ void RotateLineLowLevel(LineTypePtr Line, Coord X, Coord Y, unsigned Number)
 
 
 /* rotates a line's point */
-void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point)
+void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line, PointTypePtr Point)
 {
 	EraseLine(Line);
 	if (Layer) {
@@ -670,7 +670,7 @@ void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, Po
 }
 
 /* inserts a point into a line */
-void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line)
+void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
 	LineTypePtr line;
 	Coord X, Y;
@@ -715,7 +715,7 @@ void _draw_line(LineType * line)
 	gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 }
 
-void draw_line(LayerType * layer, LineType * line)
+void draw_line(pcb_layer_t * layer, LineType * line)
 {
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
@@ -743,7 +743,7 @@ void draw_line(LayerType * layer, LineType * line)
 
 r_dir_t draw_line_callback(const BoxType * b, void *cl)
 {
-	draw_line((LayerType *) cl, (LineType *) b);
+	draw_line((pcb_layer_t *) cl, (LineType *) b);
 	return R_DIR_FOUND_CONTINUE;
 }
 
@@ -754,7 +754,7 @@ void EraseLine(LineTypePtr Line)
 	EraseFlags(&Line->Flags);
 }
 
-void DrawLine(LayerTypePtr Layer, LineTypePtr Line)
+void DrawLine(pcb_layer_t *Layer, LineTypePtr Line)
 {
 	pcb_draw_invalidate(Line);
 }

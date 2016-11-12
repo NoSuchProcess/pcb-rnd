@@ -529,7 +529,7 @@ static int write_kicad_legacy_layout_via_drill_size(FILE * FP)
 }
 
 int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset)
 {
 	gdl_iterator_t it;
 	LineType *line;
@@ -569,7 +569,7 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 }
 
 int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset)
 {
 	gdl_iterator_t it;
 	ArcType *arc;
@@ -634,7 +634,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 }
 
 int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset)
 {
 	FontType *myfont = &PCB->Font;
 	Coord mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
@@ -1185,7 +1185,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
  */
 
 int write_kicad_legacy_layout_polygons(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset)
+																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset)
 {
 	int i, j;
 	gdl_iterator_t it;

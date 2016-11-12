@@ -28,24 +28,24 @@
 
 #include "operation.h"
 
-void *AddLineToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *ChangeLineSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *ChangeLineClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *ChangeLineName(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *ChangeLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *SetLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *ClrLineJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *InsertPointIntoLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *MoveLineToBuffer(pcb_opctx_t *ctx, LayerType * layer, LineType * line);
-void *CopyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *MoveLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *MoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point);
-void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, LineType * line, LayerType * Destination);
-void *MoveLineToLayer(pcb_opctx_t *ctx, LayerType * Layer, LineType * Line);
-void *DestroyLine(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *RemoveLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point);
-void *RemoveLine_op(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line);
-void *RotateLinePoint(pcb_opctx_t *ctx, LayerTypePtr Layer, LineTypePtr Line, PointTypePtr Point);
+void *AddLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *ChangeLineName(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *ChangeLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *SetLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *ClrLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, LineType * line);
+void *CopyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line, PointTypePtr Point);
+void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, LineType * line, pcb_layer_t * Destination);
+void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, LineType * Line);
+void *DestroyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line, PointTypePtr Point);
+void *RemoveLine_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line);
+void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line, PointTypePtr Point);
 
 
 

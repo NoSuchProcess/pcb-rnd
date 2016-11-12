@@ -42,16 +42,16 @@ struct pcb_text_s {
 };
 
 
-TextTypePtr GetTextMemory(LayerType * layer);
+TextTypePtr GetTextMemory(pcb_layer_t * layer);
 void RemoveFreeText(TextType * data);
 
-TextTypePtr CreateNewText(LayerTypePtr Layer, FontTypePtr PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags);
+TextTypePtr CreateNewText(pcb_layer_t *Layer, FontTypePtr PCBFont, Coord X, Coord Y, unsigned Direction, int Scale, char *TextString, FlagType Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_text_on_layer(LayerType *Layer, TextType *text, FontType *PCBFont);
+void pcb_add_text_on_layer(pcb_layer_t *Layer, TextType *text, FontType *PCBFont);
 
 void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text);
-void *RemoveText(LayerTypePtr Layer, TextTypePtr Text);
+void *RemoveText(pcb_layer_t *Layer, TextTypePtr Text);
 void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number);
 
 #define	MOVE_TEXT_LOWLEVEL(t,dx,dy)                    \
@@ -71,14 +71,14 @@ void RotateTextLowLevel(TextTypePtr Text, Coord X, Coord Y, unsigned Number);
 
 #define	ALLTEXT_LOOP(top) do {                        \
 	pcb_cardinal_t l;                                   \
-	LayerTypePtr layer = (top)->Layer;                  \
+	pcb_layer_t *layer = (top)->Layer;                  \
 	for (l = 0; l < max_copper_layer + 2; l++, layer++) \
 	{                                                   \
 		TEXT_LOOP(layer)
 
 #define VISIBLETEXT_LOOP(board) do {                       \
 	pcb_cardinal_t l;                                        \
-	LayerTypePtr layer = (board)->Data->Layer;               \
+	pcb_layer_t *layer = (board)->Data->Layer;               \
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)      \
 	{                                                        \
 		TEXT_LOOP(layer);                                      \

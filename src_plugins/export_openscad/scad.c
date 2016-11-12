@@ -502,7 +502,7 @@ static void scad_do_export(HID_Attr_Val * options)
 	int inner_layers;
 	float layer_spacing, layer_offset, cut_offset = 0.;
 	BoxType region;
-	LayerType *layer;
+	pcb_layer_t *layer;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);

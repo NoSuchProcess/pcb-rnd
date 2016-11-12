@@ -57,7 +57,7 @@
 #include "compat_misc.h"
 #include "obj_all.h"
 
-static	LayerTypePtr	Layer;
+static	pcb_layer_t *Layer;
 static	PolygonTypePtr	Polygon;
 static	SymbolTypePtr	Symbol;
 static	int		pin_num;
@@ -1078,7 +1078,7 @@ text_newformat
 			{
 				if ($8 & PCB_FLAG_ONSILK)
 				{
-					LayerTypePtr lay = &yyData->Layer[yyData->LayerN +
+					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(($8 & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
 					CreateNewText(lay ,yyFont, OU ($3), OU ($4), $5, $6, $7,
@@ -1103,7 +1103,7 @@ text_hi_format
 				 */
 				if ($8.f & PCB_FLAG_ONSILK)
 				{
-					LayerTypePtr lay = &yyData->Layer[yyData->LayerN +
+					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(($8.f & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
 					CreateNewText(lay, yyFont, NU ($3), NU ($4), $5, $6, $7, $8);

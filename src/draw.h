@@ -79,7 +79,7 @@ void LightenColor(const char *orig, char buf[8], double factor);
 void Draw(void);
 void Redraw(void);
 void DrawObject(int, void *, void *);
-void DrawLayer(LayerTypePtr, const BoxType *);
+void DrawLayer(pcb_layer_t *, const BoxType *);
 void EraseObject(int, void *, void *);
 
 #endif

@@ -2055,7 +2055,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
  *
  * Inserts points and constraints into GLists
  */
-int read_lines(toporouter_t * r, toporouter_layer_t * l, LayerType * layer, int ln)
+int read_lines(toporouter_t * r, toporouter_layer_t * l, pcb_layer_t * layer, int ln)
 {
 	gdouble xs[2], ys[2];
 

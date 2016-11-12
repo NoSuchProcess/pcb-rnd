@@ -131,7 +131,7 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coor
  * moves the object identified by its data pointers and the type
  * to a new layer without changing it's position
  */
-void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, LayerTypePtr Target, pcb_bool enmasse)
+void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, pcb_bool enmasse)
 {
 	void *result;
 	pcb_opctx_t ctx;
@@ -149,7 +149,7 @@ void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, LayerTypeP
  * moves the selected objects to a new layer without changing their
  * positions
  */
-pcb_bool MoveSelectedObjectsToLayer(LayerTypePtr Target)
+pcb_bool MoveSelectedObjectsToLayer(pcb_layer_t *Target)
 {
 	pcb_bool changed;
 	pcb_opctx_t ctx;
@@ -231,7 +231,7 @@ static int LastLayerInSolderGroup(int layer)
 int MoveLayer(int old_index, int new_index)
 {
 	int groups[MAX_LAYER + 2], l, g;
-	LayerType saved_layer;
+	pcb_layer_t saved_layer;
 	int saved_group;
 
 	AddLayerChangeToUndoList(old_index, new_index);
@@ -266,7 +266,7 @@ int MoveLayer(int old_index, int new_index)
 			groups[PCB->LayerGroups.Entries[g][l]] = g;
 
 	if (old_index == -1) {
-		LayerTypePtr lp;
+		pcb_layer_t *lp;
 		if (max_copper_layer == MAX_LAYER) {
 			Message(PCB_MSG_DEFAULT, "No room for new layers\n");
 			return 1;
@@ -274,10 +274,10 @@ int MoveLayer(int old_index, int new_index)
 		/* Create a new layer at new_index. */
 		lp = &PCB->Data->Layer[new_index];
 		memmove(&PCB->Data->Layer[new_index + 1],
-						&PCB->Data->Layer[new_index], (max_copper_layer - new_index + 2) * sizeof(LayerType));
+						&PCB->Data->Layer[new_index], (max_copper_layer - new_index + 2) * sizeof(pcb_layer_t));
 		memmove(&groups[new_index + 1], &groups[new_index], (max_copper_layer - new_index + 2) * sizeof(int));
 		max_copper_layer++;
-		memset(lp, 0, sizeof(LayerType));
+		memset(lp, 0, sizeof(pcb_layer_t));
 		lp->On = 1;
 		lp->Name = pcb_strdup("New Layer");
 		lp->Color = conf_core.appearance.color.layer[new_index];
@@ -290,8 +290,8 @@ int MoveLayer(int old_index, int new_index)
 	else if (new_index == -1) {
 		/* Delete the layer at old_index */
 		memmove(&PCB->Data->Layer[old_index],
-						&PCB->Data->Layer[old_index + 1], (max_copper_layer - old_index + 2 - 1) * sizeof(LayerType));
-		memset(&PCB->Data->Layer[max_copper_layer + 1], 0, sizeof(LayerType));
+						&PCB->Data->Layer[old_index + 1], (max_copper_layer - old_index + 2 - 1) * sizeof(pcb_layer_t));
+		memset(&PCB->Data->Layer[max_copper_layer + 1], 0, sizeof(pcb_layer_t));
 		memmove(&groups[old_index], &groups[old_index + 1], (max_copper_layer - old_index + 2 - 1) * sizeof(int));
 		for (l = 0; l < max_copper_layer; l++)
 			if (LayerStack[l] == old_index)
@@ -303,17 +303,17 @@ int MoveLayer(int old_index, int new_index)
 	}
 	else {
 		/* Move an existing layer */
-		memcpy(&saved_layer, &PCB->Data->Layer[old_index], sizeof(LayerType));
+		memcpy(&saved_layer, &PCB->Data->Layer[old_index], sizeof(pcb_layer_t));
 		saved_group = groups[old_index];
 		if (old_index < new_index) {
-			memmove(&PCB->Data->Layer[old_index], &PCB->Data->Layer[old_index + 1], (new_index - old_index) * sizeof(LayerType));
+			memmove(&PCB->Data->Layer[old_index], &PCB->Data->Layer[old_index + 1], (new_index - old_index) * sizeof(pcb_layer_t));
 			memmove(&groups[old_index], &groups[old_index + 1], (new_index - old_index) * sizeof(int));
 		}
 		else {
-			memmove(&PCB->Data->Layer[new_index + 1], &PCB->Data->Layer[new_index], (old_index - new_index) * sizeof(LayerType));
+			memmove(&PCB->Data->Layer[new_index + 1], &PCB->Data->Layer[new_index], (old_index - new_index) * sizeof(pcb_layer_t));
 			memmove(&groups[new_index + 1], &groups[new_index], (old_index - new_index) * sizeof(int));
 		}
-		memcpy(&PCB->Data->Layer[new_index], &saved_layer, sizeof(LayerType));
+		memcpy(&PCB->Data->Layer[new_index], &saved_layer, sizeof(pcb_layer_t));
 		groups[new_index] = saved_group;
 	}
 

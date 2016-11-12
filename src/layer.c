@@ -46,7 +46,7 @@ static struct {
 } SavedStack;
 
 
-pcb_bool IsLayerEmpty(LayerTypePtr layer)
+pcb_bool IsLayerEmpty(pcb_layer_t *layer)
 {
 	return LAYER_IS_EMPTY(layer);
 }
@@ -158,7 +158,7 @@ error:
 /* ---------------------------------------------------------------------------
  * returns the layer number for the passed pointer
  */
-int GetLayerNumber(pcb_data_t *Data, LayerTypePtr Layer)
+int GetLayerNumber(pcb_data_t *Data, pcb_layer_t *Layer)
 {
 	int i;
 
@@ -344,7 +344,7 @@ int GetGroupOfLayer(int Layer)
 /* ---------------------------------------------------------------------------
  * returns the layergroup number for the passed pointer
  */
-int GetLayerGroupNumberByPointer(LayerTypePtr Layer)
+int GetLayerGroupNumberByPointer(pcb_layer_t *Layer)
 {
 	return (GetLayerGroupNumberByNumber(GetLayerNumber(PCB->Data, Layer)));
 }

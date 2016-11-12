@@ -42,20 +42,20 @@ struct pcb_arc_s {       /* holds information about arcs */
 
 
 /*** Memory ***/
-ArcTypePtr GetArcMemory(LayerTypePtr);
+ArcTypePtr GetArcMemory(pcb_layer_t *);
 ArcType *GetElementArcMemory(ElementType *Element);
 void RemoveFreeArc(ArcType *data);
 
 /*** Utility ***/
 void SetArcBoundingBox(ArcTypePtr Arc);
 BoxTypePtr GetArcEnds(ArcTypePtr Arc);
-void ChangeArcAngles(LayerTypePtr Layer, ArcTypePtr a, Angle new_sa, Angle new_da);
-void ChangeArcRadii(LayerTypePtr Layer, ArcTypePtr a, Coord new_width, Coord new_height);
-void *RemoveArc(LayerTypePtr Layer, ArcTypePtr Arc);
-ArcType *CreateNewArcOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags);
+void ChangeArcAngles(pcb_layer_t *Layer, ArcTypePtr a, Angle new_sa, Angle new_da);
+void ChangeArcRadii(pcb_layer_t *Layer, ArcTypePtr a, Coord new_width, Coord new_height);
+void *RemoveArc(pcb_layer_t *Layer, ArcTypePtr Arc);
+ArcType *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_arc_on_layer(LayerType *Layer, ArcType *Arc);
+void pcb_add_arc_on_layer(pcb_layer_t *Layer, ArcType *Arc);
 
 void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number);
 
@@ -72,21 +72,21 @@ void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number);
 
 #define ALLARC_LOOP(top) do {		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	for (l =0; l < max_copper_layer + 2; l++, layer++)		\
 	{ \
 		ARC_LOOP(layer)
 
 #define COPPERARC_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	for (l =0; l < max_copper_layer; l++, layer++)		\
 	{ \
 		ARC_LOOP(layer)
 
 #define SILKARC_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	layer += max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
@@ -94,7 +94,7 @@ void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number);
 
 #define	VISIBLEARC_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		if (layer->On)				\

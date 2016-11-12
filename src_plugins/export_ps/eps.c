@@ -205,7 +205,7 @@ void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 
 	/* Figure out which layers actually have stuff on them.  */
 	for (i = 0; i < max_copper_layer; i++) {
-		LayerType *layer = PCB->Data->Layer + i;
+		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (layer->On)
 			if (!LAYER_IS_EMPTY(layer))
 				print_group[GetLayerGroupNumberByNumber(i)] = 1;

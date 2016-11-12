@@ -48,25 +48,25 @@ struct polygon_st  {           /* holds information about a polygon */
 
 
 
-PolygonType *GetPolygonMemory(LayerType * layer);
+PolygonType *GetPolygonMemory(pcb_layer_t * layer);
 void RemoveFreePolygon(PolygonType * data);
 PointTypePtr GetPointMemoryInPolygon(PolygonTypePtr Polygon);
 pcb_cardinal_t *GetHoleIndexMemoryInPolygon(PolygonTypePtr Polygon);
 void FreePolygonMemory(PolygonType * polygon);
 
 void SetPolygonBoundingBox(PolygonTypePtr Polygon);
-PolygonTypePtr CreateNewPolygonFromRectangle(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, FlagType Flags);
-PolygonTypePtr CreateNewPolygon(LayerTypePtr Layer, FlagType Flags);
+PolygonTypePtr CreateNewPolygonFromRectangle(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, FlagType Flags);
+PolygonTypePtr CreateNewPolygon(pcb_layer_t *Layer, FlagType Flags);
 PointTypePtr CreateNewPointInPolygon(PolygonTypePtr Polygon, Coord X, Coord Y);
 PolygonType *CreateNewHoleInPolygon(PolygonType * Polygon);
-void *RemovePolygon(LayerTypePtr Layer, PolygonTypePtr Polygon);
+void *RemovePolygon(pcb_layer_t *Layer, PolygonTypePtr Polygon);
 
 void MovePolygonLowLevel(PolygonTypePtr Polygon, Coord DX, Coord DY);
 void RotatePolygonLowLevel(PolygonTypePtr Polygon, Coord X, Coord Y, unsigned Number);
 PolygonTypePtr CopyPolygonLowLevel(PolygonTypePtr Dest, PolygonTypePtr Src);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon);
+void pcb_add_polygon_on_layer(pcb_layer_t *Layer, PolygonType *polygon);
 
 #define POLYGON_LOOP(layer) do {                                    \
   PolygonType *polygon;                                             \
@@ -82,21 +82,21 @@ void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon);
 
 #define	ALLPOLYGON_LOOP(top)	do {		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		POLYGON_LOOP(layer)
 
 #define	COPPERPOLYGON_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer; l++, layer++)	\
 	{ \
 		POLYGON_LOOP(layer)
 
 #define	SILKPOLYGON_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	layer += max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
@@ -104,7 +104,7 @@ void pcb_add_polygon_on_layer(LayerType *Layer, PolygonType *polygon);
 
 #define	VISIBLEPOLYGON_LOOP(top) do	{	\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		if (layer->On)				\

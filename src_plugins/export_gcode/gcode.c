@@ -252,7 +252,7 @@ static HID_Attribute *gcode_get_export_options(int *n)
 void gcode_choose_groups()
 {
 	int n, m;
-	LayerType *layer;
+	pcb_layer_t *layer;
 
 	/* Set entire array to 0 (don't export any layer groups by default */
 	memset(gcode_export_group, 0, sizeof(gcode_export_group));

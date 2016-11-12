@@ -497,7 +497,7 @@ static HID_Attribute *nelma_get_export_options(int *n)
 void nelma_choose_groups()
 {
 	int n, m;
-	LayerType *layer;
+	pcb_layer_t *layer;
 
 	/* Set entire array to 0 (don't export any layer groups by default */
 	memset(nelma_export_group, 0, sizeof(nelma_export_group));

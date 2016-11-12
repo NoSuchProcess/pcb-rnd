@@ -110,7 +110,7 @@ void pcb_select_element_name(ElementType *element, pcb_change_flag_t how, int re
 pcb_bool SelectObject(void)
 {
 	void *ptr1, *ptr2, *ptr3;
-	LayerTypePtr layer;
+	pcb_layer_t *layer;
 	int type;
 
 	pcb_bool changed = pcb_true;
@@ -129,7 +129,7 @@ pcb_bool SelectObject(void)
 		{
 			LineType *line = (LineTypePtr) ptr2;
 
-			layer = (LayerTypePtr) ptr1;
+			layer = (pcb_layer_t *) ptr1;
 			AddObjectToFlagUndoList(PCB_TYPE_LINE, ptr1, ptr2, ptr2);
 			TOGGLE_FLAG(PCB_FLAG_SELECTED, line);
 			DrawLine(layer, line);
@@ -150,7 +150,7 @@ pcb_bool SelectObject(void)
 		{
 			ArcType *arc = (ArcTypePtr) ptr2;
 
-			layer = (LayerTypePtr) ptr1;
+			layer = (pcb_layer_t *) ptr1;
 			AddObjectToFlagUndoList(PCB_TYPE_ARC, ptr1, ptr2, ptr2);
 			TOGGLE_FLAG(PCB_FLAG_SELECTED, arc);
 			DrawArc(layer, arc);
@@ -161,7 +161,7 @@ pcb_bool SelectObject(void)
 		{
 			TextType *text = (TextTypePtr) ptr2;
 
-			layer = (LayerTypePtr) ptr1;
+			layer = (pcb_layer_t *) ptr1;
 			AddObjectToFlagUndoList(PCB_TYPE_TEXT, ptr1, ptr2, ptr2);
 			TOGGLE_FLAG(PCB_FLAG_SELECTED, text);
 			DrawText(layer, text);
@@ -172,7 +172,7 @@ pcb_bool SelectObject(void)
 		{
 			PolygonType *poly = (PolygonTypePtr) ptr2;
 
-			layer = (LayerTypePtr) ptr1;
+			layer = (pcb_layer_t *) ptr1;
 			AddObjectToFlagUndoList(PCB_TYPE_POLYGON, ptr1, ptr2, ptr2);
 			TOGGLE_FLAG(PCB_FLAG_SELECTED, poly);
 			DrawPolygon(layer, poly);
@@ -489,32 +489,32 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 	switch (Type) {
 	case PCB_TYPE_LINE:
 		if (F->Line)
-			return (F->Line(ctx, (LayerTypePtr) Ptr1, (LineTypePtr) Ptr2));
+			return (F->Line(ctx, (pcb_layer_t *) Ptr1, (LineTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_ARC:
 		if (F->Arc)
-			return (F->Arc(ctx, (LayerTypePtr) Ptr1, (ArcTypePtr) Ptr2));
+			return (F->Arc(ctx, (pcb_layer_t *) Ptr1, (ArcTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_LINE_POINT:
 		if (F->LinePoint)
-			return (F->LinePoint(ctx, (LayerTypePtr) Ptr1, (LineTypePtr) Ptr2, (PointTypePtr) Ptr3));
+			return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (LineTypePtr) Ptr2, (PointTypePtr) Ptr3));
 		break;
 
 	case PCB_TYPE_TEXT:
 		if (F->Text)
-			return (F->Text(ctx, (LayerTypePtr) Ptr1, (TextTypePtr) Ptr2));
+			return (F->Text(ctx, (pcb_layer_t *) Ptr1, (TextTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_POLYGON:
 		if (F->Polygon)
-			return (F->Polygon(ctx, (LayerTypePtr) Ptr1, (PolygonTypePtr) Ptr2));
+			return (F->Polygon(ctx, (pcb_layer_t *) Ptr1, (PolygonTypePtr) Ptr2));
 		break;
 
 	case PCB_TYPE_POLYGON_POINT:
 		if (F->Point)
-			return (F->Point(ctx, (LayerTypePtr) Ptr1, (PolygonTypePtr) Ptr2, (PointTypePtr) Ptr3));
+			return (F->Point(ctx, (pcb_layer_t *) Ptr1, (PolygonTypePtr) Ptr2, (PointTypePtr) Ptr3));
 		break;
 
 	case PCB_TYPE_VIA:

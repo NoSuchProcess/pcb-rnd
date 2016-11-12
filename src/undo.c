@@ -96,7 +96,7 @@ typedef struct {								/* information about rotation */
 
 typedef struct {								/* information about moves between layers */
 	pcb_cardinal_t OriginalLayer;				/* the index of the original layer */
-} MoveToLayerType, *MoveToLayerTypePtr;
+} MoveToLayer;
 
 typedef struct {								/* information about layer changes */
 	int old_index;
@@ -105,7 +105,7 @@ typedef struct {								/* information about layer changes */
 
 typedef struct {								/* information about poly clear/restore */
 	pcb_bool Clear;										/* pcb_true was clear, pcb_false was restore */
-	LayerTypePtr Layer;
+	pcb_layer_t *Layer;
 } ClearPolyType, *ClearPolyTypePtr;
 
 typedef struct {
@@ -127,7 +127,7 @@ typedef struct {								/* holds information about an operation */
 		MoveType Move;
 		RemovedPointType RemovedPoint;
 		RotateType Rotate;
-		MoveToLayerType MoveToLayer;
+		MoveToLayer MoveToLayer;
 		FlagType Flags;
 		Coord Size;
 		LayerChangeType LayerChange;
@@ -246,9 +246,9 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 static void DrawRecoveredObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	if (Type & (PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLYGON | PCB_TYPE_ARC)) {
-		LayerTypePtr layer;
+		pcb_layer_t *layer;
 
-		layer = LAYER_PTR(GetLayerNumber(RemoveList, (LayerTypePtr) Ptr1));
+		layer = LAYER_PTR(GetLayerNumber(RemoveList, (pcb_layer_t *) Ptr1));
 		DrawObject(Type, (void *) layer, Ptr2);
 	}
 	else
@@ -367,7 +367,7 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type == PCB_TYPE_ARC) {
-		LayerTypePtr Layer = (LayerTypePtr) ptr1;
+		pcb_layer_t *Layer = (pcb_layer_t *) ptr1;
 		ArcTypePtr a = (ArcTypePtr) ptr2;
 		r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
 		old_sa = a->StartAngle;
@@ -398,7 +398,7 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type == PCB_TYPE_ARC) {
-		LayerTypePtr Layer = (LayerTypePtr) ptr1;
+		pcb_layer_t *Layer = (pcb_layer_t *) ptr1;
 		ArcTypePtr a = (ArcTypePtr) ptr2;
 		r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
 		old_w = a->Width;
@@ -651,7 +651,7 @@ static pcb_bool UndoMoveToLayer(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		swap = GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1);
+		swap = GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1);
 		MoveObjectToLayer(type, ptr1, ptr2, ptr3, LAYER_PTR(Entry->Data.MoveToLayer.OriginalLayer), pcb_true);
 		Entry->Data.MoveToLayer.OriginalLayer = swap;
 		return (pcb_true);
@@ -665,7 +665,7 @@ static pcb_bool UndoMoveToLayer(UndoListTypePtr Entry)
  */
 static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
 {
-	LayerTypePtr layer;
+	pcb_layer_t *layer;
 	PolygonTypePtr polygon;
 	void *ptr3;
 	int type;
@@ -704,7 +704,7 @@ static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
  */
 static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 {
-	LayerTypePtr layer;
+	pcb_layer_t *layer;
 	PolygonTypePtr polygon;
 	PointTypePtr pnt;
 	int type;
@@ -782,7 +782,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 
 	obj = (AnyObjectType *) MoveObjectToBuffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
 	if (Entry->Kind == PCB_TYPE_POLYGON)
-		InitClip(PCB->Data, (LayerTypePtr) ptr1b, (PolygonType *) obj);
+		InitClip(PCB->Data, (pcb_layer_t *) ptr1b, (PolygonType *) obj);
 	return (pcb_true);
 }
 
@@ -1187,7 +1187,7 @@ void AddObjectToClearPolyUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_CLEAR, OBJECT_ID(Ptr3), Type);
 		undo->Data.ClearPoly.Clear = clear;
-		undo->Data.ClearPoly.Layer = (LayerTypePtr) Ptr1;
+		undo->Data.ClearPoly.Layer = (pcb_layer_t *) Ptr1;
 	}
 }
 
@@ -1303,7 +1303,7 @@ static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2
  * adds an object to the list of removed contours
  * (Actually just takes a copy of the whole polygon to restore)
  */
-void AddObjectToRemoveContourUndoList(int Type, LayerType * Layer, PolygonType * Polygon)
+void AddObjectToRemoveContourUndoList(int Type, pcb_layer_t * Layer, PolygonType * Polygon)
 {
 	CopyObjectToUndoList(UNDO_REMOVE_CONTOUR, Type, Layer, Polygon, NULL);
 }
@@ -1312,7 +1312,7 @@ void AddObjectToRemoveContourUndoList(int Type, LayerType * Layer, PolygonType *
  * adds an object to the list of insert contours
  * (Actually just takes a copy of the whole polygon to restore)
  */
-void AddObjectToInsertContourUndoList(int Type, LayerType * Layer, PolygonType * Polygon)
+void AddObjectToInsertContourUndoList(int Type, pcb_layer_t * Layer, PolygonType * Polygon)
 {
 	CopyObjectToUndoList(UNDO_INSERT_CONTOUR, Type, Layer, Polygon, NULL);
 }
@@ -1366,7 +1366,7 @@ void AddObjectToMoveToLayerUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_MOVETOLAYER, OBJECT_ID(Ptr3), Type);
-		undo->Data.MoveToLayer.OriginalLayer = GetLayerNumber(PCB->Data, (LayerTypePtr) Ptr1);
+		undo->Data.MoveToLayer.OriginalLayer = GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1);
 	}
 }
 

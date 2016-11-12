@@ -269,7 +269,7 @@ static int rotateSide(int side, int n)
 /*!
  * Wrapper for CreateNewLineOnLayer that takes vectors and deals with Undo
  */
-static LineType *CreateVectorLineOnLayer(LayerType * layer, Vector a, Vector b, int thickness, int clearance, FlagType flags)
+static LineType *CreateVectorLineOnLayer(pcb_layer_t * layer, Vector a, Vector b, int thickness, int clearance, FlagType flags)
 {
 	LineType *line;
 
@@ -280,7 +280,7 @@ static LineType *CreateVectorLineOnLayer(LayerType * layer, Vector a, Vector b, 
 	return line;
 }
 
-static LineType *MakeBypassLine(LayerType * layer, Vector a, Vector b, LineType * orig, POLYAREA ** expandp)
+static LineType *MakeBypassLine(pcb_layer_t * layer, Vector a, Vector b, LineType * orig, POLYAREA ** expandp)
 {
 	LineType *line;
 
@@ -311,7 +311,7 @@ static LineType *MakeBypassLine(LayerType * layer, Vector a, Vector b, LineType 
  * points a, b, c, d.  Finally connect the dots and remove the
  * old straight line.
  */
-static int MakeBypassingLines(POLYAREA * brush, LayerType * layer, LineType * line, int side, POLYAREA ** expandp)
+static int MakeBypassingLines(POLYAREA * brush, pcb_layer_t * layer, LineType * line, int side, POLYAREA ** expandp)
 {
 	Vector pA, pB, flatA, flatB, qA, qB;
 	Vector lA, lB;
@@ -349,7 +349,7 @@ static int MakeBypassingLines(POLYAREA * brush, LayerType * layer, LineType * li
 struct info {
 	BoxType box;
 	POLYAREA *brush;
-	LayerType *layer;
+	pcb_layer_t *layer;
 	POLYAREA *smallest;
 	/*!< after cutting brush with line, the smallest chunk, which we
 	 * will go around on 'side'.

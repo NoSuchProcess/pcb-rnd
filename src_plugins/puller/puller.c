@@ -276,7 +276,7 @@ static double dist_lsp(int x1, int y1, int x2, int y2, int px, int py)
 
 static r_dir_t line_callback(const BoxType * b, void *cl)
 {
-	/* LayerTypePtr layer = (LayerTypePtr)cl; */
+	/* pcb_layer_t *layer = (pcb_layer_t *)cl; */
 	LineTypePtr l = (LineTypePtr) b;
 	double d1, d2, t;
 #if TRACE1
@@ -302,7 +302,7 @@ static r_dir_t line_callback(const BoxType * b, void *cl)
 
 static r_dir_t arc_callback(const BoxType * b, void *cl)
 {
-	/* LayerTypePtr layer = (LayerTypePtr) cl; */
+	/* pcb_layer_t *layer = (pcb_layer_t *) cl; */
 	ArcTypePtr a = (ArcTypePtr) b;
 
 #if TRACE1

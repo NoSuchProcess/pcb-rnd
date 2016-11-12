@@ -191,7 +191,7 @@ static void DrawEverything(const BoxType * drawn_area)
 
 	memset(do_group, 0, sizeof(do_group));
 	for (ngroups = 0, i = 0; i < max_copper_layer; i++) {
-		LayerType *l = LAYER_ON_STACK(i);
+		pcb_layer_t *l = LAYER_ON_STACK(i);
 		int group = GetLayerGroupNumberByNumber(LayerStack[i]);
 		if (l->On && !do_group[group]) {
 			do_group[group] = 1;
@@ -431,7 +431,7 @@ static void DrawRats(const BoxType * drawn_area)
 		gui->use_mask(HID_MASK_OFF);
 }
 
-void DrawLayer(LayerTypePtr Layer, const BoxType * screen)
+void DrawLayer(pcb_layer_t *Layer, const BoxType * screen)
 {
 	struct draw_poly_info info;
 
@@ -472,7 +472,7 @@ static void DrawLayerGroup(int group, const BoxType * drawn_area)
 {
 	int i, rv = 1;
 	int layernum;
-	LayerTypePtr Layer;
+	pcb_layer_t *Layer;
 	int n_entries = PCB->LayerGroups.Number[group];
 	pcb_cardinal_t *layers = PCB->LayerGroups.Entries[group];
 
@@ -500,7 +500,7 @@ void EraseObject(int type, void *lptr, void *ptr)
 		break;
 	case PCB_TYPE_TEXT:
 	case PCB_TYPE_ELEMENT_NAME:
-		EraseText((LayerTypePtr) lptr, (TextTypePtr) ptr);
+		EraseText((pcb_layer_t *) lptr, (TextTypePtr) ptr);
 		break;
 	case PCB_TYPE_POLYGON:
 		ErasePolygon((PolygonTypePtr) ptr);
@@ -534,20 +534,20 @@ void DrawObject(int type, void *ptr1, void *ptr2)
 			DrawVia((PinTypePtr) ptr2);
 		break;
 	case PCB_TYPE_LINE:
-		if (((LayerTypePtr) ptr1)->On)
-			DrawLine((LayerTypePtr) ptr1, (LineTypePtr) ptr2);
+		if (((pcb_layer_t *) ptr1)->On)
+			DrawLine((pcb_layer_t *) ptr1, (LineTypePtr) ptr2);
 		break;
 	case PCB_TYPE_ARC:
-		if (((LayerTypePtr) ptr1)->On)
-			DrawArc((LayerTypePtr) ptr1, (ArcTypePtr) ptr2);
+		if (((pcb_layer_t *) ptr1)->On)
+			DrawArc((pcb_layer_t *) ptr1, (ArcTypePtr) ptr2);
 		break;
 	case PCB_TYPE_TEXT:
-		if (((LayerTypePtr) ptr1)->On)
-			DrawText((LayerTypePtr) ptr1, (TextTypePtr) ptr2);
+		if (((pcb_layer_t *) ptr1)->On)
+			DrawText((pcb_layer_t *) ptr1, (TextTypePtr) ptr2);
 		break;
 	case PCB_TYPE_POLYGON:
-		if (((LayerTypePtr) ptr1)->On)
-			DrawPolygon((LayerTypePtr) ptr1, (PolygonTypePtr) ptr2);
+		if (((pcb_layer_t *) ptr1)->On)
+			DrawPolygon((pcb_layer_t *) ptr1, (PolygonTypePtr) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT:
 		if (PCB->ElementOn && (FRONT((ElementTypePtr) ptr2) || PCB->InvisibleObjectsOn))

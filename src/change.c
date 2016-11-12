@@ -363,7 +363,7 @@ pcb_bool ChangeLayoutName(char *Name)
 /* ---------------------------------------------------------------------------
  * changes the name of a layer; memory has to be already allocated
  */
-pcb_bool ChangeLayerName(LayerTypePtr Layer, char *Name)
+pcb_bool ChangeLayerName(pcb_layer_t *Layer, char *Name)
 {
 	free((char*)CURRENT->Name);
 	CURRENT->Name = Name;

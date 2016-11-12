@@ -406,7 +406,7 @@ void MirrorBuffer(BufferTypePtr Buffer)
 		return;
 	}
 	for (i = 0; i < max_copper_layer + 2; i++) {
-		LayerTypePtr layer = Buffer->Data->Layer + i;
+		pcb_layer_t *layer = Buffer->Data->Layer + i;
 		if (textlist_length(&layer->Text)) {
 			Message(PCB_MSG_DEFAULT, _("You can't mirror a buffer that has text!\n"));
 			return;
@@ -460,7 +460,7 @@ void SwapBuffer(BufferTypePtr Buffer)
 {
 	int j, k;
 	pcb_cardinal_t sgroup, cgroup;
-	LayerType swap;
+	pcb_layer_t swap;
 
 	ELEMENT_LOOP(Buffer->Data);
 	{

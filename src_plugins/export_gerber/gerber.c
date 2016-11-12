@@ -84,7 +84,7 @@ static int current_mask;
 static int flash_drills;
 static int copy_outline_mode;
 static int name_style;
-static LayerTypePtr outline_layer;
+static pcb_layer_t *outline_layer;
 
 enum ApertureShape {
 	ROUND,												/* Shaped like a circle */
@@ -528,7 +528,7 @@ static void gerber_do_export(HID_Attr_Val * options)
 	outline_layer = NULL;
 
 	for (i = 0; i < max_copper_layer; i++) {
-		LayerType *layer = PCB->Data->Layer + i;
+		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (strcmp(layer->Name, "outline") == 0 || strcmp(layer->Name, "route") == 0) {
 			outline_layer = layer;
 		}
@@ -551,7 +551,7 @@ static void gerber_do_export(HID_Attr_Val * options)
 
 	hid_save_and_show_layer_ons(save_ons);
 	for (i = 0; i < max_copper_layer; i++) {
-		LayerType *layer = PCB->Data->Layer + i;
+		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (!LAYER_IS_EMPTY(layer))
 			print_group[GetLayerGroupNumberByNumber(i)] = 1;
 	}

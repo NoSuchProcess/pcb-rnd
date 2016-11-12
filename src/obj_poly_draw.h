@@ -30,10 +30,10 @@
 #ifdef PCB_RTREE_H
 struct draw_poly_info {
 	const BoxType *drawn_area;
-	LayerType *layer;
+	pcb_layer_t *layer;
 };
 r_dir_t draw_poly_callback(const BoxType * b, void *cl);
 #endif
 
 void ErasePolygon(PolygonTypePtr Polygon);
-void DrawPolygon(LayerTypePtr Layer, PolygonTypePtr Polygon);
+void DrawPolygon(pcb_layer_t *Layer, PolygonTypePtr Polygon);

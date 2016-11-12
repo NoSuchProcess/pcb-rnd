@@ -1133,7 +1133,7 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
-	LayerTypePtr layer = CURRENT;
+	pcb_layer_t *layer = CURRENT;
 
 	type = SearchScreen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
 /* set layer current and size from line or arc */
@@ -1141,7 +1141,7 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 	case PCB_TYPE_LINE:
 		notify_crosshair_change(pcb_false);
 		set_same_(((LineTypePtr) ptr2)->Thickness, 0, 0, ((LineTypePtr) ptr2)->Clearance / 2, NULL);
-		layer = (LayerTypePtr) ptr1;
+		layer = (pcb_layer_t *) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_LINE)
 			SetMode(PCB_MODE_LINE);
 		notify_crosshair_change(pcb_true);
@@ -1151,7 +1151,7 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 	case PCB_TYPE_ARC:
 		notify_crosshair_change(pcb_false);
 		set_same_(((ArcTypePtr) ptr2)->Thickness, 0, 0, ((ArcTypePtr) ptr2)->Clearance / 2, NULL);
-		layer = (LayerTypePtr) ptr1;
+		layer = (pcb_layer_t *) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_ARC)
 			SetMode(PCB_MODE_ARC);
 		notify_crosshair_change(pcb_true);
@@ -1159,7 +1159,7 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 		break;
 
 	case PCB_TYPE_POLYGON:
-		layer = (LayerTypePtr) ptr1;
+		layer = (pcb_layer_t *) ptr1;
 		break;
 
 	case PCB_TYPE_VIA:

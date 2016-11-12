@@ -89,7 +89,7 @@ static void map_attr(void *ctx, const AttributeListType *list)
 		free(big);
 }
 
-static void map_line_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, LineType *line)
+static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line)
 {
 	map_chk_skip(ctx, line);
 	map_add_prop(ctx, "p/trace/thickness", Coord, line->Thickness);
@@ -97,7 +97,7 @@ static void map_line_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, LineType 
 	map_attr(ctx, &line->Attributes);
 }
 
-static void map_arc_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, ArcType *arc)
+static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc)
 {
 	map_chk_skip(ctx, arc);
 	map_add_prop(ctx, "p/trace/thickness", Coord, arc->Thickness);
@@ -109,7 +109,7 @@ static void map_arc_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, ArcType *a
 	map_attr(ctx, &arc->Attributes);
 }
 
-static void map_text_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, TextType *text)
+static void map_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text)
 {
 	map_chk_skip(ctx, text);
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
@@ -118,7 +118,7 @@ static void map_text_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, TextType 
 	map_attr(ctx, &text->Attributes);
 }
 
-static void map_poly_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, PolygonType *poly)
+static void map_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly)
 {
 	map_chk_skip(ctx, poly);
 	map_attr(ctx, &poly->Attributes);
@@ -216,7 +216,7 @@ static void set_attr(set_ctx_t *st, AttributeListType *list)
 
 #define DONE { st->set_cnt++; RestoreUndoSerialNumber(); return; }
 
-static void set_line_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, LineType *line)
+static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 8;
@@ -235,7 +235,7 @@ static void set_line_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, LineType 
 	    ChangeObjectClearSize(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
 }
 
-static void set_arc_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, ArcType *arc)
+static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 8;
@@ -305,13 +305,13 @@ static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_o
 	}
 }
 
-static void set_text_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, TextType *text)
+static void set_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text)
 {
 	set_text_cb_any(ctx, pcb, PCB_TYPE_TEXT, layer, text);
 }
 
 
-static void set_poly_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, PolygonType *poly)
+static void set_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 
@@ -486,25 +486,25 @@ static void del_attr(void *ctx, AttributeListType *list)
 		st->del_cnt++;
 }
 
-static void del_line_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, LineType *line)
+static void del_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line)
 {
 	map_chk_skip(ctx, line);
 	del_attr(ctx, &line->Attributes);
 }
 
-static void del_arc_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, ArcType *arc)
+static void del_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc)
 {
 	map_chk_skip(ctx, arc);
 	del_attr(ctx, &arc->Attributes);
 }
 
-static void del_text_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, TextType *text)
+static void del_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text)
 {
 	map_chk_skip(ctx, text);
 	del_attr(ctx, &text->Attributes);
 }
 
-static void del_poly_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, PolygonType *poly)
+static void del_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly)
 {
 	map_chk_skip(ctx, poly);
 	del_attr(ctx, &poly->Attributes);

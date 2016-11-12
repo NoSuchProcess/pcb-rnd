@@ -75,7 +75,7 @@ static void *MyMoveViaLowLevel(pcb_data_t * Data, PinType * Via, Coord dx, Coord
 	return Via;
 }
 
-static void *MyMoveLineLowLevel(pcb_data_t * Data, LayerType * Layer, LineType * Line, Coord dx, Coord dy)
+static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, LineType * Line, Coord dx, Coord dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_LINE, Layer, Line);
@@ -89,7 +89,7 @@ static void *MyMoveLineLowLevel(pcb_data_t * Data, LayerType * Layer, LineType *
 	return Line;
 }
 
-static void *MyMoveArcLowLevel(pcb_data_t * Data, LayerType * Layer, ArcType * Arc, Coord dx, Coord dy)
+static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, ArcType * Arc, Coord dx, Coord dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_ARC, Layer, Arc);
@@ -103,7 +103,7 @@ static void *MyMoveArcLowLevel(pcb_data_t * Data, LayerType * Layer, ArcType * A
 	return Arc;
 }
 
-static void *MyMovePolygonLowLevel(pcb_data_t * Data, LayerType * Layer, PolygonType * Polygon, Coord dx, Coord dy)
+static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, PolygonType * Polygon, Coord dx, Coord dy)
 {
 	if (Data) {
 		r_delete_entry(Layer->polygon_tree, (BoxType *) Polygon);
@@ -117,7 +117,7 @@ static void *MyMovePolygonLowLevel(pcb_data_t * Data, LayerType * Layer, Polygon
 	return Polygon;
 }
 
-static void *MyMoveTextLowLevel(LayerType * Layer, TextType * Text, Coord dx, Coord dy)
+static void *MyMoveTextLowLevel(pcb_layer_t * Layer, TextType * Text, Coord dx, Coord dy)
 {
 	if (Layer)
 		r_delete_entry(Layer->text_tree, (BoxType *) Text);

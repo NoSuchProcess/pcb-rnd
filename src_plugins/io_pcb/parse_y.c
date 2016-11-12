@@ -120,7 +120,7 @@
 #include "compat_misc.h"
 #include "obj_all.h"
 
-static	LayerTypePtr	Layer;
+static	pcb_layer_t *Layer;
 static	PolygonTypePtr	Polygon;
 static	SymbolTypePtr	Symbol;
 static	int		pin_num;
@@ -2321,7 +2321,7 @@ yyreduce:
     {
 				if ((yyvsp[-1].integer) & PCB_FLAG_ONSILK)
 				{
-					LayerTypePtr lay = &yyData->Layer[yyData->LayerN +
+					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(((yyvsp[-1].integer) & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
 					CreateNewText(lay ,yyFont, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].string),
@@ -2347,7 +2347,7 @@ yyreduce:
 				 */
 				if ((yyvsp[-1].flagtype).f & PCB_FLAG_ONSILK)
 				{
-					LayerTypePtr lay = &yyData->Layer[yyData->LayerN +
+					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(((yyvsp[-1].flagtype).f & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
 					CreateNewText(lay, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].string), (yyvsp[-1].flagtype));

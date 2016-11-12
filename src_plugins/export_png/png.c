@@ -449,7 +449,7 @@ void png_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	memset(print_layer, 0, sizeof(print_layer));
 
 	for (i = 0; i < max_copper_layer; i++) {
-		LayerType *layer = PCB->Data->Layer + i;
+		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (!LAYER_IS_EMPTY(layer))
 			print_group[GetLayerGroupNumberByNumber(i)] = 1;
 	}

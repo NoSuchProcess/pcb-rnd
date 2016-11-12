@@ -49,7 +49,7 @@ static void reassign_no_drc_flags(void)
 	int layer;
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
-		LayerTypePtr l = LAYER_PTR(layer);
+		pcb_layer_t *l = LAYER_PTR(layer);
 		l->no_drc = AttributeGet(l, "PCB::skip-drc") != NULL;
 	}
 }
@@ -169,7 +169,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_LINE:
 		{
 			int layer = GetLayerNumber(PCB->Data,
-																 (LayerTypePtr) ptr1);
+																 (pcb_layer_t *) ptr1);
 
 			if (ADD_LINE_TO_LIST(layer, (LineTypePtr) ptr2, 0, NULL, FCT_START))
 				return pcb_true;
@@ -179,7 +179,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_ARC:
 		{
 			int layer = GetLayerNumber(PCB->Data,
-																 (LayerTypePtr) ptr1);
+																 (pcb_layer_t *) ptr1);
 
 			if (ADD_ARC_TO_LIST(layer, (ArcTypePtr) ptr2, 0, NULL, FCT_START))
 				return pcb_true;
@@ -189,7 +189,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_POLYGON:
 		{
 			int layer = GetLayerNumber(PCB->Data,
-																 (LayerTypePtr) ptr1);
+																 (pcb_layer_t *) ptr1);
 
 			if (ADD_POLYGON_TO_LIST(layer, (PolygonTypePtr) ptr2, 0, NULL, FCT_START))
 				return pcb_true;
@@ -231,10 +231,10 @@ void LookupConnection(Coord X, Coord Y, pcb_bool AndDraw, Coord Range, int which
 			return;
 		if (type & SILK_TYPE) {
 			int laynum = GetLayerNumber(PCB->Data,
-																	(LayerTypePtr) ptr1);
+																	(pcb_layer_t *) ptr1);
 
 			/* don't mess with non-conducting objects! */
-			if (laynum >= max_copper_layer || ((LayerTypePtr) ptr1)->no_drc)
+			if (laynum >= max_copper_layer || ((pcb_layer_t *) ptr1)->no_drc)
 				return;
 		}
 	}

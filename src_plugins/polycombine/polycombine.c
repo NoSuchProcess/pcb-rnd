@@ -278,7 +278,7 @@ static int polycombine(int argc, const char **argv, Coord x, Coord y)
     PLINE *pline;
     VNODE *node;
     PolygonType *Polygon;*/
-	LayerType *Layer = NULL;
+	pcb_layer_t *Layer = NULL;
 	poly_tree *root = NULL;
 	poly_tree *this_node;
 

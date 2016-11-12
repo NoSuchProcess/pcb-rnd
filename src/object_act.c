@@ -122,7 +122,7 @@ static int ActionAttributes(int argc, const char **argv, Coord x, Coord y)
 
 	case F_Layer:
 		{
-			LayerType *layer = CURRENT;
+			pcb_layer_t *layer = CURRENT;
 			if (layername) {
 				int i;
 				layer = NULL;

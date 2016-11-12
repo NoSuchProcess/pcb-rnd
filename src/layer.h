@@ -57,7 +57,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 };
 
 /* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
-pcb_bool IsLayerEmpty(LayerTypePtr);
+pcb_bool IsLayerEmpty(pcb_layer_t *);
 pcb_bool IsLayerNumEmpty(int);
 
 /* Returns pcb_true if all layers in a group are empty */
@@ -68,8 +68,8 @@ pcb_bool IsLayerGroupEmpty(int);
 
 int ParseGroupString(const char *, pcb_layer_group_t *, int /* LayerN */ );
 
-int GetLayerNumber(pcb_data_t *, LayerTypePtr);
-int GetLayerGroupNumberByPointer(LayerTypePtr);
+int GetLayerNumber(pcb_data_t *, pcb_layer_t *);
+int GetLayerGroupNumberByPointer(pcb_layer_t *);
 int GetLayerGroupNumberByNumber(pcb_cardinal_t);
 int GetGroupOfLayer(int);
 int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
@@ -131,7 +131,7 @@ char *LayerGroupsToString(pcb_layer_group_t *);
 	pcb_cardinal_t entry; \
         for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
         { \
-		LayerTypePtr layer;		\
+		pcb_layer_t *layer;		\
 		pcb_cardinal_t number; 		\
 		number = ((pcb_board_t *)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
 		if (number >= max_copper_layer)	\
@@ -142,7 +142,7 @@ char *LayerGroupsToString(pcb_layer_group_t *);
         pcb_cardinal_t n; \
 	for (n = 0; n < ml; n++) \
 	{ \
-	   LayerTypePtr layer = (&data->Layer[(n)]);
+	   pcb_layer_t *layer = (&data->Layer[(n)]);
 
 
 #define LAYER_IS_EMPTY(layer) LAYER_IS_EMPTY_((layer))

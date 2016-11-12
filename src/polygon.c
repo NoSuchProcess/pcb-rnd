@@ -774,7 +774,7 @@ static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, P
 }
 
 /* remove the pin clearance from the polygon */
-static int SubtractPin(pcb_data_t * d, PinType * pin, LayerType * l, PolygonType * p)
+static int SubtractPin(pcb_data_t * d, PinType * pin, pcb_layer_t * l, PolygonType * p)
 {
 	POLYAREA *np;
 	pcb_cardinal_t i;
@@ -850,7 +850,7 @@ static int SubtractPad(PadType * pad, PolygonType * p)
 struct cpInfo {
 	const BoxType *other;
 	pcb_data_t *data;
-	LayerType *layer;
+	pcb_layer_t *layer;
 	PolygonType *polygon;
 	pcb_bool solder;
 	POLYAREA *accumulate;
@@ -998,7 +998,7 @@ static int Group(pcb_data_t *Data, pcb_cardinal_t layer)
 	return i;
 }
 
-static int clearPoly(pcb_data_t *Data, LayerTypePtr Layer, PolygonType * polygon, const BoxType * here, Coord expand)
+static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, PolygonType * polygon, const BoxType * here, Coord expand)
 {
 	int r = 0, seen;
 	BoxType region;
@@ -1084,7 +1084,7 @@ fail:
 	return 0;
 }
 
-static int UnsubtractPin(PinType * pin, LayerType * l, PolygonType * p)
+static int UnsubtractPin(PinType * pin, pcb_layer_t * l, PolygonType * p)
 {
 	POLYAREA *np;
 
@@ -1100,7 +1100,7 @@ static int UnsubtractPin(PinType * pin, LayerType * l, PolygonType * p)
 	return 1;
 }
 
-static int UnsubtractArc(ArcType * arc, LayerType * l, PolygonType * p)
+static int UnsubtractArc(ArcType * arc, pcb_layer_t * l, PolygonType * p)
 {
 	POLYAREA *np;
 
@@ -1118,7 +1118,7 @@ static int UnsubtractArc(ArcType * arc, LayerType * l, PolygonType * p)
 	return 1;
 }
 
-static int UnsubtractLine(LineType * line, LayerType * l, PolygonType * p)
+static int UnsubtractLine(LineType * line, pcb_layer_t * l, PolygonType * p)
 {
 	POLYAREA *np;
 
@@ -1136,7 +1136,7 @@ static int UnsubtractLine(LineType * line, LayerType * l, PolygonType * p)
 	return 1;
 }
 
-static int UnsubtractText(TextType * text, LayerType * l, PolygonType * p)
+static int UnsubtractText(TextType * text, pcb_layer_t * l, PolygonType * p)
 {
 	POLYAREA *np;
 
@@ -1154,7 +1154,7 @@ static int UnsubtractText(TextType * text, LayerType * l, PolygonType * p)
 	return 1;
 }
 
-static int UnsubtractPad(PadType * pad, LayerType * l, PolygonType * p)
+static int UnsubtractPad(PadType * pad, pcb_layer_t * l, PolygonType * p)
 {
 	POLYAREA *np;
 
@@ -1171,7 +1171,7 @@ static int UnsubtractPad(PadType * pad, LayerType * l, PolygonType * p)
 
 static pcb_bool inhibit = pcb_false;
 
-int InitClip(pcb_data_t *Data, LayerTypePtr layer, PolygonType * p)
+int InitClip(pcb_data_t *Data, pcb_layer_t *layer, PolygonType * p)
 {
 	if (inhibit)
 		return 0;
@@ -1194,7 +1194,7 @@ int InitClip(pcb_data_t *Data, LayerTypePtr layer, PolygonType * p)
  * line between the points on either side of it is redundant.
  * returns pcb_true if any points are removed
  */
-pcb_bool RemoveExcessPolygonPoints(LayerTypePtr Layer, PolygonTypePtr Polygon)
+pcb_bool RemoveExcessPolygonPoints(pcb_layer_t *Layer, PolygonTypePtr Polygon)
 {
 	PointTypePtr p;
 	pcb_cardinal_t n, prev, next;
@@ -1388,12 +1388,12 @@ PolygonHoles(PolygonType * polygon, const BoxType * range, int (*callback) (PLIN
 struct plow_info {
 	int type;
 	void *ptr1, *ptr2;
-	LayerTypePtr layer;
+	pcb_layer_t *layer;
 	pcb_data_t *data;
-	r_dir_t (*callback) (pcb_data_t *, LayerTypePtr, PolygonTypePtr, int, void *, void *);
+	r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, PolygonTypePtr, int, void *, void *);
 };
 
-static r_dir_t subtract_plow(pcb_data_t *Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
 {
 	if (!Polygon->Clipped)
 		return 0;
@@ -1423,7 +1423,7 @@ static r_dir_t subtract_plow(pcb_data_t *Data, LayerTypePtr Layer, PolygonTypePt
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t add_plow(pcb_data_t *Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
 {
 	switch (type) {
 	case PCB_TYPE_PIN:
@@ -1458,7 +1458,7 @@ static r_dir_t plow_callback(const BoxType * b, void *cl)
 
 int
 PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
-						 r_dir_t (*call_back) (pcb_data_t *data, LayerTypePtr lay, PolygonTypePtr poly, int type, void *ptr1, void *ptr2))
+						 r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, PolygonTypePtr poly, int type, void *ptr1, void *ptr2))
 {
 	BoxType sb = ((PinTypePtr) ptr2)->BoundingBox;
 	int r = 0, seen;
@@ -1482,7 +1482,7 @@ PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			END_LOOP;
 		}
 		else {
-			GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((LayerTypePtr) ptr1))));
+			GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((pcb_layer_t *) ptr1))));
 			{
 				info.layer = layer;
 				r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
@@ -1498,9 +1498,9 @@ PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		if (!TEST_FLAG(PCB_FLAG_CLEARLINE, (LineTypePtr) ptr2))
 			return 0;
 		/* silk doesn't plow */
-		if (GetLayerNumber(Data, (LayerTypePtr) ptr1) >= max_copper_layer)
+		if (GetLayerNumber(Data, (pcb_layer_t *) ptr1) >= max_copper_layer)
 			return 0;
-		GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((LayerTypePtr) ptr1))));
+		GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((pcb_layer_t *) ptr1))));
 		{
 			info.layer = layer;
 			r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
@@ -1543,7 +1543,7 @@ PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 void RestoreToPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	if (type == PCB_TYPE_POLYGON)
-		InitClip(PCB->Data, (LayerTypePtr) ptr1, (PolygonTypePtr) ptr2);
+		InitClip(PCB->Data, (pcb_layer_t *) ptr1, (PolygonTypePtr) ptr2);
 	else
 		PlowsPolygon(Data, type, ptr1, ptr2, add_plow);
 }
@@ -1551,7 +1551,7 @@ void RestoreToPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 void ClearFromPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	if (type == PCB_TYPE_POLYGON)
-		InitClip(PCB->Data, (LayerTypePtr) ptr1, (PolygonTypePtr) ptr2);
+		InitClip(PCB->Data, (pcb_layer_t *) ptr1, (PolygonTypePtr) ptr2);
 	else
 		PlowsPolygon(Data, type, ptr1, ptr2, subtract_plow);
 }
@@ -1685,7 +1685,7 @@ void NoHolesPolygonDicer(PolygonTypePtr p, const BoxType * clip, void (*emit) (P
 }
 
 /* make a polygon split into multiple parts into multiple polygons */
-pcb_bool MorphPolygon(LayerTypePtr layer, PolygonTypePtr poly)
+pcb_bool MorphPolygon(pcb_layer_t *layer, PolygonTypePtr poly)
 {
 	POLYAREA *p, *start;
 	pcb_bool many = pcb_false;
@@ -1798,7 +1798,7 @@ void debug_polygon(PolygonType * p)
 /* Convert a POLYAREA (and all linked POLYAREA) to
  * raw PCB polygons on the given layer.
  */
-void PolyToPolygonsOnLayer(pcb_data_t * Destination, LayerType * Layer, POLYAREA * Input, FlagType Flags)
+void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, POLYAREA * Input, FlagType Flags)
 {
 	PolygonType *Polygon;
 	POLYAREA *pa;

@@ -180,7 +180,7 @@ void pcb_loop_all(void *ctx,
  */
 void FreeDataMemory(pcb_data_t * data)
 {
-	LayerTypePtr layer;
+	pcb_layer_t *layer;
 	int i;
 
 	if (data == NULL)

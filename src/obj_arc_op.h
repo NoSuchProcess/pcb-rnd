@@ -28,19 +28,19 @@
 
 #include "operation.h"
 
-void *AddArcToBuffer(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *MoveArcToBuffer(pcb_opctx_t *ctx, LayerType *layer, ArcType *arc);
-void *ChangeArcSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ChangeArcClearSize(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ChangeArcRadius(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ChangeArcAngle(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ChangeArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *SetArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *ClrArcJoin(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *CopyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *MoveArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, LayerType * Source, ArcType * arc, LayerType * Destination);
-void *MoveArcToLayer(pcb_opctx_t *ctx, LayerType * Layer, ArcType * Arc);
-void *DestroyArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *RemoveArc_op(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
-void *RotateArc(pcb_opctx_t *ctx, LayerTypePtr Layer, ArcTypePtr Arc);
+void *AddArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *MoveArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t *layer, ArcType *arc);
+void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *ChangeArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *SetArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *ClrArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *CopyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *MoveArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *MoveArcToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, ArcType * arc, pcb_layer_t * Destination);
+void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, ArcType * Arc);
+void *DestroyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);
+void *RotateArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, ArcTypePtr Arc);

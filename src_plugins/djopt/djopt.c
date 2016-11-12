@@ -448,7 +448,7 @@ static LineType *create_pcb_line(int layer, int x1, int y1, int x2, int y2, int 
 {
 	char *from, *to;
 	LineType *nl;
-	LayerType *lyr = LAYER_PTR(layer);
+	pcb_layer_t *lyr = LAYER_PTR(layer);
 
 	from = (char *) linelist_first(&lyr->Line);
 	nl = CreateNewLineOnLayer(PCB->Data->Layer + layer, x1, y1, x2, y2, thick, clear, flags);
@@ -651,7 +651,7 @@ static void add_corner_to_rect_if(rect_s * rect, corner_s * c, rect_s * e)
 static void remove_line(line_s * l)
 {
 	int i, j;
-	LayerType *layer = &(PCB->Data->Layer[l->layer]);
+	pcb_layer_t *layer = &(PCB->Data->Layer[l->layer]);
 
 	check(0, 0);
 
@@ -674,7 +674,7 @@ static void remove_line(line_s * l)
 
 static void move_line_to_layer(line_s * l, int layer)
 {
-	LayerType *ls, *ld;
+	pcb_layer_t *ls, *ld;
 
 	ls = LAYER_PTR(l->layer);
 	ld = LAYER_PTR(layer);
@@ -2608,7 +2608,7 @@ static int ActionDJopt(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	for (layn = 0; layn < max_copper_layer; layn++) {
-		LayerType *layer = LAYER_PTR(layn);
+		pcb_layer_t *layer = LAYER_PTR(layn);
 
 		LINE_LOOP(layer);
 		{

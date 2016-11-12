@@ -238,7 +238,7 @@ static void DrawFab(hidGC gc)
 	}
 	yoff = -TEXT_LINE;
 	for (i = 0; i < max_copper_layer; i++) {
-		LayerType *l = LAYER_PTR(i);
+		pcb_layer_t *l = LAYER_PTR(i);
 		if (l->Name && (linelist_length(&l->Line) || arclist_length(&l->Arc))) {
 			if (strcmp("route", l->Name) == 0)
 				break;
@@ -262,7 +262,7 @@ static void DrawFab(hidGC gc)
 						PCB_COORD_TO_MIL(FAB_LINE_W), PCB_COORD_TO_MIL(PCB->MaxWidth), PCB_COORD_TO_MIL(PCB->MaxHeight));
 	}
 	else {
-		LayerTypePtr layer = LAYER_PTR(i);
+		pcb_layer_t *layer = LAYER_PTR(i);
 		gui->set_line_width(gc, PCB_MIL_TO_COORD(10));
 		LINE_LOOP(layer);
 		{

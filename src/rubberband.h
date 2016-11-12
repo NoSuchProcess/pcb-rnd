@@ -35,7 +35,7 @@
  * as well as for merging of elements
  */
 typedef struct {								/* rubberband lines for element moves */
-	LayerTypePtr Layer;						/* layer that holds the line */
+	pcb_layer_t *Layer;						/* layer that holds the line */
 	LineTypePtr Line;							/* the line itself */
 	PointTypePtr MovedPoint;			/* and finally the point */
 } RubberbandType, *RubberbandTypePtr;
@@ -44,6 +44,6 @@ typedef struct {								/* rubberband lines for element moves */
 void LookupRubberbandLines(int, void *, void *, void *);
 void LookupRatLines(int, void *, void *, void *);
 RubberbandTypePtr GetRubberbandMemory(void);
-RubberbandTypePtr CreateNewRubberbandEntry(LayerTypePtr Layer, LineTypePtr Line, PointTypePtr MovedPoint);
+RubberbandTypePtr CreateNewRubberbandEntry(pcb_layer_t *Layer, LineTypePtr Line, PointTypePtr MovedPoint);
 
 #endif

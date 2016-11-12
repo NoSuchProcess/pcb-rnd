@@ -70,7 +70,7 @@ static int FontEdit(int argc, const char **argv, Coord Ux, Coord Uy)
 {
 	FontType *font;
 	SymbolType *symbol;
-	LayerTypePtr lfont, lorig, lwidth, lgrid;
+	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid;
 	int s, l;
 
 	if (hid_actionl("New", "Font", 0))
@@ -162,7 +162,7 @@ static int FontSave(int argc, const char **argv, Coord Ux, Coord Uy)
 	int i;
 	LineType *l;
 	gdl_iterator_t it;
-	LayerTypePtr lfont, lwidth;
+	pcb_layer_t *lfont, *lwidth;
 
 	font = &PCB->Font;
 	lfont = PCB->Data->Layer + 0;

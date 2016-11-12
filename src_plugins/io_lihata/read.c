@@ -336,7 +336,7 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 }
 
 
-static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj, int no_id, Coord dx, Coord dy)
+static int parse_line(pcb_layer_t *ly, ElementType *el, lht_node_t *obj, int no_id, Coord dx, Coord dy)
 {
 	LineType *line;
 
@@ -404,7 +404,7 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
+static int parse_arc(pcb_layer_t *ly, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 {
 	ArcType *arc;
 
@@ -438,7 +438,7 @@ static int parse_arc(LayerType *ly, ElementType *el, lht_node_t *obj, Coord dx, 
 
 }
 
-static int parse_polygon(LayerType *ly, ElementType *el, lht_node_t *obj)
+static int parse_polygon(pcb_layer_t *ly, ElementType *el, lht_node_t *obj)
 {
 	PolygonType *poly = GetPolygonMemory(ly);
 	lht_node_t *geo;
@@ -488,7 +488,7 @@ static int parse_polygon(LayerType *ly, ElementType *el, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_pcb_text(LayerType *ly, ElementType *el, lht_node_t *obj)
+static int parse_pcb_text(pcb_layer_t *ly, ElementType *el, lht_node_t *obj)
 {
 	TextType *text;
 	lht_node_t *role;
@@ -534,7 +534,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	lht_node_t *n, *lst;
 	lht_dom_iterator_t it;
 
-	LayerType *ly = &dt->Layer[dt->LayerN];
+	pcb_layer_t *ly = &dt->Layer[dt->LayerN];
 	dt->LayerN++;
 
 	ly->Name = pcb_strdup(grp->name);

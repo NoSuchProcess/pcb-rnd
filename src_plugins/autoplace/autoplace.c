@@ -193,7 +193,7 @@ static PointerListType collectSelectedElements()
 static void showboxes(BoxListTypePtr blist)
 {
 	pcb_cardinal_t i;
-	LayerTypePtr SLayer = &(PCB->Data->Layer[solder_silk_layer]);
+	pcb_layer_t *SLayer = &(PCB->Data->Layer[solder_silk_layer]);
 	for (i = 0; i < blist->BoxN; i++) {
 		CreateNewLineOnLayer(SLayer, blist->Box[i].X1, blist->Box[i].Y1, blist->Box[i].X2, blist->Box[i].Y1, 1, 1, 0);
 		CreateNewLineOnLayer(SLayer, blist->Box[i].X1, blist->Box[i].Y2, blist->Box[i].X2, blist->Box[i].Y2, 1, 1, 0);

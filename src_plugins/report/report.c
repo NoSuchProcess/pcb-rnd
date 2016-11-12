@@ -221,7 +221,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 			LineTypePtr line;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
-				LayerTypePtr layer = (LayerTypePtr) ptr1;
+				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				__r_dump_tree(layer->line_tree->root, 0);
 				return 0;
 			}
@@ -238,7 +238,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 									line->Point1.X, line->Point1.Y, line->Point1.ID,
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
-									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1),
+									GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1),
 									UNKNOWN(line->Number), TEST_FLAG(PCB_FLAG_LOCK, line) ? "It is LOCKED.\n" : "");
 			break;
 		}
@@ -268,7 +268,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 			BoxTypePtr box;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
-				LayerTypePtr layer = (LayerTypePtr) ptr1;
+				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				__r_dump_tree(layer->arc_tree->root, 0);
 				return 0;
 			}
@@ -292,7 +292,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 									Arc->BoundingBox.X2, Arc->BoundingBox.Y2,
 									box->X1, box->Y1,
 									box->X2, box->Y2,
-									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), TEST_FLAG(PCB_FLAG_LOCK, Arc) ? "It is LOCKED.\n" : "");
+									GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1), TEST_FLAG(PCB_FLAG_LOCK, Arc) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_POLYGON:
@@ -300,7 +300,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 			PolygonTypePtr Polygon;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
-				LayerTypePtr layer = (LayerTypePtr) ptr1;
+				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				__r_dump_tree(layer->polygon_tree->root, 0);
 				return 0;
 			}
@@ -318,7 +318,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
 									Polygon->HoleIndexN,
-									GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1), TEST_FLAG(PCB_FLAG_LOCK, Polygon) ? "It is LOCKED.\n" : "");
+									GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1), TEST_FLAG(PCB_FLAG_LOCK, Polygon) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_PAD:
@@ -405,7 +405,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 	case PCB_TYPE_TEXT:
 #ifndef NDEBUG
 		if (gui->shift_is_pressed()) {
-			LayerTypePtr layer = (LayerTypePtr) ptr1;
+			pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 			__r_dump_tree(layer->text_tree->root, 0);
 			return 0;
 		}
@@ -423,7 +423,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 			text = (TextTypePtr) ptr2;
 
 			if (type == PCB_TYPE_TEXT)
-				sprintf(laynum, "It is on layer %d.", GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1));
+				sprintf(laynum, "It is on layer %d.", GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1));
 			report = pcb_strdup_printf("%m+TEXT ID# %ld;  Flags:%s\n"
 									"Located at (X,Y) = %$mD.\n"
 									"Characters are %$mS tall.\n"
@@ -447,7 +447,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 									"Located at (X,Y) = %$mD.\n"
 									"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,
 									point->X, point->Y,
-									(type == PCB_TYPE_LINE_POINT) ? "line" : "polygon", GetLayerNumber(PCB->Data, (LayerTypePtr) ptr1));
+									(type == PCB_TYPE_LINE_POINT) ? "line" : "polygon", GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1));
 			break;
 		}
 	case PCB_TYPE_NONE:

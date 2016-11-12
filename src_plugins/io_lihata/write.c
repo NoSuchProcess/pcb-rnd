@@ -418,7 +418,7 @@ static lht_node_t *build_element(ElementType *elem)
 }
 
 
-static lht_node_t *build_data_layer(pcb_data_t *data, LayerType *layer, int layer_group)
+static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int layer_group)
 {
 	lht_node_t *obj, *grp;
 	LineType *li;

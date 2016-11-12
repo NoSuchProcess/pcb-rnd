@@ -162,7 +162,7 @@ pcb_bool SmashBufferElement(BufferTypePtr Buffer)
 {
 	ElementTypePtr element;
 	pcb_cardinal_t group;
-	LayerTypePtr clayer, slayer;
+	pcb_layer_t *clayer, *slayer;
 
 	if (elementlist_length(&Buffer->Data->Element) != 1) {
 		Message(PCB_MSG_DEFAULT, _("Error!  Buffer doesn't contain a single element\n"));

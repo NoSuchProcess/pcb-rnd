@@ -78,7 +78,7 @@ pcb_bool CopyPastebufferToLayout(Coord X, Coord Y)
 
 	/* paste all layers */
 	for (i = 0; i < max_copper_layer + 2; i++) {
-		LayerTypePtr sourcelayer = &PASTEBUFFER->Data->Layer[i], destlayer = LAYER_PTR(i);
+		pcb_layer_t *sourcelayer = &PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
 
 		if (destlayer->On) {
 			changed = changed || (!LAYER_IS_EMPTY(sourcelayer));

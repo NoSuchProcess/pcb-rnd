@@ -47,7 +47,7 @@ struct pcb_data_s {
 	rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;
 	pcb_board_t *pcb;
-	LayerType Layer[MAX_LAYER + 2];    /* add 2 silkscreen layers */
+	pcb_layer_t Layer[MAX_LAYER + 2];    /* add 2 silkscreen layers */
 	plug_io_t *loader;
 	ratlist_t Rat;
 };
@@ -88,11 +88,11 @@ extern pcb_bool Bumped;
    */
 
 /* layer object callbacks */
-typedef int (*pcb_layer_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, int enter);
-typedef void (*pcb_line_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, LineType *line);
-typedef void (*pcb_arc_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, ArcType *arc);
-typedef void (*pcb_text_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, TextType *text);
-typedef void (*pcb_poly_cb_t)(void *ctx, pcb_board_t *pcb, LayerType *layer, PolygonType *poly);
+typedef int (*pcb_layer_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter);
+typedef void (*pcb_line_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line);
+typedef void (*pcb_arc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc);
+typedef void (*pcb_text_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text);
+typedef void (*pcb_poly_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly);
 
 /* element callbacks */
 typedef int (*pcb_element_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, int enter);

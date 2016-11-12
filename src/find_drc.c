@@ -223,7 +223,7 @@ static int throw_drc_dialog(void)
 }
 
 /* DRC clearance callback */
-static r_dir_t drc_callback(pcb_data_t *data, LayerTypePtr layer, PolygonTypePtr polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, PolygonTypePtr polygon, int type, void *ptr1, void *ptr2)
 {
 	const char *message;
 	Coord x, y;
@@ -835,7 +835,7 @@ static void GotoError(void)
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_POLYGON:
-		ChangeGroupVisibility(GetLayerNumber(PCB->Data, (LayerTypePtr) thing_ptr1), pcb_true, pcb_true);
+		ChangeGroupVisibility(GetLayerNumber(PCB->Data, (pcb_layer_t *) thing_ptr1), pcb_true, pcb_true);
 	}
 	CenterDisplay(X, Y);
 }

@@ -42,29 +42,29 @@ do { \
 	pcb_objlist_append(lst, o); \
 } while(0)
 
-static int list_layer_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, int enter)
+static int list_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter)
 {
 	if (enter)
 		APPEND(ctx, PCB_OBJ_LAYER, layer, PCB_PARENT_DATA, pcb->Data);
 	return 0;
 }
 
-static void list_line_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, LineType *line)
+static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line)
 {
 	APPEND(ctx, PCB_OBJ_LINE, line, PCB_PARENT_LAYER, layer);
 }
 
-static void list_arc_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, ArcType *arc)
+static void list_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc)
 {
 	APPEND(ctx, PCB_OBJ_ARC, arc, PCB_PARENT_LAYER, layer);
 }
 
-static void list_text_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, TextType *text)
+static void list_text_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text)
 {
 	APPEND(ctx, PCB_OBJ_TEXT, text, PCB_PARENT_LAYER, layer);
 }
 
-static void list_poly_cb(void *ctx, pcb_board_t *pcb, LayerType *layer, PolygonType *poly)
+static void list_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly)
 {
 	APPEND(ctx, PCB_OBJ_POLYGON, poly, PCB_PARENT_LAYER, layer);
 }
@@ -224,7 +224,7 @@ do { \
 
 static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	LayerType *l = obj->data.layer;
+	pcb_layer_t *l = obj->data.layer;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
@@ -249,7 +249,7 @@ static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_layer_from_ptr(LayerType *l, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_layer_from_ptr(pcb_layer_t *l, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_obj_t tmp;
 	tmp.type = PCB_OBJ_LAYER;

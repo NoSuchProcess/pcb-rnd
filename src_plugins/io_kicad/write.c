@@ -570,7 +570,7 @@ static int write_kicad_layout_via_drill_size(FILE * FP, pcb_cardinal_t indentati
 }
 
 int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
 	LineType *line;
@@ -608,7 +608,7 @@ int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
 }
 
 int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
 	ArcType *arc;
@@ -670,7 +670,7 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 }
 
 int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	FontType *myfont = &PCB->Font;
 	Coord mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
@@ -1255,7 +1255,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
  */
 
 int write_kicad_layout_polygons(FILE * FP, pcb_cardinal_t number,
-																		 LayerTypePtr layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	int i, j;
 	gdl_iterator_t it;

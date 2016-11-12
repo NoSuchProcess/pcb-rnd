@@ -46,17 +46,17 @@ typedef struct {								/* current marked line */
 } AttachedLineType, *AttachedLineTypePtr;
 
 
-LineType *GetLineMemory(LayerType * layer);
+LineType *GetLineMemory(pcb_layer_t * layer);
 void RemoveFreeLine(LineType * data);
 
-LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
-LineTypePtr CreateNewLineOnLayer(LayerTypePtr Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
+LineTypePtr CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
+LineTypePtr CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_line_on_layer(LayerType *Layer, LineType *Line);
+void pcb_add_line_on_layer(pcb_layer_t *Layer, LineType *Line);
 
 void SetLineBoundingBox(LineTypePtr Line);
-void *RemoveLine(LayerTypePtr Layer, LineTypePtr Line);
+void *RemoveLine(pcb_layer_t *Layer, LineTypePtr Line);
 void RotateLineLowLevel(LineTypePtr Line, Coord X, Coord Y, unsigned Number);
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/
@@ -83,21 +83,21 @@ void EnforceLineDRC(void);
 
 #define	ALLLINE_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		LINE_LOOP(layer)
 
 #define	COPPERLINE_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer; l++, layer++)	\
 	{ \
 		LINE_LOOP(layer)
 
 #define	SILKLINE_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	layer += max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
@@ -105,7 +105,7 @@ void EnforceLineDRC(void);
 
 #define	VISIBLELINE_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
-	LayerTypePtr	layer = (top)->Layer;		\
+	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		if (layer->On)				\

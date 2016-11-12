@@ -400,7 +400,7 @@ static struct {
 	pcb_bool drillcopper;
 	pcb_bool legend;
 
-	LayerTypePtr outline_layer;
+	pcb_layer_t *outline_layer;
 
 	double scale_factor;
 
@@ -650,7 +650,7 @@ void ps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	global.outline_layer = NULL;
 
 	for (i = 0; i < max_copper_layer; i++) {
-		LayerType *layer = PCB->Data->Layer + i;
+		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (!LAYER_IS_EMPTY(layer))
 			global.print_group[GetLayerGroupNumberByNumber(i)] = 1;
 

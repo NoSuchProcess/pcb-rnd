@@ -1290,7 +1290,7 @@ static gchar *make_layer_group_string(pcb_layer_group_t * lg)
 
 static void config_layers_apply(void)
 {
-	LayerType *layer;
+	pcb_layer_t *layer;
 	const gchar *s;
 	gint group, i;
 	gint componentgroup = 0, soldergroup = 0;
@@ -1366,7 +1366,7 @@ static void config_layer_group_button_state_update(void)
 static void layer_name_entry_cb(GtkWidget * entry, gpointer data)
 {
 	gint i = GPOINTER_TO_INT(data);
-	LayerType *layer;
+	pcb_layer_t *layer;
 	const gchar *name;
 
 	layer = &PCB->Data->Layer[i];
@@ -1487,7 +1487,7 @@ void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
 
 	/* change default layer names to the current ones in dest */
 	for (n = 0; n < max_copper_layer; n++) {
-		LayerType *layer;
+		pcb_layer_t *layer;
 		char lnp[128];
 		lht_node_t *nd;
 		sprintf(lnp, "design/default_layer_name[%d]", n);

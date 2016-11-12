@@ -131,7 +131,7 @@ static int layout_search_flag(const char *search_ID, multiple layout_object_mask
 {
 	pcb_cardinal_t l, n;
 	layout_search_t *s = new_search(search_ID);
-	LayerType *layer = PCB->Data->Layer;
+	pcb_layer_t *layer = PCB->Data->Layer;
 
 	for (l =0; l < MAX_LAYER + 2; l++, layer++) {
 		s->layer = l;

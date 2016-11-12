@@ -224,7 +224,7 @@ either round or, if the octagon flag is set, octagonal.
  * some local identifiers
  */
 static PointType InsertedPoint;
-LayerTypePtr lastLayer;
+pcb_layer_t *lastLayer;
 static struct {
 	PolygonTypePtr poly;
 	LineType line;
@@ -1043,7 +1043,7 @@ void NotifyMode(void)
 						 */
 						SaveUndoSerialNumber();
 						Flags = ((PolygonType *) Crosshair.AttachedObject.Ptr2)->Flags;
-						PolyToPolygonsOnLayer(PCB->Data, (LayerType *) Crosshair.AttachedObject.Ptr1, result, Flags);
+						PolyToPolygonsOnLayer(PCB->Data, (pcb_layer_t *) Crosshair.AttachedObject.Ptr1, result, Flags);
 						RemoveObject(PCB_TYPE_POLYGON,
 												 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 						RestoreUndoSerialNumber();
