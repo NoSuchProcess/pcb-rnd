@@ -487,7 +487,7 @@ static int ActionSavePatch(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action rats_patch_action_list[] = {
+pcb_hid_action_t rats_patch_action_list[] = {
 	{"ReplaceFootprint", 0, ActionReplaceFootprint,
 	 replacefootprint_help, replacefootprint_syntax}
 	,

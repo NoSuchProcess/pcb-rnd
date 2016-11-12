@@ -191,7 +191,7 @@ typedef enum {
 */
 void ghid_parse_arguments(gint * argc, gchar *** argv);
 void ghid_do_export(HID_Attr_Val * options);
-void ghid_do_exit(HID *hid);
+void ghid_do_exit(pcb_hid_t *hid);
 
 void ghid_create_pcb_widgets(void);
 void ghid_window_set_name_label(gchar * name);
@@ -283,7 +283,7 @@ char *ghid_fileselect(const char *, const char *, const char *, const char *, co
 
 /* gui-dialog-print.c */
 void ghid_dialog_export(void);
-void ghid_dialog_print(HID *);
+void ghid_dialog_print(pcb_hid_t *);
 
 int ghid_attribute_dialog(HID_Attribute *, int, HID_Attr_Val *, const char *, const char *);
 
@@ -412,7 +412,7 @@ hidGC ghid_make_gc(void);
 void ghid_destroy_gc(hidGC);
 void ghid_use_mask(int use_it);
 void ghid_set_color(hidGC gc, const char *name);
-void ghid_set_line_cap(hidGC gc, EndCapStyle style);
+void ghid_set_line_cap(hidGC gc, pcb_cap_style_t style);
 void ghid_set_line_width(hidGC gc, Coord width);
 void ghid_set_draw_xor(hidGC gc, int _xor);
 void ghid_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
@@ -434,7 +434,7 @@ gboolean ghid_drawing_area_expose_cb(GtkWidget *, GdkEventExpose *, GHidPort *);
 void ghid_port_drawing_realize_cb(GtkWidget *, gpointer);
 gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev);
 GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth);
-HID *ghid_request_debug_draw(void);
+pcb_hid_t *ghid_request_debug_draw(void);
 void ghid_flush_debug_draw(void);
 void ghid_finish_debug_draw(void);
 pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, Coord * pcb_x, Coord * pcb_y);

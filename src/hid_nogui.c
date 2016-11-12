@@ -74,7 +74,7 @@ static void nogui_set_color(hidGC gc, const char *name)
 	CRASH("set_color");
 }
 
-static void nogui_set_line_cap(hidGC gc, EndCapStyle style)
+static void nogui_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	CRASH("set_line_cap");
 }
@@ -180,41 +180,41 @@ static void nogui_set_crosshair(int x, int y, int action)
 {
 }
 
-static hidval nogui_add_timer(void (*func) (hidval user_data), unsigned long milliseconds, hidval user_data)
+static pcb_hidval_t nogui_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
-	hidval rv;
+	pcb_hidval_t rv;
 	CRASH("add_timer");
 	rv.lval = 0;
 	return rv;
 }
 
-static void nogui_stop_timer(hidval timer)
+static void nogui_stop_timer(pcb_hidval_t timer)
 {
 	CRASH("stop_timer");
 }
 
-static hidval nogui_watch_file(int fd, unsigned int condition, void (*func) (hidval watch, int fd, unsigned int condition, hidval user_data), hidval user_data)
+static pcb_hidval_t nogui_watch_file(int fd, unsigned int condition, void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
 {
-	hidval rv;
+	pcb_hidval_t rv;
 	CRASH("watch_file");
 	rv.lval = 0;
 	return rv;
 }
 
-static void nogui_unwatch_file(hidval watch)
+static void nogui_unwatch_file(pcb_hidval_t watch)
 {
 	CRASH("unwatch_file");
 }
 
-static hidval nogui_add_block_hook(void (*func) (hidval data), hidval data)
+static pcb_hidval_t nogui_add_block_hook(void (*func) (pcb_hidval_t data), pcb_hidval_t data)
 {
-	hidval rv;
+	pcb_hidval_t rv;
 	CRASH("add_block_hook");
 	rv.ptr = NULL;
 	return rv;
 }
 
-static void nogui_stop_block_hook(hidval block_hook)
+static void nogui_stop_block_hook(pcb_hidval_t block_hook)
 {
 	CRASH("stop_block_hook");
 }
@@ -376,7 +376,7 @@ static int nogui_progress(int so_far, int total, const char *message)
 	return 0;
 }
 
-static HID *nogui_request_debug_draw(void)
+static pcb_hid_t *nogui_request_debug_draw(void)
 {
 	return NULL;
 }
@@ -393,7 +393,7 @@ static void nogui_create_menu(const char *menu, const char *action, const char *
 {
 }
 
-void common_nogui_init(HID * hid)
+void common_nogui_init(pcb_hid_t * hid)
 {
 	hid->get_export_options = nogui_get_export_options;
 	hid->do_export = nogui_do_export;
@@ -450,13 +450,13 @@ void common_nogui_init(HID * hid)
 	hid->create_menu = nogui_create_menu;
 }
 
-static HID nogui_hid;
+static pcb_hid_t nogui_hid;
 
-HID *hid_nogui_get_hid(void)
+pcb_hid_t *hid_nogui_get_hid(void)
 {
-	memset(&nogui_hid, 0, sizeof(HID));
+	memset(&nogui_hid, 0, sizeof(pcb_hid_t));
 
-	nogui_hid.struct_size = sizeof(HID);
+	nogui_hid.struct_size = sizeof(pcb_hid_t);
 	nogui_hid.name = "nogui";
 	nogui_hid.description = "Default GUI when no other GUI is present.  " "Does nothing.";
 

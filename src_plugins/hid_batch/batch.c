@@ -97,7 +97,7 @@ static int info(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action batch_action_list[] = {
+pcb_hid_action_t batch_action_list[] = {
 	{"PCBChanged", 0, PCBChanged}
 	,
 	{"RouteStylesChanged", 0, nop}
@@ -155,7 +155,7 @@ static void batch_do_export(HID_Attr_Val * options)
 	batch_end();
 }
 
-static void batch_do_exit(HID *hid)
+static void batch_do_exit(pcb_hid_t *hid)
 {
 	batch_stay = 0;
 }
@@ -195,7 +195,7 @@ static void batch_set_color(hidGC gc, const char *name)
 {
 }
 
-static void batch_set_line_cap(hidGC gc, EndCapStyle style)
+static void batch_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 }
 
@@ -258,38 +258,38 @@ static void batch_set_crosshair(int x, int y, int action)
 {
 }
 
-static hidval batch_add_timer(void (*func) (hidval user_data), unsigned long milliseconds, hidval user_data)
+static pcb_hidval_t batch_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
-	hidval rv;
+	pcb_hidval_t rv;
 	rv.lval = 0;
 	return rv;
 }
 
-static void batch_stop_timer(hidval timer)
+static void batch_stop_timer(pcb_hidval_t timer)
 {
 }
 
-hidval
-batch_watch_file(int fd, unsigned int condition, void (*func) (hidval watch, int fd, unsigned int condition, hidval user_data),
-								 hidval user_data)
+pcb_hidval_t
+batch_watch_file(int fd, unsigned int condition, void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+								 pcb_hidval_t user_data)
 {
-	hidval ret;
+	pcb_hidval_t ret;
 	ret.ptr = NULL;
 	return ret;
 }
 
-void batch_unwatch_file(hidval data)
+void batch_unwatch_file(pcb_hidval_t data)
 {
 }
 
-static hidval batch_add_block_hook(void (*func) (hidval data), hidval user_data)
+static pcb_hidval_t batch_add_block_hook(void (*func) (pcb_hidval_t data), pcb_hidval_t user_data)
 {
-	hidval ret;
+	pcb_hidval_t ret;
 	ret.ptr = NULL;
 	return ret;
 }
 
-static void batch_stop_block_hook(hidval mlpoll)
+static void batch_stop_block_hook(pcb_hidval_t mlpoll)
 {
 }
 
@@ -337,16 +337,16 @@ static void batch_propedit_add_stat(void *pe, const char *propname, void *propct
 
 #include "dolists.h"
 
-static HID batch_hid;
+static pcb_hid_t batch_hid;
 
 pcb_uninit_t hid_hid_batch_init()
 {
-	memset(&batch_hid, 0, sizeof(HID));
+	memset(&batch_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&batch_hid);
 	common_draw_helpers_init(&batch_hid);
 
-	batch_hid.struct_size = sizeof(HID);
+	batch_hid.struct_size = sizeof(pcb_hid_t);
 	batch_hid.name = "batch";
 	batch_hid.description = "Batch-mode GUI for non-interactive use.";
 	batch_hid.gui = 1;

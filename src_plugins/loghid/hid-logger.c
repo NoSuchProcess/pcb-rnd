@@ -11,8 +11,8 @@
  * Just having one instance for now. Keeping it
  * local is fine.
  */
-static HID logging_hid_;
-static HID *delegatee_ = NULL;
+static pcb_hid_t logging_hid_;
+static pcb_hid_t *delegatee_ = NULL;
 static FILE *out_ = NULL;
 
 static HID_Attribute *log_get_export_options(int *ret) {
@@ -21,7 +21,7 @@ static HID_Attribute *log_get_export_options(int *ret) {
 	return result;
 }
 
-static void log_do_exit(HID *hid) {
+static void log_do_exit(pcb_hid_t *hid) {
 	pcb_fprintf(out_, "do_exit()\n");
 	delegatee_->do_exit(delegatee_);
 }
@@ -76,7 +76,7 @@ static void log_set_color(hidGC gc, const char *name) {
 	delegatee_->set_color(gc, name);
 }
 
-static void log_set_line_cap(hidGC gc, EndCapStyle style) {
+static void log_set_line_cap(hidGC gc, pcb_cap_style_t style) {
 	const char *txt = "unknown";
 	switch (style) {
 		ENUM_LOG_TEXT(Trace_Cap);
@@ -183,7 +183,7 @@ static void log_beep() {
 	delegatee_->beep();
 }
 
-HID *create_log_hid(FILE *log_out, HID *delegatee) {
+pcb_hid_t *create_log_hid(FILE *log_out, pcb_hid_t *delegatee) {
 	out_ = log_out;
 	delegatee_ = delegatee;
 

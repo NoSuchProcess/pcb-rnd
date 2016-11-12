@@ -162,7 +162,7 @@ static int boardflip(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static HID_Action boardflip_action_list[] = {
+static pcb_hid_action_t boardflip_action_list[] = {
 	{"BoardFlip", NULL, boardflip, NULL, NULL}
 };
 

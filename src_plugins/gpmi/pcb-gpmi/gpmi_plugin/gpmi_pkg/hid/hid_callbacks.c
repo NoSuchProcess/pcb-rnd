@@ -96,7 +96,7 @@ void gpmi_hid_set_color(hidGC gc, const char *name)
 	gpmi_event(h->module, HIDE_set_color, h, gc, name);
 }
 
-void gpmi_hid_set_line_cap(hidGC gc, EndCapStyle style)
+void gpmi_hid_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_set_line_cap, h, gc, style);

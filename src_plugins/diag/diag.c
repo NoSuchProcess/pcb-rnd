@@ -178,7 +178,7 @@ static int ActionDumpLayers(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action diag_action_list[] = {
+pcb_hid_action_t diag_action_list[] = {
 	{"dumpconf", 0, ActionDumpConf,
 	 dump_conf_help, dump_conf_syntax},
 	{"dumplayers", 0, ActionDumpLayers,

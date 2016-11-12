@@ -22,18 +22,18 @@ gpmi_keyword *kw_hid_attr_type_e; /* of hid_attr_type_t */
 
 /* TODO: these should not be here; GPMI needs to switch over to c99tree! */
 #ifndef FROM_PKG
-typedef void HID;
+typedef void pcb_hid_t;
 typedef void HID_Attribute;
 typedef void* hidGC;
 typedef char* HID_Attr_Val;
 
 /* Line or arc ending style */
-typedef enum EndCapStyle_e {
+typedef enum pcb_cap_style_t_e {
  Trace_Cap,    /* filled circle (trace drawing) */
  Square_Cap,   /* rectangular lines (square pad) */
  Round_Cap,    /* round pins or round-ended pads, thermals */
  Beveled_Cap   /* octagon pins or bevel-cornered pads */
-} EndCapStyle;
+} pcb_cap_style_t;
 
 typedef void *pcb_polygon_t;
 typedef void *pcb_box_t;
@@ -44,7 +44,7 @@ typedef struct hid_s {
 	int attr_num;
 	HID_Attribute *attr;
 	hid_attr_type_t *type;
-	HID *hid;
+	pcb_hid_t *hid;
 	HID_Attr_Val *result;
 	hidGC new_gc;
 } hid_t;
@@ -83,7 +83,7 @@ int hid_register(hid_t *hid);
 void hid_gpmi_data_set(hid_t *h, void *data);
 
 /* For internal use */
-hid_t *hid_gpmi_data_get(HID *h);
+hid_t *hid_gpmi_data_get(pcb_hid_t *h);
 
 /* For internal use */
 nowrap HID_Attr_Val hid_string2val(const hid_attr_type_t type, const char *str);

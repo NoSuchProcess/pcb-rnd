@@ -6,7 +6,7 @@ void gpmi_hid_parse_arguments(int *pcbargc, char ***pcbargv);
 void gpmi_hid_set_crosshair(int x, int y, int cursor_action);
 int gpmi_hid_set_layer(const char *name, int group, int _empty);
 void gpmi_hid_set_color(hidGC gc, const char *name);
-void gpmi_hid_set_line_cap(hidGC gc, EndCapStyle style);
+void gpmi_hid_set_line_cap(hidGC gc, pcb_cap_style_t style);
 void gpmi_hid_set_line_width(hidGC gc, Coord width);
 void gpmi_hid_set_draw_xor(hidGC gc, int xor);
 void gpmi_hid_set_draw_faded(hidGC gc, int faded);

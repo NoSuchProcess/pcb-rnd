@@ -358,7 +358,7 @@ int action_renumber_buffer(int argc, const char **argv, Coord x, Coord y);
 
 static const char *renumber_cookie = "renumber plugin";
 
-HID_Action renumber_action_list[] = {
+pcb_hid_action_t renumber_action_list[] = {
 	{"Renumber", 0, ActionRenumber,
 	 renumber_help, renumber_syntax},
 	{"RenumberBlock", NULL, action_renumber_block,

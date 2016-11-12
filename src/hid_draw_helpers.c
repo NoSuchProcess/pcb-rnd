@@ -430,7 +430,7 @@ void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pv, pcb_bool d
 	}
 }
 
-void common_draw_helpers_init(HID * hid)
+void common_draw_helpers_init(pcb_hid_t * hid)
 {
 	hid->fill_pcb_polygon = common_fill_pcb_polygon;
 	hid->thindraw_pcb_polygon = common_thindraw_pcb_polygon;

@@ -25,7 +25,7 @@
 #include "hid/common/hidgl.h"
 #include "hid_draw_helpers.h"
 
-extern HID ghid_hid;
+extern pcb_hid_t ghid_hid;
 
 static hidGC current_gc = NULL;
 
@@ -55,7 +55,7 @@ typedef struct render_priv {
 
 
 typedef struct hid_gc_struct {
-	HID *me_pointer;
+	pcb_hid_t *me_pointer;
 
 	const char *colorname;
 	double alpha_mult;
@@ -333,7 +333,7 @@ static void set_gl_color_for_gc(hidGC gc)
 {
 	render_priv *priv = gport->render_priv;
 	static void *cache = NULL;
-	hidval cval;
+	pcb_hidval_t cval;
 	ColorCache *cc;
 	double r, g, b, a;
 
@@ -433,7 +433,7 @@ void ghid_set_alpha_mult(hidGC gc, double alpha_mult)
 	set_gl_color_for_gc(gc);
 }
 
-void ghid_set_line_cap(hidGC gc, EndCapStyle style)
+void ghid_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -1083,7 +1083,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	return pixmap;
 }
 
-HID *ghid_request_debug_draw(void)
+pcb_hid_t *ghid_request_debug_draw(void)
 {
 	GHidPort *port = gport;
 	GtkWidget *widget = port->drawing_area;

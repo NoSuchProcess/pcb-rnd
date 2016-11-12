@@ -525,7 +525,7 @@ void lesstif_update_widget_flags()
 
 /*-----------------------------------------------------------------------------*/
 
-HID_Action lesstif_menu_action_list[] = {
+pcb_hid_action_t lesstif_menu_action_list[] = {
 	{"GetXY", "", GetXY,
 	 getxy_help, getxy_syntax},
 	{"LayersChanged", 0, LayersChanged,

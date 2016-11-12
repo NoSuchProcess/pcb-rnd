@@ -193,7 +193,7 @@ static gint GhidLogShowOnAppend(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action ghid_log_action_list[] = {
+pcb_hid_action_t ghid_log_action_list[] = {
 	{"LogShowOnAppend", 0, GhidLogShowOnAppend,
 	 logshowonappend_help, logshowonappend_syntax}
 	,

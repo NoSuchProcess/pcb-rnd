@@ -333,7 +333,7 @@ static int ActionNetlist(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action netlist_action_list[] = {
+pcb_hid_action_t netlist_action_list[] = {
 	{"net", 0, ActionNetlist,
 	 netlist_help, netlist_syntax}
 	,

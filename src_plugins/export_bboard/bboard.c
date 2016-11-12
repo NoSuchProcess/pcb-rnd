@@ -74,7 +74,7 @@ static cairo_t *bboard_cairo_ctx;
 * Breadboard export filter parameters and options
 ****************************************************************************************************/
 
-static HID bboard_hid;
+static pcb_hid_t bboard_hid;
 
 static struct {
 	int draw;
@@ -586,7 +586,7 @@ static void bboard_set_crosshair(int x, int y, int action)
 {
 }
 
-static HID bboard_hid;
+static pcb_hid_t bboard_hid;
 
 
 pcb_uninit_t hid_export_bboard_init()

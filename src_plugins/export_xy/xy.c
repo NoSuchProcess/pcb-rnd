@@ -362,15 +362,15 @@ static void xy_parse_arguments(int *argc, char ***argv)
 	hid_parse_command_line(argc, argv);
 }
 
-HID xy_hid;
+pcb_hid_t xy_hid;
 
 pcb_uninit_t hid_export_xy_init()
 {
-	memset(&xy_hid, 0, sizeof(HID));
+	memset(&xy_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&xy_hid);
 
-	xy_hid.struct_size = sizeof(HID);
+	xy_hid.struct_size = sizeof(pcb_hid_t);
 	xy_hid.name = "XY";
 	xy_hid.description = "Exports a XY (centroid)";
 	xy_hid.exporter = 1;

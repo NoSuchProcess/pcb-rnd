@@ -11,16 +11,16 @@ void dump_actions(void);
 /* HID internal interfaces.  These may ONLY be called from the HID
    modules, not from the common PCB code.  */
 
-const HID_Action *hid_find_action(const char *name);
+const pcb_hid_action_t *hid_find_action(const char *name);
 
-extern void hid_remove_actions(const HID_Action * a, int n);
-extern void hid_remove_action(const HID_Action * a);
+extern void hid_remove_actions(const pcb_hid_action_t * a, int n);
+extern void hid_remove_action(const pcb_hid_action_t * a);
 extern void hid_remove_actions_by_cookie(const char *cookie);
 
 int hid_action(const char *action_);
 int hid_actionl(const char *action_, ...);	/* NULL terminated */
 int hid_actionv(const char *action_, int argc_, const char **argv_);
-int hid_actionv_(const HID_Action *a, int argc, const char **argv);
+int hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv);
 
 /* Parse the given command string into action calls, and call
    hid_actionv for each action found.  Accepts both "action(arg1,

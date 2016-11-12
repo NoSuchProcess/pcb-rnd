@@ -81,7 +81,7 @@ static int ActionAutoRoute(int argc, const char **argv, Coord x, Coord y)
 
 static const char *autoroute_cookie = "autoroute plugin";
 
-HID_Action autoroute_action_list[] = {
+pcb_hid_action_t autoroute_action_list[] = {
 	{"AutoRoute", 0, ActionAutoRoute,
 	 autoroute_help, autoroute_syntax}
 	,

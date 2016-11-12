@@ -8225,7 +8225,7 @@ static int escape(int argc, char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static HID_Action toporouter_action_list[] = {
+static pcb_hid_action_t toporouter_action_list[] = {
 	{"Escape", "Select a set of pads", escape, "Pad escape", "Escape()"},
 	{"Toporouter", "Select net(s)", toporouter, "Topological autorouter", "Toporouter()"}
 };

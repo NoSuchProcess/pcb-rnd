@@ -46,7 +46,7 @@ typedef enum {
 	Square_Cap,									/* Square pins or pads. */
 	Round_Cap,									/* Round pins or round-ended pads, thermals.  */
 	Beveled_Cap									/* Octagon pins or bevel-cornered pads.  */
-} EndCapStyle;
+} pcb_cap_style_t;
 
 /* The HID may need something more than an "int" for colors, timers,
    etc.  So it passes/returns one of these, which is castable to a
@@ -54,7 +54,7 @@ typedef enum {
 typedef union {
 	long lval;
 	void *ptr;
-} hidval;
+} pcb_hidval_t;
 
 /* This graphics context is an opaque pointer defined by the HID.  GCs
    are HID-specific; attempts to use one HID's GC for a different HID
@@ -85,11 +85,11 @@ typedef struct {
 	const char *description;
 	/* Full allowed syntax; use \n to separate lines.  */
 	const char *syntax;
-} HID_Action;
+} pcb_hid_action_t;
 
-extern void hid_register_action(const HID_Action *a, const char *cookie, int copy);
+extern void hid_register_action(const pcb_hid_action_t *a, const char *cookie, int copy);
 
-extern void hid_register_actions(const HID_Action *a, int, const char *cookie, int copy);
+extern void hid_register_actions(const pcb_hid_action_t *a, int, const char *cookie, int copy);
 #define REGISTER_ACTIONS(a, cookie) HIDCONCAT(void register_,a) ()\
 { hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
@@ -123,7 +123,7 @@ typedef enum {
 														 /**< As in POLLOUT */
 	PCB_WATCH_ERROR = 1 << 2,	 /**< As in POLLERR */
 	PCB_WATCH_HANGUP = 1 << 3	 /**< As in POLLHUP */
-} PCBWatchFlags;
+} pcb_watch_flags_t;
 
 /* DRC GUI Hooks */
 typedef struct {
@@ -132,12 +132,12 @@ typedef struct {
 	void (*reset_drc_dialog_message) (void);
 	void (*append_drc_violation) (pcb_drc_violation_t * violation);
 	int (*throw_drc_dialog) (void);
-} HID_DRC_GUI;
+} pcb_hid_drc_gui_t;
 
-typedef struct hid_st HID;
+typedef struct hid_s pcb_hid_t;
 
 /* This is the main HID structure.  */
-struct hid_st {
+struct hid_s {
 	/* The size of this structure.  We use this as a compatibility
 	   check; a HID built with a different hid.h than we're expecting
 	   should have a different size here.  */
@@ -197,10 +197,10 @@ struct hid_st {
 	void (*do_export) (HID_Attr_Val * options_);
 
 	/* uninit a GUI hid */
-	void (*uninit) (HID *hid);
+	void (*uninit) (pcb_hid_t *hid);
 
 	/* uninit a GUI hid */
-	void (*do_exit) (HID *hid);
+	void (*do_exit) (pcb_hid_t *hid);
 
 	/* Parse the command line.  Call this early for whatever HID will be
 	   the primary HID, as it will set all the registered attributes.
@@ -269,7 +269,7 @@ struct hid_st {
 	/* Set the line style.  While calling this is cheap, calling it with
 	   different values each time may be expensive, so grouping items by
 	   line style is helpful.  */
-	void (*set_line_cap) (hidGC gc_, EndCapStyle style_);
+	void (*set_line_cap) (hidGC gc_, pcb_cap_style_t style_);
 	void (*set_line_width) (hidGC gc_, Coord width_);
 	void (*set_draw_xor) (hidGC gc_, int xor_);
 	/* Blends 20% or so color with 80% background.  Only used for
@@ -330,24 +330,24 @@ struct hid_st {
 	   timer during the callback for the first.  user_data can be
 	   anything, it's just passed to func.  Times are not guaranteed to
 	   be accurate.  */
-	  hidval(*add_timer) (void (*func) (hidval user_data_), unsigned long milliseconds_, hidval user_data_);
+	  pcb_hidval_t(*add_timer) (void (*func) (pcb_hidval_t user_data_), unsigned long milliseconds_, pcb_hidval_t user_data_);
 	/* Use this to stop a timer that hasn't triggered yet.  */
-	void (*stop_timer) (hidval timer_);
+	void (*stop_timer) (pcb_hidval_t timer_);
 
 	/* Causes func to be called when some condition occurs on the file
 	   descriptor passed. Conditions include data for reading, writing,
 	   hangup, and errors. user_data can be anything, it's just passed
 	   to func. */
-	  hidval(*watch_file) (int fd_, unsigned int condition_,
-												 void (*func_) (hidval watch_, int fd_, unsigned int condition_, hidval user_data_),
-												 hidval user_data);
+	  pcb_hidval_t(*watch_file) (int fd_, unsigned int condition_,
+												 void (*func_) (pcb_hidval_t watch_, int fd_, unsigned int condition_, pcb_hidval_t user_data_),
+												 pcb_hidval_t user_data);
 	/* Use this to stop a file watch. */
-	void (*unwatch_file) (hidval watch_);
+	void (*unwatch_file) (pcb_hidval_t watch_);
 
 	/* Causes func to be called in the mainloop prior to blocking */
-	  hidval(*add_block_hook) (void (*func_) (hidval data_), hidval data_);
+	  pcb_hidval_t(*add_block_hook) (void (*func_) (pcb_hidval_t data_), pcb_hidval_t data_);
 	/* Use this to stop a mainloop block hook. */
-	void (*stop_block_hook) (hidval block_hook_);
+	void (*stop_block_hook) (pcb_hidval_t block_hook_);
 
 	/* Various dialogs */
 
@@ -444,7 +444,7 @@ struct hid_st {
 	   Returns nonzero if the user wishes to cancel the operation.  */
 	int (*progress) (int so_far_, int total_, const char *message_);
 
-	HID_DRC_GUI *drc_gui;
+	pcb_hid_drc_gui_t *drc_gui;
 
 	void (*edit_attributes) (const char *owner, pcb_attribute_list_t * attrlist_);
 
@@ -462,7 +462,7 @@ struct hid_st {
 	 * gui-> for making drawing calls. If the return value is NULL, then
 	 * permission has been denied, and the drawing must not continue.
 	 */
-	HID *(*request_debug_draw) (void);
+	pcb_hid_t *(*request_debug_draw) (void);
 
 	/* Flush pending drawing to the screen
 	 *
@@ -551,22 +551,22 @@ struct hid_st {
    Do *not* assume that the hid that is passed is the GUI hid.  This
    callback is also used for printing and exporting. */
 struct pcb_box_t;
-void hid_expose_callback(HID * hid_, pcb_box_t *region_, void *item_);
+void hid_expose_callback(pcb_hid_t * hid_, pcb_box_t *region_, void *item_);
 
 /* This is initially set to a "no-gui" gui, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. */
-extern HID *gui;
+extern pcb_hid_t *gui;
 
 /* When not NULL, auto-start the next gui after the current one quits */
-extern HID *next_gui;
+extern pcb_hid_t *next_gui;
 
 /* This is either NULL or points to the current HID that is being called to
    do the exporting. The gui HIDs set and unset this var.*/
-extern HID *exporter;
+extern pcb_hid_t *exporter;
 
-/* This is either NULL or points to the current HID_Action that is being
+/* This is either NULL or points to the current pcb_hid_action_t that is being
    called. The action launcher sets and unsets this variable. */
-extern const HID_Action *current_action;
+extern const pcb_hid_action_t *current_action;
 
 /* The GUI may set this to be approximately the PCB size of a pixel,
    to allow for near-misses in selection and changes in drawing items

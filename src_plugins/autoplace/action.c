@@ -55,7 +55,7 @@ static int ActionAutoPlaceSelected(int argc, const char **argv, Coord x, Coord y
 
 static const char *autoplace_cookie = "autoplace plugin";
 
-HID_Action autoplace_action_list[] = {
+pcb_hid_action_t autoplace_action_list[] = {
 	{"AutoPlaceSelected", 0, ActionAutoPlaceSelected,
 	 autoplace_help, autoplace_syntax}
 	,

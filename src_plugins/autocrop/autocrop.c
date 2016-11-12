@@ -226,7 +226,7 @@ static int autocrop(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static HID_Action autocrop_action_list[] = {
+static pcb_hid_action_t autocrop_action_list[] = {
 	{"autocrop", NULL, autocrop, NULL, NULL}
 };
 

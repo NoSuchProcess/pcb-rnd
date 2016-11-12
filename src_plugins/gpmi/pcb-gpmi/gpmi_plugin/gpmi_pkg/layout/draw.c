@@ -6,7 +6,7 @@
 
 #define setup(func) \
 	hidGC gc = ctx->gc; \
-	HID  *hid = ctx->hid; \
+	pcb_hid_t  *hid = ctx->hid; \
 	if ((hid == NULL) && (gc == NULL)) Message(PCB_MSG_DEFAULT, "%s failed because of invalid hid or gc\n", func); \
 	if ((hid == NULL) && (gc == NULL)) return
 
@@ -17,7 +17,7 @@ void draw_set_color(dctx_t *ctx, const char *name)
 	hid->set_color(gc, name);
 }
 
-/*void set_line_cap(dctx_t *ctx, EndCapStyle style_);*/
+/*void set_line_cap(dctx_t *ctx, pcb_cap_style_t style_);*/
 void draw_set_line_width(dctx_t *ctx, int width)
 {
 	setup("draw_set_line_width");

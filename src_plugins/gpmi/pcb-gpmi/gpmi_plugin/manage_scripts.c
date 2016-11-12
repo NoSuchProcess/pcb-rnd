@@ -11,7 +11,7 @@
 #include "src/hid_attrib.h"
 
 
-extern HID *gui;
+extern pcb_hid_t *gui;
 
 #define attr_make_label(attr, name_, help_) \
 do { \

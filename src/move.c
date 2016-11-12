@@ -444,7 +444,7 @@ int MoveLayerAction(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action move_action_list[] = {
+pcb_hid_action_t move_action_list[] = {
 	{"MoveLayer", 0, MoveLayerAction,
 	 movelayer_help, movelayer_syntax}
 };

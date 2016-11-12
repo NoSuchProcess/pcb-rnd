@@ -364,7 +364,7 @@ static int CommandSaveLayoutAndQuit(int argc, const char **argv, Coord x, Coord 
 
 /* --------------------------------------------------------------------------- */
 
-HID_Action shand_cmd_action_list[] = {
+pcb_hid_action_t shand_cmd_action_list[] = {
 	{"h", 0, CommandHelp,
 	 h_help, h_syntax}
 	,

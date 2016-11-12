@@ -29,7 +29,7 @@ int hid_get_flag(const char *name)
 		const char *end, *s;
 		const char *argv[2];
 		if (cp != NULL) {
-			const HID_Action *a;
+			const pcb_hid_action_t *a;
 			char buff[256];
 			int len, multiarg;
 			len = cp - name;

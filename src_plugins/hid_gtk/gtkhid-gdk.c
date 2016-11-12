@@ -12,7 +12,7 @@
 #include "hid_helper.h"
 #include "hid_color.h"
 
-extern HID ghid_hid;
+extern pcb_hid_t ghid_hid;
 
 /* Sets priv->u_gc to the "right" GC to use (wrt mask or window)
 */
@@ -44,7 +44,7 @@ typedef struct render_priv {
 
 
 typedef struct hid_gc_struct {
-	HID *me_pointer;
+	pcb_hid_t *me_pointer;
 	GdkGC *gc;
 
 	gchar *colorname;
@@ -458,7 +458,7 @@ void ghid_set_special_colors(conf_native_t *cfg)
 void ghid_set_color(hidGC gc, const char *name)
 {
 	static void *cache = 0;
-	hidval cval;
+	pcb_hidval_t cval;
 
 	if (name == NULL) {
 		fprintf(stderr, "ghid_set_color():  name = NULL, setting to magenta\n");
@@ -516,7 +516,7 @@ void ghid_set_color(hidGC gc, const char *name)
 	}
 }
 
-void ghid_set_line_cap(hidGC gc, EndCapStyle style)
+void ghid_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	render_priv *priv = gport->render_priv;
 
@@ -570,7 +570,7 @@ static int use_gc(hidGC gc)
 		gc->gc = gdk_gc_new(window);
 		ghid_set_color(gc, gc->colorname);
 		ghid_set_line_width(gc, gc->width);
-		ghid_set_line_cap(gc, (EndCapStyle) gc->cap);
+		ghid_set_line_cap(gc, (pcb_cap_style_t) gc->cap);
 		ghid_set_draw_xor(gc, gc->xor_mask);
 		gdk_gc_set_clip_origin(gc->gc, 0, 0);
 	}
@@ -1233,7 +1233,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	return pixmap;
 }
 
-HID *ghid_request_debug_draw(void)
+pcb_hid_t *ghid_request_debug_draw(void)
 {
 	/* No special setup requirements, drawing goes into
 	 * the backing pixmap. */

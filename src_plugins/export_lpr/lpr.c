@@ -108,7 +108,7 @@ static void lpr_calibrate(double xval, double yval)
 	ps_calibrate_1(xval, yval, 1);
 }
 
-static HID lpr_hid;
+static pcb_hid_t lpr_hid;
 
 static int lpr_usage(const char *topic)
 {
@@ -125,12 +125,12 @@ static void plugin_lpr_uninit(void)
 
 pcb_uninit_t hid_export_lpr_init()
 {
-	memset(&lpr_hid, 0, sizeof(HID));
+	memset(&lpr_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&lpr_hid);
 	ps_ps_init(&lpr_hid);
 
-	lpr_hid.struct_size = sizeof(HID);
+	lpr_hid.struct_size = sizeof(pcb_hid_t);
 	lpr_hid.name = "lpr";
 	lpr_hid.description = "Postscript print";
 	lpr_hid.printer = 1;

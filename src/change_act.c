@@ -1504,7 +1504,7 @@ static int ActionChangeRadius(int argc, const char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-HID_Action change_action_list[] = {
+pcb_hid_action_t change_action_list[] = {
 	{"ChangeAngle", 0, ActionChangeAngle,
 	 changeangle_help, changeangle_syntax}
 	,

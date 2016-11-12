@@ -9,6 +9,6 @@
  * Create a delegating HID that sends all calls to the
  * delegatee but also logs the calls.
  */
-HID *create_log_hid(FILE *log_out, HID *delegatee);
+pcb_hid_t *create_log_hid(FILE *log_out, pcb_hid_t *delegatee);
 
 #endif

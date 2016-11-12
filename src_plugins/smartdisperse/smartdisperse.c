@@ -263,7 +263,7 @@ static int smartdisperse(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static HID_Action smartdisperse_action_list[] = {
+static pcb_hid_action_t smartdisperse_action_list[] = {
 	{"smartdisperse", NULL, smartdisperse, NULL, NULL}
 };
 

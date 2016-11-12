@@ -36,7 +36,7 @@ static int Action_fp_rehash(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action conf_plug_footprint_list[] = {
+pcb_hid_action_t conf_plug_footprint_list[] = {
 	{"fp_rehash", 0, Action_fp_rehash,
 	 fp_rehash_help, fp_rehash_syntax}
 };

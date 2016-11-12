@@ -64,7 +64,7 @@ void QuitApplication(void)
 
 char *GetInfoString(void)
 {
-	HID **hids;
+	pcb_hid_t **hids;
 	int i;
 	static gds_t info;
 	static int first_time = 1;

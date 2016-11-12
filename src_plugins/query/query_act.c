@@ -166,7 +166,7 @@ static int query_action(int argc, const char **argv, Coord x, Coord y)
 	return -1;
 }
 
-HID_Action query_action_list[] = {
+pcb_hid_action_t query_action_list[] = {
 	{"query", NULL, query_action,
 	 query_action_help, query_action_syntax}
 };

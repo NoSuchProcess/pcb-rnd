@@ -996,7 +996,7 @@ int ActionListRotations(int argc, const char **argv, Coord x, Coord y)
 
 
 
-HID_Action object_action_list[] = {
+pcb_hid_action_t object_action_list[] = {
 	{"Attributes", 0, ActionAttributes,
 	 attributes_help, attributes_syntax}
 	,

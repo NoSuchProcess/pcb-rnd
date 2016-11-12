@@ -446,7 +446,7 @@ static int ActionImport(int argc, const char **argv, Coord x, Coord y)
 
 static const char *import_sch_cookie = "import_sch plugin";
 
-HID_Action import_sch_action_list[] = {
+pcb_hid_action_t import_sch_action_list[] = {
 	{"Import", 0, ActionImport,
 	 import_help, import_syntax}
 };

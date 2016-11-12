@@ -95,8 +95,8 @@ struct color_struct {
 };
 
 struct hid_gc_struct {
-	HID *me_pointer;
-	EndCapStyle cap;
+	pcb_hid_t *me_pointer;
+	pcb_cap_style_t cap;
 	Coord width;
 	unsigned char r, g, b;
 	int erase;
@@ -105,7 +105,7 @@ struct hid_gc_struct {
 	gdImagePtr brush;
 };
 
-static HID nelma_hid;
+static pcb_hid_t nelma_hid;
 
 static struct color_struct *black = NULL, *white = NULL;
 static Coord linewidth = -1;
@@ -743,7 +743,7 @@ static void nelma_set_color(hidGC gc, const char *name)
 	return;
 }
 
-static void nelma_set_line_cap(hidGC gc, EndCapStyle style)
+static void nelma_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -784,7 +784,7 @@ static void use_gc(hidGC gc)
 	}
 	if (lastbrush != gc->brush || need_brush) {
 		static void *bcache = 0;
-		hidval bval;
+		pcb_hidval_t bval;
 		char name[256];
 		char type;
 		int r;
@@ -986,12 +986,12 @@ static int nelma_usage(const char *topic)
 
 pcb_uninit_t hid_export_nelma_init()
 {
-	memset(&nelma_hid, 0, sizeof(HID));
+	memset(&nelma_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&nelma_hid);
 	common_draw_helpers_init(&nelma_hid);
 
-	nelma_hid.struct_size = sizeof(HID);
+	nelma_hid.struct_size = sizeof(pcb_hid_t);
 	nelma_hid.name = "nelma";
 	nelma_hid.description = "Numerical analysis package export";
 	nelma_hid.exporter = 1;

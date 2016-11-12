@@ -284,7 +284,7 @@ int ActionRedo(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action undo_action_list[] = {
+pcb_hid_action_t undo_action_list[] = {
 	{"Atomic", 0, ActionAtomic,
 	 atomic_help, atomic_syntax}
 	,

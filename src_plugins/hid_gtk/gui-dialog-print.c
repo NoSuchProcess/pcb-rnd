@@ -308,12 +308,12 @@ int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * res
 
 
 
-static void exporter_clicked_cb(GtkButton * button, HID * exporter)
+static void exporter_clicked_cb(GtkButton * button, pcb_hid_t * exporter)
 {
 	ghid_dialog_print(exporter);
 }
 
-void ghid_dialog_print(HID * hid)
+void ghid_dialog_print(pcb_hid_t * hid)
 {
 	HID_Attribute *attr;
 	int n = 0;
@@ -359,7 +359,7 @@ void ghid_dialog_export(void)
 	GtkWidget *vbox, *button;
 	GHidPort *out = &ghid_port;
 	int i;
-	HID **hids;
+	pcb_hid_t **hids;
 	gboolean no_exporter = TRUE;
 
 	export_dialog = gtk_dialog_new_with_buttons(_("PCB Export Layout"),

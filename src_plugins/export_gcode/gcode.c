@@ -82,8 +82,8 @@ struct color_struct {
 };
 
 struct hid_gc_struct {
-	HID *me_pointer;
-	EndCapStyle cap;
+	pcb_hid_t *me_pointer;
+	pcb_cap_style_t cap;
 	int width;
 	unsigned char r, g, b;
 	int erase;
@@ -612,7 +612,7 @@ static void gcode_set_color(hidGC gc, const char *name)
 	return;
 }
 
-static void gcode_set_line_cap(hidGC gc, EndCapStyle style)
+static void gcode_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -653,7 +653,7 @@ static void use_gc(hidGC gc)
 	}
 	if (lastbrush != gc->brush || need_brush) {
 		static void *bcache = 0;
-		hidval bval;
+		pcb_hidval_t bval;
 		char name[256];
 		char type;
 		int r;
@@ -873,16 +873,16 @@ static int gcode_usage(const char *topic)
 
 #include "dolists.h"
 
-HID gcode_hid;
+pcb_hid_t gcode_hid;
 
 pcb_uninit_t hid_export_gcode_init()
 {
-	memset(&gcode_hid, 0, sizeof(HID));
+	memset(&gcode_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&gcode_hid);
 	common_draw_helpers_init(&gcode_hid);
 
-	gcode_hid.struct_size = sizeof(HID);
+	gcode_hid.struct_size = sizeof(pcb_hid_t);
 	gcode_hid.name = "gcode";
 	gcode_hid.description = "G-CODE export";
 	gcode_hid.exporter = 1;

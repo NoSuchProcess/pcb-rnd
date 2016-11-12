@@ -281,7 +281,7 @@ static int ActionChkBuffer(int argc, const char **argv, Coord x, Coord y)
 	return (conf_core.editor.buffer_number + 1) == expected;
 }
 
-HID_Action conf_action_list[] = {
+pcb_hid_action_t conf_action_list[] = {
 	{"conf", 0, ActionConf,
 	 conf_help, conf_syntax}
 	,

@@ -601,15 +601,15 @@ static void IPCD356_parse_arguments(int *argc, char ***argv)
 	hid_parse_command_line(argc, argv);
 }
 
-HID IPCD356_hid;
+pcb_hid_t IPCD356_hid;
 
 pcb_uninit_t *hid_export_ipcd356_init()
 {
-	memset(&IPCD356_hid, 0, sizeof(HID));
+	memset(&IPCD356_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&IPCD356_hid);
 
-	IPCD356_hid.struct_size = sizeof(HID);
+	IPCD356_hid.struct_size = sizeof(pcb_hid_t);
 	IPCD356_hid.name = "IPC-D-356";
 	IPCD356_hid.description = "Exports a IPC-D-356 Netlist";
 	IPCD356_hid.exporter = 1;

@@ -804,7 +804,7 @@ static int ActionPasteBuffer(int argc, const char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-HID_Action buffer_action_list[] = {
+pcb_hid_action_t buffer_action_list[] = {
 	{"FreeRotateBuffer", 0, ActionFreeRotateBuffer,
 	 freerotatebuffer_help, freerotatebuffer_syntax}
 	,

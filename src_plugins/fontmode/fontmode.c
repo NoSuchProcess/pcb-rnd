@@ -219,7 +219,7 @@ static int FontSave(int argc, const char **argv, Coord Ux, Coord Uy)
 	return 0;
 }
 
-HID_Action fontmode_action_list[] = {
+pcb_hid_action_t fontmode_action_list[] = {
 	{"FontEdit", 0, FontEdit,
 	 fontedit_help, fontedit_syntax}
 	,

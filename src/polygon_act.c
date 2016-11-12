@@ -137,7 +137,7 @@ static int ActionPolygon(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action polygon_action_list[] = {
+pcb_hid_action_t polygon_action_list[] = {
 	{"MorphPolygon", 0, ActionMorphPolygon,
 	 morphpolygon_help, morphpcb_polygon_syntax}
 	,

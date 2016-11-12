@@ -17,12 +17,12 @@
 #include "compat_inc.h"
 #include "fptr_cast.h"
 
-HID **hid_list = 0;
+pcb_hid_t **hid_list = 0;
 int hid_num_hids = 0;
 
-HID *gui = NULL;
-HID *next_gui = NULL;
-HID *exporter = NULL;
+pcb_hid_t *gui = NULL;
+pcb_hid_t *next_gui = NULL;
+pcb_hid_t *exporter = NULL;
 
 int pixel_slop = 1;
 
@@ -129,12 +129,12 @@ void hid_uninit(void)
 	hid_attributes_uninit();
 }
 
-void hid_register_hid(HID * hid)
+void hid_register_hid(pcb_hid_t * hid)
 {
 	int i;
-	int sz = (hid_num_hids + 2) * sizeof(HID *);
+	int sz = (hid_num_hids + 2) * sizeof(pcb_hid_t *);
 
-	if (hid->struct_size != sizeof(HID)) {
+	if (hid->struct_size != sizeof(pcb_hid_t)) {
 		fprintf(stderr, "Warning: hid \"%s\" has an incompatible ABI.\n", hid->name);
 		return;
 	}
@@ -145,15 +145,15 @@ void hid_register_hid(HID * hid)
 
 	hid_num_hids++;
 	if (hid_list)
-		hid_list = (HID **) realloc(hid_list, sz);
+		hid_list = (pcb_hid_t **) realloc(hid_list, sz);
 	else
-		hid_list = (HID **) malloc(sz);
+		hid_list = (pcb_hid_t **) malloc(sz);
 
 	hid_list[hid_num_hids - 1] = hid;
 	hid_list[hid_num_hids] = 0;
 }
 
-void hid_remove_hid(HID * hid)
+void hid_remove_hid(pcb_hid_t * hid)
 {
 	int i;
 
@@ -168,7 +168,7 @@ void hid_remove_hid(HID * hid)
 }
 
 
-HID *hid_find_gui(const char *preference)
+pcb_hid_t *hid_find_gui(const char *preference)
 {
 	int i;
 
@@ -187,7 +187,7 @@ HID *hid_find_gui(const char *preference)
 	exit(1);
 }
 
-HID *hid_find_printer()
+pcb_hid_t *hid_find_printer()
 {
 	int i;
 
@@ -198,7 +198,7 @@ HID *hid_find_printer()
 	return 0;
 }
 
-HID *hid_find_exporter(const char *which)
+pcb_hid_t *hid_find_exporter(const char *which)
 {
 	int i;
 
@@ -215,7 +215,7 @@ HID *hid_find_exporter(const char *which)
 	return 0;
 }
 
-HID **hid_enumerate()
+pcb_hid_t **hid_enumerate()
 {
 	return hid_list;
 }

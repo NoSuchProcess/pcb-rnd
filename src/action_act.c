@@ -103,7 +103,7 @@ int ActionExecuteFile(int argc, const char **argv, Coord x, Coord y)
 
 /* --------------------------------------------------------------------------- */
 
-HID_Action action_action_list[] = {
+pcb_hid_action_t action_action_list[] = {
 	{"ExecuteFile", 0, ActionExecuteFile,
 	 executefile_help, executefile_syntax}
 };

@@ -135,7 +135,7 @@ static direction_t directionIncrement(direction_t dir)
 }
 
 #ifdef ROUTE_DEBUG
-HID *ddraw = NULL;
+pcb_hid_t *ddraw = NULL;
 static hidGC ar_gc = 0;
 #endif
 

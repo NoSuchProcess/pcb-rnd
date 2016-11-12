@@ -18,7 +18,7 @@ gpmi_define_event(HIDE_set_layer)(void *hid, const char *name, int group, int em
 gpmi_define_event(HIDE_set_color)(void *hid, void *gc, const char *name);
 
 /* PCB callback events for drawing: change drawing line cap style*/
-gpmi_define_event(HIDE_set_line_cap)(void *hid, void *gc, EndCapStyle style);
+gpmi_define_event(HIDE_set_line_cap)(void *hid, void *gc, pcb_cap_style_t style);
 
 /* PCB callback events for drawing: change drawing line width */
 gpmi_define_event(HIDE_set_line_width)(void *hid, void *gc, int width);

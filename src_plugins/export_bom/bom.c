@@ -301,15 +301,15 @@ static void bom_parse_arguments(int *argc, char ***argv)
 	hid_parse_command_line(argc, argv);
 }
 
-HID bom_hid;
+pcb_hid_t bom_hid;
 
 pcb_uninit_t hid_export_bom_init()
 {
-	memset(&bom_hid, 0, sizeof(HID));
+	memset(&bom_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&bom_hid);
 
-	bom_hid.struct_size = sizeof(HID);
+	bom_hid.struct_size = sizeof(pcb_hid_t);
 	bom_hid.name = "bom";
 	bom_hid.description = "Exports a Bill of Materials";
 	bom_hid.exporter = 1;

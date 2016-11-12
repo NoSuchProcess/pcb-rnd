@@ -110,7 +110,7 @@ typedef struct color_table_struct {
 } color_table_struct;
 
 typedef struct hid_gc_struct {
-	EndCapStyle cap;
+	pcb_cap_style_t cap;
 	int width;
 	int erase;
 	int drill;

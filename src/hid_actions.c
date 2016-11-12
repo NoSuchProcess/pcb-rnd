@@ -29,7 +29,7 @@ static int action_legal_unknown(const char *name)
 }
 
 static htsp_t *all_actions = NULL;
-const HID_Action *current_action = NULL;
+const pcb_hid_action_t *current_action = NULL;
 
 static const char *check_action_name(const char *s)
 {
@@ -41,10 +41,10 @@ static const char *check_action_name(const char *s)
 
 typedef struct {
 	const char *cookie;
-	const HID_Action *action;
+	const pcb_hid_action_t *action;
 } hid_cookie_action_t;
 
-void hid_register_actions(const HID_Action * a, int n, const char *cookie, int copy)
+void hid_register_actions(const pcb_hid_action_t * a, int n, const char *cookie, int copy)
 {
 	int i;
 	hid_cookie_action_t *ca;
@@ -68,12 +68,12 @@ void hid_register_actions(const HID_Action * a, int n, const char *cookie, int c
 	}
 }
 
-void hid_register_action(const HID_Action * a, const char *cookie, int copy)
+void hid_register_action(const pcb_hid_action_t * a, const char *cookie, int copy)
 {
 	hid_register_actions(a, 1, cookie, copy);
 }
 
-void hid_remove_actions(const HID_Action * a, int n)
+void hid_remove_actions(const pcb_hid_action_t * a, int n)
 {
 	int i;
 
@@ -106,7 +106,7 @@ void hid_remove_actions_by_cookie(const char *cookie)
 	}
 }
 
-void hid_remove_action(const HID_Action * a)
+void hid_remove_action(const pcb_hid_action_t * a)
 {
 	htsp_entry_t *e;
 
@@ -120,7 +120,7 @@ void hid_remove_action(const HID_Action * a)
 	}
 }
 
-const HID_Action *hid_find_action(const char *name)
+const pcb_hid_action_t *hid_find_action(const char *name)
 {
 	hid_cookie_action_t *ca;
 
@@ -219,11 +219,11 @@ int hid_actionl(const char *name, ...)
 	return hid_actionv(name, argc, argv);
 }
 
-int hid_actionv_(const HID_Action *a, int argc, const char **argv)
+int hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 {
 	Coord x = 0, y = 0;
 	int i, ret;
-	const HID_Action *old_action;
+	const pcb_hid_action_t *old_action;
 
 	if (a->need_coord_msg)
 		gui->get_coords(_(a->need_coord_msg), &x, &y);
@@ -245,7 +245,7 @@ int hid_actionv_(const HID_Action *a, int argc, const char **argv)
 
 int hid_actionv(const char *name, int argc, const char **argv)
 {
-	const HID_Action *a;
+	const pcb_hid_action_t *a;
 
 	if (!name)
 		return 1;

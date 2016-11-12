@@ -618,7 +618,7 @@ static int distribute(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static HID_Action distalign_action_list[] = {
+static pcb_hid_action_t distalign_action_list[] = {
 	{"distribute", NULL, distribute, "Distribute Elements", distribute_syntax},
 	{"align", NULL, align, "Align Elements", align_syntax}
 };

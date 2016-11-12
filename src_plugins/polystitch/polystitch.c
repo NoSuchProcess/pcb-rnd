@@ -240,7 +240,7 @@ static int polystitch(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static HID_Action polystitch_action_list[] = {
+static pcb_hid_action_t polystitch_action_list[] = {
 	{"PolyStitch", "Select a corner on the inner polygon", polystitch,
 	 NULL, NULL}
 };

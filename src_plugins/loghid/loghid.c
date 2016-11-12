@@ -46,7 +46,7 @@ HID_Attribute loghid_attribute_list[] = {
 
 static void loghid_parse_arguments_real(int *argc, char ***argv, int is_gui)
 {
-	HID *target;
+	pcb_hid_t *target;
 	const char *target_name;
 
 	hid_register_attributes(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
@@ -104,16 +104,16 @@ static void hid_loghid_uninit(void)
 {
 }
 
-static HID loghid_gui;
-static HID loghid_exp;
+static pcb_hid_t loghid_gui;
+static pcb_hid_t loghid_exp;
 
 pcb_uninit_t hid_loghid_init(void)
 {
-	memset(&loghid_gui, 0, sizeof(HID));
-	memset(&loghid_exp, 0, sizeof(HID));
+	memset(&loghid_gui, 0, sizeof(pcb_hid_t));
+	memset(&loghid_exp, 0, sizeof(pcb_hid_t));
 
 	/* gui version */
-	loghid_gui.struct_size = sizeof(HID);
+	loghid_gui.struct_size = sizeof(pcb_hid_t);
 	loghid_gui.name = "loghid-gui";
 	loghid_gui.description = "log GUI HID calls";
 	loghid_gui.gui = 1;
@@ -124,7 +124,7 @@ pcb_uninit_t hid_loghid_init(void)
 	hid_register_hid(&loghid_gui);
 
 	/* export version */
-	loghid_exp.struct_size = sizeof(HID);
+	loghid_exp.struct_size = sizeof(pcb_hid_t);
 	loghid_exp.name = "loghid-exp";
 	loghid_exp.description = "log export HID calls";
 	loghid_exp.exporter = 1;

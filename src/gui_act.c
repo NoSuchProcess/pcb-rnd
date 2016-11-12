@@ -1195,7 +1195,7 @@ Switch to another HID.
 
 static int ActionSwitchHID(int argc, const char **argv, Coord x, Coord y)
 {
-	HID *ng = hid_find_gui(argv[0]);
+	pcb_hid_t *ng = hid_find_gui(argv[0]);
 	int chg;
 
 	if (ng == NULL) {
@@ -1236,7 +1236,7 @@ static int FullScreen(int argc, const char **argv, Coord x, Coord y)
 
 
 
-HID_Action gui_action_list[] = {
+pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, ActionDisplay,
 	 display_help, display_syntax}
 	,

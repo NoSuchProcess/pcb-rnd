@@ -67,7 +67,7 @@ static int ActionDRCheck(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action find_action_list[] = {
+pcb_hid_action_t find_action_list[] = {
 	{"DRC", 0, ActionDRCheck,
 	 drc_help, drc_syntax}
 };

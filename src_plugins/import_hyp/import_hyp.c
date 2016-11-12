@@ -73,7 +73,7 @@ int ActionLoadhypFrom(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action hyp_action_list[] = {
+pcb_hid_action_t hyp_action_list[] = {
 	{"LoadhypFrom", 0, ActionLoadhypFrom, load_hyp_help, load_hyp_syntax}
 };
 

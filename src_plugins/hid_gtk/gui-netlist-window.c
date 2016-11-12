@@ -950,7 +950,7 @@ static gint GhidNetlistPresent(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action ghid_netlist_action_list[] = {
+pcb_hid_action_t ghid_netlist_action_list[] = {
 	{"NetlistChanged", 0, GhidNetlistChanged,
 	 netlistchanged_help, netlistchanged_syntax}
 	,

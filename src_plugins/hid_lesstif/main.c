@@ -64,16 +64,16 @@ hid_cfg_keys_t lesstif_keymap;
 #define UUNIT	conf_core.editor.grid_unit->allow
 
 typedef struct hid_gc_struct {
-	HID *me_pointer;
+	pcb_hid_t *me_pointer;
 	Pixel color;
 	char *colorname;
 	int width;
-	EndCapStyle cap;
+	pcb_cap_style_t cap;
 	char xor_set;
 	char erase;
 } hid_gc_struct;
 
-static HID lesstif_hid;
+static pcb_hid_t lesstif_hid;
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented GUI function %s\n", func), abort()
 
@@ -869,7 +869,7 @@ static int CursorAction(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action lesstif_main_action_list[] = {
+pcb_hid_action_t lesstif_main_action_list[] = {
 	{"PCBChanged", 0, PCBChanged,
 	 pcbchanged_help, pcbchanged_syntax}
 	,
@@ -1863,14 +1863,14 @@ static void lesstif_do_export(HID_Attr_Val * options)
 	lesstif_end();
 }
 
-static void lesstif_do_exit(HID *hid)
+static void lesstif_do_exit(pcb_hid_t *hid)
 {
 	XtAppSetExitFlag(app_context);
 }
 
 void lesstif_uninit_menu(void);
 
-static void lesstif_uninit(HID *hid)
+static void lesstif_uninit(pcb_hid_t *hid)
 {
 	if (lesstif_hid_inited) {
 		lesstif_uninit_menu();
@@ -2918,7 +2918,7 @@ static void lesstif_use_mask(int use_it)
 static void lesstif_set_color(hidGC gc, const char *name)
 {
 	static void *cache = 0;
-	hidval cval;
+	pcb_hidval_t cval;
 	static XColor color, exact_color;
 
 	if (!display)
@@ -3026,7 +3026,7 @@ static void set_gc(hidGC gc)
 	}
 }
 
-static void lesstif_set_line_cap(hidGC gc, EndCapStyle style)
+static void lesstif_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -3311,8 +3311,8 @@ static void lesstif_set_crosshair(int x, int y, int action)
 }
 
 typedef struct {
-	void (*func) (hidval);
-	hidval user_data;
+	void (*func) (pcb_hidval_t);
+	pcb_hidval_t user_data;
 	XtIntervalId id;
 } TimerStruct;
 
@@ -3323,10 +3323,10 @@ static void lesstif_timer_cb(XtPointer * p, XtIntervalId * id)
 	free(ts);
 }
 
-static hidval lesstif_add_timer(void (*func) (hidval user_data), unsigned long milliseconds, hidval user_data)
+static pcb_hidval_t lesstif_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	TimerStruct *t;
-	hidval rv;
+	pcb_hidval_t rv;
 	t = (TimerStruct *) malloc(sizeof(TimerStruct));
 	rv.ptr = t;
 	t->func = func;
@@ -3335,7 +3335,7 @@ static hidval lesstif_add_timer(void (*func) (hidval user_data), unsigned long m
 	return rv;
 }
 
-static void lesstif_stop_timer(hidval hv)
+static void lesstif_stop_timer(pcb_hidval_t hv)
 {
 	TimerStruct *ts = (TimerStruct *) hv.ptr;
 	XtRemoveTimeOut(ts->id);
@@ -3344,8 +3344,8 @@ static void lesstif_stop_timer(hidval hv)
 
 
 typedef struct {
-	void (*func) (hidval, int, unsigned int, hidval);
-	hidval user_data;
+	void (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
+	pcb_hidval_t user_data;
 	int fd;
 	XtInputId id;
 } WatchStruct;
@@ -3357,7 +3357,7 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId * id)
 	unsigned int pcb_condition = 0;
 	struct pollfd fds;
 	short condition;
-	hidval x;
+	pcb_hidval_t x;
 	WatchStruct *watch = (WatchStruct *) client_data;
 
 	fds.fd = watch->fd;
@@ -3381,12 +3381,12 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId * id)
 	return;
 }
 
-hidval
+pcb_hidval_t
 lesstif_watch_file(int fd, unsigned int condition,
-									 void (*func) (hidval watch, int fd, unsigned int condition, hidval user_data), hidval user_data)
+									 void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
 {
 	WatchStruct *watch = (WatchStruct *) malloc(sizeof(WatchStruct));
-	hidval ret;
+	pcb_hidval_t ret;
 	unsigned int xt_condition = 0;
 
 	if (condition & PCB_WATCH_READABLE)
@@ -3407,7 +3407,7 @@ lesstif_watch_file(int fd, unsigned int condition,
 	return ret;
 }
 
-void lesstif_unwatch_file(hidval data)
+void lesstif_unwatch_file(pcb_hidval_t data)
 {
 	WatchStruct *watch = (WatchStruct *) data.ptr;
 	XtRemoveInput(watch->id);
@@ -3416,8 +3416,8 @@ void lesstif_unwatch_file(hidval data)
 
 typedef struct {
 	XtBlockHookId id;
-	void (*func) (hidval user_data);
-	hidval user_data;
+	void (*func) (pcb_hidval_t user_data);
+	pcb_hidval_t user_data;
 } BlockHookStruct;
 
 static void lesstif_block_hook_cb(XtPointer user_data);
@@ -3428,9 +3428,9 @@ static void lesstif_block_hook_cb(XtPointer user_data)
 	block_hook->func(block_hook->user_data);
 }
 
-static hidval lesstif_add_block_hook(void (*func) (hidval data), hidval user_data)
+static pcb_hidval_t lesstif_add_block_hook(void (*func) (pcb_hidval_t data), pcb_hidval_t user_data)
 {
-	hidval ret;
+	pcb_hidval_t ret;
 	BlockHookStruct *block_hook = (BlockHookStruct *) malloc(sizeof(BlockHookStruct));
 
 	block_hook->func = func;
@@ -3442,7 +3442,7 @@ static hidval lesstif_add_block_hook(void (*func) (hidval data), hidval user_dat
 	return ret;
 }
 
-static void lesstif_stop_block_hook(hidval mlpoll)
+static void lesstif_stop_block_hook(pcb_hidval_t mlpoll)
 {
 	BlockHookStruct *block_hook = (BlockHookStruct *) mlpoll.ptr;
 	XtRemoveBlockHook(block_hook->id);
@@ -3721,7 +3721,7 @@ static int lesstif_progress(int so_far, int total, const char *message)
 	return progress_cancelled;
 }
 
-static HID *lesstif_request_debug_draw(void)
+static pcb_hid_t *lesstif_request_debug_draw(void)
 {
 	/* Send drawing to the backing pixmap */
 	pixmap = main_pixmap;
@@ -3762,12 +3762,12 @@ void lesstif_create_menu(const char *menu, const char *action, const char *mnemo
 
 pcb_uninit_t hid_hid_lesstif_init()
 {
-	memset(&lesstif_hid, 0, sizeof(HID));
+	memset(&lesstif_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&lesstif_hid);
 	common_draw_helpers_init(&lesstif_hid);
 
-	lesstif_hid.struct_size = sizeof(HID);
+	lesstif_hid.struct_size = sizeof(pcb_hid_t);
 	lesstif_hid.name = "lesstif";
 	lesstif_hid.description = "LessTif - a Motif clone for X/Unix";
 	lesstif_hid.gui = 1;

@@ -133,7 +133,7 @@ static int ActionManagePlugins(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action plugins_action_list[] = {
+pcb_hid_action_t plugins_action_list[] = {
 	{"ManagePlugins", 0, ActionManagePlugins,
 	 manageplugins_help, manageplugins_syntax}
 };

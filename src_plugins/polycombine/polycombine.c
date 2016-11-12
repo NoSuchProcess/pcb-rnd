@@ -339,7 +339,7 @@ static int polycombine(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static HID_Action polycombine_action_list[] = {
+static pcb_hid_action_t polycombine_action_list[] = {
 	{"PolyCombine", "???", polycombine,
 	 NULL, NULL}
 };

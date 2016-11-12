@@ -56,20 +56,20 @@
 #include "hid_flags.h"
 
 
-static HID svg_hid;
+static pcb_hid_t svg_hid;
 
 const char *svg_cookie = "svg HID";
 
 
 typedef struct hid_gc_struct {
-	HID *me_pointer;
-	EndCapStyle cap;
+	pcb_hid_t *me_pointer;
+	pcb_cap_style_t cap;
 	int width;
 	char *color;
 	int erase, drill;
 } hid_gc_struct;
 
-static const char *CAPS(EndCapStyle cap)
+static const char *CAPS(pcb_cap_style_t cap)
 {
 	switch (cap) {
 		case Trace_Cap:
@@ -434,7 +434,7 @@ static void svg_set_color(hidGC gc, const char *name)
 	gc->color = pcb_strdup(name);
 }
 
-static void svg_set_line_cap(hidGC gc, EndCapStyle style)
+static void svg_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -695,12 +695,12 @@ static int svg_usage(const char *topic)
 
 pcb_uninit_t hid_export_svg_init()
 {
-	memset(&svg_hid, 0, sizeof(HID));
+	memset(&svg_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&svg_hid);
 	common_draw_helpers_init(&svg_hid);
 
-	svg_hid.struct_size = sizeof(HID);
+	svg_hid.struct_size = sizeof(pcb_hid_t);
 	svg_hid.name = "svg";
 	svg_hid.description = "Scalable Vector Graphics export";
 	svg_hid.exporter = 1;

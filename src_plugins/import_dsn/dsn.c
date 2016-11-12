@@ -159,7 +159,7 @@ int ActionLoadDsnFrom(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action dsn_action_list[] = {
+pcb_hid_action_t dsn_action_list[] = {
 	{"LoadDsnFrom", 0, ActionLoadDsnFrom, load_dsn_help, load_dsn_syntax}
 };
 

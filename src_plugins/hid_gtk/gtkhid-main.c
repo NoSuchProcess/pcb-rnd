@@ -365,9 +365,9 @@ void ghid_set_crosshair(int x, int y, int action)
 }
 
 typedef struct {
-	void (*func) (hidval);
+	void (*func) (pcb_hidval_t);
 	guint id;
-	hidval user_data;
+	pcb_hidval_t user_data;
 } GuiTimer;
 
 	/* We need a wrapper around the hid timer because a gtk timer needs
@@ -380,10 +380,10 @@ static gboolean ghid_timer(GuiTimer * timer)
 	return FALSE;									/* Turns timer off */
 }
 
-hidval ghid_add_timer(void (*func) (hidval user_data), unsigned long milliseconds, hidval user_data)
+pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	GuiTimer *timer = g_new0(GuiTimer, 1);
-	hidval ret;
+	pcb_hidval_t ret;
 
 	timer->func = func;
 	timer->user_data = user_data;
@@ -392,7 +392,7 @@ hidval ghid_add_timer(void (*func) (hidval user_data), unsigned long millisecond
 	return ret;
 }
 
-void ghid_stop_timer(hidval timer)
+void ghid_stop_timer(pcb_hidval_t timer)
 {
 	void *ptr = timer.ptr;
 
@@ -401,8 +401,8 @@ void ghid_stop_timer(hidval timer)
 }
 
 typedef struct {
-	void (*func) (hidval, int, unsigned int, hidval);
-	hidval user_data;
+	void (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
+	pcb_hidval_t user_data;
 	int fd;
 	GIOChannel *channel;
 	gint id;
@@ -413,7 +413,7 @@ typedef struct {
 static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer data)
 {
 	unsigned int pcb_condition = 0;
-	hidval x;
+	pcb_hidval_t x;
 	GuiWatch *watch = (GuiWatch *) data;
 
 	if (condition & G_IO_IN)
@@ -432,12 +432,12 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 	return TRUE;									/* Leave watch on */
 }
 
-hidval
-ghid_watch_file(int fd, unsigned int condition, void (*func) (hidval watch, int fd, unsigned int condition, hidval user_data),
-								hidval user_data)
+pcb_hidval_t
+ghid_watch_file(int fd, unsigned int condition, void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+								pcb_hidval_t user_data)
 {
 	GuiWatch *watch = g_new0(GuiWatch, 1);
-	hidval ret;
+	pcb_hidval_t ret;
 	unsigned int glib_condition = 0;
 
 	if (condition & PCB_WATCH_READABLE)
@@ -459,7 +459,7 @@ ghid_watch_file(int fd, unsigned int condition, void (*func) (hidval watch, int 
 	return ret;
 }
 
-void ghid_unwatch_file(hidval data)
+void ghid_unwatch_file(pcb_hidval_t data)
 {
 	GuiWatch *watch = (GuiWatch *) data.ptr;
 
@@ -470,8 +470,8 @@ void ghid_unwatch_file(hidval data)
 
 typedef struct {
 	GSource source;
-	void (*func) (hidval user_data);
-	hidval user_data;
+	void (*func) (pcb_hidval_t user_data);
+	pcb_hidval_t user_data;
 } BlockHookSource;
 
 static gboolean ghid_block_hook_prepare(GSource * source, gint * timeout);
@@ -487,7 +487,7 @@ static GSourceFuncs ghid_block_hook_funcs = {
 
 static gboolean ghid_block_hook_prepare(GSource * source, gint * timeout)
 {
-	hidval data = ((BlockHookSource *) source)->user_data;
+	pcb_hidval_t data = ((BlockHookSource *) source)->user_data;
 	((BlockHookSource *) source)->func(data);
 	return FALSE;
 }
@@ -502,9 +502,9 @@ static gboolean ghid_block_hook_dispatch(GSource * source, GSourceFunc callback,
 	return FALSE;
 }
 
-static hidval ghid_add_block_hook(void (*func) (hidval data), hidval user_data)
+static pcb_hidval_t ghid_add_block_hook(void (*func) (pcb_hidval_t data), pcb_hidval_t user_data)
 {
-	hidval ret;
+	pcb_hidval_t ret;
 	BlockHookSource *source;
 
 	source = (BlockHookSource *) g_source_new(&ghid_block_hook_funcs, sizeof(BlockHookSource));
@@ -518,7 +518,7 @@ static hidval ghid_add_block_hook(void (*func) (hidval data), hidval user_data)
 	return ret;
 }
 
-static void ghid_stop_block_hook(hidval mlpoll)
+static void ghid_stop_block_hook(pcb_hidval_t mlpoll)
 {
 	GSource *source = (GSource *) mlpoll.ptr;
 	g_source_destroy(source);
@@ -992,7 +992,7 @@ static void ghid_attributes(const char *owner, pcb_attribute_list_t * attrs)
 
 /* ---------------------------------------------------------------------- */
 
-HID_DRC_GUI ghid_drc_gui = {
+pcb_hid_drc_gui_t ghid_drc_gui = {
 	1,														/* log_drc_overview */
 	0,														/* log_drc_details */
 	ghid_drc_window_reset_message,
@@ -1375,9 +1375,9 @@ options, and print the layout.
 
 static int Print(int argc, const char **argv, Coord x, Coord y)
 {
-	HID **hids;
+	pcb_hid_t **hids;
 	int i;
-	HID *printer = NULL;
+	pcb_hid_t *printer = NULL;
 
 	hids = hid_enumerate();
 	for (i = 0; hids[i]; i++) {
@@ -1427,7 +1427,7 @@ the measurements in, so that future printouts will be more precise.
 
 static int PrintCalibrate(int argc, const char **argv, Coord x, Coord y)
 {
-	HID *printer = hid_find_printer();
+	pcb_hid_t *printer = hid_find_printer();
 	printer->calibrate(0.0, 0.0);
 
 	if (gui->attribute_dialog(printer_calibrate_attrs, 3,
@@ -1916,7 +1916,7 @@ static int Busy(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action ghid_main_action_list[] = {
+pcb_hid_action_t ghid_main_action_list[] = {
 	{"About", 0, About, about_help, about_syntax}
 	,
 	{"Benchmark", 0, Benchmark}
@@ -1985,7 +1985,7 @@ REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 #include <winreg.h>
 #endif
 
-HID ghid_hid;
+pcb_hid_t ghid_hid;
 
 static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *))
 {
@@ -2043,12 +2043,12 @@ pcb_uninit_t hid_hid_gtk_init()
 	printf("\"Share\" installation path is \"%s\"\n", "share_dir_todo12");
 #endif
 
-	memset(&ghid_hid, 0, sizeof(HID));
+	memset(&ghid_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&ghid_hid);
 	common_draw_helpers_init(&ghid_hid);
 
-	ghid_hid.struct_size = sizeof(HID);
+	ghid_hid.struct_size = sizeof(pcb_hid_t);
 	ghid_hid.name = "gtk";
 	ghid_hid.description = "Gtk - The Gimp Toolkit";
 	ghid_hid.gui = 1;

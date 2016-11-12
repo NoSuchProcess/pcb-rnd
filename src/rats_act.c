@@ -215,7 +215,7 @@ static int ActionDeleteRats(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action rats_action_list[] = {
+pcb_hid_action_t rats_action_list[] = {
 	{"AddRats", 0, ActionAddRats,
 	 addrats_help, addrats_syntax}
 	,

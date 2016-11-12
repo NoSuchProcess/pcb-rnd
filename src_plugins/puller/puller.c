@@ -2379,7 +2379,7 @@ static int GlobalPuller(int argc, const char **argv, Coord x, Coord y)
 /*                                                                           */
 /*****************************************************************************/
 
-HID_Action puller_action_list[] = {
+pcb_hid_action_t puller_action_list[] = {
 	{"Puller", "Click on a line-arc intersection or line segment", Puller,
 	 puller_help, puller_syntax}
 	,

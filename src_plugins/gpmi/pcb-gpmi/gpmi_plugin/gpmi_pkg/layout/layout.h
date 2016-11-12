@@ -238,7 +238,7 @@ dctx_t *debug_draw_dctx(void);
 
 /* Debug draw style: set drawing color */
 void draw_set_color(dctx_t *ctx, const char *name);
-/*void set_line_cap(dctx_t *ctx, EndCapStyle style_);*/
+/*void set_line_cap(dctx_t *ctx, pcb_cap_style_t style_);*/
 
 /* Debug draw style: set line width */
 void draw_set_line_width(dctx_t *ctx, int width);

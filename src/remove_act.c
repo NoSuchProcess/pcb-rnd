@@ -96,7 +96,7 @@ static int ActionRemoveSelected(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action remove_action_list[] = {
+pcb_hid_action_t remove_action_list[] = {
 	{"Delete", 0, ActionDelete,
 	 delete_help, delete_syntax}
 	,

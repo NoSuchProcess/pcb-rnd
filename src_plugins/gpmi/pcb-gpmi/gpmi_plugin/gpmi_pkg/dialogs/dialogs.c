@@ -2,7 +2,7 @@
 #include "src/error.h"
 #include "dialogs.h"
 
-extern HID *gui;
+extern pcb_hid_t *gui;
 
 void dialog_log(const char *msg)
 {

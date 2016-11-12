@@ -59,7 +59,7 @@
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", func); abort()
 
-static HID png_hid;
+static pcb_hid_t png_hid;
 
 const char *png_cookie = "png HID";
 
@@ -96,8 +96,8 @@ typedef struct color_struct {
 } color_struct;
 
 typedef struct hid_gc_struct {
-	HID *me_pointer;
-	EndCapStyle cap;
+	pcb_hid_t *me_pointer;
+	pcb_cap_style_t cap;
 	int width;
 	unsigned char r, g, b;
 	color_struct *color;
@@ -1127,7 +1127,7 @@ static void png_use_mask(int use_it)
 
 static void png_set_color(hidGC gc, const char *name)
 {
-	hidval cval;
+	pcb_hidval_t cval;
 
 	if (im == NULL)
 		return;
@@ -1168,7 +1168,7 @@ static void png_set_color(hidGC gc, const char *name)
 
 }
 
-static void png_set_line_cap(hidGC gc, EndCapStyle style)
+static void png_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -1203,7 +1203,7 @@ static void use_gc(hidGC gc)
 	}
 
 	if (lastbrush != gc->brush || need_brush) {
-		hidval bval;
+		pcb_hidval_t bval;
 		char name[256];
 		char type;
 		int r;
@@ -1491,12 +1491,12 @@ static int png_usage(const char *topic)
 
 pcb_uninit_t hid_export_png_init()
 {
-	memset(&png_hid, 0, sizeof(HID));
+	memset(&png_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&png_hid);
 	common_draw_helpers_init(&png_hid);
 
-	png_hid.struct_size = sizeof(HID);
+	png_hid.struct_size = sizeof(pcb_hid_t);
 	png_hid.name = "png";
 	png_hid.description = "GIF/JPEG/PNG export";
 	png_hid.exporter = 1;

@@ -349,7 +349,7 @@ static int ActionQuit(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action file_action_list[] = {
+pcb_hid_action_t file_action_list[] = {
 	{"ExecCommand", 0, ActionExecCommand,
 	 execcommand_help, execcommand_syntax}
 	,

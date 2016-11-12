@@ -2677,7 +2677,7 @@ static int ActionDJopt(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action djopt_action_list[] = {
+pcb_hid_action_t djopt_action_list[] = {
 	{"djopt", 0, ActionDJopt,
 	 djopt_help, djopt_syntax}
 };

@@ -181,7 +181,7 @@ void lesstif_show_library()
 	}
 }
 
-HID_Action lesstif_library_action_list[] = {
+pcb_hid_action_t lesstif_library_action_list[] = {
 	{"LibraryChanged", 0, LibraryChanged,
 	 librarychanged_help, librarychanged_syntax}
 	,

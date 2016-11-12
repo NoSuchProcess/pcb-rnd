@@ -22,7 +22,7 @@
 
 static const char *remote_cookie = "remote HID";
 
-static HID remote_hid;
+static pcb_hid_t remote_hid;
 
 typedef struct hid_gc_struct {
 	int nop;
@@ -56,7 +56,7 @@ static int info(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action remote_action_list[] = {
+pcb_hid_action_t remote_action_list[] = {
 	{"PCBChanged", 0, PCBChanged}
 	,
 	{"RouteStylesChanged", 0, nop}
@@ -101,7 +101,7 @@ static void remote_do_export(HID_Attr_Val * options)
 		exit(1);
 }
 
-static void remote_do_exit(HID *hid)
+static void remote_do_exit(pcb_hid_t *hid)
 {
 	remote_stay = 0;
 }
@@ -189,7 +189,7 @@ static void remote_set_color(hidGC gc, const char *name)
 
 /* r=round, s=square, b=beveled (octagon) */
 static const char *cap_style_names = "rsrb";
-static void remote_set_line_cap(hidGC gc, EndCapStyle style)
+static void remote_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	int idx = gc2idx(gc);
 	int max = strlen(cap_style_names);
@@ -293,38 +293,38 @@ static void remote_set_crosshair(int x, int y, int action)
 {
 }
 
-static hidval remote_add_timer(void (*func) (hidval user_data), unsigned long milliseconds, hidval user_data)
+static pcb_hidval_t remote_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
-	hidval rv;
+	pcb_hidval_t rv;
 	rv.lval = 0;
 	return rv;
 }
 
-static void remote_stop_timer(hidval timer)
+static void remote_stop_timer(pcb_hidval_t timer)
 {
 }
 
-hidval
-remote_watch_file(int fd, unsigned int condition, void (*func) (hidval watch, int fd, unsigned int condition, hidval user_data),
-								 hidval user_data)
+pcb_hidval_t
+remote_watch_file(int fd, unsigned int condition, void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+								 pcb_hidval_t user_data)
 {
-	hidval ret;
+	pcb_hidval_t ret;
 	ret.ptr = NULL;
 	return ret;
 }
 
-void remote_unwatch_file(hidval data)
+void remote_unwatch_file(pcb_hidval_t data)
 {
 }
 
-static hidval remote_add_block_hook(void (*func) (hidval data), hidval user_data)
+static pcb_hidval_t remote_add_block_hook(void (*func) (pcb_hidval_t data), pcb_hidval_t user_data)
 {
-	hidval ret;
+	pcb_hidval_t ret;
 	ret.ptr = NULL;
 	return ret;
 }
 
-static void remote_stop_block_hook(hidval mlpoll)
+static void remote_stop_block_hook(pcb_hidval_t mlpoll)
 {
 }
 
@@ -375,12 +375,12 @@ static void hid_hid_remote_uninit()
 
 pcb_uninit_t hid_hid_remote_init()
 {
-	memset(&remote_hid, 0, sizeof(HID));
+	memset(&remote_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&remote_hid);
 	common_draw_helpers_init(&remote_hid);
 
-	remote_hid.struct_size = sizeof(HID);
+	remote_hid.struct_size = sizeof(pcb_hid_t);
 	remote_hid.name = "remote";
 	remote_hid.description = "remote-mode GUI for non-interactive use.";
 	remote_hid.gui = 1;

@@ -10,6 +10,6 @@
    and if found sets val and returns nonzero.  If not found, it
    returns zero.  If set is nonzero, name/val is added to the
    cache.  */
-int hid_cache_color(int set, const char *name, hidval * val, void **cache);
+int hid_cache_color(int set, const char *name, pcb_hidval_t * val, void **cache);
 
 #endif

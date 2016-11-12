@@ -308,7 +308,7 @@ static int teardrops(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static HID_Action teardrops_action_list[] = {
+static pcb_hid_action_t teardrops_action_list[] = {
 	{"Teardrops", NULL, teardrops, NULL, NULL}
 };
 

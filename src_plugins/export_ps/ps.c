@@ -40,8 +40,8 @@ static int ps_set_layer(const char *name, int group, int empty);
 static void use_gc(hidGC gc);
 
 typedef struct hid_gc_struct {
-	HID *me_pointer;
-	EndCapStyle cap;
+	pcb_hid_t *me_pointer;
+	pcb_cap_style_t cap;
 	Coord width;
 	unsigned char r, g, b;
 	int erase;
@@ -1005,7 +1005,7 @@ static void ps_set_color(hidGC gc, const char *name)
 	}
 }
 
-static void ps_set_line_cap(hidGC gc, EndCapStyle style)
+static void ps_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -1550,7 +1550,7 @@ static int ActionPSCalib(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action hidps_action_list[] = {
+pcb_hid_action_t hidps_action_list[] = {
 	{"pscalib", 0, ActionPSCalib}
 };
 
@@ -1559,9 +1559,9 @@ REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 
 #include "dolists.h"
 
-HID ps_hid;
+pcb_hid_t ps_hid;
 static int ps_inited = 0;
-void ps_ps_init(HID * hid)
+void ps_ps_init(pcb_hid_t * hid)
 {
 	if (ps_inited)
 		return;
@@ -1610,13 +1610,13 @@ static void plugin_ps_uninit(void)
 
 pcb_uninit_t hid_export_ps_init()
 {
-	memset(&ps_hid, 0, sizeof(HID));
+	memset(&ps_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&ps_hid);
 	common_draw_helpers_init(&ps_hid);
 	ps_ps_init(&ps_hid);
 
-	ps_hid.struct_size = sizeof(HID);
+	ps_hid.struct_size = sizeof(pcb_hid_t);
 	ps_hid.name = "ps";
 	ps_hid.description = "Postscript export";
 	ps_hid.exporter = 1;

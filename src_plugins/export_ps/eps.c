@@ -36,7 +36,7 @@ static hidGC eps_make_gc(void);
 static void eps_destroy_gc(hidGC gc);
 static void eps_use_mask(int use_it);
 static void eps_set_color(hidGC gc, const char *name);
-static void eps_set_line_cap(hidGC gc, EndCapStyle style);
+static void eps_set_line_cap(hidGC gc, pcb_cap_style_t style);
 static void eps_set_line_width(hidGC gc, Coord width);
 static void eps_set_draw_xor(hidGC gc, int _xor);
 static void eps_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
@@ -50,13 +50,13 @@ static void eps_set_crosshair(int x, int y, int action);
 /*----------------------------------------------------------------------------*/
 
 typedef struct hid_gc_struct {
-	EndCapStyle cap;
+	pcb_cap_style_t cap;
 	Coord width;
 	int color;
 	int erase;
 } hid_gc_struct;
 
-static HID eps_hid;
+static pcb_hid_t eps_hid;
 
 static FILE *f = 0;
 static Coord linewidth = -1;
@@ -430,7 +430,7 @@ static void eps_use_mask(int use_it)
 static void eps_set_color(hidGC gc, const char *name)
 {
 	static void *cache = 0;
-	hidval cval;
+	pcb_hidval_t cval;
 
 	if (strcmp(name, "erase") == 0) {
 		gc->color = 0xffffff;
@@ -458,7 +458,7 @@ static void eps_set_color(hidGC gc, const char *name)
 		gc->color = 0;
 }
 
-static void eps_set_line_cap(hidGC gc, EndCapStyle style)
+static void eps_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -601,12 +601,12 @@ static int eps_usage(const char *topic)
 
 void hid_eps_init()
 {
-	memset(&eps_hid, 0, sizeof(HID));
+	memset(&eps_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&eps_hid);
 	common_draw_helpers_init(&eps_hid);
 
-	eps_hid.struct_size = sizeof(HID);
+	eps_hid.struct_size = sizeof(pcb_hid_t);
 	eps_hid.name = "eps";
 	eps_hid.description = "Encapsulated Postscript";
 	eps_hid.exporter = 1;

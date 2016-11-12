@@ -377,7 +377,7 @@ static int ActionUnselect(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-HID_Action select_action_list[] = {
+pcb_hid_action_t select_action_list[] = {
 	{"Select", 0, ActionSelect,
 	 select_help, select_syntax}
 	,

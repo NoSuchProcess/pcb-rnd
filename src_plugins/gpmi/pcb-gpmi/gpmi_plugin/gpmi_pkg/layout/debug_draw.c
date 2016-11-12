@@ -4,7 +4,7 @@
 #include "src/hid.h"
 #include "src/error.h"
 
-static HID *ddh = NULL;
+static pcb_hid_t *ddh = NULL;
 
 #define need_ddh if (ddh == NULL) return
 

@@ -281,7 +281,7 @@ int ActionDisableVendor(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action oldactions_action_list[] = {
+pcb_hid_action_t oldactions_action_list[] = {
 	{"DumpLibrary", 0, ActionDumpLibrary,
 	 dumplibrary_help, dumplibrary_syntax},
 	{"Bell", 0, ActionBell,

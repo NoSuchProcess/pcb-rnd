@@ -300,7 +300,7 @@ void ClearWarnings()
 	Draw();
 }
 
-static void click_cb(hidval hv)
+static void click_cb(pcb_hidval_t hv)
 {
 	if (Note.Click) {
 		notify_crosshair_change(pcb_false);
@@ -587,7 +587,7 @@ void NotifyMode(void)
 	case PCB_MODE_ARROW:
 		{
 			int test;
-			hidval hv;
+			pcb_hidval_t hv;
 
 			Note.Click = pcb_true;
 			/* do something after click time */

@@ -70,7 +70,7 @@ static Coord clearance = 8;
 static Coord viawidth = 45;
 static Coord viadrill = 25;
 
-static HID dsn_hid;
+static pcb_hid_t dsn_hid;
 
 static HID_Attribute dsn_options[] = {
 	{"dsnfile", "SPECCTRA output file",
@@ -571,10 +571,10 @@ static void hid_dsn_uninit()
 #include "dolists.h"
 pcb_uninit_t hid_export_dsn_init()
 {
-	memset(&dsn_hid, 0, sizeof(HID));
+	memset(&dsn_hid, 0, sizeof(pcb_hid_t));
 	common_nogui_init(&dsn_hid);
 
-	dsn_hid.struct_size = sizeof(HID);
+	dsn_hid.struct_size = sizeof(pcb_hid_t);
 	dsn_hid.name = "dsn";
 	dsn_hid.description = "Exports DSN format";
 	dsn_hid.exporter = 1;

@@ -426,7 +426,7 @@ void lesstif_insert_style_buttons(Widget menu)
 	update_style_buttons();
 }
 
-HID_Action lesstif_styles_action_list[] = {
+pcb_hid_action_t lesstif_styles_action_list[] = {
 	{"AdjustStyle", 0, AdjustStyle,
 	 adjuststyle_help, adjuststyle_syntax}
 	,

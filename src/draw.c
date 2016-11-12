@@ -421,7 +421,7 @@ static void DrawRats(const pcb_box_t * drawn_area)
 	 * XXX gtk only allows negative drawing.
 	 * XXX using the mask here is to get rat transparency
 	 */
-#warning TODO: make this a HID struct item instead
+#warning TODO: make this a pcb_hid_t struct item instead
 	int can_mask = strcmp(gui->name, "lesstif") == 0;
 
 	if (can_mask)
@@ -576,9 +576,9 @@ void DrawObject(int type, void *ptr1, void *ptr2)
  * HID drawing callback.
  */
 
-void hid_expose_callback(HID * hid, pcb_box_t * region, void *item)
+void hid_expose_callback(pcb_hid_t * hid, pcb_box_t * region, void *item)
 {
-	HID *old_gui = gui;
+	pcb_hid_t *old_gui = gui;
 
 	gui = hid;
 	Output.fgGC = gui->make_gc();

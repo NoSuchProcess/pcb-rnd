@@ -640,7 +640,7 @@ static pcb_bool rematch(const char *re, const char *s)
 
 static const char *vendor_cookie = "vendor drill mapping";
 
-HID_Action vendor_action_list[] = {
+pcb_hid_action_t vendor_action_list[] = {
 	{"ApplyVendor", 0, ActionApplyVendor,
 	 apply_vendor_help, apply_vendor_syntax}
 	,

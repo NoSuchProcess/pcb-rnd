@@ -1507,7 +1507,7 @@ void ghid_do_export(HID_Attr_Val * options)
 	gtkhid_end();
 }
 
-void ghid_do_exit(HID *hid)
+void ghid_do_exit(pcb_hid_t *hid)
 {
 	gtk_main_quit();
 }
@@ -1653,7 +1653,7 @@ static int SelectLayer(int argc, const char **argv, Coord x, Coord y)
 }
 
 
-HID_Action gtk_topwindow_action_list[] = {
+pcb_hid_action_t gtk_topwindow_action_list[] = {
 	{"LayersChanged", 0, LayersChanged,
 	 layerschanged_help, layerschanged_syntax}
 	,
@@ -1754,7 +1754,7 @@ static int EditLayerGroups(int argc, const char **argv, Coord x, Coord y)
 
 /* ------------------------------------------------------------ */
 
-HID_Action ghid_menu_action_list[] = {
+pcb_hid_action_t ghid_menu_action_list[] = {
 	{"AdjustStyle", 0, AdjustStyle, adjuststyle_help, adjuststyle_syntax}
 	,
 	{"EditLayerGroups", 0, EditLayerGroups, editlayergroups_help, editlayergroups_syntax}

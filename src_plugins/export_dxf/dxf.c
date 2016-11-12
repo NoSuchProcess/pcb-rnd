@@ -261,7 +261,7 @@ static void dxf_progress(int dxf_so_far, int dxf_total, const char *dxf_message)
 static void dxf_set_color(hidGC gc, const char *name);
 static void dxf_set_crosshair(int x, int y);
 static int dxf_set_layer(const char *name, int group);
-static void dxf_set_line_cap(hidGC gc, EndCapStyle style);
+static void dxf_set_line_cap(hidGC gc, pcb_cap_style_t style);
 static void dxf_set_line_width(hidGC gc, int width);
 static void dxf_show_item(void *item);
 static StringList *dxf_string_insert(char *str, StringList * list);
@@ -537,7 +537,7 @@ static int dxf_id_code = 0;
 /*!
  * \brief Record with all values of the DXF HID.
  */
-static HID dxf_hid;
+static pcb_hid_t dxf_hid;
 
 /*!
  * \brief Drill (hole) properties.
@@ -604,7 +604,7 @@ int dxf_max_pending_drills = 0;
  * shapes, and is thus not yet implemented.
  */
 typedef struct hid_gc_struct {
-	EndCapStyle cap;
+	pcb_cap_style_t cap;
 	/*!< end cap style. */
 	int width;
 	/*!< width. */
@@ -4690,7 +4690,7 @@ static void dxf_set_color(hidGC gc,	/*!< graphic context  */
  * While calling this is cheap, calling it with different values each time
  * may be expensive, so grouping items by line style is helpful.
 */
-static void dxf_set_line_cap(hidGC gc, EndCapStyle style) {
+static void dxf_set_line_cap(hidGC gc, pcb_cap_style_t style) {
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_set_line_cap () function.\n", __FILE__, __LINE__);
 #endif
@@ -5930,11 +5930,11 @@ const char *dxf_cookie = "dxf exporter";
  */
 pcb_uninit_t hid_export_dxf_init()
 {
-	memset(&dxf_hid, 0, sizeof(HID));
+	memset(&dxf_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&dxf_hid);
 	common_draw_helpers_init(&dxf_hid);
-	dxf_hid.struct_size = sizeof(HID);
+	dxf_hid.struct_size = sizeof(pcb_hid_t);
 	dxf_hid.name = "dxf";
 	dxf_hid.description = "DXF export";
 	dxf_hid.exporter = 1;

@@ -72,7 +72,7 @@ int propset_action(int argc, const char **argv, Coord x, Coord y)
 
 static const char *propedit_cookie = "propedit";
 
-HID_Action propedit_action_list[] = {
+pcb_hid_action_t propedit_action_list[] = {
 	{"propedit", 0, propedit_action,
 	 propedit_help, propedit_syntax},
 	{"propset", 0, propset_action,

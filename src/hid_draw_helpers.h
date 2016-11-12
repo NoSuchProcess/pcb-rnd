@@ -6,5 +6,5 @@ void common_fill_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mas
 void common_thindraw_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask);
 void common_fill_pcb_pv(hidGC gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
 void common_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
-void common_draw_helpers_init(HID * hid);
+void common_draw_helpers_init(pcb_hid_t * hid);
 #endif

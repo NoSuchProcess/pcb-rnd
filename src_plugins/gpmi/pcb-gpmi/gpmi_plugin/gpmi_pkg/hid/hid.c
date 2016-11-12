@@ -21,7 +21,7 @@ void hid_gpmi_data_set(hid_t *h, void *data)
 	h->hid->user_context = data;
 }
 
-hid_t *hid_gpmi_data_get(HID *h)
+hid_t *hid_gpmi_data_get(pcb_hid_t *h)
 {
 	if (h == NULL)
 		return NULL;
@@ -33,7 +33,7 @@ hid_t *hid_create(char *hid_name, char *description)
 	hid_t *h;
 
 	h      = calloc(sizeof(hid_t), 1);
-	h->hid = calloc(sizeof(HID), 1);
+	h->hid = calloc(sizeof(pcb_hid_t), 1);
 
 	common_nogui_init (h->hid);
 
@@ -43,7 +43,7 @@ hid_t *hid_create(char *hid_name, char *description)
 	h->hid->description = pcb_strdup(description);
 	h->hid->exporter    = 1;
 	h->hid->gui         = 0;
-	h->hid->struct_size = sizeof(HID);
+	h->hid->struct_size = sizeof(pcb_hid_t);
 
 	h->hid->get_export_options = gpmi_hid_get_export_options;
 	h->hid->make_gc            = gpmi_hid_make_gc;

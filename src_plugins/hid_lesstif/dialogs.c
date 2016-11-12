@@ -890,7 +890,7 @@ options, and print the layout.
 static int Print(int argc, const char **argv, Coord x, Coord y)
 {
 	HID_Attribute *opts;
-	HID *printer;
+	pcb_hid_t *printer;
 	HID_Attr_Val *vals;
 	int n;
 
@@ -934,7 +934,7 @@ the measurements in, so that future printouts will be more precise.
 
 static int PrintCalibrate(int argc, const char **argv, Coord x, Coord y)
 {
-	HID *printer = hid_find_printer();
+	pcb_hid_t *printer = hid_find_printer();
 	printer->calibrate(0.0, 0.0);
 	if (gui->attribute_dialog(printer_calibrate_attrs, 3,
 														printer_calibrate_values,
@@ -959,7 +959,7 @@ static int Export(int argc, const char **argv, Coord x, Coord y)
 {
 	static Widget selector = 0;
 	HID_Attribute *opts;
-	HID *printer, **hids;
+	pcb_hid_t *printer, **hids;
 	HID_Attr_Val *vals;
 	int n, i, count;
 	Widget prev = 0;
@@ -1904,7 +1904,7 @@ static int ImportGUI(int argc, const char **argv, Coord x, Coord y)
 
 /* ------------------------------------------------------------ */
 
-HID_Action lesstif_dialog_action_list[] = {
+pcb_hid_action_t lesstif_dialog_action_list[] = {
 	{"Load", 0, Load,
 	 load_help, load_syntax}
 	,

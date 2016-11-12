@@ -108,7 +108,7 @@ static char *finish_color_table[] = {
 
 
 
-static HID scad_hid;
+static pcb_hid_t scad_hid;
 
 static int silk_layer, drill_layer, outline_layer, mask_layer;
 static int layer_open, fresh_layer;
@@ -887,7 +887,7 @@ static void scad_set_color(hidGC gc, const char *name)
 	}
 }
 
-static void scad_set_line_cap(hidGC gc, EndCapStyle style)
+static void scad_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -1132,7 +1132,7 @@ static void scad_set_crosshair(int x, int y, int action)
 
 static const char *openscad_cookie = "openscad exporter";
 
-static HID scad_hid;
+static pcb_hid_t scad_hid;
 
 pcb_uninit_t hid_export_openscad_init()
 {

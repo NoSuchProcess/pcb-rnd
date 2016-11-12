@@ -112,7 +112,7 @@ static int action_gpmi_rehash(int argc, const char **argv, Coord x, Coord y)
 
 static void register_actions()
 {
-	HID_Action act;
+	pcb_hid_action_t act;
 
 	act.name           = "gpmi_scripts";
 	act.need_coord_msg = NULL;

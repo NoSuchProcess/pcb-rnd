@@ -13,7 +13,7 @@
 typedef struct acontext_s  acontext_t;
 
 struct acontext_s {
-	HID_Action action;
+	pcb_hid_action_t action;
 	char *name;
 	gpmi_module *module;
 	acontext_t *next;

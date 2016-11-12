@@ -46,7 +46,7 @@ static hidGC gerber_make_gc(void);
 static void gerber_destroy_gc(hidGC gc);
 static void gerber_use_mask(int use_it);
 static void gerber_set_color(hidGC gc, const char *name);
-static void gerber_set_line_cap(hidGC gc, EndCapStyle style);
+static void gerber_set_line_cap(hidGC gc, pcb_cap_style_t style);
 static void gerber_set_line_width(hidGC gc, Coord width);
 static void gerber_set_draw_xor(hidGC gc, int _xor);
 static void gerber_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
@@ -255,10 +255,10 @@ static ApertureList *setLayerApertureList(int layer_idx)
 
 /* --------------------------------------------------------------------------- */
 
-static HID gerber_hid;
+static pcb_hid_t gerber_hid;
 
 typedef struct hid_gc_struct {
-	EndCapStyle cap;
+	pcb_cap_style_t cap;
 	int width;
 	int color;
 	int erase;
@@ -829,7 +829,7 @@ static void gerber_set_color(hidGC gc, const char *name)
 	}
 }
 
-static void gerber_set_line_cap(hidGC gc, EndCapStyle style)
+static void gerber_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }

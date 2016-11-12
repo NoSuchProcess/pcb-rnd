@@ -38,17 +38,17 @@ typedef struct _TimeoutHandler TimeoutHandler;
 
 struct _IOWatchHandler {
 	DBusWatch *dbus_watch;
-	hidval pcb_watch;
+	pcb_hidval_t pcb_watch;
 };
 
 struct _TimeoutHandler {
 	DBusTimeout *dbus_timeout;
-	hidval pcb_timer;
+	pcb_hidval_t pcb_timer;
 	int interval;
 };
 
 
-static void block_hook_cb(hidval data)
+static void block_hook_cb(pcb_hidval_t data)
 {
 	DBusConnection *connection = (DBusConnection *) data.ptr;
 	if (dbus_connection_get_dispatch_status(connection) != DBUS_DISPATCH_DATA_REMAINS)
@@ -76,7 +76,7 @@ static void io_watch_handler_dbus_freed(void *data)
 }
 
 
-void io_watch_handler_cb(hidval pcb_watch, int fd, unsigned int condition, hidval data)
+void io_watch_handler_cb(pcb_hidval_t pcb_watch, int fd, unsigned int condition, pcb_hidval_t data)
 {
 	IOWatchHandler *handler;
 	unsigned int dbus_condition = 0;
@@ -120,7 +120,7 @@ static void timeout_handler_dbus_freed(void *data)
 }
 
 
-void timeout_handler_cb(hidval data)
+void timeout_handler_cb(pcb_hidval_t data)
 {
 	TimeoutHandler *handler;
 	handler = (TimeoutHandler *) data.ptr;
@@ -140,7 +140,7 @@ static dbus_bool_t watch_add(DBusWatch * dbus_watch, void *data)
 	int fd;
 	unsigned int pcb_condition;
 	unsigned int dbus_flags;
-	hidval temp;
+	pcb_hidval_t temp;
 
 	/* We won't create a watch until it becomes enabled. */
 	if (!dbus_watch_get_enabled(dbus_watch))
@@ -188,7 +188,7 @@ static void watch_toggled(DBusWatch * dbus_watch, void *data)
 static dbus_bool_t timeout_add(DBusTimeout * timeout, void *data)
 {
 	TimeoutHandler *handler;
-	hidval temp;
+	pcb_hidval_t temp;
 
 	/* We can't create a timeout without a GUI */
 	if (gui == NULL)
@@ -248,7 +248,7 @@ void dispatch_status_changed(DBusConnection * conn, DBusDispatchStatus new_statu
 void pcb_dbus_connection_setup_with_mainloop(DBusConnection * connection)
 {
 	/* ConnectionSetup *cs; */
-	hidval temp;
+	pcb_hidval_t temp;
 
 	/* FIXME we never free the slot, so its refcount just keeps growing,
 	 * which is kind of broken.

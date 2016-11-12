@@ -83,7 +83,7 @@ static void DebugPOLYAREA(POLYAREA * s, char *color)
 	PLINE *pl;
 	VNODE *v;
 	POLYAREA *p;
-	HID *ddraw;
+	pcb_hid_t *ddraw;
 	hidGC ddgc;
 
 #ifndef DEBUG_POLYAREA
@@ -541,7 +541,7 @@ static int jostle(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static HID_Action jostle_action_list[] = {
+static pcb_hid_action_t jostle_action_list[] = {
 	{"jostle", NULL, jostle, "Move lines out of the way", jostle_syntax},
 };
 

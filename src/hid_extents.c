@@ -57,7 +57,7 @@ static void extents_set_color(hidGC gc, const char *name)
 {
 }
 
-static void extents_set_line_cap(hidGC gc, EndCapStyle style)
+static void extents_set_line_cap(hidGC gc, pcb_cap_style_t style)
 {
 }
 
@@ -121,7 +121,7 @@ static void extents_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	PEY(y2, 0);
 }
 
-static HID extents_hid;
+static pcb_hid_t extents_hid;
 
 void hid_extents_init(void)
 {
@@ -130,11 +130,11 @@ void hid_extents_init(void)
 	if (initialised)
 		return;
 
-	memset(&extents_hid, 0, sizeof(HID));
+	memset(&extents_hid, 0, sizeof(pcb_hid_t));
 
 	common_draw_helpers_init(&extents_hid);
 
-	extents_hid.struct_size = sizeof(HID);
+	extents_hid.struct_size = sizeof(pcb_hid_t);
 	extents_hid.name = "extents-extents";
 	extents_hid.description = "used to calculate extents";
 	extents_hid.poly_before = 1;

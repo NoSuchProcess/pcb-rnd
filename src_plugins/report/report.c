@@ -891,7 +891,7 @@ static int Report(int argc, const char **argv, Coord x, Coord y)
 	return 1;
 }
 
-HID_Action report_action_list[] = {
+pcb_hid_action_t report_action_list[] = {
 	{"ReportObject", "Click on an object", ReportDialog,
 	 reportdialog_help, reportdialog_syntax}
 	,
