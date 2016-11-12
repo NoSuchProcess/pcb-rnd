@@ -34,7 +34,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
-static void rats_patch_remove(pcb_board_t *pcb, rats_patch_line_t * n, int do_free);
+static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
 const char *pcb_netlist_names[NUM_NETLISTS] = {
 	"input",
@@ -43,9 +43,9 @@ const char *pcb_netlist_names[NUM_NETLISTS] = {
 
 void rats_patch_append(pcb_board_t *pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
-	rats_patch_line_t *n;
+	pcb_ratspatch_line_t *n;
 
-	n = malloc(sizeof(rats_patch_line_t));
+	n = malloc(sizeof(pcb_ratspatch_line_t));
 
 	n->op = op;
 	n->id = pcb_strdup(id);
@@ -66,7 +66,7 @@ void rats_patch_append(pcb_board_t *pcb, rats_patch_op_t op, const char *id, con
 	n->next = NULL;
 }
 
-static void rats_patch_free_fields(rats_patch_line_t *n)
+static void rats_patch_free_fields(pcb_ratspatch_line_t *n)
 {
 	if (n->id != NULL)
 		free(n->id);
@@ -78,7 +78,7 @@ static void rats_patch_free_fields(rats_patch_line_t *n)
 
 void rats_patch_destroy(pcb_board_t *pcb)
 {
-	rats_patch_line_t *n, *next;
+	pcb_ratspatch_line_t *n, *next;
 
 	for(n = pcb->NetlistPatches; n != NULL; n = next) {
 		next = n->next;
@@ -90,7 +90,7 @@ void rats_patch_destroy(pcb_board_t *pcb)
 void rats_patch_append_optimize(pcb_board_t *pcb, rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
 	rats_patch_op_t seek_op;
-	rats_patch_line_t *n;
+	pcb_ratspatch_line_t *n;
 
 	switch (op) {
 	case RATP_ADD_CONN:
@@ -128,7 +128,7 @@ quit:;
 }
 
 /* Unlink n from the list; if do_free is non-zero, also free fields and n */
-static void rats_patch_remove(pcb_board_t *pcb, rats_patch_line_t * n, int do_free)
+static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free)
 {
 	/* if we are the first or last... */
 	if (n == pcb->NetlistPatches)
@@ -198,7 +198,7 @@ static void netlist_copy(LibraryTypePtr dst, LibraryTypePtr src)
 }
 
 
-int rats_patch_apply_conn(pcb_board_t *pcb, rats_patch_line_t * patch, int del)
+int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t * patch, int del)
 {
 	int n;
 
@@ -242,7 +242,7 @@ int rats_patch_apply_conn(pcb_board_t *pcb, rats_patch_line_t * patch, int del)
 }
 
 
-int rats_patch_apply(pcb_board_t *pcb, rats_patch_line_t * patch)
+int rats_patch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
 {
 	switch (patch->op) {
 	case RATP_ADD_CONN:
@@ -258,7 +258,7 @@ int rats_patch_apply(pcb_board_t *pcb, rats_patch_line_t * patch)
 
 void rats_patch_make_edited(pcb_board_t *pcb)
 {
-	rats_patch_line_t *n;
+	pcb_ratspatch_line_t *n;
 
 	netlist_free(&(pcb->NetlistLib[NETLIST_EDITED]));
 	netlist_copy(&(pcb->NetlistLib[NETLIST_EDITED]), &(pcb->NetlistLib[NETLIST_INPUT]));
@@ -278,9 +278,9 @@ static LibraryMenuTypePtr rats_patch_find_net(pcb_board_t *pcb, const char *netn
 	return NULL;
 }
 
-int rats_patch_export(pcb_board_t *pcb, rats_patch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
+int rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
 {
-	rats_patch_line_t *n;
+	pcb_ratspatch_line_t *n;
 
 	if (need_info_lines) {
 		htsp_t *seen;

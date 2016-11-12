@@ -35,7 +35,7 @@ typedef enum {
 	RATP_CHANGE_ATTRIB
 } rats_patch_op_t;
 
-struct rats_patch_line_s {
+struct pcb_ratspatch_line_s {
 	rats_patch_op_t op;
 	char *id;
 	union {
@@ -46,7 +46,7 @@ struct rats_patch_line_s {
 		char *attrib_val;
 	} arg2;
 
-	rats_patch_line_t *prev, *next;
+	pcb_ratspatch_line_t *prev, *next;
 };
 
 
@@ -68,7 +68,7 @@ void rats_patch_append_optimize(pcb_board_t *pcb, rats_patch_op_t op, const char
 void rats_patch_make_edited(pcb_board_t *pcb);
 
 /* apply a single patch record on [NETLIST_EDITED]; returns non-zero on failure */
-int rats_patch_apply(pcb_board_t *pcb, rats_patch_line_t * patch);
+int rats_patch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch);
 
 /**** exporter ****/
 
@@ -92,6 +92,6 @@ typedef enum {            /* netn is always the net name, unless specified other
 
 /* Call cb() for each item to output; PCB_PTRE_INFO* is calculated/called only
    if need_info_lines is true; the pcb pointer is used for looking up connections */
-int rats_patch_export(pcb_board_t *pcb, rats_patch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx);
+int rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx);
 
 #endif

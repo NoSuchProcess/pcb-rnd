@@ -662,7 +662,7 @@ static void build_net_patch_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const 
 }
 
 /* Build a netlist patch so that we don't need to export a complete new set of "as built" netlist */
-static lht_node_t *build_net_patch(pcb_board_t *pcb, rats_patch_line_t *pat, int *nonempty)
+static lht_node_t *build_net_patch(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, int *nonempty)
 {
 	lht_node_t *pn;
 	build_net_patch_t ctx;
@@ -682,7 +682,7 @@ static lht_node_t *build_net_patch(pcb_board_t *pcb, rats_patch_line_t *pat, int
 }
 
 
-static lht_node_t *build_netlists(pcb_board_t *pcb, LibraryType *netlists, rats_patch_line_t *pat, int num_netlists)
+static lht_node_t *build_netlists(pcb_board_t *pcb, LibraryType *netlists, pcb_ratspatch_line_t *pat, int num_netlists)
 {
 	lht_node_t *nls;
 	int n, nonempty = 0;

@@ -98,7 +98,7 @@ struct pcb_board_s {
 	pcb_layer_group_t LayerGroups;
 	vtroutestyle_t RouteStyle;
 	LibraryType NetlistLib[NUM_NETLISTS];
-	rats_patch_line_t *NetlistPatches, *NetlistPatchLast;
+	pcb_ratspatch_line_t *NetlistPatches, *NetlistPatchLast;
 	AttributeListType Attributes;
 	pcb_data_t *Data;							/* entire database */
 
