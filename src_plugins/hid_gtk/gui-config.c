@@ -141,7 +141,7 @@ static void wgeo_save_direct(GtkButton *widget, const char *ctx)
 
 /* event handler that runs before the current pcb is saved - save win geo
    in the corresponding lihata trees if the checkbox is selected. */
-void ghid_conf_save_pre_wgeo(void *user_data, int argc, event_arg_t * argv[])
+void ghid_conf_save_pre_wgeo(void *user_data, int argc, pcb_event_arg_t * argv[])
 {
 	ghid_wgeo_save(1, 1);
 }
@@ -168,7 +168,7 @@ static int just_loaded(const char *path)
 		wplc_place(id, NULL); \
 	}
 
-void ghid_conf_load_post_wgeo(void *user_data, int argc, event_arg_t * argv[])
+void ghid_conf_load_post_wgeo(void *user_data, int argc, pcb_event_arg_t * argv[])
 {
 	did_just_load_geo(top, WPLC_TOP);
 	did_just_load_geo(log, WPLC_LOG);

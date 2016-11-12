@@ -24,7 +24,7 @@ void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
 
 
 int gpmi_hid_gui_inited = 0;
-static void ev_gui_init(void *user_data, int argc, event_arg_t *argv[])
+static void ev_gui_init(void *user_data, int argc, pcb_event_arg_t *argv[])
 {
 	int ev;
 	char *ev_args;
