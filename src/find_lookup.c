@@ -47,7 +47,7 @@ static inline r_dir_t r_search_pt(pcb_rtree_t * rtree, const pcb_point_t * pt,
 
 /* Connection lookup functions */
 
-static pcb_bool ADD_PV_TO_LIST(pcb_pin_t *Pin, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_PV_TO_LIST(pcb_pin_t *Pin, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(Pin->Element ? PCB_TYPE_PIN : PCB_TYPE_VIA, Pin->Element ? Pin->Element : Pin, Pin, Pin);
@@ -64,7 +64,7 @@ static pcb_bool ADD_PV_TO_LIST(pcb_pin_t *Pin, int from_type, void *from_ptr, fo
 	return pcb_false;
 }
 
-static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, pcb_pad_t *Pad, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, pcb_pad_t *Pad, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 /*fprintf(stderr, "ADD_PAD_TO_LIST cardinal %d %p %d\n", L, Pad, from_type);*/
 	if (User)
@@ -82,7 +82,7 @@ static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, pcb_pad_t *Pad, int from_type,
 	return pcb_false;
 }
 
-static pcb_bool ADD_LINE_TO_LIST(pcb_cardinal_t L, pcb_line_t *Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_LINE_TO_LIST(pcb_cardinal_t L, pcb_line_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_LINE, LAYER_PTR(L), (Ptr), (Ptr));
@@ -99,7 +99,7 @@ static pcb_bool ADD_LINE_TO_LIST(pcb_cardinal_t L, pcb_line_t *Ptr, int from_typ
 	return pcb_false;
 }
 
-static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_ARC, LAYER_PTR(L), (Ptr), (Ptr));
@@ -116,7 +116,7 @@ static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type,
 	return pcb_false;
 }
 
-static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_RATLINE, (Ptr), (Ptr), (Ptr));
@@ -133,7 +133,7 @@ static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, f
 	return pcb_false;
 }
 
-static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_polygon_t *Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_polygon_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_POLYGON, LAYER_PTR(L), (Ptr), (Ptr));

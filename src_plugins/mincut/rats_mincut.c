@@ -61,7 +61,7 @@ struct short_conn_s {
 	int to_type;
 	int edges;										/* number of edges */
 	AnyObjectType *to;
-	found_conn_type_t type;
+	pcb_found_conn_type_t type;
 	short_conn_t *next;
 };
 
@@ -69,7 +69,7 @@ static short_conn_t *short_conns = NULL;
 static int num_short_conns = 0;
 static int short_conns_maxid = 0;
 
-static void proc_short_cb(int current_type, void *current_obj, int from_type, void *from_obj, found_conn_type_t type)
+static void proc_short_cb(int current_type, void *current_obj, int from_type, void *from_obj, pcb_found_conn_type_t type)
 {
 	AnyObjectType *curr = current_obj, *from = from_obj;
 	short_conn_t *s;
