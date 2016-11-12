@@ -50,7 +50,7 @@
 /* ---------------------------------------------------------------------------
  * returns the object ID
  */
-#define	OBJECT_ID(p)		(((AnyObjectTypePtr) p)->ID)
+#define	OBJECT_ID(p)		(((pcb_any_obj_t *) p)->ID)
 
 /* ---------------------------------------------------------------------------
  *  Determines if object is on front or back

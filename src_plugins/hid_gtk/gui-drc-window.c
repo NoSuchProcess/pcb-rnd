@@ -210,7 +210,7 @@ static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_dat
 			continue;
 		}
 		AddObjectToFlagUndoList(object_type, ptr1, ptr2, ptr3);
-		SET_FLAG(PCB_FLAG_FOUND, (AnyObjectType *) ptr2);
+		SET_FLAG(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
 		switch (violation->object_type_list[i]) {
 		case PCB_TYPE_LINE:
 		case PCB_TYPE_ARC:

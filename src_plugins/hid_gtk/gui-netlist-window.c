@@ -203,7 +203,7 @@ static void toggle_pin_selected(pcb_lib_entry_t * entry)
 		return;
 
 	AddObjectToFlagUndoList(conn.type, conn.ptr1, conn.ptr2, conn.ptr2);
-	TOGGLE_FLAG(PCB_FLAG_SELECTED, (AnyObjectType *) conn.ptr2);
+	TOGGLE_FLAG(PCB_FLAG_SELECTED, (pcb_any_obj_t *) conn.ptr2);
 	DrawObject(conn.type, conn.ptr1, conn.ptr2);
 }
 

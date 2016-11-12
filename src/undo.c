@@ -755,7 +755,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	void *ptr1b, *ptr2b, *ptr3b;
-	AnyObjectType *obj, *obj2;
+	pcb_any_obj_t *obj, *obj2;
 	int type;
 	long int swap_id;
 
@@ -768,8 +768,8 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	if (type == PCB_TYPE_NONE)
 		return pcb_false;
 
-	obj = (AnyObjectType *) ptr2;
-	obj2 = (AnyObjectType *) ptr2b;
+	obj = (pcb_any_obj_t *) ptr2;
+	obj2 = (pcb_any_obj_t *) ptr2b;
 
 	swap_id = obj->ID;
 	obj->ID = obj2->ID;
@@ -780,7 +780,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	if (andDraw)
 		DrawRecoveredObject(Entry->Kind, ptr1, ptr2, ptr3);
 
-	obj = (AnyObjectType *) MoveObjectToBuffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
+	obj = (pcb_any_obj_t *) MoveObjectToBuffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
 	if (Entry->Kind == PCB_TYPE_POLYGON)
 		InitClip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_polygon_t *) obj);
 	return (pcb_true);
@@ -1286,7 +1286,7 @@ void AddObjectToInsertPointUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
-	AnyObjectType *copy;
+	pcb_any_obj_t *copy;
 
 	if (Locked)
 		return;
@@ -1295,7 +1295,7 @@ static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2
 		RemoveList = CreateNewBuffer();
 
 	undo = GetUndoSlot(undo_type, OBJECT_ID(Ptr2), Type);
-	copy = (AnyObjectType *) CopyObjectToBuffer(RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
+	copy = (pcb_any_obj_t *) CopyObjectToBuffer(RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
 	undo->Data.CopyID = copy->ID;
 }
 

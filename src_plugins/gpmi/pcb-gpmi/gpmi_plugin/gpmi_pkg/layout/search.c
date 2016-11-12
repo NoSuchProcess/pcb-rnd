@@ -110,7 +110,7 @@ typedef struct {
 static void select_cb(void *obj_, void *ud)
 {
 	select_t *ctx = ud;
-	AnyObjectTypePtr obj = obj_;
+	pcb_any_obj_t *obj = obj_;
 	if (TEST_FLAG(ctx->flag, obj))
 		search_append(ctx->search, obj);
 }

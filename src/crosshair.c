@@ -726,7 +726,7 @@ static r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 		op.type = PCB_TYPE_LINE;
 		op.obj.line = line;
 		vtop_append(&crosshair->onpoint_objs, op);
-		SET_FLAG(PCB_FLAG_ONPOINT, (AnyObjectType *) line);
+		SET_FLAG(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) line);
 		DrawLine(NULL, line);
 		return R_DIR_FOUND_CONTINUE;
 	}
@@ -756,7 +756,7 @@ static r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 		op.type = PCB_TYPE_ARC;
 		op.obj.arc = arc;
 		vtop_append(&crosshair->onpoint_objs, op);
-		SET_FLAG(PCB_FLAG_ONPOINT, (AnyObjectType *) arc);
+		SET_FLAG(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) arc);
 		DrawArc(NULL, arc);
 		return R_DIR_FOUND_CONTINUE;
 	}
@@ -845,7 +845,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, Coord X, Coord Y)
 		if (onpoint_find(&crosshair->onpoint_objs, op->obj.any) != NULL)
 			continue;
 
-		CLEAR_FLAG(PCB_FLAG_ONPOINT, (AnyObjectType *) op->obj.any);
+		CLEAR_FLAG(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) op->obj.any);
 		DrawLineOrArc(op->type, op->obj.any);
 		redraw = pcb_true;
 	}

@@ -54,7 +54,7 @@ typedef enum pcb_objtype_e {
 
 	/* combinations, groups, masks */
 	PCB_OBJ_CLASS_MASK= 0xF00000,
-	PCB_OBJ_CLASS_OBJ = 0x000000, /* anything with common object fields (AnyObjectType) */
+	PCB_OBJ_CLASS_OBJ = 0x000000, /* anything with common object fields (pcb_any_obj_t) */
 	PCB_OBJ_ANY       = 0xFFFFFF
 } pcb_objtype_t;
 
@@ -77,7 +77,7 @@ struct pcb_obj_s {
 	pcb_objtype_t type;
 	union {
 		void         *any;
-		AnyObjectType *anyobj;
+		pcb_any_obj_t *anyobj;
 		pcb_point_t    *point;
 		pcb_line_t     *line;
 		pcb_text_t     *text;

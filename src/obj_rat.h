@@ -32,7 +32,7 @@
 #include "obj_common.h"
 
 struct pcb_rat_line_s {          /* a rat-line */
-	ANYLINEFIELDS;
+	PCB_ANYLINEFIELDS;
 	pcb_cardinal_t group1, group2; /* the layer group each point is on */
 	gdl_elem_t link;               /* an arc is in a list on a design */
 };

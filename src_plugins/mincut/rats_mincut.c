@@ -56,11 +56,11 @@ typedef struct short_conn_s short_conn_t;
 struct short_conn_s {
 	int gid;											/* id in the graph */
 	int from_type;
-/*	AnyObjectType *from;*/
+/*	pcb_any_obj_t *from;*/
 	int from_id;
 	int to_type;
 	int edges;										/* number of edges */
-	AnyObjectType *to;
+	pcb_any_obj_t *to;
 	pcb_found_conn_type_t type;
 	short_conn_t *next;
 };
@@ -71,7 +71,7 @@ static int short_conns_maxid = 0;
 
 static void proc_short_cb(int current_type, void *current_obj, int from_type, void *from_obj, pcb_found_conn_type_t type)
 {
-	AnyObjectType *curr = current_obj, *from = from_obj;
+	pcb_any_obj_t *curr = current_obj, *from = from_obj;
 	short_conn_t *s;
 
 	s = malloc(sizeof(short_conn_t));

@@ -32,7 +32,7 @@
 #include "obj_common.h"
 
 struct pcb_arc_s {       /* holds information about arcs */
-	ANYOBJECTFIELDS;
+	PCB_ANYOBJECTFIELDS;
 	Coord Thickness, Clearance;
 	Coord Width, Height,					/* length of axis */
 	  X, Y;												/* center coordinates */

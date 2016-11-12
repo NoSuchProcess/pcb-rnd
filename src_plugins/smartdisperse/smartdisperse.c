@@ -102,7 +102,7 @@ static void place(pcb_element_t * element)
 static Coord padDX(pcb_connection_t * conn)
 {
 	pcb_element_t *element = (pcb_element_t *) conn->ptr1;
-	AnyLineObjectType *line = (AnyLineObjectType *) conn->ptr2;
+	pcb_any_line_t *line = (pcb_any_line_t *) conn->ptr2;
 
 	return line->BoundingBox.X1 - (element->BoundingBox.X1 + element->BoundingBox.X2) / 2;
 }

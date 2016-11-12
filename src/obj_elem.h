@@ -38,7 +38,7 @@
 
 
 struct pcb_element_s {
-	ANYOBJECTFIELDS;
+	PCB_ANYOBJECTFIELDS;
 	pcb_text_t Name[MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see NAME_INDEX() below */
 	Coord MarkX, MarkY;               /* position mark */
 	pinlist_t Pin;

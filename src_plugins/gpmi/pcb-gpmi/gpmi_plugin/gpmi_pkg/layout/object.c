@@ -10,12 +10,12 @@
 
 int layout_obj_coord(layout_object_t *obj, layout_object_coord_t coord)
 {
-	AnyObjectType *o;
+	pcb_any_obj_t *o;
 
 	if (obj == NULL)
 		return -1;
 
-	o = (AnyObjectType *)obj->obj.l;
+	o = (pcb_any_obj_t *)obj->obj.l;
 
 	/* bounding box is the same for any type */
 	switch (coord) {

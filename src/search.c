@@ -80,7 +80,7 @@ static r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 {
 	struct ans_info *i = (struct ans_info *) cl;
 	pcb_pin_t *pin = (pcb_pin_t *) box;
-	AnyObjectType *ptr1 = pin->Element ? pin->Element : pin;
+	pcb_any_obj_t *ptr1 = pin->Element ? pin->Element : pin;
 
 	if (TEST_FLAG(i->locked, ptr1))
 		return R_DIR_NOT_FOUND;
@@ -135,7 +135,7 @@ static r_dir_t pad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct ans_info *i = (struct ans_info *) cl;
-	AnyObjectType *ptr1 = pad->Element;
+	pcb_any_obj_t *ptr1 = pad->Element;
 
 	if (TEST_FLAG(i->locked, ptr1))
 		return R_DIR_NOT_FOUND;
@@ -793,7 +793,7 @@ pcb_bool IsPointInPad(Coord X, Coord Y, Coord Radius, pcb_pad_t *Pad)
 	/* Also used from line_callback with line type smaller than pad type;
 	   use the smallest common subset; ->Thickness is still ok. */
 	Coord t2 = (Pad->Thickness + 1) / 2, range;
-	AnyLineObjectType pad = *(AnyLineObjectType *) Pad;
+	pcb_any_line_t pad = *(pcb_any_line_t *) Pad;
 
 
 	/* series of transforms saving range */

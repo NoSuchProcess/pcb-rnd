@@ -113,7 +113,7 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 		*object_count = 1;
 		*object_id_list = (long int *) malloc(sizeof(long int));
 		*object_type_list = (int *) malloc(sizeof(int));
-		**object_id_list = ((AnyObjectType *) thing_ptr3)->ID;
+		**object_id_list = ((pcb_any_obj_t *) thing_ptr3)->ID;
 		**object_type_list = thing_type;
 		return;
 

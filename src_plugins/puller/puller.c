@@ -612,7 +612,7 @@ static void unlink_end(Extra * x, Extra ** e)
 
 #if TRACE1
 
-static void clear_found_cb(AnyObjectType * ptr, Extra * extra, void *userdata)
+static void clear_found_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
 {
 	extra->found = 0;
 }
@@ -916,7 +916,7 @@ static r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static void null_multi_next_ends(AnyObjectType * ptr, Extra * extra, void *userdata)
+static void null_multi_next_ends(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
 {
 	if (extra->start.next == &multi_next)
 		extra->start.next = NULL;
@@ -1044,7 +1044,7 @@ static void propogate_end_pin(Extra * e, End * near, End * far)
 	}
 }
 
-static void propogate_end_step1_cb(AnyObjectType * ptr, Extra * extra, void *userdata)
+static void propogate_end_step1_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
 {
 	if (extra->start.next != NULL && extra->start.next == extra->end.next) {
 		extra->end.next = NULL;
@@ -1058,7 +1058,7 @@ static void propogate_end_step1_cb(AnyObjectType * ptr, Extra * extra, void *use
 		propogate_ends_at(extra, &extra->end, &extra->start);
 }
 
-static void propogate_end_step2_cb(AnyObjectType * ptr, Extra * extra, void *userdata)
+static void propogate_end_step2_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
 {
 	if (extra->start.in_pin) {
 #if TRACE1
@@ -1074,7 +1074,7 @@ static void propogate_end_step2_cb(AnyObjectType * ptr, Extra * extra, void *use
 	}
 }
 
-static void propogate_end_step3_cb(AnyObjectType * ptr, Extra * extra, void *userdata)
+static void propogate_end_step3_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
 {
 	if (extra->start.next)
 		propogate_end_pin(extra, &extra->end, &extra->start);
@@ -2216,7 +2216,7 @@ static void validate_pair(Extra * e, End * end)
 	abort();
 }
 
-static void validate_pair_cb(AnyObjectType * ptr, Extra * extra, void *userdata)
+static void validate_pair_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
 {
 	validate_pair(extra, &extra->start);
 	validate_pair(extra, &extra->end);
@@ -2246,7 +2246,7 @@ static void mark_ends_pending(pcb_line_t * line, Extra * extra, void *userdata)
 }
 
 #if TRACE1
-static void trace_print_extra(AnyObjectType * ptr, Extra * extra, void *userdata)
+static void trace_print_extra(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
 {
 	last_pextra = (Extra *) 1;
 	print_extra(extra, 0);

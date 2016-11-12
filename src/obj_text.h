@@ -32,7 +32,7 @@
 #include "obj_common.h"
 
 struct pcb_text_s {
-	ANYOBJECTFIELDS;
+	PCB_ANYOBJECTFIELDS;
 	int Scale;                    /* text scaling in percent */
 	Coord X, Y;                   /* origin */
 	pcb_uint8_t Direction;

@@ -33,7 +33,7 @@
 #include "polyarea.h"
 
 struct pcb_polygon_s  {           /* holds information about a polygon */
-	ANYOBJECTFIELDS;
+	PCB_ANYOBJECTFIELDS;
 	pcb_cardinal_t PointN;       /* number of points in polygon */
 	pcb_cardinal_t PointMax;     /* max number from malloc() */
 	POLYAREA *Clipped;           /* the clipped region of this polygon */

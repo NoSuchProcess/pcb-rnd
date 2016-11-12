@@ -73,8 +73,8 @@ long int CreateIDGet(void);
 
 /* Any object that uses the "object flags" defined in const.h, or
    exists as an object on the pcb, MUST be defined using this as the
-   first fields, either directly or through ANYLINEFIELDS.  */
-#define ANYOBJECTFIELDS			\
+   first fields, either directly or through PCB_ANYLINEFIELDS.  */
+#define PCB_ANYOBJECTFIELDS			\
 	pcb_box_t		BoundingBox;	\
 	long int	ID;		\
 	pcb_flag_t	Flags; \
@@ -83,8 +83,8 @@ long int CreateIDGet(void);
 	/*  struct pcb_lib_entry_t *net */
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
-#define	ANYLINEFIELDS			\
-	ANYOBJECTFIELDS;		\
+#define	PCB_ANYLINEFIELDS			\
+	PCB_ANYOBJECTFIELDS;		\
 	Coord		Thickness,      \
                         Clearance;      \
 	pcb_point_t	Point1,		\
@@ -93,14 +93,12 @@ long int CreateIDGet(void);
 /* All on-pcb objects (elements, lines, pads, vias, rats, etc) are
    based on this. */
 typedef struct {
-	ANYOBJECTFIELDS;
-} AnyObjectType, *AnyObjectTypePtr;
+	PCB_ANYOBJECTFIELDS;
+} pcb_any_obj_t;
 
 /* Lines, rats, pads, etc.  */
 typedef struct {
-	ANYLINEFIELDS;
-} AnyLineObjectType, *AnyLineObjectTypePtr;
-
-
+	PCB_ANYLINEFIELDS;
+} pcb_any_line_t;
 
 #endif
