@@ -41,15 +41,15 @@
 #include "error.h"
 
 
-plug_import_t *plug_import_chain = NULL;
+pcb_plug_import_t *plug_import_chain = NULL;
 
 typedef struct {
-	plug_import_t *plug;
+	pcb_plug_import_t *plug;
 	int prio;
 } find_t;
 
 /* Find the plugin that offers the highest write prio for the format */
-static plug_import_t *find_importer(unsigned int aspects, FILE *f, const char *filename)
+static pcb_plug_import_t *find_importer(unsigned int aspects, FILE *f, const char *filename)
 {
 	find_t available[32]; /* wish we had more than 32 import plugins... */
 	int n, len = 0, best = 0, bestidx = -1;
@@ -64,7 +64,7 @@ static plug_import_t *find_importer(unsigned int aspects, FILE *f, const char *f
 		} \
 	} while(0)
 
-	HOOK_CALL_ALL(plug_import_t, plug_import_chain, fmt_support_prio, cb_append,   (self, aspects, f, filename));
+	HOOK_CALL_ALL(pcb_plug_import_t, plug_import_chain, fmt_support_prio, cb_append,   (self, aspects, f, filename));
 	if (len == 0)
 		return NULL;
 
@@ -85,7 +85,7 @@ static plug_import_t *find_importer(unsigned int aspects, FILE *f, const char *f
 
 int pcb_import(char *filename, unsigned int aspect)
 {
-	plug_import_t *plug;
+	pcb_plug_import_t *plug;
 	FILE *fp;
 
 	if (!filename) {

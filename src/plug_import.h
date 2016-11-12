@@ -33,26 +33,26 @@
 
 /**************************** API definition *********************************/
 
-typedef enum plug_import_aspect_e { /* bitfield of aspects that can be imported */
+typedef enum pcb_plug_import_aspect_e { /* bitfield of aspects that can be imported */
 	IMPORT_ASPECT_NETLIST = 1
-} plug_import_aspect_t;
+} pcb_plug_import_aspect_t;
 
-typedef struct plug_import_s plug_import_t;
-struct plug_import_s {
-	plug_import_t *next;
+typedef struct pcb_plug_import_s pcb_plug_import_t;
+struct pcb_plug_import_s {
+	pcb_plug_import_t *next;
 	void *plugin_data;
 
 	/* Check if the plugin supports format fmt. Return 0 if not supported or
 	   an integer priority if supported. The higher the prio is the more likely
 	   the plugin gets the next operation on the file. Base prio should be 100
 	   for native formats. Return non-0 only if all aspects are supported. */
-	int (*fmt_support_prio)(plug_import_t *ctx, unsigned int aspects, FILE *f, const char *filename);
+	int (*fmt_support_prio)(pcb_plug_import_t *ctx, unsigned int aspects, FILE *f, const char *filename);
 
 	/* Perform the import; return 0 on success */
-	int (*import)(plug_import_t *ctx, unsigned int aspects, const char *fn);
+	int (*import)(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn);
 };
 
-extern plug_import_t *plug_import_chain;
+extern pcb_plug_import_t *plug_import_chain;
 
 /********** hook wrappers **********/
 int pcb_import(char *filename, unsigned int aspect);

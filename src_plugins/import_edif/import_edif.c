@@ -35,9 +35,9 @@
 #include "plug_io.h"
 
 
-static plug_import_t import_edif;
+static pcb_plug_import_t import_edif;
 
-int edif_support_prio(plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+int edif_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
 {
 	char buf[65];
 	int len;
@@ -63,7 +63,7 @@ int edif_support_prio(plug_import_t *ctx, unsigned int aspects, FILE *fp, const 
 
 
 extern int ReadEdifNetlist(char *filename);
-static int edif_import(plug_import_t *ctx, unsigned int aspects, const char *fn)
+static int edif_import(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn)
 {
 	int ret = ReadEdifNetlist((char *)fn);
 	if (ret == 0) {
@@ -86,7 +86,7 @@ pcb_uninit_t hid_import_edif_init(void)
 	import_edif.fmt_support_prio = edif_support_prio;
 	import_edif.import           = edif_import;
 
-	HOOK_REGISTER(plug_import_t, plug_import_chain, &import_edif);
+	HOOK_REGISTER(pcb_plug_import_t, plug_import_chain, &import_edif);
 
 	return hid_import_edif_uninit;
 }

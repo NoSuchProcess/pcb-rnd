@@ -38,7 +38,7 @@
 #include "compat_nls.h"
 #include "paths.h"
 
-static plug_import_t import_netlist;
+static pcb_plug_import_t import_netlist;
 
 
 #define BLANK(x) ((x) == ' ' || (x) == '\t' || (x) == '\n' \
@@ -158,7 +158,7 @@ static int ReadNetlist(const char *filename)
 	return (0);
 }
 
-int netlist_support_prio(plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+int netlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
 {
 	if (aspects != IMPORT_ASPECT_NETLIST)
 		return 0; /* only pure netlist import is supported */
@@ -168,7 +168,7 @@ int netlist_support_prio(plug_import_t *ctx, unsigned int aspects, FILE *fp, con
 }
 
 
-static int netlist_import(plug_import_t *ctx, unsigned int aspects, const char *fn)
+static int netlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn)
 {
 	return ReadNetlist(fn);
 }
@@ -186,7 +186,7 @@ pcb_uninit_t hid_import_netlist_init(void)
 	import_netlist.fmt_support_prio = netlist_support_prio;
 	import_netlist.import           = netlist_import;
 
-	HOOK_REGISTER(plug_import_t, plug_import_chain, &import_netlist);
+	HOOK_REGISTER(pcb_plug_import_t, plug_import_chain, &import_netlist);
 
 	return hid_import_netlist_uninit;
 }
