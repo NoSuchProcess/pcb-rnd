@@ -722,7 +722,7 @@ static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 				 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 #endif
 	if ((line->Point1.X == info->X && line->Point1.Y == info->Y) || (line->Point2.X == info->X && line->Point2.Y == info->Y)) {
-		OnpointType op;
+		pcb_onpoint_t op;
 		op.type = PCB_TYPE_LINE;
 		op.obj.line = line;
 		vtop_append(&crosshair->onpoint_objs, op);
@@ -752,7 +752,7 @@ static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 	/* printf("p1=%ld;%ld p2=%ld;%ld info=%ld;%ld\n", p1x, p1y, p2x, p2y, info->X, info->Y); */
 
 	if ((close_enough(p1x, info->X) && close_enough(p1y, info->Y)) || (close_enough(p2x, info->X) && close_enough(p2y, info->Y))) {
-		OnpointType op;
+		pcb_onpoint_t op;
 		op.type = PCB_TYPE_ARC;
 		op.obj.arc = arc;
 		vtop_append(&crosshair->onpoint_objs, op);
@@ -798,7 +798,7 @@ static void *onpoint_find(vtop_t *vect, void *obj_ptr)
 	int i;
 
 	for (i = 0; i < vect->used; i++) {
-		OnpointType *op = &(vect->array[i]);
+		pcb_onpoint_t *op = &(vect->array[i]);
 		if (op->obj.any == obj_ptr)
 			return op;
 	}
@@ -839,7 +839,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 
 	/* Undraw the old objects */
 	for (i = 0; i < crosshair->old_onpoint_objs.used; i++) {
-		OnpointType *op = &crosshair->old_onpoint_objs.array[i];
+		pcb_onpoint_t *op = &crosshair->old_onpoint_objs.array[i];
 
 		/* only remove and redraw those which aren't in the new list */
 		if (onpoint_find(&crosshair->onpoint_objs, op->obj.any) != NULL)
@@ -852,7 +852,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 
 	/* draw the new objects */
 	for (i = 0; i < crosshair->onpoint_objs.used; i++) {
-		OnpointType *op = &crosshair->onpoint_objs.array[i];
+		pcb_onpoint_t *op = &crosshair->onpoint_objs.array[i];
 
 		/* only draw those which aren't in the old list */
 		if (onpoint_find(&crosshair->old_onpoint_objs, op->obj.any) != NULL)

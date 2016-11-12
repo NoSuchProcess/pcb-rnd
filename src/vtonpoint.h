@@ -12,15 +12,15 @@ typedef struct onpoint_st {
 		pcb_line_t *line;
 		pcb_arc_t *arc;
 	} obj;
-} OnpointType;
+} pcb_onpoint_t;
 
-/* Elem=OnpointType; init=none */
+/* Elem=pcb_onpoint_t; init=none */
 
 /* all public symbols are wrapped in GVT() - see vt_t(7) */
 #define GVT(x) vtop_ ## x
 
 /* Array elem type - see vt_t(7) */
-#define GVT_ELEM_TYPE OnpointType
+#define GVT_ELEM_TYPE pcb_onpoint_t
 
 /* Type that represents array lengths - see vt_t(7) */
 #define GVT_SIZE_TYPE size_t
