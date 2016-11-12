@@ -617,7 +617,7 @@ static int parse_pin(pcb_data_t *dt, ElementType *el, lht_node_t *obj, Coord dx,
 
 static int parse_pad(ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 {
-	PadType *pad;
+	pcb_pad_t *pad;
 
 	pad = GetPadMemory(el);
 

@@ -41,12 +41,12 @@ struct pad_st {                  /* a SMD pad */
 };
 
 
-PadType *GetPadMemory(ElementType * element);
-void RemoveFreePad(PadType * data);
+pcb_pad_t *GetPadMemory(ElementType * element);
+void RemoveFreePad(pcb_pad_t * data);
 
-PadTypePtr CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags);
-void SetPadBoundingBox(PadTypePtr Pad);
-pcb_bool ChangePaste(PadTypePtr Pad);
+pcb_pad_t *CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags);
+void SetPadBoundingBox(pcb_pad_t *Pad);
+pcb_bool ChangePaste(pcb_pad_t *Pad);
 
 
 /* Rather than move the line bounding box, we set it so the point bounding
@@ -60,7 +60,7 @@ pcb_bool ChangePaste(PadTypePtr Pad);
 	}
 
 #define PAD_LOOP(element) do {                                      \
-	PadType *pad;                                                     \
+	pcb_pad_t *pad;                                                     \
 	gdl_iterator_t __it__;                                            \
 	padlist_foreach(&(element)->Pad, &__it__, pad) {
 

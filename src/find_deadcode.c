@@ -53,7 +53,7 @@ static int LOT_Arccallback(const pcb_box_t * b, void *cl)
 
 static int LOT_Padcallback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)

@@ -324,7 +324,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 	case PCB_TYPE_PAD:
 		{
 			Coord len;
-			PadTypePtr Pad;
+			pcb_pad_t *Pad;
 			ElementTypePtr element;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
@@ -332,7 +332,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 				return 0;
 			}
 #endif
-			Pad = (PadTypePtr) ptr2;
+			Pad = (pcb_pad_t *) ptr2;
 			element = (ElementTypePtr) ptr1;
 
 			PAD_LOOP(element);
@@ -772,8 +772,8 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 				net_found = 1;
 				break;
 			case PCB_TYPE_PAD:
-				x = ((PadType *) (conn.ptr2))->Point1.X;
-				y = ((PadType *) (conn.ptr2))->Point1.Y;
+				x = ((pcb_pad_t *) (conn.ptr2))->Point1.X;
+				y = ((pcb_pad_t *) (conn.ptr2))->Point1.Y;
 				net_found = 1;
 				break;
 			}

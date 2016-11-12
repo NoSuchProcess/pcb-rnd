@@ -455,11 +455,11 @@ static pcb_bool UndoChangeMaskSize(UndoListTypePtr Entry)
 	/* lookup entry by ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type & (PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_PAD)) {
-		swap = (type == PCB_TYPE_PAD ? ((PadTypePtr) ptr2)->Mask : ((PinTypePtr) ptr2)->Mask);
+		swap = (type == PCB_TYPE_PAD ? ((pcb_pad_t *) ptr2)->Mask : ((PinTypePtr) ptr2)->Mask);
 		if (andDraw)
 			EraseObject(type, ptr1, ptr2);
 		if (type == PCB_TYPE_PAD)
-			((PadTypePtr) ptr2)->Mask = Entry->Data.Size;
+			((pcb_pad_t *) ptr2)->Mask = Entry->Data.Size;
 		else
 			((PinTypePtr) ptr2)->Mask = Entry->Data.Size;
 		Entry->Data.Size = swap;
@@ -1416,7 +1416,7 @@ void AddObjectToSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 			undo->Data.Size = ((TextTypePtr) ptr2)->Scale;
 			break;
 		case PCB_TYPE_PAD:
-			undo->Data.Size = ((PadTypePtr) ptr2)->Thickness;
+			undo->Data.Size = ((pcb_pad_t *) ptr2)->Thickness;
 			break;
 		case PCB_TYPE_ARC:
 		case PCB_TYPE_ELEMENT_ARC:
@@ -1444,7 +1444,7 @@ void AddObjectToClearSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 			undo->Data.Size = ((pcb_line_t *) ptr2)->Clearance;
 			break;
 		case PCB_TYPE_PAD:
-			undo->Data.Size = ((PadTypePtr) ptr2)->Clearance;
+			undo->Data.Size = ((pcb_pad_t *) ptr2)->Clearance;
 			break;
 		case PCB_TYPE_ARC:
 			undo->Data.Size = ((pcb_arc_t *) ptr2)->Clearance;
@@ -1468,7 +1468,7 @@ void AddObjectToMaskSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 			undo->Data.Size = ((PinTypePtr) ptr2)->Mask;
 			break;
 		case PCB_TYPE_PAD:
-			undo->Data.Size = ((PadTypePtr) ptr2)->Mask;
+			undo->Data.Size = ((pcb_pad_t *) ptr2)->Mask;
 			break;
 		}
 	}

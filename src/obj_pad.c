@@ -47,17 +47,17 @@
 
 /*** allocation ***/
 /* get next slot for a pad, allocates memory if necessary */
-PadType *GetPadMemory(ElementType * element)
+pcb_pad_t *GetPadMemory(ElementType * element)
 {
-	PadType *new_obj;
+	pcb_pad_t *new_obj;
 
-	new_obj = calloc(sizeof(PadType), 1);
+	new_obj = calloc(sizeof(pcb_pad_t), 1);
 	padlist_append(&element->Pad, new_obj);
 
 	return new_obj;
 }
 
-void RemoveFreePad(PadType * data)
+void RemoveFreePad(pcb_pad_t * data)
 {
 	padlist_remove(data);
 	free(data);
@@ -66,9 +66,9 @@ void RemoveFreePad(PadType * data)
 
 /*** utility ***/
 /* creates a new pad in an element */
-PadTypePtr CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags)
+pcb_pad_t *CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, Coord Mask, char *Name, char *Number, FlagType Flags)
 {
-	PadTypePtr pad = GetPadMemory(Element);
+	pcb_pad_t *pad = GetPadMemory(Element);
 
 	/* copy values */
 	if (X1 > X2 || (X1 == X2 && Y1 > Y2)) {
@@ -96,7 +96,7 @@ PadTypePtr CreateNewPad(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Co
 }
 
 /* sets the bounding box of a pad */
-void SetPadBoundingBox(PadTypePtr Pad)
+void SetPadBoundingBox(pcb_pad_t *Pad)
 {
 	Coord width;
 	Coord deltax;
@@ -140,7 +140,7 @@ void SetPadBoundingBox(PadTypePtr Pad)
 }
 
 /* changes the nopaste flag of a pad */
-pcb_bool ChangePaste(PadTypePtr Pad)
+pcb_bool ChangePaste(pcb_pad_t *Pad)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (pcb_false);
@@ -155,7 +155,7 @@ pcb_bool ChangePaste(PadTypePtr Pad)
 /*** ops ***/
 
 /* changes the size of a pad */
-void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
+void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Thickness + ctx->chgsize.delta;
 
@@ -179,7 +179,7 @@ void *ChangePadSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 }
 
 /* changes the clearance size of a pad */
-void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
+void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Clearance + ctx->chgsize.delta;
 
@@ -207,7 +207,7 @@ void *ChangePadClearSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pa
 }
 
 /* changes the name of a pad */
-void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
+void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 {
 	char *old = Pad->Name;
 
@@ -223,7 +223,7 @@ void *ChangePadName(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 }
 
 /* changes the number of a pad */
-void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
+void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 {
 	char *old = Pad->Number;
 
@@ -239,7 +239,7 @@ void *ChangePadNum(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 }
 
 /* changes the square flag of a pad */
-void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
+void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
 		return (NULL);
@@ -255,7 +255,7 @@ void *ChangePadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 }
 
 /* sets the square flag of a pad */
-void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
+void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 {
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || TEST_FLAG(PCB_FLAG_SQUARE, Pad))
@@ -266,7 +266,7 @@ void *SetPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 
 
 /* clears the square flag of a pad */
-void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
+void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 {
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || !TEST_FLAG(PCB_FLAG_SQUARE, Pad))
@@ -276,7 +276,7 @@ void *ClrPadSquare(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
 }
 
 /* changes the mask size of a pad */
-void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad)
+void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, pcb_pad_t *Pad)
 {
 	Coord value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Mask + ctx->chgsize.delta;
 
@@ -296,7 +296,7 @@ void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad
 }
 
 /*** draw ***/
-static void draw_pad_name(PadType * pad)
+static void draw_pad_name(pcb_pad_t * pad)
 {
 	pcb_box_t box;
 	pcb_bool vert;
@@ -343,7 +343,7 @@ static void draw_pad_name(PadType * pad)
 	DrawTextLowLevel(&text, 0);
 }
 
-static void _draw_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
+static void _draw_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	if (clear && !mask && pad->Clearance <= 0)
 		return;
@@ -354,7 +354,7 @@ static void _draw_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
 		gui->fill_pcb_pad(gc, pad, clear, mask);
 }
 
-void draw_pad(PadType * pad)
+void draw_pad(pcb_pad_t * pad)
 {
 	const char *color = NULL;
 	char buf[sizeof("#XXXXXX")];
@@ -391,7 +391,7 @@ void draw_pad(PadType * pad)
 
 r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;
 
 	if (ON_SIDE(pad, *side))
@@ -401,7 +401,7 @@ r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
 
 r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;
 	if (ON_SIDE(pad, *side) && pad->Mask)
 		_draw_pad(Output.pmGC, pad, pcb_true, pcb_true);
@@ -424,7 +424,7 @@ void DrawPaste(int side, const pcb_box_t * drawn_area)
 	ENDALL_LOOP;
 }
 
-static void GatherPadName(PadTypePtr Pad)
+static void GatherPadName(pcb_pad_t *Pad)
 {
 	pcb_box_t box;
 	pcb_bool vert;
@@ -453,7 +453,7 @@ static void GatherPadName(PadTypePtr Pad)
 	return;
 }
 
-void ErasePad(PadTypePtr Pad)
+void ErasePad(pcb_pad_t *Pad)
 {
 	pcb_draw_invalidate(Pad);
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
@@ -461,19 +461,19 @@ void ErasePad(PadTypePtr Pad)
 	EraseFlags(&Pad->Flags);
 }
 
-void ErasePadName(PadTypePtr Pad)
+void ErasePadName(pcb_pad_t *Pad)
 {
 	GatherPadName(Pad);
 }
 
-void DrawPad(PadTypePtr Pad)
+void DrawPad(pcb_pad_t *Pad)
 {
 	pcb_draw_invalidate(Pad);
 	if (pcb_draw_doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
 		DrawPadName(Pad);
 }
 
-void DrawPadName(PadTypePtr Pad)
+void DrawPadName(pcb_pad_t *Pad)
 {
 	GatherPadName(Pad);
 }

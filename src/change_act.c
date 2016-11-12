@@ -314,7 +314,7 @@ static int ActionChangePaste(int argc, const char **argv, Coord x, Coord y)
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && ChangePaste((PadTypePtr) ptr3))
+				if ((type = SearchScreen(x, y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && ChangePaste((pcb_pad_t *) ptr3))
 					IncrementUndoSerialNumber();
 				break;
 			}

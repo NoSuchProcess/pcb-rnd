@@ -341,10 +341,10 @@ pcb_bool LineLineIntersect(pcb_line_t *Line1, pcb_line_t *Line2)
 	 *  cases where the "real" lines don't intersect but the
 	 *  thick lines touch, and ensures that the dx/dy business
 	 *  below does not cause a divide-by-zero. */
-	if (IsPointInPad(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (PadTypePtr) Line1)
-			|| IsPointInPad(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (PadTypePtr) Line1)
-			|| IsPointInPad(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (PadTypePtr) Line2)
-			|| IsPointInPad(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (PadTypePtr) Line2))
+	if (IsPointInPad(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
+			|| IsPointInPad(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
+			|| IsPointInPad(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2)
+			|| IsPointInPad(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2))
 		return pcb_true;
 
 	/* setup some constants */
@@ -456,9 +456,9 @@ pcb_bool LineArcIntersect(pcb_line_t *Line, pcb_arc_t *Arc)
 		return (pcb_true);
 	/* check arc end points */
 	box = GetArcEnds(Arc);
-	if (IsPointInPad(box->X1, box->Y1, Arc->Thickness * 0.5 + Bloat, (PadTypePtr) Line))
+	if (IsPointInPad(box->X1, box->Y1, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
 		return pcb_true;
-	if (IsPointInPad(box->X2, box->Y2, Arc->Thickness * 0.5 + Bloat, (PadTypePtr) Line))
+	if (IsPointInPad(box->X2, box->Y2, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
 		return pcb_true;
 	return pcb_false;
 }
@@ -535,7 +535,7 @@ pcb_bool IsLineInPolygon(pcb_line_t *Line, pcb_polygon_t *Polygon)
  *
  * The polygon is assumed to already have been proven non-clearing
  */
-pcb_bool IsPadInPolygon(PadTypePtr pad, pcb_polygon_t *polygon)
+pcb_bool IsPadInPolygon(pcb_pad_t *pad, pcb_polygon_t *polygon)
 {
 	return IsLineInPolygon((pcb_line_t *) pad, polygon);
 }
@@ -599,12 +599,12 @@ pcb_bool IsPolygonInPolygon(pcb_polygon_t *P1, pcb_polygon_t *P2)
  * some of the 'pad' routines are the same as for lines because the 'pad'
  * struct starts with a line struct. See global.h for details
  */
-pcb_bool LinePadIntersect(pcb_line_t *Line, PadTypePtr Pad)
+pcb_bool LinePadIntersect(pcb_line_t *Line, pcb_pad_t *Pad)
 {
 	return LineLineIntersect((Line), (pcb_line_t *) Pad);
 }
 
-pcb_bool ArcPadIntersect(pcb_arc_t *Arc, PadTypePtr Pad)
+pcb_bool ArcPadIntersect(pcb_arc_t *Arc, pcb_pad_t *Pad)
 {
 	return LineArcIntersect((pcb_line_t *) (Pad), (Arc));
 }
@@ -618,7 +618,7 @@ pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
 	return pcb_true;
 }
 
-static pcb_bool PadPadIntersect(PadTypePtr p1, PadTypePtr p2)
+static pcb_bool PadPadIntersect(pcb_pad_t *p1, pcb_pad_t *p2)
 {
 	return LinePadIntersect((pcb_line_t *) p1, p2);
 }
@@ -694,5 +694,5 @@ pcb_bool PinLineIntersect(PinTypePtr PV, pcb_line_t *Line)
 
 
 	/* the original round pin version */
-	return IsPointInPad(PV->X, PV->Y, MAX(PIN_SIZE(PV) / 2.0 + Bloat, 0.0), (PadTypePtr) Line);
+	return IsPointInPad(PV->X, PV->Y, MAX(PIN_SIZE(PV) / 2.0 + Bloat, 0.0), (pcb_pad_t *) Line);
 }

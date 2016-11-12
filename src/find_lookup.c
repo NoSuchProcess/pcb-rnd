@@ -64,7 +64,7 @@ static pcb_bool ADD_PV_TO_LIST(PinTypePtr Pin, int from_type, void *from_ptr, fo
 	return pcb_false;
 }
 
-static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, PadTypePtr Pad, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, pcb_pad_t *Pad, int from_type, void *from_ptr, found_conn_type_t type)
 {
 /*fprintf(stderr, "ADD_PAD_TO_LIST cardinal %d %p %d\n", L, Pad, from_type);*/
 	if (User)
@@ -217,7 +217,7 @@ void InitComponentLookup(void)
 /*fprintf(stderr, "PadList alloc %d: %d\n", i, NumberOfPads[i]);*/
 
 		/* allocate memory for working list */
-		PadList[i].Data = (void **) calloc(NumberOfPads[i], sizeof(PadTypePtr));
+		PadList[i].Data = (void **) calloc(NumberOfPads[i], sizeof(pcb_pad_t *));
 
 		/* clear some struct members */
 		PadList[i].Location = 0;
@@ -318,7 +318,7 @@ static r_dir_t LOCtoPVarc_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPVpad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pad) && IS_PV_ON_PAD(&i->pv, pad) &&
@@ -601,7 +601,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 struct lo_info {
 	pcb_cardinal_t layer;
 	pcb_line_t line;
-	PadType pad;
+	pcb_pad_t pad;
 	pcb_arc_t arc;
 	pcb_polygon_t polygon;
 	pcb_rat_t rat;
@@ -853,7 +853,7 @@ static r_dir_t LOCtoArcArc_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoArcPad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
@@ -965,7 +965,7 @@ static r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoLinePad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
@@ -1075,7 +1075,7 @@ static r_dir_t PolygonToRat_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pad) && i->layer ==
@@ -1200,7 +1200,7 @@ static r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPadPad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
@@ -1213,7 +1213,7 @@ static r_dir_t LOCtoPadPad_callback(const pcb_box_t * b, void *cl)
  * searches all LOs that are connected to the given pad on the given
  * layergroup. All found connections are added to the list
  */
-static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, pcb_cardinal_t LayerGroup)
+static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGroup)
 {
 	pcb_cardinal_t entry;
 	struct lo_info info;
@@ -1225,7 +1225,7 @@ static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, pcb_cardinal_t LayerGro
 	ic = GET_INTCONN(Pad);
 	if ((Pad->Element != NULL) && (ic > 0)) {
 		ElementType *e = Pad->Element;
-		PadTypePtr orig_pad = Pad;
+		pcb_pad_t *orig_pad = Pad;
 		int tlayer = -1;
 
 /*fprintf(stderr, "lg===\n");*/
@@ -1337,7 +1337,7 @@ static r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPolyPad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)

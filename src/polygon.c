@@ -624,7 +624,7 @@ POLYAREA *LinePoly(pcb_line_t * L, Coord thick)
 }
 
 /* make a rounded-corner rectangle */
-POLYAREA *SquarePadPoly(PadType * pad, Coord clear)
+POLYAREA *SquarePadPoly(pcb_pad_t * pad, Coord clear)
 {
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
@@ -632,8 +632,8 @@ POLYAREA *SquarePadPoly(PadType * pad, Coord clear)
 	double d;
 	double tx, ty;
 	double cx, cy;
-	PadType _t = *pad, *t = &_t;
-	PadType _c = *pad, *c = &_c;
+	pcb_pad_t _t = *pad, *t = &_t;
+	pcb_pad_t _c = *pad, *c = &_c;
 	int halfthick = (pad->Thickness + 1) / 2;
 	int halfclear = (clear + 1) / 2;
 
@@ -830,7 +830,7 @@ static int SubtractText(TextType * text, pcb_polygon_t * p)
 	return Subtract(np, p, pcb_true);
 }
 
-static int SubtractPad(PadType * pad, pcb_polygon_t * p)
+static int SubtractPad(pcb_pad_t * pad, pcb_polygon_t * p)
 {
 	POLYAREA *np = NULL;
 
@@ -925,7 +925,7 @@ static r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	pcb_polygon_t *polygon;
 
@@ -1154,7 +1154,7 @@ static int UnsubtractText(TextType * text, pcb_layer_t * l, pcb_polygon_t * p)
 	return 1;
 }
 
-static int UnsubtractPad(PadType * pad, pcb_layer_t * l, pcb_polygon_t * p)
+static int UnsubtractPad(pcb_pad_t * pad, pcb_layer_t * l, pcb_polygon_t * p)
 {
 	POLYAREA *np;
 
@@ -1412,7 +1412,7 @@ static r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PAD:
-		SubtractPad((PadTypePtr) ptr2, Polygon);
+		SubtractPad((pcb_pad_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_TEXT:
@@ -1437,7 +1437,7 @@ static r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Pol
 		UnsubtractArc((pcb_arc_t *) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PAD:
-		UnsubtractPad((PadTypePtr) ptr2, Layer, Polygon);
+		UnsubtractPad((pcb_pad_t *) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_TEXT:
 		UnsubtractText((TextTypePtr) ptr2, Layer, Polygon);
@@ -1510,7 +1510,7 @@ PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		break;
 	case PCB_TYPE_PAD:
 		{
-			pcb_cardinal_t group = GetLayerGroupNumberByNumber(TEST_FLAG(PCB_FLAG_ONSOLDER, (PadType *) ptr2) ?
+			pcb_cardinal_t group = GetLayerGroupNumberByNumber(TEST_FLAG(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
 																									 solder_silk_layer : component_silk_layer);
 			GROUP_LOOP(Data, group);
 			{

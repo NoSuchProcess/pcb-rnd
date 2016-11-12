@@ -294,7 +294,7 @@ static lht_node_t *build_pin(PinType *pin, int is_via, Coord dx, Coord dy)
 	return obj;
 }
 
-static lht_node_t *build_pad(PadType *pad, Coord dx, Coord dy)
+static lht_node_t *build_pad(pcb_pad_t *pad, Coord dx, Coord dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -381,7 +381,7 @@ static lht_node_t *build_element(ElementType *elem)
 	pcb_line_t *li;
 	pcb_arc_t *ar;
 	PinType *pi;
-	PadType *pa;
+	pcb_pad_t *pa;
 	lht_node_t *obj, *lst;
 
 	sprintf(buff, "element.%ld", elem->ID);

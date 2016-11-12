@@ -109,7 +109,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connect
 {
 	ElementTypePtr element;
 	gdl_iterator_t it;
-	PadType *pad;
+	pcb_pad_t *pad;
 	PinType *pin;
 
 	if ((element = SearchElementByName(PCB->Data, ElementName)) == NULL)
@@ -237,7 +237,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
 										NAMEONPCB_NAME((ElementTypePtr) LastPoint.ptr1),
 										(LastPoint.type ==
-										 PCB_TYPE_PIN) ? ((PinTypePtr) LastPoint.ptr2)->Number : ((PadTypePtr) LastPoint.ptr2)->Number);
+										 PCB_TYPE_PIN) ? ((PinTypePtr) LastPoint.ptr2)->Number : ((pcb_pad_t *) LastPoint.ptr2)->Number);
 					else {
 						connection = GetConnectionMemory(net);
 						*connection = LastPoint;
@@ -248,7 +248,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 						if (LastPoint.type == PCB_TYPE_PIN)
 							((PinTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
 						else
-							((PadTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
+							((pcb_pad_t *) LastPoint.ptr2)->Spare = (void *) menu;
 					}
 				}
 				else
@@ -264,7 +264,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 					if (LastPoint.type == PCB_TYPE_PIN)
 						((PinTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
 					else
-						((PadTypePtr) LastPoint.ptr2)->Spare = (void *) menu;
+						((pcb_pad_t *) LastPoint.ptr2)->Spare = (void *) menu;
 				}
 			}
 			END_LOOP;
@@ -834,7 +834,7 @@ pcb_rat_t *AddNet(void)
 	}
 
 	/* will work for pins to since the FLAG is common */
-	group1 = (TEST_FLAG(PCB_FLAG_ONSOLDER, (PadTypePtr) ptr2) ?
+	group1 = (TEST_FLAG(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
 	strcpy(name1, ConnectionName(found, ptr1, ptr2));
 	found = SearchObjectByLocation(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
@@ -847,7 +847,7 @@ pcb_rat_t *AddNet(void)
 		Message(PCB_MSG_DEFAULT, _("You must name the ending element first\n"));
 		return (NULL);
 	}
-	group2 = (TEST_FLAG(PCB_FLAG_ONSOLDER, (PadTypePtr) ptr2) ?
+	group2 = (TEST_FLAG(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
 	name2 = ConnectionName(found, ptr1, ptr2);
 
@@ -914,7 +914,7 @@ char *ConnectionName(int type, void *ptr1, void *ptr2)
 		num = ((PinTypePtr) ptr2)->Number;
 		break;
 	case PCB_TYPE_PAD:
-		num = ((PadTypePtr) ptr2)->Number;
+		num = ((pcb_pad_t *) ptr2)->Number;
 		break;
 	default:
 		return (NULL);

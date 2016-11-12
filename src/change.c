@@ -1216,10 +1216,10 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 
 	case PCB_TYPE_PAD:
 		if (pinnum)
-			sprintf(msg, _("%s Pad Number:"), EMPTY(((PadTypePtr) Ptr2)->Number));
+			sprintf(msg, _("%s Pad Number:"), EMPTY(((pcb_pad_t *) Ptr2)->Number));
 		else
-			sprintf(msg, _("%s Pad Name:"), EMPTY(((PadTypePtr) Ptr2)->Number));
-		name = gui->prompt_for(msg, EMPTY(((PadTypePtr) Ptr2)->Name));
+			sprintf(msg, _("%s Pad Name:"), EMPTY(((pcb_pad_t *) Ptr2)->Number));
+		name = gui->prompt_for(msg, EMPTY(((pcb_pad_t *) Ptr2)->Name));
 		break;
 
 	case PCB_TYPE_TEXT:

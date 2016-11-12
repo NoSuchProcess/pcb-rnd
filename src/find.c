@@ -95,7 +95,7 @@
 	}
 
 #define	PADLIST_ENTRY(L,I)	\
-	(((PadTypePtr *)PadList[(L)].Data)[(I)])
+	(((pcb_pad_t **)PadList[(L)].Data)[(I)])
 
 #define	LINELIST_ENTRY(L,I)	\
 	(((pcb_line_t **)LineList[(L)].Data)[(I)])
@@ -156,7 +156,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToPVList(void);
 static pcb_bool LookupLOConnectionsToLine(pcb_line_t *, pcb_cardinal_t, pcb_bool);
-static pcb_bool LookupLOConnectionsToPad(PadTypePtr, pcb_cardinal_t);
+static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *, pcb_cardinal_t);

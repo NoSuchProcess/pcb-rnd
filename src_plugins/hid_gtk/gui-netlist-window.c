@@ -276,7 +276,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 			}
 		case PCB_TYPE_PAD:
 			{
-				PadTypePtr pad = (PadTypePtr) conn.ptr2;
+				pcb_pad_t *pad = (pcb_pad_t *) conn.ptr2;
 				x = pad->Point1.X + (pad->Point2.X - pad->Point1.X) / 2;
 				y = pad->Point1.Y + (pad->Point2.Y - pad->Point2.Y) / 2;
 				gui->set_crosshair(x, y, 0);

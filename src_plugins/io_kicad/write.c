@@ -818,7 +818,7 @@ int io_kicad_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
 		PinType *pin;
-		PadType *pad;
+		pcb_pad_t *pad;
 
 		elementlist_dedup_skip(ededup, element); /* skip duplicate elements */
 
@@ -1061,7 +1061,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
 		PinType *pin;
-		PadType *pad;
+		pcb_pad_t *pad;
 
 		/* elementlist_dedup_skip(ededup, element);  */
 		/* let's not skip duplicate elements for layout export*/

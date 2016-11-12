@@ -87,7 +87,7 @@ typedef struct corner_s {
 	int x, y;
 	int net;
 	PinType *via;
-	PadType *pad;
+	pcb_pad_t *pad;
 	PinType *pin;
 	int miter;
 	int n_lines;
@@ -2402,7 +2402,7 @@ static void pinsnap()
 	}
 }
 
-static int pad_orient(PadType * p)
+static int pad_orient(pcb_pad_t * p)
 {
 	if (p->Point1.X == p->Point2.X)
 		return O_VERT;

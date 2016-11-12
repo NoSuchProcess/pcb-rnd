@@ -211,7 +211,7 @@ static r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t drcPad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) == i->solder && !TEST_FLAG(PCB_FLAG_FOUND, pad) && LinePadIntersect(i->line, pad))

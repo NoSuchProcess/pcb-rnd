@@ -53,7 +53,7 @@ unsigned int pcb_pin_hash(const ElementType *e, const PinType *p)
 		h_str(p->Name) ^ h_str(p->Number);
 }
 
-int pcb_pad_eq(const ElementType *e1, const PadType *p1, const ElementType *e2, const PadType *p2)
+int pcb_pad_eq(const ElementType *e1, const pcb_pad_t *p1, const ElementType *e2, const pcb_pad_t *p2)
 {
 	if (neq(p1, p2, Thickness) || neq(p1, p2, Clearance)) return 0;
 	if (neqox(e1, p1, e2, p2, Point1.X) || neqoy(e1, p1, e2, p2, Point1.Y)) return 0;
@@ -64,7 +64,7 @@ int pcb_pad_eq(const ElementType *e1, const PadType *p1, const ElementType *e2, 
 	return 1;
 }
 
-unsigned int pcb_pad_hash(const ElementType *e, const PadType *p)
+unsigned int pcb_pad_hash(const ElementType *e, const pcb_pad_t *p)
 {
 	return
 		h_coord(p->Thickness) ^ h_coord(p->Clearance) ^
@@ -129,7 +129,7 @@ unsigned int pcb_element_hash(const ElementType *e)
 	}
 
 	{
-		PadType *p;
+		pcb_pad_t *p;
 		padlist_foreach(&e->Pad, &it, p) {
 			val ^= pcb_pad_hash(e, p);
 		}
@@ -171,7 +171,7 @@ int pcb_element_eq(const ElementType *e1, const ElementType *e2)
 	}
 
 	{
-		PadType *p1, *p2;
+		pcb_pad_t *p1, *p2;
 		p1 = padlist_first((padlist_t *)&e1->Pad);
 		p2 = padlist_first((padlist_t *)&e2->Pad);
 		for(;;) {

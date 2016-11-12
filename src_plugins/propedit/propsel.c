@@ -155,7 +155,7 @@ static void map_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PinTy
 	map_attr(ctx, &pin->Attributes);
 }
 
-static void map_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PadType *pad)
+static void map_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pad_t *pad)
 {
 	map_chk_skip(ctx, pad);
 	map_add_prop(ctx, "p/pad/mask",      Coord, pad->Mask);
@@ -377,7 +377,7 @@ static void set_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PinTy
 	    ChangeObject2ndSize(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute, pcb_false)) DONE;
 }
 
-static void set_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PadType *pad)
+static void set_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pad_t *pad)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 6;
@@ -534,7 +534,7 @@ static void del_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PinTy
 	del_attr(ctx, &pin->Attributes);
 }
 
-static void del_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PadType *pad)
+static void del_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pad_t *pad)
 {
 	map_chk_skip(ctx, pad);
 	del_attr(ctx, &pad->Attributes);

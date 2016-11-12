@@ -42,7 +42,7 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void CheckPadForRubberbandConnection(PadTypePtr);
+static void CheckPadForRubberbandConnection(pcb_pad_t *);
 static void CheckPinForRubberbandConnection(PinTypePtr);
 static void CheckLinePointForRubberbandConnection(pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
 static void CheckPolygonForRubberbandConnection(pcb_layer_t *, pcb_polygon_t *);
@@ -175,7 +175,7 @@ static r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
  * passed pad. If one of the endpoints of the line lays inside the pad,
  * the line is added to the 'rubberband' list
  */
-static void CheckPadForRubberbandConnection(PadTypePtr Pad)
+static void CheckPadForRubberbandConnection(pcb_pad_t *Pad)
 {
 	Coord half = Pad->Thickness / 2;
 	pcb_cardinal_t i, group;
@@ -206,7 +206,7 @@ struct rinfo {
 	int type;
 	pcb_cardinal_t group;
 	PinTypePtr pin;
-	PadTypePtr pad;
+	pcb_pad_t *pad;
 	pcb_point_t *point;
 };
 
@@ -252,7 +252,7 @@ static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static void CheckPadForRat(PadTypePtr Pad)
+static void CheckPadForRat(pcb_pad_t *Pad)
 {
 	struct rinfo info;
 	pcb_cardinal_t i;

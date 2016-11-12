@@ -188,8 +188,8 @@ pcb_bool SelectObject(void)
 
 	case PCB_TYPE_PAD:
 		AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, ptr2, ptr2);
-		TOGGLE_FLAG(PCB_FLAG_SELECTED, (PadTypePtr) ptr2);
-		DrawPad((PadTypePtr) ptr2);
+		TOGGLE_FLAG(PCB_FLAG_SELECTED, (pcb_pad_t *) ptr2);
+		DrawPad((pcb_pad_t *) ptr2);
 		break;
 
 	case PCB_TYPE_ELEMENT_NAME:
@@ -534,7 +534,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_PAD:
 		if (F->Pad)
-			return (F->Pad(ctx, (ElementTypePtr) Ptr1, (PadTypePtr) Ptr2));
+			return (F->Pad(ctx, (ElementTypePtr) Ptr1, (pcb_pad_t *) Ptr2));
 		break;
 
 	case PCB_TYPE_ELEMENT_NAME:

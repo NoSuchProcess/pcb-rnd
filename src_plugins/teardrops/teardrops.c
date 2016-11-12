@@ -37,7 +37,7 @@
 /* #define MAX_DISTANCE 1000000 */
 
 static PinType *pin;
-static PadType *pad;
+static pcb_pad_t *pad;
 static int layer;
 static int px, py;
 static Coord thickness;
@@ -245,7 +245,7 @@ static void check_via(PinType * _pin)
 /*!
  * \brief Draw teardrops for pads.
  */
-static void check_pad(PadType * _pad)
+static void check_pad(pcb_pad_t * _pad)
 {
 	pad = _pad;
 

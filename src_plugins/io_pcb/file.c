@@ -377,7 +377,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	elementlist_foreach(&Data->Element, &eit, element) {
 		gdl_iterator_t it;
 		PinType *pin;
-		PadType *pad;
+		pcb_pad_t *pad;
 
 		/* only non empty elements */
 		if (!linelist_length(&element->Line) && !pinlist_length(&element->Pin) && !arclist_length(&element->Arc) && !padlist_length(&element->Pad))

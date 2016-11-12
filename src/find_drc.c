@@ -161,7 +161,7 @@ static void LocateError(Coord * x, Coord * y)
 		}
 	case PCB_TYPE_PAD:
 		{
-			PadTypePtr pad = (PadTypePtr) thing_ptr3;
+			pcb_pad_t *pad = (pcb_pad_t *) thing_ptr3;
 			*x = (pad->Point1.X + pad->Point2.X) / 2;
 			*y = (pad->Point1.Y + pad->Point2.Y) / 2;
 			break;
@@ -235,7 +235,7 @@ static r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygon_t 
 	pcb_line_t *line = (pcb_line_t *) ptr2;
 	pcb_arc_t *arc = (pcb_arc_t *) ptr2;
 	PinTypePtr pin = (PinTypePtr) ptr2;
-	PadTypePtr pad = (PadTypePtr) ptr2;
+	pcb_pad_t *pad = (pcb_pad_t *) ptr2;
 
 	thing_type = type;
 	thing_ptr1 = ptr1;

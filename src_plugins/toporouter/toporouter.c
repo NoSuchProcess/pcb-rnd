@@ -306,7 +306,7 @@ gint toporouter_draw_vertex(gpointer item, gpointer data)
 	drawing_context_t *dc = (drawing_context_t *) data;
 	toporouter_vertex_t *tv;
 	PinType *pin;
-	PadType *pad;
+	pcb_pad_t *pad;
 	gdouble blue;
 
 	if (TOPOROUTER_IS_VERTEX((GtsObject *) item)) {
@@ -335,7 +335,7 @@ gint toporouter_draw_vertex(gpointer item, gpointer data)
 		if (!dc->mode) {
 			if (tv->bbox) {
 				pin = (PinType *) tv->bbox->data;
-				pad = (PadType *) tv->bbox->data;
+				pad = (pcb_pad_t *) tv->bbox->data;
 
 				blue = 0.0f;
 				switch (tv->bbox->type) {
@@ -605,7 +605,7 @@ gdouble vertex_net_thickness(toporouter_vertex_t * v)
 			return ((PinType *) box->data)->Thickness;
 		}
 		else if (box->type == PAD) {
-			PadType *pad = (PadType *) box->data;
+			pcb_pad_t *pad = (pcb_pad_t *) box->data;
 			if (pad->Point1.X == pad->Point2.X && pad->Point1.Y == pad->Point2.Y && !TEST_FLAG(PCB_FLAG_SQUARE, pad)) {
 				return pad->Thickness;
 			}
@@ -646,7 +646,7 @@ gdouble vertex_net_clearance(toporouter_vertex_t * v)
 		/*  if(box->type == PIN || box->type == VIA) 
 		   return ((PinType *)box->data)->Clearance;
 		   else if(box->type == PAD)
-		   return ((PadType *)box->data)->Clearance; */
+		   return ((pcb_pad_t *)box->data)->Clearance; */
 
 	}
 
@@ -1749,7 +1749,7 @@ GtsPoint *midpoint(GtsPoint * a, GtsPoint * b)
 	return gts_point_new(gts_point_class(), (a->x + b->x) / 2., (a->y + b->y) / 2., 0.);
 }
 
-static inline gdouble pad_rad(PadType * pad)
+static inline gdouble pad_rad(pcb_pad_t * pad)
 {
 	return (lookup_thickness(pad->Name) / 2.) + lookup_clearance(pad->Name);
 }
@@ -2725,7 +2725,7 @@ void import_clusters(toporouter_t * r)
 #endif
 					}
 					else if (connection->type == PCB_TYPE_PAD) {
-						PadType *pad = (PadType *) connection->ptr2;
+						pcb_pad_t *pad = (pcb_pad_t *) connection->ptr2;
 						toporouter_bbox_t *box = toporouter_bbox_locate(r, PAD, pad, connection->X, connection->Y, connection->group);
 						cluster_join_bbox(cluster, box);
 
@@ -8151,8 +8151,8 @@ static int escape(int argc, char **argv, Coord x, Coord y)
 			PinTypePtr via;
 			pcb_line_t *line;
 
-			PadType *pad0 = element->Pad->data;
-			PadType *pad1 = g_list_next(element->Pad)->data;
+			pcb_pad_t *pad0 = element->Pad->data;
+			pcb_pad_t *pad1 = g_list_next(element->Pad)->data;
 
 			pitch = sqrt(pow(abs(pad0->Point1.X - pad1->Point1.X), 2) + pow(abs(pad0->Point1.Y - pad1->Point1.Y), 2));
 			length = sqrt(pow(pitch, 2) + pow(pitch, 2)) / 2.;

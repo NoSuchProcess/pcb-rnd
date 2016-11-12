@@ -80,7 +80,7 @@ static void PrintConnectionListEntry(char *ObjName, ElementTypePtr Element, pcb_
 static void PrintPadConnections(pcb_cardinal_t Layer, FILE * FP, pcb_bool IsFirst)
 {
 	pcb_cardinal_t i;
-	PadTypePtr ptr;
+	pcb_pad_t *ptr;
 
 	if (!PadList[Layer].Number)
 		return;

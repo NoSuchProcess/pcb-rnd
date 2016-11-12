@@ -793,7 +793,7 @@ static r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t check_point_in_pad(PadTypePtr pad, int x, int y, End * e)
+static r_dir_t check_point_in_pad(pcb_pad_t *pad, int x, int y, End * e)
 {
 	int inside_p;
 	int t;
@@ -840,7 +840,7 @@ static r_dir_t check_point_in_pad(PadTypePtr pad, int x, int y, End * e)
 static r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
-	PadTypePtr pad = (PadTypePtr) cl;
+	pcb_pad_t *pad = (pcb_pad_t *) cl;
 	Extra *e = LINE2EXTRA(line);
 	int hits;
 	double t;
@@ -898,7 +898,7 @@ static r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 static r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
-	PadTypePtr pad = (PadTypePtr) cl;
+	pcb_pad_t *pad = (pcb_pad_t *) cl;
 	Extra *e = ARC2EXTRA(arc);
 	int hits;
 
@@ -1575,7 +1575,7 @@ static r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
 
 static r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
 {
-	const PadTypePtr p = (PadTypePtr) b;
+	const pcb_pad_t *p = (pcb_pad_t *) b;
 	int t2 = (p->Thickness + 1) / 2;
 
 	if (p == start_pinpad || p == end_pinpad)

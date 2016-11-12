@@ -100,7 +100,7 @@ void FreeElementMemory(ElementType * element)
 	END_LOOP;
 
 	list_map0(&element->Pin, PinType, RemoveFreePin);
-	list_map0(&element->Pad, PadType, RemoveFreePad);
+	list_map0(&element->Pad, pcb_pad_t, RemoveFreePad);
 	list_map0(&element->Line, pcb_line_t, RemoveFreeLine);
 	list_map0(&element->Arc,  pcb_arc_t,  RemoveFreeArc);
 
@@ -1767,7 +1767,7 @@ static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, pcb_bool invisible)
 	}
 
 	if (padlist_length(&e->Pad) != 0) {
-		PadType *pad0 = padlist_first(&e->Pad);
+		pcb_pad_t *pad0 = padlist_first(&e->Pad);
 		mark_size = MIN(mark_size, pad0->Thickness / 2);
 	}
 

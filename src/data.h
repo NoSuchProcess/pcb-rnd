@@ -100,7 +100,7 @@ typedef void (*pcb_eline_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element
 typedef void (*pcb_earc_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_arc_t *arc);
 typedef void (*pcb_etext_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, TextType *text);
 typedef void (*pcb_epin_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, PinType *pin);
-typedef void (*pcb_epad_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, PadType *pad);
+typedef void (*pcb_epad_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pad_t *pad);
 
 /* via callbacks */
 typedef void (*pcb_via_cb_t)(void *ctx, pcb_board_t *pcb, PinType *via);

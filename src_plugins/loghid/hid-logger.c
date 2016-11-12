@@ -144,13 +144,13 @@ static void log_thindraw_pcb_polygon(hidGC gc, pcb_polygon_t *poly, const pcb_bo
 	delegatee_->thindraw_pcb_polygon(gc, poly, clip_box);
 }
 
-static void log_fill_pcb_pad(hidGC gc, PadType *pad, pcb_bool clip, pcb_bool mask) {
+static void log_fill_pcb_pad(hidGC gc, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask) {
 	pcb_fprintf(out_, "fill_pcb_pad(gc, pad->name=%s, clip=%s, mask=%s)\n",
 							pad->Name, clip ? "true" : "false", mask ? "true" : "false");
 	delegatee_->fill_pcb_pad(gc, pad, clip, mask);
 }
 
-static void log_thindraw_pcb_pad(hidGC gc, PadType *pad, pcb_bool clip, pcb_bool mask) {
+static void log_thindraw_pcb_pad(hidGC gc, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask) {
 	pcb_fprintf(out_, "thindraw_pcb_pad(gc, pad->name=%s, clip=%s, mask=%s)\n",
 							pad->Name, clip ? "true" : "false", mask ? "true" : "false");
 	delegatee_->thindraw_pcb_pad(gc, pad, clip, mask);

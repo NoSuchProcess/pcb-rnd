@@ -59,7 +59,7 @@ static pcb_bool SearchRatLineByLocation(int, pcb_rat_t **, pcb_rat_t **, pcb_rat
 static pcb_bool SearchTextByLocation(int, pcb_layer_t **, TextTypePtr *, TextTypePtr *);
 static pcb_bool SearchPolygonByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_polygon_t **);
 static pcb_bool SearchPinByLocation(int, ElementTypePtr *, PinTypePtr *, PinTypePtr *);
-static pcb_bool SearchPadByLocation(int, ElementTypePtr *, PadTypePtr *, PadTypePtr *, pcb_bool);
+static pcb_bool SearchPadByLocation(int, ElementTypePtr *, pcb_pad_t **, pcb_pad_t **, pcb_bool);
 static pcb_bool SearchViaByLocation(int, PinTypePtr *, PinTypePtr *, PinTypePtr *);
 static pcb_bool SearchElementNameByLocation(int, ElementTypePtr *, TextTypePtr *, TextTypePtr *, pcb_bool);
 static pcb_bool SearchLinePointByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_point_t **);
@@ -133,7 +133,7 @@ static pcb_bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTyp
 
 static r_dir_t pad_callback(const pcb_box_t * b, void *cl)
 {
-	PadTypePtr pad = (PadTypePtr) b;
+	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct ans_info *i = (struct ans_info *) cl;
 	AnyObjectType *ptr1 = pad->Element;
 
@@ -154,7 +154,7 @@ static r_dir_t pad_callback(const pcb_box_t * b, void *cl)
  * searches a pad
  * starts with the newest element
  */
-static pcb_bool SearchPadByLocation(int locked, ElementTypePtr * Element, PadTypePtr * Pad, PadTypePtr * Dummy, pcb_bool BackToo)
+static pcb_bool SearchPadByLocation(int locked, ElementTypePtr * Element, pcb_pad_t ** Pad, pcb_pad_t ** Dummy, pcb_bool BackToo)
 {
 	struct ans_info info;
 
@@ -190,7 +190,7 @@ static r_dir_t line_callback(const pcb_box_t * box, void *cl)
 	if (TEST_FLAG(i->locked, l))
 		return R_DIR_NOT_FOUND;
 
-	if (!IsPointInPad(PosX, PosY, SearchRadius, (PadTypePtr) l))
+	if (!IsPointInPad(PosX, PosY, SearchRadius, (pcb_pad_t *) l))
 		return R_DIR_NOT_FOUND;
 	*i->Line = l;
 	*i->Point = (pcb_point_t *) l;
@@ -785,7 +785,7 @@ pcb_bool IsArcInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_arc_t *Arc
  * Check if a circle of Radius with center at (X, Y) intersects a Pad.
  * Written to enable arbitrary pad directions; for rounded pads, too.
  */
-pcb_bool IsPointInPad(Coord X, Coord Y, Coord Radius, PadTypePtr Pad)
+pcb_bool IsPointInPad(Coord X, Coord Y, Coord Radius, pcb_pad_t *Pad)
 {
 	double r, Sin, Cos;
 	Coord x;
@@ -1007,7 +1007,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 		HigherAvail = PCB_TYPE_PIN;
 
 	if (!HigherAvail && Type & PCB_TYPE_PAD &&
-			SearchPadByLocation(locked, (ElementTypePtr *) pr1, (PadTypePtr *) pr2, (PadTypePtr *) pr3, pcb_false))
+			SearchPadByLocation(locked, (ElementTypePtr *) pr1, (pcb_pad_t **) pr2, (pcb_pad_t **) pr3, pcb_false))
 		HigherAvail = PCB_TYPE_PAD;
 
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT_NAME &&
@@ -1106,7 +1106,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 		return (PCB_TYPE_NONE);
 
 	if (Type & PCB_TYPE_PAD &&
-			SearchPadByLocation(locked, (ElementTypePtr *) Result1, (PadTypePtr *) Result2, (PadTypePtr *) Result3, pcb_true))
+			SearchPadByLocation(locked, (ElementTypePtr *) Result1, (pcb_pad_t **) Result2, (pcb_pad_t **) Result3, pcb_true))
 		return (PCB_TYPE_PAD);
 
 	if (Type & PCB_TYPE_ELEMENT_NAME &&

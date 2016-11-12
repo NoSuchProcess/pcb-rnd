@@ -84,7 +84,7 @@ struct pcb_obj_s {
 		pcb_polygon_t  *polygon;
 		pcb_arc_t      *arc;
 		pcb_rat_t      *rat;
-		PadType      *pad;
+		pcb_pad_t      *pad;
 		PinType      *pin;
 		PinType      *via;
 		ElementType  *element;

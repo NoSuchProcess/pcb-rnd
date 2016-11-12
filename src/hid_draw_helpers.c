@@ -180,7 +180,7 @@ void common_thindraw_pcb_polygon(hidGC gc, pcb_polygon_t * poly, const pcb_box_t
 	PolygonHoles(poly, clip_box, thindraw_hole_cb, gc);
 }
 
-void common_thindraw_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
+void common_thindraw_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	Coord w = clear ? (mask ? pad->Mask : pad->Thickness + pad->Clearance)
 		: pad->Thickness;
@@ -244,7 +244,7 @@ void common_thindraw_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool m
 	}
 }
 
-void common_fill_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
+void common_fill_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	Coord w = clear ? (mask ? pad->Mask : pad->Thickness + pad->Clearance)
 		: pad->Thickness;

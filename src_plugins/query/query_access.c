@@ -96,7 +96,7 @@ static void list_epin_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PinT
 	APPEND(ctx, PCB_OBJ_PIN, pin, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, PadType *pad)
+static void list_epad_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_pad_t *pad)
 {
 	APPEND(ctx, PCB_OBJ_PAD, pad, PCB_PARENT_ELEMENT, element);
 }
@@ -624,7 +624,7 @@ static int field_pin(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_pad(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	PadType *p = obj->data.pad;
+	pcb_pad_t *p = obj->data.pad;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);

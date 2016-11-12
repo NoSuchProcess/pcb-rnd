@@ -155,8 +155,8 @@ static void UpdateXY(NetListTypePtr Nets)
 			case PCB_TYPE_PAD:
 				c->group = TEST_FLAG(PCB_FLAG_ONSOLDER, (ElementTypePtr) c->ptr1)
 					? SLayer : CLayer;
-				c->X = ((PadTypePtr) c->ptr2)->Point1.X;
-				c->Y = ((PadTypePtr) c->ptr2)->Point1.Y;
+				c->X = ((pcb_pad_t *) c->ptr2)->Point1.X;
+				c->Y = ((pcb_pad_t *) c->ptr2)->Point1.Y;
 				break;
 			case PCB_TYPE_PIN:
 				c->group = SLayer;			/* any layer will do */

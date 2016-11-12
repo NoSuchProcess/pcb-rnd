@@ -108,8 +108,8 @@ int pcb_pin_name_to_xy(LibraryEntryType * pin, Coord *x, Coord *y)
 		*y = ((PinType *) (conn.ptr2))->Y;
 		return 0;
 	case PCB_TYPE_PAD:
-		*x = ((PadType *) (conn.ptr2))->Point1.X;
-		*y = ((PadType *) (conn.ptr2))->Point1.Y;
+		*x = ((pcb_pad_t *) (conn.ptr2))->Point1.X;
+		*y = ((pcb_pad_t *) (conn.ptr2))->Point1.Y;
 		return 0;
 	}
 	return 1;
@@ -231,7 +231,7 @@ LibraryMenuTypePtr pcb_netlist_find_net4pin(pcb_board_t *pcb, const PinType *pin
 }
 
 
-LibraryMenuTypePtr pcb_netlist_find_net4pad(pcb_board_t *pcb, const PadType *pad)
+LibraryMenuTypePtr pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad)
 {
 	const ElementType *e = pad->Element;
 

@@ -174,7 +174,7 @@ void gpmi_hid_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pad, pcb_bool drawH
 	gpmi_event(h->module, HIDE_fill_pcb_pv, h, fg_gc, bg_gc, pad, drawHole, mask);
 }
 
-void gpmi_hid_fill_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
+void gpmi_hid_fill_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_pcb_pad, h, gc, pad, clear, mask);

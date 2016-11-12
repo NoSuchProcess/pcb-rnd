@@ -28,7 +28,7 @@
 /* List of Pads */
 #define TDL(x)      padlist_ ## x
 #define TDL_LIST_T  padlist_t
-#define TDL_ITEM_T  PadType
+#define TDL_ITEM_T  pcb_pad_t
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC

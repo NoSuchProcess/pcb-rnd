@@ -250,7 +250,7 @@ static void XORDrawElement(ElementTypePtr Element, Coord DX, Coord DY)
 	{
 		if (PCB->InvisibleObjectsOn || (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) != 0) == conf_core.editor.show_solder_side) {
 			/* Make a copy of the pad structure, moved to the correct position */
-			PadType moved_pad = *pad;
+			pcb_pad_t moved_pad = *pad;
 			moved_pad.Point1.X += DX;
 			moved_pad.Point1.Y += DY;
 			moved_pad.Point2.X += DX;
@@ -1043,7 +1043,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 
 	if (ans != PCB_TYPE_NONE &&
 			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
-		PadTypePtr pad = (PadTypePtr) ptr2;
+		pcb_pad_t *pad = (pcb_pad_t *) ptr2;
 		pcb_layer_t *desired_layer;
 		pcb_cardinal_t desired_group;
 		pcb_cardinal_t SLayer, CLayer;
@@ -1073,7 +1073,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 	}
 
 	if (ans != PCB_TYPE_NONE) {
-		PadType *pad = (PadType *) ptr2;
+		pcb_pad_t *pad = (pcb_pad_t *) ptr2;
 		check_snap_object(&snap_data, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y) / 2, pcb_true);
 	}
 

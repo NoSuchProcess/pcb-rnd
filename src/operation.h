@@ -117,7 +117,7 @@ typedef struct {
 	void *(*Element)(pcb_opctx_t *ctx, ElementTypePtr);
 	void *(*ElementName)(pcb_opctx_t *ctx, ElementTypePtr);
 	void *(*Pin)(pcb_opctx_t *ctx, ElementTypePtr, PinTypePtr);
-	void *(*Pad)(pcb_opctx_t *ctx, ElementTypePtr, PadTypePtr);
+	void *(*Pad)(pcb_opctx_t *ctx, ElementTypePtr, pcb_pad_t *);
 	void *(*LinePoint)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_line_t *, pcb_point_t *);
 	void *(*Point)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_polygon_t *, pcb_point_t *);
 	void *(*Arc)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_arc_t *);

@@ -123,12 +123,12 @@ static void nogui_fill_pcb_polygon(hidGC gc, pcb_polygon_t * poly, const pcb_box
 	CRASH("fill_pcb_polygon");
 }
 
-static void nogui_fill_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
+static void nogui_fill_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	CRASH("fill_pcb_pad");
 }
 
-static void nogui_thindraw_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask)
+static void nogui_thindraw_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	CRASH("thindraw_pcb_pad");
 }

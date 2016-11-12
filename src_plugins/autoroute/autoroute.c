@@ -222,7 +222,7 @@ typedef enum etype { PAD, PIN, VIA, VIA_SHADOW, LINE, OTHER, EXPANSION_AREA, PLA
 typedef struct routebox {
 	pcb_box_t box, sbox;
 	union {
-		PadTypePtr pad;
+		pcb_pad_t *pad;
 		PinTypePtr pin;
 		PinTypePtr via;
 		struct routebox *via_shadow;	/* points to the via in r-tree which
@@ -626,7 +626,7 @@ static routebox_t *AddPin(PointerListType layergroupboxes[], PinTypePtr pin, pcb
 	return lastrb;
 }
 
-static routebox_t *AddPad(PointerListType layergroupboxes[], ElementTypePtr element, PadTypePtr pad, RouteStyleType * style)
+static routebox_t *AddPad(PointerListType layergroupboxes[], ElementTypePtr element, pcb_pad_t *pad, RouteStyleType * style)
 {
 	Coord halfthick;
 	routebox_t **rbpp;
@@ -995,7 +995,7 @@ static routedata_t *CreateRouteData()
 					else
 						switch (connection->type) {
 						case PCB_TYPE_PAD:
-							rb = AddPad(layergroupboxes, (ElementType *) connection->ptr1, (PadType *) connection->ptr2, rd->styles[j]);
+							rb = AddPad(layergroupboxes, (ElementType *) connection->ptr1, (pcb_pad_t *) connection->ptr2, rd->styles[j]);
 							break;
 						case PCB_TYPE_PIN:
 							rb = AddPin(layergroupboxes, (PinType *) connection->ptr2, pcb_false, rd->styles[j]);

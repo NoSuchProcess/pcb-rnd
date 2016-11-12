@@ -497,12 +497,12 @@ static int ActionDisplay(int argc, const char **argv, Coord childX, Coord childY
 					break;
 
 				case PCB_TYPE_PAD:
-					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (PadTypePtr) ptr2))
-						ErasePadName((PadTypePtr) ptr2);
+					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2))
+						ErasePadName((pcb_pad_t *) ptr2);
 					else
-						DrawPadName((PadTypePtr) ptr2);
+						DrawPadName((pcb_pad_t *) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, ptr2, ptr3);
-					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (PadTypePtr) ptr2);
+					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2);
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					Draw();
