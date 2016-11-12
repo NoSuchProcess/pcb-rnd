@@ -220,6 +220,25 @@ static long int *ListBlock_(BoxTypePtr Box, pcb_bool Flag, int *len)
 	int used = 0, alloced = 0;
 	long int *list = NULL;
 
+	/* Make sure our negative box is canonical: always from bottom-right to top-left
+	   This limits all possible box coordinate orders to two, one for positive and
+	   one for negative. */
+	if (IS_BOX_NEGATIVE(Box)) {
+		Coord tmp;
+		if (Box->X1 < Box->X2) {
+			tmp = Box->X1;
+			Box->X1 = Box->X2;
+			Box->X2 = tmp;
+		}
+		if (Box->Y1 < Box->Y2) {
+			tmp = Box->Y1;
+			Box->Y1 = Box->Y2;
+			Box->Y2 = tmp;
+		}
+	}
+
+	/*pcb_printf("box: %mm %mm - %mm %mm %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, IS_BOX_NEGATIVE(Box));*/
+
 /* append an object to the return list OR set the flag if there's no list */
 #define append(undo_type, p1, obj) \
 do { \
