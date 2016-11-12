@@ -1370,6 +1370,18 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
 	Y4 = by2;
 
 	tmp = ((Y4 - Y3) * (X2 - X1) - (X4 - X3) * (Y2 - Y1));
+
+	if (tmp == 0) {
+		/* Corner case: parallel lines; intersect only if the endpoint of either line
+		   is on the other line */
+		return
+			is_point_on_line(ax1, ay1,  bx1, by1, bx2, by2) ||
+			is_point_on_line(ax2, ay2,  bx1, by1, bx2, by2) ||
+			is_point_on_line(bx1, by1,  ax1, ay1, ax2, ay2) ||
+			is_point_on_line(bx2, by2,  ax1, ay1, ax2, ay2);
+	}
+
+
 	ua = ((X4 - X3) * (Y1 - Y3) - (Y4 - Y3) * (X1 - X3)) / tmp;
 /*	ub = ((X2 - X1) * (Y1 - Y3) - (Y2 - Y1) * (X1 - X3)) / tmp;*/
 	xi = X1 + ua * (X2 - X1);
