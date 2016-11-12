@@ -433,7 +433,7 @@ static void DrawRats(const pcb_box_t * drawn_area)
 
 void DrawLayer(pcb_layer_t *Layer, const pcb_box_t * screen)
 {
-	struct draw_poly_info info;
+	struct pcb_draw_poly_info_s info;
 
 	info.drawn_area = screen;
 	info.layer = Layer;

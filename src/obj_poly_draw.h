@@ -28,7 +28,7 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-struct draw_poly_info {
+struct pcb_draw_poly_info_s {
 	const pcb_box_t *drawn_area;
 	pcb_layer_t *layer;
 };
