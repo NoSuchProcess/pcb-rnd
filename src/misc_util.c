@@ -65,7 +65,7 @@ double GetValue(const char *val, const char *units, pcb_bool * absolute, pcb_boo
 	return GetValueEx(val, units, absolute, NULL, "cmil", success);
 }
 
-double GetValueEx(const char *val, const char *units, pcb_bool * absolute, UnitList extra_units, const char *default_unit, pcb_bool *success)
+double GetValueEx(const char *val, const char *units, pcb_bool * absolute, pcb_unit_list_t extra_units, const char *default_unit, pcb_bool *success)
 {
 	double value;
 	int n = -1;

@@ -823,13 +823,13 @@ The values are percentages of the board size.  Thus, a move of
 
 static int CursorAction(int argc, const char **argv, Coord x, Coord y)
 {
-	UnitList extra_units_x = {
+	pcb_unit_list_t extra_units_x = {
 		{"grid", 0, 0},
 		{"view", 0, UNIT_PERCENT},
 		{"board", 0, UNIT_PERCENT},
 		{"", 0, 0}
 	};
-	UnitList extra_units_y = {
+	pcb_unit_list_t extra_units_y = {
 		{"grid", 0, 0},
 		{"view", 0, UNIT_PERCENT},
 		{"board", 0, UNIT_PERCENT},

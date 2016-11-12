@@ -34,16 +34,16 @@
 double Distance(double x1, double y1, double x2, double y2);
 double Distance2(double x1, double y1, double x2, double y2);	/* distance square */
 
-enum unitflags { UNIT_PERCENT = 1 };
+enum pcb_unit_flags_e { UNIT_PERCENT = 1 };
 
 typedef struct {
 	const char *suffix;
 	double scale;
-	enum unitflags flags;
-} UnitList[];
+	enum pcb_unit_flags_e flags;
+} pcb_unit_list_t[];
 
 double GetValue(const char *, const char *, pcb_bool *, pcb_bool *success);
-double GetValueEx(const char *, const char *, pcb_bool *, UnitList, const char *, pcb_bool *success);
+double GetValueEx(const char *, const char *, pcb_bool *, pcb_unit_list_t, const char *, pcb_bool *success);
 Coord GetNum(char **s, const char *default_unit);
 
 

@@ -415,7 +415,7 @@ static int in_mono, as_shown;
 static void parse_bloat(const char *str)
 {
 	int n;
-	UnitList extra_units = {
+	pcb_unit_list_t extra_units = {
 		{"pix", 0, 0},
 		{"px", 0, 0},
 		{"", 0, 0}
