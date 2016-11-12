@@ -116,7 +116,7 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path)
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		char *end, *fn;
-		library_t *l;
+		pcb_fplibrary_t *l;
 
 		if (*line == '#')
 			continue;

@@ -53,7 +53,7 @@
 /* opendir, readdir */
 #include "compat_inc.h"
 
-static fp_type_t pcb_fp_file_type(const char *fn, void ***tags);
+static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags);
 
 /* ---------------------------------------------------------------------------
  * Parse the directory tree where newlib footprints are found
@@ -67,15 +67,15 @@ struct list_dir_s {
 };
 
 typedef struct {
-	library_t *menu;
+	pcb_fplibrary_t *menu;
 	list_dir_t *subdirs;
 	int children;
 } list_st_t;
 
-static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t type, void *tags[])
+static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[])
 {
 	list_st_t *l = (list_st_t *) cookie;
-	library_t *e;
+	pcb_fplibrary_t *e;
 
 	if (type == PCB_FP_DIR) {
 		list_dir_t *d;
@@ -108,8 +108,8 @@ static int list_cb(void *cookie, const char *subdir, const char *name, fp_type_t
 	return 0;
 }
 
-static int fp_fs_list(library_t *pl, const char *subdir, int recurse,
-								int (*cb) (void *cookie, const char *subdir, const char *name, fp_type_t type, void *tags[]), void *cookie,
+static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
+								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[]), void *cookie,
 								int subdir_may_not_exist, int need_tags)
 {
 	char olddir[MAXPATHLEN + 1];	/* The directory we start out in (cwd) */
@@ -187,7 +187,7 @@ static int fp_fs_list(library_t *pl, const char *subdir, int recurse,
 #endif
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
-				fp_type_t ty;
+				pcb_fptype_t ty;
 				void **tags = NULL;
 				ty = pcb_fp_file_type(subdirentry->d_name, (need_tags ? &tags : NULL));
 				if ((ty == PCB_FP_FILE) || (ty == PCB_FP_PARAMETRIC)) {
@@ -218,7 +218,7 @@ static int fp_fs_list(library_t *pl, const char *subdir, int recurse,
 	return n_footprints;
 }
 
-static int fp_fs_load_dir_(library_t *pl, const char *subdir, const char *toppath, int is_root)
+static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *toppath, int is_root)
 {
 	list_st_t l;
 	list_dir_t *d, *nextd;
@@ -271,7 +271,7 @@ typedef struct {
 	char *real_name;
 } fp_search_t;
 
-static int fp_search_cb(void *cookie, const char *subdir, const char *name, fp_type_t type, void *tags[])
+static int fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[])
 {
 	fp_search_t *ctx = (fp_search_t *) cookie;
 	if ((strncmp(ctx->target, name, ctx->target_len) == 0) && ((! !ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
@@ -338,7 +338,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
    - if a line of a file element starts with ## and doesn't contain @, it's a tag
    - if tags is not NULL, it's a pointer to a void *tags[] - an array of tag IDs
 */
-static fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
+static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags)
 {
 	int c, comment_len;
 	int first_element = 1;
@@ -352,7 +352,7 @@ static fp_type_t pcb_fp_file_type(const char *fn, void ***tags)
 	char *tag = NULL;
 	int talloced = 0, tused = 0;
 	int Talloced = 0, Tused = 0;
-	fp_type_t ret = PCB_FP_INVALID;
+	pcb_fptype_t ret = PCB_FP_INVALID;
 
 	if (tags != NULL)
 		*tags = NULL;

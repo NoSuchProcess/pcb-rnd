@@ -15,7 +15,7 @@ library_t *fp_mkdir_p(const char *path)
 	return (library_t *)&ltmp;
 }
 
-library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, void *tags[])
+library_t *fp_append_entry(library_t *parent, const char *name, pcb_fp_type_t type, void *tags[])
 {
 	printf("lib entry: '%s'\n", name);
 	return (library_t *)&ltmp;

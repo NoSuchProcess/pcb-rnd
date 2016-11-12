@@ -26,12 +26,12 @@ static XmString *library_strings = 0;
 static XmString *libnode_strings = 0;
 static int last_pick = -1;
 
-vtptr_t picks;      /* of library_t * */
+vtptr_t picks;      /* of pcb_fplibrary_t * */
 vtptr_t pick_names; /* of char * */
 
 static void pick_net(int pick)
 {
-	library_t *menu = (library_t *)picks.array[pick];
+	pcb_fplibrary_t *menu = (pcb_fplibrary_t *)picks.array[pick];
 	int i, found;
 
 	if (pick == last_pick)
@@ -62,7 +62,7 @@ static void library_browse(Widget w, void *v, XmListCallbackStruct * cbs)
 
 static void libnode_select(Widget w, void *v, XmListCallbackStruct * cbs)
 {
-	library_t *e = picks.array[last_pick];
+	pcb_fplibrary_t *e = picks.array[last_pick];
 	e = &e->data.dir.children.array[cbs->item_position - 1];
 	if (LoadElementToBuffer(PASTEBUFFER, e->data.fp.loc_info))
 		SetMode(PCB_MODE_PASTE_BUFFER);
@@ -102,9 +102,9 @@ static int build_library_dialog()
 	return 0;
 }
 
-static void lib_dfs(library_t *parent, int level)
+static void lib_dfs(pcb_fplibrary_t *parent, int level)
 {
-	library_t *l;
+	pcb_fplibrary_t *l;
 	char *s;
 	int n, len;
 

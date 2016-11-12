@@ -72,9 +72,9 @@ static void ind(int level)
 	inds[level] = ' ';
 }
 
-static void dump_lib_any(int level, library_t *l);
+static void dump_lib_any(int level, pcb_fplibrary_t *l);
 
-static void dump_lib_dir(int level, library_t *l)
+static void dump_lib_dir(int level, pcb_fplibrary_t *l)
 {
 	pcb_cardinal_t n;
 
@@ -84,7 +84,7 @@ static void dump_lib_dir(int level, library_t *l)
 		dump_lib_any(level+1, l->data.dir.children.array+n);
 }
 
-static void dump_lib_fp(int level, library_t *l)
+static void dump_lib_fp(int level, pcb_fplibrary_t *l)
 {
 	ind(level);
 	printf("%s", l->name);
@@ -97,7 +97,7 @@ static void dump_lib_fp(int level, library_t *l)
 	printf(" loc_info(%s)\n", l->data.fp.loc_info);
 }
 
-static void dump_lib_any(int level, library_t *l)
+static void dump_lib_any(int level, pcb_fplibrary_t *l)
 {
 	switch(l->type) {
 		case LIB_INVALID:     printf("??\n"); break;

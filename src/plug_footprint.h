@@ -62,19 +62,19 @@ extern pcb_plug_fp_t *plug_fp_chain;
 
 /* Optional pcb-rnd-side glue for some implementations */
 
-extern library_t library; /* the footprint library */
+extern pcb_fplibrary_t library; /* the footprint library */
 
 #define get_library_memory(parent) vtlib_alloc_append(((parent) == NULL ? &library.data.dir.children : &(parent)->data.dir.children), 1);
 
-void fp_free_children(library_t *parent);
-void fp_sort_children(library_t *parent);
-void fp_rmdir(library_t *dir);
-library_t *fp_mkdir_p(const char *path);
-library_t *fp_mkdir_len(library_t *parent, const char *name, int name_len);
-library_t *fp_lib_search(library_t *dir, const char *name);
+void fp_free_children(pcb_fplibrary_t *parent);
+void fp_sort_children(pcb_fplibrary_t *parent);
+void fp_rmdir(pcb_fplibrary_t *dir);
+pcb_fplibrary_t *fp_mkdir_p(const char *path);
+pcb_fplibrary_t *fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int name_len);
+pcb_fplibrary_t *fp_lib_search(pcb_fplibrary_t *dir, const char *name);
 
 /* Append a menu entry in the tree */
-library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, void *tags[]);
+pcb_fplibrary_t *fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[]);
 
 /* walk through all lib paths and build the library menu */
 int fp_read_lib_all(void);

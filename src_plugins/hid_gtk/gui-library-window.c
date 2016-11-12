@@ -265,7 +265,7 @@ static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter 
 		ret = g_pattern_match_simple(pattern, compname_upper);
 
 		if ((tags != NULL) && ret) {
-			library_t *entry = NULL;
+			pcb_fplibrary_t *entry = NULL;
 			gtk_tree_model_get(model, iter, MENU_ENTRY_COLUMN, &entry, -1);
 			if ((entry != NULL) && (entry->type == LIB_FOOTPRINT) && (entry->data.fp.tags != NULL)) {
 				char *next, *tag;
@@ -380,7 +380,7 @@ static gboolean tree_row_key_pressed(GtkTreeView * tree_view, GdkEventKey * even
 	return TRUE;
 }
 
-static void library_window_preview_refresh(GhidLibraryWindow * library_window, const char *name, library_t * entry)
+static void library_window_preview_refresh(GhidLibraryWindow * library_window, const char *name, pcb_fplibrary_t * entry)
 {
 	GString *pt;
 	char *fullp;
@@ -439,7 +439,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GhidLibraryWindow *library_window = (GhidLibraryWindow *) user_data;
-	library_t *entry = NULL;
+	pcb_fplibrary_t *entry = NULL;
 
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
 		return;
@@ -557,10 +557,10 @@ static void library_window_callback_filter_button_clicked(GtkButton * button, gp
  * Creates a tree where the branches are the available library
  * sources and the leaves are the footprints.
  */
-static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore *tree, GhidLibraryWindow *library_window, library_t *parent, GtkTreeIter *iter_parent)
+static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore *tree, GhidLibraryWindow *library_window, pcb_fplibrary_t *parent, GtkTreeIter *iter_parent)
 {
 	GtkTreeIter p_iter;
-	library_t *menu;
+	pcb_fplibrary_t *menu;
 	int n;
 
 	for(menu = parent->data.dir.children.array, n = 0; n < parent->data.dir.children.used; n++, menu++)

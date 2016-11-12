@@ -48,7 +48,7 @@ struct pcb_lib_entry_s {
 	const char *Value;						/* the value field */
 	const char *Description;			/* some descriptive text */
 #if 0
-	fp_type_t Type;
+	pcb_fp_type_t Type;
 	void **Tags;									/* an array of void * tag IDs; last tag ID is NULL */
 #endif
 };
