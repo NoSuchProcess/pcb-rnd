@@ -512,7 +512,7 @@ GtsGraphBisection * gts_graph_ggg_bisection (GtsGraph * g, guint ntry)
   degree_heap = gts_eheap_new ((GtsKeyFunc) degree_cost, g);
   gts_eheap_freeze (degree_heap);
   gts_container_foreach (GTS_CONTAINER (g), (GtsFunc) add_seed, degree_heap);
-  gts_eheap_thaw (degree_heap);
+  gts_epcb_heap_thaw (degree_heap);
 
   while (ntry && ((seed = gts_eheap_remove_top (degree_heap, NULL)))) {
     GtsGraph * g1, * g2;
@@ -623,7 +623,7 @@ GtsGraphBisection * gts_graph_bfgg_bisection (GtsGraph * g, guint ntry)
   degree_heap = gts_eheap_new ((GtsKeyFunc) degree_cost, g);
   gts_eheap_freeze (degree_heap);
   gts_container_foreach (GTS_CONTAINER (g), (GtsFunc) add_seed, degree_heap);
-  gts_eheap_thaw (degree_heap);
+  gts_epcb_heap_thaw (degree_heap);
 
   while (ntry && ((seed = gts_eheap_remove_top (degree_heap, NULL)))) {
     GtsGraph * g1, * g2;
@@ -732,12 +732,12 @@ gdouble gts_graph_bisection_kl_refine (GtsGraphBisection * bg,
   h1 = gts_eheap_new ((GtsKeyFunc) node_move_cost1, bg);
   gts_eheap_freeze (h1);
   gts_container_foreach (GTS_CONTAINER (bg->g1), (GtsFunc) build_heap, h1);
-  gts_eheap_thaw (h1);
+  gts_epcb_heap_thaw (h1);
 
   h2 = gts_eheap_new ((GtsKeyFunc) node_move_cost2, bg);
   gts_eheap_freeze (h2);
   gts_container_foreach (GTS_CONTAINER (bg->g2), (GtsFunc) build_heap, h2);
-  gts_eheap_thaw (h2);
+  gts_epcb_heap_thaw (h2);
 
   moves = g_malloc (sizeof (GtsGNode *)*mmax);
   best_balance = fabs (gts_graph_weight (bg->g1) - gts_graph_weight (bg->g2));
@@ -899,12 +899,12 @@ gdouble gts_graph_bisection_bkl_refine (GtsGraphBisection * bg,
   h1 = gts_eheap_new ((GtsKeyFunc) node_move_cost1, bg);
   gts_eheap_freeze (h1);
   g_hash_table_foreach (bg->bg1, (GHFunc) build_bheap, h1);
-  gts_eheap_thaw (h1);
+  gts_epcb_heap_thaw (h1);
 
   h2 = gts_eheap_new ((GtsKeyFunc) node_move_cost2, bg);
   gts_eheap_freeze (h2);
   g_hash_table_foreach (bg->bg2, (GHFunc) build_bheap, h2);
-  gts_eheap_thaw (h2);
+  gts_epcb_heap_thaw (h2);
 
   moves = g_malloc (sizeof (GtsGNode *)*mmax);
   imbalance *= gts_graph_weight (bg->g);

@@ -273,7 +273,7 @@ typedef struct routebox {
 		unsigned is_thermal;
 	} flags;
 	/* indicate the direction an expansion box came from */
-	cost_t cost;
+	pcb_cost_t cost;
 	pcb_cheap_point_t cost_point;
 	/* reference count for homeless routeboxes; free when refcount==0 */
 	int refcount;
@@ -317,9 +317,9 @@ typedef struct routedata {
 typedef struct edge_struct {
 	routebox_t *rb;								/* path expansion edges are real routeboxen. */
 	pcb_cheap_point_t cost_point;
-	cost_t cost_to_point;					/* from source */
-	cost_t cost;									/* cached edge cost */
-	routebox_t *mincost_target;		/* minimum cost from cost_point to any target */
+	pcb_cost_t pcb_cost_to_point;					/* from source */
+	pcb_cost_t cost;									/* cached edge cost */
+	routebox_t *minpcb_cost_target;		/* minimum cost from cost_point to any target */
 	vetting_t *work;							/* for via search edges */
 	pcb_direction_t expand_dir;
 	struct {
@@ -343,7 +343,7 @@ static struct {
 	/* the present bloat */
 	pcb_coord_t bloat;
 	/* cost parameters */
-	cost_t ViaCost,								/* additional "length" cost for using a via */
+	pcb_cost_t ViaCost,								/* additional "length" cost for using a via */
 	  LastConflictPenalty,				/* length mult. for routing over last pass' trace */
 	  ConflictPenalty,						/* length multiplier for routing over another trace */
 	  JogPenalty,									/* additional "length" cost for changing direction */
@@ -368,10 +368,10 @@ static struct {
 
 struct routeone_state {
 	/* heap of all candidate expansion edges */
-	heap_t *workheap;
+	pcb_heap_t *workheap;
 	/* information about the best path found so far. */
 	routebox_t *best_path, *best_target;
-	cost_t best_cost;
+	pcb_cost_t best_cost;
 };
 
 
@@ -381,7 +381,7 @@ struct routeone_state {
 static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t group,
 																			 routebox_t * parent, pcb_bool relax_edge_requirements, edge_t * edge);
 
-static cost_t edge_cost(const edge_t * e, const cost_t too_big);
+static pcb_cost_t edge_cost(const edge_t * e, const pcb_cost_t too_big);
 static void best_path_candidate(struct routeone_state *s, edge_t * e, routebox_t * best_target);
 
 static pcb_box_t edge_to_box(const routebox_t * rb, pcb_direction_t expand_dir);
@@ -452,7 +452,7 @@ static int __edge_is_good(edge_t * e)
 	assert((e->flags.is_via ? e->rb->flags.is_via : 1)
 				 && (e->flags.via_conflict_level >= 0 && e->flags.via_conflict_level <= 2)
 				 && (e->flags.via_conflict_level != 0 ? e->flags.is_via : 1));
-	assert((e->cost_to_point >= 0) && e->cost >= 0);
+	assert((e->pcb_cost_to_point >= 0) && e->cost >= 0);
 	return 1;
 }
 
@@ -563,9 +563,9 @@ static inline pcb_box_t shrink_routebox(const routebox_t * rb)
 	return rb->sbox;
 }
 
-static inline cost_t box_area(const pcb_box_t b)
+static inline pcb_cost_t box_area(const pcb_box_t b)
 {
-	cost_t ans = b.X2 - b.X1;
+	pcb_cost_t ans = b.X2 - b.X1;
 	return ans * (b.Y2 - b.Y1);
 }
 
@@ -1204,9 +1204,9 @@ static void ResetSubnet(routebox_t * net)
 	END_LOOP;
 }
 
-static inline cost_t cost_to_point_on_layer(const pcb_cheap_point_t * p1, const pcb_cheap_point_t * p2, pcb_cardinal_t point_layer)
+static inline pcb_cost_t pcb_cost_to_point_on_layer(const pcb_cheap_point_t * p1, const pcb_cheap_point_t * p2, pcb_cardinal_t point_layer)
 {
-	cost_t x_dist = p1->X - p2->X, y_dist = p1->Y - p2->Y, r;
+	pcb_cost_t x_dist = p1->X - p2->X, y_dist = p1->Y - p2->Y, r;
 	x_dist *= x_cost[point_layer];
 	y_dist *= y_cost[point_layer];
 	/* cost is proportional to orthogonal distance. */
@@ -1216,9 +1216,9 @@ static inline cost_t cost_to_point_on_layer(const pcb_cheap_point_t * p1, const 
 	return r;
 }
 
-static cost_t cost_to_point(const pcb_cheap_point_t * p1, pcb_cardinal_t point_layer1, const pcb_cheap_point_t * p2, pcb_cardinal_t point_layer2)
+static pcb_cost_t pcb_cost_to_point(const pcb_cheap_point_t * p1, pcb_cardinal_t point_layer1, const pcb_cheap_point_t * p2, pcb_cardinal_t point_layer2)
 {
-	cost_t r = cost_to_point_on_layer(p1, p2, point_layer1);
+	pcb_cost_t r = pcb_cost_to_point_on_layer(p1, p2, point_layer1);
 	/* apply via cost penalty if layers differ */
 	if (point_layer1 != point_layer2)
 		r += AutoRouteParameters.ViaCost;
@@ -1228,10 +1228,10 @@ static cost_t cost_to_point(const pcb_cheap_point_t * p1, pcb_cardinal_t point_l
 /* return the minimum *cost* from a point to a box on any layer.
  * It's safe to return a smaller than minimum cost
  */
-static cost_t cost_to_layerless_box(const pcb_cheap_point_t * p, pcb_cardinal_t point_layer, const pcb_box_t * b)
+static pcb_cost_t pcb_cost_to_layerless_box(const pcb_cheap_point_t * p, pcb_cardinal_t point_layer, const pcb_box_t * b)
 {
 	pcb_cheap_point_t p2 = closest_point_in_box(p, b);
-	register cost_t c1, c2;
+	register pcb_cost_t c1, c2;
 
 	c1 = p2.X - p->X;
 	c2 = p2.Y - p->Y;
@@ -1274,9 +1274,9 @@ pcb_bool TargetPoint(pcb_cheap_point_t * nextpoint, const routebox_t * target)
  * via costs if the route box is on a different layer.
  * assume routbox is bloated unless it is an expansion area
  */
-static cost_t cost_to_routebox(const pcb_cheap_point_t * p, pcb_cardinal_t point_layer, const routebox_t * rb)
+static pcb_cost_t pcb_cost_to_routebox(const pcb_cheap_point_t * p, pcb_cardinal_t point_layer, const routebox_t * rb)
 {
-	register cost_t trial = 0;
+	register pcb_cost_t trial = 0;
 	pcb_cheap_point_t p2 = closest_point_in_routebox(p, rb);
 	if (!usedGroup[point_layer] || !usedGroup[rb->group])
 		trial = AutoRouteParameters.NewLayerPenalty;
@@ -1467,36 +1467,36 @@ static routebox_t *nonhomeless_parent(routebox_t * rb)
 
 /* some routines to find the minimum *cost* from a cost point to
  * a target (any target) */
-struct mincost_target_closure {
+struct minpcb_cost_target_closure {
 	const pcb_cheap_point_t *CostPoint;
 	pcb_cardinal_t CostPointLayer;
 	routebox_t *nearest;
-	cost_t nearest_cost;
+	pcb_cost_t nearest_cost;
 };
 static pcb_r_dir_t __region_within_guess(const pcb_box_t * region, void *cl)
 {
-	struct mincost_target_closure *mtc = (struct mincost_target_closure *) cl;
-	cost_t cost_to_region;
+	struct minpcb_cost_target_closure *mtc = (struct minpcb_cost_target_closure *) cl;
+	pcb_cost_t pcb_cost_to_region;
 	if (mtc->nearest == NULL)
 		return R_DIR_FOUND_CONTINUE;
-	cost_to_region = cost_to_layerless_box(mtc->CostPoint, mtc->CostPointLayer, region);
-	assert(cost_to_region >= 0);
+	pcb_cost_to_region = pcb_cost_to_layerless_box(mtc->CostPoint, mtc->CostPointLayer, region);
+	assert(pcb_cost_to_region >= 0);
 	/* if no guess yet, all regions are "close enough" */
 	/* note that cost is *strictly more* than minimum distance, so we'll
 	 * always search a region large enough. */
-	return (cost_to_region < mtc->nearest_cost) ? R_DIR_FOUND_CONTINUE : R_DIR_NOT_FOUND;
+	return (pcb_cost_to_region < mtc->nearest_cost) ? R_DIR_FOUND_CONTINUE : R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
 {
-	struct mincost_target_closure *mtc = (struct mincost_target_closure *) cl;
+	struct minpcb_cost_target_closure *mtc = (struct minpcb_cost_target_closure *) cl;
 	routebox_t *guess = (routebox_t *) box;
-	cost_t cost_to_guess = cost_to_routebox(mtc->CostPoint, mtc->CostPointLayer, guess);
-	assert(cost_to_guess >= 0);
+	pcb_cost_t pcb_cost_to_guess = pcb_cost_to_routebox(mtc->CostPoint, mtc->CostPointLayer, guess);
+	assert(pcb_cost_to_guess >= 0);
 	/* if this is cheaper than previous guess... */
-	if (cost_to_guess < mtc->nearest_cost) {
+	if (pcb_cost_to_guess < mtc->nearest_cost) {
 		mtc->nearest = guess;
-		mtc->nearest_cost = cost_to_guess;	/* this is our new guess! */
+		mtc->nearest_cost = pcb_cost_to_guess;	/* this is our new guess! */
 		return R_DIR_FOUND_CONTINUE;
 	}
 	else
@@ -1505,16 +1505,16 @@ static pcb_r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
 
 /* target_guess is our guess at what the nearest target is, or NULL if we
  * just plum don't have a clue. */
-static routebox_t *mincost_target_to_point(const pcb_cheap_point_t * CostPoint,
+static routebox_t *minpcb_cost_target_to_point(const pcb_cheap_point_t * CostPoint,
 																					 pcb_cardinal_t CostPointLayer, pcb_rtree_t * targets, routebox_t * target_guess)
 {
-	struct mincost_target_closure mtc;
+	struct minpcb_cost_target_closure mtc;
 	assert(target_guess == NULL || target_guess->flags.target);	/* this is a target, right? */
 	mtc.CostPoint = CostPoint;
 	mtc.CostPointLayer = CostPointLayer;
 	mtc.nearest = target_guess;
 	if (mtc.nearest)
-		mtc.nearest_cost = cost_to_routebox(mtc.CostPoint, mtc.CostPointLayer, mtc.nearest);
+		mtc.nearest_cost = pcb_cost_to_routebox(mtc.CostPoint, mtc.CostPointLayer, mtc.nearest);
 	else
 		mtc.nearest_cost = EXPENSIVE;
 	r_search(targets, NULL, __region_within_guess, __found_new_guess, &mtc, NULL);
@@ -1524,10 +1524,10 @@ static routebox_t *mincost_target_to_point(const pcb_cheap_point_t * CostPoint,
 }
 
 /* create edge from field values */
-/* mincost_target_guess can be NULL */
+/* minpcb_cost_target_guess can be NULL */
 static edge_t *CreateEdge(routebox_t * rb,
 													pcb_coord_t CostPointX, pcb_coord_t CostPointY,
-													cost_t cost_to_point, routebox_t * mincost_target_guess, pcb_direction_t expand_dir, pcb_rtree_t * targets)
+													pcb_cost_t pcb_cost_to_point, routebox_t * minpcb_cost_target_guess, pcb_direction_t expand_dir, pcb_rtree_t * targets)
 {
 	edge_t *e;
 	assert(__routebox_is_good(rb));
@@ -1539,15 +1539,15 @@ static edge_t *CreateEdge(routebox_t * rb,
 		RB_up_count(rb);
 	e->cost_point.X = CostPointX;
 	e->cost_point.Y = CostPointY;
-	e->cost_to_point = cost_to_point;
+	e->pcb_cost_to_point = pcb_cost_to_point;
 	e->flags.via_search = 0;
 	/* if this edge is created in response to a target, use it */
 	if (targets)
-		e->mincost_target = mincost_target_to_point(&e->cost_point, rb->group, targets, mincost_target_guess);
+		e->minpcb_cost_target = minpcb_cost_target_to_point(&e->cost_point, rb->group, targets, minpcb_cost_target_guess);
 	else
-		e->mincost_target = mincost_target_guess;
+		e->minpcb_cost_target = minpcb_cost_target_guess;
 	e->expand_dir = expand_dir;
-	assert(e->rb && e->mincost_target);	/* valid edge? */
+	assert(e->rb && e->minpcb_cost_target);	/* valid edge? */
 	assert(!e->flags.is_via || e->expand_dir == ALL);
 	/* cost point should be on edge (unless this is a plane/via/conflict edge) */
 #if 0
@@ -1571,7 +1571,7 @@ static edge_t *CreateEdge2(routebox_t * rb, pcb_direction_t expand_dir,
 {
 	pcb_box_t thisbox;
 	pcb_cheap_point_t thiscost, prevcost;
-	cost_t d;
+	pcb_cost_t d;
 
 	assert(rb && previous_edge);
 	/* okay, find cheapest costpoint to costpoint of previous edge */
@@ -1580,13 +1580,13 @@ static edge_t *CreateEdge2(routebox_t * rb, pcb_direction_t expand_dir,
 	/* find point closest to target */
 	thiscost = closest_point_in_box(&prevcost, &thisbox);
 	/* compute cost-to-point */
-	d = cost_to_point_on_layer(&prevcost, &thiscost, rb->group);
+	d = pcb_cost_to_point_on_layer(&prevcost, &thiscost, rb->group);
 	/* add in jog penalty */
 	if (previous_edge->expand_dir != expand_dir)
 		d += AutoRouteParameters.JogPenalty;
 	/* okay, new edge! */
 	return CreateEdge(rb, thiscost.X, thiscost.Y,
-										previous_edge->cost_to_point + d, guess ? guess : previous_edge->mincost_target, expand_dir, targets);
+										previous_edge->pcb_cost_to_point + d, guess ? guess : previous_edge->minpcb_cost_target, expand_dir, targets);
 }
 
 /* create via edge, using previous edge to fill in defaults. */
@@ -1596,9 +1596,9 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
 {
 	routebox_t *rb;
 	pcb_cheap_point_t costpoint;
-	cost_t d;
+	pcb_cost_t d;
 	edge_t *ne;
-	cost_t scale[3];
+	pcb_cost_t scale[3];
 
 	scale[0] = 1;
 	scale[1] = AutoRouteParameters.LastConflictPenalty;
@@ -1619,30 +1619,30 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
 		/* find a target near this via box */
 		pnt.X = CENTER_X(*area);
 		pnt.Y = CENTER_Y(*area);
-		target = mincost_target_to_point(&pnt, rb->group, targets, previous_edge->mincost_target);
+		target = minpcb_cost_target_to_point(&pnt, rb->group, targets, previous_edge->minpcb_cost_target);
 		/* now find point near the target */
 		pnt.X = CENTER_X(target->box);
 		pnt.Y = CENTER_Y(target->box);
 		costpoint = closest_point_in_routebox(&pnt, rb);
 		/* we moved from the previous cost point through the plane which is free travel */
-		d = (scale[through_site_conflict] * cost_to_point(&costpoint, group, &costpoint, previous_edge->rb->group));
-		ne = CreateEdge(rb, costpoint.X, costpoint.Y, previous_edge->cost_to_point + d, target, ALL, NULL);
-		ne->mincost_target = target;
+		d = (scale[through_site_conflict] * pcb_cost_to_point(&costpoint, group, &costpoint, previous_edge->rb->group));
+		ne = CreateEdge(rb, costpoint.X, costpoint.Y, previous_edge->pcb_cost_to_point + d, target, ALL, NULL);
+		ne->minpcb_cost_target = target;
 	}
 	else {
 		routebox_t *target;
-		target = previous_edge->mincost_target;
+		target = previous_edge->minpcb_cost_target;
 		costpoint = closest_point_in_routebox(&previous_edge->cost_point, rb);
 		d =
 			(scale[to_site_conflict] *
-			 cost_to_point_on_layer(&costpoint, &previous_edge->cost_point,
+			 pcb_cost_to_point_on_layer(&costpoint, &previous_edge->cost_point,
 															previous_edge->rb->group)) +
-			(scale[through_site_conflict] * cost_to_point(&costpoint, group, &costpoint, previous_edge->rb->group));
+			(scale[through_site_conflict] * pcb_cost_to_point(&costpoint, group, &costpoint, previous_edge->rb->group));
 		/* if the target is just this via away, then this via is cheaper */
 		if (target->group == group && point_in_shrunk_box(target, costpoint.X, costpoint.Y))
 			d -= AutoRouteParameters.ViaCost / 2;
 		ne =
-			CreateEdge(rb, costpoint.X, costpoint.Y, previous_edge->cost_to_point + d, previous_edge->mincost_target, ALL, targets);
+			CreateEdge(rb, costpoint.X, costpoint.Y, previous_edge->pcb_cost_to_point + d, previous_edge->minpcb_cost_target, ALL, targets);
 	}
 	ne->flags.is_via = 1;
 	ne->flags.via_conflict_level = to_site_conflict;
@@ -1658,11 +1658,11 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
  */
 static edge_t *CreateEdgeWithConflicts(const pcb_box_t * interior_edge,
 																			 routebox_t * container, edge_t * previous_edge,
-																			 cost_t cost_penalty_to_box, pcb_rtree_t * targets)
+																			 pcb_cost_t cost_penalty_to_box, pcb_rtree_t * targets)
 {
 	routebox_t *rb;
 	pcb_cheap_point_t costpoint;
-	cost_t d;
+	pcb_cost_t d;
 	edge_t *ne;
 	assert(interior_edge && container && previous_edge && targets);
 	assert(!container->flags.homeless);
@@ -1673,9 +1673,9 @@ static edge_t *CreateEdgeWithConflicts(const pcb_box_t * interior_edge,
 	rb = CreateExpansionArea(interior_edge, previous_edge->rb->group, previous_edge->rb, pcb_true, previous_edge);
 	path_conflicts(rb, container, pcb_true);	/* crucial! */
 	costpoint = closest_point_in_box(&previous_edge->cost_point, interior_edge);
-	d = cost_to_point_on_layer(&costpoint, &previous_edge->cost_point, previous_edge->rb->group);
+	d = pcb_cost_to_point_on_layer(&costpoint, &previous_edge->cost_point, previous_edge->rb->group);
 	d *= cost_penalty_to_box;
-	d += previous_edge->cost_to_point;
+	d += previous_edge->pcb_cost_to_point;
 	ne = CreateEdge(rb, costpoint.X, costpoint.Y, d, NULL, ALL, targets);
 	ne->flags.is_interior = 1;
 	assert(__edge_is_good(ne));
@@ -1701,16 +1701,16 @@ static void DestroyEdge(edge_t ** e)
 }
 
 /* cost function for an edge. */
-static cost_t edge_cost(const edge_t * e, const cost_t too_big)
+static pcb_cost_t edge_cost(const edge_t * e, const pcb_cost_t too_big)
 {
-	cost_t penalty = e->cost_to_point;
+	pcb_cost_t penalty = e->pcb_cost_to_point;
 	if (e->rb->flags.is_thermal || e->rb->type == PLANE)
 		return penalty;							/* thermals are cheap */
 	if (penalty > too_big)
 		return penalty;
 
-	/* cost_to_routebox adds in our via correction, too. */
-	return penalty + cost_to_routebox(&e->cost_point, e->rb->group, e->mincost_target);
+	/* pcb_cost_to_routebox adds in our via correction, too. */
+	return penalty + pcb_cost_to_routebox(&e->cost_point, e->rb->group, e->minpcb_cost_target);
 }
 
 /* given an edge of a box, return a box containing exactly the points on that
@@ -1816,7 +1816,7 @@ static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t gr
 	rb->cost_point = closest_point_in_box(&rb->parent.expansion_area->cost_point, area);
 	rb->cost =
 		rb->parent.expansion_area->cost +
-		cost_to_point_on_layer(&rb->parent.expansion_area->cost_point, &rb->cost_point, rb->group);
+		pcb_cost_to_point_on_layer(&rb->parent.expansion_area->cost_point, &rb->cost_point, rb->group);
 	assert(relax_edge_requirements ? edge_intersect(&rb->sbox, &parent->sbox)
 				 : share_edge(&rb->sbox, &parent->sbox));
 	if (rb->parent.expansion_area->flags.homeless)
@@ -2132,7 +2132,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
  * It returns 1 for any fixed blocker that is not part
  * of this net and zero otherwise.
  */
-static int blocker_to_heap(heap_t * heap, routebox_t * rb, pcb_box_t * box, pcb_direction_t dir)
+static int blocker_to_heap(pcb_heap_t * heap, routebox_t * rb, pcb_box_t * box, pcb_direction_t dir)
 {
 	pcb_box_t b = rb->sbox;
 	if (rb->style->Clearance > AutoRouteParameters.style->Clearance)
@@ -2179,7 +2179,7 @@ static routebox_t *CreateBridge(const pcb_box_t * area, routebox_t * parent, pcb
 	rb->type = EXPANSION_AREA;
 	rb->came_from = dir;
 	rb->cost_point = closest_point_in_box(&parent->cost_point, area);
-	rb->cost = parent->cost + cost_to_point_on_layer(&parent->cost_point, &rb->cost_point, rb->group);
+	rb->cost = parent->cost + pcb_cost_to_point_on_layer(&parent->cost_point, &rb->cost_point, rb->group);
 	rb->parent.expansion_area = route_parent(parent);
 	if (rb->parent.expansion_area->flags.homeless)
 		RB_up_count(rb->parent.expansion_area);
@@ -2279,9 +2279,9 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		 */
 		if (dir == NE || dir == SE || dir == SW || dir == NW) {
 			pcb_cheap_point_t p;
-			p = closest_point_in_box(&nrb->cost_point, &e->mincost_target->sbox);
+			p = closest_point_in_box(&nrb->cost_point, &e->minpcb_cost_target->sbox);
 			p = closest_point_in_box(&p, &b);
-			nrb->cost += cost_to_point_on_layer(&p, &nrb->cost_point, nrb->group);
+			nrb->cost += pcb_cost_to_point_on_layer(&p, &nrb->cost_point, nrb->group);
 			nrb->cost_point = p;
 		}
 		ne = CreateEdge(nrb, nrb->cost_point.X, nrb->cost_point.Y, nrb->cost, NULL, dir, targets);
@@ -2321,7 +2321,7 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		/* and make an expansion edge */
 		nrb->cost_point = closest_point_in_box(&nrb->cost_point, &blocker->sbox);
 		nrb->cost +=
-			cost_to_point_on_layer(&nrb->parent.expansion_area->cost_point, &nrb->cost_point, nrb->group) * CONFLICT_PENALTY(blocker);
+			pcb_cost_to_point_on_layer(&nrb->parent.expansion_area->cost_point, &nrb->cost_point, nrb->group) * CONFLICT_PENALTY(blocker);
 
 		ne = CreateEdge(nrb, nrb->cost_point.X, nrb->cost_point.Y, nrb->cost, NULL, ALL, targets);
 		ne->flags.is_interior = 1;
@@ -2330,7 +2330,7 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 #if 1
 	else if (blocker->type == EXPANSION_AREA) {
 		if (blocker->cost < rb->cost || blocker->cost <= rb->cost +
-				cost_to_point_on_layer(&blocker->cost_point, &rb->cost_point, rb->group))
+				pcb_cost_to_point_on_layer(&blocker->cost_point, &rb->cost_point, rb->group))
 			return;
 		if (blocker->conflicts_with || rb->conflicts_with)
 			return;
@@ -2378,7 +2378,7 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 }
 
 struct break_info {
-	heap_t *heap;
+	pcb_heap_t *heap;
 	routebox_t *parent;
 	pcb_box_t box;
 	pcb_direction_t dir;
@@ -2438,7 +2438,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 {
 	struct break_info bi;
 	vector_t *edges;
-	heap_t *heap[4];
+	pcb_heap_t *heap[4];
 	pcb_coord_t first, last;
 	pcb_coord_t bloat;
 	pcb_direction_t dir;
@@ -3273,16 +3273,16 @@ CreateSearchEdge(struct routeone_state *s, vetting_t * work, edge_t * parent,
 {
 	routebox_t *target;
 	pcb_box_t b;
-	cost_t cost;
+	pcb_cost_t cost;
 	assert(__routebox_is_good(rb));
 	/* find the cheapest target */
 #if 0
-	target = mincost_target_to_point(&parent->cost_point, max_group + 1, targets, parent->mincost_target);
+	target = minpcb_cost_target_to_point(&parent->cost_point, max_group + 1, targets, parent->minpcb_cost_target);
 #else
-	target = parent->mincost_target;
+	target = parent->minpcb_cost_target;
 #endif
 	b = shrink_routebox(target);
-	cost = parent->cost_to_point + AutoRouteParameters.ViaCost + cost_to_layerless_box(&rb->cost_point, 0, &b);
+	cost = parent->pcb_cost_to_point + AutoRouteParameters.ViaCost + pcb_cost_to_layerless_box(&rb->cost_point, 0, &b);
 	if (cost < s->best_cost) {
 		edge_t *ne;
 		ne = (edge_t *) malloc(sizeof(*ne));
@@ -3294,9 +3294,9 @@ CreateSearchEdge(struct routeone_state *s, vetting_t * work, edge_t * parent,
 		if (rb->flags.homeless)
 			RB_up_count(rb);
 		ne->work = work;
-		ne->mincost_target = target;
+		ne->minpcb_cost_target = target;
 		ne->flags.via_conflict_level = conflict;
-		ne->cost_to_point = parent->cost_to_point;
+		ne->pcb_cost_to_point = parent->pcb_cost_to_point;
 		ne->cost_point = parent->cost_point;
 		ne->cost = cost;
 		heap_insert(s->workheap, ne->cost, ne);
@@ -3538,7 +3538,7 @@ static void source_conflicts(pcb_rtree_t * tree, routebox_t * rb)
 struct routeone_status {
 	pcb_bool found_route;
 	int route_had_conflicts;
-	cost_t best_route_cost;
+	pcb_cost_t best_route_cost;
 	pcb_bool net_completely_routed;
 };
 
@@ -3662,7 +3662,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 			cp.X = CENTER_X(b);
 			cp.Y = CENTER_Y(b);
 			e = CreateEdge(p, cp.X, cp.Y, 0, NULL, ALL, targets);
-			cp = closest_point_in_box(&cp, &e->mincost_target->sbox);
+			cp = closest_point_in_box(&cp, &e->minpcb_cost_target->sbox);
 			cp = closest_point_in_box(&cp, &b);
 			e->cost_point = cp;
 			p->cost_point = cp;
@@ -3727,7 +3727,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 		/*showedge (e); */
 #endif
 		if (e->rb->flags.is_thermal) {
-			best_path_candidate(&s, e, e->mincost_target);
+			best_path_candidate(&s, e, e->minpcb_cost_target);
 			goto dontexpand;
 		}
 		/* for a plane, look for quick connections with thermals or vias */
@@ -3754,7 +3754,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 					routebox_t *nrb = CreateExpansionArea(&e->rb->sbox, e->rb->group, e->rb,
 																								pcb_true, e);
 					edge_t *ne = CreateEdge2(nrb, e->expand_dir, e, NULL,
-																	 e->mincost_target);
+																	 e->minpcb_cost_target);
 					nrb->flags.is_thermal = 1;
 					add_via_sites(&s, &vss, rd->mtspace, nrb, NO_CONFLICT, ne, targets, e->rb->style->Diameter, pcb_true);
 				}
@@ -4130,11 +4130,11 @@ struct routeall_status RouteAll(routedata_t * rd)
 	pcb_bool rip;
 	int request_cancel;
 #ifdef NET_HEAP
-	heap_t *net_heap;
+	pcb_heap_t *net_heap;
 #endif
-	heap_t *this_pass, *next_pass, *tmp;
+	pcb_heap_t *this_pass, *next_pass, *tmp;
 	routebox_t *net, *p, *pp;
-	cost_t total_net_cost, last_cost = 0, this_cost = 0;
+	pcb_cost_t total_net_cost, last_cost = 0, this_cost = 0;
 	int i;
 	int this_heap_size;
 	int this_heap_item;

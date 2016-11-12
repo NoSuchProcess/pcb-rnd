@@ -1312,8 +1312,8 @@ typedef struct _GtsHeap         GtsHeap;
 GtsHeap *    gts_heap_new          (GCompareFunc compare_func);
 void         gts_heap_insert       (GtsHeap * heap, gpointer p);
 gpointer     gts_heap_remove_top   (GtsHeap * heap);
-gpointer     gts_heap_top          (GtsHeap * heap);
-void         gts_heap_thaw         (GtsHeap * heap);
+gpointer     gts_pcb_heap_top          (GtsHeap * heap);
+void         gts_pcb_heap_thaw         (GtsHeap * heap);
 void         gts_heap_foreach      (GtsHeap * heap, 
 				    GFunc func,
 				    gpointer user_data);
@@ -1354,9 +1354,9 @@ GtsEHeapPair * gts_eheap_insert_with_key (GtsEHeap * heap,
 					  gdouble key);
 gpointer       gts_eheap_remove_top   (GtsEHeap * heap,
 				       gdouble * key);
-gpointer       gts_eheap_top          (GtsEHeap * heap, 
+gpointer       gts_epcb_heap_top          (GtsEHeap * heap, 
 				       gdouble * key);
-void           gts_eheap_thaw         (GtsEHeap * heap);
+void           gts_epcb_heap_thaw         (GtsEHeap * heap);
 void           gts_eheap_foreach      (GtsEHeap * heap, 
 				       GFunc func,
 				       gpointer data);

@@ -37,26 +37,26 @@
 #include "config.h"
 
 /* type of heap costs */
-typedef double cost_t;
+typedef double pcb_cost_t;
 /* what a heap looks like */
-typedef struct heap_struct heap_t;
+typedef struct pcb_heap_s pcb_heap_t;
 
 /* create an empty heap */
-heap_t *heap_create();
+pcb_heap_t *heap_create();
 /* destroy a heap */
-void heap_destroy(heap_t ** heap);
+void heap_destroy(pcb_heap_t ** heap);
 /* free all elements in a heap */
-void heap_free(heap_t * heap, void (*funcfree) (void *));
+void heap_free(pcb_heap_t * heap, void (*funcfree) (void *));
 
 /* -- mutation -- */
-void heap_insert(heap_t * heap, cost_t cost, void *data);
-void *heap_remove_smallest(heap_t * heap);
+void heap_insert(pcb_heap_t * heap, pcb_cost_t cost, void *data);
+void *heap_remove_smallest(pcb_heap_t * heap);
 /* replace the smallest item with a new item and return the smallest item.
  * (if the new item is the smallest, than return it, instead.) */
-void *heap_replace(heap_t * heap, cost_t cost, void *data);
+void *heap_replace(pcb_heap_t * heap, pcb_cost_t cost, void *data);
 
 /* -- interrogation -- */
-int heap_is_empty(heap_t * heap);
-int heap_size(heap_t * heap);
+int heap_is_empty(pcb_heap_t * heap);
+int heap_size(pcb_heap_t * heap);
 
 #endif /* PCB_HEAP_H */

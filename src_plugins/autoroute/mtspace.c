@@ -65,7 +65,7 @@ struct mtspace {
 
 typedef union {
 	vector_t *v;
-	heap_t *h;
+	pcb_heap_t *h;
 } heap_or_vector;
 
 /* this is a vetting_t */
@@ -185,7 +185,7 @@ struct query_closure {
 	pcb_bool touch_is_vec;
 };
 
-static inline void heap_append(heap_t * heap, pcb_cheap_point_t * desired, pcb_box_t * newone)
+static inline void heap_append(pcb_heap_t * heap, pcb_cheap_point_t * desired, pcb_box_t * newone)
 {
 	pcb_cheap_point_t p = *desired;
 	assert(desired);

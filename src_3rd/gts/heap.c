@@ -153,12 +153,12 @@ gpointer gts_heap_remove_top (GtsHeap * heap)
 }
 
 /**
- * gts_heap_top:
+ * gts_pcb_heap_top:
  * @heap: a #GtsHeap.
  *
  * Returns: the element at the top of the heap.
  */
-gpointer gts_heap_top (GtsHeap * heap)
+gpointer gts_pcb_heap_top (GtsHeap * heap)
 {
   GPtrArray * elts;
   guint len;
@@ -187,13 +187,13 @@ void gts_heap_destroy (GtsHeap * heap)
 }
 
 /**
- * gts_heap_thaw:
+ * gts_pcb_heap_thaw:
  * @heap: a #GtsHeap.
  *
  * If @heap has been frozen previously using gts_heap_freeze(), reorder it
  * in O(n) time and unfreeze it.
  */
-void gts_heap_thaw (GtsHeap * heap)
+void gts_pcb_heap_thaw (GtsHeap * heap)
 {
   guint i;
   
@@ -234,7 +234,7 @@ void gts_heap_foreach (GtsHeap * heap,
  * @heap: a #GtsHeap.
  *
  * Freezes the heap. Any subsequent operation will not preserve the heap
- * property. Used in conjunction with gts_heap_insert() and gts_heap_thaw()
+ * property. Used in conjunction with gts_heap_insert() and gts_pcb_heap_thaw()
  * to create a heap in O(n) time.
  */
 void gts_heap_freeze (GtsHeap * heap)

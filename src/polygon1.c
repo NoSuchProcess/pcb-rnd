@@ -902,7 +902,7 @@ returns poly is inside outfst ? pcb_true : pcb_false */
 static int cntr_in_M_pcb_polyarea_t(pcb_pline_t * poly, pcb_polyarea_t * outfst, pcb_bool test)
 {
 	pcb_polyarea_t *outer = outfst;
-	heap_t *heap;
+	pcb_heap_t *heap;
 
 	assert(poly != NULL);
 	assert(outer != NULL);
@@ -1146,7 +1146,7 @@ struct polyarea_info {
 
 static pcb_r_dir_t heap_it(const pcb_box_t * b, void *cl)
 {
-	heap_t *heap = (heap_t *) cl;
+	pcb_heap_t *heap = (pcb_heap_t *) cl;
 	struct polyarea_info *pa_info = (struct polyarea_info *) b;
 	pcb_pline_t *p = pa_info->pa->contours;
 	if (p->Count == 0)
@@ -1181,7 +1181,7 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 {
 	pcb_polyarea_t *curc;
 	pcb_pline_t *curh, *container;
-	heap_t *heap;
+	pcb_heap_t *heap;
 	pcb_rtree_t *tree;
 	int i;
 	int num_polyareas = 0;
