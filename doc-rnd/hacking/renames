@@ -109,5 +109,7 @@ Angle -> pcb_angle_t
 Coord -> pcb_coord_t
 RouteStyleTypePtr -> pcb_route_style_t *
 RouteStyleType -> pcb_route_style_t
+heap_t -> pcb_heap_t
+cost_t -> pcb_cost_t
 
 
