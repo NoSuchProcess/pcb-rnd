@@ -33,7 +33,7 @@
 
 struct pcb_buffer_s {								/* information about the paste buffer */
 	Coord X, Y;										/* offset */
-	BoxType BoundingBox;
+	pcb_box_t BoundingBox;
 	pcb_data_t *Data;							/* data; not all members of pcb_board_t */
 	/* are used */
 };

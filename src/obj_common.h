@@ -35,7 +35,7 @@
 
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */
-	Coord X, Y, X2, Y2;   /* so Point type can be cast as BoxType */
+	Coord X, Y, X2, Y2;   /* so Point type can be cast as pcb_box_t */
 	long int ID;
 };
 
@@ -44,7 +44,7 @@ struct pcb_box_s {  /* a bounding box */
 	Coord X2, Y2;     /* and lower right corner */
 };
 
-BoxTypePtr GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+pcb_box_t *GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 
 /* memset object to 0, but keep the link field */
 #define reset_obj_mem(type, obj) \
@@ -75,7 +75,7 @@ long int CreateIDGet(void);
    exists as an object on the pcb, MUST be defined using this as the
    first fields, either directly or through ANYLINEFIELDS.  */
 #define ANYOBJECTFIELDS			\
-	BoxType		BoundingBox;	\
+	pcb_box_t		BoundingBox;	\
 	long int	ID;		\
 	FlagType	Flags; \
 	AttributeListType Attributes

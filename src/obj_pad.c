@@ -298,7 +298,7 @@ void *ChangePadMaskSize(pcb_opctx_t *ctx, ElementTypePtr Element, PadTypePtr Pad
 /*** draw ***/
 static void draw_pad_name(PadType * pad)
 {
-	BoxType box;
+	pcb_box_t box;
 	pcb_bool vert;
 	TextType text;
 	char buff[128];
@@ -389,7 +389,7 @@ void draw_pad(PadType * pad)
 		draw_pad_name(pad);
 }
 
-r_dir_t draw_pad_callback(const BoxType * b, void *cl)
+r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	int *side = cl;
@@ -399,7 +399,7 @@ r_dir_t draw_pad_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-r_dir_t clear_pad_callback(const BoxType * b, void *cl)
+r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	int *side = cl;
@@ -409,7 +409,7 @@ r_dir_t clear_pad_callback(const BoxType * b, void *cl)
 }
 
 /* draws solder paste layer for a given side of the board - only pads get paste */
-void DrawPaste(int side, const BoxType * drawn_area)
+void DrawPaste(int side, const pcb_box_t * drawn_area)
 {
 	gui->set_color(Output.fgGC, PCB->ElementColor);
 	ALLPAD_LOOP(PCB->Data);
@@ -426,7 +426,7 @@ void DrawPaste(int side, const BoxType * drawn_area)
 
 static void GatherPadName(PadTypePtr Pad)
 {
-	BoxType box;
+	pcb_box_t box;
 	pcb_bool vert;
 
 	/* should text be vertical ? */

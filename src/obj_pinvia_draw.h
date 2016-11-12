@@ -28,10 +28,10 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-r_dir_t draw_pin_callback(const BoxType * b, void *cl);
-r_dir_t clear_pin_callback(const BoxType * b, void *cl);
-r_dir_t draw_via_callback(const BoxType * b, void *cl);
-r_dir_t draw_hole_callback(const BoxType * b, void *cl);
+r_dir_t draw_pin_callback(const pcb_box_t * b, void *cl);
+r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl);
+r_dir_t draw_via_callback(const pcb_box_t * b, void *cl);
+r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl);
 #endif
 
 

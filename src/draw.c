@@ -68,7 +68,7 @@ OutputType Output;							/* some widgets ... used for drawing */
  * some local identifiers
  */
 
-BoxType pcb_draw_invalidated = { MAXINT, MAXINT, -MAXINT, -MAXINT };
+pcb_box_t pcb_draw_invalidated = { MAXINT, MAXINT, -MAXINT, -MAXINT };
 
 int pcb_draw_doing_pinout = 0;
 pcb_bool pcb_draw_doing_assy = pcb_false;
@@ -76,12 +76,12 @@ pcb_bool pcb_draw_doing_assy = pcb_false;
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
-static void DrawEverything(const BoxType *);
-static void DrawPPV(int group, const BoxType *);
-static void DrawLayerGroup(int, const BoxType *);
-static void DrawMask(int side, const BoxType *);
-static void DrawRats(const BoxType *);
-static void DrawSilk(int side, const BoxType *);
+static void DrawEverything(const pcb_box_t *);
+static void DrawPPV(int group, const pcb_box_t *);
+static void DrawLayerGroup(int, const pcb_box_t *);
+static void DrawMask(int side, const pcb_box_t *);
+static void DrawRats(const pcb_box_t *);
+static void DrawSilk(int side, const pcb_box_t *);
 
 #warning TODO: this should be cached
 void LightenColor(const char *orig, char buf[8], double factor)
@@ -126,7 +126,7 @@ void Redraw(void)
 	gui->invalidate_all();
 }
 
-static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const BoxType * drawn_area)
+static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_box_t * drawn_area)
 {
 	int plated = -1;
 
@@ -142,7 +142,7 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const BoxTyp
 /* ---------------------------------------------------------------------------
  * prints assembly drawing.
  */
-static void PrintAssembly(int side, const BoxType * drawn_area)
+static void PrintAssembly(int side, const pcb_box_t * drawn_area)
 {
 	int side_group = GetLayerGroupNumberByNumber(max_copper_layer + side);
 
@@ -156,7 +156,7 @@ static void PrintAssembly(int side, const BoxType * drawn_area)
 	pcb_draw_doing_assy = pcb_false;
 }
 
-static void DrawEverything_holes(const BoxType * drawn_area)
+static void DrawEverything_holes(const pcb_box_t * drawn_area)
 {
 	int plated, unplated;
 	CountHoles(&plated, &unplated, drawn_area);
@@ -175,7 +175,7 @@ static void DrawEverything_holes(const BoxType * drawn_area)
 /* ---------------------------------------------------------------------------
  * initializes some identifiers for a new zoom factor and redraws whole screen
  */
-static void DrawEverything(const BoxType * drawn_area)
+static void DrawEverything(const pcb_box_t * drawn_area)
 {
 	int i, ngroups, side;
 	int component, solder;
@@ -303,7 +303,7 @@ static void DrawEverything(const BoxType * drawn_area)
  * Draws pins pads and vias - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->PinOn and PCB->ViaOn
  */
-static void DrawPPV(int group, const BoxType * drawn_area)
+static void DrawPPV(int group, const pcb_box_t * drawn_area)
 {
 	int component_group = GetLayerGroupNumberByNumber(component_silk_layer);
 	int solder_group = GetLayerGroupNumberByNumber(solder_silk_layer);
@@ -338,7 +338,7 @@ static void DrawPPV(int group, const BoxType * drawn_area)
  * Draws silk layer.
  */
 
-static void DrawSilk(int side, const BoxType * drawn_area)
+static void DrawSilk(int side, const pcb_box_t * drawn_area)
 {
 #if 0
 	/* This code is used when you want to mask silk to avoid exposed
@@ -374,7 +374,7 @@ static void DrawSilk(int side, const BoxType * drawn_area)
 }
 
 
-static void DrawMaskBoardArea(int mask_type, const BoxType * drawn_area)
+static void DrawMaskBoardArea(int mask_type, const pcb_box_t * drawn_area)
 {
 	/* Skip the mask drawing if the GUI doesn't want this type */
 	if ((mask_type == HID_MASK_BEFORE && !gui->poly_before) || (mask_type == HID_MASK_AFTER && !gui->poly_after))
@@ -391,7 +391,7 @@ static void DrawMaskBoardArea(int mask_type, const BoxType * drawn_area)
 /* ---------------------------------------------------------------------------
  * draws solder mask layer - this will cover nearly everything
  */
-static void DrawMask(int side, const BoxType * screen)
+static void DrawMask(int side, const pcb_box_t * screen)
 {
 	int thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
 
@@ -414,7 +414,7 @@ static void DrawMask(int side, const BoxType * screen)
 	}
 }
 
-static void DrawRats(const BoxType * drawn_area)
+static void DrawRats(const pcb_box_t * drawn_area)
 {
 	/*
 	 * XXX lesstif allows positive AND negative drawing in HID_MASK_CLEAR.
@@ -431,7 +431,7 @@ static void DrawRats(const BoxType * drawn_area)
 		gui->use_mask(HID_MASK_OFF);
 }
 
-void DrawLayer(pcb_layer_t *Layer, const BoxType * screen)
+void DrawLayer(pcb_layer_t *Layer, const pcb_box_t * screen)
 {
 	struct draw_poly_info info;
 
@@ -468,7 +468,7 @@ void DrawLayer(pcb_layer_t *Layer, const BoxType * screen)
  * draws one layer group.  If the exporter is not a GUI,
  * also draws the pins / pads / vias in this layer group.
  */
-static void DrawLayerGroup(int group, const BoxType * drawn_area)
+static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 {
 	int i, rv = 1;
 	int layernum;
@@ -576,7 +576,7 @@ void DrawObject(int type, void *ptr1, void *ptr2)
  * HID drawing callback.
  */
 
-void hid_expose_callback(HID * hid, BoxType * region, void *item)
+void hid_expose_callback(HID * hid, pcb_box_t * region, void *item)
 {
 	HID *old_gui = gui;
 

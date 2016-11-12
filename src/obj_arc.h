@@ -48,7 +48,7 @@ void RemoveFreeArc(ArcType *data);
 
 /*** Utility ***/
 void SetArcBoundingBox(ArcTypePtr Arc);
-BoxTypePtr GetArcEnds(ArcTypePtr Arc);
+pcb_box_t *GetArcEnds(ArcTypePtr Arc);
 void ChangeArcAngles(pcb_layer_t *Layer, ArcTypePtr a, Angle new_sa, Angle new_da);
 void ChangeArcRadii(pcb_layer_t *Layer, ArcTypePtr a, Coord new_width, Coord new_height);
 void *RemoveArc(pcb_layer_t *Layer, ArcTypePtr Arc);

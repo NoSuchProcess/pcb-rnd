@@ -54,7 +54,7 @@ void gpmi_hid_do_export(HID_Attr_Val * options)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
   int save_ons[MAX_LAYER + 2];
-  BoxType region;
+  pcb_box_t region;
 
 	h->result = options;
 	gpmi_event(h->module, HIDE_do_export_start, h);
@@ -151,7 +151,7 @@ void gpmi_hid_fill_polygon(hidGC gc, int n_coords, Coord *x, Coord *y)
 	gpmi_event(h->module, HIDE_fill_polygon, h, gc, x, y);
 }
 
-void gpmi_hid_fill_pcb_polygon(hidGC gc, PolygonType *poly, const BoxType *clip_box)
+void gpmi_hid_fill_pcb_polygon(hidGC gc, PolygonType *poly, const pcb_box_t *clip_box)
 {
 	/* TODO */
 }

@@ -34,16 +34,16 @@
 /* ---------------------------------------------------------------------------
  * get next slot for a box, allocates memory if necessary
  */
-BoxTypePtr GetBoxMemory(BoxListTypePtr Boxes)
+pcb_box_t *GetBoxMemory(BoxListTypePtr Boxes)
 {
-	BoxTypePtr box = Boxes->Box;
+	pcb_box_t *box = Boxes->Box;
 
 	/* realloc new memory if necessary and clear it */
 	if (Boxes->BoxN >= Boxes->BoxMax) {
 		Boxes->BoxMax = STEP_POINT + (2 * Boxes->BoxMax);
-		box = (BoxTypePtr) realloc(box, Boxes->BoxMax * sizeof(BoxType));
+		box = (pcb_box_t *) realloc(box, Boxes->BoxMax * sizeof(pcb_box_t));
 		Boxes->Box = box;
-		memset(box + Boxes->BoxN, 0, (Boxes->BoxMax - Boxes->BoxN) * sizeof(BoxType));
+		memset(box + Boxes->BoxN, 0, (Boxes->BoxMax - Boxes->BoxN) * sizeof(pcb_box_t));
 	}
 	return (box + Boxes->BoxN++);
 }

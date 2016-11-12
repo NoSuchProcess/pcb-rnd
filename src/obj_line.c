@@ -78,7 +78,7 @@ struct line_info {
 	jmp_buf env;
 };
 
-static r_dir_t line_callback(const BoxType * b, void *cl)
+static r_dir_t line_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct line_info *i = (struct line_info *) cl;
@@ -149,7 +149,7 @@ static r_dir_t line_callback(const BoxType * b, void *cl)
 LineTypePtr CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags)
 {
 	struct line_info info;
-	BoxType search;
+	pcb_box_t search;
 
 	search.X1 = MIN(X1, X2);
 	search.X2 = MAX(X1, X2);
@@ -218,7 +218,7 @@ void pcb_add_line_on_layer(pcb_layer_t *Layer, LineType *Line)
 	SetLineBoundingBox(Line);
 	if (!Layer->line_tree)
 		Layer->line_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
+	r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 }
 
 /* sets the bounding box of a line */
@@ -263,7 +263,7 @@ void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, LineType * line)
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
 
 	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_LINE, layer, line);
-	r_delete_entry(layer->line_tree, (BoxType *) line);
+	r_delete_entry(layer->line_tree, (pcb_box_t *) line);
 
 	linelist_remove(line);
 	linelist_append(&(lay->Line), line);
@@ -272,7 +272,7 @@ void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, LineType * line)
 
 	if (!lay->line_tree)
 		lay->line_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(lay->line_tree, (BoxType *) line, 0);
+	r_insert_entry(lay->line_tree, (pcb_box_t *) line, 0);
 	ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_LINE, lay, line);
 	return (line);
 }
@@ -287,11 +287,11 @@ void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Line->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
 		EraseLine(Line);
-		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
+		r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		Line->Thickness = value;
 		SetLineBoundingBox(Line);
-		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
+		r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		DrawLine(Layer, Line);
 		return (Line);
@@ -311,14 +311,14 @@ void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line
 		AddObjectToClearSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		EraseLine(Line);
-		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
+		r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		Line->Clearance = value;
 		if (Line->Clearance == 0) {
 			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Line);
 			Line->Clearance = PCB_MIL_TO_COORD(10);
 		}
 		SetLineBoundingBox(Line);
-		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
+		r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		DrawLine(Layer, Line);
 		return (Line);
@@ -396,9 +396,9 @@ void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 	if (Layer->On)
 		EraseLine(Line);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-	r_delete_entry(Layer->line_tree, (BoxType *) Line);
+	r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	MOVE_LINE_LOWLEVEL(Line, ctx->move.dx, ctx->move.dy);
-	r_insert_entry(Layer->line_tree, (BoxType *) Line, 0);
+	r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	if (Layer->On) {
 		DrawLine(Layer, Line);
@@ -444,14 +444,14 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line, Poin
 /* moves a line between layers; lowlevel routines */
 void *MoveLineToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, LineType * line, pcb_layer_t * Destination)
 {
-	r_delete_entry(Source->line_tree, (BoxType *) line);
+	r_delete_entry(Source->line_tree, (pcb_box_t *) line);
 
 	linelist_remove(line);
 	linelist_append(&(Destination->Line), line);
 
 	if (!Destination->line_tree)
 		Destination->line_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Destination->line_tree, (BoxType *) line, 0);
+	r_insert_entry(Destination->line_tree, (pcb_box_t *) line, 0);
 	return line;
 }
 
@@ -463,7 +463,7 @@ struct via_info {
 	jmp_buf env;
 };
 
-static r_dir_t moveline_callback(const BoxType * b, void *cl)
+static r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 {
 	struct via_info *i = (struct via_info *) cl;
 	PinTypePtr via;
@@ -480,7 +480,7 @@ static r_dir_t moveline_callback(const BoxType * b, void *cl)
 void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, LineType * Line)
 {
 	struct via_info info;
-	BoxType sb;
+	pcb_box_t sb;
 	LineTypePtr newone;
 	void *ptr1, *ptr2, *ptr3;
 
@@ -540,7 +540,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, LineType * Line)
 /* destroys a line from a layer */
 void *DestroyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line)
 {
-	r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
+	r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	free(Line->Number);
 
 	RemoveFreeLine(Line);
@@ -553,7 +553,7 @@ struct rlp_info {
 	LineTypePtr line;
 	PointTypePtr point;
 };
-static r_dir_t remove_point(const BoxType * b, void *cl)
+static r_dir_t remove_point(const pcb_box_t * b, void *cl)
 {
 	LineType *line = (LineType *) b;
 	struct rlp_info *info = (struct rlp_info *) cl;
@@ -586,7 +586,7 @@ void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line, Po
 	info.line = Line;
 	info.point = Point;
 	if (setjmp(info.env) == 0) {
-		r_search(Layer->line_tree, (const BoxType *) Point, NULL, remove_point, &info, NULL);
+		r_search(Layer->line_tree, (const pcb_box_t *) Point, NULL, remove_point, &info, NULL);
 		return RemoveLine_op(ctx, Layer, Line);
 	}
 	MoveObject(PCB_TYPE_LINE_POINT, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);
@@ -650,19 +650,19 @@ void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line, Po
 	EraseLine(Line);
 	if (Layer) {
 		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
-		r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
+		r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	}
 	else
-		r_delete_entry(PCB->Data->rat_tree, (BoxTypePtr) Line);
+		r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) Line);
 	RotatePointLowLevel(Point, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	SetLineBoundingBox(Line);
 	if (Layer) {
-		r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
+		r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		DrawLine(Layer, Line);
 	}
 	else {
-		r_insert_entry(PCB->Data->rat_tree, (BoxTypePtr) Line, 0);
+		r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) Line, 0);
 		DrawRat((RatTypePtr) Line);
 	}
 	Draw();
@@ -682,12 +682,12 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, LineTypePtr Line
 	Y = Line->Point2.Y;
 	AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, Layer, Line, &Line->Point2, ctx->insert.x - X, ctx->insert.y - Y);
 	EraseLine(Line);
-	r_delete_entry(Layer->line_tree, (BoxTypePtr) Line);
+	r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	Line->Point2.X = ctx->insert.x;
 	Line->Point2.Y = ctx->insert.y;
 	SetLineBoundingBox(Line);
-	r_insert_entry(Layer->line_tree, (BoxTypePtr) Line, 0);
+	r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	DrawLine(Layer, Line);
 	/* we must create after playing with Line since creation may
@@ -741,7 +741,7 @@ void draw_line(pcb_layer_t * layer, LineType * line)
 	_draw_line(line);
 }
 
-r_dir_t draw_line_callback(const BoxType * b, void *cl)
+r_dir_t draw_line_callback(const pcb_box_t * b, void *cl)
 {
 	draw_line((pcb_layer_t *) cl, (LineType *) b);
 	return R_DIR_FOUND_CONTINUE;

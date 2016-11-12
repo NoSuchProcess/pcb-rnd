@@ -46,7 +46,7 @@
  */
 static double PosX, PosY;				/* search position for subroutines */
 static Coord SearchRadius;
-static BoxType SearchBox;
+static pcb_box_t SearchBox;
 static pcb_layer_t *SearchLayer;
 
 /* ---------------------------------------------------------------------------
@@ -76,7 +76,7 @@ struct ans_info {
 	int locked;										/* This will be zero or PCB_FLAG_LOCK */
 };
 
-static r_dir_t pinorvia_callback(const BoxType * box, void *cl)
+static r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 {
 	struct ans_info *i = (struct ans_info *) cl;
 	PinTypePtr pin = (PinTypePtr) box;
@@ -131,7 +131,7 @@ static pcb_bool SearchPinByLocation(int locked, ElementTypePtr * Element, PinTyp
 	return pcb_false;
 }
 
-static r_dir_t pad_callback(const BoxType * b, void *cl)
+static r_dir_t pad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -182,7 +182,7 @@ struct line_info {
 	int locked;
 };
 
-static r_dir_t line_callback(const BoxType * box, void *cl)
+static r_dir_t line_callback(const pcb_box_t * box, void *cl)
 {
 	struct line_info *i = (struct line_info *) cl;
 	LineTypePtr l = (LineTypePtr) box;
@@ -214,7 +214,7 @@ static pcb_bool SearchLineByLocation(int locked, pcb_layer_t ** Layer, LineTypeP
 	return pcb_false;
 }
 
-static r_dir_t rat_callback(const BoxType * box, void *cl)
+static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -256,7 +256,7 @@ struct arc_info {
 	int locked;
 };
 
-static r_dir_t arc_callback(const BoxType * box, void *cl)
+static r_dir_t arc_callback(const pcb_box_t * box, void *cl)
 {
 	struct arc_info *i = (struct arc_info *) cl;
 	ArcTypePtr a = (ArcTypePtr) box;
@@ -286,7 +286,7 @@ static pcb_bool SearchArcByLocation(int locked, pcb_layer_t ** Layer, ArcTypePtr
 	return pcb_false;
 }
 
-static r_dir_t text_callback(const BoxType * box, void *cl)
+static r_dir_t text_callback(const pcb_box_t * box, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -318,7 +318,7 @@ static pcb_bool SearchTextByLocation(int locked, pcb_layer_t ** Layer, TextTypeP
 	return pcb_false;
 }
 
-static r_dir_t polygon_callback(const BoxType * box, void *cl)
+static r_dir_t polygon_callback(const pcb_box_t * box, void *cl)
 {
 	PolygonTypePtr polygon = (PolygonTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -351,7 +351,7 @@ static pcb_bool SearchPolygonByLocation(int locked, pcb_layer_t ** Layer, Polygo
 	return pcb_false;
 }
 
-static r_dir_t linepoint_callback(const BoxType * b, void *cl)
+static r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct line_info *i = (struct line_info *) cl;
@@ -428,7 +428,7 @@ static pcb_bool SearchPointByLocation(int locked, pcb_layer_t ** Layer, PolygonT
 	return (pcb_false);
 }
 
-static r_dir_t name_callback(const BoxType * box, void *cl)
+static r_dir_t name_callback(const pcb_box_t * box, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -474,7 +474,7 @@ SearchElementNameByLocation(int locked, ElementTypePtr * Element, TextTypePtr * 
 	return (pcb_false);
 }
 
-static r_dir_t element_callback(const BoxType * box, void *cl)
+static r_dir_t element_callback(const pcb_box_t * box, void *cl)
 {
 	ElementTypePtr element = (ElementTypePtr) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -526,7 +526,7 @@ pcb_bool IsPointOnPin(Coord X, Coord Y, Coord Radius, PinTypePtr pin)
 {
 	Coord t = PIN_SIZE(pin) / 2;
 	if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
-		BoxType b;
+		pcb_box_t b;
 
 		b.X1 = pin->X - t;
 		b.X2 = pin->X + t;
@@ -856,7 +856,7 @@ pcb_bool IsPointInPad(Coord X, Coord Y, Coord Radius, PadTypePtr Pad)
 	return range < Radius;
 }
 
-pcb_bool IsPointInBox(Coord X, Coord Y, BoxTypePtr box, Coord Radius)
+pcb_bool IsPointInBox(Coord X, Coord Y, pcb_box_t *box, Coord Radius)
 {
 	Coord width, height, range;
 
@@ -1012,14 +1012,14 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT_NAME &&
 			SearchElementNameByLocation(locked, (ElementTypePtr *) pr1, (TextTypePtr *) pr2, (TextTypePtr *) pr3, pcb_false)) {
-		BoxTypePtr box = &((TextTypePtr) r2)->BoundingBox;
+		pcb_box_t *box = &((TextTypePtr) r2)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_TYPE_ELEMENT_NAME;
 	}
 
 	if (!HigherAvail && Type & PCB_TYPE_ELEMENT &&
 			SearchElementByLocation(locked, (ElementTypePtr *) pr1, (ElementTypePtr *) pr2, (ElementTypePtr *) pr3, pcb_false)) {
-		BoxTypePtr box = &((ElementTypePtr) r1)->BoundingBox;
+		pcb_box_t *box = &((ElementTypePtr) r1)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_TYPE_ELEMENT;
 	}
@@ -1060,7 +1060,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 			if (Type & PCB_TYPE_POLYGON &&
 					SearchPolygonByLocation(locked, (pcb_layer_t **) Result1, (PolygonTypePtr *) Result2, (PolygonTypePtr *) Result3)) {
 				if (HigherAvail) {
-					BoxTypePtr box = &(*(PolygonTypePtr *) Result2)->BoundingBox;
+					pcb_box_t *box = &(*(PolygonTypePtr *) Result2)->BoundingBox;
 					double area = (double) (box->X2 - box->X1) * (double) (box->X2 - box->X1);
 					if (HigherBound < area)
 						break;

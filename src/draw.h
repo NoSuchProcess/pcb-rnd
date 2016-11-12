@@ -57,13 +57,13 @@ do { \
 } while(0) \
 
 /* the minimum box that needs to be redrawn */
-extern BoxType pcb_draw_invalidated;
+extern pcb_box_t pcb_draw_invalidated;
 
 /* Adds the update rect to the invalidated region. This schedules the object
-   for redraw (by Draw()). obj is anything that can be casted to BoxType */
+   for redraw (by Draw()). obj is anything that can be casted to pcb_box_t */
 #define pcb_draw_invalidate(obj) \
 do { \
-	BoxType *box = (BoxType *)obj; \
+	pcb_box_t *box = (pcb_box_t *)obj; \
 	pcb_draw_invalidated.X1 = MIN(pcb_draw_invalidated.X1, box->X1); \
 	pcb_draw_invalidated.X2 = MAX(pcb_draw_invalidated.X2, box->X2); \
 	pcb_draw_invalidated.Y1 = MIN(pcb_draw_invalidated.Y1, box->Y1); \
@@ -79,7 +79,7 @@ void LightenColor(const char *orig, char buf[8], double factor);
 void Draw(void);
 void Redraw(void);
 void DrawObject(int, void *, void *);
-void DrawLayer(pcb_layer_t *, const BoxType *);
+void DrawLayer(pcb_layer_t *, const pcb_box_t *);
 void EraseObject(int, void *, void *);
 
 #endif

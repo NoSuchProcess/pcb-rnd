@@ -391,7 +391,7 @@ static void maybe_close_f(FILE * f)
 	}
 }
 
-static BoxType region;
+static pcb_box_t region;
 
 /* Very similar to layer_type_to_file_name() but appends only a
    three-character suffix compatible with Eagle's defaults.  */

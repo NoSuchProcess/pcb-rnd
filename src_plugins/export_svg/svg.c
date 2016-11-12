@@ -194,7 +194,7 @@ static HID_Attribute *svg_get_export_options(int *n)
 void svg_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 {
 	static int saved_layer_stack[MAX_LAYER];
-	BoxType region;
+	pcb_box_t region;
 
 	region.X1 = 0;
 	region.Y1 = 0;

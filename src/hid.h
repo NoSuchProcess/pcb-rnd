@@ -284,8 +284,8 @@ struct hid_st {
 	void (*draw_rect) (hidGC gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
 	void (*fill_circle) (hidGC gc_, Coord cx_, Coord cy_, Coord radius_);
 	void (*fill_polygon) (hidGC gc_, int n_coords_, Coord * x_, Coord * y_);
-	void (*fill_pcb_polygon) (hidGC gc_, PolygonType * poly, const BoxType * clip_box);
-	void (*thindraw_pcb_polygon) (hidGC gc_, PolygonType * poly, const BoxType * clip_box);
+	void (*fill_pcb_polygon) (hidGC gc_, PolygonType * poly, const pcb_box_t * clip_box);
+	void (*thindraw_pcb_polygon) (hidGC gc_, PolygonType * poly, const pcb_box_t * clip_box);
 	void (*fill_pcb_pad) (hidGC gc_, PadType * pad, pcb_bool clip, pcb_bool mask);
 	void (*thindraw_pcb_pad) (hidGC gc_, PadType * pad, pcb_bool clip, pcb_bool mask);
 	void (*fill_pcb_pv) (hidGC fg_gc, hidGC bg_gc, PinType * pv, pcb_bool drawHole, pcb_bool mask);
@@ -550,8 +550,8 @@ struct hid_st {
 
    Do *not* assume that the hid that is passed is the GUI hid.  This
    callback is also used for printing and exporting. */
-struct BoxType;
-void hid_expose_callback(HID * hid_, BoxType *region_, void *item_);
+struct pcb_box_t;
+void hid_expose_callback(HID * hid_, pcb_box_t *region_, void *item_);
 
 /* This is initially set to a "no-gui" gui, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. */

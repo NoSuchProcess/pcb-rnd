@@ -41,11 +41,11 @@ typedef struct {								/* currently marked block */
 	  Point2;
 	long int State;
 	pcb_bool otherway;
-} AttachedBoxType, *AttachedBoxTypePtr;
+} AttachedBoxType;
 
 typedef struct {								/* currently attached object */
 	Coord X, Y;										/* saved position when PCB_MODE_MOVE */
-	BoxType BoundingBox;
+	pcb_box_t BoundingBox;
 	long int Type,								/* object type */
 	  State;
 	void *Ptr1,										/* three pointers to data, see */

@@ -192,7 +192,7 @@ typedef struct {
 	int nunplated;
 } HoleCountStruct;
 
-static r_dir_t hole_counting_callback(const BoxType * b, void *cl)
+static r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pin = (PinTypePtr) b;
 	HoleCountStruct *hcs = (HoleCountStruct *) cl;
@@ -209,7 +209,7 @@ static r_dir_t hole_counting_callback(const BoxType * b, void *cl)
  * a given area of the board. To count for the whole board, pass NULL
  * within_area.
  */
-void CountHoles(int *plated, int *unplated, const BoxType * within_area)
+void CountHoles(int *plated, int *unplated, const pcb_box_t * within_area)
 {
 	HoleCountStruct hcs = { 0, 0 };
 

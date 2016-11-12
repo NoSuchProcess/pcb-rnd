@@ -43,7 +43,7 @@
 
 void FinishStroke(void);
 
-BoxType StrokeBox;
+pcb_box_t StrokeBox;
 
 /* ---------------------------------------------------------------------------
  * FinishStroke - try to recognize the stroke sent

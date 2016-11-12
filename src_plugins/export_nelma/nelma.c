@@ -580,7 +580,7 @@ static void nelma_finish_png()
 
 void nelma_start_png_export()
 {
-	BoxType region;
+	pcb_box_t region;
 
 	region.X1 = 0;
 	region.Y1 = 0;

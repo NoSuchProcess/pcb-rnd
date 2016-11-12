@@ -65,11 +65,11 @@ static void *MyMoveViaLowLevel(pcb_data_t * Data, PinType * Via, Coord dx, Coord
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_VIA, Via, Via);
-		r_delete_entry(Data->via_tree, (BoxType *) Via);
+		r_delete_entry(Data->via_tree, (pcb_box_t *) Via);
 	}
 	MOVE_VIA_LOWLEVEL(Via, dx, dy);
 	if (Data) {
-		r_insert_entry(Data->via_tree, (BoxType *) Via, 0);
+		r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
 		ClearFromPolygon(Data, PCB_TYPE_VIA, Via, Via);
 	}
 	return Via;
@@ -79,11 +79,11 @@ static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, LineType
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_LINE, Layer, Line);
-		r_delete_entry(Layer->line_tree, (BoxType *) Line);
+		r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	}
 	MOVE_LINE_LOWLEVEL(Line, dx, dy);
 	if (Data) {
-		r_insert_entry(Layer->line_tree, (BoxType *) Line, 0);
+		r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		ClearFromPolygon(Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	return Line;
@@ -93,11 +93,11 @@ static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, ArcType *
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_ARC, Layer, Arc);
-		r_delete_entry(Layer->arc_tree, (BoxType *) Arc);
+		r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	}
 	MOVE_ARC_LOWLEVEL(Arc, dx, dy);
 	if (Data) {
-		r_insert_entry(Layer->arc_tree, (BoxType *) Arc, 0);
+		r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		ClearFromPolygon(Data, PCB_TYPE_ARC, Layer, Arc);
 	}
 	return Arc;
@@ -106,12 +106,12 @@ static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, ArcType *
 static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, PolygonType * Polygon, Coord dx, Coord dy)
 {
 	if (Data) {
-		r_delete_entry(Layer->polygon_tree, (BoxType *) Polygon);
+		r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	}
 	/* move.c actually only moves points, note no Data/Layer args */
 	MovePolygonLowLevel(Polygon, dx, dy);
 	if (Data) {
-		r_insert_entry(Layer->polygon_tree, (BoxType *) Polygon, 0);
+		r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 		InitClip(Data, Layer, Polygon);
 	}
 	return Polygon;
@@ -120,10 +120,10 @@ static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, Polyg
 static void *MyMoveTextLowLevel(pcb_layer_t * Layer, TextType * Text, Coord dx, Coord dy)
 {
 	if (Layer)
-		r_delete_entry(Layer->text_tree, (BoxType *) Text);
+		r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	MOVE_TEXT_LOWLEVEL(Text, dx, dy);
 	if (Layer)
-		r_insert_entry(Layer->text_tree, (BoxType *) Text, 0);
+		r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	return Text;
 }
 
@@ -183,7 +183,7 @@ static void MoveAll(Coord dx, Coord dy)
 static int autocrop(int argc, const char **argv, Coord x, Coord y)
 {
 	Coord dx, dy, pad;
-	BoxType *box;
+	pcb_box_t *box;
 
 	box = GetDataBoundingBox(PCB->Data);	/* handy! */
 	if (!box || (box->X1 == box->X2 || box->Y1 == box->Y2)) {

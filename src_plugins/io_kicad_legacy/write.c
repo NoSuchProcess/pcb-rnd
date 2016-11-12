@@ -574,7 +574,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	gdl_iterator_t it;
 	ArcType *arc;
 	ArcType localArc; /* for converting ellipses to circular arcs */
-	BoxType *boxResult; /* for figuring out arc ends */
+	pcb_box_t *boxResult; /* for figuring out arc ends */
 	pcb_cardinal_t currentLayer = number;
 	Coord radius, xStart, yStart, xEnd, yEnd;
 	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
@@ -764,7 +764,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	LineType *line;
 	ArcType *arc;
 	ElementType *element;
-	BoxType *boxResult;
+	pcb_box_t *boxResult;
 
 	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc exporting */
 
@@ -1144,7 +1144,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 
 		arclist_foreach(&element->Arc, &it, arc) {
 
-			BoxType *boxResult = GetArcEnds(arc);
+			pcb_box_t *boxResult = GetArcEnds(arc);
 			arcStartX = boxResult->X1;
 			arcStartY = boxResult->Y1;
 			arcEndX = boxResult->X2; 

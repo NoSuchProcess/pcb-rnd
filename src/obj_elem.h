@@ -45,7 +45,7 @@ struct element_st {
 	padlist_t Pad;
 	linelist_t Line;
 	arclist_t Arc;
-	BoxType VBox;
+	pcb_box_t VBox;
 	gdl_elem_t link;
 };
 

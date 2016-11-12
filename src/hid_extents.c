@@ -8,7 +8,7 @@
 #define MAXINT (((unsigned int)(~0))>>1)
 #endif
 
-static BoxType box;
+static pcb_box_t box;
 
 typedef struct hid_gc_struct {
 	int width;
@@ -157,9 +157,9 @@ void hid_extents_init(void)
 	initialised = pcb_true;
 }
 
-BoxType *hid_get_extents(void *item)
+pcb_box_t *hid_get_extents(void *item)
 {
-	BoxType region;
+	pcb_box_t region;
 
 	/* As this isn't a real "HID", we need to ensure we are initialised. */
 	hid_extents_init();

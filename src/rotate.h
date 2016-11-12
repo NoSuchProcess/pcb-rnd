@@ -92,7 +92,7 @@ do { \
 #define	ROTATE_TYPES	(PCB_TYPE_ELEMENT | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_ARC)
 
 
-void RotateBoxLowLevel(BoxTypePtr, Coord, Coord, unsigned);
+void RotateBoxLowLevel(pcb_box_t *, Coord, Coord, unsigned);
 void RotatePolygonLowLevel(PolygonTypePtr, Coord, Coord, unsigned);
 void *RotateObject(int, void *, void *, void *, Coord, Coord, unsigned);
 void RotateScreenObject(Coord, Coord, unsigned);

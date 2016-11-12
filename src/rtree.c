@@ -67,12 +67,12 @@
 #define DELETE_BY_POINTER
 
 typedef struct {
-	const BoxType *bptr;					/* pointer to the box */
-	BoxType bounds;								/* copy of the box for locality of reference */
+	const pcb_box_t *bptr;					/* pointer to the box */
+	pcb_box_t bounds;								/* copy of the box for locality of reference */
 } Rentry;
 
 struct rtree_node {
-	BoxType box;									/* bounds rectangle of this node */
+	pcb_box_t box;									/* bounds rectangle of this node */
 	struct rtree_node *parent;		/* parent of this node, NULL = root */
 	struct {
 		unsigned is_leaf:1;					/* this is a leaf node */
@@ -240,7 +240,7 @@ void __r_dump_tree(struct rtree_node *node, int depth)
  * according to the largest side.
  */
 #ifdef SORT
-static int cmp_box(const BoxType * a, const BoxType * b)
+static int cmp_box(const pcb_box_t * a, const pcb_box_t * b)
 {
 	/* compare two box coordinates so that the __r_search
 	 * will fail at the earliest comparison possible.
@@ -341,7 +341,7 @@ static void adjust_bounds(struct rtree_node *node)
  * it, so don't free the box list until you've called r_destroy_tree.
  * if you set 'manage' to pcb_true, r_destroy_tree will free your boxlist.
  */
-rtree_t *r_create_tree(const BoxType * boxlist[], int N, int manage)
+rtree_t *r_create_tree(const pcb_box_t * boxlist[], int N, int manage)
 {
 	rtree_t *rtree;
 	struct rtree_node *node;
@@ -396,8 +396,8 @@ void r_destroy_tree(rtree_t ** rtree)
 }
 
 typedef struct {
-	r_dir_t (*check_it) (const BoxType * region, void *cl);
-	r_dir_t (*found_it) (const BoxType * box, void *cl);
+	r_dir_t (*check_it) (const pcb_box_t * region, void *cl);
+	r_dir_t (*found_it) (const pcb_box_t * box, void *cl);
 	void *closure;
 	int cancel;
 } r_arg;
@@ -406,7 +406,7 @@ typedef struct {
  * so some careful thought has been given to maximizing the speed
  *
  */
-int __r_search(struct rtree_node *node, const BoxType * query, r_arg * arg)
+int __r_search(struct rtree_node *node, const pcb_box_t * query, r_arg * arg)
 {
 	r_dir_t res;
 
@@ -498,9 +498,9 @@ int __r_search(struct rtree_node *node, const BoxType * query, r_arg * arg)
  * Returns how the search ended.
  */
 r_dir_t
-r_search(rtree_t * rtree, const BoxType * query,
-				 r_dir_t (*check_region) (const BoxType * region, void *cl),
-				 r_dir_t (*found_rectangle) (const BoxType * box, void *cl), void *cl,
+r_search(rtree_t * rtree, const pcb_box_t * query,
+				 r_dir_t (*check_region) (const pcb_box_t * region, void *cl),
+				 r_dir_t (*found_rectangle) (const pcb_box_t * box, void *cl), void *cl,
 				 int *num_found)
 {
 	r_arg arg;
@@ -546,14 +546,14 @@ ret:;
 }
 
 /*------ r_region_is_empty ------*/
-static r_dir_t __r_region_is_empty_rect_in_reg(const BoxType * box, void *cl)
+static r_dir_t __r_region_is_empty_rect_in_reg(const pcb_box_t * box, void *cl)
 {
 	jmp_buf *envp = (jmp_buf *) cl;
 	longjmp(*envp, 1);						/* found one! */
 }
 
 /* return 0 if there are any rectangles in the given region. */
-int r_region_is_empty(rtree_t * rtree, const BoxType * region)
+int r_region_is_empty(rtree_t * rtree, const pcb_box_t * region)
 {
 	jmp_buf env;
 	int r;
@@ -582,7 +582,7 @@ struct rtree_node *find_clusters(struct rtree_node *node)
 	int a_manage = 0, b_manage = 0;
 	int i, old_ax, old_ay, old_bx, old_by;
 	struct rtree_node *new_node;
-	BoxType *b;
+	pcb_box_t *b;
 
 	for (i = 0; i < M_SIZE + 1; i++) {
 		if (node->flags.is_leaf)
@@ -754,7 +754,7 @@ static void split_node(struct rtree_node *node)
 	split_node(node->parent);
 }
 
-static inline int contained(struct rtree_node *node, const BoxType * query)
+static inline int contained(struct rtree_node *node, const pcb_box_t * query)
 {
 	if (node->box.X1 > query->X1 || node->box.X2 < query->X2 || node->box.Y1 > query->Y1 || node->box.Y2 < query->Y2)
 		return 0;
@@ -762,7 +762,7 @@ static inline int contained(struct rtree_node *node, const BoxType * query)
 }
 
 
-static inline double penalty(struct rtree_node *node, const BoxType * query)
+static inline double penalty(struct rtree_node *node, const pcb_box_t * query)
 {
 	double score;
 
@@ -776,7 +776,7 @@ static inline double penalty(struct rtree_node *node, const BoxType * query)
 	return score;
 }
 
-static void __r_insert_node(struct rtree_node *node, const BoxType * query, int manage, pcb_bool force)
+static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, int manage, pcb_bool force)
 {
 
 #ifdef SLOW_ASSERTS
@@ -885,7 +885,7 @@ static void __r_insert_node(struct rtree_node *node, const BoxType * query, int 
 	}
 }
 
-void r_insert_entry(rtree_t * rtree, const BoxType * which, int man)
+void r_insert_entry(rtree_t * rtree, const pcb_box_t * which, int man)
 {
 	assert(which);
 	assert(which->X1 <= which->X2);
@@ -898,7 +898,7 @@ void r_insert_entry(rtree_t * rtree, const BoxType * which, int man)
 	rtree->size++;
 }
 
-pcb_bool __r_delete(struct rtree_node *node, const BoxType * query)
+pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
 {
 	int i, flag, mask, a;
 
@@ -989,7 +989,7 @@ pcb_bool __r_delete(struct rtree_node *node, const BoxType * query)
 	return pcb_true;
 }
 
-pcb_bool r_delete_entry(rtree_t * rtree, const BoxType * box)
+pcb_bool r_delete_entry(rtree_t * rtree, const pcb_box_t * box)
 {
 	pcb_bool r;
 

@@ -175,14 +175,14 @@ static int layer_sort(const void *va, const void *vb)
 }
 
 static const char *filename;
-static BoxType *bounds;
+static pcb_box_t *bounds;
 static int in_mono, as_shown;
 
 void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 {
 	int i;
 	static int saved_layer_stack[MAX_LAYER];
-	BoxType region;
+	pcb_box_t region;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);

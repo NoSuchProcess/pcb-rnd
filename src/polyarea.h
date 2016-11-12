@@ -166,6 +166,6 @@ int poly_AndSubtract_free(POLYAREA * a, POLYAREA * b, POLYAREA ** aandb, POLYARE
 int SavePOLYAREA(POLYAREA * PA, char *fname);
 
 /* calculate the bounding box of a POLYAREA and save result in b */
-void poly_bbox(POLYAREA * p, BoxType * b);
+void poly_bbox(POLYAREA * p, pcb_box_t * b);
 
 #endif /* PCB_POLYAREA_H */

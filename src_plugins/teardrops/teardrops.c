@@ -56,7 +56,7 @@ int distance_between_points(int x1, int y1, int x2, int y2)
 	return distance;
 }
 
-static r_dir_t check_line_callback(const BoxType * box, void *cl)
+static r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_layer_t *lay = &PCB->Data->Layer[layer];
 	LineType *l = (LineType *) box;
@@ -194,7 +194,7 @@ static r_dir_t check_line_callback(const BoxType * box, void *cl)
 
 static void check_pin(PinType * _pin)
 {
-	BoxType spot;
+	pcb_box_t spot;
 
 	pin = _pin;
 
@@ -222,7 +222,7 @@ static void check_pin(PinType * _pin)
 
 static void check_via(PinType * _pin)
 {
-	BoxType spot;
+	pcb_box_t spot;
 
 	pin = _pin;
 

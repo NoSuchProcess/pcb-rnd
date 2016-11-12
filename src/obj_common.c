@@ -37,7 +37,7 @@
 /* returns a pointer to an objects bounding box;
  * data is valid until the routine is called again
  */
-BoxTypePtr GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_box_t *GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	switch (Type) {
 	case PCB_TYPE_LINE:
@@ -47,16 +47,16 @@ BoxTypePtr GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	case PCB_TYPE_PAD:
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_ELEMENT_NAME:
-		return (BoxType *) Ptr2;
+		return (pcb_box_t *) Ptr2;
 	case PCB_TYPE_VIA:
 	case PCB_TYPE_ELEMENT:
-		return (BoxType *) Ptr1;
+		return (pcb_box_t *) Ptr1;
 	case PCB_TYPE_POLYGON_POINT:
 	case PCB_TYPE_LINE_POINT:
-		return (BoxType *) Ptr3;
+		return (pcb_box_t *) Ptr3;
 	default:
 		Message(PCB_MSG_DEFAULT, "Request for bounding box of unsupported type %d\n", Type);
-		return (BoxType *) Ptr2;
+		return (pcb_box_t *) Ptr2;
 	}
 }
 

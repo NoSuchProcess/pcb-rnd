@@ -97,7 +97,7 @@ void hidgl_set_depth(float depth)
 	global_depth = depth;
 }
 
-void hidgl_draw_grid(BoxType * drawn_area)
+void hidgl_draw_grid(pcb_box_t * drawn_area)
 {
 	static GLfloat *points = 0;
 	static int npoints = 0;
@@ -547,7 +547,7 @@ struct do_hole_info {
 	double scale;
 };
 
-static r_dir_t do_hole(const BoxType * b, void *cl)
+static r_dir_t do_hole(const pcb_box_t * b, void *cl)
 {
 	struct do_hole_info *info = cl;
 	PLINE *curc = (PLINE *) b;
@@ -566,7 +566,7 @@ static int dirty_bits = 0;
 static int assigned_bits = 0;
 
 /* FIXME: JUST DRAWS THE FIRST PIECE.. TODO: SUPPORT FOR FULLPOLY POLYGONS */
-void hidgl_fill_pcb_polygon(PolygonType * poly, const BoxType * clip_box, double scale)
+void hidgl_fill_pcb_polygon(PolygonType * poly, const pcb_box_t * clip_box, double scale)
 {
 	int vertex_count = 0;
 	PLINE *contour;

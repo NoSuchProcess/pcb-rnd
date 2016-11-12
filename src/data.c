@@ -271,9 +271,9 @@ pcb_bool IsDataEmpty(pcb_data_t *Data)
  * gets minimum and maximum coordinates
  * returns NULL if layout is empty
  */
-BoxTypePtr GetDataBoundingBox(pcb_data_t *Data)
+pcb_box_t *GetDataBoundingBox(pcb_data_t *Data)
 {
-	static BoxType box;
+	static pcb_box_t box;
 	/* FIX ME: use r_search to do this much faster */
 
 	/* preset identifiers with highest and lowest possible values */

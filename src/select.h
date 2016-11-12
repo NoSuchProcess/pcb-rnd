@@ -37,8 +37,8 @@
 	 PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
 
 pcb_bool SelectObject(void);
-pcb_bool SelectBlock(BoxTypePtr, pcb_bool);
-long int *ListBlock(BoxTypePtr Box, int *len);
+pcb_bool SelectBlock(pcb_box_t *, pcb_bool);
+long int *ListBlock(pcb_box_t *Box, int *len);
 
 void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type);

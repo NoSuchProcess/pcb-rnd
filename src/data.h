@@ -123,6 +123,6 @@ void pcb_loop_all(void *ctx,
 
 void FreeDataMemory(pcb_data_t *);
 pcb_bool IsDataEmpty(pcb_data_t *);
-BoxTypePtr GetDataBoundingBox(pcb_data_t *Data);
+pcb_box_t *GetDataBoundingBox(pcb_data_t *Data);
 
 #endif

@@ -369,7 +369,7 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 	if (type == PCB_TYPE_ARC) {
 		pcb_layer_t *Layer = (pcb_layer_t *) ptr1;
 		ArcTypePtr a = (ArcTypePtr) ptr2;
-		r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
+		r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);
 		old_sa = a->StartAngle;
 		old_da = a->Delta;
 		if (andDraw)
@@ -377,7 +377,7 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 		a->StartAngle = Entry->Data.AngleChange.angle[0];
 		a->Delta = Entry->Data.AngleChange.angle[1];
 		SetArcBoundingBox(a);
-		r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
+		r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
 		Entry->Data.AngleChange.angle[0] = old_sa;
 		Entry->Data.AngleChange.angle[1] = old_da;
 		DrawObject(type, ptr1, a);
@@ -400,7 +400,7 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
 	if (type == PCB_TYPE_ARC) {
 		pcb_layer_t *Layer = (pcb_layer_t *) ptr1;
 		ArcTypePtr a = (ArcTypePtr) ptr2;
-		r_delete_entry(Layer->arc_tree, (BoxTypePtr) a);
+		r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);
 		old_w = a->Width;
 		old_h = a->Height;
 		if (andDraw)
@@ -408,7 +408,7 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
 		a->Width = Entry->Data.Move.DX;
 		a->Height = Entry->Data.Move.DY;
 		SetArcBoundingBox(a);
-		r_insert_entry(Layer->arc_tree, (BoxTypePtr) a, 0);
+		r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
 		Entry->Data.Move.DX = old_w;
 		Entry->Data.Move.DY = old_h;
 		DrawObject(type, ptr1, a);

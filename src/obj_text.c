@@ -100,7 +100,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, TextType *text, FontType *PCBFont
 	text->ID = CreateIDGet();
 	if (!Layer->text_tree)
 		Layer->text_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Layer->text_tree, (BoxTypePtr) text, 0);
+	r_insert_entry(Layer->text_tree, (pcb_box_t *) text, 0);
 }
 
 /* creates the bounding box of a text object */
@@ -160,7 +160,7 @@ void SetTextBoundingBox(FontTypePtr FontPtr, TextTypePtr Text)
 			space = symbol[*s].Delta;
 		}
 		else {
-			BoxType *ds = &FontPtr->DefaultSymbol;
+			pcb_box_t *ds = &FontPtr->DefaultSymbol;
 			Coord w = ds->X2 - ds->X1;
 
 			minx = MIN(minx, ds->X1 + tx);
@@ -229,7 +229,7 @@ void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, TextType * text)
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
 
-	r_delete_entry(layer->text_tree, (BoxType *) text);
+	r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_TEXT, layer, text);
 
 	textlist_remove(text);
@@ -237,7 +237,7 @@ void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, TextType * text)
 
 	if (!lay->text_tree)
 		lay->text_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(lay->text_tree, (BoxType *) text, 0);
+	r_insert_entry(lay->text_tree, (pcb_box_t *) text, 0);
 	ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_TEXT, lay, text);
 	return (text);
 }
@@ -253,11 +253,11 @@ void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE && value != Text->Scale) {
 		AddObjectToSizeUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
 		EraseText(Layer, Text);
-		r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
+		r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		Text->Scale = value;
 		SetTextBoundingBox(&PCB->Font, Text);
-		r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
+		r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		DrawText(Layer, Text);
 		return (Text);
@@ -274,13 +274,13 @@ void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
 		return (NULL);
 	EraseText(Layer, Text);
-	r_delete_entry(Layer->text_tree, (BoxTypePtr)Text);
+	r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	Text->TextString = ctx->chgname.new_name;
 
 	/* calculate size of the bounding box */
 	SetTextBoundingBox(&PCB->Font, Text);
-	r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
+	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
 	return (old);
@@ -338,7 +338,7 @@ void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 {
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	r_delete_entry(Layer->text_tree, (BoxType *) Text);
+	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	if (Layer->On) {
 		EraseText(Layer, Text);
 		MOVE_TEXT_LOWLEVEL(Text, ctx->move.dx, ctx->move.dy);
@@ -347,7 +347,7 @@ void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 	}
 	else
 		MOVE_TEXT_LOWLEVEL(Text, ctx->move.dx, ctx->move.dy);
-	r_insert_entry(Layer->text_tree, (BoxType *) Text, 0);
+	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	return (Text);
 }
@@ -356,7 +356,7 @@ void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, TextType * text, pcb_layer_t * Destination)
 {
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Source, text);
-	r_delete_entry(Source->text_tree, (BoxType *) text);
+	r_delete_entry(Source->text_tree, (pcb_box_t *) text);
 
 	textlist_remove(text);
 	textlist_append(&Destination->Text, text);
@@ -370,7 +370,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, TextType *
 	SetTextBoundingBox(&PCB->Font, text);
 	if (!Destination->text_tree)
 		Destination->text_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Destination->text_tree, (BoxType *) text, 0);
+	r_insert_entry(Destination->text_tree, (pcb_box_t *) text, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Destination, text);
 
 	return text;
@@ -400,7 +400,7 @@ void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, TextType * text)
 void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 {
 	free(Text->TextString);
-	r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
+	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 
 	RemoveFreeText(Text);
 
@@ -413,7 +413,7 @@ void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 	/* erase from screen */
 	if (Layer->On) {
 		EraseText(Layer, Text);
-		r_delete_entry(Layer->text_tree, (BoxTypePtr)Text);
+		r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
 		if (!ctx->remove.bulk)
 			Draw();
 	}
@@ -454,9 +454,9 @@ void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, TextTypePtr Text)
 {
 	EraseText(Layer, Text);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
-	r_delete_entry(Layer->text_tree, (BoxTypePtr) Text);
+	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	RotateTextLowLevel(Text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	r_insert_entry(Layer->text_tree, (BoxTypePtr) Text, 0);
+	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
 	Draw();
@@ -516,7 +516,7 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 		}
 		else {
 			/* the default symbol is a filled box */
-			BoxType defaultsymbol = PCB->Font.DefaultSymbol;
+			pcb_box_t defaultsymbol = PCB->Font.DefaultSymbol;
 			Coord size = (defaultsymbol.X2 - defaultsymbol.X1) * 6 / 5;
 
 			defaultsymbol.X1 = PCB_SCALE_TEXT(defaultsymbol.X1 + x, Text->Scale);
@@ -541,7 +541,7 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 }
 
 
-r_dir_t draw_text_callback(const BoxType * b, void *cl)
+r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_layer_t *layer = cl;
 	TextType *text = (TextType *) b;

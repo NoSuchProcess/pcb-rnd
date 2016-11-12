@@ -745,7 +745,7 @@ void ghid_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 static void redraw_region(GdkRectangle * rect)
 {
 	int eleft, eright, etop, ebottom;
-	BoxType region;
+	pcb_box_t region;
 	render_priv *priv = gport->render_priv;
 
 	if (!gport->pixmap)
@@ -1185,7 +1185,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	GdkDrawable *save_drawable;
 	view_data save_view;
 	int save_width, save_height;
-	BoxType region;
+	pcb_box_t region;
 	render_priv *priv = gport->render_priv;
 
 	save_drawable = gport->drawable;

@@ -15,7 +15,7 @@ void gpmi_hid_draw_arc(hidGC gc, Coord cx, Coord cy, Coord xradius, Coord yradiu
 void gpmi_hid_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
 void gpmi_hid_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius);
 void gpmi_hid_fill_polygon(hidGC gc, int n_coords, Coord *x, Coord *y);
-void gpmi_hid_fill_pcb_polygon(hidGC gc, PolygonType *poly, const BoxType *clip_box);
+void gpmi_hid_fill_pcb_polygon(hidGC gc, PolygonType *poly, const pcb_box_t *clip_box);
 void gpmi_hid_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
 void gpmi_hid_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, PinType *pad, pcb_bool drawHole, pcb_bool mask);
 void gpmi_hid_fill_pcb_pad(hidGC gc, PadType * pad, pcb_bool clear, pcb_bool mask);

@@ -274,7 +274,7 @@ static double dist_lsp(int x1, int y1, int x2, int y2, int px, int py)
 /*                                                                           */
 /*****************************************************************************/
 
-static r_dir_t line_callback(const BoxType * b, void *cl)
+static r_dir_t line_callback(const pcb_box_t * b, void *cl)
 {
 	/* pcb_layer_t *layer = (pcb_layer_t *)cl; */
 	LineTypePtr l = (LineTypePtr) b;
@@ -300,7 +300,7 @@ static r_dir_t line_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t arc_callback(const BoxType * b, void *cl)
+static r_dir_t arc_callback(const pcb_box_t * b, void *cl)
 {
 	/* pcb_layer_t *layer = (pcb_layer_t *) cl; */
 	ArcTypePtr a = (ArcTypePtr) b;
@@ -336,7 +336,7 @@ static r_dir_t arc_callback(const BoxType * b, void *cl)
 
 static int find_pair(int Px, int Py)
 {
-	BoxType spot;
+	pcb_box_t spot;
 
 #if TRACE1
 	pcb_printf("\nPuller find_pair at %#mD\n", Crosshair.X, Crosshair.Y);
@@ -647,7 +647,7 @@ typedef struct {
 
 #define NEAR(a,b) ((a) <= (b) + 2 && (a) >= (b) - 2)
 
-static r_dir_t find_pair_line_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_line_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 #if TRACE1
@@ -682,7 +682,7 @@ static r_dir_t find_pair_line_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t find_pair_arc_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_arc_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	Extra *e = ARC2EXTRA(arc);
@@ -710,7 +710,7 @@ static r_dir_t find_pair_arc_callback(const BoxType * b, void *cl)
 static void find_pairs_1(void *me, Extra ** e, int x, int y)
 {
 	FindPairCallbackStruct fpcs;
-	BoxType b;
+	pcb_box_t b;
 
 	if (*e)
 		return;
@@ -749,7 +749,7 @@ static int check_point_in_pin(PinTypePtr pin, int x, int y, End * e)
 	return 0;
 }
 
-static r_dir_t find_pair_pinline_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	PinTypePtr pin = (PinTypePtr) cl;
@@ -781,7 +781,7 @@ static r_dir_t find_pair_pinline_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t find_pair_pinarc_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	PinTypePtr pin = (PinTypePtr) cl;
@@ -837,7 +837,7 @@ static r_dir_t check_point_in_pad(PadTypePtr pad, int x, int y, End * e)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t find_pair_padline_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	PadTypePtr pad = (PadTypePtr) cl;
@@ -895,7 +895,7 @@ static r_dir_t find_pair_padline_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t find_pair_padarc_callback(const BoxType * b, void *cl)
+static r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	PadTypePtr pad = (PadTypePtr) cl;
@@ -973,7 +973,7 @@ static void find_pairs()
 	END_LOOP;
 
 	ALLPIN_LOOP(PCB->Data); {
-		BoxType box;
+		pcb_box_t box;
 		box.X1 = pin->X - pin->Thickness / 2;
 		box.Y1 = pin->Y - pin->Thickness / 2;
 		box.X2 = pin->X + pin->Thickness / 2;
@@ -984,7 +984,7 @@ static void find_pairs()
 	ENDALL_LOOP;
 
 	VIA_LOOP(PCB->Data); {
-		BoxType box;
+		pcb_box_t box;
 		box.X1 = via->X - via->Thickness / 2;
 		box.Y1 = via->Y - via->Thickness / 2;
 		box.X2 = via->X + via->Thickness / 2;
@@ -995,7 +995,7 @@ static void find_pairs()
 	END_LOOP;
 
 	ALLPAD_LOOP(PCB->Data); {
-		BoxType box;
+		pcb_box_t box;
 		box.X1 = MIN(pad->Point1.X, pad->Point2.X) - pad->Thickness / 2;
 		box.Y1 = MIN(pad->Point1.Y, pad->Point2.Y) - pad->Thickness / 2;
 		box.X2 = MAX(pad->Point1.X, pad->Point2.X) + pad->Thickness / 2;
@@ -1221,7 +1221,7 @@ static void reverse_arc(ArcTypePtr arc)
 	memcpy(&e->end, &etmp, sizeof(End));
 }
 
-static void expand_box(BoxTypePtr b, int x, int y, int t)
+static void expand_box(pcb_box_t *b, int x, int y, int t)
 {
 	b->X1 = MIN(b->X1, x - t);
 	b->X2 = MAX(b->X2, x + t);
@@ -1490,7 +1490,7 @@ static int gp_point_2(int x, int y, int t, End * e, int esa, int eda, const char
 	return gp_point_force(x, y, t, e, esa, eda, 0, func);
 }
 
-static r_dir_t gp_line_cb(const BoxType * b, void *cb)
+static r_dir_t gp_line_cb(const pcb_box_t * b, void *cb)
 {
 	const LineTypePtr l = (LineTypePtr) b;
 	Extra *e = LINE2EXTRA(l);
@@ -1509,7 +1509,7 @@ static r_dir_t gp_line_cb(const BoxType * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_arc_cb(const BoxType * b, void *cb)
+static r_dir_t gp_arc_cb(const pcb_box_t * b, void *cb)
 {
 	const ArcTypePtr a = (ArcTypePtr) b;
 	Extra *e = ARC2EXTRA(a);
@@ -1531,7 +1531,7 @@ static r_dir_t gp_arc_cb(const BoxType * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_text_cb(const BoxType * b, void *cb)
+static r_dir_t gp_text_cb(const pcb_box_t * b, void *cb)
 {
 	const TextTypePtr t = (TextTypePtr) b;
 	/* FIXME: drop in the actual text-line endpoints later. */
@@ -1542,7 +1542,7 @@ static r_dir_t gp_text_cb(const BoxType * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_poly_cb(const BoxType * b, void *cb)
+static r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
 {
 	int i;
 	const PolygonTypePtr p = (PolygonTypePtr) b;
@@ -1551,7 +1551,7 @@ static r_dir_t gp_poly_cb(const BoxType * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_pin_cb(const BoxType * b, void *cb)
+static r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
 {
 	const PinTypePtr p = (PinTypePtr) b;
 	int t2 = (p->Thickness + 1) / 2;
@@ -1573,7 +1573,7 @@ static r_dir_t gp_pin_cb(const BoxType * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t gp_pad_cb(const BoxType * b, void *cb)
+static r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
 {
 	const PadTypePtr p = (PadTypePtr) b;
 	int t2 = (p->Thickness + 1) / 2;
@@ -1766,7 +1766,7 @@ static void mark_arc_for_deletion(ArcTypePtr a)
 
 static void maybe_pull_1(LineTypePtr line)
 {
-	BoxType box;
+	pcb_box_t box;
 	/* Line half-thicknesses, including line space */
 	int ex, ey;
 	LineTypePtr new_line;

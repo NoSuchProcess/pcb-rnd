@@ -179,7 +179,7 @@ double ComputeIntersectionArea(BoxListTypePtr boxlist)
  */
 double ComputeUnionArea(BoxListTypePtr boxlist)
 {
-	BoxTypePtr *rectLeft, *rectRight;
+	pcb_box_t **rectLeft, **rectRight;
 	pcb_cardinal_t i, j;
 	LocationList yCoords;
 	SegmentTree segtree;
@@ -194,8 +194,8 @@ double ComputeUnionArea(BoxListTypePtr boxlist)
 	segtree = createSegmentTree(yCoords.p, yCoords.size);
 	free(yCoords.p);
 	/* create sorted list of left and right X coordinates of rectangles */
-	rectLeft = (BoxTypePtr *) calloc(boxlist->BoxN, sizeof(*rectLeft));
-	rectRight = (BoxTypePtr *) calloc(boxlist->BoxN, sizeof(*rectRight));
+	rectLeft = (pcb_box_t **) calloc(boxlist->BoxN, sizeof(*rectLeft));
+	rectRight = (pcb_box_t **) calloc(boxlist->BoxN, sizeof(*rectRight));
 	for (i = 0; i < boxlist->BoxN; i++) {
 		assert(boxlist->Box[i].X1 <= boxlist->Box[i].X2);
 		assert(boxlist->Box[i].Y1 <= boxlist->Box[i].Y2);
@@ -211,7 +211,7 @@ double ComputeUnionArea(BoxListTypePtr boxlist)
 		/* i will step through rectLeft, j will through rectRight */
 		if (i == boxlist->BoxN || rectRight[j]->X2 < rectLeft[i]->X1) {
 			/* right edge of rectangle */
-			BoxTypePtr b = rectRight[j++];
+			pcb_box_t *b = rectRight[j++];
 			/* check lastX */
 			if (b->X2 != lastX) {
 				assert(lastX < b->X2);
@@ -223,7 +223,7 @@ double ComputeUnionArea(BoxListTypePtr boxlist)
 		}
 		else {
 			/* left edge of rectangle */
-			BoxTypePtr b = rectLeft[i++];
+			pcb_box_t *b = rectLeft[i++];
 			/* check lastX */
 			if (b->X1 != lastX) {
 				assert(lastX < b->X1);
@@ -242,13 +242,13 @@ double ComputeUnionArea(BoxListTypePtr boxlist)
 
 static int compareleft(const void *ptr1, const void *ptr2)
 {
-	BoxTypePtr *b1 = (BoxTypePtr *) ptr1, *b2 = (BoxTypePtr *) ptr2;
+	pcb_box_t **b1 = (pcb_box_t **) ptr1, **b2 = (pcb_box_t **) ptr2;
 	return (*b1)->X1 - (*b2)->X1;
 }
 
 static int compareright(const void *ptr1, const void *ptr2)
 {
-	BoxTypePtr *b1 = (BoxTypePtr *) ptr1, *b2 = (BoxTypePtr *) ptr2;
+	pcb_box_t **b1 = (pcb_box_t **) ptr1, **b2 = (pcb_box_t **) ptr2;
 	return (*b1)->X2 - (*b2)->X2;
 }
 

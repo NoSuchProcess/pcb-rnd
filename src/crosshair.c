@@ -133,7 +133,7 @@ static void XORPolygon(PolygonTypePtr polygon, Coord dx, Coord dy, int dash_last
 static void XORDrawAttachedArc(Coord thick)
 {
 	ArcType arc;
-	BoxTypePtr bx;
+	pcb_box_t *bx;
 	Coord wx, wy;
 	Angle sa, dir;
 	Coord wid = thick / 2;
@@ -305,7 +305,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 			END_LOOP;
 			TEXT_LOOP(layer);
 			{
-				BoxTypePtr box = &text->BoundingBox;
+				pcb_box_t *box = &text->BoundingBox;
 				gui->draw_rect(Crosshair.GC, x + box->X1, y + box->Y1, x + box->X2, y + box->Y2);
 			}
 			END_LOOP;
@@ -440,7 +440,7 @@ static void XORDrawMoveOrCopyObject(void)
 	case PCB_TYPE_TEXT:
 		{
 			TextTypePtr text = (TextTypePtr) Crosshair.AttachedObject.Ptr2;
-			BoxTypePtr box = &text->BoundingBox;
+			pcb_box_t *box = &text->BoundingBox;
 			gui->draw_rect(Crosshair.GC, box->X1 + dx, box->Y1 + dy, box->X2 + dx, box->Y2 + dy);
 			break;
 		}
@@ -711,7 +711,7 @@ struct onpoint_search_info {
 	Coord Y;
 };
 
-static r_dir_t onpoint_line_callback(const BoxType * box, void *cl)
+static r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	CrosshairType *crosshair = info->crosshair;
@@ -737,7 +737,7 @@ static r_dir_t onpoint_line_callback(const BoxType * box, void *cl)
 
 #define close_enough(v1, v2) (coord_abs((v1)-(v2)) < 10)
 
-static r_dir_t onpoint_arc_callback(const BoxType * box, void *cl)
+static r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	CrosshairType *crosshair = info->crosshair;
@@ -812,7 +812,7 @@ static void *onpoint_find(vtop_t *vect, void *obj_ptr)
  */
 static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
 {
-	BoxType SearchBox = point_box(X, Y);
+	pcb_box_t SearchBox = point_box(X, Y);
 	struct onpoint_search_info info;
 	int i;
 	pcb_bool redraw = pcb_false;

@@ -94,7 +94,7 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		break;
 	case PCB_TYPE_ARC:
 		{
-			BoxTypePtr box;
+			pcb_box_t *box;
 
 			box = GetArcEnds((ArcTypePtr) ptr2);
 			*x = box->X1;
@@ -106,7 +106,7 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 
 static void AttachForCopy(Coord PlaceX, Coord PlaceY)
 {
-	BoxTypePtr box;
+	pcb_box_t *box;
 	Coord mx = 0, my = 0;
 
 	Crosshair.AttachedObject.RubberbandN = 0;
@@ -317,7 +317,7 @@ static void click_cb(hidval hv)
 			SetMode(PCB_MODE_PASTE_BUFFER);
 		}
 		else if (Note.Hit && !gui->shift_is_pressed()) {
-			BoxType box;
+			pcb_box_t box;
 
 			SaveMode();
 			saved_mode = pcb_true;
@@ -342,7 +342,7 @@ static void click_cb(hidval hv)
 			AttachForCopy(Note.X, Note.Y);
 		}
 		else {
-			BoxType box;
+			pcb_box_t box;
 
 			Note.Hit = 0;
 			Note.Moving = pcb_false;
@@ -364,10 +364,10 @@ static void click_cb(hidval hv)
 
 void ReleaseMode(void)
 {
-	BoxType box;
+	pcb_box_t box;
 
 	if (Note.Click) {
-		BoxType box;
+		pcb_box_t box;
 
 		box.X1 = -MAX_COORD;
 		box.Y1 = -MAX_COORD;
@@ -683,7 +683,7 @@ void NotifyMode(void)
 																												conf_core.design.line_thickness,
 																												2 * conf_core.design.clearance,
 																												MakeFlags(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) {
-						BoxTypePtr bx;
+						pcb_box_t *bx;
 
 						bx = GetArcEnds(arc);
 						Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = bx->X2;
@@ -1110,11 +1110,11 @@ void NotifyMode(void)
 					for (i = 0; i < MAX_ELEMENTNAMES; i++) {
 						if (i == save_n)
 							EraseElementName(e);
-						r_delete_entry(PCB->Data->name_tree[i], (BoxType *) & (e->Name[i]));
+						r_delete_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]));
 						memcpy(&(e->Name[i]), &(estr[i]), sizeof(TextType));
 						e->Name[i].Element = e;
 						SetTextBoundingBox(&PCB->Font, &(e->Name[i]));
-						r_insert_entry(PCB->Data->name_tree[i], (BoxType *) & (e->Name[i]), 0);
+						r_insert_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]), 0);
 						if (i == save_n)
 							DrawElementName(e);
 					}

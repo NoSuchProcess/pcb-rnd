@@ -199,7 +199,7 @@ struct drc_info {
 	jmp_buf env;
 };
 
-static r_dir_t drcVia_callback(const BoxType * b, void *cl)
+static r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr via = (PinTypePtr) b;
 	struct drc_info *i = (struct drc_info *) cl;
@@ -209,7 +209,7 @@ static r_dir_t drcVia_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t drcPad_callback(const BoxType * b, void *cl)
+static r_dir_t drcPad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct drc_info *i = (struct drc_info *) cl;
@@ -219,7 +219,7 @@ static r_dir_t drcPad_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t drcLine_callback(const BoxType * b, void *cl)
+static r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct drc_info *i = (struct drc_info *) cl;
@@ -229,7 +229,7 @@ static r_dir_t drcLine_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t drcArc_callback(const BoxType * b, void *cl)
+static r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct drc_info *i = (struct drc_info *) cl;

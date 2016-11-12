@@ -78,7 +78,7 @@ void RotatePointLowLevel(PointTypePtr Point, Coord X, Coord Y, unsigned Number)
 /* ---------------------------------------------------------------------------
  * rotates a box in 90 degree steps
  */
-void RotateBoxLowLevel(BoxTypePtr Box, Coord X, Coord Y, unsigned Number)
+void RotateBoxLowLevel(pcb_box_t *Box, Coord X, Coord Y, unsigned Number)
 {
 	Coord x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
 
@@ -116,19 +116,19 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 		EraseLine(ptr->Line);
 		if (ptr->Layer) {
 			RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
-			r_delete_entry(ptr->Layer->line_tree, (BoxType *) ptr->Line);
+			r_delete_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
 		}
 		else
-			r_delete_entry(PCB->Data->rat_tree, (BoxType *) ptr->Line);
+			r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
 		RotatePointLowLevel(ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
 		SetLineBoundingBox(ptr->Line);
 		if (ptr->Layer) {
-			r_insert_entry(ptr->Layer->line_tree, (BoxType *) ptr->Line, 0);
+			r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
 			ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
 			DrawLine(ptr->Layer, ptr->Line);
 		}
 		else {
-			r_insert_entry(PCB->Data->rat_tree, (BoxType *) ptr->Line, 0);
+			r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);
 			DrawRat((RatTypePtr) ptr->Line);
 		}
 		Crosshair.AttachedObject.RubberbandN--;

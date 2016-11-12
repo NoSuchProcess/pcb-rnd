@@ -121,7 +121,7 @@ int CreateNewPCBPost(pcb_board_t *pcb, int use_defaults);
 
 void pcb_colors_from_settings(pcb_board_t *);
 
-void CountHoles(int *plated, int *unplated, const BoxType * within_area);
+void CountHoles(int *plated, int *unplated, const pcb_box_t * within_area);
 
 #define	SWAP_X(x)		(SWAP_SIGN_X(x))
 #define	SWAP_Y(y)		(PCB->MaxHeight +SWAP_SIGN_Y(y))

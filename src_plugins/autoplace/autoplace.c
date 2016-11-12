@@ -210,8 +210,8 @@ static void showboxes(BoxListTypePtr blist)
  */
 /*------ r_find_neighbor ------*/
 struct r_neighbor_info {
-	const BoxType *neighbor;
-	BoxType trap;
+	const pcb_box_t *neighbor;
+	pcb_box_t trap;
 	direction_t search_dir;
 };
 #define ROTATEBOX(box) { Coord t;\
@@ -220,10 +220,10 @@ struct r_neighbor_info {
     t = (box).X1; (box).X1 =   (box).X2; (box).X2 = t;\
 }
 /* helper methods for __r_find_neighbor */
-static r_dir_t __r_find_neighbor_reg_in_sea(const BoxType * region, void *cl)
+static r_dir_t __r_find_neighbor_reg_in_sea(const pcb_box_t * region, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
-	BoxType query = *region;
+	pcb_box_t query = *region;
 	ROTATEBOX_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
 	 *  \            /               |__| query rect.
@@ -236,10 +236,10 @@ static r_dir_t __r_find_neighbor_reg_in_sea(const BoxType * region, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t __r_find_neighbor_rect_in_reg(const BoxType * box, void *cl)
+static r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
-	BoxType query = *box;
+	pcb_box_t query = *box;
 	int r;
 	ROTATEBOX_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
@@ -260,10 +260,10 @@ static r_dir_t __r_find_neighbor_rect_in_reg(const BoxType * box, void *cl)
 
 /* main r_find_neighbor routine.  Returns NULL if no neighbor in the
  * requested direction. */
-static const BoxType *r_find_neighbor(rtree_t * rtree, const BoxType * box, direction_t search_direction)
+static const pcb_box_t *r_find_neighbor(rtree_t * rtree, const pcb_box_t * box, direction_t search_direction)
 {
 	struct r_neighbor_info ni;
-	BoxType bbox;
+	pcb_box_t bbox;
 
 	ni.neighbor = NULL;
 	ni.trap = *box;
@@ -335,7 +335,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 		}
 		/* save bounding rectangle */
 		{
-			BoxTypePtr box = GetBoxMemory(&bounds);
+			pcb_box_t *box = GetBoxMemory(&bounds);
 			box->X1 = minx;
 			box->Y1 = miny;
 			box->X2 = maxx;
@@ -360,8 +360,8 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 	{
 		BoxListTypePtr thisside;
 		BoxListTypePtr otherside;
-		BoxTypePtr box;
-		BoxTypePtr lastbox = NULL;
+		pcb_box_t *box;
+		pcb_box_t *lastbox = NULL;
 		Coord thickness;
 		Coord clearance;
 		if (TEST_FLAG(PCB_FLAG_ONSOLDER, element)) {
@@ -459,7 +459,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 		, ceboxes = {
 		0, 0, NULL};
 		struct ebox {
-			BoxType box;
+			pcb_box_t box;
 			ElementTypePtr element;
 		};
 		direction_t dir[4] = { NORTH, EAST, SOUTH, WEST };
@@ -480,8 +480,8 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 			(*boxpp)->element = element;
 		}
 		END_LOOP;
-		rt_s = r_create_tree((const BoxType **) seboxes.Ptr, seboxes.PtrN, 1);
-		rt_c = r_create_tree((const BoxType **) ceboxes.Ptr, ceboxes.PtrN, 1);
+		rt_s = r_create_tree((const pcb_box_t **) seboxes.Ptr, seboxes.PtrN, 1);
+		rt_c = r_create_tree((const pcb_box_t **) ceboxes.Ptr, ceboxes.PtrN, 1);
 		FreePointerListMemory(&seboxes);
 		FreePointerListMemory(&ceboxes);
 		/* now, for each element, find its neighbor on all four sides */

@@ -6,7 +6,7 @@
 
 /* Convenience function that calls the expose callback for the item,
    and returns the extents of what was drawn.  */
-BoxType *hid_get_extents(void *item);
+pcb_box_t *hid_get_extents(void *item);
 
 
 #endif

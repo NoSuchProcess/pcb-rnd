@@ -208,8 +208,8 @@ static void stitch_them()
 	dup_endpoints(inner_poly);
 	dup_endpoints(outer_poly);
 
-	r_delete_entry(poly_layer->polygon_tree, (BoxType *) inner_poly);
-	r_delete_entry(poly_layer->polygon_tree, (BoxType *) outer_poly);
+	r_delete_entry(poly_layer->polygon_tree, (pcb_box_t *) inner_poly);
+	r_delete_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly);
 
 	for (i = 0; i < inner_poly->PointN; i++)
 		CreateNewPointInPolygon(outer_poly, inner_poly->Points[i].X, inner_poly->Points[i].Y);
@@ -218,7 +218,7 @@ static void stitch_them()
 
 	outer_poly->NoHolesValid = 0;
 	SetPolygonBoundingBox(outer_poly);
-	r_insert_entry(poly_layer->polygon_tree, (BoxType *) outer_poly, 0);
+	r_insert_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly, 0);
 	RemoveExcessPolygonPoints(poly_layer, outer_poly);
 	InitClip(PCB->Data, poly_layer, outer_poly);
 	DrawPolygon(poly_layer, outer_poly);

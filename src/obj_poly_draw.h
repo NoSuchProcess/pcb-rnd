@@ -29,10 +29,10 @@
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
 struct draw_poly_info {
-	const BoxType *drawn_area;
+	const pcb_box_t *drawn_area;
 	pcb_layer_t *layer;
 };
-r_dir_t draw_poly_callback(const BoxType * b, void *cl);
+r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl);
 #endif
 
 void ErasePolygon(PolygonTypePtr Polygon);

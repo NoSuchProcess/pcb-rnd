@@ -47,17 +47,17 @@ static void CheckPinForRubberbandConnection(PinTypePtr);
 static void CheckLinePointForRubberbandConnection(pcb_layer_t *, LineTypePtr, PointTypePtr, pcb_bool);
 static void CheckPolygonForRubberbandConnection(pcb_layer_t *, PolygonTypePtr);
 static void CheckLinePointForRat(pcb_layer_t *, PointTypePtr);
-static r_dir_t rubber_callback(const BoxType * b, void *cl);
+static r_dir_t rubber_callback(const pcb_box_t * b, void *cl);
 
 struct rubber_info {
 	Coord radius;
 	Coord X, Y;
 	LineTypePtr line;
-	BoxType box;
+	pcb_box_t box;
 	pcb_layer_t *layer;
 };
 
-static r_dir_t rubber_callback(const BoxType * b, void *cl)
+static r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct rubber_info *i = (struct rubber_info *) cl;
@@ -210,7 +210,7 @@ struct rinfo {
 	PointTypePtr point;
 };
 
-static r_dir_t rat_callback(const BoxType * box, void *cl)
+static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) box;
 	struct rinfo *i = (struct rinfo *) cl;
@@ -281,7 +281,7 @@ static void CheckLinePointForRat(pcb_layer_t *Layer, PointTypePtr Point)
 	info.point = Point;
 	info.type = PCB_TYPE_LINE_POINT;
 
-	r_search(PCB->Data->rat_tree, (BoxType *) Point, NULL, rat_callback, &info, NULL);
+	r_search(PCB->Data->rat_tree, (pcb_box_t *) Point, NULL, rat_callback, &info, NULL);
 }
 
 /* ---------------------------------------------------------------------------

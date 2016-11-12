@@ -31,7 +31,7 @@ static inline void search_append(layout_search_t *s, void *obj)
 	}
 }
 
-static r_dir_t search_callback (const BoxType * b, void *cl)
+static r_dir_t search_callback (const pcb_box_t * b, void *cl)
 {
 	search_append(cl, (void *)b);
   return R_DIR_FOUND_CONTINUE;
@@ -56,7 +56,7 @@ static layout_search_t *new_search(const char *search_ID)
 
 int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int x1, int y1, int x2, int y2)
 {
-  BoxType spot;
+  pcb_box_t spot;
 	layout_search_t *s = new_search(search_ID);
 
 	spot.X1 = x1;

@@ -402,7 +402,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X
 	ELEMENTTEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
-			r_delete_entry(Data->name_tree[n], (BoxType *) text);
+			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
 		RotateTextLowLevel(text, X, Y, Number);
 	}
 	END_LOOP;
@@ -418,7 +418,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X
 	{
 		/* pre-delete the pins from the pin-tree before their coordinates change */
 		if (Data)
-			r_delete_entry(Data->pin_tree, (BoxType *) pin);
+			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
 		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		free_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
 		SetPinBoundingBox(pin);
@@ -428,7 +428,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X
 	{
 		/* pre-delete the pads before their coordinates change */
 		if (Data)
-			r_delete_entry(Data->pad_tree, (BoxType *) pad);
+			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
 		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		free_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
 		free_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
@@ -718,20 +718,20 @@ void MirrorElementCoordinates(pcb_data_t *Data, ElementTypePtr Element, Coord yo
 /* sets the bounding box of an elements */
 void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, FontTypePtr Font)
 {
-	BoxTypePtr box, vbox;
+	pcb_box_t *box, *vbox;
 
 	if (Data && Data->element_tree)
-		r_delete_entry(Data->element_tree, (BoxType *) Element);
+		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
 	/* first update the text objects */
 	ELEMENTTEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
-			r_delete_entry(Data->name_tree[n], (BoxType *) text);
+			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
 		SetTextBoundingBox(Font, text);
 		if (Data && !Data->name_tree[n])
 			Data->name_tree[n] = r_create_tree(NULL, 0, 0);
 		if (Data)
-			r_insert_entry(Data->name_tree[n], (BoxType *) text, 0);
+			r_insert_entry(Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
 	END_LOOP;
 
@@ -768,12 +768,12 @@ void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, FontTypePtr
 	PIN_LOOP(Element);
 	{
 		if (Data && Data->pin_tree)
-			r_delete_entry(Data->pin_tree, (BoxType *) pin);
+			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
 		SetPinBoundingBox(pin);
 		if (Data) {
 			if (!Data->pin_tree)
 				Data->pin_tree = r_create_tree(NULL, 0, 0);
-			r_insert_entry(Data->pin_tree, (BoxType *) pin, 0);
+			r_insert_entry(Data->pin_tree, (pcb_box_t *) pin, 0);
 		}
 		MAKEMIN(box->X1, pin->BoundingBox.X1);
 		MAKEMIN(box->Y1, pin->BoundingBox.Y1);
@@ -788,12 +788,12 @@ void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, FontTypePtr
 	PAD_LOOP(Element);
 	{
 		if (Data && Data->pad_tree)
-			r_delete_entry(Data->pad_tree, (BoxType *) pad);
+			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
 		SetPadBoundingBox(pad);
 		if (Data) {
 			if (!Data->pad_tree)
 				Data->pad_tree = r_create_tree(NULL, 0, 0);
-			r_insert_entry(Data->pad_tree, (BoxType *) pad, 0);
+			r_insert_entry(Data->pad_tree, (pcb_box_t *) pad, 0);
 		}
 		MAKEMIN(box->X1, pad->BoundingBox.X1);
 		MAKEMIN(box->Y1, pad->BoundingBox.Y1);
@@ -904,20 +904,20 @@ char *UniqueElementName(pcb_data_t *Data, char *Name)
 
 void r_delete_element(pcb_data_t * data, ElementType * element)
 {
-	r_delete_entry(data->element_tree, (BoxType *) element);
+	r_delete_entry(data->element_tree, (pcb_box_t *) element);
 	PIN_LOOP(element);
 	{
-		r_delete_entry(data->pin_tree, (BoxType *) pin);
+		r_delete_entry(data->pin_tree, (pcb_box_t *) pin);
 	}
 	END_LOOP;
 	PAD_LOOP(element);
 	{
-		r_delete_entry(data->pad_tree, (BoxType *) pad);
+		r_delete_entry(data->pad_tree, (pcb_box_t *) pad);
 	}
 	END_LOOP;
 	ELEMENTTEXT_LOOP(element);
 	{
-		r_delete_entry(data->name_tree[n], (BoxType *) text);
+		r_delete_entry(data->name_tree[n], (pcb_box_t *) text);
 	}
 	END_LOOP;
 }
@@ -994,7 +994,7 @@ int ElementOrientation(ElementType * e)
 void MoveElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord DX, Coord DY)
 {
 	if (Data)
-		r_delete_entry(Data->element_tree, (BoxType *) Element);
+		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
 	ELEMENTLINE_LOOP(Element);
 	{
 		MOVE_LINE_LOWLEVEL(line, DX, DY);
@@ -1003,12 +1003,12 @@ void MoveElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord DX, Coo
 	PIN_LOOP(Element);
 	{
 		if (Data) {
-			r_delete_entry(Data->pin_tree, (BoxType *) pin);
+			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
 			RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		}
 		MOVE_PIN_LOWLEVEL(pin, DX, DY);
 		if (Data) {
-			r_insert_entry(Data->pin_tree, (BoxType *) pin, 0);
+			r_insert_entry(Data->pin_tree, (pcb_box_t *) pin, 0);
 			ClearFromPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		}
 	}
@@ -1016,12 +1016,12 @@ void MoveElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord DX, Coo
 	PAD_LOOP(Element);
 	{
 		if (Data) {
-			r_delete_entry(Data->pad_tree, (BoxType *) pad);
+			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
 			RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		}
 		MOVE_PAD_LOWLEVEL(pad, DX, DY);
 		if (Data) {
-			r_insert_entry(Data->pad_tree, (BoxType *) pad, 0);
+			r_insert_entry(Data->pad_tree, (pcb_box_t *) pad, 0);
 			ClearFromPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		}
 	}
@@ -1034,17 +1034,17 @@ void MoveElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord DX, Coo
 	ELEMENTTEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
-			r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
+			r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 		MOVE_TEXT_LOWLEVEL(text, DX, DY);
 		if (Data && Data->name_tree[n])
-			r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
+			r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
 	END_LOOP;
 	MOVE_BOX_LOWLEVEL(&Element->BoundingBox, DX, DY);
 	MOVE_BOX_LOWLEVEL(&Element->VBox, DX, DY);
 	MOVE(Element->MarkX, Element->MarkY, DX, DY);
 	if (Data)
-		r_insert_entry(Data->element_tree, (BoxType *) Element, 0);
+		r_insert_entry(Data->element_tree, (pcb_box_t *) Element, 0);
 }
 
 void *RemoveElement(ElementTypePtr Element)
@@ -1069,7 +1069,7 @@ void RotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Co
 	ELEMENTTEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
-			r_delete_entry(Data->name_tree[n], (BoxType *) text);
+			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
 		RotateTextLowLevel(text, X, Y, Number);
 	}
 	END_LOOP;
@@ -1082,7 +1082,7 @@ void RotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Co
 	{
 		/* pre-delete the pins from the pin-tree before their coordinates change */
 		if (Data)
-			r_delete_entry(Data->pin_tree, (BoxType *) pin);
+			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
 		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		ROTATE_PIN_LOWLEVEL(pin, X, Y, Number);
 	}
@@ -1091,7 +1091,7 @@ void RotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Co
 	{
 		/* pre-delete the pads before their coordinates change */
 		if (Data)
-			r_delete_entry(Data->pad_tree, (BoxType *) pad);
+			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
 		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		ROTATE_PAD_LOWLEVEL(pad, X, Y, Number);
 	}
@@ -1355,10 +1355,10 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, ElementTypePtr Element)
 		ELEMENTTEXT_LOOP(Element);
 		{
 			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_NAME, Element, text, text);
-			r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
+			r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 			text->Scale = value;
 			SetTextBoundingBox(&PCB->Font, text);
-			r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
+			r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
 		END_LOOP;
 		DrawElementName(Element);
@@ -1535,10 +1535,10 @@ void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 		ELEMENTTEXT_LOOP(Element);
 		{
 			if (PCB->Data->name_tree[n])
-				r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
+				r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 			MOVE_TEXT_LOWLEVEL(text, ctx->move.dx, ctx->move.dy);
 			if (PCB->Data->name_tree[n])
-				r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
+				r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
 		END_LOOP;
 		DrawElementName(Element);
@@ -1548,10 +1548,10 @@ void *MoveElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 		ELEMENTTEXT_LOOP(Element);
 		{
 			if (PCB->Data->name_tree[n])
-				r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
+				r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 			MOVE_TEXT_LOWLEVEL(text, ctx->move.dx, ctx->move.dy);
 			if (PCB->Data->name_tree[n])
-				r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
+				r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
 		END_LOOP;
 	}
@@ -1588,25 +1588,25 @@ void *MoveElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 void *DestroyElement(pcb_opctx_t *ctx, ElementTypePtr Element)
 {
 	if (ctx->remove.destroy_target->element_tree)
-		r_delete_entry(ctx->remove.destroy_target->element_tree, (BoxType *) Element);
+		r_delete_entry(ctx->remove.destroy_target->element_tree, (pcb_box_t *) Element);
 	if (ctx->remove.destroy_target->pin_tree) {
 		PIN_LOOP(Element);
 		{
-			r_delete_entry(ctx->remove.destroy_target->pin_tree, (BoxType *) pin);
+			r_delete_entry(ctx->remove.destroy_target->pin_tree, (pcb_box_t *) pin);
 		}
 		END_LOOP;
 	}
 	if (ctx->remove.destroy_target->pad_tree) {
 		PAD_LOOP(Element);
 		{
-			r_delete_entry(ctx->remove.destroy_target->pad_tree, (BoxType *) pad);
+			r_delete_entry(ctx->remove.destroy_target->pad_tree, (pcb_box_t *) pad);
 		}
 		END_LOOP;
 	}
 	ELEMENTTEXT_LOOP(Element);
 	{
 		if (ctx->remove.destroy_target->name_tree[n])
-			r_delete_entry(ctx->remove.destroy_target->name_tree[n], (BoxType *) text);
+			r_delete_entry(ctx->remove.destroy_target->name_tree[n], (pcb_box_t *) text);
 	}
 	END_LOOP;
 	FreeElementMemory(Element);
@@ -1647,9 +1647,9 @@ void *RotateElementName(pcb_opctx_t *ctx, ElementTypePtr Element)
 	EraseElementName(Element);
 	ELEMENTTEXT_LOOP(Element);
 	{
-		r_delete_entry(PCB->Data->name_tree[n], (BoxType *) text);
+		r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 		RotateTextLowLevel(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-		r_insert_entry(PCB->Data->name_tree[n], (BoxType *) text, 0);
+		r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
 	END_LOOP;
 	DrawElementName(Element);
@@ -1680,7 +1680,7 @@ void draw_element_name(ElementType * element)
 
 }
 
-r_dir_t draw_element_name_callback(const BoxType * b, void *cl)
+r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) b;
 	ElementTypePtr element = (ElementTypePtr) text->Element;
@@ -1742,7 +1742,7 @@ void draw_element(ElementTypePtr element)
 	draw_element_pins_and_pads(element);
 }
 
-r_dir_t draw_element_callback(const BoxType * b, void *cl)
+r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
 {
 	ElementTypePtr element = (ElementTypePtr) b;
 	int *side = cl;
@@ -1790,7 +1790,7 @@ static void DrawEMark(ElementTypePtr e, Coord X, Coord Y, pcb_bool invisible)
 	}
 }
 
-r_dir_t draw_element_mark_callback(const BoxType * b, void *cl)
+r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
 {
 	ElementTypePtr element = (ElementTypePtr) b;
 

@@ -172,7 +172,7 @@ hidGC ghid_make_gc(void)
 	return rv;
 }
 
-static void ghid_draw_grid(BoxTypePtr drawn_area)
+static void ghid_draw_grid(pcb_box_t *drawn_area)
 {
 	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
 		return;
@@ -520,14 +520,14 @@ void ghid_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 	hidgl_fill_polygon(n_coords, x, y);
 }
 
-void ghid_fill_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType * clip_box)
+void ghid_fill_pcb_polygon(hidGC gc, PolygonType * poly, const pcb_box_t * clip_box)
 {
 	USE_GC(gc);
 
 	hidgl_fill_pcb_polygon(poly, clip_box, gport->view.coord_per_px);
 }
 
-void ghid_thindraw_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType * clip_box)
+void ghid_thindraw_pcb_polygon(hidGC gc, PolygonType * poly, const pcb_box_t * clip_box)
 {
 	common_thindraw_pcb_polygon(gc, poly, clip_box);
 	ghid_set_alpha_mult(gc, 0.25);
@@ -780,7 +780,7 @@ gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GH
 {
 	render_priv *priv = port->render_priv;
 	GtkAllocation allocation;
-	BoxType region;
+	pcb_box_t region;
 
 	gtk_widget_get_allocation(widget, &allocation);
 
@@ -987,7 +987,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	GdkGLDrawable *gldrawable;
 	view_data save_view;
 	int save_width, save_height;
-	BoxType region;
+	pcb_box_t region;
 
 	save_view = gport->view;
 	save_width = gport->width;

@@ -177,7 +177,7 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 			/* all objects in block */
 		case F_Block:
 			{
-				BoxType box;
+				pcb_box_t box;
 
 				box.X1 = MIN(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
 				box.Y1 = MIN(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
@@ -196,7 +196,7 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 			/* select all visible objects */
 		case F_All:
 			{
-				BoxType box;
+				pcb_box_t box;
 
 				box.X1 = -MAX_COORD;
 				box.Y1 = -MAX_COORD;
@@ -329,7 +329,7 @@ static int ActionUnselect(int argc, const char **argv, Coord x, Coord y)
 			/* all objects in block */
 		case F_Block:
 			{
-				BoxType box;
+				pcb_box_t box;
 
 				box.X1 = MIN(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
 				box.Y1 = MIN(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
@@ -348,7 +348,7 @@ static int ActionUnselect(int argc, const char **argv, Coord x, Coord y)
 			/* unselect all visible objects */
 		case F_All:
 			{
-				BoxType box;
+				pcb_box_t box;
 
 				box.X1 = -MAX_COORD;
 				box.Y1 = -MAX_COORD;

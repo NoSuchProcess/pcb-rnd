@@ -60,14 +60,14 @@ hidgl_add_triangle(triangle_buffer * buffer, GLfloat x1, GLfloat y1, GLfloat x2,
 	hidgl_add_triangle_3D(buffer, x1, y1, global_depth, x2, y2, global_depth, x3, y3, global_depth);
 }
 
-void hidgl_draw_grid(BoxType * drawn_area);
+void hidgl_draw_grid(pcb_box_t * drawn_area);
 void hidgl_set_depth(float depth);
 void hidgl_draw_line(int cap, Coord width, Coord x1, Coord y1, Coord x2, Coord y2, double scale);
 void hidgl_draw_arc(Coord width, Coord vx, Coord vy, Coord vrx, Coord vry, Angle start_angle, Angle delta_angle, double scale);
 void hidgl_draw_rect(Coord x1, Coord y1, Coord x2, Coord y2);
 void hidgl_fill_circle(Coord vx, Coord vy, Coord vr, double scale);
 void hidgl_fill_polygon(int n_coords, Coord * x, Coord * y);
-void hidgl_fill_pcb_polygon(PolygonType * poly, const BoxType * clip_box, double scale);
+void hidgl_fill_pcb_polygon(PolygonType * poly, const pcb_box_t * clip_box, double scale);
 void hidgl_fill_rect(Coord x1, Coord y1, Coord x2, Coord y2);
 
 void hidgl_init(void);

@@ -36,7 +36,7 @@ typedef enum EndCapStyle_e {
 } EndCapStyle;
 
 typedef void *PolygonType;
-typedef void *BoxType;
+typedef void *pcb_box_t;
 #endif
 
 typedef struct hid_s {

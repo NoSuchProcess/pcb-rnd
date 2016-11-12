@@ -29,7 +29,7 @@
 #error do not compile this
 
 
-static int LOT_Linecallback(const BoxType * b, void *cl)
+static int LOT_Linecallback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -39,7 +39,7 @@ static int LOT_Linecallback(const BoxType * b, void *cl)
 	return 0;
 }
 
-static int LOT_Arccallback(const BoxType * b, void *cl)
+static int LOT_Arccallback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -51,7 +51,7 @@ static int LOT_Arccallback(const BoxType * b, void *cl)
 	return 0;
 }
 
-static int LOT_Padcallback(const BoxType * b, void *cl)
+static int LOT_Padcallback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -69,11 +69,11 @@ static pcb_bool PVTouchesLine(LineTypePtr line)
 	info.line = *line;
 	EXPAND_BOUNDS(&info.line);
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->via_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info, NULL);
+		r_search(PCB->Data->via_tree, (pcb_box_t *) & info.line, NULL, pv_touch_callback, &info, NULL);
 	else
 		return pcb_true;
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->pin_tree, (BoxType *) & info.line, NULL, pv_touch_callback, &info, NULL);
+		r_search(PCB->Data->pin_tree, (pcb_box_t *) & info.line, NULL, pv_touch_callback, &info, NULL);
 	else
 		return pcb_true;
 
@@ -103,11 +103,11 @@ static pcb_bool LOTouchesLine(LineTypePtr Line, pcb_cardinal_t LayerGroup)
 			/* find the first line that touches coordinates */
 
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.line, NULL, LOT_Linecallback, &info, NULL);
+				r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.line, NULL, LOT_Linecallback, &info, NULL);
 			else
 				return (pcb_true);
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.line, NULL, LOT_Arccallback, &info, NULL);
+				r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.line, NULL, LOT_Arccallback, &info, NULL);
 			else
 				return (pcb_true);
 

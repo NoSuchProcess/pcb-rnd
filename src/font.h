@@ -43,7 +43,7 @@ typedef struct symbol_st {     /* a single symbol */
 
 struct pcb_font_s {          /* complete set of symbols */
 	Coord MaxHeight, MaxWidth; /* maximum cell width and height */
-	BoxType DefaultSymbol;     /* the default symbol is a filled box */
+	pcb_box_t DefaultSymbol;     /* the default symbol is a filled box */
 	SymbolType Symbol[MAX_FONTPOSITION + 1];
 	pcb_bool Valid;
 };

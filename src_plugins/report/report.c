@@ -265,7 +265,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 	case PCB_TYPE_ARC:
 		{
 			ArcTypePtr Arc;
-			BoxTypePtr box;
+			pcb_box_t *box;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;

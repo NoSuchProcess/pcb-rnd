@@ -128,11 +128,11 @@ static void DebugPOLYAREA(POLYAREA * s, char *color)
  * n->contours->next would be the start of the inner holes (irrelevant
  * for bounding box).
  */
-static BoxType POLYAREA_boundingBox(POLYAREA * a)
+static pcb_box_t POLYAREA_boundingBox(POLYAREA * a)
 {
 	POLYAREA *n;
 	PLINE *pa;
-	BoxType box;
+	pcb_box_t box;
 	int first = 1;
 
 	n = a;
@@ -347,7 +347,7 @@ static int MakeBypassingLines(POLYAREA * brush, pcb_layer_t * layer, LineType * 
 }
 
 struct info {
-	BoxType box;
+	pcb_box_t box;
 	POLYAREA *brush;
 	pcb_layer_t *layer;
 	POLYAREA *smallest;
@@ -366,7 +366,7 @@ struct info {
 /*!
  * Process lines that intersect our 'brush'.
  */
-static r_dir_t jostle_callback(const BoxType * targ, void *private)
+static r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 {
 	LineType *line = (LineType *) targ;
 	struct info *info = private;

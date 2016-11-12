@@ -200,7 +200,7 @@ void pcb_add_via(pcb_data_t *Data, PinType *Via)
 	SetPinBoundingBox(Via);
 	if (!Data->via_tree)
 		Data->via_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Data->via_tree, (BoxTypePtr) Via, 0);
+	r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
 }
 
 /* sets the bounding box of a pin or via */
@@ -243,7 +243,7 @@ void *MoveViaToBuffer(pcb_opctx_t *ctx, PinType * via)
 {
 	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_VIA, via, via);
 
-	r_delete_entry(ctx->buffer.src->via_tree, (BoxType *) via);
+	r_delete_entry(ctx->buffer.src->via_tree, (pcb_box_t *) via);
 	pinlist_remove(via);
 	pinlist_append(&ctx->buffer.dst->Via, via);
 
@@ -251,7 +251,7 @@ void *MoveViaToBuffer(pcb_opctx_t *ctx, PinType * via)
 
 	if (!ctx->buffer.dst->via_tree)
 		ctx->buffer.dst->via_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(ctx->buffer.dst->via_tree, (BoxType *) via, 0);
+	r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *) via, 0);
 	ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_VIA, via, via);
 	return via;
 }
@@ -299,7 +299,7 @@ void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr Via)
 			value >= MIN_PINORVIASIZE && value >= Via->DrillingHole + MIN_PINORVIACOPPER && value != Via->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
-		r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
+		r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Via, Via);
 		if (Via->Mask) {
 			AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
@@ -307,7 +307,7 @@ void *ChangeViaSize(pcb_opctx_t *ctx, PinTypePtr Via)
 		}
 		Via->Thickness = value;
 		SetPinBoundingBox(Via);
-		r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
+		r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		DrawVia(Via);
 		return (Via);
@@ -385,10 +385,10 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, PinTypePtr Via)
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	AddObjectToClearSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	EraseVia(Via);
-	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
+	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	Via->Clearance = value;
 	SetPinBoundingBox(Via);
-	r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
+	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
 	Via->Element = NULL;
@@ -633,7 +633,7 @@ pcb_bool ChangeHole(PinTypePtr Via)
 	EraseVia(Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
+	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	TOGGLE_FLAG(PCB_FLAG_HOLE, Via);
 
@@ -652,7 +652,7 @@ pcb_bool ChangeHole(PinTypePtr Via)
 	}
 
 	SetPinBoundingBox(Via);
-	r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
+	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
 	Draw();
@@ -716,12 +716,12 @@ void *CopyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 /* moves a via */
 void *MoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 {
-	r_delete_entry(PCB->Data->via_tree, (BoxType *) Via);
+	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	MOVE_VIA_LOWLEVEL(Via, ctx->move.dx, ctx->move.dy);
 	if (PCB->ViaOn)
 		EraseVia(Via);
-	r_insert_entry(PCB->Data->via_tree, (BoxType *) Via, 0);
+	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	if (PCB->ViaOn) {
 		DrawVia(Via);
@@ -733,7 +733,7 @@ void *MoveVia(pcb_opctx_t *ctx, PinTypePtr Via)
 /* destroys a via */
 void *DestroyVia(pcb_opctx_t *ctx, PinTypePtr Via)
 {
-	r_delete_entry(ctx->remove.destroy_target->via_tree, (BoxTypePtr) Via);
+	r_delete_entry(ctx->remove.destroy_target->via_tree, (pcb_box_t *) Via);
 	free(Via->Name);
 
 	RemoveFreeVia(Via);
@@ -803,7 +803,7 @@ static void SetPVColor(PinTypePtr Pin, int Type)
 
 static void _draw_pv_name(PinType * pv)
 {
-	BoxType box;
+	pcb_box_t box;
 	pcb_bool vert;
 	TextType text;
 	char buff[128];
@@ -864,13 +864,13 @@ void draw_pin(PinTypePtr pin, pcb_bool draw_hole)
 	_draw_pv(pin, draw_hole);
 }
 
-r_dir_t draw_pin_callback(const BoxType * b, void *cl)
+r_dir_t draw_pin_callback(const pcb_box_t * b, void *cl)
 {
 	draw_pin((PinType *) b, pcb_false);
 	return R_DIR_FOUND_CONTINUE;
 }
 
-r_dir_t clear_pin_callback(const BoxType * b, void *cl)
+r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl)
 {
 	PinType *pin = (PinTypePtr) b;
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
@@ -887,13 +887,13 @@ static void draw_via(PinTypePtr via, pcb_bool draw_hole)
 	_draw_pv(via, draw_hole);
 }
 
-r_dir_t draw_via_callback(const BoxType * b, void *cl)
+r_dir_t draw_via_callback(const pcb_box_t * b, void *cl)
 {
 	draw_via((PinType *) b, pcb_false);
 	return R_DIR_FOUND_CONTINUE;
 }
 
-r_dir_t draw_hole_callback(const BoxType * b, void *cl)
+r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	int plated = cl ? *(int *) cl : -1;
@@ -937,7 +937,7 @@ r_dir_t draw_hole_callback(const BoxType * b, void *cl)
 
 static void GatherPVName(PinTypePtr Ptr)
 {
-	BoxType box;
+	pcb_box_t box;
 	pcb_bool vert = TEST_FLAG(PCB_FLAG_EDGE2, Ptr);
 
 	if (vert) {

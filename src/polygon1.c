@@ -461,7 +461,7 @@ static inline void cntrbox_adjust(PLINE * c, Vector p)
 /* some structures for handling segment intersections using the rtrees */
 
 typedef struct seg {
-	BoxType box;
+	pcb_box_t box;
 	VNODE *v;
 	PLINE *p;
 	int intersected;
@@ -514,7 +514,7 @@ static int adjust_tree(rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	r_insert_entry(tree, (const BoxType *) q, 1);
+	r_insert_entry(tree, (const pcb_box_t *) q, 1);
 	q = (seg *) malloc(sizeof(struct seg));
 	if (!q)
 		return 1;
@@ -525,8 +525,8 @@ static int adjust_tree(rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	r_insert_entry(tree, (const BoxType *) q, 1);
-	r_delete_entry(tree, (const BoxType *) s);
+	r_insert_entry(tree, (const pcb_box_t *) q, 1);
+	r_delete_entry(tree, (const pcb_box_t *) s);
 	return 0;
 }
 
@@ -535,7 +535,7 @@ static int adjust_tree(rtree_t * tree, struct seg *s)
  * (C) 2006, harry eaton
  * This prunes the search for boxes that don't intersect the segment.
  */
-static r_dir_t seg_in_region(const BoxType * b, void *cl)
+static r_dir_t seg_in_region(const pcb_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	double y1, y2;
@@ -572,7 +572,7 @@ static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg *
  * problem. There are efficient algorithms for finding intersections with snap
  * rounding, but I don't have time to implement them right now.
  */
-static r_dir_t seg_in_seg(const BoxType * b, void *cl)
+static r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	struct seg *s = (struct seg *) b;
@@ -650,13 +650,13 @@ static void *make_edge_tree(PLINE * pb)
 		}
 		s->v = bv;
 		s->p = pb;
-		r_insert_entry(ans, (const BoxType *) s, 1);
+		r_insert_entry(ans, (const pcb_box_t *) s, 1);
 	}
 	while ((bv = bv->next) != &pb->head);
 	return (void *) ans;
 }
 
-static r_dir_t get_seg(const BoxType * b, void *cl)
+static r_dir_t get_seg(const pcb_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	struct seg *s = (struct seg *) b;
@@ -685,7 +685,7 @@ static r_dir_t get_seg(const BoxType * b, void *cl)
  *
  */
 
-static r_dir_t contour_bounds_touch(const BoxType * b, void *cl)
+static r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 {
 	contour_info *c_info = (contour_info *) cl;
 	PLINE *pa = c_info->pa;
@@ -694,7 +694,7 @@ static r_dir_t contour_bounds_touch(const BoxType * b, void *cl)
 	PLINE *looping_over;
 	VNODE *av;										/* node iterators */
 	struct info info;
-	BoxType box;
+	pcb_box_t box;
 	jmp_buf restart;
 
 	/* Have seg_in_seg return to our desired location if it touches */
@@ -781,7 +781,7 @@ static int intersect_impl(jmp_buf * jb, POLYAREA * b, POLYAREA * a, int add)
 	}
 
 	for (pa = a->contours; pa; pa = pa->next) {	/* Loop over the contours of POLYAREA "a" */
-		BoxType sb;
+		pcb_box_t sb;
 		jmp_buf out;
 		int retval;
 
@@ -887,7 +887,7 @@ static inline int cntrbox_inside(PLINE * c1, PLINE * c2)
 /*****************************************************************/
 /* Routines for making labels */
 
-static r_dir_t count_contours_i_am_inside(const BoxType * b, void *cl)
+static r_dir_t count_contours_i_am_inside(const pcb_box_t * b, void *cl)
 {
 	PLINE *me = (PLINE *) cl;
 	PLINE *check = (PLINE *) b;
@@ -924,7 +924,7 @@ static int cntr_in_M_POLYAREA(PLINE * poly, POLYAREA * outfst, pcb_bool test)
 			break;
 		outer = (POLYAREA *) heap_remove_smallest(heap);
 
-		r_search(outer->contour_tree, (BoxType *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
+		r_search(outer->contour_tree, (pcb_box_t *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
 		switch (cnt) {
 		case 0:										/* Didn't find anything in this piece, Keep looking */
 			break;
@@ -1084,7 +1084,7 @@ static void InsCntr(jmp_buf * e, PLINE * c, POLYAREA ** dst)
 	}
 	newp->contours = c;
 	newp->contour_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(newp->contour_tree, (BoxTypePtr) c, 0);
+	r_insert_entry(newp->contour_tree, (pcb_box_t *) c, 0);
 	c->next = NULL;
 }																/* InsCntr */
 
@@ -1098,7 +1098,7 @@ PutContour(jmp_buf * e, PLINE * cntr, POLYAREA ** contours, PLINE ** holes,
 
 	if (cntr->Flags.orient == PLF_DIR) {
 		if (owner != NULL)
-			r_delete_entry(owner->contour_tree, (BoxType *) cntr);
+			r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
 		InsCntr(e, cntr, contours);
 	}
 	/* put hole into temporary list */
@@ -1109,8 +1109,8 @@ PutContour(jmp_buf * e, PLINE * cntr, POLYAREA ** contours, PLINE ** holes,
 			parent_contour->next = cntr;
 			if (owner != parent) {
 				if (owner != NULL)
-					r_delete_entry(owner->contour_tree, (BoxType *) cntr);
-				r_insert_entry(parent->contour_tree, (BoxType *) cntr, 0);
+					r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
+				r_insert_entry(parent->contour_tree, (pcb_box_t *) cntr, 0);
 			}
 		}
 		else {
@@ -1119,7 +1119,7 @@ PutContour(jmp_buf * e, PLINE * cntr, POLYAREA ** contours, PLINE ** holes,
 			/* We don't insert the holes into an r-tree,
 			 * they just form a linked list */
 			if (owner != NULL)
-				r_delete_entry(owner->contour_tree, (BoxType *) cntr);
+				r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
 		}
 	}
 }																/* PutContour */
@@ -1136,15 +1136,15 @@ static inline void remove_contour(POLYAREA * piece, PLINE * prev_contour, PLINE 
 	contour->next = NULL;
 
 	if (remove_rtree_entry)
-		r_delete_entry(piece->contour_tree, (BoxType *) contour);
+		r_delete_entry(piece->contour_tree, (pcb_box_t *) contour);
 }
 
 struct polyarea_info {
-	BoxType BoundingBox;
+	pcb_box_t BoundingBox;
 	POLYAREA *pa;
 };
 
-static r_dir_t heap_it(const BoxType * b, void *cl)
+static r_dir_t heap_it(const pcb_box_t * b, void *cl)
 {
 	heap_t *heap = (heap_t *) cl;
 	struct polyarea_info *pa_info = (struct polyarea_info *) b;
@@ -1161,7 +1161,7 @@ struct find_inside_info {
 	PLINE *result;
 };
 
-static r_dir_t find_inside(const BoxType * b, void *cl)
+static r_dir_t find_inside(const pcb_box_t * b, void *cl)
 {
 	struct find_inside_info *info = (struct find_inside_info *) cl;
 	PLINE *check = (PLINE *) b;
@@ -1211,7 +1211,7 @@ static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
 		all_pa_info[i].BoundingBox.X2 = curc->contours->xmax;
 		all_pa_info[i].BoundingBox.Y2 = curc->contours->ymax;
 		all_pa_info[i].pa = curc;
-		r_insert_entry(tree, (const BoxType *) &all_pa_info[i], 0);
+		r_insert_entry(tree, (const pcb_box_t *) &all_pa_info[i], 0);
 		i++;
 	}
 	while ((curc = curc->f) != dest);
@@ -1223,7 +1223,7 @@ static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
 		container = NULL;
 		/* build a heap of all of the polys that the hole is inside its bounding box */
 		heap = heap_create();
-		r_search(tree, (BoxType *) curh, NULL, heap_it, heap, NULL);
+		r_search(tree, (pcb_box_t *) curh, NULL, heap_it, heap, NULL);
 		if (heap_is_empty(heap)) {
 #ifndef NDEBUG
 #ifdef DEBUG
@@ -1282,7 +1282,7 @@ static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
 					info.result = NULL;
 					/* Rtree search, calling back a routine to longjmp back with data about any hole inside the added one */
 					/*   Be sure not to bother jumping back to report the main contour! */
-					r_search(pa_info->pa->contour_tree, (BoxType *) curh, NULL, find_inside, &info, NULL);
+					r_search(pa_info->pa->contour_tree, (pcb_box_t *) curh, NULL, find_inside, &info, NULL);
 
 					/* Nothing found? */
 					break;
@@ -1306,7 +1306,7 @@ static void InsertHoles(jmp_buf * e, POLYAREA * dest, PLINE ** src)
 			/* link at front of hole list */
 			curh->next = container->next;
 			container->next = curh;
-			r_insert_entry(pa_info->pa->contour_tree, (BoxTypePtr) curh, 0);
+			r_insert_entry(pa_info->pa->contour_tree, (pcb_box_t *) curh, 0);
 
 		}
 	}
@@ -1756,7 +1756,7 @@ struct find_inside_m_pa_info {
 	PLINE *result;
 };
 
-static r_dir_t find_inside_m_pa(const BoxType * b, void *cl)
+static r_dir_t find_inside_m_pa(const pcb_box_t * b, void *cl)
 {
 	struct find_inside_m_pa_info *info = (struct find_inside_m_pa_info *) cl;
 	PLINE *check = (PLINE *) b;
@@ -1780,7 +1780,7 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 	POLYAREA *b;
 	POLYAREA *anext;
 	PLINE *curc, *next, *prev;
-	BoxType box;
+	pcb_box_t box;
 	/* int inv_inside = 0; */
 	int del_inside = 0;
 	int del_outside = 0;
@@ -1803,10 +1803,10 @@ static void M_POLYAREA_update_primary(jmp_buf * e, POLYAREA ** pieces, PLINE ** 
 		break;
 	}
 
-	box = *((BoxType *) bpa->contours);
+	box = *((pcb_box_t *) bpa->contours);
 	b = bpa;
 	while ((b = b->f) != bpa) {
-		BoxType *b_box = (BoxType *) b->contours;
+		pcb_box_t *b_box = (pcb_box_t *) b->contours;
 		MAKEMIN(box.X1, b_box->X1);
 		MAKEMIN(box.Y1, b_box->Y1);
 		MAKEMAX(box.X2, b_box->X2);
@@ -2361,7 +2361,7 @@ void poly_PreContour(PLINE * C, pcb_bool optimize)
 	C->tree = (rtree_t *) make_edge_tree(C);
 }																/* poly_PreContour */
 
-static r_dir_t flip_cb(const BoxType * b, void *cl)
+static r_dir_t flip_cb(const pcb_box_t * b, void *cl)
 {
 	struct seg *s = (struct seg *) b;
 	s->v = s->v->prev;
@@ -2475,7 +2475,7 @@ pcb_bool poly_Copy1(POLYAREA * dst, const POLYAREA * src)
 	for (cur = src->contours; cur != NULL; cur = cur->next) {
 		if (!poly_CopyContour(last, cur))
 			return pcb_false;
-		r_insert_entry(dst->contour_tree, (BoxTypePtr) * last, 0);
+		r_insert_entry(dst->contour_tree, (pcb_box_t *) * last, 0);
 		last = &(*last)->next;
 	}
 	return pcb_true;
@@ -2528,7 +2528,7 @@ pcb_bool poly_InclContour(POLYAREA * p, PLINE * c)
 		p->contours->next = c;
 		c->next = tmp;
 	}
-	r_insert_entry(p->contour_tree, (BoxTypePtr) c, 0);
+	r_insert_entry(p->contour_tree, (pcb_box_t *) c, 0);
 	return pcb_true;
 }
 
@@ -2539,7 +2539,7 @@ typedef struct pip {
 } pip;
 
 
-static r_dir_t crossing(const BoxType * b, void *cl)
+static r_dir_t crossing(const pcb_box_t * b, void *cl)
 {
 	struct seg *s = (struct seg *) b;
 	struct pip *p = (struct pip *) cl;
@@ -2580,7 +2580,7 @@ static r_dir_t crossing(const BoxType * b, void *cl)
 int poly_InsideContour(PLINE * c, Vector p)
 {
 	struct pip info;
-	BoxType ray;
+	pcb_box_t ray;
 
 	if (!cntrbox_pointin(c, p))
 		return pcb_false;
@@ -2902,7 +2902,7 @@ pcb_bool poly_ChkContour(PLINE * a)
 	return pcb_false;
 }
 
-void poly_bbox(POLYAREA * p, BoxType * b)
+void poly_bbox(POLYAREA * p, pcb_box_t * b)
 {
 	PLINE *n;
 	/*int cnt;*/

@@ -475,7 +475,7 @@ static POLYAREA *ArcPolyNoIntersect(ArcType * a, Coord thick)
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
 	Vector v;
-	BoxType *ends;
+	pcb_box_t *ends;
 	int i, segs;
 	double ang, da, rx, ry;
 	long half;
@@ -757,7 +757,7 @@ POLYAREA *PinPoly(PinType * pin, Coord thick, Coord clear)
 	return CirclePoly(pin->X, pin->Y, size);
 }
 
-POLYAREA *BoxPolyBloated(BoxType * box, Coord bloat)
+POLYAREA *BoxPolyBloated(pcb_box_t * box, Coord bloat)
 {
 	return RectPoly(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
 }
@@ -821,7 +821,7 @@ static int SubtractArc(ArcType * arc, PolygonType * p)
 static int SubtractText(TextType * text, PolygonType * p)
 {
 	POLYAREA *np;
-	const BoxType *b = &text->BoundingBox;
+	const pcb_box_t *b = &text->BoundingBox;
 
 	if (!TEST_FLAG(PCB_FLAG_CLEARLINE, text))
 		return 0;
@@ -848,7 +848,7 @@ static int SubtractPad(PadType * pad, PolygonType * p)
 }
 
 struct cpInfo {
-	const BoxType *other;
+	const pcb_box_t *other;
 	pcb_data_t *data;
 	pcb_layer_t *layer;
 	PolygonType *polygon;
@@ -867,7 +867,7 @@ static void subtract_accumulated(struct cpInfo *info, PolygonTypePtr polygon)
 	info->batch_size = 0;
 }
 
-static r_dir_t pin_sub_callback(const BoxType * b, void *cl)
+static r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pin = (PinTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -906,7 +906,7 @@ static r_dir_t pin_sub_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t arc_sub_callback(const BoxType * b, void *cl)
+static r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -923,7 +923,7 @@ static r_dir_t arc_sub_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t pad_sub_callback(const BoxType * b, void *cl)
+static r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -943,7 +943,7 @@ static r_dir_t pad_sub_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t line_sub_callback(const BoxType * b, void *cl)
+static r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -971,7 +971,7 @@ static r_dir_t line_sub_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static r_dir_t text_sub_callback(const BoxType * b, void *cl)
+static r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
 {
 	TextTypePtr text = (TextTypePtr) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -998,10 +998,10 @@ static int Group(pcb_data_t *Data, pcb_cardinal_t layer)
 	return i;
 }
 
-static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, PolygonType * polygon, const BoxType * here, Coord expand)
+static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, PolygonType * polygon, const pcb_box_t * here, Coord expand)
 {
 	int r = 0, seen;
-	BoxType region;
+	pcb_box_t region;
 	struct cpInfo info;
 	pcb_cardinal_t group;
 
@@ -1096,7 +1096,7 @@ static int UnsubtractPin(PinType * pin, pcb_layer_t * l, PolygonType * p)
 	if (!Unsubtract(np, p))
 		return 0;
 
-	clearPoly(PCB->Data, l, p, (const BoxType *) pin, 2 * UNSUBTRACT_BLOAT * 400000);
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *) pin, 2 * UNSUBTRACT_BLOAT * 400000);
 	return 1;
 }
 
@@ -1114,7 +1114,7 @@ static int UnsubtractArc(ArcType * arc, pcb_layer_t * l, PolygonType * p)
 		return 0;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const BoxType *) arc, 2 * UNSUBTRACT_BLOAT);
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *) arc, 2 * UNSUBTRACT_BLOAT);
 	return 1;
 }
 
@@ -1132,7 +1132,7 @@ static int UnsubtractLine(LineType * line, pcb_layer_t * l, PolygonType * p)
 		return 0;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const BoxType *) line, 2 * UNSUBTRACT_BLOAT);
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *) line, 2 * UNSUBTRACT_BLOAT);
 	return 1;
 }
 
@@ -1150,7 +1150,7 @@ static int UnsubtractText(TextType * text, pcb_layer_t * l, PolygonType * p)
 		return -1;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const BoxType *) text, 2 * UNSUBTRACT_BLOAT);
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *) text, 2 * UNSUBTRACT_BLOAT);
 	return 1;
 }
 
@@ -1165,7 +1165,7 @@ static int UnsubtractPad(PadType * pad, pcb_layer_t * l, PolygonType * p)
 		return 0;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const BoxType *) pad, 2 * UNSUBTRACT_BLOAT);
+	clearPoly(PCB->Data, l, p, (const pcb_box_t *) pad, 2 * UNSUBTRACT_BLOAT);
 	return 1;
 }
 
@@ -1347,7 +1347,7 @@ void CopyAttachedPolygonToLayer(void)
 	SetPolygonBoundingBox(polygon);
 	if (!CURRENT->polygon_tree)
 		CURRENT->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(CURRENT->polygon_tree, (BoxType *) polygon, 0);
+	r_insert_entry(CURRENT->polygon_tree, (pcb_box_t *) polygon, 0);
 	InitClip(PCB->Data, CURRENT, polygon);
 	DrawPolygon(CURRENT, polygon);
 	SetChangedFlag(pcb_true);
@@ -1366,7 +1366,7 @@ void CopyAttachedPolygonToLayer(void)
  * the search.
  */
 int
-PolygonHoles(PolygonType * polygon, const BoxType * range, int (*callback) (PLINE * contour, void *user_data), void *user_data)
+PolygonHoles(PolygonType * polygon, const pcb_box_t * range, int (*callback) (PLINE * contour, void *user_data), void *user_data)
 {
 	POLYAREA *pa = polygon->Clipped;
 	PLINE *pl;
@@ -1446,7 +1446,7 @@ static r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, PolygonTypePtr Pol
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t plow_callback(const BoxType * b, void *cl)
+static r_dir_t plow_callback(const pcb_box_t * b, void *cl)
 {
 	struct plow_info *plow = (struct plow_info *) cl;
 	PolygonTypePtr polygon = (PolygonTypePtr) b;
@@ -1460,7 +1460,7 @@ int
 PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 						 r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, PolygonTypePtr poly, int type, void *ptr1, void *ptr2))
 {
-	BoxType sb = ((PinTypePtr) ptr2)->BoundingBox;
+	pcb_box_t sb = ((PinTypePtr) ptr2)->BoundingBox;
 	int r = 0, seen;
 	struct plow_info info;
 
@@ -1657,7 +1657,7 @@ static void r_NoHolesPolygonDicer(POLYAREA * pa, void (*emit) (PLINE *, void *),
 	}
 }
 
-void NoHolesPolygonDicer(PolygonTypePtr p, const BoxType * clip, void (*emit) (PLINE *, void *), void *user_data)
+void NoHolesPolygonDicer(PolygonTypePtr p, const pcb_box_t * clip, void (*emit) (PLINE *, void *), void *user_data)
 {
 	POLYAREA *main_contour, *cur, *next;
 
@@ -1733,7 +1733,7 @@ pcb_bool MorphPolygon(pcb_layer_t *layer, PolygonTypePtr poly)
 			newone->Clipped = p;
 			p = p->f;									/* go to next pline */
 			newone->Clipped->b = newone->Clipped->f = newone->Clipped;	/* unlink from others */
-			r_insert_entry(layer->polygon_tree, (BoxType *) newone, 0);
+			r_insert_entry(layer->polygon_tree, (pcb_box_t *) newone, 0);
 			DrawPolygon(layer, newone);
 		}
 		else {
@@ -1834,7 +1834,7 @@ void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, POLYAR
 		SetPolygonBoundingBox(Polygon);
 		if (!Layer->polygon_tree)
 			Layer->polygon_tree = r_create_tree(NULL, 0, 0);
-		r_insert_entry(Layer->polygon_tree, (BoxType *) Polygon, 0);
+		r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 
 		DrawPolygon(Layer, Polygon);
 		/* add to undo list */

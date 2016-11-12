@@ -214,7 +214,7 @@ pcb_bool SelectObject(void)
  *  returns a list of object IDs matched the search and loads len with the
  *  length of the list. Returns NULL on no match.
  */
-static long int *ListBlock_(BoxTypePtr Box, pcb_bool Flag, int *len)
+static long int *ListBlock_(pcb_box_t *Box, pcb_bool Flag, int *len)
 {
 	int changed = 0;
 	int used = 0, alloced = 0;
@@ -466,7 +466,7 @@ do { \
  * Flag determines if the block is to be selected or unselected
  * returns pcb_true if the state of any object has changed
  */
-pcb_bool SelectBlock(BoxTypePtr Box, pcb_bool Flag)
+pcb_bool SelectBlock(pcb_box_t *Box, pcb_bool Flag)
 {
 	/* do not list, set flag */
 	return (ListBlock_(Box, Flag, NULL) == NULL) ? pcb_false : pcb_true;
@@ -475,7 +475,7 @@ pcb_bool SelectBlock(BoxTypePtr Box, pcb_bool Flag)
 /* ----------------------------------------------------------------------
  * List all visible objects within the passed box
  */
-long int *ListBlock(BoxTypePtr Box, int *len)
+long int *ListBlock(pcb_box_t *Box, int *len)
 {
 	return ListBlock_(Box, 1, len);
 }

@@ -419,7 +419,7 @@ pcb_bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
 pcb_bool LineArcIntersect(LineTypePtr Line, ArcTypePtr Arc)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
-	BoxTypePtr box;
+	pcb_box_t *box;
 
 	dx = Line->Point2.X - Line->Point1.X;
 	dy = Line->Point2.Y - Line->Point1.Y;
@@ -473,7 +473,7 @@ pcb_bool LineArcIntersect(LineTypePtr Line, ArcTypePtr Arc)
  */
 pcb_bool IsArcInPolygon(ArcTypePtr Arc, PolygonTypePtr Polygon)
 {
-	BoxTypePtr Box = (BoxType *) Arc;
+	pcb_box_t *Box = (pcb_box_t *) Arc;
 
 	/* arcs with clearance never touch polys */
 	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, Polygon) && TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
@@ -502,7 +502,7 @@ pcb_bool IsArcInPolygon(ArcTypePtr Arc, PolygonTypePtr Polygon)
  */
 pcb_bool IsLineInPolygon(LineTypePtr Line, PolygonTypePtr Polygon)
 {
-	BoxTypePtr Box = (BoxType *) Line;
+	pcb_box_t *Box = (pcb_box_t *) Line;
 	POLYAREA *lp;
 
 	/* lines with clearance never touch polygons */
@@ -609,7 +609,7 @@ pcb_bool ArcPadIntersect(ArcTypePtr Arc, PadTypePtr Pad)
 	return LineArcIntersect((LineTypePtr) (Pad), (Arc));
 }
 
-pcb_bool BoxBoxIntersection(BoxTypePtr b1, BoxTypePtr b2)
+pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
 {
 	if (b2->X2 < b1->X1 || b2->X1 > b1->X2)
 		return pcb_false;
@@ -626,7 +626,7 @@ static pcb_bool PadPadIntersect(PadTypePtr p1, PadTypePtr p2)
 static inline pcb_bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
 {
 	double t1, t2;
-	BoxType b1, b2;
+	pcb_box_t b1, b2;
 	int shape1, shape2;
 
 	shape1 = GET_SQUARE(PV1);

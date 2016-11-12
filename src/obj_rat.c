@@ -134,7 +134,7 @@ void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr Rat)
 /* moves a rat-line to paste buffer */
 void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat)
 {
-	r_delete_entry(ctx->buffer.src->rat_tree, (BoxType *) rat);
+	r_delete_entry(ctx->buffer.src->rat_tree, (pcb_box_t *) rat);
 
 	ratlist_remove(rat);
 	ratlist_append(&ctx->buffer.dst->Rat, rat);
@@ -143,7 +143,7 @@ void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat)
 
 	if (!ctx->buffer.dst->rat_tree)
 		ctx->buffer.dst->rat_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(ctx->buffer.dst->rat_tree, (BoxType *) rat, 0);
+	r_insert_entry(ctx->buffer.dst->rat_tree, (pcb_box_t *) rat, 0);
 	return rat;
 }
 
@@ -220,7 +220,7 @@ void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 }
 
 /*** draw ***/
-r_dir_t draw_rat_callback(const BoxType * b, void *cl)
+r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 {
 	RatType *rat = (RatType *) b;
 
@@ -255,7 +255,7 @@ void EraseRat(RatTypePtr Rat)
 	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
 		Coord w = Rat->Thickness;
 
-		BoxType b;
+		pcb_box_t b;
 
 		b.X1 = Rat->Point1.X - w * 2 - w / 2;
 		b.X2 = Rat->Point1.X + w * 2 + w / 2;
@@ -276,7 +276,7 @@ void DrawRat(RatTypePtr Rat)
 	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
 		Coord w = Rat->Thickness;
 
-		BoxType b;
+		pcb_box_t b;
 
 		b.X1 = Rat->Point1.X - w * 2 - w / 2;
 		b.X2 = Rat->Point1.X + w * 2 + w / 2;

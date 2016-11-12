@@ -739,7 +739,7 @@ static int Benchmark(int argc, const char **argv, Coord x, Coord y)
 {
 	int i = 0;
 	time_t start, end;
-	BoxType region;
+	pcb_box_t region;
 	Drawable save_main;
 
 	save_main = main_pixmap;
@@ -2359,7 +2359,7 @@ static Boolean idle_proc(XtPointer dummy)
 {
 	if (need_redraw) {
 		int mx, my;
-		BoxType region;
+		pcb_box_t region;
 		lesstif_use_mask(0);
 		pixmap = main_pixmap;
 		mx = view_width;
@@ -3463,7 +3463,7 @@ lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * resu
 
 static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
 {
-	BoxType region;
+	pcb_box_t region;
 	int save_vx, save_vy, save_vw, save_vh;
 	int save_fx, save_fy;
 	double save_vz;
@@ -3546,7 +3546,7 @@ static void lesstif_show_item(void *item)
 {
 	double scale;
 	Widget da;
-	BoxType *extents;
+	pcb_box_t *extents;
 	PinoutData *pd;
 
 	for (pd = pinouts; pd; pd = pd->next)

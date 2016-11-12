@@ -215,7 +215,7 @@ int ActionUndo(int argc, const char **argv, Coord x, Coord y)
 			}
 			if (Crosshair.AttachedBox.State == STATE_THIRD) {
 				void *ptr1, *ptr2, *ptr3;
-				BoxTypePtr bx;
+				pcb_box_t *bx;
 				/* guaranteed to succeed */
 				SearchObjectByLocation(PCB_TYPE_ARC, &ptr1, &ptr2, &ptr3,
 															 Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point1.Y, 0);

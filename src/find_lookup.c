@@ -30,11 +30,11 @@
 
 static inline r_dir_t r_search_pt(rtree_t * rtree, const PointType * pt,
 															int radius,
-															r_dir_t (*region_in_search) (const BoxType * region, void *cl),
-															r_dir_t (*rectangle_in_region) (const BoxType * box, void *cl), void *closure,
+															r_dir_t (*region_in_search) (const pcb_box_t * region, void *cl),
+															r_dir_t (*rectangle_in_region) (const pcb_box_t * box, void *cl), void *closure,
 															int *num_found)
 {
-	BoxType box;
+	pcb_box_t box;
 
 	box.X1 = pt->X - radius;
 	box.X2 = pt->X + radius;
@@ -292,7 +292,7 @@ struct pv_info {
 	jmp_buf env;
 };
 
-static r_dir_t LOCtoPVline_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVline_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -304,7 +304,7 @@ static r_dir_t LOCtoPVline_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPVarc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVarc_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -316,7 +316,7 @@ static r_dir_t LOCtoPVarc_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPVpad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVpad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -328,7 +328,7 @@ static r_dir_t LOCtoPVpad_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPVrat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVrat_callback(const pcb_box_t * b, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -338,7 +338,7 @@ static r_dir_t LOCtoPVrat_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPVpoly_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 {
 	PolygonTypePtr polygon = (PolygonTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -392,7 +392,7 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 
 		/* check pads */
 		if (setjmp(info.env) == 0)
-			r_search(PCB->Data->pad_tree, (BoxType *) & info.pv, NULL, LOCtoPVpad_callback, &info, NULL);
+			r_search(PCB->Data->pad_tree, (pcb_box_t *) & info.pv, NULL, LOCtoPVpad_callback, &info, NULL);
 		else
 			return pcb_true;
 
@@ -403,24 +403,24 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 			info.layer = layer;
 			/* add touching lines */
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.pv, NULL, LOCtoPVline_callback, &info, NULL);
+				r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.pv, NULL, LOCtoPVline_callback, &info, NULL);
 			else
 				return pcb_true;
 			/* add touching arcs */
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.pv, NULL, LOCtoPVarc_callback, &info, NULL);
+				r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.pv, NULL, LOCtoPVarc_callback, &info, NULL);
 			else
 				return pcb_true;
 			/* check all polygons */
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->polygon_tree, (BoxType *) & info.pv, NULL, LOCtoPVpoly_callback, &info, NULL);
+				r_search(LAYER_PTR(layer)->polygon_tree, (pcb_box_t *) & info.pv, NULL, LOCtoPVpoly_callback, &info, NULL);
 			else
 				return pcb_true;
 		}
 		/* Check for rat-lines that may intersect the PV */
 		if (AndRats) {
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->rat_tree, (BoxType *) & info.pv, NULL, LOCtoPVrat_callback, &info, NULL);
+				r_search(PCB->Data->rat_tree, (pcb_box_t *) & info.pv, NULL, LOCtoPVrat_callback, &info, NULL);
 			else
 				return pcb_true;
 		}
@@ -529,7 +529,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 	return (pcb_false);
 }
 
-static r_dir_t pv_pv_callback(const BoxType * b, void *cl)
+static r_dir_t pv_pv_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pin = (PinTypePtr) b;
 	struct pv_info *i = (struct pv_info *) cl;
@@ -585,11 +585,11 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 
 		EXPAND_BOUNDS(&info.pv);
 		if (setjmp(info.env) == 0)
-			r_search(PCB->Data->via_tree, (BoxType *) & info.pv, NULL, pv_pv_callback, &info, NULL);
+			r_search(PCB->Data->via_tree, (pcb_box_t *) & info.pv, NULL, pv_pv_callback, &info, NULL);
 		else
 			return pcb_true;
 		if (setjmp(info.env) == 0)
-			r_search(PCB->Data->pin_tree, (BoxType *) & info.pv, NULL, pv_pv_callback, &info, NULL);
+			r_search(PCB->Data->pin_tree, (pcb_box_t *) & info.pv, NULL, pv_pv_callback, &info, NULL);
 		else
 			return pcb_true;
 		PVList.Location++;
@@ -608,7 +608,7 @@ struct lo_info {
 	jmp_buf env;
 };
 
-static r_dir_t pv_line_callback(const BoxType * b, void *cl)
+static r_dir_t pv_line_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -625,7 +625,7 @@ static r_dir_t pv_line_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t pv_pad_callback(const BoxType * b, void *cl)
+static r_dir_t pv_pad_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -642,7 +642,7 @@ static r_dir_t pv_pad_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t pv_arc_callback(const BoxType * b, void *cl)
+static r_dir_t pv_arc_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -659,7 +659,7 @@ static r_dir_t pv_arc_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t pv_poly_callback(const BoxType * b, void *cl)
+static r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -691,7 +691,7 @@ static r_dir_t pv_poly_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t pv_rat_callback(const BoxType * b, void *cl)
+static r_dir_t pv_rat_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pv = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -728,11 +728,11 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 			info.line = *(LINELIST_ENTRY(layer, LineList[layer].Location));
 			EXPAND_BOUNDS(&info.line);
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->via_tree, (BoxType *) & info.line, NULL, pv_line_callback, &info, NULL);
+				r_search(PCB->Data->via_tree, (pcb_box_t *) & info.line, NULL, pv_line_callback, &info, NULL);
 			else
 				return pcb_true;
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->pin_tree, (BoxType *) & info.line, NULL, pv_line_callback, &info, NULL);
+				r_search(PCB->Data->pin_tree, (pcb_box_t *) & info.line, NULL, pv_line_callback, &info, NULL);
 			else
 				return pcb_true;
 			LineList[layer].Location++;
@@ -743,11 +743,11 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 			info.arc = *(ARCLIST_ENTRY(layer, ArcList[layer].Location));
 			EXPAND_BOUNDS(&info.arc);
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->via_tree, (BoxType *) & info.arc, NULL, pv_arc_callback, &info, NULL);
+				r_search(PCB->Data->via_tree, (pcb_box_t *) & info.arc, NULL, pv_arc_callback, &info, NULL);
 			else
 				return pcb_true;
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->pin_tree, (BoxType *) & info.arc, NULL, pv_arc_callback, &info, NULL);
+				r_search(PCB->Data->pin_tree, (pcb_box_t *) & info.arc, NULL, pv_arc_callback, &info, NULL);
 			else
 				return pcb_true;
 			ArcList[layer].Location++;
@@ -759,11 +759,11 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 			info.polygon = *(POLYGONLIST_ENTRY(layer, PolygonList[layer].Location));
 			EXPAND_BOUNDS(&info.polygon);
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->via_tree, (BoxType *) & info.polygon, NULL, pv_poly_callback, &info, NULL);
+				r_search(PCB->Data->via_tree, (pcb_box_t *) & info.polygon, NULL, pv_poly_callback, &info, NULL);
 			else
 				return pcb_true;
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->pin_tree, (BoxType *) & info.polygon, NULL, pv_poly_callback, &info, NULL);
+				r_search(PCB->Data->pin_tree, (pcb_box_t *) & info.polygon, NULL, pv_poly_callback, &info, NULL);
 			else
 				return pcb_true;
 			PolygonList[layer].Location++;
@@ -785,11 +785,11 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 			info.pad = *(PADLIST_ENTRY(layer, PadList[layer].Location));
 			EXPAND_BOUNDS(&info.pad);
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->via_tree, (BoxType *) & info.pad, NULL, pv_pad_callback, &info, NULL);
+				r_search(PCB->Data->via_tree, (pcb_box_t *) & info.pad, NULL, pv_pad_callback, &info, NULL);
 			else
 				return pcb_true;
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->pin_tree, (BoxType *) & info.pad, NULL, pv_pad_callback, &info, NULL);
+				r_search(PCB->Data->pin_tree, (pcb_box_t *) & info.pad, NULL, pv_pad_callback, &info, NULL);
 			else
 				return pcb_true;
 			PadList[layer].Location++;
@@ -815,7 +815,7 @@ static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 	return (pcb_false);
 }
 
-r_dir_t pv_touch_callback(const BoxType * b, void *cl)
+r_dir_t pv_touch_callback(const pcb_box_t * b, void *cl)
 {
 	PinTypePtr pin = (PinTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -825,7 +825,7 @@ r_dir_t pv_touch_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoArcLine_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoArcLine_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -837,7 +837,7 @@ static r_dir_t LOCtoArcLine_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoArcArc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoArcArc_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -851,7 +851,7 @@ static r_dir_t LOCtoArcArc_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoArcPad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoArcPad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -917,7 +917,7 @@ static pcb_bool LookupLOConnectionsToArc(ArcTypePtr Arc, pcb_cardinal_t LayerGro
 	return (pcb_false);
 }
 
-static r_dir_t LOCtoLineLine_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -929,7 +929,7 @@ static r_dir_t LOCtoLineLine_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoLineArc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoLineArc_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -943,7 +943,7 @@ static r_dir_t LOCtoLineArc_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoLineRat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -963,7 +963,7 @@ static r_dir_t LOCtoLineRat_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoLinePad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoLinePad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1006,12 +1006,12 @@ static pcb_bool LookupLOConnectionsToLine(LineTypePtr Line, pcb_cardinal_t Layer
 			info.layer = layer;
 			/* add lines */
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.line, NULL, LOCtoLineLine_callback, &info, NULL);
+				r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.line, NULL, LOCtoLineLine_callback, &info, NULL);
 			else
 				return pcb_true;
 			/* add arcs */
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.line, NULL, LOCtoLineArc_callback, &info, NULL);
+				r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.line, NULL, LOCtoLineArc_callback, &info, NULL);
 			else
 				return pcb_true;
 			/* now check all polygons */
@@ -1045,7 +1045,7 @@ struct rat_info {
 	jmp_buf env;
 };
 
-static r_dir_t LOCtoRat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoRat_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1059,7 +1059,7 @@ static r_dir_t LOCtoRat_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t PolygonToRat_callback(const BoxType * b, void *cl)
+static r_dir_t PolygonToRat_callback(const pcb_box_t * b, void *cl)
 {
 	PolygonTypePtr polygon = (PolygonTypePtr) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1073,7 +1073,7 @@ static r_dir_t PolygonToRat_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct rat_info *i = (struct rat_info *) cl;
@@ -1133,7 +1133,7 @@ static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr Point, pcb_cardinal_t L
 	return (pcb_false);
 }
 
-static r_dir_t LOCtoPadLine_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadLine_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1145,7 +1145,7 @@ static r_dir_t LOCtoPadLine_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPadArc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadArc_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1159,7 +1159,7 @@ static r_dir_t LOCtoPadArc_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPadPoly_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadPoly_callback(const pcb_box_t * b, void *cl)
 {
 	PolygonTypePtr polygon = (PolygonTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1172,7 +1172,7 @@ static r_dir_t LOCtoPadPoly_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPadRat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1198,7 +1198,7 @@ static r_dir_t LOCtoPadRat_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPadPad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPadPad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1300,7 +1300,7 @@ static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, pcb_cardinal_t LayerGro
 			/* handle special 'pad' layers */
 			info.layer = layer - max_copper_layer;
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->pad_tree, (BoxType *) & info.pad, NULL, LOCtoPadPad_callback, &info, NULL);
+				r_search(PCB->Data->pad_tree, (pcb_box_t *) & info.pad, NULL, LOCtoPadPad_callback, &info, NULL);
 			else
 				return pcb_true;
 		}
@@ -1309,7 +1309,7 @@ static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, pcb_cardinal_t LayerGro
 	return retv;
 }
 
-static r_dir_t LOCtoPolyLine_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
 {
 	LineTypePtr line = (LineTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1321,7 +1321,7 @@ static r_dir_t LOCtoPolyLine_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPolyArc_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
 {
 	ArcTypePtr arc = (ArcTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1335,7 +1335,7 @@ static r_dir_t LOCtoPolyArc_callback(const BoxType * b, void *cl)
 	return 0;
 }
 
-static r_dir_t LOCtoPolyPad_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPolyPad_callback(const pcb_box_t * b, void *cl)
 {
 	PadTypePtr pad = (PadTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1348,7 +1348,7 @@ static r_dir_t LOCtoPolyPad_callback(const BoxType * b, void *cl)
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t LOCtoPolyRat_callback(const BoxType * b, void *cl)
+static r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
 {
 	RatTypePtr rat = (RatTypePtr) b;
 	struct lo_info *i = (struct lo_info *) cl;
@@ -1382,7 +1382,7 @@ static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, pcb_cardina
 	info.layer = LayerGroup;
 	/* check rats */
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->rat_tree, (BoxType *) & info.polygon, NULL, LOCtoPolyRat_callback, &info, NULL);
+		r_search(PCB->Data->rat_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyRat_callback, &info, NULL);
 	else
 		return pcb_true;
 /* loop over all layers of the group */
@@ -1407,19 +1407,19 @@ static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr Polygon, pcb_cardina
 			info.layer = layer;
 			/* check all lines */
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->line_tree, (BoxType *) & info.polygon, NULL, LOCtoPolyLine_callback, &info, NULL);
+				r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyLine_callback, &info, NULL);
 			else
 				return pcb_true;
 			/* check all arcs */
 			if (setjmp(info.env) == 0)
-				r_search(LAYER_PTR(layer)->arc_tree, (BoxType *) & info.polygon, NULL, LOCtoPolyArc_callback, &info, NULL);
+				r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyArc_callback, &info, NULL);
 			else
 				return pcb_true;
 		}
 		else {
 			info.layer = layer - max_copper_layer;
 			if (setjmp(info.env) == 0)
-				r_search(PCB->Data->pad_tree, (BoxType *) & info.polygon, NULL, LOCtoPolyPad_callback, &info, NULL);
+				r_search(PCB->Data->pad_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyPad_callback, &info, NULL);
 			else
 				return pcb_true;
 		}

@@ -118,7 +118,7 @@ static void nogui_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 	CRASH("fill_polygon");
 }
 
-static void nogui_fill_pcb_polygon(hidGC gc, PolygonType * poly, const BoxType * clip_box)
+static void nogui_fill_pcb_polygon(hidGC gc, PolygonType * poly, const pcb_box_t * clip_box)
 {
 	CRASH("fill_pcb_polygon");
 }

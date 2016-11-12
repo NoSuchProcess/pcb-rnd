@@ -45,7 +45,7 @@
 struct pcb_boxlist_s {
 	pcb_cardinal_t BoxN,								/* the number of boxes contained */
 	  BoxMax;											/* max boxes from malloc */
-	BoxTypePtr Box;
+	pcb_box_t *Box;
 };
 
 #include "misc_util.h"
@@ -110,27 +110,27 @@ typedef struct cheap_point {
 /* note that boxes are closed on top and left and open on bottom and right. */
 /* this means that top-left corner is in box, *but bottom-right corner is
  * not*.  */
-static inline PCB_FUNC_UNUSED pcb_bool point_in_box(const BoxType * box, Coord X, Coord Y) 
+static inline PCB_FUNC_UNUSED pcb_bool point_in_box(const pcb_box_t * box, Coord X, Coord Y) 
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X < box->X2) && (Y < box->Y2);
 }
 
-static inline PCB_FUNC_UNUSED pcb_bool point_in_closed_box(const BoxType * box, Coord X, Coord Y)
+static inline PCB_FUNC_UNUSED pcb_bool point_in_closed_box(const pcb_box_t * box, Coord X, Coord Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X <= box->X2) && (Y <= box->Y2);
 }
 
-static inline PCB_FUNC_UNUSED pcb_bool box_is_good(const BoxType * b)
+static inline PCB_FUNC_UNUSED pcb_bool box_is_good(const pcb_box_t * b)
 {
 	return (b->X1 < b->X2) && (b->Y1 < b->Y2);
 }
 
-static inline PCB_FUNC_UNUSED pcb_bool box_intersect(const BoxType * a, const BoxType * b)
+static inline PCB_FUNC_UNUSED pcb_bool box_intersect(const pcb_box_t * a, const pcb_box_t * b)
 {
 	return (a->X1 < b->X2) && (b->X1 < a->X2) && (a->Y1 < b->Y2) && (b->Y1 < a->Y2);
 }
 
-static inline PCB_FUNC_UNUSED CheapPointType closest_point_in_box(const CheapPointType * from, const BoxType * box)
+static inline PCB_FUNC_UNUSED CheapPointType closest_point_in_box(const CheapPointType * from, const pcb_box_t * box)
 {
 	CheapPointType r;
 	assert(box->X1 < box->X2 && box->Y1 < box->Y2);
@@ -140,14 +140,14 @@ static inline PCB_FUNC_UNUSED CheapPointType closest_point_in_box(const CheapPoi
 	return r;
 }
 
-static inline PCB_FUNC_UNUSED pcb_bool box_in_box(const BoxType * outer, const BoxType * inner)
+static inline PCB_FUNC_UNUSED pcb_bool box_in_box(const pcb_box_t * outer, const pcb_box_t * inner)
 {
 	return (outer->X1 <= inner->X1) && (inner->X2 <= outer->X2) && (outer->Y1 <= inner->Y1) && (inner->Y2 <= outer->Y2);
 }
 
-static inline PCB_FUNC_UNUSED BoxType clip_box(const BoxType * box, const BoxType * clipbox)
+static inline PCB_FUNC_UNUSED pcb_box_t clip_box(const pcb_box_t * box, const pcb_box_t * clipbox)
 {
-	BoxType r;
+	pcb_box_t r;
 	assert(box_intersect(box, clipbox));
 	r.X1 = MAX(box->X1, clipbox->X1);
 	r.X2 = MIN(box->X2, clipbox->X2);
@@ -157,9 +157,9 @@ static inline PCB_FUNC_UNUSED BoxType clip_box(const BoxType * box, const BoxTyp
 	return r;
 }
 
-static inline PCB_FUNC_UNUSED BoxType shrink_box(const BoxType * box, Coord amount)
+static inline PCB_FUNC_UNUSED pcb_box_t shrink_box(const pcb_box_t * box, Coord amount)
 {
-	BoxType r = *box;
+	pcb_box_t r = *box;
 	r.X1 += amount;
 	r.Y1 += amount;
 	r.X2 -= amount;
@@ -167,15 +167,15 @@ static inline PCB_FUNC_UNUSED BoxType shrink_box(const BoxType * box, Coord amou
 	return r;
 }
 
-static inline PCB_FUNC_UNUSED BoxType bloat_box(const BoxType * box, Coord amount)
+static inline PCB_FUNC_UNUSED pcb_box_t bloat_box(const pcb_box_t * box, Coord amount)
 {
 	return shrink_box(box, -amount);
 }
 
 /* construct a minimum box that touches the input box at the center */
-static inline PCB_FUNC_UNUSED BoxType box_center(const BoxType * box)
+static inline PCB_FUNC_UNUSED pcb_box_t box_center(const pcb_box_t * box)
 {
-	BoxType r;
+	pcb_box_t r;
 	r.X1 = box->X1 + (box->X2 - box->X1) / 2;
 	r.X2 = r.X1 + 1;
 	r.Y1 = box->Y1 + (box->Y2 - box->Y1) / 2;
@@ -184,9 +184,9 @@ static inline PCB_FUNC_UNUSED BoxType box_center(const BoxType * box)
 }
 
 /* construct a minimum box that touches the input box at the corner */
-static inline PCB_FUNC_UNUSED BoxType box_corner(const BoxType * box)
+static inline PCB_FUNC_UNUSED pcb_box_t box_corner(const pcb_box_t * box)
 {
-	BoxType r;
+	pcb_box_t r;
 	r.X1 = box->X1;
 	r.X2 = r.X1 + 1;
 	r.Y1 = box->Y1;
@@ -195,9 +195,9 @@ static inline PCB_FUNC_UNUSED BoxType box_corner(const BoxType * box)
 }
 
 /* construct a box that holds a single point */
-static inline PCB_FUNC_UNUSED BoxType point_box(Coord X, Coord Y)
+static inline PCB_FUNC_UNUSED pcb_box_t point_box(Coord X, Coord Y)
 {
-	BoxType r;
+	pcb_box_t r;
 	r.X1 = X;
 	r.X2 = X + 1;
 	r.Y1 = Y;
@@ -206,7 +206,7 @@ static inline PCB_FUNC_UNUSED BoxType point_box(Coord X, Coord Y)
 }
 
 /* close a bounding box by pushing its upper right corner */
-static inline PCB_FUNC_UNUSED void close_box(BoxType * r)
+static inline PCB_FUNC_UNUSED void close_box(pcb_box_t * r)
 {
 	r->X2++;
 	r->Y2++;
@@ -215,13 +215,13 @@ static inline PCB_FUNC_UNUSED void close_box(BoxType * r)
 /* return the square of the minimum distance from a point to some point
  * inside a box.  The box is half-closed!  That is, the top-left corner
  * is considered in the box, but the bottom-right corner is not. */
-static inline PCB_FUNC_UNUSED double dist2_to_box(const CheapPointType * p, const BoxType * b)
+static inline PCB_FUNC_UNUSED double dist2_to_box(const CheapPointType * p, const pcb_box_t * b)
 {
 	CheapPointType r = closest_point_in_box(p, b);
 	return Distance(r.X, r.Y, p->X, p->Y);
 }
 
-BoxTypePtr GetBoxMemory(BoxListTypePtr);
+pcb_box_t *GetBoxMemory(BoxListTypePtr);
 void FreeBoxListMemory(BoxListTypePtr);
 void SetPointBoundingBox(PointTypePtr Pnt);
 

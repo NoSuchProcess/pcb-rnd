@@ -153,7 +153,7 @@ pcb_bool IsLineInRectangle(Coord, Coord, Coord, Coord, LineTypePtr);
 pcb_bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line);
 pcb_bool IsArcInRectangle(Coord, Coord, Coord, Coord, ArcTypePtr);
 pcb_bool IsPointInPad(Coord, Coord, Coord, PadTypePtr);
-pcb_bool IsPointInBox(Coord, Coord, BoxTypePtr, Coord);
+pcb_bool IsPointInBox(Coord, Coord, pcb_box_t *, Coord);
 int SearchObjectByLocation(unsigned, void **, void **, void **, Coord, Coord, Coord);
 int SearchScreen(Coord, Coord, int, void **, void **, void **);
 int SearchScreenGridSlop(Coord, Coord, int, void **, void **, void **);

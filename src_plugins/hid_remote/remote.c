@@ -82,7 +82,7 @@ REGISTER_ACTIONS(remote_action_list, remote_cookie)
 static int remote_stay;
 static void remote_do_export(HID_Attr_Val * options)
 {
-	BoxType region;
+	pcb_box_t region;
 	region.X1 = 0;
 	region.Y1 = 0;
 	region.X2 = PCB->MaxWidth;
