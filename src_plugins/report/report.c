@@ -264,7 +264,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 		}
 	case PCB_TYPE_ARC:
 		{
-			ArcTypePtr Arc;
+			pcb_arc_t *Arc;
 			pcb_box_t *box;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
@@ -273,7 +273,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 				return 0;
 			}
 #endif
-			Arc = (ArcTypePtr) ptr2;
+			Arc = (pcb_arc_t *) ptr2;
 			box = GetArcEnds(Arc);
 
 			report = pcb_strdup_printf("%m+ARC ID# %ld;  Flags:%s\n"

@@ -1150,7 +1150,7 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 
 	case PCB_TYPE_ARC:
 		notify_crosshair_change(pcb_false);
-		set_same_(((ArcTypePtr) ptr2)->Thickness, 0, 0, ((ArcTypePtr) ptr2)->Clearance / 2, NULL);
+		set_same_(((pcb_arc_t *) ptr2)->Thickness, 0, 0, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_ARC)
 			SetMode(PCB_MODE_ARC);

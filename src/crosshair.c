@@ -132,7 +132,7 @@ static void XORPolygon(PolygonTypePtr polygon, Coord dx, Coord dy, int dash_last
  */
 static void XORDrawAttachedArc(Coord thick)
 {
-	ArcType arc;
+	pcb_arc_t arc;
 	pcb_box_t *bx;
 	Coord wx, wy;
 	Angle sa, dir;
@@ -378,7 +378,7 @@ static void XORDrawMoveOrCopyObject(void)
 
 	case PCB_TYPE_ARC:
 		{
-			ArcTypePtr Arc = (ArcTypePtr) Crosshair.AttachedObject.Ptr2;
+			pcb_arc_t *Arc = (pcb_arc_t *) Crosshair.AttachedObject.Ptr2;
 
 			gui->draw_arc(Crosshair.GC, Arc->X + dx, Arc->Y + dy, Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta);
 			break;
@@ -741,7 +741,7 @@ static r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
-	ArcType *arc = (ArcType *) box;
+	pcb_arc_t *arc = (pcb_arc_t *) box;
 	Coord p1x, p1y, p2x, p2y;
 
 	p1x = arc->X - arc->Width * cos(TO_RADIANS(arc->StartAngle));
@@ -779,7 +779,7 @@ void DrawLineOrArc(int type, void *obj)
 #if 0
 	case ARCPOINT_TYPE:
 		/* See comment above */
-		DrawArc(NULL, (ArcType *) obj);
+		DrawArc(NULL, (pcb_arc_t *) obj);
 		break;
 #endif
 	}

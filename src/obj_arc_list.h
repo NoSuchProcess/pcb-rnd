@@ -29,7 +29,7 @@
 /* List of Arcs */
 #define TDL(x)      arclist_ ## x
 #define TDL_LIST_T  arclist_t
-#define TDL_ITEM_T  ArcType
+#define TDL_ITEM_T  pcb_arc_t
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC

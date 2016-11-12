@@ -42,22 +42,22 @@ struct pcb_arc_s {       /* holds information about arcs */
 
 
 /*** Memory ***/
-ArcTypePtr GetArcMemory(pcb_layer_t *);
-ArcType *GetElementArcMemory(ElementType *Element);
-void RemoveFreeArc(ArcType *data);
+pcb_arc_t *GetArcMemory(pcb_layer_t *);
+pcb_arc_t *GetElementArcMemory(ElementType *Element);
+void RemoveFreeArc(pcb_arc_t *data);
 
 /*** Utility ***/
-void SetArcBoundingBox(ArcTypePtr Arc);
-pcb_box_t *GetArcEnds(ArcTypePtr Arc);
-void ChangeArcAngles(pcb_layer_t *Layer, ArcTypePtr a, Angle new_sa, Angle new_da);
-void ChangeArcRadii(pcb_layer_t *Layer, ArcTypePtr a, Coord new_width, Coord new_height);
-void *RemoveArc(pcb_layer_t *Layer, ArcTypePtr Arc);
-ArcType *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags);
+void SetArcBoundingBox(pcb_arc_t *Arc);
+pcb_box_t *GetArcEnds(pcb_arc_t *Arc);
+void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, Angle new_sa, Angle new_da);
+void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, Coord new_width, Coord new_height);
+void *RemoveArc(pcb_layer_t *Layer, pcb_arc_t *Arc);
+pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, FlagType Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_arc_on_layer(pcb_layer_t *Layer, ArcType *Arc);
+void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);
 
-void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number);
+void RotateArcLowLevel(pcb_arc_t *Arc, Coord X, Coord Y, unsigned Number);
 
 #define	MOVE_ARC_LOWLEVEL(a,dx,dy) \
 	{ \
@@ -66,7 +66,7 @@ void RotateArcLowLevel(ArcTypePtr Arc, Coord X, Coord Y, unsigned Number);
 	}
 
 #define ARC_LOOP(element) do {                                      \
-  ArcType *arc;                                                     \
+  pcb_arc_t *arc;                                                     \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {
 

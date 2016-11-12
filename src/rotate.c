@@ -149,7 +149,7 @@ void RotateScreenObject(Coord X, Coord Y, unsigned Steps)
 	int type;
 	void *ptr1, *ptr2, *ptr3;
 	if ((type = SearchScreen(X, Y, ROTATE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-		if (TEST_FLAG(PCB_FLAG_LOCK, (ArcTypePtr) ptr2)) {
+		if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_arc_t *) ptr2)) {
 			Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			return;
 		}

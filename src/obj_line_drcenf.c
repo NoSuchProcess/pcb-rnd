@@ -231,7 +231,7 @@ static r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (!TEST_FLAG(PCB_FLAG_FOUND, arc) && LineArcIntersect(i->line, arc))

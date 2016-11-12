@@ -10,7 +10,7 @@ typedef struct onpoint_st {
 	union {
 		void *any;
 		pcb_line_t *line;
-		ArcType *arc;
+		pcb_arc_t *arc;
 	} obj;
 } OnpointType;
 

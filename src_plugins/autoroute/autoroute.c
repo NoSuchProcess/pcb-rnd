@@ -765,7 +765,7 @@ static void AddText(PointerListType layergroupboxes[], pcb_cardinal_t layergroup
 											 text->BoundingBox.X2, text->BoundingBox.Y2, layergroup, text, style);
 }
 
-static routebox_t *AddArc(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, ArcTypePtr arc, RouteStyleType * style)
+static routebox_t *AddArc(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, pcb_arc_t *arc, RouteStyleType * style)
 {
 	return AddIrregularObstacle(layergroupboxes,
 															arc->BoundingBox.X1, arc->BoundingBox.Y1,

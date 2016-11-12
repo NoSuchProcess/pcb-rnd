@@ -41,7 +41,7 @@ static int LOT_Linecallback(const pcb_box_t * b, void *cl)
 
 static int LOT_Arccallback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!arc->Thickness)

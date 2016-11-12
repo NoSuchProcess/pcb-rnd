@@ -219,7 +219,7 @@ int ActionUndo(int argc, const char **argv, Coord x, Coord y)
 				/* guaranteed to succeed */
 				SearchObjectByLocation(PCB_TYPE_ARC, &ptr1, &ptr2, &ptr3,
 															 Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point1.Y, 0);
-				bx = GetArcEnds((ArcTypePtr) ptr2);
+				bx = GetArcEnds((pcb_arc_t *) ptr2);
 				Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = bx->X1;
 				Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = bx->Y1;
 				AdjustAttachedObjects();

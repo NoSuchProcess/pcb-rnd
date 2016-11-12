@@ -368,7 +368,7 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type == PCB_TYPE_ARC) {
 		pcb_layer_t *Layer = (pcb_layer_t *) ptr1;
-		ArcTypePtr a = (ArcTypePtr) ptr2;
+		pcb_arc_t *a = (pcb_arc_t *) ptr2;
 		r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);
 		old_sa = a->StartAngle;
 		old_da = a->Delta;
@@ -399,7 +399,7 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type == PCB_TYPE_ARC) {
 		pcb_layer_t *Layer = (pcb_layer_t *) ptr1;
-		ArcTypePtr a = (ArcTypePtr) ptr2;
+		pcb_arc_t *a = (pcb_arc_t *) ptr2;
 		r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);
 		old_w = a->Width;
 		old_h = a->Height;
@@ -1420,7 +1420,7 @@ void AddObjectToSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 			break;
 		case PCB_TYPE_ARC:
 		case PCB_TYPE_ELEMENT_ARC:
-			undo->Data.Size = ((ArcTypePtr) ptr2)->Thickness;
+			undo->Data.Size = ((pcb_arc_t *) ptr2)->Thickness;
 			break;
 		}
 	}
@@ -1447,7 +1447,7 @@ void AddObjectToClearSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 			undo->Data.Size = ((PadTypePtr) ptr2)->Clearance;
 			break;
 		case PCB_TYPE_ARC:
-			undo->Data.Size = ((ArcTypePtr) ptr2)->Clearance;
+			undo->Data.Size = ((pcb_arc_t *) ptr2)->Clearance;
 			break;
 		}
 	}
@@ -1495,7 +1495,7 @@ void AddObjectTo2ndSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 void AddObjectToChangeAnglesUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
-	ArcTypePtr a = (ArcTypePtr) Ptr3;
+	pcb_arc_t *a = (pcb_arc_t *) Ptr3;
 
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_CHANGEANGLES, OBJECT_ID(Ptr3), Type);
@@ -1511,7 +1511,7 @@ void AddObjectToChangeAnglesUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr
 void AddObjectToChangeRadiiUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
-	ArcTypePtr a = (ArcTypePtr) Ptr3;
+	pcb_arc_t *a = (pcb_arc_t *) Ptr3;
 
 	if (!Locked) {
 		undo = GetUndoSlot(UNDO_CHANGERADII, OBJECT_ID(Ptr3), Type);

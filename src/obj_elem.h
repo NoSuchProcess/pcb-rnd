@@ -81,7 +81,7 @@ ElementTypePtr CreateNewElement(pcb_data_t *Data, ElementTypePtr Element,
 	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
 	int TextScale, FlagType TextFlags, pcb_bool uniqueName);
 
-ArcTypePtr CreateNewArcInElement(ElementTypePtr Element, Coord X, Coord Y,
+pcb_arc_t *CreateNewArcInElement(ElementTypePtr Element, Coord X, Coord Y,
 	Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness);
 
 pcb_line_t *CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
@@ -141,7 +141,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, ElementTypePtr Ele
   linelist_foreach(&(element)->Line, &__it__, line) {
 
 #define ELEMENTARC_LOOP(element) do {                               \
-  ArcType *arc;                                                     \
+  pcb_arc_t *arc;                                                     \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {
 

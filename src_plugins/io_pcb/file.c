@@ -370,7 +370,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
 	pcb_line_t *line;
-	ArcType *arc;
+	pcb_arc_t *arc;
 	ElementType *element;
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
@@ -440,7 +440,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
-	ArcType *arc;
+	pcb_arc_t *arc;
 	TextType *text;
 	PolygonType *polygon;
 

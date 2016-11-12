@@ -94,7 +94,7 @@ unsigned int pcb_line_hash(const ElementType *e, const pcb_line_t *l)
 		h_str(l->Number);
 }
 
-int pcb_arc_eq(const ElementType *e1, const ArcType *a1, const ElementType *e2, const ArcType *a2)
+int pcb_arc_eq(const ElementType *e1, const pcb_arc_t *a1, const ElementType *e2, const pcb_arc_t *a2)
 {
 	if (neq(a1, a2, Thickness) || neq(a1, a2, Clearance)) return 0;
 	if (neq(a1, a2, Width) || neq(a1, a2, Height)) return 0;
@@ -104,7 +104,7 @@ int pcb_arc_eq(const ElementType *e1, const ArcType *a1, const ElementType *e2, 
 	return 1;
 }
 
-unsigned int pcb_arc_hash(const ElementType *e, const ArcType *a)
+unsigned int pcb_arc_hash(const ElementType *e, const pcb_arc_t *a)
 {
 	return 
 		h_coord(a->Thickness) ^ h_coord(a->Clearance) ^
@@ -143,7 +143,7 @@ unsigned int pcb_element_hash(const ElementType *e)
 	}
 
 	{
-		ArcType *a;
+		pcb_arc_t *a;
 		linelist_foreach(&e->Arc, &it, a) {
 			val ^= pcb_arc_hash(e, a);
 		}
@@ -199,7 +199,7 @@ int pcb_element_eq(const ElementType *e1, const ElementType *e2)
 	}
 
 	{
-		ArcType *a1, *a2;
+		pcb_arc_t *a1, *a2;
 		a1 = arclist_first((arclist_t *)&e1->Arc);
 		a2 = arclist_first((arclist_t *)&e2->Arc);
 		for(;;) {

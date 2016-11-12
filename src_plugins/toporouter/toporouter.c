@@ -5557,7 +5557,7 @@ gdouble export_pcb_drawarc(guint layer, toporouter_arc_t * a, guint thickness, g
 {
 	gdouble sa, da, theta;
 	gdouble d = 0.;
-	ArcTypePtr arc;
+	pcb_arc_t *arc;
 	gint wind;
 
 	wind = coord_wind(a->x0, a->y0, a->x1, a->y1, vx(a->centre), vy(a->centre));

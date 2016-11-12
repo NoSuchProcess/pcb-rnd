@@ -406,7 +406,7 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 
 static int parse_arc(pcb_layer_t *ly, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 {
-	ArcType *arc;
+	pcb_arc_t *arc;
 
 	if (ly != NULL)
 		arc = GetArcMemory(ly);

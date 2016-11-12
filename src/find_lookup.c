@@ -99,7 +99,7 @@ static pcb_bool ADD_LINE_TO_LIST(pcb_cardinal_t L, pcb_line_t *Ptr, int from_typ
 	return pcb_false;
 }
 
-static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, ArcTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_ARC, LAYER_PTR(L), (Ptr), (Ptr));
@@ -245,7 +245,7 @@ void InitLayoutLookup(void)
 		}
 		if (arclist_length(&layer->Arc)) {
 			ArcList[i].Size = arclist_length(&layer->Arc);
-			ArcList[i].Data = (void **) calloc(ArcList[i].Size, sizeof(ArcTypePtr));
+			ArcList[i].Data = (void **) calloc(ArcList[i].Size, sizeof(pcb_arc_t *));
 		}
 		if (polylist_length(&layer->Polygon)) {
 			PolygonList[i].Size = polylist_length(&layer->Polygon);
@@ -306,7 +306,7 @@ static r_dir_t LOCtoPVline_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPVarc_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, arc) && IS_PV_ON_ARC(&i->pv, arc) && !TEST_FLAG(PCB_FLAG_HOLE, &i->pv)) {
@@ -602,7 +602,7 @@ struct lo_info {
 	pcb_cardinal_t layer;
 	pcb_line_t line;
 	PadType pad;
-	ArcType arc;
+	pcb_arc_t arc;
 	PolygonType polygon;
 	RatType rat;
 	jmp_buf env;
@@ -839,7 +839,7 @@ static r_dir_t LOCtoArcLine_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoArcArc_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!arc->Thickness)
@@ -869,7 +869,7 @@ static r_dir_t LOCtoArcPad_callback(const pcb_box_t * b, void *cl)
  * the notation that is used is:
  * Xij means Xj at arc i
  */
-static pcb_bool LookupLOConnectionsToArc(ArcTypePtr Arc, pcb_cardinal_t LayerGroup)
+static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGroup)
 {
 	pcb_cardinal_t entry;
 	struct lo_info info;
@@ -931,7 +931,7 @@ static r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoLineArc_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!arc->Thickness)
@@ -1147,7 +1147,7 @@ static r_dir_t LOCtoPadLine_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPadArc_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!arc->Thickness)
@@ -1323,7 +1323,7 @@ static r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!arc->Thickness)

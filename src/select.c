@@ -148,7 +148,7 @@ pcb_bool SelectObject(void)
 
 	case PCB_TYPE_ARC:
 		{
-			ArcType *arc = (ArcTypePtr) ptr2;
+			pcb_arc_t *arc = (pcb_arc_t *) ptr2;
 
 			layer = (pcb_layer_t *) ptr1;
 			AddObjectToFlagUndoList(PCB_TYPE_ARC, ptr1, ptr2, ptr2);
@@ -494,7 +494,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_ARC:
 		if (F->Arc)
-			return (F->Arc(ctx, (pcb_layer_t *) Ptr1, (ArcTypePtr) Ptr2));
+			return (F->Arc(ctx, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2));
 		break;
 
 	case PCB_TYPE_LINE_POINT:

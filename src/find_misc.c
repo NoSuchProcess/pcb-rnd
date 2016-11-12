@@ -181,7 +181,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 			int layer = GetLayerNumber(PCB->Data,
 																 (pcb_layer_t *) ptr1);
 
-			if (ADD_ARC_TO_LIST(layer, (ArcTypePtr) ptr2, 0, NULL, FCT_START))
+			if (ADD_ARC_TO_LIST(layer, (pcb_arc_t *) ptr2, 0, NULL, FCT_START))
 				return pcb_true;
 			break;
 		}

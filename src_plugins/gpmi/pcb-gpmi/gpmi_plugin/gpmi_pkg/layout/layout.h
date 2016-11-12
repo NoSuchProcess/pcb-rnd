@@ -84,7 +84,7 @@ typedef struct layout_object_s {
 		pcb_line_t    *l;
 		TextType    *t;
 		PolygonType *p;
-		ArcType     *a;
+		pcb_arc_t     *a;
 		PinType     *v;
 		PinType     *pin;
 	} obj;

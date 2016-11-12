@@ -355,7 +355,7 @@ static POLYAREA *oct_therm(PinTypePtr pin, pcb_cardinal_t style)
  */
 POLYAREA *ThermPoly(pcb_board_t *p, PinTypePtr pin, pcb_cardinal_t laynum)
 {
-	ArcType a;
+	pcb_arc_t a;
 	POLYAREA *pa, *arc;
 	pcb_cardinal_t style = GET_THERM(laynum, pin);
 

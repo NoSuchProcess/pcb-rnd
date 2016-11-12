@@ -470,7 +470,7 @@ POLYAREA *RoundRect(Coord x1, Coord x2, Coord y1, Coord y2, Coord t)
 }
 
 #define ARC_ANGLE 5
-static POLYAREA *ArcPolyNoIntersect(ArcType * a, Coord thick)
+static POLYAREA *ArcPolyNoIntersect(pcb_arc_t * a, Coord thick)
 {
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
@@ -539,10 +539,10 @@ static POLYAREA *ArcPolyNoIntersect(ArcType * a, Coord thick)
 }
 
 #define MIN_CLEARANCE_BEFORE_BISECT 10.
-POLYAREA *ArcPoly(ArcType * a, Coord thick)
+POLYAREA *ArcPoly(pcb_arc_t * a, Coord thick)
 {
 	double delta;
-	ArcType seg1, seg2;
+	pcb_arc_t seg1, seg2;
 	POLYAREA *tmp1, *tmp2, *res;
 
 	delta = (a->Delta < 0) ? -a->Delta : a->Delta;
@@ -807,7 +807,7 @@ static int SubtractLine(pcb_line_t * line, PolygonType * p)
 	return Subtract(np, p, pcb_true);
 }
 
-static int SubtractArc(ArcType * arc, PolygonType * p)
+static int SubtractArc(pcb_arc_t * arc, PolygonType * p)
 {
 	POLYAREA *np;
 
@@ -908,7 +908,7 @@ static r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	PolygonTypePtr polygon;
 
@@ -1100,7 +1100,7 @@ static int UnsubtractPin(PinType * pin, pcb_layer_t * l, PolygonType * p)
 	return 1;
 }
 
-static int UnsubtractArc(ArcType * arc, pcb_layer_t * l, PolygonType * p)
+static int UnsubtractArc(pcb_arc_t * arc, pcb_layer_t * l, PolygonType * p)
 {
 	POLYAREA *np;
 
@@ -1408,7 +1408,7 @@ static r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, PolygonTypePt
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_ARC:
-		SubtractArc((ArcTypePtr) ptr2, Polygon);
+		SubtractArc((pcb_arc_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PAD:
@@ -1434,7 +1434,7 @@ static r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, PolygonTypePtr Pol
 		UnsubtractLine((pcb_line_t *) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_ARC:
-		UnsubtractArc((ArcTypePtr) ptr2, Layer, Polygon);
+		UnsubtractArc((pcb_arc_t *) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PAD:
 		UnsubtractPad((PadTypePtr) ptr2, Layer, Polygon);

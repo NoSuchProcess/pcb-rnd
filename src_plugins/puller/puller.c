@@ -82,7 +82,7 @@ static jmp_buf abort_buf;
 
 static int multi, line_exact, arc_exact;
 static pcb_line_t *the_line;
-static ArcTypePtr the_arc;
+static pcb_arc_t *the_arc;
 static double arc_dist;
 
 /* We canonicalize the arc and line such that the point to be moved is
@@ -99,7 +99,7 @@ static int within(int x1, int y1, int x2, int y2, int r)
 	return Distance(x1, y1, x2, y2) <= r / 2;
 }
 
-static int arc_endpoint_is(ArcTypePtr a, int angle, int x, int y)
+static int arc_endpoint_is(pcb_arc_t *a, int angle, int x, int y)
 {
 	int ax = a->X, ay = a->Y;
 
@@ -303,7 +303,7 @@ static r_dir_t line_callback(const pcb_box_t * b, void *cl)
 static r_dir_t arc_callback(const pcb_box_t * b, void *cl)
 {
 	/* pcb_layer_t *layer = (pcb_layer_t *) cl; */
-	ArcTypePtr a = (ArcTypePtr) b;
+	pcb_arc_t *a = (pcb_arc_t *) b;
 
 #if TRACE1
 	pcb_printf("arc a %#mD r %#mS sa %ld d %ld\n", a->X, a->Y, a->Width, a->StartAngle, a->Delta);
@@ -563,7 +563,7 @@ typedef struct Extra {
 	int type;
 	union {
 		pcb_line_t *line;
-		ArcType *arc;
+		pcb_arc_t *arc;
 	} parent;
 } Extra;
 
@@ -624,7 +624,7 @@ static void clear_found()
 }
 #endif
 
-static void fix_arc_extra(ArcTypePtr a, Extra * e)
+static void fix_arc_extra(pcb_arc_t *a, Extra * e)
 {
 #if TRACE1
 	printf("new arc angles %ld %ld\n", a->StartAngle, a->Delta);
@@ -684,7 +684,7 @@ static r_dir_t find_pair_line_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t find_pair_arc_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	Extra *e = ARC2EXTRA(arc);
 	FindPairCallbackStruct *fpcs = (FindPairCallbackStruct *) cl;
 
@@ -783,7 +783,7 @@ static r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	PinTypePtr pin = (PinTypePtr) cl;
 	Extra *e = ARC2EXTRA(arc);
 	int hits;
@@ -897,7 +897,7 @@ static r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
 {
-	ArcTypePtr arc = (ArcTypePtr) b;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
 	PadTypePtr pad = (PadTypePtr) cl;
 	Extra *e = ARC2EXTRA(arc);
 	int hits;
@@ -934,7 +934,7 @@ static Extra *new_line_extra(pcb_line_t * line)
 	return extra;
 }
 
-static Extra *new_arc_extra(ArcType * arc)
+static Extra *new_arc_extra(pcb_arc_t * arc)
 {
 	Extra *extra = g_slice_new0(Extra);
 	g_hash_table_insert(arcs, arc, extra);
@@ -1128,7 +1128,7 @@ static void print_extra(Extra * e, Extra * prev)
 		printf("  %s %p %s %p\n", e->start.is_pad ? "pad" : "pin", (void *)e->start.pin, e->end.is_pad ? "pad" : "pin", (void *)e->end.pin);
 	}
 	else if (EXTRA_IS_ARC(e)) {
-		ArcTypePtr arc = EXTRA2ARC(e);
+		pcb_arc_t *arc = EXTRA2ARC(e);
 		pcb_printf(" %p A %#mD-%#mD", (void *)arc, e->start.x, e->start.y, e->end.x, e->end.y);
 		pcb_printf(" at %#mD ang %ld,%ld\n", arc->X, arc->Y, arc->StartAngle, arc->Delta);
 	}
@@ -1204,7 +1204,7 @@ static void reverse_line(pcb_line_t *line)
 	memcpy(&e->end, &etmp, sizeof(End));
 }
 
-static void reverse_arc(ArcTypePtr arc)
+static void reverse_arc(pcb_arc_t *arc)
 {
 	Extra *e = ARC2EXTRA(arc);
 	End etmp;
@@ -1234,10 +1234,10 @@ static void expand_box(pcb_box_t *b, int x, int y, int t)
    working on. */
 
 /* what we're working with */
-static ArcTypePtr start_arc;
+static pcb_arc_t *start_arc;
 static pcb_line_t *start_line;
 static pcb_line_t *end_line;
-static ArcTypePtr end_arc;
+static pcb_arc_t *end_arc;
 static Extra *start_extra, *end_extra;
 static Extra *sarc_extra, *earc_extra;
 static void *start_pinpad, *end_pinpad;
@@ -1511,7 +1511,7 @@ static r_dir_t gp_line_cb(const pcb_box_t * b, void *cb)
 
 static r_dir_t gp_arc_cb(const pcb_box_t * b, void *cb)
 {
-	const ArcTypePtr a = (ArcTypePtr) b;
+	const pcb_arc_t *a = (pcb_arc_t *) b;
 	Extra *e = ARC2EXTRA(a);
 	if (a == start_arc || a == end_arc)
 		return R_DIR_NOT_FOUND;
@@ -1639,10 +1639,10 @@ static pcb_line_t *create_line(pcb_line_t *sample, int x1, int y1, int x2, int y
 	return line;
 }
 
-static ArcTypePtr create_arc(pcb_line_t *sample, int x, int y, int r, int sa, int da)
+static pcb_arc_t *create_arc(pcb_line_t *sample, int x, int y, int r, int sa, int da)
 {
 	Extra *e;
-	ArcTypePtr arc;
+	pcb_arc_t *arc;
 
 	if (r % 100 == 1)
 		r--;
@@ -1741,7 +1741,7 @@ static void mark_line_for_deletion(pcb_line_t *l)
 #endif
 }
 
-static void mark_arc_for_deletion(ArcTypePtr a)
+static void mark_arc_for_deletion(pcb_arc_t *a)
 {
 	Extra *e = ARC2EXTRA(a);
 	e->deleted = 1;
@@ -1771,7 +1771,7 @@ static void maybe_pull_1(pcb_line_t *line)
 	int ex, ey;
 	pcb_line_t *new_line;
 	Extra *new_lextra;
-	ArcTypePtr new_arc;
+	pcb_arc_t *new_arc;
 	Extra *new_aextra;
 	double abs_angle;
 

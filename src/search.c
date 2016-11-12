@@ -54,7 +54,7 @@ static pcb_layer_t *SearchLayer;
  * want to include locked types in the search.
  */
 static pcb_bool SearchLineByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_line_t **);
-static pcb_bool SearchArcByLocation(int, pcb_layer_t **, ArcTypePtr *, ArcTypePtr *);
+static pcb_bool SearchArcByLocation(int, pcb_layer_t **, pcb_arc_t **, pcb_arc_t **);
 static pcb_bool SearchRatLineByLocation(int, RatTypePtr *, RatTypePtr *, RatTypePtr *);
 static pcb_bool SearchTextByLocation(int, pcb_layer_t **, TextTypePtr *, TextTypePtr *);
 static pcb_bool SearchPolygonByLocation(int, pcb_layer_t **, PolygonTypePtr *, PolygonTypePtr *);
@@ -252,14 +252,14 @@ static pcb_bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePt
  * searches arc on the SearchLayer
  */
 struct arc_info {
-	ArcTypePtr *Arc, *Dummy;
+	pcb_arc_t **Arc, **Dummy;
 	int locked;
 };
 
 static r_dir_t arc_callback(const pcb_box_t * box, void *cl)
 {
 	struct arc_info *i = (struct arc_info *) cl;
-	ArcTypePtr a = (ArcTypePtr) box;
+	pcb_arc_t *a = (pcb_arc_t *) box;
 
 	if (TEST_FLAG(i->locked, a))
 		return R_DIR_NOT_FOUND;
@@ -272,7 +272,7 @@ static r_dir_t arc_callback(const pcb_box_t * box, void *cl)
 }
 
 
-static pcb_bool SearchArcByLocation(int locked, pcb_layer_t ** Layer, ArcTypePtr * Arc, ArcTypePtr * Dummy)
+static pcb_bool SearchArcByLocation(int locked, pcb_layer_t ** Layer, pcb_arc_t ** Arc, pcb_arc_t ** Dummy)
 {
 	struct arc_info info;
 
@@ -742,7 +742,7 @@ pcb_bool IsLineInQuadrangle(PointType p[4], pcb_line_t *Line)
 /* ---------------------------------------------------------------------------
  * checks if an arc crosses a square
  */
-pcb_bool IsArcInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, ArcTypePtr Arc)
+pcb_bool IsArcInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_arc_t *Arc)
 {
 	pcb_line_t line;
 
@@ -901,7 +901,7 @@ pcb_bool IsPointInBox(Coord X, Coord Y, pcb_box_t *box, Coord Radius)
  *       and in the case that the arc thickness is greater than
  *       the radius.
  */
-pcb_bool IsPointOnArc(Coord X, Coord Y, Coord Radius, ArcTypePtr Arc)
+pcb_bool IsPointOnArc(Coord X, Coord Y, Coord Radius, pcb_arc_t *Arc)
 {
 	/* Calculate angle of point from arc center */
 	double p_dist = Distance(X, Y, Arc->X, Arc->Y);
@@ -1050,7 +1050,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 				return (PCB_TYPE_LINE);
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_ARC &&
-					SearchArcByLocation(locked, (pcb_layer_t **) Result1, (ArcTypePtr *) Result2, (ArcTypePtr *) Result3))
+					SearchArcByLocation(locked, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (pcb_arc_t **) Result3))
 				return (PCB_TYPE_ARC);
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_TEXT

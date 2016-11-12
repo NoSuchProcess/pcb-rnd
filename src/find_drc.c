@@ -139,7 +139,7 @@ static void LocateError(Coord * x, Coord * y)
 		}
 	case PCB_TYPE_ARC:
 		{
-			ArcTypePtr arc = (ArcTypePtr) thing_ptr3;
+			pcb_arc_t *arc = (pcb_arc_t *) thing_ptr3;
 			*x = arc->X;
 			*y = arc->Y;
 			break;
@@ -233,7 +233,7 @@ static r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, PolygonTypePtr
 	DrcViolationType *violation;
 
 	pcb_line_t *line = (pcb_line_t *) ptr2;
-	ArcTypePtr arc = (ArcTypePtr) ptr2;
+	pcb_arc_t *arc = (pcb_arc_t *) ptr2;
 	PinTypePtr pin = (PinTypePtr) ptr2;
 	PadTypePtr pad = (PadTypePtr) ptr2;
 

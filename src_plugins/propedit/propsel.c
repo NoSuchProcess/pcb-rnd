@@ -97,7 +97,7 @@ static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_lin
 	map_attr(ctx, &line->Attributes);
 }
 
-static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc)
+static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
 {
 	map_chk_skip(ctx, arc);
 	map_add_prop(ctx, "p/trace/thickness", Coord, arc->Thickness);
@@ -131,7 +131,7 @@ static void map_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_
 	map_attr(ctx, &line->Attributes);
 }
 
-static void map_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, ArcType *arc)
+static void map_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_arc_t *arc)
 {
 	map_chk_skip(ctx, arc);
 	map_arc_cb(ctx, pcb, NULL, arc);
@@ -235,7 +235,7 @@ static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_lin
 	    ChangeObjectClearSize(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
 }
 
-static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc)
+static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 8;
@@ -335,7 +335,7 @@ static void set_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_
 	}
 }
 
-static void set_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, ArcType *arc)
+static void set_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_arc_t *arc)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 
@@ -492,7 +492,7 @@ static void del_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_lin
 	del_attr(ctx, &line->Attributes);
 }
 
-static void del_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc)
+static void del_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
 {
 	map_chk_skip(ctx, arc);
 	del_attr(ctx, &arc->Attributes);
@@ -516,7 +516,7 @@ static void del_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_
 	del_attr(ctx, &line->Attributes);
 }
 
-static void del_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, ArcType *arc)
+static void del_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_arc_t *arc)
 {
 	map_chk_skip(ctx, arc);
 	del_attr(ctx, &arc->Attributes);

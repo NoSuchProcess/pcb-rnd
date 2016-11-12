@@ -96,7 +96,7 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		{
 			pcb_box_t *box;
 
-			box = GetArcEnds((ArcTypePtr) ptr2);
+			box = GetArcEnds((pcb_arc_t *) ptr2);
 			*x = box->X1;
 			*y = box->Y1;
 			break;
@@ -646,7 +646,7 @@ void NotifyMode(void)
 			case STATE_SECOND:
 			case STATE_THIRD:
 				{
-					ArcTypePtr arc;
+					pcb_arc_t *arc;
 					Coord wx, wy;
 					Angle sa, dir;
 

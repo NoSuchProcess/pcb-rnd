@@ -74,7 +74,7 @@ static void normalize_angles(Angle * sa, Angle * d)
 	*sa = NormalizeAngle(*sa);
 }
 
-static int radius_crosses_arc(double x, double y, ArcTypePtr arc)
+static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 {
 	double alpha = atan2(y - arc->Y, -x + arc->X) * PCB_RAD_TO_DEG;
 	Angle sa = arc->StartAngle, d = arc->Delta;
@@ -87,7 +87,7 @@ static int radius_crosses_arc(double x, double y, ArcTypePtr arc)
 	return (sa + d - 360) >= alpha;
 }
 
-static void get_arc_ends(Coord * box, ArcTypePtr arc)
+static void get_arc_ends(Coord * box, pcb_arc_t *arc)
 {
 	box[0] = arc->X - arc->Width * cos(PCB_M180 * arc->StartAngle);
 	box[1] = arc->Y + arc->Height * sin(PCB_M180 * arc->StartAngle);
@@ -120,7 +120,7 @@ static void get_arc_ends(Coord * box, ArcTypePtr arc)
  *
  *
  */
-static pcb_bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
+static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 {
 	double x, y, dx, dy, r1, r2, a, d, l, t, t1, t2, dl;
 	Coord pdx, pdy;
@@ -416,7 +416,7 @@ pcb_bool LineLineIntersect(pcb_line_t *Line1, pcb_line_t *Line2)
  *
  * The end points are hell so they are checked individually
  */
-pcb_bool LineArcIntersect(pcb_line_t *Line, ArcTypePtr Arc)
+pcb_bool LineArcIntersect(pcb_line_t *Line, pcb_arc_t *Arc)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
 	pcb_box_t *box;
@@ -471,7 +471,7 @@ pcb_bool LineArcIntersect(pcb_line_t *Line, ArcTypePtr Arc)
  * - check the two end points of the arc. If none of them matches
  * - check all segments of the polygon against the arc.
  */
-pcb_bool IsArcInPolygon(ArcTypePtr Arc, PolygonTypePtr Polygon)
+pcb_bool IsArcInPolygon(pcb_arc_t *Arc, PolygonTypePtr Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Arc;
 
@@ -604,7 +604,7 @@ pcb_bool LinePadIntersect(pcb_line_t *Line, PadTypePtr Pad)
 	return LineLineIntersect((Line), (pcb_line_t *) Pad);
 }
 
-pcb_bool ArcPadIntersect(ArcTypePtr Arc, PadTypePtr Pad)
+pcb_bool ArcPadIntersect(pcb_arc_t *Arc, PadTypePtr Pad)
 {
 	return LineArcIntersect((pcb_line_t *) (Pad), (Arc));
 }

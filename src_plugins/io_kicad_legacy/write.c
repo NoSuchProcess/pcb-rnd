@@ -572,8 +572,8 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset)
 {
 	gdl_iterator_t it;
-	ArcType *arc;
-	ArcType localArc; /* for converting ellipses to circular arcs */
+	pcb_arc_t *arc;
+	pcb_arc_t localArc; /* for converting ellipses to circular arcs */
 	pcb_box_t *boxResult; /* for figuring out arc ends */
 	pcb_cardinal_t currentLayer = number;
 	Coord radius, xStart, yStart, xEnd, yEnd;
@@ -762,7 +762,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 
 	gdl_iterator_t eit;
 	pcb_line_t *line;
-	ArcType *arc;
+	pcb_arc_t *arc;
 	ElementType *element;
 	pcb_box_t *boxResult;
 
@@ -993,7 +993,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 
 	gdl_iterator_t eit;
 	pcb_line_t *line;
-	ArcType *arc;
+	pcb_arc_t *arc;
 	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
 	Coord xPos, yPos;
 

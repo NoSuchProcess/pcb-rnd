@@ -89,7 +89,7 @@ static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_line
 	return Line;
 }
 
-static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, ArcType * Arc, Coord dx, Coord dy)
+static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_arc_t * Arc, Coord dx, Coord dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_ARC, Layer, Arc);

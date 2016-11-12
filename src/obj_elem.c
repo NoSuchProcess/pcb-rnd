@@ -102,7 +102,7 @@ void FreeElementMemory(ElementType * element)
 	list_map0(&element->Pin, PinType, RemoveFreePin);
 	list_map0(&element->Pad, PadType, RemoveFreePad);
 	list_map0(&element->Line, pcb_line_t, RemoveFreeLine);
-	list_map0(&element->Arc,  ArcType,  RemoveFreeArc);
+	list_map0(&element->Arc,  pcb_arc_t,  RemoveFreeArc);
 
 	FreeAttributeListMemory(&element->Attributes);
 	reset_obj_mem(ElementType, element);
@@ -595,10 +595,10 @@ ElementTypePtr CreateNewElement(pcb_data_t *Data, ElementTypePtr Element,
 }
 
 /* creates a new arc in an element */
-ArcTypePtr CreateNewArcInElement(ElementTypePtr Element, Coord X, Coord Y,
+pcb_arc_t *CreateNewArcInElement(ElementTypePtr Element, Coord X, Coord Y,
 	Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness)
 {
-	ArcType *arc = GetElementArcMemory(Element);
+	pcb_arc_t *arc = GetElementArcMemory(Element);
 
 	/* set Delta (0,360], StartAngle in [0,360) */
 	if (delta < 0) {

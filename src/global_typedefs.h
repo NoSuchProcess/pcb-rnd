@@ -35,7 +35,7 @@ typedef struct pcb_box_s pcb_box_t;
 typedef struct pcb_box_list_s pcb_box_list_t;
 typedef struct pcb_font_s pcb_font_t;
 typedef struct pcb_line_s pcb_line_t;
-typedef struct pcb_arc_s ArcType, *ArcTypePtr;
+typedef struct pcb_arc_s pcb_arc_t;
 typedef struct pcb_point_s PointType, *PointTypePtr;
 typedef struct pcb_rat_line_s RatType, *RatTypePtr;
 

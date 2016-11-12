@@ -251,7 +251,7 @@ static lht_node_t *build_rat(RatType *rat)
 	return obj;
 }
 
-static lht_node_t *build_arc(ArcType *arc, Coord dx, Coord dy)
+static lht_node_t *build_arc(pcb_arc_t *arc, Coord dx, Coord dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -379,7 +379,7 @@ static lht_node_t *build_element(ElementType *elem)
 {
 	char buff[128];
 	pcb_line_t *li;
-	ArcType *ar;
+	pcb_arc_t *ar;
 	PinType *pi;
 	PadType *pa;
 	lht_node_t *obj, *lst;
@@ -422,7 +422,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int la
 {
 	lht_node_t *obj, *grp;
 	pcb_line_t *li;
-	ArcType *ar;
+	pcb_arc_t *ar;
 	PolygonType *po;
 	TextType *tx;
 	char tmp[16];

@@ -67,7 +67,7 @@ static r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 	double ldist, adist, radius;
 	double vx, vy, vr, vl;
 	int delta, aoffset, count;
-	ArcType *arc;
+	pcb_arc_t *arc;
 
 	fprintf(stderr, "...Line ((%.6f, %.6f), (%.6f, %.6f)): ",
 					PCB_COORD_TO_MM(l->Point1.X), PCB_COORD_TO_MM(l->Point1.Y), PCB_COORD_TO_MM(l->Point2.X), PCB_COORD_TO_MM(l->Point2.Y));

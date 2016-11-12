@@ -54,7 +54,7 @@ static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_li
 	APPEND(ctx, PCB_OBJ_LINE, line, PCB_PARENT_LAYER, layer);
 }
 
-static void list_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc)
+static void list_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
 {
 	APPEND(ctx, PCB_OBJ_ARC, arc, PCB_PARENT_LAYER, layer);
 }
@@ -81,7 +81,7 @@ static void list_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb
 	APPEND(ctx, PCB_OBJ_ELINE, line, PCB_PARENT_ELEMENT, element);
 }
 
-static void list_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, ArcType *arc)
+static void list_earc_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_arc_t *arc)
 {
 	APPEND(ctx, PCB_OBJ_EARC, arc, PCB_PARENT_ELEMENT, element);
 }
@@ -327,7 +327,7 @@ static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	ArcType *a = obj->data.arc;
+	pcb_arc_t *a = obj->data.arc;
 	query_fields_keys_t fh1, fh2;
 
 	fld2hash_req(fh1, fld, 0);
@@ -578,7 +578,7 @@ static int field_eline(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_earc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	ArcType *a = obj->data.arc;
+	pcb_arc_t *a = obj->data.arc;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
