@@ -41,7 +41,7 @@ typedef struct {								/* currently marked block */
 	  Point2;
 	long int State;
 	pcb_bool otherway;
-} AttachedBoxType;
+} pcb_attached_box_t;
 
 typedef struct {								/* currently attached object */
 	Coord X, Y;										/* saved position when PCB_MODE_MOVE */
@@ -54,12 +54,12 @@ typedef struct {								/* currently attached object */
 	pcb_cardinal_t RubberbandN,					/* number of lines in array */
 	  RubberbandMax;
 	RubberbandTypePtr Rubberband;
-} AttachedObjectType, *AttachedObjectTypePtr;
+} pcb_attached_object_t;
 
 typedef struct {
 	pcb_bool status;
 	Coord X, Y;
-} MarkType, *MarkTypePtr;
+} pcb_mark_t;
 
 enum crosshair_shape {
 	Basic_Crosshair_Shape = 0,		/*  4-ray */
@@ -75,9 +75,9 @@ typedef struct {								/* holds cursor information */
 	  MinX, MinY,									/* lowest and highest coordinates */
 	  MaxX, MaxY;
 	AttachedLineType AttachedLine;	/* data of new lines... */
-	AttachedBoxType AttachedBox;
+	pcb_attached_box_t AttachedBox;
 	PolygonType AttachedPolygon;
-	AttachedObjectType AttachedObject;	/* data of attached objects */
+	pcb_attached_object_t AttachedObject;	/* data of attached objects */
 	enum crosshair_shape shape;		/* shape of crosshair */
 	vtop_t onpoint_objs;
 	vtop_t old_onpoint_objs;
@@ -86,7 +86,7 @@ typedef struct {								/* holds cursor information */
 	long int *drags;
 	int drags_len, drags_current;
 	Coord dragx, dragy;						/* the point where drag started */
-} CrosshairType, *CrosshairTypePtr;
+} pcb_crosshair_t;
 
 
 /* ---------------------------------------------------------------------------

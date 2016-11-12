@@ -2444,10 +2444,10 @@ static Boolean idle_proc(XtPointer dummy)
 
 	{
 		static int c_x = -2, c_y = -2;
-		static MarkType saved_mark;
+		static pcb_mark_t saved_mark;
 		static const Unit *old_grid_unit = NULL;
 		if (crosshair_x != c_x || crosshair_y != c_y
-				|| conf_core.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &Marked, sizeof(MarkType))) {
+				|| conf_core.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &Marked, sizeof(pcb_mark_t))) {
 			static int last_state = 0;
 			static int this_state = 0;
 
@@ -2475,7 +2475,7 @@ static Boolean idle_proc(XtPointer dummy)
 				}
 				last_state = this_state + 100;
 			}
-			memcpy(&saved_mark, &Marked, sizeof(MarkType));
+			memcpy(&saved_mark, &Marked, sizeof(pcb_mark_t));
 
 			if (old_grid_unit != conf_core.editor.grid_unit) {
 				old_grid_unit = conf_core.editor.grid_unit;

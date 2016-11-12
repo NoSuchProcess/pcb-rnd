@@ -706,7 +706,7 @@ void RestoreCrosshair(void)
  * endpoints.
  */
 struct onpoint_search_info {
-	CrosshairType *crosshair;
+	pcb_crosshair_t *crosshair;
 	Coord X;
 	Coord Y;
 };
@@ -714,7 +714,7 @@ struct onpoint_search_info {
 static r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
-	CrosshairType *crosshair = info->crosshair;
+	pcb_crosshair_t *crosshair = info->crosshair;
 	pcb_line_t *line = (pcb_line_t *) box;
 
 #ifdef DEBUG_ONPOINT
@@ -740,7 +740,7 @@ static r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 static r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
-	CrosshairType *crosshair = info->crosshair;
+	pcb_crosshair_t *crosshair = info->crosshair;
 	ArcType *arc = (ArcType *) box;
 	Coord p1x, p1y, p2x, p2y;
 
@@ -810,7 +810,7 @@ static void *onpoint_find(vtop_t *vect, void *obj_ptr)
  * at the given coordinates and adds them to the crosshair's
  * object list along with their respective type.
  */
-static void onpoint_work(CrosshairType * crosshair, Coord X, Coord Y)
+static void onpoint_work(pcb_crosshair_t * crosshair, Coord X, Coord Y)
 {
 	pcb_box_t SearchBox = point_box(X, Y);
 	struct onpoint_search_info info;
@@ -874,13 +874,13 @@ static double square(double x)
 	return x * x;
 }
 
-static double crosshair_sq_dist(CrosshairType * crosshair, Coord x, Coord y)
+static double crosshair_sq_dist(pcb_crosshair_t * crosshair, Coord x, Coord y)
 {
 	return square(x - crosshair->X) + square(y - crosshair->Y);
 }
 
 struct snap_data {
-	CrosshairType *crosshair;
+	pcb_crosshair_t *crosshair;
 	double nearest_sq_dist;
 	pcb_bool nearest_is_grid;
 	Coord x, y;

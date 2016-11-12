@@ -253,7 +253,7 @@ void SetMode(int Mode)
 
 void SetLocalRef(Coord X, Coord Y, pcb_bool Showing)
 {
-	static MarkType old;
+	static pcb_mark_t old;
 	static int count = 0;
 
 	if (Showing) {

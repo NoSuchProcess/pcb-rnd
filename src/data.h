@@ -56,9 +56,9 @@ struct pcb_data_s {
 /* ---------------------------------------------------------------------------
  * some shared identifiers
  */
-extern CrosshairType Crosshair;
+extern pcb_crosshair_t Crosshair;
 
-extern MarkType Marked;
+extern pcb_mark_t Marked;
 
 #define max_group (PCB->Data->LayerN)
 #define max_copper_layer (PCB->Data->LayerN)
