@@ -70,8 +70,8 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		*y = ((PinTypePtr) ptr2)->Y;
 		break;
 	case PCB_TYPE_LINE:
-		*x = ((LineTypePtr) ptr2)->Point1.X;
-		*y = ((LineTypePtr) ptr2)->Point1.Y;
+		*x = ((pcb_line_t *) ptr2)->Point1.X;
+		*y = ((pcb_line_t *) ptr2)->Point1.Y;
 		break;
 	case PCB_TYPE_TEXT:
 	case PCB_TYPE_ELEMENT_NAME:
@@ -227,7 +227,7 @@ static PointType InsertedPoint;
 pcb_layer_t *lastLayer;
 static struct {
 	PolygonTypePtr poly;
-	LineType line;
+	pcb_line_t line;
 } fake;
 
 action_note_t Note;
@@ -793,7 +793,7 @@ void NotifyMode(void)
 		else
 			/* create line if both ends are determined && length != 0 */
 		{
-			LineTypePtr line;
+			pcb_line_t *line;
 			int maybe_found_flag;
 
 			if (conf_core.editor.line_refraction
@@ -1125,7 +1125,7 @@ void NotifyMode(void)
 
 	case PCB_MODE_REMOVE:
 		if ((type = SearchScreen(Note.X, Note.Y, REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-			if (TEST_FLAG(PCB_FLAG_LOCK, (LineTypePtr) ptr2)) {
+			if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_line_t *) ptr2)) {
 				Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				break;
 			}

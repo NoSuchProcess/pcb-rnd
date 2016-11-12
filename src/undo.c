@@ -1409,7 +1409,7 @@ void AddObjectToSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 			break;
 		case PCB_TYPE_LINE:
 		case PCB_TYPE_ELEMENT_LINE:
-			undo->Data.Size = ((LineTypePtr) ptr2)->Thickness;
+			undo->Data.Size = ((pcb_line_t *) ptr2)->Thickness;
 			break;
 		case PCB_TYPE_TEXT:
 		case PCB_TYPE_ELEMENT_NAME:
@@ -1441,7 +1441,7 @@ void AddObjectToClearSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 			undo->Data.Size = ((PinTypePtr) ptr2)->Clearance;
 			break;
 		case PCB_TYPE_LINE:
-			undo->Data.Size = ((LineTypePtr) ptr2)->Clearance;
+			undo->Data.Size = ((pcb_line_t *) ptr2)->Clearance;
 			break;
 		case PCB_TYPE_PAD:
 			undo->Data.Size = ((PadTypePtr) ptr2)->Clearance;

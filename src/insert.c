@@ -88,7 +88,7 @@ PointTypePtr AdjustInsertPoint(void)
 	static PointType InsertedPoint;
 	double m;
 	Coord x, y, m1, m2;
-	LineTypePtr line = (LineTypePtr) Crosshair.AttachedObject.Ptr2;
+	pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
 
 	if (Crosshair.AttachedObject.State == STATE_FIRST)
 		return NULL;

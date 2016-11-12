@@ -55,7 +55,7 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
 	(POINT_IN_BOX((l)->Point1.X,(l)->Point1.Y,(b)) &&	\
 	POINT_IN_BOX((l)->Point2.X,(l)->Point2.Y,(b)))
 
-#define	PAD_IN_BOX(p,b)	LINE_IN_BOX((LineTypePtr)(p),(b))
+#define	PAD_IN_BOX(p,b)	LINE_IN_BOX((pcb_line_t *)(p),(b))
 
 #define	BOX_IN_BOX(b1,b)	\
 	((b1)->X1 >= (b)->X1 && (b1)->X2 <= (b)->X2 &&	\
@@ -91,7 +91,7 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
 	  || lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X2, (b)->Y2, (b)->X2, (b)->Y1) \
 	  || LINE_IN_BOX((l), (b)))
 
-#define	PAD_TOUCHES_BOX(p,b)	LINE_TOUCHES_BOX((LineTypePtr)(p),(b))
+#define	PAD_TOUCHES_BOX(p,b)	LINE_TOUCHES_BOX((pcb_line_t *)(p),(b))
 
 /* a corner of either box is within the other, or edges cross */
 #define	BOX_TOUCHES_BOX(b1,b2)	\
@@ -145,12 +145,12 @@ int lines_intersect(Coord ax1, Coord ay1, Coord ax2, Coord ay2, Coord bx1, Coord
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-pcb_bool IsPointOnLine(Coord, Coord, Coord, LineTypePtr);
+pcb_bool IsPointOnLine(Coord, Coord, Coord, pcb_line_t *);
 pcb_bool IsPointOnPin(Coord, Coord, Coord, PinTypePtr);
 pcb_bool IsPointOnArc(Coord, Coord, Coord, ArcTypePtr);
 pcb_bool IsPointOnLineEnd(Coord, Coord, RatTypePtr);
-pcb_bool IsLineInRectangle(Coord, Coord, Coord, Coord, LineTypePtr);
-pcb_bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line);
+pcb_bool IsLineInRectangle(Coord, Coord, Coord, Coord, pcb_line_t *);
+pcb_bool IsLineInQuadrangle(PointType p[4], pcb_line_t *Line);
 pcb_bool IsArcInRectangle(Coord, Coord, Coord, Coord, ArcTypePtr);
 pcb_bool IsPointInPad(Coord, Coord, Coord, PadTypePtr);
 pcb_bool IsPointInBox(Coord, Coord, pcb_box_t *, Coord);

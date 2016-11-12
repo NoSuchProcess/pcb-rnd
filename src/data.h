@@ -89,14 +89,14 @@ extern pcb_bool Bumped;
 
 /* layer object callbacks */
 typedef int (*pcb_layer_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int enter);
-typedef void (*pcb_line_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line);
+typedef void (*pcb_line_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line);
 typedef void (*pcb_arc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, ArcType *arc);
 typedef void (*pcb_text_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, TextType *text);
 typedef void (*pcb_poly_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, PolygonType *poly);
 
 /* element callbacks */
 typedef int (*pcb_element_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, int enter);
-typedef void (*pcb_eline_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, LineType *line);
+typedef void (*pcb_eline_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_line_t *line);
 typedef void (*pcb_earc_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, ArcType *arc);
 typedef void (*pcb_etext_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, TextType *text);
 typedef void (*pcb_epin_cb_t)(void *ctx, pcb_board_t *pcb, ElementType *element, PinType *pin);

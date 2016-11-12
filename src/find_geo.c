@@ -231,7 +231,7 @@ static pcb_bool ArcArcIntersect(ArcTypePtr Arc1, ArcTypePtr Arc2)
 /* ---------------------------------------------------------------------------
  * Tests if point is same as line end point
  */
-static pcb_bool IsRatPointOnLineEnd(PointTypePtr Point, LineTypePtr Line)
+static pcb_bool IsRatPointOnLineEnd(PointTypePtr Point, pcb_line_t *Line)
 {
 	if ((Point->X == Line->Point1.X && Point->Y == Line->Point1.Y)
 			|| (Point->X == Line->Point2.X && Point->Y == Line->Point2.Y))
@@ -239,7 +239,7 @@ static pcb_bool IsRatPointOnLineEnd(PointTypePtr Point, LineTypePtr Line)
 	return (pcb_false);
 }
 
-static void form_slanted_rectangle(PointType p[4], LineTypePtr l)
+static void form_slanted_rectangle(PointType p[4], pcb_line_t *l)
 /* writes vertices of a squared line */
 {
 	double dwx = 0, dwy = 0;
@@ -319,7 +319,7 @@ static void form_slanted_rectangle(PointType p[4], LineTypePtr l)
  *  Also note that the denominators of eqn 1 & 2 are identical.
  *
  */
-pcb_bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
+pcb_bool LineLineIntersect(pcb_line_t *Line1, pcb_line_t *Line2)
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
@@ -416,7 +416,7 @@ pcb_bool LineLineIntersect(LineTypePtr Line1, LineTypePtr Line2)
  *
  * The end points are hell so they are checked individually
  */
-pcb_bool LineArcIntersect(LineTypePtr Line, ArcTypePtr Arc)
+pcb_bool LineArcIntersect(pcb_line_t *Line, ArcTypePtr Arc)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
 	pcb_box_t *box;
@@ -500,7 +500,7 @@ pcb_bool IsArcInPolygon(ArcTypePtr Arc, PolygonTypePtr Polygon)
  * - check the two end points of the line. If none of them matches
  * - check all segments of the polygon against the line.
  */
-pcb_bool IsLineInPolygon(LineTypePtr Line, PolygonTypePtr Polygon)
+pcb_bool IsLineInPolygon(pcb_line_t *Line, PolygonTypePtr Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Line;
 	POLYAREA *lp;
@@ -537,7 +537,7 @@ pcb_bool IsLineInPolygon(LineTypePtr Line, PolygonTypePtr Polygon)
  */
 pcb_bool IsPadInPolygon(PadTypePtr pad, PolygonTypePtr polygon)
 {
-	return IsLineInPolygon((LineTypePtr) pad, polygon);
+	return IsLineInPolygon((pcb_line_t *) pad, polygon);
 }
 
 /* ---------------------------------------------------------------------------
@@ -568,7 +568,7 @@ pcb_bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
 	if (Bloat > 0) {
 		PLINE *c;
 		for (c = P1->Clipped->contours; c; c = c->next) {
-			LineType line;
+			pcb_line_t line;
 			VNODE *v = &c->head;
 			if (c->xmin - Bloat <= P2->Clipped->contours->xmax &&
 					c->xmax + Bloat >= P2->Clipped->contours->xmin &&
@@ -599,14 +599,14 @@ pcb_bool IsPolygonInPolygon(PolygonTypePtr P1, PolygonTypePtr P2)
  * some of the 'pad' routines are the same as for lines because the 'pad'
  * struct starts with a line struct. See global.h for details
  */
-pcb_bool LinePadIntersect(LineTypePtr Line, PadTypePtr Pad)
+pcb_bool LinePadIntersect(pcb_line_t *Line, PadTypePtr Pad)
 {
-	return LineLineIntersect((Line), (LineTypePtr) Pad);
+	return LineLineIntersect((Line), (pcb_line_t *) Pad);
 }
 
 pcb_bool ArcPadIntersect(ArcTypePtr Arc, PadTypePtr Pad)
 {
-	return LineArcIntersect((LineTypePtr) (Pad), (Arc));
+	return LineArcIntersect((pcb_line_t *) (Pad), (Arc));
 }
 
 pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
@@ -620,7 +620,7 @@ pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
 
 static pcb_bool PadPadIntersect(PadTypePtr p1, PadTypePtr p2)
 {
-	return LinePadIntersect((LineTypePtr) p1, p2);
+	return LinePadIntersect((pcb_line_t *) p1, p2);
 }
 
 static inline pcb_bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
@@ -665,7 +665,7 @@ static inline pcb_bool PV_TOUCH_PV(PinTypePtr PV1, PinTypePtr PV2)
 	return BoxBoxIntersection(&b1, &b2);
 }
 
-pcb_bool PinLineIntersect(PinTypePtr PV, LineTypePtr Line)
+pcb_bool PinLineIntersect(PinTypePtr PV, pcb_line_t *Line)
 {
 	if (TEST_FLAG(PCB_FLAG_SQUARE, PV)) {
 		int shape = GET_SQUARE(PV);

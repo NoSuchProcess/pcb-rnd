@@ -299,7 +299,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, PolygonTypePt
 {
 	PointType save;
 	pcb_cardinal_t n;
-	LineType line;
+	pcb_line_t line;
 
 	if (!ctx->insert.forcible) {
 		/*

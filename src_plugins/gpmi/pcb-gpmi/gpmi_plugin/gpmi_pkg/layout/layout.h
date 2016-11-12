@@ -81,7 +81,7 @@ gpmi_keyword *kw_layout_flag_e; /* of layout_flag_t */
 typedef struct layout_object_s {
 	layout_object_mask_t type;
 	union {
-		LineType    *l;
+		pcb_line_t    *l;
 		TextType    *t;
 		PolygonType *p;
 		ArcType     *a;

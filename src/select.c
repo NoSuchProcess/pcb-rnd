@@ -127,7 +127,7 @@ pcb_bool SelectObject(void)
 
 	case PCB_TYPE_LINE:
 		{
-			LineType *line = (LineTypePtr) ptr2;
+			pcb_line_t *line = (pcb_line_t *) ptr2;
 
 			layer = (pcb_layer_t *) ptr1;
 			AddObjectToFlagUndoList(PCB_TYPE_LINE, ptr1, ptr2, ptr2);
@@ -287,7 +287,7 @@ do { \
 	if (PCB->RatOn || !Flag)
 		RAT_LOOP(PCB->Data);
 	{
-		if (LINE_NEAR_BOX((LineTypePtr) line, Box) && !TEST_FLAG(PCB_FLAG_LOCK, line) && TEST_FLAG(PCB_FLAG_SELECTED, line) != Flag) {
+		if (LINE_NEAR_BOX((pcb_line_t *) line, Box) && !TEST_FLAG(PCB_FLAG_LOCK, line) && TEST_FLAG(PCB_FLAG_SELECTED, line) != Flag) {
 			append(PCB_TYPE_RATLINE, line, line);
 			if (PCB->RatOn)
 				DrawRat(line);
@@ -489,7 +489,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 	switch (Type) {
 	case PCB_TYPE_LINE:
 		if (F->Line)
-			return (F->Line(ctx, (pcb_layer_t *) Ptr1, (LineTypePtr) Ptr2));
+			return (F->Line(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2));
 		break;
 
 	case PCB_TYPE_ARC:
@@ -499,7 +499,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_LINE_POINT:
 		if (F->LinePoint)
-			return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (LineTypePtr) Ptr2, (PointTypePtr) Ptr3));
+			return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (PointTypePtr) Ptr3));
 		break;
 
 	case PCB_TYPE_TEXT:

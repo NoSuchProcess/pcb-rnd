@@ -75,7 +75,7 @@ unsigned int pcb_pad_hash(const ElementType *e, const PadType *p)
 }
 
 
-int pcb_line_eq(const ElementType *e1, const LineType *l1, const ElementType *e2, const LineType *l2)
+int pcb_line_eq(const ElementType *e1, const pcb_line_t *l1, const ElementType *e2, const pcb_line_t *l2)
 {
 	if (neq(l1, l2, Thickness) || neq(l1, l2, Clearance)) return 0;
 	if (neqox(e1, l1, e2, l2, Point1.X) || neqoy(e1, l1, e2, l2, Point1.Y)) return 0;
@@ -85,7 +85,7 @@ int pcb_line_eq(const ElementType *e1, const LineType *l1, const ElementType *e2
 }
 
 
-unsigned int pcb_line_hash(const ElementType *e, const LineType *l)
+unsigned int pcb_line_hash(const ElementType *e, const pcb_line_t *l)
 {
 	return
 		h_coord(l->Thickness) ^ h_coord(l->Clearance) ^
@@ -136,7 +136,7 @@ unsigned int pcb_element_hash(const ElementType *e)
 	}
 
 	{
-		LineType *l;
+		pcb_line_t *l;
 		linelist_foreach(&e->Line, &it, l) {
 			val ^= pcb_line_hash(e, l);
 		}
@@ -185,7 +185,7 @@ int pcb_element_eq(const ElementType *e1, const ElementType *e2)
 	}
 
 	{
-		LineType *l1, *l2;
+		pcb_line_t *l1, *l2;
 		l1 = linelist_first((linelist_t *)&e1->Line);
 		l2 = linelist_first((linelist_t *)&e2->Line);
 		for(;;) {

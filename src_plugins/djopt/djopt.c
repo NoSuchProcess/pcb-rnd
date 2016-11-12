@@ -98,7 +98,7 @@ typedef struct line_s {
 	int layer;
 	struct line_s *next;
 	corner_s *s, *e;
-	LineType *line;
+	pcb_line_t *line;
 	char is_pad;
 } line_s;
 
@@ -444,10 +444,10 @@ static void add_line_to_corner(line_s * l, corner_s * c)
 	dprintf("add_line_to_corner %#mD\n", c->x, c->y);
 }
 
-static LineType *create_pcb_line(int layer, int x1, int y1, int x2, int y2, int thick, int clear, FlagType flags)
+static pcb_line_t *create_pcb_line(int layer, int x1, int y1, int x2, int y2, int thick, int clear, FlagType flags)
 {
 	char *from, *to;
-	LineType *nl;
+	pcb_line_t *nl;
 	pcb_layer_t *lyr = LAYER_PTR(layer);
 
 	from = (char *) linelist_first(&lyr->Line);
@@ -460,14 +460,14 @@ static LineType *create_pcb_line(int layer, int x1, int y1, int x2, int y2, int 
 		for (lp = lines; lp; lp = lp->next) {
 			if (DELETED(lp))
 				continue;
-			if ((char *) (lp->line) >= from && (char *) (lp->line) <= from + linelist_length(&lyr->Line) * sizeof(LineType))
-				lp->line = (LineType *) ((char *) (lp->line) + (to - from));
+			if ((char *) (lp->line) >= from && (char *) (lp->line) <= from + linelist_length(&lyr->Line) * sizeof(pcb_line_t))
+				lp->line = (pcb_line_t *) ((char *) (lp->line) + (to - from));
 		}
 	}
 	return nl;
 }
 
-static void new_line(corner_s * s, corner_s * e, int layer, LineType * example)
+static void new_line(corner_s * s, corner_s * e, int layer, pcb_line_t * example)
 {
 	line_s *ls;
 
@@ -495,7 +495,7 @@ static void new_line(corner_s * s, corner_s * e, int layer, LineType * example)
 	else
 #endif
 	{
-		LineType *nl;
+		pcb_line_t *nl;
 		dprintf
 			("New line \033[35m%#mD to %#mD from l%d t%#mS c%#mS f%s\033[0m\n",
 			 s->x, s->y, e->x, e->y, layer, example->Thickness, example->Clearance, flags_to_string(example->Flags, PCB_TYPE_LINE));
@@ -754,7 +754,7 @@ static void move_corner(corner_s * c, int x, int y)
 		dprintf("via move %#mD to %#mD\n", via->X, via->Y, x, y);
 	}
 	for (i = 0; i < c->n_lines; i++) {
-		LineTypePtr tl = c->lines[i]->line;
+		pcb_line_t *tl = c->lines[i]->line;
 		if (tl) {
 			if (c->lines[i]->s == c) {
 				MoveObject(PCB_TYPE_LINE_POINT, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point1, x - (tl->Point1.X), y - (tl->Point1.Y));
@@ -814,7 +814,7 @@ static int canonicalize_line(line_s * l);
 static int split_line(line_s * l, corner_s * c)
 {
 	int i;
-	LineType *pcbline;
+	pcb_line_t *pcbline;
 	line_s *ls;
 
 	if (!intersecting_layers(l->layer, c->layer))
@@ -2176,7 +2176,7 @@ static line_s *choose_example_line(corner_s * c1, corner_s * c2)
 							c[ci]->lines[li]->line->Thickness,
 							c[ci]->lines[li]->line->Clearance, flags_to_string(c[ci]->lines[li]->line->Flags, PCB_TYPE_LINE));
 			/* Pads are disqualified, as we want to mimic a trace line. */
-			if (c[ci]->lines[li]->line == (LineTypePtr) c[ci]->pad) {
+			if (c[ci]->lines[li]->line == (pcb_line_t *) c[ci]->pad) {
 				dprintf("  bad, pad\n");
 				continue;
 			}
@@ -2196,7 +2196,7 @@ static int connect_corners(corner_s * c1, corner_s * c2)
 {
 	int layer;
 	line_s *ex = choose_example_line(c1, c2);
-	LineType *example = ex->line;
+	pcb_line_t *example = ex->line;
 
 	dprintf
 		("connect_corners \033[32m%#mD to %#mD, example line %#mD to %#mD l%d\033[0m\n",
@@ -2582,7 +2582,7 @@ static int ActionDJopt(int argc, const char **argv, Coord x, Coord y)
 		ls->e = find_corner(pad->Point2.X, pad->Point2.Y, layern);
 		ls->e->pad = pad;
 		ls->layer = layern;
-		ls->line = (LineTypePtr) pad;
+		ls->line = (pcb_line_t *) pad;
 		add_line_to_corner(ls, ls->s);
 		add_line_to_corner(ls, ls->e);
 

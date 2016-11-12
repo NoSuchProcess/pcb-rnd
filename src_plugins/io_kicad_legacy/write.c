@@ -532,7 +532,7 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 																		 pcb_layer_t *layer, Coord xOffset, Coord yOffset)
 {
 	gdl_iterator_t it;
-	LineType *line;
+	pcb_line_t *line;
 	pcb_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
@@ -761,7 +761,7 @@ int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 
 
 	gdl_iterator_t eit;
-	LineType *line;
+	pcb_line_t *line;
 	ArcType *arc;
 	ElementType *element;
 	pcb_box_t *boxResult;
@@ -992,7 +992,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 {
 
 	gdl_iterator_t eit;
-	LineType *line;
+	pcb_line_t *line;
 	ArcType *arc;
 	Coord arcStartX, arcStartY, arcEndX, arcEndY; /* for arc rendering */
 	Coord xPos, yPos;

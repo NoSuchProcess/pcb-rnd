@@ -98,7 +98,7 @@
 	(((PadTypePtr *)PadList[(L)].Data)[(I)])
 
 #define	LINELIST_ENTRY(L,I)	\
-	(((LineTypePtr *)LineList[(L)].Data)[(I)])
+	(((pcb_line_t **)LineList[(L)].Data)[(I)])
 
 #define	ARCLIST_ENTRY(L,I)	\
 	(((ArcTypePtr *)ArcList[(L)].Data)[(I)])
@@ -155,12 +155,12 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool);
 static pcb_bool LookupLOConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToLOList(pcb_bool);
 static pcb_bool LookupPVConnectionsToPVList(void);
-static pcb_bool LookupLOConnectionsToLine(LineTypePtr, pcb_cardinal_t, pcb_bool);
+static pcb_bool LookupLOConnectionsToLine(pcb_line_t *, pcb_cardinal_t, pcb_bool);
 static pcb_bool LookupLOConnectionsToPad(PadTypePtr, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToPolygon(PolygonTypePtr, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToArc(ArcTypePtr, pcb_cardinal_t);
 static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr, pcb_cardinal_t);
-static pcb_bool IsRatPointOnLineEnd(PointTypePtr, LineTypePtr);
+static pcb_bool IsRatPointOnLineEnd(PointTypePtr, pcb_line_t *);
 static pcb_bool ArcArcIntersect(ArcTypePtr, ArcTypePtr);
 static pcb_bool PrintElementConnections(ElementTypePtr, FILE *, pcb_bool);
 static pcb_bool ListsEmpty(pcb_bool);

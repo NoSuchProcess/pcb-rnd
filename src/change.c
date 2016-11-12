@@ -1199,7 +1199,7 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 	}
 	switch (Type) {
 	case PCB_TYPE_LINE:
-		name = gui->prompt_for(_("Linename:"), EMPTY(((LineTypePtr) Ptr2)->Number));
+		name = gui->prompt_for(_("Linename:"), EMPTY(((pcb_line_t *) Ptr2)->Number));
 		break;
 
 	case PCB_TYPE_VIA:

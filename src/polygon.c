@@ -567,14 +567,14 @@ POLYAREA *ArcPoly(ArcType * a, Coord thick)
 	return ArcPolyNoIntersect(a, thick);
 }
 
-POLYAREA *LinePoly(LineType * L, Coord thick)
+POLYAREA *LinePoly(pcb_line_t * L, Coord thick)
 {
 	PLINE *contour = NULL;
 	POLYAREA *np = NULL;
 	Vector v;
 	double d, dx, dy;
 	long half;
-	LineType _l = *L, *l = &_l;
+	pcb_line_t _l = *L, *l = &_l;
 
 	if (thick <= 0)
 		return NULL;
@@ -796,7 +796,7 @@ static int SubtractPin(pcb_data_t * d, PinType * pin, pcb_layer_t * l, PolygonTy
 	return Subtract(np, p, pcb_true);
 }
 
-static int SubtractLine(LineType * line, PolygonType * p)
+static int SubtractLine(pcb_line_t * line, PolygonType * p)
 {
 	POLYAREA *np;
 
@@ -841,7 +841,7 @@ static int SubtractPad(PadType * pad, PolygonType * p)
 			return -1;
 	}
 	else {
-		if (!(np = LinePoly((LineType *) pad, pad->Thickness + pad->Clearance)))
+		if (!(np = LinePoly((pcb_line_t *) pad, pad->Thickness + pad->Clearance)))
 			return -1;
 	}
 	return Subtract(np, p, pcb_true);
@@ -945,7 +945,7 @@ static r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
 	PolygonTypePtr polygon;
 	POLYAREA *np;
@@ -1118,7 +1118,7 @@ static int UnsubtractArc(ArcType * arc, pcb_layer_t * l, PolygonType * p)
 	return 1;
 }
 
-static int UnsubtractLine(LineType * line, pcb_layer_t * l, PolygonType * p)
+static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, PolygonType * p)
 {
 	POLYAREA *np;
 
@@ -1198,7 +1198,7 @@ pcb_bool RemoveExcessPolygonPoints(pcb_layer_t *Layer, PolygonTypePtr Polygon)
 {
 	PointTypePtr p;
 	pcb_cardinal_t n, prev, next;
-	LineType line;
+	pcb_line_t line;
 	pcb_bool changed = pcb_false;
 
 	if (Undoing())
@@ -1404,7 +1404,7 @@ static r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, PolygonTypePt
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
-		SubtractLine((LineTypePtr) ptr2, Polygon);
+		SubtractLine((pcb_line_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_ARC:
@@ -1431,7 +1431,7 @@ static r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, PolygonTypePtr Pol
 		UnsubtractPin((PinTypePtr) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
-		UnsubtractLine((LineTypePtr) ptr2, Layer, Polygon);
+		UnsubtractLine((pcb_line_t *) ptr2, Layer, Polygon);
 		return R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_ARC:
 		UnsubtractArc((ArcTypePtr) ptr2, Layer, Polygon);
@@ -1495,7 +1495,7 @@ PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_TEXT:
 		/* the cast works equally well for lines and arcs */
-		if (!TEST_FLAG(PCB_FLAG_CLEARLINE, (LineTypePtr) ptr2))
+		if (!TEST_FLAG(PCB_FLAG_CLEARLINE, (pcb_line_t *) ptr2))
 			return 0;
 		/* silk doesn't plow */
 		if (GetLayerNumber(Data, (pcb_layer_t *) ptr1) >= max_copper_layer)

@@ -70,7 +70,7 @@ POLYAREA *PolygonToPoly(PolygonType *);
 POLYAREA *RectPoly(Coord x1, Coord x2, Coord y1, Coord y2);
 POLYAREA *CirclePoly(Coord x, Coord y, Coord radius);
 POLYAREA *OctagonPoly(Coord x, Coord y, Coord radius, int style);
-POLYAREA *LinePoly(LineType * l, Coord thick);
+POLYAREA *LinePoly(pcb_line_t * l, Coord thick);
 POLYAREA *ArcPoly(ArcType * l, Coord thick);
 POLYAREA *PinPoly(PinType * l, Coord thick, Coord clear);
 POLYAREA *BoxPolyBloated(pcb_box_t * box, Coord radius);

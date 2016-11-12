@@ -95,7 +95,7 @@ int ActionLoadDsnFrom(int argc, const char **argv, Coord x, Coord y)
 	Coord linethick = 0, lineclear, viadiam, viadrill;
 	char lname[200];
 	pcb_layer_t *rlayer = NULL;
-	LineType *line = NULL;
+	pcb_line_t *line = NULL;
 
 	fname = argc ? argv[0] : 0;
 

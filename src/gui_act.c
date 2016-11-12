@@ -818,7 +818,7 @@ static int ActionCycleDrag(int argc, const char **argv, Coord x, Coord y)
 
 		if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_LINE) != PCB_TYPE_NONE) {
 			/* line has two endpoints, check which one is close to the original x;y */
-			LineType *l = ptr2;
+			pcb_line_t *l = ptr2;
 			if (close_enough(Note.X, l->Point1.X) && close_enough(Note.Y, l->Point1.Y)) {
 				Crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
 				Crosshair.AttachedObject.Ptr1 = ptr1;
@@ -1140,7 +1140,7 @@ static int ActionSetSame(int argc, const char **argv, Coord x, Coord y)
 	switch (type) {
 	case PCB_TYPE_LINE:
 		notify_crosshair_change(pcb_false);
-		set_same_(((LineTypePtr) ptr2)->Thickness, 0, 0, ((LineTypePtr) ptr2)->Clearance / 2, NULL);
+		set_same_(((pcb_line_t *) ptr2)->Thickness, 0, 0, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (conf_core.editor.mode != PCB_MODE_LINE)
 			SetMode(PCB_MODE_LINE);

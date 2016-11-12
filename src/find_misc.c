@@ -171,7 +171,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 			int layer = GetLayerNumber(PCB->Data,
 																 (pcb_layer_t *) ptr1);
 
-			if (ADD_LINE_TO_LIST(layer, (LineTypePtr) ptr2, 0, NULL, FCT_START))
+			if (ADD_LINE_TO_LIST(layer, (pcb_line_t *) ptr2, 0, NULL, FCT_START))
 				return pcb_true;
 			break;
 		}

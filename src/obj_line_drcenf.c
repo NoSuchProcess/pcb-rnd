@@ -44,7 +44,7 @@ static double drc_lines(PointTypePtr end, pcb_bool way);
  */
 void AdjustAttachedLine(void)
 {
-	AttachedLineTypePtr line = &Crosshair.AttachedLine;
+	AttachedLineType *line = &Crosshair.AttachedLine;
 
 	/* I need at least one point */
 	if (line->State == STATE_FIRST)
@@ -76,7 +76,7 @@ void AdjustAttachedLine(void)
  *          5 3
  *           4
  */
-void FortyFiveLine(AttachedLineTypePtr Line)
+void FortyFiveLine(AttachedLineType *Line)
 {
 	Coord dx, dy, min;
 	unsigned direction = 0;
@@ -150,7 +150,7 @@ void FortyFiveLine(AttachedLineTypePtr Line)
 void AdjustTwoLine(pcb_bool way)
 {
 	Coord dx, dy;
-	AttachedLineTypePtr line = &Crosshair.AttachedLine;
+	AttachedLineType *line = &Crosshair.AttachedLine;
 
 	if (Crosshair.AttachedLine.State == STATE_FIRST)
 		return;
@@ -194,7 +194,7 @@ void AdjustTwoLine(pcb_bool way)
 }
 
 struct drc_info {
-	LineTypePtr line;
+	pcb_line_t *line;
 	pcb_bool solder;
 	jmp_buf env;
 };
@@ -221,7 +221,7 @@ static r_dir_t drcPad_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (!TEST_FLAG(PCB_FLAG_FOUND, line) && LineLineIntersect(line, i->line))
@@ -253,7 +253,7 @@ static double drc_lines(PointTypePtr end, pcb_bool way)
 	double f, s, f2, s2, len, best;
 	Coord dx, dy, temp, last, length;
 	Coord temp2, last2, length2;
-	LineType line1, line2;
+	pcb_line_t line1, line2;
 	pcb_cardinal_t group, comp;
 	struct drc_info info;
 	pcb_bool two_lines, x_is_long, blocker;
@@ -413,7 +413,7 @@ static void drc_line(PointTypePtr end)
 {
 	struct drc_info info;
 	pcb_cardinal_t group, comp;
-	LineType line;
+	pcb_line_t line;
 	AttachedLineType aline;
 	static PointType last_good; /* internal state of last good endpoint - we cna do thsi cheat, because... */
 

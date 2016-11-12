@@ -227,7 +227,7 @@ typedef struct routebox {
 		PinTypePtr via;
 		struct routebox *via_shadow;	/* points to the via in r-tree which
 																	 * points to the PinType in the PCB. */
-		LineTypePtr line;
+		pcb_line_t *line;
 		void *generic;							/* 'other' is polygon, arc, text */
 		struct routebox *expansion_area;	/* previous expansion area in search */
 	} parent;
@@ -293,7 +293,7 @@ typedef struct routebox {
 	routebox_list same_net, same_subnet, original_subnet, different_net;
 	union {
 		PinType *via;
-		LineType *line;
+		pcb_line_t *line;
 	} livedraw_obj;
 } routebox_t;
 
@@ -660,8 +660,8 @@ static routebox_t *AddPad(PointerListType layergroupboxes[], ElementTypePtr elem
 	return *rbpp;
 }
 
-static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, LineTypePtr line,
-													 LineTypePtr ptr, RouteStyleType * style)
+static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, pcb_line_t *line,
+													 pcb_line_t *ptr, RouteStyleType * style)
 {
 	routebox_t **rbpp;
 	assert(layergroupboxes && line);
@@ -955,7 +955,7 @@ static routedata_t *CreateRouteData()
 					routebox_t *rb = NULL;
 					SET_FLAG(PCB_FLAG_DRC, (PinTypePtr) connection->ptr2);
 					if (connection->type == PCB_TYPE_LINE) {
-						LineType *line = (LineType *) connection->ptr2;
+						pcb_line_t *line = (pcb_line_t *) connection->ptr2;
 
 						/* lines are listed at each end, so skip one */
 						/* this should probably by a macro named "BUMP_LOOP" */
@@ -963,7 +963,7 @@ static routedata_t *CreateRouteData()
 
 						/* dice up non-straight lines into many tiny obstacles */
 						if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
-							LineType fake_line = *line;
+							pcb_line_t fake_line = *line;
 							Coord dx = (line->Point2.X - line->Point1.X);
 							Coord dy = (line->Point2.Y - line->Point1.Y);
 							int segs = MAX(PCB_ABS(dx),
@@ -1078,7 +1078,7 @@ static routedata_t *CreateRouteData()
 			}
 			/* dice up non-straight lines into many tiny obstacles */
 			if (line->Point1.X != line->Point2.X && line->Point1.Y != line->Point2.Y) {
-				LineType fake_line = *line;
+				pcb_line_t fake_line = *line;
 				Coord dx = (line->Point2.X - line->Point1.X);
 				Coord dy = (line->Point2.Y - line->Point1.Y);
 				int segs = MAX(PCB_ABS(dx), PCB_ABS(dy)) / (4 * rd->max_bloat + 1);
@@ -1318,7 +1318,7 @@ static pcb_box_t bloat_routebox(routebox_t * rb)
 /* makes a line on the solder layer silk surrounding the box */
 static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 {
-	LineTypePtr line;
+	pcb_line_t *line;
 	pcb_layer_t *SLayer = LAYER_PTR(group);
 	if (showboxen < -1)
 		return;
@@ -2986,7 +2986,7 @@ RD_DrawLine(routedata_t * rd,
 
 	if (conf_core.editor.live_routing) {
 		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
-		LineType *line = CreateNewLineOnLayer(layer, qX1, qY1, qX2, qY2,
+		pcb_line_t *line = CreateNewLineOnLayer(layer, qX1, qY1, qX2, qY2,
 																					2 * qhthick, 0, MakeFlags(0));
 		rb->livedraw_obj.line = line;
 		if (line != NULL)

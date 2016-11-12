@@ -88,7 +88,7 @@ RatTypePtr CreateNewRat(pcb_data_t *Data, Coord X1, Coord Y1, Coord X2, Coord Y2
 	Line->Point2.ID = CreateIDGet();
 	Line->group1 = group1;
 	Line->group2 = group2;
-	SetLineBoundingBox((LineTypePtr) Line);
+	SetLineBoundingBox((pcb_line_t *) Line);
 	if (!Data->rat_tree)
 		Data->rat_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Data->rat_tree, &Line->BoundingBox, 0);
@@ -150,7 +150,7 @@ void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat)
 /* inserts a point into a rat-line */
 void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 {
-	LineTypePtr newone;
+	pcb_line_t *newone;
 
 	newone = CreateDrawnLineOnLayer(CURRENT, Rat->Point1.X, Rat->Point1.Y,
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
@@ -173,7 +173,7 @@ void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 /* moves a line between layers */
 void *MoveRatToLayer(pcb_opctx_t *ctx, RatType * Rat)
 {
-	LineTypePtr newone;
+	pcb_line_t *newone;
 	/*Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
 	   Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
 	   if PCB_FLAG_VIA
@@ -246,7 +246,7 @@ r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 		gui->draw_arc(Output.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
 	}
 	else
-		_draw_line((LineType *) rat);
+		_draw_line((pcb_line_t *) rat);
 	return R_DIR_FOUND_CONTINUE;
 }
 
@@ -264,7 +264,7 @@ void EraseRat(RatTypePtr Rat)
 		pcb_draw_invalidate(&b);
 	}
 	else
-		EraseLine((LineType *) Rat);
+		EraseLine((pcb_line_t *) Rat);
 	EraseFlags(&Rat->Flags);
 }
 
@@ -285,5 +285,5 @@ void DrawRat(RatTypePtr Rat)
 		pcb_draw_invalidate(&b);
 	}
 	else
-		DrawLine(NULL, (LineType *) Rat);
+		DrawLine(NULL, (pcb_line_t *) Rat);
 }

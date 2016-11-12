@@ -218,7 +218,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 		}
 	case PCB_TYPE_LINE:
 		{
-			LineTypePtr line;
+			pcb_line_t *line;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
@@ -226,7 +226,7 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 				return 0;
 			}
 #endif
-			line = (LineTypePtr) ptr2;
+			line = (pcb_line_t *) ptr2;
 			report = pcb_strdup_printf("%m+LINE ID# %ld;  Flags:%s\n"
 									"FirstPoint(X,Y)  = %$mD, ID = %ld.\n"
 									"SecondPoint(X,Y) = %$mD, ID = %ld.\n"

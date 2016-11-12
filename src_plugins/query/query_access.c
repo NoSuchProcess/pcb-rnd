@@ -49,7 +49,7 @@ static int list_layer_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, int en
 	return 0;
 }
 
-static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line)
+static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	APPEND(ctx, PCB_OBJ_LINE, line, PCB_PARENT_LAYER, layer);
 }
@@ -76,7 +76,7 @@ static int list_element_cb(void *ctx, pcb_board_t *pcb, ElementType *element, in
 	return 0;
 }
 
-static void list_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, LineType *line)
+static void list_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_line_t *line)
 {
 	APPEND(ctx, PCB_OBJ_ELINE, line, PCB_PARENT_ELEMENT, element);
 }
@@ -283,7 +283,7 @@ static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_
 
 static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	LineType *l = obj->data.line;
+	pcb_line_t *l = obj->data.line;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
@@ -562,7 +562,7 @@ static int field_net(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 
 static int field_eline(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	LineType *l = obj->data.line;
+	pcb_line_t *l = obj->data.line;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);

@@ -269,7 +269,7 @@ static void WritePCBDataHeader(FILE * FP)
 static void WritePCBFontData(FILE * FP)
 {
 	pcb_cardinal_t i, j;
-	LineTypePtr line;
+	pcb_line_t *line;
 	pcb_font_t *font;
 
 	for (font = &PCB->Font, i = 0; i <= MAX_FONTPOSITION; i++) {
@@ -369,7 +369,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
-	LineType *line;
+	pcb_line_t *line;
 	ArcType *arc;
 	ElementType *element;
 
@@ -439,7 +439,7 @@ int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 {
 	gdl_iterator_t it;
-	LineType *line;
+	pcb_line_t *line;
 	ArcType *arc;
 	TextType *text;
 	PolygonType *polygon;

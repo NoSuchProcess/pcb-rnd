@@ -154,11 +154,11 @@ int ActionUndo(int argc, const char **argv, Coord x, Coord y)
 			if (Crosshair.AttachedLine.State == STATE_THIRD) {
 				int type;
 				void *ptr1, *ptr3, *ptrtmp;
-				LineTypePtr ptr2;
+				pcb_line_t *ptr2;
 				/* this search is guaranteed to succeed */
 				SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 															 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 0);
-				ptr2 = (LineTypePtr) ptrtmp;
+				ptr2 = (pcb_line_t *) ptrtmp;
 
 				/* save both ends of line */
 				Crosshair.AttachedLine.Point2.X = ptr2->Point1.X;
@@ -181,7 +181,7 @@ int ActionUndo(int argc, const char **argv, Coord x, Coord y)
 					/* this search should find the restored line */
 					SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 0);
-					ptr2 = (LineTypePtr) ptrtmp;
+					ptr2 = (pcb_line_t *) ptrtmp;
 					if (conf_core.editor.auto_drc) {
 						/* undo loses PCB_FLAG_FOUND */
 						SET_FLAG(PCB_FLAG_FOUND, ptr2);
@@ -200,7 +200,7 @@ int ActionUndo(int argc, const char **argv, Coord x, Coord y)
 					/* this search is guaranteed to succeed too */
 					SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 0);
-					ptr2 = (LineTypePtr) ptrtmp;
+					ptr2 = (pcb_line_t *) ptrtmp;
 					lastLayer = (pcb_layer_t *) ptr1;
 				}
 				notify_crosshair_change(pcb_true);
@@ -273,7 +273,7 @@ int ActionRedo(int argc, const char **argv, Coord x, Coord y)
 	if (Redo(pcb_true)) {
 		SetChangedFlag(pcb_true);
 		if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != STATE_FIRST) {
-			LineType *line = linelist_last(&CURRENT->Line);
+			pcb_line_t *line = linelist_last(&CURRENT->Line);
 			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = line->Point2.X;
 			Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = line->Point2.Y;
 			addedLines++;

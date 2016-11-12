@@ -615,7 +615,7 @@ gdouble vertex_net_thickness(toporouter_vertex_t * v)
 			return 0.;
 		}
 		else if (box->type == LINE) {
-			LineType *line = (LineType *) box->data;
+			pcb_line_t *line = (pcb_line_t *) box->data;
 			return line->Thickness;
 		}
 		else if (box->type == POLYGON) {
@@ -2716,7 +2716,7 @@ void import_clusters(toporouter_t * r)
 				{
 
 					if (connection->type == PCB_TYPE_LINE) {
-						LineType *line = (LineType *) connection->ptr2;
+						pcb_line_t *line = (pcb_line_t *) connection->ptr2;
 						toporouter_bbox_t *box = toporouter_bbox_locate(r, LINE, line, connection->X, connection->Y, connection->group);
 						cluster_join_bbox(cluster, box);
 
@@ -2913,7 +2913,7 @@ toporouter_cluster_t *cluster_find(toporouter_t * r, gdouble x, gdouble y, gdoub
 		if (box->layer == (int) z) {
 			if (box->type != BOARD) {
 				if (box->type == LINE) {
-					LineType *line = (LineType *) box->data;
+					pcb_line_t *line = (pcb_line_t *) box->data;
 					gint linewind = coord_wind(line->Point1.X, line->Point1.Y, x, y, line->Point2.X, line->Point2.Y);
 
 					if (line->Point1.X > x - EPSILON && line->Point1.X < x + EPSILON &&
@@ -5530,7 +5530,7 @@ void print_oproute(toporouter_oproute_t * oproute)
 gdouble export_pcb_drawline(guint layer, guint x0, guint y0, guint x1, guint y1, guint thickness, guint clearance)
 {
 	gdouble d = 0.;
-	LineTypePtr line;
+	pcb_line_t *line;
 	line = CreateDrawnLineOnLayer(LAYER_PTR(layer), x0, y0, x1, y1,
 																thickness, clearance, MakeFlags(PCB_FLAG_AUTO | (TEST_FLAG(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
 
@@ -8149,7 +8149,7 @@ static int escape(int argc, char **argv, Coord x, Coord y)
 	{
 		if (TEST_FLAG(PCB_FLAG_SELECTED, pad)) {
 			PinTypePtr via;
-			LineTypePtr line;
+			pcb_line_t *line;
 
 			PadType *pad0 = element->Pad->data;
 			PadType *pad1 = g_list_next(element->Pad)->data;

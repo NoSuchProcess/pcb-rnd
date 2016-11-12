@@ -52,7 +52,7 @@ struct element_st {
 ElementType *GetElementMemory(pcb_data_t * data);
 void RemoveFreeElement(ElementType * data);
 void FreeElementMemory(ElementType * element);
-LineType *GetElementLineMemory(ElementType *Element);
+pcb_line_t *GetElementLineMemory(ElementType *Element);
 
 
 pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name);
@@ -84,7 +84,7 @@ ElementTypePtr CreateNewElement(pcb_data_t *Data, ElementTypePtr Element,
 ArcTypePtr CreateNewArcInElement(ElementTypePtr Element, Coord X, Coord Y,
 	Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness);
 
-LineTypePtr CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
+pcb_line_t *CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
 
 void AddTextToElement(TextTypePtr Text, pcb_font_t *PCBFont, Coord X, Coord Y,
 	unsigned Direction, char *TextString, int Scale, FlagType Flags);
@@ -136,7 +136,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, ElementTypePtr Ele
 		textstring = (element)->Name[n].TextString
 
 #define ELEMENTLINE_LOOP(element) do {                              \
-  LineType *line;                                                   \
+  pcb_line_t *line;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Line, &__it__, line) {
 

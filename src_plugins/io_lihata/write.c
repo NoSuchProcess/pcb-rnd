@@ -212,7 +212,7 @@ static lht_node_t *build_flags(FlagType *f, int object_type)
 	return hsh;
 }
 
-static lht_node_t *build_line(LineType *line, int local_id, Coord dx, Coord dy)
+static lht_node_t *build_line(pcb_line_t *line, int local_id, Coord dx, Coord dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -378,7 +378,7 @@ static lht_node_t *build_pcb_text(const char *role, TextType *text)
 static lht_node_t *build_element(ElementType *elem)
 {
 	char buff[128];
-	LineType *li;
+	pcb_line_t *li;
 	ArcType *ar;
 	PinType *pi;
 	PadType *pa;
@@ -421,7 +421,7 @@ static lht_node_t *build_element(ElementType *elem)
 static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, int layer_group)
 {
 	lht_node_t *obj, *grp;
-	LineType *li;
+	pcb_line_t *li;
 	ArcType *ar;
 	PolygonType *po;
 	TextType *tx;
@@ -513,7 +513,7 @@ static lht_node_t *build_data(pcb_data_t *data)
 static lht_node_t *build_symbol(SymbolType *sym, const char *name)
 {
 	lht_node_t *lst, *ndt;
-	LineType *li;
+	pcb_line_t *li;
 	int n;
 
 	ndt = lht_dom_node_alloc(LHT_HASH, name);

@@ -89,7 +89,7 @@ static void map_attr(void *ctx, const AttributeListType *list)
 		free(big);
 }
 
-static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line)
+static void map_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	map_chk_skip(ctx, line);
 	map_add_prop(ctx, "p/trace/thickness", Coord, line->Thickness);
@@ -124,7 +124,7 @@ static void map_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, Polygon
 	map_attr(ctx, &poly->Attributes);
 }
 
-static void map_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, LineType *line)
+static void map_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_line_t *line)
 {
 	map_chk_skip(ctx, line);
 	map_line_cb(ctx, pcb, NULL, line);
@@ -216,7 +216,7 @@ static void set_attr(set_ctx_t *st, AttributeListType *list)
 
 #define DONE { st->set_cnt++; RestoreUndoSerialNumber(); return; }
 
-static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line)
+static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 	const char *pn = st->name + 8;
@@ -323,7 +323,7 @@ static void set_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, Polygon
 	}
 }
 
-static void set_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, LineType *line)
+static void set_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_line_t *line)
 {
 	set_ctx_t *st = (set_ctx_t *)ctx;
 
@@ -486,7 +486,7 @@ static void del_attr(void *ctx, AttributeListType *list)
 		st->del_cnt++;
 }
 
-static void del_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, LineType *line)
+static void del_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	map_chk_skip(ctx, line);
 	del_attr(ctx, &line->Attributes);
@@ -510,7 +510,7 @@ static void del_poly_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, Polygon
 	del_attr(ctx, &poly->Attributes);
 }
 
-static void del_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, LineType *line)
+static void del_eline_cb(void *ctx, pcb_board_t *pcb, ElementType *element, pcb_line_t *line)
 {
 	map_chk_skip(ctx, line);
 	del_attr(ctx, &line->Attributes);

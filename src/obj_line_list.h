@@ -28,7 +28,7 @@
 /* List of Lines */
 #define TDL(x)      linelist_ ## x
 #define TDL_LIST_T  linelist_t
-#define TDL_ITEM_T  LineType
+#define TDL_ITEM_T  pcb_line_t
 #define TDL_FIELD   link
 #define TDL_SIZE_T  size_t
 #define TDL_FUNC

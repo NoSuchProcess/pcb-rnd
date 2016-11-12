@@ -60,10 +60,10 @@ extern find_callback_t find_callback;
 #define SILK_TYPE	\
 	(PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON)
 
-pcb_bool LineLineIntersect(LineTypePtr, LineTypePtr);
-pcb_bool LineArcIntersect(LineTypePtr, ArcTypePtr);
-pcb_bool PinLineIntersect(PinTypePtr, LineTypePtr);
-pcb_bool LinePadIntersect(LineTypePtr, PadTypePtr);
+pcb_bool LineLineIntersect(pcb_line_t *, pcb_line_t *);
+pcb_bool LineArcIntersect(pcb_line_t *, ArcTypePtr);
+pcb_bool PinLineIntersect(PinTypePtr, pcb_line_t *);
+pcb_bool LinePadIntersect(pcb_line_t *, PadTypePtr);
 pcb_bool ArcPadIntersect(ArcTypePtr, PadTypePtr);
 pcb_bool IsPolygonInPolygon(PolygonTypePtr, PolygonTypePtr);
 void LookupElementConnections(ElementTypePtr, FILE *);
@@ -84,7 +84,7 @@ void RatFindHook(int, void *, void *, void *, pcb_bool, pcb_bool);
 void SaveFindFlag(int);
 void RestoreFindFlag(void);
 int DRCAll(void);
-pcb_bool IsLineInPolygon(LineTypePtr, PolygonTypePtr);
+pcb_bool IsLineInPolygon(pcb_line_t *, PolygonTypePtr);
 pcb_bool IsArcInPolygon(ArcTypePtr, PolygonTypePtr);
 pcb_bool IsPadInPolygon(PadTypePtr, PolygonTypePtr);
 

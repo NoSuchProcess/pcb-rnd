@@ -75,7 +75,7 @@ static void *MyMoveViaLowLevel(pcb_data_t * Data, PinType * Via, Coord dx, Coord
 	return Via;
 }
 
-static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, LineType * Line, Coord dx, Coord dy)
+static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_line_t * Line, Coord dx, Coord dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_LINE, Layer, Line);

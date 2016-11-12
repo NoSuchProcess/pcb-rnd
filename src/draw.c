@@ -511,7 +511,7 @@ void EraseObject(int type, void *lptr, void *ptr)
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ELEMENT_LINE:
 	case PCB_TYPE_RATLINE:
-		EraseLine((LineTypePtr) ptr);
+		EraseLine((pcb_line_t *) ptr);
 		break;
 	case PCB_TYPE_PAD:
 		ErasePad((PadTypePtr) ptr);
@@ -535,7 +535,7 @@ void DrawObject(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_LINE:
 		if (((pcb_layer_t *) ptr1)->On)
-			DrawLine((pcb_layer_t *) ptr1, (LineTypePtr) ptr2);
+			DrawLine((pcb_layer_t *) ptr1, (pcb_line_t *) ptr2);
 		break;
 	case PCB_TYPE_ARC:
 		if (((pcb_layer_t *) ptr1)->On)

@@ -269,9 +269,9 @@ static int rotateSide(int side, int n)
 /*!
  * Wrapper for CreateNewLineOnLayer that takes vectors and deals with Undo
  */
-static LineType *CreateVectorLineOnLayer(pcb_layer_t * layer, Vector a, Vector b, int thickness, int clearance, FlagType flags)
+static pcb_line_t *CreateVectorLineOnLayer(pcb_layer_t * layer, Vector a, Vector b, int thickness, int clearance, FlagType flags)
 {
-	LineType *line;
+	pcb_line_t *line;
 
 	line = CreateNewLineOnLayer(layer, a[0], a[1], b[0], b[1], thickness, clearance, flags);
 	if (line) {
@@ -280,9 +280,9 @@ static LineType *CreateVectorLineOnLayer(pcb_layer_t * layer, Vector a, Vector b
 	return line;
 }
 
-static LineType *MakeBypassLine(pcb_layer_t * layer, Vector a, Vector b, LineType * orig, POLYAREA ** expandp)
+static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, Vector a, Vector b, pcb_line_t * orig, POLYAREA ** expandp)
 {
-	LineType *line;
+	pcb_line_t *line;
 
 	line = CreateVectorLineOnLayer(layer, a, b, orig->Thickness, orig->Clearance, orig->Flags);
 	if (line && expandp) {
@@ -311,7 +311,7 @@ static LineType *MakeBypassLine(pcb_layer_t * layer, Vector a, Vector b, LineTyp
  * points a, b, c, d.  Finally connect the dots and remove the
  * old straight line.
  */
-static int MakeBypassingLines(POLYAREA * brush, pcb_layer_t * layer, LineType * line, int side, POLYAREA ** expandp)
+static int MakeBypassingLines(POLYAREA * brush, pcb_layer_t * layer, pcb_line_t * line, int side, POLYAREA ** expandp)
 {
 	Vector pA, pB, flatA, flatB, qA, qB;
 	Vector lA, lB;
@@ -354,7 +354,7 @@ struct info {
 	/*!< after cutting brush with line, the smallest chunk, which we
 	 * will go around on 'side'.
 	 */
-	LineType *line;
+	pcb_line_t *line;
 	int side;
 	double centroid;
 	/*!< smallest difference between slices of brush after cutting with
@@ -368,7 +368,7 @@ struct info {
  */
 static r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 {
-	LineType *line = (LineType *) targ;
+	pcb_line_t *line = (pcb_line_t *) targ;
 	struct info *info = private;
 	POLYAREA *lp, *copy, *tmp, *n, *smallest = NULL;
 	Vector p;

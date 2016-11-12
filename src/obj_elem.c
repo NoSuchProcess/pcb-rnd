@@ -101,16 +101,16 @@ void FreeElementMemory(ElementType * element)
 
 	list_map0(&element->Pin, PinType, RemoveFreePin);
 	list_map0(&element->Pad, PadType, RemoveFreePad);
-	list_map0(&element->Line, LineType, RemoveFreeLine);
+	list_map0(&element->Line, pcb_line_t, RemoveFreeLine);
 	list_map0(&element->Arc,  ArcType,  RemoveFreeArc);
 
 	FreeAttributeListMemory(&element->Attributes);
 	reset_obj_mem(ElementType, element);
 }
 
-LineType *GetElementLineMemory(ElementType *Element)
+pcb_line_t *GetElementLineMemory(ElementType *Element)
 {
-	LineType *line = calloc(sizeof(LineType), 1);
+	pcb_line_t *line = calloc(sizeof(pcb_line_t), 1);
 	linelist_append(&Element->Line, line);
 
 	return line;
@@ -210,7 +210,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	slayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
 	PAD_LOOP(element);
 	{
-		LineTypePtr line;
+		pcb_line_t *line;
 		line = CreateNewLineOnLayer(TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? slayer : clayer,
 																pad->Point1.X, pad->Point1.Y,
 																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, NoFlags());
@@ -432,7 +432,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X
 		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		free_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
 		free_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
-		SetLineBoundingBox((LineType *) pad);
+		SetLineBoundingBox((pcb_line_t *) pad);
 	}
 	END_LOOP;
 	ARC_LOOP(Element);
@@ -623,9 +623,9 @@ ArcTypePtr CreateNewArcInElement(ElementTypePtr Element, Coord X, Coord Y,
 }
 
 /* creates a new line for an element */
-LineTypePtr CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
+pcb_line_t *CreateNewLineInElement(ElementTypePtr Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
 {
-	LineType *line;
+	pcb_line_t *line;
 
 	if (Thickness == 0)
 		return NULL;

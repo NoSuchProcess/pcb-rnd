@@ -338,7 +338,7 @@ static int parse_flags(FlagType *f, lht_node_t *fn, int object_type)
 
 static int parse_line(pcb_layer_t *ly, ElementType *el, lht_node_t *obj, int no_id, Coord dx, Coord dy)
 {
-	LineType *line;
+	pcb_line_t *line;
 
 	if (ly != NULL)
 		line = GetLineMemory(ly);

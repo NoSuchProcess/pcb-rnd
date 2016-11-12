@@ -44,7 +44,7 @@
  */
 static void CheckPadForRubberbandConnection(PadTypePtr);
 static void CheckPinForRubberbandConnection(PinTypePtr);
-static void CheckLinePointForRubberbandConnection(pcb_layer_t *, LineTypePtr, PointTypePtr, pcb_bool);
+static void CheckLinePointForRubberbandConnection(pcb_layer_t *, pcb_line_t *, PointTypePtr, pcb_bool);
 static void CheckPolygonForRubberbandConnection(pcb_layer_t *, PolygonTypePtr);
 static void CheckLinePointForRat(pcb_layer_t *, PointTypePtr);
 static r_dir_t rubber_callback(const pcb_box_t * b, void *cl);
@@ -52,14 +52,14 @@ static r_dir_t rubber_callback(const pcb_box_t * b, void *cl);
 struct rubber_info {
 	Coord radius;
 	Coord X, Y;
-	LineTypePtr line;
+	pcb_line_t *line;
 	pcb_box_t box;
 	pcb_layer_t *layer;
 };
 
 static r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct rubber_info *i = (struct rubber_info *) cl;
 	double x, y, rad, dist1, dist2;
 	Coord t;
@@ -218,33 +218,33 @@ static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 	switch (i->type) {
 	case PCB_TYPE_PIN:
 		if (rat->Point1.X == i->pin->X && rat->Point1.Y == i->pin->Y)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point1);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else if (rat->Point2.X == i->pin->X && rat->Point2.Y == i->pin->Y)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point2);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
 		break;
 	case PCB_TYPE_PAD:
 		if (rat->Point1.X == i->pad->Point1.X && rat->Point1.Y == i->pad->Point1.Y && rat->group1 == i->group)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point1);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else if (rat->Point2.X == i->pad->Point1.X && rat->Point2.Y == i->pad->Point1.Y && rat->group2 == i->group)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point2);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
 		else if (rat->Point1.X == i->pad->Point2.X && rat->Point1.Y == i->pad->Point2.Y && rat->group1 == i->group)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point1);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else if (rat->Point2.X == i->pad->Point2.X && rat->Point2.Y == i->pad->Point2.Y && rat->group2 == i->group)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point2);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
 		else
 			if (rat->Point1.X == (i->pad->Point1.X + i->pad->Point2.X) / 2 &&
 					rat->Point1.Y == (i->pad->Point1.Y + i->pad->Point2.Y) / 2 && rat->group1 == i->group)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point1);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else
 			if (rat->Point2.X == (i->pad->Point1.X + i->pad->Point2.X) / 2 &&
 					rat->Point2.Y == (i->pad->Point1.Y + i->pad->Point2.Y) / 2 && rat->group2 == i->group)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point2);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
 		break;
 	case PCB_TYPE_LINE_POINT:
 		if (rat->group1 == i->group && rat->Point1.X == i->point->X && rat->Point1.Y == i->point->Y)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point1);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else if (rat->group2 == i->group && rat->Point2.X == i->point->X && rat->Point2.Y == i->point->Y)
-			CreateNewRubberbandEntry(NULL, (LineTypePtr) rat, &rat->Point2);
+			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
 		break;
 	default:
 		Message(PCB_MSG_DEFAULT, "hace: bad rubber-rat lookup callback\n");
@@ -322,7 +322,7 @@ static void CheckPinForRubberbandConnection(PinTypePtr Pin)
  * If one of the endpoints of the line lays * inside the passed line,
  * the scanned line is added to the 'rubberband' list
  */
-static void CheckLinePointForRubberbandConnection(pcb_layer_t *Layer, LineTypePtr Line, PointTypePtr LinePoint, pcb_bool Exact)
+static void CheckLinePointForRubberbandConnection(pcb_layer_t *Layer, pcb_line_t *Line, PointTypePtr LinePoint, pcb_bool Exact)
 {
 	pcb_cardinal_t group;
 	struct rubber_info info;
@@ -424,7 +424,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	case PCB_TYPE_LINE:
 		{
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
-			LineTypePtr line = (LineTypePtr) Ptr2;
+			pcb_line_t *line = (pcb_line_t *) Ptr2;
 			if (GetLayerNumber(PCB->Data, layer) < max_copper_layer) {
 				CheckLinePointForRubberbandConnection(layer, line, &line->Point1, pcb_false);
 				CheckLinePointForRubberbandConnection(layer, line, &line->Point2, pcb_false);
@@ -434,7 +434,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	case PCB_TYPE_LINE_POINT:
 		if (GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1) < max_copper_layer)
-			CheckLinePointForRubberbandConnection((pcb_layer_t *) Ptr1, (LineTypePtr) Ptr2, (PointTypePtr) Ptr3, pcb_true);
+			CheckLinePointForRubberbandConnection((pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (PointTypePtr) Ptr3, pcb_true);
 		break;
 
 	case PCB_TYPE_VIA:
@@ -471,7 +471,7 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	case PCB_TYPE_LINE:
 		{
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
-			LineTypePtr line = (LineTypePtr) Ptr2;
+			pcb_line_t *line = (pcb_line_t *) Ptr2;
 
 			CheckLinePointForRat(layer, &line->Point1);
 			CheckLinePointForRat(layer, &line->Point2);
@@ -509,7 +509,7 @@ RubberbandTypePtr GetRubberbandMemory(void)
  * adds a new line to the rubberband list of 'Crosshair.AttachedObject'
  * if Layer == 0  it is a rat line
  */
-RubberbandTypePtr CreateNewRubberbandEntry(pcb_layer_t *Layer, LineTypePtr Line, PointTypePtr MovedPoint)
+RubberbandTypePtr CreateNewRubberbandEntry(pcb_layer_t *Layer, pcb_line_t *Line, PointTypePtr MovedPoint)
 {
 	RubberbandTypePtr ptr = GetRubberbandMemory();
 

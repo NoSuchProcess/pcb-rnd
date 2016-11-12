@@ -34,7 +34,7 @@
  * symbol and font related stuff
  */
 typedef struct symbol_st {     /* a single symbol */
-	LineTypePtr Line;
+	pcb_line_t *Line;
 	pcb_bool Valid;
 	pcb_cardinal_t LineN;       /* number of lines */
 	pcb_cardinal_t LineMax;     /* lines allocated */
@@ -51,7 +51,7 @@ struct pcb_font_s {          /* complete set of symbols */
 void CreateDefaultFont(pcb_board_t *pcb);
 void SetFontInfo(pcb_font_t *Ptr);
 
-LineTypePtr CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
+pcb_line_t *CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
 
 #endif
 

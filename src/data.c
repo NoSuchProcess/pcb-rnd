@@ -216,7 +216,7 @@ void FreeDataMemory(pcb_data_t * data)
 		}
 		END_LOOP;
 
-		list_map0(&layer->Line, LineType, RemoveFreeLine);
+		list_map0(&layer->Line, pcb_line_t, RemoveFreeLine);
 		list_map0(&layer->Arc,  ArcType,  RemoveFreeArc);
 		list_map0(&layer->Text, TextType, RemoveFreeText);
 		POLYGON_LOOP(layer);

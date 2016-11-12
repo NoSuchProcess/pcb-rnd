@@ -160,7 +160,7 @@ static int FontSave(int argc, const char **argv, Coord Ux, Coord Uy)
 	pcb_font_t *font;
 	SymbolTypePtr symbol;
 	int i;
-	LineType *l;
+	pcb_line_t *l;
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
 

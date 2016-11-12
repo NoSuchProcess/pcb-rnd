@@ -53,7 +53,7 @@ static pcb_layer_t *SearchLayer;
  * some local prototypes.  The first parameter includes PCB_TYPE_LOCKED if we
  * want to include locked types in the search.
  */
-static pcb_bool SearchLineByLocation(int, pcb_layer_t **, LineTypePtr *, LineTypePtr *);
+static pcb_bool SearchLineByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_line_t **);
 static pcb_bool SearchArcByLocation(int, pcb_layer_t **, ArcTypePtr *, ArcTypePtr *);
 static pcb_bool SearchRatLineByLocation(int, RatTypePtr *, RatTypePtr *, RatTypePtr *);
 static pcb_bool SearchTextByLocation(int, pcb_layer_t **, TextTypePtr *, TextTypePtr *);
@@ -62,7 +62,7 @@ static pcb_bool SearchPinByLocation(int, ElementTypePtr *, PinTypePtr *, PinType
 static pcb_bool SearchPadByLocation(int, ElementTypePtr *, PadTypePtr *, PadTypePtr *, pcb_bool);
 static pcb_bool SearchViaByLocation(int, PinTypePtr *, PinTypePtr *, PinTypePtr *);
 static pcb_bool SearchElementNameByLocation(int, ElementTypePtr *, TextTypePtr *, TextTypePtr *, pcb_bool);
-static pcb_bool SearchLinePointByLocation(int, pcb_layer_t **, LineTypePtr *, PointTypePtr *);
+static pcb_bool SearchLinePointByLocation(int, pcb_layer_t **, pcb_line_t **, PointTypePtr *);
 static pcb_bool SearchPointByLocation(int, pcb_layer_t **, PolygonTypePtr *, PointTypePtr *);
 static pcb_bool SearchElementByLocation(int, ElementTypePtr *, ElementTypePtr *, ElementTypePtr *, pcb_bool);
 
@@ -176,7 +176,7 @@ static pcb_bool SearchPadByLocation(int locked, ElementTypePtr * Element, PadTyp
  */
 
 struct line_info {
-	LineTypePtr *Line;
+	pcb_line_t **Line;
 	PointTypePtr *Point;
 	double least;
 	int locked;
@@ -185,7 +185,7 @@ struct line_info {
 static r_dir_t line_callback(const pcb_box_t * box, void *cl)
 {
 	struct line_info *i = (struct line_info *) cl;
-	LineTypePtr l = (LineTypePtr) box;
+	pcb_line_t *l = (pcb_line_t *) box;
 
 	if (TEST_FLAG(i->locked, l))
 		return R_DIR_NOT_FOUND;
@@ -199,7 +199,7 @@ static r_dir_t line_callback(const pcb_box_t * box, void *cl)
 }
 
 
-static pcb_bool SearchLineByLocation(int locked, pcb_layer_t ** Layer, LineTypePtr * Line, LineTypePtr * Dummy)
+static pcb_bool SearchLineByLocation(int locked, pcb_layer_t ** Layer, pcb_line_t ** Line, pcb_line_t ** Dummy)
 {
 	struct line_info info;
 
@@ -216,7 +216,7 @@ static pcb_bool SearchLineByLocation(int locked, pcb_layer_t ** Layer, LineTypeP
 
 static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) box;
+	pcb_line_t *line = (pcb_line_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
 	if (TEST_FLAG(i->locked, line))
@@ -353,7 +353,7 @@ static pcb_bool SearchPolygonByLocation(int locked, pcb_layer_t ** Layer, Polygo
 
 static r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct line_info *i = (struct line_info *) cl;
 	r_dir_t ret_val = R_DIR_NOT_FOUND;
 	double d;
@@ -383,7 +383,7 @@ static r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 /* ---------------------------------------------------------------------------
  * searches a line-point on all the search layer
  */
-static pcb_bool SearchLinePointByLocation(int locked, pcb_layer_t ** Layer, LineTypePtr * Line, PointTypePtr * Point)
+static pcb_bool SearchLinePointByLocation(int locked, pcb_layer_t ** Layer, pcb_line_t ** Line, PointTypePtr * Point)
 {
 	struct line_info info;
 	*Layer = SearchLayer;
@@ -582,7 +582,7 @@ pcb_bool IsPointOnLineEnd(Coord X, Coord Y, RatTypePtr Line)
  * Finally, D1 and D2 are orthogonal, so we can sum them easily
  * by Pythagorean theorem.
  */
-pcb_bool IsPointOnLine(Coord X, Coord Y, Coord Radius, LineTypePtr Line)
+pcb_bool IsPointOnLine(Coord X, Coord Y, Coord Radius, pcb_line_t *Line)
 {
 	double D1, D2, L;
 
@@ -611,7 +611,7 @@ pcb_bool IsPointOnLine(Coord X, Coord Y, Coord Radius, LineTypePtr Line)
 static int is_point_on_line(Coord px, Coord py, Coord lx1, Coord ly1, Coord lx2, Coord ly2)
 {
 	/* ohh well... let's hope the optimizer does something clever with inlining... */
-	LineType l;
+	pcb_line_t l;
 	l.Point1.X = lx1;
 	l.Point1.Y = ly1;
 	l.Point2.X = lx2;
@@ -623,9 +623,9 @@ static int is_point_on_line(Coord px, Coord py, Coord lx1, Coord ly1, Coord lx2,
 /* ---------------------------------------------------------------------------
  * checks if a line crosses a rectangle
  */
-pcb_bool IsLineInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, LineTypePtr Line)
+pcb_bool IsLineInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_line_t *Line)
 {
-	LineType line;
+	pcb_line_t line;
 
 	/* first, see if point 1 is inside the rectangle */
 	/* in case the whole line is inside the rectangle */
@@ -696,9 +696,9 @@ static int /*checks if a point (of null radius) is in a slanted rectangle */ IsP
  * checks if a line crosses a quadrangle: almost copied from IsLineInRectangle()
  * Note: actually this quadrangle is a slanted rectangle
  */
-pcb_bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line)
+pcb_bool IsLineInQuadrangle(PointType p[4], pcb_line_t *Line)
 {
-	LineType line;
+	pcb_line_t line;
 
 	/* first, see if point 1 is inside the rectangle */
 	/* in case the whole line is inside the rectangle */
@@ -744,7 +744,7 @@ pcb_bool IsLineInQuadrangle(PointType p[4], LineTypePtr Line)
  */
 pcb_bool IsArcInRectangle(Coord X1, Coord Y1, Coord X2, Coord Y2, ArcTypePtr Arc)
 {
-	LineType line;
+	pcb_line_t line;
 
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
@@ -1042,11 +1042,11 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
 					Type & PCB_TYPE_LINE_POINT &&
-					SearchLinePointByLocation(locked, (pcb_layer_t **) Result1, (LineTypePtr *) Result2, (PointTypePtr *) Result3))
+					SearchLinePointByLocation(locked, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (PointTypePtr *) Result3))
 				return (PCB_TYPE_LINE_POINT);
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_LINE
-					&& SearchLineByLocation(locked, (pcb_layer_t **) Result1, (LineTypePtr *) Result2, (LineTypePtr *) Result3))
+					&& SearchLineByLocation(locked, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_line_t **) Result3))
 				return (PCB_TYPE_LINE);
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_ARC &&

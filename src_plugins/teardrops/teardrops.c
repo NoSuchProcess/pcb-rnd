@@ -59,7 +59,7 @@ int distance_between_points(int x1, int y1, int x2, int y2)
 static r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 {
 	pcb_layer_t *lay = &PCB->Data->Layer[layer];
-	LineType *l = (LineType *) box;
+	pcb_line_t *l = (pcb_line_t *) box;
 	int x1, x2, y1, y2;
 	double a, b, c, x, r, t;
 	double dx, dy, len;

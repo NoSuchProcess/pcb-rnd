@@ -132,7 +132,7 @@ void SetTextBoundingBox(pcb_font_t *FontPtr, TextTypePtr Text)
 	/* calculate size of the bounding box */
 	for (; s && *s; s++) {
 		if (*s <= MAX_FONTPOSITION && symbol[*s].Valid) {
-			LineTypePtr line = symbol[*s].Line;
+			pcb_line_t *line = symbol[*s].Line;
 			for (i = 0; i < symbol[*s].LineN; line++, i++) {
 				/* Clamp the width of text lines at the minimum thickness.
 				 * NB: Divide 4 in thickness calculation is comprised of a factor
@@ -478,8 +478,8 @@ void DrawTextLowLevel(TextTypePtr Text, Coord min_line_width)
 	while (string && *string) {
 		/* draw lines if symbol is valid and data is present */
 		if (*string <= MAX_FONTPOSITION && font->Symbol[*string].Valid) {
-			LineTypePtr line = font->Symbol[*string].Line;
-			LineType newline;
+			pcb_line_t *line = font->Symbol[*string].Line;
+			pcb_line_t newline;
 
 			for (n = font->Symbol[*string].LineN; n; n--, line++) {
 				/* create one line, scale, move, rotate and swap it */

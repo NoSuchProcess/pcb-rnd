@@ -65,7 +65,7 @@ void SetFontInfo(pcb_font_t *Ptr)
 {
 	pcb_cardinal_t i, j;
 	SymbolTypePtr symbol;
-	LineTypePtr line;
+	pcb_line_t *line;
 	Coord totalminy = MAX_COORD;
 
 	/* calculate cell with and height (is at least DEFAULT_CELLSIZE)
@@ -123,16 +123,16 @@ void SetFontInfo(pcb_font_t *Ptr)
 }
 
 /* creates a new line in a symbol */
-LineTypePtr CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
+pcb_line_t *CreateNewLineInSymbol(SymbolTypePtr Symbol, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness)
 {
-	LineTypePtr line = Symbol->Line;
+	pcb_line_t *line = Symbol->Line;
 
 	/* realloc new memory if necessary and clear it */
 	if (Symbol->LineN >= Symbol->LineMax) {
 		Symbol->LineMax += STEP_SYMBOLLINE;
-		line = (LineTypePtr) realloc(line, Symbol->LineMax * sizeof(LineType));
+		line = (pcb_line_t *) realloc(line, Symbol->LineMax * sizeof(pcb_line_t));
 		Symbol->Line = line;
-		memset(line + Symbol->LineN, 0, STEP_SYMBOLLINE * sizeof(LineType));
+		memset(line + Symbol->LineN, 0, STEP_SYMBOLLINE * sizeof(pcb_line_t));
 	}
 
 	/* copy values */

@@ -82,7 +82,7 @@ static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, PadTypePtr Pad, int from_type,
 	return pcb_false;
 }
 
-static pcb_bool ADD_LINE_TO_LIST(pcb_cardinal_t L, LineTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_LINE_TO_LIST(pcb_cardinal_t L, pcb_line_t *Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_LINE, LAYER_PTR(L), (Ptr), (Ptr));
@@ -241,7 +241,7 @@ void InitLayoutLookup(void)
 
 		if (linelist_length(&layer->Line)) {
 			LineList[i].Size = linelist_length(&layer->Line);
-			LineList[i].Data = (void **) calloc(LineList[i].Size, sizeof(LineTypePtr));
+			LineList[i].Data = (void **) calloc(LineList[i].Size, sizeof(pcb_line_t *));
 		}
 		if (arclist_length(&layer->Arc)) {
 			ArcList[i].Size = arclist_length(&layer->Arc);
@@ -294,7 +294,7 @@ struct pv_info {
 
 static r_dir_t LOCtoPVline_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, line) && PinLineIntersect(&i->pv, line) && !TEST_FLAG(PCB_FLAG_HOLE, &i->pv)) {
@@ -600,7 +600,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 
 struct lo_info {
 	pcb_cardinal_t layer;
-	LineType line;
+	pcb_line_t line;
 	PadType pad;
 	ArcType arc;
 	PolygonType polygon;
@@ -827,7 +827,7 @@ r_dir_t pv_touch_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoArcLine_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, line) && LineArcIntersect(line, &i->arc)) {
@@ -919,7 +919,7 @@ static pcb_bool LookupLOConnectionsToArc(ArcTypePtr Arc, pcb_cardinal_t LayerGro
 
 static r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, line) && LineLineIntersect(&i->line, line)) {
@@ -981,7 +981,7 @@ static r_dir_t LOCtoLinePad_callback(const pcb_box_t * b, void *cl)
  * the notation that is used is:
  * Xij means Xj at line i
  */
-static pcb_bool LookupLOConnectionsToLine(LineTypePtr Line, pcb_cardinal_t LayerGroup, pcb_bool PolysTo)
+static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup, pcb_bool PolysTo)
 {
 	pcb_cardinal_t entry;
 	struct lo_info info;
@@ -1047,7 +1047,7 @@ struct rat_info {
 
 static r_dir_t LOCtoRat_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct rat_info *i = (struct rat_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, line) &&
@@ -1135,7 +1135,7 @@ static pcb_bool LookupLOConnectionsToRatEnd(PointTypePtr Point, pcb_cardinal_t L
 
 static r_dir_t LOCtoPadLine_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, line) && LinePadIntersect(line, &i->pad)) {
@@ -1261,7 +1261,7 @@ static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, pcb_cardinal_t LayerGro
 
 
 	if (!TEST_FLAG(PCB_FLAG_SQUARE, Pad))
-		return (LookupLOConnectionsToLine((LineTypePtr) Pad, LayerGroup, pcb_false));
+		return (LookupLOConnectionsToLine((pcb_line_t *) Pad, LayerGroup, pcb_false));
 
 	info.pad = *Pad;
 	EXPAND_BOUNDS(&info.pad);
@@ -1311,7 +1311,7 @@ static pcb_bool LookupLOConnectionsToPad(PadTypePtr Pad, pcb_cardinal_t LayerGro
 
 static r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, line) && IsLineInPolygon(line, &i->polygon)) {

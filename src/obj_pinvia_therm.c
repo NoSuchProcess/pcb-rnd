@@ -157,7 +157,7 @@ static POLYAREA *square_therm(PinTypePtr pin, pcb_cardinal_t style)
 		return p;
 	case 4:
 		{
-			LineType l;
+			pcb_line_t l;
 			l.Flags = NoFlags();
 			d = pin->Thickness / 2 - pcb->ThermScale * pin->Clearance;
 			out = pin->Thickness / 2 + pin->Clearance / 4;

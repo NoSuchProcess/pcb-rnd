@@ -46,23 +46,23 @@ typedef struct {								/* current marked line */
 } AttachedLineType, *AttachedLineTypePtr;
 
 
-LineType *GetLineMemory(pcb_layer_t * layer);
-void RemoveFreeLine(LineType * data);
+pcb_line_t *GetLineMemory(pcb_layer_t * layer);
+void RemoveFreeLine(pcb_line_t * data);
 
-LineTypePtr CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
-LineTypePtr CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
+pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
+pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness, Coord Clearance, FlagType Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_line_on_layer(pcb_layer_t *Layer, LineType *Line);
+void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line);
 
-void SetLineBoundingBox(LineTypePtr Line);
-void *RemoveLine(pcb_layer_t *Layer, LineTypePtr Line);
-void RotateLineLowLevel(LineTypePtr Line, Coord X, Coord Y, unsigned Number);
+void SetLineBoundingBox(pcb_line_t *Line);
+void *RemoveLine(pcb_layer_t *Layer, pcb_line_t *Line);
+void RotateLineLowLevel(pcb_line_t *Line, Coord X, Coord Y, unsigned Number);
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/
 void AdjustAttachedLine(void);
 void AdjustTwoLine(pcb_bool);
-void FortyFiveLine(AttachedLineTypePtr);
+void FortyFiveLine(AttachedLineType *);
 void EnforceLineDRC(void);
 
 /* Rather than mode the line bounding box, we set it so the point bounding
@@ -77,7 +77,7 @@ void EnforceLineDRC(void);
 
 
 #define LINE_LOOP(layer) do {                                       \
-  LineType *line;                                                   \
+  pcb_line_t *line;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(layer)->Line, &__it__, line) {
 

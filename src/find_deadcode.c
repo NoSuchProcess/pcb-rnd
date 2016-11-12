@@ -31,7 +31,7 @@
 
 static int LOT_Linecallback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, line) && LineLineIntersect(&i->line, line))
@@ -62,7 +62,7 @@ static int LOT_Padcallback(const pcb_box_t * b, void *cl)
 	return 0;
 }
 
-static pcb_bool PVTouchesLine(LineTypePtr line)
+static pcb_bool PVTouchesLine(pcb_line_t *line)
 {
 	struct lo_info info;
 
@@ -80,7 +80,7 @@ static pcb_bool PVTouchesLine(LineTypePtr line)
 	return (pcb_false);
 }
 
-static pcb_bool LOTouchesLine(LineTypePtr Line, pcb_cardinal_t LayerGroup)
+static pcb_bool LOTouchesLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup)
 {
 	pcb_cardinal_t entry;
 	struct lo_info info;
@@ -135,7 +135,7 @@ static pcb_bool LOTouchesLine(LineTypePtr Line, pcb_cardinal_t LayerGroup)
  * doesn't include rat-lines in the search
  */
 
-pcb_bool lineClear(LineTypePtr line, pcb_cardinal_t group)
+pcb_bool lineClear(pcb_line_t *line, pcb_cardinal_t group)
 {
 	if (LOTouchesLine(line, group))
 		return (pcb_false);

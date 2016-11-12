@@ -81,7 +81,7 @@ static jmp_buf abort_buf;
 #define sqr(x) (1.0*(x)*(x))
 
 static int multi, line_exact, arc_exact;
-static LineTypePtr the_line;
+static pcb_line_t *the_line;
 static ArcTypePtr the_arc;
 static double arc_dist;
 
@@ -277,7 +277,7 @@ static double dist_lsp(int x1, int y1, int x2, int y2, int px, int py)
 static r_dir_t line_callback(const pcb_box_t * b, void *cl)
 {
 	/* pcb_layer_t *layer = (pcb_layer_t *)cl; */
-	LineTypePtr l = (LineTypePtr) b;
+	pcb_line_t *l = (pcb_line_t *) b;
 	double d1, d2, t;
 #if TRACE1
 	pcb_printf("line %#mD .. %#mD\n", l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
@@ -562,7 +562,7 @@ typedef struct Extra {
 	unsigned deleted:1;
 	int type;
 	union {
-		LineType *line;
+		pcb_line_t *line;
 		ArcType *arc;
 	} parent;
 } Extra;
@@ -579,7 +579,7 @@ static int current_is_component, current_is_solder;
 #if TRACE1
 static void trace_paths();
 #endif
-static void mark_line_for_deletion(LineTypePtr);
+static void mark_line_for_deletion(pcb_line_t *);
 
 #define LINE2EXTRA(l)    ((Extra *)g_hash_table_lookup (lines, l))
 #define ARC2EXTRA(a)     ((Extra *)g_hash_table_lookup (arcs, a))
@@ -649,7 +649,7 @@ typedef struct {
 
 static r_dir_t find_pair_line_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 #if TRACE1
 	Extra *e = LINE2EXTRA(line);
 #endif
@@ -751,7 +751,7 @@ static int check_point_in_pin(PinTypePtr pin, int x, int y, End * e)
 
 static r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	PinTypePtr pin = (PinTypePtr) cl;
 	Extra *e = LINE2EXTRA(line);
 	int hits;
@@ -839,7 +839,7 @@ static r_dir_t check_point_in_pad(PadTypePtr pad, int x, int y, End * e)
 
 static r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 {
-	LineTypePtr line = (LineTypePtr) b;
+	pcb_line_t *line = (pcb_line_t *) b;
 	PadTypePtr pad = (PadTypePtr) cl;
 	Extra *e = LINE2EXTRA(line);
 	int hits;
@@ -925,7 +925,7 @@ static void null_multi_next_ends(AnyObjectType * ptr, Extra * extra, void *userd
 		extra->end.next = NULL;
 }
 
-static Extra *new_line_extra(LineType * line)
+static Extra *new_line_extra(pcb_line_t * line)
 {
 	Extra *extra = g_slice_new0(Extra);
 	g_hash_table_insert(lines, line, extra);
@@ -1048,7 +1048,7 @@ static void propogate_end_step1_cb(AnyObjectType * ptr, Extra * extra, void *use
 {
 	if (extra->start.next != NULL && extra->start.next == extra->end.next) {
 		extra->end.next = NULL;
-		mark_line_for_deletion((LineType *) ptr);
+		mark_line_for_deletion((pcb_line_t *) ptr);
 	}
 
 	if (extra->start.at_pin)
@@ -1123,7 +1123,7 @@ static void print_extra(Extra * e, Extra * prev)
 				 e->end.in_pin ? "I" : "-", e->end.at_pin ? "A" : "-", e->end.is_pad ? "P" : "-", e->end.pending ? "p" : "-");
 
 	if (EXTRA_IS_LINE(e)) {
-		LineTypePtr line = EXTRA2LINE(e);
+		pcb_line_t *line = EXTRA2LINE(e);
 		pcb_printf(" %p L %#mD-%#mD", (void *)line, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		printf("  %s %p %s %p\n", e->start.is_pad ? "pad" : "pin", (void *)e->start.pin, e->end.is_pad ? "pad" : "pin", (void *)e->end.pin);
 	}
@@ -1181,7 +1181,7 @@ static void trace_paths()
 }
 #endif
 
-static void reverse_line(LineTypePtr line)
+static void reverse_line(pcb_line_t *line)
 {
 	Extra *e = LINE2EXTRA(line);
 	int x, y;
@@ -1235,8 +1235,8 @@ static void expand_box(pcb_box_t *b, int x, int y, int t)
 
 /* what we're working with */
 static ArcTypePtr start_arc;
-static LineTypePtr start_line;
-static LineTypePtr end_line;
+static pcb_line_t *start_line;
+static pcb_line_t *end_line;
 static ArcTypePtr end_arc;
 static Extra *start_extra, *end_extra;
 static Extra *sarc_extra, *earc_extra;
@@ -1492,7 +1492,7 @@ static int gp_point_2(int x, int y, int t, End * e, int esa, int eda, const char
 
 static r_dir_t gp_line_cb(const pcb_box_t * b, void *cb)
 {
-	const LineTypePtr l = (LineTypePtr) b;
+	const pcb_line_t *l = (pcb_line_t *) b;
 	Extra *e = LINE2EXTRA(l);
 	if (l == start_line || l == end_line)
 		return R_DIR_NOT_FOUND;
@@ -1619,13 +1619,13 @@ static r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
 	return R_DIR_NOT_FOUND;
 }
 
-static LineTypePtr create_line(LineTypePtr sample, int x1, int y1, int x2, int y2)
+static pcb_line_t *create_line(pcb_line_t *sample, int x1, int y1, int x2, int y2)
 {
 #if TRACE1
 	Extra *e;
 	pcb_printf("create_line from %#mD to %#mD\n", x1, y1, x2, y2);
 #endif
-	LineTypePtr line = CreateNewLineOnLayer(CURRENT, x1, y1, x2, y2,
+	pcb_line_t *line = CreateNewLineOnLayer(CURRENT, x1, y1, x2, y2,
 																					sample->Thickness, sample->Clearance, sample->Flags);
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
 
@@ -1639,7 +1639,7 @@ static LineTypePtr create_line(LineTypePtr sample, int x1, int y1, int x2, int y
 	return line;
 }
 
-static ArcTypePtr create_arc(LineTypePtr sample, int x, int y, int r, int sa, int da)
+static ArcTypePtr create_arc(pcb_line_t *sample, int x, int y, int r, int sa, int da)
 {
 	Extra *e;
 	ArcTypePtr arc;
@@ -1719,7 +1719,7 @@ static void unlink_extras(Extra * e)
 	e->start.next = e->end.next = 0;
 }
 
-static void mark_line_for_deletion(LineTypePtr l)
+static void mark_line_for_deletion(pcb_line_t *l)
 {
 	Extra *e = LINE2EXTRA(l);
 	if (e->deleted) {
@@ -1764,12 +1764,12 @@ static void mark_arc_for_deletion(ArcTypePtr a)
      S             E   S              E   S            E   E           S
 */
 
-static void maybe_pull_1(LineTypePtr line)
+static void maybe_pull_1(pcb_line_t *line)
 {
 	pcb_box_t box;
 	/* Line half-thicknesses, including line space */
 	int ex, ey;
-	LineTypePtr new_line;
+	pcb_line_t *new_line;
 	Extra *new_lextra;
 	ArcTypePtr new_arc;
 	Extra *new_aextra;
@@ -2182,7 +2182,7 @@ static void maybe_pull_1(LineTypePtr line)
 }
 
 /* Given a line with a end_next, attempt to pull both ends.  */
-static void maybe_pull(LineTypePtr line, Extra * e)
+static void maybe_pull(pcb_line_t *line, Extra * e)
 {
 #if TRACE0
 	printf("maybe_pull: ");
@@ -2236,7 +2236,7 @@ static void FreeExtra(Extra * extra)
 	g_slice_free(Extra, extra);
 }
 
-static void mark_ends_pending(LineType * line, Extra * extra, void *userdata)
+static void mark_ends_pending(pcb_line_t * line, Extra * extra, void *userdata)
 {
 	int *select_flags = userdata;
 	if (TEST_FLAGS(*select_flags, line)) {

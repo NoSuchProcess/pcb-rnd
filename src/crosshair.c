@@ -342,7 +342,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
  */
 static void XORDrawInsertPointObject(void)
 {
-	LineTypePtr line = (LineTypePtr) Crosshair.AttachedObject.Ptr2;
+	pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
 	PointTypePtr point = (PointTypePtr) Crosshair.AttachedObject.Ptr3;
 
 	if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
@@ -370,7 +370,7 @@ static void XORDrawMoveOrCopyObject(void)
 
 	case PCB_TYPE_LINE:
 		{
-			LineTypePtr line = (LineTypePtr) Crosshair.AttachedObject.Ptr2;
+			pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
 
 			XORDrawAttachedLine(line->Point1.X + dx, line->Point1.Y + dy, line->Point2.X + dx, line->Point2.Y + dy, line->Thickness);
 			break;
@@ -397,10 +397,10 @@ static void XORDrawMoveOrCopyObject(void)
 
 	case PCB_TYPE_LINE_POINT:
 		{
-			LineTypePtr line;
+			pcb_line_t *line;
 			PointTypePtr point;
 
-			line = (LineTypePtr) Crosshair.AttachedObject.Ptr2;
+			line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
 			point = (PointTypePtr) Crosshair.AttachedObject.Ptr3;
 			if (point == &line->Point1)
 				XORDrawAttachedLine(point->X + dx, point->Y + dy, line->Point2.X, line->Point2.Y, line->Thickness);
@@ -715,7 +715,7 @@ static r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	CrosshairType *crosshair = info->crosshair;
-	LineType *line = (LineType *) box;
+	pcb_line_t *line = (pcb_line_t *) box;
 
 #ifdef DEBUG_ONPOINT
 	printf("X=%ld Y=%ld    X1=%ld Y1=%ld X2=%ld Y2=%ld\n", info->X, info->Y,
@@ -774,7 +774,7 @@ void DrawLineOrArc(int type, void *obj)
 		 * ATM DrawLine() only calls AddPart() internally, which invalidates
 		 * the area specified by the line's bounding box.
 		 */
-		DrawLine(NULL, (LineType *) obj);
+		DrawLine(NULL, (pcb_line_t *) obj);
 		break;
 #if 0
 	case ARCPOINT_TYPE:
@@ -909,7 +909,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 {
 	void *ptr1, *ptr2, *ptr3;
 	int ans;
-	LineType *line;
+	pcb_line_t *line;
 	Coord try_x, try_y;
 	double dx, dy;
 	double dist;
@@ -926,7 +926,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, Coord nearest_g
 	if (ans == PCB_TYPE_NONE)
 		return;
 
-	line = (LineType *) ptr2;
+	line = (pcb_line_t *) ptr2;
 
 	/* Allow snapping to off-grid lines when drawing new lines (on
 	 * the same layer), and when moving a line end-point
@@ -1140,7 +1140,7 @@ void FitCrosshairIntoGrid(Coord X, Coord Y)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_TYPE_NONE)
 			hid_action("PointCursor");
-		else if (!TEST_FLAG(PCB_FLAG_SELECTED, (LineType *) ptr2))
+		else if (!TEST_FLAG(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2))
 			hid_actionl("PointCursor", "True", NULL);
 	}
 
