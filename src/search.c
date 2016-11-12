@@ -1128,7 +1128,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
  * the results.
  * A type value is returned too which is PCB_TYPE_NONE if no objects has been found.
  */
-int SearchObjectByID(DataTypePtr Base, void **Result1, void **Result2, void **Result3, int ID, int type)
+int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
 {
 	if (type == PCB_TYPE_LINE || type == PCB_TYPE_LINE_POINT) {
 		ALLLINE_LOOP(Base);
@@ -1303,7 +1303,7 @@ int SearchObjectByID(DataTypePtr Base, void **Result1, void **Result2, void **Re
  * searches for an element by its board name.
  * The function returns a pointer to the element, NULL if not found
  */
-ElementTypePtr SearchElementByName(DataTypePtr Base, const char *Name)
+ElementTypePtr SearchElementByName(pcb_data_t *Base, const char *Name)
 {
 	ElementTypePtr result = NULL;
 

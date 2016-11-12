@@ -29,12 +29,12 @@
 #include <stdio.h>
 #include "data.h"
 
-int io_kicad_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data);
+int io_kicad_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data);
 int io_kicad_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff);
 int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
 int write_kicad_module_header(FILE * FP, pcb_cardinal_t indentation);
 int write_kicad_layout_header(FILE * FP, pcb_cardinal_t indentation);
-int write_kicad_layout_vias(FILE * FP, DataTypePtr Data, Coord MaxWidth, 										Coord MaxHeight, pcb_cardinal_t indentation);
+int write_kicad_layout_vias(FILE * FP, pcb_data_t *Data, Coord MaxWidth, 										Coord MaxHeight, pcb_cardinal_t indentation);
 int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
 						Coord MaxWidth, Coord MaxHeight, pcb_cardinal_t indentation);
 int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
@@ -42,6 +42,6 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer
 int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,
 						Coord xOffset, Coord yOffset, pcb_cardinal_t indentation);
 int write_kicad_equipotential_netlists(FILE * FP, pcb_board_t *Layout, pcb_cardinal_t indentation);
-int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, DataTypePtr Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation);
+int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation);
 int write_kicad_layout_polygons(FILE * FP, pcb_cardinal_t number, LayerTypePtr layer,								Coord xOffset, Coord yOffset, pcb_cardinal_t indentation);
 

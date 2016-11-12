@@ -47,7 +47,7 @@
 /*** allocation ***/
 
 /* get next slot for a via, allocates memory if necessary */
-PinType *GetViaMemory(DataType * data)
+PinType *GetViaMemory(pcb_data_t * data)
 {
 	PinType *new_obj;
 
@@ -85,7 +85,7 @@ void RemoveFreePin(PinType * data)
 /*** utility ***/
 
 /* creates a new via */
-PinTypePtr CreateNewVia(DataTypePtr Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags)
+PinTypePtr CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags)
 {
 	PinTypePtr Via;
 
@@ -195,7 +195,7 @@ PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thicknes
 
 
 
-void pcb_add_via(DataType *Data, PinType *Via)
+void pcb_add_via(pcb_data_t *Data, PinType *Via)
 {
 	SetPinBoundingBox(Via);
 	if (!Data->via_tree)

@@ -141,7 +141,7 @@ typedef struct {								/* holds information about an operation */
 /* ---------------------------------------------------------------------------
  * some local variables
  */
-static DataTypePtr RemoveList = NULL;	/* list of removed objects */
+static pcb_data_t *RemoveList = NULL;	/* list of removed objects */
 static UndoListTypePtr UndoList = NULL;	/* list of operations */
 static int Serial = 1,					/* serial number */
 	SavedSerial;

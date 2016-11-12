@@ -41,6 +41,6 @@
 void RemovePCB(pcb_board_t *);
 pcb_bool RemoveSelected(void);
 void *RemoveObject(int, void *, void *, void *);
-void *DestroyObject(DataTypePtr, int, void *, void *, void *);
+void *DestroyObject(pcb_data_t *, int, void *, void *, void *);
 
 #endif

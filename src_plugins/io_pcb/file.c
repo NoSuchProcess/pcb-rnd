@@ -69,7 +69,7 @@
 static void WritePCBInfoHeader(FILE *);
 static void WritePCBDataHeader(FILE *);
 static void WritePCBFontData(FILE *);
-static void WriteViaData(FILE *, DataTypePtr);
+static void WriteViaData(FILE *, pcb_data_t *);
 static void WritePCBRatData(FILE *);
 static void WriteLayerData(FILE *, pcb_cardinal_t, LayerTypePtr);
 
@@ -292,7 +292,7 @@ static void WritePCBFontData(FILE * FP)
 /* ---------------------------------------------------------------------------
  * writes via data
  */
-static void WriteViaData(FILE * FP, DataTypePtr Data)
+static void WriteViaData(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t it;
 	PinType *via;
@@ -366,7 +366,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 /* ---------------------------------------------------------------------------
  * writes element data
  */
-int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
+int io_pcb_WriteElementData(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
 	LineType *line;
@@ -541,7 +541,7 @@ int io_pcb_WritePCB(plug_io_t *ctx, FILE * FP, const char *old_filename, const c
  */
 
 extern pcb_board_t *yyPCB;
-extern DataTypePtr yyData;
+extern pcb_data_t *yyData;
 extern FontTypePtr yyFont;
 
 void PreLoadElementPCB()

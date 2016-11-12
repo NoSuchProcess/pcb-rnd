@@ -49,7 +49,7 @@ struct element_st {
 	gdl_elem_t link;
 };
 
-ElementType *GetElementMemory(DataType * data);
+ElementType *GetElementMemory(pcb_data_t * data);
 void RemoveFreeElement(ElementType * data);
 void FreeElementMemory(ElementType * element);
 LineType *GetElementLineMemory(ElementType *Element);
@@ -59,24 +59,24 @@ pcb_bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name);
 int LoadFootprintByName(BufferTypePtr Buffer, const char *Footprint);
 pcb_bool SmashBufferElement(BufferTypePtr Buffer);
 pcb_bool ConvertBufferToElement(BufferTypePtr Buffer);
-void FreeRotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, double cosa, double sina, Angle angle);
+void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Coord Y, double cosa, double sina, Angle angle);
 pcb_bool ChangeElementSide(ElementTypePtr Element, Coord yoff);
 pcb_bool ChangeSelectedElementSide(void);
-ElementTypePtr CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, pcb_bool uniqueName, Coord dx, Coord dy);
-void SetElementBoundingBox(DataTypePtr Data, ElementTypePtr Element, FontTypePtr Font);
-char *UniqueElementName(DataTypePtr Data, char *Name);
-void r_delete_element(DataType * data, ElementType * element);
+ElementTypePtr CopyElementLowLevel(pcb_data_t *Data, ElementTypePtr Dest, ElementTypePtr Src, pcb_bool uniqueName, Coord dx, Coord dy);
+void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, FontTypePtr Font);
+char *UniqueElementName(pcb_data_t *Data, char *Name);
+void r_delete_element(pcb_data_t * data, ElementType * element);
 
 /* Return a relative rotation for an element, useful only for
    comparing two similar footprints.  */
 int ElementOrientation(ElementType * e);
 
-void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coord DY);
+void MoveElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord DX, Coord DY);
 void *RemoveElement(ElementTypePtr Element);
-void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number);
-void MirrorElementCoordinates(DataTypePtr Data, ElementTypePtr Element, Coord yoff);
+void RotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number);
+void MirrorElementCoordinates(pcb_data_t *Data, ElementTypePtr Element, Coord yoff);
 
-ElementTypePtr CreateNewElement(DataTypePtr Data, ElementTypePtr Element,
+ElementTypePtr CreateNewElement(pcb_data_t *Data, ElementTypePtr Element,
 	FontTypePtr PCBFont, FlagType Flags, char *Description, char *NameOnPCB,
 	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
 	int TextScale, FlagType TextFlags, pcb_bool uniqueName);
@@ -93,7 +93,7 @@ void AddTextToElement(TextTypePtr Text, FontTypePtr PCBFont, Coord X, Coord Y,
 /* Change the specified text on an element, either on the board (give
    PCB, PCB->Data) or in a buffer (give NULL, Buffer->Data).  The old
    string is returned, and must be properly freed by the caller.  */
-char *ChangeElementText(pcb_board_t * pcb, DataType * data, ElementTypePtr Element, int which, char *new_name);
+char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, ElementTypePtr Element, int which, char *new_name);
 
 
 /* ---------------------------------------------------------------------------

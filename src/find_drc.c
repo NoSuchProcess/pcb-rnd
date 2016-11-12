@@ -223,7 +223,7 @@ static int throw_drc_dialog(void)
 }
 
 /* DRC clearance callback */
-static r_dir_t drc_callback(DataTypePtr data, LayerTypePtr layer, PolygonTypePtr polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t drc_callback(pcb_data_t *data, LayerTypePtr layer, PolygonTypePtr polygon, int type, void *ptr1, void *ptr2)
 {
 	const char *message;
 	Coord x, y;

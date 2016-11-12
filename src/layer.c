@@ -158,7 +158,7 @@ error:
 /* ---------------------------------------------------------------------------
  * returns the layer number for the passed pointer
  */
-int GetLayerNumber(DataTypePtr Data, LayerTypePtr Layer)
+int GetLayerNumber(pcb_data_t *Data, LayerTypePtr Layer)
 {
 	int i;
 

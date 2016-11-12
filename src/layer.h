@@ -68,7 +68,7 @@ pcb_bool IsLayerGroupEmpty(int);
 
 int ParseGroupString(const char *, LayerGroupTypePtr, int /* LayerN */ );
 
-int GetLayerNumber(DataTypePtr, LayerTypePtr);
+int GetLayerNumber(pcb_data_t *, LayerTypePtr);
 int GetLayerGroupNumberByPointer(LayerTypePtr);
 int GetLayerGroupNumberByNumber(pcb_cardinal_t);
 int GetGroupOfLayer(int);

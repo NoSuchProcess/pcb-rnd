@@ -101,7 +101,7 @@ static int DrillQSort(const void *va, const void *vb)
 	return a->DrillSize - b->DrillSize;
 }
 
-DrillInfoTypePtr GetDrillInfo(DataTypePtr top)
+DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 {
 	DrillInfoTypePtr AllDrills;
 	DrillTypePtr Drill = NULL;

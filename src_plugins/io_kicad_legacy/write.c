@@ -46,7 +46,7 @@
  */
 
 /* generates a line by line listing of the elements being saved */
-static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data);
+static int io_kicad_legacy_write_element_index(FILE * FP, pcb_data_t *Data);
 
 /* generates a default via drill size for the layout */
 static int write_kicad_legacy_layout_via_drill_size(FILE * FP);
@@ -463,7 +463,7 @@ int io_kicad_legacy_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filenam
 /* ---------------------------------------------------------------------------
  * writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX
  */
-static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
+static int io_kicad_legacy_write_element_index(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
 	ElementType *element;
@@ -505,7 +505,7 @@ static int io_kicad_legacy_write_element_index(FILE * FP, DataTypePtr Data)
 */
 
 
-int write_kicad_legacy_layout_vias(FILE * FP, DataTypePtr Data, Coord xOffset, Coord yOffset)
+int write_kicad_legacy_layout_vias(FILE * FP, pcb_data_t *Data, Coord xOffset, Coord yOffset)
 {
 	gdl_iterator_t it;
 	PinType *via;
@@ -749,7 +749,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a .mod library
  */
-int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
+int io_kicad_legacy_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
 
 
@@ -988,7 +988,7 @@ int write_kicad_legacy_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
-int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, DataTypePtr Data, Coord xOffset, Coord yOffset)
+int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data, Coord xOffset, Coord yOffset)
 {
 
 	gdl_iterator_t eit;

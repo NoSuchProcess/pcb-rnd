@@ -120,7 +120,7 @@ void *RemoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * remove object as referred by pointers and type
  * allocated memory is destroyed assumed to already be erased
  */
-void *DestroyObject(DataTypePtr Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *DestroyObject(pcb_data_t *Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 

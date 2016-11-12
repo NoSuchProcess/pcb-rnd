@@ -51,7 +51,7 @@
 
 /*** allocation ***/
 /* get next slot for a Rat, allocates memory if necessary */
-RatType *GetRatMemory(DataType *data)
+RatType *GetRatMemory(pcb_data_t *data)
 {
 	RatType *new_obj;
 
@@ -69,7 +69,7 @@ void RemoveFreeRat(RatType *data)
 
 /*** utility ***/
 /* creates a new rat-line */
-RatTypePtr CreateNewRat(DataTypePtr Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags)
+RatTypePtr CreateNewRat(pcb_data_t *Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags)
 {
 	RatTypePtr Line = GetRatMemory(Data);
 

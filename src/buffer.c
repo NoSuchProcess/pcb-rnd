@@ -336,10 +336,10 @@ void FreeRotateBuffer(BufferTypePtr Buffer, Angle angle)
 /* ---------------------------------------------------------------------------
  * creates a new paste buffer
  */
-DataTypePtr CreateNewBuffer(void)
+pcb_data_t *CreateNewBuffer(void)
 {
-	DataTypePtr data;
-	data = (DataTypePtr) calloc(1, sizeof(DataType));
+	pcb_data_t *data;
+	data = (pcb_data_t *) calloc(1, sizeof(pcb_data_t));
 	data->pcb = (pcb_board_t *) PCB;
 	return data;
 }
@@ -586,7 +586,7 @@ void pcb_swap_buffers(void)
  * moves the passed object to the passed buffer and removes it
  * from its original place
  */
-void *MoveObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *MoveObjectToBuffer(pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -600,7 +600,7 @@ void *MoveObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, voi
 /* ----------------------------------------------------------------------
  * Adds the passed object to the passed buffer
  */
-void *CopyObjectToBuffer(DataTypePtr Destination, DataTypePtr Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *CopyObjectToBuffer(pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 

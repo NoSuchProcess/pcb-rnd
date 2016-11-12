@@ -774,7 +774,7 @@ static POLYAREA *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, P
 }
 
 /* remove the pin clearance from the polygon */
-static int SubtractPin(DataType * d, PinType * pin, LayerType * l, PolygonType * p)
+static int SubtractPin(pcb_data_t * d, PinType * pin, LayerType * l, PolygonType * p)
 {
 	POLYAREA *np;
 	pcb_cardinal_t i;
@@ -849,7 +849,7 @@ static int SubtractPad(PadType * pad, PolygonType * p)
 
 struct cpInfo {
 	const BoxType *other;
-	DataType *data;
+	pcb_data_t *data;
 	LayerType *layer;
 	PolygonType *polygon;
 	pcb_bool solder;
@@ -988,7 +988,7 @@ static r_dir_t text_sub_callback(const BoxType * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-static int Group(DataTypePtr Data, pcb_cardinal_t layer)
+static int Group(pcb_data_t *Data, pcb_cardinal_t layer)
 {
 	pcb_cardinal_t i, j;
 	for (i = 0; i < max_group; i++)
@@ -998,7 +998,7 @@ static int Group(DataTypePtr Data, pcb_cardinal_t layer)
 	return i;
 }
 
-static int clearPoly(DataTypePtr Data, LayerTypePtr Layer, PolygonType * polygon, const BoxType * here, Coord expand)
+static int clearPoly(pcb_data_t *Data, LayerTypePtr Layer, PolygonType * polygon, const BoxType * here, Coord expand)
 {
 	int r = 0, seen;
 	BoxType region;
@@ -1171,7 +1171,7 @@ static int UnsubtractPad(PadType * pad, LayerType * l, PolygonType * p)
 
 static pcb_bool inhibit = pcb_false;
 
-int InitClip(DataTypePtr Data, LayerTypePtr layer, PolygonType * p)
+int InitClip(pcb_data_t *Data, LayerTypePtr layer, PolygonType * p)
 {
 	if (inhibit)
 		return 0;
@@ -1389,11 +1389,11 @@ struct plow_info {
 	int type;
 	void *ptr1, *ptr2;
 	LayerTypePtr layer;
-	DataTypePtr data;
-	r_dir_t (*callback) (DataTypePtr, LayerTypePtr, PolygonTypePtr, int, void *, void *);
+	pcb_data_t *data;
+	r_dir_t (*callback) (pcb_data_t *, LayerTypePtr, PolygonTypePtr, int, void *, void *);
 };
 
-static r_dir_t subtract_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t subtract_plow(pcb_data_t *Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
 {
 	if (!Polygon->Clipped)
 		return 0;
@@ -1423,7 +1423,7 @@ static r_dir_t subtract_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePt
 	return R_DIR_NOT_FOUND;
 }
 
-static r_dir_t add_plow(DataTypePtr Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
+static r_dir_t add_plow(pcb_data_t *Data, LayerTypePtr Layer, PolygonTypePtr Polygon, int type, void *ptr1, void *ptr2)
 {
 	switch (type) {
 	case PCB_TYPE_PIN:
@@ -1457,8 +1457,8 @@ static r_dir_t plow_callback(const BoxType * b, void *cl)
 }
 
 int
-PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
-						 r_dir_t (*call_back) (DataTypePtr data, LayerTypePtr lay, PolygonTypePtr poly, int type, void *ptr1, void *ptr2))
+PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
+						 r_dir_t (*call_back) (pcb_data_t *data, LayerTypePtr lay, PolygonTypePtr poly, int type, void *ptr1, void *ptr2))
 {
 	BoxType sb = ((PinTypePtr) ptr2)->BoundingBox;
 	int r = 0, seen;
@@ -1540,7 +1540,7 @@ PlowsPolygon(DataType * Data, int type, void *ptr1, void *ptr2,
 	return r;
 }
 
-void RestoreToPolygon(DataType * Data, int type, void *ptr1, void *ptr2)
+void RestoreToPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	if (type == PCB_TYPE_POLYGON)
 		InitClip(PCB->Data, (LayerTypePtr) ptr1, (PolygonTypePtr) ptr2);
@@ -1548,7 +1548,7 @@ void RestoreToPolygon(DataType * Data, int type, void *ptr1, void *ptr2)
 		PlowsPolygon(Data, type, ptr1, ptr2, add_plow);
 }
 
-void ClearFromPolygon(DataType * Data, int type, void *ptr1, void *ptr2)
+void ClearFromPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	if (type == PCB_TYPE_POLYGON)
 		InitClip(PCB->Data, (LayerTypePtr) ptr1, (PolygonTypePtr) ptr2);
@@ -1798,7 +1798,7 @@ void debug_polygon(PolygonType * p)
 /* Convert a POLYAREA (and all linked POLYAREA) to
  * raw PCB polygons on the given layer.
  */
-void PolyToPolygonsOnLayer(DataType * Destination, LayerType * Layer, POLYAREA * Input, FlagType Flags)
+void PolyToPolygonsOnLayer(pcb_data_t * Destination, LayerType * Layer, POLYAREA * Input, FlagType Flags)
 {
 	PolygonType *Polygon;
 	POLYAREA *pa;

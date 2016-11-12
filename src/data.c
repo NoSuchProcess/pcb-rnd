@@ -178,7 +178,7 @@ void pcb_loop_all(void *ctx,
 /* ---------------------------------------------------------------------------
  * free memory used by data struct
  */
-void FreeDataMemory(DataType * data)
+void FreeDataMemory(pcb_data_t * data)
 {
 	LayerTypePtr layer;
 	int i;
@@ -249,13 +249,13 @@ void FreeDataMemory(DataType * data)
 	if (data->rat_tree)
 		r_destroy_tree(&data->rat_tree);
 	/* clear struct */
-	memset(data, 0, sizeof(DataType));
+	memset(data, 0, sizeof(pcb_data_t));
 }
 
 /* ---------------------------------------------------------------------------
  * returns pcb_true if data area is empty
  */
-pcb_bool IsDataEmpty(DataTypePtr Data)
+pcb_bool IsDataEmpty(pcb_data_t *Data)
 {
 	pcb_bool hasNoObjects;
 	pcb_cardinal_t i;
@@ -271,7 +271,7 @@ pcb_bool IsDataEmpty(DataTypePtr Data)
  * gets minimum and maximum coordinates
  * returns NULL if layout is empty
  */
-BoxTypePtr GetDataBoundingBox(DataTypePtr Data)
+BoxTypePtr GetDataBoundingBox(pcb_data_t *Data)
 {
 	static BoxType box;
 	/* FIX ME: use r_search to do this much faster */

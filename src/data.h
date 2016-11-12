@@ -121,8 +121,8 @@ void pcb_loop_all(void *ctx,
 	pcb_via_cb_t vcb
 );
 
-void FreeDataMemory(DataTypePtr);
-pcb_bool IsDataEmpty(DataTypePtr);
-BoxTypePtr GetDataBoundingBox(DataTypePtr Data);
+void FreeDataMemory(pcb_data_t *);
+pcb_bool IsDataEmpty(pcb_data_t *);
+BoxTypePtr GetDataBoundingBox(pcb_data_t *Data);
 
 #endif

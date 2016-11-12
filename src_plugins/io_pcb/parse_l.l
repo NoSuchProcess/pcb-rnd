@@ -74,7 +74,7 @@
 
 const char			*yyfilename;	/* in this file */
 pcb_board_t *	yyPCB;			/* used by parser */
-DataTypePtr		yyData;
+pcb_data_t *	yyData;
 ElementTypePtr		yyElement;
 FontTypePtr		yyFont;
 conf_role_t yy_settings_dest;
@@ -314,7 +314,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a single element file
  */
-int io_pcb_ParseElement(plug_io_t *ctx, DataTypePtr Ptr, const char *name)
+int io_pcb_ParseElement(plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 {
 	FILE *f;
 	int ret;

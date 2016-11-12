@@ -418,7 +418,7 @@ static lht_node_t *build_element(ElementType *elem)
 }
 
 
-static lht_node_t *build_data_layer(DataType *data, LayerType *layer, int layer_group)
+static lht_node_t *build_data_layer(pcb_data_t *data, LayerType *layer, int layer_group)
 {
 	lht_node_t *obj, *grp;
 	LineType *li;
@@ -467,7 +467,7 @@ static lht_node_t *build_data_layer(DataType *data, LayerType *layer, int layer_
 	return obj;
 }
 
-static lht_node_t *build_data_layers(DataType *data)
+static lht_node_t *build_data_layers(pcb_data_t *data)
 {
 	int n;
 	lht_node_t *layers;
@@ -481,7 +481,7 @@ static lht_node_t *build_data_layers(DataType *data)
 }
 
 
-static lht_node_t *build_data(DataType *data)
+static lht_node_t *build_data(pcb_data_t *data)
 {
 	lht_node_t *grp, *ndt;
 	PinType *pi;

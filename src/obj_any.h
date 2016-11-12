@@ -96,7 +96,7 @@ struct pcb_obj_s {
 	union {
 		void         *any;
 		LayerType    *layer;
-		DataType     *data;
+		pcb_data_t     *data;
 		ElementType  *element;
 	} parent;
 	gdl_elem_t link;

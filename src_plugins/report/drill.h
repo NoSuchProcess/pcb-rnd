@@ -47,7 +47,7 @@ typedef struct {								/* holds a range of Drill Infos */
 	DrillTypePtr Drill;						/* plated holes */
 } DrillInfoType, *DrillInfoTypePtr;
 
-DrillInfoTypePtr GetDrillInfo(DataTypePtr);
+DrillInfoTypePtr GetDrillInfo(pcb_data_t *);
 void FreeDrillInfo(DrillInfoTypePtr);
 void RoundDrillInfo(DrillInfoTypePtr, int);
 DrillTypePtr GetDrillInfoDrillMemory(DrillInfoTypePtr);

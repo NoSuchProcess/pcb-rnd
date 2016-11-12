@@ -62,7 +62,7 @@ struct plug_io_s {
 	int (*parse_pcb)(plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
-	int (*parse_element)(plug_io_t *ctx, DataTypePtr Ptr, const char *name);
+	int (*parse_element)(plug_io_t *ctx, pcb_data_t *Ptr, const char *name);
 
 	/* Attempt to load fonts from a file. Return 0 on success. */
 	int (*parse_font)(plug_io_t *ctx, FontTypePtr Ptr, const char *Filename);
@@ -72,7 +72,7 @@ struct plug_io_s {
 	int (*write_buffer)(plug_io_t *ctx, FILE *f, BufferType *buff);
 
 	/* Write element data to a file. Return 0 on success. */
-	int (*write_element)(plug_io_t *ctx, FILE *f, DataTypePtr e);
+	int (*write_element)(plug_io_t *ctx, FILE *f, pcb_data_t *e);
 
 	/* Write PCB to f; there's a copy of the file we are going to
 	   "overwrite", named in old_filename and the new file name we are
@@ -92,10 +92,10 @@ extern plug_io_t *plug_io_chain;
 
 /********** hook wrappers **********/
 int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings);
-int ParseElement(DataTypePtr Ptr, const char *name);
+int ParseElement(pcb_data_t *Ptr, const char *name);
 int ParseFont(FontTypePtr Ptr, char *Filename);
 int WriteBuffer(FILE *f, BufferType *buff, const char *fmt);
-int WriteElementData(FILE *f, DataTypePtr e, const char *fmt);
+int WriteElementData(FILE *f, pcb_data_t *e, const char *fmt);
 
 /********** common function used to be part of file.[ch] and friends **********/
 FILE *CheckAndOpenFile(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);

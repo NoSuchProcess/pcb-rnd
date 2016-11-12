@@ -61,7 +61,7 @@
 #include "box.h"
 #include "hid_actions.h"
 
-static void *MyMoveViaLowLevel(DataType * Data, PinType * Via, Coord dx, Coord dy)
+static void *MyMoveViaLowLevel(pcb_data_t * Data, PinType * Via, Coord dx, Coord dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_VIA, Via, Via);
@@ -75,7 +75,7 @@ static void *MyMoveViaLowLevel(DataType * Data, PinType * Via, Coord dx, Coord d
 	return Via;
 }
 
-static void *MyMoveLineLowLevel(DataType * Data, LayerType * Layer, LineType * Line, Coord dx, Coord dy)
+static void *MyMoveLineLowLevel(pcb_data_t * Data, LayerType * Layer, LineType * Line, Coord dx, Coord dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_LINE, Layer, Line);
@@ -89,7 +89,7 @@ static void *MyMoveLineLowLevel(DataType * Data, LayerType * Layer, LineType * L
 	return Line;
 }
 
-static void *MyMoveArcLowLevel(DataType * Data, LayerType * Layer, ArcType * Arc, Coord dx, Coord dy)
+static void *MyMoveArcLowLevel(pcb_data_t * Data, LayerType * Layer, ArcType * Arc, Coord dx, Coord dy)
 {
 	if (Data) {
 		RestoreToPolygon(Data, PCB_TYPE_ARC, Layer, Arc);
@@ -103,7 +103,7 @@ static void *MyMoveArcLowLevel(DataType * Data, LayerType * Layer, ArcType * Arc
 	return Arc;
 }
 
-static void *MyMovePolygonLowLevel(DataType * Data, LayerType * Layer, PolygonType * Polygon, Coord dx, Coord dy)
+static void *MyMovePolygonLowLevel(pcb_data_t * Data, LayerType * Layer, PolygonType * Polygon, Coord dx, Coord dy)
 {
 	if (Data) {
 		r_delete_entry(Layer->polygon_tree, (BoxType *) Polygon);

@@ -100,7 +100,7 @@ struct pcb_board_s {
 	LibraryType NetlistLib[NUM_NETLISTS];
 	rats_patch_line_t *NetlistPatches, *NetlistPatchLast;
 	AttributeListType Attributes;
-	DataTypePtr Data;							/* entire database */
+	pcb_data_t *Data;							/* entire database */
 
 	pcb_bool is_footprint;						/* If set, the user has loaded a footprint, not a pcb. */
 

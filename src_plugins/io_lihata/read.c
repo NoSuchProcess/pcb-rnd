@@ -377,7 +377,7 @@ static int parse_line(LayerType *ly, ElementType *el, lht_node_t *obj, int no_id
 	return 0;
 }
 
-static int parse_rat(DataType *dt, lht_node_t *obj)
+static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 {
 	RatType rat, *new_rat;
 
@@ -529,7 +529,7 @@ static int parse_pcb_text(LayerType *ly, ElementType *el, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_data_layer(pcb_board_t *pcb, DataType *dt, lht_node_t *grp, int layer_id)
+static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id)
 {
 	lht_node_t *n, *lst;
 	lht_dom_iterator_t it;
@@ -565,7 +565,7 @@ static int parse_data_layer(pcb_board_t *pcb, DataType *dt, lht_node_t *grp, int
 	return 0;
 }
 
-static int parse_data_layers(pcb_board_t *pcb, DataType *dt, lht_node_t *grp)
+static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp)
 {
 	int id;
 	lht_node_t *n;
@@ -580,7 +580,7 @@ static int parse_data_layers(pcb_board_t *pcb, DataType *dt, lht_node_t *grp)
 }
 
 /* If el == NULL and dt != NULL it is a via (for now). */
-static int parse_pin(DataType *dt, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
+static int parse_pin(pcb_data_t *dt, ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 {
 	PinType *via;
 
@@ -648,7 +648,7 @@ static int parse_pad(ElementType *el, lht_node_t *obj, Coord dx, Coord dy)
 }
 
 
-static int parse_element(pcb_board_t *pcb, DataType *dt, lht_node_t *obj)
+static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 {
 	ElementType *elem = GetElementMemory(dt);
 	lht_node_t *lst, *n;
@@ -694,7 +694,7 @@ static int parse_element(pcb_board_t *pcb, DataType *dt, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_data_objects(pcb_board_t *pcb_for_font, DataType *dt, lht_node_t *grp)
+static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_node_t *grp)
 {
 	lht_node_t *n;
 	lht_dom_iterator_t it;
@@ -714,14 +714,14 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, DataType *dt, lht_node_
 	return 0;
 }
 
-static DataType *parse_data(pcb_board_t *pcb, lht_node_t *nd)
+static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 {
-	DataType *dt;
+	pcb_data_t *dt;
 	lht_node_t *grp;
 	if (nd->type != LHT_HASH)
 		return NULL;
 
-	dt = calloc(sizeof(DataType), 1);
+	dt = calloc(sizeof(pcb_data_t), 1);
 
 	grp = lht_dom_hash_get(nd, "layers");
 	if ((grp != NULL) && (grp->type == LHT_LIST))

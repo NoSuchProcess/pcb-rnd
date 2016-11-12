@@ -37,7 +37,7 @@
 typedef struct {
 	pcb_board_t *pcb;
 	int extraflg;
-	DataType *dst, *src;
+	pcb_data_t *dst, *src;
 } pcb_opctx_buffer_t;
 
 typedef struct {
@@ -85,7 +85,7 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	DataTypePtr destroy_target;
+	pcb_data_t *destroy_target;
 	pcb_bool bulk;                /* don't draw if part of a bulk operation */
 } pcb_opctx_remove_t;
 

@@ -62,8 +62,8 @@ void GoToPreviousPoint(void);
 void ClosePolygon(void);
 void CopyAttachedPolygonToLayer(void);
 int PolygonHoles(PolygonType * ptr, const BoxType * range, int (*callback) (PLINE *, void *user_data), void *user_data);
-int PlowsPolygon(DataType *, int, void *, void *,
-								 r_dir_t (*callback) (DataTypePtr, LayerTypePtr, PolygonTypePtr, int, void *, void *));
+int PlowsPolygon(pcb_data_t *, int, void *, void *,
+								 r_dir_t (*callback) (pcb_data_t *, LayerTypePtr, PolygonTypePtr, int, void *, void *));
 void ComputeNoHoles(PolygonType * poly);
 POLYAREA *ContourToPoly(PLINE *);
 POLYAREA *PolygonToPoly(PolygonType *);
@@ -75,9 +75,9 @@ POLYAREA *ArcPoly(ArcType * l, Coord thick);
 POLYAREA *PinPoly(PinType * l, Coord thick, Coord clear);
 POLYAREA *BoxPolyBloated(BoxType * box, Coord radius);
 void frac_circle(PLINE *, Coord, Coord, Vector, int);
-int InitClip(DataType * d, LayerType * l, PolygonType * p);
-void RestoreToPolygon(DataType *, int, void *, void *);
-void ClearFromPolygon(DataType *, int, void *, void *);
+int InitClip(pcb_data_t * d, LayerType * l, PolygonType * p);
+void RestoreToPolygon(pcb_data_t *, int, void *, void *);
+void ClearFromPolygon(pcb_data_t *, int, void *, void *);
 
 pcb_bool IsPointInPolygon(Coord, Coord, Coord, PolygonTypePtr);
 pcb_bool IsPointInPolygonIgnoreHoles(Coord, Coord, PolygonTypePtr);
@@ -85,7 +85,7 @@ pcb_bool IsRectangleInPolygon(Coord, Coord, Coord, Coord, PolygonTypePtr);
 pcb_bool isects(POLYAREA *, PolygonTypePtr, pcb_bool);
 pcb_bool MorphPolygon(LayerTypePtr, PolygonTypePtr);
 void NoHolesPolygonDicer(PolygonType * p, const BoxType * clip, void (*emit) (PLINE *, void *), void *user_data);
-void PolyToPolygonsOnLayer(DataType *, LayerType *, POLYAREA *, FlagType);
+void PolyToPolygonsOnLayer(pcb_data_t *, LayerType *, POLYAREA *, FlagType);
 
 void square_pin_factors(int style, double *xm, double *ym);
 

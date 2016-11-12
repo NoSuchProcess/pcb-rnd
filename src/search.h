@@ -157,7 +157,7 @@ pcb_bool IsPointInBox(Coord, Coord, BoxTypePtr, Coord);
 int SearchObjectByLocation(unsigned, void **, void **, void **, Coord, Coord, Coord);
 int SearchScreen(Coord, Coord, int, void **, void **, void **);
 int SearchScreenGridSlop(Coord, Coord, int, void **, void **, void **);
-int SearchObjectByID(DataTypePtr, void **, void **, void **, int, int);
-ElementTypePtr SearchElementByName(DataTypePtr, const char *);
+int SearchObjectByID(pcb_data_t *, void **, void **, void **, int, int);
+ElementTypePtr SearchElementByName(pcb_data_t *, const char *);
 
 #endif

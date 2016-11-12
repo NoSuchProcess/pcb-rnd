@@ -87,7 +87,7 @@ static int LayersChanged(int argc, const char **argv, Coord x, Coord y)
 	if (!layer_button_list)
 		return 0;
 	if (PCB && PCB->Data) {
-		DataType *d = PCB->Data;
+		pcb_data_t *d = PCB->Data;
 		for (i = 0; i < MAX_LAYER; i++)
 			fg_colors[i] = lesstif_parse_color(d->Layer[i].Color);
 		fg_colors[LB_SILK] = lesstif_parse_color(PCB->ElementColor);

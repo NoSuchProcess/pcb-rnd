@@ -59,7 +59,7 @@
 /*** allocation ***/
 
 /* get next slot for an element, allocates memory if necessary */
-ElementType *GetElementMemory(DataType * data)
+ElementType *GetElementMemory(pcb_data_t * data)
 {
 	ElementType *new_obj;
 
@@ -391,7 +391,7 @@ pcb_bool ConvertBufferToElement(BufferTypePtr Buffer)
 	return (pcb_true);
 }
 
-void FreeRotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, double cosa, double sina, Angle angle)
+void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Coord Y, double cosa, double sina, Angle angle)
 {
 	/* solder side objects need a different orientation */
 
@@ -481,7 +481,7 @@ pcb_bool ChangeSelectedElementSide(void)
 }
 
 /* changes the layout-name of an element */
-char *ChangeElementText(pcb_board_t * pcb, DataType * data, ElementTypePtr Element, int which, char *new_name)
+char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, ElementTypePtr Element, int which, char *new_name)
 {
 	char *old = Element->Name[which].TextString;
 
@@ -506,7 +506,7 @@ char *ChangeElementText(pcb_board_t * pcb, DataType * data, ElementTypePtr Eleme
 }
 
 /* copies data from one element to another and creates the destination; if necessary */
-ElementTypePtr CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, ElementTypePtr Src, pcb_bool uniqueName, Coord dx, Coord dy)
+ElementTypePtr CopyElementLowLevel(pcb_data_t *Data, ElementTypePtr Dest, ElementTypePtr Src, pcb_bool uniqueName, Coord dx, Coord dy)
 {
 	int i;
 	/* release old memory if necessary */
@@ -562,7 +562,7 @@ ElementTypePtr CopyElementLowLevel(DataTypePtr Data, ElementTypePtr Dest, Elemen
 }
 
 /* creates an new element; memory is allocated if needed */
-ElementTypePtr CreateNewElement(DataTypePtr Data, ElementTypePtr Element,
+ElementTypePtr CreateNewElement(pcb_data_t *Data, ElementTypePtr Element,
 	FontTypePtr PCBFont, FlagType Flags, char *Description, char *NameOnPCB,
 	char *Value, Coord TextX, Coord TextY, pcb_uint8_t Direction,
 	int TextScale, FlagType TextFlags, pcb_bool uniqueName)
@@ -662,7 +662,7 @@ void AddTextToElement(TextTypePtr Text, FontTypePtr PCBFont, Coord X, Coord Y,
 }
 
 /* mirrors the coordinates of an element; an additional offset is passed */
-void MirrorElementCoordinates(DataTypePtr Data, ElementTypePtr Element, Coord yoff)
+void MirrorElementCoordinates(pcb_data_t *Data, ElementTypePtr Element, Coord yoff)
 {
 	r_delete_element(Data, Element);
 	ELEMENTLINE_LOOP(Element);
@@ -716,7 +716,7 @@ void MirrorElementCoordinates(DataTypePtr Data, ElementTypePtr Element, Coord yo
 }
 
 /* sets the bounding box of an elements */
-void SetElementBoundingBox(DataTypePtr Data, ElementTypePtr Element, FontTypePtr Font)
+void SetElementBoundingBox(pcb_data_t *Data, ElementTypePtr Element, FontTypePtr Font)
 {
 	BoxTypePtr box, vbox;
 
@@ -879,7 +879,7 @@ static char *BumpName(char *Name)
 
 /* make a unique name for the name on board
  * this can alter the contents of the input string */
-char *UniqueElementName(DataTypePtr Data, char *Name)
+char *UniqueElementName(pcb_data_t *Data, char *Name)
 {
 	pcb_bool unique = pcb_true;
 	/* null strings are ok */
@@ -902,7 +902,7 @@ char *UniqueElementName(DataTypePtr Data, char *Name)
 	}
 }
 
-void r_delete_element(DataType * data, ElementType * element)
+void r_delete_element(pcb_data_t * data, ElementType * element)
 {
 	r_delete_entry(data->element_tree, (BoxType *) element);
 	PIN_LOOP(element);
@@ -991,7 +991,7 @@ int ElementOrientation(ElementType * e)
 }
 
 /* moves a element by +-X and +-Y */
-void MoveElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord DX, Coord DY)
+void MoveElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord DX, Coord DY)
 {
 	if (Data)
 		r_delete_entry(Data->element_tree, (BoxType *) Element);
@@ -1059,7 +1059,7 @@ void *RemoveElement(ElementTypePtr Element)
 }
 
 /* rotate an element in 90 degree steps */
-void RotateElementLowLevel(DataTypePtr Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number)
+void RotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Coord Y, unsigned Number)
 {
 	/* solder side objects need a different orientation */
 

@@ -38,10 +38,10 @@ struct pcb_rat_line_s {          /* a rat-line */
 };
 
 
-RatType *GetRatMemory(DataType *data);
+RatType *GetRatMemory(pcb_data_t *data);
 void RemoveFreeRat(RatType *data);
 
-RatTypePtr CreateNewRat(DataTypePtr Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags);
+RatTypePtr CreateNewRat(pcb_data_t *Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags);
 pcb_bool DeleteRats(pcb_bool selected);
 
 #endif

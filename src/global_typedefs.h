@@ -25,7 +25,7 @@
 #include "config.h"
 
 typedef struct pcb_board_s pcb_board_t;
-typedef struct pcb_data_s  DataType, *DataTypePtr;
+typedef struct pcb_data_s pcb_data_t;
 typedef struct pcb_layer_group_s  LayerGroupType, *LayerGroupTypePtr;
 typedef struct pcb_layer_s LayerType, *LayerTypePtr;
 typedef struct pcb_buffer_s BufferType, *BufferTypePtr;

@@ -143,7 +143,7 @@ int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_s
 	return res;
 }
 
-int ParseElement(DataTypePtr Ptr, const char *name)
+int ParseElement(pcb_data_t *Ptr, const char *name)
 {
 	int res = -1;
 
@@ -234,7 +234,7 @@ int WriteBuffer(FILE *f, BufferType *buff, const char *fmt)
 	return res;
 }
 
-int WriteElementData(FILE *f, DataTypePtr e, const char *fmt)
+int WriteElementData(FILE *f, pcb_data_t *e, const char *fmt)
 {
 	int res, newfmt = 0;
 	plug_io_t *p = e->loader;

@@ -34,7 +34,7 @@
 struct pcb_buffer_s {								/* information about the paste buffer */
 	Coord X, Y;										/* offset */
 	BoxType BoundingBox;
-	DataTypePtr Data;							/* data; not all members of pcb_board_t */
+	pcb_data_t *Data;							/* data; not all members of pcb_board_t */
 	/* are used */
 };
 
@@ -52,13 +52,13 @@ void pcb_swap_buffers(void);
 void MirrorBuffer(BufferTypePtr);
 void InitBuffers(void);
 void UninitBuffers(void);
-void *MoveObjectToBuffer(DataTypePtr, DataTypePtr, int, void *, void *, void *);
-void *CopyObjectToBuffer(DataTypePtr, DataTypePtr, int, void *, void *, void *);
+void *MoveObjectToBuffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
+void *CopyObjectToBuffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
 
 /* This action is called from ActionElementAddIf() */
 int LoadFootprint(int argc, const char **argv, Coord x, Coord y);
 
-DataTypePtr CreateNewBuffer(void);
+pcb_data_t *CreateNewBuffer(void);
 
 
 /* ---------------------------------------------------------------------------

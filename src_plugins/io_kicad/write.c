@@ -46,7 +46,7 @@
  */
 
 /* generates a line by line listing of the elements being saved */
-static int io_kicad_write_element_index(FILE * FP, DataTypePtr Data);
+static int io_kicad_write_element_index(FILE * FP, pcb_data_t *Data);
 
 /* generates text for the kicad layer provided  */
 static char * kicad_sexpr_layer_to_text(int layer);
@@ -460,7 +460,7 @@ int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, cons
 /* ---------------------------------------------------------------------------
  * writes (eventually) de-duplicated list of element names in kicad legacy format module $INDEX
  */
-static int io_kicad_write_element_index(FILE * FP, DataTypePtr Data)
+static int io_kicad_write_element_index(FILE * FP, pcb_data_t *Data)
 {
 	gdl_iterator_t eit;
 	ElementType *element;
@@ -502,7 +502,7 @@ static int io_kicad_write_element_index(FILE * FP, DataTypePtr Data)
 */
 
 
-int write_kicad_layout_vias(FILE * FP, DataTypePtr Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+int write_kicad_layout_vias(FILE * FP, pcb_data_t *Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 	gdl_iterator_t it;
 	PinType *via;
@@ -789,7 +789,7 @@ int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a .mod library
  */
-int io_kicad_write_element(plug_io_t *ctx, FILE * FP, DataTypePtr Data)
+int io_kicad_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 {
 
 
@@ -1033,7 +1033,7 @@ int write_kicad_equipotential_netlists(FILE * FP, pcb_board_t *Layout, pcb_cardi
 /* ---------------------------------------------------------------------------
  * writes element data in kicad legacy format for use in a layout .brd file
  */
-int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, DataTypePtr Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
+int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data, Coord xOffset, Coord yOffset, pcb_cardinal_t indentation)
 {
 
 	gdl_iterator_t eit;

@@ -42,14 +42,14 @@ struct pin_st {
 };
 
 
-PinType *GetViaMemory(DataType * data);
+PinType *GetViaMemory(pcb_data_t * data);
 void RemoveFreeVia(PinType * data);
 PinType *GetPinMemory(ElementType * element);
 void RemoveFreePin(PinType * data);
 
-PinTypePtr CreateNewVia(DataTypePtr Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags);
+PinTypePtr CreateNewVia(pcb_data_t *Data, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, const char *Name, FlagType Flags);
 PinTypePtr CreateNewPin(ElementTypePtr Element, Coord X, Coord Y, Coord Thickness, Coord Clearance, Coord Mask, Coord DrillingHole, char *Name, char *Number, FlagType Flags);
-void pcb_add_via(DataType *Data, PinType *Via);
+void pcb_add_via(pcb_data_t *Data, PinType *Via);
 void SetPinBoundingBox(PinTypePtr Pin);
 pcb_bool ChangeHole(PinTypePtr Via);
 

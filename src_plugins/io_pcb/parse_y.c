@@ -129,7 +129,7 @@ static	pcb_bool			LayerFlag[MAX_LAYER + 2];
 
 extern	char			*yytext;		/* defined by LEX */
 extern	pcb_board_t *	yyPCB;
-extern	DataTypePtr		yyData;
+extern	pcb_data_t *	yyData;
 extern	ElementTypePtr	yyElement;
 extern	FontTypePtr		yyFont;
 extern	int				pcb_lineno;		/* linenumber */
