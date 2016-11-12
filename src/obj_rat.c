@@ -51,17 +51,17 @@
 
 /*** allocation ***/
 /* get next slot for a Rat, allocates memory if necessary */
-RatType *GetRatMemory(pcb_data_t *data)
+pcb_rat_t *GetRatMemory(pcb_data_t *data)
 {
-	RatType *new_obj;
+	pcb_rat_t *new_obj;
 
-	new_obj = calloc(sizeof(RatType), 1);
+	new_obj = calloc(sizeof(pcb_rat_t), 1);
 	ratlist_append(&data->Rat, new_obj);
 
 	return new_obj;
 }
 
-void RemoveFreeRat(RatType *data)
+void RemoveFreeRat(pcb_rat_t *data)
 {
 	ratlist_remove(data);
 	free(data);
@@ -69,9 +69,9 @@ void RemoveFreeRat(RatType *data)
 
 /*** utility ***/
 /* creates a new rat-line */
-RatTypePtr CreateNewRat(pcb_data_t *Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags)
+pcb_rat_t *CreateNewRat(pcb_data_t *Data, Coord X1, Coord Y1, Coord X2, Coord Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, Coord Thickness, FlagType Flags)
 {
-	RatTypePtr Line = GetRatMemory(Data);
+	pcb_rat_t *Line = GetRatMemory(Data);
 
 	if (!Line)
 		return (Line);
@@ -124,7 +124,7 @@ pcb_bool DeleteRats(pcb_bool selected)
 
 /*** ops ***/
 /* copies a rat-line to paste buffer */
-void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr Rat)
+void *AddRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	return (CreateNewRat(ctx->buffer.dst, Rat->Point1.X, Rat->Point1.Y,
 		Rat->Point2.X, Rat->Point2.Y, Rat->group1, Rat->group2, Rat->Thickness,
@@ -132,7 +132,7 @@ void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr Rat)
 }
 
 /* moves a rat-line to paste buffer */
-void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat)
+void *MoveRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 {
 	r_delete_entry(ctx->buffer.src->rat_tree, (pcb_box_t *) rat);
 
@@ -148,7 +148,7 @@ void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat)
 }
 
 /* inserts a point into a rat-line */
-void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr Rat)
+void *InsertPointIntoRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	pcb_line_t *newone;
 
@@ -171,7 +171,7 @@ void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 }
 
 /* moves a line between layers */
-void *MoveRatToLayer(pcb_opctx_t *ctx, RatType * Rat)
+void *MoveRatToLayer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 {
 	pcb_line_t *newone;
 	/*Coord X1 = Rat->Point1.X, Y1 = Rat->Point1.Y;
@@ -197,7 +197,7 @@ void *MoveRatToLayer(pcb_opctx_t *ctx, RatType * Rat)
 }
 
 /* destroys a rat */
-void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr Rat)
+void *DestroyRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	if (ctx->remove.destroy_target->rat_tree)
 		r_delete_entry(ctx->remove.destroy_target->rat_tree, &Rat->BoundingBox);
@@ -207,7 +207,7 @@ void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 }
 
 /* removes a rat */
-void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat)
+void *RemoveRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	/* erase from screen and memory */
 	if (PCB->RatOn) {
@@ -222,7 +222,7 @@ void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat)
 /*** draw ***/
 r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 {
-	RatType *rat = (RatType *) b;
+	pcb_rat_t *rat = (pcb_rat_t *) b;
 
 	if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
 		if (TEST_FLAG(PCB_FLAG_SELECTED, rat))
@@ -250,7 +250,7 @@ r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-void EraseRat(RatTypePtr Rat)
+void EraseRat(pcb_rat_t *Rat)
 {
 	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
 		Coord w = Rat->Thickness;
@@ -268,7 +268,7 @@ void EraseRat(RatTypePtr Rat)
 	EraseFlags(&Rat->Flags);
 }
 
-void DrawRat(RatTypePtr Rat)
+void DrawRat(pcb_rat_t *Rat)
 {
 	if (conf_core.appearance.rat_thickness < 20)
 		Rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;

@@ -47,7 +47,7 @@ struct pcb_connection_s {				/* holds a connection (rat) */
 	LibraryMenuType *menu;				/* the netmenu this *SHOULD* belong too */
 };
 
-RatTypePtr AddNet(void);
+pcb_rat_t *AddNet(void);
 char *ConnectionName(int, void *, void *);
 
 pcb_bool AddAllRats(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr));
@@ -65,7 +65,7 @@ pcb_connection_t *GetConnectionMemory(pcb_net_t *);
                 connection = & (net)->Connection[n]
 
 #define RAT_LOOP(top) do {                                          \
-  RatType *line;                                                    \
+  pcb_rat_t *line;                                                    \
   gdl_iterator_t __it__;                                            \
   ratlist_foreach(&(top)->Rat, &__it__, line) {
 

@@ -116,7 +116,7 @@ static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type,
 	return pcb_false;
 }
 
-static pcb_bool ADD_RAT_TO_LIST(RatTypePtr Ptr, int from_type, void *from_ptr, found_conn_type_t type)
+static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, found_conn_type_t type)
 {
 	if (User)
 		AddObjectToFlagUndoList(PCB_TYPE_RATLINE, (Ptr), (Ptr), (Ptr));
@@ -280,7 +280,7 @@ void InitLayoutLookup(void)
 	PVList.Number = 0;
 	/* Initialize ratline data */
 	RatList.Size = ratlist_length(&PCB->Data->Rat);
-	RatList.Data = (void **) calloc(RatList.Size, sizeof(RatTypePtr));
+	RatList.Data = (void **) calloc(RatList.Size, sizeof(pcb_rat_t *));
 	RatList.Location = 0;
 	RatList.DrawLocation = 0;
 	RatList.Number = 0;
@@ -330,7 +330,7 @@ static r_dir_t LOCtoPVpad_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPVrat_callback(const pcb_box_t * b, void *cl)
 {
-	RatTypePtr rat = (RatTypePtr) b;
+	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct pv_info *i = (struct pv_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, rat) && IS_PV_ON_RAT(&i->pv, rat) && ADD_RAT_TO_LIST(rat, PCB_TYPE_PIN, &i->pv, FCT_RAT))
@@ -604,7 +604,7 @@ struct lo_info {
 	PadType pad;
 	pcb_arc_t arc;
 	PolygonType polygon;
-	RatType rat;
+	pcb_rat_t rat;
 	jmp_buf env;
 };
 
@@ -945,7 +945,7 @@ static r_dir_t LOCtoLineArc_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoLineRat_callback(const pcb_box_t * b, void *cl)
 {
-	RatTypePtr rat = (RatTypePtr) b;
+	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, rat)) {
@@ -1174,7 +1174,7 @@ static r_dir_t LOCtoPadPoly_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPadRat_callback(const pcb_box_t * b, void *cl)
 {
-	RatTypePtr rat = (RatTypePtr) b;
+	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, rat)) {
@@ -1350,7 +1350,7 @@ static r_dir_t LOCtoPolyPad_callback(const pcb_box_t * b, void *cl)
 
 static r_dir_t LOCtoPolyRat_callback(const pcb_box_t * b, void *cl)
 {
-	RatTypePtr rat = (RatTypePtr) b;
+	pcb_rat_t *rat = (pcb_rat_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, rat)) {

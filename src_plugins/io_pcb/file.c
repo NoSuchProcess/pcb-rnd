@@ -312,7 +312,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 static void WritePCBRatData(FILE * FP)
 {
 	gdl_iterator_t it;
-	RatType *line;
+	pcb_rat_t *line;
 
 	/* write information about rats */
 	ratlist_foreach(&PCB->Data->Rat, &it, line) {

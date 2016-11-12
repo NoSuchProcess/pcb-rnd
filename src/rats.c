@@ -494,7 +494,7 @@ static pcb_bool
 DrawShortestRats(NetListTypePtr Netl,
 								 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr))
 {
-	RatTypePtr line;
+	pcb_rat_t *line;
 	register float distance, temp;
 	register pcb_connection_t *conn1, *conn2, *firstpoint, *secondpoint;
 	PolygonTypePtr polygon;
@@ -807,7 +807,7 @@ static int rat_used(char *name)
 	/* These next two functions moved from the original netlist.c as part of the
 	   |  gui code separation for the Gtk port.
 	 */
-RatTypePtr AddNet(void)
+pcb_rat_t *AddNet(void)
 {
 	static int ratDrawn = 0;
 	char name1[256], *name2;

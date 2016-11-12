@@ -778,7 +778,7 @@ void NotifyMode(void)
 		}
 
 		if (PCB->RatDraw) {
-			RatTypePtr line;
+			pcb_rat_t *line;
 			if ((line = AddNet())) {
 				addedLines++;
 				AddObjectToCreateUndoList(PCB_TYPE_RATLINE, line, line, line);
@@ -1138,7 +1138,7 @@ void NotifyMode(void)
 				ptr = Crosshair.AttachedObject.Rubberband;
 				for (i = 0; i < Crosshair.AttachedObject.RubberbandN; i++) {
 					if (PCB->RatOn)
-						EraseRat((RatTypePtr) ptr->Line);
+						EraseRat((pcb_rat_t *) ptr->Line);
 					if (TEST_FLAG(PCB_FLAG_RUBBEREND, ptr->Line))
 						MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
 					else

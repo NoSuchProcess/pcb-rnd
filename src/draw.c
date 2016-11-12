@@ -555,7 +555,7 @@ void DrawObject(int type, void *ptr1, void *ptr2)
 		break;
 	case PCB_TYPE_RATLINE:
 		if (PCB->RatOn)
-			DrawRat((RatTypePtr) ptr2);
+			DrawRat((pcb_rat_t *) ptr2);
 		break;
 	case PCB_TYPE_PIN:
 		if (PCB->PinOn)

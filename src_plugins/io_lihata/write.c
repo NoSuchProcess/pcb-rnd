@@ -232,7 +232,7 @@ static lht_node_t *build_line(pcb_line_t *line, int local_id, Coord dx, Coord dy
 	return obj;
 }
 
-static lht_node_t *build_rat(RatType *rat)
+static lht_node_t *build_rat(pcb_rat_t *rat)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -487,7 +487,7 @@ static lht_node_t *build_data(pcb_data_t *data)
 	PinType *pi;
 	ElementType *el;
 	gdl_iterator_t it;
-	RatType *line;
+	pcb_rat_t *line;
 
 	ndt = lht_dom_node_alloc(LHT_HASH, "data");
 

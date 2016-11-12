@@ -379,7 +379,7 @@ static int parse_line(pcb_layer_t *ly, ElementType *el, lht_node_t *obj, int no_
 
 static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 {
-	RatType rat, *new_rat;
+	pcb_rat_t rat, *new_rat;
 
 	parse_id(&rat.ID, obj, 4);
 	parse_attributes(&rat.Attributes, lht_dom_hash_get(obj, "attributes"));

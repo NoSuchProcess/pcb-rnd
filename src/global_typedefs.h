@@ -37,7 +37,7 @@ typedef struct pcb_font_s pcb_font_t;
 typedef struct pcb_line_s pcb_line_t;
 typedef struct pcb_arc_s pcb_arc_t;
 typedef struct pcb_point_s pcb_point_t;
-typedef struct pcb_rat_line_s RatType, *RatTypePtr;
+typedef struct pcb_rat_line_s pcb_rat_t;
 
 typedef struct polygon_st PolygonType, *PolygonTypePtr;
 typedef struct pad_st PadType, *PadTypePtr;

@@ -138,7 +138,7 @@ pcb_bool SelectObject(void)
 
 	case PCB_TYPE_RATLINE:
 		{
-			RatTypePtr rat = (RatTypePtr) ptr2;
+			pcb_rat_t *rat = (pcb_rat_t *) ptr2;
 
 			AddObjectToFlagUndoList(PCB_TYPE_RATLINE, ptr1, ptr1, ptr1);
 			TOGGLE_FLAG(PCB_FLAG_SELECTED, rat);
@@ -544,7 +544,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
 
 	case PCB_TYPE_RATLINE:
 		if (F->Rat)
-			return (F->Rat(ctx, (RatTypePtr) Ptr1));
+			return (F->Rat(ctx, (pcb_rat_t *) Ptr1));
 		break;
 	}
 	return (NULL);

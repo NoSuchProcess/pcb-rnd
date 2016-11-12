@@ -55,7 +55,7 @@ static pcb_layer_t *SearchLayer;
  */
 static pcb_bool SearchLineByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_line_t **);
 static pcb_bool SearchArcByLocation(int, pcb_layer_t **, pcb_arc_t **, pcb_arc_t **);
-static pcb_bool SearchRatLineByLocation(int, RatTypePtr *, RatTypePtr *, RatTypePtr *);
+static pcb_bool SearchRatLineByLocation(int, pcb_rat_t **, pcb_rat_t **, pcb_rat_t **);
 static pcb_bool SearchTextByLocation(int, pcb_layer_t **, TextTypePtr *, TextTypePtr *);
 static pcb_bool SearchPolygonByLocation(int, pcb_layer_t **, PolygonTypePtr *, PolygonTypePtr *);
 static pcb_bool SearchPinByLocation(int, ElementTypePtr *, PinTypePtr *, PinTypePtr *);
@@ -234,7 +234,7 @@ static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 /* ---------------------------------------------------------------------------
  * searches rat lines if they are visible
  */
-static pcb_bool SearchRatLineByLocation(int locked, RatTypePtr * Line, RatTypePtr * Dummy1, RatTypePtr * Dummy2)
+static pcb_bool SearchRatLineByLocation(int locked, pcb_rat_t ** Line, pcb_rat_t ** Dummy1, pcb_rat_t ** Dummy2)
 {
 	struct ans_info info;
 
@@ -543,7 +543,7 @@ pcb_bool IsPointOnPin(Coord X, Coord Y, Coord Radius, PinTypePtr pin)
 /* ---------------------------------------------------------------------------
  * checks if a rat-line end is on a PV
  */
-pcb_bool IsPointOnLineEnd(Coord X, Coord Y, RatTypePtr Line)
+pcb_bool IsPointOnLineEnd(Coord X, Coord Y, pcb_rat_t *Line)
 {
 	if (((X == Line->Point1.X) && (Y == Line->Point1.Y)) || ((X == Line->Point2.X) && (Y == Line->Point2.Y)))
 		return (pcb_true);
@@ -997,7 +997,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 	}
 
 	if (Type & PCB_TYPE_RATLINE && PCB->RatOn &&
-			SearchRatLineByLocation(locked, (RatTypePtr *) Result1, (RatTypePtr *) Result2, (RatTypePtr *) Result3))
+			SearchRatLineByLocation(locked, (pcb_rat_t **) Result1, (pcb_rat_t **) Result2, (pcb_rat_t **) Result3))
 		return (PCB_TYPE_RATLINE);
 
 	if (Type & PCB_TYPE_VIA && SearchViaByLocation(locked, (PinTypePtr *) Result1, (PinTypePtr *) Result2, (PinTypePtr *) Result3))

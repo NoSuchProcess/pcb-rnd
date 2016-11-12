@@ -129,7 +129,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, Coord X, Coord 
 		}
 		else {
 			r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);
-			DrawRat((RatTypePtr) ptr->Line);
+			DrawRat((pcb_rat_t *) ptr->Line);
 		}
 		Crosshair.AttachedObject.RubberbandN--;
 		ptr++;

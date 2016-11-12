@@ -161,7 +161,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 
 	case PCB_TYPE_RATLINE:
 		{
-			if (ADD_RAT_TO_LIST((RatTypePtr) ptr1, 0, NULL, FCT_START))
+			if (ADD_RAT_TO_LIST((pcb_rat_t *) ptr1, 0, NULL, FCT_START))
 				return pcb_true;
 			break;
 		}

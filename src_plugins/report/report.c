@@ -244,14 +244,14 @@ static int ReportDialog(int argc, const char **argv, Coord x, Coord y)
 		}
 	case PCB_TYPE_RATLINE:
 		{
-			RatTypePtr line;
+			pcb_rat_t *line;
 #ifndef NDEBUG
 			if (gui->shift_is_pressed()) {
 				__r_dump_tree(PCB->Data->rat_tree->root, 0);
 				return 0;
 			}
 #endif
-			line = (RatTypePtr) ptr2;
+			line = (pcb_rat_t *) ptr2;
 			report = pcb_strdup_printf("%m+RAT-LINE ID# %ld;  Flags:%s\n"
 									"FirstPoint(X,Y)  = %$mD; ID = %ld; "
 									"connects to layer group %d.\n"

@@ -72,7 +72,7 @@ Selects the shortest unselected rat on the board.
 static int ActionAddRats(int argc, const char **argv, Coord x, Coord y)
 {
 	const char *function = ACTION_ARG(0);
-	RatTypePtr shorty;
+	pcb_rat_t *shorty;
 	float len, small;
 
 	if (function) {

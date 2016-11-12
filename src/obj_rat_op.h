@@ -28,9 +28,9 @@
 
 #include "operation.h"
 
-void *AddRatToBuffer(pcb_opctx_t *ctx, RatTypePtr Rat);
-void *MoveRatToBuffer(pcb_opctx_t *ctx, RatType * rat);
-void *InsertPointIntoRat(pcb_opctx_t *ctx, RatTypePtr Rat);
-void *MoveRatToLayer(pcb_opctx_t *ctx, RatType * Rat);
-void *DestroyRat(pcb_opctx_t *ctx, RatTypePtr Rat);
-void *RemoveRat(pcb_opctx_t *ctx, RatTypePtr Rat);
+void *AddRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t *Rat);
+void *MoveRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t * rat);
+void *InsertPointIntoRat(pcb_opctx_t *ctx, pcb_rat_t *Rat);
+void *MoveRatToLayer(pcb_opctx_t *ctx, pcb_rat_t * Rat);
+void *DestroyRat(pcb_opctx_t *ctx, pcb_rat_t *Rat);
+void *RemoveRat(pcb_opctx_t *ctx, pcb_rat_t *Rat);

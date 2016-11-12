@@ -104,7 +104,7 @@
 	(((pcb_arc_t **)ArcList[(L)].Data)[(I)])
 
 #define RATLIST_ENTRY(I)	\
-	(((RatTypePtr *)RatList.Data)[(I)])
+	(((pcb_rat_t **)RatList.Data)[(I)])
 
 #define	POLYGONLIST_ENTRY(L,I)	\
 	(((PolygonTypePtr *)PolygonList[(L)].Data)[(I)])

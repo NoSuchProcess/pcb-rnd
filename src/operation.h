@@ -121,7 +121,7 @@ typedef struct {
 	void *(*LinePoint)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_line_t *, pcb_point_t *);
 	void *(*Point)(pcb_opctx_t *ctx, pcb_layer_t *, PolygonTypePtr, pcb_point_t *);
 	void *(*Arc)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_arc_t *);
-	void *(*Rat)(pcb_opctx_t *ctx, RatTypePtr);
+	void *(*Rat)(pcb_opctx_t *ctx, pcb_rat_t *);
 } pcb_opfunc_t;
 
 #endif

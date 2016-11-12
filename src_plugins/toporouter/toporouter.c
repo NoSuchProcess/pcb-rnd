@@ -7011,7 +7011,7 @@ print_routedata(toporouter_route_t *routedata)
   g_list_free(destvertices);
 }*/
 
-toporouter_route_t *import_route(toporouter_t * r, RatType * line)
+toporouter_route_t *import_route(toporouter_t * r, pcb_rat_t * line)
 {
 	toporouter_route_t *routedata = routedata_create();
 

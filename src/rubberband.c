@@ -212,7 +212,7 @@ struct rinfo {
 
 static r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 {
-	RatTypePtr rat = (RatTypePtr) box;
+	pcb_rat_t *rat = (pcb_rat_t *) box;
 	struct rinfo *i = (struct rinfo *) cl;
 
 	switch (i->type) {

@@ -677,7 +677,7 @@ int ActionChangeName(int argc, const char **argv, Coord x, Coord y)
 							ptr = Crosshair.AttachedObject.Rubberband;
 							for (i = 0; i < Crosshair.AttachedObject.RubberbandN; i++, ptr++) {
 								if (PCB->RatOn)
-									EraseRat((RatTypePtr) ptr->Line);
+									EraseRat((pcb_rat_t *) ptr->Line);
 								MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
 							}
 							IncrementUndoSerialNumber();

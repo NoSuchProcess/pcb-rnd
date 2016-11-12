@@ -31,5 +31,5 @@
 r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl);
 #endif
 
-void EraseRat(RatTypePtr Rat);
-void DrawRat(RatTypePtr Rat);
+void EraseRat(pcb_rat_t *Rat);
+void DrawRat(pcb_rat_t *Rat);
