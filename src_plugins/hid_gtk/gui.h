@@ -506,8 +506,8 @@ static inline Coord Pz(int z)
 
 extern const char *ghid_cookie;
 extern const char *ghid_menu_cookie;
-extern hid_cfg_mouse_t ghid_mouse;
-extern hid_cfg_keys_t ghid_keymap;
+extern pcb_hid_cfg_mouse_t ghid_mouse;
+extern pcb_hid_cfg_keys_t ghid_keymap;
 extern int ghid_wheel_zoom;
 
 int ghid_usage(const char *topic);

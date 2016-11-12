@@ -36,7 +36,7 @@
 char hid_cfg_error_shared[1024];
 
 typedef struct {
-	hid_cfg_t *hr;
+	pcb_hid_cfg_t *hr;
 	create_menu_widget_t cb;
 	void *cb_ctx;
 	lht_node_t *parent;
@@ -103,7 +103,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 	return node;
 }
 
-int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, create_menu_widget_t cb, void *cb_ctx)
+int hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, create_menu_widget_t cb, void *cb_ctx)
 {
 	const char *name;
 	create_menu_ctx_t cmc;
@@ -141,7 +141,7 @@ int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, con
 	return cmc.err;
 }
 
-static int hid_cfg_remove_item(hid_cfg_t *hr, lht_node_t *item, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
+static int hid_cfg_remove_item(pcb_hid_cfg_t *hr, lht_node_t *item, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	if (gui_remove(ctx, item) != 0)
 		return -1;
@@ -150,7 +150,7 @@ static int hid_cfg_remove_item(hid_cfg_t *hr, lht_node_t *item, int (*gui_remove
 }
 
 
-static int hid_cfg_remove_menu_(hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
+static int hid_cfg_remove_menu_(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	if (root == NULL)
 		return -1;
@@ -178,7 +178,7 @@ static int hid_cfg_remove_menu_(hid_cfg_t *hr, lht_node_t *root, int (*gui_remov
 	return hid_cfg_remove_item(hr, root, gui_remove, ctx);
 }
 
-int hid_cfg_remove_menu(hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
+int hid_cfg_remove_menu(pcb_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	return hid_cfg_remove_menu_(hr, hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL), gui_remove, ctx);
 }
@@ -262,7 +262,7 @@ lht_doc_t *hid_cfg_load_str(const char *text)
 	return doc;
 }
 
-const char *hid_cfg_text_value(lht_doc_t *doc, const char *path)
+const char *pcb_hid_cfg_text_value(lht_doc_t *doc, const char *path)
 {
 	lht_node_t *n = lht_tree_path(doc, "/", path, 1, NULL);
 	if (n == NULL)
@@ -274,10 +274,10 @@ const char *hid_cfg_text_value(lht_doc_t *doc, const char *path)
 	return n->data.text.value;
 }
 
-hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallback)
+pcb_hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallback)
 {
 	lht_doc_t *doc;
-	hid_cfg_t *hr;
+	pcb_hid_cfg_t *hr;
 
 	if (!exact_fn) {
 		/* try different paths to find the menu file inventing its exact name */
@@ -307,7 +307,7 @@ hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallb
 	if (doc == NULL)
 		return NULL;
 
-	hr = calloc(sizeof(hid_cfg_t), 1); /* make sure the cache is cleared */
+	hr = calloc(sizeof(pcb_hid_cfg_t), 1); /* make sure the cache is cleared */
 	hr->doc = doc;
 
 	return hr;
@@ -315,7 +315,7 @@ hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallb
 
 /************* "parsing" **************/
 
-lht_node_t *hid_cfg_get_menu_at(hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
+lht_node_t *hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
 {
 	lht_err_t err;
 	lht_node_t *curr;
@@ -371,12 +371,12 @@ lht_node_t *hid_cfg_get_menu_at(hid_cfg_t *hr, lht_node_t *at, const char *menu_
 	return curr;
 }
 
-lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path)
+lht_node_t *hid_cfg_get_menu(pcb_hid_cfg_t *hr, const char *menu_path)
 {
 	return hid_cfg_get_menu_at(hr, NULL, menu_path, NULL, NULL);
 }
 
-lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t field, const char **field_name)
+lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name)
 {
 	lht_err_t err;
 	const char *fieldstr = NULL;
@@ -405,7 +405,7 @@ lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t fi
 	return lht_tree_path_(submenu->doc, submenu, fieldstr, 1, 0, &err);
 }
 
-const char *hid_cfg_menu_field_str(const lht_node_t *submenu, hid_cfg_menufield_t field)
+const char *hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field)
 {
 	const char *fldname;
 	lht_node_t *n = hid_cfg_menu_field(submenu, field, &fldname);

@@ -51,8 +51,8 @@
 
 const char *lesstif_cookie = "lesstif HID";
 
-hid_cfg_mouse_t lesstif_mouse;
-hid_cfg_keys_t lesstif_keymap;
+pcb_hid_cfg_mouse_t lesstif_mouse;
+pcb_hid_cfg_keys_t lesstif_keymap;
 
 
 #ifndef XtRDouble
@@ -1263,7 +1263,7 @@ static void mod_changed(XKeyEvent * e, int set)
 	in_move_event = 0;
 }
 
-static hid_cfg_mod_t lesstif_mb2cfg(int but)
+static pcb_hid_cfg_mod_t lesstif_mb2cfg(int but)
 {
 	switch(but) {
 		case 1: return MB_LEFT;

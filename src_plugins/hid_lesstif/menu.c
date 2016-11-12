@@ -27,7 +27,7 @@
 #include <genht/hash.h>
 
 Widget lesstif_menubar;
-hid_cfg_t *lesstif_cfg;
+pcb_hid_cfg_t *lesstif_cfg;
 
 #ifndef R_OK
 /* Common value for systems that don't define it.  */
@@ -668,7 +668,7 @@ int lesstif_key_event(XKeyEvent * e)
 	KeySym sym;
 	int slen;
 	int mods = 0;
-	static hid_cfg_keyseq_t *seq[32];
+	static pcb_hid_cfg_keyseq_t *seq[32];
 	static int seq_len = 0;
 
 	if (e->state & ShiftMask)

@@ -194,10 +194,10 @@ int ActionLoadVendorFrom(int argc, const char **argv, Coord x, Coord y)
 	}
 
 	/* figure out the vendor name, if specified */
-	vendor_name = (char *) UNKNOWN(hid_cfg_text_value(doc, "vendor"));
+	vendor_name = (char *) UNKNOWN(pcb_hid_cfg_text_value(doc, "vendor"));
 
 	/* figure out the units, if specified */
-	sval = hid_cfg_text_value(doc, "/units");
+	sval = pcb_hid_cfg_text_value(doc, "/units");
 	if (sval == NULL) {
 		sf = PCB_MIL_TO_COORD(1);
 	}
@@ -217,7 +217,7 @@ int ActionLoadVendorFrom(int argc, const char **argv, Coord x, Coord y)
 
 	/* default to ROUND_UP */
 	rounding_method = ROUND_UP;
-	sval = hid_cfg_text_value(doc, "/round");
+	sval = pcb_hid_cfg_text_value(doc, "/round");
 	if (sval != NULL) {
 		if (NSTRCMP(sval, "up") == 0) {
 			rounding_method = ROUND_UP;
@@ -250,37 +250,37 @@ int ActionLoadVendorFrom(int argc, const char **argv, Coord x, Coord y)
 	else
 		Message(PCB_MSG_DEFAULT, _("No drillmap resource found\n"));
 
-	sval = hid_cfg_text_value(doc, "/drc/copper_space");
+	sval = pcb_hid_cfg_text_value(doc, "/drc/copper_space");
 	if (sval != NULL) {
 		PCB->Bloat = floor(sf * atof(sval) + 0.5);
 		Message(PCB_MSG_DEFAULT, _("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->Bloat);
 	}
 
-	sval = hid_cfg_text_value(doc, "/drc/copper_overlap");
+	sval = pcb_hid_cfg_text_value(doc, "/drc/copper_overlap");
 	if (sval != NULL) {
 		PCB->Shrink = floor(sf * atof(sval) + 0.5);
 		Message(PCB_MSG_DEFAULT, _("Set DRC minimum copper overlap to %.2f mils\n"), 0.01 * PCB->Shrink);
 	}
 
-	sval = hid_cfg_text_value(doc, "/drc/copper_width");
+	sval = pcb_hid_cfg_text_value(doc, "/drc/copper_width");
 	if (sval != NULL) {
 		PCB->minWid = floor(sf * atof(sval) + 0.5);
 		Message(PCB_MSG_DEFAULT, _("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->minWid);
 	}
 
-	sval = hid_cfg_text_value(doc, "/drc/silk_width");
+	sval = pcb_hid_cfg_text_value(doc, "/drc/silk_width");
 	if (sval != NULL) {
 		PCB->minSlk = floor(sf * atof(sval) + 0.5);
 		Message(PCB_MSG_DEFAULT, _("Set DRC minimum silk width to %.2f mils\n"), 0.01 * PCB->minSlk);
 	}
 
-	sval = hid_cfg_text_value(doc, "/drc/min_drill");
+	sval = pcb_hid_cfg_text_value(doc, "/drc/min_drill");
 	if (sval != NULL) {
 		PCB->minDrill = floor(sf * atof(sval) + 0.5);
 		Message(PCB_MSG_DEFAULT, _("Set DRC minimum drill diameter to %.2f mils\n"), 0.01 * PCB->minDrill);
 	}
 
-	sval = hid_cfg_text_value(doc, "/drc/min_ring");
+	sval = pcb_hid_cfg_text_value(doc, "/drc/min_ring");
 	if (sval != NULL) {
 		PCB->minRing = floor(sf * atof(sval) + 0.5);
 		Message(PCB_MSG_DEFAULT, _("Set DRC minimum annular ring to %.2f mils\n"), 0.01 * PCB->minRing);

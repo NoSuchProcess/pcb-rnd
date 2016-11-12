@@ -34,7 +34,7 @@ void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteSty
 void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 int ghid_remove_menu(const char *menu_path);
 
-extern hid_cfg_t *ghid_cfg;
+extern pcb_hid_cfg_t *ghid_cfg;
 
 G_END_DECLS											/* keep c++ happy */
 #endif

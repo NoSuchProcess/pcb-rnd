@@ -161,7 +161,7 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 	if (kev->keyval <= 0xffff) {
 		GdkModifierType state = (GdkModifierType) (kev->state);
 		int slen, mods = 0;
-		static hid_cfg_keyseq_t *seq[32];
+		static pcb_hid_cfg_keyseq_t *seq[32];
 		static int seq_len = 0;
 		unsigned short int kv = kev->keyval;
 
@@ -194,7 +194,7 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 	return FALSE;
 }
 
-static hid_cfg_mod_t ghid_mouse_button(int ev_button)
+static pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button)
 {
 	/* GDK numbers buttons from 1..5, there seem to be no symbolic names */
 	return (MB_LEFT << (ev_button-1));

@@ -24,7 +24,7 @@ typedef enum {
 	MB_SCROLL_DOWN   = M_Mod0(11),
 	MB_SCROLL_LEFT   = M_Mod0(12),
 	MB_SCROLL_RIGHT  = M_Mod0(13)
-} hid_cfg_mod_t;
+} pcb_hid_cfg_mod_t;
 #undef M_Mod0
 
 #define MB_ANY (MB_LEFT | MB_MIDDLE | MB_RIGHT | MB_SCROLL_UP | MB_SCROLL_DOWN | MB_SCROLL_LEFT | MB_SCROLL_RIGHT)
@@ -35,10 +35,10 @@ typedef enum {
 typedef struct {
 	lht_node_t *mouse;
 	htip_t *mouse_mask;
-} hid_cfg_mouse_t;
+} pcb_hid_cfg_mouse_t;
 
-int hid_cfg_mouse_init(hid_cfg_t *hr, hid_cfg_mouse_t *mouse);
-void hid_cfg_mouse_action(hid_cfg_mouse_t *mouse, hid_cfg_mod_t button_and_mask);
+int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse);
+void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask);
 
 
 /************************** KEYBOARD ***************************/
@@ -46,34 +46,34 @@ void hid_cfg_mouse_action(hid_cfg_mouse_t *mouse, hid_cfg_mod_t button_and_mask)
 typedef union hid_cfg_keyhash_u { /* integer hash key */
 	unsigned long hash;
 	struct {
-		unsigned short int mods;          /* of hid_cfg_mod_t */
+		unsigned short int mods;          /* of pcb_hid_cfg_mod_t */
 		unsigned short int key_char;
 	} details;
 } hid_cfg_keyhash_t;
 
 
-typedef struct hid_cfg_keyseq_s  hid_cfg_keyseq_t;
-struct hid_cfg_keyseq_s {
+typedef struct pcb_hid_cfg_keyseq_s  pcb_hid_cfg_keyseq_t;
+struct pcb_hid_cfg_keyseq_s {
 	unsigned long int keysym;  /* optional 32 bit long storage the GUI hid should cast to whatever the GUI backend supports */
 
 	const lht_node_t *action_node; /* terminal node: end of sequence, run actions */
 
 	htip_t seq_next; /* ... or if node is NULL, a hash for each key that may follow the current one */
-	hid_cfg_keyseq_t *parent;
+	pcb_hid_cfg_keyseq_t *parent;
 };
 
 /* Translate symbolic name to single-char keysym before processing; useful
    for shortcuts like "Return -> '\r'" which are otherwise hard to describe
    in text format */
-typedef struct hid_cfg_keytrans_s {
+typedef struct pcb_hid_cfg_keytrans_s {
 		const char *name;
 		char sym;
-} hid_cfg_keytrans_t;
+} pcb_hid_cfg_keytrans_t;
 
-extern const hid_cfg_keytrans_t hid_cfg_key_default_trans[];
+extern const pcb_hid_cfg_keytrans_t hid_cfg_key_default_trans[];
 
 /* A complete tree of keyboard shortcuts/hotkeys */
-typedef struct hid_cfg_keys_s {
+typedef struct pcb_hid_cfg_keys_s {
 	htip_t keys;
 
 	/* translate key sym description (the portion after <Key>) to key_char;
@@ -87,24 +87,24 @@ typedef struct hid_cfg_keys_s {
 
 
 	int auto_chr;                       /* if non-zero: don't call translate_key() for 1-char symbols, handle the default way */
-	const hid_cfg_keytrans_t *auto_tr;  /* apply this table before calling translate_key() */
-} hid_cfg_keys_t;
+	const pcb_hid_cfg_keytrans_t *auto_tr;  /* apply this table before calling translate_key() */
+} pcb_hid_cfg_keys_t;
 
 
 /* Initialize a new keyboard context
    Returns 0 on success.
 */
-int hid_cfg_keys_init(hid_cfg_keys_t *km);
+int hid_cfg_keys_init(pcb_hid_cfg_keys_t *km);
 
 /* Free km's fields recursively */
-int hid_cfg_keys_uninit(hid_cfg_keys_t *km);
+int hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km);
 
 /* Add the next key of a key sequence; key sequences form a tree. A key starting
    a new key sequence should have parent set NULL, subsequent calls should have
    parent set to the previously returned keyseq value. Terminal is non-zero if
    this is the last key of the sequence.
    Returns NULL on error */
-hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *parent, hid_cfg_mod_t mods, unsigned short int key_char, int terminal);
+pcb_hid_cfg_keyseq_t *hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_char, int terminal);
 
 /* Add a new key using a description (read from a lihata file usually)
    If out_seq is not NULL, load the array with pointers pointing to each
@@ -113,8 +113,8 @@ hid_cfg_keyseq_t *hid_cfg_keys_add_under(hid_cfg_keys_t *km, hid_cfg_keyseq_t *p
    same action). In this case return value and seq are set using the first key.
    Returns -1 on failure or the length of the sequence.
 */
-int hid_cfg_keys_add_by_desc(hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len);
-int hid_cfg_keys_add_by_strdesc(hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, hid_cfg_keyseq_t **out_seq, int out_seq_len);
+int hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
+int hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
 
 
 /* Allocate a new string and generate a human readable accel-text; mask determines
@@ -122,7 +122,7 @@ int hid_cfg_keys_add_by_strdesc(hid_cfg_keys_t *km, const char *keydesc, const l
    specified for the same action; from LSB to MSB, at most 32 keys)
    Caller needs to free the string; returns NULL on error.
    */
-char *hid_cfg_keys_gen_accel(hid_cfg_keys_t *km, const lht_node_t *keydescn, unsigned long mask, const char *sep);
+char *hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn, unsigned long mask, const char *sep);
 
 /* Process next input key stroke.
    Seq and seq_len must not be NULL as they are the internal state of multi-key
@@ -134,11 +134,11 @@ char *hid_cfg_keys_gen_accel(hid_cfg_keys_t *km, const lht_node_t *keydescn, uns
      + a positive integer means the lookup succeeded and the return value
        is the length of the resulting sequence.
 */
-int hid_cfg_keys_input(hid_cfg_keys_t *km, hid_cfg_mod_t mods, unsigned short int key_char, hid_cfg_keyseq_t **seq, int *seq_len);
+int hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_char, pcb_hid_cfg_keyseq_t **seq, int *seq_len);
 
 /* Run the action for a key sequence looked up by hid_cfg_keys_input().
    Returns: the result of the action or -1 on error */
-int hid_cfg_keys_action(hid_cfg_keyseq_t **seq, int seq_len);
+int hid_cfg_keys_action(pcb_hid_cfg_keyseq_t **seq, int seq_len);
 
 
 #endif

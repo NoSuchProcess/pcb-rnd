@@ -28,9 +28,9 @@
 #include <liblihata/dom.h>
 #include <stdarg.h>
 
-typedef struct hid_cfg_s {
+typedef struct pcb_hid_cfg_s {
 	lht_doc_t *doc;
-} hid_cfg_t;
+} pcb_hid_cfg_t;
 
 /* Create a set of resources representing a single menu item
    If action is NULL, it's a drop-down item that has submenus.
@@ -38,25 +38,25 @@ typedef struct hid_cfg_s {
    NOTE: unlike other cookies, this cookie is strdup()'d. 
    */
 typedef int (*create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item);
-int hid_cfg_create_menu(hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, create_menu_widget_t cb, void *cb_ctx);
+int hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie, create_menu_widget_t cb, void *cb_ctx);
 
 /* Remove a path recursively; call gui_remove() on leaf paths until the subtree
    is consumed (should return 0 on success) */
-int hid_cfg_remove_menu(hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx);
+int hid_cfg_remove_menu(pcb_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx);
 
 /* Search and load the menu res for hidname; if not found, and embedded_fallback
    is not NULL, parse that string instead. Returns NULL on error */
-hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallback);
+pcb_hid_cfg_t *hid_cfg_load(const char *fn, int exact_fn, const char *embedded_fallback);
 
 /* Generic, low level lihata loader */
 lht_doc_t *hid_cfg_load_lht(const char *filename);
 lht_doc_t *hid_cfg_load_str(const char *text);
 
 /* Generic, low level lihata text value fetch */
-const char *hid_cfg_text_value(lht_doc_t *doc, const char *path);
+const char *pcb_hid_cfg_text_value(lht_doc_t *doc, const char *path);
 
-lht_node_t *hid_cfg_get_menu(hid_cfg_t *hr, const char *menu_path);
-lht_node_t *hid_cfg_get_menu_at(hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx);
+lht_node_t *hid_cfg_get_menu(pcb_hid_cfg_t *hr, const char *menu_path);
+lht_node_t *hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx);
 
 
 /* Fields are retrieved using this enum so that HIDs don't need to hardwire
@@ -75,11 +75,11 @@ typedef enum {
 	MF_BACKGROUND,
 	MF_FONT
 /*	MF_RADIO*/
-} hid_cfg_menufield_t;
+} pcb_hid_cfg_menufield_t;
 
 /* Return a field of a submenu and optionally fill in field_name with the
    field name expected in the lihata document (useful for error messages) */
-lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, hid_cfg_menufield_t field, const char **field_name);
+lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name);
 
 /* Return a lihata node using a relative lihata path from parent - this is
    just a wrapper around lht_tree_path_ */
@@ -87,7 +87,7 @@ lht_node_t *hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
 
 /* Return a text field of a submenu; return NULL and generate a Message(PCB_MSG_DEFAULT, ) if
    the given field is not text */
-const char *hid_cfg_menu_field_str(const lht_node_t *submenu, hid_cfg_menufield_t field);
+const char *hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field);
 
 /* Return non-zero if submenu has further submenus; generate Message(PCB_MSG_DEFAULT, ) if
    there is a submenu field with the wrong lihata type */
