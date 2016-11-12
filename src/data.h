@@ -65,7 +65,7 @@ extern MarkType Marked;
 #define solder_silk_layer (max_copper_layer + SOLDER_LAYER)
 #define component_silk_layer (max_copper_layer + COMPONENT_LAYER)
 
-extern BufferType Buffers[MAX_BUFFER];
+extern pcb_buffer_t Buffers[MAX_BUFFER];
 
 /*extern	DeviceInfoType	PrintingDevice[];*/
 

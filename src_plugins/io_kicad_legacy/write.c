@@ -52,7 +52,7 @@ static int io_kicad_legacy_write_element_index(FILE * FP, pcb_data_t *Data);
 static int write_kicad_legacy_layout_via_drill_size(FILE * FP);
 
 /* writes the buffer to file */
-int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
+int io_kicad_legacy_write_buffer(plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 {
 	/*fputs("io_kicad_legacy_write_buffer()", FP); */
 

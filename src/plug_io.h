@@ -69,7 +69,7 @@ struct plug_io_s {
 
 
 	/* Write the buffer to a file. Return 0 on success. */
-	int (*write_buffer)(plug_io_t *ctx, FILE *f, BufferType *buff);
+	int (*write_buffer)(plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
 
 	/* Write element data to a file. Return 0 on success. */
 	int (*write_element)(plug_io_t *ctx, FILE *f, pcb_data_t *e);
@@ -94,7 +94,7 @@ extern plug_io_t *plug_io_chain;
 int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings);
 int ParseElement(pcb_data_t *Ptr, const char *name);
 int ParseFont(FontTypePtr Ptr, char *Filename);
-int WriteBuffer(FILE *f, BufferType *buff, const char *fmt);
+int WriteBuffer(FILE *f, pcb_buffer_t *buff, const char *fmt);
 int WriteElementData(FILE *f, pcb_data_t *e, const char *fmt);
 
 /********** common function used to be part of file.[ch] and friends **********/

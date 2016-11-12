@@ -30,7 +30,7 @@
 #include "data.h"
 
 int io_kicad_write_element(plug_io_t *ctx, FILE * FP, pcb_data_t *Data);
-int io_kicad_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff);
+int io_kicad_write_buffer(plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff);
 int io_kicad_write_pcb(plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
 int write_kicad_module_header(FILE * FP, pcb_cardinal_t indentation);
 int write_kicad_layout_header(FILE * FP, pcb_cardinal_t indentation);

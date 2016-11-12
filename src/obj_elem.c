@@ -122,7 +122,7 @@ LineType *GetElementLineMemory(ElementType *Element)
  * returns pcb_false on error
  * if successful, update some other stuff and reposition the pastebuffer
  */
-pcb_bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
+pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name)
 {
 	ElementTypePtr element;
 
@@ -151,14 +151,14 @@ pcb_bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name)
 
 /* Searches for the given element by "footprint" name, and loads it
    into the buffer. Returns zero on success, non-zero on error.  */
-int LoadFootprintByName(BufferTypePtr Buffer, const char *Footprint)
+int LoadFootprintByName(pcb_buffer_t *Buffer, const char *Footprint)
 {
 	return !LoadElementToBuffer(Buffer, Footprint);
 }
 
 
 /* break buffer element into pieces */
-pcb_bool SmashBufferElement(BufferTypePtr Buffer)
+pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 {
 	ElementTypePtr element;
 	pcb_cardinal_t group;
@@ -253,7 +253,7 @@ static int polygon_is_rectangle(PolygonTypePtr poly)
 }
 
 /* convert buffer contents into an element */
-pcb_bool ConvertBufferToElement(BufferTypePtr Buffer)
+pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 {
 	ElementTypePtr Element;
 	pcb_cardinal_t group;

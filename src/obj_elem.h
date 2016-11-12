@@ -55,10 +55,10 @@ void FreeElementMemory(ElementType * element);
 LineType *GetElementLineMemory(ElementType *Element);
 
 
-pcb_bool LoadElementToBuffer(BufferTypePtr Buffer, const char *Name);
-int LoadFootprintByName(BufferTypePtr Buffer, const char *Footprint);
-pcb_bool SmashBufferElement(BufferTypePtr Buffer);
-pcb_bool ConvertBufferToElement(BufferTypePtr Buffer);
+pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name);
+int LoadFootprintByName(pcb_buffer_t *Buffer, const char *Footprint);
+pcb_bool SmashBufferElement(pcb_buffer_t *Buffer);
+pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer);
 void FreeRotateElementLowLevel(pcb_data_t *Data, ElementTypePtr Element, Coord X, Coord Y, double cosa, double sina, Angle angle);
 pcb_bool ChangeElementSide(ElementTypePtr Element, Coord yoff);
 pcb_bool ChangeSelectedElementSide(void);

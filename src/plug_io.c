@@ -217,7 +217,7 @@ static plug_io_t *find_writer(plug_iot_t typ, const char *fmt)
 }
 
 
-int WriteBuffer(FILE *f, BufferType *buff, const char *fmt)
+int WriteBuffer(FILE *f, pcb_buffer_t *buff, const char *fmt)
 {
 	int res, newfmt = 0;
 	plug_io_t *p = find_writer(PCB_IOT_BUFFER, fmt);

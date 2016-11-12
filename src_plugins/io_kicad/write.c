@@ -55,7 +55,7 @@ static char * kicad_sexpr_layer_to_text(int layer);
 static int write_kicad_layout_via_drill_size(FILE * FP, pcb_cardinal_t indentation);
 
 /* writes the buffer to file */
-int io_kicad_write_buffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
+int io_kicad_write_buffer(plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 {
 	/*fputs("io_kicad_legacy_write_buffer()", FP); */
 

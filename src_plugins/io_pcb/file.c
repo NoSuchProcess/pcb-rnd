@@ -499,7 +499,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 /* ---------------------------------------------------------------------------
  * writes the buffer to file
  */
-int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, BufferType *buff)
+int io_pcb_WriteBuffer(plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 {
 	pcb_cardinal_t i;
 

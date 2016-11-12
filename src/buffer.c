@@ -81,7 +81,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
 /* ---------------------------------------------------------------------------
  * calculates the bounding box of the buffer
  */
-void SetBufferBoundingBox(BufferTypePtr Buffer)
+void SetBufferBoundingBox(pcb_buffer_t *Buffer)
 {
 	BoxTypePtr box = GetDataBoundingBox(Buffer->Data);
 
@@ -92,7 +92,7 @@ void SetBufferBoundingBox(BufferTypePtr Buffer)
 /* ---------------------------------------------------------------------------
  * clears the contents of the paste buffer
  */
-void ClearBuffer(BufferTypePtr Buffer)
+void ClearBuffer(pcb_buffer_t *Buffer)
 {
 	if (Buffer && Buffer->Data) {
 		FreeDataMemory(Buffer->Data);
@@ -104,7 +104,7 @@ void ClearBuffer(BufferTypePtr Buffer)
  * copies all selected and visible objects to the paste buffer
  * returns true if any objects have been removed
  */
-void AddSelectedToBuffer(BufferTypePtr Buffer, Coord X, Coord Y, pcb_bool LeaveSelected)
+void AddSelectedToBuffer(pcb_buffer_t *Buffer, Coord X, Coord Y, pcb_bool LeaveSelected)
 {
 	pcb_opctx_t ctx;
 
@@ -193,7 +193,7 @@ int LoadFootprint(int argc, const char **argv, Coord x, Coord y)
  * parse the file with enabled 'PCB mode' (see parser)
  * if successful, update some other stuff
  */
-pcb_bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const char *fmt)
+pcb_bool LoadLayoutToBuffer(pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
 {
 	pcb_board_t *newPCB = CreateNewPCB();
 
@@ -220,7 +220,7 @@ pcb_bool LoadLayoutToBuffer(BufferTypePtr Buffer, const char *Filename, const ch
 /* ---------------------------------------------------------------------------
  * rotates the contents of the pastebuffer
  */
-void RotateBuffer(BufferTypePtr Buffer, pcb_uint8_t Number)
+void RotateBuffer(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 {
 	/* rotate vias */
 	VIA_LOOP(Buffer->Data);
@@ -274,7 +274,7 @@ void RotateBuffer(BufferTypePtr Buffer, pcb_uint8_t Number)
 	RotateBoxLowLevel(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 }
 
-void FreeRotateBuffer(BufferTypePtr Buffer, Angle angle)
+void FreeRotateBuffer(pcb_buffer_t *Buffer, Angle angle)
 {
 	double cosa, sina;
 
@@ -397,7 +397,7 @@ void UninitBuffers(void)
 }
 
 
-void MirrorBuffer(BufferTypePtr Buffer)
+void MirrorBuffer(pcb_buffer_t *Buffer)
 {
 	int i;
 
@@ -456,7 +456,7 @@ void MirrorBuffer(BufferTypePtr Buffer)
 /* ---------------------------------------------------------------------------
  * flip components/tracks from one side to the other
  */
-void SwapBuffer(BufferTypePtr Buffer)
+void SwapBuffer(pcb_buffer_t *Buffer)
 {
 	int j, k;
 	pcb_cardinal_t sgroup, cgroup;

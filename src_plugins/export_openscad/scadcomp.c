@@ -347,7 +347,7 @@ static void scad_export_model(int model_type, ElementType * element, pcb_bool im
 
 
 
-extern void FreeRotateBuffer(BufferType * Buffer, Angle angle);
+extern void FreeRotateBuffer(pcb_buffer_t * Buffer, Angle angle);
 
 static int scad_calculate_bbox(ElementType * element, Angle angle, float *w, float *h, float *ox, float *oy)
 {
@@ -356,7 +356,7 @@ static int scad_calculate_bbox(ElementType * element, Angle angle, float *w, flo
 /*
   TODO: automatic calculation of bounding box
 
-  BufferType element_buffer;
+  pcb_buffer_t element_buffer;
 
   element_buffer.Data = CreateNewBuffer ();
 

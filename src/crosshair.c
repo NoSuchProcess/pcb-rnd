@@ -55,7 +55,7 @@ typedef struct {
  */
 static void XORPolygon(PolygonTypePtr, Coord, Coord, int);
 static void XORDrawElement(ElementTypePtr, Coord, Coord);
-static void XORDrawBuffer(BufferTypePtr);
+static void XORDrawBuffer(pcb_buffer_t *);
 static void XORDrawInsertPointObject(void);
 static void XORDrawMoveOrCopyObject(void);
 static void XORDrawAttachedLine(Coord, Coord, Coord, Coord, Coord);
@@ -274,7 +274,7 @@ static void XORDrawElement(ElementTypePtr Element, Coord DX, Coord DY)
 /* ---------------------------------------------------------------------------
  * draws all visible and attached objects of the pastebuffer
  */
-static void XORDrawBuffer(BufferTypePtr Buffer)
+static void XORDrawBuffer(pcb_buffer_t *Buffer)
 {
 	pcb_cardinal_t i;
 	Coord x, y;
