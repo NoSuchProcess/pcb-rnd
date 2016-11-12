@@ -81,7 +81,7 @@ static int show_solder_side;
 #define NOT_EDGE_Y(y) ((y) != 0 && (y) != PCB->MaxHeight)
 #define NOT_EDGE(x,y) (NOT_EDGE_X(x) || NOT_EDGE_Y(y))
 
-static void png_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius);
+static void png_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius);
 
 /* The result of a failed gdImageColorAllocate() call */
 #define BADC -1
@@ -164,7 +164,7 @@ static const char *filetypes[] = {
 	NULL
 };
 
-hid_attribute_t png_attribute_list[] = {
+pcb_hid_attribute_t png_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 PNG Options"
@@ -342,7 +342,7 @@ In photo-realistic mode, export the reverse side of the layout. Up-down flip.
 
 REGISTER_ATTRIBUTES(png_attribute_list, png_cookie)
 
-		 static hid_attr_val_t png_values[NUM_OPTIONS];
+		 static pcb_hid_attr_val_t png_values[NUM_OPTIONS];
 
 		 static const char *get_file_suffix(void)
 {
@@ -366,7 +366,7 @@ REGISTER_ATTRIBUTES(png_attribute_list, png_cookie)
 	return result;
 }
 
-static hid_attribute_t *png_get_export_options(int *n)
+static pcb_hid_attribute_t *png_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 	const char *suffix = get_file_suffix();
@@ -427,7 +427,7 @@ static void parse_bloat(const char *str)
 	bloat = GetValueEx(str, NULL, NULL, extra_units, "", NULL);
 }
 
-void png_hid_export_to_file(FILE * the_file, hid_attr_val_t * options)
+void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
 	int i;
 	static int saved_layer_stack[MAX_LAYER];
@@ -597,7 +597,7 @@ static void ts_bs_sm(gdImagePtr im)
 		}
 }
 
-static void png_do_export(hid_attr_val_t * options)
+static void png_do_export(pcb_hid_attr_val_t * options)
 {
 	int save_ons[MAX_LAYER + 2];
 	int i;
@@ -1073,9 +1073,9 @@ static int png_set_layer(const char *name, int group, int empty)
 }
 
 
-static hid_gc_t png_make_gc(void)
+static pcb_hid_gc_t png_make_gc(void)
 {
-	hid_gc_t rv = (hid_gc_t) malloc(sizeof(hid_gc_s));
+	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(hid_gc_s));
 	rv->me_pointer = &png_hid;
 	rv->cap = Trace_Cap;
 	rv->width = 1;
@@ -1086,7 +1086,7 @@ static hid_gc_t png_make_gc(void)
 	return rv;
 }
 
-static void png_destroy_gc(hid_gc_t gc)
+static void png_destroy_gc(pcb_hid_gc_t gc)
 {
 	free(gc);
 }
@@ -1125,7 +1125,7 @@ static void png_use_mask(int use_it)
 	}
 }
 
-static void png_set_color(hid_gc_t gc, const char *name)
+static void png_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	pcb_hidval_t cval;
 
@@ -1168,22 +1168,22 @@ static void png_set_color(hid_gc_t gc, const char *name)
 
 }
 
-static void png_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
+static void png_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void png_set_line_width(hid_gc_t gc, Coord width)
+static void png_set_line_width(pcb_hid_gc_t gc, Coord width)
 {
 	gc->width = width;
 }
 
-static void png_set_draw_xor(hid_gc_t gc, int xor_)
+static void png_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 {
 	;
 }
 
-static void use_gc(hid_gc_t gc)
+static void use_gc(pcb_hid_gc_t gc)
 {
 	int need_brush = 0;
 
@@ -1281,13 +1281,13 @@ static void use_gc(hid_gc_t gc)
 	}
 }
 
-static void png_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void png_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	use_gc(gc);
 	gdImageRectangle(im, SCALE_X(x1), SCALE_Y(y1), SCALE_X(x2), SCALE_Y(y2), gc->color->c);
 }
 
-static void png_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void png_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	use_gc(gc);
 	gdImageSetThickness(im, 0);
@@ -1311,7 +1311,7 @@ static void png_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	have_outline |= doing_outline;
 }
 
-static void png_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void png_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	if (x1 == x2 && y1 == y2) {
 		Coord w = gc->width / 2;
@@ -1370,7 +1370,7 @@ static void png_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	}
 }
 
-static void png_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void png_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
 	Angle sa, ea;
 
@@ -1426,7 +1426,7 @@ static void png_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord hei
 	gdImageArc(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * width), SCALE(2 * height), sa, ea, gdBrushed);
 }
 
-static void png_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void png_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	Coord my_bloat;
 
@@ -1446,7 +1446,7 @@ static void png_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 
 }
 
-static void png_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	int i;
 	gdPoint *points;

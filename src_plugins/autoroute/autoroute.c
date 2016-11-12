@@ -136,7 +136,7 @@ static direction_t directionIncrement(direction_t dir)
 
 #ifdef ROUTE_DEBUG
 pcb_hid_t *ddraw = NULL;
-static hid_gc_t ar_gc = 0;
+static pcb_hid_gc_t ar_gc = 0;
 #endif
 
 #define EXPENSIVE 3e28

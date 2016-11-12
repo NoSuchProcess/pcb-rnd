@@ -1476,7 +1476,7 @@ int ghid_key_name(unsigned short int key_char, char *out, int out_len)
 	return 0;
 }
 
-void ghid_do_export(hid_attr_val_t * options)
+void ghid_do_export(pcb_hid_attr_val_t * options)
 {
 	gtkhid_begin();
 

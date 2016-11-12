@@ -7,7 +7,7 @@
 #include "obj_pad.h"
 #include "obj_poly.h"
 
-static void fill_contour(hid_gc_t gc, PLINE * pl)
+static void fill_contour(pcb_hid_gc_t gc, PLINE * pl)
 {
 	Coord *x, *y, n, i = 0;
 	VNODE *v;
@@ -27,7 +27,7 @@ static void fill_contour(hid_gc_t gc, PLINE * pl)
 	free(y);
 }
 
-static void thindraw_contour(hid_gc_t gc, PLINE * pl)
+static void thindraw_contour(pcb_hid_gc_t gc, PLINE * pl)
 {
 	VNODE *v;
 	Coord last_x, last_y;
@@ -65,14 +65,14 @@ static void thindraw_contour(hid_gc_t gc, PLINE * pl)
 
 static void fill_contour_cb(PLINE * pl, void *user_data)
 {
-	hid_gc_t gc = (hid_gc_t) user_data;
+	pcb_hid_gc_t gc = (pcb_hid_gc_t) user_data;
 	PLINE *local_pl = pl;
 
 	fill_contour(gc, pl);
 	poly_FreeContours(&local_pl);
 }
 
-static void fill_clipped_contour(hid_gc_t gc, PLINE * pl, const pcb_box_t * clip_box)
+static void fill_clipped_contour(pcb_hid_gc_t gc, PLINE * pl, const pcb_box_t * clip_box)
 {
 	PLINE *pl_copy;
 	POLYAREA *clip_poly;
@@ -134,7 +134,7 @@ static int should_compute_no_holes(pcb_polygon_t * poly, const pcb_box_t * clip_
 
 #undef BOUNDS_INSIDE_CLIP_THRESHOLD
 
-void common_fill_pcb_polygon(hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+void common_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	if (!poly->NoHolesValid) {
 		/* If enough of the polygon is on-screen, compute the entire
@@ -169,18 +169,18 @@ void common_fill_pcb_polygon(hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t 
 
 static int thindraw_hole_cb(PLINE * pl, void *user_data)
 {
-	hid_gc_t gc = (hid_gc_t) user_data;
+	pcb_hid_gc_t gc = (pcb_hid_gc_t) user_data;
 	thindraw_contour(gc, pl);
 	return 0;
 }
 
-void common_thindraw_pcb_polygon(hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+void common_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	thindraw_contour(gc, poly->Clipped->contours);
 	PolygonHoles(poly, clip_box, thindraw_hole_cb, gc);
 }
 
-void common_thindraw_pcb_pad(hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
+void common_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	Coord w = clear ? (mask ? pad->Mask : pad->Thickness + pad->Clearance)
 		: pad->Thickness;
@@ -244,7 +244,7 @@ void common_thindraw_pcb_pad(hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_b
 	}
 }
 
-void common_fill_pcb_pad(hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
+void common_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	Coord w = clear ? (mask ? pad->Mask : pad->Thickness + pad->Clearance)
 		: pad->Thickness;
@@ -288,7 +288,7 @@ typedef struct {
 	double X, Y;
 } FloatPolyType;
 
-static void draw_square_pin_poly(hid_gc_t gc, Coord X, Coord Y, Coord Thickness, Coord thin_draw, int style)
+static void draw_square_pin_poly(pcb_hid_gc_t gc, Coord X, Coord Y, Coord Thickness, Coord thin_draw, int style)
 {
 	static FloatPolyType p[8] = {
 		{0.5, -PCB_TAN_22_5_DEGREE_2},
@@ -336,13 +336,13 @@ static void draw_square_pin_poly(hid_gc_t gc, Coord X, Coord Y, Coord Thickness,
 		gui->fill_polygon(gc, 8, polygon_x, polygon_y);
 }
 
-static void draw_octagon_poly(hid_gc_t gc, Coord X, Coord Y, Coord Thickness, Coord thin_draw)
+static void draw_octagon_poly(pcb_hid_gc_t gc, Coord X, Coord Y, Coord Thickness, Coord thin_draw)
 {
 	draw_square_pin_poly(gc, X, Y, Thickness, thin_draw, 17);
 }
 
 
-void common_fill_pcb_pv(hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
+void common_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
 {
 	Coord w = mask ? pv->Mask : pv->Thickness;
 	Coord r = w / 2;
@@ -381,7 +381,7 @@ void common_fill_pcb_pv(hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool
 		gui->fill_circle(bg_gc, pv->X, pv->Y, pv->DrillingHole / 2);
 }
 
-void common_thindraw_pcb_pv(hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
+void common_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
 {
 	Coord w = mask ? pv->Mask : pv->Thickness;
 	Coord r = w / 2;

@@ -90,7 +90,7 @@ static struct {
 #define HA_skipsolder	 	2
 #define HA_antialias 		3
 
-static hid_attribute_t bboard_options[] = {
+static pcb_hid_attribute_t bboard_options[] = {
 /*
 %start-doc options "Breadboard Export"
 @ftable @code
@@ -143,7 +143,7 @@ Connections are antialiased. Antialiasing applies only to wires, models are not 
 
 #define NUM_OPTIONS (sizeof(bboard_options)/sizeof(bboard_options[0]))
 
-static hid_attr_val_t bboard_values[NUM_OPTIONS];
+static pcb_hid_attr_val_t bboard_values[NUM_OPTIONS];
 
 /****************************************************************************************************/
 static const char *bboard_filename = 0;
@@ -159,7 +159,7 @@ Coord bboard_scale_coord(Coord x)
 * Export filter implementation starts here
 ********************************************/
 
-static hid_attribute_t *bboard_get_export_options(int *n)
+static pcb_hid_attribute_t *bboard_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 	if (PCB)
@@ -492,7 +492,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 }
 
 
-static void bboard_do_export(hid_attr_val_t * options)
+static void bboard_do_export(pcb_hid_attr_val_t * options)
 {
 	int i;
 	int clr_r, clr_g, clr_b;

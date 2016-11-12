@@ -23,7 +23,7 @@
 
 const char *lpr_cookie = "lpr HID";
 
-static hid_attribute_t base_lpr_options[] = {
+static pcb_hid_attribute_t base_lpr_options[] = {
 
 /* %start-doc options "98 lpr Printing Options"
 @ftable @code
@@ -42,11 +42,11 @@ PDF output with a virtual PDF printer. Example: @*
 
 #define NUM_OPTIONS (sizeof(lpr_options)/sizeof(lpr_options[0]))
 
-static hid_attribute_t *lpr_options = 0;
+static pcb_hid_attribute_t *lpr_options = 0;
 static int num_lpr_options = 0;
-static hid_attr_val_t *lpr_values;
+static pcb_hid_attr_val_t *lpr_values;
 
-static hid_attribute_t *lpr_get_export_options(int *n)
+static pcb_hid_attribute_t *lpr_get_export_options(int *n)
 {
 	/*
 	 * We initialize the default value in this manner because the GUI
@@ -58,18 +58,18 @@ static hid_attribute_t *lpr_get_export_options(int *n)
 	}
 
 	if (lpr_options == 0) {
-		hid_attribute_t *ps_opts = ps_hid.get_export_options(&num_lpr_options);
-		lpr_options = (hid_attribute_t *) calloc(num_lpr_options, sizeof(hid_attribute_t));
-		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(hid_attribute_t));
+		pcb_hid_attribute_t *ps_opts = ps_hid.get_export_options(&num_lpr_options);
+		lpr_options = (pcb_hid_attribute_t *) calloc(num_lpr_options, sizeof(pcb_hid_attribute_t));
+		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(pcb_hid_attribute_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
-		lpr_values = (hid_attr_val_t *) calloc(num_lpr_options, sizeof(hid_attr_val_t));
+		lpr_values = (pcb_hid_attr_val_t *) calloc(num_lpr_options, sizeof(pcb_hid_attr_val_t));
 	}
 	if (n)
 		*n = num_lpr_options;
 	return lpr_options;
 }
 
-static void lpr_do_export(hid_attr_val_t * options)
+static void lpr_do_export(pcb_hid_attr_val_t * options)
 {
 	FILE *f;
 	int i;

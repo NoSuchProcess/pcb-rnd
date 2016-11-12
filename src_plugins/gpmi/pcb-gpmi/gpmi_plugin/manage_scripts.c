@@ -15,7 +15,7 @@ extern pcb_hid_t *gui;
 
 #define attr_make_label(attr, name_, help_) \
 do { \
-	memset((attr), 0, sizeof(hid_attribute_t)); \
+	memset((attr), 0, sizeof(pcb_hid_attribute_t)); \
 	(attr)->name         = name_; \
 	(attr)->help_text    = help_; \
 	(attr)->type         = HID_Label; \
@@ -31,7 +31,7 @@ do { \
 
 #define attr_make_enum(attr, name_, help_, enum_vals, default_item) \
 do { \
-	memset((attr), 0, sizeof(hid_attribute_t)); \
+	memset((attr), 0, sizeof(pcb_hid_attribute_t)); \
 	(attr)->name         = name_; \
 	(attr)->help_text    = help_; \
 	(attr)->type         = HID_Enum; \
@@ -41,8 +41,8 @@ do { \
 
 static hid_gpmi_script_info_t *choose_script(const char **operations, int *operation)
 {
-	hid_attribute_t attr[3];
-	hid_attr_val_t result[3];
+	pcb_hid_attribute_t attr[3];
+	pcb_hid_attr_val_t result[3];
 	char **scrl, **s;
 	hid_gpmi_script_info_t *i;
 	int n, res;
@@ -98,8 +98,8 @@ static hid_gpmi_script_info_t *load_script(void)
 	char *fn, *ext;
 	hid_gpmi_script_info_t *info;
 	int default_mod = -1;
-	hid_attribute_t attr[3];
-	hid_attr_val_t result[3];
+	pcb_hid_attribute_t attr[3];
+	pcb_hid_attr_val_t result[3];
 	char *exts[] = {
 		".tcl",    "tcl",
 		".lua",    "lua",
@@ -163,8 +163,8 @@ static hid_gpmi_script_info_t *load_script(void)
 
 static void script_details(hid_gpmi_script_info_t *i)
 {
-	hid_attribute_t attr[4];
-	hid_attr_val_t result[4];
+	pcb_hid_attribute_t attr[4];
+	pcb_hid_attr_val_t result[4];
 	char *cf;
 
 	cf = i->conffile_name == NULL ? "<none>" : i->conffile_name;

@@ -134,7 +134,7 @@ static struct {
 #define HA_minimal_drill        9
 #define HA_board_cut            10
 
-static hid_attribute_t scad_options[] = {
+static pcb_hid_attribute_t scad_options[] = {
 /*
 %start-doc options "Advanced OpenSCAD Export"
 @ftable @code
@@ -274,7 +274,7 @@ Type of board cut. Values: @samp{All}, @samp{Top}, @samp{Top only}, @samp{Bottom
 
 #define NUM_OPTIONS (sizeof(scad_options)/sizeof(scad_options[0]))
 
-static hid_attr_val_t scad_values[NUM_OPTIONS];
+static pcb_hid_attr_val_t scad_values[NUM_OPTIONS];
 
 /****************************************************************************************************/
 
@@ -300,8 +300,8 @@ static float scaled_layer_thickness;
 static int n_alloc_outline_segments, n_outline_segments;
 static t_outline_segment *outline_segments;
 
-static void scad_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y);
-static void scad_emit_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y, float thickness);
+static void scad_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y);
+static void scad_emit_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y, float thickness);
 
 
 /* scaling function - all output is in milimeters */
@@ -334,7 +334,7 @@ static void scad_close_layer()
 * Export filter implementation starts here
 ********************************************/
 
-static hid_attribute_t *scad_get_export_options(int *n)
+static pcb_hid_attribute_t *scad_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 	if (PCB)
@@ -496,7 +496,7 @@ void scad_process_outline()
 	}
 }
 
-static void scad_do_export(hid_attr_val_t * options)
+static void scad_do_export(pcb_hid_attr_val_t * options)
 {
 	int i;
 	int inner_layers;
@@ -840,15 +840,15 @@ static int scad_set_layer(const char *name, int group, int empty)
 	return 1;
 }
 
-static hid_gc_t scad_make_gc(void)
+static pcb_hid_gc_t scad_make_gc(void)
 {
-	hid_gc_t rv = (hid_gc_t) calloc(1, sizeof(hid_gc_s));
+	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(1, sizeof(hid_gc_s));
 	rv->cap = Trace_Cap;
 	rv->seq = lastseq++;
 	return rv;
 }
 
-static void scad_destroy_gc(hid_gc_t gc)
+static void scad_destroy_gc(pcb_hid_gc_t gc)
 {
 	free(gc);
 }
@@ -858,7 +858,7 @@ static void scad_use_mask(int use_it)
 	current_mask = use_it;
 }
 
-static void scad_set_color(hid_gc_t gc, const char *name)
+static void scad_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	if (strcmp(name, "erase") == 0) {
 		gc->erase = 1;
@@ -887,22 +887,22 @@ static void scad_set_color(hid_gc_t gc, const char *name)
 	}
 }
 
-static void scad_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
+static void scad_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void scad_set_line_width(hid_gc_t gc, Coord width)
+static void scad_set_line_width(pcb_hid_gc_t gc, Coord width)
 {
 	gc->width = width;
 }
 
-static void scad_set_draw_xor(hid_gc_t gc, int xor)
+static void scad_set_draw_xor(pcb_hid_gc_t gc, int xor)
 {
 }
 
 
-static void scad_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void scad_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	Coord x[5];
 	Coord y[5];
@@ -924,7 +924,7 @@ static void scad_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 *    -- on polyline segment cap is drawn only on beginning
 */
 
-static void scad_emit_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2, int mode)
+static void scad_emit_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2, int mode)
 {
 	int zero_length;
 	float angle = 0., length = 0.;
@@ -978,7 +978,7 @@ static void scad_emit_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2, 
 
 }
 
-static void scad_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void scad_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	if (drill_layer)
 		return;
@@ -987,7 +987,7 @@ static void scad_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 }
 
 
-static void scad_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void scad_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
 	int i, n_steps, x, y, ox = 0, oy = 0, sa;
 	float angle;
@@ -1024,7 +1024,7 @@ static void scad_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord he
 *    - as plated or unplated drills it creates vector of holes
 *    - otherwise it is drawn as simple
 */
-static void scad_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void scad_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 /*  int i; */
 	if (outline_layer)
@@ -1058,7 +1058,7 @@ static void scad_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 * Helper function - creates extruded polygon
 */
 
-static void scad_emit_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y, float thickness)
+static void scad_emit_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y, float thickness)
 {
 	int i, n;
 /*  int cw, cx; */
@@ -1091,7 +1091,7 @@ static void scad_emit_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y, f
 
 }
 
-static void scad_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void scad_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	if (outline_layer)
 		return;
@@ -1099,7 +1099,7 @@ static void scad_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 	scad_emit_polygon(gc, n_coords, x, y, scaled_layer_thickness);
 }
 
-static void scad_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void scad_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	Coord x[5];
 	Coord y[5];

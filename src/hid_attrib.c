@@ -3,14 +3,14 @@
 #include "misc_util.h"
 #include "pcb-printf.h"
 
-HID_AttrNode *hid_attr_nodes = 0;
+pcb_hid_attr_node_t *hid_attr_nodes = 0;
 
-void hid_register_attributes(hid_attribute_t * a, int n, const char *cookie, int copy)
+void hid_register_attributes(pcb_hid_attribute_t * a, int n, const char *cookie, int copy)
 {
-	HID_AttrNode *ha;
+	pcb_hid_attr_node_t *ha;
 
 	/* printf("%d attributes registered\n", n); */
-	ha = (HID_AttrNode *) malloc(sizeof(HID_AttrNode));
+	ha = malloc(sizeof(pcb_hid_attr_node_t));
 	ha->next = hid_attr_nodes;
 	hid_attr_nodes = ha;
 	ha->attributes = a;
@@ -20,7 +20,7 @@ void hid_register_attributes(hid_attribute_t * a, int n, const char *cookie, int
 
 void hid_attributes_uninit(void)
 {
-	HID_AttrNode *ha, *next;
+	pcb_hid_attr_node_t *ha, *next;
 	for (ha = hid_attr_nodes; ha; ha = next) {
 		next = ha->next;
 		if (ha->cookie != NULL)
@@ -32,7 +32,7 @@ void hid_attributes_uninit(void)
 
 void hid_remove_attributes_by_cookie(const char *cookie)
 {
-	HID_AttrNode *ha, *next, *prev = NULL;
+	pcb_hid_attr_node_t *ha, *next, *prev = NULL;
 	for (ha = hid_attr_nodes; ha; ha = next) {
 		next = ha->next;
 		if (ha->cookie == cookie) {
@@ -49,12 +49,12 @@ void hid_remove_attributes_by_cookie(const char *cookie)
 
 void hid_parse_command_line(int *argc, char ***argv)
 {
-	HID_AttrNode *ha;
+	pcb_hid_attr_node_t *ha;
 	int i, e, ok;
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			hid_attribute_t *a = ha->attributes + i;
+			pcb_hid_attribute_t *a = ha->attributes + i;
 			switch (a->type) {
 			case HID_Label:
 				break;
@@ -84,7 +84,7 @@ void hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case HID_Mixed:
 				if (a->value) {
-					*(hid_attr_val_t *) a->value = a->default_val;
+					*(pcb_hid_attr_val_t *) a->value = a->default_val;
 			case HID_Unit:
 					if (a->value)
 						*(int *) a->value = a->default_val.int_value;
@@ -106,7 +106,7 @@ void hid_parse_command_line(int *argc, char ***argv)
 		for (ha = hid_attr_nodes; ha; ha = ha->next)
 			for (i = 0; i < ha->n; i++)
 				if (strcmp((*argv)[0] + arg_ofs, ha->attributes[i].name) == 0) {
-					hid_attribute_t *a = ha->attributes + i;
+					pcb_hid_attribute_t *a = ha->attributes + i;
 					char *ep;
 					const Unit *unit;
 					switch (ha->attributes[i].type) {
@@ -210,7 +210,7 @@ void hid_usage_option(const char *name, const char *help)
 	fprintf(stderr, "%-20s %s\n", name, help);
 }
 
-void hid_usage(hid_attribute_t * a, int numa)
+void hid_usage(pcb_hid_attribute_t * a, int numa)
 {
 	for (; numa > 0; numa--,a++) {
 		const char *help;

@@ -37,14 +37,14 @@ static int extents_set_layer(const char *name, int group, int empty)
 	return 0;
 }
 
-static hid_gc_t extents_make_gc(void)
+static pcb_hid_gc_t extents_make_gc(void)
 {
-	hid_gc_t rv = (hid_gc_t) malloc(sizeof(hid_gc_s));
+	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(hid_gc_s));
 	memset(rv, 0, sizeof(hid_gc_s));
 	return rv;
 }
 
-static void extents_destroy_gc(hid_gc_t gc)
+static void extents_destroy_gc(pcb_hid_gc_t gc)
 {
 	free(gc);
 }
@@ -53,20 +53,20 @@ static void extents_use_mask(int use_it)
 {
 }
 
-static void extents_set_color(hid_gc_t gc, const char *name)
+static void extents_set_color(pcb_hid_gc_t gc, const char *name)
 {
 }
 
-static void extents_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
+static void extents_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 }
 
-static void extents_set_line_width(hid_gc_t gc, Coord width)
+static void extents_set_line_width(pcb_hid_gc_t gc, Coord width)
 {
 	gc->width = width;
 }
 
-static void extents_set_draw_xor(hid_gc_t gc, int xor_)
+static void extents_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 {
 }
 
@@ -75,7 +75,7 @@ static void extents_set_draw_xor(hid_gc_t gc, int xor_)
 #define PEY(y,w) if (box.Y1 > (y)-(w)) box.Y1 = (y)-(w); \
 	if (box.Y2 < (y)+(w)) box.Y2 = (y)+(w)
 
-static void extents_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void extents_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	PEX(x1, gc->width);
 	PEY(y1, gc->width);
@@ -83,14 +83,14 @@ static void extents_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y
 	PEY(y2, gc->width);
 }
 
-static void extents_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
+static void extents_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
 {
 	/* Naive but good enough.  */
 	PEX(cx, width + gc->width);
 	PEY(cy, height + gc->width);
 }
 
-static void extents_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void extents_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	PEX(x1, gc->width);
 	PEY(y1, gc->width);
@@ -98,13 +98,13 @@ static void extents_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y
 	PEY(y2, gc->width);
 }
 
-static void extents_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void extents_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	PEX(cx, radius);
 	PEY(cy, radius);
 }
 
-static void extents_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void extents_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	int i;
 	for (i = 0; i < n_coords; i++) {
@@ -113,7 +113,7 @@ static void extents_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y
 	}
 }
 
-static void extents_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void extents_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	PEX(x1, 0);
 	PEY(y1, 0);

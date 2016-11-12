@@ -28,7 +28,7 @@ typedef struct hid_gc_s {
 	int nop;
 } hid_gc_s;
 
-static hid_attribute_t *remote_get_export_options(int *n_ret)
+static pcb_hid_attribute_t *remote_get_export_options(int *n_ret)
 {
 	return 0;
 }
@@ -80,7 +80,7 @@ REGISTER_ACTIONS(remote_action_list, remote_cookie)
 
 /* ----------------------------------------------------------------------------- */
 static int remote_stay;
-static void remote_do_export(hid_attr_val_t * options)
+static void remote_do_export(pcb_hid_attr_val_t * options)
 {
 	pcb_box_t region;
 	region.X1 = 0;
@@ -135,7 +135,7 @@ typedef struct {
 static hid_gc_s remote_gc[32];
 static remote_gc_cache_t gc_cache[32];
 
-static hid_gc_t remote_make_gc(void)
+static pcb_hid_gc_t remote_make_gc(void)
 {
 	int gci = proto_send_make_gc();
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
@@ -148,7 +148,7 @@ static hid_gc_t remote_make_gc(void)
 	return remote_gc+gci;
 }
 
-static int gc2idx(hid_gc_t gc)
+static int gc2idx(pcb_hid_gc_t gc)
 {
 	int idx = gc - remote_gc;
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
@@ -160,7 +160,7 @@ static int gc2idx(hid_gc_t gc)
 	return idx;
 }
 
-static void remote_destroy_gc(hid_gc_t gc)
+static void remote_destroy_gc(pcb_hid_gc_t gc)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
@@ -176,7 +176,7 @@ static void remote_use_mask(int mask)
 		Message(PCB_MSG_ERROR, "Invalid use_mask %d\n", mask);
 }
 
-static void remote_set_color(hid_gc_t gc, const char *name)
+static void remote_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0) {
@@ -189,7 +189,7 @@ static void remote_set_color(hid_gc_t gc, const char *name)
 
 /* r=round, s=square, b=beveled (octagon) */
 static const char *cap_style_names = "rsrb";
-static void remote_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
+static void remote_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 	int idx = gc2idx(gc);
 	int max = strlen(cap_style_names);
@@ -208,7 +208,7 @@ static void remote_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
 	}
 }
 
-static void remote_set_line_width(hid_gc_t gc, Coord width)
+static void remote_set_line_width(pcb_hid_gc_t gc, Coord width)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0) {
@@ -219,47 +219,47 @@ static void remote_set_line_width(hid_gc_t gc, Coord width)
 	}
 }
 
-static void remote_set_draw_xor(hid_gc_t gc, int xor_set)
+static void remote_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_set_draw_xor(idx, xor_set);
 }
 
-static void remote_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void remote_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_line(idx, x1, y1, x2, y2);
 }
 
-static void remote_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
+static void remote_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
 {
 #warning TODO
 }
 
-static void remote_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void remote_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_rect(idx, x1, y1, x2, y2, 0);
 }
 
-static void remote_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void remote_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_fill_circle(idx, cx, cy, radius);
 }
 
-static void remote_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void remote_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_poly(idx, n_coords, x, y);
 }
 
-static void remote_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void remote_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
@@ -329,7 +329,7 @@ static void remote_stop_block_hook(pcb_hidval_t mlpoll)
 }
 
 static int
-remote_attribute_dialog(hid_attribute_t * attrs_, int n_attrs_, hid_attr_val_t * results_, const char *title_, const char *descr_)
+remote_attribute_dialog(pcb_hid_attribute_t * attrs_, int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_)
 {
 	return 0;
 }

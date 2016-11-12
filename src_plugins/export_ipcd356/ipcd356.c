@@ -58,7 +58,7 @@
 
 static const char *ipcd356_cookie = "ipcd356 exporter";
 
-static hid_attribute_t IPCD356_options[] = {
+static pcb_hid_attribute_t IPCD356_options[] = {
 /* %start-doc options "8 IPC-D-356 Netlist Export"
 @ftable @code
 @item --netlist-file <string>
@@ -76,7 +76,7 @@ Name of the IPC-D-356 Netlist output file.
 
 #define NUM_OPTIONS (sizeof(IPCD356_options)/sizeof(IPCD356_options[0]))
 
-static hid_attr_val_t IPCD356_values[NUM_OPTIONS];
+static pcb_hid_attr_val_t IPCD356_values[NUM_OPTIONS];
 
 const char *IPCD356_filename;
 
@@ -101,7 +101,7 @@ IPCD356_AliasList *CreateAliasList(void);
 IPCD356_AliasList *AddAliasToList(IPCD356_AliasList *);
 int IPCD356_SanityCheck(void);
 
-static hid_attribute_t *IPCD356_get_export_options(int *n)
+static pcb_hid_attribute_t *IPCD356_get_export_options(int *n)
 {
 	static char *last_IPCD356_filename = 0;
 
@@ -576,7 +576,7 @@ int IPCD356_SanityCheck()
 	return (0);
 }
 
-static void IPCD356_do_export(hid_attr_val_t * options)
+static void IPCD356_do_export(pcb_hid_attr_val_t * options)
 {
 	int i;
 

@@ -240,32 +240,32 @@ typedef struct _DxfList {
 static void dxf_beep(void);
 static void dxf_calibrate(double xval, double yval);
 static char *dxf_clean_string(char *in);
-static void dxf_destroy_gc(hid_gc_t gc);
-static void dxf_do_export(hid_attr_val_t * options);
-static void dxf_draw_arc(hid_gc_t gc, int cx, int cy, int width, int height, int start_angle, int delta_angle);
-static void dxf_draw_line(hid_gc_t gc, int x1, int y1, int x2, int y2);
-static void dxf_draw_rect(hid_gc_t gc, int x1, int y1, int x2, int y2);
+static void dxf_destroy_gc(pcb_hid_gc_t gc);
+static void dxf_do_export(pcb_hid_attr_val_t * options);
+static void dxf_draw_arc(pcb_hid_gc_t gc, int cx, int cy, int width, int height, int start_angle, int delta_angle);
+static void dxf_draw_line(pcb_hid_gc_t gc, int x1, int y1, int x2, int y2);
+static void dxf_draw_rect(pcb_hid_gc_t gc, int x1, int y1, int x2, int y2);
 static int dxf_drill_sort(const void *va, const void *vb);
 static int dxf_export_xref_file(void);
-static void dxf_fill_circle(hid_gc_t gc, int cx, int cy, int radius);
-static void dxf_fill_polygon(hid_gc_t gc, int n_coords, int *x, int *y);
-static void dxf_fill_rect(hid_gc_t gc, int x1, int y1, int x2, int y2);
-static hid_attribute_t *dxf_get_export_options(int *n);
+static void dxf_fill_circle(pcb_hid_gc_t gc, int cx, int cy, int radius);
+static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, int *x, int *y);
+static void dxf_fill_rect(pcb_hid_gc_t gc, int x1, int y1, int x2, int y2);
+static pcb_hid_attribute_t *dxf_get_export_options(int *n);
 static int dxf_group_for_layer(int l);
 static DxfList *dxf_insert(char *refdes, char *descr, char *value, DxfList * dxf);
 static int dxf_layer_sort(const void *va, const void *vb);
-static hid_gc_t dxf_make_gc(void);
+static pcb_hid_gc_t dxf_make_gc(void);
 static void dxf_maybe_close_file();
 static void dxf_parse_arguments(int *argc, char ***argv);
 static void dxf_progress(int dxf_so_far, int dxf_total, const char *dxf_message);
-static void dxf_set_color(hid_gc_t gc, const char *name);
+static void dxf_set_color(pcb_hid_gc_t gc, const char *name);
 static void dxf_set_crosshair(int x, int y);
 static int dxf_set_layer(const char *name, int group);
-static void dxf_set_line_cap(hid_gc_t gc, pcb_cap_style_t style);
-static void dxf_set_line_width(hid_gc_t gc, int width);
+static void dxf_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
+static void dxf_set_line_width(pcb_hid_gc_t gc, int width);
 static void dxf_show_item(void *item);
 static StringList *dxf_string_insert(char *str, StringList * list);
-static void dxf_use_gc(hid_gc_t gc, int radius);
+static void dxf_use_gc(pcb_hid_gc_t gc, int radius);
 static void dxf_use_mask(int use_it);
 static void dxf_write_block(FILE * fp, int id_code, char *xref_name,
 														char *block_name, char *linetype, char *layer, double x0,
@@ -620,7 +620,7 @@ typedef struct hid_gc_s {
  * \brief Definition of options the user can select in the DXF exporter
  * dialog.
  */
-static hid_attribute_t dxf_options[] = {
+static pcb_hid_attribute_t dxf_options[] = {
 /*
 %start-doc options "DXF Export"
 @ftable @code
@@ -716,7 +716,7 @@ Export all layers.
  * HID_Label just shows the default str_value.\n
  * HID_Mixed is a real_value followed by an enum, like 0.5in or 100mm.
  */
-static hid_attr_val_t dxf_values[NUM_OPTIONS];
+static pcb_hid_attr_val_t dxf_values[NUM_OPTIONS];
 
 static int pagecount = 0;
 
@@ -3760,7 +3760,7 @@ static void dxf_write_vertex(FILE * fp,
  * In command line mode, these are used to interpret command line options.\n
  * If n_ret is non-NULL, the number of attributes is stored there.
  */
-static hid_attribute_t *dxf_get_export_options(int *n)
+static pcb_hid_attribute_t *dxf_get_export_options(int *n)
 {
 	static char *last_dxf_filename;
 	static char *last_dxf_xref_filename;
@@ -4223,7 +4223,7 @@ static void dxf_maybe_close_file()
  * <li>Export a DXF file for every PCB layer.\n
  * </ul>
  */
-static void dxf_do_export(hid_attr_val_t * options)
+static void dxf_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *dxf_fnbase;
 	int i;
@@ -4586,14 +4586,14 @@ static int dxf_set_layer(const char *name, int group) {
 /*!
  * \brief Constructor for the graphic context.
  */
-static hid_gc_t dxf_make_gc(void)
+static pcb_hid_gc_t dxf_make_gc(void)
 {
-	hid_gc_t rv;
+	pcb_hid_gc_t rv;
 
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_make_gc () function.\n", __FILE__, __LINE__);
 #endif
-	rv = (hid_gc_t) calloc(1, sizeof(hid_gc_s));
+	rv = (pcb_hid_gc_t) calloc(1, sizeof(hid_gc_s));
 	rv->cap = Trace_Cap;
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Leaving dxf_make_gc () function.\n", __FILE__, __LINE__);
@@ -4605,7 +4605,7 @@ static hid_gc_t dxf_make_gc(void)
 /*!
  * \brief Destructor for the graphic context.
  */
-static void dxf_destroy_gc(hid_gc_t gc)
+static void dxf_destroy_gc(pcb_hid_gc_t gc)
 {
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_destroy_gc () function.\n", __FILE__, __LINE__);
@@ -4657,7 +4657,7 @@ static void dxf_use_mask(int use_it) {
  * You may assume this is cheap enough to call inside the redraw callback,
  * but not cheap enough to call for each item drawn.
  */
-static void dxf_set_color(hid_gc_t gc,	/*!< graphic context  */
+static void dxf_set_color(pcb_hid_gc_t gc,	/*!< graphic context  */
 													const char *name) {
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_set_color () function.\n", __FILE__, __LINE__);
@@ -4690,7 +4690,7 @@ static void dxf_set_color(hid_gc_t gc,	/*!< graphic context  */
  * While calling this is cheap, calling it with different values each time
  * may be expensive, so grouping items by line style is helpful.
 */
-static void dxf_set_line_cap(hid_gc_t gc, pcb_cap_style_t style) {
+static void dxf_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style) {
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_set_line_cap () function.\n", __FILE__, __LINE__);
 #endif
@@ -4708,7 +4708,7 @@ static void dxf_set_line_cap(hid_gc_t gc, pcb_cap_style_t style) {
  * While calling this is cheap, calling it with different values each time
  * may be expensive, so grouping items by line width is helpful.
  */
-static void dxf_set_line_width(hid_gc_t gc, int width) {
+static void dxf_set_line_width(pcb_hid_gc_t gc, int width) {
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_set_line_width () function.\n", __FILE__, __LINE__);
 #endif
@@ -4719,7 +4719,7 @@ static void dxf_set_line_width(hid_gc_t gc, int width) {
 }
 
 
-static void dxf_set_draw_xor(hid_gc_t gc, int xor_)
+static void dxf_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 {
 	;
 }
@@ -4728,7 +4728,7 @@ static void dxf_set_draw_xor(hid_gc_t gc, int xor_)
 /*!
  * \brief Use the graphic context.
  */
-static void dxf_use_gc(hid_gc_t gc, int radius) {
+static void dxf_use_gc(pcb_hid_gc_t gc, int radius) {
 	int c;
 
 #if DEBUG
@@ -4808,7 +4808,7 @@ static void dxf_use_gc(hid_gc_t gc, int radius) {
  * contains the top right corner values. \n
  * The rectangle is not filled, use dxf_fill_rect () for a filled rectangle.
  */
-static void dxf_draw_rect(hid_gc_t gc,
+static void dxf_draw_rect(pcb_hid_gc_t gc,
 													/*!< graphic context  */
 													int x1,
 													/*!< X-value bottom left ?? point  */
@@ -5000,7 +5000,7 @@ static void dxf_draw_rect(hid_gc_t gc,
  * to check if the layer didn't change since the last trace segment was
  * drawn.\n
  */
-static void dxf_draw_line(hid_gc_t gc,
+static void dxf_draw_line(pcb_hid_gc_t gc,
 													/*!< graphic context  */
 													int x1,
 													/*!< X-value start point  */
@@ -5293,7 +5293,7 @@ static void dxf_draw_line(hid_gc_t gc,
  * \todo The end cap style has to be implemented at the start and end point of
  * a trace.
  */
-static void dxf_draw_arc(hid_gc_t gc,
+static void dxf_draw_arc(pcb_hid_gc_t gc,
 												 /*!< graphic context  */
 												 int cx,
 												 /*!< X-value center point  */
@@ -5584,7 +5584,7 @@ static void dxf_draw_arc(hid_gc_t gc,
  * fill to a zero-width outline.\n
  * \todo Implement a donut (polyline) instead of a circle.
  */
-static void dxf_fill_circle(hid_gc_t gc,
+static void dxf_fill_circle(pcb_hid_gc_t gc,
 														/*!< graphic context. */
 														int cx,
 														/*!< X-value center point. */
@@ -5679,7 +5679,7 @@ static void dxf_fill_circle(hid_gc_t gc,
  * (select a hatch pattern, create a boundary path, apply a scale and all the
  * other stuff that is needed).
  */
-static void dxf_fill_polygon(hid_gc_t gc,
+static void dxf_fill_polygon(pcb_hid_gc_t gc,
 														 /*!< graphic context. */
 														 int n_coords,
 														 /*!< number of XY-coordinates. */
@@ -5783,7 +5783,7 @@ static void dxf_fill_polygon(hid_gc_t gc,
  * "draw" means to use segments of the given width, whereas "fill" means to
  * fill to a zero-width outline.\n
  */
-static void dxf_fill_rect(hid_gc_t gc,
+static void dxf_fill_rect(pcb_hid_gc_t gc,
 													/*!< graphic context. */
 													int x1,
 													/*!< X-value bottom left ?? point. */

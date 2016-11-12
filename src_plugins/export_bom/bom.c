@@ -23,7 +23,7 @@
 
 const char *bom_cookie = "bom HID";
 
-static hid_attribute_t bom_options[] = {
+static pcb_hid_attribute_t bom_options[] = {
 /* %start-doc options "8 BOM Creation"
 @ftable @code
 @item --bomfile <string>
@@ -45,7 +45,7 @@ Name of the XY output file.
 
 #define NUM_OPTIONS (sizeof(bom_options)/sizeof(bom_options[0]))
 
-static hid_attr_val_t bom_values[NUM_OPTIONS];
+static pcb_hid_attr_val_t bom_values[NUM_OPTIONS];
 
 static const char *bom_filename;
 
@@ -62,7 +62,7 @@ typedef struct _BomList {
 	struct _BomList *next;
 } BomList;
 
-static hid_attribute_t *bom_get_export_options(int *n)
+static pcb_hid_attribute_t *bom_get_export_options(int *n)
 {
 	static char *last_bom_filename = NULL;
 
@@ -268,7 +268,7 @@ static int PrintBOM(void)
 	return (0);
 }
 
-static void bom_do_export(hid_attr_val_t * options)
+static void bom_do_export(pcb_hid_attr_val_t * options)
 {
 	int i;
 

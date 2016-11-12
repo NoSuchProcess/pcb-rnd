@@ -48,9 +48,9 @@
 static char *gui_get_pat(search_method_t * method)
 {
 	const char *methods[] = { "regexp", "list of names", NULL };
-	hid_attribute_t attrs[2];
+	pcb_hid_attribute_t attrs[2];
 #define nattr sizeof(attrs)/sizeof(attrs[0])
-	static hid_attr_val_t results[nattr] = { 0 };
+	static pcb_hid_attr_val_t results[nattr] = { 0 };
 
 	memset(attrs, 0, sizeof(attrs));
 

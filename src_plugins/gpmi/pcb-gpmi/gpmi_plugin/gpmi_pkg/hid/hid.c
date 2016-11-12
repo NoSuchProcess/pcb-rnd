@@ -80,7 +80,7 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 {
 	const char *res;
 	char buff[128];
-	hid_attr_val_t *v;
+	pcb_hid_attr_val_t *v;
 
 	if ((hid == NULL) || (attr_id < 0) || (attr_id >= hid->attr_num) || (hid->result == NULL))
 		return 0;
@@ -141,9 +141,9 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 }
 
 
-hid_attr_val_t hid_string2val(const hid_attr_type_t type, const char *str)
+pcb_hid_attr_val_t hid_string2val(const hid_attr_type_t type, const char *str)
 {
-	hid_attr_val_t v;
+	pcb_hid_attr_val_t v;
 	memset(&v, 0, sizeof(v));
 	switch(type) {
 		case HIDA_Boolean:
@@ -201,7 +201,7 @@ hid_attr_val_t hid_string2val(const hid_attr_type_t type, const char *str)
 	return v;
 }
 
-char **hid_string2enum(const char *str, hid_attr_val_t *def)
+char **hid_string2enum(const char *str, pcb_hid_attr_val_t *def)
 {
 	char **e;
 	const char *s, *last;
@@ -244,7 +244,7 @@ int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t t
 
 	/* TODO: should realloc more space here */
 	hid->attr_num++;
-	hid->attr = realloc(hid->attr, sizeof(hid_attribute_t) * hid->attr_num);
+	hid->attr = realloc(hid->attr, sizeof(pcb_hid_attribute_t) * hid->attr_num);
 	hid->type = realloc(hid->type, sizeof(hid_attr_type_t) * hid->attr_num);
 
 	hid->attr[current].name         = pcb_strdup(attr_name);

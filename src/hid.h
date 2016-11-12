@@ -9,8 +9,8 @@
 #include "global_typedefs.h"
 #include "attrib.h"
 
-typedef struct hid_attr_val_t_s  hid_attr_val_t;
-typedef struct hid_attribute_t_s hid_attribute_t;
+typedef struct pcb_hid_attr_val_s  pcb_hid_attr_val_t;
+typedef struct pcb_hid_attribute_s pcb_hid_attribute_t;
 
 /* Human Interface Device */
 
@@ -59,7 +59,7 @@ typedef union {
 /* This graphics context is an opaque pointer defined by the HID.  GCs
    are HID-specific; attempts to use one HID's GC for a different HID
    will result in a fatal error.  */
-typedef struct hid_gc_s *hid_gc_t;
+typedef struct hid_gc_s *pcb_hid_gc_t;
 
 #define HIDCONCAT(a,b) a##b
 
@@ -188,13 +188,13 @@ struct hid_s {
 	   set up the selectable options.  In command line mode, these are
 	   used to interpret command line options.  If n_ret is non-NULL,
 	   the number of attributes is stored there.  */
-	hid_attribute_t *(*get_export_options) (int *n_ret_);
+	pcb_hid_attribute_t *(*get_export_options) (int *n_ret_);
 
 	/* Export (or print) the current PCB.  The options given represent
 	   the choices made from the options returned from
 	   get_export_options.  Call with options == NULL to start the
 	   primary GUI (create a main window, print, export, etc)  */
-	void (*do_export) (hid_attr_val_t * options_);
+	void (*do_export) (pcb_hid_attr_val_t * options_);
 
 	/* uninit a GUI hid */
 	void (*uninit) (pcb_hid_t *hid);
@@ -236,8 +236,8 @@ struct hid_s {
 	   (positive X) and 90 being "up" (positive Y).  */
 
 	/* Make an empty graphics context.  */
-	hid_gc_t (*make_gc) (void);
-	void (*destroy_gc) (hid_gc_t gc_);
+	pcb_hid_gc_t (*make_gc) (void);
+	void (*destroy_gc) (pcb_hid_gc_t gc_);
 
 	/* Special note about the "erase" color: To use this color, you must
 	   use this function to tell the HID when you're using it.  At the
@@ -264,33 +264,33 @@ struct hid_s {
 	   use the "drill" color to draw holes.  You may assume this is
 	   cheap enough to call inside the redraw callback, but not cheap
 	   enough to call for each item drawn. */
-	void (*set_color) (hid_gc_t gc_, const char *name_);
+	void (*set_color) (pcb_hid_gc_t gc_, const char *name_);
 
 	/* Set the line style.  While calling this is cheap, calling it with
 	   different values each time may be expensive, so grouping items by
 	   line style is helpful.  */
-	void (*set_line_cap) (hid_gc_t gc_, pcb_cap_style_t style_);
-	void (*set_line_width) (hid_gc_t gc_, Coord width_);
-	void (*set_draw_xor) (hid_gc_t gc_, int xor_);
+	void (*set_line_cap) (pcb_hid_gc_t gc_, pcb_cap_style_t style_);
+	void (*set_line_width) (pcb_hid_gc_t gc_, Coord width_);
+	void (*set_draw_xor) (pcb_hid_gc_t gc_, int xor_);
 	/* Blends 20% or so color with 80% background.  Only used for
 	   assembly drawings so far. */
-	void (*set_draw_faded) (hid_gc_t gc_, int faded_);
+	void (*set_draw_faded) (pcb_hid_gc_t gc_, int faded_);
 
 	/* The usual drawing functions.  "draw" means to use segments of the
 	   given width, whereas "fill" means to fill to a zero-width
 	   outline.  */
-	void (*draw_line) (hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
-	void (*draw_arc) (hid_gc_t gc_, Coord cx_, Coord cy_, Coord xradius_, Coord yradius_, Angle start_angle_, Angle delta_angle_);
-	void (*draw_rect) (hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
-	void (*fill_circle) (hid_gc_t gc_, Coord cx_, Coord cy_, Coord radius_);
-	void (*fill_polygon) (hid_gc_t gc_, int n_coords_, Coord * x_, Coord * y_);
-	void (*fill_pcb_polygon) (hid_gc_t gc_, pcb_polygon_t * poly, const pcb_box_t * clip_box);
-	void (*thindraw_pcb_polygon) (hid_gc_t gc_, pcb_polygon_t * poly, const pcb_box_t * clip_box);
-	void (*fill_pcb_pad) (hid_gc_t gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
-	void (*thindraw_pcb_pad) (hid_gc_t gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
-	void (*fill_pcb_pv) (hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
-	void (*thindraw_pcb_pv) (hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
-	void (*fill_rect) (hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
+	void (*draw_line) (pcb_hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
+	void (*draw_arc) (pcb_hid_gc_t gc_, Coord cx_, Coord cy_, Coord xradius_, Coord yradius_, Angle start_angle_, Angle delta_angle_);
+	void (*draw_rect) (pcb_hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
+	void (*fill_circle) (pcb_hid_gc_t gc_, Coord cx_, Coord cy_, Coord radius_);
+	void (*fill_polygon) (pcb_hid_gc_t gc_, int n_coords_, Coord * x_, Coord * y_);
+	void (*fill_pcb_polygon) (pcb_hid_gc_t gc_, pcb_polygon_t * poly, const pcb_box_t * clip_box);
+	void (*thindraw_pcb_polygon) (pcb_hid_gc_t gc_, pcb_polygon_t * poly, const pcb_box_t * clip_box);
+	void (*fill_pcb_pad) (pcb_hid_gc_t gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
+	void (*thindraw_pcb_pad) (pcb_hid_gc_t gc_, pcb_pad_t * pad, pcb_bool clip, pcb_bool mask);
+	void (*fill_pcb_pv) (pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
+	void (*thindraw_pcb_pv) (pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask);
+	void (*fill_rect) (pcb_hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
 
 
 	/* This is for the printer.  If you call this for the GUI, xval and
@@ -426,8 +426,8 @@ struct hid_s {
 	   may use it for a tooltip or text in a dialog box, or a help
 	   string.
 	 */
-	int (*attribute_dialog) (hid_attribute_t * attrs_,
-													 int n_attrs_, hid_attr_val_t * results_, const char *title_, const char *descr_);
+	int (*attribute_dialog) (pcb_hid_attribute_t * attrs_,
+													 int n_attrs_, pcb_hid_attr_val_t * results_, const char *title_, const char *descr_);
 
 	/* This causes a second window to display, which only shows the
 	   selected item. The expose callback is called twice; once to size

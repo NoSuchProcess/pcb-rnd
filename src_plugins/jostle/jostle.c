@@ -84,7 +84,7 @@ static void DebugPOLYAREA(POLYAREA * s, char *color)
 	VNODE *v;
 	POLYAREA *p;
 	pcb_hid_t *ddraw;
-	hid_gc_t ddgc;
+	pcb_hid_gc_t ddgc;
 
 #ifndef DEBUG_POLYAREA
 	return;

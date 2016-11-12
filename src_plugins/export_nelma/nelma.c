@@ -149,7 +149,7 @@ static double nelma_substratee = -1;
 /* Permittivity of empty space (As/Vm) */
 static const double nelma_air_epsilon = 8.85e-12;
 
-hid_attribute_t nelma_attribute_list[] = {
+pcb_hid_attribute_t nelma_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "nelma Options"
@@ -211,7 +211,7 @@ Substrate relative epsilon.
 #define NUM_OPTIONS (sizeof(nelma_attribute_list)/sizeof(nelma_attribute_list[0]))
 
 REGISTER_ATTRIBUTES(nelma_attribute_list, nelma_cookie)
-		 static hid_attr_val_t nelma_values[NUM_OPTIONS];
+		 static pcb_hid_attr_val_t nelma_values[NUM_OPTIONS];
 
 /* *** Utility funcions **************************************************** */
 
@@ -480,7 +480,7 @@ static void nelma_parse_arguments(int *argc, char ***argv)
 	hid_parse_command_line(argc, argv);
 }
 
-static hid_attribute_t *nelma_get_export_options(int *n)
+static pcb_hid_attribute_t *nelma_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 
@@ -594,7 +594,7 @@ void nelma_start_png_export()
 	hid_expose_callback(&nelma_hid, &region, 0);
 }
 
-static void nelma_do_export(hid_attr_val_t * options)
+static void nelma_do_export(pcb_hid_attr_val_t * options)
 {
 	int save_ons[MAX_LAYER + 2];
 	int i, idx;
@@ -697,9 +697,9 @@ static int nelma_set_layer(const char *name, int group, int empty)
 	return 0;
 }
 
-static hid_gc_t nelma_make_gc(void)
+static pcb_hid_gc_t nelma_make_gc(void)
 {
-	hid_gc_t rv = (hid_gc_t) malloc(sizeof(struct hid_gc_s));
+	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(struct hid_gc_s));
 	rv->me_pointer = &nelma_hid;
 	rv->cap = Trace_Cap;
 	rv->width = 1;
@@ -709,7 +709,7 @@ static hid_gc_t nelma_make_gc(void)
 	return rv;
 }
 
-static void nelma_destroy_gc(hid_gc_t gc)
+static void nelma_destroy_gc(pcb_hid_gc_t gc)
 {
 	free(gc);
 }
@@ -719,7 +719,7 @@ static void nelma_use_mask(int use_it)
 	/* does nothing */
 }
 
-static void nelma_set_color(hid_gc_t gc, const char *name)
+static void nelma_set_color(pcb_hid_gc_t gc, const char *name)
 {
 	if (nelma_im == NULL) {
 		return;
@@ -743,27 +743,27 @@ static void nelma_set_color(hid_gc_t gc, const char *name)
 	return;
 }
 
-static void nelma_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
+static void nelma_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void nelma_set_line_width(hid_gc_t gc, Coord width)
+static void nelma_set_line_width(pcb_hid_gc_t gc, Coord width)
 {
 	gc->width = width;
 }
 
-static void nelma_set_draw_xor(hid_gc_t gc, int xor_)
+static void nelma_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 {
 	;
 }
 
-static void nelma_set_draw_faded(hid_gc_t gc, int faded)
+static void nelma_set_draw_faded(pcb_hid_gc_t gc, int faded)
 {
 	gc->faded = faded;
 }
 
-static void use_gc(hid_gc_t gc)
+static void use_gc(pcb_hid_gc_t gc)
 {
 	int need_brush = 0;
 
@@ -865,13 +865,13 @@ static void use_gc(hid_gc_t gc)
 	}
 }
 
-static void nelma_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nelma_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	use_gc(gc);
 	gdImageRectangle(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gc->color->c);
 }
 
-static void nelma_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nelma_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	use_gc(gc);
 	gdImageSetThickness(nelma_im, 0);
@@ -879,7 +879,7 @@ static void nelma_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	gdImageFilledRectangle(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gc->color->c);
 }
 
-static void nelma_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nelma_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	if (x1 == x2 && y1 == y2) {
 		Coord w = gc->width / 2;
@@ -893,7 +893,7 @@ static void nelma_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	gdImageLine(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gdBrushed);
 }
 
-static void nelma_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void nelma_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
 	Angle sa, ea;
 
@@ -931,7 +931,7 @@ static void nelma_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord h
 						 pcb_to_nelma(2 * width), pcb_to_nelma(2 * height), sa, ea, gdBrushed);
 }
 
-static void nelma_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
+static void nelma_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	use_gc(gc);
 
@@ -942,7 +942,7 @@ static void nelma_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 
 }
 
-static void nelma_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
+static void nelma_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	int i;
 	gdPoint *points;

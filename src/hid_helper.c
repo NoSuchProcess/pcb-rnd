@@ -92,7 +92,7 @@ const char *layer_type_to_file_name(int idx, int style)
 	}
 }
 
-void derive_default_filename(const char *pcbfile, hid_attribute_t * filename_attrib, const char *suffix, char **memory)
+void derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix, char **memory)
 {
 	char *buf;
 	char *pf;

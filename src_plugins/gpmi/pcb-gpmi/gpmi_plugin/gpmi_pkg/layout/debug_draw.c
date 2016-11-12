@@ -35,7 +35,7 @@ void debug_draw_finish(dctx_t *ctx)
 dctx_t *debug_draw_dctx(void)
 {
 	dctx_t *ctx;
-	hid_gc_t gc;
+	pcb_hid_gc_t gc;
 	need_ddh(NULL);
 	gc = ddh->make_gc();
 	if (gc == NULL) {

@@ -573,7 +573,7 @@ static Widget create_form_ok_dialog(const char *name, int ok)
 	return topform;
 }
 
-int lesstif_attribute_dialog(hid_attribute_t * attrs, int n_attrs, hid_attr_val_t * results, const char *title, const char *descr)
+int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
 {
 	Widget dialog, topform, lform, form;
 	Widget *wl;
@@ -889,9 +889,9 @@ options, and print the layout.
 
 static int Print(int argc, const char **argv, Coord x, Coord y)
 {
-	hid_attribute_t *opts;
+	pcb_hid_attribute_t *opts;
 	pcb_hid_t *printer;
-	hid_attr_val_t *vals;
+	pcb_hid_attr_val_t *vals;
 	int n;
 
 	printer = hid_find_printer();
@@ -900,7 +900,7 @@ static int Print(int argc, const char **argv, Coord x, Coord y)
 		return 1;
 	}
 	opts = printer->get_export_options(&n);
-	vals = (hid_attr_val_t *) calloc(n, sizeof(hid_attr_val_t));
+	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
 	if (lesstif_attribute_dialog(opts, n, vals, "Print", "")) {
 		free(vals);
 		return 1;
@@ -910,7 +910,7 @@ static int Print(int argc, const char **argv, Coord x, Coord y)
 	return 0;
 }
 
-static hid_attribute_t printer_calibrate_attrs[] = {
+static pcb_hid_attribute_t printer_calibrate_attrs[] = {
 	{"Enter Values here:", "",
 	 HID_Label, 0, 0, {0, 0, 0}, 0, 0},
 	{"x-calibration", "X scale for calibrating your printer",
@@ -919,7 +919,7 @@ static hid_attribute_t printer_calibrate_attrs[] = {
 	 HID_Real, 0.5, 25, {0, 0, 1.00}, 0, 0}
 };
 
-static hid_attr_val_t printer_calibrate_values[3];
+static pcb_hid_attr_val_t printer_calibrate_values[3];
 
 static const char printcalibrate_syntax[] = "PrintCalibrate()";
 
@@ -958,9 +958,9 @@ that exporter's options, and exports the layout.
 static int Export(int argc, const char **argv, Coord x, Coord y)
 {
 	static Widget selector = 0;
-	hid_attribute_t *opts;
+	pcb_hid_attribute_t *opts;
 	pcb_hid_t *printer, **hids;
-	hid_attr_val_t *vals;
+	pcb_hid_attr_val_t *vals;
 	int n, i, count;
 	Widget prev = 0;
 	Widget w;
@@ -1014,7 +1014,7 @@ static int Export(int argc, const char **argv, Coord x, Coord y)
 	exporter = printer;
 
 	opts = printer->get_export_options(&n);
-	vals = (hid_attr_val_t *) calloc(n, sizeof(hid_attr_val_t));
+	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
 	if (lesstif_attribute_dialog(opts, n, vals, "Export", NULL)) {
 		free(vals);
 		return 1;
