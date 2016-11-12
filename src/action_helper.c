@@ -230,7 +230,7 @@ static struct {
 	pcb_line_t line;
 } fake;
 
-action_note_t Note;
+pcb_action_note_t Note;
 int defer_updates = 0;
 int defer_needs_update = 0;
 

@@ -66,9 +66,9 @@ typedef struct {
 	void *ptr1;
 	void *ptr2;
 	void *ptr3;
-} action_note_t;
+} pcb_action_note_t;
 
-extern action_note_t Note;
+extern pcb_action_note_t Note;
 extern pcb_bool saved_mode;
 
 void ReleaseMode(void);
