@@ -28,7 +28,7 @@ extern char *CleanBOMString(const char *in);
 
 const char *xy_cookie = "bom HID";
 
-static HID_Attribute xy_options[] = {
+static hid_attribute_t xy_options[] = {
 /* %start-doc options "8 XY Creation"
 @ftable @code
 @item --xyfile <string>
@@ -57,12 +57,12 @@ Unit of XY dimensions. Defaults to mil.
 
 #define NUM_OPTIONS (sizeof(xy_options)/sizeof(xy_options[0]))
 
-static HID_Attr_Val xy_values[NUM_OPTIONS];
+static hid_attr_val_t xy_values[NUM_OPTIONS];
 
 static const char *xy_filename;
 static const Unit *xy_unit;
 
-static HID_Attribute *xy_get_export_options(int *n)
+static hid_attribute_t *xy_get_export_options(int *n)
 {
 	static char *last_xy_filename = 0;
 	static int last_unit_value = -1;
@@ -325,7 +325,7 @@ static int PrintXY(void)
 	return (0);
 }
 
-static void xy_do_export(HID_Attr_Val * options)
+static void xy_do_export(hid_attr_val_t * options)
 {
 	int i;
 

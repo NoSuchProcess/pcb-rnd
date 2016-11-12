@@ -32,6 +32,6 @@
 #include "hid.h"
 
 extern int (*stub_DrawFab_overhang)(void);
-extern void (*stub_DrawFab)(hidGC gc);
+extern void (*stub_DrawFab)(hid_gc_t gc);
 
 #endif

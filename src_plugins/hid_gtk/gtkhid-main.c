@@ -1000,7 +1000,7 @@ pcb_hid_drc_gui_t ghid_drc_gui = {
 	ghid_drc_window_throw_dialog,
 };
 
-extern HID_Attribute *ghid_get_export_options(int *);
+extern hid_attribute_t *ghid_get_export_options(int *);
 
 
 /* ------------------------------------------------------------
@@ -1403,7 +1403,7 @@ static int Print(int argc, const char **argv, Coord x, Coord y)
 
 /* ------------------------------------------------------------ */
 
-static HID_Attribute printer_calibrate_attrs[] = {
+static hid_attribute_t printer_calibrate_attrs[] = {
 	{N_("Enter Values here:"), "",
 	 HID_Label, 0, 0, {0, 0, 0}, 0, 0},
 	{N_("x-calibration"), N_("X scale for calibrating your printer"),
@@ -1412,7 +1412,7 @@ static HID_Attribute printer_calibrate_attrs[] = {
 	 HID_Real, 0.5, 25, {0, 0, 1.00}, 0, 0}
 };
 
-static HID_Attr_Val printer_calibrate_values[3];
+static hid_attr_val_t printer_calibrate_values[3];
 
 static const char printcalibrate_syntax[] = "PrintCalibrate()";
 

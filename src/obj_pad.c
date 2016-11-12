@@ -343,7 +343,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 	DrawTextLowLevel(&text, 0);
 }
 
-static void _draw_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
+static void _draw_pad(hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	if (clear && !mask && pad->Clearance <= 0)
 		return;

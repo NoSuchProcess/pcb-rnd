@@ -5,7 +5,7 @@
 
 HID_AttrNode *hid_attr_nodes = 0;
 
-void hid_register_attributes(HID_Attribute * a, int n, const char *cookie, int copy)
+void hid_register_attributes(hid_attribute_t * a, int n, const char *cookie, int copy)
 {
 	HID_AttrNode *ha;
 
@@ -54,7 +54,7 @@ void hid_parse_command_line(int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			HID_Attribute *a = ha->attributes + i;
+			hid_attribute_t *a = ha->attributes + i;
 			switch (a->type) {
 			case HID_Label:
 				break;
@@ -84,7 +84,7 @@ void hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case HID_Mixed:
 				if (a->value) {
-					*(HID_Attr_Val *) a->value = a->default_val;
+					*(hid_attr_val_t *) a->value = a->default_val;
 			case HID_Unit:
 					if (a->value)
 						*(int *) a->value = a->default_val.int_value;
@@ -106,7 +106,7 @@ void hid_parse_command_line(int *argc, char ***argv)
 		for (ha = hid_attr_nodes; ha; ha = ha->next)
 			for (i = 0; i < ha->n; i++)
 				if (strcmp((*argv)[0] + arg_ofs, ha->attributes[i].name) == 0) {
-					HID_Attribute *a = ha->attributes + i;
+					hid_attribute_t *a = ha->attributes + i;
 					char *ep;
 					const Unit *unit;
 					switch (ha->attributes[i].type) {
@@ -210,7 +210,7 @@ void hid_usage_option(const char *name, const char *help)
 	fprintf(stderr, "%-20s %s\n", name, help);
 }
 
-void hid_usage(HID_Attribute * a, int numa)
+void hid_usage(hid_attribute_t * a, int numa)
 {
 	for (; numa > 0; numa--,a++) {
 		const char *help;

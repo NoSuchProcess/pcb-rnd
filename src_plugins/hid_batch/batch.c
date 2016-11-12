@@ -26,11 +26,11 @@ static void batch_end(void);
 /* This is a text-line "batch" HID, which exists for scripting and
    non-GUI needs.  */
 
-typedef struct hid_gc_struct {
+typedef struct hid_gc_s {
 	int nothing_interesting_here;
-} hid_gc_struct;
+} hid_gc_s;
 
-static HID_Attribute *batch_get_export_options(int *n_ret)
+static hid_attribute_t *batch_get_export_options(int *n_ret)
 {
 	return 0;
 }
@@ -123,7 +123,7 @@ extern int isatty();
 
 /* ----------------------------------------------------------------------------- */
 static int batch_stay;
-static void batch_do_export(HID_Attr_Val * options)
+static void batch_do_export(hid_attr_val_t * options)
 {
 	int interactive;
 	char line[1000];
@@ -178,12 +178,12 @@ static int batch_set_layer(const char *name, int idx, int empty)
 	return 0;
 }
 
-static hidGC batch_make_gc(void)
+static hid_gc_t batch_make_gc(void)
 {
 	return 0;
 }
 
-static void batch_destroy_gc(hidGC gc)
+static void batch_destroy_gc(hid_gc_t gc)
 {
 }
 
@@ -191,43 +191,43 @@ static void batch_use_mask(int use_it)
 {
 }
 
-static void batch_set_color(hidGC gc, const char *name)
+static void batch_set_color(hid_gc_t gc, const char *name)
 {
 }
 
-static void batch_set_line_cap(hidGC gc, pcb_cap_style_t style)
+static void batch_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
 {
 }
 
-static void batch_set_line_width(hidGC gc, Coord width)
+static void batch_set_line_width(hid_gc_t gc, Coord width)
 {
 }
 
-static void batch_set_draw_xor(hidGC gc, int xor_set)
+static void batch_set_draw_xor(hid_gc_t gc, int xor_set)
 {
 }
 
-static void batch_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void batch_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 }
 
-static void batch_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
+static void batch_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
 {
 }
 
-static void batch_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void batch_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 }
 
-static void batch_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
+static void batch_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 }
 
-static void batch_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
+static void batch_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 }
 
-static void batch_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void batch_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 }
 
@@ -294,7 +294,7 @@ static void batch_stop_block_hook(pcb_hidval_t mlpoll)
 }
 
 static int
-batch_attribute_dialog(HID_Attribute * attrs_, int n_attrs_, HID_Attr_Val * results_, const char *title_, const char *descr_)
+batch_attribute_dialog(hid_attribute_t * attrs_, int n_attrs_, hid_attr_val_t * results_, const char *title_, const char *descr_)
 {
 	return 0;
 }

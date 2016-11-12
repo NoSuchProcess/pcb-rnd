@@ -87,7 +87,7 @@ static void enum_changed_cb(GtkWidget * combo_box, int *val)
 }
 
 
-int ghid_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * results, const char *title, const char *descr)
+int ghid_attribute_dialog(hid_attribute_t * attrs, int n_attrs, hid_attr_val_t * results, const char *title, const char *descr)
 {
 	GtkWidget *dialog;
 	GtkWidget *content_area;
@@ -315,10 +315,10 @@ static void exporter_clicked_cb(GtkButton * button, pcb_hid_t * exporter)
 
 void ghid_dialog_print(pcb_hid_t * hid)
 {
-	HID_Attribute *attr;
+	hid_attribute_t *attr;
 	int n = 0;
 	int i;
-	HID_Attr_Val *results = NULL;
+	hid_attr_val_t *results = NULL;
 
 	/* signal the initial export select dialog that it should close */
 	if (export_dialog)
@@ -328,7 +328,7 @@ void ghid_dialog_print(pcb_hid_t * hid)
 
 	attr = exporter->get_export_options(&n);
 	if (n > 0) {
-		results = (HID_Attr_Val *) malloc(n * sizeof(HID_Attr_Val));
+		results = (hid_attr_val_t *) malloc(n * sizeof(hid_attr_val_t));
 		if (results == NULL) {
 			fprintf(stderr, "ghid_dialog_print() -- malloc failed\n");
 			exit(1);

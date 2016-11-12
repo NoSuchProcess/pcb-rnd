@@ -15,17 +15,17 @@
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called GUI function %s without having a GUI available.\n", func); abort()
 
-typedef struct hid_gc_struct {
+typedef struct hid_gc_s {
 	int nothing_interesting_here;
-} hid_gc_struct;
+} hid_gc_s;
 
-static HID_Attribute *nogui_get_export_options(int *n_ret)
+static hid_attribute_t *nogui_get_export_options(int *n_ret)
 {
 	CRASH("get_export_options");
 	return 0;
 }
 
-static void nogui_do_export(HID_Attr_Val * options)
+static void nogui_do_export(hid_attr_val_t * options)
 {
 	CRASH("do_export");
 }
@@ -55,12 +55,12 @@ static void nogui_end_layer(void)
 {
 }
 
-static hidGC nogui_make_gc(void)
+static hid_gc_t nogui_make_gc(void)
 {
 	return 0;
 }
 
-static void nogui_destroy_gc(hidGC gc)
+static void nogui_destroy_gc(hid_gc_t gc)
 {
 }
 
@@ -69,81 +69,81 @@ static void nogui_use_mask(int use_it)
 	CRASH("use_mask");
 }
 
-static void nogui_set_color(hidGC gc, const char *name)
+static void nogui_set_color(hid_gc_t gc, const char *name)
 {
 	CRASH("set_color");
 }
 
-static void nogui_set_line_cap(hidGC gc, pcb_cap_style_t style)
+static void nogui_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
 {
 	CRASH("set_line_cap");
 }
 
-static void nogui_set_line_width(hidGC gc, Coord width)
+static void nogui_set_line_width(hid_gc_t gc, Coord width)
 {
 	CRASH("set_line_width");
 }
 
-static void nogui_set_draw_xor(hidGC gc, int xor_)
+static void nogui_set_draw_xor(hid_gc_t gc, int xor_)
 {
 	CRASH("set_draw_xor");
 }
 
-static void nogui_set_draw_faded(hidGC gc, int faded)
+static void nogui_set_draw_faded(hid_gc_t gc, int faded)
 {
 }
 
-static void nogui_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nogui_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	CRASH("draw_line");
 }
 
-static void nogui_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
+static void nogui_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
 {
 	CRASH("draw_arc");
 }
 
-static void nogui_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nogui_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	CRASH("draw_rect");
 }
 
-static void nogui_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
+static void nogui_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	CRASH("fill_circle");
 }
 
-static void nogui_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
+static void nogui_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	CRASH("fill_polygon");
 }
 
-static void nogui_fill_pcb_polygon(hidGC gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+static void nogui_fill_pcb_polygon(hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	CRASH("fill_pcb_polygon");
 }
 
-static void nogui_fill_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
+static void nogui_fill_pcb_pad(hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	CRASH("fill_pcb_pad");
 }
 
-static void nogui_thindraw_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
+static void nogui_thindraw_pcb_pad(hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	CRASH("thindraw_pcb_pad");
 }
 
-static void nogui_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pad, pcb_bool drawHole, pcb_bool mask)
+static void nogui_fill_pcb_pv(hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t * pad, pcb_bool drawHole, pcb_bool mask)
 {
 	CRASH("fill_pcb_pv");
 }
 
-static void nogui_thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t * pad, pcb_bool drawHole, pcb_bool mask)
+static void nogui_thindraw_pcb_pv(hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t * pad, pcb_bool drawHole, pcb_bool mask)
 {
 	CRASH("thindraw_pcb_pv");
 }
 
-static void nogui_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void nogui_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	CRASH("fill_rect");
 }
@@ -355,7 +355,7 @@ static char *nogui_fileselect(const char *title, const char *descr,
 		return pcb_strdup(answer);
 }
 
-static int nogui_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * results, const char *title, const char *descr)
+static int nogui_attribute_dialog(hid_attribute_t * attrs, int n_attrs, hid_attr_val_t * results, const char *title, const char *descr)
 {
 	CRASH("attribute_dialog");
 }

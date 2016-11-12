@@ -37,7 +37,7 @@
 
 static const char *loghid_cookie = "loghid plugin";
 
-HID_Attribute loghid_attribute_list[] = {
+hid_attribute_t loghid_attribute_list[] = {
 	{"target-hid", "the real GUI or export HID to relay calls to",
 	 HID_String, 0, 0, {0, 0, 0}, 0, 0}
 #define HA_target_hid 0
@@ -88,7 +88,7 @@ static int loghid_usage(const char *topic)
 
 REGISTER_ATTRIBUTES(loghid_attribute_list, loghid_cookie)
 
-static HID_Attribute *loghid_get_export_options(int *n)
+static hid_attribute_t *loghid_get_export_options(int *n)
 {
 /*	loghid_attribute_list[HA_psfile] = pcb_strdup("default?");*/
 

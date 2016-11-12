@@ -27,7 +27,7 @@
 
 extern pcb_hid_t ghid_hid;
 
-static hidGC current_gc = NULL;
+static hid_gc_t current_gc = NULL;
 
 /* Sets gport->u_gc to the "right" GC to use (wrt mask or window)
 */
@@ -54,7 +54,7 @@ typedef struct render_priv {
 } render_priv;
 
 
-typedef struct hid_gc_struct {
+typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 
 	const char *colorname;
@@ -62,7 +62,7 @@ typedef struct hid_gc_struct {
 	Coord width;
 	gint cap, join;
 	gchar xor;
-} hid_gc_struct;
+} hid_gc_s;
 
 
 static void draw_lead_user(render_priv * priv);
@@ -156,16 +156,16 @@ static void ghid_end_layer(void)
 	end_subcomposite();
 }
 
-void ghid_destroy_gc(hidGC gc)
+void ghid_destroy_gc(hid_gc_t gc)
 {
 	g_free(gc);
 }
 
-hidGC ghid_make_gc(void)
+hid_gc_t ghid_make_gc(void)
 {
-	hidGC rv;
+	hid_gc_t rv;
 
-	rv = g_new0(hid_gc_struct, 1);
+	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &ghid_hid;
 	rv->colorname = conf_core.appearance.color.background;
 	rv->alpha_mult = 1.0;
@@ -302,7 +302,7 @@ static void set_special_grid_color(void)
 	gport->grid_color.blue ^= gport->bg_color.blue;
 }
 
-void ghid_set_special_colors(HID_Attribute * ha)
+void ghid_set_special_colors(hid_attribute_t * ha)
 {
 	if (!ha->name || !ha->value)
 		return;
@@ -329,7 +329,7 @@ typedef struct {
 	double blue;
 } ColorCache;
 
-static void set_gl_color_for_gc(hidGC gc)
+static void set_gl_color_for_gc(hid_gc_t gc)
 {
 	render_priv *priv = gport->render_priv;
 	static void *cache = NULL;
@@ -421,30 +421,30 @@ static void set_gl_color_for_gc(hidGC gc)
 	glColor4d(r, g, b, a);
 }
 
-void ghid_set_color(hidGC gc, const char *name)
+void ghid_set_color(hid_gc_t gc, const char *name)
 {
 	gc->colorname = name;
 	set_gl_color_for_gc(gc);
 }
 
-void ghid_set_alpha_mult(hidGC gc, double alpha_mult)
+void ghid_set_alpha_mult(hid_gc_t gc, double alpha_mult)
 {
 	gc->alpha_mult = alpha_mult;
 	set_gl_color_for_gc(gc);
 }
 
-void ghid_set_line_cap(hidGC gc, pcb_cap_style_t style)
+void ghid_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-void ghid_set_line_width(hidGC gc, Coord width)
+void ghid_set_line_width(hid_gc_t gc, Coord width)
 {
 	gc->width = width;
 }
 
 
-void ghid_set_draw_xor(hidGC gc, int xor)
+void ghid_set_draw_xor(hid_gc_t gc, int xor)
 {
 	/* NOT IMPLEMENTED */
 
@@ -452,12 +452,12 @@ void ghid_set_draw_xor(hidGC gc, int xor)
 	 * We manage our own drawing model for that anyway. */
 }
 
-void ghid_set_draw_faded(hidGC gc, int faded)
+void ghid_set_draw_faded(hid_gc_t gc, int faded)
 {
 	printf("ghid_set_draw_faded(%p,%d) -- not implemented\n", (void *)gc, faded);
 }
 
-void ghid_set_line_cap_angle(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_set_line_cap_angle(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	printf("ghid_set_line_cap_angle() -- not implemented\n");
 }
@@ -467,7 +467,7 @@ static void ghid_invalidate_current_gc(void)
 	current_gc = NULL;
 }
 
-static int use_gc(hidGC gc)
+static int use_gc(hid_gc_t gc)
 {
 	if (gc->me_pointer != &ghid_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n");
@@ -483,21 +483,21 @@ static int use_gc(hidGC gc)
 	return 1;
 }
 
-void ghid_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	USE_GC(gc);
 
 	hidgl_draw_line(gc->cap, gc->width, x1, y1, x2, y2, gport->view.coord_per_px);
 }
 
-void ghid_draw_arc(hidGC gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
+void ghid_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
 {
 	USE_GC(gc);
 
 	hidgl_draw_arc(gc->width, cx, cy, xradius, yradius, start_angle, delta_angle, gport->view.coord_per_px);
 }
 
-void ghid_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	USE_GC(gc);
 
@@ -505,7 +505,7 @@ void ghid_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 }
 
 
-void ghid_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
+void ghid_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	USE_GC(gc);
 
@@ -513,21 +513,21 @@ void ghid_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 }
 
 
-void ghid_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
+void ghid_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	USE_GC(gc);
 
 	hidgl_fill_polygon(n_coords, x, y);
 }
 
-void ghid_fill_pcb_polygon(hidGC gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+void ghid_fill_pcb_polygon(hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	USE_GC(gc);
 
 	hidgl_fill_pcb_polygon(poly, clip_box, gport->view.coord_per_px);
 }
 
-void ghid_thindraw_pcb_polygon(hidGC gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+void ghid_thindraw_pcb_polygon(hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	common_thindraw_pcb_polygon(gc, poly, clip_box);
 	ghid_set_alpha_mult(gc, 0.25);
@@ -535,7 +535,7 @@ void ghid_thindraw_pcb_polygon(hidGC gc, pcb_polygon_t * poly, const pcb_box_t *
 	ghid_set_alpha_mult(gc, 1.0);
 }
 
-void ghid_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	USE_GC(gc);
 

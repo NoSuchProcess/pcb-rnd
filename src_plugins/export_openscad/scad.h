@@ -109,14 +109,14 @@ typedef struct color_table_struct {
 	int r, g, b;
 } color_table_struct;
 
-typedef struct hid_gc_struct {
+typedef struct hid_gc_s {
 	pcb_cap_style_t cap;
 	int width;
 	int erase;
 	int drill;
 	int r, g, b;
 	int seq;
-} hid_gc_struct;
+} hid_gc_s;
 
 typedef struct {
 	int processed;

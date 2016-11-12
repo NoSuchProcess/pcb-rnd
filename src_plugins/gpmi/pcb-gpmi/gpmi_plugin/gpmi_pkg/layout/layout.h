@@ -261,7 +261,7 @@ void fill_pcb_polygon(dctx_t *ctx, pcb_polygon_t *poly, const pcb_box_t *clip_bo
 void thindraw_pcb_polygon(dctx_t *ctx, pcb_polygon_t *poly, const pcb_box_t *clip_box);
 void fill_pcb_pad(dctx_t *ctx, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask);
 void thindraw_pcb_pad(dctx_t *ctx, pcb_pad_t *pad, pcb_bool clip, pcb_bool mask);
-void fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask);
-void thindraw_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask);
+void fill_pcb_pv(hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask);
+void thindraw_pcb_pv(hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask);
 void fill_rect(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 */

@@ -33,7 +33,7 @@ int dummy_DrawFab_overhang(void)
 	return 0;
 }
 
-void dummy_DrawFab(hidGC gc)
+void dummy_DrawFab(hid_gc_t gc)
 {
 	pcb_text_t t;
 	t.X = 0;
@@ -46,5 +46,5 @@ void dummy_DrawFab(hidGC gc)
 }
 
 int (*stub_DrawFab_overhang)(void) = dummy_DrawFab_overhang;
-void (*stub_DrawFab)(hidGC gc) = dummy_DrawFab;
+void (*stub_DrawFab)(hid_gc_t gc) = dummy_DrawFab;
 

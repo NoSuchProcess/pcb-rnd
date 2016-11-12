@@ -72,7 +72,7 @@ static Coord viadrill = 25;
 
 static pcb_hid_t dsn_hid;
 
-static HID_Attribute dsn_options[] = {
+static hid_attribute_t dsn_options[] = {
 	{"dsnfile", "SPECCTRA output file",
 	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dsnfile 0
@@ -95,11 +95,11 @@ static HID_Attribute dsn_options[] = {
 #define NUM_OPTIONS (sizeof(dsn_options)/sizeof(dsn_options[0]))
 REGISTER_ATTRIBUTES(dsn_options, dsn_cookie)
 
-static HID_Attr_Val dsn_values[NUM_OPTIONS];
+static hid_attr_val_t dsn_values[NUM_OPTIONS];
 
 static const char *dsn_filename;
 
-static HID_Attribute *dsn_get_export_options(int *n)
+static hid_attribute_t *dsn_get_export_options(int *n)
 {
 	static char *last_dsn_filename = 0;
 	if (PCB) {
@@ -538,7 +538,7 @@ static int PrintSPECCTRA(void)
 }
 
 
-static void dsn_do_export(HID_Attr_Val * options)
+static void dsn_do_export(hid_attr_val_t * options)
 {
 	int i;
 	if (!options) {

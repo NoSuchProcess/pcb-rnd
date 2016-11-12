@@ -43,7 +43,7 @@ typedef struct render_priv {
 } render_priv;
 
 
-typedef struct hid_gc_struct {
+typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 	GdkGC *gc;
 
@@ -52,7 +52,7 @@ typedef struct hid_gc_struct {
 	gint cap, join;
 	gchar xor_mask;
 	gint mask_seq;
-} hid_gc_struct;
+} hid_gc_s;
 
 
 static void draw_lead_user(render_priv * priv);
@@ -97,7 +97,7 @@ int ghid_set_layer(const char *name, int group, int empty)
 	return 0;
 }
 
-void ghid_destroy_gc(hidGC gc)
+void ghid_destroy_gc(hid_gc_t gc)
 {
 	if (gc->gc)
 		g_object_unref(gc->gc);
@@ -106,11 +106,11 @@ void ghid_destroy_gc(hidGC gc)
 	g_free(gc);
 }
 
-hidGC ghid_make_gc(void)
+hid_gc_t ghid_make_gc(void)
 {
-	hidGC rv;
+	hid_gc_t rv;
 
-	rv = g_new0(hid_gc_struct, 1);
+	rv = g_new0(hid_gc_s, 1);
 	rv->me_pointer = &ghid_hid;
 	rv->colorname = g_strdup(conf_core.appearance.color.background);
 	return rv;
@@ -455,7 +455,7 @@ void ghid_set_special_colors(conf_native_t *cfg)
 	}
 }
 
-void ghid_set_color(hidGC gc, const char *name)
+void ghid_set_color(hid_gc_t gc, const char *name)
 {
 	static void *cache = 0;
 	pcb_hidval_t cval;
@@ -516,7 +516,7 @@ void ghid_set_color(hidGC gc, const char *name)
 	}
 }
 
-void ghid_set_line_cap(hidGC gc, pcb_cap_style_t style)
+void ghid_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
 {
 	render_priv *priv = gport->render_priv;
 
@@ -536,7 +536,7 @@ void ghid_set_line_cap(hidGC gc, pcb_cap_style_t style)
 		gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
-void ghid_set_line_width(hidGC gc, Coord width)
+void ghid_set_line_width(hid_gc_t gc, Coord width)
 {
 	render_priv *priv = gport->render_priv;
 
@@ -545,7 +545,7 @@ void ghid_set_line_width(hidGC gc, Coord width)
 		gdk_gc_set_line_attributes(WHICH_GC(gc), Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
-void ghid_set_draw_xor(hidGC gc, int xor_mask)
+void ghid_set_draw_xor(hid_gc_t gc, int xor_mask)
 {
 	gc->xor_mask = xor_mask;
 	if (!gc->gc)
@@ -554,7 +554,7 @@ void ghid_set_draw_xor(hidGC gc, int xor_mask)
 	ghid_set_color(gc, gc->colorname);
 }
 
-static int use_gc(hidGC gc)
+static int use_gc(hid_gc_t gc)
 {
 	render_priv *priv = gport->render_priv;
 	GdkWindow *window = gtk_widget_get_window(gport->top_window);
@@ -585,7 +585,7 @@ static int use_gc(hidGC gc)
 	return 1;
 }
 
-void ghid_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	double dx1, dy1, dx2, dy2;
 	render_priv *priv = gport->render_priv;
@@ -602,7 +602,7 @@ void ghid_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	gdk_draw_line(gport->drawable, priv->u_gc, dx1, dy1, dx2, dy2);
 }
 
-void ghid_draw_arc(hidGC gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
+void ghid_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
 {
 	gint vrx, vry;
 	gint w, h, radius;
@@ -637,7 +637,7 @@ void ghid_draw_arc(hidGC gc, Coord cx, Coord cy, Coord xradius, Coord yradius, A
 							 Vx(cx) - vrx, Vy(cy) - vry, vrx * 2, vry * 2, (start_angle + 180) * 64, delta_angle * 64);
 }
 
-void ghid_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	gint w, h, lw;
 	render_priv *priv = gport->render_priv;
@@ -673,7 +673,7 @@ void ghid_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 }
 
 
-void ghid_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
+void ghid_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	gint w, h, vr;
 	render_priv *priv = gport->render_priv;
@@ -690,7 +690,7 @@ void ghid_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 	gdk_draw_arc(gport->drawable, priv->u_gc, TRUE, Vx(cx) - vr, Vy(cy) - vr, vr * 2, vr * 2, 0, 360 * 64);
 }
 
-void ghid_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
+void ghid_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	static GdkPoint *points = 0;
 	static int npoints = 0;
@@ -709,7 +709,7 @@ void ghid_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 	gdk_draw_polygon(gport->drawable, priv->u_gc, 1, points, n_coords);
 }
 
-void ghid_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void ghid_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	gint w, h, lw, xx, yy;
 	render_priv *priv = gport->render_priv;

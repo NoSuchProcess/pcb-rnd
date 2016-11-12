@@ -14,7 +14,7 @@
 /* TODO */
 #define MAX_LAYER 16
 
-HID_Attribute *gpmi_hid_get_export_options(int *num)
+hid_attribute_t *gpmi_hid_get_export_options(int *num)
 {
 	hid_t *h;
 
@@ -31,9 +31,9 @@ HID_Attribute *gpmi_hid_get_export_options(int *num)
 }
 
 static char *gcs = "abcdefghijklmnopqrstuvxyz";
-hidGC gpmi_hid_make_gc(void)
+hid_gc_t gpmi_hid_make_gc(void)
 {
-	hidGC ret;
+	hid_gc_t ret;
 	hid_t *h = hid_gpmi_data_get(exporter);
 
 	/* TODO: fix gc handling... */
@@ -44,13 +44,13 @@ hidGC gpmi_hid_make_gc(void)
 	return ret;
 }
 
-void gpmi_hid_destroy_gc(hidGC gc)
+void gpmi_hid_destroy_gc(hid_gc_t gc)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_destroy_gc, h, gc);
 }
 
-void gpmi_hid_do_export(HID_Attr_Val * options)
+void gpmi_hid_do_export(hid_attr_val_t * options)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
   int save_ons[MAX_LAYER + 2];
@@ -90,73 +90,73 @@ int gpmi_hid_set_layer(const char *name, int group, int empty)
 	return 1;
 }
 
-void gpmi_hid_set_color(hidGC gc, const char *name)
+void gpmi_hid_set_color(hid_gc_t gc, const char *name)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_set_color, h, gc, name);
 }
 
-void gpmi_hid_set_line_cap(hidGC gc, pcb_cap_style_t style)
+void gpmi_hid_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_set_line_cap, h, gc, style);
 }
 
-void gpmi_hid_set_line_width(hidGC gc, Coord width)
+void gpmi_hid_set_line_width(hid_gc_t gc, Coord width)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_set_line_width, h, gc, width);
 }
 
-void gpmi_hid_set_draw_xor(hidGC gc, int xor)
+void gpmi_hid_set_draw_xor(hid_gc_t gc, int xor)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_set_draw_xor, h, gc, xor);
 }
 
-void gpmi_hid_set_draw_faded(hidGC gc, int faded)
+void gpmi_hid_set_draw_faded(hid_gc_t gc, int faded)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_set_draw_faded, h, gc, faded);
 }
 
-void gpmi_hid_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void gpmi_hid_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_line, h, gc, x1, y1, x2, y2);
 }
 
-void gpmi_hid_draw_arc(hidGC gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
+void gpmi_hid_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_arc, h, gc, cx, cy, xradius, yradius, start_angle, delta_angle);
 }
 
-void gpmi_hid_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void gpmi_hid_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_rect, h, gc, x1, y1, x2, y2);
 }
 
-void gpmi_hid_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
+void gpmi_hid_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_circle, h, gc, cx, cy, radius);
 }
 
-void gpmi_hid_fill_polygon(hidGC gc, int n_coords, Coord *x, Coord *y)
+void gpmi_hid_fill_polygon(hid_gc_t gc, int n_coords, Coord *x, Coord *y)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	/* TODO: need accessor for these */
 	gpmi_event(h->module, HIDE_fill_polygon, h, gc, x, y);
 }
 
-void gpmi_hid_fill_pcb_polygon(hidGC gc, pcb_polygon_t *poly, const pcb_box_t *clip_box)
+void gpmi_hid_fill_pcb_polygon(hid_gc_t gc, pcb_polygon_t *poly, const pcb_box_t *clip_box)
 {
 	/* TODO */
 }
 
-void gpmi_hid_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+void gpmi_hid_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_rect, h, gc, x1, y1, x2, y2);
@@ -168,13 +168,13 @@ void gpmi_hid_use_mask(int use_it)
 	gpmi_event(h->module, HIDE_use_mask, h, use_it);
 }
 
-void gpmi_hid_fill_pcb_pv(hidGC fg_gc, hidGC bg_gc, pcb_pin_t *pad, pcb_bool drawHole, pcb_bool mask)
+void gpmi_hid_fill_pcb_pv(hid_gc_t fg_gc, hid_gc_t bg_gc, pcb_pin_t *pad, pcb_bool drawHole, pcb_bool mask)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_pcb_pv, h, fg_gc, bg_gc, pad, drawHole, mask);
 }
 
-void gpmi_hid_fill_pcb_pad(hidGC gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
+void gpmi_hid_fill_pcb_pad(hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_fill_pcb_pad, h, gc, pad, clear, mask);

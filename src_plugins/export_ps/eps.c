@@ -28,33 +28,33 @@
 /*----------------------------------------------------------------------------*/
 /* Function prototypes                                                        */
 /*----------------------------------------------------------------------------*/
-static HID_Attribute *eps_get_export_options(int *n);
-static void eps_do_export(HID_Attr_Val * options);
+static hid_attribute_t *eps_get_export_options(int *n);
+static void eps_do_export(hid_attr_val_t * options);
 static void eps_parse_arguments(int *argc, char ***argv);
 static int eps_set_layer(const char *name, int group, int empty);
-static hidGC eps_make_gc(void);
-static void eps_destroy_gc(hidGC gc);
+static hid_gc_t eps_make_gc(void);
+static void eps_destroy_gc(hid_gc_t gc);
 static void eps_use_mask(int use_it);
-static void eps_set_color(hidGC gc, const char *name);
-static void eps_set_line_cap(hidGC gc, pcb_cap_style_t style);
-static void eps_set_line_width(hidGC gc, Coord width);
-static void eps_set_draw_xor(hidGC gc, int _xor);
-static void eps_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void eps_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void eps_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle);
-static void eps_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void eps_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius);
-static void eps_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y);
+static void eps_set_color(hid_gc_t gc, const char *name);
+static void eps_set_line_cap(hid_gc_t gc, pcb_cap_style_t style);
+static void eps_set_line_width(hid_gc_t gc, Coord width);
+static void eps_set_draw_xor(hid_gc_t gc, int _xor);
+static void eps_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+static void eps_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+static void eps_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle);
+static void eps_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+static void eps_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius);
+static void eps_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y);
 static void eps_calibrate(double xval, double yval);
 static void eps_set_crosshair(int x, int y, int action);
 /*----------------------------------------------------------------------------*/
 
-typedef struct hid_gc_struct {
+typedef struct hid_gc_s {
 	pcb_cap_style_t cap;
 	Coord width;
 	int color;
 	int erase;
-} hid_gc_struct;
+} hid_gc_s;
 
 static pcb_hid_t eps_hid;
 
@@ -66,7 +66,7 @@ static int print_group[MAX_LAYER];
 static int print_layer[MAX_LAYER];
 static int fast_erase = -1;
 
-static HID_Attribute eps_attribute_list[] = {
+static hid_attribute_t eps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "92 Encapsulated Postscript Export"
@@ -131,9 +131,9 @@ Limit the bounds of the EPS file to the visible items.
 
 REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 
-		 static HID_Attr_Val eps_values[NUM_OPTIONS];
+		 static hid_attr_val_t eps_values[NUM_OPTIONS];
 
-		 static HID_Attribute *eps_get_export_options(int *n)
+		 static hid_attribute_t *eps_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 
@@ -178,7 +178,7 @@ static const char *filename;
 static pcb_box_t *bounds;
 static int in_mono, as_shown;
 
-void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
+void eps_hid_export_to_file(FILE * the_file, hid_attr_val_t * options)
 {
 	int i;
 	static int saved_layer_stack[MAX_LAYER];
@@ -303,7 +303,7 @@ void eps_hid_export_to_file(FILE * the_file, HID_Attr_Val * options)
 	conf_update(NULL); /* restore forced sets */
 }
 
-static void eps_do_export(HID_Attr_Val * options)
+static void eps_do_export(hid_attr_val_t * options)
 {
 	int i;
 	int save_ons[MAX_LAYER + 2];
@@ -391,16 +391,16 @@ static int eps_set_layer(const char *name, int group, int empty)
 	return 1;
 }
 
-static hidGC eps_make_gc(void)
+static hid_gc_t eps_make_gc(void)
 {
-	hidGC rv = (hidGC) malloc(sizeof(hid_gc_struct));
+	hid_gc_t rv = (hid_gc_t) malloc(sizeof(hid_gc_s));
 	rv->cap = Trace_Cap;
 	rv->width = 0;
 	rv->color = 0;
 	return rv;
 }
 
-static void eps_destroy_gc(hidGC gc)
+static void eps_destroy_gc(hid_gc_t gc)
 {
 	free(gc);
 }
@@ -427,7 +427,7 @@ static void eps_use_mask(int use_it)
 	}
 }
 
-static void eps_set_color(hidGC gc, const char *name)
+static void eps_set_color(hid_gc_t gc, const char *name)
 {
 	static void *cache = 0;
 	pcb_hidval_t cval;
@@ -458,22 +458,22 @@ static void eps_set_color(hidGC gc, const char *name)
 		gc->color = 0;
 }
 
-static void eps_set_line_cap(hidGC gc, pcb_cap_style_t style)
+static void eps_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void eps_set_line_width(hidGC gc, Coord width)
+static void eps_set_line_width(hid_gc_t gc, Coord width)
 {
 	gc->width = width;
 }
 
-static void eps_set_draw_xor(hidGC gc, int xor_)
+static void eps_set_draw_xor(hid_gc_t gc, int xor_)
 {
 	;
 }
 
-static void use_gc(hidGC gc)
+static void use_gc(hid_gc_t gc)
 {
 	if (linewidth != gc->width) {
 		pcb_fprintf(f, "%mi setlinewidth\n", gc->width);
@@ -502,16 +502,16 @@ static void use_gc(hidGC gc)
 	}
 }
 
-static void eps_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void eps_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius);
+static void eps_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+static void eps_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius);
 
-static void eps_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void eps_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-static void eps_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void eps_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	Coord w = gc->width / 2;
 	if (x1 == x2 && y1 == y2) {
@@ -540,7 +540,7 @@ static void eps_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	pcb_fprintf(f, "%mi %mi %mi %mi %s\n", x1, y1, x2, y2, gc->erase ? "tc" : "t");
 }
 
-static void eps_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void eps_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
 	Angle sa, ea;
 	if (delta_angle > 0) {
@@ -558,13 +558,13 @@ static void eps_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height
 	pcb_fprintf(f, "%ma %ma %mi %mi %mi %mi %g a\n", sa, ea, -width, height, cx, cy, (double) linewidth / width);
 }
 
-static void eps_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
+static void eps_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %s\n", cx, cy, radius, gc->erase ? "cc" : "c");
 }
 
-static void eps_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
+static void eps_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	int i;
 	const char *op = "moveto";
@@ -576,7 +576,7 @@ static void eps_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 	fprintf(f, "fill\n");
 }
 
-static void eps_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void eps_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);

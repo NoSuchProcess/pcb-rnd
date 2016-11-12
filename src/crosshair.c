@@ -71,7 +71,7 @@ static void thindraw_moved_pv(pcb_pin_t * pv, Coord x, Coord y)
 	gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &moved_pv, pcb_true, pcb_false);
 }
 
-static void draw_dashed_line(hidGC GC, Coord x1, Coord y1, Coord x2, Coord y2)
+static void draw_dashed_line(hid_gc_t GC, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 /* TODO: we need a real geo lib... using double here is plain wrong */
 	double dx = x2-x1, dy = y2-y1;

@@ -63,7 +63,7 @@ hid_cfg_keys_t lesstif_keymap;
 #define MAX_ZOOM_SCALE	10
 #define UUNIT	conf_core.editor.grid_unit->allow
 
-typedef struct hid_gc_struct {
+typedef struct hid_gc_s {
 	pcb_hid_t *me_pointer;
 	Pixel color;
 	char *colorname;
@@ -71,7 +71,7 @@ typedef struct hid_gc_struct {
 	pcb_cap_style_t cap;
 	char xor_set;
 	char erase;
-} hid_gc_struct;
+} hid_gc_s;
 
 static pcb_hid_t lesstif_hid;
 
@@ -179,7 +179,7 @@ static void ShowCrosshair(pcb_bool show)
 		 static int stdin_listen = 0;
 		 static char *background_image_file = 0;
 
-		 HID_Attribute lesstif_attribute_list[] = {
+		 hid_attribute_t lesstif_attribute_list[] = {
 			 {"install", "Install private colormap",
 				HID_Boolean, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
 #define HA_colormap 0
@@ -1071,9 +1071,9 @@ static void DrawBackgroundImage()
 
 /* ---------------------------------------------------------------------- */
 
-static HID_Attribute *lesstif_get_export_options(int *n)
+static hid_attribute_t *lesstif_get_export_options(int *n)
 {
-	*n = sizeof(lesstif_attribute_list) / sizeof(HID_Attribute);
+	*n = sizeof(lesstif_attribute_list) / sizeof(hid_attribute_t);
 	return lesstif_attribute_list;
 }
 
@@ -1699,7 +1699,7 @@ int lesstif_key_name(unsigned short int key_char, char *out, int out_len)
 extern Widget lesstif_menubar;
 static int lesstif_hid_inited = 0;
 
-static void lesstif_do_export(HID_Attr_Val * options)
+static void lesstif_do_export(hid_attr_val_t * options)
 {
 	Dimension width, height;
 	Widget menu;
@@ -1948,7 +1948,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			HID_Attribute *a = ha->attributes + i;
+			hid_attribute_t *a = ha->attributes + i;
 			switch (a->type) {
 			case HID_Integer:
 			case HID_Coord:
@@ -1992,7 +1992,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			HID_Attribute *a = ha->attributes + i;
+			hid_attribute_t *a = ha->attributes + i;
 			XrmOptionDescRec *o = new_options + acount;
 			char *tmpopt, *tmpres;
 			XtResource *r = new_resources + rcount;
@@ -2110,7 +2110,7 @@ static void lesstif_parse_arguments(int *argc, char ***argv)
 	rcount = 0;
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			HID_Attribute *a = ha->attributes + i;
+			hid_attribute_t *a = ha->attributes + i;
 			val_union *v = new_values + rcount;
 			switch (a->type) {
 			case HID_Integer:
@@ -2856,16 +2856,16 @@ static int lesstif_set_layer(const char *name, int group, int empty)
 	return 0;
 }
 
-static hidGC lesstif_make_gc(void)
+static hid_gc_t lesstif_make_gc(void)
 {
-	hidGC rv = (hid_gc_struct *) malloc(sizeof(hid_gc_struct));
-	memset(rv, 0, sizeof(hid_gc_struct));
+	hid_gc_t rv = (hid_gc_s *) malloc(sizeof(hid_gc_s));
+	memset(rv, 0, sizeof(hid_gc_s));
 	rv->me_pointer = &lesstif_hid;
 	rv->colorname = NULL;
 	return rv;
 }
 
-static void lesstif_destroy_gc(hidGC gc)
+static void lesstif_destroy_gc(hid_gc_t gc)
 {
 	if (gc->colorname != NULL)
 		free(gc->colorname);
@@ -2915,7 +2915,7 @@ static void lesstif_use_mask(int use_it)
 	}
 }
 
-static void lesstif_set_color(hidGC gc, const char *name)
+static void lesstif_set_color(hid_gc_t gc, const char *name)
 {
 	static void *cache = 0;
 	pcb_hidval_t cval;
@@ -2972,7 +2972,7 @@ static void lesstif_set_color(hidGC gc, const char *name)
 	}
 }
 
-static void set_gc(hidGC gc)
+static void set_gc(hid_gc_t gc)
 {
 	int cap, join, width;
 	if (gc->me_pointer != &lesstif_hid) {
@@ -3026,24 +3026,24 @@ static void set_gc(hidGC gc)
 	}
 }
 
-static void lesstif_set_line_cap(hidGC gc, pcb_cap_style_t style)
+static void lesstif_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void lesstif_set_line_width(hidGC gc, Coord width)
+static void lesstif_set_line_width(hid_gc_t gc, Coord width)
 {
 	gc->width = width;
 }
 
-static void lesstif_set_draw_xor(hidGC gc, int xor_set)
+static void lesstif_set_draw_xor(hid_gc_t gc, int xor_set)
 {
 	gc->xor_set = xor_set;
 }
 
 #define ISORT(a,b) if (a>b) { a^=b; b^=a; a^=b; }
 
-static void lesstif_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void lesstif_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	double dx1, dy1, dx2, dy2;
 	int vw = Vz(gc->width);
@@ -3083,7 +3083,7 @@ static void lesstif_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	}
 }
 
-static void lesstif_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void lesstif_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
 	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
 		return;
@@ -3128,7 +3128,7 @@ static void lesstif_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord he
 #endif
 }
 
-static void lesstif_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void lesstif_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	int vw = Vz(gc->width);
 	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
@@ -3161,7 +3161,7 @@ static void lesstif_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 		XDrawRectangle(display, mask_bitmap, mask_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-static void lesstif_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
+static void lesstif_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	if (pinout && use_mask && gc->erase)
 		return;
@@ -3186,7 +3186,7 @@ static void lesstif_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 		XFillArc(display, mask_bitmap, mask_gc, cx, cy, radius * 2, radius * 2, 0, 360 * 64);
 }
 
-static void lesstif_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
+static void lesstif_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	static XPoint *p = 0;
 	static int maxp = 0;
@@ -3213,7 +3213,7 @@ static void lesstif_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 		XFillPolygon(display, mask_bitmap, mask_gc, p, n_coords, Complex, CoordModeOrigin);
 }
 
-static void lesstif_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void lesstif_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	int vw = Vz(gc->width);
 	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
@@ -3459,7 +3459,7 @@ extern int lesstif_close_confirm_dialog();
 extern void lesstif_report_dialog(const char *title, const char *msg);
 
 extern int
-lesstif_attribute_dialog(HID_Attribute * attrs, int n_attrs, HID_Attr_Val * results, const char *title, const char *descr);
+lesstif_attribute_dialog(hid_attribute_t * attrs, int n_attrs, hid_attr_val_t * results, const char *title, const char *descr);
 
 static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
 {

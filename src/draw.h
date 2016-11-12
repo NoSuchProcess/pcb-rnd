@@ -36,7 +36,7 @@
  * some useful values of our widgets
  */
 typedef struct {								/* holds information about output window */
-	hidGC bgGC,										/* background and foreground; */
+	hid_gc_t bgGC,										/* background and foreground; */
 	  fgGC,												/* changed from some routines */
 	  pmGC;												/* depth 1 pixmap GC to store clip */
 } pcb_output_t;

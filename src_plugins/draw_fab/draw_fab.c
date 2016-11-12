@@ -50,19 +50,19 @@
 #define DRILL_MARK_SIZE	PCB_MIL_TO_COORD(16)
 #define FAB_LINE_W      PCB_MIL_TO_COORD(8)
 
-static void fab_line(hidGC gc, int x1, int y1, int x2, int y2)
+static void fab_line(hid_gc_t gc, int x1, int y1, int x2, int y2)
 {
 	gui->draw_line(gc, x1, y1, x2, y2);
 }
 
-static void fab_circle(hidGC gc, int x, int y, int r)
+static void fab_circle(hid_gc_t gc, int x, int y, int r)
 {
 	gui->draw_arc(gc, x, y, r, r, 0, 180);
 	gui->draw_arc(gc, x, y, r, r, 180, 180);
 }
 
 /* align is 0=left, 1=center, 2=right, add 8 for underline */
-static void text_at(hidGC gc, int x, int y, int align, const char *fmt, ...)
+static void text_at(hid_gc_t gc, int x, int y, int align, const char *fmt, ...)
 {
 	char tmp[512];
 	int w = 0, i;
@@ -92,7 +92,7 @@ static void text_at(hidGC gc, int x, int y, int align, const char *fmt, ...)
 }
 
 /* Y, +, X, circle, square */
-static void drill_sym(hidGC gc, int idx, int x, int y)
+static void drill_sym(hid_gc_t gc, int idx, int x, int y)
 {
 	int type = idx % 5;
 	int size = idx / 5;
@@ -165,7 +165,7 @@ static int DrawFab_overhang(void)
 	return (ds + 2) * TEXT_LINE;
 }
 
-static void DrawFab(hidGC gc)
+static void DrawFab(hid_gc_t gc)
 {
 	DrillInfoTypePtr AllDrills;
 	int i, n, yoff, total_drills = 0, ds = 0;

@@ -23,9 +23,9 @@ gpmi_keyword *kw_hid_attr_type_e; /* of hid_attr_type_t */
 /* TODO: these should not be here; GPMI needs to switch over to c99tree! */
 #ifndef FROM_PKG
 typedef void pcb_hid_t;
-typedef void HID_Attribute;
-typedef void* hidGC;
-typedef char* HID_Attr_Val;
+typedef void hid_attribute_t;
+typedef void* hid_gc_t;
+typedef char* hid_attr_val_t;
 
 /* Line or arc ending style */
 typedef enum pcb_cap_style_t_e {
@@ -42,11 +42,11 @@ typedef void *pcb_box_t;
 typedef struct hid_s {
 	gpmi_module *module;
 	int attr_num;
-	HID_Attribute *attr;
+	hid_attribute_t *attr;
 	hid_attr_type_t *type;
 	pcb_hid_t *hid;
-	HID_Attr_Val *result;
-	hidGC new_gc;
+	hid_attr_val_t *result;
+	hid_gc_t new_gc;
 } hid_t;
 
 /* Creates a new hid context. Name and description matters only if the hid is
@@ -86,5 +86,5 @@ void hid_gpmi_data_set(hid_t *h, void *data);
 hid_t *hid_gpmi_data_get(pcb_hid_t *h);
 
 /* For internal use */
-nowrap HID_Attr_Val hid_string2val(const hid_attr_type_t type, const char *str);
+nowrap hid_attr_val_t hid_string2val(const hid_attr_type_t type, const char *str);
 

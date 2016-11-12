@@ -69,7 +69,7 @@ enum crosshair_shape {
 };
 
 typedef struct {								/* holds cursor information */
-	hidGC GC,											/* GC for cursor drawing */
+	hid_gc_t GC,											/* GC for cursor drawing */
 	  AttachGC;										/* and for displaying buffer contents */
 	Coord X, Y,										/* position in PCB coordinates */
 	  MinX, MinY,									/* lowest and highest coordinates */

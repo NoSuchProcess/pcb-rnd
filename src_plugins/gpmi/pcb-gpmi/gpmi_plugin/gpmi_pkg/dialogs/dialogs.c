@@ -85,7 +85,7 @@ int dialog_attribute(hid_t *hid, const char *title, const char *descr)
 		/* TODO: free string fields to avoid memleaks */
 	}
 	else
-		hid->result = calloc(sizeof(HID_Attribute), hid->attr_num);
+		hid->result = calloc(sizeof(hid_attribute_t), hid->attr_num);
 
 	return gui->attribute_dialog(hid->attr, hid->attr_num, hid->result, title, descr);
 }

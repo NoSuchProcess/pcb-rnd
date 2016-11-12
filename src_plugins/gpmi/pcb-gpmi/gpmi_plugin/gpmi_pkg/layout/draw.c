@@ -5,7 +5,7 @@
 #include "src/error.h"
 
 #define setup(func) \
-	hidGC gc = ctx->gc; \
+	hid_gc_t gc = ctx->gc; \
 	pcb_hid_t  *hid = ctx->hid; \
 	if ((hid == NULL) && (gc == NULL)) Message(PCB_MSG_DEFAULT, "%s failed because of invalid hid or gc\n", func); \
 	if ((hid == NULL) && (gc == NULL)) return

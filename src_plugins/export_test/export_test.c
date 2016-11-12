@@ -22,7 +22,7 @@
 
 const char *export_test_cookie = "export_test HID";
 
-static HID_Attribute export_test_options[] = {
+static hid_attribute_t export_test_options[] = {
 /* %start-doc options "8 export_test Creation"
 @ftable @code
 @item --export_testfile <string>
@@ -37,11 +37,11 @@ Name of the export_test output file. Use stdout if not specified.
 
 #define NUM_OPTIONS (sizeof(export_test_options)/sizeof(export_test_options[0]))
 
-static HID_Attr_Val export_test_values[NUM_OPTIONS];
+static hid_attr_val_t export_test_values[NUM_OPTIONS];
 
 static const char *export_test_filename;
 
-static HID_Attribute *export_test_get_export_options(int *n)
+static hid_attribute_t *export_test_get_export_options(int *n)
 {
 	static char *last_export_test_filename = 0;
 
@@ -292,7 +292,7 @@ static int Printexport_test(void)
 	return (0);
 }
 
-static void export_test_do_export(HID_Attr_Val * options)
+static void export_test_do_export(hid_attr_val_t * options)
 {
 	int i;
 

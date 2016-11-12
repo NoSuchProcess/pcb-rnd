@@ -190,7 +190,7 @@ typedef enum {
 /* Function prototypes
 */
 void ghid_parse_arguments(gint * argc, gchar *** argv);
-void ghid_do_export(HID_Attr_Val * options);
+void ghid_do_export(hid_attr_val_t * options);
 void ghid_do_exit(pcb_hid_t *hid);
 
 void ghid_create_pcb_widgets(void);
@@ -285,7 +285,7 @@ char *ghid_fileselect(const char *, const char *, const char *, const char *, co
 void ghid_dialog_export(void);
 void ghid_dialog_print(pcb_hid_t *);
 
-int ghid_attribute_dialog(HID_Attribute *, int, HID_Attr_Val *, const char *, const char *);
+int ghid_attribute_dialog(hid_attribute_t *, int, hid_attr_val_t *, const char *, const char *);
 
 /* gui-drc-window.c */
 void ghid_drc_window_show(gboolean raise);
@@ -408,19 +408,19 @@ void ghid_pinout_window_show(GHidPort * out, pcb_element_t *Element);
 
 /* gtkhid-gdk.c AND gtkhid-gl.c */
 int ghid_set_layer(const char *name, int group, int empty);
-hidGC ghid_make_gc(void);
-void ghid_destroy_gc(hidGC);
+hid_gc_t ghid_make_gc(void);
+void ghid_destroy_gc(hid_gc_t);
 void ghid_use_mask(int use_it);
-void ghid_set_color(hidGC gc, const char *name);
-void ghid_set_line_cap(hidGC gc, pcb_cap_style_t style);
-void ghid_set_line_width(hidGC gc, Coord width);
-void ghid_set_draw_xor(hidGC gc, int _xor);
-void ghid_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
-void ghid_draw_arc(hidGC gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle);
-void ghid_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
-void ghid_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius);
-void ghid_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y);
-void ghid_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
+void ghid_set_color(hid_gc_t gc, const char *name);
+void ghid_set_line_cap(hid_gc_t gc, pcb_cap_style_t style);
+void ghid_set_line_width(hid_gc_t gc, Coord width);
+void ghid_set_draw_xor(hid_gc_t gc, int _xor);
+void ghid_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+void ghid_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle);
+void ghid_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+void ghid_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius);
+void ghid_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y);
+void ghid_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
 void ghid_invalidate_lr(int left, int right, int top, int bottom);
 void ghid_invalidate_all();
 void ghid_notify_crosshair_change(pcb_bool changes_complete);

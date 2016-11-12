@@ -38,25 +38,25 @@ const char *gerber_cookie = "gerber HID";
 /* Function prototypes                                                        */
 /*----------------------------------------------------------------------------*/
 
-static HID_Attribute *gerber_get_export_options(int *n);
-static void gerber_do_export(HID_Attr_Val * options);
+static hid_attribute_t *gerber_get_export_options(int *n);
+static void gerber_do_export(hid_attr_val_t * options);
 static void gerber_parse_arguments(int *argc, char ***argv);
 static int gerber_set_layer(const char *name, int group, int empty);
-static hidGC gerber_make_gc(void);
-static void gerber_destroy_gc(hidGC gc);
+static hid_gc_t gerber_make_gc(void);
+static void gerber_destroy_gc(hid_gc_t gc);
 static void gerber_use_mask(int use_it);
-static void gerber_set_color(hidGC gc, const char *name);
-static void gerber_set_line_cap(hidGC gc, pcb_cap_style_t style);
-static void gerber_set_line_width(hidGC gc, Coord width);
-static void gerber_set_draw_xor(hidGC gc, int _xor);
-static void gerber_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void gerber_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle);
-static void gerber_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void gerber_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius);
-static void gerber_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2);
+static void gerber_set_color(hid_gc_t gc, const char *name);
+static void gerber_set_line_cap(hid_gc_t gc, pcb_cap_style_t style);
+static void gerber_set_line_width(hid_gc_t gc, Coord width);
+static void gerber_set_draw_xor(hid_gc_t gc, int _xor);
+static void gerber_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+static void gerber_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle);
+static void gerber_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
+static void gerber_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius);
+static void gerber_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
 static void gerber_calibrate(double xval, double yval);
 static void gerber_set_crosshair(int x, int y, int action);
-static void gerber_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y);
+static void gerber_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y);
 
 /*----------------------------------------------------------------------------*/
 /* Utility routines                                                           */
@@ -257,13 +257,13 @@ static ApertureList *setLayerApertureList(int layer_idx)
 
 static pcb_hid_t gerber_hid;
 
-typedef struct hid_gc_struct {
+typedef struct hid_gc_s {
 	pcb_cap_style_t cap;
 	int width;
 	int color;
 	int erase;
 	int drill;
-} hid_gc_struct;
+} hid_gc_s;
 
 static FILE *f = NULL;
 static char *filename = NULL;
@@ -305,7 +305,7 @@ static const char *name_style_names[] = {
 	NULL
 };
 
-static HID_Attribute gerber_options[] = {
+static hid_attribute_t gerber_options[] = {
 
 /* %start-doc options "90 Gerber Export"
 @ftable @code
@@ -349,9 +349,9 @@ Print file names and aperture counts on stdout.
 
 #define NUM_OPTIONS (sizeof(gerber_options)/sizeof(gerber_options[0]))
 
-static HID_Attr_Val gerber_values[NUM_OPTIONS];
+static hid_attr_val_t gerber_values[NUM_OPTIONS];
 
-static HID_Attribute *gerber_get_export_options(int *n)
+static hid_attribute_t *gerber_get_export_options(int *n)
 {
 	static char *last_made_filename = NULL;
 	if (PCB)
@@ -497,7 +497,7 @@ static void assign_file_suffix(char *dest, int idx)
 	strcat(dest, sext);
 }
 
-static void gerber_do_export(HID_Attr_Val * options)
+static void gerber_do_export(hid_attr_val_t * options)
 {
 	const char *fnbase;
 	int i;
@@ -774,7 +774,7 @@ emit_outline:
 		if (outline_layer && outline_layer != PCB->Data->Layer + idx)
 			DrawLayer(outline_layer, &region);
 		else if (!outline_layer) {
-			hidGC gc = gui->make_gc();
+			hid_gc_t gc = gui->make_gc();
 			printf("name %s idx %d\n", name, idx);
 			if (SL_TYPE(idx) == SL_SILK)
 				gui->set_line_width(gc, PCB->minSlk);
@@ -793,14 +793,14 @@ emit_outline:
 	return 1;
 }
 
-static hidGC gerber_make_gc(void)
+static hid_gc_t gerber_make_gc(void)
 {
-	hidGC rv = (hidGC) calloc(1, sizeof(*rv));
+	hid_gc_t rv = (hid_gc_t) calloc(1, sizeof(*rv));
 	rv->cap = Trace_Cap;
 	return rv;
 }
 
-static void gerber_destroy_gc(hidGC gc)
+static void gerber_destroy_gc(hid_gc_t gc)
 {
 	free(gc);
 }
@@ -810,7 +810,7 @@ static void gerber_use_mask(int use_it)
 	current_mask = use_it;
 }
 
-static void gerber_set_color(hidGC gc, const char *name)
+static void gerber_set_color(hid_gc_t gc, const char *name)
 {
 	if (strcmp(name, "erase") == 0) {
 		gc->color = 1;
@@ -829,22 +829,22 @@ static void gerber_set_color(hidGC gc, const char *name)
 	}
 }
 
-static void gerber_set_line_cap(hidGC gc, pcb_cap_style_t style)
+static void gerber_set_line_cap(hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void gerber_set_line_width(hidGC gc, Coord width)
+static void gerber_set_line_width(hid_gc_t gc, Coord width)
 {
 	gc->width = width;
 }
 
-static void gerber_set_draw_xor(hidGC gc, int xor_)
+static void gerber_set_draw_xor(hid_gc_t gc, int xor_)
 {
 	;
 }
 
-static void use_gc(hidGC gc, int radius)
+static void use_gc(hid_gc_t gc, int radius)
 {
 	if (radius) {
 		radius *= 2;
@@ -902,7 +902,7 @@ static void use_gc(hidGC gc, int radius)
 #endif
 }
 
-static void gerber_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void gerber_draw_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	gerber_draw_line(gc, x1, y1, x1, y2);
 	gerber_draw_line(gc, x1, y1, x2, y1);
@@ -910,7 +910,7 @@ static void gerber_draw_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	gerber_draw_line(gc, x2, y1, x2, y2);
 }
 
-static void gerber_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void gerber_draw_line(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	pcb_bool m = pcb_false;
 
@@ -973,7 +973,7 @@ static void gerber_draw_line(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
 
 }
 
-static void gerber_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void gerber_draw_arc(hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
 {
 	pcb_bool m = pcb_false;
 	double arcStartX, arcStopX, arcStartY, arcStopY;
@@ -1047,7 +1047,7 @@ static void gerber_draw_arc(hidGC gc, Coord cx, Coord cy, Coord width, Coord hei
 	lastY = arcStopY;
 }
 
-static void gerber_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
+static void gerber_fill_circle(hid_gc_t gc, Coord cx, Coord cy, Coord radius)
 {
 	if (radius <= 0)
 		return;
@@ -1080,7 +1080,7 @@ static void gerber_fill_circle(hidGC gc, Coord cx, Coord cy, Coord radius)
 	fprintf(f, "D03*\r\n");
 }
 
-static void gerber_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
+static void gerber_fill_polygon(hid_gc_t gc, int n_coords, Coord * x, Coord * y)
 {
 	pcb_bool m = pcb_false;
 	int i;
@@ -1131,7 +1131,7 @@ static void gerber_fill_polygon(hidGC gc, int n_coords, Coord * x, Coord * y)
 	fprintf(f, "G37*\r\n");
 }
 
-static void gerber_fill_rect(hidGC gc, Coord x1, Coord y1, Coord x2, Coord y2)
+static void gerber_fill_rect(hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 {
 	Coord x[5];
 	Coord y[5];
