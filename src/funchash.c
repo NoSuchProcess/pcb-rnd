@@ -31,7 +31,7 @@
 #include "macro.h"
 
 #define action_entry(x) { #x, F_ ## x},
-static funchash_table_t Functions[] = {
+static pcb_funchash_table_t Functions[] = {
 #include "funchash_core_list.h"
 	{"F_END", F_END}
 };
@@ -127,7 +127,7 @@ int funchash_set(const char *key, int val, const char *cookie)
 	return 0;
 }
 
-int funchash_set_table(funchash_table_t *table, int numelem, const char *cookie)
+int funchash_set_table(pcb_funchash_table_t *table, int numelem, const char *cookie)
 {
 	int i, rv = 0;
 

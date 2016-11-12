@@ -6,5 +6,5 @@
 typedef enum {
 #include "funchash_core_list.h"
 F_END
-} FunctionID;
+} pcb_function_id_t;
 #undef action_entry

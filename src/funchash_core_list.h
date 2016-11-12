@@ -1,7 +1,7 @@
 /*
 	Central list of function IDs
 	The core and core plugins use these from a single, central hash
-	This list is used to cpp-generate the F_* constants in enum FunctionID
+	This list is used to cpp-generate the F_* constants in enum pcb_function_id_t
 */
 action_entry(AddSelected)
 action_entry(All)

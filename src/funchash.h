@@ -24,7 +24,7 @@
 typedef struct {
 	const char *key;
 	int val;
-} funchash_table_t;
+} pcb_funchash_table_t;
 
 /* Cookie is the namespace so that different modules can use the same
    function names with different integer IDs without interference. Core
@@ -37,7 +37,7 @@ int funchash_get(const char *key, const char *cookie);
 int funchash_set(const char *key, int val, const char *cookie);
 
 /* Store multiple key strings - integer ID pairs using a table */
-int funchash_set_table(funchash_table_t *table, int numelem, const char *cookie);
+int funchash_set_table(pcb_funchash_table_t *table, int numelem, const char *cookie);
 
 /* Remove all keys inserted for a cookie */
 void funchash_remove_cookie(const char *cookie);
