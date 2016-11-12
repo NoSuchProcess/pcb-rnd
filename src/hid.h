@@ -280,7 +280,7 @@ struct hid_s {
 	   given width, whereas "fill" means to fill to a zero-width
 	   outline.  */
 	void (*draw_line) (pcb_hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
-	void (*draw_arc) (pcb_hid_gc_t gc_, Coord cx_, Coord cy_, Coord xradius_, Coord yradius_, Angle start_angle_, Angle delta_angle_);
+	void (*draw_arc) (pcb_hid_gc_t gc_, Coord cx_, Coord cy_, Coord xradius_, Coord yradius_, pcb_angle_t start_angle_, pcb_angle_t delta_angle_);
 	void (*draw_rect) (pcb_hid_gc_t gc_, Coord x1_, Coord y1_, Coord x2_, Coord y2_);
 	void (*fill_circle) (pcb_hid_gc_t gc_, Coord cx_, Coord cy_, Coord radius_);
 	void (*fill_polygon) (pcb_hid_gc_t gc_, int n_coords_, Coord * x_, Coord * y_);

@@ -2256,7 +2256,7 @@ static void mark_delta_to_widget(Coord dx, Coord dy, Widget w)
 	if (dx == 0 && dy == 0)
 		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS", UUNIT, prec, dx, prec, dy);
 	else {
-		Angle angle = atan2(dy, -dx) * 180 / M_PI;
+		pcb_angle_t angle = atan2(dy, -dx) * 180 / M_PI;
 		Coord dist = Distance(0, 0, dx, dy);
 
 		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS (%.*mS, %.2f\260)", UUNIT, prec, dx, prec, dy, prec, dist, angle);
@@ -3083,7 +3083,7 @@ static void lesstif_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coo
 	}
 }
 
-static void lesstif_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void lesstif_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	if ((pinout || conf_core.editor.thin_draw) && gc->erase)
 		return;

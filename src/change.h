@@ -106,8 +106,8 @@ void *QueryInputAndChangeObjectName(int, void *, void *, void *, int);
 void ChangePCBSize(Coord, Coord);
 void *ChangeObjectPinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name);
 pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, Coord r, pcb_bool absolute);
-pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, Angle a, pcb_bool absolute);
-pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool fixIt);
-pcb_bool ChangeSelectedRadius(int types, int is_start, Angle Difference, pcb_bool fixIt);
+pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, pcb_bool absolute);
+pcb_bool ChangeSelectedAngle(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt);
+pcb_bool ChangeSelectedRadius(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt);
 
 #endif

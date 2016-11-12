@@ -135,7 +135,7 @@ static void XORDrawAttachedArc(Coord thick)
 	pcb_arc_t arc;
 	pcb_box_t *bx;
 	Coord wx, wy;
-	Angle sa, dir;
+	pcb_angle_t sa, dir;
 	Coord wid = thick / 2;
 
 	wx = Crosshair.X - Crosshair.AttachedBox.Point1.X;
@@ -197,7 +197,7 @@ static void XORDrawAttachedLine(Coord x1, Coord y1, Coord x2, Coord y2, Coord th
 	oy = -(dx * h + 0.5 * SGN(dx));
 	gui->draw_line(Crosshair.GC, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
 	if (coord_abs(ox) >= pixel_slop || coord_abs(oy) >= pixel_slop) {
-		Angle angle = atan2(dx, dy) * 57.295779;
+		pcb_angle_t angle = atan2(dx, dy) * 57.295779;
 		gui->draw_line(Crosshair.GC, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
 		gui->draw_arc(Crosshair.GC, x1, y1, thick / 2, thick / 2, angle - 180, 180);
 		gui->draw_arc(Crosshair.GC, x2, y2, thick / 2, thick / 2, angle, 180);

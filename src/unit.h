@@ -31,7 +31,7 @@
 #include "config.h"
 
 /* typedef ... Coord;				pcb base unit, typedef'd in config.h */
-typedef double Angle;						/* degrees */
+typedef double pcb_angle_t;						/* degrees */
 
 enum pcb_allow_e {
 	NO_PRINT = 0,									/* suffixes we can read but not print (i.e., "inch") */
@@ -119,7 +119,7 @@ double coord_to_unit(const pcb_unit_t *, Coord);
 double unit_to_factor(const pcb_unit_t * unit);
 Coord unit_to_coord(const pcb_unit_t *, double);
 pcb_increments_t *get_increments_struct(const char *suffix);
-Angle NormalizeAngle(Angle a);
+pcb_angle_t NormalizeAngle(pcb_angle_t a);
 
 /* PCB/physical unit conversions */
 #define PCB_COORD_TO_MIL(n)	((n) / 25400.0)

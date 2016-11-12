@@ -42,12 +42,12 @@ typedef struct {
 
 #define type2field_String string
 #define type2field_Coord coord
-#define type2field_Angle angle
+#define type2field_pcb_angle_t angle
 #define type2field_int i
 
 #define type2TYPE_String PCB_PROPT_STRING
 #define type2TYPE_Coord PCB_PROPT_COORD
-#define type2TYPE_Angle PCB_PROPT_ANGLE
+#define type2TYPE_pcb_angle_t PCB_PROPT_ANGLE
 #define type2TYPE_int PCB_PROPT_INT
 
 #define map_add_prop(ctx, name, type, val) \
@@ -104,8 +104,8 @@ static void map_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 	map_add_prop(ctx, "p/trace/clearance", Coord, arc->Clearance);
 	map_add_prop(ctx, "p/arc/width",       Coord, arc->Width);
 	map_add_prop(ctx, "p/arc/height",      Coord, arc->Height);
-	map_add_prop(ctx, "p/arc/angle/start", Angle, arc->StartAngle);
-	map_add_prop(ctx, "p/arc/angle/delta", Angle, arc->Delta);
+	map_add_prop(ctx, "p/arc/angle/start", pcb_angle_t, arc->StartAngle);
+	map_add_prop(ctx, "p/arc/angle/delta", pcb_angle_t, arc->Delta);
 	map_attr(ctx, &arc->Attributes);
 }
 

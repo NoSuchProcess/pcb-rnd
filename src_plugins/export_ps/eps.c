@@ -41,7 +41,7 @@ static void eps_set_line_width(pcb_hid_gc_t gc, Coord width);
 static void eps_set_draw_xor(pcb_hid_gc_t gc, int _xor);
 static void eps_draw_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
 static void eps_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
-static void eps_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle);
+static void eps_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle);
 static void eps_fill_rect(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2);
 static void eps_fill_circle(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord radius);
 static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, Coord * x, Coord * y);
@@ -540,9 +540,9 @@ static void eps_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y
 	pcb_fprintf(f, "%mi %mi %mi %mi %s\n", x1, y1, x2, y2, gc->erase ? "tc" : "t");
 }
 
-static void eps_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void eps_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	Angle sa, ea;
+	pcb_angle_t sa, ea;
 	if (delta_angle > 0) {
 		sa = start_angle;
 		ea = start_angle + delta_angle;

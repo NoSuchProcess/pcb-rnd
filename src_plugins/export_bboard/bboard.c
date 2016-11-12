@@ -260,7 +260,7 @@ static void bboard_draw_line_cairo(Coord x1, Coord y1, Coord x2, Coord y2, Coord
 #warning TODO: remove x1;y1;x2;y2
 static void
 bboard_draw_arc_cairo(/*Coord x1, Coord y1, Coord x2, Coord y2,*/ Coord x,
-											Coord y, Coord w, Coord h, Angle sa, Angle a, Coord thickness)
+											Coord y, Coord w, Coord h, pcb_angle_t sa, pcb_angle_t a, Coord thickness)
 {
 	ASSERT_CAIRO;
 
@@ -391,7 +391,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 	Coord ex, ey;
 	Coord ox = 0, oy = 0;
 	int w, h;
-	Angle tmp_angle = 0.0;
+	pcb_angle_t tmp_angle = 0.0;
 	char *model_angle, *s = 0, *s1, *s2, *fname = NULL;
 	pcb_bool offset_in_model = pcb_false;
 

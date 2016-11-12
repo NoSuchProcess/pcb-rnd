@@ -36,7 +36,7 @@ struct pcb_arc_s {       /* holds information about arcs */
 	Coord Thickness, Clearance;
 	Coord Width, Height,					/* length of axis */
 	  X, Y;												/* center coordinates */
-	Angle StartAngle, Delta;			/* the two limiting angles in degrees */
+	pcb_angle_t StartAngle, Delta;			/* the two limiting angles in degrees */
 	gdl_elem_t link;              /* an arc is in a list: either on a layer or in an element */
 };
 
@@ -49,10 +49,10 @@ void RemoveFreeArc(pcb_arc_t *data);
 /*** Utility ***/
 void SetArcBoundingBox(pcb_arc_t *Arc);
 pcb_box_t *GetArcEnds(pcb_arc_t *Arc);
-void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, Angle new_sa, Angle new_da);
+void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);
 void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, Coord new_width, Coord new_height);
 void *RemoveArc(pcb_layer_t *Layer, pcb_arc_t *Arc);
-pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, pcb_flag_t Flags);
+pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, pcb_angle_t sa, pcb_angle_t dir, Coord Thickness, Coord Clearance, pcb_flag_t Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);

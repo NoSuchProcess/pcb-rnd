@@ -575,10 +575,10 @@ static void draw_arc(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord r, Coord x2, Coo
 	}
 }
 
-static void svg_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void svg_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	Coord x1, y1, x2, y2;
-	Angle sa, ea;
+	pcb_angle_t sa, ea;
 
 	TRX(cx); TRY(cy);
 

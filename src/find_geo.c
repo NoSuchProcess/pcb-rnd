@@ -63,7 +63,7 @@
 	( IsPointInPad((PV)->X, (PV)->Y, MAX((PV)->Thickness/2 +Bloat,0), (Pad)))
 
 /* reduce arc start angle and delta to 0..360 */
-static void normalize_angles(Angle * sa, Angle * d)
+static void normalize_angles(pcb_angle_t * sa, pcb_angle_t * d)
 {
 	if (*d < 0) {
 		*sa += *d;
@@ -77,7 +77,7 @@ static void normalize_angles(Angle * sa, Angle * d)
 static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 {
 	double alpha = atan2(y - arc->Y, -x + arc->X) * PCB_RAD_TO_DEG;
-	Angle sa = arc->StartAngle, d = arc->Delta;
+	pcb_angle_t sa = arc->StartAngle, d = arc->Delta;
 
 	normalize_angles(&sa, &d);
 	if (alpha < 0)
@@ -150,8 +150,8 @@ static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 	if (dl < 0.5) {
 		if ((Arc1->Width - t >= Arc2->Width - t2 && Arc1->Width - t <= Arc2->Width + t2)
 				|| (Arc1->Width + t >= Arc2->Width - t2 && Arc1->Width + t <= Arc2->Width + t2)) {
-			Angle sa1 = Arc1->StartAngle, d1 = Arc1->Delta;
-			Angle sa2 = Arc2->StartAngle, d2 = Arc2->Delta;
+			pcb_angle_t sa1 = Arc1->StartAngle, d1 = Arc1->Delta;
+			pcb_angle_t sa2 = Arc2->StartAngle, d2 = Arc2->Delta;
 			/* NB the endpoints have already been checked,
 			   so we just compare the angles */
 

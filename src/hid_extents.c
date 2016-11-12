@@ -83,7 +83,7 @@ static void extents_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coo
 	PEY(y2, gc->width);
 }
 
-static void extents_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
+static void extents_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t end_angle)
 {
 	/* Naive but good enough.  */
 	PEX(cx, width + gc->width);

@@ -59,7 +59,7 @@ pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name);
 int LoadFootprintByName(pcb_buffer_t *Buffer, const char *Footprint);
 pcb_bool SmashBufferElement(pcb_buffer_t *Buffer);
 pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer);
-void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, double cosa, double sina, Angle angle);
+void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, double cosa, double sina, pcb_angle_t angle);
 pcb_bool ChangeElementSide(pcb_element_t *Element, Coord yoff);
 pcb_bool ChangeSelectedElementSide(void);
 pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, Coord dx, Coord dy);
@@ -82,7 +82,7 @@ pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
 	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName);
 
 pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, Coord X, Coord Y,
-	Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness);
+	Coord Width, Coord Height, pcb_angle_t angle, pcb_angle_t delta, Coord Thickness);
 
 pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, Coord X1, Coord Y1, Coord X2, Coord Y2, Coord Thickness);
 

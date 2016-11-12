@@ -33,7 +33,7 @@ struct drc_violation_s {
 	char *title;
 	char *explanation;
 	Coord x, y;
-	Angle angle;
+	pcb_angle_t angle;
 	int have_measured;
 	Coord measured_value;
 	Coord required_value;

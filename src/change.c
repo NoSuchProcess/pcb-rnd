@@ -599,7 +599,7 @@ pcb_bool ChangeSelectedSquare(int types)
  * changes the angle of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool fixIt)
+pcb_bool ChangeSelectedAngle(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -621,7 +621,7 @@ pcb_bool ChangeSelectedAngle(int types, int is_start, Angle Difference, pcb_bool
  * changes the radius of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedRadius(int types, int is_start, Angle Difference, pcb_bool fixIt)
+pcb_bool ChangeSelectedRadius(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -849,7 +849,7 @@ pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
  * changes the angles of the passed object (e.g. arc start/ctx->chgsize.delta)
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, Angle a, pcb_bool fixIt)
+pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;

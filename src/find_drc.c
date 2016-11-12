@@ -45,7 +45,7 @@ static pcb_drc_violation_t
 	* pcb_drc_violation_new(const char *title,
 													const char *explanation,
 													Coord x, Coord y,
-													Angle angle,
+													pcb_angle_t angle,
 													pcb_bool have_measured,
 													Coord measured_value,
 													Coord required_value, int object_count, long int *object_id_list, int *object_type_list)

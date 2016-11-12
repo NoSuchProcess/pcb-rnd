@@ -108,7 +108,7 @@ static void log_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y
 	delegatee_->draw_line(gc, x1, y1, x2, y2);
 }
 
-static void log_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle) {
+static void log_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle) {
 	pcb_fprintf(out_, "draw_arc(gc, %mm, %mm, rx=%mm, ry=%mm, start_angle=%.1f, delta_a=%.1f)\n",
 					cx, cy, xradius, yradius, start_angle, delta_angle);
 	delegatee_->draw_arc(gc, cx, cy, xradius, yradius, start_angle, delta_angle);

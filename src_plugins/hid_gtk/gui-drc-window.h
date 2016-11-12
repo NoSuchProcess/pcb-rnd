@@ -49,7 +49,7 @@ struct _GhidDrcViolation {
 	char *explanation;
 	Coord x_coord;
 	Coord y_coord;
-	Angle angle;
+	pcb_angle_t angle;
 	pcb_bool have_measured;
 	Coord measured_value;
 	Coord required_value;

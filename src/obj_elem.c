@@ -391,7 +391,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	return (pcb_true);
 }
 
-void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, double cosa, double sina, Angle angle)
+void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, Coord X, Coord Y, double cosa, double sina, pcb_angle_t angle)
 {
 	/* solder side objects need a different orientation */
 
@@ -596,7 +596,7 @@ pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
 
 /* creates a new arc in an element */
 pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, Coord X, Coord Y,
-	Coord Width, Coord Height, Angle angle, Angle delta, Coord Thickness)
+	Coord Width, Coord Height, pcb_angle_t angle, pcb_angle_t delta, Coord Thickness)
 {
 	pcb_arc_t *arc = GetElementArcMemory(Element);
 

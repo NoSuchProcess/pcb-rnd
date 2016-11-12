@@ -893,9 +893,9 @@ static void nelma_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord
 	gdImageLine(nelma_im, pcb_to_nelma(x1), pcb_to_nelma(y1), pcb_to_nelma(x2), pcb_to_nelma(y2), gdBrushed);
 }
 
-static void nelma_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void nelma_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	Angle sa, ea;
+	pcb_angle_t sa, ea;
 
 	/*
 	 * in gdImageArc, 0 degrees is to the right and +90 degrees is down

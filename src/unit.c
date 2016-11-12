@@ -282,7 +282,7 @@ pcb_increments_t *get_increments_struct(const char *suffix)
 }
 
 /* Bring an angle into [0, 360) range */
-Angle NormalizeAngle(Angle a)
+pcb_angle_t NormalizeAngle(pcb_angle_t a)
 {
 	while (a < 0)
 		a += 360.0;

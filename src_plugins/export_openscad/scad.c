@@ -987,7 +987,7 @@ static void scad_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord 
 }
 
 
-static void scad_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle delta_angle)
+static void scad_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	int i, n_steps, x, y, ox = 0, oy = 0, sa;
 	float angle;

@@ -906,8 +906,8 @@ pcb_bool IsPointOnArc(Coord X, Coord Y, Coord Radius, pcb_arc_t *Arc)
 	/* Calculate angle of point from arc center */
 	double p_dist = Distance(X, Y, Arc->X, Arc->Y);
 	double p_cos = (X - Arc->X) / p_dist;
-	Angle p_ang = acos(p_cos) * PCB_RAD_TO_DEG;
-	Angle ang1, ang2;
+	pcb_angle_t p_ang = acos(p_cos) * PCB_RAD_TO_DEG;
+	pcb_angle_t ang1, ang2;
 
 	/* Convert StartAngle, Delta into bounding angles in [0, 720) */
 	if (Arc->Delta > 0) {

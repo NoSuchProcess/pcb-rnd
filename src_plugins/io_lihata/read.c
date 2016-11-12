@@ -102,7 +102,7 @@ static int parse_coord(Coord *res, lht_node_t *nd)
 }
 
 /* Load the Angle value of a text node into res. Return 0 on success */
-static int parse_angle(Angle *res, lht_node_t *nd)
+static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
 {
 	double tmp;
 	pcb_bool success;

@@ -602,7 +602,7 @@ void ghid_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	gdk_draw_line(gport->drawable, priv->u_gc, dx1, dy1, dx2, dy2);
 }
 
-void ghid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
+void ghid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	gint vrx, vry;
 	gint w, h, radius;

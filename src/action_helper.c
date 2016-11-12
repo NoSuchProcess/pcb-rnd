@@ -648,7 +648,7 @@ void NotifyMode(void)
 				{
 					pcb_arc_t *arc;
 					Coord wx, wy;
-					Angle sa, dir;
+					pcb_angle_t sa, dir;
 
 					wx = Note.X - Crosshair.AttachedBox.Point1.X;
 					wy = Note.Y - Crosshair.AttachedBox.Point1.Y;

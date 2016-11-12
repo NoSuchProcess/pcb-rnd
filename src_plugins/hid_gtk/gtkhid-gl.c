@@ -490,7 +490,7 @@ void ghid_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	hidgl_draw_line(gc->cap, gc->width, x1, y1, x2, y2, gport->view.coord_per_px);
 }
 
-void ghid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
+void ghid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	USE_GC(gc);
 

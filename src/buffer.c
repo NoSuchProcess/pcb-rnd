@@ -274,7 +274,7 @@ void RotateBuffer(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	RotateBoxLowLevel(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 }
 
-void FreeRotateBuffer(pcb_buffer_t *Buffer, Angle angle)
+void FreeRotateBuffer(pcb_buffer_t *Buffer, pcb_angle_t angle)
 {
 	double cosa, sina;
 

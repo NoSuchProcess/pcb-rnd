@@ -163,7 +163,7 @@ int calc_slices(float pix_radius, float sweep_angle)
 
 #define MIN_TRIANGLES_PER_CAP 3
 #define MAX_TRIANGLES_PER_CAP 90
-static void draw_cap(Coord width, Coord x, Coord y, Angle angle, double scale)
+static void draw_cap(Coord width, Coord x, Coord y, pcb_angle_t angle, double scale)
 {
 	float last_capx, last_capy;
 	float capx, capy;
@@ -259,7 +259,7 @@ void hidgl_draw_line(int cap, Coord width, Coord x1, Coord y1, Coord x2, Coord y
 
 #define MIN_SLICES_PER_ARC 6
 #define MAX_SLICES_PER_ARC 360
-void hidgl_draw_arc(Coord width, Coord x, Coord y, Coord rx, Coord ry, Angle start_angle, Angle delta_angle, double scale)
+void hidgl_draw_arc(Coord width, Coord x, Coord y, Coord rx, Coord ry, pcb_angle_t start_angle, pcb_angle_t delta_angle, double scale)
 {
 	float last_inner_x, last_inner_y;
 	float last_outer_x, last_outer_y;

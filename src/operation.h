@@ -49,8 +49,8 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	int is_primary;           /* whether the primary parameter should be changed */
-	Angle delta, absolute;    /* same as above, but for angles */
+	int is_primary;                 /* whether the primary parameter should be changed */
+	pcb_angle_t delta, absolute;    /* same as above, but for angles */
 } pcb_opctx_chgangle_t;
 
 typedef struct {

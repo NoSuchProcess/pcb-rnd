@@ -109,7 +109,7 @@ typedef struct {								/* information about poly clear/restore */
 } ClearPolyType, *ClearPolyTypePtr;
 
 typedef struct {
-	Angle angle[2];
+	pcb_angle_t angle[2];
 } AngleChangeType;
 
 typedef struct {								/* information about netlist lib changes */

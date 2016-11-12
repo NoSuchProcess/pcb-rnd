@@ -470,8 +470,8 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 	char *end;
 	double val;
 	Coord centreX, centreY, endX, endY, width, height, Thickness, Clearance;
-	Angle startAngle = 0.0;
-	Angle delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
+	pcb_angle_t startAngle = 0.0;
+	pcb_angle_t delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
@@ -991,9 +991,9 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int refdesScaling  = 100;
 	unsigned long tally = 0, featureTally, required;
 	Coord moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
-	Angle startAngle = 0.0;
-	Angle endAngle = 0.0;
-	Angle delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
+	pcb_angle_t startAngle = 0.0;
+	pcb_angle_t endAngle = 0.0;
+	pcb_angle_t delta = 360.0; /* these defaults allow a fp_circle to be parsed, which does not specify (angle XXX) */
 	double val;
 	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */

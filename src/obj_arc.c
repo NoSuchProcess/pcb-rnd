@@ -70,7 +70,7 @@ void SetArcBoundingBox(pcb_arc_t *Arc)
 {
 	double ca1, ca2, sa1, sa2;
 	double minx, maxx, miny, maxy;
-	Angle ang1, ang2;
+	pcb_angle_t ang1, ang2;
 	Coord width;
 
 	/* first put angles into standard form:
@@ -141,7 +141,7 @@ pcb_box_t *GetArcEnds(pcb_arc_t *Arc)
 }
 
 /* doesn't these belong in change.c ?? */
-void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, Angle new_sa, Angle new_da)
+void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da)
 {
 	if (new_da >= 360) {
 		new_da = 360;
@@ -172,7 +172,7 @@ void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, Coord new_width, Coord new
 
 
 /* creates a new arc on a layer */
-pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, Angle sa, Angle dir, Coord Thickness, Coord Clearance, pcb_flag_t Flags)
+pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, Coord X1, Coord Y1, Coord width, Coord height, pcb_angle_t sa, pcb_angle_t dir, Coord Thickness, Coord Clearance, pcb_flag_t Flags)
 {
 	pcb_arc_t *Arc;
 
@@ -339,7 +339,7 @@ void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 /* changes the angle of an arc (is_primary 0=start or 1=end) */
 void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	Angle value, *dst;
+	pcb_angle_t value, *dst;
 	void *a0, *a1;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))

@@ -126,7 +126,7 @@ void gpmi_hid_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coord y2)
 	gpmi_event(h->module, HIDE_draw_line, h, gc, x1, y1, x2, y2);
 }
 
-void gpmi_hid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, Angle start_angle, Angle delta_angle)
+void gpmi_hid_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord xradius, Coord yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	hid_t *h = hid_gpmi_data_get(exporter);
 	gpmi_event(h->module, HIDE_draw_arc, h, gc, cx, cy, xradius, yradius, start_angle, delta_angle);

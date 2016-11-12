@@ -288,7 +288,7 @@ static int scad_parse_float_triplet(char *s, float *ox, float *oy, float *oz)
 static void scad_export_model(int model_type, pcb_element_t * element, pcb_bool imported, FILE * f, char *line, int size)
 {
 	char *model_rotation, *model_translate, *model_scale, *model_angle;
-	Angle tmp_angle = (Angle) 0;
+	pcb_angle_t tmp_angle = (pcb_angle_t) 0;
 	Coord tx, ty, tz;
 	float fx, fy, fz;
 
@@ -347,9 +347,9 @@ static void scad_export_model(int model_type, pcb_element_t * element, pcb_bool 
 
 
 
-extern void FreeRotateBuffer(pcb_buffer_t * Buffer, Angle angle);
+extern void FreeRotateBuffer(pcb_buffer_t * Buffer, pcb_angle_t angle);
 
-static int scad_calculate_bbox(pcb_element_t * element, Angle angle, float *w, float *h, float *ox, float *oy)
+static int scad_calculate_bbox(pcb_element_t * element, pcb_angle_t angle, float *w, float *h, float *ox, float *oy)
 {
 	return 0;
 
@@ -377,7 +377,7 @@ static int scad_calculate_bbox(pcb_element_t * element, Angle angle, float *w, f
 static void scad_export_bbox(pcb_element_t * element)
 {
 	char *model_angle, *bbox;
-	Angle tmp_angle = (Angle) 0;
+	pcb_angle_t tmp_angle = (pcb_angle_t) 0;
 	float w = 0., h = 0., t = 0., ox = 0., oy = 0.;
 	int x = element->MarkX, y = element->MarkY;
 	int n, ln;

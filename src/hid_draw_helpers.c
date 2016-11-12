@@ -236,7 +236,7 @@ void common_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, p
 		gui->draw_line(gc, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
 
 		if (labs(ox) >= pixel_slop || coord_abs(oy) >= pixel_slop) {
-			Angle angle = atan2(dx, dy) * 57.295779;
+			pcb_angle_t angle = atan2(dx, dy) * 57.295779;
 			gui->draw_line(gc, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
 			gui->draw_arc(gc, x1, y1, t, t, angle - 180, 180);
 			gui->draw_arc(gc, x2, y2, t, t, angle, 180);

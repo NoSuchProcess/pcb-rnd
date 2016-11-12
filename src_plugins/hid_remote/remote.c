@@ -233,7 +233,7 @@ static void remote_draw_line(pcb_hid_gc_t gc, Coord x1, Coord y1, Coord x2, Coor
 		proto_send_draw_line(idx, x1, y1, x2, y2);
 }
 
-static void remote_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, Angle start_angle, Angle end_angle)
+static void remote_draw_arc(pcb_hid_gc_t gc, Coord cx, Coord cy, Coord width, Coord height, pcb_angle_t start_angle, pcb_angle_t end_angle)
 {
 #warning TODO
 }
