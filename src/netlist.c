@@ -99,7 +99,7 @@ LibraryMenuTypePtr pcb_netname_to_netname(const char *netname)
 
 int pcb_pin_name_to_xy(LibraryEntryType * pin, Coord *x, Coord *y)
 {
-	ConnectionType conn;
+	pcb_connection_t conn;
 	if (!SeekPad(pin, &conn, pcb_false))
 		return 1;
 	switch (conn.type) {

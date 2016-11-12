@@ -50,16 +50,16 @@ struct pcb_connection_s {				/* holds a connection (rat) */
 RatTypePtr AddNet(void);
 char *ConnectionName(int, void *, void *);
 
-pcb_bool AddAllRats(pcb_bool, void (*)(register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr));
-pcb_bool SeekPad(LibraryEntryTypePtr, ConnectionTypePtr, pcb_bool);
+pcb_bool AddAllRats(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr));
+pcb_bool SeekPad(LibraryEntryTypePtr, pcb_connection_t *, pcb_bool);
 
 NetListTypePtr ProcNetlist(LibraryTypePtr);
 NetListListType CollectSubnets(pcb_bool);
-ConnectionTypePtr GetConnectionMemory(pcb_net_t *);
+pcb_connection_t *GetConnectionMemory(pcb_net_t *);
 
 #define CONNECTION_LOOP(net) do {                         \
         pcb_cardinal_t        n;                                      \
-        ConnectionTypePtr       connection;                     \
+        pcb_connection_t *      connection;                     \
         for (n = (net)->ConnectionN-1; n != -1; n--)            \
         {                                                       \
                 connection = & (net)->Connection[n]

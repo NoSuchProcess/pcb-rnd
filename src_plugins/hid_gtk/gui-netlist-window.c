@@ -197,7 +197,7 @@ static void node_model_update(LibraryMenuType * menu)
 
 static void toggle_pin_selected(LibraryEntryType * entry)
 {
-	ConnectionType conn;
+	pcb_connection_t conn;
 
 	if (!SeekPad(entry, &conn, pcb_false))
 		return;
@@ -216,7 +216,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	GtkTreeModel *model;
 	LibraryMenuType *node_net;
 	LibraryEntryType *node;
-	ConnectionType conn;
+	pcb_connection_t conn;
 	Coord x, y;
 	static gchar *node_name;
 
@@ -491,7 +491,7 @@ static void netlist_disable_all_cb(GtkToggleButton * button, gpointer data)
 static void netlist_select_cb(GtkWidget * widget, gpointer data)
 {
 	LibraryEntryType *entry;
-	ConnectionType conn;
+	pcb_connection_t conn;
 	gint i;
 	gboolean select_flag = GPOINTER_TO_INT(data);
 

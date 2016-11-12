@@ -982,7 +982,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, s
 		{
 			pcb_cardinal_t i;
 			LibraryEntryType *entry;
-			ConnectionType conn;
+			pcb_connection_t conn;
 
 			/* Name[0] and Name[1] are special purpose, not the actual name */
 			if (menu->Name && menu->Name[0] != '\0' && menu->Name[1] != '\0' && REGEXEC(menu->Name + 2)) {

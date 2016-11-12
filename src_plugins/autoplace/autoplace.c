@@ -150,7 +150,7 @@ static void UpdateXY(NetListTypePtr Nets)
 	/* update all nets */
 	for (i = 0; i < Nets->NetN; i++) {
 		for (j = 0; j < Nets->Net[i].ConnectionN; j++) {
-			ConnectionTypePtr c = &(Nets->Net[i].Connection[j]);
+			pcb_connection_t *c = &(Nets->Net[i].Connection[j]);
 			switch (c->type) {
 			case PCB_TYPE_PAD:
 				c->group = TEST_FLAG(PCB_FLAG_ONSOLDER, (ElementTypePtr) c->ptr1)
@@ -323,7 +323,7 @@ static double ComputeCost(NetListTypePtr Nets, double T0, double T)
 		allpads = (n->Connection[0].type == PCB_TYPE_PAD);
 		allsameside = pcb_true;
 		for (j = 1; j < n->ConnectionN; j++) {
-			ConnectionTypePtr c = &(n->Connection[j]);
+			pcb_connection_t *c = &(n->Connection[j]);
 			MAKEMIN(minx, c->X);
 			MAKEMAX(maxx, c->X);
 			MAKEMIN(miny, c->Y);

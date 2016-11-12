@@ -726,7 +726,7 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 	int found = 0;
 	int i;
 	LibraryMenuType *net;
-	ConnectionType conn;
+	pcb_connection_t conn;
 	int net_found = 0;
 	int use_re = 0;
 	re_sei_t *regex;

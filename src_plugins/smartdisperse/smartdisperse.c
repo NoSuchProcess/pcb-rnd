@@ -99,7 +99,7 @@ static void place(ElementType * element)
  * \brief Return the X location of a connection's pad or pin within its
  * element.
  */
-static Coord padDX(ConnectionType * conn)
+static Coord padDX(pcb_connection_t * conn)
 {
 	ElementType *element = (ElementType *) conn->ptr1;
 	AnyLineObjectType *line = (AnyLineObjectType *) conn->ptr2;
@@ -111,7 +111,7 @@ static Coord padDX(ConnectionType * conn)
  * \brief Return true if ea,eb would be the best order, else eb,ea,
  * based on pad loc.
  */
-static int padorder(ConnectionType * conna, ConnectionType * connb)
+static int padorder(pcb_connection_t * conna, pcb_connection_t * connb)
 {
 	Coord dxa, dxb;
 
@@ -190,7 +190,7 @@ static int smartdisperse(int argc, const char **argv, Coord x, Coord y)
 	 */
 	NET_LOOP(Nets);
 	{
-		ConnectionType *conna, *connb;
+		pcb_connection_t *conna, *connb;
 		ElementType *ea, *eb;
 /*    ElementType *epp;*/
 

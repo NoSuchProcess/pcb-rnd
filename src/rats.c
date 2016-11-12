@@ -59,10 +59,10 @@
 /* ---------------------------------------------------------------------------
  * some forward declarations
  */
-static pcb_bool FindPad(const char *, const char *, ConnectionType *, pcb_bool);
+static pcb_bool FindPad(const char *, const char *, pcb_connection_t *, pcb_bool);
 static pcb_bool ParseConnection(const char *, char *, char *);
 static pcb_bool DrawShortestRats(NetListTypePtr,
-														 void (*)(register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr));
+														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr));
 static pcb_bool GatherSubnets(NetListTypePtr, pcb_bool, pcb_bool);
 static pcb_bool CheckShorts(LibraryMenuTypePtr);
 static void TransferNet(NetListTypePtr, pcb_net_t *, pcb_net_t *);
@@ -105,7 +105,7 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
 /* ---------------------------------------------------------------------------
  * Find a particular pad from an element name and pin number
  */
-static pcb_bool FindPad(const char *ElementName, const char *PinNum, ConnectionType * conn, pcb_bool Same)
+static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connection_t * conn, pcb_bool Same)
 {
 	ElementTypePtr element;
 	gdl_iterator_t it;
@@ -153,7 +153,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, ConnectionT
  * parse a netlist menu entry and locate the corresponding pad
  * returns pcb_true if found, and fills in Connection information
  */
-pcb_bool SeekPad(LibraryEntryType * entry, ConnectionType * conn, pcb_bool Same)
+pcb_bool SeekPad(LibraryEntryType * entry, pcb_connection_t * conn, pcb_bool Same)
 {
 	int j;
 	char ElementName[256];
@@ -186,8 +186,8 @@ pcb_bool SeekPad(LibraryEntryType * entry, ConnectionType * conn, pcb_bool Same)
 
 NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
 {
-	ConnectionTypePtr connection;
-	ConnectionType LastPoint;
+	pcb_connection_t *connection;
+	pcb_connection_t LastPoint;
 	pcb_net_t *net;
 	static NetListTypePtr Wantlist = NULL;
 
@@ -291,7 +291,7 @@ NetListTypePtr ProcNetlist(LibraryTypePtr net_menu)
  */
 static void TransferNet(NetListTypePtr Netl, pcb_net_t *SourceNet, pcb_net_t *DestNet)
 {
-	ConnectionTypePtr conn;
+	pcb_connection_t *conn;
 
 	/* It would be worth checking if SourceNet is NULL here to avoid a segfault. Seb James. */
 	CONNECTION_LOOP(SourceNet);
@@ -396,7 +396,7 @@ static pcb_bool CheckShorts(LibraryMenuTypePtr theNet)
 static pcb_bool GatherSubnets(NetListTypePtr Netl, pcb_bool NoWarn, pcb_bool AndRats)
 {
 	pcb_net_t *a, *b;
-	ConnectionTypePtr conn;
+	pcb_connection_t *conn;
 	pcb_cardinal_t m, n;
 	pcb_bool Warned = pcb_false;
 
@@ -492,11 +492,11 @@ static pcb_bool GatherSubnets(NetListTypePtr Netl, pcb_bool NoWarn, pcb_bool And
 
 static pcb_bool
 DrawShortestRats(NetListTypePtr Netl,
-								 void (*funcp) (register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr))
+								 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr))
 {
 	RatTypePtr line;
 	register float distance, temp;
-	register ConnectionTypePtr conn1, conn2, firstpoint, secondpoint;
+	register pcb_connection_t *conn1, *conn2, *firstpoint, *secondpoint;
 	PolygonTypePtr polygon;
 	pcb_bool changed = pcb_false;
 	pcb_bool havepoints;
@@ -645,11 +645,11 @@ DrawShortestRats(NetListTypePtr Netl,
  */
 pcb_bool
 AddAllRats(pcb_bool SelectedOnly,
-					 void (*funcp) (register ConnectionTypePtr, register ConnectionTypePtr, register RouteStyleTypePtr))
+					 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr))
 {
 	NetListTypePtr Nets, Wantlist;
 	pcb_net_t *lonesome;
-	ConnectionTypePtr onepin;
+	pcb_connection_t *onepin;
 	pcb_bool changed, Warned = pcb_false;
 
 	/* the netlist library has the text form
@@ -736,7 +736,7 @@ NetListListType CollectSubnets(pcb_bool SelectedOnly)
 	NetListListType result = { 0, 0, NULL };
 	NetListTypePtr Nets, Wantlist;
 	pcb_net_t *lonesome;
-	ConnectionTypePtr onepin;
+	pcb_connection_t *onepin;
 
 	/* the netlist library has the text form
 	 * ProcNetlist fills in the Netlist
@@ -928,16 +928,16 @@ char *ConnectionName(int type, void *ptr1, void *ptr2)
 /* ---------------------------------------------------------------------------
  * get next slot for a connection, allocates memory if necessary
  */
-ConnectionTypePtr GetConnectionMemory(pcb_net_t *Net)
+pcb_connection_t *GetConnectionMemory(pcb_net_t *Net)
 {
-	ConnectionTypePtr con = Net->Connection;
+	pcb_connection_t *con = Net->Connection;
 
 	/* realloc new memory if necessary and clear it */
 	if (Net->ConnectionN >= Net->ConnectionMax) {
 		Net->ConnectionMax += STEP_POINT;
-		con = (ConnectionTypePtr) realloc(con, Net->ConnectionMax * sizeof(ConnectionType));
+		con = (pcb_connection_t *) realloc(con, Net->ConnectionMax * sizeof(pcb_connection_t));
 		Net->Connection = con;
-		memset(con + Net->ConnectionN, 0, STEP_POINT * sizeof(ConnectionType));
+		memset(con + Net->ConnectionN, 0, STEP_POINT * sizeof(pcb_connection_t));
 	}
 	return (con + Net->ConnectionN++);
 }

@@ -112,7 +112,7 @@ static void nbcb_rat_off(LibraryMenuTypePtr net, int pos)
 static void nbcb_select_common(LibraryMenuTypePtr net, int pos, int select_flag)
 {
 	LibraryEntryType *entry;
-	ConnectionType conn;
+	pcb_connection_t conn;
 	int i;
 
 	InitConnectionLookup();
