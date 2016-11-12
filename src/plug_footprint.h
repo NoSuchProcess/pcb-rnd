@@ -4,19 +4,19 @@
 #include <stdio.h>
 #include "vtlibrary.h"
 
-typedef struct plug_fp_s plug_fp_t;
+typedef struct pcb_plug_fp_s pcb_plug_fp_t;
 
 typedef struct {
-	plug_fp_t *backend;
+	pcb_plug_fp_t *backend;
 	union {
 		int i;
 		void *p;
 	} field[4];
-} fp_fopen_ctx_t;
+} pcb_fp_fopen_ctx_t;
 
 /* hook bindings, see below */
-FILE *fp_fopen(const char *path, const char *name, fp_fopen_ctx_t *fctx);
-void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx);
+FILE *fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx);
+void fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx);
 
 /* duplicates the name and splits it into a basename and params;
    params is NULL if the name is not parametric (and "" if parameter list is empty)
@@ -37,13 +37,13 @@ void fp_init();
 void fp_uninit();
 
 /**************************** API definition *********************************/
-struct plug_fp_s {
-	plug_fp_t *next;
+struct pcb_plug_fp_s {
+	pcb_plug_fp_t *next;
 	void *plugin_data;
 
 	/* returns the number of footprints loaded into the library or -1 on
 	   error; next in chain is run only on error. */
-	int (*load_dir)(plug_fp_t *ctx, const char *path);
+	int (*load_dir)(pcb_plug_fp_t *ctx, const char *path);
 
 /* Open a footprint for reading; if the footprint is parametric, it's run
    prefixed with libshell (or executed directly, if libshell is NULL).
@@ -51,13 +51,13 @@ struct plug_fp_s {
    The user has to supply a state integer that will be used by pcb_fp_fclose().
    Must fill in fctx->backend, may use any other field of fctx as well.
  */
-	FILE *(*fopen)(plug_fp_t *ctx, const char *path, const char *name, fp_fopen_ctx_t *fctx);
+	FILE *(*fopen)(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx);
 
 /* Close the footprint file opened by pcb_fp_fopen(). */
-	void (*fclose)(plug_fp_t *ctx, FILE * f, fp_fopen_ctx_t *fctx);
+	void (*fclose)(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx);
 };
 
-extern plug_fp_t *plug_fp_chain;
+extern pcb_plug_fp_t *plug_fp_chain;
 
 
 /* Optional pcb-rnd-side glue for some implementations */

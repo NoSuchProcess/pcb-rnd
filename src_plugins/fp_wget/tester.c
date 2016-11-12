@@ -6,7 +6,7 @@
 #undef strdup
 char *pcb_strdup(const char *s) { return strdup(s); }
 
-plug_fp_t *plug_fp_chain = NULL;
+pcb_plug_fp_t *plug_fp_chain = NULL;
 
 library_t ltmp;
 library_t *fp_mkdir_p(const char *path)
@@ -23,7 +23,7 @@ library_t *fp_append_entry(library_t *parent, const char *name, fp_type_t type, 
 
 int main()
 {
-	fp_fopen_ctx_t fctx;
+	pcb_fp_fopen_ctx_t fctx;
 	FILE *f;
 	char line[1024];
 

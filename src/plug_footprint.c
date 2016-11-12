@@ -35,7 +35,7 @@
 #include "error.h"
 #include "compat_misc.h"
 
-plug_fp_t *plug_fp_chain = NULL;
+pcb_plug_fp_t *plug_fp_chain = NULL;
 library_t library;
 
 int fp_dupname(const char *name, char **basename, char **params)
@@ -102,14 +102,14 @@ const char *fp_tagname(const void *tagid)
 	return (char *) tagid;
 }
 
-FILE *fp_fopen(const char *path, const char *name, fp_fopen_ctx_t *fctx)
+FILE *fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
 	FILE *res = NULL;
-	HOOK_CALL(plug_fp_t, plug_fp_chain, fopen, res, != NULL, (self, path, name, fctx));
+	HOOK_CALL(pcb_plug_fp_t, plug_fp_chain, fopen, res, != NULL, (self, path, name, fctx));
 	return res;
 }
 
-void fp_fclose(FILE * f, fp_fopen_ctx_t *fctx)
+void fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
 	if (fctx->backend->fclose != NULL)
 		fctx->backend->fclose(fctx->backend, f, fctx);
@@ -352,7 +352,7 @@ static int fp_read_lib_all_(const char *searchpath)
 
 		/* Next read in any footprints in the top level dir */
 		res = -1;
-		HOOK_CALL(plug_fp_t, plug_fp_chain, load_dir, res, >= 0, (self, toppath));
+		HOOK_CALL(pcb_plug_fp_t, plug_fp_chain, load_dir, res, >= 0, (self, toppath));
 		if (res >= 0)
 			n_footprints += res;
 		else

@@ -318,7 +318,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 {
 	FILE *f;
 	int ret;
-	fp_fopen_ctx_t st;
+	pcb_fp_fopen_ctx_t st;
 
 	yy_settings_dest = CFR_invalid;
 	yyPCB = NULL;

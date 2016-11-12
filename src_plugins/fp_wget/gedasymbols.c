@@ -68,7 +68,7 @@ static int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
 	return changed;
 }
 
-int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
+int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path)
 {
 	FILE *f;
 	int fctx;
@@ -149,7 +149,7 @@ int fp_gedasymbols_load_dir(plug_fp_t *ctx, const char *path)
 
 #define FIELD_WGET_CTX 0
 
-FILE *fp_gedasymbols_fopen(plug_fp_t *ctx, const char *path, const char *name, fp_fopen_ctx_t *fctx)
+FILE *fp_gedasymbols_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
 	gds_t s;
 	FILE *f;
@@ -173,17 +173,17 @@ FILE *fp_gedasymbols_fopen(plug_fp_t *ctx, const char *path, const char *name, f
 	return f;
 }
 
-void fp_gedasymbols_fclose(plug_fp_t *ctx, FILE * f, fp_fopen_ctx_t *fctx)
+void fp_gedasymbols_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
 	fp_wget_close(&f, &(fctx->field[FIELD_WGET_CTX].i));
 }
 
 
-static plug_fp_t fp_gedasymbols;
+static pcb_plug_fp_t fp_gedasymbols;
 
 void fp_gedasymbols_uninit(void)
 {
-	HOOK_UNREGISTER(plug_fp_t, plug_fp_chain, &fp_gedasymbols);
+	HOOK_UNREGISTER(pcb_plug_fp_t, plug_fp_chain, &fp_gedasymbols);
 }
 
 void fp_gedasymbols_init(void)
@@ -193,5 +193,5 @@ void fp_gedasymbols_init(void)
 	fp_gedasymbols.fopen = fp_gedasymbols_fopen;
 	fp_gedasymbols.fclose = fp_gedasymbols_fclose;
 
-	HOOK_REGISTER(plug_fp_t, plug_fp_chain, &fp_gedasymbols);
+	HOOK_REGISTER(pcb_plug_fp_t, plug_fp_chain, &fp_gedasymbols);
 }

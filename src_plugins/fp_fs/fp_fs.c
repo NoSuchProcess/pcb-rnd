@@ -258,7 +258,7 @@ static int fp_fs_load_dir_(library_t *pl, const char *subdir, const char *toppat
 }
 
 
-static int fp_fs_load_dir(plug_fp_t *ctx, const char *path)
+static int fp_fs_load_dir(pcb_plug_fp_t *ctx, const char *path)
 {
 	return fp_fs_load_dir_(&library, ".", path, 1);
 }
@@ -446,7 +446,7 @@ out:;
 }
 
 #define F_IS_PARAMETRIC 0
-static FILE *fp_fs_fopen(plug_fp_t *ctx, const char *path, const char *name, fp_fopen_ctx_t *fctx)
+static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
 	char *basename, *params, *fullname;
 	FILE *f = NULL;
@@ -487,7 +487,7 @@ static FILE *fp_fs_fopen(plug_fp_t *ctx, const char *path, const char *name, fp_
 	return f;
 }
 
-static void fp_fs_fclose(plug_fp_t *ctx, FILE * f, fp_fopen_ctx_t *fctx)
+static void fp_fs_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
 	if (fctx->field[F_IS_PARAMETRIC].i)
 		pclose(f);
@@ -496,11 +496,11 @@ static void fp_fs_fclose(plug_fp_t *ctx, FILE * f, fp_fopen_ctx_t *fctx)
 }
 
 
-static plug_fp_t fp_fs;
+static pcb_plug_fp_t fp_fs;
 
 void hid_fp_fs_uninit(void)
 {
-	HOOK_UNREGISTER(plug_fp_t, plug_fp_chain, &fp_fs);
+	HOOK_UNREGISTER(pcb_plug_fp_t, plug_fp_chain, &fp_fs);
 }
 
 pcb_uninit_t hid_fp_fs_init(void)
@@ -509,6 +509,6 @@ pcb_uninit_t hid_fp_fs_init(void)
 	fp_fs.load_dir = fp_fs_load_dir;
 	fp_fs.fopen = fp_fs_fopen;
 	fp_fs.fclose = fp_fs_fclose;
-	HOOK_REGISTER(plug_fp_t, plug_fp_chain, &fp_fs);
+	HOOK_REGISTER(pcb_plug_fp_t, plug_fp_chain, &fp_fs);
 	return hid_fp_fs_uninit;
 }

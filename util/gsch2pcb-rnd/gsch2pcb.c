@@ -744,7 +744,7 @@ static int add_elements(char * pcb_file)
 	int total, paren_level = 0;
 	int skipping = FALSE;
 	int dpcb;
-	fp_fopen_ctx_t fctx;
+	pcb_fp_fopen_ctx_t fctx;
 
 	if ((f_in = fopen(pcb_file, "r")) == NULL)
 		return 0;
