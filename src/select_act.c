@@ -45,7 +45,7 @@
 
 /* --------------------------------------------------------------------------- */
 /* Ask the user for a search pattern */
-static char *gui_get_pat(search_method_t * method)
+static char *gui_get_pat(pcb_search_method_t * method)
 {
 	const char *methods[] = { "regexp", "list of names", NULL };
 	pcb_hid_attribute_t attrs[2];
@@ -156,7 +156,7 @@ static int ActionSelect(int argc, const char **argv, Coord x, Coord y)
 		commonByName:
 			{
 				const char *pattern = ACTION_ARG(1);
-				search_method_t method = SM_REGEX;
+				pcb_search_method_t method = SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (SelectObjectByName(type, pattern, pcb_true, method))
@@ -315,7 +315,7 @@ static int ActionUnselect(int argc, const char **argv, Coord x, Coord y)
 		commonByName:
 			{
 				const char *pattern = ACTION_ARG(1);
-				search_method_t method = SM_REGEX;
+				pcb_search_method_t method = SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (SelectObjectByName(type, pattern, pcb_false, method))

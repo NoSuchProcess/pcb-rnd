@@ -831,7 +831,7 @@ static int strlst_match(const char **pat, const char *name)
 	return 0;
 }
 
-pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, search_method_t method)
+pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, pcb_search_method_t method)
 {
 	pcb_bool changed = pcb_false;
 	const char **pat = NULL;
