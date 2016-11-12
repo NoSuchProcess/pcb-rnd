@@ -13,14 +13,14 @@ typedef struct {
 	  Clearance;       /* min. separation from other nets */
 	char name[32];     /* fixed length name to save malloc/free */
 /*	int index;*/
-} RouteStyleType, *RouteStyleTypePtr;
+} pcb_route_style_t;
 
 /* all public symbols are wrapped in GVT() - see vt_t(7) */
 #define GVT(x) vtroutestyle_ ## x
 #define HAVE_VTROUTESTYLE_T
 
 /* Array elem type - see vt_t(7) */
-#define GVT_ELEM_TYPE RouteStyleType
+#define GVT_ELEM_TYPE pcb_route_style_t
 
 /* Type that represents array lengths - see vt_t(7) */
 #define GVT_SIZE_TYPE size_t

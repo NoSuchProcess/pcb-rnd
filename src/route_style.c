@@ -33,7 +33,7 @@
 #include "conf.h"
 #include "misc_util.h"
 
-RouteStyleType pcb_custom_route_style;
+pcb_route_style_t pcb_custom_route_style;
 
 /*! \brief Serializes the route style list 
  *  \par Function Description
@@ -62,7 +62,7 @@ char *make_route_string(vtroutestyle_t *styles)
  * comma separated Name, Dimension, Dimension, Dimension, Dimension
  * e.g. Signal,20,40,20,10:Power,40,60,28,10:...
  */
-int ParseRoutingString1(char **str, RouteStyleTypePtr routeStyle, const char *default_unit)
+int ParseRoutingString1(char **str, pcb_route_style_t *routeStyle, const char *default_unit)
 {
 	char *s = *str;
 	char Name[256];
@@ -148,7 +148,7 @@ int ParseRouteString(char *s, vtroutestyle_t *styles, const char *default_unit)
 	return 0;
 }
 
-void pcb_use_route_style(RouteStyleType * rst)
+void pcb_use_route_style(pcb_route_style_t * rst)
 {
 	conf_set_design("design/line_thickness", "%$mS", rst->Thick);
 	conf_set_design("design/via_thickness", "%$mS", rst->Diameter);

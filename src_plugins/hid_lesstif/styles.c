@@ -233,7 +233,7 @@ static void style_set_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 
 static void style_selected(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 {
-	RouteStyleType *style;
+	pcb_route_style_t *style;
 	int j, n;
 	if (cbs && cbs->set == 0) {
 		XmToggleButtonSetState(w, 1, 0);

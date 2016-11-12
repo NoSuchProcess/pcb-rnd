@@ -1014,7 +1014,7 @@ static const char routestyle_help[] = "Copies the indicated routing style into t
 static int ActionRouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *str = ACTION_ARG(0);
-	RouteStyleType *rts;
+	pcb_route_style_t *rts;
 	int number;
 
 	if (str) {

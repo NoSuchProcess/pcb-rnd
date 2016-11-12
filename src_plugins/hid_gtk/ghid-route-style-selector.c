@@ -22,7 +22,7 @@
 
 /* Forward dec'ls */
 struct _route_style;
-struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector *, RouteStyleType *, int);
+struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector *, pcb_route_style_t *, int);
 static void ghid_route_style_selector_finalize(GObject * object);
 static void add_new_iter(GHidRouteStyleSelector * rss);
 
@@ -68,7 +68,7 @@ struct _GHidRouteStyleSelector {
 struct _GHidRouteStyleSelectorClass {
 	GtkVBoxClass parent_class;
 
-	void (*select_style) (GHidRouteStyleSelector *, RouteStyleType *);
+	void (*select_style) (GHidRouteStyleSelector *, pcb_route_style_t *);
 	void (*style_edited) (GHidRouteStyleSelector *, gboolean);
 };
 
@@ -77,7 +77,7 @@ struct _route_style {
 	GtkWidget *button;
 	GtkWidget *menu_item;
 	GtkTreeRowReference *rref;
-	RouteStyleType *rst;
+	pcb_route_style_t *rst;
 	gulong sig_id;
 	int hidden;
 };
@@ -264,7 +264,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	gtk_widget_show_all(dialog);
 	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
 		int changed = 0;
-		RouteStyleType *rst;
+		pcb_route_style_t *rst;
 		struct _route_style *style;
 		gboolean save;
 		if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(select_box), &iter))
@@ -431,14 +431,14 @@ GtkWidget *ghid_route_style_selector_new()
  *  \param [in] data    PCB's route style object that will be edited
  */
 struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteStyleSelector * rss,
-																																		RouteStyleType * data, int hide)
+																																		pcb_route_style_t * data, int hide)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	gchar *action_name = g_strdup_printf("RouteStyle%d", action_count);
 	struct _route_style *new_style = g_malloc(sizeof(*new_style));
 
-	/* Key the route style data with the RouteStyleType it controls */
+	/* Key the route style data with the pcb_route_style_t it controls */
 	new_style->hidden = hide;
 	new_style->rst = data;
 	new_style->action = gtk_radio_action_new(action_name, data->name, NULL, NULL, action_count);
@@ -485,7 +485,7 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
  *  \param [in] rss     The selector to be acted on
  *  \param [in] data    PCB's route style object describing the style
  */
-void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, RouteStyleType * data)
+void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, pcb_route_style_t * data)
 {
 	if (!rss->hidden_button) {
 		memset(&pcb_custom_route_style, 0, sizeof(pcb_custom_route_style));
@@ -542,7 +542,7 @@ gint ghid_route_style_selector_install_items(GHidRouteStyleSelector * rss, GtkMe
  *
  *  \return TRUE if a style was selected, FALSE otherwise
  */
-gboolean ghid_route_style_selector_select_style(GHidRouteStyleSelector * rss, RouteStyleType * rst)
+gboolean ghid_route_style_selector_select_style(GHidRouteStyleSelector * rss, pcb_route_style_t * rst)
 {
 	GtkTreeIter iter;
 	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter);

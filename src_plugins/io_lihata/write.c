@@ -571,7 +571,7 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 
 	stl = lht_dom_node_alloc(LHT_LIST, "styles");
 	for(n = 0; n < vtroutestyle_len(styles); n++) {
-		RouteStyleType *s = styles->array + n;
+		pcb_route_style_t *s = styles->array + n;
 		sn = lht_dom_node_alloc(LHT_HASH, s->name);
 		lht_dom_list_append(stl, sn);
 		lht_dom_hash_put(sn, build_textf("thickness", CFMT, s->Thick));

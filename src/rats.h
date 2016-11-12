@@ -50,7 +50,7 @@ struct pcb_connection_s {				/* holds a connection (rat) */
 pcb_rat_t *AddNet(void);
 char *ConnectionName(int, void *, void *);
 
-pcb_bool AddAllRats(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr));
+pcb_bool AddAllRats(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
 pcb_bool SeekPad(pcb_lib_entry_t *, pcb_connection_t *, pcb_bool);
 
 pcb_netlist_t *ProcNetlist(pcb_lib_t *);

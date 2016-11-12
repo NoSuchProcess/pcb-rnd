@@ -720,7 +720,7 @@ static void route_styles_edited_cb(GHidRouteStyleSelector * rss, gboolean save, 
 }
 
 /*! \brief Called when a route style is selected */
-static void route_style_changed_cb(GHidRouteStyleSelector * rss, RouteStyleType * rst, gpointer data)
+static void route_style_changed_cb(GHidRouteStyleSelector * rss, pcb_route_style_t * rst, gpointer data)
 {
 	pcb_use_route_style(rst);
 	ghid_set_status_line_label();

@@ -825,7 +825,7 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 		return -1;
 
 	for(stn = lht_dom_first(&it, nd); stn != NULL; stn = lht_dom_next(&it)) {
-		RouteStyleType *s = vtroutestyle_alloc_append(styles, 1);
+		pcb_route_style_t *s = vtroutestyle_alloc_append(styles, 1);
 		int name_len = strlen(stn->name);
 
 		/* safe copy the name */

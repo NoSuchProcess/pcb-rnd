@@ -62,7 +62,7 @@
 static pcb_bool FindPad(const char *, const char *, pcb_connection_t *, pcb_bool);
 static pcb_bool ParseConnection(const char *, char *, char *);
 static pcb_bool DrawShortestRats(pcb_netlist_t *,
-														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr));
+														 void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
 static pcb_bool GatherSubnets(pcb_netlist_t *, pcb_bool, pcb_bool);
 static pcb_bool CheckShorts(pcb_lib_menu_t *);
 static void TransferNet(pcb_netlist_t *, pcb_net_t *, pcb_net_t *);
@@ -492,7 +492,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 
 static pcb_bool
 DrawShortestRats(pcb_netlist_t *Netl,
-								 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr))
+								 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
 {
 	pcb_rat_t *line;
 	register float distance, temp;
@@ -645,7 +645,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
  */
 pcb_bool
 AddAllRats(pcb_bool SelectedOnly,
-					 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register RouteStyleTypePtr))
+					 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
 {
 	pcb_netlist_t *Nets, *Wantlist;
 	pcb_net_t *lonesome;

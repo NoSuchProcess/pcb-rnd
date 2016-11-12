@@ -22,8 +22,8 @@ GtkWidget *ghid_route_style_selector_new(void);
 
 gint ghid_route_style_selector_install_items(GHidRouteStyleSelector * rss, GtkMenuShell * shell, gint pos);
 
-void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, RouteStyleType * data);
-gboolean ghid_route_style_selector_select_style(GHidRouteStyleSelector * rss, RouteStyleType * rst);
+void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, pcb_route_style_t * data);
+gboolean ghid_route_style_selector_select_style(GHidRouteStyleSelector * rss, pcb_route_style_t * rst);
 void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss);
 
 GtkAccelGroup *ghid_route_style_selector_get_accel_group(GHidRouteStyleSelector * rss);

@@ -282,7 +282,7 @@ typedef struct routebox {
 	 */
 	vector_t *conflicts_with;
 	/* route style of the net associated with this routebox */
-	RouteStyleType *style;
+	pcb_route_style_t *style;
 	/* congestion values for the edges of an expansion box */
 	unsigned char n, e, s, w;
 	/* what pass this this track was laid down on */
@@ -304,9 +304,9 @@ typedef struct routedata {
 	/* root pointer into connectivity information */
 	routebox_t *first_net;
 	/* default routing style */
-	RouteStyleType defaultstyle;
+	pcb_route_style_t defaultstyle;
 	/* style structures */
-	RouteStyleType **styles; /* [max_styles+1] */
+	pcb_route_style_t **styles; /* [max_styles+1] */
 	/* what is the maximum bloat (clearance+line half-width or
 	 * clearance+via_radius) for any style we've seen? */
 	pcb_coord_t max_bloat;
@@ -339,7 +339,7 @@ typedef struct edge_struct {
 
 static struct {
 	/* net style parameters */
-	RouteStyleType *style;
+	pcb_route_style_t *style;
 	/* the present bloat */
 	pcb_coord_t bloat;
 	/* cost parameters */
@@ -584,7 +584,7 @@ static inline pcb_bool point_in_shrunk_box(const routebox_t * box, pcb_coord_t X
  * routedata initialization functions.
  */
 
-static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb_bool is_via, RouteStyleType * style)
+static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb_bool is_via, pcb_route_style_t * style)
 {
 	routebox_t **rbpp, *lastrb = NULL;
 	int i, ht;
@@ -626,7 +626,7 @@ static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb
 	return lastrb;
 }
 
-static routebox_t *AddPad(PointerListType layergroupboxes[], pcb_element_t *element, pcb_pad_t *pad, RouteStyleType * style)
+static routebox_t *AddPad(PointerListType layergroupboxes[], pcb_element_t *element, pcb_pad_t *pad, pcb_route_style_t * style)
 {
 	pcb_coord_t halfthick;
 	routebox_t **rbpp;
@@ -661,7 +661,7 @@ static routebox_t *AddPad(PointerListType layergroupboxes[], pcb_element_t *elem
 }
 
 static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, pcb_line_t *line,
-													 pcb_line_t *ptr, RouteStyleType * style)
+													 pcb_line_t *ptr, pcb_route_style_t * style)
 {
 	routebox_t **rbpp;
 	assert(layergroupboxes && line);
@@ -703,7 +703,7 @@ static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, pc
 
 static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
 																				pcb_coord_t X1, pcb_coord_t Y1,
-																				pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t layergroup, void *parent, RouteStyleType * style)
+																				pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t layergroup, void *parent, pcb_route_style_t * style)
 {
 	routebox_t **rbpp;
 	pcb_coord_t keep = style->Clearance;
@@ -727,7 +727,7 @@ static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
 	return *rbpp;
 }
 
-static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t layer, pcb_polygon_t *polygon, RouteStyleType * style)
+static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t layer, pcb_polygon_t *polygon, pcb_route_style_t * style)
 {
 	int is_not_rectangle = 1;
 	int layergroup = GetLayerGroupNumberByNumber(layer);
@@ -758,14 +758,14 @@ static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t 
 	return rb;
 }
 
-static void AddText(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, pcb_text_t *text, RouteStyleType * style)
+static void AddText(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, pcb_text_t *text, pcb_route_style_t * style)
 {
 	AddIrregularObstacle(layergroupboxes,
 											 text->BoundingBox.X1, text->BoundingBox.Y1,
 											 text->BoundingBox.X2, text->BoundingBox.Y2, layergroup, text, style);
 }
 
-static routebox_t *AddArc(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, pcb_arc_t *arc, RouteStyleType * style)
+static routebox_t *AddArc(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, pcb_arc_t *arc, pcb_route_style_t * style)
 {
 	return AddIrregularObstacle(layergroupboxes,
 															arc->BoundingBox.X1, arc->BoundingBox.Y1,
@@ -909,7 +909,7 @@ static routedata_t *CreateRouteData()
 	bbox.X2 = PCB->MaxWidth;
 	bbox.Y2 = PCB->MaxHeight;
 	for (i = 0; i < rd->max_styles + 1; i++) {
-		RouteStyleType *style = (i < rd->max_styles) ? &PCB->RouteStyle.array[i] : &rd->defaultstyle;
+		pcb_route_style_t *style = (i < rd->max_styles) ? &PCB->RouteStyle.array[i] : &rd->defaultstyle;
 		rd->styles[i] = style;
 	}
 
@@ -4021,7 +4021,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 	return result;
 }
 
-static void InitAutoRouteParameters(int pass, RouteStyleType * style, pcb_bool with_conflicts, pcb_bool is_smoothing, pcb_bool lastpass)
+static void InitAutoRouteParameters(int pass, pcb_route_style_t * style, pcb_bool with_conflicts, pcb_bool is_smoothing, pcb_bool lastpass)
 {
 	int i;
 	/* routing style */

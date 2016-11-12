@@ -36,7 +36,7 @@ struct pcb_net_s {								/* holds a net of connections */
 	pcb_cardinal_t ConnectionN,					/* the number of connections contained */
 	  ConnectionMax;							/* max connections from malloc */
 	pcb_connection_t *Connection;
-	RouteStyleTypePtr Style;
+	pcb_route_style_t *Style;
 };
 
 typedef struct {								/* holds a list of nets */
