@@ -55,10 +55,10 @@ typedef int          CFT_BOOLEAN;
 typedef long         CFT_INTEGER;
 typedef double       CFT_REAL;
 typedef Coord        CFT_COORD;
-typedef Unit *       CFT_UNIT;
+typedef pcb_unit_t *       CFT_UNIT;
 typedef char *       CFT_COLOR;
 typedef conflist_t   CFT_LIST;
-typedef Increments   CFT_INCREMENTS;
+typedef pcb_increments_t   CFT_INCREMENTS;
 
 typedef enum {
 	CFN_STRING,
@@ -78,10 +78,10 @@ union confitem_u {
 	long *integer;
 	double *real;
 	Coord *coord;
-	const Unit **unit;
+	const pcb_unit_t **unit;
 	const char **color;
 	conflist_t *list;
-	Increments *increments;
+	pcb_increments_t *increments;
 	void *any;
 };
 

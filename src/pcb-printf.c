@@ -274,7 +274,7 @@ typedef struct {
 	enum pcb_allow_e  up;
 
 	/* persistent, calculated once */
-	const Unit    *base_unit, *down_unit, *up_unit;
+	const pcb_unit_t    *base_unit, *down_unit, *up_unit;
 } human_coord_t;
 
 /* Conversion preference table */
@@ -284,7 +284,7 @@ static human_coord_t human_coord[] = {
 };
 #define NUM_HUMAN_COORD (sizeof(human_coord) / sizeof(human_coord[0]))
 
-static inline int try_human_coord(Coord coord, const Unit *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
+static inline int try_human_coord(Coord coord, const pcb_unit_t *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
 {
 	double v, frac;
 	long int digs, zeros;

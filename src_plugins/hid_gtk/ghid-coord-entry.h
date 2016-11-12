@@ -22,7 +22,7 @@ typedef struct _GHidCoordEntryClass GHidCoordEntryClass;
 enum ce_step_size { CE_TINY, CE_SMALL, CE_MEDIUM, CE_LARGE };
 
 GType ghid_coord_entry_get_type(void);
-GtkWidget *ghid_coord_entry_new(Coord min_val, Coord max_val, Coord value, const Unit * unit, enum ce_step_size step_size);
+GtkWidget *ghid_coord_entry_new(Coord min_val, Coord max_val, Coord value, const pcb_unit_t * unit, enum ce_step_size step_size);
 void ghid_coord_entry_add_entry(GHidCoordEntry * ce, const gchar * name, const gchar * desc);
 gchar *ghid_coord_entry_get_last_command(GHidCoordEntry * ce);
 

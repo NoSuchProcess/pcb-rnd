@@ -390,7 +390,7 @@ Sets the display units to millimeters.
 
 static int SetUnits(int argc, const char **argv, Coord x, Coord y)
 {
-	const Unit *new_unit;
+	const pcb_unit_t *new_unit;
 	if (argc == 0)
 		return 0;
 	new_unit = get_unit_struct(argv[0]);
@@ -2445,7 +2445,7 @@ static Boolean idle_proc(XtPointer dummy)
 	{
 		static int c_x = -2, c_y = -2;
 		static pcb_mark_t saved_mark;
-		static const Unit *old_grid_unit = NULL;
+		static const pcb_unit_t *old_grid_unit = NULL;
 		if (crosshair_x != c_x || crosshair_y != c_y
 				|| conf_core.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &Marked, sizeof(pcb_mark_t))) {
 			static int last_state = 0;
@@ -2514,7 +2514,7 @@ static Boolean idle_proc(XtPointer dummy)
 	{
 		static Coord old_grid = -1;
 		static Coord old_gx, old_gy;
-		static const Unit *old_unit;
+		static const pcb_unit_t *old_unit;
 		XmString ms;
 		if (PCB->Grid != old_grid || PCB->GridOffsetX != old_gx || PCB->GridOffsetY != old_gy || conf_core.editor.grid_unit != old_unit) {
 			static char buf[100];
@@ -2540,7 +2540,7 @@ static Boolean idle_proc(XtPointer dummy)
 
 	{
 		static double old_zoom = -1;
-		static const Unit *old_grid_unit = NULL;
+		static const pcb_unit_t *old_grid_unit = NULL;
 		if (view_zoom != old_zoom || conf_core.editor.grid_unit != old_grid_unit) {
 			char *buf = pcb_strdup_printf("%m+%$mS/pix",
 																			 conf_core.editor.grid_unit->allow, (Coord) view_zoom);

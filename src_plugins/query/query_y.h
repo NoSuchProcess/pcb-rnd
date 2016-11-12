@@ -78,7 +78,7 @@ union YYSTYPE
 	char *s;
 	Coord c;
 	double d;
-	const Unit *u;
+	const pcb_unit_t *u;
 	pcb_qry_node_t *n;
 
 #line 85 "query_y.h" /* yacc.c:1909  */

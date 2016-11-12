@@ -212,7 +212,7 @@ ghid_check_button_connected(GtkWidget * box,
 
 void
 ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
-								 Coord low, Coord high, enum ce_step_size step_size, const Unit *u,
+								 Coord low, Coord high, enum ce_step_size step_size, const pcb_unit_t *u,
 								 gint width, void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, const gchar * string_pre, const gchar * string_post)
 {
 	GtkWidget *hbox = NULL, *label, *entry_widget;
@@ -402,7 +402,7 @@ ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 	gtk_scale_set_draw_value(GTK_SCALE(scale), set_draw_value);
 	gtk_scale_set_digits(GTK_SCALE(scale), digits);
 
-	/* Increments don't make sense, use -1,1 because that does closest to
+	/* pcb_increments_t don't make sense, use -1,1 because that does closest to
 	   |  what I want: scroll down decrements slider value.
 	 */
 	gtk_range_set_increments(GTK_RANGE(scale), -1, 1);

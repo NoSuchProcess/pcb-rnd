@@ -60,7 +60,7 @@ Unit of XY dimensions. Defaults to mil.
 static pcb_hid_attr_val_t xy_values[NUM_OPTIONS];
 
 static const char *xy_filename;
-static const Unit *xy_unit;
+static const pcb_unit_t *xy_unit;
 
 static pcb_hid_attribute_t *xy_get_export_options(int *n)
 {

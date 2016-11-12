@@ -108,7 +108,7 @@ void hid_parse_command_line(int *argc, char ***argv)
 				if (strcmp((*argv)[0] + arg_ofs, ha->attributes[i].name) == 0) {
 					pcb_hid_attribute_t *a = ha->attributes + i;
 					char *ep;
-					const Unit *unit;
+					const pcb_unit_t *unit;
 					switch (ha->attributes[i].type) {
 					case HID_Label:
 						break;

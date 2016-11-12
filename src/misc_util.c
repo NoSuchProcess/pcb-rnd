@@ -102,7 +102,7 @@ double GetValueEx(const char *val, const char *units, pcb_bool * absolute, pcb_u
 
 	if (units && *units) {
 		int i, unit_ok = 0;
-		const Unit *unit = get_unit_struct(units);
+		const pcb_unit_t *unit = get_unit_struct(units);
 		if (unit != NULL) {
 			value = unit_to_coord(unit, value);
 			scaled = 1;
@@ -126,7 +126,7 @@ double GetValueEx(const char *val, const char *units, pcb_bool * absolute, pcb_u
 	/* Apply default unit */
 	if (!scaled && default_unit && *default_unit) {
 		int i;
-		const Unit *unit = get_unit_struct(default_unit);
+		const pcb_unit_t *unit = get_unit_struct(default_unit);
 		if (extra_units)
 			for (i = 0; *extra_units[i].suffix; ++i)
 				if (strcmp(extra_units[i].suffix, default_unit) == 0) {

@@ -14,7 +14,7 @@ double mm2pcb_multiplier()
 
 const char *current_grid_unit()
 {
-	const Unit *u = conf_core.editor.grid_unit;
+	const pcb_unit_t *u = conf_core.editor.grid_unit;
 	if (u == NULL)
 		return "";
 	return u->suffix;

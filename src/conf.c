@@ -241,7 +241,7 @@ int conf_get_policy_prio(lht_node_t *node, conf_policy_t *gpolicy, long *gprio)
 	}
 }
 
-static int conf_parse_increments(Increments *inc, lht_node_t *node)
+static int conf_parse_increments(pcb_increments_t *inc, lht_node_t *node)
 {
 	lht_node_t *val;
 
@@ -333,7 +333,7 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 	long l;
 	int base = 10;
 	double d;
-	const Unit *u;
+	const pcb_unit_t *u;
 
 	switch(type) {
 		case CFN_STRING:
@@ -1690,7 +1690,7 @@ int conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t *va
 		case CFN_COLOR:   print_str_or_null(pfn, ctx, verbose, val->color[idx], val->color[idx]); break;
 		case CFN_INCREMENTS:
 			{
-				Increments *i = &val->increments[idx];
+				pcb_increments_t *i = &val->increments[idx];
 				ret += pfn(ctx, "{ grid=%$mS/%$mS/%$mS size=%$mS/%$mS/%$mS line=%$mS/%$mS/%$mS clear=%$mS/%$mS/%$mS}",
 				i->grid, i->grid_min, i->grid_max,
 				i->size, i->size_min, i->size_max,

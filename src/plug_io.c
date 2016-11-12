@@ -345,7 +345,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* Use attribute PCB::grid::unit as unit, if we can */
 		unit_suffix = AttributeGet(PCB, "PCB::grid::unit");
 		if (unit_suffix && *unit_suffix) {
-			const Unit *new_unit = get_unit_struct(unit_suffix);
+			const pcb_unit_t *new_unit = get_unit_struct(unit_suffix);
 			if (new_unit)
 				conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, POL_OVERWRITE);
 		}

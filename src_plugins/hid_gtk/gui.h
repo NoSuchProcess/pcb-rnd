@@ -324,7 +324,7 @@ void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button,
 																 gboolean expand, gboolean fill, gint pad,
 																 void (*cb_func) (GtkToggleButton *, gpointer), gpointer data, const gchar * string);
 void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, Coord value,
-											Coord low, Coord high, enum ce_step_size step_size, const Unit *u,
+											Coord low, Coord high, enum ce_step_size step_size, const pcb_unit_t *u,
 											gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
 											gpointer data, const gchar * string_pre, const gchar * string_post);
 void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button,

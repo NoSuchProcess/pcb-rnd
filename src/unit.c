@@ -43,7 +43,7 @@
 /* These should be kept in order of smallest scale_factor
  * to largest -- the code uses this ordering when finding
  * the best scale to use for a group of measures */
-Unit Units[] = {
+pcb_unit_t Units[] = {
 	{0, "km", NULL, 'k', 0.000001, METRIC, ALLOW_KM, 5,
 	 0.00005, 0.0005, 0.0025, 0.05, 0.25,
 	 {""}},
@@ -96,7 +96,7 @@ void initialize_units()
 /* This list -must- contain all printable units from the above list */
 /* For now I have just copy/pasted the same values for all metric
  * units and the same values for all imperial ones */
-Increments increments[] = {
+pcb_increments_t increments[] = {
 	/* TABLE FORMAT   |  default  |  min  |  max
 	 *          grid  |           |       |
 	 *          size  |           |       |
@@ -156,9 +156,9 @@ Increments increments[] = {
  *
  * \param [in] const_suffix   The suffix to look up
  *
- * \return A const pointer to the Unit struct, or NULL if none was found
+ * \return A const pointer to the pcb_unit_t struct, or NULL if none was found
  */
-const Unit *get_unit_struct(const char *suffix)
+const pcb_unit_t *get_unit_struct(const char *suffix)
 {
 	int i;
 	int s_len = 0;
@@ -186,7 +186,7 @@ const Unit *get_unit_struct(const char *suffix)
 	return NULL;
 }
 
-const Unit *get_unit_struct_by_allow(enum pcb_allow_e allow)
+const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i)
@@ -198,13 +198,13 @@ const Unit *get_unit_struct_by_allow(enum pcb_allow_e allow)
 
 /* ACCESSORS */
 /* \brief Returns the master unit list. This may not be modified. */
-const Unit *get_unit_list(void)
+const pcb_unit_t *get_unit_list(void)
 {
 	return Units;
 }
 
 /* \brief Returns the unit by its index */
-const Unit *get_unit_by_idx(int idx)
+const pcb_unit_t *get_unit_by_idx(int idx)
 {
 	if ((idx < 0) || (idx >= N_UNITS))
 		return NULL;
@@ -224,7 +224,7 @@ int get_n_units(void)
  *
  * \return The converted measure
  */
-double coord_to_unit(const Unit * unit, Coord x)
+double coord_to_unit(const pcb_unit_t * unit, Coord x)
 {
 	double base;
 	if (unit == NULL)
@@ -241,7 +241,7 @@ double coord_to_unit(const Unit * unit, Coord x)
  *
  * \return The converted measure
  */
-Coord unit_to_coord(const Unit * unit, double x)
+Coord unit_to_coord(const pcb_unit_t * unit, double x)
 {
 	double base;
 	if (unit == NULL)
@@ -257,7 +257,7 @@ Coord unit_to_coord(const Unit * unit, double x)
  *
  * \return The converted measure
  */
-double unit_to_factor(const Unit * unit)
+double unit_to_factor(const pcb_unit_t * unit)
 {
 	return 1.0 / coord_to_unit(unit, 1);
 }
@@ -269,9 +269,9 @@ double unit_to_factor(const Unit * unit)
  *
  * \param [in] suffix   The suffix to look up
  *
- * \return A const pointer to the Increments struct, or NULL if none was found
+ * \return A const pointer to the pcb_increments_t struct, or NULL if none was found
  */
-Increments *get_increments_struct(const char *suffix)
+pcb_increments_t *get_increments_struct(const char *suffix)
 {
 	int i;
 	/* Do lookup */

@@ -62,7 +62,7 @@ static Widget value_form, value_labels, value_texts, units_form;
 static int local_update = 0;
 XmString xms_mm, xms_mil;
 
-static const Unit *unit = 0;
+static const pcb_unit_t *unit = 0;
 static XmString ustr;
 
 static int hash(char *cp)

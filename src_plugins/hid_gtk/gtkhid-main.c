@@ -1709,7 +1709,7 @@ Sets the display units to millimeters.
 
 static int SetUnits(int argc, const char **argv, Coord x, Coord y)
 {
-	const Unit *new_unit;
+	const pcb_unit_t *new_unit;
 	if (argc == 0)
 		return 0;
 

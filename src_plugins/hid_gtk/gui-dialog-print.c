@@ -120,7 +120,7 @@ int ghid_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr
 	 * reflected in this dialog box.
 	 */
 	for (j = 0; j < n_attrs; j++) {
-		const Unit *unit_list;
+		const pcb_unit_t *unit_list;
 		if (attrs[j].help_text == ATTR_UNDOCUMENTED)
 			continue;
 		switch (attrs[j].type) {

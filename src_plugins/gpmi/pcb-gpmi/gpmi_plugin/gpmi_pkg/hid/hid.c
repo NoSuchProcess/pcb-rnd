@@ -118,7 +118,7 @@ dynamic char *hid_get_attribute(hid_t *hid, int attr_id)
 				break;
 		case HIDA_Unit:
 			{
-				const Unit *u;
+				const pcb_unit_t *u;
 				double fact;
 				u = get_unit_by_idx(v->int_value);
 				if (u == NULL)
@@ -162,7 +162,7 @@ pcb_hid_attr_val_t hid_string2val(const hid_attr_type_t type, const char *str)
 				val = strtod(str, &end);
 				while(isspace(*end)) end++;
 				if (*end != '\0') {
-					const Unit *u;
+					const pcb_unit_t *u;
 					u = get_unit_struct(end);
 					if (u == NULL) {
 						Message(PCB_MSG_DEFAULT, "Invalid unit for HIDA_Coord in the script: '%s'\n", end);
@@ -177,7 +177,7 @@ pcb_hid_attr_val_t hid_string2val(const hid_attr_type_t type, const char *str)
 			break;
 		case HIDA_Unit:
 			{
-				const Unit *u;
+				const pcb_unit_t *u;
 				u = get_unit_struct(str);
 				if (u != NULL)
 					v.real_value = unit_to_factor(u);
@@ -253,7 +253,7 @@ int hid_add_attribute(hid_t *hid, char *attr_name, char *help, hid_attr_type_t t
 	hid->attr[current].min_val      = min;
 	hid->attr[current].max_val      = max;
 	if (type == HIDA_Unit) {
-		const Unit *u, *all;
+		const pcb_unit_t *u, *all;
 		all = get_unit_list();
 		u = get_unit_struct(default_val);
 		if (u != NULL)

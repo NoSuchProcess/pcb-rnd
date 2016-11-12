@@ -105,20 +105,20 @@ struct pcb_increments_s {
 	Coord clear_max;
 };
 
-typedef struct pcb_unit_s Unit;
-typedef struct pcb_increments_s Increments;
-extern Unit Units[];
-extern Increments increments[];
+typedef struct pcb_unit_s pcb_unit_t;
+typedef struct pcb_increments_s pcb_increments_t;
+extern pcb_unit_t Units[];
+extern pcb_increments_t increments[];
 
-const Unit *get_unit_struct(const char *suffix);
-const Unit *get_unit_struct_by_allow(enum pcb_allow_e allow);
-const Unit *get_unit_list(void);
-const Unit *get_unit_by_idx(int idx);
+const pcb_unit_t *get_unit_struct(const char *suffix);
+const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);
+const pcb_unit_t *get_unit_list(void);
+const pcb_unit_t *get_unit_by_idx(int idx);
 int get_n_units(void);
-double coord_to_unit(const Unit *, Coord);
-double unit_to_factor(const Unit * unit);
-Coord unit_to_coord(const Unit *, double);
-Increments *get_increments_struct(const char *suffix);
+double coord_to_unit(const pcb_unit_t *, Coord);
+double unit_to_factor(const pcb_unit_t * unit);
+Coord unit_to_coord(const pcb_unit_t *, double);
+pcb_increments_t *get_increments_struct(const char *suffix);
 Angle NormalizeAngle(Angle a);
 
 /* PCB/physical unit conversions */

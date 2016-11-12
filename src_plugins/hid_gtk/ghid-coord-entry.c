@@ -37,13 +37,13 @@ struct _GHidCoordEntry {
 	Coord value;
 
 	enum ce_step_size step_size;
-	const Unit *unit;
+	const pcb_unit_t *unit;
 };
 
 struct _GHidCoordEntryClass {
 	GtkSpinButtonClass parent_class;
 
-	void (*change_unit) (GHidCoordEntry *, const Unit *);
+	void (*change_unit) (GHidCoordEntry *, const pcb_unit_t *);
 };
 
 /* SIGNAL HANDLERS */
@@ -51,7 +51,7 @@ struct _GHidCoordEntryClass {
 static void menu_item_activate_cb(GtkMenuItem * item, GHidCoordEntry * ce)
 {
 	const char *text = gtk_menu_item_get_label(item);
-	const Unit *unit = get_unit_struct(text);
+	const pcb_unit_t *unit = get_unit_struct(text);
 
 	g_signal_emit(ce, ghid_coord_entry_signals[UNIT_CHANGE_SIGNAL], 0, unit);
 }
@@ -60,7 +60,7 @@ static void menu_item_activate_cb(GtkMenuItem * item, GHidCoordEntry * ce)
 static void ghid_coord_entry_popup_cb(GHidCoordEntry * ce, GtkMenu * menu, gpointer data)
 {
 	int i, n;
-	const Unit *unit_list;
+	const pcb_unit_t *unit_list;
 	GtkWidget *menu_item, *submenu;
 
 	/* Build submenu */
@@ -105,7 +105,7 @@ static gboolean ghid_coord_text_changed_cb(GHidCoordEntry * entry, gpointer data
 {
 	const char *text;
 	char *suffix;
-	const Unit *new_unit;
+	const pcb_unit_t *new_unit;
 	double value;
 
 	/* Check if units have changed */
@@ -139,7 +139,7 @@ static gboolean ghid_coord_value_changed_cb(GHidCoordEntry * ce, gpointer data)
  *  \param [in] ce         The entry to be acted on
  *  \parin [in] new_unit   The new unit to be used
  */
-static void ghid_coord_entry_change_unit(GHidCoordEntry * ce, const Unit * new_unit)
+static void ghid_coord_entry_change_unit(GHidCoordEntry * ce, const pcb_unit_t * new_unit)
 {
 	double climb_rate = 0.0;
 	GtkAdjustment *adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(ce));
@@ -182,7 +182,7 @@ static void ghid_coord_entry_class_init(GHidCoordEntryClass * klass)
 	klass->change_unit = ghid_coord_entry_change_unit;
 
 	/* GtkAutoComplete *ce : the object acted on */
-	/* const Unit *new_unit: the new unit that was set */
+	/* const pcb_unit_t *new_unit: the new unit that was set */
 	ghid_coord_entry_signals[UNIT_CHANGE_SIGNAL] =
 		g_signal_new("change-unit",
 								 G_TYPE_FROM_CLASS(klass),
@@ -226,7 +226,7 @@ GType ghid_coord_entry_get_type(void)
  *
  *  \return a freshly-allocated GHidCoordEntry
  */
-GtkWidget *ghid_coord_entry_new(Coord min_val, Coord max_val, Coord value, const Unit * unit, enum ce_step_size step_size)
+GtkWidget *ghid_coord_entry_new(Coord min_val, Coord max_val, Coord value, const pcb_unit_t * unit, enum ce_step_size step_size)
 {
 	/* Setup spinbox min/max values */
 	double small_step, big_step;

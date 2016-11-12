@@ -228,7 +228,7 @@ union YYSTYPE
 	char *s;
 	Coord c;
 	double d;
-	const Unit *u;
+	const pcb_unit_t *u;
 	pcb_qry_node_t *n;
 
 #line 235 "query_y.c" /* yacc.c:355  */

@@ -96,7 +96,7 @@ static pcb_qry_node_t *make_regex_free(char *str)
 	char *s;
 	Coord c;
 	double d;
-	const Unit *u;
+	const pcb_unit_t *u;
 	pcb_qry_node_t *n;
 }
 

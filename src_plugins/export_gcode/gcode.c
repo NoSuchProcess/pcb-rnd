@@ -352,7 +352,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 	int save_ons[MAX_LAYER + 2];
 	int i, idx;
 	time_t t;
-	const Unit *unit;
+	const pcb_unit_t *unit;
 	double scale = 0, d = 0;
 	int r, c, v, p, metric;
 	char *filename;

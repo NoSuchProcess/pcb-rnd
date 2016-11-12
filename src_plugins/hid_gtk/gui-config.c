@@ -789,8 +789,8 @@ static void config_increments_sect_create(GtkWidget * vbox)
 	const int width = 128;
 	char pathmm[256], *pemm;
 	char pathmil[256], *pemil;
-	const Unit *umm = get_unit_struct("mm");
-	const Unit *umil = get_unit_struct("mil");
+	const pcb_unit_t *umm = get_unit_struct("mm");
+	const pcb_unit_t *umil = get_unit_struct("mil");
 	const char *base_pathmm = "editor/increments_mm";
 	const char *base_pathmil = "editor/increments_mil";
 	int lmm = strlen(base_pathmm);
@@ -2225,7 +2225,7 @@ static void config_auto_src_show(lht_node_t *nd)
 			break;
 		case CFN_UNIT:
 			{
-				const Unit *u = NULL;
+				const pcb_unit_t *u = NULL;
 				citem.unit = &u;
 				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
 				if (citem.unit[0] == NULL)
