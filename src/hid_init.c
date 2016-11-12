@@ -65,7 +65,7 @@ static void hid_load_dir(char *dirname)
 				fprintf(stderr, "dl_error: %s\n", dlerror());
 			}
 			else {
-				plugin_info_t *inf = plugin_find(basename);
+				pcb_plugin_info_t *inf = plugin_find(basename);
 				if (inf == NULL) {
 					symname = Concat("hid_", basename, "_init", NULL);
 					if ((sym = dlsym(so, symname)) != NULL) {

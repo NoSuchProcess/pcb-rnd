@@ -33,11 +33,11 @@
 #include "compat_misc.h"
 #include "hid.h"
 
-plugin_info_t *plugins = NULL;
+pcb_plugin_info_t *plugins = NULL;
 
-plugin_info_t *plugin_find(const char *name)
+pcb_plugin_info_t *plugin_find(const char *name)
 {
-	plugin_info_t *i;
+	pcb_plugin_info_t *i;
 	for(i = plugins; i != NULL; i = i->next)
 		if (strcmp(i->name, name) == 0)
 			return i;
@@ -46,7 +46,7 @@ plugin_info_t *plugin_find(const char *name)
 
 void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
 {
-	plugin_info_t *i = malloc(sizeof(plugin_info_t));
+	pcb_plugin_info_t *i = malloc(sizeof(pcb_plugin_info_t));
 
 	i->name = pcb_strdup(name);
 	i->path = pcb_strdup(path);
@@ -65,7 +65,7 @@ void plugins_init(void)
 
 void plugins_uninit(void)
 {
-	plugin_info_t *i, *next;
+	pcb_plugin_info_t *i, *next;
 	for(i = plugins; i != NULL; i = next) {
 		next = i->next;
 		free(i->name);
@@ -86,7 +86,7 @@ static const char manageplugins_help[] = "Manage plugins dialog.";
 
 static int ActionManagePlugins(int argc, const char **argv, Coord x, Coord y)
 {
-	plugin_info_t *i;
+	pcb_plugin_info_t *i;
 	int nump = 0, numb = 0;
 	gds_t str;
 
