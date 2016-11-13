@@ -78,7 +78,7 @@ pcb_rat_t *CreateNewRat(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_co
 
 	Line->ID = CreateIDGet();
 	Line->Flags = Flags;
-	SET_FLAG(PCB_FLAG_RAT, Line);
+	PCB_FLAG_SET(PCB_FLAG_RAT, Line);
 	Line->Thickness = Thickness;
 	Line->Point1.X = X1;
 	Line->Point1.Y = Y1;
@@ -108,7 +108,7 @@ pcb_bool DeleteRats(pcb_bool selected)
 
 	RAT_LOOP(PCB->Data);
 	{
-		if ((!selected) || TEST_FLAG(PCB_FLAG_SELECTED, line)) {
+		if ((!selected) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			changed = pcb_true;
 			RemoveRat(&ctx, line);
 		}
@@ -139,7 +139,7 @@ void *MoveRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 	ratlist_remove(rat);
 	ratlist_append(&ctx->buffer.dst->Rat, rat);
 
-	CLEAR_FLAG(PCB_FLAG_FOUND, rat);
+	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, rat);
 
 	if (!ctx->buffer.dst->rat_tree)
 		ctx->buffer.dst->rat_tree = r_create_tree(NULL, 0, 0);
@@ -224,8 +224,8 @@ pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 
-	if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
-		if (TEST_FLAG(PCB_FLAG_SELECTED, rat))
+	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, rat))
 			gui->set_color(Output.fgGC, PCB->RatSelectedColor);
 		else
 			gui->set_color(Output.fgGC, PCB->ConnectedColor);
@@ -236,7 +236,7 @@ pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 	if (conf_core.appearance.rat_thickness < 20)
 		rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
 	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
-	if (TEST_FLAG(PCB_FLAG_VIA, rat)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_VIA, rat)) {
 		int w = rat->Thickness;
 
 		if (conf_core.editor.thin_draw)
@@ -252,7 +252,7 @@ pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 
 void EraseRat(pcb_rat_t *Rat)
 {
-	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_VIA, Rat)) {
 		pcb_coord_t w = Rat->Thickness;
 
 		pcb_box_t b;
@@ -273,7 +273,7 @@ void DrawRat(pcb_rat_t *Rat)
 	if (conf_core.appearance.rat_thickness < 20)
 		Rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
 	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
-	if (TEST_FLAG(PCB_FLAG_VIA, Rat)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_VIA, Rat)) {
 		pcb_coord_t w = Rat->Thickness;
 
 		pcb_box_t b;

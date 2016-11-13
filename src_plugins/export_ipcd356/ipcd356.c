@@ -177,13 +177,13 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 
 	ELEMENT_LOOP(PCB->Data);
 	PAD_LOOP(element);
-	if (TEST_FLAG(PCB_FLAG_FOUND, pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
 		fprintf(fd, "327%-17.14s", net);	/* Net Name. */
 		fprintf(fd, "%-6.6s", element->Name[1].TextString);	/* Refdes. */
 		fprintf(fd, "-%-4.4s", pad->Number);	/* pin number. */
 		fprintf(fd, " ");						/*! \todo Midpoint indicator (M). */
 		fprintf(fd, "      ");			/* Drilled hole Id (blank for pads). */
-		if (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) == pcb_true) {
+		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == pcb_true) {
 			fprintf(fd, "A02");				/*! \todo Put actual layer # for bottom side. */
 		}
 		else {
@@ -220,7 +220,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		fprintf(fd, "R000");				/* Rotation (0 degrees). */
 		fprintf(fd, " ");						/* Column 72 should be left blank. */
 		if (pad->Mask > 0) {
-			if (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) == pcb_true) {
+			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == pcb_true) {
 				fprintf(fd, "S2");			/* Soldermask on bottom side. */
 			}
 			else {
@@ -232,13 +232,13 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		}
 		fprintf(fd, "      ");			/* Padding. */
 		fprintf(fd, "\n");
-		SET_FLAG(PCB_FLAG_VISIT, pad);
+		PCB_FLAG_SET(PCB_FLAG_VISIT, pad);
 	}
 
 	END_LOOP;											/* Pad. */
 	PIN_LOOP(element);
-	if (TEST_FLAG(PCB_FLAG_FOUND, pin)) {
-		if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {	/* Non plated? */
+	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {	/* Non plated? */
 			fprintf(fd, "367%-17.14s", net);	/* Net Name. */
 		}
 		else {
@@ -255,7 +255,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 			tmp = tmp / 1000;					/* 0.001 mm. */
 		}
 
-		if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
 			fprintf(fd, "D%-4.4dU", tmp);	/* Unplated Drilled hole Id. */
 		}
 		else {
@@ -287,7 +287,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		}
 
 		fprintf(fd, "X%4.4d", padx);	/* Pad dimension X. */
-		if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
 			fprintf(fd, "Y%4.4d", padx);	/* Pad dimension Y. */
 		}
 		else {
@@ -305,7 +305,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 
 		fprintf(fd, "\n");
 
-		SET_FLAG(PCB_FLAG_VISIT, pin);
+		PCB_FLAG_SET(PCB_FLAG_VISIT, pin);
 
 	}
 
@@ -313,8 +313,8 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 	END_LOOP;											/* Element */
 
 	VIA_LOOP(PCB->Data);
-	if (TEST_FLAG(PCB_FLAG_FOUND, via)) {
-		if (TEST_FLAG(PCB_FLAG_HOLE, via)) {	/* Non plated ? */
+	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, via)) {	/* Non plated ? */
 			fprintf(fd, "367%-17.14s", net);	/* Net Name. */
 		}
 		else {
@@ -331,7 +331,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 			tmp = tmp / 1000;					/* 0.001 mm. */
 		}
 
-		if (TEST_FLAG(PCB_FLAG_HOLE, via)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, via)) {
 			fprintf(fd, "D%-4.4dU", tmp);	/* Unplated Drilled hole Id. */
 		}
 		else {
@@ -374,7 +374,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		}
 		fprintf(fd, "      ");			/* Padding. */
 		fprintf(fd, "\n");
-		SET_FLAG(PCB_FLAG_VISIT, via);
+		PCB_FLAG_SET(PCB_FLAG_VISIT, via);
 	}
 
 	END_LOOP;											/* Via. */
@@ -427,7 +427,7 @@ int IPCD356_Netlist(void)
 
 	ELEMENT_LOOP(PCB->Data);
 	PIN_LOOP(element);
-	if (!TEST_FLAG(PCB_FLAG_VISIT, pin)) {
+	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, pin)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
 		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
 		pcb_lookup_conn_by_pin(PCB_TYPE_PIN, pin);
@@ -445,7 +445,7 @@ int IPCD356_Netlist(void)
 	}
 	END_LOOP;											/* Pin. */
 	PAD_LOOP(element);
-	if (!TEST_FLAG(PCB_FLAG_VISIT, pad)) {
+	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, pad)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
 		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
 		pcb_lookup_conn_by_pin(PCB_TYPE_PAD, pad);
@@ -466,7 +466,7 @@ int IPCD356_Netlist(void)
 	END_LOOP;											/* Element. */
 
 	VIA_LOOP(PCB->Data);
-	if (!TEST_FLAG(PCB_FLAG_VISIT, via)) {
+	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, via)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
 		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
 		pcb_lookup_conn_by_pin(PCB_TYPE_PIN, via);
@@ -492,14 +492,14 @@ void IPCD356_End(FILE * fd)
 void ResetVisitPinsViasAndPads()
 {
 	VIA_LOOP(PCB->Data);
-	CLEAR_FLAG(PCB_FLAG_VISIT, via);
+	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, via);
 	END_LOOP;											/* Via. */
 	ELEMENT_LOOP(PCB->Data);
 	PIN_LOOP(element);
-	CLEAR_FLAG(PCB_FLAG_VISIT, pin);
+	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, pin);
 	END_LOOP;											/* Pin. */
 	PAD_LOOP(element);
-	CLEAR_FLAG(PCB_FLAG_VISIT, pad);
+	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, pad);
 	END_LOOP;											/* Pad. */
 	END_LOOP;											/* Element. */
 }

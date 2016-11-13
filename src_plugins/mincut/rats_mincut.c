@@ -118,14 +118,14 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 
 	if (pin != NULL) {
 		debprintf("short on pin!\n");
-		SET_FLAG(PCB_FLAG_WARN, pin);
+		PCB_FLAG_SET(PCB_FLAG_WARN, pin);
 		x = pin->X;
 		y = pin->Y;
 	}
 	else if (pad != NULL) {
 		debprintf("short on pad!\n");
-		SET_FLAG(PCB_FLAG_WARN, pad);
-		if (TEST_FLAG(PCB_FLAG_EDGE2, pad)) {
+		PCB_FLAG_SET(PCB_FLAG_WARN, pad);
+		if (PCB_FLAG_TEST(PCB_FLAG_EDGE2, pad)) {
 			x = pad->Point2.X;
 			y = pad->Point2.Y;
 		}
@@ -305,7 +305,7 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 				s = lut_by_gid[solution[i]];
 				debprintf("%d %p", solution[i], (void *)s);
 				if (s != NULL) {
-					SET_FLAG(PCB_FLAG_WARN, s->to);
+					PCB_FLAG_SET(PCB_FLAG_WARN, s->to);
 					debprintf("  -> %d", s->to->ID);
 				}
 				debprintf("\n");
@@ -366,9 +366,9 @@ void rat_proc_shorts(void)
 		next = n->next;
 
 		if (n->pin != NULL)
-			SET_FLAG(PCB_FLAG_WARN, n->pin);
+			PCB_FLAG_SET(PCB_FLAG_WARN, n->pin);
 		if (n->pad != NULL)
-			SET_FLAG(PCB_FLAG_WARN, n->pad);
+			PCB_FLAG_SET(PCB_FLAG_WARN, n->pad);
 
 
 		/* run only if net is not ignored */

@@ -321,7 +321,7 @@ static void apply_vendor_map(void)
 			tot++;
 			if (via->DrillingHole != vendorDrillMap(via->DrillingHole)) {
 				/* only change unlocked vias */
-				if (!TEST_FLAG(PCB_FLAG_LOCK, via)) {
+				if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
 					if (pcb_chg_obj_2nd_size(PCB_TYPE_VIA, via, NULL, NULL, vendorDrillMap(via->DrillingHole), pcb_true, pcb_false))
 						changed++;
 					else {
@@ -351,7 +351,7 @@ static void apply_vendor_map(void)
 				{
 					tot++;
 					if (pin->DrillingHole != vendorDrillMap(pin->DrillingHole)) {
-						if (!TEST_FLAG(PCB_FLAG_LOCK, pin)) {
+						if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, pin)) {
 							if (pcb_chg_obj_2nd_size(PCB_TYPE_PIN, element, pin, NULL, vendorDrillMap(pin->DrillingHole), pcb_true, pcb_false))
 								changed++;
 							else {
@@ -605,7 +605,7 @@ pcb_bool vendorIsElementMappable(pcb_element_t *element)
 			}
 		}
 
-	if (noskip && TEST_FLAG(PCB_FLAG_LOCK, element)) {
+	if (noskip && PCB_FLAG_TEST(PCB_FLAG_LOCK, element)) {
 		pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because element %s is locked\n"), UNKNOWN(NAMEONPCB_NAME(element)));
 		noskip = 0;
 	}

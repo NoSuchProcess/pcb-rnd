@@ -106,12 +106,12 @@ void pcb_flag_erase(pcb_flag_t *f);
 /* ---------------------------------------------------------------------------
  * some routines for flag setting, clearing, changing and testing
  */
-#define	SET_FLAG(F,P)		((P)->Flags.f |= (F))
-#define	CLEAR_FLAG(F,P)		((P)->Flags.f &= (~(F)))
-#define	TEST_FLAG(F,P)		((P)->Flags.f & (F) ? 1 : 0)
-#define	TOGGLE_FLAG(F,P)	((P)->Flags.f ^= (F))
-#define	ASSIGN_FLAG(F,V,P)	((P)->Flags.f = ((P)->Flags.f & (~(F))) | ((V) ? (F) : 0))
-#define TEST_FLAGS(F,P)         (((P)->Flags.f & (F)) == (F) ? 1 : 0)
+#define PCB_FLAG_SET(F,P)       ((P)->Flags.f |= (F))
+#define PCB_FLAG_CLEAR(F,P)     ((P)->Flags.f &= (~(F)))
+#define PCB_FLAG_TEST(F,P)      ((P)->Flags.f & (F) ? 1 : 0)
+#define PCB_FLAG_TOGGLE(F,P)    ((P)->Flags.f ^= (F))
+#define PCB_FLAG_ASSIGN(F,V,P)  ((P)->Flags.f = ((P)->Flags.f & (~(F))) | ((V) ? (F) : 0))
+#define PCB_FLAGS_TEST(F,P)     (((P)->Flags.f & (F)) == (F) ? 1 : 0)
 
 typedef enum {
 	PCB_CHGFLG_CLEAR,
@@ -122,9 +122,9 @@ typedef enum {
 #define CHANGE_FLAG(how, F, P) \
 do { \
 	switch(how) { \
-		case PCB_CHGFLG_CLEAR:  CLEAR_FLAG(F, P); break; \
-		case PCB_CHGFLG_SET:    SET_FLAG(F, P); break; \
-		case PCB_CHGFLG_TOGGLE: TOGGLE_FLAG(F, P); break; \
+		case PCB_CHGFLG_CLEAR:  PCB_FLAG_CLEAR(F, P); break; \
+		case PCB_CHGFLG_SET:    PCB_FLAG_SET(F, P); break; \
+		case PCB_CHGFLG_TOGGLE: PCB_FLAG_TOGGLE(F, P); break; \
 	} \
 } while(0)
 
@@ -145,7 +145,7 @@ do { \
 
 #define GET_INTCONN(P)		((P)->Flags.int_conn_grp)
 
-extern int mem_any_set(unsigned char *, int);
-#define TEST_ANY_THERMS(P)	mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
+extern int pcb_mem_any_set(unsigned char *, int);
+#define TEST_ANY_THERMS(P)	pcb_mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
 
 #endif

@@ -54,7 +54,7 @@ static int pcb_netlist_swap()
 	{
 		PIN_LOOP(element);
 		{
-			if (TEST_FLAG(PCB_FLAG_SELECTED, pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin)) {
 				int le, lp;
 
 				if (next > 2) {

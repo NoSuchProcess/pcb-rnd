@@ -89,7 +89,7 @@ pcb_pad_t *CreateNewPad(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, 
 	pad->Name = pcb_strdup_null(Name);
 	pad->Number = pcb_strdup_null(Number);
 	pad->Flags = Flags;
-	CLEAR_FLAG(PCB_FLAG_WARN, pad);
+	PCB_FLAG_CLEAR(PCB_FLAG_WARN, pad);
 	pad->ID = CreateIDGet();
 	pad->Element = Element;
 	return (pad);
@@ -110,7 +110,7 @@ void SetPadBoundingBox(pcb_pad_t *Pad)
 	deltax = Pad->Point2.X - Pad->Point1.X;
 	deltay = Pad->Point2.Y - Pad->Point1.Y;
 
-	if (TEST_FLAG(PCB_FLAG_SQUARE, Pad) && deltax != 0 && deltay != 0) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad) && deltax != 0 && deltay != 0) {
 		/* slanted square pad */
 		double theta;
 		pcb_coord_t btx, bty;
@@ -142,11 +142,11 @@ void SetPadBoundingBox(pcb_pad_t *Pad)
 /* changes the nopaste flag of a pad */
 pcb_bool ChangePaste(pcb_pad_t *Pad)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (pcb_false);
 	ErasePad(Pad);
 	AddObjectToFlagUndoList(PCB_TYPE_PAD, Pad, Pad, Pad);
-	TOGGLE_FLAG(PCB_FLAG_NOPASTE, Pad);
+	PCB_FLAG_TOGGLE(PCB_FLAG_NOPASTE, Pad);
 	DrawPad(Pad);
 	pcb_draw();
 	return (pcb_true);
@@ -159,7 +159,7 @@ void *ChangePadSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Thickness + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
 	if (value <= MAX_PADSIZE && value >= MIN_PADSIZE && value != Pad->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
@@ -183,7 +183,7 @@ void *ChangePadClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pa
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pad->Clearance + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, value);
 	if (value < 0)
@@ -212,7 +212,7 @@ void *ChangePadName(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 	char *old = Pad->Name;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad)) {
 		ErasePadName(Pad);
 		Pad->Name = ctx->chgname.new_name;
 		DrawPadName(Pad);
@@ -228,7 +228,7 @@ void *ChangePadNum(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 	char *old = Pad->Number;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad)) {
 		ErasePadName(Pad);
 		Pad->Number = ctx->chgname.new_name;
 		DrawPadName(Pad);
@@ -241,13 +241,13 @@ void *ChangePadNum(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 /* changes the square flag of a pad */
 void *ChangePadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
 	ErasePad(Pad);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	AddObjectToFlagUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-	TOGGLE_FLAG(PCB_FLAG_SQUARE, Pad);
+	PCB_FLAG_TOGGLE(PCB_FLAG_SQUARE, Pad);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	DrawPad(Pad);
@@ -258,7 +258,7 @@ void *ChangePadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 void *SetPadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || TEST_FLAG(PCB_FLAG_SQUARE, Pad))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad) || PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad))
 		return (NULL);
 
 	return (ChangePadSquare(ctx, Element, Pad));
@@ -269,7 +269,7 @@ void *SetPadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 void *ClrPadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 {
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pad) || !TEST_FLAG(PCB_FLAG_SQUARE, Pad))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad) || !PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad))
 		return (NULL);
 
 	return (ChangePadSquare(ctx, Element, Pad));
@@ -361,10 +361,10 @@ void draw_pad(pcb_pad_t * pad)
 
 	if (pcb_draw_doing_pinout)
 		gui->set_color(Output.fgGC, PCB->PinColor);
-	else if (TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, pad)) {
-		if (TEST_FLAG(PCB_FLAG_WARN, pad))
+	else if (PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, pad)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pad))
 			color = PCB->WarnColor;
-		else if (TEST_FLAG(PCB_FLAG_SELECTED, pad))
+		else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad))
 			color = PCB->PinSelectedColor;
 		else
 			color = PCB->ConnectedColor;
@@ -374,7 +374,7 @@ void draw_pad(pcb_pad_t * pad)
 	else
 		color = PCB->InvisibleObjectsColor;
 
-	if (TEST_FLAG(PCB_FLAG_ONPOINT, pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, pad)) {
 		assert(color != NULL);
 		pcb_lighten_color(color, buf, 1.75);
 		color = buf;
@@ -385,7 +385,7 @@ void draw_pad(pcb_pad_t * pad)
 
 	_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
 
-	if (pcb_draw_doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, pad))
+	if (pcb_draw_doing_pinout || PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pad))
 		draw_pad_name(pad);
 }
 
@@ -414,7 +414,7 @@ void DrawPaste(int side, const pcb_box_t * drawn_area)
 	gui->set_color(Output.fgGC, PCB->ElementColor);
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (ON_SIDE(pad, side) && !TEST_FLAG(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
+		if (ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			if (pad->Mask < pad->Thickness)
 				_draw_pad(Output.fgGC, pad, pcb_true, pcb_true);
 			else
@@ -456,7 +456,7 @@ static void GatherPadName(pcb_pad_t *Pad)
 void ErasePad(pcb_pad_t *Pad)
 {
 	pcb_draw_invalidate(Pad);
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
+	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad))
 		ErasePadName(Pad);
 	pcb_flag_erase(&Pad->Flags);
 }
@@ -469,7 +469,7 @@ void ErasePadName(pcb_pad_t *Pad)
 void DrawPad(pcb_pad_t *Pad)
 {
 	pcb_draw_invalidate(Pad);
-	if (pcb_draw_doing_pinout || TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
+	if (pcb_draw_doing_pinout || PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pad))
 		DrawPadName(Pad);
 }
 

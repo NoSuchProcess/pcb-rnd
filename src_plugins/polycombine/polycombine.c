@@ -285,7 +285,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	/* First pass to combine the forward and backward contours */
 	VISIBLEPOLYGON_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, polygon))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 			continue;
 
 		/* Pick the layer of the first polygon we find selected */
@@ -319,7 +319,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	/* Second pass to remove the input polygons */
 	VISIBLEPOLYGON_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, polygon))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 			continue;
 
 		/* Only combine polygons on the same layer */

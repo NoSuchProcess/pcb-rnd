@@ -458,7 +458,7 @@ pcb_bool IsPasteEmpty(int side)
 	pcb_bool paste_empty = pcb_true;
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (ON_SIDE(pad, side) && !TEST_FLAG(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
+		if (ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			paste_empty = pcb_false;
 			break;
 		}

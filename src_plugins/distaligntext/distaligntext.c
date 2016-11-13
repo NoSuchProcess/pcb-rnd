@@ -171,14 +171,14 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	{
 		pcb_text_t *text;
 		text = &(element)->Name[NAME_INDEX()];
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		nsel++;
 	}
 	END_LOOP;
 	ALLTEXT_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		nsel++;
 	}
@@ -192,7 +192,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	{
 		pcb_text_t *text;
 		text = &(element)->Name[NAME_INDEX()];
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		texts_by_pos[nsel].text = text;
 		texts_by_pos[nsel].type = PCB_TYPE_ELEMENT_NAME;
@@ -201,7 +201,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	END_LOOP;
 	ALLTEXT_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		texts_by_pos[nsel].text = text;
 		texts_by_pos[nsel].type = PCB_TYPE_TEXT;
@@ -363,7 +363,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	{
 		pcb_text_t *text;
 		text = &(element)->Name[NAME_INDEX()];
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, text))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		/* find delta from reference point to reference point */
 		p = coord(text, dir, point);
@@ -390,7 +390,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	/* Selected bare text objects */
 	ALLTEXT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_SELECTED, text)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text)) {
 			/* find delta from reference point to reference point */
 			p = coord(text, dir, point);
 			dp = q - p;

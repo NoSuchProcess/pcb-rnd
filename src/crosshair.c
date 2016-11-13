@@ -248,7 +248,7 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 	/* pads */
 	PAD_LOOP(Element);
 	{
-		if (PCB->InvisibleObjectsOn || (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) != 0) == conf_core.editor.show_solder_side) {
+		if (PCB->InvisibleObjectsOn || (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) != 0) == conf_core.editor.show_solder_side) {
 			/* Make a copy of the pad structure, moved to the correct position */
 			pcb_pad_t moved_pad = *pad;
 			moved_pad.Point1.X += DX;
@@ -459,10 +459,10 @@ static void XORDrawMoveOrpcb_copy_obj(void)
 	while (i) {
 		pcb_point_t *point1, *point2;
 
-		if (TEST_FLAG(PCB_FLAG_VIA, ptr->Line)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_VIA, ptr->Line)) {
 			/* this is a rat going to a polygon.  do not draw for rubberband */ ;
 		}
-		else if (TEST_FLAG(PCB_FLAG_RUBBEREND, ptr->Line)) {
+		else if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line)) {
 			/* 'point1' is always the fix-point */
 			if (ptr->MovedPoint == &ptr->Line->Point1) {
 				point1 = &ptr->Line->Point2;
@@ -726,7 +726,7 @@ static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 		op.type = PCB_TYPE_LINE;
 		op.obj.line = line;
 		vtop_append(&crosshair->onpoint_objs, op);
-		SET_FLAG(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) line);
+		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) line);
 		DrawLine(NULL, line);
 		return R_DIR_FOUND_CONTINUE;
 	}
@@ -756,7 +756,7 @@ static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 		op.type = PCB_TYPE_ARC;
 		op.obj.arc = arc;
 		vtop_append(&crosshair->onpoint_objs, op);
-		SET_FLAG(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) arc);
+		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) arc);
 		DrawArc(NULL, arc);
 		return R_DIR_FOUND_CONTINUE;
 	}
@@ -845,7 +845,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 		if (onpoint_find(&crosshair->onpoint_objs, op->obj.any) != NULL)
 			continue;
 
-		CLEAR_FLAG(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) op->obj.any);
+		PCB_FLAG_CLEAR(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) op->obj.any);
 		DrawLineOrArc(op->type, op->obj.any);
 		redraw = pcb_true;
 	}
@@ -1057,7 +1057,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		/* find layer groups of the component side and solder side */
 		SLayer = GetLayerGroupNumberByNumber(solder_silk_layer);
 		CLayer = GetLayerGroupNumberByNumber(component_silk_layer);
-		desired_group = TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SLayer : CLayer;
+		desired_group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SLayer : CLayer;
 
 		GROUP_LOOP(PCB->Data, desired_group);
 		{
@@ -1140,7 +1140,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_TYPE_NONE)
 			hid_action("PointCursor");
-		else if (!TEST_FLAG(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2))
+		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2))
 			hid_actionl("PointCursor", "True", NULL);
 	}
 

@@ -55,7 +55,7 @@ int action_renumber_block(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		char *old_ref, *new_ref;
 		int num;
 
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 			continue;
 
 		old_ref = element->Name[1].TextString;

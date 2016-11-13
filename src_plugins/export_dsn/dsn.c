@@ -255,7 +255,7 @@ static void print_placement(FILE * fp)
 	{
 		char *ename;
 		pcb_point_t ecentroid = get_centroid(element);
-		char *side = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? "back" : "front";
+		char *side = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? "back" : "front";
 		ename = NAMEONPCB_NAME(element);
 		if (ename != NULL)
 			ename = pcb_strdup(ename);
@@ -285,8 +285,8 @@ static void print_library(FILE * fp)
 	fprintf(fp, "  (library\n");
 	ELEMENT_LOOP(PCB->Data);
 	{
-		int partside = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? g_list_length(layerlist) - 1 : 0;
-		int partsidesign = TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? -1 : 1;
+		int partside = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? g_list_length(layerlist) - 1 : 0;
+		int partsidesign = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? -1 : 1;
 		pcb_point_t centroid = get_centroid(element);
 		fprintf(fp, "    (image %ld\n", element->ID); /* map every element by ID */
 		/* loop thru pins and pads to add to image */
@@ -297,7 +297,7 @@ static void print_library(FILE * fp)
 			pcb_coord_t lx, ly;  /* hold local pin coordinates */
 			ty = PCB->MaxHeight - pin->Y;
 			pinthickness = pin->Thickness;
-			if (TEST_FLAG(PCB_FLAG_SQUARE, pin))
+			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
 				padstack = pcb_strdup_printf("Th_square_%mI", pinthickness);
 			else
 				padstack = pcb_strdup_printf("Th_round_%mI", pinthickness);

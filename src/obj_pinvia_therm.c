@@ -362,9 +362,9 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 	if (style == 3)
 		return NULL;								/* solid connection no clearance */
 	pcb = p;
-	if (TEST_FLAG(PCB_FLAG_SQUARE, pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
 		return square_therm(pin, style);
-	if (TEST_FLAG(PCB_FLAG_OCTAGON, pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin))
 		return oct_therm(pin, style);
 	/* must be circular */
 	switch (style) {

@@ -241,7 +241,7 @@ void *MoveArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_arc_t * arc)
 	arclist_remove(arc);
 	arclist_append(&lay->Arc, arc);
 
-	CLEAR_FLAG(PCB_FLAG_FOUND, arc);
+	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, arc);
 
 	if (!lay->arc_tree)
 		lay->arc_tree = r_create_tree(NULL, 0, 0);
@@ -255,7 +255,7 @@ void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Thickness + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return (NULL);
 	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Arc->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
@@ -277,7 +277,7 @@ void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Arc->Clearance + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Arc->Clearance) {
@@ -287,7 +287,7 @@ void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		Arc->Clearance = value;
 		if (Arc->Clearance == 0) {
-			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Arc);
+			PCB_FLAG_CLEAR(PCB_FLAG_CLEARLINE, Arc);
 			Arc->Clearance = PCB_MIL_TO_COORD(10);
 		}
 		SetArcBoundingBox(Arc);
@@ -305,7 +305,7 @@ void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	pcb_coord_t value, *dst;
 	void *a0, *a1;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return (NULL);
 
 	switch(ctx->chgsize.is_primary) {
@@ -342,7 +342,7 @@ void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	pcb_angle_t value, *dst;
 	void *a0, *a1;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return (NULL);
 
 	switch(ctx->chgangle.is_primary) {
@@ -379,16 +379,16 @@ void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 /* changes the clearance flag of an arc */
 void *ChangeArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return (NULL);
 	EraseArc(Arc);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Arc)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc)) {
 		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_false);
 	}
 	AddObjectToFlagUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
-	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Arc);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Arc)) {
+	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Arc);
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc)) {
 		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_true);
 	}
@@ -399,7 +399,7 @@ void *ChangeArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 /* sets the clearance flag of an arc */
 void *SetArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
 	return ChangeArcJoin(ctx, Layer, Arc);
 }
@@ -407,7 +407,7 @@ void *SetArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 /* clears the clearance flag of an arc */
 void *ClrArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
 	return ChangeArcJoin(ctx, Layer, Arc);
 }
@@ -466,7 +466,7 @@ void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 {
 	pcb_arc_t *newone;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Arc)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc)) {
 		pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
@@ -572,10 +572,10 @@ void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
 
-	if (TEST_FLAG(PCB_FLAG_WARN, arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc))
 		color = PCB->WarnColor;
-	else if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
-		if (TEST_FLAG(PCB_FLAG_SELECTED, arc))
+	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc))
 			color = layer->SelectedColor;
 		else
 			color = PCB->ConnectedColor;
@@ -583,7 +583,7 @@ void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
 	else
 		color = layer->Color;
 
-	if (TEST_FLAG(PCB_FLAG_ONPOINT, arc)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, arc)) {
 		assert(color != NULL);
 		pcb_lighten_color(color, buf, 1.75);
 		color = buf;

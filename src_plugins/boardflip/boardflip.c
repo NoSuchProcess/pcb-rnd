@@ -77,7 +77,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		TEXT_LOOP(layer);
 		{
 			FLIP(text->Y);
-			TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
+			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 		}
 		END_LOOP;
 		POLYGON_LOOP(layer);
@@ -118,11 +118,11 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	{
 		FLIP(element->MarkY);
 		if (sides)
-			TOGGLE_FLAG(PCB_FLAG_ONSOLDER, element);
+			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, element);
 		ELEMENTTEXT_LOOP(element);
 		{
 			FLIP(text->Y);
-			TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
+			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 		}
 		END_LOOP;
 		ELEMENTLINE_LOOP(element);
@@ -148,7 +148,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			FLIP(pad->Point1.Y);
 			FLIP(pad->Point2.Y);
 			if (sides)
-				TOGGLE_FLAG(PCB_FLAG_ONSOLDER, pad);
+				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, pad);
 		}
 		END_LOOP;
 	}

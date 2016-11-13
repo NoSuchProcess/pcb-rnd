@@ -45,7 +45,7 @@ static void dump_flag(pcb_flag_t * f)
 }
 
 
-int mem_any_set(unsigned char *ptr, int bytes)
+int pcb_mem_any_set(unsigned char *ptr, int bytes)
 {
 	while (bytes--)
 		if (*ptr++)
@@ -88,7 +88,7 @@ int main()
 		otype = PCB_TYPEMASK_ALL;
 		fh.Flags = empty_flags;
 		for (i = 0; i < ENTRIES(object_flagbits); i++) {
-			if (TEST_FLAG(object_flagbits[i].mask, &fh))
+			if (PCB_FLAG_TEST(object_flagbits[i].mask, &fh))
 				continue;
 			if ((otype & object_flagbits[i].object_types) == 0)
 				continue;
@@ -96,7 +96,7 @@ int main()
 				continue;
 
 			otype &= object_flagbits[i].object_types;
-			SET_FLAG(object_flagbits[i].mask, &fh);
+			PCB_FLAG_SET(object_flagbits[i].mask, &fh);
 		}
 
 		if (otype & PCB_TYPEMASK_PIN)
@@ -128,13 +128,13 @@ int main()
 		otype = PCB_TYPEMASK_ALL;
 		fh.Flags = empty_flags;
 		for (i = 0; i < ENTRIES(pcb_flagbits); i++) {
-			if (TEST_FLAG(pcb_flagbits[i].mask, &fh))
+			if (PCB_FLAG_TEST(pcb_flagbits[i].mask, &fh))
 				continue;
 			if ((random() & 4) == 0)
 				continue;
 
 			otype &= pcb_flagbits[i].object_types;
-			SET_FLAG(pcb_flagbits[i].mask, &fh);
+			PCB_FLAG_SET(pcb_flagbits[i].mask, &fh);
 		}
 
 		str = pcbflags_to_string(fh.Flags);

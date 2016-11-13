@@ -197,7 +197,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 			void *ptr1, *ptr2, *ptr3;
 
 			if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-				if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
+				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
 				SetChangedFlag(pcb_true);
@@ -409,7 +409,7 @@ static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		case F_Object:
 			{
 				if (type != PCB_TYPE_NONE)
-					if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				if (tostyle) {
 					if (pcb_chg_obj_1st_size(type, ptr1, ptr2, ptr3, value, absolute))
@@ -1413,7 +1413,7 @@ static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		case F_Object:
 			{
 				if (type != PCB_TYPE_NONE) {
-					if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					else {
 						if (pcb_chg_obj_angle(type, ptr1, ptr2, ptr3, which, value, absolute))
@@ -1476,7 +1476,7 @@ static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_co
 		case F_Object:
 			{
 				if (type != PCB_TYPE_NONE) {
-					if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					else {
 						if (pcb_chg_obj_radius(type, ptr1, ptr2, ptr3, which, value, absolute))

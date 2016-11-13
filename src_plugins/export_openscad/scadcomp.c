@@ -313,13 +313,13 @@ static void scad_export_model(int model_type, pcb_element_t * element, pcb_bool 
 
 	fprintf(scad_output, "translate ([%f, %f, %f]) ",
 					scad_scale_coord((float) x), -scad_scale_coord((float) y),
-					((TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) ? -1. : 1.) * (BOARD_THICKNESS / 2. + OUTER_COPPER_THICKNESS));
+					((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) ? -1. : 1.) * (BOARD_THICKNESS / 2. + OUTER_COPPER_THICKNESS));
 
 	/* rotate order: angle onsolder user-defined */
 	if (tmp_angle != 0.)
-		fprintf(scad_output, "rotate ([0, 0, %f]) ", (TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) ? -tmp_angle : tmp_angle);
+		fprintf(scad_output, "rotate ([0, 0, %f]) ", (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) ? -tmp_angle : tmp_angle);
 
-	if (TEST_FLAG(PCB_FLAG_ONSOLDER, (element)))
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element)))
 		fprintf(scad_output, "rotate([180.,0,0]) ");
 
 	if (model_rotation && scad_parse_float_triplet(model_rotation, &fx, &fy, &fz))
@@ -431,11 +431,11 @@ static void scad_export_bbox(pcb_element_t * element)
 
 	fprintf(scad_output, "translate ([%f, %f, %f]) ",
 					scad_scale_coord((float) x), -scad_scale_coord((float) y),
-					((TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) ? -1. : 1.) * (BOARD_THICKNESS / 2. + OUTER_COPPER_THICKNESS));
+					((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) ? -1. : 1.) * (BOARD_THICKNESS / 2. + OUTER_COPPER_THICKNESS));
 
 	if (tmp_angle != 0.)
-		fprintf(scad_output, "rotate ([0, 0, %f]) ", (TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) ? -tmp_angle : tmp_angle);
-	if (TEST_FLAG(PCB_FLAG_ONSOLDER, (element)))
+		fprintf(scad_output, "rotate ([0, 0, %f]) ", (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) ? -tmp_angle : tmp_angle);
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element)))
 		fprintf(scad_output, "rotate([180.,0,0]) ");
 
 	fprintf(scad_output, "{\n");

@@ -82,7 +82,7 @@ static pcb_r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 	pcb_pin_t *pin = (pcb_pin_t *) box;
 	pcb_any_obj_t *ptr1 = pin->Element ? pin->Element : pin;
 
-	if (TEST_FLAG(i->locked, ptr1))
+	if (PCB_FLAG_TEST(i->locked, ptr1))
 		return R_DIR_NOT_FOUND;
 
 	if (!IsPointOnPin(PosX, PosY, SearchRadius, pin))
@@ -137,7 +137,7 @@ static pcb_r_dir_t pad_callback(const pcb_box_t * b, void *cl)
 	struct ans_info *i = (struct ans_info *) cl;
 	pcb_any_obj_t *ptr1 = pad->Element;
 
-	if (TEST_FLAG(i->locked, ptr1))
+	if (PCB_FLAG_TEST(i->locked, ptr1))
 		return R_DIR_NOT_FOUND;
 
 	if (FRONT(pad) || i->BackToo) {
@@ -187,7 +187,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * box, void *cl)
 	struct line_info *i = (struct line_info *) cl;
 	pcb_line_t *l = (pcb_line_t *) box;
 
-	if (TEST_FLAG(i->locked, l))
+	if (PCB_FLAG_TEST(i->locked, l))
 		return R_DIR_NOT_FOUND;
 
 	if (!IsPointInPad(PosX, PosY, SearchRadius, (pcb_pad_t *) l))
@@ -219,10 +219,10 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 	pcb_line_t *line = (pcb_line_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
-	if (TEST_FLAG(i->locked, line))
+	if (PCB_FLAG_TEST(i->locked, line))
 		return R_DIR_NOT_FOUND;
 
-	if (TEST_FLAG(PCB_FLAG_VIA, line) ?
+	if (PCB_FLAG_TEST(PCB_FLAG_VIA, line) ?
 			(Distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
 			 line->Thickness * 2 + SearchRadius) : IsPointOnLine(PosX, PosY, SearchRadius, line)) {
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
@@ -261,7 +261,7 @@ static pcb_r_dir_t arc_callback(const pcb_box_t * box, void *cl)
 	struct arc_info *i = (struct arc_info *) cl;
 	pcb_arc_t *a = (pcb_arc_t *) box;
 
-	if (TEST_FLAG(i->locked, a))
+	if (PCB_FLAG_TEST(i->locked, a))
 		return R_DIR_NOT_FOUND;
 
 	if (!IsPointOnArc(PosX, PosY, SearchRadius, a))
@@ -291,7 +291,7 @@ static pcb_r_dir_t text_callback(const pcb_box_t * box, void *cl)
 	pcb_text_t *text = (pcb_text_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
-	if (TEST_FLAG(i->locked, text))
+	if (PCB_FLAG_TEST(i->locked, text))
 		return R_DIR_NOT_FOUND;
 
 	if (POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
@@ -323,7 +323,7 @@ static pcb_r_dir_t polygon_callback(const pcb_box_t * box, void *cl)
 	pcb_polygon_t *polygon = (pcb_polygon_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
 
-	if (TEST_FLAG(i->locked, polygon))
+	if (PCB_FLAG_TEST(i->locked, polygon))
 		return R_DIR_NOT_FOUND;
 
 	if (IsPointInPolygon(PosX, PosY, SearchRadius, polygon)) {
@@ -358,7 +358,7 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 	pcb_r_dir_t ret_val = R_DIR_NOT_FOUND;
 	double d;
 
-	if (TEST_FLAG(i->locked, line))
+	if (PCB_FLAG_TEST(i->locked, line))
 		return R_DIR_NOT_FOUND;
 
 	/* some stupid code to check both points */
@@ -435,10 +435,10 @@ static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
 	pcb_element_t *element = (pcb_element_t *) text->Element;
 	double newarea;
 
-	if (TEST_FLAG(i->locked, text))
+	if (PCB_FLAG_TEST(i->locked, text))
 		return R_DIR_NOT_FOUND;
 
-	if ((FRONT(element) || i->BackToo) && !TEST_FLAG(PCB_FLAG_HIDENAME, element) && POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
+	if ((FRONT(element) || i->BackToo) && !PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) && POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		/* use the text with the smallest bounding box */
 		newarea = (text->BoundingBox.X2 - text->BoundingBox.X1) * (double) (text->BoundingBox.Y2 - text->BoundingBox.Y1);
 		if (newarea < i->area) {
@@ -480,7 +480,7 @@ static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
 	struct ans_info *i = (struct ans_info *) cl;
 	double newarea;
 
-	if (TEST_FLAG(i->locked, element))
+	if (PCB_FLAG_TEST(i->locked, element))
 		return R_DIR_NOT_FOUND;
 
 	if ((FRONT(element) || i->BackToo) && POINT_IN_BOX(PosX, PosY, &element->VBox)) {
@@ -525,7 +525,7 @@ SearchElementByLocation(int locked, pcb_element_t ** Element, pcb_element_t ** D
 pcb_bool IsPointOnPin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_t *pin)
 {
 	pcb_coord_t t = PIN_SIZE(pin) / 2;
-	if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
 		pcb_box_t b;
 
 		b.X1 = pin->X - t;
@@ -821,14 +821,14 @@ pcb_bool IsPointInPad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pad_
 	/* now pad.Point2.X = r; pad.Point2.Y = 0; */
 
 	/* take into account the ends */
-	if (TEST_FLAG(PCB_FLAG_SQUARE, Pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad)) {
 		r += Pad->Thickness;
 		X += t2;
 	}
 	if (Y < 0)
 		Y = -Y;											/* range value is evident now */
 
-	if (TEST_FLAG(PCB_FLAG_SQUARE, Pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pad)) {
 		if (X <= 0) {
 			if (Y <= t2)
 				range = -X;

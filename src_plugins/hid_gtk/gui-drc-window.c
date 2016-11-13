@@ -93,9 +93,9 @@ static void unset_found_flags(int AndDraw)
 
 	VIA_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(flag, via)) {
+		if (PCB_FLAG_TEST(flag, via)) {
 			AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
-			CLEAR_FLAG(flag, via);
+			PCB_FLAG_CLEAR(flag, via);
 			DrawVia(via);
 			change = pcb_true;
 		}
@@ -105,9 +105,9 @@ static void unset_found_flags(int AndDraw)
 	{
 		PIN_LOOP(element);
 		{
-			if (TEST_FLAG(flag, pin)) {
+			if (PCB_FLAG_TEST(flag, pin)) {
 				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
-				CLEAR_FLAG(flag, pin);
+				PCB_FLAG_CLEAR(flag, pin);
 				DrawPin(pin);
 				change = pcb_true;
 			}
@@ -115,9 +115,9 @@ static void unset_found_flags(int AndDraw)
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			if (TEST_FLAG(flag, pad)) {
+			if (PCB_FLAG_TEST(flag, pad)) {
 				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
-				CLEAR_FLAG(flag, pad);
+				PCB_FLAG_CLEAR(flag, pad);
 				DrawPad(pad);
 				change = pcb_true;
 			}
@@ -127,9 +127,9 @@ static void unset_found_flags(int AndDraw)
 	END_LOOP;
 	RAT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(flag, line)) {
+		if (PCB_FLAG_TEST(flag, line)) {
 			AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
-			CLEAR_FLAG(flag, line);
+			PCB_FLAG_CLEAR(flag, line);
 			DrawRat(line);
 			change = pcb_true;
 		}
@@ -137,9 +137,9 @@ static void unset_found_flags(int AndDraw)
 	END_LOOP;
 	COPPERLINE_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(flag, line)) {
+		if (PCB_FLAG_TEST(flag, line)) {
 			AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
-			CLEAR_FLAG(flag, line);
+			PCB_FLAG_CLEAR(flag, line);
 			DrawLine(layer, line);
 			change = pcb_true;
 		}
@@ -147,9 +147,9 @@ static void unset_found_flags(int AndDraw)
 	ENDALL_LOOP;
 	COPPERARC_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(flag, arc)) {
+		if (PCB_FLAG_TEST(flag, arc)) {
 			AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
-			CLEAR_FLAG(flag, arc);
+			PCB_FLAG_CLEAR(flag, arc);
 			DrawArc(layer, arc);
 			change = pcb_true;
 		}
@@ -157,9 +157,9 @@ static void unset_found_flags(int AndDraw)
 	ENDALL_LOOP;
 	COPPERPOLYGON_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(flag, polygon)) {
+		if (PCB_FLAG_TEST(flag, polygon)) {
 			AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
-			CLEAR_FLAG(flag, polygon);
+			PCB_FLAG_CLEAR(flag, polygon);
 			DrawPolygon(layer, polygon);
 			change = pcb_true;
 		}
@@ -210,7 +210,7 @@ static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_dat
 			continue;
 		}
 		AddObjectToFlagUndoList(object_type, ptr1, ptr2, ptr3);
-		SET_FLAG(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
+		PCB_FLAG_SET(PCB_FLAG_FOUND, (pcb_any_obj_t *) ptr2);
 		switch (violation->object_type_list[i]) {
 		case PCB_TYPE_LINE:
 		case PCB_TYPE_ARC:

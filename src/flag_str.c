@@ -362,7 +362,7 @@ common_string_to_flags(const char *flagstring, int (*error) (const char *msg), p
 			for (i = 0; i < n_flagbits; i++)
 				if (flagbits[i].nlen == flen && memcmp(flagbits[i].name, fp, flen) == 0) {
 					found = 1;
-					SET_FLAG(flagbits[i].mask, &rv);
+					PCB_FLAG_SET(flagbits[i].mask, &rv);
 					break;
 				}
 			if (!found) {
@@ -434,13 +434,13 @@ char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t 
 #ifndef FLAG_TEST
 	switch (object_type) {
 	case PCB_TYPE_VIA:
-		CLEAR_FLAG(PCB_FLAG_VIA, &fh);
+		PCB_FLAG_CLEAR(PCB_FLAG_VIA, &fh);
 		break;
 	case PCB_TYPE_RATLINE:
-		CLEAR_FLAG(PCB_FLAG_RAT, &fh);
+		PCB_FLAG_CLEAR(PCB_FLAG_RAT, &fh);
 		break;
 	case PCB_TYPE_PIN:
-		CLEAR_FLAG(PCB_FLAG_PIN, &fh);
+		PCB_FLAG_CLEAR(PCB_FLAG_PIN, &fh);
 		break;
 	}
 #endif
@@ -452,10 +452,10 @@ char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t 
 	for (i = 0; i < n_flagbits; i++)
 
 		if ((flagbits[i].object_types & object_type)
-				&& (TEST_FLAG(flagbits[i].mask, &fh))) {
+				&& (PCB_FLAG_TEST(flagbits[i].mask, &fh))) {
 
 			len += flagbits[i].nlen + 1;
-			CLEAR_FLAG(flagbits[i].mask, &fh);
+			PCB_FLAG_CLEAR(flagbits[i].mask, &fh);
 		}
 
 	if (TEST_ANY_THERMS(&fh)) {
@@ -488,12 +488,12 @@ char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t 
 
 	fh = savef;
 	for (i = 0; i < n_flagbits; i++)
-		if (flagbits[i].object_types & object_type && (TEST_FLAG(flagbits[i].mask, &fh))) {
+		if (flagbits[i].object_types & object_type && (PCB_FLAG_TEST(flagbits[i].mask, &fh))) {
 			if (bp != buf + 1)
 				*bp++ = ',';
 			strcpy(bp, flagbits[i].name);
 			bp += flagbits[i].nlen;
-			CLEAR_FLAG(flagbits[i].mask, &fh);
+			PCB_FLAG_CLEAR(flagbits[i].mask, &fh);
 		}
 
 	if (TEST_ANY_THERMS(&fh)) {

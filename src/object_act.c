@@ -149,7 +149,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			pcb_element_t *e = NULL;
 			ELEMENT_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(PCB_FLAG_SELECTED, element)) {
+				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 					e = element;
 					n_found++;
 				}
@@ -245,7 +245,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 		 * going to be used either with a brand new design or a scratch
 		 * design holding some new components
 		 */
-		if (!TEST_FLAG(PCB_FLAG_LOCK, element) && (all || TEST_FLAG(PCB_FLAG_SELECTED, element))) {
+		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && (all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))) {
 
 			/* figure out how much to move the element */
 			dx = minx - element->BoundingBox.X1;
@@ -493,7 +493,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	if (strcasecmp(function, "start") == 0) {
 		ELEMENT_LOOP(PCB->Data);
 		{
-			CLEAR_FLAG(PCB_FLAG_FOUND, element);
+			PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
 		}
 		END_LOOP;
 		element_cache = NULL;
@@ -504,12 +504,12 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	if (strcasecmp(function, "done") == 0) {
 		ELEMENT_LOOP(PCB->Data);
 		{
-			if (TEST_FLAG(PCB_FLAG_FOUND, element)) {
-				CLEAR_FLAG(PCB_FLAG_FOUND, element);
+			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, element)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
 			}
 			else if (!EMPTY_STRING_P(NAMEONPCB_NAME(element))) {
 				/* Unnamed elements should remain untouched */
-				SET_FLAG(PCB_FLAG_SELECTED, element);
+				PCB_FLAG_SET(PCB_FLAG_SELECTED, element);
 			}
 		}
 		END_LOOP;
@@ -632,7 +632,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	if (old)
 		free(old);
 
-	SET_FLAG(PCB_FLAG_FOUND, e);
+	PCB_FLAG_SET(PCB_FLAG_FOUND, e);
 
 #ifdef DEBUG
 	printf(" ... Leaving ActionElementList.\n");
@@ -733,7 +733,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		case F_All:
 			ALLLINE_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(PCB_FLAG_AUTO, line) && !TEST_FLAG(PCB_FLAG_LOCK, line)) {
+				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
 					RemoveObject(PCB_TYPE_LINE, layer, line, line);
 					changed = pcb_true;
 				}
@@ -741,7 +741,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			ENDALL_LOOP;
 			ALLARC_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(PCB_FLAG_AUTO, arc) && !TEST_FLAG(PCB_FLAG_LOCK, arc)) {
+				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
 					RemoveObject(PCB_TYPE_ARC, layer, arc, arc);
 					changed = pcb_true;
 				}
@@ -749,7 +749,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			ENDALL_LOOP;
 			VIA_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(PCB_FLAG_AUTO, via) && !TEST_FLAG(PCB_FLAG_LOCK, via)) {
+				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
 					RemoveObject(PCB_TYPE_VIA, via, via, via);
 					changed = pcb_true;
 				}
@@ -764,8 +764,8 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		case F_Selected:
 			VISIBLELINE_LOOP(PCB->Data);
 			{
-				if (TEST_FLAGS(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, line)
-						&& !TEST_FLAG(PCB_FLAG_LOCK, line)) {
+				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, line)
+						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
 					RemoveObject(PCB_TYPE_LINE, layer, line, line);
 					changed = pcb_true;
 				}
@@ -774,8 +774,8 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			if (PCB->ViaOn)
 				VIA_LOOP(PCB->Data);
 			{
-				if (TEST_FLAGS(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, via)
-						&& !TEST_FLAG(PCB_FLAG_LOCK, via)) {
+				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, via)
+						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
 					RemoveObject(PCB_TYPE_VIA, via, via, via);
 					changed = pcb_true;
 				}
@@ -852,7 +852,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	{
 		PIN_LOOP(element);
 		{
-			if (!TEST_FLAGS(flags, pin))
+			if (!PCB_FLAGS_TEST(flags, pin))
 				continue;
 			if (pin->Mask < pin->Thickness + value) {
 				pcb_chg_obj_mask_size(PCB_TYPE_PIN, element, pin, 0, pin->Thickness + value, 1);
@@ -862,7 +862,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			if (!TEST_FLAGS(flags, pad))
+			if (!PCB_FLAGS_TEST(flags, pad))
 				continue;
 			if (pad->Mask < pad->Thickness + value) {
 				pcb_chg_obj_mask_size(PCB_TYPE_PAD, element, pad, 0, pad->Thickness + value, 1);
@@ -874,7 +874,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	END_LOOP;
 	VIA_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAGS(flags, via))
+		if (!PCB_FLAGS_TEST(flags, via))
 			continue;
 		if (via->Mask && via->Mask < via->Thickness + value) {
 			pcb_chg_obj_mask_size(PCB_TYPE_VIA, via, 0, 0, via->Thickness + value, 1);
@@ -926,7 +926,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	{
 		PIN_LOOP(element);
 		{
-			if (!TEST_FLAGS(flags, pin))
+			if (!PCB_FLAGS_TEST(flags, pin))
 				continue;
 			if (pin->Clearance < value) {
 				pcb_chg_obj_clear_size(PCB_TYPE_PIN, element, pin, 0, value, 1);
@@ -936,7 +936,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			if (!TEST_FLAGS(flags, pad))
+			if (!PCB_FLAGS_TEST(flags, pad))
 				continue;
 			if (pad->Clearance < value) {
 				pcb_chg_obj_clear_size(PCB_TYPE_PAD, element, pad, 0, value, 1);
@@ -948,7 +948,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	END_LOOP;
 	VIA_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAGS(flags, via))
+		if (!PCB_FLAGS_TEST(flags, via))
 			continue;
 		if (via->Clearance < value) {
 			pcb_chg_obj_clear_size(PCB_TYPE_VIA, via, 0, 0, value, 1);
@@ -958,7 +958,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	END_LOOP;
 	ALLLINE_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAGS(flags, line))
+		if (!PCB_FLAGS_TEST(flags, line))
 			continue;
 		if (line->Clearance < value) {
 			pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, 0, value, 1);
@@ -968,7 +968,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	ENDALL_LOOP;
 	ALLARC_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAGS(flags, arc))
+		if (!PCB_FLAGS_TEST(flags, arc))
 			continue;
 		if (arc->Clearance < value) {
 			pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, 0, value, 1);

@@ -203,7 +203,7 @@ static void toggle_pin_selected(pcb_lib_entry_t * entry)
 		return;
 
 	AddObjectToFlagUndoList(conn.type, conn.ptr1, conn.ptr2, conn.ptr2);
-	TOGGLE_FLAG(PCB_FLAG_SELECTED, (pcb_any_obj_t *) conn.ptr2);
+	PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_any_obj_t *) conn.ptr2);
 	pcb_draw_obj(conn.type, conn.ptr1, conn.ptr2);
 }
 
@@ -535,14 +535,14 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 
 	VISIBLELINE_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_FOUND, line) && !TEST_FLAG(PCB_FLAG_LOCK, line))
+		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 			RemoveObject(PCB_TYPE_LINE, layer, line, line);
 	}
 	ENDALL_LOOP;
 
 	VISIBLEARC_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_FOUND, arc) && !TEST_FLAG(PCB_FLAG_LOCK, arc))
+		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
 			RemoveObject(PCB_TYPE_ARC, layer, arc, arc);
 	}
 	ENDALL_LOOP;
@@ -550,7 +550,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	if (PCB->ViaOn)
 		VIA_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_FOUND, via) && !TEST_FLAG(PCB_FLAG_LOCK, via))
+		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via))
 			RemoveObject(PCB_TYPE_VIA, via, via, via);
 	}
 	END_LOOP;

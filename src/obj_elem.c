@@ -198,7 +198,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	{
 		pcb_flag_t f = pcb_no_flags();
 		pcb_flag_add(f, PCB_FLAG_VIA);
-		if (TEST_FLAG(PCB_FLAG_HOLE, pin))
+		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin))
 			pcb_flag_add(f, PCB_FLAG_HOLE);
 
 		CreateNewVia(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
@@ -211,7 +211,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	PAD_LOOP(element);
 	{
 		pcb_line_t *line;
-		line = CreateNewLineOnLayer(TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? slayer : clayer,
+		line = CreateNewLineOnLayer(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? slayer : clayer,
 																pad->Point1.X, pad->Point1.Y,
 																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, pcb_no_flags());
 		if (line)
@@ -383,7 +383,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	Element->MarkX = Buffer->X;
 	Element->MarkY = Buffer->Y;
 	if (SWAP_IDENT)
-		SET_FLAG(PCB_FLAG_ONSOLDER, Element);
+		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, Element);
 	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
 	pcb_buffer_clear(Buffer);
 	pcb_move_obj_to_buffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
@@ -450,7 +450,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coo
 /* changes the side of the board an element is on; returns pcb_true if done */
 pcb_bool ChangeElementSide(pcb_element_t *Element, pcb_coord_t yoff)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (pcb_false);
 	EraseElement(Element);
 	AddObjectToMirrorUndoList(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);
@@ -468,7 +468,7 @@ pcb_bool ChangeSelectedElementSide(void)
 	if (PCB->PinOn && PCB->ElementOn)
 		ELEMENT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_SELECTED, element)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			change |= ChangeElementSide(element, 0);
 		}
 	}
@@ -687,7 +687,7 @@ void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, pcb_coor
 		pad->Point1.Y = PCB_SWAP_Y(pad->Point1.Y) + yoff;
 		pad->Point2.X = PCB_SWAP_X(pad->Point2.X);
 		pad->Point2.Y = PCB_SWAP_Y(pad->Point2.Y) + yoff;
-		TOGGLE_FLAG(PCB_FLAG_ONSOLDER, pad);
+		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, pad);
 	}
 	END_LOOP;
 	ARC_LOOP(Element);
@@ -702,14 +702,14 @@ void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, pcb_coor
 	{
 		text->X = PCB_SWAP_X(text->X);
 		text->Y = PCB_SWAP_Y(text->Y) + yoff;
-		TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
+		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 	}
 	END_LOOP;
 	Element->MarkX = PCB_SWAP_X(Element->MarkX);
 	Element->MarkY = PCB_SWAP_Y(Element->MarkY) + yoff;
 
 	/* now toggle the solder-side flag */
-	TOGGLE_FLAG(PCB_FLAG_ONSOLDER, Element);
+	PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, Element);
 	/* this inserts all of the rtree data too */
 	SetElementBoundingBox(Data, Element, &PCB->Font);
 	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
@@ -813,16 +813,16 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 		if (pad->Point1.Y == pad->Point2.Y) {
 			/* horizontal pad */
 			if (box->X2 - pad->Point2.X < pad->Point1.X - box->X1)
-				SET_FLAG(PCB_FLAG_EDGE2, pad);
+				PCB_FLAG_SET(PCB_FLAG_EDGE2, pad);
 			else
-				CLEAR_FLAG(PCB_FLAG_EDGE2, pad);
+				PCB_FLAG_CLEAR(PCB_FLAG_EDGE2, pad);
 		}
 		else {
 			/* vertical pad */
 			if (box->Y2 - pad->Point2.Y < pad->Point1.Y - box->Y1)
-				SET_FLAG(PCB_FLAG_EDGE2, pad);
+				PCB_FLAG_SET(PCB_FLAG_EDGE2, pad);
 			else
-				CLEAR_FLAG(PCB_FLAG_EDGE2, pad);
+				PCB_FLAG_CLEAR(PCB_FLAG_EDGE2, pad);
 		}
 	}
 	END_LOOP;
@@ -831,14 +831,14 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 	if ((box->X2 - box->X1) > (box->Y2 - box->Y1)) {
 		PIN_LOOP(Element);
 		{
-			SET_FLAG(PCB_FLAG_EDGE2, pin);
+			PCB_FLAG_SET(PCB_FLAG_EDGE2, pin);
 		}
 		END_LOOP;
 	}
 	else {
 		PIN_LOOP(Element);
 		{
-			CLEAR_FLAG(PCB_FLAG_EDGE2, pin);
+			PCB_FLAG_CLEAR(PCB_FLAG_EDGE2, pin);
 		}
 		END_LOOP;
 	}
@@ -1116,21 +1116,21 @@ void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 
 	element = GetElementMemory(ctx->buffer.dst);
 	CopyElementLowLevel(ctx->buffer.dst, element, Element, pcb_false, 0, 0);
-	CLEAR_FLAG(ctx->buffer.extraflg, element);
+	PCB_FLAG_CLEAR(ctx->buffer.extraflg, element);
 	if (ctx->buffer.extraflg) {
 		ELEMENTTEXT_LOOP(element);
 		{
-			CLEAR_FLAG(ctx->buffer.extraflg, text);
+			PCB_FLAG_CLEAR(ctx->buffer.extraflg, text);
 		}
 		END_LOOP;
 		PIN_LOOP(element);
 		{
-			CLEAR_FLAG(PCB_FLAG_FOUND | ctx->buffer.extraflg, pin);
+			PCB_FLAG_CLEAR(PCB_FLAG_FOUND | ctx->buffer.extraflg, pin);
 		}
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			CLEAR_FLAG(PCB_FLAG_FOUND | ctx->buffer.extraflg, pad);
+			PCB_FLAG_CLEAR(PCB_FLAG_FOUND | ctx->buffer.extraflg, pad);
 		}
 		END_LOOP;
 	}
@@ -1152,13 +1152,13 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 	PIN_LOOP(element);
 	{
 		RestoreToPolygon(ctx->buffer.src, PCB_TYPE_PIN, element, pin);
-		CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, pin);
+		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(element);
 	{
 		RestoreToPolygon(ctx->buffer.src, PCB_TYPE_PAD, element, pad);
-		CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, pad);
+		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, pad);
 	}
 	END_LOOP;
 	SetElementBoundingBox(ctx->buffer.dst, element, &PCB->Font);
@@ -1186,20 +1186,20 @@ void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_bool changed = pcb_false;
 	pcb_coord_t value;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pin->DrillingHole + ctx->chgsize.delta;
 		if (value <= MAX_PINORVIASIZE &&
-				value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
+				value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->DrillingHole) {
 			changed = pcb_true;
 			AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
 			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->DrillingHole = value;
-			if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
@@ -1220,7 +1220,7 @@ void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_bool changed = pcb_false;
 	pcb_coord_t value;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1231,7 +1231,7 @@ void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			ErasePin(pin);
 			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Thickness = value;
-			if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
@@ -1252,20 +1252,20 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_bool changed = pcb_false;
 	pcb_coord_t value;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pin->Clearance + ctx->chgsize.delta;
 		if (value <= MAX_PINORVIASIZE &&
-				value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
+				value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->Clearance) {
 			changed = pcb_true;
 			AddObjectToClearSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
 			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Clearance = value;
-			if (TEST_FLAG(PCB_FLAG_HOLE, pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
@@ -1285,7 +1285,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			r_delete_entry(PCB->Data->pad_tree, &pad->BoundingBox);
 			pad->Clearance = value;
-			if (TEST_FLAG(PCB_FLAG_HOLE, pad)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pad)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, pad, pad);
 				pad->Thickness = value;
 			}
@@ -1310,7 +1310,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_coord_t value;
 	pcb_bool changed = pcb_false;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	if (PCB->ElementOn)
 		EraseElement(Element);
@@ -1348,7 +1348,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
 		: DESCRIPTION_TEXT(Element).Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, &Element->Name[0]))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
 	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE) {
 		EraseElementName(Element);
@@ -1370,7 +1370,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 
 void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, &Element->Name[0]))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
 	if (NAME_INDEX() == NAMEONPCB_INDEX) {
 		if (conf_core.editor.unique_names && UniqueElementName(PCB->Data, ctx->chgname.new_name) != ctx->chgname.new_name) {
@@ -1384,9 +1384,9 @@ void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 
 void *ChangeElementNonetlist(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
-	TOGGLE_FLAG(PCB_FLAG_NONETLIST, Element);
+	PCB_FLAG_TOGGLE(PCB_FLAG_NONETLIST, Element);
 	return Element;
 }
 
@@ -1396,7 +1396,7 @@ void *ChangeElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *ans = NULL;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1416,7 +1416,7 @@ void *SetElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *ans = NULL;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1436,7 +1436,7 @@ void *ClrElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *ans = NULL;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1456,7 +1456,7 @@ void *ChangeElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *result = NULL;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1472,7 +1472,7 @@ void *SetElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *result = NULL;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1488,7 +1488,7 @@ void *ClrElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	void *result = NULL;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (NULL);
 	PIN_LOOP(Element);
 	{
@@ -1660,15 +1660,15 @@ void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 /*** draw ***/
 void draw_element_name(pcb_element_t * element)
 {
-	if ((conf_core.editor.hide_names && gui->gui) || TEST_FLAG(PCB_FLAG_HIDENAME, element))
+	if ((conf_core.editor.hide_names && gui->gui) || PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
 		return;
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
 		gui->set_color(Output.fgGC, PCB->ElementColor);
-	else if (TEST_FLAG(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)))
+	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)))
 		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
 	else if (FRONT(element)) {
 #warning TODO: why do we test for Names flag here instead of elements flag?
-		if (TEST_FLAG(PCB_FLAG_NONETLIST, element))
+		if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, element))
 			gui->set_color(Output.fgGC, PCB->ElementColor_nonetlist);
 		else
 			gui->set_color(Output.fgGC, PCB->ElementColor);
@@ -1686,7 +1686,7 @@ pcb_r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
 	pcb_element_t *element = (pcb_element_t *) text->Element;
 	int *side = cl;
 
-	if (TEST_FLAG(PCB_FLAG_HIDENAME, element))
+	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
 		return R_DIR_NOT_FOUND;
 
 	if (ON_SIDE(element, *side))
@@ -1715,7 +1715,7 @@ void draw_element_package(pcb_element_t * element)
 	/* set color and draw lines, arcs, text and pins */
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
 		gui->set_color(Output.fgGC, PCB->ElementColor);
-	else if (TEST_FLAG(PCB_FLAG_SELECTED, element))
+	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
 	else if (FRONT(element))
 		gui->set_color(Output.fgGC, PCB->ElementColor);
@@ -1760,7 +1760,7 @@ static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool i
 
 	if (pinlist_length(&e->Pin) != 0) {
 		pcb_pin_t *pin0 = pinlist_first(&e->Pin);
-		if (TEST_FLAG(PCB_FLAG_HOLE, pin0))
+		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin0))
 			mark_size = MIN(mark_size, pin0->DrillingHole / 2);
 		else
 			mark_size = MIN(mark_size, pin0->Thickness / 2);
@@ -1784,7 +1784,7 @@ static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool i
 	 * This provides a nice visual indication that it is locked that
 	 * works even for color blind users.
 	 */
-	if (TEST_FLAG(PCB_FLAG_LOCK, e)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, e)) {
 		gui->draw_line(Output.fgGC, X, Y, X + 2 * mark_size, Y);
 		gui->draw_line(Output.fgGC, X, Y, X, Y - 4 * mark_size);
 	}
@@ -1831,7 +1831,7 @@ void EraseElementPinsAndPads(pcb_element_t *Element)
 
 void EraseElementName(pcb_element_t *Element)
 {
-	if (TEST_FLAG(PCB_FLAG_HIDENAME, Element)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element)) {
 		return;
 	}
 	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
@@ -1846,7 +1846,7 @@ void DrawElement(pcb_element_t *Element)
 
 void DrawElementName(pcb_element_t *Element)
 {
-	if (TEST_FLAG(PCB_FLAG_HIDENAME, Element))
+	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element))
 		return;
 	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
 }

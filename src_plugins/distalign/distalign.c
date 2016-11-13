@@ -246,7 +246,7 @@ static int sort_elements_by_pos(int op, int dir, int point)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 			continue;
 		nsel++;
 	}
@@ -258,7 +258,7 @@ static int sort_elements_by_pos(int op, int dir, int point)
 	nsel = 0;
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 			continue;
 		elements_by_pos[nsel].element = element;
 		elements_by_pos[nsel++].pos = coord(element, dir, point);
@@ -299,7 +299,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 		q = 0;
 		ELEMENT_LOOP(PCB->Data);
 		{
-			if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 				continue;
 			q += coord(element, dir, point);
 			nsel++;
@@ -415,7 +415,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	{
 		pcb_coord_t p, dp, dx, dy;
 
-		if (!TEST_FLAG(PCB_FLAG_SELECTED, element))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 			continue;
 		/* find delta from reference point to reference point */
 		p = coord(element, dir, point);

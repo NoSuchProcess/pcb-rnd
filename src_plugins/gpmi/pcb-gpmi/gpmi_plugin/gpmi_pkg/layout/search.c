@@ -111,7 +111,7 @@ static void select_cb(void *obj_, void *ud)
 {
 	select_t *ctx = ud;
 	pcb_any_obj_t *obj = obj_;
-	if (TEST_FLAG(ctx->flag, obj))
+	if (PCB_FLAG_TEST(ctx->flag, obj))
 		search_append(ctx->search, obj);
 }
 

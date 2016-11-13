@@ -314,7 +314,7 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type)
 			if (pcb_object_flagbits[n].object_types & object_type) {
 				pcb_bool b;
 				if ((parse_bool(&b, lht_dom_hash_get(fn, pcb_object_flagbits[n].name)) == 0) && b)
-					SET_FLAG(pcb_object_flagbits[n].mask, &fh);
+					PCB_FLAG_SET(pcb_object_flagbits[n].mask, &fh);
 			}
 		}
 
@@ -661,7 +661,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	parse_coord(&elem->MarkX, lht_dom_hash_get(obj, "x"));
 	parse_coord(&elem->MarkY, lht_dom_hash_get(obj, "y"));
 
-	onsld = TEST_FLAG(PCB_FLAG_ONSOLDER, elem);
+	onsld = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, elem);
 
 	lst = lht_dom_hash_get(obj, "objects");
 	if (lst->type == LHT_LIST) {
@@ -684,7 +684,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	if (onsld) {
 		int n;
 		for(n = 0; n < MAX_ELEMENTNAMES; n++)
-			SET_FLAG(PCB_FLAG_ONSOLDER, &elem->Name[n]);
+			PCB_FLAG_SET(PCB_FLAG_ONSOLDER, &elem->Name[n]);
 	}
 
 	/* Make sure we use some sort of font */

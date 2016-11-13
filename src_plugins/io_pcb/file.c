@@ -176,9 +176,9 @@ static void conf_update_pcb_flag(pcb_flag_t *dest, const char *hash_path, int bi
 	} *tmp = (void *)dest;
 
 	if ((n == NULL) || (n->type != CFN_BOOLEAN) || (n->used < 0) || (!n->val.boolean[0]))
-		CLEAR_FLAG(binflag, tmp);
+		PCB_FLAG_CLEAR(binflag, tmp);
 	else
-		SET_FLAG(binflag, tmp);
+		PCB_FLAG_SET(binflag, tmp);
 }
 
 /* ---------------------------------------------------------------------------
@@ -208,7 +208,7 @@ static void WritePCBDataHeader(FILE * FP)
 	io_pcb_attrib_c2a(PCB);
 
 	/* set binary flags from conf hash; these flags used to be checked
-	   with TEST_FLAG() but got moved to the conf system */
+	   with PCB_FLAG_TEST() but got moved to the conf system */
 	conf_update_pcb_flag(&pcb_flags, "plugins/mincut/enable", ENABLEPCB_FLAG_MINCUT);
 	conf_update_pcb_flag(&pcb_flags, "editor/show_number", SHOWNUMBERFLAG);
 	conf_update_pcb_flag(&pcb_flags, "editor/show_drc", SHOWPCB_FLAG_DRC);

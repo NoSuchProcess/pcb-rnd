@@ -523,7 +523,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 		text->X = PCB_SWAP_X(text->X);
 		text->Y = PCB_SWAP_Y(text->Y);
-		TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
+		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 		SetTextBoundingBox(&PCB->Font, text);
 		r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 	}

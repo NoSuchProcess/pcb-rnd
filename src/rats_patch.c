@@ -390,7 +390,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 	/* check if we have elements selected and quit if not */
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_SELECTED, element)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			found = 1;
 			break;
 		}
@@ -425,7 +425,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 	/* action: replace selected elements */
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_SELECTED, element)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			a[0] = fpname;
 			a[1] = element->Name[1].TextString;
 			a[2] = element->Name[2].TextString;

@@ -71,13 +71,13 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 	CopyElementLowLevel(NULL, &pinout->element, element, FALSE, 0, 0);
 	PIN_LOOP(&pinout->element);
 	{
-		SET_FLAG(PCB_FLAG_DISPLAYNAME, pin);
+		PCB_FLAG_SET(PCB_FLAG_DISPLAYNAME, pin);
 	}
 	END_LOOP;
 
 	PAD_LOOP(&pinout->element);
 	{
-		SET_FLAG(PCB_FLAG_DISPLAYNAME, pad);
+		PCB_FLAG_SET(PCB_FLAG_DISPLAYNAME, pad);
 	}
 	END_LOOP;
 

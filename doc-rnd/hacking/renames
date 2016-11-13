@@ -306,3 +306,10 @@ AddFlags -> pcb_flag_add
 MaskFlags -> pcb_flag_mask
 EraseFlags -> pcb_flag_erase
 NoFlags -> pcb_no_flags
+mem_any_set -> pcb_mem_any_set
+SET_FLAG -> PCB_FLAG_SET
+CLEAR_FLAG -> PCB_FLAG_CLEAR
+TEST_FLAG -> PCB_FLAG_TEST
+TOGGLE_FLAG -> PCB_FLAG_TOGGLE
+ASSIGN_FLAG -> PCB_FLAG_ASSIGN
+TEST_FLAGS -> PCB_FLAGS_TEST

@@ -101,7 +101,7 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 
 		/* first clear any marks that we made in the line flags */
 		for(n = 0, ptr = Crosshair.AttachedObject.Rubberband; n < Crosshair.AttachedObject.RubberbandN; n++, ptr++)
-			CLEAR_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);
+			PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
 
 		return (NULL);
 	}
@@ -110,7 +110,7 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 	ptr = Crosshair.AttachedObject.Rubberband;
 	while (Crosshair.AttachedObject.RubberbandN) {
 		/* first clear any marks that we made in the line flags */
-		CLEAR_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);
+		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
 		AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
 		MoveLinePoint(&ctx, ptr->Layer, ptr->Line, ptr->MovedPoint);
 		Crosshair.AttachedObject.RubberbandN--;

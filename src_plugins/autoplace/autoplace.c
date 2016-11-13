@@ -153,7 +153,7 @@ static void UpdateXY(pcb_netlist_t *Nets)
 			pcb_connection_t *c = &(Nets->Net[i].Connection[j]);
 			switch (c->type) {
 			case PCB_TYPE_PAD:
-				c->group = TEST_FLAG(PCB_FLAG_ONSOLDER, (pcb_element_t *) c->ptr1)
+				c->group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_element_t *) c->ptr1)
 					? SLayer : CLayer;
 				c->X = ((pcb_pad_t *) c->ptr2)->Point1.X;
 				c->Y = ((pcb_pad_t *) c->ptr2)->Point1.Y;
@@ -179,7 +179,7 @@ static PointerListType collectSelectedElements()
 	PointerListType list = { 0, 0, NULL };
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_SELECTED, element)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			pcb_element_t **epp = (pcb_element_t **) GetPointerMemory(&list);
 			*epp = element;
 		}
@@ -364,7 +364,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		pcb_box_t *lastbox = NULL;
 		pcb_coord_t thickness;
 		pcb_coord_t clearance;
-		if (TEST_FLAG(PCB_FLAG_ONSOLDER, element)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element)) {
 			thisside = &solderside;
 			otherside = &componentside;
 		}
@@ -469,7 +469,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		ELEMENT_LOOP(PCB->Data);
 		{
 			boxpp = (struct ebox **)
-				GetPointerMemory(TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? &seboxes : &ceboxes);
+				GetPointerMemory(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? &seboxes : &ceboxes);
 			*boxpp = (struct ebox *) malloc(sizeof(**boxpp));
 			if (*boxpp == NULL) {
 				fprintf(stderr, "malloc() failed in ComputeCost\n");
@@ -490,7 +490,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			ELEMENT_LOOP(PCB->Data);
 		{
 			boxp = (struct ebox *)
-				r_find_neighbor(TEST_FLAG(PCB_FLAG_ONSOLDER, element) ? rt_s : rt_c, &element->VBox, dir[i]);
+				r_find_neighbor(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? rt_s : rt_c, &element->VBox, dir[i]);
 			/* score bounding box alignments */
 			if (!boxp)
 				continue;
@@ -595,8 +595,8 @@ PerturbationType createPerturbation(PointerListTypePtr selected, double T)
 			/* don't allow exchanging a solderside-side SMD component
 			 * with a non-SMD component. */
 			if ((pinlist_length(&(pt.element->Pin)) != 0 /* non-SMD */  &&
-					 TEST_FLAG(PCB_FLAG_ONSOLDER, pt.other)) || (pinlist_length(&pt.other->Pin) != 0 /* non-SMD */  &&
-																									TEST_FLAG(PCB_FLAG_ONSOLDER, pt.element)))
+					 PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt.other)) || (pinlist_length(&pt.other->Pin) != 0 /* non-SMD */  &&
+																									PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt.element)))
 				return createPerturbation(selected, T);
 			break;
 		}
@@ -650,7 +650,7 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 			MoveElementLowLevel(PCB->Data, pt->element, x2 - x1, y2 - y1);
 			MoveElementLowLevel(PCB->Data, pt->other, x1 - x2, y1 - y2);
 			/* then flip both elements if they are on opposite sides */
-			if (TEST_FLAG(PCB_FLAG_ONSOLDER, pt->element) != TEST_FLAG(PCB_FLAG_ONSOLDER, pt->other)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt->element) != PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt->other)) {
 				PerturbationType mypt;
 				mypt.element = pt->element;
 				mypt.which = ROTATE;

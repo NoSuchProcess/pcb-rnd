@@ -127,7 +127,7 @@ static void DrawNewConnections(void)
 	while (PVList.DrawLocation < PVList.Number) {
 		pcb_pin_t *pv = PVLIST_ENTRY(PVList.DrawLocation);
 
-		if (TEST_FLAG(PCB_FLAG_PIN, pv)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_PIN, pv)) {
 			if (PCB->PinOn)
 				DrawPin(pv);
 		}
@@ -199,7 +199,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_PAD:
 		{
 			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
-			if (ADD_PAD_TO_LIST(TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, FCT_START))
+			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, FCT_START))
 				return pcb_true;
 			break;
 		}
@@ -298,10 +298,10 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 
 	VIA_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(TheFlag, via)) {
+		if (PCB_FLAG_TEST(TheFlag, via)) {
 			if (AndDraw)
 				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
-			CLEAR_FLAG(TheFlag, via);
+			PCB_FLAG_CLEAR(TheFlag, via);
 			if (AndDraw)
 				DrawVia(via);
 			change = pcb_true;
@@ -312,10 +312,10 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 	{
 		PIN_LOOP(element);
 		{
-			if (TEST_FLAG(TheFlag, pin)) {
+			if (PCB_FLAG_TEST(TheFlag, pin)) {
 				if (AndDraw)
 					AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
-				CLEAR_FLAG(TheFlag, pin);
+				PCB_FLAG_CLEAR(TheFlag, pin);
 				if (AndDraw)
 					DrawPin(pin);
 				change = pcb_true;
@@ -324,10 +324,10 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		END_LOOP;
 		PAD_LOOP(element);
 		{
-			if (TEST_FLAG(TheFlag, pad)) {
+			if (PCB_FLAG_TEST(TheFlag, pad)) {
 				if (AndDraw)
 					AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
-				CLEAR_FLAG(TheFlag, pad);
+				PCB_FLAG_CLEAR(TheFlag, pad);
 				if (AndDraw)
 					DrawPad(pad);
 				change = pcb_true;
@@ -350,10 +350,10 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 
 	RAT_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(TheFlag, line)) {
+		if (PCB_FLAG_TEST(TheFlag, line)) {
 			if (AndDraw)
 				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
-			CLEAR_FLAG(TheFlag, line);
+			PCB_FLAG_CLEAR(TheFlag, line);
 			if (AndDraw)
 				DrawRat(line);
 			change = pcb_true;
@@ -362,10 +362,10 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	END_LOOP;
 	COPPERLINE_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(TheFlag, line)) {
+		if (PCB_FLAG_TEST(TheFlag, line)) {
 			if (AndDraw)
 				AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
-			CLEAR_FLAG(TheFlag, line);
+			PCB_FLAG_CLEAR(TheFlag, line);
 			if (AndDraw)
 				DrawLine(layer, line);
 			change = pcb_true;
@@ -374,10 +374,10 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	ENDALL_LOOP;
 	COPPERARC_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(TheFlag, arc)) {
+		if (PCB_FLAG_TEST(TheFlag, arc)) {
 			if (AndDraw)
 				AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
-			CLEAR_FLAG(TheFlag, arc);
+			PCB_FLAG_CLEAR(TheFlag, arc);
 			if (AndDraw)
 				DrawArc(layer, arc);
 			change = pcb_true;
@@ -386,10 +386,10 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	ENDALL_LOOP;
 	COPPERPOLYGON_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(TheFlag, polygon)) {
+		if (PCB_FLAG_TEST(TheFlag, polygon)) {
 			if (AndDraw)
 				AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
-			CLEAR_FLAG(TheFlag, polygon);
+			PCB_FLAG_CLEAR(TheFlag, polygon);
 			if (AndDraw)
 				DrawPolygon(layer, polygon);
 			change = pcb_true;

@@ -68,7 +68,7 @@ pcb_flag_t pcb_flag_mask(pcb_flag_t flag, unsigned int flags)
 	return flag;
 }
 
-int mem_any_set(unsigned char *ptr, int bytes)
+int pcb_mem_any_set(unsigned char *ptr, int bytes)
 {
 	while (bytes--)
 		if (*ptr++)

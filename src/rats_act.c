@@ -93,7 +93,7 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			shorty = NULL;
 			RAT_LOOP(PCB->Data);
 			{
-				if (TEST_FLAG(PCB_FLAG_SELECTED, line))
+				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 					continue;
 				len = SQUARE(line->Point1.X - line->Point2.X) + SQUARE(line->Point1.Y - line->Point2.Y);
 				if (len < small) {
@@ -104,7 +104,7 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			END_LOOP;
 			if (shorty) {
 				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, shorty, shorty, shorty);
-				SET_FLAG(PCB_FLAG_SELECTED, shorty);
+				PCB_FLAG_SET(PCB_FLAG_SELECTED, shorty);
 				DrawRat(shorty);
 				pcb_draw();
 				pcb_center_display((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);

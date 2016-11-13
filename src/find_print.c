@@ -41,9 +41,9 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 	PIN_LOOP(Element);
 	{
-		if (!TEST_FLAG(PCB_FLAG_HOLE, pin)) {
+		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
 			/* pin might have bee checked before, add to list if not */
-			if (!TEST_FLAG(TheFlag, pin) && FP) {
+			if (!PCB_FLAG_TEST(TheFlag, pin) && FP) {
 				int i;
 				if (ADD_PV_TO_LIST(pin, 0, NULL, 0))
 					return pcb_true;
@@ -66,7 +66,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 					fputc('\t', FP);
 					PrintQuotedString(FP, (char *) EMPTY(pin->Name));
 					fputc('\n', FP);
-					SET_FLAG(PCB_FLAG_SELECTED, pin);
+					PCB_FLAG_SET(PCB_FLAG_SELECTED, pin);
 					DrawPin(pin);
 				}
 
@@ -83,9 +83,9 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 	{
 		/* lookup pad in list */
 		/* pad might has bee checked before, add to list if not */
-		if (!TEST_FLAG(TheFlag, pad) && FP) {
+		if (!PCB_FLAG_TEST(TheFlag, pad) && FP) {
 			int i;
-			if (ADD_PAD_TO_LIST(TEST_FLAG(PCB_FLAG_ONSOLDER, pad)
+			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)
 													? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, 0))
 				return pcb_true;
 			DoIt(pcb_true, pcb_true);
@@ -108,7 +108,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 				PrintQuotedString(FP, (char *) EMPTY(pad->Name));
 				fputc('\n', FP);
 
-				SET_FLAG(PCB_FLAG_SELECTED, pad);
+				PCB_FLAG_SET(PCB_FLAG_SELECTED, pad);
 				DrawPad(pad);
 			}
 
@@ -165,7 +165,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 	PIN_LOOP(Element);
 	{
 		/* pin might have been checked before, add to list if not */
-		if (TEST_FLAG(TheFlag, pin)) {
+		if (PCB_FLAG_TEST(TheFlag, pin)) {
 			PrintConnectionListEntry((char *) EMPTY(pin->Name), NULL, pcb_true, FP);
 			fputs("\t\t__CHECKED_BEFORE__\n\t}\n", FP);
 			continue;
@@ -188,12 +188,12 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 	{
 		pcb_cardinal_t layer;
 		/* pad might have been checked before, add to list if not */
-		if (TEST_FLAG(TheFlag, pad)) {
+		if (PCB_FLAG_TEST(TheFlag, pad)) {
 			PrintConnectionListEntry((char *) EMPTY(pad->Name), NULL, pcb_true, FP);
 			fputs("\t\t__CHECKED_BEFORE__\n\t}\n", FP);
 			continue;
 		}
-		layer = TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
+		layer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
 		if (ADD_PAD_TO_LIST(layer, pad, PCB_TYPE_ELEMENT, Element, FCT_ELEMENT))
 			return pcb_true;
 		DoIt(pcb_true, AndDraw);

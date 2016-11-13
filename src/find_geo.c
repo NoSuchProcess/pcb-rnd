@@ -52,7 +52,7 @@
 	(IsPointOnLineEnd((PV)->X,(PV)->Y, (Rat)))
 
 #define IS_PV_ON_ARC(PV, Arc)	\
-	(TEST_FLAG(PCB_FLAG_SQUARE, (PV)) ? \
+	(PCB_FLAG_TEST(PCB_FLAG_SQUARE, (PV)) ? \
 		IsArcInRectangle( \
 			(PV)->X -MAX(((PV)->Thickness+1)/2 +Bloat,0), (PV)->Y -MAX(((PV)->Thickness+1)/2 +Bloat,0), \
 			(PV)->X +MAX(((PV)->Thickness+1)/2 +Bloat,0), (PV)->Y +MAX(((PV)->Thickness+1)/2 +Bloat,0), \
@@ -323,14 +323,14 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
-	if (TEST_FLAG(PCB_FLAG_SQUARE, Line1)) {	/* pretty reckless recursion */
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line1)) {	/* pretty reckless recursion */
 		pcb_point_t p[4];
 		form_slanted_rectangle(p, Line1);
 		return IsLineInQuadrangle(p, Line2);
 	}
 	/* here come only round Line1 because IsLineInQuadrangle()
 	   calls pcb_intersect_line_line() with first argument rounded */
-	if (TEST_FLAG(PCB_FLAG_SQUARE, Line2)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line2)) {
 		pcb_point_t p[4];
 		form_slanted_rectangle(p, Line2);
 		return IsLineInQuadrangle(p, Line1);
@@ -476,7 +476,7 @@ pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
 	pcb_box_t *Box = (pcb_box_t *) Arc;
 
 	/* arcs with clearance never touch polys */
-	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, Polygon) && TEST_FLAG(PCB_FLAG_CLEARLINE, Arc))
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
 		return pcb_false;
 	if (!Polygon->Clipped)
 		return pcb_false;
@@ -506,11 +506,11 @@ pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_polygon_t *Polygon)
 	pcb_polyarea_t *lp;
 
 	/* lines with clearance never touch polygons */
-	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, Polygon) && TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return pcb_false;
 	if (!Polygon->Clipped)
 		return pcb_false;
-	if (TEST_FLAG(PCB_FLAG_SQUARE, Line) && (Line->Point1.X == Line->Point2.X || Line->Point1.Y == Line->Point2.Y)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line) && (Line->Point1.X == Line->Point2.X || Line->Point1.Y == Line->Point2.Y)) {
 		pcb_coord_t wid = (Line->Thickness + Bloat + 1) / 2;
 		pcb_coord_t x1, x2, y1, y2;
 
@@ -650,7 +650,7 @@ static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 	if (IsPointOnPin(PV1->X, PV1->Y, t1, PV2)
 			|| IsPointOnPin(PV2->X, PV2->Y, t2, PV1))
 		return pcb_true;
-	if (!TEST_FLAG(PCB_FLAG_SQUARE, PV1) || !TEST_FLAG(PCB_FLAG_SQUARE, PV2))
+	if (!PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV1) || !PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV2))
 		return pcb_false;
 	/* check for square/square overlap */
 	b1.X1 = PV1->X - t1;
@@ -667,7 +667,7 @@ static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 
 pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 {
-	if (TEST_FLAG(PCB_FLAG_SQUARE, PV)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV)) {
 		int shape = GET_SQUARE(PV);
 		if (shape <= 1) {
 			/* the original square case */

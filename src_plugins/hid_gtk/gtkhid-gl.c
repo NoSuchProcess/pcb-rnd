@@ -130,7 +130,7 @@ int ghid_set_layer(const char *name, int group, int empty)
 			return PCB->InvisibleObjectsOn;
 		case SL_MASK:
 			if (SL_MYSIDE(idx))
-				return TEST_FLAG(SHOWMASKFLAG, PCB);
+				return PCB_FLAG_TEST(SHOWMASKFLAG, PCB);
 			return 0;
 		case SL_SILK:
 			priv->trans_lines = pcb_true;

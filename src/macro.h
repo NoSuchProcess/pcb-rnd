@@ -56,14 +56,14 @@
  *  Determines if object is on front or back
  */
 #define FRONT(o)	\
-	((TEST_FLAG(PCB_FLAG_ONSOLDER, (o)) != 0) == SWAP_IDENT)
+	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (o)) != 0) == SWAP_IDENT)
 
 /* ---------------------------------------------------------------------------
  *  Determines if an object is on the given side. side is either SOLDER_LAYER
  *  or COMPONENT_LAYER.
  */
 #define ON_SIDE(element, side) \
-        (TEST_FLAG (PCB_FLAG_ONSOLDER, element) == (side == SOLDER_LAYER))
+        (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) == (side == SOLDER_LAYER))
 
 /* ---------------------------------------------------------------------------
  * some loop shortcuts

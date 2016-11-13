@@ -478,7 +478,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 
 
 		cairo_translate(bboard_cairo_ctx, ex, ey);
-		if (TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) {
+		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) {
 			cairo_scale(bboard_cairo_ctx, 1, -1);
 		}
 		cairo_rotate(bboard_cairo_ctx, -tmp_angle * M_PI / 180.);
@@ -533,14 +533,14 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	/* write out components on solder side */
 	ELEMENT_LOOP(PCB->Data);
-	if (TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) {
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) {
 		bboard_export_element_cairo(element, 1);
 	}
 	END_LOOP;
 
 	/* write out components on component side */
 	ELEMENT_LOOP(PCB->Data);
-	if (!TEST_FLAG(PCB_FLAG_ONSOLDER, (element))) {
+	if (!PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) {
 		bboard_export_element_cairo(element, 0);
 	}
 	END_LOOP;

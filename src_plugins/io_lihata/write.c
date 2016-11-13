@@ -161,9 +161,9 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type)
 
 	/* create normal flag nodes */
 	for (n = 0; n < pcb_object_flagbits_len; n++) {
-		if ((pcb_object_flagbits[n].object_types & object_type) && (TEST_FLAG(pcb_object_flagbits[n].mask, &fh))) {
+		if ((pcb_object_flagbits[n].object_types & object_type) && (PCB_FLAG_TEST(pcb_object_flagbits[n].mask, &fh))) {
 			lht_dom_hash_put(hsh, build_text(pcb_object_flagbits[n].name, "1"));
-			CLEAR_FLAG(pcb_object_flagbits[n].mask, &fh);
+			PCB_FLAG_CLEAR(pcb_object_flagbits[n].mask, &fh);
 			added++;
 		}
 	}

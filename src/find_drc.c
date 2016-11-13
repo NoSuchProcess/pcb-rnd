@@ -245,7 +245,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 	case PCB_TYPE_LINE:
 		if (line->Clearance < 2 * PCB->Bloat) {
 			AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
-			SET_FLAG(TheFlag, line);
+			PCB_FLAG_SET(TheFlag, line);
 			message = _("Line with insufficient clearance inside polygon\n");
 			goto doIsBad;
 		}
@@ -253,7 +253,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 	case PCB_TYPE_ARC:
 		if (arc->Clearance < 2 * PCB->Bloat) {
 			AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
-			SET_FLAG(TheFlag, arc);
+			PCB_FLAG_SET(TheFlag, arc);
 			message = _("Arc with insufficient clearance inside polygon\n");
 			goto doIsBad;
 		}
@@ -262,7 +262,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 		if (pad->Clearance && pad->Clearance < 2 * PCB->Bloat)
 			if (pcb_is_pad_in_poly(pad, polygon)) {
 				AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
-				SET_FLAG(TheFlag, pad);
+				PCB_FLAG_SET(TheFlag, pad);
 				message = _("Pad with insufficient clearance inside polygon\n");
 				goto doIsBad;
 			}
@@ -270,7 +270,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 	case PCB_TYPE_PIN:
 		if (pin->Clearance && pin->Clearance < 2 * PCB->Bloat) {
 			AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
-			SET_FLAG(TheFlag, pin);
+			PCB_FLAG_SET(TheFlag, pin);
 			message = _("Pin with insufficient clearance inside polygon\n");
 			goto doIsBad;
 		}
@@ -278,7 +278,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 	case PCB_TYPE_VIA:
 		if (pin->Clearance && pin->Clearance < 2 * PCB->Bloat) {
 			AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
-			SET_FLAG(TheFlag, pin);
+			PCB_FLAG_SET(TheFlag, pin);
 			message = _("Via with insufficient clearance inside polygon\n");
 			goto doIsBad;
 		}
@@ -290,7 +290,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 
 doIsBad:
 	AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
-	SET_FLAG(PCB_FLAG_FOUND, polygon);
+	PCB_FLAG_SET(PCB_FLAG_FOUND, polygon);
 	DrawPolygon(layer, polygon);
 	pcb_draw_obj(type, ptr1, ptr2);
 	drcerr_count++;
@@ -351,7 +351,7 @@ int pcb_drc_all(void)
 	{
 		PIN_LOOP(element);
 		{
-			if (!TEST_FLAG(PCB_FLAG_DRC, pin)
+			if (!PCB_FLAG_TEST(PCB_FLAG_DRC, pin)
 					&& DRCFind(PCB_TYPE_PIN, (void *) element, (void *) pin, (void *) pin)) {
 				IsBad = pcb_true;
 				break;
@@ -364,10 +364,10 @@ int pcb_drc_all(void)
 		{
 
 			/* count up how many pads have no solderpaste openings */
-			if (TEST_FLAG(PCB_FLAG_NOPASTE, pad))
+			if (PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad))
 				nopastecnt++;
 
-			if (!TEST_FLAG(PCB_FLAG_DRC, pad)
+			if (!PCB_FLAG_TEST(PCB_FLAG_DRC, pad)
 					&& DRCFind(PCB_TYPE_PAD, (void *) element, (void *) pad, (void *) pad)) {
 				IsBad = pcb_true;
 				break;
@@ -381,7 +381,7 @@ int pcb_drc_all(void)
 	if (!IsBad)
 		VIA_LOOP(PCB->Data);
 	{
-		if (!TEST_FLAG(PCB_FLAG_DRC, via)
+		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, via)
 				&& DRCFind(PCB_TYPE_VIA, (void *) via, (void *) via, (void *) via)) {
 			IsBad = pcb_true;
 			break;
@@ -402,7 +402,7 @@ int pcb_drc_all(void)
 				break;
 			if (line->Thickness < PCB->minWid) {
 				AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
-				SET_FLAG(TheFlag, line);
+				PCB_FLAG_SET(TheFlag, line);
 				DrawLine(layer, line);
 				drcerr_count++;
 				SetThing(PCB_TYPE_LINE, layer, line, line);
@@ -433,7 +433,7 @@ int pcb_drc_all(void)
 				break;
 			if (arc->Thickness < PCB->minWid) {
 				AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
-				SET_FLAG(TheFlag, arc);
+				PCB_FLAG_SET(TheFlag, arc);
 				DrawArc(layer, arc);
 				drcerr_count++;
 				SetThing(PCB_TYPE_ARC, layer, arc, arc);
@@ -462,9 +462,9 @@ int pcb_drc_all(void)
 			PlowsPolygon(PCB->Data, PCB_TYPE_PIN, element, pin, drc_callback);
 			if (IsBad)
 				break;
-			if (!TEST_FLAG(PCB_FLAG_HOLE, pin) && pin->Thickness - pin->DrillingHole < 2 * PCB->minRing) {
+			if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && pin->Thickness - pin->DrillingHole < 2 * PCB->minRing) {
 				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
-				SET_FLAG(TheFlag, pin);
+				PCB_FLAG_SET(TheFlag, pin);
 				DrawPin(pin);
 				drcerr_count++;
 				SetThing(PCB_TYPE_PIN, element, pin, pin);
@@ -487,7 +487,7 @@ int pcb_drc_all(void)
 			}
 			if (pin->DrillingHole < PCB->minDrill) {
 				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
-				SET_FLAG(TheFlag, pin);
+				PCB_FLAG_SET(TheFlag, pin);
 				DrawPin(pin);
 				drcerr_count++;
 				SetThing(PCB_TYPE_PIN, element, pin, pin);
@@ -518,7 +518,7 @@ int pcb_drc_all(void)
 				break;
 			if (pad->Thickness < PCB->minWid) {
 				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
-				SET_FLAG(TheFlag, pad);
+				PCB_FLAG_SET(TheFlag, pad);
 				DrawPad(pad);
 				drcerr_count++;
 				SetThing(PCB_TYPE_PAD, element, pad, pad);
@@ -547,9 +547,9 @@ int pcb_drc_all(void)
 			PlowsPolygon(PCB->Data, PCB_TYPE_VIA, via, via, drc_callback);
 			if (IsBad)
 				break;
-			if (!TEST_FLAG(PCB_FLAG_HOLE, via) && via->Thickness - via->DrillingHole < 2 * PCB->minRing) {
+			if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, via) && via->Thickness - via->DrillingHole < 2 * PCB->minRing) {
 				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
-				SET_FLAG(TheFlag, via);
+				PCB_FLAG_SET(TheFlag, via);
 				DrawVia(via);
 				drcerr_count++;
 				SetThing(PCB_TYPE_VIA, via, via, via);
@@ -572,7 +572,7 @@ int pcb_drc_all(void)
 			}
 			if (via->DrillingHole < PCB->minDrill) {
 				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
-				SET_FLAG(TheFlag, via);
+				PCB_FLAG_SET(TheFlag, via);
 				DrawVia(via);
 				drcerr_count++;
 				SetThing(PCB_TYPE_VIA, via, via, via);
@@ -607,7 +607,7 @@ int pcb_drc_all(void)
 		SILKLINE_LOOP(PCB->Data);
 		{
 			if (line->Thickness < PCB->minSlk) {
-				SET_FLAG(TheFlag, line);
+				PCB_FLAG_SET(TheFlag, line);
 				DrawLine(layer, line);
 				drcerr_count++;
 				SetThing(PCB_TYPE_LINE, layer, line, line);
@@ -648,7 +648,7 @@ int pcb_drc_all(void)
 				char *buffer;
 				int buflen;
 
-				SET_FLAG(TheFlag, element);
+				PCB_FLAG_SET(TheFlag, element);
 				DrawElement(element);
 				drcerr_count++;
 				SetThing(PCB_TYPE_ELEMENT, element, element, element);

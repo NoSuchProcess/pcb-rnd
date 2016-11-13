@@ -119,15 +119,15 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coor
 
 	Via->Name = pcb_strdup_null(Name);
 	Via->Flags = Flags;
-	CLEAR_FLAG(PCB_FLAG_WARN, Via);
-	SET_FLAG(PCB_FLAG_VIA, Via);
+	PCB_FLAG_CLEAR(PCB_FLAG_WARN, Via);
+	PCB_FLAG_SET(PCB_FLAG_VIA, Via);
 	Via->ID = CreateIDGet();
 
 	/*
 	 * don't complain about MIN_PINORVIACOPPER on a mounting hole (pure
 	 * hole)
 	 */
-	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && (Via->Thickness < Via->DrillingHole + MIN_PINORVIACOPPER)) {
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && (Via->Thickness < Via->DrillingHole + MIN_PINORVIACOPPER)) {
 		Via->Thickness = Via->DrillingHole + MIN_PINORVIACOPPER;
 		pcb_message(PCB_MSG_DEFAULT, _("%m+Increased via thickness to %$mS to allow enough copper"
 							" at %$mD.\n"), conf_core.editor.grid_unit->allow, Via->Thickness, Via->X, Via->Y);
@@ -151,8 +151,8 @@ pcb_pin_t *CreateNewPin(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pc
 	pin->Name = pcb_strdup_null(Name);
 	pin->Number = pcb_strdup_null(Number);
 	pin->Flags = Flags;
-	CLEAR_FLAG(PCB_FLAG_WARN, pin);
-	SET_FLAG(PCB_FLAG_PIN, pin);
+	PCB_FLAG_CLEAR(PCB_FLAG_WARN, pin);
+	PCB_FLAG_SET(PCB_FLAG_PIN, pin);
 	pin->ID = CreateIDGet();
 	pin->Element = Element;
 
@@ -174,7 +174,7 @@ pcb_pin_t *CreateNewPin(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pc
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
-		else if (!TEST_FLAG(PCB_FLAG_HOLE, pin)
+		else if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)
 						 && (pin->DrillingHole > pin->Thickness - MIN_PINORVIACOPPER)) {
 			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
@@ -208,7 +208,7 @@ void SetPinBoundingBox(pcb_pin_t *Pin)
 {
 	pcb_coord_t width;
 
-	if ((GET_SQUARE(Pin) > 1) && (TEST_FLAG(PCB_FLAG_SQUARE, Pin))) {
+	if ((GET_SQUARE(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))) {
 		pcb_polyarea_t *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
 		poly_bbox(p, &Pin->BoundingBox);
 		poly_Free(&p);
@@ -247,7 +247,7 @@ void *MoveViaToBuffer(pcb_opctx_t *ctx, pcb_pin_t * via)
 	pinlist_remove(via);
 	pinlist_append(&ctx->buffer.dst->Via, via);
 
-	CLEAR_FLAG(PCB_FLAG_WARN | PCB_FLAG_FOUND, via);
+	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, via);
 
 	if (!ctx->buffer.dst->via_tree)
 		ctx->buffer.dst->via_tree = r_create_tree(NULL, 0, 0);
@@ -293,9 +293,9 @@ void *ChangeViaSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	pcb_coord_t value = ctx->chgsize.absolute ? ctx->chgsize.absolute : Via->Thickness + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
-	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && value <= MAX_PINORVIASIZE &&
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIASIZE && value >= Via->DrillingHole + MIN_PINORVIACOPPER && value != Via->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
@@ -320,16 +320,16 @@ void *ChangeVia2ndSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->DrillingHole + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	if (value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, Via) || value <= Via->Thickness - MIN_PINORVIACOPPER)
+			value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) || value <= Via->Thickness - MIN_PINORVIACOPPER)
 			&& value != Via->DrillingHole) {
 		AddObjectTo2ndSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		Via->DrillingHole = value;
-		if (TEST_FLAG(PCB_FLAG_HOLE, Via)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, Via)) {
 			AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 			Via->Thickness = value;
 		}
@@ -345,16 +345,16 @@ void *ChangePin2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->DrillingHole + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	if (value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIAHOLE && (TEST_FLAG(PCB_FLAG_HOLE, Pin) || value <= Pin->Thickness - MIN_PINORVIACOPPER)
+			value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) || value <= Pin->Thickness - MIN_PINORVIACOPPER)
 			&& value != Pin->DrillingHole) {
 		AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		Pin->DrillingHole = value;
-		if (TEST_FLAG(PCB_FLAG_HOLE, Pin)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin)) {
 			AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 			Pin->Thickness = value;
 		}
@@ -371,7 +371,7 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Clearance + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, value);
 	if (value < 0)
@@ -401,9 +401,9 @@ void *ChangePinSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Thickness + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
-	if (!TEST_FLAG(PCB_FLAG_HOLE, Pin) && value <= MAX_PINORVIASIZE &&
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) && value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIASIZE && value >= Pin->DrillingHole + MIN_PINORVIACOPPER && value != Pin->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
@@ -426,7 +426,7 @@ void *ChangePinClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pi
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Pin->Clearance + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, value);
 	if (value < 0)
@@ -454,7 +454,7 @@ void *ChangeViaName(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	char *old = Via->Name;
 
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Via)) {
 		ErasePinName(Via);
 		Via->Name = ctx->chgname.new_name;
 		DrawPinName(Via);
@@ -470,7 +470,7 @@ void *ChangePinName(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 	char *old = Pin->Name;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pin)) {
 		ErasePinName(Pin);
 		Pin->Name = ctx->chgname.new_name;
 		DrawPinName(Pin);
@@ -486,7 +486,7 @@ void *ChangePinNum(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 	char *old = Pin->Number;
 
 	Element = Element;						/* get rid of 'unused...' warnings */
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pin)) {
 		ErasePinName(Pin);
 		Pin->Number = ctx->chgname.new_name;
 		DrawPinName(Pin);
@@ -500,7 +500,7 @@ void *ChangePinNum(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 /* changes the square flag of a via */
 void *ChangeViaSquare(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	EraseVia(Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, pcb_false);
@@ -508,9 +508,9 @@ void *ChangeViaSquare(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, NULL, Via, Via);
 	ASSIGN_SQUARE(ctx->chgsize.absolute, Via);
 	if (ctx->chgsize.absolute == 0)
-		CLEAR_FLAG(PCB_FLAG_SQUARE, Via);
+		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Via);
 	else
-		SET_FLAG(PCB_FLAG_SQUARE, Via);
+		PCB_FLAG_SET(PCB_FLAG_SQUARE, Via);
 	SetPinBoundingBox(Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, NULL, Via);
@@ -521,7 +521,7 @@ void *ChangeViaSquare(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* changes the square flag of a pin */
 void *ChangePinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	ErasePin(Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
@@ -529,9 +529,9 @@ void *ChangePinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 	ASSIGN_SQUARE(ctx->chgsize.absolute, Pin);
 	if (ctx->chgsize.absolute == 0)
-		CLEAR_FLAG(PCB_FLAG_SQUARE, Pin);
+		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Pin);
 	else
-		SET_FLAG(PCB_FLAG_SQUARE, Pin);
+		PCB_FLAG_SET(PCB_FLAG_SQUARE, Pin);
 	SetPinBoundingBox(Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
@@ -542,7 +542,7 @@ void *ChangePinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 /* sets the square flag of a pin */
 void *SetPinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_SQUARE, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) || PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
 
 	return (ChangePinSquare(ctx, Element, Pin));
@@ -551,7 +551,7 @@ void *SetPinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 /* clears the square flag of a pin */
 void *ClrPinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_SQUARE, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) || !PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))
 		return (NULL);
 
 	return (ChangePinSquare(ctx, Element, Pin));
@@ -560,13 +560,13 @@ void *ClrPinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 /* changes the octagon flag of a via */
 void *ChangeViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	EraseVia(Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	TOGGLE_FLAG(PCB_FLAG_OCTAGON, Via);
+	PCB_FLAG_TOGGLE(PCB_FLAG_OCTAGON, Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
@@ -576,7 +576,7 @@ void *ChangeViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* sets the octagon flag of a via */
 void *SetViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || TEST_FLAG(PCB_FLAG_OCTAGON, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via) || PCB_FLAG_TEST(PCB_FLAG_OCTAGON, Via))
 		return (NULL);
 
 	return (ChangeViaOctagon(ctx, Via));
@@ -585,7 +585,7 @@ void *SetViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* clears the octagon flag of a via */
 void *ClrViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via) || !TEST_FLAG(PCB_FLAG_OCTAGON, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via) || !PCB_FLAG_TEST(PCB_FLAG_OCTAGON, Via))
 		return (NULL);
 
 	return (ChangeViaOctagon(ctx, Via));
@@ -594,13 +594,13 @@ void *ClrViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* changes the octagon flag of a pin */
 void *ChangePinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	ErasePin(Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-	TOGGLE_FLAG(PCB_FLAG_OCTAGON, Pin);
+	PCB_FLAG_TOGGLE(PCB_FLAG_OCTAGON, Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	DrawPin(Pin);
@@ -610,7 +610,7 @@ void *ChangePinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 /* sets the octagon flag of a pin */
 void *SetPinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) || PCB_FLAG_TEST(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
 
 	return (ChangePinOctagon(ctx, Element, Pin));
@@ -619,7 +619,7 @@ void *SetPinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 /* clears the octagon flag of a pin */
 void *ClrPinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Pin) || !TEST_FLAG(PCB_FLAG_OCTAGON, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) || !PCB_FLAG_TEST(PCB_FLAG_OCTAGON, Pin))
 		return (NULL);
 
 	return (ChangePinOctagon(ctx, Element, Pin));
@@ -628,16 +628,16 @@ void *ClrPinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 /* changes the hole flag of a via */
 pcb_bool ChangeHole(pcb_pin_t *Via)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (pcb_false);
 	EraseVia(Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	TOGGLE_FLAG(PCB_FLAG_HOLE, Via);
+	PCB_FLAG_TOGGLE(PCB_FLAG_HOLE, Via);
 
-	if (TEST_FLAG(PCB_FLAG_HOLE, Via)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, Via)) {
 		/* A tented via becomes an minimally untented hole.  An untented
 		   via retains its mask clearance.  */
 		if (Via->Mask > Via->Thickness) {
@@ -762,15 +762,15 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 	char buf[sizeof("#XXXXXX")];
 
 	if (Type == PCB_TYPE_VIA) {
-		if (!pcb_draw_doing_pinout && TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
-			if (TEST_FLAG(PCB_FLAG_WARN, Pin))
+		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_WARN, Pin))
 				color = PCB->WarnColor;
-			else if (TEST_FLAG(PCB_FLAG_SELECTED, Pin))
+			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, Pin))
 				color = PCB->ViaSelectedColor;
 			else
 				color = PCB->ConnectedColor;
 
-			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, Pin)) {
 				assert(color != NULL);
 				pcb_lighten_color(color, buf, 1.75);
 				color = buf;
@@ -780,15 +780,15 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 			color = PCB->ViaColor;
 	}
 	else {
-		if (!pcb_draw_doing_pinout && TEST_FLAG(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
-			if (TEST_FLAG(PCB_FLAG_WARN, Pin))
+		if (!pcb_draw_doing_pinout && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, Pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_WARN, Pin))
 				color = PCB->WarnColor;
-			else if (TEST_FLAG(PCB_FLAG_SELECTED, Pin))
+			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, Pin))
 				color = PCB->PinSelectedColor;
 			else
 				color = PCB->ConnectedColor;
 
-			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, Pin)) {
 				assert(color != NULL);
 				pcb_lighten_color(color, buf, 1.75);
 				color = buf;
@@ -820,7 +820,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 		strcpy(buff, pn);
 	text.TextString = buff;
 
-	vert = TEST_FLAG(PCB_FLAG_EDGE2, pv);
+	vert = PCB_FLAG_TEST(PCB_FLAG_EDGE2, pv);
 
 	if (vert) {
 		box.X1 = pv->X - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
@@ -854,7 +854,7 @@ static void _draw_pv(pcb_pin_t *pv, pcb_bool draw_hole)
 	else
 		gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, pcb_false);
 
-	if (!TEST_FLAG(PCB_FLAG_HOLE, pv) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, pv))
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pv))
 		_draw_pv_name(pv);
 }
 
@@ -900,11 +900,11 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
 
-	if ((plated == 0 && !TEST_FLAG(PCB_FLAG_HOLE, pv)) || (plated == 1 && TEST_FLAG(PCB_FLAG_HOLE, pv)))
+	if ((plated == 0 && !PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) || (plated == 1 && PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)))
 		return R_DIR_FOUND_CONTINUE;
 
 	if (conf_core.editor.thin_draw) {
-		if (!TEST_FLAG(PCB_FLAG_HOLE, pv)) {
+		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 			gui->set_line_cap(Output.fgGC, Round_Cap);
 			gui->set_line_width(Output.fgGC, 0);
 			gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
@@ -913,15 +913,15 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 	else
 		gui->fill_circle(Output.bgGC, pv->X, pv->Y, pv->DrillingHole / 2);
 
-	if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
-		if (TEST_FLAG(PCB_FLAG_WARN, pv))
+	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pv))
 			color = PCB->WarnColor;
-		else if (TEST_FLAG(PCB_FLAG_SELECTED, pv))
+		else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pv))
 			color = PCB->ViaSelectedColor;
 		else
 			color = conf_core.appearance.color.black;
 
-		if (TEST_FLAG(PCB_FLAG_ONPOINT, pv)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, pv)) {
 			assert(color != NULL);
 			pcb_lighten_color(color, buf, 1.75);
 			color = buf;
@@ -938,7 +938,7 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 static void GatherPVName(pcb_pin_t *Ptr)
 {
 	pcb_box_t box;
-	pcb_bool vert = TEST_FLAG(PCB_FLAG_EDGE2, Ptr);
+	pcb_bool vert = PCB_FLAG_TEST(PCB_FLAG_EDGE2, Ptr);
 
 	if (vert) {
 		box.X1 = Ptr->X - Ptr->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
@@ -963,7 +963,7 @@ static void GatherPVName(pcb_pin_t *Ptr)
 void EraseVia(pcb_pin_t *Via)
 {
 	pcb_draw_invalidate(Via);
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
+	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Via))
 		EraseViaName(Via);
 	pcb_flag_erase(&Via->Flags);
 }
@@ -976,7 +976,7 @@ void EraseViaName(pcb_pin_t *Via)
 void ErasePin(pcb_pin_t *Pin)
 {
 	pcb_draw_invalidate(Pin);
-	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pin))
 		ErasePinName(Pin);
 	pcb_flag_erase(&Pin->Flags);
 }
@@ -989,7 +989,7 @@ void ErasePinName(pcb_pin_t *Pin)
 void DrawVia(pcb_pin_t *Via)
 {
 	pcb_draw_invalidate(Via);
-	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Via))
 		DrawViaName(Via);
 }
 
@@ -1001,7 +1001,7 @@ void DrawViaName(pcb_pin_t *Via)
 void DrawPin(pcb_pin_t *Pin)
 {
 	pcb_draw_invalidate(Pin);
-	if ((!TEST_FLAG(PCB_FLAG_HOLE, Pin) && TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
+	if ((!PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, Pin))
 			|| pcb_draw_doing_pinout)
 		DrawPinName(Pin);
 }

@@ -879,7 +879,7 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Dat
 			fputs("Sh ",FP); /* pin shape descriptor */
 			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
 
-			if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
 				fputs(" R ",FP); /* square */
 			} else {
 				fputs(" C ",FP); /* circular */
@@ -1029,7 +1029,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 
 		xPos = element->MarkX + xOffset;
 		yPos = element->MarkY + yOffset;
-		if (TEST_FLAG(PCB_FLAG_ONSOLDER, element)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element)) {
 			silkLayer = 20;
 			copperLayer = 0;
 		} else {
@@ -1057,7 +1057,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 			fputs("Sh ",FP); /* pin shape descriptor */
 			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
 
-			if (TEST_FLAG(PCB_FLAG_SQUARE, pin)) {
+			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
 				fputs(" R ",FP); /* square */
 			} else {
 				fputs(" C ",FP); /* circular */

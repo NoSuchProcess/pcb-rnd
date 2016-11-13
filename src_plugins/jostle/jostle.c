@@ -318,7 +318,7 @@ static int MakeBypassingLines(pcb_polyarea_t * brush, pcb_layer_t * layer, pcb_l
 	pcb_vector_t a, b, c, d, junk;
 	int hits;
 
-	SET_FLAG(PCB_FLAG_DRC, line);			/* will cause sublines to inherit */
+	PCB_FLAG_SET(PCB_FLAG_DRC, line);			/* will cause sublines to inherit */
 	lA[0] = line->Point1.X;
 	lA[1] = line->Point1.Y;
 	lB[0] = line->Point2.X;
@@ -376,7 +376,7 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	double small, big;
 	int nocentroid = 0;
 
-	if (TEST_FLAG(PCB_FLAG_DRC, line)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)) {
 		return 0;
 	}
 	fprintf(stderr, "hit! %p\n", (void *)line);
@@ -519,7 +519,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	info.layer = CURRENT;
 	LINE_LOOP(info.layer);
 	{
-		CLEAR_FLAG(PCB_FLAG_DRC, line);
+		PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);
 	}
 	END_LOOP;
 	do {

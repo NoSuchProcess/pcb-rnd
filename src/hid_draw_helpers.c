@@ -159,7 +159,7 @@ void common_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_bo
 
 	/* Draw other parts of the polygon if fullpoly flag is set */
 	/* NB: No "NoHoles" cache for these */
-	if (TEST_FLAG(PCB_FLAG_FULLPOLY, poly)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)) {
 		pcb_polygon_t p = *poly;
 
 		for (p.Clipped = poly->Clipped->f; p.Clipped != poly->Clipped; p.Clipped = p.Clipped->f)
@@ -200,7 +200,7 @@ void common_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, p
 	}
 	gui->set_line_cap(gc, Round_Cap);
 	gui->set_line_width(gc, 0);
-	if (TEST_FLAG(PCB_FLAG_SQUARE, pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) {
 		/* slanted square pad */
 		double tx, ty, theta;
 
@@ -250,7 +250,7 @@ void common_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_b
 		: pad->Thickness;
 
 	if (pad->Point1.X == pad->Point2.X && pad->Point1.Y == pad->Point2.Y) {
-		if (TEST_FLAG(PCB_FLAG_SQUARE, pad)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) {
 			pcb_coord_t l, r, t, b;
 			l = pad->Point1.X - w / 2;
 			b = pad->Point1.Y - w / 2;
@@ -263,7 +263,7 @@ void common_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_b
 		}
 	}
 	else {
-		gui->set_line_cap(gc, TEST_FLAG(PCB_FLAG_SQUARE, pad) ? Square_Cap : Round_Cap);
+		gui->set_line_cap(gc, PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad) ? Square_Cap : Round_Cap);
 		gui->set_line_width(gc, w);
 
 		gui->draw_line(gc, pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y);
@@ -347,7 +347,7 @@ void common_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, 
 	pcb_coord_t w = mask ? pv->Mask : pv->Thickness;
 	pcb_coord_t r = w / 2;
 
-	if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 		if (mask)
 			gui->fill_circle(bg_gc, pv->X, pv->Y, r);
 		if (drawHole) {
@@ -359,7 +359,7 @@ void common_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, 
 		return;
 	}
 
-	if (TEST_FLAG(PCB_FLAG_SQUARE, pv)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv)) {
 		/* use the original code for now */
 		if ((GET_SQUARE(pv) == 0) || (GET_SQUARE(pv) == 1)) {
 			pcb_coord_t l = pv->X - r;
@@ -371,7 +371,7 @@ void common_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, 
 		else
 			draw_square_pin_poly(fg_gc, pv->X, pv->Y, w, pcb_false, GET_SQUARE(pv));
 	}
-	else if (TEST_FLAG(PCB_FLAG_OCTAGON, pv))
+	else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv))
 		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, pcb_false);
 	else													/* draw a round pin or via */
 		gui->fill_circle(fg_gc, pv->X, pv->Y, r);
@@ -386,7 +386,7 @@ void common_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * 
 	pcb_coord_t w = mask ? pv->Mask : pv->Thickness;
 	pcb_coord_t r = w / 2;
 
-	if (TEST_FLAG(PCB_FLAG_HOLE, pv)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 		if (mask)
 			gui->draw_arc(fg_gc, pv->X, pv->Y, r, r, 0, 360);
 		if (drawHole) {
@@ -398,7 +398,7 @@ void common_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * 
 		return;
 	}
 
-	if (TEST_FLAG(PCB_FLAG_SQUARE, pv)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv)) {
 		pcb_coord_t l = pv->X - r;
 		pcb_coord_t b = pv->Y - r;
 		pcb_coord_t r = l + w;
@@ -412,7 +412,7 @@ void common_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * 
 		gui->draw_line(fg_gc, r, b, l, b);
 
 	}
-	else if (TEST_FLAG(PCB_FLAG_OCTAGON, pv)) {
+	else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv)) {
 		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, pcb_true);
 	}
 	else {												/* draw a round pin or via */

@@ -734,7 +734,7 @@ static int check_point_in_pin(pcb_pin_t *pin, int x, int y, End * e)
 {
 	int inside_p;
 	int t = (pin->Thickness + 1) / 2;
-	if (TEST_FLAG(PCB_FLAG_SQUARE, pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
 		inside_p = (x >= pin->X - t && x <= pin->X + t && y >= pin->Y - t && y <= pin->Y + t);
 	else
 		inside_p = (Distance(pin->X, pin->Y, x, y) <= t);
@@ -801,7 +801,7 @@ static pcb_r_dir_t check_point_in_pad(pcb_pad_t *pad, int x, int y, End * e)
 	pcb_printf("pad %#mD - %#mD t %#mS  vs  %#mD\n", pad->Point1.X, pad->Point1.Y,
 						 pad->Point2.X, pad->Point2.Y, pad->Thickness, x, y);
 	t = (pad->Thickness + 1) / 2;
-	if (TEST_FLAG(PCB_FLAG_SQUARE, pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) {
 		inside_p = (x >= MIN(pad->Point1.X - t, pad->Point2.X - t)
 								&& x <= MAX(pad->Point1.X + t, pad->Point2.X + t)
 								&& y >= MIN(pad->Point1.Y - t, pad->Point2.Y - t)
@@ -847,7 +847,7 @@ static pcb_r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 	int intersect;
 	double p1_d, p2_d;
 
-	if (TEST_FLAG(PCB_FLAG_ONSOLDER, pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)) {
 		if (!current_is_solder)
 			return R_DIR_NOT_FOUND;
 	}
@@ -902,7 +902,7 @@ static pcb_r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
 	Extra *e = ARC2EXTRA(arc);
 	int hits;
 
-	if (TEST_FLAG(PCB_FLAG_ONSOLDER, pad)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)) {
 		if (!current_is_solder)
 			return R_DIR_NOT_FOUND;
 	}
@@ -1561,7 +1561,7 @@ static pcb_r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
 
 	/* FIXME: we lump octagonal pins in with square; safe, but not
 	   optimal.  */
-	if (TEST_FLAG(PCB_FLAG_SQUARE, p) || TEST_FLAG(PCB_FLAG_OCTAGON, p)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, p) || PCB_FLAG_TEST(PCB_FLAG_OCTAGON, p)) {
 		gp_point(p->X - t2, p->Y - t2, 0, 0);
 		gp_point(p->X - t2, p->Y + t2, 0, 0);
 		gp_point(p->X + t2, p->Y + t2, 0, 0);
@@ -1581,7 +1581,7 @@ static pcb_r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
 	if (p == start_pinpad || p == end_pinpad)
 		return R_DIR_NOT_FOUND;
 
-	if (TEST_FLAG(PCB_FLAG_ONSOLDER, p)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, p)) {
 		if (!current_is_solder)
 			return R_DIR_NOT_FOUND;
 	}
@@ -1592,7 +1592,7 @@ static pcb_r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
 
 	/* FIXME: we lump octagonal pads in with square; safe, but not
 	   optimal.  I don't think we even support octagonal pads.  */
-	if (TEST_FLAG(PCB_FLAG_SQUARE, p) || TEST_FLAG(PCB_FLAG_OCTAGON, p)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, p) || PCB_FLAG_TEST(PCB_FLAG_OCTAGON, p)) {
 		if (p->Point1.X == p->Point2.X) {
 			int y1 = MIN(p->Point1.Y, p->Point2.Y) - t2;
 			int y2 = MAX(p->Point1.Y, p->Point2.Y) + t2;
@@ -1944,7 +1944,7 @@ static void maybe_pull_1(pcb_line_t *line)
 
 #if 0
 	if (fa > M_PI / 2 || fa < -M_PI / 2) {
-		SET_FLAG(PCB_FLAG_FOUND, line);
+		PCB_FLAG_SET(PCB_FLAG_FOUND, line);
 		longjmp(abort_buf, 1);
 	}
 #endif
@@ -2239,7 +2239,7 @@ static void FreeExtra(Extra * extra)
 static void mark_ends_pending(pcb_line_t * line, Extra * extra, void *userdata)
 {
 	int *select_flags = userdata;
-	if (TEST_FLAGS(*select_flags, line)) {
+	if (PCB_FLAGS_TEST(*select_flags, line)) {
 		extra->start.pending = 1;
 		extra->end.pending = 1;
 	}

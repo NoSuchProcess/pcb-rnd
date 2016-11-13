@@ -99,7 +99,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 	/* remove unnecessary line points */
 	if (line->Thickness == i->Thickness
 			/* don't merge lines if the clear flags differ  */
-			&& TEST_FLAG(PCB_FLAG_CLEARLINE, line) == TEST_FLAG(PCB_FLAG_CLEARLINE, i)) {
+			&& PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) == PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, i)) {
 		if (line->Point1.X == i->X1 && line->Point1.Y == i->Y1) {
 			i->test.Point1.X = line->Point2.X;
 			i->test.Point1.Y = line->Point2.Y;
@@ -200,7 +200,7 @@ pcb_line_t *CreateNewLineOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t
 		return (Line);
 	Line->ID = CreateIDGet();
 	Line->Flags = Flags;
-	CLEAR_FLAG(PCB_FLAG_RAT, Line);
+	PCB_FLAG_CLEAR(PCB_FLAG_RAT, Line);
 	Line->Thickness = Thickness;
 	Line->Clearance = Clearance;
 	Line->Point1.X = X1;
@@ -268,7 +268,7 @@ void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
 	linelist_remove(line);
 	linelist_append(&(lay->Line), line);
 
-	CLEAR_FLAG(PCB_FLAG_FOUND, line);
+	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, line);
 
 	if (!lay->line_tree)
 		lay->line_tree = r_create_tree(NULL, 0, 0);
@@ -282,7 +282,7 @@ void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Thickness + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
 		return (NULL);
 	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Line->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
@@ -304,7 +304,7 @@ void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 {
 	pcb_coord_t value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Line->Clearance + ctx->chgsize.delta;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
 	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Line->Clearance) {
@@ -314,7 +314,7 @@ void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 		r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		Line->Clearance = value;
 		if (Line->Clearance == 0) {
-			CLEAR_FLAG(PCB_FLAG_CLEARLINE, Line);
+			PCB_FLAG_CLEAR(PCB_FLAG_CLEARLINE, Line);
 			Line->Clearance = PCB_MIL_TO_COORD(10);
 		}
 		SetLineBoundingBox(Line);
@@ -339,16 +339,16 @@ void *ChangeLineName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 /* changes the clearance flag of a line */
 void *ChangeLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
 		return (NULL);
 	EraseLine(Line);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Line)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, pcb_false);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	AddObjectToFlagUndoList(PCB_TYPE_LINE, Layer, Line, Line);
-	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Line);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Line)) {
+	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Line);
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, pcb_true);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
@@ -359,7 +359,7 @@ void *ChangeLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 /* sets the clearance flag of a line */
 void *SetLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
 	return ChangeLineJoin(ctx, Layer, Line);
 }
@@ -367,7 +367,7 @@ void *SetLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 /* clears the clearance flag of a line */
 void *ClrLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Line))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
 	return ChangeLineJoin(ctx, Layer, Line);
 }
@@ -484,7 +484,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 	pcb_line_t *newone;
 	void *ptr1, *ptr2, *ptr3;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Line)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line)) {
 		pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
@@ -720,10 +720,10 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 	const char *color;
 	char buf[sizeof("#XXXXXX")];
 
-	if (TEST_FLAG(PCB_FLAG_WARN, line))
+	if (PCB_FLAG_TEST(PCB_FLAG_WARN, line))
 		color = PCB->WarnColor;
-	else if (TEST_FLAG(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
-		if (TEST_FLAG(PCB_FLAG_SELECTED, line))
+	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 			color = layer->SelectedColor;
 		else
 			color = PCB->ConnectedColor;
@@ -731,7 +731,7 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 	else
 		color = layer->Color;
 
-	if (TEST_FLAG(PCB_FLAG_ONPOINT, line)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, line)) {
 		assert(color != NULL);
 		pcb_lighten_color(color, buf, 1.75);
 		color = buf;

@@ -188,7 +188,7 @@ void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	 * and rotate box
 	 */
 
-	if (TEST_FLAG(PCB_FLAG_ONSOLDER, Text)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
 		Text->BoundingBox.X1 = Text->X + minx;
 		Text->BoundingBox.Y1 = Text->Y - miny;
 		Text->BoundingBox.X2 = Text->X + maxx;
@@ -248,7 +248,7 @@ void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
 		: Text->Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return (NULL);
 	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE && value != Text->Scale) {
 		AddObjectToSizeUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
@@ -271,7 +271,7 @@ void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	char *old = Text->TextString;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return (NULL);
 	EraseText(Layer, Text);
 	r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
@@ -289,16 +289,16 @@ void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 /* changes the clearance flag of a text */
 void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return (NULL);
 	EraseText(Layer, Text);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Text)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_false);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
 	AddObjectToFlagUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
-	TOGGLE_FLAG(PCB_FLAG_CLEARLINE, Text);
-	if (TEST_FLAG(PCB_FLAG_CLEARLINE, Text)) {
+	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Text);
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_true);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
@@ -309,7 +309,7 @@ void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 /* sets the clearance flag of a text */
 void *SetTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text) || PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
 	return ChangeTextJoin(ctx, Layer, Text);
 }
@@ -317,7 +317,7 @@ void *SetTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 /* clears the clearance flag of a text */
 void *ClrTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Text) || !TEST_FLAG(PCB_FLAG_CLEARLINE, Text))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text))
 		return (NULL);
 	return ChangeTextJoin(ctx, Layer, Text);
 }
@@ -362,9 +362,9 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 	textlist_append(&Destination->Text, text);
 
 	if (GetLayerGroupNumberByNumber(solder_silk_layer) == GetLayerGroupNumberByPointer(Destination))
-		SET_FLAG(PCB_FLAG_ONSOLDER, text);
+		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, text);
 	else
-		CLEAR_FLAG(PCB_FLAG_ONSOLDER, text);
+		PCB_FLAG_CLEAR(PCB_FLAG_ONSOLDER, text);
 
 	/* re-calculate the bounding box (it could be mirrored now) */
 	SetTextBoundingBox(&PCB->Font, text);
@@ -379,7 +379,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 /* moves a text object between layers */
 void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, text)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, text)) {
 		pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
@@ -438,7 +438,7 @@ void RotateTextLowLevel(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned
 {
 	pcb_uint8_t number;
 
-	number = TEST_FLAG(PCB_FLAG_ONSOLDER, Text) ? (4 - Number) & 3 : Number;
+	number = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text) ? (4 - Number) & 3 : Number;
 	RotateBoxLowLevel(&Text->BoundingBox, X, Y, Number);
 	ROTATE(Text->X, Text->Y, X, Y, Number);
 
@@ -497,7 +497,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 				/* the labels of SMD objects on the bottom
 				 * side haven't been swapped yet, only their offset
 				 */
-				if (TEST_FLAG(PCB_FLAG_ONSOLDER, Text)) {
+				if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
 					newline.Point1.X = SWAP_SIGN_X(newline.Point1.X);
 					newline.Point1.Y = SWAP_SIGN_Y(newline.Point1.Y);
 					newline.Point2.X = SWAP_SIGN_X(newline.Point2.X);
@@ -547,7 +547,7 @@ pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 	pcb_text_t *text = (pcb_text_t *) b;
 	int min_silk_line;
 
-	if (TEST_FLAG(PCB_FLAG_SELECTED, text))
+	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 		gui->set_color(Output.fgGC, layer->SelectedColor);
 	else
 		gui->set_color(Output.fgGC, layer->Color);

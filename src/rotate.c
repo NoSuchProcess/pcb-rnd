@@ -111,7 +111,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, 
 	ptr = Crosshair.AttachedObject.Rubberband;
 	while (Crosshair.AttachedObject.RubberbandN) {
 		changed = pcb_true;
-		CLEAR_FLAG(PCB_FLAG_RUBBEREND, ptr->Line);
+		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
 		AddObjectToRotateUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
 		EraseLine(ptr->Line);
 		if (ptr->Layer) {
@@ -149,7 +149,7 @@ void RotateScreenObject(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 	int type;
 	void *ptr1, *ptr2, *ptr3;
 	if ((type = SearchScreen(X, Y, ROTATE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-		if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_arc_t *) ptr2)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_arc_t *) ptr2)) {
 			pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			return;
 		}

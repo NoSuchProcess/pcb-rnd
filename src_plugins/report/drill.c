@@ -63,7 +63,7 @@ static void FillDrill(DrillTypePtr Drill, pcb_element_t *Element, pcb_pin_t *Pin
 	}
 	else
 		Drill->ViaCount++;
-	if (TEST_FLAG(PCB_FLAG_HOLE, Pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin))
 		Drill->UnplatedCount++;
 }
 
@@ -90,7 +90,7 @@ static void InitializeDrill(DrillTypePtr drill, pcb_pin_t *pin, pcb_element_t *e
 	}
 	else
 		drill->ViaCount = 1;
-	if (TEST_FLAG(PCB_FLAG_HOLE, pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin))
 		drill->UnplatedCount = 1;
 }
 

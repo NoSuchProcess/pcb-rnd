@@ -220,7 +220,7 @@ pcb_polygon_t *CopyPolygonLowLevel(pcb_polygon_t *Dest, pcb_polygon_t *Src)
 	}
 	SetPolygonBoundingBox(Dest);
 	Dest->Flags = Src->Flags;
-	CLEAR_FLAG(PCB_FLAG_FOUND, Dest);
+	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, Dest);
 	return (Dest);
 }
 
@@ -243,7 +243,7 @@ void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 		layer->polygon_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 
-	CLEAR_FLAG(PCB_FLAG_FOUND | ctx->buffer.extraflg, polygon);
+	PCB_FLAG_CLEAR(PCB_FLAG_FOUND | ctx->buffer.extraflg, polygon);
 	return (polygon);
 }
 
@@ -258,7 +258,7 @@ void *MovePolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t *
 	polylist_remove(polygon);
 	polylist_append(&lay->Polygon, polygon);
 
-	CLEAR_FLAG(PCB_FLAG_FOUND, polygon);
+	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, polygon);
 
 	if (!lay->polygon_tree)
 		lay->polygon_tree = r_create_tree(NULL, 0, 0);
@@ -284,11 +284,11 @@ void *ChangePolygonClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 /* changes the CLEARPOLY flag of a polygon */
 void *ChangePolyClear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
-	if (TEST_FLAG(PCB_FLAG_LOCK, Polygon))
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon))
 		return (NULL);
 	AddObjectToClearPolyUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon, pcb_true);
 	AddObjectToFlagUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
-	TOGGLE_FLAG(PCB_FLAG_CLEARPOLY, Polygon);
+	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARPOLY, Polygon);
 	InitClip(PCB->Data, Layer, Polygon);
 	DrawPolygon(Layer, Polygon);
 	return (Polygon);
@@ -428,7 +428,7 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 	pcb_polygon_t *newone;
 	struct mptlc d;
 
-	if (TEST_FLAG(PCB_FLAG_LOCK, Polygon)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon)) {
 		pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
@@ -644,13 +644,13 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 	if (!polygon->Clipped)
 		return R_DIR_NOT_FOUND;
 
-	if (TEST_FLAG(PCB_FLAG_WARN, polygon))
+	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))
 		color = PCB->WarnColor;
-	else if (TEST_FLAG(PCB_FLAG_SELECTED, polygon))
+	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 		color = i->layer->SelectedColor;
-	else if (TEST_FLAG(PCB_FLAG_FOUND, polygon))
+	else if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon))
 		color = PCB->ConnectedColor;
-	else if (TEST_FLAG(PCB_FLAG_ONPOINT, polygon)) {
+	else if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, polygon)) {
 		assert(color != NULL);
 		pcb_lighten_color(color, buf, 1.75);
 		color = buf;
@@ -665,7 +665,7 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 		gui->fill_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
-	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !TEST_FLAG(PCB_FLAG_FULLPOLY, polygon)) {
+	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
 		pcb_polygon_t poly = *polygon;
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)

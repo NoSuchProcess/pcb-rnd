@@ -461,22 +461,22 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 				case PCB_TYPE_ELEMENT:
 					PIN_LOOP((pcb_element_t *) ptr1);
 					{
-						if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, pin))
+						if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pin))
 							ErasePinName(pin);
 						else
 							DrawPinName(pin);
 						AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, pin, pin);
-						TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, pin);
+						PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, pin);
 					}
 					END_LOOP;
 					PAD_LOOP((pcb_element_t *) ptr1);
 					{
-						if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, pad))
+						if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pad))
 							ErasePadName(pad);
 						else
 							DrawPadName(pad);
 						AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, pad, pad);
-						TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, pad);
+						PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, pad);
 					}
 					END_LOOP;
 					SetChangedFlag(pcb_true);
@@ -485,35 +485,35 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					break;
 
 				case PCB_TYPE_PIN:
-					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2))
+					if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2))
 						ErasePinName((pcb_pin_t *) ptr2);
 					else
 						DrawPinName((pcb_pin_t *) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, ptr2, ptr3);
-					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
+					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					pcb_draw();
 					break;
 
 				case PCB_TYPE_PAD:
-					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2))
+					if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2))
 						ErasePadName((pcb_pad_t *) ptr2);
 					else
 						DrawPadName((pcb_pad_t *) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, ptr2, ptr3);
-					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2);
+					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2);
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					pcb_draw();
 					break;
 				case PCB_TYPE_VIA:
-					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2))
+					if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2))
 						EraseViaName((pcb_pin_t *) ptr2);
 					else
 						DrawViaName((pcb_pin_t *) ptr2);
 					AddObjectToFlagUndoList(PCB_TYPE_VIA, ptr1, ptr2, ptr3);
-					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
+					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
 					pcb_draw();
@@ -920,7 +920,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 				if ((type = SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					AddObjectToFlagUndoList(type, ptr1, ptr2, ptr3);
 					EraseElementName((pcb_element_t *) ptr2);
-					TOGGLE_FLAG(PCB_FLAG_HIDENAME, (pcb_element_t *) ptr2);
+					PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, (pcb_element_t *) ptr2);
 					DrawElementName((pcb_element_t *) ptr2);
 					pcb_draw();
 					IncrementUndoSerialNumber();
@@ -933,11 +933,11 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 				pcb_bool changed = pcb_false;
 				ELEMENT_LOOP(PCB->Data);
 				{
-					if ((TEST_FLAG(PCB_FLAG_SELECTED, element) || TEST_FLAG(PCB_FLAG_SELECTED, &NAMEONPCB_TEXT(element)))
+					if ((PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, &NAMEONPCB_TEXT(element)))
 							&& (FRONT(element) || PCB->InvisibleObjectsOn)) {
 						AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
 						EraseElementName(element);
-						TOGGLE_FLAG(PCB_FLAG_HIDENAME, element);
+						PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, element);
 						DrawElementName(element);
 						changed = pcb_true;
 					}

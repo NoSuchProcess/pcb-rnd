@@ -612,7 +612,7 @@ static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb
 		(*rbpp)->flags.fixed = 1;
 		(*rbpp)->came_from = ALL;
 		(*rbpp)->style = style;
-		(*rbpp)->flags.circular = !TEST_FLAG(PCB_FLAG_SQUARE, pin);
+		(*rbpp)->flags.circular = !PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin);
 		/* circular lists */
 		InitLists(*rbpp);
 		/* link together */
@@ -630,7 +630,7 @@ static routebox_t *AddPad(PointerListType layergroupboxes[], pcb_element_t *elem
 {
 	pcb_coord_t halfthick;
 	routebox_t **rbpp;
-	int layergroup = (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? back : front);
+	int layergroup = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? back : front);
 	assert(0 <= layergroup && layergroup < max_group);
 	assert(PCB->LayerGroups.Number[layergroup] > 0);
 	rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[layergroup]);
@@ -750,7 +750,7 @@ static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t 
 	rb->flags.nonstraight = is_not_rectangle;
 	rb->layer = layer;
 	rb->came_from = ALL;
-	if (TEST_FLAG(PCB_FLAG_CLEARPOLY, polygon)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)) {
 		rb->flags.clear_poly = 1;
 		if (!is_not_rectangle)
 			rb->type = PLANE;
@@ -953,7 +953,7 @@ static routedata_t *CreateRouteData()
 				CONNECTION_LOOP(net);
 				{
 					routebox_t *rb = NULL;
-					SET_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) connection->ptr2);
+					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) connection->ptr2);
 					if (connection->type == PCB_TYPE_LINE) {
 						pcb_line_t *line = (pcb_line_t *) connection->ptr2;
 
@@ -1043,16 +1043,16 @@ static routedata_t *CreateRouteData()
 	/* add pins and pads of elements */
 	ALLPIN_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_DRC, pin))
-			CLEAR_FLAG(PCB_FLAG_DRC, pin);
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pin))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
 		else
 			AddPin(layergroupboxes, pin, pcb_false, rd->styles[rd->max_styles]);
 	}
 	ENDALL_LOOP;
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_DRC, pad))
-			CLEAR_FLAG(PCB_FLAG_DRC, pad);
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pad))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
 		else
 			AddPad(layergroupboxes, element, pad, rd->styles[rd->max_styles]);
 	}
@@ -1060,8 +1060,8 @@ static routedata_t *CreateRouteData()
 	/* add all vias */
 	VIA_LOOP(PCB->Data);
 	{
-		if (TEST_FLAG(PCB_FLAG_DRC, via))
-			CLEAR_FLAG(PCB_FLAG_DRC, via);
+		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via))
+			PCB_FLAG_CLEAR(PCB_FLAG_DRC, via);
 		else
 			AddPin(layergroupboxes, via, pcb_true, rd->styles[rd->max_styles]);
 	}
@@ -1072,8 +1072,8 @@ static routedata_t *CreateRouteData()
 		/* add all (non-rat) lines */
 		LINE_LOOP(LAYER_PTR(i));
 		{
-			if (TEST_FLAG(PCB_FLAG_DRC, line)) {
-				CLEAR_FLAG(PCB_FLAG_DRC, line);
+			if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)) {
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);
 				continue;
 			}
 			/* dice up non-straight lines into many tiny obstacles */
@@ -1105,8 +1105,8 @@ static routedata_t *CreateRouteData()
 		/* add all polygons */
 		POLYGON_LOOP(LAYER_PTR(i));
 		{
-			if (TEST_FLAG(PCB_FLAG_DRC, polygon))
-				CLEAR_FLAG(PCB_FLAG_DRC, polygon);
+			if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon))
+				PCB_FLAG_CLEAR(PCB_FLAG_DRC, polygon);
 			else
 				AddPolygon(layergroupboxes, i, polygon, rd->styles[rd->max_styles]);
 		}
@@ -4570,7 +4570,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 		/* count number of rats selected */
 		RAT_LOOP(PCB->Data);
 		{
-			if (!selected || TEST_FLAG(PCB_FLAG_SELECTED, line))
+			if (!selected || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 				i++;
 		}
 		END_LOOP;
@@ -4582,7 +4582,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 		/* if only one rat selected, do things the quick way. =) */
 		if (i == 1) {
 			RAT_LOOP(PCB->Data);
-			if (!selected || TEST_FLAG(PCB_FLAG_SELECTED, line)) {
+			if (!selected || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 				/* look up the end points of this rat line */
 				routebox_t *a;
 				routebox_t *b;
@@ -4638,7 +4638,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 
 		/* now merge only those subnets connected by a rat line */
 		RAT_LOOP(PCB->Data);
-		if (!selected || TEST_FLAG(PCB_FLAG_SELECTED, line)) {
+		if (!selected || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			/* look up the end points of this rat line */
 			routebox_t *a;
 			routebox_t *b;
@@ -4647,7 +4647,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 			if (!a || !b) {
 #ifdef DEBUG_STALE_RATS
 				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
-				ASSIGN_FLAG(PCB_FLAG_SELECTED, pcb_true, line);
+				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, pcb_true, line);
 				DrawRat(line, 0);
 #endif /* DEBUG_STALE_RATS */
 				pcb_message(PCB_MSG_DEFAULT, "The rats nest is stale! Aborting autoroute...\n");

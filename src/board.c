@@ -185,7 +185,7 @@ static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	HoleCountStruct *hcs = (HoleCountStruct *) cl;
-	if (TEST_FLAG(PCB_FLAG_HOLE, pin))
+	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin))
 		hcs->nunplated++;
 	else
 		hcs->nplated++;

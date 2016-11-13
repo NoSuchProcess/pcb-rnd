@@ -38,7 +38,7 @@ typedef struct {
 } map_ctx_t;
 
 #define map_chk_skip(ctx, obj) \
-	if (!TEST_FLAG(PCB_FLAG_SELECTED, obj)) return;
+	if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) return;
 
 #define type2field_String string
 #define type2field_pcb_coord_t coord
@@ -212,7 +212,7 @@ static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
 }
 
 #define set_chk_skip(ctx, obj) \
-	if (!TEST_FLAG(PCB_FLAG_SELECTED, obj)) return;
+	if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) return;
 
 #define DONE { st->set_cnt++; RestoreUndoSerialNumber(); return; }
 

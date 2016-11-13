@@ -56,7 +56,7 @@ pcb_bool ChangeHole(pcb_pin_t *Via);
 /* This is the extents of a Pin or Via, depending on whether it's a
    hole or not.  */
 #define PIN_SIZE(pinptr) \
-	(TEST_FLAG(PCB_FLAG_HOLE, (pinptr)) \
+	(PCB_FLAG_TEST(PCB_FLAG_HOLE, (pinptr)) \
 	? (pinptr)->DrillingHole \
 	: (pinptr)->Thickness)
 
