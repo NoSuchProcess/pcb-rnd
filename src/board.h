@@ -132,8 +132,8 @@ void pcb_colors_from_settings(pcb_board_t *);
    within_area. */
 void pcb_board_count_holes(int *plated, int *unplated, const pcb_box_t * within_area);
 
-#define	PCB_SWAP_X(x)		(SWAP_SIGN_X(x))
-#define	PCB_SWAP_Y(y)		(PCB->MaxHeight +SWAP_SIGN_Y(y))
+#define	PCB_SWAP_X(x)		(PCB_SWAP_SIGN_X(x))
+#define	PCB_SWAP_Y(y)		(PCB->MaxHeight +PCB_SWAP_SIGN_Y(y))
 
 const char *pcb_board_get_filename(void);
 const char *pcb_board_get_name(void);

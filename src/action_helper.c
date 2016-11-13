@@ -631,24 +631,24 @@ void pcb_notify_mode(void)
 					wx = Note.X - Crosshair.AttachedBox.Point1.X;
 					wy = Note.Y - Crosshair.AttachedBox.Point1.Y;
 					if (PCB_XOR(Crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
-						Crosshair.AttachedBox.Point2.X = Crosshair.AttachedBox.Point1.X + coord_abs(wy) * SGNZ(wx);
+						Crosshair.AttachedBox.Point2.X = Crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
 						sa = (wx >= 0) ? 0 : 180;
 #ifdef ARC45
 						if (abs(wy) / 2 >= abs(wx))
-							dir = (SGNZ(wx) == SGNZ(wy)) ? 45 : -45;
+							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 45 : -45;
 						else
 #endif
-							dir = (SGNZ(wx) == SGNZ(wy)) ? 90 : -90;
+							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
 					}
 					else {
-						Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedBox.Point1.Y + coord_abs(wx) * SGNZ(wy);
+						Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
 						sa = (wy >= 0) ? -90 : 90;
 #ifdef ARC45
 						if (abs(wx) / 2 >= abs(wy))
-							dir = (SGNZ(wx) == SGNZ(wy)) ? -45 : 45;
+							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -45 : 45;
 						else
 #endif
-							dir = (SGNZ(wx) == SGNZ(wy)) ? -90 : 90;
+							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
 						wy = wx;
 					}
 					if (coord_abs(wy) > 0 && (arc = CreateNewArcOnLayer(CURRENT,

@@ -498,10 +498,10 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 				 * side haven't been swapped yet, only their offset
 				 */
 				if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text)) {
-					newline.Point1.X = SWAP_SIGN_X(newline.Point1.X);
-					newline.Point1.Y = SWAP_SIGN_Y(newline.Point1.Y);
-					newline.Point2.X = SWAP_SIGN_X(newline.Point2.X);
-					newline.Point2.Y = SWAP_SIGN_Y(newline.Point2.Y);
+					newline.Point1.X = PCB_SWAP_SIGN_X(newline.Point1.X);
+					newline.Point1.Y = PCB_SWAP_SIGN_Y(newline.Point1.Y);
+					newline.Point2.X = PCB_SWAP_SIGN_X(newline.Point2.X);
+					newline.Point2.Y = PCB_SWAP_SIGN_Y(newline.Point2.Y);
 				}
 				/* add offset and draw line */
 				newline.Point1.X += Text->X;

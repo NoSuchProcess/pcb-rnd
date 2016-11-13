@@ -57,10 +57,10 @@
 #ifndef SGN
 #define SGN(a)			((a) >0 ? 1 : ((a) == 0 ? 0 : -1))
 #endif
-#define SGNZ(a)                 ((a) >=0 ? 1 : -1)
+#define PCB_SGNZ(a)                 ((a) >=0 ? 1 : -1)
 #define PCB_MAKE_MIN(a,b)            if ((b) < (a)) (a) = (b)
 #define PCB_MAKE_MAX(a,b)            if ((b) > (a)) (a) = (b)
 
 
-#define	SWAP_SIGN_X(x)		(x)
-#define	SWAP_SIGN_Y(y)		(-(y))
+#define	PCB_SWAP_SIGN_X(x)		(x)
+#define	PCB_SWAP_SIGN_Y(y)		(-(y))
