@@ -61,7 +61,7 @@ static pcb_opfunc_t CopyFunctions = {
  * pastes the contents of the buffer to the layout. Only visible objects
  * are handled by the routine.
  */
-pcb_bool CopyPastebufferToLayout(pcb_coord_t X, pcb_coord_t Y)
+pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_cardinal_t i;
 	pcb_bool changed = pcb_false;

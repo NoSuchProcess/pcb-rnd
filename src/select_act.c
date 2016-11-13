@@ -230,7 +230,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				RemoveSelected();
 				ConvertBufferToElement(PCB_PASTEBUFFER);
 				RestoreUndoSerialNumber();
-				CopyPastebufferToLayout(x, y);
+				pcb_buffer_copy_to_layout(x, y);
 				SetBufferNumber(Note.Buffer);
 			}
 			break;

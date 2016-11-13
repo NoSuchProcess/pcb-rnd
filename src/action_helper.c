@@ -1074,7 +1074,7 @@ void pcb_notify_mode(void)
 					}
 				}
 			}
-			if (CopyPastebufferToLayout(Note.X, Note.Y))
+			if (pcb_buffer_copy_to_layout(Note.X, Note.Y))
 				SetChangedFlag(pcb_true);
 			if (e) {
 				int type = SearchScreen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,

@@ -231,3 +231,4 @@ tempfile_name_new -> pcb_tempfile_name_new
 tempfile_unlink -> pcb_tempfile_unlink
 lrealpath -> pcb_lrealpath
 get_user_name -> pcb_get_user_name
+CopyPastebufferToLayout -> pcb_buffer_copy_to_layout

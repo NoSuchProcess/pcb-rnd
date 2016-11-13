@@ -578,7 +578,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			ny = PCB->MaxHeight - 1;
 
 		/* Place components onto center of board. */
-		if (CopyPastebufferToLayout(nx, ny))
+		if (pcb_buffer_copy_to_layout(nx, ny))
 			SetChangedFlag(pcb_true);
 	}
 
@@ -617,7 +617,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 		RemoveElement(e);
 
-		if (CopyPastebufferToLayout(mx, my))
+		if (pcb_buffer_copy_to_layout(mx, my))
 			SetChangedFlag(pcb_true);
 	}
 
@@ -802,7 +802,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					EraseObject(PCB_TYPE_ELEMENT, ptr1, ptr1);
 					MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
 					RestoreUndoSerialNumber();
-					CopyPastebufferToLayout(0, 0);
+					pcb_buffer_copy_to_layout(0, 0);
 					SetBufferNumber(Note.Buffer);
 					SetChangedFlag(pcb_true);
 				}

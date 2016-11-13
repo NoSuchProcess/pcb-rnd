@@ -781,7 +781,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 				oldx = x;
 				oldy = y;
-				if (CopyPastebufferToLayout(x, y))
+				if (pcb_buffer_copy_to_layout(x, y))
 					SetChangedFlag(pcb_true);
 			}
 			break;

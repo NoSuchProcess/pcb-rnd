@@ -39,7 +39,7 @@
 	PCB_TYPE_ELEMENT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_POLYGON | PCB_TYPE_ARC)
 
 
-pcb_bool CopyPastebufferToLayout(pcb_coord_t, pcb_coord_t);
+pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t, pcb_coord_t);
 void *CopyObject(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
 
 #endif
