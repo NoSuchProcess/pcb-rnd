@@ -306,7 +306,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 
 	if (strcasecmp(mode, "gnetlist") == 0) {
-		char *tmpfile = tempfile_name_new("gnetlist_output");
+		char *tmpfile = pcb_tempfile_name_new("gnetlist_output");
 		const char **cmd;
 		int i;
 
@@ -350,7 +350,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		ActionExecuteFile(1, cmd, 0, 0);
 
 		free(cmd);
-		tempfile_unlink(tmpfile);
+		pcb_tempfile_unlink(tmpfile);
 	}
 	else if (strcasecmp(mode, "make") == 0) {
 		int must_free_tmpfile = 0;
@@ -378,7 +378,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		if (user_outfile)
 			tmpfile = user_outfile;
 		else {
-			tmpfile = tempfile_name_new("gnetlist_output");
+			tmpfile = pcb_tempfile_name_new("gnetlist_output");
 			if (tmpfile == NULL) {
 				Message(PCB_MSG_ERROR, _("Could not create temp file"));
 				return 1;
@@ -427,7 +427,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		free((char*)cmd[3]);
 		free((char*)cmd[4]);
 		if (must_free_tmpfile)
-			tempfile_unlink(tmpfile);
+			pcb_tempfile_unlink(tmpfile);
 	}
 	else {
 		Message(PCB_MSG_DEFAULT, _("Unknown import mode: %s\n"), mode);

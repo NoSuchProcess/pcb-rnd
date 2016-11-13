@@ -56,7 +56,7 @@
  * NULL, then the current working directory is copied to the array
  * pointed to by 'path'
  */
-char *GetWorkingDirectory(char *path)
+char *pcb_get_wd(char *path)
 {
 #if defined(HAVE_GETCWD)
 	return getcwd(path, MAXPATHLEN);
@@ -138,17 +138,17 @@ int pcb_spawnvp(const char **argv)
  * the returned string is made up of the directory plus the name
  * variable.  For example:
  *
- * tempfile_name_new ("myfile") might return
+ * pcb_tempfile_name_new("myfile") might return
  * "/var/tmp/pcb.123456/myfile".
  *
  * If mkdtemp() is not available then 'name' is ignored and the
  * insecure tmpnam() function is used.
  *
- * Files/names created with tempfile_name_new() should be unlinked
+ * Files/names created with pcb_tempfile_name_new() should be unlinked
  * with tempfile_unlink to make sure the temporary directory is also
  * removed when mkdtemp() is used.
  */
-char *tempfile_name_new(const char *name)
+char *pcb_tempfile_name_new(const char *name)
 {
 	char *tmpfile = NULL;
 #ifdef HAVE_MKDTEMP
@@ -178,7 +178,7 @@ char *tempfile_name_new(const char *name)
 
 	mytmpdir = (char *) malloc(sizeof(char) * (strlen(tmpdir) + 1 + strlen(TEMPLATE) + 1));
 	if (mytmpdir == NULL) {
-		fprintf(stderr, "tempfile_name_new(): malloc failed()\n");
+		fprintf(stderr, "pcb_tempfile_name_new(): malloc failed()\n");
 		exit(1);
 	}
 
@@ -233,7 +233,7 @@ char *tempfile_name_new(const char *name)
  * lives in a temporary directory and we need to remove that directory
  * too.
  */
-int tempfile_unlink(char *name)
+int pcb_tempfile_unlink(char *name)
 {
 #ifdef DEBUG
 	/* SDB says:  Want to keep old temp files for examination when debugging */
@@ -269,8 +269,8 @@ int tempfile_unlink(char *name)
 
 	}
 	else {
-		fprintf(stderr, _("tempfile_unlink():  Unable to determine temp directory name from the temp file\n"));
-		fprintf(stderr, "tempfile_unlink():  \"%s\"\n", name);
+		fprintf(stderr, _("pcb_tempfile_unlink():  Unable to determine temp directory name from the temp file\n"));
+		fprintf(stderr, "pcb_tempfile_unlink():  \"%s\"\n", name);
 		rc2 = -1;
 	}
 

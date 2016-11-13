@@ -226,3 +226,6 @@ ChangeSelectedRadius -> pcb_chg_selected_radius
 QueryInputAndpcb_chg_obj_name -> pcb_chg_obj_name_query
 ChangePCBSize -> pcb_board_resize
 ClipLine -> pcb_line_clip
+GetWorkingDirectory -> pcb_get_wd
+tempfile_name_new -> pcb_tempfile_name_new
+tempfile_unlink -> pcb_tempfile_unlink
