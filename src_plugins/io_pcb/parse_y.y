@@ -1863,7 +1863,7 @@ net
 			/* name style pin pin ... */
 		: T_NET '(' STRING STRING ')' '('
 			{
-				Menu = CreateNewNet((pcb_lib_t *)&yyPCB->NetlistLib, $3, $4);
+				Menu = pcb_lib_net_new((pcb_lib_t *)&yyPCB->NetlistLib, $3, $4);
 				free ($3);
 				free ($4);
 			}
@@ -1898,7 +1898,7 @@ pin 7 of U14, or @code{"T4-E"} for pin E of T4.
 conn
 		: T_CONN '(' STRING ')'
 			{
-				CreateNewConnection(Menu, $3);
+				pcb_lib_conn_new(Menu, $3);
 				free ($3);
 			}
 		;

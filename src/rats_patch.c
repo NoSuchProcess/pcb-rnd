@@ -225,7 +225,7 @@ int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t * patch, int de
 				return 1;
 
 			/* Wanted to add, let's add it */
-			CreateNewConnection(menu, (char *) patch->id);
+			pcb_lib_conn_new(menu, (char *) patch->id);
 			return 0;
 		}
 	}
@@ -233,10 +233,10 @@ int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t * patch, int de
 	/* couldn't find the net: create it */
 	{
 		pcb_lib_menu_t *net = NULL;
-		net = CreateNewNet(&pcb->NetlistLib[NETLIST_EDITED], patch->arg1.net_name, NULL);
+		net = pcb_lib_net_new(&pcb->NetlistLib[NETLIST_EDITED], patch->arg1.net_name, NULL);
 		if (net == NULL)
 			return 1;
-		CreateNewConnection(net, (char *) patch->id);
+		pcb_lib_conn_new(net, (char *) patch->id);
 	}
 	return 0;
 }

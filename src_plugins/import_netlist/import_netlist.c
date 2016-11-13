@@ -124,7 +124,7 @@ static int ReadNetlist(const char *filename)
 			while (inputline[i] != '\0' && BLANK(inputline[i]))
 				i++;
 			if (kind == 0) {
-				menu = GetLibraryMenuMemory(&PCB->NetlistLib[NETLIST_INPUT], NULL);
+				menu = pcb_lib_menu_new(&PCB->NetlistLib[NETLIST_INPUT], NULL);
 				menu->Name = pcb_strdup(temp);
 				menu->flag = 1;
 				kind++;
@@ -135,7 +135,7 @@ static int ReadNetlist(const char *filename)
 					menu->Style = pcb_strdup(temp);
 				}
 				else {
-					entry = GetLibraryEntryMemory(menu);
+					entry = pcb_lib_entry_new(menu);
 					entry->ListEntry = pcb_strdup(temp);
 					entry->ListEntry_dontfree = 0;
 				}

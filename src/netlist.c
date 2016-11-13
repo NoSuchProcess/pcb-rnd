@@ -156,7 +156,7 @@ void pcb_netlist_clear(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 	if (net == 0) {
 		/* Clear the entire netlist. */
 		for (ni = 0; ni < NUM_NETLISTS; ni++)
-			FreeLibraryMemory(&(PCB->NetlistLib[ni]));
+			pcb_lib_free(&(PCB->NetlistLib[ni]));
 	}
 	else if (pin == 0) {
 		/* Remove a net from the netlist. */

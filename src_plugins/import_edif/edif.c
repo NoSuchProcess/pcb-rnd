@@ -109,8 +109,8 @@
 #include "compat_nls.h"
 
 /* from mymem.h, not include because of the malloc junk */
-pcb_lib_menu_t *GetLibraryMenuMemory(pcb_lib_t *, int *idx);
-pcb_lib_entry_t *GetLibraryEntryMemory(pcb_lib_menu_t *);
+pcb_lib_menu_t *pcb_lib_menu_new(pcb_lib_t *, int *idx);
+pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
 
 
 /*
@@ -180,7 +180,7 @@ pcb_lib_entry_t *GetLibraryEntryMemory(pcb_lib_menu_t *);
      char* buf;
      char* p;
      pcb_lib_entry_t *entry;
-     pcb_lib_menu_t *menu = GetLibraryMenuMemory(&PCB->NetlistLib[NETLIST_INPUT], NULL);
+     pcb_lib_menu_t *menu = pcb_lib_menu_new(&PCB->NetlistLib[NETLIST_INPUT], NULL);
 
      if ( !name->str1 )
      {
@@ -254,7 +254,7 @@ pcb_lib_entry_t *GetLibraryEntryMemory(pcb_lib_menu_t *);
 	 /* free the strings */
 	 free(node->str1);
 	 free(node->str2);
-	 entry = GetLibraryEntryMemory (menu);
+	 entry = pcb_lib_entry_new(menu);
 	 entry->ListEntry = pcb_strdup(buf);
 	 done_node = node;
 	 node = node->next;

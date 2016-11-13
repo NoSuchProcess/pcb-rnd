@@ -857,7 +857,7 @@ pcb_rat_t *AddNet(void)
 			pcb_message(PCB_MSG_DEFAULT, _("Both connections already in netlist - cannot merge nets\n"));
 			return (NULL);
 		}
-		entry = GetLibraryEntryMemory(menu);
+		entry = pcb_lib_entry_new(menu);
 		entry->ListEntry = pcb_strdup(name2);
 		entry->ListEntry_dontfree = 0;
 		pcb_netnode_to_netname(name2);
@@ -866,7 +866,7 @@ pcb_rat_t *AddNet(void)
 	/* ok, the first name did not belong to a net */
 	menu = pcb_netnode_to_netname(name2);
 	if (menu) {
-		entry = GetLibraryEntryMemory(menu);
+		entry = pcb_lib_entry_new(menu);
 		entry->ListEntry = pcb_strdup(name1);
 		entry->ListEntry_dontfree = 0;
 		pcb_netnode_to_netname(name1);
@@ -884,13 +884,13 @@ pcb_rat_t *AddNet(void)
 		sprintf(ratname, "  ratDrawn%i", ++ratDrawn);
 	}
 
-	menu = GetLibraryMenuMemory(&(PCB->NetlistLib[NETLIST_EDITED]), NULL);
+	menu = pcb_lib_menu_new(&(PCB->NetlistLib[NETLIST_EDITED]), NULL);
 	menu->Name = pcb_strdup(ratname);
-	entry = GetLibraryEntryMemory(menu);
+	entry = pcb_lib_entry_new(menu);
 	entry->ListEntry = pcb_strdup(name1);
 	entry->ListEntry_dontfree = 0;
 
-	entry = GetLibraryEntryMemory(menu);
+	entry = pcb_lib_entry_new(menu);
 	entry->ListEntry = pcb_strdup(name2);
 	entry->ListEntry_dontfree = 0;
 	menu->flag = 1;

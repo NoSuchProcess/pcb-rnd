@@ -52,7 +52,7 @@ void pcb_board_free(pcb_board_t * pcb)
 	for (i = 0; i <= MAX_FONTPOSITION; i++)
 		free(pcb->Font.Symbol[i].Line);
 	for (i = 0; i < NUM_NETLISTS; i++)
-		FreeLibraryMemory(&(pcb->NetlistLib[i]));
+		pcb_lib_free(&(pcb->NetlistLib[i]));
 	vtroutestyle_uninit(&pcb->RouteStyle);
 	pcb_attribute_free(&pcb->Attributes);
 	/* clear struct */

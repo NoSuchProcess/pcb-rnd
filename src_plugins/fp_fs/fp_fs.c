@@ -80,7 +80,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 	if (type == PCB_FP_DIR) {
 		list_dir_t *d;
 		/* can not recurse directly from here because that would ruin the menu
-		   pointer: GetLibraryMenuMemory (&Library) calls realloc()!
+		   pointer: pcb_lib_menu_new(&Library) calls realloc()!
 		   Build a list of directories to be visited later, instead. */
 		d = malloc(sizeof(list_dir_t));
 		d->subdir = pcb_strdup(name);
@@ -243,7 +243,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	fp_fs_list(l.menu, working, 0, list_cb, &l, is_root, 1);
 
 	/* now recurse to each subdirectory mapped in the previous call;
-	   by now we don't care if menu is ruined by the realloc() in GetLibraryMenuMemory() */
+	   by now we don't care if menu is ruined by the realloc() in pcb_lib_menu_new() */
 	for (d = l.subdirs; d != NULL; d = nextd) {
 		l.children += fp_fs_load_dir_(l.menu, d->subdir, d->parent, 0);
 		nextd = d->next;

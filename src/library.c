@@ -40,7 +40,7 @@
 /* ---------------------------------------------------------------------------
  * get next slot for a library menu, allocates memory if necessary
  */
-pcb_lib_menu_t *GetLibraryMenuMemory(pcb_lib_t *lib, int *idx)
+pcb_lib_menu_t *pcb_lib_menu_new(pcb_lib_t *lib, int *idx)
 {
 	pcb_lib_menu_t *menu = lib->Menu;
 
@@ -56,7 +56,7 @@ pcb_lib_menu_t *GetLibraryMenuMemory(pcb_lib_t *lib, int *idx)
 	return (menu + lib->MenuN++);
 }
 
-void DeleteLibraryMenuMemory(pcb_lib_t *lib, int menuidx)
+void pcb_lib_menu_free(pcb_lib_t *lib, int menuidx)
 {
 	pcb_lib_menu_t *menu = lib->Menu;
 
@@ -72,7 +72,7 @@ void DeleteLibraryMenuMemory(pcb_lib_t *lib, int menuidx)
 /* ---------------------------------------------------------------------------
  * get next slot for a library entry, allocates memory if necessary
  */
-pcb_lib_entry_t *GetLibraryEntryMemory(pcb_lib_menu_t *Menu)
+pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *Menu)
 {
 	pcb_lib_entry_t *entry = Menu->Entry;
 
@@ -90,7 +90,7 @@ pcb_lib_entry_t *GetLibraryEntryMemory(pcb_lib_menu_t *Menu)
 /* ---------------------------------------------------------------------------
  * releases the memory that's allocated by the library
  */
-void FreeLibraryMemory(pcb_lib_t *lib)
+void pcb_lib_free(pcb_lib_t *lib)
 {
 	MENU_LOOP(lib);
 	{
@@ -114,13 +114,13 @@ void FreeLibraryMemory(pcb_lib_t *lib)
 /* ---------------------------------------------------------------------------
  * Add a new net to the netlist menu
  */
-pcb_lib_menu_t *CreateNewNet(pcb_lib_t *lib, char *name, const char *style)
+pcb_lib_menu_t *pcb_lib_net_new(pcb_lib_t *lib, char *name, const char *style)
 {
 	pcb_lib_menu_t *menu;
 	char temp[64];
 
 	sprintf(temp, "  %s", name);
-	menu = GetLibraryMenuMemory(lib, NULL);
+	menu = pcb_lib_menu_new(lib, NULL);
 	menu->Name = pcb_strdup(temp);
 	menu->flag = 1;								/* net is enabled by default */
 	if (style == NULL || NSTRCMP("(unknown)", style) == 0)
@@ -133,9 +133,9 @@ pcb_lib_menu_t *CreateNewNet(pcb_lib_t *lib, char *name, const char *style)
 /* ---------------------------------------------------------------------------
  * Add a connection to the net
  */
-pcb_lib_entry_t *CreateNewConnection(pcb_lib_menu_t *net, char *conn)
+pcb_lib_entry_t *pcb_lib_conn_new(pcb_lib_menu_t *net, char *conn)
 {
-	pcb_lib_entry_t *entry = GetLibraryEntryMemory(net);
+	pcb_lib_entry_t *entry = pcb_lib_entry_new(net);
 
 	entry->ListEntry = pcb_strdup_null(conn);
 	entry->ListEntry_dontfree = 0;

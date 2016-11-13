@@ -2824,7 +2824,7 @@ yyreduce:
   case 183:
 #line 1865 "parse_y.y" /* yacc.c:1646  */
     {
-				Menu = CreateNewNet((pcb_lib_t *)&yyPCB->NetlistLib, (yyvsp[-3].string), (yyvsp[-2].string));
+				Menu = pcb_lib_net_new((pcb_lib_t *)&yyPCB->NetlistLib, (yyvsp[-3].string), (yyvsp[-2].string));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
@@ -2834,7 +2834,7 @@ yyreduce:
   case 189:
 #line 1900 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewConnection(Menu, (yyvsp[-1].string));
+				pcb_lib_conn_new(Menu, (yyvsp[-1].string));
 				free ((yyvsp[-1].string));
 			}
 #line 2841 "parse_y.c" /* yacc.c:1646  */

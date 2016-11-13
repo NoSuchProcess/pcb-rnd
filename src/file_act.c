@@ -143,7 +143,7 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		{
 			int i;
 			for (i = 0; i < NUM_NETLISTS; i++)
-				FreeLibraryMemory(&(PCB->NetlistLib[i]));
+				pcb_lib_free(&(PCB->NetlistLib[i]));
 		}
 		if (!ImportNetlist(PCB->Netlistname))
 			pcb_netlist_changed(1);

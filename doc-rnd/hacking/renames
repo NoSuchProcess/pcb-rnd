@@ -435,3 +435,9 @@ InsertPointIntoObject -> pcb_insert_point_in_object
 AdjustInsertPoint -> pcb_adjust_insert_point
 ComputeIntersectionArea -> pcb_intersect_box_box
 ComputeUnionArea -> pcb_union_box_box
+GetLibraryMenuMemory -> pcb_lib_menu_new
+GetLibraryEntryMemory -> pcb_lib_entry_new
+FreeLibraryMemory -> pcb_lib_free
+DeleteLibraryMenuMemory -> pcb_lib_menu_free
+CreateNewNet -> pcb_lib_net_new
+CreateNewConnection -> pcb_lib_conn_new

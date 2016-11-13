@@ -123,7 +123,7 @@ static int pcb_netlist_add(const char *netname, const char *pinname)
 			break;
 		}
 	if (net == NULL) {
-		net = CreateNewNet(netlist, (char *) netname, NULL);
+		net = pcb_lib_net_new(netlist, (char *) netname, NULL);
 	}
 
 	for (pi = 0; pi < net->EntryN; pi++)
@@ -132,7 +132,7 @@ static int pcb_netlist_add(const char *netname, const char *pinname)
 			break;
 		}
 	if (pin == NULL) {
-		pin = CreateNewConnection(net, (char *) pinname);
+		pin = pcb_lib_conn_new(net, (char *) pinname);
 		rats_patch_append_optimize(PCB, RATP_ADD_CONN, pin->ListEntry, net->Name + 2, NULL);
 	}
 

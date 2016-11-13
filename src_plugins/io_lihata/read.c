@@ -870,12 +870,12 @@ static int parse_netlist_input(pcb_lib_t *lib, lht_node_t *netlist)
 			style = nstyle->data.text.value;
 		}
 
-		net = CreateNewNet(lib, nnet->name, style);
+		net = pcb_lib_net_new(lib, nnet->name, style);
 		if (nconn != NULL) {
 			for(nt = nconn->data.list.first; nt != NULL; nt = nt->next) {
 				if ((nt->type != LHT_TEXT) || (*nt->data.text.value == '\0'))
 					return -1;
-				CreateNewConnection(net, nt->data.text.value);
+				pcb_lib_conn_new(net, nt->data.text.value);
 			}
 		}
 	}

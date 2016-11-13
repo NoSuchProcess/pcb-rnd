@@ -76,13 +76,13 @@ typedef struct {
 	pcb_lib_menu_t *Menu;			/* the entries */
 } pcb_lib_t;
 
-pcb_lib_menu_t *GetLibraryMenuMemory(pcb_lib_t *, int *idx);
-pcb_lib_entry_t *GetLibraryEntryMemory(pcb_lib_menu_t *);
-void FreeLibraryMemory(pcb_lib_t *);
-void DeleteLibraryMenuMemory(pcb_lib_t *lib, int menuidx);
+pcb_lib_menu_t *pcb_lib_menu_new(pcb_lib_t *, int *idx);
+pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
+void pcb_lib_free(pcb_lib_t *);
+void pcb_lib_menu_free(pcb_lib_t *lib, int menuidx);
 
-pcb_lib_menu_t *CreateNewNet(pcb_lib_t *lib, char *name, const char *style);
-pcb_lib_entry_t *CreateNewConnection(pcb_lib_menu_t *net, char *conn);
+pcb_lib_menu_t *pcb_lib_net_new(pcb_lib_t *lib, char *name, const char *style);
+pcb_lib_entry_t *pcb_lib_conn_new(pcb_lib_menu_t *net, char *conn);
 
 
 #define MENU_LOOP(top)	do {	\
