@@ -1162,7 +1162,7 @@ void pcb_notify_mode(void)
 			/* second notify, move or copy object */
 		case STATE_SECOND:
 			if (conf_core.editor.mode == PCB_MODE_COPY)
-				CopyObject(Crosshair.AttachedObject.Type,
+				pcb_copy_obj(Crosshair.AttachedObject.Type,
 									 Crosshair.AttachedObject.Ptr1,
 									 Crosshair.AttachedObject.Ptr2,
 									 Crosshair.AttachedObject.Ptr3, Note.X - Crosshair.AttachedObject.X, Note.Y - Crosshair.AttachedObject.Y);
