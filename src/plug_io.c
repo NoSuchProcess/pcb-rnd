@@ -327,7 +327,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 			Crosshair.Y = PCB_CLAMP(PCB->CursorY, 0, PCB->MaxHeight);
 
 			/* update cursor confinement and output area (scrollbars) */
-			ChangePCBSize(PCB->MaxWidth, PCB->MaxHeight);
+			pcb_board_resize(PCB->MaxWidth, PCB->MaxHeight);
 		}
 
 		/* enable default font if necessary */

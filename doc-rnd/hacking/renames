@@ -223,3 +223,5 @@ ChangeObjectRadius -> pcb_chg_obj_radius
 ChangeObjectAngle -> pcb_chg_obj_angle
 ChangeSelectedAngle -> pcb_chg_selected_angle
 ChangeSelectedRadius -> pcb_chg_selected_radius
+QueryInputAndpcb_chg_obj_name -> pcb_chg_obj_name_query
+ChangePCBSize -> pcb_board_resize

@@ -1163,7 +1163,7 @@ pcb_bool pcb_clr_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * The allocated memory isn't freed because the old string is used
  * by the undo module.
  */
-void *QueryInputAndpcb_chg_obj_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int pinnum)
+void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int pinnum)
 {
 	char *name = NULL;
 	char msg[513];
@@ -1234,7 +1234,7 @@ void *QueryInputAndpcb_chg_obj_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3
  * releases the saved pixmap if necessary
  * and adjusts the cursor confinement box
  */
-void ChangePCBSize(pcb_coord_t Width, pcb_coord_t Height)
+void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 {
 	PCB->MaxWidth = Width;
 	PCB->MaxHeight = Height;

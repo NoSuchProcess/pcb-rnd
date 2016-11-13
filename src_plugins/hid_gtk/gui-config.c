@@ -524,7 +524,7 @@ static void config_sizes_apply(void)
 	conf_set_design("design/min_ring", "%$mS", PCB->minRing);
 
 	if (PCB->MaxWidth != conf_core.design.max_width || PCB->MaxHeight != conf_core.design.max_height)
-		ChangePCBSize(conf_core.design.max_width, conf_core.design.max_height);
+		pcb_board_resize(conf_core.design.max_width, conf_core.design.max_height);
 }
 
 static void text_spin_button_cb(GtkSpinButton * spin, void *dst)

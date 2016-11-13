@@ -665,7 +665,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 						pinnum = 1;
 					else
 						pinnum = 0;
-					if (QueryInputAndpcb_chg_obj_name(type, ptr1, ptr2, ptr3, pinnum)) {
+					if (pcb_chg_obj_name_query(type, ptr1, ptr2, ptr3, pinnum)) {
 						SetChangedFlag(pcb_true);
 						if (type == PCB_TYPE_ELEMENT) {
 							pcb_rubberband_t *ptr;
