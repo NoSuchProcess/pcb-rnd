@@ -32,7 +32,7 @@ BEGIN {
 }
 
 
-/^REGISTER/ {
+/^PCB_REGISTER/ {
 	LIST[basename] = LIST[basename] $0 "\n"
 }
 
@@ -48,7 +48,7 @@ END {
 			print "if ((gui != NULL) && (strcmp(gui->name, " q hn q ") == 0)) {"
 		if (TYPE[n] == "plugdir") {
 			vname = LIST[n]
-			sub("REGISTER_ACTIONS.*[(]", "", vname)
+			sub("PCB_REGISTER_ACTIONS.*[(]", "", vname)
 			sub("[)].*[\\n\\r]*", "", vname)
 			print "extern HID_Action " vname "[];"
 		}
