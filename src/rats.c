@@ -403,7 +403,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 	for (m = 0; Netl->NetN > 0 && m < Netl->NetN; m++) {
 		a = &Netl->Net[m];
 		pcb_reset_conns(pcb_false);
-		RatFindHook(a->Connection[0].type, a->Connection[0].ptr1, a->Connection[0].ptr2, a->Connection[0].ptr2, pcb_false, AndRats);
+		pcb_rat_find_hook(a->Connection[0].type, a->Connection[0].ptr1, a->Connection[0].ptr2, a->Connection[0].ptr2, pcb_false, AndRats);
 		/* now anybody connected to the first point has PCB_FLAG_DRC set */
 		/* so move those to this subnet */
 		CLEAR_FLAG(PCB_FLAG_DRC, (pcb_pin_t *) a->Connection[0].ptr2);
@@ -665,7 +665,7 @@ AddAllRats(pcb_bool SelectedOnly,
 	changed = pcb_false;
 	/* initialize finding engine */
 	pcb_conn_lookup_init();
-	SaveFindFlag(PCB_FLAG_DRC);
+	pcb_save_find_flag(PCB_FLAG_DRC);
 	Nets = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	/* now we build another netlist (Nets) for each
 	 * net in Wantlist that shows how it actually looks now,
@@ -699,7 +699,7 @@ AddAllRats(pcb_bool SelectedOnly,
 	FreeNetListMemory(Nets);
 	free(Nets);
 	pcb_conn_lookup_uninit();
-	RestoreFindFlag();
+	pcb_restore_find_flag();
 	if (funcp)
 		return (pcb_true);
 
@@ -750,7 +750,7 @@ pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
 	}
 	/* initialize finding engine */
 	pcb_conn_lookup_init();
-	SaveFindFlag(PCB_FLAG_DRC);
+	pcb_save_find_flag(PCB_FLAG_DRC);
 	/* now we build another netlist (Nets) for each
 	 * net in Wantlist that shows how it actually looks now,
 	 * then fill in any missing connections with rat lines.
@@ -781,7 +781,7 @@ pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
 	}
 	END_LOOP;
 	pcb_conn_lookup_uninit();
-	RestoreFindFlag();
+	pcb_restore_find_flag();
 	return result;
 }
 

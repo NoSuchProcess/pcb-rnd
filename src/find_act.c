@@ -55,7 +55,7 @@ static int ActionDRCheck(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 							"min drill %$mS, min annular ring %$mS\n"),
 						conf_core.editor.grid_unit->allow, PCB->Bloat, PCB->Shrink, PCB->minWid, PCB->minSlk, PCB->minDrill, PCB->minRing);
 	}
-	count = DRCAll();
+	count = pcb_drc_all();
 	if (gui->drc_gui == NULL || gui->drc_gui->log_drc_overview) {
 		if (count == 0)
 			pcb_message(PCB_MSG_DEFAULT, _("No DRC problems found.\n"));

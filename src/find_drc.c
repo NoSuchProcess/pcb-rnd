@@ -319,7 +319,7 @@ doIsBad:
  * Check for DRC violations
  * see if the connectivity changes when everything is bloated, or shrunk
  */
-int DRCAll(void)
+int pcb_drc_all(void)
 {
 	pcb_coord_t x, y;
 	int object_count;

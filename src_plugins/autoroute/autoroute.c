@@ -4561,7 +4561,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 	}
 	if (ratlist_length(&PCB->Data->Rat) == 0)
 		return (pcb_false);
-	SaveFindFlag(PCB_FLAG_DRC);
+	pcb_save_find_flag(PCB_FLAG_DRC);
 	rd = CreateRouteData();
 
 	if (1) {
@@ -4715,7 +4715,7 @@ donerouting:
 
 		pcb_redraw();
 	}
-	RestoreFindFlag();
+	pcb_restore_find_flag();
 #if defined (ROUTE_DEBUG)
 	aabort = 0;
 #endif

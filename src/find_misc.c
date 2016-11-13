@@ -280,7 +280,7 @@ void pcb_lookup_conn_by_pin(int type, void *ptr1)
  * find connections for rats nesting
  * assumes pcb_conn_lookup_init() has already been done
  */
-void RatFindHook(int type, void *ptr1, void *ptr2, void *ptr3, pcb_bool undo, pcb_bool AndRats)
+void pcb_rat_find_hook(int type, void *ptr1, void *ptr2, void *ptr3, pcb_bool undo, pcb_bool AndRats)
 {
 	User = undo;
 	DumpList();
@@ -449,7 +449,7 @@ static void DumpList(void)
 /*----------------------------------------------------------------------------
  * set up a temporary flag to use
  */
-void SaveFindFlag(int NewFlag)
+void pcb_save_find_flag(int NewFlag)
 {
 	OldFlag = TheFlag;
 	TheFlag = NewFlag;
@@ -458,7 +458,7 @@ void SaveFindFlag(int NewFlag)
 /*----------------------------------------------------------------------------
  * restore flag
  */
-void RestoreFindFlag(void)
+void pcb_restore_find_flag(void)
 {
 	TheFlag = OldFlag;
 }

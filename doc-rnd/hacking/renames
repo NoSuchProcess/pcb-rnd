@@ -290,3 +290,7 @@ InitLayoutLookup -> pcb_layout_lookup_init
 FreeConnectionLookupMemory -> pcb_conn_lookup_uninit
 FreeComponentLookupMemory -> pcb_component_lookup_uninit
 FreeLayoutLookupMemory -> pcb_layout_lookup_uninit
+RatFindHook -> pcb_rat_find_hook
+SaveFindFlag -> pcb_save_find_flag
+RestoreFindFlag -> pcb_restore_find_flag
+DRCAll -> pcb_drc_all

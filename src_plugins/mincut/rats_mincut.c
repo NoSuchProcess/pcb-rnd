@@ -146,7 +146,7 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 	/* perform a search using PCB_FLAG_MINCUT, calling back proc_short_cb() with the connections */
 	old_cb = find_callback;
 	find_callback = proc_short_cb;
-	SaveFindFlag(PCB_FLAG_MINCUT);
+	pcb_save_find_flag(PCB_FLAG_MINCUT);
 	pcb_lookup_conn(x, y, pcb_false, 1, PCB_FLAG_MINCUT);
 
 	debprintf("- alloced for %d\n", (short_conns_maxid + 1));
@@ -329,7 +329,7 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 
 	pcb_reset_found_lines_polys(pcb_false);
 	pcb_reset_found_pins_vias_pads(pcb_false);
-	RestoreFindFlag();
+	pcb_restore_find_flag();
 
 	find_callback = old_cb;
 	return bad_gr;
