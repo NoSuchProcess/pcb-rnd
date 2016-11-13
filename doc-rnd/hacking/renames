@@ -263,3 +263,10 @@ OpendirErrorpcb_message -> pcb_opendir_error_message
 ChdirErrorpcb_message -> ocb_chdir_error_message
 OpenErrorpcb_message -> pcb_open_error_message
 CatchSignal -> pcb_catch_signal
+events_init -> pcb_events_init
+events_uninit -> pcb_events_uninit
+event_bind -> pcb_event_bind
+event_unbind -> pcb_event_unbind
+event_unbind_cookie -> pcb_event_unbind_cookie
+event_unbind_allcookie -> pcb_event_unbind_allcookie
+event -> pcb_event

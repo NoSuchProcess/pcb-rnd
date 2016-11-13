@@ -1500,7 +1500,7 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 
 	ghid_notify_gui_is_up();
 
-	event(EVENT_GUI_INIT, NULL);
+	pcb_event(EVENT_GUI_INIT, NULL);
 
 	gtk_main();
 	hid_cfg_keys_uninit(&ghid_keymap);

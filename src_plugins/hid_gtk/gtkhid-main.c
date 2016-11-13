@@ -2008,7 +2008,7 @@ static void ghid_conf_regs()
 
 void hid_hid_gtk_uninit()
 {
-	event_unbind_allcookie(ghid_cookie);
+	pcb_event_unbind_allcookie(ghid_cookie);
 	conf_hid_unreg(ghid_cookie);
 	conf_hid_unreg(ghid_menu_cookie);
 }
@@ -2130,8 +2130,8 @@ pcb_uninit_t hid_hid_gtk_init()
 	conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
 #include "hid_gtk_conf_fields.h"
 
-	event_bind(EVENT_SAVE_PRE, ghid_conf_save_pre_wgeo, NULL, ghid_cookie);
-	event_bind(EVENT_LOAD_POST, ghid_conf_load_post_wgeo, NULL, ghid_cookie);
+	pcb_event_bind(EVENT_SAVE_PRE, ghid_conf_save_pre_wgeo, NULL, ghid_cookie);
+	pcb_event_bind(EVENT_LOAD_POST, ghid_conf_load_post_wgeo, NULL, ghid_cookie);
 
 	return hid_hid_gtk_uninit;
 }

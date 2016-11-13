@@ -108,7 +108,7 @@ int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_s
 	int res = -1;
 
 	if (load_settings)
-		event(EVENT_LOAD_PRE, "s", Filename);
+		pcb_event(EVENT_LOAD_PRE, "s", Filename);
 
 	Ptr->Data->loader = NULL;
 
@@ -137,7 +137,7 @@ int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_s
 		conf_load_project(NULL, Filename);
 
 	if (load_settings)
-		event(EVENT_LOAD_POST, "si", Filename, res);
+		pcb_event(EVENT_LOAD_POST, "si", Filename, res);
 
 	plug_io_err(res, "load pcb", Filename);
 	return res;
@@ -265,9 +265,9 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 	}
 
 	if (p != NULL) {
-		event(EVENT_SAVE_PRE, "s", fmt);
+		pcb_event(EVENT_SAVE_PRE, "s", fmt);
 		res = p->write_pcb(p, f, old_filename, new_filename, emergency);
-		event(EVENT_SAVE_POST, "si", fmt, res);
+		pcb_event(EVENT_SAVE_POST, "si", fmt, res);
 	}
 
 	if ((res == 0) && (newfmt))

@@ -230,7 +230,7 @@ void pcb_main_uninit(void)
 
 	plugins_uninit();
 	hid_uninit();
-	events_uninit();
+	pcb_events_uninit();
 
 	uninit_strflags_buf();
 	uninit_strflags_layerlist();
@@ -379,7 +379,7 @@ int main(int argc, char *argv[])
 	 */
 	atexit(EmergencySave);
 
-	events_init();
+	pcb_events_init();
 
 	buildin_init();
 	hid_init();

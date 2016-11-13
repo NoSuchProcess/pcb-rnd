@@ -31,7 +31,7 @@
 typedef struct event_s event_t;
 
 struct event_s {
-	event_handler_t *handler;
+	pcb_event_handler_t *handler;
 	void *user_data;
 	const char *cookie;
 	event_t *next;
@@ -41,7 +41,7 @@ event_t *events[EVENT_last];
 
 #define event_valid(ev) (((ev) >= 0) && ((ev) < EVENT_last))
 
-void event_bind(pcb_event_id_t ev, event_handler_t * handler, void *user_data, const char *cookie)
+void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t * handler, void *user_data, const char *cookie)
 {
 	event_t *e;
 
@@ -63,7 +63,7 @@ static void event_destroy(event_t * ev)
 	free(ev);
 }
 
-void event_unbind(pcb_event_id_t ev, event_handler_t * handler)
+void pcb_event_unbind(pcb_event_id_t ev, pcb_event_handler_t * handler)
 {
 	event_t *prev = NULL, *e, *next;
 	if (!(event_valid(ev)))
@@ -82,7 +82,7 @@ void event_unbind(pcb_event_id_t ev, event_handler_t * handler)
 	}
 }
 
-void event_unbind_cookie(pcb_event_id_t ev, const char *cookie)
+void pcb_event_unbind_cookie(pcb_event_id_t ev, const char *cookie)
 {
 	event_t *prev = NULL, *e, *next;
 	if (!(event_valid(ev)))
@@ -102,14 +102,14 @@ void event_unbind_cookie(pcb_event_id_t ev, const char *cookie)
 }
 
 
-void event_unbind_allcookie(const char *cookie)
+void pcb_event_unbind_allcookie(const char *cookie)
 {
 	pcb_event_id_t n;
 	for (n = 0; n < EVENT_last; n++)
-		event_unbind_cookie(n, cookie);
+		pcb_event_unbind_cookie(n, cookie);
 }
 
-void event(pcb_event_id_t ev, const char *fmt, ...)
+void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
 {
 	va_list ap;
 	pcb_event_arg_t argv[EVENT_MAX_ARG], *a;
@@ -125,7 +125,7 @@ void event(pcb_event_id_t ev, const char *fmt, ...)
 		va_start(ap, fmt);
 		for (a++; *fmt != '\0'; fmt++, a++, argc++) {
 			if (argc >= EVENT_MAX_ARG) {
-				pcb_message(PCB_MSG_DEFAULT, "event(): too many arguments\n");
+				pcb_message(PCB_MSG_DEFAULT, "pcb_event(): too many arguments\n");
 				break;
 			}
 			switch (*fmt) {
@@ -144,7 +144,7 @@ void event(pcb_event_id_t ev, const char *fmt, ...)
 			default:
 				a->type = ARG_INT;
 				a->d.i = 0;
-				pcb_message(PCB_MSG_DEFAULT, "event(): invalid argument type '%c'\n", *fmt);
+				pcb_message(PCB_MSG_DEFAULT, "pcb_event(): invalid argument type '%c'\n", *fmt);
 				break;
 			}
 		}
@@ -155,12 +155,12 @@ void event(pcb_event_id_t ev, const char *fmt, ...)
 		e->handler(e->user_data, argc, (pcb_event_arg_t **) & argv);
 }
 
-void events_init(void)
+void pcb_events_init(void)
 {
 
 }
 
-void events_uninit(void)
+void pcb_events_uninit(void)
 {
 	int ev;
 	for(ev = 0; ev < EVENT_last; ev++) {

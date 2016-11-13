@@ -54,30 +54,30 @@ typedef struct {
 } pcb_event_arg_t;
 
 /* Initialize the event system */
-void events_init(void);
+void pcb_events_init(void);
 
 /* Uninitialize the event system and remove all events */
-void events_uninit(void);
+void pcb_events_uninit(void);
 
 
-/* Event callback prototype; user_data is the same as in event_bind().
+/* Event callback prototype; user_data is the same as in pcb_event_bind().
    argv[0] is always an ARG_INT with the event id that triggered the event. */
-typedef void (event_handler_t) (void *user_data, int argc, pcb_event_arg_t * argv[]);
+typedef void (pcb_event_handler_t) (void *user_data, int argc, pcb_event_arg_t * argv[]);
 
 /* Bind: add a handler to the call-list of an event; the cookie is also remembered
    so that mass-unbind is easier later. user_data is passed to the handler. */
-void event_bind(pcb_event_id_t ev, event_handler_t * handler, void *user_data, const char *cookie);
+void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t * handler, void *user_data, const char *cookie);
 
 /* Unbind: remove a handler from an event */
-void event_unbind(pcb_event_id_t ev, event_handler_t * handler);
+void pcb_event_unbind(pcb_event_id_t ev, pcb_event_handler_t * handler);
 
 /* Unbind by cookie: remove all handlers from an event matching the cookie */
-void event_unbind_cookie(pcb_event_id_t ev, const char *cookie);
+void pcb_event_unbind_cookie(pcb_event_id_t ev, const char *cookie);
 
 /* Unbind all by cookie: remove all handlers from all events matching the cookie */
-void event_unbind_allcookie(const char *cookie);
+void pcb_event_unbind_allcookie(const char *cookie);
 
 /* Event trigger: call all handlers for an event. Fmt is a list of
    format characters (e.g. i for ARG_INT). */
-void event(pcb_event_id_t ev, const char *fmt, ...);
+void pcb_event(pcb_event_id_t ev, const char *fmt, ...);
 #endif
