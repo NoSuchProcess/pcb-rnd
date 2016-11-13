@@ -308,7 +308,7 @@ PCB_REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
 
 static void hid_oldactions_uninit(void)
 {
-	hid_remove_actions_by_cookie(oldactions_cookie);
+	pcb_hid_remove_actions_by_cookie(oldactions_cookie);
 }
 
 #include "dolists.h"

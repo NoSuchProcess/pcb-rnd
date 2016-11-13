@@ -273,7 +273,7 @@ PCB_REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie)
 
 static void hid_smartdisperse_uninit(void)
 {
-	hid_remove_actions_by_cookie(smartdisperse_cookie);
+	pcb_hid_remove_actions_by_cookie(smartdisperse_cookie);
 }
 
 #include "dolists.h"

@@ -55,7 +55,7 @@ static int action_cb(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 static void cleanup_action(gpmi_module *mod, gpmi_cleanup *cl)
 {
 	acontext_t *ctx = cl->argv[0].p;
-	hid_remove_action(&ctx->action);
+	pcb_hid_remove_action(&ctx->action);
 	free((char *)ctx->action.name);
 	if (ctx->action.need_coord_msg != NULL)
 		free((char *)ctx->action.need_coord_msg);

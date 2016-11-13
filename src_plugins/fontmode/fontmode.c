@@ -233,7 +233,7 @@ PCB_REGISTER_ACTIONS(fontmode_action_list, fontmode_cookie)
 
 static void hid_fontmode_uninit(void)
 {
-	hid_remove_actions_by_cookie(fontmode_cookie);
+	pcb_hid_remove_actions_by_cookie(fontmode_cookie);
 }
 
 #include "dolists.h"

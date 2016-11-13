@@ -364,3 +364,9 @@ hid_expose_callback -> pcb_hid_expose_callback
 hid_actions_init -> pcb_hid_actions_init
 hid_actions_uninit -> pcb_hid_actions_uninit
 REGISTER_ATTRIBUTES -> PCB_REGISTER_ATTRIBUTES
+print_actions -> pcb_print_actions
+dump_actions -> pcb_dump_actions
+hid_find_action -> pcb_hid_find_action
+hid_remove_actions -> pcb_hid_remove_actions
+hid_remove_action -> pcb_hid_remove_action
+hid_remove_actions_by_cookie -> pcb_hid_remove_actions_by_cookie

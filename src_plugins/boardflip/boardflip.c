@@ -172,7 +172,7 @@ PCB_REGISTER_ACTIONS(boardflip_action_list, boardflip_cookie)
 
 static void hid_boardflip_uninit(void)
 {
-	hid_remove_actions_by_cookie(boardflip_cookie);
+	pcb_hid_remove_actions_by_cookie(boardflip_cookie);
 }
 
 #include "dolists.h"

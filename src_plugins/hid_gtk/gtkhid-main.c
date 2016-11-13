@@ -2150,7 +2150,7 @@ void gtkhid_begin(void)
 
 void gtkhid_end(void)
 {
-	hid_remove_actions_by_cookie(ghid_cookie);
+	pcb_hid_remove_actions_by_cookie(ghid_cookie);
 	hid_remove_attributes_by_cookie(ghid_cookie);
 	gtkhid_active = 0;
 }

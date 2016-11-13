@@ -83,7 +83,7 @@ PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
 
 static void hid_propedit_uninit(void)
 {
-	hid_remove_actions_by_cookie(propedit_cookie);
+	pcb_hid_remove_actions_by_cookie(propedit_cookie);
 }
 
 #include "dolists.h"

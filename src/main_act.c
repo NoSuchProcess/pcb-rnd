@@ -42,7 +42,7 @@ static const char printactions_help[] = "Print all actions available.";
 
 int ActionPrintActions(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	print_actions();
+	pcb_print_actions();
 	return 0;
 }
 /* --------------------------------------------------------------------------- */
@@ -53,7 +53,7 @@ static const char dumpactions_help[] = "Dump all actions available.";
 
 int ActionDumpActions(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	dump_actions();
+	pcb_dump_actions();
 	return 0;
 }
 

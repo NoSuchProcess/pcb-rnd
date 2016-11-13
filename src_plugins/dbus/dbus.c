@@ -377,7 +377,7 @@ static void hid_dbus_uninit(void)
 {
 	pcb_dbus_finish();
 	pcb_event_unbind_allcookie(dbus_cookie);
-/*	hid_remove_actions_by_cookie(dbus_cookie);*/
+/*	pcb_hid_remove_actions_by_cookie(dbus_cookie);*/
 }
 
 #include "dolists.h"

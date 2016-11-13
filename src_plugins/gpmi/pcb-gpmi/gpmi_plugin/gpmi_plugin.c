@@ -213,7 +213,7 @@ static void load_base_and_cfg(void)
 static void plugin_gpmi_uninit(void)
 {
 	pcb_event_unbind_allcookie(gpmi_cookie);
-	hid_remove_actions_by_cookie(gpmi_cookie);
+	pcb_hid_remove_actions_by_cookie(gpmi_cookie);
 	hid_gpmi_script_info_uninit();
 	gpmi_pkg_unload(pkg_scripts);
 	gpmi_uninit();

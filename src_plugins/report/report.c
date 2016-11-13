@@ -905,7 +905,7 @@ PCB_REGISTER_ACTIONS(report_action_list, report_cookie)
 
 static void hid_report_uninit(void)
 {
-	hid_remove_actions_by_cookie(report_cookie);
+	pcb_hid_remove_actions_by_cookie(report_cookie);
 }
 
 #include "dolists.h"

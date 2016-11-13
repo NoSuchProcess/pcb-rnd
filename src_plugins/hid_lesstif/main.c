@@ -3848,6 +3848,6 @@ static void lesstif_begin(void)
 
 static void lesstif_end(void)
 {
-	hid_remove_actions_by_cookie(lesstif_cookie);
+	pcb_hid_remove_actions_by_cookie(lesstif_cookie);
 	hid_remove_attributes_by_cookie(lesstif_cookie);
 }

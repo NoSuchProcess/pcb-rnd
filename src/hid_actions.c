@@ -73,7 +73,7 @@ void pcb_hid_register_action(const pcb_hid_action_t * a, const char *cookie, int
 	pcb_hid_register_actions(a, 1, cookie, copy);
 }
 
-void hid_remove_actions(const pcb_hid_action_t * a, int n)
+void pcb_hid_remove_actions(const pcb_hid_action_t * a, int n)
 {
 	int i;
 
@@ -88,7 +88,7 @@ void hid_remove_actions(const pcb_hid_action_t * a, int n)
 	}
 }
 
-void hid_remove_actions_by_cookie(const char *cookie)
+void pcb_hid_remove_actions_by_cookie(const char *cookie)
 {
 	htsp_entry_t *e;
 
@@ -106,7 +106,7 @@ void hid_remove_actions_by_cookie(const char *cookie)
 	}
 }
 
-void hid_remove_action(const pcb_hid_action_t * a)
+void pcb_hid_remove_action(const pcb_hid_action_t * a)
 {
 	htsp_entry_t *e;
 
@@ -120,7 +120,7 @@ void hid_remove_action(const pcb_hid_action_t * a)
 	}
 }
 
-const pcb_hid_action_t *hid_find_action(const char *name)
+const pcb_hid_action_t *pcb_hid_find_action(const char *name)
 {
 	hid_cookie_action_t *ca;
 
@@ -137,7 +137,7 @@ const pcb_hid_action_t *hid_find_action(const char *name)
 	return 0;
 }
 
-void print_actions()
+void pcb_print_actions()
 {
 	htsp_entry_t *e;
 
@@ -181,7 +181,7 @@ static void dump_string(char prefix, const char *str)
 		putchar('\n');
 }
 
-void dump_actions(void)
+void pcb_dump_actions(void)
 {
 	htsp_entry_t *e;
 
@@ -250,7 +250,7 @@ int hid_actionv(const char *name, int argc, const char **argv)
 	if (!name)
 		return 1;
 
-	a = hid_find_action(name);
+	a = pcb_hid_find_action(name);
 	if (!a) {
 		int i;
 		if (action_legal_unknown(name))

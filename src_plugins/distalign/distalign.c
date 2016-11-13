@@ -629,7 +629,7 @@ PCB_REGISTER_ACTIONS(distalign_action_list, distalign_cookie)
 
 static void hid_distalign_uninit(void)
 {
-	hid_remove_actions_by_cookie(distalign_cookie);
+	pcb_hid_remove_actions_by_cookie(distalign_cookie);
 }
 
 #include "dolists.h"

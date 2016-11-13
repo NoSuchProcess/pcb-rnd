@@ -91,7 +91,7 @@ PCB_REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
 
 static void hid_autoroute_uninit(void)
 {
-	hid_remove_actions_by_cookie(autoroute_cookie);
+	pcb_hid_remove_actions_by_cookie(autoroute_cookie);
 }
 
 #include "dolists.h"

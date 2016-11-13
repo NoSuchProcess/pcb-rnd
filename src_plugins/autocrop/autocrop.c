@@ -236,7 +236,7 @@ PCB_REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie)
 
 static void hid_autocrop_uninit(void)
 {
-	hid_remove_actions_by_cookie(autocrop_cookie);
+	pcb_hid_remove_actions_by_cookie(autocrop_cookie);
 }
 
 #include "dolists.h"

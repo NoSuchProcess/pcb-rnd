@@ -39,7 +39,7 @@ int hid_get_flag(const char *name)
 			}
 			memcpy(buff, name, len);
 			buff[len] = '\0';
-			a = hid_find_action(buff);
+			a = pcb_hid_find_action(buff);
 			if (!a) {
 				pcb_message(PCB_MSG_DEFAULT, "hid_get_flag: no action %s\n", name);
 				return -1;

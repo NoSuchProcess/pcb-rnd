@@ -280,7 +280,7 @@ static const char *query_cookie = "query plugin";
 
 static void hid_query_uninit(void)
 {
-	hid_remove_actions_by_cookie(query_cookie);
+	pcb_hid_remove_actions_by_cookie(query_cookie);
 }
 
 void pcb_qry_basic_fnc_init(void);

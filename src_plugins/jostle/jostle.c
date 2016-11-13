@@ -551,7 +551,7 @@ PCB_REGISTER_ACTIONS(jostle_action_list, jostle_cookie)
 
 static void hid_jostle_uninit(void)
 {
-	hid_remove_actions_by_cookie(jostle_cookie);
+	pcb_hid_remove_actions_by_cookie(jostle_cookie);
 }
 
 #include "dolists.h"

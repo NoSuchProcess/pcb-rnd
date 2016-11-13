@@ -47,7 +47,7 @@ static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 static int help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	print_actions();
+	pcb_print_actions();
 	return 0;
 }
 
@@ -370,7 +370,7 @@ static void remote_propedit_add_stat(void *pe, const char *propname, void *propc
 
 static void hid_hid_remote_uninit()
 {
-	hid_remove_actions_by_cookie(remote_cookie);
+	pcb_hid_remove_actions_by_cookie(remote_cookie);
 }
 
 pcb_uninit_t hid_hid_remote_init()

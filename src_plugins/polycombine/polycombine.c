@@ -350,7 +350,7 @@ PCB_REGISTER_ACTIONS(polycombine_action_list, polycombine_cookie)
 
 static void hid_polycombine_uninit(void)
 {
-	hid_remove_actions_by_cookie(polycombine_cookie);
+	pcb_hid_remove_actions_by_cookie(polycombine_cookie);
 }
 
 #include "dolists.h"

@@ -626,7 +626,7 @@ PCB_REGISTER_ACTIONS(distaligntext_action_list, distaligntext_cookie)
 
 static void hid_distaligntext_uninit(void)
 {
-	hid_remove_actions_by_cookie(distaligntext_cookie);
+	pcb_hid_remove_actions_by_cookie(distaligntext_cookie);
 }
 
 #include "dolists.h"

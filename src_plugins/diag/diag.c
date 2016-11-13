@@ -193,7 +193,7 @@ PCB_REGISTER_ACTIONS(diag_action_list, diag_cookie)
 
 static void hid_diag_uninit(void)
 {
-	hid_remove_actions_by_cookie(diag_cookie);
+	pcb_hid_remove_actions_by_cookie(diag_cookie);
 }
 
 #include "dolists.h"

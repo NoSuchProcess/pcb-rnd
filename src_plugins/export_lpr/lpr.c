@@ -120,7 +120,7 @@ static int lpr_usage(const char *topic)
 
 static void plugin_lpr_uninit(void)
 {
-	hid_remove_actions_by_cookie(lpr_cookie);
+	pcb_hid_remove_actions_by_cookie(lpr_cookie);
 }
 
 pcb_uninit_t hid_export_lpr_init()

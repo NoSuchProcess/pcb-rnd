@@ -2686,7 +2686,7 @@ PCB_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 
 static void hid_djopt_uninit(void)
 {
-	hid_remove_actions_by_cookie(djopt_cookie);
+	pcb_hid_remove_actions_by_cookie(djopt_cookie);
 	conf_unreg_fields("plugins/djopt/");
 }
 

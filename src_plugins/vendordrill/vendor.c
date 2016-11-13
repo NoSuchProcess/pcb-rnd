@@ -681,7 +681,7 @@ static void vendor_free_all(void)
 
 static void hid_vendordrill_uninit(void)
 {
-	hid_remove_actions_by_cookie(vendor_cookie);
+	pcb_hid_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
 	conf_unreg_fields("plugins/vendor/");
 }

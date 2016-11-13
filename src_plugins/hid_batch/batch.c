@@ -41,7 +41,7 @@ static char *prompt = NULL;
 
 static void hid_batch_uninit(void)
 {
-	hid_remove_actions_by_cookie(batch_cookie);
+	pcb_hid_remove_actions_by_cookie(batch_cookie);
 	if (prompt != NULL)
 		free(prompt);
 }
@@ -71,7 +71,7 @@ static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 static int help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	print_actions();
+	pcb_print_actions();
 	return 0;
 }
 
@@ -405,5 +405,5 @@ static void batch_begin(void)
 
 static void batch_end(void)
 {
-	hid_remove_actions_by_cookie(batch_cookie);
+	pcb_hid_remove_actions_by_cookie(batch_cookie);
 }

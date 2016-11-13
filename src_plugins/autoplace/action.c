@@ -65,7 +65,7 @@ PCB_REGISTER_ACTIONS(autoplace_action_list, autoplace_cookie)
 
 static void hid_autoplace_uninit(void)
 {
-	hid_remove_actions_by_cookie(autoplace_cookie);
+	pcb_hid_remove_actions_by_cookie(autoplace_cookie);
 }
 
 #include "dolists.h"

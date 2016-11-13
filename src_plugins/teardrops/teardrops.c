@@ -318,7 +318,7 @@ PCB_REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie)
 
 static void hid_teardrops_uninit(void)
 {
-	hid_remove_actions_by_cookie(teardrops_cookie);
+	pcb_hid_remove_actions_by_cookie(teardrops_cookie);
 }
 
 #include "dolists.h"

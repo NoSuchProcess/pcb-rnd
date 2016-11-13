@@ -2393,7 +2393,7 @@ PCB_REGISTER_ACTIONS(puller_action_list, puller_cookie)
 
 static void hid_puller_uninit(void)
 {
-	hid_remove_actions_by_cookie(puller_cookie);
+	pcb_hid_remove_actions_by_cookie(puller_cookie);
 }
 
 #include "dolists.h"

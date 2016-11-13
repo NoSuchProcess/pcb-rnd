@@ -4,18 +4,18 @@
 #include "hid.h"
 
 /* These are called from main_act.c */
-void print_actions(void);
-void dump_actions(void);
+void pcb_print_actions(void);
+void pcb_dump_actions(void);
 
 
 /* HID internal interfaces.  These may ONLY be called from the HID
    modules, not from the common PCB code.  */
 
-const pcb_hid_action_t *hid_find_action(const char *name);
+const pcb_hid_action_t *pcb_hid_find_action(const char *name);
 
-extern void hid_remove_actions(const pcb_hid_action_t * a, int n);
-extern void hid_remove_action(const pcb_hid_action_t * a);
-extern void hid_remove_actions_by_cookie(const char *cookie);
+extern void pcb_hid_remove_actions(const pcb_hid_action_t * a, int n);
+extern void pcb_hid_remove_action(const pcb_hid_action_t * a);
+extern void pcb_hid_remove_actions_by_cookie(const char *cookie);
 
 int hid_action(const char *action_);
 int hid_actionl(const char *action_, ...);	/* NULL terminated */

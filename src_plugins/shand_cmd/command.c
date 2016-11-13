@@ -403,7 +403,7 @@ PCB_REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
 
 static void hid_shand_cmd_uninit(void)
 {
-	hid_remove_actions_by_cookie(shand_cmd_cookie);
+	pcb_hid_remove_actions_by_cookie(shand_cmd_cookie);
 }
 
 #include "dolists.h"
