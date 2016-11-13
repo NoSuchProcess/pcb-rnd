@@ -119,7 +119,7 @@ typedef enum {
 	PCB_CHGFLG_TOGGLE
 } pcb_change_flag_t;
 
-#define CHANGE_FLAG(how, F, P) \
+#define PCB_FLAG_CHANGE(how, F, P) \
 do { \
 	switch(how) { \
 		case PCB_CHGFLG_CLEAR:  PCB_FLAG_CLEAR(F, P); break; \
@@ -128,24 +128,24 @@ do { \
 	} \
 } while(0)
 
-#define FLAGS_EQUAL(F1,F2)	(memcmp (&F1, &F2, sizeof(pcb_flag_t)) == 0)
+#define PCB_FLAG_EQ(F1,F2)	(memcmp (&F1, &F2, sizeof(pcb_flag_t)) == 0)
 
-#define THERMFLAG(L)		(0xf << (4 *((L) % 2)))
+#define PCB_FLAG_THERM(L)		(0xf << (4 *((L) % 2)))
 
-#define TEST_THERM(L,P)		((P)->Flags.t[(L)/2] & THERMFLAG(L) ? 1 : 0)
-#define GET_THERM(L,P)		(((P)->Flags.t[(L)/2] >> (4 * ((L) % 2))) & 0xf)
-#define CLEAR_THERM(L,P)	(P)->Flags.t[(L)/2] &= ~THERMFLAG(L)
-#define ASSIGN_THERM(L,V,P)	(P)->Flags.t[(L)/2] = ((P)->Flags.t[(L)/2] & ~THERMFLAG(L)) | ((V)  << (4 * ((L) % 2)))
-
-
-#define GET_SQUARE(P)		((P)->Flags.q)
-#define CLEAR_SQUARE(P)		(P)->Flags.q = 0
-#define ASSIGN_SQUARE(V,P)	(P)->Flags.q = V
+#define PCB_FLAG_THERM_TEST(L,P)		((P)->Flags.t[(L)/2] & PCB_FLAG_THERM(L) ? 1 : 0)
+#define PCB_FLAG_THERM_GET(L,P)		(((P)->Flags.t[(L)/2] >> (4 * ((L) % 2))) & 0xf)
+#define PCB_FLAG_THERM_CLEAR(L,P)	(P)->Flags.t[(L)/2] &= ~PCB_FLAG_THERM(L)
+#define PCB_FLAG_THERM_ASSIGN(L,V,P)	(P)->Flags.t[(L)/2] = ((P)->Flags.t[(L)/2] & ~PCB_FLAG_THERM(L)) | ((V)  << (4 * ((L) % 2)))
 
 
-#define GET_INTCONN(P)		((P)->Flags.int_conn_grp)
+#define PCB_FLAG_SQUARE_GET(P)		((P)->Flags.q)
+#define PCB_FLAG_SQUARE_CLEAR(P)		(P)->Flags.q = 0
+#define PCB_FLAG_SQUARE_ASSIGN(V,P)	(P)->Flags.q = V
+
+
+#define PCB_FLAG_INTCONN_GET(P)		((P)->Flags.int_conn_grp)
 
 extern int pcb_mem_any_set(unsigned char *, int);
-#define TEST_ANY_THERMS(P)	pcb_mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
+#define PCB_FLAG_THERM_TEST_ANY(P)	pcb_mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
 
 #endif

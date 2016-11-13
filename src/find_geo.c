@@ -629,8 +629,8 @@ static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 	pcb_box_t b1, b2;
 	int shape1, shape2;
 
-	shape1 = GET_SQUARE(PV1);
-	shape2 = GET_SQUARE(PV2);
+	shape1 = PCB_FLAG_SQUARE_GET(PV1);
+	shape2 = PCB_FLAG_SQUARE_GET(PV2);
 
 	if ((shape1 > 1) || (shape2 > 1)) {
 		pcb_polyarea_t *pl1, *pl2;
@@ -668,7 +668,7 @@ static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV)) {
-		int shape = GET_SQUARE(PV);
+		int shape = PCB_FLAG_SQUARE_GET(PV);
 		if (shape <= 1) {
 			/* the original square case */
 			/* IsLineInRectangle already has Bloat factor */

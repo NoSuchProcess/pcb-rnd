@@ -309,8 +309,8 @@ static void draw_pad_name(pcb_pad_t * pad)
 	else
 		pn = conf_core.editor.show_number ? pad->Number : pad->Name;
 
-	if (GET_INTCONN(pad) > 0)
-		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pad));
+	if (PCB_FLAG_INTCONN_GET(pad) > 0)
+		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, PCB_FLAG_INTCONN_GET(pad));
 	else
 		strcpy(buff, pn);
 	text.TextString = buff;

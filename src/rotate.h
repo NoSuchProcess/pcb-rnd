@@ -58,7 +58,7 @@ do { \
 	int _n_; \
 	for(_n_ = n_in;_n_>0;_n_--) { \
 		int _old_, _nw_ = 0; \
-		_old_ = GET_SQUARE(p); \
+		_old_ = PCB_FLAG_SQUARE_GET(p); \
 		if ((_old_ > 1) && (_old_ < 17)) { \
 			_old_--; \
 			if (_old_ & 1) \
@@ -69,7 +69,7 @@ do { \
 				_nw_ |= 4; \
 			if (_old_ & 4) \
 				_nw_ |= 1; \
-			GET_SQUARE(p) = _nw_+1; \
+			PCB_FLAG_SQUARE_GET(p) = _nw_+1; \
 		} \
 	} \
 } while(0)

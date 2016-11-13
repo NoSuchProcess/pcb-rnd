@@ -361,7 +361,7 @@ void common_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, 
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv)) {
 		/* use the original code for now */
-		if ((GET_SQUARE(pv) == 0) || (GET_SQUARE(pv) == 1)) {
+		if ((PCB_FLAG_SQUARE_GET(pv) == 0) || (PCB_FLAG_SQUARE_GET(pv) == 1)) {
 			pcb_coord_t l = pv->X - r;
 			pcb_coord_t b = pv->Y - r;
 			pcb_coord_t r = l + w;
@@ -369,7 +369,7 @@ void common_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, 
 			gui->fill_rect(fg_gc, l, b, r, t);
 		}
 		else
-			draw_square_pin_poly(fg_gc, pv->X, pv->Y, w, pcb_false, GET_SQUARE(pv));
+			draw_square_pin_poly(fg_gc, pv->X, pv->Y, w, pcb_false, PCB_FLAG_SQUARE_GET(pv));
 	}
 	else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv))
 		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, pcb_false);

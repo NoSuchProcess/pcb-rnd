@@ -172,8 +172,8 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type)
 	lst = lht_dom_node_alloc(LHT_HASH, "thermal");
 
 	for(layer = 0; layer < max_copper_layer; layer++) {
-		if (TEST_ANY_THERMS(&fh)) {
-			int t = GET_THERM(layer, &fh);
+		if (PCB_FLAG_THERM_TEST_ANY(&fh)) {
+			int t = PCB_FLAG_THERM_GET(layer, &fh);
 			if (t != 0) {
 				const char *name;
 				txt = lht_dom_node_alloc(LHT_TEXT, PCB->Data->Layer[layer].Name);

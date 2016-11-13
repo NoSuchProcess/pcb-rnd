@@ -840,7 +840,7 @@ static int ActionChangeSquare(int argc, const char **argv, pcb_coord_t x, pcb_co
 				type = SearchScreen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3);
 
 				if (ptr3 != NULL) {
-					int qstyle = GET_SQUARE((pcb_pin_t *) ptr3);
+					int qstyle = PCB_FLAG_SQUARE_GET((pcb_pin_t *) ptr3);
 					qstyle++;
 					if (qstyle > 17)
 						qstyle = 0;

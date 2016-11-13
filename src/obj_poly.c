@@ -411,14 +411,14 @@ pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 {
 	struct mptlc *d = (struct mptlc *) cl;
 	pcb_pin_t *pin = (pcb_pin_t *) b;
-	if (!TEST_THERM(d->snum, pin) || !IsPointInPolygon(pin->X, pin->Y, pin->Thickness + pin->Clearance + 2, d->polygon))
+	if (!PCB_FLAG_THERM_TEST(d->snum, pin) || !IsPointInPolygon(pin->X, pin->Y, pin->Thickness + pin->Clearance + 2, d->polygon))
 		return R_DIR_NOT_FOUND;
 	if (d->type == PCB_TYPE_PIN)
 		AddObjectToFlagUndoList(PCB_TYPE_PIN, pin->Element, pin, pin);
 	else
 		AddObjectToFlagUndoList(PCB_TYPE_VIA, pin, pin, pin);
-	ASSIGN_THERM(d->dnum, GET_THERM(d->snum, pin), pin);
-	CLEAR_THERM(d->snum, pin);
+	PCB_FLAG_THERM_ASSIGN(d->dnum, PCB_FLAG_THERM_GET(d->snum, pin), pin);
+	PCB_FLAG_THERM_CLEAR(d->snum, pin);
 	return R_DIR_FOUND_CONTINUE;
 }
 

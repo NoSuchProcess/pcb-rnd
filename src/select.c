@@ -59,23 +59,23 @@ void pcb_select_element(pcb_element_t *element, pcb_change_flag_t how, int redra
 	PIN_LOOP(element);
 	{
 		AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
-		CHANGE_FLAG(how, PCB_FLAG_SELECTED, pin);
+		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pin);
 	}
 	END_LOOP;
 	PAD_LOOP(element);
 	{
 		AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
-		CHANGE_FLAG(how, PCB_FLAG_SELECTED, pad);
+		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pad);
 	}
 	END_LOOP;
 	ELEMENTTEXT_LOOP(element);
 	{
 		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
-		CHANGE_FLAG(how, PCB_FLAG_SELECTED, text);
+		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
 	}
 	END_LOOP;
 	AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
-	CHANGE_FLAG(how, PCB_FLAG_SELECTED, element);
+	PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, element);
 
 	if (redraw) {
 		if (PCB->ElementOn && ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn))
@@ -94,7 +94,7 @@ void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int 
 	ELEMENTTEXT_LOOP(element);
 	{
 		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
-		CHANGE_FLAG(how, PCB_FLAG_SELECTED, text);
+		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
 	}
 	END_LOOP;
 

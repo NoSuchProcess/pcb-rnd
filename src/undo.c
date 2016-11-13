@@ -531,7 +531,7 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 		f1 = pcb_flag_mask(pin->Flags, ~DRAW_FLAGS);
 		f2 = pcb_flag_mask(Entry->Data.Flags, ~DRAW_FLAGS);
 
-		if (!FLAGS_EQUAL(f1, f2))
+		if (!PCB_FLAG_EQ(f1, f2))
 			must_redraw = 1;
 
 		if (andDraw && must_redraw && (ptr1e != NULL))

@@ -289,7 +289,7 @@ static int post_thermal_assign(vtptr_t *pt)
 					pcb_message(PCB_MSG_ERROR, "#LHT10 Invalid layer name in thermal: '%s'\n", n->name);
 					return -1;
 				}
-				ASSIGN_THERM(layer, io_lihata_resolve_thermal_style(n->data.text.value), &fh);
+				PCB_FLAG_THERM_ASSIGN(layer, io_lihata_resolve_thermal_style(n->data.text.value), &fh);
 			}
 		}
 		*f = fh.Flags;

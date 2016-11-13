@@ -350,7 +350,7 @@ static pcb_r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 	 * be on an edge such that it doesn't actually touch.
 	 */
 	if (!PCB_FLAG_TEST(TheFlag, polygon) && !PCB_FLAG_TEST(PCB_FLAG_HOLE, &i->pv) &&
-			(TEST_THERM(i->layer, &i->pv) || !PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)
+			(PCB_FLAG_THERM_TEST(i->layer, &i->pv) || !PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)
 			 || !i->pv.Clearance)) {
 		double wide = MAX(0.5 * i->pv.Thickness + Bloat, 0);
 		if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, &i->pv)) {
@@ -363,7 +363,7 @@ static pcb_r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 				longjmp(i->env, 1);
 		}
 		else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, &i->pv)) {
-			pcb_polyarea_t *oct = OctagonPoly(i->pv.X, i->pv.Y, i->pv.Thickness / 2, GET_SQUARE(&i->pv));
+			pcb_polyarea_t *oct = OctagonPoly(i->pv.X, i->pv.Y, i->pv.Thickness / 2, PCB_FLAG_SQUARE_GET(&i->pv));
 			if (isects(oct, polygon, pcb_true)
 					&& ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PIN, &i->pv, FCT_COPPER))
 				longjmp(i->env, 1);
@@ -569,12 +569,12 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 
 		/* Internal connection: if pins in the same element have the same
 		   internal connection group number, they are connected */
-		ic = GET_INTCONN(orig_pin);
+		ic = PCB_FLAG_INTCONN_GET(orig_pin);
 		if ((info.pv.Element != NULL) && (ic > 0)) {
 			pcb_element_t *e = info.pv.Element;
 			PIN_LOOP(e);
 			{
-				if ((orig_pin != pin) && (ic == GET_INTCONN(pin))) {
+				if ((orig_pin != pin) && (ic == PCB_FLAG_INTCONN_GET(pin))) {
 					if (!PCB_FLAG_TEST(TheFlag, pin))
 						ADD_PV_TO_LIST(pin, PCB_TYPE_PIN, orig_pin, FCT_INTERNAL);
 				}
@@ -666,7 +666,7 @@ static pcb_r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 
 	/* note that holes in polygons are ok, so they don't generate warnings. */
 	if (!PCB_FLAG_TEST(TheFlag, pv) && !PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) &&
-			(TEST_THERM(i->layer, pv) || !PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, &i->polygon) || !pv->Clearance)) {
+			(PCB_FLAG_THERM_TEST(i->layer, pv) || !PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, &i->polygon) || !pv->Clearance)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv)) {
 			pcb_coord_t x1, x2, y1, y2;
 			x1 = pv->X - (PIN_SIZE(pv) + 1 + Bloat) / 2;
@@ -678,7 +678,7 @@ static pcb_r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 				longjmp(i->env, 1);
 		}
 		else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv)) {
-			pcb_polyarea_t *oct = OctagonPoly(pv->X, pv->Y, PIN_SIZE(pv) / 2, GET_SQUARE(pv));
+			pcb_polyarea_t *oct = OctagonPoly(pv->X, pv->Y, PIN_SIZE(pv) / 2, PCB_FLAG_SQUARE_GET(pv));
 			if (isects(oct, &i->polygon, pcb_true) && ADD_PV_TO_LIST(pv, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
 				longjmp(i->env, 1);
 		}
@@ -1222,7 +1222,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 
 	/* Internal connection: if pads in the same element have the same
 	   internal connection group number, they are connected */
-	ic = GET_INTCONN(Pad);
+	ic = PCB_FLAG_INTCONN_GET(Pad);
 	if ((Pad->Element != NULL) && (ic > 0)) {
 		pcb_element_t *e = Pad->Element;
 		pcb_pad_t *orig_pad = Pad;
@@ -1244,7 +1244,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 		if (tlayer >= 0) {
 			PAD_LOOP(e);
 			{
-				if ((orig_pad != pad) && (ic == GET_INTCONN(pad))) {
+				if ((orig_pad != pad) && (ic == PCB_FLAG_INTCONN_GET(pad))) {
 					int padlayer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
 /*fprintf(stderr, "layergroup1: %d {%d %d %d} %d \n", tlayer, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad), SOLDER_LAYER, COMPONENT_LAYER, padlayer);*/
 					if ((!PCB_FLAG_TEST(TheFlag, pad)) && (tlayer != padlayer)) {

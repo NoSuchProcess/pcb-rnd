@@ -350,7 +350,7 @@ common_string_to_flags(const char *flagstring, int (*error) (const char *msg), p
 		if (flen == 7 && memcmp(fp, "thermal", 7) == 0) {
 			for (i = 0; i < MAX_LAYER && i < num_layers; i++)
 				if (layers[i])
-					ASSIGN_THERM(i, layers[i], &rv);
+					PCB_FLAG_THERM_ASSIGN(i, layers[i], &rv);
 		}
 		else if (flen == 5 && memcmp(fp, "shape", 5) == 0) {
 			rv.Flags.q = atoi(fp + 6);
@@ -458,11 +458,11 @@ char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t 
 			PCB_FLAG_CLEAR(flagbits[i].mask, &fh);
 		}
 
-	if (TEST_ANY_THERMS(&fh)) {
+	if (PCB_FLAG_THERM_TEST_ANY(&fh)) {
 		len += sizeof("thermal()");
 		for (i = 0; i < MAX_LAYER; i++)
-			if (TEST_THERM(i, &fh))
-				len += printed_int_length(i, GET_THERM(i, &fh)) + 1;
+			if (PCB_FLAG_THERM_TEST(i, &fh))
+				len += printed_int_length(i, PCB_FLAG_THERM_GET(i, &fh)) + 1;
 	}
 
 	if (flags.q > 0) {
@@ -496,15 +496,15 @@ char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t 
 			PCB_FLAG_CLEAR(flagbits[i].mask, &fh);
 		}
 
-	if (TEST_ANY_THERMS(&fh)) {
+	if (PCB_FLAG_THERM_TEST_ANY(&fh)) {
 		if (bp != buf + 1)
 			*bp++ = ',';
 		strcpy(bp, "thermal");
 		bp += strlen("thermal");
 		grow_layer_list(0);
 		for (i = 0; i < MAX_LAYER; i++)
-			if (TEST_THERM(i, &fh))
-				set_layer_list(i, GET_THERM(i, &fh));
+			if (PCB_FLAG_THERM_TEST(i, &fh))
+				set_layer_list(i, PCB_FLAG_THERM_GET(i, &fh));
 		strcpy(bp, print_layer_list());
 		bp += strlen(bp);
 	}

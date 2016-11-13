@@ -173,7 +173,7 @@ static void move_one_thermal(int old_index, int new_index, pcb_pin_t * pin)
 	int oi = old_index, ni = new_index;
 
 	if (old_index != -1)
-		t1 = GET_THERM(old_index, pin);
+		t1 = PCB_FLAG_THERM_GET(old_index, pin);
 
 	if (oi == -1)
 		oi = MAX_LAYER - 1;					/* inserting a layer */
@@ -182,17 +182,17 @@ static void move_one_thermal(int old_index, int new_index, pcb_pin_t * pin)
 
 	if (oi < ni) {
 		for (i = oi; i < ni; i++)
-			ASSIGN_THERM(i, GET_THERM(i + 1, pin), pin);
+			PCB_FLAG_THERM_ASSIGN(i, PCB_FLAG_THERM_GET(i + 1, pin), pin);
 	}
 	else {
 		for (i = oi; i > ni; i--)
-			ASSIGN_THERM(i, GET_THERM(i - 1, pin), pin);
+			PCB_FLAG_THERM_ASSIGN(i, PCB_FLAG_THERM_GET(i - 1, pin), pin);
 	}
 
 	if (new_index != -1)
-		ASSIGN_THERM(new_index, t1, pin);
+		PCB_FLAG_THERM_ASSIGN(new_index, t1, pin);
 	else
-		ASSIGN_THERM(ni, 0, pin);
+		PCB_FLAG_THERM_ASSIGN(ni, 0, pin);
 }
 
 static void move_all_thermals(int old_index, int new_index)

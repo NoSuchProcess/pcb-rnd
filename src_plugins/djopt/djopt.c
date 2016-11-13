@@ -982,7 +982,7 @@ static int simple_optimize_corner(corner_s * c)
 			dprintf("via check: line[0] layer %d at %#mD nl %d\n", c->lines[0]->layer, c->x, c->y, c->n_lines);
 		/* We can't delete vias that connect to power planes, or vias
 		   that aren't tented (assume they're test points).  */
-		if (!TEST_ANY_THERMS(c->via)
+		if (!PCB_FLAG_THERM_TEST_ANY(c->via)
 				&& c->via->Mask == 0) {
 			for (i = 1; i < c->n_lines; i++) {
 				if (selected(c->via))

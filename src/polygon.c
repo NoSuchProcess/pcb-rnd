@@ -738,20 +738,20 @@ pcb_polyarea_t *PinPoly(pcb_pin_t * pin, pcb_coord_t thick, pcb_coord_t clear)
 	int size;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
-		if (GET_SQUARE(pin) <= 1) {
+		if (PCB_FLAG_SQUARE_GET(pin) <= 1) {
 			size = (thick + 1) / 2;
 			return RoundRect(pin->X - size, pin->X + size, pin->Y - size, pin->Y + size, (clear + 1) / 2);
 		}
 		else {
 			size = (thick + clear + 1) / 2;
-			return OctagonPoly(pin->X, pin->Y, size + size, GET_SQUARE(pin));
+			return OctagonPoly(pin->X, pin->Y, size + size, PCB_FLAG_SQUARE_GET(pin));
 		}
 
 	}
 	else {
 		size = (thick + clear + 1) / 2;
 		if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pin)) {
-			return OctagonPoly(pin->X, pin->Y, size + size, GET_SQUARE(pin));
+			return OctagonPoly(pin->X, pin->Y, size + size, PCB_FLAG_SQUARE_GET(pin));
 		}
 	}
 	return CirclePoly(pin->X, pin->Y, size);
@@ -766,7 +766,7 @@ pcb_polyarea_t *BoxPolyBloated(pcb_box_t * box, pcb_coord_t bloat)
 static pcb_polyarea_t *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_pin_t * pin)
 {
 	pcb_polyarea_t *np;
-	if (TEST_THERM(layernum, pin))
+	if (PCB_FLAG_THERM_TEST(layernum, pin))
 		np = ThermPoly(pcb, pin, layernum);
 	else
 		np = PinPoly(pin, PIN_SIZE(pin), pin->Clearance);
@@ -784,7 +784,7 @@ static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_pol
 	i = GetLayerNumber(d, l);
 	np = pin_clearance_poly(i, d->pcb, pin);
 
-	if (TEST_THERM(i, pin)) {
+	if (PCB_FLAG_THERM_TEST(i, pin)) {
 		if (!np)
 			return 0;
 	}
@@ -884,7 +884,7 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 	if (pin->Clearance == 0)
 		return R_DIR_NOT_FOUND;
 	i = GetLayerNumber(info->data, info->layer);
-	if (TEST_THERM(i, pin)) {
+	if (PCB_FLAG_THERM_TEST(i, pin)) {
 		np = ThermPoly((pcb_board_t *) (info->data->pcb), pin, i);
 		if (!np)
 			return R_DIR_FOUND_CONTINUE;

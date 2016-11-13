@@ -315,8 +315,8 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	pcb_coord_t t = 0.5 * pcb->ThermScale * pin->Clearance;
 	pcb_coord_t w = pin->Thickness + pin->Clearance;
 
-	p = OctagonPoly(pin->X, pin->Y, w, GET_SQUARE(pin));
-	p2 = OctagonPoly(pin->X, pin->Y, pin->Thickness, GET_SQUARE(pin));
+	p = OctagonPoly(pin->X, pin->Y, w, PCB_FLAG_SQUARE_GET(pin));
+	p2 = OctagonPoly(pin->X, pin->Y, pin->Thickness, PCB_FLAG_SQUARE_GET(pin));
 	/* make full clearance ring */
 	poly_Boolean_free(p, p2, &m, PBO_SUB);
 	switch (style) {
@@ -357,7 +357,7 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 {
 	pcb_arc_t a;
 	pcb_polyarea_t *pa, *arc;
-	pcb_cardinal_t style = GET_THERM(laynum, pin);
+	pcb_cardinal_t style = PCB_FLAG_THERM_GET(laynum, pin);
 
 	if (style == 3)
 		return NULL;								/* solid connection no clearance */

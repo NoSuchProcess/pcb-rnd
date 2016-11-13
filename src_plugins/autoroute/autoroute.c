@@ -4522,7 +4522,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 					AddObjectToClearPolyUndoList(type, pin->Element ? pin->Element : pin, pin, pin, pcb_false);
 					RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
 					AddObjectToFlagUndoList(type, pin->Element ? pin->Element : pin, pin, pin);
-					ASSIGN_THERM(p->layer, PCB->ThermStyle, pin);
+					PCB_FLAG_THERM_ASSIGN(p->layer, PCB->ThermStyle, pin);
 					AddObjectToClearPolyUndoList(type, pin->Element ? pin->Element : pin, pin, pin, pcb_true);
 					ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
 					changed = pcb_true;

@@ -82,7 +82,7 @@ static void select_cb(void *user_ctx, pcb_qry_val_t *res, pcb_obj_t *current)
 			else if (current->type == PCB_OBJ_ETEXT)
 				pcb_select_element_name(current->data.element, sel->how, 0);
 			else
-				CHANGE_FLAG(sel->how, PCB_FLAG_SELECTED, current->data.anyobj);
+				PCB_FLAG_CHANGE(sel->how, PCB_FLAG_SELECTED, current->data.anyobj);
 			sel->cnt++;
 		}
 	}

@@ -556,18 +556,18 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 			/* move the thermal flags with the layers */
 			ALLPIN_LOOP(Buffer->Data);
 			{
-				t1 = TEST_THERM(snumber, pin);
-				t2 = TEST_THERM(cnumber, pin);
-				ASSIGN_THERM(snumber, t2, pin);
-				ASSIGN_THERM(cnumber, t1, pin);
+				t1 = PCB_FLAG_THERM_TEST(snumber, pin);
+				t2 = PCB_FLAG_THERM_TEST(cnumber, pin);
+				PCB_FLAG_THERM_ASSIGN(snumber, t2, pin);
+				PCB_FLAG_THERM_ASSIGN(cnumber, t1, pin);
 			}
 			ENDALL_LOOP;
 			VIA_LOOP(Buffer->Data);
 			{
-				t1 = TEST_THERM(snumber, via);
-				t2 = TEST_THERM(cnumber, via);
-				ASSIGN_THERM(snumber, t2, via);
-				ASSIGN_THERM(cnumber, t1, via);
+				t1 = PCB_FLAG_THERM_TEST(snumber, via);
+				t2 = PCB_FLAG_THERM_TEST(cnumber, via);
+				PCB_FLAG_THERM_ASSIGN(snumber, t2, via);
+				PCB_FLAG_THERM_ASSIGN(cnumber, t1, via);
 			}
 			END_LOOP;
 		}

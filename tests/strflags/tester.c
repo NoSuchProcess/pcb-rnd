@@ -102,13 +102,13 @@ int main()
 		if (otype & PCB_TYPEMASK_PIN)
 			for (i = 0; i < MAX_LAYER; i++)
 				if (random() & 4)
-					ASSIGN_THERM(i, 3, &fh);
+					PCB_FLAG_THERM_ASSIGN(i, 3, &fh);
 
 		str = flags_to_string(fh.Flags, otype);
 		new_flags = string_to_flags(str, 0);
 
 		count++;
-		if (FLAGS_EQUAL(fh.Flags, new_flags))
+		if (PCB_FLAG_EQ(fh.Flags, new_flags))
 			continue;
 		dump_flag(&fh.Flags);
 		printf(" ");
@@ -141,7 +141,7 @@ int main()
 		new_flags = string_to_pcbflags(str, 0);
 
 		count++;
-		if (FLAGS_EQUAL(fh.Flags, new_flags))
+		if (PCB_FLAG_EQ(fh.Flags, new_flags))
 			continue;
 
 		dump_flag(&fh.Flags);

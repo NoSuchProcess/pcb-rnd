@@ -208,7 +208,7 @@ void SetPinBoundingBox(pcb_pin_t *Pin)
 {
 	pcb_coord_t width;
 
-	if ((GET_SQUARE(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))) {
+	if ((PCB_FLAG_SQUARE_GET(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))) {
 		pcb_polyarea_t *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
 		poly_bbox(p, &Pin->BoundingBox);
 		poly_Free(&p);
@@ -263,9 +263,9 @@ void *ChangeViaThermal(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	if (!ctx->chgtherm.style)										/* remove the thermals */
-		CLEAR_THERM(INDEXOFCURRENT, Via);
+		PCB_FLAG_THERM_CLEAR(INDEXOFCURRENT, Via);
 	else
-		ASSIGN_THERM(INDEXOFCURRENT, ctx->chgtherm.style, Via);
+		PCB_FLAG_THERM_ASSIGN(INDEXOFCURRENT, ctx->chgtherm.style, Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
 	DrawVia(Via);
@@ -279,9 +279,9 @@ void *ChangePinThermal(pcb_opctx_t *ctx, pcb_element_t *element, pcb_pin_t *Pin)
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
 	AddObjectToFlagUndoList(PCB_TYPE_PIN, element, Pin, Pin);
 	if (!ctx->chgtherm.style)										/* remove the thermals */
-		CLEAR_THERM(INDEXOFCURRENT, Pin);
+		PCB_FLAG_THERM_CLEAR(INDEXOFCURRENT, Pin);
 	else
-		ASSIGN_THERM(INDEXOFCURRENT, ctx->chgtherm.style, Pin);
+		PCB_FLAG_THERM_ASSIGN(INDEXOFCURRENT, ctx->chgtherm.style, Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
 	DrawPin(Pin);
@@ -506,7 +506,7 @@ void *ChangeViaSquare(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, NULL, Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, NULL, Via, Via);
-	ASSIGN_SQUARE(ctx->chgsize.absolute, Via);
+	PCB_FLAG_SQUARE_ASSIGN(ctx->chgsize.absolute, Via);
 	if (ctx->chgsize.absolute == 0)
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Via);
 	else
@@ -527,7 +527,7 @@ void *ChangePinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-	ASSIGN_SQUARE(ctx->chgsize.absolute, Pin);
+	PCB_FLAG_SQUARE_ASSIGN(ctx->chgsize.absolute, Pin);
 	if (ctx->chgsize.absolute == 0)
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Pin);
 	else
@@ -814,8 +814,8 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	else
 		pn = EMPTY(conf_core.editor.show_number ? pv->Number : pv->Name);
 
-	if (GET_INTCONN(pv) > 0)
-		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, GET_INTCONN(pv));
+	if (PCB_FLAG_INTCONN_GET(pv) > 0)
+		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, PCB_FLAG_INTCONN_GET(pv));
 	else
 		strcpy(buff, pn);
 	text.TextString = buff;
