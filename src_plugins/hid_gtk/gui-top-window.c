@@ -1692,7 +1692,7 @@ static GtkWidget *ghid_load_menus(void)
 				ghid_main_menu_add_popup_node(GHID_MAIN_MENU(menu_bar), n);
 		}
 		else
-			hid_cfg_error(mr, "/popups should be a list");
+			pcb_hid_cfg_error(mr, "/popups should be a list");
 	}
 
 #ifdef DEBUG_MENUS

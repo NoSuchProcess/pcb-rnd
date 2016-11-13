@@ -240,7 +240,7 @@ int ActionLoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			lht_node_t *n;
 			for(n = drlres->data.list.first; n != NULL; n = n->next) {
 				if (n->type != LHT_TEXT)
-					hid_cfg_error(n, "Broken drillmap: /drillmap should contain text children only\n");
+					pcb_hid_cfg_error(n, "Broken drillmap: /drillmap should contain text children only\n");
 				else
 					add_to_drills(n->data.text.value);
 			}
@@ -534,7 +534,7 @@ static void process_skips(lht_node_t *res)
 		return;
 
 	if (res->type != LHT_LIST)
-		hid_cfg_error(res, "skips must be a list.\n");
+		pcb_hid_cfg_error(res, "skips must be a list.\n");
 
 	for(n = res->data.list.first; n != NULL; n = n->next) {
 		if (n->type == LHT_TEXT) {
@@ -551,7 +551,7 @@ static void process_skips(lht_node_t *res)
 				lst = &ignore_descr;
 			}
 			else {
-				hid_cfg_error(n, "invalid skip name; must be one of refdes, value, descr");
+				pcb_hid_cfg_error(n, "invalid skip name; must be one of refdes, value, descr");
 				continue;
 			}
 			/* add the entry to the appropriate list */
@@ -564,7 +564,7 @@ static void process_skips(lht_node_t *res)
 			(*lst)[*cnt - 1] = pcb_strdup(sval);
 		}
 		else
-			hid_cfg_error(n, "invalid skip type; must be text");
+			pcb_hid_cfg_error(n, "invalid skip type; must be text");
 	}
 }
 

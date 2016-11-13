@@ -79,36 +79,36 @@ typedef enum {
 
 /* Return a field of a submenu and optionally fill in field_name with the
    field name expected in the lihata document (useful for error messages) */
-lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name);
+lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name);
 
 /* Return a lihata node using a relative lihata path from parent - this is
    just a wrapper around lht_tree_path_ */
-lht_node_t *hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
+lht_node_t *pcb_hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
 
 /* Return a text field of a submenu; return NULL and generate a pcb_message(PCB_MSG_DEFAULT, ) if
    the given field is not text */
-const char *hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field);
+const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field);
 
 /* Return non-zero if submenu has further submenus; generate pcb_message(PCB_MSG_DEFAULT, ) if
    there is a submenu field with the wrong lihata type */
-int hid_cfg_has_submenus(const lht_node_t *submenu);
+int pcb_hid_cfg_has_submenus(const lht_node_t *submenu);
 
 /* Create a new hash node under parent (optional) and create a flat subtree of
    text nodes from name,value varargs (NULL terminated). This is a shorthand
    for creating a menu item in a subtree list. */
-lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...);
+lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...);
 
 /* Create a flat subtree of text nodes from name,value varargs (NULL
    terminated). This is a shorthand for creating a menu item in a
    subtree list. */
-void hid_cfg_extend_hash_node(lht_node_t *node, ...);
-void hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap);
+void pcb_hid_cfg_extend_hash_node(lht_node_t *node, ...);
+void pcb_hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap);
 
 /* Search a subtree in depth-first-search manner. Call cb on each node as
    descending. If cb returns non-zero, stop the search and return that value.
    Do all this recursively. */
-int hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *ctx);
+int pcb_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *ctx);
 
 /* Report an error about a node */
-void hid_cfg_error(const lht_node_t *node, const char *fmt, ...);
+void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...);
 #endif

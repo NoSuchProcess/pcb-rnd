@@ -126,7 +126,7 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		return 0;
 	}
 
-	hid_cfg_error(d->root, "Root node must be either li:pcb-rnd-conf-v1 or ha:geda-project-v1\n");
+	pcb_hid_cfg_error(d->root, "Root node must be either li:pcb-rnd-conf-v1 or ha:geda-project-v1\n");
 
 	if (d != NULL)
 		lht_dom_uninit(d);
@@ -197,7 +197,7 @@ void conf_extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio
 	conf_policy_t pol;
 
 	if (len >= sizeof(tmp)) {
-		hid_cfg_error(root, "Invalid policy-prio '%s', subtree is ignored\n", root->name);
+		pcb_hid_cfg_error(root, "Invalid policy-prio '%s', subtree is ignored\n", root->name);
 		return;
 	}
 
@@ -210,7 +210,7 @@ void conf_extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio
 		sprio++;
 		p = strtol(sprio, &end, 10);
 		if ((*end != '\0') || (p < 0)) {
-			hid_cfg_error(root, "Invalid prio in '%s', subtree is ignored\n", root->name);
+			pcb_hid_cfg_error(root, "Invalid prio in '%s', subtree is ignored\n", root->name);
 			return;
 		}
 	}
@@ -218,7 +218,7 @@ void conf_extract_poliprio(lht_node_t *root, conf_policy_t *gpolicy, long *gprio
 	/* convert policy */
 	pol = conf_policy_parse(tmp);
 	if (pol == POL_invalid) {
-		hid_cfg_error(root, "Invalid policy in '%s', subtree is ignored\n", root->name);
+		pcb_hid_cfg_error(root, "Invalid policy in '%s', subtree is ignored\n", root->name);
 		return;
 	}
 
@@ -246,7 +246,7 @@ static int conf_parse_increments(pcb_increments_t *inc, lht_node_t *node)
 	lht_node_t *val;
 
 	if (node->type != LHT_HASH) {
-		hid_cfg_error(node, "Increments need to be a hash\n");
+		pcb_hid_cfg_error(node, "Increments need to be a hash\n");
 		return -1;
 	}
 
@@ -257,10 +257,10 @@ static int conf_parse_increments(pcb_increments_t *inc, lht_node_t *node)
 			pcb_bool succ; \
 			inc->field = GetValue(val->data.text.value, NULL, NULL, &succ); \
 			if (!succ) \
-				hid_cfg_error(node, "invalid numeric value in increment field " #field ": %s\n", val->data.text.value); \
+				pcb_hid_cfg_error(node, "invalid numeric value in increment field " #field ": %s\n", val->data.text.value); \
 		} \
 		else\
-			hid_cfg_error(node, "increment field " #field " needs to be a text node\n"); \
+			pcb_hid_cfg_error(node, "increment field " #field " needs to be a text node\n"); \
 	}
 
 	incload(grid);
@@ -351,7 +351,7 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 					dst->boolean[idx] = 0;
 					return 0;
 				}
-			hid_cfg_error(err_node, "Invalid boolean value: %s\n", text);
+			pcb_hid_cfg_error(err_node, "Invalid boolean value: %s\n", text);
 			return -1;
 		case CFN_INTEGER:
 			if ((text[0] == '0') && (text[1] == 'x')) {
@@ -365,7 +365,7 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 				dst->integer[idx] = l;
 				return 0;
 			}
-			hid_cfg_error(err_node, "Invalid integer value: %s\n", text);
+			pcb_hid_cfg_error(err_node, "Invalid integer value: %s\n", text);
 			return -1;
 		case CFN_REAL:
 			d = strtod(text, &end);
@@ -373,20 +373,20 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 				dst->real[idx] = d;
 				return 0;
 			}
-			hid_cfg_error(err_node, "Invalid numeric value: %s\n", text);
+			pcb_hid_cfg_error(err_node, "Invalid numeric value: %s\n", text);
 			return -1;
 		case CFN_COORD:
 			{
 				pcb_bool succ;
 				dst->coord[idx] = GetValue(text, NULL, NULL, &succ);
 				if (!succ)
-					hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);
+					pcb_hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);
 			}
 			break;
 		case CFN_UNIT:
 			u = get_unit_struct(text);
 			if (u == NULL)
-				hid_cfg_error(err_node, "Invalid unit: %s\n", text);
+				pcb_hid_cfg_error(err_node, "Invalid unit: %s\n", text);
 			else
 				dst->unit[idx] = u;
 			break;
@@ -408,7 +408,7 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, conf_p
 		return 0;
 
 	if (dest->random_flags.read_only) {
-		hid_cfg_error(src, "WARNING: not going to overwrite read-only value %s from a config file\n", dest->hash_path);
+		pcb_hid_cfg_error(src, "WARNING: not going to overwrite read-only value %s from a config file\n", dest->hash_path);
 		return 0;
 	}
 
@@ -481,7 +481,7 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 			}
 /*printf("   didx: %d / %d '%s'\n", didx, dest->array_size, s->data.text.value);*/
 			if (didx >= dest->array_size) {
-				hid_cfg_error(s, "Array is already full [%d] of [%d] ignored value: '%s' policy=%d\n", dest->used, dest->array_size, s->data.text.value, pol);
+				pcb_hid_cfg_error(s, "Array is already full [%d] of [%d] ignored value: '%s' policy=%d\n", dest->used, dest->array_size, s->data.text.value, pol);
 				res = -1;
 				break;
 			}
@@ -494,7 +494,7 @@ int conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, c
 			}
 		}
 		else {
-			hid_cfg_error(s, "List item must be text\n");
+			pcb_hid_cfg_error(s, "List item must be text\n");
 			res = -1;
 		}
 	}
@@ -542,7 +542,7 @@ int conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, co
 			}
 		}
 		else {
-			hid_cfg_error(s, "List item must be text\n");
+			pcb_hid_cfg_error(s, "List item must be text\n");
 			res = -1;
 		}
 	}
@@ -559,7 +559,7 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 		case LHT_TEXT:
 			if (target == NULL) {
 				if ((strncmp(path, "plugins/", 8) != 0) && (strncmp(path, "utils/", 6) != 0))/* it is normal to have configuration for plugins and utils not loaded - ignore these */
-					hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
+					pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht!\n", path);
 				break;
 			}
 			conf_merge_patch_text(target, n, default_prio, default_policy);
@@ -572,13 +572,13 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 			break;
 		case LHT_LIST:
 			if (target == NULL)
-				hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht; may it be that it should be a hash instead of a list?\n", path);
+				pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht; may it be that it should be a hash instead of a list?\n", path);
 			else if (target->type == CFN_LIST)
 				res |= conf_merge_patch_list(target, n, default_prio, default_policy);
 			else if (target->array_size > 1)
 				res |= conf_merge_patch_array(target, n, default_prio, default_policy);
 			else
-				hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
+				pcb_hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
 			break;
 		case LHT_SYMLINK:
 #warning TODO
@@ -622,7 +622,7 @@ int conf_merge_patch(lht_node_t *root, long gprio)
 	lht_dom_iterator_t it;
 
 	if (root->type != LHT_HASH) {
-		hid_cfg_error(root, "patch root should be a hash\n");
+		pcb_hid_cfg_error(root, "patch root should be a hash\n");
 		return -1;
 	}
 

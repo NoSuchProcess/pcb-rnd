@@ -110,7 +110,7 @@ int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse)
 	}
 
 	if (mouse->mouse->type != LHT_LIST) {
-		hid_cfg_error(mouse->mouse, "Warning: should be a list - mouse is disabled\n");
+		pcb_hid_cfg_error(mouse->mouse, "Warning: should be a list - mouse is disabled\n");
 		return -1;
 	}
 
@@ -122,11 +122,11 @@ int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse)
 	for(btn = mouse->mouse->data.list.first; btn != NULL; btn = btn->next) {
 		pcb_hid_cfg_mod_t btn_mask = button_name2mask(btn->name);
 		if (btn_mask == 0) {
-			hid_cfg_error(btn, "unknown mouse button");
+			pcb_hid_cfg_error(btn, "unknown mouse button");
 			continue;
 		}
 		if (btn->type != LHT_LIST) {
-			hid_cfg_error(btn, "needs to be a list");
+			pcb_hid_cfg_error(btn, "needs to be a list");
 			continue;
 		}
 		for(m = btn->data.list.first; m != NULL; m = m->next) {

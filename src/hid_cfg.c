@@ -73,15 +73,15 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			free(name);
 		}
 		else
-			psub = hid_cfg_menu_field(cmc->parent, MF_SUBMENU, NULL);
+			psub = pcb_hid_cfg_menu_field(cmc->parent, MF_SUBMENU, NULL);
 
 		if (rel_level == cmc->target_level) {
-			node = hid_cfg_create_hash_node(psub, name, "dyn", "1", "m", "cookie", cmc->cookie, cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
+			node = pcb_hid_cfg_create_hash_node(psub, name, "dyn", "1", "m", "cookie", cmc->cookie, cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
 		else
-			node = hid_cfg_create_hash_node(psub, name, "dyn", "1", "cookie", cmc->cookie,  NULL);
+			node = pcb_hid_cfg_create_hash_node(psub, name, "dyn", "1", "cookie", cmc->cookie,  NULL);
 
 		if (node == NULL)
 			return NULL;
@@ -157,7 +157,7 @@ static int hid_cfg_remove_menu_(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_r
 
 	if (root->type == LHT_HASH) {
 		lht_node_t *psub, *n, *next;
-		psub = hid_cfg_menu_field(root, MF_SUBMENU, NULL);
+		psub = pcb_hid_cfg_menu_field(root, MF_SUBMENU, NULL);
 		if (psub != NULL) { /* remove a whole submenu with all children */
 			int res = 0;
 			for(n = psub->data.list.first; n != NULL; n = next) {
@@ -268,7 +268,7 @@ const char *pcb_hid_cfg_text_value(lht_doc_t *doc, const char *path)
 	if (n == NULL)
 		return NULL;
 	if (n->type != LHT_TEXT) {
-		hid_cfg_error(n, "Error: node %s should be a text node\n", path);
+		pcb_hid_cfg_error(n, "Error: node %s should be a text node\n", path);
 		return NULL;
 	}
 	return n->data.text.value;
@@ -376,7 +376,7 @@ lht_node_t *pcb_hid_cfg_get_menu(pcb_hid_cfg_t *hr, const char *menu_path)
 	return pcb_hid_cfg_get_menu_at(hr, NULL, menu_path, NULL, NULL);
 }
 
-lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name)
+lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name)
 {
 	lht_err_t err;
 	const char *fieldstr = NULL;
@@ -405,35 +405,35 @@ lht_node_t *hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_
 	return lht_tree_path_(submenu->doc, submenu, fieldstr, 1, 0, &err);
 }
 
-const char *hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field)
+const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field)
 {
 	const char *fldname;
-	lht_node_t *n = hid_cfg_menu_field(submenu, field, &fldname);
+	lht_node_t *n = pcb_hid_cfg_menu_field(submenu, field, &fldname);
 
 	if (n == NULL)
 		return NULL;
 	if (n->type != LHT_TEXT) {
-		hid_cfg_error(submenu, "Error: field %s should be a text node\n", fldname);
+		pcb_hid_cfg_error(submenu, "Error: field %s should be a text node\n", fldname);
 		return NULL;
 	}
 	return n->data.text.value;
 }
 
-int hid_cfg_has_submenus(const lht_node_t *submenu)
+int pcb_hid_cfg_has_submenus(const lht_node_t *submenu)
 {
 	const char *fldname;
-	lht_node_t *n = hid_cfg_menu_field(submenu, MF_SUBMENU, &fldname);
+	lht_node_t *n = pcb_hid_cfg_menu_field(submenu, MF_SUBMENU, &fldname);
 	if (n == NULL)
 		return 0;
 	if (n->type != LHT_LIST) {
-		hid_cfg_error(submenu, "Error: field %s should be a list (of submenus)\n", fldname);
+		pcb_hid_cfg_error(submenu, "Error: field %s should be a list (of submenus)\n", fldname);
 		return 0;
 	}
 	return 1;
 }
 
 
-void hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
+void pcb_hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
 {
 	for(;;) {
 		char *cname, *cval;
@@ -452,15 +452,15 @@ void hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
 	}
 }
 
-void hid_cfg_extend_hash_node(lht_node_t *node, ...)
+void pcb_hid_cfg_extend_hash_node(lht_node_t *node, ...)
 {
 	va_list ap;
 	va_start(ap, node);
-	hid_cfg_extend_hash_nodev(node, ap);
+	pcb_hid_cfg_extend_hash_nodev(node, ap);
 	va_end(ap);
 }
 
-lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
+lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
 {
 	lht_node_t *n;
 	va_list ap;
@@ -473,18 +473,18 @@ lht_node_t *hid_cfg_create_hash_node(lht_node_t *parent, const char *name, ...)
 		lht_dom_list_append(parent, n);
 
 	va_start(ap, name);
-	hid_cfg_extend_hash_nodev(n, ap);
+	pcb_hid_cfg_extend_hash_nodev(n, ap);
 	va_end(ap);
 
 	return n;
 }
 
-lht_node_t *hid_cfg_menu_field_path(const lht_node_t *parent, const char *path)
+lht_node_t *pcb_hid_cfg_menu_field_path(const lht_node_t *parent, const char *path)
 {
 	return lht_tree_path_(parent->doc, parent, path, 1, 0, NULL);
 }
 
-int hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *ctx)
+int pcb_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *ctx)
 {
 	lht_dom_iterator_t it;
 	lht_node_t *n;
@@ -495,7 +495,7 @@ int hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *c
 		if (ret != 0)
 			return ret;
 		if (n->type != LHT_TEXT) {
-			ret = hid_cfg_dfs(n, cb, ctx);
+			ret = pcb_hid_cfg_dfs(n, cb, ctx);
 			if (ret != 0)
 				return ret;
 		}
@@ -504,7 +504,7 @@ int hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *c
 }
 
 /* extern char hid_cfg_error_shared[]; */
-void hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
+void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
 {
 	char *end;
 	va_list ap;
