@@ -152,7 +152,7 @@ static int ActionConnection(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		case F_Find:
 			{
 				gui->get_coords(_("Click on a connection"), &x, &y);
-				LookupConnection(x, y, pcb_true, 1, PCB_FLAG_FOUND);
+				pcb_lookup_conn(x, y, pcb_true, 1, PCB_FLAG_FOUND);
 				break;
 			}
 

@@ -213,7 +213,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 /* ---------------------------------------------------------------------------
  * find all unused pins of all element
  */
-void LookupUnusedPins(FILE * FP)
+void pcb_lookup_unused_pins(FILE * FP)
 {
 	/* reset all currently marked connections */
 	User = pcb_true;
@@ -241,7 +241,7 @@ void LookupUnusedPins(FILE * FP)
 /* ---------------------------------------------------------------------------
  * find all connections to pins within one element
  */
-void LookupElementConnections(pcb_element_t *Element, FILE * FP)
+void pcb_lookup_element_conns(pcb_element_t *Element, FILE * FP)
 {
 	/* reset all currently marked connections */
 	User = pcb_true;
@@ -262,7 +262,7 @@ void LookupElementConnections(pcb_element_t *Element, FILE * FP)
 /* ---------------------------------------------------------------------------
  * find all connections to pins of all element
  */
-void LookupConnectionsToAllElements(FILE * FP)
+void pcb_lookup_conns_to_all_elements(FILE * FP)
 {
 	/* reset all currently marked connections */
 	User = pcb_false;

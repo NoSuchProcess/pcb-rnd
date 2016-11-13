@@ -120,7 +120,7 @@ void pcb_netlist_find(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 	pcb_coord_t x, y;
 	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
 		return;
-	LookupConnection(x, y, 1, 1, PCB_FLAG_FOUND);
+	pcb_lookup_conn(x, y, 1, 1, PCB_FLAG_FOUND);
 }
 
 void pcb_netlist_select(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
@@ -128,7 +128,7 @@ void pcb_netlist_select(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)
 	pcb_coord_t x, y;
 	if (pcb_pin_name_to_xy(net->Entry, &x, &y))
 		return;
-	LookupConnection(x, y, 1, 1, PCB_FLAG_SELECTED);
+	pcb_lookup_conn(x, y, 1, 1, PCB_FLAG_SELECTED);
 }
 
 void pcb_netlist_rats(pcb_lib_menu_t * net, pcb_lib_entry_t * pin)

@@ -281,7 +281,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		FILE *fp;
 		pcb_bool result;
 		if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-			LookupConnectionsToAllElements(fp);
+			pcb_lookup_conns_to_all_elements(fp);
 			fclose(fp);
 			SetChangedFlag(pcb_true);
 		}
@@ -292,7 +292,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		FILE *fp;
 		pcb_bool result;
 		if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-			LookupUnusedPins(fp);
+			pcb_lookup_unused_pins(fp);
 			fclose(fp);
 			SetChangedFlag(pcb_true);
 		}
@@ -308,7 +308,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		if ((SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 			element = (pcb_element_t *) ptrtmp;
 			if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
-				LookupElementConnections(element, fp);
+				pcb_lookup_element_conns(element, fp);
 				fclose(fp);
 				SetChangedFlag(pcb_true);
 			}

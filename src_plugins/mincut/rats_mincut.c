@@ -147,7 +147,7 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 	old_cb = find_callback;
 	find_callback = proc_short_cb;
 	SaveFindFlag(PCB_FLAG_MINCUT);
-	LookupConnection(x, y, pcb_false, 1, PCB_FLAG_MINCUT);
+	pcb_lookup_conn(x, y, pcb_false, 1, PCB_FLAG_MINCUT);
 
 	debprintf("- alloced for %d\n", (short_conns_maxid + 1));
 	lut_by_oid = calloc(sizeof(short_conn_t *), (short_conns_maxid + 1));

@@ -515,7 +515,7 @@ static double XYtoNetLength(pcb_coord_t x, pcb_coord_t y, int *found)
 	/* NB: The third argument here, 'false' ensures LookupConnection
 	 *     does not add its changes to the undo system.
 	 */
-	LookupConnection(x, y, pcb_false, PCB->Grid, PCB_FLAG_FOUND);
+	pcb_lookup_conn(x, y, pcb_false, PCB->Grid, PCB_FLAG_FOUND);
 
 	ALLLINE_LOOP(PCB->Data);
 	{

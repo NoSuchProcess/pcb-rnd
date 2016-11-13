@@ -383,7 +383,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					pcb_draw();
 				}
 				if (Crosshair.AttachedLine.State != STATE_FIRST)
-					LookupConnection(Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, pcb_true, 1, PCB_FLAG_FOUND);
+					pcb_lookup_conn(Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, pcb_true, 1, PCB_FLAG_FOUND);
 			}
 			pcb_notify_crosshair_change(pcb_true);
 			break;

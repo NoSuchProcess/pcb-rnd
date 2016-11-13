@@ -499,7 +499,7 @@ void pcb_notify_line(void)
 		}
 		if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
 			type = SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
-			LookupConnection(Crosshair.X, Crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
+			pcb_lookup_conn(Crosshair.X, Crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
 		}
 		if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
 			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = ((pcb_pin_t *) ptr2)->X;

@@ -276,3 +276,8 @@ PinLineIntersect -> pcb_intersect_line_pin
 LinePadIntersect -> pcb_intersect_line_pad
 ArcPadIntersect -> pcb_intersect_arc_pad
 IsPolygonInPolygon -> pcb_is_poly_in_poly
+LookupElementConnections -> pcb_lookup_element_conns
+LookupConnectionsToAllElements -> pcb_lookup_conns_to_all_elements
+LookupConnection -> pcb_lookup_conn
+LookupConnectionByPin -> pcb_lookup_conn_by_pin
+LookupUnusedPins -> pcb_lookup_unused_pins
