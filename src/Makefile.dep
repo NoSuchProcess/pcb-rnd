@@ -1695,13 +1695,17 @@
 ../src_plugins/import_hyp/hyp_l.o: ../src_plugins/import_hyp/hyp_l.c \
  ../src_plugins/import_hyp/hyp_y.h
 ../src_plugins/import_hyp/hyp_y.o: ../src_plugins/import_hyp/hyp_y.c \
- ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/lihata.h
+ ../src_plugins/import_hyp/parser.h pcb_bool.h
 ../src_plugins/import_hyp/import_hyp.o: \
  ../src_plugins/import_hyp/import_hyp.c ../config.h action_helper.h \
  global_typedefs.h pcb_bool.h unit.h compat_nls.h hid.h error.h drc.h \
  attrib.h hid_draw_helpers.h hid_nogui.h hid_actions.h hid.h hid_init.h \
- hid_attrib.h hid_helper.h plugins.h ../src_plugins/import_hyp/hyp_l.h \
- ../src_plugins/import_hyp/hyp_y.h dolists.h
+ hid_attrib.h hid_helper.h plugins.h ../src_plugins/import_hyp/parser.h \
+ pcb_bool.h dolists.h
+../src_plugins/import_hyp/parser.o: ../src_plugins/import_hyp/parser.c \
+ ../src_plugins/import_hyp/parser.h pcb_bool.h \
+ ../src_plugins/import_hyp/hyp_l.h ../src_plugins/import_hyp/hyp_y.h \
+ error.h
 ../src_plugins/import_netlist/import_netlist.o: \
  ../src_plugins/import_netlist/import_netlist.c ../config.h board.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
@@ -1981,7 +1985,7 @@
  ../src_plugins/io_pcb/parse_common.h pcb-printf.h polygon.h rtree.h \
  rats.h netlist.h route_style.h remove.h set.h flag_str.h compat_fs.h \
  paths.h rats_patch.h hid_actions.h hid_flags.h \
- flag.h ../src_plugins/io_pcb/attribs.h \
+ ../src_plugins/io_pcb/flags.h flag.h ../src_plugins/io_pcb/attribs.h \
  route_style.h obj_poly.h
 ../src_plugins/io_pcb/io_pcb.o: ../src_plugins/io_pcb/io_pcb.c \
  ../config.h plugins.h ../src_plugins/io_pcb/parse_common.h plug_io.h \
@@ -2012,18 +2016,17 @@
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h \
- flag.h crosshair.h rubberband.h \
- vtonpoint.h hid.h error.h drc.h attrib.h obj_line.h obj_common.h \
- ../src_3rd/genlist/gendlist.h flag.h obj_poly.h polyarea.h data.h \
- layer.h obj_all_list.h obj_arc_list.h obj_arc.h obj_elem_list.h \
- obj_elem.h obj_line_list.h obj_pad_list.h obj_pad.h obj_pinvia_list.h \
- obj_pinvia.h obj_text.h ht_element.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/liblihata/genht/hash.h obj_poly_list.h obj_text_list.h \
- obj_rat_list.h obj_rat.h crosshair.h buffer.h error.h \
- ../src_plugins/io_pcb/file.h board.h const.h macro.h vtroutestyle.h \
- library.h rats_patch.h board.h font.h box.h math_helper.h move.h \
- misc_util.h plug_io.h flag_str.h ../src_plugins/io_pcb/parse_common.h \
+ ../src_3rd/genlist/gendlist.h globalconst.h flag_str.h flag.h \
+ crosshair.h rubberband.h vtonpoint.h hid.h error.h drc.h attrib.h \
+ obj_line.h obj_common.h ../src_3rd/genlist/gendlist.h obj_poly.h \
+ polyarea.h data.h layer.h obj_all_list.h obj_arc_list.h obj_arc.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_pad_list.h obj_pad.h \
+ obj_pinvia_list.h obj_pinvia.h obj_text.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/hash.h \
+ obj_poly_list.h obj_text_list.h obj_rat_list.h obj_rat.h crosshair.h \
+ buffer.h error.h ../src_plugins/io_pcb/file.h board.h const.h macro.h \
+ vtroutestyle.h library.h rats_patch.h board.h font.h box.h math_helper.h \
+ move.h misc_util.h plug_io.h ../src_plugins/io_pcb/parse_common.h \
  ../src_plugins/io_pcb/parse_y.h plug_footprint.h vtlibrary.h \
  ../src_plugins/io_pcb/attribs.h compat_misc.h compat_cc.h obj_common.h \
  paths.h
@@ -2048,8 +2051,8 @@
  rubberband.h vtonpoint.h hid.h error.h drc.h buffer.h error.h \
  ../src_plugins/io_pcb/file.h plug_io.h ../src_plugins/io_pcb/parse_l.h \
  polygon.h rtree.h remove.h rtree.h flag_str.h obj_pinvia_therm.h \
- rats_patch.h flag.h route_style.h \
- compat_misc.h obj_all.h ../src_plugins/io_pcb/parse_y.h
+ rats_patch.h route_style.h compat_misc.h obj_all.h \
+ ../src_plugins/io_pcb/parse_y.h
 ../src_plugins/jostle/jostle.o: ../src_plugins/jostle/jostle.c \
  ../config.h board.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \
  vtroutestyle.h ../src_3rd/genvector/genvector_impl.h \
