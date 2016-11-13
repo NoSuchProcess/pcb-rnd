@@ -65,25 +65,25 @@
 static void InitHandler(void)
 {
 #ifdef PCB_HAVE_SIGHUP
-	signal(SIGHUP, CatchSignal);
+	signal(SIGHUP, pcb_catch_signal);
 #endif
 #ifdef PCB_HAVE_SIGQUIT
-	signal(SIGQUIT, CatchSignal);
+	signal(SIGQUIT, pcb_catch_signal);
 #endif
 #ifdef PCB_HAVE_SIGTERM
-	signal(SIGTERM, CatchSignal);
+	signal(SIGTERM, pcb_catch_signal);
 #endif
 #ifdef PCB_HAVE_SIGINT
-	signal(SIGINT, CatchSignal);
+	signal(SIGINT, pcb_catch_signal);
 #endif
 
 #ifdef NDEBUG
 /* so that we get a core dump on segfault in debug mode */
 #	ifdef PCB_HAVE_SIGABRT
-		signal(SIGABRT, CatchSignal);
+		signal(SIGABRT, pcb_catch_signal);
 #	endif
 #	ifdef PCB_HAVE_SIGSEGV
-		signal(SIGSEGV, CatchSignal);
+		signal(SIGSEGV, pcb_catch_signal);
 #	endif
 #endif
 

@@ -261,3 +261,5 @@ OpenErrorpcb_messag -> pcb_open_error_message
 PopenErrorpcb_message -> pcb_popen_error_message
 OpendirErrorpcb_message -> pcb_opendir_error_message
 ChdirErrorpcb_message -> ocb_chdir_error_message
+OpenErrorpcb_message -> pcb_open_error_message
+CatchSignal -> pcb_catch_signal

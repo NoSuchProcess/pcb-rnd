@@ -87,7 +87,7 @@ void pcb_trace(const char *Format, ...)
 /* ---------------------------------------------------------------------------
  * print standard 'open error'
  */
-void OpenErrorpcb_message(const char *Filename)
+void pcb_open_error_message(const char *Filename)
 {
 	char *utf8 = NULL;
 
@@ -135,7 +135,7 @@ void pcb_chdir_error_message(const char *DirName)
 /* ---------------------------------------------------------------------------
  * catches signals which abort the program
  */
-void CatchSignal(int Signal)
+void pcb_catch_signal(int Signal)
 {
 	const char *s;
 

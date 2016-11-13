@@ -507,7 +507,7 @@ FILE *CheckAndOpenFile(const char *Filename, pcb_bool Confirm, pcb_bool AllButto
 			}
 		}
 		if ((fp = fopen(Filename, "w")) == NULL)
-			OpenErrorpcb_message(Filename);
+			pcb_open_error_message(Filename);
 	}
 	return (fp);
 }
@@ -782,7 +782,7 @@ int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_boo
 	}
 
 	if ((fp = fopen(Filename, "w")) == NULL) {
-		OpenErrorpcb_message(Filename);
+		pcb_open_error_message(Filename);
 		return (STATUS_ERROR);
 	}
 

@@ -48,11 +48,11 @@ typedef enum pcb_message_level {
 } pcb_message_level_t;
 
 void pcb_message(enum pcb_message_level level, const char *Format, ...);
-void OpenErrorpcb_message(const char *);
+void pcb_open_error_message(const char *);
 void pcb_popen_error_message(const char *);
 void pcb_opendir_error_message(const char *);
 void pcb_chdir_error_message(const char *);
-void CatchSignal(int);
+void pcb_catch_signal(int);
 void pcb_trace(const char *Format, ...);
 
 #endif
