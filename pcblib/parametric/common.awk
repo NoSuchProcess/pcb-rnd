@@ -176,6 +176,15 @@ function element_pad_rectangle(x1, y1, x2, y2,   number, flags,   clearance, mas
 	}
 }
 
+# draw a matrix of pads; top-left corner is x1;y1, there are nx*ny pads
+# of w*h size. rows/cols of pads are drawn with ox and oy offset
+function element_pad_matrix(x1, y1, nx, ny, w, h, ox, oy,     number, flags,   clearance, mask, name,     ix,iy)
+{
+	for(iy = 0; iy < ny; iy++)
+		for(ix = 0; ix < nx; ix++)
+			element_pad_rectangle(x1+ix*ox, y1+iy*oy, x1+ix*ox+w, y1+iy*oy+h, number, flags, clearance, mask, name)
+}
+
 # draw element pad circle
 function element_pad_circle(x1, y1, radius,   number,  clearance, mask, name)
 {

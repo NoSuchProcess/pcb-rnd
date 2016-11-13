@@ -14,6 +14,10 @@ function qf_globals(pre_args, post_args    ,reqs)
 		set_arg(P, "?pad_thickness", "0.3mm")
 		set_arg(P, "?silkmark", "dot")
 		set_arg(P, "?line_thickness", "0.1mm")
+		set_arg(P, "?cpm_width", "1mm")
+		set_arg(P, "?cpm_height", "1mm")
+		set_arg(P, "?cpm_nx", "2")
+		set_arg(P, "?cpm_ny", "2")
 	}
 
 	reqs = "nx,ny"
@@ -27,7 +31,7 @@ function qf_globals(pre_args, post_args    ,reqs)
 	if ((pre_args != "") && (!(pre_args ~ ",$")))
 		pre_args = pre_args ","
 
-	proc_args(P, pre_args "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,rpad_round,bodysilk,pinoffs,silkmark" post_args, reqs)
+	proc_args(P, pre_args "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,cpm_nx,cpm_ny,cpm_width,cpm_height,cpad_mask,rpad_round,bodysilk,pinoffs,silkmark" post_args, reqs)
 
 	nx = int(P["nx"])
 	ny = int(P["ny"])
@@ -81,6 +85,12 @@ function qf_globals(pre_args, post_args    ,reqs)
 		rpad_round = "square"
 	else
 		rpad_round = ""
+
+
+	cpm_width = parse_dim(P["cpm_width"])
+	cpm_height = parse_dim(P["cpm_height"])
+	cpm_nx = int(P["cpm_nx"])
+	cpm_ny = int(P["cpm_ny"])
 }
 
 function pinnum(num)
@@ -121,6 +131,14 @@ BEGIN {
 
 
 	if ((cpad_width != "") && (cpad_height != "")) {
+#		center pad paste matrix
+		if ((cpm_nx > 0) && (cpm_ny > 0)) {
+			ox = (cpad_width - (cpm_nx*cpm_width)) / (cpm_nx - 1)
+			oy = (cpad_height - (cpm_ny*cpm_height)) / (cpm_ny - 1)
+			element_pad_matrix(-cpad_width/2, -cpad_height/2,   cpm_nx,cpm_ny,  cpm_width,cpm_height,  ox+cpm_width,oy+cpm_height,   2*nx+2*ny+1, "square,nopaste")
+		}
+
+#		center pad
 		tmp = DEFAULT["pad_mask"]
 		DEFAULT["pad_mask"] = cpad_mask
 		element_pad_rectangle(-cpad_width/2, -cpad_height/2, +cpad_width/2, +cpad_height/2, 2*nx+2*ny+1, "square,nopaste")

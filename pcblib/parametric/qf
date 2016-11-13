@@ -62,6 +62,24 @@
 #@@optional:cpad_height
 #@@default:cpad_height false, no central pad
 
+#@@param:cpm_nx central pad paste matrix, number of paste pads in x direction
+#@@optional:cpm_nx
+#@@default:cpm_nx 2
+
+#@@param:cpm_ny central pad paste matrix, number of paste pads in y direction
+#@@optional:cpm_ny
+#@@default:cpm_ny 2
+
+#@@param:cpm_width central pad paste matrix, paste pad width (dimension of each paste rectangle)
+#@@dim:cpm_width
+#@@optional:cpm_width
+#@@default:cpm_width 1mm
+
+#@@param:cpm_height central pad paste matrix, paste pad height (dimension of each paste rectangle)
+#@@dim:cpm_height
+#@@optional:cpm_height
+#@@default:cpm_height 1mm
+
 #@@param:cpad_mask center pad mask; if not specified, use the same gap as for the rows (pad_mask)
 #@@dim:cpad_mask
 #@@optional:cpad_mask
