@@ -229,3 +229,4 @@ ClipLine -> pcb_line_clip
 GetWorkingDirectory -> pcb_get_wd
 tempfile_name_new -> pcb_tempfile_name_new
 tempfile_unlink -> pcb_tempfile_unlink
+lrealpath -> pcb_lrealpath

@@ -75,7 +75,7 @@ static DBusHandlerResult handle_get_filename(DBusConnection * connection, DBusMe
 	dbus_message_iter_init_append(reply, &iter);
 
 	if (PCB->Filename)
-		filename = lrealpath(PCB->Filename);
+		filename = pcb_lrealpath(PCB->Filename);
 	else
 		filename = NULL;
 
