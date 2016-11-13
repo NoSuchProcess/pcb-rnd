@@ -25,10 +25,18 @@ on the direction the rule for object selection differ:
 <ul>
 	<li> drag from top-right towards bottom-left (positive sized box):
 	     select objects that are fully contained in the box (original behaviour)
-	<li> drag from bottom-left towards top-right (negative sized box):
+	<li> drag in any other direction (e.g. bottom-left to top-right, or
+	     bottom-right to top-left; negative sized box):
 	     select objects that are even partially within the box or merely touch
 	     the edge of the box
 </ul>
+
+The feature can be disabled using the editor/selection/disable_negative conf
+setting.
+<p>
+It's possible to limit the feature so that only hirozintal-negative is
+considered negative size (i.e. only right-to-left dragging), using the
+editor/selection/symmetric_negative conf setting.
 
 <h2> save/load and compatibility </h2>
 Not affected.
