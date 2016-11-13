@@ -679,7 +679,7 @@ static pcb_bool UndoRemovePoint(UndoListTypePtr Entry)
 			/* recover the point */
 			if (andDraw && layer->On)
 				ErasePolygon(polygon);
-			InsertPointIntoObject(PCB_TYPE_POLYGON, layer, polygon,
+			pcb_insert_point_in_object(PCB_TYPE_POLYGON, layer, polygon,
 														&Entry->Data.RemovedPoint.Index,
 														Entry->Data.RemovedPoint.X,
 														Entry->Data.RemovedPoint.Y, pcb_true, Entry->Data.RemovedPoint.last_in_contour);

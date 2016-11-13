@@ -37,7 +37,7 @@
 
 #include "global_typedefs.h"
 
-double ComputeIntersectionArea(pcb_box_list_t *boxlist);	/* will sort boxlist */
-double ComputeUnionArea(pcb_box_list_t *boxlist);
+double pcb_intersect_box_box(pcb_box_list_t *boxlist);	/* will sort boxlist */
+double pcb_union_box_box(pcb_box_list_t *boxlist);
 
 #endif

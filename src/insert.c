@@ -61,7 +61,7 @@ static pcb_opfunc_t InsertFunctions = {
 /* ---------------------------------------------------------------------------
  * inserts point into objects
  */
-void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * Ptr3, pcb_coord_t DX, pcb_coord_t DY, pcb_bool Force, pcb_bool insert_last)
+void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * Ptr3, pcb_coord_t DX, pcb_coord_t DY, pcb_bool Force, pcb_bool insert_last)
 {
 	void *ptr;
 	pcb_opctx_t ctx;
@@ -83,7 +83,7 @@ void *InsertPointIntoObject(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * P
 /* ---------------------------------------------------------------------------
  *  adjusts the insert point to make 45 degree lines as necessary
  */
-pcb_point_t *AdjustInsertPoint(void)
+pcb_point_t *pcb_adjust_insert_point(void)
 {
 	static pcb_point_t InsertedPoint;
 	double m;

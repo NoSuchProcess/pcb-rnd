@@ -431,3 +431,7 @@ hid_register_hid -> pcb_hid_register_hid
 hid_remove_hid -> pcb_hid_remove_hid
 common_nogui_init -> pcb_hid_nogui_init
 hid_nogui_get_hid -> pcb_hid_nogui_get_hid
+InsertPointIntoObject -> pcb_insert_point_in_object
+AdjustInsertPoint -> pcb_adjust_insert_point
+ComputeIntersectionArea -> pcb_intersect_box_box
+ComputeUnionArea -> pcb_union_box_box

@@ -475,7 +475,7 @@ void pcb_adjust_attached_objects(void)
 		break;
 		/* point insertion mode */
 	case PCB_MODE_INSERT_POINT:
-		pnt = AdjustInsertPoint();
+		pnt = pcb_adjust_insert_point();
 		if (pnt)
 			InsertedPoint = *pnt;
 		break;
@@ -1210,7 +1210,7 @@ void pcb_notify_mode(void)
 
 					}
 					Crosshair.AttachedObject.State = STATE_SECOND;
-					InsertedPoint = *AdjustInsertPoint();
+					InsertedPoint = *pcb_adjust_insert_point();
 				}
 			}
 			break;
@@ -1218,11 +1218,11 @@ void pcb_notify_mode(void)
 			/* second notify, insert new point into object */
 		case STATE_SECOND:
 			if (Crosshair.AttachedObject.Type == PCB_TYPE_POLYGON)
-				InsertPointIntoObject(PCB_TYPE_POLYGON,
+				pcb_insert_point_in_object(PCB_TYPE_POLYGON,
 															Crosshair.AttachedObject.Ptr1, fake.poly,
 															&polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
 			else
-				InsertPointIntoObject(Crosshair.AttachedObject.Type,
+				pcb_insert_point_in_object(Crosshair.AttachedObject.Type,
 															Crosshair.AttachedObject.Ptr1,
 															Crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
 			SetChangedFlag(pcb_true);

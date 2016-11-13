@@ -162,7 +162,7 @@ void deleteSegment(SegmentTree * st, int n, pcb_coord_t Y1, pcb_coord_t Y2)
  * etc.).
  * Runs in O(N ln N) time.
  */
-double ComputeIntersectionArea(pcb_box_list_t *boxlist)
+double pcb_intersect_box_box(pcb_box_list_t *boxlist)
 {
 	pcb_cardinal_t i;
 	double area = 0.0;
@@ -170,14 +170,14 @@ double ComputeIntersectionArea(pcb_box_list_t *boxlist)
 	for (i = 0; i < boxlist->BoxN; i++)
 		area += (double) (boxlist->Box[i].X2 - boxlist->Box[i].X1) * (double) (boxlist->Box[i].Y2 - boxlist->Box[i].Y1);
 	/* intersection area is aggregate - union. */
-	return area * 0.0001 - ComputeUnionArea(boxlist);
+	return area * 0.0001 - pcb_union_box_box(boxlist);
 }
 
 /* ---------------------------------------------------------------------------
  * Compute the area of the union of the given rectangles.
  * O(N ln N) time.
  */
-double ComputeUnionArea(pcb_box_list_t *boxlist)
+double pcb_union_box_box(pcb_box_list_t *boxlist)
 {
 	pcb_box_t **rectLeft, **rectRight;
 	pcb_cardinal_t i, j;
