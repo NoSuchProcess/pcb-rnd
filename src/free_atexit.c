@@ -45,7 +45,7 @@ static void **free_list = NULL;
 static leaky_idx_t free_size = 0;
 
 
-void *leaky_malloc(size_t size)
+void *pcb_leaky_malloc(size_t size)
 {
 	char *new_memory = malloc(size + sizeof(leaky_admin_t));
 
@@ -57,23 +57,23 @@ void *leaky_malloc(size_t size)
 	return new_memory + sizeof(leaky_admin_t);
 }
 
-void *leaky_calloc(size_t nmemb, size_t size)
+void *pcb_leaky_calloc(size_t nmemb, size_t size)
 {
 	size_t size_ = size * nmemb;
-	void *new_memory = leaky_malloc(size_);
+	void *new_memory = pcb_leaky_malloc(size_);
 
 	memset(new_memory, 0, size_);
 	return new_memory;
 }
 
-void *leaky_realloc(void *old_memory_, size_t size)
+void *pcb_leaky_realloc(void *old_memory_, size_t size)
 {
 	char *new_memory;
 	char *old_memory = old_memory_;
 	leaky_idx_t i;
 
 	if (old_memory == NULL)
-		return leaky_malloc(size);
+		return pcb_leaky_malloc(size);
 
 	old_memory -= sizeof(leaky_admin_t);
 
@@ -85,15 +85,15 @@ void *leaky_realloc(void *old_memory_, size_t size)
 	return new_memory + sizeof(leaky_admin_t);
 }
 
-char *leaky_strdup(const char *src)
+char *pcb_leaky_strdup(const char *src)
 {
 	int len = strlen(src)+1;
-	char *res = leaky_malloc(len);
+	char *res = pcb_leaky_malloc(len);
 	memcpy(res, src, len);
 	return res;
 }
 
-void leaky_uninit(void)
+void pcb_leaky_uninit(void)
 {
 	int i;
 
@@ -104,7 +104,7 @@ void leaky_uninit(void)
 	free_size = 0;
 }
 
-void leaky_init(void)
+void pcb_leaky_init(void)
 {
-	atexit(leaky_uninit);
+	atexit(pcb_leaky_uninit);
 }

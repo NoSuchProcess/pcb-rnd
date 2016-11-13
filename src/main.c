@@ -369,7 +369,7 @@ int main(int argc, char *argv[])
 	 * clean up and free various items of allocated memory,
 	 * and must be the last last atexit function to run.
 	 */
-	leaky_init();
+	pcb_leaky_init();
 
 	/* Register a function to be called when the program terminates.
 	 * This makes sure that data is saved even if LEX/YACC routines

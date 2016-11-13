@@ -336,3 +336,9 @@ flags_to_string -> pcb_strflg_f2s
 CreateDefaultFont -> pcb_font_create_default
 SetFontInfo -> pcb_font_set_info
 CreateNewLineInSymbol -> pcb_font_new_line_in_sym
+leaky_init -> pcb_leaky_init
+leaky_uninit -> pcb_leaky_uninit
+leaky_malloc -> pcb_leaky_malloc
+leaky_calloc -> pcb_leaky_calloc
+leaky_realloc -> pcb_leaky_realloc
+leaky_strdup -> pcb_leaky_strdup
