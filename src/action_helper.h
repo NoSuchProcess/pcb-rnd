@@ -33,7 +33,6 @@
 
 #define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_VIA | PCB_TYPE_POLYGON
 
-void ActionAdjustStyle(char *);
 void EventMoveCrosshair(int, int);
 
 void AdjustAttachedObjects(void);
