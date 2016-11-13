@@ -72,10 +72,10 @@ int ActionLoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		debug += (strcmp(argv[i], "debug") == 0);
 
 	if (debug > 0)
-		Message(PCB_MSG_INFO, _("Importing Hyperlynx file '%s', debug level %d\n"), fname, debug);
+		pcb_message(PCB_MSG_INFO, _("Importing Hyperlynx file '%s', debug level %d\n"), fname, debug);
 
 	if (hyp_parse(fname, debug))
-		AFAIL(load_hyp);
+		PCB_AFAIL(load_hyp);
 
 	return 0;
 }

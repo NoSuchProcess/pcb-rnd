@@ -47,7 +47,7 @@ int hyp_parse(const char *fname, int debug)
 /* print error message */
 void hyp_error(const char *msg)
 {
-  Message(PCB_MSG_DEBUG, "line %d: %s at '%s'\n", hyylineno, msg, hyytext);
+  pcb_message(PCB_MSG_DEBUG, "line %d: %s at '%s'\n", hyylineno, msg, hyytext);
 }
 
 /* exec_* routines are called by parser to interpret hyperlynx file */ 
