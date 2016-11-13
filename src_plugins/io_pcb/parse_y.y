@@ -271,7 +271,7 @@ parsefont
 		  symbols
 			{
 				yyFont->Valid = pcb_true;
-		  		SetFontInfo(yyFont);
+		  		pcb_font_set_info(yyFont);
 			}
 		;
 
@@ -1801,14 +1801,14 @@ symboldefinition
 			/* x1, y1, x2, y2, thickness */
 		: T_SYMBOLLINE '(' measure measure measure measure measure ')'
 			{
-				CreateNewLineInSymbol(Symbol, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
+				pcb_font_new_line_in_sym(Symbol, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
 			}
 		;
 hiressymbol
 			/* x1, y1, x2, y2, thickness */
 		: T_SYMBOLLINE '[' measure measure measure measure measure ']'
 			{
-				CreateNewLineInSymbol(Symbol, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
+				pcb_font_new_line_in_sym(Symbol, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
 			}
 		;
 

@@ -197,7 +197,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 			symbol->Width = x2;
 		symbol->Valid = 1;
 
-		CreateNewLineInSymbol(symbol, x1, y1, x2, y2, l->Thickness);
+		pcb_font_new_line_in_sym(symbol, x1, y1, x2, y2, l->Thickness);
 	}
 
 	linelist_foreach(&lwidth->Line, &it, l) {
@@ -214,7 +214,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		symbol->Delta = x1 - symbol->Width;
 	}
 
-	SetFontInfo(font);
+	pcb_font_set_info(font);
 
 	return 0;
 }

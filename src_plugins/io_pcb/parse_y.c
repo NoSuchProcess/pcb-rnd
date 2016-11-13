@@ -1897,7 +1897,7 @@ yyreduce:
 #line 272 "parse_y.y" /* yacc.c:1646  */
     {
 				yyFont->Valid = pcb_true;
-		  		SetFontInfo(yyFont);
+		  		pcb_font_set_info(yyFont);
 			}
 #line 1903 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2808,7 +2808,7 @@ yyreduce:
   case 174:
 #line 1803 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewLineInSymbol(Symbol, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
+				pcb_font_new_line_in_sym(Symbol, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
 			}
 #line 2814 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2816,7 +2816,7 @@ yyreduce:
   case 175:
 #line 1810 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewLineInSymbol(Symbol, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
+				pcb_font_new_line_in_sym(Symbol, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
 			}
 #line 2822 "parse_y.c" /* yacc.c:1646  */
     break;

@@ -316,7 +316,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	preview_pcb.Data = pcb_buffer_new();
 	preview_pcb.MaxWidth = preview_pcb.MaxHeight = PCB_MIL_TO_COORD(2000);
 	pcb_colors_from_settings(&preview_pcb);
-	CreateDefaultFont(&preview_pcb);
+	pcb_font_create_default(&preview_pcb);
 	preview_pcb.ViaOn = 1;
 
 	for(n = 0; n < max_copper_layer+2; n++) {

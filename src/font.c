@@ -43,7 +43,7 @@
 /* parses a file with font information and installs it into the provided PCB
  * checks directories given as colon separated list by resource fontPath
  * if the fonts filename doesn't contain a directory component */
-void CreateDefaultFont(pcb_board_t *pcb)
+void pcb_font_create_default(pcb_board_t *pcb)
 {
 	int res = -1;
 	pcb_io_err_inhibit_inc();
@@ -61,7 +61,7 @@ void CreateDefaultFont(pcb_board_t *pcb)
 
 /* transforms symbol coordinates so that the left edge of each symbol
  * is at the zero position. The y coordinates are moved so that min(y) = 0 */
-void SetFontInfo(pcb_font_t *Ptr)
+void pcb_font_set_info(pcb_font_t *Ptr)
 {
 	pcb_cardinal_t i, j;
 	pcb_symbol_t *symbol;
@@ -123,7 +123,7 @@ void SetFontInfo(pcb_font_t *Ptr)
 }
 
 /* creates a new line in a symbol */
-pcb_line_t *CreateNewLineInSymbol(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
+pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
 {
 	pcb_line_t *line = Symbol->Line;
 

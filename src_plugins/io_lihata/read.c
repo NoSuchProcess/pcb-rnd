@@ -754,7 +754,7 @@ static int parse_symbol(pcb_symbol_t *sym, lht_node_t *nd)
 		parse_coord(&x2, lht_dom_hash_get(obj, "x2"));
 		parse_coord(&y2, lht_dom_hash_get(obj, "y2"));
 		parse_coord(&th, lht_dom_hash_get(obj, "thickness"));
-		CreateNewLineInSymbol(sym, x1, y1, x2, y2, th);
+		pcb_font_new_line_in_sym(sym, x1, y1, x2, y2, th);
 	}
 
 	sym->Valid = 1;

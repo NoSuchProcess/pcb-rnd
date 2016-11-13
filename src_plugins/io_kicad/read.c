@@ -297,7 +297,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	required = BV(0) | BV(1) | BV(2) | BV(3);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
 		if (&st->PCB->Font == NULL) {
-			CreateDefaultFont(st->PCB);
+			pcb_font_create_default(st->PCB);
 		}
 
 		if (mirrored != 0) {
@@ -1231,7 +1231,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	required = BV(0) | BV(1) | BV(4) | BV(7) | BV(8);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
 		if (&st->PCB->Font == NULL) {
-			CreateDefaultFont(st->PCB);
+			pcb_font_create_default(st->PCB);
 		}
 
 		X = refdesX;

@@ -101,7 +101,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	for (i = 0; i < MAX_LAYER; i++)
 		ptr->Data->Layer[i].Name = pcb_strdup(conf_core.design.default_layer_name[i]);
 
-	CreateDefaultFont(ptr);
+	pcb_font_create_default(ptr);
 
 	return (ptr);
 }
