@@ -181,3 +181,5 @@ CreateNewBuffer -> pcb_buffer_new
 PASTEBUFFER -> PCB_PASTEBUFFER
 QuitApplication -> pcb_quit_app
 GetInfoString -> pcb_get_infostr
+ChangeLayoutName -> pcb_board_change_name
+ChangeLayerName -> pcb_layer_change_name

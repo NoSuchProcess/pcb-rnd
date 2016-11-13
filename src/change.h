@@ -66,8 +66,8 @@
 #define CHANGEMASKSIZE_TYPES    \
         (PCB_TYPE_PIN | PCB_TYPE_VIA | PCB_TYPE_PAD)
 
-pcb_bool ChangeLayoutName(char *);
-pcb_bool ChangeLayerName(pcb_layer_t *, char *);
+pcb_bool pcb_board_change_name(char *);
+pcb_bool pcb_layer_change_name(pcb_layer_t *, char *);
 pcb_bool ChangeSelectedSize(int, pcb_coord_t, pcb_bool);
 pcb_bool ChangeSelectedClearSize(int, pcb_coord_t, pcb_bool);
 pcb_bool ChangeSelected2ndSize(int, pcb_coord_t, pcb_bool);

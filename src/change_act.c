@@ -692,7 +692,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		case F_Layout:
 			name = gui->prompt_for(_("Enter the layout name:"), EMPTY(PCB->Name));
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
-			if (name && ChangeLayoutName(name))
+			if (name && pcb_board_change_name(name))
 				SetChangedFlag(pcb_true);
 			break;
 
@@ -700,7 +700,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		case F_Layer:
 			name = gui->prompt_for(_("Enter the layer name:"), EMPTY(CURRENT->Name));
 			/* NB: ChangeLayerName takes ownership of the passed memory */
-			if (name && ChangeLayerName(CURRENT, name))
+			if (name && pcb_layer_change_name(CURRENT, name))
 				SetChangedFlag(pcb_true);
 			break;
 		}

@@ -351,7 +351,7 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 /* ---------------------------------------------------------------------------
  * changes the name of a layout; memory has to be already allocated
  */
-pcb_bool ChangeLayoutName(char *Name)
+pcb_bool pcb_board_change_name(char *Name)
 {
 	free(PCB->Name);
 	PCB->Name = Name;
@@ -363,7 +363,7 @@ pcb_bool ChangeLayoutName(char *Name)
 /* ---------------------------------------------------------------------------
  * changes the name of a layer; memory has to be already allocated
  */
-pcb_bool ChangeLayerName(pcb_layer_t *Layer, char *Name)
+pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name)
 {
 	free((char*)CURRENT->Name);
 	CURRENT->Name = Name;
