@@ -538,3 +538,43 @@ char *flags_to_string(pcb_flag_t flags, int object_type)
 {
 	return common_flags_to_string(flags, object_type, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
 }
+
+
+#define N(x) x, sizeof(x)-1
+static pcb_flag_bits_t pcb_flagbits[] = {
+	{SHOWNUMBERFLAG, N("shownumber"), 1},
+	{LOCALREFFLAG, N("localref"), 1},
+	{CHECKPLANESFLAG, N("checkplanes"), 1},
+	{SHOWPCB_FLAG_DRC, N("showdrc"), 1},
+	{RUBBERBANDFLAG, N("rubberband"), 1},
+	{DESCRIPTIONFLAG, N("description"), 1},
+	{NAMEONPCBFLAG, N("nameonpcb"), 1},
+	{AUTOPCB_FLAG_DRC, N("autodrc"), 1},
+	{ALLDIRECTIONFLAG, N("alldirection"), 1},
+	{SWAPSTARTDIRFLAG, N("swapstartdir"), 1},
+	{UNIQUENAMEFLAG, N("uniquename"), 1},
+	{CLEARNEWFLAG, N("clearnew"), 1},
+	{NEWPCB_FLAG_FULLPOLY, N("newfullpoly"), 1},
+	{SNAPPCB_FLAG_PIN, N("snappin"), 1},
+	{SHOWMASKFLAG, N("showmask"), 1},
+	{THINDRAWFLAG, N("thindraw"), 1},
+	{ORTHOMOVEFLAG, N("orthomove"), 1},
+	{LIVEROUTEFLAG, N("liveroute"), 1},
+	{THINDRAWPOLYFLAG, N("thindrawpoly"), 1},
+	{LOCKNAMESFLAG, N("locknames"), 1},
+	{ONLYNAMESFLAG, N("onlynames"), 1},
+	{HIDENAMESFLAG, N("hidenames"), 1},
+	{ENABLEPCB_FLAG_MINCUT, N("enablemincut"), 1},
+};
+#undef N
+
+
+char *pcbflags_to_string(pcb_flag_t flags)
+{
+	return common_flags_to_string(flags, PCB_TYPEMASK_ALL, pcb_flagbits, ENTRIES(pcb_flagbits));
+}
+
+pcb_flag_t string_to_pcbflags(const char *flagstring, int (*error) (const char *msg))
+{
+	return common_string_to_flags(flagstring, error, pcb_flagbits, ENTRIES(pcb_flagbits));
+}

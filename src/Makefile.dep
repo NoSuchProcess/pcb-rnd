@@ -1981,11 +1981,8 @@
  ../src_plugins/io_pcb/parse_common.h pcb-printf.h polygon.h rtree.h \
  rats.h netlist.h route_style.h remove.h set.h flag_str.h compat_fs.h \
  paths.h rats_patch.h hid_actions.h hid_flags.h \
- ../src_plugins/io_pcb/flags.h flag.h ../src_plugins/io_pcb/attribs.h \
+ flag.h ../src_plugins/io_pcb/attribs.h \
  route_style.h obj_poly.h
-../src_plugins/io_pcb/flags.o: ../src_plugins/io_pcb/flags.c ../config.h \
- flag_str.h flag.h globalconst.h ../src_plugins/io_pcb/flags.h flag.h \
- const.h macro.h
 ../src_plugins/io_pcb/io_pcb.o: ../src_plugins/io_pcb/io_pcb.c \
  ../config.h plugins.h ../src_plugins/io_pcb/parse_common.h plug_io.h \
  library.h global_typedefs.h pcb_bool.h unit.h conf.h pcb-printf.h \
@@ -2016,7 +2013,7 @@
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h \
- ../src_plugins/io_pcb/flags.h flag.h crosshair.h rubberband.h \
+ flag.h crosshair.h rubberband.h \
  vtonpoint.h hid.h error.h drc.h attrib.h obj_line.h obj_common.h \
  ../src_3rd/genlist/gendlist.h flag.h obj_poly.h polyarea.h data.h \
  layer.h obj_all_list.h obj_arc_list.h obj_arc.h obj_elem_list.h \
@@ -2051,7 +2048,7 @@
  rubberband.h vtonpoint.h hid.h error.h drc.h buffer.h error.h \
  ../src_plugins/io_pcb/file.h plug_io.h ../src_plugins/io_pcb/parse_l.h \
  polygon.h rtree.h remove.h rtree.h flag_str.h obj_pinvia_therm.h \
- rats_patch.h ../src_plugins/io_pcb/flags.h flag.h route_style.h \
+ rats_patch.h flag.h route_style.h \
  compat_misc.h obj_all.h ../src_plugins/io_pcb/parse_y.h
 ../src_plugins/jostle/jostle.o: ../src_plugins/jostle/jostle.c \
  ../config.h board.h const.h macro.h global_typedefs.h pcb_bool.h unit.h \

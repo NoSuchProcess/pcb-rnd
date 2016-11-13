@@ -62,10 +62,14 @@ pcb_flag_t string_to_flags(const char *flagstring, int (*error) (const char *msg
    freed.  */
 char *flags_to_string(pcb_flag_t flags, int object_type);
 
+/* same as above, for pcb level flags */
+char *pcbflags_to_string(pcb_flag_t flags);
+pcb_flag_t string_to_pcbflags(const char *flagstring, int (*error) (const char *msg));
+
 void uninit_strflags_buf(void);
 void uninit_strflags_layerlist(void);
 
-/* io_pcb() needs this for historic reasons */
+/* low level */
 pcb_flag_t common_string_to_flags(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits);
 char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits);
 

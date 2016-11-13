@@ -680,7 +680,7 @@ char *pcb_text;
 #include <unistd.h>
 #endif
 
-#include "flags.h"
+#include "flag_str.h"
 
 #include "crosshair.h"
 #include "data.h"
