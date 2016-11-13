@@ -636,9 +636,9 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 
 			nelma_start_png(nelma_basename, layer_type_to_file_name(idx, PCB_FNS_fixed));
 
-			hid_save_and_show_layer_ons(save_ons);
+			pcb_hid_save_and_show_layer_ons(save_ons);
 			nelma_start_png_export();
-			hid_restore_layer_ons(save_ons);
+			pcb_hid_restore_layer_ons(save_ons);
 
 			nelma_finish_png();
 		}

@@ -59,7 +59,7 @@ void gpmi_hid_do_export(pcb_hid_attr_val_t * options)
 	h->result = options;
 	gpmi_event(h->module, HIDE_do_export_start, h);
 
-	hid_save_and_show_layer_ons(save_ons);
+	pcb_hid_save_and_show_layer_ons(save_ons);
 
   region.X1 = 0;
   region.Y1 = 0;
@@ -67,7 +67,7 @@ void gpmi_hid_do_export(pcb_hid_attr_val_t * options)
   region.Y2 = PCB->MaxHeight;
 
 	pcb_hid_expose_callback(h->hid, &region, 0);
-	hid_restore_layer_ons(save_ons);
+	pcb_hid_restore_layer_ons(save_ons);
 	gpmi_event(h->module, HIDE_do_export_finish, h);
 	h->result = NULL;
 }

@@ -508,7 +508,7 @@ void lesstif_update_widget_flags()
 {
 	int i;
 	for (i = 0; i < n_wflags; i++) {
-		int v = hid_get_flag(wflags[i].flagname);
+		int v = pcb_hid_get_flag(wflags[i].flagname);
 		Arg args[2];
 		if (v < 0) {
 			XtSetArg(args[0], wflags[i].xres, 0);

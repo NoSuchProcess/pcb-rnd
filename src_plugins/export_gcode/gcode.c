@@ -411,9 +411,9 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 			is_solder = (GetLayerGroupNumberByNumber(idx) == GetLayerGroupNumberByNumber(solder_silk_layer)) ? 1 : 0;
 			save_drill = is_solder;		/* save drills for one layer only */
 			gcode_start_png(gcode_basename, layer_type_to_file_name(idx, PCB_FNS_fixed));
-			hid_save_and_show_layer_ons(save_ons);
+			pcb_hid_save_and_show_layer_ons(save_ons);
 			gcode_start_png_export();
-			hid_restore_layer_ons(save_ons);
+			pcb_hid_restore_layer_ons(save_ons);
 
 /* ***************** gcode conversion *************************** */
 /* potrace uses a different kind of bitmap; for simplicity gcode_im is copied to this format */

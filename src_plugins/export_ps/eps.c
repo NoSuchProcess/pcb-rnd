@@ -326,10 +326,10 @@ static void eps_do_export(pcb_hid_attr_val_t * options)
 	}
 
 	if (!options[HA_as_shown].int_value)
-		hid_save_and_show_layer_ons(save_ons);
+		pcb_hid_save_and_show_layer_ons(save_ons);
 	eps_hid_export_to_file(f, options);
 	if (!options[HA_as_shown].int_value)
-		hid_restore_layer_ons(save_ons);
+		pcb_hid_restore_layer_ons(save_ons);
 
 	fclose(f);
 }

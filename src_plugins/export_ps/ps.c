@@ -731,9 +731,9 @@ static void ps_do_export(pcb_hid_attr_val_t * options)
 		}
 	}
 
-	hid_save_and_show_layer_ons(save_ons);
+	pcb_hid_save_and_show_layer_ons(save_ons);
 	ps_hid_export_to_file(fh, options);
-	hid_restore_layer_ons(save_ons);
+	pcb_hid_restore_layer_ons(save_ons);
 
 	global.multi_file = 0;
 	if (fh) {

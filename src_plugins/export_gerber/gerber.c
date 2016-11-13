@@ -549,7 +549,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		memset(print_layer, 0, sizeof(print_layer));
 	}
 
-	hid_save_and_show_layer_ons(save_ons);
+	pcb_hid_save_and_show_layer_ons(save_ons);
 	for (i = 0; i < max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (!LAYER_IS_EMPTY(layer))
@@ -589,7 +589,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 
 	maybe_close_f(f);
 	f = NULL;
-	hid_restore_layer_ons(save_ons);
+	pcb_hid_restore_layer_ons(save_ons);
 	conf_update(NULL); /* resotre forced sets */
 }
 

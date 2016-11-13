@@ -9,7 +9,7 @@
 #include "error.h"
 #include "hid_actions.h"
 
-int hid_get_flag(const char *name)
+int pcb_hid_get_flag(const char *name)
 {
 	const char *cp;
 
@@ -75,13 +75,13 @@ int hid_get_flag(const char *name)
 			}
 		}
 		else {
-			fprintf(stderr, "ERROR: hid_get_flag(%s) - not a path or an action\n", name);
+			fprintf(stderr, "ERROR: pcb_hid_get_flag(%s) - not a path or an action\n", name);
 		}
 	}
 	return -1;
 }
 
-void hid_save_and_show_layer_ons(int *save_array)
+void pcb_hid_save_and_show_layer_ons(int *save_array)
 {
 	int i;
 	for (i = 0; i < max_copper_layer + 2; i++) {
@@ -90,7 +90,7 @@ void hid_save_and_show_layer_ons(int *save_array)
 	}
 }
 
-void hid_restore_layer_ons(int *save_array)
+void pcb_hid_restore_layer_ons(int *save_array)
 {
 	int i;
 	for (i = 0; i < max_copper_layer + 2; i++)

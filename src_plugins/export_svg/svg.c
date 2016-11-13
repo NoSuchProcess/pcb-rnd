@@ -307,11 +307,11 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 	y2 += PCB_MM_TO_COORD(5);
 	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
 
-	hid_save_and_show_layer_ons(save_ons);
+	pcb_hid_save_and_show_layer_ons(save_ons);
 
 	svg_hid_export_to_file(f, options);
 
-	hid_restore_layer_ons(save_ons);
+	pcb_hid_restore_layer_ons(save_ons);
 
 	while(group_open) {
 		group_close();

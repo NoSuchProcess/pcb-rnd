@@ -157,7 +157,7 @@ void hid_extents_init(void)
 	initialised = pcb_true;
 }
 
-pcb_box_t *hid_get_extents(void *item)
+pcb_box_t *pcb_hid_get_extents(void *item)
 {
 	pcb_box_t region;
 

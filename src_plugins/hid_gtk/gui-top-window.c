@@ -112,7 +112,7 @@ pcb_hid_cfg_keys_t ghid_keymap;
 void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag)
 {
 	if (tflag != NULL) {
-		int v = hid_get_flag(tflag);
+		int v = pcb_hid_get_flag(tflag);
 		if (v < 0) {
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), 0);
 			gtk_action_set_sensitive(act, 0);
@@ -121,7 +121,7 @@ void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), ! !v);
 	}
 	if (aflag != NULL) {
-		int v = hid_get_flag(aflag);
+		int v = pcb_hid_get_flag(aflag);
 		gtk_action_set_sensitive(act, ! !v);
 	}
 }

@@ -414,3 +414,7 @@ common_thindraw_pcb_pad -> pcb_dhlp_thindraw_pcb_pad
 common_fill_pcb_pv -> pcb_dhlp_fill_pcb_pv
 common_thindraw_pcb_pv -> pcb_dhlp_thindraw_pcb_pv
 common_draw_helpers_init -> pcb_dhlp_draw_helpers_init
+hid_get_extents -> pcb_hid_get_extents
+hid_save_and_show_layer_ons -> pcb_hid_save_and_show_layer_ons
+hid_restore_layer_ons -> pcb_hid_restore_layer_ons
+hid_get_flag -> pcb_hid_get_flag

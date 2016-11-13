@@ -3559,7 +3559,7 @@ static void lesstif_show_item(void *item)
 
 	pd->item = item;
 
-	extents = hid_get_extents(item);
+	extents = pcb_hid_get_extents(item);
 	pd->left = extents->X1;
 	pd->right = extents->X2;
 	pd->top = extents->Y1;

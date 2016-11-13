@@ -4295,7 +4295,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	/*
 	 * use this to temporarily enable all layers.
 	 */
-	hid_save_and_show_layer_ons(save_ons);
+	pcb_hid_save_and_show_layer_ons(save_ons);
 
 	len = pcb_layer_list(PCB_LYT_SILK | PCB_LYT_COPPER, tmp, sizeof(tmp));
 	for(i = 0; i < len; i++)
@@ -4323,7 +4323,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	pcb_hid_expose_callback(&dxf_hid, &region, 0);
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
 	dxf_maybe_close_file();
-	hid_restore_layer_ons(save_ons);
+	pcb_hid_restore_layer_ons(save_ons);
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Leaving dxf_do_export () function.\n", __FILE__, __LINE__);
 #endif
