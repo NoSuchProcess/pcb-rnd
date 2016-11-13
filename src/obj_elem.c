@@ -745,23 +745,23 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 	ELEMENTLINE_LOOP(Element);
 	{
 		SetLineBoundingBox(line);
-		MAKEMIN(box->X1, line->Point1.X - (line->Thickness + 1) / 2);
-		MAKEMIN(box->Y1, line->Point1.Y - (line->Thickness + 1) / 2);
-		MAKEMIN(box->X1, line->Point2.X - (line->Thickness + 1) / 2);
-		MAKEMIN(box->Y1, line->Point2.Y - (line->Thickness + 1) / 2);
-		MAKEMAX(box->X2, line->Point1.X + (line->Thickness + 1) / 2);
-		MAKEMAX(box->Y2, line->Point1.Y + (line->Thickness + 1) / 2);
-		MAKEMAX(box->X2, line->Point2.X + (line->Thickness + 1) / 2);
-		MAKEMAX(box->Y2, line->Point2.Y + (line->Thickness + 1) / 2);
+		PCB_MAKE_MIN(box->X1, line->Point1.X - (line->Thickness + 1) / 2);
+		PCB_MAKE_MIN(box->Y1, line->Point1.Y - (line->Thickness + 1) / 2);
+		PCB_MAKE_MIN(box->X1, line->Point2.X - (line->Thickness + 1) / 2);
+		PCB_MAKE_MIN(box->Y1, line->Point2.Y - (line->Thickness + 1) / 2);
+		PCB_MAKE_MAX(box->X2, line->Point1.X + (line->Thickness + 1) / 2);
+		PCB_MAKE_MAX(box->Y2, line->Point1.Y + (line->Thickness + 1) / 2);
+		PCB_MAKE_MAX(box->X2, line->Point2.X + (line->Thickness + 1) / 2);
+		PCB_MAKE_MAX(box->Y2, line->Point2.Y + (line->Thickness + 1) / 2);
 	}
 	END_LOOP;
 	ARC_LOOP(Element);
 	{
 		SetArcBoundingBox(arc);
-		MAKEMIN(box->X1, arc->BoundingBox.X1);
-		MAKEMIN(box->Y1, arc->BoundingBox.Y1);
-		MAKEMAX(box->X2, arc->BoundingBox.X2);
-		MAKEMAX(box->Y2, arc->BoundingBox.Y2);
+		PCB_MAKE_MIN(box->X1, arc->BoundingBox.X1);
+		PCB_MAKE_MIN(box->Y1, arc->BoundingBox.Y1);
+		PCB_MAKE_MAX(box->X2, arc->BoundingBox.X2);
+		PCB_MAKE_MAX(box->Y2, arc->BoundingBox.Y2);
 	}
 	END_LOOP;
 	*vbox = *box;
@@ -775,14 +775,14 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 				Data->pin_tree = r_create_tree(NULL, 0, 0);
 			r_insert_entry(Data->pin_tree, (pcb_box_t *) pin, 0);
 		}
-		MAKEMIN(box->X1, pin->BoundingBox.X1);
-		MAKEMIN(box->Y1, pin->BoundingBox.Y1);
-		MAKEMAX(box->X2, pin->BoundingBox.X2);
-		MAKEMAX(box->Y2, pin->BoundingBox.Y2);
-		MAKEMIN(vbox->X1, pin->X - pin->Thickness / 2);
-		MAKEMIN(vbox->Y1, pin->Y - pin->Thickness / 2);
-		MAKEMAX(vbox->X2, pin->X + pin->Thickness / 2);
-		MAKEMAX(vbox->Y2, pin->Y + pin->Thickness / 2);
+		PCB_MAKE_MIN(box->X1, pin->BoundingBox.X1);
+		PCB_MAKE_MIN(box->Y1, pin->BoundingBox.Y1);
+		PCB_MAKE_MAX(box->X2, pin->BoundingBox.X2);
+		PCB_MAKE_MAX(box->Y2, pin->BoundingBox.Y2);
+		PCB_MAKE_MIN(vbox->X1, pin->X - pin->Thickness / 2);
+		PCB_MAKE_MIN(vbox->Y1, pin->Y - pin->Thickness / 2);
+		PCB_MAKE_MAX(vbox->X2, pin->X + pin->Thickness / 2);
+		PCB_MAKE_MAX(vbox->Y2, pin->Y + pin->Thickness / 2);
 	}
 	END_LOOP;
 	PAD_LOOP(Element);
@@ -795,14 +795,14 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 				Data->pad_tree = r_create_tree(NULL, 0, 0);
 			r_insert_entry(Data->pad_tree, (pcb_box_t *) pad, 0);
 		}
-		MAKEMIN(box->X1, pad->BoundingBox.X1);
-		MAKEMIN(box->Y1, pad->BoundingBox.Y1);
-		MAKEMAX(box->X2, pad->BoundingBox.X2);
-		MAKEMAX(box->Y2, pad->BoundingBox.Y2);
-		MAKEMIN(vbox->X1, MIN(pad->Point1.X, pad->Point2.X) - pad->Thickness / 2);
-		MAKEMIN(vbox->Y1, MIN(pad->Point1.Y, pad->Point2.Y) - pad->Thickness / 2);
-		MAKEMAX(vbox->X2, MAX(pad->Point1.X, pad->Point2.X) + pad->Thickness / 2);
-		MAKEMAX(vbox->Y2, MAX(pad->Point1.Y, pad->Point2.Y) + pad->Thickness / 2);
+		PCB_MAKE_MIN(box->X1, pad->BoundingBox.X1);
+		PCB_MAKE_MIN(box->Y1, pad->BoundingBox.Y1);
+		PCB_MAKE_MAX(box->X2, pad->BoundingBox.X2);
+		PCB_MAKE_MAX(box->Y2, pad->BoundingBox.Y2);
+		PCB_MAKE_MIN(vbox->X1, MIN(pad->Point1.X, pad->Point2.X) - pad->Thickness / 2);
+		PCB_MAKE_MIN(vbox->Y1, MIN(pad->Point1.Y, pad->Point2.Y) - pad->Thickness / 2);
+		PCB_MAKE_MAX(vbox->X2, MAX(pad->Point1.X, pad->Point2.X) + pad->Thickness / 2);
+		PCB_MAKE_MAX(vbox->Y2, MAX(pad->Point1.Y, pad->Point2.Y) + pad->Thickness / 2);
 	}
 	END_LOOP;
 	/* now we set the PCB_FLAG_EDGE2 of the pad if Point2

@@ -986,8 +986,8 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	if (!f)
 		return;
 
-	arcStartX = cx - width * cos(TO_RADIANS(start_angle));
-	arcStartY = cy + height * sin(TO_RADIANS(start_angle));
+	arcStartX = cx - width * cos(PCB_TO_RADIANS(start_angle));
+	arcStartY = cy + height * sin(PCB_TO_RADIANS(start_angle));
 
 	/* I checked three different gerber viewers, and they all disagreed
 	   on how ellipses should be drawn.  The spec just calls G74/G75
@@ -1014,8 +1014,8 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 		angle = start_angle;
 		while (nsteps > 0) {
 			nsteps--;
-			x1 = cx - width * cos(TO_RADIANS(angle + step));
-			y1 = cy + height * sin(TO_RADIANS(angle + step));
+			x1 = cx - width * cos(PCB_TO_RADIANS(angle + step));
+			y1 = cy + height * sin(PCB_TO_RADIANS(angle + step));
 			gerber_draw_line(gc, x0, y0, x1, y1);
 			x0 = x1;
 			y0 = y1;
@@ -1024,8 +1024,8 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 		return;
 	}
 
-	arcStopX = cx - width * cos(TO_RADIANS(start_angle + delta_angle));
-	arcStopY = cy + height * sin(TO_RADIANS(start_angle + delta_angle));
+	arcStopX = cx - width * cos(PCB_TO_RADIANS(start_angle + delta_angle));
+	arcStopY = cy + height * sin(PCB_TO_RADIANS(start_angle + delta_angle));
 	if (arcStartX != lastX) {
 		m = pcb_true;
 		lastX = arcStartX;

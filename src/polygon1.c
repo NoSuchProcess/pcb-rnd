@@ -1807,10 +1807,10 @@ static void M_pcb_polyarea_t_update_primary(jmp_buf * e, pcb_polyarea_t ** piece
 	b = bpa;
 	while ((b = b->f) != bpa) {
 		pcb_box_t *b_box = (pcb_box_t *) b->contours;
-		MAKEMIN(box.X1, b_box->X1);
-		MAKEMIN(box.Y1, b_box->Y1);
-		MAKEMAX(box.X2, b_box->X2);
-		MAKEMAX(box.Y2, b_box->Y2);
+		PCB_MAKE_MIN(box.X1, b_box->X1);
+		PCB_MAKE_MIN(box.Y1, b_box->Y1);
+		PCB_MAKE_MAX(box.X2, b_box->X2);
+		PCB_MAKE_MAX(box.Y2, b_box->Y2);
 	}
 
 	if (del_inside) {

@@ -137,10 +137,10 @@ void SetPolygonBoundingBox(pcb_polygon_t *Polygon)
 	Polygon->BoundingBox.X2 = Polygon->BoundingBox.Y2 = 0;
 	POLYGONPOINT_LOOP(Polygon);
 	{
-		MAKEMIN(Polygon->BoundingBox.X1, point->X);
-		MAKEMIN(Polygon->BoundingBox.Y1, point->Y);
-		MAKEMAX(Polygon->BoundingBox.X2, point->X);
-		MAKEMAX(Polygon->BoundingBox.Y2, point->Y);
+		PCB_MAKE_MIN(Polygon->BoundingBox.X1, point->X);
+		PCB_MAKE_MIN(Polygon->BoundingBox.Y1, point->Y);
+		PCB_MAKE_MAX(Polygon->BoundingBox.X2, point->X);
+		PCB_MAKE_MAX(Polygon->BoundingBox.Y2, point->Y);
 	}
 	/* boxes don't include the lower right corner */
 	pcb_close_box(&Polygon->BoundingBox);

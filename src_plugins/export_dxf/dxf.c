@@ -5347,10 +5347,10 @@ static void dxf_draw_arc(pcb_hid_gc_t gc,
 		return;
 	}
 	dxf_use_gc(gc, 0);
-	arcStartX = cx - width * cos(TO_RADIANS(start_angle));
-	arcStartY = cy + height * sin(TO_RADIANS(start_angle));
-	arcStopX = cx - width * cos(TO_RADIANS(start_angle + delta_angle));
-	arcStopY = cy + height * sin(TO_RADIANS(start_angle + delta_angle));
+	arcStartX = cx - width * cos(PCB_TO_RADIANS(start_angle));
+	arcStartY = cy + height * sin(PCB_TO_RADIANS(start_angle));
+	arcStopX = cx - width * cos(PCB_TO_RADIANS(start_angle + delta_angle));
+	arcStopY = cy + height * sin(PCB_TO_RADIANS(start_angle + delta_angle));
 	if (dxf_metric) {
 		/* use metric (mm) */
 		dxf_x0 = PCB_COORD_TO_MM(DXF_X(PCB, cx));
@@ -5426,8 +5426,8 @@ static void dxf_draw_arc(pcb_hid_gc_t gc,
 	 * in the pcb universe 0 degrees (the negative X-axis) is to the left,
 	 * and in the dxf universe 0 degrees is to the right.
 	 */
-	dxf_start_angle = TO_RADIANS(start_angle + 180);
-	dxf_end_angle = TO_RADIANS(start_angle + delta_angle + 180);
+	dxf_start_angle = PCB_TO_RADIANS(start_angle + 180);
+	dxf_end_angle = PCB_TO_RADIANS(start_angle + delta_angle + 180);
 	if (dxf_start_angle >= (2 * M_PI)) {
 		dxf_start_angle = dxf_start_angle - (2 * M_PI);
 	}

@@ -324,10 +324,10 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		allsameside = pcb_true;
 		for (j = 1; j < n->ConnectionN; j++) {
 			pcb_connection_t *c = &(n->Connection[j]);
-			MAKEMIN(minx, c->X);
-			MAKEMAX(maxx, c->X);
-			MAKEMIN(miny, c->Y);
-			MAKEMAX(maxy, c->Y);
+			PCB_MAKE_MIN(minx, c->X);
+			PCB_MAKE_MAX(maxx, c->X);
+			PCB_MAKE_MIN(miny, c->Y);
+			PCB_MAKE_MAX(maxy, c->Y);
 			if (c->type != PCB_TYPE_PAD)
 				allpads = pcb_false;
 			if (c->group != thegroup)
@@ -522,10 +522,10 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		pcb_coord_t maxX = -MAX_COORD, maxY = -MAX_COORD;
 		ELEMENT_LOOP(PCB->Data);
 		{
-			MAKEMIN(minX, element->VBox.X1);
-			MAKEMIN(minY, element->VBox.Y1);
-			MAKEMAX(maxX, element->VBox.X2);
-			MAKEMAX(maxY, element->VBox.Y2);
+			PCB_MAKE_MIN(minX, element->VBox.X1);
+			PCB_MAKE_MIN(minY, element->VBox.Y1);
+			PCB_MAKE_MAX(maxX, element->VBox.X2);
+			PCB_MAKE_MAX(maxY, element->VBox.Y2);
 		}
 		END_LOOP;
 		if (minX < maxX && minY < maxY)

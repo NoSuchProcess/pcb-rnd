@@ -317,10 +317,10 @@ static void adjust_bounds(struct rtree_node *node)
 		for (i = 1; i < M_SIZE + 1; i++) {
 			if (!node->u.rects[i].bptr)
 				return;
-			MAKEMIN(node->box.X1, node->u.rects[i].bounds.X1);
-			MAKEMAX(node->box.X2, node->u.rects[i].bounds.X2);
-			MAKEMIN(node->box.Y1, node->u.rects[i].bounds.Y1);
-			MAKEMAX(node->box.Y2, node->u.rects[i].bounds.Y2);
+			PCB_MAKE_MIN(node->box.X1, node->u.rects[i].bounds.X1);
+			PCB_MAKE_MAX(node->box.X2, node->u.rects[i].bounds.X2);
+			PCB_MAKE_MIN(node->box.Y1, node->u.rects[i].bounds.Y1);
+			PCB_MAKE_MAX(node->box.Y2, node->u.rects[i].bounds.Y2);
 		}
 	}
 	else {
@@ -328,10 +328,10 @@ static void adjust_bounds(struct rtree_node *node)
 		for (i = 1; i < M_SIZE + 1; i++) {
 			if (!node->u.kids[i])
 				return;
-			MAKEMIN(node->box.X1, node->u.kids[i]->box.X1);
-			MAKEMAX(node->box.X2, node->u.kids[i]->box.X2);
-			MAKEMIN(node->box.Y1, node->u.kids[i]->box.Y1);
-			MAKEMAX(node->box.Y2, node->u.kids[i]->box.Y2);
+			PCB_MAKE_MIN(node->box.X1, node->u.kids[i]->box.X1);
+			PCB_MAKE_MAX(node->box.X2, node->u.kids[i]->box.X2);
+			PCB_MAKE_MIN(node->box.Y1, node->u.kids[i]->box.Y1);
+			PCB_MAKE_MAX(node->box.Y2, node->u.kids[i]->box.Y2);
 		}
 	}
 }
@@ -812,10 +812,10 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 		if (i == 0)
 			node->box = *query;
 		else if (force) {
-			MAKEMIN(node->box.X1, query->X1);
-			MAKEMAX(node->box.X2, query->X2);
-			MAKEMIN(node->box.Y1, query->Y1);
-			MAKEMAX(node->box.Y2, query->Y2);
+			PCB_MAKE_MIN(node->box.X1, query->X1);
+			PCB_MAKE_MAX(node->box.X2, query->X2);
+			PCB_MAKE_MIN(node->box.Y1, query->Y1);
+			PCB_MAKE_MAX(node->box.Y2, query->Y2);
 		}
 		if (i < M_SIZE) {
 			sort_node(node);
@@ -831,10 +831,10 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 		double score, best_score;
 
 		if (force) {
-			MAKEMIN(node->box.X1, query->X1);
-			MAKEMAX(node->box.X2, query->X2);
-			MAKEMIN(node->box.Y1, query->Y1);
-			MAKEMAX(node->box.Y2, query->Y2);
+			PCB_MAKE_MIN(node->box.X1, query->X1);
+			PCB_MAKE_MAX(node->box.X2, query->X2);
+			PCB_MAKE_MIN(node->box.Y1, query->Y1);
+			PCB_MAKE_MAX(node->box.Y2, query->Y2);
 		}
 
 		/* this node encloses it, but it's not a leaf, so descend the tree */

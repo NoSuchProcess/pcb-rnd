@@ -4153,10 +4153,10 @@ struct routeall_status RouteAll(routedata_t * rd)
 		pcb_box_t bb = shrink_routebox(net);
 		LIST_LOOP(net, same_net, p);
 		{
-			MAKEMIN(bb.X1, p->sbox.X1);
-			MAKEMIN(bb.Y1, p->sbox.Y1);
-			MAKEMAX(bb.X2, p->sbox.X2);
-			MAKEMAX(bb.Y2, p->sbox.Y2);
+			PCB_MAKE_MIN(bb.X1, p->sbox.X1);
+			PCB_MAKE_MIN(bb.Y1, p->sbox.Y1);
+			PCB_MAKE_MAX(bb.X2, p->sbox.X2);
+			PCB_MAKE_MAX(bb.Y2, p->sbox.Y2);
 		}
 		END_LOOP;
 		area = (double) (bb.X2 - bb.X1) * (bb.Y2 - bb.Y1);

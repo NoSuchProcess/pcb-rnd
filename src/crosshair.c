@@ -744,10 +744,10 @@ static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *) box;
 	pcb_coord_t p1x, p1y, p2x, p2y;
 
-	p1x = arc->X - arc->Width * cos(TO_RADIANS(arc->StartAngle));
-	p1y = arc->Y + arc->Height * sin(TO_RADIANS(arc->StartAngle));
-	p2x = arc->X - arc->Width * cos(TO_RADIANS(arc->StartAngle + arc->Delta));
-	p2y = arc->Y + arc->Height * sin(TO_RADIANS(arc->StartAngle + arc->Delta));
+	p1x = arc->X - arc->Width * cos(PCB_TO_RADIANS(arc->StartAngle));
+	p1y = arc->Y + arc->Height * sin(PCB_TO_RADIANS(arc->StartAngle));
+	p2x = arc->X - arc->Width * cos(PCB_TO_RADIANS(arc->StartAngle + arc->Delta));
+	p2y = arc->Y + arc->Height * sin(PCB_TO_RADIANS(arc->StartAngle + arc->Delta));
 
 	/* printf("p1=%ld;%ld p2=%ld;%ld info=%ld;%ld\n", p1x, p1y, p2x, p2y, info->X, info->Y); */
 

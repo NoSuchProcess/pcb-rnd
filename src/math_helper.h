@@ -42,7 +42,7 @@
 #define	PCB_TAN_30_DEGREE		0.577350269	/* tan(30) */
 #define	PCB_TAN_60_DEGREE		1.732050808	/* tan(60) */
 #define PCB_LN_2_OVER_2		0.346573590
-#define TO_RADIANS(degrees)	(PCB_M180 * (degrees))
+#define PCB_TO_RADIANS(degrees)	(PCB_M180 * (degrees))
 
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
@@ -58,8 +58,8 @@
 #define SGN(a)			((a) >0 ? 1 : ((a) == 0 ? 0 : -1))
 #endif
 #define SGNZ(a)                 ((a) >=0 ? 1 : -1)
-#define MAKEMIN(a,b)            if ((b) < (a)) (a) = (b)
-#define MAKEMAX(a,b)            if ((b) > (a)) (a) = (b)
+#define PCB_MAKE_MIN(a,b)            if ((b) < (a)) (a) = (b)
+#define PCB_MAKE_MAX(a,b)            if ((b) > (a)) (a) = (b)
 
 
 #define	SWAP_SIGN_X(x)		(x)

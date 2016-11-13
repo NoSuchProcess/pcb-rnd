@@ -146,10 +146,10 @@ static pcb_box_t pcb_polyarea_t_boundingBox(pcb_polyarea_t * a)
 			first = 0;
 		}
 		else {
-			MAKEMIN(box.X1, pa->xmin);
-			MAKEMAX(box.X2, pa->xmax + 1);
-			MAKEMIN(box.Y1, pa->ymin);
-			MAKEMAX(box.Y2, pa->ymax + 1);
+			PCB_MAKE_MIN(box.X1, pa->xmin);
+			PCB_MAKE_MAX(box.X2, pa->xmax + 1);
+			PCB_MAKE_MIN(box.Y1, pa->ymin);
+			PCB_MAKE_MAX(box.Y2, pa->ymax + 1);
 		}
 	} while ((n = n->f) != a);
 	return box;
