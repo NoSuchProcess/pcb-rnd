@@ -67,7 +67,7 @@ static pcb_hid_attribute_t *bom_get_export_options(int *n)
 	static char *last_bom_filename = NULL;
 
 	if (PCB)
-		derive_default_filename(PCB->Filename, &bom_options[HA_bomfile], ".bom", &last_bom_filename);
+		pcb_derive_default_filename(PCB->Filename, &bom_options[HA_bomfile], ".bom", &last_bom_filename);
 
 	if (n)
 		*n = NUM_OPTIONS;

@@ -138,7 +138,7 @@ PCB_REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 	static char *last_made_filename = 0;
 
 	if (PCB)
-		derive_default_filename(PCB->Filename, &eps_attribute_list[HA_psfile], ".eps", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &eps_attribute_list[HA_psfile], ".eps", &last_made_filename);
 
 	if (n)
 		*n = NUM_OPTIONS;

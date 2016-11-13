@@ -3771,8 +3771,8 @@ static pcb_hid_attribute_t *dxf_get_export_options(int *n)
 	last_dxf_filename = 0;
 	last_dxf_xref_filename = 0;
 	if (PCB) {
-		derive_default_filename(PCB->Filename, &dxf_options[HA_dxffile], "", &last_dxf_filename);
-		derive_default_filename(PCB->Filename, &dxf_options[HA_xreffile], "", &last_dxf_xref_filename);
+		pcb_derive_default_filename(PCB->Filename, &dxf_options[HA_dxffile], "", &last_dxf_filename);
+		pcb_derive_default_filename(PCB->Filename, &dxf_options[HA_xreffile], "", &last_dxf_xref_filename);
 	}
 	if (n) {
 		*n = NUM_OPTIONS;
@@ -4510,7 +4510,7 @@ static int dxf_set_layer(const char *name, int group) {
 			sext = ".dxf";
 			break;
 		}
-		strcpy(dxf_filesuffix, layer_type_to_file_name(idx, PCB_FNS_first));
+		strcpy(dxf_filesuffix, pcb_layer_type_to_file_name(idx, PCB_FNS_first));
 		strcat(dxf_filesuffix, sext);
 		fp = fopen(dxf_filename, "w");
 		if (fp == NULL) {

@@ -338,7 +338,7 @@ static pcb_hid_attribute_t *scad_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 	if (PCB)
-		derive_default_filename(PCB->Filename, &scad_options[HA_scadfile], ".scad", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &scad_options[HA_scadfile], ".scad", &last_made_filename);
 
 /*    scad_options[HA_minimal_drill].coord_value = scad_options[HA_minimal_drill].*/
 	if (n)

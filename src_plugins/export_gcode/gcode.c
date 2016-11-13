@@ -240,7 +240,7 @@ static pcb_hid_attribute_t *gcode_get_export_options(int *n)
 	}
 
 	if (PCB) {
-		derive_default_filename(PCB->Filename, &gcode_attribute_list[HA_basename], ".gcode", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &gcode_attribute_list[HA_basename], ".gcode", &last_made_filename);
 	}
 	if (n) {
 		*n = NUM_OPTIONS;
@@ -407,10 +407,10 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 
 			/* magic */
 			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-			printf("idx=%d %s\n", idx, layer_type_to_file_name(idx, PCB_FNS_fixed));
+			printf("idx=%d %s\n", idx, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
 			is_solder = (GetLayerGroupNumberByNumber(idx) == GetLayerGroupNumberByNumber(solder_silk_layer)) ? 1 : 0;
 			save_drill = is_solder;		/* save drills for one layer only */
-			gcode_start_png(gcode_basename, layer_type_to_file_name(idx, PCB_FNS_fixed));
+			gcode_start_png(gcode_basename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
 			pcb_hid_save_and_show_layer_ons(save_ons);
 			gcode_start_png_export();
 			pcb_hid_restore_layer_ons(save_ons);
@@ -430,7 +430,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 				}
 				gdImageDestroy(temp_im);
 			}
-			sprintf(filename, "%s.%s.cnc", gcode_basename, layer_type_to_file_name(idx, PCB_FNS_fixed));
+			sprintf(filename, "%s.%s.cnc", gcode_basename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
 			for (r = 0; r < gdImageSX(gcode_im); r++) {
 				for (c = 0; c < gdImageSY(gcode_im); c++) {
 					v = gdImageGetPixel(gcode_im, r, gdImageSY(gcode_im) - 1 - c);

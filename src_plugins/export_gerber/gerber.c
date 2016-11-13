@@ -355,7 +355,7 @@ static pcb_hid_attribute_t *gerber_get_export_options(int *n)
 {
 	static char *last_made_filename = NULL;
 	if (PCB)
-		derive_default_filename(PCB->Filename, &gerber_options[HA_gerberfile], "", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &gerber_options[HA_gerberfile], "", &last_made_filename);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -393,7 +393,7 @@ static void maybe_close_f(FILE * f)
 
 static pcb_box_t region;
 
-/* Very similar to layer_type_to_file_name() but appends only a
+/* Very similar to pcb_layer_type_to_file_name() but appends only a
    three-character suffix compatible with Eagle's defaults.  */
 static void assign_eagle_file_suffix(char *dest, int idx)
 {
@@ -493,7 +493,7 @@ static void assign_file_suffix(char *dest, int idx)
 		break;
 	}
 
-	strcpy(dest, layer_type_to_file_name(idx, fns_style));
+	strcpy(dest, pcb_layer_type_to_file_name(idx, fns_style));
 	strcat(dest, sext);
 }
 

@@ -12,8 +12,8 @@ enum pcb_file_name_style_e {
 };
 
 /* Returns a filename base that can be used to output the layer.  */
-const char *layer_type_to_file_name(int idx, int style);
+const char *pcb_layer_type_to_file_name(int idx, int style);
 
-void derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix, char **memory);
+void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix, char **memory);
 
 #endif

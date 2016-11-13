@@ -260,7 +260,7 @@ static void nelma_write_space(FILE * out)
 	for (i = 0; i < MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
 			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-			ext = layer_type_to_file_name(idx, PCB_FNS_fixed);
+			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
 
 			if (z != 10) {
 				fprintf(out, ",\n");
@@ -325,7 +325,7 @@ static void nelma_write_nets(FILE * out)
 			for (i = 0; i < MAX_LAYER; i++)
 				if (nelma_export_group[i]) {
 					idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-					ext = layer_type_to_file_name(idx, PCB_FNS_fixed);
+					ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
 
 					if (m != 0 || i != 0)
 						fprintf(out, ",\n");
@@ -396,7 +396,7 @@ static void nelma_write_layers(FILE * out)
 	for (i = 0; i < MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
 			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-			ext = layer_type_to_file_name(idx, PCB_FNS_fixed);
+			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
 
 			if (z != 10) {
 				sprintf(buf, "substrate-%d", z);
@@ -430,7 +430,7 @@ static void nelma_write_object(FILE * out, pcb_lib_entry_t *pin)
 	for (i = 0; i < MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
 			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-			ext = layer_type_to_file_name(idx, PCB_FNS_fixed);
+			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
 
 			fprintf(out, "object %s-%s {\n", pin->ListEntry, ext);
 			fprintf(out, "\tposition = { 0, 0 }\n");
@@ -485,7 +485,7 @@ static pcb_hid_attribute_t *nelma_get_export_options(int *n)
 	static char *last_made_filename = 0;
 
 	if (PCB) {
-		derive_default_filename(PCB->Filename, &nelma_attribute_list[HA_basename], ".nelma", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &nelma_attribute_list[HA_basename], ".nelma", &last_made_filename);
 	}
 	if (n) {
 		*n = NUM_OPTIONS;
@@ -634,7 +634,7 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 			/* magic */
 			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 
-			nelma_start_png(nelma_basename, layer_type_to_file_name(idx, PCB_FNS_fixed));
+			nelma_start_png(nelma_basename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
 
 			pcb_hid_save_and_show_layer_ons(save_ons);
 			nelma_start_png_export();

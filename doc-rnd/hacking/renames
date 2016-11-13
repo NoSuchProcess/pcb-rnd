@@ -418,3 +418,5 @@ hid_get_extents -> pcb_hid_get_extents
 hid_save_and_show_layer_ons -> pcb_hid_save_and_show_layer_ons
 hid_restore_layer_ons -> pcb_hid_restore_layer_ons
 hid_get_flag -> pcb_hid_get_flag
+derive_default_filename -> pcb_derive_default_filename
+layer_type_to_file_name -> pcb_layer_type_to_file_name

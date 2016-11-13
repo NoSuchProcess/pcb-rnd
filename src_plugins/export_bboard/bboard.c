@@ -163,7 +163,7 @@ static pcb_hid_attribute_t *bboard_get_export_options(int *n)
 {
 	static char *last_made_filename = 0;
 	if (PCB)
-		derive_default_filename(PCB->Filename, &bboard_options[HA_bboardfile], ".png", &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &bboard_options[HA_bboardfile], ".png", &last_made_filename);
 
 	bboard_options[HA_bgcolor].default_val.str_value = pcb_strdup("#FFFFFF");
 

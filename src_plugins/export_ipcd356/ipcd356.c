@@ -106,7 +106,7 @@ static pcb_hid_attribute_t *IPCD356_get_export_options(int *n)
 	static char *last_IPCD356_filename = 0;
 
 	if (PCB) {
-		derive_default_filename(PCB->Filename, &IPCD356_options[HA_IPCD356_filename], ".net", &last_IPCD356_filename);
+		pcb_derive_default_filename(PCB->Filename, &IPCD356_options[HA_IPCD356_filename], ".net", &last_IPCD356_filename);
 	}
 
 	if (n)

@@ -75,7 +75,7 @@ static pcb_hid_attribute_t *xy_get_export_options(int *n)
 		last_unit_value = xy_options[HA_unit].default_val.int_value;
 	}
 	if (PCB)
-		derive_default_filename(PCB->Filename, &xy_options[HA_xyfile], ".xy", &last_xy_filename);
+		pcb_derive_default_filename(PCB->Filename, &xy_options[HA_xyfile], ".xy", &last_xy_filename);
 
 	if (n)
 		*n = NUM_OPTIONS;

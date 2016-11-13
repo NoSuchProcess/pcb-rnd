@@ -46,7 +46,7 @@ static pcb_hid_attribute_t *export_test_get_export_options(int *n)
 	static char *last_export_test_filename = 0;
 
 	if (PCB) {
-		derive_default_filename(PCB->Filename, &export_test_options[HA_export_testfile], ".export_test", &last_export_test_filename);
+		pcb_derive_default_filename(PCB->Filename, &export_test_options[HA_export_testfile], ".export_test", &last_export_test_filename);
 	}
 
 	if (n)

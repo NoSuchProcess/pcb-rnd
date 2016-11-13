@@ -372,7 +372,7 @@ static pcb_hid_attribute_t *png_get_export_options(int *n)
 	const char *suffix = get_file_suffix();
 
 	if (PCB)
-		derive_default_filename(PCB->Filename, &png_attribute_list[HA_pngfile], suffix, &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &png_attribute_list[HA_pngfile], suffix, &last_made_filename);
 
 	if (n)
 		*n = NUM_OPTIONS;

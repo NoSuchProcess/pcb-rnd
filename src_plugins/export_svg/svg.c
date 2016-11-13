@@ -184,7 +184,7 @@ static pcb_hid_attribute_t *svg_get_export_options(int *n)
 	const char *suffix = ".svg";
 
 	if (PCB)
-		derive_default_filename(PCB->Filename, &svg_attribute_list[HA_svgfile], suffix, &last_made_filename);
+		pcb_derive_default_filename(PCB->Filename, &svg_attribute_list[HA_svgfile], suffix, &last_made_filename);
 
 	if (n)
 		*n = NUM_OPTIONS;
