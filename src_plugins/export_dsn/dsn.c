@@ -572,7 +572,7 @@ static void hid_dsn_uninit()
 pcb_uninit_t hid_export_dsn_init()
 {
 	memset(&dsn_hid, 0, sizeof(pcb_hid_t));
-	common_nogui_init(&dsn_hid);
+	pcb_hid_nogui_init(&dsn_hid);
 
 	dsn_hid.struct_size = sizeof(pcb_hid_t);
 	dsn_hid.name = "dsn";

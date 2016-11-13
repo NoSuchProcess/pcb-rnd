@@ -593,7 +593,7 @@ pcb_uninit_t hid_export_bboard_init()
 {
 	memset(&bboard_hid, 0, sizeof(bboard_hid));
 
-	common_nogui_init(&bboard_hid);
+	pcb_hid_nogui_init(&bboard_hid);
 
 	bboard_hid.struct_size = sizeof(bboard_hid);
 	bboard_hid.name = "bboard";

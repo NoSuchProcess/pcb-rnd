@@ -1493,7 +1493,7 @@ pcb_uninit_t hid_export_png_init()
 {
 	memset(&png_hid, 0, sizeof(pcb_hid_t));
 
-	common_nogui_init(&png_hid);
+	pcb_hid_nogui_init(&png_hid);
 	pcb_dhlp_draw_helpers_init(&png_hid);
 
 	png_hid.struct_size = sizeof(pcb_hid_t);

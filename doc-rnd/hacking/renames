@@ -429,3 +429,5 @@ hid_enumerate -> pcb_hid_enumerate
 hid_parse_command_line -> pcb_hid_parse_command_line
 hid_register_hid -> pcb_hid_register_hid
 hid_remove_hid -> pcb_hid_remove_hid
+common_nogui_init -> pcb_hid_nogui_init
+hid_nogui_get_hid -> pcb_hid_nogui_get_hid

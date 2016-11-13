@@ -97,7 +97,7 @@ void pcb_hid_init()
 	pcb_hid_actions_init();
 
 	/* Setup a "nogui" default HID */
-	gui = hid_nogui_get_hid();
+	gui = pcb_hid_nogui_get_hid();
 
 #warning TODO: make this configurable
 	hid_load_dir(Concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",

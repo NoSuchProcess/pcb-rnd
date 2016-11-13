@@ -3764,7 +3764,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 {
 	memset(&lesstif_hid, 0, sizeof(pcb_hid_t));
 
-	common_nogui_init(&lesstif_hid);
+	pcb_hid_nogui_init(&lesstif_hid);
 	pcb_dhlp_draw_helpers_init(&lesstif_hid);
 
 	lesstif_hid.struct_size = sizeof(pcb_hid_t);

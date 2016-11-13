@@ -334,7 +334,7 @@ pcb_uninit_t hid_export_test_init()
 {
 	memset(&export_test_hid, 0, sizeof(pcb_hid_t));
 
-	common_nogui_init(&export_test_hid);
+	pcb_hid_nogui_init(&export_test_hid);
 
 	export_test_hid.struct_size = sizeof(pcb_hid_t);
 	export_test_hid.name = "export_test";

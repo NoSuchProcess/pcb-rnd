@@ -2045,7 +2045,7 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	memset(&ghid_hid, 0, sizeof(pcb_hid_t));
 
-	common_nogui_init(&ghid_hid);
+	pcb_hid_nogui_init(&ghid_hid);
 	pcb_dhlp_draw_helpers_init(&ghid_hid);
 
 	ghid_hid.struct_size = sizeof(pcb_hid_t);

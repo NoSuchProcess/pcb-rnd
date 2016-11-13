@@ -1612,7 +1612,7 @@ pcb_uninit_t hid_export_ps_init()
 {
 	memset(&ps_hid, 0, sizeof(pcb_hid_t));
 
-	common_nogui_init(&ps_hid);
+	pcb_hid_nogui_init(&ps_hid);
 	pcb_dhlp_draw_helpers_init(&ps_hid);
 	ps_ps_init(&ps_hid);
 

@@ -127,7 +127,7 @@ pcb_uninit_t hid_export_lpr_init()
 {
 	memset(&lpr_hid, 0, sizeof(pcb_hid_t));
 
-	common_nogui_init(&lpr_hid);
+	pcb_hid_nogui_init(&lpr_hid);
 	ps_ps_init(&lpr_hid);
 
 	lpr_hid.struct_size = sizeof(pcb_hid_t);

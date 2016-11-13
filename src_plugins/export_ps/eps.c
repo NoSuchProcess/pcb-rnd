@@ -603,7 +603,7 @@ void hid_eps_init()
 {
 	memset(&eps_hid, 0, sizeof(pcb_hid_t));
 
-	common_nogui_init(&eps_hid);
+	pcb_hid_nogui_init(&eps_hid);
 	pcb_dhlp_draw_helpers_init(&eps_hid);
 
 	eps_hid.struct_size = sizeof(pcb_hid_t);

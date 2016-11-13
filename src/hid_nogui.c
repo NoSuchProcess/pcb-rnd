@@ -393,7 +393,7 @@ static void nogui_create_menu(const char *menu, const char *action, const char *
 {
 }
 
-void common_nogui_init(pcb_hid_t * hid)
+void pcb_hid_nogui_init(pcb_hid_t * hid)
 {
 	hid->get_export_options = nogui_get_export_options;
 	hid->do_export = nogui_do_export;
@@ -452,7 +452,7 @@ void common_nogui_init(pcb_hid_t * hid)
 
 static pcb_hid_t nogui_hid;
 
-pcb_hid_t *hid_nogui_get_hid(void)
+pcb_hid_t *pcb_hid_nogui_get_hid(void)
 {
 	memset(&nogui_hid, 0, sizeof(pcb_hid_t));
 
@@ -460,7 +460,7 @@ pcb_hid_t *hid_nogui_get_hid(void)
 	nogui_hid.name = "nogui";
 	nogui_hid.description = "Default GUI when no other GUI is present.  " "Does nothing.";
 
-	common_nogui_init(&nogui_hid);
+	pcb_hid_nogui_init(&nogui_hid);
 
 	return &nogui_hid;
 }

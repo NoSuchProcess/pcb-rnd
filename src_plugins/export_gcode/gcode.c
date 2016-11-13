@@ -879,7 +879,7 @@ pcb_uninit_t hid_export_gcode_init()
 {
 	memset(&gcode_hid, 0, sizeof(pcb_hid_t));
 
-	common_nogui_init(&gcode_hid);
+	pcb_hid_nogui_init(&gcode_hid);
 	pcb_dhlp_draw_helpers_init(&gcode_hid);
 
 	gcode_hid.struct_size = sizeof(pcb_hid_t);
