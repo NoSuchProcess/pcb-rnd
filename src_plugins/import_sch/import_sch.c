@@ -188,15 +188,15 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		ds = PCB_ACTION_ARG(1);
 		units = PCB_ACTION_ARG(2);
 		if (!ds) {
-			const char *as = AttributeGet(PCB, "import::disperse");
+			const char *as = pcb_attrib_get(PCB, "import::disperse");
 			ds = gui->prompt_for(_("Enter dispersion:"), as ? as : "0");
 		}
 		if (units) {
 			sprintf(buf, "%s%s", ds, units);
-			AttributePut(PCB, "import::disperse", buf);
+			pcb_attrib_put(PCB, "import::disperse", buf);
 		}
 		else
-			AttributePut(PCB, "import::disperse", ds);
+			pcb_attrib_put(PCB, "import::disperse", ds);
 		if (PCB_ACTION_ARG(1) == NULL)
 			free((char*)ds);
 		return 0;
@@ -215,8 +215,8 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			gui->get_coords(_("Click on a location"), &x, &y);
 		}
 		else if (strcasecmp(xs, "center") == 0) {
-			AttributeRemove(PCB, "import::newX");
-			AttributeRemove(PCB, "import::newY");
+			pcb_attrib_remove(PCB, "import::newX");
+			pcb_attrib_remove(PCB, "import::newY");
 			return 0;
 		}
 		else if (strcasecmp(xs, "mark") == 0) {
@@ -235,14 +235,14 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		}
 
 		pcb_sprintf(buf, "%$ms", x);
-		AttributePut(PCB, "import::newX", buf);
+		pcb_attrib_put(PCB, "import::newX", buf);
 		pcb_sprintf(buf, "%$ms", y);
-		AttributePut(PCB, "import::newY", buf);
+		pcb_attrib_put(PCB, "import::newY", buf);
 		return 0;
 	}
 
 	if (!mode)
-		mode = AttributeGet(PCB, "import::mode");
+		mode = pcb_attrib_get(PCB, "import::mode");
 	if (!mode)
 		mode = "gnetlist";
 
@@ -259,7 +259,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		do {
 			nsources++;
 			sprintf(sname, "import::src%d", nsources);
-			src = AttributeGet(PCB, sname);
+			src = pcb_attrib_get(PCB, sname);
 		} while (src);
 
 		if (nsources > 0) {
@@ -268,7 +268,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			do {
 				nsources++;
 				sprintf(sname, "import::src%d", nsources);
-				src = AttributeGet(PCB, sname);
+				src = pcb_attrib_get(PCB, sname);
 				sources[nsources] = src;
 			} while (src);
 		}
@@ -364,9 +364,9 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		char *user_target = NULL;
 
 
-		user_outfile = AttributeGet(PCB, "import::outfile");
-		user_makefile = AttributeGet(PCB, "import::makefile");
-		user_target = AttributeGet(PCB, "import::target");
+		user_outfile = pcb_attrib_get(PCB, "import::outfile");
+		user_makefile = pcb_attrib_get(PCB, "import::makefile");
+		user_target = pcb_attrib_get(PCB, "import::target");
 		if (user_outfile && !user_target)
 			user_target = user_outfile;
 

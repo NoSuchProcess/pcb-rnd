@@ -1890,7 +1890,7 @@ static int ImportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			bname = last_slash + 1;
 	}
 
-	AttributePut(PCB, "import::src0", bname);
+	pcb_attrib_put(PCB, "import::src0", bname);
 
 	XtFree(name);
 

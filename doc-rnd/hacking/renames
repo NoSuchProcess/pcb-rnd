@@ -129,3 +129,6 @@ AttributeGetFromList -> pcb_attribute_get
 AttributePutToList -> pcb_attribute_put
 AttributeRemoveFromList -> pcb_attribute_remove
 FreeAttributeListMemory -> pcb_attribute_free
+AttributeGet -> pcb_attrib_get
+AttributePut -> pcb_attrib_put
+AttributeRemove -> pcb_attrib_remove

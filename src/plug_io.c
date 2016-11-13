@@ -343,13 +343,13 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* just in case a bad file saved file is loaded */
 
 		/* Use attribute PCB::grid::unit as unit, if we can */
-		unit_suffix = AttributeGet(PCB, "PCB::grid::unit");
+		unit_suffix = pcb_attrib_get(PCB, "PCB::grid::unit");
 		if (unit_suffix && *unit_suffix) {
 			const pcb_unit_t *new_unit = get_unit_struct(unit_suffix);
 			if (new_unit)
 				conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, POL_OVERWRITE);
 		}
-		AttributePut(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
+		pcb_attrib_put(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
 
 		pcb_sort_netlist();
 		rats_patch_make_edited(PCB);

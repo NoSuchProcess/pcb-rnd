@@ -400,7 +400,7 @@ static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 #if 0
 		Settings.increments = get_increments_struct(Settings.grid_unit->suffix);
 #endif
-		AttributePut(PCB, "PCB::grid::unit", argv[0]);
+		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
 	}
 	lesstif_sizes_reset();
 	lesstif_styles_update_values();

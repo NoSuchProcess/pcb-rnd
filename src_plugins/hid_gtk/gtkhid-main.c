@@ -1716,7 +1716,7 @@ static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	new_unit = get_unit_struct(argv[0]);
 	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
 		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
-		AttributePut(PCB, "PCB::grid::unit", argv[0]);
+		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
 	}
 
 	ghid_config_handle_units_changed();
@@ -1886,7 +1886,7 @@ static int ImportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	printf("File selected = %s\n", name);
 #endif
 
-	AttributePut(PCB, "import::src0", name);
+	pcb_attrib_put(PCB, "import::src0", name);
 	free(name);
 
 	I_am_recursing = 1;

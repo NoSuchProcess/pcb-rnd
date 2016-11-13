@@ -472,7 +472,7 @@ static int number_of_footprints_not_found;
 
 static int parse_layout_attribute_units(const char *name, int def)
 {
-	const char *as = AttributeGet(PCB, name);
+	const char *as = pcb_attrib_get(PCB, name);
 	if (!as)
 		return def;
 	return GetValue(as, NULL, NULL, NULL);

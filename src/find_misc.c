@@ -50,7 +50,7 @@ static void reassign_no_drc_flags(void)
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
 		pcb_layer_t *l = LAYER_PTR(layer);
-		l->no_drc = AttributeGet(l, "PCB::skip-drc") != NULL;
+		l->no_drc = pcb_attrib_get(l, "PCB::skip-drc") != NULL;
 	}
 }
 
