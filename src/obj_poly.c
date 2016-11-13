@@ -143,7 +143,7 @@ void SetPolygonBoundingBox(pcb_polygon_t *Polygon)
 		MAKEMAX(Polygon->BoundingBox.Y2, point->Y);
 	}
 	/* boxes don't include the lower right corner */
-	close_box(&Polygon->BoundingBox);
+	pcb_close_box(&Polygon->BoundingBox);
 	END_LOOP;
 }
 

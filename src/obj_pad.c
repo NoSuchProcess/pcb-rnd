@@ -136,7 +136,7 @@ void SetPadBoundingBox(pcb_pad_t *Pad)
 		Pad->BoundingBox.Y1 = MIN(Pad->Point1.Y, Pad->Point2.Y) - width;
 		Pad->BoundingBox.Y2 = MAX(Pad->Point1.Y, Pad->Point2.Y) + width;
 	}
-	close_box(&Pad->BoundingBox);
+	pcb_close_box(&Pad->BoundingBox);
 }
 
 /* changes the nopaste flag of a pad */

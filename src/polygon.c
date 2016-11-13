@@ -1015,10 +1015,10 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	info.layer = Layer;
 	info.polygon = polygon;
 	if (here)
-		region = clip_box(here, &polygon->BoundingBox);
+		region = pcb_clip_box(here, &polygon->BoundingBox);
 	else
 		region = polygon->BoundingBox;
-	region = bloat_box(&region, expand);
+	region = pcb_bloat_box(&region, expand);
 
 	if (setjmp(info.env) == 0) {
 		r = 0;

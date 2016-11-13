@@ -145,3 +145,17 @@ ROTATEBOX_FROM_NORTH -> PCB_BOX_ROTATE_FROM_NORTH
 CENTER_X -> PCB_BOX_CENTER_X
 CENTER_Y -> PCB_BOX_CENTER_Y
 MOVE_BOX_LOWLEVEL -> PCB_BOX_MOVE_LOWLEVEL
+point_in_box -> pcb_point_in_box
+point_in_closed_box -> pcb_point_in_closed_box
+box_is_good -> pcb_box_is_good
+box_intersect -> pcb_box_intersect
+closest_pcb_point_in_box -> pcb_closest_pcb_point_in_box
+box_in_box -> pcb_box_in_box
+clip_box -> pcb_clip_box
+shrink_box -> pcb_shrink_box
+bloat_box -> pcb_bloat_box
+box_center -> pcb_box_center
+box_corner -> pcb_box_corner
+point_box -> pcb_point_box
+close_box -> pcb_close_box
+dist2_to_box -> pcb_dist2_to_box

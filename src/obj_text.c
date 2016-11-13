@@ -210,7 +210,7 @@ void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	Text->BoundingBox.Y1 -= PCB->Bloat;
 	Text->BoundingBox.X2 += PCB->Bloat;
 	Text->BoundingBox.Y2 += PCB->Bloat;
-	close_box(&Text->BoundingBox);
+	pcb_close_box(&Text->BoundingBox);
 }
 
 

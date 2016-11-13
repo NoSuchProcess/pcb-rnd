@@ -127,7 +127,7 @@ void SetArcBoundingBox(pcb_arc_t *Arc)
 	Arc->BoundingBox.X2 += width;
 	Arc->BoundingBox.Y1 -= width;
 	Arc->BoundingBox.Y2 += width;
-	close_box(&Arc->BoundingBox);
+	pcb_close_box(&Arc->BoundingBox);
 }
 
 pcb_box_t *GetArcEnds(pcb_arc_t *Arc)

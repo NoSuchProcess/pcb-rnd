@@ -842,8 +842,8 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 		}
 		END_LOOP;
 	}
-	close_box(box);
-	close_box(vbox);
+	pcb_close_box(box);
+	pcb_close_box(vbox);
 	if (Data && !Data->element_tree)
 		Data->element_tree = r_create_tree(NULL, 0, 0);
 	if (Data)

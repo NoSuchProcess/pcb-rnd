@@ -980,7 +980,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 		SearchBox.Y2 = Y + Radius;
 	}
 	else {
-		SearchBox = point_box(X, Y);
+		SearchBox = pcb_point_box(X, Y);
 	}
 
 	if (conf_core.editor.lock_names) {

@@ -226,7 +226,7 @@ void SetPinBoundingBox(pcb_pin_t *Pin)
 	Pin->BoundingBox.Y1 = Pin->Y - width;
 	Pin->BoundingBox.X2 = Pin->X + width;
 	Pin->BoundingBox.Y2 = Pin->Y + width;
-	close_box(&Pin->BoundingBox);
+	pcb_close_box(&Pin->BoundingBox);
 }
 
 
