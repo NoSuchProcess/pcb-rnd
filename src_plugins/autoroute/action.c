@@ -65,7 +65,7 @@ responsive.
 static int ActionAutoRoute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
-	hid_action("Busy");
+	pcb_hid_action("Busy");
 	if (function) {								/* one parameter */
 		if (strcmp(function, "AllRats") == 0) {
 			if (AutoRoute(pcb_false))

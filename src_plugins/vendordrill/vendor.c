@@ -106,7 +106,7 @@ sizes for your vendor.
 
 int ActionApplyVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	hid_action("Busy");
+	pcb_hid_action("Busy");
 	apply_vendor_map();
 	return 0;
 }

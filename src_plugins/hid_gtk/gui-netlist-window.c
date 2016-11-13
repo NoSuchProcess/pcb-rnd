@@ -522,8 +522,8 @@ static void netlist_find_cb(GtkWidget * widget, gpointer data)
 		return;
 
 	name = selected_net->Name + 2;
-	hid_actionl("connection", "reset", NULL);
-	hid_actionl("netlist", "find", name, NULL);
+	pcb_hid_actionl("connection", "reset", NULL);
+	pcb_hid_actionl("netlist", "find", name, NULL);
 }
 
 static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)

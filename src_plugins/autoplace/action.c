@@ -45,7 +45,7 @@ connecting them are minimized.  Note that you cannot undo this.
 
 static int ActionAutoPlaceSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	hid_action("Busy");
+	pcb_hid_action("Busy");
 	if (gui->confirm_dialog(_("Auto-placement can NOT be undone.\n" "Do you want to continue anyway?\n"), 0)) {
 		if (AutoPlaceSelected())
 			SetChangedFlag(pcb_true);

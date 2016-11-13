@@ -202,7 +202,7 @@ static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_redraw();
 
 		if (gui != NULL)
-			hid_action("PCBChanged");
+			pcb_hid_action("PCBChanged");
 		pcb_notify_crosshair_change(pcb_true);
 		return 0;
 	}

@@ -142,7 +142,7 @@ static void nbcb_deselect(pcb_lib_menu_t *net, int pos)
 static void nbcb_find(pcb_lib_menu_t *net, int pos)
 {
 	char *name = net->Name + 2;
-	hid_actionl("netlist", "find", name, NULL);
+	pcb_hid_actionl("netlist", "find", name, NULL);
 }
 
 static void nbcb_std_callback(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * cbs)
@@ -152,7 +152,7 @@ static void nbcb_std_callback(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStr
 	if (XmListGetSelectedPos(netlist_list, &posl, &posc) == False)
 		return;
 	if (v == nbcb_find)
-		hid_actionl("connection", "reset", NULL);
+		pcb_hid_actionl("connection", "reset", NULL);
 	for (i = 0; i < posc; i++) {
 		pcb_lib_menu_t *net = &(PCB->NetlistLib[NETLIST_EDITED].Menu[posl[i] - 1]);
 		v(net, posl[i]);

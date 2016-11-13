@@ -1039,7 +1039,7 @@ static int ActionRouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			SetViaSize(rts->Diameter, pcb_true);
 			SetViaDrillingHole(rts->Hole, pcb_true);
 			SetClearanceWidth(rts->Clearance);
-			hid_action("RouteStylesChanged");
+			pcb_hid_action("RouteStylesChanged");
 		}
 		else
 			pcb_message(PCB_MSG_DEFAULT, "Error: invalid route style name or index\n");
@@ -1145,7 +1145,7 @@ static int ActionSetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		if (conf_core.editor.mode != PCB_MODE_LINE)
 			SetMode(PCB_MODE_LINE);
 		pcb_notify_crosshair_change(pcb_true);
-		hid_action("RouteStylesChanged");
+		pcb_hid_action("RouteStylesChanged");
 		break;
 
 	case PCB_TYPE_ARC:
@@ -1155,7 +1155,7 @@ static int ActionSetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		if (conf_core.editor.mode != PCB_MODE_ARC)
 			SetMode(PCB_MODE_ARC);
 		pcb_notify_crosshair_change(pcb_true);
-		hid_action("RouteStylesChanged");
+		pcb_hid_action("RouteStylesChanged");
 		break;
 
 	case PCB_TYPE_POLYGON:
@@ -1168,7 +1168,7 @@ static int ActionSetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		if (conf_core.editor.mode != PCB_MODE_VIA)
 			SetMode(PCB_MODE_VIA);
 		pcb_notify_crosshair_change(pcb_true);
-		hid_action("RouteStylesChanged");
+		pcb_hid_action("RouteStylesChanged");
 		break;
 
 	default:

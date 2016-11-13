@@ -200,12 +200,12 @@ void pcb_dump_actions(void)
 	}
 }
 
-int hid_action(const char *name)
+int pcb_hid_action(const char *name)
 {
-	return hid_actionv(name, 0, 0);
+	return pcb_hid_actionv(name, 0, 0);
 }
 
-int hid_actionl(const char *name, ...)
+int pcb_hid_actionl(const char *name, ...)
 {
 	const char *argv[20];
 	int argc = 0;
@@ -216,10 +216,10 @@ int hid_actionl(const char *name, ...)
 	while ((arg = va_arg(ap, char *)) != 0)
 		  argv[argc++] = arg;
 	va_end(ap);
-	return hid_actionv(name, argc, argv);
+	return pcb_hid_actionv(name, argc, argv);
 }
 
-int hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
+int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 {
 	pcb_coord_t x = 0, y = 0;
 	int i, ret;
@@ -243,7 +243,7 @@ int hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 	return ret;
 }
 
-int hid_actionv(const char *name, int argc, const char **argv)
+int pcb_hid_actionv(const char *name, int argc, const char **argv)
 {
 	const pcb_hid_action_t *a;
 
@@ -261,7 +261,7 @@ int hid_actionv(const char *name, int argc, const char **argv)
 		pcb_message(PCB_MSG_DEFAULT, ")\n");
 		return 1;
 	}
-	return hid_actionv_(a, argc, argv);
+	return pcb_hid_actionv_(a, argc, argv);
 }
 
 static int hid_parse_actionstring(const char *rstr, char require_parens)
@@ -312,7 +312,7 @@ another:
 	 * with no parameters or event.
 	 */
 	if (!*sp) {
-		retcode = hid_actionv(aname, 0, 0);
+		retcode = pcb_hid_actionv(aname, 0, 0);
 		goto cleanup;
 	}
 
@@ -335,7 +335,7 @@ another:
 		 * ","
 		 */
 		if (!maybe_empty && ((parens && *sp == ')') || (!parens && !*sp))) {
-			retcode = hid_actionv(aname, num, list);
+			retcode = pcb_hid_actionv(aname, num, list);
 			if (retcode)
 				goto cleanup;
 
@@ -411,13 +411,13 @@ cleanup:
 	return retcode;
 }
 
-int hid_parse_command(const char *str_)
+int pcb_hid_parse_command(const char *str_)
 {
 	pcb_event(EVENT_CLI_ENTER, "s", str_);
 	return hid_parse_actionstring(str_, pcb_false);
 }
 
-int hid_parse_actions(const char *str_)
+int pcb_hid_parse_actions(const char *str_)
 {
 	return hid_parse_actionstring(str_, pcb_true);
 }

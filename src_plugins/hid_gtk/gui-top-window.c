@@ -29,7 +29,7 @@ TODO:
 
 	/* Set to ! because ActionDisplay toggles it */
 conf_core.editor.draw_grid = !gtk_toggle_action_get_active(action);
-hid_actionl("Display", "Grid", "", NULL);
+pcb_hid_actionl("Display", "Grid", "", NULL);
 ghid_set_status_line_label();
 
 
@@ -427,11 +427,11 @@ static void layer_selector_select_callback(GHidLayerSelector * ls, int layer, gp
 	PCB->RatDraw = (layer == LAYER_BUTTON_RATS);
 	if (layer == LAYER_BUTTON_SILK) {
 		PCB->ElementOn = pcb_true;
-		hid_action("LayersChanged");
+		pcb_hid_action("LayersChanged");
 	}
 	else if (layer == LAYER_BUTTON_RATS) {
 		PCB->RatOn = pcb_true;
-		hid_action("LayersChanged");
+		pcb_hid_action("LayersChanged");
 	}
 	else if (layer < max_copper_layer)
 		ChangeGroupVisibility(layer, TRUE, pcb_true);
@@ -552,9 +552,9 @@ static void grid_units_button_cb(GtkWidget * widget, gpointer data)
 {
 	/* Button only toggles between mm and mil */
 	if (conf_core.editor.grid_unit == get_unit_struct("mm"))
-		hid_actionl("SetUnits", "mil", NULL);
+		pcb_hid_actionl("SetUnits", "mil", NULL);
 	else
-		hid_actionl("SetUnits", "mm", NULL);
+		pcb_hid_actionl("SetUnits", "mm", NULL);
 }
 
 /*
@@ -933,7 +933,7 @@ static gint delete_chart_cb(GtkWidget * widget, GdkEvent * event, GHidPort * por
 	if (ghid_entry_loop != NULL)
 		g_main_loop_quit(ghid_entry_loop);
 
-	hid_action("Quit");
+	pcb_hid_action("Quit");
 
 	/*
 	 * Return TRUE to keep our app running.  A FALSE here would let the
@@ -1321,7 +1321,7 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 		status = g_io_channel_read_line(source, &str, &len, &term, &err);
 		switch (status) {
 		case G_IO_STATUS_NORMAL:
-			hid_parse_actions(str);
+			pcb_hid_parse_actions(str);
 			g_free(str);
 			break;
 
@@ -1747,7 +1747,7 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	if (argc != 0)
 		PCB_AFAIL(editlayergroups);
 
-	hid_actionl("DoWindows", "Preferences", NULL);
+	pcb_hid_actionl("DoWindows", "Preferences", NULL);
 
 	return 0;
 }

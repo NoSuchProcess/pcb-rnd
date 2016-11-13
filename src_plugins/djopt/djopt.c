@@ -2556,7 +2556,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	SwitchDrawingWindow(PCB->Zoom, Output.drawing_area->window, conf_core.editor.show_solder_side, pcb_false);
 #endif
 
-	hid_action("Busy");
+	pcb_hid_action("Busy");
 
 	lines = 0;
 	corners = 0;

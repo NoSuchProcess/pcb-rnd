@@ -1139,9 +1139,9 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	if (conf_core.editor.mode == PCB_MODE_ARROW) {
 		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_TYPE_NONE)
-			hid_action("PointCursor");
+			pcb_hid_action("PointCursor");
 		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2))
-			hid_actionl("PointCursor", "True", NULL);
+			pcb_hid_actionl("PointCursor", "True", NULL);
 	}
 
 	if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != STATE_FIRST && conf_core.editor.auto_drc)

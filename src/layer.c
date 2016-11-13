@@ -227,7 +227,7 @@ int ChangeGroupVisibility(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 		PushOnTopOfLayerStack(Layer);
 
 	/* update control panel and exit */
-	hid_action("LayersChanged");
+	pcb_hid_action("LayersChanged");
 	return (changed);
 }
 
@@ -851,6 +851,6 @@ pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name)
 {
 	free((char*)CURRENT->Name);
 	CURRENT->Name = Name;
-	hid_action("LayersChanged");
+	pcb_hid_action("LayersChanged");
 	return (pcb_true);
 }

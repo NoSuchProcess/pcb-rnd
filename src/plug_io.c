@@ -361,9 +361,9 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 
 		if (((how == 0) || (revert)) && (gui != NULL)) {
 			if (revert)
-				hid_actionl("PCBChanged", "revert", NULL);
+				pcb_hid_actionl("PCBChanged", "revert", NULL);
 			else
-				hid_action("PCBChanged");
+				pcb_hid_action("PCBChanged");
 		}
 
 #ifdef DEBUG
@@ -386,7 +386,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	}
 
 	if (gui != NULL)
-		hid_action("PCBChanged");
+		pcb_hid_action("PCBChanged");
 
 	/* release unused memory */
 	RemovePCB(newPCB);

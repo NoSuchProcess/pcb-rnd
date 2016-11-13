@@ -703,7 +703,7 @@ void pcb_notify_mode(void)
 				 */
 				DrawElement(element);
 				pcb_draw();
-				hid_actionl("Report", "Object", NULL);
+				pcb_hid_actionl("Report", "Object", NULL);
 			}
 			else if (type != PCB_TYPE_NONE) {
 				pcb_text_t *thing = (pcb_text_t *) ptr3;
@@ -715,7 +715,7 @@ void pcb_notify_mode(void)
 					pcb_draw_obj(type, ptr1, ptr2);
 					pcb_draw();
 				}
-				hid_actionl("Report", "Object", NULL);
+				pcb_hid_actionl("Report", "Object", NULL);
 			}
 			break;
 		}
@@ -934,14 +934,14 @@ void pcb_notify_mode(void)
 
 			/* check if this is the last point of a polygon */
 			if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
-				hid_actionl("Polygon", "Close", NULL);
+				pcb_hid_actionl("Polygon", "Close", NULL);
 				ClosePolygon();
 				break;
 			}
 
 			/* Someone clicking twice on the same point ('doubleclick'): close polygon */
 			if (n >= 3 && points[n - 1].X == Crosshair.AttachedLine.Point2.X && points[n - 1].Y == Crosshair.AttachedLine.Point2.Y) {
-				hid_actionl("Polygon", "Close", NULL);
+				pcb_hid_actionl("Polygon", "Close", NULL);
 				break;
 			}
 

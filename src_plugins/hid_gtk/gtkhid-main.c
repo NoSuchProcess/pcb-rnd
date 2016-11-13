@@ -570,7 +570,7 @@ int ghid_close_confirm_dialog()
 	switch (ghid_dialog_close_confirm()) {
 	case GUI_DIALOG_CLOSE_CONFIRM_SAVE:
 		{
-			if (hid_actionl("Save", NULL)) {	/* Save failed */
+			if (pcb_hid_actionl("Save", NULL)) {	/* Save failed */
 				return 0;								/* Cancel */
 			}
 			else {
@@ -1154,7 +1154,7 @@ static int Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	/* we've been given the file name */
 	if (argc > 1)
-		return hid_actionv("LoadFrom", argc, argv);
+		return pcb_hid_actionv("LoadFrom", argc, argv);
 
 	function = argc ? argv[0] : "Layout";
 
@@ -1175,7 +1175,7 @@ static int Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (name) {
 		if (conf_core.rc.verbose)
 			fprintf(stderr, "Load:  Calling LoadFrom(%s, %s)\n", function, name);
-		hid_actionl("LoadFrom", function, name, NULL);
+		pcb_hid_actionl("LoadFrom", function, name, NULL);
 		g_free(name);
 	}
 
@@ -1214,13 +1214,13 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		current_dir = dup_cwd();
 
 	if (argc > 1)
-		return hid_actionv("SaveTo", argc, argv);
+		return pcb_hid_actionv("SaveTo", argc, argv);
 
 	function = argc ? argv[0] : "Layout";
 
 	if (strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
-			return hid_actionl("SaveTo", "Layout", PCB->Filename, NULL);
+			return pcb_hid_actionl("SaveTo", "Layout", PCB->Filename, NULL);
 
 	if (strcasecmp(function, "PasteBuffer") == 0) {
 		prompt = _("Save element as");
@@ -1254,7 +1254,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, name);
 
 		if (strcasecmp(function, "PasteBuffer") == 0) {
-			hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->description, "1", NULL);
+			pcb_hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->description, "1", NULL);
 			pcb_io_list_free(&avail);
 		}
 		else {
@@ -1268,9 +1268,9 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			if (fmt_param != NULL)
 				sfmt = avail.plug[fmt]->description;
 			if (strcasecmp(function, "Layout") == 0)
-				hid_actionl("SaveTo", "LayoutAs", name, sfmt, NULL);
+				pcb_hid_actionl("SaveTo", "LayoutAs", name, sfmt, NULL);
 			else
-				hid_actionl("SaveTo", function, name, sfmt, NULL);
+				pcb_hid_actionl("SaveTo", function, name, sfmt, NULL);
 		}
 		g_free(name);
 	}
@@ -1890,7 +1890,7 @@ static int ImportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	free(name);
 
 	I_am_recursing = 1;
-	rv = hid_action("Import");
+	rv = pcb_hid_action("Import");
 	I_am_recursing = 0;
 
 	return rv;

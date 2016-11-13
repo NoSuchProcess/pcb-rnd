@@ -281,7 +281,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		char *dot, *slash, *bslash;
 
 		if (!pcbname)
-			return hid_action("ImportGUI");
+			return pcb_hid_action("ImportGUI");
 
 		schname = (char *) malloc(strlen(pcbname) + 5);
 		strcpy(schname, pcbname);
@@ -297,7 +297,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		strcat(schname, ".sch");
 
 		if (access(schname, F_OK))
-			return hid_action("ImportGUI");
+			return pcb_hid_action("ImportGUI");
 
 		sources = (const char **) malloc(2 * sizeof(char *));
 		sources[0] = schname;

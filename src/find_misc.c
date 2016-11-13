@@ -240,7 +240,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 	}
 	else {
 		name = ConnectionName(type, ptr1, ptr2);
-		hid_actionl("NetlistShow", name, NULL);
+		pcb_hid_actionl("NetlistShow", name, NULL);
 	}
 
 	TheFlag = which_flag;

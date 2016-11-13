@@ -73,7 +73,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid;
 	int s, l;
 
-	if (hid_actionl("New", "Font", 0))
+	if (pcb_hid_actionl("New", "Font", 0))
 		return 1;
 
 #warning TODO do we need to change design.bloat here?
@@ -98,8 +98,8 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	PCB->Data->Layer[1].Name = pcb_strdup("OrigFont");
 	PCB->Data->Layer[2].Name = pcb_strdup("Width");
 	PCB->Data->Layer[3].Name = pcb_strdup("Grid");
-	hid_action("PCBChanged");
-	hid_action("LayersChanged");
+	pcb_hid_action("PCBChanged");
+	pcb_hid_action("LayersChanged");
 
 	lfont = PCB->Data->Layer + 0;
 	lorig = PCB->Data->Layer + 1;

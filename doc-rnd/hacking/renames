@@ -370,3 +370,9 @@ hid_find_action -> pcb_hid_find_action
 hid_remove_actions -> pcb_hid_remove_actions
 hid_remove_action -> pcb_hid_remove_action
 hid_remove_actions_by_cookie -> pcb_hid_remove_actions_by_cookie
+hid_action -> pcb_hid_action
+hid_actionl -> pcb_hid_actionl
+hid_actionv -> pcb_hid_actionv
+hid_actionv_ -> pcb_hid_actionv_
+hid_parse_command -> pcb_hid_parse_command
+hid_parse_actions -> pcb_hid_parse_actions

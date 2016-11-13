@@ -430,7 +430,7 @@ int main(int argc, char *argv[])
 	conf_update(NULL);
 
 	if (main_action != NULL) {
-		hid_parse_command(main_action);
+		pcb_hid_parse_command(main_action);
 		exit(0);
 	}
 
@@ -473,15 +473,15 @@ int main(int argc, char *argv[])
 	/* read the library file and display it if it's not empty
 	 */
 	if (!fp_read_lib_all() && library.data.dir.children.used)
-		hid_action("LibraryChanged");
+		pcb_hid_action("LibraryChanged");
 
 	if (conf_core.rc.script_filename) {
 		pcb_message(PCB_MSG_DEFAULT, _("Executing startup script file %s\n"), conf_core.rc.script_filename);
-		hid_actionl("ExecuteFile", conf_core.rc.script_filename, NULL);
+		pcb_hid_actionl("ExecuteFile", conf_core.rc.script_filename, NULL);
 	}
 	if (conf_core.rc.action_string) {
 		pcb_message(PCB_MSG_DEFAULT, _("Executing startup action %s\n"), conf_core.rc.action_string);
-		hid_parse_actions(conf_core.rc.action_string);
+		pcb_hid_parse_actions(conf_core.rc.action_string);
 	}
 
 	if (gui->printer || gui->exporter) {
@@ -504,7 +504,7 @@ int main(int argc, char *argv[])
 			if (gui->gui)
 				pcb_crosshair_init();
 			SetMode(PCB_MODE_ARROW);
-				hid_action("LibraryChanged");
+				pcb_hid_action("LibraryChanged");
 		}
 	} while(gui != NULL);
 

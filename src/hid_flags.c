@@ -67,11 +67,11 @@ int hid_get_flag(const char *name)
 				buff[len] = '\0';
 				argv[0] = buff;
 				argv[1] = NULL;
-				return hid_actionv_(a, len > 0, argv);
+				return pcb_hid_actionv_(a, len > 0, argv);
 			}
 			else {
 				/* slower but more generic way */
-				return hid_parse_command(name);
+				return pcb_hid_parse_command(name);
 			}
 		}
 		else {

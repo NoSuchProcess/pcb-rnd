@@ -71,7 +71,7 @@ static void drc_close_cb(gpointer data)
 
 static void drc_refresh_cb(gpointer data)
 {
-	hid_actionl("DRC", NULL);
+	pcb_hid_actionl("DRC", NULL);
 }
 
 static void drc_destroy_cb(GtkWidget * widget, gpointer data)

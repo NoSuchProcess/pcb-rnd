@@ -2280,7 +2280,7 @@ static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	printf("optimizing...\n");
 	/* This canonicalizes all the lines, and cleans up near-misses.  */
-	/* hid_actionl ("djopt", "puller", 0); */
+	/* pcb_hid_actionl("djopt", "puller", 0); */
 
 	current_is_solder = (GetLayerGroupNumberByPointer(CURRENT)
 											 == GetLayerGroupNumberByNumber(solder_silk_layer));

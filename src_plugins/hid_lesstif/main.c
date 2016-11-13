@@ -353,9 +353,9 @@ static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	XtSetValues(vscroll, stdarg_args, stdarg_n);
 	zoom_max();
 
-	hid_action("NetlistChanged");
-	hid_action("LayersChanged");
-	hid_action("RouteStylesChanged");
+	pcb_hid_action("NetlistChanged");
+	pcb_hid_action("LayersChanged");
+	pcb_hid_action("RouteStylesChanged");
 	lesstif_sizes_reset();
 	lesstif_update_layer_groups();
 	while (pinouts)
@@ -645,7 +645,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 	case XmCR_ACTIVATE:
 		s = XmTextGetString(w);
 		lesstif_show_crosshair(0);
-		hid_parse_command(s);
+		pcb_hid_parse_command(s);
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
 	case XmCR_LOSING_FOCUS:
@@ -1913,7 +1913,7 @@ pcb_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmVa
 
 static void mainwind_delete_cb()
 {
-	hid_action("Quit");
+	pcb_hid_action("Quit");
 }
 
 static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
@@ -1926,7 +1926,7 @@ static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
 
 	if (nbytes) {
 		buf[nbytes] = '\0';
-		hid_parse_actions(buf);
+		pcb_hid_parse_actions(buf);
 	}
 }
 

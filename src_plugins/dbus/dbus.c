@@ -152,7 +152,7 @@ static DBusHandlerResult handle_exec_action(DBusConnection * connection, DBusMes
 #endif
 
 	/* TODO: Proper return value from actions */
-	hid_actionv(action_name, argc, (const char**)argv);
+	pcb_hid_actionv(action_name, argc, (const char**)argv);
 	retval = 0;
 
 	dbus_free_string_array(argv);

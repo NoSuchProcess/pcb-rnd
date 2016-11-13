@@ -93,7 +93,7 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 
 int action(const char *cmdline)
 {
-	return hid_parse_command(cmdline);
+	return pcb_hid_parse_command(cmdline);
 }
 
 void create_menu(const char *path, const char *action, const char *mnemonic, const char *hotkey, const char *tooltip)

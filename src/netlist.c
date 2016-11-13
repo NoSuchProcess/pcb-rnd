@@ -62,7 +62,7 @@ void pcb_netlist_changed(int force_unfreeze)
 		PCB->netlist_needs_update = 1;
 	else {
 		PCB->netlist_needs_update = 0;
-		hid_action("NetlistChanged");
+		pcb_hid_action("NetlistChanged");
 	}
 }
 

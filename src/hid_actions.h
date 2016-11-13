@@ -17,21 +17,21 @@ extern void pcb_hid_remove_actions(const pcb_hid_action_t * a, int n);
 extern void pcb_hid_remove_action(const pcb_hid_action_t * a);
 extern void pcb_hid_remove_actions_by_cookie(const char *cookie);
 
-int hid_action(const char *action_);
-int hid_actionl(const char *action_, ...);	/* NULL terminated */
-int hid_actionv(const char *action_, int argc_, const char **argv_);
-int hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv);
+int pcb_hid_action(const char *action_);
+int pcb_hid_actionl(const char *action_, ...);	/* NULL terminated */
+int pcb_hid_actionv(const char *action_, int argc_, const char **argv_);
+int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv);
 
 /* Parse the given command string into action calls, and call
    hid_actionv for each action found.  Accepts both "action(arg1,
    arg2)" and command-style "action arg1 arg2", allowing only one
    action in the later case.  Returns nonzero if the action handler(s)
    return nonzero. */
-int hid_parse_command(const char *str_);
+int pcb_hid_parse_command(const char *str_);
 
 /* Parse the given string into action calls, and call
    hid_actionv for each action found.  Accepts only
    "action(arg1, arg2)" */
-int hid_parse_actions(const char *str_);
+int pcb_hid_parse_actions(const char *str_);
 
 #endif

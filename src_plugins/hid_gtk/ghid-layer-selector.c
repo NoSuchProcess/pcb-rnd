@@ -737,7 +737,7 @@ void ghid_layer_selector_update_colors(GHidLayerSelector * ls, const gchar * (*c
  *  Deletes layers according to a callback function: a return value of TRUE
  *  means delete, FALSE means leave it alone. Do not try to delete all layers
  *  using this function; with nothing left to select, pcb will likely go into
- *  an infinite recursion between hid_action() and g_signal().
+ *  an infinite recursion between pcb_hid_action() and g_signal().
  *
  *  Separators will be deleted if the layer AFTER them is deleted.
  *

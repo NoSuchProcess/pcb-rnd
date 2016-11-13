@@ -82,7 +82,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ParseGroupString(conf_core.design.groups, &ptr->LayerGroups, MAX_LAYER);
 	save = PCB;
 	PCB = ptr;
-	hid_action("RouteStylesChanged");
+	pcb_hid_action("RouteStylesChanged");
 	PCB = save;
 
 	ptr->Zoom = conf_core.editor.zoom;
@@ -220,7 +220,7 @@ pcb_bool pcb_board_change_name(char *Name)
 	free(PCB->Name);
 	PCB->Name = Name;
 	if (gui != NULL)
-		hid_action("PCBChanged");
+		pcb_hid_action("PCBChanged");
 	return (pcb_true);
 }
 
@@ -242,5 +242,5 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 		pcb_crosshair_set_range(0, 0, Width, Height);
 
 	if (gui != NULL)
-		hid_action("PCBChanged");
+		pcb_hid_action("PCBChanged");
 }

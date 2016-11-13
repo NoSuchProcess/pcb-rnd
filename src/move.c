@@ -338,7 +338,7 @@ int MoveLayer(int old_index, int new_index)
 							&PCB->LayerGroups.Entries[g + 1], (MAX_LAYER - g - 1) * sizeof(PCB->LayerGroups.Entries[g]));
 		}
 
-	hid_action("LayersChanged");
+	pcb_hid_action("LayersChanged");
 	gui->invalidate_all();
 	return 0;
 }

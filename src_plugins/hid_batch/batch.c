@@ -150,7 +150,7 @@ static void batch_do_export(pcb_hid_attr_val_t * options)
 			hid_batch_uninit();
 			return;
 		}
-		hid_parse_command(line);
+		pcb_hid_parse_command(line);
 	}
 	batch_end();
 }

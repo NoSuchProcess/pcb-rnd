@@ -120,7 +120,7 @@ static void ghid_log_append_string_(enum pcb_message_level level, gchar *msg)
 	ghid_text_view_append(log_text, msg);
 
 	if (popup)
-		hid_actionl("DoWindows", "Log", "false", NULL);
+		pcb_hid_actionl("DoWindows", "Log", "false", NULL);
 }
 
 static void ghid_log_append_string(enum pcb_message_level level, gchar *s)
