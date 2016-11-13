@@ -83,7 +83,7 @@ int action_register(const char *name, const char *need_xy, const char *descripti
 	ctx->module                = gpmi_get_current_module();
 	ctx->next                  = NULL;
 
-	hid_register_action(&ctx->action, gpmi_cookie, 0);
+	pcb_hid_register_action(&ctx->action, gpmi_cookie, 0);
 
 	gpmi_mod_cleanup_insert(ctx->module, cleanup_action, "p", ctx);
 

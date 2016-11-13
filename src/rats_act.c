@@ -226,4 +226,4 @@ pcb_hid_action_t rats_action_list[] = {
 	 deleterats_help, deleterats_syntax}
 };
 
-REGISTER_ACTIONS(rats_action_list, NULL)
+PCB_REGISTER_ACTIONS(rats_action_list, NULL)

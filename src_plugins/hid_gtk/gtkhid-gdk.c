@@ -814,7 +814,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	ghid_draw_bg_image();
 
-	hid_expose_callback(&ghid_hid, &region, 0);
+	pcb_hid_expose_callback(&ghid_hid, &region, 0);
 	ghid_draw_grid();
 
 	/* In some cases we are called with the crosshair still off */
@@ -1169,7 +1169,7 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
 
 	/* call the drawing routine */
-	hid_expose_callback(&ghid_hid, NULL, &pinout->element);
+	pcb_hid_expose_callback(&ghid_hid, NULL, &pinout->element);
 
 	gport->drawable = save_drawable;
 	gport->view = save_view;
@@ -1223,7 +1223,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	region.Y1 = MAX(0, MIN(PCB->MaxHeight, region.Y1));
 	region.Y2 = MAX(0, MIN(PCB->MaxHeight, region.Y2));
 
-	hid_expose_callback(&ghid_hid, &region, NULL);
+	pcb_hid_expose_callback(&ghid_hid, &region, NULL);
 
 	gport->drawable = save_drawable;
 	gport->view = save_view;

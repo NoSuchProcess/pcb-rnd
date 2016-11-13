@@ -189,7 +189,7 @@ pcb_hid_action_t diag_action_list[] = {
 
 static const char *diag_cookie = "debug plugin";
 
-REGISTER_ACTIONS(diag_action_list, diag_cookie)
+PCB_REGISTER_ACTIONS(diag_action_list, diag_cookie)
 
 static void hid_diag_uninit(void)
 {
@@ -199,6 +199,6 @@ static void hid_diag_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_diag_init(void)
 {
-	REGISTER_ACTIONS(diag_action_list, diag_cookie)
+	PCB_REGISTER_ACTIONS(diag_action_list, diag_cookie)
 	return hid_diag_uninit;
 }

@@ -304,4 +304,4 @@ pcb_hid_action_t conf_action_list[] = {
 	 ChkBuffer_help, ChkBuffer_syntax}
 };
 
-REGISTER_ACTIONS(conf_action_list, NULL)
+PCB_REGISTER_ACTIONS(conf_action_list, NULL)

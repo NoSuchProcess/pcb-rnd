@@ -451,7 +451,7 @@ pcb_hid_action_t import_sch_action_list[] = {
 	 import_help, import_syntax}
 };
 
-REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
+PCB_REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 
 static void hid_import_sch_uninit(void)
 {
@@ -464,7 +464,7 @@ pcb_uninit_t hid_import_sch_init(void)
 {
 	char *tmp;
 
-	REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
+	PCB_REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_import_sch, field,isarray,type_name,cpath,cname,desc,flags);
 #include "import_sch_conf_fields.h"

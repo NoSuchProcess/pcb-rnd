@@ -370,7 +370,7 @@ If non-zero grid polygons instead of filling them with gridlines spaced as speci
 
 #define NUM_OPTIONS (sizeof(ps_attribute_list)/sizeof(ps_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(ps_attribute_list, ps_cookie)
+PCB_REGISTER_ATTRIBUTES(ps_attribute_list, ps_cookie)
 
 /* All file-scope data is in global struct */
 static struct {
@@ -686,14 +686,14 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		fprintf(the_file, "/tocp { /y y 12 sub def 90 y moveto rightshow } bind def\n");
 
 		global.doing_toc = 1;
-		global.pagecount = 1;				/* 'pagecount' is modified by hid_expose_callback() call */
-		hid_expose_callback(&ps_hid, &global.region, 0);
+		global.pagecount = 1;				/* 'pagecount' is modified by pcb_hid_expose_callback() call */
+		pcb_hid_expose_callback(&ps_hid, &global.region, 0);
 	}
 
 	global.pagecount = 1;					/* Reset 'pagecount' if single file */
 	global.doing_toc = 0;
 	ps_set_layer(NULL, 0, -1);		/* reset static vars */
-	hid_expose_callback(&ps_hid, &global.region, 0);
+	pcb_hid_expose_callback(&ps_hid, &global.region, 0);
 
 	if (the_file)
 		fprintf(the_file, "showpage\n");
@@ -1554,7 +1554,7 @@ pcb_hid_action_t hidps_action_list[] = {
 	{"pscalib", 0, ActionPSCalib}
 };
 
-REGISTER_ACTIONS(hidps_action_list, ps_cookie)
+PCB_REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 
 
 #include "dolists.h"
@@ -1588,7 +1588,7 @@ void ps_ps_init(pcb_hid_t * hid)
 	hid->calibrate = ps_calibrate;
 	hid->set_crosshair = ps_set_crosshair;
 
-	REGISTER_ACTIONS(hidps_action_list, ps_cookie)
+	PCB_REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 
 	ps_inited = 1;
 }

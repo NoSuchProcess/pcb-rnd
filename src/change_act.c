@@ -1575,4 +1575,4 @@ pcb_hid_action_t change_action_list[] = {
 	 clrflag_help, clrflag_syntax}
 };
 
-REGISTER_ACTIONS(change_action_list, NULL)
+PCB_REGISTER_ACTIONS(change_action_list, NULL)

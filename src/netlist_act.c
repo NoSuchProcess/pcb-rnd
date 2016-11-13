@@ -341,4 +341,4 @@ pcb_hid_action_t netlist_action_list[] = {
 	 netlist_help, netlist_syntax}
 };
 
-REGISTER_ACTIONS(netlist_action_list, NULL)
+PCB_REGISTER_ACTIONS(netlist_action_list, NULL)

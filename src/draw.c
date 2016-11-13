@@ -576,7 +576,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
  * HID drawing callback.
  */
 
-void hid_expose_callback(pcb_hid_t * hid, pcb_box_t * region, void *item)
+void pcb_hid_expose_callback(pcb_hid_t * hid, pcb_box_t * region, void *item)
 {
 	pcb_hid_t *old_gui = gui;
 

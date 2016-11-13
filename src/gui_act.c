@@ -1273,4 +1273,4 @@ pcb_hid_action_t gui_action_list[] = {
 	 switchhid_help, switchhid_syntax}
 };
 
-REGISTER_ACTIONS(gui_action_list, NULL)
+PCB_REGISTER_ACTIONS(gui_action_list, NULL)

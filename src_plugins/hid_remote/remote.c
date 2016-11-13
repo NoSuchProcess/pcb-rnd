@@ -76,7 +76,7 @@ pcb_hid_action_t remote_action_list[] = {
 	{"PointCursor", 0, info}
 };
 
-REGISTER_ACTIONS(remote_action_list, remote_cookie)
+PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)
 
 /* ----------------------------------------------------------------------------- */
 static int remote_stay;
@@ -94,7 +94,7 @@ static void remote_do_export(pcb_hid_attr_val_t * options)
 	if (remote_proto_send_ready() != 0)
 		exit(1);
 
-	hid_expose_callback(&remote_hid, &region, 0);
+	pcb_hid_expose_callback(&remote_hid, &region, 0);
 
 /* main loop, parser */
 	if (remote_proto_parse_all() != 0)
@@ -427,7 +427,7 @@ pcb_uninit_t hid_hid_remote_init()
 	remote_hid.propedit_add_value = remote_propedit_add_value;
 	remote_hid.propedit_add_stat = remote_propedit_add_stat;
 
-	REGISTER_ACTIONS(remote_action_list, remote_cookie)
+	PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)
 
 	hid_register_hid(&remote_hid);
 

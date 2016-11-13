@@ -190,4 +190,4 @@ pcb_hid_action_t lesstif_library_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
+PCB_REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)

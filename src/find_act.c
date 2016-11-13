@@ -72,4 +72,4 @@ pcb_hid_action_t find_action_list[] = {
 	 drc_help, drc_syntax}
 };
 
-REGISTER_ACTIONS(find_action_list, NULL)
+PCB_REGISTER_ACTIONS(find_action_list, NULL)

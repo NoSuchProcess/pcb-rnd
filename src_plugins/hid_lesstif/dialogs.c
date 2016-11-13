@@ -1945,4 +1945,4 @@ pcb_hid_action_t lesstif_dialog_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
+PCB_REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)

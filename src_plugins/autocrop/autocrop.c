@@ -232,7 +232,7 @@ static pcb_hid_action_t autocrop_action_list[] = {
 
 char *autocrop_cookie = "autocrop plugin";
 
-REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie)
+PCB_REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie)
 
 static void hid_autocrop_uninit(void)
 {
@@ -242,6 +242,6 @@ static void hid_autocrop_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_autocrop_init()
 {
-	REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie);
+	PCB_REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie);
 	return hid_autocrop_uninit;
 }

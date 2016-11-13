@@ -536,7 +536,7 @@ pcb_hid_action_t lesstif_menu_action_list[] = {
 	 selectlayer_help, selectlayer_syntax}
 };
 
-REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
+PCB_REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 #if 0
 		 static void
 		   stdarg_do_color(char *value, char *which)

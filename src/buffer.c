@@ -903,4 +903,4 @@ pcb_hid_action_t buffer_action_list[] = {
 	 pastebuffer_help, pastebuffer_syntax}
 };
 
-REGISTER_ACTIONS(buffer_action_list, NULL)
+PCB_REGISTER_ACTIONS(buffer_action_list, NULL)

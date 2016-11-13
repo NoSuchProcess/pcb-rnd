@@ -105,4 +105,4 @@ pcb_hid_action_t remove_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(remove_action_list, NULL)
+PCB_REGISTER_ACTIONS(remove_action_list, NULL)

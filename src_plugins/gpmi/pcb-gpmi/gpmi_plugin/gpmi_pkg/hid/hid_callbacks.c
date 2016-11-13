@@ -66,7 +66,7 @@ void gpmi_hid_do_export(pcb_hid_attr_val_t * options)
   region.X2 = PCB->MaxWidth;
   region.Y2 = PCB->MaxHeight;
 
-	hid_expose_callback(h->hid, &region, 0);
+	pcb_hid_expose_callback(h->hid, &region, 0);
 	hid_restore_layer_ons(save_ons);
 	gpmi_event(h->module, HIDE_do_export_finish, h);
 	h->result = NULL;

@@ -385,4 +385,4 @@ pcb_hid_action_t select_action_list[] = {
 	 unselect_help, unselect_syntax}
 };
 
-REGISTER_ACTIONS(select_action_list, NULL)
+PCB_REGISTER_ACTIONS(select_action_list, NULL)

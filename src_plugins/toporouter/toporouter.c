@@ -8230,7 +8230,7 @@ static pcb_hid_action_t toporouter_action_list[] = {
 	{"Toporouter", "Select net(s)", toporouter, "Topological autorouter", "Toporouter()"}
 };
 
-REGISTER_ACTIONS(toporouter_action_list, toporouter_cookie)
+PCB_REGISTER_ACTIONS(toporouter_action_list, toporouter_cookie)
 
 static void hid_toporouter_uninit(void)
 {

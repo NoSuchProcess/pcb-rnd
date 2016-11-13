@@ -851,7 +851,7 @@ gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GH
 
 	hidgl_init_triangle_array(&buffer);
 	ghid_invalidate_current_gc();
-	hid_expose_callback(&ghid_hid, &region, 0);
+	pcb_hid_expose_callback(&ghid_hid, &region, 0);
 	hidgl_flush_triangles(&buffer);
 
 	ghid_draw_grid(&region);
@@ -957,7 +957,7 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 					 (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
 	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
 							 -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
-	hid_expose_callback(&ghid_hid, NULL, &pinout->element);
+	pcb_hid_expose_callback(&ghid_hid, NULL, &pinout->element);
 	hidgl_flush_triangles(&buffer);
 	glPopMatrix();
 
@@ -1061,7 +1061,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	region.Y1 = MAX(0, MIN(PCB->MaxHeight, region.Y1));
 	region.Y2 = MAX(0, MIN(PCB->MaxHeight, region.Y2));
 
-	hid_expose_callback(&ghid_hid, &region, NULL);
+	pcb_hid_expose_callback(&ghid_hid, &region, NULL);
 	hidgl_flush_triangles(&buffer);
 	glPopMatrix();
 

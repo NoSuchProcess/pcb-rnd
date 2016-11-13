@@ -434,4 +434,4 @@ pcb_hid_action_t lesstif_styles_action_list[] = {
 	 routestyleschanged_help, routestyleschanged_syntax}
 };
 
-REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)
+PCB_REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)

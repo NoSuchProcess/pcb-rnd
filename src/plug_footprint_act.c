@@ -41,4 +41,4 @@ pcb_hid_action_t conf_plug_footprint_list[] = {
 	 fp_rehash_help, fp_rehash_syntax}
 };
 
-REGISTER_ACTIONS(conf_plug_footprint_list, NULL)
+PCB_REGISTER_ACTIONS(conf_plug_footprint_list, NULL)

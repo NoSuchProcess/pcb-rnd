@@ -622,7 +622,7 @@ static pcb_hid_action_t distaligntext_action_list[] = {
 
 char *distaligntext_cookie = "distaligntext plugin";
 
-REGISTER_ACTIONS(distaligntext_action_list, distaligntext_cookie)
+PCB_REGISTER_ACTIONS(distaligntext_action_list, distaligntext_cookie)
 
 static void hid_distaligntext_uninit(void)
 {
@@ -632,6 +632,6 @@ static void hid_distaligntext_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_distaligntext_init()
 {
-	REGISTER_ACTIONS(distaligntext_action_list, distaligntext_cookie);
+	PCB_REGISTER_ACTIONS(distaligntext_action_list, distaligntext_cookie);
 	return hid_distaligntext_uninit;
 }

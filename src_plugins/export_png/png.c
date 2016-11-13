@@ -340,7 +340,7 @@ In photo-realistic mode, export the reverse side of the layout. Up-down flip.
 
 #define NUM_OPTIONS (sizeof(png_attribute_list)/sizeof(png_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(png_attribute_list, png_cookie)
+PCB_REGISTER_ATTRIBUTES(png_attribute_list, png_cookie)
 
 		 static pcb_hid_attr_val_t png_values[NUM_OPTIONS];
 
@@ -521,7 +521,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		}
 	}
 
-	hid_expose_callback(&png_hid, bounds, 0);
+	pcb_hid_expose_callback(&png_hid, bounds, 0);
 
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
 	conf_update(NULL); /* restore forced sets */

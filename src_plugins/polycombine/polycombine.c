@@ -346,7 +346,7 @@ static pcb_hid_action_t polycombine_action_list[] = {
 
 char *polycombine_cookie = "polycombine plugin";
 
-REGISTER_ACTIONS(polycombine_action_list, polycombine_cookie)
+PCB_REGISTER_ACTIONS(polycombine_action_list, polycombine_cookie)
 
 static void hid_polycombine_uninit(void)
 {
@@ -356,6 +356,6 @@ static void hid_polycombine_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_polycombine_init()
 {
-	REGISTER_ACTIONS(polycombine_action_list, polycombine_cookie);
+	PCB_REGISTER_ACTIONS(polycombine_action_list, polycombine_cookie);
 	return hid_polycombine_uninit;
 }

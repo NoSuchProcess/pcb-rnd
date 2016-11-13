@@ -84,7 +84,7 @@ pcb_hid_action_t hyp_action_list[] = {
 	{"LoadhypFrom", 0, ActionLoadhypFrom, load_hyp_help, load_hyp_syntax}
 };
 
-REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
+PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 
 static void hid_hyp_uninit()
 {
@@ -95,7 +95,7 @@ static void hid_hyp_uninit()
 pcb_uninit_t hid_import_hyp_init()
 {
 #warning TODO: rather register an importer than an action
-	REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
+	PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 	return hid_hyp_uninit;
 }
 

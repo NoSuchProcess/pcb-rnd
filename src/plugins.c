@@ -138,4 +138,4 @@ pcb_hid_action_t plugins_action_list[] = {
 	 manageplugins_help, manageplugins_syntax}
 };
 
-REGISTER_ACTIONS(plugins_action_list, NULL)
+PCB_REGISTER_ACTIONS(plugins_action_list, NULL)

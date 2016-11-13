@@ -438,4 +438,4 @@ pcb_hid_action_t lesstif_netlist_action_list[] = {
 	 netlistshow_help, netlistshow_syntax}
 };
 
-REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
+PCB_REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)

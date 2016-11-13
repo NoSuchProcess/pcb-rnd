@@ -93,7 +93,7 @@ static pcb_hid_attribute_t dsn_options[] = {
 };
 
 #define NUM_OPTIONS (sizeof(dsn_options)/sizeof(dsn_options[0]))
-REGISTER_ATTRIBUTES(dsn_options, dsn_cookie)
+PCB_REGISTER_ATTRIBUTES(dsn_options, dsn_cookie)
 
 static pcb_hid_attr_val_t dsn_values[NUM_OPTIONS];
 

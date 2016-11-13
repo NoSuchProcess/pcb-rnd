@@ -1031,4 +1031,4 @@ pcb_hid_action_t object_action_list[] = {
 	 mincleargap_help, mincleargap_syntax}
 };
 
-REGISTER_ACTIONS(object_action_list, NULL)
+PCB_REGISTER_ACTIONS(object_action_list, NULL)

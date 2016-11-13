@@ -61,7 +61,7 @@ typedef union {
    will result in a fatal error.  */
 typedef struct hid_gc_s *pcb_hid_gc_t;
 
-#define HIDCONCAT(a,b) a##b
+#define PCB_HIDCONCAT(a,b) a##b
 
 /* This is used to register the action callbacks (for menus and
    whatnot).  HID assumes the following actions are available for its
@@ -87,11 +87,11 @@ typedef struct {
 	const char *syntax;
 } pcb_hid_action_t;
 
-extern void hid_register_action(const pcb_hid_action_t *a, const char *cookie, int copy);
+extern void pcb_hid_register_action(const pcb_hid_action_t *a, const char *cookie, int copy);
 
-extern void hid_register_actions(const pcb_hid_action_t *a, int, const char *cookie, int copy);
-#define REGISTER_ACTIONS(a, cookie) HIDCONCAT(void register_,a) ()\
-{ hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
+extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char *cookie, int copy);
+#define PCB_REGISTER_ACTIONS(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
+{ pcb_hid_register_actions(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
 /* Note that PCB expects the gui to provide the following actions:
 
@@ -551,7 +551,7 @@ struct hid_s {
    Do *not* assume that the hid that is passed is the GUI hid.  This
    callback is also used for printing and exporting. */
 struct pcb_box_t;
-void hid_expose_callback(pcb_hid_t * hid_, pcb_box_t *region_, void *item_);
+void pcb_hid_expose_callback(pcb_hid_t * hid_, pcb_box_t *region_, void *item_);
 
 /* This is initially set to a "no-gui" gui, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. */
@@ -574,7 +574,7 @@ extern const pcb_hid_action_t *current_action;
 extern int pixel_slop;
 
 /* Init and uninit the whole action framework */
-void hid_actions_init(void);
-void hid_actions_uninit(void);
+void pcb_hid_actions_init(void);
+void pcb_hid_actions_uninit(void);
 
 #endif

@@ -264,4 +264,4 @@ pcb_hid_action_t main_action_list[] = {
 	 printpaths_help, printpaths_syntax}
 };
 
-REGISTER_ACTIONS(main_action_list, NULL)
+PCB_REGISTER_ACTIONS(main_action_list, NULL)

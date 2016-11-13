@@ -79,7 +79,7 @@ pcb_hid_action_t propedit_action_list[] = {
 	 propset_help, propset_syntax},
 };
 
-REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
+PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
 
 static void hid_propedit_uninit(void)
 {
@@ -89,6 +89,6 @@ static void hid_propedit_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_propedit_init(void)
 {
-	REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
+	PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
 	return hid_propedit_uninit;
 }

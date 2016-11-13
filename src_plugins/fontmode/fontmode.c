@@ -229,7 +229,7 @@ pcb_hid_action_t fontmode_action_list[] = {
 
 static const char *fontmode_cookie = "fontmode plugin";
 
-REGISTER_ACTIONS(fontmode_action_list, fontmode_cookie)
+PCB_REGISTER_ACTIONS(fontmode_action_list, fontmode_cookie)
 
 static void hid_fontmode_uninit(void)
 {
@@ -239,6 +239,6 @@ static void hid_fontmode_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_fontmode_init(void)
 {
-	REGISTER_ACTIONS(fontmode_action_list, fontmode_cookie)
+	PCB_REGISTER_ACTIONS(fontmode_action_list, fontmode_cookie)
 	return hid_fontmode_uninit;
 }

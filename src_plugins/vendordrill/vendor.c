@@ -651,7 +651,7 @@ pcb_hid_action_t vendor_action_list[] = {
 	 load_vendor_help, load_vendor_syntax}
 };
 
-REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
+PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 
 static char **vendor_free_vect(char **lst, int *len)
 {
@@ -696,6 +696,6 @@ pcb_uninit_t hid_vendordrill_init(void)
 	stub_vendorDrillMap = vendorDrillMap;
 	stub_vendorIsElementMappable = vendorIsElementMappable;
 
-	REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
+	PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 	return hid_vendordrill_uninit;
 }

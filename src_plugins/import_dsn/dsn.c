@@ -163,7 +163,7 @@ pcb_hid_action_t dsn_action_list[] = {
 	{"LoadDsnFrom", 0, ActionLoadDsnFrom, load_dsn_help, load_dsn_syntax}
 };
 
-REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
+PCB_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
 
 static void hid_dsn_uninit()
 {
@@ -173,7 +173,7 @@ static void hid_dsn_uninit()
 #include "dolists.h"
 pcb_uninit_t hid_import_dsn_init()
 {
-	REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
+	PCB_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
 	return hid_dsn_uninit;
 }
 

@@ -129,7 +129,7 @@ Limit the bounds of the EPS file to the visible items.
 
 #define NUM_OPTIONS (sizeof(eps_attribute_list)/sizeof(eps_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
+PCB_REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 
 		 static pcb_hid_attr_val_t eps_values[NUM_OPTIONS];
 
@@ -290,7 +290,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	fprintf(f, "/cc { 0 360 arc nclip } bind def\n");
 	fprintf(f, "/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
 
-	hid_expose_callback(&eps_hid, bounds, 0);
+	pcb_hid_expose_callback(&eps_hid, bounds, 0);
 
 	fprintf(f, "showpage\n");
 

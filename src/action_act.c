@@ -108,4 +108,4 @@ pcb_hid_action_t action_action_list[] = {
 	 executefile_help, executefile_syntax}
 };
 
-REGISTER_ACTIONS(action_action_list, NULL)
+PCB_REGISTER_ACTIONS(action_action_list, NULL)

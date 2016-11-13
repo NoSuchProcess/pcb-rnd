@@ -210,7 +210,7 @@ Substrate relative epsilon.
 
 #define NUM_OPTIONS (sizeof(nelma_attribute_list)/sizeof(nelma_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(nelma_attribute_list, nelma_cookie)
+PCB_REGISTER_ATTRIBUTES(nelma_attribute_list, nelma_cookie)
 		 static pcb_hid_attr_val_t nelma_values[NUM_OPTIONS];
 
 /* *** Utility funcions **************************************************** */
@@ -591,7 +591,7 @@ void nelma_start_png_export()
 	lastbrush = (gdImagePtr) ((void *) -1);
 	lastcolor = -1;
 
-	hid_expose_callback(&nelma_hid, &region, 0);
+	pcb_hid_expose_callback(&nelma_hid, &region, 0);
 }
 
 static void nelma_do_export(pcb_hid_attr_val_t * options)

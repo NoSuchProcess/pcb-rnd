@@ -269,7 +269,7 @@ static pcb_hid_action_t smartdisperse_action_list[] = {
 
 char *smartdisperse_cookie = "smartdisperse plugin";
 
-REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie)
+PCB_REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie)
 
 static void hid_smartdisperse_uninit(void)
 {
@@ -279,6 +279,6 @@ static void hid_smartdisperse_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_smartdisperse_init()
 {
-	REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie);
+	PCB_REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie);
 	return hid_smartdisperse_uninit;
 }

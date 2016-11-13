@@ -86,7 +86,7 @@ static int loghid_usage(const char *topic)
 	return 0;
 }
 
-REGISTER_ATTRIBUTES(loghid_attribute_list, loghid_cookie)
+PCB_REGISTER_ATTRIBUTES(loghid_attribute_list, loghid_cookie)
 
 static pcb_hid_attribute_t *loghid_get_export_options(int *n)
 {

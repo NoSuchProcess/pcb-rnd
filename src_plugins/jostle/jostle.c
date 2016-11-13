@@ -547,7 +547,7 @@ static pcb_hid_action_t jostle_action_list[] = {
 
 char *jostle_cookie = "jostle plugin";
 
-REGISTER_ACTIONS(jostle_action_list, jostle_cookie)
+PCB_REGISTER_ACTIONS(jostle_action_list, jostle_cookie)
 
 static void hid_jostle_uninit(void)
 {
@@ -557,6 +557,6 @@ static void hid_jostle_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_jostle_init()
 {
-	REGISTER_ACTIONS(jostle_action_list, jostle_cookie);
+	PCB_REGISTER_ACTIONS(jostle_action_list, jostle_cookie);
 	return hid_jostle_uninit;
 }

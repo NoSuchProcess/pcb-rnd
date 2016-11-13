@@ -87,7 +87,7 @@ pcb_hid_action_t autoroute_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
+PCB_REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
 
 static void hid_autoroute_uninit(void)
 {
@@ -97,6 +97,6 @@ static void hid_autoroute_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_autoroute_init(void)
 {
-	REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
+	PCB_REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
 	return hid_autoroute_uninit;
 }

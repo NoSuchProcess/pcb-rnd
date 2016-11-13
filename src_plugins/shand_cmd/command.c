@@ -399,7 +399,7 @@ pcb_hid_action_t shand_cmd_action_list[] = {
 
 static const char *shand_cmd_cookie = "shand_cmd plugin";
 
-REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
+PCB_REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
 
 static void hid_shand_cmd_uninit(void)
 {
@@ -409,6 +409,6 @@ static void hid_shand_cmd_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_shand_cmd_init(void)
 {
-	REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
+	PCB_REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
 	return hid_shand_cmd_uninit;
 }

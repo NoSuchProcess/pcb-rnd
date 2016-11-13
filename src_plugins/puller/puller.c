@@ -2389,7 +2389,7 @@ pcb_hid_action_t puller_action_list[] = {
 
 static const char *puller_cookie = "puller plugin";
 
-REGISTER_ACTIONS(puller_action_list, puller_cookie)
+PCB_REGISTER_ACTIONS(puller_action_list, puller_cookie)
 
 static void hid_puller_uninit(void)
 {
@@ -2399,6 +2399,6 @@ static void hid_puller_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_puller_init(void)
 {
-	REGISTER_ACTIONS(puller_action_list, puller_cookie)
+	PCB_REGISTER_ACTIONS(puller_action_list, puller_cookie)
 	return hid_puller_uninit;
 }

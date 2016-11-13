@@ -117,7 +117,7 @@ pcb_hid_action_t batch_action_list[] = {
 	{"PointCursor", 0, info}
 };
 
-REGISTER_ACTIONS(batch_action_list, batch_cookie)
+PCB_REGISTER_ACTIONS(batch_action_list, batch_cookie)
 
 extern int isatty();
 
@@ -400,7 +400,7 @@ pcb_uninit_t hid_hid_batch_init()
 
 static void batch_begin(void)
 {
-	REGISTER_ACTIONS(batch_action_list, batch_cookie)
+	PCB_REGISTER_ACTIONS(batch_action_list, batch_cookie)
 }
 
 static void batch_end(void)

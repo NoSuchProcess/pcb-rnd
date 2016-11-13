@@ -314,7 +314,7 @@ static pcb_hid_action_t teardrops_action_list[] = {
 
 char *teardrops_cookie = "teardrops plugin";
 
-REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie)
+PCB_REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie)
 
 static void hid_teardrops_uninit(void)
 {
@@ -324,6 +324,6 @@ static void hid_teardrops_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_teardrops_init()
 {
-	REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie);
+	PCB_REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie);
 	return hid_teardrops_uninit;
 }

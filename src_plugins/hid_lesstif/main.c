@@ -223,7 +223,7 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 */
 		 };
 
-REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
+PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 
 		 static void lesstif_use_mask(int use_it);
 		 static void zoom_max();
@@ -755,7 +755,7 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	time(&start);
 	do {
 		XFillRectangle(display, pixmap, bg_gc, 0, 0, view_width, view_height);
-		hid_expose_callback(&lesstif_hid, &region, 0);
+		pcb_hid_expose_callback(&lesstif_hid, &region, 0);
 		XSync(display, 0);
 		time(&end);
 		i++;
@@ -902,7 +902,7 @@ pcb_hid_action_t lesstif_main_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
+PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
 
 
 /* ----------------------------------------------------------------------
@@ -2428,7 +2428,7 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 		}
 		DrawBackgroundImage();
-		hid_expose_callback(&lesstif_hid, &region, 0);
+		pcb_hid_expose_callback(&lesstif_hid, &region, 0);
 		draw_grid();
 		lesstif_use_mask(0);
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */
@@ -3517,7 +3517,7 @@ static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStr
 	region.Y2 = PCB->MaxHeight;
 
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
-	hid_expose_callback(&lesstif_hid, &region, pd->item);
+	pcb_hid_expose_callback(&lesstif_hid, &region, pd->item);
 
 	pinout = 0;
 	view_left_x = save_vx;
@@ -3837,13 +3837,13 @@ pcb_uninit_t hid_hid_lesstif_init()
 
 static void lesstif_begin(void)
 {
-	REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
-	REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
-	REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
-	REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
-	REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
-	REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
-	REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)
+	PCB_REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
+	PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
+	PCB_REGISTER_ACTIONS(lesstif_main_action_list, lesstif_cookie)
+	PCB_REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
+	PCB_REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
+	PCB_REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
+	PCB_REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)
 }
 
 static void lesstif_end(void)

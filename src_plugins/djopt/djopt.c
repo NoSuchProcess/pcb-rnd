@@ -2682,7 +2682,7 @@ pcb_hid_action_t djopt_action_list[] = {
 	 djopt_help, djopt_syntax}
 };
 
-REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
+PCB_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 
 static void hid_djopt_uninit(void)
 {
@@ -2697,6 +2697,6 @@ pcb_uninit_t hid_djopt_init(void)
 	conf_reg_field(conf_djopt, field,isarray,type_name,cpath,cname,desc,flags);
 #include "djopt_conf_fields.h"
 
-	REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
+	PCB_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 	return hid_djopt_uninit;
 }

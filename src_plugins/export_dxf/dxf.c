@@ -4317,10 +4317,10 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	lastgroup = -1;
 	c_layerapps = 0;
 	dxf_finding_apertures = 1;
-	hid_expose_callback(&dxf_hid, &region, 0);
+	pcb_hid_expose_callback(&dxf_hid, &region, 0);
 	c_layerapps = 0;
 	dxf_finding_apertures = 0;
-	hid_expose_callback(&dxf_hid, &region, 0);
+	pcb_hid_expose_callback(&dxf_hid, &region, 0);
 	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
 	dxf_maybe_close_file();
 	hid_restore_layer_ons(save_ons);

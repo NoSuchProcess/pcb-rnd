@@ -1972,7 +1972,7 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"Zoom", N_("Click on zoom focus"), Zoom, zoom_help, zoom_syntax}
 };
 
-REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
+PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 
 #include "dolists.h"
 /*
@@ -2140,11 +2140,11 @@ int gtkhid_active = 0;
 
 void gtkhid_begin(void)
 {
-	REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-	REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)
-	REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
-	REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
-	REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
+	PCB_REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)
+	PCB_REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
+	PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
+	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
 	gtkhid_active = 1;
 }
 

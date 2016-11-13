@@ -495,4 +495,4 @@ pcb_hid_action_t rats_patch_action_list[] = {
 	 savepatch_help, savepatch_syntax}
 };
 
-REGISTER_ACTIONS(rats_patch_action_list, NULL)
+PCB_REGISTER_ACTIONS(rats_patch_action_list, NULL)

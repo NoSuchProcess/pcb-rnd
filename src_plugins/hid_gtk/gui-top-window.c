@@ -1664,7 +1664,7 @@ pcb_hid_action_t gtk_topwindow_action_list[] = {
 	 toggleview_help, toggleview_syntax}
 };
 
-REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
+PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 
 static GtkWidget *ghid_load_menus(void)
 {
@@ -1760,4 +1760,4 @@ pcb_hid_action_t ghid_menu_action_list[] = {
 	{"EditLayerGroups", 0, EditLayerGroups, editlayergroups_help, editlayergroups_syntax}
 };
 
-REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)

@@ -171,10 +171,10 @@ pcb_hid_action_t query_action_list[] = {
 	 query_action_help, query_action_syntax}
 };
 
-REGISTER_ACTIONS(query_action_list, NULL)
+PCB_REGISTER_ACTIONS(query_action_list, NULL)
 
 #include "dolists.h"
 void query_action_reg(const char *cookie)
 {
-	REGISTER_ACTIONS(query_action_list, cookie)
+	PCB_REGISTER_ACTIONS(query_action_list, cookie)
 }

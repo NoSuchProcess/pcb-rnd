@@ -901,7 +901,7 @@ pcb_hid_action_t report_action_list[] = {
 
 static const char *report_cookie = "report plugin";
 
-REGISTER_ACTIONS(report_action_list, report_cookie)
+PCB_REGISTER_ACTIONS(report_action_list, report_cookie)
 
 static void hid_report_uninit(void)
 {
@@ -911,7 +911,7 @@ static void hid_report_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_report_init(void)
 {
-	REGISTER_ACTIONS(report_action_list, report_cookie)
+	PCB_REGISTER_ACTIONS(report_action_list, report_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_report, field,isarray,type_name,cpath,cname,desc,flags);
 #include "report_conf_fields.h"

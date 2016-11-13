@@ -168,7 +168,7 @@ static pcb_hid_action_t boardflip_action_list[] = {
 
 char *boardflip_cookie = "boardflip plugin";
 
-REGISTER_ACTIONS(boardflip_action_list, boardflip_cookie)
+PCB_REGISTER_ACTIONS(boardflip_action_list, boardflip_cookie)
 
 static void hid_boardflip_uninit(void)
 {
@@ -178,7 +178,7 @@ static void hid_boardflip_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_boardflip_init()
 {
-	REGISTER_ACTIONS(boardflip_action_list, boardflip_cookie);
+	PCB_REGISTER_ACTIONS(boardflip_action_list, boardflip_cookie);
 	return hid_boardflip_uninit;
 }
 

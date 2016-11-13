@@ -173,7 +173,7 @@ pcb_box_t *hid_get_extents(void *item)
 	region.Y1 = -MAXINT;
 	region.X2 = MAXINT;
 	region.Y2 = MAXINT;
-	hid_expose_callback(&extents_hid, &region, item);
+	pcb_hid_expose_callback(&extents_hid, &region, item);
 
 	return &box;
 }

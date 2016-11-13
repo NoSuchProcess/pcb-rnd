@@ -199,4 +199,4 @@ pcb_hid_action_t ghid_log_action_list[] = {
 	,
 };
 
-REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
+PCB_REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)

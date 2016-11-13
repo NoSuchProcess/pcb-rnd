@@ -145,4 +145,4 @@ pcb_hid_action_t polygon_action_list[] = {
 	 polygon_help, pcb_polygon_syntax}
 };
 
-REGISTER_ACTIONS(polygon_action_list, NULL)
+PCB_REGISTER_ACTIONS(polygon_action_list, NULL)

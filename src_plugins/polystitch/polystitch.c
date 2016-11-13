@@ -247,7 +247,7 @@ static pcb_hid_action_t polystitch_action_list[] = {
 
 char *polystitch_cookie = "polystitch plugin";
 
-REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie)
+PCB_REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie)
 
 static void hid_polystitch_uninit(void)
 {
@@ -257,6 +257,6 @@ static void hid_polystitch_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_polystitch_init()
 {
-	REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie);
+	PCB_REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie);
 	return hid_polystitch_uninit;
 }

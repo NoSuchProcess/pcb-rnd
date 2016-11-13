@@ -176,7 +176,7 @@ pcb_hid_attribute_t gcode_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(gcode_attribute_list)/sizeof(gcode_attribute_list[0]))
 
-REGISTER_ATTRIBUTES(gcode_attribute_list, gcode_cookie)
+PCB_REGISTER_ATTRIBUTES(gcode_attribute_list, gcode_cookie)
 		 static pcb_hid_attr_val_t gcode_values[NUM_OPTIONS];
 
 /* *** Utility funcions **************************************************** */
@@ -344,7 +344,7 @@ void gcode_start_png_export()
 	lastbrush = (gdImagePtr) ((void *) -1);
 	lastcolor = -1;
 
-	hid_expose_callback(&gcode_hid, &region, 0);
+	pcb_hid_expose_callback(&gcode_hid, &region, 0);
 }
 
 static void gcode_do_export(pcb_hid_attr_val_t * options)

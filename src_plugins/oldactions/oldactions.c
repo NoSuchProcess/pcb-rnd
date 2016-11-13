@@ -304,7 +304,7 @@ pcb_hid_action_t oldactions_action_list[] = {
 
 static const char *oldactions_cookie = "oldactions plugin";
 
-REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
+PCB_REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
 
 static void hid_oldactions_uninit(void)
 {
@@ -314,6 +314,6 @@ static void hid_oldactions_uninit(void)
 #include "dolists.h"
 pcb_uninit_t hid_oldactions_init(void)
 {
-	REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
+	PCB_REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
 	return hid_oldactions_uninit;
 }

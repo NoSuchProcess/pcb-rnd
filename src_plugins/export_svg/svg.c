@@ -174,7 +174,7 @@ do { \
 } while(0)
 
 
-REGISTER_ATTRIBUTES(svg_attribute_list, svg_cookie)
+PCB_REGISTER_ATTRIBUTES(svg_attribute_list, svg_cookie)
 
 static pcb_hid_attr_val_t svg_values[NUM_OPTIONS];
 
@@ -237,7 +237,7 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	gds_init(&sbright);
 	gds_init(&sdark);
 	gds_init(&snormal);
-	hid_expose_callback(&svg_hid, &region, 0);
+	pcb_hid_expose_callback(&svg_hid, &region, 0);
 
 	conf_update(NULL); /* restore forced sets */
 }
