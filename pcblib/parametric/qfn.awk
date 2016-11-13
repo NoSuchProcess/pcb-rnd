@@ -22,7 +22,7 @@ BEGIN {
 		pt = PT[pitch]
 	}
 	else
-		pt = rev_mm(DEFAULT["pad_thickness"])
+		pt = rev_mm(DEFAULT["pad_thickness"]) "mm"
 
 	split(P["size"], S, "x")
 	if (S[2] == "")
