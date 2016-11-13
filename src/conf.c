@@ -90,9 +90,9 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		conf_root[role] = NULL;
 	}
 	if (fn_is_text)
-		d = hid_cfg_load_str(fn);
+		d = pcb_hid_cfg_load_str(fn);
 	else
-		d = hid_cfg_load_lht(fn);
+		d = pcb_hid_cfg_load_lht(fn);
 	if (d == NULL) {
 		FILE *f;
 		char *efn;

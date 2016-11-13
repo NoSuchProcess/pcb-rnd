@@ -512,11 +512,11 @@ static int ghid_remove_menu_widget(void *ctx, lht_node_t *nd)
 /* Create a new menu by path */
 void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
-	hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, NULL);
+	pcb_hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, NULL);
 }
 
 int ghid_remove_menu(const char *menu_path)
 {
-	return hid_cfg_remove_menu(ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
+	return pcb_hid_cfg_remove_menu(ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
 }
 

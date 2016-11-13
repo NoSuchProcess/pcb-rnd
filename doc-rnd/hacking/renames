@@ -381,3 +381,10 @@ hid_remove_attributes_by_cookie -> pcb_hid_remove_attributes_by_cookie
 hid_attributes_uninit -> pcb_hid_attributes_uninit
 hid_usage -> pcb_hid_usage
 hid_usage_option -> pcb_hid_usage_option
+hid_cfg_create_menu -> pcb_hid_cfg_create_menu
+hid_cfg_remove_menu -> pcb_hid_cfg_remove_menu
+hid_cfg_load -> pcb_hid_cfg_load
+hid_cfg_load_lht -> pcb_hid_cfg_load_lht
+hid_cfg_load_str -> pcb_hid_cfg_load_str
+hid_cfg_get_menu -> pcb_hid_cfg_get_menu
+hid_cfg_get_menu_at -> pcb_hid_cfg_get_menu_at

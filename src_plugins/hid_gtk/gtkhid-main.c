@@ -1837,7 +1837,7 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (strlen(argv[0]) < sizeof(name)-32) {
 		lht_node_t *menu_node;
 		sprintf(name, "/popups/%s", argv[0]);
-		menu_node = hid_cfg_get_menu(ghid_cfg, name);
+		menu_node = pcb_hid_cfg_get_menu(ghid_cfg, name);
 		if (menu_node != NULL)
 			menu = menu_node->user_data;
 	}

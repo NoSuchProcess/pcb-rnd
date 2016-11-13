@@ -187,7 +187,7 @@ int ActionLoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	vendor_free_all();
 
 	/* load the resource file */
-	doc = hid_cfg_load_lht(fname);
+	doc = pcb_hid_cfg_load_lht(fname);
 	if (doc == NULL) {
 		pcb_message(PCB_MSG_DEFAULT, _("Could not load vendor resource file \"%s\"\n"), fname);
 		return 1;

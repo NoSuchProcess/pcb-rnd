@@ -928,13 +928,13 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	screen = DefaultScreen(display);
 	cmap = DefaultColormap(display, screen);
 
-	lesstif_cfg = hid_cfg_load("lesstif", 0, lesstif_menu_default);
+	lesstif_cfg = pcb_hid_cfg_load("lesstif", 0, lesstif_menu_default);
 	if (lesstif_cfg == NULL) {
 		pcb_message(PCB_MSG_DEFAULT, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
 	}
 
-	mr = hid_cfg_get_menu(lesstif_cfg, "/main_menu");
+	mr = pcb_hid_cfg_get_menu(lesstif_cfg, "/main_menu");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -966,7 +966,7 @@ static int lesstif_create_menu_widget(void *ctx, const char *path, const char *n
 
 void lesstif_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
-	hid_cfg_create_menu(lesstif_cfg, menu_path, action, mnemonic, accel, tip, cookie, lesstif_create_menu_widget, NULL);
+	pcb_hid_cfg_create_menu(lesstif_cfg, menu_path, action, mnemonic, accel, tip, cookie, lesstif_create_menu_widget, NULL);
 }
 
 

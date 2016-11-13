@@ -102,7 +102,7 @@ int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse)
 {
 	lht_node_t *btn, *m;
 
-	mouse->mouse = hid_cfg_get_menu(hr, "/mouse");
+	mouse->mouse = pcb_hid_cfg_get_menu(hr, "/mouse");
 
 	if (mouse->mouse == NULL) {
 		pcb_message(PCB_MSG_DEFAULT, "Warning: no /mouse section in the resource file - mouse is disabled\n");

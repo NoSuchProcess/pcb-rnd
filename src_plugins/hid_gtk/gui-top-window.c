@@ -1672,19 +1672,19 @@ static GtkWidget *ghid_load_menus(void)
 	GtkWidget *menu_bar = NULL;
 	extern const char *hid_gtk_menu_default;
 
-	ghid_cfg = hid_cfg_load("gtk", 0, hid_gtk_menu_default);
+	ghid_cfg = pcb_hid_cfg_load("gtk", 0, hid_gtk_menu_default);
 	if (ghid_cfg == NULL) {
 		pcb_message(PCB_MSG_DEFAULT, "FATAL: can't load the gtk menu res either from file or from hardwired default.");
 		abort();
 	}
 
-	mr = hid_cfg_get_menu(ghid_cfg, "/main_menu");
+	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/main_menu");
 	if (mr != NULL) {
 		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
 		ghid_main_menu_add_node(GHID_MAIN_MENU(menu_bar), mr);
 	}
 
-	mr = hid_cfg_get_menu(ghid_cfg, "/popups");
+	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/popups");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -1699,7 +1699,7 @@ static GtkWidget *ghid_load_menus(void)
 	puts("Finished loading menus.");
 #endif
 
-	mr = hid_cfg_get_menu(ghid_cfg, "/mouse");
+	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/mouse");
 	if (hid_cfg_mouse_init(ghid_cfg, &ghid_mouse) != 0)
 		pcb_message(PCB_MSG_DEFAULT, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
 
