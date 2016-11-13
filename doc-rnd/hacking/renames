@@ -397,3 +397,12 @@ hid_cfg_extend_hash_nodev -> pcb_hid_cfg_extend_hash_nodev
 hid_cfg_extend_hash_node -> pcb_hid_cfg_extend_hash_node
 hid_cfg_dfs -> pcb_hid_cfg_dfs
 hid_cfg_error -> pcb_hid_cfg_error
+hid_cfg_action -> pcb_hid_cfg_action
+hid_cfg_keys_init -> pcb_hid_cfg_keys_init
+hid_cfg_keys_uninit -> pcb_hid_cfg_keys_uninit
+hid_cfg_keys_add_under -> pcb_hid_cfg_keys_add_under
+hid_cfg_keys_add_by_desc -> pcb_hid_cfg_keys_add_by_desc
+hid_cfg_keys_add_by_strdesc -> pcb_hid_cfg_keys_add_by_strdesc
+hid_cfg_keys_gen_accel -> pcb_hid_cfg_keys_gen_accel
+hid_cfg_keys_input -> pcb_hid_cfg_keys_input
+hid_cfg_keys_action -> pcb_hid_cfg_keys_action

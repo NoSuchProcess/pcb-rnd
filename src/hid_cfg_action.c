@@ -24,7 +24,7 @@
 #include "hid_cfg_action.h"
 #include "hid_actions.h"
 
-int hid_cfg_action(const lht_node_t *node)
+int pcb_hid_cfg_action(const lht_node_t *node)
 {
 	if (node == NULL)
 		return -1;

@@ -24,4 +24,4 @@
 #include "hid_cfg.h"
 /* Run an action node. The node is either a list of text nodes or a text node;
    returns non-zero on error, the first action that fails in a chain breaks the chain */
-int hid_cfg_action(const lht_node_t *node);
+int pcb_hid_cfg_action(const lht_node_t *node);

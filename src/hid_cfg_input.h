@@ -94,17 +94,17 @@ typedef struct pcb_hid_cfg_keys_s {
 /* Initialize a new keyboard context
    Returns 0 on success.
 */
-int hid_cfg_keys_init(pcb_hid_cfg_keys_t *km);
+int pcb_hid_cfg_keys_init(pcb_hid_cfg_keys_t *km);
 
 /* Free km's fields recursively */
-int hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km);
+int pcb_hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km);
 
 /* Add the next key of a key sequence; key sequences form a tree. A key starting
    a new key sequence should have parent set NULL, subsequent calls should have
    parent set to the previously returned keyseq value. Terminal is non-zero if
    this is the last key of the sequence.
    Returns NULL on error */
-pcb_hid_cfg_keyseq_t *hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_char, int terminal);
+pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_char, int terminal);
 
 /* Add a new key using a description (read from a lihata file usually)
    If out_seq is not NULL, load the array with pointers pointing to each
@@ -113,8 +113,8 @@ pcb_hid_cfg_keyseq_t *hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg
    same action). In this case return value and seq are set using the first key.
    Returns -1 on failure or the length of the sequence.
 */
-int hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
-int hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
+int pcb_hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
+int pcb_hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
 
 
 /* Allocate a new string and generate a human readable accel-text; mask determines
@@ -122,7 +122,7 @@ int hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, con
    specified for the same action; from LSB to MSB, at most 32 keys)
    Caller needs to free the string; returns NULL on error.
    */
-char *hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn, unsigned long mask, const char *sep);
+char *pcb_hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn, unsigned long mask, const char *sep);
 
 /* Process next input key stroke.
    Seq and seq_len must not be NULL as they are the internal state of multi-key
@@ -134,11 +134,11 @@ char *hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn,
      + a positive integer means the lookup succeeded and the return value
        is the length of the resulting sequence.
 */
-int hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_char, pcb_hid_cfg_keyseq_t **seq, int *seq_len);
+int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_char, pcb_hid_cfg_keyseq_t **seq, int *seq_len);
 
-/* Run the action for a key sequence looked up by hid_cfg_keys_input().
+/* Run the action for a key sequence looked up by pcb_hid_cfg_keys_input().
    Returns: the result of the action or -1 on error */
-int hid_cfg_keys_action(pcb_hid_cfg_keyseq_t **seq, int seq_len);
+int pcb_hid_cfg_keys_action(pcb_hid_cfg_keyseq_t **seq, int seq_len);
 
 
 #endif

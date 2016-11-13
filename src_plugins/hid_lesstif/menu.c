@@ -647,7 +647,7 @@ static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * p
 	}
 
 	lesstif_need_idle_proc();
-	hid_cfg_action(node);
+	pcb_hid_cfg_action(node);
 }
 
 static void note_accelerator(const lht_node_t *node)
@@ -657,7 +657,7 @@ static void note_accelerator(const lht_node_t *node)
 	anode = pcb_hid_cfg_menu_field(node, MF_ACTION, NULL);
 	knode = pcb_hid_cfg_menu_field(node, MF_ACCELERATOR, NULL);
 	if ((anode != NULL) && (knode != NULL))
-		hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode, NULL, 0);
+		pcb_hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode, NULL, 0);
 	else
 		pcb_hid_cfg_error(node, "No action specified for key accel\n");
 }
@@ -719,7 +719,7 @@ int lesstif_key_event(XKeyEvent * e)
 
 /*	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen); */
 
-	slen = hid_cfg_keys_input(&lesstif_keymap, mods, sym, seq, &seq_len);
+	slen = pcb_hid_cfg_keys_input(&lesstif_keymap, mods, sym, seq, &seq_len);
 	if (slen <= 0)
 		return 1;
 
@@ -733,7 +733,7 @@ int lesstif_key_event(XKeyEvent * e)
 
 	/* Parsing actions may not return until more user interaction
 	   happens.  */
-	hid_cfg_keys_action(seq, slen);
+	pcb_hid_cfg_keys_action(seq, slen);
 
 	return 1;
 }
@@ -792,7 +792,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 
 	kacc = pcb_hid_cfg_menu_field(node, MF_ACCELERATOR, NULL);
 	if (kacc != NULL) {
-		char *acc_str = hid_cfg_keys_gen_accel(&lesstif_keymap, kacc, 1, NULL);
+		char *acc_str = pcb_hid_cfg_keys_gen_accel(&lesstif_keymap, kacc, 1, NULL);
 
 		if (acc_str != NULL) {
 			XmString as = XmStringCreatePCB(acc_str);

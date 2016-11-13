@@ -161,25 +161,25 @@ static lht_node_t *find_best_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_
 
 void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask)
 {
-	hid_cfg_action(find_best_action(mouse, button_and_mask));
+	pcb_hid_cfg_action(find_best_action(mouse, button_and_mask));
 }
 
 
 /************************** KEYBOARD ***************************/
-int hid_cfg_keys_init(pcb_hid_cfg_keys_t *km)
+int pcb_hid_cfg_keys_init(pcb_hid_cfg_keys_t *km)
 {
 	htip_init(&km->keys, keyhash_int, htip_keyeq);
 	return 0;
 }
 
-int hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km)
+int pcb_hid_cfg_keys_uninit(pcb_hid_cfg_keys_t *km)
 {
 #warning TODO: recursive free of nodes
 	htip_uninit(&km->keys);
 	return 0;
 }
 
-pcb_hid_cfg_keyseq_t *hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_char, int terminal)
+pcb_hid_cfg_keyseq_t *pcb_hid_cfg_keys_add_under(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_keyseq_t *parent, pcb_hid_cfg_mod_t mods, unsigned short int key_char, int terminal)
 {
 	pcb_hid_cfg_keyseq_t *ns;
 	hid_cfg_keyhash_t addr;
@@ -297,7 +297,7 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 	return slen;
 }
 
-int hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len)
+int pcb_hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len)
 {
 	pcb_hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
 	unsigned short int key_chars[HIDCFG_MAX_KEYSEQ_LEN];
@@ -320,7 +320,7 @@ int hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, con
 
 /*		printf(" mods=%x sym=%x\n", mods[n], key_chars[n]);*/
 
-		s = hid_cfg_keys_add_under(km, lasts, mods[n], key_chars[n], terminal);
+		s = pcb_hid_cfg_keys_add_under(km, lasts, mods[n], key_chars[n], terminal);
 		if (s == NULL) {
 		printf("  ERROR\n");
 #warning TODO: free stuff?
@@ -337,10 +337,10 @@ int hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc, con
 	return slen;
 }
 
-int hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len)
+int pcb_hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len)
 {
 	switch(keydescn->type) {
-		case LHT_TEXT: return hid_cfg_keys_add_by_strdesc(km, keydescn->data.text.value, action_node, out_seq, out_seq_len);
+		case LHT_TEXT: return pcb_hid_cfg_keys_add_by_strdesc(km, keydescn->data.text.value, action_node, out_seq, out_seq_len);
 		case LHT_LIST:
 		{
 			int ret = -1, cnt;
@@ -349,9 +349,9 @@ int hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn,
 				if (n->type != LHT_TEXT)
 					break;
 				if (cnt == 0)
-					ret = hid_cfg_keys_add_by_strdesc(km, n->data.text.value, action_node, out_seq, out_seq_len);
+					ret = pcb_hid_cfg_keys_add_by_strdesc(km, n->data.text.value, action_node, out_seq, out_seq_len);
 				else
-					hid_cfg_keys_add_by_strdesc(km, n->data.text.value, action_node, NULL, 0);
+					pcb_hid_cfg_keys_add_by_strdesc(km, n->data.text.value, action_node, NULL, 0);
 			}
 			return ret;
 		}
@@ -389,7 +389,7 @@ static void gen_accel(gds_t *s, pcb_hid_cfg_keys_t *km, const char *keydesc, int
 	}
 }
 
-char *hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn, unsigned long mask, const char *sep)
+char *pcb_hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn, unsigned long mask, const char *sep)
 {
 	gds_t s;
 	int cnt = 0;
@@ -419,7 +419,7 @@ char *hid_cfg_keys_gen_accel(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn,
 }
 
 
-int hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_char, pcb_hid_cfg_keyseq_t **seq, int *seq_len)
+int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned short int key_char, pcb_hid_cfg_keyseq_t **seq, int *seq_len)
 {
 	pcb_hid_cfg_keyseq_t *ns;
 	hid_cfg_keyhash_t addr;
@@ -449,10 +449,10 @@ int hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsigned 
 	return 0;
 }
 
-int hid_cfg_keys_action(pcb_hid_cfg_keyseq_t **seq, int seq_len)
+int pcb_hid_cfg_keys_action(pcb_hid_cfg_keyseq_t **seq, int seq_len)
 {
 	if (seq_len < 1)
 		return -1;
 
-	return hid_cfg_action(seq[seq_len-1]->action_node);
+	return pcb_hid_cfg_action(seq[seq_len-1]->action_node);
 }

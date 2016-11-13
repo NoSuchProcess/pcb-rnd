@@ -183,10 +183,10 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 		}
 
 		if (kv == GDK_KEY_ISO_Left_Tab) kv = GDK_KEY_Tab;
-		slen = hid_cfg_keys_input(&ghid_keymap, mods, kv, seq, &seq_len);
+		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, kv, seq, &seq_len);
 		if (slen > 0) {
 			ghid_port.has_entered  = 1;
-			hid_cfg_keys_action(seq, slen);
+			pcb_hid_cfg_keys_action(seq, slen);
 			return TRUE;
 		}
 	}

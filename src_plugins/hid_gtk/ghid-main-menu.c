@@ -85,8 +85,8 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 	/* Resolve accelerator and save it */
 	if (n_keydesc != NULL) {
 		if (n_action != NULL) {
-			hid_cfg_keys_add_by_desc(&ghid_keymap, n_keydesc, n_action, NULL, 0);
-			accel = hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, 1, NULL);
+			pcb_hid_cfg_keys_add_by_desc(&ghid_keymap, n_keydesc, n_action, NULL, 0);
+			accel = pcb_hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, 1, NULL);
 		}
 		else
 			pcb_hid_cfg_error(sub_res, "No action specified for key accel\n");
@@ -191,7 +191,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 			if ((tip != NULL) || (n_keydesc != NULL)) {
 				char *acc = NULL, *s;
 				if (n_keydesc != NULL)
-					acc = hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, -1, "\nhotkey: ");
+					acc = pcb_hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, -1, "\nhotkey: ");
 				s = Concat((tip == NULL ? "" : tip), "\nhotkey: ", (acc == NULL ? "" : acc), NULL);
 				gtk_widget_set_tooltip_text(item, s);
 				free(s);

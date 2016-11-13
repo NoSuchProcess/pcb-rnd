@@ -278,7 +278,7 @@ static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
 	if (action == NULL || node == NULL)
 		return;
 
-	hid_cfg_action(node);
+	pcb_hid_cfg_action(node);
 
 	/* Sync gui widgets with pcb state */
 	ghid_mode_buttons_update();
@@ -1480,7 +1480,7 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 {
 	gtkhid_begin();
 
-	hid_cfg_keys_init(&ghid_keymap);
+	pcb_hid_cfg_keys_init(&ghid_keymap);
 	ghid_keymap.translate_key = ghid_translate_key;
 	ghid_keymap.key_name = ghid_key_name;
 	ghid_keymap.auto_chr = 1;
@@ -1503,7 +1503,7 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 	pcb_event(EVENT_GUI_INIT, NULL);
 
 	gtk_main();
-	hid_cfg_keys_uninit(&ghid_keymap);
+	pcb_hid_cfg_keys_uninit(&ghid_keymap);
 	gtkhid_end();
 }
 

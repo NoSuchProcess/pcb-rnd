@@ -1707,7 +1707,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 
 	lesstif_begin();
 
-	hid_cfg_keys_init(&lesstif_keymap);
+	pcb_hid_cfg_keys_init(&lesstif_keymap);
 	lesstif_keymap.translate_key = lesstif_translate_key;
 	lesstif_keymap.key_name = lesstif_key_name;
 	lesstif_keymap.auto_chr = 1;
@@ -1859,7 +1859,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 
 	XtAppMainLoop(app_context);
 
-	hid_cfg_keys_uninit(&lesstif_keymap);
+	pcb_hid_cfg_keys_uninit(&lesstif_keymap);
 	lesstif_end();
 }
 
