@@ -1164,7 +1164,7 @@ void ClearUndoList(pcb_bool Force)
 		free(UndoList);
 		UndoList = NULL;
 		if (RemoveList) {
-			FreeDataMemory(RemoveList);
+			pcb_data_free(RemoveList);
 			free(RemoveList);
 			RemoveList = NULL;
 		}

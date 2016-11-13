@@ -441,7 +441,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	region.Y2 = PCB->MaxHeight;
 
 	if (options[HA_only_visible].int_value)
-		bounds = GetDataBoundingBox(PCB->Data);
+		bounds = pcb_data_bbox(PCB->Data);
 	else
 		bounds = &region;
 
@@ -647,7 +647,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 
 	/* figure out width and height of the board */
 	if (options[HA_only_visible].int_value) {
-		bbox = GetDataBoundingBox(PCB->Data);
+		bbox = pcb_data_bbox(PCB->Data);
 		x_shift = bbox->X1;
 		y_shift = bbox->Y1;
 		h = bbox->Y2 - bbox->Y1;

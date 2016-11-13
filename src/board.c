@@ -46,7 +46,7 @@ void pcb_board_free(pcb_board_t * pcb)
 	free(pcb->Filename);
 	free(pcb->PrintFilename);
 	rats_patch_destroy(pcb);
-	FreeDataMemory(pcb->Data);
+	pcb_data_free(pcb->Data);
 	free(pcb->Data);
 	/* release font symbols */
 	for (i = 0; i <= MAX_FONTPOSITION; i++)

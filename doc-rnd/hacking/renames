@@ -247,3 +247,6 @@ InitCrosshair -> pcb_crosshair_init
 DestroyCrosshair -> pcb_crosshair_uninit
 FitCrosshairIntoGrid -> pcb_crosshair_grid_fit
 CenterDisplay -> pcb_center_display
+FreeDataMemory -> pcb_data_free
+IsDataEmpty -> pcb_data_is_empty
+GetDataBoundingBox -> pcb_data_bbox

@@ -173,7 +173,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	 * Now we detach the single element from the buffer and then clear the
 	 * buffer, ready to receive the smashed elements.  As a result of detaching
 	 * it the single element is orphaned from the buffer and thus will not be
-	 * free()'d by FreeDataMemory (called via ClearBuffer).  This leaves it
+	 * free()'d by pcb_data_free(called via ClearBuffer).  This leaves it
 	 * around for us to smash bits off it.  It then becomes our responsibility,
 	 * however, to free the single element when we're finished with it.
 	 */

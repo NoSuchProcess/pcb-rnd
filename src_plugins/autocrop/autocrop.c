@@ -185,7 +185,7 @@ static int autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	pcb_coord_t dx, dy, pad;
 	pcb_box_t *box;
 
-	box = GetDataBoundingBox(PCB->Data);	/* handy! */
+	box = pcb_data_bbox(PCB->Data);	/* handy! */
 	if (!box || (box->X1 == box->X2 || box->Y1 == box->Y2)) {
 		/* board would become degenerate */
 		return 0;

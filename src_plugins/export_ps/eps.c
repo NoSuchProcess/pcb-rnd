@@ -196,7 +196,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	region.Y2 = PCB->MaxHeight;
 
 	if (options[HA_only_visible].int_value)
-		bounds = GetDataBoundingBox(PCB->Data);
+		bounds = pcb_data_bbox(PCB->Data);
 	else
 		bounds = &region;
 

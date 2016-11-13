@@ -1391,7 +1391,7 @@ static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 
 	/* check if layout is empty */
-	if (!IsDataEmpty(PCB->Data)) {
+	if (!pcb_data_is_empty(PCB->Data)) {
 		ghid_dialog_print(printer);
 	}
 	else
@@ -1444,7 +1444,7 @@ static int Export(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 
 	/* check if layout is empty */
-	if (!IsDataEmpty(PCB->Data)) {
+	if (!pcb_data_is_empty(PCB->Data)) {
 		ghid_dialog_export();
 	}
 	else

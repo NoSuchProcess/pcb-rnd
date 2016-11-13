@@ -121,8 +121,8 @@ void pcb_loop_all(void *ctx,
 	pcb_via_cb_t vcb
 );
 
-void FreeDataMemory(pcb_data_t *);
-pcb_bool IsDataEmpty(pcb_data_t *);
-pcb_box_t *GetDataBoundingBox(pcb_data_t *Data);
+void pcb_data_free(pcb_data_t *);
+pcb_bool pcb_data_is_empty(pcb_data_t *);
+pcb_box_t *pcb_data_bbox(pcb_data_t *Data);
 
 #endif

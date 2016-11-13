@@ -178,7 +178,7 @@ void pcb_loop_all(void *ctx,
 /* ---------------------------------------------------------------------------
  * free memory used by data struct
  */
-void FreeDataMemory(pcb_data_t * data)
+void pcb_data_free(pcb_data_t * data)
 {
 	pcb_layer_t *layer;
 	int i;
@@ -255,7 +255,7 @@ void FreeDataMemory(pcb_data_t * data)
 /* ---------------------------------------------------------------------------
  * returns pcb_true if data area is empty
  */
-pcb_bool IsDataEmpty(pcb_data_t *Data)
+pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 {
 	pcb_bool hasNoObjects;
 	pcb_cardinal_t i;
@@ -271,7 +271,7 @@ pcb_bool IsDataEmpty(pcb_data_t *Data)
  * gets minimum and maximum coordinates
  * returns NULL if layout is empty
  */
-pcb_box_t *GetDataBoundingBox(pcb_data_t *Data)
+pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 {
 	static pcb_box_t box;
 	/* FIX ME: use r_search to do this much faster */
@@ -340,6 +340,6 @@ pcb_box_t *GetDataBoundingBox(pcb_data_t *Data)
 		box.Y2 = MAX(box.Y2, polygon->BoundingBox.Y2);
 	}
 	ENDALL_LOOP;
-	return (IsDataEmpty(Data) ? NULL : &box);
+	return (pcb_data_is_empty(Data) ? NULL : &box);
 }
 
