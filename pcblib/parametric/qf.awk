@@ -1,5 +1,7 @@
 function qf_globals(pre_args, post_args    ,reqs)
 {
+	DEFAULT["cpad_mask", "dim"] = 1
+
 	if (hook_spc_conv == "")
 		hook_spc_conv = 1.8
 	if (hook_cpad_mult == "")
@@ -53,6 +55,12 @@ function qf_globals(pre_args, post_args    ,reqs)
 
 	cpad_width=parse_dim(P["cpad_width"])
 	cpad_height=parse_dim(P["cpad_height"])
+
+	if (P["cpad_mask"] == "")
+		cpad_mask = (cpad_width > cpad_height ? cpad_width : cpad_height) +  either(parse_dim(P["pad_mask"]), DEFAULT["pad_mask"])
+	else
+		cpad_mask=parse_dim(P["cpad_mask"])
+
 
 	if (tobool(P["cpad_auto"]) || hook_cpad_auto) {
 		if (cpad_width == "")
@@ -113,7 +121,10 @@ BEGIN {
 
 
 	if ((cpad_width != "") && (cpad_height != "")) {
+		tmp = DEFAULT["pad_mask"]
+		DEFAULT["pad_mask"] = cpad_mask
 		element_pad_rectangle(-cpad_width/2, -cpad_height/2, +cpad_width/2, +cpad_height/2, 2*nx+2*ny+1, "square,nopaste")
+		DEFAULT["pad_mask"] = tmp
 		dimension(-cpad_width/2, -cpad_height/2, +cpad_width/2, -cpad_height/2, "@0;" (height * -0.6-ext_bloat), "cpad_width")
 		dimension(cpad_width/2, -cpad_height/2, cpad_width/2, +cpad_height/2, "@" (width * 0.8+ext_bloat) ";0", "cpad_height")
 	}
