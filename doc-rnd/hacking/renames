@@ -348,3 +348,11 @@ funchash_set_table -> pcb_funchash_set_table
 funchash_remove_cookie -> pcb_funchash_remove_cookie
 funchash_init -> pcb_funchash_init
 funchash_uninit -> pcb_funchash_uninit
+heap_create -> pcb_heap_create
+heap_destroy -> pcb_heap_destroy
+heap_free -> pcb_heap_free
+heap_insert -> pcb_heap_insert
+heap_remove_smallest -> pcb_heap_remove_smallest
+heap_replace -> pcb_heap_replace
+heap_is_empty -> pcb_heap_is_empty
+heap_size -> pcb_heap_size

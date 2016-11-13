@@ -4893,9 +4893,9 @@ GList *route(toporouter_t * r, toporouter_route_t * data, guint debug)
 		}
 	}
 
-	gts_eheap_insert(openlist, curpoint);
+	gts_epcb_heap_insert(openlist, curpoint);
 
-	while (gts_eheap_size(openlist) > 0) {
+	while (gts_epcb_heap_size(openlist) > 0) {
 		GList *candidatepoints;
 		data->curpoint = curpoint;
 		/*draw_route_status(r, closelist, openlist, curpoint, data, count++); */
@@ -5027,7 +5027,7 @@ GList *route(toporouter_t * r, toporouter_route_t * data, guint debug)
 
 					temppoint->hcost = simple_h_cost(r, temppoint, destv);
 /*          if(cur_layer != dest_layer) temppoint->hcost += r->viacost;*/
-					gts_eheap_insert(openlist, temppoint);
+					gts_epcb_heap_insert(openlist, temppoint);
 				}
 
 			}
@@ -5111,7 +5111,7 @@ route_finish:
 
         if(restartv) {
           clean_routing_edges(r, data); 
-          gts_eheap_destroy(openlist);     
+          gts_epcb_heap_destroy(openlist);     
           g_list_free(closelist);
           openlist = gts_eheap_new(route_heap_cmp, NULL);
           closelist = NULL;
@@ -5205,7 +5205,7 @@ routing_return:
 	g_list_free(data->srcvertices);
 	data->destvertices = NULL;
 	data->srcvertices = NULL;
-	gts_eheap_destroy(openlist);
+	gts_epcb_heap_destroy(openlist);
 	g_list_free(closelist);
 
 	data->alltemppoints = NULL;

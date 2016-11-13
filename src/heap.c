@@ -91,7 +91,7 @@ static int __heap_is_good(pcb_heap_t * heap)
 #endif /* ! NDEBUG */
 
 /* create an empty heap */
-pcb_heap_t *heap_create()
+pcb_heap_t *pcb_heap_create()
 {
 	pcb_heap_t *heap;
 	/* initialize MIN_COST if necessary */
@@ -106,7 +106,7 @@ pcb_heap_t *heap_create()
 }
 
 /* destroy a heap */
-void heap_destroy(pcb_heap_t ** heap)
+void pcb_heap_destroy(pcb_heap_t ** heap)
 {
 	assert(heap && *heap);
 	assert(__heap_is_good(*heap));
@@ -117,7 +117,7 @@ void heap_destroy(pcb_heap_t ** heap)
 }
 
 /* free all elements in the heap */
-void heap_free(pcb_heap_t * heap, void (*freefunc) (void *))
+void pcb_heap_free(pcb_heap_t * heap, void (*freefunc) (void *))
 {
 	assert(heap);
 	assert(__heap_is_good(heap));
@@ -142,7 +142,7 @@ static void __upheap(pcb_heap_t * heap, int k)
 	heap->element[k] = v;
 }
 
-void heap_insert(pcb_heap_t * heap, pcb_cost_t cost, void *data)
+void pcb_heap_insert(pcb_heap_t * heap, pcb_cost_t cost, void *data)
 {
 	assert(heap && __heap_is_good(heap));
 	assert(cost >= MIN_COST);
@@ -187,7 +187,7 @@ static void __downheap(pcb_heap_t * heap, int k)
 	heap->element[k] = v;
 }
 
-void *heap_remove_smallest(pcb_heap_t * heap)
+void *pcb_heap_remove_smallest(pcb_heap_t * heap)
 {
 	struct heap_element v;
 	assert(heap && __heap_is_good(heap));
@@ -203,11 +203,11 @@ void *heap_remove_smallest(pcb_heap_t * heap)
 	return v.data;
 }
 
-void *heap_replace(pcb_heap_t * heap, pcb_cost_t cost, void *data)
+void *pcb_heap_replace(pcb_heap_t * heap, pcb_cost_t cost, void *data)
 {
 	assert(heap && __heap_is_good(heap));
 
-	if (heap_is_empty(heap))
+	if (pcb_heap_is_empty(heap))
 		return data;
 
 	assert(heap->size > 0);
@@ -222,14 +222,14 @@ void *heap_replace(pcb_heap_t * heap, pcb_cost_t cost, void *data)
 }
 
 /* -- interrogation -- */
-int heap_is_empty(pcb_heap_t * heap)
+int pcb_heap_is_empty(pcb_heap_t * heap)
 {
 	assert(__heap_is_good(heap));
 	return heap->size == 0;
 }
 
 /* -- size -- */
-int heap_size(pcb_heap_t * heap)
+int pcb_heap_size(pcb_heap_t * heap)
 {
 	assert(__heap_is_good(heap));
 	return heap->size;

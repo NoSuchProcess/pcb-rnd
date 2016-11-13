@@ -907,10 +907,10 @@ static int cntr_in_M_pcb_polyarea_t(pcb_pline_t * poly, pcb_polyarea_t * outfst,
 	assert(poly != NULL);
 	assert(outer != NULL);
 
-	heap = heap_create();
+	heap = pcb_heap_create();
 	do {
 		if (cntrbox_inside(poly, outer->contours))
-			heap_insert(heap, outer->contours->area, (void *) outer);
+			pcb_heap_insert(heap, outer->contours->area, (void *) outer);
 	}
 	/* if checking touching, use only the first polygon */
 	while (!test && (outer = outer->f) != outfst);
@@ -920,19 +920,19 @@ static int cntr_in_M_pcb_polyarea_t(pcb_pline_t * poly, pcb_polyarea_t * outfst,
 	do {
 		int cnt;
 
-		if (heap_is_empty(heap))
+		if (pcb_heap_is_empty(heap))
 			break;
-		outer = (pcb_polyarea_t *) heap_remove_smallest(heap);
+		outer = (pcb_polyarea_t *) pcb_heap_remove_smallest(heap);
 
 		r_search(outer->contour_tree, (pcb_box_t *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
 		switch (cnt) {
 		case 0:										/* Didn't find anything in this piece, Keep looking */
 			break;
 		case 1:										/* Found we are inside this piece, and not any of its holes */
-			heap_destroy(&heap);
+			pcb_heap_destroy(&heap);
 			return pcb_true;
 		case 2:										/* Found inside a hole in the smallest polygon so far. No need to check the other polygons */
-			heap_destroy(&heap);
+			pcb_heap_destroy(&heap);
 			return pcb_false;
 		default:
 			printf("Something strange here\n");
@@ -940,7 +940,7 @@ static int cntr_in_M_pcb_polyarea_t(pcb_pline_t * poly, pcb_polyarea_t * outfst,
 		}
 	}
 	while (1);
-	heap_destroy(&heap);
+	pcb_heap_destroy(&heap);
 	return pcb_false;
 }																/* cntr_in_M_pcb_polyarea_t */
 
@@ -1151,7 +1151,7 @@ static pcb_r_dir_t heap_it(const pcb_box_t * b, void *cl)
 	pcb_pline_t *p = pa_info->pa->contours;
 	if (p->Count == 0)
 		return R_DIR_NOT_FOUND;										/* how did this happen? */
-	heap_insert(heap, p->area, pa_info);
+	pcb_heap_insert(heap, p->area, pa_info);
 	return R_DIR_FOUND_CONTINUE;
 }
 
@@ -1222,9 +1222,9 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 
 		container = NULL;
 		/* build a heap of all of the polys that the hole is inside its bounding box */
-		heap = heap_create();
+		heap = pcb_heap_create();
 		r_search(tree, (pcb_box_t *) curh, NULL, heap_it, heap, NULL);
-		if (heap_is_empty(heap)) {
+		if (pcb_heap_is_empty(heap)) {
 #ifndef NDEBUG
 #ifdef DEBUG
 			poly_dump(dest);
@@ -1237,8 +1237,8 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 		 * in the heap, assume it is the container without the expense of
 		 * proving it.
 		 */
-		pa_info = (struct polyarea_info *) heap_remove_smallest(heap);
-		if (heap_is_empty(heap)) {	/* only one possibility it must be the right one */
+		pa_info = (struct polyarea_info *) pcb_heap_remove_smallest(heap);
+		if (pcb_heap_is_empty(heap)) {	/* only one possibility it must be the right one */
 			assert(poly_ContourInContour(pa_info->pa->contours, curh));
 			container = pa_info->pa->contours;
 		}
@@ -1248,13 +1248,13 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 					container = pa_info->pa->contours;
 					break;
 				}
-				if (heap_is_empty(heap))
+				if (pcb_heap_is_empty(heap))
 					break;
-				pa_info = (struct polyarea_info *) heap_remove_smallest(heap);
+				pa_info = (struct polyarea_info *) pcb_heap_remove_smallest(heap);
 			}
 			while (1);
 		}
-		heap_destroy(&heap);
+		pcb_heap_destroy(&heap);
 		if (container == NULL) {
 			/* bad input polygons were given */
 #ifndef NDEBUG

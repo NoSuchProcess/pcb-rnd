@@ -2146,16 +2146,16 @@ static int blocker_to_heap(pcb_heap_t * heap, routebox_t * rb, pcb_box_t * box, 
 		 * first.
 		 */
 	case NORTH:
-		heap_insert(heap, b.X1 - b.X1 / (b.X2 + 1.0), rb);
+		pcb_heap_insert(heap, b.X1 - b.X1 / (b.X2 + 1.0), rb);
 		break;
 	case EAST:
-		heap_insert(heap, b.Y1 - b.Y1 / (b.Y2 + 1.0), rb);
+		pcb_heap_insert(heap, b.Y1 - b.Y1 / (b.Y2 + 1.0), rb);
 		break;
 	case SOUTH:
-		heap_insert(heap, -(b.X2 + b.X1 / (b.X2 + 1.0)), rb);
+		pcb_heap_insert(heap, -(b.X2 + b.X1 / (b.X2 + 1.0)), rb);
 		break;
 	case WEST:
-		heap_insert(heap, -(b.Y2 + b.Y1 / (b.Y2 + 1.0)), rb);
+		pcb_heap_insert(heap, -(b.Y2 + b.Y1 / (b.Y2 + 1.0)), rb);
 		break;
 	default:
 		assert(0);
@@ -2489,7 +2489,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 		int tmp;
 		/* don't break the edge we came from */
 		if (e->expand_dir != ((dir + 2) % 4)) {
-			heap[dir] = heap_create();
+			heap[dir] = pcb_heap_create();
 			bi.box = pcb_bloat_box(&rb->sbox, bloat);
 			bi.heap = heap[dir];
 			bi.dir = dir;
@@ -2563,11 +2563,11 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
  */
 	first = last = -1;
 	for (dir = NORTH; dir <= WEST; dir = directionIncrement(dir)) {
-		if (heap[dir] && !heap_is_empty(heap[dir])) {
+		if (heap[dir] && !pcb_heap_is_empty(heap[dir])) {
 			/* pull the very first one out of the heap outside of the
 			 * heap loop because it is special; it can be part of a corner
 			 */
-			routebox_t *blk = (routebox_t *) heap_remove_smallest(heap[dir]);
+			routebox_t *blk = (routebox_t *) pcb_heap_remove_smallest(heap[dir]);
 			pcb_box_t b = rb->sbox;
 			struct broken_boxes broke = break_box_edge(&b, dir, blk);
 			if (broke.is_valid_left) {
@@ -2645,9 +2645,9 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 				default:
 					assert(0);
 				}
-				if (heap_is_empty(heap[dir]))
+				if (pcb_heap_is_empty(heap[dir]))
 					break;
-				blk = (routebox_t *) heap_remove_smallest(heap[dir]);
+				blk = (routebox_t *) pcb_heap_remove_smallest(heap[dir]);
 				broke = break_box_edge(&b, dir, blk);
 				if (broke.is_valid_left)
 					moveable_edge(edges, &broke.left, dir, rb, NULL, e, targets, s, NULL, NULL);
@@ -2700,7 +2700,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 	/* done with all expansion edges of this box */
 	for (dir = NORTH; dir <= WEST; dir = directionIncrement(dir)) {
 		if (heap[dir])
-			heap_destroy(&heap[dir]);
+			pcb_heap_destroy(&heap[dir]);
 	}
 	return edges;
 }
@@ -3299,7 +3299,7 @@ CreateSearchEdge(struct routeone_state *s, vetting_t * work, edge_t * parent,
 		ne->pcb_cost_to_point = parent->pcb_cost_to_point;
 		ne->cost_point = parent->cost_point;
 		ne->cost = cost;
-		heap_insert(s->workheap, ne->cost, ne);
+		pcb_heap_insert(s->workheap, ne->cost, ne);
 	}
 	else {
 		mtsFreeWork(&work);
@@ -3312,7 +3312,7 @@ static void add_or_destroy_edge(struct routeone_state *s, edge_t * e)
 	assert(__edge_is_good(e));
 	assert(is_layer_group_active[e->rb->group]);
 	if (e->cost < s->best_cost)
-		heap_insert(s->workheap, e->cost, e);
+		pcb_heap_insert(s->workheap, e->cost, e);
 	else
 		DestroyEdge(&e);
 }
@@ -3679,13 +3679,13 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 
 	/* okay, main expansion-search routing loop. */
 	/* set up the initial activity heap */
-	s.workheap = heap_create();
+	s.workheap = pcb_heap_create();
 	assert(s.workheap);
 	while (!vector_is_empty(source_vec)) {
 		edge_t *e = (edge_t *) vector_remove_last(source_vec);
 		assert(is_layer_group_active[e->rb->group]);
 		e->cost = edge_cost(e, EXPENSIVE);
-		heap_insert(s.workheap, e->cost, e);
+		pcb_heap_insert(s.workheap, e->cost, e);
 	}
 	vector_destroy(&source_vec);
 	/* okay, process items from heap until it is empty! */
@@ -3696,8 +3696,8 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 	vss.free_space_vec = vector_create();
 	vss.lo_conflict_space_vec = vector_create();
 	vss.hi_conflict_space_vec = vector_create();
-	while (!heap_is_empty(s.workheap)) {
-		edge_t *e = (edge_t *) heap_remove_smallest(s.workheap);
+	while (!pcb_heap_is_empty(s.workheap)) {
+		edge_t *e = (edge_t *) pcb_heap_remove_smallest(s.workheap);
 #ifdef ROUTE_DEBUG
 		if (aabort)
 			goto dontexpand;
@@ -3705,7 +3705,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 		/* don't bother expanding this edge if the minimum possible edge cost
 		 * is already larger than the best edge cost we've found. */
 		if (s.best_path && e->cost >= s.best_cost) {
-			heap_free(s.workheap, KillEdge);
+			pcb_heap_free(s.workheap, KillEdge);
 			goto dontexpand;					/* skip this edge */
 		}
 		/* surprisingly it helps to give up and not try too hard to find
@@ -3950,7 +3950,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 		DestroyEdge(&e);
 	}
 	touch_conflicts(NULL, 1);
-	heap_destroy(&s.workheap);
+	pcb_heap_destroy(&s.workheap);
 	r_destroy_tree(&targets);
 	assert(vector_is_empty(edge_vec));
 	vector_destroy(&edge_vec);
@@ -4142,10 +4142,10 @@ struct routeall_status RouteAll(routedata_t * rd)
 	/* initialize heap for first pass;
 	 * do smallest area first; that makes
 	 * the subsequent costs more representative */
-	this_pass = heap_create();
-	next_pass = heap_create();
+	this_pass = pcb_heap_create();
+	next_pass = pcb_heap_create();
 #ifdef NET_HEAP
-	net_heap = heap_create();
+	net_heap = pcb_heap_create();
 #endif
 	LIST_LOOP(rd->first_net, different_net, net);
 	{
@@ -4160,7 +4160,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 		}
 		END_LOOP;
 		area = (double) (bb.X2 - bb.X1) * (bb.Y2 - bb.Y1);
-		heap_insert(this_pass, area, net);
+		pcb_heap_insert(this_pass, area, net);
 	}
 	END_LOOP;
 
@@ -4174,15 +4174,15 @@ struct routeall_status RouteAll(routedata_t * rd)
 			printf("--------- STARTING SMOOTHING PASS %d -------------\n", i - passes);
 #endif
 		ras.total_subnets = ras.routed_subnets = ras.conflict_subnets = ras.failed = ras.ripped = 0;
-		assert(heap_is_empty(next_pass));
+		assert(pcb_heap_is_empty(next_pass));
 
-		this_heap_size = heap_size(this_pass);
-		for (this_heap_item = 0; !heap_is_empty(this_pass); this_heap_item++) {
+		this_heap_size = pcb_heap_size(this_pass);
+		for (this_heap_item = 0; !pcb_heap_is_empty(this_pass); this_heap_item++) {
 #ifdef ROUTE_DEBUG
 			if (aabort)
 				break;
 #endif
-			net = (routebox_t *) heap_remove_smallest(this_pass);
+			net = (routebox_t *) pcb_heap_remove_smallest(this_pass);
 			InitAutoRouteParameters(i, net->style, i < passes, i > passes, i == passes + smoothes);
 			if (i > 0) {
 				/* rip up all unfixed traces in this net ? */
@@ -4238,7 +4238,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 					ResetSubnet(net);
 				}
 				else {
-					heap_insert(next_pass, 0, net);
+					pcb_heap_insert(next_pass, 0, net);
 					continue;
 				}
 			}
@@ -4257,7 +4257,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 			if (ras.total_subnets == 0)
 #endif
 			{
-				heap_insert(next_pass, 0, net);
+				pcb_heap_insert(next_pass, 0, net);
 				continue;
 			}
 
@@ -4269,7 +4269,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 				pcb_box_t b = shrink_routebox(p);
 				/* using a heap allows us to start from smaller objects and
 				 * end at bigger ones. also prefer to start at planes, then pads */
-				heap_insert(net_heap, (float) (b.X2 - b.X1) *
+				pcb_heap_insert(net_heap, (float) (b.X2 - b.X1) *
 #if defined(ROUTE_RANDOMIZED)
 										(0.3 + pcb_rand() / (RAND_MAX + 1.0)) *
 #endif
@@ -4277,8 +4277,8 @@ struct routeall_status RouteAll(routedata_t * rd)
 			}
 			END_LOOP;
 			ros.net_completely_routed = 0;
-			while (!heap_is_empty(net_heap)) {
-				p = (routebox_t *) heap_remove_smallest(net_heap);
+			while (!pcb_heap_is_empty(net_heap)) {
+				p = (routebox_t *) pcb_heap_remove_smallest(net_heap);
 #endif
 				if (!p->flags.fixed || p->flags.subnet_processed || p->type == OTHER)
 					continue;
@@ -4335,7 +4335,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 			 * but it will do no good to rip it up and try it again
 			 * without first changing any of the other routes
 			 */
-			heap_insert(next_pass, total_net_cost, net);
+			pcb_heap_insert(next_pass, total_net_cost, net);
 			if (total_net_cost < EXPENSIVE)
 				this_cost += total_net_cost;
 			/* reset subnet_processed flags */
@@ -4347,7 +4347,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 		}
 		/* swap this_pass and next_pass and do it all over again! */
 		ro = 0;
-		assert(heap_is_empty(this_pass));
+		assert(pcb_heap_is_empty(this_pass));
 		tmp = this_pass;
 		this_pass = next_pass;
 		next_pass = tmp;
@@ -4373,10 +4373,10 @@ struct routeall_status RouteAll(routedata_t * rd)
 	pcb_message(PCB_MSG_DEFAULT, "%d of %d nets successfully routed.\n", ras.routed_subnets, ras.total_subnets);
 
 out:
-	heap_destroy(&this_pass);
-	heap_destroy(&next_pass);
+	pcb_heap_destroy(&this_pass);
+	pcb_heap_destroy(&next_pass);
 #ifdef NET_HEAP
-	heap_destroy(&net_heap);
+	pcb_heap_destroy(&net_heap);
 #endif
 
 	/* no conflicts should be left at the end of the process. */
