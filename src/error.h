@@ -48,7 +48,6 @@ typedef enum pcb_message_level {
 } pcb_message_level_t;
 
 void pcb_message(enum pcb_message_level level, const char *Format, ...);
-void MyFatal(const char *Format, ...);
 void OpenErrorpcb_message(const char *);
 void PopenErrorpcb_message(const char *);
 void OpendirErrorpcb_message(const char *);

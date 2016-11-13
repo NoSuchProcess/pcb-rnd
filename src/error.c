@@ -133,24 +133,6 @@ void ChdirErrorpcb_message(const char *DirName)
 }
 
 /* ---------------------------------------------------------------------------
- * output of fatal error message
- */
-void MyFatal(const char *Format, ...)
-{
-	va_list args;
-
-	va_start(args, Format);
-
-	/* try to save the layout and do some cleanup */
-	EmergencySave();
-	fprintf(stderr, "pcb-rnd (%i): fatal, ", pcb_getpid());
-	vfprintf(stderr, Format, args);
-	fflush(stderr);
-	va_end(args);
-	exit(1);
-}
-
-/* ---------------------------------------------------------------------------
  * catches signals which abort the program
  */
 void CatchSignal(int Signal)
@@ -184,5 +166,6 @@ void CatchSignal(int Signal)
 		s = "unknown";
 		break;
 	}
-	MyFatal("aborted by %s signal\n", s);
+	pcb_message(PCB_MSG_ERROR, "aborted by %s signal\n", s);
+	exit(1);
 }
