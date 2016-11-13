@@ -34,7 +34,7 @@
 /* ---------------------------------------------------------------------------
  * get next slot for a box, allocates memory if necessary
  */
-pcb_box_t *GetBoxMemory(pcb_box_list_t *Boxes)
+pcb_box_t *pcb_box_new(pcb_box_list_t *Boxes)
 {
 	pcb_box_t *box = Boxes->Box;
 
@@ -51,7 +51,7 @@ pcb_box_t *GetBoxMemory(pcb_box_list_t *Boxes)
 /* ---------------------------------------------------------------------------
  * frees memory used by a box list
  */
-void FreeBoxListMemory(pcb_box_list_t *Boxlist)
+void pcb_box_free(pcb_box_list_t *Boxlist)
 {
 	if (Boxlist) {
 		free(Boxlist->Box);
@@ -62,7 +62,7 @@ void FreeBoxListMemory(pcb_box_list_t *Boxlist)
 /* ---------------------------------------------------------------------------
  * sets the bounding box of a point (which is silly)
  */
-void SetPointBoundingBox(pcb_point_t *Pnt)
+void pcb_set_point_bounding_box(pcb_point_t *Pnt)
 {
 	Pnt->X2 = Pnt->X + 1;
 	Pnt->Y2 = Pnt->Y + 1;

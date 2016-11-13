@@ -222,8 +222,8 @@ static inline PCB_FUNC_UNUSED double pcb_dist2_to_box(const pcb_cheap_point_t * 
 	return Distance(r.X, r.Y, p->X, p->Y);
 }
 
-pcb_box_t *GetBoxMemory(pcb_box_list_t *);
-void FreeBoxListMemory(pcb_box_list_t *);
-void SetPointBoundingBox(pcb_point_t *Pnt);
+pcb_box_t *pcb_box_new(pcb_box_list_t *);
+void pcb_box_free(pcb_box_list_t *);
+void pcb_set_point_bounding_box(pcb_point_t *Pnt);
 
 #endif /* __BOX_H_INCLUDED__ */

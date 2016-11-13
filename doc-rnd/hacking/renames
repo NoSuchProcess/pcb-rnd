@@ -159,3 +159,6 @@ box_corner -> pcb_box_corner
 point_box -> pcb_point_box
 close_box -> pcb_close_box
 dist2_to_box -> pcb_dist2_to_box
+GetBoxMemory -> pcb_box_new
+FreeBoxListMemory -> pcb_box_free
+SetPointBoundingBox -> pcb_set_point_bounding_box

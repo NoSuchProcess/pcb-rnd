@@ -335,7 +335,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		}
 		/* save bounding rectangle */
 		{
-			pcb_box_t *box = GetBoxMemory(&bounds);
+			pcb_box_t *box = pcb_box_new(&bounds);
 			box->X1 = minx;
 			box->Y1 = miny;
 			box->X2 = maxx;
@@ -352,7 +352,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	printf("Wire Congestion Area: %f\n", ComputeIntersectionArea(&bounds));
 #endif
 	/* free bounding rectangles */
-	FreeBoxListMemory(&bounds);
+	pcb_box_free(&bounds);
 	/* now collect module areas (bounding rect of pins/pads) */
 	/* two lists for solder side / component side. */
 
@@ -372,7 +372,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			thisside = &componentside;
 			otherside = &solderside;
 		}
-		box = GetBoxMemory(thisside);
+		box = pcb_box_new(thisside);
 		/* protect against elements with no pins/pads */
 		if (pinlist_length(&element->Pin) == 0 && padlist_length(&element->Pad) == 0)
 			continue;
@@ -409,7 +409,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		if (!CostParameter.fast)
 			PIN_LOOP(element);
 		{
-			box = GetBoxMemory(otherside);
+			box = pcb_box_new(otherside);
 			thickness = pin->Thickness / 2;
 			clearance = pin->Clearance * 2;
 			/* we ignore clearance here */
@@ -447,8 +447,8 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	printf("Module Overlap Area (solder): %f\n", ComputeIntersectionArea(&solderside));
 	printf("Module Overlap Area (component): %f\n", ComputeIntersectionArea(&componentside));
 #endif
-	FreeBoxListMemory(&solderside);
-	FreeBoxListMemory(&componentside);
+	pcb_box_free(&solderside);
+	pcb_box_free(&componentside);
 	/* reward pin/pad x/y alignment */
 	/* score higher if pins/pads belong to same *type* of component */
 	/* XXX: subkey should be *distance* from thing aligned with, so that

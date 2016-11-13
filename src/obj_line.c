@@ -234,8 +234,8 @@ void SetLineBoundingBox(pcb_line_t *Line)
 	Line->BoundingBox.Y1 = MIN(Line->Point1.Y, Line->Point2.Y) - width;
 	Line->BoundingBox.Y2 = MAX(Line->Point1.Y, Line->Point2.Y) + width;
 	pcb_close_box(&Line->BoundingBox);
-	SetPointBoundingBox(&Line->Point1);
-	SetPointBoundingBox(&Line->Point2);
+	pcb_set_point_bounding_box(&Line->Point1);
+	pcb_set_point_bounding_box(&Line->Point2);
 }
 
 
