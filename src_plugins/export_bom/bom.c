@@ -156,7 +156,7 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 	   components */
 	cur = bom;
 	while (cur != NULL) {
-		if ((NSTRCMP(descr, cur->descr) == 0) && (NSTRCMP(value, cur->value) == 0)) {
+		if ((PCB_NSTRCMP(descr, cur->descr) == 0) && (PCB_NSTRCMP(value, cur->value) == 0)) {
 			cur->num++;
 			cur->refdes = string_insert(refdes, cur->refdes);
 			break;
@@ -240,8 +240,8 @@ static int PrintBOM(void)
 	ELEMENT_LOOP(PCB->Data);
 	{
 		/* insert this component into the bill of materials list */
-		bom = bom_insert((char *) UNKNOWN(NAMEONPCB_NAME(element)),
-										 (char *) UNKNOWN(DESCRIPTION_NAME(element)), (char *) UNKNOWN(VALUE_NAME(element)), bom);
+		bom = bom_insert((char *) PCB_UNKNOWN(NAMEONPCB_NAME(element)),
+										 (char *) PCB_UNKNOWN(DESCRIPTION_NAME(element)), (char *) PCB_UNKNOWN(VALUE_NAME(element)), bom);
 	}
 	END_LOOP;
 
@@ -257,7 +257,7 @@ static int PrintBOM(void)
 	fprintf(fp, "# PcbBOM Version 1.0\n");
 	fprintf(fp, "# Date: %s\n", utcTime);
 	fprintf(fp, "# Author: %s\n", pcb_author());
-	fprintf(fp, "# Title: %s - PCB BOM\n", UNKNOWN(PCB->Name));
+	fprintf(fp, "# Title: %s - PCB BOM\n", PCB_UNKNOWN(PCB->Name));
 	fprintf(fp, "# Quantity, Description, Value, RefDes\n");
 	fprintf(fp, "# --------------------------------------------\n");
 

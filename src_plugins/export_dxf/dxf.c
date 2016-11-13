@@ -3824,7 +3824,7 @@ static DxfList *dxf_insert(char *refdes,
 	 */
 	cur = dxf;
 	while (cur != NULL) {
-		if ((NSTRCMP(descr, cur->descr) == 0) && (NSTRCMP(value, cur->value) == 0)) {
+		if ((PCB_NSTRCMP(descr, cur->descr) == 0) && (PCB_NSTRCMP(value, cur->value) == 0)) {
 			cur->num++;
 			cur->refdes = dxf_string_insert(refdes, cur->refdes);
 			break;
@@ -3935,7 +3935,7 @@ static int dxf_export_xref_file(void)
 	strftime(utcTime, sizeof(utcTime), "%c UTC", gmtime(&currenttime));
 	if (dxf_verbose) {
 		/* report at the beginning of each file */
-		fprintf(stderr, "DXF: Board Name: %s, %s \n", UNKNOWN(PCB->Name), UNKNOWN(name));
+		fprintf(stderr, "DXF: Board Name: %s, %s \n", PCB_UNKNOWN(PCB->Name), PCB_UNKNOWN(name));
 		fprintf(stderr, "DXF: Created by: %s.\n", PCB_DXF_HID_VERSION);
 		fprintf(stderr, "DXF: Creation date: %s \n", utcTime);
 		fprintf(stderr, "DXF: File Format according to: AutoCAD R14.\n");
@@ -3963,7 +3963,7 @@ static int dxf_export_xref_file(void)
 		/*
 		 * insert the elements into the dxf list.
 		 */
-		dxf = dxf_insert(UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(DESCRIPTION_NAME(element)), UNKNOWN(VALUE_NAME(element)), dxf);
+		dxf = dxf_insert(PCB_UNKNOWN(NAMEONPCB_NAME(element)), PCB_UNKNOWN(DESCRIPTION_NAME(element)), PCB_UNKNOWN(VALUE_NAME(element)), dxf);
 	}
 	END_LOOP;											/* End of ELEMENT_LOOP  */
 	/*
@@ -4023,13 +4023,13 @@ static int dxf_export_xref_file(void)
 			sumx += (double) pin->X;
 			sumy += (double) pin->Y;
 			pin_cnt++;
-			if (NSTRCMP(pin->Number, "1") == 0) {
+			if (PCB_NSTRCMP(pin->Number, "1") == 0) {
 				pin1x = (double) pin->X;
 				pin1y = (double) pin->Y;
 				pin1angle = 0.0;
 				found_pin1 = 1;
 			}
-			else if (NSTRCMP(pin->Number, "2") == 0) {
+			else if (PCB_NSTRCMP(pin->Number, "2") == 0) {
 				pin2x = (double) pin->X;
 				pin2y = (double) pin->Y;
 				pin2angle = 0.0;
@@ -4042,7 +4042,7 @@ static int dxf_export_xref_file(void)
 			sumx += (pad->Point1.X + pad->Point2.X) / 2.0;
 			sumy += (pad->Point1.Y + pad->Point2.Y) / 2.0;
 			pin_cnt++;
-			if (NSTRCMP(pad->Number, "1") == 0) {
+			if (PCB_NSTRCMP(pad->Number, "1") == 0) {
 				pin1x = (double) (pad->Point1.X + pad->Point2.X) / 2.0;
 				pin1y = (double) (pad->Point1.Y + pad->Point2.Y) / 2.0;
 				/*
@@ -4056,7 +4056,7 @@ static int dxf_export_xref_file(void)
 				pin1angle = (180.0 / M_PI) * atan2(pad->Point1.Y - pad->Point2.Y, pad->Point2.X - pad->Point1.X);
 				found_pin1 = 1;
 			}
-			else if (NSTRCMP(pad->Number, "2") == 0) {
+			else if (PCB_NSTRCMP(pad->Number, "2") == 0) {
 				pin2x = (double) (pad->Point1.X + pad->Point2.X) / 2.0;
 				pin2y = (double) (pad->Point1.Y + pad->Point2.Y) / 2.0;
 				pin2angle = (180.0 / M_PI) * atan2(pad->Point1.Y - pad->Point2.Y, pad->Point2.X - pad->Point1.X);
@@ -4091,7 +4091,7 @@ static int dxf_export_xref_file(void)
 											"     unable to figure out angle of element\n"
 											"     %s because pin #1 is at the centroid of the part\n"
 											"     and I could not find pin #2's location.\n"
-											"     Setting to %g degrees.\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
+											"     Setting to %g degrees.\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
 						}
 					}
 					else
@@ -4104,9 +4104,9 @@ static int dxf_export_xref_file(void)
 				pcb_message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
 								"     unable to figure out angle because I could\n"
 								"     not find pin #1 of element %s.\n"
-								"     Setting to %g degrees.\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
+								"     Setting to %g degrees.\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
 			}
-			dxf_block_name = pcb_strdup(dxf_clean_string(UNKNOWN(DESCRIPTION_NAME(element))));
+			dxf_block_name = pcb_strdup(dxf_clean_string(PCB_UNKNOWN(DESCRIPTION_NAME(element))));
 			if (dxf_metric) {
 				/* convert mils to mm */
 				dxf_x0 = PCB_COORD_TO_MM(x);
@@ -4148,7 +4148,7 @@ static int dxf_export_xref_file(void)
 				pcb_message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
 								"     unable to figure out angle of dxf block\n"
 								"     %s because pcb angle theta is not Cardinal [0.0, 90.0, 180.0, 270.0].\n"
-								"     Setting dxf_rot_angle to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), dxf_rot_angle);
+								"     Setting dxf_rot_angle to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), dxf_rot_angle);
 			}
 #endif
 			dxf_write_insert(fp, dxf_id_code, dxf_block_name, DXF_DEFAULT_LINETYPE,	/* dxf_linetype, */
@@ -4540,7 +4540,7 @@ static int dxf_set_layer(const char *name, int group) {
 		}
 		if (dxf_verbose) {
 			/* report at the beginning of each file */
-			fprintf(stderr, "DXF: Board Name: %s, %s \n", UNKNOWN(PCB->Name), UNKNOWN(name));
+			fprintf(stderr, "DXF: Board Name: %s, %s \n", PCB_UNKNOWN(PCB->Name), PCB_UNKNOWN(name));
 			fprintf(stderr, "DXF: Created by: %s.\n", PCB_DXF_HID_VERSION);
 			fprintf(stderr, "DXF: Creation date: %s \n", utcTime);
 			fprintf(stderr, "DXF: File Format according to: AutoCAD R14.\n");

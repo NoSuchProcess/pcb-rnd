@@ -412,7 +412,7 @@ static void layer_process(const gchar ** color_string, const char **text, int *s
 		break;
 	default:											/* layers */
 		*color_string = conf_core.appearance.color.layer[i];
-		*text = (char *) UNKNOWN(PCB->Data->Layer[i].Name);
+		*text = (char *) PCB_UNKNOWN(PCB->Data->Layer[i].Name);
 		*set = PCB->Data->Layer[i].On;
 		break;
 	}

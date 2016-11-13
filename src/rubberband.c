@@ -139,7 +139,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	if (i->radius < 0)
 		rad = 0;										/* require exact match */
 	else
-		rad = SQUARE(i->radius + t);
+		rad = PCB_SQUARE(i->radius + t);
 
 	x = (i->X - line->Point1.X);
 	x *= x;

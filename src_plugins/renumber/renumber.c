@@ -151,7 +151,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			 */
 			pcb_fprintf(out,
 									"*WARN* Element \"%s\" at %$md is locked and will not be renumbered.\n",
-									UNKNOWN(NAMEONPCB_NAME(element)), element->MarkX, element->MarkY);
+									PCB_UNKNOWN(NAMEONPCB_NAME(element)), element->MarkX, element->MarkY);
 			locked_element_list[lock_cnt] = element;
 			lock_cnt++;
 		}
@@ -262,7 +262,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				 * elements) names
 				 */
 				for (k = 0; k < lock_cnt; k++) {
-					if (strcmp(UNKNOWN(NAMEONPCB_NAME(locked_element_list[k])), tmps) == 0) {
+					if (strcmp(PCB_UNKNOWN(NAMEONPCB_NAME(locked_element_list[k])), tmps) == 0) {
 						ok = 0;
 						break;
 					}

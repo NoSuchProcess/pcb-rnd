@@ -64,7 +64,7 @@ static int ReadNetlist(const char *filename)
 
 	pcb_message(PCB_MSG_DEFAULT, _("Importing PCB netlist %s\n"), filename);
 
-	if (EMPTY_STRING_P(conf_core.rc.rat_command)) {
+	if (PCB_EMPTY_STRING_P(conf_core.rc.rat_command)) {
 		fp = fopen(filename, "r");
 		if (!fp) {
 			pcb_message(PCB_MSG_DEFAULT, "Cannot open %s for reading", filename);

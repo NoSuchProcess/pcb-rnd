@@ -636,7 +636,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
 
 		if (destlayer->On) {
-			changed = changed || (!LAYER_IS_EMPTY(sourcelayer));
+			changed = changed || (!LAYER_IS_PCB_EMPTY(sourcelayer));
 			LINE_LOOP(sourcelayer);
 			{
 				CopyLine(&ctx, destlayer, line);

@@ -229,7 +229,7 @@ void pcb_dhlp_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear,
 
 		dx = x2 - x1;
 		dy = y2 - y1;
-		h = t / sqrt(SQUARE(dx) + SQUARE(dy));
+		h = t / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
 		ox = dy * h + 0.5 * SGN(dy);
 		oy = -(dx * h + 0.5 * SGN(dx));
 

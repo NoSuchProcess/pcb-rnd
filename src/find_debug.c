@@ -33,11 +33,11 @@
 static void PrintElementNameList(pcb_element_t *Element, FILE * FP)
 {
 	fputc('(', FP);
-	PrintQuotedString(FP, (char *) EMPTY(DESCRIPTION_NAME(Element)));
+	PrintQuotedString(FP, (char *) PCB_EMPTY(DESCRIPTION_NAME(Element)));
 	fputc(' ', FP);
-	PrintQuotedString(FP, (char *) EMPTY(NAMEONPCB_NAME(Element)));
+	PrintQuotedString(FP, (char *) PCB_EMPTY(NAMEONPCB_NAME(Element)));
 	fputc(' ', FP);
-	PrintQuotedString(FP, (char *) EMPTY(VALUE_NAME(Element)));
+	PrintQuotedString(FP, (char *) PCB_EMPTY(VALUE_NAME(Element)));
 	fputc(')', FP);
 	fputc('\n', FP);
 }
@@ -89,7 +89,7 @@ static void PrintPadConnections(pcb_cardinal_t Layer, FILE * FP, pcb_bool IsFirs
 	if (IsFirst) {
 		ptr = PADLIST_ENTRY(Layer, 0);
 		if (ptr != NULL)
-			PrintConnectionListEntry((char *) UNKNOWN(ptr->Name), NULL, pcb_true, FP);
+			PrintConnectionListEntry((char *) PCB_UNKNOWN(ptr->Name), NULL, pcb_true, FP);
 		else
 			printf("Skipping NULL ptr in 1st part of PrintPadConnections\n");
 	}
@@ -100,7 +100,7 @@ static void PrintPadConnections(pcb_cardinal_t Layer, FILE * FP, pcb_bool IsFirs
 	for (i = IsFirst ? 1 : 0; i < PadList[Layer].Number; i++) {
 		ptr = PADLIST_ENTRY(Layer, i);
 		if (ptr != NULL)
-			PrintConnectionListEntry((char *) EMPTY(ptr->Name), (pcb_element_t *) ptr->Element, pcb_false, FP);
+			PrintConnectionListEntry((char *) PCB_EMPTY(ptr->Name), (pcb_element_t *) ptr->Element, pcb_false, FP);
 		else
 			printf("Skipping NULL ptr in 2nd part of PrintPadConnections\n");
 	}
@@ -121,7 +121,7 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 	if (IsFirst) {
 		/* the starting pin */
 		pv = PVLIST_ENTRY(0);
-		PrintConnectionListEntry((char *) EMPTY(pv->Name), NULL, pcb_true, FP);
+		PrintConnectionListEntry((char *) PCB_EMPTY(pv->Name), NULL, pcb_true, FP);
 	}
 
 	/* we maybe have to start with i=1 if we are handling the
@@ -130,6 +130,6 @@ static void PrintPinConnections(FILE * FP, pcb_bool IsFirst)
 	for (i = IsFirst ? 1 : 0; i < PVList.Number; i++) {
 		/* get the elements name or assume that its a via */
 		pv = PVLIST_ENTRY(i);
-		PrintConnectionListEntry((char *) EMPTY(pv->Name), (pcb_element_t *) pv->Element, pcb_false, FP);
+		PrintConnectionListEntry((char *) PCB_EMPTY(pv->Name), (pcb_element_t *) pv->Element, pcb_false, FP);
 	}
 }

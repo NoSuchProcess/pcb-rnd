@@ -167,7 +167,7 @@ static int keyword(const char *s)
 	if (!s) {
 		return K_none;
 	}
-	for (i = 0; i < ENTRIES(keywords); ++i) {
+	for (i = 0; i < PCB_ENTRIES(keywords); ++i) {
 		if (keywords[i] && strcasecmp(s, keywords[i]) == 0)
 			return i;
 	}

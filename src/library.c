@@ -123,7 +123,7 @@ pcb_lib_menu_t *pcb_lib_net_new(pcb_lib_t *lib, char *name, const char *style)
 	menu = pcb_lib_menu_new(lib, NULL);
 	menu->Name = pcb_strdup(temp);
 	menu->flag = 1;								/* net is enabled by default */
-	if (style == NULL || NSTRCMP("(unknown)", style) == 0)
+	if (style == NULL || PCB_NSTRCMP("(unknown)", style) == 0)
 		menu->Style = NULL;
 	else
 		menu->Style = pcb_strdup(style);

@@ -130,7 +130,7 @@ static int Printexport_test(void)
 	fprintf(fp, "# PcbXY Version 1.0\n");
 	fprintf(fp, "# Date: %s\n", utcTime);
 	fprintf(fp, "# Author: %s\n", pcb_author());
-	fprintf(fp, "# Title: %s - PCB X-Y\n", UNKNOWN(PCB->Name));
+	fprintf(fp, "# Title: %s - PCB X-Y\n", PCB_UNKNOWN(PCB->Name));
 	fprintf(fp, "# RefDes, Description, Value, X, Y, rotation, top/bottom\n");
 	fprintf(fp, "# X,Y in %s.  rotation in degrees.\n", xy_unit->in_suffix);
 	fprintf(fp, "# --------------------------------------------\n");
@@ -153,8 +153,8 @@ static int Printexport_test(void)
 		found_pin2 = 0;
 
 		/* insert this component into the bill of materials list */
-		export_test = export_test_insert((char *) UNKNOWN(NAMEONPCB_NAME(element)),
-										 (char *) UNKNOWN(DESCRIPTION_NAME(element)), (char *) UNKNOWN(VALUE_NAME(element)), export_test);
+		export_test = export_test_insert((char *) PCB_UNKNOWN(NAMEONPCB_NAME(element)),
+										 (char *) PCB_UNKNOWN(DESCRIPTION_NAME(element)), (char *) PCB_UNKNOWN(VALUE_NAME(element)), export_test);
 
 
 		/*
@@ -171,13 +171,13 @@ static int Printexport_test(void)
 			sumy += (double) pin->Y;
 			pin_cnt++;
 
-			if (NSTRCMP(pin->Number, "1") == 0) {
+			if (PCB_NSTRCMP(pin->Number, "1") == 0) {
 				pin1x = (double) pin->X;
 				pin1y = (double) pin->Y;
 				pin1angle = 0.0;				/* pins have no notion of angle */
 				found_pin1 = 1;
 			}
-			else if (NSTRCMP(pin->Number, "2") == 0) {
+			else if (PCB_NSTRCMP(pin->Number, "2") == 0) {
 				pin2x = (double) pin->X;
 				pin2y = (double) pin->Y;
 				found_pin2 = 1;
@@ -191,7 +191,7 @@ static int Printexport_test(void)
 			sumy += (pad->Point1.Y + pad->Point2.Y) / 2.0;
 			pin_cnt++;
 
-			if (NSTRCMP(pad->Number, "1") == 0) {
+			if (PCB_NSTRCMP(pad->Number, "1") == 0) {
 				pin1x = (double) (pad->Point1.X + pad->Point2.X) / 2.0;
 				pin1y = (double) (pad->Point1.Y + pad->Point2.Y) / 2.0;
 				/*
@@ -202,7 +202,7 @@ static int Printexport_test(void)
 				pin1angle = (180.0 / M_PI) * atan2(pad->Point1.Y - pad->Point2.Y, pad->Point2.X - pad->Point1.X);
 				found_pin1 = 1;
 			}
-			else if (NSTRCMP(pad->Number, "2") == 0) {
+			else if (PCB_NSTRCMP(pad->Number, "2") == 0) {
 				pin2x = (double) (pad->Point1.X + pad->Point2.X) / 2.0;
 				pin2y = (double) (pad->Point1.Y + pad->Point2.Y) / 2.0;
 				found_pin2 = 1;
@@ -235,7 +235,7 @@ static int Printexport_test(void)
 								("Printexport_test(): unable to figure out angle of element\n"
 								 "     %s because pin #1 is at the centroid of the part.\n"
 								 "     and I could not find pin #2's location\n"
-								 "     Setting to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
+								 "     Setting to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
 						}
 					}
 					else
@@ -247,12 +247,12 @@ static int Printexport_test(void)
 				theta = 0.0;
 				Message
 					("Printexport_test(): unable to figure out angle because I could\n"
-					 "     not find pin #1 of element %s\n" "     Setting to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
+					 "     not find pin #1 of element %s\n" "     Setting to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
 			}
 
-			name = Cleanexport_testString((char *) UNKNOWN(NAMEONPCB_NAME(element)));
-			descr = Cleanexport_testString((char *) UNKNOWN(DESCRIPTION_NAME(element)));
-			value = Cleanexport_testString((char *) UNKNOWN(VALUE_NAME(element)));
+			name = Cleanexport_testString((char *) PCB_UNKNOWN(NAMEONPCB_NAME(element)));
+			descr = Cleanexport_testString((char *) PCB_UNKNOWN(DESCRIPTION_NAME(element)));
+			value = Cleanexport_testString((char *) PCB_UNKNOWN(VALUE_NAME(element)));
 
 			y = PCB->MaxHeight - y;
 			pcb_fprintf(fp, "%m+%s,\"%s\",\"%s\",%mS,%.2mS,%g,%s\n",
@@ -280,7 +280,7 @@ static int Printexport_test(void)
 	fprintf(fp, "# Pcbexport_test Version 1.0\n");
 	fprintf(fp, "# Date: %s\n", utcTime);
 	fprintf(fp, "# Author: %s\n", pcb_author());
-	fprintf(fp, "# Title: %s - PCB export_test\n", UNKNOWN(PCB->Name));
+	fprintf(fp, "# Title: %s - PCB export_test\n", PCB_UNKNOWN(PCB->Name));
 	fprintf(fp, "# Quantity, Description, Value, RefDes\n");
 	fprintf(fp, "# --------------------------------------------\n");
 

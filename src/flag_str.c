@@ -79,7 +79,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 };
 #undef N
 
-const int pcb_object_flagbits_len = ENTRIES(pcb_object_flagbits);
+const int pcb_object_flagbits_len = PCB_ENTRIES(pcb_object_flagbits);
 
 
 /*
@@ -405,7 +405,7 @@ pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const cha
 
 pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg))
 {
-	return pcb_strflg_common_s2f(flagstring, error, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
+	return pcb_strflg_common_s2f(flagstring, error, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits));
 }
 
 
@@ -536,7 +536,7 @@ char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *
 
 char *pcb_strflg_f2s(pcb_flag_t flags, int object_type)
 {
-	return pcb_strflg_common_f2s(flags, object_type, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
+	return pcb_strflg_common_f2s(flags, object_type, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits));
 }
 
 
@@ -571,10 +571,10 @@ static pcb_flag_bits_t pcb_flagbits[] = {
 
 char *pcb_strflg_board_f2s(pcb_flag_t flags)
 {
-	return pcb_strflg_common_f2s(flags, PCB_TYPEMASK_ALL, pcb_flagbits, ENTRIES(pcb_flagbits));
+	return pcb_strflg_common_f2s(flags, PCB_TYPEMASK_ALL, pcb_flagbits, PCB_ENTRIES(pcb_flagbits));
 }
 
 pcb_flag_t pcb_strflg_board_s2f(const char *flagstring, int (*error) (const char *msg))
 {
-	return pcb_strflg_common_s2f(flagstring, error, pcb_flagbits, ENTRIES(pcb_flagbits));
+	return pcb_strflg_common_s2f(flagstring, error, pcb_flagbits, PCB_ENTRIES(pcb_flagbits));
 }

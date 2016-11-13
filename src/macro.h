@@ -39,13 +39,13 @@
 #define	SWAP_IDENT			conf_core.editor.show_solder_side
 #endif
 
-#define	ENTRIES(x)		(sizeof((x))/sizeof((x)[0]))
-#define	UNKNOWN(a)		((a) && *(a) ? (a) : "(unknown)")
-#define NSTRCMP(a, b)		((a) ? ((b) ? strcmp((a),(b)) : 1) : -1)
-#define	EMPTY(a)		((a) ? (a) : "")
-#define	EMPTY_STRING_P(a)	((a) ? (a)[0]==0 : 1)
-#define XOR(a,b)		(((a) && !(b)) || (!(a) && (b)))
-#define SQUARE(x)		((float) (x) * (float) (x))
+#define PCB_ENTRIES(x)         (sizeof((x))/sizeof((x)[0]))
+#define PCB_UNKNOWN(a)         ((a) && *(a) ? (a) : "(unknown)")
+#define PCB_NSTRCMP(a, b)      ((a) ? ((b) ? strcmp((a),(b)) : 1) : -1)
+#define PCB_EMPTY(a)           ((a) ? (a) : "")
+#define PCB_EMPTY_STRING_P(a)  ((a) ? (a)[0]==0 : 1)
+#define PCB_XOR(a,b)           (((a) && !(b)) || (!(a) && (b)))
+#define PCB_SQUARE(x)          ((float) (x) * (float) (x))
 
 /* ---------------------------------------------------------------------------
  * returns the object ID

@@ -237,7 +237,7 @@ static void WritePCBDataHeader(FILE * FP)
 	fprintf(FP, "FileVersion[%i]\n", PCBFileVersionNeeded());
 
 	fputs("\nPCB[", FP);
-	PrintQuotedString(FP, (char *) EMPTY(PCB->Name));
+	PrintQuotedString(FP, (char *) PCB_EMPTY(PCB->Name));
 	pcb_fprintf(FP, " %[0] %[0]]\n\n", PCB->MaxWidth, PCB->MaxHeight);
 	pcb_fprintf(FP, "Grid[%[0] %[0] %[0] %d]\n", PCB->Grid, PCB->GridOffsetX, PCB->GridOffsetY, conf_core.editor.draw_grid);
 	pcb_fprintf(FP, "Cursor[%[0] %[0] %s]\n", Crosshair.X, Crosshair.Y, c_dtostr(PCB->Zoom));
@@ -301,7 +301,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 	pinlist_foreach(&Data->Via, &it, via) {
 		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", via->X, via->Y,
 								via->Thickness, via->Clearance, via->Mask, via->DrillingHole);
-		PrintQuotedString(FP, (char *) EMPTY(via->Name));
+		PrintQuotedString(FP, (char *) PCB_EMPTY(via->Name));
 		fprintf(FP, " %s]\n", F2S(via, PCB_TYPE_VIA));
 	}
 }
@@ -337,7 +337,7 @@ static void WritePCBNetlistData(FILE * FP)
 			fprintf(FP, "\tNet(");
 			PrintQuotedString(FP, &menu->Name[2]);
 			fprintf(FP, " ");
-			PrintQuotedString(FP, (char *) UNKNOWN(menu->Style));
+			PrintQuotedString(FP, (char *) PCB_UNKNOWN(menu->Style));
 			fprintf(FP, ")\n\t(\n");
 			for (p = 0; p < menu->EntryN; p++) {
 				pcb_lib_entry_t *entry = &menu->Entry[p];
@@ -386,11 +386,11 @@ int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 		 * both names of an element
 		 */
 		fprintf(FP, "\nElement[%s ", F2S(element, PCB_TYPE_ELEMENT));
-		PrintQuotedString(FP, (char *) EMPTY(DESCRIPTION_NAME(element)));
+		PrintQuotedString(FP, (char *) PCB_EMPTY(DESCRIPTION_NAME(element)));
 		fputc(' ', FP);
-		PrintQuotedString(FP, (char *) EMPTY(NAMEONPCB_NAME(element)));
+		PrintQuotedString(FP, (char *) PCB_EMPTY(NAMEONPCB_NAME(element)));
 		fputc(' ', FP);
-		PrintQuotedString(FP, (char *) EMPTY(VALUE_NAME(element)));
+		PrintQuotedString(FP, (char *) PCB_EMPTY(VALUE_NAME(element)));
 		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n",
 								element->MarkX, element->MarkY,
 								DESCRIPTION_TEXT(element).X - element->MarkX,
@@ -402,9 +402,9 @@ int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 			pcb_fprintf(FP, "\tPin[%[0] %[0] %[0] %[0] %[0] %[0] ",
 									pin->X - element->MarkX,
 									pin->Y - element->MarkY, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole);
-			PrintQuotedString(FP, (char *) EMPTY(pin->Name));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Name));
 			fprintf(FP, " ");
-			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Number));
 			fprintf(FP, " %s]\n", F2S(pin, PCB_TYPE_PIN));
 		}
 		pinlist_foreach(&element->Pad, &it, pad) {
@@ -412,9 +412,9 @@ int io_pcb_WriteElementData(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 									pad->Point1.X - element->MarkX,
 									pad->Point1.Y - element->MarkY,
 									pad->Point2.X - element->MarkX, pad->Point2.Y - element->MarkY, pad->Thickness, pad->Clearance, pad->Mask);
-			PrintQuotedString(FP, (char *) EMPTY(pad->Name));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(pad->Name));
 			fprintf(FP, " ");
-			PrintQuotedString(FP, (char *) EMPTY(pad->Number));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(pad->Number));
 			fprintf(FP, " %s]\n", F2S(pad, PCB_TYPE_PAD));
 		}
 		linelist_foreach(&element->Line, &it, line) {
@@ -445,9 +445,9 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 	pcb_polygon_t *polygon;
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		fprintf(FP, "Layer(%i ", (int) Number + 1);
-		PrintQuotedString(FP, (char *) EMPTY(layer->Name));
+		PrintQuotedString(FP, (char *) PCB_EMPTY(layer->Name));
 		fputs(")\n(\n", FP);
 		WriteAttributeList(FP, &layer->Attributes, "\t");
 
@@ -463,7 +463,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 		}
 		textlist_foreach(&layer->Text, &it, text) {
 			pcb_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, text->Direction, text->Scale);
-			PrintQuotedString(FP, (char *) EMPTY(text->TextString));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, PCB_TYPE_TEXT));
 		}
 		textlist_foreach(&layer->Polygon, &it, polygon) {

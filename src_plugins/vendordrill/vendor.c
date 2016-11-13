@@ -194,20 +194,20 @@ int ActionLoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	}
 
 	/* figure out the vendor name, if specified */
-	vendor_name = (char *) UNKNOWN(pcb_hid_cfg_text_value(doc, "vendor"));
+	vendor_name = (char *) PCB_UNKNOWN(pcb_hid_cfg_text_value(doc, "vendor"));
 
 	/* figure out the units, if specified */
 	sval = pcb_hid_cfg_text_value(doc, "/units");
 	if (sval == NULL) {
 		sf = PCB_MIL_TO_COORD(1);
 	}
-	else if ((NSTRCMP(sval, "mil") == 0) || (NSTRCMP(sval, "mils") == 0)) {
+	else if ((PCB_NSTRCMP(sval, "mil") == 0) || (PCB_NSTRCMP(sval, "mils") == 0)) {
 		sf = PCB_MIL_TO_COORD(1);
 	}
-	else if ((NSTRCMP(sval, "inch") == 0) || (NSTRCMP(sval, "inches") == 0)) {
+	else if ((PCB_NSTRCMP(sval, "inch") == 0) || (PCB_NSTRCMP(sval, "inches") == 0)) {
 		sf = PCB_INCH_TO_COORD(1);
 	}
-	else if (NSTRCMP(sval, "mm") == 0) {
+	else if (PCB_NSTRCMP(sval, "mm") == 0) {
 		sf = PCB_MM_TO_COORD(1);
 	}
 	else {
@@ -219,10 +219,10 @@ int ActionLoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	rounding_method = ROUND_UP;
 	sval = pcb_hid_cfg_text_value(doc, "/round");
 	if (sval != NULL) {
-		if (NSTRCMP(sval, "up") == 0) {
+		if (PCB_NSTRCMP(sval, "up") == 0) {
 			rounding_method = ROUND_UP;
 		}
-		else if (NSTRCMP(sval, "nearest") == 0) {
+		else if (PCB_NSTRCMP(sval, "nearest") == 0) {
 			rounding_method = CLOSEST;
 		}
 		else {
@@ -360,9 +360,9 @@ static void apply_vendor_map(void)
 												 "\tPossible reasons:\n"
 												 "\t- pad size too small\n"
 												 "\t- new size would be too large or too small\n"),
-												UNKNOWN(pin->Number), UNKNOWN(pin->Name),
+												PCB_UNKNOWN(pin->Number), PCB_UNKNOWN(pin->Name),
 												0.01 * pin->X, 0.01 * pin->Y,
-												UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(VALUE_NAME(element)), UNKNOWN(DESCRIPTION_NAME(element)));
+												PCB_UNKNOWN(NAMEONPCB_NAME(element)), PCB_UNKNOWN(VALUE_NAME(element)), PCB_UNKNOWN(DESCRIPTION_NAME(element)));
 							}
 						}
 						else {
@@ -538,15 +538,15 @@ static void process_skips(lht_node_t *res)
 
 	for(n = res->data.list.first; n != NULL; n = n->next) {
 		if (n->type == LHT_TEXT) {
-			if (NSTRCMP(n->name, "refdes") == 0) {
+			if (PCB_NSTRCMP(n->name, "refdes") == 0) {
 				cnt = &n_refdes;
 				lst = &ignore_refdes;
 			}
-			else if (NSTRCMP(n->name, "value") == 0) {
+			else if (PCB_NSTRCMP(n->name, "value") == 0) {
 				cnt = &n_value;
 				lst = &ignore_value;
 			}
-			else if (NSTRCMP(n->name, "descr") == 0) {
+			else if (PCB_NSTRCMP(n->name, "descr") == 0) {
 				cnt = &n_descr;
 				lst = &ignore_descr;
 			}
@@ -578,35 +578,35 @@ pcb_bool vendorIsElementMappable(pcb_element_t *element)
 
 	noskip = 1;
 	for (i = 0; i < n_refdes; i++) {
-		if ((NSTRCMP(UNKNOWN(NAMEONPCB_NAME(element)), ignore_refdes[i]) == 0)
-				|| rematch(ignore_refdes[i], UNKNOWN(NAMEONPCB_NAME(element)))) {
-			pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because refdes = %s matches %s\n"), UNKNOWN(NAMEONPCB_NAME(element)), ignore_refdes[i]);
+		if ((PCB_NSTRCMP(PCB_UNKNOWN(NAMEONPCB_NAME(element)), ignore_refdes[i]) == 0)
+				|| rematch(ignore_refdes[i], PCB_UNKNOWN(NAMEONPCB_NAME(element)))) {
+			pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because refdes = %s matches %s\n"), PCB_UNKNOWN(NAMEONPCB_NAME(element)), ignore_refdes[i]);
 			noskip = 0;
 		}
 	}
 	if (noskip)
 		for (i = 0; i < n_value; i++) {
-			if ((NSTRCMP(UNKNOWN(VALUE_NAME(element)), ignore_value[i]) == 0)
-					|| rematch(ignore_value[i], UNKNOWN(VALUE_NAME(element)))) {
-				pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because value = %s matches %s\n"), UNKNOWN(VALUE_NAME(element)), ignore_value[i]);
+			if ((PCB_NSTRCMP(PCB_UNKNOWN(VALUE_NAME(element)), ignore_value[i]) == 0)
+					|| rematch(ignore_value[i], PCB_UNKNOWN(VALUE_NAME(element)))) {
+				pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because value = %s matches %s\n"), PCB_UNKNOWN(VALUE_NAME(element)), ignore_value[i]);
 				noskip = 0;
 			}
 		}
 
 	if (noskip)
 		for (i = 0; i < n_descr; i++) {
-			if ((NSTRCMP(UNKNOWN(DESCRIPTION_NAME(element)), ignore_descr[i])
+			if ((PCB_NSTRCMP(PCB_UNKNOWN(DESCRIPTION_NAME(element)), ignore_descr[i])
 					 == 0)
-					|| rematch(ignore_descr[i], UNKNOWN(DESCRIPTION_NAME(element)))) {
+					|| rematch(ignore_descr[i], PCB_UNKNOWN(DESCRIPTION_NAME(element)))) {
 				pcb_message(PCB_MSG_DEFAULT, _
 								("Vendor mapping skipped because descr = %s matches %s\n"),
-								UNKNOWN(DESCRIPTION_NAME(element)), ignore_descr[i]);
+								PCB_UNKNOWN(DESCRIPTION_NAME(element)), ignore_descr[i]);
 				noskip = 0;
 			}
 		}
 
 	if (noskip && PCB_FLAG_TEST(PCB_FLAG_LOCK, element)) {
-		pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because element %s is locked\n"), UNKNOWN(NAMEONPCB_NAME(element)));
+		pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because element %s is locked\n"), PCB_UNKNOWN(NAMEONPCB_NAME(element)));
 		noskip = 0;
 	}
 

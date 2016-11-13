@@ -656,7 +656,7 @@ int pcb_drc_all(void)
 				BuildObjectList(&object_count, &object_id_list, &object_type_list);
 
 				title = _("Element %s has %i silk lines which are too thin");
-				name = UNKNOWN(NAMEONPCB_NAME(element));
+				name = PCB_UNKNOWN(NAMEONPCB_NAME(element));
 
 				/* -4 is for the %s and %i place-holders */
 				/* +11 is the max printed length for a 32 bit integer */

@@ -809,7 +809,7 @@ int WritePipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 	const char *p;
 	static gds_t command;
 
-	if (EMPTY_STRING_P(conf_core.rc.save_command))
+	if (PCB_EMPTY_STRING_P(conf_core.rc.save_command))
 		return WritePCBFile(Filename, thePcb, fmt, pcb_false);
 
 	/* setup commandline */

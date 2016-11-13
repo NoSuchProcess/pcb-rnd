@@ -149,7 +149,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"It is a pure hole of diameter %$mS.\n"
 										"Name = \"%s\"."
 										"%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA),
-										via->X, via->Y, via->DrillingHole, EMPTY(via->Name), PCB_FLAG_TEST(PCB_FLAG_LOCK, via) ? "It is LOCKED.\n" : "");
+										via->X, via->Y, via->DrillingHole, PCB_EMPTY(via->Name), PCB_FLAG_TEST(PCB_FLAG_LOCK, via) ? "It is LOCKED.\n" : "");
 			else
 				report = pcb_strdup_printf("%m+VIA ID# %ld;  Flags:%s\n"
 										"(X,Y) = %$mD.\n"
@@ -165,7 +165,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										via->Clearance / 2,
 										(via->Thickness - via->DrillingHole) / 2,
 										via->Mask,
-										(via->Mask - via->Thickness) / 2, EMPTY(via->Name), PCB_FLAG_TEST(PCB_FLAG_LOCK, via) ? "It is LOCKED.\n" : "");
+										(via->Mask - via->Thickness) / 2, PCB_EMPTY(via->Name), PCB_FLAG_TEST(PCB_FLAG_LOCK, via) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_PIN:
@@ -194,7 +194,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"It is owned by element %$mS.\n"
 										"%s", USER_UNITMASK, Pin->ID, pcb_strflg_f2s(Pin->Flags, PCB_TYPE_PIN),
 										Pin->X, Pin->Y, Pin->DrillingHole,
-										EMPTY(element->Name[1].TextString), PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) ? "It is LOCKED.\n" : "");
+										PCB_EMPTY(element->Name[1].TextString), PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) ? "It is LOCKED.\n" : "");
 			else
 				report = pcb_strdup_printf(
 										"%m+PIN ID# %ld;  Flags:%s\n" "(X,Y) = %$mD.\n"
@@ -212,8 +212,8 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										(Pin->Thickness - Pin->DrillingHole) / 2,
 										Pin->Mask,
 										(Pin->Mask - Pin->Thickness) / 2,
-										EMPTY(Pin->Name),
-										EMPTY(element->Name[1].TextString), EMPTY(Pin->Number), PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) ? "It is LOCKED.\n" : "");
+										PCB_EMPTY(Pin->Name),
+										PCB_EMPTY(element->Name[1].TextString), PCB_EMPTY(Pin->Number), PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_LINE:
@@ -239,7 +239,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
 									GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1),
-									UNKNOWN(line->Number), PCB_FLAG_TEST(PCB_FLAG_LOCK, line) ? "It is LOCKED.\n" : "");
+									PCB_UNKNOWN(line->Number), PCB_FLAG_TEST(PCB_FLAG_LOCK, line) ? "It is LOCKED.\n" : "");
 			break;
 		}
 	case PCB_TYPE_RATLINE:
@@ -362,9 +362,9 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									Pad->Clearance / 2,
 									Pad->Mask, len + Pad->Mask,
 									(Pad->Mask - Pad->Thickness) / 2,
-									EMPTY(Pad->Name),
-									EMPTY(element->Name[1].TextString),
-									EMPTY(Pad->Number),
+									PCB_EMPTY(Pad->Name),
+									PCB_EMPTY(element->Name[1].TextString),
+									PCB_EMPTY(Pad->Number),
 									PCB_FLAG_TEST(PCB_FLAG_ONSOLDER,
 														Pad) ? "solder (bottom)" : "component", PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad) ? "It is LOCKED.\n" : "");
 			break;
@@ -391,9 +391,9 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									element->ID, pcb_strflg_f2s(element->Flags, PCB_TYPE_ELEMENT),
 									element->BoundingBox.X1, element->BoundingBox.Y1,
 									element->BoundingBox.X2, element->BoundingBox.Y2,
-									EMPTY(element->Name[0].TextString),
-									EMPTY(element->Name[1].TextString),
-									EMPTY(element->Name[2].TextString),
+									PCB_EMPTY(element->Name[0].TextString),
+									PCB_EMPTY(element->Name[1].TextString),
+									PCB_EMPTY(element->Name[2].TextString),
 									PCB_SCALE_TEXT(FONT_CAPHEIGHT, element->Name[1].Scale),
 									element->Name[1].X, element->Name[1].Y,
 									PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) ? ",\n  but it's hidden" : "",

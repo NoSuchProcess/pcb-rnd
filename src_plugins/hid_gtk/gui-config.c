@@ -1429,7 +1429,7 @@ void ghid_config_groups_changed(void)
 		else if (layer == solder_silk_layer)
 			name = _("solder side");
 		else
-			name = (gchar *) UNKNOWN(PCB->Data->Layer[layer].Name);
+			name = (gchar *) PCB_UNKNOWN(PCB->Data->Layer[layer].Name);
 
 		if (layer >= max_copper_layer) {
 			label = gtk_label_new(name);

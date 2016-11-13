@@ -209,10 +209,10 @@ static void check_pin(pcb_pin_t * _pin)
 
 	element = (pcb_element_t *) pin->Element;
 
-	fprintf(stderr, "Pin %s (%s) at %.6f, %.6f (element %s, %s, %s)\n", EMPTY(pin->Number), EMPTY(pin->Name),
+	fprintf(stderr, "Pin %s (%s) at %.6f, %.6f (element %s, %s, %s)\n", PCB_EMPTY(pin->Number), PCB_EMPTY(pin->Name),
 					/* 0.01 * pin->X, 0.01 * pin->Y, */
 					PCB_COORD_TO_MM(pin->X), PCB_COORD_TO_MM(pin->Y),
-					EMPTY(NAMEONPCB_NAME(element)), EMPTY(VALUE_NAME(element)), EMPTY(DESCRIPTION_NAME(element)));
+					PCB_EMPTY(NAMEONPCB_NAME(element)), PCB_EMPTY(VALUE_NAME(element)), PCB_EMPTY(DESCRIPTION_NAME(element)));
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
@@ -256,21 +256,21 @@ static void check_pad(pcb_pad_t * _pad)
 
 	fprintf(stderr,
 					"Pad %s (%s) at %.6f, %.6f (element %s, %s, %s) \n",
-					EMPTY(pad->Number), EMPTY(pad->Name),
+					PCB_EMPTY(pad->Number), PCB_EMPTY(pad->Name),
 					PCB_COORD_TO_MM((pad->BoundingBox.X1 + pad->BoundingBox.X2) / 2),
 					PCB_COORD_TO_MM((pad->BoundingBox.Y1 + pad->BoundingBox.Y2) / 2),
-					EMPTY(NAMEONPCB_NAME(element)), EMPTY(VALUE_NAME(element)), EMPTY(DESCRIPTION_NAME(element)));
+					PCB_EMPTY(NAMEONPCB_NAME(element)), PCB_EMPTY(VALUE_NAME(element)), PCB_EMPTY(DESCRIPTION_NAME(element)));
 
 	/* fprintf(stderr, */
 	/*   "Pad %s (%s) at ((%.6f, %.6f), (%.6f, %.6f)) (element %s, %s, %s) \n", */
-	/*           EMPTY (pad->Number), EMPTY (pad->Name), */
+	/*           PCB_EMPTY(pad->Number), PCB_EMPTY(pad->Name), */
 	/*           PCB_COORD_TO_MM(pad->BoundingBox.X1), */
 	/*           PCB_COORD_TO_MM(pad->BoundingBox.Y1), */
 	/*           PCB_COORD_TO_MM(pad->BoundingBox.X2), */
 	/*           PCB_COORD_TO_MM(pad->BoundingBox.Y2), */
-	/*           EMPTY (NAMEONPCB_NAME (element)), */
-	/*           EMPTY (VALUE_NAME (element)), */
-	/*           EMPTY (DESCRIPTION_NAME (element))); */
+	/*           PCB_EMPTY(NAMEONPCB_NAME (element)), */
+	/*           PCB_EMPTY(VALUE_NAME (element)), */
+	/*           PCB_EMPTY(DESCRIPTION_NAME (element))); */
 
 	for (layer = 0; layer < max_copper_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);

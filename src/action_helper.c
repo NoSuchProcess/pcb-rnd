@@ -630,7 +630,7 @@ void pcb_notify_mode(void)
 
 					wx = Note.X - Crosshair.AttachedBox.Point1.X;
 					wy = Note.Y - Crosshair.AttachedBox.Point1.Y;
-					if (XOR(Crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
+					if (PCB_XOR(Crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
 						Crosshair.AttachedBox.Point2.X = Crosshair.AttachedBox.Point1.X + coord_abs(wy) * SGNZ(wx);
 						sa = (wx >= 0) ? 0 : 180;
 #ifdef ARC45

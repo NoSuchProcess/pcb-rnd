@@ -552,7 +552,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	pcb_hid_save_and_show_layer_ons(save_ons);
 	for (i = 0; i < max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
-		if (!LAYER_IS_EMPTY(layer))
+		if (!LAYER_IS_PCB_EMPTY(layer))
 			print_group[GetLayerGroupNumberByNumber(i)] = 1;
 	}
 	print_group[GetLayerGroupNumberByNumber(solder_silk_layer)] = 1;
@@ -714,7 +714,7 @@ static int gerber_set_layer(const char *name, int group, int empty)
 			strftime(utcTime, sizeof utcTime, fmt, gmtime(&currenttime));
 		}
 		/* Print a cute file header at the beginning of each file. */
-		fprintf(f, "G04 Title: %s, %s *\r\n", UNKNOWN(PCB->Name), UNKNOWN(name));
+		fprintf(f, "G04 Title: %s, %s *\r\n", PCB_UNKNOWN(PCB->Name), PCB_UNKNOWN(name));
 		fprintf(f, "G04 Creator: pcb-rnd " VERSION " *\r\n");
 		fprintf(f, "G04 CreationDate: %s *\r\n", utcTime);
 

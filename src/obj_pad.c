@@ -305,7 +305,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 	const char *pn;
 
 	if (!pad->Name || !pad->Name[0])
-		pn = EMPTY(pad->Number);
+		pn = PCB_EMPTY(pad->Number);
 	else
 		pn = conf_core.editor.show_number ? pad->Number : pad->Name;
 

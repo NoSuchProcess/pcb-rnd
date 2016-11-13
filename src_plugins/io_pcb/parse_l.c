@@ -2364,7 +2364,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 #endif
 
 	if (Pipe == NULL) {
-	if (EMPTY_STRING_P (Executable))
+	if (PCB_EMPTY_STRING_P(Executable))
 	  {
 	    l = 2;
 	    if ( Path != NULL )

@@ -287,7 +287,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 	yoff -= TEXT_LINE;
 	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Author: %s", pcb_author());
 	yoff -= TEXT_LINE;
-	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", UNKNOWN(PCB->Name));
+	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", PCB_UNKNOWN(PCB->Name));
 }
 
 static void hid_draw_fab_uninit(void)

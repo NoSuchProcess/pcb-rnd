@@ -1176,35 +1176,35 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 	}
 	switch (Type) {
 	case PCB_TYPE_LINE:
-		name = gui->prompt_for(_("Linename:"), EMPTY(((pcb_line_t *) Ptr2)->Number));
+		name = gui->prompt_for(_("Linename:"), PCB_EMPTY(((pcb_line_t *) Ptr2)->Number));
 		break;
 
 	case PCB_TYPE_VIA:
-		name = gui->prompt_for(_("Vianame:"), EMPTY(((pcb_pin_t *) Ptr2)->Name));
+		name = gui->prompt_for(_("Vianame:"), PCB_EMPTY(((pcb_pin_t *) Ptr2)->Name));
 		break;
 
 	case PCB_TYPE_PIN:
 		if (pinnum)
-			sprintf(msg, _("%s Pin Number:"), EMPTY(((pcb_pin_t *) Ptr2)->Number));
+			sprintf(msg, _("%s Pin Number:"), PCB_EMPTY(((pcb_pin_t *) Ptr2)->Number));
 		else
-			sprintf(msg, _("%s Pin Name:"), EMPTY(((pcb_pin_t *) Ptr2)->Number));
-		name = gui->prompt_for(msg, EMPTY(((pcb_pin_t *) Ptr2)->Name));
+			sprintf(msg, _("%s Pin Name:"), PCB_EMPTY(((pcb_pin_t *) Ptr2)->Number));
+		name = gui->prompt_for(msg, PCB_EMPTY(((pcb_pin_t *) Ptr2)->Name));
 		break;
 
 	case PCB_TYPE_PAD:
 		if (pinnum)
-			sprintf(msg, _("%s Pad Number:"), EMPTY(((pcb_pad_t *) Ptr2)->Number));
+			sprintf(msg, _("%s Pad Number:"), PCB_EMPTY(((pcb_pad_t *) Ptr2)->Number));
 		else
-			sprintf(msg, _("%s Pad Name:"), EMPTY(((pcb_pad_t *) Ptr2)->Number));
-		name = gui->prompt_for(msg, EMPTY(((pcb_pad_t *) Ptr2)->Name));
+			sprintf(msg, _("%s Pad Name:"), PCB_EMPTY(((pcb_pad_t *) Ptr2)->Number));
+		name = gui->prompt_for(msg, PCB_EMPTY(((pcb_pad_t *) Ptr2)->Name));
 		break;
 
 	case PCB_TYPE_TEXT:
-		name = gui->prompt_for(_("Enter text:"), EMPTY(((pcb_text_t *) Ptr2)->TextString));
+		name = gui->prompt_for(_("Enter text:"), PCB_EMPTY(((pcb_text_t *) Ptr2)->TextString));
 		break;
 
 	case PCB_TYPE_ELEMENT:
-		name = gui->prompt_for(_("Elementname:"), EMPTY(ELEMENT_NAME(PCB, (pcb_element_t *) Ptr2)));
+		name = gui->prompt_for(_("Elementname:"), PCB_EMPTY(ELEMENT_NAME(PCB, (pcb_element_t *) Ptr2)));
 		break;
 	}
 	if (name) {

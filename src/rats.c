@@ -116,7 +116,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connect
 		return pcb_false;
 
 	padlist_foreach(&element->Pad, &it, pad) {
-		if (NSTRCMP(PinNum, pad->Number) == 0 && (!Same || !PCB_FLAG_TEST(PCB_FLAG_DRC, pad))) {
+		if (PCB_NSTRCMP(PinNum, pad->Number) == 0 && (!Same || !PCB_FLAG_TEST(PCB_FLAG_DRC, pad))) {
 			conn->type = PCB_TYPE_PAD;
 			conn->ptr1 = element;
 			conn->ptr2 = pad;
@@ -135,7 +135,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connect
 	}
 
 	padlist_foreach(&element->Pin, &it, pin) {
-		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && pin->Number && NSTRCMP(PinNum, pin->Number) == 0 && (!Same || !PCB_FLAG_TEST(PCB_FLAG_DRC, pin))) {
+		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && pin->Number && PCB_NSTRCMP(PinNum, pin->Number) == 0 && (!Same || !PCB_FLAG_TEST(PCB_FLAG_DRC, pin))) {
 			conn->type = PCB_TYPE_PIN;
 			conn->ptr1 = element;
 			conn->ptr2 = pin;
@@ -327,7 +327,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			warn = pcb_true;
 			if (!pin->Spare) {
 				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to %s pin %s\n"),
-								&theNet->Name[2], UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(pin->Number));
+								&theNet->Name[2], PCB_UNKNOWN(NAMEONPCB_NAME(element)), PCB_UNKNOWN(pin->Number));
 				stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 				continue;
 			}
@@ -358,7 +358,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			warn = pcb_true;
 			if (!pad->Spare) {
 				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
-								&theNet->Name[2], UNKNOWN(NAMEONPCB_NAME(element)), UNKNOWN(pad->Number));
+								&theNet->Name[2], PCB_UNKNOWN(NAMEONPCB_NAME(element)), PCB_UNKNOWN(pad->Number));
 				stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 				continue;
 			}
@@ -588,7 +588,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 						theSubnet = next;
 						havepoints = pcb_true;
 					}
-					else if ((temp = SQUARE(conn1->X - conn2->X) + SQUARE(conn1->Y - conn2->Y)) < distance || !firstpoint) {
+					else if ((temp = PCB_SQUARE(conn1->X - conn2->X) + PCB_SQUARE(conn1->Y - conn2->Y)) < distance || !firstpoint) {
 						distance = temp;
 						firstpoint = conn1;
 						secondpoint = conn2;
@@ -919,9 +919,9 @@ char *ConnectionName(int type, void *ptr1, void *ptr2)
 	default:
 		return (NULL);
 	}
-	strcpy(name, UNKNOWN(NAMEONPCB_NAME((pcb_element_t *) ptr1)));
+	strcpy(name, PCB_UNKNOWN(NAMEONPCB_NAME((pcb_element_t *) ptr1)));
 	strcat(name, "-");
-	strcat(name, UNKNOWN(num));
+	strcat(name, PCB_UNKNOWN(num));
 	return (name);
 }
 

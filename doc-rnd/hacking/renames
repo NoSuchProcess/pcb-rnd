@@ -441,3 +441,10 @@ FreeLibraryMemory -> pcb_lib_free
 DeleteLibraryMenuMemory -> pcb_lib_menu_free
 CreateNewNet -> pcb_lib_net_new
 CreateNewConnection -> pcb_lib_conn_new
+ENTRIES -> PCB_ENTRIES
+UNKNOWN -> PCB_UNKNOWN
+NSTRCMP -> PCB_NSTRCMP
+EMPTY -> PCB_EMPTY
+EMPTY_STRING_P -> PCB_EMPTY_STRING_P
+XOR -> PCB_XOR
+SQUARE -> PCB_SQUARE

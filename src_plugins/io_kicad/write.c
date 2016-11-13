@@ -577,10 +577,10 @@ int write_kicad_layout_tracks(FILE * FP, pcb_cardinal_t number,
 	pcb_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
 			fprintf(FP, "Layer(%i ", (int) Number + 1);
-			PrintQuotedString(FP, (char *) EMPTY(layer->Name));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(layer->Name));
 			fputs(")\n(\n", FP);
 			WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
@@ -620,10 +620,10 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
 			fprintf(FP, "Layer(%i ", (int) Number + 1);
-			PrintQuotedString(FP, (char *) EMPTY(layer->Name));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(layer->Name));
 			fputs(")\n(\n", FP);
 			WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
@@ -692,10 +692,10 @@ int write_kicad_layout_text(FILE * FP, pcb_cardinal_t number,
 	pcb_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
 			fprintf(FP, "Layer(%i ", (int) Number + 1);
-			PrintQuotedString(FP, (char *) EMPTY(layer->Name));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(layer->Name));
 			fputs(")\n(\n", FP);
 			WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
@@ -835,11 +835,11 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 			 information
 
 			 fprintf(FP, "\nDS %s ", F2S(element, PCB_TYPE_ELEMENT));
-			 PrintQuotedString(FP, (char *) EMPTY(DESCRIPTION_NAME(element)));
+			 PrintQuotedString(FP, (char *) PCB_EMPTY(DESCRIPTION_NAME(element)));
 			 fputc(' ', FP);
-			 PrintQuotedString(FP, (char *) EMPTY(NAMEONPCB_NAME(element)));
+			 PrintQuotedString(FP, (char *) PCB_EMPTY(NAMEONPCB_NAME(element)));
 			 fputc(' ', FP);
-			 PrintQuotedString(FP, (char *) EMPTY(VALUE_NAME(element)));
+			 PrintQuotedString(FP, (char *) PCB_EMPTY(VALUE_NAME(element)));
 			 pcb_fprintf(FP, " %mm %mm %mm %mm %d %d %s]\n(\n",
 			 element->MarkX, element->MarkY,
 			 DESCRIPTION_TEXT(element).X - element->MarkX,
@@ -917,7 +917,7 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 									pin->Y - element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
-			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Number));
 
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
 				fputs(" R ",FP); /* square */
@@ -935,7 +935,7 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 
 			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
 			/*
-				PrintQuotedString(FP, (char *) EMPTY(pin->Name));
+				PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Name));
 				fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
 			*/
 			fputs("$EndPAD\n",FP);
@@ -948,7 +948,7 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
-			PrintQuotedString(FP, (char *) EMPTY(pad->Number));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(pad->Number));
 			fputs(" R ",FP); /* rectangular, not a pin */
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0
@@ -1161,7 +1161,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 		pinlist_foreach(&element->Pin, &it, pin) {
 			fprintf(FP, "%*s", indentation + 2, "");
 			fputs("(pad ", FP);
-			PrintQuotedString(FP, (char *) EMPTY(pin->Number));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Number));
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
 				fputs(" thru_hole rect ",FP); /* square */
 			} else {
@@ -1170,7 +1170,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 			pcb_fprintf(FP, "(at %.3mm %.3mm)", /* positions of pad */
 									pin->X - element->MarkX,
 									pin->Y - element->MarkY);
-			/* PrintQuotedString(FP, (char *) EMPTY(pin->Number)); */
+			/* PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Number)); */
 			pcb_fprintf(FP, " (size %.3mm %.3mm)", pin->Thickness, pin->Thickness); /* height = width */
 			/* drill details; size */
 			pcb_fprintf(FP, " (drill %.3mm)\n", pin->DrillingHole);
@@ -1185,7 +1185,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 			}
 			fprintf(FP, "%*s)\n", indentation + 2, "");
 			/*
-				PrintQuotedString(FP, (char *) EMPTY(pin->Name));
+				PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Name));
 				fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
 			*/
 		}
@@ -1197,7 +1197,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
-			PrintQuotedString(FP, (char *) EMPTY(pad->Number));
+			PrintQuotedString(FP, (char *) PCB_EMPTY(pad->Number));
 			fputs(" R ",FP); /* rectangular, not a pin */
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0
@@ -1263,7 +1263,7 @@ int write_kicad_layout_polygons(FILE * FP, pcb_cardinal_t number,
 	pcb_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		int localFlag = 0;
 		polylist_foreach(&layer->Polygon, &it, polygon) {
 			if (polygon->HoleIndexN == 0) { /* no holes defined within polygon, which we implement support for first */

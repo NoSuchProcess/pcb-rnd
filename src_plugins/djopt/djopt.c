@@ -2601,7 +2601,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	END_LOOP;
 	check(0, 0);
 
-	if (NSTRCMP(arg, "splitlines") == 0) {
+	if (PCB_NSTRCMP(arg, "splitlines") == 0) {
 		if (canonicalize_lines())
 			IncrementUndoSerialNumber();
 		return 0;
@@ -2648,21 +2648,21 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	/*dump_all(); */
 	check(0, 0);
 
-	if (NSTRCMP(arg, "debumpify") == 0)
+	if (PCB_NSTRCMP(arg, "debumpify") == 0)
 		saved += debumpify();
-	else if (NSTRCMP(arg, "unjaggy") == 0)
+	else if (PCB_NSTRCMP(arg, "unjaggy") == 0)
 		saved += unjaggy();
-	else if (NSTRCMP(arg, "simple") == 0)
+	else if (PCB_NSTRCMP(arg, "simple") == 0)
 		saved += simple_optimizations();
-	else if (NSTRCMP(arg, "vianudge") == 0)
+	else if (PCB_NSTRCMP(arg, "vianudge") == 0)
 		saved += vianudge();
-	else if (NSTRCMP(arg, "viatrim") == 0)
+	else if (PCB_NSTRCMP(arg, "viatrim") == 0)
 		saved += viatrim();
-	else if (NSTRCMP(arg, "orthopull") == 0)
+	else if (PCB_NSTRCMP(arg, "orthopull") == 0)
 		saved += orthopull();
-	else if (NSTRCMP(arg, "auto") == 0)
+	else if (PCB_NSTRCMP(arg, "auto") == 0)
 		saved += automagic();
-	else if (NSTRCMP(arg, "miter") == 0)
+	else if (PCB_NSTRCMP(arg, "miter") == 0)
 		saved += miter();
 	else {
 		printf("unknown command: %s\n", arg);

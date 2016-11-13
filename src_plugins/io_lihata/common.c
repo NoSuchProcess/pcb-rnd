@@ -46,7 +46,7 @@ int io_lihata_resolve_thermal_style(const char *name)
 	if (name == NULL)
 		return 0;
 
-	for(n = 1; n < ENTRIES(thermal_style); n++)
+	for(n = 1; n < PCB_ENTRIES(thermal_style); n++)
 		if (strcmp(name, thermal_style[n]) == 0)
 			return n;
 
@@ -59,7 +59,7 @@ int io_lihata_resolve_thermal_style(const char *name)
 
 const char *io_lihata_thermal_style(int idx)
 {
-	if ((idx > 0) && (idx < ENTRIES(thermal_style)))
+	if ((idx > 0) && (idx < PCB_ENTRIES(thermal_style)))
 		return thermal_style[idx];
 	return NULL;
 }

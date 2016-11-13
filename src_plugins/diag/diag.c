@@ -47,7 +47,7 @@ static int ActionDumpConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 {
 	const char *cmd = argc > 0 ? argv[0] : NULL;
 
-	if (NSTRCMP(cmd, "native") == 0) {
+	if (PCB_NSTRCMP(cmd, "native") == 0) {
 		int verbose;
 		const char *prefix = "";
 		if (argc > 1)
@@ -57,7 +57,7 @@ static int ActionDumpConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		conf_dump(stdout, prefix, verbose, NULL);
 	}
 
-	else if (NSTRCMP(cmd, "lihata") == 0) {
+	else if (PCB_NSTRCMP(cmd, "lihata") == 0) {
 		conf_role_t role;
 		const char *prefix = "";
 		if (argc <= 1) {

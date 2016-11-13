@@ -175,12 +175,12 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 		l = strlen(subdirentry->d_name);
 		if (!stat(subdirentry->d_name, &buffer)
 				&& subdirentry->d_name[0] != '.'
-				&& NSTRCMP(subdirentry->d_name, "CVS") != 0
-				&& NSTRCMP(subdirentry->d_name, "Makefile") != 0
-				&& NSTRCMP(subdirentry->d_name, "Makefile.am") != 0
-				&& NSTRCMP(subdirentry->d_name, "Makefile.in") != 0 && (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".png") != 0)
-				&& (l < 5 || NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
-				&& (l < 4 || NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0)) {
+				&& PCB_NSTRCMP(subdirentry->d_name, "CVS") != 0
+				&& PCB_NSTRCMP(subdirentry->d_name, "Makefile") != 0
+				&& PCB_NSTRCMP(subdirentry->d_name, "Makefile.am") != 0
+				&& PCB_NSTRCMP(subdirentry->d_name, "Makefile.in") != 0 && (l < 4 || PCB_NSTRCMP(subdirentry->d_name + (l - 4), ".png") != 0)
+				&& (l < 5 || PCB_NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
+				&& (l < 4 || PCB_NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0)) {
 
 #ifdef DEBUG
 /*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */

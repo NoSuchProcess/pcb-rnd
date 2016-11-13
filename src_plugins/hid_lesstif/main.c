@@ -1024,7 +1024,7 @@ void LoadBackgroundImage(char *filename)
 {
 	FILE *f = fopen(filename, "rb");
 	if (!f) {
-		if (NSTRCMP(filename, "pcb-background.ppm"))
+		if (PCB_NSTRCMP(filename, "pcb-background.ppm"))
 			perror(filename);
 		return;
 	}

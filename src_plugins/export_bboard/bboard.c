@@ -407,7 +407,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 			*s2 = 0;
 			offset_in_model = bboard_parse_offset(s2 + 1, &ox, &oy);
 		}
-		if (!EMPTY_STRING_P(VALUE_NAME(element))) {
+		if (!PCB_EMPTY_STRING_P(VALUE_NAME(element))) {
 			fname = bboard_get_model_filename(s, VALUE_NAME(element), pcb_true);
 			if (!fname)
 				fname = bboard_get_model_filename(s, VALUE_NAME(element), pcb_false);
@@ -424,7 +424,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 
 		s = pcb_attribute_get(&(element->Attributes), "Footprint::File");
 		if (s) {
-			if (!EMPTY_STRING_P(VALUE_NAME(element))) {
+			if (!PCB_EMPTY_STRING_P(VALUE_NAME(element))) {
 				fname = bboard_get_model_filename(s, VALUE_NAME(element), pcb_true);
 				if (!fname)
 					fname = bboard_get_model_filename(s, VALUE_NAME(element), pcb_false);
@@ -435,8 +435,8 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 	}
 	if (!fname) {
 		s = DESCRIPTION_NAME(element);
-		if (!EMPTY_STRING_P(DESCRIPTION_NAME(element))) {
-			if (!EMPTY_STRING_P(VALUE_NAME(element))) {
+		if (!PCB_EMPTY_STRING_P(DESCRIPTION_NAME(element))) {
+			if (!PCB_EMPTY_STRING_P(VALUE_NAME(element))) {
 				fname = bboard_get_model_filename(DESCRIPTION_NAME(element), VALUE_NAME(element), pcb_true);
 				if (!fname)
 					fname = bboard_get_model_filename(DESCRIPTION_NAME(element), VALUE_NAME(element), pcb_false);

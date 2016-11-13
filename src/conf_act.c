@@ -53,7 +53,7 @@ static int ActionConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *cmd = argc > 0 ? argv[0] : 0;
 
-	if (NSTRCMP(cmd, "set") == 0) {
+	if (PCB_NSTRCMP(cmd, "set") == 0) {
 		const char *path, *val;
 		conf_policy_t pol = POL_OVERWRITE;
 		conf_role_t role = CFR_invalid;
@@ -96,7 +96,7 @@ static int ActionConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 
-	else if (NSTRCMP(cmd, "iseq") == 0) {
+	else if (PCB_NSTRCMP(cmd, "iseq") == 0) {
 		const char *path, *val;
 		int res;
 		gds_t nval;
@@ -124,7 +124,7 @@ static int ActionConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return res;
 	}
 
-	else if (NSTRCMP(cmd, "toggle") == 0) {
+	else if (PCB_NSTRCMP(cmd, "toggle") == 0) {
 		conf_native_t *n = conf_get_field(argv[1]);
 		const char *new_value;
 		conf_role_t role = CFR_invalid;
@@ -165,7 +165,7 @@ static int ActionConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		conf_update(argv[1]);
 	}
 
-	else if (NSTRCMP(cmd, "reset") == 0) {
+	else if (PCB_NSTRCMP(cmd, "reset") == 0) {
 		conf_role_t role;
 		role = conf_role_parse(argv[1]);
 		if (role == CFR_invalid) {

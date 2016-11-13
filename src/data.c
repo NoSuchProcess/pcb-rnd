@@ -263,7 +263,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 	hasNoObjects = (pinlist_length(&Data->Via) == 0);
 	hasNoObjects &= (elementlist_length(&Data->Element) == 0);
 	for (i = 0; i < max_copper_layer + 2; i++)
-		hasNoObjects = hasNoObjects && LAYER_IS_EMPTY(&(Data->Layer[i]));
+		hasNoObjects = hasNoObjects && LAYER_IS_PCB_EMPTY(&(Data->Layer[i]));
 	return (hasNoObjects);
 }
 

@@ -889,7 +889,7 @@ char *UniqueElementName(pcb_data_t *Data, char *Name)
 	for (;;) {
 		ELEMENT_LOOP(Data);
 		{
-			if (NAMEONPCB_NAME(element) && NSTRCMP(NAMEONPCB_NAME(element), Name) == 0) {
+			if (NAMEONPCB_NAME(element) && PCB_NSTRCMP(NAMEONPCB_NAME(element), Name) == 0) {
 				Name = BumpName(Name);
 				unique = pcb_false;
 				break;
@@ -942,12 +942,12 @@ int ElementOrientation(pcb_element_t * e)
 
 	PIN_LOOP(e);
 	{
-		if (NSTRCMP(pin->Number, "1") == 0) {
+		if (PCB_NSTRCMP(pin->Number, "1") == 0) {
 			pin1x = pin->X;
 			pin1y = pin->Y;
 			found_pin1 = 1;
 		}
-		else if (NSTRCMP(pin->Number, "2") == 0) {
+		else if (PCB_NSTRCMP(pin->Number, "2") == 0) {
 			pin2x = pin->X;
 			pin2y = pin->Y;
 			found_pin2 = 1;
@@ -957,12 +957,12 @@ int ElementOrientation(pcb_element_t * e)
 
 	PAD_LOOP(e);
 	{
-		if (NSTRCMP(pad->Number, "1") == 0) {
+		if (PCB_NSTRCMP(pad->Number, "1") == 0) {
 			pin1x = (pad->Point1.X + pad->Point2.X) / 2;
 			pin1y = (pad->Point1.Y + pad->Point2.Y) / 2;
 			found_pin1 = 1;
 		}
-		else if (NSTRCMP(pad->Number, "2") == 0) {
+		else if (PCB_NSTRCMP(pad->Number, "2") == 0) {
 			pin2x = (pad->Point1.X + pad->Point2.X) / 2;
 			pin2y = (pad->Point1.Y + pad->Point2.Y) / 2;
 			found_pin2 = 1;

@@ -579,7 +579,7 @@ pcb_polyarea_t *LinePoly(pcb_line_t * L, pcb_coord_t thick)
 	if (thick <= 0)
 		return NULL;
 	half = (thick + 1) / 2;
-	d = sqrt(SQUARE(l->Point1.X - l->Point2.X) + SQUARE(l->Point1.Y - l->Point2.Y));
+	d = sqrt(PCB_SQUARE(l->Point1.X - l->Point2.X) + PCB_SQUARE(l->Point1.Y - l->Point2.Y));
 	if (!PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
 		if (d == 0)									/* line is a point */
 			return CirclePoly(l->Point1.X, l->Point1.Y, half);
@@ -637,7 +637,7 @@ pcb_polyarea_t *SquarePadPoly(pcb_pad_t * pad, pcb_coord_t clear)
 	int halfthick = (pad->Thickness + 1) / 2;
 	int halfclear = (clear + 1) / 2;
 
-	d = sqrt(SQUARE(pad->Point1.X - pad->Point2.X) + SQUARE(pad->Point1.Y - pad->Point2.Y));
+	d = sqrt(PCB_SQUARE(pad->Point1.X - pad->Point2.X) + PCB_SQUARE(pad->Point1.Y - pad->Point2.Y));
 	if (d != 0) {
 		double a = halfthick / d;
 		tx = (t->Point1.Y - t->Point2.Y) * a;
@@ -935,7 +935,7 @@ static pcb_r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
 	if (pad->Clearance == 0)
 		return R_DIR_NOT_FOUND;
 	polygon = info->polygon;
-	if (XOR(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad), !info->solder)) {
+	if (PCB_XOR(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad), !info->solder)) {
 		if (SubtractPad(pad, polygon) < 0)
 			longjmp(info->env, 1);
 		return R_DIR_FOUND_CONTINUE;
@@ -1250,13 +1250,13 @@ pcb_cardinal_t GetLowestDistancePolygonPoint(pcb_polygon_t *Polygon, pcb_coord_t
 			u = ((X - ptr1->X) * dx + (Y - ptr1->Y) * dy) / (dx * dx + dy * dy);
 
 			if (u < 0.0) {						/* ptr1 is closest point */
-				u = SQUARE(X - ptr1->X) + SQUARE(Y - ptr1->Y);
+				u = PCB_SQUARE(X - ptr1->X) + PCB_SQUARE(Y - ptr1->Y);
 			}
 			else if (u > 1.0) {				/* ptr2 is closest point */
-				u = SQUARE(X - ptr2->X) + SQUARE(Y - ptr2->Y);
+				u = PCB_SQUARE(X - ptr2->X) + PCB_SQUARE(Y - ptr2->Y);
 			}
 			else {										/* projected intersection is closest point */
-				u = SQUARE(X - ptr1->X * (1.0 - u) - u * ptr2->X) + SQUARE(Y - ptr1->Y * (1.0 - u) - u * ptr2->Y);
+				u = PCB_SQUARE(X - ptr1->X * (1.0 - u) - u * ptr2->X) + PCB_SQUARE(Y - ptr1->Y * (1.0 - u) - u * ptr2->Y);
 			}
 			if (u < mindistance) {
 				mindistance = u;

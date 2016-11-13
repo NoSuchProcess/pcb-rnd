@@ -48,7 +48,7 @@ static struct {
 
 pcb_bool IsLayerEmpty(pcb_layer_t *layer)
 {
-	return LAYER_IS_EMPTY(layer);
+	return LAYER_IS_PCB_EMPTY(layer);
 }
 
 pcb_bool IsLayerNumEmpty(int num)

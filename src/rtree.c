@@ -614,8 +614,8 @@ struct rtree_node *find_clusters(struct rtree_node *node)
 		for (i = 0; i < M_SIZE + 1; i++) {
 			float dist1, dist2;
 
-			dist1 = SQUARE(a_X - center[i].x) + SQUARE(a_Y - center[i].y);
-			dist2 = SQUARE(b_X - center[i].x) + SQUARE(b_Y - center[i].y);
+			dist1 = PCB_SQUARE(a_X - center[i].x) + PCB_SQUARE(a_Y - center[i].y);
+			dist2 = PCB_SQUARE(b_X - center[i].x) + PCB_SQUARE(b_Y - center[i].y);
 			if (dist1 * (clust_a + M_SIZE / 2) < dist2 * (clust_b + M_SIZE / 2)) {
 				belong[i] = pcb_true;
 				clust_a++;

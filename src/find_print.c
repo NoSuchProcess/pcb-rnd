@@ -64,7 +64,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 					/* write name to list and draw selected object */
 					fputc('\t', FP);
-					PrintQuotedString(FP, (char *) EMPTY(pin->Name));
+					PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Name));
 					fputc('\n', FP);
 					PCB_FLAG_SET(PCB_FLAG_SELECTED, pin);
 					DrawPin(pin);
@@ -105,7 +105,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 				/* write name to list and draw selected object */
 				fputc('\t', FP);
-				PrintQuotedString(FP, (char *) EMPTY(pad->Name));
+				PrintQuotedString(FP, (char *) PCB_EMPTY(pad->Name));
 				fputc('\n', FP);
 
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, pad);
@@ -166,7 +166,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 	{
 		/* pin might have been checked before, add to list if not */
 		if (PCB_FLAG_TEST(TheFlag, pin)) {
-			PrintConnectionListEntry((char *) EMPTY(pin->Name), NULL, pcb_true, FP);
+			PrintConnectionListEntry((char *) PCB_EMPTY(pin->Name), NULL, pcb_true, FP);
 			fputs("\t\t__CHECKED_BEFORE__\n\t}\n", FP);
 			continue;
 		}
@@ -189,7 +189,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 		pcb_cardinal_t layer;
 		/* pad might have been checked before, add to list if not */
 		if (PCB_FLAG_TEST(TheFlag, pad)) {
-			PrintConnectionListEntry((char *) EMPTY(pad->Name), NULL, pcb_true, FP);
+			PrintConnectionListEntry((char *) PCB_EMPTY(pad->Name), NULL, pcb_true, FP);
 			fputs("\t\t__CHECKED_BEFORE__\n\t}\n", FP);
 			continue;
 		}

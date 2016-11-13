@@ -175,7 +175,7 @@ static int PrintXY(void)
 	fprintf(fp, "# PcbXY Version 1.0\n");
 	fprintf(fp, "# Date: %s\n", utcTime);
 	fprintf(fp, "# Author: %s\n", pcb_author());
-	fprintf(fp, "# Title: %s - PCB X-Y\n", UNKNOWN(PCB->Name));
+	fprintf(fp, "# Title: %s - PCB X-Y\n", PCB_UNKNOWN(PCB->Name));
 	fprintf(fp, "# RefDes, Description, Value, X, Y, rotation, top/bottom\n");
 	fprintf(fp, "# X,Y in %s.  rotation in degrees.\n", xy_unit->in_suffix);
 	fprintf(fp, "# --------------------------------------------\n");
@@ -207,7 +207,7 @@ static int PrintXY(void)
 			pin_cnt++;
 
 			for (rpindex = 0; reference_pin_names[rpindex]; rpindex++) {
-				if (NSTRCMP(pin->Number, reference_pin_names[rpindex]) == 0) {
+				if (PCB_NSTRCMP(pin->Number, reference_pin_names[rpindex]) == 0) {
 					pinx[rpindex] = (double) pin->X;
 					piny[rpindex] = (double) pin->Y;
 					pinangle[rpindex] = 0.0;	/* pins have no notion of angle */
@@ -224,7 +224,7 @@ static int PrintXY(void)
 			pin_cnt++;
 
 			for (rpindex = 0; reference_pin_names[rpindex]; rpindex++) {
-				if (NSTRCMP(pad->Number, reference_pin_names[rpindex]) == 0) {
+				if (PCB_NSTRCMP(pad->Number, reference_pin_names[rpindex]) == 0) {
 					padcentrex = (double) (pad->Point1.X + pad->Point2.X) / 2.0;
 					padcentrey = (double) (pad->Point1.Y + pad->Point2.Y) / 2.0;
 					pinx[rpindex] = padcentrex;
@@ -245,7 +245,7 @@ static int PrintXY(void)
 			centroidx = sumx / (double) pin_cnt;
 			centroidy = sumy / (double) pin_cnt;
 
-			if (NSTRCMP(pcb_attribute_get(&element->Attributes, "xy-centre"), "origin") == 0) {
+			if (PCB_NSTRCMP(pcb_attribute_get(&element->Attributes, "xy-centre"), "origin") == 0) {
 				x = element->MarkX;
 				y = element->MarkY;
 			}
@@ -295,21 +295,21 @@ static int PrintXY(void)
 					pcb_message
 						(PCB_MSG_WARNING, "PrintBOM(): unable to figure out angle because I could\n"
 						 "     not find a suitable reference pin of element %s\n"
-						 "     Setting to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
+						 "     Setting to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
 				}
 				else if (!found_any_not_at_centroid) {
 					pcb_message
 						(PCB_MSG_WARNING, "PrintBOM(): unable to figure out angle of element\n"
 						 "     %s because the reference pin(s) are at the centroid of the part.\n"
-						 "     Setting to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
+						 "     Setting to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
 				}
 			}
 		}
 
 
-		name = CleanBOMString((char *) UNKNOWN(NAMEONPCB_NAME(element)));
-		descr = CleanBOMString((char *) UNKNOWN(DESCRIPTION_NAME(element)));
-		value = CleanBOMString((char *) UNKNOWN(VALUE_NAME(element)));
+		name = CleanBOMString((char *) PCB_UNKNOWN(NAMEONPCB_NAME(element)));
+		descr = CleanBOMString((char *) PCB_UNKNOWN(DESCRIPTION_NAME(element)));
+		value = CleanBOMString((char *) PCB_UNKNOWN(VALUE_NAME(element)));
 
 		y = PCB->MaxHeight - y;
 		pcb_fprintf(fp, "%m+%s,\"%s\",\"%s\",%mS,%.2mS,%g,%s\n",

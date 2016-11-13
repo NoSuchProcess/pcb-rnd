@@ -496,7 +496,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 				continue;
 			factor = 1;
 			if (element->Name[0].TextString &&
-					boxp->element->Name[0].TextString && 0 == NSTRCMP(element->Name[0].TextString, boxp->element->Name[0].TextString)) {
+					boxp->element->Name[0].TextString && 0 == PCB_NSTRCMP(element->Name[0].TextString, boxp->element->Name[0].TextString)) {
 				delta4 += CostParameter.matching_neighbor_bonus;
 				factor++;
 			}

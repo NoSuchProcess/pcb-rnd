@@ -171,15 +171,15 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 	pcb_bool(*set_object) (int, void *, void *, void *);
 	pcb_bool(*set_selected) (int);
 
-	if (NSTRCMP(flag_name, "square") == 0) {
+	if (PCB_NSTRCMP(flag_name, "square") == 0) {
 		set_object = value ? pcb_set_obj_square : pcb_clr_obj_square;
 		set_selected = value ? pcb_set_selected_square : pcb_clr_selected_square;
 	}
-	else if (NSTRCMP(flag_name, "octagon") == 0) {
+	else if (PCB_NSTRCMP(flag_name, "octagon") == 0) {
 		set_object = value ? pcb_set_obj_octagon : pcb_clr_obj_octagon;
 		set_selected = value ? pcb_set_selected_octagon : pcb_clr_selected_octagon;
 	}
-	else if (NSTRCMP(flag_name, "join") == 0) {
+	else if (PCB_NSTRCMP(flag_name, "join") == 0) {
 		/* Note: these are backwards, because the flag is "clear" but
 		   the command is "join".  */
 		set_object = value ? pcb_clr_obj_join : pcb_set_obj_join;
@@ -571,10 +571,10 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (NSTRCMP(refdes, NAMEONPCB_NAME(element)) == 0) {
+		if (PCB_NSTRCMP(refdes, NAMEONPCB_NAME(element)) == 0) {
 			PIN_LOOP(element);
 			{
-				if (NSTRCMP(pinnum, pin->Number) == 0) {
+				if (PCB_NSTRCMP(pinnum, pin->Number) == 0) {
 					AddObjectToChangeNameUndoList(PCB_TYPE_PIN, NULL, NULL, pin, pin->Name);
 					/*
 					 * Note:  we can't free() pin->Name first because
@@ -589,7 +589,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 			PAD_LOOP(element);
 			{
-				if (NSTRCMP(pinnum, pad->Number) == 0) {
+				if (PCB_NSTRCMP(pinnum, pad->Number) == 0) {
 					AddObjectToChangeNameUndoList(PCB_TYPE_PAD, NULL, NULL, pad, pad->Name);
 					/*
 					 * Note:  we can't free() pad->Name first because
@@ -690,7 +690,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 			/* change the layout's name */
 		case F_Layout:
-			name = gui->prompt_for(_("Enter the layout name:"), EMPTY(PCB->Name));
+			name = gui->prompt_for(_("Enter the layout name:"), PCB_EMPTY(PCB->Name));
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
 				SetChangedFlag(pcb_true);
@@ -698,7 +698,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 			/* change the name of the active layer */
 		case F_Layer:
-			name = gui->prompt_for(_("Enter the layer name:"), EMPTY(CURRENT->Name));
+			name = gui->prompt_for(_("Enter the layer name:"), PCB_EMPTY(CURRENT->Name));
 			/* NB: ChangeLayerName takes ownership of the passed memory */
 			if (name && pcb_layer_change_name(CURRENT, name))
 				SetChangedFlag(pcb_true);

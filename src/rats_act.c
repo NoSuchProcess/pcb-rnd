@@ -89,13 +89,13 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				SetChangedFlag(pcb_true);
 			break;
 		case F_Close:
-			small = SQUARE(MAX_COORD);
+			small = PCB_SQUARE(MAX_COORD);
 			shorty = NULL;
 			RAT_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 					continue;
-				len = SQUARE(line->Point1.X - line->Point2.X) + SQUARE(line->Point1.Y - line->Point2.Y);
+				len = PCB_SQUARE(line->Point1.X - line->Point2.X) + PCB_SQUARE(line->Point1.Y - line->Point2.Y);
 				if (len < small) {
 					small = len;
 					shorty = line;

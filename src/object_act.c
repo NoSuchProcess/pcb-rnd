@@ -507,7 +507,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, element)) {
 				PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
 			}
-			else if (!EMPTY_STRING_P(NAMEONPCB_NAME(element))) {
+			else if (!PCB_EMPTY_STRING_P(NAMEONPCB_NAME(element))) {
 				/* Unnamed elements should remain untouched */
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, element);
 			}
@@ -670,7 +670,7 @@ static int ActionElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_
 
 	ELEMENT_LOOP(PCB->Data);
 	{
-		if (NSTRCMP(refdes, NAMEONPCB_NAME(element)) == 0) {
+		if (PCB_NSTRCMP(refdes, NAMEONPCB_NAME(element)) == 0) {
 			e = element;
 			break;
 		}

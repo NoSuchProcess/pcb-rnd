@@ -61,7 +61,7 @@ static unsigned fh_hash(const void *key)
 void pcb_funchash_init(void)
 {
 	funchash = htpi_alloc(fh_hash, keyeq);
-	pcb_funchash_set_table(Functions, ENTRIES(Functions), NULL);
+	pcb_funchash_set_table(Functions, PCB_ENTRIES(Functions), NULL);
 }
 
 void pcb_funchash_uninit(void)

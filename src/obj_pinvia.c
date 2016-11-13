@@ -166,18 +166,18 @@ pcb_pin_t *CreateNewPin(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pc
 	if (stub_vendorIsElementMappable(Element)) {
 		if (pin->DrillingHole < MIN_PINORVIASIZE) {
 			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
-							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
+							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 		else if (pin->DrillingHole > MAX_PINORVIASIZE) {
 			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is above the maximum allowed size\n"),
-							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
+							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 		else if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)
 						 && (pin->DrillingHole > pin->Thickness - MIN_PINORVIACOPPER)) {
 			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
-							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
+							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 	}
@@ -810,9 +810,9 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	const char *pn;
 
 	if (!pv->Name || !pv->Name[0])
-		pn = EMPTY(pv->Number);
+		pn = PCB_EMPTY(pv->Number);
 	else
-		pn = EMPTY(conf_core.editor.show_number ? pv->Number : pv->Name);
+		pn = PCB_EMPTY(conf_core.editor.show_number ? pv->Number : pv->Name);
 
 	if (PCB_FLAG_INTCONN_GET(pv) > 0)
 		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, PCB_FLAG_INTCONN_GET(pv));
