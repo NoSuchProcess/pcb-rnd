@@ -369,7 +369,7 @@ void draw_pad(pcb_pad_t * pad)
 		else
 			color = PCB->ConnectedColor;
 	}
-	else if (FRONT(pad))
+	else if (PCB_FRONT(pad))
 		color = PCB->PinColor;
 	else
 		color = PCB->InvisibleObjectsColor;
@@ -394,7 +394,7 @@ pcb_r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;
 
-	if (ON_SIDE(pad, *side))
+	if (PCB_ON_SIDE(pad, *side))
 		draw_pad(pad);
 	return R_DIR_FOUND_CONTINUE;
 }
@@ -403,7 +403,7 @@ pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	int *side = cl;
-	if (ON_SIDE(pad, *side) && pad->Mask)
+	if (PCB_ON_SIDE(pad, *side) && pad->Mask)
 		_draw_pad(Output.pmGC, pad, pcb_true, pcb_true);
 	return R_DIR_FOUND_CONTINUE;
 }
@@ -414,7 +414,7 @@ void DrawPaste(int side, const pcb_box_t * drawn_area)
 	gui->set_color(Output.fgGC, PCB->ElementColor);
 	ALLPAD_LOOP(PCB->Data);
 	{
-		if (ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
+		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			if (pad->Mask < pad->Thickness)
 				_draw_pad(Output.fgGC, pad, pcb_true, pcb_true);
 			else

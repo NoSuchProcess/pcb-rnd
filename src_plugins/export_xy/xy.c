@@ -276,7 +276,7 @@ static int PrintXY(void)
 						pin1y = piny[rpindex] - y;
 
 						/* flip x, to reverse rotation for elements on back */
-						if (FRONT(element) != 1)
+						if (PCB_FRONT(element) != 1)
 							pin1x = -pin1x;
 
 						/* if only 1 pin, use pin 1's angle */
@@ -313,7 +313,7 @@ static int PrintXY(void)
 
 		y = PCB->MaxHeight - y;
 		pcb_fprintf(fp, "%m+%s,\"%s\",\"%s\",%mS,%.2mS,%g,%s\n",
-								xy_unit->allow, name, descr, value, x, y, theta, FRONT(element) == 1 ? "top" : "bottom");
+								xy_unit->allow, name, descr, value, x, y, theta, PCB_FRONT(element) == 1 ? "top" : "bottom");
 		free(name);
 		free(descr);
 		free(value);

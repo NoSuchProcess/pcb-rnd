@@ -550,7 +550,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 			DrawPolygon((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT:
-		if (PCB->ElementOn && (FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
+		if (PCB->ElementOn && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
 			DrawElement((pcb_element_t *) ptr2);
 		break;
 	case PCB_TYPE_RATLINE:
@@ -566,7 +566,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 			DrawPad((pcb_pad_t *) ptr2);
 		break;
 	case PCB_TYPE_ELEMENT_NAME:
-		if (PCB->ElementOn && (FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
+		if (PCB->ElementOn && (PCB_FRONT((pcb_element_t *) ptr2) || PCB->InvisibleObjectsOn))
 			DrawElementName((pcb_element_t *) ptr1);
 		break;
 	}

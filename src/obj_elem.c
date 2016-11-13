@@ -1514,7 +1514,7 @@ void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 
 	/* this call clears the polygons */
 	AddObjectToCreateUndoList(PCB_TYPE_ELEMENT, element, element, element);
-	if (PCB->ElementOn && (FRONT(element) || PCB->InvisibleObjectsOn)) {
+	if (PCB->ElementOn && (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {
 		DrawElementName(element);
 		DrawElementPackage(element);
 	}
@@ -1530,7 +1530,7 @@ void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 /* moves all names of an element to a new position */
 void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
-	if (PCB->ElementOn && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
+	if (PCB->ElementOn && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElementName(Element);
 		ELEMENTTEXT_LOOP(Element);
 		{
@@ -1563,7 +1563,7 @@ void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_bool didDraw = pcb_false;
 
-	if (PCB->ElementOn && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
+	if (PCB->ElementOn && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElement(Element);
 		MoveElementLowLevel(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
 		DrawElementName(Element);
@@ -1620,7 +1620,7 @@ void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	/* erase from screen */
-	if ((PCB->ElementOn || PCB->PinOn) && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
+	if ((PCB->ElementOn || PCB->PinOn) && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElement(Element);
 		if (!ctx->remove.bulk)
 			pcb_draw();
@@ -1666,7 +1666,7 @@ void draw_element_name(pcb_element_t * element)
 		gui->set_color(Output.fgGC, PCB->ElementColor);
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)))
 		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
-	else if (FRONT(element)) {
+	else if (PCB_FRONT(element)) {
 #warning TODO: why do we test for Names flag here instead of elements flag?
 		if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, element))
 			gui->set_color(Output.fgGC, PCB->ElementColor_nonetlist);
@@ -1689,7 +1689,7 @@ pcb_r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
 	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
 		return R_DIR_NOT_FOUND;
 
-	if (ON_SIDE(element, *side))
+	if (PCB_ON_SIDE(element, *side))
 		draw_element_name(element);
 	return R_DIR_NOT_FOUND;
 }
@@ -1698,7 +1698,7 @@ void draw_element_pins_and_pads(pcb_element_t * element)
 {
 	PAD_LOOP(element);
 	{
-		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || FRONT(pad) || PCB->InvisibleObjectsOn)
+		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || PCB_FRONT(pad) || PCB->InvisibleObjectsOn)
 			draw_pad(pad);
 	}
 	END_LOOP;
@@ -1717,7 +1717,7 @@ void draw_element_package(pcb_element_t * element)
 		gui->set_color(Output.fgGC, PCB->ElementColor);
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
-	else if (FRONT(element))
+	else if (PCB_FRONT(element))
 		gui->set_color(Output.fgGC, PCB->ElementColor);
 	else
 		gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
@@ -1747,7 +1747,7 @@ pcb_r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
 	pcb_element_t *element = (pcb_element_t *) b;
 	int *side = cl;
 
-	if (ON_SIDE(element, *side))
+	if (PCB_ON_SIDE(element, *side))
 		draw_element_package(element);
 	return R_DIR_FOUND_CONTINUE;
 }
@@ -1794,7 +1794,7 @@ pcb_r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_element_t *element = (pcb_element_t *) b;
 
-	DrawEMark(element, element->MarkX, element->MarkY, !FRONT(element));
+	DrawEMark(element, element->MarkX, element->MarkY, !PCB_FRONT(element));
 	return R_DIR_FOUND_CONTINUE;
 }
 
@@ -1869,7 +1869,7 @@ void DrawElementPinsAndPads(pcb_element_t *Element)
 {
 	PAD_LOOP(Element);
 	{
-		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || FRONT(pad) || PCB->InvisibleObjectsOn)
+		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || PCB_FRONT(pad) || PCB->InvisibleObjectsOn)
 			DrawPad(pad);
 	}
 	END_LOOP;

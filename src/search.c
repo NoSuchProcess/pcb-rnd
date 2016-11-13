@@ -140,7 +140,7 @@ static pcb_r_dir_t pad_callback(const pcb_box_t * b, void *cl)
 	if (PCB_FLAG_TEST(i->locked, ptr1))
 		return R_DIR_NOT_FOUND;
 
-	if (FRONT(pad) || i->BackToo) {
+	if (PCB_FRONT(pad) || i->BackToo) {
 		if (IsPointInPad(PosX, PosY, SearchRadius, pad)) {
 			*i->ptr1 = ptr1;
 			*i->ptr2 = *i->ptr3 = pad;
@@ -438,7 +438,7 @@ static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, text))
 		return R_DIR_NOT_FOUND;
 
-	if ((FRONT(element) || i->BackToo) && !PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) && POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
+	if ((PCB_FRONT(element) || i->BackToo) && !PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) && POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		/* use the text with the smallest bounding box */
 		newarea = (text->BoundingBox.X2 - text->BoundingBox.X1) * (double) (text->BoundingBox.Y2 - text->BoundingBox.Y1);
 		if (newarea < i->area) {
@@ -483,7 +483,7 @@ static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, element))
 		return R_DIR_NOT_FOUND;
 
-	if ((FRONT(element) || i->BackToo) && POINT_IN_BOX(PosX, PosY, &element->VBox)) {
+	if ((PCB_FRONT(element) || i->BackToo) && POINT_IN_BOX(PosX, PosY, &element->VBox)) {
 		/* use the element with the smallest bounding box */
 		newarea = (element->VBox.X2 - element->VBox.X1) * (double) (element->VBox.Y2 - element->VBox.Y1);
 		if (newarea < i->area) {

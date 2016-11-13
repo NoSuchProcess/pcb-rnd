@@ -323,7 +323,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 	if (PCB->PinOn && PCB->ElementOn)
 		ELEMENT_LOOP(Buffer->Data);
 	{
-		if (FRONT(element) || PCB->InvisibleObjectsOn)
+		if (PCB_FRONT(element) || PCB->InvisibleObjectsOn)
 			XORDrawElement(element, x, y);
 	}
 	END_LOOP;

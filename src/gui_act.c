@@ -934,7 +934,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 				ELEMENT_LOOP(PCB->Data);
 				{
 					if ((PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, &NAMEONPCB_TEXT(element)))
-							&& (FRONT(element) || PCB->InvisibleObjectsOn)) {
+							&& (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {
 						AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
 						EraseElementName(element);
 						PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, element);

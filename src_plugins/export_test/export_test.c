@@ -256,7 +256,7 @@ static int Printexport_test(void)
 
 			y = PCB->MaxHeight - y;
 			pcb_fprintf(fp, "%m+%s,\"%s\",\"%s\",%mS,%.2mS,%g,%s\n",
-									xy_unit->allow, name, descr, value, x, y, theta, FRONT(element) == 1 ? "top" : "bottom");
+									xy_unit->allow, name, descr, value, x, y, theta, PCB_FRONT(element) == 1 ? "top" : "bottom");
 			free(name);
 			free(descr);
 			free(value);

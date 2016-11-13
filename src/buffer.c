@@ -667,7 +667,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 #ifdef DEBUG
 			printf("In CopyPastebufferToLayout, pasting element %s\n", element->Name[1].TextString);
 #endif
-			if (FRONT(element) || PCB->InvisibleObjectsOn) {
+			if (PCB_FRONT(element) || PCB->InvisibleObjectsOn) {
 				CopyElement(&ctx, element);
 				changed = pcb_true;
 			}
