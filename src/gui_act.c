@@ -378,7 +378,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			pcb_notify_crosshair_change(pcb_false);
 			conf_toggle_editor(auto_drc);
 			if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
-				if (ResetConnections(pcb_true)) {
+				if (pcb_reset_conns(pcb_true)) {
 					IncrementUndoSerialNumber();
 					pcb_draw();
 				}

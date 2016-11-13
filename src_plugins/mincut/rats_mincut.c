@@ -327,8 +327,8 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 	}
 
 
-	ResetFoundLinesAndPolygons(pcb_false);
-	ResetFoundPinsViasAndPads(pcb_false);
+	pcb_reset_found_lines_polys(pcb_false);
+	pcb_reset_found_pins_vias_pads(pcb_false);
 	RestoreFindFlag();
 
 	find_callback = old_cb;

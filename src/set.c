@@ -226,7 +226,7 @@ void SetMode(int Mode)
 		Crosshair.AttachedBox.State = STATE_FIRST;
 		Crosshair.AttachedLine.State = STATE_FIRST;
 		if (Mode == PCB_MODE_LINE && conf_core.editor.auto_drc) {
-			if (ResetConnections(pcb_true)) {
+			if (pcb_reset_conns(pcb_true)) {
 				IncrementUndoSerialNumber();
 				pcb_draw();
 			}

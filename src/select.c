@@ -975,8 +975,8 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 	}
 	END_LOOP;
 	if (Type & PCB_TYPE_NET) {
-		InitConnectionLookup();
-		changed = ResetConnections(pcb_true) || changed;
+		pcb_conn_lookup_init();
+		changed = pcb_reset_conns(pcb_true) || changed;
 
 		MENU_LOOP(&(PCB->NetlistLib[NETLIST_EDITED]));
 		{
@@ -994,8 +994,8 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 		END_LOOP;
 
 		changed = SelectConnection(Flag) || changed;
-		changed = ResetConnections(pcb_false) || changed;
-		FreeConnectionLookupMemory();
+		changed = pcb_reset_conns(pcb_false) || changed;
+		pcb_conn_lookup_uninit();
 	}
 
 	if (method == SM_REGEX)

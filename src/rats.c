@@ -402,7 +402,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 
 	for (m = 0; Netl->NetN > 0 && m < Netl->NetN; m++) {
 		a = &Netl->Net[m];
-		ResetConnections(pcb_false);
+		pcb_reset_conns(pcb_false);
 		RatFindHook(a->Connection[0].type, a->Connection[0].ptr1, a->Connection[0].ptr2, a->Connection[0].ptr2, pcb_false, AndRats);
 		/* now anybody connected to the first point has PCB_FLAG_DRC set */
 		/* so move those to this subnet */
@@ -476,7 +476,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 		if (!NoWarn)
 			Warned |= CheckShorts(a->Connection[0].menu);
 	}
-	ResetConnections(pcb_false);
+	pcb_reset_conns(pcb_false);
 	return (Warned);
 }
 
@@ -632,8 +632,8 @@ DrawShortestRats(pcb_netlist_t *Netl,
 	/* Sadly adding a rat line messes up the sorted arrays in connection finder */
 	/* hace: perhaps not necessarily now that they aren't stored in normal layers */
 	if (changed) {
-		FreeConnectionLookupMemory();
-		InitConnectionLookup();
+		pcb_conn_lookup_uninit();
+		pcb_conn_lookup_init();
 	}
 	return (changed);
 }
@@ -664,7 +664,7 @@ AddAllRats(pcb_bool SelectedOnly,
 	}
 	changed = pcb_false;
 	/* initialize finding engine */
-	InitConnectionLookup();
+	pcb_conn_lookup_init();
 	SaveFindFlag(PCB_FLAG_DRC);
 	Nets = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	/* now we build another netlist (Nets) for each
@@ -698,7 +698,7 @@ AddAllRats(pcb_bool SelectedOnly,
 	END_LOOP;
 	FreeNetListMemory(Nets);
 	free(Nets);
-	FreeConnectionLookupMemory();
+	pcb_conn_lookup_uninit();
 	RestoreFindFlag();
 	if (funcp)
 		return (pcb_true);
@@ -749,7 +749,7 @@ pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
 		return result;
 	}
 	/* initialize finding engine */
-	InitConnectionLookup();
+	pcb_conn_lookup_init();
 	SaveFindFlag(PCB_FLAG_DRC);
 	/* now we build another netlist (Nets) for each
 	 * net in Wantlist that shows how it actually looks now,
@@ -780,7 +780,7 @@ pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
 		GatherSubnets(Nets, SelectedOnly, pcb_false);
 	}
 	END_LOOP;
-	FreeConnectionLookupMemory();
+	pcb_conn_lookup_uninit();
 	RestoreFindFlag();
 	return result;
 }

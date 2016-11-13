@@ -217,8 +217,8 @@ void pcb_lookup_unused_pins(FILE * FP)
 {
 	/* reset all currently marked connections */
 	User = pcb_true;
-	ResetConnections(pcb_true);
-	InitConnectionLookup();
+	pcb_reset_conns(pcb_true);
+	pcb_conn_lookup_init();
 
 	ELEMENT_LOOP(PCB->Data);
 	{
@@ -232,7 +232,7 @@ void pcb_lookup_unused_pins(FILE * FP)
 
 	if (conf_core.editor.beep_when_finished)
 		gui->beep();
-	FreeConnectionLookupMemory();
+	pcb_conn_lookup_uninit();
 	IncrementUndoSerialNumber();
 	User = pcb_false;
 	pcb_draw();
@@ -246,13 +246,13 @@ void pcb_lookup_element_conns(pcb_element_t *Element, FILE * FP)
 	/* reset all currently marked connections */
 	User = pcb_true;
 	TheFlag = PCB_FLAG_FOUND;
-	ResetConnections(pcb_true);
-	InitConnectionLookup();
+	pcb_reset_conns(pcb_true);
+	pcb_conn_lookup_init();
 	PrintElementConnections(Element, FP, pcb_true);
 	SetChangedFlag(pcb_true);
 	if (conf_core.editor.beep_when_finished)
 		gui->beep();
-	FreeConnectionLookupMemory();
+	pcb_conn_lookup_uninit();
 	IncrementUndoSerialNumber();
 	User = pcb_false;
 	pcb_draw();
@@ -267,8 +267,8 @@ void pcb_lookup_conns_to_all_elements(FILE * FP)
 	/* reset all currently marked connections */
 	User = pcb_false;
 	TheFlag = PCB_FLAG_FOUND;
-	ResetConnections(pcb_false);
-	InitConnectionLookup();
+	pcb_reset_conns(pcb_false);
+	pcb_conn_lookup_init();
 
 	ELEMENT_LOOP(PCB->Data);
 	{
@@ -277,12 +277,12 @@ void pcb_lookup_conns_to_all_elements(FILE * FP)
 			break;
 		SEPARATE(FP);
 		if (conf_core.editor.reset_after_element && gdl_it_idx(&__it__) != 1)
-			ResetConnections(pcb_false);
+			pcb_reset_conns(pcb_false);
 	}
 	END_LOOP;
 	if (conf_core.editor.beep_when_finished)
 		gui->beep();
-	ResetConnections(pcb_false);
-	FreeConnectionLookupMemory();
+	pcb_reset_conns(pcb_false);
+	pcb_conn_lookup_uninit();
 	pcb_redraw();
 }

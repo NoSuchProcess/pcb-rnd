@@ -166,7 +166,7 @@ pcb_bool SetThing(int type, void *ptr1, void *ptr2, void *ptr3)
 /* ---------------------------------------------------------------------------
  * releases all allocated memory
  */
-void FreeLayoutLookupMemory(void)
+void pcb_layout_lookup_uninit(void)
 {
 	pcb_cardinal_t i;
 
@@ -184,7 +184,7 @@ void FreeLayoutLookupMemory(void)
 	RatList.Data = NULL;
 }
 
-void FreeComponentLookupMemory(void)
+void pcb_component_lookup_uninit(void)
 {
 /*fprintf(stderr, "PadList free both\n");*/
 	free(PadList[0].Data);
@@ -197,7 +197,7 @@ void FreeComponentLookupMemory(void)
  * allocates memory for component related stacks ...
  * initializes index and sorts it by X1 and X2
  */
-void InitComponentLookup(void)
+void pcb_component_lookup_init(void)
 {
 	pcb_cardinal_t i;
 
@@ -231,7 +231,7 @@ void InitComponentLookup(void)
  * allocates memory for component related stacks ...
  * initializes index and sorts it by X1 and X2
  */
-void InitLayoutLookup(void)
+void pcb_layout_lookup_init(void)
 {
 	pcb_cardinal_t i;
 

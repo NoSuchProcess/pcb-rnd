@@ -281,3 +281,12 @@ LookupConnectionsToAllElements -> pcb_lookup_conns_to_all_elements
 LookupConnection -> pcb_lookup_conn
 LookupConnectionByPin -> pcb_lookup_conn_by_pin
 LookupUnusedPins -> pcb_lookup_unused_pins
+ResetFoundLinesAndPolygons -> pcb_reset_found_lines_polys
+ResetFoundPinsViasAndPads -> pcb_reset_found_pins_vias_pads
+ResetConnections -> pcb_reset_conns
+InitConnectionLookup -> pcb_conn_lookup_init
+InitComponentLookup -> pcb_component_lookup_init
+InitLayoutLookup -> pcb_layout_lookup_init
+FreeConnectionLookupMemory -> pcb_conn_lookup_uninit
+FreeComponentLookupMemory -> pcb_component_lookup_uninit
+FreeLayoutLookupMemory -> pcb_layout_lookup_uninit

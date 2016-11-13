@@ -500,16 +500,16 @@ static void netlist_select_cb(GtkWidget * widget, gpointer data)
 	if (selected_net == node_selected_net)
 		node_selected_net = NULL;
 
-	InitConnectionLookup();
-	ResetConnections(pcb_true);
+	pcb_conn_lookup_init();
+	pcb_reset_conns(pcb_true);
 
 	for (i = selected_net->EntryN, entry = selected_net->Entry; i; i--, entry++)
 		if (SeekPad(entry, &conn, pcb_false))
 			RatFindHook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, pcb_true, pcb_true);
 
 	SelectConnection(select_flag);
-	ResetConnections(pcb_false);
-	FreeConnectionLookupMemory();
+	pcb_reset_conns(pcb_false);
+	pcb_conn_lookup_uninit();
 	IncrementUndoSerialNumber();
 	pcb_draw();
 }

@@ -245,7 +245,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 
 	TheFlag = which_flag;
 	User = AndDraw;
-	InitConnectionLookup();
+	pcb_conn_lookup_init();
 
 	/* now add the object to the appropriate list and start scanning
 	 * This is step (1) from the description
@@ -261,24 +261,24 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 		pcb_draw();
 	if (AndDraw && conf_core.editor.beep_when_finished)
 		gui->beep();
-	FreeConnectionLookupMemory();
+	pcb_conn_lookup_uninit();
 }
 
 void pcb_lookup_conn_by_pin(int type, void *ptr1)
 {
 	User = 0;
-	InitConnectionLookup();
+	pcb_conn_lookup_init();
 	ListStart(type, NULL, ptr1, NULL);
 
 	DoIt(pcb_true, pcb_false);
 
-	FreeConnectionLookupMemory();
+	pcb_conn_lookup_uninit();
 }
 
 
 /* ---------------------------------------------------------------------------
  * find connections for rats nesting
- * assumes InitConnectionLookup() has already been done
+ * assumes pcb_conn_lookup_init() has already been done
  */
 void RatFindHook(int type, void *ptr1, void *ptr2, void *ptr3, pcb_bool undo, pcb_bool AndRats)
 {
@@ -292,7 +292,7 @@ void RatFindHook(int type, void *ptr1, void *ptr2, void *ptr3, pcb_bool undo, pc
 /* ---------------------------------------------------------------------------
  * resets all used flags of pins and vias
  */
-pcb_bool ResetFoundPinsViasAndPads(pcb_bool AndDraw)
+pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 {
 	pcb_bool change = pcb_false;
 
@@ -344,7 +344,7 @@ pcb_bool ResetFoundPinsViasAndPads(pcb_bool AndDraw)
 /* ---------------------------------------------------------------------------
  * resets all used flags of LOs
  */
-pcb_bool ResetFoundLinesAndPolygons(pcb_bool AndDraw)
+pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 {
 	pcb_bool change = pcb_false;
 
@@ -404,12 +404,12 @@ pcb_bool ResetFoundLinesAndPolygons(pcb_bool AndDraw)
 /* ---------------------------------------------------------------------------
  * resets all found connections
  */
-pcb_bool ResetConnections(pcb_bool AndDraw)
+pcb_bool pcb_reset_conns(pcb_bool AndDraw)
 {
 	pcb_bool change = pcb_false;
 
-	change = ResetFoundPinsViasAndPads(AndDraw) || change;
-	change = ResetFoundLinesAndPolygons(AndDraw) || change;
+	change = pcb_reset_found_pins_vias_pads(AndDraw) || change;
+	change = pcb_reset_found_lines_polys(AndDraw) || change;
 
 	return change;
 }
@@ -463,14 +463,14 @@ void RestoreFindFlag(void)
 	TheFlag = OldFlag;
 }
 
-void InitConnectionLookup(void)
+void pcb_conn_lookup_init(void)
 {
-	InitComponentLookup();
-	InitLayoutLookup();
+	pcb_component_lookup_init();
+	pcb_layout_lookup_init();
 }
 
-void FreeConnectionLookupMemory(void)
+void pcb_conn_lookup_uninit(void)
 {
-	FreeComponentLookupMemory();
-	FreeLayoutLookupMemory();
+	pcb_component_lookup_uninit();
+	pcb_layout_lookup_uninit();
 }

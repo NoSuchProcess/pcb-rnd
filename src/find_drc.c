@@ -336,11 +336,11 @@ int DRCAll(void)
 	SaveStackAndVisibility();
 	ResetStackAndVisibility();
 	hid_action("LayersChanged");
-	InitConnectionLookup();
+	pcb_conn_lookup_init();
 
 	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
 
-	if (ResetConnections(pcb_true)) {
+	if (pcb_reset_conns(pcb_true)) {
 		IncrementUndoSerialNumber();
 		pcb_draw();
 	}
@@ -390,7 +390,7 @@ int DRCAll(void)
 	END_LOOP;
 
 	TheFlag = (IsBad) ? PCB_FLAG_DRC : (PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED);
-	ResetConnections(pcb_false);
+	pcb_reset_conns(pcb_false);
 	TheFlag = PCB_FLAG_SELECTED;
 	/* check minimum widths and polygon clearances */
 	if (!IsBad) {
@@ -596,7 +596,7 @@ int DRCAll(void)
 		END_LOOP;
 	}
 
-	FreeConnectionLookupMemory();
+	pcb_conn_lookup_uninit();
 	TheFlag = PCB_FLAG_FOUND;
 	Bloat = 0;
 
@@ -728,7 +728,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 			DumpList();
 			/* make the flag changes undoable */
 			TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-			ResetConnections(pcb_false);
+			pcb_reset_conns(pcb_false);
 			User = pcb_true;
 			drc = pcb_false;
 			Bloat = -PCB->Shrink;
@@ -765,7 +765,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	}
 	/* now check the bloated condition */
 	drc = pcb_false;
-	ResetConnections(pcb_false);
+	pcb_reset_conns(pcb_false);
 	TheFlag = PCB_FLAG_FOUND;
 	ListStart(What, ptr1, ptr2, ptr3);
 	Bloat = PCB->Bloat;
@@ -774,7 +774,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 		DumpList();
 		/* make the flag changes undoable */
 		TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-		ResetConnections(pcb_false);
+		pcb_reset_conns(pcb_false);
 		User = pcb_true;
 		drc = pcb_false;
 		Bloat = 0;
@@ -818,7 +818,7 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 	drc = pcb_false;
 	DumpList();
 	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_SELECTED;
-	ResetConnections(pcb_false);
+	pcb_reset_conns(pcb_false);
 	return (pcb_false);
 }
 
