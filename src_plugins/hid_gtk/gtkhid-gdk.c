@@ -595,7 +595,7 @@ void ghid_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t
 	dx2 = Vx((double) x2);
 	dy2 = Vy((double) y2);
 
-	if (!ClipLine(0, 0, gport->width, gport->height, &dx1, &dy1, &dx2, &dy2, gc->width / gport->view.coord_per_px))
+	if (!pcb_line_clip(0, 0, gport->width, gport->height, &dx1, &dy1, &dx2, &dy2, gc->width / gport->view.coord_per_px))
 		return;
 
 	USE_GC(gc);

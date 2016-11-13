@@ -32,7 +32,7 @@
  * return pcb_true if something to be drawn
  * pcb_false if the whole thing is clipped
  */
-pcb_bool ClipLine(double minx, double miny, double maxx, double maxy, double *x1, double *y1, double *x2, double *y2, double margin)
+pcb_bool pcb_line_clip(double minx, double miny, double maxx, double maxy, double *x1, double *y1, double *x2, double *y2, double margin)
 {
 	double d, r;
 
