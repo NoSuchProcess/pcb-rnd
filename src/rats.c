@@ -612,7 +612,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 				if ((line = CreateNewRat(PCB->Data,
 																 firstpoint->X, firstpoint->Y,
 																 secondpoint->X, secondpoint->Y,
-																 firstpoint->group, secondpoint->group, conf_core.appearance.rat_thickness, NoFlags())) != NULL) {
+																 firstpoint->group, secondpoint->group, conf_core.appearance.rat_thickness, pcb_no_flags())) != NULL) {
 					if (distance == 0)
 						SET_FLAG(PCB_FLAG_VIA, line);
 					AddObjectToCreateUndoList(PCB_TYPE_RATLINE, line, line, line);
@@ -900,7 +900,7 @@ ratIt:
 	return (CreateNewRat(PCB->Data, Crosshair.AttachedLine.Point1.X,
 											 Crosshair.AttachedLine.Point1.Y,
 											 Crosshair.AttachedLine.Point2.X,
-											 Crosshair.AttachedLine.Point2.Y, group1, group2, conf_core.appearance.rat_thickness, NoFlags()));
+											 Crosshair.AttachedLine.Point2.Y, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags()));
 }
 
 

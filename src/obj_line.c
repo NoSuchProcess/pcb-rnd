@@ -166,7 +166,7 @@ pcb_line_t *CreateDrawnLineOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord
 	info.Thickness = Thickness;
 	info.Flags = Flags;
 	info.test.Thickness = 0;
-	info.test.Flags = NoFlags();
+	info.test.Flags = pcb_no_flags();
 	info.ans = NULL;
 	/* prevent stacking of duplicate lines
 	 * and remove needless intermediate points
@@ -251,7 +251,7 @@ void *AddLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 
 	line = CreateNewLineOnLayer(layer, Line->Point1.X, Line->Point1.Y,
 															Line->Point2.X, Line->Point2.Y,
-															Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
+															Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
 	if (line && Line->Number)
 		line->Number = pcb_strdup(Line->Number);
 	return (line);
@@ -380,7 +380,7 @@ void *CopyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 	line = CreateDrawnLineOnLayer(Layer, Line->Point1.X + ctx->copy.DeltaX,
 																Line->Point1.Y + ctx->copy.DeltaY,
 																Line->Point2.X + ctx->copy.DeltaX,
-																Line->Point2.Y + ctx->copy.DeltaY, Line->Thickness, Line->Clearance, MaskFlags(Line->Flags, PCB_FLAG_FOUND));
+																Line->Point2.Y + ctx->copy.DeltaY, Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND));
 	if (!line)
 		return (line);
 	if (Line->Number)
@@ -470,7 +470,7 @@ static pcb_r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 
 	if ((via =
 			 CreateNewVia(PCB->Data, i->X, i->Y,
-										conf_core.design.via_thickness, 2 * conf_core.design.clearance, PCB_FLAG_NO, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
+										conf_core.design.via_thickness, 2 * conf_core.design.clearance, PCB_FLAG_NO, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 		AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 		DrawVia(via);
 	}
@@ -751,7 +751,7 @@ pcb_r_dir_t draw_line_callback(const pcb_box_t * b, void *cl)
 void EraseLine(pcb_line_t *Line)
 {
 	pcb_draw_invalidate(Line);
-	EraseFlags(&Line->Flags);
+	pcb_flag_erase(&Line->Flags);
 }
 
 void DrawLine(pcb_layer_t *Layer, pcb_line_t *Line)

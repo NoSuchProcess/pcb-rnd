@@ -633,7 +633,7 @@ pcb_bool IsLineInRectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_c
 		return (pcb_true);
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
-	line.Flags = NoFlags();
+	line.Flags = pcb_no_flags();
 
 	/* upper-left to upper-right corner */
 	line.Point1.Y = line.Point2.Y = Y1;
@@ -708,7 +708,7 @@ pcb_bool IsLineInQuadrangle(pcb_point_t p[4], pcb_line_t *Line)
 		return pcb_true;
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
-	line.Flags = NoFlags();
+	line.Flags = pcb_no_flags();
 
 	/* upper-left to upper-right corner */
 	line.Point1.X = p[0].X;
@@ -748,7 +748,7 @@ pcb_bool IsArcInRectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_co
 
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
-	line.Flags = NoFlags();
+	line.Flags = pcb_no_flags();
 
 	/* upper-left to upper-right corner */
 	line.Point1.Y = line.Point2.Y = Y1;

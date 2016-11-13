@@ -333,7 +333,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 
 	gui->set_color(Output.fgGC, PCB->PinNameColor);
 
-	text.Flags = NoFlags();
+	text.Flags = pcb_no_flags();
 	/* Set font height to approx 90% of pin thickness */
 	text.Scale = 90 * pad->Thickness / FONT_CAPHEIGHT;
 	text.X = box.X1;
@@ -458,7 +458,7 @@ void ErasePad(pcb_pad_t *Pad)
 	pcb_draw_invalidate(Pad);
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pad))
 		ErasePadName(Pad);
-	EraseFlags(&Pad->Flags);
+	pcb_flag_erase(&Pad->Flags);
 }
 
 void ErasePadName(pcb_pad_t *Pad)

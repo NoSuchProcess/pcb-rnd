@@ -177,7 +177,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	int mirrored = 0;
 	double glyphWidth = 1.27; /* a reasonable approximation of pcb glyph width, ~=  5000 centimils */
 	unsigned direction = 0; /* default is horizontal */
-	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
 	if (subtree->str != NULL) {
@@ -237,7 +237,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 					if (PCBLayer == -1) {
 						return -1;
 					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
-							Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 					}
 				} else {
 					return -1;
@@ -349,7 +349,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	char *end;
 	double val;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance; /* not sure what to do with mask */
-	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
 	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
@@ -472,7 +472,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 	pcb_coord_t centreX, centreY, endX, endY, width, height, Thickness, Clearance;
 	pcb_angle_t startAngle = 0.0;
 	pcb_angle_t delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
-	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
 
 	Clearance = Thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
@@ -627,7 +627,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	char *end, *name; /* not using via name for now */
 	double val;
 	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
-	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 /*	int PCBLayer = 0;   not used for now; no blind or buried vias currently in pcb-rnd */
 
 	Clearance = Mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
@@ -721,7 +721,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	char *end;
 	double val;
 	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
-	pcb_flag_t Flags = MakeFlags(PCB_FLAG_CLEARLINE); /* we try clearline flag here */
+	pcb_flag_t Flags = pcb_flag_make(PCB_FLAG_CLEARLINE); /* we try clearline flag here */
 	int PCBLayer = 0; /* sane default value */
 
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
@@ -1001,8 +1001,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	char * moduleName, * moduleRefdes, * moduleValue, * pinName;
 	pcb_element_t *newModule;
 
-	pcb_flag_t Flags = MakeFlags(0); /* start with something bland here */
-	pcb_flag_t TextFlags = MakeFlags(0); /* start with something bland here */
+	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
+	pcb_flag_t TextFlags = pcb_flag_make(0); /* start with something bland here */
 	Clearance = PCB_MM_TO_COORD(0.250); /* start with something bland here */
 
 	moduleName = moduleRefdes = moduleValue = NULL;
@@ -1020,8 +1020,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					if (PCBLayer == -1) {
 						return -1;
 					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
-							Flags = MakeFlags(PCB_FLAG_ONSOLDER);
-							TextFlags = MakeFlags(PCB_FLAG_ONSOLDER);
+							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
+							TextFlags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 					}
 				} else {
 					return -1;
@@ -1165,7 +1165,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					if (PCBLayer == -1) {
 						return -1;
 					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
-							Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 					}
 				} else {
 					return -1;
@@ -1394,7 +1394,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 									} else if (PCBLayer < -1) {
 										printf("\tUnimplemented layer definition: %s", l->str);
 									} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
-										Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+										Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 										kicadLayer = 0;
 									}
 									pcb_printf("\tpad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str));
@@ -1488,13 +1488,13 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							Thickness = padXsize;
 						}
 						if (square && kicadLayer) {
-							Flags = MakeFlags(PCB_FLAG_SQUARE);
+							Flags = pcb_flag_make(PCB_FLAG_SQUARE);
 						} else if (kicadLayer) {
-							Flags = MakeFlags(0);
+							Flags = pcb_flag_make(0);
 						} else if (square && !kicadLayer) {
-							Flags = MakeFlags(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
+							Flags = pcb_flag_make(PCB_FLAG_SQUARE | PCB_FLAG_ONSOLDER);
 						} else {
-							Flags = MakeFlags(PCB_FLAG_ONSOLDER);
+							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 						}
 						CreateNewPad(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
 								Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
@@ -1823,7 +1823,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	unsigned long required;
 
 	pcb_polygon_t *polygon = NULL;
-	pcb_flag_t flags = MakeFlags(PCB_FLAG_CLEARPOLY);
+	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	char *end;
 	double val;
 	pcb_coord_t X, Y;

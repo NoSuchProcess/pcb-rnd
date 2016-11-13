@@ -1336,7 +1336,7 @@ void CopyAttachedPolygonToLayer(void)
 	int saveID;
 
 	/* move data to layer and clear attached struct */
-	polygon = CreateNewPolygon(CURRENT, NoFlags());
+	polygon = CreateNewPolygon(CURRENT, pcb_no_flags());
 	saveID = polygon->ID;
 	*polygon = Crosshair.AttachedPolygon;
 	polygon->ID = saveID;

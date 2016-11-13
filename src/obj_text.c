@@ -221,7 +221,7 @@ void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
 
-	return (CreateNewText(layer, &PCB->Font, Text->X, Text->Y, Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, ctx->buffer.extraflg)));
+	return (CreateNewText(layer, &PCB->Font, Text->X, Text->Y, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg)));
 }
 
 /* moves a text to buffer without allocating memory for the name */
@@ -328,7 +328,7 @@ void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_text_t *text;
 
 	text = CreateNewText(Layer, &PCB->Font, Text->X + ctx->copy.DeltaX,
-											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, MaskFlags(Text->Flags, PCB_FLAG_FOUND));
+											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
 	DrawText(Layer, text);
 	AddObjectToCreateUndoList(PCB_TYPE_TEXT, Layer, text, text);
 	return (text);

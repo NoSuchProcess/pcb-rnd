@@ -300,3 +300,9 @@ IsPadInPolygon -> pcb_is_pad_in_poly
 ClearFlagOnPinsViasAndPads -> pcb_clear_flag_on_pins_vias_pads
 ClearFlagOnLinesAndPolygons -> pcb_clear_flag_on_lines_polys
 ClearFlagOnAllObjects -> pcb_clear_flag_on_all_objs
+MakeFlags -> pcb_flag_make
+OldFlags -> pcb_flag_old
+AddFlags -> pcb_flag_add
+MaskFlags -> pcb_flag_mask
+EraseFlags -> pcb_flag_erase
+NoFlags -> pcb_no_flags

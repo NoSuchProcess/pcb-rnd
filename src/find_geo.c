@@ -578,7 +578,7 @@ pcb_bool pcb_is_poly_in_poly(pcb_polygon_t *P1, pcb_polygon_t *P2)
 				line.Point1.Y = v->point[1];
 				line.Thickness = 2 * Bloat;
 				line.Clearance = 0;
-				line.Flags = NoFlags();
+				line.Flags = pcb_no_flags();
 				for (v = v->next; v != &c->head; v = v->next) {
 					line.Point2.X = v->point[0];
 					line.Point2.Y = v->point[1];

@@ -227,7 +227,7 @@ void *AddArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 	return (CreateNewArcOnLayer(layer, Arc->X, Arc->Y,
 		Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
-		Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
+		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
 
 /* moves an arc to buffer */
@@ -419,7 +419,7 @@ void *CopyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 	arc = CreateNewArcOnLayer(Layer, Arc->X + ctx->copy.DeltaX,
 														Arc->Y + ctx->copy.DeltaY, Arc->Width, Arc->Height, Arc->StartAngle,
-														Arc->Delta, Arc->Thickness, Arc->Clearance, MaskFlags(Arc->Flags, PCB_FLAG_FOUND));
+														Arc->Delta, Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND));
 	if (!arc)
 		return (arc);
 	DrawArc(Layer, arc);
@@ -604,7 +604,7 @@ void EraseArc(pcb_arc_t *Arc)
 	if (!Arc->Thickness)
 		return;
 	pcb_draw_invalidate(Arc);
-	EraseFlags(&Arc->Flags);
+	pcb_flag_erase(&Arc->Flags);
 }
 
 void DrawArc(pcb_layer_t *Layer, pcb_arc_t *Arc)

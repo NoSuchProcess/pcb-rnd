@@ -1339,16 +1339,16 @@ static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 #if 1
 	if (b.Y1 == b.Y2 || b.X1 == b.X2)
 		thickness = 5;
-	line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X2, b.Y1, thickness, 0, MakeFlags(0));
+	line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X2, b.Y1, thickness, 0, pcb_flag_make(0));
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	if (b.Y1 != b.Y2) {
-		line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X1, b.Y2, b.X2, b.Y2, thickness, 0, MakeFlags(0));
+		line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X1, b.Y2, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	}
-	line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X1, b.Y2, thickness, 0, MakeFlags(0));
+	line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X1, b.Y2, thickness, 0, pcb_flag_make(0));
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	if (b.X1 != b.X2) {
-		line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X2, b.Y1, b.X2, b.Y2, thickness, 0, MakeFlags(0));
+		line = CreateNewLineOnLayer(LAYER_PTR(component_silk_layer), b.X2, b.Y1, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	}
 #endif
@@ -2859,7 +2859,7 @@ static void RD_DrawVia(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 
 	if (conf_core.editor.live_routing) {
 		live_via = CreateNewVia(PCB->Data, X, Y, radius * 2,
-														2 * AutoRouteParameters.style->Clearance, 0, AutoRouteParameters.style->Hole, NULL, MakeFlags(0));
+														2 * AutoRouteParameters.style->Clearance, 0, AutoRouteParameters.style->Hole, NULL, pcb_flag_make(0));
 		if (live_via != NULL)
 			DrawVia(live_via);
 	}
@@ -2987,7 +2987,7 @@ RD_DrawLine(routedata_t * rd,
 	if (conf_core.editor.live_routing) {
 		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
 		pcb_line_t *line = CreateNewLineOnLayer(layer, qX1, qY1, qX2, qY2,
-																					2 * qhthick, 0, MakeFlags(0));
+																					2 * qhthick, 0, pcb_flag_make(0));
 		rb->livedraw_obj.line = line;
 		if (line != NULL)
 			DrawLine(layer, line);
@@ -4472,7 +4472,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 					/* using CreateDrawn instead of CreateNew concatenates sequential lines */
 					p->parent.line = CreateDrawnLineOnLayer
 						(layer, b.X1, b.Y1, b.X2, b.Y2,
-						 p->style->Thick, p->style->Clearance * 2, MakeFlags(PCB_FLAG_AUTO | (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
+						 p->style->Thick, p->style->Clearance * 2, pcb_flag_make(PCB_FLAG_AUTO | (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
 
 					if (p->parent.line) {
 						AddObjectToCreateUndoList(PCB_TYPE_LINE, layer, p->parent.line, p->parent.line);
@@ -4491,7 +4491,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 						pp->parent.via =
 							CreateNewVia(PCB->Data, b.X1 + radius,
 													 b.Y1 + radius,
-													 pp->style->Diameter, 2 * pp->style->Clearance, 0, pp->style->Hole, NULL, MakeFlags(PCB_FLAG_AUTO));
+													 pp->style->Diameter, 2 * pp->style->Clearance, 0, pp->style->Hole, NULL, pcb_flag_make(PCB_FLAG_AUTO));
 						assert(pp->parent.via);
 						if (pp->parent.via) {
 							AddObjectToCreateUndoList(PCB_TYPE_VIA, pp->parent.via, pp->parent.via, pp->parent.via);

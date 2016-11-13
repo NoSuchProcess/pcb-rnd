@@ -41,7 +41,7 @@ void dummy_DrawFab(pcb_hid_gc_t gc)
 	t.TextString = "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded";
 	t.Direction = 0;
 	t.Scale = 150;
-	t.Flags = NoFlags();
+	t.Flags = pcb_no_flags();
 	DrawTextLowLevel(&t, 0);
 }
 

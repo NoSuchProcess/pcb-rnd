@@ -621,7 +621,7 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	pcb_polygon_t *polygon;
 
-	polygon = CreateNewPolygon(Layer, NoFlags());
+	polygon = CreateNewPolygon(Layer, pcb_no_flags());
 	CopyPolygonLowLevel(polygon, Polygon);
 	MovePolygonLowLevel(polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	if (!Layer->polygon_tree)
@@ -679,7 +679,7 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 void ErasePolygon(pcb_polygon_t *Polygon)
 {
 	pcb_draw_invalidate(Polygon);
-	EraseFlags(&Polygon->Flags);
+	pcb_flag_erase(&Polygon->Flags);
 }
 
 void DrawPolygon(pcb_layer_t *Layer, pcb_polygon_t *Polygon)

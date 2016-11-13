@@ -262,7 +262,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 	f = 1.0;
 	s = 0.5;
 	last = -1;
-	line1.Flags = line2.Flags = NoFlags();
+	line1.Flags = line2.Flags = pcb_no_flags();
 	line1.Thickness = conf_core.design.line_thickness + 2 * (PCB->Bloat + 1);
 	line2.Thickness = line1.Thickness;
 	line1.Clearance = line2.Clearance = 0;

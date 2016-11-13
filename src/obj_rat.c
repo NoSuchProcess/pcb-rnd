@@ -128,7 +128,7 @@ void *AddRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	return (CreateNewRat(ctx->buffer.dst, Rat->Point1.X, Rat->Point1.Y,
 		Rat->Point2.X, Rat->Point2.Y, Rat->group1, Rat->group2, Rat->Thickness,
-		MaskFlags(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
+		pcb_flag_mask(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
 
 /* moves a rat-line to paste buffer */
@@ -265,7 +265,7 @@ void EraseRat(pcb_rat_t *Rat)
 	}
 	else
 		EraseLine((pcb_line_t *) Rat);
-	EraseFlags(&Rat->Flags);
+	pcb_flag_erase(&Rat->Flags);
 }
 
 void DrawRat(pcb_rat_t *Rat)

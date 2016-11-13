@@ -122,27 +122,27 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 														 symbol->Line[l].Point1.X + ox,
 														 symbol->Line[l].Point1.Y + oy,
 														 symbol->Line[l].Point2.X + ox,
-														 symbol->Line[l].Point2.Y + oy, symbol->Line[l].Thickness, symbol->Line[l].Thickness, NoFlags());
+														 symbol->Line[l].Point2.Y + oy, symbol->Line[l].Thickness, symbol->Line[l].Thickness, pcb_no_flags());
 			CreateDrawnLineOnLayer(lorig, symbol->Line[l].Point1.X + ox,
 														 symbol->Line[l].Point1.Y + oy,
 														 symbol->Line[l].Point2.X + ox,
-														 symbol->Line[l].Point2.Y + oy, symbol->Line[l].Thickness, symbol->Line[l].Thickness, NoFlags());
+														 symbol->Line[l].Point2.Y + oy, symbol->Line[l].Thickness, symbol->Line[l].Thickness, pcb_no_flags());
 			if (maxx < symbol->Line[l].Point1.X)
 				maxx = symbol->Line[l].Point1.X;
 			if (maxx < symbol->Line[l].Point2.X)
 				maxx = symbol->Line[l].Point2.X;
 		}
 		w = maxx + symbol->Delta + ox;
-		CreateDrawnLineOnLayer(lwidth, w, miny + oy, w, maxy + oy, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), NoFlags());
+		CreateDrawnLineOnLayer(lwidth, w, miny + oy, w, maxy + oy, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
 
 	for (l = 0; l < 16; l++) {
 		int x = (l + 1) * CELL_SIZE;
-		CreateDrawnLineOnLayer(lgrid, x, 0, x, PCB->MaxHeight, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), NoFlags());
+		CreateDrawnLineOnLayer(lgrid, x, 0, x, PCB->MaxHeight, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	for (l = 0; l <= MAX_FONTPOSITION / 16 + 1; l++) {
 		int y = (l + 1) * CELL_SIZE;
-		CreateDrawnLineOnLayer(lgrid, 0, y, PCB->MaxWidth, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), NoFlags());
+		CreateDrawnLineOnLayer(lgrid, 0, y, PCB->MaxWidth, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	return 0;
 }

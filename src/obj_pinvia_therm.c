@@ -158,7 +158,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	case 4:
 		{
 			pcb_line_t l;
-			l.Flags = NoFlags();
+			l.Flags = pcb_no_flags();
 			d = pin->Thickness / 2 - pcb->ThermScale * pin->Clearance;
 			out = pin->Thickness / 2 + pin->Clearance / 4;
 			in = pin->Clearance / 2;
@@ -406,7 +406,7 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 		a.Height = a.Width = pin->Thickness / 2 + pin->Clearance / 4;
 		a.Thickness = 1;
 		a.Clearance = pin->Clearance / 2;
-		a.Flags = NoFlags();
+		a.Flags = pcb_no_flags();
 		a.Delta = 90 - (a.Clearance * (1. + 2. * pcb->ThermScale) * 180) / (M_PI * a.Width);
 		a.StartAngle = 90 - a.Delta / 2 + (style == 4 ? 0 : 45);
 		pa = ArcPoly(&a, a.Clearance);

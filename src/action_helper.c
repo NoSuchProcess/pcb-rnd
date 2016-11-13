@@ -601,7 +601,7 @@ void pcb_notify_mode(void)
 			}
 			if ((via = CreateNewVia(PCB->Data, Note.X, Note.Y,
 															conf_core.design.via_thickness, 2 * conf_core.design.clearance,
-															0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
+															0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 				AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 				if (gui->shift_is_pressed())
 					pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
@@ -660,7 +660,7 @@ void pcb_notify_mode(void)
 																												dir,
 																												conf_core.design.line_thickness,
 																												2 * conf_core.design.clearance,
-																												MakeFlags(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) {
+																												pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) {
 						pcb_box_t *bx;
 
 						bx = GetArcEnds(arc);
@@ -803,7 +803,7 @@ void pcb_notify_mode(void)
 																		 Crosshair.AttachedLine.Point2.Y,
 																		 conf_core.design.line_thickness,
 																		 2 * conf_core.design.clearance,
-																		 MakeFlags(maybe_found_flag |
+																		 pcb_flag_make(maybe_found_flag |
 																							 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 				pcb_pin_t *via;
 
@@ -825,7 +825,7 @@ void pcb_notify_mode(void)
 														 Crosshair.AttachedLine.Point1.X,
 														 Crosshair.AttachedLine.Point1.Y,
 														 conf_core.design.via_thickness,
-														 2 * conf_core.design.clearance, 0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
+														 2 * conf_core.design.clearance, 0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 					AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 					DrawVia(via);
 				}
@@ -843,7 +843,7 @@ void pcb_notify_mode(void)
 																		 Note.X, Note.Y,
 																		 conf_core.design.line_thickness,
 																		 2 * conf_core.design.clearance,
-																		 MakeFlags((conf_core.editor.auto_drc ? PCB_FLAG_FOUND : 0) |
+																		 pcb_flag_make((conf_core.editor.auto_drc ? PCB_FLAG_FOUND : 0) |
 																							 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 				addedLines++;
 				AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
@@ -888,7 +888,7 @@ void pcb_notify_mode(void)
 																									 Crosshair.AttachedBox.Point1.X,
 																									 Crosshair.AttachedBox.Point1.Y,
 																									 Crosshair.AttachedBox.Point2.X,
-																									 Crosshair.AttachedBox.Point2.Y, MakeFlags(flags))) != NULL) {
+																									 Crosshair.AttachedBox.Point2.Y, pcb_flag_make(flags))) != NULL) {
 				AddObjectToCreateUndoList(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
 				IncrementUndoSerialNumber();
 				DrawPolygon(CURRENT, polygon);
@@ -912,7 +912,7 @@ void pcb_notify_mode(void)
 					if (GetLayerGroupNumberByNumber(INDEXOFCURRENT) == GetLayerGroupNumberByNumber(solder_silk_layer))
 						flag |= PCB_FLAG_ONSOLDER;
 					if ((text = CreateNewText(CURRENT, &PCB->Font, Note.X,
-																		Note.Y, 0, conf_core.design.text_scale, string, MakeFlags(flag))) != NULL) {
+																		Note.Y, 0, conf_core.design.text_scale, string, pcb_flag_make(flag))) != NULL) {
 						AddObjectToCreateUndoList(PCB_TYPE_TEXT, CURRENT, text, text);
 						IncrementUndoSerialNumber();
 						DrawText(CURRENT, text);

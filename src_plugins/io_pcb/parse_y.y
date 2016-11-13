@@ -575,7 +575,7 @@ represent pcb-wide flags as defined in @ref{PCBFlags}.
 pcbflags
 		: T_FLAGS '(' INTEGER ')'
 			{
-				yy_pcb_flags = MakeFlags ($3 & PCB_FLAGS);
+				yy_pcb_flags = pcb_flag_make($3 & PCB_FLAGS);
 			}
 		| T_FLAGS '(' STRING ')'
 			{
@@ -759,7 +759,7 @@ via_2.0_format
 		: T_VIA '(' measure measure measure measure measure measure STRING INTEGER ')'
 			{
 				CreateNewVia(yyData, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7), OU ($8), $9,
-					OldFlags($10));
+					pcb_flag_old($10));
 				free ($9);
 			}
 		;
@@ -770,7 +770,7 @@ via_1.7_format
 		: T_VIA '(' measure measure measure measure measure STRING INTEGER ')'
 			{
 				CreateNewVia(yyData, OU ($3), OU ($4), OU ($5), OU ($6),
-					     OU ($5) + OU($6), OU ($7), $8, OldFlags($9));
+					     OU ($5) + OU($6), OU ($7), $8, pcb_flag_old($9));
 				free ($8);
 			}
 		;
@@ -780,7 +780,7 @@ via_newformat
 		: T_VIA '(' measure measure measure measure STRING INTEGER ')'
 			{
 				CreateNewVia(yyData, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU($5) + 2*MASKFRAME,  OU ($6), $7, OldFlags($8));
+					OU($5) + 2*MASKFRAME,  OU ($6), $7, pcb_flag_old($8));
 				free ($7);
 			}
 		;
@@ -797,7 +797,7 @@ via_oldformat
 					hole = OU($5) - MIN_PINORVIACOPPER;
 
 				CreateNewVia(yyData, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU($5) + 2*MASKFRAME, hole, $6, OldFlags($7));
+					OU($5) + 2*MASKFRAME, hole, $6, pcb_flag_old($7));
 				free ($6);
 			}
 		;
@@ -831,7 +831,7 @@ rats
 		| T_RAT '(' measure measure INTEGER measure measure INTEGER INTEGER ')'
 			{
 				CreateNewRat(yyData, OU ($3), OU ($4), OU ($6), OU ($7), $5, $8,
-					conf_core.appearance.rat_thickness, OldFlags($9));
+					conf_core.appearance.rat_thickness, pcb_flag_old($9));
 			}
 		;
 
@@ -907,7 +907,7 @@ layerdefinition
 		| T_RECTANGLE '(' measure measure measure measure INTEGER ')'
 			{
 				CreateNewPolygonFromRectangle(Layer,
-					OU ($3), OU ($4), OU ($3) + OU ($5), OU ($4) + OU ($6), OldFlags($7));
+					OU ($3), OU ($4), OU ($3) + OU ($5), OU ($4) + OU ($6), pcb_flag_old($7));
 			}
 		| text_hi_format
 		| text_newformat
@@ -955,7 +955,7 @@ line_1.7_format
 		: T_LINE '(' measure measure measure measure measure measure INTEGER ')'
 			{
 				CreateNewLineOnLayer(Layer, OU ($3), OU ($4), OU ($5), OU ($6),
-						     OU ($7), OU ($8), OldFlags($9));
+						     OU ($7), OU ($8), pcb_flag_old($9));
 			}
 		;
 
@@ -966,7 +966,7 @@ line_oldformat
 				/* eliminate old-style rat-lines */
 			if ((IV ($8) & PCB_FLAG_RAT) == 0)
 				CreateNewLineOnLayer(Layer, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7),
-					200*GROUNDPLANEFRAME, OldFlags(IV ($8)));
+					200*GROUNDPLANEFRAME, pcb_flag_old(IV ($8)));
 			}
 		;
 
@@ -1021,7 +1021,7 @@ arc_1.7_format
 		: T_ARC '(' measure measure measure measure measure measure number number INTEGER ')'
 			{
 				CreateNewArcOnLayer(Layer, OU ($3), OU ($4), OU ($5), OU ($6), $9, $10,
-						    OU ($7), OU ($8), OldFlags($11));
+						    OU ($7), OU ($8), pcb_flag_old($11));
 			}
 		;
 
@@ -1030,7 +1030,7 @@ arc_oldformat
 		: T_ARC '(' measure measure measure measure measure measure number INTEGER ')'
 			{
 				CreateNewArcOnLayer(Layer, OU ($3), OU ($4), OU ($5), OU ($5), IV ($8), $9,
-					OU ($7), 200*GROUNDPLANEFRAME, OldFlags($10));
+					OU ($7), 200*GROUNDPLANEFRAME, pcb_flag_old($10));
 			}
 		;
 
@@ -1067,7 +1067,7 @@ text_oldformat
 		: T_TEXT '(' measure measure number STRING INTEGER ')'
 			{
 					/* use a default scale of 100% */
-				CreateNewText(Layer,yyFont,OU ($3), OU ($4), $5, 100, $6, OldFlags($7));
+				CreateNewText(Layer,yyFont,OU ($3), OU ($4), $5, 100, $6, pcb_flag_old($7));
 				free ($6);
 			}
 		;
@@ -1082,11 +1082,11 @@ text_newformat
 						(($8 & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
 					CreateNewText(lay ,yyFont, OU ($3), OU ($4), $5, $6, $7,
-						      OldFlags($8));
+						      pcb_flag_old($8));
 				}
 				else
 					CreateNewText(Layer, yyFont, OU ($3), OU ($4), $5, $6, $7,
-						      OldFlags($8));
+						      pcb_flag_old($8));
 				free ($7);
 			}
 		;
@@ -1277,8 +1277,8 @@ element_oldformat
 			 */
 		: T_ELEMENT '(' STRING STRING measure measure INTEGER ')' '('
 			{
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, NoFlags(),
-					$3, $4, NULL, OU ($5), OU ($6), $7, 100, NoFlags(), pcb_false);
+				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_no_flags(),
+					$3, $4, NULL, OU ($5), OU ($6), $7, 100, pcb_no_flags(), pcb_false);
 				free ($3);
 				free ($4);
 				pin_num = 1;
@@ -1295,8 +1295,8 @@ element_1.3.4_format
 			 */
 		: T_ELEMENT '(' INTEGER STRING STRING measure measure measure measure INTEGER ')' '('
 			{
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags($3),
-					$4, $5, NULL, OU ($6), OU ($7), IV ($8), IV ($9), OldFlags($10), pcb_false);
+				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_flag_old($3),
+					$4, $5, NULL, OU ($6), OU ($7), IV ($8), IV ($9), pcb_flag_old($10), pcb_false);
 				free ($4);
 				free ($5);
 				pin_num = 1;
@@ -1313,8 +1313,8 @@ element_newformat
 			 */
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure measure measure INTEGER ')' '('
 			{
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags($3),
-					$4, $5, $6, OU ($7), OU ($8), IV ($9), IV ($10), OldFlags($11), pcb_false);
+				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_flag_old($3),
+					$4, $5, $6, OU ($7), OU ($8), IV ($9), IV ($10), pcb_flag_old($11), pcb_false);
 				free ($4);
 				free ($5);
 				free ($6);
@@ -1333,9 +1333,9 @@ element_1.7_format
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure
 			measure measure number number INTEGER ')' '('
 			{
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, OldFlags($3),
+				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_flag_old($3),
 					$4, $5, $6, OU ($7) + OU ($9), OU ($8) + OU ($10),
-					$11, $12, OldFlags($13), pcb_false);
+					$11, $12, pcb_flag_old($13), pcb_false);
 				yyElement->MarkX = OU ($7);
 				yyElement->MarkY = OU ($8);
 				free ($4);
@@ -1568,7 +1568,7 @@ pin_1.7_format
 			{
 				CreateNewPin(yyElement, OU ($3) + yyElement->MarkX,
 					OU ($4) + yyElement->MarkY, OU ($5), OU ($6), OU ($7), OU ($8), $9,
-					$10, OldFlags($11));
+					$10, pcb_flag_old($11));
 				free ($9);
 				free ($10);
 			}
@@ -1579,7 +1579,7 @@ pin_1.6.3_format
 		: T_PIN '(' measure measure measure measure STRING STRING INTEGER ')'
 			{
 				CreateNewPin(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU ($5) + 2*MASKFRAME, OU ($6), $7, $8, OldFlags($9));
+					OU ($5) + 2*MASKFRAME, OU ($6), $7, $8, pcb_flag_old($9));
 				free ($7);
 				free ($8);
 			}
@@ -1593,7 +1593,7 @@ pin_newformat
 
 				sprintf(p_number, "%d", pin_num++);
 				CreateNewPin(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU ($5) + 2*MASKFRAME, OU ($6), $7, p_number, OldFlags($8));
+					OU ($5) + 2*MASKFRAME, OU ($6), $7, p_number, pcb_flag_old($8));
 
 				free ($7);
 			}
@@ -1615,7 +1615,7 @@ pin_oldformat
 
 				sprintf(p_number, "%d", pin_num++);
 				CreateNewPin(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU ($5) + 2*MASKFRAME, hole, $6, p_number, OldFlags($7));
+					OU ($5) + 2*MASKFRAME, hole, $6, p_number, pcb_flag_old($7));
 				free ($6);
 			}
 		;
@@ -1676,7 +1676,7 @@ pad_1.7_format
 				CreateNewPad(yyElement,OU ($3) + yyElement->MarkX,
 					OU ($4) + yyElement->MarkY, OU ($5) + yyElement->MarkX,
 					OU ($6) + yyElement->MarkY, OU ($7), OU ($8), OU ($9),
-					$10, $11, OldFlags($12));
+					$10, $11, pcb_flag_old($12));
 				free ($10);
 				free ($11);
 			}
@@ -1687,7 +1687,7 @@ pad_newformat
 		: T_PAD '(' measure measure measure measure measure STRING STRING INTEGER ')'
 			{
 				CreateNewPad(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*GROUNDPLANEFRAME,
-					OU ($7) + 2*MASKFRAME, $8, $9, OldFlags($10));
+					OU ($7) + 2*MASKFRAME, $8, $9, pcb_flag_old($10));
 				free ($8);
 				free ($9);
 			}
@@ -1701,12 +1701,12 @@ pad
 
 				sprintf(p_number, "%d", pin_num++);
 				CreateNewPad(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*GROUNDPLANEFRAME,
-					OU ($7) + 2*MASKFRAME, $8,p_number, OldFlags($9));
+					OU ($7) + 2*MASKFRAME, $8,p_number, pcb_flag_old($9));
 				free ($8);
 			}
 		;
 
-flags		: INTEGER	{ $$ = OldFlags($1); }
+flags		: INTEGER	{ $$ = pcb_flag_old($1); }
 		| STRING	{ $$ = string_to_flags ($1, yyerror); free($1); }
 		;
 

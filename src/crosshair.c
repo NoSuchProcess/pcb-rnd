@@ -499,7 +499,7 @@ void pcb_draw_attached(void)
 			via.Clearance = 2 * conf_core.design.clearance;
 			via.DrillingHole = conf_core.design.via_drilling_hole;
 			via.Mask = 0;
-			via.Flags = NoFlags();
+			via.Flags = pcb_no_flags();
 
 			gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &via, pcb_true, pcb_false);
 

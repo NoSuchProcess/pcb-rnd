@@ -75,7 +75,7 @@ static void text_at(pcb_hid_gc_t gc, int x, int y, int align, const char *fmt, .
 	t.Direction = 0;
 	t.TextString = tmp;
 	t.Scale = PCB_COORD_TO_MIL(TEXT_SIZE);	/* pcnt of 100mil base height */
-	t.Flags = NoFlags();
+	t.Flags = pcb_no_flags();
 	t.X = x;
 	t.Y = y;
 	for (i = 0; tmp[i]; i++)

@@ -5532,7 +5532,7 @@ gdouble export_pcb_drawline(guint layer, guint x0, guint y0, guint x1, guint y1,
 	gdouble d = 0.;
 	pcb_line_t *line;
 	line = CreateDrawnLineOnLayer(LAYER_PTR(layer), x0, y0, x1, y1,
-																thickness, clearance, MakeFlags(PCB_FLAG_AUTO | (TEST_FLAG(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
+																thickness, clearance, pcb_flag_make(PCB_FLAG_AUTO | (TEST_FLAG(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
 
 	if (line) {
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(layer), line, line);
@@ -5581,7 +5581,7 @@ gdouble export_pcb_drawarc(guint layer, toporouter_arc_t * a, guint thickness, g
 
 	arc = CreateNewArcOnLayer(LAYER_PTR(layer), vx(a->centre), vy(a->centre), a->r, a->r,
 														sa, da, thickness, clearance,
-														MakeFlags(PCB_FLAG_AUTO | (TEST_FLAG(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
+														pcb_flag_make(PCB_FLAG_AUTO | (TEST_FLAG(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
 
 	if (arc) {
 		AddObjectToCreateUndoList(PCB_TYPE_ARC, LAYER_PTR(layer), arc, arc);
@@ -8200,13 +8200,13 @@ static int escape(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 
 			if ((via = CreateNewVia(PCB->Data, viax, viay,
 															Settings.ViaThickness, 2 * Settings.Clearance,
-															0, Settings.ViaDrillingHole, NULL, NoFlags())) != NULL) {
+															0, Settings.ViaDrillingHole, NULL, pcb_no_flags())) != NULL) {
 				AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 /*        if (gui->shift_is_pressed ())
             pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);*/
 				DrawVia(via);
 				if ((line = CreateDrawnLineOnLayer(CURRENT, pad->Point1.X + 1., pad->Point1.Y + 1., viax + 1., viay + 1.,
-																					 Settings.LineThickness, 2 * Settings.Clearance, NoFlags()))) {
+																					 Settings.LineThickness, 2 * Settings.Clearance, pcb_no_flags()))) {
 
 					AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
 					DrawLine(CURRENT, line);

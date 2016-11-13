@@ -144,7 +144,7 @@ int ActionLoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			y1 = dim2;
 			if (x0 != 0 || y0 != 0) {
 				line = CreateDrawnLineOnLayer(rlayer, x0, PCB->MaxHeight - y0,
-																			x1, PCB->MaxHeight - y1, linethick, lineclear, MakeFlags(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
+																			x1, PCB->MaxHeight - y1, linethick, lineclear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
 				ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, rlayer, line);
 			}
 			x0 = x1;
@@ -152,7 +152,7 @@ int ActionLoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 		ret = sscanf(str, "        (via via_%ld_%ld %ld %ld", &viadiam, &viadrill, &dim1, &dim2);
 		if (ret == 4) {
-			CreateNewVia(PCB->Data, dim1, PCB->MaxHeight - dim2, viadiam, lineclear, 0, viadrill, 0, MakeFlags(PCB_FLAG_AUTO));
+			CreateNewVia(PCB->Data, dim1, PCB->MaxHeight - dim2, viadiam, lineclear, 0, viadrill, 0, pcb_flag_make(PCB_FLAG_AUTO));
 		}
 	}
 	fclose(fp);

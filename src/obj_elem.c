@@ -183,7 +183,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	ELEMENTLINE_LOOP(element);
 	{
 		CreateNewLineOnLayer(&Buffer->Data->SILKLAYER,
-												 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0, NoFlags());
+												 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0, pcb_no_flags());
 		if (line)
 			line->Number = pcb_strdup_null(NAMEONPCB_NAME(element));
 	}
@@ -191,15 +191,15 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	ARC_LOOP(element);
 	{
 		CreateNewArcOnLayer(&Buffer->Data->SILKLAYER,
-												arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, NoFlags());
+												arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
 	}
 	END_LOOP;
 	PIN_LOOP(element);
 	{
-		pcb_flag_t f = NoFlags();
-		AddFlags(f, PCB_FLAG_VIA);
+		pcb_flag_t f = pcb_no_flags();
+		pcb_flag_add(f, PCB_FLAG_VIA);
 		if (TEST_FLAG(PCB_FLAG_HOLE, pin))
-			AddFlags(f, PCB_FLAG_HOLE);
+			pcb_flag_add(f, PCB_FLAG_HOLE);
 
 		CreateNewVia(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
 	}
@@ -213,7 +213,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 		pcb_line_t *line;
 		line = CreateNewLineOnLayer(TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? slayer : clayer,
 																pad->Point1.X, pad->Point1.Y,
-																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, NoFlags());
+																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, pcb_no_flags());
 		if (line)
 			line->Number = pcb_strdup_null(pad->Number);
 	}
@@ -265,9 +265,9 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	if (Buffer->Data->pcb == 0)
 		Buffer->Data->pcb = PCB;
 
-	Element = CreateNewElement(PCB->Data, NULL, &PCB->Font, NoFlags(),
+	Element = CreateNewElement(PCB->Data, NULL, &PCB->Font, pcb_no_flags(),
 														 NULL, NULL, NULL, PCB_PASTEBUFFER->X,
-														 PCB_PASTEBUFFER->Y, 0, 100, MakeFlags(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
+														 PCB_PASTEBUFFER->Y, 0, 100, pcb_flag_make(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
 	if (!Element)
 		return (pcb_false);
 	VIA_LOOP(Buffer->Data);
@@ -278,12 +278,12 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 		if (via->Name)
 			CreateNewPin(Element, via->X, via->Y, via->Thickness,
 									 via->Clearance, via->Mask, via->DrillingHole,
-									 NULL, via->Name, MaskFlags(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
+									 NULL, via->Name, pcb_flag_mask(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
 		else {
 			sprintf(num, "%d", pin_n++);
 			CreateNewPin(Element, via->X, via->Y, via->Thickness,
 									 via->Clearance, via->Mask, via->DrillingHole,
-									 NULL, num, MaskFlags(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
+									 NULL, num, pcb_flag_mask(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
 		}
 		hasParts = pcb_true;
 	}
@@ -324,7 +324,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 										 line->Point1.Y, line->Point2.X,
 										 line->Point2.Y, line->Thickness,
 										 line->Clearance,
-										 line->Thickness + line->Clearance, NULL, line->Number ? line->Number : num, MakeFlags(onsolderflag));
+										 line->Thickness + line->Clearance, NULL, line->Number ? line->Number : num, pcb_flag_make(onsolderflag));
 				MAYBE_WARN();
 				hasParts = pcb_true;
 			}
@@ -349,7 +349,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 				sprintf(num, "%d", pin_n++);
 				CreateNewPad(Element,
 										 x1, y1, x2, y2, t,
-										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, MakeFlags(PCB_FLAG_SQUARE | onsolderflag));
+										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, pcb_flag_make(PCB_FLAG_SQUARE | onsolderflag));
 				MAYBE_WARN();
 				hasParts = pcb_true;
 			}
@@ -515,12 +515,12 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 
 	/* both coordinates and flags are the same */
 	Dest = CreateNewElement(Data, Dest, &PCB->Font,
-													MaskFlags(Src->Flags, PCB_FLAG_FOUND),
+													pcb_flag_mask(Src->Flags, PCB_FLAG_FOUND),
 													DESCRIPTION_NAME(Src), NAMEONPCB_NAME(Src),
 													VALUE_NAME(Src), DESCRIPTION_TEXT(Src).X + dx,
 													DESCRIPTION_TEXT(Src).Y + dy,
 													DESCRIPTION_TEXT(Src).Direction,
-													DESCRIPTION_TEXT(Src).Scale, MaskFlags(DESCRIPTION_TEXT(Src).Flags, PCB_FLAG_FOUND), uniqueName);
+													DESCRIPTION_TEXT(Src).Scale, pcb_flag_mask(DESCRIPTION_TEXT(Src).Flags, PCB_FLAG_FOUND), uniqueName);
 
 	/* abort on error */
 	if (!Dest)
@@ -535,14 +535,14 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	PIN_LOOP(Src);
 	{
 		CreateNewPin(Dest, pin->X + dx, pin->Y + dy, pin->Thickness,
-								 pin->Clearance, pin->Mask, pin->DrillingHole, pin->Name, pin->Number, MaskFlags(pin->Flags, PCB_FLAG_FOUND));
+								 pin->Clearance, pin->Mask, pin->DrillingHole, pin->Name, pin->Number, pcb_flag_mask(pin->Flags, PCB_FLAG_FOUND));
 	}
 	END_LOOP;
 	PAD_LOOP(Src);
 	{
 		CreateNewPad(Dest, pad->Point1.X + dx, pad->Point1.Y + dy,
 								 pad->Point2.X + dx, pad->Point2.Y + dy, pad->Thickness,
-								 pad->Clearance, pad->Mask, pad->Name, pad->Number, MaskFlags(pad->Flags, PCB_FLAG_FOUND));
+								 pad->Clearance, pad->Mask, pad->Name, pad->Number, pcb_flag_mask(pad->Flags, PCB_FLAG_FOUND));
 	}
 	END_LOOP;
 	ARC_LOOP(Src);
@@ -638,7 +638,7 @@ pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, pcb_coord_t X1, pcb_c
 	line->Point2.X = X2;
 	line->Point2.Y = Y2;
 	line->Thickness = Thickness;
-	line->Flags = NoFlags();
+	line->Flags = pcb_no_flags();
 	line->ID = CreateIDGet();
 	return line;
 }
@@ -1812,7 +1812,7 @@ void EraseElement(pcb_element_t *Element)
 	END_LOOP;
 	EraseElementName(Element);
 	EraseElementPinsAndPads(Element);
-	EraseFlags(&Element->Flags);
+	pcb_flag_erase(&Element->Flags);
 }
 
 void EraseElementPinsAndPads(pcb_element_t *Element)

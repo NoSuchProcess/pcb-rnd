@@ -235,7 +235,7 @@ void SetPinBoundingBox(pcb_pin_t *Pin)
 /* copies a via to paste buffer */
 void *AddViaToBuffer(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	return (CreateNewVia(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
+	return (CreateNewVia(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
 
 /* moves a via to paste buffer without allocating memory for the name */
@@ -705,7 +705,7 @@ void *CopyVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_pin_t *via;
 
 	via = CreateNewVia(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
-										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, MaskFlags(Via->Flags, PCB_FLAG_FOUND));
+										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND));
 	if (!via)
 		return (via);
 	DrawVia(via);
@@ -833,7 +833,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 
 	gui->set_color(Output.fgGC, PCB->PinNameColor);
 
-	text.Flags = NoFlags();
+	text.Flags = pcb_no_flags();
 	/* Set font height to approx 56% of pin thickness */
 	text.Scale = 56 * pv->Thickness / FONT_CAPHEIGHT;
 	text.X = box.X1;
@@ -965,7 +965,7 @@ void EraseVia(pcb_pin_t *Via)
 	pcb_draw_invalidate(Via);
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Via))
 		EraseViaName(Via);
-	EraseFlags(&Via->Flags);
+	pcb_flag_erase(&Via->Flags);
 }
 
 void EraseViaName(pcb_pin_t *Via)
@@ -978,7 +978,7 @@ void ErasePin(pcb_pin_t *Pin)
 	pcb_draw_invalidate(Pin);
 	if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, Pin))
 		ErasePinName(Pin);
-	EraseFlags(&Pin->Flags);
+	pcb_flag_erase(&Pin->Flags);
 }
 
 void ErasePinName(pcb_pin_t *Pin)

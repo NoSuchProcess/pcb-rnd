@@ -96,12 +96,12 @@ typedef enum {
 
 
 /* For passing modified flags to other functions. */
-pcb_flag_t MakeFlags(unsigned int);
-pcb_flag_t OldFlags(unsigned int);
-pcb_flag_t AddFlags(pcb_flag_t, unsigned int);
-pcb_flag_t MaskFlags(pcb_flag_t, unsigned int);
-void EraseFlags(pcb_flag_t *f);
-#define		NoFlags() MakeFlags(0)
+pcb_flag_t pcb_flag_make(unsigned int);
+pcb_flag_t pcb_flag_old(unsigned int);
+pcb_flag_t pcb_flag_add(pcb_flag_t, unsigned int);
+pcb_flag_t pcb_flag_mask(pcb_flag_t, unsigned int);
+void pcb_flag_erase(pcb_flag_t *f);
+#define		pcb_no_flags() pcb_flag_make(0)
 
 /* ---------------------------------------------------------------------------
  * some routines for flag setting, clearing, changing and testing

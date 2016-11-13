@@ -304,7 +304,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	v = CreateNewPolygonFromRectangle(PCB->Data->Layer+1,
 		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
 		PCB_MIL_TO_COORD(1500), PCB_MIL_TO_COORD(1500),
-		MakeFlags(PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY));
+		pcb_flag_make(PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY));
 	printf("poly2=%p -----------\n", (void *)v);
 	DrawPolygon(PCB->Data->Layer+1, v);
 	pcb_draw();
@@ -333,27 +333,27 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 
 	CreateNewVia(preview_pcb.Data,
 							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(20), "", NoFlags());
+							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(20), "", pcb_no_flags());
 
 	CreateNewLineOnLayer(preview_pcb.Data->Layer+0,
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1300),
-		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), MakeFlags(PCB_FLAG_CLEARLINE));
+		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 	CreateNewArcOnLayer(preview_pcb.Data->Layer+0,
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 		PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100),
 		0.0, 90.0,
-		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), MakeFlags(PCB_FLAG_CLEARLINE));
+		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 		CreateNewText(preview_pcb.Data->Layer+0, &PCB->Font,
-							PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", MakeFlags(PCB_FLAG_CLEARLINE));
+							PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 	{
 		pcb_polygon_t *v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer,
 			PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
 			PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
-			MakeFlags(PCB_FLAG_CLEARPOLY));
+			pcb_flag_make(PCB_FLAG_CLEARPOLY));
 		InitClip(preview_pcb.Data, preview_pcb.Data->Layer, v);
 	}
 
