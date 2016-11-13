@@ -48,7 +48,7 @@ long pcb_rand(void)
 }
 #endif
 
-const char *get_user_name(void)
+const char *pcb_get_user_name(void)
 {
 #ifdef HAVE_GETPWUID
 	static struct passwd *pwentry;

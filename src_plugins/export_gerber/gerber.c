@@ -719,7 +719,7 @@ static int gerber_set_layer(const char *name, int group, int empty)
 		fprintf(f, "G04 CreationDate: %s *\r\n", utcTime);
 
 		/* ID the user. */
-		fprintf(f, "G04 For: %s *\r\n", get_user_name());
+		fprintf(f, "G04 For: %s *\r\n", pcb_get_user_name());
 
 		fprintf(f, "G04 Format: Gerber/RS-274X *\r\n");
 		pcb_fprintf(f, "G04 PCB-Dimensions: %.0mc %.0mc *\r\n", PCB->MaxWidth, PCB->MaxHeight);

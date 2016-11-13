@@ -29,7 +29,7 @@
 
 long pcb_rand(void);
 
-const char *get_user_name(void);
+const char *pcb_get_user_name(void);
 int pcb_getpid(void);
 
 char *pcb_strndup(const char *s, int len);
