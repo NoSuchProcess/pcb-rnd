@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "action_helper.h"
 #include "compat_nls.h"
@@ -40,18 +41,20 @@
 #warning TODO: rename config.h VERSION to PCB_VERSION
 #undef VERSION
 
-#include "hyp_l.h"
-#include "hyp_y.h"
+#include "parser.h"
 
 static const char *hyp_cookie = "hyp importer";
 
-static const char load_hyp_syntax[] = "LoadhypFrom(filename)";
+static const char load_hyp_syntax[] = "LoadhypFrom(filename[, \"debug\"]...)";
 
-static const char load_hyp_help[] = "Loads the specified hyp resource file.";
+static const char load_hyp_help[] = "Loads the specified Hyperlynx file.";
 
 int ActionLoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
+	int debug = 0;
+	int i = 0;
+
 	fname = argc ? argv[0] : 0;
 
 	if ((fname == NULL) || (*fname == '\0')) {
@@ -63,13 +66,17 @@ int ActionLoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (fname == NULL)
 		PCB_AFAIL(load_hyp);
 
-	hyp_in =  fopen(fname, "r");
-	if (hyp_in == NULL)
-		PCB_AFAIL(load_hyp);
 
-	hyp_parse();
+	/* debug level */
+	for (i = 0; i < argc; i++)
+		debug += (strcmp(argv[i], "debug") == 0);
 
-	fclose(hyp_in);
+	if (debug > 0)
+		Message(PCB_MSG_INFO, _("Importing Hyperlynx file '%s', debug level %d\n"), fname, debug);
+
+	if (hyp_parse(fname, debug))
+		AFAIL(load_hyp);
+
 	return 0;
 }
 
@@ -92,3 +99,4 @@ pcb_uninit_t hid_import_hyp_init()
 	return hid_hyp_uninit;
 }
 
+/* not truncated */

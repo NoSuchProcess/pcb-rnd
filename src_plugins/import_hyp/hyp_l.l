@@ -1,9 +1,9 @@
 
 /*
- * hyp2mat - convert hyperlynx files to matlab scripts
- * Copyright 2012 Koen De Vleeschauwer.
+ * read hyperlynx files
+ * Copyright 2012, 2016 Koen De Vleeschauwer.
  *
- * This file is part of hyp2mat.
+ * This file is part of pcb-rnd.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,14 @@
  */
 
 %option noyywrap nodefault yylineno debug
-%option prefix="hyp_"
 
+/* avoid collision with other scanners */
+%option prefix="hyy"
 
 %{
 #include <stdlib.h>
+#include <string.h>
 #include "hyp_y.h"
-
 
 /* copy a string between quotes */
 char *strunquote(const char *);
@@ -255,40 +256,40 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
  
  /* Booleans */
 
-"YES"|"yes"         {hyp_lval.boolval = 1; return BOOL; }
-"NO"|"no"           {hyp_lval.boolval = 0; return BOOL; }
+"YES"|"yes"         {hyylval.boolval = 1; return BOOL; }
+"NO"|"no"           {hyylval.boolval = 0; return BOOL; }
 
  /* Floats */
 
                     /* ordinary floating point numbers */
-{SIMPLE_FLOAT}      {hyp_lval.floatval = strtod(yytext, NULL); return FLOAT;}
+{SIMPLE_FLOAT}      {hyylval.floatval = strtod(hyytext, NULL); return FLOAT;}
 
                     /* floating point numbers with suffix, e,g. pF, nH */
-{FLOAT_YOTTA}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e24; return FLOAT;}
-{FLOAT_ZETA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e21; return FLOAT;}
-{FLOAT_EXA}         {hyp_lval.floatval = strtod(yytext, NULL) * 1e18; return FLOAT;}
-{FLOAT_PETA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e15; return FLOAT;}
-{FLOAT_TERA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e12; return FLOAT;}
-{FLOAT_GIGA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e9; return FLOAT;}
-{FLOAT_MEGA}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e6; return FLOAT;}
-{FLOAT_KILO}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e3; return FLOAT;}
-{FLOAT_MILLI}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-3; return FLOAT;}
-{FLOAT_MICRO}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-6; return FLOAT;}
-{FLOAT_NANO}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e-9; return FLOAT;}
-{FLOAT_PICO}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e-12; return FLOAT;}
-{FLOAT_FEMTO}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-15; return FLOAT;}
-{FLOAT_ATTO}        {hyp_lval.floatval = strtod(yytext, NULL) * 1e-18; return FLOAT;}
-{FLOAT_ZEPTO}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-21; return FLOAT;}
-{FLOAT_YOCTO}       {hyp_lval.floatval = strtod(yytext, NULL) * 1e-24; return FLOAT;}
+{FLOAT_YOTTA}       {hyylval.floatval = strtod(hyytext, NULL) * 1e24; return FLOAT;}
+{FLOAT_ZETA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e21; return FLOAT;}
+{FLOAT_EXA}         {hyylval.floatval = strtod(hyytext, NULL) * 1e18; return FLOAT;}
+{FLOAT_PETA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e15; return FLOAT;}
+{FLOAT_TERA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e12; return FLOAT;}
+{FLOAT_GIGA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e9; return FLOAT;}
+{FLOAT_MEGA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e6; return FLOAT;}
+{FLOAT_KILO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e3; return FLOAT;}
+{FLOAT_MILLI}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-3; return FLOAT;}
+{FLOAT_MICRO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-6; return FLOAT;}
+{FLOAT_NANO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e-9; return FLOAT;}
+{FLOAT_PICO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e-12; return FLOAT;}
+{FLOAT_FEMTO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-15; return FLOAT;}
+{FLOAT_ATTO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e-18; return FLOAT;}
+{FLOAT_ZEPTO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-21; return FLOAT;}
+{FLOAT_YOCTO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-24; return FLOAT;}
 
                     /* floating point numbers in VERSION and PLANE_SEP have no suffix and are followed by optional comments */
 <STATE_FLOAT>{
-{SIMPLE_FLOAT}      {hyp_lval.floatval = strtod(yytext, NULL); BEGIN STATE_COMMENT; return FLOAT;}
+{SIMPLE_FLOAT}      {hyylval.floatval = strtod(hyytext, NULL); BEGIN STATE_COMMENT; return FLOAT;}
 }
 
                     /* A positive integer is used only in polygon/polyline/polyvoid "ID = posint" */
 <STATE_POSINT>{
-{POSINT}            { BEGIN INITIAL; hyp_lval.intval = atoi(yytext); return POSINT; }
+{POSINT}            { BEGIN INITIAL; hyylval.intval = atoi(hyytext); return POSINT; }
 }
 
  
@@ -300,7 +301,7 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
                      * NAME= }
                      */
 <STATE_STRING>{
-([A-Z][A-Z1-2_]*{WS}*"="|")"|"}")  { yyless(0); BEGIN INITIAL; hyp_lval.strval = strdup(""); return STRING; } /* emit empty string and reprocess */
+([A-Z][A-Z1-2_]*{WS}*"="|")"|"}")  { yyless(0); BEGIN INITIAL; hyylval.strval = strdup(""); return STRING; } /* emit empty string and reprocess */
 }
 
 <*>{
@@ -325,23 +326,23 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
                          * unless the string is enclosed in double quotes (").
                          */
 
-                        if ((section == PADSTACK) && strchr(yytext, ','))
+                        if ((section == PADSTACK) && strchr(hyytext, ','))
                           REJECT 
                         else 
                         { 
                           BEGIN INITIAL; 
-                          hyp_lval.strval = strdup(yytext); 
+                          hyylval.strval = strdup(hyytext); 
                           return STRING;
                         }
                       }
 
                       /* string in double quotes */
-  {QUOTED_STRING}     {BEGIN INITIAL; hyp_lval.strval = strunquote(yytext); return STRING;}
+  {QUOTED_STRING}     {BEGIN INITIAL; hyylval.strval = strunquote(hyytext); return STRING;}
 
   <<EOF>>             {yyterminate();}
 
                       /* have bison catch all unrecognized characters with parse errors */
-  .                   {return yytext[0];}
+  .                   {return hyytext[0];}
 
 }
 
