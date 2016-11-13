@@ -40,8 +40,6 @@ void pcb_event_move_crosshair(int ev_x, int ev_y);
 /* adjusts the objects which are to be created like attached lines... */
 void pcb_adjust_attached_objects(void);
 
-void warpNoWhere(void);
-
 /* In gui-misc.c */
 pcb_bool ActionGetLocation(char *);
 void ActionGetXY(char *);
