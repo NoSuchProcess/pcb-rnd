@@ -204,7 +204,7 @@ static pcb_r_dir_t drcVia_callback(const pcb_box_t * b, void *cl)
 	pcb_pin_t *via = (pcb_pin_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
-	if (!TEST_FLAG(PCB_FLAG_FOUND, via) && PinLineIntersect(via, i->line))
+	if (!TEST_FLAG(PCB_FLAG_FOUND, via) && pcb_intersect_line_pin(via, i->line))
 		longjmp(i->env, 1);
 	return R_DIR_FOUND_CONTINUE;
 }
@@ -214,7 +214,7 @@ static pcb_r_dir_t drcPad_callback(const pcb_box_t * b, void *cl)
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
-	if (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) == i->solder && !TEST_FLAG(PCB_FLAG_FOUND, pad) && LinePadIntersect(i->line, pad))
+	if (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) == i->solder && !TEST_FLAG(PCB_FLAG_FOUND, pad) && pcb_intersect_line_pad(i->line, pad))
 		longjmp(i->env, 1);
 	return R_DIR_FOUND_CONTINUE;
 }
@@ -224,7 +224,7 @@ static pcb_r_dir_t drcLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
-	if (!TEST_FLAG(PCB_FLAG_FOUND, line) && LineLineIntersect(line, i->line))
+	if (!TEST_FLAG(PCB_FLAG_FOUND, line) && pcb_intersect_line_line(line, i->line))
 		longjmp(i->env, 1);
 	return R_DIR_FOUND_CONTINUE;
 }
@@ -234,7 +234,7 @@ static pcb_r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
-	if (!TEST_FLAG(PCB_FLAG_FOUND, arc) && LineArcIntersect(i->line, arc))
+	if (!TEST_FLAG(PCB_FLAG_FOUND, arc) && pcb_intersect_line_arc(i->line, arc))
 		longjmp(i->env, 1);
 	return R_DIR_FOUND_CONTINUE;
 }

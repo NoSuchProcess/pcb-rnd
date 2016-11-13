@@ -639,28 +639,28 @@ pcb_bool IsLineInRectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_c
 	line.Point1.Y = line.Point2.Y = Y1;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
-	if (LineLineIntersect(&line, Line))
+	if (pcb_intersect_line_line(&line, Line))
 		return (pcb_true);
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = X2;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
-	if (LineLineIntersect(&line, Line))
+	if (pcb_intersect_line_line(&line, Line))
 		return (pcb_true);
 
 	/* lower-right to lower-left corner */
 	line.Point1.Y = Y2;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
-	if (LineLineIntersect(&line, Line))
+	if (pcb_intersect_line_line(&line, Line))
 		return (pcb_true);
 
 	/* lower-left to upper-left corner */
 	line.Point2.X = X1;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
-	if (LineLineIntersect(&line, Line))
+	if (pcb_intersect_line_line(&line, Line))
 		return (pcb_true);
 
 	return (pcb_false);
@@ -715,25 +715,25 @@ pcb_bool IsLineInQuadrangle(pcb_point_t p[4], pcb_line_t *Line)
 	line.Point1.Y = p[0].Y;
 	line.Point2.X = p[1].X;
 	line.Point2.Y = p[1].Y;
-	if (LineLineIntersect(&line, Line))
+	if (pcb_intersect_line_line(&line, Line))
 		return (pcb_true);
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = p[2].X;
 	line.Point1.Y = p[2].Y;
-	if (LineLineIntersect(&line, Line))
+	if (pcb_intersect_line_line(&line, Line))
 		return (pcb_true);
 
 	/* lower-right to lower-left corner */
 	line.Point2.X = p[3].X;
 	line.Point2.Y = p[3].Y;
-	if (LineLineIntersect(&line, Line))
+	if (pcb_intersect_line_line(&line, Line))
 		return (pcb_true);
 
 	/* lower-left to upper-left corner */
 	line.Point1.X = p[0].X;
 	line.Point1.Y = p[0].Y;
-	if (LineLineIntersect(&line, Line))
+	if (pcb_intersect_line_line(&line, Line))
 		return (pcb_true);
 
 	return (pcb_false);
@@ -754,28 +754,28 @@ pcb_bool IsArcInRectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_co
 	line.Point1.Y = line.Point2.Y = Y1;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
-	if (LineArcIntersect(&line, Arc))
+	if (pcb_intersect_line_arc(&line, Arc))
 		return (pcb_true);
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = line.Point2.X = X2;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
-	if (LineArcIntersect(&line, Arc))
+	if (pcb_intersect_line_arc(&line, Arc))
 		return (pcb_true);
 
 	/* lower-right to lower-left corner */
 	line.Point1.Y = line.Point2.Y = Y2;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
-	if (LineArcIntersect(&line, Arc))
+	if (pcb_intersect_line_arc(&line, Arc))
 		return (pcb_true);
 
 	/* lower-left to upper-left corner */
 	line.Point1.X = line.Point2.X = X1;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
-	if (LineArcIntersect(&line, Arc))
+	if (pcb_intersect_line_arc(&line, Arc))
 		return (pcb_true);
 
 	return (pcb_false);

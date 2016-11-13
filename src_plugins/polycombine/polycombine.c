@@ -159,7 +159,7 @@ static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_
 	for (cur_node = start_point; cur_node != NULL; cur_node = next) {
 		next = cur_node->next;
 
-/*      to_insert_isects_cur_node = IsPolygonInPolygon (to_insert->polygon, cur_node->polygon);*/
+/*      to_insert_isects_cur_node = pcb_is_poly_in_poly(to_insert->polygon, cur_node->polygon);*/
 		to_insert_contains_cur_node = PolygonContainsPolygon(to_insert->polyarea, cur_node->polyarea);
 
 #if 0

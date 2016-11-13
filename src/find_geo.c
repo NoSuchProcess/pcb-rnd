@@ -37,7 +37,7 @@
  *   to X,Y
  *
  * Intersection of line <--> line:
- * - see the description of 'LineLineIntersect()'
+ * - see the description of 'pcb_intersect_line_line()'
  */
 
 #include "macro.h"
@@ -319,7 +319,7 @@ static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
  *  Also note that the denominators of eqn 1 & 2 are identical.
  *
  */
-pcb_bool LineLineIntersect(pcb_line_t *Line1, pcb_line_t *Line2)
+pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
@@ -329,7 +329,7 @@ pcb_bool LineLineIntersect(pcb_line_t *Line1, pcb_line_t *Line2)
 		return IsLineInQuadrangle(p, Line2);
 	}
 	/* here come only round Line1 because IsLineInQuadrangle()
-	   calls LineLineIntersect() with first argument rounded */
+	   calls pcb_intersect_line_line() with first argument rounded */
 	if (TEST_FLAG(PCB_FLAG_SQUARE, Line2)) {
 		pcb_point_t p[4];
 		form_slanted_rectangle(p, Line2);
@@ -416,7 +416,7 @@ pcb_bool LineLineIntersect(pcb_line_t *Line1, pcb_line_t *Line2)
  *
  * The end points are hell so they are checked individually
  */
-pcb_bool LineArcIntersect(pcb_line_t *Line, pcb_arc_t *Arc)
+pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
 	pcb_box_t *box;
@@ -546,7 +546,7 @@ pcb_bool IsPadInPolygon(pcb_pad_t *pad, pcb_polygon_t *polygon)
  * First check all points out of P1 against P2 and vice versa.
  * If both fail check all lines of P1 against the ones of P2
  */
-pcb_bool IsPolygonInPolygon(pcb_polygon_t *P1, pcb_polygon_t *P2)
+pcb_bool pcb_is_poly_in_poly(pcb_polygon_t *P1, pcb_polygon_t *P2)
 {
 	if (!P1->Clipped || !P2->Clipped)
 		return pcb_false;
@@ -599,14 +599,14 @@ pcb_bool IsPolygonInPolygon(pcb_polygon_t *P1, pcb_polygon_t *P2)
  * some of the 'pad' routines are the same as for lines because the 'pad'
  * struct starts with a line struct. See global.h for details
  */
-pcb_bool LinePadIntersect(pcb_line_t *Line, pcb_pad_t *Pad)
+pcb_bool pcb_intersect_line_pad(pcb_line_t *Line, pcb_pad_t *Pad)
 {
-	return LineLineIntersect((Line), (pcb_line_t *) Pad);
+	return pcb_intersect_line_line((Line), (pcb_line_t *) Pad);
 }
 
-pcb_bool ArcPadIntersect(pcb_arc_t *Arc, pcb_pad_t *Pad)
+pcb_bool pcb_intersect_arc_pad(pcb_arc_t *Arc, pcb_pad_t *Pad)
 {
-	return LineArcIntersect((pcb_line_t *) (Pad), (Arc));
+	return pcb_intersect_line_arc((pcb_line_t *) (Pad), (Arc));
 }
 
 pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
@@ -620,7 +620,7 @@ pcb_bool BoxBoxIntersection(pcb_box_t *b1, pcb_box_t *b2)
 
 static pcb_bool PadPadIntersect(pcb_pad_t *p1, pcb_pad_t *p2)
 {
-	return LinePadIntersect((pcb_line_t *) p1, p2);
+	return pcb_intersect_line_pad((pcb_line_t *) p1, p2);
 }
 
 static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
@@ -665,7 +665,7 @@ static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 	return BoxBoxIntersection(&b1, &b2);
 }
 
-pcb_bool PinLineIntersect(pcb_pin_t *PV, pcb_line_t *Line)
+pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 {
 	if (TEST_FLAG(PCB_FLAG_SQUARE, PV)) {
 		int shape = GET_SQUARE(PV);

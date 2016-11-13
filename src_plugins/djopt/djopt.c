@@ -941,7 +941,7 @@ static int canonicalize_line(line_s * l)
 				int th = c->pin ? c->pin->Thickness : c->via->Thickness;
 				th /= 2;
 				if (dist(l->s->x, l->s->y, c->x, c->y) > th
-						&& dist(l->e->x, l->e->y, c->x, c->y) > th && PinLineIntersect(c->pin ? c->pin : c->via, l->line)) {
+						&& dist(l->e->x, l->e->y, c->x, c->y) > th && pcb_intersect_line_pin(c->pin ? c->pin : c->via, l->line)) {
 					return split_line(l, c);
 				}
 			}

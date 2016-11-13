@@ -270,3 +270,9 @@ event_unbind -> pcb_event_unbind
 event_unbind_cookie -> pcb_event_unbind_cookie
 event_unbind_allcookie -> pcb_event_unbind_allcookie
 event -> pcb_event
+LineLineIntersect -> pcb_intersect_line_line
+LineArcIntersect -> pcb_intersect_line_arc
+PinLineIntersect -> pcb_intersect_line_pin
+LinePadIntersect -> pcb_intersect_line_pad
+ArcPadIntersect -> pcb_intersect_arc_pad
+IsPolygonInPolygon -> pcb_is_poly_in_poly

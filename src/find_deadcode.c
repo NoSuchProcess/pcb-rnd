@@ -34,7 +34,7 @@ static int LOT_Linecallback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!TEST_FLAG(TheFlag, line) && LineLineIntersect(&i->line, line))
+	if (!TEST_FLAG(TheFlag, line) && pcb_intersect_line_line(&i->line, line))
 		longjmp(i->env, 1);
 	return 0;
 }
@@ -46,7 +46,7 @@ static int LOT_Arccallback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!TEST_FLAG(TheFlag, arc) && LineArcIntersect(&i->line, arc))
+	if (!TEST_FLAG(TheFlag, arc) && pcb_intersect_line_arc(&i->line, arc))
 		longjmp(i->env, 1);
 	return 0;
 }
@@ -57,7 +57,7 @@ static int LOT_Padcallback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
-			&& LinePadIntersect(&i->line, pad))
+			&& pcb_intersect_line_pad(&i->line, pad))
 		longjmp(i->env, 1);
 	return 0;
 }

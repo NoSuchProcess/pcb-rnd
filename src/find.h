@@ -60,12 +60,12 @@ extern find_callback_t find_callback;
 #define SILK_TYPE	\
 	(PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON)
 
-pcb_bool LineLineIntersect(pcb_line_t *, pcb_line_t *);
-pcb_bool LineArcIntersect(pcb_line_t *, pcb_arc_t *);
-pcb_bool PinLineIntersect(pcb_pin_t *, pcb_line_t *);
-pcb_bool LinePadIntersect(pcb_line_t *, pcb_pad_t *);
-pcb_bool ArcPadIntersect(pcb_arc_t *, pcb_pad_t *);
-pcb_bool IsPolygonInPolygon(pcb_polygon_t *, pcb_polygon_t *);
+pcb_bool pcb_intersect_line_line(pcb_line_t *, pcb_line_t *);
+pcb_bool pcb_intersect_line_arc(pcb_line_t *, pcb_arc_t *);
+pcb_bool pcb_intersect_line_pin(pcb_pin_t *, pcb_line_t *);
+pcb_bool pcb_intersect_line_pad(pcb_line_t *, pcb_pad_t *);
+pcb_bool pcb_intersect_arc_pad(pcb_arc_t *, pcb_pad_t *);
+pcb_bool pcb_is_poly_in_poly(pcb_polygon_t *, pcb_polygon_t *);
 void LookupElementConnections(pcb_element_t *, FILE *);
 void LookupConnectionsToAllElements(FILE *);
 void LookupConnection(pcb_coord_t, pcb_coord_t, pcb_bool, pcb_coord_t, int);
