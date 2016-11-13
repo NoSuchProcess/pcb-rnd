@@ -428,8 +428,8 @@ int IPCD356_Netlist(void)
 	ELEMENT_LOOP(PCB->Data);
 	PIN_LOOP(element);
 	if (!TEST_FLAG(PCB_FLAG_VISIT, pin)) {
-		ClearFlagOnLinesAndPolygons(pcb_true, PCB_FLAG_FOUND);
-		ClearFlagOnPinsViasAndPads(pcb_true, PCB_FLAG_FOUND);
+		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
+		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
 		pcb_lookup_conn_by_pin(PCB_TYPE_PIN, pin);
 		sprintf(nodename, "%s-%s", element->Name[1].TextString, pin->Number);
 		netname = pcb_netnode_to_netname(nodename);
@@ -446,8 +446,8 @@ int IPCD356_Netlist(void)
 	END_LOOP;											/* Pin. */
 	PAD_LOOP(element);
 	if (!TEST_FLAG(PCB_FLAG_VISIT, pad)) {
-		ClearFlagOnLinesAndPolygons(pcb_true, PCB_FLAG_FOUND);
-		ClearFlagOnPinsViasAndPads(pcb_true, PCB_FLAG_FOUND);
+		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
+		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
 		pcb_lookup_conn_by_pin(PCB_TYPE_PAD, pad);
 		sprintf(nodename, "%s-%s", element->Name[1].TextString, pad->Number);
 		netname = pcb_netnode_to_netname(nodename);
@@ -467,8 +467,8 @@ int IPCD356_Netlist(void)
 
 	VIA_LOOP(PCB->Data);
 	if (!TEST_FLAG(PCB_FLAG_VISIT, via)) {
-		ClearFlagOnLinesAndPolygons(pcb_true, PCB_FLAG_FOUND);
-		ClearFlagOnPinsViasAndPads(pcb_true, PCB_FLAG_FOUND);
+		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
+		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
 		pcb_lookup_conn_by_pin(PCB_TYPE_PIN, via);
 		strcpy(net, "N/C");
 		IPCD356_WriteNet(fp, net);
@@ -479,8 +479,8 @@ int IPCD356_Netlist(void)
 	fclose(fp);
 	free(aliaslist);
 	ResetVisitPinsViasAndPads();
-	ClearFlagOnLinesAndPolygons(pcb_true, PCB_FLAG_FOUND);
-	ClearFlagOnPinsViasAndPads(pcb_true, PCB_FLAG_FOUND);
+	pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
+	pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
 	return 0;
 }
 

@@ -26,7 +26,7 @@
  * \brief Resets all used flags of pins and vias.
  */
 
-pcb_bool ClearFlagOnPinsViasAndPads(pcb_bool AndDraw, int flag)
+pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;
 
@@ -78,7 +78,7 @@ pcb_bool ClearFlagOnPinsViasAndPads(pcb_bool AndDraw, int flag)
 /*!
  * \brief Resets all used flags of LOs.
  */
-pcb_bool ClearFlagOnLinesAndPolygons(pcb_bool AndDraw, int flag)
+pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;
 
@@ -138,12 +138,12 @@ pcb_bool ClearFlagOnLinesAndPolygons(pcb_bool AndDraw, int flag)
 /*!
  * \brief Resets all found connections.
  */
-pcb_bool ClearFlagOnAllObjects(pcb_bool AndDraw, int flag)
+pcb_bool pcb_clear_flag_on_all_objs(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;
 
-	change = ClearFlagOnPinsViasAndPads(AndDraw, flag) || change;
-	change = ClearFlagOnLinesAndPolygons(AndDraw, flag) || change;
+	change = pcb_clear_flag_on_pins_vias_pads(AndDraw, flag) || change;
+	change = pcb_clear_flag_on_lines_polys(AndDraw, flag) || change;
 
 	return change;
 }
