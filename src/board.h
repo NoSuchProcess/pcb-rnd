@@ -138,5 +138,8 @@ void pcb_board_count_holes(int *plated, int *unplated, const pcb_box_t * within_
 const char *pcb_board_get_filename(void);
 const char *pcb_board_get_name(void);
 
+/* changes the name of a layout; Name is allocated by the caller (no strdup() is made) */
+pcb_bool pcb_board_change_name(char *Name);
+
 
 #endif

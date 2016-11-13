@@ -845,3 +845,12 @@ void pcb_layers_finalize()
 }
 
 #undef APPEND
+
+/* changes the name of a layer; memory has to be already allocated */
+pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name)
+{
+	free((char*)CURRENT->Name);
+	CURRENT->Name = Name;
+	hid_action("LayersChanged");
+	return (pcb_true);
+}

@@ -214,3 +214,12 @@ const char *pcb_board_get_name(void)
 {
 	return PCB->Name;
 }
+
+pcb_bool pcb_board_change_name(char *Name)
+{
+	free(PCB->Name);
+	PCB->Name = Name;
+	if (gui != NULL)
+		hid_action("PCBChanged");
+	return (pcb_true);
+}

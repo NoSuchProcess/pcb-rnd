@@ -222,4 +222,7 @@ int pcb_layer_rename(int layer, const char *lname);
 /* Needs to be called once at the end, when all layers has been added */
 void pcb_layers_finalize();
 
+/* changes the name of a layer; memory has to be already allocated */
+pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name);
+
 #endif

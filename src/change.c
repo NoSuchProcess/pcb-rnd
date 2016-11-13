@@ -348,29 +348,6 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 	NULL
 };
 
-/* ---------------------------------------------------------------------------
- * changes the name of a layout; memory has to be already allocated
- */
-pcb_bool pcb_board_change_name(char *Name)
-{
-	free(PCB->Name);
-	PCB->Name = Name;
-	if (gui != NULL)
-		hid_action("PCBChanged");
-	return (pcb_true);
-}
-
-/* ---------------------------------------------------------------------------
- * changes the name of a layer; memory has to be already allocated
- */
-pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name)
-{
-	free((char*)CURRENT->Name);
-	CURRENT->Name = Name;
-	hid_action("LayersChanged");
-	return (pcb_true);
-}
-
 /* ----------------------------------------------------------------------
  * changes the thermals on all selected and visible pins
  * and/or vias. Returns pcb_true if anything has changed
