@@ -486,7 +486,7 @@ static void XORDrawMoveOrpcb_copy_obj(void)
 /* ---------------------------------------------------------------------------
  * draws additional stuff that follows the crosshair
  */
-void DrawAttached(void)
+void pcb_draw_attached(void)
 {
 	switch (conf_core.editor.mode) {
 	case PCB_MODE_VIA:
@@ -597,7 +597,7 @@ void DrawAttached(void)
 /* --------------------------------------------------------------------------
  * draw the marker position
  */
-void DrawMark(void)
+void pcb_draw_mark(void)
 {
 	pcb_coord_t ms = conf_core.appearance.mark_size;
 
@@ -612,7 +612,7 @@ void DrawMark(void)
 /* ---------------------------------------------------------------------------
  * Returns the nearest grid-point to the given Coord
  */
-pcb_coord_t GridFit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
+pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
 {
 	x -= grid_offset;
 	x = grid_spacing * pcb_round((double) x / grid_spacing);
@@ -636,7 +636,7 @@ pcb_coord_t GridFit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_of
  * (if necessary) mean repainting the whole screen if the GUI hasn't tracked the
  * location of existing attached drawing.
  */
-void notify_crosshair_change(pcb_bool changes_complete)
+void pcb_notify_crosshair_change(pcb_bool changes_complete)
 {
 	if (gui->notify_crosshair_change)
 		gui->notify_crosshair_change(changes_complete);
@@ -657,7 +657,7 @@ void notify_crosshair_change(pcb_bool changes_complete)
  * They should initiate a redraw of the mark - which may (if necessary) mean
  * repainting the whole screen if the GUI hasn't tracked the mark's location.
  */
-void notify_mark_change(pcb_bool changes_complete)
+void pcb_notify_mark_change(pcb_bool changes_complete)
 {
 	if (gui->notify_mark_change)
 		gui->notify_mark_change(changes_complete);
@@ -674,30 +674,30 @@ void notify_mark_change(pcb_bool changes_complete)
  * warning at the time of their first use.
  *
  */
-void HideCrosshair(void)
+void pcb_crosshair_hide(void)
 {
 	static pcb_bool warned_old_api = pcb_false;
 	if (!warned_old_api) {
-		Message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API HideCrosshair().\n"
+		Message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API pcb_crosshair_hide().\n"
 							"         This API may be removed in a future release of PCB.\n"));
 		warned_old_api = pcb_true;
 	}
 
-	notify_crosshair_change(pcb_false);
-	notify_mark_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
+	pcb_notify_mark_change(pcb_false);
 }
 
-void RestoreCrosshair(void)
+void pcb_crosshair_restore(void)
 {
 	static pcb_bool warned_old_api = pcb_false;
 	if (!warned_old_api) {
-		Message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API RestoreCrosshair().\n"
+		Message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API pcb_crosshair_restore().\n"
 							"         This API may be removed in a future release of PCB.\n"));
 		warned_old_api = pcb_true;
 	}
 
-	notify_crosshair_change(pcb_true);
-	notify_mark_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_mark_change(pcb_true);
 }
 
 /*
@@ -988,7 +988,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 /* ---------------------------------------------------------------------------
  * recalculates the passed coordinates to fit the current grid setting
  */
-void FitCrosshairIntoGrid(pcb_coord_t X, pcb_coord_t Y)
+void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_coord_t nearest_grid_x, nearest_grid_y;
 	void *ptr1, *ptr2, *ptr3;
@@ -1003,8 +1003,8 @@ void FitCrosshairIntoGrid(pcb_coord_t X, pcb_coord_t Y)
 		nearest_grid_y = -PCB_MIL_TO_COORD(6);
 	}
 	else {
-		nearest_grid_x = GridFit(Crosshair.X, PCB->Grid, PCB->GridOffsetX);
-		nearest_grid_y = GridFit(Crosshair.Y, PCB->Grid, PCB->GridOffsetY);
+		nearest_grid_x = pcb_grid_fit(Crosshair.X, PCB->Grid, PCB->GridOffsetX);
+		nearest_grid_y = pcb_grid_fit(Crosshair.Y, PCB->Grid, PCB->GridOffsetY);
 
 		if (Marked.status && conf_core.editor.orthogonal_moves) {
 			pcb_coord_t dx = Crosshair.X - Marked.X;
@@ -1153,21 +1153,21 @@ void FitCrosshairIntoGrid(pcb_coord_t X, pcb_coord_t Y)
 /* ---------------------------------------------------------------------------
  * move crosshair relative (has to be switched off)
  */
-void MoveCrosshairRelative(pcb_coord_t DeltaX, pcb_coord_t DeltaY)
+void pcb_crosshair_move_relative(pcb_coord_t DeltaX, pcb_coord_t DeltaY)
 {
-	FitCrosshairIntoGrid(Crosshair.X + DeltaX, Crosshair.Y + DeltaY);
+	pcb_crosshair_grid_fit(Crosshair.X + DeltaX, Crosshair.Y + DeltaY);
 }
 
 /* ---------------------------------------------------------------------------
  * move crosshair absolute
  * return pcb_true if the crosshair was moved from its existing position
  */
-pcb_bool MoveCrosshairAbsolute(pcb_coord_t X, pcb_coord_t Y)
+pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_coord_t x, y, z;
 	x = Crosshair.X;
 	y = Crosshair.Y;
-	FitCrosshairIntoGrid(X, Y);
+	pcb_crosshair_grid_fit(X, Y);
 	if (Crosshair.X != x || Crosshair.Y != y) {
 		/* back up to old position to notify the GUI
 		 * (which might want to erase the old crosshair) */
@@ -1176,7 +1176,7 @@ pcb_bool MoveCrosshairAbsolute(pcb_coord_t X, pcb_coord_t Y)
 		x = z;
 		z = Crosshair.Y;
 		Crosshair.Y = y;
-		notify_crosshair_change(pcb_false);	/* Our caller notifies when it has done */
+		pcb_notify_crosshair_change(pcb_false);	/* Our caller notifies when it has done */
 		/* now move forward again */
 		Crosshair.X = x;
 		Crosshair.Y = z;
@@ -1188,7 +1188,7 @@ pcb_bool MoveCrosshairAbsolute(pcb_coord_t X, pcb_coord_t Y)
 /* ---------------------------------------------------------------------------
  * sets the valid range for the crosshair cursor
  */
-void SetCrosshairRange(pcb_coord_t MinX, pcb_coord_t MinY, pcb_coord_t MaxX, pcb_coord_t MaxY)
+void pcb_crosshair_set_range(pcb_coord_t MinX, pcb_coord_t MinY, pcb_coord_t MaxX, pcb_coord_t MaxY)
 {
 	Crosshair.MinX = MAX(0, MinX);
 	Crosshair.MinY = MAX(0, MinY);
@@ -1196,18 +1196,18 @@ void SetCrosshairRange(pcb_coord_t MinX, pcb_coord_t MinY, pcb_coord_t MaxX, pcb
 	Crosshair.MaxY = MIN(PCB->MaxHeight, MaxY);
 
 	/* force update of position */
-	MoveCrosshairRelative(0, 0);
+	pcb_crosshair_move_relative(0, 0);
 }
 
 /* ---------------------------------------------------------------------------
  * centers the displayed PCB around the specified point (X,Y)
  */
-void CenterDisplay(pcb_coord_t X, pcb_coord_t Y)
+void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_coord_t save_grid = PCB->Grid;
 	PCB->Grid = 1;
-	if (MoveCrosshairAbsolute(X, Y))
-		notify_crosshair_change(pcb_true);
+	if (pcb_crosshair_move_absolute(X, Y))
+		pcb_notify_crosshair_change(pcb_true);
 	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_WARP_POINTER);
 	PCB->Grid = save_grid;
 }
@@ -1216,7 +1216,7 @@ void CenterDisplay(pcb_coord_t X, pcb_coord_t Y)
  * initializes crosshair stuff
  * clears the struct, allocates to graphical contexts
  */
-void InitCrosshair(void)
+void pcb_crosshair_init(void)
 {
 	Crosshair.GC = gui->make_gc();
 
@@ -1244,7 +1244,7 @@ void InitCrosshair(void)
 /* ---------------------------------------------------------------------------
  * exits crosshair routines, release GCs
  */
-void DestroyCrosshair(void)
+void pcb_crosshair_uninit(void)
 {
 	FreePolygonMemory(&Crosshair.AttachedPolygon);
 	gui->destroy_gc(Crosshair.GC);

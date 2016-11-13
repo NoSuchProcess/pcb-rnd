@@ -1069,7 +1069,7 @@ static void sizes_set()
 	conf_set_design("design/min_drill", "%s", sz_drc_drill);
 	conf_set_design("design/min_ring", "%s", sz_drc_ring);
 
-	SetCrosshairRange(0, 0, PCB->MaxWidth, PCB->MaxHeight);
+	pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	lesstif_pan_fixup();
 }
 

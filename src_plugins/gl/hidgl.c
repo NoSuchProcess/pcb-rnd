@@ -107,10 +107,10 @@ void hidgl_draw_grid(pcb_box_t * drawn_area)
 	if (!Settings.DrawGrid)
 		return;
 
-	x1 = GridFit(MAX(0, drawn_area->X1), PCB->Grid, PCB->GridOffsetX);
-	y1 = GridFit(MAX(0, drawn_area->Y1), PCB->Grid, PCB->GridOffsetY);
-	x2 = GridFit(MIN(PCB->MaxWidth, drawn_area->X2), PCB->Grid, PCB->GridOffsetX);
-	y2 = GridFit(MIN(PCB->MaxHeight, drawn_area->Y2), PCB->Grid, PCB->GridOffsetY);
+	x1 = pcb_grid_fit(MAX(0, drawn_area->X1), PCB->Grid, PCB->GridOffsetX);
+	y1 = pcb_grid_fit(MAX(0, drawn_area->Y1), PCB->Grid, PCB->GridOffsetY);
+	x2 = pcb_grid_fit(MIN(PCB->MaxWidth, drawn_area->X2), PCB->Grid, PCB->GridOffsetX);
+	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, drawn_area->Y2), PCB->Grid, PCB->GridOffsetY);
 
 	if (x1 > x2) {
 		pcb_coord_t tmp = x1;

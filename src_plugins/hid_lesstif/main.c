@@ -161,15 +161,15 @@ static void ShowCrosshair(pcb_bool show)
 	if (crosshair_on == show)
 		return;
 
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	if (Marked.status)
-		notify_mark_change(pcb_false);
+		pcb_notify_mark_change(pcb_false);
 
 	crosshair_on = show;
 
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 	if (Marked.status)
-		notify_mark_change(pcb_true);
+		pcb_notify_mark_change(pcb_true);
 }
 
 /* This is the size of the current PCB work area.  */
@@ -770,8 +770,8 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 static int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	x = GridFit(x, PCB->Grid, PCB->GridOffsetX);
-	y = GridFit(y, PCB->Grid, PCB->GridOffsetY);
+	x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
+	y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
 	view_left_x = x - (view_width * view_zoom) / 2;
 	view_top_y = y - (view_height * view_zoom) / 2;
 	lesstif_pan_fixup();
@@ -1254,12 +1254,12 @@ static void mod_changed(XKeyEvent * e, int set)
 		return;
 	}
 	in_move_event = 1;
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	if (panning)
 		Pan(2, e->x, e->y);
 	pcb_event_move_crosshair(Px(e->x), Py(e->y));
 	pcb_adjust_attached_objects();
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 	in_move_event = 0;
 }
 
@@ -1300,7 +1300,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			if (lesstif_button_event(w, e))
 				return;
 
-			notify_crosshair_change(pcb_false);
+			pcb_notify_crosshair_change(pcb_false);
 			pressed_button = e->xbutton.button;
 			mods = ((e->xbutton.state & ShiftMask) ? M_Shift : 0)
 				+ ((e->xbutton.state & ControlMask) ? M_Ctrl : 0)
@@ -1311,7 +1311,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #endif
 			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
 
-			notify_crosshair_change(pcb_true);
+			pcb_notify_crosshair_change(pcb_true);
 			break;
 		}
 
@@ -1321,7 +1321,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			if (e->xbutton.button != pressed_button)
 				return;
 			lesstif_button_event(w, e);
-			notify_crosshair_change(pcb_false);
+			pcb_notify_crosshair_change(pcb_false);
 			pressed_button = 0;
 			mods = ((e->xbutton.state & ShiftMask) ? M_Shift : 0)
 				+ ((e->xbutton.state & ControlMask) ? M_Ctrl : 0)
@@ -1332,7 +1332,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #endif
 				+ M_Release;
 			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
-			notify_crosshair_change(pcb_true);
+			pcb_notify_crosshair_change(pcb_true);
 			break;
 		}
 
@@ -2185,32 +2185,32 @@ static void draw_grid()
 		XSetForeground(display, grid_gc, grid_color);
 	}
 	if (conf_core.editor.view.flip_x) {
-		x2 = GridFit(Px(0), PCB->Grid, PCB->GridOffsetX);
-		x1 = GridFit(Px(view_width), PCB->Grid, PCB->GridOffsetX);
+		x2 = pcb_grid_fit(Px(0), PCB->Grid, PCB->GridOffsetX);
+		x1 = pcb_grid_fit(Px(view_width), PCB->Grid, PCB->GridOffsetX);
 		if (Vx(x2) < 0)
 			x2 -= PCB->Grid;
 		if (Vx(x1) >= view_width)
 			x1 += PCB->Grid;
 	}
 	else {
-		x1 = GridFit(Px(0), PCB->Grid, PCB->GridOffsetX);
-		x2 = GridFit(Px(view_width), PCB->Grid, PCB->GridOffsetX);
+		x1 = pcb_grid_fit(Px(0), PCB->Grid, PCB->GridOffsetX);
+		x2 = pcb_grid_fit(Px(view_width), PCB->Grid, PCB->GridOffsetX);
 		if (Vx(x1) < 0)
 			x1 += PCB->Grid;
 		if (Vx(x2) >= view_width)
 			x2 -= PCB->Grid;
 	}
 	if (conf_core.editor.view.flip_y) {
-		y2 = GridFit(Py(0), PCB->Grid, PCB->GridOffsetY);
-		y1 = GridFit(Py(view_height), PCB->Grid, PCB->GridOffsetY);
+		y2 = pcb_grid_fit(Py(0), PCB->Grid, PCB->GridOffsetY);
+		y1 = pcb_grid_fit(Py(view_height), PCB->Grid, PCB->GridOffsetY);
 		if (Vy(y2) < 0)
 			y2 -= PCB->Grid;
 		if (Vy(y1) >= view_height)
 			y1 += PCB->Grid;
 	}
 	else {
-		y1 = GridFit(Py(0), PCB->Grid, PCB->GridOffsetY);
-		y2 = GridFit(Py(view_height), PCB->Grid, PCB->GridOffsetY);
+		y1 = pcb_grid_fit(Py(0), PCB->Grid, PCB->GridOffsetY);
+		y2 = pcb_grid_fit(Py(view_height), PCB->Grid, PCB->GridOffsetY);
 		if (Vy(y1) < 0)
 			y1 += PCB->Grid;
 		if (Vy(y2) >= view_height)
@@ -2436,8 +2436,8 @@ static Boolean idle_proc(XtPointer dummy)
 		XCopyArea(display, main_pixmap, window, my_gc, 0, 0, view_width, view_height, 0, 0);
 		pixmap = window;
 		if (crosshair_on) {
-			DrawAttached();
-			DrawMark();
+			pcb_draw_attached();
+			pcb_draw_mark();
 		}
 		need_redraw = 0;
 	}
@@ -2769,7 +2769,7 @@ static void lesstif_notify_crosshair_change(pcb_bool changes_complete)
 	if (invalidate_depth == 0 && crosshair_on) {
 		save_pixmap = pixmap;
 		pixmap = window;
-		DrawAttached();
+		pcb_draw_attached();
 		pixmap = save_pixmap;
 	}
 
@@ -2799,7 +2799,7 @@ static void lesstif_notify_mark_change(pcb_bool changes_complete)
 	if (invalidate_depth == 0 && crosshair_on) {
 		save_pixmap = pixmap;
 		pixmap = window;
-		DrawMark();
+		pcb_draw_mark();
 		pixmap = save_pixmap;
 	}
 
@@ -3735,8 +3735,8 @@ static void lesstif_flush_debug_draw(void)
 	XCopyArea(display, main_pixmap, window, my_gc, 0, 0, view_width, view_height, 0, 0);
 	pixmap = window;
 	if (crosshair_on) {
-		DrawAttached();
-		DrawMark();
+		pcb_draw_attached();
+		pcb_draw_mark();
 	}
 	pixmap = main_pixmap;
 }

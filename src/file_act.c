@@ -118,17 +118,17 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		format = argv[2];
 
 	if (strcasecmp(function, "ElementToBuffer") == 0) {
-		notify_crosshair_change(pcb_false);
+		pcb_notify_crosshair_change(pcb_false);
 		if (LoadElementToBuffer(PCB_PASTEBUFFER, name))
 			SetMode(PCB_MODE_PASTE_BUFFER);
-		notify_crosshair_change(pcb_true);
+		pcb_notify_crosshair_change(pcb_true);
 	}
 
 	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
-		notify_crosshair_change(pcb_false);
+		pcb_notify_crosshair_change(pcb_false);
 		if (pcb_buffer_load_layout(PCB_PASTEBUFFER, name, format))
 			SetMode(PCB_MODE_PASTE_BUFFER);
-		notify_crosshair_change(pcb_true);
+		pcb_notify_crosshair_change(pcb_true);
 	}
 
 	else if (strcasecmp(function, "Layout") == 0) {
@@ -182,7 +182,7 @@ static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		if (!name)
 			return 1;
 
-		notify_crosshair_change(pcb_false);
+		pcb_notify_crosshair_change(pcb_false);
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
 		 */
@@ -197,13 +197,13 @@ static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		PCB->Name = name;
 
 		ResetStackAndVisibility();
-		SetCrosshairRange(0, 0, PCB->MaxWidth, PCB->MaxHeight);
-		CenterDisplay(PCB->MaxWidth / 2, PCB->MaxHeight / 2);
+		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
+		pcb_center_display(PCB->MaxWidth / 2, PCB->MaxHeight / 2);
 		Redraw();
 
 		if (gui != NULL)
 			hid_action("PCBChanged");
-		notify_crosshair_change(pcb_true);
+		pcb_notify_crosshair_change(pcb_true);
 		return 0;
 	}
 	return 1;

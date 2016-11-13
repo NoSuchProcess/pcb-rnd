@@ -127,7 +127,7 @@ static void real_stroke_finish(void)
 				z = MAX(z, 1 + log(fabs(StrokeBox.Y2 - StrokeBox.Y1) / PCB->MaxHeight) / log(2.0));
 				PCB->Zoom = z;
 
-				CenterDisplay(x, y);
+				pcb_center_display(x, y);
 				break;
 			}
 

@@ -279,12 +279,12 @@ static gboolean run_get_location_loop(const gchar * message)
 	oldObjState = Crosshair.AttachedObject.State;
 	oldLineState = Crosshair.AttachedLine.State;
 	oldBoxState = Crosshair.AttachedBox.State;
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	Crosshair.AttachedObject.State = STATE_FIRST;
 	Crosshair.AttachedLine.State = STATE_FIRST;
 	Crosshair.AttachedBox.State = STATE_FIRST;
 	ghid_hand_cursor();
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 
 	/* Stop the top level GMainLoop from getting user input from keyboard
 	   |  and mouse so we can install our own handlers here.  Also set the
@@ -310,11 +310,11 @@ static gboolean run_get_location_loop(const gchar * message)
 	ghid_interface_input_signals_connect();	/* return to normal */
 	ghid_interface_set_sensitive(TRUE);
 
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	Crosshair.AttachedObject.State = oldObjState;
 	Crosshair.AttachedLine.State = oldLineState;
 	Crosshair.AttachedBox.State = oldBoxState;
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 	ghid_restore_cursor();
 
 	ghid_set_status_line_label();

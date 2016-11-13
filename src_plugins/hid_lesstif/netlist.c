@@ -217,7 +217,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 			PIN_LOOP(element);
 			{
 				if (strcmp(pin->Number, pname) == 0) {
-					MoveCrosshairAbsolute(pin->X, pin->Y);
+					pcb_crosshair_move_absolute(pin->X, pin->Y);
 					free(ename);
 					return;
 				}

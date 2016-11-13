@@ -107,7 +107,7 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				SET_FLAG(PCB_FLAG_SELECTED, shorty);
 				DrawRat(shorty);
 				Draw();
-				CenterDisplay((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
+				pcb_center_display((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
 			}
 			break;
 		}

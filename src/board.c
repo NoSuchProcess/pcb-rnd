@@ -233,13 +233,13 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 	 * is enabled
 	 */
 	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER)
-		SetCrosshairRange(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
+		pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
 											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->BoundingBox.Y1,
 											MAX(0,
 													Width - (PCB_PASTEBUFFER->BoundingBox.X2 -
 																	 PCB_PASTEBUFFER->X)), MAX(0, Height - (PCB_PASTEBUFFER->BoundingBox.Y2 - PCB_PASTEBUFFER->Y)));
 	else
-		SetCrosshairRange(0, 0, Width, Height);
+		pcb_crosshair_set_range(0, 0, Width, Height);
 
 	if (gui != NULL)
 		hid_action("PCBChanged");

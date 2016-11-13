@@ -237,7 +237,7 @@ static void row_activated_cb(GtkTreeView * view, GtkTreePath * path, GtkTreeView
 	if (violation == NULL)
 		return;
 
-	CenterDisplay(violation->x_coord, violation->y_coord);
+	pcb_center_display(violation->x_coord, violation->y_coord);
 }
 
 

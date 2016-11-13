@@ -74,7 +74,7 @@ void SetLineSize(pcb_coord_t Size)
 	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
 		conf_set_design("design/line_thickness", "%$mS", Size);
 		if (conf_core.editor.auto_drc)
-			FitCrosshairIntoGrid(Crosshair.X, Crosshair.Y);
+			pcb_crosshair_grid_fit(Crosshair.X, Crosshair.Y);
 	}
 }
 
@@ -136,7 +136,7 @@ void SetCrosshairRangeToBuffer(void)
 {
 	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER) {
 		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
-		SetCrosshairRange(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
+		pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
 											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->BoundingBox.Y1,
 											PCB->MaxWidth -
 											(PCB_PASTEBUFFER->BoundingBox.X2 - PCB_PASTEBUFFER->X),
@@ -191,7 +191,7 @@ void SetMode(int Mode)
 	if (recursing)
 		return;
 	recursing = pcb_true;
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	addedLines = 0;
 	Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 	Crosshair.AttachedObject.State = STATE_FIRST;
@@ -240,15 +240,15 @@ void SetMode(int Mode)
 		/* do an update on the crosshair range */
 		SetCrosshairRangeToBuffer();
 	else
-		SetCrosshairRange(0, 0, PCB->MaxWidth, PCB->MaxHeight);
+		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 
 	recursing = pcb_false;
 
 	/* force a crosshair grid update because the valid range
 	 * may have changed
 	 */
-	MoveCrosshairRelative(0, 0);
-	notify_crosshair_change(pcb_true);
+	pcb_crosshair_move_relative(0, 0);
+	pcb_notify_crosshair_change(pcb_true);
 }
 
 void SetLocalRef(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
@@ -257,19 +257,19 @@ void SetLocalRef(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 	static int count = 0;
 
 	if (Showing) {
-		notify_mark_change(pcb_false);
+		pcb_notify_mark_change(pcb_false);
 		if (count == 0)
 			old = Marked;
 		Marked.X = X;
 		Marked.Y = Y;
 		Marked.status = pcb_true;
 		count++;
-		notify_mark_change(pcb_true);
+		pcb_notify_mark_change(pcb_true);
 	}
 	else if (count > 0) {
-		notify_mark_change(pcb_false);
+		pcb_notify_mark_change(pcb_false);
 		count = 0;
 		Marked = old;
-		notify_mark_change(pcb_true);
+		pcb_notify_mark_change(pcb_true);
 	}
 }

@@ -41,9 +41,9 @@ static void log_invalidate_all(void) {
 	delegatee_->invalidate_all();
 }
 
-static void log_notify_mark_change(pcb_bool changes_complete) {
-	pcb_fprintf(out_, "notify_mark_change(%s)\n", changes_complete ? "true" : "false");
-	delegatee_->notify_mark_change(changes_complete);
+static void log_pcb_notify_mark_change(pcb_bool changes_complete) {
+	pcb_fprintf(out_, "pcb_notify_mark_change(%s)\n", changes_complete ? "true" : "false");
+	delegatee_->pcb_notify_mark_change(changes_complete);
 }
 
 static int log_set_layer(const char *name, int group, int empty) {

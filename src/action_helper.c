@@ -117,8 +117,8 @@ static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 		GetGridLockCoordinates(Crosshair.AttachedObject.Type,
 													 Crosshair.AttachedObject.Ptr1,
 													 Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3, &mx, &my);
-		mx = GridFit(mx, PCB->Grid, PCB->GridOffsetX) - mx;
-		my = GridFit(my, PCB->Grid, PCB->GridOffsetY) - my;
+		mx = pcb_grid_fit(mx, PCB->Grid, PCB->GridOffsetX) - mx;
+		my = pcb_grid_fit(my, PCB->Grid, PCB->GridOffsetY) - my;
 	}
 	Crosshair.AttachedObject.X = PlaceX - mx;
 	Crosshair.AttachedObject.Y = PlaceY - my;
@@ -129,7 +129,7 @@ static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 	/* get boundingbox of object and set cursor range */
 	box = GetObjectBoundingBox(Crosshair.AttachedObject.Type,
 														 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
-	SetCrosshairRange(Crosshair.AttachedObject.X - box->X1,
+	pcb_crosshair_set_range(Crosshair.AttachedObject.X - box->X1,
 										Crosshair.AttachedObject.Y - box->Y1,
 										PCB->MaxWidth - (box->X2 - Crosshair.AttachedObject.X),
 										PCB->MaxHeight - (box->Y2 - Crosshair.AttachedObject.Y));
@@ -298,7 +298,7 @@ void pcb_clear_warnings()
 static void click_cb(pcb_hidval_t hv)
 {
 	if (Note.Click) {
-		notify_crosshair_change(pcb_false);
+		pcb_notify_crosshair_change(pcb_false);
 		Note.Click = pcb_false;
 		if (Note.Moving && !gui->shift_is_pressed()) {
 			Note.Buffer = conf_core.editor.buffer_number;
@@ -353,7 +353,7 @@ static void click_cb(pcb_hidval_t hv)
 			Crosshair.AttachedBox.Point1.X = Note.X;
 			Crosshair.AttachedBox.Point1.Y = Note.Y;
 		}
-		notify_crosshair_change(pcb_true);
+		pcb_notify_crosshair_change(pcb_true);
 	}
 }
 
@@ -539,7 +539,7 @@ void pcb_notify_line(void)
 
 void pcb_notify_block(void)
 {
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	switch (Crosshair.AttachedBox.State) {
 	case STATE_FIRST:						/* setup first point */
 		Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Crosshair.X;
@@ -551,7 +551,7 @@ void pcb_notify_block(void)
 		Crosshair.AttachedBox.State = STATE_THIRD;
 		break;
 	}
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 }
 
 void pcb_notify_mode(void)
@@ -1240,10 +1240,10 @@ void pcb_event_move_crosshair(int ev_x, int ev_y)
 {
 	if (mid_stroke)
 		stub_stroke_record(ev_x, ev_y);
-	if (MoveCrosshairAbsolute(ev_x, ev_y)) {
+	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
 		pcb_adjust_attached_objects();
-		notify_crosshair_change(pcb_true);
+		pcb_notify_crosshair_change(pcb_true);
 	}
 }
 

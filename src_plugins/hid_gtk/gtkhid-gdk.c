@@ -135,10 +135,10 @@ static inline void ghid_draw_grid_global(void)
 	static GdkPoint *points = NULL;
 	static int npoints = 0;
 
-	x1 = GridFit(MAX(0, SIDE_X(gport->view.x0)), PCB->Grid, PCB->GridOffsetX);
-	y1 = GridFit(MAX(0, SIDE_Y(gport->view.y0)), PCB->Grid, PCB->GridOffsetY);
-	x2 = GridFit(MIN(PCB->MaxWidth,  SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->Grid, PCB->GridOffsetX);
-	y2 = GridFit(MIN(PCB->MaxHeight, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->Grid, PCB->GridOffsetY);
+	x1 = pcb_grid_fit(MAX(0, SIDE_X(gport->view.x0)), PCB->Grid, PCB->GridOffsetX);
+	y1 = pcb_grid_fit(MAX(0, SIDE_Y(gport->view.y0)), PCB->Grid, PCB->GridOffsetY);
+	x2 = pcb_grid_fit(MIN(PCB->MaxWidth,  SIDE_X(gport->view.x0 + gport->view.width - 1)), PCB->Grid, PCB->GridOffsetX);
+	y2 = pcb_grid_fit(MIN(PCB->MaxHeight, SIDE_Y(gport->view.y0 + gport->view.height - 1)), PCB->Grid, PCB->GridOffsetY);
 
 	grd = PCB->Grid;
 	
@@ -819,11 +819,11 @@ static void redraw_region(GdkRectangle * rect)
 
 	/* In some cases we are called with the crosshair still off */
 	if (priv->attached_invalidate_depth == 0)
-		DrawAttached();
+		pcb_draw_attached();
 
 	/* In some cases we are called with the mark still off */
 	if (priv->mark_invalidate_depth == 0)
-		DrawMark();
+		pcb_draw_mark();
 
 	draw_lead_user(priv);
 
@@ -888,7 +888,7 @@ void ghid_notify_crosshair_change(pcb_bool changes_complete)
 	}
 
 	if (priv->attached_invalidate_depth == 0)
-		DrawAttached();
+		pcb_draw_attached();
 
 	if (!changes_complete) {
 		priv->attached_invalidate_depth++;
@@ -922,7 +922,7 @@ void ghid_notify_mark_change(pcb_bool changes_complete)
 	}
 
 	if (priv->mark_invalidate_depth == 0)
-		DrawMark();
+		pcb_draw_mark();
 
 	if (!changes_complete) {
 		priv->mark_invalidate_depth++;

@@ -120,7 +120,7 @@ void pcb_buffer_add_selected(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y,
 	else
 		ctx.buffer.extraflg =  0;
 
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	ctx.buffer.src = PCB->Data;
 	ctx.buffer.dst = Buffer->Data;
 	SelectedOperation(&AddBufferFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL);
@@ -134,7 +134,7 @@ void pcb_buffer_add_selected(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y,
 		Buffer->X = Crosshair.X;
 		Buffer->Y = Crosshair.Y;
 	}
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -371,9 +371,9 @@ int ActionFreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	else
 		angle_s = argv[0];
 
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	Freepcb_buffer_rotate(PCB_PASTEBUFFER, strtod(angle_s, 0));
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
 
@@ -770,7 +770,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	pcb_bool free_name = pcb_false;
 	int force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
 
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 			/* clear contents of paste buffer */
@@ -863,7 +863,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 						y += oldy;
 				}
 				else {
-					notify_crosshair_change(pcb_true);
+					pcb_notify_crosshair_change(pcb_true);
 					PCB_AFAIL(pastebuffer);
 				}
 
@@ -886,7 +886,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		}
 	}
 
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
 

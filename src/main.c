@@ -451,7 +451,7 @@ int main(int argc, char *argv[])
 	ResetStackAndVisibility();
 
 	if (gui->gui)
-		InitCrosshair();
+		pcb_crosshair_init();
 	InitHandler();
 	pcb_init_buffers();
 
@@ -501,7 +501,7 @@ int main(int argc, char *argv[])
 			/* init the next GUI */
 			gui->parse_arguments(&hid_argc, &hid_argv);
 			if (gui->gui)
-				InitCrosshair();
+				pcb_crosshair_init();
 			SetMode(PCB_MODE_ARROW);
 				hid_action("LibraryChanged");
 		}

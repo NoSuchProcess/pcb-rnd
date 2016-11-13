@@ -155,7 +155,7 @@ static void nogui_calibrate(double xval, double yval)
 
 static int nogui_shift_is_pressed(void)
 {
-	/* This is called from FitCrosshairIntoGrid() when the board is loaded.  */
+	/* This is called from pcb_crosshair_grid_fit() when the board is loaded.  */
 	return 0;
 }
 

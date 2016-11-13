@@ -233,3 +233,17 @@ lrealpath -> pcb_lrealpath
 get_user_name -> pcb_get_user_name
 CopyPastebufferToLayout -> pcb_buffer_copy_to_layout
 CopyObject -> pcb_copy_obj
+GridFit -> pcb_grid_fit
+notify_crosshair_change -> pcb_notify_crosshair_change
+notify_mark_change -> pcb_notify_mark_change
+HideCrosshair -> pcb_crosshair_hide
+RestoreCrosshair -> pcb_crosshair_restore
+DrawAttached -> pcb_draw_attached
+DrawMark -> pcb_draw_mark
+MoveCrosshairRelative -> pcb_crosshair_move_relative
+MoveCrosshairAbsolute -> pcb_crosshair_move_absolute
+SetCrosshairRange -> pcb_crosshair_set_range
+InitCrosshair -> pcb_crosshair_init
+DestroyCrosshair -> pcb_crosshair_uninit
+FitCrosshairIntoGrid -> pcb_crosshair_grid_fit
+CenterDisplay -> pcb_center_display

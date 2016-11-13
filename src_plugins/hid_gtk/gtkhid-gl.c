@@ -858,8 +858,8 @@ gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GH
 
 	ghid_invalidate_current_gc();
 
-	DrawAttached();
-	DrawMark();
+	pcb_draw_attached();
+	pcb_draw_mark();
 	hidgl_flush_triangles(&buffer);
 
 	ghid_show_crosshair(TRUE);

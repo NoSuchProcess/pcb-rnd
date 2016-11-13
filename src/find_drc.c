@@ -837,5 +837,5 @@ static void GotoError(void)
 	case PCB_TYPE_POLYGON:
 		ChangeGroupVisibility(GetLayerNumber(PCB->Data, (pcb_layer_t *) thing_ptr1), pcb_true, pcb_true);
 	}
-	CenterDisplay(X, Y);
+	pcb_center_display(X, Y);
 }

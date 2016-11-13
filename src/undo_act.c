@@ -135,10 +135,10 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			return 1;
 		/* undo the last operation */
 
-		notify_crosshair_change(pcb_false);
+		pcb_notify_crosshair_change(pcb_false);
 		if ((conf_core.editor.mode == PCB_MODE_POLYGON || conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) && Crosshair.AttachedPolygon.PointN) {
 			GoToPreviousPoint();
-			notify_crosshair_change(pcb_true);
+			pcb_notify_crosshair_change(pcb_true);
 			return 0;
 		}
 		/* move anchor point if undoing during line creation */
@@ -148,7 +148,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					Undo(pcb_true);						/* undo the connection find */
 				Crosshair.AttachedLine.State = STATE_FIRST;
 				SetLocalRef(0, 0, pcb_false);
-				notify_crosshair_change(pcb_true);
+				pcb_notify_crosshair_change(pcb_true);
 				return 0;
 			}
 			if (Crosshair.AttachedLine.State == STATE_THIRD) {
@@ -170,7 +170,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					/* wrong undo type, restore anchor points */
 					Crosshair.AttachedLine.Point2.X = Crosshair.AttachedLine.Point1.X;
 					Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedLine.Point1.Y;
-					notify_crosshair_change(pcb_true);
+					pcb_notify_crosshair_change(pcb_true);
 					return 0;
 				}
 				/* move to new anchor */
@@ -190,7 +190,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = ptr2->Point2.X;
 					Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = ptr2->Point2.Y;
 				}
-				FitCrosshairIntoGrid(Crosshair.X, Crosshair.Y);
+				pcb_crosshair_grid_fit(Crosshair.X, Crosshair.Y);
 				pcb_adjust_attached_objects();
 				if (--addedLines == 0) {
 					Crosshair.AttachedLine.State = STATE_SECOND;
@@ -203,14 +203,14 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					ptr2 = (pcb_line_t *) ptrtmp;
 					lastLayer = (pcb_layer_t *) ptr1;
 				}
-				notify_crosshair_change(pcb_true);
+				pcb_notify_crosshair_change(pcb_true);
 				return 0;
 			}
 		}
 		if (conf_core.editor.mode == PCB_MODE_ARC) {
 			if (Crosshair.AttachedBox.State == STATE_SECOND) {
 				Crosshair.AttachedBox.State = STATE_FIRST;
-				notify_crosshair_change(pcb_true);
+				pcb_notify_crosshair_change(pcb_true);
 				return 0;
 			}
 			if (Crosshair.AttachedBox.State == STATE_THIRD) {
@@ -239,7 +239,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			break;
 		}
 	}
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
 
@@ -269,7 +269,7 @@ int ActionRedo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (((conf_core.editor.mode == PCB_MODE_POLYGON ||
 				conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) && Crosshair.AttachedPolygon.PointN) || Crosshair.AttachedLine.State == STATE_SECOND)
 		return 1;
-	notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(pcb_false);
 	if (Redo(pcb_true)) {
 		SetChangedFlag(pcb_true);
 		if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != STATE_FIRST) {
@@ -279,7 +279,7 @@ int ActionRedo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			addedLines++;
 		}
 	}
-	notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
 

@@ -183,13 +183,13 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				box.Y1 = MIN(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
-				notify_crosshair_change(pcb_false);
+				pcb_notify_crosshair_change(pcb_false);
 				pcb_notify_block();
 				if (Crosshair.AttachedBox.State == STATE_THIRD && SelectBlock(&box, pcb_true)) {
 					SetChangedFlag(pcb_true);
 					Crosshair.AttachedBox.State = STATE_FIRST;
 				}
-				notify_crosshair_change(pcb_true);
+				pcb_notify_crosshair_change(pcb_true);
 				break;
 			}
 
@@ -223,8 +223,8 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				SetBufferNumber(MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB_PASTEBUFFER);
 				gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
-				x = GridFit(x, PCB->Grid, PCB->GridOffsetX);
-				y = GridFit(y, PCB->Grid, PCB->GridOffsetY);
+				x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
+				y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
 				pcb_buffer_add_selected(PCB_PASTEBUFFER, x, y, pcb_true);
 				SaveUndoSerialNumber();
 				RemoveSelected();
@@ -335,13 +335,13 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				box.Y1 = MIN(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
-				notify_crosshair_change(pcb_false);
+				pcb_notify_crosshair_change(pcb_false);
 				pcb_notify_block();
 				if (Crosshair.AttachedBox.State == STATE_THIRD && SelectBlock(&box, pcb_false)) {
 					SetChangedFlag(pcb_true);
 					Crosshair.AttachedBox.State = STATE_FIRST;
 				}
-				notify_crosshair_change(pcb_true);
+				pcb_notify_crosshair_change(pcb_true);
 				break;
 			}
 
