@@ -295,16 +295,16 @@ static void scad_export_model(int model_type, pcb_element_t * element, pcb_bool 
 	int x = element->MarkX, y = element->MarkY;
 
 	model_rotation =
-		AttributeGetFromList(&(element->Attributes),
+		pcb_attribute_get(&(element->Attributes),
 												 (model_type == SCAD_OVERLAY) ? "OpenSCAD::Overlay:rotate" : "OpenSCAD::Model:rotate");
 	model_scale =
-		AttributeGetFromList(&(element->Attributes),
+		pcb_attribute_get(&(element->Attributes),
 												 (model_type == SCAD_OVERLAY) ? "OpenSCAD::Overlay:scale" : "OpenSCAD::Model:scale");
 	model_translate =
-		AttributeGetFromList(&(element->Attributes),
+		pcb_attribute_get(&(element->Attributes),
 												 (model_type == SCAD_OVERLAY) ? "OpenSCAD::Overlay:translate" : "OpenSCAD::Model:translate");
 
-	if ((model_angle = AttributeGetFromList(&(element->Attributes), "Footprint::RotationTracking")) != NULL) {
+	if ((model_angle = pcb_attribute_get(&(element->Attributes), "Footprint::RotationTracking")) != NULL) {
 		sscanf(model_angle, "%lf", &tmp_angle);
 	}
 
@@ -383,11 +383,11 @@ static void scad_export_bbox(pcb_element_t * element)
 	int n, ln;
 	char val[32], *s;
 
-	if ((bbox = AttributeGetFromList(&(element->Attributes), "Footprint::BoundingBox")) == NULL)
+	if ((bbox = pcb_attribute_get(&(element->Attributes), "Footprint::BoundingBox")) == NULL)
 		return;
 
 
-	if ((model_angle = AttributeGetFromList(&(element->Attributes), "Footprint::RotationTracking")) != NULL) {
+	if ((model_angle = pcb_attribute_get(&(element->Attributes), "Footprint::RotationTracking")) != NULL) {
 		sscanf(model_angle, "%lf", &tmp_angle);
 	}
 
@@ -480,18 +480,18 @@ static void scad_export_element(pcb_element_t * element, pcb_bool simple)
 	char *model_name, *s;
 	pcb_bool imported_model;
 
-	s = AttributeGetFromList(&(element->Attributes), "OpenSCAD::Model:type");
+	s = pcb_attribute_get(&(element->Attributes), "OpenSCAD::Model:type");
 	imported_model = s && (strcmp(s, "STL") == 0);
 
 	/* get model name from attibute */
-	model_name = AttributeGetFromList(&(element->Attributes), "OpenSCAD::Model");
+	model_name = pcb_attribute_get(&(element->Attributes), "OpenSCAD::Model");
 
 	if (model_name) {
 		scad_writeout_element(element, model_name, SCAD_STANDARD, imported_model, simple);
 	}
 	else {
 		/* no model variable found, try model, based on footprint name attribute */
-		model_name = AttributeGetFromList(&(element->Attributes), "Footprint::File");
+		model_name = pcb_attribute_get(&(element->Attributes), "Footprint::File");
 		if (model_name) {
 			scad_writeout_element(element, model_name, SCAD_STANDARD, imported_model, simple);
 		}
@@ -504,11 +504,11 @@ static void scad_export_element(pcb_element_t * element, pcb_bool simple)
 		}
 	}
 
-	s = AttributeGetFromList(&(element->Attributes), "OpenSCAD::Overlay:type");
+	s = pcb_attribute_get(&(element->Attributes), "OpenSCAD::Overlay:type");
 	imported_model = s && (strcmp(s, "STL") == 0);
 
 	/* get overlay name from attibute */
-	model_name = AttributeGetFromList(&(element->Attributes), "OpenSCAD::Overlay");
+	model_name = pcb_attribute_get(&(element->Attributes), "OpenSCAD::Overlay");
 
 	if (model_name) {
 		scad_writeout_element(element, model_name, SCAD_OVERLAY, imported_model, simple);

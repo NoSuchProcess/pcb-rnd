@@ -57,7 +57,7 @@ void FreePCBMemory(pcb_board_t * pcb)
 	for (i = 0; i < NUM_NETLISTS; i++)
 		FreeLibraryMemory(&(pcb->NetlistLib[i]));
 	vtroutestyle_uninit(&pcb->RouteStyle);
-	FreeAttributeListMemory(&pcb->Attributes);
+	pcb_attribute_free(&pcb->Attributes);
 	/* clear struct */
 	memset(pcb, 0, sizeof(pcb_board_t));
 }

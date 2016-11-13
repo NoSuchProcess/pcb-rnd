@@ -104,7 +104,7 @@ void FreeElementMemory(pcb_element_t * element)
 	list_map0(&element->Line, pcb_line_t, RemoveFreeLine);
 	list_map0(&element->Arc,  pcb_arc_t,  RemoveFreeArc);
 
-	FreeAttributeListMemory(&element->Attributes);
+	pcb_attribute_free(&element->Attributes);
 	reset_obj_mem(pcb_element_t, element);
 }
 
@@ -552,7 +552,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	END_LOOP;
 
 	for (i = 0; i < Src->Attributes.Number; i++)
-		AttributePutToList(&Dest->Attributes, Src->Attributes.List[i].name, Src->Attributes.List[i].value, 0);
+		pcb_attribute_put(&Dest->Attributes, Src->Attributes.List[i].name, Src->Attributes.List[i].value, 0);
 
 	Dest->MarkX = Src->MarkX + dx;
 	Dest->MarkY = Src->MarkY + dy;

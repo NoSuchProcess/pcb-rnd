@@ -692,7 +692,7 @@ static int ActionElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_
 		delete_attr(&e->Attributes, attr);
 	}
 	if (!attr && value) {
-		AttributePutToList(&e->Attributes, name, value, 0);
+		pcb_attribute_put(&e->Attributes, name, value, 0);
 	}
 
 	return 0;

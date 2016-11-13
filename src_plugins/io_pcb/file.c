@@ -518,7 +518,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 {
 	pcb_cardinal_t i;
 
-	AttributePutToList(&PCB->Attributes, "PCB::loader", ctx->description, 1);
+	pcb_attribute_put(&PCB->Attributes, "PCB::loader", ctx->description, 1);
 
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WritePCBInfoHeader(FP);

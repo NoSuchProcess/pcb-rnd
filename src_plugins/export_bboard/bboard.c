@@ -210,7 +210,7 @@ static void bboard_get_layer_color(pcb_layer_t * layer, int *clr_r, int *clr_g, 
 	char *clr;
 	unsigned int r, g, b;
 
-	if ((clr = AttributeGetFromList(&(layer->Attributes), "BBoard::LayerColor")) != NULL) {
+	if ((clr = pcb_attribute_get(&(layer->Attributes), "BBoard::LayerColor")) != NULL) {
 		if (clr[0] == '#') {
 			if (sscanf(&(clr[1]), "%02x%02x%02x", &r, &g, &b) == 3)
 				goto ok;
@@ -397,7 +397,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 
 	ASSERT_CAIRO;
 
-	s1 = AttributeGetFromList(&(element->Attributes), "BBoard::Model");
+	s1 = pcb_attribute_get(&(element->Attributes), "BBoard::Model");
 	if (s1) {
 		s = pcb_strdup(s1);
 		if (!s)
@@ -422,7 +422,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 		/* invalidate offset from BBoard::Model, if such model does not exist */
 		offset_in_model = pcb_false;
 
-		s = AttributeGetFromList(&(element->Attributes), "Footprint::File");
+		s = pcb_attribute_get(&(element->Attributes), "Footprint::File");
 		if (s) {
 			if (!EMPTY_STRING_P(VALUE_NAME(element))) {
 				fname = bboard_get_model_filename(s, VALUE_NAME(element), pcb_true);
@@ -460,7 +460,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 
 		/* read offest from attribute */
 		if (!offset_in_model) {
-			s = AttributeGetFromList(&(element->Attributes), "BBoard::Offset");
+			s = pcb_attribute_get(&(element->Attributes), "BBoard::Offset");
 
 			/* Parse values with units... */
 			if (s) {
@@ -472,7 +472,7 @@ static void bboard_export_element_cairo(pcb_element_t * element, pcb_bool onsold
 
 		cairo_save(bboard_cairo_ctx);
 
-		if ((model_angle = AttributeGetFromList(&(element->Attributes), "Footprint::RotationTracking")) != NULL) {
+		if ((model_angle = pcb_attribute_get(&(element->Attributes), "Footprint::RotationTracking")) != NULL) {
 			sscanf(model_angle, "%lf", &tmp_angle);
 		}
 

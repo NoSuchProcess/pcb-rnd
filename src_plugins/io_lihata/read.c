@@ -67,7 +67,7 @@ static int parse_attributes(pcb_attribute_list_t *list, lht_node_t *nd)
 
 	for(n = lht_dom_first(&it, nd); n != NULL; n = lht_dom_next(&it)) {
 		if (n->type == LHT_TEXT)
-			AttributePutToList(list, n->name, n->data.text.value, 0);
+			pcb_attribute_put(list, n->name, n->data.text.value, 0);
 	}
 
 	return 0;

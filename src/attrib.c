@@ -31,7 +31,7 @@
 #include "compat_misc.h"
 #include "attrib.h"
 
-char *AttributeGetFromList(pcb_attribute_list_t * list, const char *name)
+char *pcb_attribute_get(pcb_attribute_list_t * list, const char *name)
 {
 	int i;
 	for (i = 0; i < list->Number; i++)
@@ -40,7 +40,7 @@ char *AttributeGetFromList(pcb_attribute_list_t * list, const char *name)
 	return NULL;
 }
 
-int AttributePutToList(pcb_attribute_list_t * list, const char *name, const char *value, int replace)
+int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value, int replace)
 {
 	int i;
 
@@ -70,7 +70,7 @@ int AttributePutToList(pcb_attribute_list_t * list, const char *name, const char
 	return 0;
 }
 
-int AttributeRemoveFromList(pcb_attribute_list_t * list, const char *name)
+int pcb_attribute_remove(pcb_attribute_list_t * list, const char *name)
 {
 	int i, j, found = 0;
 	for (i = 0; i < list->Number; i++)
@@ -85,10 +85,7 @@ int AttributeRemoveFromList(pcb_attribute_list_t * list, const char *name)
 	return found;
 }
 
-/* ---------------------------------------------------------------------------
- * frees memory used by an attribute list
- */
-void FreeAttributeListMemory(pcb_attribute_list_t *list)
+void pcb_attribute_free(pcb_attribute_list_t *list)
 {
 	int i;
 

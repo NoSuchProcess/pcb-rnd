@@ -232,7 +232,7 @@ static int field_layer(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&l->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&l->Attributes, s2));
 	}
 
 	if (fld->next != NULL)
@@ -291,7 +291,7 @@ static int field_line(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&l->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&l->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_layer) {
@@ -335,7 +335,7 @@ static int field_arc(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&a->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&a->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_angle) {
@@ -389,7 +389,7 @@ static int field_text(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&t->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&t->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_layer) {
@@ -424,7 +424,7 @@ static int field_polygon(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_layer) {
@@ -465,7 +465,7 @@ static int field_via(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
 	}
 
 	if (fld->next != NULL)
@@ -495,7 +495,7 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_layer)
@@ -634,7 +634,7 @@ static int field_pad(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 			{
 				const char *s2;
 				fld2str_req(s2, fld, 1);
-				PCB_QRY_RET_STR(res, AttributeGetFromList(&p->Attributes, s2));
+				PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
 			}
 		case query_fields_layer:   return layer_of_obj(fld->next, res, PCB_LYT_COPPER | (TEST_FLAG(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
 		case query_fields_element: return field_element_obj(obj, fld->next, res);
@@ -680,7 +680,7 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 		fld2str_req(s2, fld, 0);
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
 			PCB_QRY_RET_INV(res);
-		PCB_QRY_RET_STR(res, AttributeGetFromList(&obj->data.anyobj->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&obj->data.anyobj->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_ID) {

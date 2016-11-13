@@ -201,7 +201,7 @@ void FreeDataMemory(pcb_data_t * data)
 	list_map0(&data->Rat, pcb_rat_t, RemoveFreeRat);
 
 	for (layer = data->Layer, i = 0; i < MAX_LAYER + 2; layer++, i++) {
-		FreeAttributeListMemory(&layer->Attributes);
+		pcb_attribute_free(&layer->Attributes);
 		TEXT_LOOP(layer);
 		{
 			free(text->TextString);

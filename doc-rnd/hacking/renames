@@ -125,3 +125,7 @@ ClearWarnings -> pcb_clear_warnings
 ReleaseMode -> pcb_release_mode
 AFAIL -> PCB_AFAIL
 ACTION_ARG -> PCB_ACTION_ARG
+AttributeGetFromList -> pcb_attribute_get
+AttributePutToList -> pcb_attribute_put
+AttributeRemoveFromList -> pcb_attribute_remove
+FreeAttributeListMemory -> pcb_attribute_free

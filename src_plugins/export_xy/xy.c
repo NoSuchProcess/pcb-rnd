@@ -245,7 +245,7 @@ static int PrintXY(void)
 			centroidx = sumx / (double) pin_cnt;
 			centroidy = sumy / (double) pin_cnt;
 
-			if (NSTRCMP(AttributeGetFromList(&element->Attributes, "xy-centre"), "origin") == 0) {
+			if (NSTRCMP(pcb_attribute_get(&element->Attributes, "xy-centre"), "origin") == 0) {
 				x = element->MarkX;
 				y = element->MarkY;
 			}
@@ -254,7 +254,7 @@ static int PrintXY(void)
 				y = centroidy;
 			}
 
-			fixed_rotation = AttributeGetFromList(&element->Attributes, "xy-fixed-rotation");
+			fixed_rotation = pcb_attribute_get(&element->Attributes, "xy-fixed-rotation");
 			if (fixed_rotation) {
 				/* The user specified a fixed rotation */
 				theta = atof(fixed_rotation);

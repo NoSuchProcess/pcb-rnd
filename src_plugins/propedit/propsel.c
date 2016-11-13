@@ -202,12 +202,12 @@ typedef struct set_ctx_s {
 static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
 {
 	const char *key = st->name+2;
-	const char *orig = AttributeGetFromList(list, key);
+	const char *orig = pcb_attribute_get(list, key);
 
 	if ((orig != NULL) && (strcmp(orig, st->value) == 0))
 		return;
 
-	AttributePutToList(list, key, st->value, 1);
+	pcb_attribute_put(list, key, st->value, 1);
 	st->set_cnt++;
 }
 
@@ -482,7 +482,7 @@ typedef struct del_ctx_s {
 static void del_attr(void *ctx, pcb_attribute_list_t *list)
 {
 	del_ctx_t *st = (del_ctx_t *)ctx;
-	if (AttributeRemoveFromList(list, st->key+2))
+	if (pcb_attribute_remove(list, st->key+2))
 		st->del_cnt++;
 }
 

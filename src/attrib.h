@@ -43,20 +43,21 @@ struct pcb_attribute_list_s {
 
 /* Returns NULL if the name isn't found, else the value for that named
    attribute.  */
-char *AttributeGetFromList(pcb_attribute_list_t * list, const char *name);
+char *pcb_attribute_get(pcb_attribute_list_t * list, const char *name);
 /* Adds an attribute to the list.  If the attribute already exists,
    whether it's replaced or a second copy added depends on
    REPLACE.  Returns non-zero if an existing attribute was replaced.  */
-int AttributePutToList(pcb_attribute_list_t * list, const char *name, const char *value, int replace);
+int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value, int replace);
 /* Simplistic version: Takes a pointer to an object, looks up attributes in it.  */
-#define AttributeGet(OBJ,name) AttributeGetFromList (&(OBJ->Attributes), name)
+#define AttributeGet(OBJ,name) pcb_attribute_get(&(OBJ->Attributes), name)
 /* Simplistic version: Takes a pointer to an object, sets attributes in it.  */
-#define AttributePut(OBJ,name,value) AttributePutToList (&(OBJ->Attributes), name, value, 1)
+#define AttributePut(OBJ,name,value) pcb_attribute_put(&(OBJ->Attributes), name, value, 1)
 /* Remove an attribute by name; returns number of items removed  */
-int AttributeRemoveFromList(pcb_attribute_list_t * list, const char *name);
+int pcb_attribute_remove(pcb_attribute_list_t * list, const char *name);
 /* Simplistic version of Remove.  */
-#define AttributeRemove(OBJ, name) AttributeRemoveFromList (&(OBJ->Attributes), name)
+#define AttributeRemove(OBJ, name) pcb_attribute_remove(&(OBJ->Attributes), name)
 
-void FreeAttributeListMemory(pcb_attribute_list_t *list);
+/* Frees memory used by an attribute list */
+void pcb_attribute_free(pcb_attribute_list_t *list);
 
 #endif
