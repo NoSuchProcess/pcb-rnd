@@ -195,7 +195,7 @@ int LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
  */
 pcb_bool LoadLayoutToBuffer(pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
 {
-	pcb_board_t *newPCB = CreateNewPCB();
+	pcb_board_t *newPCB = pcb_board_new();
 
 	/* new data isn't added to the undo list */
 	if (!ParsePCB(newPCB, Filename, fmt, CFR_invalid)) {
@@ -413,26 +413,26 @@ void MirrorBuffer(pcb_buffer_t *Buffer)
 		}
 	}
 	/* set buffer offset to 'mark' position */
-	Buffer->X = SWAP_X(Buffer->X);
-	Buffer->Y = SWAP_Y(Buffer->Y);
+	Buffer->X = PCB_SWAP_X(Buffer->X);
+	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
 	VIA_LOOP(Buffer->Data);
 	{
-		via->X = SWAP_X(via->X);
-		via->Y = SWAP_Y(via->Y);
+		via->X = PCB_SWAP_X(via->X);
+		via->Y = PCB_SWAP_Y(via->Y);
 	}
 	END_LOOP;
 	ALLLINE_LOOP(Buffer->Data);
 	{
-		line->Point1.X = SWAP_X(line->Point1.X);
-		line->Point1.Y = SWAP_Y(line->Point1.Y);
-		line->Point2.X = SWAP_X(line->Point2.X);
-		line->Point2.Y = SWAP_Y(line->Point2.Y);
+		line->Point1.X = PCB_SWAP_X(line->Point1.X);
+		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y);
+		line->Point2.X = PCB_SWAP_X(line->Point2.X);
+		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y);
 	}
 	ENDALL_LOOP;
 	ALLARC_LOOP(Buffer->Data);
 	{
-		arc->X = SWAP_X(arc->X);
-		arc->Y = SWAP_Y(arc->Y);
+		arc->X = PCB_SWAP_X(arc->X);
+		arc->Y = PCB_SWAP_Y(arc->Y);
 		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
 		arc->Delta = SWAP_DELTA(arc->Delta);
 		SetArcBoundingBox(arc);
@@ -442,8 +442,8 @@ void MirrorBuffer(pcb_buffer_t *Buffer)
 	{
 		POLYGONPOINT_LOOP(polygon);
 		{
-			point->X = SWAP_X(point->X);
-			point->Y = SWAP_Y(point->Y);
+			point->X = PCB_SWAP_X(point->X);
+			point->Y = PCB_SWAP_Y(point->Y);
 		}
 		END_LOOP;
 		SetPolygonBoundingBox(polygon);
@@ -469,13 +469,13 @@ void SwapBuffer(pcb_buffer_t *Buffer)
 	}
 	END_LOOP;
 	/* set buffer offset to 'mark' position */
-	Buffer->X = SWAP_X(Buffer->X);
-	Buffer->Y = SWAP_Y(Buffer->Y);
+	Buffer->X = PCB_SWAP_X(Buffer->X);
+	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
 	VIA_LOOP(Buffer->Data);
 	{
 		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
-		via->X = SWAP_X(via->X);
-		via->Y = SWAP_Y(via->Y);
+		via->X = PCB_SWAP_X(via->X);
+		via->Y = PCB_SWAP_Y(via->Y);
 		SetPinBoundingBox(via);
 		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
@@ -483,10 +483,10 @@ void SwapBuffer(pcb_buffer_t *Buffer)
 	ALLLINE_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
-		line->Point1.X = SWAP_X(line->Point1.X);
-		line->Point1.Y = SWAP_Y(line->Point1.Y);
-		line->Point2.X = SWAP_X(line->Point2.X);
-		line->Point2.Y = SWAP_Y(line->Point2.Y);
+		line->Point1.X = PCB_SWAP_X(line->Point1.X);
+		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y);
+		line->Point2.X = PCB_SWAP_X(line->Point2.X);
+		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y);
 		SetLineBoundingBox(line);
 		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
@@ -494,8 +494,8 @@ void SwapBuffer(pcb_buffer_t *Buffer)
 	ALLARC_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
-		arc->X = SWAP_X(arc->X);
-		arc->Y = SWAP_Y(arc->Y);
+		arc->X = PCB_SWAP_X(arc->X);
+		arc->Y = PCB_SWAP_Y(arc->Y);
 		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
 		arc->Delta = SWAP_DELTA(arc->Delta);
 		SetArcBoundingBox(arc);
@@ -507,8 +507,8 @@ void SwapBuffer(pcb_buffer_t *Buffer)
 		r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 		POLYGONPOINT_LOOP(polygon);
 		{
-			point->X = SWAP_X(point->X);
-			point->Y = SWAP_Y(point->Y);
+			point->X = PCB_SWAP_X(point->X);
+			point->Y = PCB_SWAP_Y(point->Y);
 		}
 		END_LOOP;
 		SetPolygonBoundingBox(polygon);
@@ -519,8 +519,8 @@ void SwapBuffer(pcb_buffer_t *Buffer)
 	ALLTEXT_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->text_tree, (pcb_box_t *) text);
-		text->X = SWAP_X(text->X);
-		text->Y = SWAP_Y(text->Y);
+		text->X = PCB_SWAP_X(text->X);
+		text->Y = PCB_SWAP_Y(text->Y);
 		TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
 		SetTextBoundingBox(&PCB->Font, text);
 		r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);

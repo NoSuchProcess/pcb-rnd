@@ -1816,7 +1816,7 @@ yyreduce:
 			  pcb_board_t *pcb_save = PCB;
 			  if ((yy_settings_dest != CFR_invalid) && (layer_group_string != NULL))
 					conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, POL_OVERWRITE);
-			  CreateNewPCBPost (yyPCB, 0);
+			  pcb_board_new_postproc(yyPCB, 0);
 			  if (ParseGroupString(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
 			    {
 			      Message(PCB_MSG_ERROR, "illegal layer-group string\n");

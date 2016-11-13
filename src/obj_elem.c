@@ -667,46 +667,46 @@ void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, pcb_coor
 	r_delete_element(Data, Element);
 	ELEMENTLINE_LOOP(Element);
 	{
-		line->Point1.X = SWAP_X(line->Point1.X);
-		line->Point1.Y = SWAP_Y(line->Point1.Y) + yoff;
-		line->Point2.X = SWAP_X(line->Point2.X);
-		line->Point2.Y = SWAP_Y(line->Point2.Y) + yoff;
+		line->Point1.X = PCB_SWAP_X(line->Point1.X);
+		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y) + yoff;
+		line->Point2.X = PCB_SWAP_X(line->Point2.X);
+		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y) + yoff;
 	}
 	END_LOOP;
 	PIN_LOOP(Element);
 	{
 		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
-		pin->X = SWAP_X(pin->X);
-		pin->Y = SWAP_Y(pin->Y) + yoff;
+		pin->X = PCB_SWAP_X(pin->X);
+		pin->Y = PCB_SWAP_Y(pin->Y) + yoff;
 	}
 	END_LOOP;
 	PAD_LOOP(Element);
 	{
 		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
-		pad->Point1.X = SWAP_X(pad->Point1.X);
-		pad->Point1.Y = SWAP_Y(pad->Point1.Y) + yoff;
-		pad->Point2.X = SWAP_X(pad->Point2.X);
-		pad->Point2.Y = SWAP_Y(pad->Point2.Y) + yoff;
+		pad->Point1.X = PCB_SWAP_X(pad->Point1.X);
+		pad->Point1.Y = PCB_SWAP_Y(pad->Point1.Y) + yoff;
+		pad->Point2.X = PCB_SWAP_X(pad->Point2.X);
+		pad->Point2.Y = PCB_SWAP_Y(pad->Point2.Y) + yoff;
 		TOGGLE_FLAG(PCB_FLAG_ONSOLDER, pad);
 	}
 	END_LOOP;
 	ARC_LOOP(Element);
 	{
-		arc->X = SWAP_X(arc->X);
-		arc->Y = SWAP_Y(arc->Y) + yoff;
+		arc->X = PCB_SWAP_X(arc->X);
+		arc->Y = PCB_SWAP_Y(arc->Y) + yoff;
 		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
 		arc->Delta = SWAP_DELTA(arc->Delta);
 	}
 	END_LOOP;
 	ELEMENTTEXT_LOOP(Element);
 	{
-		text->X = SWAP_X(text->X);
-		text->Y = SWAP_Y(text->Y) + yoff;
+		text->X = PCB_SWAP_X(text->X);
+		text->Y = PCB_SWAP_Y(text->Y) + yoff;
 		TOGGLE_FLAG(PCB_FLAG_ONSOLDER, text);
 	}
 	END_LOOP;
-	Element->MarkX = SWAP_X(Element->MarkX);
-	Element->MarkY = SWAP_Y(Element->MarkY) + yoff;
+	Element->MarkX = PCB_SWAP_X(Element->MarkX);
+	Element->MarkY = PCB_SWAP_Y(Element->MarkY) + yoff;
 
 	/* now toggle the solder-side flag */
 	TOGGLE_FLAG(PCB_FLAG_ONSOLDER, Element);

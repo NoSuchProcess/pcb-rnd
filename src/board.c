@@ -35,10 +35,7 @@
 
 pcb_board_t *PCB;
 
-/* ---------------------------------------------------------------------------
- * free memory used by PCB
- */
-void FreePCBMemory(pcb_board_t * pcb)
+void pcb_board_free(pcb_board_t * pcb)
 {
 	int i;
 
@@ -63,7 +60,7 @@ void FreePCBMemory(pcb_board_t * pcb)
 }
 
 /* creates a new PCB */
-pcb_board_t *CreateNewPCB_(pcb_bool SetDefaultNames)
+pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 {
 	pcb_board_t *ptr, *save;
 	int i;
@@ -109,7 +106,7 @@ pcb_board_t *CreateNewPCB_(pcb_bool SetDefaultNames)
 	return (ptr);
 }
 
-pcb_board_t *CreateNewPCB(void)
+pcb_board_t *pcb_board_new(void)
 {
 	pcb_board_t *old, *nw;
 	int dpcb;
@@ -139,11 +136,7 @@ pcb_board_t *CreateNewPCB(void)
 	return nw;
 }
 
-
-/* This post-processing step adds the top and bottom silk layers to a
- * pre-existing PCB.
- */
-int CreateNewPCBPost(pcb_board_t *pcb, int use_defaults)
+int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults)
 {
 	/* copy default settings */
 	pcb_colors_from_settings(pcb);
@@ -151,10 +144,6 @@ int CreateNewPCBPost(pcb_board_t *pcb, int use_defaults)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------------
- * Perhaps PCB should internally just use the Settings colors?  For now,
- * use this to set PCB colors so the config can reassign PCB colors.
- */
 #warning TODO: indeed, remove this and all the board *color fields
 void pcb_colors_from_settings(pcb_board_t *ptr)
 {
@@ -203,13 +192,7 @@ static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 	return R_DIR_FOUND_CONTINUE;
 }
 
-
-/* ---------------------------------------------------------------------------
- * counts the number of plated and unplated holes in the design within
- * a given area of the board. To count for the whole board, pass NULL
- * within_area.
- */
-void CountHoles(int *plated, int *unplated, const pcb_box_t * within_area)
+void pcb_board_count_holes(int *plated, int *unplated, const pcb_box_t * within_area)
 {
 	HoleCountStruct hcs = { 0, 0 };
 

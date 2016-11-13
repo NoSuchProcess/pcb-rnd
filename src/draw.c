@@ -159,7 +159,7 @@ static void PrintAssembly(int side, const pcb_box_t * drawn_area)
 static void DrawEverything_holes(const pcb_box_t * drawn_area)
 {
 	int plated, unplated;
-	CountHoles(&plated, &unplated, drawn_area);
+	pcb_board_count_holes(&plated, &unplated, drawn_area);
 
 	if (plated && gui->set_layer("plated-drill", SL(PDRILL, 0), 0)) {
 		DrawHoles(pcb_true, pcb_false, drawn_area);

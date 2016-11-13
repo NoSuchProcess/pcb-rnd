@@ -109,22 +109,31 @@ struct pcb_board_s {
 	unsigned netlist_needs_update:1;
 };
 
-void FreePCBMemory(pcb_board_t *);
-
 extern pcb_board_t *PCB; /* the board being edited */
 
-pcb_board_t *CreateNewPCB_(pcb_bool SetDefaultNames);
-pcb_board_t *CreateNewPCB(void);
+/* free memory used by a board */
+void pcb_board_free(pcb_board_t *pcb);
+
+/* creates a new PCB - low level */
+pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames);
+
+/* creates a new PCB - high level (uses a template board) */
+pcb_board_t *pcb_board_new(void);
 
 /* Called after PCB->Data->LayerN is set.  Returns non-zero on error */
-int CreateNewPCBPost(pcb_board_t *pcb, int use_defaults);
+int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults);
 
+/* Perhaps PCB should internally just use the Settings colors?  For now,
+ * use this to set PCB colors so the config can reassign PCB colors. */
 void pcb_colors_from_settings(pcb_board_t *);
 
-void CountHoles(int *plated, int *unplated, const pcb_box_t * within_area);
+/* counts the number of plated and unplated holes in the design within
+   a given area of the board. To count for the whole board, pass NULL
+   within_area. */
+void pcb_board_count_holes(int *plated, int *unplated, const pcb_box_t * within_area);
 
-#define	SWAP_X(x)		(SWAP_SIGN_X(x))
-#define	SWAP_Y(y)		(PCB->MaxHeight +SWAP_SIGN_Y(y))
+#define	PCB_SWAP_X(x)		(SWAP_SIGN_X(x))
+#define	PCB_SWAP_Y(y)		(PCB->MaxHeight +SWAP_SIGN_Y(y))
 
 const char *pcb_board_get_filename(void);
 const char *pcb_board_get_name(void);

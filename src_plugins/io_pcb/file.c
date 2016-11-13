@@ -564,7 +564,7 @@ void PostLoadElementPCB()
 	if (!yyPCB)
 		return;
 
-	CreateNewPCBPost(yyPCB, 0);
+	pcb_board_new_postproc(yyPCB, 0);
 	ParseGroupString("1,c:2,s", &yyPCB->LayerGroups, yyData->LayerN);
 	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
 	PCB = yyPCB;

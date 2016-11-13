@@ -223,7 +223,7 @@ void pcb_main_uninit(void)
 	 * Because it removes some false positives from heap bug detectors such as
 	 * lib dmalloc.
 	 */
-	FreePCBMemory(PCB);
+	pcb_board_free(PCB);
 	free(PCB);
 	PCB = NULL;
 
@@ -436,7 +436,7 @@ int main(int argc, char *argv[])
 	gui->parse_arguments(&hid_argc, &hid_argv);
 
 	/* Create a new PCB object in memory */
-	PCB = CreateNewPCB();
+	PCB = pcb_board_new();
 
 	if (PCB == NULL) {
 		Message(PCB_MSG_ERROR, "Can't load the default pcb for creating an empty layout\n");
@@ -444,7 +444,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* Add silk layers to newly created PCB */
-	CreateNewPCBPost(PCB, 1);
+	pcb_board_new_postproc(PCB, 1);
 	if (hid_argc > 0)
 		command_line_pcb = hid_argv[0];
 

@@ -132,3 +132,10 @@ FreeAttributeListMemory -> pcb_attribute_free
 AttributeGet -> pcb_attrib_get
 AttributePut -> pcb_attrib_put
 AttributeRemove -> pcb_attrib_remove
+FreePCBMemory -> pcb_board_free
+CreateNewPCB_ -> pcb_board_new_
+CreateNewPCB -> pcb_board_new
+CreateNewPCBPost -> pcb_board_new_postproc
+CountHoles -> pcb_board_count_holes
+SWAP_X -> PCB_SWAP_X
+SWAP_Y -> PCB_SWAP_Y

@@ -289,7 +289,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 {
 	const char *unit_suffix;
 	char *new_filename;
-	pcb_board_t *newPCB = CreateNewPCB_(pcb_false);
+	pcb_board_t *newPCB = pcb_board_new_(pcb_false);
 	pcb_board_t *oldPCB;
 	conf_role_t settings_dest;
 #ifdef DEBUG
@@ -318,7 +318,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	if (!ParsePCB(PCB, new_filename, fmt, settings_dest)) {
 		RemovePCB(oldPCB);
 
-		CreateNewPCBPost(PCB, 0);
+		pcb_board_new_postproc(PCB, 0);
 		ResetStackAndVisibility();
 
 		if (how == 0) {
@@ -378,7 +378,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	PCB = oldPCB;
 	if (PCB == NULL) {
 		/* bozo: we are trying to revert back to a non-existing pcb... create one to avoid a segfault */
-		PCB = CreateNewPCB_(pcb_false);
+		PCB = pcb_board_new_(pcb_false);
 		if (PCB == NULL) {
 			Message(PCB_MSG_DEFAULT, "FATAL: can't create a new empty pcb!");
 			exit(1);
