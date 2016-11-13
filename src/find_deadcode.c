@@ -114,7 +114,7 @@ static pcb_bool LOTouchesLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup)
 			/* now check all polygons */
 			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
 				if (!TEST_FLAG(TheFlag, polygon)
-						&& IsLineInPolygon(Line, polygon))
+						&& pcb_is_line_in_poly(Line, polygon))
 					return (pcb_true);
 			}
 		}

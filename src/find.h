@@ -84,9 +84,9 @@ void pcb_rat_find_hook(int, void *, void *, void *, pcb_bool, pcb_bool);
 void pcb_save_find_flag(int);
 void pcb_restore_find_flag(void);
 int pcb_drc_all(void);
-pcb_bool IsLineInPolygon(pcb_line_t *, pcb_polygon_t *);
-pcb_bool IsArcInPolygon(pcb_arc_t *, pcb_polygon_t *);
-pcb_bool IsPadInPolygon(pcb_pad_t *, pcb_polygon_t *);
+pcb_bool pcb_is_line_in_poly(pcb_line_t *, pcb_polygon_t *);
+pcb_bool pcb_is_arc_in_poly(pcb_arc_t *, pcb_polygon_t *);
+pcb_bool pcb_is_pad_in_poly(pcb_pad_t *, pcb_polygon_t *);
 
 /* find_clear.c */
 pcb_bool ClearFlagOnPinsViasAndPads(pcb_bool AndDraw, int flag);

@@ -260,7 +260,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 		break;
 	case PCB_TYPE_PAD:
 		if (pad->Clearance && pad->Clearance < 2 * PCB->Bloat)
-			if (IsPadInPolygon(pad, polygon)) {
+			if (pcb_is_pad_in_poly(pad, polygon)) {
 				AddObjectToFlagUndoList(type, ptr1, ptr2, ptr2);
 				SET_FLAG(TheFlag, pad);
 				message = _("Pad with insufficient clearance inside polygon\n");

@@ -471,7 +471,7 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
  * - check the two end points of the arc. If none of them matches
  * - check all segments of the polygon against the arc.
  */
-pcb_bool IsArcInPolygon(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
+pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Arc;
 
@@ -500,7 +500,7 @@ pcb_bool IsArcInPolygon(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
  * - check the two end points of the line. If none of them matches
  * - check all segments of the polygon against the line.
  */
-pcb_bool IsLineInPolygon(pcb_line_t *Line, pcb_polygon_t *Polygon)
+pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_polygon_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Line;
 	pcb_polyarea_t *lp;
@@ -535,9 +535,9 @@ pcb_bool IsLineInPolygon(pcb_line_t *Line, pcb_polygon_t *Polygon)
  *
  * The polygon is assumed to already have been proven non-clearing
  */
-pcb_bool IsPadInPolygon(pcb_pad_t *pad, pcb_polygon_t *polygon)
+pcb_bool pcb_is_pad_in_poly(pcb_pad_t *pad, pcb_polygon_t *polygon)
 {
-	return IsLineInPolygon((pcb_line_t *) pad, polygon);
+	return pcb_is_line_in_poly((pcb_line_t *) pad, polygon);
 }
 
 /* ---------------------------------------------------------------------------
@@ -583,7 +583,7 @@ pcb_bool pcb_is_poly_in_poly(pcb_polygon_t *P1, pcb_polygon_t *P2)
 					line.Point2.X = v->point[0];
 					line.Point2.Y = v->point[1];
 					SetLineBoundingBox(&line);
-					if (IsLineInPolygon(&line, P2))
+					if (pcb_is_line_in_poly(&line, P2))
 						return (pcb_true);
 					line.Point1.X = line.Point2.X;
 					line.Point1.Y = line.Point2.Y;

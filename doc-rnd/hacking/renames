@@ -294,3 +294,6 @@ RatFindHook -> pcb_rat_find_hook
 SaveFindFlag -> pcb_save_find_flag
 RestoreFindFlag -> pcb_restore_find_flag
 DRCAll -> pcb_drc_all
+IsLineInPolygon -> pcb_is_line_in_poly
+IsArcInPolygon -> pcb_is_arc_in_poly
+IsPadInPolygon -> pcb_is_pad_in_poly

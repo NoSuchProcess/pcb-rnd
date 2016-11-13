@@ -901,7 +901,7 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 
 			/* now check all polygons */
 			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
-				if (!TEST_FLAG(TheFlag, polygon) && IsArcInPolygon(Arc, polygon)
+				if (!TEST_FLAG(TheFlag, polygon) && pcb_is_arc_in_poly(Arc, polygon)
 						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_ARC, Arc, FCT_COPPER))
 					return pcb_true;
 			}
@@ -1020,7 +1020,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 				pcb_polygon_t *polygon;
 
 				polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
-					if (!TEST_FLAG(TheFlag, polygon) && IsLineInPolygon(Line, polygon)
+					if (!TEST_FLAG(TheFlag, polygon) && pcb_is_line_in_poly(Line, polygon)
 							&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_LINE, Line, FCT_COPPER))
 						return pcb_true;
 				}
@@ -1166,7 +1166,7 @@ static pcb_r_dir_t LOCtoPadPoly_callback(const pcb_box_t * b, void *cl)
 
 
 	if (!TEST_FLAG(TheFlag, polygon) && (!TEST_FLAG(PCB_FLAG_CLEARPOLY, polygon) || !i->pad.Clearance)) {
-		if (IsPadInPolygon(&i->pad, polygon) && ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PAD, &i->pad, FCT_COPPER))
+		if (pcb_is_pad_in_poly(&i->pad, polygon) && ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PAD, &i->pad, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
 	return R_DIR_NOT_FOUND;
@@ -1314,7 +1314,7 @@ static pcb_r_dir_t LOCtoPolyLine_callback(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!TEST_FLAG(TheFlag, line) && IsLineInPolygon(line, &i->polygon)) {
+	if (!TEST_FLAG(TheFlag, line) && pcb_is_line_in_poly(line, &i->polygon)) {
 		if (ADD_LINE_TO_LIST(i->layer, line, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1328,7 +1328,7 @@ static pcb_r_dir_t LOCtoPolyArc_callback(const pcb_box_t * b, void *cl)
 
 	if (!arc->Thickness)
 		return 0;
-	if (!TEST_FLAG(TheFlag, arc) && IsArcInPolygon(arc, &i->polygon)) {
+	if (!TEST_FLAG(TheFlag, arc) && pcb_is_arc_in_poly(arc, &i->polygon)) {
 		if (ADD_ARC_TO_LIST(i->layer, arc, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -1341,7 +1341,7 @@ static pcb_r_dir_t LOCtoPolyPad_callback(const pcb_box_t * b, void *cl)
 	struct lo_info *i = (struct lo_info *) cl;
 
 	if (!TEST_FLAG(TheFlag, pad) && i->layer == (TEST_FLAG(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
-			&& IsPadInPolygon(pad, &i->polygon)) {
+			&& pcb_is_pad_in_poly(pad, &i->polygon)) {
 		if (ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
