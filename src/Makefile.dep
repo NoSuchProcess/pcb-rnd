@@ -1693,7 +1693,8 @@
  ../src_3rd/genvector/vtp0.h list_conf.h netlist.h route_style.h \
  rats_patch.h plug_io.h
 ../src_plugins/import_hyp/hyp_l.o: ../src_plugins/import_hyp/hyp_l.c \
- ../src_plugins/import_hyp/hyp_y.h
+ ../src_plugins/import_hyp/hyp_y.h ../src_plugins/import_hyp/parser.h \
+ pcb_bool.h
 ../src_plugins/import_hyp/hyp_y.o: ../src_plugins/import_hyp/hyp_y.c \
  ../src_plugins/import_hyp/parser.h pcb_bool.h
 ../src_plugins/import_hyp/import_hyp.o: \
@@ -1985,8 +1986,7 @@
  ../src_plugins/io_pcb/parse_common.h pcb-printf.h polygon.h rtree.h \
  rats.h netlist.h route_style.h remove.h set.h flag_str.h compat_fs.h \
  paths.h rats_patch.h hid_actions.h hid_flags.h \
- ../src_plugins/io_pcb/flags.h flag.h ../src_plugins/io_pcb/attribs.h \
- route_style.h obj_poly.h
+ ../src_plugins/io_pcb/attribs.h route_style.h obj_poly.h
 ../src_plugins/io_pcb/io_pcb.o: ../src_plugins/io_pcb/io_pcb.c \
  ../config.h plugins.h ../src_plugins/io_pcb/parse_common.h plug_io.h \
  library.h global_typedefs.h pcb_bool.h unit.h conf.h pcb-printf.h \
