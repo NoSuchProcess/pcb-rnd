@@ -476,7 +476,7 @@ static void nelma_write_objects(FILE * out)
 
 static void nelma_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]), nelma_cookie, 0);
+	pcb_hid_register_attributes(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]), nelma_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 
@@ -975,7 +975,7 @@ static void nelma_set_crosshair(int x, int y, int a)
 static int nelma_usage(const char *topic)
 {
 	fprintf(stderr, "\nnelma exporter command line arguments:\n\n");
-	hid_usage(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]));
+	pcb_hid_usage(nelma_attribute_list, sizeof(nelma_attribute_list) / sizeof(nelma_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x nelma foo.pcb [nelma options]\n\n");
 	return 0;
 }

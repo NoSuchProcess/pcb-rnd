@@ -316,7 +316,7 @@ static void export_test_do_export(pcb_hid_attr_val_t * options)
 static int export_test_usage(const char *topic)
 {
 	fprintf(stderr, "\nexport_test exporter command line arguments:\n\n");
-	hid_usage(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]));
+	pcb_hid_usage(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x export_test foo.pcb [export_test_options]\n\n");
 	return 0;
 }
@@ -324,7 +324,7 @@ static int export_test_usage(const char *topic)
 
 static void export_test_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]), export_test_cookie, 0);
+	pcb_hid_register_attributes(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]), export_test_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 

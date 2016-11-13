@@ -336,7 +336,7 @@ static void eps_do_export(pcb_hid_attr_val_t * options)
 
 static void eps_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
+	pcb_hid_register_attributes(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 
@@ -594,7 +594,7 @@ static void eps_set_crosshair(int x, int y, int action)
 static int eps_usage(const char *topic)
 {
 	fprintf(stderr, "\neps exporter command line arguments:\n\n");
-	hid_usage(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));
+	pcb_hid_usage(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x eps foo.pcb [eps options]\n\n");
 	return 0;
 }

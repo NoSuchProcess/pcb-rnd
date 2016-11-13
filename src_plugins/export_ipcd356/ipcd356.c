@@ -620,7 +620,7 @@ pcb_uninit_t *hid_export_ipcd356_init()
 
 	hid_register_hid(&IPCD356_hid);
 
-	hid_register_attributes(IPCD356_options, sizeof(IPCD356_options) / sizeof(IPCD356_options[0]), ipcd356_cookie, 0);
+	pcb_hid_register_attributes(IPCD356_options, sizeof(IPCD356_options) / sizeof(IPCD356_options[0]), ipcd356_cookie, 0);
 	return NULL;
 }
 

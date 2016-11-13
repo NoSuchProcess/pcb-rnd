@@ -5966,7 +5966,7 @@ pcb_uninit_t hid_export_dxf_init()
 
 	hid_register_hid(&dxf_hid);
 
-	hid_register_attributes(dxf_options, sizeof(dxf_options) / sizeof(dxf_options[0]), dxf_cookie, 0);
+	pcb_hid_register_attributes(dxf_options, sizeof(dxf_options) / sizeof(dxf_options[0]), dxf_cookie, 0);
 
 /*	return hid_dxf_uninit();*/
 	return NULL;

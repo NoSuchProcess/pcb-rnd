@@ -376,3 +376,8 @@ hid_actionv -> pcb_hid_actionv
 hid_actionv_ -> pcb_hid_actionv_
 hid_parse_command -> pcb_hid_parse_command
 hid_parse_actions -> pcb_hid_parse_actions
+hid_register_attributes -> pcb_hid_register_attributes
+hid_remove_attributes_by_cookie -> pcb_hid_remove_attributes_by_cookie
+hid_attributes_uninit -> pcb_hid_attributes_uninit
+hid_usage -> pcb_hid_usage
+hid_usage_option -> pcb_hid_usage_option

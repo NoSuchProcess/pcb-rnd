@@ -325,7 +325,7 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 
 static void svg_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]), svg_cookie, 0);
+	pcb_hid_register_attributes(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]), svg_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 
@@ -686,7 +686,7 @@ static void svg_set_crosshair(int x, int y, int a)
 static int svg_usage(const char *topic)
 {
 	fprintf(stderr, "\nsvg exporter command line arguments:\n\n");
-	hid_usage(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]));
+	pcb_hid_usage(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x svg foo.pcb [svg options]\n\n");
 	return 0;
 }

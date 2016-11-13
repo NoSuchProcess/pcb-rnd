@@ -1367,7 +1367,7 @@ static void ghid_create_listener(void)
 int ghid_usage(const char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
-	conf_usage("plugins/hid_gtk", hid_usage_option);
+	conf_usage("plugins/hid_gtk", pcb_hid_usage_option);
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui gtk [options]\n");
 	return 0;
 }

@@ -744,7 +744,7 @@ static void ps_do_export(pcb_hid_attr_val_t * options)
 
 static void ps_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
+	pcb_hid_register_attributes(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 
@@ -1596,7 +1596,7 @@ void ps_ps_init(pcb_hid_t * hid)
 static int ps_usage(const char *topic)
 {
 	fprintf(stderr, "\nps exporter command line arguments:\n\n");
-	hid_usage(ps_attribute_list, sizeof(ps_attribute_list) / sizeof(ps_attribute_list[0]));
+	pcb_hid_usage(ps_attribute_list, sizeof(ps_attribute_list) / sizeof(ps_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x ps foo.pcb [ps options]\n\n");
 	return 0;
 }

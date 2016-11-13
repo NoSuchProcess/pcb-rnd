@@ -936,7 +936,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 
 static void png_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
+	pcb_hid_register_attributes(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 
@@ -1482,7 +1482,7 @@ static void png_set_crosshair(int x, int y, int a)
 static int png_usage(const char *topic)
 {
 	fprintf(stderr, "\npng exporter command line arguments:\n\n");
-	hid_usage(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));
+	pcb_hid_usage(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x png foo.pcb [png options]\n\n");
 	return 0;
 }

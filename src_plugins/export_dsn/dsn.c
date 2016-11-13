@@ -583,7 +583,7 @@ pcb_uninit_t hid_export_dsn_init()
 	dsn_hid.parse_arguments = dsn_parse_arguments;
 	hid_register_hid(&dsn_hid);
 
-	hid_register_attributes(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
+	pcb_hid_register_attributes(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
 	return hid_dsn_uninit;
 }
 

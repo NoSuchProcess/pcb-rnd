@@ -607,7 +607,7 @@ pcb_uninit_t hid_export_bboard_init()
 	bboard_hid.set_crosshair = bboard_set_crosshair;
 	hid_register_hid(&bboard_hid);
 
-	hid_register_attributes(bboard_options, sizeof(bboard_options) / sizeof(bboard_options[0]), bboard_cookie, 0);
+	pcb_hid_register_attributes(bboard_options, sizeof(bboard_options) / sizeof(bboard_options[0]), bboard_cookie, 0);
 	return NULL;
 }
 

@@ -351,14 +351,14 @@ static void xy_do_export(pcb_hid_attr_val_t * options)
 static int xy_usage(const char *topic)
 {
 	fprintf(stderr, "\nXY exporter command line arguments:\n\n");
-	hid_usage(xy_options, sizeof(xy_options) / sizeof(xy_options[0]));
+	pcb_hid_usage(xy_options, sizeof(xy_options) / sizeof(xy_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x xy foo.pcb [xy_options]\n\n");
 	return 0;
 }
 
 static void xy_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(xy_options, sizeof(xy_options) / sizeof(xy_options[0]), xy_cookie, 0);
+	pcb_hid_register_attributes(xy_options, sizeof(xy_options) / sizeof(xy_options[0]), xy_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 

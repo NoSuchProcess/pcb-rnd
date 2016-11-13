@@ -3751,7 +3751,7 @@ static void lesstif_finish_debug_draw(void)
 static int lesstif_usage(const char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
-	hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));
+	pcb_hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui lesstif [options]\n");
 	return 0;
 }
@@ -3849,5 +3849,5 @@ static void lesstif_begin(void)
 static void lesstif_end(void)
 {
 	pcb_hid_remove_actions_by_cookie(lesstif_cookie);
-	hid_remove_attributes_by_cookie(lesstif_cookie);
+	pcb_hid_remove_attributes_by_cookie(lesstif_cookie);
 }

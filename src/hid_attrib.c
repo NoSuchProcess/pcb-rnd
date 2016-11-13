@@ -5,7 +5,7 @@
 
 pcb_hid_attr_node_t *hid_attr_nodes = 0;
 
-void hid_register_attributes(pcb_hid_attribute_t * a, int n, const char *cookie, int copy)
+void pcb_hid_register_attributes(pcb_hid_attribute_t * a, int n, const char *cookie, int copy)
 {
 	pcb_hid_attr_node_t *ha;
 
@@ -18,7 +18,7 @@ void hid_register_attributes(pcb_hid_attribute_t * a, int n, const char *cookie,
 	ha->cookie = cookie;
 }
 
-void hid_attributes_uninit(void)
+void pcb_hid_attributes_uninit(void)
 {
 	pcb_hid_attr_node_t *ha, *next;
 	for (ha = hid_attr_nodes; ha; ha = next) {
@@ -30,7 +30,7 @@ void hid_attributes_uninit(void)
 	hid_attr_nodes = NULL;
 }
 
-void hid_remove_attributes_by_cookie(const char *cookie)
+void pcb_hid_remove_attributes_by_cookie(const char *cookie)
 {
 	pcb_hid_attr_node_t *ha, *next, *prev = NULL;
 	for (ha = hid_attr_nodes; ha; ha = next) {
@@ -205,18 +205,18 @@ void hid_parse_command_line(int *argc, char ***argv)
 	}
 }
 
-void hid_usage_option(const char *name, const char *help)
+void pcb_hid_usage_option(const char *name, const char *help)
 {
 	fprintf(stderr, "%-20s %s\n", name, help);
 }
 
-void hid_usage(pcb_hid_attribute_t * a, int numa)
+void pcb_hid_usage(pcb_hid_attribute_t * a, int numa)
 {
 	for (; numa > 0; numa--,a++) {
 		const char *help;
 		if (a->help_text == NULL) help = "";
 		else if (a->help_text == ATTR_UNDOCUMENTED) help = "<undocumented>";
 		else help = a->help_text;
-		hid_usage_option(a->name, help);
+		pcb_hid_usage_option(a->name, help);
 	}
 }

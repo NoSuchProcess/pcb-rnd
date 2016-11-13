@@ -49,7 +49,7 @@ static void loghid_parse_arguments_real(int *argc, char ***argv, int is_gui)
 	pcb_hid_t *target;
 	const char *target_name;
 
-	hid_register_attributes(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
+	pcb_hid_register_attributes(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
 	hid_parse_command_line(argc, argv);
 
 	target_name = loghid_attribute_list[HA_target_hid].default_val.str_value;
@@ -78,7 +78,7 @@ static void loghid_parse_arguments_exp(int *argc, char ***argv)
 static int loghid_usage(const char *topic)
 {
 	fprintf(stderr, "\nhidlog command line arguments:\n\n");
-	hid_usage(loghid_attribute_list, NUM_OPTIONS);
+	pcb_hid_usage(loghid_attribute_list, NUM_OPTIONS);
 	fprintf(stderr, "\n");
 	fprintf(stderr, "Usage: pcb-rnd [generic_options] --gui hidlog-gui --target-hid gtk foo.pcb\n");
 	fprintf(stderr, "Usage: pcb-rnd [generic_options] --x hidlog-exp --target-hid png foo.pcb\n");

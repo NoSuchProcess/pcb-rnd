@@ -39,15 +39,15 @@ struct pcb_hid_attribute_s {
 	int hash;										/* for detecting changes. */
 };
 
-extern void hid_register_attributes(pcb_hid_attribute_t *, int, const char *cookie, int copy);
+extern void pcb_hid_register_attributes(pcb_hid_attribute_t *, int, const char *cookie, int copy);
 #define PCB_REGISTER_ATTRIBUTES(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
-{ hid_register_attributes(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
+{ pcb_hid_register_attributes(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
 /* Remove all attributes registered with the given cookie */
-void hid_remove_attributes_by_cookie(const char *cookie);
+void pcb_hid_remove_attributes_by_cookie(const char *cookie);
 
 /* remove all attributes and free the list */
-void hid_attributes_uninit(void);
+void pcb_hid_attributes_uninit(void);
 
 typedef struct pcb_hid_attr_node_s {
 	struct pcb_hid_attr_node_s *next;
@@ -58,6 +58,6 @@ typedef struct pcb_hid_attr_node_s {
 
 extern pcb_hid_attr_node_t *hid_attr_nodes;
 
-void hid_usage(pcb_hid_attribute_t * a, int numa);
-void hid_usage_option(const char *name, const char *help);
+void pcb_hid_usage(pcb_hid_attribute_t * a, int numa);
+void pcb_hid_usage_option(const char *name, const char *help);
 #endif

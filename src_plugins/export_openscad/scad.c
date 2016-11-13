@@ -1170,6 +1170,6 @@ pcb_uninit_t hid_export_openscad_init()
 
 	hid_register_hid(&scad_hid);
 
-	hid_register_attributes(scad_options, sizeof(scad_options) / sizeof(scad_options[0]), openscad_cookie, 0);
+	pcb_hid_register_attributes(scad_options, sizeof(scad_options) / sizeof(scad_options[0]), openscad_cookie, 0);
 	return NULL;
 }

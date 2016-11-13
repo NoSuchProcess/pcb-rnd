@@ -99,7 +99,7 @@ static void lpr_do_export(pcb_hid_attr_val_t * options)
 static void lpr_parse_arguments(int *argc, char ***argv)
 {
 	lpr_get_export_options(0);
-	hid_register_attributes(lpr_options, num_lpr_options, lpr_cookie, 0);
+	pcb_hid_register_attributes(lpr_options, num_lpr_options, lpr_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 
@@ -113,7 +113,7 @@ static pcb_hid_t lpr_hid;
 static int lpr_usage(const char *topic)
 {
 	fprintf(stderr, "\nlpr exporter command line arguments:\n\n");
-	hid_usage(base_lpr_options, sizeof(base_lpr_options) / sizeof(base_lpr_options[0]));
+	pcb_hid_usage(base_lpr_options, sizeof(base_lpr_options) / sizeof(base_lpr_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x lpr foo.pcb [lpr options]\n\n");
 	return 0;
 }

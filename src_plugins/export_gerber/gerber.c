@@ -595,7 +595,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 
 static void gerber_parse_arguments(int *argc, char ***argv)
 {
-	hid_register_attributes(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
+	pcb_hid_register_attributes(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
 	hid_parse_command_line(argc, argv);
 }
 
@@ -1154,7 +1154,7 @@ static void gerber_calibrate(double xval, double yval)
 static int gerber_usage(const char *topic)
 {
 	fprintf(stderr, "\ngerber exporter command line arguments:\n\n");
-	hid_usage(gerber_options, sizeof(gerber_options) / sizeof(gerber_options[0]));
+	pcb_hid_usage(gerber_options, sizeof(gerber_options) / sizeof(gerber_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gerber foo.pcb [gerber options]\n\n");
 	return 0;
 }

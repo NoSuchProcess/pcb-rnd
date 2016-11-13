@@ -126,7 +126,7 @@ void hid_uninit(void)
 	free(hid_list);
 
 	pcb_hid_actions_uninit();
-	hid_attributes_uninit();
+	pcb_hid_attributes_uninit();
 }
 
 void hid_register_hid(pcb_hid_t * hid)
