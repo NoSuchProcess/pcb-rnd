@@ -148,7 +148,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"(X,Y) = %$mD.\n"
 										"It is a pure hole of diameter %$mS.\n"
 										"Name = \"%s\"."
-										"%s", USER_UNITMASK, via->ID, flags_to_string(via->Flags, PCB_TYPE_VIA),
+										"%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA),
 										via->X, via->Y, via->DrillingHole, EMPTY(via->Name), PCB_FLAG_TEST(PCB_FLAG_LOCK, via) ? "It is LOCKED.\n" : "");
 			else
 				report = pcb_strdup_printf("%m+VIA ID# %ld;  Flags:%s\n"
@@ -158,7 +158,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"Annulus = %$mS.\n"
 										"Solder mask hole = %$mS (gap = %$mS).\n"
 										"Name = \"%s\"."
-										"%s", USER_UNITMASK, via->ID, flags_to_string(via->Flags, PCB_TYPE_VIA),
+										"%s", USER_UNITMASK, via->ID, pcb_strflg_f2s(via->Flags, PCB_TYPE_VIA),
 										via->X, via->Y,
 										via->Thickness,
 										via->DrillingHole,
@@ -192,7 +192,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"(X,Y) = %$mD.\n"
 										"It is a mounting hole. Drill width = %$mS.\n"
 										"It is owned by element %$mS.\n"
-										"%s", USER_UNITMASK, Pin->ID, flags_to_string(Pin->Flags, PCB_TYPE_PIN),
+										"%s", USER_UNITMASK, Pin->ID, pcb_strflg_f2s(Pin->Flags, PCB_TYPE_PIN),
 										Pin->X, Pin->Y, Pin->DrillingHole,
 										EMPTY(element->Name[1].TextString), PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin) ? "It is LOCKED.\n" : "");
 			else
@@ -205,7 +205,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 										"Name = \"%s\".\n"
 										"It is owned by element %s\n as pin number %s.\n"
 										"%s", USER_UNITMASK,
-										Pin->ID, flags_to_string(Pin->Flags, PCB_TYPE_PIN),
+										Pin->ID, pcb_strflg_f2s(Pin->Flags, PCB_TYPE_PIN),
 										Pin->X, Pin->Y, Pin->Thickness,
 										Pin->DrillingHole,
 										Pin->Clearance / 2,
@@ -234,7 +234,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"It is on layer %d\n"
 									"and has name \"%s\".\n"
 									"%s", USER_UNITMASK,
-									line->ID, flags_to_string(line->Flags, PCB_TYPE_LINE),
+									line->ID, pcb_strflg_f2s(line->Flags, PCB_TYPE_LINE),
 									line->Point1.X, line->Point1.Y, line->Point1.ID,
 									line->Point2.X, line->Point2.Y, line->Point2.ID,
 									line->Thickness, line->Clearance / 2,
@@ -257,7 +257,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"connects to layer group %d.\n"
 									"SecondPoint(X,Y) = %$mD; ID = %ld; "
 									"connects to layer group %d.\n",
-									USER_UNITMASK, line->ID, flags_to_string(line->Flags, PCB_TYPE_LINE),
+									USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_TYPE_LINE),
 									line->Point1.X, line->Point1.Y,
 									line->Point1.ID, line->group1, line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2);
 			break;
@@ -284,7 +284,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"Bounding Box is %$mD, %$mD.\n"
 									"That makes the end points at %$mD and %$mD.\n"
 									"It is on layer %d.\n"
-									"%s", USER_UNITMASK, Arc->ID, flags_to_string(Arc->Flags, PCB_TYPE_ARC),
+									"%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_TYPE_ARC),
 									Arc->X, Arc->Y,
 									Arc->Width, Arc->Thickness,
 									Arc->Clearance / 2, Arc->StartAngle, Arc->Delta,
@@ -313,7 +313,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"  without using more memory.\n"
 									"It has %d holes and resides on layer %d.\n"
 									"%s", USER_UNITMASK, Polygon->ID,
-									flags_to_string(Polygon->Flags, PCB_TYPE_POLYGON),
+									pcb_strflg_f2s(Polygon->Flags, PCB_TYPE_POLYGON),
 									Polygon->BoundingBox.X1, Polygon->BoundingBox.Y1,
 									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
 									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
@@ -355,7 +355,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"  as pin number %s and is on the %s\n"
 									"side of the board.\n"
 									"%s", USER_UNITMASK, Pad->ID,
-									flags_to_string(Pad->Flags, PCB_TYPE_PAD),
+									pcb_strflg_f2s(Pad->Flags, PCB_TYPE_PAD),
 									Pad->Point1.X, Pad->Point1.Y, Pad->Point1.ID,
 									Pad->Point2.X, Pad->Point2.Y, Pad->Point2.ID,
 									Pad->Thickness, len + Pad->Thickness,
@@ -388,7 +388,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"Mark located at point (X,Y) = %$mD.\n"
 									"It is on the %s side of the board.\n"
 									"%s", USER_UNITMASK,
-									element->ID, flags_to_string(element->Flags, PCB_TYPE_ELEMENT),
+									element->ID, pcb_strflg_f2s(element->Flags, PCB_TYPE_ELEMENT),
 									element->BoundingBox.X1, element->BoundingBox.Y1,
 									element->BoundingBox.X2, element->BoundingBox.Y2,
 									EMPTY(element->Name[0].TextString),
@@ -431,7 +431,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"Direction is %d.\n"
 									"The bounding box is %$mD %$mD.\n"
 									"%s\n"
-									"%s", USER_UNITMASK, text->ID, flags_to_string(text->Flags, PCB_TYPE_TEXT),
+									"%s", USER_UNITMASK, text->ID, pcb_strflg_f2s(text->Flags, PCB_TYPE_TEXT),
 									text->X, text->Y, PCB_SCALE_TEXT(FONT_CAPHEIGHT, text->Scale),
 									text->TextString, text->Direction,
 									text->BoundingBox.X1, text->BoundingBox.Y1,

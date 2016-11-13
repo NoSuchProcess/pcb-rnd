@@ -84,7 +84,7 @@ const int pcb_object_flagbits_len = ENTRIES(pcb_object_flagbits);
 
 /*
  * This helper function maintains a small list of buffers which are
- * used by flags_to_string().  Each buffer is allocated from the heap,
+ * used by pcb_strflg_f2s().  Each buffer is allocated from the heap,
  * but the caller must not free them (they get realloced when they're
  * reused, but never completely freed).
  */
@@ -110,7 +110,7 @@ static char *alloc_buf(int len)
 #undef B
 }
 
-void uninit_strflags_buf(void)
+void pcb_strflg_uninit_buf(void)
 {
 	int n;
 	for(n = 0; n < 10; n++) {
@@ -147,7 +147,7 @@ static void grow_layer_list(int num)
 	return;
 }
 
-void uninit_strflags_layerlist(void)
+void pcb_strflg_uninit_layerlist(void)
 {
 	if (layers != NULL) {
 		free(layers);
@@ -318,7 +318,7 @@ static int error_ignore(const char *msg)
 
 static pcb_flag_t empty_flags;
 
-pcb_flag_t common_string_to_flags(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits)
+pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits)
 {
 	const char *fp, *ep;
 	int flen;
@@ -403,9 +403,9 @@ pcb_flag_t common_string_to_flags(const char *flagstring, int (*error) (const ch
 	return rv.Flags;
 }
 
-pcb_flag_t string_to_flags(const char *flagstring, int (*error) (const char *msg))
+pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg))
 {
-	return common_string_to_flags(flagstring, error, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
+	return pcb_strflg_common_s2f(flagstring, error, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
 }
 
 
@@ -420,7 +420,7 @@ pcb_flag_t string_to_flags(const char *flagstring, int (*error) (const char *msg
  * forcibly set when vias are parsed.
  */
 
-char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits)
+char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits)
 {
 	int len;
 	int i;
@@ -534,9 +534,9 @@ char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t 
 	return buf;
 }
 
-char *flags_to_string(pcb_flag_t flags, int object_type)
+char *pcb_strflg_f2s(pcb_flag_t flags, int object_type)
 {
-	return common_flags_to_string(flags, object_type, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
+	return pcb_strflg_common_f2s(flags, object_type, pcb_object_flagbits, ENTRIES(pcb_object_flagbits));
 }
 
 
@@ -569,12 +569,12 @@ static pcb_flag_bits_t pcb_flagbits[] = {
 #undef N
 
 
-char *pcbflags_to_string(pcb_flag_t flags)
+char *pcb_strflg_board_f2s(pcb_flag_t flags)
 {
-	return common_flags_to_string(flags, PCB_TYPEMASK_ALL, pcb_flagbits, ENTRIES(pcb_flagbits));
+	return pcb_strflg_common_f2s(flags, PCB_TYPEMASK_ALL, pcb_flagbits, ENTRIES(pcb_flagbits));
 }
 
-pcb_flag_t string_to_pcbflags(const char *flagstring, int (*error) (const char *msg))
+pcb_flag_t pcb_strflg_board_s2f(const char *flagstring, int (*error) (const char *msg))
 {
-	return common_string_to_flags(flagstring, error, pcb_flagbits, ENTRIES(pcb_flagbits));
+	return pcb_strflg_common_s2f(flagstring, error, pcb_flagbits, ENTRIES(pcb_flagbits));
 }

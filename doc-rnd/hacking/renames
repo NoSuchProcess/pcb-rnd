@@ -325,3 +325,11 @@ CLEAR_SQUARE -> PCB_FLAG_SQUARE_CLEAR
 ASSIGN_SQUARE -> PCB_FLAG_SQUARE_ASSIGN
 GET_INTCONN -> PCB_FLAG_INTCONN_GET
 TEST_ANY_THERMS -> PCB_FLAG_THERM_TEST_ANY
+common_string_to_flags -> pcb_strflg_common_s2f
+common_flags_to_string -> pcb_strflg_common_f2s
+uninit_strflags_buf -> pcb_strflg_uninit_buf
+uninit_strflags_layerlist -> pcb_strflg_uninit_layerlist
+pcbflags_to_string -> pcb_strflg_board_f2s
+string_to_pcbflags -> pcb_strflg_board_s2f
+string_to_flags -> pcb_strflg_s2f
+flags_to_string -> pcb_strflg_f2s

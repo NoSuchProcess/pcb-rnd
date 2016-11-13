@@ -58,7 +58,7 @@
 #include "rats_patch.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
-#include "flags.h"
+#include "flag_str.h"
 #include "attribs.h"
 #include "route_style.h"
 #include "obj_poly.h"
@@ -77,7 +77,7 @@ static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
  * Flag helper functions
  */
 
-#define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
+#define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
 
 /* --------------------------------------------------------------------------- */
 
@@ -246,7 +246,7 @@ static void WritePCBDataHeader(FILE * FP)
 	pcb_fprintf(FP, "Thermal[%s]\n", c_dtostr(PCB->ThermScale));
 	pcb_fprintf(FP, "DRC[%[0] %[0] %[0] %[0] %[0] %[0]]\n", PCB->Bloat, PCB->Shrink,
 							PCB->minWid, PCB->minSlk, PCB->minDrill, PCB->minRing);
-	fprintf(FP, "Flags(%s)\n", pcbflags_to_string(pcb_flags));
+	fprintf(FP, "Flags(%s)\n", pcb_strflg_board_f2s(pcb_flags));
 	fprintf(FP, "Groups(\"%s\")\n", LayerGroupsToString(&PCB->LayerGroups));
 	fputs("Styles[\"", FP);
 

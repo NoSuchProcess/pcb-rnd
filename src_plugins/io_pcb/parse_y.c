@@ -2069,7 +2069,7 @@ yyreduce:
   case 42:
 #line 581 "parse_y.y" /* yacc.c:1646  */
     {
-			  yy_pcb_flags = string_to_pcbflags ((yyvsp[-1].string), yyerror);
+			  yy_pcb_flags = pcb_strflg_board_s2f((yyvsp[-1].string), yyerror);
 			  free((yyvsp[-1].string));
 			}
 #line 2076 "parse_y.c" /* yacc.c:1646  */
@@ -2761,7 +2761,7 @@ yyreduce:
 
   case 163:
 #line 1710 "parse_y.y" /* yacc.c:1646  */
-    { (yyval.flagtype) = string_to_flags ((yyvsp[0].string), yyerror); free((yyvsp[0].string)); }
+    { (yyval.flagtype) = pcb_strflg_s2f((yyvsp[0].string), yyerror); free((yyvsp[0].string)); }
 #line 2766 "parse_y.c" /* yacc.c:1646  */
     break;
 

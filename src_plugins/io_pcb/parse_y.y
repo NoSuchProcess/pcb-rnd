@@ -579,7 +579,7 @@ pcbflags
 			}
 		| T_FLAGS '(' STRING ')'
 			{
-			  yy_pcb_flags = string_to_pcbflags ($3, yyerror);
+			  yy_pcb_flags = pcb_strflg_board_s2f($3, yyerror);
 			  free($3);
 			}
 		|
@@ -1707,7 +1707,7 @@ pad
 		;
 
 flags		: INTEGER	{ $$ = pcb_flag_old($1); }
-		| STRING	{ $$ = string_to_flags ($1, yyerror); free($1); }
+		| STRING	{ $$ = pcb_strflg_s2f($1, yyerror); free($1); }
 		;
 
 symbols

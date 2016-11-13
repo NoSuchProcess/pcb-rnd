@@ -55,22 +55,22 @@ extern const int pcb_object_flagbits_len;
 /* When passed a string, parse it and return an appropriate set of
    flags.  Errors cause error() to be called with a suitable message;
    if error is NULL, errors are ignored.  */
-pcb_flag_t string_to_flags(const char *flagstring, int (*error) (const char *msg));
+pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg));
 
 /* Given a set of flags for a given object type, return a string which
    can be output to a file.  The returned pointer must not be
    freed.  */
-char *flags_to_string(pcb_flag_t flags, int object_type);
+char *pcb_strflg_f2s(pcb_flag_t flags, int object_type);
 
 /* same as above, for pcb level flags */
-char *pcbflags_to_string(pcb_flag_t flags);
-pcb_flag_t string_to_pcbflags(const char *flagstring, int (*error) (const char *msg));
+char *pcb_strflg_board_f2s(pcb_flag_t flags);
+pcb_flag_t pcb_strflg_board_s2f(const char *flagstring, int (*error) (const char *msg));
 
-void uninit_strflags_buf(void);
-void uninit_strflags_layerlist(void);
+void pcb_strflg_uninit_buf(void);
+void pcb_strflg_uninit_layerlist(void);
 
 /* low level */
-pcb_flag_t common_string_to_flags(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits);
-char *common_flags_to_string(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits);
+pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits);
+char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits);
 
 #endif

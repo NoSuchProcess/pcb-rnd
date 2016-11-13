@@ -104,8 +104,8 @@ int main()
 				if (random() & 4)
 					PCB_FLAG_THERM_ASSIGN(i, 3, &fh);
 
-		str = flags_to_string(fh.Flags, otype);
-		new_flags = string_to_flags(str, 0);
+		str = pcb_strflg_f2s(fh.Flags, otype);
+		new_flags = pcb_strflg_s2f(str, 0);
 
 		count++;
 		if (PCB_FLAG_EQ(fh.Flags, new_flags))
@@ -137,8 +137,8 @@ int main()
 			PCB_FLAG_SET(pcb_flagbits[i].mask, &fh);
 		}
 
-		str = pcbflags_to_string(fh.Flags);
-		new_flags = string_to_pcbflags(str, 0);
+		str = pcb_strflg_board_f2s(fh.Flags);
+		new_flags = pcb_strflg_board_s2f(str, 0);
 
 		count++;
 		if (PCB_FLAG_EQ(fh.Flags, new_flags))

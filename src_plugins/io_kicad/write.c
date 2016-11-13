@@ -37,7 +37,7 @@
 #include "netlist.h"
 #include "obj_all.h"
 
-#define F2S(OBJ, TYPE) flags_to_string ((OBJ)->Flags, TYPE)
+#define F2S(OBJ, TYPE) pcb_strflg_f2s((OBJ)->Flags, TYPE)
 
 /* layer "0" is first copper layer = "0. Back - Solder"
  * and layer "15" is "15. Front - Component"

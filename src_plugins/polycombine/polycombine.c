@@ -331,7 +331,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	ENDALL_LOOP;
 
 	/* Now de-construct the resulting polygon into raw PCB polygons */
-	PolyToPolygonsOnLayer(PCB->Data, Layer, res, string_to_pcbflags("clearpoly", NULL));
+	PolyToPolygonsOnLayer(PCB->Data, Layer, res, pcb_strflg_board_s2f("clearpoly", NULL));
 	RestoreUndoSerialNumber();
 	IncrementUndoSerialNumber();
 	pcb_draw();

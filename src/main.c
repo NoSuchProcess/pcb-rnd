@@ -232,8 +232,8 @@ void pcb_main_uninit(void)
 	hid_uninit();
 	pcb_events_uninit();
 
-	uninit_strflags_buf();
-	uninit_strflags_layerlist();
+	pcb_strflg_uninit_buf();
+	pcb_strflg_uninit_layerlist();
 
 	fp_uninit();
 	fp_host_uninit();

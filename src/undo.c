@@ -546,7 +546,7 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 		return (pcb_true);
 	}
 	pcb_message(PCB_MSG_DEFAULT, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
-	pcb_message(PCB_MSG_DEFAULT, "for UndoFlag Operation. Previous flags: %s\n", flags_to_string(Entry->Data.Flags, 0));
+	pcb_message(PCB_MSG_DEFAULT, "for UndoFlag Operation. Previous flags: %s\n", pcb_strflg_f2s(Entry->Data.Flags, 0));
 	return (pcb_false);
 }
 
