@@ -1287,7 +1287,7 @@ void gts_surface_refine (GtsSurface * surface,
   heap = gts_eheap_new (cost_func, cost_data);
   gts_eheap_freeze (heap);
   gts_surface_foreach_edge (surface, (GtsFunc) create_heap_refine, heap);
-  gts_epcb_heap_thaw (heap);
+  gts_eheap_thaw (heap);
   while ((e = gts_eheap_remove_top (heap, &top_cost)) &&
 	 !(*stop_func) (top_cost,
 			gts_eheap_size (heap) + 
@@ -1670,7 +1670,7 @@ void gts_surface_coarsen (GtsSurface * surface,
 
   gts_eheap_freeze (heap);
   gts_surface_foreach_edge (surface, (GtsFunc) create_heap_coarsen, heap);
-  gts_epcb_heap_thaw (heap);
+  gts_eheap_thaw (heap);
   /* we want to control edge destruction manually */
   gts_allow_floating_edges = TRUE;
   while ((e = gts_eheap_remove_top (heap, &top_cost)) &&

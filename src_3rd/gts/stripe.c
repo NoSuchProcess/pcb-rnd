@@ -35,7 +35,7 @@ typedef struct {
 typedef struct {
   map_t * map;
   GtsEHeap * heap;
-} pcb_heap_t;
+} heap_t;
 
 static tri_data_t    * tri_data_new (GtsTriangle * t);
 static void            tri_data_destroy (tri_data_t * td);
@@ -49,11 +49,11 @@ static void            map_destroy (map_t * map);
 static tri_data_t    * map_lookup (const map_t * map, GtsTriangle * t);
 
 
-static pcb_heap_t        * heap_new (GtsSurface * s);
-static void            heap_destroy (pcb_heap_t * heap);
-static gboolean        heap_is_empty (const pcb_heap_t * heap);
-static GtsTriangle   * pcb_heap_top (const pcb_heap_t * heap);
-static void            heap_remove (pcb_heap_t * heap, GtsTriangle * t);
+static heap_t        * heap_new (GtsSurface * s);
+static void            heap_destroy (heap_t * heap);
+static gboolean        heap_is_empty (const heap_t * heap);
+static GtsTriangle   * heap_top (const heap_t * heap);
+static void            heap_remove (heap_t * heap, GtsTriangle * t);
 
 /* helper functions */
 
@@ -299,7 +299,7 @@ static void tri_data_print (const tri_data_t * td, FILE * fp)
 }
 #endif /* PRINT_HEAP_ELEMENTS */
 
-/* pcb_heap_t functions */
+/* heap_t functions */
 
 static gdouble triangle_priority (gpointer item, gpointer data)
 {
@@ -346,12 +346,12 @@ static void insert_entry_into_heap (gpointer key,
   g_assert (td->pos);
 }
 
-static pcb_heap_t * heap_new (GtsSurface *s)
+static heap_t * heap_new (GtsSurface *s)
 {
-  pcb_heap_t * heap;
+  heap_t * heap;
 
   g_assert (s);
-  heap = g_malloc (sizeof (pcb_heap_t));
+  heap = g_malloc (sizeof (heap_t));
   heap->map = map_new (s);
   heap->heap = gts_eheap_new (triangle_priority, heap->map);
   g_hash_table_foreach (heap->map->ht,
@@ -363,7 +363,7 @@ static pcb_heap_t * heap_new (GtsSurface *s)
   return heap;
 }
 
-static void heap_destroy (pcb_heap_t * heap)
+static void heap_destroy (heap_t * heap)
 {
   if (!heap)
     return;
@@ -372,7 +372,7 @@ static void heap_destroy (pcb_heap_t * heap)
   g_free (heap);
 }
 
-static gboolean heap_is_empty (const pcb_heap_t * heap)
+static gboolean heap_is_empty (const heap_t * heap)
 {
   g_assert (heap);
   g_assert (heap->heap);
@@ -380,17 +380,17 @@ static gboolean heap_is_empty (const pcb_heap_t * heap)
 }
 
 typedef struct {
-  const pcb_heap_t * heap;
+  const heap_t * heap;
   double min_key;
 } min_key_t;
 
-static GtsTriangle * pcb_heap_top (const pcb_heap_t * heap)
+static GtsTriangle * heap_top (const heap_t * heap)
 {
   GtsTriangle * t;
   
   g_assert (heap);
   g_assert (heap->heap);
-  t = gts_epcb_heap_top (heap->heap, NULL);
+  t = gts_eheap_top (heap->heap, NULL);
   return t;
 }
 
@@ -398,7 +398,7 @@ static void decrease_key (gpointer key, gpointer value, gpointer user_data)
 {
   GtsTriangle * t = key;
   tri_data_t * td = value;
-  pcb_heap_t *heap = user_data;
+  heap_t *heap = user_data;
   gdouble k;
   
   (void) t;
@@ -422,7 +422,7 @@ static void decrease_key (gpointer key, gpointer value, gpointer user_data)
   }
 }
 
-static void heap_remove (pcb_heap_t * heap, GtsTriangle * t)
+static void heap_remove (heap_t * heap, GtsTriangle * t)
 {
   tri_data_t * td;
   GHashTable * h;
@@ -504,7 +504,7 @@ static tri_data_t * map_lookup (const map_t * map, GtsTriangle * t)
 
 /* other helper functions */
 
-static GtsTriangle * find_min_neighbor (pcb_heap_t * heap, GtsTriangle * t)
+static GtsTriangle * find_min_neighbor (heap_t * heap, GtsTriangle * t)
 {
   GtsTriangle * min_neighbor = NULL;
   gdouble min_key = G_MAXDOUBLE;
@@ -533,7 +533,7 @@ static GtsTriangle * find_min_neighbor (pcb_heap_t * heap, GtsTriangle * t)
   return min_neighbor;
 }
 
-static GtsTriangle * find_neighbor_forward (pcb_heap_t * heap,
+static GtsTriangle * find_neighbor_forward (heap_t * heap,
 					    GtsTriangle * t,
 					    GtsVertex ** v1,
 					    GtsVertex ** v2,
@@ -575,7 +575,7 @@ static GtsTriangle * find_neighbor_forward (pcb_heap_t * heap,
   return neighbor;
 }
 
-static GtsTriangle * find_neighbor_backward (pcb_heap_t * heap,
+static GtsTriangle * find_neighbor_backward (heap_t * heap,
 					     GtsTriangle * t,
 					     GtsVertex ** v1,
 					     GtsVertex ** v2,
@@ -615,7 +615,7 @@ static GtsTriangle * find_neighbor_backward (pcb_heap_t * heap,
   return neighbor;
 }
 
-static GSList * grow_strip_forward (pcb_heap_t * heap,
+static GSList * grow_strip_forward (heap_t * heap,
 				    GSList * strip,
 				    GtsTriangle * t,
 				    GtsVertex * v1,
@@ -640,7 +640,7 @@ static GSList * grow_strip_forward (pcb_heap_t * heap,
   return strip;
 }
 
-static GSList * grow_strip_backward (pcb_heap_t * heap,
+static GSList * grow_strip_backward (heap_t * heap,
 				     GSList * strip,
 				     GtsTriangle * t,
 				     GtsVertex * v1,
@@ -718,7 +718,7 @@ static gboolean find_right_turn (GtsVertex ** v1,
 GSList * gts_surface_strip (GtsSurface *s)
 {
   GSList * strips = NULL;
-  pcb_heap_t * heap;
+  heap_t * heap;
 
   g_return_val_if_fail (s != NULL, NULL);
 
@@ -729,7 +729,7 @@ GSList * gts_surface_strip (GtsSurface *s)
     GSList * strip = NULL;
 
     /* remove heap top */
-    t1 = pcb_heap_top (heap);
+    t1 = heap_top (heap);
     g_assert (t1);
     heap_remove (heap, t1);
 

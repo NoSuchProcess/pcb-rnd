@@ -261,7 +261,7 @@ GtsPSurface * gts_psurface_new (GtsPSurfaceClass * klass,
 
   gts_eheap_freeze (heap);
   gts_surface_foreach_edge (surface, (GtsFunc) create_heap_coarsen, heap);
-  gts_epcb_heap_thaw (heap);
+  gts_eheap_thaw (heap);
   /* we want to control edge destruction manually */
   gts_allow_floating_edges = TRUE;
   while ((e = gts_eheap_remove_top (heap, &top_cost)) &&

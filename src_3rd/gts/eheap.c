@@ -218,14 +218,14 @@ gpointer gts_eheap_remove_top (GtsEHeap * heap, gdouble * key)
 }
 
 /**
- * gts_epcb_heap_top:
+ * gts_eheap_top:
  * @heap: a #GtsEHeap.
  * @key: a pointer on a gdouble or %NULL.
  *
  * Returns: the element at the top of the heap and optionally (if @key is not
  * %NULL) its key.
  */
-gpointer gts_epcb_heap_top (GtsEHeap * heap, gdouble * key)
+gpointer gts_eheap_top (GtsEHeap * heap, gdouble * key)
 {
   GtsEHeapPair * pair;
   GPtrArray * elts;
@@ -262,13 +262,13 @@ void gts_eheap_destroy (GtsEHeap * heap)
 }
 
 /**
- * gts_epcb_heap_thaw:
+ * gts_eheap_thaw:
  * @heap: a #GtsEHeap.
  *
  * If @heap has been frozen previously using gts_eheap_freeze(), reorder it
  * in O(n) time and unfreeze it.
  */
-void gts_epcb_heap_thaw (GtsEHeap * heap)
+void gts_eheap_thaw (GtsEHeap * heap)
 {
   guint i;
   
@@ -379,7 +379,7 @@ void gts_eheap_decrease_key (GtsEHeap * heap,
  * @heap: a #GtsEHeap.
  *
  * Freezes the heap. Any subsequent operation will not preserve the heap
- * property. Used in conjunction with gts_eheap_insert() and gts_epcb_heap_thaw()
+ * property. Used in conjunction with gts_eheap_insert() and gts_eheap_thaw()
  * to create a heap in O(n) time.
  */
 void gts_eheap_freeze (GtsEHeap * heap)
@@ -430,7 +430,7 @@ void gts_eheap_update (GtsEHeap * heap)
     pair->key = (*func) (pair->data, data);
   }
   
-  gts_epcb_heap_thaw (heap);
+  gts_eheap_thaw (heap);
 }
 
 /**

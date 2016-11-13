@@ -353,7 +353,7 @@ void gts_hsurface_foreach (GtsHSurface * hsurface,
   g_return_if_fail (func != NULL);
   g_return_if_fail (order == G_PRE_ORDER || order == G_POST_ORDER);
 
-  while ((hs = gts_epcb_heap_top (hsurface->expandable, NULL))) 
+  while ((hs = gts_eheap_top (hsurface->expandable, NULL))) 
     gts_hsplit_expand (hs, hsurface);
 
   len = hsurface->split->len;
