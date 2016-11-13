@@ -745,7 +745,7 @@ static void ps_do_export(pcb_hid_attr_val_t * options)
 static void ps_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, pcb_coord_t dx, pcb_coord_t dy)
@@ -1624,7 +1624,7 @@ pcb_uninit_t hid_export_ps_init()
 
 	ps_hid.usage = ps_usage;
 
-	hid_register_hid(&ps_hid);
+	pcb_hid_register_hid(&ps_hid);
 
 	hid_eps_init();
 	return plugin_ps_uninit;

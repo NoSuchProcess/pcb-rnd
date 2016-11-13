@@ -98,7 +98,7 @@ char *pcb_get_infostr(void)
 		gds_append_str(&info, "gEDA Wiki: http://wiki.geda-project.org\n\n");
 
 		gds_append_str(&info, "----- Compile Time Options -----\n");
-		hids = hid_enumerate();
+		hids = pcb_hid_enumerate();
 		gds_append_str(&info, "GUI:\n");
 		for (i = 0; hids[i]; i++) {
 			if (hids[i]->gui) {

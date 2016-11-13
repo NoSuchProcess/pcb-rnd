@@ -572,7 +572,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 static void bboard_parse_arguments(int *argc, char ***argv)
 {
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 
@@ -605,7 +605,7 @@ pcb_uninit_t hid_export_bboard_init()
 	bboard_hid.parse_arguments = bboard_parse_arguments;
 	bboard_hid.calibrate = bboard_calibrate;
 	bboard_hid.set_crosshair = bboard_set_crosshair;
-	hid_register_hid(&bboard_hid);
+	pcb_hid_register_hid(&bboard_hid);
 
 	pcb_hid_register_attributes(bboard_options, sizeof(bboard_options) / sizeof(bboard_options[0]), bboard_cookie, 0);
 	return NULL;

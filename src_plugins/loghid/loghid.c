@@ -50,14 +50,14 @@ static void loghid_parse_arguments_real(int *argc, char ***argv, int is_gui)
 	const char *target_name;
 
 	pcb_hid_register_attributes(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 
 	target_name = loghid_attribute_list[HA_target_hid].default_val.str_value;
 
 	if (is_gui)
-		target = hid_find_gui(target_name);
+		target = pcb_hid_find_gui(target_name);
 	else
-		target = hid_find_exporter(target_name);
+		target = pcb_hid_find_exporter(target_name);
 
 #warning TODO:
 	fprintf(stderr, "Initialize for delegatee: '%s' -> %p\n", target_name, (void *)target);
@@ -121,7 +121,7 @@ pcb_uninit_t hid_loghid_init(void)
 	loghid_gui.usage = loghid_usage;
 	loghid_gui.parse_arguments = loghid_parse_arguments_gui;
 
-	hid_register_hid(&loghid_gui);
+	pcb_hid_register_hid(&loghid_gui);
 
 	/* export version */
 	loghid_exp.struct_size = sizeof(pcb_hid_t);
@@ -132,7 +132,7 @@ pcb_uninit_t hid_loghid_init(void)
 	loghid_exp.usage = loghid_usage;
 	loghid_exp.parse_arguments = loghid_parse_arguments_exp;
 
-	hid_register_hid(&loghid_exp);
+	pcb_hid_register_hid(&loghid_exp);
 
 	return hid_loghid_uninit;
 }

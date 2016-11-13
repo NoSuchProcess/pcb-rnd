@@ -298,7 +298,7 @@ static int bom_usage(const char *topic)
 static void bom_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie, 0);
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 pcb_hid_t bom_hid;
@@ -320,6 +320,6 @@ pcb_uninit_t hid_export_bom_init()
 
 	bom_hid.usage = bom_usage;
 
-	hid_register_hid(&bom_hid);
+	pcb_hid_register_hid(&bom_hid);
 	return NULL;
 }

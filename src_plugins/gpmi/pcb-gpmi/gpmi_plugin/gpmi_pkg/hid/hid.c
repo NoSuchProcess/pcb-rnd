@@ -280,7 +280,7 @@ static void cleanup_hid_reg(gpmi_module *mod, gpmi_cleanup *cl)
 	gpmi_hid_t *hid = cl->argv[0].p;
 	int n;
 
-	hid_remove_hid(hid->hid);
+	pcb_hid_remove_hid(hid->hid);
 
 	for(n = 0; n < hid->attr_num; n++) {
 		free((char *)hid->attr[n].name);
@@ -300,7 +300,7 @@ static void cleanup_hid_reg(gpmi_module *mod, gpmi_cleanup *cl)
 
 int hid_register(gpmi_hid_t *hid)
 {
-	hid_register_hid(hid->hid);
+	pcb_hid_register_hid(hid->hid);
 
 	gpmi_mod_cleanup_insert(NULL, cleanup_hid_reg, "p", hid);
 

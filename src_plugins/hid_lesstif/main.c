@@ -3830,7 +3830,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 	lesstif_hid.create_menu = lesstif_create_menu;
 	lesstif_hid.usage = lesstif_usage;
 
-	hid_register_hid(&lesstif_hid);
+	pcb_hid_register_hid(&lesstif_hid);
 
 	return NULL;
 }

@@ -75,7 +75,7 @@ static const char printusage_help[] = "Print command line arguments of pcb-rnd o
 
 static int help0(void)
 {
-	pcb_hid_t **hl = hid_enumerate();
+	pcb_hid_t **hl = pcb_hid_enumerate();
 	int i;
 
 	u("pcb-rnd Printed Circuit Board editing program, http://repo.hu/projects/pcb-rnd");
@@ -108,7 +108,7 @@ static int help_main(void) {
 
 static int help_invoc(void)
 {
-	pcb_hid_t **hl = hid_enumerate();
+	pcb_hid_t **hl = pcb_hid_enumerate();
 	int i;
 	int n_printer = 0, n_gui = 0, n_exporter = 0;
 
@@ -146,7 +146,7 @@ int ActionPrintUsage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	u("");
 	if (argc > 0) {
-		pcb_hid_t **hl = hid_enumerate();
+		pcb_hid_t **hl = pcb_hid_enumerate();
 		int i;
 
 		if (strcmp(argv[0], "invocation") == 0)  return help_invoc();

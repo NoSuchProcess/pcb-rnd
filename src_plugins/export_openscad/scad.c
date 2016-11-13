@@ -722,7 +722,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 
 static void scad_parse_arguments(int *argc, char ***argv)
 {
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 static int scad_set_layer(const char *name, int group, int empty)
@@ -1168,7 +1168,7 @@ pcb_uninit_t hid_export_openscad_init()
 	scad_hid.fill_polygon = scad_fill_polygon;
 	scad_hid.fill_rect = scad_fill_rect;
 
-	hid_register_hid(&scad_hid);
+	pcb_hid_register_hid(&scad_hid);
 
 	pcb_hid_register_attributes(scad_options, sizeof(scad_options) / sizeof(scad_options[0]), openscad_cookie, 0);
 	return NULL;

@@ -1379,7 +1379,7 @@ static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int i;
 	pcb_hid_t *printer = NULL;
 
-	hids = hid_enumerate();
+	hids = pcb_hid_enumerate();
 	for (i = 0; hids[i]; i++) {
 		if (hids[i]->printer)
 			printer = hids[i];
@@ -1427,7 +1427,7 @@ the measurements in, so that future printouts will be more precise.
 
 static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_hid_t *printer = hid_find_printer();
+	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);
 
 	if (gui->attribute_dialog(printer_calibrate_attrs, 3,
@@ -2124,7 +2124,7 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	ghid_hid.usage = ghid_usage;
 
-	hid_register_hid(&ghid_hid);
+	pcb_hid_register_hid(&ghid_hid);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);

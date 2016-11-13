@@ -92,7 +92,7 @@ static void hid_load_dir(char *dirname)
 	closedir(dir);
 }
 
-void hid_init()
+void pcb_hid_init()
 {
 	pcb_hid_actions_init();
 
@@ -114,7 +114,7 @@ void hid_init()
 	hid_load_dir(Concat("plugins", NULL));
 }
 
-void hid_uninit(void)
+void pcb_hid_uninit(void)
 {
 	if (hid_num_hids > 0) {
 		int i;
@@ -129,7 +129,7 @@ void hid_uninit(void)
 	pcb_hid_attributes_uninit();
 }
 
-void hid_register_hid(pcb_hid_t * hid)
+void pcb_hid_register_hid(pcb_hid_t * hid)
 {
 	int i;
 	int sz = (hid_num_hids + 2) * sizeof(pcb_hid_t *);
@@ -153,7 +153,7 @@ void hid_register_hid(pcb_hid_t * hid)
 	hid_list[hid_num_hids] = 0;
 }
 
-void hid_remove_hid(pcb_hid_t * hid)
+void pcb_hid_remove_hid(pcb_hid_t * hid)
 {
 	int i;
 
@@ -168,7 +168,7 @@ void hid_remove_hid(pcb_hid_t * hid)
 }
 
 
-pcb_hid_t *hid_find_gui(const char *preference)
+pcb_hid_t *pcb_hid_find_gui(const char *preference)
 {
 	int i;
 
@@ -187,7 +187,7 @@ pcb_hid_t *hid_find_gui(const char *preference)
 	exit(1);
 }
 
-pcb_hid_t *hid_find_printer()
+pcb_hid_t *pcb_hid_find_printer()
 {
 	int i;
 
@@ -198,7 +198,7 @@ pcb_hid_t *hid_find_printer()
 	return 0;
 }
 
-pcb_hid_t *hid_find_exporter(const char *which)
+pcb_hid_t *pcb_hid_find_exporter(const char *which)
 {
 	int i;
 
@@ -215,7 +215,7 @@ pcb_hid_t *hid_find_exporter(const char *which)
 	return 0;
 }
 
-pcb_hid_t **hid_enumerate()
+pcb_hid_t **pcb_hid_enumerate()
 {
 	return hid_list;
 }

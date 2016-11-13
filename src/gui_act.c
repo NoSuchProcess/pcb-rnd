@@ -1195,7 +1195,7 @@ Switch to another HID.
 
 static int ActionSwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_hid_t *ng = hid_find_gui(argv[0]);
+	pcb_hid_t *ng = pcb_hid_find_gui(argv[0]);
 	int chg;
 
 	if (ng == NULL) {

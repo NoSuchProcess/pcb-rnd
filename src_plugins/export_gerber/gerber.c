@@ -596,7 +596,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 static void gerber_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 static int drill_sort(const void *va, const void *vb)
@@ -1196,6 +1196,6 @@ pcb_uninit_t hid_export_gerber_init()
 	gerber_hid.set_crosshair = gerber_set_crosshair;
 	gerber_hid.usage = gerber_usage;
 
-	hid_register_hid(&gerber_hid);
+	pcb_hid_register_hid(&gerber_hid);
 	return NULL;
 }

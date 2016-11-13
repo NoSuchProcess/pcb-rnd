@@ -894,7 +894,7 @@ static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	pcb_hid_attr_val_t *vals;
 	int n;
 
-	printer = hid_find_printer();
+	printer = pcb_hid_find_printer();
 	if (!printer) {
 		lesstif_confirm_dialog("No printer?", "Oh well", 0);
 		return 1;
@@ -934,7 +934,7 @@ the measurements in, so that future printouts will be more precise.
 
 static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_hid_t *printer = hid_find_printer();
+	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);
 	if (gui->attribute_dialog(printer_calibrate_attrs, 3,
 														printer_calibrate_values,
@@ -965,7 +965,7 @@ static int Export(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	Widget prev = 0;
 	Widget w;
 
-	hids = hid_enumerate();
+	hids = pcb_hid_enumerate();
 
 	if (!selector) {
 		stdarg_n = 0;

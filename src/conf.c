@@ -1781,7 +1781,7 @@ void conf_uninit(void)
 	int n;
 	htsp_entry_t *e;
 
-	conf_hid_uninit();
+	conf_pcb_hid_uninit();
 
 	for(n = 0; n < CFR_max_alloc; n++)
 		if (conf_root[n] != NULL)

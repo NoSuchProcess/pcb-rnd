@@ -560,7 +560,7 @@ static void dsn_do_export(pcb_hid_attr_val_t * options)
 
 static void dsn_parse_arguments(int *argc, char ***argv)
 {
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 static void hid_dsn_uninit()
@@ -581,7 +581,7 @@ pcb_uninit_t hid_export_dsn_init()
 	dsn_hid.get_export_options = dsn_get_export_options;
 	dsn_hid.do_export = dsn_do_export;
 	dsn_hid.parse_arguments = dsn_parse_arguments;
-	hid_register_hid(&dsn_hid);
+	pcb_hid_register_hid(&dsn_hid);
 
 	pcb_hid_register_attributes(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
 	return hid_dsn_uninit;

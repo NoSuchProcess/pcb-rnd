@@ -47,7 +47,7 @@ void pcb_hid_remove_attributes_by_cookie(const char *cookie)
 	}
 }
 
-void hid_parse_command_line(int *argc, char ***argv)
+void pcb_hid_parse_command_line(int *argc, char ***argv)
 {
 	pcb_hid_attr_node_t *ha;
 	int i, e, ok;

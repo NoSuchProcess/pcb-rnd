@@ -229,7 +229,7 @@ void pcb_main_uninit(void)
 	PCB = NULL;
 
 	plugins_uninit();
-	hid_uninit();
+	pcb_hid_uninit();
 	pcb_events_uninit();
 
 	pcb_strflg_uninit_buf();
@@ -382,16 +382,16 @@ int main(int argc, char *argv[])
 	pcb_events_init();
 
 	buildin_init();
-	hid_init();
+	pcb_hid_init();
 	plugins_init();
 
 
 	/* Export pcb from command line if requested.  */
 	switch(do_what) {
-		case DO_PRINT:   exporter = gui = hid_find_printer(); break;
-		case DO_EXPORT:  exporter = gui = hid_find_exporter(hid_name); break;
+		case DO_PRINT:   exporter = gui = pcb_hid_find_printer(); break;
+		case DO_EXPORT:  exporter = gui = pcb_hid_find_exporter(hid_name); break;
 		case DO_GUI:
-			gui = hid_find_gui(argv[2]);
+			gui = pcb_hid_find_gui(argv[2]);
 			if (gui == NULL) {
 				pcb_message(PCB_MSG_DEFAULT, "Can't find the gui requested.\n");
 				exit(1);
@@ -404,7 +404,7 @@ int main(int argc, char *argv[])
 
 			gui = NULL;
 			conf_loop_list_str(&conf_core.rc.preferred_gui, i, g, n) {
-				gui = hid_find_gui(g);
+				gui = pcb_hid_find_gui(g);
 				if (gui != NULL)
 					break;
 			}
@@ -412,7 +412,7 @@ int main(int argc, char *argv[])
 			/* try anything */
 			if (gui == NULL) {
 				pcb_message(PCB_MSG_DEFAULT, "Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
-				gui = hid_find_gui(NULL);
+				gui = pcb_hid_find_gui(NULL);
 			}
 		}
 	}

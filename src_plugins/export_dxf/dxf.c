@@ -4344,7 +4344,7 @@ static void dxf_parse_arguments(int *argc, char ***argv)
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_parse_arguments () function.\n", __FILE__, __LINE__);
 #endif
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Leaving dxf_parse_arguments () function.\n", __FILE__, __LINE__);
 #endif
@@ -5964,7 +5964,7 @@ pcb_uninit_t hid_export_dxf_init()
 	dxf_hid.fill_polygon = dxf_fill_polygon;
 	dxf_hid.fill_rect = dxf_fill_rect;
 
-	hid_register_hid(&dxf_hid);
+	pcb_hid_register_hid(&dxf_hid);
 
 	pcb_hid_register_attributes(dxf_options, sizeof(dxf_options) / sizeof(dxf_options[0]), dxf_cookie, 0);
 

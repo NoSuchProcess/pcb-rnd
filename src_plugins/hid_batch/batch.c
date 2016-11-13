@@ -162,7 +162,7 @@ static void batch_do_exit(pcb_hid_t *hid)
 
 static void batch_parse_arguments(int *argc, char ***argv)
 {
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 static void batch_invalidate_lr(int l, int r, int t, int b)
@@ -394,7 +394,7 @@ pcb_uninit_t hid_hid_batch_init()
 	batch_hid.propedit_add_stat = batch_propedit_add_stat;
 
 
-	hid_register_hid(&batch_hid);
+	pcb_hid_register_hid(&batch_hid);
 	return NULL;
 }
 

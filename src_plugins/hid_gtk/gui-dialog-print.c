@@ -383,7 +383,7 @@ void ghid_dialog_export(void)
 	 * reflected in this dialog box.
 	 */
 
-	hids = hid_enumerate();
+	hids = pcb_hid_enumerate();
 	for (i = 0; hids[i]; i++) {
 		if (hids[i]->exporter) {
 			no_exporter = FALSE;

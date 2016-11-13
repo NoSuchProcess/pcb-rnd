@@ -34,13 +34,13 @@ const conf_hid_callbacks_t *conf_hid_set_cb(conf_native_t *cfg, conf_hid_id_t id
 static int conf_hid_id_next = 0;
 static htpp_t *conf_hid_ids = NULL;
 
-static void conf_hid_init(void)
+static void conf_pcb_hid_init(void)
 {
 	if (conf_hid_ids == NULL)
 		conf_hid_ids = htpp_alloc(ptrhash, ptrkeyeq);
 }
 
-void conf_hid_uninit(void)
+void conf_pcb_hid_uninit(void)
 {
 	if (conf_hid_ids != NULL) {
 		htpp_free(conf_hid_ids);
@@ -55,7 +55,7 @@ conf_hid_id_t conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb)
 	if (cookie == NULL)
 		return -1;
 
-	conf_hid_init();
+	conf_pcb_hid_init();
 	if (htpp_getentry(conf_hid_ids, (void *)cookie) != NULL)
 		return -1; /* already registered */
 

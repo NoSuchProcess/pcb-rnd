@@ -359,7 +359,7 @@ static int xy_usage(const char *topic)
 static void xy_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(xy_options, sizeof(xy_options) / sizeof(xy_options[0]), xy_cookie, 0);
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 pcb_hid_t xy_hid;
@@ -381,6 +381,6 @@ pcb_uninit_t hid_export_xy_init()
 
 	xy_hid.usage = xy_usage;
 
-	hid_register_hid(&xy_hid);
+	pcb_hid_register_hid(&xy_hid);
 	return NULL;
 }

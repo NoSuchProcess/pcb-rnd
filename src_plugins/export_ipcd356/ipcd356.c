@@ -598,7 +598,7 @@ static void IPCD356_do_export(pcb_hid_attr_val_t * options)
 
 static void IPCD356_parse_arguments(int *argc, char ***argv)
 {
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 pcb_hid_t IPCD356_hid;
@@ -618,7 +618,7 @@ pcb_uninit_t *hid_export_ipcd356_init()
 	IPCD356_hid.do_export = IPCD356_do_export;
 	IPCD356_hid.parse_arguments = IPCD356_parse_arguments;
 
-	hid_register_hid(&IPCD356_hid);
+	pcb_hid_register_hid(&IPCD356_hid);
 
 	pcb_hid_register_attributes(IPCD356_options, sizeof(IPCD356_options) / sizeof(IPCD356_options[0]), ipcd356_cookie, 0);
 	return NULL;

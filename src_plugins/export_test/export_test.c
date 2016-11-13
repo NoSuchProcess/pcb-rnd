@@ -325,7 +325,7 @@ static int export_test_usage(const char *topic)
 static void export_test_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]), export_test_cookie, 0);
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 pcb_hid_t export_test_hid;
@@ -347,6 +347,6 @@ pcb_uninit_t hid_export_test_init()
 
 	export_test_hid.usage = export_test_usage;
 
-	hid_register_hid(&export_test_hid);
+	pcb_hid_register_hid(&export_test_hid);
 	return NULL;
 }

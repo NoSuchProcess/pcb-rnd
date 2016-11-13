@@ -326,7 +326,7 @@ static void svg_do_export(pcb_hid_attr_val_t * options)
 static void svg_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]), svg_cookie, 0);
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 static int svg_set_layer(const char *name, int group, int empty)
@@ -729,7 +729,7 @@ pcb_uninit_t hid_export_svg_init()
 
 	svg_hid.usage = svg_usage;
 
-	hid_register_hid(&svg_hid);
+	pcb_hid_register_hid(&svg_hid);
 
 	return NULL;
 }

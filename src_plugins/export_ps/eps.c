@@ -337,7 +337,7 @@ static void eps_do_export(pcb_hid_attr_val_t * options)
 static void eps_parse_arguments(int *argc, char ***argv)
 {
 	pcb_hid_register_attributes(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 static int is_mask;
@@ -634,5 +634,5 @@ void hid_eps_init()
 
 	eps_hid.usage = eps_usage;
 
-	hid_register_hid(&eps_hid);
+	pcb_hid_register_hid(&eps_hid);
 }

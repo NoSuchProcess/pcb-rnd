@@ -108,7 +108,7 @@ static void remote_do_exit(pcb_hid_t *hid)
 
 static void remote_parse_arguments(int *argc, char ***argv)
 {
-	hid_parse_command_line(argc, argv);
+	pcb_hid_parse_command_line(argc, argv);
 }
 
 static void remote_invalidate_lr(int l, int r, int t, int b)
@@ -429,7 +429,7 @@ pcb_uninit_t hid_hid_remote_init()
 
 	PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)
 
-	hid_register_hid(&remote_hid);
+	pcb_hid_register_hid(&remote_hid);
 
 
 	return hid_hid_remote_uninit;

@@ -420,3 +420,12 @@ hid_restore_layer_ons -> pcb_hid_restore_layer_ons
 hid_get_flag -> pcb_hid_get_flag
 derive_default_filename -> pcb_derive_default_filename
 layer_type_to_file_name -> pcb_layer_type_to_file_name
+hid_init -> pcb_hid_init
+hid_uninit -> pcb_hid_uninit
+hid_find_gui -> pcb_hid_find_gui
+hid_find_printer -> pcb_hid_find_printer
+hid_find_exporter -> pcb_hid_find_exporter
+hid_enumerate -> pcb_hid_enumerate
+hid_parse_command_line -> pcb_hid_parse_command_line
+hid_register_hid -> pcb_hid_register_hid
+hid_remove_hid -> pcb_hid_remove_hid
