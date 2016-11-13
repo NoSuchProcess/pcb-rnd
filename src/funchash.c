@@ -58,13 +58,13 @@ static unsigned fh_hash(const void *key)
 	return strhash_case((char *)k->key) ^ ptrhash((void *)k->cookie);
 }
 
-void funchash_init(void)
+void pcb_funchash_init(void)
 {
 	funchash = htpi_alloc(fh_hash, keyeq);
-	funchash_set_table(Functions, ENTRIES(Functions), NULL);
+	pcb_funchash_set_table(Functions, ENTRIES(Functions), NULL);
 }
 
-void funchash_uninit(void)
+void pcb_funchash_uninit(void)
 {
 	htpi_entry_t *e;
 
@@ -79,7 +79,7 @@ void funchash_uninit(void)
 	funchash = NULL;
 }
 
-void funchash_remove_cookie(const char *cookie)
+void pcb_funchash_remove_cookie(const char *cookie)
 {
 	htpi_entry_t *e;
 
@@ -93,7 +93,7 @@ void funchash_remove_cookie(const char *cookie)
 	}
 }
 
-int funchash_get(const char *key, const char *cookie)
+int pcb_funchash_get(const char *key, const char *cookie)
 {
 	fh_key_t new_key;
 	htpi_entry_t *e;
@@ -110,12 +110,12 @@ int funchash_get(const char *key, const char *cookie)
 	return e->value;
 }
 
-int funchash_set(const char *key, int val, const char *cookie)
+int pcb_funchash_set(const char *key, int val, const char *cookie)
 {
 	fh_key_t *new_key;
 	int kl;
 
-	if (funchash_get(key, cookie) >= 0)
+	if (pcb_funchash_get(key, cookie) >= 0)
 		return -1;
 
 	kl = strlen(key);
@@ -127,12 +127,12 @@ int funchash_set(const char *key, int val, const char *cookie)
 	return 0;
 }
 
-int funchash_set_table(pcb_funchash_table_t *table, int numelem, const char *cookie)
+int pcb_funchash_set_table(pcb_funchash_table_t *table, int numelem, const char *cookie)
 {
 	int i, rv = 0;
 
 	for (i = 0; i < numelem; i++)
-		rv |= funchash_set(table[i].key, table[i].val, cookie);
+		rv |= pcb_funchash_set(table[i].key, table[i].val, cookie);
 
 	return rv;
 }

@@ -83,7 +83,7 @@ int ActionAtomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (argc != 1)
 		PCB_AFAIL(atomic);
 
-	switch (funchash_get(argv[0], NULL)) {
+	switch (pcb_funchash_get(argv[0], NULL)) {
 	case F_Save:
 		SaveUndoSerialNumber();
 		break;
@@ -232,7 +232,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			SetChangedFlag(pcb_true);
 	}
 	else if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 			/* clear 'undo objects' list */
 		case F_ClearList:
 			ClearUndoList(pcb_false);

@@ -130,7 +130,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (function) {
 		int type;
 
-		switch (funchash_get(function, NULL)) { /* select objects by their names */
+		switch (pcb_funchash_get(function, NULL)) { /* select objects by their names */
 		case F_ElementByName:
 			type = PCB_TYPE_ELEMENT;
 			goto commonByName;
@@ -288,7 +288,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		int type;
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 			/* select objects by their names */
 		case F_ElementByName:
 			type = PCB_TYPE_ELEMENT;

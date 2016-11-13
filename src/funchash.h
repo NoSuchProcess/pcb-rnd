@@ -20,7 +20,7 @@
  *
  */
 
-/* Table entry format for funchash_set_table() */
+/* Table entry format for pcb_funchash_set_table() */
 typedef struct {
 	const char *key;
 	int val;
@@ -31,17 +31,17 @@ typedef struct {
    should use cookie==NULL. */
 
 /* Resolve a key string into an integer ID */
-int funchash_get(const char *key, const char *cookie);
+int pcb_funchash_get(const char *key, const char *cookie);
 
 /* Store key string - integer ID pair */
-int funchash_set(const char *key, int val, const char *cookie);
+int pcb_funchash_set(const char *key, int val, const char *cookie);
 
 /* Store multiple key strings - integer ID pairs using a table */
-int funchash_set_table(pcb_funchash_table_t *table, int numelem, const char *cookie);
+int pcb_funchash_set_table(pcb_funchash_table_t *table, int numelem, const char *cookie);
 
 /* Remove all keys inserted for a cookie */
-void funchash_remove_cookie(const char *cookie);
+void pcb_funchash_remove_cookie(const char *cookie);
 
 /* Init-uninit the hash */
-void funchash_init(void);
-void funchash_uninit(void);
+void pcb_funchash_init(void);
+void pcb_funchash_uninit(void);

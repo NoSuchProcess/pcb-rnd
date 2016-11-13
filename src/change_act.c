@@ -78,7 +78,7 @@ static int ActionChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb
 	void *ptr1, *ptr2, *ptr3;
 
 	if (function && delta) {
-		int funcid = funchash_get(function, NULL);
+		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
 			gui->get_coords(_("Select an Object"), &x, &y);
@@ -95,7 +95,7 @@ static int ActionChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb
 		}
 		else
 			value = 2 * GetValue(delta, units, &absolute, NULL);
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
 				if (type != PCB_TYPE_NONE)
@@ -190,7 +190,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		return;
 	}
 
-	switch (funchash_get(what, NULL)) {
+	switch (pcb_funchash_get(what, NULL)) {
 	case F_Object:
 		{
 			int type;
@@ -264,7 +264,7 @@ static int ActionChangeHole(int argc, const char **argv, pcb_coord_t x, pcb_coor
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -306,7 +306,7 @@ static int ActionChangePaste(int argc, const char **argv, pcb_coord_t x, pcb_coo
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -392,7 +392,7 @@ static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 
 	if (function && delta) {
-		int funcid = funchash_get(function, NULL);
+		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
 			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
@@ -494,7 +494,7 @@ static int ActionChange2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_c
 	pcb_coord_t value;
 
 	if (function && delta) {
-		int funcid = funchash_get(function, NULL);
+		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
 			gui->get_coords(_("Select an Object"), &x, &y);
@@ -509,7 +509,7 @@ static int ActionChange2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_c
 		else
 			value = GetValue(delta, units, &absolute, NULL);
 
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
 
@@ -651,7 +651,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int pinnum;
 
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 			/* change the name of an object */
 		case F_Object:
 			{
@@ -728,7 +728,7 @@ static int ActionChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_coor
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -781,7 +781,7 @@ static int ActionChangeNonetlist(int argc, const char **argv, pcb_coord_t x, pcb
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 		case F_Element:
@@ -827,7 +827,7 @@ static int ActionChangeSquare(int argc, const char **argv, pcb_coord_t x, pcb_co
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -889,7 +889,7 @@ static int ActionSetSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function && *function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -941,7 +941,7 @@ static int ActionClearSquare(int argc, const char **argv, pcb_coord_t x, pcb_coo
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function && *function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -992,7 +992,7 @@ static int ActionChangeOctagon(int argc, const char **argv, pcb_coord_t x, pcb_c
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -1047,7 +1047,7 @@ static int ActionSetOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coor
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -1103,7 +1103,7 @@ static int ActionClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_co
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleObject:
 		case F_Object:
 			{
@@ -1185,7 +1185,7 @@ static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		kind = GetValue(style, NULL, &absolute, NULL);
 		if (absolute)
-			switch (funchash_get(function, NULL)) {
+			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
 				if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind);
@@ -1318,7 +1318,7 @@ static int ActionSetValue(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	if (function && val) {
 		value = GetValue(val, units, &absolute, NULL);
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ViaDrillingHole:
 			SetViaDrillingHole(absolute ? value : value + conf_core.design.via_drilling_hole, pcb_false);
 			hid_action("RouteStylesChanged");
@@ -1393,7 +1393,7 @@ static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	}
 
 	if (function && delta) {
-		int funcid = funchash_get(function, NULL);
+		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
 			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
@@ -1465,7 +1465,7 @@ static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_co
 	}
 
 	if (function && delta) {
-		int funcid = funchash_get(function, NULL);
+		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
 			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);

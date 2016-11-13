@@ -78,7 +78,7 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	if (function) {
 		if (conf_core.temp.rat_warn)
 			pcb_clear_warnings();
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_AllRats:
 			if (AddAllRats(pcb_false, NULL))
 				SetChangedFlag(pcb_true);
@@ -148,7 +148,7 @@ static int ActionConnection(int argc, const char **argv, pcb_coord_t x, pcb_coor
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_Find:
 			{
 				gui->get_coords(_("Click on a connection"), &x, &y);
@@ -199,7 +199,7 @@ static int ActionDeleteRats(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if (function) {
 		if (conf_core.temp.rat_warn)
 			pcb_clear_warnings();
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_AllRats:
 			if (DeleteRats(pcb_false))
 				SetChangedFlag(pcb_true);

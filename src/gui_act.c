@@ -221,7 +221,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 	str_dir = PCB_ACTION_ARG(1);
 
 	if (function && (!str_dir || !*str_dir)) {
-		switch (id = funchash_get(function, NULL)) {
+		switch (id = pcb_funchash_get(function, NULL)) {
 
 			/* redraw layout */
 		case F_ClearAndRedraw:
@@ -526,7 +526,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 		}
 	}
 	else if (function && str_dir) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_ToggleGrid:
 			if (argc > 2) {
 				PCB->GridOffsetX = GetValue(argv[1], NULL, NULL, NULL);
@@ -615,7 +615,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		Note.X = Crosshair.X;
 		Note.Y = Crosshair.Y;
 		pcb_notify_crosshair_change(pcb_false);
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_Arc:
 			SetMode(PCB_MODE_ARC);
 			break;
@@ -910,7 +910,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function && PCB->ElementOn) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
 				int type;
@@ -991,7 +991,7 @@ static int ActionMarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb_c
 			pcb_notify_mark_change(pcb_true);
 		}
 	}
-	else if (funchash_get(function, NULL) == F_Center) {
+	else if (pcb_funchash_get(function, NULL) == F_Center) {
 		pcb_notify_mark_change(pcb_false);
 		Marked.status = pcb_true;
 		Marked.X = Crosshair.X;

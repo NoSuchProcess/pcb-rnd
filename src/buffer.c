@@ -772,7 +772,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 	pcb_notify_crosshair_change(pcb_false);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 			/* clear contents of paste buffer */
 		case F_Clear:
 			pcb_buffer_clear(PCB_PASTEBUFFER);

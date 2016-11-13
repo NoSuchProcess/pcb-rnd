@@ -61,7 +61,7 @@ static int ActionMorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_co
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
 				int type;
@@ -120,7 +120,7 @@ static int ActionPolygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	const char *function = PCB_ACTION_ARG(0);
 	if (function && conf_core.editor.mode == PCB_MODE_POLYGON) {
 		pcb_notify_crosshair_change(pcb_false);
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 			/* close open polygon if possible */
 		case F_Close:
 			ClosePolygon();

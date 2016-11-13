@@ -342,3 +342,9 @@ leaky_malloc -> pcb_leaky_malloc
 leaky_calloc -> pcb_leaky_calloc
 leaky_realloc -> pcb_leaky_realloc
 leaky_strdup -> pcb_leaky_strdup
+funchash_get -> pcb_funchash_get
+funchash_set -> pcb_funchash_set
+funchash_set_table -> pcb_funchash_set_table
+funchash_remove_cookie -> pcb_funchash_remove_cookie
+funchash_init -> pcb_funchash_init
+funchash_uninit -> pcb_funchash_uninit

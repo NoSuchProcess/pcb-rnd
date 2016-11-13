@@ -237,7 +237,7 @@ void pcb_main_uninit(void)
 
 	fp_uninit();
 	fp_host_uninit();
-	funchash_uninit();
+	pcb_funchash_uninit();
 	free(hid_argv_orig);
 	conf_uninit();
 }
@@ -360,7 +360,7 @@ int main(int argc, char *argv[])
 
 	srand(time(NULL));						/* Set seed for rand() */
 
-	funchash_init();
+	pcb_funchash_init();
 	initialize_units();
 	polygon_init();
 

@@ -113,7 +113,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		return 1;
 	}
 
-	switch (funchash_get(function, NULL)) {
+	switch (pcb_funchash_get(function, NULL)) {
 	case F_Layout:
 		{
 			gui->edit_attributes("Layout Attributes", &(PCB->Attributes));
@@ -217,7 +217,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 		bad = 1;
 	}
 	else {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_All:
 			all = 1;
 			break;
@@ -326,7 +326,7 @@ static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int err = 0;
 
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 				element = (pcb_element_t *) ptrtmp;
@@ -415,7 +415,7 @@ static int ActionMoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, 
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
 				int type;
@@ -729,7 +729,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	pcb_bool changed = pcb_false;
 
 	if (function) {
-		switch (funchash_get(function, NULL)) {
+		switch (pcb_funchash_get(function, NULL)) {
 		case F_All:
 			ALLLINE_LOOP(PCB->Data);
 			{
