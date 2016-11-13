@@ -218,7 +218,7 @@ save) before quitting.
 static int CommandQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (!PCB->Changed || gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
-		QuitApplication();
+		pcb_quit_app();
 	return 0;
 }
 
@@ -237,7 +237,7 @@ confirmation.
 
 static int CommandReallyQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	QuitApplication();
+	pcb_quit_app();
 	return 0;
 }
 

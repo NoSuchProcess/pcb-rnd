@@ -863,7 +863,7 @@ static int About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (!about) {
 		XmString xs;
 		stdarg_n = 0;
-		xs = XmStringCreatePCB(GetInfoString());
+		xs = XmStringCreatePCB(pcb_get_infostr());
 		stdarg(XmNmessageString, xs);
 		stdarg(XmNtitle, "About pcb-rnd");
 		about = XmCreateInformationDialog(mainwind, XmStrCast("about"), stdarg_args, stdarg_n);

@@ -88,7 +88,7 @@ void ghid_dialog_about(void)
 	dialog = gtk_message_dialog_new(GTK_WINDOW(out->top_window),
 																	(GtkDialogFlags) (GTK_DIALOG_MODAL
 																										| GTK_DIALOG_DESTROY_WITH_PARENT),
-																	GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "%s", GetInfoString());
+																	GTK_MESSAGE_INFO, GTK_BUTTONS_OK, "%s", pcb_get_infostr());
 
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);

@@ -37,7 +37,7 @@
  * quits application
  */
 extern void pcb_main_uninit(void);
-void QuitApplication(void)
+void pcb_quit_app(void)
 {
 	/*
 	 * save data if necessary.  It not needed, then don't trigger EmergencySave
@@ -62,7 +62,7 @@ void QuitApplication(void)
  * Can be used for things like "about" dialog boxes.
  */
 
-char *GetInfoString(void)
+char *pcb_get_infostr(void)
 {
 	pcb_hid_t **hids;
 	int i;

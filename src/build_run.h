@@ -26,10 +26,10 @@
 
 /* build info and run control */
 
-void QuitApplication(void);
+void pcb_quit_app(void);
 
 /* Returns a string with info about this copy of pcb. */
-char *GetInfoString(void);
+char *pcb_get_infostr(void);
 
 const char *pcb_author(void);
 

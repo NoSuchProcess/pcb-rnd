@@ -344,7 +344,7 @@ static int ActionQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		exit(0);
 	}
 	if (!PCB->Changed || gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
-		QuitApplication();
+		pcb_quit_app();
 	return 1;
 }
 

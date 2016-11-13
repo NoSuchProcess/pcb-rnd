@@ -179,3 +179,5 @@ CopyObjectToBuffer -> pcb_copy_obj_to_buffer
 LoadFootprint -> pcb_load_footprint
 CreateNewBuffer -> pcb_buffer_new
 PASTEBUFFER -> PCB_PASTEBUFFER
+QuitApplication -> pcb_quit_app
+GetInfoString -> pcb_get_infostr

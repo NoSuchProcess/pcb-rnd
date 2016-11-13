@@ -1205,7 +1205,7 @@ static int ActionSwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	next_gui = ng;
 	chg = PCB->Changed;
-	QuitApplication();
+	pcb_quit_app();
 	PCB->Changed = chg;
 
 	return 0;
