@@ -126,7 +126,7 @@ numbered paste buffer.
 
 static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		int type;
 
@@ -155,13 +155,13 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 		commonByName:
 			{
-				const char *pattern = ACTION_ARG(1);
+				const char *pattern = PCB_ACTION_ARG(1);
 				pcb_search_method_t method = SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (SelectObjectByName(type, pattern, pcb_true, method))
 						SetChangedFlag(pcb_true);
-					if (ACTION_ARG(1) == NULL)
+					if (PCB_ACTION_ARG(1) == NULL)
 						free((char*)pattern);
 				}
 				break;
@@ -184,7 +184,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				box.X2 = MAX(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
 				notify_crosshair_change(pcb_false);
-				NotifyBlock();
+				pcb_notify_block();
 				if (Crosshair.AttachedBox.State == STATE_THIRD && SelectBlock(&box, pcb_true)) {
 					SetChangedFlag(pcb_true);
 					Crosshair.AttachedBox.State = STATE_FIRST;
@@ -236,7 +236,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			break;
 
 		default:
-			AFAIL(select);
+			PCB_AFAIL(select);
 			break;
 		}
 	}
@@ -285,7 +285,7 @@ type specified are unselected.
 
 static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		int type;
 		switch (funchash_get(function, NULL)) {
@@ -314,13 +314,13 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 		commonByName:
 			{
-				const char *pattern = ACTION_ARG(1);
+				const char *pattern = PCB_ACTION_ARG(1);
 				pcb_search_method_t method = SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (SelectObjectByName(type, pattern, pcb_false, method))
 						SetChangedFlag(pcb_true);
-					if (ACTION_ARG(1) == NULL)
+					if (PCB_ACTION_ARG(1) == NULL)
 						free((char*)pattern);
 				}
 				break;
@@ -336,7 +336,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				box.X2 = MAX(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
 				notify_crosshair_change(pcb_false);
-				NotifyBlock();
+				pcb_notify_block();
 				if (Crosshair.AttachedBox.State == STATE_THIRD && SelectBlock(&box, pcb_false)) {
 					SetChangedFlag(pcb_true);
 					Crosshair.AttachedBox.State = STATE_FIRST;
@@ -369,7 +369,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			break;
 
 		default:
-			AFAIL(unselect);
+			PCB_AFAIL(unselect);
 			break;
 
 		}

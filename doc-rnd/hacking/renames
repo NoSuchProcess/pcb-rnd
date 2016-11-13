@@ -116,3 +116,12 @@ cost_t -> pcb_cost_t
 EventMoveCrosshair -> pcb_event_move_crosshair
 AdjustAttachedObjects -> pcb_adjust_attached_objects
 
+warpNoWhere -> pcb_warp_nowhere
+get_style_size -> pcb_get_style_size
+NotifyLine -> pcb_notify_line
+NotifyBlock -> pcb_notify_block
+NotifyMode -> pcb_notify_mode
+ClearWarnings -> pcb_clear_warnings
+ReleaseMode -> pcb_release_mode
+AFAIL -> PCB_AFAIL
+ACTION_ARG -> PCB_ACTION_ARG

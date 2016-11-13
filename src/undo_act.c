@@ -81,7 +81,7 @@ Does a Restore if there was nothing to undo, else does a Close.
 int ActionAtomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (argc != 1)
-		AFAIL(atomic);
+		PCB_AFAIL(atomic);
 
 	switch (funchash_get(argv[0], NULL)) {
 	case F_Save:
@@ -126,7 +126,7 @@ same serial number will be undone (or redone) as a group.  See
 
 int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
 		/* don't allow undo in the middle of an operation */
 		if (conf_core.editor.mode != PCB_MODE_POLYGON_HOLE && Crosshair.AttachedObject.State != STATE_FIRST)

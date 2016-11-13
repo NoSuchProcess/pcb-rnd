@@ -151,13 +151,13 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 int LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *name = ACTION_ARG(0);
-	const char *refdes = ACTION_ARG(1);
-	const char *value = ACTION_ARG(2);
+	const char *name = PCB_ACTION_ARG(0);
+	const char *refdes = PCB_ACTION_ARG(1);
+	const char *value = PCB_ACTION_ARG(2);
 	pcb_element_t *e;
 
 	if (!name)
-		AFAIL(loadfootprint);
+		PCB_AFAIL(loadfootprint);
 
 	if (LoadFootprintByName(PASTEBUFFER, name))
 		return 1;
@@ -767,16 +767,16 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 					x = y = 0;
 				}
 				else if (argc == 3 || argc == 4) {
-					x = GetValue(ACTION_ARG(1), ACTION_ARG(3), &absolute, NULL);
+					x = GetValue(PCB_ACTION_ARG(1), PCB_ACTION_ARG(3), &absolute, NULL);
 					if (!absolute)
 						x += oldx;
-					y = GetValue(ACTION_ARG(2), ACTION_ARG(3), &absolute, NULL);
+					y = GetValue(PCB_ACTION_ARG(2), PCB_ACTION_ARG(3), &absolute, NULL);
 					if (!absolute)
 						y += oldy;
 				}
 				else {
 					notify_crosshair_change(pcb_true);
-					AFAIL(pastebuffer);
+					PCB_AFAIL(pastebuffer);
 				}
 
 				oldx = x;

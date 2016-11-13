@@ -40,18 +40,28 @@ void pcb_event_move_crosshair(int ev_x, int ev_y);
 /* adjusts the objects which are to be created like attached lines... */
 void pcb_adjust_attached_objects(void);
 
-#define ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
+#define PCB_ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
 
-int get_style_size(int funcid, pcb_coord_t * out, int type, int size_id);
+/* helper: get route style size for a function and selected object type.
+   size_id: 0=main size; 1=2nd size (drill); 2=clearance */
+int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id);
+
 
 extern int defer_updates;
 extern int defer_needs_update;
 extern pcb_layer_t *lastLayer;
 
-void NotifyLine(void);
-void NotifyBlock(void);
-void NotifyMode(void);
-void ClearWarnings(void);
+
+void pcb_notify_line(void);       /* creates points of a line (when clicked) */
+void pcb_notify_block(void);           /* create first or second corner of a marked block (when clicked) */
+
+/* does what's appropriate for the current mode setting (when clicked). This
+   normally means creation of an object at the current crosshair location.
+   new created objects are added to the create undo list of course */
+void pcb_notify_mode(void);
+
+/* Clear warning color from pins/pads */
+void pcb_clear_warnings(void);
 
 typedef struct {
 	pcb_coord_t X, Y;
@@ -67,12 +77,12 @@ typedef struct {
 extern pcb_action_note_t Note;
 extern pcb_bool saved_mode;
 
-void ReleaseMode(void);
+void pcb_release_mode(void);
 
 /* ---------------------------------------------------------------------------
  * Macros called by various action routines to show usage or to report
  * a syntax error and fail
  */
-#define AFAIL(x) { Message (PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (x##_syntax)); return 1; }
+#define PCB_AFAIL(x) { Message (PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (x##_syntax)); return 1; }
 
 #endif

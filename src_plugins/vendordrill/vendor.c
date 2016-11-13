@@ -173,7 +173,7 @@ int ActionLoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 															"particular vendor as well as a list of\n"
 															"predefined drills which are allowed."), default_file, ".res", "vendor", HID_FILESELECT_READ);
 		if (fname == NULL)
-			AFAIL(load_vendor);
+			PCB_AFAIL(load_vendor);
 
 		free_fname = pcb_true;
 

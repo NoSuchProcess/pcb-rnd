@@ -887,7 +887,7 @@ static int Report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	else if (argc == 2)
 		AUSAGE(report);
 	else
-		AFAIL(report);
+		PCB_AFAIL(report);
 	return 1;
 }
 

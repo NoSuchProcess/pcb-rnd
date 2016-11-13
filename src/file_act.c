@@ -58,10 +58,10 @@ static int ActionExecCommand(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	const char *command;
 
 	if (argc < 1) {
-		AFAIL(execcommand);
+		PCB_AFAIL(execcommand);
 	}
 
-	command = ACTION_ARG(0);
+	command = PCB_ACTION_ARG(0);
 
 	if (system(command))
 		return 1;
@@ -110,7 +110,7 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	const char *function, *name, *format = NULL;
 
 	if (argc < 2)
-		AFAIL(loadfrom);
+		PCB_AFAIL(loadfrom);
 
 	function = argv[0];
 	name = argv[1];
@@ -170,7 +170,7 @@ If a name is not given, one is prompted for.
 
 static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *argument_name = ACTION_ARG(0);
+	const char *argument_name = PCB_ACTION_ARG(0);
 	char *name = NULL;
 
 	if (!PCB->Changed || gui->confirm_dialog(_("OK to clear layout data?"), 0)) {
@@ -261,7 +261,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 
 	if ((argc != 2) && (argc != 3))
-		AFAIL(saveto);
+		PCB_AFAIL(saveto);
 
 	if (argc >= 3)
 		fmt = argv[2];
@@ -320,7 +320,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		return SaveBufferElements(name, fmt);
 	}
 
-	AFAIL(saveto);
+	PCB_AFAIL(saveto);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -338,7 +338,7 @@ save) before quitting.
 
 static int ActionQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *force = ACTION_ARG(0);
+	const char *force = PCB_ACTION_ARG(0);
 	if (force && strcasecmp(force, "force") == 0) {
 		PCB->Changed = 0;
 		exit(0);

@@ -1579,7 +1579,7 @@ static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 #endif
 
 	if (argc == 0) {
-		AFAIL(toggleview);
+		PCB_AFAIL(toggleview);
 	}
 	if (isdigit((int) argv[0][0])) {
 		l = atoi(argv[0]) - 1;
@@ -1604,7 +1604,7 @@ static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				break;
 			}
 		if (l == -1) {
-			AFAIL(toggleview);
+			PCB_AFAIL(toggleview);
 		}
 
 	}
@@ -1631,7 +1631,7 @@ static int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 {
 	int newl;
 	if (argc == 0)
-		AFAIL(selectlayer);
+		PCB_AFAIL(selectlayer);
 
 	if (strcasecmp(argv[0], "silk") == 0)
 		newl = LAYER_BUTTON_SILK;
@@ -1721,7 +1721,7 @@ Opens the window which allows editing of the route styles.
 static int AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (argc > 1)
-		AFAIL(adjuststyle);
+		PCB_AFAIL(adjuststyle);
 
 	ghid_route_style_selector_edit_dialog(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
 	return 0;
@@ -1745,7 +1745,7 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 {
 
 	if (argc != 0)
-		AFAIL(editlayergroups);
+		PCB_AFAIL(editlayergroups);
 
 	hid_actionl("DoWindows", "Preferences", NULL);
 

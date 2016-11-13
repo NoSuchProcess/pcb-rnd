@@ -351,7 +351,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int changed = 0;
 
 	if (argc < 1 || argc > 4) {
-		AFAIL(align);
+		PCB_AFAIL(align);
 	}
 	/* parse direction arg */
 	switch ((dir = keyword(ARG(0)))) {
@@ -359,7 +359,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Y:
 		break;
 	default:
-		AFAIL(align);
+		PCB_AFAIL(align);
 	}
 	/* parse point (within each element) which will be aligned */
 	switch ((point = keyword(ARG(1)))) {
@@ -369,20 +369,20 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Lefts:
 	case K_Rights:
 		if (dir == K_Y) {
-			AFAIL(align);
+			PCB_AFAIL(align);
 		}
 		break;
 	case K_Tops:
 	case K_Bottoms:
 		if (dir == K_X) {
-			AFAIL(align);
+			PCB_AFAIL(align);
 		}
 		break;
 	case K_none:
 		point = K_Marks;						/* default value */
 		break;
 	default:
-		AFAIL(align);
+		PCB_AFAIL(align);
 	}
 	/* parse reference which will determine alignment coordinates */
 	switch ((reference = keyword(ARG(2)))) {
@@ -395,7 +395,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		reference = K_First;				/* default value */
 		break;
 	default:
-		AFAIL(align);
+		PCB_AFAIL(align);
 	}
 	/* optionally work off the grid (solar cells!) */
 	switch (keyword(ARG(3))) {
@@ -406,7 +406,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		gridless = 0;
 		break;
 	default:
-		AFAIL(align);
+		PCB_AFAIL(align);
 	}
 	/* find the final alignment coordinate using the above options */
 	q = reference_coord(K_align, Crosshair.X, Crosshair.Y, dir, point, reference);
@@ -474,7 +474,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int i;
 
 	if (argc < 1 || argc == 3 || argc > 4) {
-		AFAIL(distribute);
+		PCB_AFAIL(distribute);
 	}
 	/* parse direction arg */
 	switch ((dir = keyword(ARG(0)))) {
@@ -482,7 +482,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Y:
 		break;
 	default:
-		AFAIL(distribute);
+		PCB_AFAIL(distribute);
 	}
 	/* parse point (within each element) which will be distributed */
 	switch ((point = keyword(ARG(1)))) {
@@ -493,20 +493,20 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	case K_Lefts:
 	case K_Rights:
 		if (dir == K_Y) {
-			AFAIL(distribute);
+			PCB_AFAIL(distribute);
 		}
 		break;
 	case K_Tops:
 	case K_Bottoms:
 		if (dir == K_X) {
-			AFAIL(distribute);
+			PCB_AFAIL(distribute);
 		}
 		break;
 	case K_none:
 		point = K_Marks;						/* default value */
 		break;
 	default:
-		AFAIL(distribute);
+		PCB_AFAIL(distribute);
 	}
 	/* parse reference which will determine first distribution coordinate */
 	switch ((refa = keyword(ARG(2)))) {
@@ -519,7 +519,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		refa = K_First;							/* default value */
 		break;
 	default:
-		AFAIL(distribute);
+		PCB_AFAIL(distribute);
 	}
 	/* parse reference which will determine final distribution coordinate */
 	switch ((refb = keyword(ARG(3)))) {
@@ -532,10 +532,10 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		refb = K_Last;							/* default value */
 		break;
 	default:
-		AFAIL(distribute);
+		PCB_AFAIL(distribute);
 	}
 	if (refa == refb) {
-		AFAIL(distribute);
+		PCB_AFAIL(distribute);
 	}
 	/* optionally work off the grid (solar cells!) */
 	switch (keyword(ARG(4))) {
@@ -546,7 +546,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		gridless = 0;
 		break;
 	default:
-		AFAIL(distribute);
+		PCB_AFAIL(distribute);
 	}
 	/* build list of elements in orthogonal axis order */
 	sort_elements_by_pos(K_distribute, dir, point);

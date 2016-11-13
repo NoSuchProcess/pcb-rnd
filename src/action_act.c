@@ -56,7 +56,7 @@ int ActionExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	char *sp;
 
 	if (argc != 1)
-		AFAIL(executefile);
+		PCB_AFAIL(executefile);
 
 	fname = argv[0];
 

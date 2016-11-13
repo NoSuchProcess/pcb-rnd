@@ -206,7 +206,7 @@ static int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	double v;
 
 	if (argc > 1)
-		AFAIL(zoom);
+		PCB_AFAIL(zoom);
 
 	if (argc < 1) {
 		ghid_zoom_view_fit();
@@ -1500,7 +1500,7 @@ static int Center(int argc, const char **argv, pcb_coord_t pcb_x, pcb_coord_t pc
 	int pointer_x, pointer_y;
 
 	if (argc != 0)
-		AFAIL(center);
+		PCB_AFAIL(center);
 
 	/* Aim to put the given x, y PCB coordinates in the center of the widget */
 	widget_x = gport->width / 2;
@@ -1585,14 +1585,14 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	double dx, dy;
 
 	if (argc != 4)
-		AFAIL(cursor);
+		PCB_AFAIL(cursor);
 
 	if (strcasecmp(argv[0], "pan") == 0)
 		pan_warp = HID_SC_PAN_VIEWPORT;
 	else if (strcasecmp(argv[0], "warp") == 0)
 		pan_warp = HID_SC_WARP_POINTER;
 	else
-		AFAIL(cursor);
+		PCB_AFAIL(cursor);
 
 	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "", NULL);
 	if (conf_core.editor.view.flip_x)
@@ -1682,7 +1682,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ghid_search_window_show(raise);
 	}
 	else {
-		AFAIL(dowindows);
+		PCB_AFAIL(dowindows);
 	}
 
 	return 0;
@@ -1756,7 +1756,7 @@ static int ScrollAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		return 0;
 
 	if (argc != 1 && argc != 2)
-		AFAIL(scroll);
+		PCB_AFAIL(scroll);
 
 	if (argc == 2)
 		div = atoi(argv[1]);
@@ -1770,7 +1770,7 @@ static int ScrollAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	else if (strcasecmp(argv[0], "left") == 0)
 		dx = -gport->view.width / div;
 	else
-		AFAIL(scroll);
+		PCB_AFAIL(scroll);
 
 	ghid_pan_view_rel(dx, dy);
 
@@ -1798,7 +1798,7 @@ static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 0;
 
 	if (argc != 1 && argc != 2)
-		AFAIL(pan);
+		PCB_AFAIL(pan);
 
 	if (argc == 1)
 		mode = atoi(argv[0]);
@@ -1832,7 +1832,7 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	char name[256];
 
 	if (argc != 1 && argc != 2)
-		AFAIL(popup);
+		PCB_AFAIL(popup);
 
 	if (strlen(argv[0]) < sizeof(name)-32) {
 		lht_node_t *menu_node;

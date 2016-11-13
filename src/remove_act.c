@@ -44,7 +44,7 @@ static const char delete_help[] = "Delete stuff.";
 
 static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	int id = funchash_get(function, NULL);
 
 	Note.X = Crosshair.X;
@@ -59,7 +59,7 @@ static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	case F_Object:
 		SaveMode();
 		SetMode(PCB_MODE_REMOVE);
-		NotifyMode();
+		pcb_notify_mode();
 		RestoreMode();
 		break;
 	case F_Selected:

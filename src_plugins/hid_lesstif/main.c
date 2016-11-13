@@ -847,14 +847,14 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	extra_units_y[2].scale = PCB->MaxHeight;
 
 	if (argc != 4)
-		AFAIL(cursor);
+		PCB_AFAIL(cursor);
 
 	if (strcasecmp(argv[0], "pan") == 0)
 		pan_warp = HID_SC_PAN_VIEWPORT;
 	else if (strcasecmp(argv[0], "warp") == 0)
 		pan_warp = HID_SC_WARP_POINTER;
 	else
-		AFAIL(cursor);
+		PCB_AFAIL(cursor);
 
 	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "mil", NULL);
 	if (conf_core.editor.view.flip_x)

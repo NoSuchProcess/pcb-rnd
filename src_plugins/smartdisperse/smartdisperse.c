@@ -156,7 +156,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		all = 0;
 	}
 	else {
-		AFAIL(smartdisperse);
+		PCB_AFAIL(smartdisperse);
 	}
 
 	Nets = ProcNetlist(&PCB->NetlistLib[0]);

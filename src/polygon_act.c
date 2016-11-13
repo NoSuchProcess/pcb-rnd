@@ -59,7 +59,7 @@ off are automatically deleted.
 
 static int ActionMorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_Object:
@@ -117,7 +117,7 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 
 static int ActionPolygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function && conf_core.editor.mode == PCB_MODE_POLYGON) {
 		notify_crosshair_change(pcb_false);
 		switch (funchash_get(function, NULL)) {

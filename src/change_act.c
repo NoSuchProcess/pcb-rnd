@@ -69,9 +69,9 @@ changes the polygon clearance.
 
 static int ActionChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *delta = ACTION_ARG(1);
-	const char *units = ACTION_ARG(2);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *delta = PCB_ACTION_ARG(1);
+	const char *units = PCB_ACTION_ARG(2);
 	pcb_bool absolute;
 	pcb_coord_t value;
 	int type = PCB_TYPE_NONE;
@@ -88,7 +88,7 @@ static int ActionChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb
 		if (strcmp(argv[1], "style") == 0) {
 			if ((type == PCB_TYPE_NONE) || (type == PCB_TYPE_POLYGON))	/* workaround: SearchScreen(CHANGECLEARSIZE_TYPES) wouldn't return elements */
 				type = SearchScreen(x, y, CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
-			if (get_style_size(funcid, &value, type, 2) != 0)
+			if (pcb_get_style_size(funcid, &value, type, 2) != 0)
 				return 1;
 			absolute = 1;
 			value *= 2;
@@ -154,11 +154,11 @@ cleared.  If the value is 1, the flag is set.
 
 static int ActionChangeFlag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *flag = ACTION_ARG(1);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *flag = PCB_ACTION_ARG(1);
 	int value = argc > 2 ? atoi(argv[2]) : -1;
 	if (value != 0 && value != 1)
-		AFAIL(changeflag);
+		PCB_AFAIL(changeflag);
 
 	ChangeFlag(function, flag, value, "ChangeFlag");
 	return 0;
@@ -262,7 +262,7 @@ plated-through hole (not set), or an unplated hole (set).
 
 static int ActionChangeHole(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -304,7 +304,7 @@ The "no paste flag" of a pad determines whether the solderpaste
 
 static int ActionChangePaste(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -382,9 +382,9 @@ of the silk layer lines and arcs for this element.
 
 static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *delta = ACTION_ARG(1);
-	const char *units = ACTION_ARG(2);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *delta = PCB_ACTION_ARG(1);
+	const char *units = PCB_ACTION_ARG(2);
 	pcb_bool absolute;								/* indicates if absolute size is given */
 	pcb_coord_t value;
 	int type = PCB_TYPE_NONE, tostyle = 0;
@@ -398,7 +398,7 @@ static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		if (strcmp(argv[1], "style") == 0) {
-			if (get_style_size(funcid, &value, type, 0) != 0)
+			if (pcb_get_style_size(funcid, &value, type, 0) != 0)
 				return 1;
 			absolute = 1;
 			tostyle = 1;
@@ -484,9 +484,9 @@ static const char changedrillsize_help[] = "Changes the drilling hole size of ob
 
 static int ActionChange2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *delta = ACTION_ARG(1);
-	const char *units = ACTION_ARG(2);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *delta = PCB_ACTION_ARG(1);
+	const char *units = PCB_ACTION_ARG(2);
 	int type = PCB_TYPE_NONE;
 	void *ptr1, *ptr2, *ptr3;
 
@@ -502,7 +502,7 @@ static int ActionChange2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_c
 		}
 
 		if (strcmp(argv[1], "style") == 0) {
-			if (get_style_size(funcid, &value, type, 1) != 0)
+			if (pcb_get_style_size(funcid, &value, type, 1) != 0)
 				return 1;
 			absolute = 1;
 		}
@@ -562,7 +562,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 	const char *refdes, *pinnum, *pinname;
 
 	if (argc != 3) {
-		AFAIL(changepinname);
+		PCB_AFAIL(changepinname);
 	}
 
 	refdes = argv[0];
@@ -645,8 +645,8 @@ Changes the name of the currently active layer.
 
 int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *pinnums = ACTION_ARG(1);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *pinnums = PCB_ACTION_ARG(1);
 	char *name;
 	int pinnum;
 
@@ -726,7 +726,7 @@ polygon, insulating them from each other.
 
 static int ActionChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -779,7 +779,7 @@ Note that @code{Pins} means both pins and pads.
 
 static int ActionChangeNonetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -825,7 +825,7 @@ Note that @code{Pins} means both pins and pads.
 
 static int ActionChangeSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -887,7 +887,7 @@ Note that @code{Pins} means pins and pads.
 
 static int ActionSetSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function && *function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -939,7 +939,7 @@ Note that @code{Pins} means pins and pads.
 
 static int ActionClearSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function && *function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -990,7 +990,7 @@ static const char changeoctagon_help[] = "Changes the octagon-flag of pins and v
 
 static int ActionChangeOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -1045,7 +1045,7 @@ static const char setoctagon_help[] = "Sets the octagon-flag of objects.";
 
 static int ActionSetOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -1101,7 +1101,7 @@ static const char clearoctagon_help[] = "Clears the octagon-flag of pins and via
 
 static int ActionClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_ToggleObject:
@@ -1174,8 +1174,8 @@ to connect with. However, they will have no effect without the polygon.
 
 static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *style = ACTION_ARG(1);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *style = PCB_ACTION_ARG(1);
 	void *ptr1, *ptr2, *ptr3;
 	int type, kind;
 	int err = 0;
@@ -1213,7 +1213,7 @@ static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			return 0;
 	}
 
-	AFAIL(setthermal);
+	PCB_AFAIL(setthermal);
 }
 
 
@@ -1240,8 +1240,8 @@ SetFlag(SelectedPins,thermal)
 
 static int ActionSetFlag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *flag = ACTION_ARG(1);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *flag = PCB_ACTION_ARG(1);
 	ChangeFlag(function, flag, 1, "SetFlag");
 	return 0;
 }
@@ -1269,8 +1269,8 @@ ClrFlag(SelectedLines,join)
 
 static int ActionClrFlag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *flag = ACTION_ARG(1);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *flag = PCB_ACTION_ARG(1);
 	ChangeFlag(function, flag, 0, "ClrFlag");
 	return 0;
 }
@@ -1309,9 +1309,9 @@ Changes the size of new text.
 
 static int ActionSetValue(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *val = ACTION_ARG(1);
-	const char *units = ACTION_ARG(2);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *val = PCB_ACTION_ARG(1);
+	const char *units = PCB_ACTION_ARG(2);
 	pcb_bool absolute;								/* flag for 'absolute' value */
 	double value;
 	int err = 0;
@@ -1364,7 +1364,7 @@ static int ActionSetValue(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			return 0;
 	}
 
-	AFAIL(setvalue);
+	PCB_AFAIL(setvalue);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -1376,9 +1376,9 @@ static const char changeangle_syntax[] =
 static const char changeangle_help[] = "Changes the start angle, delta angle or both angles of an arc.";
 static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *prim  = ACTION_ARG(1);
-	const char *delta = ACTION_ARG(2);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *prim  = PCB_ACTION_ARG(1);
+	const char *delta = PCB_ACTION_ARG(2);
 	pcb_bool absolute;								/* indicates if absolute size is given */
 	double value;
 	int type = PCB_TYPE_NONE, which;
@@ -1447,10 +1447,10 @@ static const char changeradius_syntax[] =
 static const char changeradius_help[] = "Changes the width or height (radius) of an arc.";
 static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
-	const char *prim  = ACTION_ARG(1);
-	const char *delta = ACTION_ARG(2);
-	const char *units = ACTION_ARG(3);
+	const char *function = PCB_ACTION_ARG(0);
+	const char *prim  = PCB_ACTION_ARG(1);
+	const char *delta = PCB_ACTION_ARG(2);
+	const char *units = PCB_ACTION_ARG(3);
 	pcb_bool absolute;								/* indicates if absolute size is given */
 	double value;
 	int type = PCB_TYPE_NONE, which;

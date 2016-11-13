@@ -71,13 +71,13 @@ Selects the shortest unselected rat on the board.
 
 static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	pcb_rat_t *shorty;
 	float len, small;
 
 	if (function) {
 		if (conf_core.temp.rat_warn)
-			ClearWarnings();
+			pcb_clear_warnings();
 		switch (funchash_get(function, NULL)) {
 		case F_AllRats:
 			if (AddAllRats(pcb_false, NULL))
@@ -146,7 +146,7 @@ All ``found'' objects are marked ``not found''.
 
 static int ActionConnection(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		switch (funchash_get(function, NULL)) {
 		case F_Find:
@@ -180,7 +180,7 @@ static int ActionConnection(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		return 0;
 	}
 
-	AFAIL(connection);
+	PCB_AFAIL(connection);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -195,10 +195,10 @@ static const char deleterats_help[] = "Delete rat lines.";
 
 static int ActionDeleteRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
 		if (conf_core.temp.rat_warn)
-			ClearWarnings();
+			pcb_clear_warnings();
 		switch (funchash_get(function, NULL)) {
 		case F_AllRats:
 			if (DeleteRats(pcb_false))

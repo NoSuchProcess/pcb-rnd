@@ -217,8 +217,8 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 	int id;
 	int err = 0;
 
-	function = ACTION_ARG(0);
-	str_dir = ACTION_ARG(1);
+	function = PCB_ACTION_ARG(0);
+	str_dir = PCB_ACTION_ARG(1);
 
 	if (function && (!str_dir || !*str_dir)) {
 		switch (id = funchash_get(function, NULL)) {
@@ -545,7 +545,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 	if (!err)
 		return 0;
 
-	AFAIL(display);
+	PCB_AFAIL(display);
 }
 /* --------------------------------------------------------------------------- */
 
@@ -609,7 +609,7 @@ Restores the tool to the last saved tool.
 
 static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 
 	if (function) {
 		Note.X = Crosshair.X;
@@ -720,7 +720,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			break;
 
 		case F_Notify:
-			NotifyMode();
+			pcb_notify_mode();
 			break;
 		case F_PasteBuffer:
 			SetMode(PCB_MODE_PASTE_BUFFER);
@@ -735,7 +735,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			if ((mid_stroke) && (conf_core.editor.enable_stroke))
 				stub_stroke_finish();
 			else
-				ReleaseMode();
+				pcb_release_mode();
 			break;
 		case F_Remove:
 			SetMode(PCB_MODE_REMOVE);
@@ -767,7 +767,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				SaveMode();
 				saved_mode = pcb_true;
 				SetMode(PCB_MODE_ARROW);
-				NotifyMode();
+				pcb_notify_mode();
 			}
 			break;
 		case F_Text:
@@ -792,7 +792,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 0;
 	}
 
-	AFAIL(mode);
+	PCB_AFAIL(mode);
 }
 
 /* ---------------------------------------------------------------- */
@@ -883,7 +883,7 @@ static int ActionMessage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	int i;
 
 	if (argc < 1)
-		AFAIL(message);
+		PCB_AFAIL(message);
 
 	for (i = 0; i < argc; i++) {
 		Message(PCB_MSG_DEFAULT, argv[i]);
@@ -908,7 +908,7 @@ appear on the silk layer when you print the layout.
 
 static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (function && PCB->ElementOn) {
 		switch (funchash_get(function, NULL)) {
 		case F_Object:
@@ -975,7 +975,7 @@ cursor location.
 
 static int ActionMarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *function = ACTION_ARG(0);
+	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
 		if (Marked.status) {
 			notify_mark_change(pcb_false);
@@ -1013,7 +1013,7 @@ static const char routestyle_help[] = "Copies the indicated routing style into t
 
 static int ActionRouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	const char *str = ACTION_ARG(0);
+	const char *str = PCB_ACTION_ARG(0);
 	pcb_route_style_t *rts;
 	int number;
 
@@ -1068,7 +1068,7 @@ static int ActionCreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		return 0;
 	}
 
-	AFAIL(message);
+	PCB_AFAIL(message);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -1098,7 +1098,7 @@ static int ActionRemoveMenu(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		return 0;
 	}
 
-	AFAIL(message);
+	PCB_AFAIL(message);
 }
 
 /* --------------------------------------------------------------------------- */

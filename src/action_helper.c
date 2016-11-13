@@ -238,14 +238,9 @@ int defer_needs_update = 0;
 static pcb_cardinal_t polyIndex = 0;
 pcb_bool saved_mode = pcb_false;
 
-/* ---------------------------------------------------------------------------
- * some local routines
- */
 static void AdjustAttachedBox(void);
-/* ---------------------------------------------------------------------------
- * Clear warning color from pins/pads
- */
-void ClearWarnings()
+
+void pcb_clear_warnings()
 {
 	conf_core.temp.rat_warn = pcb_false;
 	ALLPIN_LOOP(PCB->Data);
@@ -354,7 +349,7 @@ static void click_cb(pcb_hidval_t hv)
 			/* unselect first if shift key not down */
 			if (!gui->shift_is_pressed() && SelectBlock(&box, pcb_false))
 				SetChangedFlag(pcb_true);
-			NotifyBlock();
+			pcb_notify_block();
 			Crosshair.AttachedBox.Point1.X = Note.X;
 			Crosshair.AttachedBox.Point1.Y = Note.Y;
 		}
@@ -362,7 +357,7 @@ static void click_cb(pcb_hidval_t hv)
 	}
 }
 
-void ReleaseMode(void)
+void pcb_release_mode(void)
 {
 	pcb_box_t box;
 
@@ -398,14 +393,14 @@ void ReleaseMode(void)
 	}
 	else if (Note.Moving) {
 		RestoreUndoSerialNumber();
-		NotifyMode();
+		pcb_notify_mode();
 		ClearBuffer(PASTEBUFFER);
 		SetBufferNumber(Note.Buffer);
 		Note.Moving = pcb_false;
 		Note.Hit = 0;
 	}
 	else if (Note.Hit) {
-		NotifyMode();
+		pcb_notify_mode();
 		Note.Hit = 0;
 	}
 	else if (conf_core.editor.mode == PCB_MODE_ARROW) {
@@ -489,10 +484,7 @@ void pcb_adjust_attached_objects(void)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * creates points of a line
- */
-void NotifyLine(void)
+void pcb_notify_line(void)
 {
 	int type = PCB_TYPE_NONE;
 	void *ptr1, *ptr2, *ptr3;
@@ -545,10 +537,7 @@ void NotifyLine(void)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * create first or second corner of a marked block
- */
-void NotifyBlock(void)
+void pcb_notify_block(void)
 {
 	notify_crosshair_change(pcb_false);
 	switch (Crosshair.AttachedBox.State) {
@@ -565,21 +554,13 @@ void NotifyBlock(void)
 	notify_crosshair_change(pcb_true);
 }
 
-
-/* ---------------------------------------------------------------------------
- *
- * does what's appropriate for the current mode setting. This normally
- * means creation of an object at the current crosshair location.
- *
- * new created objects are added to the create undo list of course
- */
-void NotifyMode(void)
+void pcb_notify_mode(void)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
 	if (conf_core.temp.rat_warn)
-		ClearWarnings();
+		pcb_clear_warnings();
 	switch (conf_core.editor.mode) {
 	case PCB_MODE_ARROW:
 		{
@@ -759,7 +740,7 @@ void NotifyMode(void)
 
 	case PCB_MODE_LINE:
 		/* do update of position */
-		NotifyLine();
+		pcb_notify_line();
 		if (Crosshair.AttachedLine.State != STATE_THIRD)
 			break;
 
@@ -890,7 +871,7 @@ void NotifyMode(void)
 
 	case PCB_MODE_RECTANGLE:
 		/* do update of position */
-		NotifyBlock();
+		pcb_notify_block();
 
 		/* create rectangle if both corners are determined
 		 * and width, height are != 0
@@ -949,7 +930,7 @@ void NotifyMode(void)
 			pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
 
 			/* do update of position; use the 'PCB_MODE_LINE' mechanism */
-			NotifyLine();
+			pcb_notify_line();
 
 			/* check if this is the last point of a polygon */
 			if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
@@ -1017,7 +998,7 @@ void NotifyMode(void)
 					pcb_flag_t Flags;
 
 					/* do update of position; use the 'PCB_MODE_LINE' mechanism */
-					NotifyLine();
+					pcb_notify_line();
 
 					if (conf_core.editor.orthogonal_moves) {
 						/* set the mark to the new starting point so ortho works */
@@ -1266,10 +1247,7 @@ void pcb_event_move_crosshair(int ev_x, int ev_y)
 	}
 }
 
-/* --------------------------------------------------------------------------- */
-/* helper: get route style size for a function and selected object type.
-   size_id: 0=main size; 1=2nd size (drill); 2=clearance */
-int get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
+int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 {
 	switch (funcid) {
 	case F_Object:
@@ -1277,13 +1255,13 @@ int get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 		case PCB_TYPE_ELEMENT:					/* we'd set pin/pad properties, so fall thru */
 		case PCB_TYPE_VIA:
 		case PCB_TYPE_PIN:
-			return get_style_size(F_SelectedVias, out, 0, size_id);
+			return pcb_get_style_size(F_SelectedVias, out, 0, size_id);
 		case PCB_TYPE_PAD:
-			return get_style_size(F_SelectedPads, out, 0, size_id);
+			return pcb_get_style_size(F_SelectedPads, out, 0, size_id);
 		case PCB_TYPE_LINE:
-			return get_style_size(F_SelectedLines, out, 0, size_id);
+			return pcb_get_style_size(F_SelectedLines, out, 0, size_id);
 		case PCB_TYPE_ARC:
-			return get_style_size(F_SelectedArcs, out, 0, size_id);
+			return pcb_get_style_size(F_SelectedArcs, out, 0, size_id);
 		}
 		Message(PCB_MSG_DEFAULT, _("Sorry, can't fetch the style of that object type (%x)\n"), type);
 		return -1;

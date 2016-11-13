@@ -179,14 +179,14 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	printf("ActionImport:  ===========  Entering ActionImport  ============\n");
 #endif
 
-	mode = ACTION_ARG(0);
+	mode = PCB_ACTION_ARG(0);
 
 	if (mode && strcasecmp(mode, "setdisperse") == 0) {
 		const char *ds, *units;
 		char buf[50];
 
-		ds = ACTION_ARG(1);
-		units = ACTION_ARG(2);
+		ds = PCB_ACTION_ARG(1);
+		units = PCB_ACTION_ARG(2);
 		if (!ds) {
 			const char *as = AttributeGet(PCB, "import::disperse");
 			ds = gui->prompt_for(_("Enter dispersion:"), as ? as : "0");
@@ -197,7 +197,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		}
 		else
 			AttributePut(PCB, "import::disperse", ds);
-		if (ACTION_ARG(1) == NULL)
+		if (PCB_ACTION_ARG(1) == NULL)
 			free((char*)ds);
 		return 0;
 	}
@@ -207,9 +207,9 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		pcb_coord_t x, y;
 		char buf[50];
 
-		xs = ACTION_ARG(1);
-		ys = ACTION_ARG(2);
-		units = ACTION_ARG(3);
+		xs = PCB_ACTION_ARG(1);
+		ys = PCB_ACTION_ARG(2);
+		units = PCB_ACTION_ARG(3);
 
 		if (!xs) {
 			gui->get_coords(_("Click on a location"), &x, &y);

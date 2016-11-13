@@ -240,7 +240,7 @@ static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		return pcb_netlist_swap();
 	else if (strcasecmp(argv[0], "add") == 0) {
 		/* Add is different, because the net/pin won't already exist.  */
-		return pcb_netlist_add(ACTION_ARG(1), ACTION_ARG(2));
+		return pcb_netlist_add(PCB_ACTION_ARG(1), PCB_ACTION_ARG(2));
 	}
 	else if (strcasecmp(argv[0], "sort") == 0) {
 		pcb_sort_netlist();
@@ -303,7 +303,7 @@ static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 		pin = 0;
 		if (func == (NFunc) pcb_netlist_style) {
-			pcb_netlist_style(net, ACTION_ARG(2));
+			pcb_netlist_style(net, PCB_ACTION_ARG(2));
 		}
 		else if (argc > 2) {
 			int l = strlen(argv[2]);

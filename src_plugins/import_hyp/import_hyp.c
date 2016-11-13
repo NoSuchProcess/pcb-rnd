@@ -61,11 +61,11 @@ int ActionLoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 
 	if (fname == NULL)
-		AFAIL(load_hyp);
+		PCB_AFAIL(load_hyp);
 
 	hyp_in =  fopen(fname, "r");
 	if (hyp_in == NULL)
-		AFAIL(load_hyp);
+		PCB_AFAIL(load_hyp);
 
 	hyp_parse();
 
