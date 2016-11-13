@@ -112,4 +112,7 @@ RouteStyleType -> pcb_route_style_t
 heap_t -> pcb_heap_t
 cost_t -> pcb_cost_t
 
+# functions:
+EventMoveCrosshair -> pcb_event_move_crosshair
+AdjustAttachedObjects -> pcb_adjust_attached_objects
 
