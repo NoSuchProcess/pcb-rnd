@@ -113,7 +113,7 @@ BEGIN {
 
 
 	if ((cpad_width != "") && (cpad_height != "")) {
-		element_pad_rectangle(-cpad_width/2, -cpad_height/2, +cpad_width/2, +cpad_height/2, 2*nx+2*ny+1, "square")
+		element_pad_rectangle(-cpad_width/2, -cpad_height/2, +cpad_width/2, +cpad_height/2, 2*nx+2*ny+1, "square,nopaste")
 		dimension(-cpad_width/2, -cpad_height/2, +cpad_width/2, -cpad_height/2, "@0;" (height * -0.6-ext_bloat), "cpad_width")
 		dimension(cpad_width/2, -cpad_height/2, cpad_width/2, +cpad_height/2, "@" (width * 0.8+ext_bloat) ";0", "cpad_height")
 	}
