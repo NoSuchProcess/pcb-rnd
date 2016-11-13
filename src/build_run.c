@@ -25,6 +25,7 @@
  */
 
 #include "config.h"
+#include <signal.h>
 #include <genvector/gds_char.h>
 #include "conf_core.h"
 #include "board.h"
@@ -143,3 +144,37 @@ const char *pcb_author(void)
 		return pcb_get_user_name();
 }
 
+void pcb_catch_signal(int Signal)
+{
+	const char *s;
+
+	switch (Signal) {
+#ifdef SIGHUP
+	case SIGHUP:
+		s = "SIGHUP";
+		break;
+#endif
+	case SIGINT:
+		s = "SIGINT";
+		break;
+#ifdef SIGQUIT
+	case SIGQUIT:
+		s = "SIGQUIT";
+		break;
+#endif
+	case SIGABRT:
+		s = "SIGABRT";
+		break;
+	case SIGTERM:
+		s = "SIGTERM";
+		break;
+	case SIGSEGV:
+		s = "SIGSEGV";
+		break;
+	default:
+		s = "unknown";
+		break;
+	}
+	pcb_message(PCB_MSG_ERROR, "aborted by %s signal\n", s);
+	exit(1);
+}

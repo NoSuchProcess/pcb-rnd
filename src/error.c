@@ -31,7 +31,6 @@
 
 #include <errno.h>
 #include <stdarg.h>
-#include <signal.h>
 
 #include "data.h"
 #include "error.h"
@@ -130,42 +129,4 @@ void pcb_chdir_error_message(const char *DirName)
 	utf8_dup_string(&utf8, DirName);
 	pcb_message(PCB_MSG_DEFAULT, _("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
-}
-
-/* ---------------------------------------------------------------------------
- * catches signals which abort the program
- */
-void pcb_catch_signal(int Signal)
-{
-	const char *s;
-
-	switch (Signal) {
-#ifdef SIGHUP
-	case SIGHUP:
-		s = "SIGHUP";
-		break;
-#endif
-	case SIGINT:
-		s = "SIGINT";
-		break;
-#ifdef SIGQUIT
-	case SIGQUIT:
-		s = "SIGQUIT";
-		break;
-#endif
-	case SIGABRT:
-		s = "SIGABRT";
-		break;
-	case SIGTERM:
-		s = "SIGTERM";
-		break;
-	case SIGSEGV:
-		s = "SIGSEGV";
-		break;
-	default:
-		s = "unknown";
-		break;
-	}
-	pcb_message(PCB_MSG_ERROR, "aborted by %s signal\n", s);
-	exit(1);
 }

@@ -52,7 +52,6 @@ void pcb_open_error_message(const char *);
 void pcb_popen_error_message(const char *);
 void pcb_opendir_error_message(const char *);
 void pcb_chdir_error_message(const char *);
-void pcb_catch_signal(int);
 void pcb_trace(const char *Format, ...);
 
 #endif

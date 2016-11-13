@@ -33,3 +33,5 @@ char *pcb_get_infostr(void);
 
 const char *pcb_author(void);
 
+/* catches signals which abort the program */
+void pcb_catch_signal(int Signal);
