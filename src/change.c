@@ -1227,30 +1227,3 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 	}
 	return (NULL);
 }
-
-/* ---------------------------------------------------------------------------
- * changes the maximum size of a layout
- * adjusts the scrollbars
- * releases the saved pixmap if necessary
- * and adjusts the cursor confinement box
- */
-void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
-{
-	PCB->MaxWidth = Width;
-	PCB->MaxHeight = Height;
-
-	/* crosshair range is different if pastebuffer-mode
-	 * is enabled
-	 */
-	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER)
-		SetCrosshairRange(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
-											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->BoundingBox.Y1,
-											MAX(0,
-													Width - (PCB_PASTEBUFFER->BoundingBox.X2 -
-																	 PCB_PASTEBUFFER->X)), MAX(0, Height - (PCB_PASTEBUFFER->BoundingBox.Y2 - PCB_PASTEBUFFER->Y)));
-	else
-		SetCrosshairRange(0, 0, Width, Height);
-
-	if (gui != NULL)
-		hid_action("PCBChanged");
-}
