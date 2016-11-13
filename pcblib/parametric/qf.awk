@@ -25,7 +25,7 @@ function qf_globals(pre_args, post_args    ,reqs)
 	if ((pre_args != "") && (!(pre_args ~ ",$")))
 		pre_args = pre_args ","
 
-	proc_args(P, pre_args "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,bodysilk,pinoffs,silkmark" post_args, reqs)
+	proc_args(P, pre_args "nx,ny,x_spacing,y_spacing,pad_spacing,ext_bloat,int_bloat,width,height,cpad_width,cpad_height,cpad_auto,rpad_round,bodysilk,pinoffs,silkmark" post_args, reqs)
 
 	nx = int(P["nx"])
 	ny = int(P["ny"])
@@ -68,6 +68,11 @@ function qf_globals(pre_args, post_args    ,reqs)
 		height = y_spacing
 
 	pinmax=(nx+ny)*2
+
+	if (!tobool(P["rpad_round"]))
+		rpad_round = "square"
+	else
+		rpad_round = ""
 }
 
 function pinnum(num)
@@ -88,8 +93,8 @@ BEGIN {
 		y = (-cy + n) * pad_spacing
 		x1 = -x_spacing/2
 		x2 = x_spacing/2
-		element_pad(x1-ext_bloat, y, x1+int_bloat, y, pad_width, pinnum(n), "square")
-		element_pad(x2-int_bloat, y, x2+ext_bloat, y, pad_width, pinnum(nx+2*ny-n+1), "square")
+		element_pad(x1-ext_bloat, y, x1+int_bloat, y, pad_width, pinnum(n), rpad_round)
+		element_pad(x2-int_bloat, y, x2+ext_bloat, y, pad_width, pinnum(nx+2*ny-n+1), rpad_round)
 		if (n == 1)
 			y1 = y
 		if (n == 2)
@@ -102,8 +107,8 @@ BEGIN {
 		x = (-cx + n) * pad_spacing
 		y1 = -y_spacing/2
 		y2 = y_spacing/2
-		element_pad(x, y1-ext_bloat, x, y1+int_bloat, pad_width, pinnum(nx*2+ny*2-n+1), "square")
-		element_pad(x, y2-int_bloat, x, y2+ext_bloat, pad_width, pinnum(n+ny), "square")
+		element_pad(x, y1-ext_bloat, x, y1+int_bloat, pad_width, pinnum(nx*2+ny*2-n+1), rpad_round)
+		element_pad(x, y2-int_bloat, x, y2+ext_bloat, pad_width, pinnum(n+ny), rpad_round)
 	}
 
 

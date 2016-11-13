@@ -62,6 +62,11 @@
 #@@optional:cpad_height
 #@@default:cpad_height false, no central pad
 
+#@@param:rpad_round when true, row pads are round
+#@@bool:rpad_round
+#@@optional:rpad_round
+#@@default:rpad_round false, row pads are square
+
 #@@param:bodysilk how to draw body on the silk layer
 #@@enum:bodysilk:none no drawing
 #@@enum:bodysilk:corners draw the corners, silkmark is outside of the top-left corner
