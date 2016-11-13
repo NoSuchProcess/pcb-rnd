@@ -275,7 +275,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			/* toggle line-adjust flag */
 		case F_ToggleAllDirections:
 			conf_toggle_editor(all_direction_lines);
-			AdjustAttachedObjects();
+			pcb_adjust_attached_objects();
 			break;
 
 		case F_CycleClip:
@@ -287,7 +287,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			else {
 				conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 			}
-			AdjustAttachedObjects();
+			pcb_adjust_attached_objects();
 			notify_crosshair_change(pcb_true);
 			break;
 

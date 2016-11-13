@@ -447,10 +447,7 @@ static void AdjustAttachedBox(void)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adjusts the objects which are to be created like attached lines...
- */
-void AdjustAttachedObjects(void)
+void pcb_adjust_attached_objects(void)
 {
 	pcb_point_t *pnt;
 	switch (conf_core.editor.mode) {
@@ -1258,19 +1255,13 @@ void NotifyMode(void)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * !!! no action routine !!!
- *
- * event handler to set the cursor according to the X pointer position
- * called from inside main.c
- */
-void EventMoveCrosshair(int ev_x, int ev_y)
+void pcb_event_move_crosshair(int ev_x, int ev_y)
 {
 	if (mid_stroke)
 		stub_stroke_record(ev_x, ev_y);
 	if (MoveCrosshairAbsolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
-		AdjustAttachedObjects();
+		pcb_adjust_attached_objects();
 		notify_crosshair_change(pcb_true);
 	}
 }

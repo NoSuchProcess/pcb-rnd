@@ -863,7 +863,7 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
 
-	EventMoveCrosshair(Crosshair.X + dx, Crosshair.Y + dy);
+	pcb_event_move_crosshair(Crosshair.X + dx, Crosshair.Y + dy);
 	gui->set_crosshair(Crosshair.X, Crosshair.Y, pan_warp);
 
 	return 0;
@@ -1257,8 +1257,8 @@ static void mod_changed(XKeyEvent * e, int set)
 	notify_crosshair_change(pcb_false);
 	if (panning)
 		Pan(2, e->x, e->y);
-	EventMoveCrosshair(Px(e->x), Py(e->y));
-	AdjustAttachedObjects();
+	pcb_event_move_crosshair(Px(e->x), Py(e->y));
+	pcb_adjust_attached_objects();
 	notify_crosshair_change(pcb_true);
 	in_move_event = 0;
 }
@@ -1355,7 +1355,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			in_move_event = 1;
 			if (panning)
 				Pan(2, pos_x, pos_y);
-			EventMoveCrosshair(Px(pos_x), Py(pos_y));
+			pcb_event_move_crosshair(Px(pos_x), Py(pos_y));
 			in_move_event = 0;
 		}
 		break;
@@ -1369,7 +1369,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 	case EnterNotify:
 		crosshair_in_window = 1;
 		in_move_event = 1;
-		EventMoveCrosshair(Px(e->xcrossing.x), Py(e->xcrossing.y));
+		pcb_event_move_crosshair(Px(e->xcrossing.x), Py(e->xcrossing.y));
 		ShowCrosshair(pcb_true);
 		in_move_event = 0;
 		need_idle_proc();

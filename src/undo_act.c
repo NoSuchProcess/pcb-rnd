@@ -191,7 +191,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = ptr2->Point2.Y;
 				}
 				FitCrosshairIntoGrid(Crosshair.X, Crosshair.Y);
-				AdjustAttachedObjects();
+				pcb_adjust_attached_objects();
 				if (--addedLines == 0) {
 					Crosshair.AttachedLine.State = STATE_SECOND;
 					lastLayer = CURRENT;
@@ -222,7 +222,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				bx = GetArcEnds((pcb_arc_t *) ptr2);
 				Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = bx->X1;
 				Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = bx->Y1;
-				AdjustAttachedObjects();
+				pcb_adjust_attached_objects();
 				if (--addedLines == 0)
 					Crosshair.AttachedBox.State = STATE_SECOND;
 			}

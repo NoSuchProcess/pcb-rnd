@@ -209,7 +209,7 @@ void SetMode(int Mode)
 		Crosshair.AttachedBox.State = STATE_SECOND;
 		Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Crosshair.AttachedLine.Point1.X;
 		Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedLine.Point1.Y;
-		AdjustAttachedObjects();
+		pcb_adjust_attached_objects();
 	}
 	else if (conf_core.editor.mode == PCB_MODE_ARC && Mode == PCB_MODE_LINE && Crosshair.AttachedBox.State != STATE_FIRST) {
 		Crosshair.AttachedBox.State = STATE_FIRST;
@@ -218,7 +218,7 @@ void SetMode(int Mode)
 		Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedBox.Point1.Y;
 		sprintf(sMode, "%d", Mode);
 		conf_set(CFR_DESIGN, "editor/mode", -1, sMode, POL_OVERWRITE);
-		AdjustAttachedObjects();
+		pcb_adjust_attached_objects();
 	}
 	else {
 		if (conf_core.editor.mode == PCB_MODE_ARC || conf_core.editor.mode == PCB_MODE_LINE)

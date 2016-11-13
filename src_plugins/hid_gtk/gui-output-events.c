@@ -123,7 +123,7 @@ void ghid_note_event_location(GdkEventButton * ev)
 
 	ghid_event_to_pcb_coords(event_x, event_y, &gport->pcb_x, &gport->pcb_y);
 
-	EventMoveCrosshair(gport->pcb_x, gport->pcb_y);
+	pcb_event_move_crosshair(gport->pcb_x, gport->pcb_y);
 	ghid_set_cursor_position_labels();
 }
 
@@ -146,7 +146,7 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, g
 	if (ghid_is_modifier_key_sym(ksym))
 		ghid_note_event_location(NULL);
 
-	AdjustAttachedObjects();
+	pcb_adjust_attached_objects();
 	ghid_invalidate_all();
 	g_idle_add(ghid_idle_cb, NULL);
 	return FALSE;
@@ -243,7 +243,7 @@ gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * 
 
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | M_Release);
 
-	AdjustAttachedObjects();
+	pcb_adjust_attached_objects();
 	ghid_invalidate_all();
 
 	ghid_window_set_name_label(PCB->Name);

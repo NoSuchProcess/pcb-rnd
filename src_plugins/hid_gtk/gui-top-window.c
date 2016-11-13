@@ -284,7 +284,7 @@ static void ghid_menu_cb(GtkAction * action, const lht_node_t * node)
 	ghid_mode_buttons_update();
 
 	/* Sync gui status display with pcb state */
-	AdjustAttachedObjects();
+	pcb_adjust_attached_objects();
 	ghid_invalidate_all();
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
