@@ -855,7 +855,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			if (!TEST_FLAGS(flags, pin))
 				continue;
 			if (pin->Mask < pin->Thickness + value) {
-				ChangeObjectMaskSize(PCB_TYPE_PIN, element, pin, 0, pin->Thickness + value, 1);
+				pcb_chg_obj_mask_size(PCB_TYPE_PIN, element, pin, 0, pin->Thickness + value, 1);
 				RestoreUndoSerialNumber();
 			}
 		}
@@ -865,7 +865,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			if (!TEST_FLAGS(flags, pad))
 				continue;
 			if (pad->Mask < pad->Thickness + value) {
-				ChangeObjectMaskSize(PCB_TYPE_PAD, element, pad, 0, pad->Thickness + value, 1);
+				pcb_chg_obj_mask_size(PCB_TYPE_PAD, element, pad, 0, pad->Thickness + value, 1);
 				RestoreUndoSerialNumber();
 			}
 		}
@@ -877,7 +877,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		if (!TEST_FLAGS(flags, via))
 			continue;
 		if (via->Mask && via->Mask < via->Thickness + value) {
-			ChangeObjectMaskSize(PCB_TYPE_VIA, via, 0, 0, via->Thickness + value, 1);
+			pcb_chg_obj_mask_size(PCB_TYPE_VIA, via, 0, 0, via->Thickness + value, 1);
 			RestoreUndoSerialNumber();
 		}
 	}
@@ -929,7 +929,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			if (!TEST_FLAGS(flags, pin))
 				continue;
 			if (pin->Clearance < value) {
-				ChangeObjectClearSize(PCB_TYPE_PIN, element, pin, 0, value, 1);
+				pcb_chg_obj_clear_size(PCB_TYPE_PIN, element, pin, 0, value, 1);
 				RestoreUndoSerialNumber();
 			}
 		}
@@ -939,7 +939,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			if (!TEST_FLAGS(flags, pad))
 				continue;
 			if (pad->Clearance < value) {
-				ChangeObjectClearSize(PCB_TYPE_PAD, element, pad, 0, value, 1);
+				pcb_chg_obj_clear_size(PCB_TYPE_PAD, element, pad, 0, value, 1);
 				RestoreUndoSerialNumber();
 			}
 		}
@@ -951,7 +951,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		if (!TEST_FLAGS(flags, via))
 			continue;
 		if (via->Clearance < value) {
-			ChangeObjectClearSize(PCB_TYPE_VIA, via, 0, 0, value, 1);
+			pcb_chg_obj_clear_size(PCB_TYPE_VIA, via, 0, 0, value, 1);
 			RestoreUndoSerialNumber();
 		}
 	}
@@ -961,7 +961,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		if (!TEST_FLAGS(flags, line))
 			continue;
 		if (line->Clearance < value) {
-			ChangeObjectClearSize(PCB_TYPE_LINE, layer, line, 0, value, 1);
+			pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, 0, value, 1);
 			RestoreUndoSerialNumber();
 		}
 	}
@@ -971,7 +971,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		if (!TEST_FLAGS(flags, arc))
 			continue;
 		if (arc->Clearance < value) {
-			ChangeObjectClearSize(PCB_TYPE_ARC, layer, arc, 0, value, 1);
+			pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, 0, value, 1);
 			RestoreUndoSerialNumber();
 		}
 	}

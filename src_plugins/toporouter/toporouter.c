@@ -8203,7 +8203,7 @@ static int escape(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 															0, Settings.ViaDrillingHole, NULL, NoFlags())) != NULL) {
 				AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 /*        if (gui->shift_is_pressed ())
-            ChangeObjectThermal (PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);*/
+            pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);*/
 				DrawVia(via);
 				if ((line = CreateDrawnLineOnLayer(CURRENT, pad->Point1.X + 1., pad->Point1.Y + 1., viax + 1., viay + 1.,
 																					 Settings.LineThickness, 2 * Settings.Clearance, NoFlags()))) {

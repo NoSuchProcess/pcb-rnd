@@ -308,7 +308,7 @@ static pcb_bool UndoChangeName(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		Entry->Data.ChangeName.Name = (char *) (ChangeObjectName(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
+		Entry->Data.ChangeName.Name = (char *) (pcb_chg_obj_name(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -326,7 +326,7 @@ static pcb_bool UndoChangePinnum(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		Entry->Data.ChangeName.Name = (char *) (ChangeObjectPinnum(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
+		Entry->Data.ChangeName.Name = (char *) (pcb_chg_obj_pinnum(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
 		return (pcb_true);
 	}
 	return (pcb_false);

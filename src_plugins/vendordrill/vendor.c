@@ -322,7 +322,7 @@ static void apply_vendor_map(void)
 			if (via->DrillingHole != vendorDrillMap(via->DrillingHole)) {
 				/* only change unlocked vias */
 				if (!TEST_FLAG(PCB_FLAG_LOCK, via)) {
-					if (ChangeObject2ndSize(PCB_TYPE_VIA, via, NULL, NULL, vendorDrillMap(via->DrillingHole), pcb_true, pcb_false))
+					if (pcb_chg_obj_2nd_size(PCB_TYPE_VIA, via, NULL, NULL, vendorDrillMap(via->DrillingHole), pcb_true, pcb_false))
 						changed++;
 					else {
 						Message(PCB_MSG_DEFAULT, _
@@ -352,7 +352,7 @@ static void apply_vendor_map(void)
 					tot++;
 					if (pin->DrillingHole != vendorDrillMap(pin->DrillingHole)) {
 						if (!TEST_FLAG(PCB_FLAG_LOCK, pin)) {
-							if (ChangeObject2ndSize(PCB_TYPE_PIN, element, pin, NULL, vendorDrillMap(pin->DrillingHole), pcb_true, pcb_false))
+							if (pcb_chg_obj_2nd_size(PCB_TYPE_PIN, element, pin, NULL, vendorDrillMap(pin->DrillingHole), pcb_true, pcb_false))
 								changed++;
 							else {
 								Message(PCB_MSG_DEFAULT, _

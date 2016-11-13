@@ -352,7 +352,7 @@ static pcb_opfunc_t ChangeAngleFunctions = {
  * changes the thermals on all selected and visible pins
  * and/or vias. Returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedThermals(int types, int therm_style)
+pcb_bool pcb_chg_selected_thermals(int types, int therm_style)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -372,7 +372,7 @@ pcb_bool ChangeSelectedThermals(int types, int therm_style)
  * changes the size of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedSize(int types, pcb_coord_t Difference, pcb_bool fixIt)
+pcb_bool pcb_chg_selected_size(int types, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -394,7 +394,7 @@ pcb_bool ChangeSelectedSize(int types, pcb_coord_t Difference, pcb_bool fixIt)
  * changes the clearance size of all selected and visible objects
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedClearSize(int types, pcb_coord_t Difference, pcb_bool fixIt)
+pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -419,7 +419,7 @@ pcb_bool ChangeSelectedClearSize(int types, pcb_coord_t Difference, pcb_bool fix
  * changes the 2nd size (drilling hole) of all selected and visible objects
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelected2ndSize(int types, pcb_coord_t Difference, pcb_bool fixIt)
+pcb_bool pcb_chg_selected_2nd_size(int types, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -441,7 +441,7 @@ pcb_bool ChangeSelected2ndSize(int types, pcb_coord_t Difference, pcb_bool fixIt
  * changes the clearance flag (join) of all selected and visible lines
  * and/or arcs. Returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedJoin(int types)
+pcb_bool pcb_chg_selected_join(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -460,7 +460,7 @@ pcb_bool ChangeSelectedJoin(int types)
  * changes the clearance flag (join) of all selected and visible lines
  * and/or arcs. Returns pcb_true if anything has changed
  */
-pcb_bool SetSelectedJoin(int types)
+pcb_bool pcb_set_selected_join(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -479,7 +479,7 @@ pcb_bool SetSelectedJoin(int types)
  * changes the clearance flag (join) of all selected and visible lines
  * and/or arcs. Returns pcb_true if anything has changed
  */
-pcb_bool ClrSelectedJoin(int types)
+pcb_bool pcb_clr_selected_join(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -498,7 +498,7 @@ pcb_bool ClrSelectedJoin(int types)
  * changes the nonetlist-flag of all selected and visible elements
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedNonetlist(int types)
+pcb_bool pcb_chg_selected_nonetlist(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -557,7 +557,7 @@ pcb_bool ClrSelectedNonetlist(int types)
  * changes the square-flag of all selected and visible pins or pads
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedSquare(int types)
+pcb_bool pcb_chg_selected_square(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -576,7 +576,7 @@ pcb_bool ChangeSelectedSquare(int types)
  * changes the angle of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedAngle(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt)
+pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -598,7 +598,7 @@ pcb_bool ChangeSelectedAngle(int types, int is_start, pcb_angle_t Difference, pc
  * changes the radius of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedRadius(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt)
+pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -621,7 +621,7 @@ pcb_bool ChangeSelectedRadius(int types, int is_start, pcb_angle_t Difference, p
  * sets the square-flag of all selected and visible pins or pads
  * returns pcb_true if anything has changed
  */
-pcb_bool SetSelectedSquare(int types)
+pcb_bool pcb_set_selected_square(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -640,7 +640,7 @@ pcb_bool SetSelectedSquare(int types)
  * clears the square-flag of all selected and visible pins or pads
  * returns pcb_true if anything has changed
  */
-pcb_bool ClrSelectedSquare(int types)
+pcb_bool pcb_clr_selected_square(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -659,7 +659,7 @@ pcb_bool ClrSelectedSquare(int types)
  * changes the octagon-flag of all selected and visible pins and vias
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedOctagon(int types)
+pcb_bool pcb_chg_selected_octagon(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -678,7 +678,7 @@ pcb_bool ChangeSelectedOctagon(int types)
  * sets the octagon-flag of all selected and visible pins and vias
  * returns pcb_true if anything has changed
  */
-pcb_bool SetSelectedOctagon(int types)
+pcb_bool pcb_set_selected_octagon(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -697,7 +697,7 @@ pcb_bool SetSelectedOctagon(int types)
  * clears the octagon-flag of all selected and visible pins and vias
  * returns pcb_true if anything has changed
  */
-pcb_bool ClrSelectedOctagon(int types)
+pcb_bool pcb_clr_selected_octagon(int types)
 {
 	pcb_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -716,7 +716,7 @@ pcb_bool ClrSelectedOctagon(int types)
  * changes the hole-flag of all selected and visible vias
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedHole(void)
+pcb_bool pcb_chg_selected_hole(void)
 {
 	pcb_bool change = pcb_false;
 
@@ -738,7 +738,7 @@ pcb_bool ChangeSelectedHole(void)
  * changes the no paste-flag of all selected and visible pads
  * returns pcb_true if anything has changed
  */
-pcb_bool ChangeSelectedPaste(void)
+pcb_bool pcb_chg_selected_paste(void)
 {
 	pcb_bool change = pcb_false;
 
@@ -760,7 +760,7 @@ pcb_bool ChangeSelectedPaste(void)
  * changes the size of the passed object; element size is silk size
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
+pcb_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -782,7 +782,7 @@ pcb_bool ChangeObjectSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coor
  * changes the size of the passed object; element size is pin ring sizes
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObject1stSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
+pcb_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -804,7 +804,7 @@ pcb_bool ChangeObject1stSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_c
  * changes the radius of the passed object (e.g. arc width/height)
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, pcb_coord_t r, pcb_bool fixIt)
+pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, pcb_coord_t r, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -826,7 +826,7 @@ pcb_bool ChangeObjectRadius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
  * changes the angles of the passed object (e.g. arc start/ctx->chgsize.delta)
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, pcb_bool fixIt)
+pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -849,7 +849,7 @@ pcb_bool ChangeObjectAngle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
  * changes the clearance size of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectClearSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
+pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -875,7 +875,7 @@ pcb_bool ChangeObjectClearSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb
  * Returns pcb_true if anything is changed
  *
  */
-pcb_bool ChangeObjectThermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type)
+pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -895,7 +895,7 @@ pcb_bool ChangeObjectThermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int t
  * changes the 2nd size of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObject2ndSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt, pcb_bool incundo)
+pcb_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt, pcb_bool incundo)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -918,7 +918,7 @@ pcb_bool ChangeObject2ndSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_c
  * changes the mask size of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectMaskSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
+pcb_bool pcb_chg_obj_mask_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
 {
 	pcb_bool change;
 	pcb_opctx_t ctx;
@@ -943,7 +943,7 @@ pcb_bool ChangeObjectMaskSize(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
  * The allocated memory isn't freed because the old string is used
  * by the undo module.
  */
-void *ChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
+void *pcb_chg_obj_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 {
 	void *result;
 	pcb_opctx_t ctx;
@@ -963,7 +963,7 @@ void *ChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
  * The allocated memory isn't freed because the old string is used
  * by the undo module.
  */
-void *ChangeObjectPinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
+void *pcb_chg_obj_pinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 {
 	void *result;
 	pcb_opctx_t ctx;
@@ -980,7 +980,7 @@ void *ChangeObjectPinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Nam
  * changes the clearance-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_bool pcb_chg_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -998,7 +998,7 @@ pcb_bool ChangeObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * sets the clearance-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool SetObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_bool pcb_set_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -1016,7 +1016,7 @@ pcb_bool SetObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * clears the clearance-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ClrObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_bool pcb_clr_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -1034,7 +1034,7 @@ pcb_bool ClrObjectJoin(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * changes the square-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectNonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -1052,7 +1052,7 @@ pcb_bool ChangeObjectNonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * changes the square-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int style)
+pcb_bool pcb_chg_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int style)
 {
 	pcb_opctx_t ctx;
 
@@ -1071,7 +1071,7 @@ pcb_bool ChangeObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int st
  * sets the square-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool SetObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_bool pcb_set_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -1089,7 +1089,7 @@ pcb_bool SetObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * clears the square-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ClrObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_bool pcb_clr_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -1107,7 +1107,7 @@ pcb_bool ClrObjectSquare(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * changes the octagon-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ChangeObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_bool pcb_chg_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -1125,7 +1125,7 @@ pcb_bool ChangeObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * sets the octagon-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool SetObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_bool pcb_set_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -1143,7 +1143,7 @@ pcb_bool SetObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * clears the octagon-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool ClrObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+pcb_bool pcb_clr_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -1163,7 +1163,7 @@ pcb_bool ClrObjectOctagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * The allocated memory isn't freed because the old string is used
  * by the undo module.
  */
-void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int pinnum)
+void *QueryInputAndpcb_chg_obj_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int pinnum)
 {
 	char *name = NULL;
 	char msg[513];
@@ -1211,9 +1211,9 @@ void *QueryInputAndChangeObjectName(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 		/* NB: ChangeObjectName takes ownership of the passed memory */
 		char *old;
 		if (pinnum)
-			old = (char *) ChangeObjectPinnum(Type, Ptr1, Ptr2, Ptr3, name);
+			old = (char *) pcb_chg_obj_pinnum(Type, Ptr1, Ptr2, Ptr3, name);
 		else
-			old = (char *) ChangeObjectName(Type, Ptr1, Ptr2, Ptr3, name);
+			old = (char *) pcb_chg_obj_name(Type, Ptr1, Ptr2, Ptr3, name);
 
 		if (old != (char *) -1) {
 			if (pinnum)

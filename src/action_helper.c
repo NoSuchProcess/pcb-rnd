@@ -604,7 +604,7 @@ void pcb_notify_mode(void)
 															0, conf_core.design.via_drilling_hole, NULL, NoFlags())) != NULL) {
 				AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 				if (gui->shift_is_pressed())
-					ChangeObjectThermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
+					pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
 				IncrementUndoSerialNumber();
 				DrawVia(via);
 				Draw();
@@ -728,12 +728,12 @@ void pcb_notify_mode(void)
 					tstyle++;
 					if (tstyle > 5)
 						tstyle = 1;
-					ChangeObjectThermal(type, ptr1, ptr2, ptr3, tstyle);
+					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, tstyle);
 				}
 				else if (GET_THERM(INDEXOFCURRENT, (pcb_pin_t *) ptr3))
-					ChangeObjectThermal(type, ptr1, ptr2, ptr3, 0);
+					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, 0);
 				else
-					ChangeObjectThermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle);
+					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, PCB->ThermStyle);
 			}
 			break;
 		}

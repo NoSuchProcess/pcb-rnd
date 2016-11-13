@@ -229,10 +229,10 @@ static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_lin
 	}
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    ChangeObject1stSize(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_1st_size(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    ChangeObjectClearSize(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, NULL, st->c, st->c_absolute)) DONE;
 }
 
 static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc)
@@ -248,24 +248,24 @@ static void set_arc_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_
 	}
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    ChangeObject1stSize(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_1st_size(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    ChangeObjectClearSize(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, NULL, st->c, st->c_absolute)) DONE;
 
 	pn = st->name + 6;
 
 	if (!st->is_trace && st->c_valid && (strcmp(pn, "width") == 0) &&
-	    ChangeObjectRadius(PCB_TYPE_ARC, layer, arc, NULL, 0, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_radius(PCB_TYPE_ARC, layer, arc, NULL, 0, st->c, st->c_absolute)) DONE;
 
 	if (!st->is_trace && st->c_valid && (strcmp(pn, "height") == 0) &&
-	    ChangeObjectRadius(PCB_TYPE_ARC, layer, arc, NULL, 1, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_radius(PCB_TYPE_ARC, layer, arc, NULL, 1, st->c, st->c_absolute)) DONE;
 
 	if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/start") == 0) &&
-	    ChangeObjectAngle(PCB_TYPE_ARC, layer, arc, NULL, 0, st->d, st->d_absolute)) DONE;
+	    pcb_chg_obj_angle(PCB_TYPE_ARC, layer, arc, NULL, 0, st->d, st->d_absolute)) DONE;
 
 	if (!st->is_trace && st->d_valid && (strcmp(pn, "angle/delta") == 0) &&
-	    ChangeObjectAngle(PCB_TYPE_ARC, layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
+	    pcb_chg_obj_angle(PCB_TYPE_ARC, layer, arc, NULL, 1, st->d, st->d_absolute)) DONE;
 }
 
 static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_or_element, pcb_text_t *text)
@@ -282,10 +282,10 @@ static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_o
 	}
 
 	if (st->d_valid && (strcmp(pn, "scale") == 0) &&
-	    ChangeObjectSize(type, layer_or_element, text, text, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
+	    pcb_chg_obj_size(type, layer_or_element, text, text, PCB_MIL_TO_COORD(st->d), st->d_absolute)) DONE;
 
 	if ((strcmp(pn, "string") == 0) &&
-	    (old = ChangeObjectName(type, layer_or_element, text, NULL, pcb_strdup(st->value)))) {
+	    (old = pcb_chg_obj_name(type, layer_or_element, text, NULL, pcb_strdup(st->value)))) {
 		free(old);
 		DONE;
 	}
@@ -365,16 +365,16 @@ static void set_epin_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	}
 
 	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    ChangeObject1stSize(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_1st_size(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    ChangeObjectClearSize(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
-	    ChangeObjectMaskSize(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_mask_size(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
-	    ChangeObject2ndSize(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute, pcb_false)) DONE;
+	    pcb_chg_obj_2nd_size(PCB_TYPE_PIN, pin->Element, pin, NULL, st->c, st->c_absolute, pcb_false)) DONE;
 }
 
 static void set_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb_pad_t *pad)
@@ -390,7 +390,7 @@ static void set_epad_cb(void *ctx, pcb_board_t *pcb, pcb_element_t *element, pcb
 	}
 
 	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
-	    ChangeObjectMaskSize(PCB_TYPE_PAD, pad->Element, pad, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_mask_size(PCB_TYPE_PAD, pad->Element, pad, NULL, st->c, st->c_absolute)) DONE;
 }
 
 static void set_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
@@ -406,16 +406,16 @@ static void set_via_cb(void *ctx, pcb_board_t *pcb, pcb_pin_t *via)
 	}
 
 	if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
-	    ChangeObject1stSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_1st_size(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
-	    ChangeObjectClearSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_clear_size(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "mask") == 0) &&
-	    ChangeObjectMaskSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
+	    pcb_chg_obj_mask_size(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute)) DONE;
 
 	if (st->c_valid && (strcmp(pn, "hole") == 0) &&
-	    ChangeObject2ndSize(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute, pcb_false)) DONE;
+	    pcb_chg_obj_2nd_size(PCB_TYPE_VIA, via, via, NULL, st->c, st->c_absolute, pcb_false)) DONE;
 }
 
 /* use the callback if trc is true or prop matches a prefix or we are setting attributes, else NULL */

@@ -281,7 +281,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 				AddObjectToChangeNameUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element_list[i], NAMEONPCB_NAME(element_list[i]));
 
-				ChangeObjectName(PCB_TYPE_ELEMENT, element_list[i], NULL, NULL, tmps);
+				pcb_chg_obj_name(PCB_TYPE_ELEMENT, element_list[i], NULL, NULL, tmps);
 				changed = pcb_true;
 
 				/* we don't free tmps in this case because it is used */
