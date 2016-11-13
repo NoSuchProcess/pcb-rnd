@@ -41,29 +41,29 @@ struct pcb_buffer_s {								/* information about the paste buffer */
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-void SwapBuffer(pcb_buffer_t *Buffer);
-void SetBufferBoundingBox(pcb_buffer_t *);
-void ClearBuffer(pcb_buffer_t *);
-void AddSelectedToBuffer(pcb_buffer_t *, pcb_coord_t, pcb_coord_t, pcb_bool);
-pcb_bool LoadLayoutToBuffer(pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
-void RotateBuffer(pcb_buffer_t *, pcb_uint8_t);
-void SelectPasteBuffer(int);
+void pcb_buffer_swap(pcb_buffer_t *Buffer);
+void pcb_set_buffer_bbox(pcb_buffer_t *);
+void pcb_buffer_clear(pcb_buffer_t *);
+void pcb_buffer_add_selected(pcb_buffer_t *, pcb_coord_t, pcb_coord_t, pcb_bool);
+pcb_bool pcb_buffer_load_layout(pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
+void pcb_buffer_rotate(pcb_buffer_t *, pcb_uint8_t);
+void pcb_buffer_select_paste(int);
 void pcb_swap_buffers(void);
-void MirrorBuffer(pcb_buffer_t *);
-void InitBuffers(void);
-void UninitBuffers(void);
-void *MoveObjectToBuffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
-void *CopyObjectToBuffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
+void pcb_buffer_mirror(pcb_buffer_t *);
+void pcb_init_buffers(void);
+void pcb_uninit_buffers(void);
+void *pcb_move_obj_to_buffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
+void *pcb_copy_obj_to_buffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
 
 /* This action is called from ActionElementAddIf() */
-int LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+int pcb_load_footprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
-pcb_data_t *CreateNewBuffer(void);
+pcb_data_t *pcb_buffer_new(void);
 
 
 /* ---------------------------------------------------------------------------
  * access macro for current buffer
  */
-#define	PASTEBUFFER		(&Buffers[conf_core.editor.buffer_number])
+#define	PCB_PASTEBUFFER (&Buffers[conf_core.editor.buffer_number])
 
 #endif

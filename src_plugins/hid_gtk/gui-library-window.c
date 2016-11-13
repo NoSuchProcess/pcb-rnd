@@ -394,12 +394,12 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 		fullp = entry->data.fp.loc_info;
 	}
 		SetMode(PCB_MODE_ARROW);
-	if (LoadElementToBuffer(PASTEBUFFER, name == NULL ? fullp : name))
+	if (LoadElementToBuffer(PCB_PASTEBUFFER, name == NULL ? fullp : name))
 		SetMode(PCB_MODE_PASTE_BUFFER);
 
 	/* update the preview with new symbol data */
-	if ((PASTEBUFFER->Data != NULL) && (elementlist_length(&PASTEBUFFER->Data->Element) != 0))
-		g_object_set(library_window->preview, "element-data", elementlist_first(&PASTEBUFFER->Data->Element), NULL);
+	if ((PCB_PASTEBUFFER->Data != NULL) && (elementlist_length(&PCB_PASTEBUFFER->Data->Element) != 0))
+		g_object_set(library_window->preview, "element-data", elementlist_first(&PCB_PASTEBUFFER->Data->Element), NULL);
 	else {
 		g_object_set(library_window->preview, "element-data", NULL, NULL);
 	}

@@ -119,14 +119,14 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	if (strcasecmp(function, "ElementToBuffer") == 0) {
 		notify_crosshair_change(pcb_false);
-		if (LoadElementToBuffer(PASTEBUFFER, name))
+		if (LoadElementToBuffer(PCB_PASTEBUFFER, name))
 			SetMode(PCB_MODE_PASTE_BUFFER);
 		notify_crosshair_change(pcb_true);
 	}
 
 	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
 		notify_crosshair_change(pcb_false);
-		if (LoadLayoutToBuffer(PASTEBUFFER, name, format))
+		if (pcb_buffer_load_layout(PCB_PASTEBUFFER, name, format))
 			SetMode(PCB_MODE_PASTE_BUFFER);
 		notify_crosshair_change(pcb_true);
 	}

@@ -81,7 +81,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
 /* ---------------------------------------------------------------------------
  * calculates the bounding box of the buffer
  */
-void SetBufferBoundingBox(pcb_buffer_t *Buffer)
+void pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 {
 	pcb_box_t *box = GetDataBoundingBox(Buffer->Data);
 
@@ -92,7 +92,7 @@ void SetBufferBoundingBox(pcb_buffer_t *Buffer)
 /* ---------------------------------------------------------------------------
  * clears the contents of the paste buffer
  */
-void ClearBuffer(pcb_buffer_t *Buffer)
+void pcb_buffer_clear(pcb_buffer_t *Buffer)
 {
 	if (Buffer && Buffer->Data) {
 		FreeDataMemory(Buffer->Data);
@@ -104,7 +104,7 @@ void ClearBuffer(pcb_buffer_t *Buffer)
  * copies all selected and visible objects to the paste buffer
  * returns true if any objects have been removed
  */
-void AddSelectedToBuffer(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
+void pcb_buffer_add_selected(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
 {
 	pcb_opctx_t ctx;
 
@@ -137,7 +137,7 @@ void AddSelectedToBuffer(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb
 
 /*---------------------------------------------------------------------------*/
 
-static const char loadfootprint_syntax[] = "LoadFootprint(filename[,refdes,value])";
+static const char loadfootprint_syntax[] = "pcb_load_footprint(filename[,refdes,value])";
 
 static const char loadfootprint_help[] = "Loads a single footprint by name.";
 
@@ -149,7 +149,7 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 %end-doc */
 
-int LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_load_footprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *name = PCB_ACTION_ARG(0);
 	const char *refdes = PCB_ACTION_ARG(1);
@@ -159,19 +159,19 @@ int LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (!name)
 		PCB_AFAIL(loadfootprint);
 
-	if (LoadFootprintByName(PASTEBUFFER, name))
+	if (LoadFootprintByName(PCB_PASTEBUFFER, name))
 		return 1;
 
-	if (elementlist_length(&PASTEBUFFER->Data->Element) == 0) {
+	if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) == 0) {
 		Message(PCB_MSG_DEFAULT, "Footprint %s contains no elements", name);
 		return 1;
 	}
-	if (elementlist_length(&PASTEBUFFER->Data->Element) > 1) {
+	if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) > 1) {
 		Message(PCB_MSG_DEFAULT, "Footprint %s contains multiple elements", name);
 		return 1;
 	}
 
-	e = elementlist_first(&PASTEBUFFER->Data->Element);
+	e = elementlist_first(&PCB_PASTEBUFFER->Data->Element);
 
 	if (e->Name[0].TextString)
 		free(e->Name[0].TextString);
@@ -193,14 +193,14 @@ int LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
  * parse the file with enabled 'PCB mode' (see parser)
  * if successful, update some other stuff
  */
-pcb_bool LoadLayoutToBuffer(pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
+pcb_bool pcb_buffer_load_layout(pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
 {
 	pcb_board_t *newPCB = pcb_board_new();
 
 	/* new data isn't added to the undo list */
 	if (!ParsePCB(newPCB, Filename, fmt, CFR_invalid)) {
 		/* clear data area and replace pointer */
-		ClearBuffer(Buffer);
+		pcb_buffer_clear(Buffer);
 		free(Buffer->Data);
 		Buffer->Data = newPCB->Data;
 		newPCB->Data = NULL;
@@ -220,7 +220,7 @@ pcb_bool LoadLayoutToBuffer(pcb_buffer_t *Buffer, const char *Filename, const ch
 /* ---------------------------------------------------------------------------
  * rotates the contents of the pastebuffer
  */
-void RotateBuffer(pcb_buffer_t *Buffer, pcb_uint8_t Number)
+void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 {
 	/* rotate vias */
 	VIA_LOOP(Buffer->Data);
@@ -274,7 +274,7 @@ void RotateBuffer(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	RotateBoxLowLevel(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 }
 
-void FreeRotateBuffer(pcb_buffer_t *Buffer, pcb_angle_t angle)
+void Freepcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 {
 	double cosa, sina;
 
@@ -330,13 +330,13 @@ void FreeRotateBuffer(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	}
 	ENDALL_LOOP;
 
-	SetBufferBoundingBox(Buffer);
+	pcb_set_buffer_bbox(Buffer);
 }
 
 /* ---------------------------------------------------------------------------
  * creates a new paste buffer
  */
-pcb_data_t *CreateNewBuffer(void)
+pcb_data_t *pcb_buffer_new(void)
 {
 	pcb_data_t *data;
 	data = (pcb_data_t *) calloc(1, sizeof(pcb_data_t));
@@ -347,7 +347,7 @@ pcb_data_t *CreateNewBuffer(void)
 
 /* -------------------------------------------------------------------------- */
 
-static const char freerotatebuffer_syntax[] = "FreeRotateBuffer([Angle])";
+static const char freerotatebuffer_syntax[] = "Freepcb_buffer_rotate([Angle])";
 
 static const char freerotatebuffer_help[] =
 	"Rotates the current paste buffer contents by the specified angle.  The\n"
@@ -370,7 +370,7 @@ int ActionFreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		angle_s = argv[0];
 
 	notify_crosshair_change(pcb_false);
-	FreeRotateBuffer(PASTEBUFFER, strtod(angle_s, 0));
+	Freepcb_buffer_rotate(PCB_PASTEBUFFER, strtod(angle_s, 0));
 	notify_crosshair_change(pcb_true);
 	return 0;
 }
@@ -378,26 +378,26 @@ int ActionFreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 /* ---------------------------------------------------------------------------
  * initializes the buffers by allocating memory
  */
-void InitBuffers(void)
+void pcb_init_buffers(void)
 {
 	int i;
 
 	for (i = 0; i < MAX_BUFFER; i++)
-		Buffers[i].Data = CreateNewBuffer();
+		Buffers[i].Data = pcb_buffer_new();
 }
 
-void UninitBuffers(void)
+void pcb_uninit_buffers(void)
 {
 	int i;
 
 	for (i = 0; i < MAX_BUFFER; i++) {
-		ClearBuffer(Buffers+i);
+		pcb_buffer_clear(Buffers+i);
 		free(Buffers[i].Data);
 	}
 }
 
 
-void MirrorBuffer(pcb_buffer_t *Buffer)
+void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 {
 	int i;
 
@@ -449,14 +449,14 @@ void MirrorBuffer(pcb_buffer_t *Buffer)
 		SetPolygonBoundingBox(polygon);
 	}
 	ENDALL_LOOP;
-	SetBufferBoundingBox(Buffer);
+	pcb_set_buffer_bbox(Buffer);
 }
 
 
 /* ---------------------------------------------------------------------------
  * flip components/tracks from one side to the other
  */
-void SwapBuffer(pcb_buffer_t *Buffer)
+void pcb_buffer_swap(pcb_buffer_t *Buffer)
 {
 	int j, k;
 	pcb_cardinal_t sgroup, cgroup;
@@ -570,7 +570,7 @@ void SwapBuffer(pcb_buffer_t *Buffer)
 			END_LOOP;
 		}
 	}
-	SetBufferBoundingBox(Buffer);
+	pcb_set_buffer_bbox(Buffer);
 }
 
 void pcb_swap_buffers(void)
@@ -578,7 +578,7 @@ void pcb_swap_buffers(void)
 	int i;
 
 	for (i = 0; i < MAX_BUFFER; i++)
-		SwapBuffer(&Buffers[i]);
+		pcb_buffer_swap(&Buffers[i]);
 	SetCrosshairRangeToBuffer();
 }
 
@@ -586,7 +586,7 @@ void pcb_swap_buffers(void)
  * moves the passed object to the passed buffer and removes it
  * from its original place
  */
-void *MoveObjectToBuffer(pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *pcb_move_obj_to_buffer(pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -600,7 +600,7 @@ void *MoveObjectToBuffer(pcb_data_t *Destination, pcb_data_t *Src, int Type, voi
 /* ----------------------------------------------------------------------
  * Adds the passed object to the passed buffer
  */
-void *CopyObjectToBuffer(pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *pcb_copy_obj_to_buffer(pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -687,38 +687,38 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		switch (funchash_get(function, NULL)) {
 			/* clear contents of paste buffer */
 		case F_Clear:
-			ClearBuffer(PASTEBUFFER);
+			pcb_buffer_clear(PCB_PASTEBUFFER);
 			break;
 
 			/* copies objects to paste buffer */
 		case F_AddSelected:
-			AddSelectedToBuffer(PASTEBUFFER, 0, 0, pcb_false);
+			pcb_buffer_add_selected(PCB_PASTEBUFFER, 0, 0, pcb_false);
 			break;
 
 			/* converts buffer contents into an element */
 		case F_Convert:
-			ConvertBufferToElement(PASTEBUFFER);
+			ConvertBufferToElement(PCB_PASTEBUFFER);
 			break;
 
 			/* break up element for editing */
 		case F_Restore:
-			SmashBufferElement(PASTEBUFFER);
+			SmashBufferElement(PCB_PASTEBUFFER);
 			break;
 
 			/* Mirror buffer */
 		case F_Mirror:
-			MirrorBuffer(PASTEBUFFER);
+			pcb_buffer_mirror(PCB_PASTEBUFFER);
 			break;
 
 		case F_Rotate:
 			if (sbufnum) {
-				RotateBuffer(PASTEBUFFER, (pcb_uint8_t) atoi(sbufnum));
+				pcb_buffer_rotate(PCB_PASTEBUFFER, (pcb_uint8_t) atoi(sbufnum));
 				SetCrosshairRangeToBuffer();
 			}
 			break;
 
 		case F_Save:
-			if (elementlist_length(&PASTEBUFFER->Data->Element) == 0) {
+			if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) == 0) {
 				Message(PCB_MSG_DEFAULT, _("Buffer has no elements!\n"));
 				break;
 			}
@@ -808,7 +808,7 @@ pcb_hid_action_t buffer_action_list[] = {
 	{"FreeRotateBuffer", 0, ActionFreeRotateBuffer,
 	 freerotatebuffer_help, freerotatebuffer_syntax}
 	,
-	{"LoadFootprint", 0, LoadFootprint,
+	{"LoadFootprint", 0, pcb_load_footprint,
 	 loadfootprint_help, loadfootprint_syntax}
 	,
 	{"PasteBuffer", 0, ActionPasteBuffer,

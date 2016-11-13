@@ -73,12 +73,12 @@ pcb_bool CopyPastebufferToLayout(pcb_coord_t X, pcb_coord_t Y)
 
 	/* set movement vector */
 	ctx.copy.pcb = PCB;
-	ctx.copy.DeltaX = X - PASTEBUFFER->X;
-	ctx.copy.DeltaY = Y - PASTEBUFFER->Y;
+	ctx.copy.DeltaX = X - PCB_PASTEBUFFER->X;
+	ctx.copy.DeltaY = Y - PCB_PASTEBUFFER->Y;
 
 	/* paste all layers */
 	for (i = 0; i < max_copper_layer + 2; i++) {
-		pcb_layer_t *sourcelayer = &PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
+		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
 
 		if (destlayer->On) {
 			changed = changed || (!LAYER_IS_EMPTY(sourcelayer));
@@ -107,7 +107,7 @@ pcb_bool CopyPastebufferToLayout(pcb_coord_t X, pcb_coord_t Y)
 
 	/* paste elements */
 	if (PCB->PinOn && PCB->ElementOn) {
-		ELEMENT_LOOP(PASTEBUFFER->Data);
+		ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
 		{
 #ifdef DEBUG
 			printf("In CopyPastebufferToLayout, pasting element %s\n", element->Name[1].TextString);
@@ -122,8 +122,8 @@ pcb_bool CopyPastebufferToLayout(pcb_coord_t X, pcb_coord_t Y)
 
 	/* finally the vias */
 	if (PCB->ViaOn) {
-		changed |= (pinlist_length(&(PASTEBUFFER->Data->Via)) != 0);
-		VIA_LOOP(PASTEBUFFER->Data);
+		changed |= (pinlist_length(&(PCB_PASTEBUFFER->Data->Via)) != 0);
+		VIA_LOOP(PCB_PASTEBUFFER->Data);
 		{
 			CopyVia(&ctx, via);
 		}

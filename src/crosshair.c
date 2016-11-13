@@ -568,7 +568,7 @@ void DrawAttached(void)
 		break;
 
 	case PCB_MODE_PASTE_BUFFER:
-		XORDrawBuffer(PASTEBUFFER);
+		XORDrawBuffer(PCB_PASTEBUFFER);
 		break;
 
 	case PCB_MODE_COPY:

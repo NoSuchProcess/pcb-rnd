@@ -126,11 +126,11 @@ pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name)
 {
 	pcb_element_t *element;
 
-	ClearBuffer(Buffer);
+	pcb_buffer_clear(Buffer);
 	if (!ParseElement(Buffer->Data, Name)) {
 		if (conf_core.editor.show_solder_side)
-			SwapBuffer(Buffer);
-		SetBufferBoundingBox(Buffer);
+			pcb_buffer_swap(Buffer);
+		pcb_set_buffer_bbox(Buffer);
 		if (elementlist_length(&Buffer->Data->Element)) {
 			element = elementlist_first(&Buffer->Data->Element);
 			Buffer->X = element->MarkX;
@@ -144,7 +144,7 @@ pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name)
 	}
 
 	/* release memory which might have been acquired */
-	ClearBuffer(Buffer);
+	pcb_buffer_clear(Buffer);
 	return (pcb_false);
 }
 
@@ -179,7 +179,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	 */
 	element = elementlist_first(&Buffer->Data->Element);
 	elementlist_remove(element);
-	ClearBuffer(Buffer);
+	pcb_buffer_clear(Buffer);
 	ELEMENTLINE_LOOP(element);
 	{
 		CreateNewLineOnLayer(&Buffer->Data->SILKLAYER,
@@ -266,8 +266,8 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 		Buffer->Data->pcb = PCB;
 
 	Element = CreateNewElement(PCB->Data, NULL, &PCB->Font, NoFlags(),
-														 NULL, NULL, NULL, PASTEBUFFER->X,
-														 PASTEBUFFER->Y, 0, 100, MakeFlags(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
+														 NULL, NULL, NULL, PCB_PASTEBUFFER->X,
+														 PCB_PASTEBUFFER->Y, 0, 100, MakeFlags(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
 	if (!Element)
 		return (pcb_false);
 	VIA_LOOP(Buffer->Data);
@@ -385,9 +385,9 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	if (SWAP_IDENT)
 		SET_FLAG(PCB_FLAG_ONSOLDER, Element);
 	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
-	ClearBuffer(Buffer);
-	MoveObjectToBuffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
-	SetBufferBoundingBox(Buffer);
+	pcb_buffer_clear(Buffer);
+	pcb_move_obj_to_buffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
+	pcb_set_buffer_bbox(Buffer);
 	return (pcb_true);
 }
 

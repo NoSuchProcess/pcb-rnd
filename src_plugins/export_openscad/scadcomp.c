@@ -347,7 +347,7 @@ static void scad_export_model(int model_type, pcb_element_t * element, pcb_bool 
 
 
 
-extern void FreeRotateBuffer(pcb_buffer_t * Buffer, pcb_angle_t angle);
+extern void Freepcb_buffer_rotate(pcb_buffer_t * Buffer, pcb_angle_t angle);
 
 static int scad_calculate_bbox(pcb_element_t * element, pcb_angle_t angle, float *w, float *h, float *ox, float *oy)
 {
@@ -358,14 +358,14 @@ static int scad_calculate_bbox(pcb_element_t * element, pcb_angle_t angle, float
 
   pcb_buffer_t element_buffer;
 
-  element_buffer.Data = CreateNewBuffer ();
+  element_buffer.Data = pcb_buffer_new();
 
   -- Copy
   AddElementToBuffer (pcb_element_t *Element)
   if (ON_SIDE(Element,(Settings.ShowBottomSide)?BOTTOM_SIDE:TOP_SIDE))
      MirrorElementCoordinates (element_buffer.Data, element, 0);
 
-  ClearBuffer (&element_buffer);
+  pcb_buffer_clear(&element_buffer);
 */
 }
 

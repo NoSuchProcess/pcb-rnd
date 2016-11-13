@@ -587,11 +587,11 @@ static pcb_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
 		if (!RemoveList)
-			RemoveList = CreateNewBuffer();
+			RemoveList = pcb_buffer_new();
 		if (andDraw)
 			EraseObject(type, ptr1, ptr2);
 		/* in order to make this re-doable we move it to the RemoveList */
-		MoveObjectToBuffer(RemoveList, PCB->Data, type, ptr1, ptr2, ptr3);
+		pcb_move_obj_to_buffer(RemoveList, PCB->Data, type, ptr1, ptr2, ptr3);
 		Entry->Type = UNDO_REMOVE;
 		return (pcb_true);
 	}
@@ -632,7 +632,7 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 	if (type != PCB_TYPE_NONE) {
 		if (andDraw)
 			DrawRecoveredObject(type, ptr1, ptr2, ptr3);
-		MoveObjectToBuffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
+		pcb_move_obj_to_buffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
 		Entry->Type = UNDO_CREATE;
 		return (pcb_true);
 	}
@@ -775,12 +775,12 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	obj->ID = obj2->ID;
 	obj2->ID = swap_id;
 
-	MoveObjectToBuffer(RemoveList, PCB->Data, type, ptr1b, ptr2b, ptr3b);
+	pcb_move_obj_to_buffer(RemoveList, PCB->Data, type, ptr1b, ptr2b, ptr3b);
 
 	if (andDraw)
 		DrawRecoveredObject(Entry->Kind, ptr1, ptr2, ptr3);
 
-	obj = (pcb_any_obj_t *) MoveObjectToBuffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
+	obj = (pcb_any_obj_t *) pcb_move_obj_to_buffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
 	if (Entry->Kind == PCB_TYPE_POLYGON)
 		InitClip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_polygon_t *) obj);
 	return (pcb_true);
@@ -1229,10 +1229,10 @@ void MoveObjectToRemoveUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		return;
 
 	if (!RemoveList)
-		RemoveList = CreateNewBuffer();
+		RemoveList = pcb_buffer_new();
 
 	GetUndoSlot(UNDO_REMOVE, OBJECT_ID(Ptr3), Type);
-	MoveObjectToBuffer(RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
+	pcb_move_obj_to_buffer(RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1292,10 +1292,10 @@ static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2
 		return;
 
 	if (!RemoveList)
-		RemoveList = CreateNewBuffer();
+		RemoveList = pcb_buffer_new();
 
 	undo = GetUndoSlot(undo_type, OBJECT_ID(Ptr2), Type);
-	copy = (pcb_any_obj_t *) CopyObjectToBuffer(RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
+	copy = (pcb_any_obj_t *) pcb_copy_obj_to_buffer(RemoveList, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
 	undo->Data.CopyID = copy->ID;
 }
 

@@ -217,7 +217,7 @@ void pcb_main_uninit(void)
 	if (conf_isdirty(CFR_USER))
 		conf_save_file(NULL, NULL, CFR_USER, NULL);
 
-	UninitBuffers();
+	pcb_uninit_buffers();
 
 	/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
 	 * Because it removes some false positives from heap bug detectors such as
@@ -453,7 +453,7 @@ int main(int argc, char *argv[])
 	if (gui->gui)
 		InitCrosshair();
 	InitHandler();
-	InitBuffers();
+	pcb_init_buffers();
 
 	SetMode(PCB_MODE_ARROW);
 

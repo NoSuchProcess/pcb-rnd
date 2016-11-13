@@ -1266,11 +1266,11 @@ void ChangePCBSize(pcb_coord_t Width, pcb_coord_t Height)
 	 * is enabled
 	 */
 	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER)
-		SetCrosshairRange(PASTEBUFFER->X - PASTEBUFFER->BoundingBox.X1,
-											PASTEBUFFER->Y - PASTEBUFFER->BoundingBox.Y1,
+		SetCrosshairRange(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
+											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->BoundingBox.Y1,
 											MAX(0,
-													Width - (PASTEBUFFER->BoundingBox.X2 -
-																	 PASTEBUFFER->X)), MAX(0, Height - (PASTEBUFFER->BoundingBox.Y2 - PASTEBUFFER->Y)));
+													Width - (PCB_PASTEBUFFER->BoundingBox.X2 -
+																	 PCB_PASTEBUFFER->X)), MAX(0, Height - (PCB_PASTEBUFFER->BoundingBox.Y2 - PCB_PASTEBUFFER->Y)));
 	else
 		SetCrosshairRange(0, 0, Width, Height);
 

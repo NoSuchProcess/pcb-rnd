@@ -750,7 +750,7 @@ static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const
 			return WriteElementData(fp, PCB->Data, fmt);
 		return pcb_write_pcb(fp, old_path, new_path, fmt, emergency);
 	}
-	return WriteBuffer(fp, PASTEBUFFER, fmt);
+	return WriteBuffer(fp, PCB_PASTEBUFFER, fmt);
 }
 
 /* ---------------------------------------------------------------------------

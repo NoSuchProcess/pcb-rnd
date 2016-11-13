@@ -221,14 +221,14 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				pcb_coord_t x, y;
 				Note.Buffer = conf_core.editor.buffer_number;
 				SetBufferNumber(MAX_BUFFER - 1);
-				ClearBuffer(PASTEBUFFER);
+				pcb_buffer_clear(PCB_PASTEBUFFER);
 				gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
 				x = GridFit(x, PCB->Grid, PCB->GridOffsetX);
 				y = GridFit(y, PCB->Grid, PCB->GridOffsetY);
-				AddSelectedToBuffer(PASTEBUFFER, x, y, pcb_true);
+				pcb_buffer_add_selected(PCB_PASTEBUFFER, x, y, pcb_true);
 				SaveUndoSerialNumber();
 				RemoveSelected();
-				ConvertBufferToElement(PASTEBUFFER);
+				ConvertBufferToElement(PCB_PASTEBUFFER);
 				RestoreUndoSerialNumber();
 				CopyPastebufferToLayout(x, y);
 				SetBufferNumber(Note.Buffer);

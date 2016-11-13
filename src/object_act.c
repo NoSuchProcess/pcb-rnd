@@ -550,7 +550,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		printf("  ... Footprint not on board, need to add it.\n");
 #endif
 		/* Not on board, need to add it. */
-		if (LoadFootprint(argc, args, x, y)) {
+		if (pcb_load_footprint(argc, args, x, y)) {
 			number_of_footprints_not_found++;
 			return 1;
 		}
@@ -591,22 +591,22 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		pcb_element_t *pe;
 
 		/* Different footprint, we need to swap them out.  */
-		if (LoadFootprint(argc, args, x, y)) {
+		if (pcb_load_footprint(argc, args, x, y)) {
 			number_of_footprints_not_found++;
 			return 1;
 		}
 
 		er = ElementOrientation(e);
-		pe = elementlist_first(&(PASTEBUFFER->Data->Element));
+		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
 		if (!FRONT(e))
-			MirrorElementCoordinates(PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
+			MirrorElementCoordinates(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
 		pr = ElementOrientation(pe);
 
 		mx = e->MarkX;
 		my = e->MarkY;
 
 		if (er != pr)
-			RotateElementLowLevel(PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (er - pr + 4) % 4);
+			RotateElementLowLevel(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (er - pr + 4) % 4);
 
 		for (i = 0; i < MAX_ELEMENTNAMES; i++) {
 			pe->Name[i].X = e->Name[i].X - mx + pe->MarkX;
@@ -793,11 +793,11 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 				if (SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
 					Note.Buffer = conf_core.editor.buffer_number;
 					SetBufferNumber(MAX_BUFFER - 1);
-					ClearBuffer(PASTEBUFFER);
-					CopyObjectToBuffer(PASTEBUFFER->Data, PCB->Data, PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
-					SmashBufferElement(PASTEBUFFER);
-					PASTEBUFFER->X = 0;
-					PASTEBUFFER->Y = 0;
+					pcb_buffer_clear(PCB_PASTEBUFFER);
+					pcb_copy_obj_to_buffer(PCB_PASTEBUFFER->Data, PCB->Data, PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
+					SmashBufferElement(PCB_PASTEBUFFER);
+					PCB_PASTEBUFFER->X = 0;
+					PCB_PASTEBUFFER->Y = 0;
 					SaveUndoSerialNumber();
 					EraseObject(PCB_TYPE_ELEMENT, ptr1, ptr1);
 					MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);

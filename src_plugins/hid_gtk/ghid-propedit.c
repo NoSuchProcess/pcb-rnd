@@ -313,7 +313,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 */
 
 	memset(&preview_pcb, 0, sizeof(preview_pcb));
-	preview_pcb.Data = CreateNewBuffer();
+	preview_pcb.Data = pcb_buffer_new();
 	preview_pcb.MaxWidth = preview_pcb.MaxHeight = PCB_MIL_TO_COORD(2000);
 	pcb_colors_from_settings(&preview_pcb);
 	CreateDefaultFont(&preview_pcb);

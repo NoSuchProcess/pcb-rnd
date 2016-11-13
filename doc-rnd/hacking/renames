@@ -162,3 +162,20 @@ dist2_to_box -> pcb_dist2_to_box
 GetBoxMemory -> pcb_box_new
 FreeBoxListMemory -> pcb_box_free
 SetPointBoundingBox -> pcb_set_point_bounding_box
+SwapBuffer -> pcb_swap_buffer
+SetBufferBoundingBox -> pcb_set_buffer_bbox
+ClearBuffer -> pcb_buffer_clear
+pcb_swap_buffer -> pcb_buffer_swap
+pcb_buffer_set_bbox -> 
+AddSelectedToBuffer -> pcb_buffer_add_selected
+LoadLayoutToBuffer -> pcb_buffer_load_layout
+RotateBuffer -> pcb_buffer_rotate
+SelectPasteBuffer -> pcb_buffer_select_paste
+MirrorBuffer -> pcb_buffer_mirror
+InitBuffers -> pcb_init_buffers
+UninitBuffers -> pcb_uninit_buffers
+MoveObjectToBuffer -> pcb_move_obj_to_buffer
+CopyObjectToBuffer -> pcb_copy_obj_to_buffer
+LoadFootprint -> pcb_load_footprint
+CreateNewBuffer -> pcb_buffer_new
+PASTEBUFFER -> PCB_PASTEBUFFER

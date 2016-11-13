@@ -303,8 +303,8 @@ static void click_cb(pcb_hidval_t hv)
 		if (Note.Moving && !gui->shift_is_pressed()) {
 			Note.Buffer = conf_core.editor.buffer_number;
 			SetBufferNumber(MAX_BUFFER - 1);
-			ClearBuffer(PASTEBUFFER);
-			AddSelectedToBuffer(PASTEBUFFER, Note.X, Note.Y, pcb_true);
+			pcb_buffer_clear(PCB_PASTEBUFFER);
+			pcb_buffer_add_selected(PCB_PASTEBUFFER, Note.X, Note.Y, pcb_true);
 			SaveUndoSerialNumber();
 			RemoveSelected();
 			SaveMode();
@@ -394,7 +394,7 @@ void pcb_release_mode(void)
 	else if (Note.Moving) {
 		RestoreUndoSerialNumber();
 		pcb_notify_mode();
-		ClearBuffer(PASTEBUFFER);
+		pcb_buffer_clear(PCB_PASTEBUFFER);
 		SetBufferNumber(Note.Buffer);
 		Note.Moving = pcb_false;
 		Note.Hit = 0;

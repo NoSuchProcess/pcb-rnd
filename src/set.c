@@ -135,12 +135,12 @@ void SetChangedFlag(pcb_bool New)
 void SetCrosshairRangeToBuffer(void)
 {
 	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER) {
-		SetBufferBoundingBox(PASTEBUFFER);
-		SetCrosshairRange(PASTEBUFFER->X - PASTEBUFFER->BoundingBox.X1,
-											PASTEBUFFER->Y - PASTEBUFFER->BoundingBox.Y1,
+		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
+		SetCrosshairRange(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
+											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->BoundingBox.Y1,
 											PCB->MaxWidth -
-											(PASTEBUFFER->BoundingBox.X2 - PASTEBUFFER->X),
-											PCB->MaxHeight - (PASTEBUFFER->BoundingBox.Y2 - PASTEBUFFER->Y));
+											(PCB_PASTEBUFFER->BoundingBox.X2 - PCB_PASTEBUFFER->X),
+											PCB->MaxHeight - (PCB_PASTEBUFFER->BoundingBox.Y2 - PCB_PASTEBUFFER->Y));
 	}
 }
 
