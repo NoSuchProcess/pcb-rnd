@@ -827,7 +827,7 @@ int WritePipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 	}
 	printf("write to pipe \"%s\"\n", command.array);
 	if ((fp = popen(command.array, "w")) == NULL) {
-		PopenErrorpcb_message(command.array);
+		pcb_popen_error_message(command.array);
 		return (STATUS_ERROR);
 	}
 

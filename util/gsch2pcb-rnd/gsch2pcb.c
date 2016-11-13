@@ -138,17 +138,17 @@ static int file_exists(const char *fn)
 	return 1;
 }
 
-void ChdirErrorpcb_message(const char *DirName)
+void pcb_chdir_error_message(const char *DirName)
 {
 	fprintf(stderr, "gsch2pcb-rnd: warning: can't cd to %s\n", DirName);
 }
 
-void OpendirErrorpcb_message(const char *DirName)
+void pcb_opendir_error_message(const char *DirName)
 {
 	fprintf(stderr, "gsch2pcb-rnd: warning: can't opendir %s\n", DirName);
 }
 
-void PopenErrorpcb_message(const char *cmd)
+void pcb_popen_error_message(const char *cmd)
 {
 	fprintf(stderr, "gsch2pcb-rnd: warning: can't popen %s\n", cmd);
 }

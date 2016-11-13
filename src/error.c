@@ -99,7 +99,7 @@ void OpenErrorpcb_message(const char *Filename)
 /* ---------------------------------------------------------------------------
  * print standard 'popen error'
  */
-void PopenErrorpcb_message(const char *Filename)
+void pcb_popen_error_message(const char *Filename)
 {
 	char *utf8 = NULL;
 
@@ -111,7 +111,7 @@ void PopenErrorpcb_message(const char *Filename)
 /* ---------------------------------------------------------------------------
  * print standard 'opendir'
  */
-void OpendirErrorpcb_message(const char *DirName)
+void pcb_opendir_error_message(const char *DirName)
 {
 	char *utf8 = NULL;
 
@@ -123,7 +123,7 @@ void OpendirErrorpcb_message(const char *DirName)
 /* ---------------------------------------------------------------------------
  * print standard 'chdir error'
  */
-void ChdirErrorpcb_message(const char *DirName)
+void pcb_chdir_error_message(const char *DirName)
 {
 	char *utf8 = NULL;
 

@@ -257,3 +257,7 @@ DrawLayer -> pcb_draw_layer
 EraseObject -> pcb_erase_obj
 LightenColor -> pcb_lighten_color
 Message -> pcb_message
+OpenErrorpcb_messag -> pcb_open_error_message
+PopenErrorpcb_message -> pcb_popen_error_message
+OpendirErrorpcb_message -> pcb_opendir_error_message
+ChdirErrorpcb_message -> ocb_chdir_error_message

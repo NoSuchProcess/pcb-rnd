@@ -133,7 +133,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 	if (chdir(subdir)) {
 		if (!subdir_may_not_exist)
-			ChdirErrorpcb_message(subdir);
+			pcb_chdir_error_message(subdir);
 		return 0;
 	}
 
@@ -142,7 +142,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	if (pcb_get_wd(new_subdir) == NULL) {
 		pcb_message(PCB_MSG_DEFAULT, _("fp_fs_list(): Could not determine new working directory\n"));
 		if (chdir(olddir))
-			ChdirErrorpcb_message(olddir);
+			pcb_chdir_error_message(olddir);
 		return 0;
 	}
 
@@ -153,9 +153,9 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 	/* First try opening the directory specified by path */
 	if ((subdirobj = opendir(new_subdir)) == NULL) {
-		OpendirErrorpcb_message(new_subdir);
+		pcb_opendir_error_message(new_subdir);
 		if (chdir(olddir))
-			ChdirErrorpcb_message(olddir);
+			pcb_chdir_error_message(olddir);
 		return 0;
 	}
 
@@ -214,7 +214,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	/* Done.  Clean up, cd back into old dir, and return */
 	closedir(subdirobj);
 	if (chdir(olddir))
-		ChdirErrorpcb_message(olddir);
+		pcb_chdir_error_message(olddir);
 	return n_footprints;
 }
 

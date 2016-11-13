@@ -2401,7 +2401,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	    /* open pipe to stdout of command */
 	    if (*command == '\0' || (pcb_in = popen(command, "r")) == NULL)
 	      {
-		PopenErrorpcb_message(command);
+		pcb_popen_error_message(command);
 		free(command);
 		return(1);
 	      }

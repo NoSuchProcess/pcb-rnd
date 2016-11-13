@@ -81,7 +81,7 @@ static int ReadNetlist(const char *filename)
 
 		/* open pipe to stdout of command */
 		if (*command == '\0' || (fp = popen(command, "r")) == NULL) {
-			PopenErrorpcb_message(command);
+			pcb_popen_error_message(command);
 			free(command);
 			return (1);
 		}

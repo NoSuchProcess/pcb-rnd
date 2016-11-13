@@ -77,7 +77,7 @@ char *ExpandFilename(char *Dirname, char *Filename)
 	}
 
 	/* couldn't be expanded by the shell */
-	PopenErrorpcb_message(command);
+	pcb_popen_error_message(command);
 	free(command);
 	gds_uninit(&answer);
 	return NULL;
