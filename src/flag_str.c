@@ -318,8 +318,7 @@ static int error_ignore(const char *msg)
 
 static pcb_flag_t empty_flags;
 
-pcb_flag_t
-common_string_to_flags(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits)
+pcb_flag_t common_string_to_flags(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits)
 {
 	const char *fp, *ep;
 	int flen;

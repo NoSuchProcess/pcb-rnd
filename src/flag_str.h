@@ -62,10 +62,6 @@ pcb_flag_t string_to_flags(const char *flagstring, int (*error) (const char *msg
    freed.  */
 char *flags_to_string(pcb_flag_t flags, int object_type);
 
-/* Same as above, but for pcb flags.  */
-pcb_flag_t string_to_pcbflags(const char *flagstring, int (*error) (const char *msg));
-char *pcbflags_to_string(pcb_flag_t flags);
-
 void uninit_strflags_buf(void);
 void uninit_strflags_layerlist(void);
 
