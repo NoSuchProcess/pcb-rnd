@@ -222,7 +222,7 @@ static void stitch_them()
 	RemoveExcessPolygonPoints(poly_layer, outer_poly);
 	InitClip(PCB->Data, poly_layer, outer_poly);
 	DrawPolygon(poly_layer, outer_poly);
-	Draw();
+	pcb_draw();
 
 	RemovePolygon(poly_layer, inner_poly);
 }

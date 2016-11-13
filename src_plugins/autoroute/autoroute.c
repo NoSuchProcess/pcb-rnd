@@ -3258,7 +3258,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 	RD_DrawLine(rd, -1, 0, 0, 0, 0, 0, NULL, pcb_false, pcb_false);
 
 	if (conf_core.editor.live_routing)
-		Draw();
+		pcb_draw();
 
 #ifdef ROUTE_DEBUG
 	if (ddraw != NULL)
@@ -4231,7 +4231,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 				}
 				END_LOOP;
 				if (conf_core.editor.live_routing)
-					Draw();
+					pcb_draw();
 				/* reset to original connectivity */
 				if (rip) {
 					ras.ripped++;
@@ -4713,7 +4713,7 @@ donerouting:
 
 		IncrementUndoSerialNumber();
 
-		Redraw();
+		pcb_redraw();
 	}
 	RestoreFindFlag();
 #if defined (ROUTE_DEBUG)

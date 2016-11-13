@@ -362,7 +362,7 @@ pcb_bool pcb_chg_selected_thermals(int types, int therm_style)
 
 	change = SelectedOperation(&ChangeThermalFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -384,7 +384,7 @@ pcb_bool pcb_chg_selected_size(int types, pcb_coord_t Difference, pcb_bool fixIt
 
 	change = SelectedOperation(&ChangeSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -409,7 +409,7 @@ pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool
 	else
 		change = SelectedOperation(&ChangeClearSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -431,7 +431,7 @@ pcb_bool pcb_chg_selected_2nd_size(int types, pcb_coord_t Difference, pcb_bool f
 
 	change = SelectedOperation(&Change2ndSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -450,7 +450,7 @@ pcb_bool pcb_chg_selected_join(int types)
 
 	change = SelectedOperation(&ChangeJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -469,7 +469,7 @@ pcb_bool pcb_set_selected_join(int types)
 
 	change = SelectedOperation(&SetJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -488,7 +488,7 @@ pcb_bool pcb_clr_selected_join(int types)
 
 	change = SelectedOperation(&ClrJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -507,7 +507,7 @@ pcb_bool pcb_chg_selected_nonetlist(int types)
 
 	change = SelectedOperation(&ChangeNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -527,7 +527,7 @@ pcb_bool SetSelectedNonetlist(int types)
 
 	change = SelectedOperation(&SetNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -546,7 +546,7 @@ pcb_bool ClrSelectedNonetlist(int types)
 
 	change = SelectedOperation(&ClrNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -566,7 +566,7 @@ pcb_bool pcb_chg_selected_square(int types)
 
 	change = SelectedOperation(&ChangeSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -588,7 +588,7 @@ pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference,
 
 	change = SelectedOperation(&ChangeAngleFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -610,7 +610,7 @@ pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference
 
 	change = SelectedOperation(&ChangeRadiusFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -630,7 +630,7 @@ pcb_bool pcb_set_selected_square(int types)
 
 	change = SelectedOperation(&SetSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -649,7 +649,7 @@ pcb_bool pcb_clr_selected_square(int types)
 
 	change = SelectedOperation(&ClrSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -668,7 +668,7 @@ pcb_bool pcb_chg_selected_octagon(int types)
 
 	change = SelectedOperation(&ChangeOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -687,7 +687,7 @@ pcb_bool pcb_set_selected_octagon(int types)
 
 	change = SelectedOperation(&SetOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -706,7 +706,7 @@ pcb_bool pcb_clr_selected_octagon(int types)
 
 	change = SelectedOperation(&ClrOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -728,7 +728,7 @@ pcb_bool pcb_chg_selected_hole(void)
 	}
 	END_LOOP;
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -749,7 +749,7 @@ pcb_bool pcb_chg_selected_paste(void)
 	}
 	ENDALL_LOOP;
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -772,7 +772,7 @@ pcb_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coor
 
 	change = (ObjectOperation(&ChangeSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -794,7 +794,7 @@ pcb_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 
 	change = (ObjectOperation(&Change1stSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -816,7 +816,7 @@ pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 
 	change = (ObjectOperation(&ChangeRadiusFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -838,7 +838,7 @@ pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
 
 	change = (ObjectOperation(&ChangeAngleFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -864,7 +864,7 @@ pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
 	else
 		change = (ObjectOperation(&ChangeClearSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -885,7 +885,7 @@ pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int t
 
 	change = (ObjectOperation(&ChangeThermalFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -907,7 +907,7 @@ pcb_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 
 	change = (ObjectOperation(&Change2ndSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
-		Draw();
+		pcb_draw();
 		if (incundo)
 			IncrementUndoSerialNumber();
 	}
@@ -930,7 +930,7 @@ pcb_bool pcb_chg_obj_mask_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb
 
 	change = (ObjectOperation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -952,7 +952,7 @@ void *pcb_chg_obj_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 	ctx.chgname.new_name = Name;
 
 	result = ObjectOperation(&ChangeNameFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	Draw();
+	pcb_draw();
 	return (result);
 }
 
@@ -972,7 +972,7 @@ void *pcb_chg_obj_pinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Nam
 	ctx.chgname.new_name = Name;
 
 	result = ObjectOperation(&ChangePinnumFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	Draw();
+	pcb_draw();
 	return (result);
 }
 
@@ -987,7 +987,7 @@ pcb_bool pcb_chg_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ChangeJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1005,7 +1005,7 @@ pcb_bool pcb_set_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&SetJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1023,7 +1023,7 @@ pcb_bool pcb_clr_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ClrJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1041,7 +1041,7 @@ pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ChangeNonetlistFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1060,7 +1060,7 @@ pcb_bool pcb_chg_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int st
 	ctx.chgsize.absolute = style;
 
 	if (ObjectOperation(&ChangeSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1078,7 +1078,7 @@ pcb_bool pcb_set_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&SetSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1096,7 +1096,7 @@ pcb_bool pcb_clr_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ClrSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1114,7 +1114,7 @@ pcb_bool pcb_chg_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ChangeOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1132,7 +1132,7 @@ pcb_bool pcb_set_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&SetOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1150,7 +1150,7 @@ pcb_bool pcb_clr_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.chgsize.pcb = PCB;
 
 	if (ObjectOperation(&ClrOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 		return (pcb_true);
 	}
@@ -1222,7 +1222,7 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 				AddObjectToChangeNameUndoList(Type, Ptr1, Ptr2, Ptr3, old);
 			IncrementUndoSerialNumber();
 		}
-		Draw();
+		pcb_draw();
 		return (Ptr3);
 	}
 	return (NULL);

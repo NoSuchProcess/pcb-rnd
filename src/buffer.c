@@ -686,7 +686,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 	}
 
 	if (changed) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 

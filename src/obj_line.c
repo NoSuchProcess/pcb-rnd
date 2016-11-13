@@ -402,7 +402,7 @@ void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	if (Layer->On) {
 		DrawLine(Layer, Line);
-		Draw();
+		pcb_draw();
 	}
 	return (Line);
 }
@@ -421,7 +421,7 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		if (Layer->On) {
 			DrawLine(Layer, Line);
-			Draw();
+			pcb_draw();
 		}
 		return (Line);
 	}
@@ -435,7 +435,7 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 		r_insert_entry(PCB->Data->rat_tree, &Line->BoundingBox, 0);
 		if (PCB->RatOn) {
 			DrawRat((pcb_rat_t *) Line);
-			Draw();
+			pcb_draw();
 		}
 		return (Line);
 	}
@@ -490,7 +490,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 	}
 	if (ctx->move.dst_layer == Layer && Layer->On) {
 		DrawLine(Layer, Line);
-		Draw();
+		pcb_draw();
 	}
 	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
 		return (Line);
@@ -504,7 +504,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->On)
 		DrawLine(ctx->move.dst_layer, newone);
-	Draw();
+	pcb_draw();
 	if (!PCB->ViaOn || ctx->move.more_to_come ||
 			GetLayerGroupNumberByPointer(Layer) ==
 			GetLayerGroupNumberByPointer(ctx->move.dst_layer) || TEST_SILK_LAYER(Layer) || TEST_SILK_LAYER(ctx->move.dst_layer))
@@ -533,7 +533,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 		if (setjmp(info.env) == 0)
 			r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
 	}
-	Draw();
+	pcb_draw();
 	return (newone);
 }
 
@@ -600,7 +600,7 @@ void *RemoveLine_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 	if (Layer->On) {
 		EraseLine(Line);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_LINE, Layer, Line, Line);
 	return NULL;
@@ -665,7 +665,7 @@ void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 		r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) Line, 0);
 		DrawRat((pcb_rat_t *) Line);
 	}
-	Draw();
+	pcb_draw();
 	return (Line);
 }
 
@@ -699,7 +699,7 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, line);
 		/* creation call adds it to the rtree */
 	}
-	Draw();
+	pcb_draw();
 	return (line);
 }
 
@@ -733,7 +733,7 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 
 	if (TEST_FLAG(PCB_FLAG_ONPOINT, line)) {
 		assert(color != NULL);
-		LightenColor(color, buf, 1.75);
+		pcb_lighten_color(color, buf, 1.75);
 		color = buf;
 	}
 

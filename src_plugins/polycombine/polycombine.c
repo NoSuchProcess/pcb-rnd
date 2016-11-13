@@ -334,7 +334,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	PolyToPolygonsOnLayer(PCB->Data, Layer, res, string_to_pcbflags("clearpoly", NULL));
 	RestoreUndoSerialNumber();
 	IncrementUndoSerialNumber();
-	Draw();
+	pcb_draw();
 
 	return 0;
 }

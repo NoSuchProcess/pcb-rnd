@@ -122,7 +122,7 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 	IncrementUndoSerialNumber();
 
 	pcb_draw_inhibit_dec();
-	Draw();
+	pcb_draw();
 
 	return (ptr2);
 }

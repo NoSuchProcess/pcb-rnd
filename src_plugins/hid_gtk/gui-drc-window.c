@@ -169,7 +169,7 @@ static void unset_found_flags(int AndDraw)
 		SetChangedFlag(pcb_true);
 		if (AndDraw) {
 			IncrementUndoSerialNumber();
-			Draw();
+			pcb_draw();
 		}
 	}
 }
@@ -217,11 +217,11 @@ static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_dat
 		case PCB_TYPE_POLYGON:
 			ChangeGroupVisibility(GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1), pcb_true, pcb_true);
 		}
-		DrawObject(object_type, ptr1, ptr2);
+		pcb_draw_obj(object_type, ptr1, ptr2);
 	}
 	SetChangedFlag(pcb_true);
 	IncrementUndoSerialNumber();
-	Draw();
+	pcb_draw();
 }
 
 static void row_activated_cb(GtkTreeView * view, GtkTreePath * path, GtkTreeViewColumn * column, gpointer user_data)

@@ -200,7 +200,7 @@ pcb_bool SelectObject(void)
 		pcb_select_element((pcb_element_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
 		break;
 	}
-	Draw();
+	pcb_draw();
 	IncrementUndoSerialNumber();
 	return (changed);
 }
@@ -445,7 +445,7 @@ do { \
 	END_LOOP;
 
 	if (changed) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 
@@ -1003,7 +1003,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 
 	if (changed) {
 		IncrementUndoSerialNumber();
-		Draw();
+		pcb_draw();
 	}
 	if (pat != NULL)
 		free(pat);

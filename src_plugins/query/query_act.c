@@ -147,7 +147,7 @@ static int query_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			SetChangedFlag(pcb_true);
-			Redraw();
+			pcb_redraw();
 		}
 		return 0;
 	}
@@ -158,7 +158,7 @@ static int query_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			SetChangedFlag(pcb_true);
-			Redraw();
+			pcb_redraw();
 		}
 		return 0;
 	}

@@ -292,7 +292,7 @@ void pcb_clear_warnings()
 	}
 	ENDALL_LOOP;
 
-	Draw();
+	pcb_draw();
 }
 
 static void click_cb(pcb_hidval_t hv)
@@ -607,7 +607,7 @@ void pcb_notify_mode(void)
 					pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
 				IncrementUndoSerialNumber();
 				DrawVia(via);
-				Draw();
+				pcb_draw();
 			}
 			break;
 		}
@@ -670,7 +670,7 @@ void pcb_notify_mode(void)
 						IncrementUndoSerialNumber();
 						addedLines++;
 						DrawArc(CURRENT, arc);
-						Draw();
+						pcb_draw();
 						Crosshair.AttachedBox.State = STATE_THIRD;
 					}
 					break;
@@ -702,7 +702,7 @@ void pcb_notify_mode(void)
 				 * to tell if a selected flag changed
 				 */
 				DrawElement(element);
-				Draw();
+				pcb_draw();
 				hid_actionl("Report", "Object", NULL);
 			}
 			else if (type != PCB_TYPE_NONE) {
@@ -712,8 +712,8 @@ void pcb_notify_mode(void)
 						&& TEST_FLAG(PCB_FLAG_SELECTED, thing)) {
 					/* this is not un-doable since LOCK isn't */
 					CLEAR_FLAG(PCB_FLAG_SELECTED, thing);
-					DrawObject(type, ptr1, ptr2);
-					Draw();
+					pcb_draw_obj(type, ptr1, ptr2);
+					pcb_draw();
 				}
 				hid_actionl("Report", "Object", NULL);
 			}
@@ -764,7 +764,7 @@ void pcb_notify_mode(void)
 				DrawRat(line);
 				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
 				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y;
-				Draw();
+				pcb_draw();
 			}
 			break;
 		}
@@ -865,7 +865,7 @@ void pcb_notify_mode(void)
 				Marked.X = Note.X;
 				Marked.Y = Note.Y;
 			}
-			Draw();
+			pcb_draw();
 		}
 		break;
 
@@ -892,7 +892,7 @@ void pcb_notify_mode(void)
 				AddObjectToCreateUndoList(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
 				IncrementUndoSerialNumber();
 				DrawPolygon(CURRENT, polygon);
-				Draw();
+				pcb_draw();
 			}
 
 			/* reset state to 'first corner' */
@@ -916,7 +916,7 @@ void pcb_notify_mode(void)
 						AddObjectToCreateUndoList(PCB_TYPE_TEXT, CURRENT, text, text);
 						IncrementUndoSerialNumber();
 						DrawText(CURRENT, text);
-						Draw();
+						pcb_draw();
 					}
 				}
 				free(string);
@@ -1026,7 +1026,7 @@ void pcb_notify_mode(void)
 												 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 						RestoreUndoSerialNumber();
 						IncrementUndoSerialNumber();
-						Draw();
+						pcb_draw();
 
 						/* reset state of attached line */
 						memset(&Crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));

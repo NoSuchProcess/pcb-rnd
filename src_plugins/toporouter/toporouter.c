@@ -8129,7 +8129,7 @@ static int toporouter(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 	AddAllRats(pcb_false, NULL);
 	RestoreUndoSerialNumber();
 	IncrementUndoSerialNumber();
-	Redraw();
+	pcb_redraw();
 
 	return 0;
 }
@@ -8221,7 +8221,7 @@ static int escape(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 	END_LOOP;
 
 	IncrementUndoSerialNumber();
-	Draw();
+	pcb_draw();
 	return 0;
 }
 

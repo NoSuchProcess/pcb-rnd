@@ -126,7 +126,7 @@ static void nbcb_select_common(pcb_lib_menu_t *net, int pos, int select_flag)
 	ResetConnections(pcb_false);
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();
-	Draw();
+	pcb_draw();
 }
 
 static void nbcb_select(pcb_lib_menu_t *net, int pos)

@@ -655,7 +655,7 @@ pcb_bool ChangeHole(pcb_pin_t *Via)
 	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
-	Draw();
+	pcb_draw();
 	return (pcb_true);
 }
 
@@ -725,7 +725,7 @@ void *MoveVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	if (PCB->ViaOn) {
 		DrawVia(Via);
-		Draw();
+		pcb_draw();
 	}
 	return (Via);
 }
@@ -747,7 +747,7 @@ void *RemoveVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	if (PCB->ViaOn) {
 		EraseVia(Via);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	return NULL;
@@ -772,7 +772,7 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 
 			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
 				assert(color != NULL);
-				LightenColor(color, buf, 1.75);
+				pcb_lighten_color(color, buf, 1.75);
 				color = buf;
 			}
 		}
@@ -790,7 +790,7 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 
 			if (TEST_FLAG(PCB_FLAG_ONPOINT, Pin)) {
 				assert(color != NULL);
-				LightenColor(color, buf, 1.75);
+				pcb_lighten_color(color, buf, 1.75);
 				color = buf;
 			}
 		}
@@ -923,7 +923,7 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 
 		if (TEST_FLAG(PCB_FLAG_ONPOINT, pv)) {
 			assert(color != NULL);
-			LightenColor(color, buf, 1.75);
+			pcb_lighten_color(color, buf, 1.75);
 			color = buf;
 		}
 		gui->set_color(Output.fgGC, color);

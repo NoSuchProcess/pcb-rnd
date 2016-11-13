@@ -292,7 +292,7 @@ doIsBad:
 	AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
 	SET_FLAG(PCB_FLAG_FOUND, polygon);
 	DrawPolygon(layer, polygon);
-	DrawObject(type, ptr1, ptr2);
+	pcb_draw_obj(type, ptr1, ptr2);
 	drcerr_count++;
 	LocateError(&x, &y);
 	BuildObjectList(&object_count, &object_id_list, &object_type_list);
@@ -342,7 +342,7 @@ int DRCAll(void)
 
 	if (ResetConnections(pcb_true)) {
 		IncrementUndoSerialNumber();
-		Draw();
+		pcb_draw();
 	}
 
 	User = pcb_false;

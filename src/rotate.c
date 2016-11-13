@@ -138,7 +138,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, 
 	ptr2 = ObjectOperation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);
 	if (changed) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (ptr2);

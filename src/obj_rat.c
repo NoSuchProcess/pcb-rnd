@@ -115,7 +115,7 @@ pcb_bool DeleteRats(pcb_bool selected)
 	}
 	END_LOOP;
 	if (changed) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (changed);
@@ -166,7 +166,7 @@ void *InsertPointIntoRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 		DrawLine(CURRENT, newone);
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
-	Draw();
+	pcb_draw();
 	return (newone);
 }
 
@@ -192,7 +192,7 @@ void *MoveRatToLayer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 		EraseRat(Rat);
 	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	DrawLine(ctx->move.dst_layer, newone);
-	Draw();
+	pcb_draw();
 	return (newone);
 }
 
@@ -213,7 +213,7 @@ void *RemoveRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 	if (PCB->RatOn) {
 		EraseRat(Rat);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	return NULL;

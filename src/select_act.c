@@ -210,7 +210,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			/* all found connections */
 		case F_Connection:
 			if (SelectConnection(pcb_true)) {
-				Draw();
+				pcb_draw();
 				IncrementUndoSerialNumber();
 				SetChangedFlag(pcb_true);
 			}
@@ -362,7 +362,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			/* all found connections */
 		case F_Connection:
 			if (SelectConnection(pcb_false)) {
-				Draw();
+				pcb_draw();
 				IncrementUndoSerialNumber();
 				SetChangedFlag(pcb_true);
 			}

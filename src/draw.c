@@ -84,7 +84,7 @@ static void DrawRats(const pcb_box_t *);
 static void DrawSilk(int side, const pcb_box_t *);
 
 #warning TODO: this should be cached
-void LightenColor(const char *orig, char buf[8], double factor)
+void pcb_lighten_color(const char *orig, char buf[8], double factor)
 {
 	unsigned int r, g, b;
 
@@ -106,7 +106,7 @@ void LightenColor(const char *orig, char buf[8], double factor)
  * initiate the actual redrawing of the updated area
  */
 pcb_cardinal_t pcb_draw_inhibit = 0;
-void Draw(void)
+void pcb_draw(void)
 {
 	if (pcb_draw_inhibit)
 		return;
@@ -121,7 +121,7 @@ void Draw(void)
 /* ----------------------------------------------------------------------
  * redraws all the data by the event handlers
  */
-void Redraw(void)
+void pcb_redraw(void)
 {
 	gui->invalidate_all();
 }
@@ -211,7 +211,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		if (PCB->ElementOn) {
 			r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 			r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
-			DrawLayer(&(PCB->Data->Layer[max_copper_layer + side]), drawn_area);
+			pcb_draw_layer(&(PCB->Data->Layer[max_copper_layer + side]), drawn_area);
 		}
 		r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		gui->end_layer();
@@ -350,7 +350,7 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 	if (gui->poly_before) {
 		gui->use_mask(HID_MASK_BEFORE);
 #endif
-		DrawLayer(LAYER_PTR(max_copper_layer + side), drawn_area);
+		pcb_draw_layer(LAYER_PTR(max_copper_layer + side), drawn_area);
 		/* draw package */
 		r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
@@ -364,7 +364,7 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 
 	if (gui->poly_after) {
 		gui->use_mask(HID_MASK_AFTER);
-		DrawLayer(LAYER_PTR(max_copper_layer + layer), drawn_area);
+		pcb_draw_layer(LAYER_PTR(max_copper_layer + layer), drawn_area);
 		/* draw package */
 		r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
@@ -431,7 +431,7 @@ static void DrawRats(const pcb_box_t * drawn_area)
 		gui->use_mask(HID_MASK_OFF);
 }
 
-void DrawLayer(pcb_layer_t *Layer, const pcb_box_t * screen)
+void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 {
 	struct pcb_draw_poly_info_s info;
 
@@ -482,7 +482,7 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 		if (strcmp(Layer->Name, "outline") == 0 || strcmp(Layer->Name, "route") == 0)
 			rv = 0;
 		if (layernum < max_copper_layer && Layer->On)
-			DrawLayer(Layer, drawn_area);
+			pcb_draw_layer(Layer, drawn_area);
 	}
 	if (n_entries > 1)
 		rv = 1;
@@ -491,7 +491,7 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 		DrawPPV(group, drawn_area);
 }
 
-void EraseObject(int type, void *lptr, void *ptr)
+void pcb_erase_obj(int type, void *lptr, void *ptr)
 {
 	switch (type) {
 	case PCB_TYPE_VIA:
@@ -526,7 +526,7 @@ void EraseObject(int type, void *lptr, void *ptr)
 }
 
 
-void DrawObject(int type, void *ptr1, void *ptr2)
+void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 {
 	switch (type) {
 	case PCB_TYPE_VIA:

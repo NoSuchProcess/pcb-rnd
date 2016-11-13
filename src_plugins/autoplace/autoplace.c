@@ -758,7 +758,7 @@ done:
 	if (changed) {
 		DeleteRats(pcb_false);
 		AddAllRats(pcb_false, NULL);
-		Redraw();
+		pcb_redraw();
 	}
 	FreePointerListMemory(&Selected);
 	return (changed);

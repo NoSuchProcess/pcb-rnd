@@ -409,7 +409,7 @@ static void apply_vendor_map(void)
 		 */
 		if (changed) {
 			SetChangedFlag(pcb_true);
-			Redraw();
+			pcb_redraw();
 			IncrementUndoSerialNumber();
 		}
 	}

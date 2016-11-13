@@ -772,7 +772,7 @@ emit_outline:
 	if (want_outline && strcmp(name, "outline")
 			&& strcmp(name, "route")) {
 		if (outline_layer && outline_layer != PCB->Data->Layer + idx)
-			DrawLayer(outline_layer, &region);
+			pcb_draw_layer(outline_layer, &region);
 		else if (!outline_layer) {
 			pcb_hid_gc_t gc = gui->make_gc();
 			printf("name %s idx %d\n", name, idx);

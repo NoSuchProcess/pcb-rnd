@@ -474,7 +474,7 @@ pcb_bool ChangeSelectedElementSide(void)
 	}
 	END_LOOP;
 	if (change) {
-		Draw();
+		pcb_draw();
 		IncrementUndoSerialNumber();
 	}
 	return (change);
@@ -1542,7 +1542,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 		}
 		END_LOOP;
 		DrawElementName(Element);
-		Draw();
+		pcb_draw();
 	}
 	else {
 		ELEMENTTEXT_LOOP(Element);
@@ -1580,7 +1580,7 @@ void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 		didDraw = pcb_true;
 	}
 	if (didDraw)
-		Draw();
+		pcb_draw();
 	return (Element);
 }
 
@@ -1623,7 +1623,7 @@ void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
 	if ((PCB->ElementOn || PCB->PinOn) && (FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElement(Element);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, Element, Element, Element);
 	return NULL;
@@ -1635,7 +1635,7 @@ void *RotateElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 	EraseElement(Element);
 	RotateElementLowLevel(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	DrawElement(Element);
-	Draw();
+	pcb_draw();
 	return (Element);
 }
 
@@ -1653,7 +1653,7 @@ void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 	}
 	END_LOOP;
 	DrawElementName(Element);
-	Draw();
+	pcb_draw();
 	return (Element);
 }
 

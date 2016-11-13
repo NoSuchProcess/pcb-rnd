@@ -204,7 +204,7 @@ static void toggle_pin_selected(pcb_lib_entry_t * entry)
 
 	AddObjectToFlagUndoList(conn.type, conn.ptr1, conn.ptr2, conn.ptr2);
 	TOGGLE_FLAG(PCB_FLAG_SELECTED, (pcb_any_obj_t *) conn.ptr2);
-	DrawObject(conn.type, conn.ptr1, conn.ptr2);
+	pcb_draw_obj(conn.type, conn.ptr1, conn.ptr2);
 }
 
 
@@ -511,7 +511,7 @@ static void netlist_select_cb(GtkWidget * widget, gpointer data)
 	ResetConnections(pcb_false);
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();
-	Draw();
+	pcb_draw();
 }
 
 static void netlist_find_cb(GtkWidget * widget, gpointer data)

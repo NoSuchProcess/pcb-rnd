@@ -294,7 +294,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 	/* done with our action so increment the undo # */
 	IncrementUndoSerialNumber();
 
-	Redraw();
+	pcb_redraw();
 	SetChangedFlag(pcb_true);
 
 	return 0;
@@ -332,7 +332,7 @@ static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				element = (pcb_element_t *) ptrtmp;
 				ChangeElementSide(element, 2 * Crosshair.Y - PCB->MaxHeight);
 				IncrementUndoSerialNumber();
-				Draw();
+				pcb_draw();
 			}
 			break;
 		case F_Selected:
@@ -799,7 +799,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					PCB_PASTEBUFFER->X = 0;
 					PCB_PASTEBUFFER->Y = 0;
 					SaveUndoSerialNumber();
-					EraseObject(PCB_TYPE_ELEMENT, ptr1, ptr1);
+					pcb_erase_obj(PCB_TYPE_ELEMENT, ptr1, ptr1);
 					MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
 					RestoreUndoSerialNumber();
 					pcb_buffer_copy_to_layout(0, 0);

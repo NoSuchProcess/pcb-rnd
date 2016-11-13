@@ -226,7 +226,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			/* redraw layout */
 		case F_ClearAndRedraw:
 		case F_Redraw:
-			Redraw();
+			pcb_redraw();
 			break;
 
 			/* change the displayed name of elements */
@@ -269,7 +269,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 				DrawElementName(element);
 			}
 			END_LOOP;
-			Draw();
+			pcb_draw();
 			break;
 
 			/* toggle line-adjust flag */
@@ -339,12 +339,12 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 
 		case F_ToggleThindraw:
 			conf_toggle_editor(thin_draw);
-			Redraw();
+			pcb_redraw();
 			break;
 
 		case F_ToggleThindrawPoly:
 			conf_toggle_editor(thin_draw_poly);
-			Redraw();
+			pcb_redraw();
 			break;
 
 		case F_ToggleLockNames:
@@ -359,7 +359,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 
 		case F_ToggleHideNames:
 			conf_toggle_editor(hide_names);
-			Redraw();
+			pcb_redraw();
 			break;
 
 		case F_ToggleStroke:
@@ -380,7 +380,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
 				if (ResetConnections(pcb_true)) {
 					IncrementUndoSerialNumber();
-					Draw();
+					pcb_draw();
 				}
 				if (Crosshair.AttachedLine.State != STATE_FIRST)
 					LookupConnection(Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, pcb_true, 1, PCB_FLAG_FOUND);
@@ -390,7 +390,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 
 		case F_ToggleCheckPlanes:
 			conf_toggle_editor(check_planes);
-			Redraw();
+			pcb_redraw();
 			break;
 
 		case F_ToggleOrthoMove:
@@ -399,12 +399,12 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 
 		case F_ToggleName:
 			conf_toggle_editor(show_number);
-			Redraw();
+			pcb_redraw();
 			break;
 
 		case F_ToggleMask:
 			conf_toggle_editor(show_mask);
-			Redraw();
+			pcb_redraw();
 			break;
 
 		case F_ToggleClearLine:
@@ -430,7 +430,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			/* toggle displaying of the grid */
 		case F_Grid:
 			conf_toggle_editor(draw_grid);
-			Redraw();
+			pcb_redraw();
 			break;
 
 			/* display the pinout of an element */
@@ -481,7 +481,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					END_LOOP;
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
-					Draw();
+					pcb_draw();
 					break;
 
 				case PCB_TYPE_PIN:
@@ -493,7 +493,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
-					Draw();
+					pcb_draw();
 					break;
 
 				case PCB_TYPE_PAD:
@@ -505,7 +505,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2);
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
-					Draw();
+					pcb_draw();
 					break;
 				case PCB_TYPE_VIA:
 					if (TEST_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2))
@@ -516,7 +516,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					TOGGLE_FLAG(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					SetChangedFlag(pcb_true);
 					IncrementUndoSerialNumber();
-					Draw();
+					pcb_draw();
 					break;
 				}
 				break;
@@ -532,7 +532,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 				PCB->GridOffsetX = GetValue(argv[1], NULL, NULL, NULL);
 				PCB->GridOffsetY = GetValue(argv[2], NULL, NULL, NULL);
 				if (conf_core.editor.draw_grid)
-					Redraw();
+					pcb_redraw();
 			}
 			break;
 
@@ -922,7 +922,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 					EraseElementName((pcb_element_t *) ptr2);
 					TOGGLE_FLAG(PCB_FLAG_HIDENAME, (pcb_element_t *) ptr2);
 					DrawElementName((pcb_element_t *) ptr2);
-					Draw();
+					pcb_draw();
 					IncrementUndoSerialNumber();
 				}
 				break;
@@ -944,7 +944,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 				}
 				END_LOOP;
 				if (changed) {
-					Draw();
+					pcb_draw();
 					IncrementUndoSerialNumber();
 				}
 			}
@@ -1176,7 +1176,7 @@ static int ActionSetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	}
 	if (layer != CURRENT) {
 		ChangeGroupVisibility(GetLayerNumber(PCB->Data, layer), pcb_true, pcb_true);
-		Redraw();
+		pcb_redraw();
 	}
 	return 0;
 }

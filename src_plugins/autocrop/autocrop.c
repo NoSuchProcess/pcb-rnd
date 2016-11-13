@@ -221,7 +221,7 @@ static int autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	PCB->MaxHeight = box->Y2;
 	MoveAll(dx, dy);
 	IncrementUndoSerialNumber();
-	Redraw();
+	pcb_redraw();
 	SetChangedFlag(1);
 	return 0;
 }

@@ -249,10 +249,10 @@ static void DrawRecoveredObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		pcb_layer_t *layer;
 
 		layer = LAYER_PTR(GetLayerNumber(RemoveList, (pcb_layer_t *) Ptr1));
-		DrawObject(Type, (void *) layer, Ptr2);
+		pcb_draw_obj(Type, (void *) layer, Ptr2);
 	}
 	else
-		DrawObject(Type, Ptr1, Ptr2);
+		pcb_draw_obj(Type, Ptr1, Ptr2);
 }
 
 /* ---------------------------------------------------------------------------
@@ -346,10 +346,10 @@ static pcb_bool UndoChange2ndSize(UndoListTypePtr Entry)
 	if (type != PCB_TYPE_NONE) {
 		swap = ((pcb_pin_t *) ptr2)->DrillingHole;
 		if (andDraw)
-			EraseObject(type, ptr1, ptr2);
+			pcb_erase_obj(type, ptr1, ptr2);
 		((pcb_pin_t *) ptr2)->DrillingHole = Entry->Data.Size;
 		Entry->Data.Size = swap;
-		DrawObject(type, ptr1, ptr2);
+		pcb_draw_obj(type, ptr1, ptr2);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -373,14 +373,14 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 		old_sa = a->StartAngle;
 		old_da = a->Delta;
 		if (andDraw)
-			EraseObject(type, Layer, a);
+			pcb_erase_obj(type, Layer, a);
 		a->StartAngle = Entry->Data.AngleChange.angle[0];
 		a->Delta = Entry->Data.AngleChange.angle[1];
 		SetArcBoundingBox(a);
 		r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
 		Entry->Data.AngleChange.angle[0] = old_sa;
 		Entry->Data.AngleChange.angle[1] = old_da;
-		DrawObject(type, ptr1, a);
+		pcb_draw_obj(type, ptr1, a);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -404,14 +404,14 @@ static pcb_bool UndoChangeRadii(UndoListTypePtr Entry)
 		old_w = a->Width;
 		old_h = a->Height;
 		if (andDraw)
-			EraseObject(type, Layer, a);
+			pcb_erase_obj(type, Layer, a);
 		a->Width = Entry->Data.Move.DX;
 		a->Height = Entry->Data.Move.DY;
 		SetArcBoundingBox(a);
 		r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
 		Entry->Data.Move.DX = old_w;
 		Entry->Data.Move.DY = old_h;
-		DrawObject(type, ptr1, a);
+		pcb_draw_obj(type, ptr1, a);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -432,12 +432,12 @@ static pcb_bool UndoChangeClearSize(UndoListTypePtr Entry)
 		swap = ((pcb_pin_t *) ptr2)->Clearance;
 		RestoreToPolygon(PCB->Data, type, ptr1, ptr2);
 		if (andDraw)
-			EraseObject(type, ptr1, ptr2);
+			pcb_erase_obj(type, ptr1, ptr2);
 		((pcb_pin_t *) ptr2)->Clearance = Entry->Data.Size;
 		ClearFromPolygon(PCB->Data, type, ptr1, ptr2);
 		Entry->Data.Size = swap;
 		if (andDraw)
-			DrawObject(type, ptr1, ptr2);
+			pcb_draw_obj(type, ptr1, ptr2);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -457,14 +457,14 @@ static pcb_bool UndoChangeMaskSize(UndoListTypePtr Entry)
 	if (type & (PCB_TYPE_VIA | PCB_TYPE_PIN | PCB_TYPE_PAD)) {
 		swap = (type == PCB_TYPE_PAD ? ((pcb_pad_t *) ptr2)->Mask : ((pcb_pin_t *) ptr2)->Mask);
 		if (andDraw)
-			EraseObject(type, ptr1, ptr2);
+			pcb_erase_obj(type, ptr1, ptr2);
 		if (type == PCB_TYPE_PAD)
 			((pcb_pad_t *) ptr2)->Mask = Entry->Data.Size;
 		else
 			((pcb_pin_t *) ptr2)->Mask = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		if (andDraw)
-			DrawObject(type, ptr1, ptr2);
+			pcb_draw_obj(type, ptr1, ptr2);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -493,12 +493,12 @@ static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 		swap = ((pcb_pin_t *) ptr2)->Thickness;
 		RestoreToPolygon(PCB->Data, type, ptr1, ptr2);
 		if ((andDraw) && (ptr1e != NULL))
-			EraseObject(type, ptr1e, ptr2);
+			pcb_erase_obj(type, ptr1e, ptr2);
 		((pcb_pin_t *) ptr2)->Thickness = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		ClearFromPolygon(PCB->Data, type, ptr1, ptr2);
 		if (andDraw)
-			DrawObject(type, ptr1, ptr2);
+			pcb_draw_obj(type, ptr1, ptr2);
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -535,14 +535,14 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 			must_redraw = 1;
 
 		if (andDraw && must_redraw && (ptr1e != NULL))
-			EraseObject(type, ptr1e, ptr2);
+			pcb_erase_obj(type, ptr1e, ptr2);
 
 		pin->Flags = Entry->Data.Flags;
 
 		Entry->Data.Flags = swap;
 
 		if (andDraw && must_redraw)
-			DrawObject(type, ptr1, ptr2);
+			pcb_draw_obj(type, ptr1, ptr2);
 		return (pcb_true);
 	}
 	Message(PCB_MSG_DEFAULT, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
@@ -589,7 +589,7 @@ static pcb_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 		if (!RemoveList)
 			RemoveList = pcb_buffer_new();
 		if (andDraw)
-			EraseObject(type, ptr1, ptr2);
+			pcb_erase_obj(type, ptr1, ptr2);
 		/* in order to make this re-doable we move it to the RemoveList */
 		pcb_move_obj_to_buffer(RemoveList, PCB->Data, type, ptr1, ptr2, ptr3);
 		Entry->Type = UNDO_REMOVE;
@@ -925,7 +925,7 @@ int Undo(pcb_bool draw)
 		Message(PCB_MSG_DEFAULT, _("ERROR: Failed to undo some operations\n"));
 
 	if (Types && andDraw)
-		Draw();
+		pcb_draw();
 
 	/* restore the unique flag setting */
 	conf_force_set_bool(conf_core.editor.unique_names, unique);
@@ -1103,7 +1103,7 @@ int Redo(pcb_bool draw)
 		Message(PCB_MSG_DEFAULT, _("ERROR: Failed to redo some operations\n"));
 
 	if (Types && andDraw)
-		Draw();
+		pcb_draw();
 
 	return Types;
 }

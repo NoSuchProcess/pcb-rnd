@@ -44,8 +44,8 @@ typedef struct {								/* holds information about output window */
 extern pcb_output_t Output;
 
 /* Temporarily inhibid drawing if this is non-zero. A function that calls a
-   lot of other functions that would call Draw() a lot in turn may increase
-   this value before the calls, then decrease it at the end and call Draw().
+   lot of other functions that would call pcb_draw() a lot in turn may increase
+   this value before the calls, then decrease it at the end and call pcb_draw().
    This makes sure the whole block is redrawn only once at the end. */
 extern pcb_cardinal_t pcb_draw_inhibit;
 
@@ -60,7 +60,7 @@ do { \
 extern pcb_box_t pcb_draw_invalidated;
 
 /* Adds the update rect to the invalidated region. This schedules the object
-   for redraw (by Draw()). obj is anything that can be casted to pcb_box_t */
+   for redraw (by pcb_draw()). obj is anything that can be casted to pcb_box_t */
 #define pcb_draw_invalidate(obj) \
 do { \
 	pcb_box_t *box = (pcb_box_t *)obj; \
@@ -73,13 +73,13 @@ do { \
 extern int pcb_draw_doing_pinout;
 extern pcb_bool pcb_draw_doing_assy;
 
-void LightenColor(const char *orig, char buf[8], double factor);
+void pcb_lighten_color(const char *orig, char buf[8], double factor);
 
 
-void Draw(void);
-void Redraw(void);
-void DrawObject(int, void *, void *);
-void DrawLayer(pcb_layer_t *, const pcb_box_t *);
-void EraseObject(int, void *, void *);
+void pcb_draw(void);
+void pcb_redraw(void);
+void pcb_draw_obj(int, void *, void *);
+void pcb_draw_layer(pcb_layer_t *, const pcb_box_t *);
+void pcb_erase_obj(int, void *, void *);
 
 #endif

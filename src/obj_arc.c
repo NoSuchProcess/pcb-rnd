@@ -436,7 +436,7 @@ void *MoveArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		EraseArc(Arc);
 		MOVE_ARC_LOWLEVEL(Arc, ctx->move.dx, ctx->move.dy);
 		DrawArc(Layer, Arc);
-		Draw();
+		pcb_draw();
 	}
 	else {
 		MOVE_ARC_LOWLEVEL(Arc, ctx->move.dx, ctx->move.dy);
@@ -472,7 +472,7 @@ void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 	}
 	if (ctx->move.dst_layer == Layer && Layer->On) {
 		DrawArc(Layer, Arc);
-		Draw();
+		pcb_draw();
 	}
 	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
 		return (Arc);
@@ -484,7 +484,7 @@ void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, ctx->move.dst_layer, Arc);
 	if (ctx->move.dst_layer->On)
 		DrawArc(ctx->move.dst_layer, newone);
-	Draw();
+	pcb_draw();
 	return (newone);
 }
 
@@ -505,7 +505,7 @@ void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	if (Layer->On) {
 		EraseArc(Arc);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
 	return NULL;
@@ -548,7 +548,7 @@ void *RotateArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	RotateArcLowLevel(Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 	DrawArc(Layer, Arc);
-	Draw();
+	pcb_draw();
 	return (Arc);
 }
 
@@ -585,7 +585,7 @@ void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
 
 	if (TEST_FLAG(PCB_FLAG_ONPOINT, arc)) {
 		assert(color != NULL);
-		LightenColor(color, buf, 1.75);
+		pcb_lighten_color(color, buf, 1.75);
 		color = buf;
 	}
 	gui->set_color(Output.fgGC, color);

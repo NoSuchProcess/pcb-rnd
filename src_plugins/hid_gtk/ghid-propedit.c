@@ -307,7 +307,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 		MakeFlags(PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY));
 	printf("poly2=%p -----------\n", (void *)v);
 	DrawPolygon(PCB->Data->Layer+1, v);
-	Draw();
+	pcb_draw();
 	gtk_drawing_area_size(GTK_DRAWING_AREA(area), 300, 400);
 	return;
 */

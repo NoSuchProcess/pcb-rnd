@@ -148,7 +148,7 @@ pcb_bool ChangePaste(pcb_pad_t *Pad)
 	AddObjectToFlagUndoList(PCB_TYPE_PAD, Pad, Pad, Pad);
 	TOGGLE_FLAG(PCB_FLAG_NOPASTE, Pad);
 	DrawPad(Pad);
-	Draw();
+	pcb_draw();
 	return (pcb_true);
 }
 
@@ -376,7 +376,7 @@ void draw_pad(pcb_pad_t * pad)
 
 	if (TEST_FLAG(PCB_FLAG_ONPOINT, pad)) {
 		assert(color != NULL);
-		LightenColor(color, buf, 1.75);
+		pcb_lighten_color(color, buf, 1.75);
 		color = buf;
 	}
 

@@ -705,7 +705,7 @@ AddAllRats(pcb_bool SelectedOnly,
 
 	if (Warned || changed) {
 		stub_rat_proc_shorts();
-		Draw();
+		pcb_draw();
 	}
 
 	if (Warned)

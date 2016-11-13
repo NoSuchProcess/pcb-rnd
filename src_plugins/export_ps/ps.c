@@ -961,7 +961,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 	if (global.outline &&
 			global.outline_layer != NULL &&
 			global.outline_layer != PCB->Data->Layer + idx && strcmp(name, "outline") != 0 && strcmp(name, "route") != 0) {
-		DrawLayer(global.outline_layer, &global.region);
+		pcb_draw_layer(global.outline_layer, &global.region);
 	}
 
 	return 1;

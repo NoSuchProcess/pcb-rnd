@@ -343,7 +343,7 @@ void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		EraseText(Layer, Text);
 		MOVE_TEXT_LOWLEVEL(Text, ctx->move.dx, ctx->move.dy);
 		DrawText(Layer, Text);
-		Draw();
+		pcb_draw();
 	}
 	else
 		MOVE_TEXT_LOWLEVEL(Text, ctx->move.dx, ctx->move.dy);
@@ -391,7 +391,7 @@ void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 		if (ctx->move.dst_layer->On)
 			DrawText(ctx->move.dst_layer, text);
 		if (layer->On || ctx->move.dst_layer->On)
-			Draw();
+			pcb_draw();
 	}
 	return text;
 }
@@ -415,7 +415,7 @@ void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		EraseText(Layer, Text);
 		r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
 	return NULL;
@@ -459,7 +459,7 @@ void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
-	Draw();
+	pcb_draw();
 	return (Text);
 }
 

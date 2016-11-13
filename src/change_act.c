@@ -681,7 +681,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 								MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
 							}
 							IncrementUndoSerialNumber();
-							Draw();
+							pcb_draw();
 						}
 					}
 				}
@@ -1190,7 +1190,7 @@ static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind);
 					IncrementUndoSerialNumber();
-					Draw();
+					pcb_draw();
 				}
 				break;
 			case F_SelectedPins:

@@ -199,7 +199,7 @@ static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ResetStackAndVisibility();
 		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 		pcb_center_display(PCB->MaxWidth / 2, PCB->MaxHeight / 2);
-		Redraw();
+		pcb_redraw();
 
 		if (gui != NULL)
 			hid_action("PCBChanged");

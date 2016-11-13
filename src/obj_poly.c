@@ -334,7 +334,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 	InitClip(PCB->Data, Layer, Polygon);
 	if (ctx->insert.forcible || !RemoveExcessPolygonPoints(Layer, Polygon)) {
 		DrawPolygon(Layer, Polygon);
-		Draw();
+		pcb_draw();
 	}
 	return (&Polygon->Points[ctx->insert.idx]);
 }
@@ -362,7 +362,7 @@ void *MovePolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 	InitClip(PCB->Data, Layer, Polygon);
 	if (Layer->On) {
 		DrawPolygon(Layer, Polygon);
-		Draw();
+		pcb_draw();
 	}
 	return (Polygon);
 }
@@ -381,7 +381,7 @@ void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 	InitClip(PCB->Data, Layer, Polygon);
 	if (Layer->On) {
 		DrawPolygon(Layer, Polygon);
-		Draw();
+		pcb_draw();
 	}
 	return (Point);
 }
@@ -449,7 +449,7 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 	InitClip(PCB->Data, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->On) {
 		DrawPolygon(ctx->move.dst_layer, newone);
-		Draw();
+		pcb_draw();
 	}
 	return (newone);
 }
@@ -508,7 +508,7 @@ void *RemovePolygon_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 	if (Layer->On) {
 		ErasePolygon(Polygon);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 	MoveObjectToRemoveUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	return NULL;
@@ -538,7 +538,7 @@ void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *
 	if (Layer->On) {
 		ErasePolygon(Polygon);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 
 	/* Copy the polygon to the undo list */
@@ -563,7 +563,7 @@ void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *
 	if (Layer->On) {
 		DrawPolygon(Layer, Polygon);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 	return NULL;
 }
@@ -611,7 +611,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 	if (Layer->On) {
 		DrawPolygon(Layer, Polygon);
 		if (!ctx->remove.bulk)
-			Draw();
+			pcb_draw();
 	}
 	return NULL;
 }
@@ -652,7 +652,7 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 		color = PCB->ConnectedColor;
 	else if (TEST_FLAG(PCB_FLAG_ONPOINT, polygon)) {
 		assert(color != NULL);
-		LightenColor(color, buf, 1.75);
+		pcb_lighten_color(color, buf, 1.75);
 		color = buf;
 	}
 	else

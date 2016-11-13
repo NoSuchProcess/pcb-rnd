@@ -235,7 +235,7 @@ void LookupUnusedPins(FILE * FP)
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();
 	User = pcb_false;
-	Draw();
+	pcb_draw();
 }
 
 /* ---------------------------------------------------------------------------
@@ -255,7 +255,7 @@ void LookupElementConnections(pcb_element_t *Element, FILE * FP)
 	FreeConnectionLookupMemory();
 	IncrementUndoSerialNumber();
 	User = pcb_false;
-	Draw();
+	pcb_draw();
 }
 
 
@@ -284,5 +284,5 @@ void LookupConnectionsToAllElements(FILE * FP)
 		gui->beep();
 	ResetConnections(pcb_false);
 	FreeConnectionLookupMemory();
-	Redraw();
+	pcb_redraw();
 }

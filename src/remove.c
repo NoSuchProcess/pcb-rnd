@@ -93,7 +93,7 @@ pcb_bool RemoveSelected(void)
 
 	if (SelectedOperation(&RemoveFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL)) {
 		IncrementUndoSerialNumber();
-		Draw();
+		pcb_draw();
 		return (pcb_true);
 	}
 	return (pcb_false);

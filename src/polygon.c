@@ -1321,7 +1321,7 @@ void ClosePolygon(void)
 			}
 		}
 		CopyAttachedPolygonToLayer();
-		Draw();
+		pcb_draw();
 	}
 	else
 		Message(PCB_MSG_DEFAULT, _("A polygon has to have at least 3 points\n"));

@@ -62,7 +62,7 @@ void SetGrid(pcb_coord_t Grid, pcb_bool align)
 		PCB->Grid = Grid;
 		conf_set_design("editor/grid", "%$mS", Grid);
 		if (conf_core.editor.draw_grid)
-			Redraw();
+			pcb_redraw();
 	}
 }
 
@@ -228,7 +228,7 @@ void SetMode(int Mode)
 		if (Mode == PCB_MODE_LINE && conf_core.editor.auto_drc) {
 			if (ResetConnections(pcb_true)) {
 				IncrementUndoSerialNumber();
-				Draw();
+				pcb_draw();
 			}
 		}
 	}

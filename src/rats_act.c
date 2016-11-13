@@ -106,7 +106,7 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, shorty, shorty, shorty);
 				SET_FLAG(PCB_FLAG_SELECTED, shorty);
 				DrawRat(shorty);
-				Draw();
+				pcb_draw();
 				pcb_center_display((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
 			}
 			break;
@@ -159,21 +159,21 @@ static int ActionConnection(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		case F_ResetLinesAndPolygons:
 			if (ResetFoundLinesAndPolygons(pcb_true)) {
 				IncrementUndoSerialNumber();
-				Draw();
+				pcb_draw();
 			}
 			break;
 
 		case F_ResetPinsViasAndPads:
 			if (ResetFoundPinsViasAndPads(pcb_true)) {
 				IncrementUndoSerialNumber();
-				Draw();
+				pcb_draw();
 			}
 			break;
 
 		case F_Reset:
 			if (ResetConnections(pcb_true)) {
 				IncrementUndoSerialNumber();
-				Draw();
+				pcb_draw();
 			}
 			break;
 		}
