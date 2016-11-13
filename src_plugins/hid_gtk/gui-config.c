@@ -252,7 +252,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 			conf_fields_foreach(e) {
 				if (strncmp(e->key, wildp, pl) == 0) {
 					if (conf_replace_subtree(ctx->dst_role, e->key, ctx->src_role, e->key) != 0)
-						Message(PCB_MSG_DEFAULT, "Error: failed to save config item %s\n", *p);
+						pcb_message(PCB_MSG_DEFAULT, "Error: failed to save config item %s\n", *p);
 					if (ctx->dst_role < CFR_max_real) {
 						conf_update(e->key);
 						need_update++;
@@ -263,7 +263,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		else {
 			/* plain node */
 			if (conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p) != 0)
-					Message(PCB_MSG_DEFAULT, "Error: failed to save config item %s\n", *p);
+					pcb_message(PCB_MSG_DEFAULT, "Error: failed to save config item %s\n", *p);
 			if (ctx->dst_role < CFR_max_real) {
 				conf_update(*p);
 				need_update++;
@@ -1334,11 +1334,11 @@ static void config_layers_apply(void)
 		   |  solder-side and component-side must not be the only one in the group
 		 */
 		if (layer_groups.Number[soldergroup] <= 1 || layer_groups.Number[componentgroup] <= 1) {
-			Message(PCB_MSG_DEFAULT, _("Both 'solder side' or 'component side' layers must have at least\n" "\tone other layer in their group.\n"));
+			pcb_message(PCB_MSG_DEFAULT, _("Both 'solder side' or 'component side' layers must have at least\n" "\tone other layer in their group.\n"));
 			return;
 		}
 		else if (soldergroup == componentgroup) {
-			Message(PCB_MSG_DEFAULT, _("The 'solder side' and 'component side' layers are not allowed\n" "\tto be in the same layer group #\n"));
+			pcb_message(PCB_MSG_DEFAULT, _("The 'solder side' and 'component side' layers are not allowed\n" "\tto be in the same layer group #\n"));
 			return;
 		}
 		PCB->LayerGroups = layer_groups;
@@ -2427,7 +2427,7 @@ static void config_auto_save(conf_role_t role)
 			FILE *f;
 			f = fopen(try, "w");
 			if (f == NULL) {
-				Message(PCB_MSG_ERROR, "can not create config to project file: %s\n", try);
+				pcb_message(PCB_MSG_ERROR, "can not create config to project file: %s\n", try);
 				return;
 			}
 			fclose(f);
@@ -2533,7 +2533,7 @@ static void config_auto_remove_cb(GtkButton *btn, void *data)
 	conf_role_t role = config_auto_get_edited_role();
 
 	if (nat->array_size > 1) {
-		Message(PCB_MSG_ERROR, "Can't create remove array %s\n", nat->hash_path);
+		pcb_message(PCB_MSG_ERROR, "Can't create remove array %s\n", nat->hash_path);
 		return;
 	}
 
@@ -2718,13 +2718,13 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 		char *basename;
 		e = sorted[n];
 		if (strlen(e->key) > sizeof(path)-1) {
-			Message(PCB_MSG_DEFAULT, "Warning: can't create config item for %s: path too long\n", e->key);
+			pcb_message(PCB_MSG_DEFAULT, "Warning: can't create config item for %s: path too long\n", e->key);
 			continue;
 		}
 		strcpy(path, e->key);
 		basename = strrchr(path, '/');
 		if ((basename == NULL) || (basename == path)) {
-			Message(PCB_MSG_DEFAULT, "Warning: can't create config item for %s: invalid path\n", e->key);
+			pcb_message(PCB_MSG_DEFAULT, "Warning: can't create config item for %s: invalid path\n", e->key);
 			continue;
 		}
 		*basename = '\0';

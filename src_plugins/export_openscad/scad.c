@@ -371,7 +371,7 @@ static void add_outline_segment(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, 
 		outline_segments = (t_outline_segment *) malloc(sizeof(t_outline_segment) * 50);
 		n_alloc_outline_segments = 50;
 		if (!outline_segments) {
-			Message(PCB_MSG_ERROR, "openscad: cannot allocate memory for board outline. Board outline cannot be created.\n");
+			pcb_message(PCB_MSG_ERROR, "openscad: cannot allocate memory for board outline. Board outline cannot be created.\n");
 			return;
 		}
 	}
@@ -385,7 +385,7 @@ static void add_outline_segment(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, 
 				n_alloc_outline_segments = n_alloc_outline_segments + 50;
 			}
 			else {
-				Message(PCB_MSG_ERROR, "openscad: cannot allocate more memory for board outline. Board outline will be incomplete.\n");
+				pcb_message(PCB_MSG_ERROR, "openscad: cannot allocate more memory for board outline. Board outline will be incomplete.\n");
 				return;
 			}
 		}
@@ -488,7 +488,7 @@ void scad_process_outline()
 			fprintf(scad_output, "}\n\n");
 		}
 		else {
-			Message(PCB_MSG_ERROR, "openscad: cannot allocate more memory for board outline. Board outline will be incomplete.\n");
+			pcb_message(PCB_MSG_ERROR, "openscad: cannot allocate more memory for board outline. Board outline will be incomplete.\n");
 		}
 		if (op)
 			free(op);
@@ -529,7 +529,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 
 	scad_output = fopen(scad_filename, "w");
 	if (scad_output == NULL) {
-		Message(PCB_MSG_ERROR, "openscad: could not open %s for writing.\n", scad_filename);
+		pcb_message(PCB_MSG_ERROR, "openscad: could not open %s for writing.\n", scad_filename);
 		goto quit;
 	}
 
@@ -872,7 +872,7 @@ static void scad_set_color(pcb_hid_gc_t gc, const char *name)
 		if (name[0] == '#') {
 			unsigned int r, g, b;
 			if (sscanf(name + 1, "%02x%02x%02x", &r, &g, &b) != 3)
-				Message(PCB_MSG_ERROR, "Invalid color format: %s\n", name);
+				pcb_message(PCB_MSG_ERROR, "Invalid color format: %s\n", name);
 			gc->r = r;
 			gc->g = g;
 			gc->b = b;

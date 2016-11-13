@@ -102,7 +102,7 @@ static void find_crosshair_poly(int x, int y)
 	}
 	ENDALL_LOOP;
 	if (!inner_poly) {
-		Message(PCB_MSG_ERROR, "Cannot find any polygons");
+		pcb_message(PCB_MSG_ERROR, "Cannot find any polygons");
 		return;
 	}
 }
@@ -127,7 +127,7 @@ static void find_enclosing_poly()
 		}
 	}
 	END_LOOP;
-	Message(PCB_MSG_ERROR, "Cannot find a polygon enclosing the one you selected");
+	pcb_message(PCB_MSG_ERROR, "Cannot find a polygon enclosing the one you selected");
 }
 
 static void check_windings()

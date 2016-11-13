@@ -226,7 +226,7 @@ static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vecto
 				minmax = 1;
 				break;
 			default:
-				Message(PCB_MSG_ERROR, "jostle: aiee, what side?");
+				pcb_message(PCB_MSG_ERROR, "jostle: aiee, what side?");
 				return;
 			}
 			v = &a->contours->head;
@@ -505,7 +505,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_bool succ;
 		value = GetValue(ARG(0), ARG(1), &rel, &succ);
 		if (!succ) {
-			Message(PCB_MSG_ERROR, "Failed to convert size\n");
+			pcb_message(PCB_MSG_ERROR, "Failed to convert size\n");
 			return -1;
 		}
 	}

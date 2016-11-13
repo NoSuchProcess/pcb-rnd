@@ -124,7 +124,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	/* Cache old dir, then cd into subdir because stat is given relative file names. */
 	memset(olddir, 0, sizeof olddir);
 	if (pcb_get_wd(olddir) == NULL) {
-		Message(PCB_MSG_DEFAULT, _("fp_fs_list(): Could not determine initial working directory\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("fp_fs_list(): Could not determine initial working directory\n"));
 		return 0;
 	}
 
@@ -133,16 +133,16 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 	if (chdir(subdir)) {
 		if (!subdir_may_not_exist)
-			ChdirErrorMessage(subdir);
+			ChdirErrorpcb_message(subdir);
 		return 0;
 	}
 
 
 	/* Determine subdir's abs path */
 	if (pcb_get_wd(new_subdir) == NULL) {
-		Message(PCB_MSG_DEFAULT, _("fp_fs_list(): Could not determine new working directory\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("fp_fs_list(): Could not determine new working directory\n"));
 		if (chdir(olddir))
-			ChdirErrorMessage(olddir);
+			ChdirErrorpcb_message(olddir);
 		return 0;
 	}
 
@@ -153,9 +153,9 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 	/* First try opening the directory specified by path */
 	if ((subdirobj = opendir(new_subdir)) == NULL) {
-		OpendirErrorMessage(new_subdir);
+		OpendirErrorpcb_message(new_subdir);
 		if (chdir(olddir))
-			ChdirErrorMessage(olddir);
+			ChdirErrorpcb_message(olddir);
 		return 0;
 	}
 
@@ -214,7 +214,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	/* Done.  Clean up, cd back into old dir, and return */
 	closedir(subdirobj);
 	if (chdir(olddir))
-		ChdirErrorMessage(olddir);
+		ChdirErrorpcb_message(olddir);
 	return n_footprints;
 }
 

@@ -87,7 +87,7 @@ int ActionExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		 */
 
 		if (*sp && *sp != '#') {
-			/*Message ("%s : line %-3d : \"%s\"\n", fname, n, sp); */
+			/*pcb_message("%s : line %-3d : \"%s\"\n", fname, n, sp); */
 			hid_parse_actions(sp);
 		}
 	}

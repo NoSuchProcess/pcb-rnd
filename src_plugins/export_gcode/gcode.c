@@ -319,7 +319,7 @@ static void gcode_finish_png()
 #ifdef HAVE_GDIMAGEPNG
 	gdImagePng(gcode_im, gcode_f);
 #else
-	Message(PCB_MSG_DEFAULT, "GCODE: PNG not supported by gd. Can't write layer mask.\n");
+	pcb_message(PCB_MSG_DEFAULT, "GCODE: PNG not supported by gd. Can't write layer mask.\n");
 #endif
 	gdImageDestroy(gcode_im);
 	fclose(gcode_f);

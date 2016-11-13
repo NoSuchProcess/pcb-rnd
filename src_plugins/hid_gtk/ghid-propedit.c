@@ -270,10 +270,10 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 				gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), val); /* keep relative values intact for a reapply */
 		}
 		else
-			Message(PCB_MSG_WARNING, "Failed to change any object - %s is possibly invalid value for %s\n", val, prop);
+			pcb_message(PCB_MSG_WARNING, "Failed to change any object - %s is possibly invalid value for %s\n", val, prop);
 	}
 	else
-		Message(PCB_MSG_ERROR, "Internal error: no type for proeprty %s\n", prop);
+		pcb_message(PCB_MSG_ERROR, "Internal error: no type for proeprty %s\n", prop);
 
 	free(val);
 	g_free(prop);

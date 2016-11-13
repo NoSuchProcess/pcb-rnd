@@ -109,7 +109,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		PCB_AFAIL(attributes);
 
 	if (!gui->edit_attributes) {
-		Message(PCB_MSG_DEFAULT, _("This GUI doesn't support Attribute Editing\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("This GUI doesn't support Attribute Editing\n"));
 		return 1;
 	}
 
@@ -132,7 +132,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 						break;
 					}
 				if (layer == NULL) {
-					Message(PCB_MSG_DEFAULT, _("No layer named %s\n"), layername);
+					pcb_message(PCB_MSG_DEFAULT, _("No layer named %s\n"), layername);
 					return 1;
 				}
 			}
@@ -156,7 +156,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			}
 			END_LOOP;
 			if (n_found > 1) {
-				Message(PCB_MSG_DEFAULT, _("Too many elements selected\n"));
+				pcb_message(PCB_MSG_DEFAULT, _("Too many elements selected\n"));
 				return 1;
 			}
 			if (n_found == 0) {
@@ -165,7 +165,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
 					e = (pcb_element_t *) ptrtmp;
 				else {
-					Message(PCB_MSG_DEFAULT, _("No element found there\n"));
+					pcb_message(PCB_MSG_DEFAULT, _("No element found there\n"));
 					return 1;
 				}
 			}
@@ -380,7 +380,7 @@ static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 	type = SearchScreen(x, y, MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE) {
-		Message(PCB_MSG_DEFAULT, _("Nothing found under crosshair\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("Nothing found under crosshair\n"));
 		return 1;
 	}
 	if (absolute1)
@@ -678,7 +678,7 @@ static int ActionElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_
 	END_LOOP;
 
 	if (!e) {
-		Message(PCB_MSG_DEFAULT, _("Cannot change attribute of %s - element not found\n"), refdes);
+		pcb_message(PCB_MSG_DEFAULT, _("Cannot change attribute of %s - element not found\n"), refdes);
 		return 1;
 	}
 

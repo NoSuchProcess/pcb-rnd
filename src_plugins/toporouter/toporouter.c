@@ -1207,7 +1207,7 @@ void toporouter_free(toporouter_t * r)
 		usecs += 1000;
 	}
 
-	Message(PCB_MSG_DEFAULT, _("Elapsed time: %d.%02d seconds\n"), secs, usecs);
+	pcb_message(PCB_MSG_DEFAULT, _("Elapsed time: %d.%02d seconds\n"), secs, usecs);
 	free(r->layers);
 	free(r);
 
@@ -6967,8 +6967,8 @@ void toporouter_export(toporouter_t * r)
 		i = i->next;
 	}
 
-	Message(PCB_MSG_DEFAULT, _("Reticulating splines... successful\n\n"));
-	Message(PCB_MSG_DEFAULT, _("Wiring cost: %f inches\n"), r->wiring_score / 1000.);
+	pcb_message(PCB_MSG_DEFAULT, _("Reticulating splines... successful\n\n"));
+	pcb_message(PCB_MSG_DEFAULT, _("Wiring cost: %f inches\n"), r->wiring_score / 1000.);
 	printf("Wiring cost: %f inches\n", r->wiring_score / 1000.);
 
 	g_list_free(oproutes);
@@ -7769,7 +7769,7 @@ gint roar_router(toporouter_t * r, gint failcount, gint threshold)
 	guint j;
 	gint pfailcount = failcount + 1;
 
-	Message(PCB_MSG_DEFAULT, _("ROAR router: "));
+	pcb_message(PCB_MSG_DEFAULT, _("ROAR router: "));
 	for (j = 0; j < 6; j++) {
 		GList *failed = g_list_copy(r->failednets), *k = failed;
 
@@ -7783,10 +7783,10 @@ gint roar_router(toporouter_t * r, gint failcount, gint threshold)
 		printf("\tROAR pass %d - %d routed -  %d failed\n", j, g_list_length(r->routednets), g_list_length(r->failednets));
 
 		if (!failcount || failcount >= pfailcount) {
-			Message(PCB_MSG_DEFAULT, _("%d nets remaining\n"), failcount);
+			pcb_message(PCB_MSG_DEFAULT, _("%d nets remaining\n"), failcount);
 			break;
 		}
-		Message(PCB_MSG_DEFAULT, _("%d -> "), failcount);
+		pcb_message(PCB_MSG_DEFAULT, _("%d -> "), failcount);
 		pfailcount = failcount;
 	}
 
@@ -7967,7 +7967,7 @@ guint hybrid_router(toporouter_t * r)
 	r->flags |= TOPOROUTER_FLAG_AFTERRUBIX;
 	failcount = rubix_router(r, failcount);
 
-	Message(PCB_MSG_DEFAULT, _("RUBIX router: %d nets remaining\n"), failcount);
+	pcb_message(PCB_MSG_DEFAULT, _("RUBIX router: %d nets remaining\n"), failcount);
 	printf("RUBIX router: %d nets remaining\n", failcount);
 
 	r->flags |= TOPOROUTER_FLAG_GOFAR;
@@ -8055,10 +8055,10 @@ toporouter_t *toporouter_new(void)
 
 	gts_predicates_init();
 
-	Message(PCB_MSG_DEFAULT, _("Topological Autorouter\n"));
-	Message(PCB_MSG_DEFAULT, _("Started %s"), asctime(localtime(&ltime)));
-	Message(PCB_MSG_DEFAULT, _("-------------------------------------\n"));
-	Message(PCB_MSG_DEFAULT, _("Copyright 2009 Anthony Blake (tonyb33@gmail.com)\n\n"));
+	pcb_message(PCB_MSG_DEFAULT, _("Topological Autorouter\n"));
+	pcb_message(PCB_MSG_DEFAULT, _("Started %s"), asctime(localtime(&ltime)));
+	pcb_message(PCB_MSG_DEFAULT, _("-------------------------------------\n"));
+	pcb_message(PCB_MSG_DEFAULT, _("Copyright 2009 Anthony Blake (tonyb33@gmail.com)\n\n"));
 	return r;
 }
 

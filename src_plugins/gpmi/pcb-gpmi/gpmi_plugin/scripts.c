@@ -121,10 +121,10 @@ hid_gpmi_script_info_t *hid_gpmi_load_module(hid_gpmi_script_info_t *i, const ch
 {
 	gpmi_module *module;
 
-	Message(PCB_MSG_DEFAULT, "Loading GPMI module %s with params %s...\n", module_name, params);
+	pcb_message(PCB_MSG_DEFAULT, "Loading GPMI module %s with params %s...\n", module_name, params);
 	module = gpmi_mod_load(module_name, params);
 	if (module == NULL) {
-		Message(PCB_MSG_DEFAULT, " Failed loading the script. Details:\n");
+		pcb_message(PCB_MSG_DEFAULT, " Failed loading the script. Details:\n");
 		gpmi_err_stack_process_str(gpmi_hid_print_error);
 	}
 	gpmi_err_stack_destroy(NULL);
@@ -309,19 +309,19 @@ int gpmi_hid_script_remove(hid_gpmi_script_info_t *i)
 	int res;
 
 	if (i->conffile_name == NULL) {
-		Message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, the script is not loaded from a config.\n");
+		pcb_message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, the script is not loaded from a config.\n");
 		return -1;
 	}
 
 	fin = fopen(i->conffile_name, "r");
 	if (fin == NULL) {
-		Message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't open %s for read.\n", i->conffile_name);
+		pcb_message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't open %s for read.\n", i->conffile_name);
 		return -1;
 	}
 	tmpfn = Concat(i->conffile_name, ".tmp", NULL);
 	fout = fopen(tmpfn, "w");
 	if (fout == NULL) {
-		Message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't create %s.\n", tmpfn);
+		pcb_message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't create %s.\n", tmpfn);
 		fclose(fin);
 		free(tmpfn);
 		return -1;
@@ -333,13 +333,13 @@ int gpmi_hid_script_remove(hid_gpmi_script_info_t *i)
 	fclose(fout);
 
 	if (res < 1) {
-		Message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't find the correspondign config line in %s\n", i->conffile_name);
+		pcb_message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't find the correspondign config line in %s\n", i->conffile_name);
 		free(tmpfn);
 		return -1;
 	}
 
 	if (rename(tmpfn, i->conffile_name) != 0) {
-		Message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't move %s to %s.\n", tmpfn, i->conffile_name);
+		pcb_message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't move %s to %s.\n", tmpfn, i->conffile_name);
 		free(tmpfn);
 		return -1;
 	}
@@ -374,7 +374,7 @@ int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i)
 
 		f = fopen(fn, "a");
 	if (f == NULL) {
-		Message(PCB_MSG_DEFAULT, "gpmi_hid_script_addcfg: can't open %s for write\n", fn);
+		pcb_message(PCB_MSG_DEFAULT, "gpmi_hid_script_addcfg: can't open %s for write\n", fn);
 		return -1;
 	}
 

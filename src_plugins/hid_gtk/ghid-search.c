@@ -778,7 +778,7 @@ static void ghid_search_window_create()
 	ver = hid_actionl("query", "version", NULL);
 	if (ver < 0100) {
 		sdlg.window = NULL;
-		Message(PCB_MSG_ERROR, "The query plugin is not avaialble, can not do advanced search.\n");
+		pcb_message(PCB_MSG_ERROR, "The query plugin is not avaialble, can not do advanced search.\n");
 		return;
 	}
 

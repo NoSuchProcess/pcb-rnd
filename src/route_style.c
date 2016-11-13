@@ -77,7 +77,7 @@ int ParseRoutingString1(char **str, pcb_route_style_t *routeStyle, const char *d
 	if (len > sizeof(routeStyle->name)-1) {
 		memcpy(routeStyle->name, Name, sizeof(routeStyle->name)-1);
 		routeStyle->name[sizeof(routeStyle->name)-1] = '\0';
-		Message(PCB_MSG_DEFAULT, "Route style name '%s' too long, truncated to '%s'\n", Name, routeStyle->name);
+		pcb_message(PCB_MSG_DEFAULT, "Route style name '%s' too long, truncated to '%s'\n", Name, routeStyle->name);
 	}
 	else
 		strcpy(routeStyle->name, Name);

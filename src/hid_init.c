@@ -82,7 +82,7 @@ static void hid_load_dir(char *dirname)
 					free(symname);
 				}
 				else
-					Message(PCB_MSG_ERROR, "Can't load %s because it'd provide plugin %s that is already loaded from %s\n", path, basename, (*inf->path == '<' ? "<buildin>" : inf->path));
+					pcb_message(PCB_MSG_ERROR, "Can't load %s because it'd provide plugin %s that is already loaded from %s\n", path, basename, (*inf->path == '<' ? "<buildin>" : inf->path));
 			}
 		}
 		free(basename);

@@ -260,7 +260,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	    /* open pipe to stdout of command */
 	    if (*command == '\0' || (yyin = popen(command, "r")) == NULL)
 	      {
-		PopenErrorMessage(command);
+		PopenErrorpcb_message(command);
 		free(command);
 		return(1);
 	      }
@@ -445,7 +445,7 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	r = Parse(NULL, conf_core.rc.font_command, NULL, Filename);
 	if (r == 0) {
 #ifdef DEBUG
-		Message (PCB_MSG_DEBUG, "Found %s in %s\n", Filename, conf_core.rc.font_command);
+		pcb_message(PCB_MSG_DEBUG, "Found %s in %s\n", Filename, conf_core.rc.font_command);
 #endif
 	}
 	return r;

@@ -93,7 +93,7 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coor
 		VIA_LOOP(Data);
 		{
 			if (Distance(X, Y, via->X, via->Y) <= via->DrillingHole / 2 + DrillingHole / 2) {
-				Message(PCB_MSG_DEFAULT, _("%m+Dropping via at %$mD because it's hole would overlap with the via "
+				pcb_message(PCB_MSG_DEFAULT, _("%m+Dropping via at %$mD because it's hole would overlap with the via "
 									"at %$mD\n"), conf_core.editor.grid_unit->allow, X, Y, via->X, via->Y);
 				return (NULL);					/* don't allow via stacking */
 			}
@@ -113,7 +113,7 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coor
 	Via->Mask = Mask;
 	Via->DrillingHole = stub_vendorDrillMap(DrillingHole);
 	if (Via->DrillingHole != DrillingHole) {
-		Message(PCB_MSG_DEFAULT, _("%m+Mapped via drill hole to %$mS from %$mS per vendor table\n"),
+		pcb_message(PCB_MSG_DEFAULT, _("%m+Mapped via drill hole to %$mS from %$mS per vendor table\n"),
 						conf_core.editor.grid_unit->allow, Via->DrillingHole, DrillingHole);
 	}
 
@@ -129,7 +129,7 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coor
 	 */
 	if (!TEST_FLAG(PCB_FLAG_HOLE, Via) && (Via->Thickness < Via->DrillingHole + MIN_PINORVIACOPPER)) {
 		Via->Thickness = Via->DrillingHole + MIN_PINORVIACOPPER;
-		Message(PCB_MSG_DEFAULT, _("%m+Increased via thickness to %$mS to allow enough copper"
+		pcb_message(PCB_MSG_DEFAULT, _("%m+Increased via thickness to %$mS to allow enough copper"
 							" at %$mD.\n"), conf_core.editor.grid_unit->allow, Via->Thickness, Via->X, Via->Y);
 	}
 
@@ -165,18 +165,18 @@ pcb_pin_t *CreateNewPin(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pc
 	/* Unless we should not map drills on this element, map them! */
 	if (stub_vendorIsElementMappable(Element)) {
 		if (pin->DrillingHole < MIN_PINORVIASIZE) {
-			Message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
+			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 		else if (pin->DrillingHole > MAX_PINORVIASIZE) {
-			Message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is above the maximum allowed size\n"),
+			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is above the maximum allowed size\n"),
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 		else if (!TEST_FLAG(PCB_FLAG_HOLE, pin)
 						 && (pin->DrillingHole > pin->Thickness - MIN_PINORVIACOPPER)) {
-			Message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
+			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
 							conf_core.editor.grid_unit->allow, UNKNOWN(Number), UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
@@ -186,7 +186,7 @@ pcb_pin_t *CreateNewPin(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pc
 	}
 
 	if (pin->DrillingHole != DrillingHole) {
-		Message(PCB_MSG_DEFAULT, _("%m+Mapped pin drill hole to %$mS from %$mS per vendor table\n"),
+		pcb_message(PCB_MSG_DEFAULT, _("%m+Mapped pin drill hole to %$mS from %$mS per vendor table\n"),
 						conf_core.editor.grid_unit->allow, pin->DrillingHole, DrillingHole);
 	}
 

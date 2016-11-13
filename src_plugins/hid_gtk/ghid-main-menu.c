@@ -171,7 +171,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 			}
 			else {
 				if ((update_on == NULL) || (*update_on != '\0')) /* warn if update_on is not explicitly empty */
-					Message(PCB_MSG_WARNING, "Checkbox menu item not %s updated on any conf change - try to use the update_on field\n", checked);
+					pcb_message(PCB_MSG_WARNING, "Checkbox menu item not %s updated on any conf change - try to use the update_on field\n", checked);
 			}
 		}
 		else if (label && strcmp(label, "false") == 0) {
@@ -459,7 +459,7 @@ void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteSty
 GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 {
 	if (menu == NULL) {
-		Message(PCB_MSG_DEFAULT, "ghid: can't initialize the menu - is your menu .lht valid?\n");
+		pcb_message(PCB_MSG_DEFAULT, "ghid: can't initialize the menu - is your menu .lht valid?\n");
 		exit(1);
 	}
 	return menu->accel_group;

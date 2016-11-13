@@ -50,7 +50,7 @@ char *dlerror()
 	dw = GetLastError();
 
 	/* get the corresponding error message */
-	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+	Formatpcb_message(FORMAT_MESSAGE_ALLOCATE_BUFFER |
 								FORMAT_MESSAGE_FROM_SYSTEM |
 								FORMAT_MESSAGE_IGNORE_INSERTS,
 								NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) & lpMsgBuf, 0, NULL);

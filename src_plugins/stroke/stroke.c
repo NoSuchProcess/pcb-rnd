@@ -132,7 +132,7 @@ static void real_stroke_finish(void)
 			}
 
 		default:
-			Message(PCB_MSG_DEFAULT, _("Unknown stroke %s\n"), msg);
+			pcb_message(PCB_MSG_DEFAULT, _("Unknown stroke %s\n"), msg);
 			break;
 		}
 	}

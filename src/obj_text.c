@@ -380,7 +380,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 {
 	if (TEST_FLAG(PCB_FLAG_LOCK, text)) {
-		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
 	if (ctx->move.dst_layer != layer) {

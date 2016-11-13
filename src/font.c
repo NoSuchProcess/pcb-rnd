@@ -54,7 +54,7 @@ void CreateDefaultFont(pcb_board_t *pcb)
 		const char *s;
 		gds_t buff;
 		s = conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
-		Message(PCB_MSG_ERROR, _("Can't find font-symbol-file - there won't be font in this design. Searched: '%s'\n"), s);
+		pcb_message(PCB_MSG_ERROR, _("Can't find font-symbol-file - there won't be font in this design. Searched: '%s'\n"), s);
 		gds_uninit(&buff);
 	}
 }

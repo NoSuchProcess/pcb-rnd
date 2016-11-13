@@ -2423,7 +2423,7 @@ static inline pcb_box_t previous_edge(pcb_coord_t last, pcb_direction_t i, const
 		db.X2 = last;
 		break;
 	default:
-		Message(PCB_MSG_DEFAULT, "previous edge bogus direction!");
+		pcb_message(PCB_MSG_DEFAULT, "previous edge bogus direction!");
 		assert(0);
 	}
 	return db;
@@ -4318,7 +4318,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 					if (request_cancel) {
 						ras.total_nets_routed = 0;
 						ras.conflict_subnets = 0;
-						Message(PCB_MSG_DEFAULT, "Autorouting cancelled\n");
+						pcb_message(PCB_MSG_DEFAULT, "Autorouting cancelled\n");
 						goto out;
 					}
 				}
@@ -4370,7 +4370,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 		this_cost = 0;
 	}
 
-	Message(PCB_MSG_DEFAULT, "%d of %d nets successfully routed.\n", ras.routed_subnets, ras.total_subnets);
+	pcb_message(PCB_MSG_DEFAULT, "%d of %d nets successfully routed.\n", ras.routed_subnets, ras.total_subnets);
 
 out:
 	heap_destroy(&this_pass);
@@ -4555,7 +4555,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++) {
 		if (PCB->RouteStyle.array[i].Thick == 0 ||
 				PCB->RouteStyle.array[i].Diameter == 0 || PCB->RouteStyle.array[i].Hole == 0 || PCB->RouteStyle.array[i].Clearance == 0) {
-			Message(PCB_MSG_DEFAULT, "You must define proper routing styles\n" "before auto-routing.\n");
+			pcb_message(PCB_MSG_DEFAULT, "You must define proper routing styles\n" "before auto-routing.\n");
 			return (pcb_false);
 		}
 	}
@@ -4650,7 +4650,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 				ASSIGN_FLAG(PCB_FLAG_SELECTED, pcb_true, line);
 				DrawRat(line, 0);
 #endif /* DEBUG_STALE_RATS */
-				Message(PCB_MSG_DEFAULT, "The rats nest is stale! Aborting autoroute...\n");
+				pcb_message(PCB_MSG_DEFAULT, "The rats nest is stale! Aborting autoroute...\n");
 				goto donerouting;
 			}
 			/* merge subnets into a net! */
@@ -4700,7 +4700,7 @@ donerouting:
 
 	if (changed)
 		changed = IronDownAllUnfixedPaths(rd);
-	Message(PCB_MSG_DEFAULT, "Total added wire length = %$mS, %d vias added\n", (pcb_coord_t) total_wire_length, total_via_count);
+	pcb_message(PCB_MSG_DEFAULT, "Total added wire length = %$mS, %d vias added\n", (pcb_coord_t) total_wire_length, total_via_count);
 	DestroyRouteData(&rd);
 	if (changed) {
 		SaveUndoSerialNumber();

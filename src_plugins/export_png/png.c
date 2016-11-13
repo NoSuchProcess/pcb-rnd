@@ -725,7 +725,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 
 	im = gdImageCreate(w, h);
 	if (im == NULL) {
-		Message(PCB_MSG_DEFAULT, "png_do_export():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", w, h);
+		pcb_message(PCB_MSG_DEFAULT, "png_do_export():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", w, h);
 		return;
 	}
 
@@ -746,7 +746,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		white->a = 0;
 	white->c = gdImageColorAllocateAlpha(im, white->r, white->g, white->b, white->a);
 	if (white->c == BADC) {
-		Message(PCB_MSG_DEFAULT, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
+		pcb_message(PCB_MSG_DEFAULT, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
 		return;
 	}
 
@@ -756,7 +756,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 	black->r = black->g = black->b = black->a = 0;
 	black->c = gdImageColorAllocate(im, black->r, black->g, black->b);
 	if (black->c == BADC) {
-		Message(PCB_MSG_DEFAULT, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
+		pcb_message(PCB_MSG_DEFAULT, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
 		return;
 	}
 
@@ -1014,7 +1014,7 @@ static int png_set_layer(const char *name, int group, int empty)
 			static color_struct *black = NULL, *white = NULL;
 			*photo_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
 			if (photo_im == NULL) {
-				Message(PCB_MSG_DEFAULT, "png_set_layer():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", gdImageSX(im), gdImageSY(im));
+				pcb_message(PCB_MSG_DEFAULT, "png_set_layer():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", gdImageSX(im), gdImageSY(im));
 				return 0;
 			}
 
@@ -1024,7 +1024,7 @@ static int png_set_layer(const char *name, int group, int empty)
 			white->a = 0;
 			white->c = gdImageColorAllocate(*photo_im, white->r, white->g, white->b);
 			if (white->c == BADC) {
-				Message(PCB_MSG_DEFAULT, "png_set_layer():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+				pcb_message(PCB_MSG_DEFAULT, "png_set_layer():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return 0;
 			}
 
@@ -1032,7 +1032,7 @@ static int png_set_layer(const char *name, int group, int empty)
 			black->r = black->g = black->b = black->a = 0;
 			black->c = gdImageColorAllocate(*photo_im, black->r, black->g, black->b);
 			if (black->c == BADC) {
-				Message(PCB_MSG_DEFAULT, "png_set_layer(): gdImageColorAllocate() returned NULL.  Aborting export.\n");
+				pcb_message(PCB_MSG_DEFAULT, "png_set_layer(): gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return 0;
 			}
 
@@ -1103,7 +1103,7 @@ static void png_use_mask(int use_it)
 		if (mask_im == NULL) {
 			mask_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
 			if (!mask_im) {
-				Message(PCB_MSG_DEFAULT, "png_use_mask():  gdImageCreate(%d, %d) returned NULL.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+				pcb_message(PCB_MSG_DEFAULT, "png_use_mask():  gdImageCreate(%d, %d) returned NULL.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
 				return;
 			}
 			gdImagePaletteCopy(mask_im, im);
@@ -1155,7 +1155,7 @@ static void png_set_color(pcb_hid_gc_t gc, const char *name)
 		sscanf(name + 1, "%2x%2x%2x", &(gc->color->r), &(gc->color->g), &(gc->color->b));
 		gc->color->c = gdImageColorAllocate(master_im, gc->color->r, gc->color->g, gc->color->b);
 		if (gc->color->c == BADC) {
-			Message(PCB_MSG_DEFAULT, "png_set_color():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+			pcb_message(PCB_MSG_DEFAULT, "png_set_color():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 			return;
 		}
 		cval.ptr = gc->color;
@@ -1237,18 +1237,18 @@ static void use_gc(pcb_hid_gc_t gc)
 			int bg, fg;
 			gc->brush = gdImageCreate(r, r);
 			if (gc->brush == NULL) {
-				Message(PCB_MSG_DEFAULT, "use_gc():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", r, r);
+				pcb_message(PCB_MSG_DEFAULT, "use_gc():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", r, r);
 				return;
 			}
 
 			bg = gdImageColorAllocate(gc->brush, 255, 255, 255);
 			if (bg == BADC) {
-				Message(PCB_MSG_DEFAULT, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+				pcb_message(PCB_MSG_DEFAULT, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return;
 			}
 			fg = gdImageColorAllocateAlpha(gc->brush, gc->color->r, gc->color->g, gc->color->b, 0);
 			if (fg == BADC) {
-				Message(PCB_MSG_DEFAULT, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+				pcb_message(PCB_MSG_DEFAULT, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return;
 			}
 			gdImageColorTransparent(gc->brush, bg);

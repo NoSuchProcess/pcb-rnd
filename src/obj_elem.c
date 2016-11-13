@@ -165,7 +165,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	pcb_layer_t *clayer, *slayer;
 
 	if (elementlist_length(&Buffer->Data->Element) != 1) {
-		Message(PCB_MSG_DEFAULT, _("Error!  Buffer doesn't contain a single element\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("Error!  Buffer doesn't contain a single element\n"));
 		return (pcb_false);
 	}
 	/*
@@ -306,7 +306,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	  if (onsolder && !hasParts && !warned) \
 	    { \
 	      warned = pcb_true; \
-	      Message \
+	      pcb_message \
 					(PCB_MSG_WARNING, _("Warning: All of the pads are on the opposite\n" \
 		   "side from the component - that's probably not what\n" \
 		   "you wanted\n")); \
@@ -375,11 +375,11 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	END_LOOP;
 	if (!hasParts) {
 		DestroyObject(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
-		Message(PCB_MSG_DEFAULT, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
 		return (pcb_false);
 	}
 	if (crooked)
-		Message(PCB_MSG_DEFAULT, _("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
 	Element->MarkX = Buffer->X;
 	Element->MarkY = Buffer->Y;
 	if (SWAP_IDENT)
@@ -1374,7 +1374,7 @@ void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	if (NAME_INDEX() == NAMEONPCB_INDEX) {
 		if (conf_core.editor.unique_names && UniqueElementName(PCB->Data, ctx->chgname.new_name) != ctx->chgname.new_name) {
-			Message(PCB_MSG_DEFAULT, _("Error: The name \"%s\" is not unique!\n"), ctx->chgname.new_name);
+			pcb_message(PCB_MSG_DEFAULT, _("Error: The name \"%s\" is not unique!\n"), ctx->chgname.new_name);
 			return ((char *) -1);
 		}
 	}

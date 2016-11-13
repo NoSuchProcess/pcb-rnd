@@ -53,7 +53,7 @@ static pcb_hid_cfg_mod_t parse_mods(const char *value, const char **last, unsign
 		else if ((vlen >= 7) && (strncasecmp(value, "release", 7) == 0)) m |= M_Release;
 		else if ((vlen >= 5) && (strncasecmp(value, "press", 5) == 0))   press = 1;
 		else
-			Message(PCB_MSG_DEFAULT, "Unknown modifier: %s\n", value);
+			pcb_message(PCB_MSG_DEFAULT, "Unknown modifier: %s\n", value);
 		/* skip to next word */
 		next = strpbrk(value, "<- \t");
 		if (next == NULL)
@@ -69,7 +69,7 @@ static pcb_hid_cfg_mod_t parse_mods(const char *value, const char **last, unsign
 		*last = value;
 
 	if (press && (m & M_Release))
-		Message(PCB_MSG_DEFAULT, "Bogus modifier: both press and release\n");
+		pcb_message(PCB_MSG_DEFAULT, "Bogus modifier: both press and release\n");
 
 	return m;
 }
@@ -89,7 +89,7 @@ static pcb_hid_cfg_mod_t button_name2mask(const char *name)
 	else if (strcasecmp(name, "scroll-left") == 0)   return MB_SCROLL_UP;
 	else if (strcasecmp(name, "scroll-right") == 0)  return MB_SCROLL_DOWN;
 	else {
-		Message(PCB_MSG_DEFAULT, "Error: unknown mouse button: %s\n", name);
+		pcb_message(PCB_MSG_DEFAULT, "Error: unknown mouse button: %s\n", name);
 		return 0;
 	}
 }
@@ -105,7 +105,7 @@ int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse)
 	mouse->mouse = hid_cfg_get_menu(hr, "/mouse");
 
 	if (mouse->mouse == NULL) {
-		Message(PCB_MSG_DEFAULT, "Warning: no /mouse section in the resource file - mouse is disabled\n");
+		pcb_message(PCB_MSG_DEFAULT, "Warning: no /mouse section in the resource file - mouse is disabled\n");
 		return -1;
 	}
 
@@ -223,7 +223,7 @@ static unsigned short int translate_key(pcb_hid_cfg_keys_t *km, const char *desc
 			return *desc;
 
 	if (len > sizeof(tmp)-1) {
-		Message(PCB_MSG_DEFAULT, "key sym name too long\n");
+		pcb_message(PCB_MSG_DEFAULT, "key sym name too long\n");
 		return 0;
 	}
 	strncpy(tmp, desc, len);
@@ -269,13 +269,13 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 
 		k = strchr(last, '<');
 		if (k == NULL) {
-			Message(PCB_MSG_DEFAULT, "Missing <key> in the key description: '%s'\n", keydesc);
+			pcb_message(PCB_MSG_DEFAULT, "Missing <key> in the key description: '%s'\n", keydesc);
 			return -1;
 		}
 		len -= k-last;
 		k++; len--;
 		if ((strncmp(k, "key>", 4) != 0) && (strncmp(k, "Key>", 4) != 0)) {
-			Message(PCB_MSG_DEFAULT, "Missing <key> in the key description\n");
+			pcb_message(PCB_MSG_DEFAULT, "Missing <key> in the key description\n");
 			return -1;
 		}
 		k+=4; len-=4;
@@ -286,7 +286,7 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 			s = malloc(len+1);
 			memcpy(s, k, len);
 			s[len] = '\0';
-			Message(PCB_MSG_DEFAULT, "Unrecognised key symbol in key description: %s\n", s);
+			pcb_message(PCB_MSG_DEFAULT, "Unrecognised key symbol in key description: %s\n", s);
 			free(s);
 			return -1;
 		}

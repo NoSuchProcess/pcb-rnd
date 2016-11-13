@@ -256,3 +256,4 @@ DrawObject -> pcb_draw_obj
 DrawLayer -> pcb_draw_layer
 EraseObject -> pcb_erase_obj
 LightenColor -> pcb_lighten_color
+Message -> pcb_message

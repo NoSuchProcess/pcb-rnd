@@ -169,7 +169,7 @@ parsepcb
 
 				if (!yyPCB)
 				{
-					Message(PCB_MSG_ERROR, "illegal fileformat\n");
+					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				for (i = 0; i < MAX_LAYER + 2; i++)
@@ -202,7 +202,7 @@ parsepcb
 			  pcb_board_new_postproc(yyPCB, 0);
 			  if (ParseGroupString(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
 			    {
-			      Message(PCB_MSG_ERROR, "illegal layer-group string\n");
+			      pcb_message(PCB_MSG_ERROR, "illegal layer-group string\n");
 			      YYABORT;
 			    }
 			/* initialize the polygon clipping now since
@@ -237,7 +237,7 @@ parsedata
 
 				if (!yyData || !yyFont)
 				{
-					Message(PCB_MSG_ERROR, "illegal fileformat\n");
+					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				for (i = 0; i < MAX_LAYER + 2; i++)
@@ -260,7 +260,7 @@ parsefont
 
 				if (!yyFont)
 				{
-					Message(PCB_MSG_ERROR, "illegal fileformat\n");
+					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				yyFont->Valid = pcb_false;
@@ -662,7 +662,7 @@ pcbstyles
 			{
 				if (ParseRouteString($3, &yyPCB->RouteStyle, "mil"))
 				{
-					Message(PCB_MSG_ERROR, "illegal route-style string\n");
+					pcb_message(PCB_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
 				}
 				free($3);
@@ -671,7 +671,7 @@ pcbstyles
 			{
 				if (ParseRouteString(($3 == NULL ? "" : $3), &yyPCB->RouteStyle, "cmil"))
 				{
-					Message(PCB_MSG_ERROR, "illegal route-style string\n");
+					pcb_message(PCB_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
 				}
 				free($3);
@@ -1164,7 +1164,7 @@ polygon_format
 
 				if (bad_contour_found)
 				  {
-				    Message(PCB_MSG_WARNING, "WARNING parsing file '%s'\n"
+				    pcb_message(PCB_MSG_WARNING, "WARNING parsing file '%s'\n"
 					    "    line:        %i\n"
 					    "    description: 'ignored polygon (< 3 points in a contour)'\n",
 					    yyfilename, pcb_lineno);
@@ -2011,7 +2011,7 @@ measure
  */
 int yyerror(const char * s)
 {
-	Message(PCB_MSG_ERROR, "ERROR parsing file '%s'\n"
+	pcb_message(PCB_MSG_ERROR, "ERROR parsing file '%s'\n"
 		"    line:        %i\n"
 		"    description: '%s'\n",
 		yyfilename, pcb_lineno, s);
@@ -2027,7 +2027,7 @@ static int
 check_file_version (int ver)
 {
   if ( ver > PCB_FILE_VERSION ) {
-    Message (PCB_MSG_DEFAULT, "ERROR:  The file you are attempting to load is in a format\n"
+    pcb_message(PCB_MSG_DEFAULT, "ERROR:  The file you are attempting to load is in a format\n"
 	     "which is too new for this version of pcb.  To load this file\n"
 	     "you need a version of pcb which is >= %d.  If you are\n"
 	     "using a version built from git source, the source date\n"

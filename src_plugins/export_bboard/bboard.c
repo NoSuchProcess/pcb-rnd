@@ -294,7 +294,7 @@ static pcb_bool bboard_init_board_cairo(pcb_coord_t x1, pcb_coord_t y1, const ch
 		else {
 			if ((color[0] != '#')
 					|| sscanf(&(color[1]), "%02x%02x%02x", &r, &g, &b) != 3) {
-				Message(PCB_MSG_ERROR, "BBExport: Invalid background color \"%s\"", color);
+				pcb_message(PCB_MSG_ERROR, "BBExport: Invalid background color \"%s\"", color);
 				r = g = b = 0xff;
 			}
 

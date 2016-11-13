@@ -865,7 +865,7 @@ static int ActionCycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 /* -------------------------------------------------------------------------- */
 
-static const char message_syntax[] = "Message(message)";
+static const char message_syntax[] = "pcb_message(message)";
 
 static const char message_help[] = "Writes a message to the log window.";
 
@@ -886,8 +886,8 @@ static int ActionMessage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		PCB_AFAIL(message);
 
 	for (i = 0; i < argc; i++) {
-		Message(PCB_MSG_DEFAULT, argv[i]);
-		Message(PCB_MSG_DEFAULT, "\n");
+		pcb_message(PCB_MSG_DEFAULT, argv[i]);
+		pcb_message(PCB_MSG_DEFAULT, "\n");
 	}
 
 	return 0;
@@ -1042,7 +1042,7 @@ static int ActionRouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			hid_action("RouteStylesChanged");
 		}
 		else
-			Message(PCB_MSG_DEFAULT, "Error: invalid route style name or index\n");
+			pcb_message(PCB_MSG_DEFAULT, "Error: invalid route style name or index\n");
 	}
 	return 0;
 }
@@ -1059,7 +1059,7 @@ static const char createmenu_help[] = "Creates a new menu, popup (only path spec
 static int ActionCreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (gui == NULL) {
-		Message(PCB_MSG_DEFAULT, "Error: can't create menu, there's no GUI hid loaded\n");
+		pcb_message(PCB_MSG_DEFAULT, "Error: can't create menu, there's no GUI hid loaded\n");
 		return 1;
 	}
 
@@ -1083,18 +1083,18 @@ static const char removemenu_help[] = "Recursively removes a new menu, popup (on
 static int ActionRemoveMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (gui == NULL) {
-		Message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
+		pcb_message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
 		return 1;
 	}
 
 	if (gui->remove_menu == NULL) {
-		Message(PCB_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
+		pcb_message(PCB_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
 		return 1;
 	}
 
 	if (argc > 0) {
 		if (gui->remove_menu(argv[0]) != 0)
-			Message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
+			pcb_message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
 		return 0;
 	}
 
@@ -1199,7 +1199,7 @@ static int ActionSwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	int chg;
 
 	if (ng == NULL) {
-		Message(PCB_MSG_DEFAULT, "No such HID.");
+		pcb_message(PCB_MSG_DEFAULT, "No such HID.");
 		return 1;
 	}
 

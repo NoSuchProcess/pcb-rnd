@@ -34,14 +34,14 @@ int hid_get_flag(const char *name)
 			int len, multiarg;
 			len = cp - name;
 			if (len > sizeof(buff)-1) {
-				Message(PCB_MSG_DEFAULT, "hid_get_flag: action name too long: %s()\n", name);
+				pcb_message(PCB_MSG_DEFAULT, "hid_get_flag: action name too long: %s()\n", name);
 				return -1;
 			}
 			memcpy(buff, name, len);
 			buff[len] = '\0';
 			a = hid_find_action(buff);
 			if (!a) {
-				Message(PCB_MSG_DEFAULT, "hid_get_flag: no action %s\n", name);
+				pcb_message(PCB_MSG_DEFAULT, "hid_get_flag: no action %s\n", name);
 				return -1;
 			}
 			cp++;
@@ -59,7 +59,7 @@ int hid_get_flag(const char *name)
 			if (!multiarg) {
 				/* faster but limited way for a single arg */
 				if ((len > sizeof(buff)-1) || (end == NULL)) {
-					Message(PCB_MSG_DEFAULT, "hid_get_flag: action arg too long or unterminated: %s\n", name);
+					pcb_message(PCB_MSG_DEFAULT, "hid_get_flag: action arg too long or unterminated: %s\n", name);
 					return -1;
 				}
 				len = end - cp;

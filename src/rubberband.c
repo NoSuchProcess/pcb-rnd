@@ -247,7 +247,7 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
 		break;
 	default:
-		Message(PCB_MSG_DEFAULT, "hace: bad rubber-rat lookup callback\n");
+		pcb_message(PCB_MSG_DEFAULT, "hace: bad rubber-rat lookup callback\n");
 	}
 	return R_DIR_NOT_FOUND;
 }

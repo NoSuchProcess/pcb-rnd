@@ -170,7 +170,7 @@ void SaveMode(void)
 void RestoreMode(void)
 {
 	if (mode_position == 0) {
-		Message(PCB_MSG_DEFAULT, "hace: underflow of restore mode\n");
+		pcb_message(PCB_MSG_DEFAULT, "hace: underflow of restore mode\n");
 		return;
 	}
 	SetMode(mode_stack[--mode_position]);
@@ -200,7 +200,7 @@ void SetMode(int Mode)
 		if (Mode == PCB_MODE_ARC || Mode == PCB_MODE_RECTANGLE ||
 				Mode == PCB_MODE_VIA || Mode == PCB_MODE_POLYGON ||
 				Mode == PCB_MODE_POLYGON_HOLE || Mode == PCB_MODE_TEXT || Mode == PCB_MODE_INSERT_POINT || Mode == PCB_MODE_THERMAL) {
-			Message(PCB_MSG_DEFAULT, _("That mode is NOT allowed when drawing ratlines!\n"));
+			pcb_message(PCB_MSG_DEFAULT, _("That mode is NOT allowed when drawing ratlines!\n"));
 			Mode = PCB_MODE_NO;
 		}
 	}

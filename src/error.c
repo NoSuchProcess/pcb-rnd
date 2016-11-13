@@ -56,7 +56,7 @@ extern char *sys_errlist[];			/* array of error messages */
 /* ---------------------------------------------------------------------------
  * output of message in a dialog window or log window
  */
-void Message(enum pcb_message_level level, const char *Format, ...)
+void pcb_message(enum pcb_message_level level, const char *Format, ...)
 {
 	va_list args;
 
@@ -87,48 +87,48 @@ void pcb_trace(const char *Format, ...)
 /* ---------------------------------------------------------------------------
  * print standard 'open error'
  */
-void OpenErrorMessage(const char *Filename)
+void OpenErrorpcb_message(const char *Filename)
 {
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, Filename);
-	Message(PCB_MSG_DEFAULT, _("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, strerror(errno));
+	pcb_message(PCB_MSG_DEFAULT, _("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 
 /* ---------------------------------------------------------------------------
  * print standard 'popen error'
  */
-void PopenErrorMessage(const char *Filename)
+void PopenErrorpcb_message(const char *Filename)
 {
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, Filename);
-	Message(PCB_MSG_DEFAULT, _("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), utf8, strerror(errno));
+	pcb_message(PCB_MSG_DEFAULT, _("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 
 /* ---------------------------------------------------------------------------
  * print standard 'opendir'
  */
-void OpendirErrorMessage(const char *DirName)
+void OpendirErrorpcb_message(const char *DirName)
 {
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, DirName);
-	Message(PCB_MSG_DEFAULT, _("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), utf8, strerror(errno));
+	pcb_message(PCB_MSG_DEFAULT, _("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 
 /* ---------------------------------------------------------------------------
  * print standard 'chdir error'
  */
-void ChdirErrorMessage(const char *DirName)
+void ChdirErrorpcb_message(const char *DirName)
 {
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, DirName);
-	Message(PCB_MSG_DEFAULT, _("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror(errno));
+	pcb_message(PCB_MSG_DEFAULT, _("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 

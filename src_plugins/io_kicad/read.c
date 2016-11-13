@@ -925,7 +925,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 					pcb_printf("\tlayer #%d layer label found:\t%s\n", i, lname);
 					pcb_printf("\tlayer #%d layer description/type found:\t%s\n", i, ltype);
 					if (kicad_create_layer(st, lnum, lname, ltype) < 0) {
-						Message(PCB_MSG_ERROR, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
+						pcb_message(PCB_MSG_ERROR, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
 						return -1;
 					}
 				} else {
@@ -947,7 +947,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 			*/
 
 			if (res != 0) {
-				Message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
+				pcb_message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
 				return -1;
 			}
 

@@ -54,11 +54,11 @@ void hid_register_actions(const pcb_hid_action_t * a, int n, const char *cookie,
 
 	for (i = 0; i < n; i++) {
 		if (check_action_name(a[i].name)) {
-			Message(PCB_MSG_DEFAULT, _("ERROR! Invalid action name, " "action \"%s\" not registered.\n"), a[i].name);
+			pcb_message(PCB_MSG_DEFAULT, _("ERROR! Invalid action name, " "action \"%s\" not registered.\n"), a[i].name);
 			continue;
 		}
 		if (htsp_get(all_actions, a[i].name) != NULL) {
-			Message(PCB_MSG_DEFAULT, _("ERROR! Invalid action name, " "action \"%s\" is already registered.\n"), a[i].name);
+			pcb_message(PCB_MSG_DEFAULT, _("ERROR! Invalid action name, " "action \"%s\" is already registered.\n"), a[i].name);
 			continue;
 		}
 		ca = malloc(sizeof(hid_cookie_action_t));
@@ -133,7 +133,7 @@ const pcb_hid_action_t *hid_find_action(const char *name)
 		return ca->action;
 
 	if (!action_legal_unknown(name))
-		Message(PCB_MSG_DEFAULT, "unknown action `%s'\n", name);
+		pcb_message(PCB_MSG_DEFAULT, "unknown action `%s'\n", name);
 	return 0;
 }
 
@@ -255,10 +255,10 @@ int hid_actionv(const char *name, int argc, const char **argv)
 		int i;
 		if (action_legal_unknown(name))
 			return 1;
-		Message(PCB_MSG_DEFAULT, "no action %s(", name);
+		pcb_message(PCB_MSG_DEFAULT, "no action %s(", name);
 		for (i = 0; i < argc; i++)
-			Message(PCB_MSG_DEFAULT, "%s%s", i ? ", " : "", argv[i]);
-		Message(PCB_MSG_DEFAULT, ")\n");
+			pcb_message(PCB_MSG_DEFAULT, "%s%s", i ? ", " : "", argv[i]);
+		pcb_message(PCB_MSG_DEFAULT, ")\n");
 		return 1;
 	}
 	return hid_actionv_(a, argc, argv);
@@ -322,8 +322,8 @@ another:
 		sp++;
 	}
 	else if (require_parens) {
-		Message(PCB_MSG_DEFAULT, _("Syntax error: %s\n"), rstr);
-		Message(PCB_MSG_DEFAULT, _("    expected: Action(arg1, arg2)"));
+		pcb_message(PCB_MSG_DEFAULT, _("Syntax error: %s\n"), rstr);
+		pcb_message(PCB_MSG_DEFAULT, _("    expected: Action(arg1, arg2)"));
 		retcode = 1;
 		goto cleanup;
 	}

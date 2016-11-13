@@ -682,7 +682,7 @@ static int gerber_set_layer(const char *name, int group, int empty)
 		assign_file_suffix(filesuff, idx);
 		f = fopen(filename, "wb");	/* Binary needed to force CR-LF */
 		if (f == NULL) {
-			Message(PCB_MSG_DEFAULT, "Error:  Could not open %s for writing.\n", filename);
+			pcb_message(PCB_MSG_DEFAULT, "Error:  Could not open %s for writing.\n", filename);
 			return 1;
 		}
 

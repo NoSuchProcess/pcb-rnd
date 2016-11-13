@@ -40,7 +40,7 @@ int action_renumber_block(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	int old_base, new_base;
 
 	if (argc < 2) {
-		Message(PCB_MSG_ERROR, "Usage: RenumberBlock oldnum newnum");
+		pcb_message(PCB_MSG_ERROR, "Usage: RenumberBlock oldnum newnum");
 		return 1;
 	}
 
@@ -85,7 +85,7 @@ int action_renumber_buffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	int old_base, new_base;
 
 	if (argc < 2) {
-		Message(PCB_MSG_ERROR, "Usage: RenumberBuffer oldnum newnum");
+		pcb_message(PCB_MSG_ERROR, "Usage: RenumberBuffer oldnum newnum");
 		return 1;
 	}
 

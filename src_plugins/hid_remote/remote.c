@@ -140,7 +140,7 @@ static pcb_hid_gc_t remote_make_gc(void)
 	int gci = proto_send_make_gc();
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
 	if (gci >= max) {
-		Message(PCB_MSG_ERROR, "remote_make_gc(): GC index too high: %d >= %d\n", gci, max);
+		pcb_message(PCB_MSG_ERROR, "remote_make_gc(): GC index too high: %d >= %d\n", gci, max);
 		proto_send_del_gc(gci);
 		return NULL;
 	}
@@ -154,7 +154,7 @@ static int gc2idx(pcb_hid_gc_t gc)
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
 
 	if ((idx < 0) || (idx >= max)) {
-		Message(PCB_MSG_ERROR, "GC index too high: %d >= %d\n", idx, max);
+		pcb_message(PCB_MSG_ERROR, "GC index too high: %d >= %d\n", idx, max);
 		return -1;
 	}
 	return idx;
@@ -173,7 +173,7 @@ static void remote_use_mask(int mask)
 	if ((mask >= 0) && (mask < sizeof(mask_names) / sizeof(mask_names[0])))
 		proto_send_use_mask(mask_names[mask]);
 	else
-		Message(PCB_MSG_ERROR, "Invalid use_mask %d\n", mask);
+		pcb_message(PCB_MSG_ERROR, "Invalid use_mask %d\n", mask);
 }
 
 static void remote_set_color(pcb_hid_gc_t gc, const char *name)
@@ -196,7 +196,7 @@ static void remote_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 
 	if (style >= max) {
-		Message(PCB_MSG_ERROR, "can't set invalid cap style: %d >= %d\n", style, max);
+		pcb_message(PCB_MSG_ERROR, "can't set invalid cap style: %d >= %d\n", style, max);
 		return;
 	}
 	if (idx >= 0) {

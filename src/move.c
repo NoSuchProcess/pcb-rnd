@@ -238,11 +238,11 @@ int MoveLayer(int old_index, int new_index)
 	IncrementUndoSerialNumber();
 
 	if (old_index < -1 || old_index >= max_copper_layer) {
-		Message(PCB_MSG_DEFAULT, "Invalid old layer %d for move: must be -1..%d\n", old_index, max_copper_layer - 1);
+		pcb_message(PCB_MSG_DEFAULT, "Invalid old layer %d for move: must be -1..%d\n", old_index, max_copper_layer - 1);
 		return 1;
 	}
 	if (new_index < -1 || new_index > max_copper_layer || new_index >= MAX_LAYER) {
-		Message(PCB_MSG_DEFAULT, "Invalid new layer %d for move: must be -1..%d\n", new_index, max_copper_layer);
+		pcb_message(PCB_MSG_DEFAULT, "Invalid new layer %d for move: must be -1..%d\n", new_index, max_copper_layer);
 		return 1;
 	}
 	if (old_index == new_index)
@@ -268,7 +268,7 @@ int MoveLayer(int old_index, int new_index)
 	if (old_index == -1) {
 		pcb_layer_t *lp;
 		if (max_copper_layer == MAX_LAYER) {
-			Message(PCB_MSG_DEFAULT, "No room for new layers\n");
+			pcb_message(PCB_MSG_DEFAULT, "No room for new layers\n");
 			return 1;
 		}
 		/* Create a new layer at new_index. */
@@ -397,7 +397,7 @@ int MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int new_top = -1;
 
 	if (argc != 2) {
-		Message(PCB_MSG_DEFAULT, "Usage; MoveLayer(old,new)");
+		pcb_message(PCB_MSG_DEFAULT, "Usage; MoveLayer(old,new)");
 		return 1;
 	}
 

@@ -7,7 +7,7 @@
 #define setup(func) \
 	pcb_hid_gc_t gc = ctx->gc; \
 	pcb_hid_t  *hid = ctx->hid; \
-	if ((hid == NULL) && (gc == NULL)) Message(PCB_MSG_DEFAULT, "%s failed because of invalid hid or gc\n", func); \
+	if ((hid == NULL) && (gc == NULL)) pcb_message(PCB_MSG_DEFAULT, "%s failed because of invalid hid or gc\n", func); \
 	if ((hid == NULL) && (gc == NULL)) return
 
 

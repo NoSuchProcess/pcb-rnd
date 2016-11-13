@@ -40,7 +40,7 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	htsp_entry_t *pe;
 
 	if ((gui == NULL) || (gui->propedit_start == NULL)) {
-		Message(PCB_MSG_DEFAULT, "Error: there's no GUI or the active GUI can't edit properties.\n");
+		pcb_message(PCB_MSG_DEFAULT, "Error: there's no GUI or the active GUI can't edit properties.\n");
 		return 1;
 	}
 

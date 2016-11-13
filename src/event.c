@@ -125,7 +125,7 @@ void event(pcb_event_id_t ev, const char *fmt, ...)
 		va_start(ap, fmt);
 		for (a++; *fmt != '\0'; fmt++, a++, argc++) {
 			if (argc >= EVENT_MAX_ARG) {
-				Message(PCB_MSG_DEFAULT, "event(): too many arguments\n");
+				pcb_message(PCB_MSG_DEFAULT, "event(): too many arguments\n");
 				break;
 			}
 			switch (*fmt) {
@@ -144,7 +144,7 @@ void event(pcb_event_id_t ev, const char *fmt, ...)
 			default:
 				a->type = ARG_INT;
 				a->d.i = 0;
-				Message(PCB_MSG_DEFAULT, "event(): invalid argument type '%c'\n", *fmt);
+				pcb_message(PCB_MSG_DEFAULT, "event(): invalid argument type '%c'\n", *fmt);
 				break;
 			}
 		}

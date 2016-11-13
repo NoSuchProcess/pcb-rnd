@@ -93,7 +93,7 @@ static int parse_coord(pcb_coord_t *res, lht_node_t *nd)
 
 	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success) {
-		Message(PCB_MSG_ERROR, "#LHT1 Invalid coord value: '%s'\n", nd->data.text.value);
+		pcb_message(PCB_MSG_ERROR, "#LHT1 Invalid coord value: '%s'\n", nd->data.text.value);
 		return -1;
 	}
 
@@ -108,13 +108,13 @@ static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
 	pcb_bool success;
 
 	if ((nd == NULL) || (nd->type != LHT_TEXT)) {
-		Message(PCB_MSG_ERROR, "#LHT2 Invalid angle type: '%d'\n", nd->type);
+		pcb_message(PCB_MSG_ERROR, "#LHT2 Invalid angle type: '%d'\n", nd->type);
 		return -1;
 	}
 
 	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success) {
-		Message(PCB_MSG_ERROR, "#LHT3 Invalid angle value: '%s'\n", nd->data.text.value);
+		pcb_message(PCB_MSG_ERROR, "#LHT3 Invalid angle value: '%s'\n", nd->data.text.value);
 		return -1;
 	}
 
@@ -133,7 +133,7 @@ static int parse_int(int *res, lht_node_t *nd)
 		return -1;
 
 	if (nd->type != LHT_TEXT) {
-		Message(PCB_MSG_ERROR, "#LHT4 Invalid int type: '%d'\n", nd->type);
+		pcb_message(PCB_MSG_ERROR, "#LHT4 Invalid int type: '%d'\n", nd->type);
 		return -1;
 	}
 
@@ -141,7 +141,7 @@ static int parse_int(int *res, lht_node_t *nd)
 		base = 16;
 	tmp = strtol(nd->data.text.value, &end, base);
 	if (*end != '\0') {
-		Message(PCB_MSG_ERROR, "#LHT5 Invalid int value: '%s'\n", nd->data.text.value);
+		pcb_message(PCB_MSG_ERROR, "#LHT5 Invalid int value: '%s'\n", nd->data.text.value);
 		return -1;
 	}
 
@@ -159,14 +159,14 @@ static int parse_double(double *res, lht_node_t *nd)
 		return -1;
 
 	if (nd->type != LHT_TEXT) {
-		Message(PCB_MSG_ERROR, "#LHT8 Invalid double type: '%d'\n", nd->type);
+		pcb_message(PCB_MSG_ERROR, "#LHT8 Invalid double type: '%d'\n", nd->type);
 		return -1;
 	}
 
 	tmp = strtod(nd->data.text.value, &end);
 
 	if (*end != '\0') {
-		Message(PCB_MSG_ERROR, "#LHT9 Invalid double value: '%s'\n", nd->data.text.value);
+		pcb_message(PCB_MSG_ERROR, "#LHT9 Invalid double value: '%s'\n", nd->data.text.value);
 		return -1;
 	}
 
@@ -186,7 +186,7 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 
 	tmp = strtol(nd->name + prefix_len, &end, 10);
 	if (*end != '\0') {
-		Message(PCB_MSG_ERROR, "#LHT6 Invalid id value: '%s' in line %d\n", nd->data.text.value, nd->line);
+		pcb_message(PCB_MSG_ERROR, "#LHT6 Invalid id value: '%s' in line %d\n", nd->data.text.value, nd->line);
 		return -1;
 	}
 
@@ -215,7 +215,7 @@ static int parse_bool(pcb_bool *res, lht_node_t *nd)
 		return 0;
 	}
 
-	Message(PCB_MSG_ERROR, "#LHT7 Invalid bool value: '%s'\n", nd->data.text.value);
+	pcb_message(PCB_MSG_ERROR, "#LHT7 Invalid bool value: '%s'\n", nd->data.text.value);
 	return -1;
 }
 
@@ -286,7 +286,7 @@ static int post_thermal_assign(vtptr_t *pt)
 			if (n->type == LHT_TEXT) {
 				int layer = pcb_layer_by_name(n->name);
 				if (layer < 0) {
-					Message(PCB_MSG_ERROR, "#LHT10 Invalid layer name in thermal: '%s'\n", n->name);
+					pcb_message(PCB_MSG_ERROR, "#LHT10 Invalid layer name in thermal: '%s'\n", n->name);
 					return -1;
 				}
 				ASSIGN_THERM(layer, io_lihata_resolve_thermal_style(n->data.text.value), &fh);
@@ -791,7 +791,7 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 			char *end;
 			chr = strtol(sym->name+1, &end, 16);
 			if (*end != '\0') {
-				Message(PCB_MSG_ERROR, "Ignoring invalid symbol name '%s'.\n", sym->name);
+				pcb_message(PCB_MSG_ERROR, "Ignoring invalid symbol name '%s'.\n", sym->name);
 				continue;
 			}
 		}
@@ -830,7 +830,7 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 
 		/* safe copy the name */
 		if (name_len > sizeof(s->name)-1) {
-			Message(PCB_MSG_WARNING, "Route style name too long: '%s' (should be less than %d characters)\n", stn->name, sizeof(s->name)-1);
+			pcb_message(PCB_MSG_WARNING, "Route style name too long: '%s' (should be less than %d characters)\n", stn->name, sizeof(s->name)-1);
 			memcpy(s->name, stn->name, sizeof(s->name)-2);
 			s->name[sizeof(s->name)-1] = '\0';
 		}
@@ -945,7 +945,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	lht_node_t *sub;
 
 	if ((nd->type != LHT_HASH) || (strcmp(nd->name, "pcb-rnd-board-v1"))) {
-		Message(PCB_MSG_DEFAULT, "Not a board lihata.\n");
+		pcb_message(PCB_MSG_DEFAULT, "Not a board lihata.\n");
 		return -1;
 	}
 
@@ -999,7 +999,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	lht_doc_t *doc = lht_dom_load(Filename, &errmsg);
 
 	if (doc == NULL) {
-/*		Message(PCB_MSG_DEFAULT, "Error loading '%s': %s\n", Filename, errmsg);*/
+/*		pcb_message(PCB_MSG_DEFAULT, "Error loading '%s': %s\n", Filename, errmsg);*/
 		return -1;
 	}
 

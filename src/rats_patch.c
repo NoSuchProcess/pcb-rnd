@@ -398,7 +398,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 	END_LOOP;
 
 	if (!(found)) {
-		Message(PCB_MSG_DEFAULT, "ReplaceFootprint works on selected elements, please select elements first!\n");
+		pcb_message(PCB_MSG_DEFAULT, "ReplaceFootprint works on selected elements, please select elements first!\n");
 		return 1;
 	}
 
@@ -406,7 +406,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 	if (argc == 0) {
 		fpname = gui->prompt_for("Footprint name", "");
 		if (fpname == NULL) {
-			Message(PCB_MSG_DEFAULT, "No footprint name supplied\n");
+			pcb_message(PCB_MSG_DEFAULT, "No footprint name supplied\n");
 			return 1;
 		}
 	}
@@ -417,7 +417,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 	a[0] = fpname;
 	a[1] = NULL;
 	if (pcb_load_footprint(1, a, x, y) != 0) {
-		Message(PCB_MSG_DEFAULT, "Can't load footprint %s\n", fpname);
+		pcb_message(PCB_MSG_DEFAULT, "Can't load footprint %s\n", fpname);
 		return 1;
 	}
 
@@ -479,7 +479,7 @@ static int ActionSavePatch(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		fn = argv[0];
 	f = fopen(fn, "w");
 	if (f == NULL) {
-		Message(PCB_MSG_DEFAULT, "Can't open netlist patch file %s for writing\n", fn);
+		pcb_message(PCB_MSG_DEFAULT, "Can't open netlist patch file %s for writing\n", fn);
 		return 1;
 	}
 	rats_patch_fexport(PCB, f, 0);

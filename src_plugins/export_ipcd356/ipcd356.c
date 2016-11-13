@@ -395,7 +395,7 @@ int IPCD356_Netlist(void)
 	IPCD356_AliasList *aliaslist;
 
 	if (IPCD356_SanityCheck()) {	/* Check for invalid names + numbers. */
-		Message(PCB_MSG_ERROR, "IPCD356: aborting on the sanity check.\n");
+		pcb_message(PCB_MSG_ERROR, "IPCD356: aborting on the sanity check.\n");
 		return (1);
 	}
 
@@ -405,7 +405,7 @@ int IPCD356_Netlist(void)
 
 	fp = fopen(IPCD356_filename, "w+");
 	if (fp == NULL) {
-		Message(PCB_MSG_ERROR, "error opening %s\n", IPCD356_filename);
+		pcb_message(PCB_MSG_ERROR, "error opening %s\n", IPCD356_filename);
 		return 1;
 	}
 /*   free (IPCD356_filename); */
@@ -415,12 +415,12 @@ int IPCD356_Netlist(void)
 
 	aliaslist = CreateAliasList();
 	if (aliaslist == NULL) {
-		Message(PCB_MSG_ERROR, "Error Aloccating memory for IPC-D-356 AliasList\n");
+		pcb_message(PCB_MSG_ERROR, "Error Aloccating memory for IPC-D-356 AliasList\n");
 		return 1;
 	}
 
 	if (IPCD356_WriteAliases(fp, aliaslist)) {
-		Message(PCB_MSG_ERROR, "Error Writing IPC-D-356 AliasList\n");
+		pcb_message(PCB_MSG_ERROR, "Error Writing IPC-D-356 AliasList\n");
 		return 1;
 	}
 
@@ -433,7 +433,7 @@ int IPCD356_Netlist(void)
 		LookupConnectionByPin(PCB_TYPE_PIN, pin);
 		sprintf(nodename, "%s-%s", element->Name[1].TextString, pin->Number);
 		netname = pcb_netnode_to_netname(nodename);
-/*      Message(PCB_MSG_INFO, "Netname: %s\n", netname->Name +2); */
+/*      pcb_message(PCB_MSG_INFO, "Netname: %s\n", netname->Name +2); */
 		if (netname) {
 			strcpy(net, &netname->Name[2]);
 			CheckNetLength(net, aliaslist);
@@ -451,7 +451,7 @@ int IPCD356_Netlist(void)
 		LookupConnectionByPin(PCB_TYPE_PAD, pad);
 		sprintf(nodename, "%s-%s", element->Name[1].TextString, pad->Number);
 		netname = pcb_netnode_to_netname(nodename);
-/*      Message(PCB_MSG_INFO, "Netname: %s\n", netname->Name +2); */
+/*      pcb_message(PCB_MSG_INFO, "Netname: %s\n", netname->Name +2); */
 		if (netname) {
 			strcpy(net, &netname->Name[2]);
 			CheckNetLength(net, aliaslist);
@@ -569,7 +569,7 @@ int IPCD356_SanityCheck()
 {
 	ELEMENT_LOOP(PCB->Data);
 	if (element->Name[1].TextString == '\0') {
-		Message(PCB_MSG_ERROR, "Error: Found unnamed element. All elements need to be named to create an IPC-D-356 netlist.\n");
+		pcb_message(PCB_MSG_ERROR, "Error: Found unnamed element. All elements need to be named to create an IPC-D-356 netlist.\n");
 		return (1);
 	}
 	END_LOOP;											/* Element. */

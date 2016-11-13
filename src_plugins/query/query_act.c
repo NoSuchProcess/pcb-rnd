@@ -96,7 +96,7 @@ static int run_script(const char *script, void (*cb)(void *user_ctx, pcb_qry_val
 	qry_parse(&prg);
 
 	if (prg == NULL) {
-		Message(PCB_MSG_ERROR, "Compilation error.\n");
+		pcb_message(PCB_MSG_ERROR, "Compilation error.\n");
 		return -1;
 	}
 

@@ -186,7 +186,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		set_selected = value ? pcb_clr_selected_join : pcb_set_selected_join;
 	}
 	else {
-		Message(PCB_MSG_DEFAULT, _("%s():  Flag \"%s\" is not valid\n"), cmd_name, flag_name);
+		pcb_message(PCB_MSG_DEFAULT, _("%s():  Flag \"%s\" is not valid\n"), cmd_name, flag_name);
 		return;
 	}
 
@@ -198,7 +198,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 
 			if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 				if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
-					Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
 				SetChangedFlag(pcb_true);
 			break;
@@ -410,7 +410,7 @@ static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			{
 				if (type != PCB_TYPE_NONE)
 					if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
-						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				if (tostyle) {
 					if (pcb_chg_obj_1st_size(type, ptr1, ptr2, ptr3, value, absolute))
 						SetChangedFlag(pcb_true);
@@ -1388,7 +1388,7 @@ static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	else if (strcasecmp(prim, "delta") == 0) which = 1;
 	else if (strcasecmp(prim, "both") == 0) which = 2;
 	else {
-		Message(PCB_MSG_ERROR, "Second argument of ChangeAngle must be start, delta or both\n");
+		pcb_message(PCB_MSG_ERROR, "Second argument of ChangeAngle must be start, delta or both\n");
 		return -1;
 	}
 
@@ -1403,7 +1403,7 @@ static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			while(isspace(*delta)) delta++;
 			value = strtod(delta, &end);
 			if (*end != '\0') {
-				Message(PCB_MSG_ERROR, "Invalid numeric (in angle)\n");
+				pcb_message(PCB_MSG_ERROR, "Invalid numeric (in angle)\n");
 				return -1;
 			}
 			absolute = ((*delta != '-') && (*delta != '+'));
@@ -1414,7 +1414,7 @@ static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			{
 				if (type != PCB_TYPE_NONE) {
 					if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
-						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					else {
 						if (pcb_chg_obj_angle(type, ptr1, ptr2, ptr3, which, value, absolute))
 							SetChangedFlag(pcb_true);
@@ -1460,7 +1460,7 @@ static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_co
 	else if ((strcasecmp(prim, "height") == 0) || (strcasecmp(prim, "y") == 0)) which = 1;
 	else if (strcasecmp(prim, "both") == 0) which = 2;
 	else {
-		Message(PCB_MSG_ERROR, "Second argument of ChangeRadius must be width, x, height, y or both\n");
+		pcb_message(PCB_MSG_ERROR, "Second argument of ChangeRadius must be width, x, height, y or both\n");
 		return -1;
 	}
 
@@ -1477,7 +1477,7 @@ static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_co
 			{
 				if (type != PCB_TYPE_NONE) {
 					if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
-						Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 					else {
 						if (pcb_chg_obj_radius(type, ptr1, ptr2, ptr3, which, value, absolute))
 							SetChangedFlag(pcb_true);

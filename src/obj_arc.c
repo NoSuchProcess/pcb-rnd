@@ -467,7 +467,7 @@ void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 	pcb_arc_t *newone;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Arc)) {
-		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->On) {

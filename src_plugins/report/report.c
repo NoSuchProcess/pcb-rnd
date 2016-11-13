@@ -62,7 +62,7 @@
 
 conf_report_t conf_report;
 
-#define AUSAGE(x) Message (PCB_MSG_INFO, "Usage:\n%s\n", (x##_syntax))
+#define AUSAGE(x) pcb_message(PCB_MSG_INFO, "Usage:\n%s\n", (x##_syntax))
 #define USER_UNITMASK (conf_core.editor.grid_unit->allow)
 
 static int ReportDrills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -460,7 +460,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 
 	if ((report == NULL) || (report == '\0')) {
-		Message(PCB_MSG_DEFAULT, _("Nothing found to report on\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("Nothing found to report on\n"));
 		return 1;
 	}
 
@@ -746,7 +746,7 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 	if (use_re) {
 		regex = re_sei_comp(tofind);
 		if (re_sei_errno(regex) != 0) {
-			Message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+			pcb_message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 			re_sei_free(regex);
 			return (1);
 		}

@@ -485,7 +485,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 	void *ptr1, *ptr2, *ptr3;
 
 	if (TEST_FLAG(PCB_FLAG_LOCK, Line)) {
-		Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->On) {

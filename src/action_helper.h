@@ -83,6 +83,6 @@ void pcb_release_mode(void);
  * Macros called by various action routines to show usage or to report
  * a syntax error and fail
  */
-#define PCB_AFAIL(x) { Message (PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (x##_syntax)); return 1; }
+#define PCB_AFAIL(x) { pcb_message(PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (x##_syntax)); return 1; }
 
 #endif

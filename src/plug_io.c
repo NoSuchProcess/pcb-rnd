@@ -99,7 +99,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 			if (filename == NULL)
 				filename = "";
 		}
-		Message(PCB_MSG_DEFAULT, "IO error during %s: %s %s %s\n", what, reason, filename, comment);
+		pcb_message(PCB_MSG_DEFAULT, "IO error during %s: %s %s %s\n", what, reason, filename, comment);
 	}
 }
 
@@ -117,7 +117,7 @@ int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_s
 		int len, n;
 		len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), PCB_IOT_PCB, 0, fmt);
 		if (len <= 0) {
-			Message(PCB_MSG_DEFAULT, "Error: can't find a IO_ plugin to load a PCB using format %s\n", fmt);
+			pcb_message(PCB_MSG_DEFAULT, "Error: can't find a IO_ plugin to load a PCB using format %s\n", fmt);
 			return -1;
 		}
 		for(n = 0; n < len; n++) {
@@ -333,7 +333,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* enable default font if necessary */
 		if (!PCB->Font.Valid) {
 			if (require_font)
-				Message(PCB_MSG_DEFAULT, _("File '%s' has no font information, using default font\n"), new_filename);
+				pcb_message(PCB_MSG_DEFAULT, _("File '%s' has no font information, using default font\n"), new_filename);
 			PCB->Font.Valid = pcb_true;
 		}
 
@@ -380,7 +380,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* bozo: we are trying to revert back to a non-existing pcb... create one to avoid a segfault */
 		PCB = pcb_board_new_(pcb_false);
 		if (PCB == NULL) {
-			Message(PCB_MSG_DEFAULT, "FATAL: can't create a new empty pcb!");
+			pcb_message(PCB_MSG_DEFAULT, "FATAL: can't create a new empty pcb!");
 			exit(1);
 		}
 	}
@@ -507,7 +507,7 @@ FILE *CheckAndOpenFile(const char *Filename, pcb_bool Confirm, pcb_bool AllButto
 			}
 		}
 		if ((fp = fopen(Filename, "w")) == NULL)
-			OpenErrorMessage(Filename);
+			OpenErrorpcb_message(Filename);
 	}
 	return (fp);
 }
@@ -627,7 +627,7 @@ void SaveInTMP(void)
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
-		Message(PCB_MSG_DEFAULT, _("Trying to save your layout in '%s'\n"), filename);
+		pcb_message(PCB_MSG_DEFAULT, _("Trying to save your layout in '%s'\n"), filename);
 		WritePCBFile(filename, pcb_true, DEFAULT_FMT, pcb_true);
 	}
 }
@@ -775,14 +775,14 @@ int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_boo
 				Filename = fn_tmp;
 			}
 			else {
-				Message(PCB_MSG_ERROR, "Can't rename %s to %s before save\n", Filename, fn_tmp);
+				pcb_message(PCB_MSG_ERROR, "Can't rename %s to %s before save\n", Filename, fn_tmp);
 				return -1;
 			}
 		}
 	}
 
 	if ((fp = fopen(Filename, "w")) == NULL) {
-		OpenErrorMessage(Filename);
+		OpenErrorpcb_message(Filename);
 		return (STATUS_ERROR);
 	}
 
@@ -827,7 +827,7 @@ int WritePipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 	}
 	printf("write to pipe \"%s\"\n", command.array);
 	if ((fp = popen(command.array, "w")) == NULL) {
-		PopenErrorMessage(command.array);
+		PopenErrorpcb_message(command.array);
 		return (STATUS_ERROR);
 	}
 

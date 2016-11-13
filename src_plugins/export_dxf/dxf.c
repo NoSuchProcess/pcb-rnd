@@ -786,7 +786,7 @@ static double dxf_xy_to_angle(double x, double y) {
 		theta = 270.0;
 	else {
 		theta = 0.0;
-		Message(PCB_MSG_WARNING, "DXF: in dxf_xy_to_angle ():\n"
+		pcb_message(PCB_MSG_WARNING, "DXF: in dxf_xy_to_angle ():\n"
 						"     unable to figure out angle of element\n"
 						"     because the pin is at the centroid of the part.\n"
 						"     This is a BUG!!!\n" "     Setting to %g degrees\n", theta);
@@ -812,7 +812,7 @@ static char *dxf_clean_string(char *in) {
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_clean_string () function.\n", __FILE__, __LINE__);
 #endif
 	if ((out = malloc((strlen(in) + 1) * sizeof(char))) == NULL) {
-		Message(PCB_MSG_ERROR, "DXF: in dxf_clean_string (): malloc () failed.\n");
+		pcb_message(PCB_MSG_ERROR, "DXF: in dxf_clean_string (): malloc () failed.\n");
 		exit(1);
 	}
 	for (i = 0; i <= strlen(in); i++) {
@@ -846,7 +846,7 @@ static StringList *dxf_string_insert(char *str, StringList * list) {
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_string_insert () function.\n", __FILE__, __LINE__);
 #endif
 	if ((new = (StringList *) malloc(sizeof(StringList))) == NULL) {
-		Message(PCB_MSG_ERROR, "DXF: in dxf_string_insert (): malloc () failed.\n");
+		pcb_message(PCB_MSG_ERROR, "DXF: in dxf_string_insert (): malloc () failed.\n");
 		exit(1);
 	}
 	new->next = NULL;
@@ -4087,7 +4087,7 @@ static int dxf_export_xref_file(void)
 						if (found_pin2)
 							theta = dxf_xy_to_angle(pin2x, pin2y);
 						else {
-							Message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
+							pcb_message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
 											"     unable to figure out angle of element\n"
 											"     %s because pin #1 is at the centroid of the part\n"
 											"     and I could not find pin #2's location.\n"
@@ -4101,7 +4101,7 @@ static int dxf_export_xref_file(void)
 			/* we did not find pin #1 */
 			else {
 				theta = 0.0;
-				Message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
+				pcb_message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
 								"     unable to figure out angle because I could\n"
 								"     not find pin #1 of element %s.\n"
 								"     Setting to %g degrees.\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
@@ -4145,7 +4145,7 @@ static int dxf_export_xref_file(void)
 				dxf_rot_angle = 180.0;
 			else {
 				dxf_rot_angle = 0.0;
-				Message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
+				pcb_message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
 								"     unable to figure out angle of dxf block\n"
 								"     %s because pcb angle theta is not Cardinal [0.0, 90.0, 180.0, 270.0].\n"
 								"     Setting dxf_rot_angle to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), dxf_rot_angle);
@@ -4514,7 +4514,7 @@ static int dxf_set_layer(const char *name, int group) {
 		strcat(dxf_filesuffix, sext);
 		fp = fopen(dxf_filename, "w");
 		if (fp == NULL) {
-			Message(PCB_MSG_ERROR, "DXF: could not open %s for writing.\n", dxf_filename);
+			pcb_message(PCB_MSG_ERROR, "DXF: could not open %s for writing.\n", dxf_filename);
 			return 1;
 		}
 		/* write version info as a dxf comment */

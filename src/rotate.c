@@ -150,7 +150,7 @@ void RotateScreenObject(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 	void *ptr1, *ptr2, *ptr3;
 	if ((type = SearchScreen(X, Y, ROTATE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 		if (TEST_FLAG(PCB_FLAG_LOCK, (pcb_arc_t *) ptr2)) {
-			Message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+			pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			return;
 		}
 		Crosshair.AttachedObject.RubberbandN = 0;

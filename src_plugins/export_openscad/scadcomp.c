@@ -90,7 +90,7 @@ static void scad_add_include_file(char *include_file)
 			include_files_bufsize = 2048;
 		}
 		else {
-			Message(PCB_MSG_ERROR, "openscad: cannot allocate memory for component included files.\n");
+			pcb_message(PCB_MSG_ERROR, "openscad: cannot allocate memory for component included files.\n");
 		}
 	}
 
@@ -124,7 +124,7 @@ static void scad_export_include_files(void)
 
 	l = strlen(pcblibdir) + 1 + strlen(MODELBASE) + 1 + strlen(SCADBASE) + 1 + include_file_maxlength + 1;
 	if ((fullname = (char *) malloc(l * sizeof(char))) == NULL) {
-		Message(PCB_MSG_ERROR, "openscad: cannot allocate memory for component included files.\n");
+		pcb_message(PCB_MSG_ERROR, "openscad: cannot allocate memory for component included files.\n");
 		return;
 	}
 	sprintf(fullname, "%s%s%s%s%s%s", pcblibdir, PCB_DIR_SEPARATOR_S,

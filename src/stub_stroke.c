@@ -31,7 +31,7 @@ static void stub_stroke_record_dummy(int ev_x, int ev_y)
 
 static void stub_stroke_start_dummy(void)
 {
-	Message(PCB_MSG_DEFAULT, "Can not use libstroke: not compiled as a buildin and not loaded as a plugin\n");
+	pcb_message(PCB_MSG_DEFAULT, "Can not use libstroke: not compiled as a buildin and not loaded as a plugin\n");
 }
 
 void (*stub_stroke_record)(int ev_x, int ev_y) = stub_stroke_record_dummy;

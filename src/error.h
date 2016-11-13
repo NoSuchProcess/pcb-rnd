@@ -47,12 +47,12 @@ typedef enum pcb_message_level {
 	PCB_MSG_ERROR        /* Couldn't finish an action, needs user attention. */
 } pcb_message_level_t;
 
-void Message(enum pcb_message_level level, const char *Format, ...);
+void pcb_message(enum pcb_message_level level, const char *Format, ...);
 void MyFatal(const char *Format, ...);
-void OpenErrorMessage(const char *);
-void PopenErrorMessage(const char *);
-void OpendirErrorMessage(const char *);
-void ChdirErrorMessage(const char *);
+void OpenErrorpcb_message(const char *);
+void PopenErrorpcb_message(const char *);
+void OpendirErrorpcb_message(const char *);
+void ChdirErrorpcb_message(const char *);
 void CatchSignal(int);
 void pcb_trace(const char *Format, ...);
 

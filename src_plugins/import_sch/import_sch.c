@@ -230,7 +230,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			y = GetValue(ys, units, NULL, NULL);
 		}
 		else {
-			Message(PCB_MSG_DEFAULT, _("Bad syntax for Import(setnewpoint)"));
+			pcb_message(PCB_MSG_DEFAULT, _("Bad syntax for Import(setnewpoint)"));
 			return 1;
 		}
 
@@ -311,12 +311,12 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		int i;
 
 		if (tmpfile == NULL) {
-			Message(PCB_MSG_ERROR, _("Could not create temp file"));
+			pcb_message(PCB_MSG_ERROR, _("Could not create temp file"));
 			return 1;
 		}
 
 		if ((conf_import_sch.plugins.import_sch.gnetlist_program == NULL) || (*conf_import_sch.plugins.import_sch.gnetlist_program == '\0')) {
-			Message(PCB_MSG_ERROR, _("No gnetlist program configured, can not import. Please fill in configuration setting plugins/import_sch/gnetlist_program\n"));
+			pcb_message(PCB_MSG_ERROR, _("No gnetlist program configured, can not import. Please fill in configuration setting plugins/import_sch/gnetlist_program\n"));
 			return 1;
 		}
 
@@ -371,7 +371,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			user_target = user_outfile;
 
 		if ((conf_import_sch.plugins.import_sch.make_program == NULL) || (*conf_import_sch.plugins.import_sch.make_program == '\0')) {
-			Message(PCB_MSG_ERROR, _("No make program configured, can not import. Please fill in configuration setting plugins/import_sch/make_program\n"));
+			pcb_message(PCB_MSG_ERROR, _("No make program configured, can not import. Please fill in configuration setting plugins/import_sch/make_program\n"));
 			return 1;
 		}
 
@@ -380,7 +380,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		else {
 			tmpfile = pcb_tempfile_name_new("gnetlist_output");
 			if (tmpfile == NULL) {
-				Message(PCB_MSG_ERROR, _("Could not create temp file"));
+				pcb_message(PCB_MSG_ERROR, _("Could not create temp file"));
 				return 1;
 			}
 			must_free_tmpfile = 1;
@@ -430,7 +430,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_tempfile_unlink(tmpfile);
 	}
 	else {
-		Message(PCB_MSG_DEFAULT, _("Unknown import mode: %s\n"), mode);
+		pcb_message(PCB_MSG_DEFAULT, _("Unknown import mode: %s\n"), mode);
 		return 1;
 	}
 

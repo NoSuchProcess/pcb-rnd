@@ -292,13 +292,13 @@ static int PrintXY(void)
 				}
 
 				if (!found_any) {
-					Message
+					pcb_message
 						(PCB_MSG_WARNING, "PrintBOM(): unable to figure out angle because I could\n"
 						 "     not find a suitable reference pin of element %s\n"
 						 "     Setting to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);
 				}
 				else if (!found_any_not_at_centroid) {
-					Message
+					pcb_message
 						(PCB_MSG_WARNING, "PrintBOM(): unable to figure out angle of element\n"
 						 "     %s because the reference pin(s) are at the centroid of the part.\n"
 						 "     Setting to %g degrees\n", UNKNOWN(NAMEONPCB_NAME(element)), theta);

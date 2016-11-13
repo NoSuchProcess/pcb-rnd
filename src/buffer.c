@@ -165,11 +165,11 @@ int pcb_load_footprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		return 1;
 
 	if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) == 0) {
-		Message(PCB_MSG_DEFAULT, "Footprint %s contains no elements", name);
+		pcb_message(PCB_MSG_DEFAULT, "Footprint %s contains no elements", name);
 		return 1;
 	}
 	if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) > 1) {
-		Message(PCB_MSG_DEFAULT, "Footprint %s contains multiple elements", name);
+		pcb_message(PCB_MSG_DEFAULT, "Footprint %s contains multiple elements", name);
 		return 1;
 	}
 
@@ -404,13 +404,13 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 	int i;
 
 	if (elementlist_length(&Buffer->Data->Element)) {
-		Message(PCB_MSG_DEFAULT, _("You can't mirror a buffer that has elements!\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("You can't mirror a buffer that has elements!\n"));
 		return;
 	}
 	for (i = 0; i < max_copper_layer + 2; i++) {
 		pcb_layer_t *layer = Buffer->Data->Layer + i;
 		if (textlist_length(&layer->Text)) {
-			Message(PCB_MSG_DEFAULT, _("You can't mirror a buffer that has text!\n"));
+			pcb_message(PCB_MSG_DEFAULT, _("You can't mirror a buffer that has text!\n"));
 			return;
 		}
 	}
@@ -807,7 +807,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 		case F_Save:
 			if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) == 0) {
-				Message(PCB_MSG_DEFAULT, _("Buffer has no elements!\n"));
+				pcb_message(PCB_MSG_DEFAULT, _("Buffer has no elements!\n"));
 				break;
 			}
 			free_name = pcb_false;
