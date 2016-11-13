@@ -56,7 +56,7 @@ void RotateTextLowLevel(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned
 
 #define	MOVE_TEXT_LOWLEVEL(t,dx,dy)                    \
 	{                                                    \
-		MOVE_BOX_LOWLEVEL(&((t)->BoundingBox),(dx),(dy));  \
+		PCB_BOX_MOVE_LOWLEVEL(&((t)->BoundingBox),(dx),(dy));  \
 		MOVE((t)->X, (t)->Y, (dx), (dy));                  \
 	}
 

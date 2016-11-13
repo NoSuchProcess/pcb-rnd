@@ -224,7 +224,7 @@ static pcb_r_dir_t __r_find_neighbor_reg_in_sea(const pcb_box_t * region, void *
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	pcb_box_t query = *region;
-	ROTATEBOX_TO_NORTH(query, ni->search_dir);
+	PCB_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
 	 *  \            /               |__| query rect.
 	 *   \__________/  __ trap.y2
@@ -241,7 +241,7 @@ static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	pcb_box_t query = *box;
 	int r;
-	ROTATEBOX_TO_NORTH(query, ni->search_dir);
+	PCB_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
 	 *  \            /               |__| query rect.
 	 *   \__________/  __ trap.y2
@@ -273,8 +273,8 @@ static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * b
 	bbox.X2 = PCB->MaxWidth;
 	bbox.Y2 = PCB->MaxHeight;
 	/* rotate so that we can use the 'north' case for everything */
-	ROTATEBOX_TO_NORTH(bbox, search_direction);
-	ROTATEBOX_TO_NORTH(ni.trap, search_direction);
+	PCB_BOX_ROTATE_TO_NORTH(bbox, search_direction);
+	PCB_BOX_ROTATE_TO_NORTH(ni.trap, search_direction);
 	/* shift Y's such that trap contains full bounds of trapezoid */
 	ni.trap.Y2 = ni.trap.Y1;
 	ni.trap.Y1 = bbox.Y1;

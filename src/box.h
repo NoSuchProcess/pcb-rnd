@@ -56,11 +56,11 @@ typedef enum {
 
 /* rotates box 90-degrees cw */
 /* that's a strange rotation! */
-#define ROTATEBOX_CW(box) { pcb_coord_t t;\
+#define PCB_BOX_ROTATE_CW(box) { pcb_coord_t t;\
     t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
     (box).X2 = -(box).Y1; (box).Y1 = t;\
 }
-#define ROTATEBOX_TO_NORTH(box, dir) do { pcb_coord_t t;\
+#define PCB_BOX_ROTATE_TO_NORTH(box, dir) do { pcb_coord_t t;\
   switch(dir) {\
   case EAST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
@@ -75,7 +75,7 @@ typedef enum {
   default: assert(0);\
   }\
   } while (0)
-#define ROTATEBOX_FROM_NORTH(box, dir) do { pcb_coord_t t;\
+#define PCB_BOX_ROTATE_FROM_NORTH(box, dir) do { pcb_coord_t t;\
   switch(dir) {\
   case WEST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
@@ -92,11 +92,11 @@ typedef enum {
   } while (0)
 
 /* to avoid overflow, we calculate centers this way */
-#define CENTER_X(b) ((b).X1 + ((b).X2 - (b).X1)/2)
-#define CENTER_Y(b) ((b).Y1 + ((b).Y2 - (b).Y1)/2)
+#define PCB_BOX_CENTER_X(b) ((b).X1 + ((b).X2 - (b).X1)/2)
+#define PCB_BOX_CENTER_Y(b) ((b).Y1 + ((b).Y2 - (b).Y1)/2)
 /* some useful box utilities. */
 
-#define	MOVE_BOX_LOWLEVEL(b,dx,dy)		\
+#define	PCB_BOX_MOVE_LOWLEVEL(b,dx,dy)		\
 	{									\
 		MOVE((b)->X1,(b)->Y1,(dx),(dy))	\
 		MOVE((b)->X2,(b)->Y2,(dx),(dy))	\

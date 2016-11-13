@@ -1264,8 +1264,8 @@ pcb_bool TargetPoint(pcb_cheap_point_t * nextpoint, const routebox_t * target)
 		return pcb_true;
 	}
 	else {
-		nextpoint->X = CENTER_X(target->sbox);
-		nextpoint->Y = CENTER_Y(target->sbox);
+		nextpoint->X = PCB_BOX_CENTER_X(target->sbox);
+		nextpoint->Y = PCB_BOX_CENTER_Y(target->sbox);
 	}
 	return pcb_false;
 }
@@ -1617,12 +1617,12 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
 		routebox_t *target;
 		pcb_cheap_point_t pnt;
 		/* find a target near this via box */
-		pnt.X = CENTER_X(*area);
-		pnt.Y = CENTER_Y(*area);
+		pnt.X = PCB_BOX_CENTER_X(*area);
+		pnt.Y = PCB_BOX_CENTER_Y(*area);
 		target = minpcb_cost_target_to_point(&pnt, rb->group, targets, previous_edge->minpcb_cost_target);
 		/* now find point near the target */
-		pnt.X = CENTER_X(target->box);
-		pnt.Y = CENTER_Y(target->box);
+		pnt.X = PCB_BOX_CENTER_X(target->box);
+		pnt.Y = PCB_BOX_CENTER_Y(target->box);
 		costpoint = closest_point_in_routebox(&pnt, rb);
 		/* we moved from the previous cost point through the plane which is free travel */
 		d = (scale[through_site_conflict] * pcb_cost_to_point(&costpoint, group, &costpoint, previous_edge->rb->group));
@@ -1754,8 +1754,8 @@ static struct broken_boxes break_box_edge(const pcb_box_t * original, pcb_direct
 
 	origbox = *original;
 	breakbox = bloat_routebox(breaker);
-	ROTATEBOX_TO_NORTH(origbox, which_edge);
-	ROTATEBOX_TO_NORTH(breakbox, which_edge);
+	PCB_BOX_ROTATE_TO_NORTH(origbox, which_edge);
+	PCB_BOX_ROTATE_TO_NORTH(breakbox, which_edge);
 	result.right.Y1 = result.center.Y1 = result.left.Y1 = origbox.Y1;
 	result.right.Y2 = result.center.Y2 = result.left.Y2 = origbox.Y1 + 1;
 	/* validity of breaker is not important because the boxes are marked invalid */
@@ -1774,9 +1774,9 @@ static struct broken_boxes break_box_edge(const pcb_box_t * original, pcb_direct
 	result.is_valid_center = (result.center.X1 < result.center.X2);
 	result.is_valid_right = (result.right.X1 < result.right.X2);
 	/* rotate back */
-	ROTATEBOX_FROM_NORTH(result.left, which_edge);
-	ROTATEBOX_FROM_NORTH(result.center, which_edge);
-	ROTATEBOX_FROM_NORTH(result.right, which_edge);
+	PCB_BOX_ROTATE_FROM_NORTH(result.left, which_edge);
+	PCB_BOX_ROTATE_FROM_NORTH(result.center, which_edge);
+	PCB_BOX_ROTATE_FROM_NORTH(result.right, which_edge);
 	/* done */
 	return result;
 }
@@ -2788,8 +2788,8 @@ static pcb_r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
 		}
 		else {
 			sq = shrink_box(&ti->query, rbox->style->Diameter);
-			sb.X1 = CENTER_X(sb);
-			sb.Y1 = CENTER_Y(sb);
+			sb.X1 = PCB_BOX_CENTER_X(sb);
+			sb.Y1 = PCB_BOX_CENTER_Y(sb);
 		}
 		if (!box_intersect(&sb, &sq))
 			return R_DIR_NOT_FOUND;
@@ -2798,8 +2798,8 @@ static pcb_r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
 		sq = shrink_box(&ti->query, rbox->style->Diameter);
 		if (!box_intersect(&sb, &sq))
 			return R_DIR_NOT_FOUND;
-		sb.X1 = CENTER_X(sb);
-		sb.Y1 = CENTER_Y(sb);
+		sb.X1 = PCB_BOX_CENTER_X(sb);
+		sb.Y1 = PCB_BOX_CENTER_Y(sb);
 		break;
 	default:
 		assert(0);
@@ -3133,8 +3133,8 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 		 * is where we're utlimately headed on this path. However, it
 		 * must reside in the plane as well as the via area too.
 		 */
-		nextpoint.X = CENTER_X(path->sbox);
-		nextpoint.Y = CENTER_Y(path->sbox);
+		nextpoint.X = PCB_BOX_CENTER_X(path->sbox);
+		nextpoint.Y = PCB_BOX_CENTER_Y(path->sbox);
 		if (path->parent.expansion_area->flags.is_via) {
 			TargetPoint(&nextpoint, rb_source(path));
 			/* nextpoint is the middle of the source terminal now */
@@ -3152,8 +3152,8 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 	}
 	else {
 		/* start from best place of target box */
-		lastpoint.X = CENTER_X(target->sbox);
-		lastpoint.Y = CENTER_Y(target->sbox);
+		lastpoint.X = PCB_BOX_CENTER_X(target->sbox);
+		lastpoint.Y = PCB_BOX_CENTER_Y(target->sbox);
 		TargetPoint(&lastpoint, target);
 		if (AutoRouteParameters.last_smooth && box_in_box(&path->sbox, &target->sbox))
 			path = path->parent.expansion_area;
@@ -3659,8 +3659,8 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 			/* may expand in all directions from source; center edge cost point. */
 			/* note that planes shouldn't really expand, but we need an edge */
 
-			cp.X = CENTER_X(b);
-			cp.Y = CENTER_Y(b);
+			cp.X = PCB_BOX_CENTER_X(b);
+			cp.Y = PCB_BOX_CENTER_Y(b);
 			e = CreateEdge(p, cp.X, cp.Y, 0, NULL, ALL, targets);
 			cp = closest_point_in_box(&cp, &e->minpcb_cost_target->sbox);
 			cp = closest_point_in_box(&cp, &b);
@@ -3889,22 +3889,22 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 				switch (e->rb->came_from) {
 				case NORTH:
 					b.Y2 = b.Y1 + 1;
-					b.X1 = CENTER_X(b);
+					b.X1 = PCB_BOX_CENTER_X(b);
 					b.X2 = b.X1 + 1;
 					break;
 				case EAST:
 					b.X1 = b.X2 - 1;
-					b.Y1 = CENTER_Y(b);
+					b.Y1 = PCB_BOX_CENTER_Y(b);
 					b.Y2 = b.Y1 + 1;
 					break;
 				case SOUTH:
 					b.Y1 = b.Y2 - 1;
-					b.X1 = CENTER_X(b);
+					b.X1 = PCB_BOX_CENTER_X(b);
 					b.X2 = b.X1 + 1;
 					break;
 				case WEST:
 					b.X2 = b.X1 + 1;
-					b.Y1 = CENTER_Y(b);
+					b.Y1 = PCB_BOX_CENTER_Y(b);
 					b.Y2 = b.Y1 + 1;
 					break;
 				default:

@@ -347,7 +347,7 @@ void MovePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 		MOVE(point->X, point->Y, DX, DY);
 	}
 	END_LOOP;
-	MOVE_BOX_LOWLEVEL(&Polygon->BoundingBox, DX, DY);
+	PCB_BOX_MOVE_LOWLEVEL(&Polygon->BoundingBox, DX, DY);
 }
 
 /* moves a polygon */
