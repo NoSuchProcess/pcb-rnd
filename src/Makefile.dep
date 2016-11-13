@@ -3284,9 +3284,10 @@ main.o: main.c ../config.h board.h const.h macro.h global_typedefs.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
  ../src_3rd/genvector/vtp0.h list_conf.h set.h buffer.h crosshair.h \
  rubberband.h vtonpoint.h hid.h drc.h compat_lrealpath.h free_atexit.h \
- polygon.h rtree.h buildin.h flag_str.h plugins.h plug_footprint.h \
- vtlibrary.h event.h funchash.h conf_core.h hid_actions.h hid_init.h \
- compat_misc.h compat_nls.h dolists.h generated_lists.h
+ polygon.h rtree.h buildin.h build_run.h flag_str.h plugins.h \
+ plug_footprint.h vtlibrary.h event.h funchash.h conf_core.h \
+ hid_actions.h hid_init.h compat_misc.h compat_nls.h dolists.h \
+ generated_lists.h
 main_act.o: main_act.c ../config.h hid_actions.h hid.h error.h drc.h \
  unit.h global_typedefs.h pcb_bool.h attrib.h hid_init.h conf_core.h \
  conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
