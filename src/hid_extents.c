@@ -132,7 +132,7 @@ void hid_extents_init(void)
 
 	memset(&extents_hid, 0, sizeof(pcb_hid_t));
 
-	common_draw_helpers_init(&extents_hid);
+	pcb_dhlp_draw_helpers_init(&extents_hid);
 
 	extents_hid.struct_size = sizeof(pcb_hid_t);
 	extents_hid.name = "extents-extents";

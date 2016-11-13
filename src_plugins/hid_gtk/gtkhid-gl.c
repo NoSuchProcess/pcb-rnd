@@ -360,13 +360,13 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		a = 0.85;
 	}
 	else {
-		if (hid_cache_color(0, gc->colorname, &cval, &cache))
+		if (pcb_hid_cache_color(0, gc->colorname, &cval, &cache))
 			cc = (ColorCache *) cval.ptr;
 		else {
 			cc = (ColorCache *) malloc(sizeof(ColorCache));
 			memset(cc, 0, sizeof(*cc));
 			cval.ptr = cc;
-			hid_cache_color(1, gc->colorname, &cval, &cache);
+			pcb_hid_cache_color(1, gc->colorname, &cval, &cache);
 		}
 
 		if (!cc->color_set) {
@@ -529,7 +529,7 @@ void ghid_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_
 
 void ghid_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
-	common_thindraw_pcb_polygon(gc, poly, clip_box);
+	pcb_dhlp_thindraw_pcb_polygon(gc, poly, clip_box);
 	ghid_set_alpha_mult(gc, 0.25);
 	ghid_fill_pcb_polygon(gc, poly, clip_box);
 	ghid_set_alpha_mult(gc, 1.0);
@@ -792,7 +792,7 @@ gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GH
 	   we can't use the hidgl polygon drawing routine */
 	/* TODO: We could use the GLU tessellator though */
 	if (hidgl_stencil_bits() == 0)
-		ghid_hid.fill_pcb_polygon = common_fill_pcb_polygon;
+		ghid_hid.fill_pcb_polygon = pcb_dhlp_fill_pcb_polygon;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

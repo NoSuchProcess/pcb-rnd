@@ -484,13 +484,13 @@ void ghid_set_color(pcb_hid_gc_t gc, const char *name)
 	}
 	else {
 		ColorCache *cc;
-		if (hid_cache_color(0, name, &cval, &cache))
+		if (pcb_hid_cache_color(0, name, &cval, &cache))
 			cc = (ColorCache *) cval.ptr;
 		else {
 			cc = (ColorCache *) malloc(sizeof(ColorCache));
 			memset(cc, 0, sizeof(*cc));
 			cval.ptr = cc;
-			hid_cache_color(1, name, &cval, &cache);
+			pcb_hid_cache_color(1, name, &cval, &cache);
 		}
 
 		if (!cc->color_set) {

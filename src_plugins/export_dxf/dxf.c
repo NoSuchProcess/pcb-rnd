@@ -5933,7 +5933,7 @@ pcb_uninit_t hid_export_dxf_init()
 	memset(&dxf_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&dxf_hid);
-	common_draw_helpers_init(&dxf_hid);
+	pcb_dhlp_draw_helpers_init(&dxf_hid);
 	dxf_hid.struct_size = sizeof(pcb_hid_t);
 	dxf_hid.name = "dxf";
 	dxf_hid.description = "DXF export";

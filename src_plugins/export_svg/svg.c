@@ -698,7 +698,7 @@ pcb_uninit_t hid_export_svg_init()
 	memset(&svg_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&svg_hid);
-	common_draw_helpers_init(&svg_hid);
+	pcb_dhlp_draw_helpers_init(&svg_hid);
 
 	svg_hid.struct_size = sizeof(pcb_hid_t);
 	svg_hid.name = "svg";

@@ -17,7 +17,7 @@ typedef pcb_hidval_t htsh_value_t;
 #undef HT
 
 
-int hid_cache_color(int set, const char *name, pcb_hidval_t * val, void **vcache)
+int pcb_hid_cache_color(int set, const char *name, pcb_hidval_t * val, void **vcache)
 {
 	htsh_t *cache;
 	htsh_entry_t *e;

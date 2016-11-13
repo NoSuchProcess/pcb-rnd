@@ -134,7 +134,7 @@ static int should_compute_no_holes(pcb_polygon_t * poly, const pcb_box_t * clip_
 
 #undef BOUNDS_INSIDE_CLIP_THRESHOLD
 
-void common_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+void pcb_dhlp_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	if (!poly->NoHolesValid) {
 		/* If enough of the polygon is on-screen, compute the entire
@@ -174,13 +174,13 @@ static int thindraw_hole_cb(pcb_pline_t * pl, void *user_data)
 	return 0;
 }
 
-void common_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
+void pcb_dhlp_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	thindraw_contour(gc, poly->Clipped->contours);
 	PolygonHoles(poly, clip_box, thindraw_hole_cb, gc);
 }
 
-void common_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
+void pcb_dhlp_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	pcb_coord_t w = clear ? (mask ? pad->Mask : pad->Thickness + pad->Clearance)
 		: pad->Thickness;
@@ -244,7 +244,7 @@ void common_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, p
 	}
 }
 
-void common_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
+void pcb_dhlp_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)
 {
 	pcb_coord_t w = clear ? (mask ? pad->Mask : pad->Thickness + pad->Clearance)
 		: pad->Thickness;
@@ -342,7 +342,7 @@ static void draw_octagon_poly(pcb_hid_gc_t gc, pcb_coord_t X, pcb_coord_t Y, pcb
 }
 
 
-void common_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
+void pcb_dhlp_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
 {
 	pcb_coord_t w = mask ? pv->Mask : pv->Thickness;
 	pcb_coord_t r = w / 2;
@@ -381,7 +381,7 @@ void common_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, 
 		gui->fill_circle(bg_gc, pv->X, pv->Y, pv->DrillingHole / 2);
 }
 
-void common_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
+void pcb_dhlp_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
 {
 	pcb_coord_t w = mask ? pv->Mask : pv->Thickness;
 	pcb_coord_t r = w / 2;
@@ -430,12 +430,12 @@ void common_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * 
 	}
 }
 
-void common_draw_helpers_init(pcb_hid_t * hid)
+void pcb_dhlp_draw_helpers_init(pcb_hid_t * hid)
 {
-	hid->fill_pcb_polygon = common_fill_pcb_polygon;
-	hid->thindraw_pcb_polygon = common_thindraw_pcb_polygon;
-	hid->fill_pcb_pad = common_fill_pcb_pad;
-	hid->thindraw_pcb_pad = common_thindraw_pcb_pad;
-	hid->fill_pcb_pv = common_fill_pcb_pv;
-	hid->thindraw_pcb_pv = common_thindraw_pcb_pv;
+	hid->fill_pcb_polygon      = pcb_dhlp_fill_pcb_polygon;
+	hid->thindraw_pcb_polygon  = pcb_dhlp_thindraw_pcb_polygon;
+	hid->fill_pcb_pad          = pcb_dhlp_fill_pcb_pad;
+	hid->thindraw_pcb_pad      = pcb_dhlp_thindraw_pcb_pad;
+	hid->fill_pcb_pv           = pcb_dhlp_fill_pcb_pv;
+	hid->thindraw_pcb_pv       = pcb_dhlp_thindraw_pcb_pv;
 }

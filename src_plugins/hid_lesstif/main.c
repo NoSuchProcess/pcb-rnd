@@ -2940,7 +2940,7 @@ static void lesstif_set_color(pcb_hid_gc_t gc, const char *name)
 		gc->color = offlimit_color;
 		gc->erase = 0;
 	}
-	else if (hid_cache_color(0, name, &cval, &cache)) {
+	else if (pcb_hid_cache_color(0, name, &cval, &cache)) {
 		gc->color = cval.lval;
 		gc->erase = 0;
 	}
@@ -2951,7 +2951,7 @@ static void lesstif_set_color(pcb_hid_gc_t gc, const char *name)
 		printf("lesstif_set_color `%s' %08x rgb/%d/%d/%d\n", name, color.pixel, color.red, color.green, color.blue);
 #endif
 		cval.lval = gc->color = color.pixel;
-		hid_cache_color(1, name, &cval, &cache);
+		pcb_hid_cache_color(1, name, &cval, &cache);
 		gc->erase = 0;
 	}
 	if (autofade) {
@@ -3765,7 +3765,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 	memset(&lesstif_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&lesstif_hid);
-	common_draw_helpers_init(&lesstif_hid);
+	pcb_dhlp_draw_helpers_init(&lesstif_hid);
 
 	lesstif_hid.struct_size = sizeof(pcb_hid_t);
 	lesstif_hid.name = "lesstif";

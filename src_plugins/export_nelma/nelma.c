@@ -803,7 +803,7 @@ static void use_gc(pcb_hid_gc_t gc)
 		}
 		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc->color->r, gc->color->g, gc->color->b, type, r);
 
-		if (hid_cache_color(0, name, &bval, &bcache)) {
+		if (pcb_hid_cache_color(0, name, &bval, &bcache)) {
 			gc->brush = (gdImagePtr) bval.ptr;
 		}
 		else {
@@ -829,7 +829,7 @@ static void use_gc(pcb_hid_gc_t gc)
 					gdImageFilledRectangle(gc->brush, 0, 0, r, r, fg);
 			}
 			bval.ptr = gc->brush;
-			hid_cache_color(1, name, &bval, &bcache);
+			pcb_hid_cache_color(1, name, &bval, &bcache);
 		}
 
 		gdImageSetBrush(nelma_im, gc->brush);
@@ -989,7 +989,7 @@ pcb_uninit_t hid_export_nelma_init()
 	memset(&nelma_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&nelma_hid);
-	common_draw_helpers_init(&nelma_hid);
+	pcb_dhlp_draw_helpers_init(&nelma_hid);
 
 	nelma_hid.struct_size = sizeof(pcb_hid_t);
 	nelma_hid.name = "nelma";

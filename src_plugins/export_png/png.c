@@ -1147,7 +1147,7 @@ static void png_set_color(pcb_hid_gc_t gc, const char *name)
 		return;
 	}
 
-	if (hid_cache_color(0, name, &cval, &color_cache)) {
+	if (pcb_hid_cache_color(0, name, &cval, &color_cache)) {
 		gc->color = (color_struct *) cval.ptr;
 	}
 	else if (name[0] == '#') {
@@ -1159,7 +1159,7 @@ static void png_set_color(pcb_hid_gc_t gc, const char *name)
 			return;
 		}
 		cval.ptr = gc->color;
-		hid_cache_color(1, name, &cval, &color_cache);
+		pcb_hid_cache_color(1, name, &cval, &color_cache);
 	}
 	else {
 		printf("WE SHOULD NOT BE HERE!!!\n");
@@ -1230,7 +1230,7 @@ static void use_gc(pcb_hid_gc_t gc)
 
 		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc->color->r, gc->color->g, gc->color->b, type, r);
 
-		if (hid_cache_color(0, name, &bval, &brush_cache)) {
+		if (pcb_hid_cache_color(0, name, &bval, &brush_cache)) {
 			gc->brush = (gdImagePtr) bval.ptr;
 		}
 		else {
@@ -1272,7 +1272,7 @@ static void use_gc(pcb_hid_gc_t gc)
 					gdImageFilledRectangle(gc->brush, 0, 0, r - 1, r - 1, fg);
 			}
 			bval.ptr = gc->brush;
-			hid_cache_color(1, name, &bval, &brush_cache);
+			pcb_hid_cache_color(1, name, &bval, &brush_cache);
 		}
 
 		gdImageSetBrush(im, gc->brush);
@@ -1494,7 +1494,7 @@ pcb_uninit_t hid_export_png_init()
 	memset(&png_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&png_hid);
-	common_draw_helpers_init(&png_hid);
+	pcb_dhlp_draw_helpers_init(&png_hid);
 
 	png_hid.struct_size = sizeof(pcb_hid_t);
 	png_hid.name = "png";

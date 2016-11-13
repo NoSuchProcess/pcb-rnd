@@ -344,7 +344,7 @@ pcb_uninit_t hid_hid_batch_init()
 	memset(&batch_hid, 0, sizeof(pcb_hid_t));
 
 	common_nogui_init(&batch_hid);
-	common_draw_helpers_init(&batch_hid);
+	pcb_dhlp_draw_helpers_init(&batch_hid);
 
 	batch_hid.struct_size = sizeof(pcb_hid_t);
 	batch_hid.name = "batch";

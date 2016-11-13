@@ -1168,7 +1168,7 @@ pcb_uninit_t hid_export_gerber_init()
 	memset(&gerber_hid, 0, sizeof(gerber_hid));
 
 	common_nogui_init(&gerber_hid);
-	common_draw_helpers_init(&gerber_hid);
+	pcb_dhlp_draw_helpers_init(&gerber_hid);
 
 	gerber_hid.struct_size = sizeof(gerber_hid);
 	gerber_hid.name = "gerber";
