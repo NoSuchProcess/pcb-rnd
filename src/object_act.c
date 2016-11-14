@@ -994,6 +994,106 @@ int ActionListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 }
 
 
+/* --------------------------------------------------------------------------- */
+
+static const char movelayer_syntax[] = "MoveLayer(old,new)";
+
+static const char movelayer_help[] = "Moves/Creates/Deletes Layers.";
+
+/* %start-doc actions MoveLayer
+
+Moves a layer, creates a new layer, or deletes a layer.
+
+@table @code
+
+@item old
+The is the layer number to act upon.  Allowed values are:
+@table @code
+
+@item c
+Currently selected layer.
+
+@item -1
+Create a new layer.
+
+@item number
+An existing layer number.
+
+@end table
+
+@item new
+Specifies where to move the layer to.  Allowed values are:
+@table @code
+@item -1
+Deletes the layer.
+
+@item up
+Moves the layer up.
+
+@item down
+Moves the layer down.
+
+@item c
+Creates a new layer.
+
+@end table
+
+@end table
+
+%end-doc */
+
+int MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	int old_index, new_index;
+	int new_top = -1;
+
+	if (argc != 2) {
+		pcb_message(PCB_MSG_DEFAULT, "Usage; MoveLayer(old,new)");
+		return 1;
+	}
+
+	if (strcmp(argv[0], "c") == 0)
+		old_index = INDEXOFCURRENT;
+	else
+		old_index = atoi(argv[0]);
+
+	if (strcmp(argv[1], "c") == 0) {
+		new_index = INDEXOFCURRENT;
+		if (new_index < 0)
+			new_index = 0;
+	}
+	else if (strcmp(argv[1], "up") == 0) {
+		new_index = INDEXOFCURRENT - 1;
+		if (new_index < 0)
+			return 1;
+		new_top = new_index;
+	}
+	else if (strcmp(argv[1], "down") == 0) {
+		new_index = INDEXOFCURRENT + 1;
+		if (new_index >= max_copper_layer)
+			return 1;
+		new_top = new_index;
+	}
+	else
+		new_index = atoi(argv[1]);
+
+	if (pcb_layer_move(old_index, new_index))
+		return 1;
+
+	if (new_index == -1) {
+		new_top = old_index;
+		if (new_top >= max_copper_layer)
+			new_top--;
+		new_index = new_top;
+	}
+	if (old_index == -1)
+		new_top = new_index;
+
+	if (new_top != -1)
+		ChangeGroupVisibility(new_index, 1, 1);
+
+	return 0;
+}
 
 
 pcb_hid_action_t object_action_list[] = {
@@ -1029,6 +1129,9 @@ pcb_hid_action_t object_action_list[] = {
 	,
 	{"MinClearGap", 0, ActionMinClearGap,
 	 mincleargap_help, mincleargap_syntax}
+	,
+	{"MoveLayer", 0, MoveLayerAction,
+	 movelayer_help, movelayer_syntax}
 };
 
 PCB_REGISTER_ACTIONS(object_action_list, NULL)
