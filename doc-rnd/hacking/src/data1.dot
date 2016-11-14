@@ -45,4 +45,15 @@ digraph pcb_data {
 	pcb_layer_t -> LayerType_texts
 	pcb_layer_t -> LayerType_polygons
 	pcb_layer_t [shape=box]
+
+	subgraph "cluster_1" {
+		label="LEGEND"
+		style=filled
+		bgcolor=grey
+		round [label="round:\nstruct field"]
+		struct [label="box:\nstruct" shape=box]
+		diamond [label="diamond:\nglobal variable" shape=diamond]
+	}
+
+	LayerType_misc -> struct [style=invis]
 }
