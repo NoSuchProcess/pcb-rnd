@@ -47,7 +47,7 @@
 /*** allocation ***/
 
 /* get next slot for a via, allocates memory if necessary */
-pcb_pin_t *GetViaMemory(pcb_data_t * data)
+pcb_pin_t *pcb_via_new(pcb_data_t * data)
 {
 	pcb_pin_t *new_obj;
 
@@ -57,14 +57,14 @@ pcb_pin_t *GetViaMemory(pcb_data_t * data)
 	return new_obj;
 }
 
-void RemoveFreeVia(pcb_pin_t * data)
+void pcb_via_free(pcb_pin_t * data)
 {
 	pinlist_remove(data);
 	free(data);
 }
 
 /* get next slot for a pin, allocates memory if necessary */
-pcb_pin_t *GetPinMemory(pcb_element_t * element)
+pcb_pin_t *pcb_pin_new(pcb_element_t * element)
 {
 	pcb_pin_t *new_obj;
 
@@ -74,7 +74,7 @@ pcb_pin_t *GetPinMemory(pcb_element_t * element)
 	return new_obj;
 }
 
-void RemoveFreePin(pcb_pin_t * data)
+void pcb_pin_free(pcb_pin_t * data)
 {
 	pinlist_remove(data);
 	free(data);
@@ -85,7 +85,7 @@ void RemoveFreePin(pcb_pin_t * data)
 /*** utility ***/
 
 /* creates a new via */
-pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
+pcb_pin_t *pcb_via_new_on_board(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
 {
 	pcb_pin_t *Via;
 
@@ -101,7 +101,7 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coor
 		END_LOOP;
 	}
 
-	Via = GetViaMemory(Data);
+	Via = pcb_via_new(Data);
 
 	if (!Via)
 		return (Via);
@@ -138,9 +138,9 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coor
 }
 
 /* creates a new pin in an element */
-pcb_pin_t *CreateNewPin(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, char *Name, char *Number, pcb_flag_t Flags)
+pcb_pin_t *pcb_pin_new_in_element(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, char *Name, char *Number, pcb_flag_t Flags)
 {
-	pcb_pin_t *pin = GetPinMemory(Element);
+	pcb_pin_t *pin = pcb_pin_new(Element);
 
 	/* copy values */
 	pin->X = X;
@@ -197,14 +197,14 @@ pcb_pin_t *CreateNewPin(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pc
 
 void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via)
 {
-	SetPinBoundingBox(Via);
+	pcb_pin_bbox(Via);
 	if (!Data->via_tree)
 		Data->via_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
 }
 
 /* sets the bounding box of a pin or via */
-void SetPinBoundingBox(pcb_pin_t *Pin)
+void pcb_pin_bbox(pcb_pin_t *Pin)
 {
 	pcb_coord_t width;
 
@@ -235,7 +235,7 @@ void SetPinBoundingBox(pcb_pin_t *Pin)
 /* copies a via to paste buffer */
 void *AddViaToBuffer(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	return (CreateNewVia(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
+	return (pcb_via_new_on_board(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
 
 /* moves a via to paste buffer without allocating memory for the name */
@@ -306,7 +306,7 @@ void *ChangeViaSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 			Via->Mask += value - Via->Thickness;
 		}
 		Via->Thickness = value;
-		SetPinBoundingBox(Via);
+		pcb_pin_bbox(Via);
 		r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		DrawVia(Via);
@@ -387,7 +387,7 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	EraseVia(Via);
 	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	Via->Clearance = value;
-	SetPinBoundingBox(Via);
+	pcb_pin_bbox(Via);
 	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
@@ -511,7 +511,7 @@ void *ChangeViaSquare(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Via);
 	else
 		PCB_FLAG_SET(PCB_FLAG_SQUARE, Via);
-	SetPinBoundingBox(Via);
+	pcb_pin_bbox(Via);
 	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, NULL, Via);
 	DrawVia(Via);
@@ -532,7 +532,7 @@ void *ChangePinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Pin);
 	else
 		PCB_FLAG_SET(PCB_FLAG_SQUARE, Pin);
-	SetPinBoundingBox(Pin);
+	pcb_pin_bbox(Pin);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	DrawPin(Pin);
@@ -651,7 +651,7 @@ pcb_bool ChangeHole(pcb_pin_t *Via)
 		Via->Mask = (Via->Thickness + (Via->Mask - Via->DrillingHole));
 	}
 
-	SetPinBoundingBox(Via);
+	pcb_pin_bbox(Via);
 	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
@@ -691,7 +691,7 @@ void *ChangeViaMaskSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		EraseVia(Via);
 		r_delete_entry(PCB->Data->via_tree, &Via->BoundingBox);
 		Via->Mask = value;
-		SetPinBoundingBox(Via);
+		pcb_pin_bbox(Via);
 		r_insert_entry(PCB->Data->via_tree, &Via->BoundingBox, 0);
 		DrawVia(Via);
 		return (Via);
@@ -704,7 +704,7 @@ void *CopyVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	pcb_pin_t *via;
 
-	via = CreateNewVia(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
+	via = pcb_via_new_on_board(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
 										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND));
 	if (!via)
 		return (via);
@@ -736,7 +736,7 @@ void *DestroyVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	r_delete_entry(ctx->remove.destroy_target->via_tree, (pcb_box_t *) Via);
 	free(Via->Name);
 
-	RemoveFreeVia(Via);
+	pcb_via_free(Via);
 	return NULL;
 }
 

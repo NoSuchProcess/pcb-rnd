@@ -748,7 +748,7 @@ via_hi_format
 			/* x, y, thickness, clearance, mask, drilling-hole, name, flags */
 		: T_VIA '[' measure measure measure measure measure measure STRING flags ']'
 			{
-				CreateNewVia(yyData, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7),
+				pcb_via_new_on_board(yyData, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7),
 				                     NU ($8), $9, $10);
 				free ($9);
 			}
@@ -758,7 +758,7 @@ via_2.0_format
 			/* x, y, thickness, clearance, mask, drilling-hole, name, flags */
 		: T_VIA '(' measure measure measure measure measure measure STRING INTEGER ')'
 			{
-				CreateNewVia(yyData, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7), OU ($8), $9,
+				pcb_via_new_on_board(yyData, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7), OU ($8), $9,
 					pcb_flag_old($10));
 				free ($9);
 			}
@@ -769,7 +769,7 @@ via_1.7_format
 			/* x, y, thickness, clearance, drilling-hole, name, flags */
 		: T_VIA '(' measure measure measure measure measure STRING INTEGER ')'
 			{
-				CreateNewVia(yyData, OU ($3), OU ($4), OU ($5), OU ($6),
+				pcb_via_new_on_board(yyData, OU ($3), OU ($4), OU ($5), OU ($6),
 					     OU ($5) + OU($6), OU ($7), $8, pcb_flag_old($9));
 				free ($8);
 			}
@@ -779,7 +779,7 @@ via_newformat
 			/* x, y, thickness, drilling-hole, name, flags */
 		: T_VIA '(' measure measure measure measure STRING INTEGER ')'
 			{
-				CreateNewVia(yyData, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
+				pcb_via_new_on_board(yyData, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
 					OU($5) + 2*MASKFRAME,  OU ($6), $7, pcb_flag_old($8));
 				free ($7);
 			}
@@ -796,7 +796,7 @@ via_oldformat
 					OU($5) > MIN_PINORVIACOPPER)
 					hole = OU($5) - MIN_PINORVIACOPPER;
 
-				CreateNewVia(yyData, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
+				pcb_via_new_on_board(yyData, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
 					OU($5) + 2*MASKFRAME, hole, $6, pcb_flag_old($7));
 				free ($6);
 			}
@@ -1554,7 +1554,7 @@ pin_hi_format
 			   number, flags */
 		: T_PIN '[' measure measure measure measure measure measure STRING STRING flags ']'
 			{
-				CreateNewPin(yyElement, NU ($3) + yyElement->MarkX,
+				pcb_pin_new_in_element(yyElement, NU ($3) + yyElement->MarkX,
 					NU ($4) + yyElement->MarkY, NU ($5), NU ($6), NU ($7), NU ($8), $9,
 					$10, $11);
 				free ($9);
@@ -1566,7 +1566,7 @@ pin_1.7_format
 			   number, flags */
 		: T_PIN '(' measure measure measure measure measure measure STRING STRING INTEGER ')'
 			{
-				CreateNewPin(yyElement, OU ($3) + yyElement->MarkX,
+				pcb_pin_new_in_element(yyElement, OU ($3) + yyElement->MarkX,
 					OU ($4) + yyElement->MarkY, OU ($5), OU ($6), OU ($7), OU ($8), $9,
 					$10, pcb_flag_old($11));
 				free ($9);
@@ -1578,7 +1578,7 @@ pin_1.6.3_format
 			/* x, y, thickness, drilling hole, name, number, flags */
 		: T_PIN '(' measure measure measure measure STRING STRING INTEGER ')'
 			{
-				CreateNewPin(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
+				pcb_pin_new_in_element(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
 					OU ($5) + 2*MASKFRAME, OU ($6), $7, $8, pcb_flag_old($9));
 				free ($7);
 				free ($8);
@@ -1592,7 +1592,7 @@ pin_newformat
 				char	p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				CreateNewPin(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
+				pcb_pin_new_in_element(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
 					OU ($5) + 2*MASKFRAME, OU ($6), $7, p_number, pcb_flag_old($8));
 
 				free ($7);
@@ -1614,7 +1614,7 @@ pin_oldformat
 					hole = OU ($5) - MIN_PINORVIACOPPER;
 
 				sprintf(p_number, "%d", pin_num++);
-				CreateNewPin(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
+				pcb_pin_new_in_element(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
 					OU ($5) + 2*MASKFRAME, hole, $6, p_number, pcb_flag_old($7));
 				free ($6);
 			}

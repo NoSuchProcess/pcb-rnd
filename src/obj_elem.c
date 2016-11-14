@@ -99,8 +99,8 @@ void pcb_element_free_fields(pcb_element_t * element)
 	}
 	END_LOOP;
 
-	list_map0(&element->Pin, pcb_pin_t, RemoveFreePin);
-	list_map0(&element->Pad, pcb_pad_t,   pcb_pad_free);
+	list_map0(&element->Pin,  pcb_pin_t,  pcb_pin_free);
+	list_map0(&element->Pad,  pcb_pad_t,  pcb_pad_free);
 	list_map0(&element->Line, pcb_line_t, pcb_line_free);
 	list_map0(&element->Arc,  pcb_arc_t,  pcb_arc_free);
 
@@ -201,7 +201,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin))
 			pcb_flag_add(f, PCB_FLAG_HOLE);
 
-		CreateNewVia(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
+		pcb_via_new_on_board(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
 	}
 	END_LOOP;
 	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? solder_silk_layer : component_silk_layer);
@@ -276,12 +276,12 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 		if (via->Mask < via->Thickness)
 			via->Mask = via->Thickness + 2 * MASKFRAME;
 		if (via->Name)
-			CreateNewPin(Element, via->X, via->Y, via->Thickness,
+			pcb_pin_new_in_element(Element, via->X, via->Y, via->Thickness,
 									 via->Clearance, via->Mask, via->DrillingHole,
 									 NULL, via->Name, pcb_flag_mask(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
 		else {
 			sprintf(num, "%d", pin_n++);
-			CreateNewPin(Element, via->X, via->Y, via->Thickness,
+			pcb_pin_new_in_element(Element, via->X, via->Y, via->Thickness,
 									 via->Clearance, via->Mask, via->DrillingHole,
 									 NULL, num, pcb_flag_mask(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
 		}
@@ -421,7 +421,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coo
 			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
 		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		free_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
-		SetPinBoundingBox(pin);
+		pcb_pin_bbox(pin);
 	}
 	END_LOOP;
 	PAD_LOOP(Element);
@@ -534,7 +534,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	END_LOOP;
 	PIN_LOOP(Src);
 	{
-		CreateNewPin(Dest, pin->X + dx, pin->Y + dy, pin->Thickness,
+		pcb_pin_new_in_element(Dest, pin->X + dx, pin->Y + dy, pin->Thickness,
 								 pin->Clearance, pin->Mask, pin->DrillingHole, pin->Name, pin->Number, pcb_flag_mask(pin->Flags, PCB_FLAG_FOUND));
 	}
 	END_LOOP;
@@ -769,7 +769,7 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 	{
 		if (Data && Data->pin_tree)
 			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
-		SetPinBoundingBox(pin);
+		pcb_pin_bbox(pin);
 		if (Data) {
 			if (!Data->pin_tree)
 				Data->pin_tree = r_create_tree(NULL, 0, 0);

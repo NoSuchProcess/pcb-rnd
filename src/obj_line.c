@@ -469,7 +469,7 @@ static pcb_r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 	pcb_pin_t *via;
 
 	if ((via =
-			 CreateNewVia(PCB->Data, i->X, i->Y,
+			 pcb_via_new_on_board(PCB->Data, i->X, i->Y,
 										conf_core.design.via_thickness, 2 * conf_core.design.clearance, PCB_FLAG_NO, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 		AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 		DrawVia(via);

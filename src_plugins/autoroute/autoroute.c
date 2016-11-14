@@ -2858,7 +2858,7 @@ static void RD_DrawVia(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	pcb_pin_t *live_via = NULL;
 
 	if (conf_core.editor.live_routing) {
-		live_via = CreateNewVia(PCB->Data, X, Y, radius * 2,
+		live_via = pcb_via_new_on_board(PCB->Data, X, Y, radius * 2,
 														2 * AutoRouteParameters.style->Clearance, 0, AutoRouteParameters.style->Hole, NULL, pcb_flag_make(0));
 		if (live_via != NULL)
 			DrawVia(live_via);
@@ -4489,7 +4489,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 						assert(b.X1 + radius == b.X2 - radius);
 						assert(b.Y1 + radius == b.Y2 - radius);
 						pp->parent.via =
-							CreateNewVia(PCB->Data, b.X1 + radius,
+							pcb_via_new_on_board(PCB->Data, b.X1 + radius,
 													 b.Y1 + radius,
 													 pp->style->Diameter, 2 * pp->style->Clearance, 0, pp->style->Hole, NULL, pcb_flag_make(PCB_FLAG_AUTO));
 						assert(pp->parent.via);

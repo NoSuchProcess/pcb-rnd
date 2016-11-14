@@ -191,7 +191,7 @@ void pcb_data_free(pcb_data_t * data)
 		free(via->Name);
 	}
 	END_LOOP;
-	list_map0(&data->Via, pcb_pin_t, RemoveFreeVia);
+	list_map0(&data->Via, pcb_pin_t, pcb_via_free);
 	ELEMENT_LOOP(data);
 	{
 		pcb_element_free_fields(element);

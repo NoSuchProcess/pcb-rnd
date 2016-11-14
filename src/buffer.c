@@ -229,7 +229,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	{
 		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
 		ROTATE_VIA_LOWLEVEL(via, Buffer->X, Buffer->Y, Number);
-		SetPinBoundingBox(via);
+		pcb_pin_bbox(via);
 		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
 	END_LOOP;
@@ -288,7 +288,7 @@ void Freepcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	{
 		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
 		free_rotate(&via->X, &via->Y, Buffer->X, Buffer->Y, cosa, sina);
-		SetPinBoundingBox(via);
+		pcb_pin_bbox(via);
 		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
 	END_LOOP;
@@ -478,7 +478,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
 		via->X = PCB_SWAP_X(via->X);
 		via->Y = PCB_SWAP_Y(via->Y);
-		SetPinBoundingBox(via);
+		pcb_pin_bbox(via);
 		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
 	END_LOOP;
