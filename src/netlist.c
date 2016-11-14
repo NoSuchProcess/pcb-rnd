@@ -255,7 +255,7 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net)
 /* ---------------------------------------------------------------------------
  * get next slot for a subnet, allocates memory if necessary
  */
-pcb_net_t *GetNetMemory(pcb_netlist_t *Netlist)
+pcb_net_t *pcb_net_new(pcb_netlist_t *Netlist)
 {
 	pcb_net_t *net = Netlist->Net;
 
@@ -272,7 +272,7 @@ pcb_net_t *GetNetMemory(pcb_netlist_t *Netlist)
 /* ---------------------------------------------------------------------------
  * get next slot for a net list, allocates memory if necessary
  */
-pcb_netlist_t *GetNetListMemory(pcb_netlist_list_t *Netlistlist)
+pcb_netlist_t *pcb_netlist_new(pcb_netlist_list_t *Netlistlist)
 {
 	pcb_netlist_t *netlist = Netlistlist->NetList;
 
@@ -289,12 +289,12 @@ pcb_netlist_t *GetNetListMemory(pcb_netlist_list_t *Netlistlist)
 /* ---------------------------------------------------------------------------
  * frees memory used by a net
  */
-void FreeNetListMemory(pcb_netlist_t *Netlist)
+void pcb_netlist_free(pcb_netlist_t *Netlist)
 {
 	if (Netlist) {
 		NET_LOOP(Netlist);
 		{
-			FreeNetMemory(net);
+			pcb_net_free(net);
 		}
 		END_LOOP;
 		free(Netlist->Net);
@@ -305,12 +305,12 @@ void FreeNetListMemory(pcb_netlist_t *Netlist)
 /* ---------------------------------------------------------------------------
  * frees memory used by a net list
  */
-void FreeNetListListMemory(pcb_netlist_list_t *Netlistlist)
+void pcb_netlist_list_free(pcb_netlist_list_t *Netlistlist)
 {
 	if (Netlistlist) {
 		NETLIST_LOOP(Netlistlist);
 		{
-			FreeNetListMemory(netlist);
+			pcb_netlist_free(netlist);
 		}
 		END_LOOP;
 		free(Netlistlist->NetList);
@@ -321,7 +321,7 @@ void FreeNetListListMemory(pcb_netlist_list_t *Netlistlist)
 /* ---------------------------------------------------------------------------
  * frees memory used by a subnet
  */
-void FreeNetMemory(pcb_net_t *Net)
+void pcb_net_free(pcb_net_t *Net)
 {
 	if (Net) {
 		free(Net->Connection);

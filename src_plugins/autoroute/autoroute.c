@@ -1030,7 +1030,7 @@ static routedata_t *CreateRouteData()
 		END_LOOP;
 		rd->first_net = last_net;
 	}
-	FreeNetListListMemory(&Nets);
+	pcb_netlist_list_free(&Nets);
 
 	/* reset all nets to "original" connectivity (which we just set) */
 	{

@@ -193,7 +193,7 @@ pcb_netlist_t *ProcNetlist(pcb_lib_t *net_menu)
 
 	if (!net_menu->MenuN)
 		return (NULL);
-	FreeNetListMemory(Wantlist);
+	pcb_netlist_free(Wantlist);
 	free(Wantlist);
 	badnet = pcb_false;
 
@@ -221,7 +221,7 @@ pcb_netlist_t *ProcNetlist(pcb_lib_t *net_menu)
 				badnet = pcb_true;
 				continue;
 			}
-			net = GetNetMemory(Wantlist);
+			net = pcb_net_new(Wantlist);
 			if (menu->Style) {
 				int idx = pcb_route_style_lookup(&PCB->RouteStyle, 0, 0, 0, 0, menu->Style);
 				if (idx >= 0)
@@ -302,7 +302,7 @@ static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *De
 	END_LOOP;
 	DestNet->Style = SourceNet->Style;
 	/* free the connection memory */
-	FreeNetMemory(SourceNet);
+	pcb_net_free(SourceNet);
 	/* remove SourceNet from its netlist */
 	*SourceNet = Netl->Net[--(Netl->NetN)];
 	/* zero out old garbage */
@@ -628,7 +628,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 
 	/* presently nothing to do with the new subnet */
 	/* so we throw it away and free the space */
-	FreeNetMemory(&Netl->Net[--(Netl->NetN)]);
+	pcb_net_free(&Netl->Net[--(Netl->NetN)]);
 	/* Sadly adding a rat line messes up the sorted arrays in connection finder */
 	/* hace: perhaps not necessarily now that they aren't stored in normal layers */
 	if (changed) {
@@ -684,7 +684,7 @@ AddAllRats(pcb_bool SelectedOnly,
 		CONNECTION_LOOP(net);
 		{
 			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->ptr2)) {
-				lonesome = GetNetMemory(Nets);
+				lonesome = pcb_net_new(Nets);
 				onepin = GetConnectionMemory(lonesome);
 				*onepin = *connection;
 				lonesome->Style = net->Style;
@@ -696,7 +696,7 @@ AddAllRats(pcb_bool SelectedOnly,
 			changed |= DrawShortestRats(Nets, funcp);
 	}
 	END_LOOP;
-	FreeNetListMemory(Nets);
+	pcb_netlist_free(Nets);
 	free(Nets);
 	pcb_conn_lookup_uninit();
 	pcb_restore_find_flag();
@@ -765,11 +765,11 @@ pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
 	 */
 	NET_LOOP(Wantlist);
 	{
-		Nets = GetNetListMemory(&result);
+		Nets = pcb_netlist_new(&result);
 		CONNECTION_LOOP(net);
 		{
 			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->ptr2)) {
-				lonesome = GetNetMemory(Nets);
+				lonesome = pcb_net_new(Nets);
 				onepin = GetConnectionMemory(lonesome);
 				*onepin = *connection;
 				lonesome->Style = net->Style;

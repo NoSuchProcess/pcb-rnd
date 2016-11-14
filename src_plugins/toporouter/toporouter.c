@@ -2779,7 +2779,7 @@ void import_clusters(toporouter_t * r)
 		}
 	}
 	END_LOOP;
-	FreeNetListListMemory(&nets);
+	pcb_netlist_list_free(&nets);
 }
 
 void import_geometry(toporouter_t * r)

@@ -87,11 +87,11 @@ pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net);
 
 #define PCB_NETLIST_INVALID_INDEX ((pcb_cardinal_t)(-1))
 
-pcb_net_t *GetNetMemory(pcb_netlist_t *);
-pcb_netlist_t *GetNetListMemory(pcb_netlist_list_t *);
-void FreeNetListListMemory(pcb_netlist_list_t *);
-void FreeNetListMemory(pcb_netlist_t *);
-void FreeNetMemory(pcb_net_t *);
+pcb_net_t *pcb_net_new(pcb_netlist_t *);
+pcb_netlist_t *pcb_netlist_new(pcb_netlist_list_t *);
+void pcb_netlist_list_free(pcb_netlist_list_t *);
+void pcb_netlist_free(pcb_netlist_t *);
+void pcb_net_free(pcb_net_t *);
 
 #define NETLIST_LOOP(top) do   {                         \
         pcb_cardinal_t        n;                                      \

@@ -470,3 +470,8 @@ MoveObject -> pcb_move_obj
 MoveObjectToLayer -> pcb_move_obj_to_layer
 MoveObjectAndRubberband -> pcb_move_obj_and_rubberband
 MoveSelectedObjectsToLayer -> pcb_move_selected_objs_to_layer
+GetNetMemory -> pcb_net_new
+GetNetListMemory -> pcb_netlist_new
+FreeNetListListMemory -> pcb_netlist_list_free
+FreeNetListMemory -> pcb_netlist_free
+FreeNetMemory -> pcb_net_free
