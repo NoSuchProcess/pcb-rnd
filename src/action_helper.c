@@ -796,7 +796,7 @@ void pcb_notify_mode(void)
 			if ((Crosshair.AttachedLine.Point1.X !=
 					 Crosshair.AttachedLine.Point2.X || Crosshair.AttachedLine.Point1.Y != Crosshair.AttachedLine.Point2.Y)
 					&& (line =
-							CreateDrawnLineOnLayer(CURRENT,
+							pcb_line_new_on_layer_merge(CURRENT,
 																		 Crosshair.AttachedLine.Point1.X,
 																		 Crosshair.AttachedLine.Point1.Y,
 																		 Crosshair.AttachedLine.Point2.X,
@@ -837,7 +837,7 @@ void pcb_notify_mode(void)
 			}
 			if (conf_core.editor.line_refraction && (Note.X != Crosshair.AttachedLine.Point2.X || Note.Y != Crosshair.AttachedLine.Point2.Y)
 					&& (line =
-							CreateDrawnLineOnLayer(CURRENT,
+							pcb_line_new_on_layer_merge(CURRENT,
 																		 Crosshair.AttachedLine.Point2.X,
 																		 Crosshair.AttachedLine.Point2.Y,
 																		 Note.X, Note.Y,

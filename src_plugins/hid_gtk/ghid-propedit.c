@@ -335,7 +335,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(20), "", pcb_no_flags());
 
-	CreateNewLineOnLayer(preview_pcb.Data->Layer+0,
+	pcb_line_new_on_layer(preview_pcb.Data->Layer+0,
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1300),
 		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));

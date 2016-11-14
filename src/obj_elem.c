@@ -101,7 +101,7 @@ void pcb_element_free_fields(pcb_element_t * element)
 
 	list_map0(&element->Pin, pcb_pin_t, RemoveFreePin);
 	list_map0(&element->Pad, pcb_pad_t, RemoveFreePad);
-	list_map0(&element->Line, pcb_line_t, RemoveFreeLine);
+	list_map0(&element->Line, pcb_line_t, pcb_line_free);
 	list_map0(&element->Arc,  pcb_arc_t,  pcb_arc_free);
 
 	pcb_attribute_free(&element->Attributes);
@@ -182,7 +182,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	pcb_buffer_clear(Buffer);
 	ELEMENTLINE_LOOP(element);
 	{
-		CreateNewLineOnLayer(&Buffer->Data->SILKLAYER,
+		pcb_line_new_on_layer(&Buffer->Data->SILKLAYER,
 												 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0, pcb_no_flags());
 		if (line)
 			line->Number = pcb_strdup_null(NAMEONPCB_NAME(element));
@@ -211,7 +211,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	PAD_LOOP(element);
 	{
 		pcb_line_t *line;
-		line = CreateNewLineOnLayer(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? slayer : clayer,
+		line = pcb_line_new_on_layer(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? slayer : clayer,
 																pad->Point1.X, pad->Point1.Y,
 																pad->Point2.X, pad->Point2.Y, pad->Thickness, pad->Clearance, pcb_no_flags());
 		if (line)

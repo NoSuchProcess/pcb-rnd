@@ -341,7 +341,7 @@ static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int n
 	pcb_line_t *line;
 
 	if (ly != NULL)
-		line = GetLineMemory(ly);
+		line = pcb_line_new(ly);
 	else if (el != NULL)
 		line = pcb_element_line_new(el);
 	else

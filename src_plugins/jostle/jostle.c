@@ -273,7 +273,7 @@ static pcb_line_t *Createpcb_vector_tLineOnLayer(pcb_layer_t * layer, pcb_vector
 {
 	pcb_line_t *line;
 
-	line = CreateNewLineOnLayer(layer, a[0], a[1], b[0], b[1], thickness, clearance, flags);
+	line = pcb_line_new_on_layer(layer, a[0], a[1], b[0], b[1], thickness, clearance, flags);
 	if (line) {
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, layer, line, line);
 	}

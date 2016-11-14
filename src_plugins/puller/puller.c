@@ -1625,7 +1625,7 @@ static pcb_line_t *create_line(pcb_line_t *sample, int x1, int y1, int x2, int y
 	Extra *e;
 	pcb_printf("create_line from %#mD to %#mD\n", x1, y1, x2, y2);
 #endif
-	pcb_line_t *line = CreateNewLineOnLayer(CURRENT, x1, y1, x2, y2,
+	pcb_line_t *line = pcb_line_new_on_layer(CURRENT, x1, y1, x2, y2,
 																					sample->Thickness, sample->Clearance, sample->Flags);
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
 

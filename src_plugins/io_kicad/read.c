@@ -454,7 +454,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 	}
         required = BV(0) | BV(1) | BV(2) | BV(3);
         if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+		pcb_line_new_on_layer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		pcb_printf("\tnew gr_line on layer created\n");
 		return 0;
 	}
@@ -827,7 +827,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 	}
         required = BV(0) | BV(1) | BV(2) | BV(3);
         if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		CreateNewLineOnLayer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+		pcb_line_new_on_layer( &st->PCB->Data->Layer[PCBLayer], X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 		pcb_printf("\tnew segment on layer created\n");
 		return 0;
 	}

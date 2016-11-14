@@ -451,7 +451,7 @@ static pcb_line_t *create_pcb_line(int layer, int x1, int y1, int x2, int y2, in
 	pcb_layer_t *lyr = LAYER_PTR(layer);
 
 	from = (char *) linelist_first(&lyr->Line);
-	nl = CreateNewLineOnLayer(PCB->Data->Layer + layer, x1, y1, x2, y2, thick, clear, flags);
+	nl = pcb_line_new_on_layer(PCB->Data->Layer + layer, x1, y1, x2, y2, thick, clear, flags);
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, lyr, nl, nl);
 
 	to = (char *) linelist_first(&lyr->Line);
