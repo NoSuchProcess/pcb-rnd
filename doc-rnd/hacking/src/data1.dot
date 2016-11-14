@@ -1,35 +1,36 @@
 digraph pcb_data {
 	PCBType_misc [label="misc fields:\nID\nName\nFileName\ncolors\ndrc settings\ncursor coords\ngrid\nlayergroups\nroute styles\n..."]
 	PCBType_flags [label="flags:\nChanged\nViaOn (vias drawn?)\n..."]
-	PCBType -> PCBType_misc
-	PCBType -> PCBType_flags
-	PCBType -> DataType
-	PCBType [shape=box]
+	pcb_board_t -> PCBType_misc
+	pcb_board_t -> PCBType_flags
+	pcb_board_t -> pcb_data_t
+	pcb_board_t [shape=box]
 
-	PCB [label="extern PCBType PCB\nglobal variable\nholding the current\nboard" shape=diamond]
-	PCB -> PCBType
+	PCB [label="extern pcb_board_t PCB\nglobal variable\nholding the current\nboard" shape=diamond]
+	PCB -> pcb_board_t
 
-	Buffers [label="extern BufferType Buffers[]\nglobal variable holding\nall paste buffers" shape=diamond]
-	Buffers -> BufferType
+	Buffers [label="extern pcb_buffer_t Buffers[]\nglobal variable holding\nall paste buffers" shape=diamond]
+	Buffers -> pcb_buffer_t
 
 	BufferType_misc [label="misc fields:\nbounding box\noffset"]
-	BufferType -> BufferType_misc
-	BufferType -> DataType
-	BufferType [shape=box]
+	pcb_buffer_t -> BufferType_misc
+	pcb_buffer_t -> pcb_data_t
+	pcb_buffer_t [shape=box]
 
 	DataType_lists [label="layer-independent lists:\nrats\nvias\nelements"]
 	DataType_rtrees [label="layer-independent rtrees"]
 	DataType_LayerN [label="LayerN: number of\nlayers in use"]
 	DataType_layers [label="an array of layers"]
+	DataType_misc [label="misc fields"]
 
-	DataType -> DataType_misc
-	DataType -> DataType_LayerN
-	DataType -> DataType_layers
-	DataType -> DataType_lists
-	DataType -> DataType_rtrees
-	DataType [shape=box]
+	pcb_data_t -> DataType_misc
+	pcb_data_t -> DataType_LayerN
+	pcb_data_t -> DataType_layers
+	pcb_data_t -> DataType_lists
+	pcb_data_t -> DataType_rtrees
+	pcb_data_t [shape=box]
 
-	DataType_layers -> LayerType
+	DataType_layers -> pcb_layer_t
 
 
 	LayerType_lines [label="list and rtree of lines"]
@@ -38,10 +39,10 @@ digraph pcb_data {
 	LayerType_polygons [label="list and rtree of polygons"]
 	LayerType_misc [label="misc fields:\nflags\ncolors"]
 
-	LayerType -> LayerType_misc
-	LayerType -> LayerType_lines
-	LayerType -> LayerType_arcs
-	LayerType -> LayerType_texts
-	LayerType -> LayerType_polygons
-	LayerType [shape=box]
+	pcb_layer_t -> LayerType_misc
+	pcb_layer_t -> LayerType_lines
+	pcb_layer_t -> LayerType_arcs
+	pcb_layer_t -> LayerType_texts
+	pcb_layer_t -> LayerType_polygons
+	pcb_layer_t [shape=box]
 }
