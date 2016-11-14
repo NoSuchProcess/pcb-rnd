@@ -87,7 +87,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	MoveLayerToGroup(max_copper_layer + SOLDER_LAYER, 1);
 
 	while (PCB->Data->LayerN > 4)
-		MoveLayer(4, -1);
+		pcb_layer_move(4, -1);
 	for (l = 0; l < 4; l++) {
 		MoveLayerToGroup(l, l);
 	}

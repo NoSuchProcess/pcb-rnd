@@ -246,7 +246,7 @@ int MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	else
 		new_index = atoi(argv[1]);
 
-	if (MoveLayer(old_index, new_index))
+	if (pcb_layer_move(old_index, new_index))
 		return 1;
 
 	if (new_index == -1) {

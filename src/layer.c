@@ -922,7 +922,7 @@ pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name)
 	return (pcb_true);
 }
 
-int MoveLayer(int old_index, int new_index)
+int pcb_layer_move(int old_index, int new_index)
 {
 	int groups[MAX_LAYER + 2], l, g;
 	pcb_layer_t saved_layer;

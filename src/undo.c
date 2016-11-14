@@ -819,7 +819,7 @@ static pcb_bool UndoLayerChange(UndoListTypePtr Entry)
 	l->new_index = l->old_index;
 	l->old_index = tmp;
 
-	if (MoveLayer(l->old_index, l->new_index))
+	if (pcb_layer_move(l->old_index, l->new_index))
 		return pcb_false;
 	else
 		return pcb_true;

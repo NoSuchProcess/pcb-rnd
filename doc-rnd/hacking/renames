@@ -464,3 +464,4 @@ GetValueEx -> pcb_get_value_ex
 GetNum -> pcb_get_num
 Concat -> pcb_concat
 StripWhiteSpaceAndDup -> pcb_strdup_strip_wspace
+MoveLayer -> pcb_layer_move
