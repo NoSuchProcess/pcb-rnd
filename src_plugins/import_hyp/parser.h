@@ -18,11 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PARSE_H
-#define PARSE_H
+#ifndef PARSER_H
+#define PARSER_H
 
+#include <stdio.h>
 #include "pcb_bool.h"
-#include "stdio.h"
 
   /* 
    * Parameters passed on by the parser.

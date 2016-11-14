@@ -26,7 +26,9 @@
 
 %{
 #include <stdlib.h>
-#include <string.h>
+
+char *pcb_strdup(const char *s); /* from #include "compat_misc.h" */
+
 #include "hyp_y.h"
 
 /* copy a string between quotes */
@@ -301,7 +303,7 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
                      * NAME= }
                      */
 <STATE_STRING>{
-([A-Z][A-Z1-2_]*{WS}*"="|")"|"}")  { yyless(0); BEGIN INITIAL; hyylval.strval = strdup(""); return STRING; } /* emit empty string and reprocess */
+([A-Z][A-Z1-2_]*{WS}*"="|")"|"}")  { yyless(0); BEGIN INITIAL; hyylval.strval = pcb_strdup(""); return STRING; } /* emit empty string and reprocess */
 }
 
 <*>{
@@ -331,7 +333,7 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
                         else 
                         { 
                           BEGIN INITIAL; 
-                          hyylval.strval = strdup(hyytext); 
+                          hyylval.strval = pcb_strdup(hyytext); 
                           return STRING;
                         }
                       }
