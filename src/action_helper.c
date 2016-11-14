@@ -1167,7 +1167,7 @@ void pcb_notify_mode(void)
 									 Crosshair.AttachedObject.Ptr2,
 									 Crosshair.AttachedObject.Ptr3, Note.X - Crosshair.AttachedObject.X, Note.Y - Crosshair.AttachedObject.Y);
 			else {
-				MoveObjectAndRubberband(Crosshair.AttachedObject.Type,
+				pcb_move_obj_and_rubberband(Crosshair.AttachedObject.Type,
 																Crosshair.AttachedObject.Ptr1,
 																Crosshair.AttachedObject.Ptr2,
 																Crosshair.AttachedObject.Ptr3,

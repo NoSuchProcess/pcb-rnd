@@ -54,8 +54,8 @@ pcb_bool ChangePaste(pcb_pad_t *Pad);
  */
 #define	MOVE_PAD_LOWLEVEL(p,dx,dy)              \
 	{                                             \
-		MOVE((p)->Point1.X,(p)->Point1.Y,(dx),(dy)) \
-		MOVE((p)->Point2.X,(p)->Point2.Y,(dx),(dy)) \
+		PCB_MOVE((p)->Point1.X,(p)->Point1.Y,(dx),(dy)) \
+		PCB_MOVE((p)->Point2.X,(p)->Point2.Y,(dx),(dy)) \
 		SetPadBoundingBox ((p));                    \
 	}
 

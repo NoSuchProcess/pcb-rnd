@@ -415,7 +415,7 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 			EraseLine(Line);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		r_delete_entry(Layer->line_tree, &Line->BoundingBox);
-		MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
+		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 		SetLineBoundingBox(Line);
 		r_insert_entry(Layer->line_tree, &Line->BoundingBox, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
@@ -430,7 +430,7 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 		if (PCB->RatOn)
 			EraseRat((pcb_rat_t *) Line);
 		r_delete_entry(PCB->Data->rat_tree, &Line->BoundingBox);
-		MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
+		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 		SetLineBoundingBox(Line);
 		r_insert_entry(PCB->Data->rat_tree, &Line->BoundingBox, 0);
 		if (PCB->RatOn) {
@@ -589,7 +589,7 @@ void *RemoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 		r_search(Layer->line_tree, (const pcb_box_t *) Point, NULL, remove_point, &info, NULL);
 		return RemoveLine_op(ctx, Layer, Line);
 	}
-	MoveObject(PCB_TYPE_LINE_POINT, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);
+	pcb_move_obj(PCB_TYPE_LINE_POINT, Layer, info.line, info.point, other.X - Point->X, other.Y - Point->Y);
 	return (RemoveLine_op(ctx, Layer, Line));
 }
 

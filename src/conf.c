@@ -423,21 +423,21 @@ int conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, conf_p
 
 static void conf_insert_arr(conf_native_t *dest, int offs)
 {
-#define CASE_MOVE(typ, fld) \
+#define CASE_PCB_MOVE(typ, fld) \
 	case typ: memmove(dest->val.fld+offs, dest->val.fld, dest->used * sizeof(dest->val.fld[0])); return
 
 	memmove(dest->prop+offs, dest->prop, dest->used * sizeof(dest->prop[0]));
 	if (dest->used > 0) {
 		switch(dest->type) {
-			CASE_MOVE(CFN_STRING, string);
-			CASE_MOVE(CFN_BOOLEAN, boolean);
-			CASE_MOVE(CFN_INTEGER, integer);
-			CASE_MOVE(CFN_REAL, real);
-			CASE_MOVE(CFN_COORD, coord);
-			CASE_MOVE(CFN_UNIT, unit);
-			CASE_MOVE(CFN_COLOR, color);
-			CASE_MOVE(CFN_LIST, list);
-			CASE_MOVE(CFN_INCREMENTS, increments);
+			CASE_PCB_MOVE(CFN_STRING, string);
+			CASE_PCB_MOVE(CFN_BOOLEAN, boolean);
+			CASE_PCB_MOVE(CFN_INTEGER, integer);
+			CASE_PCB_MOVE(CFN_REAL, real);
+			CASE_PCB_MOVE(CFN_COORD, coord);
+			CASE_PCB_MOVE(CFN_UNIT, unit);
+			CASE_PCB_MOVE(CFN_COLOR, color);
+			CASE_PCB_MOVE(CFN_LIST, list);
+			CASE_PCB_MOVE(CFN_INCREMENTS, increments);
 		}
 	}
 #undef CASE_MOVE

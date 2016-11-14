@@ -679,7 +679,7 @@ static void move_line_to_layer(line_s * l, int layer)
 	ls = LAYER_PTR(l->layer);
 	ld = LAYER_PTR(layer);
 
-	MoveObjectToLayer(PCB_TYPE_LINE, ls, l->line, 0, ld, 0);
+	pcb_move_obj_to_layer(PCB_TYPE_LINE, ls, l->line, 0, ld, 0);
 	l->layer = layer;
 }
 
@@ -750,17 +750,17 @@ static void move_corner(corner_s * c, int x, int y)
 	c->y = y;
 	via = c->via;
 	if (via) {
-		MoveObject(PCB_TYPE_VIA, via, via, via, x - via->X, y - via->Y);
+		pcb_move_obj(PCB_TYPE_VIA, via, via, via, x - via->X, y - via->Y);
 		dprintf("via move %#mD to %#mD\n", via->X, via->Y, x, y);
 	}
 	for (i = 0; i < c->n_lines; i++) {
 		pcb_line_t *tl = c->lines[i]->line;
 		if (tl) {
 			if (c->lines[i]->s == c) {
-				MoveObject(PCB_TYPE_LINE_POINT, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point1, x - (tl->Point1.X), y - (tl->Point1.Y));
+				pcb_move_obj(PCB_TYPE_LINE_POINT, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point1, x - (tl->Point1.X), y - (tl->Point1.Y));
 			}
 			else {
-				MoveObject(PCB_TYPE_LINE_POINT, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point2, x - (tl->Point2.X), y - (tl->Point2.Y));
+				pcb_move_obj(PCB_TYPE_LINE_POINT, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point2, x - (tl->Point2.X), y - (tl->Point2.Y));
 			}
 			dprintf("Line %p moved to %#mD %#mD\n", (void *) tl, tl->Point1.X, tl->Point1.Y, tl->Point2.X, tl->Point2.Y);
 		}
@@ -852,7 +852,7 @@ static int split_line(line_s * l, corner_s * c)
 	add_line_to_corner(l, c);
 	add_line_to_corner(ls, c);
 
-	MoveObject(PCB_TYPE_LINE_POINT, LAYER_PTR(l->layer), l->line, &l->line->Point2,
+	pcb_move_obj(PCB_TYPE_LINE_POINT, LAYER_PTR(l->layer), l->line, &l->line->Point2,
 						 c->x - (l->line->Point2.X), c->y - (l->line->Point2.Y));
 
 	return 1;

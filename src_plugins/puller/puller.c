@@ -471,7 +471,7 @@ static int Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	x = the_arc->X - the_arc->Width * cos(d2r(arc_angle)) + 0.5;
 	y = the_arc->Y + the_arc->Height * sin(d2r(arc_angle)) + 0.5;
 
-	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
+	pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
 
 	gui->invalidate_all();
 	IncrementUndoSerialNumber();
@@ -1190,8 +1190,8 @@ static void reverse_line(pcb_line_t *line)
 	x = line->Point1.X;
 	y = line->Point1.Y;
 #if 1
-	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, line, &(line->Point1), line->Point2.X - line->Point1.X, line->Point2.Y - line->Point1.Y);
-	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, line, &(line->Point2), x - line->Point2.X, y - line->Point2.Y);
+	pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, line, &(line->Point1), line->Point2.X - line->Point1.X, line->Point2.Y - line->Point1.Y);
+	pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, line, &(line->Point2), x - line->Point2.X, y - line->Point2.Y);
 #else
 	/* In theory, we should be using the above so that undo works.  */
 	line->Point1.X = line->Point2.X;
@@ -1736,8 +1736,8 @@ static void mark_line_for_deletion(pcb_line_t *l)
 		fprintf(stderr, "double neg move?\n");
 		abort();
 	}
-	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, l, &(l->Point1), -1 - l->Point1.X, -1 - l->Point1.Y);
-	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, l, &(l->Point2), -1 - l->Point2.X, -1 - l->Point2.Y);
+	pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, l, &(l->Point1), -1 - l->Point1.X, -1 - l->Point1.Y);
+	pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, l, &(l->Point2), -1 - l->Point2.X, -1 - l->Point2.Y);
 #endif
 }
 
@@ -2019,11 +2019,11 @@ static void maybe_pull_1(pcb_line_t *line)
 
 		ChangeArcAngles(CURRENT, start_arc, start_arc->StartAngle, new_delta);
 		fix_arc_extra(start_arc, sarc_extra);
-		MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point1),
+		pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point1),
 							 sarc_extra->end.x - start_line->Point1.X, sarc_extra->end.y - start_line->Point1.Y);
 
 		if (del_arc) {
-			MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point1),
+			pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point1),
 								 sarc_extra->start.x - start_line->Point1.X, sarc_extra->start.y - start_line->Point1.Y);
 			mark_arc_for_deletion(start_arc);
 		}
@@ -2085,17 +2085,17 @@ static void maybe_pull_1(pcb_line_t *line)
 
 			ChangeArcAngles(CURRENT, end_arc, end_arc->StartAngle, new_delta);
 			fix_arc_extra(end_arc, earc_extra);
-			MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
+			pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
 								 earc_extra->end.x - start_line->Point2.X, earc_extra->end.y - start_line->Point2.Y);
 
 			if (del_arc) {
-				MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
+				pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
 									 earc_extra->start.x - start_line->Point2.X, earc_extra->start.y - start_line->Point2.Y);
 				mark_arc_for_deletion(end_arc);
 			}
 		}
 		else {
-			MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
+			pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
 								 end_line->Point2.X - start_line->Point2.X, end_line->Point2.Y - start_line->Point2.Y);
 		}
 		mark_line_for_deletion(end_line);
@@ -2129,7 +2129,7 @@ static void maybe_pull_1(pcb_line_t *line)
 #if TRACE1
 	pcb_printf("new point %#mS\n", ex, ey);
 #endif
-	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, end_line, &(end_line->Point1), ex - end_line->Point1.X, ey - end_line->Point1.Y);
+	pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, end_line, &(end_line->Point1), ex - end_line->Point1.X, ey - end_line->Point1.Y);
 
 	/* Step 4: Split start_line at the obstacle and insert a zero-delta
 	   arc at it.  */
@@ -2142,7 +2142,7 @@ static void maybe_pull_1(pcb_line_t *line)
 	if (end_arc)
 		earc_extra = ARC2EXTRA(end_arc);
 
-	MoveObject(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
+	pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
 						 new_aextra->start.x - start_line->Point2.X, new_aextra->start.y - start_line->Point2.Y);
 
 	new_line = create_line(start_line, new_aextra->end.x, new_aextra->end.y, ex, ey);

@@ -1042,7 +1042,7 @@ void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t D
 	END_LOOP;
 	PCB_BOX_MOVE_LOWLEVEL(&Element->BoundingBox, DX, DY);
 	PCB_BOX_MOVE_LOWLEVEL(&Element->VBox, DX, DY);
-	MOVE(Element->MarkX, Element->MarkY, DX, DY);
+	PCB_MOVE(Element->MarkX, Element->MarkY, DX, DY);
 	if (Data)
 		r_insert_entry(Data->element_tree, (pcb_box_t *) Element, 0);
 }

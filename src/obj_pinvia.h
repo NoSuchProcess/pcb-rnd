@@ -63,13 +63,13 @@ pcb_bool ChangeHole(pcb_pin_t *Via);
 
 #define	MOVE_VIA_LOWLEVEL(v,dx,dy) \
         { \
-	        MOVE((v)->X,(v)->Y,(dx),(dy)) \
+	        PCB_MOVE((v)->X,(v)->Y,(dx),(dy)) \
 		PCB_BOX_MOVE_LOWLEVEL(&((v)->BoundingBox),(dx),(dy));		\
 	}
 
 #define	MOVE_PIN_LOWLEVEL(p,dx,dy) \
 	{ \
-		MOVE((p)->X,(p)->Y,(dx),(dy)) \
+		PCB_MOVE((p)->X,(p)->Y,(dx),(dy)) \
 		PCB_BOX_MOVE_LOWLEVEL(&((p)->BoundingBox),(dx),(dy));		\
 	}
 

@@ -1281,7 +1281,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								 moduleName, moduleRefdes, moduleValue,
 								 moduleX, moduleY, direction,
 								 refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
-			MoveObject(PCB_TYPE_ELEMENT_NAME, newModule,  &newModule->Name[NAME_INDEX()],  &newModule->Name[NAME_INDEX()], X, Y);
+			pcb_move_obj(PCB_TYPE_ELEMENT_NAME, newModule,  &newModule->Name[NAME_INDEX()],  &newModule->Name[NAME_INDEX()], X, Y);
 		}
 	}
 

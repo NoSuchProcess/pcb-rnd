@@ -351,7 +351,7 @@ static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 /* --------------------------------------------------------------------------- */
 
-static const char moveobject_syntax[] = "MoveObject(X,Y,dim)";
+static const char moveobject_syntax[] = "pcb_move_obj(X,Y,dim)";
 
 static const char moveobject_help[] = "Moves the object under the crosshair.";
 
@@ -392,7 +392,7 @@ static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		LookupRubberbandLines(type, ptr1, ptr2, ptr3);
 	if (type == PCB_TYPE_ELEMENT)
 		LookupRatLines(type, ptr1, ptr2, ptr3);
-	MoveObjectAndRubberband(type, ptr1, ptr2, ptr3, nx, ny);
+	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx, ny);
 	SetChangedFlag(pcb_true);
 	return 0;
 }
@@ -423,14 +423,14 @@ static int ActionMoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, 
 
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
-					if (MoveObjectToLayer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
+					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
 						SetChangedFlag(pcb_true);
 				break;
 			}
 
 		case F_SelectedObjects:
 		case F_Selected:
-			if (MoveSelectedObjectsToLayer(CURRENT))
+			if (pcb_move_selected_objs_to_layer(CURRENT))
 				SetChangedFlag(pcb_true);
 			break;
 		}

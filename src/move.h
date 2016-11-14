@@ -34,7 +34,7 @@
 /* ---------------------------------------------------------------------------
  * some useful transformation macros and constants
  */
-#define	MOVE(xs,ys,deltax,deltay)							\
+#define	PCB_MOVE(xs,ys,deltax,deltay)							\
 	{														\
 		((xs) += (deltax));									\
 		((ys) += (deltay));									\
@@ -50,9 +50,9 @@
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-void *MoveObject(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
-void *MoveObjectToLayer(int, void *, void *, void *, pcb_layer_t *, pcb_bool);
-void *MoveObjectAndRubberband(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
-pcb_bool MoveSelectedObjectsToLayer(pcb_layer_t *);
+void *pcb_move_obj(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
+void *pcb_move_obj_to_layer(int, void *, void *, void *, pcb_layer_t *, pcb_bool);
+void *pcb_move_obj_and_rubberband(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
+pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *);
 
 #endif

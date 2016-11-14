@@ -382,7 +382,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				dy = 0;
 			else
 				dx = 0;
-			MoveObject(PCB_TYPE_ELEMENT_NAME, element, text, text, dx, dy);
+			pcb_move_obj(PCB_TYPE_ELEMENT_NAME, element, text, text, dx, dy);
 			changed = 1;
 		}
 	}
@@ -408,7 +408,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					dy = 0;
 				else
 					dx = 0;
-				MoveObject(PCB_TYPE_TEXT, layer, text, text, dx, dy);
+				pcb_move_obj(PCB_TYPE_TEXT, layer, text, text, dx, dy);
 				changed = 1;
 			}
 		}
@@ -589,7 +589,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			 * element is also PCB_TYPE_ELEMENT_NAME.  For undo, this is
 			 * significant in search.c: SearchObjectByID.
 			 *
-			 * MoveObject() is better as in aligntext(), but we
+			 * pcb_move_obj() is better as in aligntext(), but we
 			 * didn't keep the element reference when sorting.
 			 */
 			MOVE_TEXT_LOWLEVEL(text, dx, dy);

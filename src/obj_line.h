@@ -70,8 +70,8 @@ void EnforceLineDRC(void);
  */
 #define	MOVE_LINE_LOWLEVEL(l,dx,dy)							\
 	{									\
-		MOVE((l)->Point1.X,(l)->Point1.Y,(dx),(dy))			\
-		MOVE((l)->Point2.X,(l)->Point2.Y,(dx),(dy))			\
+		PCB_MOVE((l)->Point1.X,(l)->Point1.Y,(dx),(dy))			\
+		PCB_MOVE((l)->Point2.X,(l)->Point2.Y,(dx),(dy))			\
 		SetLineBoundingBox ((l)); \
 	}
 

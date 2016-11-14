@@ -61,7 +61,7 @@ void RotateArcLowLevel(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Nu
 
 #define	MOVE_ARC_LOWLEVEL(a,dx,dy) \
 	{ \
-		MOVE((a)->X,(a)->Y,(dx),(dy)) \
+		PCB_MOVE((a)->X,(a)->Y,(dx),(dy)) \
 		PCB_BOX_MOVE_LOWLEVEL(&((a)->BoundingBox),(dx),(dy));		\
 	}
 

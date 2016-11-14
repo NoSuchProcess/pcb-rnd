@@ -67,7 +67,7 @@ MoveLineToLayer, MoveTextToLayer, MovePolygonToLayer, NULL, NULL, NULL, NULL, NU
  * moves the object identified by its data pointers and the type
  * not we don't bump the undo serial number
  */
-void *MoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
+void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	void *result;
 	pcb_opctx_t ctx;
@@ -84,7 +84,7 @@ void *MoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, p
  * moves the object identified by its data pointers and the type
  * as well as all attached rubberband lines
  */
-void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
+void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	pcb_rubberband_t *ptr;
 	pcb_opctx_t ctx;
@@ -131,7 +131,7 @@ void *MoveObjectAndRubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
  * moves the object identified by its data pointers and the type
  * to a new layer without changing it's position
  */
-void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, pcb_bool enmasse)
+void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, pcb_bool enmasse)
 {
 	void *result;
 	pcb_opctx_t ctx;
@@ -149,7 +149,7 @@ void *MoveObjectToLayer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_
  * moves the selected objects to a new layer without changing their
  * positions
  */
-pcb_bool MoveSelectedObjectsToLayer(pcb_layer_t *Target)
+pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
 {
 	pcb_bool changed;
 	pcb_opctx_t ctx;

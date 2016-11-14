@@ -465,3 +465,8 @@ GetNum -> pcb_get_num
 Concat -> pcb_concat
 StripWhiteSpaceAndDup -> pcb_strdup_strip_wspace
 MoveLayer -> pcb_layer_move
+MOVE -> PCB_MOVE
+MoveObject -> pcb_move_obj
+MoveObjectToLayer -> pcb_move_obj_to_layer
+MoveObjectAndRubberband -> pcb_move_obj_and_rubberband
+MoveSelectedObjectsToLayer -> pcb_move_selected_objs_to_layer

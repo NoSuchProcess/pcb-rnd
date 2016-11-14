@@ -344,7 +344,7 @@ void MovePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 {
 	POLYGONPOINT_LOOP(Polygon);
 	{
-		MOVE(point->X, point->Y, DX, DY);
+		PCB_MOVE(point->X, point->Y, DX, DY);
 	}
 	END_LOOP;
 	PCB_BOX_MOVE_LOWLEVEL(&Polygon->BoundingBox, DX, DY);
@@ -374,7 +374,7 @@ void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 		ErasePolygon(Polygon);
 	}
 	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
-	MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
+	PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 	SetPolygonBoundingBox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	RemoveExcessPolygonPoints(Layer, Polygon);
