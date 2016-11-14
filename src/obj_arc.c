@@ -45,7 +45,7 @@
 #include "obj_arc_draw.h"
 
 
-pcb_arc_t *GetArcMemory(pcb_layer_t * layer)
+pcb_arc_t *pcb_arc_new(pcb_layer_t * layer)
 {
 	pcb_arc_t *new_obj;
 
@@ -55,7 +55,7 @@ pcb_arc_t *GetArcMemory(pcb_layer_t * layer)
 	return new_obj;
 }
 
-pcb_arc_t *GetElementArcMemory(pcb_element_t *Element)
+pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element)
 {
 	pcb_arc_t *arc = calloc(sizeof(pcb_arc_t), 1);
 
@@ -183,7 +183,7 @@ pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y
 			return (NULL);						/* prevent stacked arcs */
 	}
 	END_LOOP;
-	Arc = GetArcMemory(Layer);
+	Arc = pcb_arc_new(Layer);
 	if (!Arc)
 		return (Arc);
 
@@ -211,7 +211,7 @@ void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 
 
-void RemoveFreeArc(pcb_arc_t * data)
+void pcb_arc_free(pcb_arc_t * data)
 {
 	arclist_remove(data);
 	free(data);
@@ -493,7 +493,7 @@ void *DestroyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 
-	RemoveFreeArc(Arc);
+	pcb_arc_free(Arc);
 
 	return NULL;
 }

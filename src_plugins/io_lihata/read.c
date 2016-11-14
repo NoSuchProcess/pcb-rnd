@@ -409,9 +409,9 @@ static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_co
 	pcb_arc_t *arc;
 
 	if (ly != NULL)
-		arc = GetArcMemory(ly);
+		arc = pcb_arc_new(ly);
 	else if (el != NULL)
-		arc = GetElementArcMemory(el);
+		arc = pcb_element_arc_new(el);
 	else
 		return -1;
 

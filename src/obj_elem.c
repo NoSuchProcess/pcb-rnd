@@ -102,7 +102,7 @@ void FreeElementMemory(pcb_element_t * element)
 	list_map0(&element->Pin, pcb_pin_t, RemoveFreePin);
 	list_map0(&element->Pad, pcb_pad_t, RemoveFreePad);
 	list_map0(&element->Line, pcb_line_t, RemoveFreeLine);
-	list_map0(&element->Arc,  pcb_arc_t,  RemoveFreeArc);
+	list_map0(&element->Arc,  pcb_arc_t,  pcb_arc_free);
 
 	pcb_attribute_free(&element->Attributes);
 	reset_obj_mem(pcb_element_t, element);
@@ -598,7 +598,7 @@ pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
 pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y,
 	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness)
 {
-	pcb_arc_t *arc = GetElementArcMemory(Element);
+	pcb_arc_t *arc = pcb_element_arc_new(Element);
 
 	/* set Delta (0,360], StartAngle in [0,360) */
 	if (delta < 0) {
