@@ -55,9 +55,4 @@ void *MoveObjectToLayer(int, void *, void *, void *, pcb_layer_t *, pcb_bool);
 void *MoveObjectAndRubberband(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
 pcb_bool MoveSelectedObjectsToLayer(pcb_layer_t *);
 
-/* index is 0..MAX_LAYER-1.  If old_index is -1, a new layer is
-   inserted at that index.  If new_index is -1, the specified layer is
-   deleted.  Returns non-zero on error, zero if OK.  */
-int MoveLayer(int old_index, int new_index);
-
 #endif

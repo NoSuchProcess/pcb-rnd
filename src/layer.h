@@ -225,4 +225,9 @@ void pcb_layers_finalize();
 /* changes the name of a layer; memory has to be already allocated */
 pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name);
 
+/* index is 0..MAX_LAYER-1.  If old_index is -1, a new layer is
+   inserted at that index.  If new_index is -1, the specified layer is
+   deleted.  Returns non-zero on error, zero if OK.  */
+int MoveLayer(int old_index, int new_index);
+
 #endif
