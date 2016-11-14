@@ -100,7 +100,7 @@ void pcb_element_free_fields(pcb_element_t * element)
 	END_LOOP;
 
 	list_map0(&element->Pin, pcb_pin_t, RemoveFreePin);
-	list_map0(&element->Pad, pcb_pad_t, RemoveFreePad);
+	list_map0(&element->Pad, pcb_pad_t,   pcb_pad_free);
 	list_map0(&element->Line, pcb_line_t, pcb_line_free);
 	list_map0(&element->Arc,  pcb_arc_t,  pcb_arc_free);
 
@@ -320,7 +320,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 			LINE_LOOP(layer);
 			{
 				sprintf(num, "%d", pin_n++);
-				CreateNewPad(Element, line->Point1.X,
+				pcb_pad_new_in_element(Element, line->Point1.X,
 										 line->Point1.Y, line->Point2.X,
 										 line->Point2.Y, line->Thickness,
 										 line->Clearance,
@@ -347,7 +347,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 				y2 = y1 + (h - t);
 
 				sprintf(num, "%d", pin_n++);
-				CreateNewPad(Element,
+				pcb_pad_new_in_element(Element,
 										 x1, y1, x2, y2, t,
 										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, pcb_flag_make(PCB_FLAG_SQUARE | onsolderflag));
 				MAYBE_WARN();
@@ -540,7 +540,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	END_LOOP;
 	PAD_LOOP(Src);
 	{
-		CreateNewPad(Dest, pad->Point1.X + dx, pad->Point1.Y + dy,
+		pcb_pad_new_in_element(Dest, pad->Point1.X + dx, pad->Point1.Y + dy,
 								 pad->Point2.X + dx, pad->Point2.Y + dy, pad->Thickness,
 								 pad->Clearance, pad->Mask, pad->Name, pad->Number, pcb_flag_mask(pad->Flags, PCB_FLAG_FOUND));
 	}
@@ -789,7 +789,7 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 	{
 		if (Data && Data->pad_tree)
 			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
-		SetPadBoundingBox(pad);
+		pcb_pad_bbox(pad);
 		if (Data) {
 			if (!Data->pad_tree)
 				Data->pad_tree = r_create_tree(NULL, 0, 0);

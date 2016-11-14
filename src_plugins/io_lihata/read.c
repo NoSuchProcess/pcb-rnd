@@ -619,7 +619,7 @@ static int parse_pad(pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coo
 {
 	pcb_pad_t *pad;
 
-	pad = GetPadMemory(el);
+	pad = pcb_pad_new(el);
 
 	parse_id(&pad->ID, obj, 4);
 	parse_attributes(&pad->Attributes, lht_dom_hash_get(obj, "attributes"));

@@ -41,11 +41,11 @@ struct pcb_pad_s {                  /* a SMD pad */
 };
 
 
-pcb_pad_t *GetPadMemory(pcb_element_t * element);
-void RemoveFreePad(pcb_pad_t * data);
+pcb_pad_t *pcb_pad_new(pcb_element_t * element);
+void pcb_pad_free(pcb_pad_t * data);
 
-pcb_pad_t *CreateNewPad(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, char *Name, char *Number, pcb_flag_t Flags);
-void SetPadBoundingBox(pcb_pad_t *Pad);
+pcb_pad_t *pcb_pad_new_in_element(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, char *Name, char *Number, pcb_flag_t Flags);
+void pcb_pad_bbox(pcb_pad_t *Pad);
 pcb_bool ChangePaste(pcb_pad_t *Pad);
 
 
@@ -56,7 +56,7 @@ pcb_bool ChangePaste(pcb_pad_t *Pad);
 	{                                             \
 		PCB_MOVE((p)->Point1.X,(p)->Point1.Y,(dx),(dy)) \
 		PCB_MOVE((p)->Point2.X,(p)->Point2.Y,(dx),(dy)) \
-		SetPadBoundingBox ((p));                    \
+		pcb_pad_bbox((p));                    \
 	}
 
 #define PAD_LOOP(element) do {                                      \

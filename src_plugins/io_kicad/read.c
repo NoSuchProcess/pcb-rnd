@@ -1496,7 +1496,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						} else {
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 						}
-						CreateNewPad(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
+						pcb_pad_new_in_element(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
 								Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
 					} else {
 						return -1;
