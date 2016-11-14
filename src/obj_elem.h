@@ -49,10 +49,10 @@ struct pcb_element_s {
 	gdl_elem_t link;
 };
 
-pcb_element_t *GetElementMemory(pcb_data_t * data);
-void RemoveFreeElement(pcb_element_t * data);
-void FreeElementMemory(pcb_element_t * element);
-pcb_line_t *GetElementLineMemory(pcb_element_t *Element);
+pcb_element_t *pcb_element_new(pcb_data_t * data);
+void pcb_element_free(pcb_element_t * data);
+void pcb_element_free_fields(pcb_element_t * element);
+pcb_line_t *pcb_element_line_new(pcb_element_t *Element);
 
 
 pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name);

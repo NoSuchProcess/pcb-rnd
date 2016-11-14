@@ -480,3 +480,7 @@ NET_LOOP -> PCB_NET_LOOP
 GetArcMemory -> pcb_arc_new
 GetElementArcMemory -> pcb_element_arc_new
 RemoveFreeArc -> pcb_arc_free
+GetElementMemory -> pcb_element_new
+RemoveFreeElement -> pcb_element_free
+FreeElementMemory -> pcb_element_free_fields
+GetElementLineMemory -> pcb_element_line_new

@@ -194,10 +194,10 @@ void pcb_data_free(pcb_data_t * data)
 	list_map0(&data->Via, pcb_pin_t, RemoveFreeVia);
 	ELEMENT_LOOP(data);
 	{
-		FreeElementMemory(element);
+		pcb_element_free_fields(element);
 	}
 	END_LOOP;
-	list_map0(&data->Element, pcb_element_t, RemoveFreeElement);
+	list_map0(&data->Element, pcb_element_t, pcb_element_free);
 	list_map0(&data->Rat, pcb_rat_t, RemoveFreeRat);
 
 	for (layer = data->Layer, i = 0; i < MAX_LAYER + 2; layer++, i++) {

@@ -343,7 +343,7 @@ static int parse_line(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, int n
 	if (ly != NULL)
 		line = GetLineMemory(ly);
 	else if (el != NULL)
-		line = GetElementLineMemory(el);
+		line = pcb_element_line_new(el);
 	else
 		return -1;
 
@@ -650,7 +650,7 @@ static int parse_pad(pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coo
 
 static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 {
-	pcb_element_t *elem = GetElementMemory(dt);
+	pcb_element_t *elem = pcb_element_new(dt);
 	lht_node_t *lst, *n;
 	lht_dom_iterator_t it;
 	int onsld;
