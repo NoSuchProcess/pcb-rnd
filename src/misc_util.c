@@ -37,20 +37,20 @@
 #include "misc_util.h"
 #include "unit.h"
 
-/* Distance() should be used so that there is only one
+/* pcb_distance() should be used so that there is only one
  *  place to deal with overflow/precision errors
  */
-double Distance(double x1, double y1, double x2, double y2)
+double pcb_distance(double x1, double y1, double x2, double y2)
 {
 	double delta_x = (x2 - x1);
 	double delta_y = (y2 - y1);
 	return sqrt(delta_x * delta_x + delta_y * delta_y);
 }
 
-/* Distance2() should be used so that there is only one
+/* pcb_distance2() should be used so that there is only one
  *  place to deal with overflow/precision errors
  */
-double Distance2(double x1, double y1, double x2, double y2)
+double pcb_distance2(double x1, double y1, double x2, double y2)
 {
 	double delta_x = (x2 - x1);
 	double delta_y = (y2 - y1);
@@ -60,12 +60,12 @@ double Distance2(double x1, double y1, double x2, double y2)
 /* Get Value returns a numeric value passed from the string and sets the
  * pcb_bool variable absolute to false if it leads with a +/- character
  */
-double GetValue(const char *val, const char *units, pcb_bool * absolute, pcb_bool *success)
+double pcb_get_value(const char *val, const char *units, pcb_bool * absolute, pcb_bool *success)
 {
-	return GetValueEx(val, units, absolute, NULL, "cmil", success);
+	return pcb_get_value_ex(val, units, absolute, NULL, "cmil", success);
 }
 
-double GetValueEx(const char *val, const char *units, pcb_bool * absolute, pcb_unit_list_t extra_units, const char *default_unit, pcb_bool *success)
+double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute, pcb_unit_list_t extra_units, const char *default_unit, pcb_bool *success)
 {
 	double value;
 	int n = -1;
@@ -149,7 +149,7 @@ double GetValueEx(const char *val, const char *units, pcb_bool * absolute, pcb_u
 	return 0;
 }
 
-char *Concat(const char *first, ...)
+char *pcb_concat(const char *first, ...)
 {
 	char *rv;
 	int len;
@@ -172,10 +172,10 @@ char *Concat(const char *first, ...)
 	return rv;
 }
 
-pcb_coord_t GetNum(char **s, const char *default_unit)
+pcb_coord_t pcb_get_num(char **s, const char *default_unit)
 {
 	/* Read value */
-	pcb_coord_t ret_val = GetValueEx(*s, NULL, NULL, NULL, default_unit, NULL);
+	pcb_coord_t ret_val = pcb_get_value_ex(*s, NULL, NULL, NULL, default_unit, NULL);
 	/* Advance pointer */
 	while (isalnum(**s) || **s == '.')
 		(*s)++;
@@ -187,7 +187,7 @@ pcb_coord_t GetNum(char **s, const char *default_unit)
  * returns a pointer to the new 'duped' one or NULL if the old one
  * holds only white space characters
  */
-char *StripWhiteSpaceAndDup(const char *S)
+char *pcb_strdup_strip_wspace(const char *S)
 {
 	const char *p1, *p2;
 	char *copy;

@@ -94,7 +94,7 @@ static int ActionChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb
 			value *= 2;
 		}
 		else
-			value = 2 * GetValue(delta, units, &absolute, NULL);
+			value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
@@ -404,7 +404,7 @@ static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			tostyle = 1;
 		}
 		else
-			value = GetValue(delta, units, &absolute, NULL);
+			value = pcb_get_value(delta, units, &absolute, NULL);
 		switch (funcid) {
 		case F_Object:
 			{
@@ -507,7 +507,7 @@ static int ActionChange2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_c
 			absolute = 1;
 		}
 		else
-			value = GetValue(delta, units, &absolute, NULL);
+			value = pcb_get_value(delta, units, &absolute, NULL);
 
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
@@ -1183,7 +1183,7 @@ static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if (function && *function && style && *style) {
 		pcb_bool absolute;
 
-		kind = GetValue(style, NULL, &absolute, NULL);
+		kind = pcb_get_value(style, NULL, &absolute, NULL);
 		if (absolute)
 			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
@@ -1317,7 +1317,7 @@ static int ActionSetValue(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	int err = 0;
 
 	if (function && val) {
-		value = GetValue(val, units, &absolute, NULL);
+		value = pcb_get_value(val, units, &absolute, NULL);
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_ViaDrillingHole:
 			SetViaDrillingHole(absolute ? value : value + conf_core.design.via_drilling_hole, pcb_false);
@@ -1470,7 +1470,7 @@ static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_co
 		if (funcid == F_Object)
 			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
-		value = GetValue(delta, units, &absolute, NULL);
+		value = pcb_get_value(delta, units, &absolute, NULL);
 
 		switch (funcid) {
 		case F_Object:

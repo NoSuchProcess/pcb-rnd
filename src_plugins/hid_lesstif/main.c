@@ -856,10 +856,10 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	else
 		PCB_AFAIL(cursor);
 
-	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "mil", NULL);
+	dx = pcb_get_value_ex(argv[1], argv[3], NULL, extra_units_x, "mil", NULL);
 	if (conf_core.editor.view.flip_x)
 		dx = -dx;
-	dy = GetValueEx(argv[2], argv[3], NULL, extra_units_y, "mil", NULL);
+	dy = pcb_get_value_ex(argv[2], argv[3], NULL, extra_units_y, "mil", NULL);
 	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
 
@@ -1902,7 +1902,7 @@ static Boolean
 pcb_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmValue * from, XrmValue * to, XtPointer * data)
 {
 	static pcb_coord_t rv;
-	rv = GetValue((char *) from->addr, NULL, NULL, NULL);
+	rv = pcb_get_value((char *) from->addr, NULL, NULL, NULL);
 	if (to->addr)
 		*(pcb_coord_t *) to->addr = rv;
 	else
@@ -2257,7 +2257,7 @@ static void mark_delta_to_widget(pcb_coord_t dx, pcb_coord_t dy, Widget w)
 		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS", UUNIT, prec, dx, prec, dy);
 	else {
 		pcb_angle_t angle = atan2(dy, -dx) * 180 / M_PI;
-		pcb_coord_t dist = Distance(0, 0, dx, dy);
+		pcb_coord_t dist = pcb_distance(0, 0, dx, dy);
 
 		buf = pcb_strdup_printf("%m+%+.*mS, %+.*mS (%.*mS, %.2f\260)", UUNIT, prec, dx, prec, dy, prec, dist, angle);
 	}

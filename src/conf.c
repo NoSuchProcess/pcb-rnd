@@ -255,7 +255,7 @@ static int conf_parse_increments(pcb_increments_t *inc, lht_node_t *node)
 	if (val != NULL) {\
 		if (val->type == LHT_TEXT) {\
 			pcb_bool succ; \
-			inc->field = GetValue(val->data.text.value, NULL, NULL, &succ); \
+			inc->field = pcb_get_value(val->data.text.value, NULL, NULL, &succ); \
 			if (!succ) \
 				pcb_hid_cfg_error(node, "invalid numeric value in increment field " #field ": %s\n", val->data.text.value); \
 		} \
@@ -378,7 +378,7 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 		case CFN_COORD:
 			{
 				pcb_bool succ;
-				dst->coord[idx] = GetValue(text, NULL, NULL, &succ);
+				dst->coord[idx] = pcb_get_value(text, NULL, NULL, &succ);
 				if (!succ)
 					pcb_hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);
 			}

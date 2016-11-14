@@ -242,13 +242,13 @@ static int scad_parse_coord_triplet(char *s, pcb_coord_t * ox, pcb_coord_t * oy,
 	while (sscanf(s, "%30s%n", val, &ln) >= 1) {
 		switch (n) {
 		case 0:
-			xx = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			xx = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 1:
-			yy = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			yy = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 2:
-			zz = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			zz = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		}
 		s = s + ln;
@@ -397,19 +397,19 @@ static void scad_export_bbox(pcb_element_t * element)
 	while (sscanf(s, "%30s%n", val, &ln) >= 1) {
 		switch (n) {
 		case 0:
-			w = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			w = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 1:
-			h = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			h = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 2:
-			t = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			t = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 3:
-			ox = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			ox = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 4:
-			oy = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			oy = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		}
 		s = s + ln;

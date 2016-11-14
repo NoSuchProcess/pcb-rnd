@@ -605,7 +605,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 	}
         required = BV(0) | BV(1) | BV(2) | BV(3); /* | BV(4); not needed for circles */
         if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		width = height = Distance(centreX, centreY, endX, endY); /* calculate radius of arc */
+		width = height = pcb_distance(centreX, centreY, endX, endY); /* calculate radius of arc */
 		if (width < 1) { /* degenerate case */
 			startAngle = 0;
 		} else {
@@ -1770,7 +1770,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
         required = BV(0) | BV(6) | BV(8);
         if (((featureTally & required) == required) && newModule != NULL) {
 		/* need start, layer, thickness at a minimum */
-		width = height = Distance(centreX, centreY, endX, endY); /* calculate radius of arc */
+		width = height = pcb_distance(centreX, centreY, endX, endY); /* calculate radius of arc */
 		if (width < 1) { /* degenerate case */
 			startAngle = 0;
 		} else {

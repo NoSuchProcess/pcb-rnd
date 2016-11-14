@@ -96,7 +96,7 @@ static int ex, ey;							/* fixed end of the line */
 
 static int within(int x1, int y1, int x2, int y2, int r)
 {
-	return Distance(x1, y1, x2, y2) <= r / 2;
+	return pcb_distance(x1, y1, x2, y2) <= r / 2;
 }
 
 static int arc_endpoint_is(pcb_arc_t *a, int angle, int x, int y)
@@ -128,7 +128,7 @@ static int arc_endpoint_is(pcb_arc_t *a, int angle, int x, int y)
 #if TRACE1
 	pcb_printf(" - arc endpoint %#mD\n", ax, ay);
 #endif
-	arc_dist = Distance(ax, ay, x, y);
+	arc_dist = pcb_distance(ax, ay, x, y);
 	if (arc_exact)
 		return arc_dist < 2;
 	return arc_dist < a->Thickness / 2;
@@ -244,7 +244,7 @@ static int intersection_of_linesegs(int x1, int y1, int x2, int y2, int x3, int 
 /* distance between a line and a point */
 static double dist_lp(int x1, int y1, int x2, int y2, int px, int py)
 {
-	double den = Distance(x1, y1, x2, y2);
+	double den = pcb_distance(x1, y1, x2, y2);
 	double rv = (fabs(((double) x2 - x1) * ((double) y1 - py)
 										- ((double) x1 - px) * ((double) y2 - y1))
 							 / den);
@@ -259,12 +259,12 @@ static double dist_lsp(int x1, int y1, int x2, int y2, int px, int py)
 {
 	double d;
 	if (dot2d(x1, y1, x2, y2, px, py) < 0)
-		return Distance(x1, y1, px, py);
+		return pcb_distance(x1, y1, px, py);
 	if (dot2d(x2, y2, x1, y1, px, py) < 0)
-		return Distance(x2, y2, px, py);
+		return pcb_distance(x2, y2, px, py);
 	d = (fabs(((double) x2 - x1) * ((double) y1 - py)
 						- ((double) x1 - px) * ((double) y2 - y1))
-			 / Distance(x1, y1, x2, y2));
+			 / pcb_distance(x1, y1, x2, y2));
 	return d;
 }
 
@@ -282,8 +282,8 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 #if TRACE1
 	pcb_printf("line %#mD .. %#mD\n", l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
 #endif
-	d1 = Distance(l->Point1.X, l->Point1.Y, x, y);
-	d2 = Distance(l->Point2.X, l->Point2.Y, x, y);
+	d1 = pcb_distance(l->Point1.X, l->Point1.Y, x, y);
+	d2 = pcb_distance(l->Point2.X, l->Point2.Y, x, y);
 	if ((d1 < 2 || d2 < 2) && !line_exact) {
 		line_exact = 1;
 		the_line = 0;
@@ -437,7 +437,7 @@ static int Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		arc_angle = the_arc->StartAngle + the_arc->Delta - 90;
 	base_angle = r2d(atan2(ey - cy, cx - ex));
 
-	tangent = r2d(acos(the_arc->Width / Distance(cx, cy, ex, ey)));
+	tangent = r2d(acos(the_arc->Width / pcb_distance(cx, cy, ex, ey)));
 
 #if TRACE1
 	line_angle = r2d(atan2(ey - y, x - ex));
@@ -737,7 +737,7 @@ static int check_point_in_pin(pcb_pin_t *pin, int x, int y, End * e)
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin))
 		inside_p = (x >= pin->X - t && x <= pin->X + t && y >= pin->Y - t && y <= pin->Y + t);
 	else
-		inside_p = (Distance(pin->X, pin->Y, x, y) <= t);
+		inside_p = (pcb_distance(pin->X, pin->Y, x, y) <= t);
 
 	if (inside_p) {
 		e->in_pin = 1;
@@ -819,7 +819,7 @@ static pcb_r_dir_t check_point_in_pad(pcb_pad_t *pad, int x, int y, End * e)
 									&& y >= pad->Point1.Y - t && y <= pad->Point1.Y + t);
 		}
 		if (!inside_p) {
-			if (Distance(pad->Point1.X, pad->Point1.Y, x, y) <= t || Distance(pad->Point2.X, pad->Point2.Y, x, y) <= t)
+			if (pcb_distance(pad->Point1.X, pad->Point1.Y, x, y) <= t || pcb_distance(pad->Point2.X, pad->Point2.Y, x, y) <= t)
 				inside_p = 1;
 		}
 	}
@@ -1291,7 +1291,7 @@ static int gp_point_force(int x, int y, int t, End * e, int esa, int eda, int fo
 	r = t + thickness;
 
 	/* See if the point is inside our start arc. */
-	d = Distance(scx, scy, x, y);
+	d = pcb_distance(scx, scy, x, y);
 #if TRACE1
 	pcb_printf("%f = dist #mD to %#mD\n", d, scx, scy, x, y);
 	pcb_printf("sr %#mS r %f d %f\n", sr, r, d);
@@ -1389,9 +1389,9 @@ static int gp_point_force(int x, int y, int t, End * e, int esa, int eda, int fo
 	printf("%f * %f < %f * %f ?\n", a, se_sign, best_angle, se_sign);
 #endif
 	if (a * se_sign == best_angle * se_sign) {
-		double old_d = Distance(start_line->Point1.X, start_line->Point1.Y,
+		double old_d = pcb_distance(start_line->Point1.X, start_line->Point1.Y,
 														fx, fy);
-		double new_d = Distance(start_line->Point1.X, start_line->Point1.Y,
+		double new_d = pcb_distance(start_line->Point1.X, start_line->Point1.Y,
 														x, y);
 		if (new_d > old_d) {
 			best_angle = a;
@@ -1921,7 +1921,7 @@ static void maybe_pull_1(pcb_line_t *line)
 		abort();
 	}
 
-	end_dist = Distance(end_line->Point1.X, end_line->Point1.Y, end_line->Point2.X, end_line->Point2.Y);
+	end_dist = pcb_distance(end_line->Point1.X, end_line->Point1.Y, end_line->Point2.X, end_line->Point2.Y);
 
 	start_pinpad = start_extra->start.pin;
 	end_pinpad = start_extra->end.pin;
@@ -2039,7 +2039,7 @@ static void maybe_pull_1(pcb_line_t *line)
 		pcb_printf("obstacle at %#mD angle %d = arc starts at %#mD\n", fx, fy, (int) r2d(oa), (int) ox, (int) oy);
 #endif
 
-		if (Distance(ox, oy, end_line->Point2.X, end_line->Point2.Y)
+		if (pcb_distance(ox, oy, end_line->Point2.X, end_line->Point2.Y)
 				< fr * SIN1D) {
 			/* Pretend it doesn't exist.  */
 			fx = ex;

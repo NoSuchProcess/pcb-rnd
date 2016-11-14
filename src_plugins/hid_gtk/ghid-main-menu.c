@@ -192,7 +192,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 				char *acc = NULL, *s;
 				if (n_keydesc != NULL)
 					acc = pcb_hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, -1, "\nhotkey: ");
-				s = Concat((tip == NULL ? "" : tip), "\nhotkey: ", (acc == NULL ? "" : acc), NULL);
+				s = pcb_concat((tip == NULL ? "" : tip), "\nhotkey: ", (acc == NULL ? "" : acc), NULL);
 				gtk_widget_set_tooltip_text(item, s);
 				free(s);
 			}

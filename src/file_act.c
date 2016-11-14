@@ -139,7 +139,7 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	else if (strcasecmp(function, "Netlist") == 0) {
 		if (PCB->Netlistname)
 			free(PCB->Netlistname);
-		PCB->Netlistname = StripWhiteSpaceAndDup(name);
+		PCB->Netlistname = pcb_strdup_strip_wspace(name);
 		{
 			int i;
 			for (i = 0; i < NUM_NETLISTS; i++)

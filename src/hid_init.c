@@ -49,7 +49,7 @@ static void hid_load_dir(char *dirname)
 			basename[strlen(basename) - 3] = 0;
 		else if (strlen(basename) > 4 && strcasecmp(basename + strlen(basename) - 4, ".dll") == 0)
 			basename[strlen(basename) - 4] = 0;
-		path = Concat(dirname, PCB_DIR_SEPARATOR_S, de->d_name, NULL);
+		path = pcb_concat(dirname, PCB_DIR_SEPARATOR_S, de->d_name, NULL);
 
 		if (stat(path, &st) == 0 && (
 /* mingw and win32 do not support S_IXGRP or S_IXOTH */
@@ -67,7 +67,7 @@ static void hid_load_dir(char *dirname)
 			else {
 				pcb_plugin_info_t *inf = plugin_find(basename);
 				if (inf == NULL) {
-					symname = Concat("hid_", basename, "_init", NULL);
+					symname = pcb_concat("hid_", basename, "_init", NULL);
 					if ((sym = dlsym(so, symname)) != NULL) {
 						symv = (pcb_uninit_t (*)())pcb_cast_d2f(sym);
 						uninit = symv();
@@ -100,18 +100,18 @@ void pcb_hid_init()
 	gui = pcb_hid_nogui_get_hid();
 
 #warning TODO: make this configurable
-	hid_load_dir(Concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
+	hid_load_dir(pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
 											PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-	hid_load_dir(Concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
+	hid_load_dir(pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
 											PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", NULL));
 
 	/* conf_core.rc.path.home is set by the conf_core immediately on startup */
 	if (conf_core.rc.path.home != NULL) {
-		hid_load_dir(Concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-		hid_load_dir(Concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL));
+		hid_load_dir(pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
+		hid_load_dir(pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL));
 	}
-	hid_load_dir(Concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-	hid_load_dir(Concat("plugins", NULL));
+	hid_load_dir(pcb_concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
+	hid_load_dir(pcb_concat("plugins", NULL));
 }
 
 void pcb_hid_uninit(void)

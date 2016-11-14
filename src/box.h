@@ -219,7 +219,7 @@ static inline PCB_FUNC_UNUSED void pcb_close_box(pcb_box_t * r)
 static inline PCB_FUNC_UNUSED double pcb_dist2_to_box(const pcb_cheap_point_t * p, const pcb_box_t * b)
 {
 	pcb_cheap_point_t r = pcb_closest_pcb_point_in_box(p, b);
-	return Distance(r.X, r.Y, p->X, p->Y);
+	return pcb_distance(r.X, r.Y, p->X, p->Y);
 }
 
 pcb_box_t *pcb_box_new(pcb_box_list_t *);

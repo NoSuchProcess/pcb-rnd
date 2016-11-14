@@ -96,8 +96,8 @@ pcb_point_t *pcb_adjust_insert_point(void)
 	if (gui->shift_is_pressed()) {
 		pcb_attached_line_t myline;
 		/* only force 45 degree for nearest point */
-		if (Distance(Crosshair.X, Crosshair.Y, line->Point1.X, line->Point1.Y) <
-				Distance(Crosshair.X, Crosshair.Y, line->Point2.X, line->Point2.Y))
+		if (pcb_distance(Crosshair.X, Crosshair.Y, line->Point1.X, line->Point1.Y) <
+				pcb_distance(Crosshair.X, Crosshair.Y, line->Point2.X, line->Point2.Y))
 			myline.Point1 = myline.Point2 = line->Point1;
 		else
 			myline.Point1 = myline.Point2 = line->Point2;

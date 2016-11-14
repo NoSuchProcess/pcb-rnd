@@ -339,7 +339,7 @@ static char *bboard_get_model_filename(char *basename, char *value, pcb_bool nes
 	char *s;
 
 /*
-	s = Concat(pcblibdir, PCB_DIR_SEPARATOR_S, MODELBASE, PCB_DIR_SEPARATOR_S,
+	s = pcb_concat(pcblibdir, PCB_DIR_SEPARATOR_S, MODELBASE, PCB_DIR_SEPARATOR_S,
 					 BBOARDBASE, PCB_DIR_SEPARATOR_S, basename, (value
 																											 && nested) ?
 					 PCB_DIR_SEPARATOR_S : "", (value && nested) ? basename : "", (value) ? "-" : "", (value) ? value : "", BBEXT, NULL);
@@ -364,10 +364,10 @@ static int bboard_parse_offset(char *s, pcb_coord_t * ox, pcb_coord_t * oy)
 	while (sscanf(s, "%30s%n", val, &ln) >= 1) {
 		switch (n) {
 		case 0:
-			xx = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			xx = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		case 1:
-			yy = GetValueEx(val, NULL, NULL, NULL, "mm", NULL);
+			yy = pcb_get_value_ex(val, NULL, NULL, NULL, "mm", NULL);
 			break;
 		}
 		s = s + ln;

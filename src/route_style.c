@@ -83,7 +83,7 @@ int ParseRoutingString1(char **str, pcb_route_style_t *routeStyle, const char *d
 		strcpy(routeStyle->name, Name);
 	if (!isdigit((int) *++s))
 		goto error;
-	routeStyle->Thick = GetNum(&s, default_unit);
+	routeStyle->Thick = pcb_get_num(&s, default_unit);
 	while (*s && isspace((int) *s))
 		s++;
 	if (*s++ != ',')
@@ -92,7 +92,7 @@ int ParseRoutingString1(char **str, pcb_route_style_t *routeStyle, const char *d
 		s++;
 	if (!isdigit((int) *s))
 		goto error;
-	routeStyle->Diameter = GetNum(&s, default_unit);
+	routeStyle->Diameter = pcb_get_num(&s, default_unit);
 	while (*s && isspace((int) *s))
 		s++;
 	if (*s++ != ',')
@@ -101,7 +101,7 @@ int ParseRoutingString1(char **str, pcb_route_style_t *routeStyle, const char *d
 		s++;
 	if (!isdigit((int) *s))
 		goto error;
-	routeStyle->Hole = GetNum(&s, default_unit);
+	routeStyle->Hole = pcb_get_num(&s, default_unit);
 	/* for backwards-compatibility, we use a 10-mil default
 	 * for styles which omit the clearance specification. */
 	if (*s != ',')
@@ -112,7 +112,7 @@ int ParseRoutingString1(char **str, pcb_route_style_t *routeStyle, const char *d
 			s++;
 		if (!isdigit((int) *s))
 			goto error;
-		routeStyle->Clearance = GetNum(&s, default_unit);
+		routeStyle->Clearance = pcb_get_num(&s, default_unit);
 		while (*s && isspace((int) *s))
 			s++;
 	}

@@ -855,10 +855,10 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 					x = y = 0;
 				}
 				else if (argc == 3 || argc == 4) {
-					x = GetValue(PCB_ACTION_ARG(1), PCB_ACTION_ARG(3), &absolute, NULL);
+					x = pcb_get_value(PCB_ACTION_ARG(1), PCB_ACTION_ARG(3), &absolute, NULL);
 					if (!absolute)
 						x += oldx;
-					y = GetValue(PCB_ACTION_ARG(2), PCB_ACTION_ARG(3), &absolute, NULL);
+					y = pcb_get_value(PCB_ACTION_ARG(2), PCB_ACTION_ARG(3), &absolute, NULL);
 					if (!absolute)
 						y += oldy;
 				}

@@ -276,7 +276,7 @@ static int CommandLoadNetlist(int argc, const char **argv, pcb_coord_t x, pcb_co
 	}
 	if (PCB->Netlistname)
 		free(PCB->Netlistname);
-	PCB->Netlistname = StripWhiteSpaceAndDup(filename);
+	PCB->Netlistname = pcb_strdup_strip_wspace(filename);
 
 	return (0);
 }

@@ -642,7 +642,7 @@ void expr_wizard_import(const char *desc_)
 			case RIGHT_COORD:
 			{
 				pcb_bool succ;
-				double d = GetValueEx(right, NULL, NULL, NULL, "mm", &succ);
+				double d = pcb_get_value_ex(right, NULL, NULL, NULL, "mm", &succ);
 				if (succ)
 					ghid_coord_entry_set_value(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), d);
 				break;

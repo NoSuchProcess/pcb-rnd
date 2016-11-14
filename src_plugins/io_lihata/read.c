@@ -91,7 +91,7 @@ static int parse_coord(pcb_coord_t *res, lht_node_t *nd)
 	if ((nd == NULL) || (nd->type != LHT_TEXT))
 		return -1;
 
-	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
+	tmp = pcb_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success) {
 		pcb_message(PCB_MSG_ERROR, "#LHT1 Invalid coord value: '%s'\n", nd->data.text.value);
 		return -1;
@@ -112,7 +112,7 @@ static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
 		return -1;
 	}
 
-	tmp = GetValueEx(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
+	tmp = pcb_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success) {
 		pcb_message(PCB_MSG_ERROR, "#LHT3 Invalid angle value: '%s'\n", nd->data.text.value);
 		return -1;

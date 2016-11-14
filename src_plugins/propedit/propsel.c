@@ -441,7 +441,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 	ctx.is_attr = (prop[0] == 'a');
 	ctx.name = prop;
 	ctx.value = value;
-	ctx.c = GetValueEx(value, NULL, &ctx.c_absolute, NULL, NULL, &ctx.c_valid);
+	ctx.c = pcb_get_value_ex(value, NULL, &ctx.c_absolute, NULL, NULL, &ctx.c_valid);
 	ctx.d = strtod(value, &end);
 	ctx.d_valid = (*end == '\0');
 	start = value;

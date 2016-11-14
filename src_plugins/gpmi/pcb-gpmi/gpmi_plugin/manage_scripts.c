@@ -24,7 +24,7 @@ do { \
 #define attr_make_label_str(attr, name1, name2, help_) \
 do { \
 	char *__names__; \
-	__names__ = Concat(name1, name2, NULL); \
+	__names__ = pcb_concat(name1, name2, NULL); \
 	attr_make_label(attr, __names__, help_); \
 } while(0)
 
@@ -59,7 +59,7 @@ static hid_gpmi_script_info_t *choose_script(const char **operations, int *opera
 		else
 			basename++;
 
-		scrl[n] = Concat(basename, "\t", i->module_name, NULL);
+		scrl[n] = pcb_concat(basename, "\t", i->module_name, NULL);
 	}
 	scrl[n] = NULL;
 
@@ -219,7 +219,7 @@ void gpmi_hid_manage_scripts(void)
 				r2 = gpmi_hid_script_unload(i);
 				if (r1 || r2) {
 					char *msg;
-					msg = Concat("Error:", 
+					msg = pcb_concat("Error:", 
 					             (r1 ? "couldnt't remove the script from the config file;" : ""), 
 					             (r2 ? "couldnt't unload the script;" : ""),
 					             "\n" CONSULT "\n", NULL);

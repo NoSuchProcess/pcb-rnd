@@ -343,7 +343,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				}
 			}
 			END_LOOP;
-			len = Distance(Pad->Point1.X, Pad->Point1.Y, Pad->Point2.X, Pad->Point2.Y);
+			len = pcb_distance(Pad->Point1.X, Pad->Point1.Y, Pad->Point2.X, Pad->Point2.Y);
 			report = pcb_strdup_printf("%m+PAD ID# %ld;  Flags:%s\n"
 									"FirstPoint(X,Y)  = %$mD; ID = %ld.\n"
 									"SecondPoint(X,Y) = %$mD; ID = %ld.\n"
@@ -667,7 +667,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				char *n;
 
 				if (ename && pname) {
-					n = Concat(ename, "-", pname, NULL);
+					n = pcb_concat(ename, "-", pname, NULL);
 					for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++)
 						for (nei = 0; nei < PCB->NetlistLib[NETLIST_EDITED].Menu[ni].EntryN; nei++) {
 							if (strcmp(PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry, n) == 0) {
@@ -688,7 +688,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				char *n;
 
 				if (ename && pname) {
-					n = Concat(ename, "-", pname, NULL);
+					n = pcb_concat(ename, "-", pname, NULL);
 					for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++)
 						for (nei = 0; nei < PCB->NetlistLib[NETLIST_EDITED].Menu[ni].EntryN; nei++) {
 							if (strcmp(PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry, n) == 0) {

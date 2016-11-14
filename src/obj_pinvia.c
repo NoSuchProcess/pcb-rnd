@@ -92,7 +92,7 @@ pcb_pin_t *CreateNewVia(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coor
 	if (!pcb_create_be_lenient) {
 		VIA_LOOP(Data);
 		{
-			if (Distance(X, Y, via->X, via->Y) <= via->DrillingHole / 2 + DrillingHole / 2) {
+			if (pcb_distance(X, Y, via->X, via->Y) <= via->DrillingHole / 2 + DrillingHole / 2) {
 				pcb_message(PCB_MSG_DEFAULT, _("%m+Dropping via at %$mD because it's hole would overlap with the via "
 									"at %$mD\n"), conf_core.editor.grid_unit->allow, X, Y, via->X, via->Y);
 				return (NULL);					/* don't allow via stacking */

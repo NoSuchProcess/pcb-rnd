@@ -1594,10 +1594,10 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	else
 		PCB_AFAIL(cursor);
 
-	dx = GetValueEx(argv[1], argv[3], NULL, extra_units_x, "", NULL);
+	dx = pcb_get_value_ex(argv[1], argv[3], NULL, extra_units_x, "", NULL);
 	if (conf_core.editor.view.flip_x)
 		dx = -dx;
-	dy = GetValueEx(argv[2], argv[3], NULL, extra_units_y, "", NULL);
+	dy = pcb_get_value_ex(argv[2], argv[3], NULL, extra_units_y, "", NULL);
 	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
 

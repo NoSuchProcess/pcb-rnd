@@ -223,7 +223,7 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 		return R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, line) ?
-			(Distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
+			(pcb_distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
 			 line->Thickness * 2 + SearchRadius) : IsPointOnLine(PosX, PosY, SearchRadius, line)) {
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
 		return R_DIR_CANCEL;
@@ -362,7 +362,7 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 		return R_DIR_NOT_FOUND;
 
 	/* some stupid code to check both points */
-	d = Distance(PosX, PosY, line->Point1.X, line->Point1.Y);
+	d = pcb_distance(PosX, PosY, line->Point1.X, line->Point1.Y);
 	if (d < i->least) {
 		i->least = d;
 		*i->Line = line;
@@ -370,7 +370,7 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 		ret_val = R_DIR_FOUND_CONTINUE;
 	}
 
-	d = Distance(PosX, PosY, line->Point2.X, line->Point2.Y);
+	d = pcb_distance(PosX, PosY, line->Point2.X, line->Point2.Y);
 	if (d < i->least) {
 		i->least = d;
 		*i->Line = line;
@@ -412,7 +412,7 @@ static pcb_bool SearchPointByLocation(int locked, pcb_layer_t ** Layer, pcb_poly
 	{
 		POLYGONPOINT_LOOP(polygon);
 		{
-			d = Distance(point->X, point->Y, PosX, PosY);
+			d = pcb_distance(point->X, point->Y, PosX, PosY);
 			if (d < least) {
 				least = d;
 				*Polygon = polygon;
@@ -535,7 +535,7 @@ pcb_bool IsPointOnPin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_
 		if (IsPointInBox(X, Y, &b, Radius))
 			return pcb_true;
 	}
-	else if (Distance(pin->X, pin->Y, X, Y) <= Radius + t)
+	else if (pcb_distance(pin->X, pin->Y, X, Y) <= Radius + t)
 		return pcb_true;
 	return pcb_false;
 }
@@ -587,9 +587,9 @@ pcb_bool IsPointOnLine(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_lin
 	double D1, D2, L;
 
 	/* Get length of segment */
-	L = Distance(Line->Point1.X, Line->Point1.Y, Line->Point2.X, Line->Point2.Y);
+	L = pcb_distance(Line->Point1.X, Line->Point1.Y, Line->Point2.X, Line->Point2.Y);
 	if (L < 0.1)
-		return Distance(X, Y, Line->Point1.X, Line->Point1.Y) < Radius + Line->Thickness / 2;
+		return pcb_distance(X, Y, Line->Point1.X, Line->Point1.Y) < Radius + Line->Thickness / 2;
 
 	/* Get distance from (X1, Y1) to Q (on the line) */
 	D1 = ((double) (Y - Line->Point1.Y) * (Line->Point2.Y - Line->Point1.Y)
@@ -806,7 +806,7 @@ pcb_bool IsPointInPad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pad_
 	/* so, pad.Point1.X = pad.Point1.Y = 0; */
 
 	/* rotate round (0, 0) so that Point2 coordinates be (r, 0) */
-	r = Distance(0, 0, pad.Point2.X, pad.Point2.Y);
+	r = pcb_distance(0, 0, pad.Point2.X, pad.Point2.Y);
 	if (r < .1) {
 		Cos = 1;
 		Sin = 0;
@@ -833,13 +833,13 @@ pcb_bool IsPointInPad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pad_
 			if (Y <= t2)
 				range = -X;
 			else
-				return Radius > Distance(0, t2, X, Y);
+				return Radius > pcb_distance(0, t2, X, Y);
 		}
 		else if (X >= r) {
 			if (Y <= t2)
 				range = X - r;
 			else
-				return Radius > Distance(r, t2, X, Y);
+				return Radius > pcb_distance(r, t2, X, Y);
 		}
 		else
 			range = Y - t2;
@@ -847,9 +847,9 @@ pcb_bool IsPointInPad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pad_
 	else {												/*Rounded pad: even more simple */
 
 		if (X <= 0)
-			return (Radius + t2) > Distance(0, 0, X, Y);
+			return (Radius + t2) > pcb_distance(0, 0, X, Y);
 		else if (X >= r)
-			return (Radius + t2) > Distance(r, 0, X, Y);
+			return (Radius + t2) > pcb_distance(r, 0, X, Y);
 		else
 			range = Y - t2;
 	}
@@ -871,17 +871,17 @@ pcb_bool IsPointInBox(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_coord_t 
 
 	if (X <= 0) {
 		if (Y < 0)
-			return Radius > Distance(0, 0, X, Y);
+			return Radius > pcb_distance(0, 0, X, Y);
 		else if (Y > height)
-			return Radius > Distance(0, height, X, Y);
+			return Radius > pcb_distance(0, height, X, Y);
 		else
 			range = -X;
 	}
 	else if (X >= width) {
 		if (Y < 0)
-			return Radius > Distance(width, 0, X, Y);
+			return Radius > pcb_distance(width, 0, X, Y);
 		else if (Y > height)
-			return Radius > Distance(width, height, X, Y);
+			return Radius > pcb_distance(width, height, X, Y);
 		else
 			range = X - width;
 	}
@@ -904,7 +904,7 @@ pcb_bool IsPointInBox(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_coord_t 
 pcb_bool IsPointOnArc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_arc_t *Arc)
 {
 	/* Calculate angle of point from arc center */
-	double p_dist = Distance(X, Y, Arc->X, Arc->Y);
+	double p_dist = pcb_distance(X, Y, Arc->X, Arc->Y);
 	double p_cos = (X - Arc->X) / p_dist;
 	pcb_angle_t p_ang = acos(p_cos) * PCB_RAD_TO_DEG;
 	pcb_angle_t ang1, ang2;
@@ -934,17 +934,17 @@ pcb_bool IsPointOnArc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_arc_
 
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
-		if (Distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
+		if (pcb_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return pcb_true;
 
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
-		if (Distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
+		if (pcb_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return pcb_true;
 		return pcb_false;
 	}
 	/* If point is inside the arc range, just compare it to the arc */
-	return fabs(Distance(X, Y, Arc->X, Arc->Y) - Arc->Width) < Radius + Arc->Thickness / 2;
+	return fabs(pcb_distance(X, Y, Arc->X, Arc->Y) - Arc->Width) < Radius + Arc->Thickness / 2;
 }
 
 /* ---------------------------------------------------------------------------

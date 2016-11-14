@@ -457,3 +457,10 @@ MAKEMAX -> PCB_MAKE_MAX
 SGNZ -> PCB_SGNZ
 SWAP_SIGN_X -> PCB_SWAP_SIGN_X
 SWAP_SIGN_Y -> PCB_SWAP_SIGN_Y
+Distance2 -> pcb_distance2
+Distance -> pcb_distance
+GetValue -> pcb_get_value
+GetValueEx -> pcb_get_value_ex
+GetNum -> pcb_get_num
+Concat -> pcb_concat
+StripWhiteSpaceAndDup -> pcb_strdup_strip_wspace

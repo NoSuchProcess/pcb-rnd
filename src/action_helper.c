@@ -507,9 +507,9 @@ void pcb_notify_line(void)
 		}
 		else if (type == PCB_TYPE_PAD) {
 			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
-			double d1 = Distance(Crosshair.X, Crosshair.Y, pad->Point1.X, pad->Point1.Y);
-			double d2 = Distance(Crosshair.X, Crosshair.Y, pad->Point2.X, pad->Point2.Y);
-			double dm = Distance(Crosshair.X, Crosshair.Y, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y)/2);
+			double d1 = pcb_distance(Crosshair.X, Crosshair.Y, pad->Point1.X, pad->Point1.Y);
+			double d2 = pcb_distance(Crosshair.X, Crosshair.Y, pad->Point2.X, pad->Point2.Y);
+			double dm = pcb_distance(Crosshair.X, Crosshair.Y, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y)/2);
 			if ((dm <= d1) && (dm <= d2)) { /* prefer to snap to the middle of a pin if that's the closest */
 				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.X;
 				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.Y;

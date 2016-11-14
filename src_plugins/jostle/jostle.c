@@ -503,7 +503,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	if (argc == 2) {
 		pcb_bool succ;
-		value = GetValue(ARG(0), ARG(1), &rel, &succ);
+		value = pcb_get_value(ARG(0), ARG(1), &rel, &succ);
 		if (!succ) {
 			pcb_message(PCB_MSG_ERROR, "Failed to convert size\n");
 			return -1;

@@ -56,7 +56,7 @@ static void intspinner_changed_cb(GtkSpinButton * spin_button, gpointer data)
 static void coordentry_changed_cb(GtkEntry * entry, pcb_coord_t * res)
 {
 	const gchar *s = gtk_entry_get_text(entry);
-	*res = GetValue(s, NULL, NULL, NULL);
+	*res = pcb_get_value(s, NULL, NULL, NULL);
 }
 
 static void dblspinner_changed_cb(GtkSpinButton * spin_button, gpointer data)

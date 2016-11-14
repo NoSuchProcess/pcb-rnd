@@ -399,7 +399,7 @@ void ghid_set_cursor_position_labels(void)
 	if (Marked.status) {
 		pcb_coord_t dx = Crosshair.X - Marked.X;
 		pcb_coord_t dy = Crosshair.Y - Marked.Y;
-		pcb_coord_t r = Distance(Crosshair.X, Crosshair.Y, Marked.X, Marked.Y);
+		pcb_coord_t r = pcb_distance(Crosshair.X, Crosshair.Y, Marked.X, Marked.Y);
 		double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
 
 

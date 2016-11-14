@@ -53,7 +53,7 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 				subst_to = conf_core.rc.path.home;
 				subst_offs = 1;
 				replace:;
-				/* avoid Concat() here to reduce dependencies for external tools */
+				/* avoid pcb_concat() here to reduce dependencies for external tools */
 				l1 = strlen(subst_to);
 				l2 = strlen((*in) + 1);
 				*out = malloc(l1 + l2 + 4 + extra_room);

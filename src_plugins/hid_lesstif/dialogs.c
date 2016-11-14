@@ -759,7 +759,7 @@ int lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_a
 			break;
 		case HID_Coord:
 			cp = XmTextGetString(wl[i]);
-			results[i].coord_value = GetValue(cp, NULL, NULL, NULL);
+			results[i].coord_value = pcb_get_value(cp, NULL, NULL, NULL);
 			break;
 		case HID_Real:
 			cp = XmTextGetString(wl[i]);
@@ -1037,7 +1037,7 @@ static int sz_str2val(Widget w, pcb_bool pcbu)
 	char *buf = XmTextGetString(w);
 	if (!pcbu)
 		return strtol(buf, NULL, 0);
-	return GetValueEx(buf, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, NULL);
+	return pcb_get_value_ex(buf, NULL, NULL, NULL, conf_core.editor.grid_unit->suffix, NULL);
 }
 
 static void sz_val2str(Widget w, pcb_coord_t u, int pcbu)

@@ -93,7 +93,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 	l->children++;
 	e = fp_append_entry(l->menu, name, type, tags);
 
-/* Avoid using Concat() - would be a new dependency for gsch2pcb-rnd */
+/* Avoid using pcb_concat() - would be a new dependency for gsch2pcb-rnd */
 	{
 		int sl = strlen(subdir);
 		int nl = strlen(name);

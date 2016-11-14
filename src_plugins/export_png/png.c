@@ -424,7 +424,7 @@ static void parse_bloat(const char *str)
 		extra_units[n].scale = scale;
 	if (str == NULL)
 		return;
-	bloat = GetValueEx(str, NULL, NULL, extra_units, "", NULL);
+	bloat = pcb_get_value_ex(str, NULL, NULL, extra_units, "", NULL);
 }
 
 void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)

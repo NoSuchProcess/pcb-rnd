@@ -226,8 +226,8 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			}
 		}
 		else if (ys) {
-			x = GetValue(xs, units, NULL, NULL);
-			y = GetValue(ys, units, NULL, NULL);
+			x = pcb_get_value(xs, units, NULL, NULL);
+			y = pcb_get_value(ys, units, NULL, NULL);
 		}
 		else {
 			pcb_message(PCB_MSG_DEFAULT, _("Bad syntax for Import(setnewpoint)"));
@@ -399,9 +399,9 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 		cmd[0] = conf_import_sch.plugins.import_sch.make_program;
 		cmd[1] = "-s";
-		cmd[2] = Concat("PCB=", PCB->Filename, NULL);
+		cmd[2] = pcb_concat("PCB=", PCB->Filename, NULL);
 		cmd[3] = srclist;
-		cmd[4] = Concat("OUT=", tmpfile, NULL);
+		cmd[4] = pcb_concat("OUT=", tmpfile, NULL);
 		i = 5;
 		if (user_makefile) {
 			cmd[i++] = "-f";

@@ -234,7 +234,7 @@ void hid_gpmi_load_dir(const char *dir, int add_pkg_path)
 	char *cfn;
 
 	conf_dir = dir;
-	cfn = Concat(dir, PCB_DIR_SEPARATOR_S, CONFNAME,  NULL);
+	cfn = pcb_concat(dir, PCB_DIR_SEPARATOR_S, CONFNAME,  NULL);
 #ifdef CONFIG_DEBUG
 	fprintf(stderr, "pcb-gpmi: opening config: %s\n", cfn);
 #endif
@@ -318,7 +318,7 @@ int gpmi_hid_script_remove(hid_gpmi_script_info_t *i)
 		pcb_message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't open %s for read.\n", i->conffile_name);
 		return -1;
 	}
-	tmpfn = Concat(i->conffile_name, ".tmp", NULL);
+	tmpfn = pcb_concat(i->conffile_name, ".tmp", NULL);
 	fout = fopen(tmpfn, "w");
 	if (fout == NULL) {
 		pcb_message(PCB_MSG_DEFAULT, "gpmi_hid_script_remove(): can't remove script from configs, can't create %s.\n", tmpfn);
@@ -359,18 +359,18 @@ int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i)
 		home = conf_core.rc.path.home;
 
 	if (conf_core.rc.path.home != NULL) {
-		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb", NULL);
+		fn = pcb_concat(home, PCB_DIR_SEPARATOR_S ".pcb", NULL);
 		pcb_mkdir(fn, 0755);
 		free(fn);
 
-		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL);
+		fn = pcb_concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins", NULL);
 		pcb_mkdir(fn, 0755);
 		free(fn);
 		
-		fn = Concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
+		fn = pcb_concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
 	}
 	else
-		fn = Concat("plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
+		fn = pcb_concat("plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
 
 		f = fopen(fn, "a");
 	if (f == NULL) {

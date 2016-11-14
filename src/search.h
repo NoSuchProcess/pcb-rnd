@@ -75,7 +75,7 @@ int lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord
 
 /* == the same but accept if any part of the object touches the box == */
 #define POINT_IN_CIRCLE(x, y, cx, cy, r) \
-	(Distance2(x, y, cx, cy) <= (double)(r) * (double)(r))
+	(pcb_distance2(x, y, cx, cy) <= (double)(r) * (double)(r))
 
 #define CIRCLE_TOUCHES_BOX(cx, cy, r, b) \
 	(    POINT_IN_BOX((cx)-(r),(cy),(b)) || POINT_IN_BOX((cx)+(r),(cy),(b)) || POINT_IN_BOX((cx),(cy)-(r),(b)) || POINT_IN_BOX((cx),(cy)+(r),(b)) \

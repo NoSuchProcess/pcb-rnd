@@ -31,8 +31,8 @@
 
 #include "pcb_bool.h"
 
-double Distance(double x1, double y1, double x2, double y2);
-double Distance2(double x1, double y1, double x2, double y2);	/* distance square */
+double pcb_distance(double x1, double y1, double x2, double y2);
+double pcb_distance2(double x1, double y1, double x2, double y2);	/* distance square */
 
 enum pcb_unit_flags_e { UNIT_PERCENT = 1 };
 
@@ -42,14 +42,14 @@ typedef struct {
 	enum pcb_unit_flags_e flags;
 } pcb_unit_list_t[];
 
-double GetValue(const char *, const char *, pcb_bool *, pcb_bool *success);
-double GetValueEx(const char *, const char *, pcb_bool *, pcb_unit_list_t, const char *, pcb_bool *success);
-pcb_coord_t GetNum(char **s, const char *default_unit);
+double pcb_get_value(const char *, const char *, pcb_bool *, pcb_bool *success);
+double pcb_get_value_ex(const char *, const char *, pcb_bool *, pcb_unit_list_t, const char *, pcb_bool *success);
+pcb_coord_t pcb_get_num(char **s, const char *default_unit);
 
 
-char *Concat(const char *, ...);	/* end with NULL */
+char *pcb_concat(const char *, ...);	/* end with NULL */
 int pcb_mem_any_set(unsigned char *ptr, int bytes);
 
-char *StripWhiteSpaceAndDup(const char *S);
+char *pcb_strdup_strip_wspace(const char *S);
 
 #endif

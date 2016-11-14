@@ -375,8 +375,8 @@ static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
-	ny = GetValue(y_str, units, &absolute1, NULL);
-	nx = GetValue(x_str, units, &absolute2, NULL);
+	ny = pcb_get_value(y_str, units, &absolute1, NULL);
+	nx = pcb_get_value(x_str, units, &absolute2, NULL);
 
 	type = SearchScreen(x, y, MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE) {
@@ -475,7 +475,7 @@ static int parse_layout_attribute_units(const char *name, int def)
 	const char *as = pcb_attrib_get(PCB, name);
 	if (!as)
 		return def;
-	return GetValue(as, NULL, NULL, NULL);
+	return pcb_get_value(as, NULL, NULL, NULL);
 }
 
 static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -845,7 +845,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		delta = function;
 		flags = 0;
 	}
-	value = 2 * GetValue(delta, units, &absolute, NULL);
+	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 
 	SaveUndoSerialNumber();
 	ELEMENT_LOOP(PCB->Data);
@@ -919,7 +919,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		delta = function;
 		flags = 0;
 	}
-	value = 2 * GetValue(delta, units, &absolute, NULL);
+	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 
 	SaveUndoSerialNumber();
 	ELEMENT_LOOP(PCB->Data);

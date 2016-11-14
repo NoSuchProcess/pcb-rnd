@@ -242,7 +242,7 @@ static int ActionChkGridSize(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	if (strcmp(argv[0], "none") == 0)
 		return PCB->Grid <= 300;
 
-	return (PCB->Grid == GetValueEx(argv[0], NULL, NULL, NULL, NULL, NULL));
+	return (PCB->Grid == pcb_get_value_ex(argv[0], NULL, NULL, NULL, NULL, NULL));
 }
 
 static const char ChkElementName_syntax[] =

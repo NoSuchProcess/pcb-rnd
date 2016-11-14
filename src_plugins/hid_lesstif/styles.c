@@ -143,7 +143,7 @@ static void style_value_cb(Widget w, int i, void *cbs)
 	if (local_update)
 		return;
 	s = XmTextGetString(w);
-	GetValueEx(s, NULL, NULL, NULL, unit->suffix, NULL);
+	pcb_get_value_ex(s, NULL, NULL, NULL, unit->suffix, NULL);
 	switch (i) {
 	case SSthick:
 		conf_setf(CFR_DESIGN, "design/line_thickness", -1, "%s %s", s, unit->suffix);
