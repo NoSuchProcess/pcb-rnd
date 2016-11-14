@@ -66,11 +66,11 @@ static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		RemoveSelected();
 		break;
 	case F_AllRats:
-		if (DeleteRats(pcb_false))
+		if (pcb_rats_delete(pcb_false))
 			SetChangedFlag(pcb_true);
 		break;
 	case F_SelectedRats:
-		if (DeleteRats(pcb_true))
+		if (pcb_rats_delete(pcb_true))
 			SetChangedFlag(pcb_true);
 		break;
 	}

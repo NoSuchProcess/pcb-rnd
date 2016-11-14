@@ -198,7 +198,7 @@ void pcb_data_free(pcb_data_t * data)
 	}
 	END_LOOP;
 	list_map0(&data->Element, pcb_element_t, pcb_element_free);
-	list_map0(&data->Rat, pcb_rat_t, RemoveFreeRat);
+	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
 	for (layer = data->Layer, i = 0; i < MAX_LAYER + 2; layer++, i++) {
 		pcb_attribute_free(&layer->Attributes);

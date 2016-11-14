@@ -396,7 +396,7 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	post_id_req(&rat.Point1);
 	post_id_req(&rat.Point2);
 
-	new_rat = CreateNewRat(dt, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
+	new_rat = pcb_rat_new(dt, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
 		conf_core.appearance.rat_thickness, rat.Flags);
 
 	new_rat->ID = rat.ID;

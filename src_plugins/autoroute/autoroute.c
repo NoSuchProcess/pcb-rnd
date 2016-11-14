@@ -4706,7 +4706,7 @@ donerouting:
 		SaveUndoSerialNumber();
 
 		/* optimize rats, we've changed connectivity a lot. */
-		DeleteRats(pcb_false /*all rats */ );
+		pcb_rats_delete(pcb_false /*all rats */ );
 		RestoreUndoSerialNumber();
 		AddAllRats(pcb_false /*all rats */ , NULL);
 		RestoreUndoSerialNumber();

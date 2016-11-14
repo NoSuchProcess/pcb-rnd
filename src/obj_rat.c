@@ -51,7 +51,7 @@
 
 /*** allocation ***/
 /* get next slot for a Rat, allocates memory if necessary */
-pcb_rat_t *GetRatMemory(pcb_data_t *data)
+pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 {
 	pcb_rat_t *new_obj;
 
@@ -61,7 +61,7 @@ pcb_rat_t *GetRatMemory(pcb_data_t *data)
 	return new_obj;
 }
 
-void RemoveFreeRat(pcb_rat_t *data)
+void pcb_rat_free(pcb_rat_t *data)
 {
 	ratlist_remove(data);
 	free(data);
@@ -69,9 +69,9 @@ void RemoveFreeRat(pcb_rat_t *data)
 
 /*** utility ***/
 /* creates a new rat-line */
-pcb_rat_t *CreateNewRat(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, pcb_coord_t Thickness, pcb_flag_t Flags)
+pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, pcb_coord_t Thickness, pcb_flag_t Flags)
 {
-	pcb_rat_t *Line = GetRatMemory(Data);
+	pcb_rat_t *Line = pcb_rat_alloc(Data);
 
 	if (!Line)
 		return (Line);
@@ -97,7 +97,7 @@ pcb_rat_t *CreateNewRat(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_co
 
 /* DeleteRats - deletes rat lines only
  * can delete all rat lines, or only selected one */
-pcb_bool DeleteRats(pcb_bool selected)
+pcb_bool pcb_rats_delete(pcb_bool selected)
 {
 	pcb_opctx_t ctx;
 	pcb_bool changed = pcb_false;
@@ -126,7 +126,7 @@ pcb_bool DeleteRats(pcb_bool selected)
 /* copies a rat-line to paste buffer */
 void *AddRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
-	return (CreateNewRat(ctx->buffer.dst, Rat->Point1.X, Rat->Point1.Y,
+	return (pcb_rat_new(ctx->buffer.dst, Rat->Point1.X, Rat->Point1.Y,
 		Rat->Point2.X, Rat->Point2.Y, Rat->group1, Rat->group2, Rat->Thickness,
 		pcb_flag_mask(Rat->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
@@ -202,7 +202,7 @@ void *DestroyRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 	if (ctx->remove.destroy_target->rat_tree)
 		r_delete_entry(ctx->remove.destroy_target->rat_tree, &Rat->BoundingBox);
 
-	RemoveFreeRat(Rat);
+	pcb_rat_free(Rat);
 	return NULL;
 }
 

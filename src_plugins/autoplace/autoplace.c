@@ -756,7 +756,7 @@ pcb_bool AutoPlaceSelected(void)
 	}
 done:
 	if (changed) {
-		DeleteRats(pcb_false);
+		pcb_rats_delete(pcb_false);
 		AddAllRats(pcb_false, NULL);
 		pcb_redraw();
 	}

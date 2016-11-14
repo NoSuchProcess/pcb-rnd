@@ -609,7 +609,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 			}
 			else {
 				/* found the shortest distance subnet, draw the rat */
-				if ((line = CreateNewRat(PCB->Data,
+				if ((line = pcb_rat_new(PCB->Data,
 																 firstpoint->X, firstpoint->Y,
 																 secondpoint->X, secondpoint->Y,
 																 firstpoint->group, secondpoint->group, conf_core.appearance.rat_thickness, pcb_no_flags())) != NULL) {
@@ -897,7 +897,7 @@ pcb_rat_t *AddNet(void)
 
 ratIt:
 	pcb_netlist_changed(0);
-	return (CreateNewRat(PCB->Data, Crosshair.AttachedLine.Point1.X,
+	return (pcb_rat_new(PCB->Data, Crosshair.AttachedLine.Point1.X,
 											 Crosshair.AttachedLine.Point1.Y,
 											 Crosshair.AttachedLine.Point2.X,
 											 Crosshair.AttachedLine.Point2.Y, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags()));

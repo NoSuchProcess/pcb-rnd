@@ -8124,7 +8124,7 @@ static int toporouter(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 	toporouter_free(r);
 
 	SaveUndoSerialNumber();
-	DeleteRats(pcb_false);
+	pcb_rats_delete(pcb_false);
 	RestoreUndoSerialNumber();
 	AddAllRats(pcb_false, NULL);
 	RestoreUndoSerialNumber();

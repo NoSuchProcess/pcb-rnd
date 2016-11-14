@@ -510,3 +510,7 @@ CreateNewPolygon -> pcb_poly_new
 CreateNewPointInPolygon -> pcb_poly_point_new
 CreateNewHoleInPolygon -> pcb_poly_hole_new
 RemovePolygon -> pcb_poly_remove
+GetRatMemory -> pcb_rat_alloc
+RemoveFreeRat -> pcb_rat_free
+CreateNewRat -> pcb_rat_new
+DeleteRats -> pcb_rats_delete

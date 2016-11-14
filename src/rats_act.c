@@ -201,12 +201,12 @@ static int ActionDeleteRats(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			pcb_clear_warnings();
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_AllRats:
-			if (DeleteRats(pcb_false))
+			if (pcb_rats_delete(pcb_false))
 				SetChangedFlag(pcb_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
-			if (DeleteRats(pcb_true))
+			if (pcb_rats_delete(pcb_true))
 				SetChangedFlag(pcb_true);
 			break;
 		}
