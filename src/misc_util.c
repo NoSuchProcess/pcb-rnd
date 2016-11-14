@@ -154,7 +154,7 @@ char *Concat(const char *first, ...)
 	char *rv;
 	int len;
 	va_list a;
-
+#warning TODO: rewrite this with gds
 	len = strlen(first);
 	rv = (char *) malloc(len + 1);
 	strcpy(rv, first);
