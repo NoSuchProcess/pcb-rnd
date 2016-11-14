@@ -307,7 +307,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		/* Check where we should place the node in the tree */
 		root = insert_node_recursive(root, this_node);
 
-		/*RemovePolygon (layer, polygon);*/
+		/*pcb_poly_remove(layer, polygon);*/
 	}
 	ENDALL_LOOP;
 
@@ -326,7 +326,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		if (Layer != layer)
 			continue;
 
-		RemovePolygon(layer, polygon);
+		pcb_poly_remove(layer, polygon);
 	}
 	ENDALL_LOOP;
 

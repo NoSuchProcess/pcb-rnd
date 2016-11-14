@@ -440,7 +440,7 @@ static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_co
 
 static int parse_polygon(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 {
-	pcb_polygon_t *poly = GetPolygonMemory(ly);
+	pcb_polygon_t *poly = pcb_poly_alloc(ly);
 	lht_node_t *geo;
 	pcb_cardinal_t n = 0, c;
 

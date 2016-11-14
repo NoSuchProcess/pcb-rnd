@@ -906,7 +906,7 @@ layerdefinition
 			/* x1, y1, x2, y2, flags */
 		| T_RECTANGLE '(' measure measure measure measure INTEGER ')'
 			{
-				CreateNewPolygonFromRectangle(Layer,
+				pcb_poly_new_from_rectangle(Layer,
 					OU ($3), OU ($4), OU ($3) + OU ($5), OU ($4) + OU ($6), pcb_flag_old($7));
 			}
 		| text_hi_format
@@ -1143,7 +1143,7 @@ polygon_format
 		: /* flags are passed in */
 		T_POLYGON '(' flags ')' '('
 			{
-				Polygon = CreateNewPolygon(Layer, $3);
+				Polygon = pcb_poly_new(Layer, $3);
 			}
 		  polygonpoints
 		  polygonholes ')'
@@ -1172,7 +1172,7 @@ polygon_format
 				  }
 				else
 				  {
-				    SetPolygonBoundingBox (Polygon);
+				    pcb_poly_bbox(Polygon);
 				    if (!Layer->polygon_tree)
 				      Layer->polygon_tree = r_create_tree (NULL, 0, 0);
 				    r_insert_entry (Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
@@ -1188,7 +1188,7 @@ polygonholes
 polygonhole
 		: T_POLYGON_HOLE '('
 			{
-				CreateNewHoleInPolygon (Polygon);
+				pcb_poly_hole_new(Polygon);
 			}
 		  polygonpoints ')'
 		;
@@ -1202,11 +1202,11 @@ polygonpoint
 			/* xcoord ycoord */
 		: '(' measure measure ')'
 			{
-				CreateNewPointInPolygon(Polygon, OU ($2), OU ($3));
+				pcb_poly_point_new(Polygon, OU ($2), OU ($3));
 			}
 		| '[' measure measure ']'
 			{
-				CreateNewPointInPolygon(Polygon, NU ($2), NU ($3));
+				pcb_poly_point_new(Polygon, NU ($2), NU ($3));
 			}
 		;
 

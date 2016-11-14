@@ -301,7 +301,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 
 /*
 	void *v;
-	v = CreateNewPolygonFromRectangle(PCB->Data->Layer+1,
+	v = pcb_poly_new_from_rectangle(PCB->Data->Layer+1,
 		PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(0),
 		PCB_MIL_TO_COORD(1500), PCB_MIL_TO_COORD(1500),
 		pcb_flag_make(PCB_FLAG_CLEARPOLY | PCB_FLAG_FULLPOLY));
@@ -350,7 +350,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 							PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 	{
-		pcb_polygon_t *v = CreateNewPolygonFromRectangle(preview_pcb.Data->Layer,
+		pcb_polygon_t *v = pcb_poly_new_from_rectangle(preview_pcb.Data->Layer,
 			PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
 			PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
 			pcb_flag_make(PCB_FLAG_CLEARPOLY));

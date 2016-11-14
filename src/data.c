@@ -221,10 +221,10 @@ void pcb_data_free(pcb_data_t * data)
 		list_map0(&layer->Text, pcb_text_t, RemoveFreeText);
 		POLYGON_LOOP(layer);
 		{
-			FreePolygonMemory(polygon);
+			pcb_poly_free_fields(polygon);
 		}
 		END_LOOP;
-		list_map0(&layer->Polygon, pcb_polygon_t, RemoveFreePolygon);
+		list_map0(&layer->Polygon, pcb_polygon_t, pcb_poly_free);
 		if (layer->line_tree)
 			r_destroy_tree(&layer->line_tree);
 		if (layer->arc_tree)

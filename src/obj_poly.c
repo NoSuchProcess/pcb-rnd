@@ -54,7 +54,7 @@
 /*** allocation ***/
 
 /* get next slot for a polygon object, allocates memory if necessary */
-pcb_polygon_t *GetPolygonMemory(pcb_layer_t * layer)
+pcb_polygon_t *pcb_poly_alloc(pcb_layer_t * layer)
 {
 	pcb_polygon_t *new_obj;
 
@@ -64,14 +64,14 @@ pcb_polygon_t *GetPolygonMemory(pcb_layer_t * layer)
 	return new_obj;
 }
 
-void RemoveFreePolygon(pcb_polygon_t * data)
+void pcb_poly_free(pcb_polygon_t * data)
 {
 	polylist_remove(data);
 	free(data);
 }
 
 /* gets the next slot for a point in a polygon struct, allocates memory if necessary */
-pcb_point_t *GetPointMemoryInPolygon(pcb_polygon_t *Polygon)
+pcb_point_t *pcb_poly_point_alloc(pcb_polygon_t *Polygon)
 {
 	pcb_point_t *points = Polygon->Points;
 
@@ -86,7 +86,7 @@ pcb_point_t *GetPointMemoryInPolygon(pcb_polygon_t *Polygon)
 }
 
 /* gets the next slot for a point in a polygon struct, allocates memory if necessary */
-pcb_cardinal_t *GetHoleIndexMemoryInPolygon(pcb_polygon_t *Polygon)
+pcb_cardinal_t *pcb_poly_holeidx_new(pcb_polygon_t *Polygon)
 {
 	pcb_cardinal_t *holeindex = Polygon->HoleIndex;
 
@@ -101,7 +101,7 @@ pcb_cardinal_t *GetHoleIndexMemoryInPolygon(pcb_polygon_t *Polygon)
 }
 
 /* frees memory used by a polygon */
-void FreePolygonMemory(pcb_polygon_t * polygon)
+void pcb_poly_free_fields(pcb_polygon_t * polygon)
 {
 	if (polygon == NULL)
 		return;
@@ -131,7 +131,7 @@ void RotatePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y,
 
 
 /* sets the bounding box of a polygons */
-void SetPolygonBoundingBox(pcb_polygon_t *Polygon)
+void pcb_poly_bbox(pcb_polygon_t *Polygon)
 {
 	Polygon->BoundingBox.X1 = Polygon->BoundingBox.Y1 = MAX_COORD;
 	Polygon->BoundingBox.X2 = Polygon->BoundingBox.Y2 = 0;
@@ -148,16 +148,16 @@ void SetPolygonBoundingBox(pcb_polygon_t *Polygon)
 }
 
 /* creates a new polygon from the old formats rectangle data */
-pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_flag_t Flags)
+pcb_polygon_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_flag_t Flags)
 {
-	pcb_polygon_t *polygon = CreateNewPolygon(Layer, Flags);
+	pcb_polygon_t *polygon = pcb_poly_new(Layer, Flags);
 	if (!polygon)
 		return (polygon);
 
-	CreateNewPointInPolygon(polygon, X1, Y1);
-	CreateNewPointInPolygon(polygon, X2, Y1);
-	CreateNewPointInPolygon(polygon, X2, Y2);
-	CreateNewPointInPolygon(polygon, X1, Y2);
+	pcb_poly_point_new(polygon, X1, Y1);
+	pcb_poly_point_new(polygon, X2, Y1);
+	pcb_poly_point_new(polygon, X2, Y2);
+	pcb_poly_point_new(polygon, X1, Y2);
 
 	pcb_add_polygon_on_layer(Layer, polygon);
 	return (polygon);
@@ -165,16 +165,16 @@ pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, pcb_coord_t X1,
 
 void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon)
 {
-	SetPolygonBoundingBox(polygon);
+	pcb_poly_bbox(polygon);
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
 }
 
 /* creates a new polygon on a layer */
-pcb_polygon_t *CreateNewPolygon(pcb_layer_t *Layer, pcb_flag_t Flags)
+pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_flag_t Flags)
 {
-	pcb_polygon_t *polygon = GetPolygonMemory(Layer);
+	pcb_polygon_t *polygon = pcb_poly_alloc(Layer);
 
 	/* copy values */
 	polygon->Flags = Flags;
@@ -186,9 +186,9 @@ pcb_polygon_t *CreateNewPolygon(pcb_layer_t *Layer, pcb_flag_t Flags)
 }
 
 /* creates a new point in a polygon */
-pcb_point_t *CreateNewPointInPolygon(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y)
+pcb_point_t *pcb_poly_point_new(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y)
 {
-	pcb_point_t *point = GetPointMemoryInPolygon(Polygon);
+	pcb_point_t *point = pcb_poly_point_alloc(Polygon);
 
 	/* copy values */
 	point->X = X;
@@ -198,9 +198,9 @@ pcb_point_t *CreateNewPointInPolygon(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_
 }
 
 /* creates a new hole in a polygon */
-pcb_polygon_t *CreateNewHoleInPolygon(pcb_polygon_t * Polygon)
+pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon)
 {
-	pcb_cardinal_t *holeindex = GetHoleIndexMemoryInPolygon(Polygon);
+	pcb_cardinal_t *holeindex = pcb_poly_holeidx_new(Polygon);
 	*holeindex = Polygon->PointN;
 	return Polygon;
 }
@@ -213,12 +213,12 @@ pcb_polygon_t *CopyPolygonLowLevel(pcb_polygon_t *Dest, pcb_polygon_t *Src)
 
 	for (n = 0; n < Src->PointN; n++) {
 		if (hole < Src->HoleIndexN && n == Src->HoleIndex[hole]) {
-			CreateNewHoleInPolygon(Dest);
+			pcb_poly_hole_new(Dest);
 			hole++;
 		}
-		CreateNewPointInPolygon(Dest, Src->Points[n].X, Src->Points[n].Y);
+		pcb_poly_point_new(Dest, Src->Points[n].X, Src->Points[n].Y);
 	}
-	SetPolygonBoundingBox(Dest);
+	pcb_poly_bbox(Dest);
 	Dest->Flags = Src->Flags;
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, Dest);
 	return (Dest);
@@ -232,7 +232,7 @@ void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
 	pcb_polygon_t *polygon;
 
-	polygon = CreateNewPolygon(layer, Polygon->Flags);
+	polygon = pcb_poly_new(layer, Polygon->Flags);
 	CopyPolygonLowLevel(polygon, Polygon);
 
 	/* Update the polygon r-tree. Unlike similarly named functions for
@@ -316,7 +316,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 	 */
 	ErasePolygon(Polygon);
 	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
-	save = *CreateNewPointInPolygon(Polygon, ctx->insert.x, ctx->insert.y);
+	save = *pcb_poly_point_new(Polygon, ctx->insert.x, ctx->insert.y);
 	for (n = Polygon->PointN - 1; n > ctx->insert.idx; n--)
 		Polygon->Points[n] = Polygon->Points[n - 1];
 
@@ -329,7 +329,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 	SetChangedFlag(pcb_true);
 	AddObjectToInsertPointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
 
-	SetPolygonBoundingBox(Polygon);
+	pcb_poly_bbox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	InitClip(PCB->Data, Layer, Polygon);
 	if (ctx->insert.forcible || !RemoveExcessPolygonPoints(Layer, Polygon)) {
@@ -375,7 +375,7 @@ void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 	}
 	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
-	SetPolygonBoundingBox(Polygon);
+	pcb_poly_bbox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	RemoveExcessPolygonPoints(Layer, Polygon);
 	InitClip(PCB->Data, Layer, Polygon);
@@ -459,9 +459,9 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 void *DestroyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
-	FreePolygonMemory(Polygon);
+	pcb_poly_free_fields(Polygon);
 
-	RemoveFreePolygon(Polygon);
+	pcb_poly_free(Polygon);
 
 	return NULL;
 }
@@ -495,7 +495,7 @@ void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 		if (Polygon->HoleIndex[i] > point_idx)
 			Polygon->HoleIndex[i]--;
 
-	SetPolygonBoundingBox(Polygon);
+	pcb_poly_bbox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	InitClip(PCB->Data, Layer, Polygon);
 	return (Polygon);
@@ -514,7 +514,7 @@ void *RemovePolygon_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 	return NULL;
 }
 
-void *RemovePolygon(pcb_layer_t *Layer, pcb_polygon_t *Polygon)
+void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	pcb_opctx_t ctx;
 
@@ -533,7 +533,7 @@ void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *
 	pcb_cardinal_t i;
 
 	if (contour == 0)
-		return RemovePolygon(Layer, Polygon);
+		return pcb_poly_remove(Layer, Polygon);
 
 	if (Layer->On) {
 		ErasePolygon(Polygon);
@@ -602,7 +602,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 		if (Polygon->HoleIndex[i] > point_idx)
 			Polygon->HoleIndex[i]--;
 
-	SetPolygonBoundingBox(Polygon);
+	pcb_poly_bbox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	RemoveExcessPolygonPoints(Layer, Polygon);
 	InitClip(PCB->Data, Layer, Polygon);
@@ -621,7 +621,7 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
 	pcb_polygon_t *polygon;
 
-	polygon = CreateNewPolygon(Layer, pcb_no_flags());
+	polygon = pcb_poly_new(Layer, pcb_no_flags());
 	CopyPolygonLowLevel(polygon, Polygon);
 	MovePolygonLowLevel(polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	if (!Layer->polygon_tree)

@@ -499,3 +499,14 @@ RemoveFreePin -> pcb_pin_free
 CreateNewVia -> pcb_via_new_on_board
 CreateNewPin -> pcb_pin_new_in_element
 SetPinBoundingBox -> pcb_pin_bbox
+GetPolygonMemory -> pcb_poly_alloc
+RemoveFreePolygon -> pcb_poly_free
+GetPointMemoryInPolygon -> pcb_poly_point_alloc
+GetHoleIndexMemoryInPolygon -> pcb_poly_holeidx_new
+FreePolygonMemory -> pcb_poly_free_fields
+SetPolygonBoundingBox -> pcb_poly_bbox
+CreateNewPolygonFromRectangle -> pcb_poly_new_from_rectangle
+CreateNewPolygon -> pcb_poly_new
+CreateNewPointInPolygon -> pcb_poly_point_new
+CreateNewHoleInPolygon -> pcb_poly_hole_new
+RemovePolygon -> pcb_poly_remove

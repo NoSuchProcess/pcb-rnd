@@ -327,7 +327,7 @@ void Freepcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 			free_rotate(&point->X, &point->Y, Buffer->X, Buffer->Y, cosa, sina);
 		}
 		END_LOOP;
-		SetPolygonBoundingBox(polygon);
+		pcb_poly_bbox(polygon);
 		r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	}
 	ENDALL_LOOP;
@@ -448,7 +448,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 			point->Y = PCB_SWAP_Y(point->Y);
 		}
 		END_LOOP;
-		SetPolygonBoundingBox(polygon);
+		pcb_poly_bbox(polygon);
 	}
 	ENDALL_LOOP;
 	pcb_set_buffer_bbox(Buffer);
@@ -513,7 +513,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 			point->Y = PCB_SWAP_Y(point->Y);
 		}
 		END_LOOP;
-		SetPolygonBoundingBox(polygon);
+		pcb_poly_bbox(polygon);
 		r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 		/* hmmm, how to handle clip */
 	}

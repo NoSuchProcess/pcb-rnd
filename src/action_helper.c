@@ -884,7 +884,7 @@ void pcb_notify_mode(void)
 			int flags = PCB_FLAG_CLEARPOLY;
 			if (conf_core.editor.full_poly)
 				flags |= PCB_FLAG_FULLPOLY;
-			if ((polygon = CreateNewPolygonFromRectangle(CURRENT,
+			if ((polygon = pcb_poly_new_from_rectangle(CURRENT,
 																									 Crosshair.AttachedBox.Point1.X,
 																									 Crosshair.AttachedBox.Point1.Y,
 																									 Crosshair.AttachedBox.Point2.X,
@@ -949,7 +949,7 @@ void pcb_notify_mode(void)
 			 * different to the last one
 			 */
 			if (!n || points[n - 1].X != Crosshair.AttachedLine.Point2.X || points[n - 1].Y != Crosshair.AttachedLine.Point2.Y) {
-				CreateNewPointInPolygon(&Crosshair.AttachedPolygon, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y);
+				pcb_poly_point_new(&Crosshair.AttachedPolygon, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y);
 
 				/* copy the coordinates */
 				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
@@ -1041,7 +1041,7 @@ void pcb_notify_mode(void)
 					 * different to the last one
 					 */
 					if (!n || points[n - 1].X != Crosshair.AttachedLine.Point2.X || points[n - 1].Y != Crosshair.AttachedLine.Point2.Y) {
-						CreateNewPointInPolygon(&Crosshair.AttachedPolygon,
+						pcb_poly_point_new(&Crosshair.AttachedPolygon,
 																		Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y);
 
 						/* copy the coordinates */

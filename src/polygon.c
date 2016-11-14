@@ -1336,7 +1336,7 @@ void CopyAttachedPolygonToLayer(void)
 	int saveID;
 
 	/* move data to layer and clear attached struct */
-	polygon = CreateNewPolygon(CURRENT, pcb_no_flags());
+	polygon = pcb_poly_new(CURRENT, pcb_no_flags());
 	saveID = polygon->ID;
 	*polygon = Crosshair.AttachedPolygon;
 	polygon->ID = saveID;
@@ -1344,7 +1344,7 @@ void CopyAttachedPolygonToLayer(void)
 	if (conf_core.editor.full_poly)
 		PCB_FLAG_SET(PCB_FLAG_FULLPOLY, polygon);
 	memset(&Crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
-	SetPolygonBoundingBox(polygon);
+	pcb_poly_bbox(polygon);
 	if (!CURRENT->polygon_tree)
 		CURRENT->polygon_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(CURRENT->polygon_tree, (pcb_box_t *) polygon, 0);
@@ -1699,7 +1699,7 @@ pcb_bool MorphPolygon(pcb_layer_t *layer, pcb_polygon_t *poly)
 	start = p = poly->Clipped;
 	/* This is ugly. The creation of the new polygons can cause
 	 * all of the polygon pointers (including the one we're called
-	 * with to change if there is a realloc in GetPolygonMemory().
+	 * with to change if there is a realloc in pcb_poly_alloc().
 	 * That will invalidate our original "poly" argument, potentially
 	 * inside the loop. We need to steal the Clipped pointer and
 	 * hide it from the Remove call so that it still exists while
@@ -1710,21 +1710,21 @@ pcb_bool MorphPolygon(pcb_layer_t *layer, pcb_polygon_t *poly)
 		printf("Just leaked in MorpyPolygon\n");
 	poly->NoHoles = NULL;
 	flags = poly->Flags;
-	RemovePolygon(layer, poly);
+	pcb_poly_remove(layer, poly);
 	inhibit = pcb_true;
 	do {
 		pcb_vnode_t *v;
 		pcb_polygon_t *newone;
 
 		if (p->contours->area > PCB->IsleArea) {
-			newone = CreateNewPolygon(layer, flags);
+			newone = pcb_poly_new(layer, flags);
 			if (!newone)
 				return pcb_false;
 			many = pcb_true;
 			v = &p->contours->head;
-			CreateNewPointInPolygon(newone, v->point[0], v->point[1]);
+			pcb_poly_point_new(newone, v->point[0], v->point[1]);
 			for (v = v->next; v != &p->contours->head; v = v->next)
-				CreateNewPointInPolygon(newone, v->point[0], v->point[1]);
+				pcb_poly_point_new(newone, v->point[0], v->point[1]);
 			newone->BoundingBox.X1 = p->contours->xmin;
 			newone->BoundingBox.X2 = p->contours->xmax + 1;
 			newone->BoundingBox.Y1 = p->contours->ymin;
@@ -1811,19 +1811,19 @@ void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, pcb_po
 
 	pa = Input;
 	do {
-		Polygon = CreateNewPolygon(Layer, Flags);
+		Polygon = pcb_poly_new(Layer, Flags);
 
 		pline = pa->contours;
 		outer = pcb_true;
 
 		do {
 			if (!outer)
-				CreateNewHoleInPolygon(Polygon);
+				pcb_poly_hole_new(Polygon);
 			outer = pcb_false;
 
 			node = &pline->head;
 			do {
-				CreateNewPointInPolygon(Polygon, node->point[0], node->point[1]);
+				pcb_poly_point_new(Polygon, node->point[0], node->point[1]);
 			}
 			while ((node = node->next) != &pline->head);
 
@@ -1831,7 +1831,7 @@ void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, pcb_po
 		while ((pline = pline->next) != NULL);
 
 		InitClip(Destination, Layer, Polygon);
-		SetPolygonBoundingBox(Polygon);
+		pcb_poly_bbox(Polygon);
 		if (!Layer->polygon_tree)
 			Layer->polygon_tree = r_create_tree(NULL, 0, 0);
 		r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);

@@ -1892,7 +1892,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 					if (PCBLayer == -1) {
 						return -1;
 					}
-					polygon = CreateNewPolygon(&st->PCB->Data->Layer[PCBLayer], flags);
+					polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
 				} else {
 					return -1;
 				}
@@ -1920,7 +1920,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 											Y = PCB_MM_TO_COORD(val);
 										}
 										if (polygon != NULL) {
-											CreateNewPointInPolygon(polygon, X, Y);
+											pcb_poly_point_new(polygon, X, Y);
 										}
 									} else {
 										return -1;

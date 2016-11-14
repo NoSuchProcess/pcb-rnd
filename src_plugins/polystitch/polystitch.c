@@ -172,7 +172,7 @@ static void dup_endpoints(pcb_polygon_t * poly)
 	int n = poly->PointN;
 	if (poly->Points[0].X == poly->Points[n - 1].X && poly->Points[0].Y == poly->Points[n - 1].Y)
 		return;
-	CreateNewPointInPolygon(poly, poly->Points[0].X, poly->Points[0].Y);
+	pcb_poly_point_new(poly, poly->Points[0].X, poly->Points[0].Y);
 }
 
 /*!
@@ -212,19 +212,19 @@ static void stitch_them()
 	r_delete_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly);
 
 	for (i = 0; i < inner_poly->PointN; i++)
-		CreateNewPointInPolygon(outer_poly, inner_poly->Points[i].X, inner_poly->Points[i].Y);
+		pcb_poly_point_new(outer_poly, inner_poly->Points[i].X, inner_poly->Points[i].Y);
 
 	SetChangedFlag(pcb_true);
 
 	outer_poly->NoHolesValid = 0;
-	SetPolygonBoundingBox(outer_poly);
+	pcb_poly_bbox(outer_poly);
 	r_insert_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly, 0);
 	RemoveExcessPolygonPoints(poly_layer, outer_poly);
 	InitClip(PCB->Data, poly_layer, outer_poly);
 	DrawPolygon(poly_layer, outer_poly);
 	pcb_draw();
 
-	RemovePolygon(poly_layer, inner_poly);
+	pcb_poly_remove(poly_layer, inner_poly);
 }
 
 static int polystitch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)

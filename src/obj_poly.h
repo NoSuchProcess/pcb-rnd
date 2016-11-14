@@ -48,18 +48,18 @@ struct pcb_polygon_s  {           /* holds information about a polygon */
 
 
 
-pcb_polygon_t *GetPolygonMemory(pcb_layer_t * layer);
-void RemoveFreePolygon(pcb_polygon_t * data);
-pcb_point_t *GetPointMemoryInPolygon(pcb_polygon_t *Polygon);
-pcb_cardinal_t *GetHoleIndexMemoryInPolygon(pcb_polygon_t *Polygon);
-void FreePolygonMemory(pcb_polygon_t * polygon);
+pcb_polygon_t *pcb_poly_alloc(pcb_layer_t * layer);
+void pcb_poly_free(pcb_polygon_t * data);
+pcb_point_t *pcb_poly_point_alloc(pcb_polygon_t *Polygon);
+pcb_cardinal_t *pcb_poly_holeidx_new(pcb_polygon_t *Polygon);
+void pcb_poly_free_fields(pcb_polygon_t * polygon);
 
-void SetPolygonBoundingBox(pcb_polygon_t *Polygon);
-pcb_polygon_t *CreateNewPolygonFromRectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_flag_t Flags);
-pcb_polygon_t *CreateNewPolygon(pcb_layer_t *Layer, pcb_flag_t Flags);
-pcb_point_t *CreateNewPointInPolygon(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y);
-pcb_polygon_t *CreateNewHoleInPolygon(pcb_polygon_t * Polygon);
-void *RemovePolygon(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
+void pcb_poly_bbox(pcb_polygon_t *Polygon);
+pcb_polygon_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_flag_t Flags);
+pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_flag_t Flags);
+pcb_point_t *pcb_poly_point_new(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y);
+pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon);
+void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
 
 void MovePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
 void RotatePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number);

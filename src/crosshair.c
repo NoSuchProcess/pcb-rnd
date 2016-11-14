@@ -1246,6 +1246,6 @@ void pcb_crosshair_init(void)
  */
 void pcb_crosshair_uninit(void)
 {
-	FreePolygonMemory(&Crosshair.AttachedPolygon);
+	pcb_poly_free_fields(&Crosshair.AttachedPolygon);
 	gui->destroy_gc(Crosshair.GC);
 }

@@ -2238,7 +2238,7 @@ yyreduce:
   case 85:
 #line 908 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewPolygonFromRectangle(Layer,
+				pcb_poly_new_from_rectangle(Layer,
 					OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-5].measure)) + OU ((yyvsp[-3].measure)), OU ((yyvsp[-4].measure)) + OU ((yyvsp[-2].measure)), pcb_flag_old((yyvsp[-1].integer)));
 			}
 #line 2245 "parse_y.c" /* yacc.c:1646  */
@@ -2362,7 +2362,7 @@ yyreduce:
   case 101:
 #line 1145 "parse_y.y" /* yacc.c:1646  */
     {
-				Polygon = CreateNewPolygon(Layer, (yyvsp[-2].flagtype));
+				Polygon = pcb_poly_new(Layer, (yyvsp[-2].flagtype));
 			}
 #line 2368 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2394,7 +2394,7 @@ yyreduce:
 				  }
 				else
 				  {
-				    SetPolygonBoundingBox (Polygon);
+				    pcb_poly_bbox(Polygon);
 				    if (!Layer->polygon_tree)
 				      Layer->polygon_tree = r_create_tree (NULL, 0, 0);
 				    r_insert_entry (Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
@@ -2406,7 +2406,7 @@ yyreduce:
   case 105:
 #line 1190 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewHoleInPolygon (Polygon);
+				pcb_poly_hole_new(Polygon);
 			}
 #line 2412 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2414,7 +2414,7 @@ yyreduce:
   case 109:
 #line 1204 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewPointInPolygon(Polygon, OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
+				pcb_poly_point_new(Polygon, OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
 			}
 #line 2420 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2422,7 +2422,7 @@ yyreduce:
   case 110:
 #line 1208 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewPointInPolygon(Polygon, NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
+				pcb_poly_point_new(Polygon, NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
 			}
 #line 2428 "parse_y.c" /* yacc.c:1646  */
     break;
