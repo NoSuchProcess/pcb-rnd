@@ -939,10 +939,10 @@ static routedata_t *CreateRouteData()
 	Nets = CollectSubnets(pcb_false);
 	{
 		routebox_t *last_net = NULL;
-		NETLIST_LOOP(&Nets);
+		PCB_NETLIST_LOOP(&Nets);
 		{
 			routebox_t *last_in_net = NULL;
-			NET_LOOP(netlist);
+			PCB_NET_LOOP(netlist);
 			{
 				routebox_t *last_in_subnet = NULL;
 				int j;

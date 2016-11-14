@@ -292,7 +292,7 @@ pcb_netlist_t *pcb_netlist_new(pcb_netlist_list_t *Netlistlist)
 void pcb_netlist_free(pcb_netlist_t *Netlist)
 {
 	if (Netlist) {
-		NET_LOOP(Netlist);
+		PCB_NET_LOOP(Netlist);
 		{
 			pcb_net_free(net);
 		}
@@ -308,7 +308,7 @@ void pcb_netlist_free(pcb_netlist_t *Netlist)
 void pcb_netlist_list_free(pcb_netlist_list_t *Netlistlist)
 {
 	if (Netlistlist) {
-		NETLIST_LOOP(Netlistlist);
+		PCB_NETLIST_LOOP(Netlistlist);
 		{
 			pcb_netlist_free(netlist);
 		}

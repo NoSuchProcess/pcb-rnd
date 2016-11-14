@@ -188,7 +188,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	 * elaborate algorithm to walk serial nets, but the datastructures
 	 * are too gross so I'm going with the 80% solution.
 	 */
-	NET_LOOP(Nets);
+	PCB_NET_LOOP(Nets);
 	{
 		pcb_connection_t *conna, *connb;
 		pcb_element_t *ea, *eb;
@@ -224,7 +224,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	END_LOOP;
 
 	/* Place larger nets, still grouping by net */
-	NET_LOOP(Nets);
+	PCB_NET_LOOP(Nets);
 	{
 		CONNECTION_LOOP(net);
 		{

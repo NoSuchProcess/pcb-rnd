@@ -475,3 +475,5 @@ GetNetListMemory -> pcb_netlist_new
 FreeNetListListMemory -> pcb_netlist_list_free
 FreeNetListMemory -> pcb_netlist_free
 FreeNetMemory -> pcb_net_free
+NETLIST_LOOP -> PCB_NETLIST_LOOP
+NET_LOOP -> PCB_NET_LOOP

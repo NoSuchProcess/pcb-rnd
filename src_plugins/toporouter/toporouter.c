@@ -2700,12 +2700,12 @@ void import_clusters(toporouter_t * r)
 	pcb_netlist_list_t nets;
 	pcb_reset_conns(pcb_false);
 	nets = CollectSubnets(pcb_false);
-	NETLIST_LOOP(&nets);
+	PCB_NETLIST_LOOP(&nets);
 	{
 		if (netlist->NetN > 0) {
 			toporouter_netlist_t *nl = netlist_create(r, netlist->Net->Connection->menu->Name, netlist->Net->Connection->menu->Style);
 
-			NET_LOOP(netlist);
+			PCB_NET_LOOP(netlist);
 			{
 
 				toporouter_cluster_t *cluster = cluster_create(r, nl);

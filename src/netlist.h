@@ -93,15 +93,15 @@ void pcb_netlist_list_free(pcb_netlist_list_t *);
 void pcb_netlist_free(pcb_netlist_t *);
 void pcb_net_free(pcb_net_t *);
 
-#define NETLIST_LOOP(top) do   {                         \
-        pcb_cardinal_t        n;                                      \
+#define PCB_NETLIST_LOOP(top) do   {                            \
+        pcb_cardinal_t        n;                                \
         pcb_netlist_t *  netlist;                               \
         for (n = (top)->NetListN-1; n != -1; n--)               \
         {                                                       \
                 netlist = &(top)->NetList[n]
 
-#define NET_LOOP(top) do   {                             \
-        pcb_cardinal_t        n;                                      \
+#define PCB_NET_LOOP(top) do   {                                \
+        pcb_cardinal_t        n;                                \
         pcb_net_t *  net;                                       \
         for (n = (top)->NetN-1; n != -1; n--)                   \
         {                                                       \

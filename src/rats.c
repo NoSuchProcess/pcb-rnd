@@ -679,7 +679,7 @@ AddAllRats(pcb_bool SelectedOnly,
 	 * from Nets, so *Nets is empty after the
 	 * DrawShortestRats call
 	 */
-	NET_LOOP(Wantlist);
+	PCB_NET_LOOP(Wantlist);
 	{
 		CONNECTION_LOOP(net);
 		{
@@ -763,7 +763,7 @@ pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
 	 * from Nets, so *Nets is empty after the
 	 * DrawShortestRats call
 	 */
-	NET_LOOP(Wantlist);
+	PCB_NET_LOOP(Wantlist);
 	{
 		Nets = pcb_netlist_new(&result);
 		CONNECTION_LOOP(net);
