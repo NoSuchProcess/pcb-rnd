@@ -599,3 +599,11 @@ POLYGON_LOOP -> PCB_POLY_LOOP
 ALLTEXT_LOOP -> PCB_TEXT_ALL_LOOP
 VISIBLETEXT_LOOP -> PCB_TEXT_VISIBLE_LOOP
 TEXT_LOOP -> PCB_TEXT_LOOP
+LoadElementToBuffer -> pcb_element_load_to_buffer
+LoadFootprintByName -> pcb_element_load_footprint_by_name
+SmashBufferElement -> pcb_element_smash_buffer
+ConvertBufferToElement -> pcb_element_convert_from_buffer
+CopyElementLowLevel -> pcb_element_copy
+UniqueElementName -> pcb_element_uniq_name
+AddTextToElement -> pcb_element_text_set
+ChangeElementText -> pcb_element_text_change

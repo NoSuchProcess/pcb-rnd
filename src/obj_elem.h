@@ -73,12 +73,13 @@ pcb_bool pcb_selected_element_change_side(void);
 int pcb_element_get_orientation(pcb_element_t * e);
 
 
-pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name);
-int LoadFootprintByName(pcb_buffer_t *Buffer, const char *Footprint);
-pcb_bool SmashBufferElement(pcb_buffer_t *Buffer);
-pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer);
-pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, pcb_coord_t dx, pcb_coord_t dy);
-char *UniqueElementName(pcb_data_t *Data, char *Name);
+pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name);
+int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footprint);
+pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer);
+pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer);
+pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, pcb_coord_t dx, pcb_coord_t dy);
+char *pcb_element_uniq_name(pcb_data_t *Data, char *Name);
+
 void r_delete_element(pcb_data_t * data, pcb_element_t * element);
 
 void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY);
@@ -90,14 +91,14 @@ pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 
 pcb_line_t *pcb_element_line_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
 
-void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
+void pcb_element_text_set(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
 	unsigned Direction, char *TextString, int Scale, pcb_flag_t Flags);
 
 
 /* Change the specified text on an element, either on the board (give
    PCB, PCB->Data) or in a buffer (give NULL, Buffer->Data).  The old
    string is returned, and must be properly freed by the caller.  */
-char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Element, int which, char *new_name);
+char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Element, int which, char *new_name);
 
 
 /* ---------------------------------------------------------------------------

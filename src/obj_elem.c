@@ -122,7 +122,7 @@ pcb_line_t *pcb_element_line_alloc(pcb_element_t *Element)
  * returns pcb_false on error
  * if successful, update some other stuff and reposition the pastebuffer
  */
-pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name)
+pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
 {
 	pcb_element_t *element;
 
@@ -151,14 +151,14 @@ pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name)
 
 /* Searches for the given element by "footprint" name, and loads it
    into the buffer. Returns zero on success, non-zero on error.  */
-int LoadFootprintByName(pcb_buffer_t *Buffer, const char *Footprint)
+int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footprint)
 {
-	return !LoadElementToBuffer(Buffer, Footprint);
+	return !pcb_element_load_to_buffer(Buffer, Footprint);
 }
 
 
 /* break buffer element into pieces */
-pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
+pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 {
 	pcb_element_t *element;
 	pcb_cardinal_t group;
@@ -253,7 +253,7 @@ static int polygon_is_rectangle(pcb_polygon_t *poly)
 }
 
 /* convert buffer contents into an element */
-pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
+pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 {
 	pcb_element_t *Element;
 	pcb_cardinal_t group;
@@ -481,7 +481,7 @@ pcb_bool pcb_selected_element_change_side(void)
 }
 
 /* changes the layout-name of an element */
-char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Element, int which, char *new_name)
+char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Element, int which, char *new_name)
 {
 	char *old = Element->Name[which].TextString;
 
@@ -506,7 +506,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Ele
 }
 
 /* copies data from one element to another and creates the destination; if necessary */
-pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, pcb_coord_t dx, pcb_coord_t dy)
+pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i;
 	/* release old memory if necessary */
@@ -576,11 +576,11 @@ pcb_element_t *pcb_element_new(pcb_data_t *Data, pcb_element_t *Element,
 
 	/* copy values and set additional information */
 	TextScale = MAX(MIN_TEXTSCALE, TextScale);
-	AddTextToElement(&DESCRIPTION_TEXT(Element), PCBFont, TextX, TextY, Direction, Description, TextScale, TextFlags);
+	pcb_element_text_set(&DESCRIPTION_TEXT(Element), PCBFont, TextX, TextY, Direction, Description, TextScale, TextFlags);
 	if (uniqueName)
-		NameOnPCB = UniqueElementName(Data, NameOnPCB);
-	AddTextToElement(&NAMEONPCB_TEXT(Element), PCBFont, TextX, TextY, Direction, NameOnPCB, TextScale, TextFlags);
-	AddTextToElement(&VALUE_TEXT(Element), PCBFont, TextX, TextY, Direction, Value, TextScale, TextFlags);
+		NameOnPCB = pcb_element_uniq_name(Data, NameOnPCB);
+	pcb_element_text_set(&NAMEONPCB_TEXT(Element), PCBFont, TextX, TextY, Direction, NameOnPCB, TextScale, TextFlags);
+	pcb_element_text_set(&VALUE_TEXT(Element), PCBFont, TextX, TextY, Direction, Value, TextScale, TextFlags);
 	DESCRIPTION_TEXT(Element).Element = Element;
 	NAMEONPCB_TEXT(Element).Element = Element;
 	VALUE_TEXT(Element).Element = Element;
@@ -645,7 +645,7 @@ pcb_line_t *pcb_element_line_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coo
 
 /* creates a new textobject as part of an element
    copies the values to the appropriate text object */
-void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
+void pcb_element_text_set(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
 	unsigned Direction, char *TextString, int Scale, pcb_flag_t Flags)
 {
 	free(Text->TextString);
@@ -879,7 +879,7 @@ static char *BumpName(char *Name)
 
 /* make a unique name for the name on board
  * this can alter the contents of the input string */
-char *UniqueElementName(pcb_data_t *Data, char *Name)
+char *pcb_element_uniq_name(pcb_data_t *Data, char *Name)
 {
 	pcb_bool unique = pcb_true;
 	/* null strings are ok */
@@ -1115,7 +1115,7 @@ void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 	pcb_element_t *element;
 
 	element = pcb_element_alloc(ctx->buffer.dst);
-	CopyElementLowLevel(ctx->buffer.dst, element, Element, pcb_false, 0, 0);
+	pcb_element_copy(ctx->buffer.dst, element, Element, pcb_false, 0, 0);
 	PCB_FLAG_CLEAR(ctx->buffer.extraflg, element);
 	if (ctx->buffer.extraflg) {
 		PCB_ELEMENT_PCB_TEXT_LOOP(element);
@@ -1373,13 +1373,13 @@ void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
 	if (NAME_INDEX() == NAMEONPCB_INDEX) {
-		if (conf_core.editor.unique_names && UniqueElementName(PCB->Data, ctx->chgname.new_name) != ctx->chgname.new_name) {
+		if (conf_core.editor.unique_names && pcb_element_uniq_name(PCB->Data, ctx->chgname.new_name) != ctx->chgname.new_name) {
 			pcb_message(PCB_MSG_DEFAULT, _("Error: The name \"%s\" is not unique!\n"), ctx->chgname.new_name);
 			return ((char *) -1);
 		}
 	}
 
-	return ChangeElementText(PCB, PCB->Data, Element, NAME_INDEX(), ctx->chgname.new_name);
+	return pcb_element_text_change(PCB, PCB->Data, Element, NAME_INDEX(), ctx->chgname.new_name);
 }
 
 void *ChangeElementNonetlist(pcb_opctx_t *ctx, pcb_element_t *Element)
@@ -1507,7 +1507,7 @@ void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 	printf("Entered CopyElement, trying to copy element %s\n", Element->Name[1].TextString);
 #endif
 
-	pcb_element_t *element = CopyElementLowLevel(PCB->Data,
+	pcb_element_t *element = pcb_element_copy(PCB->Data,
 																							 NULL, Element,
 																							 conf_core.editor.unique_names, ctx->copy.DeltaX,
 																							 ctx->copy.DeltaY);

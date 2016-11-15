@@ -394,7 +394,7 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 		fullp = entry->data.fp.loc_info;
 	}
 		SetMode(PCB_MODE_ARROW);
-	if (LoadElementToBuffer(PCB_PASTEBUFFER, name == NULL ? fullp : name))
+	if (pcb_element_load_to_buffer(PCB_PASTEBUFFER, name == NULL ? fullp : name))
 		SetMode(PCB_MODE_PASTE_BUFFER);
 
 	/* update the preview with new symbol data */

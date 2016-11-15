@@ -228,7 +228,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				pcb_buffer_add_selected(PCB_PASTEBUFFER, x, y, pcb_true);
 				SaveUndoSerialNumber();
 				RemoveSelected();
-				ConvertBufferToElement(PCB_PASTEBUFFER);
+				pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
 				RestoreUndoSerialNumber();
 				pcb_buffer_copy_to_layout(x, y);
 				SetBufferNumber(Note.Buffer);

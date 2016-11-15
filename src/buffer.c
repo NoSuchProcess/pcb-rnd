@@ -161,7 +161,7 @@ int pcb_load_footprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	if (!name)
 		PCB_AFAIL(loadfootprint);
 
-	if (LoadFootprintByName(PCB_PASTEBUFFER, name))
+	if (pcb_element_load_footprint_by_name(PCB_PASTEBUFFER, name))
 		return 1;
 
 	if (elementlist_length(&PCB_PASTEBUFFER->Data->Element) == 0) {
@@ -786,12 +786,12 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 			/* converts buffer contents into an element */
 		case F_Convert:
-			ConvertBufferToElement(PCB_PASTEBUFFER);
+			pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
 			break;
 
 			/* break up element for editing */
 		case F_Restore:
-			SmashBufferElement(PCB_PASTEBUFFER);
+			pcb_element_smash_buffer(PCB_PASTEBUFFER);
 			break;
 
 			/* Mirror buffer */

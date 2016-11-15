@@ -68,7 +68,7 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 	 * move element to a 5% offset from zero position
 	 * set all package lines/arcs to zero width
 	 */
-	CopyElementLowLevel(NULL, &pinout->element, element, FALSE, 0, 0);
+	pcb_element_copy(NULL, &pinout->element, element, FALSE, 0, 0);
 	PCB_PIN_LOOP(&pinout->element);
 	{
 		PCB_FLAG_SET(PCB_FLAG_DISPLAYNAME, pin);

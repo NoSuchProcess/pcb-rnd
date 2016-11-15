@@ -625,10 +625,10 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	element_cache = NULL;
 	e = find_element_by_refdes(refdes);
 
-	old = ChangeElementText(PCB, PCB->Data, e, NAMEONPCB_INDEX, pcb_strdup(refdes));
+	old = pcb_element_text_change(PCB, PCB->Data, e, NAMEONPCB_INDEX, pcb_strdup(refdes));
 	if (old)
 		free(old);
-	old = ChangeElementText(PCB, PCB->Data, e, VALUE_INDEX, pcb_strdup(value));
+	old = pcb_element_text_change(PCB, PCB->Data, e, VALUE_INDEX, pcb_strdup(value));
 	if (old)
 		free(old);
 
@@ -795,7 +795,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					SetBufferNumber(MAX_BUFFER - 1);
 					pcb_buffer_clear(PCB_PASTEBUFFER);
 					pcb_copy_obj_to_buffer(PCB_PASTEBUFFER->Data, PCB->Data, PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
-					SmashBufferElement(PCB_PASTEBUFFER);
+					pcb_element_smash_buffer(PCB_PASTEBUFFER);
 					PCB_PASTEBUFFER->X = 0;
 					PCB_PASTEBUFFER->Y = 0;
 					SaveUndoSerialNumber();
