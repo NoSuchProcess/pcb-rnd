@@ -1011,7 +1011,7 @@ arc_hi_format
 			/* x, y, width, height, thickness, clearance, startangle, delta, flags */
 		: T_ARC '[' measure measure measure measure measure measure number number flags ']'
 			{
-			  CreateNewArcOnLayer(Layer, NU ($3), NU ($4), NU ($5), NU ($6), $9, $10,
+			  pcb_arc_new(Layer, NU ($3), NU ($4), NU ($5), NU ($6), $9, $10,
 			                             NU ($7), NU ($8), $11);
 			}
 		;
@@ -1020,7 +1020,7 @@ arc_1.7_format
 			/* x, y, width, height, thickness, clearance, startangle, delta, flags */
 		: T_ARC '(' measure measure measure measure measure measure number number INTEGER ')'
 			{
-				CreateNewArcOnLayer(Layer, OU ($3), OU ($4), OU ($5), OU ($6), $9, $10,
+				pcb_arc_new(Layer, OU ($3), OU ($4), OU ($5), OU ($6), $9, $10,
 						    OU ($7), OU ($8), pcb_flag_old($11));
 			}
 		;
@@ -1029,7 +1029,7 @@ arc_oldformat
 			/* x, y, width, height, thickness, startangle, delta, flags */
 		: T_ARC '(' measure measure measure measure measure measure number INTEGER ')'
 			{
-				CreateNewArcOnLayer(Layer, OU ($3), OU ($4), OU ($5), OU ($5), IV ($8), $9,
+				pcb_arc_new(Layer, OU ($3), OU ($4), OU ($5), OU ($5), IV ($8), $9,
 					OU ($7), 200*GROUNDPLANEFRAME, pcb_flag_old($10));
 			}
 		;

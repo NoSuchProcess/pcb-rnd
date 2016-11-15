@@ -612,7 +612,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 			startAngle = 180*atan2(endY - centreY, endX - centreX)/M_PI;
 			/* avoid using atan2 with zero parameters */
 		}
-		CreateNewArcOnLayer( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, -delta, Thickness, Clearance, Flags);
+		pcb_arc_new( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, -delta, Thickness, Clearance, Flags);
 		return 0;
 	}
 	return -1;

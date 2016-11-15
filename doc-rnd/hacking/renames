@@ -517,3 +517,6 @@ DeleteRats -> pcb_rats_delete
 GetTextMemory -> pcb_text_alloc
 RemoveFreeText -> pcb_text_free
 CreateNewText -> pcb_text_new
+pcb_arc_new -> pcb_arc_alloc
+CreateNewArcOnLayer -> pcb_arc_new
+RemoveArc -> pcb_arc_destroy

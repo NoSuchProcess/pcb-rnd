@@ -651,7 +651,7 @@ void pcb_notify_mode(void)
 							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
 						wy = wx;
 					}
-					if (coord_abs(wy) > 0 && (arc = CreateNewArcOnLayer(CURRENT,
+					if (coord_abs(wy) > 0 && (arc = pcb_arc_new(CURRENT,
 																												Crosshair.AttachedBox.Point2.X,
 																												Crosshair.AttachedBox.Point2.Y,
 																												coord_abs(wy),

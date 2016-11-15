@@ -1651,9 +1651,9 @@ static pcb_arc_t *create_arc(pcb_line_t *sample, int x, int y, int r, int sa, in
 #if TRACE1
 	pcb_printf("create_arc at %#mD r %#mS sa %d delta %d\n", x, y, r, sa, da);
 #endif
-	arc = CreateNewArcOnLayer(CURRENT, x, y, r, r, sa, da, sample->Thickness, sample->Clearance, sample->Flags);
+	arc = pcb_arc_new(CURRENT, x, y, r, r, sa, da, sample->Thickness, sample->Clearance, sample->Flags);
 	if (arc == 0) {
-		arc = CreateNewArcOnLayer(CURRENT, x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags);
+		arc = pcb_arc_new(CURRENT, x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags);
 	}
 	AddObjectToCreateUndoList(PCB_TYPE_ARC, CURRENT, arc, arc);
 
@@ -2362,7 +2362,7 @@ static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	ARC_LOOP(CURRENT);
 	{
 		if (ARC2EXTRA(arc)->deleted)
-			RemoveArc(CURRENT, arc);
+			pcb_arc_destroy(CURRENT, arc);
 	}
 	END_LOOP;
 

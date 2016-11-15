@@ -5579,7 +5579,7 @@ gdouble export_pcb_drawarc(guint layer, toporouter_arc_t * a, guint thickness, g
 	if (da > 359. || da < -359.)
 		return 0.;
 
-	arc = CreateNewArcOnLayer(LAYER_PTR(layer), vx(a->centre), vy(a->centre), a->r, a->r,
+	arc = pcb_arc_new(LAYER_PTR(layer), vx(a->centre), vy(a->centre), a->r, a->r,
 														sa, da, thickness, clearance,
 														pcb_flag_make(PCB_FLAG_AUTO | (PCB_FLAG_TEST(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
 

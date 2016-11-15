@@ -409,7 +409,7 @@ static int parse_arc(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj, pcb_co
 	pcb_arc_t *arc;
 
 	if (ly != NULL)
-		arc = pcb_arc_new(ly);
+		arc = pcb_arc_alloc(ly);
 	else if (el != NULL)
 		arc = pcb_element_arc_new(el);
 	else

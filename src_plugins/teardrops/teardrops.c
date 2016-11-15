@@ -169,7 +169,7 @@ static pcb_r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 		ax = lx - dy * adist;
 		ay = ly + dx * adist;
 
-		arc = CreateNewArcOnLayer(lay, (int) ax, (int) ay, (int) radius,
+		arc = pcb_arc_new(lay, (int) ax, (int) ay, (int) radius,
 															(int) radius, (int) theta + 90 + aoffset, delta - aoffset, l->Thickness, l->Clearance, l->Flags);
 		if (arc)
 			AddObjectToCreateUndoList(PCB_TYPE_ARC, lay, arc, arc);
@@ -177,7 +177,7 @@ static pcb_r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 		ax = lx + dy * (x + t);
 		ay = ly - dx * (x + t);
 
-		arc = CreateNewArcOnLayer(lay, (int) ax, (int) ay, (int) radius,
+		arc = pcb_arc_new(lay, (int) ax, (int) ay, (int) radius,
 															(int) radius, (int) theta - 90 - aoffset, -delta + aoffset, l->Thickness, l->Clearance, l->Flags);
 		if (arc)
 			AddObjectToCreateUndoList(PCB_TYPE_ARC, lay, arc, arc);

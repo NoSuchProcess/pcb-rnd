@@ -190,7 +190,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	END_LOOP;
 	ARC_LOOP(element);
 	{
-		CreateNewArcOnLayer(&Buffer->Data->SILKLAYER,
+		pcb_arc_new(&Buffer->Data->SILKLAYER,
 												arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
 	}
 	END_LOOP;

@@ -45,7 +45,7 @@
 #include "obj_arc_draw.h"
 
 
-pcb_arc_t *pcb_arc_new(pcb_layer_t * layer)
+pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
 {
 	pcb_arc_t *new_obj;
 
@@ -172,7 +172,7 @@ void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb
 
 
 /* creates a new arc on a layer */
-pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t width, pcb_coord_t height, pcb_angle_t sa, pcb_angle_t dir, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
+pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t width, pcb_coord_t height, pcb_angle_t sa, pcb_angle_t dir, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
 	pcb_arc_t *Arc;
 
@@ -183,7 +183,7 @@ pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y
 			return (NULL);						/* prevent stacked arcs */
 	}
 	END_LOOP;
-	Arc = pcb_arc_new(Layer);
+	Arc = pcb_arc_alloc(Layer);
 	if (!Arc)
 		return (Arc);
 
@@ -225,7 +225,7 @@ void *AddArcToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
 
-	return (CreateNewArcOnLayer(layer, Arc->X, Arc->Y,
+	return (pcb_arc_new(layer, Arc->X, Arc->Y,
 		Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
 		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
@@ -417,7 +417,7 @@ void *CopyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_arc_t *arc;
 
-	arc = CreateNewArcOnLayer(Layer, Arc->X + ctx->copy.DeltaX,
+	arc = pcb_arc_new(Layer, Arc->X + ctx->copy.DeltaX,
 														Arc->Y + ctx->copy.DeltaY, Arc->Width, Arc->Height, Arc->StartAngle,
 														Arc->Delta, Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND));
 	if (!arc)
@@ -511,7 +511,7 @@ void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	return NULL;
 }
 
-void *RemoveArc(pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_opctx_t ctx;
 

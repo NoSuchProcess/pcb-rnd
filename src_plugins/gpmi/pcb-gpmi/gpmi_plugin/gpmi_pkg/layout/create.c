@@ -104,7 +104,7 @@ int layout_create_via(int x, int y, int thickness, int clearance, int mask, int 
 static void *layout_create_arc_(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
 {
 	void *arc;
-	arc = CreateNewArcOnLayer (CURRENT, x, y, width, height, sa, dir, thickness, clearance, get_flags(flags));
+	arc = pcb_arc_new(CURRENT, x, y, width, height, sa, dir, thickness, clearance, get_flags(flags));
 	if (arc != NULL) {
 		AddObjectToCreateUndoList (PCB_TYPE_ARC, CURRENT, arc, arc);
 		return 0;

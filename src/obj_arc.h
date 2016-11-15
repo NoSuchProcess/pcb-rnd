@@ -40,23 +40,23 @@ struct pcb_arc_s {       /* holds information about arcs */
 	gdl_elem_t link;              /* an arc is in a list: either on a layer or in an element */
 };
 
-
 /*** Memory ***/
-pcb_arc_t *pcb_arc_new(pcb_layer_t *);
-pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element);
+pcb_arc_t *pcb_arc_alloc(pcb_layer_t *);
 void pcb_arc_free(pcb_arc_t *data);
+
+pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element);
+pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t width, pcb_coord_t height, pcb_angle_t sa, pcb_angle_t dir, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
+void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc);
+
+/* Add objects without creating them or making any "sanity modifications" to them */
+void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);
+
 
 /*** Utility ***/
 void SetArcBoundingBox(pcb_arc_t *Arc);
 pcb_box_t *GetArcEnds(pcb_arc_t *Arc);
 void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);
 void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height);
-void *RemoveArc(pcb_layer_t *Layer, pcb_arc_t *Arc);
-pcb_arc_t *CreateNewArcOnLayer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t width, pcb_coord_t height, pcb_angle_t sa, pcb_angle_t dir, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
-
-/* Add objects without creating them or making any "sanity modifications" to them */
-void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);
-
 void RotateArcLowLevel(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 #define	MOVE_ARC_LOWLEVEL(a,dx,dy) \
