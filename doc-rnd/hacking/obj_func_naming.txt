@@ -45,3 +45,7 @@ Low level (alloc/free):
 	pcb_add_*_on_layer():
 		Postprocessing: call this after a new object is allocated and fields are
 		filled in. It mainly updates the rtree.
+
+Misc:
+	pcb_*_bbox():
+		calculate and update the bounding box of an object
