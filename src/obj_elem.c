@@ -1019,7 +1019,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
 			RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		}
-		MOVE_PAD_LOWLEVEL(pad, DX, DY);
+		pcb_pad_move(pad, DX, DY);
 		if (Data) {
 			r_insert_entry(Data->pad_tree, (pcb_box_t *) pad, 0);
 			ClearFromPolygon(Data, PCB_TYPE_PAD, Element, pad);
