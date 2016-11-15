@@ -51,7 +51,7 @@ void *ClrViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *ChangePinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin);
 void *SetPinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin);
 void *ClrPinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin);
-pcb_bool ChangeHole(pcb_pin_t *Via);
+pcb_bool pcb_pin_change_hole(pcb_pin_t *Via);
 void *ChangePinMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin);
 void *ChangeViaMaskSize(pcb_opctx_t *ctx, pcb_pin_t *Via);
 void *CopyVia(pcb_opctx_t *ctx, pcb_pin_t *Via);

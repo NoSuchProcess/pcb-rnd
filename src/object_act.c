@@ -330,14 +330,14 @@ static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		case F_Object:
 			if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 				element = (pcb_element_t *) ptrtmp;
-				ChangeElementSide(element, 2 * Crosshair.Y - PCB->MaxHeight);
+				pcb_element_change_side(element, 2 * Crosshair.Y - PCB->MaxHeight);
 				IncrementUndoSerialNumber();
 				pcb_draw();
 			}
 			break;
 		case F_Selected:
 		case F_SelectedElements:
-			ChangeSelectedElementSide();
+			pcb_selected_element_change_side();
 			break;
 		default:
 			err = 1;
@@ -596,11 +596,11 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			return 1;
 		}
 
-		er = ElementOrientation(e);
+		er = pcb_element_get_orientation(e);
 		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
 		if (!PCB_FRONT(e))
 			MirrorElementCoordinates(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
-		pr = ElementOrientation(pe);
+		pr = pcb_element_get_orientation(pe);
 
 		mx = e->MarkX;
 		my = e->MarkY;
@@ -986,7 +986,7 @@ int ActionListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 {
 	ELEMENT_LOOP(PCB->Data);
 	{
-		printf("%d %s\n", ElementOrientation(element), NAMEONPCB_NAME(element));
+		printf("%d %s\n", pcb_element_get_orientation(element), NAMEONPCB_NAME(element));
 	}
 	END_LOOP;
 

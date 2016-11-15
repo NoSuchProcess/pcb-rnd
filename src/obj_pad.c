@@ -140,7 +140,7 @@ void pcb_pad_bbox(pcb_pad_t *Pad)
 }
 
 /* changes the nopaste flag of a pad */
-pcb_bool ChangePaste(pcb_pad_t *Pad)
+pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (pcb_false);

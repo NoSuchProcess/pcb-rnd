@@ -448,7 +448,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 }
 
 /* changes the side of the board an element is on; returns pcb_true if done */
-pcb_bool ChangeElementSide(pcb_element_t *Element, pcb_coord_t yoff)
+pcb_bool pcb_element_change_side(pcb_element_t *Element, pcb_coord_t yoff)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (pcb_false);
@@ -461,7 +461,7 @@ pcb_bool ChangeElementSide(pcb_element_t *Element, pcb_coord_t yoff)
 
 /* changes the side of all selected and visible elements;
    returns pcb_true if anything has changed */
-pcb_bool ChangeSelectedElementSide(void)
+pcb_bool pcb_selected_element_change_side(void)
 {
 	pcb_bool change = pcb_false;
 
@@ -469,7 +469,7 @@ pcb_bool ChangeSelectedElementSide(void)
 		ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
-			change |= ChangeElementSide(element, 0);
+			change |= pcb_element_change_side(element, 0);
 		}
 	}
 	END_LOOP;
@@ -928,7 +928,7 @@ void r_delete_element(pcb_data_t * data, pcb_element_t * element)
  * indication of absolute rotation; only relative rotation is
  * meaningful.
  */
-int ElementOrientation(pcb_element_t * e)
+int pcb_element_get_orientation(pcb_element_t * e)
 {
 	pcb_coord_t pin1x, pin1y, pin2x, pin2y, dx, dy;
 	pcb_bool found_pin1 = 0;

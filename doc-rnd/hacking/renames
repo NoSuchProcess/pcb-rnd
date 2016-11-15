@@ -550,3 +550,8 @@ Freepcb_buffer_rotate -> pcb_buffer_free_rotate
 GetArcEnds -> pcb_arc_get_ends
 ChangeArcAngles -> pcb_arc_set_angles
 ChangeArcRadii -> pcb_arc_set_radii
+ChangeElementSide -> pcb_element_change_side
+ChangeSelectedElementSide -> pcb_selected_element_change_side
+ElementOrientation -> pcb_element_get_orientation
+ChangePaste -> pcb_pad_change_paste
+ChangeHole -> pcb_pin_change_hole

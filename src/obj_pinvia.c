@@ -626,7 +626,7 @@ void *ClrPinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 }
 
 /* changes the hole flag of a via */
-pcb_bool ChangeHole(pcb_pin_t *Via)
+pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (pcb_false);

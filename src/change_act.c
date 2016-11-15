@@ -272,7 +272,7 @@ static int ActionChangeHole(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && ChangeHole((pcb_pin_t *) ptr3))
+				if ((type = SearchScreen(x, y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pin_change_hole((pcb_pin_t *) ptr3))
 					IncrementUndoSerialNumber();
 				break;
 			}
@@ -314,7 +314,7 @@ static int ActionChangePaste(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && ChangePaste((pcb_pad_t *) ptr3))
+				if ((type = SearchScreen(x, y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pad_change_paste((pcb_pad_t *) ptr3))
 					IncrementUndoSerialNumber();
 				break;
 			}
