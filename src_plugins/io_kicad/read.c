@@ -334,7 +334,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 
-		CreateNewText( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags);
+		pcb_text_new( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags);
 		return 0; /* create new font */
 	}
 	return -1;

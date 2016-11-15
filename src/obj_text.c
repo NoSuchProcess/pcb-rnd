@@ -48,7 +48,7 @@
 
 /*** allocation ***/
 /* get next slot for a text object, allocates memory if necessary */
-pcb_text_t *GetTextMemory(pcb_layer_t * layer)
+pcb_text_t *pcb_text_alloc(pcb_layer_t * layer)
 {
 	pcb_text_t *new_obj;
 
@@ -58,7 +58,7 @@ pcb_text_t *GetTextMemory(pcb_layer_t * layer)
 	return new_obj;
 }
 
-void RemoveFreeText(pcb_text_t * data)
+void pcb_text_free(pcb_text_t * data)
 {
 	textlist_remove(data);
 	free(data);
@@ -67,14 +67,14 @@ void RemoveFreeText(pcb_text_t * data)
 /*** utility ***/
 
 /* creates a new text on a layer */
-pcb_text_t *CreateNewText(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text;
 
 	if (TextString == NULL)
 		return NULL;
 
-	text = GetTextMemory(Layer);
+	text = pcb_text_alloc(Layer);
 	if (text == NULL)
 		return NULL;
 
@@ -221,7 +221,7 @@ void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
 
-	return (CreateNewText(layer, &PCB->Font, Text->X, Text->Y, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg)));
+	return (pcb_text_new(layer, &PCB->Font, Text->X, Text->Y, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg)));
 }
 
 /* moves a text to buffer without allocating memory for the name */
@@ -327,7 +327,7 @@ void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_text_t *text;
 
-	text = CreateNewText(Layer, &PCB->Font, Text->X + ctx->copy.DeltaX,
+	text = pcb_text_new(Layer, &PCB->Font, Text->X + ctx->copy.DeltaX,
 											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
 	DrawText(Layer, text);
 	AddObjectToCreateUndoList(PCB_TYPE_TEXT, Layer, text, text);
@@ -402,7 +402,7 @@ void *DestroyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	free(Text->TextString);
 	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 
-	RemoveFreeText(Text);
+	pcb_text_free(Text);
 
 	return NULL;
 }

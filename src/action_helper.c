@@ -911,7 +911,7 @@ void pcb_notify_mode(void)
 
 					if (GetLayerGroupNumberByNumber(INDEXOFCURRENT) == GetLayerGroupNumberByNumber(solder_silk_layer))
 						flag |= PCB_FLAG_ONSOLDER;
-					if ((text = CreateNewText(CURRENT, &PCB->Font, Note.X,
+					if ((text = pcb_text_new(CURRENT, &PCB->Font, Note.X,
 																		Note.Y, 0, conf_core.design.text_scale, string, pcb_flag_make(flag))) != NULL) {
 						AddObjectToCreateUndoList(PCB_TYPE_TEXT, CURRENT, text, text);
 						IncrementUndoSerialNumber();

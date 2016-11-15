@@ -514,3 +514,6 @@ GetRatMemory -> pcb_rat_alloc
 RemoveFreeRat -> pcb_rat_free
 CreateNewRat -> pcb_rat_new
 DeleteRats -> pcb_rats_delete
+GetTextMemory -> pcb_text_alloc
+RemoveFreeText -> pcb_text_free
+CreateNewText -> pcb_text_new

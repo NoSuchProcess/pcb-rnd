@@ -346,7 +346,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 		0.0, 90.0,
 		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));
 
-		CreateNewText(preview_pcb.Data->Layer+0, &PCB->Font,
+		pcb_text_new(preview_pcb.Data->Layer+0, &PCB->Font,
 							PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 	{

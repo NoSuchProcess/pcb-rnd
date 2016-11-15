@@ -499,7 +499,7 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	if (ly != NULL) {
 		if (role != NULL)
 			return -1;
-		text = GetTextMemory(ly);
+		text = pcb_text_alloc(ly);
 	}
 	else if (el != NULL) {
 		if (role == NULL)

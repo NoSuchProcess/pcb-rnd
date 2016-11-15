@@ -1067,7 +1067,7 @@ text_oldformat
 		: T_TEXT '(' measure measure number STRING INTEGER ')'
 			{
 					/* use a default scale of 100% */
-				CreateNewText(Layer,yyFont,OU ($3), OU ($4), $5, 100, $6, pcb_flag_old($7));
+				pcb_text_new(Layer,yyFont,OU ($3), OU ($4), $5, 100, $6, pcb_flag_old($7));
 				free ($6);
 			}
 		;
@@ -1081,11 +1081,11 @@ text_newformat
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(($8 & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
-					CreateNewText(lay ,yyFont, OU ($3), OU ($4), $5, $6, $7,
+					pcb_text_new(lay ,yyFont, OU ($3), OU ($4), $5, $6, $7,
 						      pcb_flag_old($8));
 				}
 				else
-					CreateNewText(Layer, yyFont, OU ($3), OU ($4), $5, $6, $7,
+					pcb_text_new(Layer, yyFont, OU ($3), OU ($4), $5, $6, $7,
 						      pcb_flag_old($8));
 				free ($7);
 			}
@@ -1106,10 +1106,10 @@ text_hi_format
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
 						(($8.f & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
 
-					CreateNewText(lay, yyFont, NU ($3), NU ($4), $5, $6, $7, $8);
+					pcb_text_new(lay, yyFont, NU ($3), NU ($4), $5, $6, $7, $8);
 				}
 				else
-					CreateNewText(Layer, yyFont, NU ($3), NU ($4), $5, $6, $7, $8);
+					pcb_text_new(Layer, yyFont, NU ($3), NU ($4), $5, $6, $7, $8);
 				free ($7);
 			}
 		;
