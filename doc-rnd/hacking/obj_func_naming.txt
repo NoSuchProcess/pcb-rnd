@@ -1,0 +1,45 @@
+obj_* function naming conventions
+
+
+High level:
+
+	This is the recommended way of creating new objects.
+
+	pcb_*_new():
+		Calls pcb_*_alloc(), fills in fields from parameters and calls the post
+		processing (pcb_add_*_on_layer()) function as needed. Makes sanity checks
+		on the parameters and may fail upon that. May do clever things so the
+		object created may not be 1:1 what was reqested (e.g. overlapping
+		line merging)
+
+	pcb_element_*_new():
+		same as pcb_*_new(), parent being an element
+
+	pcb_*_destroy()
+		free all fields of an object and properly remove it from the parent
+		(including rtree removal)
+
+
+Low level:
+
+	Use this in some special cases (like loading a file) when the extra checks
+	of a _new may interfere. 
+
+	pcb_*_alloc():
+		allocate a new objects within a parent (as of now: layer). Allocates
+		the struct of a new objects with all fields clean and links the object
+		in the parent list. Returns a pointer to the object. NOTE: some post
+		processing may be needed after filling in the fields
+		(see also: pcb_add_*_on_layer())
+
+	pcb_element_*_alloc():
+		same, but parent is an element - will be removed once elements are
+		generalized.
+
+	pcb_*_free():
+		free the struct memory (but not the fields!) of an object and remove
+		it from the parent list.
+
+	pcb_add_*_on_layer():
+		Postprocessing: call this after a new object is allocated and fields are
+		filled in. It mainly updates the rtree.
