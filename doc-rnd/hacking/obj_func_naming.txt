@@ -46,6 +46,37 @@ Low level (alloc/free):
 		Postprocessing: call this after a new object is allocated and fields are
 		filled in. It mainly updates the rtree.
 
+	pcb_*_copy():
+		copy fields of a complex obj to a pre-allocated target obj
+
+
+Accessors:
+	pcb_*_get_*():
+		Return data that are not directly accessible as object struct fields but
+		require some sort of calculation
+
+	pcb_*_set_*():
+		Set object fields that require postprocessing because of side effects.
+		Use these instead of direct writes to the fields to get side effects
+		properly executed.
+
+	pcb_*_change_*():
+		Similar to pcb_*_set_*(), but instead of setting a field to a value
+		specified as a parameter, change the field to comply with some global
+		state, e.g. "change side" would move the object to the currently viewed
+		side.
+
+Trasformations:
+	pcb_*_move():
+		move the object within its parent (x;y)
+
+	pcb_*_mirror():
+		mirror the object within its parent (x;y)
+
+
 Misc:
 	pcb_*_bbox():
 		calculate and update the bounding box of an object
+
+	pcb_*_rotate90()
+		Rotate the object by n*90 degrees
