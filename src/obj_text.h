@@ -65,24 +65,24 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 /* Determines if text is actually visible */
 #define pcb_text_is_visible(b, l, t)      ((l)->On)
 
-#define TEXT_LOOP(layer) do {                                       \
+#define PCB_TEXT_LOOP(layer) do {                                       \
   pcb_text_t *text;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(layer)->Text, &__it__, text) {
 
-#define	ALLTEXT_LOOP(top) do {                        \
+#define	PCB_TEXT_ALL_LOOP(top) do {                        \
 	pcb_cardinal_t l;                                   \
 	pcb_layer_t *layer = (top)->Layer;                  \
 	for (l = 0; l < max_copper_layer + 2; l++, layer++) \
 	{                                                   \
-		TEXT_LOOP(layer)
+		PCB_TEXT_LOOP(layer)
 
-#define VISIBLETEXT_LOOP(board) do {                       \
+#define PCB_TEXT_VISIBLE_LOOP(board) do {                       \
 	pcb_cardinal_t l;                                        \
 	pcb_layer_t *layer = (board)->Data->Layer;               \
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)      \
 	{                                                        \
-		TEXT_LOOP(layer);                                      \
+		PCB_TEXT_LOOP(layer);                                      \
 		if (pcb_text_is_visible((board), layer, text))
 
 #endif

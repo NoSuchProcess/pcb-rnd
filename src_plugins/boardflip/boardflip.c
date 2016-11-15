@@ -74,7 +74,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			FLIP(line->Point2.Y);
 		}
 		END_LOOP;
-		TEXT_LOOP(layer);
+		PCB_TEXT_LOOP(layer);
 		{
 			FLIP(text->Y);
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
@@ -119,7 +119,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		FLIP(element->MarkY);
 		if (sides)
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, element);
-		PCB_ELEMENT_TEXT_LOOP(element);
+		PCB_ELEMENT_PCB_TEXT_LOOP(element);
 		{
 			FLIP(text->Y);
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);

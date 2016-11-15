@@ -1166,7 +1166,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 	}
 
 	if (type == PCB_TYPE_TEXT) {
-		ALLTEXT_LOOP(Base);
+		PCB_TEXT_ALL_LOOP(Base);
 		{
 			if (text->ID == ID) {
 				*Result1 = (void *) layer;
@@ -1263,7 +1263,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 		}
 		END_LOOP;
 		if (type == PCB_TYPE_ELEMENT_NAME)
-			PCB_ELEMENT_TEXT_LOOP(element);
+			PCB_ELEMENT_PCB_TEXT_LOOP(element);
 		{
 			if (text->ID == ID) {
 				*Result1 = (void *) element;

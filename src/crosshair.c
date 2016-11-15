@@ -303,7 +303,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 				gui->draw_arc(Crosshair.GC, x + arc->X, y + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 			}
 			END_LOOP;
-			TEXT_LOOP(layer);
+			PCB_TEXT_LOOP(layer);
 			{
 				pcb_box_t *box = &text->BoundingBox;
 				gui->draw_rect(Crosshair.GC, x + box->X1, y + box->Y1, x + box->X2, y + box->Y2);

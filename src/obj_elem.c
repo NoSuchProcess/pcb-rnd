@@ -399,7 +399,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 	 * is to be corrected
 	 */
 #if 0
-	PCB_ELEMENT_TEXT_LOOP(Element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
@@ -698,7 +698,7 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 		arc->Delta = SWAP_DELTA(arc->Delta);
 	}
 	END_LOOP;
-	PCB_ELEMENT_TEXT_LOOP(Element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		text->X = PCB_SWAP_X(text->X);
 		text->Y = PCB_SWAP_Y(text->Y) + yoff;
@@ -723,7 +723,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 	if (Data && Data->element_tree)
 		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
 	/* first update the text objects */
-	PCB_ELEMENT_TEXT_LOOP(Element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
@@ -915,7 +915,7 @@ void r_delete_element(pcb_data_t * data, pcb_element_t * element)
 		r_delete_entry(data->pad_tree, (pcb_box_t *) pad);
 	}
 	END_LOOP;
-	PCB_ELEMENT_TEXT_LOOP(element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(element);
 	{
 		r_delete_entry(data->name_tree[n], (pcb_box_t *) text);
 	}
@@ -1031,7 +1031,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 		pcb_arc_move(arc, DX, DY);
 	}
 	END_LOOP;
-	PCB_ELEMENT_TEXT_LOOP(Element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
@@ -1066,7 +1066,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 	/* the text subroutine decides by itself if the direction
 	 * is to be corrected
 	 */
-	PCB_ELEMENT_TEXT_LOOP(Element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
@@ -1118,7 +1118,7 @@ void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 	CopyElementLowLevel(ctx->buffer.dst, element, Element, pcb_false, 0, 0);
 	PCB_FLAG_CLEAR(ctx->buffer.extraflg, element);
 	if (ctx->buffer.extraflg) {
-		PCB_ELEMENT_TEXT_LOOP(element);
+		PCB_ELEMENT_PCB_TEXT_LOOP(element);
 		{
 			PCB_FLAG_CLEAR(ctx->buffer.extraflg, text);
 		}
@@ -1352,7 +1352,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE) {
 		EraseElementName(Element);
-		PCB_ELEMENT_TEXT_LOOP(Element);
+		PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 		{
 			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_NAME, Element, text, text);
 			r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
@@ -1532,7 +1532,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (PCB->ElementOn && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElementName(Element);
-		PCB_ELEMENT_TEXT_LOOP(Element);
+		PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 		{
 			if (PCB->Data->name_tree[n])
 				r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
@@ -1545,7 +1545,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 		pcb_draw();
 	}
 	else {
-		PCB_ELEMENT_TEXT_LOOP(Element);
+		PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 		{
 			if (PCB->Data->name_tree[n])
 				r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
@@ -1603,7 +1603,7 @@ void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 		}
 		END_LOOP;
 	}
-	PCB_ELEMENT_TEXT_LOOP(Element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		if (ctx->remove.destroy_target->name_tree[n])
 			r_delete_entry(ctx->remove.destroy_target->name_tree[n], (pcb_box_t *) text);
@@ -1645,7 +1645,7 @@ void *RotateElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	EraseElementName(Element);
-	PCB_ELEMENT_TEXT_LOOP(Element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 		pcb_text_rotate90(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);

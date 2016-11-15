@@ -274,7 +274,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 			gui->draw_arc(gc, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 		}
 		END_LOOP;
-		TEXT_LOOP(layer);
+		PCB_TEXT_LOOP(layer);
 		{
 			DrawTextLowLevel(text, 0);
 		}

@@ -75,7 +75,7 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 			}
 
 			if (tcb != NULL) {
-				TEXT_LOOP(layer);
+				PCB_TEXT_LOOP(layer);
 				{
 					tcb(ctx, PCB, layer, text);
 				}
@@ -122,7 +122,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 			}
 
 			if (etcb != NULL) {
-				PCB_ELEMENT_TEXT_LOOP(element);
+				PCB_ELEMENT_PCB_TEXT_LOOP(element);
 				{
 					etcb(ctx, PCB, element, text);
 				}
@@ -202,7 +202,7 @@ void pcb_data_free(pcb_data_t * data)
 
 	for (layer = data->Layer, i = 0; i < MAX_LAYER + 2; layer++, i++) {
 		pcb_attribute_free(&layer->Attributes);
-		TEXT_LOOP(layer);
+		PCB_TEXT_LOOP(layer);
 		{
 			free(text->TextString);
 		}
@@ -324,7 +324,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		box.Y2 = MAX(box.Y2, arc->BoundingBox.Y2);
 	}
 	ENDALL_LOOP;
-	ALLTEXT_LOOP(Data);
+	PCB_TEXT_ALL_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, text->BoundingBox.X1);
 		box.Y1 = MIN(box.Y1, text->BoundingBox.Y1);

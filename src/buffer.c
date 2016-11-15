@@ -256,7 +256,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 		r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
 	ENDALL_LOOP;
-	ALLTEXT_LOOP(Buffer->Data);
+	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 		pcb_text_rotate90(text, Buffer->X, Buffer->Y, Number);
@@ -519,7 +519,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		/* hmmm, how to handle clip */
 	}
 	ENDALL_LOOP;
-	ALLTEXT_LOOP(Buffer->Data);
+	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 		text->X = PCB_SWAP_X(text->X);
@@ -648,7 +648,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 				CopyArc(&ctx, destlayer, arc);
 			}
 			END_LOOP;
-			TEXT_LOOP(sourcelayer);
+			PCB_TEXT_LOOP(sourcelayer);
 			{
 				CopyText(&ctx, destlayer, text);
 			}

@@ -68,7 +68,7 @@ void pcb_select_element(pcb_element_t *element, pcb_change_flag_t how, int redra
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pad);
 	}
 	END_LOOP;
-	PCB_ELEMENT_TEXT_LOOP(element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(element);
 	{
 		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
@@ -91,7 +91,7 @@ void pcb_select_element(pcb_element_t *element, pcb_change_flag_t how, int redra
 void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int redraw)
 {
 	/* select all names of the element */
-	PCB_ELEMENT_TEXT_LOOP(element);
+	PCB_ELEMENT_PCB_TEXT_LOOP(element);
 	{
 		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
@@ -331,7 +331,7 @@ do { \
 			}
 		}
 		END_LOOP;
-		TEXT_LOOP(layer);
+		PCB_TEXT_LOOP(layer);
 		{
 			if (!Flag || pcb_text_is_visible(PCB, layer, text)) {
 				if (TEXT_NEAR_BOX(text, Box)
@@ -370,7 +370,7 @@ do { \
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, &ELEMENT_TEXT(PCB, element))
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)) != Flag) {
 					/* select all names of element */
-					PCB_ELEMENT_TEXT_LOOP(element);
+					PCB_ELEMENT_PCB_TEXT_LOOP(element);
 					{
 						append(PCB_TYPE_ELEMENT_NAME, element, text);
 					}
@@ -592,7 +592,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 
 	/* check text */
 	if (type & PCB_TYPE_TEXT && F->Text)
-		ALLTEXT_LOOP(PCB->Data);
+		PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) && pcb_text_is_visible(PCB, layer, text)) {
 			if (Reset) {
@@ -886,7 +886,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 
 	/* loop over all visible objects with names */
 	if (Type & PCB_TYPE_TEXT)
-		ALLTEXT_LOOP(PCB->Data);
+		PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, text)
 				&& pcb_text_is_visible(PCB, layer, text)
@@ -922,7 +922,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
 				}
 				END_LOOP;
-				PCB_ELEMENT_TEXT_LOOP(element);
+				PCB_ELEMENT_PCB_TEXT_LOOP(element);
 				{
 					AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, text);

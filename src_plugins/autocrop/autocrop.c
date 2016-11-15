@@ -161,7 +161,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		AddObjectToMoveUndoList(PCB_TYPE_ARC, NULL, NULL, arc, dx, dy);
 	}
 	ENDALL_LOOP;
-	ALLTEXT_LOOP(PCB->Data);
+	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		MyMoveTextLowLevel(layer, text, dx, dy);
 		AddObjectToMoveUndoList(PCB_TYPE_TEXT, NULL, NULL, text, dx, dy);

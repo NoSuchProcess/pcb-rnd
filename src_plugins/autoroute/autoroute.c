@@ -1112,7 +1112,7 @@ static routedata_t *CreateRouteData()
 		}
 		END_LOOP;
 		/* add all copper text */
-		TEXT_LOOP(LAYER_PTR(i));
+		PCB_TEXT_LOOP(LAYER_PTR(i));
 		{
 			AddText(layergroupboxes, layergroup, text, rd->styles[rd->max_styles]);
 		}

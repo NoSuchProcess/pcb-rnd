@@ -176,7 +176,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		nsel++;
 	}
 	END_LOOP;
-	ALLTEXT_LOOP(PCB->Data);
+	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
@@ -199,7 +199,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		texts_by_pos[nsel++].pos = coord(text, dir, point);
 	}
 	END_LOOP;
-	ALLTEXT_LOOP(PCB->Data);
+	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
@@ -388,7 +388,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	END_LOOP;
 	/* Selected bare text objects */
-	ALLTEXT_LOOP(PCB->Data);
+	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text)) {
 			/* find delta from reference point to reference point */

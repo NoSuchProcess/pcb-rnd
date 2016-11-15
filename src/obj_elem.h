@@ -125,7 +125,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Ele
   gdl_iterator_t __it__;                                            \
   pinlist_foreach(&(top)->Element, &__it__, element) {
 
-#define	PCB_ELEMENT_TEXT_LOOP(element) do { 	\
+#define	PCB_ELEMENT_PCB_TEXT_LOOP(element) do { 	\
 	pcb_cardinal_t	n;				\
 	pcb_text_t *text;				\
 	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)	\
