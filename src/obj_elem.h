@@ -49,9 +49,11 @@ struct pcb_element_s {
 	gdl_elem_t link;
 };
 
-pcb_element_t *pcb_element_new(pcb_data_t * data);
+pcb_element_t *pcb_element_alloc(pcb_data_t * data);
 void pcb_element_free(pcb_element_t * data);
-void pcb_element_free_fields(pcb_element_t * element);
+
+void pcb_element_destroy(pcb_element_t * element);
+
 pcb_line_t *pcb_element_line_new(pcb_element_t *Element);
 
 

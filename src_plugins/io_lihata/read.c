@@ -650,7 +650,7 @@ static int parse_pad(pcb_element_t *el, lht_node_t *obj, pcb_coord_t dx, pcb_coo
 
 static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 {
-	pcb_element_t *elem = pcb_element_new(dt);
+	pcb_element_t *elem = pcb_element_alloc(dt);
 	lht_node_t *lst, *n;
 	lht_dom_iterator_t it;
 	int onsld;

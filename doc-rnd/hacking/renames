@@ -521,3 +521,5 @@ pcb_arc_new -> pcb_arc_alloc
 CreateNewArcOnLayer -> pcb_arc_new
 RemoveArc -> pcb_arc_destroy
 pcb_element_arc_new -> pcb_element_arc_alloc
+pcb_element_new -> pcb_element_alloc
+pcb_element_free_fields -> pcb_element_destroy

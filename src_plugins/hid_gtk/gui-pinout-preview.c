@@ -56,7 +56,7 @@ static void pinout_set_view(GhidPinoutPreview * pinout)
 static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 {
 	if (element == NULL) {
-		pcb_element_free_fields(&pinout->element);
+		pcb_element_destroy(&pinout->element);
 		pinout->w_pixels = 0;
 		pinout->h_pixels = 0;
 		return;

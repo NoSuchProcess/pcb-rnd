@@ -59,7 +59,7 @@
 /*** allocation ***/
 
 /* get next slot for an element, allocates memory if necessary */
-pcb_element_t *pcb_element_new(pcb_data_t * data)
+pcb_element_t *pcb_element_alloc(pcb_data_t * data)
 {
 	pcb_element_t *new_obj;
 
@@ -76,7 +76,7 @@ void pcb_element_free(pcb_element_t * data)
 }
 
 /* frees memory used by an element */
-void pcb_element_free_fields(pcb_element_t * element)
+void pcb_element_destroy(pcb_element_t * element)
 {
 	if (element == NULL)
 		return;
@@ -218,7 +218,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 			line->Number = pcb_strdup_null(pad->Number);
 	}
 	END_LOOP;
-	pcb_element_free_fields(element);
+	pcb_element_destroy(element);
 	pcb_element_free(element);
 	return (pcb_true);
 }
@@ -511,7 +511,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	int i;
 	/* release old memory if necessary */
 	if (Dest)
-		pcb_element_free_fields(Dest);
+		pcb_element_destroy(Dest);
 
 	/* both coordinates and flags are the same */
 	Dest = CreateNewElement(Data, Dest, &PCB->Font,
@@ -572,7 +572,7 @@ pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
 #endif
 
 	if (!Element)
-		Element = pcb_element_new(Data);
+		Element = pcb_element_alloc(Data);
 
 	/* copy values and set additional information */
 	TextScale = MAX(MIN_TEXTSCALE, TextScale);
@@ -1114,7 +1114,7 @@ void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	pcb_element_t *element;
 
-	element = pcb_element_new(ctx->buffer.dst);
+	element = pcb_element_alloc(ctx->buffer.dst);
 	CopyElementLowLevel(ctx->buffer.dst, element, Element, pcb_false, 0, 0);
 	PCB_FLAG_CLEAR(ctx->buffer.extraflg, element);
 	if (ctx->buffer.extraflg) {
@@ -1609,7 +1609,7 @@ void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 			r_delete_entry(ctx->remove.destroy_target->name_tree[n], (pcb_box_t *) text);
 	}
 	END_LOOP;
-	pcb_element_free_fields(Element);
+	pcb_element_destroy(Element);
 
 	pcb_element_free(Element);
 
