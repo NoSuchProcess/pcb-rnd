@@ -181,7 +181,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			Pin = (pcb_pin_t *) ptr2;
 			element = (pcb_element_t *) ptr1;
 
-			PIN_LOOP(element);
+			PCB_PIN_LOOP(element);
 			{
 				if (pin == Pin)
 					break;
@@ -335,7 +335,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			Pad = (pcb_pad_t *) ptr2;
 			element = (pcb_element_t *) ptr1;
 
-			PAD_LOOP(element);
+			PCB_PAD_LOOP(element);
 			{
 				{
 					if (pad == Pad)
@@ -481,13 +481,13 @@ static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	gds_append_str(&list, "The following pins/pads are FOUND:\n");
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin))
 				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pin->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 		}
 		END_LOOP;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad))
 				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pad->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
@@ -581,7 +581,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 		{
 			char *es = element->Name[NAMEONPCB_INDEX].TextString;
 			if (es && strcmp(es, ename) == 0) {
-				PIN_LOOP(element);
+				PCB_PIN_LOOP(element);
 				{
 					if (strcmp(pin->Number, pname) == 0) {
 						x = pin->X;
@@ -591,7 +591,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 					}
 				}
 				END_LOOP;
-				PAD_LOOP(element);
+				PCB_PAD_LOOP(element);
 				{
 					if (strcmp(pad->Number, pname) == 0) {
 						x = (pad->Point1.X + pad->Point2.X) / 2;
@@ -658,7 +658,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
 				int ni, nei;
@@ -679,7 +679,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			}
 		}
 		END_LOOP;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
 				int ni, nei;

@@ -239,14 +239,14 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 		END_LOOP;
 	}
 	/* pin coordinates and angles have to be converted to X11 notation */
-	PIN_LOOP(Element);
+	PCB_PIN_LOOP(Element);
 	{
 		thindraw_moved_pv(pin, DX, DY);
 	}
 	END_LOOP;
 
 	/* pads */
-	PAD_LOOP(Element);
+	PCB_PAD_LOOP(Element);
 	{
 		if (PCB->InvisibleObjectsOn || (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) != 0) == conf_core.editor.show_solder_side) {
 			/* Make a copy of the pad structure, moved to the correct position */
@@ -330,7 +330,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 
 	/* and the vias */
 	if (PCB->ViaOn)
-		VIA_LOOP(Buffer->Data);
+		PCB_VIA_LOOP(Buffer->Data);
 	{
 		thindraw_moved_pv(via, x, y);
 	}

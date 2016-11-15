@@ -110,7 +110,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 	pcb_bool NewDrill;
 
 	AllDrills = (DrillInfoTypePtr) calloc(1, sizeof(DrillInfoType));
-	ALLPIN_LOOP(top);
+	PCB_PIN_ALL_LOOP(top);
 	{
 		if (!DrillFound) {
 			DrillFound = pcb_true;
@@ -151,7 +151,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 		}
 	}
 	ENDALL_LOOP;
-	VIA_LOOP(top);
+	PCB_VIA_LOOP(top);
 	{
 		if (!DrillFound) {
 			DrillFound = pcb_true;

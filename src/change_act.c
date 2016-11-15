@@ -572,7 +572,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_NSTRCMP(refdes, NAMEONPCB_NAME(element)) == 0) {
-			PIN_LOOP(element);
+			PCB_PIN_LOOP(element);
 			{
 				if (PCB_NSTRCMP(pinnum, pin->Number) == 0) {
 					AddObjectToChangeNameUndoList(PCB_TYPE_PIN, NULL, NULL, pin, pin->Name);
@@ -587,7 +587,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 			}
 			END_LOOP;
 
-			PAD_LOOP(element);
+			PCB_PAD_LOOP(element);
 			{
 				if (PCB_NSTRCMP(pinnum, pad->Number) == 0) {
 					AddObjectToChangeNameUndoList(PCB_TYPE_PAD, NULL, NULL, pad, pad->Name);

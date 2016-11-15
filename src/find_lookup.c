@@ -205,7 +205,7 @@ void pcb_component_lookup_init(void)
 	 * on each of the two possible layers
 	 */
 	NumberOfPads[COMPONENT_LAYER] = NumberOfPads[SOLDER_LAYER] = 0;
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))
 			NumberOfPads[SOLDER_LAYER]++;
@@ -572,7 +572,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 		ic = PCB_FLAG_INTCONN_GET(orig_pin);
 		if ((info.pv.Element != NULL) && (ic > 0)) {
 			pcb_element_t *e = info.pv.Element;
-			PIN_LOOP(e);
+			PCB_PIN_LOOP(e);
 			{
 				if ((orig_pin != pin) && (ic == PCB_FLAG_INTCONN_GET(pin))) {
 					if (!PCB_FLAG_TEST(TheFlag, pin))
@@ -1242,7 +1242,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 /*fprintf(stderr, "tlayer=%d\n", tlayer);*/
 
 		if (tlayer >= 0) {
-			PAD_LOOP(e);
+			PCB_PAD_LOOP(e);
 			{
 				if ((orig_pad != pad) && (ic == PCB_FLAG_INTCONN_GET(pad))) {
 					int padlayer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER;

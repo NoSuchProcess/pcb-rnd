@@ -176,7 +176,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 	int padx, pady, tmp;
 
 	PCB_ELEMENT_LOOP(PCB->Data);
-	PAD_LOOP(element);
+	PCB_PAD_LOOP(element);
 	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
 		fprintf(fd, "327%-17.14s", net);	/* Net Name. */
 		fprintf(fd, "%-6.6s", element->Name[1].TextString);	/* Refdes. */
@@ -236,7 +236,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 	}
 
 	END_LOOP;											/* Pad. */
-	PIN_LOOP(element);
+	PCB_PIN_LOOP(element);
 	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {	/* Non plated? */
 			fprintf(fd, "367%-17.14s", net);	/* Net Name. */
@@ -312,7 +312,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 	END_LOOP;											/* Pin. */
 	END_LOOP;											/* Element */
 
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, via)) {	/* Non plated ? */
 			fprintf(fd, "367%-17.14s", net);	/* Net Name. */
@@ -426,7 +426,7 @@ int IPCD356_Netlist(void)
 
 
 	PCB_ELEMENT_LOOP(PCB->Data);
-	PIN_LOOP(element);
+	PCB_PIN_LOOP(element);
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, pin)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
 		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
@@ -444,7 +444,7 @@ int IPCD356_Netlist(void)
 		IPCD356_WriteNet(fp, net);
 	}
 	END_LOOP;											/* Pin. */
-	PAD_LOOP(element);
+	PCB_PAD_LOOP(element);
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, pad)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
 		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
@@ -465,7 +465,7 @@ int IPCD356_Netlist(void)
 
 	END_LOOP;											/* Element. */
 
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, via)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
 		pcb_clear_flag_on_pins_vias_pads(pcb_true, PCB_FLAG_FOUND);
@@ -491,14 +491,14 @@ void IPCD356_End(FILE * fd)
 
 void ResetVisitPinsViasAndPads()
 {
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, via);
 	END_LOOP;											/* Via. */
 	PCB_ELEMENT_LOOP(PCB->Data);
-	PIN_LOOP(element);
+	PCB_PIN_LOOP(element);
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, pin);
 	END_LOOP;											/* Pin. */
-	PAD_LOOP(element);
+	PCB_PAD_LOOP(element);
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, pad);
 	END_LOOP;											/* Pad. */
 	END_LOOP;											/* Element. */

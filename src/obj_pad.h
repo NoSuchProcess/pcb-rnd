@@ -62,14 +62,14 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
 		pcb_pad_bbox((__p__)); \
 	} while(0)
 
-#define PAD_LOOP(element) do {                                      \
+#define PCB_PAD_LOOP(element) do {                                      \
 	pcb_pad_t *pad;                                                     \
 	gdl_iterator_t __it__;                                            \
 	padlist_foreach(&(element)->Pad, &__it__, pad) {
 
-#define	ALLPAD_LOOP(top)    \
+#define PCB_PAD_ALL_LOOP(top)    \
 	PCB_ELEMENT_LOOP(top);        \
-		PAD_LOOP(element)
+		PCB_PAD_LOOP(element)
 
 
 #endif

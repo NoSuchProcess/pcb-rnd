@@ -412,7 +412,7 @@ pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 void DrawPaste(int side, const pcb_box_t * drawn_area)
 {
 	gui->set_color(Output.fgGC, PCB->ElementColor);
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			if (pad->Mask < pad->Thickness)

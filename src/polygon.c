@@ -1524,12 +1524,12 @@ PlowsPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 
 	case PCB_TYPE_ELEMENT:
 		{
-			PIN_LOOP((pcb_element_t *) ptr1);
+			PCB_PIN_LOOP((pcb_element_t *) ptr1);
 			{
 				PlowsPolygon(Data, PCB_TYPE_PIN, ptr1, pin, call_back);
 			}
 			END_LOOP;
-			PAD_LOOP((pcb_element_t *) ptr1);
+			PCB_PAD_LOOP((pcb_element_t *) ptr1);
 			{
 				PlowsPolygon(Data, PCB_TYPE_PAD, ptr1, pad, call_back);
 			}

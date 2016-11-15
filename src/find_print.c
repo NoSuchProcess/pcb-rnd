@@ -39,7 +39,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 	/* check all pins in element */
 
-	PIN_LOOP(Element);
+	PCB_PIN_LOOP(Element);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
 			/* pin might have bee checked before, add to list if not */
@@ -79,7 +79,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 	END_LOOP;
 
 	/* check all pads in element */
-	PAD_LOOP(Element);
+	PCB_PAD_LOOP(Element);
 	{
 		/* lookup pad in list */
 		/* pad might has bee checked before, add to list if not */
@@ -162,7 +162,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 	PrintConnectionElementName(Element, FP);
 
 	/* check all pins in element */
-	PIN_LOOP(Element);
+	PCB_PIN_LOOP(Element);
 	{
 		/* pin might have been checked before, add to list if not */
 		if (PCB_FLAG_TEST(TheFlag, pin)) {
@@ -184,7 +184,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 	END_LOOP;
 
 	/* check all pads in element */
-	PAD_LOOP(Element);
+	PCB_PAD_LOOP(Element);
 	{
 		pcb_cardinal_t layer;
 		/* pad might have been checked before, add to list if not */

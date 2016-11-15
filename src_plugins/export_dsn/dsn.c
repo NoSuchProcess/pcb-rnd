@@ -118,7 +118,7 @@ static pcb_point_t get_centroid(pcb_element_t * element)
 	double sumx = 0.0, sumy = 0.0;
 	int pin_cnt = 0;
 
-	PIN_LOOP(element);
+	PCB_PIN_LOOP(element);
 	{
 		sumx += (double) pin->X;
 		sumy += (double) pin->Y;
@@ -126,7 +126,7 @@ static pcb_point_t get_centroid(pcb_element_t * element)
 	}
 	END_LOOP;
 
-	PAD_LOOP(element);
+	PCB_PAD_LOOP(element);
 	{
 		sumx += (pad->Point1.X + pad->Point2.X) / 2.0;
 		sumy += (pad->Point1.Y + pad->Point2.Y) / 2.0;
@@ -268,7 +268,7 @@ static void print_placement(FILE * fp)
 	}
 	END_LOOP;
 
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{ /* add mounting holes */
 		pcb_fprintf(fp, "    (component %d\n", via->ID);
 		pcb_fprintf(fp, "      (place %d %.6mm %.6mm %s 0 (PN 0))\n", via->ID, via->X, (PCB->MaxHeight - via->Y), "front");
@@ -290,7 +290,7 @@ static void print_library(FILE * fp)
 		pcb_point_t centroid = get_centroid(element);
 		fprintf(fp, "    (image %ld\n", element->ID); /* map every element by ID */
 		/* loop thru pins and pads to add to image */
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			pcb_coord_t ty;
 			pcb_coord_t pinthickness;
@@ -321,7 +321,7 @@ static void print_library(FILE * fp)
 		}
 		END_LOOP;
 
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			pcb_coord_t xlen, ylen, xc, yc, p1y, p2y;
 			pcb_coord_t lx, ly;  /* store local coordinates for pins */
@@ -363,7 +363,7 @@ static void print_library(FILE * fp)
 	}
 	END_LOOP;
 
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{ /* add mounting holes and vias */
 		fprintf(fp, "    (image %ld\n", via->ID); /* map every via by ID */
 		/* for mounting holes, clearance is added to thickness for higher total clearance */

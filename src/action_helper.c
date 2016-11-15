@@ -243,7 +243,7 @@ static void AdjustAttachedBox(void);
 void pcb_clear_warnings()
 {
 	conf_core.temp.rat_warn = pcb_false;
-	ALLPIN_LOOP(PCB->Data);
+	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pin)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, pin);
@@ -251,7 +251,7 @@ void pcb_clear_warnings()
 		}
 	}
 	ENDALL_LOOP;
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, via)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, via);
@@ -259,7 +259,7 @@ void pcb_clear_warnings()
 		}
 	}
 	END_LOOP;
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pad)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, pad);
@@ -685,13 +685,13 @@ void pcb_notify_mode(void)
 				pcb_element_t *element = (pcb_element_t *) ptr2;
 
 				PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, element);
-				PIN_LOOP(element);
+				PCB_PIN_LOOP(element);
 				{
 					PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, pin);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pin);
 				}
 				END_LOOP;
-				PAD_LOOP(element);
+				PCB_PAD_LOOP(element);
 				{
 					PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, pad);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pad);

@@ -408,12 +408,12 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 			 * and readability is more important then the few %
 			 * of failures that are immediately recognized
 			 */
-			PIN_LOOP(element);
+			PCB_PIN_LOOP(element);
 			{
 				CheckPinForRubberbandConnection(pin);
 			}
 			END_LOOP;
-			PAD_LOOP(element);
+			PCB_PAD_LOOP(element);
 			{
 				CheckPadForRubberbandConnection(pad);
 			}
@@ -455,12 +455,12 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		{
 			pcb_element_t *element = (pcb_element_t *) Ptr1;
 
-			PIN_LOOP(element);
+			PCB_PIN_LOOP(element);
 			{
 				CheckPinForRat(pin);
 			}
 			END_LOOP;
-			PAD_LOOP(element);
+			PCB_PAD_LOOP(element);
 			{
 				CheckPadForRat(pad);
 			}

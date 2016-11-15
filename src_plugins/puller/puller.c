@@ -972,7 +972,7 @@ static void find_pairs()
 	}
 	END_LOOP;
 
-	ALLPIN_LOOP(PCB->Data); {
+	PCB_PIN_ALL_LOOP(PCB->Data); {
 		pcb_box_t box;
 		box.X1 = pin->X - pin->Thickness / 2;
 		box.Y1 = pin->Y - pin->Thickness / 2;
@@ -983,7 +983,7 @@ static void find_pairs()
 	}
 	ENDALL_LOOP;
 
-	VIA_LOOP(PCB->Data); {
+	PCB_VIA_LOOP(PCB->Data); {
 		pcb_box_t box;
 		box.X1 = via->X - via->Thickness / 2;
 		box.Y1 = via->Y - via->Thickness / 2;
@@ -994,7 +994,7 @@ static void find_pairs()
 	}
 	END_LOOP;
 
-	ALLPAD_LOOP(PCB->Data); {
+	PCB_PAD_ALL_LOOP(PCB->Data); {
 		pcb_box_t box;
 		box.X1 = MIN(pad->Point1.X, pad->Point2.X) - pad->Thickness / 2;
 		box.Y1 = MIN(pad->Point1.Y, pad->Point2.Y) - pad->Thickness / 2;

@@ -457,7 +457,7 @@ void RestoreStackAndVisibility(void)
 pcb_bool IsPasteEmpty(int side)
 {
 	pcb_bool paste_empty = pcb_true;
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {
 			paste_empty = pcb_false;
@@ -882,13 +882,13 @@ static void move_one_thermal(int old_index, int new_index, pcb_pin_t * pin)
 
 static void move_all_thermals(int old_index, int new_index)
 {
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		move_one_thermal(old_index, new_index, via);
 	}
 	END_LOOP;
 
-	ALLPIN_LOOP(PCB->Data);
+	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
 		move_one_thermal(old_index, new_index, pin);
 	}

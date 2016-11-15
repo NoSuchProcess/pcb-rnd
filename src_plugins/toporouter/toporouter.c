@@ -1816,7 +1816,7 @@ int read_pads(toporouter_t * r, toporouter_layer_t * l, guint layer)
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			if ((l - r->layers == back && PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)) || (l - r->layers == front && !PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))) {
 
@@ -1979,7 +1979,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 
 			t = (gdouble) pin->Thickness / 2.0f;
@@ -2012,7 +2012,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 	}
 	END_LOOP;
 
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 
 		t = (gdouble) via->Thickness / 2.0f;
@@ -8145,7 +8145,7 @@ static int escape(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 	dir = atoi(argv[0]);
 
 
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad)) {
 			pcb_pin_t *via;

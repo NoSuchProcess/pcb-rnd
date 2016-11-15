@@ -382,7 +382,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		box->Y1 = MAX_COORD;
 		box->X2 = -MAX_COORD;
 		box->Y2 = -MAX_COORD;
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			thickness = pin->Thickness / 2;
 			clearance = pin->Clearance * 2;
@@ -390,7 +390,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 									 pin->X - (thickness + clearance),
 									 pin->Y - (thickness + clearance), pin->X + (thickness + clearance), pin->Y + (thickness + clearance))}
 		END_LOOP;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			thickness = pad->Thickness / 2;
 			clearance = pad->Clearance * 2;
@@ -407,7 +407,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		/* add a box for each pin to the "opposite side":
 		 * surface mount components can't sit on top of pins */
 		if (!CostParameter.fast)
-			PIN_LOOP(element);
+			PCB_PIN_LOOP(element);
 		{
 			box = pcb_box_new(otherside);
 			thickness = pin->Thickness / 2;

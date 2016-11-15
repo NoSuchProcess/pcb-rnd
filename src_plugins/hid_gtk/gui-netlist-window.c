@@ -548,7 +548,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	ENDALL_LOOP;
 
 	if (PCB->ViaOn)
-		VIA_LOOP(PCB->Data);
+		PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via))
 			RemoveObject(PCB_TYPE_VIA, via, via, via);

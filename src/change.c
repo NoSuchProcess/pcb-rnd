@@ -721,7 +721,7 @@ pcb_bool pcb_chg_selected_hole(void)
 	pcb_bool change = pcb_false;
 
 	if (PCB->ViaOn)
-		VIA_LOOP(PCB->Data);
+		PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, via))
 			change |= pcb_pin_change_hole(via);
@@ -742,7 +742,7 @@ pcb_bool pcb_chg_selected_paste(void)
 {
 	pcb_bool change = pcb_false;
 
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad))
 			change |= pcb_pad_change_paste(pad);

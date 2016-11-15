@@ -349,7 +349,7 @@ int pcb_drc_all(void)
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_DRC, pin)
 					&& DRCFind(PCB_TYPE_PIN, (void *) element, (void *) pin, (void *) pin)) {
@@ -360,7 +360,7 @@ int pcb_drc_all(void)
 		END_LOOP;
 		if (IsBad)
 			break;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 
 			/* count up how many pads have no solderpaste openings */
@@ -379,7 +379,7 @@ int pcb_drc_all(void)
 	}
 	END_LOOP;
 	if (!IsBad)
-		VIA_LOOP(PCB->Data);
+		PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_DRC, via)
 				&& DRCFind(PCB_TYPE_VIA, (void *) via, (void *) via, (void *) via)) {
@@ -457,7 +457,7 @@ int pcb_drc_all(void)
 		ENDALL_LOOP;
 	}
 	if (!IsBad) {
-		ALLPIN_LOOP(PCB->Data);
+		PCB_PIN_ALL_LOOP(PCB->Data);
 		{
 			PlowsPolygon(PCB->Data, PCB_TYPE_PIN, element, pin, drc_callback);
 			if (IsBad)
@@ -511,7 +511,7 @@ int pcb_drc_all(void)
 		ENDALL_LOOP;
 	}
 	if (!IsBad) {
-		ALLPAD_LOOP(PCB->Data);
+		PCB_PAD_ALL_LOOP(PCB->Data);
 		{
 			PlowsPolygon(PCB->Data, PCB_TYPE_PAD, element, pad, drc_callback);
 			if (IsBad)
@@ -542,7 +542,7 @@ int pcb_drc_all(void)
 		ENDALL_LOOP;
 	}
 	if (!IsBad) {
-		VIA_LOOP(PCB->Data);
+		PCB_VIA_LOOP(PCB->Data);
 		{
 			PlowsPolygon(PCB->Data, PCB_TYPE_VIA, via, via, drc_callback);
 			if (IsBad)

@@ -91,7 +91,7 @@ static void unset_found_flags(int AndDraw)
 	int flag = PCB_FLAG_FOUND;
 	int change = 0;
 
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, via)) {
 			AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
@@ -103,7 +103,7 @@ static void unset_found_flags(int AndDraw)
 	END_LOOP;
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(flag, pin)) {
 				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
@@ -113,7 +113,7 @@ static void unset_found_flags(int AndDraw)
 			}
 		}
 		END_LOOP;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(flag, pad)) {
 				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);

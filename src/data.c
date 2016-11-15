@@ -130,7 +130,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 			}
 
 			if (epicb != NULL) {
-				PIN_LOOP(element);
+				PCB_PIN_LOOP(element);
 				{
 					epicb(ctx, PCB, element, pin);
 				}
@@ -139,7 +139,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 
 
 			if (epacb != NULL) {
-				PAD_LOOP(element);
+				PCB_PAD_LOOP(element);
 				{
 					epacb(ctx, PCB, element, pad);
 				}
@@ -156,7 +156,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 void pcb_loop_vias(void *ctx, pcb_via_cb_t vcb)
 {
 	if (vcb != NULL) {
-		VIA_LOOP(PCB->Data);
+		PCB_VIA_LOOP(PCB->Data);
 		{
 			vcb(ctx, PCB, via);
 		}
@@ -186,7 +186,7 @@ void pcb_data_free(pcb_data_t * data)
 	if (data == NULL)
 		return;
 
-	VIA_LOOP(data);
+	PCB_VIA_LOOP(data);
 	{
 		free(via->Name);
 	}
@@ -281,7 +281,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 	box.X2 = box.Y2 = -MAX_COORD;
 
 	/* now scan for the lowest/highest X and Y coordinate */
-	VIA_LOOP(Data);
+	PCB_VIA_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, via->X - via->Thickness / 2);
 		box.Y1 = MIN(box.Y1, via->Y - via->Thickness / 2);

@@ -459,7 +459,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 														 PCB_TYPE_ELEMENT | PCB_TYPE_PIN | PCB_TYPE_PAD |
 														 PCB_TYPE_VIA, (void **) &ptr1, (void **) &ptr2, (void **) &ptr3)) {
 				case PCB_TYPE_ELEMENT:
-					PIN_LOOP((pcb_element_t *) ptr1);
+					PCB_PIN_LOOP((pcb_element_t *) ptr1);
 					{
 						if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pin))
 							ErasePinName(pin);
@@ -469,7 +469,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 						PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, pin);
 					}
 					END_LOOP;
-					PAD_LOOP((pcb_element_t *) ptr1);
+					PCB_PAD_LOOP((pcb_element_t *) ptr1);
 					{
 						if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pad))
 							ErasePadName(pad);

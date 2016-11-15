@@ -188,7 +188,7 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 	ENDALL_LOOP;
 
 	if (PCB->ViaOn)
-		VIA_LOOP(PCB->Data);
+		PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via))
 			RemoveObject(PCB_TYPE_VIA, via, via, via);
@@ -214,7 +214,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 	{
 		char *es = element->Name[NAMEONPCB_INDEX].TextString;
 		if (es && strcmp(es, ename) == 0) {
-			PIN_LOOP(element);
+			PCB_PIN_LOOP(element);
 			{
 				if (strcmp(pin->Number, pname) == 0) {
 					pcb_crosshair_move_absolute(pin->X, pin->Y);
@@ -223,7 +223,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 				}
 			}
 			END_LOOP;
-			PAD_LOOP(element);
+			PCB_PAD_LOOP(element);
 			{
 				if (strcmp(pad->Number, pname) == 0) {
 					int x = (pad->Point1.X + pad->Point2.X) / 2;

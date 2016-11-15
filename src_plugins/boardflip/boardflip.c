@@ -109,7 +109,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		END_LOOP;
 	}
 	END_LOOP;
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		FLIP(via->Y);
 	}
@@ -138,12 +138,12 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			NEG(arc->Delta);
 		}
 		END_LOOP;
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			FLIP(pin->Y);
 		}
 		END_LOOP;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			FLIP(pad->Point1.Y);
 			FLIP(pad->Point2.Y);

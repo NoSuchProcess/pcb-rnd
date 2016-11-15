@@ -282,19 +282,19 @@ static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	new_arcs = 0;
 
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		check_via(via);
 	}
 	END_LOOP;
 
-	ALLPIN_LOOP(PCB->Data);
+	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
 		check_pin(pin);
 	}
 	ENDALL_LOOP;
 
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		check_pad(pad);
 	}

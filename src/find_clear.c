@@ -30,7 +30,7 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;
 
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, via)) {
 			if (AndDraw)
@@ -44,7 +44,7 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 	END_LOOP;
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(flag, pin)) {
 				if (AndDraw)
@@ -56,7 +56,7 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 			}
 		}
 		END_LOOP;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(flag, pad)) {
 				if (AndDraw)

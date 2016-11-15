@@ -72,18 +72,18 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via);
 
 #define pcb_pin_move(p,dx,dy) pcb_via_move(p, dx, dy)
 
-#define VIA_LOOP(top) do {                                          \
+#define PCB_VIA_LOOP(top) do {                                          \
   pcb_pin_t *via;                                                     \
   gdl_iterator_t __it__;                                            \
   pinlist_foreach(&(top)->Via, &__it__, via) {
 
-#define PIN_LOOP(element) do {                                      \
+#define PCB_PIN_LOOP(element) do {                                      \
   pcb_pin_t *pin;                                                     \
   gdl_iterator_t __it__;                                            \
   pinlist_foreach(&(element)->Pin, &__it__, pin) {
 
-#define ALLPIN_LOOP(top)   \
+#define PCB_PIN_ALL_LOOP(top)   \
         PCB_ELEMENT_LOOP(top); \
-        PIN_LOOP(element)  \
+        PCB_PIN_LOOP(element)  \
 
 #endif

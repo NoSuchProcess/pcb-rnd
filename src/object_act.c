@@ -747,7 +747,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 				}
 			}
 			ENDALL_LOOP;
-			VIA_LOOP(PCB->Data);
+			PCB_VIA_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
 					RemoveObject(PCB_TYPE_VIA, via, via, via);
@@ -772,7 +772,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			}
 			ENDALL_LOOP;
 			if (PCB->ViaOn)
-				VIA_LOOP(PCB->Data);
+				PCB_VIA_LOOP(PCB->Data);
 			{
 				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, via)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
@@ -850,7 +850,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	SaveUndoSerialNumber();
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			if (!PCB_FLAGS_TEST(flags, pin))
 				continue;
@@ -860,7 +860,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			}
 		}
 		END_LOOP;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			if (!PCB_FLAGS_TEST(flags, pad))
 				continue;
@@ -872,7 +872,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		END_LOOP;
 	}
 	END_LOOP;
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, via))
 			continue;
@@ -924,7 +924,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	SaveUndoSerialNumber();
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			if (!PCB_FLAGS_TEST(flags, pin))
 				continue;
@@ -934,7 +934,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			}
 		}
 		END_LOOP;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			if (!PCB_FLAGS_TEST(flags, pad))
 				continue;
@@ -946,7 +946,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		END_LOOP;
 	}
 	END_LOOP;
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, via))
 			continue;

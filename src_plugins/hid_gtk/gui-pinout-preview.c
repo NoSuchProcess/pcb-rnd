@@ -69,13 +69,13 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 	 * set all package lines/arcs to zero width
 	 */
 	CopyElementLowLevel(NULL, &pinout->element, element, FALSE, 0, 0);
-	PIN_LOOP(&pinout->element);
+	PCB_PIN_LOOP(&pinout->element);
 	{
 		PCB_FLAG_SET(PCB_FLAG_DISPLAYNAME, pin);
 	}
 	END_LOOP;
 
-	PAD_LOOP(&pinout->element);
+	PCB_PAD_LOOP(&pinout->element);
 	{
 		PCB_FLAG_SET(PCB_FLAG_DISPLAYNAME, pad);
 	}

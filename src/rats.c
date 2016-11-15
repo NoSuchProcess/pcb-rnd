@@ -203,13 +203,13 @@ pcb_netlist_t *ProcNetlist(pcb_lib_t *net_menu)
 
 	Wantlist = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	if (Wantlist) {
-		ALLPIN_LOOP(PCB->Data);
+		PCB_PIN_ALL_LOOP(PCB->Data);
 		{
 			pin->Spare = NULL;
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
 		}
 		ENDALL_LOOP;
-		ALLPAD_LOOP(PCB->Data);
+		PCB_PAD_ALL_LOOP(PCB->Data);
 		{
 			pad->Spare = NULL;
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
@@ -272,12 +272,12 @@ pcb_netlist_t *ProcNetlist(pcb_lib_t *net_menu)
 		END_LOOP;
 	}
 	/* clear all visit marks */
-	ALLPIN_LOOP(PCB->Data);
+	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
 	}
 	ENDALL_LOOP;
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
 	}
@@ -319,7 +319,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 	void **menu = GetPointerMemory(generic);
 
 	*menu = theNet;
-	ALLPIN_LOOP(PCB->Data);
+	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
 		pcb_element_t *e = pin->Element;
 /* TODO: should be: !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, (pcb_element_t *)pin->Element)*/
@@ -350,7 +350,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 		}
 	}
 	ENDALL_LOOP;
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		pcb_element_t *e = pad->Element;
 /* TODO: should be: !PCB_FLAG_TEST(PCB_FLAG_NONETLIST, (pcb_element_t *)pad->Element)*/
@@ -460,7 +460,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 			}
 		}
 		ENDALL_LOOP;
-		VIA_LOOP(PCB->Data);
+		PCB_VIA_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, via)) {
 				conn = GetConnectionMemory(a);

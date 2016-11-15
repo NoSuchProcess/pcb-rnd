@@ -200,7 +200,7 @@ static int PrintXY(void)
 		 * we can find them
 		 */
 
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			sumx += (double) pin->X;
 			sumy += (double) pin->Y;
@@ -217,7 +217,7 @@ static int PrintXY(void)
 		}
 		END_LOOP;
 
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			sumx += (pad->Point1.X + pad->Point2.X) / 2.0;
 			sumy += (pad->Point1.Y + pad->Point2.Y) / 2.0;

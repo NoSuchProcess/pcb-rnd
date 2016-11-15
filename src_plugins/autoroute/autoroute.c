@@ -1041,7 +1041,7 @@ static routedata_t *CreateRouteData()
 	}
 
 	/* add pins and pads of elements */
-	ALLPIN_LOOP(PCB->Data);
+	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pin))
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
@@ -1049,7 +1049,7 @@ static routedata_t *CreateRouteData()
 			AddPin(layergroupboxes, pin, pcb_false, rd->styles[rd->max_styles]);
 	}
 	ENDALL_LOOP;
-	ALLPAD_LOOP(PCB->Data);
+	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pad))
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
@@ -1058,7 +1058,7 @@ static routedata_t *CreateRouteData()
 	}
 	ENDALL_LOOP;
 	/* add all vias */
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, via))
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, via);

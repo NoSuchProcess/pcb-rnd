@@ -121,13 +121,13 @@ static const char *element_name_for(corner_s * c)
 {
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		PIN_LOOP(element);
+		PCB_PIN_LOOP(element);
 		{
 			if (pin == c->pin)
 				return element->Name[1].TextString;
 		}
 		END_LOOP;
-		PAD_LOOP(element);
+		PCB_PAD_LOOP(element);
 		{
 			if (pad == c->pad)
 				return element->Name[1].TextString;
@@ -2433,7 +2433,7 @@ static void padcleaner()
 		if (l->s->pad && l->s->pad == l->e->pad)
 			continue;
 
-		ALLPAD_LOOP(PCB->Data);
+		PCB_PAD_ALL_LOOP(PCB->Data);
 		{
 			int layerflag = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? LT_SOLDER : LT_COMPONENT;
 
@@ -2564,13 +2564,13 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	grok_layer_groups();
 
 	PCB_ELEMENT_LOOP(PCB->Data);
-	PIN_LOOP(element);
+	PCB_PIN_LOOP(element);
 	{
 		c = find_corner(pin->X, pin->Y, -1);
 		c->pin = pin;
 	}
 	END_LOOP;
-	PAD_LOOP(element);
+	PCB_PAD_LOOP(element);
 	{
 		int layern = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? solder_layer : component_layer;
 		line_s *ls = (line_s *) malloc(sizeof(line_s));
@@ -2589,7 +2589,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	}
 	END_LOOP;
 	END_LOOP;
-	VIA_LOOP(PCB->Data);
+	PCB_VIA_LOOP(PCB->Data);
 	/* hace don't mess with vias that have thermals */
 	/* but then again don't bump into them
 	   if (!PCB_FLAG_TEST(ALLTHERMFLAGS, via))

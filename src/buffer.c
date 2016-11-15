@@ -225,7 +225,7 @@ pcb_bool pcb_buffer_load_layout(pcb_buffer_t *Buffer, const char *Filename, cons
 void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 {
 	/* rotate vias */
-	VIA_LOOP(Buffer->Data);
+	PCB_VIA_LOOP(Buffer->Data);
 	{
 		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
 		ROTATE_VIA_LOWLEVEL(via, Buffer->X, Buffer->Y, Number);
@@ -285,7 +285,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 
 #warning unravel: move these to the corresponding obj_*.[ch]
 	/* rotate vias */
-	VIA_LOOP(Buffer->Data);
+	PCB_VIA_LOOP(Buffer->Data);
 	{
 		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
 		free_rotate(&via->X, &via->Y, Buffer->X, Buffer->Y, cosa, sina);
@@ -418,7 +418,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 	/* set buffer offset to 'mark' position */
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
-	VIA_LOOP(Buffer->Data);
+	PCB_VIA_LOOP(Buffer->Data);
 	{
 		via->X = PCB_SWAP_X(via->X);
 		via->Y = PCB_SWAP_Y(via->Y);
@@ -474,7 +474,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 	/* set buffer offset to 'mark' position */
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
-	VIA_LOOP(Buffer->Data);
+	PCB_VIA_LOOP(Buffer->Data);
 	{
 		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
 		via->X = PCB_SWAP_X(via->X);
@@ -555,7 +555,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 			Buffer->Data->Layer[cnumber] = swap;
 			k++;
 			/* move the thermal flags with the layers */
-			ALLPIN_LOOP(Buffer->Data);
+			PCB_PIN_ALL_LOOP(Buffer->Data);
 			{
 				t1 = PCB_FLAG_THERM_TEST(snumber, pin);
 				t2 = PCB_FLAG_THERM_TEST(cnumber, pin);
@@ -563,7 +563,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 				PCB_FLAG_THERM_ASSIGN(cnumber, t1, pin);
 			}
 			ENDALL_LOOP;
-			VIA_LOOP(Buffer->Data);
+			PCB_VIA_LOOP(Buffer->Data);
 			{
 				t1 = PCB_FLAG_THERM_TEST(snumber, via);
 				t2 = PCB_FLAG_THERM_TEST(cnumber, via);
@@ -679,7 +679,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 	/* finally the vias */
 	if (PCB->ViaOn) {
 		changed |= (pinlist_length(&(PCB_PASTEBUFFER->Data->Via)) != 0);
-		VIA_LOOP(PCB_PASTEBUFFER->Data);
+		PCB_VIA_LOOP(PCB_PASTEBUFFER->Data);
 		{
 			CopyVia(&ctx, via);
 		}

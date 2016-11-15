@@ -1200,7 +1200,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 		ENDALL_LOOP;
 	}
 	if (type == PCB_TYPE_VIA) {
-		VIA_LOOP(Base);
+		PCB_VIA_LOOP(Base);
 		{
 			if (via->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *) via;
@@ -1273,7 +1273,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 		}
 		END_LOOP;
 		if (type == PCB_TYPE_PIN)
-			PIN_LOOP(element);
+			PCB_PIN_LOOP(element);
 		{
 			if (pin->ID == ID) {
 				*Result1 = (void *) element;
@@ -1283,7 +1283,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 		}
 		END_LOOP;
 		if (type == PCB_TYPE_PAD)
-			PAD_LOOP(element);
+			PCB_PAD_LOOP(element);
 		{
 			if (pad->ID == ID) {
 				*Result1 = (void *) element;

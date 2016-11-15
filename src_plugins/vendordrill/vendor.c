@@ -316,7 +316,7 @@ static void apply_vendor_map(void)
 	if (n_vendor_drills > 0) {
 
 		/* first all the vias */
-		VIA_LOOP(PCB->Data);
+		PCB_VIA_LOOP(PCB->Data);
 		{
 			tot++;
 			if (via->DrillingHole != vendorDrillMap(via->DrillingHole)) {
@@ -347,7 +347,7 @@ static void apply_vendor_map(void)
 			 */
 			if (vendorIsElementMappable(element)) {
 				/* the element is ok to modify, so iterate over its pins */
-				PIN_LOOP(element);
+				PCB_PIN_LOOP(element);
 				{
 					tot++;
 					if (pin->DrillingHole != vendorDrillMap(pin->DrillingHole)) {
