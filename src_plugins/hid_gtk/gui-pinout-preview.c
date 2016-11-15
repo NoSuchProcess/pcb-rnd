@@ -82,7 +82,7 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 	END_LOOP;
 
 
-	MoveElementLowLevel(NULL, &pinout->element,
+	pcb_element_move(NULL, &pinout->element,
 											conf_core.appearance.pinout.offset_x -
 											pinout->element.BoundingBox.X1, conf_core.appearance.pinout.offset_y - pinout->element.BoundingBox.Y1);
 

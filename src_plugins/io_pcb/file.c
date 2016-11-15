@@ -568,7 +568,7 @@ void PostLoadElementPCB()
 	ParseGroupString("1,c:2,s", &yyPCB->LayerGroups, yyData->LayerN);
 	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
 	PCB = yyPCB;
-	MoveElementLowLevel(yyPCB->Data, e, -e->BoundingBox.X1, -e->BoundingBox.Y1);
+	pcb_element_move(yyPCB->Data, e, -e->BoundingBox.X1, -e->BoundingBox.Y1);
 	PCB = pcb_save;
 	yyPCB->MaxWidth = e->BoundingBox.X2;
 	yyPCB->MaxHeight = e->BoundingBox.Y2;

@@ -1070,7 +1070,7 @@ void pcb_notify_mode(void)
 						memcpy(estr, e->Name, MAX_ELEMENTNAMES * sizeof(pcb_text_t));
 						for (i = 0; i < MAX_ELEMENTNAMES; ++i)
 							estr[i].TextString = estr[i].TextString ? pcb_strdup(estr[i].TextString) : NULL;
-						RemoveElement(e);
+						pcb_element_remove(e);
 					}
 				}
 			}

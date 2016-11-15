@@ -621,7 +621,7 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 				DX = -DX;
 				DY = -DY;
 			}
-			MoveElementLowLevel(PCB->Data, pt->element, DX, DY);
+			pcb_element_move(PCB->Data, pt->element, DX, DY);
 			return;
 		}
 	case ROTATE:
@@ -634,9 +634,9 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 				pcb_element_rotate90(PCB->Data, pt->element, bbcx, bbcy, b);
 			else {
 				pcb_coord_t y = pt->element->VBox.Y1;
-				MirrorElementCoordinates(PCB->Data, pt->element, 0);
+				pcb_element_mirror(PCB->Data, pt->element, 0);
 				/* mirroring moves the element.  move it back. */
-				MoveElementLowLevel(PCB->Data, pt->element, 0, y - pt->element->VBox.Y1);
+				pcb_element_move(PCB->Data, pt->element, 0, y - pt->element->VBox.Y1);
 			}
 			return;
 		}
@@ -647,8 +647,8 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 			pcb_coord_t y1 = pt->element->VBox.Y1;
 			pcb_coord_t x2 = pt->other->BoundingBox.X1;
 			pcb_coord_t y2 = pt->other->BoundingBox.Y1;
-			MoveElementLowLevel(PCB->Data, pt->element, x2 - x1, y2 - y1);
-			MoveElementLowLevel(PCB->Data, pt->other, x1 - x2, y1 - y2);
+			pcb_element_move(PCB->Data, pt->element, x2 - x1, y2 - y1);
+			pcb_element_move(PCB->Data, pt->other, x1 - x2, y1 - y2);
 			/* then flip both elements if they are on opposite sides */
 			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt->element) != PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pt->other)) {
 				PerturbationType mypt;

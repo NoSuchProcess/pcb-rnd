@@ -81,9 +81,9 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 char *UniqueElementName(pcb_data_t *Data, char *Name);
 void r_delete_element(pcb_data_t * data, pcb_element_t * element);
 
-void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY);
-void *RemoveElement(pcb_element_t *Element);
-void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff);
+void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY);
+void *pcb_element_remove(pcb_element_t *Element);
+void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff);
 
 pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y,
 	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness);

@@ -558,3 +558,6 @@ ChangeHole -> pcb_pin_change_hole
 CreateNewElement -> pcb_element_new
 CreateNewArcInElement -> pcb_element_arc_new
 CreateNewLineInElement -> pcb_element_line_new
+RemoveElement -> pcb_element_remove
+MoveElementLowLevel -> pcb_element_move
+MirrorElementCoordinates -> pcb_element_mirror

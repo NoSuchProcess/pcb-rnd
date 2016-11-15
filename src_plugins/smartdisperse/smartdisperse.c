@@ -83,7 +83,7 @@ static void place(pcb_element_t * element)
 	}
 
 	/* move the element */
-	MoveElementLowLevel(PCB->Data, element, dx, dy);
+	pcb_element_move(PCB->Data, element, dx, dy);
 
 	/* and add to the undo list so we can undo this operation */
 	AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);

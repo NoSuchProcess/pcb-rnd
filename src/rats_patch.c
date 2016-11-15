@@ -433,7 +433,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 			pcb_load_footprint(3, a, element->MarkX, element->MarkY);
 			pcb_buffer_copy_to_layout(element->MarkX, element->MarkY);
 			rats_patch_append_optimize(PCB, RATP_CHANGE_ATTRIB, a[1], "footprint", fpname);
-			RemoveElement(element);
+			pcb_element_remove(element);
 		}
 	}
 	END_LOOP;

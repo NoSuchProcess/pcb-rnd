@@ -276,7 +276,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 			dy += PCB->Grid;
 
 			/* move the element */
-			MoveElementLowLevel(PCB->Data, element, dx, dy);
+			pcb_element_move(PCB->Data, element, dx, dy);
 
 			/* and add to the undo list so we can undo this operation */
 			AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
@@ -599,7 +599,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		er = pcb_element_get_orientation(e);
 		pe = elementlist_first(&(PCB_PASTEBUFFER->Data->Element));
 		if (!PCB_FRONT(e))
-			MirrorElementCoordinates(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
+			pcb_element_mirror(PCB_PASTEBUFFER->Data, pe, pe->MarkY * 2 - PCB->MaxHeight);
 		pr = pcb_element_get_orientation(pe);
 
 		mx = e->MarkX;
@@ -615,7 +615,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			pe->Name[i].Scale = e->Name[i].Scale;
 		}
 
-		RemoveElement(e);
+		pcb_element_remove(e);
 
 		if (pcb_buffer_copy_to_layout(mx, my))
 			SetChangedFlag(pcb_true);

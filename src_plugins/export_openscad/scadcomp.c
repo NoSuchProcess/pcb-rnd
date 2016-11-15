@@ -363,7 +363,7 @@ static int scad_calculate_bbox(pcb_element_t * element, pcb_angle_t angle, float
   -- Copy
   AddElementToBuffer (pcb_element_t *Element)
   if (PCB_ON_SIDE(Element,(Settings.ShowBottomSide)?BOTTOM_SIDE:TOP_SIDE))
-     MirrorElementCoordinates (element_buffer.Data, element, 0);
+     pcb_element_mirror(element_buffer.Data, element, 0);
 
   pcb_buffer_clear(&element_buffer);
 */

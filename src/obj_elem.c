@@ -454,7 +454,7 @@ pcb_bool pcb_element_change_side(pcb_element_t *Element, pcb_coord_t yoff)
 		return (pcb_false);
 	EraseElement(Element);
 	AddObjectToMirrorUndoList(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);
-	MirrorElementCoordinates(PCB->Data, Element, yoff);
+	pcb_element_mirror(PCB->Data, Element, yoff);
 	DrawElement(Element);
 	return (pcb_true);
 }
@@ -662,7 +662,7 @@ void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_
 }
 
 /* mirrors the coordinates of an element; an additional offset is passed */
-void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff)
+void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff)
 {
 	r_delete_element(Data, Element);
 	ELEMENTLINE_LOOP(Element);
@@ -991,7 +991,7 @@ int pcb_element_get_orientation(pcb_element_t * e)
 }
 
 /* moves a element by +-X and +-Y */
-void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY)
+void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t DY)
 {
 	if (Data)
 		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
@@ -1047,7 +1047,7 @@ void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t D
 		r_insert_entry(Data->element_tree, (pcb_box_t *) Element, 0);
 }
 
-void *RemoveElement(pcb_element_t *Element)
+void *pcb_element_remove(pcb_element_t *Element)
 {
 	pcb_opctx_t ctx;
 
@@ -1565,7 +1565,7 @@ void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 
 	if (PCB->ElementOn && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElement(Element);
-		MoveElementLowLevel(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
+		pcb_element_move(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
 		DrawElementName(Element);
 		DrawElementPackage(Element);
 		didDraw = pcb_true;
@@ -1573,7 +1573,7 @@ void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 	else {
 		if (PCB->PinOn)
 			EraseElementPinsAndPads(Element);
-		MoveElementLowLevel(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
+		pcb_element_move(PCB->Data, Element, ctx->move.dx, ctx->move.dy);
 	}
 	if (PCB->PinOn) {
 		DrawElementPinsAndPads(Element);

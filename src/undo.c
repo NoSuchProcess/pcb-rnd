@@ -565,7 +565,7 @@ static pcb_bool UndoMirror(UndoListTypePtr Entry)
 		pcb_element_t *element = (pcb_element_t *) ptr3;
 		if (andDraw)
 			EraseElement(element);
-		MirrorElementCoordinates(PCB->Data, element, Entry->Data.Move.DY);
+		pcb_element_mirror(PCB->Data, element, Entry->Data.Move.DY);
 		if (andDraw)
 			DrawElement(element);
 		return (pcb_true);

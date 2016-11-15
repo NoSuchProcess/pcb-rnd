@@ -139,7 +139,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 {
 	ELEMENT_LOOP(PCB->Data);
 	{
-		MoveElementLowLevel(PCB->Data, element, dx, dy);
+		pcb_element_move(PCB->Data, element, dx, dy);
 		AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 	}
 	END_LOOP;

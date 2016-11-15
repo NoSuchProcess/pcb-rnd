@@ -468,7 +468,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 	ELEMENT_LOOP(Buffer->Data);
 	{
 		r_delete_element(Buffer->Data, element);
-		MirrorElementCoordinates(Buffer->Data, element, 0);
+		pcb_element_mirror(Buffer->Data, element, 0);
 	}
 	END_LOOP;
 	/* set buffer offset to 'mark' position */
