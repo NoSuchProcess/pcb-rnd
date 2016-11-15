@@ -329,7 +329,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 				hasParts = pcb_true;
 			}
 			END_LOOP;
-			POLYGON_LOOP(layer);
+			PCB_POLY_LOOP(layer);
 			{
 				pcb_coord_t x1, y1, x2, y2, w, h, t;
 

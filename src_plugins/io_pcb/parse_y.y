@@ -210,7 +210,7 @@ parsepcb
 			 */
 			free(layer_group_string);
 			PCB = yyPCB;
-			ALLPOLYGON_LOOP (yyData);
+			PCB_POLY_ALL_LOOP(yyData);
 			{
 			  InitClip (yyData, layer, polygon);
 			}

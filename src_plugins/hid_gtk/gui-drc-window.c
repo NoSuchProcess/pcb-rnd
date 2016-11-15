@@ -155,7 +155,7 @@ static void unset_found_flags(int AndDraw)
 		}
 	}
 	ENDALL_LOOP;
-	COPPERPOLYGON_LOOP(PCB->Data);
+	PCB_POLY_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, polygon)) {
 			AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);

@@ -408,9 +408,9 @@ static pcb_bool SearchPointByLocation(int locked, pcb_layer_t ** Layer, pcb_poly
 
 	least = SearchRadius + MAX_POLYGON_POINT_DISTANCE;
 	*Layer = SearchLayer;
-	POLYGON_LOOP(*Layer);
+	PCB_POLY_LOOP(*Layer);
 	{
-		POLYGONPOINT_LOOP(polygon);
+		PCB_POLY_POINT_LOOP(polygon);
 		{
 			d = pcb_distance(point->X, point->Y, PosX, PosY);
 			if (d < least) {
@@ -1178,7 +1178,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 	}
 
 	if (type == PCB_TYPE_POLYGON || type == PCB_TYPE_POLYGON_POINT) {
-		ALLPOLYGON_LOOP(Base);
+		PCB_POLY_ALL_LOOP(Base);
 		{
 			if (polygon->ID == ID) {
 				*Result1 = (void *) layer;
@@ -1186,7 +1186,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 				return (PCB_TYPE_POLYGON);
 			}
 			if (type == PCB_TYPE_POLYGON_POINT)
-				POLYGONPOINT_LOOP(polygon);
+				PCB_POLY_POINT_LOOP(polygon);
 			{
 				if (point->ID == ID) {
 					*Result1 = (void *) layer;

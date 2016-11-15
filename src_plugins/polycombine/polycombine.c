@@ -283,7 +283,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	poly_tree *this_node;
 
 	/* First pass to combine the forward and backward contours */
-	VISIBLEPOLYGON_LOOP(PCB->Data);
+	PCB_POLY_VISIBLE_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 			continue;
@@ -317,7 +317,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	SaveUndoSerialNumber();
 
 	/* Second pass to remove the input polygons */
-	VISIBLEPOLYGON_LOOP(PCB->Data);
+	PCB_POLY_VISIBLE_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 			continue;

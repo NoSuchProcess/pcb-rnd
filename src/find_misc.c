@@ -384,7 +384,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 		}
 	}
 	ENDALL_LOOP;
-	COPPERPOLYGON_LOOP(PCB->Data);
+	PCB_POLY_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, polygon)) {
 			if (AndDraw)

@@ -1103,7 +1103,7 @@ static routedata_t *CreateRouteData()
 		}
 		END_LOOP;
 		/* add all polygons */
-		POLYGON_LOOP(LAYER_PTR(i));
+		PCB_POLY_LOOP(LAYER_PTR(i));
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon))
 				PCB_FLAG_CLEAR(PCB_FLAG_DRC, polygon);

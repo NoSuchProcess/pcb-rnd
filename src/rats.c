@@ -445,7 +445,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 		}
 		ENDALL_LOOP;
 		/* add polygons so the auto-router can see them as targets */
-		ALLPOLYGON_LOOP(PCB->Data);
+		PCB_POLY_ALL_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon)) {
 				conn = GetConnectionMemory(a);

@@ -983,7 +983,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 
 	/* Run poly clipping at the end so we have all IDs and we can
 	   announce the clipping (it's slow, we may need a progress bar) */
-	ALLPOLYGON_LOOP(pcb->Data);
+	PCB_POLY_ALL_LOOP(pcb->Data);
 	{
 		InitClip(pcb->Data, layer, polygon);
 	}

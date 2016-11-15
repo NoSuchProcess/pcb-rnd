@@ -109,7 +109,7 @@ static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
 
 int PCBFileVersionNeeded(void)
 {
-	ALLPOLYGON_LOOP(PCB->Data);
+	PCB_POLY_ALL_LOOP(PCB->Data);
 	{
 		if (polygon->HoleIndexN > 0)
 			return PCB_FILE_VERSION_HOLES;

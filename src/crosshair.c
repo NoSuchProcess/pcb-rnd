@@ -312,7 +312,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 			/* the tmp polygon has n+1 points because the first
 			 * and the last one are set to the same coordinates
 			 */
-			POLYGON_LOOP(layer);
+			PCB_POLY_LOOP(layer);
 			{
 				XORPolygon(polygon, x, y, 0);
 			}

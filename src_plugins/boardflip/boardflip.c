@@ -80,10 +80,10 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 		}
 		END_LOOP;
-		POLYGON_LOOP(layer);
+		PCB_POLY_LOOP(layer);
 		{
 			int i, j;
-			POLYGONPOINT_LOOP(polygon);
+			PCB_POLY_POINT_LOOP(polygon);
 			{
 				FLIP(point->Y);
 			}

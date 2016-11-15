@@ -167,7 +167,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		AddObjectToMoveUndoList(PCB_TYPE_TEXT, NULL, NULL, text, dx, dy);
 	}
 	ENDALL_LOOP;
-	ALLPOLYGON_LOOP(PCB->Data);
+	PCB_POLY_ALL_LOOP(PCB->Data);
 	{
 		/*
 		 * XXX MovePolygonLowLevel does not mean "no gui" like

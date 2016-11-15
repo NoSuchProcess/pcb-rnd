@@ -344,7 +344,7 @@ do { \
 			}
 		}
 		END_LOOP;
-		POLYGON_LOOP(layer);
+		PCB_POLY_LOOP(layer);
 		{
 			if (POLYGON_NEAR_BOX(polygon, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)
@@ -607,7 +607,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 
 	/* check polygons */
 	if (type & PCB_TYPE_POLYGON && F->Polygon)
-		VISIBLEPOLYGON_LOOP(PCB->Data);
+		PCB_POLY_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
 			if (Reset) {
@@ -760,7 +760,7 @@ pcb_bool SelectConnection(pcb_bool Flag)
 		}
 	}
 	ENDALL_LOOP;
-	VISIBLEPOLYGON_LOOP(PCB->Data);
+	PCB_POLY_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)) {
 			AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);

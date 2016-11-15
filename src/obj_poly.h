@@ -68,47 +68,47 @@ pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src);
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon);
 
-#define POLYGON_LOOP(layer) do {                                    \
+#define PCB_POLY_LOOP(layer) do {                                    \
   pcb_polygon_t *polygon;                                             \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(layer)->Polygon, &__it__, polygon) {
 
-#define	POLYGONPOINT_LOOP(polygon) do	{	\
+#define	PCB_POLY_POINT_LOOP(polygon) do	{	\
 	pcb_cardinal_t			n;		\
 	pcb_point_t *point;				\
 	for (n = (polygon)->PointN-1; n != -1; n--)	\
 	{						\
 		point = &(polygon)->Points[n]
 
-#define	ALLPOLYGON_LOOP(top)	do {		\
+#define	PCB_POLY_ALL_LOOP(top)	do {		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
-		POLYGON_LOOP(layer)
+		PCB_POLY_LOOP(layer)
 
-#define	COPPERPOLYGON_LOOP(top) do	{		\
+#define	PCB_POLY_COPPER_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer; l++, layer++)	\
 	{ \
-		POLYGON_LOOP(layer)
+		PCB_POLY_LOOP(layer)
 
-#define	SILKPOLYGON_LOOP(top) do	{		\
+#define	PCB_POLY_SILK_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	layer += max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
-		POLYGON_LOOP(layer)
+		PCB_POLY_LOOP(layer)
 
-#define	VISIBLEPOLYGON_LOOP(top) do	{	\
+#define	PCB_POLY_VISIBLE_LOOP(top) do	{	\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		if (layer->On)				\
-			POLYGON_LOOP(layer)
+			PCB_POLY_LOOP(layer)
 
 
 #endif

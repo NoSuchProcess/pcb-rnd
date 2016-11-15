@@ -121,7 +121,7 @@ void pcb_poly_free_fields(pcb_polygon_t * polygon)
 /* rotates a polygon in 90 degree steps */
 void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
-	POLYGONPOINT_LOOP(Polygon);
+	PCB_POLY_POINT_LOOP(Polygon);
 	{
 		ROTATE(point->X, point->Y, X, Y, Number);
 	}
@@ -135,7 +135,7 @@ void pcb_poly_bbox(pcb_polygon_t *Polygon)
 {
 	Polygon->BoundingBox.X1 = Polygon->BoundingBox.Y1 = MAX_COORD;
 	Polygon->BoundingBox.X2 = Polygon->BoundingBox.Y2 = 0;
-	POLYGONPOINT_LOOP(Polygon);
+	PCB_POLY_POINT_LOOP(Polygon);
 	{
 		PCB_MAKE_MIN(Polygon->BoundingBox.X1, point->X);
 		PCB_MAKE_MIN(Polygon->BoundingBox.Y1, point->Y);
@@ -342,7 +342,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 /* low level routine to move a polygon */
 void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 {
-	POLYGONPOINT_LOOP(Polygon);
+	PCB_POLY_POINT_LOOP(Polygon);
 	{
 		PCB_MOVE(point->X, point->Y, DX, DY);
 	}

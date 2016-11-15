@@ -263,7 +263,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 		r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 	}
 	ENDALL_LOOP;
-	ALLPOLYGON_LOOP(Buffer->Data);
+	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 		pcb_poly_rotate90(polygon, Buffer->X, Buffer->Y, Number);
@@ -320,10 +320,10 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	}
 	ENDALL_LOOP;
 	/* FIXME: rotate text */
-	ALLPOLYGON_LOOP(Buffer->Data);
+	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
-		POLYGONPOINT_LOOP(polygon);
+		PCB_POLY_POINT_LOOP(polygon);
 		{
 			free_rotate(&point->X, &point->Y, Buffer->X, Buffer->Y, cosa, sina);
 		}
@@ -441,9 +441,9 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 		pcb_arc_bbox(arc);
 	}
 	ENDALL_LOOP;
-	ALLPOLYGON_LOOP(Buffer->Data);
+	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
-		POLYGONPOINT_LOOP(polygon);
+		PCB_POLY_POINT_LOOP(polygon);
 		{
 			point->X = PCB_SWAP_X(point->X);
 			point->Y = PCB_SWAP_Y(point->Y);
@@ -505,10 +505,10 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
 	ENDALL_LOOP;
-	ALLPOLYGON_LOOP(Buffer->Data);
+	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
-		POLYGONPOINT_LOOP(polygon);
+		PCB_POLY_POINT_LOOP(polygon);
 		{
 			point->X = PCB_SWAP_X(point->X);
 			point->Y = PCB_SWAP_Y(point->Y);
@@ -653,7 +653,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 				CopyText(&ctx, destlayer, text);
 			}
 			END_LOOP;
-			POLYGON_LOOP(sourcelayer);
+			PCB_POLY_LOOP(sourcelayer);
 			{
 				CopyPolygon(&ctx, destlayer, polygon);
 			}

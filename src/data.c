@@ -83,7 +83,7 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 			}
 
 			if (pocb != NULL) {
-				POLYGON_LOOP(layer);
+				PCB_POLY_LOOP(layer);
 				{
 					pocb(ctx, PCB, layer, polygon);
 				}
@@ -219,7 +219,7 @@ void pcb_data_free(pcb_data_t * data)
 		list_map0(&layer->Line, pcb_line_t, pcb_line_free);
 		list_map0(&layer->Arc,  pcb_arc_t,  pcb_arc_free);
 		list_map0(&layer->Text, pcb_text_t, pcb_text_free);
-		POLYGON_LOOP(layer);
+		PCB_POLY_LOOP(layer);
 		{
 			pcb_poly_free_fields(polygon);
 		}
@@ -332,7 +332,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		box.Y2 = MAX(box.Y2, text->BoundingBox.Y2);
 	}
 	ENDALL_LOOP;
-	ALLPOLYGON_LOOP(Data);
+	PCB_POLY_ALL_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, polygon->BoundingBox.X1);
 		box.Y1 = MIN(box.Y1, polygon->BoundingBox.Y1);

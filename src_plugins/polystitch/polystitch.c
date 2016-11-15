@@ -83,10 +83,10 @@ static void find_crosshair_poly(int x, int y)
 	inner_poly = NULL;
 	poly_layer = NULL;
 
-	VISIBLEPOLYGON_LOOP(PCB->Data);
+	PCB_POLY_VISIBLE_LOOP(PCB->Data);
 	{
 		/* layer, polygon */
-		POLYGONPOINT_LOOP(polygon);
+		PCB_POLY_POINT_LOOP(polygon);
 		{
 			/* point */
 			int dx = x - point->X;
@@ -115,7 +115,7 @@ static void find_enclosing_poly()
 {
 	outer_poly = NULL;
 
-	POLYGON_LOOP(poly_layer);
+	PCB_POLY_LOOP(poly_layer);
 	{
 		if (polygon == inner_poly)
 			continue;
