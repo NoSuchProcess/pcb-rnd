@@ -62,20 +62,15 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via);
 	: (pinptr)->Thickness)
 
 
-#define	MOVE_VIA_LOWLEVEL(v_,dx_,dy_) \
+#define	MOVE_VIA_LOWLEVEL(v,dx,dy) \
 	{ \
-		pcb_coord_t __dx__ = (dx_), __dy__ = (dy_); \
-		pcb_pin_t *__v__ = (v_); \
+		pcb_coord_t __dx__ = (dx), __dy__ = (dy); \
+		pcb_pin_t *__v__ = (v); \
 		PCB_MOVE((__v__)->X,(__v__)->Y,(__dx__),(__dy__)) \
 		PCB_BOX_MOVE_LOWLEVEL(&((__v__)->BoundingBox),(__dx__),(__dy__)); \
 	}
 
-#define	MOVE_PIN_LOWLEVEL(p,dx,dy) \
-	{ \
-		PCB_MOVE((p)->X,(p)->Y,(dx),(dy)) \
-		PCB_BOX_MOVE_LOWLEVEL(&((p)->BoundingBox),(dx),(dy));		\
-	}
-
+#define	MOVE_PIN_LOWLEVEL(p,dx,dy) MOVE_VIA_LOWLEVEL(p, dx, dy)
 
 #define VIA_LOOP(top) do {                                          \
   pcb_pin_t *via;                                                     \
@@ -90,6 +85,5 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via);
 #define ALLPIN_LOOP(top)   \
         ELEMENT_LOOP(top); \
         PIN_LOOP(element)  \
-
 
 #endif
