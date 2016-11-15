@@ -53,11 +53,13 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
 /* Rather than move the line bounding box, we set it so the point bounding
  * boxes are updated too.
  */
-#define	MOVE_PAD_LOWLEVEL(p,dx,dy)              \
-	{                                             \
-		PCB_MOVE((p)->Point1.X,(p)->Point1.Y,(dx),(dy)) \
-		PCB_MOVE((p)->Point2.X,(p)->Point2.Y,(dx),(dy)) \
-		pcb_pad_bbox((p));                    \
+#define	MOVE_PAD_LOWLEVEL(p,dx,dy) \
+	{ \
+		pcb_coord_t __dx__ = (dx), __dy__ = (dy); \
+		pcb_pad_t *__p__ = (p); \
+		PCB_MOVE((__p__)->Point1.X,(__p__)->Point1.Y,(__dx__),(__dy__)) \
+		PCB_MOVE((__p__)->Point2.X,(__p__)->Point2.Y,(__dx__),(__dy__)) \
+		pcb_pad_bbox((__p__)); \
 	}
 
 #define PAD_LOOP(element) do {                                      \
