@@ -1028,7 +1028,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 	END_LOOP;
 	ARC_LOOP(Element);
 	{
-		MOVE_ARC_LOWLEVEL(arc, DX, DY);
+		pcb_arc_move(arc, DX, DY);
 	}
 	END_LOOP;
 	ELEMENTTEXT_LOOP(Element);

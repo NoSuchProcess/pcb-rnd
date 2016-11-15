@@ -95,7 +95,7 @@ static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_arc_t
 		RestoreToPolygon(Data, PCB_TYPE_ARC, Layer, Arc);
 		r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	}
-	MOVE_ARC_LOWLEVEL(Arc, dx, dy);
+	pcb_arc_move(Arc, dx, dy);
 	if (Data) {
 		r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		ClearFromPolygon(Data, PCB_TYPE_ARC, Layer, Arc);

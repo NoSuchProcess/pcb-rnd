@@ -434,12 +434,12 @@ void *MoveArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 	if (Layer->On) {
 		EraseArc(Arc);
-		MOVE_ARC_LOWLEVEL(Arc, ctx->move.dx, ctx->move.dy);
+		pcb_arc_move(Arc, ctx->move.dx, ctx->move.dy);
 		DrawArc(Layer, Arc);
 		pcb_draw();
 	}
 	else {
-		MOVE_ARC_LOWLEVEL(Arc, ctx->move.dx, ctx->move.dy);
+		pcb_arc_move(Arc, ctx->move.dx, ctx->move.dy);
 	}
 	r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);

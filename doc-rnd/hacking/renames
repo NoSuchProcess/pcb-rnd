@@ -565,3 +565,4 @@ MovePolygonLowLevel -> pcb_poly_move
 CopyPolygonLowLevel -> pcb_poly_copy
 MOVE_TEXT_LOWLEVEL -> pcb_text_move
 TEXT_IS_VISIBLE -> pcb_text_is_visible
+MOVE_ARC_LOWLEVEL -> pcb_arc_move

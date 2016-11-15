@@ -61,7 +61,7 @@ pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc);
 void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);
 void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height);
 
-#define	MOVE_ARC_LOWLEVEL(a,dx,dy)                                \
+#define	pcb_arc_move(a,dx,dy)                                \
 	{                                                               \
 		pcb_coord_t __dx__ = (dx), __dy__ = (dy);                     \
 		pcb_arc_t *__a__ = (a);                                       \
