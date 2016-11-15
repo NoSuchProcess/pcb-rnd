@@ -1,16 +1,19 @@
 obj_* function naming conventions
 
 
-High level:
+High level (new/destroy):
 
 	This is the recommended way of creating new objects.
 
 	pcb_*_new():
 		Calls pcb_*_alloc(), fills in fields from parameters and calls the post
 		processing (pcb_add_*_on_layer()) function as needed. Makes sanity checks
-		on the parameters and may fail upon that. May do clever things so the
-		object created may not be 1:1 what was reqested (e.g. overlapping
-		line merging)
+		on the parameters and may fail upon that. 
+
+	pcb_*_new_*():
+		Same as pcb_*_new(), but may do clever things so the object created may
+		not be 1:1 what was reqested or may not even be a new object (e.g.
+		overlapping line merging)
 
 	pcb_element_*_new():
 		same as pcb_*_new(), parent being an element
@@ -19,8 +22,7 @@ High level:
 		free all fields of an object and properly remove it from the parent
 		(including rtree removal)
 
-
-Low level:
+Low level (alloc/free):
 
 	Use this in some special cases (like loading a file) when the extra checks
 	of a _new may interfere. 
