@@ -532,14 +532,14 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 	bboard_init_board_cairo(PCB->MaxWidth, PCB->MaxHeight, bboard_bgcolor, options[HA_antialias].int_value);
 
 	/* write out components on solder side */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) {
 		bboard_export_element_cairo(element, 1);
 	}
 	END_LOOP;
 
 	/* write out components on component side */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	if (!PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) {
 		bboard_export_element_cairo(element, 0);
 	}

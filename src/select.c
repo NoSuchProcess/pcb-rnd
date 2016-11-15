@@ -68,7 +68,7 @@ void pcb_select_element(pcb_element_t *element, pcb_change_flag_t how, int redra
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pad);
 	}
 	END_LOOP;
-	ELEMENTTEXT_LOOP(element);
+	PCB_ELEMENT_TEXT_LOOP(element);
 	{
 		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
@@ -91,7 +91,7 @@ void pcb_select_element(pcb_element_t *element, pcb_change_flag_t how, int redra
 void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int redraw)
 {
 	/* select all names of the element */
-	ELEMENTTEXT_LOOP(element);
+	PCB_ELEMENT_TEXT_LOOP(element);
 	{
 		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
@@ -359,7 +359,7 @@ do { \
 	END_LOOP;
 
 	/* elements */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		{
 			pcb_bool gotElement = pcb_false;
@@ -370,7 +370,7 @@ do { \
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, &ELEMENT_TEXT(PCB, element))
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)) != Flag) {
 					/* select all names of element */
-					ELEMENTTEXT_LOOP(element);
+					PCB_ELEMENT_TEXT_LOOP(element);
 					{
 						append(PCB_TYPE_ELEMENT_NAME, element, text);
 					}
@@ -622,7 +622,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 
 	/* elements silkscreen */
 	if (type & PCB_TYPE_ELEMENT && PCB->ElementOn && F->Element)
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			if (Reset) {
@@ -635,7 +635,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 	}
 	END_LOOP;
 	if (type & PCB_TYPE_ELEMENT_NAME && PCB->ElementOn && F->ElementName)
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element))) {
 			if (Reset) {
@@ -649,7 +649,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 	END_LOOP;
 
 	if (type & PCB_TYPE_PIN && PCB->PinOn && F->Pin)
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{
@@ -667,7 +667,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 	END_LOOP;
 
 	if (type & PCB_TYPE_PAD && PCB->PinOn && F->Pad)
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PAD_LOOP(element);
 		{
@@ -901,7 +901,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 	ENDALL_LOOP;
 
 	if (PCB->ElementOn && (Type & PCB_TYPE_ELEMENT))
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
 				&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn)
@@ -922,7 +922,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
 				}
 				END_LOOP;
-				ELEMENTTEXT_LOOP(element);
+				PCB_ELEMENT_TEXT_LOOP(element);
 				{
 					AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, text);

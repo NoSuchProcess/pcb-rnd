@@ -388,7 +388,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 	int found = 0;
 
 	/* check if we have elements selected and quit if not */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			found = 1;
@@ -423,7 +423,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 
 
 	/* action: replace selected elements */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			a[0] = fpname;

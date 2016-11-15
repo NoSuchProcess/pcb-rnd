@@ -53,7 +53,7 @@ static pcb_element_t *find_element_by_refdes(const char *refdes)
 			&& strcmp(NAMEONPCB_NAME(element_cache), refdes) == 0)
 		return element_cache;
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (NAMEONPCB_NAME(element)
 				&& strcmp(NAMEONPCB_NAME(element), refdes) == 0) {
@@ -147,7 +147,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		{
 			int n_found = 0;
 			pcb_element_t *e = NULL;
-			ELEMENT_LOOP(PCB->Data);
+			PCB_ELEMENT_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 					e = element;
@@ -236,7 +236,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 	}
 
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		/*
 		 * If we want to disperse selected elements, maybe we need smarter
@@ -491,7 +491,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 #endif
 
 	if (strcasecmp(function, "start") == 0) {
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
 		}
@@ -502,7 +502,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	}
 
 	if (strcasecmp(function, "done") == 0) {
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, element)) {
 				PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
@@ -668,7 +668,7 @@ static int ActionElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_
 	name = argv[1];
 	value = PCB_ACTION_ARG(2);
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_NSTRCMP(refdes, NAMEONPCB_NAME(element)) == 0) {
 			e = element;
@@ -848,7 +848,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 
 	SaveUndoSerialNumber();
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{
@@ -922,7 +922,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 
 	SaveUndoSerialNumber();
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{
@@ -984,7 +984,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 /* ---------------------------------------------------------------------------  */
 int ActionListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		printf("%d %s\n", pcb_element_get_orientation(element), NAMEONPCB_NAME(element));
 	}

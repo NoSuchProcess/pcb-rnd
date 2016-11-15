@@ -479,7 +479,7 @@ static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	gds_init(&list);
 	gds_append_str(&list, "The following pins/pads are FOUND:\n");
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{
@@ -577,7 +577,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 		}
 		*pname++ = 0;
 
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			char *es = element->Name[NAMEONPCB_INDEX].TextString;
 			if (es && strcmp(es, ename) == 0) {
@@ -656,7 +656,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		return 1;
 	}
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{

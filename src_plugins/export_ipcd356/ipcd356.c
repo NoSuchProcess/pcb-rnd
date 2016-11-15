@@ -175,7 +175,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 {
 	int padx, pady, tmp;
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	PAD_LOOP(element);
 	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
 		fprintf(fd, "327%-17.14s", net);	/* Net Name. */
@@ -425,7 +425,7 @@ int IPCD356_Netlist(void)
 	}
 
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	PIN_LOOP(element);
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, pin)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
@@ -494,7 +494,7 @@ void ResetVisitPinsViasAndPads()
 	VIA_LOOP(PCB->Data);
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, via);
 	END_LOOP;											/* Via. */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	PIN_LOOP(element);
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, pin);
 	END_LOOP;											/* Pin. */
@@ -567,7 +567,7 @@ void CheckNetLength(char *net, IPCD356_AliasList * aliaslist)
 
 int IPCD356_SanityCheck()
 {
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	if (element->Name[1].TextString == '\0') {
 		pcb_message(PCB_MSG_ERROR, "Error: Found unnamed element. All elements need to be named to create an IPC-D-356 netlist.\n");
 		return (1);

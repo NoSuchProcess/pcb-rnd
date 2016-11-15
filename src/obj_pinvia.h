@@ -83,7 +83,7 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via);
   pinlist_foreach(&(element)->Pin, &__it__, pin) {
 
 #define ALLPIN_LOOP(top)   \
-        ELEMENT_LOOP(top); \
+        PCB_ELEMENT_LOOP(top); \
         PIN_LOOP(element)  \
 
 #endif

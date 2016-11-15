@@ -88,7 +88,7 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 
 	pinout_set_view(pinout);
 
-	ELEMENTLINE_LOOP(&pinout->element);
+	PCB_ELEMENT_LINE_LOOP(&pinout->element);
 	{
 		line->Thickness = 0;
 	}

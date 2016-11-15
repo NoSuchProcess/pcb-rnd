@@ -220,7 +220,7 @@ void pcb_lookup_unused_pins(FILE * FP)
 	pcb_reset_conns(pcb_true);
 	pcb_conn_lookup_init();
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		/* break if abort dialog returned pcb_true;
 		 * passing NULL as filedescriptor discards the normal output
@@ -270,7 +270,7 @@ void pcb_lookup_conns_to_all_elements(FILE * FP)
 	pcb_reset_conns(pcb_false);
 	pcb_conn_lookup_init();
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		/* break if abort dialog returned pcb_true */
 		if (PrintElementConnections(element, FP, pcb_false))

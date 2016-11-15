@@ -244,7 +244,7 @@ static int sort_elements_by_pos(int op, int dir, int point)
 		return nelements_by_pos;
 	if (op == K_align)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 			continue;
@@ -256,7 +256,7 @@ static int sort_elements_by_pos(int op, int dir, int point)
 	elements_by_pos = malloc(nsel * sizeof(*elements_by_pos));
 	nelements_by_pos = nsel;
 	nsel = 0;
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 			continue;
@@ -297,7 +297,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 	case K_Average:							/* the average among selected elements */
 		nsel = 0;
 		q = 0;
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
 				continue;
@@ -411,7 +411,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	/* find the final alignment coordinate using the above options */
 	q = reference_coord(K_align, Crosshair.X, Crosshair.Y, dir, point, reference);
 	/* move all selected elements to the new coordinate */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_coord_t p, dp, dx, dy;
 

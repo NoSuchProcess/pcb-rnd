@@ -101,7 +101,7 @@ static void unset_found_flags(int AndDraw)
 		}
 	}
 	END_LOOP;
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{

@@ -167,7 +167,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		return ntexts_by_pos;
 	if (op == K_aligntext)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_text_t *text;
 		text = &(element)->Name[NAME_INDEX()];
@@ -188,7 +188,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	texts_by_pos = malloc(nsel * sizeof(*texts_by_pos));
 	ntexts_by_pos = nsel;
 	nsel = 0;
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_text_t *text;
 		text = &(element)->Name[NAME_INDEX()];
@@ -359,7 +359,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	q = reference_coord(K_aligntext, Crosshair.X, Crosshair.Y, dir, point, reference);
 	/* move all selected elements to the new coordinate */
 	/* selected text part of an element */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_text_t *text;
 		text = &(element)->Name[NAME_INDEX()];

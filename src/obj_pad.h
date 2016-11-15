@@ -68,7 +68,7 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
 	padlist_foreach(&(element)->Pad, &__it__, pad) {
 
 #define	ALLPAD_LOOP(top)    \
-	ELEMENT_LOOP(top);        \
+	PCB_ELEMENT_LOOP(top);        \
 		PAD_LOOP(element)
 
 

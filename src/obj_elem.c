@@ -81,7 +81,7 @@ void pcb_element_destroy(pcb_element_t * element)
 	if (element == NULL)
 		return;
 
-	ELEMENTNAME_LOOP(element);
+	PCB_ELEMENT_NAME_LOOP(element);
 	{
 		free(textstring);
 	}
@@ -180,7 +180,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	element = elementlist_first(&Buffer->Data->Element);
 	elementlist_remove(element);
 	pcb_buffer_clear(Buffer);
-	ELEMENTLINE_LOOP(element);
+	PCB_ELEMENT_LINE_LOOP(element);
 	{
 		pcb_line_new(&Buffer->Data->SILKLAYER,
 												 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0, pcb_no_flags());
@@ -399,7 +399,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 	 * is to be corrected
 	 */
 #if 0
-	ELEMENTTEXT_LOOP(Element);
+	PCB_ELEMENT_TEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
@@ -407,7 +407,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 	}
 	END_LOOP;
 #endif
-	ELEMENTLINE_LOOP(Element);
+	PCB_ELEMENT_LINE_LOOP(Element);
 	{
 		free_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
 		free_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
@@ -466,7 +466,7 @@ pcb_bool pcb_selected_element_change_side(void)
 	pcb_bool change = pcb_false;
 
 	if (PCB->PinOn && PCB->ElementOn)
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			change |= pcb_element_change_side(element, 0);
@@ -526,7 +526,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	if (!Dest)
 		return (Dest);
 
-	ELEMENTLINE_LOOP(Src);
+	PCB_ELEMENT_LINE_LOOP(Src);
 	{
 		pcb_element_line_new(Dest, line->Point1.X + dx,
 													 line->Point1.Y + dy, line->Point2.X + dx, line->Point2.Y + dy, line->Thickness);
@@ -665,7 +665,7 @@ void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_
 void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff)
 {
 	r_delete_element(Data, Element);
-	ELEMENTLINE_LOOP(Element);
+	PCB_ELEMENT_LINE_LOOP(Element);
 	{
 		line->Point1.X = PCB_SWAP_X(line->Point1.X);
 		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y) + yoff;
@@ -698,7 +698,7 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 		arc->Delta = SWAP_DELTA(arc->Delta);
 	}
 	END_LOOP;
-	ELEMENTTEXT_LOOP(Element);
+	PCB_ELEMENT_TEXT_LOOP(Element);
 	{
 		text->X = PCB_SWAP_X(text->X);
 		text->Y = PCB_SWAP_Y(text->Y) + yoff;
@@ -723,7 +723,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 	if (Data && Data->element_tree)
 		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
 	/* first update the text objects */
-	ELEMENTTEXT_LOOP(Element);
+	PCB_ELEMENT_TEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
@@ -742,7 +742,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 	vbox = &Element->VBox;
 	box->X1 = box->Y1 = MAX_COORD;
 	box->X2 = box->Y2 = 0;
-	ELEMENTLINE_LOOP(Element);
+	PCB_ELEMENT_LINE_LOOP(Element);
 	{
 		pcb_line_bbox(line);
 		PCB_MAKE_MIN(box->X1, line->Point1.X - (line->Thickness + 1) / 2);
@@ -887,7 +887,7 @@ char *UniqueElementName(pcb_data_t *Data, char *Name)
 		return (Name);
 
 	for (;;) {
-		ELEMENT_LOOP(Data);
+		PCB_ELEMENT_LOOP(Data);
 		{
 			if (NAMEONPCB_NAME(element) && PCB_NSTRCMP(NAMEONPCB_NAME(element), Name) == 0) {
 				Name = BumpName(Name);
@@ -915,7 +915,7 @@ void r_delete_element(pcb_data_t * data, pcb_element_t * element)
 		r_delete_entry(data->pad_tree, (pcb_box_t *) pad);
 	}
 	END_LOOP;
-	ELEMENTTEXT_LOOP(element);
+	PCB_ELEMENT_TEXT_LOOP(element);
 	{
 		r_delete_entry(data->name_tree[n], (pcb_box_t *) text);
 	}
@@ -995,7 +995,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 {
 	if (Data)
 		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
-	ELEMENTLINE_LOOP(Element);
+	PCB_ELEMENT_LINE_LOOP(Element);
 	{
 		pcb_line_move(line, DX, DY);
 	}
@@ -1031,7 +1031,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 		pcb_arc_move(arc, DX, DY);
 	}
 	END_LOOP;
-	ELEMENTTEXT_LOOP(Element);
+	PCB_ELEMENT_TEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
@@ -1066,14 +1066,14 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 	/* the text subroutine decides by itself if the direction
 	 * is to be corrected
 	 */
-	ELEMENTTEXT_LOOP(Element);
+	PCB_ELEMENT_TEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
 		pcb_text_rotate90(text, X, Y, Number);
 	}
 	END_LOOP;
-	ELEMENTLINE_LOOP(Element);
+	PCB_ELEMENT_LINE_LOOP(Element);
 	{
 		pcb_line_rotate90(line, X, Y, Number);
 	}
@@ -1118,7 +1118,7 @@ void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 	CopyElementLowLevel(ctx->buffer.dst, element, Element, pcb_false, 0, 0);
 	PCB_FLAG_CLEAR(ctx->buffer.extraflg, element);
 	if (ctx->buffer.extraflg) {
-		ELEMENTTEXT_LOOP(element);
+		PCB_ELEMENT_TEXT_LOOP(element);
 		{
 			PCB_FLAG_CLEAR(ctx->buffer.extraflg, text);
 		}
@@ -1314,7 +1314,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	if (PCB->ElementOn)
 		EraseElement(Element);
-	ELEMENTLINE_LOOP(Element);
+	PCB_ELEMENT_LINE_LOOP(Element);
 	{
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : line->Thickness + ctx->chgsize.delta;
 		if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != line->Thickness) {
@@ -1352,7 +1352,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE) {
 		EraseElementName(Element);
-		ELEMENTTEXT_LOOP(Element);
+		PCB_ELEMENT_TEXT_LOOP(Element);
 		{
 			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_NAME, Element, text, text);
 			r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
@@ -1532,7 +1532,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (PCB->ElementOn && (PCB_FRONT(Element) || PCB->InvisibleObjectsOn)) {
 		EraseElementName(Element);
-		ELEMENTTEXT_LOOP(Element);
+		PCB_ELEMENT_TEXT_LOOP(Element);
 		{
 			if (PCB->Data->name_tree[n])
 				r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
@@ -1545,7 +1545,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 		pcb_draw();
 	}
 	else {
-		ELEMENTTEXT_LOOP(Element);
+		PCB_ELEMENT_TEXT_LOOP(Element);
 		{
 			if (PCB->Data->name_tree[n])
 				r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
@@ -1603,7 +1603,7 @@ void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 		}
 		END_LOOP;
 	}
-	ELEMENTTEXT_LOOP(Element);
+	PCB_ELEMENT_TEXT_LOOP(Element);
 	{
 		if (ctx->remove.destroy_target->name_tree[n])
 			r_delete_entry(ctx->remove.destroy_target->name_tree[n], (pcb_box_t *) text);
@@ -1645,7 +1645,7 @@ void *RotateElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	EraseElementName(Element);
-	ELEMENTTEXT_LOOP(Element);
+	PCB_ELEMENT_TEXT_LOOP(Element);
 	{
 		r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 		pcb_text_rotate90(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
@@ -1723,7 +1723,7 @@ void draw_element_package(pcb_element_t * element)
 		gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
 
 	/* draw lines, arcs, text and pins */
-	ELEMENTLINE_LOOP(element);
+	PCB_ELEMENT_LINE_LOOP(element);
 	{
 		_draw_line(line);
 	}
@@ -1800,7 +1800,7 @@ pcb_r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
 
 void EraseElement(pcb_element_t *Element)
 {
-	ELEMENTLINE_LOOP(Element);
+	PCB_ELEMENT_LINE_LOOP(Element);
 	{
 		EraseLine(line);
 	}
@@ -1853,7 +1853,7 @@ void DrawElementName(pcb_element_t *Element)
 
 void DrawElementPackage(pcb_element_t *Element)
 {
-	ELEMENTLINE_LOOP(Element);
+	PCB_ELEMENT_LINE_LOOP(Element);
 	{
 		DrawLine(NULL, line);
 	}

@@ -1814,7 +1814,7 @@ int read_pads(toporouter_t * r, toporouter_layer_t * l, guint layer)
 	if (l - r->layers != front && l - r->layers != back)
 		return 0;
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PAD_LOOP(element);
 		{
@@ -1977,7 +1977,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 	GList *vlist = NULL;
 	toporouter_bbox_t *bbox = NULL;
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{

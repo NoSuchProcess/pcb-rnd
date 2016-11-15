@@ -114,24 +114,24 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		FLIP(via->Y);
 	}
 	END_LOOP;
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		FLIP(element->MarkY);
 		if (sides)
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, element);
-		ELEMENTTEXT_LOOP(element);
+		PCB_ELEMENT_TEXT_LOOP(element);
 		{
 			FLIP(text->Y);
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 		}
 		END_LOOP;
-		ELEMENTLINE_LOOP(element);
+		PCB_ELEMENT_LINE_LOOP(element);
 		{
 			FLIP(line->Point1.Y);
 			FLIP(line->Point2.Y);
 		}
 		END_LOOP;
-		ELEMENTPCB_ARC_LOOP(element);
+		PCB_ELEMENT_ARC_LOOP(element);
 		{
 			FLIP(arc->Y);
 			NEG(arc->StartAngle);

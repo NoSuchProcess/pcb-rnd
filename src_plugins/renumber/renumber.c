@@ -142,7 +142,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	cnt = 0;
 	lock_cnt = 0;
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, element->Name) || PCB_FLAG_TEST(PCB_FLAG_LOCK, element)) {
 			/*

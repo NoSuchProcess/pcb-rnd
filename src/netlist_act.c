@@ -50,7 +50,7 @@ static int pcb_netlist_swap()
 	int ret = -1;
 	pcb_lib_menu_t *nets[2];
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{

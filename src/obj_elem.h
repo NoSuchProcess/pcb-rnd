@@ -120,31 +120,31 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Ele
 
 /*** loops ***/
 
-#define ELEMENT_LOOP(top) do {                                      \
+#define PCB_ELEMENT_LOOP(top) do {                                      \
   pcb_element_t *element;                                             \
   gdl_iterator_t __it__;                                            \
   pinlist_foreach(&(top)->Element, &__it__, element) {
 
-#define	ELEMENTTEXT_LOOP(element) do { 	\
+#define	PCB_ELEMENT_TEXT_LOOP(element) do { 	\
 	pcb_cardinal_t	n;				\
 	pcb_text_t *text;				\
 	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)	\
 	{						\
 		text = &(element)->Name[n]
 
-#define	ELEMENTNAME_LOOP(element) do	{ 			\
+#define	PCB_ELEMENT_NAME_LOOP(element) do	{ 			\
 	pcb_cardinal_t	n;					\
 	char		*textstring;				\
 	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)		\
 	{							\
 		textstring = (element)->Name[n].TextString
 
-#define ELEMENTLINE_LOOP(element) do {                              \
+#define PCB_ELEMENT_LINE_LOOP(element) do {                              \
   pcb_line_t *line;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Line, &__it__, line) {
 
-#define ELEMENTPCB_ARC_LOOP(element) do {                               \
+#define PCB_ELEMENT_ARC_LOOP(element) do {                               \
   pcb_arc_t *arc;                                                     \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {

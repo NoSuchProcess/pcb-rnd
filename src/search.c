@@ -1236,14 +1236,14 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 	if (type == PCB_TYPE_ELEMENT || type == PCB_TYPE_PAD || type == PCB_TYPE_PIN
 			|| type == PCB_TYPE_ELEMENT_LINE || type == PCB_TYPE_ELEMENT_NAME || type == PCB_TYPE_ELEMENT_ARC)
 		/* check pins and elementnames too */
-		ELEMENT_LOOP(Base);
+		PCB_ELEMENT_LOOP(Base);
 	{
 		if (element->ID == ID) {
 			*Result1 = *Result2 = *Result3 = (void *) element;
 			return (PCB_TYPE_ELEMENT);
 		}
 		if (type == PCB_TYPE_ELEMENT_LINE)
-			ELEMENTLINE_LOOP(element);
+			PCB_ELEMENT_LINE_LOOP(element);
 		{
 			if (line->ID == ID) {
 				*Result1 = (void *) element;
@@ -1263,7 +1263,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 		}
 		END_LOOP;
 		if (type == PCB_TYPE_ELEMENT_NAME)
-			ELEMENTTEXT_LOOP(element);
+			PCB_ELEMENT_TEXT_LOOP(element);
 		{
 			if (text->ID == ID) {
 				*Result1 = (void *) element;
@@ -1307,7 +1307,7 @@ pcb_element_t *SearchElementByName(pcb_data_t *Base, const char *Name)
 {
 	pcb_element_t *result = NULL;
 
-	ELEMENT_LOOP(Base);
+	PCB_ELEMENT_LOOP(Base);
 	{
 		if (element->Name[1].TextString && PCB_NSTRCMP(element->Name[1].TextString, Name) == 0) {
 			result = element;

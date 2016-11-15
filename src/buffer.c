@@ -235,7 +235,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	END_LOOP;
 
 	/* elements */
-	ELEMENT_LOOP(Buffer->Data);
+	PCB_ELEMENT_LOOP(Buffer->Data);
 	{
 		pcb_element_rotate90(Buffer->Data, element, Buffer->X, Buffer->Y, Number);
 	}
@@ -295,7 +295,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	END_LOOP;
 
 	/* elements */
-	ELEMENT_LOOP(Buffer->Data);
+	PCB_ELEMENT_LOOP(Buffer->Data);
 	{
 		pcb_element_rotate(Buffer->Data, element, Buffer->X, Buffer->Y, cosa, sina, angle);
 	}
@@ -465,7 +465,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 	pcb_cardinal_t sgroup, cgroup;
 	pcb_layer_t swap;
 
-	ELEMENT_LOOP(Buffer->Data);
+	PCB_ELEMENT_LOOP(Buffer->Data);
 	{
 		r_delete_element(Buffer->Data, element);
 		pcb_element_mirror(Buffer->Data, element, 0);
@@ -663,7 +663,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 
 	/* paste elements */
 	if (PCB->PinOn && PCB->ElementOn) {
-		ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
+		PCB_ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
 		{
 #ifdef DEBUG
 			printf("In CopyPastebufferToLayout, pasting element %s\n", element->Name[1].TextString);

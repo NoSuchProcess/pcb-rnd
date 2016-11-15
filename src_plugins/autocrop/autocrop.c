@@ -137,7 +137,7 @@ static void *MyMoveTextLowLevel(pcb_layer_t * Layer, pcb_text_t * Text, pcb_coor
  */
 static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 {
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_element_move(PCB->Data, element, dx, dy);
 		AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);

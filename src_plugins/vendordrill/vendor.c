@@ -339,7 +339,7 @@ static void apply_vendor_map(void)
 		END_LOOP;
 
 		/* and now the pins */
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			/*
 			 * first figure out if this element should be skipped for some

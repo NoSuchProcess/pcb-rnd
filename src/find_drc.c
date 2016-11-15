@@ -347,7 +347,7 @@ int pcb_drc_all(void)
 
 	User = pcb_false;
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{
@@ -633,10 +633,10 @@ int pcb_drc_all(void)
 	/* XXX - need to check text and polygons too! */
 	TheFlag = PCB_FLAG_SELECTED;
 	if (!IsBad) {
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			tmpcnt = 0;
-			ELEMENTLINE_LOOP(element);
+			PCB_ELEMENT_LINE_LOOP(element);
 			{
 				if (line->Thickness < PCB->minSlk)
 					tmpcnt++;

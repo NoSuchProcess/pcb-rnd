@@ -533,7 +533,7 @@ void scad_process_components(int mode)
 	fprintf(scad_output, "module all_components() {\n");
 
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if ((mode == SCAD_COMPONENT_SIMPLE) || (mode == SCAD_COMPONENT_REALISTIC)) {
 			scad_export_element(element, (mode == SCAD_COMPONENT_SIMPLE) ? 1 : 0);

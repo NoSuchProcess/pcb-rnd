@@ -308,7 +308,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		}
 	}
 	END_LOOP;
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{

@@ -251,7 +251,7 @@ static void print_structure(FILE * fp)
 static void print_placement(FILE * fp)
 {
 	fprintf(fp, "  (placement\n");
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		char *ename;
 		pcb_point_t ecentroid = get_centroid(element);
@@ -283,7 +283,7 @@ static void print_library(FILE * fp)
 	GList *pads = NULL, *iter; /* contain unique pad names */
 	gchar *padstack;
 	fprintf(fp, "  (library\n");
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		int partside = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? g_list_length(layerlist) - 1 : 0;
 		int partsidesign = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? -1 : 1;

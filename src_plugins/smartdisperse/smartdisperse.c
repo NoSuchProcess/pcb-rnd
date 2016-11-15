@@ -169,7 +169,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	htpi_init(&visited, ptrhash, ptrkeyeq);
 
 	/* if we're not doing all, mark the unselected elements as "visited" */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (!(all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))) {
 			set_visited(element);
@@ -246,7 +246,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	END_LOOP;
 
 	/* Place up anything else */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (!is_visited(element)) {
 			place(element);

@@ -177,7 +177,7 @@ static void UpdateXY(pcb_netlist_t *Nets)
 static PointerListType collectSelectedElements()
 {
 	PointerListType list = { 0, 0, NULL };
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			pcb_element_t **epp = (pcb_element_t **) GetPointerMemory(&list);
@@ -356,7 +356,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	/* now collect module areas (bounding rect of pins/pads) */
 	/* two lists for solder side / component side. */
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_box_list_t *thisside;
 		pcb_box_list_t *otherside;
@@ -466,7 +466,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		struct ebox **boxpp, *boxp;
 		pcb_rtree_t *rt_s, *rt_c;
 		int factor;
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			boxpp = (struct ebox **)
 				GetPointerMemory(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? &seboxes : &ceboxes);
@@ -487,7 +487,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		/* now, for each element, find its neighbor on all four sides */
 		delta4 = 0;
 		for (i = 0; i < 4; i++)
-			ELEMENT_LOOP(PCB->Data);
+			PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			boxp = (struct ebox *)
 				r_find_neighbor(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? rt_s : rt_c, &element->VBox, dir[i]);
@@ -520,7 +520,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	{
 		pcb_coord_t minX = MAX_COORD, minY = MAX_COORD;
 		pcb_coord_t maxX = -MAX_COORD, maxY = -MAX_COORD;
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			PCB_MAKE_MIN(minX, element->VBox.X1);
 			PCB_MAKE_MIN(minY, element->VBox.Y1);

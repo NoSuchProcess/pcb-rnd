@@ -49,7 +49,7 @@ int action_renumber_block(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	conf_set_editor(name_on_pcb, 1);
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		char *refdes_split, *cp;
 		char *old_ref, *new_ref;
@@ -94,7 +94,7 @@ int action_renumber_buffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	conf_set_editor(name_on_pcb, 1);
 
-	ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
+	PCB_ELEMENT_LOOP(PCB_PASTEBUFFER->Data);
 	{
 		char *refdes_split, *cp;
 		char *old_ref, *new_ref;

@@ -141,7 +141,7 @@ static int Printexport_test(void)
 	 * While here generate the export_test list
 	 */
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 
 		/* initialize our pin count and our totals for finding the

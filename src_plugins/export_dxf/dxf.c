@@ -3958,7 +3958,7 @@ static int dxf_export_xref_file(void)
 	/*
 	 * lookup all elements on pcb and insert element in the list of elements.
 	 */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		/*
 		 * insert the elements into the dxf list.
@@ -4001,7 +4001,7 @@ static int dxf_export_xref_file(void)
 	 * for each element we calculate the centroid of the footprint.
 	 * in addition, we need to extract some notion of rotation.
 	 */
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		/*
 		 * initialize our pin count and our totals for finding the

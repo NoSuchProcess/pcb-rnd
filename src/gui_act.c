@@ -233,7 +233,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 		case F_Value:
 		case F_NameOnPCB:
 		case F_Description:
-			ELEMENT_LOOP(PCB->Data);
+			PCB_ELEMENT_LOOP(PCB->Data);
 			{
 				EraseElementName(element);
 			}
@@ -264,7 +264,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					conf_set_editor(name_on_pcb, 0); /* need to write once so the event is triggered */
 				break;
 			}
-			ELEMENT_LOOP(PCB->Data);
+			PCB_ELEMENT_LOOP(PCB->Data);
 			{
 				DrawElementName(element);
 			}
@@ -931,7 +931,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 		case F_Selected:
 			{
 				pcb_bool changed = pcb_false;
-				ELEMENT_LOOP(PCB->Data);
+				PCB_ELEMENT_LOOP(PCB->Data);
 				{
 					if ((PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, &NAMEONPCB_TEXT(element)))
 							&& (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {

@@ -237,7 +237,7 @@ static int PrintBOM(void)
 	}
 
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		/* insert this component into the bill of materials list */
 		bom = bom_insert((char *) PCB_UNKNOWN(NAMEONPCB_NAME(element)),

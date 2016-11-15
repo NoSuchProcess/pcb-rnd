@@ -184,7 +184,7 @@ static int PrintXY(void)
 	 * For each element we calculate the centroid of the footprint.
 	 */
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		/* initialize our pin count and our totals for finding the
 		   centriod */

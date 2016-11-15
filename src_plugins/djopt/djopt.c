@@ -119,7 +119,7 @@ static char layer_type[MAX_LAYER];
 
 static const char *element_name_for(corner_s * c)
 {
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PIN_LOOP(element);
 		{
@@ -2563,7 +2563,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 	grok_layer_groups();
 
-	ELEMENT_LOOP(PCB->Data);
+	PCB_ELEMENT_LOOP(PCB->Data);
 	PIN_LOOP(element);
 	{
 		c = find_corner(pin->X, pin->Y, -1);

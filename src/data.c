@@ -99,14 +99,14 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb_earc_cb_t eacb, pcb_etext_cb_t etcb, pcb_epin_cb_t epicb, pcb_epad_cb_t epacb)
 {
 	if ((ecb != NULL) || (elcb != NULL) || (eacb != NULL)  || (etcb != NULL) || (epicb != NULL) || (epacb != NULL)) {
-		ELEMENT_LOOP(PCB->Data);
+		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			if (ecb != NULL)
 				if (ecb(ctx, PCB, element, 1))
 					continue;
 
 			if (elcb != NULL) {
-				ELEMENTLINE_LOOP(element);
+				PCB_ELEMENT_LINE_LOOP(element);
 				{
 					elcb(ctx, PCB, element, line);
 				}
@@ -114,7 +114,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 			}
 
 			if (eacb != NULL) {
-				ELEMENTPCB_ARC_LOOP(element);
+				PCB_ELEMENT_ARC_LOOP(element);
 				{
 					eacb(ctx, PCB, element, arc);
 				}
@@ -122,7 +122,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 			}
 
 			if (etcb != NULL) {
-				ELEMENTTEXT_LOOP(element);
+				PCB_ELEMENT_TEXT_LOOP(element);
 				{
 					etcb(ctx, PCB, element, text);
 				}
@@ -192,7 +192,7 @@ void pcb_data_free(pcb_data_t * data)
 	}
 	END_LOOP;
 	list_map0(&data->Via, pcb_pin_t, pcb_via_free);
-	ELEMENT_LOOP(data);
+	PCB_ELEMENT_LOOP(data);
 	{
 		pcb_element_destroy(element);
 	}
@@ -289,7 +289,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		box.Y2 = MAX(box.Y2, via->Y + via->Thickness / 2);
 	}
 	END_LOOP;
-	ELEMENT_LOOP(Data);
+	PCB_ELEMENT_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, element->BoundingBox.X1);
 		box.Y1 = MIN(box.Y1, element->BoundingBox.Y1);
