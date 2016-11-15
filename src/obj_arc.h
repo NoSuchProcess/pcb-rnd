@@ -61,14 +61,16 @@ pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc);
 void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);
 void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height);
 
-#define	MOVE_ARC_LOWLEVEL(a,dx,dy) \
-	{ \
-		PCB_MOVE((a)->X,(a)->Y,(dx),(dy)) \
-		PCB_BOX_MOVE_LOWLEVEL(&((a)->BoundingBox),(dx),(dy));		\
+#define	MOVE_ARC_LOWLEVEL(a,dx,dy)                                \
+	{                                                               \
+		pcb_coord_t __dx__ = (dx), __dy__ = (dy);                     \
+		pcb_arc_t *__a__ = (a);                                       \
+		PCB_MOVE((__a__)->X,(__a__)->Y,__dx__,__dy__)                 \
+		PCB_BOX_MOVE_LOWLEVEL(&((__a__)->BoundingBox),__dx__,__dy__); \
 	}
 
 #define ARC_LOOP(element) do {                                      \
-  pcb_arc_t *arc;                                                     \
+  pcb_arc_t *arc;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {
 
