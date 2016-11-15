@@ -331,7 +331,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 
 #warning TODO: preview_pcb is never freed
 
-	pcb_via_new_on_board(preview_pcb.Data,
+	pcb_via_new(preview_pcb.Data,
 							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(20), "", pcb_no_flags());
 

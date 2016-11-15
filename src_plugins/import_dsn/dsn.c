@@ -152,7 +152,7 @@ int ActionLoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 		ret = sscanf(str, "        (via via_%ld_%ld %ld %ld", &viadiam, &viadrill, &dim1, &dim2);
 		if (ret == 4) {
-			pcb_via_new_on_board(PCB->Data, dim1, PCB->MaxHeight - dim2, viadiam, lineclear, 0, viadrill, 0, pcb_flag_make(PCB_FLAG_AUTO));
+			pcb_via_new(PCB->Data, dim1, PCB->MaxHeight - dim2, viadiam, lineclear, 0, viadrill, 0, pcb_flag_make(PCB_FLAG_AUTO));
 		}
 	}
 	fclose(fp);

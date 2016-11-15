@@ -87,7 +87,7 @@ static void *layout_create_via_(int x, int y, int thickness, int clearance, int 
 {
 	void *pin;
 
-	pin = pcb_via_new_on_board(PCB->Data, x, y, thickness, clearance, mask, hole, name, get_flags(flags));
+	pin = pcb_via_new(PCB->Data, x, y, thickness, clearance, mask, hole, name, get_flags(flags));
 
 	if (pin != NULL) {
 		AddObjectToCreateUndoList (PCB_TYPE_VIA, pin, pin, pin);

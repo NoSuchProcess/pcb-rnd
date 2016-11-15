@@ -2135,7 +2135,7 @@ yyreduce:
   case 66:
 #line 750 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_via_new_on_board(yyData, NU ((yyvsp[-8].measure)), NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
+				pcb_via_new(yyData, NU ((yyvsp[-8].measure)), NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
 				                     NU ((yyvsp[-3].measure)), (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				free ((yyvsp[-2].string));
 			}
@@ -2145,7 +2145,7 @@ yyreduce:
   case 67:
 #line 760 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_via_new_on_board(yyData, OU ((yyvsp[-8].measure)), OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].string),
+				pcb_via_new(yyData, OU ((yyvsp[-8].measure)), OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].string),
 					pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
@@ -2155,7 +2155,7 @@ yyreduce:
   case 68:
 #line 771 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_via_new_on_board(yyData, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)),
+				pcb_via_new(yyData, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)),
 					     OU ((yyvsp[-5].measure)) + OU((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
@@ -2165,7 +2165,7 @@ yyreduce:
   case 69:
 #line 781 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_via_new_on_board(yyData, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
+				pcb_via_new(yyData, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
 					OU((yyvsp[-4].measure)) + 2*MASKFRAME,  OU ((yyvsp[-3].measure)), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
@@ -2182,7 +2182,7 @@ yyreduce:
 					OU((yyvsp[-3].measure)) > MIN_PINORVIACOPPER)
 					hole = OU((yyvsp[-3].measure)) - MIN_PINORVIACOPPER;
 
-				pcb_via_new_on_board(yyData, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), 2*GROUNDPLANEFRAME,
+				pcb_via_new(yyData, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), 2*GROUNDPLANEFRAME,
 					OU((yyvsp[-3].measure)) + 2*MASKFRAME, hole, (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
@@ -2637,7 +2637,7 @@ yyreduce:
   case 153:
 #line 1556 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_pin_new_in_element(yyElement, NU ((yyvsp[-9].measure)) + yyElement->MarkX,
+				pcb_element_pin_new(yyElement, NU ((yyvsp[-9].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-8].measure)) + yyElement->MarkY, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].string),
 					(yyvsp[-2].string), (yyvsp[-1].flagtype));
 				free ((yyvsp[-3].string));
@@ -2649,7 +2649,7 @@ yyreduce:
   case 154:
 #line 1568 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_pin_new_in_element(yyElement, OU ((yyvsp[-9].measure)) + yyElement->MarkX,
+				pcb_element_pin_new(yyElement, OU ((yyvsp[-9].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-8].measure)) + yyElement->MarkY, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].string),
 					(yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-3].string));
@@ -2661,7 +2661,7 @@ yyreduce:
   case 155:
 #line 1580 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_pin_new_in_element(yyElement, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), 2*GROUNDPLANEFRAME,
+				pcb_element_pin_new(yyElement, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), 2*GROUNDPLANEFRAME,
 					OU ((yyvsp[-5].measure)) + 2*MASKFRAME, OU ((yyvsp[-4].measure)), (yyvsp[-3].string), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
@@ -2675,7 +2675,7 @@ yyreduce:
 				char	p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_pin_new_in_element(yyElement, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
+				pcb_element_pin_new(yyElement, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
 					OU ((yyvsp[-4].measure)) + 2*MASKFRAME, OU ((yyvsp[-3].measure)), (yyvsp[-2].string), p_number, pcb_flag_old((yyvsp[-1].integer)));
 
 				free ((yyvsp[-2].string));
@@ -2695,7 +2695,7 @@ yyreduce:
 					hole = OU ((yyvsp[-3].measure)) - MIN_PINORVIACOPPER;
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_pin_new_in_element(yyElement, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), 2*GROUNDPLANEFRAME,
+				pcb_element_pin_new(yyElement, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), 2*GROUNDPLANEFRAME,
 					OU ((yyvsp[-3].measure)) + 2*MASKFRAME, hole, (yyvsp[-2].string), p_number, pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}

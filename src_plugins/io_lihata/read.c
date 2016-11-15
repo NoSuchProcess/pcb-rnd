@@ -585,9 +585,9 @@ static int parse_pin(pcb_data_t *dt, pcb_element_t *el, lht_node_t *obj, pcb_coo
 	pcb_pin_t *via;
 
 	if (dt != NULL)
-		via = pcb_via_new(dt);
+		via = pcb_via_alloc(dt);
 	else if (el != NULL)
-		via = pcb_pin_new(el);
+		via = pcb_pin_alloc(el);
 	else
 		return -1;
 

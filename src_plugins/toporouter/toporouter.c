@@ -8198,7 +8198,7 @@ static int escape(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 				return 1;
 			}
 
-			if ((via = pcb_via_new_on_board(PCB->Data, viax, viay,
+			if ((via = pcb_via_new(PCB->Data, viax, viay,
 															Settings.ViaThickness, 2 * Settings.Clearance,
 															0, Settings.ViaDrillingHole, NULL, pcb_no_flags())) != NULL) {
 				AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);

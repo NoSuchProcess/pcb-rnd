@@ -47,7 +47,7 @@
 /*** allocation ***/
 
 /* get next slot for a via, allocates memory if necessary */
-pcb_pin_t *pcb_via_new(pcb_data_t * data)
+pcb_pin_t *pcb_via_alloc(pcb_data_t * data)
 {
 	pcb_pin_t *new_obj;
 
@@ -64,7 +64,7 @@ void pcb_via_free(pcb_pin_t * data)
 }
 
 /* get next slot for a pin, allocates memory if necessary */
-pcb_pin_t *pcb_pin_new(pcb_element_t * element)
+pcb_pin_t *pcb_pin_alloc(pcb_element_t * element)
 {
 	pcb_pin_t *new_obj;
 
@@ -85,7 +85,7 @@ void pcb_pin_free(pcb_pin_t * data)
 /*** utility ***/
 
 /* creates a new via */
-pcb_pin_t *pcb_via_new_on_board(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
+pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
 {
 	pcb_pin_t *Via;
 
@@ -101,7 +101,7 @@ pcb_pin_t *pcb_via_new_on_board(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, 
 		END_LOOP;
 	}
 
-	Via = pcb_via_new(Data);
+	Via = pcb_via_alloc(Data);
 
 	if (!Via)
 		return (Via);
@@ -138,9 +138,9 @@ pcb_pin_t *pcb_via_new_on_board(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, 
 }
 
 /* creates a new pin in an element */
-pcb_pin_t *pcb_pin_new_in_element(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, char *Name, char *Number, pcb_flag_t Flags)
+pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, char *Name, char *Number, pcb_flag_t Flags)
 {
-	pcb_pin_t *pin = pcb_pin_new(Element);
+	pcb_pin_t *pin = pcb_pin_alloc(Element);
 
 	/* copy values */
 	pin->X = X;
@@ -235,7 +235,7 @@ void pcb_pin_bbox(pcb_pin_t *Pin)
 /* copies a via to paste buffer */
 void *AddViaToBuffer(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	return (pcb_via_new_on_board(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
+	return (pcb_via_new(ctx->buffer.dst, Via->X, Via->Y, Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg)));
 }
 
 /* moves a via to paste buffer without allocating memory for the name */
@@ -704,7 +704,7 @@ void *CopyVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	pcb_pin_t *via;
 
-	via = pcb_via_new_on_board(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
+	via = pcb_via_new(PCB->Data, Via->X + ctx->copy.DeltaX, Via->Y + ctx->copy.DeltaY,
 										 Via->Thickness, Via->Clearance, Via->Mask, Via->DrillingHole, Via->Name, pcb_flag_mask(Via->Flags, PCB_FLAG_FOUND));
 	if (!via)
 		return (via);

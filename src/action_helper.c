@@ -599,7 +599,7 @@ void pcb_notify_mode(void)
 				pcb_message(PCB_MSG_DEFAULT, _("You must turn via visibility on before\n" "you can place vias\n"));
 				break;
 			}
-			if ((via = pcb_via_new_on_board(PCB->Data, Note.X, Note.Y,
+			if ((via = pcb_via_new(PCB->Data, Note.X, Note.Y,
 															conf_core.design.via_thickness, 2 * conf_core.design.clearance,
 															0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 				AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
@@ -821,7 +821,7 @@ void pcb_notify_mode(void)
 																	 conf_core.design.via_thickness / 2) ==
 						PCB_TYPE_NONE
 						&& (via =
-								pcb_via_new_on_board(PCB->Data,
+								pcb_via_new(PCB->Data,
 														 Crosshair.AttachedLine.Point1.X,
 														 Crosshair.AttachedLine.Point1.Y,
 														 conf_core.design.via_thickness,

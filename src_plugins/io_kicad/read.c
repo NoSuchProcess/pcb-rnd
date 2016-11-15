@@ -705,7 +705,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	}
         required = BV(0) | BV(1);
         if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
-		pcb_via_new_on_board( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
+		pcb_via_new( st->PCB->Data, X, Y, Thickness, Clearance, Mask, Drill, name, Flags);
 		return 0;
 	}
 	return -1;
@@ -1467,7 +1467,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					printf("\tcreating new pin %s in element\n", pinName);
 					required = BV(0) | BV(1) | BV(3) | BV(5);
         				if ((featureTally & required) == required) {
-						pcb_pin_new_in_element(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
+						pcb_element_pin_new(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
 								Clearance, drill, pinName, pinName, Flags); /* using clearance value for arg 5 = mask too */
 					} else {
 						return -1;

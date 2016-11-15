@@ -42,15 +42,16 @@ struct pcb_pin_s {
 };
 
 
-pcb_pin_t *pcb_via_new(pcb_data_t * data);
+pcb_pin_t *pcb_via_alloc(pcb_data_t * data);
 void pcb_via_free(pcb_pin_t * data);
-pcb_pin_t *pcb_pin_new(pcb_element_t * element);
+pcb_pin_t *pcb_pin_alloc(pcb_element_t * element);
 void pcb_pin_free(pcb_pin_t * data);
 
-pcb_pin_t *pcb_via_new_on_board(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags);
-pcb_pin_t *pcb_pin_new_in_element(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, char *Name, char *Number, pcb_flag_t Flags);
+pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags);
+pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, char *Name, char *Number, pcb_flag_t Flags);
 void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via);
 void pcb_pin_bbox(pcb_pin_t *Pin);
+
 pcb_bool ChangeHole(pcb_pin_t *Via);
 
 /* This is the extents of a Pin or Via, depending on whether it's a

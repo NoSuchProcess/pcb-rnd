@@ -201,7 +201,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin))
 			pcb_flag_add(f, PCB_FLAG_HOLE);
 
-		pcb_via_new_on_board(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
+		pcb_via_new(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
 	}
 	END_LOOP;
 	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? solder_silk_layer : component_silk_layer);
@@ -276,12 +276,12 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 		if (via->Mask < via->Thickness)
 			via->Mask = via->Thickness + 2 * MASKFRAME;
 		if (via->Name)
-			pcb_pin_new_in_element(Element, via->X, via->Y, via->Thickness,
+			pcb_element_pin_new(Element, via->X, via->Y, via->Thickness,
 									 via->Clearance, via->Mask, via->DrillingHole,
 									 NULL, via->Name, pcb_flag_mask(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
 		else {
 			sprintf(num, "%d", pin_n++);
-			pcb_pin_new_in_element(Element, via->X, via->Y, via->Thickness,
+			pcb_element_pin_new(Element, via->X, via->Y, via->Thickness,
 									 via->Clearance, via->Mask, via->DrillingHole,
 									 NULL, num, pcb_flag_mask(via->Flags, PCB_FLAG_VIA | PCB_FLAG_FOUND | PCB_FLAG_SELECTED | PCB_FLAG_WARN));
 		}
@@ -534,7 +534,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	END_LOOP;
 	PIN_LOOP(Src);
 	{
-		pcb_pin_new_in_element(Dest, pin->X + dx, pin->Y + dy, pin->Thickness,
+		pcb_element_pin_new(Dest, pin->X + dx, pin->Y + dy, pin->Thickness,
 								 pin->Clearance, pin->Mask, pin->DrillingHole, pin->Name, pin->Number, pcb_flag_mask(pin->Flags, PCB_FLAG_FOUND));
 	}
 	END_LOOP;
