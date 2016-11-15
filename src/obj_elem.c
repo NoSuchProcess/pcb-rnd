@@ -997,7 +997,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
 	ELEMENTLINE_LOOP(Element);
 	{
-		MOVE_LINE_LOWLEVEL(line, DX, DY);
+		pcb_line_move(line, DX, DY);
 	}
 	END_LOOP;
 	PIN_LOOP(Element);

@@ -81,7 +81,7 @@ static void *MyMoveLineLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_line
 		RestoreToPolygon(Data, PCB_TYPE_LINE, Layer, Line);
 		r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	}
-	MOVE_LINE_LOWLEVEL(Line, dx, dy);
+	pcb_line_move(Line, dx, dy);
 	if (Data) {
 		r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		ClearFromPolygon(Data, PCB_TYPE_LINE, Layer, Line);

@@ -397,7 +397,7 @@ void *MoveLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 		EraseLine(Line);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
-	MOVE_LINE_LOWLEVEL(Line, ctx->move.dx, ctx->move.dy);
+	pcb_line_move(Line, ctx->move.dx, ctx->move.dy);
 	r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	if (Layer->On) {

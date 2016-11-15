@@ -96,7 +96,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 
 		/* move symbol to left edge */
 		for (line = symbol->Line, j = symbol->LineN; j; j--, line++)
-			MOVE_LINE_LOWLEVEL(line, -minx, 0);
+			pcb_line_move(line, -minx, 0);
 
 		/* set symbol bounding box with a minimum cell size of (1,1) */
 		symbol->Width = maxx - minx + 1;
@@ -113,7 +113,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 		if (symbol->Valid) {
 			symbol->Height -= totalminy;
 			for (line = symbol->Line, j = symbol->LineN; j; j--, line++)
-				MOVE_LINE_LOWLEVEL(line, 0, -totalminy);
+				pcb_line_move(line, 0, -totalminy);
 		}
 
 	/* setup the box for the default symbol */
