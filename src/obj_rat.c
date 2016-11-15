@@ -88,7 +88,7 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coo
 	Line->Point2.ID = CreateIDGet();
 	Line->group1 = group1;
 	Line->group2 = group2;
-	SetLineBoundingBox((pcb_line_t *) Line);
+	pcb_line_bbox((pcb_line_t *) Line);
 	if (!Data->rat_tree)
 		Data->rat_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Data->rat_tree, &Line->BoundingBox, 0);

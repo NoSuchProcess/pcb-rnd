@@ -215,14 +215,14 @@ pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb
 
 void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	SetLineBoundingBox(Line);
+	pcb_line_bbox(Line);
 	if (!Layer->line_tree)
 		Layer->line_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 }
 
 /* sets the bounding box of a line */
-void SetLineBoundingBox(pcb_line_t *Line)
+void pcb_line_bbox(pcb_line_t *Line)
 {
 	pcb_coord_t width = (Line->Thickness + Line->Clearance + 1) / 2;
 
@@ -290,7 +290,7 @@ void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 		r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		Line->Thickness = value;
-		SetLineBoundingBox(Line);
+		pcb_line_bbox(Line);
 		r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		DrawLine(Layer, Line);
@@ -317,7 +317,7 @@ void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 			PCB_FLAG_CLEAR(PCB_FLAG_CLEARLINE, Line);
 			Line->Clearance = PCB_MIL_TO_COORD(10);
 		}
-		SetLineBoundingBox(Line);
+		pcb_line_bbox(Line);
 		r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		DrawLine(Layer, Line);
@@ -416,7 +416,7 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 		RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		r_delete_entry(Layer->line_tree, &Line->BoundingBox);
 		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
-		SetLineBoundingBox(Line);
+		pcb_line_bbox(Line);
 		r_insert_entry(Layer->line_tree, &Line->BoundingBox, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		if (Layer->On) {
@@ -431,7 +431,7 @@ void *MoveLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_
 			EraseRat((pcb_rat_t *) Line);
 		r_delete_entry(PCB->Data->rat_tree, &Line->BoundingBox);
 		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
-		SetLineBoundingBox(Line);
+		pcb_line_bbox(Line);
 		r_insert_entry(PCB->Data->rat_tree, &Line->BoundingBox, 0);
 		if (PCB->RatOn) {
 			DrawRat((pcb_rat_t *) Line);
@@ -640,7 +640,7 @@ void RotateLineLowLevel(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned
 		}
 	}
 	/* instead of rotating the bounding box, the call updates both end points too */
-	SetLineBoundingBox(Line);
+	pcb_line_bbox(Line);
 }
 
 
@@ -655,7 +655,7 @@ void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 	else
 		r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) Line);
 	RotatePointLowLevel(Point, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
-	SetLineBoundingBox(Line);
+	pcb_line_bbox(Line);
 	if (Layer) {
 		r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
@@ -686,7 +686,7 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 	RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	Line->Point2.X = ctx->insert.x;
 	Line->Point2.Y = ctx->insert.y;
-	SetLineBoundingBox(Line);
+	pcb_line_bbox(Line);
 	r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	DrawLine(Layer, Line);

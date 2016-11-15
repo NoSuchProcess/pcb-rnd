@@ -1285,7 +1285,7 @@ element_oldformat
 			}
 		  elementdefinitions ')'
 			{
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 		;
 
@@ -1303,7 +1303,7 @@ element_1.3.4_format
 			}
 		  elementdefinitions ')'
 			{
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 		;
 
@@ -1322,7 +1322,7 @@ element_newformat
 			}
 		  elementdefinitions ')'
 			{
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 		;
 
@@ -1344,7 +1344,7 @@ element_1.7_format
 			}
 		  relementdefs ')'
 			{
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 		;
 
@@ -1366,7 +1366,7 @@ element_hi_format
 			}
 		  relementdefs ')'
 			{
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 		;
 

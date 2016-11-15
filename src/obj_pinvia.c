@@ -413,7 +413,7 @@ void *ChangePinSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 		Pin->Mask += value - Pin->Thickness;
 		Pin->Thickness = value;
 		/* SetElementBB updates all associated rtrees */
-		SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
+		pcb_element_bbox(PCB->Data, Element, &PCB->Font);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		DrawPin(Pin);
 		return (Pin);
@@ -443,7 +443,7 @@ void *ChangePinClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pi
 	r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 	Pin->Clearance = value;
 	/* SetElementBB updates all associated rtrees */
-	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
+	pcb_element_bbox(PCB->Data, Element, &PCB->Font);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	DrawPin(Pin);
 	return (Pin);
@@ -672,7 +672,7 @@ void *ChangePinMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin
 		ErasePin(Pin);
 		r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 		Pin->Mask = value;
-		SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
+		pcb_element_bbox(PCB->Data, Element, &PCB->Font);
 		DrawPin(Pin);
 		return (Pin);
 	}

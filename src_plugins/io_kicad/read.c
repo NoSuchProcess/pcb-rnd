@@ -1802,7 +1802,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		}
 
 		if (newModule != NULL) {
-			SetElementBoundingBox(PCB->Data, newModule, &PCB->Font);
+			pcb_element_bbox(PCB->Data, newModule, &PCB->Font);
 			return 0; 
 		} else {
 			return -1;

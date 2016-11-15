@@ -690,7 +690,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	/* Make sure we use some sort of font */
 	if (pcb == NULL)
 		pcb = PCB;
-	SetElementBoundingBox(dt, elem, &pcb->Font);
+	pcb_element_bbox(dt, elem, &pcb->Font);
 	return 0;
 }
 

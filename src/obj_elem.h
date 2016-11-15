@@ -57,6 +57,8 @@ void pcb_element_destroy(pcb_element_t * element);
 pcb_line_t *pcb_element_line_new(pcb_element_t *Element);
 
 
+void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font);
+
 pcb_bool LoadElementToBuffer(pcb_buffer_t *Buffer, const char *Name);
 int LoadFootprintByName(pcb_buffer_t *Buffer, const char *Footprint);
 pcb_bool SmashBufferElement(pcb_buffer_t *Buffer);
@@ -65,7 +67,6 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coo
 pcb_bool ChangeElementSide(pcb_element_t *Element, pcb_coord_t yoff);
 pcb_bool ChangeSelectedElementSide(void);
 pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, pcb_coord_t dx, pcb_coord_t dy);
-void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font);
 char *UniqueElementName(pcb_data_t *Data, char *Name);
 void r_delete_element(pcb_data_t * data, pcb_element_t * element);
 

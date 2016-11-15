@@ -582,7 +582,7 @@ pcb_bool pcb_is_poly_in_poly(pcb_polygon_t *P1, pcb_polygon_t *P2)
 				for (v = v->next; v != &c->head; v = v->next) {
 					line.Point2.X = v->point[0];
 					line.Point2.Y = v->point[1];
-					SetLineBoundingBox(&line);
+					pcb_line_bbox(&line);
 					if (pcb_is_line_in_poly(&line, P2))
 						return (pcb_true);
 					line.Point1.X = line.Point2.X;

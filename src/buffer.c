@@ -306,7 +306,7 @@ void Freepcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
 		free_rotate(&line->Point1.X, &line->Point1.Y, Buffer->X, Buffer->Y, cosa, sina);
 		free_rotate(&line->Point2.X, &line->Point2.Y, Buffer->X, Buffer->Y, cosa, sina);
-		SetLineBoundingBox(line);
+		pcb_line_bbox(line);
 		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
 	ENDALL_LOOP;
@@ -437,7 +437,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 		arc->Y = PCB_SWAP_Y(arc->Y);
 		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
 		arc->Delta = SWAP_DELTA(arc->Delta);
-		SetArcBoundingBox(arc);
+		pcb_arc_bbox(arc);
 	}
 	ENDALL_LOOP;
 	ALLPOLYGON_LOOP(Buffer->Data);
@@ -489,7 +489,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y);
 		line->Point2.X = PCB_SWAP_X(line->Point2.X);
 		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y);
-		SetLineBoundingBox(line);
+		pcb_line_bbox(line);
 		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
 	ENDALL_LOOP;
@@ -500,7 +500,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		arc->Y = PCB_SWAP_Y(arc->Y);
 		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
 		arc->Delta = SWAP_DELTA(arc->Delta);
-		SetArcBoundingBox(arc);
+		pcb_arc_bbox(arc);
 		r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
 	ENDALL_LOOP;
@@ -524,7 +524,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		text->X = PCB_SWAP_X(text->X);
 		text->Y = PCB_SWAP_Y(text->Y);
 		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
-		SetTextBoundingBox(&PCB->Font, text);
+		pcb_text_bbox(&PCB->Font, text);
 		r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 	}
 	ENDALL_LOOP;

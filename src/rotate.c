@@ -121,7 +121,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, 
 		else
 			r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
 		RotatePointLowLevel(ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
-		SetLineBoundingBox(ptr->Line);
+		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
 			r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
 			ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);

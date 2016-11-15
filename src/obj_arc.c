@@ -66,7 +66,7 @@ pcb_arc_t *pcb_element_arc_alloc(pcb_element_t *Element)
 
 
 /* computes the bounding box of an arc */
-void SetArcBoundingBox(pcb_arc_t *Arc)
+void pcb_arc_bbox(pcb_arc_t *Arc)
 {
 	double ca1, ca2, sa1, sa2;
 	double minx, maxx, miny, maxy;
@@ -152,7 +152,7 @@ void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_a
 	AddObjectToChangeAnglesUndoList(PCB_TYPE_ARC, a, a, a);
 	a->StartAngle = new_sa;
 	a->Delta = new_da;
-	SetArcBoundingBox(a);
+	pcb_arc_bbox(a);
 	r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
 }
@@ -165,7 +165,7 @@ void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb
 	AddObjectToChangeRadiiUndoList(PCB_TYPE_ARC, a, a, a);
 	a->Width = new_width;
 	a->Height = new_height;
-	SetArcBoundingBox(a);
+	pcb_arc_bbox(a);
 	r_insert_entry(Layer->arc_tree, (pcb_box_t *) a, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
 }
@@ -203,7 +203,7 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 
 void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	SetArcBoundingBox(Arc);
+	pcb_arc_bbox(Arc);
 	if (!Layer->arc_tree)
 		Layer->arc_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
@@ -263,7 +263,7 @@ void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		Arc->Thickness = value;
-		SetArcBoundingBox(Arc);
+		pcb_arc_bbox(Arc);
 		r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		DrawArc(Layer, Arc);
@@ -290,7 +290,7 @@ void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 			PCB_FLAG_CLEAR(PCB_FLAG_CLEARLINE, Arc);
 			Arc->Clearance = PCB_MIL_TO_COORD(10);
 		}
-		SetArcBoundingBox(Arc);
+		pcb_arc_bbox(Arc);
 		r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		DrawArc(Layer, Arc);
@@ -327,7 +327,7 @@ void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		*dst = value;
-		SetArcBoundingBox(Arc);
+		pcb_arc_bbox(Arc);
 		r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		DrawArc(Layer, Arc);
@@ -367,7 +367,7 @@ void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		*dst = value;
-		SetArcBoundingBox(Arc);
+		pcb_arc_bbox(Arc);
 		r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 		DrawArc(Layer, Arc);

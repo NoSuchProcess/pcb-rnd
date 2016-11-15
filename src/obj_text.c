@@ -96,7 +96,7 @@ pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X,
 void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont)
 {
 	/* calculate size of the bounding box */
-	SetTextBoundingBox(PCBFont, text);
+	pcb_text_bbox(PCBFont, text);
 	text->ID = CreateIDGet();
 	if (!Layer->text_tree)
 		Layer->text_tree = r_create_tree(NULL, 0, 0);
@@ -104,7 +104,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 }
 
 /* creates the bounding box of a text object */
-void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text)
+void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 {
 	pcb_symbol_t *symbol = FontPtr->Symbol;
 	unsigned char *s = (unsigned char *) Text->TextString;
@@ -256,7 +256,7 @@ void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		Text->Scale = value;
-		SetTextBoundingBox(&PCB->Font, Text);
+		pcb_text_bbox(&PCB->Font, Text);
 		r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		DrawText(Layer, Text);
@@ -279,7 +279,7 @@ void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	Text->TextString = ctx->chgname.new_name;
 
 	/* calculate size of the bounding box */
-	SetTextBoundingBox(&PCB->Font, Text);
+	pcb_text_bbox(&PCB->Font, Text);
 	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
@@ -367,7 +367,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 		PCB_FLAG_CLEAR(PCB_FLAG_ONSOLDER, text);
 
 	/* re-calculate the bounding box (it could be mirrored now) */
-	SetTextBoundingBox(&PCB->Font, text);
+	pcb_text_bbox(&PCB->Font, text);
 	if (!Destination->text_tree)
 		Destination->text_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Destination->text_tree, (pcb_box_t *) text, 0);

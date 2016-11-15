@@ -53,7 +53,7 @@ void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);
 
 
 /*** Utility ***/
-void SetArcBoundingBox(pcb_arc_t *Arc);
+void pcb_arc_bbox(pcb_arc_t *Arc);
 pcb_box_t *GetArcEnds(pcb_arc_t *Arc);
 void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);
 void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height);

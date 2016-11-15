@@ -535,3 +535,7 @@ pcb_via_new_on_board -> pcb_via_new
 pcb_pin_new_in_element -> pcb_element_pin_new
 pcb_rats_delete -> pcb_rats_destroy
 RemoveText -> pcb_text_destroy
+SetArcBoundingBox -> pcb_arc_bbox
+SetElementBoundingBox -> pcb_element_bbox
+SetLineBoundingBox -> pcb_line_bbox
+SetTextBoundingBox -> pcb_text_bbox

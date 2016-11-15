@@ -57,7 +57,7 @@ void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line);
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line);
 
-void SetLineBoundingBox(pcb_line_t *Line);
+void pcb_line_bbox(pcb_line_t *Line);
 void RotateLineLowLevel(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/
@@ -73,7 +73,7 @@ void EnforceLineDRC(void);
 	{									\
 		PCB_MOVE((l)->Point1.X,(l)->Point1.Y,(dx),(dy))			\
 		PCB_MOVE((l)->Point2.X,(l)->Point2.Y,(dx),(dy))			\
-		SetLineBoundingBox ((l)); \
+		pcb_line_bbox((l)); \
 	}
 
 

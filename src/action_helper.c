@@ -1091,7 +1091,7 @@ void pcb_notify_mode(void)
 						r_delete_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]));
 						memcpy(&(e->Name[i]), &(estr[i]), sizeof(pcb_text_t));
 						e->Name[i].Element = e;
-						SetTextBoundingBox(&PCB->Font, &(e->Name[i]));
+						pcb_text_bbox(&PCB->Font, &(e->Name[i]));
 						r_insert_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]), 0);
 						if (i == save_n)
 							DrawElementName(e);

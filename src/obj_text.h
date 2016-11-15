@@ -51,7 +51,7 @@ void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text);
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont);
 
-void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text);
+void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text);
 void RotateTextLowLevel(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 #define	MOVE_TEXT_LOWLEVEL(t,dx,dy)                    \

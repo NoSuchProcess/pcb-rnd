@@ -344,8 +344,8 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 				line2.Point2.X = line1.Point1.X + dx;
 				line2.Point2.Y = line1.Point1.Y + dy;
 			}
-			SetLineBoundingBox(&line1);
-			SetLineBoundingBox(&line2);
+			pcb_line_bbox(&line1);
+			pcb_line_bbox(&line2);
 			last2 = length2;
 			if (setjmp(info.env) == 0) {
 				info.line = &line1;
@@ -443,7 +443,7 @@ static void drc_line(pcb_point_t *end)
 	}
 
 	/* search for intersection */
-	SetLineBoundingBox(&line);
+	pcb_line_bbox(&line);
 	if (setjmp(info.env) == 0) {
 		info.line = &line;
 		r_search(PCB->Data->via_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);

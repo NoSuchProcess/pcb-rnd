@@ -2442,7 +2442,7 @@ yyreduce:
   case 117:
 #line 1287 "parse_y.y" /* yacc.c:1646  */
     {
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 #line 2448 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2462,7 +2462,7 @@ yyreduce:
   case 119:
 #line 1305 "parse_y.y" /* yacc.c:1646  */
     {
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 #line 2468 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2483,7 +2483,7 @@ yyreduce:
   case 121:
 #line 1324 "parse_y.y" /* yacc.c:1646  */
     {
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 #line 2489 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2506,7 +2506,7 @@ yyreduce:
   case 123:
 #line 1346 "parse_y.y" /* yacc.c:1646  */
     {
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 #line 2512 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2529,7 +2529,7 @@ yyreduce:
   case 125:
 #line 1368 "parse_y.y" /* yacc.c:1646  */
     {
-				SetElementBoundingBox(yyData, yyElement, yyFont);
+				pcb_element_bbox(yyData, yyElement, yyFont);
 			}
 #line 2535 "parse_y.c" /* yacc.c:1646  */
     break;

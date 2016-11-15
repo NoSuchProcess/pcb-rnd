@@ -384,7 +384,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	Element->MarkY = Buffer->Y;
 	if (SWAP_IDENT)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, Element);
-	SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
+	pcb_element_bbox(PCB->Data, Element, &PCB->Font);
 	pcb_buffer_clear(Buffer);
 	pcb_move_obj_to_buffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 	pcb_set_buffer_bbox(Buffer);
@@ -411,7 +411,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coo
 	{
 		free_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
 		free_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
-		SetLineBoundingBox(line);
+		pcb_line_bbox(line);
 	}
 	END_LOOP;
 	PIN_LOOP(Element);
@@ -432,7 +432,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coo
 		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
 		free_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
 		free_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
-		SetLineBoundingBox((pcb_line_t *) pad);
+		pcb_line_bbox((pcb_line_t *) pad);
 	}
 	END_LOOP;
 	ARC_LOOP(Element);
@@ -443,7 +443,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coo
 	END_LOOP;
 
 	free_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
-	SetElementBoundingBox(Data, Element, &PCB->Font);
+	pcb_element_bbox(Data, Element, &PCB->Font);
 	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
@@ -495,7 +495,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Ele
 	r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 
 	Element->Name[which].TextString = new_name;
-	SetTextBoundingBox(&PCB->Font, &Element->Name[which]);
+	pcb_text_bbox(&PCB->Font, &Element->Name[which]);
 
 	r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
 
@@ -557,7 +557,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	Dest->MarkX = Src->MarkX + dx;
 	Dest->MarkY = Src->MarkY + dy;
 
-	SetElementBoundingBox(Data, Dest, &PCB->Font);
+	pcb_element_bbox(Data, Dest, &PCB->Font);
 	return (Dest);
 }
 
@@ -657,7 +657,7 @@ void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_
 	Text->Scale = Scale;
 
 	/* calculate size of the bounding box */
-	SetTextBoundingBox(PCBFont, Text);
+	pcb_text_bbox(PCBFont, Text);
 	Text->ID = CreateIDGet();
 }
 
@@ -711,12 +711,12 @@ void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, pcb_coor
 	/* now toggle the solder-side flag */
 	PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, Element);
 	/* this inserts all of the rtree data too */
-	SetElementBoundingBox(Data, Element, &PCB->Font);
+	pcb_element_bbox(Data, Element, &PCB->Font);
 	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
 /* sets the bounding box of an elements */
-void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font)
+void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font)
 {
 	pcb_box_t *box, *vbox;
 
@@ -727,7 +727,7 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
-		SetTextBoundingBox(Font, text);
+		pcb_text_bbox(Font, text);
 		if (Data && !Data->name_tree[n])
 			Data->name_tree[n] = r_create_tree(NULL, 0, 0);
 		if (Data)
@@ -744,7 +744,7 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 	box->X2 = box->Y2 = 0;
 	ELEMENTLINE_LOOP(Element);
 	{
-		SetLineBoundingBox(line);
+		pcb_line_bbox(line);
 		PCB_MAKE_MIN(box->X1, line->Point1.X - (line->Thickness + 1) / 2);
 		PCB_MAKE_MIN(box->Y1, line->Point1.Y - (line->Thickness + 1) / 2);
 		PCB_MAKE_MIN(box->X1, line->Point2.X - (line->Thickness + 1) / 2);
@@ -757,7 +757,7 @@ void SetElementBoundingBox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t 
 	END_LOOP;
 	ARC_LOOP(Element);
 	{
-		SetArcBoundingBox(arc);
+		pcb_arc_bbox(arc);
 		PCB_MAKE_MIN(box->X1, arc->BoundingBox.X1);
 		PCB_MAKE_MIN(box->Y1, arc->BoundingBox.Y1);
 		PCB_MAKE_MAX(box->X2, arc->BoundingBox.X2);
@@ -1103,7 +1103,7 @@ void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t
 	END_LOOP;
 	ROTATE(Element->MarkX, Element->MarkY, X, Y, Number);
 	/* SetElementBoundingBox reenters the rtree data */
-	SetElementBoundingBox(Data, Element, &PCB->Font);
+	pcb_element_bbox(Data, Element, &PCB->Font);
 	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
@@ -1161,7 +1161,7 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, pad);
 	}
 	END_LOOP;
-	SetElementBoundingBox(ctx->buffer.dst, element, &PCB->Font);
+	pcb_element_bbox(ctx->buffer.dst, element, &PCB->Font);
 	/*
 	 * Now clear the from the polygons in the destination
 	 */
@@ -1290,7 +1290,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 				pad->Thickness = value;
 			}
 			/* SetElementBB updates all associated rtrees */
-			SetElementBoundingBox(PCB->Data, Element, &PCB->Font);
+			pcb_element_bbox(PCB->Data, Element, &PCB->Font);
 
 			ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			DrawPad(pad);
@@ -1357,7 +1357,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_NAME, Element, text, text);
 			r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 			text->Scale = value;
-			SetTextBoundingBox(&PCB->Font, text);
+			pcb_text_bbox(&PCB->Font, text);
 			r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
 		END_LOOP;
