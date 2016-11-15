@@ -176,7 +176,7 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 {
 	pcb_arc_t *Arc;
 
-	ARC_LOOP(Layer);
+	PCB_ARC_LOOP(Layer);
 	{
 		if (arc->X == X1 && arc->Y == Y1 && arc->Width == width &&
 				NormalizeAngle(arc->StartAngle) == NormalizeAngle(sa) && arc->Delta == dir)

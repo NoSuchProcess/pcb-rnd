@@ -531,7 +531,7 @@ static double XYtoNetLength(pcb_coord_t x, pcb_coord_t y, int *found)
 	}
 	ENDALL_LOOP;
 
-	ALLARC_LOOP(PCB->Data);
+	PCB_ARC_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc)) {
 			double l;

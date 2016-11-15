@@ -249,7 +249,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
 	ENDALL_LOOP;
-	ALLARC_LOOP(Buffer->Data);
+	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		pcb_arc_rotate90(arc, Buffer->X, Buffer->Y, Number);
@@ -311,7 +311,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
 	ENDALL_LOOP;
-	ALLARC_LOOP(Buffer->Data);
+	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		free_rotate(&arc->X, &arc->Y, Buffer->X, Buffer->Y, cosa, sina);
@@ -432,7 +432,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y);
 	}
 	ENDALL_LOOP;
-	ALLARC_LOOP(Buffer->Data);
+	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		arc->X = PCB_SWAP_X(arc->X);
 		arc->Y = PCB_SWAP_Y(arc->Y);
@@ -494,7 +494,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
 	ENDALL_LOOP;
-	ALLARC_LOOP(Buffer->Data);
+	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		arc->X = PCB_SWAP_X(arc->X);
@@ -643,7 +643,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 				CopyLine(&ctx, destlayer, line);
 			}
 			END_LOOP;
-			ARC_LOOP(sourcelayer);
+			PCB_ARC_LOOP(sourcelayer);
 			{
 				CopyArc(&ctx, destlayer, arc);
 			}

@@ -540,7 +540,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	}
 	ENDALL_LOOP;
 
-	VISIBLEARC_LOOP(PCB->Data);
+	PCB_ARC_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
 			RemoveObject(PCB_TYPE_ARC, layer, arc, arc);

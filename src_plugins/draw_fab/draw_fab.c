@@ -269,7 +269,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 			gui->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		}
 		END_LOOP;
-		ARC_LOOP(layer);
+		PCB_ARC_LOOP(layer);
 		{
 			gui->draw_arc(gc, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 		}

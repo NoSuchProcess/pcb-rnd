@@ -188,7 +188,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 			line->Number = pcb_strdup_null(NAMEONPCB_NAME(element));
 	}
 	END_LOOP;
-	ARC_LOOP(element);
+	PCB_ARC_LOOP(element);
 	{
 		pcb_arc_new(&Buffer->Data->SILKLAYER,
 												arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
@@ -367,7 +367,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 		hasParts = pcb_true;
 	}
 	END_LOOP;
-	ARC_LOOP(&Buffer->Data->SILKLAYER);
+	PCB_ARC_LOOP(&Buffer->Data->SILKLAYER);
 	{
 		pcb_element_arc_new(Element, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
 		hasParts = pcb_true;
@@ -435,7 +435,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 		pcb_line_bbox((pcb_line_t *) pad);
 	}
 	END_LOOP;
-	ARC_LOOP(Element);
+	PCB_ARC_LOOP(Element);
 	{
 		free_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
 		arc->StartAngle = NormalizeAngle(arc->StartAngle + angle);
@@ -545,7 +545,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 								 pad->Clearance, pad->Mask, pad->Name, pad->Number, pcb_flag_mask(pad->Flags, PCB_FLAG_FOUND));
 	}
 	END_LOOP;
-	ARC_LOOP(Src);
+	PCB_ARC_LOOP(Src);
 	{
 		pcb_element_arc_new(Dest, arc->X + dx, arc->Y + dy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
 	}
@@ -690,7 +690,7 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, pad);
 	}
 	END_LOOP;
-	ARC_LOOP(Element);
+	PCB_ARC_LOOP(Element);
 	{
 		arc->X = PCB_SWAP_X(arc->X);
 		arc->Y = PCB_SWAP_Y(arc->Y) + yoff;
@@ -755,7 +755,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		PCB_MAKE_MAX(box->Y2, line->Point2.Y + (line->Thickness + 1) / 2);
 	}
 	END_LOOP;
-	ARC_LOOP(Element);
+	PCB_ARC_LOOP(Element);
 	{
 		pcb_arc_bbox(arc);
 		PCB_MAKE_MIN(box->X1, arc->BoundingBox.X1);
@@ -1026,7 +1026,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 		}
 	}
 	END_LOOP;
-	ARC_LOOP(Element);
+	PCB_ARC_LOOP(Element);
 	{
 		pcb_arc_move(arc, DX, DY);
 	}
@@ -1096,7 +1096,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		ROTATE_PAD_LOWLEVEL(pad, X, Y, Number);
 	}
 	END_LOOP;
-	ARC_LOOP(Element);
+	PCB_ARC_LOOP(Element);
 	{
 		pcb_arc_rotate90(arc, X, Y, Number);
 	}
@@ -1324,7 +1324,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 		}
 	}
 	END_LOOP;
-	ARC_LOOP(Element);
+	PCB_ARC_LOOP(Element);
 	{
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : arc->Thickness + ctx->chgsize.delta;
 		if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != arc->Thickness) {
@@ -1728,7 +1728,7 @@ void draw_element_package(pcb_element_t * element)
 		_draw_line(line);
 	}
 	END_LOOP;
-	ARC_LOOP(element);
+	PCB_ARC_LOOP(element);
 	{
 		_draw_arc(arc);
 	}
@@ -1805,7 +1805,7 @@ void EraseElement(pcb_element_t *Element)
 		EraseLine(line);
 	}
 	END_LOOP;
-	ARC_LOOP(Element);
+	PCB_ARC_LOOP(Element);
 	{
 		EraseArc(arc);
 	}
@@ -1858,7 +1858,7 @@ void DrawElementPackage(pcb_element_t *Element)
 		DrawLine(NULL, line);
 	}
 	END_LOOP;
-	ARC_LOOP(Element);
+	PCB_ARC_LOOP(Element);
 	{
 		DrawArc(NULL, arc);
 	}

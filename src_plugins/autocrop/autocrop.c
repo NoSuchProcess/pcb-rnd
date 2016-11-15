@@ -155,7 +155,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		AddObjectToMoveUndoList(PCB_TYPE_LINE, NULL, NULL, line, dx, dy);
 	}
 	ENDALL_LOOP;
-	ALLARC_LOOP(PCB->Data);
+	PCB_ARC_ALL_LOOP(PCB->Data);
 	{
 		MyMoveArcLowLevel(PCB->Data, layer, arc, dx, dy);
 		AddObjectToMoveUndoList(PCB_TYPE_ARC, NULL, NULL, arc, dx, dy);

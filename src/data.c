@@ -67,7 +67,7 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 			}
 
 			if (acb != NULL) {
-				ARC_LOOP(layer);
+				PCB_ARC_LOOP(layer);
 				{
 					acb(ctx, PCB, layer, arc);
 				}
@@ -114,7 +114,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 			}
 
 			if (eacb != NULL) {
-				ELEMENTARC_LOOP(element);
+				ELEMENTPCB_ARC_LOOP(element);
 				{
 					eacb(ctx, PCB, element, arc);
 				}
@@ -316,7 +316,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		box.Y2 = MAX(box.Y2, line->Point2.Y + line->Thickness / 2);
 	}
 	ENDALL_LOOP;
-	ALLARC_LOOP(Data);
+	PCB_ARC_ALL_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, arc->BoundingBox.X1);
 		box.Y1 = MIN(box.Y1, arc->BoundingBox.Y1);

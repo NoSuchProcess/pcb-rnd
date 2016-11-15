@@ -100,7 +100,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			InitClip(PCB->Data, layer, polygon);
 		}
 		END_LOOP;
-		ARC_LOOP(layer);
+		PCB_ARC_LOOP(layer);
 		{
 			FLIP(arc->Y);
 			NEG(arc->StartAngle);
@@ -131,7 +131,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			FLIP(line->Point2.Y);
 		}
 		END_LOOP;
-		ELEMENTARC_LOOP(element);
+		ELEMENTPCB_ARC_LOOP(element);
 		{
 			FLIP(arc->Y);
 			NEG(arc->StartAngle);

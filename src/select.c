@@ -320,7 +320,7 @@ do { \
 			}
 		}
 		END_LOOP;
-		ARC_LOOP(layer);
+		PCB_ARC_LOOP(layer);
 		{
 			if (ARC_NEAR_BOX(arc, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)
@@ -577,7 +577,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 
 	/* check arcs */
 	if (type & PCB_TYPE_ARC && F->Arc)
-		VISIBLEARC_LOOP(PCB->Data);
+		PCB_ARC_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
 			if (Reset) {
@@ -750,7 +750,7 @@ pcb_bool SelectConnection(pcb_bool Flag)
 		}
 	}
 	ENDALL_LOOP;
-	VISIBLEARC_LOOP(PCB->Data);
+	PCB_ARC_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
 			AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);

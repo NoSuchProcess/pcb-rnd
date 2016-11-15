@@ -94,7 +94,7 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 	}
 	END_LOOP;
 
-	ARC_LOOP(&pinout->element);
+	PCB_ARC_LOOP(&pinout->element);
 	{
 		/* 
 		 * for whatever reason setting a thickness of 0 causes the arcs to

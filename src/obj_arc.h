@@ -69,39 +69,39 @@ void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, 
 		PCB_BOX_MOVE_LOWLEVEL(&((__a__)->BoundingBox),__dx__,__dy__); \
 	} while(0)
 
-#define ARC_LOOP(element) do {                                      \
+#define PCB_ARC_LOOP(element) do {                                      \
   pcb_arc_t *arc;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {
 
-#define ALLARC_LOOP(top) do {		\
+#define PCB_ARC_ALL_LOOP(top) do {		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l =0; l < max_copper_layer + 2; l++, layer++)		\
 	{ \
-		ARC_LOOP(layer)
+		PCB_ARC_LOOP(layer)
 
-#define COPPERARC_LOOP(top) do	{		\
+#define PCB_ARC_COPPER_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l =0; l < max_copper_layer; l++, layer++)		\
 	{ \
-		ARC_LOOP(layer)
+		PCB_ARC_LOOP(layer)
 
-#define SILKARC_LOOP(top) do	{		\
+#define PCB_ARC_SILK_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	layer += max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
-		ARC_LOOP(layer)
+		PCB_ARC_LOOP(layer)
 
-#define	VISIBLEARC_LOOP(top) do	{		\
+#define PCB_ARC_VISIBLE_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		if (layer->On)				\
-			ARC_LOOP(layer)
+			PCB_ARC_LOOP(layer)
 
 #endif

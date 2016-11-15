@@ -106,7 +106,7 @@ pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 		}
 	}
 	ENDALL_LOOP;
-	COPPERARC_LOOP(PCB->Data);
+	PCB_ARC_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, arc)) {
 			if (AndDraw)

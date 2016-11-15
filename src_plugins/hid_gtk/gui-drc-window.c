@@ -145,7 +145,7 @@ static void unset_found_flags(int AndDraw)
 		}
 	}
 	ENDALL_LOOP;
-	COPPERARC_LOOP(PCB->Data);
+	PCB_ARC_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, arc)) {
 			AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);

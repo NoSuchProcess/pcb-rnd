@@ -180,7 +180,7 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 	}
 	ENDALL_LOOP;
 
-	VISIBLEARC_LOOP(PCB->Data);
+	PCB_ARC_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
 			RemoveObject(PCB_TYPE_ARC, layer, arc, arc);

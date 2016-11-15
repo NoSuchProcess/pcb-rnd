@@ -426,7 +426,7 @@ int pcb_drc_all(void)
 		ENDALL_LOOP;
 	}
 	if (!IsBad) {
-		COPPERARC_LOOP(PCB->Data);
+		PCB_ARC_COPPER_LOOP(PCB->Data);
 		{
 			PlowsPolygon(PCB->Data, PCB_TYPE_ARC, layer, arc, drc_callback);
 			if (IsBad)

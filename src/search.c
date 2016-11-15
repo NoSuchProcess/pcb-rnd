@@ -1154,7 +1154,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 		ENDALL_LOOP;
 	}
 	if (type == PCB_TYPE_ARC) {
-		ALLARC_LOOP(Base);
+		PCB_ARC_ALL_LOOP(Base);
 		{
 			if (arc->ID == ID) {
 				*Result1 = (void *) layer;
@@ -1253,7 +1253,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 		}
 		END_LOOP;
 		if (type == PCB_TYPE_ELEMENT_ARC)
-			ARC_LOOP(element);
+			PCB_ARC_LOOP(element);
 		{
 			if (arc->ID == ID) {
 				*Result1 = (void *) element;

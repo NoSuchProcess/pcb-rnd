@@ -739,7 +739,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 				}
 			}
 			ENDALL_LOOP;
-			ALLARC_LOOP(PCB->Data);
+			PCB_ARC_ALL_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
 					RemoveObject(PCB_TYPE_ARC, layer, arc, arc);
@@ -966,7 +966,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		}
 	}
 	ENDALL_LOOP;
-	ALLARC_LOOP(PCB->Data);
+	PCB_ARC_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, arc))
 			continue;

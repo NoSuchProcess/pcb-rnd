@@ -144,7 +144,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Ele
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Line, &__it__, line) {
 
-#define ELEMENTARC_LOOP(element) do {                               \
+#define ELEMENTPCB_ARC_LOOP(element) do {                               \
   pcb_arc_t *arc;                                                     \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Arc, &__it__, arc) {

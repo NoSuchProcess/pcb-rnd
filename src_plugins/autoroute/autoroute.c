@@ -1118,7 +1118,7 @@ static routedata_t *CreateRouteData()
 		}
 		END_LOOP;
 		/* add all arcs */
-		ARC_LOOP(LAYER_PTR(i));
+		PCB_ARC_LOOP(LAYER_PTR(i));
 		{
 			AddArc(layergroupboxes, layergroup, arc, rd->styles[rd->max_styles]);
 		}

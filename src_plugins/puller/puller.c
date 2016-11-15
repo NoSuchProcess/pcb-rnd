@@ -945,7 +945,7 @@ static Extra *new_arc_extra(pcb_arc_t * arc)
 
 static void find_pairs()
 {
-	ARC_LOOP(CURRENT); {
+	PCB_ARC_LOOP(CURRENT); {
 		Extra *e = new_arc_extra(arc);
 		fix_arc_extra(arc, e);
 	} END_LOOP;
@@ -963,7 +963,7 @@ static void find_pairs()
 	}
 	END_LOOP;
 
-	ARC_LOOP(CURRENT); {
+	PCB_ARC_LOOP(CURRENT); {
 		Extra *e = ARC2EXTRA(arc);
 		if (!e->deleted) {
 			find_pairs_1(arc, &e->start.next, e->start.x, e->start.y);
@@ -1174,7 +1174,7 @@ static void trace_paths()
 		e = LINE2EXTRA(line);
 		trace_path(e);
 	} END_LOOP;
-	ARC_LOOP(CURRENT); {
+	PCB_ARC_LOOP(CURRENT); {
 		e = ARC2EXTRA(arc);
 		trace_path(e);
 	} END_LOOP;
@@ -2359,7 +2359,7 @@ static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 	END_LOOP;
 
-	ARC_LOOP(CURRENT);
+	PCB_ARC_LOOP(CURRENT);
 	{
 		if (ARC2EXTRA(arc)->deleted)
 			pcb_arc_destroy(CURRENT, arc);

@@ -232,7 +232,7 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 		END_LOOP;
 
 		/* arc coordinates and angles have to be converted to X11 notation */
-		ARC_LOOP(Element);
+		PCB_ARC_LOOP(Element);
 		{
 			gui->draw_arc(Crosshair.GC, DX + arc->X, DY + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 		}
@@ -298,7 +298,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 				gui->draw_line(Crosshair.GC, x + line->Point1.X, y + line->Point1.Y, x + line->Point2.X, y + line->Point2.Y);
 			}
 			END_LOOP;
-			ARC_LOOP(layer);
+			PCB_ARC_LOOP(layer);
 			{
 				gui->draw_arc(Crosshair.GC, x + arc->X, y + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 			}

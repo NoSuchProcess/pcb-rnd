@@ -555,7 +555,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 				bboard_draw_line_cairo(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
 			}
 			END_LOOP;
-			ARC_LOOP(&(PCB->Data->Layer[i]));
+			PCB_ARC_LOOP(&(PCB->Data->Layer[i]));
 			{
 #warning TODO: remove x1;y1;x2;y2
 				bboard_draw_arc_cairo(/*arc->Point1.X, arc->Point1.Y,
