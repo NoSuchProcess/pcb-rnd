@@ -69,11 +69,13 @@ void EnforceLineDRC(void);
 /* Rather than mode the line bounding box, we set it so the point bounding
  * boxes are updated too.
  */
-#define	MOVE_LINE_LOWLEVEL(l,dx,dy)							\
-	{									\
-		PCB_MOVE((l)->Point1.X,(l)->Point1.Y,(dx),(dy))			\
-		PCB_MOVE((l)->Point2.X,(l)->Point2.Y,(dx),(dy))			\
-		pcb_line_bbox((l)); \
+#define	MOVE_LINE_LOWLEVEL(l,dx,dy) \
+	{ \
+		pcb_coord_t __dx__ = (dx), __dy__ = (dy); \
+		pcb_line_t *__l__ = (l); \
+		PCB_MOVE((__l__)->Point1.X,(__l__)->Point1.Y,(__dx__),(__dy__)) \
+		PCB_MOVE((__l__)->Point2.X,(__l__)->Point2.Y,(__dx__),(__dy__)) \
+		pcb_line_bbox(__l__); \
 	}
 
 
