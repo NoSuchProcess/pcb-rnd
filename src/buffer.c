@@ -242,7 +242,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	END_LOOP;
 
 	/* all layer related objects */
-	ALLLINE_LOOP(Buffer->Data);
+	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
 		pcb_line_rotate90(line, Buffer->X, Buffer->Y, Number);
@@ -302,7 +302,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	END_LOOP;
 
 	/* all layer related objects */
-	ALLLINE_LOOP(Buffer->Data);
+	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
 		free_rotate(&line->Point1.X, &line->Point1.Y, Buffer->X, Buffer->Y, cosa, sina);
@@ -424,7 +424,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 		via->Y = PCB_SWAP_Y(via->Y);
 	}
 	END_LOOP;
-	ALLLINE_LOOP(Buffer->Data);
+	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		line->Point1.X = PCB_SWAP_X(line->Point1.X);
 		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y);
@@ -483,7 +483,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
 	END_LOOP;
-	ALLLINE_LOOP(Buffer->Data);
+	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
 		line->Point1.X = PCB_SWAP_X(line->Point1.X);
@@ -638,7 +638,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 
 		if (destlayer->On) {
 			changed = changed || (!LAYER_IS_PCB_EMPTY(sourcelayer));
-			LINE_LOOP(sourcelayer);
+			PCB_LINE_LOOP(sourcelayer);
 			{
 				CopyLine(&ctx, destlayer, line);
 			}

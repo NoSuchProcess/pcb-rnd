@@ -368,7 +368,7 @@ static void CheckPolygonForRubberbandConnection(pcb_layer_t *Layer, pcb_polygon_
 			/* the following code just stupidly compares the endpoints
 			 * of the lines
 			 */
-			LINE_LOOP(layer);
+			PCB_LINE_LOOP(layer);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 					continue;

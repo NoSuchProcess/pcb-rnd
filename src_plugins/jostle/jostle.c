@@ -517,7 +517,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	fprintf(stderr, "%d, %d, %f\n", (int) x, (int) y, value);
 	info.brush = CirclePoly(x, y, value / 2);
 	info.layer = CURRENT;
-	LINE_LOOP(info.layer);
+	PCB_LINE_LOOP(info.layer);
 	{
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);
 	}

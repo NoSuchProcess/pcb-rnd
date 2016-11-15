@@ -180,7 +180,7 @@ pcb_bool SmashBufferElement(pcb_buffer_t *Buffer)
 	element = elementlist_first(&Buffer->Data->Element);
 	elementlist_remove(element);
 	pcb_buffer_clear(Buffer);
-	PCB_ELEMENT_LINE_LOOP(element);
+	PCB_ELEMENT_PCB_LINE_LOOP(element);
 	{
 		pcb_line_new(&Buffer->Data->SILKLAYER,
 												 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0, pcb_no_flags());
@@ -317,7 +317,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 		GROUP_LOOP(Buffer->Data, group);
 		{
 			char num[8];
-			LINE_LOOP(layer);
+			PCB_LINE_LOOP(layer);
 			{
 				sprintf(num, "%d", pin_n++);
 				pcb_element_pad_new(Element, line->Point1.X,
@@ -359,7 +359,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	}
 
 	/* now add the silkscreen. NOTE: elements must have pads or pins too */
-	LINE_LOOP(&Buffer->Data->SILKLAYER);
+	PCB_LINE_LOOP(&Buffer->Data->SILKLAYER);
 	{
 		if (line->Number && !NAMEONPCB_NAME(Element))
 			NAMEONPCB_NAME(Element) = pcb_strdup(line->Number);
@@ -407,7 +407,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 	}
 	END_LOOP;
 #endif
-	PCB_ELEMENT_LINE_LOOP(Element);
+	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		free_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
 		free_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
@@ -526,7 +526,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	if (!Dest)
 		return (Dest);
 
-	PCB_ELEMENT_LINE_LOOP(Src);
+	PCB_ELEMENT_PCB_LINE_LOOP(Src);
 	{
 		pcb_element_line_new(Dest, line->Point1.X + dx,
 													 line->Point1.Y + dy, line->Point2.X + dx, line->Point2.Y + dy, line->Thickness);
@@ -665,7 +665,7 @@ void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_
 void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff)
 {
 	r_delete_element(Data, Element);
-	PCB_ELEMENT_LINE_LOOP(Element);
+	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		line->Point1.X = PCB_SWAP_X(line->Point1.X);
 		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y) + yoff;
@@ -742,7 +742,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 	vbox = &Element->VBox;
 	box->X1 = box->Y1 = MAX_COORD;
 	box->X2 = box->Y2 = 0;
-	PCB_ELEMENT_LINE_LOOP(Element);
+	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		pcb_line_bbox(line);
 		PCB_MAKE_MIN(box->X1, line->Point1.X - (line->Thickness + 1) / 2);
@@ -995,7 +995,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 {
 	if (Data)
 		r_delete_entry(Data->element_tree, (pcb_box_t *) Element);
-	PCB_ELEMENT_LINE_LOOP(Element);
+	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		pcb_line_move(line, DX, DY);
 	}
@@ -1073,7 +1073,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		pcb_text_rotate90(text, X, Y, Number);
 	}
 	END_LOOP;
-	PCB_ELEMENT_LINE_LOOP(Element);
+	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		pcb_line_rotate90(line, X, Y, Number);
 	}
@@ -1314,7 +1314,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	if (PCB->ElementOn)
 		EraseElement(Element);
-	PCB_ELEMENT_LINE_LOOP(Element);
+	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : line->Thickness + ctx->chgsize.delta;
 		if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != line->Thickness) {
@@ -1723,7 +1723,7 @@ void draw_element_package(pcb_element_t * element)
 		gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
 
 	/* draw lines, arcs, text and pins */
-	PCB_ELEMENT_LINE_LOOP(element);
+	PCB_ELEMENT_PCB_LINE_LOOP(element);
 	{
 		_draw_line(line);
 	}
@@ -1800,7 +1800,7 @@ pcb_r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
 
 void EraseElement(pcb_element_t *Element)
 {
-	PCB_ELEMENT_LINE_LOOP(Element);
+	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		EraseLine(line);
 	}
@@ -1853,7 +1853,7 @@ void DrawElementName(pcb_element_t *Element)
 
 void DrawElementPackage(pcb_element_t *Element)
 {
-	PCB_ELEMENT_LINE_LOOP(Element);
+	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		DrawLine(NULL, line);
 	}

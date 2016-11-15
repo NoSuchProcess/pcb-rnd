@@ -225,7 +225,7 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 									 DY + Element->BoundingBox.Y1, DX + Element->BoundingBox.X1, DY + Element->BoundingBox.Y1);
 	}
 	else {
-		PCB_ELEMENT_LINE_LOOP(Element);
+		PCB_ELEMENT_PCB_LINE_LOOP(Element);
 		{
 			gui->draw_line(Crosshair.GC, DX + line->Point1.X, DY + line->Point1.Y, DX + line->Point2.X, DY + line->Point2.Y);
 		}
@@ -288,7 +288,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 		if (PCB->Data->Layer[i].On) {
 			pcb_layer_t *layer = &Buffer->Data->Layer[i];
 
-			LINE_LOOP(layer);
+			PCB_LINE_LOOP(layer);
 			{
 /*
 				XORDrawAttachedLine(x +line->Point1.X,

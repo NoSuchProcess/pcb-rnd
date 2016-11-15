@@ -309,7 +309,7 @@ do { \
 		else if (!(layer->On || !Flag))
 			continue;
 
-		LINE_LOOP(layer);
+		PCB_LINE_LOOP(layer);
 		{
 			if (LINE_NEAR_BOX(line, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)
@@ -562,7 +562,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 
 	/* check lines */
 	if (type & PCB_TYPE_LINE && F->Line)
-		VISIBLELINE_LOOP(PCB->Data);
+		PCB_LINE_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			if (Reset) {
@@ -740,7 +740,7 @@ pcb_bool SelectConnection(pcb_bool Flag)
 	}
 	END_LOOP;
 
-	VISIBLELINE_LOOP(PCB->Data);
+	PCB_LINE_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
 			AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);

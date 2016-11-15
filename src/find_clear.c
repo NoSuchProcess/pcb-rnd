@@ -94,7 +94,7 @@ pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 		}
 	}
 	END_LOOP;
-	COPPERLINE_LOOP(PCB->Data);
+	PCB_LINE_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, line)) {
 			if (AndDraw)

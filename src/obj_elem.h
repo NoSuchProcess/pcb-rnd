@@ -139,7 +139,7 @@ char *ChangeElementText(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Ele
 	{							\
 		textstring = (element)->Name[n].TextString
 
-#define PCB_ELEMENT_LINE_LOOP(element) do {                              \
+#define PCB_ELEMENT_PCB_LINE_LOOP(element) do {                              \
   pcb_line_t *line;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(element)->Line, &__it__, line) {

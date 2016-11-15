@@ -731,7 +731,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_All:
-			ALLLINE_LOOP(PCB->Data);
+			PCB_LINE_ALL_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
 					RemoveObject(PCB_TYPE_LINE, layer, line, line);
@@ -762,7 +762,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			}
 			break;
 		case F_Selected:
-			VISIBLELINE_LOOP(PCB->Data);
+			PCB_LINE_VISIBLE_LOOP(PCB->Data);
 			{
 				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, line)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
@@ -956,7 +956,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		}
 	}
 	END_LOOP;
-	ALLLINE_LOOP(PCB->Data);
+	PCB_LINE_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, line))
 			continue;

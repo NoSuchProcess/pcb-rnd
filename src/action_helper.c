@@ -267,7 +267,7 @@ void pcb_clear_warnings()
 		}
 	}
 	ENDALL_LOOP;
-	ALLLINE_LOOP(PCB->Data);
+	PCB_LINE_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, line)) {
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN, line);

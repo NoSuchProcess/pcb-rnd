@@ -173,7 +173,7 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 {
 	nbcb_std_callback(w, nbcb_find, cbs);
 
-	VISIBLELINE_LOOP(PCB->Data);
+	PCB_LINE_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 			RemoveObject(PCB_TYPE_LINE, layer, line, line);

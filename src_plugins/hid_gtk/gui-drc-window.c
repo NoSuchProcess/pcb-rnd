@@ -135,7 +135,7 @@ static void unset_found_flags(int AndDraw)
 		}
 	}
 	END_LOOP;
-	COPPERLINE_LOOP(PCB->Data);
+	PCB_LINE_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, line)) {
 			AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);

@@ -2064,7 +2064,7 @@ int read_lines(toporouter_t * r, toporouter_layer_t * l, pcb_layer_t * layer, in
 
 	GtsVertexClass *vertex_class = GTS_VERTEX_CLASS(toporouter_vertex_class());
 
-	LINE_LOOP(layer);
+	PCB_LINE_LOOP(layer);
 	{
 		xs[0] = line->Point1.X;
 		xs[1] = line->Point2.X;

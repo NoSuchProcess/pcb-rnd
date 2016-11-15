@@ -394,7 +394,7 @@ int pcb_drc_all(void)
 	TheFlag = PCB_FLAG_SELECTED;
 	/* check minimum widths and polygon clearances */
 	if (!IsBad) {
-		COPPERLINE_LOOP(PCB->Data);
+		PCB_LINE_COPPER_LOOP(PCB->Data);
 		{
 			/* check line clearances in polygons */
 			PlowsPolygon(PCB->Data, PCB_TYPE_LINE, layer, line, drc_callback);
@@ -604,7 +604,7 @@ int pcb_drc_all(void)
 	/* XXX - need to check text and polygons too! */
 	TheFlag = PCB_FLAG_SELECTED;
 	if (!IsBad) {
-		SILKLINE_LOOP(PCB->Data);
+		PCB_LINE_SILK_LOOP(PCB->Data);
 		{
 			if (line->Thickness < PCB->minSlk) {
 				PCB_FLAG_SET(TheFlag, line);
@@ -636,7 +636,7 @@ int pcb_drc_all(void)
 		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			tmpcnt = 0;
-			PCB_ELEMENT_LINE_LOOP(element);
+			PCB_ELEMENT_PCB_LINE_LOOP(element);
 			{
 				if (line->Thickness < PCB->minSlk)
 					tmpcnt++;

@@ -68,7 +68,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	printf("argc %d argv %s sides %d\n", argc, argc > 0 ? argv[0] : "", sides);
 	LAYER_LOOP(PCB->Data, max_copper_layer + 2);
 	{
-		LINE_LOOP(layer);
+		PCB_LINE_LOOP(layer);
 		{
 			FLIP(line->Point1.Y);
 			FLIP(line->Point2.Y);
@@ -125,7 +125,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 		}
 		END_LOOP;
-		PCB_ELEMENT_LINE_LOOP(element);
+		PCB_ELEMENT_PCB_LINE_LOOP(element);
 		{
 			FLIP(line->Point1.Y);
 			FLIP(line->Point2.Y);

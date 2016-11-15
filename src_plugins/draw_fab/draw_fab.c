@@ -264,7 +264,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 	else {
 		pcb_layer_t *layer = LAYER_PTR(i);
 		gui->set_line_width(gc, PCB_MIL_TO_COORD(10));
-		LINE_LOOP(layer);
+		PCB_LINE_LOOP(layer);
 		{
 			gui->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		}

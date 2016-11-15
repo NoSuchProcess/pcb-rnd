@@ -420,7 +420,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 		/* now add other possible attachment points to the subnet */
 		/* e.g. line end-points and vias */
 		/* don't add non-manhattan lines, the auto-router can't route to them */
-		ALLLINE_LOOP(PCB->Data);
+		PCB_LINE_ALL_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)
 					&& ((line->Point1.X == line->Point2.X)

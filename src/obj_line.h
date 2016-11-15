@@ -79,39 +79,39 @@ void EnforceLineDRC(void);
 	} while(0)
 
 
-#define LINE_LOOP(layer) do {                                       \
+#define PCB_LINE_LOOP(layer) do {                                       \
   pcb_line_t *line;                                                   \
   gdl_iterator_t __it__;                                            \
   linelist_foreach(&(layer)->Line, &__it__, line) {
 
-#define	ALLLINE_LOOP(top) do	{		\
+#define PCB_LINE_ALL_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
-		LINE_LOOP(layer)
+		PCB_LINE_LOOP(layer)
 
-#define	COPPERLINE_LOOP(top) do	{		\
+#define PCB_LINE_COPPER_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer; l++, layer++)	\
 	{ \
-		LINE_LOOP(layer)
+		PCB_LINE_LOOP(layer)
 
-#define	SILKLINE_LOOP(top) do	{		\
+#define PCB_LINE_SILK_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	layer += max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
-		LINE_LOOP(layer)
+		PCB_LINE_LOOP(layer)
 
-#define	VISIBLELINE_LOOP(top) do	{		\
+#define PCB_LINE_VISIBLE_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
 	{ \
 		if (layer->On)				\
-			LINE_LOOP(layer)
+			PCB_LINE_LOOP(layer)
 
 #endif

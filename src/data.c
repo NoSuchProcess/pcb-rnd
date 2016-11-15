@@ -59,7 +59,7 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 				if (lacb(ctx, PCB, layer, 1))
 					continue;
 			if (lcb != NULL) {
-				LINE_LOOP(layer);
+				PCB_LINE_LOOP(layer);
 				{
 					lcb(ctx, PCB, layer, line);
 				}
@@ -106,7 +106,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 					continue;
 
 			if (elcb != NULL) {
-				PCB_ELEMENT_LINE_LOOP(element);
+				PCB_ELEMENT_PCB_LINE_LOOP(element);
 				{
 					elcb(ctx, PCB, element, line);
 				}
@@ -209,7 +209,7 @@ void pcb_data_free(pcb_data_t * data)
 		END_LOOP;
 		if (layer->Name)
 			free((char*)layer->Name);
-		LINE_LOOP(layer);
+		PCB_LINE_LOOP(layer);
 		{
 			if (line->Number)
 				free(line->Number);
@@ -304,7 +304,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		};
 	}
 	END_LOOP;
-	ALLLINE_LOOP(Data);
+	PCB_LINE_ALL_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, line->Point1.X - line->Thickness / 2);
 		box.Y1 = MIN(box.Y1, line->Point1.Y - line->Thickness / 2);

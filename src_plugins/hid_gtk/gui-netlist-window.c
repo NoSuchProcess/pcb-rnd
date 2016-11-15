@@ -533,7 +533,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 		return;
 	netlist_find_cb(widget, data);
 
-	VISIBLELINE_LOOP(PCB->Data);
+	PCB_LINE_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 			RemoveObject(PCB_TYPE_LINE, layer, line, line);

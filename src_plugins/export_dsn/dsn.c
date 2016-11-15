@@ -458,7 +458,7 @@ static void print_wires(FILE * fp)
 
 	for (iter = layerlist; iter; iter = g_list_next(iter)) {
 		lay = iter->data;
-		LINE_LOOP(lay);
+		PCB_LINE_LOOP(lay);
 		{
 			pcb_fprintf(fp,
 									"        (wire (path %s %.6mm %.6mm %.6mm %.6mm %.6mm)\n",

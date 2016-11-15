@@ -2610,7 +2610,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	for (layn = 0; layn < max_copper_layer; layn++) {
 		pcb_layer_t *layer = LAYER_PTR(layn);
 
-		LINE_LOOP(layer);
+		PCB_LINE_LOOP(layer);
 		{
 			line_s *ls;
 

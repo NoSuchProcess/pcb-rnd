@@ -1070,7 +1070,7 @@ static routedata_t *CreateRouteData()
 	for (i = 0; i < max_copper_layer; i++) {
 		int layergroup = GetLayerGroupNumberByNumber(i);
 		/* add all (non-rat) lines */
-		LINE_LOOP(LAYER_PTR(i));
+		PCB_LINE_LOOP(LAYER_PTR(i));
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)) {
 				PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);

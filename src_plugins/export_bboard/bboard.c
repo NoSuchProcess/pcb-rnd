@@ -550,7 +550,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 		if (bboard_validate_layer(PCB->Data->Layer[i].Name, GetLayerGroupNumberByNumber(i), options[HA_skipsolder].int_value)) {
 			bboard_get_layer_color(&(PCB->Data->Layer[i]), &clr_r, &clr_g, &clr_b);
 			bboard_set_color_cairo(clr_r, clr_g, clr_b);
-			LINE_LOOP(&(PCB->Data->Layer[i]));
+			PCB_LINE_LOOP(&(PCB->Data->Layer[i]));
 			{
 				bboard_draw_line_cairo(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
 			}

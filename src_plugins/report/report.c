@@ -517,7 +517,7 @@ static double XYtoNetLength(pcb_coord_t x, pcb_coord_t y, int *found)
 	 */
 	pcb_lookup_conn(x, y, pcb_false, PCB->Grid, PCB_FLAG_FOUND);
 
-	ALLLINE_LOOP(PCB->Data);
+	PCB_LINE_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line)) {
 			double l;

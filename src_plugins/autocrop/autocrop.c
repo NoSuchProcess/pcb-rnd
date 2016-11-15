@@ -149,7 +149,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		AddObjectToMoveUndoList(PCB_TYPE_VIA, NULL, NULL, via, dx, dy);
 	}
 	END_LOOP;
-	ALLLINE_LOOP(PCB->Data);
+	PCB_LINE_ALL_LOOP(PCB->Data);
 	{
 		MyMoveLineLowLevel(PCB->Data, layer, line, dx, dy);
 		AddObjectToMoveUndoList(PCB_TYPE_LINE, NULL, NULL, line, dx, dy);

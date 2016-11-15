@@ -1131,7 +1131,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
 int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
 {
 	if (type == PCB_TYPE_LINE || type == PCB_TYPE_LINE_POINT) {
-		ALLLINE_LOOP(Base);
+		PCB_LINE_ALL_LOOP(Base);
 		{
 			if (line->ID == ID) {
 				*Result1 = (void *) layer;
@@ -1243,7 +1243,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 			return (PCB_TYPE_ELEMENT);
 		}
 		if (type == PCB_TYPE_ELEMENT_LINE)
-			PCB_ELEMENT_LINE_LOOP(element);
+			PCB_ELEMENT_PCB_LINE_LOOP(element);
 		{
 			if (line->ID == ID) {
 				*Result1 = (void *) element;
