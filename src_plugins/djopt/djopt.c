@@ -451,7 +451,7 @@ static pcb_line_t *create_pcb_line(int layer, int x1, int y1, int x2, int y2, in
 	pcb_layer_t *lyr = LAYER_PTR(layer);
 
 	from = (char *) linelist_first(&lyr->Line);
-	nl = pcb_line_new_on_layer(PCB->Data->Layer + layer, x1, y1, x2, y2, thick, clear, flags);
+	nl = pcb_line_new(PCB->Data->Layer + layer, x1, y1, x2, y2, thick, clear, flags);
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, lyr, nl, nl);
 
 	to = (char *) linelist_first(&lyr->Line);
@@ -656,7 +656,7 @@ static void remove_line(line_s * l)
 	check(0, 0);
 
 	if (l->line)
-		RemoveLine(layer, l->line);
+		pcb_line_destroy(layer, l->line);
 
 	DELETE(l);
 
@@ -2622,7 +2622,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 				continue;
 
 			if (line->Point1.X == line->Point2.X && line->Point1.Y == line->Point2.Y) {
-				RemoveLine(layer, line);
+				pcb_line_destroy(layer, line);
 				continue;
 			}
 

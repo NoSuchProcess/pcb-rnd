@@ -523,3 +523,7 @@ RemoveArc -> pcb_arc_destroy
 pcb_element_arc_new -> pcb_element_arc_alloc
 pcb_element_new -> pcb_element_alloc
 pcb_element_free_fields -> pcb_element_destroy
+pcb_line_new -> pcb_line_alloc
+pcb_line_new_on_layer_merge -> pcb_line_new_merge
+pcb_line_new_on_layer -> pcb_line_new
+RemoveLine -> pcb_line_destroy

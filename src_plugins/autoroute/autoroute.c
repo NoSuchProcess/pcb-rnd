@@ -1339,16 +1339,16 @@ static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 #if 1
 	if (b.Y1 == b.Y2 || b.X1 == b.X2)
 		thickness = 5;
-	line = pcb_line_new_on_layer(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X2, b.Y1, thickness, 0, pcb_flag_make(0));
+	line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X2, b.Y1, thickness, 0, pcb_flag_make(0));
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	if (b.Y1 != b.Y2) {
-		line = pcb_line_new_on_layer(LAYER_PTR(component_silk_layer), b.X1, b.Y2, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
+		line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X1, b.Y2, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	}
-	line = pcb_line_new_on_layer(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X1, b.Y2, thickness, 0, pcb_flag_make(0));
+	line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X1, b.Y2, thickness, 0, pcb_flag_make(0));
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	if (b.X1 != b.X2) {
-		line = pcb_line_new_on_layer(LAYER_PTR(component_silk_layer), b.X2, b.Y1, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
+		line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X2, b.Y1, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	}
 #endif
@@ -2986,7 +2986,7 @@ RD_DrawLine(routedata_t * rd,
 
 	if (conf_core.editor.live_routing) {
 		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
-		pcb_line_t *line = pcb_line_new_on_layer(layer, qX1, qY1, qX2, qY2,
+		pcb_line_t *line = pcb_line_new(layer, qX1, qY1, qX2, qY2,
 																					2 * qhthick, 0, pcb_flag_make(0));
 		rb->livedraw_obj.line = line;
 		if (line != NULL)
@@ -4470,7 +4470,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 						b.X2 = t;
 					}
 					/* using CreateDrawn instead of CreateNew concatenates sequential lines */
-					p->parent.line = pcb_line_new_on_layer_merge
+					p->parent.line = pcb_line_new_merge
 						(layer, b.X1, b.Y1, b.X2, b.Y2,
 						 p->style->Thick, p->style->Clearance * 2, pcb_flag_make(PCB_FLAG_AUTO | (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
 

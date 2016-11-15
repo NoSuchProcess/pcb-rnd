@@ -46,17 +46,18 @@ typedef struct {								/* current marked line */
 } pcb_attached_line_t;
 
 
-pcb_line_t *pcb_line_new(pcb_layer_t * layer);
+pcb_line_t *pcb_line_alloc(pcb_layer_t * layer);
 void pcb_line_free(pcb_line_t * data);
 
-pcb_line_t *pcb_line_new_on_layer_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
-pcb_line_t *pcb_line_new_on_layer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
+pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
+pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
+void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line);
+
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line);
 
 void SetLineBoundingBox(pcb_line_t *Line);
-void *RemoveLine(pcb_layer_t *Layer, pcb_line_t *Line);
 void RotateLineLowLevel(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/

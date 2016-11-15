@@ -70,7 +70,7 @@ static void *layout_create_line_(int x1, int y1, int x2, int y2, int thickness, 
 {
 	void *line;
 
-	line = pcb_line_new_on_layer(CURRENT, x1, y1, x2, y2, thickness, clearance, get_flags(flags));
+	line = pcb_line_new(CURRENT, x1, y1, x2, y2, thickness, clearance, get_flags(flags));
 	if (line != NULL) {
 		AddObjectToCreateUndoList (PCB_TYPE_LINE, CURRENT, line, line);
 		return line;

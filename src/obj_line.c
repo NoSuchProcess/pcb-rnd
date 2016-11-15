@@ -52,7 +52,7 @@
 /**** allocation ****/
 
 /* get next slot for a line, allocates memory if necessary */
-pcb_line_t *pcb_line_new(pcb_layer_t * layer)
+pcb_line_t *pcb_line_alloc(pcb_layer_t * layer)
 {
 	pcb_line_t *new_obj;
 
@@ -146,7 +146,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 
 
 /* creates a new line on a layer and checks for overlap and extension */
-pcb_line_t *pcb_line_new_on_layer_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
+pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
 	struct line_info info;
 	pcb_box_t search;
@@ -174,7 +174,7 @@ pcb_line_t *pcb_line_new_on_layer_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_
 	 */
 	if (setjmp(info.env) == 0) {
 		r_search(Layer->line_tree, &search, NULL, line_callback, &info, NULL);
-		return pcb_line_new_on_layer(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+		return pcb_line_new(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 	}
 
 	if ((void *) info.ans == (void *) (-1))
@@ -188,14 +188,14 @@ pcb_line_t *pcb_line_new_on_layer_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_
 		Y1 = info.test.Point1.Y;
 		Y2 = info.test.Point2.Y;
 	}
-	return pcb_line_new_on_layer(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
+	return pcb_line_new(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 }
 
-pcb_line_t *pcb_line_new_on_layer(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
+pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
 {
 	pcb_line_t *Line;
 
-	Line = pcb_line_new(Layer);
+	Line = pcb_line_alloc(Layer);
 	if (!Line)
 		return (Line);
 	Line->ID = CreateIDGet();
@@ -249,7 +249,7 @@ void *AddLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 	pcb_line_t *line;
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
 
-	line = pcb_line_new_on_layer(layer, Line->Point1.X, Line->Point1.Y,
+	line = pcb_line_new(layer, Line->Point1.X, Line->Point1.Y,
 															Line->Point2.X, Line->Point2.Y,
 															Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
 	if (line && Line->Number)
@@ -377,7 +377,7 @@ void *CopyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_t *line;
 
-	line = pcb_line_new_on_layer_merge(Layer, Line->Point1.X + ctx->copy.DeltaX,
+	line = pcb_line_new_merge(Layer, Line->Point1.X + ctx->copy.DeltaX,
 																Line->Point1.Y + ctx->copy.DeltaY,
 																Line->Point2.X + ctx->copy.DeltaX,
 																Line->Point2.Y + ctx->copy.DeltaY, Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND));
@@ -606,7 +606,7 @@ void *RemoveLine_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 	return NULL;
 }
 
-void *RemoveLine(pcb_layer_t *Layer, pcb_line_t *Line)
+void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_opctx_t ctx;
 
@@ -693,7 +693,7 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 	/* we must create after playing with Line since creation may
 	 * invalidate the line pointer
 	 */
-	if ((line = pcb_line_new_on_layer_merge(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
+	if ((line = pcb_line_new_merge(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
 		DrawLine(Layer, line);
 		ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, Layer, line);

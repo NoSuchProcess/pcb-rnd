@@ -5531,7 +5531,7 @@ gdouble export_pcb_drawline(guint layer, guint x0, guint y0, guint x1, guint y1,
 {
 	gdouble d = 0.;
 	pcb_line_t *line;
-	line = pcb_line_new_on_layer_merge(LAYER_PTR(layer), x0, y0, x1, y1,
+	line = pcb_line_new_merge(LAYER_PTR(layer), x0, y0, x1, y1,
 																thickness, clearance, pcb_flag_make(PCB_FLAG_AUTO | (PCB_FLAG_TEST(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
 
 	if (line) {
@@ -8205,7 +8205,7 @@ static int escape(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 /*        if (gui->shift_is_pressed ())
             pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);*/
 				DrawVia(via);
-				if ((line = pcb_line_new_on_layer_merge(CURRENT, pad->Point1.X + 1., pad->Point1.Y + 1., viax + 1., viay + 1.,
+				if ((line = pcb_line_new_merge(CURRENT, pad->Point1.X + 1., pad->Point1.Y + 1., viax + 1., viay + 1.,
 																					 Settings.LineThickness, 2 * Settings.Clearance, pcb_no_flags()))) {
 
 					AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);

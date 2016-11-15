@@ -152,14 +152,14 @@ void *InsertPointIntoRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	pcb_line_t *newone;
 
-	newone = pcb_line_new_on_layer_merge(CURRENT, Rat->Point1.X, Rat->Point1.Y,
+	newone = pcb_line_new_merge(CURRENT, Rat->Point1.X, Rat->Point1.Y,
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (!newone)
 		return newone;
 	AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
 	EraseRat(Rat);
 	DrawLine(CURRENT, newone);
-	newone = pcb_line_new_on_layer_merge(CURRENT, Rat->Point2.X, Rat->Point2.Y,
+	newone = pcb_line_new_merge(CURRENT, Rat->Point2.X, Rat->Point2.Y,
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (newone) {
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
@@ -181,7 +181,7 @@ void *MoveRatToLayer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 	   else make a via and a wire, but 0-length wire not good
 	   else as before */
 
-	newone = pcb_line_new_on_layer(ctx->move.dst_layer, Rat->Point1.X, Rat->Point1.Y,
+	newone = pcb_line_new(ctx->move.dst_layer, Rat->Point1.X, Rat->Point1.Y,
 																Rat->Point2.X, Rat->Point2.Y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (conf_core.editor.clear_line)
 		conf_set_editor(clear_line, 1);

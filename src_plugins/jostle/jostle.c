@@ -273,7 +273,7 @@ static pcb_line_t *Createpcb_vector_tLineOnLayer(pcb_layer_t * layer, pcb_vector
 {
 	pcb_line_t *line;
 
-	line = pcb_line_new_on_layer(layer, a[0], a[1], b[0], b[1], thickness, clearance, flags);
+	line = pcb_line_new(layer, a[0], a[1], b[0], b[1], thickness, clearance, flags);
 	if (line) {
 		AddObjectToCreateUndoList(PCB_TYPE_LINE, layer, line, line);
 	}
@@ -342,7 +342,7 @@ static int MakeBypassingLines(pcb_polyarea_t * brush, pcb_layer_t * layer, pcb_l
 	MakeBypassLine(layer, b, c, line, expandp);
 	MakeBypassLine(layer, c, d, line, expandp);
 	MakeBypassLine(layer, d, lB, line, NULL);
-	RemoveLine(layer, line);
+	pcb_line_destroy(layer, line);
 	return 1;
 }
 

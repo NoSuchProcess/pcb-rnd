@@ -118,12 +118,12 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		maxy = font->MaxHeight;
 
 		for (l = 0; l < symbol->LineN; l++) {
-			pcb_line_new_on_layer_merge(lfont,
+			pcb_line_new_merge(lfont,
 														 symbol->Line[l].Point1.X + ox,
 														 symbol->Line[l].Point1.Y + oy,
 														 symbol->Line[l].Point2.X + ox,
 														 symbol->Line[l].Point2.Y + oy, symbol->Line[l].Thickness, symbol->Line[l].Thickness, pcb_no_flags());
-			pcb_line_new_on_layer_merge(lorig, symbol->Line[l].Point1.X + ox,
+			pcb_line_new_merge(lorig, symbol->Line[l].Point1.X + ox,
 														 symbol->Line[l].Point1.Y + oy,
 														 symbol->Line[l].Point2.X + ox,
 														 symbol->Line[l].Point2.Y + oy, symbol->Line[l].Thickness, symbol->Line[l].Thickness, pcb_no_flags());
@@ -133,16 +133,16 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 				maxx = symbol->Line[l].Point2.X;
 		}
 		w = maxx + symbol->Delta + ox;
-		pcb_line_new_on_layer_merge(lwidth, w, miny + oy, w, maxy + oy, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
 
 	for (l = 0; l < 16; l++) {
 		int x = (l + 1) * CELL_SIZE;
-		pcb_line_new_on_layer_merge(lgrid, x, 0, x, PCB->MaxHeight, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lgrid, x, 0, x, PCB->MaxHeight, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	for (l = 0; l <= MAX_FONTPOSITION / 16 + 1; l++) {
 		int y = (l + 1) * CELL_SIZE;
-		pcb_line_new_on_layer_merge(lgrid, 0, y, PCB->MaxWidth, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lgrid, 0, y, PCB->MaxWidth, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	return 0;
 }

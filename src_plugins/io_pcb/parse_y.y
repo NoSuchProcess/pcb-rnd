@@ -945,7 +945,7 @@ line_hi_format
 			/* x1, y1, x2, y2, thickness, clearance, flags */
 		: T_LINE '[' measure measure measure measure measure measure flags ']'
 			{
-				pcb_line_new_on_layer(Layer, NU ($3), NU ($4), NU ($5), NU ($6),
+				pcb_line_new(Layer, NU ($3), NU ($4), NU ($5), NU ($6),
 				                            NU ($7), NU ($8), $9);
 			}
 		;
@@ -954,7 +954,7 @@ line_1.7_format
 			/* x1, y1, x2, y2, thickness, clearance, flags */
 		: T_LINE '(' measure measure measure measure measure measure INTEGER ')'
 			{
-				pcb_line_new_on_layer(Layer, OU ($3), OU ($4), OU ($5), OU ($6),
+				pcb_line_new(Layer, OU ($3), OU ($4), OU ($5), OU ($6),
 						     OU ($7), OU ($8), pcb_flag_old($9));
 			}
 		;
@@ -965,7 +965,7 @@ line_oldformat
 			{
 				/* eliminate old-style rat-lines */
 			if ((IV ($8) & PCB_FLAG_RAT) == 0)
-				pcb_line_new_on_layer(Layer, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7),
+				pcb_line_new(Layer, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7),
 					200*GROUNDPLANEFRAME, pcb_flag_old(IV ($8)));
 			}
 		;
