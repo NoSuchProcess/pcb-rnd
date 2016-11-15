@@ -276,13 +276,14 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	RotateBoxLowLevel(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 }
 
-void Freepcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
+void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 {
 	double cosa, sina;
 
 	cosa = cos(angle * M_PI / 180.0);
 	sina = sin(angle * M_PI / 180.0);
 
+#warning unravel: move these to the corresponding obj_*.[ch]
 	/* rotate vias */
 	VIA_LOOP(Buffer->Data);
 	{
@@ -296,7 +297,7 @@ void Freepcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	/* elements */
 	ELEMENT_LOOP(Buffer->Data);
 	{
-		Freepcb_element_rotate90(Buffer->Data, element, Buffer->X, Buffer->Y, cosa, sina, angle);
+		pcb_element_rotate(Buffer->Data, element, Buffer->X, Buffer->Y, cosa, sina, angle);
 	}
 	END_LOOP;
 
@@ -349,7 +350,7 @@ pcb_data_t *pcb_buffer_new(void)
 
 /* -------------------------------------------------------------------------- */
 
-static const char freerotatebuffer_syntax[] = "Freepcb_buffer_rotate([Angle])";
+static const char freerotatebuffer_syntax[] = "pcb_buffer_free_rotate([Angle])";
 
 static const char freerotatebuffer_help[] =
 	"Rotates the current paste buffer contents by the specified angle.  The\n"
@@ -372,7 +373,7 @@ int ActionFreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		angle_s = argv[0];
 
 	pcb_notify_crosshair_change(pcb_false);
-	Freepcb_buffer_rotate(PCB_PASTEBUFFER, strtod(angle_s, 0));
+	pcb_buffer_free_rotate(PCB_PASTEBUFFER, strtod(angle_s, 0));
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }

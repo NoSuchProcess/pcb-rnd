@@ -347,7 +347,7 @@ static void scad_export_model(int model_type, pcb_element_t * element, pcb_bool 
 
 
 
-extern void Freepcb_buffer_rotate(pcb_buffer_t * Buffer, pcb_angle_t angle);
+extern void pcb_buffer_free_rotate(pcb_buffer_t * Buffer, pcb_angle_t angle);
 
 static int scad_calculate_bbox(pcb_element_t * element, pcb_angle_t angle, float *w, float *h, float *ox, float *oy)
 {

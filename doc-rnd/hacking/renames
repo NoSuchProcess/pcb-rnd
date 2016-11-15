@@ -544,3 +544,6 @@ RotateElementLowLevel -> pcb_element_rotate90
 RotateLineLowLevel -> pcb_line_rotate90
 RotatePolygonLowLevel -> pcb_poly_rotate90
 RotateTextLowLevel -> pcb_text_rotate90
+Freepcb_element_rotate90 -> pcb_element_rotate
+Freepcb_element_rotate90 -> pcb_element_rotate
+Freepcb_buffer_rotate -> pcb_buffer_free_rotate

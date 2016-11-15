@@ -391,7 +391,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	return (pcb_true);
 }
 
-void Freepcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
+void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
 {
 	/* solder side objects need a different orientation */
 
