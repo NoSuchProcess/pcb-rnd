@@ -68,7 +68,8 @@ Accessors:
 
 Trasformations:
 	pcb_*_move():
-		move the object within its parent (x;y)
+		move the object within its parent (x;y); it's often implemented as a
+		macro
 
 	pcb_*_mirror():
 		mirror the object within its parent (x;y)
