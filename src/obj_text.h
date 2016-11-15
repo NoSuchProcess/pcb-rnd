@@ -54,7 +54,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text);
 void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
-#define	MOVE_TEXT_LOWLEVEL(t,dx,dy)                                  \
+#define	pcb_text_move(t,dx,dy)                                  \
 	{                                                                  \
 		pcb_coord_t __dx__ = (dx), __dy__ = (dy);                        \
 		pcb_text_t *__t__ = (t);                                         \
@@ -63,7 +63,7 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 	}
 
 /* Determines if text is actually visible */
-#define TEXT_IS_VISIBLE(b, l, t)      ((l)->On)
+#define pcb_text_is_visible(b, l, t)      ((l)->On)
 
 #define TEXT_LOOP(layer) do {                                       \
   pcb_text_t *text;                                                   \
@@ -83,6 +83,6 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 	for (l = 0; l < max_copper_layer + 2; l++, layer++)      \
 	{                                                        \
 		TEXT_LOOP(layer);                                      \
-		if (TEXT_IS_VISIBLE((board), layer, text))
+		if (pcb_text_is_visible((board), layer, text))
 
 #endif

@@ -1035,7 +1035,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
-		MOVE_TEXT_LOWLEVEL(text, DX, DY);
+		pcb_text_move(text, DX, DY);
 		if (Data && Data->name_tree[n])
 			r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
@@ -1536,7 +1536,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 		{
 			if (PCB->Data->name_tree[n])
 				r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
-			MOVE_TEXT_LOWLEVEL(text, ctx->move.dx, ctx->move.dy);
+			pcb_text_move(text, ctx->move.dx, ctx->move.dy);
 			if (PCB->Data->name_tree[n])
 				r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
@@ -1549,7 +1549,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 		{
 			if (PCB->Data->name_tree[n])
 				r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
-			MOVE_TEXT_LOWLEVEL(text, ctx->move.dx, ctx->move.dy);
+			pcb_text_move(text, ctx->move.dx, ctx->move.dy);
 			if (PCB->Data->name_tree[n])
 				r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}

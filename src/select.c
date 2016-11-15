@@ -333,12 +333,12 @@ do { \
 		END_LOOP;
 		TEXT_LOOP(layer);
 		{
-			if (!Flag || TEXT_IS_VISIBLE(PCB, layer, text)) {
+			if (!Flag || pcb_text_is_visible(PCB, layer, text)) {
 				if (TEXT_NEAR_BOX(text, Box)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, text)
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) != Flag) {
 					append(PCB_TYPE_TEXT, layer, text);
-					if (TEXT_IS_VISIBLE(PCB, layer, text))
+					if (pcb_text_is_visible(PCB, layer, text))
 						DrawText(layer, text);
 				}
 			}
@@ -594,7 +594,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 	if (type & PCB_TYPE_TEXT && F->Text)
 		ALLTEXT_LOOP(PCB->Data);
 	{
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) && TEXT_IS_VISIBLE(PCB, layer, text)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) && pcb_text_is_visible(PCB, layer, text)) {
 			if (Reset) {
 				AddObjectToFlagUndoList(PCB_TYPE_TEXT, layer, text, text);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, text);
@@ -889,7 +889,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 		ALLTEXT_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, text)
-				&& TEXT_IS_VISIBLE(PCB, layer, text)
+				&& pcb_text_is_visible(PCB, layer, text)
 				&& text->TextString && REGEXEC(text->TextString)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) != Flag) {
 			AddObjectToFlagUndoList(PCB_TYPE_TEXT, layer, text, text);

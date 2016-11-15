@@ -592,7 +592,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			 * pcb_move_obj() is better as in aligntext(), but we
 			 * didn't keep the element reference when sorting.
 			 */
-			MOVE_TEXT_LOWLEVEL(text, dx, dy);
+			pcb_text_move(text, dx, dy);
 			AddObjectToMoveUndoList(type, NULL, NULL, text, dx, dy);
 			changed = 1;
 		}

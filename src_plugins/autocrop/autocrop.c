@@ -121,7 +121,7 @@ static void *MyMoveTextLowLevel(pcb_layer_t * Layer, pcb_text_t * Text, pcb_coor
 {
 	if (Layer)
 		r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
-	MOVE_TEXT_LOWLEVEL(Text, dx, dy);
+	pcb_text_move(Text, dx, dy);
 	if (Layer)
 		r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	return Text;

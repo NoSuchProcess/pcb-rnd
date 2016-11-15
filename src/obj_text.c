@@ -341,12 +341,12 @@ void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	if (Layer->On) {
 		EraseText(Layer, Text);
-		MOVE_TEXT_LOWLEVEL(Text, ctx->move.dx, ctx->move.dy);
+		pcb_text_move(Text, ctx->move.dx, ctx->move.dy);
 		DrawText(Layer, Text);
 		pcb_draw();
 	}
 	else
-		MOVE_TEXT_LOWLEVEL(Text, ctx->move.dx, ctx->move.dy);
+		pcb_text_move(Text, ctx->move.dx, ctx->move.dy);
 	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	return (Text);
