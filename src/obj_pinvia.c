@@ -718,7 +718,7 @@ void *MoveVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
 	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	MOVE_VIA_LOWLEVEL(Via, ctx->move.dx, ctx->move.dy);
+	pcb_via_move(Via, ctx->move.dx, ctx->move.dy);
 	if (PCB->ViaOn)
 		EraseVia(Via);
 	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);

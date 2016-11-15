@@ -67,7 +67,7 @@ static void *MyMoveViaLowLevel(pcb_data_t * Data, pcb_pin_t * Via, pcb_coord_t d
 		RestoreToPolygon(Data, PCB_TYPE_VIA, Via, Via);
 		r_delete_entry(Data->via_tree, (pcb_box_t *) Via);
 	}
-	MOVE_VIA_LOWLEVEL(Via, dx, dy);
+	pcb_via_move(Via, dx, dy);
 	if (Data) {
 		r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
 		ClearFromPolygon(Data, PCB_TYPE_VIA, Via, Via);

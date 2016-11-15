@@ -568,3 +568,5 @@ TEXT_IS_VISIBLE -> pcb_text_is_visible
 MOVE_ARC_LOWLEVEL -> pcb_arc_move
 MOVE_LINE_LOWLEVEL -> pcb_line_move
 MOVE_PAD_LOWLEVEL -> pcb_pad_move
+MOVE_PIN_LOWLEVEL -> pcb_pin_move
+MOVE_VIA_LOWLEVEL -> pcb_via_move

@@ -1006,7 +1006,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
 			RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
 		}
-		MOVE_PIN_LOWLEVEL(pin, DX, DY);
+		pcb_pin_move(pin, DX, DY);
 		if (Data) {
 			r_insert_entry(Data->pin_tree, (pcb_box_t *) pin, 0);
 			ClearFromPolygon(Data, PCB_TYPE_PIN, Element, pin);
