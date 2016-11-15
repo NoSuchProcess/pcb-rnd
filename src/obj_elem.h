@@ -52,9 +52,14 @@ struct pcb_element_s {
 pcb_element_t *pcb_element_alloc(pcb_data_t * data);
 void pcb_element_free(pcb_element_t * data);
 
+pcb_element_t *pcb_element_new(pcb_data_t *Data, pcb_element_t *Element,
+	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
+	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction,
+	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName);
+
 void pcb_element_destroy(pcb_element_t * element);
 
-pcb_line_t *pcb_element_line_new(pcb_element_t *Element);
+pcb_line_t *pcb_element_line_alloc(pcb_element_t *Element);
 
 
 void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font);
@@ -80,15 +85,10 @@ void MoveElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t D
 void *RemoveElement(pcb_element_t *Element);
 void MirrorElementCoordinates(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yoff);
 
-pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
-	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
-	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction,
-	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName);
-
-pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y,
+pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y,
 	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness);
 
-pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
+pcb_line_t *pcb_element_line_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
 
 void AddTextToElement(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y,
 	unsigned Direction, char *TextString, int Scale, pcb_flag_t Flags);

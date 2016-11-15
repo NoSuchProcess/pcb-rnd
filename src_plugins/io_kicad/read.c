@@ -1276,7 +1276,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		if (moduleValue != NULL && moduleRefdes != NULL && moduleName != NULL && moduleDefined == 0) {
 			moduleDefined = 1;
 			printf("now have RefDes %s and Value %s, can now define module/element %s\n", moduleRefdes, moduleValue, moduleName);
-			newModule = CreateNewElement(st->PCB->Data, NULL,
+			newModule = pcb_element_new(st->PCB->Data, NULL,
 								 &st->PCB->Font, Flags,
 								 moduleName, moduleRefdes, moduleValue,
 								 moduleX, moduleY, direction,
@@ -1618,7 +1618,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(3) | BV(6) | BV(8);
 	if (((featureTally & required) == required) && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
-		CreateNewLineInElement(newModule, X1, Y1, X2, Y2, Thickness);
+		pcb_element_line_new(newModule, X1, Y1, X2, Y2, Thickness);
 		pcb_printf("\tnew fp_line on layer created\n");
 	}
 
@@ -1787,7 +1787,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			}
 
 		}
-		CreateNewArcInElement(newModule, moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness);
+		pcb_element_arc_new(newModule, moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness);
 
 	}
 

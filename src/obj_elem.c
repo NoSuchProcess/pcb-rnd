@@ -108,7 +108,7 @@ void pcb_element_destroy(pcb_element_t * element)
 	reset_obj_mem(pcb_element_t, element);
 }
 
-pcb_line_t *pcb_element_line_new(pcb_element_t *Element)
+pcb_line_t *pcb_element_line_alloc(pcb_element_t *Element)
 {
 	pcb_line_t *line = calloc(sizeof(pcb_line_t), 1);
 	linelist_append(&Element->Line, line);
@@ -265,7 +265,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	if (Buffer->Data->pcb == 0)
 		Buffer->Data->pcb = PCB;
 
-	Element = CreateNewElement(PCB->Data, NULL, &PCB->Font, pcb_no_flags(),
+	Element = pcb_element_new(PCB->Data, NULL, &PCB->Font, pcb_no_flags(),
 														 NULL, NULL, NULL, PCB_PASTEBUFFER->X,
 														 PCB_PASTEBUFFER->Y, 0, 100, pcb_flag_make(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
 	if (!Element)
@@ -363,13 +363,13 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	{
 		if (line->Number && !NAMEONPCB_NAME(Element))
 			NAMEONPCB_NAME(Element) = pcb_strdup(line->Number);
-		CreateNewLineInElement(Element, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
+		pcb_element_line_new(Element, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
 		hasParts = pcb_true;
 	}
 	END_LOOP;
 	ARC_LOOP(&Buffer->Data->SILKLAYER);
 	{
-		CreateNewArcInElement(Element, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
+		pcb_element_arc_new(Element, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
 		hasParts = pcb_true;
 	}
 	END_LOOP;
@@ -514,7 +514,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 		pcb_element_destroy(Dest);
 
 	/* both coordinates and flags are the same */
-	Dest = CreateNewElement(Data, Dest, &PCB->Font,
+	Dest = pcb_element_new(Data, Dest, &PCB->Font,
 													pcb_flag_mask(Src->Flags, PCB_FLAG_FOUND),
 													DESCRIPTION_NAME(Src), NAMEONPCB_NAME(Src),
 													VALUE_NAME(Src), DESCRIPTION_TEXT(Src).X + dx,
@@ -528,7 +528,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 
 	ELEMENTLINE_LOOP(Src);
 	{
-		CreateNewLineInElement(Dest, line->Point1.X + dx,
+		pcb_element_line_new(Dest, line->Point1.X + dx,
 													 line->Point1.Y + dy, line->Point2.X + dx, line->Point2.Y + dy, line->Thickness);
 	}
 	END_LOOP;
@@ -547,7 +547,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	END_LOOP;
 	ARC_LOOP(Src);
 	{
-		CreateNewArcInElement(Dest, arc->X + dx, arc->Y + dy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
+		pcb_element_arc_new(Dest, arc->X + dx, arc->Y + dy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
 	}
 	END_LOOP;
 
@@ -562,7 +562,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 }
 
 /* creates an new element; memory is allocated if needed */
-pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
+pcb_element_t *pcb_element_new(pcb_data_t *Data, pcb_element_t *Element,
 	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
 	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, pcb_uint8_t Direction,
 	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName)
@@ -595,7 +595,7 @@ pcb_element_t *CreateNewElement(pcb_data_t *Data, pcb_element_t *Element,
 }
 
 /* creates a new arc in an element */
-pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y,
+pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y,
 	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness)
 {
 	pcb_arc_t *arc = pcb_element_arc_alloc(Element);
@@ -623,14 +623,14 @@ pcb_arc_t *CreateNewArcInElement(pcb_element_t *Element, pcb_coord_t X, pcb_coor
 }
 
 /* creates a new line for an element */
-pcb_line_t *CreateNewLineInElement(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
+pcb_line_t *pcb_element_line_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
 {
 	pcb_line_t *line;
 
 	if (Thickness == 0)
 		return NULL;
 
-	line = pcb_element_line_new(Element);
+	line = pcb_element_line_alloc(Element);
 
 	/* copy values */
 	line->Point1.X = X1;

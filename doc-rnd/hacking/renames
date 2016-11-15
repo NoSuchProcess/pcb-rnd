@@ -555,3 +555,6 @@ ChangeSelectedElementSide -> pcb_selected_element_change_side
 ElementOrientation -> pcb_element_get_orientation
 ChangePaste -> pcb_pad_change_paste
 ChangeHole -> pcb_pin_change_hole
+CreateNewElement -> pcb_element_new
+CreateNewArcInElement -> pcb_element_arc_new
+CreateNewLineInElement -> pcb_element_line_new

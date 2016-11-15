@@ -2430,7 +2430,7 @@ yyreduce:
   case 116:
 #line 1279 "parse_y.y" /* yacc.c:1646  */
     {
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_no_flags(),
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_no_flags(),
 					(yyvsp[-6].string), (yyvsp[-5].string), NULL, OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), (yyvsp[-2].integer), 100, pcb_no_flags(), pcb_false);
 				free ((yyvsp[-6].string));
 				free ((yyvsp[-5].string));
@@ -2450,7 +2450,7 @@ yyreduce:
   case 118:
 #line 1297 "parse_y.y" /* yacc.c:1646  */
     {
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_flag_old((yyvsp[-9].integer)),
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_flag_old((yyvsp[-9].integer)),
 					(yyvsp[-8].string), (yyvsp[-7].string), NULL, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), pcb_flag_old((yyvsp[-2].integer)), pcb_false);
 				free ((yyvsp[-8].string));
 				free ((yyvsp[-7].string));
@@ -2470,7 +2470,7 @@ yyreduce:
   case 120:
 #line 1315 "parse_y.y" /* yacc.c:1646  */
     {
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_flag_old((yyvsp[-10].integer)),
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_flag_old((yyvsp[-10].integer)),
 					(yyvsp[-9].string), (yyvsp[-8].string), (yyvsp[-7].string), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), IV ((yyvsp[-4].measure)), IV ((yyvsp[-3].measure)), pcb_flag_old((yyvsp[-2].integer)), pcb_false);
 				free ((yyvsp[-9].string));
 				free ((yyvsp[-8].string));
@@ -2491,7 +2491,7 @@ yyreduce:
   case 122:
 #line 1335 "parse_y.y" /* yacc.c:1646  */
     {
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_flag_old((yyvsp[-12].integer)),
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_flag_old((yyvsp[-12].integer)),
 					(yyvsp[-11].string), (yyvsp[-10].string), (yyvsp[-9].string), OU ((yyvsp[-8].measure)) + OU ((yyvsp[-6].measure)), OU ((yyvsp[-7].measure)) + OU ((yyvsp[-5].measure)),
 					(yyvsp[-4].number), (yyvsp[-3].number), pcb_flag_old((yyvsp[-2].integer)), pcb_false);
 				yyElement->MarkX = OU ((yyvsp[-8].measure));
@@ -2514,7 +2514,7 @@ yyreduce:
   case 124:
 #line 1357 "parse_y.y" /* yacc.c:1646  */
     {
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, (yyvsp[-12].flagtype),
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, (yyvsp[-12].flagtype),
 					(yyvsp[-11].string), (yyvsp[-10].string), (yyvsp[-9].string), NU ((yyvsp[-8].measure)) + NU ((yyvsp[-6].measure)), NU ((yyvsp[-7].measure)) + NU ((yyvsp[-5].measure)),
 					(yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].flagtype), pcb_false);
 				yyElement->MarkX = NU ((yyvsp[-8].measure));
@@ -2537,7 +2537,7 @@ yyreduce:
   case 133:
 #line 1448 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewLineInElement(yyElement, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
+				pcb_element_line_new(yyElement, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), NU ((yyvsp[-3].measure)), NU ((yyvsp[-2].measure)), NU ((yyvsp[-1].measure)));
 			}
 #line 2543 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2545,7 +2545,7 @@ yyreduce:
   case 134:
 #line 1453 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewLineInElement(yyElement, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
+				pcb_element_line_new(yyElement, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)), OU ((yyvsp[-1].measure)));
 			}
 #line 2551 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2553,7 +2553,7 @@ yyreduce:
   case 135:
 #line 1458 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewArcInElement(yyElement, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), NU ((yyvsp[-1].measure)));
+				pcb_element_arc_new(yyElement, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), NU ((yyvsp[-1].measure)));
 			}
 #line 2559 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2561,7 +2561,7 @@ yyreduce:
   case 136:
 #line 1463 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewArcInElement(yyElement, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), OU ((yyvsp[-1].measure)));
+				pcb_element_arc_new(yyElement, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), OU ((yyvsp[-1].measure)));
 			}
 #line 2567 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2593,7 +2593,7 @@ yyreduce:
   case 147:
 #line 1492 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewLineInElement(yyElement, NU ((yyvsp[-5].measure)) + yyElement->MarkX,
+				pcb_element_line_new(yyElement, NU ((yyvsp[-5].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-4].measure)) + yyElement->MarkY, NU ((yyvsp[-3].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-2].measure)) + yyElement->MarkY, NU ((yyvsp[-1].measure)));
 			}
@@ -2603,7 +2603,7 @@ yyreduce:
   case 148:
 #line 1498 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewLineInElement(yyElement, OU ((yyvsp[-5].measure)) + yyElement->MarkX,
+				pcb_element_line_new(yyElement, OU ((yyvsp[-5].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-4].measure)) + yyElement->MarkY, OU ((yyvsp[-3].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-2].measure)) + yyElement->MarkY, OU ((yyvsp[-1].measure)));
 			}
@@ -2613,7 +2613,7 @@ yyreduce:
   case 149:
 #line 1505 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewArcInElement(yyElement, NU ((yyvsp[-7].measure)) + yyElement->MarkX,
+				pcb_element_arc_new(yyElement, NU ((yyvsp[-7].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-6].measure)) + yyElement->MarkY, NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), NU ((yyvsp[-1].measure)));
 			}
 #line 2620 "parse_y.c" /* yacc.c:1646  */
@@ -2622,7 +2622,7 @@ yyreduce:
   case 150:
 #line 1510 "parse_y.y" /* yacc.c:1646  */
     {
-				CreateNewArcInElement(yyElement, OU ((yyvsp[-7].measure)) + yyElement->MarkX,
+				pcb_element_arc_new(yyElement, OU ((yyvsp[-7].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-6].measure)) + yyElement->MarkY, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), (yyvsp[-3].number), (yyvsp[-2].number), OU ((yyvsp[-1].measure)));
 			}
 #line 2629 "parse_y.c" /* yacc.c:1646  */

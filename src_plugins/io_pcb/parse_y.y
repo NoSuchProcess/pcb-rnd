@@ -1277,7 +1277,7 @@ element_oldformat
 			 */
 		: T_ELEMENT '(' STRING STRING measure measure INTEGER ')' '('
 			{
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_no_flags(),
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_no_flags(),
 					$3, $4, NULL, OU ($5), OU ($6), $7, 100, pcb_no_flags(), pcb_false);
 				free ($3);
 				free ($4);
@@ -1295,7 +1295,7 @@ element_1.3.4_format
 			 */
 		: T_ELEMENT '(' INTEGER STRING STRING measure measure measure measure INTEGER ')' '('
 			{
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_flag_old($3),
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_flag_old($3),
 					$4, $5, NULL, OU ($6), OU ($7), IV ($8), IV ($9), pcb_flag_old($10), pcb_false);
 				free ($4);
 				free ($5);
@@ -1313,7 +1313,7 @@ element_newformat
 			 */
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure measure measure INTEGER ')' '('
 			{
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_flag_old($3),
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_flag_old($3),
 					$4, $5, $6, OU ($7), OU ($8), IV ($9), IV ($10), pcb_flag_old($11), pcb_false);
 				free ($4);
 				free ($5);
@@ -1333,7 +1333,7 @@ element_1.7_format
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure
 			measure measure number number INTEGER ')' '('
 			{
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, pcb_flag_old($3),
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, pcb_flag_old($3),
 					$4, $5, $6, OU ($7) + OU ($9), OU ($8) + OU ($10),
 					$11, $12, pcb_flag_old($13), pcb_false);
 				yyElement->MarkX = OU ($7);
@@ -1355,7 +1355,7 @@ element_hi_format
 		: T_ELEMENT '[' flags STRING STRING STRING measure measure
 			measure measure number number flags ']' '('
 			{
-				yyElement = CreateNewElement(yyData, yyElement, yyFont, $3,
+				yyElement = pcb_element_new(yyData, yyElement, yyFont, $3,
 					$4, $5, $6, NU ($7) + NU ($9), NU ($8) + NU ($10),
 					$11, $12, $13, pcb_false);
 				yyElement->MarkX = NU ($7);
@@ -1446,22 +1446,22 @@ elementdefinition
 			/* x1, y1, x2, y2, thickness */
 		| T_ELEMENTLINE '[' measure measure measure measure measure ']'
 			{
-				CreateNewLineInElement(yyElement, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
+				pcb_element_line_new(yyElement, NU ($3), NU ($4), NU ($5), NU ($6), NU ($7));
 			}
 			/* x1, y1, x2, y2, thickness */
 		| T_ELEMENTLINE '(' measure measure measure measure measure ')'
 			{
-				CreateNewLineInElement(yyElement, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
+				pcb_element_line_new(yyElement, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7));
 			}
 			/* x, y, width, height, startangle, anglediff, thickness */
 		| T_ELEMENTARC '[' measure measure measure measure number number measure ']'
 			{
-				CreateNewArcInElement(yyElement, NU ($3), NU ($4), NU ($5), NU ($6), $7, $8, NU ($9));
+				pcb_element_arc_new(yyElement, NU ($3), NU ($4), NU ($5), NU ($6), $7, $8, NU ($9));
 			}
 			/* x, y, width, height, startangle, anglediff, thickness */
 		| T_ELEMENTARC '(' measure measure measure measure number number measure ')'
 			{
-				CreateNewArcInElement(yyElement, OU ($3), OU ($4), OU ($5), OU ($6), $7, $8, OU ($9));
+				pcb_element_arc_new(yyElement, OU ($3), OU ($4), OU ($5), OU ($6), $7, $8, OU ($9));
 			}
 			/* x, y position */
 		| T_MARK '[' measure measure ']'
@@ -1490,25 +1490,25 @@ relementdef
 			/* x1, y1, x2, y2, thickness */
 		| T_ELEMENTLINE '[' measure measure measure measure measure ']'
 			{
-				CreateNewLineInElement(yyElement, NU ($3) + yyElement->MarkX,
+				pcb_element_line_new(yyElement, NU ($3) + yyElement->MarkX,
 					NU ($4) + yyElement->MarkY, NU ($5) + yyElement->MarkX,
 					NU ($6) + yyElement->MarkY, NU ($7));
 			}
 		| T_ELEMENTLINE '(' measure measure measure measure measure ')'
 			{
-				CreateNewLineInElement(yyElement, OU ($3) + yyElement->MarkX,
+				pcb_element_line_new(yyElement, OU ($3) + yyElement->MarkX,
 					OU ($4) + yyElement->MarkY, OU ($5) + yyElement->MarkX,
 					OU ($6) + yyElement->MarkY, OU ($7));
 			}
 			/* x, y, width, height, startangle, anglediff, thickness */
 		| T_ELEMENTARC '[' measure measure measure measure number number measure ']'
 			{
-				CreateNewArcInElement(yyElement, NU ($3) + yyElement->MarkX,
+				pcb_element_arc_new(yyElement, NU ($3) + yyElement->MarkX,
 					NU ($4) + yyElement->MarkY, NU ($5), NU ($6), $7, $8, NU ($9));
 			}
 		| T_ELEMENTARC '(' measure measure measure measure number number measure ')'
 			{
-				CreateNewArcInElement(yyElement, OU ($3) + yyElement->MarkX,
+				pcb_element_arc_new(yyElement, OU ($3) + yyElement->MarkX,
 					OU ($4) + yyElement->MarkY, OU ($5), OU ($6), $7, $8, OU ($9));
 			}
 		| { attr_list = & yyElement->Attributes; } attribute
