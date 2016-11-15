@@ -1659,7 +1659,7 @@ pad_hi_format
 			/* x1, y1, x2, y2, thickness, clearance, mask, name , pad number, flags */
 		: T_PAD '[' measure measure measure measure measure measure measure STRING STRING flags ']'
 			{
-				pcb_pad_new_in_element(yyElement, NU ($3) + yyElement->MarkX,
+				pcb_element_pad_new(yyElement, NU ($3) + yyElement->MarkX,
 					NU ($4) + yyElement->MarkY,
 					NU ($5) + yyElement->MarkX,
 					NU ($6) + yyElement->MarkY, NU ($7), NU ($8), NU ($9),
@@ -1673,7 +1673,7 @@ pad_1.7_format
 			/* x1, y1, x2, y2, thickness, clearance, mask, name , pad number, flags */
 		: T_PAD '(' measure measure measure measure measure measure measure STRING STRING INTEGER ')'
 			{
-				pcb_pad_new_in_element(yyElement,OU ($3) + yyElement->MarkX,
+				pcb_element_pad_new(yyElement,OU ($3) + yyElement->MarkX,
 					OU ($4) + yyElement->MarkY, OU ($5) + yyElement->MarkX,
 					OU ($6) + yyElement->MarkY, OU ($7), OU ($8), OU ($9),
 					$10, $11, pcb_flag_old($12));
@@ -1686,7 +1686,7 @@ pad_newformat
 			/* x1, y1, x2, y2, thickness, name , pad number, flags */
 		: T_PAD '(' measure measure measure measure measure STRING STRING INTEGER ')'
 			{
-				pcb_pad_new_in_element(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*GROUNDPLANEFRAME,
+				pcb_element_pad_new(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*GROUNDPLANEFRAME,
 					OU ($7) + 2*MASKFRAME, $8, $9, pcb_flag_old($10));
 				free ($8);
 				free ($9);
@@ -1700,7 +1700,7 @@ pad
 				char		p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_pad_new_in_element(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*GROUNDPLANEFRAME,
+				pcb_element_pad_new(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*GROUNDPLANEFRAME,
 					OU ($7) + 2*MASKFRAME, $8,p_number, pcb_flag_old($9));
 				free ($8);
 			}

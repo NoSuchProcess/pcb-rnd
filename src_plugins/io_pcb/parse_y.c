@@ -2705,7 +2705,7 @@ yyreduce:
   case 158:
 #line 1661 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_pad_new_in_element(yyElement, NU ((yyvsp[-10].measure)) + yyElement->MarkX,
+				pcb_element_pad_new(yyElement, NU ((yyvsp[-10].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-9].measure)) + yyElement->MarkY,
 					NU ((yyvsp[-8].measure)) + yyElement->MarkX,
 					NU ((yyvsp[-7].measure)) + yyElement->MarkY, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
@@ -2719,7 +2719,7 @@ yyreduce:
   case 159:
 #line 1675 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_pad_new_in_element(yyElement,OU ((yyvsp[-10].measure)) + yyElement->MarkX,
+				pcb_element_pad_new(yyElement,OU ((yyvsp[-10].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-9].measure)) + yyElement->MarkY, OU ((yyvsp[-8].measure)) + yyElement->MarkX,
 					OU ((yyvsp[-7].measure)) + yyElement->MarkY, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)),
 					(yyvsp[-3].string), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
@@ -2732,7 +2732,7 @@ yyreduce:
   case 160:
 #line 1688 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_pad_new_in_element(yyElement,OU ((yyvsp[-8].measure)),OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
+				pcb_element_pad_new(yyElement,OU ((yyvsp[-8].measure)),OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
 					OU ((yyvsp[-4].measure)) + 2*MASKFRAME, (yyvsp[-3].string), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
@@ -2746,7 +2746,7 @@ yyreduce:
 				char		p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_pad_new_in_element(yyElement,OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)),OU ((yyvsp[-3].measure)), 2*GROUNDPLANEFRAME,
+				pcb_element_pad_new(yyElement,OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)),OU ((yyvsp[-3].measure)), 2*GROUNDPLANEFRAME,
 					OU ((yyvsp[-3].measure)) + 2*MASKFRAME, (yyvsp[-2].string),p_number, pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}

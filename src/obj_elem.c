@@ -320,7 +320,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 			LINE_LOOP(layer);
 			{
 				sprintf(num, "%d", pin_n++);
-				pcb_pad_new_in_element(Element, line->Point1.X,
+				pcb_element_pad_new(Element, line->Point1.X,
 										 line->Point1.Y, line->Point2.X,
 										 line->Point2.Y, line->Thickness,
 										 line->Clearance,
@@ -347,7 +347,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 				y2 = y1 + (h - t);
 
 				sprintf(num, "%d", pin_n++);
-				pcb_pad_new_in_element(Element,
+				pcb_element_pad_new(Element,
 										 x1, y1, x2, y2, t,
 										 2 * conf_core.design.clearance, t + conf_core.design.clearance, NULL, num, pcb_flag_make(PCB_FLAG_SQUARE | onsolderflag));
 				MAYBE_WARN();
@@ -540,7 +540,7 @@ pcb_element_t *CopyElementLowLevel(pcb_data_t *Data, pcb_element_t *Dest, pcb_el
 	END_LOOP;
 	PAD_LOOP(Src);
 	{
-		pcb_pad_new_in_element(Dest, pad->Point1.X + dx, pad->Point1.Y + dy,
+		pcb_element_pad_new(Dest, pad->Point1.X + dx, pad->Point1.Y + dy,
 								 pad->Point2.X + dx, pad->Point2.Y + dy, pad->Thickness,
 								 pad->Clearance, pad->Mask, pad->Name, pad->Number, pcb_flag_mask(pad->Flags, PCB_FLAG_FOUND));
 	}

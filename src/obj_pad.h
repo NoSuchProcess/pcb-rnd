@@ -41,11 +41,12 @@ struct pcb_pad_s {                  /* a SMD pad */
 };
 
 
-pcb_pad_t *pcb_pad_new(pcb_element_t * element);
+pcb_pad_t *pcb_pad_alloc(pcb_element_t * element);
 void pcb_pad_free(pcb_pad_t * data);
 
-pcb_pad_t *pcb_pad_new_in_element(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, char *Name, char *Number, pcb_flag_t Flags);
+pcb_pad_t *pcb_element_pad_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, char *Name, char *Number, pcb_flag_t Flags);
 void pcb_pad_bbox(pcb_pad_t *Pad);
+
 pcb_bool ChangePaste(pcb_pad_t *Pad);
 
 

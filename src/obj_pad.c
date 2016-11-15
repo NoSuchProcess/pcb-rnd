@@ -47,7 +47,7 @@
 
 /*** allocation ***/
 /* get next slot for a pad, allocates memory if necessary */
-pcb_pad_t *pcb_pad_new(pcb_element_t * element)
+pcb_pad_t *pcb_pad_alloc(pcb_element_t * element)
 {
 	pcb_pad_t *new_obj;
 
@@ -66,9 +66,9 @@ void pcb_pad_free(pcb_pad_t * data)
 
 /*** utility ***/
 /* creates a new pad in an element */
-pcb_pad_t *pcb_pad_new_in_element(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, char *Name, char *Number, pcb_flag_t Flags)
+pcb_pad_t *pcb_element_pad_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, char *Name, char *Number, pcb_flag_t Flags)
 {
-	pcb_pad_t *pad = pcb_pad_new(Element);
+	pcb_pad_t *pad = pcb_pad_alloc(Element);
 
 	/* copy values */
 	if (X1 > X2 || (X1 == X2 && Y1 > Y2)) {
