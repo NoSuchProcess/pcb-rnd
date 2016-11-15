@@ -631,7 +631,7 @@ void doPerturb(PerturbationType * pt, pcb_bool undo)
 				b = (4 - b) & 3;
 			/* 0 - flip; 1-3, rotate. */
 			if (b)
-				RotateElementLowLevel(PCB->Data, pt->element, bbcx, bbcy, b);
+				pcb_element_rotate90(PCB->Data, pt->element, bbcx, bbcy, b);
 			else {
 				pcb_coord_t y = pt->element->VBox.Y1;
 				MirrorElementCoordinates(PCB->Data, pt->element, 0);

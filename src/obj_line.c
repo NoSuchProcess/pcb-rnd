@@ -618,7 +618,7 @@ void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* rotates a line in 90 degree steps */
-void RotateLineLowLevel(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	ROTATE(Line->Point1.X, Line->Point1.Y, X, Y, Number);
 	ROTATE(Line->Point2.X, Line->Point2.Y, X, Y, Number);

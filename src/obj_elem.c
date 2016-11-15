@@ -391,7 +391,7 @@ pcb_bool ConvertBufferToElement(pcb_buffer_t *Buffer)
 	return (pcb_true);
 }
 
-void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
+void Freepcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
 {
 	/* solder side objects need a different orientation */
 
@@ -403,7 +403,7 @@ void FreeRotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coo
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
-		RotateTextLowLevel(text, X, Y, Number);
+		pcb_text_rotate90(text, X, Y, Number);
 	}
 	END_LOOP;
 #endif
@@ -1059,7 +1059,7 @@ void *RemoveElement(pcb_element_t *Element)
 }
 
 /* rotate an element in 90 degree steps */
-void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	/* solder side objects need a different orientation */
 
@@ -1070,12 +1070,12 @@ void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t
 	{
 		if (Data && Data->name_tree[n])
 			r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
-		RotateTextLowLevel(text, X, Y, Number);
+		pcb_text_rotate90(text, X, Y, Number);
 	}
 	END_LOOP;
 	ELEMENTLINE_LOOP(Element);
 	{
-		RotateLineLowLevel(line, X, Y, Number);
+		pcb_line_rotate90(line, X, Y, Number);
 	}
 	END_LOOP;
 	PIN_LOOP(Element);
@@ -1098,7 +1098,7 @@ void RotateElementLowLevel(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t
 	END_LOOP;
 	ARC_LOOP(Element);
 	{
-		RotateArcLowLevel(arc, X, Y, Number);
+		pcb_arc_rotate90(arc, X, Y, Number);
 	}
 	END_LOOP;
 	ROTATE(Element->MarkX, Element->MarkY, X, Y, Number);
@@ -1633,7 +1633,7 @@ void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *RotateElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	EraseElement(Element);
-	RotateElementLowLevel(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+	pcb_element_rotate90(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	DrawElement(Element);
 	pcb_draw();
 	return (Element);
@@ -1648,7 +1648,7 @@ void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 	ELEMENTTEXT_LOOP(Element);
 	{
 		r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
-		RotateTextLowLevel(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+		pcb_text_rotate90(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 		r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
 	END_LOOP;

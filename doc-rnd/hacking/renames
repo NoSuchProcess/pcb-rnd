@@ -539,3 +539,8 @@ SetArcBoundingBox -> pcb_arc_bbox
 SetElementBoundingBox -> pcb_element_bbox
 SetLineBoundingBox -> pcb_line_bbox
 SetTextBoundingBox -> pcb_text_bbox
+RotateArcLowLevel -> pcb_arc_rotate90
+RotateElementLowLevel -> pcb_element_rotate90
+RotateLineLowLevel -> pcb_line_rotate90
+RotatePolygonLowLevel -> pcb_poly_rotate90
+RotateTextLowLevel -> pcb_text_rotate90

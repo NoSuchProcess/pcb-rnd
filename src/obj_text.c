@@ -434,7 +434,7 @@ void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text)
 
 /* rotates a text in 90 degree steps; only the bounding box is rotated,
    text rotation itself is done by the drawing routines */
-void RotateTextLowLevel(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	pcb_uint8_t number;
 
@@ -455,7 +455,7 @@ void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	EraseText(Layer, Text);
 	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
-	RotateTextLowLevel(Text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+	pcb_text_rotate90(Text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
@@ -492,7 +492,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 				if (newline.Thickness < min_line_width)
 					newline.Thickness = min_line_width;
 
-				RotateLineLowLevel(&newline, 0, 0, Text->Direction);
+				pcb_line_rotate90(&newline, 0, 0, Text->Direction);
 
 				/* the labels of SMD objects on the bottom
 				 * side haven't been swapped yet, only their offset

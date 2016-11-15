@@ -606,7 +606,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		my = e->MarkY;
 
 		if (er != pr)
-			RotateElementLowLevel(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (er - pr + 4) % 4);
+			pcb_element_rotate90(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (er - pr + 4) % 4);
 
 		for (i = 0; i < MAX_ELEMENTNAMES; i++) {
 			pe->Name[i].X = e->Name[i].X - mx + pe->MarkX;

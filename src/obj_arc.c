@@ -523,7 +523,7 @@ void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* rotates an arc */
-void RotateArcLowLevel(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	pcb_coord_t save;
 
@@ -545,7 +545,7 @@ void *RotateArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	EraseArc(Arc);
 	r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
-	RotateArcLowLevel(Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+	pcb_arc_rotate90(Arc, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	r_insert_entry(Layer->arc_tree, (pcb_box_t *) Arc, 0);
 	DrawArc(Layer, Arc);
 	pcb_draw();

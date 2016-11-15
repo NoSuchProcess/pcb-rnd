@@ -237,7 +237,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	/* elements */
 	ELEMENT_LOOP(Buffer->Data);
 	{
-		RotateElementLowLevel(Buffer->Data, element, Buffer->X, Buffer->Y, Number);
+		pcb_element_rotate90(Buffer->Data, element, Buffer->X, Buffer->Y, Number);
 	}
 	END_LOOP;
 
@@ -245,28 +245,28 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	ALLLINE_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
-		RotateLineLowLevel(line, Buffer->X, Buffer->Y, Number);
+		pcb_line_rotate90(line, Buffer->X, Buffer->Y, Number);
 		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
 	ENDALL_LOOP;
 	ALLARC_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
-		RotateArcLowLevel(arc, Buffer->X, Buffer->Y, Number);
+		pcb_arc_rotate90(arc, Buffer->X, Buffer->Y, Number);
 		r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
 	ENDALL_LOOP;
 	ALLTEXT_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->text_tree, (pcb_box_t *) text);
-		RotateTextLowLevel(text, Buffer->X, Buffer->Y, Number);
+		pcb_text_rotate90(text, Buffer->X, Buffer->Y, Number);
 		r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 	}
 	ENDALL_LOOP;
 	ALLPOLYGON_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
-		RotatePolygonLowLevel(polygon, Buffer->X, Buffer->Y, Number);
+		pcb_poly_rotate90(polygon, Buffer->X, Buffer->Y, Number);
 		r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	}
 	ENDALL_LOOP;
@@ -296,7 +296,7 @@ void Freepcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	/* elements */
 	ELEMENT_LOOP(Buffer->Data);
 	{
-		FreeRotateElementLowLevel(Buffer->Data, element, Buffer->X, Buffer->Y, cosa, sina, angle);
+		Freepcb_element_rotate90(Buffer->Data, element, Buffer->X, Buffer->Y, cosa, sina, angle);
 	}
 	END_LOOP;
 

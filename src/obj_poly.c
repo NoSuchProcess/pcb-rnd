@@ -119,7 +119,7 @@ void pcb_poly_free_fields(pcb_polygon_t * polygon)
 /*** utility ***/
 
 /* rotates a polygon in 90 degree steps */
-void RotatePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	POLYGONPOINT_LOOP(Polygon);
 	{

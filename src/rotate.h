@@ -87,13 +87,13 @@ do { \
 } while(0)
 
 #define	ROTATE_PAD_LOWLEVEL(p,x0,y0,n)	\
-	RotateLineLowLevel(((pcb_line_t *) (p)),(x0),(y0),(n))
+	pcb_line_rotate90(((pcb_line_t *) (p)),(x0),(y0),(n))
 
 #define	ROTATE_TYPES	(PCB_TYPE_ELEMENT | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_ARC)
 
 
 void RotateBoxLowLevel(pcb_box_t *, pcb_coord_t, pcb_coord_t, unsigned);
-void RotatePolygonLowLevel(pcb_polygon_t *, pcb_coord_t, pcb_coord_t, unsigned);
+void pcb_poly_rotate90(pcb_polygon_t *, pcb_coord_t, pcb_coord_t, unsigned);
 void *RotateObject(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, unsigned);
 void RotateScreenObject(pcb_coord_t, pcb_coord_t, unsigned);
 

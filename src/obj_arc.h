@@ -52,12 +52,14 @@ void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc);
 void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);
 
 
+
 /*** Utility ***/
 void pcb_arc_bbox(pcb_arc_t *Arc);
+void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
+
 pcb_box_t *GetArcEnds(pcb_arc_t *Arc);
 void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);
 void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height);
-void RotateArcLowLevel(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 #define	MOVE_ARC_LOWLEVEL(a,dx,dy) \
 	{ \

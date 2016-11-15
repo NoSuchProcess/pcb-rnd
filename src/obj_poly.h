@@ -61,8 +61,8 @@ pcb_point_t *pcb_poly_point_new(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord
 pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon);
 void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
 
+void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 void MovePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
-void RotatePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 pcb_polygon_t *CopyPolygonLowLevel(pcb_polygon_t *Dest, pcb_polygon_t *Src);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
