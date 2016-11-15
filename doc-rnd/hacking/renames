@@ -561,3 +561,5 @@ CreateNewLineInElement -> pcb_element_line_new
 RemoveElement -> pcb_element_remove
 MoveElementLowLevel -> pcb_element_move
 MirrorElementCoordinates -> pcb_element_mirror
+MovePolygonLowLevel -> pcb_poly_move
+CopyPolygonLowLevel -> pcb_poly_copy

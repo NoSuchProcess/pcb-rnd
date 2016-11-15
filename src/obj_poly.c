@@ -206,7 +206,7 @@ pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon)
 }
 
 /* copies data from one polygon to another; 'Dest' has to exist */
-pcb_polygon_t *CopyPolygonLowLevel(pcb_polygon_t *Dest, pcb_polygon_t *Src)
+pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src)
 {
 	pcb_cardinal_t hole = 0;
 	pcb_cardinal_t n;
@@ -233,7 +233,7 @@ void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 	pcb_polygon_t *polygon;
 
 	polygon = pcb_poly_new(layer, Polygon->Flags);
-	CopyPolygonLowLevel(polygon, Polygon);
+	pcb_poly_copy(polygon, Polygon);
 
 	/* Update the polygon r-tree. Unlike similarly named functions for
 	 * other objects, CreateNewPolygon does not do this as it creates a
@@ -340,7 +340,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 }
 
 /* low level routine to move a polygon */
-void MovePolygonLowLevel(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
+void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 {
 	POLYGONPOINT_LOOP(Polygon);
 	{
@@ -357,7 +357,7 @@ void *MovePolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 		ErasePolygon(Polygon);
 	}
 	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
-	MovePolygonLowLevel(Polygon, ctx->move.dx, ctx->move.dy);
+	pcb_poly_move(Polygon, ctx->move.dx, ctx->move.dy);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	InitClip(PCB->Data, Layer, Polygon);
 	if (Layer->On) {
@@ -622,8 +622,8 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 	pcb_polygon_t *polygon;
 
 	polygon = pcb_poly_new(Layer, pcb_no_flags());
-	CopyPolygonLowLevel(polygon, Polygon);
-	MovePolygonLowLevel(polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
+	pcb_poly_copy(polygon, Polygon);
+	pcb_poly_move(polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	if (!Layer->polygon_tree)
 		Layer->polygon_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);

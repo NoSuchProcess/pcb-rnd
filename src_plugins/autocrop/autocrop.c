@@ -103,13 +103,13 @@ static void *MyMoveArcLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_arc_t
 	return Arc;
 }
 
-static void *MyMovePolygonLowLevel(pcb_data_t * Data, pcb_layer_t * Layer, pcb_polygon_t * Polygon, pcb_coord_t dx, pcb_coord_t dy)
+static void *Mypcb_poly_move(pcb_data_t * Data, pcb_layer_t * Layer, pcb_polygon_t * Polygon, pcb_coord_t dx, pcb_coord_t dy)
 {
 	if (Data) {
 		r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	}
 	/* move.c actually only moves points, note no Data/Layer args */
-	MovePolygonLowLevel(Polygon, dx, dy);
+	pcb_poly_move(Polygon, dx, dy);
 	if (Data) {
 		r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 		InitClip(Data, Layer, Polygon);
@@ -174,7 +174,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		 * XXX MoveElementLowLevel, it doesn't even handle layer
 		 * XXX tree activity.
 		 */
-		MyMovePolygonLowLevel(PCB->Data, layer, polygon, dx, dy);
+		Mypcb_poly_move(PCB->Data, layer, polygon, dx, dy);
 		AddObjectToMoveUndoList(PCB_TYPE_POLYGON, NULL, NULL, polygon, dx, dy);
 	}
 	ENDALL_LOOP;
