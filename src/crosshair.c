@@ -169,7 +169,7 @@ static void XORDrawAttachedArc(pcb_coord_t thick)
 	arc.StartAngle = sa;
 	arc.Delta = dir;
 	arc.Width = arc.Height = wy;
-	bx = GetArcEnds(&arc);
+	bx = pcb_arc_get_ends(&arc);
 	/*  sa = sa - 180; */
 	gui->draw_arc(Crosshair.GC, arc.X, arc.Y, wy + wid, wy + wid, sa, dir);
 	if (wid > pixel_slop) {

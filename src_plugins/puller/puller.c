@@ -415,7 +415,7 @@ static int Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	cx = the_arc->X;
 	cy = the_arc->Y;
 	if (arc_endpoint_is(the_arc, the_arc->StartAngle, x, y)) {
-		ChangeArcAngles(CURRENT, the_arc, the_arc->StartAngle + the_arc->Delta, -the_arc->Delta);
+		pcb_arc_set_angles(CURRENT, the_arc, the_arc->StartAngle + the_arc->Delta, -the_arc->Delta);
 	}
 	else if (!arc_endpoint_is(the_arc, the_arc->StartAngle + the_arc->Delta, x, y)) {
 #if TRACE1
@@ -461,7 +461,7 @@ static int Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		new_delta_angle -= 360;
 	if (new_delta_angle < -180)
 		new_delta_angle += 360;
-	ChangeArcAngles(CURRENT, the_arc, the_arc->StartAngle, new_delta_angle);
+	pcb_arc_set_angles(CURRENT, the_arc, the_arc->StartAngle, new_delta_angle);
 
 #if TRACE1
 	printf("arc now start %ld end %ld\n", the_arc->StartAngle, the_arc->StartAngle + new_delta_angle);
@@ -1210,7 +1210,7 @@ static void reverse_arc(pcb_arc_t *arc)
 	End etmp;
 
 #if 1
-	ChangeArcAngles(CURRENT, arc, arc->StartAngle + arc->Delta, -arc->Delta);
+	pcb_arc_set_angles(CURRENT, arc, arc->StartAngle + arc->Delta, -arc->Delta);
 #else
 	/* Likewise, see above.  */
 	arc->StartAngle += arc->Delta;
@@ -1982,7 +1982,7 @@ static void maybe_pull_1(pcb_line_t *line)
 		mark_arc_for_deletion(end_arc);
 		mark_line_for_deletion(start_line);
 		mark_line_for_deletion(end_line);
-		ChangeArcAngles(CURRENT, start_arc, start_arc->StartAngle, new_delta);
+		pcb_arc_set_angles(CURRENT, start_arc, start_arc->StartAngle, new_delta);
 		fix_arc_extra(start_arc, sarc_extra);
 		did_something++;
 		return;
@@ -2017,7 +2017,7 @@ static void maybe_pull_1(pcb_line_t *line)
 		if (new_delta * start_arc->Delta <= 0)
 			del_arc = 1;
 
-		ChangeArcAngles(CURRENT, start_arc, start_arc->StartAngle, new_delta);
+		pcb_arc_set_angles(CURRENT, start_arc, start_arc->StartAngle, new_delta);
 		fix_arc_extra(start_arc, sarc_extra);
 		pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point1),
 							 sarc_extra->end.x - start_line->Point1.X, sarc_extra->end.y - start_line->Point1.Y);
@@ -2083,7 +2083,7 @@ static void maybe_pull_1(pcb_line_t *line)
 			if (new_delta * end_arc->Delta <= 0)
 				del_arc = 1;
 
-			ChangeArcAngles(CURRENT, end_arc, end_arc->StartAngle, new_delta);
+			pcb_arc_set_angles(CURRENT, end_arc, end_arc->StartAngle, new_delta);
 			fix_arc_extra(end_arc, earc_extra);
 			pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
 								 earc_extra->end.x - start_line->Point2.X, earc_extra->end.y - start_line->Point2.Y);

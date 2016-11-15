@@ -141,6 +141,6 @@ int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta)
 		start += obj->obj.a->StartAngle;
 		delta += obj->obj.a->Delta;
 	}
-	ChangeArcAngles (CURRENT, obj->obj.a, start, delta);
+	pcb_arc_set_angles(CURRENT, obj->obj.a, start, delta);
 	return 0;
 }

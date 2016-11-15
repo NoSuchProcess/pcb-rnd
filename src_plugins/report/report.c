@@ -274,7 +274,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			}
 #endif
 			Arc = (pcb_arc_t *) ptr2;
-			box = GetArcEnds(Arc);
+			box = pcb_arc_get_ends(Arc);
 
 			report = pcb_strdup_printf("%m+ARC ID# %ld;  Flags:%s\n"
 									"CenterPoint(X,Y) = %$mD.\n"

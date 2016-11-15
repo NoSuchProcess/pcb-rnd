@@ -547,3 +547,6 @@ RotateTextLowLevel -> pcb_text_rotate90
 Freepcb_element_rotate90 -> pcb_element_rotate
 Freepcb_element_rotate90 -> pcb_element_rotate
 Freepcb_buffer_rotate -> pcb_buffer_free_rotate
+GetArcEnds -> pcb_arc_get_ends
+ChangeArcAngles -> pcb_arc_set_angles
+ChangeArcRadii -> pcb_arc_set_radii

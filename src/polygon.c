@@ -488,7 +488,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 		a->Delta = -a->Delta;
 	}
 	half = (thick + 1) / 2;
-	ends = GetArcEnds(a);
+	ends = pcb_arc_get_ends(a);
 	/* start with inner radius */
 	rx = MAX(a->Width - half, 0);
 	ry = MAX(a->Height - half, 0);

@@ -638,7 +638,7 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 				radius = arc->Width;
 				localArc.Height = radius;
 			}
-		boxResult = GetArcEnds(&localArc);
+		boxResult = pcb_arc_get_ends(&localArc);
 			if (arc->Delta == 360.0 || arc->Delta == -360.0 ) { /* it's a circle */
 				kicadArcShape = 3;
 			} else { /* it's an arc */
@@ -873,7 +873,7 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 		}
 
 		arclist_foreach(&element->Arc, &it, arc) {
-			boxResult = GetArcEnds(arc);
+			boxResult = pcb_arc_get_ends(arc);
 			arcStartX = boxResult->X1;
 			arcStartY = boxResult->Y1;
 			arcEndX = boxResult->X2; 
@@ -1131,7 +1131,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 
 		arclist_foreach(&element->Arc, &it, arc) {
 
-			pcb_box_t *boxResult = GetArcEnds(arc);
+			pcb_box_t *boxResult = pcb_arc_get_ends(arc);
 			arcStartX = boxResult->X1;
 			arcStartY = boxResult->Y1;
 			arcEndX = boxResult->X2; 

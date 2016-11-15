@@ -455,7 +455,7 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 			&& IsPointOnArc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
 		return (pcb_true);
 	/* check arc end points */
-	box = GetArcEnds(Arc);
+	box = pcb_arc_get_ends(Arc);
 	if (IsPointInPad(box->X1, box->Y1, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
 		return pcb_true;
 	if (IsPointInPad(box->X2, box->Y2, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))

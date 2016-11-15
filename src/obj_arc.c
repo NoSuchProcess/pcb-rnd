@@ -130,7 +130,7 @@ void pcb_arc_bbox(pcb_arc_t *Arc)
 	pcb_close_box(&Arc->BoundingBox);
 }
 
-pcb_box_t *GetArcEnds(pcb_arc_t *Arc)
+pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc)
 {
 	static pcb_box_t box;
 	box.X1 = Arc->X - Arc->Width * cos(Arc->StartAngle * PCB_M180);
@@ -141,7 +141,7 @@ pcb_box_t *GetArcEnds(pcb_arc_t *Arc)
 }
 
 /* doesn't these belong in change.c ?? */
-void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da)
+void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da)
 {
 	if (new_da >= 360) {
 		new_da = 360;
@@ -158,7 +158,7 @@ void ChangeArcAngles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_a
 }
 
 
-void ChangeArcRadii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height)
+void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height)
 {
 	RestoreToPolygon(PCB->Data, PCB_TYPE_ARC, Layer, a);
 	r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);

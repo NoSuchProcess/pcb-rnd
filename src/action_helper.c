@@ -96,7 +96,7 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		{
 			pcb_box_t *box;
 
-			box = GetArcEnds((pcb_arc_t *) ptr2);
+			box = pcb_arc_get_ends((pcb_arc_t *) ptr2);
 			*x = box->X1;
 			*y = box->Y1;
 			break;
@@ -663,7 +663,7 @@ void pcb_notify_mode(void)
 																												pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) {
 						pcb_box_t *bx;
 
-						bx = GetArcEnds(arc);
+						bx = pcb_arc_get_ends(arc);
 						Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = bx->X2;
 						Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = bx->Y2;
 						AddObjectToCreateUndoList(PCB_TYPE_ARC, CURRENT, arc, arc);
