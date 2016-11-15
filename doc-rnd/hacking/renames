@@ -533,3 +533,5 @@ pcb_via_new -> pcb_via_alloc
 pcb_pin_new -> pcb_pin_alloc
 pcb_via_new_on_board -> pcb_via_new
 pcb_pin_new_in_element -> pcb_element_pin_new
+pcb_rats_delete -> pcb_rats_destroy
+RemoveText -> pcb_text_destroy

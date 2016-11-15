@@ -434,7 +434,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		return 1;
 	}
 
-	pcb_rats_delete(pcb_false);
+	pcb_rats_destroy(pcb_false);
 	AddAllRats(pcb_false, NULL);
 
 #ifdef DEBUG

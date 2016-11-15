@@ -421,7 +421,7 @@ void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	return NULL;
 }
 
-void *RemoveText(pcb_layer_t *Layer, pcb_text_t *Text)
+void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_opctx_t ctx;
 

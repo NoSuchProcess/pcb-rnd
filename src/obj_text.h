@@ -45,12 +45,13 @@ struct pcb_text_s {
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer);
 void pcb_text_free(pcb_text_t * data);
 pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, unsigned Direction, int Scale, char *TextString, pcb_flag_t Flags);
+void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text);
+
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont);
 
 void SetTextBoundingBox(pcb_font_t *FontPtr, pcb_text_t *Text);
-void *RemoveText(pcb_layer_t *Layer, pcb_text_t *Text);
 void RotateTextLowLevel(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 #define	MOVE_TEXT_LOWLEVEL(t,dx,dy)                    \

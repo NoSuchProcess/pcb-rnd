@@ -42,6 +42,6 @@ pcb_rat_t *pcb_rat_alloc(pcb_data_t *data);
 void pcb_rat_free(pcb_rat_t *data);
 
 pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t group1, pcb_cardinal_t group2, pcb_coord_t Thickness, pcb_flag_t Flags);
-pcb_bool pcb_rats_delete(pcb_bool selected);
+pcb_bool pcb_rats_destroy(pcb_bool selected);
 
 #endif

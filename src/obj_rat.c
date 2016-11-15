@@ -97,7 +97,7 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coo
 
 /* DeleteRats - deletes rat lines only
  * can delete all rat lines, or only selected one */
-pcb_bool pcb_rats_delete(pcb_bool selected)
+pcb_bool pcb_rats_destroy(pcb_bool selected)
 {
 	pcb_opctx_t ctx;
 	pcb_bool changed = pcb_false;
