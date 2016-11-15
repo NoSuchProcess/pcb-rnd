@@ -54,13 +54,13 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
  * boxes are updated too.
  */
 #define pcb_pad_move(p,dx,dy) \
-	{ \
+	do { \
 		pcb_coord_t __dx__ = (dx), __dy__ = (dy); \
 		pcb_pad_t *__p__ = (p); \
 		PCB_MOVE((__p__)->Point1.X,(__p__)->Point1.Y,(__dx__),(__dy__)) \
 		PCB_MOVE((__p__)->Point2.X,(__p__)->Point2.Y,(__dx__),(__dy__)) \
 		pcb_pad_bbox((__p__)); \
-	}
+	} while(0)
 
 #define PAD_LOOP(element) do {                                      \
 	pcb_pad_t *pad;                                                     \

@@ -63,12 +63,12 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via);
 
 
 #define pcb_via_move(v,dx,dy) \
-	{ \
+	do { \
 		pcb_coord_t __dx__ = (dx), __dy__ = (dy); \
 		pcb_pin_t *__v__ = (v); \
 		PCB_MOVE((__v__)->X,(__v__)->Y,(__dx__),(__dy__)) \
 		PCB_BOX_MOVE_LOWLEVEL(&((__v__)->BoundingBox),(__dx__),(__dy__)); \
-	}
+	} while(0)
 
 #define pcb_pin_move(p,dx,dy) pcb_via_move(p, dx, dy)
 

@@ -54,13 +54,13 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text);
 void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
-#define	pcb_text_move(t,dx,dy)                                  \
-	{                                                                  \
+#define pcb_text_move(t,dx,dy)                                       \
+	do {                                                               \
 		pcb_coord_t __dx__ = (dx), __dy__ = (dy);                        \
 		pcb_text_t *__t__ = (t);                                         \
 		PCB_BOX_MOVE_LOWLEVEL(&((__t__)->BoundingBox), __dx__, __dy__);  \
 		PCB_MOVE((__t__)->X, (__t__)->Y, __dx__, __dy__);                \
-	}
+	} while(0)
 
 /* Determines if text is actually visible */
 #define pcb_text_is_visible(b, l, t)      ((l)->On)
