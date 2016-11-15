@@ -55,7 +55,7 @@ pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
 	return new_obj;
 }
 
-pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element)
+pcb_arc_t *pcb_element_arc_alloc(pcb_element_t *Element)
 {
 	pcb_arc_t *arc = calloc(sizeof(pcb_arc_t), 1);
 

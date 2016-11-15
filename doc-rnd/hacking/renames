@@ -520,3 +520,4 @@ CreateNewText -> pcb_text_new
 pcb_arc_new -> pcb_arc_alloc
 CreateNewArcOnLayer -> pcb_arc_new
 RemoveArc -> pcb_arc_destroy
+pcb_element_arc_new -> pcb_element_arc_alloc
