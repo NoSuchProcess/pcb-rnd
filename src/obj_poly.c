@@ -110,8 +110,8 @@ void pcb_poly_free_fields(pcb_polygon_t * polygon)
 	free(polygon->HoleIndex);
 
 	if (polygon->Clipped)
-		poly_Free(&polygon->Clipped);
-	poly_FreeContours(&polygon->NoHoles);
+		pcb_polyarea_free(&polygon->Clipped);
+	pcb_poly_contours_free(&polygon->NoHoles);
 
 	reset_obj_mem(pcb_polygon_t, polygon);
 }

@@ -182,7 +182,7 @@ static void add_noholes_polyarea(pcb_pline_t * pline, void *user_data)
 
 void ComputeNoHoles(pcb_polygon_t * poly)
 {
-	poly_FreeContours(&poly->NoHoles);
+	pcb_poly_contours_free(&poly->NoHoles);
 	if (poly->Clipped)
 		NoHolesPolygonDicer(poly, NULL, add_noholes_polyarea, poly);
 	else
@@ -240,10 +240,10 @@ pcb_polyarea_t *ContourToPoly(pcb_pline_t * contour)
 	pcb_polyarea_t *p;
 	pcb_poly_contour_pre(contour, pcb_true);
 	assert(contour->Flags.orient == PLF_DIR);
-	if (!(p = poly_Create()))
+	if (!(p = pcb_polyarea_create()))
 		return NULL;
-	pcb_poly_contour_include(p, contour);
-	assert(poly_Valid(p));
+	pcb_polyarea_contour_include(p, contour);
+	assert(pcb_poly_valid(p));
 	return p;
 }
 
@@ -255,7 +255,7 @@ static pcb_polyarea_t *original_poly(pcb_polygon_t * p)
 	pcb_vector_t v;
 	int hole = 0;
 
-	if ((np = poly_Create()) == NULL)
+	if ((np = pcb_polyarea_create()) == NULL)
 		return NULL;
 
 	/* first make initial polygon contour */
@@ -282,9 +282,9 @@ static pcb_polyarea_t *original_poly(pcb_polygon_t * p)
 				pcb_poly_contour_inv(contour);
 			assert(contour->Flags.orient == (hole ? PLF_INV : PLF_DIR));
 
-			pcb_poly_contour_include(np, contour);
+			pcb_polyarea_contour_include(np, contour);
 			contour = NULL;
-			assert(poly_Valid(np));
+			assert(pcb_poly_valid(np));
 
 			hole++;
 		}
@@ -703,21 +703,21 @@ static int Subtract(pcb_polyarea_t * np1, pcb_polygon_t * p, pcb_bool fnp)
 	assert(p);
 	if (!p->Clipped) {
 		if (fnp)
-			poly_Free(&np);
+			pcb_polyarea_free(&np);
 		return 1;
 	}
-	assert(poly_Valid(p->Clipped));
-	assert(poly_Valid(np));
+	assert(pcb_poly_valid(p->Clipped));
+	assert(pcb_poly_valid(np));
 	if (fnp)
 		x = poly_Boolean_free(p->Clipped, np, &merged, PBO_SUB);
 	else {
 		x = poly_Boolean(p->Clipped, np, &merged, PBO_SUB);
-		poly_Free(&p->Clipped);
+		pcb_polyarea_free(&p->Clipped);
 	}
-	assert(!merged || poly_Valid(merged));
+	assert(!merged || pcb_poly_valid(merged));
 	if (x != err_ok) {
 		fprintf(stderr, "Error while clipping PBO_SUB: %d\n", x);
-		poly_Free(&merged);
+		pcb_polyarea_free(&merged);
 		p->Clipped = NULL;
 		if (p->NoHoles)
 			printf("Just leaked in Subtract\n");
@@ -725,7 +725,7 @@ static int Subtract(pcb_polyarea_t * np1, pcb_polygon_t * p, pcb_bool fnp)
 		return -1;
 	}
 	p->Clipped = biggest(merged);
-	assert(!p->Clipped || poly_Valid(p->Clipped));
+	assert(!p->Clipped || pcb_poly_valid(p->Clipped));
 	if (!p->Clipped)
 		pcb_message(PCB_MSG_DEFAULT, "Polygon cleared out of existence near (%d, %d)\n",
 						(p->BoundingBox.X1 + p->BoundingBox.X2) / 2, (p->BoundingBox.Y1 + p->BoundingBox.Y2) / 2);
@@ -1062,18 +1062,18 @@ static int Unsubtract(pcb_polyarea_t * np1, pcb_polygon_t * p)
 	x = poly_Boolean_free(np, orig_poly, &clipped_np, PBO_ISECT);
 	if (x != err_ok) {
 		fprintf(stderr, "Error while clipping PBO_ISECT: %d\n", x);
-		poly_Free(&clipped_np);
+		pcb_polyarea_free(&clipped_np);
 		goto fail;
 	}
 
 	x = poly_Boolean_free(p->Clipped, clipped_np, &merged, PBO_UNITE);
 	if (x != err_ok) {
 		fprintf(stderr, "Error while clipping PBO_UNITE: %d\n", x);
-		poly_Free(&merged);
+		pcb_polyarea_free(&merged);
 		goto fail;
 	}
 	p->Clipped = biggest(merged);
-	assert(!p->Clipped || poly_Valid(p->Clipped));
+	assert(!p->Clipped || pcb_poly_valid(p->Clipped));
 	return 1;
 
 fail:
@@ -1176,12 +1176,12 @@ int InitClip(pcb_data_t *Data, pcb_layer_t *layer, pcb_polygon_t * p)
 	if (inhibit)
 		return 0;
 	if (p->Clipped)
-		poly_Free(&p->Clipped);
+		pcb_polyarea_free(&p->Clipped);
 	p->Clipped = original_poly(p);
-	poly_FreeContours(&p->NoHoles);
+	pcb_poly_contours_free(&p->NoHoles);
 	if (!p->Clipped)
 		return 0;
-	assert(poly_Valid(p->Clipped));
+	assert(pcb_poly_valid(p->Clipped));
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, p))
 		clearPoly(Data, layer, p, NULL, 0);
 	else
@@ -1560,11 +1560,11 @@ pcb_bool isects(pcb_polyarea_t * a, pcb_polygon_t *p, pcb_bool fr)
 {
 	pcb_polyarea_t *x;
 	pcb_bool ans;
-	ans = pcb_poly_touching(a, p->Clipped);
+	ans = pcb_polyarea_touching(a, p->Clipped);
 	/* argument may be register, so we must copy it */
 	x = a;
 	if (fr)
-		poly_Free(&x);
+		pcb_polyarea_free(&x);
 	return ans;
 }
 
@@ -1575,7 +1575,7 @@ pcb_bool IsPointInPolygon(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t r, pcb_polyg
 	pcb_vector_t v;
 	v[0] = X;
 	v[1] = Y;
-	if (pcb_poly_contour_inside(p->Clipped, v))
+	if (pcb_polyarea_contour_inside(p->Clipped, v))
 		return pcb_true;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, p)) {
@@ -1583,7 +1583,7 @@ pcb_bool IsPointInPolygon(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t r, pcb_polyg
 
 		/* Check all clipped-away regions that are now drawn because of full-poly */
 		for (tmp.Clipped = p->Clipped->f; tmp.Clipped != p->Clipped; tmp.Clipped = tmp.Clipped->f)
-			if (pcb_poly_contour_inside(tmp.Clipped, v))
+			if (pcb_polyarea_contour_inside(tmp.Clipped, v))
 				return pcb_true;
 	}
 
@@ -1600,7 +1600,7 @@ pcb_bool IsPointInPolygonIgnoreHoles(pcb_coord_t X, pcb_coord_t Y, pcb_polygon_t
 	pcb_vector_t v;
 	v[0] = X;
 	v[1] = Y;
-	return poly_InsideContour(p->Clipped->contours, v);
+	return pcb_poly_contour_inside(p->Clipped->contours, v);
 }
 
 pcb_bool IsRectangleInPolygon(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_polygon_t *p)
@@ -1623,7 +1623,7 @@ static void r_NoHolesPolygonDicer(pcb_polyarea_t * pa, void (*emit) (pcb_pline_t
 		/* Don't bother removing it from the pcb_polyarea_t's rtree
 		   since we're going to free the pcb_polyarea_t below anyway */
 		emit(p, user_data);
-		poly_Free(&pa);
+		pcb_polyarea_free(&pa);
 		return;
 	}
 	else {
@@ -1661,9 +1661,9 @@ void NoHolesPolygonDicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) 
 {
 	pcb_polyarea_t *main_contour, *cur, *next;
 
-	main_contour = poly_Create();
+	main_contour = pcb_polyarea_create();
 	/* copy the main poly only */
-	pcb_poly_copy1(main_contour, p->Clipped);
+	pcb_polyarea_copy1(main_contour, p->Clipped);
 	/* clip to the bounding box */
 	if (clip) {
 		pcb_polyarea_t *cbox = RectPoly(clip->X1, clip->X2, clip->Y1, clip->Y2);

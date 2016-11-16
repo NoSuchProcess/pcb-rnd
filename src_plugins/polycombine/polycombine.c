@@ -48,7 +48,7 @@ static pcb_polyarea_t *original_poly(pcb_polygon_t *p, pcb_bool *forward)
 
 	*forward = pcb_true;
 
-	if ((np = poly_Create()) == NULL)
+	if ((np = pcb_polyarea_create()) == NULL)
 		return NULL;
 
 	/* first make initial polygon contour */
@@ -79,9 +79,9 @@ static pcb_polyarea_t *original_poly(pcb_polygon_t *p, pcb_bool *forward)
 				pcb_poly_contour_inv(contour);
 			assert(contour->Flags.orient == (hole ? PLF_INV : PLF_DIR));
 
-			pcb_poly_contour_include(np, contour);
+			pcb_polyarea_contour_include(np, contour);
 			contour = NULL;
-			assert(poly_Valid(np));
+			assert(pcb_poly_valid(np));
 
 			hole++;
 		}
@@ -131,11 +131,11 @@ static pcb_bool PolygonContainsPolygon(pcb_polyarea_t *outer, pcb_polyarea_t *in
 {
 /*  int contours_isect;*/
 	/* Should check outer contours don't intersect? */
-/*  contours_isect = pcb_poly_touching(outer, inner);*/
+/*  contours_isect = pcb_polyarea_touching(outer, inner);*/
 	/* Cheat and assume simple single contour polygons for now */
 /*  return contours_isect ?
-           0 : poly_ContourInContour (outer->contours, inner->contours);*/
-	return poly_ContourInContour(outer->contours, inner->contours);
+           0 : pcb_poly_contour_in_contour(outer->contours, inner->contours);*/
+	return pcb_poly_contour_in_contour(outer->contours, inner->contours);
 }
 
 

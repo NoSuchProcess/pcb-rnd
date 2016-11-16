@@ -382,22 +382,22 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	fprintf(stderr, "hit! %p\n", (void *)line);
 	p[0] = line->Point1.X;
 	p[1] = line->Point1.Y;
-	if (poly_InsideContour(info->brush->contours, p)) {
+	if (pcb_poly_contour_inside(info->brush->contours, p)) {
 		pcb_fprintf(stderr, "\tinside1 %ms,%ms\n", p[0], p[1]);
 		inside++;
 	}
 	p[0] = line->Point2.X;
 	p[1] = line->Point2.Y;
-	if (poly_InsideContour(info->brush->contours, p)) {
+	if (pcb_poly_contour_inside(info->brush->contours, p)) {
 		pcb_fprintf(stderr, "\tinside2 %ms,%ms\n", p[0], p[1]);
 		inside++;
 	}
 	lp = LinePoly(line, line->Thickness);
-	if (!pcb_poly_touching(lp, info->brush)) {
+	if (!pcb_polyarea_touching(lp, info->brush)) {
 		/* not a factor */
 		return 0;
 	}
-	poly_Free(&lp);
+	pcb_polyarea_free(&lp);
 	if (inside) {
 		/* XXX not done!
 		   XXX if this is part of a series of lines passing
@@ -410,7 +410,7 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	 * around.  Use a very fine line.  XXX can still graze.
 	 */
 	lp = LinePoly(line, 1);
-	if (!pcb_poly_m_copy0(&copy, info->brush))
+	if (!pcb_polyarea_m_copy0(&copy, info->brush))
 		return 0;
 	r = poly_Boolean_free(copy, lp, &tmp, PBO_SUB);
 	if (r != err_ok) {
@@ -482,7 +482,7 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	if (info->line == NULL || (!nocentroid && (big - small) < info->centroid)) {
 		pcb_fprintf(stderr, "\tkeep it!\n");
 		if (info->smallest) {
-			poly_Free(&info->smallest);
+			pcb_polyarea_free(&info->smallest);
 		}
 		info->centroid = nocentroid ? DBL_MAX : (big - small);
 		info->side = side;
@@ -532,7 +532,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		if (found) {
 			expand = NULL;
 			MakeBypassingLines(info.smallest, info.layer, info.line, info.side, &expand);
-			poly_Free(&info.smallest);
+			pcb_polyarea_free(&info.smallest);
 			poly_Boolean_free(info.brush, expand, &info.brush, PBO_UNITE);
 		}
 	} while (found);

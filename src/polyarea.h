@@ -116,20 +116,20 @@ struct pcb_polyarea_s {
 	pcb_rtree_t *contour_tree;
 };
 
-pcb_bool pcb_poly_m_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * srcfst);
-void pcb_poly_m_include(pcb_polyarea_t ** list, pcb_polyarea_t * a);
+pcb_bool pcb_polyarea_m_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * srcfst);
+void pcb_polyarea_m_include(pcb_polyarea_t ** list, pcb_polyarea_t * a);
 
-pcb_bool pcb_poly_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src);
-pcb_bool pcb_poly_copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src);
+pcb_bool pcb_polyarea_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src);
+pcb_bool pcb_polyarea_copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src);
 
-pcb_bool pcb_poly_contour_include(pcb_polyarea_t * p, pcb_pline_t * c);
-pcb_bool pcb_poly_contour_exclide(pcb_polyarea_t * p, pcb_pline_t * c);
+pcb_bool pcb_polyarea_contour_include(pcb_polyarea_t * p, pcb_pline_t * c);
+pcb_bool pcb_polyarea_contour_exclide(pcb_polyarea_t * p, pcb_pline_t * c);
 
 
-pcb_bool pcb_poly_contour_check(pcb_pline_t * a);
+pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a);
 
-pcb_bool pcb_poly_contour_inside(pcb_polyarea_t * c, pcb_vector_t v0);
-pcb_bool pcb_poly_touching(pcb_polyarea_t * p1, pcb_polyarea_t * p2);
+pcb_bool pcb_polyarea_contour_inside(pcb_polyarea_t * c, pcb_vector_t v0);
+pcb_bool pcb_polyarea_touching(pcb_polyarea_t * p1, pcb_polyarea_t * p2);
 
 /**********************************************************************/
 
@@ -138,14 +138,14 @@ pcb_bool pcb_poly_touching(pcb_polyarea_t * p1, pcb_polyarea_t * p2);
 /* checks whether point lies within contour
 independently of its orientation */
 
-int poly_InsideContour(pcb_pline_t * c, pcb_vector_t v);
-int poly_ContourInContour(pcb_pline_t * poly, pcb_pline_t * inner);
-pcb_polyarea_t *poly_Create(void);
+int pcb_poly_contour_inside(pcb_pline_t * c, pcb_vector_t v);
+int pcb_poly_contour_in_contour(pcb_pline_t * poly, pcb_pline_t * inner);
+pcb_polyarea_t *pcb_polyarea_create(void);
 
-void poly_Free(pcb_polyarea_t ** p);
-void poly_Init(pcb_polyarea_t * p);
-void poly_FreeContours(pcb_pline_t ** pl);
-pcb_bool poly_Valid(pcb_polyarea_t * p);
+void pcb_polyarea_free(pcb_polyarea_t ** p);
+void pcb_polyarea_init(pcb_polyarea_t * p);
+void pcb_poly_contours_free(pcb_pline_t ** pl);
+pcb_bool pcb_poly_valid(pcb_polyarea_t * p);
 
 enum pcb_poly_bool_op_e {
 	PBO_UNITE,

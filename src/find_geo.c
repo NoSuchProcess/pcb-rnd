@@ -638,9 +638,9 @@ static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 
 		pl1 = PinPoly(PV1, PIN_SIZE(PV1) + Bloat, 0);
 		pl2 = PinPoly(PV2, PIN_SIZE(PV2) + Bloat, 0);
-		ret = pcb_poly_touching(pl1, pl2);
-		poly_Free(&pl1);
-		poly_Free(&pl2);
+		ret = pcb_polyarea_touching(pl1, pl2);
+		pcb_polyarea_free(&pl1);
+		pcb_polyarea_free(&pl2);
 		return ret;
 	}
 
@@ -684,9 +684,9 @@ pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 
 			pl = PinPoly(PV, PIN_SIZE(PV), 0);
 			lp = LinePoly(Line, Line->Thickness + Bloat);
-			ret = pcb_poly_touching(lp, pl);
-			poly_Free(&pl);
-			poly_Free(&lp);
+			ret = pcb_polyarea_touching(lp, pl);
+			pcb_polyarea_free(&pl);
+			pcb_polyarea_free(&lp);
 			return ret;
 		}
 

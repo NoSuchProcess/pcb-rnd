@@ -211,7 +211,7 @@ void pcb_pin_bbox(pcb_pin_t *Pin)
 	if ((PCB_FLAG_SQUARE_GET(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))) {
 		pcb_polyarea_t *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
 		poly_bbox(p, &Pin->BoundingBox);
-		poly_Free(&p);
+		pcb_polyarea_free(&p);
 	}
 
 	/* the bounding box covers the extent of influence

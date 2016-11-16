@@ -69,7 +69,7 @@ static void fill_contour_cb(pcb_pline_t * pl, void *user_data)
 	pcb_pline_t *local_pl = pl;
 
 	fill_contour(gc, pl);
-	poly_FreeContours(&local_pl);
+	pcb_poly_contours_free(&local_pl);
 }
 
 static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const pcb_box_t * clip_box)
@@ -83,8 +83,8 @@ static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const pcb_bo
 
 	clip_poly = RectPoly(clip_box->X1, clip_box->X2, clip_box->Y1, clip_box->Y2);
 	pcb_poly_contour_copy(&pl_copy, pl);
-	piece_poly = poly_Create();
-	pcb_poly_contour_include(piece_poly, pl_copy);
+	piece_poly = pcb_polyarea_create();
+	pcb_polyarea_contour_include(piece_poly, pl_copy);
 	x = poly_Boolean_free(piece_poly, clip_poly, &clipped_pieces, PBO_ISECT);
 	if (x != err_ok || clipped_pieces == NULL)
 		return;
@@ -95,7 +95,7 @@ static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const pcb_bo
 		fill_contour(gc, draw_piece->contours);
 	}
 	while ((draw_piece = draw_piece->f) != clipped_pieces);
-	poly_Free(&clipped_pieces);
+	pcb_polyarea_free(&clipped_pieces);
 }
 
 /* If at least 50% of the bounding box of the polygon is on the screen,
