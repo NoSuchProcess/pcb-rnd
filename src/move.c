@@ -119,7 +119,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 
 	AddObjectToMoveUndoList(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 	ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 
 	pcb_draw_inhibit_dec();
 	pcb_draw();
@@ -141,7 +141,7 @@ void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_la
 	ctx.move.more_to_come = enmasse;
 
 	result = pcb_object_operation(&MoveToLayerFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	return (result);
 }
 

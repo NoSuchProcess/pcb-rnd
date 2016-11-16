@@ -867,7 +867,7 @@ static pcb_bool UndoNetlistChange(UndoListTypePtr Entry)
  *
  * returns the bitfield for the types of operations that were undone
  */
-int Undo(pcb_bool draw)
+int pcb_undo(pcb_bool draw)
 {
 	UndoListTypePtr ptr;
 	int Types = 0;
@@ -880,7 +880,7 @@ int Undo(pcb_bool draw)
 	andDraw = draw;
 
 	if (Serial == 0) {
-		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Attempt to Undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
+		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Attempt to pcb_undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
 		return 0;
 	}
 
@@ -898,7 +898,7 @@ int Undo(pcb_bool draw)
 							"       Please save your work and report this bug.\n"), ptr->Serial, Serial);
 
 	/* It is likely that the serial number got corrupted through some bad
-		 * use of the SaveUndoSerialNumber() / RestoreUndoSerialNumber() APIs.
+		 * use of the pcb_undo_save_serial() / pcb_undo_restore_serial() APIs.
 		 *
 		 * Reset the serial number to be consistent with that of the last
 		 * operation on the undo stack in the hope that this might clear
@@ -908,7 +908,7 @@ int Undo(pcb_bool draw)
 		return 0;
 	}
 
-	LockUndo();										/* lock undo module to prevent from loops */
+	pcb_undo_lock();										/* lock undo module to prevent from loops */
 
 	/* Loop over all entries with the correct serial number */
 	for (; UndoN && ptr->Serial == Serial; ptr--, UndoN--, RedoN++) {
@@ -918,7 +918,7 @@ int Undo(pcb_bool draw)
 		Types |= undid;
 	}
 
-	UnlockUndo();
+	pcb_undo_unlock();
 
 	if (error_undoing)
 		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Failed to undo some operations\n"));
@@ -1053,7 +1053,7 @@ static int PerformUndo(UndoListTypePtr ptr)
  *
  * returns the number of operations redone
  */
-int Redo(pcb_bool draw)
+int pcb_redo(pcb_bool draw)
 {
 	UndoListTypePtr ptr;
 	int Types = 0;
@@ -1073,7 +1073,7 @@ int Redo(pcb_bool draw)
 							"       Please save your work and report this bug.\n"), ptr->Serial, Serial);
 
 		/* It is likely that the serial number got corrupted through some bad
-		 * use of the SaveUndoSerialNumber() / RestoreUndoSerialNumber() APIs.
+		 * use of the pcb_undo_save_serial() / pcb_undo_restore_serial() APIs.
 		 *
 		 * Reset the serial number to be consistent with that of the first
 		 * operation on the redo stack in the hope that this might clear
@@ -1083,7 +1083,7 @@ int Redo(pcb_bool draw)
 		return 0;
 	}
 
-	LockUndo();										/* lock undo module to prevent from loops */
+	pcb_undo_lock();										/* lock undo module to prevent from loops */
 
 	/* and loop over all entries with the correct serial number */
 	for (; RedoN && ptr->Serial == Serial; ptr++, UndoN++, RedoN--) {
@@ -1096,7 +1096,7 @@ int Redo(pcb_bool draw)
 	/* Make next serial number current */
 	Serial++;
 
-	UnlockUndo();
+	pcb_undo_unlock();
 
 	if (error_undoing)
 		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Failed to redo some operations\n"));
@@ -1110,7 +1110,7 @@ int Redo(pcb_bool draw)
 /* ---------------------------------------------------------------------------
  * restores the serial number of the undo list
  */
-void RestoreUndoSerialNumber(void)
+void pcb_undo_restore_serial(void)
 {
 	if (added_undo_between_increment_and_restore)
 		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Operations were added to the Undo stack with an incorrect serial number\n"));
@@ -1122,7 +1122,7 @@ void RestoreUndoSerialNumber(void)
 /* ---------------------------------------------------------------------------
  * saves the serial number of the undo list
  */
-void SaveUndoSerialNumber(void)
+void pcb_undo_save_serial(void)
 {
 	Bumped = pcb_false;
 	between_increment_and_restore = pcb_false;
@@ -1135,7 +1135,7 @@ void SaveUndoSerialNumber(void)
  * it's not done automatically because some operations perform more
  * than one request with the same serial #
  */
-void IncrementUndoSerialNumber(void)
+void pcb_undo_inc_serial(void)
 {
 	if (!Locked) {
 		/* Set the changed flag if anything was added prior to this bump */
@@ -1150,7 +1150,7 @@ void IncrementUndoSerialNumber(void)
 /* ---------------------------------------------------------------------------
  * releases memory of the undo- and remove list
  */
-void ClearUndoList(pcb_bool Force)
+void pcb_undo_clear_list(pcb_bool Force)
 {
 	UndoListTypePtr undo;
 
@@ -1599,7 +1599,7 @@ void AddNetlistLibToUndoList(pcb_lib_t *lib)
 /* ---------------------------------------------------------------------------
  * set lock flag
  */
-void LockUndo(void)
+void pcb_undo_lock(void)
 {
 	Locked = pcb_true;
 }
@@ -1607,7 +1607,7 @@ void LockUndo(void)
 /* ---------------------------------------------------------------------------
  * reset lock flag
  */
-void UnlockUndo(void)
+void pcb_undo_unlock(void)
 {
 	Locked = pcb_false;
 }
@@ -1615,7 +1615,7 @@ void UnlockUndo(void)
 /* ---------------------------------------------------------------------------
  * return undo lock state
  */
-pcb_bool Undoing(void)
+pcb_bool pcb_undoing(void)
 {
 	return (Locked);
 }

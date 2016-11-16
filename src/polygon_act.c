@@ -71,7 +71,7 @@ static int ActionMorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_co
 				if ((type = pcb_search_screen(x, y, PCB_TYPE_POLYGON, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_poly_morph((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr3);
 					pcb_draw();
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 				}
 				break;
 			}
@@ -84,7 +84,7 @@ static int ActionMorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_co
 			}
 			ENDALL_LOOP;
 			pcb_draw();
-			IncrementUndoSerialNumber();
+			pcb_undo_inc_serial();
 			break;
 		}
 	}

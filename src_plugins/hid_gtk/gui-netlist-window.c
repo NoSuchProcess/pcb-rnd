@@ -259,7 +259,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	/* Now just toggle a select of the node on the layout
 	 */
 	toggle_pin_selected(node);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 
 	/* And lead the user to the location */
 	if (pcb_rat_seek_pad(node, &conn, pcb_false))
@@ -509,7 +509,7 @@ static void netlist_select_cb(GtkWidget * widget, gpointer data)
 	pcb_select_connection(select_flag);
 	pcb_reset_conns(pcb_false);
 	pcb_conn_lookup_uninit();
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	pcb_draw();
 }
 

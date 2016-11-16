@@ -303,7 +303,7 @@ static int teardrops(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	gui->invalidate_all();
 
 	if (new_arcs)
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 
 	return 0;
 }

@@ -378,7 +378,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			conf_toggle_editor(auto_drc);
 			if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
 				if (pcb_reset_conns(pcb_true)) {
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 					pcb_draw();
 				}
 				if (Crosshair.AttachedLine.State != STATE_FIRST)
@@ -479,7 +479,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					}
 					END_LOOP;
 					pcb_board_set_changed_flag(pcb_true);
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 					pcb_draw();
 					break;
 
@@ -491,7 +491,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, ptr2, ptr3);
 					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					pcb_board_set_changed_flag(pcb_true);
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 					pcb_draw();
 					break;
 
@@ -503,7 +503,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, ptr2, ptr3);
 					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, (pcb_pad_t *) ptr2);
 					pcb_board_set_changed_flag(pcb_true);
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 					pcb_draw();
 					break;
 				case PCB_TYPE_VIA:
@@ -514,7 +514,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					AddObjectToFlagUndoList(PCB_TYPE_VIA, ptr1, ptr2, ptr3);
 					PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, (pcb_pin_t *) ptr2);
 					pcb_board_set_changed_flag(pcb_true);
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 					pcb_draw();
 					break;
 				}
@@ -922,7 +922,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 					PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, (pcb_element_t *) ptr2);
 					DrawElementName((pcb_element_t *) ptr2);
 					pcb_draw();
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 				}
 				break;
 			}
@@ -944,7 +944,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 				END_LOOP;
 				if (changed) {
 					pcb_draw();
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 				}
 			}
 		}

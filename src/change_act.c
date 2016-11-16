@@ -272,7 +272,7 @@ static int ActionChangeHole(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pin_change_hole((pcb_pin_t *) ptr3))
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 				break;
 			}
 
@@ -314,7 +314,7 @@ static int ActionChangePaste(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pad_change_paste((pcb_pad_t *) ptr3))
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 				break;
 			}
 
@@ -348,14 +348,14 @@ with the same arguments. If any of them did not fail, return success.
 static int ActionChangeSizes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int a, b, c;
-	SaveUndoSerialNumber();
+	pcb_undo_save_serial();
 	a = ActionChangeSize(argc, argv, x, y);
-	RestoreUndoSerialNumber();
+	pcb_undo_restore_serial();
 	b = ActionChange2ndSize(argc, argv, x, y);
-	RestoreUndoSerialNumber();
+	pcb_undo_restore_serial();
 	c = ActionChangeClearSize(argc, argv, x, y);
-	RestoreUndoSerialNumber();
-	IncrementUndoSerialNumber();
+	pcb_undo_restore_serial();
+	pcb_undo_inc_serial();
 	return !(!a || !b || !c);
 }
 
@@ -611,7 +611,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 		if (defer_updates)
 			defer_needs_update = 1;
 		else {
-			IncrementUndoSerialNumber();
+			pcb_undo_inc_serial();
 			gui->invalidate_all();
 		}
 	}
@@ -659,7 +659,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-					SaveUndoSerialNumber();
+					pcb_undo_save_serial();
 					if ((pinnums != NULL) && (strcasecmp(pinnums, "Number") == 0))
 						pinnum = 1;
 					else
@@ -670,7 +670,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 							pcb_rubberband_t *ptr;
 							int i;
 
-							RestoreUndoSerialNumber();
+							pcb_undo_restore_serial();
 							Crosshair.AttachedObject.RubberbandN = 0;
 							pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
 							ptr = Crosshair.AttachedObject.Rubberband;
@@ -679,7 +679,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 									EraseRat((pcb_rat_t *) ptr->Line);
 								MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
 							}
-							IncrementUndoSerialNumber();
+							pcb_undo_inc_serial();
 							pcb_draw();
 						}
 					}
@@ -1188,7 +1188,7 @@ static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			case F_Object:
 				if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind);
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 					pcb_draw();
 				}
 				break;

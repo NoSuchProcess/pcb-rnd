@@ -2603,7 +2603,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 	if (PCB_NSTRCMP(arg, "splitlines") == 0) {
 		if (canonicalize_lines())
-			IncrementUndoSerialNumber();
+			pcb_undo_inc_serial();
 		return 0;
 	}
 
@@ -2673,7 +2673,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 	check(0, 0);
 	if (saved)
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	return 0;
 }
 

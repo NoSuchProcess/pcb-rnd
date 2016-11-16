@@ -201,7 +201,7 @@ pcb_bool pcb_select_object(void)
 		break;
 	}
 	pcb_draw();
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	return (changed);
 }
 
@@ -446,7 +446,7 @@ do { \
 
 	if (changed) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 
 	if (len == NULL) {
@@ -713,7 +713,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	}
 	END_LOOP;
 	if (Reset && changed)
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	return (changed);
 }
 
@@ -1002,7 +1002,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 		re_sei_free(regex);
 
 	if (changed) {
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		pcb_draw();
 	}
 	if (pat != NULL)

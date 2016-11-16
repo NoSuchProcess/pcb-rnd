@@ -865,3 +865,12 @@ stub_DrawFab_overhang -> pcb_stub_draw_fab_overhang
 stub_DrawFab -> pcb_stub_draw_fab
 stub_rat_found_short -> pcb_stub_rat_found_short
 stub_rat_proc_shorts -> pcb_stub_rat_proc_shorts
+Undo -> pcb_undo
+Redo -> pcb_redo
+IncrementUndoSerialNumber -> pcb_undo_inc_serial
+SaveUndoSerialNumber -> pcb_undo_save_serial
+RestoreUndoSerialNumber -> pcb_undo_restore_serial
+ClearUndoList -> pcb_undo_clear_list
+LockUndo -> pcb_undo_lock
+UnlockUndo -> pcb_undo_unlock
+Undoing -> pcb_undoing

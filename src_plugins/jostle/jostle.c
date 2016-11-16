@@ -536,7 +536,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	} while (found);
 	pcb_board_set_changed_flag(pcb_true);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	return 0;
 }
 

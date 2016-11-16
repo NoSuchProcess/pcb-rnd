@@ -125,7 +125,7 @@ static void nbcb_select_common(pcb_lib_menu_t *net, int pos, int select_flag)
 	pcb_select_connection(select_flag);
 	pcb_reset_conns(pcb_false);
 	pcb_conn_lookup_uninit();
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	pcb_draw();
 }
 

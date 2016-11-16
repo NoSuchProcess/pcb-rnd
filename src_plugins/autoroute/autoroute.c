@@ -4702,15 +4702,15 @@ donerouting:
 	pcb_message(PCB_MSG_DEFAULT, "Total added wire length = %$mS, %d vias added\n", (pcb_coord_t) total_wire_length, total_via_count);
 	DestroyRouteData(&rd);
 	if (changed) {
-		SaveUndoSerialNumber();
+		pcb_undo_save_serial();
 
 		/* optimize rats, we've changed connectivity a lot. */
 		pcb_rats_destroy(pcb_false /*all rats */ );
-		RestoreUndoSerialNumber();
+		pcb_undo_restore_serial();
 		pcb_rat_add_all(pcb_false /*all rats */ , NULL);
-		RestoreUndoSerialNumber();
+		pcb_undo_restore_serial();
 
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 
 		pcb_redraw();
 	}

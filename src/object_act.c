@@ -291,7 +291,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 	END_LOOP;
 
 	/* done with our action so increment the undo # */
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 
 	pcb_redraw();
 	pcb_board_set_changed_flag(pcb_true);
@@ -330,7 +330,7 @@ static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 				element = (pcb_element_t *) ptrtmp;
 				pcb_element_change_side(element, 2 * Crosshair.Y - PCB->MaxHeight);
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				pcb_draw();
 			}
 			break;
@@ -756,7 +756,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			END_LOOP;
 
 			if (changed) {
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
@@ -781,7 +781,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			}
 			END_LOOP;
 			if (changed) {
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
@@ -797,10 +797,10 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					pcb_element_smash_buffer(PCB_PASTEBUFFER);
 					PCB_PASTEBUFFER->X = 0;
 					PCB_PASTEBUFFER->Y = 0;
-					SaveUndoSerialNumber();
+					pcb_undo_save_serial();
 					pcb_erase_obj(PCB_TYPE_ELEMENT, ptr1, ptr1);
 					MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
-					RestoreUndoSerialNumber();
+					pcb_undo_restore_serial();
 					pcb_buffer_copy_to_layout(0, 0);
 					pcb_buffer_set_number(Note.Buffer);
 					pcb_board_set_changed_flag(pcb_true);
@@ -846,7 +846,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	}
 	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 
-	SaveUndoSerialNumber();
+	pcb_undo_save_serial();
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PCB_PIN_LOOP(element);
@@ -855,7 +855,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				continue;
 			if (pin->Mask < pin->Thickness + value) {
 				pcb_chg_obj_mask_size(PCB_TYPE_PIN, element, pin, 0, pin->Thickness + value, 1);
-				RestoreUndoSerialNumber();
+				pcb_undo_restore_serial();
 			}
 		}
 		END_LOOP;
@@ -865,7 +865,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				continue;
 			if (pad->Mask < pad->Thickness + value) {
 				pcb_chg_obj_mask_size(PCB_TYPE_PAD, element, pad, 0, pad->Thickness + value, 1);
-				RestoreUndoSerialNumber();
+				pcb_undo_restore_serial();
 			}
 		}
 		END_LOOP;
@@ -877,12 +877,12 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			continue;
 		if (via->Mask && via->Mask < via->Thickness + value) {
 			pcb_chg_obj_mask_size(PCB_TYPE_VIA, via, 0, 0, via->Thickness + value, 1);
-			RestoreUndoSerialNumber();
+			pcb_undo_restore_serial();
 		}
 	}
 	END_LOOP;
-	RestoreUndoSerialNumber();
-	IncrementUndoSerialNumber();
+	pcb_undo_restore_serial();
+	pcb_undo_inc_serial();
 	return 0;
 }
 
@@ -920,7 +920,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	}
 	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
 
-	SaveUndoSerialNumber();
+	pcb_undo_save_serial();
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PCB_PIN_LOOP(element);
@@ -929,7 +929,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				continue;
 			if (pin->Clearance < value) {
 				pcb_chg_obj_clear_size(PCB_TYPE_PIN, element, pin, 0, value, 1);
-				RestoreUndoSerialNumber();
+				pcb_undo_restore_serial();
 			}
 		}
 		END_LOOP;
@@ -939,7 +939,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				continue;
 			if (pad->Clearance < value) {
 				pcb_chg_obj_clear_size(PCB_TYPE_PAD, element, pad, 0, value, 1);
-				RestoreUndoSerialNumber();
+				pcb_undo_restore_serial();
 			}
 		}
 		END_LOOP;
@@ -951,7 +951,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			continue;
 		if (via->Clearance < value) {
 			pcb_chg_obj_clear_size(PCB_TYPE_VIA, via, 0, 0, value, 1);
-			RestoreUndoSerialNumber();
+			pcb_undo_restore_serial();
 		}
 	}
 	END_LOOP;
@@ -961,7 +961,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			continue;
 		if (line->Clearance < value) {
 			pcb_chg_obj_clear_size(PCB_TYPE_LINE, layer, line, 0, value, 1);
-			RestoreUndoSerialNumber();
+			pcb_undo_restore_serial();
 		}
 	}
 	ENDALL_LOOP;
@@ -971,12 +971,12 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			continue;
 		if (arc->Clearance < value) {
 			pcb_chg_obj_clear_size(PCB_TYPE_ARC, layer, arc, 0, value, 1);
-			RestoreUndoSerialNumber();
+			pcb_undo_restore_serial();
 		}
 	}
 	ENDALL_LOOP;
-	RestoreUndoSerialNumber();
-	IncrementUndoSerialNumber();
+	pcb_undo_restore_serial();
+	pcb_undo_inc_serial();
 	return 0;
 }
 

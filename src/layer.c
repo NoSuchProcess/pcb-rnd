@@ -929,7 +929,7 @@ int pcb_layer_move(int old_index, int new_index)
 	int saved_group;
 
 	AddLayerChangeToUndoList(old_index, new_index);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 
 	if (old_index < -1 || old_index >= max_copper_layer) {
 		pcb_message(PCB_MSG_DEFAULT, "Invalid old layer %d for move: must be -1..%d\n", old_index, max_copper_layer - 1);

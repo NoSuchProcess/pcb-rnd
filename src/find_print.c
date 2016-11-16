@@ -233,7 +233,7 @@ void pcb_lookup_unused_pins(FILE * FP)
 	if (conf_core.editor.beep_when_finished)
 		gui->beep();
 	pcb_conn_lookup_uninit();
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	User = pcb_false;
 	pcb_draw();
 }
@@ -253,7 +253,7 @@ void pcb_lookup_element_conns(pcb_element_t *Element, FILE * FP)
 	if (conf_core.editor.beep_when_finished)
 		gui->beep();
 	pcb_conn_lookup_uninit();
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	User = pcb_false;
 	pcb_draw();
 }

@@ -8123,12 +8123,12 @@ static int toporouter(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 	toporouter_export(r);
 	toporouter_free(r);
 
-	SaveUndoSerialNumber();
+	pcb_undo_save_serial();
 	pcb_rats_destroy(pcb_false);
-	RestoreUndoSerialNumber();
+	pcb_undo_restore_serial();
 	pcb_rat_add_all(pcb_false, NULL);
-	RestoreUndoSerialNumber();
-	IncrementUndoSerialNumber();
+	pcb_undo_restore_serial();
+	pcb_undo_inc_serial();
 	pcb_redraw();
 
 	return 0;
@@ -8220,7 +8220,7 @@ static int escape(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 	END_LOOP;
 	END_LOOP;
 
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	pcb_draw();
 	return 0;
 }

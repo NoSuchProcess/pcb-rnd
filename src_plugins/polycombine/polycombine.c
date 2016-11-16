@@ -314,7 +314,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	/* Now perform a traversal of the tree, computing a polygon */
 	res = compute_polygon_recursive(root, NULL);
 
-	SaveUndoSerialNumber();
+	pcb_undo_save_serial();
 
 	/* Second pass to remove the input polygons */
 	PCB_POLY_VISIBLE_LOOP(PCB->Data);
@@ -332,8 +332,8 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 	/* Now de-construct the resulting polygon into raw PCB polygons */
 	pcb_poly_to_polygons_on_layer(PCB->Data, Layer, res, pcb_strflg_board_s2f("clearpoly", NULL));
-	RestoreUndoSerialNumber();
-	IncrementUndoSerialNumber();
+	pcb_undo_restore_serial();
+	pcb_undo_inc_serial();
 	pcb_draw();
 
 	return 0;

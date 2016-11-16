@@ -437,7 +437,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	END_LOOP;
 	if (changed) {
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		pcb_redraw();
 		pcb_board_set_changed_flag(1);
 	}
@@ -609,7 +609,7 @@ static int distribute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 	if (changed) {
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		pcb_redraw();
 		pcb_board_set_changed_flag(1);
 	}

@@ -1200,7 +1200,7 @@ pcb_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_polygon_t *Polygo
 	pcb_line_t line;
 	pcb_bool changed = pcb_false;
 
-	if (Undoing())
+	if (pcb_undoing())
 		return (pcb_false);
 
 	for (n = 0; n < Polygon->PointN; n++) {
@@ -1357,7 +1357,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 
 	/* add to undo list */
 	AddObjectToCreateUndoList(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 }
 
 /* find polygon holes in range, then call the callback function for
@@ -1745,7 +1745,7 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_polygon_t *poly)
 	}
 	while (p != start);
 	inhibit = pcb_false;
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	return many;
 }
 

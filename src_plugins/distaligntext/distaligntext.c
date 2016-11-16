@@ -353,7 +353,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	default:
 		PCB_AFAIL(aligntext);
 	}
-	SaveUndoSerialNumber();
+	pcb_undo_save_serial();
 	/* find the final alignment coordinate using the above options */
 	q = reference_coord(K_aligntext, Crosshair.X, Crosshair.Y, dir, point, reference);
 	/* move all selected elements to the new coordinate */
@@ -414,8 +414,8 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	ENDALL_LOOP;
 	if (changed) {
-		RestoreUndoSerialNumber();
-		IncrementUndoSerialNumber();
+		pcb_undo_restore_serial();
+		pcb_undo_inc_serial();
 		pcb_redraw();
 		pcb_board_set_changed_flag(pcb_true);
 	}
@@ -529,7 +529,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	default:
 		PCB_AFAIL(distributetext);
 	}
-	SaveUndoSerialNumber();
+	pcb_undo_save_serial();
 	/* build list of texts in orthogonal axis order */
 	sort_texts_by_pos(K_distributetext, dir, point);
 	/* find the endpoints given the above options */
@@ -605,8 +605,8 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		}
 	}
 	if (changed) {
-		RestoreUndoSerialNumber();
-		IncrementUndoSerialNumber();
+		pcb_undo_restore_serial();
+		pcb_undo_inc_serial();
 		pcb_redraw();
 		pcb_board_set_changed_flag(pcb_true);
 	}

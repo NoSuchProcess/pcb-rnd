@@ -363,7 +363,7 @@ pcb_bool pcb_chg_selected_thermals(int types, int therm_style)
 	change = pcb_selected_operation(&ChangeThermalFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -385,7 +385,7 @@ pcb_bool pcb_chg_selected_size(int types, pcb_coord_t Difference, pcb_bool fixIt
 	change = pcb_selected_operation(&ChangeSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -410,7 +410,7 @@ pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool
 		change = pcb_selected_operation(&ChangeClearSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -432,7 +432,7 @@ pcb_bool pcb_chg_selected_2nd_size(int types, pcb_coord_t Difference, pcb_bool f
 	change = pcb_selected_operation(&Change2ndSizeFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -451,7 +451,7 @@ pcb_bool pcb_chg_selected_join(int types)
 	change = pcb_selected_operation(&ChangeJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -470,7 +470,7 @@ pcb_bool pcb_set_selected_join(int types)
 	change = pcb_selected_operation(&SetJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -489,7 +489,7 @@ pcb_bool pcb_clr_selected_join(int types)
 	change = pcb_selected_operation(&ClrJoinFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -508,7 +508,7 @@ pcb_bool pcb_chg_selected_nonetlist(int types)
 	change = pcb_selected_operation(&ChangeNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -528,7 +528,7 @@ pcb_bool SetSelectedNonetlist(int types)
 	change = pcb_selected_operation(&SetNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -547,7 +547,7 @@ pcb_bool ClrSelectedNonetlist(int types)
 	change = pcb_selected_operation(&ClrNonetlistFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -567,7 +567,7 @@ pcb_bool pcb_chg_selected_square(int types)
 	change = pcb_selected_operation(&ChangeSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -589,7 +589,7 @@ pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference,
 	change = pcb_selected_operation(&ChangeAngleFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -611,7 +611,7 @@ pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference
 	change = pcb_selected_operation(&ChangeRadiusFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -631,7 +631,7 @@ pcb_bool pcb_set_selected_square(int types)
 	change = pcb_selected_operation(&SetSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -650,7 +650,7 @@ pcb_bool pcb_clr_selected_square(int types)
 	change = pcb_selected_operation(&ClrSquareFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -669,7 +669,7 @@ pcb_bool pcb_chg_selected_octagon(int types)
 	change = pcb_selected_operation(&ChangeOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -688,7 +688,7 @@ pcb_bool pcb_set_selected_octagon(int types)
 	change = pcb_selected_operation(&SetOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -707,7 +707,7 @@ pcb_bool pcb_clr_selected_octagon(int types)
 	change = pcb_selected_operation(&ClrOctagonFunctions, &ctx, pcb_false, types);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -729,7 +729,7 @@ pcb_bool pcb_chg_selected_hole(void)
 	END_LOOP;
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -750,7 +750,7 @@ pcb_bool pcb_chg_selected_paste(void)
 	ENDALL_LOOP;
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -773,7 +773,7 @@ pcb_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coor
 	change = (pcb_object_operation(&ChangeSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -795,7 +795,7 @@ pcb_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 	change = (pcb_object_operation(&Change1stSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -817,7 +817,7 @@ pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 	change = (pcb_object_operation(&ChangeRadiusFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -839,7 +839,7 @@ pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
 	change = (pcb_object_operation(&ChangeAngleFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -865,7 +865,7 @@ pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
 		change = (pcb_object_operation(&ChangeClearSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -886,7 +886,7 @@ pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int t
 	change = (pcb_object_operation(&ChangeThermalFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -909,7 +909,7 @@ pcb_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 	if (change) {
 		pcb_draw();
 		if (incundo)
-			IncrementUndoSerialNumber();
+			pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -931,7 +931,7 @@ pcb_bool pcb_chg_obj_mask_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb
 	change = (pcb_object_operation(&ChangeMaskSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }
@@ -988,7 +988,7 @@ pcb_bool pcb_chg_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (pcb_object_operation(&ChangeJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1006,7 +1006,7 @@ pcb_bool pcb_set_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (pcb_object_operation(&SetJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1024,7 +1024,7 @@ pcb_bool pcb_clr_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (pcb_object_operation(&ClrJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1042,7 +1042,7 @@ pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (pcb_object_operation(&ChangeNonetlistFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1061,7 +1061,7 @@ pcb_bool pcb_chg_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int st
 
 	if (pcb_object_operation(&ChangeSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1079,7 +1079,7 @@ pcb_bool pcb_set_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (pcb_object_operation(&SetSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1097,7 +1097,7 @@ pcb_bool pcb_clr_obj_square(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (pcb_object_operation(&ClrSquareFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1115,7 +1115,7 @@ pcb_bool pcb_chg_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (pcb_object_operation(&ChangeOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1133,7 +1133,7 @@ pcb_bool pcb_set_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (pcb_object_operation(&SetOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1151,7 +1151,7 @@ pcb_bool pcb_clr_obj_octagon(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 
 	if (pcb_object_operation(&ClrOctagonFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1220,7 +1220,7 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 				AddObjectToChangePinnumUndoList(Type, Ptr1, Ptr2, Ptr3, old);
 			else
 				AddObjectToChangeNameUndoList(Type, Ptr1, Ptr2, Ptr3, old);
-			IncrementUndoSerialNumber();
+			pcb_undo_inc_serial();
 		}
 		pcb_draw();
 		return (Ptr3);

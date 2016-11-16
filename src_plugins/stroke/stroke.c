@@ -86,7 +86,7 @@ static void real_stroke_finish(void)
 		case 147423:
 		case 147523:
 		case 1474123:
-			Redo(pcb_true);
+			pcb_redo(pcb_true);
 			break;
 		case 148963:
 		case 147863:

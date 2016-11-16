@@ -1335,7 +1335,7 @@ void pcb_crosshair_set_mode(int Mode)
 		Crosshair.AttachedLine.State = STATE_FIRST;
 		if (Mode == PCB_MODE_LINE && conf_core.editor.auto_drc) {
 			if (pcb_reset_conns(pcb_true)) {
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				pcb_draw();
 			}
 		}

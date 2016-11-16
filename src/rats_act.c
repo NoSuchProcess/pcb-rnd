@@ -157,21 +157,21 @@ static int ActionConnection(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		case F_ResetLinesAndPolygons:
 			if (pcb_reset_found_lines_polys(pcb_true)) {
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				pcb_draw();
 			}
 			break;
 
 		case F_ResetPinsViasAndPads:
 			if (pcb_reset_found_pins_vias_pads(pcb_true)) {
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				pcb_draw();
 			}
 			break;
 
 		case F_Reset:
 			if (pcb_reset_conns(pcb_true)) {
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				pcb_draw();
 			}
 			break;

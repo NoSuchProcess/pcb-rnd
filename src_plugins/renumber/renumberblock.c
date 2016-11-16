@@ -75,7 +75,7 @@ int action_renumber_block(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		pcb_chg_obj_name(PCB_TYPE_ELEMENT, element, NULL, NULL, new_ref);
 	}
 	END_LOOP;
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	return 0;
 }
 

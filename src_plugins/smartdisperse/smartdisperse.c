@@ -255,7 +255,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 	htpi_uninit(&visited);
 
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	pcb_redraw();
 	pcb_board_set_changed_flag(1);
 

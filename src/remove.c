@@ -82,7 +82,7 @@ pcb_bool pcb_remove_selected(void)
 	ctx.remove.destroy_target = NULL;
 
 	if (pcb_selected_operation(&RemoveFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL)) {
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		pcb_draw();
 		return (pcb_true);
 	}

@@ -475,7 +475,7 @@ pcb_bool pcb_selected_element_change_side(void)
 	END_LOOP;
 	if (change) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (change);
 }

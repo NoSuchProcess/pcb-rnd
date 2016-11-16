@@ -308,8 +308,8 @@ doIsBad:
 		IsBad = pcb_true;
 		return R_DIR_FOUND_CONTINUE;
 	}
-	IncrementUndoSerialNumber();
-	Undo(pcb_true);
+	pcb_undo_inc_serial();
+	pcb_undo(pcb_true);
 	return R_DIR_NOT_FOUND;
 }
 
@@ -341,7 +341,7 @@ int pcb_drc_all(void)
 	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
 
 	if (pcb_reset_conns(pcb_true)) {
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		pcb_draw();
 	}
 
@@ -419,8 +419,8 @@ int pcb_drc_all(void)
 					IsBad = pcb_true;
 					break;
 				}
-				IncrementUndoSerialNumber();
-				Undo(pcb_false);
+				pcb_undo_inc_serial();
+				pcb_undo(pcb_false);
 			}
 		}
 		ENDALL_LOOP;
@@ -450,8 +450,8 @@ int pcb_drc_all(void)
 					IsBad = pcb_true;
 					break;
 				}
-				IncrementUndoSerialNumber();
-				Undo(pcb_false);
+				pcb_undo_inc_serial();
+				pcb_undo(pcb_false);
 			}
 		}
 		ENDALL_LOOP;
@@ -482,8 +482,8 @@ int pcb_drc_all(void)
 					IsBad = pcb_true;
 					break;
 				}
-				IncrementUndoSerialNumber();
-				Undo(pcb_false);
+				pcb_undo_inc_serial();
+				pcb_undo(pcb_false);
 			}
 			if (pin->DrillingHole < PCB->minDrill) {
 				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
@@ -504,8 +504,8 @@ int pcb_drc_all(void)
 					IsBad = pcb_true;
 					break;
 				}
-				IncrementUndoSerialNumber();
-				Undo(pcb_false);
+				pcb_undo_inc_serial();
+				pcb_undo(pcb_false);
 			}
 		}
 		ENDALL_LOOP;
@@ -535,8 +535,8 @@ int pcb_drc_all(void)
 					IsBad = pcb_true;
 					break;
 				}
-				IncrementUndoSerialNumber();
-				Undo(pcb_false);
+				pcb_undo_inc_serial();
+				pcb_undo(pcb_false);
 			}
 		}
 		ENDALL_LOOP;
@@ -567,8 +567,8 @@ int pcb_drc_all(void)
 					IsBad = pcb_true;
 					break;
 				}
-				IncrementUndoSerialNumber();
-				Undo(pcb_false);
+				pcb_undo_inc_serial();
+				pcb_undo(pcb_false);
 			}
 			if (via->DrillingHole < PCB->minDrill) {
 				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
@@ -589,8 +589,8 @@ int pcb_drc_all(void)
 					IsBad = pcb_true;
 					break;
 				}
-				IncrementUndoSerialNumber();
-				Undo(pcb_false);
+				pcb_undo_inc_serial();
+				pcb_undo(pcb_false);
 			}
 		}
 		END_LOOP;
@@ -685,7 +685,7 @@ int pcb_drc_all(void)
 
 
 	if (IsBad) {
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 
 
@@ -758,8 +758,8 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 
 			if (!throw_drc_dialog())
 				return (pcb_true);
-			IncrementUndoSerialNumber();
-			Undo(pcb_true);
+			pcb_undo_inc_serial();
+			pcb_undo(pcb_true);
 		}
 		DumpList();
 	}
@@ -803,8 +803,8 @@ static pcb_bool DRCFind(int What, void *ptr1, void *ptr2, void *ptr3)
 		drc = pcb_false;
 		if (!throw_drc_dialog())
 			return (pcb_true);
-		IncrementUndoSerialNumber();
-		Undo(pcb_true);
+		pcb_undo_inc_serial();
+		pcb_undo(pcb_true);
 		/* highlight the rest of the encroaching net so it's not reported again */
 		TheFlag |= PCB_FLAG_SELECTED;
 		Bloat = 0;

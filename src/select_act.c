@@ -210,7 +210,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		case F_Connection:
 			if (pcb_select_connection(pcb_true)) {
 				pcb_draw();
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
@@ -225,10 +225,10 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
 				y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
 				pcb_buffer_add_selected(PCB_PASTEBUFFER, x, y, pcb_true);
-				SaveUndoSerialNumber();
+				pcb_undo_save_serial();
 				pcb_remove_selected();
 				pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
-				RestoreUndoSerialNumber();
+				pcb_undo_restore_serial();
 				pcb_buffer_copy_to_layout(x, y);
 				pcb_buffer_set_number(Note.Buffer);
 			}
@@ -362,7 +362,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		case F_Connection:
 			if (pcb_select_connection(pcb_false)) {
 				pcb_draw();
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;

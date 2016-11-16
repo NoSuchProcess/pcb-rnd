@@ -76,7 +76,7 @@ void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_
 	/* the operation insert the points to the undo-list */
 	ptr = pcb_object_operation(&InsertFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	if (ptr != NULL)
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	return (ptr);
 }
 

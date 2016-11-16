@@ -474,7 +474,7 @@ static int Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
 
 	gui->invalidate_all();
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 
 	return 1;
 }
@@ -2176,7 +2176,7 @@ static void maybe_pull_1(pcb_line_t *line)
 			return;
 	}
 	printf("\n\033[33mRECURSING\033[0m\n\n");
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 #endif
 	maybe_pull_1(new_line);
 }
@@ -2329,7 +2329,7 @@ static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 					maybe_pull(line, e);
 #if TRACE0
 				if (did_something != old_did_something) {
-					IncrementUndoSerialNumber();
+					pcb_undo_inc_serial();
 					old_did_something = did_something;
 					if (gui->confirm_dialog("more?", 0) == 0) {
 						did_something = 0;
@@ -2369,7 +2369,7 @@ static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	g_hash_table_unref(lines);
 	g_hash_table_unref(arcs);
 
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	return 0;
 }
 

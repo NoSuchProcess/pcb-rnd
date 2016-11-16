@@ -84,19 +84,19 @@ int ActionAtomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	switch (pcb_funchash_get(argv[0], NULL)) {
 	case F_Save:
-		SaveUndoSerialNumber();
+		pcb_undo_save_serial();
 		break;
 	case F_Restore:
-		RestoreUndoSerialNumber();
+		pcb_undo_restore_serial();
 		break;
 	case F_Close:
-		RestoreUndoSerialNumber();
-		IncrementUndoSerialNumber();
+		pcb_undo_restore_serial();
+		pcb_undo_inc_serial();
 		break;
 	case F_Block:
-		RestoreUndoSerialNumber();
+		pcb_undo_restore_serial();
 		if (Bumped)
-			IncrementUndoSerialNumber();
+			pcb_undo_inc_serial();
 		break;
 	}
 	return 0;
@@ -104,7 +104,7 @@ int ActionAtomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char undo_syntax[] = "Undo()\n" "Undo(ClearList)";
+static const char undo_syntax[] = "pcb_undo()\n" "pcb_undo(ClearList)";
 
 static const char undo_help[] = "Undo recent changes.";
 
@@ -112,7 +112,7 @@ static const char undo_help[] = "Undo recent changes.";
 
 The unlimited undo feature of @code{Pcb} allows you to recover from
 most operations that materially affect you work.  Calling
-@code{Undo()} without any parameter recovers from the last (non-undo)
+@code{pcb_undo()} without any parameter recovers from the last (non-undo)
 operation. @code{ClearList} is used to release the allocated
 memory. @code{ClearList} is called whenever a new layout is started or
 loaded. See also @code{Redo} and @code{Atomic}.
@@ -144,7 +144,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		if (conf_core.editor.mode == PCB_MODE_LINE) {
 			if (Crosshair.AttachedLine.State == STATE_SECOND) {
 				if (conf_core.editor.auto_drc)
-					Undo(pcb_true);						/* undo the connection find */
+					pcb_undo(pcb_true);						/* undo the connection find */
 				Crosshair.AttachedLine.State = STATE_FIRST;
 				pcb_crosshair_set_local_ref(0, 0, pcb_false);
 				pcb_notify_crosshair_change(pcb_true);
@@ -162,7 +162,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				/* save both ends of line */
 				Crosshair.AttachedLine.Point2.X = ptr2->Point1.X;
 				Crosshair.AttachedLine.Point2.Y = ptr2->Point1.Y;
-				if ((type = Undo(pcb_true)))
+				if ((type = pcb_undo(pcb_true)))
 					pcb_board_set_changed_flag(pcb_true);
 				/* check that the undo was of the right type */
 				if ((type & UNDO_CREATE) == 0) {
@@ -227,14 +227,14 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			}
 		}
 		/* undo the last destructive operation */
-		if (Undo(pcb_true))
+		if (pcb_undo(pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
 	}
 	else if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
 			/* clear 'undo objects' list */
 		case F_ClearList:
-			ClearUndoList(pcb_false);
+			pcb_undo_clear_list(pcb_false);
 			break;
 		}
 	}
@@ -244,7 +244,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char redo_syntax[] = "Redo()";
+static const char redo_syntax[] = "pcb_redo()";
 
 static const char redo_help[] = "Redo recent \"undo\" operations.";
 
@@ -269,7 +269,7 @@ int ActionRedo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) && Crosshair.AttachedPolygon.PointN) || Crosshair.AttachedLine.State == STATE_SECOND)
 		return 1;
 	pcb_notify_crosshair_change(pcb_false);
-	if (Redo(pcb_true)) {
+	if (pcb_redo(pcb_true)) {
 		pcb_board_set_changed_flag(pcb_true);
 		if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != STATE_FIRST) {
 			pcb_line_t *line = linelist_last(&CURRENT->Line);

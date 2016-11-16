@@ -555,12 +555,12 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 	 * to the state the board was in when we started this function.
 	 *
 	 * After this, we don't add any changes to the undo system, but
-	 * ensure we get back to a point where we can Undo() our changes
+	 * ensure we get back to a point where we can pcb_undo() our changes
 	 * by resetting the connections with pcb_reset_conns() before
-	 * calling Undo() at the end of the procedure.
+	 * calling pcb_undo() at the end of the procedure.
 	 */
 	pcb_reset_conns(pcb_true);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 
 	for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++) {
 		const char *netname = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2;
@@ -624,7 +624,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 	}
 
 	pcb_reset_conns(pcb_false);
-	Undo(pcb_true);
+	pcb_undo(pcb_true);
 	return 0;
 }
 
@@ -640,18 +640,18 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	 * to the state the board was in when we started this function.
 	 *
 	 * After this, we don't add any changes to the undo system, but
-	 * ensure we get back to a point where we can Undo() our changes
+	 * ensure we get back to a point where we can pcb_undo() our changes
 	 * by resetting the connections with pcb_reset_conns() before
-	 * calling Undo() at the end of the procedure.
+	 * calling pcb_undo() at the end of the procedure.
 	 */
 	pcb_reset_conns(pcb_true);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 
 	length = XYtoNetLength(x, y, &found);
 
 	if (!found) {
 		pcb_reset_conns(pcb_false);
-		Undo(pcb_true);
+		pcb_undo(pcb_true);
 		gui->log("No net under cursor.\n");
 		return 1;
 	}
@@ -705,7 +705,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 got_net_name:
 	pcb_reset_conns(pcb_false);
-	Undo(pcb_true);
+	pcb_undo(pcb_true);
 
 	{
 		char buf[50];
@@ -794,18 +794,18 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 	 * to the state the board was in when we started.
 	 *
 	 * After this, we don't add any changes to the undo system, but
-	 * ensure we get back to a point where we can Undo() our changes
+	 * ensure we get back to a point where we can pcb_undo() our changes
 	 * by resetting the connections with pcb_reset_conns() before
-	 * calling Undo() when we are finished.
+	 * calling pcb_undo() when we are finished.
 	 */
 	pcb_reset_conns(pcb_true);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 
 	length = XYtoNetLength(x, y, &found);
 	netname = net->Name + 2;
 
 	pcb_reset_conns(pcb_false);
-	Undo(pcb_true);
+	pcb_undo(pcb_true);
 
 	if (!found) {
 		if (net_found)

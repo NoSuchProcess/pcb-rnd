@@ -253,7 +253,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 	ListStart(type, ptr1, ptr2, ptr3);
 	DoIt(pcb_true, AndDraw);
 	if (User)
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	User = pcb_false;
 
 	/* we are done */

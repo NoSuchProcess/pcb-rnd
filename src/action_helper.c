@@ -304,7 +304,7 @@ static void click_cb(pcb_hidval_t hv)
 			pcb_buffer_set_number(MAX_BUFFER - 1);
 			pcb_buffer_clear(PCB_PASTEBUFFER);
 			pcb_buffer_add_selected(PCB_PASTEBUFFER, Note.X, Note.Y, pcb_true);
-			SaveUndoSerialNumber();
+			pcb_undo_save_serial();
 			pcb_remove_selected();
 			pcb_crosshair_save_mode();
 			saved_mode = pcb_true;
@@ -340,7 +340,7 @@ static void click_cb(pcb_hidval_t hv)
 
 			Note.Hit = 0;
 			Note.Moving = pcb_false;
-			SaveUndoSerialNumber();
+			pcb_undo_save_serial();
 			box.X1 = -MAX_COORD;
 			box.Y1 = -MAX_COORD;
 			box.X2 = MAX_COORD;
@@ -369,7 +369,7 @@ void pcb_release_mode(void)
 		box.Y2 = MAX_COORD;
 
 		Note.Click = pcb_false;					/* inhibit timer action */
-		SaveUndoSerialNumber();
+		pcb_undo_save_serial();
 		/* unselect first if shift key not down */
 		if (!gui->shift_is_pressed()) {
 			if (pcb_select_block(&box, pcb_false))
@@ -382,16 +382,16 @@ void pcb_release_mode(void)
 		}
 		/* Restore the SN so that if we select something the deselect/select combo
 		   gets the same SN. */
-		RestoreUndoSerialNumber();
+		pcb_undo_restore_serial();
 		if (pcb_select_object())
 			pcb_board_set_changed_flag(pcb_true);
 		else
-			IncrementUndoSerialNumber(); /* We didn't select anything new, so, the deselection should get its  own SN. */
+			pcb_undo_inc_serial(); /* We didn't select anything new, so, the deselection should get its  own SN. */
 		Note.Hit = 0;
 		Note.Moving = 0;
 	}
 	else if (Note.Moving) {
-		RestoreUndoSerialNumber();
+		pcb_undo_restore_serial();
 		pcb_notify_mode();
 		pcb_buffer_clear(PCB_PASTEBUFFER);
 		pcb_buffer_set_number(Note.Buffer);
@@ -408,11 +408,11 @@ void pcb_release_mode(void)
 		box.X2 = Crosshair.AttachedBox.Point2.X;
 		box.Y2 = Crosshair.AttachedBox.Point2.Y;
 
-		RestoreUndoSerialNumber();
+		pcb_undo_restore_serial();
 		if (pcb_select_block(&box, pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
 		else if (Bumped)
-			IncrementUndoSerialNumber();
+			pcb_undo_inc_serial();
 		Crosshair.AttachedBox.State = STATE_FIRST;
 	}
 	if (saved_mode)
@@ -604,7 +604,7 @@ void pcb_notify_mode(void)
 				AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
 				if (gui->shift_is_pressed())
 					pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				DrawVia(via);
 				pcb_draw();
 			}
@@ -666,7 +666,7 @@ void pcb_notify_mode(void)
 						Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = bx->X2;
 						Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = bx->Y2;
 						AddObjectToCreateUndoList(PCB_TYPE_ARC, CURRENT, arc, arc);
-						IncrementUndoSerialNumber();
+						pcb_undo_inc_serial();
 						addedLines++;
 						DrawArc(CURRENT, arc);
 						pcb_draw();
@@ -759,7 +759,7 @@ void pcb_notify_mode(void)
 			if ((line = pcb_rat_add_net())) {
 				addedLines++;
 				AddObjectToCreateUndoList(PCB_TYPE_RATLINE, line, line, line);
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				DrawRat(line);
 				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
 				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y;
@@ -831,7 +831,7 @@ void pcb_notify_mode(void)
 				/* copy the coordinates */
 				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
 				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y;
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				lastLayer = CURRENT;
 			}
 			if (conf_core.editor.line_refraction && (Note.X != Crosshair.AttachedLine.Point2.X || Note.Y != Crosshair.AttachedLine.Point2.Y)
@@ -846,7 +846,7 @@ void pcb_notify_mode(void)
 																							 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 				addedLines++;
 				AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				DrawLine(CURRENT, line);
 				/* move to new start point */
 				Crosshair.AttachedLine.Point1.X = Note.X;
@@ -889,7 +889,7 @@ void pcb_notify_mode(void)
 																									 Crosshair.AttachedBox.Point2.X,
 																									 Crosshair.AttachedBox.Point2.Y, pcb_flag_make(flags))) != NULL) {
 				AddObjectToCreateUndoList(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
-				IncrementUndoSerialNumber();
+				pcb_undo_inc_serial();
 				DrawPolygon(CURRENT, polygon);
 				pcb_draw();
 			}
@@ -913,7 +913,7 @@ void pcb_notify_mode(void)
 					if ((text = pcb_text_new(CURRENT, &PCB->Font, Note.X,
 																		Note.Y, 0, conf_core.design.text_scale, string, pcb_flag_make(flag))) != NULL) {
 						AddObjectToCreateUndoList(PCB_TYPE_TEXT, CURRENT, text, text);
-						IncrementUndoSerialNumber();
+						pcb_undo_inc_serial();
 						DrawText(CURRENT, text);
 						pcb_draw();
 					}
@@ -1018,13 +1018,13 @@ void pcb_notify_mode(void)
 						/* Convert the resulting polygon(s) into a new set of nodes
 						 * and place them on the page. Delete the original polygon.
 						 */
-						SaveUndoSerialNumber();
+						pcb_undo_save_serial();
 						Flags = ((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2)->Flags;
 						pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) Crosshair.AttachedObject.Ptr1, result, Flags);
 						pcb_remove_object(PCB_TYPE_POLYGON,
 												 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
-						RestoreUndoSerialNumber();
-						IncrementUndoSerialNumber();
+						pcb_undo_restore_serial();
+						pcb_undo_inc_serial();
 						pcb_draw();
 
 						/* reset state of attached line */
@@ -1124,7 +1124,7 @@ void pcb_notify_mode(void)
 				}
 			}
 			pcb_remove_object(type, ptr1, ptr2, ptr3);
-			IncrementUndoSerialNumber();
+			pcb_undo_inc_serial();
 			pcb_board_set_changed_flag(pcb_true);
 		}
 		break;

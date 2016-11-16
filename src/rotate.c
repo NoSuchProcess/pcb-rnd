@@ -123,7 +123,7 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 	changed |= (ptr2 != NULL);
 	if (changed) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (ptr2);
 }

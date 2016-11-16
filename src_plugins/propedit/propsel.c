@@ -214,7 +214,7 @@ static void set_attr(set_ctx_t *st, pcb_attribute_list_t *list)
 #define set_chk_skip(ctx, obj) \
 	if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj)) return;
 
-#define DONE { st->set_cnt++; RestoreUndoSerialNumber(); return; }
+#define DONE { st->set_cnt++; pcb_undo_restore_serial(); return; }
 
 static void set_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
@@ -449,7 +449,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 	ctx.d_absolute = ((*start != '-') && (*start != '+'));
 	ctx.set_cnt = 0;
 
-	SaveUndoSerialNumber();
+	pcb_undo_save_serial();
 
 	pcb_loop_all(&ctx,
 		NULL,
@@ -465,7 +465,7 @@ int pcb_propsel_set(const char *prop, const char *value)
 		MAYBE_PROP(0, "p/pad/", set_epad_cb),
 		MAYBE_PROP(0, "p/via/", set_via_cb)
 	);
-	IncrementUndoSerialNumber();
+	pcb_undo_inc_serial();
 	return ctx.set_cnt;
 }
 

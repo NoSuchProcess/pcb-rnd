@@ -249,7 +249,7 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 
 void pcb_board_remove(pcb_board_t *Ptr)
 {
-	ClearUndoList(pcb_true);
+	pcb_undo_clear_list(pcb_true);
 	pcb_board_free(Ptr);
 	free(Ptr);
 }

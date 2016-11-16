@@ -712,7 +712,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 		conf_core.temp.rat_warn = pcb_true;
 
 	if (changed) {
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		if (ratlist_length(&PCB->Data->Rat) > 0) {
 			pcb_message(PCB_MSG_DEFAULT, "%d rat line%s remaining\n", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) > 1 ? "s" : "");
 		}

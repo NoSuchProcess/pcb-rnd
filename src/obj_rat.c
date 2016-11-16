@@ -116,7 +116,7 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 	END_LOOP;
 	if (changed) {
 		pcb_draw();
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 	}
 	return (changed);
 }

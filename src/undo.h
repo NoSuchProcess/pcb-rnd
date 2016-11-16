@@ -34,14 +34,15 @@
 #define DRAW_FLAGS	(PCB_FLAG_RAT | PCB_FLAG_SELECTED \
 			| PCB_FLAG_HIDENAME | PCB_FLAG_HOLE | PCB_FLAG_OCTAGON | PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE)
 
-											/* different layers */
+/* different layers */
 
-int Undo(pcb_bool);
-int Redo(pcb_bool);
-void IncrementUndoSerialNumber(void);
-void SaveUndoSerialNumber(void);
-void RestoreUndoSerialNumber(void);
-void ClearUndoList(pcb_bool);
+int pcb_undo(pcb_bool);
+int pcb_redo(pcb_bool);
+void pcb_undo_inc_serial(void);
+void pcb_undo_save_serial(void);
+void pcb_undo_restore_serial(void);
+void pcb_undo_clear_list(pcb_bool);
+
 void MoveObjectToRemoveUndoList(int, void *, void *, void *);
 void AddObjectToRemovePointUndoList(int, void *, void *, pcb_cardinal_t);
 void AddObjectToInsertPointUndoList(int, void *, void *, void *);
@@ -64,9 +65,10 @@ void AddObjectToChangeRadiiUndoList(int, void *, void *, void *);
 void AddObjectToClearPolyUndoList(int, void *, void *, void *, pcb_bool);
 void AddLayerChangeToUndoList(int, int);
 void AddNetlistLibToUndoList(pcb_lib_t *);
-void LockUndo(void);
-void UnlockUndo(void);
-pcb_bool Undoing(void);
+
+void pcb_undo_lock(void);
+void pcb_undo_unlock(void);
+pcb_bool pcb_undoing(void);
 
 /* Publish actions - these may be useful for other actions */
 int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);

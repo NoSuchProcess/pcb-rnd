@@ -342,7 +342,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		}
 
 		pcb_netlist_changed(0);
-		IncrementUndoSerialNumber();
+		pcb_undo_inc_serial();
 		pcb_board_set_changed_flag(pcb_true);
 	}
 
