@@ -103,7 +103,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 	}
 }
 
-int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings)
+int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings)
 {
 	int res = -1;
 
@@ -143,7 +143,7 @@ int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_s
 	return res;
 }
 
-int ParseElement(pcb_data_t *Ptr, const char *name)
+int pcb_parse_element(pcb_data_t *Ptr, const char *name)
 {
 	int res = -1;
 
@@ -154,7 +154,7 @@ int ParseElement(pcb_data_t *Ptr, const char *name)
 	return res;
 }
 
-int ParseFont(pcb_font_t *Ptr, char *Filename)
+int pcb_parse_font(pcb_font_t *Ptr, char *Filename)
 {
 	int res = -1;
 	HOOK_CALL(pcb_plug_io_t, plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
@@ -217,7 +217,7 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 }
 
 
-int WriteBuffer(FILE *f, pcb_buffer_t *buff, const char *fmt)
+int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt)
 {
 	int res, newfmt = 0;
 	pcb_plug_io_t *p = find_writer(PCB_IOT_BUFFER, fmt);
@@ -234,7 +234,7 @@ int WriteBuffer(FILE *f, pcb_buffer_t *buff, const char *fmt)
 	return res;
 }
 
-int WriteElementData(FILE *f, pcb_data_t *e, const char *fmt)
+int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt)
 {
 	int res, newfmt = 0;
 	pcb_plug_io_t *p = e->loader;
@@ -315,7 +315,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	}
 
 	/* new data isn't added to the undo list */
-	if (!ParsePCB(PCB, new_filename, fmt, settings_dest)) {
+	if (!pcb_parse_pcb(PCB, new_filename, fmt, settings_dest)) {
 		RemovePCB(oldPCB);
 
 		pcb_board_new_postproc(PCB, 0);
@@ -747,10 +747,10 @@ static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const
 {
 	if (thePcb) {
 		if (PCB->is_footprint)
-			return WriteElementData(fp, PCB->Data, fmt);
+			return pcb_write_element_data(fp, PCB->Data, fmt);
 		return pcb_write_pcb(fp, old_path, new_path, fmt, emergency);
 	}
-	return WriteBuffer(fp, PCB_PASTEBUFFER, fmt);
+	return pcb_write_buffer(fp, PCB_PASTEBUFFER, fmt);
 }
 
 /* ---------------------------------------------------------------------------

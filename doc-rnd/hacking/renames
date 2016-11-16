@@ -631,3 +631,8 @@ fp_default_search_path -> pcb_fp_default_search_path
 fp_host_uninit -> pcb_fp_host_uninit
 fp_rehash -> pcb_fp_rehash
 ImportNetlist -> pcb_import_netlist
+ParsePCB -> pcb_parse_pcb
+ParseElement -> pcb_parse_element
+ParseFont -> pcb_parse_font
+WriteBuffer -> pcb_write_buffer
+WriteElementData -> pcb_write_element_data

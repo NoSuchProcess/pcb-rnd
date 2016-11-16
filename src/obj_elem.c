@@ -127,7 +127,7 @@ pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name)
 	pcb_element_t *element;
 
 	pcb_buffer_clear(Buffer);
-	if (!ParseElement(Buffer->Data, Name)) {
+	if (!pcb_parse_element(Buffer->Data, Name)) {
 		if (conf_core.editor.show_solder_side)
 			pcb_buffer_swap(Buffer);
 		pcb_set_buffer_bbox(Buffer);

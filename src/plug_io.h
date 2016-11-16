@@ -91,11 +91,11 @@ extern pcb_plug_io_t *plug_io_chain;
 
 
 /********** hook wrappers **********/
-int ParsePCB(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings);
-int ParseElement(pcb_data_t *Ptr, const char *name);
-int ParseFont(pcb_font_t *Ptr, char *Filename);
-int WriteBuffer(FILE *f, pcb_buffer_t *buff, const char *fmt);
-int WriteElementData(FILE *f, pcb_data_t *e, const char *fmt);
+int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings);
+int pcb_parse_element(pcb_data_t *Ptr, const char *name);
+int pcb_parse_font(pcb_font_t *Ptr, char *Filename);
+int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt);
+int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt);
 
 /********** common function used to be part of file.[ch] and friends **********/
 FILE *CheckAndOpenFile(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);

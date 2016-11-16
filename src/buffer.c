@@ -200,7 +200,7 @@ pcb_bool pcb_buffer_load_layout(pcb_buffer_t *Buffer, const char *Filename, cons
 	pcb_board_t *newPCB = pcb_board_new();
 
 	/* new data isn't added to the undo list */
-	if (!ParsePCB(newPCB, Filename, fmt, CFR_invalid)) {
+	if (!pcb_parse_pcb(newPCB, Filename, fmt, CFR_invalid)) {
 		/* clear data area and replace pointer */
 		pcb_buffer_clear(Buffer);
 		free(Buffer->Data);
