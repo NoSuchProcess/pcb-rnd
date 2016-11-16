@@ -208,13 +208,13 @@ pcb_bool pcb_buffer_load_layout(pcb_buffer_t *Buffer, const char *Filename, cons
 		newPCB->Data = NULL;
 		Buffer->X = newPCB->CursorX;
 		Buffer->Y = newPCB->CursorY;
-		RemovePCB(newPCB);
+		pcb_board_remove(newPCB);
 		Buffer->Data->pcb = PCB;
 		return (pcb_true);
 	}
 
 	/* release unused memory */
-	RemovePCB(newPCB);
+	pcb_board_remove(newPCB);
 	Buffer->Data->pcb = PCB;
 	return (pcb_false);
 }

@@ -188,7 +188,7 @@ static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		 */
 		if (PCB->Changed && conf_core.editor.save_in_tmp)
 			pcb_save_in_tmp();
-		RemovePCB(PCB);
+		pcb_board_remove(PCB);
 		PCB = pcb_board_new();
 		pcb_board_new_postproc(PCB, 1);
 

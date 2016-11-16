@@ -316,7 +316,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 
 	/* new data isn't added to the undo list */
 	if (!pcb_parse_pcb(PCB, new_filename, fmt, settings_dest)) {
-		RemovePCB(oldPCB);
+		pcb_board_remove(oldPCB);
 
 		pcb_board_new_postproc(PCB, 0);
 		ResetStackAndVisibility();
@@ -389,7 +389,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		pcb_hid_action("PCBChanged");
 
 	/* release unused memory */
-	RemovePCB(newPCB);
+	pcb_board_remove(newPCB);
 
 	return (1);
 }
