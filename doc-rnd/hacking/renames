@@ -654,3 +654,11 @@ WritePCBFile -> pcb_write_pcb_file
 WritePipe -> pcb_write_pipe
 SaveTMPData -> pcb_tmp_data_save
 RemoveTMPData -> pcb_tmp_data_remove
+plugins_init -> pcb_plugins_init
+plugins_uninit -> pcb_plugins_uninit
+plugin_register -> pcb_plugin_register
+HOOK_CALL_DO -> PCB_HOOK_CALL_DO
+HOOK_CALL_ALL -> PCB_HOOK_CALL_ALL
+HOOK_UNREGISTER -> PCB_HOOK_UNREGISTER
+HOOK_CALL -> PCB_HOOK_CALL
+HOOK_REGISTER -> PCB_HOOK_REGISTER

@@ -1170,7 +1170,7 @@ static void get_args(int argc, char ** argv)
 	}
 }
 
-void plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
+void pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
 {
 	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		printf("Plugin loaded: %s (%s)\n", name, path);
