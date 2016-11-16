@@ -318,20 +318,20 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	p = OctagonPoly(pin->X, pin->Y, w, PCB_FLAG_SQUARE_GET(pin));
 	p2 = OctagonPoly(pin->X, pin->Y, pin->Thickness, PCB_FLAG_SQUARE_GET(pin));
 	/* make full clearance ring */
-	poly_Boolean_free(p, p2, &m, PBO_SUB);
+	pcb_polyarea_boolean_free(p, p2, &m, PBO_SUB);
 	switch (style) {
 	default:
 	case 1:
 		p = diag_line(pin->X, pin->Y, w, t, pcb_true);
-		poly_Boolean_free(m, p, &p2, PBO_SUB);
+		pcb_polyarea_boolean_free(m, p, &p2, PBO_SUB);
 		p = diag_line(pin->X, pin->Y, w, t, pcb_false);
-		poly_Boolean_free(p2, p, &m, PBO_SUB);
+		pcb_polyarea_boolean_free(p2, p, &m, PBO_SUB);
 		return m;
 	case 2:
 		p = RectPoly(pin->X - t, pin->X + t, pin->Y - w, pin->Y + w);
-		poly_Boolean_free(m, p, &p2, PBO_SUB);
+		pcb_polyarea_boolean_free(m, p, &p2, PBO_SUB);
 		p = RectPoly(pin->X - w, pin->X + w, pin->Y - t, pin->Y + t);
-		poly_Boolean_free(p2, p, &m, PBO_SUB);
+		pcb_polyarea_boolean_free(p2, p, &m, PBO_SUB);
 		return m;
 		/* fix me add thermal style 4 */
 	case 5:
@@ -341,8 +341,8 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 			/* cheat by using the square therm's rounded parts */
 			p = square_therm(pin, style);
 			q = RectPoly(pin->X - t, pin->X + t, pin->Y - t, pin->Y + t);
-			poly_Boolean_free(p, q, &p2, PBO_UNITE);
-			poly_Boolean_free(m, p2, &p, PBO_ISECT);
+			pcb_polyarea_boolean_free(p, q, &p2, PBO_UNITE);
+			pcb_polyarea_boolean_free(m, p2, &p, PBO_ISECT);
 			return p;
 		}
 	}
@@ -377,14 +377,14 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 			pa = CirclePoly(pin->X, pin->Y, t);
 			arc = CirclePoly(pin->X, pin->Y, pin->Thickness / 2);
 			/* create a thin ring */
-			poly_Boolean_free(pa, arc, &m, PBO_SUB);
+			pcb_polyarea_boolean_free(pa, arc, &m, PBO_SUB);
 			/* fix me needs error checking */
 			if (style == 2) {
 				/* t is the theoretically required length, but we use twice that
 				 * to avoid descritisation errors in our circle approximation.
 				 */
 				pa = RectPoly(pin->X - t * 2, pin->X + t * 2, pin->Y - w, pin->Y + w);
-				poly_Boolean_free(m, pa, &arc, PBO_SUB);
+				pcb_polyarea_boolean_free(m, pa, &arc, PBO_SUB);
 				pa = RectPoly(pin->X - w, pin->X + w, pin->Y - t * 2, pin->Y + t * 2);
 			}
 			else {
@@ -392,10 +392,10 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 				 * to avoid descritisation errors in our circle approximation.
 				 */
 				pa = diag_line(pin->X, pin->Y, t * 2, w, pcb_true);
-				poly_Boolean_free(m, pa, &arc, PBO_SUB);
+				pcb_polyarea_boolean_free(m, pa, &arc, PBO_SUB);
 				pa = diag_line(pin->X, pin->Y, t * 2, w, pcb_false);
 			}
-			poly_Boolean_free(arc, pa, &m, PBO_SUB);
+			pcb_polyarea_boolean_free(arc, pa, &m, PBO_SUB);
 			return m;
 		}
 

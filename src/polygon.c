@@ -560,7 +560,7 @@ pcb_polyarea_t *ArcPoly(pcb_arc_t * a, pcb_coord_t thick)
 
 		tmp1 = ArcPolyNoIntersect(&seg1, thick);
 		tmp2 = ArcPolyNoIntersect(&seg2, thick);
-		poly_Boolean_free(tmp1, tmp2, &res, PBO_UNITE);
+		pcb_polyarea_boolean_free(tmp1, tmp2, &res, PBO_UNITE);
 		return res;
 	}
 
@@ -709,9 +709,9 @@ static int Subtract(pcb_polyarea_t * np1, pcb_polygon_t * p, pcb_bool fnp)
 	assert(pcb_poly_valid(p->Clipped));
 	assert(pcb_poly_valid(np));
 	if (fnp)
-		x = poly_Boolean_free(p->Clipped, np, &merged, PBO_SUB);
+		x = pcb_polyarea_boolean_free(p->Clipped, np, &merged, PBO_SUB);
 	else {
-		x = poly_Boolean(p->Clipped, np, &merged, PBO_SUB);
+		x = pcb_polyarea_boolean(p->Clipped, np, &merged, PBO_SUB);
 		pcb_polyarea_free(&p->Clipped);
 	}
 	assert(!merged || pcb_poly_valid(merged));
@@ -895,7 +895,7 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 			longjmp(info->env, 1);
 	}
 
-	poly_Boolean_free(info->accumulate, np, &merged, PBO_UNITE);
+	pcb_polyarea_boolean_free(info->accumulate, np, &merged, PBO_UNITE);
 	info->accumulate = merged;
 
 	info->batch_size++;
@@ -961,7 +961,7 @@ static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 	if (!(np = LinePoly(line, line->Thickness + line->Clearance)))
 		longjmp(info->env, 1);
 
-	poly_Boolean_free(info->accumulate, np, &merged, PBO_UNITE);
+	pcb_polyarea_boolean_free(info->accumulate, np, &merged, PBO_UNITE);
 	info->accumulate = merged;
 	info->batch_size++;
 
@@ -1059,14 +1059,14 @@ static int Unsubtract(pcb_polyarea_t * np1, pcb_polygon_t * p)
 
 	orig_poly = original_poly(p);
 
-	x = poly_Boolean_free(np, orig_poly, &clipped_np, PBO_ISECT);
+	x = pcb_polyarea_boolean_free(np, orig_poly, &clipped_np, PBO_ISECT);
 	if (x != err_ok) {
 		fprintf(stderr, "Error while clipping PBO_ISECT: %d\n", x);
 		pcb_polyarea_free(&clipped_np);
 		goto fail;
 	}
 
-	x = poly_Boolean_free(p->Clipped, clipped_np, &merged, PBO_UNITE);
+	x = pcb_polyarea_boolean_free(p->Clipped, clipped_np, &merged, PBO_UNITE);
 	if (x != err_ok) {
 		fprintf(stderr, "Error while clipping PBO_UNITE: %d\n", x);
 		pcb_polyarea_free(&merged);
@@ -1631,7 +1631,7 @@ static void r_NoHolesPolygonDicer(pcb_polyarea_t * pa, void (*emit) (pcb_pline_t
 
 		/* make a rectangle of the left region slicing through the middle of the first hole */
 		poly2 = RectPoly(p->xmin, (p->next->xmin + p->next->xmax) / 2, p->ymin, p->ymax);
-		poly_AndSubtract_free(pa, poly2, &left, &right);
+		pcb_polyarea_and_subtract_free(pa, poly2, &left, &right);
 		if (left) {
 			pcb_polyarea_t *cur, *next;
 			cur = left;
@@ -1667,7 +1667,7 @@ void NoHolesPolygonDicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) 
 	/* clip to the bounding box */
 	if (clip) {
 		pcb_polyarea_t *cbox = RectPoly(clip->X1, clip->X2, clip->Y1, clip->Y2);
-		poly_Boolean_free(main_contour, cbox, &main_contour, PBO_ISECT);
+		pcb_polyarea_boolean_free(main_contour, cbox, &main_contour, PBO_ISECT);
 	}
 	if (main_contour == NULL)
 		return;

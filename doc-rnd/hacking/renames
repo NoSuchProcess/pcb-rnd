@@ -697,3 +697,12 @@ poly_Free -> pcb_polyarea_free
 poly_Init -> pcb_polyarea_init
 poly_FreeContours -> pcb_poly_contours_free
 poly_Valid -> pcb_poly_valid
+vect_dist2 -> pcb_vect_dist2
+vect_det2 -> pcb_vect_det2
+vect_len2 -> pcb_vect_len2
+vect_inters2 -> pcb_vect_inters2
+poly_Boolean -> pcb_polyarea_boolean
+poly_Boolean_free -> pcb_polyarea_boolean_free
+poly_AndSubtract_free -> pcb_polyarea_and_subtract_free
+poly_bbox -> pcb_polyarea_bbox
+Savepcb_polyarea_t -> pcb_polyarea_save

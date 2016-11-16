@@ -73,11 +73,11 @@ void vect_sub(pcb_vector_t res, pcb_vector_t v2, pcb_vector_t v3);
 void vect_min(pcb_vector_t res, pcb_vector_t v2, pcb_vector_t v3);
 void vect_max(pcb_vector_t res, pcb_vector_t v2, pcb_vector_t v3);
 
-double vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
-double vect_det2(pcb_vector_t v1, pcb_vector_t v2);
-double vect_len2(pcb_vector_t v1);
+double pcb_vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
+double pcb_vect_det2(pcb_vector_t v1, pcb_vector_t v2);
+double pcb_vect_len2(pcb_vector_t v1);
 
-int vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
+int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
 
 /* note that a vertex v's Flags.status represents the edge defined by
  * v to v->next (i.e. the edge is forward of v)
@@ -587,7 +587,7 @@ static pcb_r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 	if (s->intersected || i->s->intersected)
 		return R_DIR_NOT_FOUND;
 
-	cnt = vect_inters2(s->v->point, s->v->next->point, i->v->point, i->v->next->point, s1, s2);
+	cnt = pcb_vect_inters2(s->v->point, s->v->next->point, i->v->point, i->v->next->point, s1, s2);
 	if (!cnt)
 		return R_DIR_NOT_FOUND;
 	if (i->touch)									/* if checking touches one find and we're done */
@@ -2049,18 +2049,18 @@ pcb_bool pcb_polyarea_touching(pcb_polyarea_t * a, pcb_polyarea_t * b)
 }
 
 /* the main clipping routines */
-int poly_Boolean(const pcb_polyarea_t * a_org, const pcb_polyarea_t * b_org, pcb_polyarea_t ** res, int action)
+int pcb_polyarea_boolean(const pcb_polyarea_t * a_org, const pcb_polyarea_t * b_org, pcb_polyarea_t ** res, int action)
 {
 	pcb_polyarea_t *a = NULL, *b = NULL;
 
 	if (!pcb_polyarea_m_copy0(&a, a_org) || !pcb_polyarea_m_copy0(&b, b_org))
 		return err_no_memory;
 
-	return poly_Boolean_free(a, b, res, action);
+	return pcb_polyarea_boolean_free(a, b, res, action);
 }																/* poly_Boolean */
 
 /* just like poly_Boolean but frees the input polys */
-int poly_Boolean_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb_polyarea_t ** res, int action)
+int pcb_polyarea_boolean_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb_polyarea_t ** res, int action)
 {
 	pcb_polyarea_t *a = ai, *b = bi;
 	pcb_pline_t *a_isected = NULL;
@@ -2161,7 +2161,7 @@ static void clear_marks(pcb_polyarea_t * p)
 /* compute the intersection and subtraction (divides "a" into two pieces)
  * and frees the input polys. This assumes that bi is a single simple polygon.
  */
-int poly_AndSubtract_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb_polyarea_t ** aandb, pcb_polyarea_t ** aminusb)
+int pcb_polyarea_and_subtract_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb_polyarea_t ** aandb, pcb_polyarea_t ** aminusb)
 {
 	pcb_polyarea_t *a = ai, *b = bi;
 	pcb_pline_t *p, *holes = NULL;
@@ -2334,7 +2334,7 @@ void pcb_poly_contour_pre(pcb_pline_t * C, pcb_bool optimize)
 			 * So, remove the point c
 			 */
 
-			if (vect_det2(p1, p2) == 0) {
+			if (pcb_vect_det2(p1, p2) == 0) {
 				pcb_poly_vertex_exclude(c);
 				free(c);
 				c = p;
@@ -2831,9 +2831,9 @@ static pcb_bool inside_sector(pcb_vnode_t * pn, pcb_vector_t p2)
 	vect_sub(pdir, pn->point, pn->prev->point);
 	vect_sub(ndir, pn->next->point, pn->point);
 
-	p_c = vect_det2(pdir, cdir) >= 0;
-	n_c = vect_det2(ndir, cdir) >= 0;
-	p_n = vect_det2(pdir, ndir) >= 0;
+	p_c = pcb_vect_det2(pdir, cdir) >= 0;
+	n_c = pcb_vect_det2(ndir, cdir) >= 0;
+	p_n = pcb_vect_det2(pdir, ndir) >= 0;
 
 	if ((p_n && p_c && n_c) || ((!p_n) && (p_c || n_c)))
 		return pcb_true;
@@ -2853,20 +2853,20 @@ pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a)
 	do {
 		a2 = a1;
 		do {
-			if (!node_neighbours(a1, a2) && (icnt = vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2)) > 0) {
+			if (!node_neighbours(a1, a2) && (icnt = pcb_vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2)) > 0) {
 				if (icnt > 1)
 					return pcb_true;
 
-				if (vect_dist2(i1, a1->point) < EPSILON)
+				if (pcb_vect_dist2(i1, a1->point) < EPSILON)
 					hit1 = a1;
-				else if (vect_dist2(i1, a1->next->point) < EPSILON)
+				else if (pcb_vect_dist2(i1, a1->next->point) < EPSILON)
 					hit1 = a1->next;
 				else
 					hit1 = NULL;
 
-				if (vect_dist2(i1, a2->point) < EPSILON)
+				if (pcb_vect_dist2(i1, a2->point) < EPSILON)
 					hit2 = a2;
-				else if (vect_dist2(i1, a2->next->point) < EPSILON)
+				else if (pcb_vect_dist2(i1, a2->next->point) < EPSILON)
 					hit2 = a2->next;
 				else
 					hit2 = NULL;
@@ -2902,7 +2902,7 @@ pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a)
 	return pcb_false;
 }
 
-void poly_bbox(pcb_polyarea_t * p, pcb_box_t * b)
+void pcb_polyarea_bbox(pcb_polyarea_t * p, pcb_box_t * b)
 {
 	pcb_pline_t *n;
 	/*int cnt;*/
@@ -3013,12 +3013,12 @@ void vect_max(pcb_vector_t v1, pcb_vector_t v2, pcb_vector_t v3)
 	v1[1] = (v2[1] > v3[1]) ? v2[1] : v3[1];
 }																/* vect_max */
 
-double vect_len2(pcb_vector_t v)
+double pcb_vect_len2(pcb_vector_t v)
 {
 	return ((double) v[0] * v[0] + (double) v[1] * v[1]);	/* why sqrt? only used for compares */
 }
 
-double vect_dist2(pcb_vector_t v1, pcb_vector_t v2)
+double pcb_vect_dist2(pcb_vector_t v1, pcb_vector_t v2)
 {
 	double dx = v1[0] - v2[0];
 	double dy = v1[1] - v2[1];
@@ -3027,7 +3027,7 @@ double vect_dist2(pcb_vector_t v1, pcb_vector_t v2)
 }
 
 /* value has sign of angle between vectors */
-double vect_det2(pcb_vector_t v1, pcb_vector_t v2)
+double pcb_vect_det2(pcb_vector_t v1, pcb_vector_t v2)
 {
 	return (((double) v1[0] * v2[1]) - ((double) v2[0] * v1[1]));
 }
@@ -3053,7 +3053,7 @@ vect_inters2
  (C) 1997 Michael Leonov, Alexey Nikitin
 */
 
-int vect_inters2(pcb_vector_t p1, pcb_vector_t p2, pcb_vector_t q1, pcb_vector_t q2, pcb_vector_t S1, pcb_vector_t S2)
+int pcb_vect_inters2(pcb_vector_t p1, pcb_vector_t p2, pcb_vector_t q1, pcb_vector_t q2, pcb_vector_t S1, pcb_vector_t S2)
 {
 	double s, t, deel;
 	double rpx, rpy, rqx, rqy;
@@ -3082,7 +3082,7 @@ int vect_inters2(pcb_vector_t p1, pcb_vector_t p2, pcb_vector_t q1, pcb_vector_t
 
 
 		/* If this product is not zero then p1-p2 and q1-q2 are not on same line! */
-		if (vect_det2(q1p1, q1q2) != 0)
+		if (pcb_vect_det2(q1p1, q1q2) != 0)
 			return 0;
 		dc1 = 0;										/* m_len(p1 - p1) */
 

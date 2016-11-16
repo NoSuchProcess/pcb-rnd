@@ -154,18 +154,18 @@ enum pcb_poly_bool_op_e {
 	PBO_XOR
 };
 
-double vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
-double vect_det2(pcb_vector_t v1, pcb_vector_t v2);
-double vect_len2(pcb_vector_t v1);
+double pcb_vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
+double pcb_vect_det2(pcb_vector_t v1, pcb_vector_t v2);
+double pcb_vect_len2(pcb_vector_t v1);
 
-int vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
+int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
 
-int poly_Boolean(const pcb_polyarea_t * a, const pcb_polyarea_t * b, pcb_polyarea_t ** res, int action);
-int poly_Boolean_free(pcb_polyarea_t * a, pcb_polyarea_t * b, pcb_polyarea_t ** res, int action);
-int poly_AndSubtract_free(pcb_polyarea_t * a, pcb_polyarea_t * b, pcb_polyarea_t ** aandb, pcb_polyarea_t ** aminusb);
-int Savepcb_polyarea_t(pcb_polyarea_t * PA, char *fname);
+int pcb_polyarea_boolean(const pcb_polyarea_t * a, const pcb_polyarea_t * b, pcb_polyarea_t ** res, int action);
+int pcb_polyarea_boolean_free(pcb_polyarea_t * a, pcb_polyarea_t * b, pcb_polyarea_t ** res, int action);
+int pcb_polyarea_and_subtract_free(pcb_polyarea_t * a, pcb_polyarea_t * b, pcb_polyarea_t ** aandb, pcb_polyarea_t ** aminusb);
+int pcb_polyarea_save(pcb_polyarea_t * PA, char *fname);
 
 /* calculate the bounding box of a pcb_polyarea_t and save result in b */
-void poly_bbox(pcb_polyarea_t * p, pcb_box_t * b);
+void pcb_polyarea_bbox(pcb_polyarea_t * p, pcb_box_t * b);
 
 #endif /* PCB_POLYAREA_H */
