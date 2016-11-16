@@ -397,7 +397,7 @@ int pcb_drc_all(void)
 		PCB_LINE_COPPER_LOOP(PCB->Data);
 		{
 			/* check line clearances in polygons */
-			PlowsPolygon(PCB->Data, PCB_TYPE_LINE, layer, line, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_TYPE_LINE, layer, line, drc_callback);
 			if (IsBad)
 				break;
 			if (line->Thickness < PCB->minWid) {
@@ -428,7 +428,7 @@ int pcb_drc_all(void)
 	if (!IsBad) {
 		PCB_ARC_COPPER_LOOP(PCB->Data);
 		{
-			PlowsPolygon(PCB->Data, PCB_TYPE_ARC, layer, arc, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_TYPE_ARC, layer, arc, drc_callback);
 			if (IsBad)
 				break;
 			if (arc->Thickness < PCB->minWid) {
@@ -459,7 +459,7 @@ int pcb_drc_all(void)
 	if (!IsBad) {
 		PCB_PIN_ALL_LOOP(PCB->Data);
 		{
-			PlowsPolygon(PCB->Data, PCB_TYPE_PIN, element, pin, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_TYPE_PIN, element, pin, drc_callback);
 			if (IsBad)
 				break;
 			if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) && pin->Thickness - pin->DrillingHole < 2 * PCB->minRing) {
@@ -513,7 +513,7 @@ int pcb_drc_all(void)
 	if (!IsBad) {
 		PCB_PAD_ALL_LOOP(PCB->Data);
 		{
-			PlowsPolygon(PCB->Data, PCB_TYPE_PAD, element, pad, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_TYPE_PAD, element, pad, drc_callback);
 			if (IsBad)
 				break;
 			if (pad->Thickness < PCB->minWid) {
@@ -544,7 +544,7 @@ int pcb_drc_all(void)
 	if (!IsBad) {
 		PCB_VIA_LOOP(PCB->Data);
 		{
-			PlowsPolygon(PCB->Data, PCB_TYPE_VIA, via, via, drc_callback);
+			pcb_poly_plows(PCB->Data, PCB_TYPE_VIA, via, via, drc_callback);
 			if (IsBad)
 				break;
 			if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, via) && via->Thickness - via->DrillingHole < 2 * PCB->minRing) {

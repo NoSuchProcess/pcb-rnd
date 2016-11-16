@@ -51,29 +51,32 @@
 
 /* Prototypes */
 
-void polygon_init(void);
-pcb_cardinal_t polygon_point_idx(pcb_polygon_t *polygon, pcb_point_t *point);
-pcb_cardinal_t polygon_point_contour(pcb_polygon_t *polygon, pcb_cardinal_t point);
-pcb_cardinal_t prev_contour_point(pcb_polygon_t *polygon, pcb_cardinal_t point);
-pcb_cardinal_t next_contour_point(pcb_polygon_t *polygon, pcb_cardinal_t point);
-pcb_cardinal_t GetLowestDistancePolygonPoint(pcb_polygon_t *, pcb_coord_t, pcb_coord_t);
-pcb_bool RemoveExcessPolygonPoints(pcb_layer_t *, pcb_polygon_t *);
-void GoToPreviousPoint(void);
-void ClosePolygon(void);
-void CopyAttachedPolygonToLayer(void);
-int PolygonHoles(pcb_polygon_t * ptr, const pcb_box_t * range, int (*callback) (pcb_pline_t *, void *user_data), void *user_data);
-int PlowsPolygon(pcb_data_t *, int, void *, void *,
+void pcb_polygon_init(void);
+pcb_cardinal_t pcb_poly_point_idx(pcb_polygon_t *polygon, pcb_point_t *point);
+pcb_cardinal_t pcb_poly_contour_point(pcb_polygon_t *polygon, pcb_cardinal_t point);
+pcb_cardinal_t pcb_poly_contour_prev_point(pcb_polygon_t *polygon, pcb_cardinal_t point);
+pcb_cardinal_t pcb_poly_contour_next_point(pcb_polygon_t *polygon, pcb_cardinal_t point);
+pcb_cardinal_t pcb_poly_get_lowest_distance_point(pcb_polygon_t *, pcb_coord_t, pcb_coord_t);
+pcb_bool pcb_poly_remove_excess_points(pcb_layer_t *, pcb_polygon_t *);
+void pcb_polygon_go_to_prev_point(void);
+void pcb_polygon_close_poly(void);
+void pcb_polygon_copy_attached_to_layer(void);
+int pcb_poly_holes(pcb_polygon_t * ptr, const pcb_box_t * range, int (*callback) (pcb_pline_t *, void *user_data), void *user_data);
+int pcb_poly_plows(pcb_data_t *, int, void *, void *,
 								 pcb_r_dir_t (*callback) (pcb_data_t *, pcb_layer_t *, pcb_polygon_t *, int, void *, void *));
-void ComputeNoHoles(pcb_polygon_t * poly);
-pcb_polyarea_t *ContourToPoly(pcb_pline_t *);
-pcb_polyarea_t *PolygonToPoly(pcb_polygon_t *);
-pcb_polyarea_t *RectPoly(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_coord_t y2);
-pcb_polyarea_t *CirclePoly(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius);
-pcb_polyarea_t *OctagonPoly(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, int style);
-pcb_polyarea_t *LinePoly(pcb_line_t * l, pcb_coord_t thick);
-pcb_polyarea_t *ArcPoly(pcb_arc_t * l, pcb_coord_t thick);
-pcb_polyarea_t *PinPoly(pcb_pin_t * l, pcb_coord_t thick, pcb_coord_t clear);
-pcb_polyarea_t *BoxPolyBloated(pcb_box_t * box, pcb_coord_t radius);
+void pcb_poly_compute_no_holes(pcb_polygon_t * poly);
+
+/* helpers: create complex shaped polygons */
+pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t *);
+pcb_polyarea_t *pcb_poly_from_poly(pcb_polygon_t *);
+pcb_polyarea_t *pcb_poly_from_rect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_coord_t y2);
+pcb_polyarea_t *pcb_poly_from_circle(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius);
+pcb_polyarea_t *pcb_poly_from_octagon(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, int style);
+pcb_polyarea_t *pcb_poly_from_line(pcb_line_t * l, pcb_coord_t thick);
+pcb_polyarea_t *pcb_poly_from_arc(pcb_arc_t * l, pcb_coord_t thick);
+pcb_polyarea_t *pcb_poly_from_pin(pcb_pin_t * l, pcb_coord_t thick, pcb_coord_t clear);
+pcb_polyarea_t *pcb_poly_from_box_bloated(pcb_box_t * box, pcb_coord_t radius);
+
 void frac_circle(pcb_pline_t *, pcb_coord_t, pcb_coord_t, pcb_vector_t, int);
 int InitClip(pcb_data_t * d, pcb_layer_t * l, pcb_polygon_t * p);
 void RestoreToPolygon(pcb_data_t *, int, void *, void *);

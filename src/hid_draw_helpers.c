@@ -81,7 +81,7 @@ static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const pcb_bo
 	pcb_polyarea_t *draw_piece;
 	int x;
 
-	clip_poly = RectPoly(clip_box->X1, clip_box->X2, clip_box->Y1, clip_box->Y2);
+	clip_poly = pcb_poly_from_rect(clip_box->X1, clip_box->X2, clip_box->Y1, clip_box->Y2);
 	pcb_poly_contour_copy(&pl_copy, pl);
 	piece_poly = pcb_polyarea_create();
 	pcb_polyarea_contour_include(piece_poly, pl_copy);
@@ -142,7 +142,7 @@ void pcb_dhlp_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_
 		 * just compute what we need to render now.
 		 */
 		if (should_compute_no_holes(poly, clip_box))
-			ComputeNoHoles(poly);
+			pcb_poly_compute_no_holes(poly);
 		else
 			NoHolesPolygonDicer(poly, clip_box, fill_contour_cb, gc);
 	}
@@ -177,7 +177,7 @@ static int thindraw_hole_cb(pcb_pline_t * pl, void *user_data)
 void pcb_dhlp_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_box_t * clip_box)
 {
 	thindraw_contour(gc, poly->Clipped->contours);
-	PolygonHoles(poly, clip_box, thindraw_hole_cb, gc);
+	pcb_poly_holes(poly, clip_box, thindraw_hole_cb, gc);
 }
 
 void pcb_dhlp_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool mask)

@@ -106,7 +106,7 @@ static void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, i
 {
 	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
-		pcb_cardinal_t next = next_contour_point(polygon, i);
+		pcb_cardinal_t next = pcb_poly_contour_next_point(polygon, i);
 
 		if (next == 0) { /* last line: sometimes the implicit closing line */
 			if (i == 1) /* corner case: don't draw two lines on top of each other - with XOR it looks bad */
@@ -417,11 +417,11 @@ static void XORDrawMoveOrpcb_copy_obj(void)
 
 			polygon = (pcb_polygon_t *) Crosshair.AttachedObject.Ptr2;
 			point = (pcb_point_t *) Crosshair.AttachedObject.Ptr3;
-			point_idx = polygon_point_idx(polygon, point);
+			point_idx = pcb_poly_point_idx(polygon, point);
 
 			/* get previous and following point */
-			prev = prev_contour_point(polygon, point_idx);
-			next = next_contour_point(polygon, point_idx);
+			prev = pcb_poly_contour_prev_point(polygon, point_idx);
+			next = pcb_poly_contour_next_point(polygon, point_idx);
 
 			/* draw the two segments */
 			gui->draw_line(Crosshair.GC, polygon->Points[prev].X, polygon->Points[prev].Y, point->X + dx, point->Y + dy);

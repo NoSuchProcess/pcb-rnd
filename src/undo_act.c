@@ -137,7 +137,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 		pcb_notify_crosshair_change(pcb_false);
 		if ((conf_core.editor.mode == PCB_MODE_POLYGON || conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) && Crosshair.AttachedPolygon.PointN) {
-			GoToPreviousPoint();
+			pcb_polygon_go_to_prev_point();
 			pcb_notify_crosshair_change(pcb_true);
 			return 0;
 		}

@@ -79,7 +79,7 @@ static pcb_polyarea_t *diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t l, pc
 	v[0] = X + x2;
 	v[1] = Y + y1;
 	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
-	return ContourToPoly(c);
+	return pcb_poly_from_contour(c);
 }
 
 static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
@@ -106,7 +106,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X - out + d;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
-		p = ContourToPoly(c);
+		p = pcb_poly_from_contour(c);
 		/* right */
 		v[0] = pin->X + in;
 		v[1] = pin->Y + in - d;
@@ -119,7 +119,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[1] = pin->Y + out - d;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
-		p2 = ContourToPoly(c);
+		p2 = pcb_poly_from_contour(c);
 		p->f = p2;
 		p2->b = p;
 		/* left */
@@ -134,7 +134,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[1] = pin->Y - out + d;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
-		p2 = ContourToPoly(c);
+		p2 = pcb_poly_from_contour(c);
 		p->f->f = p2;
 		p2->b = p->f;
 		/* bottom (actually top since +y is down) */
@@ -149,7 +149,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X + out - d;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
-		p2 = ContourToPoly(c);
+		p2 = pcb_poly_from_contour(c);
 		p->f->f->f = p2;
 		p2->f = p;
 		p2->b = p->f->f;
@@ -166,26 +166,26 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 			l.Point1.X = pin->X - d;
 			l.Point2.Y = l.Point1.Y = pin->Y + out;
 			l.Point2.X = pin->X + d;
-			p = LinePoly(&l, in);
+			p = pcb_poly_from_line(&l, in);
 			/* right */
 			l.Point1.X = l.Point2.X = pin->X + out;
 			l.Point1.Y = pin->Y - d;
 			l.Point2.Y = pin->Y + d;
-			p2 = LinePoly(&l, in);
+			p2 = pcb_poly_from_line(&l, in);
 			p->f = p2;
 			p2->b = p;
 			/* bottom */
 			l.Point1.X = pin->X - d;
 			l.Point2.Y = l.Point1.Y = pin->Y - out;
 			l.Point2.X = pin->X + d;
-			p2 = LinePoly(&l, in);
+			p2 = pcb_poly_from_line(&l, in);
 			p->f->f = p2;
 			p2->b = p->f;
 			/* left */
 			l.Point1.X = l.Point2.X = pin->X - out;
 			l.Point1.Y = pin->Y - d;
 			l.Point2.Y = pin->Y + d;
-			p2 = LinePoly(&l, in);
+			p2 = pcb_poly_from_line(&l, in);
 			p->f->f->f = p2;
 			p2->b = p->f->f;
 			p->b = p2;
@@ -224,7 +224,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		}
 		else
 			frac_circle(c, v[0], v[1] - pin->Clearance / 4, v, 2);
-		p = ContourToPoly(c);
+		p = pcb_poly_from_contour(c);
 		/* bottom right */
 		v[0] = pin->X + in;
 		v[1] = pin->Y - d;
@@ -248,7 +248,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 5)
 			frac_circle(c, v[0] - pin->Clearance / 4, v[1], v, 2);
-		p2 = ContourToPoly(c);
+		p2 = pcb_poly_from_contour(c);
 		p->f = p2;
 		p2->b = p;
 		/* bottom left */
@@ -274,7 +274,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 5)
 			frac_circle(c, v[0], v[1] + pin->Clearance / 4, v, 2);
-		p2 = ContourToPoly(c);
+		p2 = pcb_poly_from_contour(c);
 		p->f->f = p2;
 		p2->b = p->f;
 		/* top left */
@@ -300,7 +300,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 5)
 			frac_circle(c, v[0], v[1] + pin->Clearance / 4, v, 2);
-		p2 = ContourToPoly(c);
+		p2 = pcb_poly_from_contour(c);
 		p->f->f->f = p2;
 		p2->f = p;
 		p2->b = p->f->f;
@@ -315,8 +315,8 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 	pcb_coord_t t = 0.5 * pcb->ThermScale * pin->Clearance;
 	pcb_coord_t w = pin->Thickness + pin->Clearance;
 
-	p = OctagonPoly(pin->X, pin->Y, w, PCB_FLAG_SQUARE_GET(pin));
-	p2 = OctagonPoly(pin->X, pin->Y, pin->Thickness, PCB_FLAG_SQUARE_GET(pin));
+	p = pcb_poly_from_octagon(pin->X, pin->Y, w, PCB_FLAG_SQUARE_GET(pin));
+	p2 = pcb_poly_from_octagon(pin->X, pin->Y, pin->Thickness, PCB_FLAG_SQUARE_GET(pin));
 	/* make full clearance ring */
 	pcb_polyarea_boolean_free(p, p2, &m, PBO_SUB);
 	switch (style) {
@@ -328,9 +328,9 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		pcb_polyarea_boolean_free(p2, p, &m, PBO_SUB);
 		return m;
 	case 2:
-		p = RectPoly(pin->X - t, pin->X + t, pin->Y - w, pin->Y + w);
+		p = pcb_poly_from_rect(pin->X - t, pin->X + t, pin->Y - w, pin->Y + w);
 		pcb_polyarea_boolean_free(m, p, &p2, PBO_SUB);
-		p = RectPoly(pin->X - w, pin->X + w, pin->Y - t, pin->Y + t);
+		p = pcb_poly_from_rect(pin->X - w, pin->X + w, pin->Y - t, pin->Y + t);
 		pcb_polyarea_boolean_free(p2, p, &m, PBO_SUB);
 		return m;
 		/* fix me add thermal style 4 */
@@ -340,7 +340,7 @@ static pcb_polyarea_t *oct_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 			pcb_polyarea_t *q;
 			/* cheat by using the square therm's rounded parts */
 			p = square_therm(pin, style);
-			q = RectPoly(pin->X - t, pin->X + t, pin->Y - t, pin->Y + t);
+			q = pcb_poly_from_rect(pin->X - t, pin->X + t, pin->Y - t, pin->Y + t);
 			pcb_polyarea_boolean_free(p, q, &p2, PBO_UNITE);
 			pcb_polyarea_boolean_free(m, p2, &p, PBO_ISECT);
 			return p;
@@ -374,8 +374,8 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 			pcb_polyarea_t *m;
 			pcb_coord_t t = (pin->Thickness + pin->Clearance) / 2;
 			pcb_coord_t w = 0.5 * pcb->ThermScale * pin->Clearance;
-			pa = CirclePoly(pin->X, pin->Y, t);
-			arc = CirclePoly(pin->X, pin->Y, pin->Thickness / 2);
+			pa = pcb_poly_from_circle(pin->X, pin->Y, t);
+			arc = pcb_poly_from_circle(pin->X, pin->Y, pin->Thickness / 2);
 			/* create a thin ring */
 			pcb_polyarea_boolean_free(pa, arc, &m, PBO_SUB);
 			/* fix me needs error checking */
@@ -383,9 +383,9 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 				/* t is the theoretically required length, but we use twice that
 				 * to avoid descritisation errors in our circle approximation.
 				 */
-				pa = RectPoly(pin->X - t * 2, pin->X + t * 2, pin->Y - w, pin->Y + w);
+				pa = pcb_poly_from_rect(pin->X - t * 2, pin->X + t * 2, pin->Y - w, pin->Y + w);
 				pcb_polyarea_boolean_free(m, pa, &arc, PBO_SUB);
-				pa = RectPoly(pin->X - w, pin->X + w, pin->Y - t * 2, pin->Y + t * 2);
+				pa = pcb_poly_from_rect(pin->X - w, pin->X + w, pin->Y - t * 2, pin->Y + t * 2);
 			}
 			else {
 				/* t is the theoretically required length, but we use twice that
@@ -409,23 +409,23 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 		a.Flags = pcb_no_flags();
 		a.Delta = 90 - (a.Clearance * (1. + 2. * pcb->ThermScale) * 180) / (M_PI * a.Width);
 		a.StartAngle = 90 - a.Delta / 2 + (style == 4 ? 0 : 45);
-		pa = ArcPoly(&a, a.Clearance);
+		pa = pcb_poly_from_arc(&a, a.Clearance);
 		if (!pa)
 			return NULL;
 		a.StartAngle += 90;
-		arc = ArcPoly(&a, a.Clearance);
+		arc = pcb_poly_from_arc(&a, a.Clearance);
 		if (!arc)
 			return NULL;
 		pa->f = arc;
 		arc->b = pa;
 		a.StartAngle += 90;
-		arc = ArcPoly(&a, a.Clearance);
+		arc = pcb_poly_from_arc(&a, a.Clearance);
 		if (!arc)
 			return NULL;
 		pa->f->f = arc;
 		arc->b = pa->f;
 		a.StartAngle += 90;
-		arc = ArcPoly(&a, a.Clearance);
+		arc = pcb_poly_from_arc(&a, a.Clearance);
 		if (!arc)
 			return NULL;
 		pa->b = arc;

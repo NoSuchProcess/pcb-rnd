@@ -306,7 +306,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 		 * first make sure adding the point is sensible
 		 */
 		line.Thickness = 0;
-		line.Point1 = Polygon->Points[prev_contour_point(Polygon, ctx->insert.idx)];
+		line.Point1 = Polygon->Points[pcb_poly_contour_prev_point(Polygon, ctx->insert.idx)];
 		line.Point2 = Polygon->Points[ctx->insert.idx];
 		if (IsPointOnLine((float) ctx->insert.x, (float) ctx->insert.y, 0.0, &line))
 			return (NULL);
@@ -332,7 +332,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 	pcb_poly_bbox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	InitClip(PCB->Data, Layer, Polygon);
-	if (ctx->insert.forcible || !RemoveExcessPolygonPoints(Layer, Polygon)) {
+	if (ctx->insert.forcible || !pcb_poly_remove_excess_points(Layer, Polygon)) {
 		DrawPolygon(Layer, Polygon);
 		pcb_draw();
 	}
@@ -377,7 +377,7 @@ void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 	PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 	pcb_poly_bbox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
-	RemoveExcessPolygonPoints(Layer, Polygon);
+	pcb_poly_remove_excess_points(Layer, Polygon);
 	InitClip(PCB->Data, Layer, Polygon);
 	if (Layer->On) {
 		DrawPolygon(Layer, Polygon);
@@ -474,8 +474,8 @@ void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 	pcb_cardinal_t contour;
 	pcb_cardinal_t contour_start, contour_end, contour_points;
 
-	point_idx = polygon_point_idx(Polygon, Point);
-	contour = polygon_point_contour(Polygon, point_idx);
+	point_idx = pcb_poly_point_idx(Polygon, Point);
+	contour = pcb_poly_contour_point(Polygon, point_idx);
 	contour_start = (contour == 0) ? 0 : Polygon->HoleIndex[contour - 1];
 	contour_end = (contour == Polygon->HoleIndexN) ? Polygon->PointN : Polygon->HoleIndex[contour];
 	contour_points = contour_end - contour_start;
@@ -576,8 +576,8 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 	pcb_cardinal_t contour;
 	pcb_cardinal_t contour_start, contour_end, contour_points;
 
-	point_idx = polygon_point_idx(Polygon, Point);
-	contour = polygon_point_contour(Polygon, point_idx);
+	point_idx = pcb_poly_point_idx(Polygon, Point);
+	contour = pcb_poly_contour_point(Polygon, point_idx);
 	contour_start = (contour == 0) ? 0 : Polygon->HoleIndex[contour - 1];
 	contour_end = (contour == Polygon->HoleIndexN) ? Polygon->PointN : Polygon->HoleIndex[contour];
 	contour_points = contour_end - contour_start;
@@ -604,7 +604,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 
 	pcb_poly_bbox(Polygon);
 	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
-	RemoveExcessPolygonPoints(Layer, Polygon);
+	pcb_poly_remove_excess_points(Layer, Polygon);
 	InitClip(PCB->Data, Layer, Polygon);
 
 	/* redraw polygon if necessary */

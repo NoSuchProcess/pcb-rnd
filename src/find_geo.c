@@ -485,7 +485,7 @@ pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
 			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
 		pcb_polyarea_t *ap;
 
-		if (!(ap = ArcPoly(Arc, Arc->Thickness + Bloat)))
+		if (!(ap = pcb_poly_from_arc(Arc, Arc->Thickness + Bloat)))
 			return pcb_false;							/* error */
 		return isects(ap, Polygon, pcb_true);
 	}
@@ -523,7 +523,7 @@ pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_polygon_t *Polygon)
 	if (Box->X1 <= Polygon->Clipped->contours->xmax + Bloat
 			&& Box->X2 >= Polygon->Clipped->contours->xmin - Bloat
 			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
-		if (!(lp = LinePoly(Line, Line->Thickness + Bloat)))
+		if (!(lp = pcb_poly_from_line(Line, Line->Thickness + Bloat)))
 			return pcb_false;							/* error */
 		return isects(lp, Polygon, pcb_true);
 	}
@@ -636,8 +636,8 @@ static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 		pcb_polyarea_t *pl1, *pl2;
 		int ret;
 
-		pl1 = PinPoly(PV1, PIN_SIZE(PV1) + Bloat, 0);
-		pl2 = PinPoly(PV2, PIN_SIZE(PV2) + Bloat, 0);
+		pl1 = pcb_poly_from_pin(PV1, PIN_SIZE(PV1) + Bloat, 0);
+		pl2 = pcb_poly_from_pin(PV2, PIN_SIZE(PV2) + Bloat, 0);
 		ret = pcb_polyarea_touching(pl1, pl2);
 		pcb_polyarea_free(&pl1);
 		pcb_polyarea_free(&pl2);
@@ -682,8 +682,8 @@ pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 			pcb_polyarea_t *pl, *lp;
 			int ret;
 
-			pl = PinPoly(PV, PIN_SIZE(PV), 0);
-			lp = LinePoly(Line, Line->Thickness + Bloat);
+			pl = pcb_poly_from_pin(PV, PIN_SIZE(PV), 0);
+			lp = pcb_poly_from_line(Line, Line->Thickness + Bloat);
 			ret = pcb_polyarea_touching(lp, pl);
 			pcb_polyarea_free(&pl);
 			pcb_polyarea_free(&lp);

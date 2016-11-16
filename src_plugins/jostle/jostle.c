@@ -286,7 +286,7 @@ static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vecto
 
 	line = Createpcb_vector_tLineOnLayer(layer, a, b, orig->Thickness, orig->Clearance, orig->Flags);
 	if (line && expandp) {
-		pcb_polyarea_t *p = LinePoly(line, line->Thickness + line->Clearance);
+		pcb_polyarea_t *p = pcb_poly_from_line(line, line->Thickness + line->Clearance);
 		pcb_polyarea_boolean_free(*expandp, p, expandp, PBO_UNITE);
 	}
 	return line;
@@ -392,7 +392,7 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 		pcb_fprintf(stderr, "\tinside2 %ms,%ms\n", p[0], p[1]);
 		inside++;
 	}
-	lp = LinePoly(line, line->Thickness);
+	lp = pcb_poly_from_line(line, line->Thickness);
 	if (!pcb_polyarea_touching(lp, info->brush)) {
 		/* not a factor */
 		return 0;
@@ -409,7 +409,7 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	 * Cut the brush with the line to figure out which side to go
 	 * around.  Use a very fine line.  XXX can still graze.
 	 */
-	lp = LinePoly(line, 1);
+	lp = pcb_poly_from_line(line, 1);
 	if (!pcb_polyarea_m_copy0(&copy, info->brush))
 		return 0;
 	r = pcb_polyarea_boolean_free(copy, lp, &tmp, PBO_SUB);
@@ -422,7 +422,7 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 		 * to get the glancing sliver??
 		 */
 		pcb_fprintf(stderr, "try isect??\n");
-		lp = LinePoly(line, line->Thickness);
+		lp = pcb_poly_from_line(line, line->Thickness);
 		r = pcb_polyarea_boolean_free(tmp, lp, &tmp, PBO_ISECT);
 		if (r != err_ok) {
 			fprintf(stderr, "Error while jostling PBO_ISECT: %d\n", r);
@@ -515,7 +515,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	x = Crosshair.X;
 	y = Crosshair.Y;
 	fprintf(stderr, "%d, %d, %f\n", (int) x, (int) y, value);
-	info.brush = CirclePoly(x, y, value / 2);
+	info.brush = pcb_poly_from_circle(x, y, value / 2);
 	info.layer = CURRENT;
 	PCB_LINE_LOOP(info.layer);
 	{

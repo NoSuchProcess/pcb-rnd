@@ -935,7 +935,7 @@ void pcb_notify_mode(void)
 			/* check if this is the last point of a polygon */
 			if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
 				pcb_hid_actionl("Polygon", "Close", NULL);
-				ClosePolygon();
+				pcb_polygon_close_poly();
 				break;
 			}
 
@@ -1010,8 +1010,8 @@ void pcb_notify_mode(void)
 					if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
 						/* Create pcb_polyarea_ts from the original polygon
 						 * and the new hole polygon */
-						original = PolygonToPoly((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2);
-						new_hole = PolygonToPoly(&Crosshair.AttachedPolygon);
+						original = pcb_poly_from_poly((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2);
+						new_hole = pcb_poly_from_poly(&Crosshair.AttachedPolygon);
 
 						/* Subtract the hole from the original polygon shape */
 						pcb_polyarea_boolean_free(original, new_hole, &result, PBO_SUB);
@@ -1203,9 +1203,9 @@ void pcb_notify_mode(void)
 					/* get starting point of nearest segment */
 					if (Crosshair.AttachedObject.Type == PCB_TYPE_POLYGON) {
 						fake.poly = (pcb_polygon_t *) Crosshair.AttachedObject.Ptr2;
-						polyIndex = GetLowestDistancePolygonPoint(fake.poly, Note.X, Note.Y);
+						polyIndex = pcb_poly_get_lowest_distance_point(fake.poly, Note.X, Note.Y);
 						fake.line.Point1 = fake.poly->Points[polyIndex];
-						fake.line.Point2 = fake.poly->Points[prev_contour_point(fake.poly, polyIndex)];
+						fake.line.Point2 = fake.poly->Points[pcb_poly_contour_prev_point(fake.poly, polyIndex)];
 						Crosshair.AttachedObject.Ptr2 = &fake.line;
 
 					}

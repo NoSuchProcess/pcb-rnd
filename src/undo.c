@@ -725,7 +725,7 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 			 * If so, we need to flag as such when re-adding the point
 			 * so it goes back in the correct place
 			 */
-			point_idx = polygon_point_idx(polygon, pnt);
+			point_idx = pcb_poly_point_idx(polygon, pnt);
 			for (hole = 0; hole < polygon->HoleIndexN; hole++)
 				if (point_idx == polygon->HoleIndex[hole] - 1)
 					last_in_contour = pcb_true;

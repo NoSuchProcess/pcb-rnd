@@ -209,7 +209,7 @@ void pcb_pin_bbox(pcb_pin_t *Pin)
 	pcb_coord_t width;
 
 	if ((PCB_FLAG_SQUARE_GET(Pin) > 1) && (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Pin))) {
-		pcb_polyarea_t *p = PinPoly(Pin, PIN_SIZE(Pin), Pin->Clearance);
+		pcb_polyarea_t *p = pcb_poly_from_pin(Pin, PIN_SIZE(Pin), Pin->Clearance);
 		pcb_polyarea_bbox(p, &Pin->BoundingBox);
 		pcb_polyarea_free(&p);
 	}

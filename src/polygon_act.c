@@ -123,12 +123,12 @@ static int ActionPolygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		switch (pcb_funchash_get(function, NULL)) {
 			/* close open polygon if possible */
 		case F_Close:
-			ClosePolygon();
+			pcb_polygon_close_poly();
 			break;
 
 			/* go back to the previous point */
 		case F_PreviousPoint:
-			GoToPreviousPoint();
+			pcb_polygon_go_to_prev_point();
 			break;
 		}
 		pcb_notify_crosshair_change(pcb_true);
