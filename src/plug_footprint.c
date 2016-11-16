@@ -38,7 +38,7 @@
 pcb_plug_fp_t *plug_fp_chain = NULL;
 pcb_fplibrary_t library;
 
-int fp_dupname(const char *name, char **basename, char **params)
+int pcb_fp_dupname(const char *name, char **basename, char **params)
 {
 	char *newname, *s;
 
@@ -63,7 +63,7 @@ int fp_dupname(const char *name, char **basename, char **params)
 
 static htsp_t *fp_tags = NULL;
 
-const void *fp_tag(const char *tag, int alloc)
+const void *pcb_fp_tag(const char *tag, int alloc)
 {
 	htsp_entry_t *e;
 	static char *counter = NULL;
@@ -79,13 +79,13 @@ const void *fp_tag(const char *tag, int alloc)
 	return e == NULL ? NULL : e->key;
 }
 
-void fp_init()
+void pcb_fp_init()
 {
 	library.type = LIB_DIR;
 	library.name = pcb_strdup("/");  /* All names are eventually free()'d */
 }
 
-void fp_uninit()
+void pcb_fp_uninit()
 {
 	htsp_entry_t *e;
 	fp_free_children(&library);
@@ -97,19 +97,19 @@ void fp_uninit()
 	}
 }
 
-const char *fp_tagname(const void *tagid)
+const char *pcb_fp_tagname(const void *tagid)
 {
 	return (char *) tagid;
 }
 
-FILE *fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
+FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
 	FILE *res = NULL;
 	HOOK_CALL(pcb_plug_fp_t, plug_fp_chain, fopen, res, != NULL, (self, path, name, fctx));
 	return res;
 }
 
-void fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
+void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
 	if (fctx->backend->fclose != NULL)
 		fctx->backend->fclose(fctx->backend, f, fctx);

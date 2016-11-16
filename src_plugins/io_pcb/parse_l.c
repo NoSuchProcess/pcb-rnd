@@ -2467,14 +2467,14 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	yyFont = &PCB->Font;
 	yyElement = NULL;
 
-	f = fp_fopen(fp_default_search_path(), name, &st);
+	f = pcb_fp_fopen(fp_default_search_path(), name, &st);
 
 	if (f == NULL)
 		return -1;
 
 	ret = Parse(f, NULL,NULL,NULL);
 
-	fp_fclose(f, &st);
+	pcb_fp_fclose(f, &st);
 
 	return(ret);
 }

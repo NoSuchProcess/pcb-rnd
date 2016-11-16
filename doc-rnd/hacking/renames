@@ -611,3 +611,10 @@ resolve_path -> pcb_path_resolve
 resolve_path_inplace -> pcb_path_resolve_inplace
 resolve_paths -> pcb_paths_resolve
 resolve_all_paths -> pcb_paths_resolve_all
+fp_fopen -> pcb_fp_fopen
+fp_fclose -> pcb_fp_fclose
+fp_dupname -> pcb_fp_dupname
+fp_tagname -> pcb_fp_tagname
+fp_uninit -> pcb_fp_uninit
+fp_tag -> pcb_fp_tag
+fp_init -> pcb_fp_init

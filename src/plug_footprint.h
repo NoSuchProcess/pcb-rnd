@@ -15,26 +15,26 @@ typedef struct {
 } pcb_fp_fopen_ctx_t;
 
 /* hook bindings, see below */
-FILE *fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx);
-void fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx);
+FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx);
+void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx);
 
 /* duplicates the name and splits it into a basename and params;
    params is NULL if the name is not parametric (and "" if parameter list is empty)
    returns 1 if name is parametric, 0 if file element.
    The caller shall free only *basename at the end.
    */
-int fp_dupname(const char *name, char **basename, char **params);
+int pcb_fp_dupname(const char *name, char **basename, char **params);
 
 /**** tag management ****/
 /* Resolve a tag name to an unique void * ID; create unknown tag if alloc != 0 */
-const void *fp_tag(const char *tag, int alloc);
+const void *pcb_fp_tag(const char *tag, int alloc);
 
 /* Resolve a tag ID to a tag name */
-const char *fp_tagname(const void *tagid);
+const char *pcb_fp_tagname(const void *tagid);
 
 /* init/uninit the footprint lib, free tag key memory */
-void fp_init();
-void fp_uninit();
+void pcb_fp_init();
+void pcb_fp_uninit();
 
 /**************************** API definition *********************************/
 struct pcb_plug_fp_s {
@@ -48,12 +48,12 @@ struct pcb_plug_fp_s {
 /* Open a footprint for reading; if the footprint is parametric, it's run
    prefixed with libshell (or executed directly, if libshell is NULL).
    If name is not an absolute path, search_path is searched for the first match.
-   The user has to supply a state integer that will be used by pcb_fp_fclose().
+   The user has to supply a state integer that will be used by pcb_pcb_fp_fclose().
    Must fill in fctx->backend, may use any other field of fctx as well.
  */
 	FILE *(*fopen)(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx);
 
-/* Close the footprint file opened by pcb_fp_fopen(). */
+/* Close the footprint file opened by pcb_pcb_fp_fopen(). */
 	void (*fclose)(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx);
 };
 

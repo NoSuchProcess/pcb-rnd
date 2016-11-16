@@ -797,7 +797,7 @@ static int add_elements(char * pcb_file)
 			if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				printf("%s: need new element for footprint  %s (value=%s)\n", el->refdes, el->description, el->value);
 
-			fp = fp_fopen(element_search_path, el->description, &fctx);
+			fp = pcb_fp_fopen(element_search_path, el->description, &fctx);
 
 			if (fp == NULL && conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				printf("\tNo file element found.\n");
@@ -819,7 +819,7 @@ static int add_elements(char * pcb_file)
 				}
 			}
 			if (fp != NULL)
-				fp_fclose(fp, &fctx);
+				pcb_fp_fclose(fp, &fctx);
 		}
 
 		pcb_element_free(el);
@@ -1227,7 +1227,7 @@ int main(int argc, char ** argv)
 
 	conf_update(NULL); /* because of CLI changes */
 
-	fp_init();
+	pcb_fp_init();
 
 	element_search_path = fp_default_search_path();
 

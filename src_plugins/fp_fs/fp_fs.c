@@ -418,7 +418,7 @@ static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags)
 						Talloced += 8;
 						*tags = realloc(*tags, (Talloced + 1) * sizeof(void *));
 					}
-					(*tags)[Tused] = (void *) fp_tag(tag, 1);
+					(*tags)[Tused] = (void *) pcb_fp_tag(tag, 1);
 					Tused++;
 					(*tags)[Tused] = NULL;
 				}
@@ -452,7 +452,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 	FILE *f = NULL;
 	const char *libshell = conf_core.rc.library_shell;
 
-	fctx->field[F_IS_PARAMETRIC].i = fp_dupname(name, &basename, &params);
+	fctx->field[F_IS_PARAMETRIC].i = pcb_fp_dupname(name, &basename, &params);
 	if (basename == NULL)
 		return NULL;
 

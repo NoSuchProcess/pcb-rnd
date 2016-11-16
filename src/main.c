@@ -235,7 +235,7 @@ void pcb_main_uninit(void)
 	pcb_strflg_uninit_buf();
 	pcb_strflg_uninit_layerlist();
 
-	fp_uninit();
+	pcb_fp_uninit();
 	fp_host_uninit();
 	pcb_funchash_uninit();
 	free(hid_argv_orig);
@@ -349,7 +349,7 @@ int main(int argc, char *argv[])
 	setbuf(stdout, 0);
 	InitPaths(argv[0]);
 
-	fp_init();
+	pcb_fp_init();
 
 #ifdef LOCALEDIR
 	bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
