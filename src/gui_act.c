@@ -1035,10 +1035,10 @@ static int ActionRouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		if (number > 0 && number <= vtroutestyle_len(&PCB->RouteStyle)) {
 			rts = &PCB->RouteStyle.array[number - 1];
-			pcb_line_set_size(rts->Thick);
-			pcb_via_set_size(rts->Diameter, pcb_true);
-			pcb_via_set_drilling_hole(rts->Hole, pcb_true);
-			pcb_conf_set_clearance_width(rts->Clearance);
+			pcb_board_set_line_width(rts->Thick);
+			pcb_board_set_via_size(rts->Diameter, pcb_true);
+			pcb_board_set_via_drilling_hole(rts->Hole, pcb_true);
+			pcb_board_set_clearance(rts->Clearance);
 			pcb_hid_action("RouteStylesChanged");
 		}
 		else

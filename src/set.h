@@ -31,13 +31,15 @@
 
 #include "global_typedefs.h"
 
-void pcb_text_set_scale(int);
 void pcb_board_set_grid(pcb_coord_t, pcb_bool);
-void pcb_line_set_size(pcb_coord_t);
-void pcb_via_set_size(pcb_coord_t, pcb_bool);
-void pcb_via_set_drilling_hole(pcb_coord_t, pcb_bool);
-void pcb_conf_set_clearance_width(pcb_coord_t);
 void pcb_board_set_changed_flag(pcb_bool);
+
+void pcb_board_set_text_scale(int);
+void pcb_board_set_line_width(pcb_coord_t);
+void pcb_board_set_via_size(pcb_coord_t, pcb_bool);
+void pcb_board_set_via_drilling_hole(pcb_coord_t, pcb_bool);
+void pcb_board_set_clearance(pcb_coord_t);
+
 void pcb_buffer_set_number(int);
 void pcb_crosshair_set_mode(int);
 void pcb_crosshair_range_to_buffer(void);

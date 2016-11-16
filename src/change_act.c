@@ -1320,7 +1320,7 @@ static int ActionSetValue(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		value = pcb_get_value(val, units, &absolute, NULL);
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_ViaDrillingHole:
-			pcb_via_set_drilling_hole(absolute ? value : value + conf_core.design.via_drilling_hole, pcb_false);
+			pcb_board_set_via_drilling_hole(absolute ? value : value + conf_core.design.via_drilling_hole, pcb_false);
 			pcb_hid_action("RouteStylesChanged");
 			break;
 
@@ -1341,20 +1341,20 @@ static int ActionSetValue(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 		case F_LineSize:
 		case F_Line:
-			pcb_line_set_size(absolute ? value : value + conf_core.design.line_thickness);
+			pcb_board_set_line_width(absolute ? value : value + conf_core.design.line_thickness);
 			pcb_hid_action("RouteStylesChanged");
 			break;
 
 		case F_Via:
 		case F_ViaSize:
-			pcb_via_set_size(absolute ? value : value + conf_core.design.via_thickness, pcb_false);
+			pcb_board_set_via_size(absolute ? value : value + conf_core.design.via_thickness, pcb_false);
 			pcb_hid_action("RouteStylesChanged");
 			break;
 
 		case F_Text:
 		case F_TextScale:
 			value /= 45;
-			pcb_text_set_scale(absolute ? value : value + conf_core.design.text_scale);
+			pcb_board_set_text_scale(absolute ? value : value + conf_core.design.text_scale);
 			break;
 		default:
 			err = 1;

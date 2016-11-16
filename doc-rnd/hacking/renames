@@ -856,3 +856,8 @@ SetCrosshairRangeToBuffer -> pcb_crosshair_range_to_buffer
 SetLocalRef -> pcb_crosshair_set_local_ref
 SaveMode -> pcb_crosshair_save_mode
 RestoreMode -> pcb_crosshair_restore_mode
+pcb_text_set_scale -> pcb_board_set_text_scale
+pcb_line_set_size -> pcb_board_set_line_width
+pcb_via_set_size -> pcb_board_set_via_size
+pcb_via_set_drilling_hole -> pcb_board_set_via_drilling_hole
+pcb_conf_set_clearance_width -> pcb_board_set_clearance

@@ -240,10 +240,10 @@ static void style_selected(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 		return;
 	}
 	style = PCB->RouteStyle.array + i;
-	pcb_line_set_size(style->Thick);
-	pcb_via_set_size(style->Diameter, pcb_true);
-	pcb_via_set_drilling_hole(style->Hole, pcb_true);
-	pcb_conf_set_clearance_width(style->Clearance);
+	pcb_board_set_line_width(style->Thick);
+	pcb_board_set_via_size(style->Diameter, pcb_true);
+	pcb_board_set_via_drilling_hole(style->Hole, pcb_true);
+	pcb_board_set_clearance(style->Clearance);
 	if (style_dialog) {
 		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)
 			if (j != i)

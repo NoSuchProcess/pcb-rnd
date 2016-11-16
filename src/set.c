@@ -69,7 +69,7 @@ void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align)
 /* ---------------------------------------------------------------------------
  * sets a new line thickness
  */
-void pcb_line_set_size(pcb_coord_t Size)
+void pcb_board_set_line_width(pcb_coord_t Size)
 {
 	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
 		conf_set_design("design/line_thickness", "%$mS", Size);
@@ -81,7 +81,7 @@ void pcb_line_set_size(pcb_coord_t Size)
 /* ---------------------------------------------------------------------------
  * sets a new via thickness
  */
-void pcb_via_set_size(pcb_coord_t Size, pcb_bool Force)
+void pcb_board_set_via_size(pcb_coord_t Size, pcb_bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_thickness", "%$mS", Size);
@@ -91,7 +91,7 @@ void pcb_via_set_size(pcb_coord_t Size, pcb_bool Force)
 /* ---------------------------------------------------------------------------
  * sets a new via drilling hole
  */
-void pcb_via_set_drilling_hole(pcb_coord_t Size, pcb_bool Force)
+void pcb_board_set_via_drilling_hole(pcb_coord_t Size, pcb_bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_drilling_hole", "%$mS", Size);
@@ -101,7 +101,7 @@ void pcb_via_set_drilling_hole(pcb_coord_t Size, pcb_bool Force)
 /* ---------------------------------------------------------------------------
  * sets a clearance width
  */
-void pcb_conf_set_clearance_width(pcb_coord_t Width)
+void pcb_board_set_clearance(pcb_coord_t Width)
 {
 	if (Width <= MAX_LINESIZE) {
 		conf_set_design("design/clearance", "%$mS", Width);
@@ -111,7 +111,7 @@ void pcb_conf_set_clearance_width(pcb_coord_t Width)
 /* ---------------------------------------------------------------------------
  * sets a text scaling
  */
-void pcb_text_set_scale(int Scale)
+void pcb_board_set_text_scale(int Scale)
 {
 	if (Scale <= MAX_TEXTSCALE && Scale >= MIN_TEXTSCALE) {
 		conf_set_design("design/text_scale", "%d", Scale);
