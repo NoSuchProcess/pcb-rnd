@@ -91,21 +91,21 @@ struct pcb_pline_s {
 	} Flags;
 };
 
-pcb_pline_t *poly_NewContour(pcb_vector_t v);
+pcb_pline_t *pcb_poly_contour_new(pcb_vector_t v);
 
-void poly_IniContour(pcb_pline_t * c);
-void poly_ClrContour(pcb_pline_t * c);	/* clears list of vertices */
-void poly_DelContour(pcb_pline_t ** c);
+void pcb_poly_contour_init(pcb_pline_t * c);
+void pcb_poly_contour_clear(pcb_pline_t * c);	/* clears list of vertices */
+void pcb_poly_contour_del(pcb_pline_t ** c);
 
-pcb_bool poly_CopyContour(pcb_pline_t ** dst, pcb_pline_t * src);
+pcb_bool pcb_poly_contour_copy(pcb_pline_t ** dst, pcb_pline_t * src);
 
-void poly_PreContour(pcb_pline_t * c, pcb_bool optimize);	/* prepare contour */
-void poly_InvContour(pcb_pline_t * c);	/* invert contour */
+void pcb_poly_contour_pre(pcb_pline_t * c, pcb_bool optimize);	/* prepare contour */
+void pcb_poly_contour_inv(pcb_pline_t * c);	/* invert contour */
 
-pcb_vnode_t *poly_CreateNode(pcb_vector_t v);
+pcb_vnode_t *pcb_poly_node_create(pcb_vector_t v);
 
-void poly_InclVertex(pcb_vnode_t * after, pcb_vnode_t * node);
-void poly_ExclVertex(pcb_vnode_t * node);
+void pcb_poly_vertex_include(pcb_vnode_t * after, pcb_vnode_t * node);
+void pcb_poly_vertex_exclude(pcb_vnode_t * node);
 
 /**********************************************************************/
 
@@ -116,20 +116,20 @@ struct pcb_polyarea_s {
 	pcb_rtree_t *contour_tree;
 };
 
-pcb_bool poly_M_Copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * srcfst);
-void poly_M_Incl(pcb_polyarea_t ** list, pcb_polyarea_t * a);
+pcb_bool pcb_poly_m_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * srcfst);
+void pcb_poly_m_include(pcb_polyarea_t ** list, pcb_polyarea_t * a);
 
-pcb_bool poly_Copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src);
-pcb_bool poly_Copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src);
+pcb_bool pcb_poly_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src);
+pcb_bool pcb_poly_copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src);
 
-pcb_bool poly_InclContour(pcb_polyarea_t * p, pcb_pline_t * c);
-pcb_bool poly_ExclContour(pcb_polyarea_t * p, pcb_pline_t * c);
+pcb_bool pcb_poly_contour_include(pcb_polyarea_t * p, pcb_pline_t * c);
+pcb_bool pcb_poly_contour_exclide(pcb_polyarea_t * p, pcb_pline_t * c);
 
 
-pcb_bool poly_ChkContour(pcb_pline_t * a);
+pcb_bool pcb_poly_contour_check(pcb_pline_t * a);
 
-pcb_bool poly_CheckInside(pcb_polyarea_t * c, pcb_vector_t v0);
-pcb_bool Touching(pcb_polyarea_t * p1, pcb_polyarea_t * p2);
+pcb_bool pcb_poly_contour_inside(pcb_polyarea_t * c, pcb_vector_t v0);
+pcb_bool pcb_poly_touching(pcb_polyarea_t * p1, pcb_polyarea_t * p2);
 
 /**********************************************************************/
 

@@ -204,7 +204,7 @@ static pcb_polyarea_t *biggest(pcb_polyarea_t * p)
 		if (n->contours->area < PCB->IsleArea) {
 			n->b->f = n->f;
 			n->f->b = n->b;
-			poly_DelContour(&n->contours);
+			pcb_poly_contour_del(&n->contours);
 			if (n == p)
 				p = n->f;
 			n = n->f;
@@ -238,11 +238,11 @@ static pcb_polyarea_t *biggest(pcb_polyarea_t * p)
 pcb_polyarea_t *ContourToPoly(pcb_pline_t * contour)
 {
 	pcb_polyarea_t *p;
-	poly_PreContour(contour, pcb_true);
+	pcb_poly_contour_pre(contour, pcb_true);
 	assert(contour->Flags.orient == PLF_DIR);
 	if (!(p = poly_Create()))
 		return NULL;
-	poly_InclContour(p, contour);
+	pcb_poly_contour_include(p, contour);
 	assert(poly_Valid(p));
 	return p;
 }
@@ -266,23 +266,23 @@ static pcb_polyarea_t *original_poly(pcb_polygon_t * p)
 		v[0] = p->Points[n].X;
 		v[1] = p->Points[n].Y;
 		if (contour == NULL) {
-			if ((contour = poly_NewContour(v)) == NULL)
+			if ((contour = pcb_poly_contour_new(v)) == NULL)
 				return NULL;
 		}
 		else {
-			poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+			pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 		}
 
 		/* Is current point last in contour? If so process it. */
 		if (n == p->PointN - 1 || (hole < p->HoleIndexN && n == p->HoleIndex[hole] - 1)) {
-			poly_PreContour(contour, pcb_true);
+			pcb_poly_contour_pre(contour, pcb_true);
 
 			/* make sure it is a positive contour (outer) or negative (hole) */
 			if (contour->Flags.orient != (hole ? PLF_INV : PLF_DIR))
-				poly_InvContour(contour);
+				pcb_poly_contour_inv(contour);
 			assert(contour->Flags.orient == (hole ? PLF_INV : PLF_DIR));
 
-			poly_InclContour(np, contour);
+			pcb_poly_contour_include(np, contour);
 			contour = NULL;
 			assert(poly_Valid(np));
 
@@ -308,17 +308,17 @@ pcb_polyarea_t *RectPoly(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_coo
 
 	v[0] = x1;
 	v[1] = y1;
-	if ((contour = poly_NewContour(v)) == NULL)
+	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
 	v[0] = x2;
 	v[1] = y1;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	v[0] = x2;
 	v[1] = y2;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	v[0] = x1;
 	v[1] = y2;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	return ContourToPoly(contour);
 }
 
@@ -358,36 +358,36 @@ pcb_polyarea_t *OctagonPoly(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, in
 	/* point 7 */
 	v[0] = x + ROUND(radius * 0.5) * xm[7];
 	v[1] = y + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[7];
-	if ((contour = poly_NewContour(v)) == NULL)
+	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
 	/* point 6 */
 	v[0] = x + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[6];
 	v[1] = y + ROUND(radius * 0.5) * ym[6];
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	/* point 5 */
 	v[0] = x - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[5];
 	v[1] = y + ROUND(radius * 0.5) * ym[5];
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	/* point 4 */
 	v[0] = x - ROUND(radius * 0.5) * xm[4];
 	v[1] = y + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[4];
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	/* point 3 */
 	v[0] = x - ROUND(radius * 0.5) * xm[3];
 	v[1] = y - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[3];
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	/* point 2 */
 	v[0] = x - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[2];
 	v[1] = y - ROUND(radius * 0.5) * ym[2];
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	/* point 1 */
 	v[0] = x + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[1];
 	v[1] = y - ROUND(radius * 0.5) * ym[1];
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	/* point 0 */
 	v[0] = x + ROUND(radius * 0.5) * xm[0];
 	v[1] = y - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[0];
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	return ContourToPoly(contour);
 }
 
@@ -403,7 +403,7 @@ void frac_circle(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, 
 	double e1, e2, t1;
 	int i;
 
-	poly_InclVertex(c->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 	/* move vector to origin */
 	e1 = (v[0] - X) * POLY_CIRC_RADIUS_ADJ;
 	e2 = (v[1] - Y) * POLY_CIRC_RADIUS_ADJ;
@@ -417,7 +417,7 @@ void frac_circle(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, 
 		e1 = t1;
 		v[0] = X + ROUND(e1);
 		v[1] = Y + ROUND(e2);
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 	}
 }
 
@@ -431,7 +431,7 @@ pcb_polyarea_t *CirclePoly(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius)
 		return NULL;
 	v[0] = x + radius;
 	v[1] = y;
-	if ((contour = poly_NewContour(v)) == NULL)
+	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
 	frac_circle(contour, x, y, v, 1);
 	contour->is_round = pcb_true;
@@ -451,20 +451,20 @@ pcb_polyarea_t *RoundRect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_co
 	assert(y2 > y1);
 	v[0] = x1 - t;
 	v[1] = y1;
-	if ((contour = poly_NewContour(v)) == NULL)
+	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
 	frac_circle(contour, x1, y1, v, 4);
 	v[0] = x2;
 	v[1] = y1 - t;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	frac_circle(contour, x2, y1, v, 4);
 	v[0] = x2 + t;
 	v[1] = y2;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	frac_circle(contour, x2, y2, v, 4);
 	v[0] = x1;
 	v[1] = y2 + t;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	frac_circle(contour, x1, y2, v, 4);
 	return ContourToPoly(contour);
 }
@@ -503,13 +503,13 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	radius_adj = (M_PI * da / 360) * (M_PI * da / 360) / 2;
 	v[0] = a->X - rx * cos(ang * PCB_M180);
 	v[1] = a->Y + ry * sin(ang * PCB_M180);
-	if ((contour = poly_NewContour(v)) == NULL)
+	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return 0;
 	for (i = 0; i < segs - 1; i++) {
 		ang += da;
 		v[0] = a->X - rx * cos(ang * PCB_M180);
 		v[1] = a->Y + ry * sin(ang * PCB_M180);
-		poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	}
 	/* find last point */
 	ang = a->StartAngle + a->Delta;
@@ -524,7 +524,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	for (i = 0; i < segs; i++) {
 		v[0] = a->X - rx * cos(ang * PCB_M180);
 		v[1] = a->Y + ry * sin(ang * PCB_M180);
-		poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 		ang += da;
 	}
 	/* now add other round cap */
@@ -600,21 +600,21 @@ pcb_polyarea_t *LinePoly(pcb_line_t * L, pcb_coord_t thick)
 	}
 	v[0] = l->Point1.X - dx;
 	v[1] = l->Point1.Y - dy;
-	if ((contour = poly_NewContour(v)) == NULL)
+	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return 0;
 	v[0] = l->Point2.X - dx;
 	v[1] = l->Point2.Y - dy;
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
-		poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	else
 		frac_circle(contour, l->Point2.X, l->Point2.Y, v, 2);
 	v[0] = l->Point2.X + dx;
 	v[1] = l->Point2.Y + dy;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	v[0] = l->Point1.X + dx;
 	v[1] = l->Point1.Y + dy;
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
-		poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	else
 		frac_circle(contour, l->Point1.X, l->Point1.Y, v, 2);
 	/* now we have the line contour */
@@ -669,23 +669,23 @@ pcb_polyarea_t *SquarePadPoly(pcb_pad_t * pad, pcb_coord_t clear)
 
 	v[0] = c->Point1.X - tx;
 	v[1] = c->Point1.Y - ty;
-	if ((contour = poly_NewContour(v)) == NULL)
+	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return 0;
 	frac_circle(contour, (t->Point1.X - tx), (t->Point1.Y - ty), v, 4);
 
 	v[0] = t->Point2.X - cx;
 	v[1] = t->Point2.Y - cy;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	frac_circle(contour, (t->Point2.X - tx), (t->Point2.Y - ty), v, 4);
 
 	v[0] = c->Point2.X + tx;
 	v[1] = c->Point2.Y + ty;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	frac_circle(contour, (t->Point2.X + tx), (t->Point2.Y + ty), v, 4);
 
 	v[0] = t->Point1.X + cx;
 	v[1] = t->Point1.Y + cy;
-	poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	frac_circle(contour, (t->Point1.X + tx), (t->Point1.Y + ty), v, 4);
 
 	/* now we have the line contour */
@@ -1560,7 +1560,7 @@ pcb_bool isects(pcb_polyarea_t * a, pcb_polygon_t *p, pcb_bool fr)
 {
 	pcb_polyarea_t *x;
 	pcb_bool ans;
-	ans = Touching(a, p->Clipped);
+	ans = pcb_poly_touching(a, p->Clipped);
 	/* argument may be register, so we must copy it */
 	x = a;
 	if (fr)
@@ -1575,7 +1575,7 @@ pcb_bool IsPointInPolygon(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t r, pcb_polyg
 	pcb_vector_t v;
 	v[0] = X;
 	v[1] = Y;
-	if (poly_CheckInside(p->Clipped, v))
+	if (pcb_poly_contour_inside(p->Clipped, v))
 		return pcb_true;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, p)) {
@@ -1583,7 +1583,7 @@ pcb_bool IsPointInPolygon(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t r, pcb_polyg
 
 		/* Check all clipped-away regions that are now drawn because of full-poly */
 		for (tmp.Clipped = p->Clipped->f; tmp.Clipped != p->Clipped; tmp.Clipped = tmp.Clipped->f)
-			if (poly_CheckInside(tmp.Clipped, v))
+			if (pcb_poly_contour_inside(tmp.Clipped, v))
 				return pcb_true;
 	}
 
@@ -1663,7 +1663,7 @@ void NoHolesPolygonDicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) 
 
 	main_contour = poly_Create();
 	/* copy the main poly only */
-	poly_Copy1(main_contour, p->Clipped);
+	pcb_poly_copy1(main_contour, p->Clipped);
 	/* clip to the bounding box */
 	if (clip) {
 		pcb_polyarea_t *cbox = RectPoly(clip->X1, clip->X2, clip->Y1, clip->Y2);
@@ -1740,7 +1740,7 @@ pcb_bool MorphPolygon(pcb_layer_t *layer, pcb_polygon_t *poly)
 			pcb_polyarea_t *t = p;
 
 			p = p->f;
-			poly_DelContour(&t->contours);
+			pcb_poly_contour_del(&t->contours);
 			free(t);
 		}
 	}

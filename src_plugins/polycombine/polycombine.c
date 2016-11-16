@@ -59,16 +59,16 @@ static pcb_polyarea_t *original_poly(pcb_polygon_t *p, pcb_bool *forward)
 		v[0] = p->Points[n].X;
 		v[1] = p->Points[n].Y;
 		if (contour == NULL) {
-			if ((contour = poly_NewContour(v)) == NULL)
+			if ((contour = pcb_poly_contour_new(v)) == NULL)
 				return NULL;
 		}
 		else {
-			poly_InclVertex(contour->head.prev, poly_CreateNode(v));
+			pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 		}
 
 		/* Is current point last in contour? If so process it. */
 		if (n == p->PointN - 1 || (hole < p->HoleIndexN && n == p->HoleIndex[hole] - 1)) {
-			poly_PreContour(contour, pcb_true);
+			pcb_poly_contour_pre(contour, pcb_true);
 
 			/* Log the direction in which the outer contour was specified */
 			if (hole == 0)
@@ -76,10 +76,10 @@ static pcb_polyarea_t *original_poly(pcb_polygon_t *p, pcb_bool *forward)
 
 			/* make sure it is a positive contour (outer) or negative (hole) */
 			if (contour->Flags.orient != (hole ? PLF_INV : PLF_DIR))
-				poly_InvContour(contour);
+				pcb_poly_contour_inv(contour);
 			assert(contour->Flags.orient == (hole ? PLF_INV : PLF_DIR));
 
-			poly_InclContour(np, contour);
+			pcb_poly_contour_include(np, contour);
 			contour = NULL;
 			assert(poly_Valid(np));
 
@@ -131,7 +131,7 @@ static pcb_bool PolygonContainsPolygon(pcb_polyarea_t *outer, pcb_polyarea_t *in
 {
 /*  int contours_isect;*/
 	/* Should check outer contours don't intersect? */
-/*  contours_isect = Touching (outer, inner);*/
+/*  contours_isect = pcb_poly_touching(outer, inner);*/
 	/* Cheat and assume simple single contour polygons for now */
 /*  return contours_isect ?
            0 : poly_ContourInContour (outer->contours, inner->contours);*/

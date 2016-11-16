@@ -393,7 +393,7 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 		inside++;
 	}
 	lp = LinePoly(line, line->Thickness);
-	if (!Touching(lp, info->brush)) {
+	if (!pcb_poly_touching(lp, info->brush)) {
 		/* not a factor */
 		return 0;
 	}
@@ -410,7 +410,7 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	 * around.  Use a very fine line.  XXX can still graze.
 	 */
 	lp = LinePoly(line, 1);
-	if (!poly_M_Copy0(&copy, info->brush))
+	if (!pcb_poly_m_copy0(&copy, info->brush))
 		return 0;
 	r = poly_Boolean_free(copy, lp, &tmp, PBO_SUB);
 	if (r != err_ok) {

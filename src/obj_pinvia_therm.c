@@ -68,17 +68,17 @@ static pcb_polyarea_t *diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t l, pc
 
 	v[0] = X + x1;
 	v[1] = Y + y2;
-	if ((c = poly_NewContour(v)) == NULL)
+	if ((c = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
 	v[0] = X - x2;
 	v[1] = Y - y1;
-	poly_InclVertex(c->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 	v[0] = X - x1;
 	v[1] = Y - y2;
-	poly_InclVertex(c->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 	v[0] = X + x2;
 	v[1] = Y + y1;
-	poly_InclVertex(c->head.prev, poly_CreateNode(v));
+	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 	return ContourToPoly(c);
 }
 
@@ -97,58 +97,58 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		/* top (actually bottom since +y is down) */
 		v[0] = pin->X - in + d;
 		v[1] = pin->Y + in;
-		if ((c = poly_NewContour(v)) == NULL)
+		if ((c = pcb_poly_contour_new(v)) == NULL)
 			return NULL;
 		v[0] = pin->X + in - d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X + out - d;
 		v[1] = pin->Y + out;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X - out + d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		p = ContourToPoly(c);
 		/* right */
 		v[0] = pin->X + in;
 		v[1] = pin->Y + in - d;
-		if ((c = poly_NewContour(v)) == NULL)
+		if ((c = pcb_poly_contour_new(v)) == NULL)
 			return NULL;
 		v[1] = pin->Y - in + d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X + out;
 		v[1] = pin->Y - out + d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[1] = pin->Y + out - d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		p2 = ContourToPoly(c);
 		p->f = p2;
 		p2->b = p;
 		/* left */
 		v[0] = pin->X - in;
 		v[1] = pin->Y - in + d;
-		if ((c = poly_NewContour(v)) == NULL)
+		if ((c = pcb_poly_contour_new(v)) == NULL)
 			return NULL;
 		v[1] = pin->Y + in - d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X - out;
 		v[1] = pin->Y + out - d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[1] = pin->Y - out + d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		p2 = ContourToPoly(c);
 		p->f->f = p2;
 		p2->b = p->f;
 		/* bottom (actually top since +y is down) */
 		v[0] = pin->X + in - d;
 		v[1] = pin->Y - in;
-		if ((c = poly_NewContour(v)) == NULL)
+		if ((c = pcb_poly_contour_new(v)) == NULL)
 			return NULL;
 		v[0] = pin->X - in + d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X - out + d;
 		v[1] = pin->Y - out;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X + out - d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		p2 = ContourToPoly(c);
 		p->f->f->f = p2;
 		p2->f = p;
@@ -201,26 +201,26 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		/* topright */
 		v[0] = pin->X + in;
 		v[1] = pin->Y + in;
-		if ((c = poly_NewContour(v)) == NULL)
+		if ((c = pcb_poly_contour_new(v)) == NULL)
 			return NULL;
 		v[1] = pin->Y + d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 2) {
 			v[0] = pin->X + out;
-			poly_InclVertex(c->head.prev, poly_CreateNode(v));
+			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
 			frac_circle(c, v[0] + pin->Clearance / 4, v[1], v, 2);
 		v[1] = pin->Y + in;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		/* pivot 1/4 circle to next point */
 		frac_circle(c, pin->X + in, pin->Y + in, v, 4);
 		v[0] = pin->X + d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 2) {
-			poly_InclVertex(c->head.prev, poly_CreateNode(v));
+			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 			v[1] = pin->Y + in;
-			poly_InclVertex(c->head.prev, poly_CreateNode(v));
+			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
 			frac_circle(c, v[0], v[1] - pin->Clearance / 4, v, 2);
@@ -228,24 +228,24 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		/* bottom right */
 		v[0] = pin->X + in;
 		v[1] = pin->Y - d;
-		if ((c = poly_NewContour(v)) == NULL)
+		if ((c = pcb_poly_contour_new(v)) == NULL)
 			return NULL;
 		v[1] = pin->Y - in;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X + d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 2) {
 			v[1] = pin->Y - out;
-			poly_InclVertex(c->head.prev, poly_CreateNode(v));
+			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
 			frac_circle(c, v[0], v[1] - pin->Clearance / 4, v, 2);
 		v[0] = pin->X + in;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		/* pivot 1/4 circle to next point */
 		frac_circle(c, pin->X + in, pin->Y - in, v, 4);
 		v[1] = pin->Y - d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 5)
 			frac_circle(c, v[0] - pin->Clearance / 4, v[1], v, 2);
 		p2 = ContourToPoly(c);
@@ -254,24 +254,24 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		/* bottom left */
 		v[0] = pin->X - d;
 		v[1] = pin->Y - in;
-		if ((c = poly_NewContour(v)) == NULL)
+		if ((c = pcb_poly_contour_new(v)) == NULL)
 			return NULL;
 		v[0] = pin->X - in;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[1] = pin->Y - d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 2) {
 			v[0] = pin->X - out;
-			poly_InclVertex(c->head.prev, poly_CreateNode(v));
+			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
 			frac_circle(c, v[0] - pin->Clearance / 4, v[1], v, 2);
 		v[1] = pin->Y - in;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		/* pivot 1/4 circle to next point */
 		frac_circle(c, pin->X - in, pin->Y - in, v, 4);
 		v[0] = pin->X - d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 5)
 			frac_circle(c, v[0], v[1] + pin->Clearance / 4, v, 2);
 		p2 = ContourToPoly(c);
@@ -280,24 +280,24 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		/* top left */
 		v[0] = pin->X - d;
 		v[1] = pin->Y + out;
-		if ((c = poly_NewContour(v)) == NULL)
+		if ((c = pcb_poly_contour_new(v)) == NULL)
 			return NULL;
 		v[0] = pin->X - in;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		/* pivot 1/4 circle to next point (x-out, y+in) */
 		frac_circle(c, pin->X - in, pin->Y + in, v, 4);
 		v[1] = pin->Y + d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 2) {
 			v[0] = pin->X - in;
-			poly_InclVertex(c->head.prev, poly_CreateNode(v));
+			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
 			frac_circle(c, v[0] + pin->Clearance / 4, v[1], v, 2);
 		v[1] = pin->Y + in;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X - d;
-		poly_InclVertex(c->head.prev, poly_CreateNode(v));
+		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 5)
 			frac_circle(c, v[0], v[1] + pin->Clearance / 4, v, 2);
 		p2 = ContourToPoly(c);

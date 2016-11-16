@@ -82,9 +82,9 @@ static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const pcb_bo
 	int x;
 
 	clip_poly = RectPoly(clip_box->X1, clip_box->X2, clip_box->Y1, clip_box->Y2);
-	poly_CopyContour(&pl_copy, pl);
+	pcb_poly_contour_copy(&pl_copy, pl);
 	piece_poly = poly_Create();
-	poly_InclContour(piece_poly, pl_copy);
+	pcb_poly_contour_include(piece_poly, pl_copy);
 	x = poly_Boolean_free(piece_poly, clip_poly, &clipped_pieces, PBO_ISECT);
 	if (x != err_ok || clipped_pieces == NULL)
 		return;
