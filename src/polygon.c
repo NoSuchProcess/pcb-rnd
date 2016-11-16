@@ -1212,7 +1212,7 @@ pcb_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_polygon_t *Polygo
 		line.Point1 = Polygon->Points[prev];
 		line.Point2 = Polygon->Points[next];
 		line.Thickness = 0;
-		if (IsPointOnLine(p->X, p->Y, 0.0, &line)) {
+		if (pcb_is_point_on_line(p->X, p->Y, 0.0, &line)) {
 			pcb_remove_object(PCB_TYPE_POLYGON_POINT, Layer, Polygon, p);
 			changed = pcb_true;
 		}

@@ -49,18 +49,18 @@
        (p)->BoundingBox.Y2 += Bloat;}
 
 #define IS_PV_ON_RAT(PV, Rat) \
-	(IsPointOnLineEnd((PV)->X,(PV)->Y, (Rat)))
+	(pcb_is_point_on_line_end((PV)->X,(PV)->Y, (Rat)))
 
 #define IS_PV_ON_ARC(PV, Arc)	\
 	(PCB_FLAG_TEST(PCB_FLAG_SQUARE, (PV)) ? \
-		IsArcInRectangle( \
+		pcb_is_arc_in_rectangle( \
 			(PV)->X -MAX(((PV)->Thickness+1)/2 +Bloat,0), (PV)->Y -MAX(((PV)->Thickness+1)/2 +Bloat,0), \
 			(PV)->X +MAX(((PV)->Thickness+1)/2 +Bloat,0), (PV)->Y +MAX(((PV)->Thickness+1)/2 +Bloat,0), \
 			(Arc)) : \
-		IsPointOnArc((PV)->X,(PV)->Y,MAX((PV)->Thickness/2.0 + Bloat,0.0), (Arc)))
+		pcb_is_point_on_arc((PV)->X,(PV)->Y,MAX((PV)->Thickness/2.0 + Bloat,0.0), (Arc)))
 
 #define	IS_PV_ON_PAD(PV,Pad) \
-	( IsPointInPad((PV)->X, (PV)->Y, MAX((PV)->Thickness/2 +Bloat,0), (Pad)))
+	( pcb_is_point_in_pad((PV)->X, (PV)->Y, MAX((PV)->Thickness/2 +Bloat,0), (Pad)))
 
 /* reduce arc start angle and delta to 0..360 */
 static void normalize_angles(pcb_angle_t * sa, pcb_angle_t * d)
@@ -137,10 +137,10 @@ static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 	/* try the end points first */
 	get_arc_ends(&box[0], Arc1);
 	get_arc_ends(&box[4], Arc2);
-	if (IsPointOnArc(box[0], box[1], t, Arc2)
-			|| IsPointOnArc(box[2], box[3], t, Arc2)
-			|| IsPointOnArc(box[4], box[5], t, Arc1)
-			|| IsPointOnArc(box[6], box[7], t, Arc1))
+	if (pcb_is_point_on_arc(box[0], box[1], t, Arc2)
+			|| pcb_is_point_on_arc(box[2], box[3], t, Arc2)
+			|| pcb_is_point_on_arc(box[4], box[5], t, Arc1)
+			|| pcb_is_point_on_arc(box[6], box[7], t, Arc1))
 		return pcb_true;
 
 	pdx = Arc2->X - Arc1->X;
@@ -180,7 +180,7 @@ static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 		}
 
 		if (radius_crosses_arc(Arc1->X + dx, Arc1->Y + dy, Arc1)
-				&& IsPointOnArc(Arc1->X + dx, Arc1->Y + dy, t, Arc2))
+				&& pcb_is_point_on_arc(Arc1->X + dx, Arc1->Y + dy, t, Arc2))
 			return pcb_true;
 
 		dx = -pdx * r2 / dl;
@@ -191,7 +191,7 @@ static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 		}
 
 		if (radius_crosses_arc(Arc2->X + dx, Arc2->Y + dy, Arc2)
-				&& IsPointOnArc(Arc2->X + dx, Arc2->Y + dy, t1, Arc1))
+				&& pcb_is_point_on_arc(Arc2->X + dx, Arc2->Y + dy, t1, Arc1))
 			return pcb_true;
 		return pcb_false;
 	}
@@ -213,17 +213,17 @@ static pcb_bool ArcArcIntersect(pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 	dx = d * pdx;
 	dy = d * pdy;
 	if (radius_crosses_arc(x + dy, y - dx, Arc1)
-			&& IsPointOnArc(x + dy, y - dx, t, Arc2))
+			&& pcb_is_point_on_arc(x + dy, y - dx, t, Arc2))
 		return pcb_true;
 	if (radius_crosses_arc(x + dy, y - dx, Arc2)
-			&& IsPointOnArc(x + dy, y - dx, t1, Arc1))
+			&& pcb_is_point_on_arc(x + dy, y - dx, t1, Arc1))
 		return pcb_true;
 
 	if (radius_crosses_arc(x - dy, y + dx, Arc1)
-			&& IsPointOnArc(x - dy, y + dx, t, Arc2))
+			&& pcb_is_point_on_arc(x - dy, y + dx, t, Arc2))
 		return pcb_true;
 	if (radius_crosses_arc(x - dy, y + dx, Arc2)
-			&& IsPointOnArc(x - dy, y + dx, t1, Arc1))
+			&& pcb_is_point_on_arc(x - dy, y + dx, t1, Arc1))
 		return pcb_true;
 	return pcb_false;
 }
@@ -326,14 +326,14 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line1)) {	/* pretty reckless recursion */
 		pcb_point_t p[4];
 		form_slanted_rectangle(p, Line1);
-		return IsLineInQuadrangle(p, Line2);
+		return pcb_is_line_in_quadrangle(p, Line2);
 	}
-	/* here come only round Line1 because IsLineInQuadrangle()
+	/* here come only round Line1 because pcb_is_line_in_quadrangle()
 	   calls pcb_intersect_line_line() with first argument rounded */
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line2)) {
 		pcb_point_t p[4];
 		form_slanted_rectangle(p, Line2);
-		return IsLineInQuadrangle(p, Line1);
+		return pcb_is_line_in_quadrangle(p, Line1);
 	}
 	/* now all lines are round */
 
@@ -341,10 +341,10 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 	 *  cases where the "real" lines don't intersect but the
 	 *  thick lines touch, and ensures that the dx/dy business
 	 *  below does not cause a divide-by-zero. */
-	if (IsPointInPad(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
-			|| IsPointInPad(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
-			|| IsPointInPad(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2)
-			|| IsPointInPad(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2))
+	if (pcb_is_point_in_pad(Line2->Point1.X, Line2->Point1.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
+			|| pcb_is_point_in_pad(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line1)
+			|| pcb_is_point_in_pad(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2)
+			|| pcb_is_point_in_pad(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_pad_t *) Line2))
 		return pcb_true;
 
 	/* setup some constants */
@@ -370,7 +370,7 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 
 	/* No cross product means parallel lines, or maybe Line2 is
 	 *  zero-length. In either case, since we did a bounding-box
-	 *  check before getting here, the above IsPointInPad() checks
+	 *  check before getting here, the above pcb_is_point_in_pad() checks
 	 *  will have caught any intersections. */
 	if (r == 0.0)
 		return pcb_false;
@@ -392,7 +392,7 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
  * Check for line intersection with an arc
  *
  * Mostly this is like the circle/line intersection
- * found in IsPointOnLine (search.c) see the detailed
+ * found in pcb_is_point_on_line(search.c) see the detailed
  * discussion for the basics there.
  *
  * Since this is only an arc, not a full circle we need
@@ -438,9 +438,9 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 		return (pcb_false);
 	/* check the ends of the line in case the projected point */
 	/* of intersection is beyond the line end */
-	if (IsPointOnArc(Line->Point1.X, Line->Point1.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
+	if (pcb_is_point_on_arc(Line->Point1.X, Line->Point1.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
 		return (pcb_true);
-	if (IsPointOnArc(Line->Point2.X, Line->Point2.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
+	if (pcb_is_point_on_arc(Line->Point2.X, Line->Point2.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
 		return (pcb_true);
 	if (l == 0.0)
 		return (pcb_false);
@@ -448,17 +448,17 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 	Radius = -(dx * dx1 + dy * dy1);
 	r = (Radius + r2) / l;
 	if (r >= 0 && r <= 1
-			&& IsPointOnArc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
+			&& pcb_is_point_on_arc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
 		return (pcb_true);
 	r = (Radius - r2) / l;
 	if (r >= 0 && r <= 1
-			&& IsPointOnArc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
+			&& pcb_is_point_on_arc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
 		return (pcb_true);
 	/* check arc end points */
 	box = pcb_arc_get_ends(Arc);
-	if (IsPointInPad(box->X1, box->Y1, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
+	if (pcb_is_point_in_pad(box->X1, box->Y1, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
 		return pcb_true;
-	if (IsPointInPad(box->X2, box->Y2, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
+	if (pcb_is_point_in_pad(box->X2, box->Y2, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
 		return pcb_true;
 	return pcb_false;
 }
@@ -647,8 +647,8 @@ static inline pcb_bool PV_TOUCH_PV(pcb_pin_t *PV1, pcb_pin_t *PV2)
 
 	t1 = MAX(PV1->Thickness / 2.0 + Bloat, 0);
 	t2 = MAX(PV2->Thickness / 2.0 + Bloat, 0);
-	if (IsPointOnPin(PV1->X, PV1->Y, t1, PV2)
-			|| IsPointOnPin(PV2->X, PV2->Y, t2, PV1))
+	if (pcb_is_point_in_pin(PV1->X, PV1->Y, t1, PV2)
+			|| pcb_is_point_in_pin(PV2->X, PV2->Y, t2, PV1))
 		return pcb_true;
 	if (!PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV1) || !PCB_FLAG_TEST(PCB_FLAG_SQUARE, PV2))
 		return pcb_false;
@@ -672,7 +672,7 @@ pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 		if (shape <= 1) {
 			/* the original square case */
 			/* IsLineInRectangle already has Bloat factor */
-			return IsLineInRectangle(PV->X - (PIN_SIZE(PV) + 1) / 2,
+			return pcb_is_line_in_rectangle(PV->X - (PIN_SIZE(PV) + 1) / 2,
 															 PV->Y - (PIN_SIZE(PV) + 1) / 2,
 															 PV->X + (PIN_SIZE(PV) + 1) / 2, PV->Y + (PIN_SIZE(PV) + 1) / 2, Line);
 		}
@@ -694,5 +694,5 @@ pcb_bool pcb_intersect_line_pin(pcb_pin_t *PV, pcb_line_t *Line)
 
 
 	/* the original round pin version */
-	return IsPointInPad(PV->X, PV->Y, MAX(PIN_SIZE(PV) / 2.0 + Bloat, 0.0), (pcb_pad_t *) Line);
+	return pcb_is_point_in_pad(PV->X, PV->Y, MAX(PIN_SIZE(PV) / 2.0 + Bloat, 0.0), (pcb_pad_t *) Line);
 }

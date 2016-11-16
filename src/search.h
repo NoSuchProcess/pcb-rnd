@@ -145,15 +145,16 @@ int lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-pcb_bool IsPointOnLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_line_t *);
-pcb_bool IsPointOnPin(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pin_t *);
-pcb_bool IsPointOnArc(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_arc_t *);
-pcb_bool IsPointOnLineEnd(pcb_coord_t, pcb_coord_t, pcb_rat_t *);
-pcb_bool IsLineInRectangle(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_line_t *);
-pcb_bool IsLineInQuadrangle(pcb_point_t p[4], pcb_line_t *Line);
-pcb_bool IsArcInRectangle(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_arc_t *);
-pcb_bool IsPointInPad(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pad_t *);
-pcb_bool IsPointInBox(pcb_coord_t, pcb_coord_t, pcb_box_t *, pcb_coord_t);
+pcb_bool pcb_is_point_on_line(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_line_t *);
+pcb_bool pcb_is_point_in_pin(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pin_t *);
+pcb_bool pcb_is_point_on_arc(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_arc_t *);
+pcb_bool pcb_is_point_on_line_end(pcb_coord_t, pcb_coord_t, pcb_rat_t *);
+pcb_bool pcb_is_line_in_rectangle(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_line_t *);
+pcb_bool pcb_is_line_in_quadrangle(pcb_point_t p[4], pcb_line_t *Line);
+pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_arc_t *);
+pcb_bool pcb_is_point_in_pad(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pad_t *);
+pcb_bool pcb_is_point_in_box(pcb_coord_t, pcb_coord_t, pcb_box_t *, pcb_coord_t);
+
 int SearchObjectByLocation(unsigned, void **, void **, void **, pcb_coord_t, pcb_coord_t, pcb_coord_t);
 int SearchScreen(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
 int SearchScreenGridSlop(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);

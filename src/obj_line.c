@@ -105,7 +105,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 			i->test.Point1.Y = line->Point2.Y;
 			i->test.Point2.X = i->X2;
 			i->test.Point2.Y = i->Y2;
-			if (IsPointOnLine(i->X1, i->Y1, 0.0, &i->test)) {
+			if (pcb_is_point_on_line(i->X1, i->Y1, 0.0, &i->test)) {
 				i->ans = line;
 				longjmp(i->env, 1);
 			}
@@ -115,7 +115,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 			i->test.Point1.Y = line->Point1.Y;
 			i->test.Point2.X = i->X2;
 			i->test.Point2.Y = i->Y2;
-			if (IsPointOnLine(i->X1, i->Y1, 0.0, &i->test)) {
+			if (pcb_is_point_on_line(i->X1, i->Y1, 0.0, &i->test)) {
 				i->ans = line;
 				longjmp(i->env, 1);
 			}
@@ -125,7 +125,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 			i->test.Point1.Y = line->Point2.Y;
 			i->test.Point2.X = i->X1;
 			i->test.Point2.Y = i->Y1;
-			if (IsPointOnLine(i->X2, i->Y2, 0.0, &i->test)) {
+			if (pcb_is_point_on_line(i->X2, i->Y2, 0.0, &i->test)) {
 				i->ans = line;
 				longjmp(i->env, 1);
 			}
@@ -135,7 +135,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 			i->test.Point1.Y = line->Point1.Y;
 			i->test.Point2.X = i->X1;
 			i->test.Point2.Y = i->Y1;
-			if (IsPointOnLine(i->X2, i->Y2, 0.0, &i->test)) {
+			if (pcb_is_point_on_line(i->X2, i->Y2, 0.0, &i->test)) {
 				i->ans = line;
 				longjmp(i->env, 1);
 			}

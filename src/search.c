@@ -85,7 +85,7 @@ static pcb_r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, ptr1))
 		return R_DIR_NOT_FOUND;
 
-	if (!IsPointOnPin(PosX, PosY, SearchRadius, pin))
+	if (!pcb_is_point_in_pin(PosX, PosY, SearchRadius, pin))
 		return R_DIR_NOT_FOUND;
 	*i->ptr1 = ptr1;
 	*i->ptr2 = *i->ptr3 = pin;
@@ -141,7 +141,7 @@ static pcb_r_dir_t pad_callback(const pcb_box_t * b, void *cl)
 		return R_DIR_NOT_FOUND;
 
 	if (PCB_FRONT(pad) || i->BackToo) {
-		if (IsPointInPad(PosX, PosY, SearchRadius, pad)) {
+		if (pcb_is_point_in_pad(PosX, PosY, SearchRadius, pad)) {
 			*i->ptr1 = ptr1;
 			*i->ptr2 = *i->ptr3 = pad;
 			return R_DIR_CANCEL; /* found */
@@ -190,7 +190,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, l))
 		return R_DIR_NOT_FOUND;
 
-	if (!IsPointInPad(PosX, PosY, SearchRadius, (pcb_pad_t *) l))
+	if (!pcb_is_point_in_pad(PosX, PosY, SearchRadius, (pcb_pad_t *) l))
 		return R_DIR_NOT_FOUND;
 	*i->Line = l;
 	*i->Point = (pcb_point_t *) l;
@@ -224,7 +224,7 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, line) ?
 			(pcb_distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
-			 line->Thickness * 2 + SearchRadius) : IsPointOnLine(PosX, PosY, SearchRadius, line)) {
+			 line->Thickness * 2 + SearchRadius) : pcb_is_point_on_line(PosX, PosY, SearchRadius, line)) {
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
 		return R_DIR_CANCEL;
 	}
@@ -264,7 +264,7 @@ static pcb_r_dir_t arc_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, a))
 		return R_DIR_NOT_FOUND;
 
-	if (!IsPointOnArc(PosX, PosY, SearchRadius, a))
+	if (!pcb_is_point_on_arc(PosX, PosY, SearchRadius, a))
 		return 0;
 	*i->Arc = a;
 	*i->Dummy = a;
@@ -522,7 +522,7 @@ SearchElementByLocation(int locked, pcb_element_t ** Element, pcb_element_t ** D
 /* ---------------------------------------------------------------------------
  * checks if a point is on a pin
  */
-pcb_bool IsPointOnPin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_t *pin)
+pcb_bool pcb_is_point_in_pin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_t *pin)
 {
 	pcb_coord_t t = PIN_SIZE(pin) / 2;
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
@@ -532,7 +532,7 @@ pcb_bool IsPointOnPin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_
 		b.X2 = pin->X + t;
 		b.Y1 = pin->Y - t;
 		b.Y2 = pin->Y + t;
-		if (IsPointInBox(X, Y, &b, Radius))
+		if (pcb_is_point_in_box(X, Y, &b, Radius))
 			return pcb_true;
 	}
 	else if (pcb_distance(pin->X, pin->Y, X, Y) <= Radius + t)
@@ -543,7 +543,7 @@ pcb_bool IsPointOnPin(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pin_
 /* ---------------------------------------------------------------------------
  * checks if a rat-line end is on a PV
  */
-pcb_bool IsPointOnLineEnd(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line)
+pcb_bool pcb_is_point_on_line_end(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line)
 {
 	if (((X == Line->Point1.X) && (Y == Line->Point1.Y)) || ((X == Line->Point2.X) && (Y == Line->Point2.Y)))
 		return (pcb_true);
@@ -582,7 +582,7 @@ pcb_bool IsPointOnLineEnd(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line)
  * Finally, D1 and D2 are orthogonal, so we can sum them easily
  * by Pythagorean theorem.
  */
-pcb_bool IsPointOnLine(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line)
+pcb_bool pcb_is_point_on_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line)
 {
 	double D1, D2, L;
 
@@ -617,13 +617,13 @@ static int is_point_on_line(pcb_coord_t px, pcb_coord_t py, pcb_coord_t lx1, pcb
 	l.Point2.X = lx2;
 	l.Point2.Y = ly2;
 	l.Thickness = 1;
-	return IsPointOnLine(px, py, 1, &l);
+	return pcb_is_point_on_line(px, py, 1, &l);
 }
 
 /* ---------------------------------------------------------------------------
  * checks if a line crosses a rectangle
  */
-pcb_bool IsLineInRectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_line_t *Line)
+pcb_bool pcb_is_line_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_line_t *Line)
 {
 	pcb_line_t line;
 
@@ -693,10 +693,10 @@ static int /*checks if a point (of null radius) is in a slanted rectangle */ IsP
 }
 
 /* ---------------------------------------------------------------------------
- * checks if a line crosses a quadrangle: almost copied from IsLineInRectangle()
+ * checks if a line crosses a quadrangle: almost copied from pcb_is_line_in_rectangle()
  * Note: actually this quadrangle is a slanted rectangle
  */
-pcb_bool IsLineInQuadrangle(pcb_point_t p[4], pcb_line_t *Line)
+pcb_bool pcb_is_line_in_quadrangle(pcb_point_t p[4], pcb_line_t *Line)
 {
 	pcb_line_t line;
 
@@ -742,7 +742,7 @@ pcb_bool IsLineInQuadrangle(pcb_point_t p[4], pcb_line_t *Line)
 /* ---------------------------------------------------------------------------
  * checks if an arc crosses a square
  */
-pcb_bool IsArcInRectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_arc_t *Arc)
+pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_arc_t *Arc)
 {
 	pcb_line_t line;
 
@@ -785,7 +785,7 @@ pcb_bool IsArcInRectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_co
  * Check if a circle of Radius with center at (X, Y) intersects a Pad.
  * Written to enable arbitrary pad directions; for rounded pads, too.
  */
-pcb_bool IsPointInPad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pad_t *Pad)
+pcb_bool pcb_is_point_in_pad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pad_t *Pad)
 {
 	double r, Sin, Cos;
 	pcb_coord_t x;
@@ -856,7 +856,7 @@ pcb_bool IsPointInPad(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_pad_
 	return range < Radius;
 }
 
-pcb_bool IsPointInBox(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_coord_t Radius)
+pcb_bool pcb_is_point_in_box(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_coord_t Radius)
 {
 	pcb_coord_t width, height, range;
 
@@ -901,7 +901,7 @@ pcb_bool IsPointInBox(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_coord_t 
  *       and in the case that the arc thickness is greater than
  *       the radius.
  */
-pcb_bool IsPointOnArc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_arc_t *Arc)
+pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_arc_t *Arc)
 {
 	/* Calculate angle of point from arc center */
 	double p_dist = pcb_distance(X, Y, Arc->X, Arc->Y);

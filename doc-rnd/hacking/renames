@@ -793,3 +793,12 @@ LookupRubberbandLines -> pcb_rubber_band_lookup_lines
 LookupRatLines -> pcb_rubber_band_lookup_rat_lines
 GetRubberbandMemory -> pcb_rubber_band_alloc
 CreateNewRubberbandEntry -> pcb_rubber_band_create
+IsPointOnLine -> pcb_is_point_on_line
+IsPointOnPin -> pcb_is_point_in_pin
+IsPointOnArc -> pcb_is_point_on_arc
+IsPointOnLineEnd -> pcb_is_point_on_line_end
+IsLineInRectangle -> pcb_is_line_in_rectangle
+IsLineInQuadrangle -> pcb_is_line_in_quadrangle
+IsArcInRectangle -> pcb_is_arc_in_rectangle
+IsPointInPad -> pcb_is_point_in_pad
+IsPointInBox -> pcb_is_point_in_box

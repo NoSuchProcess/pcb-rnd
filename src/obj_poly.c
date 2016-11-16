@@ -308,7 +308,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 		line.Thickness = 0;
 		line.Point1 = Polygon->Points[pcb_poly_contour_prev_point(Polygon, ctx->insert.idx)];
 		line.Point2 = Polygon->Points[ctx->insert.idx];
-		if (IsPointOnLine((float) ctx->insert.x, (float) ctx->insert.y, 0.0, &line))
+		if (pcb_is_point_on_line((float) ctx->insert.x, (float) ctx->insert.y, 0.0, &line))
 			return (NULL);
 	}
 	/*

@@ -327,7 +327,7 @@ static int dist_line_to_point(line_s * l, corner_s * c)
 	if (l->s->y == l->e->y)
 		return dist_ltp2(l->s->y - c->y, c->x, l->s->x, l->e->x);
 
-	/* Do it the hard way.  See comments for IsPointOnLine() in search.c */
+	/* Do it the hard way.  See comments for pcb_is_point_on_line() in search.c */
 	len = sqrt(sqr(l->s->x - l->e->x) + sqr(l->s->y - l->e->y));
 	if (len == 0)
 		return dist(l->s->x, l->s->y, c->x, c->y);
