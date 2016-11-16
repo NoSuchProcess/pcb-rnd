@@ -145,7 +145,7 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			for (i = 0; i < NUM_NETLISTS; i++)
 				pcb_lib_free(&(PCB->NetlistLib[i]));
 		}
-		if (!ImportNetlist(PCB->Netlistname))
+		if (!pcb_import_netlist(PCB->Netlistname))
 			pcb_netlist_changed(1);
 	}
 	else if (strcasecmp(function, "Revert") == 0 && PCB->Filename

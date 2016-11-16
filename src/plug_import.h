@@ -56,7 +56,7 @@ extern pcb_plug_import_t *plug_import_chain;
 
 /********** hook wrappers **********/
 int pcb_import(char *filename, unsigned int aspect);
-int ImportNetlist(char *);
+int pcb_import_netlist(char *);
 
 
 #endif

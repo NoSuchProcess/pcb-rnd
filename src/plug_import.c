@@ -89,7 +89,7 @@ int pcb_import(char *filename, unsigned int aspect)
 	FILE *fp;
 
 	if (!filename) {
-		pcb_message(PCB_MSG_DEFAULT, "Error: need a file name for ImportNetlist()\n");
+		pcb_message(PCB_MSG_DEFAULT, "Error: need a file name for pcb_import_netlist()\n");
 		return (1); /* nothing to do */
 	}
 	fp = fopen(filename, "r");
@@ -111,7 +111,7 @@ int pcb_import(char *filename, unsigned int aspect)
 	return plug->import(plug, aspect, filename);
 }
 
-int ImportNetlist(char *filename)
+int pcb_import_netlist(char *filename)
 {
 	return pcb_import(filename, IMPORT_ASPECT_NETLIST);
 }
