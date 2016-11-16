@@ -4081,12 +4081,12 @@ static void ripout_livedraw_obj(routebox_t * rb)
 	if (rb->type == LINE && rb->livedraw_obj.line) {
 		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
 		EraseLine(rb->livedraw_obj.line);
-		DestroyObject(PCB->Data, PCB_TYPE_LINE, layer, rb->livedraw_obj.line, NULL);
+		pcb_destroy_object(PCB->Data, PCB_TYPE_LINE, layer, rb->livedraw_obj.line, NULL);
 		rb->livedraw_obj.line = NULL;
 	}
 	if (rb->type == VIA && rb->livedraw_obj.via) {
 		EraseVia(rb->livedraw_obj.via);
-		DestroyObject(PCB->Data, PCB_TYPE_VIA, rb->livedraw_obj.via, NULL, NULL);
+		pcb_destroy_object(PCB->Data, PCB_TYPE_VIA, rb->livedraw_obj.via, NULL, NULL);
 		rb->livedraw_obj.via = NULL;
 	}
 }

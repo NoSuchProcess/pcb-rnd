@@ -306,7 +306,7 @@ static void click_cb(pcb_hidval_t hv)
 			pcb_buffer_clear(PCB_PASTEBUFFER);
 			pcb_buffer_add_selected(PCB_PASTEBUFFER, Note.X, Note.Y, pcb_true);
 			SaveUndoSerialNumber();
-			RemoveSelected();
+			pcb_remove_selected();
 			SaveMode();
 			saved_mode = pcb_true;
 			SetMode(PCB_MODE_PASTE_BUFFER);
@@ -1022,7 +1022,7 @@ void pcb_notify_mode(void)
 						SaveUndoSerialNumber();
 						Flags = ((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2)->Flags;
 						pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) Crosshair.AttachedObject.Ptr1, result, Flags);
-						RemoveObject(PCB_TYPE_POLYGON,
+						pcb_remove_object(PCB_TYPE_POLYGON,
 												 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 						RestoreUndoSerialNumber();
 						IncrementUndoSerialNumber();
@@ -1124,7 +1124,7 @@ void pcb_notify_mode(void)
 					ptr++;
 				}
 			}
-			RemoveObject(type, ptr1, ptr2, ptr3);
+			pcb_remove_object(type, ptr1, ptr2, ptr3);
 			IncrementUndoSerialNumber();
 			SetChangedFlag(pcb_true);
 		}

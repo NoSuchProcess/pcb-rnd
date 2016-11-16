@@ -765,3 +765,6 @@ rats_patch_make_edited -> pcb_ratspatch_make_edited
 rats_patch_apply -> pcb_ratspatch_apply
 rats_patch_fexport -> pcb_ratspatch_fexport
 RemovePCB -> pcb_board_remove
+RemoveSelected -> pcb_remove_selected
+RemoveObject -> pcb_remove_object
+DestroyObject -> pcb_destroy_object

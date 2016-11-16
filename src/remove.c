@@ -73,7 +73,7 @@ static pcb_opfunc_t DestroyFunctions = {
  * removes all selected and visible objects
  * returns pcb_true if any objects have been removed
  */
-pcb_bool RemoveSelected(void)
+pcb_bool pcb_remove_selected(void)
 {
 	pcb_opctx_t ctx;
 
@@ -93,7 +93,7 @@ pcb_bool RemoveSelected(void)
  * remove object as referred by pointers and type,
  * allocated memory is passed to the 'remove undo' list
  */
-void *RemoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 	void *ptr;
@@ -110,7 +110,7 @@ void *RemoveObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * remove object as referred by pointers and type
  * allocated memory is destroyed assumed to already be erased
  */
-void *DestroyObject(pcb_data_t *Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *pcb_destroy_object(pcb_data_t *Target, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 

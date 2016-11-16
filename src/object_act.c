@@ -734,7 +734,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			PCB_LINE_ALL_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
-					RemoveObject(PCB_TYPE_LINE, layer, line, line);
+					pcb_remove_object(PCB_TYPE_LINE, layer, line, line);
 					changed = pcb_true;
 				}
 			}
@@ -742,7 +742,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			PCB_ARC_ALL_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
-					RemoveObject(PCB_TYPE_ARC, layer, arc, arc);
+					pcb_remove_object(PCB_TYPE_ARC, layer, arc, arc);
 					changed = pcb_true;
 				}
 			}
@@ -750,7 +750,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			PCB_VIA_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
-					RemoveObject(PCB_TYPE_VIA, via, via, via);
+					pcb_remove_object(PCB_TYPE_VIA, via, via, via);
 					changed = pcb_true;
 				}
 			}
@@ -766,7 +766,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			{
 				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, line)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
-					RemoveObject(PCB_TYPE_LINE, layer, line, line);
+					pcb_remove_object(PCB_TYPE_LINE, layer, line, line);
 					changed = pcb_true;
 				}
 			}
@@ -776,7 +776,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			{
 				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, via)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
-					RemoveObject(PCB_TYPE_VIA, via, via, via);
+					pcb_remove_object(PCB_TYPE_VIA, via, via, via);
 					changed = pcb_true;
 				}
 			}

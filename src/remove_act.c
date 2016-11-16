@@ -51,7 +51,7 @@ static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	Note.Y = Crosshair.Y;
 
 	if (id == -1) {								/* no arg */
-		if (RemoveSelected() == pcb_false)
+		if (pcb_remove_selected() == pcb_false)
 			id = F_Object;
 	}
 
@@ -63,7 +63,7 @@ static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		RestoreMode();
 		break;
 	case F_Selected:
-		RemoveSelected();
+		pcb_remove_selected();
 		break;
 	case F_AllRats:
 		if (pcb_rats_destroy(pcb_false))
@@ -80,7 +80,7 @@ static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 /* --------------------------------------------------------------------------- */
 
-static const char removeselected_syntax[] = "RemoveSelected()";
+static const char removeselected_syntax[] = "pcb_remove_selected()";
 
 static const char removeselected_help[] = "Removes any selected objects.";
 
@@ -90,7 +90,7 @@ static const char removeselected_help[] = "Removes any selected objects.";
 
 static int ActionRemoveSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	if (RemoveSelected())
+	if (pcb_remove_selected())
 		SetChangedFlag(pcb_true);
 	return 0;
 }

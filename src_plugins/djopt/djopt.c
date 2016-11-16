@@ -685,7 +685,7 @@ static void move_line_to_layer(line_s * l, int layer)
 
 static void remove_via_at(corner_s * c)
 {
-	RemoveObject(PCB_TYPE_VIA, c->via, 0, 0);
+	pcb_remove_object(PCB_TYPE_VIA, c->via, 0, 0);
 	c->via = 0;
 }
 

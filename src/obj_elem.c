@@ -374,7 +374,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	}
 	END_LOOP;
 	if (!hasParts) {
-		DestroyObject(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
+		pcb_destroy_object(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 		pcb_message(PCB_MSG_DEFAULT, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
 		return (pcb_false);
 	}

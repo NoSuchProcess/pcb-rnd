@@ -1168,7 +1168,7 @@ polygon_format
 					    "    line:        %i\n"
 					    "    description: 'ignored polygon (< 3 points in a contour)'\n",
 					    yyfilename, pcb_lineno);
-				    DestroyObject(yyData, PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
+				    pcb_destroy_object(yyData, PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 				  }
 				else
 				  {

@@ -221,7 +221,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 		case UNDO_REMOVE:
 			type = SearchObjectByID(RemoveList, &ptr1, &ptr2, &ptr3, ptr->ID, ptr->Kind);
 			if (type != PCB_TYPE_NONE) {
-				DestroyObject(RemoveList, type, ptr1, ptr2, ptr3);
+				pcb_destroy_object(RemoveList, type, ptr1, ptr2, ptr3);
 			}
 			break;
 		default:
@@ -740,7 +740,7 @@ static pcb_bool UndoInsertPoint(UndoListTypePtr Entry)
 			Entry->Kind = PCB_TYPE_POLYGON;
 			Entry->Type = UNDO_REMOVE_POINT;
 			Entry->Data.RemovedPoint.Index = point_idx;
-			DestroyObject(PCB->Data, PCB_TYPE_POLYGON_POINT, layer, polygon, pnt);
+			pcb_destroy_object(PCB->Data, PCB_TYPE_POLYGON_POINT, layer, polygon, pnt);
 			if (andDraw && layer->On)
 				DrawPolygon(layer, polygon);
 			return (pcb_true);

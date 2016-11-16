@@ -176,14 +176,14 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 	PCB_LINE_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
-			RemoveObject(PCB_TYPE_LINE, layer, line, line);
+			pcb_remove_object(PCB_TYPE_LINE, layer, line, line);
 	}
 	ENDALL_LOOP;
 
 	PCB_ARC_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
-			RemoveObject(PCB_TYPE_ARC, layer, arc, arc);
+			pcb_remove_object(PCB_TYPE_ARC, layer, arc, arc);
 	}
 	ENDALL_LOOP;
 
@@ -191,7 +191,7 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 		PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via))
-			RemoveObject(PCB_TYPE_VIA, via, via, via);
+			pcb_remove_object(PCB_TYPE_VIA, via, via, via);
 	}
 	END_LOOP;
 }
