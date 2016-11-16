@@ -2732,10 +2732,10 @@ board.o: board.c ../config.h board.h const.h macro.h global_typedefs.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- plug_io.h compat_misc.h hid_actions.h paths.h rtree.h
-box.o: box.c ../config.h box.h math_helper.h global_typedefs.h pcb_bool.h \
- unit.h macro.h move.h obj_common.h ../src_3rd/genlist/gendlist.h flag.h \
- globalconst.h attrib.h misc_util.h
+ plug_io.h compat_misc.h hid_actions.h paths.h rtree.h undo.h
+box.o: box.c ../config.h rotate.h global_typedefs.h pcb_bool.h unit.h \
+ box.h math_helper.h macro.h move.h obj_common.h \
+ ../src_3rd/genlist/gendlist.h flag.h globalconst.h attrib.h misc_util.h
 buffer.o: buffer.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -3253,7 +3253,7 @@ layer.o: layer.c ../config.h board.h const.h macro.h global_typedefs.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
- hid_actions.h compat_misc.h
+ hid_actions.h compat_misc.h undo.h
 library.o: library.c ../config.h library.h global_typedefs.h pcb_bool.h \
  unit.h macro.h compat_misc.h
 list_conf.o: list_conf.c conf.h ../config.h global_typedefs.h pcb_bool.h \
