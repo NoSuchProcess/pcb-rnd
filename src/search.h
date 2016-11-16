@@ -33,7 +33,7 @@
 #include "rats.h"
 #include "misc_util.h"
 
-int lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2);
+int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2);
 
 #define SLOP 5
 /* ---------------------------------------------------------------------------
@@ -42,103 +42,103 @@ int lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord
 /* ---------------------------------------------------------------------------
  * some define to check for 'type' in box
  */
-#define	POINT_IN_BOX(x,y,b)	\
-	(IS_BOX_NEGATIVE(b) ?  \
+#define	PCB_POINT_IN_BOX(x,y,b)	\
+	(PCB_IS_BOX_NEGATIVE(b) ?  \
 	((x) >= (b)->X2 && (x) <= (b)->X1 && (y) >= (b)->Y2 && (y) <= (b)->Y1) \
 	: \
 	((x) >= (b)->X1 && (x) <= (b)->X2 && (y) >= (b)->Y1 && (y) <= (b)->Y2))
 
-#define	VIA_OR_PIN_IN_BOX(v,b) \
-	POINT_IN_BOX((v)->X,(v)->Y,(b))
+#define	PCB_VIA_OR_PIN_IN_BOX(v,b) \
+	PCB_POINT_IN_BOX((v)->X,(v)->Y,(b))
 
-#define	LINE_IN_BOX(l,b)	\
-	(POINT_IN_BOX((l)->Point1.X,(l)->Point1.Y,(b)) &&	\
-	POINT_IN_BOX((l)->Point2.X,(l)->Point2.Y,(b)))
+#define	PCB_LINE_IN_BOX(l,b)	\
+	(PCB_POINT_IN_BOX((l)->Point1.X,(l)->Point1.Y,(b)) &&	\
+	PCB_POINT_IN_BOX((l)->Point2.X,(l)->Point2.Y,(b)))
 
-#define	PAD_IN_BOX(p,b)	LINE_IN_BOX((pcb_line_t *)(p),(b))
+#define	PCB_PAD_IN_BOX(p,b)	PCB_LINE_IN_BOX((pcb_line_t *)(p),(b))
 
-#define	BOX_IN_BOX(b1,b)	\
+#define	PCB_BOX_IN_BOX(b1,b)	\
 	((b1)->X1 >= (b)->X1 && (b1)->X2 <= (b)->X2 &&	\
 	((b1)->Y1 >= (b)->Y1 && (b1)->Y2 <= (b)->Y2))
 
-#define	TEXT_IN_BOX(t,b)	\
-	(BOX_IN_BOX(&((t)->BoundingBox), (b)))
+#define	PCB_TEXT_IN_BOX(t,b)	\
+	(PCB_BOX_IN_BOX(&((t)->BoundingBox), (b)))
 
-#define	POLYGON_IN_BOX(p,b)	\
-	(BOX_IN_BOX(&((p)->BoundingBox), (b)))
+#define	PCB_POLYGON_IN_BOX(p,b)	\
+	(PCB_BOX_IN_BOX(&((p)->BoundingBox), (b)))
 
-#define	ELEMENT_IN_BOX(e,b)	\
-	(BOX_IN_BOX(&((e)->BoundingBox), (b)))
+#define	PCB_ELEMENT_IN_BOX(e,b)	\
+	(PCB_BOX_IN_BOX(&((e)->BoundingBox), (b)))
 
-#define ARC_IN_BOX(a,b)		\
-	(BOX_IN_BOX(&((a)->BoundingBox), (b)))
+#define PCB_ARC_IN_BOX(a,b)		\
+	(PCB_BOX_IN_BOX(&((a)->BoundingBox), (b)))
 
 /* == the same but accept if any part of the object touches the box == */
-#define POINT_IN_CIRCLE(x, y, cx, cy, r) \
+#define PCB_POINT_IN_CIRCLE(x, y, cx, cy, r) \
 	(pcb_distance2(x, y, cx, cy) <= (double)(r) * (double)(r))
 
-#define CIRCLE_TOUCHES_BOX(cx, cy, r, b) \
-	(    POINT_IN_BOX((cx)-(r),(cy),(b)) || POINT_IN_BOX((cx)+(r),(cy),(b)) || POINT_IN_BOX((cx),(cy)-(r),(b)) || POINT_IN_BOX((cx),(cy)+(r),(b)) \
-	  || POINT_IN_CIRCLE((b)->X1, (b)->Y1, (cx), (cy), (r)) || POINT_IN_CIRCLE((b)->X2, (b)->Y1, (cx), (cy), (r)) || POINT_IN_CIRCLE((b)->X1, (b)->Y2, (cx), (cy), (r)) || POINT_IN_CIRCLE((b)->X2, (b)->Y2, (cx), (cy), (r)))
+#define PCB_CIRCLE_TOUCHES_BOX(cx, cy, r, b) \
+	(    PCB_POINT_IN_BOX((cx)-(r),(cy),(b)) || PCB_POINT_IN_BOX((cx)+(r),(cy),(b)) || PCB_POINT_IN_BOX((cx),(cy)-(r),(b)) || PCB_POINT_IN_BOX((cx),(cy)+(r),(b)) \
+	  || PCB_POINT_IN_CIRCLE((b)->X1, (b)->Y1, (cx), (cy), (r)) || PCB_POINT_IN_CIRCLE((b)->X2, (b)->Y1, (cx), (cy), (r)) || PCB_POINT_IN_CIRCLE((b)->X1, (b)->Y2, (cx), (cy), (r)) || PCB_POINT_IN_CIRCLE((b)->X2, (b)->Y2, (cx), (cy), (r)))
 
-#define	VIA_OR_PIN_TOUCHES_BOX(v,b) \
-	CIRCLE_TOUCHES_BOX((v)->X,(v)->Y,((v)->Thickness + (v)->DrillingHole/2),(b))
+#define	PCB_VIA_OR_PIN_TOUCHES_BOX(v,b) \
+	PCB_CIRCLE_TOUCHES_BOX((v)->X,(v)->Y,((v)->Thickness + (v)->DrillingHole/2),(b))
 
-#define	LINE_TOUCHES_BOX(l,b)	\
-	(    lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X1, (b)->Y1, (b)->X2, (b)->Y1) \
-	  || lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X1, (b)->Y1, (b)->X1, (b)->Y2) \
-	  || lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X2, (b)->Y2, (b)->X1, (b)->Y2) \
-	  || lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X2, (b)->Y2, (b)->X2, (b)->Y1) \
-	  || LINE_IN_BOX((l), (b)))
+#define	PCB_LINE_TOUCHES_BOX(l,b)	\
+	(    pcb_lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X1, (b)->Y1, (b)->X2, (b)->Y1) \
+	  || pcb_lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X1, (b)->Y1, (b)->X1, (b)->Y2) \
+	  || pcb_lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X2, (b)->Y2, (b)->X1, (b)->Y2) \
+	  || pcb_lines_intersect((l)->Point1.X,(l)->Point1.Y,(l)->Point2.X,(l)->Point2.Y, (b)->X2, (b)->Y2, (b)->X2, (b)->Y1) \
+	  || PCB_LINE_IN_BOX((l), (b)))
 
-#define	PAD_TOUCHES_BOX(p,b)	LINE_TOUCHES_BOX((pcb_line_t *)(p),(b))
+#define	PCB_PAD_TOUCHES_BOX(p,b)	PCB_LINE_TOUCHES_BOX((pcb_line_t *)(p),(b))
 
 /* a corner of either box is within the other, or edges cross */
-#define	BOX_TOUCHES_BOX(b1,b2)	\
-	(   POINT_IN_BOX((b1)->X1,(b1)->Y1,b2) || POINT_IN_BOX((b1)->X1,(b1)->Y2,b2) || POINT_IN_BOX((b1)->X2,(b1)->Y1,b2) || POINT_IN_BOX((b1)->X2,(b1)->Y2,b2)  \
-	 || POINT_IN_BOX((b2)->X1,(b2)->Y1,b1) || POINT_IN_BOX((b2)->X1,(b2)->Y2,b1) || POINT_IN_BOX((b2)->X2,(b2)->Y1,b1) || POINT_IN_BOX((b2)->X2,(b2)->Y2,b1)  \
-	 || lines_intersect((b1)->X1,(b1)->Y1, (b1)->X2,(b1)->Y1, (b2)->X1,(b2)->Y1, (b2)->X1,(b2)->Y2) \
-	 || lines_intersect((b2)->X1,(b2)->Y1, (b2)->X2,(b2)->Y1, (b1)->X1,(b1)->Y1, (b1)->X1,(b1)->Y2))
+#define	PCB_BOX_TOUCHES_BOX(b1,b2)	\
+	(   PCB_POINT_IN_BOX((b1)->X1,(b1)->Y1,b2) || PCB_POINT_IN_BOX((b1)->X1,(b1)->Y2,b2) || PCB_POINT_IN_BOX((b1)->X2,(b1)->Y1,b2) || PCB_POINT_IN_BOX((b1)->X2,(b1)->Y2,b2)  \
+	 || PCB_POINT_IN_BOX((b2)->X1,(b2)->Y1,b1) || PCB_POINT_IN_BOX((b2)->X1,(b2)->Y2,b1) || PCB_POINT_IN_BOX((b2)->X2,(b2)->Y1,b1) || PCB_POINT_IN_BOX((b2)->X2,(b2)->Y2,b1)  \
+	 || pcb_lines_intersect((b1)->X1,(b1)->Y1, (b1)->X2,(b1)->Y1, (b2)->X1,(b2)->Y1, (b2)->X1,(b2)->Y2) \
+	 || pcb_lines_intersect((b2)->X1,(b2)->Y1, (b2)->X2,(b2)->Y1, (b1)->X1,(b1)->Y1, (b1)->X1,(b1)->Y2))
 
-#define	TEXT_TOUCHES_BOX(t,b)	\
-	(BOX_TOUCHES_BOX(&((t)->BoundingBox), (b)))
+#define	PCB_TEXT_TOUCHES_BOX(t,b)	\
+	(PCB_BOX_TOUCHES_BOX(&((t)->BoundingBox), (b)))
 
-#define	POLYGON_TOUCHES_BOX(p,b)	\
-	(BOX_TOUCHES_BOX(&((p)->BoundingBox), (b)))
+#define	PCB_POLYGON_TOUCHES_BOX(p,b)	\
+	(PCB_BOX_TOUCHES_BOX(&((p)->BoundingBox), (b)))
 
-#define	ELEMENT_TOUCHES_BOX(e,b)	\
-	(BOX_TOUCHES_BOX(&((e)->BoundingBox), (b)))
+#define	PCB_ELEMENT_TOUCHES_BOX(e,b)	\
+	(PCB_BOX_TOUCHES_BOX(&((e)->BoundingBox), (b)))
 
-#define ARC_TOUCHES_BOX(a,b)		\
-	(BOX_TOUCHES_BOX(&((a)->BoundingBox), (b)))
+#define PCB_ARC_TOUCHES_BOX(a,b)		\
+	(PCB_BOX_TOUCHES_BOX(&((a)->BoundingBox), (b)))
 
 
 /* == the combination of *_IN_* and *_TOUCHES_*: use IN for positive boxes == */
-#define IS_BOX_NEGATIVE(b) (((b)->X2 < (b)->X1) || ((b)->Y2 < (b)->Y1))
+#define PCB_IS_BOX_NEGATIVE(b) (((b)->X2 < (b)->X1) || ((b)->Y2 < (b)->Y1))
 
-#define	BOX_NEAR_BOX(b1,b) \
-	(IS_BOX_NEGATIVE(b) ? BOX_TOUCHES_BOX(b1,b) : BOX_IN_BOX(b1,b))
+#define	PCB_BOX_NEAR_BOX(b1,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_BOX_TOUCHES_BOX(b1,b) : PCB_BOX_IN_BOX(b1,b))
 
-#define	VIA_OR_PIN_NEAR_BOX(v,b) \
-	(IS_BOX_NEGATIVE(b) ? VIA_OR_PIN_TOUCHES_BOX(v,b) : VIA_OR_PIN_IN_BOX(v,b))
+#define	PCB_VIA_OR_PIN_NEAR_BOX(v,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_VIA_OR_PIN_TOUCHES_BOX(v,b) : PCB_VIA_OR_PIN_IN_BOX(v,b))
 
-#define	LINE_NEAR_BOX(l,b) \
-	(IS_BOX_NEGATIVE(b) ? LINE_TOUCHES_BOX(l,b) : LINE_IN_BOX(l,b))
+#define	PCB_LINE_NEAR_BOX(l,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_LINE_TOUCHES_BOX(l,b) : PCB_LINE_IN_BOX(l,b))
 
-#define	PAD_NEAR_BOX(p,b) \
-	(IS_BOX_NEGATIVE(b) ? PAD_TOUCHES_BOX(p,b) : PAD_IN_BOX(p,b))
+#define	PCB_PAD_NEAR_BOX(p,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_PAD_TOUCHES_BOX(p,b) : PCB_PAD_IN_BOX(p,b))
 
-#define	TEXT_NEAR_BOX(t,b) \
-	(IS_BOX_NEGATIVE(b) ? TEXT_TOUCHES_BOX(t,b) : TEXT_IN_BOX(t,b))
+#define	PCB_TEXT_NEAR_BOX(t,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_TEXT_TOUCHES_BOX(t,b) : PCB_TEXT_IN_BOX(t,b))
 
-#define	POLYGON_NEAR_BOX(p,b) \
-	(IS_BOX_NEGATIVE(b) ? POLYGON_TOUCHES_BOX(p,b) : POLYGON_IN_BOX(p,b))
+#define	PCB_POLYGON_NEAR_BOX(p,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_POLYGON_TOUCHES_BOX(p,b) : PCB_POLYGON_IN_BOX(p,b))
 
-#define	ELEMENT_NEAR_BOX(e,b) \
-	(IS_BOX_NEGATIVE(b) ? ELEMENT_TOUCHES_BOX(e,b) : ELEMENT_IN_BOX(e,b))
+#define	PCB_ELEMENT_NEAR_BOX(e,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_ELEMENT_TOUCHES_BOX(e,b) : PCB_ELEMENT_IN_BOX(e,b))
 
-#define ARC_NEAR_BOX(a,b) \
-	(IS_BOX_NEGATIVE(b) ? ARC_TOUCHES_BOX(a,b) : ARC_IN_BOX(a,b))
+#define PCB_ARC_NEAR_BOX(a,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_ARC_TOUCHES_BOX(a,b) : PCB_ARC_IN_BOX(a,b))
 
 
 

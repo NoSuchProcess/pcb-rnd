@@ -294,7 +294,7 @@ static pcb_r_dir_t text_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, text))
 		return R_DIR_NOT_FOUND;
 
-	if (POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
+	if (PCB_POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		*i->ptr2 = *i->ptr3 = text;
 		return R_DIR_CANCEL; /* found */
 	}
@@ -438,7 +438,7 @@ static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, text))
 		return R_DIR_NOT_FOUND;
 
-	if ((PCB_FRONT(element) || i->BackToo) && !PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) && POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
+	if ((PCB_FRONT(element) || i->BackToo) && !PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) && PCB_POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		/* use the text with the smallest bounding box */
 		newarea = (text->BoundingBox.X2 - text->BoundingBox.X1) * (double) (text->BoundingBox.Y2 - text->BoundingBox.Y1);
 		if (newarea < i->area) {
@@ -483,7 +483,7 @@ static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, element))
 		return R_DIR_NOT_FOUND;
 
-	if ((PCB_FRONT(element) || i->BackToo) && POINT_IN_BOX(PosX, PosY, &element->VBox)) {
+	if ((PCB_FRONT(element) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &element->VBox)) {
 		/* use the element with the smallest bounding box */
 		newarea = (element->VBox.X2 - element->VBox.X1) * (double) (element->VBox.Y2 - element->VBox.Y1);
 		if (newarea < i->area) {
@@ -1340,7 +1340,7 @@ int SearchScreenGridSlop(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1,
 	return (ans);
 }
 
-int lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2)
+int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2)
 {
 /* TODO: this should be long double if pcb_coord_t is 64 bits */
 	double ua, xi, yi, X1, Y1, X2, Y2, X3, Y3, X4, Y4, tmp;

@@ -249,7 +249,7 @@ do { \
 		/* Make sure our negative box is canonical: always from bottom-right to top-left
 		   This limits all possible box coordinate orders to two, one for positive and
 		   one for negative. */
-		if (IS_BOX_NEGATIVE(Box)) {
+		if (PCB_IS_BOX_NEGATIVE(Box)) {
 			if (Box->X1 < Box->X2)
 				swap(Box->X1, Box->X2);
 			if (Box->Y1 < Box->Y2)
@@ -258,7 +258,7 @@ do { \
 	}
 #undef swap
 
-/*pcb_printf("box: %mm %mm - %mm %mm    [ %d ] %d %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, IS_BOX_NEGATIVE(Box), conf_core.editor.view.flip_x, conf_core.editor.view.flip_y);*/
+/*pcb_printf("box: %mm %mm - %mm %mm    [ %d ] %d %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, PCB_IS_BOX_NEGATIVE(Box), conf_core.editor.view.flip_x, conf_core.editor.view.flip_y);*/
 
 /* append an object to the return list OR set the flag if there's no list */
 #define append(undo_type, p1, obj) \
@@ -278,7 +278,7 @@ do { \
 	changed = 1; \
 } while(0)
 
-	if (IS_BOX_NEGATIVE(Box) && ((Box->X1 == Box->X2) || (Box->Y2 == Box->Y1))) {
+	if (PCB_IS_BOX_NEGATIVE(Box) && ((Box->X1 == Box->X2) || (Box->Y2 == Box->Y1))) {
 		if (len != NULL)
 			*len = 0;
 		return NULL;
@@ -287,7 +287,7 @@ do { \
 	if (PCB->RatOn || !Flag)
 		PCB_RAT_LOOP(PCB->Data);
 	{
-		if (LINE_NEAR_BOX((pcb_line_t *) line, Box) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
+		if (PCB_LINE_NEAR_BOX((pcb_line_t *) line, Box) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
 			append(PCB_TYPE_RATLINE, line, line);
 			if (PCB->RatOn)
 				DrawRat(line);
@@ -311,7 +311,7 @@ do { \
 
 		PCB_LINE_LOOP(layer);
 		{
-			if (LINE_NEAR_BOX(line, Box)
+			if (PCB_LINE_NEAR_BOX(line, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
 				append(PCB_TYPE_LINE, layer, line);
@@ -322,7 +322,7 @@ do { \
 		END_LOOP;
 		PCB_ARC_LOOP(layer);
 		{
-			if (ARC_NEAR_BOX(arc, Box)
+			if (PCB_ARC_NEAR_BOX(arc, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc) != Flag) {
 				append(PCB_TYPE_ARC, layer, arc);
@@ -334,7 +334,7 @@ do { \
 		PCB_TEXT_LOOP(layer);
 		{
 			if (!Flag || pcb_text_is_visible(PCB, layer, text)) {
-				if (TEXT_NEAR_BOX(text, Box)
+				if (PCB_TEXT_NEAR_BOX(text, Box)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, text)
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) != Flag) {
 					append(PCB_TYPE_TEXT, layer, text);
@@ -346,7 +346,7 @@ do { \
 		END_LOOP;
 		PCB_POLY_LOOP(layer);
 		{
-			if (POLYGON_NEAR_BOX(polygon, Box)
+			if (PCB_POLYGON_NEAR_BOX(polygon, Box)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) != Flag) {
 				append(PCB_TYPE_POLYGON, layer, polygon);
@@ -366,7 +366,7 @@ do { \
 			if ((PCB->ElementOn || !Flag)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
 					&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn)) {
-				if (BOX_NEAR_BOX(&ELEMENT_TEXT(PCB, element).BoundingBox, Box)
+				if (PCB_BOX_NEAR_BOX(&ELEMENT_TEXT(PCB, element).BoundingBox, Box)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, &ELEMENT_TEXT(PCB, element))
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)) != Flag) {
 					/* select all names of element */
@@ -378,7 +378,7 @@ do { \
 					if (PCB->ElementOn)
 						DrawElementName(element);
 				}
-				if ((PCB->PinOn || !Flag) && ELEMENT_NEAR_BOX(element, Box))
+				if ((PCB->PinOn || !Flag) && PCB_ELEMENT_NEAR_BOX(element, Box))
 					if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) != Flag) {
 						append(PCB_TYPE_ELEMENT, element, element);
 						PCB_PIN_LOOP(element);
@@ -407,7 +407,7 @@ do { \
 			if ((PCB->PinOn || !Flag) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && !gotElement) {
 				PCB_PIN_LOOP(element);
 				{
-					if ((VIA_OR_PIN_NEAR_BOX(pin, Box)
+					if ((PCB_VIA_OR_PIN_NEAR_BOX(pin, Box)
 							 && PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin) != Flag)) {
 						append(PCB_TYPE_PIN, element, pin);
 						if (PCB->PinOn)
@@ -417,7 +417,7 @@ do { \
 				END_LOOP;
 				PCB_PAD_LOOP(element);
 				{
-					if (PAD_NEAR_BOX(pad, Box)
+					if (PCB_PAD_NEAR_BOX(pad, Box)
 							&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad) != Flag
 							&& (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == SWAP_IDENT || PCB->InvisibleObjectsOn || !Flag)) {
 						append(PCB_TYPE_PAD, element, pad);
@@ -434,7 +434,7 @@ do { \
 	if (PCB->ViaOn || !Flag)
 		PCB_VIA_LOOP(PCB->Data);
 	{
-		if (VIA_OR_PIN_NEAR_BOX(via, Box)
+		if (PCB_VIA_OR_PIN_NEAR_BOX(via, Box)
 				&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, via) != Flag) {
 			append(PCB_TYPE_VIA, via, via);
