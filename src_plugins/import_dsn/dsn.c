@@ -145,7 +145,7 @@ int ActionLoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			if (x0 != 0 || y0 != 0) {
 				line = pcb_line_new_merge(rlayer, x0, PCB->MaxHeight - y0,
 																			x1, PCB->MaxHeight - y1, linethick, lineclear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
-				ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, rlayer, line);
+				pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, rlayer, line);
 			}
 			x0 = x1;
 			y0 = y1;

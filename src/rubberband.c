@@ -375,9 +375,9 @@ static void CheckPolygonForRubberbandConnection(pcb_layer_t *Layer, pcb_polygon_
 				if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line))
 					continue;
 				thick = (line->Thickness + 1) / 2;
-				if (IsPointInPolygon(line->Point1.X, line->Point1.Y, thick, Polygon))
+				if (pcb_poly_is_point_in_p(line->Point1.X, line->Point1.Y, thick, Polygon))
 					CreateNewRubberbandEntry(layer, line, &line->Point1);
-				if (IsPointInPolygon(line->Point2.X, line->Point2.Y, thick, Polygon))
+				if (pcb_poly_is_point_in_p(line->Point2.X, line->Point2.Y, thick, Polygon))
 					CreateNewRubberbandEntry(layer, line, &line->Point2);
 			}
 			END_LOOP;

@@ -97,7 +97,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				i++;
 				j--;
 			}
-			InitClip(PCB->Data, layer, polygon);
+			pcb_poly_init_clip(PCB->Data, layer, polygon);
 		}
 		END_LOOP;
 		PCB_ARC_LOOP(layer);

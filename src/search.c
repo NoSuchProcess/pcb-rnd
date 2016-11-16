@@ -326,7 +326,7 @@ static pcb_r_dir_t polygon_callback(const pcb_box_t * box, void *cl)
 	if (PCB_FLAG_TEST(i->locked, polygon))
 		return R_DIR_NOT_FOUND;
 
-	if (IsPointInPolygon(PosX, PosY, SearchRadius, polygon)) {
+	if (pcb_poly_is_point_in_p(PosX, PosY, SearchRadius, polygon)) {
 		*i->ptr2 = *i->ptr3 = polygon;
 		return R_DIR_CANCEL; /* found */
 	}

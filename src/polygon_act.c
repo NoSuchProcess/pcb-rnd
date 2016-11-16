@@ -43,7 +43,7 @@
 
 /* --------------------------------------------------------------------------- */
 
-static const char morphpcb_polygon_syntax[] = "MorphPolygon(Object|Selected)";
+static const char morphpcb_polygon_syntax[] = "pcb_poly_morph(Object|Selected)";
 
 static const char morphpolygon_help[] = "Converts dead polygon islands into separate polygons.";
 
@@ -69,7 +69,7 @@ static int ActionMorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = SearchScreen(x, y, PCB_TYPE_POLYGON, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
-					MorphPolygon((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr3);
+					pcb_poly_morph((pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr3);
 					pcb_draw();
 					IncrementUndoSerialNumber();
 				}
@@ -80,7 +80,7 @@ static int ActionMorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_co
 			PCB_POLY_ALL_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
-					MorphPolygon(layer, polygon);
+					pcb_poly_morph(layer, polygon);
 			}
 			ENDALL_LOOP;
 			pcb_draw();

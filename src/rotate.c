@@ -115,7 +115,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, 
 		AddObjectToRotateUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
 		EraseLine(ptr->Line);
 		if (ptr->Layer) {
-			RestoreToPolygon(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
+			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
 			r_delete_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
 		}
 		else
@@ -124,7 +124,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, 
 		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
 			r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
-			ClearFromPolygon(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
+			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
 			DrawLine(ptr->Layer, ptr->Line);
 		}
 		else {

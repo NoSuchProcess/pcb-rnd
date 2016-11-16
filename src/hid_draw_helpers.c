@@ -144,7 +144,7 @@ void pcb_dhlp_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_
 		if (should_compute_no_holes(poly, clip_box))
 			pcb_poly_compute_no_holes(poly);
 		else
-			NoHolesPolygonDicer(poly, clip_box, fill_contour_cb, gc);
+			pcb_poly_no_holes_dicer(poly, clip_box, fill_contour_cb, gc);
 	}
 	if (poly->NoHolesValid && poly->NoHoles) {
 		pcb_pline_t *pl;
@@ -163,7 +163,7 @@ void pcb_dhlp_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_polygon_t * poly, const pcb_
 		pcb_polygon_t p = *poly;
 
 		for (p.Clipped = poly->Clipped->f; p.Clipped != poly->Clipped; p.Clipped = p.Clipped->f)
-			NoHolesPolygonDicer(&p, clip_box, fill_contour_cb, gc);
+			pcb_poly_no_holes_dicer(&p, clip_box, fill_contour_cb, gc);
 	}
 }
 
@@ -308,7 +308,7 @@ static void draw_square_pin_poly(pcb_hid_gc_t gc, pcb_coord_t X, pcb_coord_t Y, 
 	double xm[8], ym[8];
 	int i;
 
-	square_pin_factors(style, xm, ym);
+	pcb_poly_square_pin_factors(style, xm, ym);
 
 	if (Thickness != special_size) {
 		special_size = Thickness;

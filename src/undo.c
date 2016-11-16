@@ -287,9 +287,9 @@ static pcb_bool UndoClearPoly(UndoListTypePtr Entry)
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
 		if (Entry->Data.ClearPoly.Clear)
-			RestoreToPolygon(PCB->Data, type, Entry->Data.ClearPoly.Layer, ptr3);
+			pcb_poly_restore_to_poly(PCB->Data, type, Entry->Data.ClearPoly.Layer, ptr3);
 		else
-			ClearFromPolygon(PCB->Data, type, Entry->Data.ClearPoly.Layer, ptr3);
+			pcb_poly_clear_from_poly(PCB->Data, type, Entry->Data.ClearPoly.Layer, ptr3);
 		Entry->Data.ClearPoly.Clear = !Entry->Data.ClearPoly.Clear;
 		return pcb_true;
 	}
@@ -430,11 +430,11 @@ static pcb_bool UndoChangeClearSize(UndoListTypePtr Entry)
 	type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
 		swap = ((pcb_pin_t *) ptr2)->Clearance;
-		RestoreToPolygon(PCB->Data, type, ptr1, ptr2);
+		pcb_poly_restore_to_poly(PCB->Data, type, ptr1, ptr2);
 		if (andDraw)
 			pcb_erase_obj(type, ptr1, ptr2);
 		((pcb_pin_t *) ptr2)->Clearance = Entry->Data.Size;
-		ClearFromPolygon(PCB->Data, type, ptr1, ptr2);
+		pcb_poly_clear_from_poly(PCB->Data, type, ptr1, ptr2);
 		Entry->Data.Size = swap;
 		if (andDraw)
 			pcb_draw_obj(type, ptr1, ptr2);
@@ -491,12 +491,12 @@ static pcb_bool UndoChangeSize(UndoListTypePtr Entry)
 		/* Wow! can any object be treated as a pin type for size change?? */
 		/* pins, vias, lines, and arcs can. Text can't but it has it's own mechanism */
 		swap = ((pcb_pin_t *) ptr2)->Thickness;
-		RestoreToPolygon(PCB->Data, type, ptr1, ptr2);
+		pcb_poly_restore_to_poly(PCB->Data, type, ptr1, ptr2);
 		if ((andDraw) && (ptr1e != NULL))
 			pcb_erase_obj(type, ptr1e, ptr2);
 		((pcb_pin_t *) ptr2)->Thickness = Entry->Data.Size;
 		Entry->Data.Size = swap;
-		ClearFromPolygon(PCB->Data, type, ptr1, ptr2);
+		pcb_poly_clear_from_poly(PCB->Data, type, ptr1, ptr2);
 		if (andDraw)
 			pcb_draw_obj(type, ptr1, ptr2);
 		return (pcb_true);
@@ -782,7 +782,7 @@ static pcb_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 
 	obj = (pcb_any_obj_t *) pcb_move_obj_to_buffer(PCB->Data, RemoveList, type, ptr1, ptr2, ptr3);
 	if (Entry->Kind == PCB_TYPE_POLYGON)
-		InitClip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_polygon_t *) obj);
+		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_polygon_t *) obj);
 	return (pcb_true);
 }
 
@@ -1377,7 +1377,7 @@ void AddObjectToCreateUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	if (!Locked)
 		GetUndoSlot(UNDO_CREATE, PCB_OBJECT_ID(Ptr3), Type);
-	ClearFromPolygon(PCB->Data, Type, Ptr1, Ptr2);
+	pcb_poly_clear_from_poly(PCB->Data, Type, Ptr1, Ptr2);
 }
 
 /* ---------------------------------------------------------------------------

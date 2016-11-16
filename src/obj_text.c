@@ -230,7 +230,7 @@ void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
 
 	r_delete_entry(layer->text_tree, (pcb_box_t *) text);
-	RestoreToPolygon(ctx->buffer.src, PCB_TYPE_TEXT, layer, text);
+	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_TEXT, layer, text);
 
 	textlist_remove(text);
 	textlist_append(&lay->Text, text);
@@ -238,7 +238,7 @@ void *MoveTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 	if (!lay->text_tree)
 		lay->text_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(lay->text_tree, (pcb_box_t *) text, 0);
-	ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_TEXT, lay, text);
+	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_TEXT, lay, text);
 	return (text);
 }
 
@@ -254,11 +254,11 @@ void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		AddObjectToSizeUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
 		EraseText(Layer, Text);
 		r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		Text->Scale = value;
 		pcb_text_bbox(&PCB->Font, Text);
 		r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		DrawText(Layer, Text);
 		return (Text);
 	}
@@ -275,13 +275,13 @@ void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		return (NULL);
 	EraseText(Layer, Text);
 	r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	Text->TextString = ctx->chgname.new_name;
 
 	/* calculate size of the bounding box */
 	pcb_text_bbox(&PCB->Font, Text);
 	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
 	return (old);
 }
@@ -294,13 +294,13 @@ void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	EraseText(Layer, Text);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_false);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
 	AddObjectToFlagUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Text);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
 		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_true);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
 	DrawText(Layer, Text);
 	return (Text);
@@ -337,7 +337,7 @@ void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 /* moves a text object */
 void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	if (Layer->On) {
 		EraseText(Layer, Text);
@@ -348,14 +348,14 @@ void *MoveText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	else
 		pcb_text_move(Text, ctx->move.dx, ctx->move.dy);
 	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	return (Text);
 }
 
 /* moves a text object between layers; lowlevel routines */
 void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t * text, pcb_layer_t * Destination)
 {
-	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Source, text);
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Source, text);
 	r_delete_entry(Source->text_tree, (pcb_box_t *) text);
 
 	textlist_remove(text);
@@ -371,7 +371,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 	if (!Destination->text_tree)
 		Destination->text_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(Destination->text_tree, (pcb_box_t *) text, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Destination, text);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Destination, text);
 
 	return text;
 }
@@ -453,11 +453,11 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	EraseText(Layer, Text);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 	pcb_text_rotate90(Text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
 	pcb_draw();
 	return (Text);

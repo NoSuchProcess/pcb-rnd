@@ -164,14 +164,14 @@ void *ChangePadSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 	if (value <= MAX_PADSIZE && value >= MIN_PADSIZE && value != Pad->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
 		AddObjectToMaskSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-		RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
+		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 		ErasePad(Pad);
 		r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 		Pad->Mask += value - Pad->Thickness;
 		Pad->Thickness = value;
 		/* SetElementBB updates all associated rtrees */
 		pcb_element_bbox(PCB->Data, Element, &PCB->Font);
-		ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
+		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 		DrawPad(Pad);
 		return (Pad);
 	}
@@ -195,13 +195,13 @@ void *ChangePadClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pa
 	if (value == Pad->Clearance)
 		return NULL;
 	AddObjectToClearSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	ErasePad(Pad);
 	r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 	Pad->Clearance = value;
 	/* SetElementBB updates all associated rtrees */
 	pcb_element_bbox(PCB->Data, Element, &PCB->Font);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	DrawPad(Pad);
 	return Pad;
 }
@@ -245,11 +245,11 @@ void *ChangePadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 		return (NULL);
 	ErasePad(Pad);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, pcb_false);
-	RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	AddObjectToFlagUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_SQUARE, Pad);
 	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, pcb_true);
-	ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, Pad);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	DrawPad(Pad);
 	return (Pad);
 }

@@ -358,17 +358,17 @@ static pcb_r_dir_t LOCtoPVpoly_callback(const pcb_box_t * b, void *cl)
 			pcb_coord_t x2 = i->pv.X + (i->pv.Thickness + 1 + Bloat) / 2;
 			pcb_coord_t y1 = i->pv.Y - (i->pv.Thickness + 1 + Bloat) / 2;
 			pcb_coord_t y2 = i->pv.Y + (i->pv.Thickness + 1 + Bloat) / 2;
-			if (IsRectangleInPolygon(x1, y1, x2, y2, polygon)
+			if (pcb_poly_is_rect_in_p(x1, y1, x2, y2, polygon)
 					&& ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PIN, &i->pv, FCT_COPPER))
 				longjmp(i->env, 1);
 		}
 		else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, &i->pv)) {
 			pcb_polyarea_t *oct = pcb_poly_from_octagon(i->pv.X, i->pv.Y, i->pv.Thickness / 2, PCB_FLAG_SQUARE_GET(&i->pv));
-			if (isects(oct, polygon, pcb_true)
+			if (pcb_poly_isects_poly(oct, polygon, pcb_true)
 					&& ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PIN, &i->pv, FCT_COPPER))
 				longjmp(i->env, 1);
 		}
-		else if (IsPointInPolygon(i->pv.X, i->pv.Y, wide, polygon)
+		else if (pcb_poly_is_point_in_p(i->pv.X, i->pv.Y, wide, polygon)
 						 && ADD_POLYGON_TO_LIST(i->layer, polygon, PCB_TYPE_PIN, &i->pv, FCT_COPPER))
 			longjmp(i->env, 1);
 	}
@@ -673,17 +673,17 @@ static pcb_r_dir_t pv_poly_callback(const pcb_box_t * b, void *cl)
 			x2 = pv->X + (PIN_SIZE(pv) + 1 + Bloat) / 2;
 			y1 = pv->Y - (PIN_SIZE(pv) + 1 + Bloat) / 2;
 			y2 = pv->Y + (PIN_SIZE(pv) + 1 + Bloat) / 2;
-			if (IsRectangleInPolygon(x1, y1, x2, y2, &i->polygon)
+			if (pcb_poly_is_rect_in_p(x1, y1, x2, y2, &i->polygon)
 					&& ADD_PV_TO_LIST(pv, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
 				longjmp(i->env, 1);
 		}
 		else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv)) {
 			pcb_polyarea_t *oct = pcb_poly_from_octagon(pv->X, pv->Y, PIN_SIZE(pv) / 2, PCB_FLAG_SQUARE_GET(pv));
-			if (isects(oct, &i->polygon, pcb_true) && ADD_PV_TO_LIST(pv, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
+			if (pcb_poly_isects_poly(oct, &i->polygon, pcb_true) && ADD_PV_TO_LIST(pv, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
 				longjmp(i->env, 1);
 		}
 		else {
-			if (IsPointInPolygon(pv->X, pv->Y, PIN_SIZE(pv) * 0.5 + Bloat, &i->polygon)
+			if (pcb_poly_is_point_in_p(pv->X, pv->Y, PIN_SIZE(pv) * 0.5 + Bloat, &i->polygon)
 					&& ADD_PV_TO_LIST(pv, PCB_TYPE_POLYGON, &i->polygon, FCT_COPPER))
 				longjmp(i->env, 1);
 		}

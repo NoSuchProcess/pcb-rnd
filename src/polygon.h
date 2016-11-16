@@ -77,20 +77,20 @@ pcb_polyarea_t *pcb_poly_from_arc(pcb_arc_t * l, pcb_coord_t thick);
 pcb_polyarea_t *pcb_poly_from_pin(pcb_pin_t * l, pcb_coord_t thick, pcb_coord_t clear);
 pcb_polyarea_t *pcb_poly_from_box_bloated(pcb_box_t * box, pcb_coord_t radius);
 
-void frac_circle(pcb_pline_t *, pcb_coord_t, pcb_coord_t, pcb_vector_t, int);
-int InitClip(pcb_data_t * d, pcb_layer_t * l, pcb_polygon_t * p);
-void RestoreToPolygon(pcb_data_t *, int, void *, void *);
-void ClearFromPolygon(pcb_data_t *, int, void *, void *);
+void pcb_poly_frac_cicle(pcb_pline_t *, pcb_coord_t, pcb_coord_t, pcb_vector_t, int);
+int pcb_poly_init_clip(pcb_data_t * d, pcb_layer_t * l, pcb_polygon_t * p);
+void pcb_poly_restore_to_poly(pcb_data_t *, int, void *, void *);
+void pcb_poly_clear_from_poly(pcb_data_t *, int, void *, void *);
 
-pcb_bool IsPointInPolygon(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_polygon_t *);
-pcb_bool IsPointInPolygonIgnoreHoles(pcb_coord_t, pcb_coord_t, pcb_polygon_t *);
-pcb_bool IsRectangleInPolygon(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_polygon_t *);
-pcb_bool isects(pcb_polyarea_t *, pcb_polygon_t *, pcb_bool);
-pcb_bool MorphPolygon(pcb_layer_t *, pcb_polygon_t *);
-void NoHolesPolygonDicer(pcb_polygon_t * p, const pcb_box_t * clip, void (*emit) (pcb_pline_t *, void *), void *user_data);
-void PolyToPolygonsOnLayer(pcb_data_t *, pcb_layer_t *, pcb_polyarea_t *, pcb_flag_t);
+pcb_bool pcb_poly_is_point_in_p(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_polygon_t *);
+pcb_bool pcb_poly_is_point_in_p_ignore_holes(pcb_coord_t, pcb_coord_t, pcb_polygon_t *);
+pcb_bool pcb_poly_is_rect_in_p(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_polygon_t *);
+pcb_bool pcb_poly_isects_poly(pcb_polyarea_t *, pcb_polygon_t *, pcb_bool);
+pcb_bool pcb_poly_morph(pcb_layer_t *, pcb_polygon_t *);
+void pcb_poly_no_holes_dicer(pcb_polygon_t * p, const pcb_box_t * clip, void (*emit) (pcb_pline_t *, void *), void *user_data);
+void pcb_poly_to_polygons_on_layer(pcb_data_t *, pcb_layer_t *, pcb_polyarea_t *, pcb_flag_t);
 
-void square_pin_factors(int style, double *xm, double *ym);
+void pcb_poly_square_pin_factors(int style, double *xm, double *ym);
 
 
 #endif

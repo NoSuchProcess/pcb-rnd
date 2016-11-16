@@ -985,7 +985,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	   announce the clipping (it's slow, we may need a progress bar) */
 	PCB_POLY_ALL_LOOP(pcb->Data);
 	{
-		InitClip(pcb->Data, layer, polygon);
+		pcb_poly_init_clip(pcb->Data, layer, polygon);
 	}
 	ENDALL_LOOP;
 

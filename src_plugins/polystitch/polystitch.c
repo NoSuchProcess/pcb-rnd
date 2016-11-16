@@ -220,7 +220,7 @@ static void stitch_them()
 	pcb_poly_bbox(outer_poly);
 	r_insert_entry(poly_layer->polygon_tree, (pcb_box_t *) outer_poly, 0);
 	pcb_poly_remove_excess_points(poly_layer, outer_poly);
-	InitClip(PCB->Data, poly_layer, outer_poly);
+	pcb_poly_init_clip(PCB->Data, poly_layer, outer_poly);
 	DrawPolygon(poly_layer, outer_poly);
 	pcb_draw();
 

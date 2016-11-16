@@ -184,7 +184,7 @@ void pcb_poly_compute_no_holes(pcb_polygon_t * poly)
 {
 	pcb_poly_contours_free(&poly->NoHoles);
 	if (poly->Clipped)
-		NoHolesPolygonDicer(poly, NULL, add_noholes_polyarea, poly);
+		pcb_poly_no_holes_dicer(poly, NULL, add_noholes_polyarea, poly);
 	else
 		printf("Compute_noholes caught poly->Clipped = NULL\n");
 	poly->NoHolesValid = 1;
@@ -323,7 +323,7 @@ pcb_polyarea_t *pcb_poly_from_rect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y
 }
 
 /* set up x and y multiplier for an octa poly, depending on square pin style */
-void square_pin_factors(int style, double *xm, double *ym)
+void pcb_poly_square_pin_factors(int style, double *xm, double *ym)
 {
 	int i;
 	const double factor = 2.0;
@@ -352,7 +352,7 @@ pcb_polyarea_t *pcb_poly_from_octagon(pcb_coord_t x, pcb_coord_t y, pcb_coord_t 
 	pcb_vector_t v;
 	double xm[8], ym[8];
 
-	square_pin_factors(style, xm, ym);
+	pcb_poly_square_pin_factors(style, xm, ym);
 
 #warning TODO: rewrite this to use the same table as the square/oct pin draw function
 	/* point 7 */
@@ -398,7 +398,7 @@ pcb_polyarea_t *pcb_poly_from_octagon(pcb_coord_t x, pcb_coord_t y, pcb_coord_t 
  * 2 for a half circle
  * or 4 for a quarter circle
  */
-void frac_circle(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, int range)
+void pcb_poly_frac_cicle(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, int range)
 {
 	double e1, e2, t1;
 	int i;
@@ -433,7 +433,7 @@ pcb_polyarea_t *pcb_poly_from_circle(pcb_coord_t x, pcb_coord_t y, pcb_coord_t r
 	v[1] = y;
 	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
-	frac_circle(contour, x, y, v, 1);
+	pcb_poly_frac_cicle(contour, x, y, v, 1);
 	contour->is_round = pcb_true;
 	contour->cx = x;
 	contour->cy = y;
@@ -453,19 +453,19 @@ pcb_polyarea_t *RoundRect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_co
 	v[1] = y1;
 	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
-	frac_circle(contour, x1, y1, v, 4);
+	pcb_poly_frac_cicle(contour, x1, y1, v, 4);
 	v[0] = x2;
 	v[1] = y1 - t;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	frac_circle(contour, x2, y1, v, 4);
+	pcb_poly_frac_cicle(contour, x2, y1, v, 4);
 	v[0] = x2 + t;
 	v[1] = y2;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	frac_circle(contour, x2, y2, v, 4);
+	pcb_poly_frac_cicle(contour, x2, y2, v, 4);
 	v[0] = x1;
 	v[1] = y2 + t;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	frac_circle(contour, x1, y2, v, 4);
+	pcb_poly_frac_cicle(contour, x1, y2, v, 4);
 	return pcb_poly_from_contour(contour);
 }
 
@@ -516,7 +516,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
 	v[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
 	/* add the round cap at the end */
-	frac_circle(contour, ends->X2, ends->Y2, v, 2);
+	pcb_poly_frac_cicle(contour, ends->X2, ends->Y2, v, 2);
 	/* and now do the outer arc (going backwards) */
 	rx = (a->Width + half) * (1 + radius_adj);
 	ry = (a->Width + half) * (1 + radius_adj);
@@ -531,7 +531,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	ang = a->StartAngle;
 	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
 	v[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
-	frac_circle(contour, ends->X1, ends->Y1, v, 2);
+	pcb_poly_frac_cicle(contour, ends->X1, ends->Y1, v, 2);
 	/* now we have the whole contour */
 	if (!(np = pcb_poly_from_contour(contour)))
 		return NULL;
@@ -607,7 +607,7 @@ pcb_polyarea_t *pcb_poly_from_line(pcb_line_t * L, pcb_coord_t thick)
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
 		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	else
-		frac_circle(contour, l->Point2.X, l->Point2.Y, v, 2);
+		pcb_poly_frac_cicle(contour, l->Point2.X, l->Point2.Y, v, 2);
 	v[0] = l->Point2.X + dx;
 	v[1] = l->Point2.Y + dy;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
@@ -616,7 +616,7 @@ pcb_polyarea_t *pcb_poly_from_line(pcb_line_t * L, pcb_coord_t thick)
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
 		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
 	else
-		frac_circle(contour, l->Point1.X, l->Point1.Y, v, 2);
+		pcb_poly_frac_cicle(contour, l->Point1.X, l->Point1.Y, v, 2);
 	/* now we have the line contour */
 	if (!(np = pcb_poly_from_contour(contour)))
 		return NULL;
@@ -671,22 +671,22 @@ pcb_polyarea_t *SquarePadPoly(pcb_pad_t * pad, pcb_coord_t clear)
 	v[1] = c->Point1.Y - ty;
 	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return 0;
-	frac_circle(contour, (t->Point1.X - tx), (t->Point1.Y - ty), v, 4);
+	pcb_poly_frac_cicle(contour, (t->Point1.X - tx), (t->Point1.Y - ty), v, 4);
 
 	v[0] = t->Point2.X - cx;
 	v[1] = t->Point2.Y - cy;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	frac_circle(contour, (t->Point2.X - tx), (t->Point2.Y - ty), v, 4);
+	pcb_poly_frac_cicle(contour, (t->Point2.X - tx), (t->Point2.Y - ty), v, 4);
 
 	v[0] = c->Point2.X + tx;
 	v[1] = c->Point2.Y + ty;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	frac_circle(contour, (t->Point2.X + tx), (t->Point2.Y + ty), v, 4);
+	pcb_poly_frac_cicle(contour, (t->Point2.X + tx), (t->Point2.Y + ty), v, 4);
 
 	v[0] = t->Point1.X + cx;
 	v[1] = t->Point1.Y + cy;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	frac_circle(contour, (t->Point1.X + tx), (t->Point1.Y + ty), v, 4);
+	pcb_poly_frac_cicle(contour, (t->Point1.X + tx), (t->Point1.Y + ty), v, 4);
 
 	/* now we have the line contour */
 	if (!(np = pcb_poly_from_contour(contour)))
@@ -1171,7 +1171,7 @@ static int UnsubtractPad(pcb_pad_t * pad, pcb_layer_t * l, pcb_polygon_t * p)
 
 static pcb_bool inhibit = pcb_false;
 
-int InitClip(pcb_data_t *Data, pcb_layer_t *layer, pcb_polygon_t * p)
+int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_polygon_t * p)
 {
 	if (inhibit)
 		return 0;
@@ -1348,7 +1348,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	if (!CURRENT->polygon_tree)
 		CURRENT->polygon_tree = r_create_tree(NULL, 0, 0);
 	r_insert_entry(CURRENT->polygon_tree, (pcb_box_t *) polygon, 0);
-	InitClip(PCB->Data, CURRENT, polygon);
+	pcb_poly_init_clip(PCB->Data, CURRENT, polygon);
 	DrawPolygon(CURRENT, polygon);
 	SetChangedFlag(pcb_true);
 
@@ -1540,23 +1540,23 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	return r;
 }
 
-void RestoreToPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
+void pcb_poly_restore_to_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	if (type == PCB_TYPE_POLYGON)
-		InitClip(PCB->Data, (pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
+		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
 	else
 		pcb_poly_plows(Data, type, ptr1, ptr2, add_plow);
 }
 
-void ClearFromPolygon(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
+void pcb_poly_clear_from_poly(pcb_data_t * Data, int type, void *ptr1, void *ptr2)
 {
 	if (type == PCB_TYPE_POLYGON)
-		InitClip(PCB->Data, (pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
+		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1, (pcb_polygon_t *) ptr2);
 	else
 		pcb_poly_plows(Data, type, ptr1, ptr2, subtract_plow);
 }
 
-pcb_bool isects(pcb_polyarea_t * a, pcb_polygon_t *p, pcb_bool fr)
+pcb_bool pcb_poly_isects_poly(pcb_polyarea_t * a, pcb_polygon_t *p, pcb_bool fr)
 {
 	pcb_polyarea_t *x;
 	pcb_bool ans;
@@ -1569,7 +1569,7 @@ pcb_bool isects(pcb_polyarea_t * a, pcb_polygon_t *p, pcb_bool fr)
 }
 
 
-pcb_bool IsPointInPolygon(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t r, pcb_polygon_t *p)
+pcb_bool pcb_poly_is_point_in_p(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t r, pcb_polygon_t *p)
 {
 	pcb_polyarea_t *c;
 	pcb_vector_t v;
@@ -1591,11 +1591,11 @@ pcb_bool IsPointInPolygon(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t r, pcb_polyg
 		return pcb_false;
 	if (!(c = pcb_poly_from_circle(X, Y, r)))
 		return pcb_false;
-	return isects(c, p, pcb_true);
+	return pcb_poly_isects_poly(c, p, pcb_true);
 }
 
 
-pcb_bool IsPointInPolygonIgnoreHoles(pcb_coord_t X, pcb_coord_t Y, pcb_polygon_t *p)
+pcb_bool pcb_poly_is_point_in_p_ignore_holes(pcb_coord_t X, pcb_coord_t Y, pcb_polygon_t *p)
 {
 	pcb_vector_t v;
 	v[0] = X;
@@ -1603,12 +1603,12 @@ pcb_bool IsPointInPolygonIgnoreHoles(pcb_coord_t X, pcb_coord_t Y, pcb_polygon_t
 	return pcb_poly_contour_inside(p->Clipped->contours, v);
 }
 
-pcb_bool IsRectangleInPolygon(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_polygon_t *p)
+pcb_bool pcb_poly_is_rect_in_p(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_polygon_t *p)
 {
 	pcb_polyarea_t *s;
 	if (!(s = pcb_poly_from_rect(min(X1, X2), max(X1, X2), min(Y1, Y2), max(Y1, Y2))))
 		return pcb_false;
-	return isects(s, p, pcb_true);
+	return pcb_poly_isects_poly(s, p, pcb_true);
 }
 
 /* NB: This function will free the passed pcb_polyarea_t.
@@ -1657,7 +1657,7 @@ static void r_NoHolesPolygonDicer(pcb_polyarea_t * pa, void (*emit) (pcb_pline_t
 	}
 }
 
-void NoHolesPolygonDicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) (pcb_pline_t *, void *), void *user_data)
+void pcb_poly_no_holes_dicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) (pcb_pline_t *, void *), void *user_data)
 {
 	pcb_polyarea_t *main_contour, *cur, *next;
 
@@ -1685,7 +1685,7 @@ void NoHolesPolygonDicer(pcb_polygon_t *p, const pcb_box_t * clip, void (*emit) 
 }
 
 /* make a polygon split into multiple parts into multiple polygons */
-pcb_bool MorphPolygon(pcb_layer_t *layer, pcb_polygon_t *poly)
+pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_polygon_t *poly)
 {
 	pcb_polyarea_t *p, *start;
 	pcb_bool many = pcb_false;
@@ -1798,7 +1798,7 @@ void debug_polygon(pcb_polygon_t * p)
 /* Convert a pcb_polyarea_t (and all linked pcb_polyarea_t) to
  * raw PCB polygons on the given layer.
  */
-void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, pcb_polyarea_t * Input, pcb_flag_t Flags)
+void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer, pcb_polyarea_t * Input, pcb_flag_t Flags)
 {
 	pcb_polygon_t *Polygon;
 	pcb_polyarea_t *pa;
@@ -1830,7 +1830,7 @@ void PolyToPolygonsOnLayer(pcb_data_t * Destination, pcb_layer_t * Layer, pcb_po
 		}
 		while ((pline = pline->next) != NULL);
 
-		InitClip(Destination, Layer, Polygon);
+		pcb_poly_init_clip(Destination, Layer, Polygon);
 		pcb_poly_bbox(Polygon);
 		if (!Layer->polygon_tree)
 			Layer->polygon_tree = r_create_tree(NULL, 0, 0);

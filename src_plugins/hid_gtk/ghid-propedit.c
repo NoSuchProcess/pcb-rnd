@@ -354,7 +354,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 			PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
 			PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
 			pcb_flag_make(PCB_FLAG_CLEARPOLY));
-		InitClip(preview_pcb.Data, preview_pcb.Data->Layer, v);
+		pcb_poly_init_clip(preview_pcb.Data, preview_pcb.Data->Layer, v);
 	}
 
 	old_pcb = PCB;

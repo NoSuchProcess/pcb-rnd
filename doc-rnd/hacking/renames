@@ -737,3 +737,15 @@ LinePoly -> pcb_poly_from_line
 ArcPoly -> pcb_poly_from_arc
 PinPoly -> pcb_poly_from_pin
 BoxPolyBloated -> pcb_poly_from_box_bloated
+frac_circle -> pcb_poly_frac_cicle
+InitClip -> pcb_poly_init_clip
+RestoreToPolygon -> pcb_poly_restore_to_poly
+ClearFromPolygon -> pcb_poly_clear_from_poly
+IsPointInPolygon -> pcb_poly_is_point_in_p
+IsPointInPolygonIgnoreHoles -> pcb_poly_is_point_in_p_ignore_holes
+IsRectangleInPolygon -> pcb_poly_is_rect_in_p
+isects -> pcb_poly_isects_poly
+MorphPolygon -> pcb_poly_morph
+NoHolesPolygonDicer -> pcb_poly_no_holes_dicer
+PolyToPolygonsOnLayer -> pcb_poly_to_polygons_on_layer
+square_pin_factors -> pcb_poly_square_pin_factors

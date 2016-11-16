@@ -210,11 +210,11 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
-			frac_circle(c, v[0] + pin->Clearance / 4, v[1], v, 2);
+			pcb_poly_frac_cicle(c, v[0] + pin->Clearance / 4, v[1], v, 2);
 		v[1] = pin->Y + in;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		/* pivot 1/4 circle to next point */
-		frac_circle(c, pin->X + in, pin->Y + in, v, 4);
+		pcb_poly_frac_cicle(c, pin->X + in, pin->Y + in, v, 4);
 		v[0] = pin->X + d;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 2) {
@@ -223,7 +223,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
-			frac_circle(c, v[0], v[1] - pin->Clearance / 4, v, 2);
+			pcb_poly_frac_cicle(c, v[0], v[1] - pin->Clearance / 4, v, 2);
 		p = pcb_poly_from_contour(c);
 		/* bottom right */
 		v[0] = pin->X + in;
@@ -239,15 +239,15 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
-			frac_circle(c, v[0], v[1] - pin->Clearance / 4, v, 2);
+			pcb_poly_frac_cicle(c, v[0], v[1] - pin->Clearance / 4, v, 2);
 		v[0] = pin->X + in;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		/* pivot 1/4 circle to next point */
-		frac_circle(c, pin->X + in, pin->Y - in, v, 4);
+		pcb_poly_frac_cicle(c, pin->X + in, pin->Y - in, v, 4);
 		v[1] = pin->Y - d;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 5)
-			frac_circle(c, v[0] - pin->Clearance / 4, v[1], v, 2);
+			pcb_poly_frac_cicle(c, v[0] - pin->Clearance / 4, v[1], v, 2);
 		p2 = pcb_poly_from_contour(c);
 		p->f = p2;
 		p2->b = p;
@@ -265,15 +265,15 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
-			frac_circle(c, v[0] - pin->Clearance / 4, v[1], v, 2);
+			pcb_poly_frac_cicle(c, v[0] - pin->Clearance / 4, v[1], v, 2);
 		v[1] = pin->Y - in;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		/* pivot 1/4 circle to next point */
-		frac_circle(c, pin->X - in, pin->Y - in, v, 4);
+		pcb_poly_frac_cicle(c, pin->X - in, pin->Y - in, v, 4);
 		v[0] = pin->X - d;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 5)
-			frac_circle(c, v[0], v[1] + pin->Clearance / 4, v, 2);
+			pcb_poly_frac_cicle(c, v[0], v[1] + pin->Clearance / 4, v, 2);
 		p2 = pcb_poly_from_contour(c);
 		p->f->f = p2;
 		p2->b = p->f;
@@ -285,7 +285,7 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 		v[0] = pin->X - in;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		/* pivot 1/4 circle to next point (x-out, y+in) */
-		frac_circle(c, pin->X - in, pin->Y + in, v, 4);
+		pcb_poly_frac_cicle(c, pin->X - in, pin->Y + in, v, 4);
 		v[1] = pin->Y + d;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 2) {
@@ -293,13 +293,13 @@ static pcb_polyarea_t *square_therm(pcb_pin_t *pin, pcb_cardinal_t style)
 			pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		}
 		else
-			frac_circle(c, v[0] + pin->Clearance / 4, v[1], v, 2);
+			pcb_poly_frac_cicle(c, v[0] + pin->Clearance / 4, v[1], v, 2);
 		v[1] = pin->Y + in;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		v[0] = pin->X - d;
 		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 		if (style == 5)
-			frac_circle(c, v[0], v[1] + pin->Clearance / 4, v, 2);
+			pcb_poly_frac_cicle(c, v[0], v[1] + pin->Clearance / 4, v, 2);
 		p2 = pcb_poly_from_contour(c);
 		p->f->f->f = p2;
 		p2->f = p;

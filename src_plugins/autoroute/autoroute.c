@@ -4520,11 +4520,11 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				int type = FindPin(&p->box, &pin);
 				if (pin) {
 					AddObjectToClearPolyUndoList(type, pin->Element ? pin->Element : pin, pin, pin, pcb_false);
-					RestoreToPolygon(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
+					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
 					AddObjectToFlagUndoList(type, pin->Element ? pin->Element : pin, pin, pin);
 					PCB_FLAG_THERM_ASSIGN(p->layer, PCB->ThermStyle, pin);
 					AddObjectToClearPolyUndoList(type, pin->Element ? pin->Element : pin, pin, pin, pcb_true);
-					ClearFromPolygon(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
+					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
 					changed = pcb_true;
 				}
 			}

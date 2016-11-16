@@ -571,7 +571,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 					if (conn1->type == PCB_TYPE_POLYGON &&
 							(polygon = (pcb_polygon_t *) conn1->ptr2) &&
 							!(distance == 0 &&
-								firstpoint && firstpoint->type == PCB_TYPE_VIA) && IsPointInPolygonIgnoreHoles(conn2->X, conn2->Y, polygon)) {
+								firstpoint && firstpoint->type == PCB_TYPE_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn2->X, conn2->Y, polygon)) {
 						distance = 0;
 						firstpoint = conn2;
 						secondpoint = conn1;
@@ -581,7 +581,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 					else if (conn2->type == PCB_TYPE_POLYGON &&
 									 (polygon = (pcb_polygon_t *) conn2->ptr2) &&
 									 !(distance == 0 &&
-										 firstpoint && firstpoint->type == PCB_TYPE_VIA) && IsPointInPolygonIgnoreHoles(conn1->X, conn1->Y, polygon)) {
+										 firstpoint && firstpoint->type == PCB_TYPE_VIA) && pcb_poly_is_point_in_p_ignore_holes(conn1->X, conn1->Y, polygon)) {
 						distance = 0;
 						firstpoint = conn1;
 						secondpoint = conn2;

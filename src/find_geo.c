@@ -487,7 +487,7 @@ pcb_bool pcb_is_arc_in_poly(pcb_arc_t *Arc, pcb_polygon_t *Polygon)
 
 		if (!(ap = pcb_poly_from_arc(Arc, Arc->Thickness + Bloat)))
 			return pcb_false;							/* error */
-		return isects(ap, Polygon, pcb_true);
+		return pcb_poly_isects_poly(ap, Polygon, pcb_true);
 	}
 	return pcb_false;
 }
@@ -518,14 +518,14 @@ pcb_bool pcb_is_line_in_poly(pcb_line_t *Line, pcb_polygon_t *Polygon)
 		y1 = MIN(Line->Point1.Y, Line->Point2.Y) - wid;
 		x2 = MAX(Line->Point1.X, Line->Point2.X) + wid;
 		y2 = MAX(Line->Point1.Y, Line->Point2.Y) + wid;
-		return IsRectangleInPolygon(x1, y1, x2, y2, Polygon);
+		return pcb_poly_is_rect_in_p(x1, y1, x2, y2, Polygon);
 	}
 	if (Box->X1 <= Polygon->Clipped->contours->xmax + Bloat
 			&& Box->X2 >= Polygon->Clipped->contours->xmin - Bloat
 			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
 		if (!(lp = pcb_poly_from_line(Line, Line->Thickness + Bloat)))
 			return pcb_false;							/* error */
-		return isects(lp, Polygon, pcb_true);
+		return pcb_poly_isects_poly(lp, Polygon, pcb_true);
 	}
 	return pcb_false;
 }
@@ -561,7 +561,7 @@ pcb_bool pcb_is_poly_in_poly(pcb_polygon_t *P1, pcb_polygon_t *P2)
 		return pcb_false;
 
 	/* first check un-bloated case */
-	if (isects(P1->Clipped, P2, pcb_false))
+	if (pcb_poly_isects_poly(P1->Clipped, P2, pcb_false))
 		return pcb_true;
 
 	/* now the difficult case of bloated */

@@ -1829,7 +1829,7 @@ yyreduce:
 			PCB = yyPCB;
 			PCB_POLY_ALL_LOOP(yyData);
 			{
-			  InitClip (yyData, layer, polygon);
+			  pcb_poly_init_clip(yyData, layer, polygon);
 			}
 			ENDALL_LOOP;
 			PCB = pcb_save;

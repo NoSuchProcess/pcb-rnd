@@ -419,7 +419,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 		/* pre-delete the pins from the pin-tree before their coordinates change */
 		if (Data)
 			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
-		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
+		pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
 		free_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
 		pcb_pin_bbox(pin);
 	}
@@ -429,7 +429,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 		/* pre-delete the pads before their coordinates change */
 		if (Data)
 			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
-		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
+		pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
 		free_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
 		free_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
 		pcb_line_bbox((pcb_line_t *) pad);
@@ -444,7 +444,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 
 	free_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
 	pcb_element_bbox(Data, Element, &PCB->Font);
-	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
+	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
 /* changes the side of the board an element is on; returns pcb_true if done */
@@ -675,14 +675,14 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 	END_LOOP;
 	PCB_PIN_LOOP(Element);
 	{
-		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
+		pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
 		pin->X = PCB_SWAP_X(pin->X);
 		pin->Y = PCB_SWAP_Y(pin->Y) + yoff;
 	}
 	END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
-		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
+		pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
 		pad->Point1.X = PCB_SWAP_X(pad->Point1.X);
 		pad->Point1.Y = PCB_SWAP_Y(pad->Point1.Y) + yoff;
 		pad->Point2.X = PCB_SWAP_X(pad->Point2.X);
@@ -712,7 +712,7 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 	PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, Element);
 	/* this inserts all of the rtree data too */
 	pcb_element_bbox(Data, Element, &PCB->Font);
-	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
+	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
 /* sets the bounding box of an elements */
@@ -1004,12 +1004,12 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 	{
 		if (Data) {
 			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
-			RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
+			pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
 		}
 		pcb_pin_move(pin, DX, DY);
 		if (Data) {
 			r_insert_entry(Data->pin_tree, (pcb_box_t *) pin, 0);
-			ClearFromPolygon(Data, PCB_TYPE_PIN, Element, pin);
+			pcb_poly_clear_from_poly(Data, PCB_TYPE_PIN, Element, pin);
 		}
 	}
 	END_LOOP;
@@ -1017,12 +1017,12 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 	{
 		if (Data) {
 			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
-			RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
+			pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
 		}
 		pcb_pad_move(pad, DX, DY);
 		if (Data) {
 			r_insert_entry(Data->pad_tree, (pcb_box_t *) pad, 0);
-			ClearFromPolygon(Data, PCB_TYPE_PAD, Element, pad);
+			pcb_poly_clear_from_poly(Data, PCB_TYPE_PAD, Element, pad);
 		}
 	}
 	END_LOOP;
@@ -1083,7 +1083,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		/* pre-delete the pins from the pin-tree before their coordinates change */
 		if (Data)
 			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
-		RestoreToPolygon(Data, PCB_TYPE_PIN, Element, pin);
+		pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
 		ROTATE_PIN_LOWLEVEL(pin, X, Y, Number);
 	}
 	END_LOOP;
@@ -1092,7 +1092,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		/* pre-delete the pads before their coordinates change */
 		if (Data)
 			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
-		RestoreToPolygon(Data, PCB_TYPE_PAD, Element, pad);
+		pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
 		ROTATE_PAD_LOWLEVEL(pad, X, Y, Number);
 	}
 	END_LOOP;
@@ -1104,7 +1104,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 	ROTATE(Element->MarkX, Element->MarkY, X, Y, Number);
 	/* SetElementBoundingBox reenters the rtree data */
 	pcb_element_bbox(Data, Element, &PCB->Font);
-	ClearFromPolygon(Data, PCB_TYPE_ELEMENT, Element, Element);
+	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
 
@@ -1151,13 +1151,13 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 
 	PCB_PIN_LOOP(element);
 	{
-		RestoreToPolygon(ctx->buffer.src, PCB_TYPE_PIN, element, pin);
+		pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_PIN, element, pin);
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, pin);
 	}
 	END_LOOP;
 	PCB_PAD_LOOP(element);
 	{
-		RestoreToPolygon(ctx->buffer.src, PCB_TYPE_PAD, element, pad);
+		pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_PAD, element, pad);
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, pad);
 	}
 	END_LOOP;
@@ -1167,12 +1167,12 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 	 */
 	PCB_PIN_LOOP(element);
 	{
-		ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_PIN, element, pin);
+		pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_PIN, element, pin);
 	}
 	END_LOOP;
 	PCB_PAD_LOOP(element);
 	{
-		ClearFromPolygon(ctx->buffer.dst, PCB_TYPE_PAD, element, pad);
+		pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_PAD, element, pad);
 	}
 	END_LOOP;
 
@@ -1197,13 +1197,13 @@ void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			changed = pcb_true;
 			AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
-			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
+			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->DrillingHole = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
-			ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
+			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			DrawPin(pin);
 		}
 	}
@@ -1229,13 +1229,13 @@ void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			changed = pcb_true;
 			AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
-			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
+			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Thickness = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
-			ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
+			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			DrawPin(pin);
 		}
 	}
@@ -1263,13 +1263,13 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			changed = pcb_true;
 			AddObjectToClearSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
-			RestoreToPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
+			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Clearance = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
 				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
-			ClearFromPolygon(PCB->Data, PCB_TYPE_PIN, Element, pin);
+			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			DrawPin(pin);
 		}
 	}
@@ -1282,7 +1282,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			changed = pcb_true;
 			AddObjectToClearSizeUndoList(PCB_TYPE_PAD, Element, pad, pad);
 			ErasePad(pad);
-			RestoreToPolygon(PCB->Data, PCB_TYPE_PAD, Element, pad);
+			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			r_delete_entry(PCB->Data->pad_tree, &pad->BoundingBox);
 			pad->Clearance = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pad)) {
@@ -1292,7 +1292,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			/* SetElementBB updates all associated rtrees */
 			pcb_element_bbox(PCB->Data, Element, &PCB->Font);
 
-			ClearFromPolygon(PCB->Data, PCB_TYPE_PAD, Element, pad);
+			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			DrawPad(pad);
 		}
 	}

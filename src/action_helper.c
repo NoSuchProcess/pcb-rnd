@@ -1021,7 +1021,7 @@ void pcb_notify_mode(void)
 						 */
 						SaveUndoSerialNumber();
 						Flags = ((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2)->Flags;
-						PolyToPolygonsOnLayer(PCB->Data, (pcb_layer_t *) Crosshair.AttachedObject.Ptr1, result, Flags);
+						pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) Crosshair.AttachedObject.Ptr1, result, Flags);
 						RemoveObject(PCB_TYPE_POLYGON,
 												 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 						RestoreUndoSerialNumber();
