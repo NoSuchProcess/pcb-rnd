@@ -9,7 +9,7 @@ append /local/pcb/buildin_init_extern    [@extern pcb_uninit_t hid_@/local/pcb/m
 
 append /local/pcb/buildin_init_code    [@
 	uninit_func = hid_@/local/pcb/mod@_init();
-	plugin_register("@/local/pcb/mod@", "<@/local/pcb/mod@>", NULL, 0, uninit_func);
+	pcb_plugin_register("@/local/pcb/mod@", "<@/local/pcb/mod@>", NULL, 0, uninit_func);
 @]  {\n}
 
 append /local/pcb/OBJS            ?/local/pcb/mod/OBJS
