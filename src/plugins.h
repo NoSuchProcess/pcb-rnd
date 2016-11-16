@@ -42,13 +42,13 @@ struct pcb_plugin_info_s {
 extern pcb_plugin_info_t *plugins;
 
 /* Init the plugin system */
-void plugins_init(void);
+void pcb_plugins_init(void);
 
 /* Uninit each plugin then uninit the plugin system */
-void plugins_uninit(void);
+void pcb_plugins_uninit(void);
 
 /* Register a new plugin (or buildin) */
-void plugin_register(const char *name, const char *path, void *handle, int dynamic, pcb_uninit_t uninit);
+void pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic, pcb_uninit_t uninit);
 
 /* Find a plugin by name */
 pcb_plugin_info_t *plugin_find(const char *name);
@@ -57,7 +57,7 @@ pcb_plugin_info_t *plugin_find(const char *name);
    HOOK_REGISTER with an api struct. The core should run the plugins using
    HOOK_CALL */
 
-#define HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, do_on_success) \
+#define PCB_HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, do_on_success) \
 do { \
 	chain_type *self; \
 	for(self = (chain); self != NULL; self = self->next) { \
@@ -71,10 +71,10 @@ do { \
 	} \
 } while(0)
 
-#define HOOK_CALL(chain_type, chain, func, res, accept, funcargs) \
-	HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, (void)0)
+#define PCB_HOOK_CALL(chain_type, chain, func, res, accept, funcargs) \
+	PCB_HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, (void)0)
 
-#define HOOK_CALL_ALL(chain_type, chain, func, cb, funcargs) \
+#define PCB_HOOK_CALL_ALL(chain_type, chain, func, cb, funcargs) \
 do { \
 	chain_type *self; \
 	for(self = (chain); self != NULL; self = self->next) { \
@@ -86,14 +86,14 @@ do { \
 	} \
 } while(0)
 
-#define HOOK_REGISTER(chain_type, chain, hstruct) \
+#define PCB_HOOK_REGISTER(chain_type, chain, hstruct) \
 do { \
 	(hstruct)->next = chain; \
 	chain = (hstruct); \
 } while(0)
 
 
-#define HOOK_UNREGISTER(chain_type, chain, hstruct) \
+#define PCB_HOOK_UNREGISTER(chain_type, chain, hstruct) \
 do { \
 	chain_type *__n__, *__prev__ = NULL, *__h__ = (hstruct); \
 	for(__n__ = chain; __n__ != NULL; __n__ = __n__->next) { \

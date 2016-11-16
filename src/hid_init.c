@@ -78,7 +78,7 @@ static void hid_load_dir(char *dirname)
 					}
 					else
 						uninit = NULL;
-					plugin_register(basename, path, so, 1, uninit);
+					pcb_plugin_register(basename, path, so, 1, uninit);
 					free(symname);
 				}
 				else

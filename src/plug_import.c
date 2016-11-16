@@ -64,7 +64,7 @@ static pcb_plug_import_t *find_importer(unsigned int aspects, FILE *f, const cha
 		} \
 	} while(0)
 
-	HOOK_CALL_ALL(pcb_plug_import_t, plug_import_chain, fmt_support_prio, cb_append,   (self, aspects, f, filename));
+	PCB_HOOK_CALL_ALL(pcb_plug_import_t, plug_import_chain, fmt_support_prio, cb_append,   (self, aspects, f, filename));
 	if (len == 0)
 		return NULL;
 

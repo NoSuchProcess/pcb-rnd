@@ -228,7 +228,7 @@ void pcb_main_uninit(void)
 	free(PCB);
 	PCB = NULL;
 
-	plugins_uninit();
+	pcb_plugins_uninit();
 	pcb_hid_uninit();
 	pcb_events_uninit();
 
@@ -383,7 +383,7 @@ int main(int argc, char *argv[])
 
 	buildin_init();
 	pcb_hid_init();
-	plugins_init();
+	pcb_plugins_init();
 
 
 	/* Export pcb from command line if requested.  */
