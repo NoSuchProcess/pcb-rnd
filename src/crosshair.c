@@ -921,7 +921,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 	/* Pick the nearest grid-point in the x or y direction
 	 * to align with, then adjust until we hit the line
 	 */
-	ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE, &ptr1, &ptr2, &ptr3);
+	ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE, &ptr1, &ptr2, &ptr3);
 
 	if (ans == PCB_TYPE_NONE)
 		return;
@@ -1025,7 +1025,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (!PCB->RatDraw)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3);
 
 	if (ans & PCB_TYPE_ELEMENT) {
 		pcb_element_t *el = (pcb_element_t *) ptr1;
@@ -1034,7 +1034,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (PCB->RatDraw || conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid self-snapping when moving */
 	if (ans != PCB_TYPE_NONE &&
@@ -1079,7 +1079,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (PCB->RatDraw || conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid self-snapping when moving */
 	if (ans != PCB_TYPE_NONE &&
@@ -1093,7 +1093,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping vias to any other vias */
 	if (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_VIA && (ans & PCB_TYPEMASK_PIN))
@@ -1106,7 +1106,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 
 	if (ans != PCB_TYPE_NONE) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
@@ -1121,7 +1121,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_POLYGON_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_POLYGON_POINT, &ptr1, &ptr2, &ptr3);
 
 	if (ans != PCB_TYPE_NONE) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
@@ -1137,7 +1137,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		onpoint_work(&Crosshair, Crosshair.X, Crosshair.Y);
 
 	if (conf_core.editor.mode == PCB_MODE_ARROW) {
-		ans = SearchScreenGridSlop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_TYPE_NONE)
 			pcb_hid_action("PointCursor");
 		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2))

@@ -224,9 +224,9 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 
 	reassign_no_drc_flags();
 
-	type = SearchObjectByLocation(LOOKUP_FIRST, &ptr1, &ptr2, &ptr3, X, Y, Range);
+	type = pcb_search_obj_by_location(LOOKUP_FIRST, &ptr1, &ptr2, &ptr3, X, Y, Range);
 	if (type == PCB_TYPE_NONE) {
-		type = SearchObjectByLocation(LOOKUP_MORE, &ptr1, &ptr2, &ptr3, X, Y, Range);
+		type = pcb_search_obj_by_location(LOOKUP_MORE, &ptr1, &ptr2, &ptr3, X, Y, Range);
 		if (type == PCB_TYPE_NONE)
 			return;
 		if (type & SILK_TYPE) {

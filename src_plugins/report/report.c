@@ -128,9 +128,9 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	int type;
 	char *report = NULL;
 
-	type = SearchScreen(x, y, REPORT_TYPES, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen(x, y, REPORT_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE)
-		type = SearchScreen(x, y, REPORT_TYPES | PCB_TYPE_LOCKED, &ptr1, &ptr2, &ptr3);
+		type = pcb_search_screen(x, y, REPORT_TYPES | PCB_TYPE_LOCKED, &ptr1, &ptr2, &ptr3);
 
 	switch (type) {
 	case PCB_TYPE_VIA:

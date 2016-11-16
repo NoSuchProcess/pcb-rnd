@@ -493,12 +493,12 @@ void pcb_notify_line(void)
 		SetLocalRef(Crosshair.X, Crosshair.Y, pcb_true);
 	switch (Crosshair.AttachedLine.State) {
 	case STATE_FIRST:						/* first point */
-		if (PCB->RatDraw && SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
+		if (PCB->RatDraw && pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
 			gui->beep();
 			break;
 		}
 		if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
-			type = SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
 			pcb_lookup_conn(Crosshair.X, Crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
 		}
 		if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
@@ -576,7 +576,7 @@ void pcb_notify_mode(void)
 			 * (Note.Hit)
 			 */
 			for (test = (SELECT_TYPES | MOVE_TYPES) & ~PCB_TYPE_RATLINE; test; test &= ~type) {
-				type = SearchScreen(Note.X, Note.Y, test, &ptr1, &ptr2, &ptr3);
+				type = pcb_search_screen(Note.X, Note.Y, test, &ptr1, &ptr2, &ptr3);
 				if (!Note.Hit && (type & MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2)) {
 					Note.Hit = type;
 					Note.ptr1 = ptr1;
@@ -680,7 +680,7 @@ void pcb_notify_mode(void)
 		}
 	case PCB_MODE_LOCK:
 		{
-			type = SearchScreen(Note.X, Note.Y, PCB_TYPEMASK_LOCK, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(Note.X, Note.Y, PCB_TYPEMASK_LOCK, &ptr1, &ptr2, &ptr3);
 			if (type == PCB_TYPE_ELEMENT) {
 				pcb_element_t *element = (pcb_element_t *) ptr2;
 
@@ -721,7 +721,7 @@ void pcb_notify_mode(void)
 		}
 	case PCB_MODE_THERMAL:
 		{
-			if (((type = SearchScreen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+			if (((type = pcb_search_screen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_pin_t *) ptr3)) {
 				if (gui->shift_is_pressed()) {
 					int tstyle = PCB_FLAG_THERM_GET(INDEXOFCURRENT, (pcb_pin_t *) ptr3);
@@ -815,7 +815,7 @@ void pcb_notify_mode(void)
 				   isn't a pin already here */
 				if (PCB->ViaOn && GetLayerGroupNumberByPointer(CURRENT) !=
 						GetLayerGroupNumberByPointer(lastLayer) &&
-						SearchObjectByLocation(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
+						pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
 																	 Crosshair.AttachedLine.Point1.X,
 																	 Crosshair.AttachedLine.Point1.Y,
 																	 conf_core.design.via_thickness / 2) ==
@@ -971,7 +971,7 @@ void pcb_notify_mode(void)
 				/* first notify, lookup object */
 			case STATE_FIRST:
 				Crosshair.AttachedObject.Type =
-					SearchScreen(Note.X, Note.Y, PCB_TYPE_POLYGON,
+					pcb_search_screen(Note.X, Note.Y, PCB_TYPE_POLYGON,
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 
 				if (Crosshair.AttachedObject.Type == PCB_TYPE_NONE) {
@@ -1060,7 +1060,7 @@ void pcb_notify_mode(void)
 			pcb_element_t *e = 0;
 
 			if (gui->shift_is_pressed()) {
-				int type = SearchScreen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
+				int type = pcb_search_screen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
 																&ptr3);
 				if (type == PCB_TYPE_ELEMENT) {
 					e = (pcb_element_t *) ptr1;
@@ -1077,7 +1077,7 @@ void pcb_notify_mode(void)
 			if (pcb_buffer_copy_to_layout(Note.X, Note.Y))
 				SetChangedFlag(pcb_true);
 			if (e) {
-				int type = SearchScreen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
+				int type = pcb_search_screen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
 																&ptr3);
 				if (type == PCB_TYPE_ELEMENT && ptr1) {
 					int i, save_n;
@@ -1102,7 +1102,7 @@ void pcb_notify_mode(void)
 		}
 
 	case PCB_MODE_REMOVE:
-		if ((type = SearchScreen(Note.X, Note.Y, REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+		if ((type = pcb_search_screen(Note.X, Note.Y, REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_line_t *) ptr2)) {
 				pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				break;
@@ -1145,7 +1145,7 @@ void pcb_notify_mode(void)
 				int types = (conf_core.editor.mode == PCB_MODE_COPY) ? COPY_TYPES : MOVE_TYPES;
 
 				Crosshair.AttachedObject.Type =
-					SearchScreen(Note.X, Note.Y, types,
+					pcb_search_screen(Note.X, Note.Y, types,
 											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 				if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 					if (conf_core.editor.mode == PCB_MODE_MOVE && PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *)
@@ -1189,7 +1189,7 @@ void pcb_notify_mode(void)
 			/* first notify, lookup object */
 		case STATE_FIRST:
 			Crosshair.AttachedObject.Type =
-				SearchScreen(Note.X, Note.Y, INSERT_TYPES,
+				pcb_search_screen(Note.X, Note.Y, INSERT_TYPES,
 										 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 
 			if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {

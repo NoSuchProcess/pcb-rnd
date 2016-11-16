@@ -155,10 +155,10 @@ pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coor
 pcb_bool pcb_is_point_in_pad(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_pad_t *);
 pcb_bool pcb_is_point_in_box(pcb_coord_t, pcb_coord_t, pcb_box_t *, pcb_coord_t);
 
-int SearchObjectByLocation(unsigned, void **, void **, void **, pcb_coord_t, pcb_coord_t, pcb_coord_t);
-int SearchScreen(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
-int SearchScreenGridSlop(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
-int SearchObjectByID(pcb_data_t *, void **, void **, void **, int, int);
-pcb_element_t *SearchElementByName(pcb_data_t *, const char *);
+int pcb_search_obj_by_location(unsigned, void **, void **, void **, pcb_coord_t, pcb_coord_t, pcb_coord_t);
+int pcb_search_screen(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
+int pcb_search_grid_slop(pcb_coord_t, pcb_coord_t, int, void **, void **, void **);
+int pcb_search_obj_by_id(pcb_data_t *, void **, void **, void **, int, int);
+pcb_element_t *pcb_search_elem_by_name(pcb_data_t *, const char *);
 
 #endif

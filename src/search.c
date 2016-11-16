@@ -961,7 +961,7 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
  * Note that if Type includes PCB_TYPE_LOCKED, then the search includes
  * locked items.  Otherwise, locked items are ignored.
  */
-int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius)
+int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius)
 {
 	void *r1, *r2, *r3;
 	void **pr1 = &r1, **pr2 = &r2, **pr3 = &r3;
@@ -1128,7 +1128,7 @@ int SearchObjectByLocation(unsigned Type, void **Result1, void **Result2, void *
  * the results.
  * A type value is returned too which is PCB_TYPE_NONE if no objects has been found.
  */
-int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
+int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type)
 {
 	if (type == PCB_TYPE_LINE || type == PCB_TYPE_LINE_POINT) {
 		PCB_LINE_ALL_LOOP(Base);
@@ -1303,7 +1303,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
  * searches for an element by its board name.
  * The function returns a pointer to the element, NULL if not found
  */
-pcb_element_t *SearchElementByName(pcb_data_t *Base, const char *Name)
+pcb_element_t *pcb_search_elem_by_name(pcb_data_t *Base, const char *Name)
 {
 	pcb_element_t *result = NULL;
 
@@ -1321,22 +1321,22 @@ pcb_element_t *SearchElementByName(pcb_data_t *Base, const char *Name)
 /* ---------------------------------------------------------------------------
  * searches the cursor position for the type
  */
-int SearchScreen(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
+int pcb_search_screen(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
 {
 	int ans;
 
-	ans = SearchObjectByLocation(Type, Result1, Result2, Result3, X, Y, SLOP * pixel_slop);
+	ans = pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, SLOP * pixel_slop);
 	return (ans);
 }
 
 /* ---------------------------------------------------------------------------
  * searches the cursor position for the type
  */
-int SearchScreenGridSlop(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
+int pcb_search_grid_slop(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
 {
 	int ans;
 
-	ans = SearchObjectByLocation(Type, Result1, Result2, Result3, X, Y, PCB->Grid / 2);
+	ans = pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, PCB->Grid / 2);
 	return (ans);
 }
 

@@ -156,7 +156,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				void *ptr1, *ptr3, *ptrtmp;
 				pcb_line_t *ptr2;
 				/* this search is guaranteed to succeed */
-				SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
+				pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 															 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 0);
 				ptr2 = (pcb_line_t *) ptrtmp;
 
@@ -179,7 +179,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				/* check if an intermediate point was removed */
 				if (type & UNDO_REMOVE) {
 					/* this search should find the restored line */
-					SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
+					pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 0);
 					ptr2 = (pcb_line_t *) ptrtmp;
 					if (conf_core.editor.auto_drc) {
@@ -198,7 +198,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				}
 				else {
 					/* this search is guaranteed to succeed too */
-					SearchObjectByLocation(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
+					pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 0);
 					ptr2 = (pcb_line_t *) ptrtmp;
 					lastLayer = (pcb_layer_t *) ptr1;
@@ -217,7 +217,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				void *ptr1, *ptr2, *ptr3;
 				pcb_box_t *bx;
 				/* guaranteed to succeed */
-				SearchObjectByLocation(PCB_TYPE_ARC, &ptr1, &ptr2, &ptr3,
+				pcb_search_obj_by_location(PCB_TYPE_ARC, &ptr1, &ptr2, &ptr3,
 															 Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point1.Y, 0);
 				bx = pcb_arc_get_ends((pcb_arc_t *) ptr2);
 				Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = bx->X1;

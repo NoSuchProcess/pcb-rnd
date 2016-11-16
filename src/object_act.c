@@ -162,7 +162,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			if (n_found == 0) {
 				void *ptrtmp;
 				gui->get_coords(_("Click on an element"), &x, &y);
-				if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
+				if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
 					e = (pcb_element_t *) ptrtmp;
 				else {
 					pcb_message(PCB_MSG_DEFAULT, _("No element found there\n"));
@@ -328,7 +328,7 @@ static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
-			if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
+			if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 				element = (pcb_element_t *) ptrtmp;
 				pcb_element_change_side(element, 2 * Crosshair.Y - PCB->MaxHeight);
 				IncrementUndoSerialNumber();
@@ -378,7 +378,7 @@ static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	ny = pcb_get_value(y_str, units, &absolute1, NULL);
 	nx = pcb_get_value(x_str, units, &absolute2, NULL);
 
-	type = SearchScreen(x, y, MOVE_TYPES, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen(x, y, MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE) {
 		pcb_message(PCB_MSG_DEFAULT, _("Nothing found under crosshair\n"));
 		return 1;
@@ -422,7 +422,7 @@ static int ActionMoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, 
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
 						SetChangedFlag(pcb_true);
 				break;
@@ -790,7 +790,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			{
 				void *ptr1, *ptr2, *ptr3;
 
-				if (SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
+				if (pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
 					Note.Buffer = conf_core.editor.buffer_number;
 					SetBufferNumber(MAX_BUFFER - 1);
 					pcb_buffer_clear(PCB_PASTEBUFFER);

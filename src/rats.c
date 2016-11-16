@@ -112,7 +112,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connect
 	pcb_pad_t *pad;
 	pcb_pin_t *pin;
 
-	if ((element = SearchElementByName(PCB->Data, ElementName)) == NULL)
+	if ((element = pcb_search_elem_by_name(PCB->Data, ElementName)) == NULL)
 		return pcb_false;
 
 	padlist_foreach(&element->Pad, &it, pad) {
@@ -822,7 +822,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 			&& Crosshair.AttachedLine.Point1.Y == Crosshair.AttachedLine.Point2.Y)
 		return (NULL);
 
-	found = SearchObjectByLocation(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
+	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 5);
 	if (found == PCB_TYPE_NONE) {
 		pcb_message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
@@ -837,7 +837,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
 	strcpy(name1, pcb_connection_name(found, ptr1, ptr2));
-	found = SearchObjectByLocation(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
+	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 5);
 	if (found == PCB_TYPE_NONE) {
 		pcb_message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));

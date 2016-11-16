@@ -441,7 +441,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 				pcb_coord_t x, y;
 
 				gui->get_coords(_("Click on an element"), &x, &y);
-				if ((SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
+				if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 					element = (pcb_element_t *) ptrtmp;
 					gui->show_item(element);
 				}
@@ -455,7 +455,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 				pcb_coord_t x, y;
 				gui->get_coords(_("Click on an element"), &x, &y);
 
-				switch (SearchScreen(x, y,
+				switch (pcb_search_screen(x, y,
 														 PCB_TYPE_ELEMENT | PCB_TYPE_PIN | PCB_TYPE_PAD |
 														 PCB_TYPE_VIA, (void **) &ptr1, (void **) &ptr2, (void **) &ptr3)) {
 				case PCB_TYPE_ELEMENT:
@@ -816,7 +816,7 @@ static int ActionCycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			over++;
 		}
 
-		if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_LINE) != PCB_TYPE_NONE) {
+		if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_LINE) != PCB_TYPE_NONE) {
 			/* line has two endpoints, check which one is close to the original x;y */
 			pcb_line_t *l = ptr2;
 			if (close_enough(Note.X, l->Point1.X) && close_enough(Note.Y, l->Point1.Y)) {
@@ -834,21 +834,21 @@ static int ActionCycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				return 0;
 			}
 		}
-		else if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_VIA) != PCB_TYPE_NONE) {
+		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_VIA) != PCB_TYPE_NONE) {
 			Crosshair.AttachedObject.Type = PCB_TYPE_VIA;
 			Crosshair.AttachedObject.Ptr1 = ptr1;
 			Crosshair.AttachedObject.Ptr2 = ptr2;
 			Crosshair.AttachedObject.Ptr3 = ptr3;
 			return 0;
 		}
-		else if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_PAD) != PCB_TYPE_NONE) {
+		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_PAD) != PCB_TYPE_NONE) {
 			Crosshair.AttachedObject.Type = PCB_TYPE_ELEMENT;
 			Crosshair.AttachedObject.Ptr1 = ptr1;
 			Crosshair.AttachedObject.Ptr2 = ptr1;
 			Crosshair.AttachedObject.Ptr3 = ptr1;
 			return 0;
 		}
-		else if (SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_ARC) != PCB_TYPE_NONE) {
+		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_ARC) != PCB_TYPE_NONE) {
 			Crosshair.AttachedObject.Type = PCB_TYPE_ARC;
 			Crosshair.AttachedObject.Ptr1 = ptr1;
 			Crosshair.AttachedObject.Ptr2 = ptr2;
@@ -917,7 +917,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+				if ((type = pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					AddObjectToFlagUndoList(type, ptr1, ptr2, ptr3);
 					EraseElementName((pcb_element_t *) ptr2);
 					PCB_FLAG_TOGGLE(PCB_FLAG_HIDENAME, (pcb_element_t *) ptr2);
@@ -1135,7 +1135,7 @@ static int ActionSetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	int type;
 	pcb_layer_t *layer = CURRENT;
 
-	type = SearchScreen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
 /* set layer current and size from line or arc */
 	switch (type) {
 	case PCB_TYPE_LINE:

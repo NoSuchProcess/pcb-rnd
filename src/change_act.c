@@ -82,12 +82,12 @@ static int ActionChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb
 
 		if (funcid == F_Object) {
 			gui->get_coords(_("Select an Object"), &x, &y);
-			type = SearchScreen(x, y, CHANGECLEARSIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(x, y, CHANGECLEARSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
 		if (strcmp(argv[1], "style") == 0) {
-			if ((type == PCB_TYPE_NONE) || (type == PCB_TYPE_POLYGON))	/* workaround: SearchScreen(CHANGECLEARSIZE_TYPES) wouldn't return elements */
-				type = SearchScreen(x, y, CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			if ((type == PCB_TYPE_NONE) || (type == PCB_TYPE_POLYGON))	/* workaround: pcb_search_screen(CHANGECLEARSIZE_TYPES) wouldn't return elements */
+				type = pcb_search_screen(x, y, CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 			if (pcb_get_style_size(funcid, &value, type, 2) != 0)
 				return 1;
 			absolute = 1;
@@ -196,7 +196,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 			int type;
 			void *ptr1, *ptr2, *ptr3;
 
-			if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+			if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
@@ -272,7 +272,7 @@ static int ActionChangeHole(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pin_change_hole((pcb_pin_t *) ptr3))
+				if ((type = pcb_search_screen(x, y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pin_change_hole((pcb_pin_t *) ptr3))
 					IncrementUndoSerialNumber();
 				break;
 			}
@@ -314,7 +314,7 @@ static int ActionChangePaste(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pad_change_paste((pcb_pad_t *) ptr3))
+				if ((type = pcb_search_screen(x, y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pad_change_paste((pcb_pad_t *) ptr3))
 					IncrementUndoSerialNumber();
 				break;
 			}
@@ -395,7 +395,7 @@ static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
-			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		if (strcmp(argv[1], "style") == 0) {
 			if (pcb_get_style_size(funcid, &value, type, 0) != 0)
@@ -498,7 +498,7 @@ static int ActionChange2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 		if (funcid == F_Object) {
 			gui->get_coords(_("Select an Object"), &x, &y);
-			type = SearchScreen(x, y, CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(x, y, CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
 		if (strcmp(argv[1], "style") == 0) {
@@ -659,7 +659,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+				if ((type = pcb_search_screen(x, y, CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					SaveUndoSerialNumber();
 					if ((pinnums != NULL) && (strcasecmp(pinnums, "Number") == 0))
 						pinnum = 1;
@@ -736,7 +736,7 @@ static int ActionChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_chg_obj_join(type, ptr1, ptr2, ptr3))
 						SetChangedFlag(pcb_true);
 				break;
@@ -791,7 +791,7 @@ static int ActionChangeNonetlist(int argc, const char **argv, pcb_coord_t x, pcb
 				gui->get_coords(_("Select an Element"), &x, &y);
 
 				ptr3 = NULL;
-				type = SearchScreen(x, y, CHANGENONETLIST_TYPES, &ptr1, &ptr2, &ptr3);
+				type = pcb_search_screen(x, y, CHANGENONETLIST_TYPES, &ptr1, &ptr2, &ptr3);
 				if (pcb_chg_obj_nonetlist(type, ptr1, ptr2, ptr3))
 					SetChangedFlag(pcb_true);
 				break;
@@ -837,7 +837,7 @@ static int ActionChangeSquare(int argc, const char **argv, pcb_coord_t x, pcb_co
 				gui->get_coords(_("Select an Object"), &x, &y);
 
 				ptr3 = NULL;
-				type = SearchScreen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3);
+				type = pcb_search_screen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3);
 
 				if (ptr3 != NULL) {
 					int qstyle = PCB_FLAG_SQUARE_GET((pcb_pin_t *) ptr3);
@@ -897,7 +897,7 @@ static int ActionSetSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_set_obj_square(type, ptr1, ptr2, ptr3))
 						SetChangedFlag(pcb_true);
 				break;
@@ -949,7 +949,7 @@ static int ActionClearSquare(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_clr_obj_square(type, ptr1, ptr2, ptr3))
 						SetChangedFlag(pcb_true);
 				break;
@@ -1000,7 +1000,7 @@ static int ActionChangeOctagon(int argc, const char **argv, pcb_coord_t x, pcb_c
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_chg_obj_octagon(type, ptr1, ptr2, ptr3))
 						SetChangedFlag(pcb_true);
 				break;
@@ -1055,7 +1055,7 @@ static int ActionSetOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(x, y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_set_obj_octagon(type, ptr1, ptr2, ptr3))
 						SetChangedFlag(pcb_true);
 				break;
@@ -1111,7 +1111,7 @@ static int ActionClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_co
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_clr_obj_octagon(type, ptr1, ptr2, ptr3))
 						SetChangedFlag(pcb_true);
 				break;
@@ -1187,7 +1187,7 @@ static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		if (absolute)
 			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
-				if ((type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+				if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind);
 					IncrementUndoSerialNumber();
 					pcb_draw();
@@ -1396,7 +1396,7 @@ static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
-			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		{ /* convert angle from string */
 			char *end;
@@ -1468,7 +1468,7 @@ static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_co
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
-			type = SearchScreen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		value = pcb_get_value(delta, units, &absolute, NULL);
 

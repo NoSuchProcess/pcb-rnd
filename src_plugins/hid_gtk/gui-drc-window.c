@@ -204,7 +204,7 @@ static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_dat
 		int found_type;
 		void *ptr1, *ptr2, *ptr3;
 
-		found_type = SearchObjectByID(PCB->Data, &ptr1, &ptr2, &ptr3, object_id, object_type);
+		found_type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, object_id, object_type);
 		if (found_type == PCB_TYPE_NONE) {
 			pcb_message(PCB_MSG_DEFAULT, _("Object ID %i identified during DRC was not found. Stale DRC window?\n"), object_id);
 			continue;
