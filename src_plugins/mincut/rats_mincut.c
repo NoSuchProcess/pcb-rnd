@@ -37,7 +37,6 @@
 #include "find.h"
 #include "polygon.h"
 #include "search.h"
-#include "set.h"
 #include "undo.h"
 #include "plugins.h"
 #include "compat_misc.h"

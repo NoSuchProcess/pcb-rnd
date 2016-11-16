@@ -32,7 +32,6 @@
 #include "action_helper.h"
 #include "error.h"
 #include "undo.h"
-#include "set.h"
 #include "find.h"
 #include "remove.h"
 #include "funchash_core.h"

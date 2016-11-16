@@ -33,7 +33,6 @@
 #include "layer.h"
 #include "pcb-printf.h"
 #include "undo.h"
-#include "set.h"
 #include "gui.h"
 #include "win_place.h"
 #include "gui-drc-window.h"

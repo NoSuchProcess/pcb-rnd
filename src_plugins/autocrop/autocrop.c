@@ -54,7 +54,6 @@
 #include "undo.h"
 #include "move.h"
 #include "draw.h"
-#include "set.h"
 #include "polygon.h"
 #include "plugins.h"
 #include "obj_all.h"

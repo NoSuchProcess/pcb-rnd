@@ -39,7 +39,6 @@
 #include "rotate.h"
 #include "remove.h"
 #include "select.h"
-#include "set.h"
 #include "draw.h"
 #include "undo.h"
 #include "funchash_core.h"

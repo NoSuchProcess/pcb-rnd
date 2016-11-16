@@ -37,7 +37,6 @@
 #include "draw.h"
 #include "search.h"
 #include "find.h"
-#include "set.h"
 #include "stub_stroke.h"
 #include "hid_actions.h"
 #include "hid_init.h"

@@ -52,7 +52,6 @@
 #include "error.h"
 #include "plug_io.h"
 #include "remove.h"
-#include "set.h"
 #include "paths.h"
 #include "rats_patch.h"
 #include "hid_actions.h"

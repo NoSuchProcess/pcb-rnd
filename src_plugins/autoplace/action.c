@@ -28,9 +28,9 @@
 #include "config.h"
 #include "autoplace.h"
 #include "plugins.h"
-#include "set.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
+#include "board.h"
 
 static const char autoplace_syntax[] = "AutoPlaceSelected()";
 

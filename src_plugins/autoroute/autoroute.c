@@ -73,7 +73,6 @@
 #include "undo.h"
 #include "vector.h"
 #include "pcb-printf.h"
-#include "set.h"
 #include "layer.h"
 #include "compat_nls.h"
 #include "obj_all.h"

@@ -36,7 +36,6 @@
 #include "data.h"
 #include "draw.h"
 #include "error.h"
-#include "set.h"
 #include "undo.h"
 #include "vendor.h"
 #include "stub_vendor.h"

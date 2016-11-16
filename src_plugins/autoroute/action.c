@@ -29,7 +29,6 @@
 #include "autoroute.h"
 #include "action_helper.h"
 #include "plugins.h"
-#include "set.h"
 #include "hid_actions.h"
 
 /* action routines for the autorouter

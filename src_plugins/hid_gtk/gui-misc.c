@@ -29,7 +29,6 @@
 #include "crosshair.h"
 #include "data.h"
 #include "action_helper.h"
-#include "set.h"
 #include "pcb-printf.h"
 #include "misc_util.h"
 #include "compat_nls.h"

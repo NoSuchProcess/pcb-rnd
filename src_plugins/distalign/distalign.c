@@ -110,7 +110,6 @@
 #include "error.h"
 #include "move.h"
 #include "draw.h"
-#include "set.h"
 #include "plugins.h"
 #include "action_helper.h"
 #include "hid_actions.h"

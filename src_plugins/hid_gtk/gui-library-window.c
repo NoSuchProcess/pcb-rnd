@@ -58,7 +58,6 @@
 #include "win_place.h"
 #include "buffer.h"
 #include "data.h"
-#include "set.h"
 #include "plug_footprint.h"
 #include "compat_nls.h"
 

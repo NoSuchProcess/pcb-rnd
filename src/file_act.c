@@ -31,7 +31,6 @@
 #include "data.h"
 #include "action_helper.h"
 
-#include "set.h"
 #include "plug_io.h"
 #include "plug_import.h"
 #include "remove.h"

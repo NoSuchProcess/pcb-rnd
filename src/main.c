@@ -39,7 +39,6 @@
 #include "board.h"
 #include "error.h"
 #include "plug_io.h"
-#include "set.h"
 #include "buffer.h"
 #include "crosshair.h"
 #include "compat_lrealpath.h"

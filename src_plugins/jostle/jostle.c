@@ -30,7 +30,6 @@
 #include "polygon.h"
 #include "remove.h"
 #include "error.h"
-#include "set.h"
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "hid_actions.h"

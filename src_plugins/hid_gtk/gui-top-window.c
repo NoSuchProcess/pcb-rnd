@@ -81,7 +81,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "rubberband.h"
 #include "search.h"
 #include "select.h"
-#include "set.h"
 #include "undo.h"
 #include "event.h"
 #include "free_atexit.h"

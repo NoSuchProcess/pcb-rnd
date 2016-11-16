@@ -40,7 +40,6 @@
 #include "rotate.h"
 #include "search.h"
 #include "select.h"
-#include "set.h"
 #include "undo.h"
 #include "conf_core.h"
 #include "compat_nls.h"

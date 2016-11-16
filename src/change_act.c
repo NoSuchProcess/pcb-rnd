@@ -40,7 +40,6 @@
 #include "change.h"
 #include "draw.h"
 #include "search.h"
-#include "set.h"
 #include "undo.h"
 #include "compat_misc.h"
 #include "compat_nls.h"

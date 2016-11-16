@@ -10,7 +10,6 @@
 
 #include "compat_misc.h"
 #include "data.h"
-#include "set.h"
 #include "pcb-printf.h"
 
 #include "hid.h"

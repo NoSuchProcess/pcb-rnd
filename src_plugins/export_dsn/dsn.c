@@ -45,7 +45,6 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "buffer.h"
 #include "change.h"
 #include "draw.h"
-#include "set.h"
 #include "undo.h"
 #include "pcb-printf.h"
 #include "polygon.h"

@@ -43,7 +43,6 @@
 #include "error.h"
 #include "plug_io.h"
 #include "rats.h"
-#include "set.h"
 #include "plugins.h"
 #include "hid_actions.h"
 #include "compat_misc.h"

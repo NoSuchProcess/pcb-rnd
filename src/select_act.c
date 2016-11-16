@@ -35,7 +35,6 @@
 #include "funchash_core.h"
 
 #include "select.h"
-#include "set.h"
 #include "draw.h"
 #include "remove.h"
 #include "copy.h"

@@ -44,7 +44,6 @@
 #include "rotate.h"
 #include "search.h"
 #include "select.h"
-#include "set.h"
 #include "undo.h"
 #include "stub_stroke.h"
 #include "funchash_core.h"

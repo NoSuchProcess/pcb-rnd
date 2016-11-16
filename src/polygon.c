@@ -87,7 +87,6 @@ dicer output is used for HIDs which cannot render things with holes
 #include "polygon.h"
 #include "remove.h"
 #include "search.h"
-#include "set.h"
 #include "obj_pinvia_therm.h"
 #include "undo.h"
 #include "layer.h"

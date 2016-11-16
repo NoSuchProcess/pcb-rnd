@@ -36,7 +36,6 @@
 #include "polygon.h"
 #include "rotate.h"
 #include "search.h"
-#include "set.h"
 
 #include "conf_core.h"
 

@@ -40,7 +40,6 @@
 #include "draw.h"
 #include "error.h"
 #include "layer.h"
-#include "set.h"
 #include "find.h"
 #include "search.h"
 #include "rats.h"

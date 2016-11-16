@@ -40,7 +40,6 @@
 #include "error.h"
 #include "draw.h"
 #include "pcb-printf.h"
-#include "set.h"
 #include "hid_attrib.h"
 #include "conf.h"
 #include "misc_util.h"

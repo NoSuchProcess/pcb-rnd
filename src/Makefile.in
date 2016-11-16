@@ -120,7 +120,6 @@ put /local/pcb/OBJS [@
 	search.o
 	select.o
 	select_act.o
-	set.o
 	stub_draw_fab.o
 	stub_mincut.o
 	stub_stroke.o

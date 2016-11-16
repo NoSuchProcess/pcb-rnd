@@ -68,7 +68,6 @@
 #include "rtree.h"
 #include "polygon.h"
 #include "search.h"
-#include "set.h"
 #include "undo.h"
 #include "rats.h"
 #include "plug_io.h"

@@ -35,7 +35,6 @@
 
 #include "undo.h"
 #include "polygon.h"
-#include "set.h"
 #include "search.h"
 
 #include "obj_line_draw.h"

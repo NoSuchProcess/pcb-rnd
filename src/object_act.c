@@ -37,7 +37,6 @@
 
 #include "search.h"
 #include "draw.h"
-#include "set.h"
 #include "copy.h"
 #include "remove.h"
 #include "compat_misc.h"

@@ -32,7 +32,6 @@
 #include "error.h"
 #include "rtree.h"
 #include "draw.h"
-#include "set.h"
 #include "polygon.h"
 #include "plugins.h"
 #include "hid_actions.h"

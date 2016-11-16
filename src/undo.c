@@ -54,7 +54,6 @@
 #include "remove.h"
 #include "rotate.h"
 #include "search.h"
-#include "set.h"
 #include "undo.h"
 #include "flag_str.h"
 #include "conf_core.h"

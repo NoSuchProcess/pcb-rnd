@@ -31,12 +31,12 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
-#include "set.h"
 #include "plugins.h"
 #include "hid_actions.h"
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "netlist.h"
 
 #include "pcb-printf.h"
 
