@@ -41,7 +41,7 @@ const char *pcb_netlist_names[NUM_NETLISTS] = {
 	"edited"
 };
 
-void rats_patch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2)
+void pcb_ratspatch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
 	pcb_ratspatch_line_t *n;
 
@@ -76,7 +76,7 @@ static void rats_patch_free_fields(pcb_ratspatch_line_t *n)
 		free(n->arg2.attrib_val);
 }
 
-void rats_patch_destroy(pcb_board_t *pcb)
+void pcb_ratspatch_destroy(pcb_board_t *pcb)
 {
 	pcb_ratspatch_line_t *n, *next;
 
@@ -87,7 +87,7 @@ void rats_patch_destroy(pcb_board_t *pcb)
 	}
 }
 
-void rats_patch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2)
+void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
 	pcb_rats_patch_op_t seek_op;
 	pcb_ratspatch_line_t *n;
@@ -124,7 +124,7 @@ void rats_patch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, const 
 	}
 
 quit:;
-	rats_patch_append(pcb, op, id, a1, a2);
+	pcb_ratspatch_append(pcb, op, id, a1, a2);
 }
 
 /* Unlink n from the list; if do_free is non-zero, also free fields and n */
@@ -242,7 +242,7 @@ int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t * patch, int de
 }
 
 
-int rats_patch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
+int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
 {
 	switch (patch->op) {
 	case RATP_ADD_CONN:
@@ -256,14 +256,14 @@ int rats_patch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch)
 	return 0;
 }
 
-void rats_patch_make_edited(pcb_board_t *pcb)
+void pcb_ratspatch_make_edited(pcb_board_t *pcb)
 {
 	pcb_ratspatch_line_t *n;
 
 	netlist_free(&(pcb->NetlistLib[NETLIST_EDITED]));
 	netlist_copy(&(pcb->NetlistLib[NETLIST_EDITED]), &(pcb->NetlistLib[NETLIST_INPUT]));
 	for (n = pcb->NetlistPatches; n != NULL; n = n->next)
-		rats_patch_apply(pcb, n);
+		pcb_ratspatch_apply(pcb, n);
 }
 
 static pcb_lib_menu_t *rats_patch_find_net(pcb_board_t *pcb, const char *netname, int listidx)
@@ -356,7 +356,7 @@ static void fexport_cb(void *ctx_, pcb_rats_patch_export_ev_t ev, const char *ne
 	}
 }
 
-int rats_patch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
+int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
 {
 	fexport_t ctx;
 	if (fmt_pcb) {
@@ -432,7 +432,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 			a[3] = NULL;
 			pcb_load_footprint(3, a, element->MarkX, element->MarkY);
 			pcb_buffer_copy_to_layout(element->MarkX, element->MarkY);
-			rats_patch_append_optimize(PCB, RATP_CHANGE_ATTRIB, a[1], "footprint", fpname);
+			pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, a[1], "footprint", fpname);
 			pcb_element_remove(element);
 		}
 	}
@@ -482,7 +482,7 @@ static int ActionSavePatch(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		pcb_message(PCB_MSG_DEFAULT, "Can't open netlist patch file %s for writing\n", fn);
 		return 1;
 	}
-	rats_patch_fexport(PCB, f, 0);
+	pcb_ratspatch_fexport(PCB, f, 0);
 	fclose(f);
 	return 0;
 }

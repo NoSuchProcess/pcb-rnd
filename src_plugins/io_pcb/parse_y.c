@@ -2842,19 +2842,19 @@ yyreduce:
 
   case 197:
 #line 1947 "parse_y.y" /* yacc.c:1646  */
-    { rats_patch_append(yyPCB, RATP_ADD_CONN, (yyvsp[-2].string), (yyvsp[-1].string), NULL); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
+    { pcb_ratspatch_append(yyPCB, RATP_ADD_CONN, (yyvsp[-2].string), (yyvsp[-1].string), NULL); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
 #line 2847 "parse_y.c" /* yacc.c:1646  */
     break;
 
   case 198:
 #line 1948 "parse_y.y" /* yacc.c:1646  */
-    { rats_patch_append(yyPCB, RATP_DEL_CONN, (yyvsp[-2].string), (yyvsp[-1].string), NULL); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
+    { pcb_ratspatch_append(yyPCB, RATP_DEL_CONN, (yyvsp[-2].string), (yyvsp[-1].string), NULL); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
 #line 2853 "parse_y.c" /* yacc.c:1646  */
     break;
 
   case 199:
 #line 1949 "parse_y.y" /* yacc.c:1646  */
-    { rats_patch_append(yyPCB, RATP_CHANGE_ATTRIB, (yyvsp[-3].string), (yyvsp[-2].string), (yyvsp[-1].string)); free((yyvsp[-3].string)); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
+    { pcb_ratspatch_append(yyPCB, RATP_CHANGE_ATTRIB, (yyvsp[-3].string), (yyvsp[-2].string), (yyvsp[-1].string)); free((yyvsp[-3].string)); free((yyvsp[-2].string)); free((yyvsp[-1].string)); }
 #line 2859 "parse_y.c" /* yacc.c:1646  */
     break;
 

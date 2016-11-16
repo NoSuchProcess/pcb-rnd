@@ -55,27 +55,27 @@ struct pcb_ratspatch_line_s {
 const char *pcb_netlist_names[NUM_NETLISTS];
 
 /* Allocate and append a patch line to the patch list */
-void rats_patch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2);
+void pcb_ratspatch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2);
 
 /* Free the patch list and all memory claimed by patch list items */
-void rats_patch_destroy(pcb_board_t *pcb);
+void pcb_ratspatch_destroy(pcb_board_t *pcb);
 
-/* Same as rats_patch_append() but also optimize previous entries so that
+/* Same as pcb_ratspatch_append() but also optimize previous entries so that
    redundant entries are removed */
-void rats_patch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2);
+void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2);
 
 /* Create [NETLIST_EDITED] from [NETLIST_INPUT] applying the patch */
-void rats_patch_make_edited(pcb_board_t *pcb);
+void pcb_ratspatch_make_edited(pcb_board_t *pcb);
 
 /* apply a single patch record on [NETLIST_EDITED]; returns non-zero on failure */
-int rats_patch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch);
+int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch);
 
 /**** exporter ****/
 
 /* Special text exporter:
    save all patch lines as an ordered list of text lines
    if fmt is non-zero, generate pcb savefile compatible lines, else generate a back annotation patch */
-int rats_patch_fexport(pcb_board_t *pcb, FILE * f, int fmt_pcb);
+int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE * f, int fmt_pcb);
 
 /* Generic, callback based exporter: */
 

@@ -358,7 +358,7 @@ static void WritePCBNetlistPatchData(FILE * FP)
 {
 	if (PCB->NetlistPatches != NULL) {
 		fprintf(FP, "NetListPatch()\n(\n");
-		rats_patch_fexport(PCB, FP, 1);
+		pcb_ratspatch_fexport(PCB, FP, 1);
 		fprintf(FP, ")\n");
 	}
 }

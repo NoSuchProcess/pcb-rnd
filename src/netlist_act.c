@@ -91,13 +91,13 @@ static int pcb_netlist_swap()
 	}
 
 
-	rats_patch_append_optimize(PCB, RATP_DEL_CONN, pins[0], nets[0]->Name + 2, NULL);
-	rats_patch_append_optimize(PCB, RATP_DEL_CONN, pins[1], nets[1]->Name + 2, NULL);
-	rats_patch_append_optimize(PCB, RATP_ADD_CONN, pins[0], nets[1]->Name + 2, NULL);
-	rats_patch_append_optimize(PCB, RATP_ADD_CONN, pins[1], nets[0]->Name + 2, NULL);
+	pcb_ratspatch_append_optimize(PCB, RATP_DEL_CONN, pins[0], nets[0]->Name + 2, NULL);
+	pcb_ratspatch_append_optimize(PCB, RATP_DEL_CONN, pins[1], nets[1]->Name + 2, NULL);
+	pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pins[0], nets[1]->Name + 2, NULL);
+	pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pins[1], nets[0]->Name + 2, NULL);
 
 	/* TODO: not very efficient to regenerate the whole list... */
-	rats_patch_make_edited(PCB);
+	pcb_ratspatch_make_edited(PCB);
 	ret = 0;
 
 quit:;
@@ -133,7 +133,7 @@ static int pcb_netlist_add(const char *netname, const char *pinname)
 		}
 	if (pin == NULL) {
 		pin = pcb_lib_conn_new(net, (char *) pinname);
-		rats_patch_append_optimize(PCB, RATP_ADD_CONN, pin->ListEntry, net->Name + 2, NULL);
+		pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pin->ListEntry, net->Name + 2, NULL);
 	}
 
 	pcb_netlist_changed(0);

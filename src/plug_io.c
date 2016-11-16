@@ -352,7 +352,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		pcb_attrib_put(PCB, "PCB::grid::unit", conf_core.editor.grid_unit->suffix);
 
 		pcb_sort_netlist();
-		rats_patch_make_edited(PCB);
+		pcb_ratspatch_make_edited(PCB);
 
 /* set route style to the first one, if the current one doesn't
    happen to match any.  This way, "revert" won't change the route style. */
