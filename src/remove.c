@@ -81,7 +81,7 @@ pcb_bool pcb_remove_selected(void)
 	ctx.remove.bulk = pcb_true;
 	ctx.remove.destroy_target = NULL;
 
-	if (SelectedOperation(&RemoveFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL)) {
+	if (pcb_selected_operation(&RemoveFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL)) {
 		IncrementUndoSerialNumber();
 		pcb_draw();
 		return (pcb_true);
@@ -102,7 +102,7 @@ void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = NULL;
 
-	ptr = ObjectOperation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	ptr = pcb_object_operation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (ptr);
 }
 
@@ -118,5 +118,5 @@ void *pcb_destroy_object(pcb_data_t *Target, int Type, void *Ptr1, void *Ptr2, v
 	ctx.remove.bulk = pcb_false;
 	ctx.remove.destroy_target = Target;
 
-	return (ObjectOperation(&DestroyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
+	return (pcb_object_operation(&DestroyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }

@@ -72,7 +72,7 @@ void *pcb_copy_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
 	ctx.copy.DeltaY = DY;
 
 	/* the subroutines add the objects to the undo-list */
-	ptr = ObjectOperation(&CopyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	ptr = pcb_object_operation(&CopyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	IncrementUndoSerialNumber();
 	return (ptr);
 }

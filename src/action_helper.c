@@ -332,7 +332,7 @@ static void click_cb(pcb_hidval_t hv)
 			box.X2 = Note.X - SLOP * pixel_slop;
 			box.Y1 = Note.Y + SLOP * pixel_slop;
 			box.Y2 = Note.Y - SLOP * pixel_slop;
-			Crosshair.drags = ListBlock(&box, &Crosshair.drags_len);
+			Crosshair.drags = pcb_list_block(&box, &Crosshair.drags_len);
 			Crosshair.drags_current = 0;
 			AttachForCopy(Note.X, Note.Y);
 		}
@@ -347,7 +347,7 @@ static void click_cb(pcb_hidval_t hv)
 			box.X2 = MAX_COORD;
 			box.Y2 = MAX_COORD;
 			/* unselect first if shift key not down */
-			if (!gui->shift_is_pressed() && SelectBlock(&box, pcb_false))
+			if (!gui->shift_is_pressed() && pcb_select_block(&box, pcb_false))
 				SetChangedFlag(pcb_true);
 			pcb_notify_block();
 			Crosshair.AttachedBox.Point1.X = Note.X;
@@ -373,7 +373,7 @@ void pcb_release_mode(void)
 		SaveUndoSerialNumber();
 		/* unselect first if shift key not down */
 		if (!gui->shift_is_pressed()) {
-			if (SelectBlock(&box, pcb_false))
+			if (pcb_select_block(&box, pcb_false))
 				SetChangedFlag(pcb_true);
 			if (Note.Moving) {
 				Note.Moving = 0;
@@ -384,7 +384,7 @@ void pcb_release_mode(void)
 		/* Restore the SN so that if we select something the deselect/select combo
 		   gets the same SN. */
 		RestoreUndoSerialNumber();
-		if (SelectObject())
+		if (pcb_select_object())
 			SetChangedFlag(pcb_true);
 		else
 			IncrementUndoSerialNumber(); /* We didn't select anything new, so, the deselection should get its  own SN. */
@@ -410,7 +410,7 @@ void pcb_release_mode(void)
 		box.Y2 = Crosshair.AttachedBox.Point2.Y;
 
 		RestoreUndoSerialNumber();
-		if (SelectBlock(&box, pcb_true))
+		if (pcb_select_block(&box, pcb_true))
 			SetChangedFlag(pcb_true);
 		else if (Bumped)
 			IncrementUndoSerialNumber();

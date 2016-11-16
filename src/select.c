@@ -107,7 +107,7 @@ void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int 
  * toggles the selection of any kind of object
  * the different types are defined by search.h
  */
-pcb_bool SelectObject(void)
+pcb_bool pcb_select_object(void)
 {
 	void *ptr1, *ptr2, *ptr3;
 	pcb_layer_t *layer;
@@ -466,7 +466,7 @@ do { \
  * Flag determines if the block is to be selected or unselected
  * returns pcb_true if the state of any object has changed
  */
-pcb_bool SelectBlock(pcb_box_t *Box, pcb_bool Flag)
+pcb_bool pcb_select_block(pcb_box_t *Box, pcb_bool Flag)
 {
 	/* do not list, set flag */
 	return (ListBlock_(Box, Flag, NULL) == NULL) ? pcb_false : pcb_true;
@@ -475,7 +475,7 @@ pcb_bool SelectBlock(pcb_box_t *Box, pcb_bool Flag)
 /* ----------------------------------------------------------------------
  * List all visible objects within the passed box
  */
-long int *ListBlock(pcb_box_t *Box, int *len)
+long int *pcb_list_block(pcb_box_t *Box, int *len)
 {
 	return ListBlock_(Box, 1, len);
 }
@@ -484,7 +484,7 @@ long int *ListBlock(pcb_box_t *Box, int *len)
  * performs several operations on the passed object
  */
 #warning TODO: maybe move this to operation.c
-void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	switch (Type) {
 	case PCB_TYPE_LINE:
@@ -556,7 +556,7 @@ void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, v
  * resets the selected flag if requested
  * returns pcb_true if anything has changed
  */
-pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type)
+pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type)
 {
 	pcb_bool changed = pcb_false;
 
@@ -724,7 +724,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
  *
  * text objects and elements cannot be selected by this routine
  */
-pcb_bool SelectConnection(pcb_bool Flag)
+pcb_bool pcb_select_connection(pcb_bool Flag)
 {
 	pcb_bool changed = pcb_false;
 
@@ -831,7 +831,7 @@ static int strlst_match(const char **pat, const char *name)
 	return 0;
 }
 
-pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, pcb_search_method_t method)
+pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool Flag, pcb_search_method_t method)
 {
 	pcb_bool changed = pcb_false;
 	const char **pat = NULL;
@@ -993,7 +993,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 		}
 		END_LOOP;
 
-		changed = SelectConnection(Flag) || changed;
+		changed = pcb_select_connection(Flag) || changed;
 		changed = pcb_reset_conns(pcb_false) || changed;
 		pcb_conn_lookup_uninit();
 	}

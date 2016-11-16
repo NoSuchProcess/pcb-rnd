@@ -36,14 +36,14 @@
 	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLYGON | PCB_TYPE_ELEMENT |	\
 	 PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
 
-pcb_bool SelectObject(void);
-pcb_bool SelectBlock(pcb_box_t *, pcb_bool);
-long int *ListBlock(pcb_box_t *Box, int *len);
+pcb_bool pcb_select_object(void);
+pcb_bool pcb_select_block(pcb_box_t *, pcb_bool);
+long int *pcb_list_block(pcb_box_t *Box, int *len);
 
-void *ObjectOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
-pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type);
+void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type);
 
-pcb_bool SelectConnection(pcb_bool);
+pcb_bool pcb_select_connection(pcb_bool);
 
 
 typedef enum {
@@ -51,7 +51,7 @@ typedef enum {
 	SM_LIST = 1
 } pcb_search_method_t;
 
-pcb_bool SelectObjectByName(int, const char *, pcb_bool, pcb_search_method_t);
+pcb_bool pcb_select_object_by_name(int, const char *, pcb_bool, pcb_search_method_t);
 
 /* New API */
 

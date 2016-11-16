@@ -76,7 +76,7 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
 	ctx.move.dx = DX;
 	ctx.move.dy = DY;
 	AddObjectToMoveUndoList(Type, Ptr1, Ptr2, Ptr3, DX, DY);
-	result = ObjectOperation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	result = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (result);
 }
 
@@ -118,7 +118,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	}
 
 	AddObjectToMoveUndoList(Type, Ptr1, Ptr2, Ptr3, DX, DY);
-	ptr2 = ObjectOperation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	IncrementUndoSerialNumber();
 
 	pcb_draw_inhibit_dec();
@@ -140,7 +140,7 @@ void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_la
 	ctx.move.dst_layer = Target;
 	ctx.move.more_to_come = enmasse;
 
-	result = ObjectOperation(&MoveToLayerFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	result = pcb_object_operation(&MoveToLayerFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	IncrementUndoSerialNumber();
 	return (result);
 }
@@ -158,7 +158,7 @@ pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
 	ctx.move.dst_layer = Target;
 	ctx.move.more_to_come = pcb_true;
 
-	changed = SelectedOperation(&MoveToLayerFunctions, &ctx, pcb_true, PCB_TYPEMASK_ALL);
+	changed = pcb_selected_operation(&MoveToLayerFunctions, &ctx, pcb_true, PCB_TYPEMASK_ALL);
 	/* passing pcb_true to above operation causes Undoserial to auto-increment */
 	return (changed);
 }

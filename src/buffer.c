@@ -123,7 +123,7 @@ void pcb_buffer_add_selected(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y,
 	pcb_notify_crosshair_change(pcb_false);
 	ctx.buffer.src = PCB->Data;
 	ctx.buffer.dst = Buffer->Data;
-	SelectedOperation(&AddBufferFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL);
+	pcb_selected_operation(&AddBufferFunctions, &ctx, pcb_false, PCB_TYPEMASK_ALL);
 
 	/* set origin to passed or current position */
 	if (X || Y) {
@@ -597,7 +597,7 @@ void *pcb_move_obj_to_buffer(pcb_data_t *Destination, pcb_data_t *Src, int Type,
 	ctx.buffer.pcb = PCB;
 	ctx.buffer.dst = Destination;
 	ctx.buffer.src = Src;
-	return (ObjectOperation(&MoveBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
+	return (pcb_object_operation(&MoveBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
 
 /* ----------------------------------------------------------------------
@@ -610,7 +610,7 @@ void *pcb_copy_obj_to_buffer(pcb_data_t *Destination, pcb_data_t *Src, int Type,
 	ctx.buffer.pcb = PCB;
 	ctx.buffer.dst = Destination;
 	ctx.buffer.src = Src;
-	return (ObjectOperation(&AddBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
+	return (pcb_object_operation(&AddBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
 
 /* ---------------------------------------------------------------------------

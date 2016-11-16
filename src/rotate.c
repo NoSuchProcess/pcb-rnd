@@ -120,7 +120,7 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 		ptr++;
 	}
 	AddObjectToRotateUndoList(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
-	ptr2 = ObjectOperation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	ptr2 = pcb_object_operation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);
 	if (changed) {
 		pcb_draw();

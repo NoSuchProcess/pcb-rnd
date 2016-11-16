@@ -836,3 +836,10 @@ SearchScreen -> pcb_search_screen
 SearchScreenGridSlop -> pcb_search_grid_slop
 SearchObjectByID -> pcb_search_obj_by_id
 SearchElementByName -> pcb_search_elem_by_name
+SelectObject -> pcb_select_object
+SelectBlock -> pcb_select_block
+ListBlock -> pcb_list_block
+ObjectOperation -> pcb_object_operation
+SelectedOperation -> pcb_selected_operation
+SelectConnection -> pcb_select_connection
+SelectObjectByName -> pcb_select_object_by_name
