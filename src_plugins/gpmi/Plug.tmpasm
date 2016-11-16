@@ -60,7 +60,7 @@ mod_pcb_gpmi: all
 
 		append /local/pcb/buildin_init_code    [@
 	uninit_func = hid_gpmi_init();
-	plugin_register("gpmi", "<gpmi>", NULL, 0, uninit_func);
+	pcb_plugin_register("gpmi", "<gpmi>", NULL, 0, uninit_func);
 @]  {\n}
 
 
