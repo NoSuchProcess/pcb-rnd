@@ -1410,8 +1410,8 @@ static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	 * make sure we start between 0 and 360 otherwise gd does
 	 * strange things
 	 */
-	sa = NormalizeAngle(sa);
-	ea = NormalizeAngle(ea);
+	sa = pcb_normalize_angle(sa);
+	ea = pcb_normalize_angle(ea);
 
 	have_outline |= doing_outline;
 

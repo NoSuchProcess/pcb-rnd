@@ -84,7 +84,7 @@ pcb_unit_t Units[] = {
  * main units array, and internationalize the units for GUI
  * display.
  */
-void initialize_units(void)
+void pcb_units_init(void)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i) {
@@ -212,7 +212,7 @@ const pcb_unit_t *get_unit_by_idx(int idx)
 }
 
 /* \brief Returns the length of the master unit list. */
-int get_n_units(void)
+int pcb_get_n_units(void)
 {
 	return N_UNITS;
 }
@@ -224,7 +224,7 @@ int get_n_units(void)
  *
  * \return The converted measure
  */
-double coord_to_unit(const pcb_unit_t * unit, pcb_coord_t x)
+double pcb_coord_to_unit(const pcb_unit_t * unit, pcb_coord_t x)
 {
 	double base;
 	if (unit == NULL)
@@ -241,7 +241,7 @@ double coord_to_unit(const pcb_unit_t * unit, pcb_coord_t x)
  *
  * \return The converted measure
  */
-pcb_coord_t unit_to_coord(const pcb_unit_t * unit, double x)
+pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x)
 {
 	double base;
 	if (unit == NULL)
@@ -257,9 +257,9 @@ pcb_coord_t unit_to_coord(const pcb_unit_t * unit, double x)
  *
  * \return The converted measure
  */
-double unit_to_factor(const pcb_unit_t * unit)
+double pcb_unit_to_factor(const pcb_unit_t * unit)
 {
-	return 1.0 / coord_to_unit(unit, 1);
+	return 1.0 / pcb_coord_to_unit(unit, 1);
 }
 
 /* \brief Obtain an increment object from its suffix
@@ -271,7 +271,7 @@ double unit_to_factor(const pcb_unit_t * unit)
  *
  * \return A const pointer to the pcb_increments_t struct, or NULL if none was found
  */
-pcb_increments_t *get_increments_struct(const char *suffix)
+pcb_increments_t *pcb_get_increments_struct(const char *suffix)
 {
 	int i;
 	/* Do lookup */
@@ -282,7 +282,7 @@ pcb_increments_t *get_increments_struct(const char *suffix)
 }
 
 /* Bring an angle into [0, 360) range */
-pcb_angle_t NormalizeAngle(pcb_angle_t a)
+pcb_angle_t pcb_normalize_angle(pcb_angle_t a)
 {
 	while (a < 0)
 		a += 360.0;

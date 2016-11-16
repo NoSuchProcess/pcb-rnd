@@ -64,7 +64,7 @@ static void ghid_coord_entry_popup_cb(GHidCoordEntry * ce, GtkMenu * menu, gpoin
 	GtkWidget *menu_item, *submenu;
 
 	/* Build submenu */
-	n = get_n_units();
+	n = pcb_get_n_units();
 	unit_list = get_unit_list();
 
 	submenu = gtk_menu_new();
@@ -113,7 +113,7 @@ static gboolean ghid_coord_text_changed_cb(GHidCoordEntry * entry, gpointer data
 	value = strtod(text, &suffix);
 	new_unit = get_unit_struct(suffix);
 	if (new_unit && new_unit != entry->unit) {
-		entry->value = unit_to_coord(new_unit, value);
+		entry->value = pcb_unit_to_coord(new_unit, value);
 		g_signal_emit(entry, ghid_coord_entry_signals[UNIT_CHANGE_SIGNAL], 0, new_unit);
 	}
 
@@ -127,7 +127,7 @@ static gboolean ghid_coord_value_changed_cb(GHidCoordEntry * ce, gpointer data)
 
 	/* Re-calculate internal value */
 	double value = gtk_adjustment_get_value(adj);
-	ce->value = unit_to_coord(ce->unit, value);
+	ce->value = pcb_unit_to_coord(ce->unit, value);
 	/* Handle potential unit changes */
 	ghid_coord_text_changed_cb(ce, data);
 
@@ -146,9 +146,9 @@ static void ghid_coord_entry_change_unit(GHidCoordEntry * ce, const pcb_unit_t *
 
 	ce->unit = new_unit;
 	/* Re-calculate min/max values for spinbox */
-	gtk_adjustment_configure(adj, coord_to_unit(new_unit, ce->value),
-													 coord_to_unit(new_unit, ce->min_value),
-													 coord_to_unit(new_unit, ce->max_value), ce->unit->step_small, ce->unit->step_medium, 0.0);
+	gtk_adjustment_configure(adj, pcb_coord_to_unit(new_unit, ce->value),
+													 pcb_coord_to_unit(new_unit, ce->min_value),
+													 pcb_coord_to_unit(new_unit, ce->max_value), ce->unit->step_small, ce->unit->step_medium, 0.0);
 
 	switch (ce->step_size) {
 	case CE_TINY:
@@ -261,9 +261,9 @@ GtkWidget *ghid_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_co
 		break;
 	}
 
-	adj = GTK_ADJUSTMENT(gtk_adjustment_new(coord_to_unit(unit, value),
-																					coord_to_unit(unit, min_val),
-																					coord_to_unit(unit, max_val), small_step, big_step, 0.0));
+	adj = GTK_ADJUSTMENT(gtk_adjustment_new(pcb_coord_to_unit(unit, value),
+																					pcb_coord_to_unit(unit, min_val),
+																					pcb_coord_to_unit(unit, max_val), small_step, big_step, 0.0));
 	gtk_spin_button_configure(GTK_SPIN_BUTTON(ce), adj, small_step, unit->default_prec + strlen(unit->suffix));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(ce), FALSE);
 
@@ -287,5 +287,5 @@ int ghid_coord_entry_get_value_str(GHidCoordEntry * ce, char *out, int out_len)
 /*! \brief Sets a GHidCoordEntry's value, in pcb coords */
 void ghid_coord_entry_set_value(GHidCoordEntry * ce, pcb_coord_t val)
 {
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ce), coord_to_unit(ce->unit, val));
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ce), pcb_coord_to_unit(ce->unit, val));
 }

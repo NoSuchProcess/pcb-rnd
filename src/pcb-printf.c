@@ -205,7 +205,7 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 
 	/* Determine scale factor -- find smallest unit that brings
 	 * the whole group above unity */
-	for (n = 0; n < get_n_units(); ++n) {
+	for (n = 0; n < pcb_get_n_units(); ++n) {
 		if ((Units[n].allow & allow) != 0 && (Units[n].family == family)) {
 			int n_above_one = 0;
 
@@ -217,7 +217,7 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 		}
 	}
 	/* If nothing worked, wind back to the smallest allowable unit */
-	if (n == get_n_units()) {
+	if (n == pcb_get_n_units()) {
 		do {
 			--n;
 		} while ((Units[n].allow & allow) == 0 || Units[n].family != family);
@@ -605,7 +605,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				case '*':
 					{
 						int found = 0;
-						for (i = 0; i < get_n_units(); ++i) {
+						for (i = 0; i < pcb_get_n_units(); ++i) {
 							if (strcmp(ext_unit, Units[i].suffix) == 0) {
 								if (CoordsToString(string, value, 1, &spec, Units[i].allow, suffix) != 0) goto err;
 								found = 1;
@@ -636,7 +636,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				default:
 					{
 						int found = 0;
-						for (i = 0; i < get_n_units(); ++i) {
+						for (i = 0; i < pcb_get_n_units(); ++i) {
 							if (*fmt == Units[i].printf_code) {
 								if (CoordsToString(string, value, 1, &spec, Units[i].allow, suffix) != 0) goto err;
 								found = 1;

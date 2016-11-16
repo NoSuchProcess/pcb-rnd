@@ -629,7 +629,7 @@ void ghid_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t 
 		delta_angle = -delta_angle;
 	}
 	/* make sure we fall in the -180 to +180 range */
-	start_angle = NormalizeAngle(start_angle);
+	start_angle = pcb_normalize_angle(start_angle);
 	if (start_angle >= 180)
 		start_angle -= 360;
 

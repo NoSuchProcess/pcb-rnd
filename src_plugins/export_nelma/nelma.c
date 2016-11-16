@@ -916,8 +916,8 @@ static void nelma_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_
 	 * make sure we start between 0 and 360 otherwise gd does strange
 	 * things
 	 */
-	sa = NormalizeAngle(sa);
-	ea = NormalizeAngle(ea);
+	sa = pcb_normalize_angle(sa);
+	ea = pcb_normalize_angle(ea);
 
 #if 0
 	printf("draw_arc %d,%d %dx%d %d..%d %d..%d\n", cx, cy, width, height, start_angle, delta_angle, sa, ea);

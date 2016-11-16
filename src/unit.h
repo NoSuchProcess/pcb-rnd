@@ -114,14 +114,14 @@ const pcb_unit_t *get_unit_struct(const char *suffix);
 const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);
 const pcb_unit_t *get_unit_list(void);
 const pcb_unit_t *get_unit_by_idx(int idx);
-int get_n_units(void);
-double coord_to_unit(const pcb_unit_t *, pcb_coord_t);
-double unit_to_factor(const pcb_unit_t * unit);
-pcb_coord_t unit_to_coord(const pcb_unit_t *, double);
-pcb_increments_t *get_increments_struct(const char *suffix);
-pcb_angle_t NormalizeAngle(pcb_angle_t a);
+int pcb_get_n_units(void);
+double pcb_coord_to_unit(const pcb_unit_t *, pcb_coord_t);
+double pcb_unit_to_factor(const pcb_unit_t * unit);
+pcb_coord_t pcb_unit_to_coord(const pcb_unit_t *, double);
+pcb_increments_t *pcb_get_increments_struct(const char *suffix);
+pcb_angle_t pcb_normalize_angle(pcb_angle_t a);
 
-void initialize_units(void);
+void pcb_units_init(void);
 
 /* PCB/physical unit conversions */
 #define PCB_COORD_TO_MIL(n)	((n) / 25400.0)

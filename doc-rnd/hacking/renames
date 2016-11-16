@@ -896,3 +896,10 @@ AddObjectToChangeRadiiUndoList -> pcb_undo_add_obj_to_change_radii
 AddObjectToClearPolyUndoList -> pcb_undo_add_obj_to_clear_poly
 AddLayerChangeToUndoList -> pcb_undo_add_layer_change
 AddNetlistLibToUndoList -> pcb_undo_add_netlist_lib
+get_n_units -> pcb_get_n_units
+coord_to_unit -> pcb_coord_to_unit
+unit_to_factor -> pcb_unit_to_factor
+unit_to_coord -> pcb_unit_to_coord
+get_increments_struct -> pcb_get_increments_struct
+NormalizeAngle -> pcb_normalize_angle
+initialize_units -> pcb_units_init

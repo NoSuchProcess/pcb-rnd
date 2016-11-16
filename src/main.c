@@ -360,7 +360,7 @@ int main(int argc, char *argv[])
 	srand(time(NULL));						/* Set seed for rand() */
 
 	pcb_funchash_init();
-	initialize_units();
+	pcb_units_init();
 	pcb_polygon_init();
 
 	/* This must be called before any other atexit functions

@@ -78,12 +78,12 @@ void pcb_arc_bbox(pcb_arc_t *Arc)
 	Arc->Delta = PCB_CLAMP(Arc->Delta, -360, 360);
 
 	if (Arc->Delta > 0) {
-		ang1 = NormalizeAngle(Arc->StartAngle);
-		ang2 = NormalizeAngle(Arc->StartAngle + Arc->Delta);
+		ang1 = pcb_normalize_angle(Arc->StartAngle);
+		ang2 = pcb_normalize_angle(Arc->StartAngle + Arc->Delta);
 	}
 	else {
-		ang1 = NormalizeAngle(Arc->StartAngle + Arc->Delta);
-		ang2 = NormalizeAngle(Arc->StartAngle);
+		ang1 = pcb_normalize_angle(Arc->StartAngle + Arc->Delta);
+		ang2 = pcb_normalize_angle(Arc->StartAngle);
 	}
 	if (ang1 > ang2)
 		ang2 += 360;
@@ -179,7 +179,7 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 	PCB_ARC_LOOP(Layer);
 	{
 		if (arc->X == X1 && arc->Y == Y1 && arc->Width == width &&
-				NormalizeAngle(arc->StartAngle) == NormalizeAngle(sa) && arc->Delta == dir)
+				pcb_normalize_angle(arc->StartAngle) == pcb_normalize_angle(sa) && arc->Delta == dir)
 			return (NULL);						/* prevent stacked arcs */
 	}
 	END_LOOP;
@@ -528,7 +528,7 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 	pcb_coord_t save;
 
 	/* add Number*90 degrees (i.e., Number quarter-turns) */
-	Arc->StartAngle = NormalizeAngle(Arc->StartAngle + Number * 90);
+	Arc->StartAngle = pcb_normalize_angle(Arc->StartAngle + Number * 90);
 	PCB_COORD_ROTATE90(Arc->X, Arc->Y, X, Y, Number);
 
 	/* now change width and height */

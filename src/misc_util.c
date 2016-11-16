@@ -104,7 +104,7 @@ double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute,
 		int i, unit_ok = 0;
 		const pcb_unit_t *unit = get_unit_struct(units);
 		if (unit != NULL) {
-			value = unit_to_coord(unit, value);
+			value = pcb_unit_to_coord(unit, value);
 			scaled = 1;
 			unit_ok = 1;
 		}
@@ -136,7 +136,7 @@ double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute,
 					scaled = 1;
 				}
 		if (!scaled && unit != NULL)
-			value = unit_to_coord(unit, value);
+			value = pcb_unit_to_coord(unit, value);
 	}
 
 	if (success != NULL)

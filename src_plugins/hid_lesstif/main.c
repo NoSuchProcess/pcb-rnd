@@ -398,7 +398,7 @@ static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
 #warning TODO: figure what to do with increments
 #if 0
-		Settings.increments = get_increments_struct(Settings.grid_unit->suffix);
+		Settings.increments = pcb_get_increments_struct(Settings.grid_unit->suffix);
 #endif
 		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
 	}
@@ -2243,7 +2243,7 @@ static void draw_grid()
 static void mark_delta_to_widget(pcb_coord_t dx, pcb_coord_t dy, Widget w)
 {
 	char *buf;
-	double g = coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
+	double g = pcb_coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
 	int prec;
 	XmString ms;
 
@@ -2274,7 +2274,7 @@ static int cursor_pos_to_widget(pcb_coord_t x, pcb_coord_t y, Widget w, int prev
 	int this_state = prev_state;
 	char *buf = NULL;
 	const char *msg = "";
-	double g = coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
+	double g = pcb_coord_to_unit(conf_core.editor.grid_unit, PCB->Grid);
 	XmString ms;
 	int prec;
 
@@ -3102,7 +3102,7 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}
-	start_angle = NormalizeAngle(start_angle);
+	start_angle = pcb_normalize_angle(start_angle);
 	if (start_angle >= 180)
 		start_angle -= 360;
 #if 0

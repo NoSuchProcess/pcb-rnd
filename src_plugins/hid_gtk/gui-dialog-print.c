@@ -260,7 +260,7 @@ int ghid_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr
 
 		case HID_Unit:
 			unit_list = get_unit_list();
-			n = get_n_units();
+			n = pcb_get_n_units();
 
 			hbox = gtk_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);

@@ -911,12 +911,12 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 
 	/* Convert StartAngle, Delta into bounding angles in [0, 720) */
 	if (Arc->Delta > 0) {
-		ang1 = NormalizeAngle(Arc->StartAngle);
-		ang2 = NormalizeAngle(Arc->StartAngle + Arc->Delta);
+		ang1 = pcb_normalize_angle(Arc->StartAngle);
+		ang2 = pcb_normalize_angle(Arc->StartAngle + Arc->Delta);
 	}
 	else {
-		ang1 = NormalizeAngle(Arc->StartAngle + Arc->Delta);
-		ang2 = NormalizeAngle(Arc->StartAngle);
+		ang1 = pcb_normalize_angle(Arc->StartAngle + Arc->Delta);
+		ang2 = pcb_normalize_angle(Arc->StartAngle);
 	}
 	if (ang1 > ang2)
 		ang2 += 360;

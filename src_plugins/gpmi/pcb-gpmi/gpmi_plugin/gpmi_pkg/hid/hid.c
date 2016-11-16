@@ -124,7 +124,7 @@ dynamic char *hid_get_attribute(gpmi_hid_t *hid, int attr_id)
 				if (u == NULL)
 					fact = 0;
 				else
-					fact = unit_to_factor(u);
+					fact = pcb_unit_to_factor(u);
 				pcb_snprintf(buff, sizeof(buff), "%f", fact);
 				res = buff;
 /*				fprintf(stderr, "unit idx: %d %p res='%s'\n", v->int_value, (void *)u, res);*/
@@ -169,7 +169,7 @@ pcb_hid_attr_val_t hid_string2val(const hid_attr_type_t type, const char *str)
 						v.coord_value = 0;
 					}
 					else
-						v.coord_value = unit_to_coord(u, val);
+						v.coord_value = pcb_unit_to_coord(u, val);
 				}
 				else 
 					v.coord_value = val;
@@ -180,7 +180,7 @@ pcb_hid_attr_val_t hid_string2val(const hid_attr_type_t type, const char *str)
 				const pcb_unit_t *u;
 				u = get_unit_struct(str);
 				if (u != NULL)
-					v.real_value = unit_to_factor(u);
+					v.real_value = pcb_unit_to_factor(u);
 				else
 					v.real_value = 0;
 			}

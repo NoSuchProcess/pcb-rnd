@@ -314,7 +314,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	{
 		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		pcb_rotate(&arc->X, &arc->Y, Buffer->X, Buffer->Y, cosa, sina);
-		arc->StartAngle = NormalizeAngle(arc->StartAngle + angle);
+		arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
 		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
 	ENDALL_LOOP;

@@ -438,7 +438,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 	PCB_ARC_LOOP(Element);
 	{
 		pcb_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
-		arc->StartAngle = NormalizeAngle(arc->StartAngle + angle);
+		arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
 	}
 	END_LOOP;
 
@@ -605,8 +605,8 @@ pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 		delta = -delta;
 		angle -= delta;
 	}
-	angle = NormalizeAngle(angle);
-	delta = NormalizeAngle(delta);
+	angle = pcb_normalize_angle(angle);
+	delta = pcb_normalize_angle(delta);
 	if (delta == 0)
 		delta = 360;
 
