@@ -1627,7 +1627,7 @@ static pcb_line_t *create_line(pcb_line_t *sample, int x1, int y1, int x2, int y
 #endif
 	pcb_line_t *line = pcb_line_new(CURRENT, x1, y1, x2, y2,
 																					sample->Thickness, sample->Clearance, sample->Flags);
-	AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, line, line);
+	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
 
 #if TRACE1
 	e =
@@ -1655,7 +1655,7 @@ static pcb_arc_t *create_arc(pcb_line_t *sample, int x, int y, int r, int sa, in
 	if (arc == 0) {
 		arc = pcb_arc_new(CURRENT, x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags);
 	}
-	AddObjectToCreateUndoList(PCB_TYPE_ARC, CURRENT, arc, arc);
+	pcb_undo_add_obj_to_create(PCB_TYPE_ARC, CURRENT, arc, arc);
 
 	if (!arc)
 		longjmp(abort_buf, 1);

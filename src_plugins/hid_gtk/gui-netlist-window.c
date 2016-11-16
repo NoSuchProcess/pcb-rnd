@@ -201,7 +201,7 @@ static void toggle_pin_selected(pcb_lib_entry_t * entry)
 	if (!pcb_rat_seek_pad(entry, &conn, pcb_false))
 		return;
 
-	AddObjectToFlagUndoList(conn.type, conn.ptr1, conn.ptr2, conn.ptr2);
+	pcb_undo_add_obj_to_flag(conn.type, conn.ptr1, conn.ptr2, conn.ptr2);
 	PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_any_obj_t *) conn.ptr2);
 	pcb_draw_obj(conn.type, conn.ptr1, conn.ptr2);
 }

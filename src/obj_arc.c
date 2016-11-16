@@ -149,7 +149,7 @@ void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pc
 	}
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, a);
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);
-	AddObjectToChangeAnglesUndoList(PCB_TYPE_ARC, a, a, a);
+	pcb_undo_add_obj_to_change_angles(PCB_TYPE_ARC, a, a, a);
 	a->StartAngle = new_sa;
 	a->Delta = new_da;
 	pcb_arc_bbox(a);
@@ -162,7 +162,7 @@ void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, 
 {
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, a);
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);
-	AddObjectToChangeRadiiUndoList(PCB_TYPE_ARC, a, a, a);
+	pcb_undo_add_obj_to_change_radii(PCB_TYPE_ARC, a, a, a);
 	a->Width = new_width;
 	a->Height = new_height;
 	pcb_arc_bbox(a);
@@ -258,7 +258,7 @@ void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return (NULL);
 	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Arc->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+		pcb_undo_add_obj_to_size(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
@@ -281,7 +281,7 @@ void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		return (NULL);
 	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Arc->Clearance) {
-		AddObjectToClearSizeUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+		pcb_undo_add_obj_to_clear_size(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
@@ -322,7 +322,7 @@ void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : (*dst) + ctx->chgsize.delta;
 	value = MIN(MAX_ARCSIZE, MAX(value, MIN_ARCSIZE));
 	if (value != *dst) {
-		AddObjectToChangeRadiiUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+		pcb_undo_add_obj_to_change_radii(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
@@ -362,7 +362,7 @@ void *ChangeArcAngle(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		value += 360;
 
 	if (value != *dst) {
-		AddObjectToChangeAnglesUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+		pcb_undo_add_obj_to_change_angles(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
@@ -384,13 +384,13 @@ void *ChangeArcJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	EraseArc(Arc);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc)) {
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_false);
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_false);
 	}
-	AddObjectToFlagUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, Layer, Arc, Arc);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Arc);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc)) {
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
-		AddObjectToClearPolyUndoList(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_true);
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_ARC, Layer, Arc, Arc, pcb_true);
 	}
 	DrawArc(Layer, Arc);
 	return (Arc);
@@ -423,7 +423,7 @@ void *CopyArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	if (!arc)
 		return (arc);
 	DrawArc(Layer, arc);
-	AddObjectToCreateUndoList(PCB_TYPE_ARC, Layer, arc, arc);
+	pcb_undo_add_obj_to_create(PCB_TYPE_ARC, Layer, arc, arc);
 	return (arc);
 }
 
@@ -476,7 +476,7 @@ void *MoveArcToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t * Arc)
 	}
 	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
 		return (Arc);
-	AddObjectToMoveToLayerUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_ARC, Layer, Arc, Arc);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_ARC, Layer, Arc);
 	if (Layer->On)
 		EraseArc(Arc);
@@ -507,7 +507,7 @@ void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_ARC, Layer, Arc, Arc);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_ARC, Layer, Arc, Arc);
 	return NULL;
 }
 

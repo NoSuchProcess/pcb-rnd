@@ -58,23 +58,23 @@ void pcb_select_element(pcb_element_t *element, pcb_change_flag_t how, int redra
 	/* select all pins and names of the element */
 	PCB_PIN_LOOP(element);
 	{
-		AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
+		pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pin);
 	}
 	END_LOOP;
 	PCB_PAD_LOOP(element);
 	{
-		AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
+		pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pad);
 	}
 	END_LOOP;
 	PCB_ELEMENT_PCB_TEXT_LOOP(element);
 	{
-		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
+		pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, text, text);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
 	}
 	END_LOOP;
-	AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT, element, element, element);
 	PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, element);
 
 	if (redraw) {
@@ -93,7 +93,7 @@ void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int 
 	/* select all names of the element */
 	PCB_ELEMENT_PCB_TEXT_LOOP(element);
 	{
-		AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
+		pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, text, text);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
 	}
 	END_LOOP;
@@ -120,7 +120,7 @@ pcb_bool pcb_select_object(void)
 		return (pcb_false);
 	switch (type) {
 	case PCB_TYPE_VIA:
-		AddObjectToFlagUndoList(PCB_TYPE_VIA, ptr1, ptr1, ptr1);
+		pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, ptr1, ptr1, ptr1);
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr1);
 		DrawVia((pcb_pin_t *) ptr1);
 		break;
@@ -130,7 +130,7 @@ pcb_bool pcb_select_object(void)
 			pcb_line_t *line = (pcb_line_t *) ptr2;
 
 			layer = (pcb_layer_t *) ptr1;
-			AddObjectToFlagUndoList(PCB_TYPE_LINE, ptr1, ptr2, ptr2);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, ptr1, ptr2, ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, line);
 			DrawLine(layer, line);
 			break;
@@ -140,7 +140,7 @@ pcb_bool pcb_select_object(void)
 		{
 			pcb_rat_t *rat = (pcb_rat_t *) ptr2;
 
-			AddObjectToFlagUndoList(PCB_TYPE_RATLINE, ptr1, ptr1, ptr1);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, ptr1, ptr1, ptr1);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, rat);
 			DrawRat(rat);
 			break;
@@ -151,7 +151,7 @@ pcb_bool pcb_select_object(void)
 			pcb_arc_t *arc = (pcb_arc_t *) ptr2;
 
 			layer = (pcb_layer_t *) ptr1;
-			AddObjectToFlagUndoList(PCB_TYPE_ARC, ptr1, ptr2, ptr2);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, ptr1, ptr2, ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, arc);
 			DrawArc(layer, arc);
 			break;
@@ -162,7 +162,7 @@ pcb_bool pcb_select_object(void)
 			pcb_text_t *text = (pcb_text_t *) ptr2;
 
 			layer = (pcb_layer_t *) ptr1;
-			AddObjectToFlagUndoList(PCB_TYPE_TEXT, ptr1, ptr2, ptr2);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_TEXT, ptr1, ptr2, ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, text);
 			DrawText(layer, text);
 			break;
@@ -173,7 +173,7 @@ pcb_bool pcb_select_object(void)
 			pcb_polygon_t *poly = (pcb_polygon_t *) ptr2;
 
 			layer = (pcb_layer_t *) ptr1;
-			AddObjectToFlagUndoList(PCB_TYPE_POLYGON, ptr1, ptr2, ptr2);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, ptr1, ptr2, ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, poly);
 			DrawPolygon(layer, poly);
 			/* changing memory order no longer effects draw order */
@@ -181,13 +181,13 @@ pcb_bool pcb_select_object(void)
 		}
 
 	case PCB_TYPE_PIN:
-		AddObjectToFlagUndoList(PCB_TYPE_PIN, ptr1, ptr2, ptr2);
+		pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, ptr1, ptr2, ptr2);
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr2);
 		DrawPin((pcb_pin_t *) ptr2);
 		break;
 
 	case PCB_TYPE_PAD:
-		AddObjectToFlagUndoList(PCB_TYPE_PAD, ptr1, ptr2, ptr2);
+		pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, ptr1, ptr2, ptr2);
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pad_t *) ptr2);
 		DrawPad((pcb_pad_t *) ptr2);
 		break;
@@ -264,7 +264,7 @@ do { \
 #define append(undo_type, p1, obj) \
 do { \
 	if (len == NULL) { \
-		AddObjectToFlagUndoList (undo_type, p1, obj, obj); \
+		pcb_undo_add_obj_to_flag(undo_type, p1, obj, obj); \
 		PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, obj); \
 	} \
 	else { \
@@ -566,7 +566,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			if (Reset) {
-				AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
 			}
 			F->Line(ctx, layer, line);
@@ -581,7 +581,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
 			if (Reset) {
-				AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, arc);
 			}
 			F->Arc(ctx, layer, arc);
@@ -596,7 +596,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) && pcb_text_is_visible(PCB, layer, text)) {
 			if (Reset) {
-				AddObjectToFlagUndoList(PCB_TYPE_TEXT, layer, text, text);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_TEXT, layer, text, text);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, text);
 			}
 			F->Text(ctx, layer, text);
@@ -611,7 +611,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon)) {
 			if (Reset) {
-				AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, polygon);
 			}
 			F->Polygon(ctx, layer, polygon);
@@ -626,7 +626,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element)) {
 			if (Reset) {
-				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT, element, element, element);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, element);
 			}
 			F->Element(ctx, element);
@@ -639,7 +639,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element))) {
 			if (Reset) {
-				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, &ELEMENT_TEXT(PCB, element), &ELEMENT_TEXT(PCB, element));
+				pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, &ELEMENT_TEXT(PCB, element), &ELEMENT_TEXT(PCB, element));
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element));
 			}
 			F->ElementName(ctx, element);
@@ -655,7 +655,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin)) {
 				if (Reset) {
-					AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
+					pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pin);
 				}
 				F->Pin(ctx, element, pin);
@@ -673,7 +673,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad)) {
 				if (Reset) {
-					AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
+					pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pad);
 				}
 				F->Pad(ctx, element, pad);
@@ -690,7 +690,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, via)) {
 			if (Reset) {
-				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, via);
 			}
 			F->Via(ctx, via);
@@ -704,7 +704,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			if (Reset) {
-				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
 			}
 			F->Rat(ctx, line);
@@ -732,7 +732,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 		PCB_RAT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line)) {
-			AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, line);
 			DrawRat(line);
 			changed = pcb_true;
@@ -743,7 +743,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 	PCB_LINE_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
-			AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, line);
 			DrawLine(layer, line);
 			changed = pcb_true;
@@ -753,7 +753,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 	PCB_ARC_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
-			AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, arc);
 			DrawArc(layer, arc);
 			changed = pcb_true;
@@ -763,7 +763,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 	PCB_POLY_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)) {
-			AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, polygon);
 			DrawPolygon(layer, polygon);
 			changed = pcb_true;
@@ -775,7 +775,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 		PCB_PIN_ALL_LOOP(PCB->Data);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
-				AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pin);
 				DrawPin(pin);
 				changed = pcb_true;
@@ -785,7 +785,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 		PCB_PAD_ALL_LOOP(PCB->Data);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
-				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
 				DrawPad(pad);
 				changed = pcb_true;
@@ -798,7 +798,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 		PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
-			AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, via);
 			DrawVia(via);
 			changed = pcb_true;
@@ -892,7 +892,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 				&& pcb_text_is_visible(PCB, layer, text)
 				&& text->TextString && REGEXEC(text->TextString)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) != Flag) {
-			AddObjectToFlagUndoList(PCB_TYPE_TEXT, layer, text, text);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_TEXT, layer, text, text);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, text);
 			DrawText(layer, text);
 			changed = pcb_true;
@@ -908,23 +908,23 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) != Flag) {
 			const char* name = ELEMENT_NAME(PCB, element);
 			if (name && REGEXEC(name)) {
-				AddObjectToFlagUndoList(PCB_TYPE_ELEMENT, element, element, element);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT, element, element, element);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, element);
 				PCB_PIN_LOOP(element);
 				{
-					AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
+					pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pin);
 				}
 				END_LOOP;
 				PCB_PAD_LOOP(element);
 				{
-					AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
+					pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
 				}
 				END_LOOP;
 				PCB_ELEMENT_PCB_TEXT_LOOP(element);
 				{
-					AddObjectToFlagUndoList(PCB_TYPE_ELEMENT_NAME, element, text, text);
+					pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, text, text);
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, text);
 				}
 				END_LOOP;
@@ -941,7 +941,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
 				&& pin->Name && REGEXEC(pin->Name)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, pin) != Flag) {
-			AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pin);
 			DrawPin(pin);
 			changed = pcb_true;
@@ -955,7 +955,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 				&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad) != Flag)
 			if (pad->Name && REGEXEC(pad->Name)) {
-				AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
 				DrawPad(pad);
 				changed = pcb_true;
@@ -967,7 +967,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, via)
 				&& via->Name && REGEXEC(via->Name) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, via) != Flag) {
-			AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
+			pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, via);
 			DrawVia(via);
 			changed = pcb_true;

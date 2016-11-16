@@ -96,7 +96,7 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 	while (Crosshair.AttachedObject.RubberbandN) {
 		changed = pcb_true;
 		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
-		AddObjectToRotateUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
+		pcb_undo_add_obj_to_rotate(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
 		EraseLine(ptr->Line);
 		if (ptr->Layer) {
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
@@ -118,7 +118,7 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 		Crosshair.AttachedObject.RubberbandN--;
 		ptr++;
 	}
-	AddObjectToRotateUndoList(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
+	pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
 	ptr2 = pcb_object_operation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);
 	if (changed) {

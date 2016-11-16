@@ -285,8 +285,8 @@ void *ChangePolyClear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polyg
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon))
 		return (NULL);
-	AddObjectToClearPolyUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon, pcb_true);
-	AddObjectToFlagUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_POLYGON, Layer, Polygon, Polygon, pcb_true);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARPOLY, Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	DrawPolygon(Layer, Polygon);
@@ -326,7 +326,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 
 	Polygon->Points[ctx->insert.idx] = save;
 	pcb_board_set_changed_flag(pcb_true);
-	AddObjectToInsertPointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
+	pcb_undo_add_obj_to_insert_point(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
 
 	pcb_poly_bbox(Polygon);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
@@ -413,9 +413,9 @@ pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 	if (!PCB_FLAG_THERM_TEST(d->snum, pin) || !pcb_poly_is_point_in_p(pin->X, pin->Y, pin->Thickness + pin->Clearance + 2, d->polygon))
 		return R_DIR_NOT_FOUND;
 	if (d->type == PCB_TYPE_PIN)
-		AddObjectToFlagUndoList(PCB_TYPE_PIN, pin->Element, pin, pin);
+		pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, pin->Element, pin, pin);
 	else
-		AddObjectToFlagUndoList(PCB_TYPE_VIA, pin, pin, pin);
+		pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, pin, pin, pin);
 	PCB_FLAG_THERM_ASSIGN(d->dnum, PCB_FLAG_THERM_GET(d->snum, pin), pin);
 	PCB_FLAG_THERM_CLEAR(d->snum, pin);
 	return R_DIR_FOUND_CONTINUE;
@@ -433,7 +433,7 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 	}
 	if (((long int) ctx->move.dst_layer == -1) || (Layer == ctx->move.dst_layer))
 		return (Polygon);
-	AddObjectToMoveToLayerUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
+	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	if (Layer->On)
 		ErasePolygon(Polygon);
 	/* Move all of the thermals with the polygon */
@@ -509,7 +509,7 @@ void *RemovePolygon_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	return NULL;
 }
 
@@ -541,7 +541,7 @@ void *RemovePolygonContour(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *
 	}
 
 	/* Copy the polygon to the undo list */
-	AddObjectToRemoveContourUndoList(PCB_TYPE_POLYGON, Layer, Polygon);
+	pcb_undo_add_obj_to_remove_contour(PCB_TYPE_POLYGON, Layer, Polygon);
 
 	contour_start = (contour == 0) ? 0 : Polygon->HoleIndex[contour - 1];
 	contour_end = (contour == Polygon->HoleIndexN) ? Polygon->PointN : Polygon->HoleIndex[contour];
@@ -588,7 +588,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 		ErasePolygon(Polygon);
 
 	/* insert the polygon-point into the undo list */
-	AddObjectToRemovePointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, point_idx);
+	pcb_undo_add_obj_to_remove_point(PCB_TYPE_POLYGON_POINT, Layer, Polygon, point_idx);
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 
 	/* remove point from list, keep point order */
@@ -628,7 +628,7 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, polygon);
 	DrawPolygon(Layer, polygon);
-	AddObjectToCreateUndoList(PCB_TYPE_POLYGON, Layer, polygon, polygon);
+	pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, Layer, polygon, polygon);
 	return (polygon);
 }
 

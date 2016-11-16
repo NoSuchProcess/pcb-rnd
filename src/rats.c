@@ -615,7 +615,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
 																 firstpoint->group, secondpoint->group, conf_core.appearance.rat_thickness, pcb_no_flags())) != NULL) {
 					if (distance == 0)
 						PCB_FLAG_SET(PCB_FLAG_VIA, line);
-					AddObjectToCreateUndoList(PCB_TYPE_RATLINE, line, line, line);
+					pcb_undo_add_obj_to_create(PCB_TYPE_RATLINE, line, line, line);
 					DrawRat(line);
 					changed = pcb_true;
 				}

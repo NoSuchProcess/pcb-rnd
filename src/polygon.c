@@ -1356,7 +1356,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	addedLines = 0;
 
 	/* add to undo list */
-	AddObjectToCreateUndoList(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
+	pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
 	pcb_undo_inc_serial();
 }
 
@@ -1728,7 +1728,7 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_polygon_t *poly)
 			newone->BoundingBox.X2 = p->contours->xmax + 1;
 			newone->BoundingBox.Y1 = p->contours->ymin;
 			newone->BoundingBox.Y2 = p->contours->ymax + 1;
-			AddObjectToCreateUndoList(PCB_TYPE_POLYGON, layer, newone, newone);
+			pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, layer, newone, newone);
 			newone->Clipped = p;
 			p = p->f;									/* go to next pline */
 			newone->Clipped->b = newone->Clipped->f = newone->Clipped;	/* unlink from others */
@@ -1837,7 +1837,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 
 		DrawPolygon(Layer, Polygon);
 		/* add to undo list */
-		AddObjectToCreateUndoList(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
+		pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, Layer, Polygon, Polygon);
 	}
 	while ((pa = pa->f) != Input);
 

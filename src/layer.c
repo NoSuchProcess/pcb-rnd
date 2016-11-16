@@ -928,7 +928,7 @@ int pcb_layer_move(int old_index, int new_index)
 	pcb_layer_t saved_layer;
 	int saved_group;
 
-	AddLayerChangeToUndoList(old_index, new_index);
+	pcb_undo_add_layer_change(old_index, new_index);
 	pcb_undo_inc_serial();
 
 	if (old_index < -1 || old_index >= max_copper_layer) {

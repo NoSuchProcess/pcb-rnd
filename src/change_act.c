@@ -574,7 +574,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 			PCB_PIN_LOOP(element);
 			{
 				if (PCB_NSTRCMP(pinnum, pin->Number) == 0) {
-					AddObjectToChangeNameUndoList(PCB_TYPE_PIN, NULL, NULL, pin, pin->Name);
+					pcb_undo_add_obj_to_change_name(PCB_TYPE_PIN, NULL, NULL, pin, pin->Name);
 					/*
 					 * Note:  we can't free() pin->Name first because
 					 * it is used in the undo list
@@ -589,7 +589,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 			PCB_PAD_LOOP(element);
 			{
 				if (PCB_NSTRCMP(pinnum, pad->Number) == 0) {
-					AddObjectToChangeNameUndoList(PCB_TYPE_PAD, NULL, NULL, pad, pad->Name);
+					pcb_undo_add_obj_to_change_name(PCB_TYPE_PAD, NULL, NULL, pad, pad->Name);
 					/*
 					 * Note:  we can't free() pad->Name first because
 					 * it is used in the undo list
@@ -677,7 +677,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 							for (i = 0; i < Crosshair.AttachedObject.RubberbandN; i++, ptr++) {
 								if (PCB->RatOn)
 									EraseRat((pcb_rat_t *) ptr->Line);
-								MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
+								pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
 							}
 							pcb_undo_inc_serial();
 							pcb_draw();

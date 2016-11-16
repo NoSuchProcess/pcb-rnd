@@ -279,7 +279,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				is[c_cnt] = pcb_strdup(tmps);
 				c_cnt++;
 
-				AddObjectToChangeNameUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element_list[i], NAMEONPCB_NAME(element_list[i]));
+				pcb_undo_add_obj_to_change_name(PCB_TYPE_ELEMENT, NULL, NULL, element_list[i], NAMEONPCB_NAME(element_list[i]));
 
 				pcb_chg_obj_name(PCB_TYPE_ELEMENT, element_list[i], NULL, NULL, tmps);
 				changed = pcb_true;
@@ -303,7 +303,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if (changed) {
 
 		/* update the netlist */
-		AddNetlistLibToUndoList(PCB->NetlistLib);
+		pcb_undo_add_netlist_lib(PCB->NetlistLib);
 
 		/* iterate over each net */
 		for (i = 0; i < PCB->NetlistLib[WTF].MenuN; i++) {

@@ -592,7 +592,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			 * didn't keep the element reference when sorting.
 			 */
 			pcb_text_move(text, dx, dy);
-			AddObjectToMoveUndoList(type, NULL, NULL, text, dx, dy);
+			pcb_undo_add_obj_to_move(type, NULL, NULL, text, dx, dy);
 			changed = 1;
 		}
 		/* in gaps mode, accumulate part widths */

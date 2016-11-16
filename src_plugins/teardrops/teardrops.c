@@ -172,7 +172,7 @@ static pcb_r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 		arc = pcb_arc_new(lay, (int) ax, (int) ay, (int) radius,
 															(int) radius, (int) theta + 90 + aoffset, delta - aoffset, l->Thickness, l->Clearance, l->Flags);
 		if (arc)
-			AddObjectToCreateUndoList(PCB_TYPE_ARC, lay, arc, arc);
+			pcb_undo_add_obj_to_create(PCB_TYPE_ARC, lay, arc, arc);
 
 		ax = lx + dy * (x + t);
 		ay = ly - dx * (x + t);
@@ -180,7 +180,7 @@ static pcb_r_dir_t check_line_callback(const pcb_box_t * box, void *cl)
 		arc = pcb_arc_new(lay, (int) ax, (int) ay, (int) radius,
 															(int) radius, (int) theta - 90 - aoffset, -delta + aoffset, l->Thickness, l->Clearance, l->Flags);
 		if (arc)
-			AddObjectToCreateUndoList(PCB_TYPE_ARC, lay, arc, arc);
+			pcb_undo_add_obj_to_create(PCB_TYPE_ARC, lay, arc, arc);
 
 		radius += t * 1.9;
 		aoffset = acos((double) adist / radius) * 180.0 / M_PI;

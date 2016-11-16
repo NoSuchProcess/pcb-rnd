@@ -1339,16 +1339,16 @@ static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 	if (b.Y1 == b.Y2 || b.X1 == b.X2)
 		thickness = 5;
 	line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X2, b.Y1, thickness, 0, pcb_flag_make(0));
-	AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
+	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	if (b.Y1 != b.Y2) {
 		line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X1, b.Y2, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
-		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
+		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	}
 	line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X1, b.Y2, thickness, 0, pcb_flag_make(0));
-	AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
+	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	if (b.X1 != b.X2) {
 		line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X2, b.Y1, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
-		AddObjectToCreateUndoList(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
+		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
 	}
 #endif
 }
@@ -4474,7 +4474,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 						 p->style->Thick, p->style->Clearance * 2, pcb_flag_make(PCB_FLAG_AUTO | (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)));
 
 					if (p->parent.line) {
-						AddObjectToCreateUndoList(PCB_TYPE_LINE, layer, p->parent.line, p->parent.line);
+						pcb_undo_add_obj_to_create(PCB_TYPE_LINE, layer, p->parent.line, p->parent.line);
 						changed = pcb_true;
 					}
 				}
@@ -4493,7 +4493,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 													 pp->style->Diameter, 2 * pp->style->Clearance, 0, pp->style->Hole, NULL, pcb_flag_make(PCB_FLAG_AUTO));
 						assert(pp->parent.via);
 						if (pp->parent.via) {
-							AddObjectToCreateUndoList(PCB_TYPE_VIA, pp->parent.via, pp->parent.via, pp->parent.via);
+							pcb_undo_add_obj_to_create(PCB_TYPE_VIA, pp->parent.via, pp->parent.via, pp->parent.via);
 							changed = pcb_true;
 						}
 					}
@@ -4518,11 +4518,11 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				/* thermals are alread a single point search, no need to shrink */
 				int type = FindPin(&p->box, &pin);
 				if (pin) {
-					AddObjectToClearPolyUndoList(type, pin->Element ? pin->Element : pin, pin, pin, pcb_false);
+					pcb_undo_add_obj_to_clear_poly(type, pin->Element ? pin->Element : pin, pin, pin, pcb_false);
 					pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
-					AddObjectToFlagUndoList(type, pin->Element ? pin->Element : pin, pin, pin);
+					pcb_undo_add_obj_to_flag(type, pin->Element ? pin->Element : pin, pin, pin);
 					PCB_FLAG_THERM_ASSIGN(p->layer, PCB->ThermStyle, pin);
-					AddObjectToClearPolyUndoList(type, pin->Element ? pin->Element : pin, pin, pin, pcb_true);
+					pcb_undo_add_obj_to_clear_poly(type, pin->Element ? pin->Element : pin, pin, pin, pcb_true);
 					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, LAYER_PTR(p->layer), pin);
 					changed = pcb_true;
 				}
@@ -4645,7 +4645,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 			b = FindRouteBoxOnLayerGroup(rd, line->Point2.X, line->Point2.Y, line->group2);
 			if (!a || !b) {
 #ifdef DEBUG_STALE_RATS
-				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, pcb_true, line);
 				DrawRat(line, 0);
 #endif /* DEBUG_STALE_RATS */

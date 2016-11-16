@@ -259,14 +259,14 @@ void *MoveViaToBuffer(pcb_opctx_t *ctx, pcb_pin_t * via)
 /* changes the thermal on a via */
 void *ChangeViaThermal(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
-	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, Via, Via, Via);
 	if (!ctx->chgtherm.style)										/* remove the thermals */
 		PCB_FLAG_THERM_CLEAR(INDEXOFCURRENT, Via);
 	else
 		PCB_FLAG_THERM_ASSIGN(INDEXOFCURRENT, ctx->chgtherm.style, Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, CURRENT, Via);
 	DrawVia(Via);
 	return Via;
@@ -275,14 +275,14 @@ void *ChangeViaThermal(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* changes the thermal on a pin */
 void *ChangePinThermal(pcb_opctx_t *ctx, pcb_element_t *element, pcb_pin_t *Pin)
 {
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_false);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, element, Pin, Pin, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
-	AddObjectToFlagUndoList(PCB_TYPE_PIN, element, Pin, Pin);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, Pin, Pin);
 	if (!ctx->chgtherm.style)										/* remove the thermals */
 		PCB_FLAG_THERM_CLEAR(INDEXOFCURRENT, Pin);
 	else
 		PCB_FLAG_THERM_ASSIGN(INDEXOFCURRENT, ctx->chgtherm.style, Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, element, Pin, Pin, pcb_true);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, element, Pin, Pin, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, CURRENT, Pin);
 	DrawPin(Pin);
 	return Pin;
@@ -297,12 +297,12 @@ void *ChangeViaSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		return (NULL);
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIASIZE && value >= Via->DrillingHole + MIN_PINORVIACOPPER && value != Via->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
+		pcb_undo_add_obj_to_size(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
 		pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Via, Via);
 		if (Via->Mask) {
-			AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
+			pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);
 			Via->Mask += value - Via->Thickness;
 		}
 		Via->Thickness = value;
@@ -325,12 +325,12 @@ void *ChangeVia2ndSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	if (value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) || value <= Via->Thickness - MIN_PINORVIACOPPER)
 			&& value != Via->DrillingHole) {
-		AddObjectTo2ndSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
+		pcb_undo_add_obj_to_2nd_size(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		Via->DrillingHole = value;
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, Via)) {
-			AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
+			pcb_undo_add_obj_to_size(PCB_TYPE_VIA, Via, Via, Via);
 			Via->Thickness = value;
 		}
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
@@ -350,12 +350,12 @@ void *ChangePin2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 	if (value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) || value <= Pin->Thickness - MIN_PINORVIACOPPER)
 			&& value != Pin->DrillingHole) {
-		AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
+		pcb_undo_add_obj_to_2nd_size(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		Pin->DrillingHole = value;
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin)) {
-			AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
+			pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, Pin, Pin);
 			Pin->Thickness = value;
 		}
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
@@ -383,7 +383,7 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	if (Via->Clearance == value)
 		return NULL;
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	AddObjectToClearSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
+	pcb_undo_add_obj_to_clear_size(PCB_TYPE_VIA, Via, Via, Via);
 	EraseVia(Via);
 	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	Via->Clearance = value;
@@ -405,8 +405,8 @@ void *ChangePinSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 		return (NULL);
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) && value <= MAX_PINORVIASIZE &&
 			value >= MIN_PINORVIASIZE && value >= Pin->DrillingHole + MIN_PINORVIACOPPER && value != Pin->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
-		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
+		pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, Pin, Pin);
+		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
 		pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
@@ -438,7 +438,7 @@ void *ChangePinClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pi
 	if (Pin->Clearance == value)
 		return NULL;
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	AddObjectToClearSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
+	pcb_undo_add_obj_to_clear_size(PCB_TYPE_PIN, Element, Pin, Pin);
 	ErasePin(Pin);
 	pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 	Pin->Clearance = value;
@@ -503,16 +503,16 @@ void *ChangeViaSquare(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	EraseVia(Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, pcb_false);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, NULL, Via, Via, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, NULL, Via);
-	AddObjectToFlagUndoList(PCB_TYPE_VIA, NULL, Via, Via);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, NULL, Via, Via);
 	PCB_FLAG_SQUARE_ASSIGN(ctx->chgsize.absolute, Via);
 	if (ctx->chgsize.absolute == 0)
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Via);
 	else
 		PCB_FLAG_SET(PCB_FLAG_SQUARE, Via);
 	pcb_pin_bbox(Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, NULL, Via, Via, pcb_true);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, NULL, Via, Via, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, NULL, Via);
 	DrawVia(Via);
 	return (Via);
@@ -524,16 +524,16 @@ void *ChangePinSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	ErasePin(Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, Element, Pin, Pin);
 	PCB_FLAG_SQUARE_ASSIGN(ctx->chgsize.absolute, Pin);
 	if (ctx->chgsize.absolute == 0)
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, Pin);
 	else
 		PCB_FLAG_SET(PCB_FLAG_SQUARE, Pin);
 	pcb_pin_bbox(Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	DrawPin(Pin);
 	return (Pin);
@@ -563,11 +563,11 @@ void *ChangeViaOctagon(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
 	EraseVia(Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, Via, Via, Via, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
-	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, Via, Via, Via);
 	PCB_FLAG_TOGGLE(PCB_FLAG_OCTAGON, Via);
-	AddObjectToClearPolyUndoList(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_VIA, Via, Via, Via, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
 	return (Via);
@@ -597,11 +597,11 @@ void *ChangePinOctagon(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
 	ErasePin(Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
-	AddObjectToFlagUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, Element, Pin, Pin);
 	PCB_FLAG_TOGGLE(PCB_FLAG_OCTAGON, Pin);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PIN, Element, Pin, Pin, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	DrawPin(Pin);
 	return (Pin);
@@ -631,8 +631,8 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (pcb_false);
 	EraseVia(Via);
-	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, Via, Via, Via);
+	pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);
 	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	PCB_FLAG_TOGGLE(PCB_FLAG_HOLE, Via);
@@ -668,7 +668,7 @@ void *ChangePinMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin
 	if (value == Pin->Mask && ctx->chgsize.absolute == 0)
 		value = Pin->Thickness;
 	if (value != Pin->Mask) {
-		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
+		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
 		pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 		Pin->Mask = value;
@@ -687,7 +687,7 @@ void *ChangeViaMaskSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : Via->Mask + ctx->chgsize.delta;
 	value = MAX(value, 0);
 	if (value != Via->Mask) {
-		AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
+		pcb_undo_add_obj_to_mask_size(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
 		pcb_r_delete_entry(PCB->Data->via_tree, &Via->BoundingBox);
 		Via->Mask = value;
@@ -709,7 +709,7 @@ void *CopyVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	if (!via)
 		return (via);
 	DrawVia(via);
-	AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
+	pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
 	return (via);
 }
 
@@ -749,7 +749,7 @@ void *RemoveVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_VIA, Via, Via, Via);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_VIA, Via, Via, Via);
 	return NULL;
 }
 

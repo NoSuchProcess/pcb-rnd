@@ -251,7 +251,7 @@ void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return (NULL);
 	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE && value != Text->Scale) {
-		AddObjectToSizeUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
+		pcb_undo_add_obj_to_size(PCB_TYPE_TEXT, Layer, Text, Text);
 		EraseText(Layer, Text);
 		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
@@ -293,13 +293,13 @@ void *ChangeTextJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		return (NULL);
 	EraseText(Layer, Text);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
-		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_false);
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_TEXT, Layer, Text, Text, pcb_false);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
-	AddObjectToFlagUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_TEXT, Layer, Text, Text);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Text);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
-		AddObjectToClearPolyUndoList(PCB_TYPE_TEXT, Layer, Text, Text, pcb_true);
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_TEXT, Layer, Text, Text, pcb_true);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	}
 	DrawText(Layer, Text);
@@ -330,7 +330,7 @@ void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	text = pcb_text_new(Layer, &PCB->Font, Text->X + ctx->copy.DeltaX,
 											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
 	DrawText(Layer, text);
-	AddObjectToCreateUndoList(PCB_TYPE_TEXT, Layer, text, text);
+	pcb_undo_add_obj_to_create(PCB_TYPE_TEXT, Layer, text, text);
 	return (text);
 }
 
@@ -384,7 +384,7 @@ void *MoveTextToLayer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 		return NULL;
 	}
 	if (ctx->move.dst_layer != layer) {
-		AddObjectToMoveToLayerUndoList(PCB_TYPE_TEXT, layer, text, text);
+		pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_TEXT, layer, text, text);
 		if (layer->On)
 			EraseText(layer, text);
 		text = MoveTextToLayerLowLevel(ctx, layer, text, ctx->move.dst_layer);
@@ -417,7 +417,7 @@ void *RemoveText_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_TEXT, Layer, Text, Text);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_TEXT, Layer, Text, Text);
 	return NULL;
 }
 

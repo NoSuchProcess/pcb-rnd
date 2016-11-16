@@ -156,16 +156,16 @@ void *InsertPointIntoRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (!newone)
 		return newone;
-	AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
+	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, newone, newone);
 	EraseRat(Rat);
 	DrawLine(CURRENT, newone);
 	newone = pcb_line_new_merge(CURRENT, Rat->Point2.X, Rat->Point2.Y,
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (newone) {
-		AddObjectToCreateUndoList(PCB_TYPE_LINE, CURRENT, newone, newone);
+		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, newone, newone);
 		DrawLine(CURRENT, newone);
 	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	pcb_draw();
 	return (newone);
 }
@@ -187,10 +187,10 @@ void *MoveRatToLayer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 		conf_set_editor(clear_line, 1);
 	if (!newone)
 		return (NULL);
-	AddObjectToCreateUndoList(PCB_TYPE_LINE, ctx->move.dst_layer, newone, newone);
+	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, ctx->move.dst_layer, newone, newone);
 	if (PCB->RatOn)
 		EraseRat(Rat);
-	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	DrawLine(ctx->move.dst_layer, newone);
 	pcb_draw();
 	return (newone);
@@ -215,7 +215,7 @@ void *RemoveRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_RATLINE, Rat, Rat, Rat);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, Rat, Rat, Rat);
 	return NULL;
 }
 

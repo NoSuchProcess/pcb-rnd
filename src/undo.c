@@ -1179,7 +1179,7 @@ void pcb_undo_clear_list(pcb_bool Force)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of clearpoly objects
  */
-void AddObjectToClearPolyUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_bool clear)
+void pcb_undo_add_obj_to_clear_poly(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_bool clear)
 {
 	UndoListTypePtr undo;
 
@@ -1193,7 +1193,7 @@ void AddObjectToClearPolyUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 /* ---------------------------------------------------------------------------
  * adds an object to the list of mirrored objects
  */
-void AddObjectToMirrorUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t yoff)
+void pcb_undo_add_obj_to_mirror(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t yoff)
 {
 	UndoListTypePtr undo;
 
@@ -1206,7 +1206,7 @@ void AddObjectToMirrorUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb
 /* ---------------------------------------------------------------------------
  * adds an object to the list of rotated objects
  */
-void AddObjectToRotateUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t CenterX, pcb_coord_t CenterY, pcb_uint8_t Steps)
+void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t CenterX, pcb_coord_t CenterY, pcb_uint8_t Steps)
 {
 	UndoListTypePtr undo;
 
@@ -1222,7 +1222,7 @@ void AddObjectToRotateUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb
  * adds an object to the list of removed objects and removes it from
  * the current PCB
  */
-void MoveObjectToRemoveUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	if (Locked)
 		return;
@@ -1237,7 +1237,7 @@ void MoveObjectToRemoveUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of removed polygon/... points
  */
-void AddObjectToRemovePointUndoList(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t index)
+void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t index)
 {
 	UndoListTypePtr undo;
 	pcb_polygon_t *polygon = (pcb_polygon_t *) Ptr2;
@@ -1276,7 +1276,7 @@ void AddObjectToRemovePointUndoList(int Type, void *Ptr1, void *Ptr2, pcb_cardin
 /* ---------------------------------------------------------------------------
  * adds an object to the list of inserted polygon/... points
  */
-void AddObjectToInsertPointUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_undo_add_obj_to_insert_point(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	if (!Locked)
 		GetUndoSlot(UNDO_INSERT_POINT, PCB_OBJECT_ID(Ptr3), Type);
@@ -1302,7 +1302,7 @@ static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2
  * adds an object to the list of removed contours
  * (Actually just takes a copy of the whole polygon to restore)
  */
-void AddObjectToRemoveContourUndoList(int Type, pcb_layer_t * Layer, pcb_polygon_t * Polygon)
+void pcb_undo_add_obj_to_remove_contour(int Type, pcb_layer_t * Layer, pcb_polygon_t * Polygon)
 {
 	CopyObjectToUndoList(UNDO_REMOVE_CONTOUR, Type, Layer, Polygon, NULL);
 }
@@ -1311,7 +1311,7 @@ void AddObjectToRemoveContourUndoList(int Type, pcb_layer_t * Layer, pcb_polygon
  * adds an object to the list of insert contours
  * (Actually just takes a copy of the whole polygon to restore)
  */
-void AddObjectToInsertContourUndoList(int Type, pcb_layer_t * Layer, pcb_polygon_t * Polygon)
+void pcb_undo_add_obj_to_insert_contour(int Type, pcb_layer_t * Layer, pcb_polygon_t * Polygon)
 {
 	CopyObjectToUndoList(UNDO_INSERT_CONTOUR, Type, Layer, Polygon, NULL);
 }
@@ -1319,7 +1319,7 @@ void AddObjectToInsertContourUndoList(int Type, pcb_layer_t * Layer, pcb_polygon
 /* ---------------------------------------------------------------------------
  * adds an object to the list of moved objects
  */
-void AddObjectToMoveUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
+void pcb_undo_add_obj_to_move(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
 	UndoListTypePtr undo;
 
@@ -1333,7 +1333,7 @@ void AddObjectToMoveUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_c
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with changed names
  */
-void AddObjectToChangeNameUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *OldName)
+void pcb_undo_add_obj_to_change_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *OldName)
 {
 	UndoListTypePtr undo;
 
@@ -1346,7 +1346,7 @@ void AddObjectToChangeNameUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3,
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with changed pinnums
  */
-void AddObjectToChangePinnumUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *OldName)
+void pcb_undo_add_obj_to_change_pinnum(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *OldName)
 {
 	UndoListTypePtr undo;
 
@@ -1359,7 +1359,7 @@ void AddObjectToChangePinnumUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects moved to another layer
  */
-void AddObjectToMoveToLayerUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_undo_add_obj_to_move_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
 
@@ -1372,7 +1372,7 @@ void AddObjectToMoveToLayerUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 /* ---------------------------------------------------------------------------
  * adds an object to the list of created objects
  */
-void AddObjectToCreateUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_undo_add_obj_to_create(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	if (!Locked)
 		GetUndoSlot(UNDO_CREATE, PCB_OBJECT_ID(Ptr3), Type);
@@ -1382,7 +1382,7 @@ void AddObjectToCreateUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with flags changed
  */
-void AddObjectToFlagUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_undo_add_obj_to_flag(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
 
@@ -1395,7 +1395,7 @@ void AddObjectToFlagUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with Size changes
  */
-void AddObjectToSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
+void pcb_undo_add_obj_to_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 {
 	UndoListTypePtr undo;
 
@@ -1428,7 +1428,7 @@ void AddObjectToSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with Size changes
  */
-void AddObjectToClearSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
+void pcb_undo_add_obj_to_clear_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 {
 	UndoListTypePtr undo;
 
@@ -1455,7 +1455,7 @@ void AddObjectToClearSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with Size changes
  */
-void AddObjectToMaskSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
+void pcb_undo_add_obj_to_mask_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 {
 	UndoListTypePtr undo;
 
@@ -1476,7 +1476,7 @@ void AddObjectToMaskSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with 2ndSize changes
  */
-void AddObjectTo2ndSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
+void pcb_undo_add_obj_to_2nd_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 {
 	UndoListTypePtr undo;
 
@@ -1491,7 +1491,7 @@ void AddObjectTo2ndSizeUndoList(int Type, void *ptr1, void *ptr2, void *ptr3)
  * adds an object to the list of changed angles.  Note that you must
  * call this before changing the angles, passing the new start/delta.
  */
-void AddObjectToChangeAnglesUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_undo_add_obj_to_change_angles(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
 	pcb_arc_t *a = (pcb_arc_t *) Ptr3;
@@ -1507,7 +1507,7 @@ void AddObjectToChangeAnglesUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr
  * adds an object to the list of changed radii.  Note that you must
  * call this before changing the radii, passing the new width/height.
  */
-void AddObjectToChangeRadiiUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_undo_add_obj_to_change_radii(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
 	pcb_arc_t *a = (pcb_arc_t *) Ptr3;
@@ -1522,7 +1522,7 @@ void AddObjectToChangeRadiiUndoList(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 /* ---------------------------------------------------------------------------
  * adds a layer change (new, delete, move) to the undo list.
  */
-void AddLayerChangeToUndoList(int old_index, int new_index)
+void pcb_undo_add_layer_change(int old_index, int new_index)
 {
 	UndoListTypePtr undo;
 
@@ -1536,7 +1536,7 @@ void AddLayerChangeToUndoList(int old_index, int new_index)
 /* ---------------------------------------------------------------------------
  * adds a netlist change to the undo list
  */
-void AddNetlistLibToUndoList(pcb_lib_t *lib)
+void pcb_undo_add_netlist_lib(pcb_lib_t *lib)
 {
 	UndoListTypePtr undo;
 	unsigned int i, j;

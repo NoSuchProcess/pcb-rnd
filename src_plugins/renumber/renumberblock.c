@@ -70,7 +70,7 @@ int action_renumber_block(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		memcpy(new_ref, old_ref, refdes_split - old_ref);
 		strcpy(new_ref + (refdes_split - old_ref), num_buf);
 
-		AddObjectToChangeNameUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, NAMEONPCB_NAME(element));
+		pcb_undo_add_obj_to_change_name(PCB_TYPE_ELEMENT, NULL, NULL, element, NAMEONPCB_NAME(element));
 
 		pcb_chg_obj_name(PCB_TYPE_ELEMENT, element, NULL, NULL, new_ref);
 	}

@@ -182,7 +182,7 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y
 	/* remove unnecessary points */
 	if (info.ans) {
 		/* must do this BEFORE getting new line memory */
-		MoveObjectToRemoveUndoList(PCB_TYPE_LINE, Layer, info.ans, info.ans);
+		pcb_undo_move_obj_to_remove(PCB_TYPE_LINE, Layer, info.ans, info.ans);
 		X1 = info.test.Point1.X;
 		X2 = info.test.Point2.X;
 		Y1 = info.test.Point1.Y;
@@ -285,7 +285,7 @@ void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
 		return (NULL);
 	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Line->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
+		pcb_undo_add_obj_to_size(PCB_TYPE_LINE, Layer, Line, Line);
 		EraseLine(Line);
 		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
@@ -308,7 +308,7 @@ void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 		return (NULL);
 	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Line->Clearance) {
-		AddObjectToClearSizeUndoList(PCB_TYPE_LINE, Layer, Line, Line);
+		pcb_undo_add_obj_to_clear_size(PCB_TYPE_LINE, Layer, Line, Line);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 		EraseLine(Line);
 		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
@@ -343,13 +343,13 @@ void *ChangeLineJoin(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 		return (NULL);
 	EraseLine(Line);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
-		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, pcb_false);
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_LINE, Layer, Line, Line, pcb_false);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
-	AddObjectToFlagUndoList(PCB_TYPE_LINE, Layer, Line, Line);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, Layer, Line, Line);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Line);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
-		AddObjectToClearPolyUndoList(PCB_TYPE_LINE, Layer, Line, Line, pcb_true);
+		pcb_undo_add_obj_to_clear_poly(PCB_TYPE_LINE, Layer, Line, Line, pcb_true);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
 	}
 	DrawLine(Layer, Line);
@@ -386,7 +386,7 @@ void *CopyLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 	if (Line->Number)
 		line->Number = pcb_strdup(Line->Number);
 	DrawLine(Layer, line);
-	AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
+	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, Layer, line, line);
 	return (line);
 }
 
@@ -471,7 +471,7 @@ static pcb_r_dir_t moveline_callback(const pcb_box_t * b, void *cl)
 	if ((via =
 			 pcb_via_new(PCB->Data, i->X, i->Y,
 										conf_core.design.via_thickness, 2 * conf_core.design.clearance, PCB_FLAG_NO, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
-		AddObjectToCreateUndoList(PCB_TYPE_VIA, via, via, via);
+		pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
 		DrawVia(via);
 	}
 	longjmp(i->env, 1);
@@ -495,7 +495,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 	if (((long int) ctx->move.dst_layer == -1) || ctx->move.dst_layer == Layer)
 		return (Line);
 
-	AddObjectToMoveToLayerUndoList(PCB_TYPE_LINE, Layer, Line, Line);
+	pcb_undo_add_obj_to_move_to_layer(PCB_TYPE_LINE, Layer, Line, Line);
 	if (Layer->On)
 		EraseLine(Line);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
@@ -602,7 +602,7 @@ void *RemoveLine_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_LINE, Layer, Line, Line);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_LINE, Layer, Line, Line);
 	return NULL;
 }
 
@@ -680,7 +680,7 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 		return (NULL);
 	X = Line->Point2.X;
 	Y = Line->Point2.Y;
-	AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, Layer, Line, &Line->Point2, ctx->insert.x - X, ctx->insert.y - Y);
+	pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, Layer, Line, &Line->Point2, ctx->insert.x - X, ctx->insert.y - Y);
 	EraseLine(Line);
 	pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
@@ -694,7 +694,7 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 	 * invalidate the line pointer
 	 */
 	if ((line = pcb_line_new_merge(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
-		AddObjectToCreateUndoList(PCB_TYPE_LINE, Layer, line, line);
+		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, Layer, line, line);
 		DrawLine(Layer, line);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, line);
 		/* creation call adds it to the rtree */

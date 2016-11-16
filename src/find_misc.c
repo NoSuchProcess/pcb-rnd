@@ -300,7 +300,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, via)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(PCB_TYPE_VIA, via, via, via);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, via, via, via);
 			PCB_FLAG_CLEAR(TheFlag, via);
 			if (AndDraw)
 				DrawVia(via);
@@ -314,7 +314,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		{
 			if (PCB_FLAG_TEST(TheFlag, pin)) {
 				if (AndDraw)
-					AddObjectToFlagUndoList(PCB_TYPE_PIN, element, pin, pin);
+					pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 				PCB_FLAG_CLEAR(TheFlag, pin);
 				if (AndDraw)
 					DrawPin(pin);
@@ -326,7 +326,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 		{
 			if (PCB_FLAG_TEST(TheFlag, pad)) {
 				if (AndDraw)
-					AddObjectToFlagUndoList(PCB_TYPE_PAD, element, pad, pad);
+					pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 				PCB_FLAG_CLEAR(TheFlag, pad);
 				if (AndDraw)
 					DrawPad(pad);
@@ -352,7 +352,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, line)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, line, line, line);
 			PCB_FLAG_CLEAR(TheFlag, line);
 			if (AndDraw)
 				DrawRat(line);
@@ -364,7 +364,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, line)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(PCB_TYPE_LINE, layer, line, line);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, layer, line, line);
 			PCB_FLAG_CLEAR(TheFlag, line);
 			if (AndDraw)
 				DrawLine(layer, line);
@@ -376,7 +376,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, arc)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(PCB_TYPE_ARC, layer, arc, arc);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, layer, arc, arc);
 			PCB_FLAG_CLEAR(TheFlag, arc);
 			if (AndDraw)
 				DrawArc(layer, arc);
@@ -388,7 +388,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	{
 		if (PCB_FLAG_TEST(TheFlag, polygon)) {
 			if (AndDraw)
-				AddObjectToFlagUndoList(PCB_TYPE_POLYGON, layer, polygon, polygon);
+				pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
 			PCB_FLAG_CLEAR(TheFlag, polygon);
 			if (AndDraw)
 				DrawPolygon(layer, polygon);

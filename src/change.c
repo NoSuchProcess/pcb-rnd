@@ -1217,9 +1217,9 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 
 		if (old != (char *) -1) {
 			if (pinnum)
-				AddObjectToChangePinnumUndoList(Type, Ptr1, Ptr2, Ptr3, old);
+				pcb_undo_add_obj_to_change_pinnum(Type, Ptr1, Ptr2, Ptr3, old);
 			else
-				AddObjectToChangeNameUndoList(Type, Ptr1, Ptr2, Ptr3, old);
+				pcb_undo_add_obj_to_change_name(Type, Ptr1, Ptr2, Ptr3, old);
 			pcb_undo_inc_serial();
 		}
 		pcb_draw();

@@ -453,7 +453,7 @@ pcb_bool pcb_element_change_side(pcb_element_t *Element, pcb_coord_t yoff)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Element))
 		return (pcb_false);
 	EraseElement(Element);
-	AddObjectToMirrorUndoList(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);
+	pcb_undo_add_obj_to_mirror(PCB_TYPE_ELEMENT, Element, Element, Element, yoff);
 	pcb_element_mirror(PCB->Data, Element, yoff);
 	DrawElement(Element);
 	return (pcb_true);
@@ -1195,12 +1195,12 @@ void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 				value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->DrillingHole) {
 			changed = pcb_true;
-			AddObjectTo2ndSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
+			pcb_undo_add_obj_to_2nd_size(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->DrillingHole = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
-				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
+				pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
@@ -1227,12 +1227,12 @@ void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pin->DrillingHole + ctx->chgsize.delta;
 		if (value <= MAX_PINORVIASIZE && value >= pin->DrillingHole + MIN_PINORVIACOPPER && value != pin->Thickness) {
 			changed = pcb_true;
-			AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
+			pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Thickness = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
-				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
+				pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
@@ -1261,12 +1261,12 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 				value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin) || value <= pin->Thickness - MIN_PINORVIACOPPER)
 				&& value != pin->Clearance) {
 			changed = pcb_true;
-			AddObjectToClearSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
+			pcb_undo_add_obj_to_clear_size(PCB_TYPE_PIN, Element, pin, pin);
 			ErasePin(pin);
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
 			pin->Clearance = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {
-				AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, pin, pin);
+				pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, pin, pin);
 				pin->Thickness = value;
 			}
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PIN, Element, pin);
@@ -1280,13 +1280,13 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : pad->Clearance + ctx->chgsize.delta;
 		if (value <= MAX_PINORVIASIZE && value >= MIN_PINORVIAHOLE && value != pad->Clearance) {
 			changed = pcb_true;
-			AddObjectToClearSizeUndoList(PCB_TYPE_PAD, Element, pad, pad);
+			pcb_undo_add_obj_to_clear_size(PCB_TYPE_PAD, Element, pad, pad);
 			ErasePad(pad);
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			pcb_r_delete_entry(PCB->Data->pad_tree, &pad->BoundingBox);
 			pad->Clearance = value;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pad)) {
-				AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, pad, pad);
+				pcb_undo_add_obj_to_size(PCB_TYPE_PAD, Element, pad, pad);
 				pad->Thickness = value;
 			}
 			/* SetElementBB updates all associated rtrees */
@@ -1318,7 +1318,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 	{
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : line->Thickness + ctx->chgsize.delta;
 		if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != line->Thickness) {
-			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_LINE, Element, line, line);
+			pcb_undo_add_obj_to_size(PCB_TYPE_ELEMENT_LINE, Element, line, line);
 			line->Thickness = value;
 			changed = pcb_true;
 		}
@@ -1328,7 +1328,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 	{
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : arc->Thickness + ctx->chgsize.delta;
 		if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != arc->Thickness) {
-			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_ARC, Element, arc, arc);
+			pcb_undo_add_obj_to_size(PCB_TYPE_ELEMENT_ARC, Element, arc, arc);
 			arc->Thickness = value;
 			changed = pcb_true;
 		}
@@ -1354,7 +1354,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 		EraseElementName(Element);
 		PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 		{
-			AddObjectToSizeUndoList(PCB_TYPE_ELEMENT_NAME, Element, text, text);
+			pcb_undo_add_obj_to_size(PCB_TYPE_ELEMENT_NAME, Element, text, text);
 			pcb_r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 			text->Scale = value;
 			pcb_text_bbox(&PCB->Font, text);
@@ -1513,7 +1513,7 @@ void *CopyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 																							 ctx->copy.DeltaY);
 
 	/* this call clears the polygons */
-	AddObjectToCreateUndoList(PCB_TYPE_ELEMENT, element, element, element);
+	pcb_undo_add_obj_to_create(PCB_TYPE_ELEMENT, element, element, element);
 	if (PCB->ElementOn && (PCB_FRONT(element) || PCB->InvisibleObjectsOn)) {
 		DrawElementName(element);
 		DrawElementPackage(element);
@@ -1625,7 +1625,7 @@ void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
 		if (!ctx->remove.bulk)
 			pcb_draw();
 	}
-	MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, Element, Element, Element);
+	pcb_undo_move_obj_to_remove(PCB_TYPE_ELEMENT, Element, Element, Element);
 	return NULL;
 }
 

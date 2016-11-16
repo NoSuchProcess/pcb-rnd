@@ -145,7 +145,7 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (pcb_false);
 	ErasePad(Pad);
-	AddObjectToFlagUndoList(PCB_TYPE_PAD, Pad, Pad, Pad);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, Pad, Pad, Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_NOPASTE, Pad);
 	DrawPad(Pad);
 	pcb_draw();
@@ -162,8 +162,8 @@ void *ChangePadSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
 	if (value <= MAX_PADSIZE && value >= MIN_PADSIZE && value != Pad->Thickness) {
-		AddObjectToSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
-		AddObjectToMaskSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
+		pcb_undo_add_obj_to_size(PCB_TYPE_PAD, Element, Pad, Pad);
+		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 		ErasePad(Pad);
 		pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
@@ -194,7 +194,7 @@ void *ChangePadClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pa
 		value = PCB->Bloat * 2 + 2;
 	if (value == Pad->Clearance)
 		return NULL;
-	AddObjectToClearSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
+	pcb_undo_add_obj_to_clear_size(PCB_TYPE_PAD, Element, Pad, Pad);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	ErasePad(Pad);
 	pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
@@ -244,11 +244,11 @@ void *ChangePadSquare(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
 	ErasePad(Pad);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, pcb_false);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PAD, Element, Pad, Pad, pcb_false);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
-	AddObjectToFlagUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
+	pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, Element, Pad, Pad);
 	PCB_FLAG_TOGGLE(PCB_FLAG_SQUARE, Pad);
-	AddObjectToClearPolyUndoList(PCB_TYPE_PAD, Element, Pad, Pad, pcb_true);
+	pcb_undo_add_obj_to_clear_poly(PCB_TYPE_PAD, Element, Pad, Pad, pcb_true);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	DrawPad(Pad);
 	return (Pad);
@@ -284,7 +284,7 @@ void *ChangePadMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad
 	if (value == Pad->Mask && ctx->chgsize.absolute == 0)
 		value = Pad->Thickness;
 	if (value != Pad->Mask) {
-		AddObjectToMaskSizeUndoList(PCB_TYPE_PAD, Element, Pad, Pad);
+		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);
 		ErasePad(Pad);
 		pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 		Pad->Mask = value;

@@ -278,7 +278,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 			pcb_element_move(PCB->Data, element, dx, dy);
 
 			/* and add to the undo list so we can undo this operation */
-			AddObjectToMoveUndoList(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
+			pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 
 			/* keep track of how tall this row is */
 			minx += element->BoundingBox.X2 - element->BoundingBox.X1 + GAP;
@@ -799,7 +799,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					PCB_PASTEBUFFER->Y = 0;
 					pcb_undo_save_serial();
 					pcb_erase_obj(PCB_TYPE_ELEMENT, ptr1, ptr1);
-					MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
+					pcb_undo_move_obj_to_remove(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
 					pcb_undo_restore_serial();
 					pcb_buffer_copy_to_layout(0, 0);
 					pcb_buffer_set_number(Note.Buffer);

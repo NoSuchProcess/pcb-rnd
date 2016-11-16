@@ -75,7 +75,7 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
 	ctx.move.pcb = PCB;
 	ctx.move.dx = DX;
 	ctx.move.dy = DY;
-	AddObjectToMoveUndoList(Type, Ptr1, Ptr2, Ptr3, DX, DY);
+	pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 	result = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	return (result);
 }
@@ -111,13 +111,13 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	while (Crosshair.AttachedObject.RubberbandN) {
 		/* first clear any marks that we made in the line flags */
 		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
-		AddObjectToMoveUndoList(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
+		pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
 		MoveLinePoint(&ctx, ptr->Layer, ptr->Line, ptr->MovedPoint);
 		Crosshair.AttachedObject.RubberbandN--;
 		ptr++;
 	}
 
-	AddObjectToMoveUndoList(Type, Ptr1, Ptr2, Ptr3, DX, DY);
+	pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 	ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	pcb_undo_inc_serial();
 
