@@ -36,7 +36,7 @@
  * some useful transformation macros and constants
  */
 #define	PCB_ROTATE90(x,y,x0,y0,n)							\
-	{												\
+	do {												\
 		pcb_coord_t	dx = (x)-(x0),					\
 					dy = (y)-(y0);					\
 													\
@@ -50,7 +50,7 @@
 						break;						\
 			default:	break;						\
 		}											\
-	}
+	} while(0)
 
 /* Rotate pin shape style by n_in * 90 degrees */
 #define PCB_PIN_ROTATE_SHAPE(p,n_in) \
