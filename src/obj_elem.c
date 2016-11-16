@@ -1101,7 +1101,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		pcb_arc_rotate90(arc, X, Y, Number);
 	}
 	END_LOOP;
-	PCB_ROTATE90(Element->MarkX, Element->MarkY, X, Y, Number);
+	PCB_COORD_ROTATE90(Element->MarkX, Element->MarkY, X, Y, Number);
 	/* SetElementBoundingBox reenters the rtree data */
 	pcb_element_bbox(Data, Element, &PCB->Font);
 	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);

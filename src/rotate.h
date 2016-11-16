@@ -35,7 +35,7 @@
 /* ---------------------------------------------------------------------------
  * some useful transformation macros and constants
  */
-#define	PCB_ROTATE90(x,y,x0,y0,n)							\
+#define	PCB_COORD_ROTATE90(x,y,x0,y0,n)							\
 	do {												\
 		pcb_coord_t	dx = (x)-(x0),					\
 					dy = (y)-(y0);					\
@@ -76,13 +76,13 @@ do { \
 
 #define	PCB_VIA_ROTATE90(v,x0,y0,n)	\
 do { \
-	PCB_ROTATE90((v)->X,(v)->Y,(x0),(y0),(n)); \
+	PCB_COORD_ROTATE90((v)->X,(v)->Y,(x0),(y0),(n)); \
 	PCB_PIN_ROTATE_SHAPE(v, (n)); \
 } while(0)
 
 #define	PCB_PIN_ROTATE90(p,x0,y0,n)	\
 do { \
-	PCB_ROTATE90((p)->X,(p)->Y,(x0),(y0),(n)); \
+	PCB_COORD_ROTATE90((p)->X,(p)->Y,(x0),(y0),(n)); \
 	PCB_PIN_ROTATE_SHAPE((p), (n)); \
 } while(0)
 

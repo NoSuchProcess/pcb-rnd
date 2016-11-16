@@ -620,8 +620,8 @@ void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line)
 /* rotates a line in 90 degree steps */
 void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
-	PCB_ROTATE90(Line->Point1.X, Line->Point1.Y, X, Y, Number);
-	PCB_ROTATE90(Line->Point2.X, Line->Point2.Y, X, Y, Number);
+	PCB_COORD_ROTATE90(Line->Point1.X, Line->Point1.Y, X, Y, Number);
+	PCB_COORD_ROTATE90(Line->Point2.X, Line->Point2.Y, X, Y, Number);
 	/* keep horizontal, vertical Point2 > Point1 */
 	if (Line->Point1.X == Line->Point2.X) {
 		if (Line->Point1.Y > Line->Point2.Y) {

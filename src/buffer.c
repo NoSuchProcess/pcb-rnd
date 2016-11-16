@@ -272,7 +272,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	ENDALL_LOOP;
 
 	/* finally the origin and the bounding box */
-	PCB_ROTATE90(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
+	PCB_COORD_ROTATE90(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
 	pcb_box_rotate90(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 }
 
