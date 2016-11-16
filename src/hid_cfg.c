@@ -200,7 +200,7 @@ lht_doc_t *pcb_hid_cfg_load_lht(const char *filename)
 	int error = 0;
 	char *efn;
 
-	resolve_path(filename, &efn, 0);
+	pcb_path_resolve(filename, &efn, 0);
 
 	f = fopen(efn, "r");
 	if (f == NULL) {
@@ -286,7 +286,7 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(const char *fn, int exact_fn, const char *embedd
 		int fn_len = strlen(fn);
 
 		doc = NULL;
-		resolve_all_paths(hid_cfg_paths_in, paths, fn_len+32);
+		pcb_paths_resolve_all(hid_cfg_paths_in, paths, fn_len+32);
 		for(p = paths; *p != NULL; p++) {
 			if (doc == NULL) {
 				char *end = *p + strlen(*p);

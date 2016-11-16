@@ -607,3 +607,7 @@ CopyElementLowLevel -> pcb_element_copy
 UniqueElementName -> pcb_element_uniq_name
 AddTextToElement -> pcb_element_text_set
 ChangeElementText -> pcb_element_text_change
+resolve_path -> pcb_path_resolve
+resolve_path_inplace -> pcb_path_resolve_inplace
+resolve_paths -> pcb_paths_resolve
+resolve_all_paths -> pcb_paths_resolve_all

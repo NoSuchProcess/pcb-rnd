@@ -96,7 +96,7 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	if (d == NULL) {
 		FILE *f;
 		char *efn;
-		resolve_path(fn, &efn, 0);
+		pcb_path_resolve(fn, &efn, 0);
 		f = fopen(efn, "r");
 		if (f != NULL) { /* warn only if the file is there - missing file is normal */
 			pcb_message(PCB_MSG_DEFAULT, "error: failed to load lht config: %s\n", efn);
@@ -1498,7 +1498,7 @@ int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role,
 		}
 	}
 
-	resolve_path(fn, &efn, 0);
+	pcb_path_resolve(fn, &efn, 0);
 
 	if (r != NULL) {
 		FILE *f;

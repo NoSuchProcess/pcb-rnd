@@ -38,7 +38,7 @@ const char *pcb_board_get_name(void);
 int pcb_getpid(void);
 
 
-void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra_room)
+void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int extra_room)
 {
 	const char *subst_to;
 	int subst_offs;
@@ -104,15 +104,15 @@ void resolve_paths(const char **in, char **out, int numpaths, unsigned int extra
 	}
 }
 
-void resolve_path(const char *in, char **out, unsigned int extra_room)
+void pcb_path_resolve(const char *in, char **out, unsigned int extra_room)
 {
-	resolve_paths(&in, out, 1, extra_room);
+	pcb_paths_resolve(&in, out, 1, extra_room);
 }
 
-char *resolve_path_inplace(char *in, unsigned int extra_room)
+char *pcb_path_resolve_inplace(char *in, unsigned int extra_room)
 {
 	char *out;
-	resolve_path(in, &out, extra_room);
+	pcb_path_resolve(in, &out, extra_room);
 	free(in);
 	return out;
 }

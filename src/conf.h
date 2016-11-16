@@ -278,7 +278,7 @@ do { \
 			const char **__in__ = __n__->val.string; \
 			if (__in__ == NULL) \
 				continue; \
-			resolve_path(*__in__, &__path__, 0); \
+			pcb_path_resolve(*__in__, &__path__, 0); \
 			res = call; \
 			free(__path__); \
 			if (res == 0) \

@@ -299,7 +299,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	start = clock();
 #endif
 
-	resolve_path(Filename, &new_filename, 0);
+	pcb_path_resolve(Filename, &new_filename, 0);
 
 	oldPCB = PCB;
 	PCB = newPCB;

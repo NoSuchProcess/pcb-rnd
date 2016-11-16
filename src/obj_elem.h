@@ -110,14 +110,15 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 #define	NAME_INDEX()		(conf_core.editor.name_on_pcb ? NAMEONPCB_INDEX :\
 				(conf_core.editor.description ?		\
 				DESCRIPTION_INDEX : VALUE_INDEX))
-#define	ELEMENT_NAME(p,e)	((e)->Name[NAME_INDEX()].TextString)
-#define	DESCRIPTION_NAME(e)	((e)->Name[DESCRIPTION_INDEX].TextString)
-#define	NAMEONPCB_NAME(e)	((e)->Name[NAMEONPCB_INDEX].TextString)
-#define	VALUE_NAME(e)		((e)->Name[VALUE_INDEX].TextString)
-#define	ELEMENT_TEXT(p,e)	((e)->Name[NAME_INDEX()])
-#define	DESCRIPTION_TEXT(e)	((e)->Name[DESCRIPTION_INDEX])
-#define	NAMEONPCB_TEXT(e)	((e)->Name[NAMEONPCB_INDEX])
-#define	VALUE_TEXT(e)		((e)->Name[VALUE_INDEX])
+
+#define ELEMENT_NAME(p,e) ((e)->Name[NAME_INDEX()].TextString)
+#define DESCRIPTION_NAME(e) ((e)->Name[DESCRIPTION_INDEX].TextString)
+#define NAMEONPCB_NAME(e) ((e)->Name[NAMEONPCB_INDEX].TextString)
+#define VALUE_NAME(e) ((e)->Name[VALUE_INDEX].TextString)
+#define ELEMENT_TEXT(p,e) ((e)->Name[NAME_INDEX()])
+#define DESCRIPTION_TEXT(e) ((e)->Name[DESCRIPTION_INDEX])
+#define NAMEONPCB_TEXT(e) ((e)->Name[NAMEONPCB_INDEX])
+#define VALUE_TEXT(e) ((e)->Name[VALUE_INDEX])
 
 /*** loops ***/
 

@@ -227,7 +227,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	char *working;								/* String holding abs path to working dir */
 
 	sprintf(working_, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
-	resolve_path(working_, &working, 0);
+	pcb_path_resolve(working_, &working, 0);
 
 	if (strcmp(subdir, ".") == 0)
 		visible_subdir = "fs";
@@ -311,7 +311,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 		memcpy(path, p, end - p);
 		path[end - p] = '\0';
 
-		resolve_path(path, &fpath, 0);
+		pcb_path_resolve(path, &fpath, 0);
 /*		fprintf(stderr, " in '%s'\n", fpath);*/
 
 		fp_fs_list(&library, fpath, 1, fp_search_cb, &ctx, 1, 0);
