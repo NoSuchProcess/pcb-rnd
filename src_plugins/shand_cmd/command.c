@@ -127,7 +127,7 @@ static int CommandLoadLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	}
 
 	if (!PCB->Changed || gui->confirm_dialog("OK to override layout data?", 0))
-		LoadPCB(filename, format, pcb_true, 0);
+		pcb_load_pcb(filename, format, pcb_true, 0);
 	return (0);
 }
 
@@ -316,7 +316,7 @@ static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	switch (argc) {
 	case 0:
 		if (PCB->Filename) {
-			if (SavePCB(PCB->Filename, NULL) == 0)
+			if (pcb_save_pcb(PCB->Filename, NULL) == 0)
 				SetChangedFlag(pcb_false);
 		}
 		else
@@ -324,7 +324,7 @@ static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		break;
 
 	case 1:
-		if (SavePCB(argv[0], NULL) == 0) {
+		if (pcb_save_pcb(argv[0], NULL) == 0) {
 			SetChangedFlag(pcb_false);
 			free(PCB->Filename);
 			PCB->Filename = pcb_strdup(argv[0]);

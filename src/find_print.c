@@ -64,7 +64,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 					/* write name to list and draw selected object */
 					fputc('\t', FP);
-					PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Name));
+					pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Name));
 					fputc('\n', FP);
 					PCB_FLAG_SET(PCB_FLAG_SELECTED, pin);
 					DrawPin(pin);
@@ -105,7 +105,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 
 				/* write name to list and draw selected object */
 				fputc('\t', FP);
-				PrintQuotedString(FP, (char *) PCB_EMPTY(pad->Name));
+				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Name));
 				fputc('\n', FP);
 
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, pad);

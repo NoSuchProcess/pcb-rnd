@@ -98,23 +98,23 @@ int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt);
 int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt);
 
 /********** common function used to be part of file.[ch] and friends **********/
-FILE *CheckAndOpenFile(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);
-FILE *OpenConnectionDataFile(void);
-int SavePCB(const char *, const char *fmt);
-int LoadPCB(const char *name, const char *fmt, pcb_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
-void EnableAutosave(void);
-void Backup(void);
-void SaveInTMP(void);
-void EmergencySave(void);
-void DisableEmergencySave(void);
-int RevertPCB(void);
-int SaveBufferElements(const char *, const char *fmt);
+FILE *pcb_check_and_open_file(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);
+FILE *pcb_open_connection_file(void);
+int pcb_save_pcb(const char *, const char *fmt);
+int pcb_load_pcb(const char *name, const char *fmt, pcb_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
+void pcb_enable_autosave(void);
+void pcb_backup(void);
+void pcb_save_in_tmp(void);
+void pcb_emergency_save(void);
+void pcb_disable_emergency_save(void);
+int pcb_revert_pcb(void);
+int pcb_save_buffer_elements(const char *, const char *fmt);
 void pcb_sort_netlist(void);
-void PrintQuotedString(FILE *, const char *);
-void sort_library(pcb_lib_t *lib);
-void set_some_route_style();
-int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency);
-int WritePipe(const char *, pcb_bool, const char *fmt);
+void pcb_print_quoted_string(FILE *, const char *);
+void pcb_library_sort(pcb_lib_t *lib);
+void pcb_set_some_route_style();
+int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency);
+int pcb_write_pipe(const char *, pcb_bool, const char *fmt);
 
 #ifndef HAS_ATEXIT
 void SaveTMPData(void);

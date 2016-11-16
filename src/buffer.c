@@ -836,10 +836,10 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				if ((!force) && ((exist = fopen(name, "r")))) {
 					fclose(exist);
 					if (gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0))
-						SaveBufferElements(name, fmt);
+						pcb_save_buffer_elements(name, fmt);
 				}
 				else
-					SaveBufferElements(name, fmt);
+					pcb_save_buffer_elements(name, fmt);
 
 				if (free_name && name)
 					free((char*)name);

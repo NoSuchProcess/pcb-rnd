@@ -33,11 +33,11 @@
 static void PrintElementNameList(pcb_element_t *Element, FILE * FP)
 {
 	fputc('(', FP);
-	PrintQuotedString(FP, (char *) PCB_EMPTY(DESCRIPTION_NAME(Element)));
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(DESCRIPTION_NAME(Element)));
 	fputc(' ', FP);
-	PrintQuotedString(FP, (char *) PCB_EMPTY(NAMEONPCB_NAME(Element)));
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(NAMEONPCB_NAME(Element)));
 	fputc(' ', FP);
-	PrintQuotedString(FP, (char *) PCB_EMPTY(VALUE_NAME(Element)));
+	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(VALUE_NAME(Element)));
 	fputc(')', FP);
 	fputc('\n', FP);
 }
@@ -59,12 +59,12 @@ static void PrintConnectionListEntry(char *ObjName, pcb_element_t *Element, pcb_
 {
 	if (FirstOne) {
 		fputc('\t', FP);
-		PrintQuotedString(FP, ObjName);
+		pcb_print_quoted_string(FP, ObjName);
 		fprintf(FP, "\n\t{\n");
 	}
 	else {
 		fprintf(FP, "\t\t");
-		PrintQuotedString(FP, ObjName);
+		pcb_print_quoted_string(FP, ObjName);
 		fputc(' ', FP);
 		if (Element)
 			PrintElementNameList(Element, FP);

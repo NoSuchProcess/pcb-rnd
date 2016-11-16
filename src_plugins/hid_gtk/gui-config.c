@@ -431,7 +431,7 @@ static void config_backup_spin_button_cb(GtkSpinButton * spin_button, gpointer d
 	i = gtk_spin_button_get_value_as_int(spin_button);
 	sprintf(s, "%d", i);
 	conf_set(CFR_DESIGN, "rc/backup_interval", -1, s, POL_OVERWRITE);
-	EnableAutosave();
+	pcb_enable_autosave();
 }
 
 static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer data)

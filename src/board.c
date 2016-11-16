@@ -117,7 +117,7 @@ pcb_board_t *pcb_board_new(void)
 
 	dpcb = -1;
 	pcb_io_err_inhibit_inc();
-	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, LoadPCB(__path__, NULL, pcb_false, 1));
+	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, pcb_load_pcb(__path__, NULL, pcb_false, 1));
 	pcb_io_err_inhibit_dec();
 
 	if (dpcb == 0) {

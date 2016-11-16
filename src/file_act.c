@@ -133,7 +133,7 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	else if (strcasecmp(function, "Layout") == 0) {
 		if (!PCB->Changed || gui->confirm_dialog(_("OK to override layout data?"), 0))
-			LoadPCB(name, format, pcb_true, 0);
+			pcb_load_pcb(name, format, pcb_true, 0);
 	}
 
 	else if (strcasecmp(function, "Netlist") == 0) {
@@ -150,7 +150,7 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	}
 	else if (strcasecmp(function, "Revert") == 0 && PCB->Filename
 					 && (!PCB->Changed || gui->confirm_dialog(_("OK to override changes?"), 0))) {
-		RevertPCB();
+		pcb_revert_pcb();
 	}
 
 	return 0;
@@ -187,7 +187,7 @@ static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		 * clear the old struct and allocate memory for the new one
 		 */
 		if (PCB->Changed && conf_core.editor.save_in_tmp)
-			SaveInTMP();
+			pcb_save_in_tmp();
 		RemovePCB(PCB);
 		PCB = pcb_board_new();
 		pcb_board_new_postproc(PCB, 1);
@@ -253,7 +253,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	name = argv[1];
 
 	if (strcasecmp(function, "Layout") == 0) {
-		if (SavePCB(PCB->Filename, NULL) == 0)
+		if (pcb_save_pcb(PCB->Filename, NULL) == 0)
 			SetChangedFlag(pcb_false);
 		if (gui->notify_filename_changed != NULL)
 			gui->notify_filename_changed();
@@ -267,7 +267,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		fmt = argv[2];
 
 	if (strcasecmp(function, "LayoutAs") == 0) {
-		if (SavePCB(name, fmt) == 0) {
+		if (pcb_save_pcb(name, fmt) == 0) {
 			SetChangedFlag(pcb_false);
 			free(PCB->Filename);
 			PCB->Filename = pcb_strdup(name);
@@ -280,7 +280,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (strcasecmp(function, "AllConnections") == 0) {
 		FILE *fp;
 		pcb_bool result;
-		if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
+		if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 			pcb_lookup_conns_to_all_elements(fp);
 			fclose(fp);
 			SetChangedFlag(pcb_true);
@@ -291,7 +291,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (strcasecmp(function, "AllUnusedPins") == 0) {
 		FILE *fp;
 		pcb_bool result;
-		if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
+		if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 			pcb_lookup_unused_pins(fp);
 			fclose(fp);
 			SetChangedFlag(pcb_true);
@@ -307,7 +307,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 		if ((SearchScreen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 			element = (pcb_element_t *) ptrtmp;
-			if ((fp = CheckAndOpenFile(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
+			if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 				pcb_lookup_element_conns(element, fp);
 				fclose(fp);
 				SetChangedFlag(pcb_true);
@@ -317,7 +317,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 
 	if (strcasecmp(function, "PasteBuffer") == 0) {
-		return SaveBufferElements(name, fmt);
+		return pcb_save_buffer_elements(name, fmt);
 	}
 
 	PCB_AFAIL(saveto);

@@ -42,13 +42,13 @@ void pcb_quit_app(void)
 {
 	/*
 	 * save data if necessary.  It not needed, then don't trigger EmergencySave
-	 * via our atexit() registering of EmergencySave().  We presumably wanted to
+	 * via our atexit() registering of pcb_emergency_save().  We presumably wanted to
 	 * exit here and thus it is not an emergency.
 	 */
 	if (PCB->Changed && conf_core.editor.save_in_tmp)
-		EmergencySave();
+		pcb_emergency_save();
 	else
-		DisableEmergencySave();
+		pcb_disable_emergency_save();
 
 	if (gui->do_exit == NULL) {
 		pcb_main_uninit();

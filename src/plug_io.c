@@ -459,7 +459,7 @@ static int netnode_sort(const void *va, const void *vb)
 	return string_cmp(a, b);
 }
 
-void sort_library(pcb_lib_t *lib)
+void pcb_library_sort(pcb_lib_t *lib)
 {
 	int i;
 	qsort(lib->Menu, lib->MenuN, sizeof(lib->Menu[0]), netlist_sort);
@@ -470,14 +470,14 @@ void sort_library(pcb_lib_t *lib)
 void pcb_sort_netlist()
 {
 	netlist_sort_offset = 2;
-	sort_library(&(PCB->NetlistLib[NETLIST_INPUT]));
+	pcb_library_sort(&(PCB->NetlistLib[NETLIST_INPUT]));
 	netlist_sort_offset = 0;
 }
 
 /* ---------------------------------------------------------------------------
  * opens a file and check if it exists
  */
-FILE *CheckAndOpenFile(const char *Filename, pcb_bool Confirm, pcb_bool AllButton, pcb_bool * WasAllButton, pcb_bool * WasCancelButton)
+FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool AllButton, pcb_bool * WasAllButton, pcb_bool * WasCancelButton)
 {
 	FILE *fp = NULL;
 	struct stat buffer;
@@ -515,7 +515,7 @@ FILE *CheckAndOpenFile(const char *Filename, pcb_bool Confirm, pcb_bool AllButto
 /* ---------------------------------------------------------------------------
  * opens a file for saving connection data
  */
-FILE *OpenConnectionDataFile(void)
+FILE *pcb_open_connection_file(void)
 {
 	char *fname;
 	FILE *fp;
@@ -536,7 +536,7 @@ FILE *OpenConnectionDataFile(void)
 	if (fname && *fname)
 		default_file = pcb_strdup(fname);
 
-	fp = CheckAndOpenFile(fname, pcb_true, pcb_false, &result, NULL);
+	fp = pcb_check_and_open_file(fname, pcb_true, pcb_false, &result, NULL);
 	free(fname);
 
 	return fp;
@@ -545,13 +545,13 @@ FILE *OpenConnectionDataFile(void)
 /* ---------------------------------------------------------------------------
  * save elements in the current buffer
  */
-int SaveBufferElements(const char *Filename, const char *fmt)
+int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 {
 	int result;
 
 	if (SWAP_IDENT)
 		pcb_swap_buffers();
-	result = WritePipe(Filename, pcb_false, fmt);
+	result = pcb_write_pipe(Filename, pcb_false, fmt);
 	if (SWAP_IDENT)
 		pcb_swap_buffers();
 	return (result);
@@ -560,15 +560,15 @@ int SaveBufferElements(const char *Filename, const char *fmt)
 /* ---------------------------------------------------------------------------
  * save PCB
  */
-int SavePCB(const char *file, const char *fmt)
+int pcb_save_pcb(const char *file, const char *fmt)
 {
 	int retcode;
 
 	if (gui->notify_save_pcb == NULL)
-		return WritePipe(file, pcb_true, fmt);
+		return pcb_write_pipe(file, pcb_true, fmt);
 
 	gui->notify_save_pcb(file, pcb_false);
-	retcode = WritePipe(file, pcb_true, fmt);
+	retcode = pcb_write_pipe(file, pcb_true, fmt);
 	gui->notify_save_pcb(file, pcb_true);
 
 	return retcode;
@@ -578,7 +578,7 @@ int SavePCB(const char *file, const char *fmt)
 /* ---------------------------------------------------------------------------
  * Load PCB
  */
-int LoadPCB(const char *file, const char *fmt, pcb_bool require_font, int how)
+int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int how)
 {
 	return real_load_pcb(file, fmt, pcb_false, require_font, how);
 }
@@ -586,7 +586,7 @@ int LoadPCB(const char *file, const char *fmt, pcb_bool require_font, int how)
 /* ---------------------------------------------------------------------------
  * Revert PCB
  */
-int RevertPCB(void)
+int pcb_revert_pcb(void)
 {
 	return real_load_pcb(PCB->Filename, NULL, pcb_true, pcb_true, pcb_true);
 }
@@ -594,7 +594,7 @@ int RevertPCB(void)
 /* ---------------------------------------------------------------------------
  * writes the quoted string created by another subroutine
  */
-void PrintQuotedString(FILE * FP, const char *S)
+void pcb_print_quoted_string(FILE * FP, const char *S)
 {
 	const char *start;
 
@@ -620,7 +620,7 @@ void PrintQuotedString(FILE * FP, const char *S)
  * this is used for fatal errors and does not call the program specified
  * in 'saveCommand' for safety reasons
  */
-void SaveInTMP(void)
+void pcb_save_in_tmp(void)
 {
 	char filename[256];
 
@@ -628,25 +628,25 @@ void SaveInTMP(void)
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
 		pcb_message(PCB_MSG_DEFAULT, _("Trying to save your layout in '%s'\n"), filename);
-		WritePCBFile(filename, pcb_true, DEFAULT_FMT, pcb_true);
+		pcb_write_pcb_file(filename, pcb_true, DEFAULT_FMT, pcb_true);
 	}
 }
 
 /* ---------------------------------------------------------------------------
- * front-end for 'SaveInTMP()'
+ * front-end for 'pcb_save_in_tmp()'
  * just makes sure that the routine is only called once
  */
 static pcb_bool dont_save_any_more = pcb_false;
-void EmergencySave(void)
+void pcb_emergency_save(void)
 {
 
 	if (!dont_save_any_more) {
 		dont_save_any_more = pcb_true;
-		SaveInTMP();
+		pcb_save_in_tmp();
 	}
 }
 
-void DisableEmergencySave(void)
+void pcb_disable_emergency_save(void)
 {
 	dont_save_any_more = pcb_true;
 }
@@ -659,18 +659,18 @@ static pcb_hidval_t backup_timer;
 
 /*
  * If the backup interval is > 0 then set another timer.  Otherwise
- * we do nothing and it is up to the GUI to call EnableAutosave()
+ * we do nothing and it is up to the GUI to call pcb_enable_autosave()
  * after setting conf_core.rc.backup_interval > 0 again.
  */
 static void backup_cb(pcb_hidval_t data)
 {
 	backup_timer.ptr = NULL;
-	Backup();
+	pcb_backup();
 	if (conf_core.rc.backup_interval > 0 && gui->add_timer)
 		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, data);
 }
 
-void EnableAutosave(void)
+void pcb_enable_autosave(void)
 {
 	pcb_hidval_t x;
 
@@ -691,14 +691,14 @@ void EnableAutosave(void)
  * a "-" appended (like "foo.pcb-") and if we don't have a pcb file name
  * then use the template in conf_core.rc.backup_name
  */
-void Backup(void)
+void pcb_backup(void)
 {
 	char *filename = NULL;
 
 	if (PCB && PCB->Filename) {
 		filename = (char *) malloc(sizeof(char) * (strlen(PCB->Filename) + 2));
 		if (filename == NULL) {
-			fprintf(stderr, "Backup():  malloc failed\n");
+			fprintf(stderr, "pcb_backup():  malloc failed\n");
 			exit(1);
 		}
 		sprintf(filename, "%s-", PCB->Filename);
@@ -707,12 +707,12 @@ void Backup(void)
 		/* conf_core.rc.backup_name has %.8i which  will be replaced by the process ID */
 		filename = pcb_build_fn(conf_core.rc.backup_name);
 		if (filename == NULL) {
-			fprintf(stderr, "Backup(): can't build file name for a backup\n");
+			fprintf(stderr, "pcb_backup(): can't build file name for a backup\n");
 			exit(1);
 		}
 	}
 
-	WritePCBFile(filename, pcb_true, DEFAULT_FMT, pcb_true);
+	pcb_write_pcb_file(filename, pcb_true, DEFAULT_FMT, pcb_true);
 	free(filename);
 }
 
@@ -726,7 +726,7 @@ void Backup(void)
 void SaveTMPData(void)
 {
 	char *fn = pcb_build_fn(conf_core.rc.emergency_name);
-	WritePCBFile(fn, pcb_true, DEFAULT_FMT, pcb_true);
+	pcb_write_pcb_file(fn, pcb_true, DEFAULT_FMT, pcb_true);
 	if (TMPFilename != NULL)
 		free(TMPFilename);
 	TMPFilename = fn;
@@ -756,7 +756,7 @@ static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const
 /* ---------------------------------------------------------------------------
  * writes PCB to file
  */
-int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency)
+int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency)
 {
 	FILE *fp;
 	int result, overwrite;
@@ -802,7 +802,7 @@ int WritePCBFile(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_boo
  * writes to pipe using the command defined by conf_core.rc.save_command
  * %f are replaced by the passed filename
  */
-int WritePipe(const char *Filename, pcb_bool thePcb, const char *fmt)
+int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 {
 	FILE *fp;
 	int result;
@@ -810,7 +810,7 @@ int WritePipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 	static gds_t command;
 
 	if (PCB_EMPTY_STRING_P(conf_core.rc.save_command))
-		return WritePCBFile(Filename, thePcb, fmt, pcb_false);
+		return pcb_write_pcb_file(Filename, thePcb, fmt, pcb_false);
 
 	/* setup commandline */
 	gds_truncate(&command,0);

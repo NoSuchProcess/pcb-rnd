@@ -539,7 +539,7 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
 			fprintf(FP, "Layer(%i ", (int) Number + 1);
-			PrintQuotedString(FP, (char *) PCB_EMPTY(layer->Name));
+			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->Name));
 			fputs(")\n(\n", FP);
 			WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
@@ -584,7 +584,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
 			fprintf(FP, "Layer(%i ", (int) Number + 1);
-			PrintQuotedString(FP, (char *) PCB_EMPTY(layer->Name));
+			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->Name));
 			fputs(")\n(\n", FP);
 			WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
@@ -659,7 +659,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
 			fprintf(FP, "Layer(%i ", (int) Number + 1);
-			PrintQuotedString(FP, (char *) PCB_EMPTY(layer->Name));
+			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->Name));
 			fputs(")\n(\n", FP);
 			WriteAttributeList(FP, &layer->Attributes, "\t");
 		*/
@@ -795,11 +795,11 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Dat
 			 information
 
 			 fprintf(FP, "\nDS %s ", F2S(element, PCB_TYPE_ELEMENT));
-			 PrintQuotedString(FP, (char *) PCB_EMPTY(DESCRIPTION_NAME(element)));
+			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(DESCRIPTION_NAME(element)));
 			 fputc(' ', FP);
-			 PrintQuotedString(FP, (char *) PCB_EMPTY(NAMEONPCB_NAME(element)));
+			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(NAMEONPCB_NAME(element)));
 			 fputc(' ', FP);
-			 PrintQuotedString(FP, (char *) PCB_EMPTY(VALUE_NAME(element)));
+			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(VALUE_NAME(element)));
 			 pcb_fprintf(FP, " %mm %mm %mm %mm %d %d %s]\n(\n",
 			 element->MarkX, element->MarkY,
 			 DESCRIPTION_TEXT(element).X - element->MarkX,
@@ -877,7 +877,7 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Dat
 									pin->Y - element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
-			PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Number));
+			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Number));
 
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
 				fputs(" R ",FP); /* square */
@@ -895,7 +895,7 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Dat
 
 			fputs("Ne 0 \"\"\n",FP); /* library parts have empty net descriptors */
 			/*
-				PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Name));
+				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Name));
 				fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
 			*/
 			fputs("$EndPAD\n",FP);
@@ -908,7 +908,7 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Dat
 									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
-			PrintQuotedString(FP, (char *) PCB_EMPTY(pad->Number));
+			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Number));
 			fputs(" R ",FP); /* rectangular, not a pin */
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0
@@ -1055,7 +1055,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 									pin->Y - element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
-			PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Number));
+			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Number));
 
 			if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pin)) {
 				fputs(" R ",FP); /* square */
@@ -1078,7 +1078,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 				fprintf(FP, "Ne 0 \"\"\n"); /* unconnected pads have zero for net */
 			} 
 			/*
-				PrintQuotedString(FP, (char *) PCB_EMPTY(pin->Name));
+				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pin->Name));
 				fprintf(FP, " %s\n", F2S(pin, PCB_TYPE_PIN));
 			*/
 			fputs("$EndPAD\n",FP);
@@ -1091,7 +1091,7 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
 
 			fputs("Sh ",FP); /* pin shape descriptor */
-			PrintQuotedString(FP, (char *) PCB_EMPTY(pad->Number));
+			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Number));
 			fputs(" R ",FP); /* rectangular, not a pin */
 
 			if ((pad->Point1.X-pad->Point2.X) <= 0

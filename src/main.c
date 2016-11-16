@@ -377,7 +377,7 @@ int main(int argc, char *argv[])
 	 * If the OS doesn't have at least one of them,
 	 * the critical sections will be handled by parse_l.l
 	 */
-	atexit(EmergencySave);
+	atexit(pcb_emergency_save);
 
 	pcb_events_init();
 
@@ -462,7 +462,7 @@ int main(int argc, char *argv[])
 		/* keep filename even if initial load command failed;
 		 * file might not exist
 		 */
-		if (LoadPCB(command_line_pcb, NULL, pcb_true, 0))
+		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, 0))
 			PCB->Filename = pcb_strdup(command_line_pcb);
 	}
 
@@ -491,7 +491,7 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	EnableAutosave();
+	pcb_enable_autosave();
 
 	/* main loop */
 	do {

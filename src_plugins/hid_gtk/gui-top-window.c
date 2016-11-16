@@ -163,7 +163,7 @@ static void info_bar_response_cb(GtkInfoBar * info_bar, gint response_id, GhidGu
 	_gui->info_bar = NULL;
 
 	if (response_id == GTK_RESPONSE_ACCEPT)
-		RevertPCB();
+		pcb_revert_pcb();
 }
 
 static void close_file_modified_externally_prompt(void)
