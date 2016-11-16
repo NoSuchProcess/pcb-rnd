@@ -2433,9 +2433,9 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 
 #if !defined(HAS_ATEXIT)
 	if (PCB && PCB->Data)
-	  SaveTMPData();
+	  pcb_tmp_data_save();
 	returncode = pcb_parse();
-	RemoveTMPData();
+	pcb_tmp_data_remove();
 #else
 	returncode = pcb_parse();
 #endif

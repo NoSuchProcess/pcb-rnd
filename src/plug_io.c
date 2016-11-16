@@ -723,7 +723,7 @@ void pcb_backup(void)
  * before LEX and YACC functions are called because they are able to abort
  * the program.
  */
-void SaveTMPData(void)
+void pcb_tmp_data_save(void)
 {
 	char *fn = pcb_build_fn(conf_core.rc.emergency_name);
 	pcb_write_pcb_file(fn, pcb_true, DEFAULT_FMT, pcb_true);
@@ -735,7 +735,7 @@ void SaveTMPData(void)
 /* ---------------------------------------------------------------------------
  * removes the temporary copy of the data file
  */
-void RemoveTMPData(void)
+void pcb_tmp_data_remove(void)
 {
 	if (TMPFilename != NULL)
 		unlink(TMPFilename);

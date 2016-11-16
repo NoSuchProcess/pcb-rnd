@@ -652,3 +652,5 @@ sort_library -> pcb_library_sort
 set_some_route_style -> pcb_set_some_route_style
 WritePCBFile -> pcb_write_pcb_file
 WritePipe -> pcb_write_pipe
+SaveTMPData -> pcb_tmp_data_save
+RemoveTMPData -> pcb_tmp_data_remove
