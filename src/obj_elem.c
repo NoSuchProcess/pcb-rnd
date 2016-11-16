@@ -1084,7 +1084,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		if (Data)
 			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
 		pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
-		ROTATE_PIN_LOWLEVEL(pin, X, Y, Number);
+		PCB_PIN_ROTATE90(pin, X, Y, Number);
 	}
 	END_LOOP;
 	PCB_PAD_LOOP(Element);
@@ -1093,7 +1093,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		if (Data)
 			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
 		pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
-		ROTATE_PAD_LOWLEVEL(pad, X, Y, Number);
+		PCB_PAD_ROTATE90(pad, X, Y, Number);
 	}
 	END_LOOP;
 	PCB_ARC_LOOP(Element);
@@ -1101,7 +1101,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		pcb_arc_rotate90(arc, X, Y, Number);
 	}
 	END_LOOP;
-	ROTATE(Element->MarkX, Element->MarkY, X, Y, Number);
+	PCB_ROTATE90(Element->MarkX, Element->MarkY, X, Y, Number);
 	/* SetElementBoundingBox reenters the rtree data */
 	pcb_element_bbox(Data, Element, &PCB->Font);
 	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);

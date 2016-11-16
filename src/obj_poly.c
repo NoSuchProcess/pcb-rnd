@@ -123,7 +123,7 @@ void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, uns
 {
 	PCB_POLY_POINT_LOOP(Polygon);
 	{
-		ROTATE(point->X, point->Y, X, Y, Number);
+		PCB_ROTATE90(point->X, point->Y, X, Y, Number);
 	}
 	END_LOOP;
 	RotateBoxLowLevel(&Polygon->BoundingBox, X, Y, Number);

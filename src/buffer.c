@@ -228,7 +228,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	PCB_VIA_LOOP(Buffer->Data);
 	{
 		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
-		ROTATE_VIA_LOWLEVEL(via, Buffer->X, Buffer->Y, Number);
+		PCB_VIA_ROTATE90(via, Buffer->X, Buffer->Y, Number);
 		pcb_pin_bbox(via);
 		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
@@ -272,7 +272,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	ENDALL_LOOP;
 
 	/* finally the origin and the bounding box */
-	ROTATE(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
+	PCB_ROTATE90(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
 	RotateBoxLowLevel(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 }
 

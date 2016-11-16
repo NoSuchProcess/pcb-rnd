@@ -35,7 +35,7 @@
 /* ---------------------------------------------------------------------------
  * some useful transformation macros and constants
  */
-#define	ROTATE(x,y,x0,y0,n)							\
+#define	PCB_ROTATE90(x,y,x0,y0,n)							\
 	{												\
 		pcb_coord_t	dx = (x)-(x0),					\
 					dy = (y)-(y0);					\
@@ -53,7 +53,7 @@
 	}
 
 /* Rotate pin shape style by n_in * 90 degrees */
-#define PIN_ROTATE(p,n_in) \
+#define PCB_PIN_ROTATE_SHAPE(p,n_in) \
 do { \
 	int _n_; \
 	for(_n_ = n_in;_n_>0;_n_--) { \
@@ -74,19 +74,19 @@ do { \
 	} \
 } while(0)
 
-#define	ROTATE_VIA_LOWLEVEL(v,x0,y0,n)	\
+#define	PCB_VIA_ROTATE90(v,x0,y0,n)	\
 do { \
-	ROTATE((v)->X,(v)->Y,(x0),(y0),(n)); \
-	PIN_ROTATE(v, (n)); \
+	PCB_ROTATE90((v)->X,(v)->Y,(x0),(y0),(n)); \
+	PCB_PIN_ROTATE_SHAPE(v, (n)); \
 } while(0)
 
-#define	ROTATE_PIN_LOWLEVEL(p,x0,y0,n)	\
+#define	PCB_PIN_ROTATE90(p,x0,y0,n)	\
 do { \
-	ROTATE((p)->X,(p)->Y,(x0),(y0),(n)); \
-	PIN_ROTATE((p), (n)); \
+	PCB_ROTATE90((p)->X,(p)->Y,(x0),(y0),(n)); \
+	PCB_PIN_ROTATE_SHAPE((p), (n)); \
 } while(0)
 
-#define	ROTATE_PAD_LOWLEVEL(p,x0,y0,n)	\
+#define	PCB_PAD_ROTATE90(p,x0,y0,n)	\
 	pcb_line_rotate90(((pcb_line_t *) (p)),(x0),(y0),(n))
 
 #define	ROTATE_TYPES	(PCB_TYPE_ELEMENT | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_ARC)

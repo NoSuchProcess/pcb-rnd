@@ -768,3 +768,8 @@ RemovePCB -> pcb_board_remove
 RemoveSelected -> pcb_remove_selected
 RemoveObject -> pcb_remove_object
 DestroyObject -> pcb_destroy_object
+ROTATE -> PCB_ROTATE90
+PIN_ROTATE -> PCB_PIN_ROTATE_SHAPE
+ROTATE_VIA_LOWLEVEL -> PCB_VIA_ROTATE90
+ROTATE_PIN_LOWLEVEL -> PCB_PIN_ROTATE90
+ROTATE_PAD_LOWLEVEL -> PCB_PAD_ROTATE90

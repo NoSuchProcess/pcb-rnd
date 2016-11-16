@@ -440,7 +440,7 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 
 	number = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text) ? (4 - Number) & 3 : Number;
 	RotateBoxLowLevel(&Text->BoundingBox, X, Y, Number);
-	ROTATE(Text->X, Text->Y, X, Y, Number);
+	PCB_ROTATE90(Text->X, Text->Y, X, Y, Number);
 
 	/* set new direction, 0..3,
 	 * 0-> to the right, 1-> straight up,

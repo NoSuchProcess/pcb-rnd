@@ -529,7 +529,7 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 
 	/* add Number*90 degrees (i.e., Number quarter-turns) */
 	Arc->StartAngle = NormalizeAngle(Arc->StartAngle + Number * 90);
-	ROTATE(Arc->X, Arc->Y, X, Y, Number);
+	PCB_ROTATE90(Arc->X, Arc->Y, X, Y, Number);
 
 	/* now change width and height */
 	if (Number == 1 || Number == 3) {
