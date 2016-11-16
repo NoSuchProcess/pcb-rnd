@@ -91,7 +91,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 	}
 
 	l->children++;
-	e = fp_append_entry(l->menu, name, type, tags);
+	e = pcb_fp_append_entry(l->menu, name, type, tags);
 
 /* Avoid using pcb_concat() - would be a new dependency for gsch2pcb-rnd */
 	{
@@ -234,9 +234,9 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	else
 		visible_subdir = subdir;
 
-	l.menu = fp_lib_search(pl, visible_subdir);
+	l.menu = pcb_fp_lib_search(pl, visible_subdir);
 	if (l.menu == NULL)
-		l.menu = fp_mkdir_len(pl, visible_subdir, -1);
+		l.menu = pcb_fp_mkdir_len(pl, visible_subdir, -1);
 	l.subdirs = NULL;
 	l.children = 0;
 
@@ -252,7 +252,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 		free(d);
 	}
 	if ((l.children == 0) && (l.menu->data.dir.children.used == 0))
-		fp_rmdir(l.menu);
+		pcb_fp_rmdir(l.menu);
 	free(working);
 	return l.children;
 }

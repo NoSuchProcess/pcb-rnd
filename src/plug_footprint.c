@@ -88,7 +88,7 @@ void pcb_fp_init()
 void pcb_fp_uninit()
 {
 	htsp_entry_t *e;
-	fp_free_children(&library);
+	pcb_fp_free_children(&library);
 	if (fp_tags != NULL) {
 		for (e = htsp_first(fp_tags); e; e = htsp_next(fp_tags, e))
 			free(e->key);
@@ -115,12 +115,12 @@ void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
 		fctx->backend->fclose(fctx->backend, f, fctx);
 }
 
-pcb_fplibrary_t *fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[])
+pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[])
 {
 	pcb_fplibrary_t *entry;   /* Pointer to individual menu entry */
 
 	assert(parent->type == LIB_DIR);
-	entry = get_library_memory(parent);
+	entry = pcb_get_library_memory(parent);
 	if (entry == NULL)
 		return NULL;
 
@@ -158,7 +158,7 @@ pcb_fplibrary_t *fp_lib_search_len(pcb_fplibrary_t *dir, const char *name, int n
 	return NULL;
 }
 
-pcb_fplibrary_t *fp_lib_search(pcb_fplibrary_t *dir, const char *name)
+pcb_fplibrary_t *pcb_fp_lib_search(pcb_fplibrary_t *dir, const char *name)
 {
 	pcb_fplibrary_t *l;
 	int n;
@@ -174,9 +174,9 @@ pcb_fplibrary_t *fp_lib_search(pcb_fplibrary_t *dir, const char *name)
 }
 
 
-pcb_fplibrary_t *fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int name_len)
+pcb_fplibrary_t *pcb_fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int name_len)
 {
-	pcb_fplibrary_t *l = get_library_memory(parent);
+	pcb_fplibrary_t *l = pcb_get_library_memory(parent);
 
 	if (name_len > 0)
 		l->name = pcb_strndup(name, name_len);
@@ -188,7 +188,7 @@ pcb_fplibrary_t *fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int nam
 	return l;
 }
 
-pcb_fplibrary_t *fp_mkdir_p(const char *path)
+pcb_fplibrary_t *pcb_fp_mkdir_p(const char *path)
 {
 	pcb_fplibrary_t *l, *parent = NULL;
 	const char *next;
@@ -199,7 +199,7 @@ pcb_fplibrary_t *fp_mkdir_p(const char *path)
 	for(parent = l = &library; l != NULL; parent = l,path = next) {
 		next = strchr(path, '/');
 		if (next == NULL)
-			l = fp_lib_search(l, path);
+			l = pcb_fp_lib_search(l, path);
 		else
 			l = fp_lib_search_len(l, path, next-path);
 
@@ -224,7 +224,7 @@ pcb_fplibrary_t *fp_mkdir_p(const char *path)
 	/* by now path points to the first non-existing dir, under parent */
 	for(;path != NULL; path = next) {
 		next = strchr(path, '/');
-		parent = fp_mkdir_len(parent, path, next-path);
+		parent = pcb_fp_mkdir_len(parent, path, next-path);
 		if (next != NULL) {
 			while(*next == '/') next++;
 			if (*next == '\0')
@@ -235,7 +235,7 @@ pcb_fplibrary_t *fp_mkdir_p(const char *path)
 	return parent;
 }
 
-void fp_sort_children(pcb_fplibrary_t *parent)
+void pcb_fp_sort_children(pcb_fplibrary_t *parent)
 {
 /*	int i;
 	qsort(lib->Menu, lib->MenuN, sizeof(lib->Menu[0]), netlist_sort);
@@ -247,7 +247,7 @@ void fp_free_entry(pcb_fplibrary_t *l)
 {
 	switch(l->type) {
 		case LIB_DIR:
-			fp_free_children(l);
+			pcb_fp_free_children(l);
 			vtlib_uninit(&(l->data.dir.children));
 			break;
 		case LIB_FOOTPRINT:
@@ -265,7 +265,7 @@ void fp_free_entry(pcb_fplibrary_t *l)
 	l->type = LIB_INVALID;
 }
 
-void fp_free_children(pcb_fplibrary_t *parent)
+void pcb_fp_free_children(pcb_fplibrary_t *parent)
 {
 	int n;
 	pcb_fplibrary_t *l;
@@ -279,7 +279,7 @@ void fp_free_children(pcb_fplibrary_t *parent)
 }
 
 
-void fp_rmdir(pcb_fplibrary_t *dir)
+void pcb_fp_rmdir(pcb_fplibrary_t *dir)
 {
 	pcb_fplibrary_t *l, *parent = dir->parent;
 	int n;
@@ -370,35 +370,35 @@ static int fp_read_lib_all_(const char *searchpath)
 static gds_t fpds_paths;
 static int fpds_inited = 0;
 
-const char *fp_default_search_path(void)
+const char *pcb_fp_default_search_path(void)
 {
 	return conf_concat_strlist(&conf_core.rc.library_search_paths, &fpds_paths, &fpds_inited, ':');
 }
 
-int fp_host_uninit(void)
+int pcb_fp_host_uninit(void)
 {
 	if (fpds_inited)
 		gds_uninit(&fpds_paths);
 	return 0;
 }
 
-int fp_read_lib_all(void)
+int pcb_fp_read_lib_all(void)
 {
 	FILE *resultFP = NULL;
 
 	/* List all footprint libraries.  Then sort the whole
 	 * library.
 	 */
-	if (fp_read_lib_all_(fp_default_search_path()) > 0 || resultFP != NULL) {
-		fp_sort_children(&library);
+	if (fp_read_lib_all_(pcb_fp_default_search_path()) > 0 || resultFP != NULL) {
+		pcb_fp_sort_children(&library);
 		return 0;
 	}
 
 	return (1);
 }
 
-int fp_rehash(void)
+int pcb_fp_rehash(void)
 {
-	fp_free_children(&library);
-	return fp_read_lib_all();
+	pcb_fp_free_children(&library);
+	return pcb_fp_read_lib_all();
 }

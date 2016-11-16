@@ -618,3 +618,15 @@ fp_tagname -> pcb_fp_tagname
 fp_uninit -> pcb_fp_uninit
 fp_tag -> pcb_fp_tag
 fp_init -> pcb_fp_init
+get_library_memory -> pcb_get_library_memory
+fp_free_children -> pcb_fp_free_children
+fp_sort_children -> pcb_fp_sort_children
+fp_rmdir -> pcb_fp_rmdir
+fp_mkdir_p -> pcb_fp_mkdir_p
+fp_mkdir_len -> pcb_fp_mkdir_len
+fp_lib_search -> pcb_fp_lib_search
+fp_append_entry -> pcb_fp_append_entry
+fp_read_lib_all -> pcb_fp_read_lib_all
+fp_default_search_path -> pcb_fp_default_search_path
+fp_host_uninit -> pcb_fp_host_uninit
+fp_rehash -> pcb_fp_rehash

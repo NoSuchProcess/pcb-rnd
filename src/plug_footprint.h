@@ -64,27 +64,27 @@ extern pcb_plug_fp_t *plug_fp_chain;
 
 extern pcb_fplibrary_t library; /* the footprint library */
 
-#define get_library_memory(parent) vtlib_alloc_append(((parent) == NULL ? &library.data.dir.children : &(parent)->data.dir.children), 1);
+#define pcb_get_library_memory(parent) vtlib_alloc_append(((parent) == NULL ? &library.data.dir.children : &(parent)->data.dir.children), 1);
 
-void fp_free_children(pcb_fplibrary_t *parent);
-void fp_sort_children(pcb_fplibrary_t *parent);
-void fp_rmdir(pcb_fplibrary_t *dir);
-pcb_fplibrary_t *fp_mkdir_p(const char *path);
-pcb_fplibrary_t *fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int name_len);
-pcb_fplibrary_t *fp_lib_search(pcb_fplibrary_t *dir, const char *name);
+void pcb_fp_free_children(pcb_fplibrary_t *parent);
+void pcb_fp_sort_children(pcb_fplibrary_t *parent);
+void pcb_fp_rmdir(pcb_fplibrary_t *dir);
+pcb_fplibrary_t *pcb_fp_mkdir_p(const char *path);
+pcb_fplibrary_t *pcb_fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int name_len);
+pcb_fplibrary_t *pcb_fp_lib_search(pcb_fplibrary_t *dir, const char *name);
 
 /* Append a menu entry in the tree */
-pcb_fplibrary_t *fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[]);
+pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[]);
 
 /* walk through all lib paths and build the library menu */
-int fp_read_lib_all(void);
+int pcb_fp_read_lib_all(void);
 
 
-const char *fp_default_search_path(void);
+const char *pcb_fp_default_search_path(void);
 
-int fp_host_uninit(void);
+int pcb_fp_host_uninit(void);
 
 /* rescan/reload all footprints in the library cache */
-int fp_rehash(void);
+int pcb_fp_rehash(void);
 
 #endif

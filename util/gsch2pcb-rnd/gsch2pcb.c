@@ -1229,7 +1229,7 @@ int main(int argc, char ** argv)
 
 	pcb_fp_init();
 
-	element_search_path = fp_default_search_path();
+	element_search_path = pcb_fp_default_search_path();
 
 	if (gadl_length(&schematics) == 0)
 		usage();

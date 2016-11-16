@@ -236,7 +236,7 @@ void pcb_main_uninit(void)
 	pcb_strflg_uninit_layerlist();
 
 	pcb_fp_uninit();
-	fp_host_uninit();
+	pcb_fp_host_uninit();
 	pcb_funchash_uninit();
 	free(hid_argv_orig);
 	conf_uninit();
@@ -472,7 +472,7 @@ int main(int argc, char *argv[])
 
 	/* read the library file and display it if it's not empty
 	 */
-	if (!fp_read_lib_all() && library.data.dir.children.used)
+	if (!pcb_fp_read_lib_all() && library.data.dir.children.used)
 		pcb_hid_action("LibraryChanged");
 
 	if (conf_core.rc.script_filename) {
