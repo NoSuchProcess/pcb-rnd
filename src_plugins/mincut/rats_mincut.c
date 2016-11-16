@@ -404,8 +404,8 @@ void hid_mincut_uninit(void)
 #include "stub_mincut.h"
 pcb_uninit_t hid_mincut_init(void)
 {
-	stub_rat_found_short = rat_found_short;
-	stub_rat_proc_shorts = rat_proc_shorts;
+	pcb_stub_rat_found_short = rat_found_short;
+	pcb_stub_rat_proc_shorts = rat_proc_shorts;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_mincut, field,isarray,type_name,cpath,cname,desc,flags);
 #include "rats_mincut_conf_fields.h"

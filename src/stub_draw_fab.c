@@ -45,6 +45,6 @@ void dummy_DrawFab(pcb_hid_gc_t gc)
 	DrawTextLowLevel(&t, 0);
 }
 
-int (*stub_DrawFab_overhang)(void) = dummy_DrawFab_overhang;
-void (*stub_DrawFab)(pcb_hid_gc_t gc) = dummy_DrawFab;
+int (*pcb_stub_draw_fab_overhang)(void) = dummy_DrawFab_overhang;
+void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc) = dummy_DrawFab;
 

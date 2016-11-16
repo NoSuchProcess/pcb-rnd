@@ -861,3 +861,7 @@ pcb_line_set_size -> pcb_board_set_line_width
 pcb_via_set_size -> pcb_board_set_via_size
 pcb_via_set_drilling_hole -> pcb_board_set_via_drilling_hole
 pcb_conf_set_clearance_width -> pcb_board_set_clearance
+stub_DrawFab_overhang -> pcb_stub_draw_fab_overhang
+stub_DrawFab -> pcb_stub_draw_fab
+stub_rat_found_short -> pcb_stub_rat_found_short
+stub_rat_proc_shorts -> pcb_stub_rat_proc_shorts

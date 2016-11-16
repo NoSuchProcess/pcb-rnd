@@ -22,6 +22,6 @@
 
 #include "global_typedefs.h"
 
-extern void (*stub_rat_found_short)(pcb_pin_t * pin, pcb_pad_t * pad, const char *with_net);
-extern void (*stub_rat_proc_shorts)(void);
+extern void (*pcb_stub_rat_found_short)(pcb_pin_t * pin, pcb_pad_t * pad, const char *with_net);
+extern void (*pcb_stub_rat_proc_shorts)(void);
 

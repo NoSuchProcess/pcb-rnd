@@ -31,7 +31,7 @@
 
 #include "hid.h"
 
-extern int (*stub_DrawFab_overhang)(void);
-extern void (*stub_DrawFab)(pcb_hid_gc_t gc);
+extern int (*pcb_stub_draw_fab_overhang)(void);
+extern void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc);
 
 #endif

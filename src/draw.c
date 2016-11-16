@@ -294,7 +294,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	if (gui->set_layer("fab", SL(FAB, 0), 0)) {
-		stub_DrawFab(Output.fgGC);
+		pcb_stub_draw_fab(Output.fgGC);
 		gui->end_layer();
 	}
 }

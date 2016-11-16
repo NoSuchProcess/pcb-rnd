@@ -296,7 +296,7 @@ static void hid_draw_fab_uninit(void)
 
 pcb_uninit_t hid_draw_fab_init(void)
 {
-	stub_DrawFab = DrawFab;
-	stub_DrawFab_overhang = DrawFab_overhang;
+	pcb_stub_draw_fab = DrawFab;
+	pcb_stub_draw_fab_overhang = DrawFab_overhang;
 	return hid_draw_fab_uninit;
 }
