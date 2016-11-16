@@ -38,10 +38,10 @@ pcb_route_style_t pcb_custom_route_style;
 /*! \brief Serializes the route style list 
  *  \par Function Description
  *  Right now n_styles should always be set to NUM_STYLES,
- *  since that is the number of route styles ParseRouteString()
+ *  since that is the number of route styles pcb_route_string_parse()
  *  expects to parse.
  */
-char *make_route_string(vtroutestyle_t *styles)
+char *pcb_route_string_make(vtroutestyle_t *styles)
 {
 	gds_t str;
 	int i;
@@ -62,7 +62,7 @@ char *make_route_string(vtroutestyle_t *styles)
  * comma separated Name, Dimension, Dimension, Dimension, Dimension
  * e.g. Signal,20,40,20,10:Power,40,60,28,10:...
  */
-int ParseRoutingString1(char **str, pcb_route_style_t *routeStyle, const char *default_unit)
+int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const char *default_unit)
 {
 	char *s = *str;
 	char Name[256];
@@ -124,14 +124,14 @@ int ParseRoutingString1(char **str, pcb_route_style_t *routeStyle, const char *d
 		return -1;
 }
 
-int ParseRouteString(char *s, vtroutestyle_t *styles, const char *default_unit)
+int pcb_route_string_parse(char *s, vtroutestyle_t *styles, const char *default_unit)
 {
 	int n;
 
 	vtroutestyle_truncate(styles, 0);
 	for(n = 0;;n++) {
 		vtroutestyle_enlarge(styles, n+1);
-		if (ParseRoutingString1(&s, &styles->array[n], default_unit) != 0) {
+		if (pcb_route_string_parse1(&s, &styles->array[n], default_unit) != 0) {
 			n--;
 			break;
 		}

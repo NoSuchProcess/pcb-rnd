@@ -660,7 +660,7 @@ is split across lines only to make it readable.
 pcbstyles
 		: T_STYLES '(' STRING ')'
 			{
-				if (ParseRouteString($3, &yyPCB->RouteStyle, "mil"))
+				if (pcb_route_string_parse($3, &yyPCB->RouteStyle, "mil"))
 				{
 					pcb_message(PCB_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
@@ -669,7 +669,7 @@ pcbstyles
 			}
 		| T_STYLES '[' STRING ']'
 			{
-				if (ParseRouteString(($3 == NULL ? "" : $3), &yyPCB->RouteStyle, "cmil"))
+				if (pcb_route_string_parse(($3 == NULL ? "" : $3), &yyPCB->RouteStyle, "cmil"))
 				{
 					pcb_message(PCB_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;

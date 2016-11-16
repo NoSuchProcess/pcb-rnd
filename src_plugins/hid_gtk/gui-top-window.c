@@ -712,9 +712,9 @@ void ghid_layer_buttons_update(void)
 /*! \brief Called when user clicks OK on route style dialog */
 static void route_styles_edited_cb(GHidRouteStyleSelector * rss, gboolean save, gpointer data)
 {
-	conf_setf(CFR_DESIGN, "design/routes", -1, "%s", make_route_string(&PCB->RouteStyle));
+	conf_setf(CFR_DESIGN, "design/routes", -1, "%s", pcb_route_string_make(&PCB->RouteStyle));
 	if (save)
-		conf_setf(CFR_USER, "design/routes", -1, "%s", make_route_string(&PCB->RouteStyle));
+		conf_setf(CFR_USER, "design/routes", -1, "%s", pcb_route_string_make(&PCB->RouteStyle));
 	ghid_main_menu_install_route_style_selector
 		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
 }

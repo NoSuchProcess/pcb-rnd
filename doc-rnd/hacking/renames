@@ -779,3 +779,6 @@ RotateScreenObject -> pcb_screen_obj_rotate90
 RotatePointLowLevel -> pcb_point_rotate90
 free_rotate -> pcb_rotate
 PCB_ROTATE90 -> PCB_COORD_ROTATE90
+ParseRoutingString1 -> pcb_route_string_parse1
+ParseRouteString -> pcb_route_string_parse
+make_route_string -> pcb_route_string_make
