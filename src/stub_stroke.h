@@ -20,7 +20,7 @@
  *
  */
 
-extern pcb_bool mid_stroke;
-extern void (*stub_stroke_record)(int ev_x, int ev_y);
-extern void (*stub_stroke_start)(void);
-extern void (*stub_stroke_finish)(void);
+extern pcb_bool pcb_mid_stroke;
+extern void (*pcb_stub_stroke_record)(int ev_x, int ev_y);
+extern void (*pcb_stub_stroke_start)(void);
+extern void (*pcb_stub_stroke_finish)(void);

@@ -52,7 +52,7 @@ static void real_stroke_finish(void)
 	char msg[255];
 	unsigned long num;
 
-	mid_stroke = pcb_false;
+	pcb_mid_stroke = pcb_false;
 	if (stroke_trans(msg)) {
 		num = atoi(msg);
 		switch (num) {
@@ -151,7 +151,7 @@ static void real_stroke_record(int ev_x, int ev_y)
 static void real_stroke_start(void)
 {
 	fprintf(stderr, "stroke: MIID!\n");
-	mid_stroke = pcb_true;
+	pcb_mid_stroke = pcb_true;
 	StrokeBox.X1 = Crosshair.X;
 	StrokeBox.Y1 = Crosshair.Y;
 }
@@ -160,8 +160,8 @@ pcb_uninit_t hid_stroke_init(void)
 {
 	stroke_init();
 
-	stub_stroke_record = real_stroke_record;
-	stub_stroke_start = real_stroke_start;
-	stub_stroke_finish = real_stroke_finish;
+	pcb_stub_stroke_record = real_stroke_record;
+	pcb_stub_stroke_start = real_stroke_start;
+	pcb_stub_stroke_finish = real_stroke_finish;
 	return NULL;
 }

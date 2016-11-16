@@ -692,8 +692,8 @@ pcb_uninit_t hid_vendordrill_init(void)
 	conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
 #include "vendor_conf_fields.h"
 
-	stub_vendorDrillMap = vendorDrillMap;
-	stub_vendorIsElementMappable = vendorIsElementMappable;
+	pcb_stub_vendor_drill_map = vendorDrillMap;
+	pcb_stub_vendor_is_element_mappable = vendorIsElementMappable;
 
 	PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 	return hid_vendordrill_uninit;

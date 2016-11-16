@@ -33,7 +33,7 @@ static pcb_bool stub_vendorIsElementMappable_dummy(pcb_element_t *e)
 	return pcb_false;
 }
 
-int (*stub_vendorDrillMap)(int) = stub_vendorDrillMap_dummy;
-pcb_bool (*stub_vendorIsElementMappable)(pcb_element_t *) = stub_vendorIsElementMappable_dummy;
+int (*pcb_stub_vendor_drill_map)(int) = stub_vendorDrillMap_dummy;
+pcb_bool (*pcb_stub_vendor_is_element_mappable)(pcb_element_t *) = stub_vendorIsElementMappable_dummy;
 
 

@@ -23,7 +23,7 @@
 #include "config.h"
 #include "pcb_bool.h"
 
-pcb_bool mid_stroke = pcb_false;
+pcb_bool pcb_mid_stroke = pcb_false;
 
 static void stub_stroke_record_dummy(int ev_x, int ev_y)
 {
@@ -34,6 +34,6 @@ static void stub_stroke_start_dummy(void)
 	pcb_message(PCB_MSG_DEFAULT, "Can not use libstroke: not compiled as a buildin and not loaded as a plugin\n");
 }
 
-void (*stub_stroke_record)(int ev_x, int ev_y) = stub_stroke_record_dummy;
-void (*stub_stroke_start)(void) = stub_stroke_start_dummy;
-void (*stub_stroke_finish)(void) = stub_stroke_start_dummy;
+void (*pcb_stub_stroke_record)(int ev_x, int ev_y) = stub_stroke_record_dummy;
+void (*pcb_stub_stroke_start)(void) = stub_stroke_start_dummy;
+void (*pcb_stub_stroke_finish)(void) = stub_stroke_start_dummy;

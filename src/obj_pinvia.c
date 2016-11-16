@@ -111,7 +111,7 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	Via->Thickness = Thickness;
 	Via->Clearance = Clearance;
 	Via->Mask = Mask;
-	Via->DrillingHole = stub_vendorDrillMap(DrillingHole);
+	Via->DrillingHole = pcb_stub_vendor_drill_map(DrillingHole);
 	if (Via->DrillingHole != DrillingHole) {
 		pcb_message(PCB_MSG_DEFAULT, _("%m+Mapped via drill hole to %$mS from %$mS per vendor table\n"),
 						conf_core.editor.grid_unit->allow, Via->DrillingHole, DrillingHole);
@@ -160,10 +160,10 @@ pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 	 * If there is no vendor drill map installed, this will simply
 	 * return DrillingHole.
 	 */
-	pin->DrillingHole = stub_vendorDrillMap(DrillingHole);
+	pin->DrillingHole = pcb_stub_vendor_drill_map(DrillingHole);
 
 	/* Unless we should not map drills on this element, map them! */
-	if (stub_vendorIsElementMappable(Element)) {
+	if (pcb_stub_vendor_is_element_mappable(Element)) {
 		if (pin->DrillingHole < MIN_PINORVIASIZE) {
 			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
 							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);

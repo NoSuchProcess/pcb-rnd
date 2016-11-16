@@ -26,7 +26,7 @@
 #include "config.h"
 #include "global_typedefs.h"
 
-extern int (*stub_vendorDrillMap)(int);
-extern pcb_bool (*stub_vendorIsElementMappable)(pcb_element_t *);
+extern int (*pcb_stub_vendor_drill_map)(int);
+extern pcb_bool (*pcb_stub_vendor_is_element_mappable)(pcb_element_t *);
 
 #endif /* __VENDOR_H__ */

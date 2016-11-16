@@ -1237,8 +1237,8 @@ void pcb_notify_mode(void)
 
 void pcb_event_move_crosshair(int ev_x, int ev_y)
 {
-	if (mid_stroke)
-		stub_stroke_record(ev_x, ev_y);
+	if (pcb_mid_stroke)
+		pcb_stub_stroke_record(ev_x, ev_y);
 	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
 		pcb_adjust_attached_objects();

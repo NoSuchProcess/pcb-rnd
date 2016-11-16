@@ -731,8 +731,8 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			pcb_crosshair_set_mode(PCB_MODE_POLYGON_HOLE);
 			break;
 		case F_Release:
-			if ((mid_stroke) && (conf_core.editor.enable_stroke))
-				stub_stroke_finish();
+			if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke))
+				pcb_stub_stroke_finish();
 			else
 				pcb_release_mode();
 			break;
@@ -747,7 +747,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			break;
 		case F_Stroke:
 			if (conf_core.editor.enable_stroke) {
-				stub_stroke_start();
+				pcb_stub_stroke_start();
 				break;
 			}
 			/* Handle middle mouse button restarts of drawing mode.  If not in
