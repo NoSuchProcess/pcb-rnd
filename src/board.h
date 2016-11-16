@@ -146,4 +146,7 @@ pcb_bool pcb_board_change_name(char *Name);
 void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height);
 
 
+/* free the board and remove its undo list */
+void pcb_board_remove(pcb_board_t *Ptr);
+
 #endif

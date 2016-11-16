@@ -69,16 +69,6 @@ static pcb_opfunc_t DestroyFunctions = {
 	DestroyRat
 };
 
-/* ---------------------------------------------------------------------------
- * remove PCB
- */
-void pcb_board_remove(pcb_board_t *Ptr)
-{
-	ClearUndoList(pcb_true);
-	pcb_board_free(Ptr);
-	free(Ptr);
-}
-
 /* ----------------------------------------------------------------------
  * removes all selected and visible objects
  * returns pcb_true if any objects have been removed

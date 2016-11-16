@@ -38,7 +38,6 @@
 	(PCB_TYPE_VIA | PCB_TYPE_LINE_POINT | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT |	\
 	PCB_TYPE_POLYGON_POINT | PCB_TYPE_POLYGON | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
 
-void pcb_board_remove(pcb_board_t *);
 pcb_bool RemoveSelected(void);
 void *RemoveObject(int, void *, void *, void *);
 void *DestroyObject(pcb_data_t *, int, void *, void *, void *);

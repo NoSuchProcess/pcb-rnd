@@ -32,6 +32,7 @@
 #include "hid_actions.h"
 #include "paths.h"
 #include "rtree.h"
+#include "undo.h"
 
 pcb_board_t *PCB;
 
@@ -243,4 +244,11 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 
 	if (gui != NULL)
 		pcb_hid_action("PCBChanged");
+}
+
+void pcb_board_remove(pcb_board_t *Ptr)
+{
+	ClearUndoList(pcb_true);
+	pcb_board_free(Ptr);
+	free(Ptr);
 }
