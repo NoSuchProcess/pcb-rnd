@@ -67,33 +67,33 @@ int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int
 	s->layer = -1;
 	if (obj_types & OM_LINE) {
 		s->searching = OM_LINE;
-		r_search (CURRENT->line_tree, &spot, NULL, search_callback, s, NULL);
+		pcb_r_search(CURRENT->line_tree, &spot, NULL, search_callback, s, NULL);
 	}
 
 	if (obj_types & OM_TEXT) {
 		s->searching = OM_TEXT;
-		r_search (CURRENT->text_tree, &spot, NULL, search_callback, s, NULL);
+		pcb_r_search(CURRENT->text_tree, &spot, NULL, search_callback, s, NULL);
 	}
 
 	if (obj_types & OM_ARC) {
 		s->searching = OM_ARC;
-		r_search (CURRENT->arc_tree, &spot, NULL, search_callback, s, NULL);
+		pcb_r_search(CURRENT->arc_tree, &spot, NULL, search_callback, s, NULL);
 	}
 
 	if (obj_types & OM_VIA) {
 		s->searching = OM_VIA;
-		r_search (PCB->Data->via_tree, &spot, NULL, search_callback, s, NULL);
+		pcb_r_search(PCB->Data->via_tree, &spot, NULL, search_callback, s, NULL);
 	}
 
 	if (obj_types & OM_PIN) {
 		s->searching = OM_PIN;
-		r_search (PCB->Data->pin_tree, &spot, NULL, search_callback, s, NULL);
+		pcb_r_search(PCB->Data->pin_tree, &spot, NULL, search_callback, s, NULL);
 	}
 
 	if (obj_types & OM_POLYGON) {
 		s->searching = OM_POLYGON;
 		for (s->layer = 0; s->layer < MAX_LAYER + 2; s->layer++)
-			r_search (PCB->Data->Layer[s->layer].polygon_tree, &spot, NULL, search_callback, s, NULL);
+			pcb_r_search(PCB->Data->Layer[s->layer].polygon_tree, &spot, NULL, search_callback, s, NULL);
 		s->layer = -1;
 	}
 

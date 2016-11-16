@@ -227,10 +227,10 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	/* rotate vias */
 	PCB_VIA_LOOP(Buffer->Data);
 	{
-		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
+		pcb_r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
 		PCB_VIA_ROTATE90(via, Buffer->X, Buffer->Y, Number);
 		pcb_pin_bbox(via);
-		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
+		pcb_r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
 	END_LOOP;
 
@@ -244,30 +244,30 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 	/* all layer related objects */
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
+		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
 		pcb_line_rotate90(line, Buffer->X, Buffer->Y, Number);
-		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
+		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
 	ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
+		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		pcb_arc_rotate90(arc, Buffer->X, Buffer->Y, Number);
-		r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
 	ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->text_tree, (pcb_box_t *) text);
+		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 		pcb_text_rotate90(text, Buffer->X, Buffer->Y, Number);
-		r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
+		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 	}
 	ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
+		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 		pcb_poly_rotate90(polygon, Buffer->X, Buffer->Y, Number);
-		r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	}
 	ENDALL_LOOP;
 
@@ -287,10 +287,10 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	/* rotate vias */
 	PCB_VIA_LOOP(Buffer->Data);
 	{
-		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
+		pcb_r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
 		pcb_rotate(&via->X, &via->Y, Buffer->X, Buffer->Y, cosa, sina);
 		pcb_pin_bbox(via);
-		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
+		pcb_r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
 	END_LOOP;
 
@@ -304,32 +304,32 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	/* all layer related objects */
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
+		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
 		pcb_rotate(&line->Point1.X, &line->Point1.Y, Buffer->X, Buffer->Y, cosa, sina);
 		pcb_rotate(&line->Point2.X, &line->Point2.Y, Buffer->X, Buffer->Y, cosa, sina);
 		pcb_line_bbox(line);
-		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
+		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
 	ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
+		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		pcb_rotate(&arc->X, &arc->Y, Buffer->X, Buffer->Y, cosa, sina);
 		arc->StartAngle = NormalizeAngle(arc->StartAngle + angle);
-		r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
 	ENDALL_LOOP;
 	/* FIXME: rotate text */
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
+		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 		PCB_POLY_POINT_LOOP(polygon);
 		{
 			pcb_rotate(&point->X, &point->Y, Buffer->X, Buffer->Y, cosa, sina);
 		}
 		END_LOOP;
 		pcb_poly_bbox(polygon);
-		r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	}
 	ENDALL_LOOP;
 
@@ -476,38 +476,38 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
 	PCB_VIA_LOOP(Buffer->Data);
 	{
-		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
+		pcb_r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
 		via->X = PCB_SWAP_X(via->X);
 		via->Y = PCB_SWAP_Y(via->Y);
 		pcb_pin_bbox(via);
-		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
+		pcb_r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
 	END_LOOP;
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
+		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
 		line->Point1.X = PCB_SWAP_X(line->Point1.X);
 		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y);
 		line->Point2.X = PCB_SWAP_X(line->Point2.X);
 		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y);
 		pcb_line_bbox(line);
-		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
+		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
 	ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
+		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		arc->X = PCB_SWAP_X(arc->X);
 		arc->Y = PCB_SWAP_Y(arc->Y);
 		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
 		arc->Delta = SWAP_DELTA(arc->Delta);
 		pcb_arc_bbox(arc);
-		r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
 	ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
+		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 		PCB_POLY_POINT_LOOP(polygon);
 		{
 			point->X = PCB_SWAP_X(point->X);
@@ -515,18 +515,18 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		}
 		END_LOOP;
 		pcb_poly_bbox(polygon);
-		r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 		/* hmmm, how to handle clip */
 	}
 	ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
-		r_delete_entry(layer->text_tree, (pcb_box_t *) text);
+		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 		text->X = PCB_SWAP_X(text->X);
 		text->Y = PCB_SWAP_Y(text->Y);
 		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 		pcb_text_bbox(&PCB->Font, text);
-		r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
+		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 	}
 	ENDALL_LOOP;
 	/* swap silkscreen layers */

@@ -226,28 +226,28 @@ void pcb_data_free(pcb_data_t * data)
 		END_LOOP;
 		list_map0(&layer->Polygon, pcb_polygon_t, pcb_poly_free);
 		if (layer->line_tree)
-			r_destroy_tree(&layer->line_tree);
+			pcb_r_destroy_tree(&layer->line_tree);
 		if (layer->arc_tree)
-			r_destroy_tree(&layer->arc_tree);
+			pcb_r_destroy_tree(&layer->arc_tree);
 		if (layer->text_tree)
-			r_destroy_tree(&layer->text_tree);
+			pcb_r_destroy_tree(&layer->text_tree);
 		if (layer->polygon_tree)
-			r_destroy_tree(&layer->polygon_tree);
+			pcb_r_destroy_tree(&layer->polygon_tree);
 	}
 
 	if (data->element_tree)
-		r_destroy_tree(&data->element_tree);
+		pcb_r_destroy_tree(&data->element_tree);
 	for (i = 0; i < MAX_ELEMENTNAMES; i++)
 		if (data->name_tree[i])
-			r_destroy_tree(&data->name_tree[i]);
+			pcb_r_destroy_tree(&data->name_tree[i]);
 	if (data->via_tree)
-		r_destroy_tree(&data->via_tree);
+		pcb_r_destroy_tree(&data->via_tree);
 	if (data->pin_tree)
-		r_destroy_tree(&data->pin_tree);
+		pcb_r_destroy_tree(&data->pin_tree);
 	if (data->pad_tree)
-		r_destroy_tree(&data->pad_tree);
+		pcb_r_destroy_tree(&data->pad_tree);
 	if (data->rat_tree)
-		r_destroy_tree(&data->rat_tree);
+		pcb_r_destroy_tree(&data->rat_tree);
 	/* clear struct */
 	memset(data, 0, sizeof(pcb_data_t));
 }

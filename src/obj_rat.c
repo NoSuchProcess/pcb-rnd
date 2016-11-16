@@ -90,8 +90,8 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coo
 	Line->group2 = group2;
 	pcb_line_bbox((pcb_line_t *) Line);
 	if (!Data->rat_tree)
-		Data->rat_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Data->rat_tree, &Line->BoundingBox, 0);
+		Data->rat_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(Data->rat_tree, &Line->BoundingBox, 0);
 	return (Line);
 }
 
@@ -134,7 +134,7 @@ void *AddRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 /* moves a rat-line to paste buffer */
 void *MoveRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 {
-	r_delete_entry(ctx->buffer.src->rat_tree, (pcb_box_t *) rat);
+	pcb_r_delete_entry(ctx->buffer.src->rat_tree, (pcb_box_t *) rat);
 
 	ratlist_remove(rat);
 	ratlist_append(&ctx->buffer.dst->Rat, rat);
@@ -142,8 +142,8 @@ void *MoveRatToBuffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, rat);
 
 	if (!ctx->buffer.dst->rat_tree)
-		ctx->buffer.dst->rat_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(ctx->buffer.dst->rat_tree, (pcb_box_t *) rat, 0);
+		ctx->buffer.dst->rat_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(ctx->buffer.dst->rat_tree, (pcb_box_t *) rat, 0);
 	return rat;
 }
 
@@ -200,7 +200,7 @@ void *MoveRatToLayer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 void *DestroyRat(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	if (ctx->remove.destroy_target->rat_tree)
-		r_delete_entry(ctx->remove.destroy_target->rat_tree, &Rat->BoundingBox);
+		pcb_r_delete_entry(ctx->remove.destroy_target->rat_tree, &Rat->BoundingBox);
 
 	pcb_rat_free(Rat);
 	return NULL;

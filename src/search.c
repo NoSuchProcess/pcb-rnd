@@ -105,7 +105,7 @@ static pcb_bool SearchViaByLocation(int locked, pcb_pin_t ** Via, pcb_pin_t ** D
 	info.ptr3 = (void **) Dummy2;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -126,7 +126,7 @@ static pcb_bool SearchPinByLocation(int locked, pcb_element_t ** Element, pcb_pi
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL)  != R_DIR_NOT_FOUND)
+	if (pcb_r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL)  != R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -166,7 +166,7 @@ static pcb_bool SearchPadByLocation(int locked, pcb_element_t ** Element, pcb_pa
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-	if (r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -208,7 +208,7 @@ static pcb_bool SearchLineByLocation(int locked, pcb_layer_t ** Layer, pcb_line_
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	*Layer = SearchLayer;
-	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return pcb_true;
 
 	return pcb_false;
@@ -243,7 +243,7 @@ static pcb_bool SearchRatLineByLocation(int locked, pcb_rat_t ** Line, pcb_rat_t
 	info.ptr3 = (void **) Dummy2;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -281,7 +281,7 @@ static pcb_bool SearchArcByLocation(int locked, pcb_layer_t ** Layer, pcb_arc_t 
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	*Layer = SearchLayer;
-	if (r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -313,7 +313,7 @@ static pcb_bool SearchTextByLocation(int locked, pcb_layer_t ** Layer, pcb_text_
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -346,7 +346,7 @@ static pcb_bool SearchPolygonByLocation(int locked, pcb_layer_t ** Layer, pcb_po
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -392,7 +392,7 @@ static pcb_bool SearchLinePointByLocation(int locked, pcb_layer_t ** Layer, pcb_
 	*Point = NULL;
 	info.least = MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
-	if (r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
+	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
 		return pcb_true;
 	return pcb_false;
 }
@@ -468,7 +468,7 @@ SearchElementNameByLocation(int locked, pcb_element_t ** Element, pcb_text_t ** 
 		info.area = PCB_SQUARE(MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
-		if (r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info, NULL))
+		if (pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info, NULL))
 			return pcb_true;
 	}
 	return (pcb_false);
@@ -513,7 +513,7 @@ SearchElementByLocation(int locked, pcb_element_t ** Element, pcb_element_t ** D
 		info.area = PCB_SQUARE(MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
-		if (r_search(PCB->Data->element_tree, &SearchBox, NULL, element_callback, &info, NULL))
+		if (pcb_r_search(PCB->Data->element_tree, &SearchBox, NULL, element_callback, &info, NULL))
 			return pcb_true;
 	}
 	return pcb_false;

@@ -279,7 +279,7 @@ static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * b
 	ni.trap.Y2 = ni.trap.Y1;
 	ni.trap.Y1 = bbox.Y1;
 	/* do the search! */
-	r_search(rtree, NULL, __r_find_neighbor_reg_in_sea, __r_find_neighbor_rect_in_reg, &ni, NULL);
+	pcb_r_search(rtree, NULL, __r_find_neighbor_reg_in_sea, __r_find_neighbor_rect_in_reg, &ni, NULL);
 	return ni.neighbor;
 }
 
@@ -480,8 +480,8 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			(*boxpp)->element = element;
 		}
 		END_LOOP;
-		rt_s = r_create_tree((const pcb_box_t **) seboxes.Ptr, seboxes.PtrN, 1);
-		rt_c = r_create_tree((const pcb_box_t **) ceboxes.Ptr, ceboxes.PtrN, 1);
+		rt_s = pcb_r_create_tree((const pcb_box_t **) seboxes.Ptr, seboxes.PtrN, 1);
+		rt_c = pcb_r_create_tree((const pcb_box_t **) ceboxes.Ptr, ceboxes.PtrN, 1);
 		FreePointerListMemory(&seboxes);
 		FreePointerListMemory(&ceboxes);
 		/* now, for each element, find its neighbor on all four sides */
@@ -513,8 +513,8 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		}
 		END_LOOP;
 		/* free k-d tree memory */
-		r_destroy_tree(&rt_s);
-		r_destroy_tree(&rt_c);
+		pcb_r_destroy_tree(&rt_s);
+		pcb_r_destroy_tree(&rt_c);
 	}
 	/* penalize total area used by this layout */
 	{

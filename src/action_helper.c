@@ -1088,11 +1088,11 @@ void pcb_notify_mode(void)
 					for (i = 0; i < MAX_ELEMENTNAMES; i++) {
 						if (i == save_n)
 							EraseElementName(e);
-						r_delete_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]));
+						pcb_r_delete_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]));
 						memcpy(&(e->Name[i]), &(estr[i]), sizeof(pcb_text_t));
 						e->Name[i].Element = e;
 						pcb_text_bbox(&PCB->Font, &(e->Name[i]));
-						r_insert_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]), 0);
+						pcb_r_insert_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]), 0);
 						if (i == save_n)
 							DrawElementName(e);
 					}

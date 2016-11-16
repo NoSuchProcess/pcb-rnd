@@ -349,26 +349,26 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 			last2 = length2;
 			if (setjmp(info.env) == 0) {
 				info.line = &line1;
-				r_search(PCB->Data->via_tree, &line1.BoundingBox, NULL, drcVia_callback, &info, NULL);
-				r_search(PCB->Data->pin_tree, &line1.BoundingBox, NULL, drcVia_callback, &info, NULL);
+				pcb_r_search(PCB->Data->via_tree, &line1.BoundingBox, NULL, drcVia_callback, &info, NULL);
+				pcb_r_search(PCB->Data->pin_tree, &line1.BoundingBox, NULL, drcVia_callback, &info, NULL);
 				if (info.solder || comp == group)
-					r_search(PCB->Data->pad_tree, &line1.BoundingBox, NULL, drcPad_callback, &info, NULL);
+					pcb_r_search(PCB->Data->pad_tree, &line1.BoundingBox, NULL, drcPad_callback, &info, NULL);
 				if (two_lines) {
 					info.line = &line2;
-					r_search(PCB->Data->via_tree, &line2.BoundingBox, NULL, drcVia_callback, &info, NULL);
-					r_search(PCB->Data->pin_tree, &line2.BoundingBox, NULL, drcVia_callback, &info, NULL);
+					pcb_r_search(PCB->Data->via_tree, &line2.BoundingBox, NULL, drcVia_callback, &info, NULL);
+					pcb_r_search(PCB->Data->pin_tree, &line2.BoundingBox, NULL, drcVia_callback, &info, NULL);
 					if (info.solder || comp == group)
-						r_search(PCB->Data->pad_tree, &line2.BoundingBox, NULL, drcPad_callback, &info, NULL);
+						pcb_r_search(PCB->Data->pad_tree, &line2.BoundingBox, NULL, drcPad_callback, &info, NULL);
 				}
 				GROUP_LOOP(PCB->Data, group);
 				{
 					info.line = &line1;
-					r_search(layer->line_tree, &line1.BoundingBox, NULL, drcLine_callback, &info, NULL);
-					r_search(layer->arc_tree, &line1.BoundingBox, NULL, drcArc_callback, &info, NULL);
+					pcb_r_search(layer->line_tree, &line1.BoundingBox, NULL, drcLine_callback, &info, NULL);
+					pcb_r_search(layer->arc_tree, &line1.BoundingBox, NULL, drcArc_callback, &info, NULL);
 					if (two_lines) {
 						info.line = &line2;
-						r_search(layer->line_tree, &line2.BoundingBox, NULL, drcLine_callback, &info, NULL);
-						r_search(layer->arc_tree, &line2.BoundingBox, NULL, drcArc_callback, &info, NULL);
+						pcb_r_search(layer->line_tree, &line2.BoundingBox, NULL, drcLine_callback, &info, NULL);
+						pcb_r_search(layer->arc_tree, &line2.BoundingBox, NULL, drcArc_callback, &info, NULL);
 					}
 				}
 				END_LOOP;
@@ -446,15 +446,15 @@ static void drc_line(pcb_point_t *end)
 	pcb_line_bbox(&line);
 	if (setjmp(info.env) == 0) {
 		info.line = &line;
-		r_search(PCB->Data->via_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
-		r_search(PCB->Data->pin_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
+		pcb_r_search(PCB->Data->via_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
+		pcb_r_search(PCB->Data->pin_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
 		if (info.solder || comp == group)
-			r_search(PCB->Data->pad_tree, &line.BoundingBox, NULL, drcPad_callback, &info, NULL);
+			pcb_r_search(PCB->Data->pad_tree, &line.BoundingBox, NULL, drcPad_callback, &info, NULL);
 		GROUP_LOOP(PCB->Data, group);
 		{
 			info.line = &line;
-			r_search(layer->line_tree, &line.BoundingBox, NULL, drcLine_callback, &info, NULL);
-			r_search(layer->arc_tree, &line.BoundingBox, NULL, drcArc_callback, &info, NULL);
+			pcb_r_search(layer->line_tree, &line.BoundingBox, NULL, drcLine_callback, &info, NULL);
+			pcb_r_search(layer->arc_tree, &line.BoundingBox, NULL, drcArc_callback, &info, NULL);
 		}
 		END_LOOP;
 		/* no intersector! */

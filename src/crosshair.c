@@ -833,8 +833,8 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 		/* Only find points of arcs and lines on currently visible layers. */
 		if (!layer->On)
 			continue;
-		r_search(layer->line_tree, &SearchBox, NULL, onpoint_line_callback, &info, NULL);
-		r_search(layer->arc_tree, &SearchBox, NULL, onpoint_arc_callback, &info, NULL);
+		pcb_r_search(layer->line_tree, &SearchBox, NULL, onpoint_line_callback, &info, NULL);
+		pcb_r_search(layer->arc_tree, &SearchBox, NULL, onpoint_arc_callback, &info, NULL);
 	}
 
 	/* Undraw the old objects */

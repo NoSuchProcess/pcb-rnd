@@ -196,7 +196,7 @@ static void CheckPadForRubberbandConnection(pcb_pad_t *Pad)
 		/* check all visible lines of the group member */
 		info.layer = layer;
 		if (info.layer->On) {
-			r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+			pcb_r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 		}
 	}
 	END_LOOP;
@@ -262,7 +262,7 @@ static void CheckPadForRat(pcb_pad_t *Pad)
 	info.pad = Pad;
 	info.type = PCB_TYPE_PAD;
 
-	r_search(PCB->Data->rat_tree, &Pad->BoundingBox, NULL, rat_callback, &info, NULL);
+	pcb_r_search(PCB->Data->rat_tree, &Pad->BoundingBox, NULL, rat_callback, &info, NULL);
 }
 
 static void CheckPinForRat(pcb_pin_t *Pin)
@@ -271,7 +271,7 @@ static void CheckPinForRat(pcb_pin_t *Pin)
 
 	info.type = PCB_TYPE_PIN;
 	info.pin = Pin;
-	r_search(PCB->Data->rat_tree, &Pin->BoundingBox, NULL, rat_callback, &info, NULL);
+	pcb_r_search(PCB->Data->rat_tree, &Pin->BoundingBox, NULL, rat_callback, &info, NULL);
 }
 
 static void CheckLinePointForRat(pcb_layer_t *Layer, pcb_point_t *Point)
@@ -281,7 +281,7 @@ static void CheckLinePointForRat(pcb_layer_t *Layer, pcb_point_t *Point)
 	info.point = Point;
 	info.type = PCB_TYPE_LINE_POINT;
 
-	r_search(PCB->Data->rat_tree, (pcb_box_t *) Point, NULL, rat_callback, &info, NULL);
+	pcb_r_search(PCB->Data->rat_tree, (pcb_box_t *) Point, NULL, rat_callback, &info, NULL);
 }
 
 /* ---------------------------------------------------------------------------
@@ -313,7 +313,7 @@ static void CheckPinForRubberbandConnection(pcb_pin_t *Pin)
 
 	for (n = 0; n < max_copper_layer; n++) {
 		info.layer = LAYER_PTR(n);
-		r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+		pcb_r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 	}
 }
 
@@ -343,7 +343,7 @@ static void CheckLinePointForRubberbandConnection(pcb_layer_t *Layer, pcb_line_t
 		/* check all visible lines of the group member */
 		if (layer->On) {
 			info.layer = layer;
-			r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+			pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 		}
 	}
 	END_LOOP;

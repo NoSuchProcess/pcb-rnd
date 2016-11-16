@@ -100,9 +100,9 @@ mtspace_t *mtspace_create(void)
 
 	/* create mtspace data structure */
 	mtspace = (mtspace_t *) malloc(sizeof(*mtspace));
-	mtspace->ftree = r_create_tree(NULL, 0, 0);
-	mtspace->etree = r_create_tree(NULL, 0, 0);
-	mtspace->otree = r_create_tree(NULL, 0, 0);
+	mtspace->ftree = pcb_r_create_tree(NULL, 0, 0);
+	mtspace->etree = pcb_r_create_tree(NULL, 0, 0);
+	mtspace->otree = pcb_r_create_tree(NULL, 0, 0);
 	/* done! */
 	return mtspace;
 }
@@ -111,9 +111,9 @@ mtspace_t *mtspace_create(void)
 void mtspace_destroy(mtspace_t ** mtspacep)
 {
 	assert(mtspacep);
-	r_destroy_tree(&(*mtspacep)->ftree);
-	r_destroy_tree(&(*mtspacep)->etree);
-	r_destroy_tree(&(*mtspacep)->otree);
+	pcb_r_destroy_tree(&(*mtspacep)->ftree);
+	pcb_r_destroy_tree(&(*mtspacep)->etree);
+	pcb_r_destroy_tree(&(*mtspacep)->otree);
 	free(*mtspacep);
 	*mtspacep = NULL;
 }
@@ -134,7 +134,7 @@ static pcb_r_dir_t mts_remove_one(const pcb_box_t * b, void *cl)
 	/* the info box is pre-bloated, so just check equality */
 	if (b->X1 == info->box.X1 && b->X2 == info->box.X2 &&
 			b->Y1 == info->box.Y1 && b->Y2 == info->box.Y2 && box->clearance == info->clearance) {
-		r_delete_entry(info->tree, b);
+		pcb_r_delete_entry(info->tree, b);
 		longjmp(info->env, 1);
 	}
 	return R_DIR_NOT_FOUND;
@@ -156,7 +156,7 @@ pcb_rtree_t *which_tree(mtspace_t * mtspace, mtspace_type_t which)
 void mtspace_add(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t which, pcb_coord_t clearance)
 {
 	mtspacebox_t *filler = mtspace_create_box(box, clearance);
-	r_insert_entry(which_tree(mtspace, which), (const pcb_box_t *) filler, 1);
+	pcb_r_insert_entry(which_tree(mtspace, which), (const pcb_box_t *) filler, 1);
 }
 
 /* remove a space-filler from the empty space representation. */
@@ -170,7 +170,7 @@ void mtspace_remove(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t w
 	cl.tree = which_tree(mtspace, which);
 	small_search = pcb_box_center(box);
 	if (setjmp(cl.env) == 0) {
-		r_search(cl.tree, &small_search, NULL, mts_remove_one, &cl, NULL);
+		pcb_r_search(cl.tree, &small_search, NULL, mts_remove_one, &cl, NULL);
 		assert(0);									/* didn't find it?? */
 	}
 }
@@ -305,7 +305,7 @@ static void qloop(struct query_closure *qc, pcb_rtree_t * tree, heap_or_vector r
 		if (setjmp(qc->env) == 0) {
 			assert(pcb_box_is_good(cbox));
 			qc->cbox = cbox;
-			r_search(tree, cbox, NULL, query_one, qc, &n);
+			pcb_r_search(tree, cbox, NULL, query_one, qc, &n);
 			assert(n == 0);
 			/* nothing intersected with this tree, put it in the result vector */
 			if (is_vec)

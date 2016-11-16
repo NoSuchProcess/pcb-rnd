@@ -614,7 +614,7 @@ void hidgl_fill_pcb_polygon(pcb_polygon_t * poly, const pcb_box_t * clip_box, do
 
 	/* Drawing operations now set our reference bit in the stencil buffer */
 
-	r_search(poly->Clipped->contour_tree, clip_box, NULL, do_hole, &info, NULL);
+	pcb_r_search(poly->Clipped->contour_tree, clip_box, NULL, do_hole, &info, NULL);
 	hidgl_flush_triangles(&buffer);
 
 	glPopAttrib();								/* Restore the colour and stencil buffer write-mask etc.. */

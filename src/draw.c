@@ -135,8 +135,8 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_bo
 	if (!draw_plated && draw_unplated)
 		plated = 0;
 
-	r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
-	r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
+	pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
+	pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, &plated, NULL);
 }
 
 /* ---------------------------------------------------------------------------
@@ -209,11 +209,11 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 			&& gui->set_layer("invisible", SL(INVISIBLE, 0), 0)) {
 		side = SWAP_IDENT ? COMPONENT_LAYER : SOLDER_LAYER;
 		if (PCB->ElementOn) {
-			r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-			r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
+			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
+			pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 			pcb_draw_layer(&(PCB->Data->Layer[max_copper_layer + side]), drawn_area);
 		}
-		r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
+		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		gui->end_layer();
 	}
 
@@ -263,7 +263,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	if (gui->gui) {
 		/* Draw element Marks */
 		if (PCB->PinOn)
-			r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
+			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
 		/* Draw rat lines on top */
 		if (gui->set_layer("rats", SL(RATS, 0), 0)) {
 			DrawRats(drawn_area);
@@ -311,27 +311,27 @@ static void DrawPPV(int group, const pcb_box_t * drawn_area)
 
 	if (PCB->PinOn || !gui->gui) {
 		/* draw element pins */
-		r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_pin_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_pin_callback, NULL, NULL);
 
 		/* draw element pads */
 		if (group == component_group) {
 			side = COMPONENT_LAYER;
-			r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
+			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		}
 
 		if (group == solder_group) {
 			side = SOLDER_LAYER;
-			r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
+			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		}
 	}
 
 	/* draw vias */
 	if (PCB->ViaOn || !gui->gui) {
-		r_search(PCB->Data->via_tree, drawn_area, NULL, draw_via_callback, NULL, NULL);
-		r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, draw_via_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
 	}
 	if (PCB->PinOn || pcb_draw_doing_assy)
-		r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
+		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
 }
 
 /* ---------------------------------------------------------------------------
@@ -352,22 +352,22 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 #endif
 		pcb_draw_layer(LAYER_PTR(max_copper_layer + side), drawn_area);
 		/* draw package */
-		r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
+		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
+		pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 #if 0
 	}
 
 	gui->use_mask(HID_MASK_CLEAR);
-	r_search(PCB->Data->pin_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
-	r_search(PCB->Data->via_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
-	r_search(PCB->Data->pad_tree, drawn_area, NULL, clear_pad_callback, &side, NULL);
+	pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, clear_pad_callback, &side, NULL);
 
 	if (gui->poly_after) {
 		gui->use_mask(HID_MASK_AFTER);
 		pcb_draw_layer(LAYER_PTR(max_copper_layer + layer), drawn_area);
 		/* draw package */
-		r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-		r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
+		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
+		pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 	}
 	gui->use_mask(HID_MASK_OFF);
 #endif
@@ -402,9 +402,9 @@ static void DrawMask(int side, const pcb_box_t * screen)
 		gui->use_mask(HID_MASK_CLEAR);
 	}
 
-	r_search(PCB->Data->pin_tree, screen, NULL, clear_pin_callback, NULL, NULL);
-	r_search(PCB->Data->via_tree, screen, NULL, clear_pin_callback, NULL, NULL);
-	r_search(PCB->Data->pad_tree, screen, NULL, clear_pad_callback, &side, NULL);
+	pcb_r_search(PCB->Data->pin_tree, screen, NULL, clear_pin_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->via_tree, screen, NULL, clear_pin_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->pad_tree, screen, NULL, clear_pad_callback, &side, NULL);
 
 	if (thin)
 		gui->set_color(Output.pmGC, "erase");
@@ -426,7 +426,7 @@ static void DrawRats(const pcb_box_t * drawn_area)
 
 	if (can_mask)
 		gui->use_mask(HID_MASK_CLEAR);
-	r_search(PCB->Data->rat_tree, drawn_area, NULL, draw_rat_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, draw_rat_callback, NULL, NULL);
 	if (can_mask)
 		gui->use_mask(HID_MASK_OFF);
 }
@@ -439,19 +439,19 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	info.layer = Layer;
 
 	/* print the non-clearing polys */
-	r_search(Layer->polygon_tree, screen, NULL, draw_poly_callback, &info, NULL);
+	pcb_r_search(Layer->polygon_tree, screen, NULL, draw_poly_callback, &info, NULL);
 
 	if (conf_core.editor.check_planes)
 		return;
 
 	/* draw all visible lines this layer */
-	r_search(Layer->line_tree, screen, NULL, draw_line_callback, Layer, NULL);
+	pcb_r_search(Layer->line_tree, screen, NULL, draw_line_callback, Layer, NULL);
 
 	/* draw the layer arcs on screen */
-	r_search(Layer->arc_tree, screen, NULL, draw_arc_callback, Layer, NULL);
+	pcb_r_search(Layer->arc_tree, screen, NULL, draw_arc_callback, Layer, NULL);
 
 	/* draw the layer text on screen */
-	r_search(Layer->text_tree, screen, NULL, draw_text_callback, Layer, NULL);
+	pcb_r_search(Layer->text_tree, screen, NULL, draw_text_callback, Layer, NULL);
 
 	/* We should check for gui->gui here, but it's kinda cool seeing the
 	   auto-outline magically disappear when you first add something to

@@ -528,7 +528,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_fprintf(stderr, "search (%ms,%ms)->(%ms,%ms):\n", info.box.X1, info.box.Y1, info.box.X2, info.box.Y2);
 		info.line = NULL;
 		info.smallest = NULL;
-		r_search(info.layer->line_tree, &info.box, NULL, jostle_callback, &info, &found);
+		pcb_r_search(info.layer->line_tree, &info.box, NULL, jostle_callback, &info, &found);
 		if (found) {
 			expand = NULL;
 			MakeBypassingLines(info.smallest, info.layer, info.line, info.side, &expand);

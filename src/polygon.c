@@ -1025,23 +1025,23 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 		info.accumulate = NULL;
 		info.batch_size = 0;
 		if (info.solder || group == Group(Data, component_silk_layer)) {
-			r_search(Data->pad_tree, &region, NULL, pad_sub_callback, &info, &seen);
+			pcb_r_search(Data->pad_tree, &region, NULL, pad_sub_callback, &info, &seen);
 			r += seen;
 		}
 		GROUP_LOOP(Data, group);
 		{
-			r_search(layer->line_tree, &region, NULL, line_sub_callback, &info, &seen);
+			pcb_r_search(layer->line_tree, &region, NULL, line_sub_callback, &info, &seen);
 			r += seen;
 			subtract_accumulated(&info, polygon);
-			r_search(layer->arc_tree, &region, NULL, arc_sub_callback, &info, &seen);
+			pcb_r_search(layer->arc_tree, &region, NULL, arc_sub_callback, &info, &seen);
 			r += seen;
-			r_search(layer->text_tree, &region, NULL, text_sub_callback, &info, &seen);
+			pcb_r_search(layer->text_tree, &region, NULL, text_sub_callback, &info, &seen);
 			r += seen;
 		}
 		END_LOOP;
-		r_search(Data->via_tree, &region, NULL, pin_sub_callback, &info, &seen);
+		pcb_r_search(Data->via_tree, &region, NULL, pin_sub_callback, &info, &seen);
 		r += seen;
-		r_search(Data->pin_tree, &region, NULL, pin_sub_callback, &info, &seen);
+		pcb_r_search(Data->pin_tree, &region, NULL, pin_sub_callback, &info, &seen);
 		r += seen;
 		subtract_accumulated(&info, polygon);
 	}
@@ -1346,8 +1346,8 @@ void pcb_polygon_copy_attached_to_layer(void)
 	memset(&Crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
 	pcb_poly_bbox(polygon);
 	if (!CURRENT->polygon_tree)
-		CURRENT->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(CURRENT->polygon_tree, (pcb_box_t *) polygon, 0);
+		CURRENT->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(CURRENT->polygon_tree, (pcb_box_t *) polygon, 0);
 	pcb_poly_init_clip(PCB->Data, CURRENT, polygon);
 	DrawPolygon(CURRENT, polygon);
 	SetChangedFlag(pcb_true);
@@ -1476,7 +1476,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			LAYER_LOOP(Data, max_copper_layer);
 			{
 				info.layer = layer;
-				r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
+				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
 				r += seen;
 			}
 			END_LOOP;
@@ -1485,7 +1485,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((pcb_layer_t *) ptr1))));
 			{
 				info.layer = layer;
-				r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
+				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
 				r += seen;
 			}
 			END_LOOP;
@@ -1503,7 +1503,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((pcb_layer_t *) ptr1))));
 		{
 			info.layer = layer;
-			r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
+			pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
 			r += seen;
 		}
 		END_LOOP;
@@ -1515,7 +1515,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			GROUP_LOOP(Data, group);
 			{
 				info.layer = layer;
-				r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
+				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
 				r += seen;
 			}
 			END_LOOP;
@@ -1733,7 +1733,7 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_polygon_t *poly)
 			newone->Clipped = p;
 			p = p->f;									/* go to next pline */
 			newone->Clipped->b = newone->Clipped->f = newone->Clipped;	/* unlink from others */
-			r_insert_entry(layer->polygon_tree, (pcb_box_t *) newone, 0);
+			pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) newone, 0);
 			DrawPolygon(layer, newone);
 		}
 		else {
@@ -1833,8 +1833,8 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 		pcb_poly_init_clip(Destination, Layer, Polygon);
 		pcb_poly_bbox(Polygon);
 		if (!Layer->polygon_tree)
-			Layer->polygon_tree = r_create_tree(NULL, 0, 0);
-		r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+			Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+		pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 
 		DrawPolygon(Layer, Polygon);
 		/* add to undo list */

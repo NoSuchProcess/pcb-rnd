@@ -167,8 +167,8 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon)
 {
 	pcb_poly_bbox(polygon);
 	if (!Layer->polygon_tree)
-		Layer->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
+		Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
 }
 
 /* creates a new polygon on a layer */
@@ -240,8 +240,8 @@ void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 	 * skeleton polygon object, which won't have correct bounds.
 	 */
 	if (!layer->polygon_tree)
-		layer->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+		layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND | ctx->buffer.extraflg, polygon);
 	return (polygon);
@@ -253,7 +253,7 @@ void *MovePolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t *
 {
 	pcb_layer_t *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
 
-	r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
+	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 
 	polylist_remove(polygon);
 	polylist_append(&lay->Polygon, polygon);
@@ -261,8 +261,8 @@ void *MovePolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t *
 	PCB_FLAG_CLEAR(PCB_FLAG_FOUND, polygon);
 
 	if (!lay->polygon_tree)
-		lay->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(lay->polygon_tree, (pcb_box_t *) polygon, 0);
+		lay->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(lay->polygon_tree, (pcb_box_t *) polygon, 0);
 	return (polygon);
 }
 
@@ -315,7 +315,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 	 * second, shift the points up to make room for the new point
 	 */
 	ErasePolygon(Polygon);
-	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
+	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	save = *pcb_poly_point_new(Polygon, ctx->insert.x, ctx->insert.y);
 	for (n = Polygon->PointN - 1; n > ctx->insert.idx; n--)
 		Polygon->Points[n] = Polygon->Points[n - 1];
@@ -330,7 +330,7 @@ void *InsertPointIntoPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 	AddObjectToInsertPointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
 
 	pcb_poly_bbox(Polygon);
-	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	if (ctx->insert.forcible || !pcb_poly_remove_excess_points(Layer, Polygon)) {
 		DrawPolygon(Layer, Polygon);
@@ -356,9 +356,9 @@ void *MovePolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 	if (Layer->On) {
 		ErasePolygon(Polygon);
 	}
-	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
+	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_move(Polygon, ctx->move.dx, ctx->move.dy);
-	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	if (Layer->On) {
 		DrawPolygon(Layer, Polygon);
@@ -373,10 +373,10 @@ void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 	if (Layer->On) {
 		ErasePolygon(Polygon);
 	}
-	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
+	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 	pcb_poly_bbox(Polygon);
-	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_remove_excess_points(Layer, Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	if (Layer->On) {
@@ -389,14 +389,14 @@ void *MovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Poly
 /* moves a polygon between layers; lowlevel routines */
 void *MovePolygonToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_polygon_t * polygon, pcb_layer_t * Destination)
 {
-	r_delete_entry(Source->polygon_tree, (pcb_box_t *) polygon);
+	pcb_r_delete_entry(Source->polygon_tree, (pcb_box_t *) polygon);
 
 	polylist_remove(polygon);
 	polylist_append(&Destination->Polygon, polygon);
 
 	if (!Destination->polygon_tree)
-		Destination->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Destination->polygon_tree, (pcb_box_t *) polygon, 0);
+		Destination->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(Destination->polygon_tree, (pcb_box_t *) polygon, 0);
 
 	return polygon;
 }
@@ -442,9 +442,9 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 	d.dnum = GetLayerNumber(PCB->Data, ctx->move.dst_layer);
 	d.polygon = Polygon;
 	d.type = PCB_TYPE_PIN;
-	r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
+	pcb_r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
 	d.type = PCB_TYPE_VIA;
-	r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
+	pcb_r_search(PCB->Data->via_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);
 	newone = (struct pcb_polygon_s *) MovePolygonToLayerLowLevel(ctx, Layer, Polygon, ctx->move.dst_layer);
 	pcb_poly_init_clip(PCB->Data, ctx->move.dst_layer, newone);
 	if (ctx->move.dst_layer->On) {
@@ -458,7 +458,7 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 /* destroys a polygon from a layer */
 void *DestroyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
-	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
+	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_free_fields(Polygon);
 
 	pcb_poly_free(Polygon);
@@ -483,7 +483,7 @@ void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 	if (contour_points <= 3)
 		return RemovePolygonContour(ctx, Layer, Polygon, contour);
 
-	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
+	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 
 	/* remove point from list, keep point order */
 	for (i = point_idx; i < Polygon->PointN - 1; i++)
@@ -496,7 +496,7 @@ void *DestroyPolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *P
 			Polygon->HoleIndex[i]--;
 
 	pcb_poly_bbox(Polygon);
-	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 	return (Polygon);
 }
@@ -590,7 +590,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 
 	/* insert the polygon-point into the undo list */
 	AddObjectToRemovePointUndoList(PCB_TYPE_POLYGON_POINT, Layer, Polygon, point_idx);
-	r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
+	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 
 	/* remove point from list, keep point order */
 	for (i = point_idx; i < Polygon->PointN - 1; i++)
@@ -603,7 +603,7 @@ void *RemovePolygonPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 			Polygon->HoleIndex[i]--;
 
 	pcb_poly_bbox(Polygon);
-	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 	pcb_poly_remove_excess_points(Layer, Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
 
@@ -625,8 +625,8 @@ void *CopyPolygon(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 	pcb_poly_copy(polygon, Polygon);
 	pcb_poly_move(polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	if (!Layer->polygon_tree)
-		Layer->polygon_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
+		Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	pcb_poly_init_clip(PCB->Data, Layer, polygon);
 	DrawPolygon(Layer, polygon);
 	AddObjectToCreateUndoList(PCB_TYPE_POLYGON, Layer, polygon, polygon);

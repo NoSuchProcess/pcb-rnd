@@ -782,3 +782,10 @@ PCB_ROTATE90 -> PCB_COORD_ROTATE90
 ParseRoutingString1 -> pcb_route_string_parse1
 ParseRouteString -> pcb_route_string_parse
 make_route_string -> pcb_route_string_make
+r_create_tree -> pcb_r_create_tree
+r_destroy_tree -> pcb_r_destroy_tree
+r_delete_entry -> pcb_r_delete_entry
+r_insert_entry -> pcb_r_insert_entry
+r_search -> pcb_r_search
+r_region_is_empty -> pcb_r_region_is_empty
+__r_dump_tree -> pcb_r_dump_tree

@@ -199,8 +199,8 @@ void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via)
 {
 	pcb_pin_bbox(Via);
 	if (!Data->via_tree)
-		Data->via_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
+		Data->via_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
 }
 
 /* sets the bounding box of a pin or via */
@@ -243,15 +243,15 @@ void *MoveViaToBuffer(pcb_opctx_t *ctx, pcb_pin_t * via)
 {
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_VIA, via, via);
 
-	r_delete_entry(ctx->buffer.src->via_tree, (pcb_box_t *) via);
+	pcb_r_delete_entry(ctx->buffer.src->via_tree, (pcb_box_t *) via);
 	pinlist_remove(via);
 	pinlist_append(&ctx->buffer.dst->Via, via);
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, via);
 
 	if (!ctx->buffer.dst->via_tree)
-		ctx->buffer.dst->via_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *) via, 0);
+		ctx->buffer.dst->via_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(ctx->buffer.dst->via_tree, (pcb_box_t *) via, 0);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_VIA, via, via);
 	return via;
 }
@@ -299,7 +299,7 @@ void *ChangeViaSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 			value >= MIN_PINORVIASIZE && value >= Via->DrillingHole + MIN_PINORVIACOPPER && value != Via->Thickness) {
 		AddObjectToSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
-		r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
+		pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Via, Via);
 		if (Via->Mask) {
 			AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
@@ -307,7 +307,7 @@ void *ChangeViaSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 		}
 		Via->Thickness = value;
 		pcb_pin_bbox(Via);
-		r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
+		pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 		DrawVia(Via);
 		return (Via);
@@ -385,10 +385,10 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	AddObjectToClearSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	EraseVia(Via);
-	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
+	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	Via->Clearance = value;
 	pcb_pin_bbox(Via);
-	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
+	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
 	Via->Element = NULL;
@@ -408,7 +408,7 @@ void *ChangePinSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 		AddObjectToSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
-		r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
+		pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 		Pin->Mask += value - Pin->Thickness;
 		Pin->Thickness = value;
@@ -440,7 +440,7 @@ void *ChangePinClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pi
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PIN, Element, Pin);
 	AddObjectToClearSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 	ErasePin(Pin);
-	r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
+	pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 	Pin->Clearance = value;
 	/* SetElementBB updates all associated rtrees */
 	pcb_element_bbox(PCB->Data, Element, &PCB->Font);
@@ -633,7 +633,7 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 	EraseVia(Via);
 	AddObjectToFlagUndoList(PCB_TYPE_VIA, Via, Via, Via);
 	AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
-	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
+	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	PCB_FLAG_TOGGLE(PCB_FLAG_HOLE, Via);
 
@@ -652,7 +652,7 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 	}
 
 	pcb_pin_bbox(Via);
-	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
+	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	DrawVia(Via);
 	pcb_draw();
@@ -670,7 +670,7 @@ void *ChangePinMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin
 	if (value != Pin->Mask) {
 		AddObjectToMaskSizeUndoList(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
-		r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
+		pcb_r_delete_entry(PCB->Data->pin_tree, &Pin->BoundingBox);
 		Pin->Mask = value;
 		pcb_element_bbox(PCB->Data, Element, &PCB->Font);
 		DrawPin(Pin);
@@ -689,10 +689,10 @@ void *ChangeViaMaskSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 	if (value != Via->Mask) {
 		AddObjectToMaskSizeUndoList(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
-		r_delete_entry(PCB->Data->via_tree, &Via->BoundingBox);
+		pcb_r_delete_entry(PCB->Data->via_tree, &Via->BoundingBox);
 		Via->Mask = value;
 		pcb_pin_bbox(Via);
-		r_insert_entry(PCB->Data->via_tree, &Via->BoundingBox, 0);
+		pcb_r_insert_entry(PCB->Data->via_tree, &Via->BoundingBox, 0);
 		DrawVia(Via);
 		return (Via);
 	}
@@ -716,12 +716,12 @@ void *CopyVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* moves a via */
 void *MoveVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
+	pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	pcb_via_move(Via, ctx->move.dx, ctx->move.dy);
 	if (PCB->ViaOn)
 		EraseVia(Via);
-	r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
+	pcb_r_insert_entry(PCB->Data->via_tree, (pcb_box_t *) Via, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_VIA, Via, Via);
 	if (PCB->ViaOn) {
 		DrawVia(Via);
@@ -733,7 +733,7 @@ void *MoveVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 /* destroys a via */
 void *DestroyVia(pcb_opctx_t *ctx, pcb_pin_t *Via)
 {
-	r_delete_entry(ctx->remove.destroy_target->via_tree, (pcb_box_t *) Via);
+	pcb_r_delete_entry(ctx->remove.destroy_target->via_tree, (pcb_box_t *) Via);
 	free(Via->Name);
 
 	pcb_via_free(Via);

@@ -802,7 +802,7 @@ static routebox_t *FindRouteBoxOnLayerGroup(routedata_t * rd, pcb_coord_t X, pcb
 	info.winner = NULL;
 	info.query = pcb_point_box(X, Y);
 	if (setjmp(info.env) == 0)
-		r_search(rd->layergrouptree[layergroup], &info.query, NULL, __found_one_on_lg, &info, NULL);
+		pcb_r_search(rd->layergrouptree[layergroup], &info.query, NULL, __found_one_on_lg, &info, NULL);
 	return info.winner;
 }
 
@@ -1128,7 +1128,7 @@ static routedata_t *CreateRouteData()
 	/* create r-trees from pointer lists */
 	for (i = 0; i < max_group; i++) {
 		/* create the r-tree */
-		rd->layergrouptree[i] = r_create_tree((const pcb_box_t **) layergroupboxes[i].Ptr, layergroupboxes[i].PtrN, 1);
+		rd->layergrouptree[i] = pcb_r_create_tree((const pcb_box_t **) layergroupboxes[i].Ptr, layergroupboxes[i].PtrN, 1);
 	}
 
 	if (AutoRouteParameters.use_vias) {
@@ -1157,7 +1157,7 @@ void DestroyRouteData(routedata_t ** rd)
 {
 	int i;
 	for (i = 0; i < max_group; i++)
-		r_destroy_tree(&(*rd)->layergrouptree[i]);
+		pcb_r_destroy_tree(&(*rd)->layergrouptree[i]);
 	if (AutoRouteParameters.use_vias)
 		mtspace_destroy(&(*rd)->mtspace);
 /*	free((*rd)->layergrouptree);*/
@@ -1517,7 +1517,7 @@ static routebox_t *minpcb_cost_target_to_point(const pcb_cheap_point_t * CostPoi
 		mtc.nearest_cost = pcb_cost_to_routebox(mtc.CostPoint, mtc.CostPointLayer, mtc.nearest);
 	else
 		mtc.nearest_cost = EXPENSIVE;
-	r_search(targets, NULL, __region_within_guess, __found_new_guess, &mtc, NULL);
+	pcb_r_search(targets, NULL, __region_within_guess, __found_new_guess, &mtc, NULL);
 	assert(mtc.nearest != NULL && mtc.nearest_cost >= 0);
 	assert(mtc.nearest->flags.target);	/* this is a target, right? */
 	return mtc.nearest;
@@ -2091,7 +2091,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 	}
 	ans.keep = e->rb->style->Clearance;
 	ans.parent = nonhomeless_parent(e->rb);
-	r_search(rtree, &ans.inflated, NULL, __Expand_this_rect, &ans, NULL);
+	pcb_r_search(rtree, &ans.inflated, NULL, __Expand_this_rect, &ans, NULL);
 /* because the overlaping boxes are found in random order, some blockers
  * may have limited edges prematurely, so we check if the blockers realy
  * are blocking, and make another try if not
@@ -2113,7 +2113,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 	else
 		ans.done |= _WEST;
 	if (ans.done != _NORTH + _EAST + _SOUTH + _WEST) {
-		r_search(rtree, &ans.inflated, NULL, __Expand_this_rect, &ans, NULL);
+		pcb_r_search(rtree, &ans.inflated, NULL, __Expand_this_rect, &ans, NULL);
 	}
 	if ((noshrink & _NORTH) == 0)
 		ans.inflated.Y1 += ans.bloat;
@@ -2313,7 +2313,7 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		if (!pcb_box_is_good(&b))
 			return;										/* how did this happen ? */
 		nrb = CreateBridge(&b, rb, dir);
-		r_insert_entry(tree, &nrb->box, 1);
+		pcb_r_insert_entry(tree, &nrb->box, 1);
 		vector_append(area_vec, nrb);
 		nrb->flags.homeless = 0;		/* not homeless any more */
 		/* mark this one as conflicted */
@@ -2368,7 +2368,7 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		assert(pcb_box_intersect(&b, &blocker->sbox));
 		b = pcb_shrink_box(&b, 1);
 		nrb = CreateBridge(&b, rb, dir);
-		r_insert_entry(tree, &nrb->box, 1);
+		pcb_r_insert_entry(tree, &nrb->box, 1);
 		vector_append(area_vec, nrb);
 		nrb->flags.homeless = 0;		/* not homeless any more */
 		ne = CreateEdge(nrb, nrb->cost_point.X, nrb->cost_point.Y, nrb->cost, blocker, dir, NULL);
@@ -2506,7 +2506,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 					bi.box.X1 = e->rb->sbox.X2;
 				if (e->expand_dir == SW)
 					bi.box.X2 = e->rb->sbox.X1;
-				r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
+				pcb_r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
 				rb->n = tmp;
 				break;
 			case EAST:
@@ -2518,7 +2518,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 					bi.box.Y1 = e->rb->sbox.Y2;
 				if (e->expand_dir == NW)
 					bi.box.Y2 = e->rb->sbox.Y1;
-				r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
+				pcb_r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
 				rb->e = tmp;
 				break;
 			case SOUTH:
@@ -2530,7 +2530,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 					bi.box.X1 = e->rb->sbox.X2;
 				if (e->expand_dir == NW)
 					bi.box.X2 = e->rb->sbox.X1;
-				r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
+				pcb_r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
 				rb->s = tmp;
 				break;
 			case WEST:
@@ -2542,7 +2542,7 @@ vector_t *BreakManyEdges(struct routeone_state * s, pcb_rtree_t * targets, pcb_r
 					bi.box.Y1 = e->rb->sbox.Y2;
 				if (e->expand_dir == NE)
 					bi.box.Y2 = e->rb->sbox.Y1;
-				r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
+				pcb_r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
 				rb->w = tmp;
 				break;
 			default:
@@ -2751,7 +2751,7 @@ static routebox_t *FindOneInBox(pcb_rtree_t * rtree, routebox_t * rb)
 	foib.intersect = NULL;
 
 	if (setjmp(foib.env) == 0)
-		r_search(rtree, &r, NULL, foib_rect_in_reg, &foib, NULL);
+		pcb_r_search(rtree, &r, NULL, foib_rect_in_reg, &foib, NULL);
 	return foib.intersect;
 }
 
@@ -2818,7 +2818,7 @@ routebox_t *FindThermable(pcb_rtree_t * rtree, routebox_t * rb)
 	info.query = shrink_routebox(rb);
 
 	if (setjmp(info.env) == 0) {
-		r_search(rtree, &info.query, NULL, ftherm_rect_in_reg, &info, NULL);
+		pcb_r_search(rtree, &info.query, NULL, ftherm_rect_in_reg, &info, NULL);
 		return NULL;
 	}
 	return info.plane;
@@ -2846,7 +2846,7 @@ static void RD_DrawThermal(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_c
 	MergeNets(rb, subnet, NET);
 	MergeNets(rb, subnet, SUBNET);
 	/* add it to the r-tree, this may be the whole route! */
-	r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
+	pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
 	rb->flags.homeless = 0;
 }
 
@@ -2898,7 +2898,7 @@ static void RD_DrawVia(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 		MergeNets(rb, subnet, SUBNET);
 		assert(__routepcb_box_is_good(rb));
 		/* and add it to the r-tree! */
-		r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
+		pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
 		rb->flags.homeless = 0;			/* not homeless anymore */
 		rb->livedraw_obj.via = live_via;
 	}
@@ -2982,7 +2982,7 @@ RD_DrawLine(routedata_t * rd,
 	MergeNets(rb, qsn, SUBNET);
 	assert(__routepcb_box_is_good(rb));
 	/* and add it to the r-tree! */
-	r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
+	pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
 
 	if (conf_core.editor.live_routing) {
 		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
@@ -3531,7 +3531,7 @@ static void source_conflicts(pcb_rtree_t * tree, routebox_t * rb)
 {
 	if (!AutoRouteParameters.with_conflicts)
 		return;
-	r_search(tree, &rb->sbox, NULL, __conflict_source, rb, NULL);
+	pcb_r_search(tree, &rb->sbox, NULL, __conflict_source, rb, NULL);
 	touch_conflicts(NULL, 1);
 }
 
@@ -3636,7 +3636,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 #endif
 	}
 	END_LOOP;
-	targets = r_create_tree((const pcb_box_t **) target_list, i, 0);
+	targets = pcb_r_create_tree((const pcb_box_t **) target_list, i, 0);
 	assert(i <= num_targets);
 	free(target_list);
 
@@ -3791,10 +3791,10 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 				/* this via candidate is in an open area; add it to r-tree as
 				 * an expansion area */
 				assert(e->rb->type == EXPANSION_AREA && e->rb->flags.is_via);
-				/*assert (!r_search (rd->layergrouptree[e->rb->group],
+				/*assert (!pcb_r_search(rd->layergrouptree[e->rb->group],
 				   &e->rb->box, NULL, no_planes,0));
 				 */
-				r_insert_entry(rd->layergrouptree[e->rb->group], &e->rb->box, 1);
+				pcb_r_insert_entry(rd->layergrouptree[e->rb->group], &e->rb->box, 1);
 				e->rb->flags.homeless = 0;	/* not homeless any more */
 				/* add to vector of all expansion areas in r-tree */
 				vector_append(area_vec, e->rb);
@@ -3931,7 +3931,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 			if (!pcb_box_is_good(&ans->inflated))
 				goto dontexpand;
 			nrb = CreateExpansionArea(&ans->inflated, e->rb->group, e->rb, pcb_true, e);
-			r_insert_entry(rd->layergrouptree[nrb->group], &nrb->box, 1);
+			pcb_r_insert_entry(rd->layergrouptree[nrb->group], &nrb->box, 1);
 			vector_append(area_vec, nrb);
 			nrb->flags.homeless = 0;	/* not homeless any more */
 			broken = BreakManyEdges(&s, targets, rd->layergrouptree[nrb->group], area_vec, ans, nrb, e);
@@ -3951,7 +3951,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 	}
 	touch_conflicts(NULL, 1);
 	pcb_heap_destroy(&s.workheap);
-	r_destroy_tree(&targets);
+	pcb_r_destroy_tree(&targets);
 	assert(vector_is_empty(edge_vec));
 	vector_destroy(&edge_vec);
 
@@ -4004,7 +4004,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 		assert(!rb->flags.homeless);
 		if (rb->conflicts_with && rb->parent.expansion_area->conflicts_with != rb->conflicts_with)
 			vector_destroy(&rb->conflicts_with);
-		r_delete_entry(rd->layergrouptree[rb->group], &rb->box);
+		pcb_r_delete_entry(rd->layergrouptree[rb->group], &rb->box);
 	}
 	vector_destroy(&area_vec);
 	/* clean up; remove all 'source', 'target', and 'nobloat' flags */
@@ -4069,7 +4069,7 @@ pcb_bool no_expansion_boxes(routedata_t * rd)
 	big.Y1 = 0;
 	big.Y2 = MAX_COORD;
 	for (i = 0; i < max_group; i++) {
-		if (r_search(rd->layergrouptree[i], &big, NULL, bad_boy, NULL, NULL))
+		if (pcb_r_search(rd->layergrouptree[i], &big, NULL, bad_boy, NULL, NULL))
 			return pcb_false;
 	}
 	return pcb_true;
@@ -4220,7 +4220,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 #ifndef NDEBUG
 						del =
 #endif
-							r_delete_entry(rd->layergrouptree[p->group], &p->box);
+							pcb_r_delete_entry(rd->layergrouptree[p->group], &p->box);
 #ifndef NDEBUG
 						assert(del);
 #endif
@@ -4410,13 +4410,13 @@ static int FindPin(const pcb_box_t * box, pcb_pin_t ** pin)
 	info.X = box->X1;
 	info.Y = box->Y1;
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->pin_tree, box, NULL, fpin_rect, &info, NULL);
+		pcb_r_search(PCB->Data->pin_tree, box, NULL, fpin_rect, &info, NULL);
 	else {
 		*pin = info.pin;
 		return PCB_TYPE_PIN;
 	}
 	if (setjmp(info.env) == 0)
-		r_search(PCB->Data->via_tree, box, NULL, fpin_rect, &info, NULL);
+		pcb_r_search(PCB->Data->via_tree, box, NULL, fpin_rect, &info, NULL);
 	else {
 		*pin = info.pin;
 		return PCB_TYPE_VIA;
@@ -4690,7 +4690,7 @@ donerouting:
 		int i;
 		pcb_box_t big = { 0, 0, MAX_COORD, MAX_COORD };
 		for (i = 0; i < max_group; i++) {
-			r_search(rd->layergrouptree[i], &big, NULL, ripout_livedraw_obj_cb, NULL, NULL);
+			pcb_r_search(rd->layergrouptree[i], &big, NULL, ripout_livedraw_obj_cb, NULL, NULL);
 		}
 	}
 #ifdef ROUTE_DEBUG

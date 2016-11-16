@@ -101,19 +101,19 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 		EraseLine(ptr->Line);
 		if (ptr->Layer) {
 			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
-			r_delete_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
+			pcb_r_delete_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
 		}
 		else
-			r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
+			pcb_r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
 		pcb_point_rotate90(ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
 		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
-			r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
+			pcb_r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
 			DrawLine(ptr->Layer, ptr->Line);
 		}
 		else {
-			r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);
+			pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);
 			DrawRat((pcb_rat_t *) ptr->Line);
 		}
 		Crosshair.AttachedObject.RubberbandN--;

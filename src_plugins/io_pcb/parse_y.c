@@ -2396,8 +2396,8 @@ yyreduce:
 				  {
 				    pcb_poly_bbox(Polygon);
 				    if (!Layer->polygon_tree)
-				      Layer->polygon_tree = r_create_tree (NULL, 0, 0);
-				    r_insert_entry (Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
+				      Layer->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
+				    pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon, 0);
 				  }
 			}
 #line 2404 "parse_y.c" /* yacc.c:1646  */

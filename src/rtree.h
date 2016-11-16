@@ -53,12 +53,12 @@ typedef enum pcb_r_dir_e {
 /* create an rtree from the list of boxes.  if 'manage' is pcb_true, then
  * the tree will take ownership of 'boxlist' and free it when the tree
  * is destroyed. */
-pcb_rtree_t *r_create_tree(const pcb_box_t * boxlist[], int N, int manage);
+pcb_rtree_t *pcb_r_create_tree(const pcb_box_t * boxlist[], int N, int manage);
 /* destroy an rtree */
-void r_destroy_tree(pcb_rtree_t ** rtree);
+void pcb_r_destroy_tree(pcb_rtree_t ** rtree);
 
-pcb_bool r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * which);
-void r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int manage);
+pcb_bool pcb_r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * which);
+void pcb_r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int manage);
 
 /* generic search routine */
 /* region_in_search should return pcb_true if "what you're looking for" is
@@ -74,15 +74,15 @@ void r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int manage);
  * abort the search if that is the desired behavior.
  */
 
-pcb_r_dir_t r_search(pcb_rtree_t * rtree, const pcb_box_t * starting_region,
+pcb_r_dir_t pcb_r_search(pcb_rtree_t * rtree, const pcb_box_t * starting_region,
 						 pcb_r_dir_t (*region_in_search) (const pcb_box_t * region, void *cl),
 						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t * box, void *cl), void *closure,
 						 int *num_found);
 
 /* -- special-purpose searches build upon r_search -- */
 /* return 0 if there are any rectangles in the given region. */
-int r_region_is_empty(pcb_rtree_t * rtree, const pcb_box_t * region);
+int pcb_r_region_is_empty(pcb_rtree_t * rtree, const pcb_box_t * region);
 
-void __r_dump_tree(struct rtree_node *, int);
+void pcb_r_dump_tree(struct rtree_node *, int);
 
 #endif

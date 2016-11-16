@@ -514,7 +514,7 @@ static int adjust_tree(pcb_rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	r_insert_entry(tree, (const pcb_box_t *) q, 1);
+	pcb_r_insert_entry(tree, (const pcb_box_t *) q, 1);
 	q = (seg *) malloc(sizeof(struct seg));
 	if (!q)
 		return 1;
@@ -525,8 +525,8 @@ static int adjust_tree(pcb_rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	r_insert_entry(tree, (const pcb_box_t *) q, 1);
-	r_delete_entry(tree, (const pcb_box_t *) s);
+	pcb_r_insert_entry(tree, (const pcb_box_t *) q, 1);
+	pcb_r_delete_entry(tree, (const pcb_box_t *) s);
 	return 0;
 }
 
@@ -627,7 +627,7 @@ static void *make_edge_tree(pcb_pline_t * pb)
 {
 	struct seg *s;
 	pcb_vnode_t *bv;
-	pcb_rtree_t *ans = r_create_tree(NULL, 0, 0);
+	pcb_rtree_t *ans = pcb_r_create_tree(NULL, 0, 0);
 	bv = &pb->head;
 	do {
 		s = (seg *) malloc(sizeof(struct seg));
@@ -650,7 +650,7 @@ static void *make_edge_tree(pcb_pline_t * pb)
 		}
 		s->v = bv;
 		s->p = pb;
-		r_insert_entry(ans, (const pcb_box_t *) s, 1);
+		pcb_r_insert_entry(ans, (const pcb_box_t *) s, 1);
 	}
 	while ((bv = bv->next) != &pb->head);
 	return (void *) ans;
@@ -734,7 +734,7 @@ static pcb_r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 		box.Y2 = (box.Y1 = av->point[1]) + 1;
 
 		/* fill in the segment in info corresponding to this node */
-		rres = r_search(looping_over->tree, &box, NULL, get_seg, &info, NULL);
+		rres = pcb_r_search(looping_over->tree, &box, NULL, get_seg, &info, NULL);
 		assert(rres == R_DIR_CANCEL);
 
 		/* If we're going to have another pass anyway, skip this */
@@ -748,7 +748,7 @@ static pcb_r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 		info.tree = rtree_over->tree;
 		if (info.tree) {
 			int seen;
-			r_search(info.tree, &info.s->box, seg_in_region, seg_in_seg, &info, &seen);
+			pcb_r_search(info.tree, &info.s->box, seg_in_region, seg_in_seg, &info, &seen);
 			if (UNLIKELY(seen))
 				assert(0);							/* XXX: Memory allocation failure */
 		}
@@ -803,7 +803,7 @@ static int intersect_impl(jmp_buf * jb, pcb_polyarea_t * b, pcb_polyarea_t * a, 
 		sb.X2 = pa->xmax + 1;
 		sb.Y2 = pa->ymax + 1;
 
-		r_search(b->contour_tree, &sb, NULL, contour_bounds_touch, &c_info, NULL);
+		pcb_r_search(b->contour_tree, &sb, NULL, contour_bounds_touch, &c_info, NULL);
 		if (c_info.need_restart)
 			need_restart = 1;
 	}
@@ -924,7 +924,7 @@ static int cntr_in_M_pcb_polyarea_t(pcb_pline_t * poly, pcb_polyarea_t * outfst,
 			break;
 		outer = (pcb_polyarea_t *) pcb_heap_remove_smallest(heap);
 
-		r_search(outer->contour_tree, (pcb_box_t *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
+		pcb_r_search(outer->contour_tree, (pcb_box_t *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
 		switch (cnt) {
 		case 0:										/* Didn't find anything in this piece, Keep looking */
 			break;
@@ -1083,8 +1083,8 @@ static void InsCntr(jmp_buf * e, pcb_pline_t * c, pcb_polyarea_t ** dst)
 		newp->f->b = newp->b->f = newp;
 	}
 	newp->contours = c;
-	newp->contour_tree = r_create_tree(NULL, 0, 0);
-	r_insert_entry(newp->contour_tree, (pcb_box_t *) c, 0);
+	newp->contour_tree = pcb_r_create_tree(NULL, 0, 0);
+	pcb_r_insert_entry(newp->contour_tree, (pcb_box_t *) c, 0);
 	c->next = NULL;
 }																/* InsCntr */
 
@@ -1098,7 +1098,7 @@ PutContour(jmp_buf * e, pcb_pline_t * cntr, pcb_polyarea_t ** contours, pcb_plin
 
 	if (cntr->Flags.orient == PLF_DIR) {
 		if (owner != NULL)
-			r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
+			pcb_r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
 		InsCntr(e, cntr, contours);
 	}
 	/* put hole into temporary list */
@@ -1109,8 +1109,8 @@ PutContour(jmp_buf * e, pcb_pline_t * cntr, pcb_polyarea_t ** contours, pcb_plin
 			parent_contour->next = cntr;
 			if (owner != parent) {
 				if (owner != NULL)
-					r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
-				r_insert_entry(parent->contour_tree, (pcb_box_t *) cntr, 0);
+					pcb_r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
+				pcb_r_insert_entry(parent->contour_tree, (pcb_box_t *) cntr, 0);
 			}
 		}
 		else {
@@ -1119,7 +1119,7 @@ PutContour(jmp_buf * e, pcb_pline_t * cntr, pcb_polyarea_t ** contours, pcb_plin
 			/* We don't insert the holes into an r-tree,
 			 * they just form a linked list */
 			if (owner != NULL)
-				r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
+				pcb_r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
 		}
 	}
 }																/* PutContour */
@@ -1136,7 +1136,7 @@ static inline void remove_contour(pcb_polyarea_t * piece, pcb_pline_t * prev_con
 	contour->next = NULL;
 
 	if (remove_rtree_entry)
-		r_delete_entry(piece->contour_tree, (pcb_box_t *) contour);
+		pcb_r_delete_entry(piece->contour_tree, (pcb_box_t *) contour);
 }
 
 struct polyarea_info {
@@ -1202,7 +1202,7 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 	/* make a polyarea info table */
 	/* make an rtree of polyarea info table */
 	all_pa_info = (struct polyarea_info *) malloc(sizeof(struct polyarea_info) * num_polyareas);
-	tree = r_create_tree(NULL, 0, 0);
+	tree = pcb_r_create_tree(NULL, 0, 0);
 	i = 0;
 	curc = dest;
 	do {
@@ -1211,7 +1211,7 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 		all_pa_info[i].BoundingBox.X2 = curc->contours->xmax;
 		all_pa_info[i].BoundingBox.Y2 = curc->contours->ymax;
 		all_pa_info[i].pa = curc;
-		r_insert_entry(tree, (const pcb_box_t *) &all_pa_info[i], 0);
+		pcb_r_insert_entry(tree, (const pcb_box_t *) &all_pa_info[i], 0);
 		i++;
 	}
 	while ((curc = curc->f) != dest);
@@ -1223,7 +1223,7 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 		container = NULL;
 		/* build a heap of all of the polys that the hole is inside its bounding box */
 		heap = pcb_heap_create();
-		r_search(tree, (pcb_box_t *) curh, NULL, heap_it, heap, NULL);
+		pcb_r_search(tree, (pcb_box_t *) curh, NULL, heap_it, heap, NULL);
 		if (pcb_heap_is_empty(heap)) {
 #ifndef NDEBUG
 #ifdef DEBUG
@@ -1282,7 +1282,7 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 					info.result = NULL;
 					/* Rtree search, calling back a routine to longjmp back with data about any hole inside the added one */
 					/*   Be sure not to bother jumping back to report the main contour! */
-					r_search(pa_info->pa->contour_tree, (pcb_box_t *) curh, NULL, find_inside, &info, NULL);
+					pcb_r_search(pa_info->pa->contour_tree, (pcb_box_t *) curh, NULL, find_inside, &info, NULL);
 
 					/* Nothing found? */
 					break;
@@ -1306,11 +1306,11 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 			/* link at front of hole list */
 			curh->next = container->next;
 			container->next = curh;
-			r_insert_entry(pa_info->pa->contour_tree, (pcb_box_t *) curh, 0);
+			pcb_r_insert_entry(pa_info->pa->contour_tree, (pcb_box_t *) curh, 0);
 
 		}
 	}
-	r_destroy_tree(&tree);
+	pcb_r_destroy_tree(&tree);
 	free(all_pa_info);
 }																/* InsertHoles */
 
@@ -1873,7 +1873,7 @@ static void M_pcb_polyarea_t_update_primary(jmp_buf * e, pcb_polyarea_t ** piece
 					 * data about any hole inside the B polygon.
 					 * NB: Does not jump back to report the main contour!
 					 */
-					r_search(a->contour_tree, &box, NULL, find_inside_m_pa, &info, NULL);
+					pcb_r_search(a->contour_tree, &box, NULL, find_inside_m_pa, &info, NULL);
 
 					/* Nothing found? */
 					break;
@@ -2310,7 +2310,7 @@ void pcb_poly_contour_del(pcb_pline_t ** c)
 	/* FIXME -- strict aliasing violation.  */
 	if ((*c)->tree) {
 		pcb_rtree_t *r = (*c)->tree;
-		r_destroy_tree(&r);
+		pcb_r_destroy_tree(&r);
 	}
 	free(*c), *c = NULL;
 }
@@ -2384,7 +2384,7 @@ void pcb_poly_contour_inv(pcb_pline_t * c)
 	while ((cur = next) != &c->head);
 	c->Flags.orient ^= 1;
 	if (c->tree) {
-		r_search(c->tree, NULL, NULL, flip_cb, NULL, &r);
+		pcb_r_search(c->tree, NULL, NULL, flip_cb, NULL, &r);
 		assert(r == c->Count);
 	}
 }
@@ -2460,7 +2460,7 @@ pcb_bool pcb_polyarea_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src)
 		*dst = (pcb_polyarea_t *) calloc(1, sizeof(pcb_polyarea_t));
 	if (*dst == NULL)
 		return pcb_false;
-	(*dst)->contour_tree = r_create_tree(NULL, 0, 0);
+	(*dst)->contour_tree = pcb_r_create_tree(NULL, 0, 0);
 
 	return pcb_polyarea_copy1(*dst, src);
 }
@@ -2475,7 +2475,7 @@ pcb_bool pcb_polyarea_copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src)
 	for (cur = src->contours; cur != NULL; cur = cur->next) {
 		if (!pcb_poly_contour_copy(last, cur))
 			return pcb_false;
-		r_insert_entry(dst->contour_tree, (pcb_box_t *) * last, 0);
+		pcb_r_insert_entry(dst->contour_tree, (pcb_box_t *) * last, 0);
 		last = &(*last)->next;
 	}
 	return pcb_true;
@@ -2528,7 +2528,7 @@ pcb_bool pcb_polyarea_contour_include(pcb_polyarea_t * p, pcb_pline_t * c)
 		p->contours->next = c;
 		c->next = tmp;
 	}
-	r_insert_entry(p->contour_tree, (pcb_box_t *) c, 0);
+	pcb_r_insert_entry(p->contour_tree, (pcb_box_t *) c, 0);
 	return pcb_true;
 }
 
@@ -2590,7 +2590,7 @@ int pcb_poly_contour_inside(pcb_pline_t * c, pcb_vector_t p)
 	ray.X2 = 0x7fffffff;
 	ray.Y2 = p[1] + 1;
 	if (setjmp(info.env) == 0)
-		r_search(c->tree, &ray, NULL, crossing, &info, NULL);
+		pcb_r_search(c->tree, &ray, NULL, crossing, &info, NULL);
 	return info.f;
 }
 
@@ -2781,7 +2781,7 @@ void pcb_polyarea_init(pcb_polyarea_t * p)
 {
 	p->f = p->b = p;
 	p->contours = NULL;
-	p->contour_tree = r_create_tree(NULL, 0, 0);
+	p->contour_tree = pcb_r_create_tree(NULL, 0, 0);
 }
 
 pcb_polyarea_t *pcb_polyarea_create(void)
@@ -2811,13 +2811,13 @@ void pcb_polyarea_free(pcb_polyarea_t ** p)
 		return;
 	for (cur = (*p)->f; cur != *p; cur = (*p)->f) {
 		pcb_poly_contours_free(&cur->contours);
-		r_destroy_tree(&cur->contour_tree);
+		pcb_r_destroy_tree(&cur->contour_tree);
 		cur->f->b = cur->b;
 		cur->b->f = cur->f;
 		free(cur);
 	}
 	pcb_poly_contours_free(&cur->contours);
-	r_destroy_tree(&cur->contour_tree);
+	pcb_r_destroy_tree(&cur->contour_tree);
 	free(*p), *p = NULL;
 }
 

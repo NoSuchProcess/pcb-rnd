@@ -352,8 +352,8 @@ static int find_pair(int Px, int Py)
 	spot.Y1 = y - 1;
 	spot.X2 = x + 1;
 	spot.Y2 = y + 1;
-	r_search(CURRENT->line_tree, &spot, NULL, line_callback, CURRENT, NULL);
-	r_search(CURRENT->arc_tree, &spot, NULL, arc_callback, CURRENT, NULL);
+	pcb_r_search(CURRENT->line_tree, &spot, NULL, line_callback, CURRENT, NULL);
+	pcb_r_search(CURRENT->arc_tree, &spot, NULL, arc_callback, CURRENT, NULL);
 	if (the_line && the_arc && !multi)
 		return 1;
 	x = Px;
@@ -726,8 +726,8 @@ static void find_pairs_1(void *me, Extra ** e, int x, int y)
 	b.X2 = x + 10;
 	b.Y1 = y - 10;
 	b.Y2 = y + 10;
-	r_search(CURRENT->line_tree, &b, NULL, find_pair_line_callback, &fpcs, NULL);
-	r_search(CURRENT->arc_tree, &b, NULL, find_pair_arc_callback, &fpcs, NULL);
+	pcb_r_search(CURRENT->line_tree, &b, NULL, find_pair_line_callback, &fpcs, NULL);
+	pcb_r_search(CURRENT->arc_tree, &b, NULL, find_pair_arc_callback, &fpcs, NULL);
 }
 
 static int check_point_in_pin(pcb_pin_t *pin, int x, int y, End * e)
@@ -978,8 +978,8 @@ static void find_pairs()
 		box.Y1 = pin->Y - pin->Thickness / 2;
 		box.X2 = pin->X + pin->Thickness / 2;
 		box.Y2 = pin->Y + pin->Thickness / 2;
-		r_search(CURRENT->line_tree, &box, NULL, find_pair_pinline_callback, pin, NULL);
-		r_search(CURRENT->arc_tree, &box, NULL, find_pair_pinarc_callback, pin, NULL);
+		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_pinline_callback, pin, NULL);
+		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_pinarc_callback, pin, NULL);
 	}
 	ENDALL_LOOP;
 
@@ -989,8 +989,8 @@ static void find_pairs()
 		box.Y1 = via->Y - via->Thickness / 2;
 		box.X2 = via->X + via->Thickness / 2;
 		box.Y2 = via->Y + via->Thickness / 2;
-		r_search(CURRENT->line_tree, &box, NULL, find_pair_pinline_callback, via, NULL);
-		r_search(CURRENT->arc_tree, &box, NULL, find_pair_pinarc_callback, via, NULL);
+		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_pinline_callback, via, NULL);
+		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_pinarc_callback, via, NULL);
 	}
 	END_LOOP;
 
@@ -1000,8 +1000,8 @@ static void find_pairs()
 		box.Y1 = MIN(pad->Point1.Y, pad->Point2.Y) - pad->Thickness / 2;
 		box.X2 = MAX(pad->Point1.X, pad->Point2.X) + pad->Thickness / 2;
 		box.Y2 = MAX(pad->Point1.Y, pad->Point2.Y) + pad->Thickness / 2;
-		r_search(CURRENT->line_tree, &box, NULL, find_pair_padline_callback, pad, NULL);
-		r_search(CURRENT->arc_tree, &box, NULL, find_pair_padarc_callback, pad, NULL);
+		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_padline_callback, pad, NULL);
+		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_padarc_callback, pad, NULL);
 
 	}
 	ENDALL_LOOP;
@@ -1927,13 +1927,13 @@ static void maybe_pull_1(pcb_line_t *line)
 	end_pinpad = start_extra->end.pin;
 	fp = 0;
 
-	r_search(CURRENT->line_tree, &box, NULL, gp_line_cb, 0, NULL);
-	r_search(CURRENT->arc_tree, &box, NULL, gp_arc_cb, 0, NULL);
-	r_search(CURRENT->text_tree, &box, NULL, gp_text_cb, 0, NULL);
-	r_search(CURRENT->polygon_tree, &box, NULL, gp_poly_cb, 0, NULL);
-	r_search(PCB->Data->pin_tree, &box, NULL, gp_pin_cb, 0, NULL);
-	r_search(PCB->Data->via_tree, &box, NULL, gp_pin_cb, 0, NULL);
-	r_search(PCB->Data->pad_tree, &box, NULL, gp_pad_cb, 0, NULL);
+	pcb_r_search(CURRENT->line_tree, &box, NULL, gp_line_cb, 0, NULL);
+	pcb_r_search(CURRENT->arc_tree, &box, NULL, gp_arc_cb, 0, NULL);
+	pcb_r_search(CURRENT->text_tree, &box, NULL, gp_text_cb, 0, NULL);
+	pcb_r_search(CURRENT->polygon_tree, &box, NULL, gp_poly_cb, 0, NULL);
+	pcb_r_search(PCB->Data->pin_tree, &box, NULL, gp_pin_cb, 0, NULL);
+	pcb_r_search(PCB->Data->via_tree, &box, NULL, gp_pin_cb, 0, NULL);
+	pcb_r_search(PCB->Data->pad_tree, &box, NULL, gp_pad_cb, 0, NULL);
 
 	/* radians, absolute angle of (at the moment) the start_line */
 	abs_angle = fa + start_angle;

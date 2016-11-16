@@ -193,7 +193,7 @@ static pcb_bool __r_tree_is_good(struct rtree_node *node)
 
 #ifndef NDEBUG
 /* print out the tree */
-void __r_dump_tree(struct rtree_node *node, int depth)
+void pcb_r_dump_tree(struct rtree_node *node, int depth)
 {
 	int i, j;
 	static int count;
@@ -230,7 +230,7 @@ void __r_dump_tree(struct rtree_node *node, int depth)
 	}
 	for (i = 0; i < M_SIZE; i++)
 		if (node->u.kids[i])
-			__r_dump_tree(node->u.kids[i], depth + 1);
+			pcb_r_dump_tree(node->u.kids[i], depth + 1);
 	if (depth == 0)
 		printf("average box area is %g\n", area / count);
 }
@@ -341,7 +341,7 @@ static void adjust_bounds(struct rtree_node *node)
  * it, so don't free the box list until you've called r_destroy_tree.
  * if you set 'manage' to pcb_true, r_destroy_tree will free your boxlist.
  */
-pcb_rtree_t *r_create_tree(const pcb_box_t * boxlist[], int N, int manage)
+pcb_rtree_t *pcb_r_create_tree(const pcb_box_t * boxlist[], int N, int manage)
 {
 	pcb_rtree_t *rtree;
 	struct rtree_node *node;
@@ -357,7 +357,7 @@ pcb_rtree_t *r_create_tree(const pcb_box_t * boxlist[], int N, int manage)
 	/* simple, just insert all of the boxes! */
 	for (i = 0; i < N; i++) {
 		assert(boxlist[i]);
-		r_insert_entry(rtree, boxlist[i], manage);
+		pcb_r_insert_entry(rtree, boxlist[i], manage);
 	}
 #ifdef SLOW_ASSERTS
 	assert(__r_tree_is_good(rtree->root));
@@ -387,7 +387,7 @@ static void __r_destroy_tree(struct rtree_node *node)
 }
 
 /* free the memory associated with an rtree. */
-void r_destroy_tree(pcb_rtree_t ** rtree)
+void pcb_r_destroy_tree(pcb_rtree_t ** rtree)
 {
 
 	__r_destroy_tree((*rtree)->root);
@@ -498,7 +498,7 @@ int __r_search(struct rtree_node *node, const pcb_box_t * query, r_arg * arg)
  * Returns how the search ended.
  */
 pcb_r_dir_t
-r_search(pcb_rtree_t * rtree, const pcb_box_t * query,
+pcb_r_search(pcb_rtree_t * rtree, const pcb_box_t * query,
 				 pcb_r_dir_t (*check_region) (const pcb_box_t * region, void *cl),
 				 pcb_r_dir_t (*found_rectangle) (const pcb_box_t * box, void *cl), void *cl,
 				 int *num_found)
@@ -553,14 +553,14 @@ static pcb_r_dir_t __r_region_is_empty_rect_in_reg(const pcb_box_t * box, void *
 }
 
 /* return 0 if there are any rectangles in the given region. */
-int r_region_is_empty(pcb_rtree_t * rtree, const pcb_box_t * region)
+int pcb_r_region_is_empty(pcb_rtree_t * rtree, const pcb_box_t * region)
 {
 	jmp_buf env;
 	int r;
 
 	if (setjmp(env))
 		return 0;
-	r_search(rtree, region, NULL, __r_region_is_empty_rect_in_reg, &env, &r);
+	pcb_r_search(rtree, region, NULL, __r_region_is_empty_rect_in_reg, &env, &r);
 	assert(r == 0);								/* otherwise longjmp would have been called */
 	return 1;											/* no rectangles found */
 }
@@ -885,7 +885,7 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 	}
 }
 
-void r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int man)
+void pcb_r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int man)
 {
 	assert(which);
 	assert(which->X1 <= which->X2);
@@ -989,7 +989,7 @@ pcb_bool __r_delete(struct rtree_node *node, const pcb_box_t * query)
 	return pcb_true;
 }
 
-pcb_bool r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * box)
+pcb_bool pcb_r_delete_entry(pcb_rtree_t * rtree, const pcb_box_t * box)
 {
 	pcb_bool r;
 
