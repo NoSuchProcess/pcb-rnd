@@ -108,7 +108,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 					touches = 1;
 			}
 			if (touches) {
-				CreateNewRubberbandEntry(i->layer, line, &line->Point1);
+				pcb_rubber_band_create(i->layer, line, &line->Point1);
 				found++;
 			}
 		}
@@ -129,7 +129,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 					touches = 1;
 			}
 			if (touches) {
-				CreateNewRubberbandEntry(i->layer, line, &line->Point2);
+				pcb_rubber_band_create(i->layer, line, &line->Point2);
 				found++;
 			}
 		}
@@ -158,14 +158,14 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 
 #ifdef CLOSEST_ONLY							/* keep this to remind me */
 	if (dist1 < dist2)
-		CreateNewRubberbandEntry(i->layer, line, &line->Point1);
+		pcb_rubber_band_create(i->layer, line, &line->Point1);
 	else
-		CreateNewRubberbandEntry(i->layer, line, &line->Point2);
+		pcb_rubber_band_create(i->layer, line, &line->Point2);
 #else
 	if (dist1 <= 0)
-		CreateNewRubberbandEntry(i->layer, line, &line->Point1);
+		pcb_rubber_band_create(i->layer, line, &line->Point1);
 	if (dist2 <= 0)
-		CreateNewRubberbandEntry(i->layer, line, &line->Point2);
+		pcb_rubber_band_create(i->layer, line, &line->Point2);
 #endif
 	return R_DIR_FOUND_CONTINUE;
 }
@@ -218,33 +218,33 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 	switch (i->type) {
 	case PCB_TYPE_PIN:
 		if (rat->Point1.X == i->pin->X && rat->Point1.Y == i->pin->Y)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else if (rat->Point2.X == i->pin->X && rat->Point2.Y == i->pin->Y)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point2);
 		break;
 	case PCB_TYPE_PAD:
 		if (rat->Point1.X == i->pad->Point1.X && rat->Point1.Y == i->pad->Point1.Y && rat->group1 == i->group)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else if (rat->Point2.X == i->pad->Point1.X && rat->Point2.Y == i->pad->Point1.Y && rat->group2 == i->group)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point2);
 		else if (rat->Point1.X == i->pad->Point2.X && rat->Point1.Y == i->pad->Point2.Y && rat->group1 == i->group)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else if (rat->Point2.X == i->pad->Point2.X && rat->Point2.Y == i->pad->Point2.Y && rat->group2 == i->group)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point2);
 		else
 			if (rat->Point1.X == (i->pad->Point1.X + i->pad->Point2.X) / 2 &&
 					rat->Point1.Y == (i->pad->Point1.Y + i->pad->Point2.Y) / 2 && rat->group1 == i->group)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else
 			if (rat->Point2.X == (i->pad->Point1.X + i->pad->Point2.X) / 2 &&
 					rat->Point2.Y == (i->pad->Point1.Y + i->pad->Point2.Y) / 2 && rat->group2 == i->group)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point2);
 		break;
 	case PCB_TYPE_LINE_POINT:
 		if (rat->group1 == i->group && rat->Point1.X == i->point->X && rat->Point1.Y == i->point->Y)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point1);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point1);
 		else if (rat->group2 == i->group && rat->Point2.X == i->point->X && rat->Point2.Y == i->point->Y)
-			CreateNewRubberbandEntry(NULL, (pcb_line_t *) rat, &rat->Point2);
+			pcb_rubber_band_create(NULL, (pcb_line_t *) rat, &rat->Point2);
 		break;
 	default:
 		pcb_message(PCB_MSG_DEFAULT, "hace: bad rubber-rat lookup callback\n");
@@ -376,9 +376,9 @@ static void CheckPolygonForRubberbandConnection(pcb_layer_t *Layer, pcb_polygon_
 					continue;
 				thick = (line->Thickness + 1) / 2;
 				if (pcb_poly_is_point_in_p(line->Point1.X, line->Point1.Y, thick, Polygon))
-					CreateNewRubberbandEntry(layer, line, &line->Point1);
+					pcb_rubber_band_create(layer, line, &line->Point1);
 				if (pcb_poly_is_point_in_p(line->Point2.X, line->Point2.Y, thick, Polygon))
-					CreateNewRubberbandEntry(layer, line, &line->Point2);
+					pcb_rubber_band_create(layer, line, &line->Point2);
 			}
 			END_LOOP;
 		}
@@ -391,7 +391,7 @@ static void CheckPolygonForRubberbandConnection(pcb_layer_t *Layer, pcb_polygon_
  * data to 'Crosshair.AttachedObject.Rubberband'
  * lookup is only done for visible layers
  */
-void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_rubber_band_lookup_lines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 
 	/* the function is only supported for some types
@@ -448,7 +448,7 @@ void LookupRubberbandLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	}
 }
 
-void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+void pcb_rubber_band_lookup_rat_lines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	switch (Type) {
 	case PCB_TYPE_ELEMENT:
@@ -491,7 +491,7 @@ void LookupRatLines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* ---------------------------------------------------------------------------
  * get next slot for a rubberband connection, allocates memory if necessary
  */
-pcb_rubberband_t *GetRubberbandMemory(void)
+pcb_rubberband_t *pcb_rubber_band_alloc(void)
 {
 	pcb_rubberband_t *ptr = Crosshair.AttachedObject.Rubberband;
 
@@ -509,9 +509,9 @@ pcb_rubberband_t *GetRubberbandMemory(void)
  * adds a new line to the rubberband list of 'Crosshair.AttachedObject'
  * if Layer == 0  it is a rat line
  */
-pcb_rubberband_t *CreateNewRubberbandEntry(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint)
+pcb_rubberband_t *pcb_rubber_band_create(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint)
 {
-	pcb_rubberband_t *ptr = GetRubberbandMemory();
+	pcb_rubberband_t *ptr = pcb_rubber_band_alloc();
 
 	/* we toggle the PCB_FLAG_RUBBEREND of the line to determine if */
 	/* both points are being moved. */

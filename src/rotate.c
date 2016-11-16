@@ -140,9 +140,9 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 		}
 		Crosshair.AttachedObject.RubberbandN = 0;
 		if (conf_core.editor.rubber_band_mode)
-			LookupRubberbandLines(type, ptr1, ptr2, ptr3);
+			pcb_rubber_band_lookup_lines(type, ptr1, ptr2, ptr3);
 		if (type == PCB_TYPE_ELEMENT)
-			LookupRatLines(type, ptr1, ptr2, ptr3);
+			pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate90(type, ptr1, ptr2, ptr3, X, Y, Steps);
 		SetChangedFlag(pcb_true);
 	}

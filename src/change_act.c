@@ -673,7 +673,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 							RestoreUndoSerialNumber();
 							Crosshair.AttachedObject.RubberbandN = 0;
-							LookupRatLines(type, ptr1, ptr2, ptr3);
+							pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
 							ptr = Crosshair.AttachedObject.Rubberband;
 							for (i = 0; i < Crosshair.AttachedObject.RubberbandN; i++, ptr++) {
 								if (PCB->RatOn)

@@ -389,9 +389,9 @@ static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		ny -= y;
 	Crosshair.AttachedObject.RubberbandN = 0;
 	if (conf_core.editor.rubber_band_mode)
-		LookupRubberbandLines(type, ptr1, ptr2, ptr3);
+		pcb_rubber_band_lookup_lines(type, ptr1, ptr2, ptr3);
 	if (type == PCB_TYPE_ELEMENT)
-		LookupRatLines(type, ptr1, ptr2, ptr3);
+		pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx, ny);
 	SetChangedFlag(pcb_true);
 	return 0;

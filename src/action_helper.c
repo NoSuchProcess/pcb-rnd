@@ -136,13 +136,13 @@ static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 
 	/* get all attached objects if necessary */
 	if ((conf_core.editor.mode != PCB_MODE_COPY) && conf_core.editor.rubber_band_mode)
-		LookupRubberbandLines(Crosshair.AttachedObject.Type,
+		pcb_rubber_band_lookup_lines(Crosshair.AttachedObject.Type,
 													Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 	if (conf_core.editor.mode != PCB_MODE_COPY &&
 			(Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
 			 Crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
 			 Crosshair.AttachedObject.Type == PCB_TYPE_LINE || Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
-		LookupRatLines(Crosshair.AttachedObject.Type,
+		pcb_rubber_band_lookup_rat_lines(Crosshair.AttachedObject.Type,
 									 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
 }
 
@@ -1112,7 +1112,7 @@ void pcb_notify_mode(void)
 				int i;
 
 				Crosshair.AttachedObject.RubberbandN = 0;
-				LookupRatLines(type, ptr1, ptr2, ptr3);
+				pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
 				ptr = Crosshair.AttachedObject.Rubberband;
 				for (i = 0; i < Crosshair.AttachedObject.RubberbandN; i++) {
 					if (PCB->RatOn)

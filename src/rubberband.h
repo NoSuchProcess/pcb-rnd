@@ -41,9 +41,9 @@ typedef struct {								/* rubberband lines for element moves */
 } pcb_rubberband_t;
 
 
-void LookupRubberbandLines(int, void *, void *, void *);
-void LookupRatLines(int, void *, void *, void *);
-pcb_rubberband_t *GetRubberbandMemory(void);
-pcb_rubberband_t *CreateNewRubberbandEntry(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint);
+void pcb_rubber_band_lookup_lines(int, void *, void *, void *);
+void pcb_rubber_band_lookup_rat_lines(int, void *, void *, void *);
+pcb_rubberband_t *pcb_rubber_band_alloc(void);
+pcb_rubberband_t *pcb_rubber_band_create(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint);
 
 #endif

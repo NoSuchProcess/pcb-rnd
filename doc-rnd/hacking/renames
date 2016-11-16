@@ -789,3 +789,7 @@ r_insert_entry -> pcb_r_insert_entry
 r_search -> pcb_r_search
 r_region_is_empty -> pcb_r_region_is_empty
 __r_dump_tree -> pcb_r_dump_tree
+LookupRubberbandLines -> pcb_rubber_band_lookup_lines
+LookupRatLines -> pcb_rubber_band_lookup_rat_lines
+GetRubberbandMemory -> pcb_rubber_band_alloc
+CreateNewRubberbandEntry -> pcb_rubber_band_create
