@@ -698,6 +698,16 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 	return (changed);
 }
 
+void pcb_buffer_set_number(int Number)
+{
+	if (Number >= 0 && Number < MAX_BUFFER) {
+		conf_set_design("editor/buffer_number", "%d", Number);
+
+		/* do an update on the crosshair range */
+		pcb_crosshair_range_to_buffer();
+	}
+}
+
 
 /* ---------------------------------------------------------------------- */
 

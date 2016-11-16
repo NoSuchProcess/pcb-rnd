@@ -65,6 +65,9 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y);
 
 pcb_data_t *pcb_buffer_new(void);
 
+/* sets currently active buffer */
+void pcb_buffer_set_number(int Number);
+
 
 /* ---------------------------------------------------------------------------
  * access macro for current buffer

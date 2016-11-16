@@ -23,28 +23,3 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
-
-/* prototypes for update routines */
-
-#ifndef	PCB_SET_H
-#define	PCB_SET_H
-
-#include "global_typedefs.h"
-
-void pcb_board_set_grid(pcb_coord_t, pcb_bool);
-void pcb_board_set_changed_flag(pcb_bool);
-
-void pcb_board_set_text_scale(int);
-void pcb_board_set_line_width(pcb_coord_t);
-void pcb_board_set_via_size(pcb_coord_t, pcb_bool);
-void pcb_board_set_via_drilling_hole(pcb_coord_t, pcb_bool);
-void pcb_board_set_clearance(pcb_coord_t);
-
-void pcb_buffer_set_number(int);
-void pcb_crosshair_set_mode(int);
-void pcb_crosshair_range_to_buffer(void);
-void pcb_crosshair_set_local_ref(pcb_coord_t, pcb_coord_t, pcb_bool);
-void pcb_crosshair_save_mode(void);
-void pcb_crosshair_restore_mode(void);
-
-#endif

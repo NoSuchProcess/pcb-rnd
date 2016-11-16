@@ -40,6 +40,9 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "vtonpoint.h"
+#include "find.h"
+#include "undo.h"
+#include "action_helper.h"
 
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
@@ -1248,4 +1251,133 @@ void pcb_crosshair_uninit(void)
 {
 	pcb_poly_free_fields(&Crosshair.AttachedPolygon);
 	gui->destroy_gc(Crosshair.GC);
+}
+
+/************************* mode *************************************/
+static int mode_position = 0;
+static int mode_stack[MAX_MODESTACK_DEPTH];
+
+/* sets the crosshair range to the current buffer extents */
+void pcb_crosshair_range_to_buffer(void)
+{
+	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER) {
+		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
+		pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
+											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->BoundingBox.Y1,
+											PCB->MaxWidth -
+											(PCB_PASTEBUFFER->BoundingBox.X2 - PCB_PASTEBUFFER->X),
+											PCB->MaxHeight - (PCB_PASTEBUFFER->BoundingBox.Y2 - PCB_PASTEBUFFER->Y));
+	}
+}
+
+void pcb_crosshair_save_mode(void)
+{
+	mode_stack[mode_position] = conf_core.editor.mode;
+	if (mode_position < MAX_MODESTACK_DEPTH - 1)
+		mode_position++;
+}
+
+void pcb_crosshair_restore_mode(void)
+{
+	if (mode_position == 0) {
+		pcb_message(PCB_MSG_DEFAULT, "hace: underflow of restore mode\n");
+		return;
+	}
+	pcb_crosshair_set_mode(mode_stack[--mode_position]);
+}
+
+
+/* set a new mode and update X cursor */
+void pcb_crosshair_set_mode(int Mode)
+{
+	char sMode[32];
+	static pcb_bool recursing = pcb_false;
+	/* protect the cursor while changing the mode
+	 * perform some additional stuff depending on the new mode
+	 * reset 'state' of attached objects
+	 */
+	if (recursing)
+		return;
+	recursing = pcb_true;
+	pcb_notify_crosshair_change(pcb_false);
+	addedLines = 0;
+	Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+	Crosshair.AttachedObject.State = STATE_FIRST;
+	Crosshair.AttachedPolygon.PointN = 0;
+	if (PCB->RatDraw) {
+		if (Mode == PCB_MODE_ARC || Mode == PCB_MODE_RECTANGLE ||
+				Mode == PCB_MODE_VIA || Mode == PCB_MODE_POLYGON ||
+				Mode == PCB_MODE_POLYGON_HOLE || Mode == PCB_MODE_TEXT || Mode == PCB_MODE_INSERT_POINT || Mode == PCB_MODE_THERMAL) {
+			pcb_message(PCB_MSG_DEFAULT, _("That mode is NOT allowed when drawing ratlines!\n"));
+			Mode = PCB_MODE_NO;
+		}
+	}
+	if (conf_core.editor.mode == PCB_MODE_LINE && Mode == PCB_MODE_ARC && Crosshair.AttachedLine.State != STATE_FIRST) {
+		Crosshair.AttachedLine.State = STATE_FIRST;
+		Crosshair.AttachedBox.State = STATE_SECOND;
+		Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Crosshair.AttachedLine.Point1.X;
+		Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedLine.Point1.Y;
+		pcb_adjust_attached_objects();
+	}
+	else if (conf_core.editor.mode == PCB_MODE_ARC && Mode == PCB_MODE_LINE && Crosshair.AttachedBox.State != STATE_FIRST) {
+		Crosshair.AttachedBox.State = STATE_FIRST;
+		Crosshair.AttachedLine.State = STATE_SECOND;
+		Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.AttachedBox.Point1.X;
+		Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedBox.Point1.Y;
+		sprintf(sMode, "%d", Mode);
+		conf_set(CFR_DESIGN, "editor/mode", -1, sMode, POL_OVERWRITE);
+		pcb_adjust_attached_objects();
+	}
+	else {
+		if (conf_core.editor.mode == PCB_MODE_ARC || conf_core.editor.mode == PCB_MODE_LINE)
+			pcb_crosshair_set_local_ref(0, 0, pcb_false);
+		Crosshair.AttachedBox.State = STATE_FIRST;
+		Crosshair.AttachedLine.State = STATE_FIRST;
+		if (Mode == PCB_MODE_LINE && conf_core.editor.auto_drc) {
+			if (pcb_reset_conns(pcb_true)) {
+				IncrementUndoSerialNumber();
+				pcb_draw();
+			}
+		}
+	}
+
+	sprintf(sMode, "%d", Mode);
+	conf_set(CFR_DESIGN, "editor/mode", -1, sMode, POL_OVERWRITE);
+
+	if (Mode == PCB_MODE_PASTE_BUFFER)
+		/* do an update on the crosshair range */
+		pcb_crosshair_range_to_buffer();
+	else
+		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
+
+	recursing = pcb_false;
+
+	/* force a crosshair grid update because the valid range
+	 * may have changed
+	 */
+	pcb_crosshair_move_relative(0, 0);
+	pcb_notify_crosshair_change(pcb_true);
+}
+
+void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
+{
+	static pcb_mark_t old;
+	static int count = 0;
+
+	if (Showing) {
+		pcb_notify_mark_change(pcb_false);
+		if (count == 0)
+			old = Marked;
+		Marked.X = X;
+		Marked.Y = Y;
+		Marked.status = pcb_true;
+		count++;
+		pcb_notify_mark_change(pcb_true);
+	}
+	else if (count > 0) {
+		pcb_notify_mark_change(pcb_false);
+		count = 0;
+		Marked = old;
+		pcb_notify_mark_change(pcb_true);
+	}
 }

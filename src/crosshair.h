@@ -111,4 +111,13 @@ void pcb_crosshair_uninit(void);
 void pcb_crosshair_grid_fit(pcb_coord_t, pcb_coord_t);
 void pcb_center_display(pcb_coord_t X, pcb_coord_t Y);
 
+/*** cursor/crosshair mode ***/
+
+/* sets the crosshair range to the current buffer extents */
+void pcb_crosshair_range_to_buffer(void);
+void pcb_crosshair_save_mode(void);
+void pcb_crosshair_restore_mode(void);
+void pcb_crosshair_set_mode(int Mode);
+void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing);
+
 #endif

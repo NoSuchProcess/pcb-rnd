@@ -149,4 +149,26 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height);
 /* free the board and remove its undo list */
 void pcb_board_remove(pcb_board_t *Ptr);
 
+/* sets cursor grid with respect to grid offset values */
+void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align);
+
+/* sets a new line thickness */
+void pcb_board_set_line_width(pcb_coord_t Size);
+
+/* sets a new via thickness */
+void pcb_board_set_via_size(pcb_coord_t Size, pcb_bool Force);
+
+/* sets a new via drilling hole */
+void pcb_board_set_via_drilling_hole(pcb_coord_t Size, pcb_bool Force);
+
+/* sets a clearance width */
+void pcb_board_set_clearance(pcb_coord_t Width);
+
+/* sets a text scaling */
+void pcb_board_set_text_scale(int Scale);
+
+/* sets or resets changed flag and redraws status */
+void pcb_board_set_changed_flag(pcb_bool New);
+
+
 #endif

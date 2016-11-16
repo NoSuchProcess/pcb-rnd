@@ -30,6 +30,7 @@
 #include "action_helper.h"
 #include "set.h"
 #include "remove.h"
+#include "board.h"
 #include "funchash_core.h"
 
 /* --------------------------------------------------------------------------- */

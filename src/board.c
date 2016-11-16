@@ -33,6 +33,7 @@
 #include "paths.h"
 #include "rtree.h"
 #include "undo.h"
+#include "draw.h"
 
 pcb_board_t *PCB;
 
@@ -252,3 +253,67 @@ void pcb_board_remove(pcb_board_t *Ptr)
 	pcb_board_free(Ptr);
 	free(Ptr);
 }
+
+/* sets cursor grid with respect to grid offset values */
+void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align)
+{
+	if (Grid >= 1 && Grid <= MAX_GRID) {
+		if (align) {
+			PCB->GridOffsetX = Crosshair.X % Grid;
+			PCB->GridOffsetY = Crosshair.Y % Grid;
+		}
+		PCB->Grid = Grid;
+		conf_set_design("editor/grid", "%$mS", Grid);
+		if (conf_core.editor.draw_grid)
+			pcb_redraw();
+	}
+}
+
+/* sets a new line thickness */
+void pcb_board_set_line_width(pcb_coord_t Size)
+{
+	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
+		conf_set_design("design/line_thickness", "%$mS", Size);
+		if (conf_core.editor.auto_drc)
+			pcb_crosshair_grid_fit(Crosshair.X, Crosshair.Y);
+	}
+}
+
+/* sets a new via thickness */
+void pcb_board_set_via_size(pcb_coord_t Size, pcb_bool Force)
+{
+	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + MIN_PINORVIACOPPER)) {
+		conf_set_design("design/via_thickness", "%$mS", Size);
+	}
+}
+
+/* sets a new via drilling hole */
+void pcb_board_set_via_drilling_hole(pcb_coord_t Size, pcb_bool Force)
+{
+	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - MIN_PINORVIACOPPER)) {
+		conf_set_design("design/via_drilling_hole", "%$mS", Size);
+	}
+}
+
+/* sets a clearance width */
+void pcb_board_set_clearance(pcb_coord_t Width)
+{
+	if (Width <= MAX_LINESIZE) {
+		conf_set_design("design/clearance", "%$mS", Width);
+	}
+}
+
+/* sets a text scaling */
+void pcb_board_set_text_scale(int Scale)
+{
+	if (Scale <= MAX_TEXTSCALE && Scale >= MIN_TEXTSCALE) {
+		conf_set_design("design/text_scale", "%d", Scale);
+	}
+}
+
+/* sets or resets changed flag and redraws status */
+void pcb_board_set_changed_flag(pcb_bool New)
+{
+	PCB->Changed = New;
+}
+

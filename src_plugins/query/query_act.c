@@ -33,6 +33,7 @@
 #include "set.h"
 #include "draw.h"
 #include "select.h"
+#include "board.h"
 #include "macro.h"
 
 static const char query_action_syntax[] =
