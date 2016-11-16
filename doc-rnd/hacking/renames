@@ -773,3 +773,8 @@ PIN_ROTATE -> PCB_PIN_ROTATE_SHAPE
 ROTATE_VIA_LOWLEVEL -> PCB_VIA_ROTATE90
 ROTATE_PIN_LOWLEVEL -> PCB_PIN_ROTATE90
 ROTATE_PAD_LOWLEVEL -> PCB_PAD_ROTATE90
+RotateBoxLowLevel -> pcb_box_rotate90
+RotateObject -> pcb_obj_rotate90
+RotateScreenObject -> pcb_screen_obj_rotate90
+RotatePointLowLevel -> pcb_point_rotate90
+free_rotate -> pcb_rotate

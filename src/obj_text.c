@@ -193,14 +193,14 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 		Text->BoundingBox.Y1 = Text->Y - miny;
 		Text->BoundingBox.X2 = Text->X + maxx;
 		Text->BoundingBox.Y2 = Text->Y - maxy;
-		RotateBoxLowLevel(&Text->BoundingBox, Text->X, Text->Y, (4 - Text->Direction) & 0x03);
+		pcb_box_rotate90(&Text->BoundingBox, Text->X, Text->Y, (4 - Text->Direction) & 0x03);
 	}
 	else {
 		Text->BoundingBox.X1 = Text->X + minx;
 		Text->BoundingBox.Y1 = Text->Y + miny;
 		Text->BoundingBox.X2 = Text->X + maxx;
 		Text->BoundingBox.Y2 = Text->Y + maxy;
-		RotateBoxLowLevel(&Text->BoundingBox, Text->X, Text->Y, Text->Direction);
+		pcb_box_rotate90(&Text->BoundingBox, Text->X, Text->Y, Text->Direction);
 	}
 
 	/* the bounding box covers the extent of influence
@@ -439,7 +439,7 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 	pcb_uint8_t number;
 
 	number = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text) ? (4 - Number) & 3 : Number;
-	RotateBoxLowLevel(&Text->BoundingBox, X, Y, Number);
+	pcb_box_rotate90(&Text->BoundingBox, X, Y, Number);
 	PCB_ROTATE90(Text->X, Text->Y, X, Y, Number);
 
 	/* set new direction, 0..3,
@@ -524,7 +524,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 			defaultsymbol.X2 = PCB_SCALE_TEXT(defaultsymbol.X2 + x, Text->Scale);
 			defaultsymbol.Y2 = PCB_SCALE_TEXT(defaultsymbol.Y2, Text->Scale);
 
-			RotateBoxLowLevel(&defaultsymbol, 0, 0, Text->Direction);
+			pcb_box_rotate90(&defaultsymbol, 0, 0, Text->Direction);
 
 			/* add offset and draw box */
 			defaultsymbol.X1 += Text->X;

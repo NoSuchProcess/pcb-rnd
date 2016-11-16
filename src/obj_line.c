@@ -654,7 +654,7 @@ void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 	}
 	else
 		r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) Line);
-	RotatePointLowLevel(Point, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+	pcb_point_rotate90(Point, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	pcb_line_bbox(Line);
 	if (Layer) {
 		r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);

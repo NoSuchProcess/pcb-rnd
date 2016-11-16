@@ -537,7 +537,7 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 		Arc->Width = Arc->Height;
 		Arc->Height = save;
 	}
-	RotateBoxLowLevel(&Arc->BoundingBox, X, Y, Number);
+	pcb_box_rotate90(&Arc->BoundingBox, X, Y, Number);
 }
 
 /* rotates an arc */

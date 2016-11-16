@@ -67,13 +67,13 @@ static void real_stroke_finish(void)
 		case 987412:
 		case 8741236:
 		case 874123:
-			RotateScreenObject(StrokeBox.X1, StrokeBox.Y1, SWAP_IDENT ? 1 : 3);
+			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, SWAP_IDENT ? 1 : 3);
 			break;
 		case 7896321:
 		case 786321:
 		case 789632:
 		case 896321:
-			RotateScreenObject(StrokeBox.X1, StrokeBox.Y1, SWAP_IDENT ? 3 : 1);
+			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, SWAP_IDENT ? 3 : 1);
 			break;
 		case 258:
 			SetMode(PCB_MODE_LINE);

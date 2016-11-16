@@ -409,8 +409,8 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 #endif
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
-		free_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
-		free_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
+		pcb_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
+		pcb_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
 		pcb_line_bbox(line);
 	}
 	END_LOOP;
@@ -420,7 +420,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 		if (Data)
 			r_delete_entry(Data->pin_tree, (pcb_box_t *) pin);
 		pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
-		free_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
+		pcb_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
 		pcb_pin_bbox(pin);
 	}
 	END_LOOP;
@@ -430,19 +430,19 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 		if (Data)
 			r_delete_entry(Data->pad_tree, (pcb_box_t *) pad);
 		pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
-		free_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
-		free_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
+		pcb_rotate(&pad->Point1.X, &pad->Point1.Y, X, Y, cosa, sina);
+		pcb_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
 		pcb_line_bbox((pcb_line_t *) pad);
 	}
 	END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
-		free_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
+		pcb_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
 		arc->StartAngle = NormalizeAngle(arc->StartAngle + angle);
 	}
 	END_LOOP;
 
-	free_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
+	pcb_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
 	pcb_element_bbox(Data, Element, &PCB->Font);
 	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }

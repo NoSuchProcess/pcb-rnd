@@ -1131,7 +1131,7 @@ void pcb_notify_mode(void)
 		break;
 
 	case PCB_MODE_ROTATE:
-		RotateScreenObject(Note.X, Note.Y, gui->shift_is_pressed()? (SWAP_IDENT ? 1 : 3)
+		pcb_screen_obj_rotate90(Note.X, Note.Y, gui->shift_is_pressed()? (SWAP_IDENT ? 1 : 3)
 											 : (SWAP_IDENT ? 3 : 1));
 		break;
 

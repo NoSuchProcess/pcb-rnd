@@ -273,7 +273,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 
 	/* finally the origin and the bounding box */
 	PCB_ROTATE90(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
-	RotateBoxLowLevel(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
+	pcb_box_rotate90(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 }
 
 void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
@@ -288,7 +288,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	PCB_VIA_LOOP(Buffer->Data);
 	{
 		r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
-		free_rotate(&via->X, &via->Y, Buffer->X, Buffer->Y, cosa, sina);
+		pcb_rotate(&via->X, &via->Y, Buffer->X, Buffer->Y, cosa, sina);
 		pcb_pin_bbox(via);
 		r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
@@ -305,8 +305,8 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->line_tree, (pcb_box_t *) line);
-		free_rotate(&line->Point1.X, &line->Point1.Y, Buffer->X, Buffer->Y, cosa, sina);
-		free_rotate(&line->Point2.X, &line->Point2.Y, Buffer->X, Buffer->Y, cosa, sina);
+		pcb_rotate(&line->Point1.X, &line->Point1.Y, Buffer->X, Buffer->Y, cosa, sina);
+		pcb_rotate(&line->Point2.X, &line->Point2.Y, Buffer->X, Buffer->Y, cosa, sina);
 		pcb_line_bbox(line);
 		r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
@@ -314,7 +314,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
-		free_rotate(&arc->X, &arc->Y, Buffer->X, Buffer->Y, cosa, sina);
+		pcb_rotate(&arc->X, &arc->Y, Buffer->X, Buffer->Y, cosa, sina);
 		arc->StartAngle = NormalizeAngle(arc->StartAngle + angle);
 		r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
@@ -325,7 +325,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 		r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 		PCB_POLY_POINT_LOOP(polygon);
 		{
-			free_rotate(&point->X, &point->Y, Buffer->X, Buffer->Y, cosa, sina);
+			pcb_rotate(&point->X, &point->Y, Buffer->X, Buffer->Y, cosa, sina);
 		}
 		END_LOOP;
 		pcb_poly_bbox(polygon);

@@ -300,7 +300,7 @@ static void set_text_cb_any(void *ctx, pcb_board_t *pcb, int type, void *layer_o
 		}
 		else
 			delta = st->d;
-		if (RotateObject(type, layer_or_element, text, text, text->X, text->Y, delta) != NULL)
+		if (pcb_obj_rotate90(type, layer_or_element, text, text, text->X, text->Y, delta) != NULL)
 			DONE;
 	}
 }

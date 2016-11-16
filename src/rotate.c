@@ -70,7 +70,7 @@ static pcb_opfunc_t RotateFunctions = {
 /* ---------------------------------------------------------------------------
  * rotates a point in 90 degree steps
  */
-void RotatePointLowLevel(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_point_rotate90(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	PCB_ROTATE90(Point->X, Point->Y, X, Y, Number);
 }
@@ -78,7 +78,7 @@ void RotatePointLowLevel(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsig
 /* ---------------------------------------------------------------------------
  * rotates a box in 90 degree steps
  */
-void RotateBoxLowLevel(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	pcb_coord_t x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
 
@@ -94,7 +94,7 @@ void RotateBoxLowLevel(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Nu
  * rotates an objects at the cursor position as identified by its ID
  * the center of rotation is determined by the current cursor location
  */
-void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
+void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 {
 	pcb_rubberband_t *ptr;
 	void *ptr2;
@@ -120,7 +120,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, 
 		}
 		else
 			r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
-		RotatePointLowLevel(ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
+		pcb_point_rotate90(ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
 		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
 			r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
@@ -144,7 +144,7 @@ void *RotateObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, 
 	return (ptr2);
 }
 
-void RotateScreenObject(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
+void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
@@ -158,7 +158,7 @@ void RotateScreenObject(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 			LookupRubberbandLines(type, ptr1, ptr2, ptr3);
 		if (type == PCB_TYPE_ELEMENT)
 			LookupRatLines(type, ptr1, ptr2, ptr3);
-		RotateObject(type, ptr1, ptr2, ptr3, X, Y, Steps);
+		pcb_obj_rotate90(type, ptr1, ptr2, ptr3, X, Y, Steps);
 		SetChangedFlag(pcb_true);
 	}
 }
