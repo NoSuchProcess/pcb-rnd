@@ -153,7 +153,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		END_LOOP;
 	}
 	END_LOOP;
-	RAT_LOOP(PCB->Data);
+	PCB_RAT_LOOP(PCB->Data);
 	{
 		FLIP(line->Point1.Y);
 		FLIP(line->Point2.Y);

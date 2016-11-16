@@ -80,18 +80,18 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			pcb_clear_warnings();
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_AllRats:
-			if (AddAllRats(pcb_false, NULL))
+			if (pcb_rat_add_all(pcb_false, NULL))
 				SetChangedFlag(pcb_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
-			if (AddAllRats(pcb_true, NULL))
+			if (pcb_rat_add_all(pcb_true, NULL))
 				SetChangedFlag(pcb_true);
 			break;
 		case F_Close:
 			small = PCB_SQUARE(MAX_COORD);
 			shorty = NULL;
-			RAT_LOOP(PCB->Data);
+			PCB_RAT_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 					continue;

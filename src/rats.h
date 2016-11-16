@@ -47,24 +47,24 @@ struct pcb_connection_s {				/* holds a connection (rat) */
 	pcb_lib_menu_t *menu;				/* the netmenu this *SHOULD* belong too */
 };
 
-pcb_rat_t *AddNet(void);
-char *ConnectionName(int, void *, void *);
+pcb_rat_t *pcb_rat_add_net(void);
+char *pcb_connection_name(int, void *, void *);
 
-pcb_bool AddAllRats(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
-pcb_bool SeekPad(pcb_lib_entry_t *, pcb_connection_t *, pcb_bool);
+pcb_bool pcb_rat_add_all(pcb_bool, void (*)(register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *));
+pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t *, pcb_connection_t *, pcb_bool);
 
-pcb_netlist_t *ProcNetlist(pcb_lib_t *);
-pcb_netlist_list_t CollectSubnets(pcb_bool);
-pcb_connection_t *GetConnectionMemory(pcb_net_t *);
+pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *);
+pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool);
+pcb_connection_t *pcb_rat_connection_alloc(pcb_net_t *);
 
-#define CONNECTION_LOOP(net) do {                         \
+#define PCB_CONNECTION_LOOP(net) do {                         \
         pcb_cardinal_t        n;                                      \
         pcb_connection_t *      connection;                     \
         for (n = (net)->ConnectionN-1; n != -1; n--)            \
         {                                                       \
                 connection = & (net)->Connection[n]
 
-#define RAT_LOOP(top) do {                                          \
+#define PCB_RAT_LOOP(top) do {                                          \
   pcb_rat_t *line;                                                    \
   gdl_iterator_t __it__;                                            \
   ratlist_foreach(&(top)->Rat, &__it__, line) {

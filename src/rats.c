@@ -153,7 +153,7 @@ static pcb_bool FindPad(const char *ElementName, const char *PinNum, pcb_connect
  * parse a netlist menu entry and locate the corresponding pad
  * returns pcb_true if found, and fills in Connection information
  */
-pcb_bool SeekPad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_bool Same)
+pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_bool Same)
 {
 	int j;
 	char ElementName[256];
@@ -184,7 +184,7 @@ pcb_bool SeekPad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_bool Same
  * Read the library-netlist build a pcb_true Netlist structure
  */
 
-pcb_netlist_t *ProcNetlist(pcb_lib_t *net_menu)
+pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 {
 	pcb_connection_t *connection;
 	pcb_connection_t LastPoint;
@@ -231,7 +231,7 @@ pcb_netlist_t *ProcNetlist(pcb_lib_t *net_menu)
 				net->Style = NULL;
 			ENTRY_LOOP(menu);
 			{
-				if (SeekPad(entry, &LastPoint, pcb_false)) {
+				if (pcb_rat_seek_pad(entry, &LastPoint, pcb_false)) {
 					if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2))
 						pcb_message(PCB_MSG_DEFAULT, _
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
@@ -239,7 +239,7 @@ pcb_netlist_t *ProcNetlist(pcb_lib_t *net_menu)
 										(LastPoint.type ==
 										 PCB_TYPE_PIN) ? ((pcb_pin_t *) LastPoint.ptr2)->Number : ((pcb_pad_t *) LastPoint.ptr2)->Number);
 					else {
-						connection = GetConnectionMemory(net);
+						connection = pcb_rat_connection_alloc(net);
 						*connection = LastPoint;
 						/* indicate expect net */
 						connection->menu = menu;
@@ -254,8 +254,8 @@ pcb_netlist_t *ProcNetlist(pcb_lib_t *net_menu)
 				else
 					badnet = pcb_true;
 				/* check for more pins with the same number */
-				for (; SeekPad(entry, &LastPoint, pcb_true);) {
-					connection = GetConnectionMemory(net);
+				for (; pcb_rat_seek_pad(entry, &LastPoint, pcb_true);) {
+					connection = pcb_rat_connection_alloc(net);
 					*connection = LastPoint;
 					/* indicate expect net */
 					connection->menu = menu;
@@ -294,9 +294,9 @@ static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *De
 	pcb_connection_t *conn;
 
 	/* It would be worth checking if SourceNet is NULL here to avoid a segfault. Seb James. */
-	CONNECTION_LOOP(SourceNet);
+	PCB_CONNECTION_LOOP(SourceNet);
 	{
-		conn = GetConnectionMemory(DestNet);
+		conn = pcb_rat_connection_alloc(DestNet);
 		*conn = *connection;
 	}
 	END_LOOP;
@@ -425,7 +425,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, line)
 					&& ((line->Point1.X == line->Point2.X)
 							|| (line->Point1.Y == line->Point2.Y))) {
-				conn = GetConnectionMemory(a);
+				conn = pcb_rat_connection_alloc(a);
 				conn->X = line->Point1.X;
 				conn->Y = line->Point1.Y;
 				conn->type = PCB_TYPE_LINE;
@@ -433,7 +433,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn->ptr2 = line;
 				conn->group = GetLayerGroupNumberByPointer(layer);
 				conn->menu = NULL;			/* agnostic view of where it belongs */
-				conn = GetConnectionMemory(a);
+				conn = pcb_rat_connection_alloc(a);
 				conn->X = line->Point2.X;
 				conn->Y = line->Point2.Y;
 				conn->type = PCB_TYPE_LINE;
@@ -448,7 +448,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 		PCB_POLY_ALL_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, polygon)) {
-				conn = GetConnectionMemory(a);
+				conn = pcb_rat_connection_alloc(a);
 				/* make point on a vertex */
 				conn->X = polygon->Clipped->contours->head.point[0];
 				conn->Y = polygon->Clipped->contours->head.point[1];
@@ -463,7 +463,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 		PCB_VIA_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, via)) {
-				conn = GetConnectionMemory(a);
+				conn = pcb_rat_connection_alloc(a);
 				conn->X = via->X;
 				conn->Y = via->Y;
 				conn->type = PCB_TYPE_VIA;
@@ -644,7 +644,7 @@ DrawShortestRats(pcb_netlist_t *Netl,
  *  if SelectedOnly is pcb_true, it will only draw rats to selected pins and pads
  */
 pcb_bool
-AddAllRats(pcb_bool SelectedOnly,
+pcb_rat_add_all(pcb_bool SelectedOnly,
 					 void (*funcp) (register pcb_connection_t *, register pcb_connection_t *, register pcb_route_style_t *))
 {
 	pcb_netlist_t *Nets, *Wantlist;
@@ -657,7 +657,7 @@ AddAllRats(pcb_bool SelectedOnly,
 	 * structure the way the final routing
 	 * is supposed to look
 	 */
-	Wantlist = ProcNetlist(&(PCB->NetlistLib[NETLIST_EDITED]));
+	Wantlist = pcb_rat_proc_netlist(&(PCB->NetlistLib[NETLIST_EDITED]));
 	if (!Wantlist) {
 		pcb_message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
 		return (pcb_false);
@@ -681,11 +681,11 @@ AddAllRats(pcb_bool SelectedOnly,
 	 */
 	PCB_NET_LOOP(Wantlist);
 	{
-		CONNECTION_LOOP(net);
+		PCB_CONNECTION_LOOP(net);
 		{
 			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->ptr2)) {
 				lonesome = pcb_net_new(Nets);
-				onepin = GetConnectionMemory(lonesome);
+				onepin = pcb_rat_connection_alloc(lonesome);
 				*onepin = *connection;
 				lonesome->Style = net->Style;
 			}
@@ -731,7 +731,7 @@ AddAllRats(pcb_bool SelectedOnly,
 /* XXX: This is copied in large part from AddAllRats above; for
  * maintainability, AddAllRats probably wants to be tweaked to use this
  * version of the code so that we don't have duplication. */
-pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
+pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 {
 	pcb_netlist_list_t result = { 0, 0, NULL };
 	pcb_netlist_t *Nets, *Wantlist;
@@ -743,7 +743,7 @@ pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
 	 * structure the way the final routing
 	 * is supposed to look
 	 */
-	Wantlist = ProcNetlist(&(PCB->NetlistLib[NETLIST_EDITED]));
+	Wantlist = pcb_rat_proc_netlist(&(PCB->NetlistLib[NETLIST_EDITED]));
 	if (!Wantlist) {
 		pcb_message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
 		return result;
@@ -766,11 +766,11 @@ pcb_netlist_list_t CollectSubnets(pcb_bool SelectedOnly)
 	PCB_NET_LOOP(Wantlist);
 	{
 		Nets = pcb_netlist_new(&result);
-		CONNECTION_LOOP(net);
+		PCB_CONNECTION_LOOP(net);
 		{
 			if (!SelectedOnly || PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) connection->ptr2)) {
 				lonesome = pcb_net_new(Nets);
-				onepin = GetConnectionMemory(lonesome);
+				onepin = pcb_rat_connection_alloc(lonesome);
 				*onepin = *connection;
 				lonesome->Style = net->Style;
 			}
@@ -807,7 +807,7 @@ static int rat_used(char *name)
 	/* These next two functions moved from the original netlist.c as part of the
 	   |  gui code separation for the Gtk port.
 	 */
-pcb_rat_t *AddNet(void)
+pcb_rat_t *pcb_rat_add_net(void)
 {
 	static int ratDrawn = 0;
 	char name1[256], *name2;
@@ -836,7 +836,7 @@ pcb_rat_t *AddNet(void)
 	/* will work for pins to since the FLAG is common */
 	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
-	strcpy(name1, ConnectionName(found, ptr1, ptr2));
+	strcpy(name1, pcb_connection_name(found, ptr1, ptr2));
 	found = SearchObjectByLocation(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 5);
 	if (found == PCB_TYPE_NONE) {
@@ -849,7 +849,7 @@ pcb_rat_t *AddNet(void)
 	}
 	group2 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
-	name2 = ConnectionName(found, ptr1, ptr2);
+	name2 = pcb_connection_name(found, ptr1, ptr2);
 
 	menu = pcb_netnode_to_netname(name1);
 	if (menu) {
@@ -904,7 +904,7 @@ ratIt:
 }
 
 
-char *ConnectionName(int type, void *ptr1, void *ptr2)
+char *pcb_connection_name(int type, void *ptr1, void *ptr2)
 {
 	static char name[256];
 	char *num;
@@ -928,7 +928,7 @@ char *ConnectionName(int type, void *ptr1, void *ptr2)
 /* ---------------------------------------------------------------------------
  * get next slot for a connection, allocates memory if necessary
  */
-pcb_connection_t *GetConnectionMemory(pcb_net_t *Net)
+pcb_connection_t *pcb_rat_connection_alloc(pcb_net_t *Net)
 {
 	pcb_connection_t *con = Net->Connection;
 

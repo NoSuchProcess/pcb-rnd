@@ -239,7 +239,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 		}
 	}
 	else {
-		name = ConnectionName(type, ptr1, ptr2);
+		name = pcb_connection_name(type, ptr1, ptr2);
 		pcb_hid_actionl("NetlistShow", name, NULL);
 	}
 
@@ -348,7 +348,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 {
 	pcb_bool change = pcb_false;
 
-	RAT_LOOP(PCB->Data);
+	PCB_RAT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, line)) {
 			if (AndDraw)

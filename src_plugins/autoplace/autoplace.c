@@ -684,7 +684,7 @@ pcb_bool AutoPlaceSelected(void)
 	 * structure the way the final routing
 	 * is supposed to look
 	 */
-	Nets = ProcNetlist(&(PCB->NetlistLib[NETLIST_EDITED]));
+	Nets = pcb_rat_proc_netlist(&(PCB->NetlistLib[NETLIST_EDITED]));
 	if (!Nets) {
 		pcb_message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
 		goto done;
@@ -757,7 +757,7 @@ pcb_bool AutoPlaceSelected(void)
 done:
 	if (changed) {
 		pcb_rats_destroy(pcb_false);
-		AddAllRats(pcb_false, NULL);
+		pcb_rat_add_all(pcb_false, NULL);
 		pcb_redraw();
 	}
 	FreePointerListMemory(&Selected);

@@ -159,7 +159,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		PCB_AFAIL(smartdisperse);
 	}
 
-	Nets = ProcNetlist(&PCB->NetlistLib[0]);
+	Nets = pcb_rat_proc_netlist(&PCB->NetlistLib[0]);
 	if (!Nets) {
 		pcb_message(PCB_MSG_ERROR, _("Can't use SmartDisperse because no netlist is loaded.\n"));
 		return 0;
@@ -226,7 +226,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	/* Place larger nets, still grouping by net */
 	PCB_NET_LOOP(Nets);
 	{
-		CONNECTION_LOOP(net);
+		PCB_CONNECTION_LOOP(net);
 		{
 			pcb_element_t *element;
 

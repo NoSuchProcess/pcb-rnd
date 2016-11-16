@@ -764,7 +764,7 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 				continue;
 		}
 
-		if (SeekPad(net->Entry, &conn, pcb_false)) {
+		if (pcb_rat_seek_pad(net->Entry, &conn, pcb_false)) {
 			switch (conn.type) {
 			case PCB_TYPE_PIN:
 				x = ((pcb_pin_t *) (conn.ptr2))->X;

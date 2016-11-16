@@ -757,7 +757,7 @@ void pcb_notify_mode(void)
 
 		if (PCB->RatDraw) {
 			pcb_rat_t *line;
-			if ((line = AddNet())) {
+			if ((line = pcb_rat_add_net())) {
 				addedLines++;
 				AddObjectToCreateUndoList(PCB_TYPE_RATLINE, line, line, line);
 				IncrementUndoSerialNumber();

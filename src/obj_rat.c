@@ -106,7 +106,7 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 	ctx.remove.bulk = pcb_true;
 	ctx.remove.destroy_target = NULL;
 
-	RAT_LOOP(PCB->Data);
+	PCB_RAT_LOOP(PCB->Data);
 	{
 		if ((!selected) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			changed = pcb_true;

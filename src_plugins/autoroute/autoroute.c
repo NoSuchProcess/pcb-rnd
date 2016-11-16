@@ -936,7 +936,7 @@ static routedata_t *CreateRouteData()
 	 */
 	/* use the PCB_FLAG_DRC to mark objects as they are entered */
 	pcb_reset_conns(pcb_false);
-	Nets = CollectSubnets(pcb_false);
+	Nets = pcb_rat_collect_subnets(pcb_false);
 	{
 		routebox_t *last_net = NULL;
 		PCB_NETLIST_LOOP(&Nets);
@@ -950,7 +950,7 @@ static routedata_t *CreateRouteData()
 				for (j = 0; j < rd->max_styles; j++)
 					if (net->Style == rd->styles[j])
 						break;
-				CONNECTION_LOOP(net);
+				PCB_CONNECTION_LOOP(net);
 				{
 					routebox_t *rb = NULL;
 					PCB_FLAG_SET(PCB_FLAG_DRC, (pcb_pin_t *) connection->ptr2);
@@ -4568,7 +4568,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 		routebox_t *net, *rb, *last;
 		int i = 0;
 		/* count number of rats selected */
-		RAT_LOOP(PCB->Data);
+		PCB_RAT_LOOP(PCB->Data);
 		{
 			if (!selected || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 				i++;
@@ -4581,7 +4581,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 			goto donerouting;					/* nothing to do here */
 		/* if only one rat selected, do things the quick way. =) */
 		if (i == 1) {
-			RAT_LOOP(PCB->Data);
+			PCB_RAT_LOOP(PCB->Data);
 			if (!selected || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 				/* look up the end points of this rat line */
 				routebox_t *a;
@@ -4637,7 +4637,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 		}
 
 		/* now merge only those subnets connected by a rat line */
-		RAT_LOOP(PCB->Data);
+		PCB_RAT_LOOP(PCB->Data);
 		if (!selected || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			/* look up the end points of this rat line */
 			routebox_t *a;
@@ -4708,7 +4708,7 @@ donerouting:
 		/* optimize rats, we've changed connectivity a lot. */
 		pcb_rats_destroy(pcb_false /*all rats */ );
 		RestoreUndoSerialNumber();
-		AddAllRats(pcb_false /*all rats */ , NULL);
+		pcb_rat_add_all(pcb_false /*all rats */ , NULL);
 		RestoreUndoSerialNumber();
 
 		IncrementUndoSerialNumber();

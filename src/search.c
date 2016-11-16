@@ -1211,7 +1211,7 @@ int SearchObjectByID(pcb_data_t *Base, void **Result1, void **Result2, void **Re
 	}
 
 	if (type == PCB_TYPE_RATLINE || type == PCB_TYPE_LINE_POINT) {
-		RAT_LOOP(Base);
+		PCB_RAT_LOOP(Base);
 		{
 			if (line->ID == ID) {
 				*Result1 = *Result2 = *Result3 = (void *) line;

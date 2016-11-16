@@ -100,7 +100,7 @@ pcb_lib_menu_t *pcb_netname_to_netname(const char *netname)
 int pcb_pin_name_to_xy(pcb_lib_entry_t * pin, pcb_coord_t *x, pcb_coord_t *y)
 {
 	pcb_connection_t conn;
-	if (!SeekPad(pin, &conn, pcb_false))
+	if (!pcb_rat_seek_pad(pin, &conn, pcb_false))
 		return 1;
 	switch (conn.type) {
 	case PCB_TYPE_PIN:

@@ -2699,7 +2699,7 @@ void import_clusters(toporouter_t * r)
 {
 	pcb_netlist_list_t nets;
 	pcb_reset_conns(pcb_false);
-	nets = CollectSubnets(pcb_false);
+	nets = pcb_rat_collect_subnets(pcb_false);
 	PCB_NETLIST_LOOP(&nets);
 	{
 		if (netlist->NetN > 0) {
@@ -2712,7 +2712,7 @@ void import_clusters(toporouter_t * r)
 #ifdef DEBUG_MERGING
 				printf("NET:\n");
 #endif
-				CONNECTION_LOOP(net);
+				PCB_CONNECTION_LOOP(net);
 				{
 
 					if (connection->type == PCB_TYPE_LINE) {
@@ -8064,13 +8064,13 @@ toporouter_t *toporouter_new(void)
 
 void acquire_twonets(toporouter_t * r)
 {
-	RAT_LOOP(PCB->Data);
+	PCB_RAT_LOOP(PCB->Data);
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 		import_route(r, line);
 	END_LOOP;
 
 	if (!r->routes->len) {
-		RAT_LOOP(PCB->Data);
+		PCB_RAT_LOOP(PCB->Data);
 		import_route(r, line);
 		END_LOOP;
 	}
@@ -8126,7 +8126,7 @@ static int toporouter(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 	SaveUndoSerialNumber();
 	pcb_rats_destroy(pcb_false);
 	RestoreUndoSerialNumber();
-	AddAllRats(pcb_false, NULL);
+	pcb_rat_add_all(pcb_false, NULL);
 	RestoreUndoSerialNumber();
 	IncrementUndoSerialNumber();
 	pcb_redraw();

@@ -285,7 +285,7 @@ do { \
 	}
 
 	if (PCB->RatOn || !Flag)
-		RAT_LOOP(PCB->Data);
+		PCB_RAT_LOOP(PCB->Data);
 	{
 		if (LINE_NEAR_BOX((pcb_line_t *) line, Box) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
 			append(PCB_TYPE_RATLINE, line, line);
@@ -700,7 +700,7 @@ pcb_bool SelectedOperation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, in
 	END_LOOP;
 	/* and rat-lines */
 	if (type & PCB_TYPE_RATLINE && PCB->RatOn && F->Rat)
-		RAT_LOOP(PCB->Data);
+		PCB_RAT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			if (Reset) {
@@ -729,7 +729,7 @@ pcb_bool SelectConnection(pcb_bool Flag)
 	pcb_bool changed = pcb_false;
 
 	if (PCB->RatOn)
-		RAT_LOOP(PCB->Data);
+		PCB_RAT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line)) {
 			AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
@@ -987,7 +987,7 @@ pcb_bool SelectObjectByName(int Type, const char *name_pattern, pcb_bool Flag, p
 			/* Name[0] and Name[1] are special purpose, not the actual name */
 			if (menu->Name && menu->Name[0] != '\0' && menu->Name[1] != '\0' && REGEXEC(menu->Name + 2)) {
 				for (i = menu->EntryN, entry = menu->Entry; i; i--, entry++)
-					if (SeekPad(entry, &conn, pcb_false))
+					if (pcb_rat_seek_pad(entry, &conn, pcb_false))
 						pcb_rat_find_hook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, pcb_true, pcb_true);
 			}
 		}

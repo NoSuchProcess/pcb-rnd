@@ -82,7 +82,7 @@ pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 {
 	pcb_bool change = pcb_false;
 
-	RAT_LOOP(PCB->Data);
+	PCB_RAT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, line)) {
 			if (AndDraw)

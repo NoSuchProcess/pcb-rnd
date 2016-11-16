@@ -749,3 +749,12 @@ MorphPolygon -> pcb_poly_morph
 NoHolesPolygonDicer -> pcb_poly_no_holes_dicer
 PolyToPolygonsOnLayer -> pcb_poly_to_polygons_on_layer
 square_pin_factors -> pcb_poly_square_pin_factors
+AddNet -> pcb_rat_add_net
+ConnectionName -> pcb_connection_name
+AddAllRats -> pcb_rat_add_all
+SeekPad -> pcb_rat_seek_pad
+ProcNetlist -> pcb_rat_proc_netlist
+CollectSubnets -> pcb_rat_collect_subnets
+GetConnectionMemory -> pcb_rat_connection_alloc
+CONNECTION_LOOP -> PCB_CONNECTION_LOOP
+RAT_LOOP -> PCB_RAT_LOOP

@@ -199,7 +199,7 @@ static void toggle_pin_selected(pcb_lib_entry_t * entry)
 {
 	pcb_connection_t conn;
 
-	if (!SeekPad(entry, &conn, pcb_false))
+	if (!pcb_rat_seek_pad(entry, &conn, pcb_false))
 		return;
 
 	AddObjectToFlagUndoList(conn.type, conn.ptr1, conn.ptr2, conn.ptr2);
@@ -263,7 +263,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	IncrementUndoSerialNumber();
 
 	/* And lead the user to the location */
-	if (SeekPad(node, &conn, pcb_false))
+	if (pcb_rat_seek_pad(node, &conn, pcb_false))
 		switch (conn.type) {
 		case PCB_TYPE_PIN:
 			{
@@ -504,7 +504,7 @@ static void netlist_select_cb(GtkWidget * widget, gpointer data)
 	pcb_reset_conns(pcb_true);
 
 	for (i = selected_net->EntryN, entry = selected_net->Entry; i; i--, entry++)
-		if (SeekPad(entry, &conn, pcb_false))
+		if (pcb_rat_seek_pad(entry, &conn, pcb_false))
 			pcb_rat_find_hook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, pcb_true, pcb_true);
 
 	SelectConnection(select_flag);

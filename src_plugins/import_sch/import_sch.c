@@ -435,7 +435,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 
 	pcb_rats_destroy(pcb_false);
-	AddAllRats(pcb_false, NULL);
+	pcb_rat_add_all(pcb_false, NULL);
 
 #ifdef DEBUG
 	printf("ActionImport:  ===========  Leaving ActionImport  ============\n");

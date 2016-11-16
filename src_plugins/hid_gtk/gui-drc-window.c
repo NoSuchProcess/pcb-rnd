@@ -125,7 +125,7 @@ static void unset_found_flags(int AndDraw)
 		END_LOOP;
 	}
 	END_LOOP;
-	RAT_LOOP(PCB->Data);
+	PCB_RAT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, line)) {
 			AddObjectToFlagUndoList(PCB_TYPE_RATLINE, line, line, line);
