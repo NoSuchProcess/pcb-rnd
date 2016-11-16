@@ -337,7 +337,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 	}
 	END_LOOP;
 	if (change)
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 	return change;
 }
 
@@ -397,7 +397,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 	}
 	ENDALL_LOOP;
 	if (change)
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 	return change;
 }
 

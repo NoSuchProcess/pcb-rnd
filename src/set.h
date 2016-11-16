@@ -31,18 +31,18 @@
 
 #include "global_typedefs.h"
 
-void SetTextScale(int);
-void SetGrid(pcb_coord_t, pcb_bool);
-void SetLineSize(pcb_coord_t);
-void SetViaSize(pcb_coord_t, pcb_bool);
-void SetViaDrillingHole(pcb_coord_t, pcb_bool);
-void SetClearanceWidth(pcb_coord_t);
-void SetChangedFlag(pcb_bool);
-void SetBufferNumber(int);
-void SetMode(int);
-void SetCrosshairRangeToBuffer(void);
-void SetLocalRef(pcb_coord_t, pcb_coord_t, pcb_bool);
-void SaveMode(void);
-void RestoreMode(void);
+void pcb_text_set_scale(int);
+void pcb_board_set_grid(pcb_coord_t, pcb_bool);
+void pcb_line_set_size(pcb_coord_t);
+void pcb_via_set_size(pcb_coord_t, pcb_bool);
+void pcb_via_set_drilling_hole(pcb_coord_t, pcb_bool);
+void pcb_conf_set_clearance_width(pcb_coord_t);
+void pcb_board_set_changed_flag(pcb_bool);
+void pcb_buffer_set_number(int);
+void pcb_crosshair_set_mode(int);
+void pcb_crosshair_range_to_buffer(void);
+void pcb_crosshair_set_local_ref(pcb_coord_t, pcb_coord_t, pcb_bool);
+void pcb_crosshair_save_mode(void);
+void pcb_crosshair_restore_mode(void);
 
 #endif

@@ -81,12 +81,12 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_AllRats:
 			if (pcb_rat_add_all(pcb_false, NULL))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
 			if (pcb_rat_add_all(pcb_true, NULL))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_Close:
 			small = PCB_SQUARE(MAX_COORD);
@@ -202,12 +202,12 @@ static int ActionDeleteRats(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_AllRats:
 			if (pcb_rats_destroy(pcb_false))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
 			if (pcb_rats_destroy(pcb_true))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}
 	}

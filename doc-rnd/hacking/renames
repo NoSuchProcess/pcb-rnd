@@ -843,3 +843,16 @@ ObjectOperation -> pcb_object_operation
 SelectedOperation -> pcb_selected_operation
 SelectConnection -> pcb_select_connection
 SelectObjectByName -> pcb_select_object_by_name
+SetTextScale -> pcb_text_set_scale
+SetGrid -> pcb_board_set_grid
+SetLineSize -> pcb_line_set_size
+SetViaSize -> pcb_via_set_size
+SetViaDrillingHole -> pcb_via_set_drilling_hole
+SetClearanceWidth -> pcb_conf_set_clearance_width
+SetChangedFlag -> pcb_board_set_changed_flag
+SetBufferNumber -> pcb_buffer_set_number
+SetMode -> pcb_crosshair_set_mode
+SetCrosshairRangeToBuffer -> pcb_crosshair_range_to_buffer
+SetLocalRef -> pcb_crosshair_set_local_ref
+SaveMode -> pcb_crosshair_save_mode
+RestoreMode -> pcb_crosshair_restore_mode

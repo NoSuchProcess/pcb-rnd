@@ -418,7 +418,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		RestoreUndoSerialNumber();
 		IncrementUndoSerialNumber();
 		pcb_redraw();
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 	}
 	free_texts_by_pos();
 	return 0;
@@ -609,7 +609,7 @@ static int distributetext(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		RestoreUndoSerialNumber();
 		IncrementUndoSerialNumber();
 		pcb_redraw();
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 	}
 	free_texts_by_pos();
 	return 0;

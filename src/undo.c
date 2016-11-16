@@ -1141,7 +1141,7 @@ void IncrementUndoSerialNumber(void)
 	if (!Locked) {
 		/* Set the changed flag if anything was added prior to this bump */
 		if (UndoN > 0 && UndoList[UndoN - 1].Serial == Serial)
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 		Serial++;
 		Bumped = pcb_true;
 		between_increment_and_restore = pcb_true;

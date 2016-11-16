@@ -160,7 +160,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (pcb_select_object_by_name(type, pattern, pcb_true, method))
-						SetChangedFlag(pcb_true);
+						pcb_board_set_changed_flag(pcb_true);
 					if (PCB_ACTION_ARG(1) == NULL)
 						free((char*)pattern);
 				}
@@ -171,7 +171,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		case F_ToggleObject:
 		case F_Object:
 			if (pcb_select_object())
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			break;
 
 			/* all objects in block */
@@ -186,7 +186,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_notify_block();
 				if (Crosshair.AttachedBox.State == STATE_THIRD && pcb_select_block(&box, pcb_true)) {
-					SetChangedFlag(pcb_true);
+					pcb_board_set_changed_flag(pcb_true);
 					Crosshair.AttachedBox.State = STATE_FIRST;
 				}
 				pcb_notify_crosshair_change(pcb_true);
@@ -203,7 +203,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				box.X2 = MAX_COORD;
 				box.Y2 = MAX_COORD;
 				if (pcb_select_block(&box, pcb_true))
-					SetChangedFlag(pcb_true);
+					pcb_board_set_changed_flag(pcb_true);
 				break;
 			}
 
@@ -212,7 +212,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			if (pcb_select_connection(pcb_true)) {
 				pcb_draw();
 				IncrementUndoSerialNumber();
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
 
@@ -220,7 +220,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			{
 				pcb_coord_t x, y;
 				Note.Buffer = conf_core.editor.buffer_number;
-				SetBufferNumber(MAX_BUFFER - 1);
+				pcb_buffer_set_number(MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB_PASTEBUFFER);
 				gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
 				x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
@@ -231,7 +231,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				pcb_element_convert_from_buffer(PCB_PASTEBUFFER);
 				RestoreUndoSerialNumber();
 				pcb_buffer_copy_to_layout(x, y);
-				SetBufferNumber(Note.Buffer);
+				pcb_buffer_set_number(Note.Buffer);
 			}
 			break;
 
@@ -319,7 +319,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (pcb_select_object_by_name(type, pattern, pcb_false, method))
-						SetChangedFlag(pcb_true);
+						pcb_board_set_changed_flag(pcb_true);
 					if (PCB_ACTION_ARG(1) == NULL)
 						free((char*)pattern);
 				}
@@ -338,7 +338,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_notify_block();
 				if (Crosshair.AttachedBox.State == STATE_THIRD && pcb_select_block(&box, pcb_false)) {
-					SetChangedFlag(pcb_true);
+					pcb_board_set_changed_flag(pcb_true);
 					Crosshair.AttachedBox.State = STATE_FIRST;
 				}
 				pcb_notify_crosshair_change(pcb_true);
@@ -355,7 +355,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				box.X2 = MAX_COORD;
 				box.Y2 = MAX_COORD;
 				if (pcb_select_block(&box, pcb_false))
-					SetChangedFlag(pcb_true);
+					pcb_board_set_changed_flag(pcb_true);
 				break;
 			}
 
@@ -364,7 +364,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			if (pcb_select_connection(pcb_false)) {
 				pcb_draw();
 				IncrementUndoSerialNumber();
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
 

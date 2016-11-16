@@ -408,7 +408,7 @@ static void apply_vendor_map(void)
 		 * file, redraw things, and make sure we can undo.
 		 */
 		if (changed) {
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 			pcb_redraw();
 			IncrementUndoSerialNumber();
 		}

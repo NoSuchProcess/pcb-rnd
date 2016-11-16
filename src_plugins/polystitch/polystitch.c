@@ -214,7 +214,7 @@ static void stitch_them()
 	for (i = 0; i < inner_poly->PointN; i++)
 		pcb_poly_point_new(outer_poly, inner_poly->Points[i].X, inner_poly->Points[i].Y);
 
-	SetChangedFlag(pcb_true);
+	pcb_board_set_changed_flag(pcb_true);
 
 	outer_poly->NoHolesValid = 0;
 	pcb_poly_bbox(outer_poly);

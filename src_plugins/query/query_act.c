@@ -146,7 +146,7 @@ static int query_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		if (run_script(argv[1], select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 			pcb_redraw();
 		}
 		return 0;
@@ -157,7 +157,7 @@ static int query_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		if (run_script(argv[1], select_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 			pcb_redraw();
 		}
 		return 0;

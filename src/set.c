@@ -52,7 +52,7 @@ static int mode_stack[MAX_MODESTACK_DEPTH];
 /* ---------------------------------------------------------------------------
  * sets cursor grid with respect to grid offset values
  */
-void SetGrid(pcb_coord_t Grid, pcb_bool align)
+void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align)
 {
 	if (Grid >= 1 && Grid <= MAX_GRID) {
 		if (align) {
@@ -69,7 +69,7 @@ void SetGrid(pcb_coord_t Grid, pcb_bool align)
 /* ---------------------------------------------------------------------------
  * sets a new line thickness
  */
-void SetLineSize(pcb_coord_t Size)
+void pcb_line_set_size(pcb_coord_t Size)
 {
 	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
 		conf_set_design("design/line_thickness", "%$mS", Size);
@@ -81,7 +81,7 @@ void SetLineSize(pcb_coord_t Size)
 /* ---------------------------------------------------------------------------
  * sets a new via thickness
  */
-void SetViaSize(pcb_coord_t Size, pcb_bool Force)
+void pcb_via_set_size(pcb_coord_t Size, pcb_bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_thickness", "%$mS", Size);
@@ -91,7 +91,7 @@ void SetViaSize(pcb_coord_t Size, pcb_bool Force)
 /* ---------------------------------------------------------------------------
  * sets a new via drilling hole
  */
-void SetViaDrillingHole(pcb_coord_t Size, pcb_bool Force)
+void pcb_via_set_drilling_hole(pcb_coord_t Size, pcb_bool Force)
 {
 	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_drilling_hole", "%$mS", Size);
@@ -101,7 +101,7 @@ void SetViaDrillingHole(pcb_coord_t Size, pcb_bool Force)
 /* ---------------------------------------------------------------------------
  * sets a clearance width
  */
-void SetClearanceWidth(pcb_coord_t Width)
+void pcb_conf_set_clearance_width(pcb_coord_t Width)
 {
 	if (Width <= MAX_LINESIZE) {
 		conf_set_design("design/clearance", "%$mS", Width);
@@ -111,7 +111,7 @@ void SetClearanceWidth(pcb_coord_t Width)
 /* ---------------------------------------------------------------------------
  * sets a text scaling
  */
-void SetTextScale(int Scale)
+void pcb_text_set_scale(int Scale)
 {
 	if (Scale <= MAX_TEXTSCALE && Scale >= MIN_TEXTSCALE) {
 		conf_set_design("design/text_scale", "%d", Scale);
@@ -121,7 +121,7 @@ void SetTextScale(int Scale)
 /* ---------------------------------------------------------------------------
  * sets or resets changed flag and redraws status
  */
-void SetChangedFlag(pcb_bool New)
+void pcb_board_set_changed_flag(pcb_bool New)
 {
 	if (PCB->Changed != New) {
 		PCB->Changed = New;
@@ -132,7 +132,7 @@ void SetChangedFlag(pcb_bool New)
 /* ---------------------------------------------------------------------------
  * sets the crosshair range to the current buffer extents 
  */
-void SetCrosshairRangeToBuffer(void)
+void pcb_crosshair_range_to_buffer(void)
 {
 	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER) {
 		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
@@ -147,40 +147,40 @@ void SetCrosshairRangeToBuffer(void)
 /* ---------------------------------------------------------------------------
  * sets a new buffer number
  */
-void SetBufferNumber(int Number)
+void pcb_buffer_set_number(int Number)
 {
 	if (Number >= 0 && Number < MAX_BUFFER) {
 		conf_set_design("editor/buffer_number", "%d", Number);
 
 		/* do an update on the crosshair range */
-		SetCrosshairRangeToBuffer();
+		pcb_crosshair_range_to_buffer();
 	}
 }
 
 /* ---------------------------------------------------------------------------
  */
 
-void SaveMode(void)
+void pcb_crosshair_save_mode(void)
 {
 	mode_stack[mode_position] = conf_core.editor.mode;
 	if (mode_position < MAX_MODESTACK_DEPTH - 1)
 		mode_position++;
 }
 
-void RestoreMode(void)
+void pcb_crosshair_restore_mode(void)
 {
 	if (mode_position == 0) {
 		pcb_message(PCB_MSG_DEFAULT, "hace: underflow of restore mode\n");
 		return;
 	}
-	SetMode(mode_stack[--mode_position]);
+	pcb_crosshair_set_mode(mode_stack[--mode_position]);
 }
 
 
 /* ---------------------------------------------------------------------------
  * set a new mode and update X cursor
  */
-void SetMode(int Mode)
+void pcb_crosshair_set_mode(int Mode)
 {
 	char sMode[32];
 	static pcb_bool recursing = pcb_false;
@@ -222,7 +222,7 @@ void SetMode(int Mode)
 	}
 	else {
 		if (conf_core.editor.mode == PCB_MODE_ARC || conf_core.editor.mode == PCB_MODE_LINE)
-			SetLocalRef(0, 0, pcb_false);
+			pcb_crosshair_set_local_ref(0, 0, pcb_false);
 		Crosshair.AttachedBox.State = STATE_FIRST;
 		Crosshair.AttachedLine.State = STATE_FIRST;
 		if (Mode == PCB_MODE_LINE && conf_core.editor.auto_drc) {
@@ -238,7 +238,7 @@ void SetMode(int Mode)
 
 	if (Mode == PCB_MODE_PASTE_BUFFER)
 		/* do an update on the crosshair range */
-		SetCrosshairRangeToBuffer();
+		pcb_crosshair_range_to_buffer();
 	else
 		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 
@@ -251,7 +251,7 @@ void SetMode(int Mode)
 	pcb_notify_crosshair_change(pcb_true);
 }
 
-void SetLocalRef(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
+void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 {
 	static pcb_mark_t old;
 	static int count = 0;

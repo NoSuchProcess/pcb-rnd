@@ -295,7 +295,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 	IncrementUndoSerialNumber();
 
 	pcb_redraw();
-	SetChangedFlag(pcb_true);
+	pcb_board_set_changed_flag(pcb_true);
 
 	return 0;
 }
@@ -393,7 +393,7 @@ static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if (type == PCB_TYPE_ELEMENT)
 		pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx, ny);
-	SetChangedFlag(pcb_true);
+	pcb_board_set_changed_flag(pcb_true);
 	return 0;
 }
 
@@ -424,14 +424,14 @@ static int ActionMoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, 
 				gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
-						SetChangedFlag(pcb_true);
+						pcb_board_set_changed_flag(pcb_true);
 				break;
 			}
 
 		case F_SelectedObjects:
 		case F_Selected:
 			if (pcb_move_selected_objs_to_layer(CURRENT))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}
 	}
@@ -579,7 +579,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 		/* Place components onto center of board. */
 		if (pcb_buffer_copy_to_layout(nx, ny))
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 	}
 
 	else if (e && strcmp(DESCRIPTION_NAME(e), footprint) != 0) {
@@ -618,7 +618,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		pcb_element_remove(e);
 
 		if (pcb_buffer_copy_to_layout(mx, my))
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 	}
 
 	/* Now reload footprint */
@@ -758,7 +758,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 			if (changed) {
 				IncrementUndoSerialNumber();
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
 		case F_Selected:
@@ -783,7 +783,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			END_LOOP;
 			if (changed) {
 				IncrementUndoSerialNumber();
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
 		case F_Element:
@@ -792,7 +792,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 				if (pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
 					Note.Buffer = conf_core.editor.buffer_number;
-					SetBufferNumber(MAX_BUFFER - 1);
+					pcb_buffer_set_number(MAX_BUFFER - 1);
 					pcb_buffer_clear(PCB_PASTEBUFFER);
 					pcb_copy_obj_to_buffer(PCB_PASTEBUFFER->Data, PCB->Data, PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
 					pcb_element_smash_buffer(PCB_PASTEBUFFER);
@@ -803,8 +803,8 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					MoveObjectToRemoveUndoList(PCB_TYPE_ELEMENT, ptr1, ptr2, ptr3);
 					RestoreUndoSerialNumber();
 					pcb_buffer_copy_to_layout(0, 0);
-					SetBufferNumber(Note.Buffer);
-					SetChangedFlag(pcb_true);
+					pcb_buffer_set_number(Note.Buffer);
+					pcb_board_set_changed_flag(pcb_true);
 				}
 			}
 			break;

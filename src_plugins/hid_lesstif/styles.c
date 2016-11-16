@@ -240,10 +240,10 @@ static void style_selected(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 		return;
 	}
 	style = PCB->RouteStyle.array + i;
-	SetLineSize(style->Thick);
-	SetViaSize(style->Diameter, pcb_true);
-	SetViaDrillingHole(style->Hole, pcb_true);
-	SetClearanceWidth(style->Clearance);
+	pcb_line_set_size(style->Thick);
+	pcb_via_set_size(style->Diameter, pcb_true);
+	pcb_via_set_drilling_hole(style->Hole, pcb_true);
+	pcb_conf_set_clearance_width(style->Clearance);
 	if (style_dialog) {
 		for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++)
 			if (j != i)

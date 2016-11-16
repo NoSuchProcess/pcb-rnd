@@ -123,7 +123,7 @@ static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 	Crosshair.AttachedObject.X = PlaceX - mx;
 	Crosshair.AttachedObject.Y = PlaceY - my;
 	if (!Marked.status || conf_core.editor.local_ref)
-		SetLocalRef(PlaceX - mx, PlaceY - my, pcb_true);
+		pcb_crosshair_set_local_ref(PlaceX - mx, PlaceY - my, pcb_true);
 	Crosshair.AttachedObject.State = STATE_SECOND;
 
 	/* get boundingbox of object and set cursor range */
@@ -302,21 +302,21 @@ static void click_cb(pcb_hidval_t hv)
 		Note.Click = pcb_false;
 		if (Note.Moving && !gui->shift_is_pressed()) {
 			Note.Buffer = conf_core.editor.buffer_number;
-			SetBufferNumber(MAX_BUFFER - 1);
+			pcb_buffer_set_number(MAX_BUFFER - 1);
 			pcb_buffer_clear(PCB_PASTEBUFFER);
 			pcb_buffer_add_selected(PCB_PASTEBUFFER, Note.X, Note.Y, pcb_true);
 			SaveUndoSerialNumber();
 			pcb_remove_selected();
-			SaveMode();
+			pcb_crosshair_save_mode();
 			saved_mode = pcb_true;
-			SetMode(PCB_MODE_PASTE_BUFFER);
+			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		}
 		else if (Note.Hit && !gui->shift_is_pressed()) {
 			pcb_box_t box;
 
-			SaveMode();
+			pcb_crosshair_save_mode();
 			saved_mode = pcb_true;
-			SetMode(gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
+			pcb_crosshair_set_mode(gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
 			Crosshair.AttachedObject.Ptr1 = Note.ptr1;
 			Crosshair.AttachedObject.Ptr2 = Note.ptr2;
 			Crosshair.AttachedObject.Ptr3 = Note.ptr3;
@@ -348,7 +348,7 @@ static void click_cb(pcb_hidval_t hv)
 			box.Y2 = MAX_COORD;
 			/* unselect first if shift key not down */
 			if (!gui->shift_is_pressed() && pcb_select_block(&box, pcb_false))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			pcb_notify_block();
 			Crosshair.AttachedBox.Point1.X = Note.X;
 			Crosshair.AttachedBox.Point1.Y = Note.Y;
@@ -374,7 +374,7 @@ void pcb_release_mode(void)
 		/* unselect first if shift key not down */
 		if (!gui->shift_is_pressed()) {
 			if (pcb_select_block(&box, pcb_false))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			if (Note.Moving) {
 				Note.Moving = 0;
 				Note.Hit = 0;
@@ -385,7 +385,7 @@ void pcb_release_mode(void)
 		   gets the same SN. */
 		RestoreUndoSerialNumber();
 		if (pcb_select_object())
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 		else
 			IncrementUndoSerialNumber(); /* We didn't select anything new, so, the deselection should get its  own SN. */
 		Note.Hit = 0;
@@ -395,7 +395,7 @@ void pcb_release_mode(void)
 		RestoreUndoSerialNumber();
 		pcb_notify_mode();
 		pcb_buffer_clear(PCB_PASTEBUFFER);
-		SetBufferNumber(Note.Buffer);
+		pcb_buffer_set_number(Note.Buffer);
 		Note.Moving = pcb_false;
 		Note.Hit = 0;
 	}
@@ -411,13 +411,13 @@ void pcb_release_mode(void)
 
 		RestoreUndoSerialNumber();
 		if (pcb_select_block(&box, pcb_true))
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 		else if (Bumped)
 			IncrementUndoSerialNumber();
 		Crosshair.AttachedBox.State = STATE_FIRST;
 	}
 	if (saved_mode)
-		RestoreMode();
+		pcb_crosshair_restore_mode();
 	saved_mode = pcb_false;
 }
 
@@ -490,7 +490,7 @@ void pcb_notify_line(void)
 	void *ptr1, *ptr2, *ptr3;
 
 	if (!Marked.status || conf_core.editor.local_ref)
-		SetLocalRef(Crosshair.X, Crosshair.Y, pcb_true);
+		pcb_crosshair_set_local_ref(Crosshair.X, Crosshair.Y, pcb_true);
 	switch (Crosshair.AttachedLine.State) {
 	case STATE_FIRST:						/* first point */
 		if (PCB->RatDraw && pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
@@ -751,7 +751,7 @@ void pcb_notify_mode(void)
 		 * the file after saving.
 		 */
 		if (Crosshair.X == Crosshair.AttachedLine.Point1.X && Crosshair.Y == Crosshair.AttachedLine.Point1.Y) {
-			SetMode(PCB_MODE_LINE);
+			pcb_crosshair_set_mode(PCB_MODE_LINE);
 			break;
 		}
 
@@ -1075,7 +1075,7 @@ void pcb_notify_mode(void)
 				}
 			}
 			if (pcb_buffer_copy_to_layout(Note.X, Note.Y))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			if (e) {
 				int type = pcb_search_screen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
 																&ptr3);
@@ -1126,7 +1126,7 @@ void pcb_notify_mode(void)
 			}
 			pcb_remove_object(type, ptr1, ptr2, ptr3);
 			IncrementUndoSerialNumber();
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 		}
 		break;
 
@@ -1172,9 +1172,9 @@ void pcb_notify_mode(void)
 																Crosshair.AttachedObject.Ptr2,
 																Crosshair.AttachedObject.Ptr3,
 																Note.X - Crosshair.AttachedObject.X, Note.Y - Crosshair.AttachedObject.Y);
-				SetLocalRef(0, 0, pcb_false);
+				pcb_crosshair_set_local_ref(0, 0, pcb_false);
 			}
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 
 			/* reset identifiers */
 			Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
@@ -1225,7 +1225,7 @@ void pcb_notify_mode(void)
 				pcb_insert_point_in_object(Crosshair.AttachedObject.Type,
 															Crosshair.AttachedObject.Ptr1,
 															Crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 
 			/* reset identifiers */
 			Crosshair.AttachedObject.Type = PCB_TYPE_NONE;

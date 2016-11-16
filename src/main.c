@@ -456,7 +456,7 @@ int main(int argc, char *argv[])
 	InitHandler();
 	pcb_init_buffers();
 
-	SetMode(PCB_MODE_ARROW);
+	pcb_crosshair_set_mode(PCB_MODE_ARROW);
 
 	if (command_line_pcb) {
 		/* keep filename even if initial load command failed;
@@ -503,7 +503,7 @@ int main(int argc, char *argv[])
 			gui->parse_arguments(&hid_argc, &hid_argv);
 			if (gui->gui)
 				pcb_crosshair_init();
-			SetMode(PCB_MODE_ARROW);
+			pcb_crosshair_set_mode(PCB_MODE_ARROW);
 				pcb_hid_action("LibraryChanged");
 		}
 	} while(gui != NULL);

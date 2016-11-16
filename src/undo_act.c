@@ -147,7 +147,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				if (conf_core.editor.auto_drc)
 					Undo(pcb_true);						/* undo the connection find */
 				Crosshair.AttachedLine.State = STATE_FIRST;
-				SetLocalRef(0, 0, pcb_false);
+				pcb_crosshair_set_local_ref(0, 0, pcb_false);
 				pcb_notify_crosshair_change(pcb_true);
 				return 0;
 			}
@@ -164,7 +164,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				Crosshair.AttachedLine.Point2.X = ptr2->Point1.X;
 				Crosshair.AttachedLine.Point2.Y = ptr2->Point1.Y;
 				if ((type = Undo(pcb_true)))
-					SetChangedFlag(pcb_true);
+					pcb_board_set_changed_flag(pcb_true);
 				/* check that the undo was of the right type */
 				if ((type & UNDO_CREATE) == 0) {
 					/* wrong undo type, restore anchor points */
@@ -229,7 +229,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 		/* undo the last destructive operation */
 		if (Undo(pcb_true))
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 	}
 	else if (function) {
 		switch (pcb_funchash_get(function, NULL)) {
@@ -271,7 +271,7 @@ int ActionRedo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 1;
 	pcb_notify_crosshair_change(pcb_false);
 	if (Redo(pcb_true)) {
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 		if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != STATE_FIRST) {
 			pcb_line_t *line = linelist_last(&CURRENT->Line);
 			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = line->Point2.X;

@@ -536,7 +536,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			pcb_polyarea_boolean_free(info.brush, expand, &info.brush, PBO_UNITE);
 		}
 	} while (found);
-	SetChangedFlag(pcb_true);
+	pcb_board_set_changed_flag(pcb_true);
 	IncrementUndoSerialNumber();
 	return 0;
 }

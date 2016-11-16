@@ -582,7 +582,7 @@ void pcb_swap_buffers(void)
 
 	for (i = 0; i < MAX_BUFFER; i++)
 		pcb_buffer_swap(&Buffers[i]);
-	SetCrosshairRangeToBuffer();
+	pcb_crosshair_range_to_buffer();
 }
 
 /* ----------------------------------------------------------------------
@@ -802,7 +802,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		case F_Rotate:
 			if (sbufnum) {
 				pcb_buffer_rotate(PCB_PASTEBUFFER, (pcb_uint8_t) atoi(sbufnum));
-				SetCrosshairRangeToBuffer();
+				pcb_crosshair_range_to_buffer();
 			}
 			break;
 
@@ -871,7 +871,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				oldx = x;
 				oldy = y;
 				if (pcb_buffer_copy_to_layout(x, y))
-					SetChangedFlag(pcb_true);
+					pcb_board_set_changed_flag(pcb_true);
 			}
 			break;
 
@@ -882,7 +882,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 				/* correct number */
 				if (number)
-					SetBufferNumber(number - 1);
+					pcb_buffer_set_number(number - 1);
 			}
 		}
 	}

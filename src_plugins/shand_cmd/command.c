@@ -154,7 +154,7 @@ static int CommandLoadElementToBuffer(int argc, const char **argv, pcb_coord_t x
 	case 1:											/* filename is passed in commandline */
 		filename = argv[0];
 		if (filename && pcb_element_load_to_buffer(PCB_PASTEBUFFER, filename))
-			SetMode(PCB_MODE_PASTE_BUFFER);
+			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		break;
 
 	default:											/* usage */
@@ -190,7 +190,7 @@ static int CommandLoadLayoutToBuffer(int argc, const char **argv, pcb_coord_t x,
 	case 1:  /* filename is passed in commandline */
 		filename = argv[0];
 		if (filename && pcb_buffer_load_layout(PCB_PASTEBUFFER, filename, format))
-			SetMode(PCB_MODE_PASTE_BUFFER);
+			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		break;
 
 	default:  /* usage */
@@ -317,7 +317,7 @@ static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	case 0:
 		if (PCB->Filename) {
 			if (pcb_save_pcb(PCB->Filename, NULL) == 0)
-				SetChangedFlag(pcb_false);
+				pcb_board_set_changed_flag(pcb_false);
 		}
 		else
 			pcb_message(PCB_MSG_DEFAULT, "No filename to save to yet\n");
@@ -325,7 +325,7 @@ static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 	case 1:
 		if (pcb_save_pcb(argv[0], NULL) == 0) {
-			SetChangedFlag(pcb_false);
+			pcb_board_set_changed_flag(pcb_false);
 			free(PCB->Filename);
 			PCB->Filename = pcb_strdup(argv[0]);
 			if (gui->notify_filename_changed != NULL)

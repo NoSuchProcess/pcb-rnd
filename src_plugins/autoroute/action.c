@@ -69,11 +69,11 @@ static int ActionAutoRoute(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	if (function) {								/* one parameter */
 		if (strcmp(function, "AllRats") == 0) {
 			if (AutoRoute(pcb_false))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 		}
 		else if ((strcmp(function, "SelectedRats") == 0) || (strcmp(function, "Selected") == 0)) {
 			if (AutoRoute(pcb_true))
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 		}
 	}
 	return 0;

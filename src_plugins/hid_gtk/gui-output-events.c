@@ -130,7 +130,7 @@ void ghid_note_event_location(GdkEventButton * ev)
 static gboolean ghid_idle_cb(gpointer data)
 {
 	if (conf_core.editor.mode == PCB_MODE_NO)
-		SetMode(PCB_MODE_ARROW);
+		pcb_crosshair_set_mode(PCB_MODE_ARROW);
 	ghid_mode_cursor(conf_core.editor.mode);
 	if (ghidgui->settings_mode != conf_core.editor.mode) {
 		ghid_mode_buttons_update();

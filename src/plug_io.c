@@ -338,7 +338,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		}
 
 		/* clear 'changed flag' */
-		SetChangedFlag(pcb_false);
+		pcb_board_set_changed_flag(pcb_false);
 		PCB->Filename = new_filename;
 		/* just in case a bad file saved file is loaded */
 

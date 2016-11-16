@@ -249,7 +249,7 @@ void pcb_lookup_element_conns(pcb_element_t *Element, FILE * FP)
 	pcb_reset_conns(pcb_true);
 	pcb_conn_lookup_init();
 	PrintElementConnections(Element, FP, pcb_true);
-	SetChangedFlag(pcb_true);
+	pcb_board_set_changed_flag(pcb_true);
 	if (conf_core.editor.beep_when_finished)
 		gui->beep();
 	pcb_conn_lookup_uninit();

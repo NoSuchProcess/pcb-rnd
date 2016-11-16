@@ -1350,7 +1350,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	pcb_r_insert_entry(CURRENT->polygon_tree, (pcb_box_t *) polygon, 0);
 	pcb_poly_init_clip(PCB->Data, CURRENT, polygon);
 	DrawPolygon(CURRENT, polygon);
-	SetChangedFlag(pcb_true);
+	pcb_board_set_changed_flag(pcb_true);
 
 	/* reset state of attached line */
 	Crosshair.AttachedLine.State = STATE_FIRST;
@@ -1842,5 +1842,5 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 	}
 	while ((pa = pa->f) != Input);
 
-	SetChangedFlag(pcb_true);
+	pcb_board_set_changed_flag(pcb_true);
 }

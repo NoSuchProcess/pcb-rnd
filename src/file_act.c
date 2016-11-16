@@ -120,14 +120,14 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if (strcasecmp(function, "ElementToBuffer") == 0) {
 		pcb_notify_crosshair_change(pcb_false);
 		if (pcb_element_load_to_buffer(PCB_PASTEBUFFER, name))
-			SetMode(PCB_MODE_PASTE_BUFFER);
+			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 
 	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
 		pcb_notify_crosshair_change(pcb_false);
 		if (pcb_buffer_load_layout(PCB_PASTEBUFFER, name, format))
-			SetMode(PCB_MODE_PASTE_BUFFER);
+			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 
@@ -254,7 +254,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	if (strcasecmp(function, "Layout") == 0) {
 		if (pcb_save_pcb(PCB->Filename, NULL) == 0)
-			SetChangedFlag(pcb_false);
+			pcb_board_set_changed_flag(pcb_false);
 		if (gui->notify_filename_changed != NULL)
 			gui->notify_filename_changed();
 		return 0;
@@ -268,7 +268,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	if (strcasecmp(function, "LayoutAs") == 0) {
 		if (pcb_save_pcb(name, fmt) == 0) {
-			SetChangedFlag(pcb_false);
+			pcb_board_set_changed_flag(pcb_false);
 			free(PCB->Filename);
 			PCB->Filename = pcb_strdup(name);
 			if (gui->notify_filename_changed != NULL)
@@ -283,7 +283,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 			pcb_lookup_conns_to_all_elements(fp);
 			fclose(fp);
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 		}
 		return 0;
 	}
@@ -294,7 +294,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 			pcb_lookup_unused_pins(fp);
 			fclose(fp);
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 		}
 		return 0;
 	}
@@ -310,7 +310,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
 				pcb_lookup_element_conns(element, fp);
 				fclose(fp);
-				SetChangedFlag(pcb_true);
+				pcb_board_set_changed_flag(pcb_true);
 			}
 		}
 		return 0;

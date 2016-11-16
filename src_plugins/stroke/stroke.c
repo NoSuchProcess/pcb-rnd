@@ -59,7 +59,7 @@ static void real_stroke_finish(void)
 		switch (num) {
 		case 456:
 			if (conf_core.editor.mode == PCB_MODE_LINE) {
-				SetMode(PCB_MODE_LINE);
+				pcb_crosshair_set_mode(PCB_MODE_LINE);
 			}
 			break;
 		case 9874123:
@@ -76,10 +76,10 @@ static void real_stroke_finish(void)
 			pcb_screen_obj_rotate90(StrokeBox.X1, StrokeBox.Y1, SWAP_IDENT ? 3 : 1);
 			break;
 		case 258:
-			SetMode(PCB_MODE_LINE);
+			pcb_crosshair_set_mode(PCB_MODE_LINE);
 			break;
 		case 852:
-			SetMode(PCB_MODE_ARROW);
+			pcb_crosshair_set_mode(PCB_MODE_ARROW);
 			break;
 		case 1478963:
 			ActionUndo(0, NULL, 0, 0);
@@ -93,7 +93,7 @@ static void real_stroke_finish(void)
 		case 147863:
 		case 147853:
 		case 145863:
-			SetMode(PCB_MODE_VIA);
+			pcb_crosshair_set_mode(PCB_MODE_VIA);
 			break;
 		case 951:
 		case 9651:

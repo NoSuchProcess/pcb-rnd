@@ -57,21 +57,21 @@ static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	switch (id) {
 	case F_Object:
-		SaveMode();
-		SetMode(PCB_MODE_REMOVE);
+		pcb_crosshair_save_mode();
+		pcb_crosshair_set_mode(PCB_MODE_REMOVE);
 		pcb_notify_mode();
-		RestoreMode();
+		pcb_crosshair_restore_mode();
 		break;
 	case F_Selected:
 		pcb_remove_selected();
 		break;
 	case F_AllRats:
 		if (pcb_rats_destroy(pcb_false))
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 		break;
 	case F_SelectedRats:
 		if (pcb_rats_destroy(pcb_true))
-			SetChangedFlag(pcb_true);
+			pcb_board_set_changed_flag(pcb_true);
 		break;
 	}
 
@@ -91,7 +91,7 @@ static const char removeselected_help[] = "Removes any selected objects.";
 static int ActionRemoveSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (pcb_remove_selected())
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 	return 0;
 }
 

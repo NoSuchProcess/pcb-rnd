@@ -71,7 +71,7 @@ pcb_bool pcb_clear_flag_on_pins_vias_pads(pcb_bool AndDraw, int flag)
 	}
 	END_LOOP;
 	if (change)
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 	return change;
 }
 
@@ -131,7 +131,7 @@ pcb_bool pcb_clear_flag_on_lines_polys(pcb_bool AndDraw, int flag)
 	}
 	ENDALL_LOOP;
 	if (change)
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 	return change;
 }
 

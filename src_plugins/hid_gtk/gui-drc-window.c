@@ -166,7 +166,7 @@ static void unset_found_flags(int AndDraw)
 	}
 	ENDALL_LOOP;
 	if (change) {
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 		if (AndDraw) {
 			IncrementUndoSerialNumber();
 			pcb_draw();
@@ -219,7 +219,7 @@ static void selection_changed_cb(GtkTreeSelection * selection, gpointer user_dat
 		}
 		pcb_draw_obj(object_type, ptr1, ptr2);
 	}
-	SetChangedFlag(pcb_true);
+	pcb_board_set_changed_flag(pcb_true);
 	IncrementUndoSerialNumber();
 	pcb_draw();
 }

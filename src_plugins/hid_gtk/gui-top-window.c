@@ -776,7 +776,7 @@ static gint n_mode_buttons = G_N_ELEMENTS(mode_buttons);
 
 static void do_set_mode(int mode)
 {
-	SetMode(mode);
+	pcb_crosshair_set_mode(mode);
 	ghid_mode_cursor(mode);
 	ghidgui->settings_mode = mode;
 }
@@ -1299,7 +1299,7 @@ void ghid_create_pcb_widgets(void)
 	ghid_update_toggle_flags();
 
 	ghid_init_icons(port);
-	SetMode(PCB_MODE_ARROW);
+	pcb_crosshair_set_mode(PCB_MODE_ARROW);
 	ghid_mode_buttons_update();
 }
 

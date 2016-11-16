@@ -144,6 +144,6 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 		if (type == PCB_TYPE_ELEMENT)
 			pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate90(type, ptr1, ptr2, ptr3, X, Y, Steps);
-		SetChangedFlag(pcb_true);
+		pcb_board_set_changed_flag(pcb_true);
 	}
 }
