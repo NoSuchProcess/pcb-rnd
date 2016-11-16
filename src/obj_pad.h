@@ -62,6 +62,9 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
 		pcb_pad_bbox((__p__)); \
 	} while(0)
 
+#define	PCB_PAD_ROTATE90(p,x0,y0,n)	\
+	pcb_line_rotate90(((pcb_line_t *) (p)),(x0),(y0),(n))
+
 #define PCB_PAD_LOOP(element) do {                                      \
 	pcb_pad_t *pad;                                                     \
 	gdl_iterator_t __it__;                                            \

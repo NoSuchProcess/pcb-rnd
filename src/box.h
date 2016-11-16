@@ -225,5 +225,6 @@ static inline PCB_FUNC_UNUSED double pcb_dist2_to_box(const pcb_cheap_point_t * 
 pcb_box_t *pcb_box_new(pcb_box_list_t *);
 void pcb_box_free(pcb_box_list_t *);
 void pcb_set_point_bounding_box(pcb_point_t *Pnt);
+void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 #endif /* __BOX_H_INCLUDED__ */

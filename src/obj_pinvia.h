@@ -72,6 +72,41 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via);
 
 #define pcb_pin_move(p,dx,dy) pcb_via_move(p, dx, dy)
 
+/* Rotate pin shape style by n_in * 90 degrees */
+#define PCB_PIN_ROTATE_SHAPE(p,n_in) \
+do { \
+	int _n_; \
+	for(_n_ = n_in;_n_>0;_n_--) { \
+		int _old_, _nw_ = 0; \
+		_old_ = PCB_FLAG_SQUARE_GET(p); \
+		if ((_old_ > 1) && (_old_ < 17)) { \
+			_old_--; \
+			if (_old_ & 1) \
+				_nw_ |= 8; \
+			if (_old_ & 8) \
+				_nw_ |= 2; \
+			if (_old_ & 2) \
+				_nw_ |= 4; \
+			if (_old_ & 4) \
+				_nw_ |= 1; \
+			PCB_FLAG_SQUARE_GET(p) = _nw_+1; \
+		} \
+	} \
+} while(0)
+
+#define	PCB_VIA_ROTATE90(v,x0,y0,n)	\
+do { \
+	PCB_COORD_ROTATE90((v)->X,(v)->Y,(x0),(y0),(n)); \
+	PCB_PIN_ROTATE_SHAPE(v, (n)); \
+} while(0)
+
+#define	PCB_PIN_ROTATE90(p,x0,y0,n)	\
+do { \
+	PCB_COORD_ROTATE90((p)->X,(p)->Y,(x0),(y0),(n)); \
+	PCB_PIN_ROTATE_SHAPE((p), (n)); \
+} while(0)
+
+
 #define PCB_VIA_LOOP(top) do {                                          \
   pcb_pin_t *via;                                                     \
   gdl_iterator_t __it__;                                            \

@@ -778,3 +778,4 @@ RotateObject -> pcb_obj_rotate90
 RotateScreenObject -> pcb_screen_obj_rotate90
 RotatePointLowLevel -> pcb_point_rotate90
 free_rotate -> pcb_rotate
+PCB_ROTATE90 -> PCB_COORD_ROTATE90

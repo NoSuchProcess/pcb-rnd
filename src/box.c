@@ -29,6 +29,7 @@
 #define STEP_POINT 100
 #include <string.h>
 #include "config.h"
+#include "rotate.h"
 #include "box.h"
 
 /* ---------------------------------------------------------------------------
@@ -66,4 +67,19 @@ void pcb_set_point_bounding_box(pcb_point_t *Pnt)
 {
 	Pnt->X2 = Pnt->X + 1;
 	Pnt->Y2 = Pnt->Y + 1;
+}
+
+/* ---------------------------------------------------------------------------
+ * rotates a box in 90 degree steps
+ */
+void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+{
+	pcb_coord_t x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
+
+	PCB_COORD_ROTATE90(x1, y1, X, Y, Number);
+	PCB_COORD_ROTATE90(x2, y2, X, Y, Number);
+	Box->X1 = MIN(x1, x2);
+	Box->Y1 = MIN(y1, y2);
+	Box->X2 = MAX(x1, x2);
+	Box->Y2 = MAX(y1, y2);
 }
