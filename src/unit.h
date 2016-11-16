@@ -121,6 +121,8 @@ pcb_coord_t unit_to_coord(const pcb_unit_t *, double);
 pcb_increments_t *get_increments_struct(const char *suffix);
 pcb_angle_t NormalizeAngle(pcb_angle_t a);
 
+void initialize_units(void);
+
 /* PCB/physical unit conversions */
 #define PCB_COORD_TO_MIL(n)	((n) / 25400.0)
 #define PCB_MIL_TO_COORD(n)	((n) * 25400.0)

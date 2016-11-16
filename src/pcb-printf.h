@@ -84,8 +84,6 @@
 #include <genvector/gds_char.h>
 #include "unit.h"
 
-void initialize_units();
-
 int pcb_fprintf(FILE * f, const char *fmt, ...);
 int pcb_vfprintf(FILE * f, const char *fmt, va_list args);
 int pcb_sprintf(char *string, const char *fmt, ...);

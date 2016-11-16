@@ -84,7 +84,7 @@ pcb_unit_t Units[] = {
  * main units array, and internationalize the units for GUI
  * display.
  */
-void initialize_units()
+void initialize_units(void)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i) {
