@@ -215,7 +215,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
 		}
 		ENDALL_LOOP;
-		MENU_LOOP(net_menu);
+		PCB_MENU_LOOP(net_menu);
 		{
 			if (menu->Name[0] == '*' || menu->flag == 0) {
 				badnet = pcb_true;
@@ -229,7 +229,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 			}
 			else											/* default to NULL if none found */
 				net->Style = NULL;
-			ENTRY_LOOP(menu);
+			PCB_ENTRY_LOOP(menu);
 			{
 				if (pcb_rat_seek_pad(entry, &LastPoint, pcb_false)) {
 					if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2))
@@ -794,7 +794,7 @@ static int rat_used(char *name)
 	if (name == NULL)
 		return -1;
 
-	MENU_LOOP(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
+	PCB_MENU_LOOP(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
 	{
 		if (menu->Name && (strcmp(menu->Name, name) == 0))
 			return 1;

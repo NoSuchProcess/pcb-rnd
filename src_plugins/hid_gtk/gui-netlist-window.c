@@ -156,7 +156,7 @@ static GtkTreeModel *node_model_create(pcb_lib_menu_t * menu)
 	if (menu == NULL)
 		return GTK_TREE_MODEL(store);
 
-	ENTRY_LOOP(menu);
+	PCB_ENTRY_LOOP(menu);
 	{
 		if (!entry->ListEntry)
 			continue;
@@ -333,7 +333,7 @@ static GtkTreeModel *net_model_create(void)
 	prefix_hash = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, (GDestroyNotify)
 																			gtk_tree_row_reference_free);
 
-	MENU_LOOP(&PCB->NetlistLib[PCB_NETLIST_EDITED]);
+	PCB_MENU_LOOP(&PCB->NetlistLib[PCB_NETLIST_EDITED]);
 	{
 		if (!menu->Name)
 			continue;

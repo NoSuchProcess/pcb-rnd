@@ -85,14 +85,14 @@ pcb_lib_menu_t *pcb_lib_net_new(pcb_lib_t *lib, char *name, const char *style);
 pcb_lib_entry_t *pcb_lib_conn_new(pcb_lib_menu_t *net, char *conn);
 
 
-#define MENU_LOOP(top)	do {	\
+#define PCB_MENU_LOOP(top)	do {	\
 	pcb_cardinal_t	l;			\
 	pcb_lib_menu_t *menu;		\
 	for (l = (top)->MenuN-1; l != -1; l--)	\
 	{					\
 		menu = &(top)->Menu[l]
 
-#define ENTRY_LOOP(top) do	{	\
+#define PCB_ENTRY_LOOP(top) do	{	\
 	pcb_cardinal_t	n;			\
 	pcb_lib_entry_t *entry;		\
 	for (n = (top)->EntryN-1; n != -1; n--)	\

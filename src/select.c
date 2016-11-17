@@ -978,7 +978,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 		pcb_conn_lookup_init();
 		changed = pcb_reset_conns(pcb_true) || changed;
 
-		MENU_LOOP(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
+		PCB_MENU_LOOP(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
 		{
 			pcb_cardinal_t i;
 			pcb_lib_entry_t *entry;

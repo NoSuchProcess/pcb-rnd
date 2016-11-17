@@ -92,9 +92,9 @@ pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *Menu)
  */
 void pcb_lib_free(pcb_lib_t *lib)
 {
-	MENU_LOOP(lib);
+	PCB_MENU_LOOP(lib);
 	{
-		ENTRY_LOOP(menu);
+		PCB_ENTRY_LOOP(menu);
 		{
 			if (!entry->ListEntry_dontfree)
 				free((char*)entry->ListEntry);
