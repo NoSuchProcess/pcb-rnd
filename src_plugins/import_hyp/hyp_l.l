@@ -148,150 +148,150 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
 
  /* Sections */
 
-"BOARD_FILE"        {section = BOARD_FILE; return BOARD_FILE;}
-"VERSION"           {section = VERSION; return VERSION;}
-"DATA_MODE"         {section = DATA_MODE; return DATA_MODE;}
-"UNITS"             {section = UNITS; return UNITS;}
-"PLANE_SEP"         {section = PLANE_SEP; return PLANE_SEP;}
-"BOARD"             {section = BOARD; BEGIN STATE_COMMENT_EOL; return BOARD;}
-"STACKUP"           {section = STACKUP; BEGIN STATE_COMMENT_EOL; return STACKUP;}
-"DEVICES"           {section = DEVICES; BEGIN STATE_COMMENT_EOL; return DEVICES;}
-"SUPPLIES"          {section = SUPPLIES; BEGIN STATE_COMMENT_EOL; return SUPPLIES;}
-"PADSTACK"          {section = PADSTACK; BEGIN STATE_STRING; return PADSTACK;}
-"NET"               {section = NET; BEGIN STATE_STRING; return NET;}
-"NET_CLASS"         {section = NET_CLASS; return NET_CLASS;}
-"END"               {section = END; return END;}
-"KEY"               {section = KEY; return KEY;}
+"BOARD_FILE"        {section = H_BOARD_FILE; return H_BOARD_FILE;}
+"VERSION"           {section = H_VERSION; return H_VERSION;}
+"DATA_MODE"         {section = H_DATA_MODE; return H_DATA_MODE;}
+"UNITS"             {section = H_UNITS; return H_UNITS;}
+"PLANE_SEP"         {section = H_PLANE_SEP; return H_PLANE_SEP;}
+"BOARD"             {section = H_BOARD; BEGIN STATE_COMMENT_EOL; return H_BOARD;}
+"STACKUP"           {section = H_STACKUP; BEGIN STATE_COMMENT_EOL; return H_STACKUP;}
+"DEVICES"           {section = H_DEVICES; BEGIN STATE_COMMENT_EOL; return H_DEVICES;}
+"SUPPLIES"          {section = H_SUPPLIES; BEGIN STATE_COMMENT_EOL; return H_SUPPLIES;}
+"PADSTACK"          {section = H_PADSTACK; BEGIN STATE_STRING; return H_PADSTACK;}
+"NET"               {section = H_NET; BEGIN STATE_STRING; return H_NET;}
+"NET_CLASS"         {section = H_NET_CLASS; return H_NET_CLASS;}
+"END"               {section = H_END; return H_END;}
+"KEY"               {section = H_KEY; return H_KEY;}
 
  /* Keywords */
 
-"A"                 {return A;}
-"ARC"               {return ARC;}
-"COPPER"            {return COPPER;}
-"CURVE"             {return CURVE;}
-"DETAILED"          {if (section == DATA_MODE) BEGIN STATE_COMMENT; return DETAILED;}
-"DIELECTRIC"        {return DIELECTRIC;}
-"ENGLISH"           {return ENGLISH;}
-"LENGTH"            {if (section == UNITS) BEGIN STATE_COMMENT; return LENGTH;}
-"LINE"              {return LINE;}
-"METRIC"            {return METRIC;}
-"M"                 {return M;}
-"N"                 {return N;}
-"OPTIONS"           {return OPTIONS;}
-"PAD"               {return PAD;}
-"PERIMETER_ARC"     {return PERIMETER_ARC;}
-"PERIMETER_SEGMENT" {return PERIMETER_SEGMENT;}
-"PIN"               {return PIN;}
-"PLANE"             {return PLANE;}
-"POLYGON"           {return POLYGON;}
-"POLYLINE"          {return POLYLINE;}
-"POLYVOID"          {return POLYVOID;}
-"POUR"              {return POUR;}
-"S"                 {return S;}
-"T"                 {return T;}
-"SEG"               {return SEG;}
-"SIGNAL"            {return SIGNAL;}
-"SIMPLIFIED"        {if (section == DATA_MODE) BEGIN STATE_COMMENT; return SIMPLIFIED; }
-"SIM_BOTH"          {return SIM_BOTH;}
-"SIM_IN"            {return SIM_IN;}
-"SIM_OUT"           {return SIM_OUT;}
-"USEG"              {return USEG;}
-"VIA"               {return VIA;}
-"WEIGHT"            {if (section == UNITS) BEGIN STATE_COMMENT; return WEIGHT;}
+"A"                 {return H_A;}
+"ARC"               {return H_ARC;}
+"COPPER"            {return H_COPPER;}
+"CURVE"             {return H_CURVE;}
+"DETAILED"          {if (section == H_DATA_MODE) BEGIN STATE_COMMENT; return H_DETAILED;}
+"DIELECTRIC"        {return H_DIELECTRIC;}
+"ENGLISH"           {return H_ENGLISH;}
+"LENGTH"            {if (section == H_UNITS) BEGIN STATE_COMMENT; return H_LENGTH;}
+"LINE"              {return H_LINE;}
+"METRIC"            {return H_METRIC;}
+"M"                 {return H_M;}
+"N"                 {return H_N;}
+"OPTIONS"           {return H_OPTIONS;}
+"PAD"               {return H_PAD;}
+"PERIMETER_ARC"     {return H_PERIMETER_ARC;}
+"PERIMETER_SEGMENT" {return H_PERIMETER_SEGMENT;}
+"PIN"               {return H_PIN;}
+"PLANE"             {return H_PLANE;}
+"POLYGON"           {return H_POLYGON;}
+"POLYLINE"          {return H_POLYLINE;}
+"POLYVOID"          {return H_POLYVOID;}
+"POUR"              {return H_POUR;}
+"S"                 {return H_S;}
+"T"                 {return H_T;}
+"SEG"               {return H_SEG;}
+"SIGNAL"            {return H_SIGNAL;}
+"SIMPLIFIED"        {if (section == H_DATA_MODE) BEGIN STATE_COMMENT; return H_SIMPLIFIED; }
+"SIM_BOTH"          {return H_SIM_BOTH;}
+"SIM_IN"            {return H_SIM_IN;}
+"SIM_OUT"           {return H_SIM_OUT;}
+"USEG"              {return H_USEG;}
+"VIA"               {return H_VIA;}
+"WEIGHT"            {if (section == H_UNITS) BEGIN STATE_COMMENT; return H_WEIGHT;}
 
  /* Assignments */
 
-"A"/{LHS}           {return A;}
-"A1"/{LHS}          {return A1;}
-"A2"/{LHS}          {return A2;}
-"BR"/{LHS}          {return BR;}
-"C"/{LHS}           {return C;}
-"C?"/{LHS}          {return C_QM;}
-"CO?"/{LHS}         {return CO_QM;}
-"D"/{LHS}           {return D;}
-"ER"/{LHS}          {return ER;}
-"F"/{LHS}           {return F;}
-"ID"/{LHS}          {BEGIN STATE_POSINT; return ID;}
-"L"/{LHS}           {BEGIN STATE_STRING; return L;}
-"L1"/{LHS}          {BEGIN STATE_STRING; return L1;}
-"L2"/{LHS}          {BEGIN STATE_STRING; return L2;}
-"LPS"/{LHS}         {return LPS;}
-"LT"/{LHS}          {return LT;}
-"M"/{LHS}           {BEGIN STATE_STRING; return M;}
-"N"/{LHS}           {BEGIN STATE_STRING; return N;}
-"NAME"/{LHS}        {BEGIN STATE_STRING; return NAME;}
+"A"/{LHS}           {return H_A;}
+"A1"/{LHS}          {return H_A1;}
+"A2"/{LHS}          {return H_A2;}
+"BR"/{LHS}          {return H_BR;}
+"C"/{LHS}           {return H_C;}
+"C?"/{LHS}          {return H_C_QM;}
+"CO?"/{LHS}         {return H_CO_QM;}
+"D"/{LHS}           {return H_D;}
+"ER"/{LHS}          {return H_ER;}
+"F"/{LHS}           {return H_F;}
+"ID"/{LHS}          {BEGIN STATE_POSINT; return H_ID;}
+"L"/{LHS}           {BEGIN STATE_STRING; return H_L;}
+"L1"/{LHS}          {BEGIN STATE_STRING; return H_L1;}
+"L2"/{LHS}          {BEGIN STATE_STRING; return H_L2;}
+"LPS"/{LHS}         {return H_LPS;}
+"LT"/{LHS}          {return H_LT;}
+"M"/{LHS}           {BEGIN STATE_STRING; return H_M;}
+"N"/{LHS}           {BEGIN STATE_STRING; return H_N;}
+"NAME"/{LHS}        {BEGIN STATE_STRING; return H_NAME;}
  /* P is used as "plating thickness" in "stackup/signal" and as "padstack" in "net/via" */
-"P"/{LHS}           {if (section == NET) BEGIN STATE_STRING; return P;}
-"PKG"/{LHS}         {BEGIN STATE_STRING; return PKG;}
-"PR?"/{LHS}         {return PR_QM;}
-"PS"/{LHS}          {return PS;}
-"R"/{LHS}           {return R;}
-"REF"/{LHS}         {BEGIN STATE_STRING; return REF;}
-"S"/{LHS}           {BEGIN STATE_STRING; return S;}
-"SX"/{LHS}          {return SX;}
-"SY"/{LHS}          {return SY;}
-"S1"/{LHS}          {BEGIN STATE_STRING; return S1;}
-"S1X"/{LHS}         {return S1X;}
-"S1Y"/{LHS}         {return S1Y;}
-"S2"/{LHS}          {BEGIN STATE_STRING; return S2;}
-"S2X"/{LHS}         {return S2X;}
-"S2Y"/{LHS}         {return S2Y;}
-"T"/{LHS}           {return T;}
-"TC"/{LHS}          {return TC;}
-"USE_DIE_FOR_METAL"/{LHS}           {return USE_DIE_FOR_METAL;}
-"V"/{LHS}           {BEGIN STATE_STRING; return V;}
-"V?"/{LHS}          {return V_QM;}
-"VAL"/{LHS}         {return VAL;}
-"W"/{LHS}           {return W;}
-"X"/{LHS}           {return X;}
-"X1"/{LHS}          {return X1;}
-"X2"/{LHS}          {return X2;}
-"XC"/{LHS}          {return XC;}
-"Y"/{LHS}           {return Y;}
-"Y1"/{LHS}          {return Y1;}
-"Y2"/{LHS}          {return Y2;}
-"YC"/{LHS}          {return YC;}
-"Z"/{LHS}           {return Z;}
-"ZL"/{LHS}          {return ZL;}
-"ZLEN"/{LHS}        {return ZLEN;}
-"ZW"/{LHS}          {return ZW;}
+"P"/{LHS}           {if (section == H_NET) BEGIN STATE_STRING; return H_P;}
+"PKG"/{LHS}         {BEGIN STATE_STRING; return H_PKG;}
+"PR?"/{LHS}         {return H_PR_QM;}
+"PS"/{LHS}          {return H_PS;}
+"R"/{LHS}           {return H_R;}
+"REF"/{LHS}         {BEGIN STATE_STRING; return H_REF;}
+"S"/{LHS}           {BEGIN STATE_STRING; return H_S;}
+"SX"/{LHS}          {return H_SX;}
+"SY"/{LHS}          {return H_SY;}
+"S1"/{LHS}          {BEGIN STATE_STRING; return H_S1;}
+"S1X"/{LHS}         {return H_S1X;}
+"S1Y"/{LHS}         {return H_S1Y;}
+"S2"/{LHS}          {BEGIN STATE_STRING; return H_S2;}
+"S2X"/{LHS}         {return H_S2X;}
+"S2Y"/{LHS}         {return H_S2Y;}
+"T"/{LHS}           {return H_T;}
+"TC"/{LHS}          {return H_TC;}
+"USE_DIE_FOR_METAL"/{LHS}           {return H_USE_DIE_FOR_METAL;}
+"V"/{LHS}           {BEGIN STATE_STRING; return H_V;}
+"V?"/{LHS}          {return H_V_QM;}
+"VAL"/{LHS}         {return H_VAL;}
+"W"/{LHS}           {return H_W;}
+"X"/{LHS}           {return H_X;}
+"X1"/{LHS}          {return H_X1;}
+"X2"/{LHS}          {return H_X2;}
+"XC"/{LHS}          {return H_XC;}
+"Y"/{LHS}           {return H_Y;}
+"Y1"/{LHS}          {return H_Y1;}
+"Y2"/{LHS}          {return H_Y2;}
+"YC"/{LHS}          {return H_YC;}
+"Z"/{LHS}           {return H_Z;}
+"ZL"/{LHS}          {return H_ZL;}
+"ZLEN"/{LHS}        {return H_ZLEN;}
+"ZW"/{LHS}          {return H_ZW;}
  
  /* Booleans */
 
-"YES"|"yes"         {hyylval.boolval = 1; return BOOL; }
-"NO"|"no"           {hyylval.boolval = 0; return BOOL; }
+"YES"|"yes"         {hyylval.boolval = 1; return H_BOOL; }
+"NO"|"no"           {hyylval.boolval = 0; return H_BOOL; }
 
  /* Floats */
 
                     /* ordinary floating point numbers */
-{SIMPLE_FLOAT}      {hyylval.floatval = strtod(hyytext, NULL); return FLOAT;}
+{SIMPLE_FLOAT}      {hyylval.floatval = strtod(hyytext, NULL); return H_FLOAT;}
 
                     /* floating point numbers with suffix, e,g. pF, nH */
-{FLOAT_YOTTA}       {hyylval.floatval = strtod(hyytext, NULL) * 1e24; return FLOAT;}
-{FLOAT_ZETA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e21; return FLOAT;}
-{FLOAT_EXA}         {hyylval.floatval = strtod(hyytext, NULL) * 1e18; return FLOAT;}
-{FLOAT_PETA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e15; return FLOAT;}
-{FLOAT_TERA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e12; return FLOAT;}
-{FLOAT_GIGA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e9; return FLOAT;}
-{FLOAT_MEGA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e6; return FLOAT;}
-{FLOAT_KILO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e3; return FLOAT;}
-{FLOAT_MILLI}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-3; return FLOAT;}
-{FLOAT_MICRO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-6; return FLOAT;}
-{FLOAT_NANO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e-9; return FLOAT;}
-{FLOAT_PICO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e-12; return FLOAT;}
-{FLOAT_FEMTO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-15; return FLOAT;}
-{FLOAT_ATTO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e-18; return FLOAT;}
-{FLOAT_ZEPTO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-21; return FLOAT;}
-{FLOAT_YOCTO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-24; return FLOAT;}
+{FLOAT_YOTTA}       {hyylval.floatval = strtod(hyytext, NULL) * 1e24; return H_FLOAT;}
+{FLOAT_ZETA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e21; return H_FLOAT;}
+{FLOAT_EXA}         {hyylval.floatval = strtod(hyytext, NULL) * 1e18; return H_FLOAT;}
+{FLOAT_PETA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e15; return H_FLOAT;}
+{FLOAT_TERA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e12; return H_FLOAT;}
+{FLOAT_GIGA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e9; return H_FLOAT;}
+{FLOAT_MEGA}        {hyylval.floatval = strtod(hyytext, NULL) * 1e6; return H_FLOAT;}
+{FLOAT_KILO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e3; return H_FLOAT;}
+{FLOAT_MILLI}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-3; return H_FLOAT;}
+{FLOAT_MICRO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-6; return H_FLOAT;}
+{FLOAT_NANO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e-9; return H_FLOAT;}
+{FLOAT_PICO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e-12; return H_FLOAT;}
+{FLOAT_FEMTO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-15; return H_FLOAT;}
+{FLOAT_ATTO}        {hyylval.floatval = strtod(hyytext, NULL) * 1e-18; return H_FLOAT;}
+{FLOAT_ZEPTO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-21; return H_FLOAT;}
+{FLOAT_YOCTO}       {hyylval.floatval = strtod(hyytext, NULL) * 1e-24; return H_FLOAT;}
 
                     /* floating point numbers in VERSION and PLANE_SEP have no suffix and are followed by optional comments */
 <STATE_FLOAT>{
-{SIMPLE_FLOAT}      {hyylval.floatval = strtod(hyytext, NULL); BEGIN STATE_COMMENT; return FLOAT;}
+{SIMPLE_FLOAT}      {hyylval.floatval = strtod(hyytext, NULL); BEGIN STATE_COMMENT; return H_FLOAT;}
 }
 
                     /* A positive integer is used only in polygon/polyline/polyvoid "ID = posint" */
 <STATE_POSINT>{
-{POSINT}            { BEGIN INITIAL; hyylval.intval = atoi(hyytext); return POSINT; }
+{POSINT}            { BEGIN INITIAL; hyylval.intval = atoi(hyytext); return H_POSINT; }
 }
 
  
@@ -303,7 +303,7 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
                      * NAME= }
                      */
 <STATE_STRING>{
-([A-Z][A-Z1-2_]*{WS}*"="|")"|"}")  { yyless(0); BEGIN INITIAL; hyylval.strval = pcb_strdup(""); return STRING; } /* emit empty string and reprocess */
+([A-Z][A-Z1-2_]*{WS}*"="|")"|"}")  { yyless(0); BEGIN INITIAL; hyylval.strval = pcb_strdup(""); return H_STRING; } /* emit empty string and reprocess */
 }
 
 <*>{
@@ -312,14 +312,14 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
 
   "}"                 {BEGIN STATE_COMMENT_EOL; return '}';}
 
-  "("                 {if (section == PADSTACK) BEGIN STATE_STRING; return '(';}
+  "("                 {if (section == H_PADSTACK) BEGIN STATE_STRING; return '(';}
 
                       /* allow for comment after the closing bracket ) */
   ")"                 {BEGIN STATE_COMMENT_EOL; return ')';}
 
   ","                 {return ',';}
 
-  "="                 {if ((section == VERSION) || (section == PLANE_SEP)) BEGIN STATE_FLOAT; return '=';}
+  "="                 {if ((section == H_VERSION) || (section == H_PLANE_SEP)) BEGIN STATE_FLOAT; return '=';}
 
                       /* string */
   {STRING}            { 
@@ -328,18 +328,18 @@ QUOTED_STRING       \"([^\"\n]|\"\")*\"
                          * unless the string is enclosed in double quotes (").
                          */
 
-                        if ((section == PADSTACK) && strchr(hyytext, ','))
+                        if ((section == H_PADSTACK) && strchr(hyytext, ','))
                           REJECT 
                         else 
                         { 
                           BEGIN INITIAL; 
                           hyylval.strval = pcb_strdup(hyytext); 
-                          return STRING;
+                          return H_STRING;
                         }
                       }
 
                       /* string in double quotes */
-  {QUOTED_STRING}     {BEGIN INITIAL; hyylval.strval = strunquote(hyytext); return STRING;}
+  {QUOTED_STRING}     {BEGIN INITIAL; hyylval.strval = strunquote(hyytext); return H_STRING;}
 
   <<EOF>>             {yyterminate();}
 
