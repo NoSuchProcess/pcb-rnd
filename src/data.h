@@ -53,13 +53,6 @@ struct pcb_data_s {
 };
 
 
-/* ---------------------------------------------------------------------------
- * some shared identifiers
- */
-extern pcb_crosshair_t Crosshair;
-
-extern pcb_mark_t Marked;
-
 #define max_group (PCB->Data->LayerN)
 #define max_copper_layer (PCB->Data->LayerN)
 #define solder_silk_layer (max_copper_layer + SOLDER_LAYER)

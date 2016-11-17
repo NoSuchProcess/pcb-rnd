@@ -37,10 +37,6 @@
 /* ---------------------------------------------------------------------------
  * some shared identifiers
  */
-
-pcb_crosshair_t Crosshair;				/* information about cursor settings */
-pcb_mark_t Marked;								/* a cross-hair mark */
-
 int LayerStack[MAX_LAYER];			/* determines the layer draw order */
 
 pcb_buffer_t Buffers[MAX_BUFFER]; /* my buffers */

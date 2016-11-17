@@ -47,11 +47,13 @@
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
 
-
-
 typedef struct {
 	int x, y;
 } point;
+
+pcb_crosshair_t Crosshair;  /* information about cursor settings */
+pcb_mark_t Marked;          /* a cross-hair mark */
+
 
 /* ---------------------------------------------------------------------------
  * some local prototypes
