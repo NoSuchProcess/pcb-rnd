@@ -930,7 +930,7 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 		return -1;
 
 	sub = lht_dom_hash_get(netlists, "input");
-	if ((sub != NULL) && (parse_netlist_input(pcb->NetlistLib+NETLIST_INPUT, sub) != 0))
+	if ((sub != NULL) && (parse_netlist_input(pcb->NetlistLib+PCB_NETLIST_INPUT, sub) != 0))
 		return -1;
 
 	sub = lht_dom_hash_get(netlists, "netlist_patch");

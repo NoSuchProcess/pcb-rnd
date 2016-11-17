@@ -52,7 +52,7 @@ struct pcb_ratspatch_line_s {
 
 
 /* Single-word netlist class names */
-const char *pcb_netlist_names[NUM_NETLISTS];
+const char *pcb_netlist_names[PCB_NUM_NETLISTS];
 
 /* Allocate and append a patch line to the patch list */
 void pcb_ratspatch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2);
@@ -64,10 +64,10 @@ void pcb_ratspatch_destroy(pcb_board_t *pcb);
    redundant entries are removed */
 void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2);
 
-/* Create [NETLIST_EDITED] from [NETLIST_INPUT] applying the patch */
+/* Create [PCB_NETLIST_EDITED] from [PCB_NETLIST_INPUT] applying the patch */
 void pcb_ratspatch_make_edited(pcb_board_t *pcb);
 
-/* apply a single patch record on [NETLIST_EDITED]; returns non-zero on failure */
+/* apply a single patch record on [PCB_NETLIST_EDITED]; returns non-zero on failure */
 int pcb_ratspatch_apply(pcb_board_t *pcb, pcb_ratspatch_line_t * patch);
 
 /**** exporter ****/

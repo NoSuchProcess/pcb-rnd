@@ -657,7 +657,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 	 * structure the way the final routing
 	 * is supposed to look
 	 */
-	Wantlist = pcb_rat_proc_netlist(&(PCB->NetlistLib[NETLIST_EDITED]));
+	Wantlist = pcb_rat_proc_netlist(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
 	if (!Wantlist) {
 		pcb_message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
 		return (pcb_false);
@@ -743,7 +743,7 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 	 * structure the way the final routing
 	 * is supposed to look
 	 */
-	Wantlist = pcb_rat_proc_netlist(&(PCB->NetlistLib[NETLIST_EDITED]));
+	Wantlist = pcb_rat_proc_netlist(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
 	if (!Wantlist) {
 		pcb_message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
 		return result;
@@ -794,7 +794,7 @@ static int rat_used(char *name)
 	if (name == NULL)
 		return -1;
 
-	MENU_LOOP(&(PCB->NetlistLib[NETLIST_EDITED]));
+	MENU_LOOP(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
 	{
 		if (menu->Name && (strcmp(menu->Name, name) == 0))
 			return 1;
@@ -884,7 +884,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 		sprintf(ratname, "  ratDrawn%i", ++ratDrawn);
 	}
 
-	menu = pcb_lib_menu_new(&(PCB->NetlistLib[NETLIST_EDITED]), NULL);
+	menu = pcb_lib_menu_new(&(PCB->NetlistLib[PCB_NETLIST_EDITED]), NULL);
 	menu->Name = pcb_strdup(ratname);
 	entry = pcb_lib_entry_new(menu);
 	entry->ListEntry = pcb_strdup(name1);

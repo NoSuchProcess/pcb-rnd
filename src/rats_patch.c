@@ -36,7 +36,7 @@
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
 
-const char *pcb_netlist_names[NUM_NETLISTS] = {
+const char *pcb_netlist_names[PCB_NUM_NETLISTS] = {
 	"input",
 	"edited"
 };
@@ -202,8 +202,8 @@ int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t * patch, int de
 {
 	int n;
 
-	for (n = 0; n < pcb->NetlistLib[NETLIST_EDITED].MenuN; n++) {
-		pcb_lib_menu_t *menu = &pcb->NetlistLib[NETLIST_EDITED].Menu[n];
+	for (n = 0; n < pcb->NetlistLib[PCB_NETLIST_EDITED].MenuN; n++) {
+		pcb_lib_menu_t *menu = &pcb->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
 		if (strcmp(menu->Name + 2, patch->arg1.net_name) == 0) {
 			int p;
 			for (p = 0; p < menu->EntryN; p++) {
@@ -233,7 +233,7 @@ int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t * patch, int de
 	/* couldn't find the net: create it */
 	{
 		pcb_lib_menu_t *net = NULL;
-		net = pcb_lib_net_new(&pcb->NetlistLib[NETLIST_EDITED], patch->arg1.net_name, NULL);
+		net = pcb_lib_net_new(&pcb->NetlistLib[PCB_NETLIST_EDITED], patch->arg1.net_name, NULL);
 		if (net == NULL)
 			return 1;
 		pcb_lib_conn_new(net, (char *) patch->id);
@@ -260,8 +260,8 @@ void pcb_ratspatch_make_edited(pcb_board_t *pcb)
 {
 	pcb_ratspatch_line_t *n;
 
-	netlist_free(&(pcb->NetlistLib[NETLIST_EDITED]));
-	netlist_copy(&(pcb->NetlistLib[NETLIST_EDITED]), &(pcb->NetlistLib[NETLIST_INPUT]));
+	netlist_free(&(pcb->NetlistLib[PCB_NETLIST_EDITED]));
+	netlist_copy(&(pcb->NetlistLib[PCB_NETLIST_EDITED]), &(pcb->NetlistLib[PCB_NETLIST_INPUT]));
 	for (n = pcb->NetlistPatches; n != NULL; n = n->next)
 		pcb_ratspatch_apply(pcb, n);
 }
@@ -295,7 +295,7 @@ int rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool need
 					pcb_lib_menu_t *net;
 					int p;
 
-					net = rats_patch_find_net(pcb, n->arg1.net_name, NETLIST_INPUT);
+					net = rats_patch_find_net(pcb, n->arg1.net_name, PCB_NETLIST_INPUT);
 /*					printf("net: '%s' %p\n", n->arg1.net_name, (void *)net);*/
 					if (net != NULL) {
 						htsp_set(seen, n->arg1.net_name, net);

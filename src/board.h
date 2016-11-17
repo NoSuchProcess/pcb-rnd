@@ -32,9 +32,9 @@
 #include "config.h"
 
 enum {
-	NETLIST_INPUT = 0,						/* index of the original netlist as imported */
-	NETLIST_EDITED = 1,						/* index of the netlist produced by applying netlist patches on [NETLIST_INPUT] */
-	NUM_NETLISTS									/* so that we know how many netlists we are dealing with */
+	PCB_NETLIST_INPUT  = 0,  /* index of the original netlist as imported */
+	PCB_NETLIST_EDITED = 1,  /* index of the netlist produced by applying netlist patches on [PCB_NETLIST_INPUT] */
+	PCB_NUM_NETLISTS         /* so that we know how many netlists we are dealing with */
 };
 
 #include "const.h"
@@ -97,7 +97,7 @@ struct pcb_board_s {
 	pcb_font_t Font;
 	pcb_layer_group_t LayerGroups;
 	vtroutestyle_t RouteStyle;
-	pcb_lib_t NetlistLib[NUM_NETLISTS];
+	pcb_lib_t NetlistLib[PCB_NUM_NETLISTS];
 	pcb_ratspatch_line_t *NetlistPatches, *NetlistPatchLast;
 	pcb_attribute_list_t Attributes;
 	pcb_data_t *Data;							/* entire database */

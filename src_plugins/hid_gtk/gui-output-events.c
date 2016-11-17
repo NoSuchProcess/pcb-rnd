@@ -319,7 +319,7 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 		return NULL;
 
 	/* Find netlist entry */
-	MENU_LOOP(&PCB->NetlistLib[NETLIST_EDITED]);
+	MENU_LOOP(&PCB->NetlistLib[PCB_NETLIST_EDITED]);
 	{
 		if (!menu->Name)
 			continue;

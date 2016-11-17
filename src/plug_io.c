@@ -469,7 +469,7 @@ void pcb_library_sort(pcb_lib_t *lib)
 void pcb_sort_netlist()
 {
 	netlist_sort_offset = 2;
-	pcb_library_sort(&(PCB->NetlistLib[NETLIST_INPUT]));
+	pcb_library_sort(&(PCB->NetlistLib[PCB_NETLIST_INPUT]));
 	netlist_sort_offset = 0;
 }
 

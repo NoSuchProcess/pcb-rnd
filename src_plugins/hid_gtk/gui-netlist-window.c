@@ -333,7 +333,7 @@ static GtkTreeModel *net_model_create(void)
 	prefix_hash = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, (GDestroyNotify)
 																			gtk_tree_row_reference_free);
 
-	MENU_LOOP(&PCB->NetlistLib[NETLIST_EDITED]);
+	MENU_LOOP(&PCB->NetlistLib[PCB_NETLIST_EDITED]);
 	{
 		if (!menu->Name)
 			continue;
@@ -649,7 +649,7 @@ void ghid_netlist_window_create(GHidPort * out)
 
 	/* No point in putting up the window if no netlist is loaded.
 	 */
-	if (!PCB->NetlistLib[NETLIST_EDITED].MenuN)
+	if (!PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN)
 		return;
 
 	if (netlist_window)
@@ -914,7 +914,7 @@ void ghid_netlist_window_update(gboolean init_nodes)
 
 	/* XXX Check if the select callback does this for us */
 	if (init_nodes)
-		node_model_update((&PCB->NetlistLib[NETLIST_EDITED])->Menu);
+		node_model_update((&PCB->NetlistLib[PCB_NETLIST_EDITED])->Menu);
 }
 
 static gint GhidNetlistChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)

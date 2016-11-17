@@ -327,12 +327,12 @@ static void WritePCBRatData(FILE * FP)
 static void WritePCBNetlistData(FILE * FP)
 {
 	/* write out the netlist if it exists */
-	if (PCB->NetlistLib[NETLIST_INPUT].MenuN) {
+	if (PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN) {
 		int n, p;
 		fprintf(FP, "NetList()\n(\n");
 
-		for (n = 0; n < PCB->NetlistLib[NETLIST_INPUT].MenuN; n++) {
-			pcb_lib_menu_t *menu = &PCB->NetlistLib[NETLIST_INPUT].Menu[n];
+		for (n = 0; n < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; n++) {
+			pcb_lib_menu_t *menu = &PCB->NetlistLib[PCB_NETLIST_INPUT].Menu[n];
 			fprintf(FP, "\tNet(");
 			pcb_print_quoted_string(FP, &menu->Name[2]);
 			fprintf(FP, " ");

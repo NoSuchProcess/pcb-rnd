@@ -971,8 +971,8 @@ int write_kicad_legacy_equipotential_netlists(FILE * FP, pcb_board_t *Layout)
 	fputs("$EndEQUIPOT\n",FP);
 
 	/* now we step through any available netlists and generate descriptors */
-        for (n = 0, netNumber = 1; n < Layout->NetlistLib[NETLIST_EDITED].MenuN; n++, netNumber ++) {
-                menu = &Layout->NetlistLib[NETLIST_EDITED].Menu[n];
+        for (n = 0, netNumber = 1; n < Layout->NetlistLib[PCB_NETLIST_EDITED].MenuN; n++, netNumber ++) {
+                menu = &Layout->NetlistLib[PCB_NETLIST_EDITED].Menu[n];
 		netlist = &menu->Entry[0];
 		if (netlist != NULL) {
 			fputs("$EQUIPOT\n",FP);

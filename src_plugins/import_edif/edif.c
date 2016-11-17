@@ -180,7 +180,7 @@ pcb_lib_entry_t *pcb_lib_entry_new(pcb_lib_menu_t *);
      char* buf;
      char* p;
      pcb_lib_entry_t *entry;
-     pcb_lib_menu_t *menu = pcb_lib_menu_new(&PCB->NetlistLib[NETLIST_INPUT], NULL);
+     pcb_lib_menu_t *menu = pcb_lib_menu_new(&PCB->NetlistLib[PCB_NETLIST_INPUT], NULL);
 
      if ( !name->str1 )
      {

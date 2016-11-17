@@ -141,7 +141,7 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		PCB->Netlistname = pcb_strdup_strip_wspace(name);
 		{
 			int i;
-			for (i = 0; i < NUM_NETLISTS; i++)
+			for (i = 0; i < PCB_NUM_NETLISTS; i++)
 				pcb_lib_free(&(PCB->NetlistLib[i]));
 		}
 		if (!pcb_import_netlist(PCB->Netlistname))

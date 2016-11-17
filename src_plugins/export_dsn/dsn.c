@@ -216,9 +216,9 @@ static void print_structure(FILE * fp)
 		char *layeropts = pcb_strdup("(type signal)");
 		/* see if layer has same name as a net and make it a power layer */
 		/* loop thru all nets */
-		for (int ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++) {
+		for (int ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
 			char *nname;
-			nname = PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2;
+			nname = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2;
 			if (!strcmp(layer->Name, nname)) {
 				g_free(layeropts);
 				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", layer->Name);
@@ -429,18 +429,18 @@ static void print_network(FILE * fp)
 {
 	int ni, nei;
 	fprintf(fp, "  (network\n");
-	for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++) {
-		fprintf(fp, "    (net \"%s\"\n", PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2);
+	for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
+		fprintf(fp, "    (net \"%s\"\n", PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2);
 		fprintf(fp, "      (pins");
-		for (nei = 0; nei < PCB->NetlistLib[NETLIST_EDITED].Menu[ni].EntryN; nei++)
-			print_quoted_pin(fp, PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry);
+		for (nei = 0; nei < PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].EntryN; nei++)
+			print_quoted_pin(fp, PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Entry[nei].ListEntry);
 		fprintf(fp, ")\n");
 		fprintf(fp, "    )\n");
 	}
 
 	fprintf(fp, "    (class geda_default");
-	for (ni = 0; ni < PCB->NetlistLib[NETLIST_EDITED].MenuN; ni++) {
-		fprintf(fp, " \"%s\"", PCB->NetlistLib[NETLIST_EDITED].Menu[ni].Name + 2);
+	for (ni = 0; ni < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; ni++) {
+		fprintf(fp, " \"%s\"", PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[ni].Name + 2);
 	}
 	pcb_fprintf(fp, "\n");
 	pcb_fprintf(fp, "      (circuit\n");

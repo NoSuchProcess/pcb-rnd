@@ -113,7 +113,7 @@ quit:;
 static int pcb_netlist_add(const char *netname, const char *pinname)
 {
 	int ni, pi;
-	pcb_lib_t *netlist = &PCB->NetlistLib[NETLIST_EDITED];
+	pcb_lib_t *netlist = &PCB->NetlistLib[PCB_NETLIST_EDITED];
 	pcb_lib_menu_t *net = NULL;
 	pcb_lib_entry_t *pin = NULL;
 
@@ -271,8 +271,8 @@ static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 	if (argc > 1) {
 		use_re = 1;
-		for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++) {
-			net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
+		for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; i++) {
+			net = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + i;
 			if (strcasecmp(argv[1], net->Name + 2) == 0)
 				use_re = 0;
 		}
@@ -286,8 +286,8 @@ static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		}
 	}
 
-	for (i = PCB->NetlistLib[NETLIST_EDITED].MenuN - 1; i >= 0; i--) {
-		net = PCB->NetlistLib[NETLIST_EDITED].Menu + i;
+	for (i = PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN - 1; i >= 0; i--) {
+		net = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + i;
 
 		if (argc > 1) {
 			if (use_re) {

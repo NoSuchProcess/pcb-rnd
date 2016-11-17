@@ -511,8 +511,8 @@ int IPCD356_WriteAliases(FILE * fd, IPCD356_AliasList * aliaslist)
 
 	index = 1;
 
-	for (i = 0; i < PCB->NetlistLib[NETLIST_EDITED].MenuN; i++) {
-		if (strlen(PCB->NetlistLib[NETLIST_EDITED].Menu[i].Name + 2) > 14) {
+	for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; i++) {
+		if (strlen(PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[i].Name + 2) > 14) {
 			if (index == 1) {
 				fprintf(fd, "C  Netname Aliases Section\n");
 			}
@@ -521,7 +521,7 @@ int IPCD356_WriteAliases(FILE * fd, IPCD356_AliasList * aliaslist)
 				return 1;
 			}
 			sprintf(aliaslist->Alias[index].NName, "NNAME%-5.5d", index);
-			strcpy(aliaslist->Alias[index].NetName, PCB->NetlistLib[NETLIST_EDITED].Menu[i].Name + 2);
+			strcpy(aliaslist->Alias[index].NetName, PCB->NetlistLib[PCB_NETLIST_EDITED].Menu[i].Name + 2);
 
 			fprintf(fd, "P  %s  %-58.58s\n", aliaslist->Alias[index].NName, aliaslist->Alias[index].NetName);
 			index++;

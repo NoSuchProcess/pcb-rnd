@@ -687,14 +687,14 @@ static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_lib_t *netlists, pcb_rat
 	lht_node_t *nls;
 	int n, nonempty = 0;
 
-	if (num_netlists > NUM_NETLISTS)
+	if (num_netlists > PCB_NUM_NETLISTS)
 		return dummy_node("netlists");
 
 	nls = lht_dom_node_alloc(LHT_HASH, "netlists");
 
 	for(n = 0; n < num_netlists; n++) {
 		lht_node_t *nl;
-		if (n == NETLIST_EDITED)
+		if (n == PCB_NETLIST_EDITED)
 			nl = build_net_patch(pcb, pat, &nonempty);
 		else
 			nl = build_netlist(netlists+n, pcb_netlist_names[n], &nonempty);
@@ -720,7 +720,7 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_font(&pcb->Font));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
-	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->NetlistLib, pcb->NetlistPatches, NUM_NETLISTS));
+	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->NetlistLib, pcb->NetlistPatches, PCB_NUM_NETLISTS));
 	return brd;
 }
 
