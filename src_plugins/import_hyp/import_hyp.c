@@ -59,7 +59,7 @@ int ActionLoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	fname = argc ? argv[0] : 0;
 
 	if ((fname == NULL) || (*fname == '\0')) {
-		fname = gui->fileselect(_("Load .hyp file..."),
+		fname = pcb_gui->fileselect(_("Load .hyp file..."),
 		_("Picks a hyperlynx file to load.\n"),
 		"default.hyp", ".hyp", "hyp", HID_FILESELECT_READ);
 	}
