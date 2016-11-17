@@ -672,11 +672,11 @@ int lesstif_key_event(XKeyEvent * e)
 	static int seq_len = 0;
 
 	if (e->state & ShiftMask)
-		mods |= M_Shift;
+		mods |= PCB_M_Shift;
 	if (e->state & ControlMask)
-		mods |= M_Ctrl;
+		mods |= PCB_M_Ctrl;
 	if (e->state & Mod1Mask)
-		mods |= M_Alt;
+		mods |= PCB_M_Alt;
 
 	e->state &= ~(ControlMask | Mod1Mask);
 
@@ -705,7 +705,7 @@ int lesstif_key_event(XKeyEvent * e)
 	}
 
 /* TODO#3: this works only on US keyboard */
-	if (mods & M_Shift) {
+	if (mods & PCB_M_Shift) {
 		static const char *lower = "`1234567890-=[]\\;',./";
 		static const char *upper = "~!@#$%^&*()_+{}|:\"<>?";
 		char *l;
@@ -713,7 +713,7 @@ int lesstif_key_event(XKeyEvent * e)
 			sym = tolower(sym);
 		else if ((l = strchr(lower, sym)) != NULL) {
 			sym = upper[l - lower];
-			mods &= ~M_Shift;
+			mods &= ~PCB_M_Shift;
 		}
 	}
 

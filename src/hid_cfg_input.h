@@ -5,30 +5,30 @@
 #include <genht/htip.h>
 #include "hid_cfg.h"
 
-#define M_Mod0(n)  (1u<<(n))
+#define PCB_M_Mod0(n)  (1u<<(n))
 typedef enum {
-	M_Shift   = M_Mod0(0),
-	M_Ctrl    = M_Mod0(1),
-	M_Alt     = M_Mod0(2),
-	M_Mod1    = M_Alt,
-	/* M_Mod(3) is M_Mod0(4) */
-	/* M_Mod(4) is M_Mod0(5) */
-	M_Release = M_Mod0(6), /* there might be a random number of modkeys, but hopefully not this many */
+	PCB_M_Shift   = PCB_M_Mod0(0),
+	PCB_M_Ctrl    = PCB_M_Mod0(1),
+	PCB_M_Alt     = PCB_M_Mod0(2),
+	PCB_M_Mod1    = PCB_M_Alt,
+	/* PCB_M_Mod(3) is PCB_M_Mod0(4) */
+	/* PCB_M_Mod(4) is PCB_M_Mod0(5) */
+	PCB_M_Release = PCB_M_Mod0(6), /* there might be a random number of modkeys, but hopefully not this many */
 
-	MB_LEFT   = M_Mod0(7),
-	MB_MIDDLE = M_Mod0(8),
-	MB_RIGHT  = M_Mod0(9),
+	PCB_MB_LEFT   = PCB_M_Mod0(7),
+	PCB_MB_MIDDLE = PCB_M_Mod0(8),
+	PCB_MB_RIGHT  = PCB_M_Mod0(9),
 
 /* scroll wheel */
-	MB_SCROLL_UP     = M_Mod0(10),
-	MB_SCROLL_DOWN   = M_Mod0(11),
-	MB_SCROLL_LEFT   = M_Mod0(12),
-	MB_SCROLL_RIGHT  = M_Mod0(13)
+	PCB_MB_SCROLL_UP     = PCB_M_Mod0(10),
+	PCB_MB_SCROLL_DOWN   = PCB_M_Mod0(11),
+	PCB_MB_SCROLL_LEFT   = PCB_M_Mod0(12),
+	PCB_MB_SCROLL_RIGHT  = PCB_M_Mod0(13)
 } pcb_hid_cfg_mod_t;
-#undef M_Mod0
+#undef PCB_M_Mod0
 
-#define MB_ANY (MB_LEFT | MB_MIDDLE | MB_RIGHT | MB_SCROLL_UP | MB_SCROLL_DOWN | MB_SCROLL_LEFT | MB_SCROLL_RIGHT)
-#define M_ANY  (M_Release-1)
+#define PCB_MB_ANY (PCB_MB_LEFT | PCB_MB_MIDDLE | PCB_MB_RIGHT | PCB_MB_SCROLL_UP | PCB_MB_SCROLL_DOWN | PCB_MB_SCROLL_LEFT | PCB_MB_SCROLL_RIGHT)
+#define PCB_M_ANY  (PCB_M_Release-1)
 
 /************************** MOUSE ***************************/
 

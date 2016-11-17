@@ -47,10 +47,10 @@ static pcb_hid_cfg_mod_t parse_mods(const char *value, const char **last, unsign
 
 	if (*value != '<') {
 	for(;;) {
-		if ((vlen >= 5) && (strncasecmp(value, "shift", 5) == 0))        m |= M_Shift;
-		else if ((vlen >= 4) && (strncasecmp(value, "ctrl", 4) == 0))    m |= M_Ctrl;
-		else if ((vlen >= 3) && (strncasecmp(value, "alt", 3) == 0))     m |= M_Alt;
-		else if ((vlen >= 7) && (strncasecmp(value, "release", 7) == 0)) m |= M_Release;
+		if ((vlen >= 5) && (strncasecmp(value, "shift", 5) == 0))        m |= PCB_M_Shift;
+		else if ((vlen >= 4) && (strncasecmp(value, "ctrl", 4) == 0))    m |= PCB_M_Ctrl;
+		else if ((vlen >= 3) && (strncasecmp(value, "alt", 3) == 0))     m |= PCB_M_Alt;
+		else if ((vlen >= 7) && (strncasecmp(value, "release", 7) == 0)) m |= PCB_M_Release;
 		else if ((vlen >= 5) && (strncasecmp(value, "press", 5) == 0))   press = 1;
 		else
 			pcb_message(PCB_MSG_DEFAULT, "Unknown modifier: %s\n", value);
@@ -68,7 +68,7 @@ static pcb_hid_cfg_mod_t parse_mods(const char *value, const char **last, unsign
 	if (last != NULL)
 		*last = value;
 
-	if (press && (m & M_Release))
+	if (press && (m & PCB_M_Release))
 		pcb_message(PCB_MSG_DEFAULT, "Bogus modifier: both press and release\n");
 
 	return m;
@@ -80,14 +80,14 @@ static pcb_hid_cfg_mod_t button_name2mask(const char *name)
 	   mouse button number.  */
 	if (!name)
 		return 0;
-	else if (strcasecmp(name, "left") == 0)   return MB_LEFT;
-	else if (strcasecmp(name, "middle") == 0) return MB_MIDDLE;
-	else if (strcasecmp(name, "right") == 0)  return MB_RIGHT;
+	else if (strcasecmp(name, "left") == 0)   return PCB_MB_LEFT;
+	else if (strcasecmp(name, "middle") == 0) return PCB_MB_MIDDLE;
+	else if (strcasecmp(name, "right") == 0)  return PCB_MB_RIGHT;
 
-	else if (strcasecmp(name, "scroll-up") == 0)     return MB_SCROLL_UP;
-	else if (strcasecmp(name, "scroll-down") == 0)   return MB_SCROLL_DOWN;
-	else if (strcasecmp(name, "scroll-left") == 0)   return MB_SCROLL_UP;
-	else if (strcasecmp(name, "scroll-right") == 0)  return MB_SCROLL_DOWN;
+	else if (strcasecmp(name, "scroll-up") == 0)     return PCB_MB_SCROLL_UP;
+	else if (strcasecmp(name, "scroll-down") == 0)   return PCB_MB_SCROLL_DOWN;
+	else if (strcasecmp(name, "scroll-left") == 0)   return PCB_MB_SCROLL_UP;
+	else if (strcasecmp(name, "scroll-right") == 0)  return PCB_MB_SCROLL_DOWN;
 	else {
 		pcb_message(PCB_MSG_DEFAULT, "Error: unknown mouse button: %s\n", name);
 		return 0;
@@ -149,9 +149,9 @@ static lht_node_t *find_best_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_
 	if (n != NULL)
 		return n;
 
-	if (button_and_mask & M_Release) {
+	if (button_and_mask & PCB_M_Release) {
 		/* look for plain release for the given button */
-		n = htip_get(mouse->mouse_mask, (button_and_mask & M_ANY) | M_Release);
+		n = htip_get(mouse->mouse_mask, (button_and_mask & PCB_M_ANY) | PCB_M_Release);
 		if (n != NULL)
 			return n;
 	}
@@ -382,9 +382,9 @@ static void gen_accel(gds_t *s, pcb_hid_cfg_keys_t *km, const char *keydesc, int
 		if (km->key_name(key_chars[n], buff, sizeof(buff)) != 0)
 			strcpy(buff, "<unknown>");
 
-		if (mods[n] & M_Alt)   gds_append_str(s, "Alt-");
-		if (mods[n] & M_Ctrl)  gds_append_str(s, "Ctrl-");
-		if (mods[n] & M_Shift) gds_append_str(s, "Shift-");
+		if (mods[n] & PCB_M_Alt)   gds_append_str(s, "Alt-");
+		if (mods[n] & PCB_M_Ctrl)  gds_append_str(s, "Ctrl-");
+		if (mods[n] & PCB_M_Shift) gds_append_str(s, "Shift-");
 		gds_append_str(s, buff);
 	}
 }

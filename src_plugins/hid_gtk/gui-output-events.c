@@ -169,13 +169,13 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 		extern GdkModifierType ghid_glob_mask;
 		ghid_glob_mask = state;
 
-		if (state & GDK_MOD1_MASK)    mods |= M_Alt;
-		if (state & GDK_CONTROL_MASK) mods |= M_Ctrl;
+		if (state & GDK_MOD1_MASK)    mods |= PCB_M_Alt;
+		if (state & GDK_CONTROL_MASK) mods |= PCB_M_Ctrl;
 		if (state & GDK_SHIFT_MASK) {
 /* TODO#3: this works only on US keyboard */
 			static const char *ignore_shift = "~!@#$%^&*()_+{}|:\"<>?";
 			if ((kv < 32) || (kv > 126) || (strchr(ignore_shift, kv) == NULL)) {
-				mods |= M_Shift;
+				mods |= PCB_M_Shift;
 				if ((kv >= 'A') && (kv <= 'Z'))
 					kv = tolower(kv);
 			}
@@ -196,7 +196,7 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 static pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button)
 {
 	/* GDK numbers buttons from 1..5, there seem to be no symbolic names */
-	return (MB_LEFT << (ev_button-1));
+	return (PCB_MB_LEFT << (ev_button-1));
 }
 
 gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data)
@@ -240,7 +240,7 @@ gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * 
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(&state);
 
-	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | M_Release);
+	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release);
 
 	pcb_adjust_attached_objects();
 	ghid_invalidate_all();
@@ -488,10 +488,10 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget * widget, GdkEventScroll * ev, G
 	 * who has buttons 4 - 7 that aren't the scroll wheel?
 	 */
 	switch (ev->direction) {
-		case GDK_SCROLL_UP:    button = MB_SCROLL_UP; break;
-		case GDK_SCROLL_DOWN:  button = MB_SCROLL_DOWN; break;
-		case GDK_SCROLL_LEFT:  button = MB_SCROLL_LEFT; break;
-		case GDK_SCROLL_RIGHT: button = MB_SCROLL_RIGHT; break;
+		case GDK_SCROLL_UP:    button = PCB_MB_SCROLL_UP; break;
+		case GDK_SCROLL_DOWN:  button = PCB_MB_SCROLL_DOWN; break;
+		case GDK_SCROLL_LEFT:  button = PCB_MB_SCROLL_LEFT; break;
+		case GDK_SCROLL_RIGHT: button = PCB_MB_SCROLL_RIGHT; break;
 		default: return FALSE;
 	}
 

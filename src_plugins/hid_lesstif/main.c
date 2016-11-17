@@ -1266,11 +1266,11 @@ static void mod_changed(XKeyEvent * e, int set)
 static pcb_hid_cfg_mod_t lesstif_mb2cfg(int but)
 {
 	switch(but) {
-		case 1: return MB_LEFT;
-		case 2: return MB_MIDDLE;
-		case 3: return MB_RIGHT;
-		case 4: return MB_SCROLL_UP;
-		case 5: return MB_SCROLL_DOWN;
+		case 1: return PCB_MB_LEFT;
+		case 2: return PCB_MB_MIDDLE;
+		case 3: return PCB_MB_RIGHT;
+		case 4: return PCB_MB_SCROLL_UP;
+		case 5: return PCB_MB_SCROLL_DOWN;
 	}
 	return 0;
 }
@@ -1302,12 +1302,12 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 
 			pcb_notify_crosshair_change(pcb_false);
 			pressed_button = e->xbutton.button;
-			mods = ((e->xbutton.state & ShiftMask) ? M_Shift : 0)
-				+ ((e->xbutton.state & ControlMask) ? M_Ctrl : 0)
+			mods = ((e->xbutton.state & ShiftMask) ? PCB_M_Shift : 0)
+				+ ((e->xbutton.state & ControlMask) ? PCB_M_Ctrl : 0)
 #ifdef __APPLE__
-				+ ((e->xbutton.state & (1 << 13)) ? M_Alt : 0);
+				+ ((e->xbutton.state & (1 << 13)) ? PCB_M_Alt : 0);
 #else
-				+ ((e->xbutton.state & Mod1Mask) ? M_Alt : 0);
+				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0);
 #endif
 			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
 
@@ -1323,14 +1323,14 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			lesstif_button_event(w, e);
 			pcb_notify_crosshair_change(pcb_false);
 			pressed_button = 0;
-			mods = ((e->xbutton.state & ShiftMask) ? M_Shift : 0)
-				+ ((e->xbutton.state & ControlMask) ? M_Ctrl : 0)
+			mods = ((e->xbutton.state & ShiftMask) ? PCB_M_Shift : 0)
+				+ ((e->xbutton.state & ControlMask) ? PCB_M_Ctrl : 0)
 #ifdef __APPLE__
-				+ ((e->xbutton.state & (1 << 13)) ? M_Alt : 0)
+				+ ((e->xbutton.state & (1 << 13)) ? PCB_M_Alt : 0)
 #else
-				+ ((e->xbutton.state & Mod1Mask) ? M_Alt : 0)
+				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0)
 #endif
-				+ M_Release;
+				+ PCB_M_Release;
 			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods);
 			pcb_notify_crosshair_change(pcb_true);
 			break;
