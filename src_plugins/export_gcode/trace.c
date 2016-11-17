@@ -860,7 +860,7 @@ malloc_error:
 
 /* Always succeeds and returns 0 */
 static int
-ATTRIBUTE_UNUSED smooth(privcurve_t * curve, int sign, double alphamax)
+PCB_ATTRIBUTE_UNUSED smooth(privcurve_t * curve, int sign, double alphamax)
 {
 	int m = curve->n;
 
@@ -1083,7 +1083,7 @@ static int opti_penalty(privpath_t * pp, int i, int j, opti_t * res, double optt
    single segment when possible. Return 0 on success, 1 with errno set
    on failure. */
 static int
-ATTRIBUTE_UNUSED opticurve(privpath_t * pp, double opttolerance)
+PCB_ATTRIBUTE_UNUSED opticurve(privpath_t * pp, double opttolerance)
 {
 	int m = pp->curve.n;
 	int *pt = NULL;								/* pt[m+1] */

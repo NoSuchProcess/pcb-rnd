@@ -790,7 +790,7 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 	if (node->flags.is_leaf) {
 		register int i;
 
-		if (UNLIKELY(manage)) {
+		if (PCB_UNLIKELY(manage)) {
 			register int flag = 1;
 
 			for (i = 0; i < M_SIZE; i++) {
@@ -861,7 +861,7 @@ static void __r_insert_node(struct rtree_node *node, const pcb_box_t * query, in
 			new_node->u.rects[0].bptr = query;
 			new_node->u.rects[0].bounds = *query;
 			new_node->box = *query;
-			if (UNLIKELY(manage))
+			if (PCB_UNLIKELY(manage))
 				new_node->flags.manage = 1;
 			sort_node(node);
 			return;

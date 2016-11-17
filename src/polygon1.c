@@ -97,7 +97,7 @@ int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_
 #define error(code)  longjmp(*(e), code)
 
 #define MemGet(ptr, type) \
-  if (UNLIKELY (((ptr) = (type *)malloc(sizeof(type))) == NULL))	\
+  if (PCB_UNLIKELY(((ptr) = (type *)malloc(sizeof(type))) == NULL))	\
     error(err_no_memory);
 
 #undef DEBUG_LABEL
@@ -749,7 +749,7 @@ static pcb_r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 		if (info.tree) {
 			int seen;
 			pcb_r_search(info.tree, &info.s->box, seg_in_region, seg_in_seg, &info, &seen);
-			if (UNLIKELY(seen))
+			if (PCB_UNLIKELY(seen))
 				assert(0);							/* XXX: Memory allocation failure */
 		}
 	}
@@ -854,7 +854,7 @@ static void M_pcb_polyarea_t_intersect(jmp_buf * e, pcb_polyarea_t * afst, pcb_p
 			if (a->contours->xmax >= b->contours->xmin &&
 					a->contours->ymax >= b->contours->ymin &&
 					a->contours->xmin <= b->contours->xmax && a->contours->ymin <= b->contours->ymax) {
-				if (UNLIKELY(intersect(e, a, b, add)))
+				if (PCB_UNLIKELY(intersect(e, a, b, add)))
 					error(err_no_memory);
 			}
 		}
@@ -862,7 +862,7 @@ static void M_pcb_polyarea_t_intersect(jmp_buf * e, pcb_polyarea_t * afst, pcb_p
 		for (curcB = b->contours; curcB != NULL; curcB = curcB->next)
 			if (curcB->Flags.status == ISECTED) {
 				the_list = add_descriptors(curcB, 'B', the_list);
-				if (UNLIKELY(the_list == NULL))
+				if (PCB_UNLIKELY(the_list == NULL))
 					error(err_no_memory);
 			}
 	}
@@ -871,7 +871,7 @@ static void M_pcb_polyarea_t_intersect(jmp_buf * e, pcb_polyarea_t * afst, pcb_p
 		for (curcA = a->contours; curcA != NULL; curcA = curcA->next)
 			if (curcA->Flags.status == ISECTED) {
 				the_list = add_descriptors(curcA, 'A', the_list);
-				if (UNLIKELY(the_list == NULL))
+				if (PCB_UNLIKELY(the_list == NULL))
 					error(err_no_memory);
 			}
 	}

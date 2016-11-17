@@ -27,7 +27,7 @@
 #ifdef USE_LOADLIBRARY
 #include <windows.h>
 
-void *dlopen(const char *f, int ATTRIBUTE_UNUSED flag)
+void *dlopen(const char *f, int PCB_ATTRIBUTE_UNUSED flag)
 {
 	return LoadLibrary(f);
 }

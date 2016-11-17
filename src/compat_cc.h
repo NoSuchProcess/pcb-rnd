@@ -51,11 +51,11 @@
       _boolean_var_ = 0;                      \
    _boolean_var_;                             \
 })
-#	define LIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 1))
-#	define UNLIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 0))
+#	define PCB_LIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 1))
+#	define PCB_UNLIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 0))
 #else
-#	define LIKELY(expr) (expr)
-#	define UNLIKELY(expr) (expr)
+#	define PCB_LIKELY(expr) (expr)
+#	define PCB_UNLIKELY(expr) (expr)
 #endif
 
 #ifndef GCC_VERSION
@@ -63,9 +63,9 @@
 #endif /* GCC_VERSION */
 
 #if GCC_VERSION > 2007
-#	define ATTRIBUTE_UNUSED __attribute__((unused))
+#	define PCB_ATTRIBUTE_UNUSED __attribute__((unused))
 #else
-#	define ATTRIBUTE_UNUSED
+#	define PCB_ATTRIBUTE_UNUSED
 #endif
 
 #endif

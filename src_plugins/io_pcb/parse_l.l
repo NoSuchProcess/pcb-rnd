@@ -69,7 +69,7 @@
  */
 #ifdef FLEX_SCANNER
 
-#define yyunput ATTRIBUTE_UNUSED yyunput
+#define yyunput PCB_ATTRIBUTE_UNUSED yyunput
 #endif
 
 const char			*yyfilename;	/* in this file */
