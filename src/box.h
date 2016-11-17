@@ -51,7 +51,9 @@ struct pcb_box_list_s {
 #include "misc_util.h"
 
 typedef enum {
-	NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3, NE = 4, SE = 5, SW = 6, NW = 7, ALL = 8
+	PCB_NORTH = 0, PCB_EAST = 1, PCB_SOUTH = 2, PCB_WEST = 3,
+	PCB_NE = 4, PCB_SE = 5, PCB_SW = 6, PCB_NW = 7,
+	PCB_ANY_DIR = 8
 } pcb_direction_t;
 
 /* rotates box 90-degrees cw */
@@ -62,31 +64,31 @@ typedef enum {
 }
 #define PCB_BOX_ROTATE_TO_NORTH(box, dir) do { pcb_coord_t t;\
   switch(dir) {\
-  case EAST: \
+  case PCB_EAST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
    (box).X2 = (box).Y2; (box).Y2 = -t; break;\
-  case SOUTH: \
+  case PCB_SOUTH: \
    t = (box).X1; (box).X1 = -(box).X2; (box).X2 = -t;\
    t = (box).Y1; (box).Y1 = -(box).Y2; (box).Y2 = -t; break;\
-  case WEST: \
+  case PCB_WEST: \
    t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
    (box).X2 = -(box).Y1; (box).Y1 = t; break;\
-  case NORTH: break;\
+  case PCB_NORTH: break;\
   default: assert(0);\
   }\
   } while (0)
 #define PCB_BOX_ROTATE_FROM_NORTH(box, dir) do { pcb_coord_t t;\
   switch(dir) {\
-  case WEST: \
+  case PCB_WEST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
    (box).X2 = (box).Y2; (box).Y2 = -t; break;\
-  case SOUTH: \
+  case PCB_SOUTH: \
    t = (box).X1; (box).X1 = -(box).X2; (box).X2 = -t;\
    t = (box).Y1; (box).Y1 = -(box).Y2; (box).Y2 = -t; break;\
-  case EAST: \
+  case PCB_EAST: \
    t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
    (box).X2 = -(box).Y1; (box).Y1 = t; break;\
-  case NORTH: break;\
+  case PCB_NORTH: break;\
   default: assert(0);\
   }\
   } while (0)

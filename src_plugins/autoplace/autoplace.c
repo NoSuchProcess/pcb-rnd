@@ -463,7 +463,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			pcb_box_t box;
 			pcb_element_t *element;
 		};
-		pcb_direction_t dir[4] = { NORTH, EAST, SOUTH, WEST };
+		pcb_direction_t dir[4] = { PCB_NORTH, PCB_EAST, PCB_SOUTH, PCB_WEST };
 		struct ebox **boxpp, *boxp;
 		pcb_rtree_t *rt_s, *rt_c;
 		int factor;
