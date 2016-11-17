@@ -654,8 +654,8 @@ static void note_accelerator(const lht_node_t *node)
 {
 	lht_node_t *anode, *knode;
 	assert(node != NULL);
-	anode = pcb_hid_cfg_menu_field(node, MF_ACTION, NULL);
-	knode = pcb_hid_cfg_menu_field(node, MF_ACCELERATOR, NULL);
+	anode = pcb_hid_cfg_menu_field(node, PCB_MF_ACTION, NULL);
+	knode = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
 	if ((anode != NULL) && (knode != NULL))
 		pcb_hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode, NULL, 0);
 	else
@@ -756,7 +756,7 @@ static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc call
 
 	if (pcb_hid_cfg_has_submenus(node)) {
 		lht_node_t *i;
-		i = pcb_hid_cfg_menu_field(node, MF_SUBMENU, NULL);
+		i = pcb_hid_cfg_menu_field(node, PCB_MF_SUBMENU, NULL);
 		for(i = i->data.list.first; i != NULL; i = i->next)
 			add_node_to_menu(sub, i, callback, 1);
 	}
@@ -769,15 +769,15 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	lht_node_t *act, *kacc;
 
 	stdarg_n = 0;
-	v = pcb_hid_cfg_menu_field_str(node, MF_FOREGROUND);
+	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_FOREGROUND);
 	if (v != NULL)
 		stdarg_do_color(v, XmNforeground);
 
-	v = pcb_hid_cfg_menu_field_str(node, MF_BACKGROUND);
+	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_BACKGROUND);
 	if (v != NULL)
 		stdarg_do_color(v, XmNbackground);
 
-	v = pcb_hid_cfg_menu_field_str(node, MF_FONT);
+	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_FONT);
 	if (v != NULL) {
 		XFontStruct *fs = XLoadQueryFont(display, v);
 		if (fs) {
@@ -786,11 +786,11 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		}
 	}
 
-	v = pcb_hid_cfg_menu_field_str(node, MF_MNEMONIC);
+	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_MNEMONIC);
 	if (v != NULL)
 		stdarg(XmNmnemonic, v);
 
-	kacc = pcb_hid_cfg_menu_field(node, MF_ACCELERATOR, NULL);
+	kacc = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
 	if (kacc != NULL) {
 		char *acc_str = pcb_hid_cfg_keys_gen_accel(&lesstif_keymap, kacc, 1, NULL);
 
@@ -810,7 +810,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		int nn = stdarg_n;
 		lht_node_t *i;
 		const char *field_name;
-		lht_node_t *submenu_node = pcb_hid_cfg_menu_field(node, MF_SUBMENU, &field_name);
+		lht_node_t *submenu_node = pcb_hid_cfg_menu_field(node, PCB_MF_SUBMENU, &field_name);
 
 		stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
 		sub = XmCreatePulldownMenu(menu, pcb_strdup(v), stdarg_args + nn, stdarg_n - nn);
@@ -826,8 +826,8 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 	}
 	else {
 		/* doesn't have submenu */
-		const char *checked = pcb_hid_cfg_menu_field_str(node, MF_CHECKED);
-		const char *label = pcb_hid_cfg_menu_field_str(node, MF_SENSITIVE);
+		const char *checked = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
+		const char *label = pcb_hid_cfg_menu_field_str(node, PCB_MF_SENSITIVE);
 #if 0
 /* Do not support radio for now: the gtk HID doesn't have it either */
 		Resource *radio = resource_subres(node->v[i].subres, "radio");
@@ -850,7 +850,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 		}
 		else
 #endif
-		act = pcb_hid_cfg_menu_field(node, MF_ACTION, NULL);
+		act = pcb_hid_cfg_menu_field(node, PCB_MF_ACTION, NULL);
 		if (checked) {
 			if (strchr(checked, '='))
 				stdarg(XmNindicatorType, XmONE_OF_MANY);
@@ -869,11 +869,11 @@ static void add_res2menu_named(Widget menu, lht_node_t *node, XtCallbackProc cal
 			XtAddCallback(btn, XmNactivateCallback, callback, (XtPointer) act);
 		}
 
-		v = pcb_hid_cfg_menu_field_str(node, MF_CHECKED);
+		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
 		if (v != NULL)
 			note_widget_flag(btn, XmNset, v);
 
-		v = pcb_hid_cfg_menu_field_str(node, MF_ACTIVE);
+		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_ACTIVE);
 		if (v != NULL)
 			note_widget_flag(btn, XmNsensitive, v);
 

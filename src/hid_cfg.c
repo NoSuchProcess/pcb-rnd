@@ -73,7 +73,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			free(name);
 		}
 		else
-			psub = pcb_hid_cfg_menu_field(cmc->parent, MF_SUBMENU, NULL);
+			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
 
 		if (rel_level == cmc->target_level) {
 			node = pcb_hid_cfg_create_hash_node(psub, name, "dyn", "1", "m", "cookie", cmc->cookie, cmc->mnemonic, "a", cmc->accel, "tip", cmc->tip, ((cmc->action != NULL) ? "action": NULL), cmc->action, NULL);
@@ -157,7 +157,7 @@ static int hid_cfg_remove_menu_(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_r
 
 	if (root->type == LHT_HASH) {
 		lht_node_t *psub, *n, *next;
-		psub = pcb_hid_cfg_menu_field(root, MF_SUBMENU, NULL);
+		psub = pcb_hid_cfg_menu_field(root, PCB_MF_SUBMENU, NULL);
 		if (psub != NULL) { /* remove a whole submenu with all children */
 			int res = 0;
 			for(n = psub->data.list.first; n != NULL; n = next) {
@@ -382,18 +382,18 @@ lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufi
 	const char *fieldstr = NULL;
 
 	switch(field) {
-		case MF_ACCELERATOR:  fieldstr = "a"; break;
-		case MF_MNEMONIC:     fieldstr = "m"; break;
-		case MF_SUBMENU:      fieldstr = "submenu"; break;
-		case MF_CHECKED:      fieldstr = "checked"; break;
-		case MF_UPDATE_ON:    fieldstr = "update_on"; break;
-		case MF_SENSITIVE:    fieldstr = "sensitive"; break;
-		case MF_TIP:          fieldstr = "tip"; break;
-		case MF_ACTIVE:       fieldstr = "active"; break;
-		case MF_ACTION:       fieldstr = "action"; break;
-		case MF_FOREGROUND:   fieldstr = "foreground"; break;
-		case MF_BACKGROUND:   fieldstr = "background"; break;
-		case MF_FONT:         fieldstr = "font"; break;
+		case PCB_MF_ACCELERATOR:  fieldstr = "a"; break;
+		case PCB_MF_MNEMONIC:     fieldstr = "m"; break;
+		case PCB_MF_SUBMENU:      fieldstr = "submenu"; break;
+		case PCB_MF_CHECKED:      fieldstr = "checked"; break;
+		case PCB_MF_UPDATE_ON:    fieldstr = "update_on"; break;
+		case PCB_MF_SENSITIVE:    fieldstr = "sensitive"; break;
+		case PCB_MF_TIP:          fieldstr = "tip"; break;
+		case PCB_MF_ACTIVE:       fieldstr = "active"; break;
+		case PCB_MF_ACTION:       fieldstr = "action"; break;
+		case PCB_MF_FOREGROUND:   fieldstr = "foreground"; break;
+		case PCB_MF_BACKGROUND:   fieldstr = "background"; break;
+		case PCB_MF_FONT:         fieldstr = "font"; break;
 /*		case MF_RADIO:        fieldstr = "radio"; break; */
 	}
 	if (field_name != NULL)
@@ -422,7 +422,7 @@ const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_me
 int pcb_hid_cfg_has_submenus(const lht_node_t *submenu)
 {
 	const char *fldname;
-	lht_node_t *n = pcb_hid_cfg_menu_field(submenu, MF_SUBMENU, &fldname);
+	lht_node_t *n = pcb_hid_cfg_menu_field(submenu, PCB_MF_SUBMENU, &fldname);
 	if (n == NULL)
 		return 0;
 	if (n->type != LHT_LIST) {

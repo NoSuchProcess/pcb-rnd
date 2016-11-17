@@ -79,8 +79,8 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 	GtkAction *action = NULL;
 	char *accel = NULL;
 	char *menu_label;
-	lht_node_t *n_action = pcb_hid_cfg_menu_field(sub_res, MF_ACTION, NULL);
-	lht_node_t *n_keydesc = pcb_hid_cfg_menu_field(sub_res, MF_ACCELERATOR, NULL);
+	lht_node_t *n_action = pcb_hid_cfg_menu_field(sub_res, PCB_MF_ACTION, NULL);
+	lht_node_t *n_keydesc = pcb_hid_cfg_menu_field(sub_res, PCB_MF_ACCELERATOR, NULL);
 
 	/* Resolve accelerator and save it */
 	if (n_keydesc != NULL) {
@@ -93,7 +93,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 	}
 
 	/* Resolve the mnemonic */
-	tmp_val = pcb_hid_cfg_menu_field_str(sub_res, MF_MNEMONIC);
+	tmp_val = pcb_hid_cfg_menu_field_str(sub_res, PCB_MF_MNEMONIC);
 	if (tmp_val)
 		mnemonic = tmp_val[0];
 
@@ -134,16 +134,16 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 		/* recurse on the newly-added submenu; pcb_hid_cfg_has_submenus() makes sure
 		   the node format is correct; iterate over the list of submenus and create
 		   them recursively. */
-		n = pcb_hid_cfg_menu_field(sub_res, MF_SUBMENU, NULL);
+		n = pcb_hid_cfg_menu_field(sub_res, PCB_MF_SUBMENU, NULL);
 		for(n = n->data.list.first; n != NULL; n = n->next)
 			ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(submenu), n);
 	}
 	else {
 		/* NON-SUBMENU: MENU ITEM */
-		const char *checked = pcb_hid_cfg_menu_field_str(sub_res, MF_CHECKED);
-		const char *update_on = pcb_hid_cfg_menu_field_str(sub_res, MF_UPDATE_ON);
-		const char *label = pcb_hid_cfg_menu_field_str(sub_res, MF_SENSITIVE);
-		const char *tip = pcb_hid_cfg_menu_field_str(sub_res, MF_TIP);
+		const char *checked = pcb_hid_cfg_menu_field_str(sub_res, PCB_MF_CHECKED);
+		const char *update_on = pcb_hid_cfg_menu_field_str(sub_res, PCB_MF_UPDATE_ON);
+		const char *label = pcb_hid_cfg_menu_field_str(sub_res, PCB_MF_SENSITIVE);
+		const char *tip = pcb_hid_cfg_menu_field_str(sub_res, PCB_MF_TIP);
 		if (checked) {
 			/* TOGGLE ITEM */
 			conf_native_t *nat = NULL;
@@ -237,11 +237,11 @@ void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, lht
 				if (action) {
 					const char *val;
 
-					val = pcb_hid_cfg_menu_field_str(base, MF_CHECKED);
+					val = pcb_hid_cfg_menu_field_str(base, PCB_MF_CHECKED);
 					if (val != NULL)
 						g_object_set_data(G_OBJECT(action), "checked-flag", (gpointer *)val);
 
-					val = pcb_hid_cfg_menu_field_str(base, MF_ACTIVE);
+					val = pcb_hid_cfg_menu_field_str(base, PCB_MF_ACTIVE);
 					if (val != NULL)
 						g_object_set_data(G_OBJECT(action), "active-flag", (gpointer *)val);
 				}
@@ -395,7 +395,7 @@ ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 	GList *list;
 	for (list = menu->actions; list; list = list->next) {
 		lht_node_t *res = g_object_get_data(G_OBJECT(list->data), "resource");
-		lht_node_t *act = pcb_hid_cfg_menu_field(res, MF_ACTION, NULL);
+		lht_node_t *act = pcb_hid_cfg_menu_field(res, PCB_MF_ACTION, NULL);
 		const char *tf = g_object_get_data(G_OBJECT(list->data),
 																			 "checked-flag");
 		const char *af = g_object_get_data(G_OBJECT(list->data),

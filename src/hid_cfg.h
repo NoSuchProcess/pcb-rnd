@@ -62,18 +62,18 @@ lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const cha
 /* Fields are retrieved using this enum so that HIDs don't need to hardwire
    lihata node names */
 typedef enum {
-	MF_ACCELERATOR,
-	MF_MNEMONIC,
-	MF_SUBMENU,
-	MF_CHECKED,
-	MF_UPDATE_ON,
-	MF_SENSITIVE,
-	MF_TIP,
-	MF_ACTIVE,
-	MF_ACTION,
-	MF_FOREGROUND,
-	MF_BACKGROUND,
-	MF_FONT
+	PCB_MF_ACCELERATOR,
+	PCB_MF_MNEMONIC,
+	PCB_MF_SUBMENU,
+	PCB_MF_CHECKED,
+	PCB_MF_UPDATE_ON,
+	PCB_MF_SENSITIVE,
+	PCB_MF_TIP,
+	PCB_MF_ACTIVE,
+	PCB_MF_ACTION,
+	PCB_MF_FOREGROUND,
+	PCB_MF_BACKGROUND,
+	PCB_MF_FONT
 /*	MF_RADIO*/
 } pcb_hid_cfg_menufield_t;
 
