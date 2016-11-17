@@ -3,7 +3,7 @@
 
 /* Use this to temporarily enable all layers, so that they can be
    exported even if they're not currently visible.  save_array must be
-   MAX_LAYER+2 big. */
+   PCB_MAX_LAYER+2 big. */
 void pcb_hid_save_and_show_layer_ons(int *save_array);
 /* Use this to restore them.  */
 void pcb_hid_restore_layer_ons(int *save_array);

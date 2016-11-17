@@ -62,7 +62,7 @@ static	pcb_polygon_t *Polygon;
 static	pcb_symbol_t *Symbol;
 static	int		pin_num;
 static	pcb_lib_menu_t *Menu;
-static	pcb_bool			LayerFlag[MAX_LAYER + 2];
+static	pcb_bool			LayerFlag[PCB_MAX_LAYER + 2];
 
 extern	char			*yytext;		/* defined by LEX */
 extern	pcb_board_t *	yyPCB;
@@ -172,7 +172,7 @@ parsepcb
 					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
-				for (i = 0; i < MAX_LAYER + 2; i++)
+				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
 					LayerFlag[i] = pcb_false;
 				yyFont = &yyPCB->Font;
 				yyData = yyPCB->Data;
@@ -240,7 +240,7 @@ parsedata
 					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
-				for (i = 0; i < MAX_LAYER + 2; i++)
+				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
 					LayerFlag[i] = pcb_false;
 				yyData->LayerN = 0;
 			}
@@ -264,7 +264,7 @@ parsefont
 					YYABORT;
 				}
 				yyFont->Valid = pcb_false;
-				for (i = 0; i <= MAX_FONTPOSITION; i++)
+				for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
 					free (yyFont->Symbol[i].Line);
 				memset(yyFont->Symbol, 0, sizeof(yyFont->Symbol));
 			}
@@ -329,8 +329,8 @@ pcbname
 		: T_PCB '(' STRING ')'
 			{
 				yyPCB->Name = $3;
-				yyPCB->MaxWidth = MAX_COORD;
-				yyPCB->MaxHeight = MAX_COORD;
+				yyPCB->MaxWidth = PCB_MAX_COORD;
+				yyPCB->MaxHeight = PCB_MAX_COORD;
 			}
 		| T_PCB '(' STRING measure measure ')'
 			{
@@ -779,8 +779,8 @@ via_newformat
 			/* x, y, thickness, drilling-hole, name, flags */
 		: T_VIA '(' measure measure measure measure STRING INTEGER ')'
 			{
-				pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU($5) + 2*MASKFRAME,  OU ($6), $7, pcb_flag_old($8));
+				pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+					OU($5) + 2*PCB_MASKFRAME,  OU ($6), $7, pcb_flag_old($8));
 				free ($7);
 			}
 		;
@@ -789,15 +789,15 @@ via_oldformat
 			/* old format: x, y, thickness, name, flags */
 		: T_VIA '(' measure measure measure STRING INTEGER ')'
 			{
-				pcb_coord_t	hole = (OU($5) * DEFAULT_DRILLINGHOLE);
+				pcb_coord_t	hole = (OU($5) * PCB_DEFAULT_DRILLINGHOLE);
 
 					/* make sure that there's enough copper left */
-				if (OU($5) - hole < MIN_PINORVIACOPPER &&
-					OU($5) > MIN_PINORVIACOPPER)
-					hole = OU($5) - MIN_PINORVIACOPPER;
+				if (OU($5) - hole < PCB_MIN_PINORVIACOPPER &&
+					OU($5) > PCB_MIN_PINORVIACOPPER)
+					hole = OU($5) - PCB_MIN_PINORVIACOPPER;
 
-				pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU($5) + 2*MASKFRAME, hole, $6, pcb_flag_old($7));
+				pcb_via_new(yyData, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+					OU($5) + 2*PCB_MASKFRAME, hole, $6, pcb_flag_old($7));
 				free ($6);
 			}
 		;
@@ -861,7 +861,7 @@ layer
 			/* name */
 		: T_LAYER '(' INTEGER STRING opt_string ')' '('
 			{
-				if ($3 <= 0 || $3 > MAX_LAYER + 2)
+				if ($3 <= 0 || $3 > PCB_MAX_LAYER + 2)
 				{
 					yyerror("Layernumber out of range");
 					YYABORT;
@@ -966,7 +966,7 @@ line_oldformat
 				/* eliminate old-style rat-lines */
 			if ((IV ($8) & PCB_FLAG_RAT) == 0)
 				pcb_line_new(Layer, OU ($3), OU ($4), OU ($5), OU ($6), OU ($7),
-					200*GROUNDPLANEFRAME, pcb_flag_old(IV ($8)));
+					200*PCB_GROUNDPLANEFRAME, pcb_flag_old(IV ($8)));
 			}
 		;
 
@@ -1030,7 +1030,7 @@ arc_oldformat
 		: T_ARC '(' measure measure measure measure measure measure number INTEGER ')'
 			{
 				pcb_arc_new(Layer, OU ($3), OU ($4), OU ($5), OU ($5), IV ($8), $9,
-					OU ($7), 200*GROUNDPLANEFRAME, pcb_flag_old($10));
+					OU ($7), 200*PCB_GROUNDPLANEFRAME, pcb_flag_old($10));
 			}
 		;
 
@@ -1578,8 +1578,8 @@ pin_1.6.3_format
 			/* x, y, thickness, drilling hole, name, number, flags */
 		: T_PIN '(' measure measure measure measure STRING STRING INTEGER ')'
 			{
-				pcb_element_pin_new(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU ($5) + 2*MASKFRAME, OU ($6), $7, $8, pcb_flag_old($9));
+				pcb_element_pin_new(yyElement, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+					OU ($5) + 2*PCB_MASKFRAME, OU ($6), $7, $8, pcb_flag_old($9));
 				free ($7);
 				free ($8);
 			}
@@ -1592,8 +1592,8 @@ pin_newformat
 				char	p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_element_pin_new(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU ($5) + 2*MASKFRAME, OU ($6), $7, p_number, pcb_flag_old($8));
+				pcb_element_pin_new(yyElement, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+					OU ($5) + 2*PCB_MASKFRAME, OU ($6), $7, p_number, pcb_flag_old($8));
 
 				free ($7);
 			}
@@ -1605,17 +1605,17 @@ pin_oldformat
 			 */
 		: T_PIN '(' measure measure measure STRING INTEGER ')'
 			{
-				pcb_coord_t	hole = OU ($5) * DEFAULT_DRILLINGHOLE;
+				pcb_coord_t	hole = OU ($5) * PCB_DEFAULT_DRILLINGHOLE;
 				char	p_number[8];
 
 					/* make sure that there's enough copper left */
-				if (OU ($5) - hole < MIN_PINORVIACOPPER &&
-					OU ($5) > MIN_PINORVIACOPPER)
-					hole = OU ($5) - MIN_PINORVIACOPPER;
+				if (OU ($5) - hole < PCB_MIN_PINORVIACOPPER &&
+					OU ($5) > PCB_MIN_PINORVIACOPPER)
+					hole = OU ($5) - PCB_MIN_PINORVIACOPPER;
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_element_pin_new(yyElement, OU ($3), OU ($4), OU ($5), 2*GROUNDPLANEFRAME,
-					OU ($5) + 2*MASKFRAME, hole, $6, p_number, pcb_flag_old($7));
+				pcb_element_pin_new(yyElement, OU ($3), OU ($4), OU ($5), 2*PCB_GROUNDPLANEFRAME,
+					OU ($5) + 2*PCB_MASKFRAME, hole, $6, p_number, pcb_flag_old($7));
 				free ($6);
 			}
 		;
@@ -1686,8 +1686,8 @@ pad_newformat
 			/* x1, y1, x2, y2, thickness, name , pad number, flags */
 		: T_PAD '(' measure measure measure measure measure STRING STRING INTEGER ')'
 			{
-				pcb_element_pad_new(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*GROUNDPLANEFRAME,
-					OU ($7) + 2*MASKFRAME, $8, $9, pcb_flag_old($10));
+				pcb_element_pad_new(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*PCB_GROUNDPLANEFRAME,
+					OU ($7) + 2*PCB_MASKFRAME, $8, $9, pcb_flag_old($10));
 				free ($8);
 				free ($9);
 			}
@@ -1700,8 +1700,8 @@ pad
 				char		p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_element_pad_new(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*GROUNDPLANEFRAME,
-					OU ($7) + 2*MASKFRAME, $8,p_number, pcb_flag_old($9));
+				pcb_element_pad_new(yyElement,OU ($3),OU ($4),OU ($5),OU ($6),OU ($7), 2*PCB_GROUNDPLANEFRAME,
+					OU ($7) + 2*PCB_MASKFRAME, $8,p_number, pcb_flag_old($9));
 				free ($8);
 			}
 		;
@@ -1738,7 +1738,7 @@ symbol : symbolhead symboldata ')'
 
 symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 			{
-				if ($3 <= 0 || $3 > MAX_FONTPOSITION)
+				if ($3 <= 0 || $3 > PCB_MAX_FONTPOSITION)
 				{
 					yyerror("fontposition out of range");
 					YYABORT;
@@ -1754,7 +1754,7 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 			}
 		| T_SYMBOL '(' symbolid measure ')' '('
 			{
-				if ($3 <= 0 || $3 > MAX_FONTPOSITION)
+				if ($3 <= 0 || $3 > PCB_MAX_FONTPOSITION)
 				{
 					yyerror("fontposition out of range");
 					YYABORT;

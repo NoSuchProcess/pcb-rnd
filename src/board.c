@@ -51,7 +51,7 @@ void pcb_board_free(pcb_board_t * pcb)
 	pcb_data_free(pcb->Data);
 	free(pcb->Data);
 	/* release font symbols */
-	for (i = 0; i <= MAX_FONTPOSITION; i++)
+	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
 		free(pcb->Font.Symbol[i].Line);
 	for (i = 0; i < PCB_NUM_NETLISTS; i++)
 		pcb_lib_free(&(pcb->NetlistLib[i]));
@@ -81,7 +81,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 						/* this is the most useful starting point for now */
 
 	ptr->Grid = conf_core.editor.grid;
-	ParseGroupString(conf_core.design.groups, &ptr->LayerGroups, MAX_LAYER);
+	ParseGroupString(conf_core.design.groups, &ptr->LayerGroups, PCB_MAX_LAYER);
 	save = PCB;
 	PCB = ptr;
 	pcb_hid_action("RouteStylesChanged");
@@ -100,7 +100,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr->minDrill = conf_core.design.min_drill;
 	ptr->minRing = conf_core.design.min_ring;
 
-	for (i = 0; i < MAX_LAYER; i++)
+	for (i = 0; i < PCB_MAX_LAYER; i++)
 		ptr->Data->Layer[i].Name = pcb_strdup(conf_core.design.default_layer_name[i]);
 
 	pcb_font_create_default(ptr);
@@ -167,7 +167,7 @@ void pcb_colors_from_settings(pcb_board_t *ptr)
 	ptr->ViaSelectedColor = conf_core.appearance.color.via_selected;
 	ptr->WarnColor = conf_core.appearance.color.warn;
 	ptr->MaskColor = conf_core.appearance.color.mask;
-	for (i = 0; i < MAX_LAYER; i++) {
+	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		ptr->Data->Layer[i].Color = conf_core.appearance.color.layer[i];
 		ptr->Data->Layer[i].SelectedColor = conf_core.appearance.color.layer_selected[i];
 	}
@@ -257,7 +257,7 @@ void pcb_board_remove(pcb_board_t *Ptr)
 /* sets cursor grid with respect to grid offset values */
 void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align)
 {
-	if (Grid >= 1 && Grid <= MAX_GRID) {
+	if (Grid >= 1 && Grid <= PCB_MAX_GRID) {
 		if (align) {
 			PCB->GridOffsetX = pcb_crosshair.X % Grid;
 			PCB->GridOffsetY = pcb_crosshair.Y % Grid;
@@ -272,7 +272,7 @@ void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align)
 /* sets a new line thickness */
 void pcb_board_set_line_width(pcb_coord_t Size)
 {
-	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
+	if (Size >= PCB_MIN_LINESIZE && Size <= PCB_MAX_LINESIZE) {
 		conf_set_design("design/line_thickness", "%$mS", Size);
 		if (conf_core.editor.auto_drc)
 			pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
@@ -282,7 +282,7 @@ void pcb_board_set_line_width(pcb_coord_t Size)
 /* sets a new via thickness */
 void pcb_board_set_via_size(pcb_coord_t Size, pcb_bool Force)
 {
-	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + MIN_PINORVIACOPPER)) {
+	if (Force || (Size <= PCB_MAX_PINORVIASIZE && Size >= PCB_MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + PCB_MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_thickness", "%$mS", Size);
 	}
 }
@@ -290,7 +290,7 @@ void pcb_board_set_via_size(pcb_coord_t Size, pcb_bool Force)
 /* sets a new via drilling hole */
 void pcb_board_set_via_drilling_hole(pcb_coord_t Size, pcb_bool Force)
 {
-	if (Force || (Size <= MAX_PINORVIASIZE && Size >= MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - MIN_PINORVIACOPPER)) {
+	if (Force || (Size <= PCB_MAX_PINORVIASIZE && Size >= PCB_MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - PCB_MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_drilling_hole", "%$mS", Size);
 	}
 }
@@ -298,7 +298,7 @@ void pcb_board_set_via_drilling_hole(pcb_coord_t Size, pcb_bool Force)
 /* sets a clearance width */
 void pcb_board_set_clearance(pcb_coord_t Width)
 {
-	if (Width <= MAX_LINESIZE) {
+	if (Width <= PCB_MAX_LINESIZE) {
 		conf_set_design("design/clearance", "%$mS", Width);
 	}
 }
@@ -306,7 +306,7 @@ void pcb_board_set_clearance(pcb_coord_t Width)
 /* sets a text scaling */
 void pcb_board_set_text_scale(int Scale)
 {
-	if (Scale <= MAX_TEXTSCALE && Scale >= MIN_TEXTSCALE) {
+	if (Scale <= PCB_MAX_TEXTSCALE && Scale >= PCB_MIN_TEXTSCALE) {
 		conf_set_design("design/text_scale", "%d", Scale);
 	}
 }

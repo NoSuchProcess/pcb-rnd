@@ -62,8 +62,8 @@ static FILE *f = 0;
 static pcb_coord_t linewidth = -1;
 static int lastcap = -1;
 static int lastcolor = -1;
-static int print_group[MAX_LAYER];
-static int print_layer[MAX_LAYER];
+static int print_group[PCB_MAX_LAYER];
+static int print_layer[PCB_MAX_LAYER];
 static int fast_erase = -1;
 
 static pcb_hid_attribute_t eps_attribute_list[] = {
@@ -181,7 +181,7 @@ static int in_mono, as_shown;
 void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
 	int i;
-	static int saved_layer_stack[MAX_LAYER];
+	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t region;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
@@ -306,7 +306,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 static void eps_do_export(pcb_hid_attr_val_t * options)
 {
 	int i;
-	int save_ons[MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER + 2];
 
 	if (!options) {
 		eps_get_export_options(0);

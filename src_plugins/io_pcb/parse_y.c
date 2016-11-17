@@ -125,7 +125,7 @@ static	pcb_polygon_t *Polygon;
 static	pcb_symbol_t *Symbol;
 static	int		pin_num;
 static	pcb_lib_menu_t *Menu;
-static	pcb_bool			LayerFlag[MAX_LAYER + 2];
+static	pcb_bool			LayerFlag[PCB_MAX_LAYER + 2];
 
 extern	char			*yytext;		/* defined by LEX */
 extern	pcb_board_t *	yyPCB;
@@ -1798,7 +1798,7 @@ yyreduce:
 					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
-				for (i = 0; i < MAX_LAYER + 2; i++)
+				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
 					LayerFlag[i] = pcb_false;
 				yyFont = &yyPCB->Font;
 				yyData = yyPCB->Data;
@@ -1867,7 +1867,7 @@ yyreduce:
 					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
-				for (i = 0; i < MAX_LAYER + 2; i++)
+				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
 					LayerFlag[i] = pcb_false;
 				yyData->LayerN = 0;
 			}
@@ -1886,7 +1886,7 @@ yyreduce:
 					YYABORT;
 				}
 				yyFont->Valid = pcb_false;
-				for (i = 0; i <= MAX_FONTPOSITION; i++)
+				for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
 					free (yyFont->Symbol[i].Line);
 				memset(yyFont->Symbol, 0, sizeof(yyFont->Symbol));
 			}
@@ -1917,8 +1917,8 @@ yyreduce:
 #line 330 "parse_y.y" /* yacc.c:1646  */
     {
 				yyPCB->Name = (yyvsp[-1].string);
-				yyPCB->MaxWidth = MAX_COORD;
-				yyPCB->MaxHeight = MAX_COORD;
+				yyPCB->MaxWidth = PCB_MAX_COORD;
+				yyPCB->MaxHeight = PCB_MAX_COORD;
 			}
 #line 1924 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2165,8 +2165,8 @@ yyreduce:
   case 69:
 #line 781 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_via_new(yyData, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
-					OU((yyvsp[-4].measure)) + 2*MASKFRAME,  OU ((yyvsp[-3].measure)), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
+				pcb_via_new(yyData, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*PCB_GROUNDPLANEFRAME,
+					OU((yyvsp[-4].measure)) + 2*PCB_MASKFRAME,  OU ((yyvsp[-3].measure)), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
 #line 2173 "parse_y.c" /* yacc.c:1646  */
@@ -2175,15 +2175,15 @@ yyreduce:
   case 70:
 #line 791 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_coord_t	hole = (OU((yyvsp[-3].measure)) * DEFAULT_DRILLINGHOLE);
+				pcb_coord_t	hole = (OU((yyvsp[-3].measure)) * PCB_DEFAULT_DRILLINGHOLE);
 
 					/* make sure that there's enough copper left */
-				if (OU((yyvsp[-3].measure)) - hole < MIN_PINORVIACOPPER &&
-					OU((yyvsp[-3].measure)) > MIN_PINORVIACOPPER)
-					hole = OU((yyvsp[-3].measure)) - MIN_PINORVIACOPPER;
+				if (OU((yyvsp[-3].measure)) - hole < PCB_MIN_PINORVIACOPPER &&
+					OU((yyvsp[-3].measure)) > PCB_MIN_PINORVIACOPPER)
+					hole = OU((yyvsp[-3].measure)) - PCB_MIN_PINORVIACOPPER;
 
-				pcb_via_new(yyData, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), 2*GROUNDPLANEFRAME,
-					OU((yyvsp[-3].measure)) + 2*MASKFRAME, hole, (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
+				pcb_via_new(yyData, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), 2*PCB_GROUNDPLANEFRAME,
+					OU((yyvsp[-3].measure)) + 2*PCB_MASKFRAME, hole, (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
 #line 2190 "parse_y.c" /* yacc.c:1646  */
@@ -2210,7 +2210,7 @@ yyreduce:
   case 73:
 #line 863 "parse_y.y" /* yacc.c:1646  */
     {
-				if ((yyvsp[-4].integer) <= 0 || (yyvsp[-4].integer) > MAX_LAYER + 2)
+				if ((yyvsp[-4].integer) <= 0 || (yyvsp[-4].integer) > PCB_MAX_LAYER + 2)
 				{
 					yyerror("Layernumber out of range");
 					YYABORT;
@@ -2274,7 +2274,7 @@ yyreduce:
 				/* eliminate old-style rat-lines */
 			if ((IV ((yyvsp[-1].measure)) & PCB_FLAG_RAT) == 0)
 				pcb_line_new(Layer, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), OU ((yyvsp[-2].measure)),
-					200*GROUNDPLANEFRAME, pcb_flag_old(IV ((yyvsp[-1].measure))));
+					200*PCB_GROUNDPLANEFRAME, pcb_flag_old(IV ((yyvsp[-1].measure))));
 			}
 #line 2280 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2301,7 +2301,7 @@ yyreduce:
 #line 1031 "parse_y.y" /* yacc.c:1646  */
     {
 				pcb_arc_new(Layer, OU ((yyvsp[-8].measure)), OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-6].measure)), IV ((yyvsp[-3].measure)), (yyvsp[-2].number),
-					OU ((yyvsp[-4].measure)), 200*GROUNDPLANEFRAME, pcb_flag_old((yyvsp[-1].integer)));
+					OU ((yyvsp[-4].measure)), 200*PCB_GROUNDPLANEFRAME, pcb_flag_old((yyvsp[-1].integer)));
 			}
 #line 2307 "parse_y.c" /* yacc.c:1646  */
     break;
@@ -2661,8 +2661,8 @@ yyreduce:
   case 155:
 #line 1580 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_element_pin_new(yyElement, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), 2*GROUNDPLANEFRAME,
-					OU ((yyvsp[-5].measure)) + 2*MASKFRAME, OU ((yyvsp[-4].measure)), (yyvsp[-3].string), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
+				pcb_element_pin_new(yyElement, OU ((yyvsp[-7].measure)), OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), 2*PCB_GROUNDPLANEFRAME,
+					OU ((yyvsp[-5].measure)) + 2*PCB_MASKFRAME, OU ((yyvsp[-4].measure)), (yyvsp[-3].string), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
@@ -2675,8 +2675,8 @@ yyreduce:
 				char	p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_element_pin_new(yyElement, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
-					OU ((yyvsp[-4].measure)) + 2*MASKFRAME, OU ((yyvsp[-3].measure)), (yyvsp[-2].string), p_number, pcb_flag_old((yyvsp[-1].integer)));
+				pcb_element_pin_new(yyElement, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), 2*PCB_GROUNDPLANEFRAME,
+					OU ((yyvsp[-4].measure)) + 2*PCB_MASKFRAME, OU ((yyvsp[-3].measure)), (yyvsp[-2].string), p_number, pcb_flag_old((yyvsp[-1].integer)));
 
 				free ((yyvsp[-2].string));
 			}
@@ -2686,17 +2686,17 @@ yyreduce:
   case 157:
 #line 1607 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_coord_t	hole = OU ((yyvsp[-3].measure)) * DEFAULT_DRILLINGHOLE;
+				pcb_coord_t	hole = OU ((yyvsp[-3].measure)) * PCB_DEFAULT_DRILLINGHOLE;
 				char	p_number[8];
 
 					/* make sure that there's enough copper left */
-				if (OU ((yyvsp[-3].measure)) - hole < MIN_PINORVIACOPPER &&
-					OU ((yyvsp[-3].measure)) > MIN_PINORVIACOPPER)
-					hole = OU ((yyvsp[-3].measure)) - MIN_PINORVIACOPPER;
+				if (OU ((yyvsp[-3].measure)) - hole < PCB_MIN_PINORVIACOPPER &&
+					OU ((yyvsp[-3].measure)) > PCB_MIN_PINORVIACOPPER)
+					hole = OU ((yyvsp[-3].measure)) - PCB_MIN_PINORVIACOPPER;
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_element_pin_new(yyElement, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), 2*GROUNDPLANEFRAME,
-					OU ((yyvsp[-3].measure)) + 2*MASKFRAME, hole, (yyvsp[-2].string), p_number, pcb_flag_old((yyvsp[-1].integer)));
+				pcb_element_pin_new(yyElement, OU ((yyvsp[-5].measure)), OU ((yyvsp[-4].measure)), OU ((yyvsp[-3].measure)), 2*PCB_GROUNDPLANEFRAME,
+					OU ((yyvsp[-3].measure)) + 2*PCB_MASKFRAME, hole, (yyvsp[-2].string), p_number, pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
 #line 2703 "parse_y.c" /* yacc.c:1646  */
@@ -2732,8 +2732,8 @@ yyreduce:
   case 160:
 #line 1688 "parse_y.y" /* yacc.c:1646  */
     {
-				pcb_element_pad_new(yyElement,OU ((yyvsp[-8].measure)),OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)), 2*GROUNDPLANEFRAME,
-					OU ((yyvsp[-4].measure)) + 2*MASKFRAME, (yyvsp[-3].string), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
+				pcb_element_pad_new(yyElement,OU ((yyvsp[-8].measure)),OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)), 2*PCB_GROUNDPLANEFRAME,
+					OU ((yyvsp[-4].measure)) + 2*PCB_MASKFRAME, (yyvsp[-3].string), (yyvsp[-2].string), pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
@@ -2746,8 +2746,8 @@ yyreduce:
 				char		p_number[8];
 
 				sprintf(p_number, "%d", pin_num++);
-				pcb_element_pad_new(yyElement,OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)),OU ((yyvsp[-3].measure)), 2*GROUNDPLANEFRAME,
-					OU ((yyvsp[-3].measure)) + 2*MASKFRAME, (yyvsp[-2].string),p_number, pcb_flag_old((yyvsp[-1].integer)));
+				pcb_element_pad_new(yyElement,OU ((yyvsp[-7].measure)),OU ((yyvsp[-6].measure)),OU ((yyvsp[-5].measure)),OU ((yyvsp[-4].measure)),OU ((yyvsp[-3].measure)), 2*PCB_GROUNDPLANEFRAME,
+					OU ((yyvsp[-3].measure)) + 2*PCB_MASKFRAME, (yyvsp[-2].string),p_number, pcb_flag_old((yyvsp[-1].integer)));
 				free ((yyvsp[-2].string));
 			}
 #line 2754 "parse_y.c" /* yacc.c:1646  */
@@ -2768,7 +2768,7 @@ yyreduce:
   case 167:
 #line 1740 "parse_y.y" /* yacc.c:1646  */
     {
-				if ((yyvsp[-3].integer) <= 0 || (yyvsp[-3].integer) > MAX_FONTPOSITION)
+				if ((yyvsp[-3].integer) <= 0 || (yyvsp[-3].integer) > PCB_MAX_FONTPOSITION)
 				{
 					yyerror("fontposition out of range");
 					YYABORT;
@@ -2788,7 +2788,7 @@ yyreduce:
   case 168:
 #line 1756 "parse_y.y" /* yacc.c:1646  */
     {
-				if ((yyvsp[-3].integer) <= 0 || (yyvsp[-3].integer) > MAX_FONTPOSITION)
+				if ((yyvsp[-3].integer) <= 0 || (yyvsp[-3].integer) > PCB_MAX_FONTPOSITION)
 				{
 					yyerror("fontposition out of range");
 					YYABORT;

@@ -39,7 +39,7 @@ static void dump_flag(pcb_flag_t * f)
 {
 	int l;
 	printf("F:%08x T:[", f->f);
-	for (l = 0; l < (MAX_LAYER + 7) / 8; l++)
+	for (l = 0; l < (PCB_MAX_LAYER + 7) / 8; l++)
 		printf(" %02x", f->t[l]);
 	printf("]");
 }
@@ -100,7 +100,7 @@ int main()
 		}
 
 		if (otype & PCB_TYPEMASK_PIN)
-			for (i = 0; i < MAX_LAYER; i++)
+			for (i = 0; i < PCB_MAX_LAYER; i++)
 				if (random() & 4)
 					PCB_FLAG_THERM_ASSIGN(i, 3, &fh);
 

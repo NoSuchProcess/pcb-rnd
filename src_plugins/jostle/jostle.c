@@ -190,7 +190,7 @@ static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vecto
 	default:											/* diagonal case */
 		{
 			int kx, ky, minmax, dq, ckx, cky;
-			pcb_coord_t mm[2] = { MAX_COORD, -MAX_COORD };
+			pcb_coord_t mm[2] = { PCB_MAX_COORD, -PCB_MAX_COORD };
 			pcb_vector_t mmp[2];
 			pcb_vnode_t *v;
 

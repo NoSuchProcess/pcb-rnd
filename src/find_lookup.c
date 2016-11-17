@@ -436,7 +436,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 {
 	pcb_bool done;
 	pcb_cardinal_t i, group, layer, ratposition,
-		lineposition[MAX_LAYER], polyposition[MAX_LAYER], arcposition[MAX_LAYER], padposition[2];
+		lineposition[PCB_MAX_LAYER], polyposition[PCB_MAX_LAYER], arcposition[PCB_MAX_LAYER], padposition[2];
 
 	/* copy the current LO list positions; the original data is changed
 	 * by 'LookupPVConnectionsToLOList()' which has to check the same

@@ -379,8 +379,8 @@ static struct {
 	FILE *f;
 	int pagecount;
 	pcb_coord_t linewidth;
-	pcb_bool print_group[MAX_LAYER];
-	pcb_bool print_layer[MAX_LAYER];
+	pcb_bool print_group[PCB_MAX_LAYER];
+	pcb_bool print_layer[PCB_MAX_LAYER];
 	double fade_ratio;
 	pcb_bool multi_file;
 	pcb_coord_t media_width, media_height, ps_width, ps_height;
@@ -599,7 +599,7 @@ static FILE *psopen(const char *base, const char *which)
 void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
 	int i;
-	static int saved_layer_stack[MAX_LAYER];
+	static int saved_layer_stack[PCB_MAX_LAYER];
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -705,7 +705,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 static void ps_do_export(pcb_hid_attr_val_t * options)
 {
 	FILE *fh;
-	int save_ons[MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER + 2];
 	int i;
 
 	if (!options) {
@@ -944,7 +944,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 		if (global.drill_helper)
 			pcb_fprintf(global.f,
 									"/dh { gsave %mi setlinewidth 0 gray %mi 0 360 arc stroke grestore} bind def\n",
-									(pcb_coord_t) MIN_PINORVIAHOLE, (pcb_coord_t) (MIN_PINORVIAHOLE * 3 / 2));
+									(pcb_coord_t) PCB_MIN_PINORVIAHOLE, (pcb_coord_t) (PCB_MIN_PINORVIAHOLE * 3 / 2));
 	}
 #if 0
 	/* Try to outsmart ps2pdf's heuristics for page rotation, by putting

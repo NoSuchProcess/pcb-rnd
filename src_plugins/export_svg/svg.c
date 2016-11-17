@@ -193,7 +193,7 @@ static pcb_hid_attribute_t *svg_get_export_options(int *n)
 
 void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
-	static int saved_layer_stack[MAX_LAYER];
+	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t region;
 
 	region.X1 = 0;
@@ -270,7 +270,7 @@ static void group_close()
 static void svg_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *filename;
-	int save_ons[MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER + 2];
 	int i;
 	pcb_coord_t w, h, x1, y1, x2, y2;
 

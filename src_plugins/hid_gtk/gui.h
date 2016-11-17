@@ -48,15 +48,15 @@
 	   |  gui code in gui-top-window.c and group code in misc.c must agree
 	   |  on what layer is what!
 	 */
-#define	LAYER_BUTTON_SILK			MAX_LAYER
-#define	LAYER_BUTTON_RATS			(MAX_LAYER + 1)
+#define	LAYER_BUTTON_SILK			PCB_MAX_LAYER
+#define	LAYER_BUTTON_RATS			(PCB_MAX_LAYER + 1)
 #define	N_SELECTABLE_LAYER_BUTTONS	(LAYER_BUTTON_RATS + 1)
 
-#define LAYER_BUTTON_PINS			(MAX_LAYER + 2)
-#define LAYER_BUTTON_VIAS			(MAX_LAYER + 3)
-#define LAYER_BUTTON_FARSIDE		(MAX_LAYER + 4)
-#define LAYER_BUTTON_MASK			(MAX_LAYER + 5)
-#define N_LAYER_BUTTONS				(MAX_LAYER + 6)
+#define LAYER_BUTTON_PINS			(PCB_MAX_LAYER + 2)
+#define LAYER_BUTTON_VIAS			(PCB_MAX_LAYER + 3)
+#define LAYER_BUTTON_FARSIDE		(PCB_MAX_LAYER + 4)
+#define LAYER_BUTTON_MASK			(PCB_MAX_LAYER + 5)
+#define N_LAYER_BUTTONS				(PCB_MAX_LAYER + 6)
 
 	/* Go from from the grid units in use (millimeters or mils) to PCB units
 	   |  and back again.

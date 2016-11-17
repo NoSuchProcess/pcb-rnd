@@ -299,7 +299,7 @@ typedef struct routebox {
 typedef struct routedata {
 	int max_styles;
 	/* one rtree per layer *group */
-	pcb_rtree_t *layergrouptree[MAX_LAYER];	/* no silkscreen layers here =) */
+	pcb_rtree_t *layergrouptree[PCB_MAX_LAYER];	/* no silkscreen layers here =) */
 	/* root pointer into connectivity information */
 	routebox_t *first_net;
 	/* default routing style */
@@ -401,9 +401,9 @@ static void showroutebox(routebox_t * rb);
  */
 /* group number of groups that hold surface mount pads */
 static pcb_cardinal_t front, back;
-static pcb_bool usedGroup[MAX_LAYER];
-static int x_cost[MAX_LAYER], y_cost[MAX_LAYER];
-static pcb_bool is_layer_group_active[MAX_LAYER];
+static pcb_bool usedGroup[PCB_MAX_LAYER];
+static int x_cost[PCB_MAX_LAYER], y_cost[PCB_MAX_LAYER];
+static pcb_bool is_layer_group_active[PCB_MAX_LAYER];
 static int ro = 0;
 static int smoothes = 1;
 static int passes = 12;
@@ -851,7 +851,7 @@ static void DumpRouteBox(routebox_t * rb)
 static routedata_t *CreateRouteData()
 {
 	pcb_netlist_list_t Nets;
-	PointerListType layergroupboxes[MAX_LAYER];
+	PointerListType layergroupboxes[PCB_MAX_LAYER];
 	pcb_box_t bbox;
 	routedata_t *rd;
 	int group, i;
@@ -4064,9 +4064,9 @@ pcb_bool no_expansion_boxes(routedata_t * rd)
 	int i;
 	pcb_box_t big;
 	big.X1 = 0;
-	big.X2 = MAX_COORD;
+	big.X2 = PCB_MAX_COORD;
 	big.Y1 = 0;
-	big.Y2 = MAX_COORD;
+	big.Y2 = PCB_MAX_COORD;
 	for (i = 0; i < pcb_max_group; i++) {
 		if (pcb_r_search(rd->layergrouptree[i], &big, NULL, bad_boy, NULL, NULL))
 			return pcb_false;
@@ -4687,7 +4687,7 @@ donerouting:
 	gui->progress(0, 0, NULL);
 	if (conf_core.editor.live_routing) {
 		int i;
-		pcb_box_t big = { 0, 0, MAX_COORD, MAX_COORD };
+		pcb_box_t big = { 0, 0, PCB_MAX_COORD, PCB_MAX_COORD };
 		for (i = 0; i < pcb_max_group; i++) {
 			pcb_r_search(rd->layergrouptree[i], &big, NULL, ripout_livedraw_obj_cb, NULL, NULL);
 		}

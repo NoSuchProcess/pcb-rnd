@@ -132,7 +132,7 @@ void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, uns
 /* sets the bounding box of a polygons */
 void pcb_poly_bbox(pcb_polygon_t *Polygon)
 {
-	Polygon->BoundingBox.X1 = Polygon->BoundingBox.Y1 = MAX_COORD;
+	Polygon->BoundingBox.X1 = Polygon->BoundingBox.Y1 = PCB_MAX_COORD;
 	Polygon->BoundingBox.X2 = Polygon->BoundingBox.Y2 = 0;
 	PCB_POLY_POINT_LOOP(Polygon);
 	{

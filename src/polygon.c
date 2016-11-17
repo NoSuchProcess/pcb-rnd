@@ -1226,7 +1226,7 @@ pcb_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_polygon_t *Polygo
  */
 pcb_cardinal_t pcb_poly_get_lowest_distance_point(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y)
 {
-	double mindistance = (double) MAX_COORD * MAX_COORD;
+	double mindistance = (double) PCB_MAX_COORD * PCB_MAX_COORD;
 	pcb_point_t *ptr1, *ptr2;
 	pcb_cardinal_t n, result = 0;
 

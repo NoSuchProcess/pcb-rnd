@@ -548,7 +548,7 @@ static lht_node_t *build_font(pcb_font_t *font)
 
 	syms = lht_dom_node_alloc(LHT_HASH, "symbols");
 	lht_dom_hash_put(ndt, syms);
-	for(n = 0; n < MAX_FONTPOSITION + 1; n++) {
+	for(n = 0; n < PCB_MAX_FONTPOSITION + 1; n++) {
 		char sname[32];
 		if (!font->Symbol[n].Valid)
 			continue;

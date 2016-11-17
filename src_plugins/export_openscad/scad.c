@@ -120,7 +120,7 @@ static struct {
 	float z_offset;
 	int solder;
 	int component;
-} group_data[MAX_LAYER];
+} group_data[PCB_MAX_LAYER];
 
 
 #define HA_scadfile 		0

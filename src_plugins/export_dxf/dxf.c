@@ -728,7 +728,7 @@ static int lastcap = -1;
 
 static int lastcolor = -1;
 
-static int print_layer[MAX_LAYER];
+static int print_layer[PCB_MAX_LAYER];
 
 /*!
  * \brief The last X coordinate.
@@ -4227,9 +4227,9 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *dxf_fnbase;
 	int i;
-	static int saved_layer_stack[MAX_LAYER];
+	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t region;
-	int save_ons[MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER + 2];
 	int tmp[128], len;
 
 #if DEBUG

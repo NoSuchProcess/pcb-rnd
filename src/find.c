@@ -144,8 +144,8 @@ static pcb_bool drc = pcb_false;				/* whether to stop if finding something not 
 static pcb_bool IsBad = pcb_false;
 static pcb_cardinal_t drcerr_count;		/* count of drc errors */
 static pcb_cardinal_t TotalP, TotalV, NumberOfPads[2];
-static ListType LineList[MAX_LAYER],	/* list of objects to */
-  PolygonList[MAX_LAYER], ArcList[MAX_LAYER], PadList[2], RatList, PVList;
+static ListType LineList[PCB_MAX_LAYER],	/* list of objects to */
+  PolygonList[PCB_MAX_LAYER], ArcList[PCB_MAX_LAYER], PadList[2], RatList, PVList;
 
 /* ---------------------------------------------------------------------------
  * some local prototypes

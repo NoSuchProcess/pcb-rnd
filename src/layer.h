@@ -38,8 +38,8 @@
  * on/off together.
  */
 struct pcb_layer_group_s {
-	pcb_cardinal_t Number[MAX_LAYER],      /* number of entries per groups */
-	  Entries[MAX_LAYER][MAX_LAYER + 2];
+	pcb_cardinal_t Number[PCB_MAX_LAYER],      /* number of entries per groups */
+	  Entries[PCB_MAX_LAYER][PCB_MAX_LAYER + 2];
 };
 
 struct pcb_layer_s {              /* holds information about one layer */
@@ -152,7 +152,7 @@ char *LayerGroupsToString(pcb_layer_group_t *);
 
 /* ---------------------------------------------------------------------------
  * the layer-numbers of the two additional special layers
- * 'component' and 'solder'. The offset of MAX_LAYER is not added
+ * 'component' and 'solder'. The offset of PCB_MAX_LAYER is not added
  */
 #define	SOLDER_LAYER		0
 #define	COMPONENT_LAYER		1
@@ -225,7 +225,7 @@ void pcb_layers_finalize();
 /* changes the name of a layer; memory has to be already allocated */
 pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name);
 
-/* index is 0..MAX_LAYER-1.  If old_index is -1, a new layer is
+/* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is
    deleted.  Returns non-zero on error, zero if OK.  */
 int pcb_layer_move(int old_index, int new_index);

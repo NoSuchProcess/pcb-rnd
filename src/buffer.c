@@ -384,7 +384,7 @@ void pcb_init_buffers(void)
 {
 	int i;
 
-	for (i = 0; i < MAX_BUFFER; i++)
+	for (i = 0; i < PCB_MAX_BUFFER; i++)
 		pcb_buffers[i].Data = pcb_buffer_new();
 }
 
@@ -392,7 +392,7 @@ void pcb_uninit_buffers(void)
 {
 	int i;
 
-	for (i = 0; i < MAX_BUFFER; i++) {
+	for (i = 0; i < PCB_MAX_BUFFER; i++) {
 		pcb_buffer_clear(pcb_buffers+i);
 		free(pcb_buffers[i].Data);
 	}
@@ -579,7 +579,7 @@ void pcb_swap_buffers(void)
 {
 	int i;
 
-	for (i = 0; i < MAX_BUFFER; i++)
+	for (i = 0; i < PCB_MAX_BUFFER; i++)
 		pcb_buffer_swap(&pcb_buffers[i]);
 	pcb_crosshair_range_to_buffer();
 }
@@ -699,7 +699,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 
 void pcb_buffer_set_number(int Number)
 {
-	if (Number >= 0 && Number < MAX_BUFFER) {
+	if (Number >= 0 && Number < PCB_MAX_BUFFER) {
 		conf_set_design("editor/buffer_number", "%d", Number);
 
 		/* do an update on the crosshair range */
@@ -711,7 +711,7 @@ void pcb_buffer_set_number(int Number)
 /* ---------------------------------------------------------------------- */
 
 static const char pastebuffer_syntax[] =
-	"PasteBuffer(AddSelected|Clear|1..MAX_BUFFER)\n"
+	"PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)\n"
 	"PasteBuffer(Rotate, 1..3)\n" "PasteBuffer(Convert|Restore|Mirror)\n" "PasteBuffer(ToLayout, X, Y, units)\n" "PasteBuffer(Save, Filename, [format], [force])";
 
 static const char pastebuffer_help[] = "Various operations on the paste buffer.";
@@ -719,7 +719,7 @@ static const char pastebuffer_help[] = "Various operations on the paste buffer."
 /* %start-doc actions PasteBuffer
 
 There are a number of paste buffers; the actual limit is a
-compile-time constant @code{MAX_BUFFER} in @file{globalconst.h}.  It
+compile-time constant @code{PCB_MAX_BUFFER} in @file{globalconst.h}.  It
 is currently @code{5}.  One of these is the ``current'' paste buffer,
 often referred to as ``the'' paste buffer.
 
@@ -762,7 +762,7 @@ location.  Otherwise, it's absolute.  Units can be
 units, currently 1/100 mil.
 
 
-@item 1..MAX_BUFFER
+@item 1..PCB_MAX_BUFFER
 Selects the given buffer to be the current paste buffer.
 
 @end table

@@ -91,7 +91,7 @@
 #define SCAD_CUT_BOTTOM		3
 #define SCAD_CUT_BOTTOM_ONLY	4
 
-#define MAX_LAYER_COLORS (MAX_LAYER *2)
+#define MAX_LAYER_COLORS (PCB_MAX_LAYER *2)
 
 /* polygon attributes */
 

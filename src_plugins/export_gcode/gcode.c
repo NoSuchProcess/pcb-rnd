@@ -109,7 +109,7 @@ static int is_solder;
  * Which groups of layers to export into PNG layer masks. 1 means export, 0
  * means do not export.
  */
-static int gcode_export_group[MAX_LAYER];
+static int gcode_export_group[PCB_MAX_LAYER];
 
 /* Group that is currently exported. */
 static int gcode_cur_group;
@@ -349,7 +349,7 @@ void gcode_start_png_export()
 
 static void gcode_do_export(pcb_hid_attr_val_t * options)
 {
-	int save_ons[MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER + 2];
 	int i, idx;
 	time_t t;
 	const pcb_unit_t *unit;
@@ -400,7 +400,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 		: PCB_INCH_TO_COORD(options[HA_toolradius].real_value * scale);
 	gcode_choose_groups();
 
-	for (i = 0; i < MAX_LAYER; i++) {
+	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		if (gcode_export_group[i]) {
 
 			gcode_cur_group = i;

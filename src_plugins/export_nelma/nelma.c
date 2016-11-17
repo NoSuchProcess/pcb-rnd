@@ -123,7 +123,7 @@ static int is_drill;
  * Which groups of layers to export into PNG layer masks. 1 means export, 0
  * means do not export.
  */
-static int nelma_export_group[MAX_LAYER];
+static int nelma_export_group[PCB_MAX_LAYER];
 
 /* Group that is currently exported. */
 static int nelma_cur_group;
@@ -257,7 +257,7 @@ static void nelma_write_space(FILE * out)
 	fprintf(out, "\t\t\"air-bottom\"");
 
 	z = 10;
-	for (i = 0; i < MAX_LAYER; i++)
+	for (i = 0; i < PCB_MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
 			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
@@ -322,7 +322,7 @@ static void nelma_write_nets(FILE * out)
 
 			/* pcb_pin_name_to_xy(pin, &x, &y); */
 
-			for (i = 0; i < MAX_LAYER; i++)
+			for (i = 0; i < PCB_MAX_LAYER; i++)
 				if (nelma_export_group[i]) {
 					idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 					ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
@@ -393,7 +393,7 @@ static void nelma_write_layers(FILE * out)
 	nelma_write_layer(out, 1000, 2 * subh, "air-bottom", 0, "air");
 
 	z = 10;
-	for (i = 0; i < MAX_LAYER; i++)
+	for (i = 0; i < PCB_MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
 			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
@@ -427,7 +427,7 @@ static void nelma_write_object(FILE * out, pcb_lib_entry_t *pin)
 	x = pcb_to_nelma(px);
 	y = pcb_to_nelma(py);
 
-	for (i = 0; i < MAX_LAYER; i++)
+	for (i = 0; i < PCB_MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
 			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
@@ -596,7 +596,7 @@ void nelma_start_png_export()
 
 static void nelma_do_export(pcb_hid_attr_val_t * options)
 {
-	int save_ons[MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER + 2];
 	int i, idx;
 	FILE *nelma_config;
 	char *buf;
@@ -626,7 +626,7 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 
 	nelma_choose_groups();
 
-	for (i = 0; i < MAX_LAYER; i++) {
+	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		if (nelma_export_group[i]) {
 
 			nelma_cur_group = i;

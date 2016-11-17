@@ -379,10 +379,10 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			continue;
 		/* initialize box so that it will take the dimensions of
 		 * the first pin/pad */
-		box->X1 = MAX_COORD;
-		box->Y1 = MAX_COORD;
-		box->X2 = -MAX_COORD;
-		box->Y2 = -MAX_COORD;
+		box->X1 = PCB_MAX_COORD;
+		box->Y1 = PCB_MAX_COORD;
+		box->X2 = -PCB_MAX_COORD;
+		box->Y2 = -PCB_MAX_COORD;
 		PCB_PIN_LOOP(element);
 		{
 			thickness = pin->Thickness / 2;
@@ -519,8 +519,8 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 	}
 	/* penalize total area used by this layout */
 	{
-		pcb_coord_t minX = MAX_COORD, minY = MAX_COORD;
-		pcb_coord_t maxX = -MAX_COORD, maxY = -MAX_COORD;
+		pcb_coord_t minX = PCB_MAX_COORD, minY = PCB_MAX_COORD;
+		pcb_coord_t maxX = -PCB_MAX_COORD, maxY = -PCB_MAX_COORD;
 		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			PCB_MAKE_MIN(minX, element->VBox.X1);

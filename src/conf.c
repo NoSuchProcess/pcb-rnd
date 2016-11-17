@@ -890,7 +890,7 @@ void conf_load_all(const char *project_fn, const char *pcb_fn)
 	dln = dln->data.list.first;
 
 	/* Set up default layer names - make sure there are enough layers (over the hardwired ones, if any) */
-	for (i = 0; i < MAX_LAYER; i++) {
+	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		char buf[20];
 		if (dln == NULL) {
 			sprintf(buf, "signal%d", i + 1);

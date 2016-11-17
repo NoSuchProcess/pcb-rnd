@@ -393,8 +393,8 @@ static void apply_vendor_map(void)
 				pcb_message(PCB_MSG_DEFAULT, _
 								("Adjusted %s routing style via hole size to be %6.2f mils\n"),
 								PCB->RouteStyle[i].Name, 0.01 * PCB->RouteStyle[i].Hole);
-				if (PCB->RouteStyle[i].Diameter < PCB->RouteStyle[i].Hole + MIN_PINORVIACOPPER) {
-					PCB->RouteStyle[i].Diameter = PCB->RouteStyle[i].Hole + MIN_PINORVIACOPPER;
+				if (PCB->RouteStyle[i].Diameter < PCB->RouteStyle[i].Hole + PCB_MIN_PINORVIACOPPER) {
+					PCB->RouteStyle[i].Diameter = PCB->RouteStyle[i].Hole + PCB_MIN_PINORVIACOPPER;
 					pcb_message(PCB_MSG_DEFAULT, _
 									("Increased %s routing style via diameter to %6.2f mils\n"),
 									PCB->RouteStyle[i].Name, 0.01 * PCB->RouteStyle[i].Diameter);

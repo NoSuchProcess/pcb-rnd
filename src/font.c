@@ -66,7 +66,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	pcb_cardinal_t i, j;
 	pcb_symbol_t *symbol;
 	pcb_line_t *line;
-	pcb_coord_t totalminy = MAX_COORD;
+	pcb_coord_t totalminy = PCB_MAX_COORD;
 
 	/* calculate cell with and height (is at least DEFAULT_CELLSIZE)
 	 * maximum cell width and height
@@ -74,14 +74,14 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	 */
 	Ptr->MaxWidth = DEFAULT_CELLSIZE;
 	Ptr->MaxHeight = DEFAULT_CELLSIZE;
-	for (i = 0, symbol = Ptr->Symbol; i <= MAX_FONTPOSITION; i++, symbol++) {
+	for (i = 0, symbol = Ptr->Symbol; i <= PCB_MAX_FONTPOSITION; i++, symbol++) {
 		pcb_coord_t minx, miny, maxx, maxy;
 
 		/* next one if the index isn't used or symbol is empty (SPACE) */
 		if (!symbol->Valid || !symbol->LineN)
 			continue;
 
-		minx = miny = MAX_COORD;
+		minx = miny = PCB_MAX_COORD;
 		maxx = maxy = 0;
 		for (line = symbol->Line, j = symbol->LineN; j; j--, line++) {
 			minx = MIN(minx, line->Point1.X);
@@ -109,7 +109,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	}
 
 	/* move coordinate system to the upper edge (lowest y on screen) */
-	for (i = 0, symbol = Ptr->Symbol; i <= MAX_FONTPOSITION; i++, symbol++)
+	for (i = 0, symbol = Ptr->Symbol; i <= PCB_MAX_FONTPOSITION; i++, symbol++)
 		if (symbol->Valid) {
 			symbol->Height -= totalminy;
 			for (line = symbol->Line, j = symbol->LineN; j; j--, line++)

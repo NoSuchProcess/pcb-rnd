@@ -180,9 +180,9 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	int i, ngroups, side;
 	int component, solder;
 	/* This is the list of layer groups we will draw.  */
-	int do_group[MAX_LAYER];
+	int do_group[PCB_MAX_LAYER];
 	/* This is the reverse of the order in which we draw them.  */
-	int drawn_groups[MAX_LAYER];
+	int drawn_groups[PCB_MAX_LAYER];
 
 	pcb_bool paste_empty;
 

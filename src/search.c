@@ -465,7 +465,7 @@ SearchElementNameByLocation(int locked, pcb_element_t ** Element, pcb_text_t ** 
 		info.ptr1 = (void **) Element;
 		info.ptr2 = (void **) Text;
 		info.ptr3 = (void **) Dummy;
-		info.area = PCB_SQUARE(MAX_COORD);
+		info.area = PCB_SQUARE(PCB_MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 		if (pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info, NULL))
@@ -510,7 +510,7 @@ SearchElementByLocation(int locked, pcb_element_t ** Element, pcb_element_t ** D
 		info.ptr1 = (void **) Element;
 		info.ptr2 = (void **) Dummy1;
 		info.ptr3 = (void **) Dummy2;
-		info.area = PCB_SQUARE(MAX_COORD);
+		info.area = PCB_SQUARE(PCB_MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 		if (pcb_r_search(PCB->Data->element_tree, &SearchBox, NULL, element_callback, &info, NULL))

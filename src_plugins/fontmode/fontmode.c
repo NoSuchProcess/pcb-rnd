@@ -92,7 +92,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		MoveLayerToGroup(l, l);
 	}
 	PCB->MaxWidth = CELL_SIZE * 18;
-	PCB->MaxHeight = CELL_SIZE * ((MAX_FONTPOSITION + 15) / 16 + 2);
+	PCB->MaxHeight = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
 	PCB->Grid = PCB_MIL_TO_COORD(5);
 	PCB->Data->Layer[0].Name = pcb_strdup("Font");
 	PCB->Data->Layer[1].Name = pcb_strdup("OrigFont");
@@ -107,7 +107,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	lgrid = PCB->Data->Layer + 3;
 
 	font = &PCB->Font;
-	for (s = 0; s <= MAX_FONTPOSITION; s++) {
+	for (s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
 		pcb_coord_t ox = (s % 16 + 1) * CELL_SIZE;
 		pcb_coord_t oy = (s / 16 + 1) * CELL_SIZE;
 		pcb_coord_t w, miny, maxy, maxx = 0;
@@ -140,7 +140,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		int x = (l + 1) * CELL_SIZE;
 		pcb_line_new_merge(lgrid, x, 0, x, PCB->MaxHeight, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
-	for (l = 0; l <= MAX_FONTPOSITION / 16 + 1; l++) {
+	for (l = 0; l <= PCB_MAX_FONTPOSITION / 16 + 1; l++) {
 		int y = (l + 1) * CELL_SIZE;
 		pcb_line_new_merge(lgrid, 0, y, PCB->MaxWidth, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
@@ -168,7 +168,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	lfont = PCB->Data->Layer + 0;
 	lwidth = PCB->Data->Layer + 2;
 
-	for (i = 0; i <= MAX_FONTPOSITION; i++) {
+	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
 		font->Symbol[i].LineN = 0;
 		font->Symbol[i].Valid = 0;
 		font->Symbol[i].Width = 0;

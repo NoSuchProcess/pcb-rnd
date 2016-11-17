@@ -271,7 +271,7 @@ static void WritePCBFontData(FILE * FP)
 	pcb_line_t *line;
 	pcb_font_t *font;
 
-	for (font = &PCB->Font, i = 0; i <= MAX_FONTPOSITION; i++) {
+	for (font = &PCB->Font, i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
 		if (!font->Symbol[i].Valid)
 			continue;
 

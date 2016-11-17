@@ -131,7 +131,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 
 	/* calculate size of the bounding box */
 	for (; s && *s; s++) {
-		if (*s <= MAX_FONTPOSITION && symbol[*s].Valid) {
+		if (*s <= PCB_MAX_FONTPOSITION && symbol[*s].Valid) {
 			pcb_line_t *line = symbol[*s].Line;
 			for (i = 0; i < symbol[*s].LineN; line++, i++) {
 				/* Clamp the width of text lines at the minimum thickness.
@@ -250,7 +250,7 @@ void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return (NULL);
-	if (value <= MAX_TEXTSCALE && value >= MIN_TEXTSCALE && value != Text->Scale) {
+	if (value <= PCB_MAX_TEXTSCALE && value >= PCB_MIN_TEXTSCALE && value != Text->Scale) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_TEXT, Layer, Text, Text);
 		EraseText(Layer, Text);
 		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
@@ -477,7 +477,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 
 	while (string && *string) {
 		/* draw lines if symbol is valid and data is present */
-		if (*string <= MAX_FONTPOSITION && font->Symbol[*string].Valid) {
+		if (*string <= PCB_MAX_FONTPOSITION && font->Symbol[*string].Valid) {
 			pcb_line_t *line = font->Symbol[*string].Line;
 			pcb_line_t newline;
 

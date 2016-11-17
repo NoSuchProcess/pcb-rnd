@@ -284,7 +284,7 @@ void *ChangeLineSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
 		return (NULL);
-	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Line->Thickness) {
+	if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != Line->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_LINE, Layer, Line, Line);
 		EraseLine(Line);
 		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
@@ -306,7 +306,7 @@ void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
-	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
+	value = MIN(PCB_MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Line->Clearance) {
 		pcb_undo_add_obj_to_clear_size(PCB_TYPE_LINE, Layer, Line, Line);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);

@@ -43,11 +43,11 @@ static void conf_ro(const char *path)
 
 void conf_core_postproc()
 {
-	conf_clamp_to(CFT_COORD, conf_core.design.line_thickness, MIN_LINESIZE, MAX_LINESIZE, PCB_MIL_TO_COORD(10));
-	conf_clamp_to(CFT_COORD, conf_core.design.via_thickness, MIN_PINORVIASIZE, MAX_PINORVIASIZE, PCB_MIL_TO_COORD(40));
-	conf_clamp_to(CFT_COORD, conf_core.design.via_drilling_hole, 0, MAX_COORD, DEFAULT_DRILLINGHOLE * conf_core.design.via_thickness / 100);
-	conf_clamp(CFT_COORD, conf_core.design.max_width, MIN_SIZE, MAX_COORD);
-	conf_clamp(CFT_COORD, conf_core.design.max_height, MIN_SIZE, MAX_COORD);
+	conf_clamp_to(CFT_COORD, conf_core.design.line_thickness, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE, PCB_MIL_TO_COORD(10));
+	conf_clamp_to(CFT_COORD, conf_core.design.via_thickness, PCB_MIN_PINORVIASIZE, PCB_MAX_PINORVIASIZE, PCB_MIL_TO_COORD(40));
+	conf_clamp_to(CFT_COORD, conf_core.design.via_drilling_hole, 0, PCB_MAX_COORD, PCB_DEFAULT_DRILLINGHOLE * conf_core.design.via_thickness / 100);
+	conf_clamp(CFT_COORD, conf_core.design.max_width, PCB_MIN_SIZE, PCB_MAX_COORD);
+	conf_clamp(CFT_COORD, conf_core.design.max_height, PCB_MIN_SIZE, PCB_MAX_COORD);
 	conf_force_set_bool(conf_core.rc.have_regex, 1);
 	conf_ro("rc/have_regex");
 

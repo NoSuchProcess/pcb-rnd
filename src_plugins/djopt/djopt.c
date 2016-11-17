@@ -112,8 +112,8 @@ typedef struct rect_s {
 static corner_s *corners, *next_corner = 0;
 static line_s *lines;
 
-static int layer_groupings[MAX_LAYER];
-static char layer_type[MAX_LAYER];
+static int layer_groupings[PCB_MAX_LAYER];
+static char layer_type[PCB_MAX_LAYER];
 #define LT_COMPONENT 1
 #define LT_SOLDER 2
 
@@ -1715,8 +1715,8 @@ static int vianudge()
 	int rv = 0;
 	corner_s *c, *c2, *c3;
 	line_s *l;
-	unsigned char directions[MAX_LAYER];
-	unsigned char counts[MAX_LAYER];
+	unsigned char directions[PCB_MAX_LAYER];
+	unsigned char counts[PCB_MAX_LAYER];
 
 	memset(directions, 0, sizeof(directions));
 	memset(counts, 0, sizeof(counts));
@@ -2233,8 +2233,8 @@ static int connect_corners(corner_s * c1, corner_s * c2)
 static void pinsnap()
 {
 	corner_s *c;
-	int best_dist[MAX_LAYER + 1];
-	corner_s *best_c[MAX_LAYER + 1];
+	int best_dist[PCB_MAX_LAYER + 1];
+	corner_s *best_c[PCB_MAX_LAYER + 1];
 	int l, got_one;
 	int left = 0, right = 0, top = 0, bottom = 0;
 	pcb_pin_t *pin;

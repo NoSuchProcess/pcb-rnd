@@ -88,7 +88,7 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_Close:
-			small = PCB_SQUARE(MAX_COORD);
+			small = PCB_SQUARE(PCB_MAX_COORD);
 			shorty = NULL;
 			PCB_RAT_LOOP(PCB->Data);
 			{

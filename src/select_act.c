@@ -197,10 +197,10 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			{
 				pcb_box_t box;
 
-				box.X1 = -MAX_COORD;
-				box.Y1 = -MAX_COORD;
-				box.X2 = MAX_COORD;
-				box.Y2 = MAX_COORD;
+				box.X1 = -PCB_MAX_COORD;
+				box.Y1 = -PCB_MAX_COORD;
+				box.X2 = PCB_MAX_COORD;
+				box.Y2 = PCB_MAX_COORD;
 				if (pcb_select_block(&box, pcb_true))
 					pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -219,7 +219,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			{
 				pcb_coord_t x, y;
 				Note.Buffer = conf_core.editor.buffer_number;
-				pcb_buffer_set_number(MAX_BUFFER - 1);
+				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB_PASTEBUFFER);
 				gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
 				x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
@@ -349,10 +349,10 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			{
 				pcb_box_t box;
 
-				box.X1 = -MAX_COORD;
-				box.Y1 = -MAX_COORD;
-				box.X2 = MAX_COORD;
-				box.Y2 = MAX_COORD;
+				box.X1 = -PCB_MAX_COORD;
+				box.Y1 = -PCB_MAX_COORD;
+				box.X2 = PCB_MAX_COORD;
+				box.Y2 = PCB_MAX_COORD;
 				if (pcb_select_block(&box, pcb_false))
 					pcb_board_set_changed_flag(pcb_true);
 				break;

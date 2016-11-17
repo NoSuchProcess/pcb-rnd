@@ -8,7 +8,7 @@
 #include "src/layer.h"
 
 #define layer_check(layer) \
-	if ((layer < 0) || (layer >= MAX_LAYER+2)) \
+	if ((layer < 0) || (layer >= PCB_MAX_LAYER+2)) \
 		return
 
 
@@ -29,7 +29,7 @@ int layout_resolve_layer(const char *name)
 	int n;
 	if (name == NULL)
 		return -2;
-	for(n = 0; n < MAX_LAYER + 2; n++)
+	for(n = 0; n < PCB_MAX_LAYER + 2; n++)
 		if ((PCB->Data->Layer[n].Name != NULL) && (strcmp(PCB->Data->Layer[n].Name, name) == 0))
 			return n;
 	return -1;
@@ -37,7 +37,7 @@ int layout_resolve_layer(const char *name)
 
 int layout_get_max_possible_layer()
 {
-	return MAX_LAYER+2;
+	return PCB_MAX_LAYER+2;
 }
 
 int layout_get_max_copper_layer()

@@ -56,15 +56,15 @@ static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /*-----------------------------------------------------------------------------*/
 
-#define LB_SILK	(MAX_LAYER+0)
-#define LB_RATS	(MAX_LAYER+1)
+#define LB_SILK	(PCB_MAX_LAYER+0)
+#define LB_RATS	(PCB_MAX_LAYER+1)
 #define LB_NUMPICK (LB_RATS+1)
 /* more */
-#define LB_PINS	(MAX_LAYER+2)
-#define LB_VIAS	(MAX_LAYER+3)
-#define LB_BACK	(MAX_LAYER+4)
-#define LB_MASK	(MAX_LAYER+5)
-#define LB_NUM  (MAX_LAYER+6)
+#define LB_PINS	(PCB_MAX_LAYER+2)
+#define LB_VIAS	(PCB_MAX_LAYER+3)
+#define LB_BACK	(PCB_MAX_LAYER+4)
+#define LB_MASK	(PCB_MAX_LAYER+5)
+#define LB_NUM  (PCB_MAX_LAYER+6)
 
 typedef struct {
 	Widget w[LB_NUM];
@@ -88,7 +88,7 @@ static int LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		return 0;
 	if (PCB && PCB->Data) {
 		pcb_data_t *d = PCB->Data;
-		for (i = 0; i < MAX_LAYER; i++)
+		for (i = 0; i < PCB_MAX_LAYER; i++)
 			fg_colors[i] = lesstif_parse_color(d->Layer[i].Color);
 		fg_colors[LB_SILK] = lesstif_parse_color(PCB->ElementColor);
 		fg_colors[LB_RATS] = lesstif_parse_color(PCB->RatColor);
@@ -99,7 +99,7 @@ static int LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		bg_color = lesstif_parse_color(conf_core.appearance.color.background);
 	}
 	else {
-		for (i = 0; i < MAX_LAYER; i++)
+		for (i = 0; i < PCB_MAX_LAYER; i++)
 			fg_colors[i] = lesstif_parse_color(conf_core.appearance.color.layer[i]);
 		fg_colors[LB_SILK] = lesstif_parse_color(conf_core.appearance.color.element);
 		fg_colors[LB_RATS] = lesstif_parse_color(conf_core.appearance.color.rat);
@@ -145,7 +145,7 @@ static int LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			}
 
 			stdarg_n = 0;
-			if (i < MAX_LAYER && PCB->Data->Layer[i].Name) {
+			if (i < PCB_MAX_LAYER && PCB->Data->Layer[i].Name) {
 				XmString s = XmStringCreatePCB(PCB->Data->Layer[i].Name);
 				stdarg(XmNlabelString, s);
 			}
@@ -167,7 +167,7 @@ static int LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			}
 			XtSetValues(lb->w[i], stdarg_args, stdarg_n);
 
-			if (i >= pcb_max_copper_layer && i < MAX_LAYER)
+			if (i >= pcb_max_copper_layer && i < PCB_MAX_LAYER)
 				XtUnmanageChild(lb->w[i]);
 			else
 				XtManageChild(lb->w[i]);

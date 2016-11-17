@@ -257,7 +257,7 @@ void *ChangeArcSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return (NULL);
-	if (value <= MAX_LINESIZE && value >= MIN_LINESIZE && value != Arc->Thickness) {
+	if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != Arc->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
@@ -279,7 +279,7 @@ void *ChangeArcClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
 		return (NULL);
-	value = MIN(MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
+	value = MIN(PCB_MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Arc->Clearance) {
 		pcb_undo_add_obj_to_clear_size(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);
@@ -320,7 +320,7 @@ void *ChangeArcRadius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	}
 
 	value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : (*dst) + ctx->chgsize.delta;
-	value = MIN(MAX_ARCSIZE, MAX(value, MIN_ARCSIZE));
+	value = MIN(PCB_MAX_ARCSIZE, MAX(value, PCB_MIN_ARCSIZE));
 	if (value != *dst) {
 		pcb_undo_add_obj_to_change_radii(PCB_TYPE_ARC, Layer, Arc, Arc);
 		EraseArc(Arc);

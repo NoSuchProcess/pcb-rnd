@@ -301,7 +301,7 @@ static void click_cb(pcb_hidval_t hv)
 		Note.Click = pcb_false;
 		if (Note.Moving && !gui->shift_is_pressed()) {
 			Note.Buffer = conf_core.editor.buffer_number;
-			pcb_buffer_set_number(MAX_BUFFER - 1);
+			pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 			pcb_buffer_clear(PCB_PASTEBUFFER);
 			pcb_buffer_add_selected(PCB_PASTEBUFFER, Note.X, Note.Y, pcb_true);
 			pcb_undo_save_serial();
@@ -341,10 +341,10 @@ static void click_cb(pcb_hidval_t hv)
 			Note.Hit = 0;
 			Note.Moving = pcb_false;
 			pcb_undo_save_serial();
-			box.X1 = -MAX_COORD;
-			box.Y1 = -MAX_COORD;
-			box.X2 = MAX_COORD;
-			box.Y2 = MAX_COORD;
+			box.X1 = -PCB_MAX_COORD;
+			box.Y1 = -PCB_MAX_COORD;
+			box.X2 = PCB_MAX_COORD;
+			box.Y2 = PCB_MAX_COORD;
 			/* unselect first if shift key not down */
 			if (!gui->shift_is_pressed() && pcb_select_block(&box, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
@@ -363,10 +363,10 @@ void pcb_release_mode(void)
 	if (Note.Click) {
 		pcb_box_t box;
 
-		box.X1 = -MAX_COORD;
-		box.Y1 = -MAX_COORD;
-		box.X2 = MAX_COORD;
-		box.Y2 = MAX_COORD;
+		box.X1 = -PCB_MAX_COORD;
+		box.Y1 = -PCB_MAX_COORD;
+		box.X2 = PCB_MAX_COORD;
+		box.Y2 = PCB_MAX_COORD;
 
 		Note.Click = pcb_false;					/* inhibit timer action */
 		pcb_undo_save_serial();

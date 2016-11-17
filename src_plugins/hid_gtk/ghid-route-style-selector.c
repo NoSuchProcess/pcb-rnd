@@ -232,12 +232,12 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 	gtk_table_attach(GTK_TABLE(table), dialog_data.name_entry, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
 
-	_table_attach(table, 1, _("Line width:"), &dialog_data.line_entry, MIN_LINESIZE, MAX_LINESIZE);
+	_table_attach(table, 1, _("Line width:"), &dialog_data.line_entry, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE);
 	_table_attach(table, 2, _("Via hole size:"),
-								&dialog_data.via_hole_entry, MIN_PINORVIAHOLE, MAX_PINORVIASIZE - MIN_PINORVIACOPPER);
+								&dialog_data.via_hole_entry, PCB_MIN_PINORVIAHOLE, PCB_MAX_PINORVIASIZE - PCB_MIN_PINORVIACOPPER);
 	_table_attach(table, 3, _("Via ring size:"),
-								&dialog_data.via_size_entry, MIN_PINORVIAHOLE + MIN_PINORVIACOPPER, MAX_PINORVIASIZE);
-	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, MIN_LINESIZE, MAX_LINESIZE);
+								&dialog_data.via_size_entry, PCB_MIN_PINORVIAHOLE + PCB_MIN_PINORVIACOPPER, PCB_MAX_PINORVIASIZE);
+	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE);
 
 	/* create delete button */
 	button = gtk_button_new_with_label (_("Delete Style"));

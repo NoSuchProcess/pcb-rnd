@@ -124,11 +124,11 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	Via->ID = CreateIDGet();
 
 	/*
-	 * don't complain about MIN_PINORVIACOPPER on a mounting hole (pure
+	 * don't complain about PCB_MIN_PINORVIACOPPER on a mounting hole (pure
 	 * hole)
 	 */
-	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && (Via->Thickness < Via->DrillingHole + MIN_PINORVIACOPPER)) {
-		Via->Thickness = Via->DrillingHole + MIN_PINORVIACOPPER;
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && (Via->Thickness < Via->DrillingHole + PCB_MIN_PINORVIACOPPER)) {
+		Via->Thickness = Via->DrillingHole + PCB_MIN_PINORVIACOPPER;
 		pcb_message(PCB_MSG_DEFAULT, _("%m+Increased via thickness to %$mS to allow enough copper"
 							" at %$mD.\n"), conf_core.editor.grid_unit->allow, Via->Thickness, Via->X, Via->Y);
 	}
@@ -164,18 +164,18 @@ pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 
 	/* Unless we should not map drills on this element, map them! */
 	if (pcb_stub_vendor_is_element_mappable(Element)) {
-		if (pin->DrillingHole < MIN_PINORVIASIZE) {
+		if (pin->DrillingHole < PCB_MIN_PINORVIASIZE) {
 			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is below the minimum allowed size\n"),
 							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
-		else if (pin->DrillingHole > MAX_PINORVIASIZE) {
+		else if (pin->DrillingHole > PCB_MAX_PINORVIASIZE) {
 			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS is above the maximum allowed size\n"),
 							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
 		}
 		else if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)
-						 && (pin->DrillingHole > pin->Thickness - MIN_PINORVIACOPPER)) {
+						 && (pin->DrillingHole > pin->Thickness - PCB_MIN_PINORVIACOPPER)) {
 			pcb_message(PCB_MSG_DEFAULT, _("%m+Did not map pin #%s (%s) drill hole because %$mS does not leave enough copper\n"),
 							conf_core.editor.grid_unit->allow, PCB_UNKNOWN(Number), PCB_UNKNOWN(Name), pin->DrillingHole);
 			pin->DrillingHole = DrillingHole;
@@ -295,8 +295,8 @@ void *ChangeViaSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
-	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIASIZE && value >= Via->DrillingHole + MIN_PINORVIACOPPER && value != Via->Thickness) {
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) && value <= PCB_MAX_PINORVIASIZE &&
+			value >= PCB_MIN_PINORVIASIZE && value >= Via->DrillingHole + PCB_MIN_PINORVIACOPPER && value != Via->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
 		pcb_r_delete_entry(PCB->Data->via_tree, (pcb_box_t *) Via);
@@ -322,8 +322,8 @@ void *ChangeVia2ndSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
-	if (value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) || value <= Via->Thickness - MIN_PINORVIACOPPER)
+	if (value <= PCB_MAX_PINORVIASIZE &&
+			value >= PCB_MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Via) || value <= Via->Thickness - PCB_MIN_PINORVIACOPPER)
 			&& value != Via->DrillingHole) {
 		pcb_undo_add_obj_to_2nd_size(PCB_TYPE_VIA, Via, Via, Via);
 		EraseVia(Via);
@@ -347,8 +347,8 @@ void *ChangePin2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
-	if (value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) || value <= Pin->Thickness - MIN_PINORVIACOPPER)
+	if (value <= PCB_MAX_PINORVIASIZE &&
+			value >= PCB_MIN_PINORVIAHOLE && (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) || value <= Pin->Thickness - PCB_MIN_PINORVIACOPPER)
 			&& value != Pin->DrillingHole) {
 		pcb_undo_add_obj_to_2nd_size(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
@@ -373,7 +373,7 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
-	value = MIN(MAX_LINESIZE, value);
+	value = MIN(PCB_MAX_LINESIZE, value);
 	if (value < 0)
 		value = 0;
 	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
@@ -403,8 +403,8 @@ void *ChangePinSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pin)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
-	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) && value <= MAX_PINORVIASIZE &&
-			value >= MIN_PINORVIASIZE && value >= Pin->DrillingHole + MIN_PINORVIACOPPER && value != Pin->Thickness) {
+	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin) && value <= PCB_MAX_PINORVIASIZE &&
+			value >= PCB_MIN_PINORVIASIZE && value >= Pin->DrillingHole + PCB_MIN_PINORVIACOPPER && value != Pin->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_PIN, Element, Pin, Pin);
 		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PIN, Element, Pin, Pin);
 		ErasePin(Pin);
@@ -428,7 +428,7 @@ void *ChangePinClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pi
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
-	value = MIN(MAX_LINESIZE, value);
+	value = MIN(PCB_MAX_LINESIZE, value);
 	if (value < 0)
 		value = 0;
 	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
@@ -644,7 +644,7 @@ pcb_bool pcb_pin_change_hole(pcb_pin_t *Via)
 			Via->Mask = (Via->DrillingHole + (Via->Mask - Via->Thickness));
 		}
 		else if (Via->Mask < Via->DrillingHole) {
-			Via->Mask = Via->DrillingHole + 2 * MASKFRAME;
+			Via->Mask = Via->DrillingHole + 2 * PCB_MASKFRAME;
 		}
 	}
 	else {

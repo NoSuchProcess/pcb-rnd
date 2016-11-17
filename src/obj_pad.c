@@ -161,7 +161,7 @@ void *ChangePadSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
-	if (value <= MAX_PADSIZE && value >= MIN_PADSIZE && value != Pad->Thickness) {
+	if (value <= PCB_MAX_PADSIZE && value >= PCB_MIN_PADSIZE && value != Pad->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_TYPE_PAD, Element, Pad, Pad);
 		pcb_undo_add_obj_to_mask_size(PCB_TYPE_PAD, Element, Pad, Pad);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
@@ -185,7 +185,7 @@ void *ChangePadClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pa
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
-	value = MIN(MAX_LINESIZE, value);
+	value = MIN(PCB_MAX_LINESIZE, value);
 	if (value < 0)
 		value = 0;
 	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)

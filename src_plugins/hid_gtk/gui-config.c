@@ -588,10 +588,10 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	new_board_width = PCB->MaxWidth;
 	new_board_height = PCB->MaxHeight;
 	ghid_table_coord_entry(table, 0, 0, NULL,
-												 PCB->MaxWidth, MIN_SIZE, MAX_COORD, CE_LARGE, 0, coord_entry_cb, &new_board_width, FALSE, _("Width"));
+												 PCB->MaxWidth, PCB_MIN_SIZE, PCB_MAX_COORD, CE_LARGE, 0, coord_entry_cb, &new_board_width, FALSE, _("Width"));
 
 	ghid_table_coord_entry(table, 1, 0, NULL,
-												 PCB->MaxHeight, MIN_SIZE, MAX_COORD,
+												 PCB->MaxHeight, PCB_MIN_SIZE, PCB_MAX_COORD,
 												 CE_LARGE, 0, coord_entry_cb, &new_board_height, FALSE, _("Height"));
 
 	/* ---- Text Scale ---- */
@@ -604,7 +604,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
 	ghid_table_spin_button(table, 0, 0, &config_text_spin_button,
 												 conf_core.design.text_scale,
-												 MIN_TEXTSCALE, MAX_TEXTSCALE, 10.0, 10.0, 0, 0, text_spin_button_cb, NULL, FALSE, "%");
+												 PCB_MIN_TEXTSCALE, PCB_MAX_TEXTSCALE, 10.0, 10.0, 0, 0, text_spin_button_cb, NULL, FALSE, "%");
 
 
 	/* ---- DRC Sizes ---- */
@@ -617,27 +617,27 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
 
 	ghid_table_coord_entry(table, 0, 0, NULL,
-												 PCB->Bloat, MIN_DRC_VALUE, MAX_DRC_VALUE,
+												 PCB->Bloat, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
 												 CE_SMALL, 0, coord_entry_cb, &PCB->Bloat, FALSE, _("Minimum copper spacing"));
 
 	ghid_table_coord_entry(table, 1, 0, NULL,
-												 PCB->minWid, MIN_DRC_VALUE, MAX_DRC_VALUE,
+												 PCB->minWid, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
 												 CE_SMALL, 0, coord_entry_cb, &PCB->minWid, FALSE, _("Minimum copper width"));
 
 	ghid_table_coord_entry(table, 2, 0, NULL,
-												 PCB->Shrink, MIN_DRC_VALUE, MAX_DRC_VALUE,
+												 PCB->Shrink, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
 												 CE_SMALL, 0, coord_entry_cb, &PCB->Shrink, FALSE, _("Minimum touching copper overlap"));
 
 	ghid_table_coord_entry(table, 3, 0, NULL,
-												 PCB->minSlk, MIN_DRC_VALUE, MAX_DRC_VALUE,
+												 PCB->minSlk, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
 												 CE_SMALL, 0, coord_entry_cb, &PCB->minSlk, FALSE, _("Minimum silk width"));
 
 	ghid_table_coord_entry(table, 4, 0, NULL,
-												 PCB->minDrill, MIN_DRC_VALUE, MAX_DRC_VALUE,
+												 PCB->minDrill, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
 												 CE_SMALL, 0, coord_entry_cb, &PCB->minDrill, FALSE, _("Minimum drill diameter"));
 
 	ghid_table_coord_entry(table, 5, 0, NULL,
-												 PCB->minRing, MIN_DRC_VALUE, MAX_DRC_VALUE,
+												 PCB->minRing, PCB_MIN_DRC_VALUE, PCB_MAX_DRC_VALUE,
 												 CE_SMALL, 0, coord_entry_cb, &PCB->minRing, FALSE, _("Minimum annular ring"));
 
 	vbox = gtk_vbox_new(TRUE, 0);
@@ -1183,10 +1183,10 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 	 */
 static GtkWidget *config_groups_table, *config_groups_vbox, *config_groups_window;
 
-static GtkWidget *layer_entry[MAX_LAYER];
-static GtkWidget *group_button[MAX_LAYER + 2][MAX_LAYER];
+static GtkWidget *layer_entry[PCB_MAX_LAYER];
+static GtkWidget *group_button[PCB_MAX_LAYER + 2][PCB_MAX_LAYER];
 
-static gint config_layer_group[MAX_LAYER + 2];
+static gint config_layer_group[PCB_MAX_LAYER + 2];
 
 static pcb_layer_group_t layer_groups,	/* Working copy */
  *lg_monitor;										/* Keep track if our working copy */

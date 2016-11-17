@@ -347,7 +347,7 @@ pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const cha
 			ep = parse_layer_list(ep + 1, error);
 
 		if (flen == 7 && memcmp(fp, "thermal", 7) == 0) {
-			for (i = 0; i < MAX_LAYER && i < num_layers; i++)
+			for (i = 0; i < PCB_MAX_LAYER && i < num_layers; i++)
 				if (layers[i])
 					PCB_FLAG_THERM_ASSIGN(i, layers[i], &rv);
 		}
@@ -459,7 +459,7 @@ char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *
 
 	if (PCB_FLAG_THERM_TEST_ANY(&fh)) {
 		len += sizeof("thermal()");
-		for (i = 0; i < MAX_LAYER; i++)
+		for (i = 0; i < PCB_MAX_LAYER; i++)
 			if (PCB_FLAG_THERM_TEST(i, &fh))
 				len += printed_int_length(i, PCB_FLAG_THERM_GET(i, &fh)) + 1;
 	}
@@ -501,7 +501,7 @@ char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *
 		strcpy(bp, "thermal");
 		bp += strlen("thermal");
 		grow_layer_list(0);
-		for (i = 0; i < MAX_LAYER; i++)
+		for (i = 0; i < PCB_MAX_LAYER; i++)
 			if (PCB_FLAG_THERM_TEST(i, &fh))
 				set_layer_list(i, PCB_FLAG_THERM_GET(i, &fh));
 		strcpy(bp, print_layer_list());

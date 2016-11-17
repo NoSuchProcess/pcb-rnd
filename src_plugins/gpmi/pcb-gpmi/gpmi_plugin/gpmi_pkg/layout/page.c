@@ -14,6 +14,6 @@ int layout_get_page_height()
 
 void layout_set_page_size(int width, int height)
 {
-	pcb_board_resize(MIN(MAX_COORD, MAX(width, MIN_SIZE)), MIN(MAX_COORD, MAX(height, MIN_SIZE)));
+	pcb_board_resize(MIN(PCB_MAX_COORD, MAX(width, PCB_MIN_SIZE)), MIN(PCB_MAX_COORD, MAX(height, PCB_MIN_SIZE)));
 }
 

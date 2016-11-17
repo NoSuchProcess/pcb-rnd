@@ -277,8 +277,8 @@ static int linewidth = -1;
 static int lastgroup = -1;
 static int lastcap = -1;
 static int lastcolor = -1;
-static int print_group[MAX_LAYER];
-static int print_layer[MAX_LAYER];
+static int print_group[PCB_MAX_LAYER];
+static int print_layer[PCB_MAX_LAYER];
 static int lastX, lastY;				/* the last X and Y coordinate */
 
 static const char *copy_outline_names[] = {
@@ -501,8 +501,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 {
 	const char *fnbase;
 	int i;
-	static int saved_layer_stack[MAX_LAYER];
-	int save_ons[MAX_LAYER + 2];
+	static int saved_layer_stack[PCB_MAX_LAYER];
+	int save_ons[PCB_MAX_LAYER + 2];
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);

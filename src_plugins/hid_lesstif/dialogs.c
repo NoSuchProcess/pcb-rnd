@@ -1212,16 +1212,16 @@ static int AdjustSizes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 static Widget layer_groups_form = 0;
 static Widget lg_buttonform = 0;
 
-static int lg_setcol[MAX_LAYER + 2];
+static int lg_setcol[PCB_MAX_LAYER + 2];
 static int lg_width, lg_height;
-static int lg_r[MAX_LAYER + 3];
-static int lg_c[MAX_LAYER + 1];
+static int lg_r[PCB_MAX_LAYER + 3];
+static int lg_c[PCB_MAX_LAYER + 1];
 static int lg_label_width, lg_fa, lg_fd;
 static GC lg_gc = 0;
 
 #if 0
-static Widget lglabels[MAX_LAYER + 2];
-static Widget lgbuttons[MAX_LAYER + 2][MAX_LAYER];
+static Widget lglabels[PCB_MAX_LAYER + 2];
+static Widget lgbuttons[PCB_MAX_LAYER + 2][PCB_MAX_LAYER];
 #endif
 
 typedef struct {
@@ -1338,7 +1338,7 @@ static void lgbutton_resize(Widget w, XtPointer u, XmDrawingAreaCallbackStruct *
 
 void lesstif_update_layer_groups()
 {
-	int sets[MAX_LAYER + 2][MAX_LAYER];
+	int sets[PCB_MAX_LAYER + 2][PCB_MAX_LAYER];
 	int i, j;
 	pcb_layer_group_t *l = &(PCB->LayerGroups);
 
@@ -1398,8 +1398,8 @@ void lesstif_update_layer_groups()
 		}
 	}
 	XtUnmanageChild(lg_buttonform);
-	for (i = 0; i < MAX_LAYER + 2; i++)
-		for (j = 0; j < MAX_LAYER; j++) {
+	for (i = 0; i < PCB_MAX_LAYER + 2; i++)
+		for (j = 0; j < PCB_MAX_LAYER; j++) {
 			if (i < pcb_max_copper_layer + 2 && j < pcb_max_group) {
 				XtManageChild(lgbuttons[i][j]);
 				stdarg_n = 0;
@@ -1461,10 +1461,10 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 		XtGetSubresources(layer_groups_form, &lgr, "layergroups", "LayerGroups", lg_resources, XtNumber(lg_resources), 0, 0);
 #if 0
-		stdarg(XmNfractionBase, pcb_max_group * (MAX_LAYER + 2));
+		stdarg(XmNfractionBase, pcb_max_group * (PCB_MAX_LAYER + 2));
 		lg_buttonform = XmCreateForm(layer_groups_form, "lgbutton", stdarg_args, stdarg_n);
 
-		for (i = 0; i < MAX_LAYER + 2; i++) {
+		for (i = 0; i < PCB_MAX_LAYER + 2; i++) {
 			stdarg_n = 0;
 			stdarg(XmNleftAttachment, XmATTACH_FORM);
 			stdarg(XmNtopAttachment, XmATTACH_POSITION);
@@ -1476,16 +1476,16 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			lglabels[i] = XmCreateLabel(layer_groups_form, "layer", stdarg_args, stdarg_n);
 			XtManageChild(lglabels[i]);
 
-			for (j = 0; j < MAX_LAYER; j++) {
+			for (j = 0; j < PCB_MAX_LAYER; j++) {
 				stdarg_n = 0;
 				stdarg(XmNleftAttachment, XmATTACH_POSITION);
-				stdarg(XmNleftPosition, j * (MAX_LAYER + 2));
+				stdarg(XmNleftPosition, j * (PCB_MAX_LAYER + 2));
 				stdarg(XmNrightAttachment, XmATTACH_POSITION);
-				stdarg(XmNrightPosition, (j + 1) * (MAX_LAYER + 2));
+				stdarg(XmNrightPosition, (j + 1) * (PCB_MAX_LAYER + 2));
 				stdarg(XmNtopAttachment, XmATTACH_POSITION);
-				stdarg(XmNtopPosition, i * MAX_LAYER);
+				stdarg(XmNtopPosition, i * PCB_MAX_LAYER);
 				stdarg(XmNbottomAttachment, XmATTACH_POSITION);
-				stdarg(XmNbottomPosition, (i + 1) * MAX_LAYER);
+				stdarg(XmNbottomPosition, (i + 1) * PCB_MAX_LAYER);
 				stdarg(XmNlabelString, XmStringCreatePCB(" "));
 				stdarg(XmNspacing, 0);
 				stdarg(XmNvisibleWhenOff, True);

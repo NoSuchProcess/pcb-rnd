@@ -37,9 +37,9 @@
 /* ---------------------------------------------------------------------------
  * some shared identifiers
  */
-int pcb_layer_stack[MAX_LAYER];			/* determines the layer draw order */
+int pcb_layer_stack[PCB_MAX_LAYER];			/* determines the layer draw order */
 
-pcb_buffer_t pcb_buffers[MAX_BUFFER]; /* my buffers */
+pcb_buffer_t pcb_buffers[PCB_MAX_BUFFER]; /* my buffers */
 pcb_bool pcb_bumped;                /* if the undo serial number has changed */
 
 int pcb_added_lines;
@@ -196,7 +196,7 @@ void pcb_data_free(pcb_data_t * data)
 	list_map0(&data->Element, pcb_element_t, pcb_element_free);
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
-	for (layer = data->Layer, i = 0; i < MAX_LAYER + 2; layer++, i++) {
+	for (layer = data->Layer, i = 0; i < PCB_MAX_LAYER + 2; layer++, i++) {
 		pcb_attribute_free(&layer->Attributes);
 		PCB_TEXT_LOOP(layer);
 		{
@@ -273,8 +273,8 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 	/* FIX ME: use r_search to do this much faster */
 
 	/* preset identifiers with highest and lowest possible values */
-	box.X1 = box.Y1 = MAX_COORD;
-	box.X2 = box.Y2 = -MAX_COORD;
+	box.X1 = box.Y1 = PCB_MAX_COORD;
+	box.X2 = box.Y2 = -PCB_MAX_COORD;
 
 	/* now scan for the lowest/highest X and Y coordinate */
 	PCB_VIA_LOOP(Data);

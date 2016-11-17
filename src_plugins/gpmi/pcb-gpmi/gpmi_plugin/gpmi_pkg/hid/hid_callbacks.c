@@ -12,7 +12,7 @@
 
 
 /* TODO */
-#define MAX_LAYER 16
+#define PCB_MAX_LAYER 16
 
 pcb_hid_attribute_t *gpmi_hid_get_export_options(int *num)
 {
@@ -53,7 +53,7 @@ void gpmi_hid_destroy_gc(pcb_hid_gc_t gc)
 void gpmi_hid_do_export(pcb_hid_attr_val_t * options)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(exporter);
-  int save_ons[MAX_LAYER + 2];
+  int save_ons[PCB_MAX_LAYER + 2];
   pcb_box_t region;
 
 	h->result = options;

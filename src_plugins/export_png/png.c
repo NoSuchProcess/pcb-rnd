@@ -112,8 +112,8 @@ static int linewidth = -1;
 static int lastgroup = -1;
 static gdImagePtr lastbrush = (gdImagePtr) ((void *) -1);
 static int lastcap = -1;
-static int print_group[MAX_LAYER];
-static int print_layer[MAX_LAYER];
+static int print_group[PCB_MAX_LAYER];
+static int print_layer[PCB_MAX_LAYER];
 
 /* For photo-mode we need the following layers as monochrome masks:
 
@@ -127,10 +127,10 @@ static int print_layer[MAX_LAYER];
 #define PHOTO_FLIP_Y	2
 
 static int photo_mode, photo_flip;
-static gdImagePtr photo_copper[MAX_LAYER + 2];
+static gdImagePtr photo_copper[PCB_MAX_LAYER + 2];
 static gdImagePtr photo_silk, photo_mask, photo_drill, *photo_im;
 static gdImagePtr photo_outline;
-static int photo_groups[MAX_LAYER + 2], photo_ngroups;
+static int photo_groups[PCB_MAX_LAYER + 2], photo_ngroups;
 static int photo_has_inners;
 
 static int doing_outline, have_outline;
@@ -430,7 +430,7 @@ static void parse_bloat(const char *str)
 void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
 	int i;
-	static int saved_layer_stack[MAX_LAYER];
+	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t region;
 
 	f = the_file;
@@ -599,7 +599,7 @@ static void ts_bs_sm(gdImagePtr im)
 
 static void png_do_export(pcb_hid_attr_val_t * options)
 {
-	int save_ons[MAX_LAYER + 2];
+	int save_ons[PCB_MAX_LAYER + 2];
 	int i;
 	pcb_box_t *bbox;
 	int w, h;
