@@ -818,12 +818,12 @@ pcb_rat_t *pcb_rat_add_net(void)
 	pcb_lib_menu_t *menu;
 	pcb_lib_entry_t *entry;
 
-	if (Crosshair.AttachedLine.Point1.X == Crosshair.AttachedLine.Point2.X
-			&& Crosshair.AttachedLine.Point1.Y == Crosshair.AttachedLine.Point2.Y)
+	if (pcb_crosshair.AttachedLine.Point1.X == pcb_crosshair.AttachedLine.Point2.X
+			&& pcb_crosshair.AttachedLine.Point1.Y == pcb_crosshair.AttachedLine.Point2.Y)
 		return (NULL);
 
 	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
-																 Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, 5);
+																 pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 5);
 	if (found == PCB_TYPE_NONE) {
 		pcb_message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
 		return (NULL);
@@ -838,7 +838,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
 	strcpy(name1, pcb_connection_name(found, ptr1, ptr2));
 	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
-																 Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 5);
+																 pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 5);
 	if (found == PCB_TYPE_NONE) {
 		pcb_message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
 		return (NULL);
@@ -897,10 +897,10 @@ pcb_rat_t *pcb_rat_add_net(void)
 
 ratIt:
 	pcb_netlist_changed(0);
-	return (pcb_rat_new(PCB->Data, Crosshair.AttachedLine.Point1.X,
-											 Crosshair.AttachedLine.Point1.Y,
-											 Crosshair.AttachedLine.Point2.X,
-											 Crosshair.AttachedLine.Point2.Y, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags()));
+	return (pcb_rat_new(PCB->Data, pcb_crosshair.AttachedLine.Point1.X,
+											 pcb_crosshair.AttachedLine.Point1.Y,
+											 pcb_crosshair.AttachedLine.Point2.X,
+											 pcb_crosshair.AttachedLine.Point2.Y, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags()));
 }
 
 

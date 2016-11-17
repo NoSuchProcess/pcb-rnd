@@ -41,10 +41,10 @@
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
 static const char aligntext_syntax[] =
-	"AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/Crosshair/Average[, Gridless]]])";
+	"AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])";
 
 static const char distributetext_syntax[] =
-	"DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/Crosshair, First/Last/Crosshair[, Gridless]]])";
+	"DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
 
 enum {
 	K_X,
@@ -77,7 +77,7 @@ static const char *keywords[] = {
 	/* [K_First] */ "First",
 	/* [K_Last] */ "Last",
 	/* [K_Average] */ "Average",
-	/* [K_Crosshair] */ "Crosshair",
+	/* [K_Crosshair] */ "pcb_crosshair",
 	/* [K_Gridless] */ "Gridless",
 };
 
@@ -265,8 +265,8 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 
 
 /*!
- * AlignText(X, [Lefts/Rights/Centers, [First/Last/Crosshair/Average[, Gridless]]])\n
- * AlignText(Y, [Tops/Bottoms/Centers, [First/Last/Crosshair/Average[, Gridless]]])
+ * AlignText(X, [Lefts/Rights/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])\n
+ * AlignText(Y, [Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])
  *
  * X or Y - Select which axis will move, other is untouched. \n
  * Lefts, Rights, \n
@@ -274,9 +274,9 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
  * Centers - Pick alignment point within each element. \n
  * NB: text objects have no Mark. \n
  * First, Last, \n
- * Crosshair, \n
+ * pcb_crosshair, \n
  * Average - Alignment reference, First=Topmost/Leftmost, \n
- * Last=Bottommost/Rightmost, Average or Crosshair point \n
+ * Last=Bottommost/Rightmost, Average or pcb_crosshair point \n
  * Gridless - Do not force results to align to prevailing grid. \n
  *
  * Defaults are Lefts/Tops, First
@@ -355,7 +355,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	pcb_undo_save_serial();
 	/* find the final alignment coordinate using the above options */
-	q = reference_coord(K_aligntext, Crosshair.X, Crosshair.Y, dir, point, reference);
+	q = reference_coord(K_aligntext, pcb_crosshair.X, pcb_crosshair.Y, dir, point, reference);
 	/* move all selected elements to the new coordinate */
 	/* selected text part of an element */
 	PCB_ELEMENT_LOOP(PCB->Data);
@@ -424,14 +424,14 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 /*!
- * DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/Crosshair, First/Last/Crosshair[, Gridless]]]) \n
- * DistributeText(Y, [Tops/Bottoms/Centers/Gaps, [First/Last/Crosshair, First/Last/Crosshair[, Gridless]]]) \n
+ * DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
+ * DistributeText(Y, [Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
  * \n
  * As with align, plus: \n
  * \n
  * Gaps - Make gaps even rather than spreading points evenly. \n
  * First, Last, \n
- * Crosshair - Two arguments specifying both ends of the distribution,
+ * pcb_crosshair - Two arguments specifying both ends of the distribution,
  * they can't both be the same. \n
  * \n
  * Defaults are Lefts/Tops, First, Last \n

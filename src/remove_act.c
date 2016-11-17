@@ -47,8 +47,8 @@ static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	const char *function = PCB_ACTION_ARG(0);
 	int id = pcb_funchash_get(function, NULL);
 
-	Note.X = Crosshair.X;
-	Note.Y = Crosshair.Y;
+	Note.X = pcb_crosshair.X;
+	Note.Y = pcb_crosshair.Y;
 
 	if (id == -1) {								/* no arg */
 		if (pcb_remove_selected() == pcb_false)

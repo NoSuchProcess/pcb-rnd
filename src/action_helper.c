@@ -108,41 +108,41 @@ static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 	pcb_box_t *box;
 	pcb_coord_t mx = 0, my = 0;
 
-	Crosshair.AttachedObject.RubberbandN = 0;
+	pcb_crosshair.AttachedObject.RubberbandN = 0;
 	if (!conf_core.editor.snap_pin) {
 		/* dither the grab point so that the mark, center, etc
 		 * will end up on a grid coordinate
 		 */
-		GetGridLockCoordinates(Crosshair.AttachedObject.Type,
-													 Crosshair.AttachedObject.Ptr1,
-													 Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3, &mx, &my);
+		GetGridLockCoordinates(pcb_crosshair.AttachedObject.Type,
+													 pcb_crosshair.AttachedObject.Ptr1,
+													 pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, &mx, &my);
 		mx = pcb_grid_fit(mx, PCB->Grid, PCB->GridOffsetX) - mx;
 		my = pcb_grid_fit(my, PCB->Grid, PCB->GridOffsetY) - my;
 	}
-	Crosshair.AttachedObject.X = PlaceX - mx;
-	Crosshair.AttachedObject.Y = PlaceY - my;
-	if (!Marked.status || conf_core.editor.local_ref)
+	pcb_crosshair.AttachedObject.X = PlaceX - mx;
+	pcb_crosshair.AttachedObject.Y = PlaceY - my;
+	if (!pcb_marked.status || conf_core.editor.local_ref)
 		pcb_crosshair_set_local_ref(PlaceX - mx, PlaceY - my, pcb_true);
-	Crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 
 	/* get boundingbox of object and set cursor range */
-	box = GetObjectBoundingBox(Crosshair.AttachedObject.Type,
-														 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
-	pcb_crosshair_set_range(Crosshair.AttachedObject.X - box->X1,
-										Crosshair.AttachedObject.Y - box->Y1,
-										PCB->MaxWidth - (box->X2 - Crosshair.AttachedObject.X),
-										PCB->MaxHeight - (box->Y2 - Crosshair.AttachedObject.Y));
+	box = GetObjectBoundingBox(pcb_crosshair.AttachedObject.Type,
+														 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+	pcb_crosshair_set_range(pcb_crosshair.AttachedObject.X - box->X1,
+										pcb_crosshair.AttachedObject.Y - box->Y1,
+										PCB->MaxWidth - (box->X2 - pcb_crosshair.AttachedObject.X),
+										PCB->MaxHeight - (box->Y2 - pcb_crosshair.AttachedObject.Y));
 
 	/* get all attached objects if necessary */
 	if ((conf_core.editor.mode != PCB_MODE_COPY) && conf_core.editor.rubber_band_mode)
-		pcb_rubber_band_lookup_lines(Crosshair.AttachedObject.Type,
-													Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
+		pcb_rubber_band_lookup_lines(pcb_crosshair.AttachedObject.Type,
+													pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	if (conf_core.editor.mode != PCB_MODE_COPY &&
-			(Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
-			 Crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
-			 Crosshair.AttachedObject.Type == PCB_TYPE_LINE || Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
-		pcb_rubber_band_lookup_rat_lines(Crosshair.AttachedObject.Type,
-									 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
+			(pcb_crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
+			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
+			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE || pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
+		pcb_rubber_band_lookup_rat_lines(pcb_crosshair.AttachedObject.Type,
+									 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 }
 
 
@@ -316,23 +316,23 @@ static void click_cb(pcb_hidval_t hv)
 			pcb_crosshair_save_mode();
 			saved_mode = pcb_true;
 			pcb_crosshair_set_mode(gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
-			Crosshair.AttachedObject.Ptr1 = Note.ptr1;
-			Crosshair.AttachedObject.Ptr2 = Note.ptr2;
-			Crosshair.AttachedObject.Ptr3 = Note.ptr3;
-			Crosshair.AttachedObject.Type = Note.Hit;
+			pcb_crosshair.AttachedObject.Ptr1 = Note.ptr1;
+			pcb_crosshair.AttachedObject.Ptr2 = Note.ptr2;
+			pcb_crosshair.AttachedObject.Ptr3 = Note.ptr3;
+			pcb_crosshair.AttachedObject.Type = Note.Hit;
 
-			if (Crosshair.drags != NULL) {
-				free(Crosshair.drags);
-				Crosshair.drags = NULL;
+			if (pcb_crosshair.drags != NULL) {
+				free(pcb_crosshair.drags);
+				pcb_crosshair.drags = NULL;
 			}
-			Crosshair.dragx = Note.X;
-			Crosshair.dragy = Note.Y;
+			pcb_crosshair.dragx = Note.X;
+			pcb_crosshair.dragy = Note.Y;
 			box.X1 = Note.X + SLOP * pixel_slop;
 			box.X2 = Note.X - SLOP * pixel_slop;
 			box.Y1 = Note.Y + SLOP * pixel_slop;
 			box.Y2 = Note.Y - SLOP * pixel_slop;
-			Crosshair.drags = pcb_list_block(&box, &Crosshair.drags_len);
-			Crosshair.drags_current = 0;
+			pcb_crosshair.drags = pcb_list_block(&box, &pcb_crosshair.drags_len);
+			pcb_crosshair.drags_current = 0;
 			AttachForCopy(Note.X, Note.Y);
 		}
 		else {
@@ -349,8 +349,8 @@ static void click_cb(pcb_hidval_t hv)
 			if (!gui->shift_is_pressed() && pcb_select_block(&box, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
 			pcb_notify_block();
-			Crosshair.AttachedBox.Point1.X = Note.X;
-			Crosshair.AttachedBox.Point1.Y = Note.Y;
+			pcb_crosshair.AttachedBox.Point1.X = Note.X;
+			pcb_crosshair.AttachedBox.Point1.Y = Note.Y;
 		}
 		pcb_notify_crosshair_change(pcb_true);
 	}
@@ -403,17 +403,17 @@ void pcb_release_mode(void)
 		Note.Hit = 0;
 	}
 	else if (conf_core.editor.mode == PCB_MODE_ARROW) {
-		box.X1 = Crosshair.AttachedBox.Point1.X;
-		box.Y1 = Crosshair.AttachedBox.Point1.Y;
-		box.X2 = Crosshair.AttachedBox.Point2.X;
-		box.Y2 = Crosshair.AttachedBox.Point2.Y;
+		box.X1 = pcb_crosshair.AttachedBox.Point1.X;
+		box.Y1 = pcb_crosshair.AttachedBox.Point1.Y;
+		box.X2 = pcb_crosshair.AttachedBox.Point2.X;
+		box.Y2 = pcb_crosshair.AttachedBox.Point2.Y;
 
 		pcb_undo_restore_serial();
 		if (pcb_select_block(&box, pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
 		else if (Bumped)
 			pcb_undo_inc_serial();
-		Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 	}
 	if (saved_mode)
 		pcb_crosshair_restore_mode();
@@ -427,15 +427,15 @@ void pcb_release_mode(void)
 static void AdjustAttachedBox(void)
 {
 	if (conf_core.editor.mode == PCB_MODE_ARC) {
-		Crosshair.AttachedBox.otherway = gui->shift_is_pressed();
+		pcb_crosshair.AttachedBox.otherway = gui->shift_is_pressed();
 		return;
 	}
-	switch (Crosshair.AttachedBox.State) {
+	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_SECOND:						/* one corner is selected */
 		{
 			/* update coordinates */
-			Crosshair.AttachedBox.Point2.X = Crosshair.X;
-			Crosshair.AttachedBox.Point2.Y = Crosshair.Y;
+			pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
+			pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.Y;
 			break;
 		}
 	}
@@ -448,9 +448,9 @@ void pcb_adjust_attached_objects(void)
 		/* update at least an attached block (selection) */
 	case PCB_MODE_NO:
 	case PCB_MODE_ARROW:
-		if (Crosshair.AttachedBox.State) {
-			Crosshair.AttachedBox.Point2.X = Crosshair.X;
-			Crosshair.AttachedBox.Point2.Y = Crosshair.Y;
+		if (pcb_crosshair.AttachedBox.State) {
+			pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
+			pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.Y;
 		}
 		break;
 
@@ -488,50 +488,50 @@ void pcb_notify_line(void)
 	int type = PCB_TYPE_NONE;
 	void *ptr1, *ptr2, *ptr3;
 
-	if (!Marked.status || conf_core.editor.local_ref)
-		pcb_crosshair_set_local_ref(Crosshair.X, Crosshair.Y, pcb_true);
-	switch (Crosshair.AttachedLine.State) {
+	if (!pcb_marked.status || conf_core.editor.local_ref)
+		pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, pcb_true);
+	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
-		if (PCB->RatDraw && pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
+		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
 			gui->beep();
 			break;
 		}
 		if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
-			type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
-			pcb_lookup_conn(Crosshair.X, Crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
+			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PIN | PCB_TYPE_PAD | PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
+			pcb_lookup_conn(pcb_crosshair.X, pcb_crosshair.Y, pcb_true, 1, PCB_FLAG_FOUND);
 		}
 		if (type == PCB_TYPE_PIN || type == PCB_TYPE_VIA) {
-			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = ((pcb_pin_t *) ptr2)->X;
-			Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = ((pcb_pin_t *) ptr2)->Y;
+			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ((pcb_pin_t *) ptr2)->X;
+			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ((pcb_pin_t *) ptr2)->Y;
 		}
 		else if (type == PCB_TYPE_PAD) {
 			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
-			double d1 = pcb_distance(Crosshair.X, Crosshair.Y, pad->Point1.X, pad->Point1.Y);
-			double d2 = pcb_distance(Crosshair.X, Crosshair.Y, pad->Point2.X, pad->Point2.Y);
-			double dm = pcb_distance(Crosshair.X, Crosshair.Y, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y)/2);
+			double d1 = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pad->Point1.X, pad->Point1.Y);
+			double d2 = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pad->Point2.X, pad->Point2.Y);
+			double dm = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, (pad->Point1.X + pad->Point2.X) / 2, (pad->Point1.Y + pad->Point2.Y)/2);
 			if ((dm <= d1) && (dm <= d2)) { /* prefer to snap to the middle of a pin if that's the closest */
-				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.X;
-				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.Y;
+				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
+				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Y;
 			}
 			else if (d2 < d1) { /* else select the closest endpoint */
-				Crosshair.AttachedLine.Point1 = Crosshair.AttachedLine.Point2 = pad->Point2;
+				pcb_crosshair.AttachedLine.Point1 = pcb_crosshair.AttachedLine.Point2 = pad->Point2;
 			}
 			else {
-				Crosshair.AttachedLine.Point1 = Crosshair.AttachedLine.Point2 = pad->Point1;
+				pcb_crosshair.AttachedLine.Point1 = pcb_crosshair.AttachedLine.Point2 = pad->Point1;
 			}
 		}
 		else {
-			Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.X;
-			Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.Y;
+			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.X;
+			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Y;
 		}
-		Crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
 		break;
 
 	case PCB_CH_STATE_SECOND:
 		/* fall through to third state too */
 		lastLayer = CURRENT;
 	default:											/* all following points */
-		Crosshair.AttachedLine.State = PCB_CH_STATE_THIRD;
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_THIRD;
 		break;
 	}
 }
@@ -539,15 +539,15 @@ void pcb_notify_line(void)
 void pcb_notify_block(void)
 {
 	pcb_notify_crosshair_change(pcb_false);
-	switch (Crosshair.AttachedBox.State) {
+	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_FIRST:						/* setup first point */
-		Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Crosshair.X;
-		Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = Crosshair.Y;
-		Crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
+		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
+		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.Y;
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 		break;
 
 	case PCB_CH_STATE_SECOND:						/* setup second point */
-		Crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
 		break;
 	}
 	pcb_notify_crosshair_change(pcb_true);
@@ -613,11 +613,11 @@ void pcb_notify_mode(void)
 
 	case PCB_MODE_ARC:
 		{
-			switch (Crosshair.AttachedBox.State) {
+			switch (pcb_crosshair.AttachedBox.State) {
 			case PCB_CH_STATE_FIRST:
-				Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Note.X;
-				Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = Note.Y;
-				Crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
+				pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = Note.X;
+				pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = Note.Y;
+				pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 				break;
 
 			case PCB_CH_STATE_SECOND:
@@ -627,10 +627,10 @@ void pcb_notify_mode(void)
 					pcb_coord_t wx, wy;
 					pcb_angle_t sa, dir;
 
-					wx = Note.X - Crosshair.AttachedBox.Point1.X;
-					wy = Note.Y - Crosshair.AttachedBox.Point1.Y;
-					if (PCB_XOR(Crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
-						Crosshair.AttachedBox.Point2.X = Crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
+					wx = Note.X - pcb_crosshair.AttachedBox.Point1.X;
+					wy = Note.Y - pcb_crosshair.AttachedBox.Point1.Y;
+					if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
+						pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
 						sa = (wx >= 0) ? 0 : 180;
 #ifdef ARC45
 						if (abs(wy) / 2 >= abs(wx))
@@ -640,7 +640,7 @@ void pcb_notify_mode(void)
 							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
 					}
 					else {
-						Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
+						pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
 						sa = (wy >= 0) ? -90 : 90;
 #ifdef ARC45
 						if (abs(wx) / 2 >= abs(wy))
@@ -651,8 +651,8 @@ void pcb_notify_mode(void)
 						wy = wx;
 					}
 					if (coord_abs(wy) > 0 && (arc = pcb_arc_new(CURRENT,
-																												Crosshair.AttachedBox.Point2.X,
-																												Crosshair.AttachedBox.Point2.Y,
+																												pcb_crosshair.AttachedBox.Point2.X,
+																												pcb_crosshair.AttachedBox.Point2.Y,
 																												coord_abs(wy),
 																												coord_abs(wy),
 																												sa,
@@ -663,14 +663,14 @@ void pcb_notify_mode(void)
 						pcb_box_t *bx;
 
 						bx = pcb_arc_get_ends(arc);
-						Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = bx->X2;
-						Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = bx->Y2;
+						pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = bx->X2;
+						pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = bx->Y2;
 						pcb_undo_add_obj_to_create(PCB_TYPE_ARC, CURRENT, arc, arc);
 						pcb_undo_inc_serial();
 						addedLines++;
 						DrawArc(CURRENT, arc);
 						pcb_draw();
-						Crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
+						pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
 					}
 					break;
 				}
@@ -740,7 +740,7 @@ void pcb_notify_mode(void)
 	case PCB_MODE_LINE:
 		/* do update of position */
 		pcb_notify_line();
-		if (Crosshair.AttachedLine.State != PCB_CH_STATE_THIRD)
+		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_THIRD)
 			break;
 
 		/* Remove anchor if clicking on start point;
@@ -749,7 +749,7 @@ void pcb_notify_mode(void)
 		 * Instead use a very small delta, or change
 		 * the file after saving.
 		 */
-		if (Crosshair.X == Crosshair.AttachedLine.Point1.X && Crosshair.Y == Crosshair.AttachedLine.Point1.Y) {
+		if (pcb_crosshair.X == pcb_crosshair.AttachedLine.Point1.X && pcb_crosshair.Y == pcb_crosshair.AttachedLine.Point1.Y) {
 			pcb_crosshair_set_mode(PCB_MODE_LINE);
 			break;
 		}
@@ -761,8 +761,8 @@ void pcb_notify_mode(void)
 				pcb_undo_add_obj_to_create(PCB_TYPE_RATLINE, line, line, line);
 				pcb_undo_inc_serial();
 				DrawRat(line);
-				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
-				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y;
+				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
+				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
 				pcb_draw();
 			}
 			break;
@@ -774,16 +774,16 @@ void pcb_notify_mode(void)
 			int maybe_found_flag;
 
 			if (conf_core.editor.line_refraction
-					&& Crosshair.AttachedLine.Point1.X ==
-					Crosshair.AttachedLine.Point2.X
-					&& Crosshair.AttachedLine.Point1.Y ==
-					Crosshair.AttachedLine.Point2.Y
-					&& (Crosshair.AttachedLine.Point2.X != Note.X || Crosshair.AttachedLine.Point2.Y != Note.Y)) {
+					&& pcb_crosshair.AttachedLine.Point1.X ==
+					pcb_crosshair.AttachedLine.Point2.X
+					&& pcb_crosshair.AttachedLine.Point1.Y ==
+					pcb_crosshair.AttachedLine.Point2.Y
+					&& (pcb_crosshair.AttachedLine.Point2.X != Note.X || pcb_crosshair.AttachedLine.Point2.Y != Note.Y)) {
 				/* We will only need to paint the second line segment.
 				   Since we only check for vias on the first segment,
 				   swap them so the non-empty segment is the first segment. */
-				Crosshair.AttachedLine.Point2.X = Note.X;
-				Crosshair.AttachedLine.Point2.Y = Note.Y;
+				pcb_crosshair.AttachedLine.Point2.X = Note.X;
+				pcb_crosshair.AttachedLine.Point2.Y = Note.Y;
 			}
 
 			if (conf_core.editor.auto_drc
@@ -792,14 +792,14 @@ void pcb_notify_mode(void)
 			else
 				maybe_found_flag = 0;
 
-			if ((Crosshair.AttachedLine.Point1.X !=
-					 Crosshair.AttachedLine.Point2.X || Crosshair.AttachedLine.Point1.Y != Crosshair.AttachedLine.Point2.Y)
+			if ((pcb_crosshair.AttachedLine.Point1.X !=
+					 pcb_crosshair.AttachedLine.Point2.X || pcb_crosshair.AttachedLine.Point1.Y != pcb_crosshair.AttachedLine.Point2.Y)
 					&& (line =
 							pcb_line_new_merge(CURRENT,
-																		 Crosshair.AttachedLine.Point1.X,
-																		 Crosshair.AttachedLine.Point1.Y,
-																		 Crosshair.AttachedLine.Point2.X,
-																		 Crosshair.AttachedLine.Point2.Y,
+																		 pcb_crosshair.AttachedLine.Point1.X,
+																		 pcb_crosshair.AttachedLine.Point1.Y,
+																		 pcb_crosshair.AttachedLine.Point2.X,
+																		 pcb_crosshair.AttachedLine.Point2.Y,
 																		 conf_core.design.line_thickness,
 																		 2 * conf_core.design.clearance,
 																		 pcb_flag_make(maybe_found_flag |
@@ -815,30 +815,30 @@ void pcb_notify_mode(void)
 				if (PCB->ViaOn && GetLayerGroupNumberByPointer(CURRENT) !=
 						GetLayerGroupNumberByPointer(lastLayer) &&
 						pcb_search_obj_by_location(PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3,
-																	 Crosshair.AttachedLine.Point1.X,
-																	 Crosshair.AttachedLine.Point1.Y,
+																	 pcb_crosshair.AttachedLine.Point1.X,
+																	 pcb_crosshair.AttachedLine.Point1.Y,
 																	 conf_core.design.via_thickness / 2) ==
 						PCB_TYPE_NONE
 						&& (via =
 								pcb_via_new(PCB->Data,
-														 Crosshair.AttachedLine.Point1.X,
-														 Crosshair.AttachedLine.Point1.Y,
+														 pcb_crosshair.AttachedLine.Point1.X,
+														 pcb_crosshair.AttachedLine.Point1.Y,
 														 conf_core.design.via_thickness,
 														 2 * conf_core.design.clearance, 0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 					pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
 					DrawVia(via);
 				}
 				/* copy the coordinates */
-				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
-				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y;
+				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
+				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
 				pcb_undo_inc_serial();
 				lastLayer = CURRENT;
 			}
-			if (conf_core.editor.line_refraction && (Note.X != Crosshair.AttachedLine.Point2.X || Note.Y != Crosshair.AttachedLine.Point2.Y)
+			if (conf_core.editor.line_refraction && (Note.X != pcb_crosshair.AttachedLine.Point2.X || Note.Y != pcb_crosshair.AttachedLine.Point2.Y)
 					&& (line =
 							pcb_line_new_merge(CURRENT,
-																		 Crosshair.AttachedLine.Point2.X,
-																		 Crosshair.AttachedLine.Point2.Y,
+																		 pcb_crosshair.AttachedLine.Point2.X,
+																		 pcb_crosshair.AttachedLine.Point2.Y,
 																		 Note.X, Note.Y,
 																		 conf_core.design.line_thickness,
 																		 2 * conf_core.design.clearance,
@@ -849,10 +849,10 @@ void pcb_notify_mode(void)
 				pcb_undo_inc_serial();
 				DrawLine(CURRENT, line);
 				/* move to new start point */
-				Crosshair.AttachedLine.Point1.X = Note.X;
-				Crosshair.AttachedLine.Point1.Y = Note.Y;
-				Crosshair.AttachedLine.Point2.X = Note.X;
-				Crosshair.AttachedLine.Point2.Y = Note.Y;
+				pcb_crosshair.AttachedLine.Point1.X = Note.X;
+				pcb_crosshair.AttachedLine.Point1.Y = Note.Y;
+				pcb_crosshair.AttachedLine.Point2.X = Note.X;
+				pcb_crosshair.AttachedLine.Point2.Y = Note.Y;
 
 
 				if (conf_core.editor.swap_start_direction) {
@@ -861,8 +861,8 @@ void pcb_notify_mode(void)
 			}
 			if (conf_core.editor.orthogonal_moves) {
 				/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */
-				Marked.X = Note.X;
-				Marked.Y = Note.Y;
+				pcb_marked.X = Note.X;
+				pcb_marked.Y = Note.Y;
 			}
 			pcb_draw();
 		}
@@ -875,19 +875,19 @@ void pcb_notify_mode(void)
 		/* create rectangle if both corners are determined
 		 * and width, height are != 0
 		 */
-		if (Crosshair.AttachedBox.State == PCB_CH_STATE_THIRD &&
-				Crosshair.AttachedBox.Point1.X != Crosshair.AttachedBox.Point2.X &&
-				Crosshair.AttachedBox.Point1.Y != Crosshair.AttachedBox.Point2.Y) {
+		if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD &&
+				pcb_crosshair.AttachedBox.Point1.X != pcb_crosshair.AttachedBox.Point2.X &&
+				pcb_crosshair.AttachedBox.Point1.Y != pcb_crosshair.AttachedBox.Point2.Y) {
 			pcb_polygon_t *polygon;
 
 			int flags = PCB_FLAG_CLEARPOLY;
 			if (conf_core.editor.full_poly)
 				flags |= PCB_FLAG_FULLPOLY;
 			if ((polygon = pcb_poly_new_from_rectangle(CURRENT,
-																									 Crosshair.AttachedBox.Point1.X,
-																									 Crosshair.AttachedBox.Point1.Y,
-																									 Crosshair.AttachedBox.Point2.X,
-																									 Crosshair.AttachedBox.Point2.Y, pcb_flag_make(flags))) != NULL) {
+																									 pcb_crosshair.AttachedBox.Point1.X,
+																									 pcb_crosshair.AttachedBox.Point1.Y,
+																									 pcb_crosshair.AttachedBox.Point2.X,
+																									 pcb_crosshair.AttachedBox.Point2.Y, pcb_flag_make(flags))) != NULL) {
 				pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
 				pcb_undo_inc_serial();
 				DrawPolygon(CURRENT, polygon);
@@ -895,7 +895,7 @@ void pcb_notify_mode(void)
 			}
 
 			/* reset state to 'first corner' */
-			Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+			pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 		}
 		break;
 
@@ -925,21 +925,21 @@ void pcb_notify_mode(void)
 
 	case PCB_MODE_POLYGON:
 		{
-			pcb_point_t *points = Crosshair.AttachedPolygon.Points;
-			pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
+			pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
+			pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
 
 			/* do update of position; use the 'PCB_MODE_LINE' mechanism */
 			pcb_notify_line();
 
 			/* check if this is the last point of a polygon */
-			if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
+			if (n >= 3 && points[0].X == pcb_crosshair.AttachedLine.Point2.X && points[0].Y == pcb_crosshair.AttachedLine.Point2.Y) {
 				pcb_hid_actionl("Polygon", "Close", NULL);
 				pcb_polygon_close_poly();
 				break;
 			}
 
 			/* Someone clicking twice on the same point ('doubleclick'): close polygon */
-			if (n >= 3 && points[n - 1].X == Crosshair.AttachedLine.Point2.X && points[n - 1].Y == Crosshair.AttachedLine.Point2.Y) {
+			if (n >= 3 && points[n - 1].X == pcb_crosshair.AttachedLine.Point2.X && points[n - 1].Y == pcb_crosshair.AttachedLine.Point2.Y) {
 				pcb_hid_actionl("Polygon", "Close", NULL);
 				break;
 			}
@@ -947,18 +947,18 @@ void pcb_notify_mode(void)
 			/* create new point if it's the first one or if it's
 			 * different to the last one
 			 */
-			if (!n || points[n - 1].X != Crosshair.AttachedLine.Point2.X || points[n - 1].Y != Crosshair.AttachedLine.Point2.Y) {
-				pcb_poly_point_new(&Crosshair.AttachedPolygon, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y);
+			if (!n || points[n - 1].X != pcb_crosshair.AttachedLine.Point2.X || points[n - 1].Y != pcb_crosshair.AttachedLine.Point2.Y) {
+				pcb_poly_point_new(&pcb_crosshair.AttachedPolygon, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
 
 				/* copy the coordinates */
-				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
-				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y;
+				pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
+				pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
 			}
 
 			if (conf_core.editor.orthogonal_moves) {
 				/* set the mark to the new starting point so ortho works */
-				Marked.X = Note.X;
-				Marked.Y = Note.Y;
+				pcb_marked.X = Note.X;
+				pcb_marked.Y = Note.Y;
 			}
 
 			break;
@@ -966,33 +966,33 @@ void pcb_notify_mode(void)
 
 	case PCB_MODE_POLYGON_HOLE:
 		{
-			switch (Crosshair.AttachedObject.State) {
+			switch (pcb_crosshair.AttachedObject.State) {
 				/* first notify, lookup object */
 			case PCB_CH_STATE_FIRST:
-				Crosshair.AttachedObject.Type =
+				pcb_crosshair.AttachedObject.Type =
 					pcb_search_screen(Note.X, Note.Y, PCB_TYPE_POLYGON,
-											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
+											 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
-				if (Crosshair.AttachedObject.Type == PCB_TYPE_NONE) {
+				if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_NONE) {
 					pcb_message(PCB_MSG_DEFAULT, "The first point of a polygon hole must be on a polygon.\n");
 					break; /* don't start doing anything if clicket out of polys */
 				}
 
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_polygon_t *)
-											Crosshair.AttachedObject.Ptr2)) {
+											pcb_crosshair.AttachedObject.Ptr2)) {
 					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
-					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					break;
 				}
 				else
-					Crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
+					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 			/* fall thru: first click is also the first point of the poly hole */
 
 				/* second notify, insert new point into object */
 			case PCB_CH_STATE_SECOND:
 				{
-					pcb_point_t *points = Crosshair.AttachedPolygon.Points;
-					pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
+					pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
+					pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
 					pcb_polyarea_t *original, *new_hole, *result;
 					pcb_flag_t Flags;
 
@@ -1001,16 +1001,16 @@ void pcb_notify_mode(void)
 
 					if (conf_core.editor.orthogonal_moves) {
 						/* set the mark to the new starting point so ortho works */
-						Marked.X = Note.X;
-						Marked.Y = Note.Y;
+						pcb_marked.X = Note.X;
+						pcb_marked.Y = Note.Y;
 					}
 
 					/* check if this is the last point of a polygon */
-					if (n >= 3 && points[0].X == Crosshair.AttachedLine.Point2.X && points[0].Y == Crosshair.AttachedLine.Point2.Y) {
+					if (n >= 3 && points[0].X == pcb_crosshair.AttachedLine.Point2.X && points[0].Y == pcb_crosshair.AttachedLine.Point2.Y) {
 						/* Create pcb_polyarea_ts from the original polygon
 						 * and the new hole polygon */
-						original = pcb_poly_from_poly((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2);
-						new_hole = pcb_poly_from_poly(&Crosshair.AttachedPolygon);
+						original = pcb_poly_from_poly((pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2);
+						new_hole = pcb_poly_from_poly(&pcb_crosshair.AttachedPolygon);
 
 						/* Subtract the hole from the original polygon shape */
 						pcb_polyarea_boolean_free(original, new_hole, &result, PBO_SUB);
@@ -1019,18 +1019,18 @@ void pcb_notify_mode(void)
 						 * and place them on the page. Delete the original polygon.
 						 */
 						pcb_undo_save_serial();
-						Flags = ((pcb_polygon_t *) Crosshair.AttachedObject.Ptr2)->Flags;
-						pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) Crosshair.AttachedObject.Ptr1, result, Flags);
+						Flags = ((pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2)->Flags;
+						pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1, result, Flags);
 						pcb_remove_object(PCB_TYPE_POLYGON,
-												 Crosshair.AttachedObject.Ptr1, Crosshair.AttachedObject.Ptr2, Crosshair.AttachedObject.Ptr3);
+												 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 						pcb_undo_restore_serial();
 						pcb_undo_inc_serial();
 						pcb_draw();
 
 						/* reset state of attached line */
-						memset(&Crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
-						Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-						Crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+						memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
+						pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+						pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 						addedLines = 0;
 
 						break;
@@ -1039,13 +1039,13 @@ void pcb_notify_mode(void)
 					/* create new point if it's the first one or if it's
 					 * different to the last one
 					 */
-					if (!n || points[n - 1].X != Crosshair.AttachedLine.Point2.X || points[n - 1].Y != Crosshair.AttachedLine.Point2.Y) {
-						pcb_poly_point_new(&Crosshair.AttachedPolygon,
-																		Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y);
+					if (!n || points[n - 1].X != pcb_crosshair.AttachedLine.Point2.X || points[n - 1].Y != pcb_crosshair.AttachedLine.Point2.Y) {
+						pcb_poly_point_new(&pcb_crosshair.AttachedPolygon,
+																		pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
 
 						/* copy the coordinates */
-						Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
-						Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y;
+						pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
+						pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
 					}
 					break;
 				}
@@ -1110,10 +1110,10 @@ void pcb_notify_mode(void)
 				pcb_rubberband_t *ptr;
 				int i;
 
-				Crosshair.AttachedObject.RubberbandN = 0;
+				pcb_crosshair.AttachedObject.RubberbandN = 0;
 				pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
-				ptr = Crosshair.AttachedObject.Rubberband;
-				for (i = 0; i < Crosshair.AttachedObject.RubberbandN; i++) {
+				ptr = pcb_crosshair.AttachedObject.Rubberband;
+				for (i = 0; i < pcb_crosshair.AttachedObject.RubberbandN; i++) {
 					if (PCB->RatOn)
 						EraseRat((pcb_rat_t *) ptr->Line);
 					if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line))
@@ -1137,20 +1137,20 @@ void pcb_notify_mode(void)
 		/* both are almost the same */
 	case PCB_MODE_COPY:
 	case PCB_MODE_MOVE:
-		switch (Crosshair.AttachedObject.State) {
+		switch (pcb_crosshair.AttachedObject.State) {
 			/* first notify, lookup object */
 		case PCB_CH_STATE_FIRST:
 			{
 				int types = (conf_core.editor.mode == PCB_MODE_COPY) ? PCB_COPY_TYPES : PCB_MOVE_TYPES;
 
-				Crosshair.AttachedObject.Type =
+				pcb_crosshair.AttachedObject.Type =
 					pcb_search_screen(Note.X, Note.Y, types,
-											 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
-				if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+											 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
+				if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 					if (conf_core.editor.mode == PCB_MODE_MOVE && PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *)
-																											Crosshair.AttachedObject.Ptr2)) {
+																											pcb_crosshair.AttachedObject.Ptr2)) {
 						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
-						Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+						pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					}
 					else
 						AttachForCopy(Note.X, Note.Y);
@@ -1161,54 +1161,54 @@ void pcb_notify_mode(void)
 			/* second notify, move or copy object */
 		case PCB_CH_STATE_SECOND:
 			if (conf_core.editor.mode == PCB_MODE_COPY)
-				pcb_copy_obj(Crosshair.AttachedObject.Type,
-									 Crosshair.AttachedObject.Ptr1,
-									 Crosshair.AttachedObject.Ptr2,
-									 Crosshair.AttachedObject.Ptr3, Note.X - Crosshair.AttachedObject.X, Note.Y - Crosshair.AttachedObject.Y);
+				pcb_copy_obj(pcb_crosshair.AttachedObject.Type,
+									 pcb_crosshair.AttachedObject.Ptr1,
+									 pcb_crosshair.AttachedObject.Ptr2,
+									 pcb_crosshair.AttachedObject.Ptr3, Note.X - pcb_crosshair.AttachedObject.X, Note.Y - pcb_crosshair.AttachedObject.Y);
 			else {
-				pcb_move_obj_and_rubberband(Crosshair.AttachedObject.Type,
-																Crosshair.AttachedObject.Ptr1,
-																Crosshair.AttachedObject.Ptr2,
-																Crosshair.AttachedObject.Ptr3,
-																Note.X - Crosshair.AttachedObject.X, Note.Y - Crosshair.AttachedObject.Y);
+				pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type,
+																pcb_crosshair.AttachedObject.Ptr1,
+																pcb_crosshair.AttachedObject.Ptr2,
+																pcb_crosshair.AttachedObject.Ptr3,
+																Note.X - pcb_crosshair.AttachedObject.X, Note.Y - pcb_crosshair.AttachedObject.Y);
 				pcb_crosshair_set_local_ref(0, 0, pcb_false);
 			}
 			pcb_board_set_changed_flag(pcb_true);
 
 			/* reset identifiers */
-			Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
-			Crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+			pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+			pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 			break;
 		}
 		break;
 
 		/* insert a point into a polygon/line/... */
 	case PCB_MODE_INSERT_POINT:
-		switch (Crosshair.AttachedObject.State) {
+		switch (pcb_crosshair.AttachedObject.State) {
 			/* first notify, lookup object */
 		case PCB_CH_STATE_FIRST:
-			Crosshair.AttachedObject.Type =
+			pcb_crosshair.AttachedObject.Type =
 				pcb_search_screen(Note.X, Note.Y, PCB_INSERT_TYPES,
-										 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
+										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
-			if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_polygon_t *)
-											Crosshair.AttachedObject.Ptr2)) {
+											pcb_crosshair.AttachedObject.Ptr2)) {
 					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
-					Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					break;
 				}
 				else {
 					/* get starting point of nearest segment */
-					if (Crosshair.AttachedObject.Type == PCB_TYPE_POLYGON) {
-						fake.poly = (pcb_polygon_t *) Crosshair.AttachedObject.Ptr2;
+					if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLYGON) {
+						fake.poly = (pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2;
 						polyIndex = pcb_poly_get_lowest_distance_point(fake.poly, Note.X, Note.Y);
 						fake.line.Point1 = fake.poly->Points[polyIndex];
 						fake.line.Point2 = fake.poly->Points[pcb_poly_contour_prev_point(fake.poly, polyIndex)];
-						Crosshair.AttachedObject.Ptr2 = &fake.line;
+						pcb_crosshair.AttachedObject.Ptr2 = &fake.line;
 
 					}
-					Crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
+					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 					InsertedPoint = *pcb_adjust_insert_point();
 				}
 			}
@@ -1216,19 +1216,19 @@ void pcb_notify_mode(void)
 
 			/* second notify, insert new point into object */
 		case PCB_CH_STATE_SECOND:
-			if (Crosshair.AttachedObject.Type == PCB_TYPE_POLYGON)
+			if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_POLYGON)
 				pcb_insert_point_in_object(PCB_TYPE_POLYGON,
-															Crosshair.AttachedObject.Ptr1, fake.poly,
+															pcb_crosshair.AttachedObject.Ptr1, fake.poly,
 															&polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
 			else
-				pcb_insert_point_in_object(Crosshair.AttachedObject.Type,
-															Crosshair.AttachedObject.Ptr1,
-															Crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
+				pcb_insert_point_in_object(pcb_crosshair.AttachedObject.Type,
+															pcb_crosshair.AttachedObject.Ptr1,
+															pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
 			pcb_board_set_changed_flag(pcb_true);
 
 			/* reset identifiers */
-			Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
-			Crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+			pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+			pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 			break;
 		}
 		break;

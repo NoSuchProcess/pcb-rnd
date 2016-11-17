@@ -47,7 +47,7 @@
  * of their top edges and let them wander off the grid to exactly the
  * average of their tops.
  * </td></tr><tr><td>
- * :Align(X,Marks,Crosshair)
+ * :Align(X,Marks,pcb_crosshair)
  * </td><td>
  * None of the objects are where you want them, so you move the
  * crosshair to a likely spot and cause them all to move their X
@@ -69,7 +69,7 @@
  * Objects are spread out evenly from the first (uppermost) to last
  * using their marks as the reference point.
  * </td></tr><tr><td>
- * :Distribute(X,Lefts,Crosshair,Last)
+ * :Distribute(X,Lefts,pcb_crosshair,Last)
  * </td><td>
  * You move your crosshair to the left edge of the target area, which
  * will be the leftmost edge of the leftmost object. The objects are
@@ -82,7 +82,7 @@
  * their centers being spread out evenly, you want the space (or "gaps")
  * to be even.
  *
- * You get tricky and bind `Align(X,Marks,Crosshair)' to a key.
+ * You get tricky and bind `Align(X,Marks,pcb_crosshair)' to a key.
  * Now you can select an object and hit your key and the object will
  * warp to the same X coordinate as your cursor.
  *
@@ -117,10 +117,10 @@
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
 static const char align_syntax[] =
-	"Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/Crosshair/Average[, Gridless]]])";
+	"Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])";
 
 static const char distribute_syntax[] =
-	"Distribute(Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/Crosshair, First/Last/Crosshair[, Gridless]]])";
+	"Distribute(Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])";
 
 enum {
 	K_X,
@@ -155,7 +155,7 @@ static const char *keywords[] = {
 	/*[K_First] */ "First",
 	/*[K_Last] */ "Last",
 	/*[K_Average] */ "Average",
-	/*[K_Crosshair] */ "Crosshair",
+	/*[K_Crosshair] */ "pcb_crosshair",
 	/*[K_Gridless] */ "Gridless",
 };
 
@@ -325,17 +325,17 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 }
 
 /*!
- * Align(X, [Lefts/Rights/Centers/Marks, [First/Last/Crosshair/Average[, Gridless]]])\n
- * Align(Y, [Tops/Bottoms/Centers/Marks, [First/Last/Crosshair/Average[, Gridless]]])
+ * Align(X, [Lefts/Rights/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])\n
+ * Align(Y, [Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])
  *
  * X or Y - Select which axis will move, other is untouched. \n
  * Lefts, Rights, \n
  * Tops, Bottoms, \n
  * Centers, Marks - Pick alignment point within each element. \n
  * First, Last, \n
- * Crosshair, \n
+ * pcb_crosshair, \n
  * Average - Alignment reference, First=Topmost/Leftmost, \n
- * Last=Bottommost/Rightmost, Average or Crosshair point \n
+ * Last=Bottommost/Rightmost, Average or pcb_crosshair point \n
  * Gridless - Do not force results to align to prevailing grid. \n
  *
  * Defaults are Marks, First.
@@ -408,7 +408,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		PCB_AFAIL(align);
 	}
 	/* find the final alignment coordinate using the above options */
-	q = reference_coord(K_align, Crosshair.X, Crosshair.Y, dir, point, reference);
+	q = reference_coord(K_align, pcb_crosshair.X, pcb_crosshair.Y, dir, point, reference);
 	/* move all selected elements to the new coordinate */
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
@@ -446,14 +446,14 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 /*!
- * Distribute(X, [Lefts/Rights/Centers/Marks/Gaps, [First/Last/Crosshair, First/Last/Crosshair[, Gridless]]]) \n
- * Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/Crosshair, First/Last/Crosshair[, Gridless]]]) \n
+ * Distribute(X, [Lefts/Rights/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
+ * Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) \n
  * \n
  * As with align, plus: \n
  * \n
  * Gaps - Make gaps even rather than spreading points evenly. \n
  * First, Last, \n
- * Crosshair - Two arguments specifying both ends of the distribution,
+ * pcb_crosshair - Two arguments specifying both ends of the distribution,
  * they can't both be the same. \n
  * \n
  * Defaults are Marks, First, Last \n

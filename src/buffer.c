@@ -130,8 +130,8 @@ void pcb_buffer_add_selected(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y,
 		Buffer->Y = Y;
 	}
 	else {
-		Buffer->X = Crosshair.X;
-		Buffer->Y = Crosshair.Y;
+		Buffer->X = pcb_crosshair.X;
+		Buffer->Y = pcb_crosshair.Y;
 	}
 	pcb_notify_crosshair_change(pcb_true);
 }

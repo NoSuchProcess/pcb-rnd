@@ -88,16 +88,16 @@ pcb_point_t *pcb_adjust_insert_point(void)
 	static pcb_point_t InsertedPoint;
 	double m;
 	pcb_coord_t x, y, m1, m2;
-	pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
+	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
 
-	if (Crosshair.AttachedObject.State == PCB_CH_STATE_FIRST)
+	if (pcb_crosshair.AttachedObject.State == PCB_CH_STATE_FIRST)
 		return NULL;
-	Crosshair.AttachedObject.Ptr3 = &InsertedPoint;
+	pcb_crosshair.AttachedObject.Ptr3 = &InsertedPoint;
 	if (gui->shift_is_pressed()) {
 		pcb_attached_line_t myline;
 		/* only force 45 degree for nearest point */
-		if (pcb_distance(Crosshair.X, Crosshair.Y, line->Point1.X, line->Point1.Y) <
-				pcb_distance(Crosshair.X, Crosshair.Y, line->Point2.X, line->Point2.Y))
+		if (pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, line->Point1.X, line->Point1.Y) <
+				pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, line->Point2.X, line->Point2.Y))
 			myline.Point1 = myline.Point2 = line->Point1;
 		else
 			myline.Point1 = myline.Point2 = line->Point2;
@@ -107,24 +107,24 @@ pcb_point_t *pcb_adjust_insert_point(void)
 		return &InsertedPoint;
 	}
 	if (conf_core.editor.all_direction_lines) {
-		InsertedPoint.X = Crosshair.X;
-		InsertedPoint.Y = Crosshair.Y;
+		InsertedPoint.X = pcb_crosshair.X;
+		InsertedPoint.Y = pcb_crosshair.Y;
 		return &InsertedPoint;
 	}
-	if (Crosshair.X == line->Point1.X)
+	if (pcb_crosshair.X == line->Point1.X)
 		m1 = 2;											/* 2 signals infinite slope */
 	else {
-		m = (double) (Crosshair.X - line->Point1.X) / (Crosshair.Y - line->Point1.Y);
+		m = (double) (pcb_crosshair.X - line->Point1.X) / (pcb_crosshair.Y - line->Point1.Y);
 		m1 = 0;
 		if (m > PCB_TAN_30_DEGREE)
 			m1 = (m > PCB_TAN_60_DEGREE) ? 2 : 1;
 		else if (m < -PCB_TAN_30_DEGREE)
 			m1 = (m < -PCB_TAN_60_DEGREE) ? 2 : -1;
 	}
-	if (Crosshair.X == line->Point2.X)
+	if (pcb_crosshair.X == line->Point2.X)
 		m2 = 2;											/* 2 signals infinite slope */
 	else {
-		m = (double) (Crosshair.X - line->Point1.X) / (Crosshair.Y - line->Point1.Y);
+		m = (double) (pcb_crosshair.X - line->Point1.X) / (pcb_crosshair.Y - line->Point1.Y);
 		m2 = 0;
 		if (m > PCB_TAN_30_DEGREE)
 			m2 = (m > PCB_TAN_60_DEGREE) ? 2 : 1;

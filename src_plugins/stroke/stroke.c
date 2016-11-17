@@ -152,8 +152,8 @@ static void real_stroke_start(void)
 {
 	fprintf(stderr, "stroke: MIID!\n");
 	pcb_mid_stroke = pcb_true;
-	StrokeBox.X1 = Crosshair.X;
-	StrokeBox.Y1 = Crosshair.Y;
+	StrokeBox.X1 = pcb_crosshair.X;
+	StrokeBox.Y1 = pcb_crosshair.Y;
 }
 
 pcb_uninit_t hid_stroke_init(void)

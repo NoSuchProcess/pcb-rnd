@@ -92,8 +92,8 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 	ctx.rotate.center_y = Y;
 
 	/* move all the rubberband lines... and reset the counter */
-	ptr = Crosshair.AttachedObject.Rubberband;
-	while (Crosshair.AttachedObject.RubberbandN) {
+	ptr = pcb_crosshair.AttachedObject.Rubberband;
+	while (pcb_crosshair.AttachedObject.RubberbandN) {
 		changed = pcb_true;
 		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
 		pcb_undo_add_obj_to_rotate(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
@@ -115,7 +115,7 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 			pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);
 			DrawRat((pcb_rat_t *) ptr->Line);
 		}
-		Crosshair.AttachedObject.RubberbandN--;
+		pcb_crosshair.AttachedObject.RubberbandN--;
 		ptr++;
 	}
 	pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
@@ -137,7 +137,7 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 			pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			return;
 		}
-		Crosshair.AttachedObject.RubberbandN = 0;
+		pcb_crosshair.AttachedObject.RubberbandN = 0;
 		if (conf_core.editor.rubber_band_mode)
 			pcb_rubber_band_lookup_lines(type, ptr1, ptr2, ptr3);
 		if (type == PCB_TYPE_ELEMENT)

@@ -51,8 +51,8 @@ typedef struct {
 	int x, y;
 } point;
 
-pcb_crosshair_t Crosshair;  /* information about cursor settings */
-pcb_mark_t Marked;          /* a cross-hair mark */
+pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
+pcb_mark_t pcb_marked;          /* a cross-hair mark */
 
 
 /* ---------------------------------------------------------------------------
@@ -73,7 +73,7 @@ static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
 	moved_pv.X += x;
 	moved_pv.Y += y;
 
-	gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &moved_pv, pcb_true, pcb_false);
+	gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &moved_pv, pcb_true, pcb_false);
 }
 
 static void draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
@@ -86,20 +86,20 @@ static void draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pc
 
 	if (len_squared < 1000000) {
 		/* line too short, just draw it - TODO: magic value; with a proper geo lib this would be gone anyway */
-		gui->draw_line(Crosshair.GC, x1, y1, x2, y2);
+		gui->draw_line(pcb_crosshair.GC, x1, y1, x2, y2);
 		return;
 	}
 
 	/* first seg is drawn from x1, y1 with no rounding error due to n-1 == 0 */
 	for(n = 1; n < segs; n+=2)
-		gui->draw_line(Crosshair.GC,
+		gui->draw_line(pcb_crosshair.GC,
 			x1 + (dx * (double)(n-1) / (double)segs), y1 + (dy * (double)(n-1) / (double)segs),
 			x1 + (dx * (double)n / (double)segs), y1 + (dy * (double)n / (double)segs));
 
 
 	/* make sure the last segment is drawn properly to x2 and y2, don't leave
 	   room for rounding errors */
-	gui->draw_line(Crosshair.GC,
+	gui->draw_line(pcb_crosshair.GC,
 		x2 - (dx / (double)segs), y2 - (dy / (double)segs),
 		x2, y2);
 }
@@ -118,7 +118,7 @@ static void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, i
 				continue;
 
 			if (dash_last) {
-				draw_dashed_line(Crosshair.GC,
+				draw_dashed_line(pcb_crosshair.GC,
 									 polygon->Points[i].X + dx,
 									 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
 				break; /* skip normal line draw below */
@@ -126,7 +126,7 @@ static void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, i
 		}
 
 		/* normal contour line */
-		gui->draw_line(Crosshair.GC,
+		gui->draw_line(pcb_crosshair.GC,
 								 polygon->Points[i].X + dx,
 								 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
 	}
@@ -143,14 +143,14 @@ static void XORDrawAttachedArc(pcb_coord_t thick)
 	pcb_angle_t sa, dir;
 	pcb_coord_t wid = thick / 2;
 
-	wx = Crosshair.X - Crosshair.AttachedBox.Point1.X;
-	wy = Crosshair.Y - Crosshair.AttachedBox.Point1.Y;
+	wx = pcb_crosshair.X - pcb_crosshair.AttachedBox.Point1.X;
+	wy = pcb_crosshair.Y - pcb_crosshair.AttachedBox.Point1.Y;
 	if (wx == 0 && wy == 0)
 		return;
-	arc.X = Crosshair.AttachedBox.Point1.X;
-	arc.Y = Crosshair.AttachedBox.Point1.Y;
-	if (PCB_XOR(Crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
-		arc.X = Crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
+	arc.X = pcb_crosshair.AttachedBox.Point1.X;
+	arc.Y = pcb_crosshair.AttachedBox.Point1.Y;
+	if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
+		arc.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
 		sa = (wx >= 0) ? 0 : 180;
 #ifdef ARC45
 		if (coord_abs(wy) >= 2 * coord_abs(wx))
@@ -160,7 +160,7 @@ static void XORDrawAttachedArc(pcb_coord_t thick)
 			dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
 	}
 	else {
-		arc.Y = Crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
+		arc.Y = pcb_crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
 		sa = (wy >= 0) ? -90 : 90;
 #ifdef ARC45
 		if (coord_abs(wx) >= 2 * coord_abs(wy))
@@ -176,11 +176,11 @@ static void XORDrawAttachedArc(pcb_coord_t thick)
 	arc.Width = arc.Height = wy;
 	bx = pcb_arc_get_ends(&arc);
 	/*  sa = sa - 180; */
-	gui->draw_arc(Crosshair.GC, arc.X, arc.Y, wy + wid, wy + wid, sa, dir);
+	gui->draw_arc(pcb_crosshair.GC, arc.X, arc.Y, wy + wid, wy + wid, sa, dir);
 	if (wid > pixel_slop) {
-		gui->draw_arc(Crosshair.GC, arc.X, arc.Y, wy - wid, wy - wid, sa, dir);
-		gui->draw_arc(Crosshair.GC, bx->X1, bx->Y1, wid, wid, sa, -180 * SGN(dir));
-		gui->draw_arc(Crosshair.GC, bx->X2, bx->Y2, wid, wid, sa + dir, 180 * SGN(dir));
+		gui->draw_arc(pcb_crosshair.GC, arc.X, arc.Y, wy - wid, wy - wid, sa, dir);
+		gui->draw_arc(pcb_crosshair.GC, bx->X1, bx->Y1, wid, wid, sa, -180 * SGN(dir));
+		gui->draw_arc(pcb_crosshair.GC, bx->X2, bx->Y2, wid, wid, sa + dir, 180 * SGN(dir));
 	}
 }
 
@@ -200,12 +200,12 @@ static void XORDrawAttachedLine(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, 
 		h = 0.0;
 	ox = dy * h + 0.5 * SGN(dy);
 	oy = -(dx * h + 0.5 * SGN(dx));
-	gui->draw_line(Crosshair.GC, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
+	gui->draw_line(pcb_crosshair.GC, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
 	if (coord_abs(ox) >= pixel_slop || coord_abs(oy) >= pixel_slop) {
 		pcb_angle_t angle = atan2(dx, dy) * 57.295779;
-		gui->draw_line(Crosshair.GC, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
-		gui->draw_arc(Crosshair.GC, x1, y1, thick / 2, thick / 2, angle - 180, 180);
-		gui->draw_arc(Crosshair.GC, x2, y2, thick / 2, thick / 2, angle, 180);
+		gui->draw_line(pcb_crosshair.GC, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
+		gui->draw_arc(pcb_crosshair.GC, x1, y1, thick / 2, thick / 2, angle - 180, 180);
+		gui->draw_arc(pcb_crosshair.GC, x2, y2, thick / 2, thick / 2, angle, 180);
 	}
 }
 
@@ -216,30 +216,30 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 {
 	/* if no silkscreen, draw the bounding box */
 	if (arclist_length(&Element->Arc) == 0 && linelist_length(&Element->Line) == 0) {
-		gui->draw_line(Crosshair.GC,
+		gui->draw_line(pcb_crosshair.GC,
 									 DX + Element->BoundingBox.X1,
 									 DY + Element->BoundingBox.Y1, DX + Element->BoundingBox.X1, DY + Element->BoundingBox.Y2);
-		gui->draw_line(Crosshair.GC,
+		gui->draw_line(pcb_crosshair.GC,
 									 DX + Element->BoundingBox.X1,
 									 DY + Element->BoundingBox.Y2, DX + Element->BoundingBox.X2, DY + Element->BoundingBox.Y2);
-		gui->draw_line(Crosshair.GC,
+		gui->draw_line(pcb_crosshair.GC,
 									 DX + Element->BoundingBox.X2,
 									 DY + Element->BoundingBox.Y2, DX + Element->BoundingBox.X2, DY + Element->BoundingBox.Y1);
-		gui->draw_line(Crosshair.GC,
+		gui->draw_line(pcb_crosshair.GC,
 									 DX + Element->BoundingBox.X2,
 									 DY + Element->BoundingBox.Y1, DX + Element->BoundingBox.X1, DY + Element->BoundingBox.Y1);
 	}
 	else {
 		PCB_ELEMENT_PCB_LINE_LOOP(Element);
 		{
-			gui->draw_line(Crosshair.GC, DX + line->Point1.X, DY + line->Point1.Y, DX + line->Point2.X, DY + line->Point2.Y);
+			gui->draw_line(pcb_crosshair.GC, DX + line->Point1.X, DY + line->Point1.Y, DX + line->Point2.X, DY + line->Point2.Y);
 		}
 		END_LOOP;
 
 		/* arc coordinates and angles have to be converted to X11 notation */
 		PCB_ARC_LOOP(Element);
 		{
-			gui->draw_arc(Crosshair.GC, DX + arc->X, DY + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+			gui->draw_arc(pcb_crosshair.GC, DX + arc->X, DY + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 		}
 		END_LOOP;
 	}
@@ -261,18 +261,18 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 			moved_pad.Point2.X += DX;
 			moved_pad.Point2.Y += DY;
 
-			gui->thindraw_pcb_pad(Crosshair.GC, &moved_pad, pcb_false, pcb_false);
+			gui->thindraw_pcb_pad(pcb_crosshair.GC, &moved_pad, pcb_false, pcb_false);
 		}
 	}
 	END_LOOP;
 	/* mark */
-	gui->draw_line(Crosshair.GC,
+	gui->draw_line(pcb_crosshair.GC,
 								 Element->MarkX + DX - EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY - EMARK_SIZE);
-	gui->draw_line(Crosshair.GC,
+	gui->draw_line(pcb_crosshair.GC,
 								 Element->MarkX + DX + EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY - EMARK_SIZE);
-	gui->draw_line(Crosshair.GC,
+	gui->draw_line(pcb_crosshair.GC,
 								 Element->MarkX + DX - EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY + EMARK_SIZE);
-	gui->draw_line(Crosshair.GC,
+	gui->draw_line(pcb_crosshair.GC,
 								 Element->MarkX + DX + EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY + EMARK_SIZE);
 }
 
@@ -285,8 +285,8 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 	pcb_coord_t x, y;
 
 	/* set offset */
-	x = Crosshair.X - Buffer->X;
-	y = Crosshair.Y - Buffer->Y;
+	x = pcb_crosshair.X - Buffer->X;
+	y = pcb_crosshair.Y - Buffer->Y;
 
 	/* draw all visible layers */
 	for (i = 0; i < max_copper_layer + 2; i++)
@@ -300,18 +300,18 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 					y +line->Point1.Y, x +line->Point2.X,
 					y +line->Point2.Y, line->Thickness);
 */
-				gui->draw_line(Crosshair.GC, x + line->Point1.X, y + line->Point1.Y, x + line->Point2.X, y + line->Point2.Y);
+				gui->draw_line(pcb_crosshair.GC, x + line->Point1.X, y + line->Point1.Y, x + line->Point2.X, y + line->Point2.Y);
 			}
 			END_LOOP;
 			PCB_ARC_LOOP(layer);
 			{
-				gui->draw_arc(Crosshair.GC, x + arc->X, y + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+				gui->draw_arc(pcb_crosshair.GC, x + arc->X, y + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 			}
 			END_LOOP;
 			PCB_TEXT_LOOP(layer);
 			{
 				pcb_box_t *box = &text->BoundingBox;
-				gui->draw_rect(Crosshair.GC, x + box->X1, y + box->Y1, x + box->X2, y + box->Y2);
+				gui->draw_rect(pcb_crosshair.GC, x + box->X1, y + box->Y1, x + box->X2, y + box->Y2);
 			}
 			END_LOOP;
 			/* the tmp polygon has n+1 points because the first
@@ -347,12 +347,12 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
  */
 static void XORDrawInsertPointObject(void)
 {
-	pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
-	pcb_point_t *point = (pcb_point_t *) Crosshair.AttachedObject.Ptr3;
+	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
+	pcb_point_t *point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 
-	if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
-		gui->draw_line(Crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
-		gui->draw_line(Crosshair.GC, point->X, point->Y, line->Point2.X, line->Point2.Y);
+	if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
+		gui->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
+		gui->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point2.X, line->Point2.Y);
 	}
 }
 
@@ -363,19 +363,19 @@ static void XORDrawMoveOrpcb_copy_obj(void)
 {
 	pcb_rubberband_t *ptr;
 	pcb_cardinal_t i;
-	pcb_coord_t dx = Crosshair.X - Crosshair.AttachedObject.X, dy = Crosshair.Y - Crosshair.AttachedObject.Y;
+	pcb_coord_t dx = pcb_crosshair.X - pcb_crosshair.AttachedObject.X, dy = pcb_crosshair.Y - pcb_crosshair.AttachedObject.Y;
 
-	switch (Crosshair.AttachedObject.Type) {
+	switch (pcb_crosshair.AttachedObject.Type) {
 	case PCB_TYPE_VIA:
 		{
-			pcb_pin_t *via = (pcb_pin_t *) Crosshair.AttachedObject.Ptr1;
+			pcb_pin_t *via = (pcb_pin_t *) pcb_crosshair.AttachedObject.Ptr1;
 			thindraw_moved_pv(via, dx, dy);
 			break;
 		}
 
 	case PCB_TYPE_LINE:
 		{
-			pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
+			pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
 
 			XORDrawAttachedLine(line->Point1.X + dx, line->Point1.Y + dy, line->Point2.X + dx, line->Point2.Y + dy, line->Thickness);
 			break;
@@ -383,15 +383,15 @@ static void XORDrawMoveOrpcb_copy_obj(void)
 
 	case PCB_TYPE_ARC:
 		{
-			pcb_arc_t *Arc = (pcb_arc_t *) Crosshair.AttachedObject.Ptr2;
+			pcb_arc_t *Arc = (pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2;
 
-			gui->draw_arc(Crosshair.GC, Arc->X + dx, Arc->Y + dy, Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta);
+			gui->draw_arc(pcb_crosshair.GC, Arc->X + dx, Arc->Y + dy, Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta);
 			break;
 		}
 
 	case PCB_TYPE_POLYGON:
 		{
-			pcb_polygon_t *polygon = (pcb_polygon_t *) Crosshair.AttachedObject.Ptr2;
+			pcb_polygon_t *polygon = (pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2;
 
 			/* the tmp polygon has n+1 points because the first
 			 * and the last one are set to the same coordinates
@@ -405,8 +405,8 @@ static void XORDrawMoveOrpcb_copy_obj(void)
 			pcb_line_t *line;
 			pcb_point_t *point;
 
-			line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
-			point = (pcb_point_t *) Crosshair.AttachedObject.Ptr3;
+			line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
+			point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 			if (point == &line->Point1)
 				XORDrawAttachedLine(point->X + dx, point->Y + dy, line->Point2.X, line->Point2.Y, line->Thickness);
 			else
@@ -420,8 +420,8 @@ static void XORDrawMoveOrpcb_copy_obj(void)
 			pcb_point_t *point;
 			pcb_cardinal_t point_idx, prev, next;
 
-			polygon = (pcb_polygon_t *) Crosshair.AttachedObject.Ptr2;
-			point = (pcb_point_t *) Crosshair.AttachedObject.Ptr3;
+			polygon = (pcb_polygon_t *) pcb_crosshair.AttachedObject.Ptr2;
+			point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 			point_idx = pcb_poly_point_idx(polygon, point);
 
 			/* get previous and following point */
@@ -429,24 +429,24 @@ static void XORDrawMoveOrpcb_copy_obj(void)
 			next = pcb_poly_contour_next_point(polygon, point_idx);
 
 			/* draw the two segments */
-			gui->draw_line(Crosshair.GC, polygon->Points[prev].X, polygon->Points[prev].Y, point->X + dx, point->Y + dy);
-			gui->draw_line(Crosshair.GC, point->X + dx, point->Y + dy, polygon->Points[next].X, polygon->Points[next].Y);
+			gui->draw_line(pcb_crosshair.GC, polygon->Points[prev].X, polygon->Points[prev].Y, point->X + dx, point->Y + dy);
+			gui->draw_line(pcb_crosshair.GC, point->X + dx, point->Y + dy, polygon->Points[next].X, polygon->Points[next].Y);
 			break;
 		}
 
 	case PCB_TYPE_ELEMENT_NAME:
 		{
 			/* locate the element "mark" and draw an association line from crosshair to it */
-			pcb_element_t *element = (pcb_element_t *) Crosshair.AttachedObject.Ptr1;
+			pcb_element_t *element = (pcb_element_t *) pcb_crosshair.AttachedObject.Ptr1;
 
-			gui->draw_line(Crosshair.GC, element->MarkX, element->MarkY, Crosshair.X, Crosshair.Y);
+			gui->draw_line(pcb_crosshair.GC, element->MarkX, element->MarkY, pcb_crosshair.X, pcb_crosshair.Y);
 			/* fall through to move the text as a box outline */
 		}
 	case PCB_TYPE_TEXT:
 		{
-			pcb_text_t *text = (pcb_text_t *) Crosshair.AttachedObject.Ptr2;
+			pcb_text_t *text = (pcb_text_t *) pcb_crosshair.AttachedObject.Ptr2;
 			pcb_box_t *box = &text->BoundingBox;
-			gui->draw_rect(Crosshair.GC, box->X1 + dx, box->Y1 + dy, box->X2 + dx, box->Y2 + dy);
+			gui->draw_rect(pcb_crosshair.GC, box->X1 + dx, box->Y1 + dy, box->X2 + dx, box->Y2 + dy);
 			break;
 		}
 
@@ -454,13 +454,13 @@ static void XORDrawMoveOrpcb_copy_obj(void)
 	case PCB_TYPE_PAD:
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_ELEMENT:
-		XORDrawElement((pcb_element_t *) Crosshair.AttachedObject.Ptr2, dx, dy);
+		XORDrawElement((pcb_element_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy);
 		break;
 	}
 
 	/* draw the attached rubberband lines too */
-	i = Crosshair.AttachedObject.RubberbandN;
-	ptr = Crosshair.AttachedObject.Rubberband;
+	i = pcb_crosshair.AttachedObject.RubberbandN;
+	ptr = pcb_crosshair.AttachedObject.Rubberband;
 	while (i) {
 		pcb_point_t *point1, *point2;
 
@@ -498,22 +498,22 @@ void pcb_draw_attached(void)
 		{
 			/* Make a dummy via structure to draw from */
 			pcb_pin_t via;
-			via.X = Crosshair.X;
-			via.Y = Crosshair.Y;
+			via.X = pcb_crosshair.X;
+			via.Y = pcb_crosshair.Y;
 			via.Thickness = conf_core.design.via_thickness;
 			via.Clearance = 2 * conf_core.design.clearance;
 			via.DrillingHole = conf_core.design.via_drilling_hole;
 			via.Mask = 0;
 			via.Flags = pcb_no_flags();
 
-			gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &via, pcb_true, pcb_false);
+			gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &via, pcb_true, pcb_false);
 
 			if (conf_core.editor.show_drc) {
 				/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
 				via.Mask = conf_core.design.via_thickness + PCB->Bloat * 2;
-				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
-				gui->thindraw_pcb_pv(Crosshair.GC, Crosshair.GC, &via, pcb_false, pcb_true);
-				gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
+				gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+				gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &via, pcb_false, pcb_true);
+				gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;
 		}
@@ -522,24 +522,24 @@ void pcb_draw_attached(void)
 	case PCB_MODE_POLYGON:
 	case PCB_MODE_POLYGON_HOLE:
 		/* draw only if starting point is set */
-		if (Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-			gui->draw_line(Crosshair.GC,
-										 Crosshair.AttachedLine.Point1.X,
-										 Crosshair.AttachedLine.Point1.Y, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y);
+		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
+			gui->draw_line(pcb_crosshair.GC,
+										 pcb_crosshair.AttachedLine.Point1.X,
+										 pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
 
 		/* draw attached polygon only if in PCB_MODE_POLYGON or PCB_MODE_POLYGON_HOLE */
-		if (Crosshair.AttachedPolygon.PointN > 1) {
-			XORPolygon(&Crosshair.AttachedPolygon, 0, 0, 1);
+		if (pcb_crosshair.AttachedPolygon.PointN > 1) {
+			XORPolygon(&pcb_crosshair.AttachedPolygon, 0, 0, 1);
 		}
 		break;
 
 	case PCB_MODE_ARC:
-		if (Crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
+		if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
 			XORDrawAttachedArc(conf_core.design.line_thickness);
 			if (conf_core.editor.show_drc) {
-				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
+				gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
 				XORDrawAttachedArc(conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
-				gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
+				gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 
 		}
@@ -547,27 +547,27 @@ void pcb_draw_attached(void)
 
 	case PCB_MODE_LINE:
 		/* draw only if starting point exists and the line has length */
-		if (Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && Crosshair.AttachedLine.draw) {
-			XORDrawAttachedLine(Crosshair.AttachedLine.Point1.X,
-													Crosshair.AttachedLine.Point1.Y,
-													Crosshair.AttachedLine.Point2.X,
-													Crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
+		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && pcb_crosshair.AttachedLine.draw) {
+			XORDrawAttachedLine(pcb_crosshair.AttachedLine.Point1.X,
+													pcb_crosshair.AttachedLine.Point1.Y,
+													pcb_crosshair.AttachedLine.Point2.X,
+													pcb_crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
 			/* draw two lines ? */
 			if (conf_core.editor.line_refraction)
-				XORDrawAttachedLine(Crosshair.AttachedLine.Point2.X,
-														Crosshair.AttachedLine.Point2.Y,
-														Crosshair.X, Crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
+				XORDrawAttachedLine(pcb_crosshair.AttachedLine.Point2.X,
+														pcb_crosshair.AttachedLine.Point2.Y,
+														pcb_crosshair.X, pcb_crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness);
 			if (conf_core.editor.show_drc) {
-				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
-				XORDrawAttachedLine(Crosshair.AttachedLine.Point1.X,
-														Crosshair.AttachedLine.Point1.Y,
-														Crosshair.AttachedLine.Point2.X,
-														Crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
+				gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+				XORDrawAttachedLine(pcb_crosshair.AttachedLine.Point1.X,
+														pcb_crosshair.AttachedLine.Point1.Y,
+														pcb_crosshair.AttachedLine.Point2.X,
+														pcb_crosshair.AttachedLine.Point2.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
 				if (conf_core.editor.line_refraction)
-					XORDrawAttachedLine(Crosshair.AttachedLine.Point2.X,
-															Crosshair.AttachedLine.Point2.Y,
-															Crosshair.X, Crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
-				gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
+					XORDrawAttachedLine(pcb_crosshair.AttachedLine.Point2.X,
+															pcb_crosshair.AttachedLine.Point2.Y,
+															pcb_crosshair.X, pcb_crosshair.Y, PCB->RatDraw ? 10 : conf_core.design.line_thickness + 2 * (PCB->Bloat + 1));
+				gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 		}
 		break;
@@ -587,14 +587,14 @@ void pcb_draw_attached(void)
 	}
 
 	/* an attached box does not depend on a special mode */
-	if (Crosshair.AttachedBox.State == PCB_CH_STATE_SECOND || Crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {
+	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND || pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {
 		pcb_coord_t x1, y1, x2, y2;
 
-		x1 = Crosshair.AttachedBox.Point1.X;
-		y1 = Crosshair.AttachedBox.Point1.Y;
-		x2 = Crosshair.AttachedBox.Point2.X;
-		y2 = Crosshair.AttachedBox.Point2.Y;
-		gui->draw_rect(Crosshair.GC, x1, y1, x2, y2);
+		x1 = pcb_crosshair.AttachedBox.Point1.X;
+		y1 = pcb_crosshair.AttachedBox.Point1.Y;
+		x2 = pcb_crosshair.AttachedBox.Point2.X;
+		y2 = pcb_crosshair.AttachedBox.Point2.Y;
+		gui->draw_rect(pcb_crosshair.GC, x1, y1, x2, y2);
 	}
 }
 
@@ -607,11 +607,11 @@ void pcb_draw_mark(void)
 	pcb_coord_t ms = conf_core.appearance.mark_size;
 
 	/* Mark is not drawn when it is not set */
-	if (!Marked.status)
+	if (!pcb_marked.status)
 		return;
 
-	gui->draw_line(Crosshair.GC, Marked.X - ms, Marked.Y - ms, Marked.X + ms, Marked.Y + ms);
-	gui->draw_line(Crosshair.GC, Marked.X + ms, Marked.Y - ms, Marked.X - ms, Marked.Y + ms);
+	gui->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
+	gui->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
 }
 
 /* ---------------------------------------------------------------------------
@@ -670,7 +670,7 @@ void pcb_notify_mark_change(pcb_bool changes_complete)
 
 
 /* ---------------------------------------------------------------------------
- * Convenience for plugins using the old {Hide,Restore}Crosshair API.
+ * Convenience for plugins using the old {Hide,Restore}pcb_crosshair API.
  * This links up to notify the GUI of the expected changes using the new APIs.
  *
  * Use of this old API is deprecated, as the names don't necessarily reflect
@@ -926,7 +926,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 	/* Pick the nearest grid-point in the x or y direction
 	 * to align with, then adjust until we hit the line
 	 */
-	ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE, &ptr1, &ptr2, &ptr3);
+	ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE, &ptr1, &ptr2, &ptr3);
 
 	if (ans == PCB_TYPE_NONE)
 		return;
@@ -939,8 +939,8 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 	 */
 	if ((conf_core.editor.mode != PCB_MODE_LINE || CURRENT != ptr1) &&
 			(conf_core.editor.mode != PCB_MODE_MOVE ||
-			 Crosshair.AttachedObject.Ptr1 != ptr1 ||
-			 Crosshair.AttachedObject.Type != PCB_TYPE_LINE_POINT || Crosshair.AttachedObject.Ptr2 == line))
+			 pcb_crosshair.AttachedObject.Ptr1 != ptr1 ||
+			 pcb_crosshair.AttachedObject.Type != PCB_TYPE_LINE_POINT || pcb_crosshair.AttachedObject.Ptr2 == line))
 		return;
 
 	dx = line->Point2.X - line->Point1.X;
@@ -1000,37 +1000,37 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	struct snap_data snap_data;
 	int ans;
 
-	Crosshair.X = PCB_CLAMP(X, Crosshair.MinX, Crosshair.MaxX);
-	Crosshair.Y = PCB_CLAMP(Y, Crosshair.MinY, Crosshair.MaxY);
+	pcb_crosshair.X = PCB_CLAMP(X, pcb_crosshair.MinX, pcb_crosshair.MaxX);
+	pcb_crosshair.Y = PCB_CLAMP(Y, pcb_crosshair.MinY, pcb_crosshair.MaxY);
 
 	if (PCB->RatDraw) {
 		nearest_grid_x = -PCB_MIL_TO_COORD(6);
 		nearest_grid_y = -PCB_MIL_TO_COORD(6);
 	}
 	else {
-		nearest_grid_x = pcb_grid_fit(Crosshair.X, PCB->Grid, PCB->GridOffsetX);
-		nearest_grid_y = pcb_grid_fit(Crosshair.Y, PCB->Grid, PCB->GridOffsetY);
+		nearest_grid_x = pcb_grid_fit(pcb_crosshair.X, PCB->Grid, PCB->GridOffsetX);
+		nearest_grid_y = pcb_grid_fit(pcb_crosshair.Y, PCB->Grid, PCB->GridOffsetY);
 
-		if (Marked.status && conf_core.editor.orthogonal_moves) {
-			pcb_coord_t dx = Crosshair.X - Marked.X;
-			pcb_coord_t dy = Crosshair.Y - Marked.Y;
+		if (pcb_marked.status && conf_core.editor.orthogonal_moves) {
+			pcb_coord_t dx = pcb_crosshair.X - pcb_marked.X;
+			pcb_coord_t dy = pcb_crosshair.Y - pcb_marked.Y;
 			if (PCB_ABS(dx) > PCB_ABS(dy))
-				nearest_grid_y = Marked.Y;
+				nearest_grid_y = pcb_marked.Y;
 			else
-				nearest_grid_x = Marked.X;
+				nearest_grid_x = pcb_marked.X;
 		}
 
 	}
 
-	snap_data.crosshair = &Crosshair;
-	snap_data.nearest_sq_dist = crosshair_sq_dist(&Crosshair, nearest_grid_x, nearest_grid_y);
+	snap_data.crosshair = &pcb_crosshair;
+	snap_data.nearest_sq_dist = crosshair_sq_dist(&pcb_crosshair, nearest_grid_x, nearest_grid_y);
 	snap_data.nearest_is_grid = pcb_true;
 	snap_data.x = nearest_grid_x;
 	snap_data.y = nearest_grid_y;
 
 	ans = PCB_TYPE_NONE;
 	if (!PCB->RatDraw)
-		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3);
 
 	if (ans & PCB_TYPE_ELEMENT) {
 		pcb_element_t *el = (pcb_element_t *) ptr1;
@@ -1039,15 +1039,15 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (PCB->RatDraw || conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid self-snapping when moving */
 	if (ans != PCB_TYPE_NONE &&
-			conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == Crosshair.AttachedObject.Ptr1)
+			conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == pcb_crosshair.AttachedObject.Ptr1)
 		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE &&
-			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
+			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
 		pcb_pad_t *pad = (pcb_pad_t *) ptr2;
 		pcb_layer_t *desired_layer;
 		pcb_cardinal_t desired_group;
@@ -1055,8 +1055,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		int found_our_layer = pcb_false;
 
 		desired_layer = CURRENT;
-		if (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT) {
-			desired_layer = (pcb_layer_t *) Crosshair.AttachedObject.Ptr1;
+		if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT) {
+			desired_layer = (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1;
 		}
 
 		/* find layer groups of the component side and solder side */
@@ -1084,11 +1084,11 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (PCB->RatDraw || conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid self-snapping when moving */
 	if (ans != PCB_TYPE_NONE &&
-			conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == Crosshair.AttachedObject.Ptr1)
+			conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT && ptr1 == pcb_crosshair.AttachedObject.Ptr1)
 		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE) {
@@ -1098,10 +1098,10 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping vias to any other vias */
-	if (conf_core.editor.mode == PCB_MODE_MOVE && Crosshair.AttachedObject.Type == PCB_TYPE_VIA && (ans & PCB_TYPEMASK_PIN))
+	if (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_VIA && (ans & PCB_TYPEMASK_PIN))
 		ans = PCB_TYPE_NONE;
 
 	if (ans != PCB_TYPE_NONE) {
@@ -1111,7 +1111,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 
 	if (ans != PCB_TYPE_NONE) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
@@ -1126,7 +1126,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_POLYGON_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_POLYGON_POINT, &ptr1, &ptr2, &ptr3);
 
 	if (ans != PCB_TYPE_NONE) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
@@ -1134,25 +1134,25 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	}
 
 	if (snap_data.x >= 0 && snap_data.y >= 0) {
-		Crosshair.X = snap_data.x;
-		Crosshair.Y = snap_data.y;
+		pcb_crosshair.X = snap_data.x;
+		pcb_crosshair.Y = snap_data.y;
 	}
 
 	if (conf_core.editor.highlight_on_point)
-		onpoint_work(&Crosshair, Crosshair.X, Crosshair.Y);
+		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
 
 	if (conf_core.editor.mode == PCB_MODE_ARROW) {
-		ans = pcb_search_grid_slop(Crosshair.X, Crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_TYPE_NONE)
 			pcb_hid_action("PointCursor");
 		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2))
 			pcb_hid_actionl("PointCursor", "True", NULL);
 	}
 
-	if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
+	if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
 		EnforceLineDRC();
 
-	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_DO_NOTHING);
+	gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, HID_SC_DO_NOTHING);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1160,7 +1160,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
  */
 void pcb_crosshair_move_relative(pcb_coord_t DeltaX, pcb_coord_t DeltaY)
 {
-	pcb_crosshair_grid_fit(Crosshair.X + DeltaX, Crosshair.Y + DeltaY);
+	pcb_crosshair_grid_fit(pcb_crosshair.X + DeltaX, pcb_crosshair.Y + DeltaY);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1170,21 +1170,21 @@ void pcb_crosshair_move_relative(pcb_coord_t DeltaX, pcb_coord_t DeltaY)
 pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
 {
 	pcb_coord_t x, y, z;
-	x = Crosshair.X;
-	y = Crosshair.Y;
+	x = pcb_crosshair.X;
+	y = pcb_crosshair.Y;
 	pcb_crosshair_grid_fit(X, Y);
-	if (Crosshair.X != x || Crosshair.Y != y) {
+	if (pcb_crosshair.X != x || pcb_crosshair.Y != y) {
 		/* back up to old position to notify the GUI
 		 * (which might want to erase the old crosshair) */
-		z = Crosshair.X;
-		Crosshair.X = x;
+		z = pcb_crosshair.X;
+		pcb_crosshair.X = x;
 		x = z;
-		z = Crosshair.Y;
-		Crosshair.Y = y;
+		z = pcb_crosshair.Y;
+		pcb_crosshair.Y = y;
 		pcb_notify_crosshair_change(pcb_false);	/* Our caller notifies when it has done */
 		/* now move forward again */
-		Crosshair.X = x;
-		Crosshair.Y = z;
+		pcb_crosshair.X = x;
+		pcb_crosshair.Y = z;
 		return (pcb_true);
 	}
 	return (pcb_false);
@@ -1195,10 +1195,10 @@ pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
  */
 void pcb_crosshair_set_range(pcb_coord_t MinX, pcb_coord_t MinY, pcb_coord_t MaxX, pcb_coord_t MaxY)
 {
-	Crosshair.MinX = MAX(0, MinX);
-	Crosshair.MinY = MAX(0, MinY);
-	Crosshair.MaxX = MIN(PCB->MaxWidth, MaxX);
-	Crosshair.MaxY = MIN(PCB->MaxHeight, MaxY);
+	pcb_crosshair.MinX = MAX(0, MinX);
+	pcb_crosshair.MinY = MAX(0, MinY);
+	pcb_crosshair.MaxX = MIN(PCB->MaxWidth, MaxX);
+	pcb_crosshair.MaxY = MIN(PCB->MaxHeight, MaxY);
 
 	/* force update of position */
 	pcb_crosshair_move_relative(0, 0);
@@ -1213,7 +1213,7 @@ void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
 	PCB->Grid = 1;
 	if (pcb_crosshair_move_absolute(X, Y))
 		pcb_notify_crosshair_change(pcb_true);
-	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_WARP_POINTER);
+	gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, HID_SC_WARP_POINTER);
 	PCB->Grid = save_grid;
 }
 
@@ -1223,27 +1223,27 @@ void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
  */
 void pcb_crosshair_init(void)
 {
-	Crosshair.GC = gui->make_gc();
+	pcb_crosshair.GC = gui->make_gc();
 
-	gui->set_color(Crosshair.GC, conf_core.appearance.color.crosshair);
-	gui->set_draw_xor(Crosshair.GC, 1);
-	gui->set_line_cap(Crosshair.GC, Trace_Cap);
-	gui->set_line_width(Crosshair.GC, 1);
+	gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+	gui->set_draw_xor(pcb_crosshair.GC, 1);
+	gui->set_line_cap(pcb_crosshair.GC, Trace_Cap);
+	gui->set_line_width(pcb_crosshair.GC, 1);
 
 	/* set initial shape */
-	Crosshair.shape = pcb_ch_shape_basic;
+	pcb_crosshair.shape = pcb_ch_shape_basic;
 
 	/* set default limits */
-	Crosshair.MinX = Crosshair.MinY = 0;
-	Crosshair.MaxX = PCB->MaxWidth;
-	Crosshair.MaxY = PCB->MaxHeight;
+	pcb_crosshair.MinX = pcb_crosshair.MinY = 0;
+	pcb_crosshair.MaxX = PCB->MaxWidth;
+	pcb_crosshair.MaxY = PCB->MaxHeight;
 
 	/* Initialize the onpoint data. */
-	memset(&Crosshair.onpoint_objs, 0, sizeof(vtop_t));
-	memset(&Crosshair.old_onpoint_objs, 0, sizeof(vtop_t));
+	memset(&pcb_crosshair.onpoint_objs, 0, sizeof(vtop_t));
+	memset(&pcb_crosshair.old_onpoint_objs, 0, sizeof(vtop_t));
 
 	/* clear the mark */
-	Marked.status = pcb_false;
+	pcb_marked.status = pcb_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1251,8 +1251,8 @@ void pcb_crosshair_init(void)
  */
 void pcb_crosshair_uninit(void)
 {
-	pcb_poly_free_fields(&Crosshair.AttachedPolygon);
-	gui->destroy_gc(Crosshair.GC);
+	pcb_poly_free_fields(&pcb_crosshair.AttachedPolygon);
+	gui->destroy_gc(pcb_crosshair.GC);
 }
 
 /************************* mode *************************************/
@@ -1303,9 +1303,9 @@ void pcb_crosshair_set_mode(int Mode)
 	recursing = pcb_true;
 	pcb_notify_crosshair_change(pcb_false);
 	addedLines = 0;
-	Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
-	Crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	Crosshair.AttachedPolygon.PointN = 0;
+	pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedPolygon.PointN = 0;
 	if (PCB->RatDraw) {
 		if (Mode == PCB_MODE_ARC || Mode == PCB_MODE_RECTANGLE ||
 				Mode == PCB_MODE_VIA || Mode == PCB_MODE_POLYGON ||
@@ -1314,18 +1314,18 @@ void pcb_crosshair_set_mode(int Mode)
 			Mode = PCB_MODE_NO;
 		}
 	}
-	if (conf_core.editor.mode == PCB_MODE_LINE && Mode == PCB_MODE_ARC && Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
-		Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-		Crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
-		Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Crosshair.AttachedLine.Point1.X;
-		Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedLine.Point1.Y;
+	if (conf_core.editor.mode == PCB_MODE_LINE && Mode == PCB_MODE_ARC && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
+		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
+		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
 		pcb_adjust_attached_objects();
 	}
-	else if (conf_core.editor.mode == PCB_MODE_ARC && Mode == PCB_MODE_LINE && Crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
-		Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-		Crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
-		Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.AttachedBox.Point1.X;
-		Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedBox.Point1.Y;
+	else if (conf_core.editor.mode == PCB_MODE_ARC && Mode == PCB_MODE_LINE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
+		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.AttachedBox.Point1.X;
+		pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y;
 		sprintf(sMode, "%d", Mode);
 		conf_set(CFR_DESIGN, "editor/mode", -1, sMode, POL_OVERWRITE);
 		pcb_adjust_attached_objects();
@@ -1333,8 +1333,8 @@ void pcb_crosshair_set_mode(int Mode)
 	else {
 		if (conf_core.editor.mode == PCB_MODE_ARC || conf_core.editor.mode == PCB_MODE_LINE)
 			pcb_crosshair_set_local_ref(0, 0, pcb_false);
-		Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-		Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		if (Mode == PCB_MODE_LINE && conf_core.editor.auto_drc) {
 			if (pcb_reset_conns(pcb_true)) {
 				pcb_undo_inc_serial();
@@ -1369,17 +1369,17 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 	if (Showing) {
 		pcb_notify_mark_change(pcb_false);
 		if (count == 0)
-			old = Marked;
-		Marked.X = X;
-		Marked.Y = Y;
-		Marked.status = pcb_true;
+			old = pcb_marked;
+		pcb_marked.X = X;
+		pcb_marked.Y = Y;
+		pcb_marked.status = pcb_true;
 		count++;
 		pcb_notify_mark_change(pcb_true);
 	}
 	else if (count > 0) {
 		pcb_notify_mark_change(pcb_false);
 		count = 0;
-		Marked = old;
+		pcb_marked = old;
 		pcb_notify_mark_change(pcb_true);
 	}
 }

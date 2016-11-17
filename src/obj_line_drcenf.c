@@ -44,7 +44,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way);
  */
 void AdjustAttachedLine(void)
 {
-	pcb_attached_line_t *line = &Crosshair.AttachedLine;
+	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 
 	/* I need at least one point */
 	if (line->State == PCB_CH_STATE_FIRST)
@@ -58,8 +58,8 @@ void AdjustAttachedLine(void)
 		line->draw = pcb_true;
 	/* no 45 degree lines required */
 	if (PCB->RatDraw || conf_core.editor.all_direction_lines) {
-		line->Point2.X = Crosshair.X;
-		line->Point2.Y = Crosshair.Y;
+		line->Point2.X = pcb_crosshair.X;
+		line->Point2.Y = pcb_crosshair.Y;
 		return;
 	}
 	FortyFiveLine(line);
@@ -83,8 +83,8 @@ void FortyFiveLine(pcb_attached_line_t *Line)
 	double m;
 
 	/* first calculate direction of line */
-	dx = Crosshair.X - Line->Point1.X;
-	dy = Crosshair.Y - Line->Point1.Y;
+	dx = pcb_crosshair.X - Line->Point1.X;
+	dy = pcb_crosshair.Y - Line->Point1.Y;
 
 	if (!dx) {
 		if (!dy)
@@ -113,12 +113,12 @@ void FortyFiveLine(pcb_attached_line_t *Line)
 	case 0:
 	case 4:
 		Line->Point2.X = Line->Point1.X;
-		Line->Point2.Y = Crosshair.Y;
+		Line->Point2.Y = pcb_crosshair.Y;
 		break;
 
 	case 2:
 	case 6:
-		Line->Point2.X = Crosshair.X;
+		Line->Point2.X = pcb_crosshair.X;
 		Line->Point2.Y = Line->Point1.Y;
 		break;
 
@@ -150,9 +150,9 @@ void FortyFiveLine(pcb_attached_line_t *Line)
 void AdjustTwoLine(pcb_bool way)
 {
 	pcb_coord_t dx, dy;
-	pcb_attached_line_t *line = &Crosshair.AttachedLine;
+	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 
-	if (Crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 		return;
 	/* don't draw outline when ctrl key is pressed */
 	if (gui->control_is_pressed()) {
@@ -162,32 +162,32 @@ void AdjustTwoLine(pcb_bool way)
 	else
 		line->draw = pcb_true;
 	if (conf_core.editor.all_direction_lines) {
-		line->Point2.X = Crosshair.X;
-		line->Point2.Y = Crosshair.Y;
+		line->Point2.X = pcb_crosshair.X;
+		line->Point2.Y = pcb_crosshair.Y;
 		return;
 	}
 	/* swap the modes if shift is held down */
 	if (gui->shift_is_pressed())
 		way = !way;
-	dx = Crosshair.X - line->Point1.X;
-	dy = Crosshair.Y - line->Point1.Y;
+	dx = pcb_crosshair.X - line->Point1.X;
+	dy = pcb_crosshair.Y - line->Point1.Y;
 	if (!way) {
 		if (coord_abs(dx) > coord_abs(dy)) {
-			line->Point2.X = Crosshair.X - SGN(dx) * coord_abs(dy);
+			line->Point2.X = pcb_crosshair.X - SGN(dx) * coord_abs(dy);
 			line->Point2.Y = line->Point1.Y;
 		}
 		else {
 			line->Point2.X = line->Point1.X;
-			line->Point2.Y = Crosshair.Y - SGN(dy) * coord_abs(dx);
+			line->Point2.Y = pcb_crosshair.Y - SGN(dy) * coord_abs(dx);
 		}
 	}
 	else {
 		if (coord_abs(dx) > coord_abs(dy)) {
 			line->Point2.X = line->Point1.X + SGN(dx) * coord_abs(dy);
-			line->Point2.Y = Crosshair.Y;
+			line->Point2.Y = pcb_crosshair.Y;
 		}
 		else {
-			line->Point2.X = Crosshair.X;
+			line->Point2.X = pcb_crosshair.X;
 			line->Point2.Y = line->Point1.Y + SGN(dy) * coord_abs(dx);;
 		}
 	}
@@ -266,8 +266,8 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 	line1.Thickness = conf_core.design.line_thickness + 2 * (PCB->Bloat + 1);
 	line2.Thickness = line1.Thickness;
 	line1.Clearance = line2.Clearance = 0;
-	line1.Point1.X = Crosshair.AttachedLine.Point1.X;
-	line1.Point1.Y = Crosshair.AttachedLine.Point1.Y;
+	line1.Point1.X = pcb_crosshair.AttachedLine.Point1.X;
+	line1.Point1.Y = pcb_crosshair.AttachedLine.Point1.Y;
 	dy = end->Y - line1.Point1.Y;
 	dx = end->X - line1.Point1.X;
 	if (coord_abs(dx) > coord_abs(dy)) {
@@ -418,16 +418,16 @@ static void drc_line(pcb_point_t *end)
 	static pcb_point_t last_good; /* internal state of last good endpoint - we cna do thsi cheat, because... */
 
 	/* ... we hardwire the assumption on how a line is drawn: it starts out as a 0 long segment, which is valid: */
-	if ((Crosshair.AttachedLine.Point1.X == Crosshair.X) && (Crosshair.AttachedLine.Point1.Y == Crosshair.Y)) {
-		line.Point1 = line.Point2 = Crosshair.AttachedLine.Point1;
+	if ((pcb_crosshair.AttachedLine.Point1.X == pcb_crosshair.X) && (pcb_crosshair.AttachedLine.Point1.Y == pcb_crosshair.Y)) {
+		line.Point1 = line.Point2 = pcb_crosshair.AttachedLine.Point1;
 		goto auto_good;
 	}
 
 	memset(&line, 0, sizeof(line));
 
 	/* check where the line wants to end */
-	aline.Point1.X = Crosshair.AttachedLine.Point1.X;
-	aline.Point1.Y = Crosshair.AttachedLine.Point1.Y;
+	aline.Point1.X = pcb_crosshair.AttachedLine.Point1.X;
+	aline.Point1.Y = pcb_crosshair.AttachedLine.Point1.Y;
 	FortyFiveLine(&aline);
 	line.Point1 = aline.Point1;
 	line.Point2 = aline.Point2;
@@ -481,8 +481,8 @@ void EnforceLineDRC(void)
 	if (gui->mod1_is_pressed() || gui->control_is_pressed() || PCB->RatDraw || layer_idx >= max_copper_layer)
 		return;
 
-	rs.X = r45.X = Crosshair.X;
-	rs.Y = r45.Y = Crosshair.Y;
+	rs.X = r45.X = pcb_crosshair.X;
+	rs.Y = r45.Y = pcb_crosshair.Y;
 
 	if (conf_core.editor.line_refraction != 0) {
 		/* first try starting straight */
@@ -494,7 +494,7 @@ void EnforceLineDRC(void)
 		drc_line(&rs);
 		r45 = rs;
 #define sqr(a) ((a) * (a))
-		r1 = r2 = sqrt(sqr(rs.X - Crosshair.AttachedLine.Point1.X) + sqr(rs.Y - Crosshair.AttachedLine.Point1.Y));
+		r1 = r2 = sqrt(sqr(rs.X - pcb_crosshair.AttachedLine.Point1.X) + sqr(rs.Y - pcb_crosshair.AttachedLine.Point1.Y));
 #undef sqr
 	}
 	/* shift<Key> forces the line lookahead path to refract the alternate way */
@@ -511,8 +511,8 @@ void EnforceLineDRC(void)
 				conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
 			}
 		}
-		Crosshair.X = rs.X;
-		Crosshair.Y = rs.Y;
+		pcb_crosshair.X = rs.X;
+		pcb_crosshair.Y = rs.Y;
 	}
 	else {
 		if (conf_core.editor.line_refraction !=0) {
@@ -525,7 +525,7 @@ void EnforceLineDRC(void)
 					conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
 			}
 		}
-		Crosshair.X = r45.X;
-		Crosshair.Y = r45.Y;
+		pcb_crosshair.X = r45.X;
+		pcb_crosshair.Y = r45.Y;
 	}
 }

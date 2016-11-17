@@ -666,7 +666,7 @@ static void draw_crosshair(gint x, gint y, gint z)
 		draw_slanted_cross(x, y, z);
 	if (prev == pcb_ch_shape_dozen)
 		draw_dozen_cross(x, y, z);
-	prev = Crosshair.shape;
+	prev = pcb_crosshair.shape;
 }
 
 void ghid_show_crosshair(gboolean paint_new_location)

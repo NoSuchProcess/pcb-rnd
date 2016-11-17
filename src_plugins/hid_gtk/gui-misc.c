@@ -199,10 +199,10 @@ void ghid_corner_cursor(void)
 {
 	GdkCursorType shape;
 
-	if (Crosshair.Y <= Crosshair.AttachedBox.Point1.Y)
-		shape = (Crosshair.X >= Crosshair.AttachedBox.Point1.X) ? GDK_UR_ANGLE : GDK_UL_ANGLE;
+	if (pcb_crosshair.Y <= pcb_crosshair.AttachedBox.Point1.Y)
+		shape = (pcb_crosshair.X >= pcb_crosshair.AttachedBox.Point1.X) ? GDK_UR_ANGLE : GDK_UL_ANGLE;
 	else
-		shape = (Crosshair.X >= Crosshair.AttachedBox.Point1.X) ? GDK_LR_ANGLE : GDK_LL_ANGLE;
+		shape = (pcb_crosshair.X >= pcb_crosshair.AttachedBox.Point1.X) ? GDK_LR_ANGLE : GDK_LL_ANGLE;
 	if (gport->X_cursor_shape != shape)
 		gport_set_cursor(shape);
 }
@@ -275,13 +275,13 @@ static gboolean run_get_location_loop(const gchar * message)
 	getting_loc = 1;
 	ghid_status_line_set_text(message);
 
-	oldObjState = Crosshair.AttachedObject.State;
-	oldLineState = Crosshair.AttachedLine.State;
-	oldBoxState = Crosshair.AttachedBox.State;
+	oldObjState = pcb_crosshair.AttachedObject.State;
+	oldLineState = pcb_crosshair.AttachedLine.State;
+	oldBoxState = pcb_crosshair.AttachedBox.State;
 	pcb_notify_crosshair_change(pcb_false);
-	Crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-	Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 	ghid_hand_cursor();
 	pcb_notify_crosshair_change(pcb_true);
 
@@ -310,9 +310,9 @@ static gboolean run_get_location_loop(const gchar * message)
 	ghid_interface_set_sensitive(TRUE);
 
 	pcb_notify_crosshair_change(pcb_false);
-	Crosshair.AttachedObject.State = oldObjState;
-	Crosshair.AttachedLine.State = oldLineState;
-	Crosshair.AttachedBox.State = oldBoxState;
+	pcb_crosshair.AttachedObject.State = oldObjState;
+	pcb_crosshair.AttachedLine.State = oldLineState;
+	pcb_crosshair.AttachedBox.State = oldBoxState;
 	pcb_notify_crosshair_change(pcb_true);
 	ghid_restore_cursor();
 
@@ -395,10 +395,10 @@ void ghid_set_cursor_position_labels(void)
 	if (conf_hid_gtk.plugins.hid_gtk.compact_vertical)
 		sep = '\n';
 
-	if (Marked.status) {
-		pcb_coord_t dx = Crosshair.X - Marked.X;
-		pcb_coord_t dy = Crosshair.Y - Marked.Y;
-		pcb_coord_t r = pcb_distance(Crosshair.X, Crosshair.Y, Marked.X, Marked.Y);
+	if (pcb_marked.status) {
+		pcb_coord_t dx = pcb_crosshair.X - pcb_marked.X;
+		pcb_coord_t dy = pcb_crosshair.Y - pcb_marked.Y;
+		pcb_coord_t r = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pcb_marked.X, pcb_marked.Y);
 		double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
 
 
@@ -413,7 +413,7 @@ void ghid_set_cursor_position_labels(void)
 	}
 
 
-	text = pcb_strdup_printf("%m+%-mS%c%-mS", conf_core.editor.grid_unit->allow, Crosshair.X, sep, Crosshair.Y);
+	text = pcb_strdup_printf("%m+%-mS%c%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X, sep, pcb_crosshair.Y);
 	ghid_cursor_position_label_set_text(text);
 	free(text);
 }

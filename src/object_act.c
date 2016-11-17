@@ -329,7 +329,7 @@ static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		case F_Object:
 			if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 				element = (pcb_element_t *) ptrtmp;
-				pcb_element_change_side(element, 2 * Crosshair.Y - PCB->MaxHeight);
+				pcb_element_change_side(element, 2 * pcb_crosshair.Y - PCB->MaxHeight);
 				pcb_undo_inc_serial();
 				pcb_draw();
 			}
@@ -386,7 +386,7 @@ static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		nx -= x;
 	if (absolute2)
 		ny -= y;
-	Crosshair.AttachedObject.RubberbandN = 0;
+	pcb_crosshair.AttachedObject.RubberbandN = 0;
 	if (conf_core.editor.rubber_band_mode)
 		pcb_rubber_band_lookup_lines(type, ptr1, ptr2, ptr3);
 	if (type == PCB_TYPE_ELEMENT)
@@ -789,7 +789,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			{
 				void *ptr1, *ptr2, *ptr3;
 
-				if (pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
+				if (pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3) != PCB_TYPE_NONE) {
 					Note.Buffer = conf_core.editor.buffer_number;
 					pcb_buffer_set_number(MAX_BUFFER - 1);
 					pcb_buffer_clear(PCB_PASTEBUFFER);

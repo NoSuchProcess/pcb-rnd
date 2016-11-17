@@ -96,8 +96,8 @@ typedef struct {								/* holds cursor information */
 #define PCB_CH_STATE_SECOND 1
 #define PCB_CH_STATE_THIRD  2
 
-extern pcb_crosshair_t Crosshair;
-extern pcb_mark_t Marked;
+extern pcb_crosshair_t pcb_crosshair;
+extern pcb_mark_t pcb_marked;
 
 
 pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset);

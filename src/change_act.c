@@ -195,7 +195,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 			int type;
 			void *ptr1, *ptr2, *ptr3;
 
-			if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+			if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
@@ -394,7 +394,7 @@ static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
-			type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		if (strcmp(argv[1], "style") == 0) {
 			if (pcb_get_style_size(funcid, &value, type, 0) != 0)
@@ -671,10 +671,10 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 							int i;
 
 							pcb_undo_restore_serial();
-							Crosshair.AttachedObject.RubberbandN = 0;
+							pcb_crosshair.AttachedObject.RubberbandN = 0;
 							pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
-							ptr = Crosshair.AttachedObject.Rubberband;
-							for (i = 0; i < Crosshair.AttachedObject.RubberbandN; i++, ptr++) {
+							ptr = pcb_crosshair.AttachedObject.Rubberband;
+							for (i = 0; i < pcb_crosshair.AttachedObject.RubberbandN; i++, ptr++) {
 								if (PCB->RatOn)
 									EraseRat((pcb_rat_t *) ptr->Line);
 								pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
@@ -1110,7 +1110,7 @@ static int ActionClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_co
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_clr_obj_octagon(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -1186,7 +1186,7 @@ static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		if (absolute)
 			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
-				if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+				if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind);
 					pcb_undo_inc_serial();
 					pcb_draw();
@@ -1395,7 +1395,7 @@ static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
-			type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		{ /* convert angle from string */
 			char *end;
@@ -1467,7 +1467,7 @@ static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_co
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
-			type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		value = pcb_get_value(delta, units, &absolute, NULL);
 

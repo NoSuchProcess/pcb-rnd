@@ -1271,27 +1271,27 @@ pcb_cardinal_t pcb_poly_get_lowest_distance_point(pcb_polygon_t *Polygon, pcb_co
  */
 void pcb_polygon_go_to_prev_point(void)
 {
-	switch (Crosshair.AttachedPolygon.PointN) {
+	switch (pcb_crosshair.AttachedPolygon.PointN) {
 		/* do nothing if mode has just been entered */
 	case 0:
 		break;
 
 		/* reset number of points and 'PCB_MODE_LINE' state */
 	case 1:
-		Crosshair.AttachedPolygon.PointN = 0;
-		Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.AttachedPolygon.PointN = 0;
+		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		addedLines = 0;
 		break;
 
 		/* back-up one point */
 	default:
 		{
-			pcb_point_t *points = Crosshair.AttachedPolygon.Points;
-			pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN - 2;
+			pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
+			pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN - 2;
 
-			Crosshair.AttachedPolygon.PointN--;
-			Crosshair.AttachedLine.Point1.X = points[n].X;
-			Crosshair.AttachedLine.Point1.Y = points[n].Y;
+			pcb_crosshair.AttachedPolygon.PointN--;
+			pcb_crosshair.AttachedLine.Point1.X = points[n].X;
+			pcb_crosshair.AttachedLine.Point1.Y = points[n].Y;
 			break;
 		}
 	}
@@ -1302,7 +1302,7 @@ void pcb_polygon_go_to_prev_point(void)
  */
 void pcb_polygon_close_poly(void)
 {
-	pcb_cardinal_t n = Crosshair.AttachedPolygon.PointN;
+	pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
 
 	/* check number of points */
 	if (n >= 3) {
@@ -1312,8 +1312,8 @@ void pcb_polygon_close_poly(void)
 		if (!conf_core.editor.all_direction_lines) {
 			pcb_coord_t dx, dy;
 
-			dx = coord_abs(Crosshair.AttachedPolygon.Points[n - 1].X - Crosshair.AttachedPolygon.Points[0].X);
-			dy = coord_abs(Crosshair.AttachedPolygon.Points[n - 1].Y - Crosshair.AttachedPolygon.Points[0].Y);
+			dx = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].X - pcb_crosshair.AttachedPolygon.Points[0].X);
+			dy = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].Y - pcb_crosshair.AttachedPolygon.Points[0].Y);
 			if (!(dx == 0 || dy == 0 || dx == dy)) {
 				pcb_message(PCB_MSG_ERROR, _("Cannot close polygon because 45 degree lines are requested.\n"));
 				return;
@@ -1337,12 +1337,12 @@ void pcb_polygon_copy_attached_to_layer(void)
 	/* move data to layer and clear attached struct */
 	polygon = pcb_poly_new(CURRENT, pcb_no_flags());
 	saveID = polygon->ID;
-	*polygon = Crosshair.AttachedPolygon;
+	*polygon = pcb_crosshair.AttachedPolygon;
 	polygon->ID = saveID;
 	PCB_FLAG_SET(PCB_FLAG_CLEARPOLY, polygon);
 	if (conf_core.editor.full_poly)
 		PCB_FLAG_SET(PCB_FLAG_FULLPOLY, polygon);
-	memset(&Crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
+	memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
 	pcb_poly_bbox(polygon);
 	if (!CURRENT->polygon_tree)
 		CURRENT->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
@@ -1352,7 +1352,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	pcb_board_set_changed_flag(pcb_true);
 
 	/* reset state of attached line */
-	Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 	addedLines = 0;
 
 	/* add to undo list */

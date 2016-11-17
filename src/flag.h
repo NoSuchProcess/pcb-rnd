@@ -130,7 +130,7 @@ Force unique names on board.
 @item 0x00800
 New lines/arc clear polygons.
 @item 0x01000
-Crosshair snaps to pins and pads.
+pcb_crosshair snaps to pins and pads.
 @item 0x02000
 Show the solder mask layer.
 @item 0x04000

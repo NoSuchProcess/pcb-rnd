@@ -86,7 +86,7 @@ various settings are: straight only, orthogonal then angled, and angled
 then orthogonal.  If AllDirections is set, this action disables it.
 
 @item CycleCrosshair
-Changes crosshair drawing.  Crosshair may accept form of 4-ray,
+Changes crosshair drawing.  pcb_crosshair may accept form of 4-ray,
 8-ray and 12-ray cross.
 
 @item ToggleRubberBandMode
@@ -293,9 +293,9 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 
 		case F_CycleCrosshair:
 			pcb_notify_crosshair_change(pcb_false);
-			Crosshair.shape = CrosshairShapeIncrement(Crosshair.shape);
-			if (pcb_ch_shape_NUM == Crosshair.shape)
-				Crosshair.shape = pcb_ch_shape_basic;
+			pcb_crosshair.shape = CrosshairShapeIncrement(pcb_crosshair.shape);
+			if (pcb_ch_shape_NUM == pcb_crosshair.shape)
+				pcb_crosshair.shape = pcb_ch_shape_basic;
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 
@@ -382,8 +382,8 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					pcb_undo_inc_serial();
 					pcb_draw();
 				}
-				if (Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-					pcb_lookup_conn(Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, pcb_true, 1, PCB_FLAG_FOUND);
+				if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
+					pcb_lookup_conn(pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, pcb_true, 1, PCB_FLAG_FOUND);
 			}
 			pcb_notify_crosshair_change(pcb_true);
 			break;
@@ -421,7 +421,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 				pcb_coord_t oldGrid = PCB->Grid;
 
 				PCB->Grid = 1;
-				if (pcb_crosshair_move_absolute(Crosshair.X, Crosshair.Y))
+				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
 					pcb_notify_crosshair_change(pcb_true);	/* first notify was in MoveCrosshairAbs */
 				pcb_board_set_grid(oldGrid, pcb_true);
 			}
@@ -612,8 +612,8 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	const char *function = PCB_ACTION_ARG(0);
 
 	if (function) {
-		Note.X = Crosshair.X;
-		Note.Y = Crosshair.Y;
+		Note.X = pcb_crosshair.X;
+		Note.Y = pcb_crosshair.Y;
 		pcb_notify_crosshair_change(pcb_false);
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Arc:
@@ -666,7 +666,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_LINE:
-					if (Crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+					if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -675,7 +675,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_RECTANGLE:
-					if (Crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
+					if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -684,7 +684,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_POLYGON:
-					if (Crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+					if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -693,7 +693,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_POLYGON_HOLE:
-					if (Crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+					if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -702,7 +702,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_ARC:
-					if (Crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
+					if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -754,14 +754,14 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			/* Handle middle mouse button restarts of drawing mode.  If not in
 			   |  a drawing mode, middle mouse button will select objects.
 			 */
-			if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
+			if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
 				pcb_crosshair_set_mode(PCB_MODE_LINE);
 			}
-			else if (conf_core.editor.mode == PCB_MODE_ARC && Crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
+			else if (conf_core.editor.mode == PCB_MODE_ARC && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
 				pcb_crosshair_set_mode(PCB_MODE_ARC);
-			else if (conf_core.editor.mode == PCB_MODE_RECTANGLE && Crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
+			else if (conf_core.editor.mode == PCB_MODE_RECTANGLE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
 				pcb_crosshair_set_mode(PCB_MODE_RECTANGLE);
-			else if (conf_core.editor.mode == PCB_MODE_POLYGON && Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
+			else if (conf_core.editor.mode == PCB_MODE_POLYGON && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
 				pcb_crosshair_set_mode(PCB_MODE_POLYGON);
 			else {
 				pcb_crosshair_save_mode();
@@ -806,53 +806,53 @@ static int ActionCycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
 
-	if (Crosshair.drags == NULL)
+	if (pcb_crosshair.drags == NULL)
 		return 0;
 
 	do {
-		Crosshair.drags_current++;
-		if (Crosshair.drags_current >= Crosshair.drags_len) {
-			Crosshair.drags_current = 0;
+		pcb_crosshair.drags_current++;
+		if (pcb_crosshair.drags_current >= pcb_crosshair.drags_len) {
+			pcb_crosshair.drags_current = 0;
 			over++;
 		}
 
-		if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_LINE) != PCB_TYPE_NONE) {
+		if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_LINE) != PCB_TYPE_NONE) {
 			/* line has two endpoints, check which one is close to the original x;y */
 			pcb_line_t *l = ptr2;
 			if (close_enough(Note.X, l->Point1.X) && close_enough(Note.Y, l->Point1.Y)) {
-				Crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
-				Crosshair.AttachedObject.Ptr1 = ptr1;
-				Crosshair.AttachedObject.Ptr2 = ptr2;
-				Crosshair.AttachedObject.Ptr3 = &l->Point1;
+				pcb_crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
+				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
+				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
+				pcb_crosshair.AttachedObject.Ptr3 = &l->Point1;
 				return 0;
 			}
 			if (close_enough(Note.X, l->Point2.X) && close_enough(Note.Y, l->Point2.Y)) {
-				Crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
-				Crosshair.AttachedObject.Ptr1 = ptr1;
-				Crosshair.AttachedObject.Ptr2 = ptr2;
-				Crosshair.AttachedObject.Ptr3 = &l->Point2;
+				pcb_crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
+				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
+				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
+				pcb_crosshair.AttachedObject.Ptr3 = &l->Point2;
 				return 0;
 			}
 		}
-		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_VIA) != PCB_TYPE_NONE) {
-			Crosshair.AttachedObject.Type = PCB_TYPE_VIA;
-			Crosshair.AttachedObject.Ptr1 = ptr1;
-			Crosshair.AttachedObject.Ptr2 = ptr2;
-			Crosshair.AttachedObject.Ptr3 = ptr3;
+		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_VIA) != PCB_TYPE_NONE) {
+			pcb_crosshair.AttachedObject.Type = PCB_TYPE_VIA;
+			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
+			pcb_crosshair.AttachedObject.Ptr2 = ptr2;
+			pcb_crosshair.AttachedObject.Ptr3 = ptr3;
 			return 0;
 		}
-		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_PAD) != PCB_TYPE_NONE) {
-			Crosshair.AttachedObject.Type = PCB_TYPE_ELEMENT;
-			Crosshair.AttachedObject.Ptr1 = ptr1;
-			Crosshair.AttachedObject.Ptr2 = ptr1;
-			Crosshair.AttachedObject.Ptr3 = ptr1;
+		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_PAD) != PCB_TYPE_NONE) {
+			pcb_crosshair.AttachedObject.Type = PCB_TYPE_ELEMENT;
+			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
+			pcb_crosshair.AttachedObject.Ptr2 = ptr1;
+			pcb_crosshair.AttachedObject.Ptr3 = ptr1;
 			return 0;
 		}
-		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Crosshair.drags[Crosshair.drags_current], PCB_TYPE_ARC) != PCB_TYPE_NONE) {
-			Crosshair.AttachedObject.Type = PCB_TYPE_ARC;
-			Crosshair.AttachedObject.Ptr1 = ptr1;
-			Crosshair.AttachedObject.Ptr2 = ptr2;
-			Crosshair.AttachedObject.Ptr3 = ptr3;
+		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_ARC) != PCB_TYPE_NONE) {
+			pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC;
+			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
+			pcb_crosshair.AttachedObject.Ptr2 = ptr2;
+			pcb_crosshair.AttachedObject.Ptr3 = ptr3;
 			return 0;
 		}
 
@@ -957,7 +957,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 
 static const char markcrosshair_syntax[] = "MarkCrosshair()\n" "MarkCrosshair(Center)";
 
-static const char markcrosshair_help[] = "Set/Reset the Crosshair mark.";
+static const char markcrosshair_help[] = "Set/Reset the pcb_crosshair mark.";
 
 /* %start-doc actions MarkCrosshair
 
@@ -977,25 +977,25 @@ static int ActionMarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb_c
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
-		if (Marked.status) {
+		if (pcb_marked.status) {
 			pcb_notify_mark_change(pcb_false);
-			Marked.status = pcb_false;
+			pcb_marked.status = pcb_false;
 			pcb_notify_mark_change(pcb_true);
 		}
 		else {
 			pcb_notify_mark_change(pcb_false);
-			Marked.status = pcb_false;
-			Marked.status = pcb_true;
-			Marked.X = Crosshair.X;
-			Marked.Y = Crosshair.Y;
+			pcb_marked.status = pcb_false;
+			pcb_marked.status = pcb_true;
+			pcb_marked.X = pcb_crosshair.X;
+			pcb_marked.Y = pcb_crosshair.Y;
 			pcb_notify_mark_change(pcb_true);
 		}
 	}
 	else if (pcb_funchash_get(function, NULL) == F_Center) {
 		pcb_notify_mark_change(pcb_false);
-		Marked.status = pcb_true;
-		Marked.X = Crosshair.X;
-		Marked.Y = Crosshair.Y;
+		pcb_marked.status = pcb_true;
+		pcb_marked.X = pcb_crosshair.X;
+		pcb_marked.Y = pcb_crosshair.Y;
 		pcb_notify_mark_change(pcb_true);
 	}
 	return 0;

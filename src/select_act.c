@@ -178,15 +178,15 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			{
 				pcb_box_t box;
 
-				box.X1 = MIN(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
-				box.Y1 = MIN(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
-				box.X2 = MAX(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
-				box.Y2 = MAX(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
+				box.X1 = MIN(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
+				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
+				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
+				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_notify_block();
-				if (Crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(&box, pcb_true)) {
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(&box, pcb_true)) {
 					pcb_board_set_changed_flag(pcb_true);
-					Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
 				pcb_notify_crosshair_change(pcb_true);
 				break;
@@ -330,15 +330,15 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			{
 				pcb_box_t box;
 
-				box.X1 = MIN(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
-				box.Y1 = MIN(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
-				box.X2 = MAX(Crosshair.AttachedBox.Point1.X, Crosshair.AttachedBox.Point2.X);
-				box.Y2 = MAX(Crosshair.AttachedBox.Point1.Y, Crosshair.AttachedBox.Point2.Y);
+				box.X1 = MIN(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
+				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
+				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
+				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_notify_crosshair_change(pcb_false);
 				pcb_notify_block();
-				if (Crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(&box, pcb_false)) {
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(&box, pcb_false)) {
 					pcb_board_set_changed_flag(pcb_true);
-					Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
 				pcb_notify_crosshair_change(pcb_true);
 				break;

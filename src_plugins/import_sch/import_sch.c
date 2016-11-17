@@ -220,9 +220,9 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			return 0;
 		}
 		else if (strcasecmp(xs, "mark") == 0) {
-			if (Marked.status) {
-				x = Marked.X;
-				y = Marked.Y;
+			if (pcb_marked.status) {
+				x = pcb_marked.X;
+				y = pcb_marked.Y;
 			}
 		}
 		else if (ys) {

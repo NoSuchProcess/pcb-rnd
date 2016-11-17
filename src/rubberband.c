@@ -388,7 +388,7 @@ static void CheckPolygonForRubberbandConnection(pcb_layer_t *Layer, pcb_polygon_
 
 /* ---------------------------------------------------------------------------
  * lookup all lines that are connected to an object and save the
- * data to 'Crosshair.AttachedObject.Rubberband'
+ * data to 'pcb_crosshair.AttachedObject.Rubberband'
  * lookup is only done for visible layers
  */
 void pcb_rubber_band_lookup_lines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
@@ -493,20 +493,20 @@ void pcb_rubber_band_lookup_rat_lines(int Type, void *Ptr1, void *Ptr2, void *Pt
  */
 pcb_rubberband_t *pcb_rubber_band_alloc(void)
 {
-	pcb_rubberband_t *ptr = Crosshair.AttachedObject.Rubberband;
+	pcb_rubberband_t *ptr = pcb_crosshair.AttachedObject.Rubberband;
 
 	/* realloc new memory if necessary and clear it */
-	if (Crosshair.AttachedObject.RubberbandN >= Crosshair.AttachedObject.RubberbandMax) {
-		Crosshair.AttachedObject.RubberbandMax += STEP_RUBBERBAND;
-		ptr = (pcb_rubberband_t *) realloc(ptr, Crosshair.AttachedObject.RubberbandMax * sizeof(pcb_rubberband_t));
-		Crosshair.AttachedObject.Rubberband = ptr;
-		memset(ptr + Crosshair.AttachedObject.RubberbandN, 0, STEP_RUBBERBAND * sizeof(pcb_rubberband_t));
+	if (pcb_crosshair.AttachedObject.RubberbandN >= pcb_crosshair.AttachedObject.RubberbandMax) {
+		pcb_crosshair.AttachedObject.RubberbandMax += STEP_RUBBERBAND;
+		ptr = (pcb_rubberband_t *) realloc(ptr, pcb_crosshair.AttachedObject.RubberbandMax * sizeof(pcb_rubberband_t));
+		pcb_crosshair.AttachedObject.Rubberband = ptr;
+		memset(ptr + pcb_crosshair.AttachedObject.RubberbandN, 0, STEP_RUBBERBAND * sizeof(pcb_rubberband_t));
 	}
-	return (ptr + Crosshair.AttachedObject.RubberbandN++);
+	return (ptr + pcb_crosshair.AttachedObject.RubberbandN++);
 }
 
 /* ---------------------------------------------------------------------------
- * adds a new line to the rubberband list of 'Crosshair.AttachedObject'
+ * adds a new line to the rubberband list of 'pcb_crosshair.AttachedObject'
  * if Layer == 0  it is a rat line
  */
 pcb_rubberband_t *pcb_rubber_band_create(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint)

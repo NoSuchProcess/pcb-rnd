@@ -47,7 +47,7 @@ double pcb_vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
         t = (a)[1], (a)[1] = (b)[1], (b)[1] = t; \
 }
 
-/*{if (!Marked.status && side==NORTHWEST) { pcb_draw_mark(pcb_true); Marked.status = True; Marked.X = p[0]; Marked.Y = p[1]; pcb_draw_mark(False);} }*/
+/*{if (!pcb_marked.status && side==NORTHWEST) { pcb_draw_mark(pcb_true); pcb_marked.status = True; pcb_marked.X = p[0]; pcb_marked.Y = p[1]; pcb_draw_mark(False);} }*/
 
 enum {
 	JNORTH,
@@ -511,8 +511,8 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	else {
 		value = conf_core.design.via_thickness + (PCB->Bloat + 1) * 2 + 50;
 	}
-	x = Crosshair.X;
-	y = Crosshair.Y;
+	x = pcb_crosshair.X;
+	y = pcb_crosshair.Y;
 	fprintf(stderr, "%d, %d, %f\n", (int) x, (int) y, value);
 	info.brush = pcb_poly_from_circle(x, y, value / 2);
 	info.layer = CURRENT;

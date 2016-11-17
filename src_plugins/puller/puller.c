@@ -339,7 +339,7 @@ static int find_pair(int Px, int Py)
 	pcb_box_t spot;
 
 #if TRACE1
-	pcb_printf("\nPuller find_pair at %#mD\n", Crosshair.X, Crosshair.Y);
+	pcb_printf("\nPuller find_pair at %#mD\n", pcb_crosshair.X, pcb_crosshair.Y);
 #endif
 
 	x = Px;
@@ -391,7 +391,7 @@ static int Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	double tangent;
 	int new_delta_angle;
 
-	if (!find_pair(Crosshair.X, Crosshair.Y))
+	if (!find_pair(pcb_crosshair.X, pcb_crosshair.Y))
 		if (!find_pair(Ux, Uy))
 			return 0;
 
@@ -1729,7 +1729,7 @@ static void mark_line_for_deletion(pcb_line_t *l)
 	e->deleted = 1;
 	unlink_extras(e);
 #if TRACE1
-	pcb_printf("Marked line %p for deletion %#mD to %#mD\n", (void *)e, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
+	pcb_printf("pcb_marked line %p for deletion %#mD to %#mD\n", (void *)e, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
 #endif
 #if 0
 	if (l->Point1.X < 0) {
@@ -1747,7 +1747,7 @@ static void mark_arc_for_deletion(pcb_arc_t *a)
 	e->deleted = 1;
 	unlink_extras(e);
 #if TRACE1
-	printf("Marked arc %p for deletion %ld < %ld\n", (void *)e, a->StartAngle, a->Delta);
+	printf("pcb_marked arc %p for deletion %ld < %ld\n", (void *)e, a->StartAngle, a->Delta);
 #endif
 }
 

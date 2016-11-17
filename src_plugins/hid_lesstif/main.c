@@ -162,13 +162,13 @@ static void ShowCrosshair(pcb_bool show)
 		return;
 
 	pcb_notify_crosshair_change(pcb_false);
-	if (Marked.status)
+	if (pcb_marked.status)
 		pcb_notify_mark_change(pcb_false);
 
 	crosshair_on = show;
 
 	pcb_notify_crosshair_change(pcb_true);
-	if (Marked.status)
+	if (pcb_marked.status)
 		pcb_notify_mark_change(pcb_true);
 }
 
@@ -863,8 +863,8 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
 
-	pcb_event_move_crosshair(Crosshair.X + dx, Crosshair.Y + dy);
-	gui->set_crosshair(Crosshair.X, Crosshair.Y, pan_warp);
+	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
+	gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
 
 	return 0;
 }
@@ -1460,9 +1460,9 @@ static void draw_dozen_cross(GC xor_gc, int x, int y, int view_width, int view_h
 static void draw_crosshair(GC xor_gc, int x, int y, int view_width, int view_height)
 {
 	draw_right_cross(xor_gc, x, y, view_width, view_height);
-	if (Crosshair.shape == pcb_ch_shape_union_jack)
+	if (pcb_crosshair.shape == pcb_ch_shape_union_jack)
 		draw_slanted_cross(xor_gc, x, y, view_width, view_height);
-	if (Crosshair.shape == pcb_ch_shape_dozen)
+	if (pcb_crosshair.shape == pcb_ch_shape_dozen)
 		draw_dozen_cross(xor_gc, x, y, view_width, view_height);
 }
 
@@ -2447,7 +2447,7 @@ static Boolean idle_proc(XtPointer dummy)
 		static pcb_mark_t saved_mark;
 		static const pcb_unit_t *old_grid_unit = NULL;
 		if (crosshair_x != c_x || crosshair_y != c_y
-				|| conf_core.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &Marked, sizeof(pcb_mark_t))) {
+				|| conf_core.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(pcb_mark_t))) {
 			static int last_state = 0;
 			static int this_state = 0;
 
@@ -2455,11 +2455,11 @@ static Boolean idle_proc(XtPointer dummy)
 			c_y = crosshair_y;
 
 			this_state = cursor_pos_to_widget(crosshair_x, crosshair_y, m_crosshair, this_state);
-			if (Marked.status)
-				mark_delta_to_widget(crosshair_x - Marked.X, crosshair_y - Marked.Y, m_mark);
+			if (pcb_marked.status)
+				mark_delta_to_widget(crosshair_x - pcb_marked.X, crosshair_y - pcb_marked.Y, m_mark);
 
-			if (Marked.status != saved_mark.status) {
-				if (Marked.status) {
+			if (pcb_marked.status != saved_mark.status) {
+				if (pcb_marked.status) {
 					XtManageChild(XtParent(m_mark));
 					XtManageChild(m_mark);
 					stdarg_n = 0;
@@ -2475,7 +2475,7 @@ static Boolean idle_proc(XtPointer dummy)
 				}
 				last_state = this_state + 100;
 			}
-			memcpy(&saved_mark, &Marked, sizeof(pcb_mark_t));
+			memcpy(&saved_mark, &pcb_marked, sizeof(pcb_mark_t));
 
 			if (old_grid_unit != conf_core.editor.grid_unit) {
 				old_grid_unit = conf_core.editor.grid_unit;

@@ -1601,8 +1601,8 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (!conf_core.editor.view.flip_y)
 		dy = -dy;
 
-	pcb_event_move_crosshair(Crosshair.X + dx, Crosshair.Y + dy);
-	gui->set_crosshair(Crosshair.X, Crosshair.Y, pan_warp);
+	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
+	gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
 
 	return 0;
 }

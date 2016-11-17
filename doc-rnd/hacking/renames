@@ -955,3 +955,5 @@ Basic_Crosshair_Shape -> pcb_ch_shape_basic
 Union_Jack_Crosshair_Shape -> pcb_ch_shape_union_jack
 Dozen_Crosshair_Shape -> pcb_ch_shape_dozen
 Crosshair_Shapes_Number -> pcb_ch_shape_NUM
+Crosshair -> pcb_crosshair
+Marked -> pcb_marked

@@ -259,8 +259,8 @@ void pcb_board_set_grid(pcb_coord_t Grid, pcb_bool align)
 {
 	if (Grid >= 1 && Grid <= MAX_GRID) {
 		if (align) {
-			PCB->GridOffsetX = Crosshair.X % Grid;
-			PCB->GridOffsetY = Crosshair.Y % Grid;
+			PCB->GridOffsetX = pcb_crosshair.X % Grid;
+			PCB->GridOffsetY = pcb_crosshair.Y % Grid;
 		}
 		PCB->Grid = Grid;
 		conf_set_design("editor/grid", "%$mS", Grid);
@@ -275,7 +275,7 @@ void pcb_board_set_line_width(pcb_coord_t Size)
 	if (Size >= MIN_LINESIZE && Size <= MAX_LINESIZE) {
 		conf_set_design("design/line_thickness", "%$mS", Size);
 		if (conf_core.editor.auto_drc)
-			pcb_crosshair_grid_fit(Crosshair.X, Crosshair.Y);
+			pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
 	}
 }
 
