@@ -37,9 +37,9 @@ struct event_s {
 	event_t *next;
 };
 
-event_t *events[EVENT_last];
+event_t *events[PCB_EVENT_last];
 
-#define event_valid(ev) (((ev) >= 0) && ((ev) < EVENT_last))
+#define event_valid(ev) (((ev) >= 0) && ((ev) < PCB_EVENT_last))
 
 void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t * handler, void *user_data, const char *cookie)
 {
@@ -105,7 +105,7 @@ void pcb_event_unbind_cookie(pcb_event_id_t ev, const char *cookie)
 void pcb_event_unbind_allcookie(const char *cookie)
 {
 	pcb_event_id_t n;
-	for (n = 0; n < EVENT_last; n++)
+	for (n = 0; n < PCB_EVENT_last; n++)
 		pcb_event_unbind_cookie(n, cookie);
 }
 
@@ -117,7 +117,7 @@ void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
 	int argc;
 
 	a = argv;
-	a->type = ARG_INT;
+	a->type = PCB_EVARG_INT;
 	a->d.i = ev;
 	argc = 1;
 
@@ -130,19 +130,19 @@ void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
 			}
 			switch (*fmt) {
 			case 'i':
-				a->type = ARG_INT;
+				a->type = PCB_EVARG_INT;
 				a->d.i = va_arg(ap, int);
 				break;
 			case 'd':
-				a->type = ARG_DOUBLE;
+				a->type = PCB_EVARG_DOUBLE;
 				a->d.d = va_arg(ap, double);
 				break;
 			case 's':
-				a->type = ARG_STR;
+				a->type = PCB_EVARG_STR;
 				a->d.s = va_arg(ap, const char *);
 				break;
 			default:
-				a->type = ARG_INT;
+				a->type = PCB_EVARG_INT;
 				a->d.i = 0;
 				pcb_message(PCB_MSG_DEFAULT, "pcb_event(): invalid argument type '%c'\n", *fmt);
 				break;
@@ -163,7 +163,7 @@ void pcb_events_init(void)
 void pcb_events_uninit(void)
 {
 	int ev;
-	for(ev = 0; ev < EVENT_last; ev++) {
+	for(ev = 0; ev < PCB_EVENT_last; ev++) {
 		event_t *e, *next;
 		for(e = events[ev]; e != NULL; e = next) {
 			next = e->next;

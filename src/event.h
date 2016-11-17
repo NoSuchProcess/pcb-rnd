@@ -23,13 +23,13 @@
 #ifndef PCB_EVENT_H
 #define PCB_EVENT_H
 typedef enum {
-	EVENT_GUI_INIT,               /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
-	EVENT_CLI_ENTER,              /* the user pressed enter on a CLI command - called before parsing the line for actions; args: (str commandline) */
-	EVENT_SAVE_PRE,               /* called before saving the design */
-	EVENT_SAVE_POST,              /* called after saving the design */
-	EVENT_LOAD_PRE,               /* called before loading a new design */
-	EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not */
-	EVENT_last                    /* not a real event */
+	PCB_EVENT_GUI_INIT,               /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
+	PCB_EVENT_CLI_ENTER,              /* the user pressed enter on a CLI command - called before parsing the line for actions; args: (str commandline) */
+	PCB_EVENT_SAVE_PRE,               /* called before saving the design */
+	PCB_EVENT_SAVE_POST,              /* called after saving the design */
+	PCB_EVENT_LOAD_PRE,               /* called before loading a new design */
+	PCB_EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not */
+	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
 
 /* Maximum number of arguments for an event handler, auto-set argv[0] included */
@@ -37,9 +37,9 @@ typedef enum {
 
 /* Argument types in event's argv[] */
 typedef enum {
-	ARG_INT,											/* format char: i */
-	ARG_DOUBLE,										/* format char: d */
-	ARG_STR												/* format char: s */
+	PCB_EVARG_INT,											/* format char: i */
+	PCB_EVARG_DOUBLE,										/* format char: d */
+	PCB_EVARG_STR												/* format char: s */
 } pcb_event_argtype_t;
 
 
@@ -61,7 +61,7 @@ void pcb_events_uninit(void);
 
 
 /* Event callback prototype; user_data is the same as in pcb_event_bind().
-   argv[0] is always an ARG_INT with the event id that triggered the event. */
+   argv[0] is always an PCB_EVARG_INT with the event id that triggered the event. */
 typedef void (pcb_event_handler_t) (void *user_data, int argc, pcb_event_arg_t * argv[]);
 
 /* Bind: add a handler to the call-list of an event; the cookie is also remembered
@@ -78,6 +78,6 @@ void pcb_event_unbind_cookie(pcb_event_id_t ev, const char *cookie);
 void pcb_event_unbind_allcookie(const char *cookie);
 
 /* Event trigger: call all handlers for an event. Fmt is a list of
-   format characters (e.g. i for ARG_INT). */
+   format characters (e.g. i for PCB_EVARG_INT). */
 void pcb_event(pcb_event_id_t ev, const char *fmt, ...);
 #endif

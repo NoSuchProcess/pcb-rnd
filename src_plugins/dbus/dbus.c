@@ -384,6 +384,6 @@ static void hid_dbus_uninit(void)
 pcb_uninit_t hid_dbus_init(void)
 {
 /*	PCB_REGISTER_ACTIONS(debug_action_list, dbus_cookie)*/
-	pcb_event_bind(EVENT_GUI_INIT, dbus_gui_init, NULL, dbus_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, dbus_gui_init, NULL, dbus_cookie);
 	return hid_dbus_uninit;
 }

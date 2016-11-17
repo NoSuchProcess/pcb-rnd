@@ -1853,7 +1853,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 	PCBChanged(0, 0, 0, 0);
 
 	lesstif_menubar = menu;
-	pcb_event(EVENT_GUI_INIT, NULL);
+	pcb_event(PCB_EVENT_GUI_INIT, NULL);
 
 	lesstif_hid_inited = 1;
 

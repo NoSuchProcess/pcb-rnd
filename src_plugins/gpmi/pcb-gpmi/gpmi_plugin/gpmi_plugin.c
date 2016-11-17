@@ -183,7 +183,7 @@ static void load_base_and_cfg(void)
 	*gpmi_asm_scriptname = gpmi_hid_asm_scriptname;
 
 	register_actions();
-	pcb_event_bind(EVENT_GUI_INIT, ev_gui_init, NULL, gpmi_cookie);
+	pcb_event_bind(PCB_EVENT_GUI_INIT, ev_gui_init, NULL, gpmi_cookie);
 
 	hid_gpmi_load_dir(libdirh, 0);
 	hid_gpmi_load_dir(libdirg, 0);

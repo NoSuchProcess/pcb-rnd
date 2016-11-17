@@ -1499,7 +1499,7 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 
 	ghid_notify_gui_is_up();
 
-	pcb_event(EVENT_GUI_INIT, NULL);
+	pcb_event(PCB_EVENT_GUI_INIT, NULL);
 
 	gtk_main();
 	pcb_hid_cfg_keys_uninit(&ghid_keymap);

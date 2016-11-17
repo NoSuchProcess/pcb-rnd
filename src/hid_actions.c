@@ -413,7 +413,7 @@ cleanup:
 
 int pcb_hid_parse_command(const char *str_)
 {
-	pcb_event(EVENT_CLI_ENTER, "s", str_);
+	pcb_event(PCB_EVENT_CLI_ENTER, "s", str_);
 	return hid_parse_actionstring(str_, pcb_false);
 }
 
