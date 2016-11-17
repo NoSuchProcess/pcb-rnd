@@ -17,12 +17,12 @@
 int want_intl = 0, want_coord_bits;
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
-	{"disable-xrender",   "libs/pcb_gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
-	{"disable-xinerama",  "libs/pcb_gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
-	{"disable-gd",        "libs/pcb_gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
-	{"disable-gd-gif",    "libs/pcb_gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png pcb_exporter"},
-	{"disable-gd-png",    "libs/pcb_gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png pcb_exporter"},
-	{"disable-gd-jpg",    "libs/pcb_gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png pcb_exporter"},
+	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
+	{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
+	{"disable-gd",        "libs/gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
+	{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png pcb_exporter"},
+	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png pcb_exporter"},
+	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png pcb_exporter"},
 	{"enable-bison",      "/local/pcb/want_bison",        arg_true,      "$enable generating language files"},
 	{"disable-bison",     "/local/pcb/want_bison",        arg_false,     "$disable generating language files"},
 	{"enable-dmalloc",    "/local/pcb/want_dmalloc",      arg_true,      "$compile with lib dmalloc"},
@@ -328,26 +328,26 @@ int hook_detect_target()
 		put("/local/pcb/want_nls", sfalse);
 
 	if (want_stroke) {
-		require("libs/pcb_gui/libstroke/presents", 0, 0);
-		if (!istrue(get("libs/pcb_gui/libstroke/presents"))) {
+		require("libs/gui/libstroke/presents", 0, 0);
+		if (!istrue(get("libs/gui/libstroke/presents"))) {
 			report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");
 			hook_custom_arg("disable-stroke", NULL);
 		}
 	}
 
 	if (want_gtk) {
-		require("libs/pcb_gui/gtk2/presents", 0, 0);
-		if (!istrue(get("libs/pcb_gui/gtk2/presents"))) {
+		require("libs/gui/gtk2/presents", 0, 0);
+		if (!istrue(get("libs/gui/gtk2/presents"))) {
 			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid...\n");
 			hook_custom_arg("disable-hid_gtk", NULL);
 		}
 	}
 
 	if (plug_is_enabled("hid_lesstif")) {
-		require("libs/pcb_gui/lesstif2/presents", 0, 0);
-		if (istrue(get("libs/pcb_gui/lesstif2/presents"))) {
-			require("libs/pcb_gui/xinerama/presents", 0, 0);
-			require("libs/pcb_gui/xrender/presents", 0, 0);
+		require("libs/gui/lesstif2/presents", 0, 0);
+		if (istrue(get("libs/gui/lesstif2/presents"))) {
+			require("libs/gui/xinerama/presents", 0, 0);
+			require("libs/gui/xrender/presents", 0, 0);
 		}
 		else {
 			report_repeat("WARNING: Since there's no lesstif2 found, disabling the lesstif HID and xinerama and xrender...\n");
@@ -409,8 +409,8 @@ int hook_detect_target()
 	}
 
 	if (want_gd) {
-		require("libs/pcb_gui/gd/presents", 0, 0);
-		if (!istrue(get("libs/pcb_gui/gd/presents"))) {
+		require("libs/gui/gd/presents", 0, 0);
+		if (!istrue(get("libs/gui/gd/presents"))) {
 			report_repeat("WARNING: Since there's no libgd, disabling gd based exports (png, nelma, gcode)...\n");
 			hook_custom_arg("disable-gd-gif", NULL);
 			hook_custom_arg("disable-gd-png", NULL);
@@ -422,20 +422,20 @@ int hook_detect_target()
 			goto disable_gd_formats;
 		}
 		else {
-			require("libs/pcb_gui/gd/gdImagePng/presents", 0, 0);
-			require("libs/pcb_gui/gd/gdImageGif/presents", 0, 0);
-			require("libs/pcb_gui/gd/gdImageJpeg/presents", 0, 0);
-			if (!istrue(get("libs/pcb_gui/gd/gdImagePng/presents"))) {
+			require("libs/gui/gd/gdImagePng/presents", 0, 0);
+			require("libs/gui/gd/gdImageGif/presents", 0, 0);
+			require("libs/gui/gd/gdImageJpeg/presents", 0, 0);
+			if (!istrue(get("libs/gui/gd/gdImagePng/presents"))) {
 				report_repeat("WARNING: libgd is installed, but its png code fails, some exporters will be compiled with reduced functionality; exporters affected: export_nelma, export_gcode\n");
 			}
 		}
 	}
 	else {
-		put("libs/pcb_gui/gd/presents", sfalse);
+		put("libs/gui/gd/presents", sfalse);
 		disable_gd_formats:;
-		put("libs/pcb_gui/gd/gdImagePng/presents", sfalse);
-		put("libs/pcb_gui/gd/gdImageGif/presents", sfalse);
-		put("libs/pcb_gui/gd/gdImageJpeg/presents", sfalse);
+		put("libs/gui/gd/gdImagePng/presents", sfalse);
+		put("libs/gui/gd/gdImageGif/presents", sfalse);
+		put("libs/gui/gd/gdImageJpeg/presents", sfalse);
 	}
 
 	/* generic utils for Makefiles */
