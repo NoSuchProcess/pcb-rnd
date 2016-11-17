@@ -1024,10 +1024,10 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 		HigherAvail = PCB_TYPE_ELEMENT;
 	}
 
-	for (i = -1; i < max_copper_layer + 1; i++) {
+	for (i = -1; i < pcb_max_copper_layer + 1; i++) {
 		if (i < 0)
 			SearchLayer = &PCB->Data->SILKLAYER;
-		else if (i < max_copper_layer)
+		else if (i < pcb_max_copper_layer)
 			SearchLayer = LAYER_ON_STACK(i);
 		else {
 			SearchLayer = &PCB->Data->BACKSILKLAYER;

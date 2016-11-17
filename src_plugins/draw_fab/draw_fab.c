@@ -237,7 +237,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 		strftime(utcTime, sizeof utcTime, fmt, gmtime(&currenttime));
 	}
 	yoff = -TEXT_LINE;
-	for (i = 0; i < max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *l = LAYER_PTR(i);
 		if (l->Name && (linelist_length(&l->Line) || arclist_length(&l->Arc))) {
 			if (strcmp("route", l->Name) == 0)
@@ -246,7 +246,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 				break;
 		}
 	}
-	if (i == max_copper_layer) {
+	if (i == pcb_max_copper_layer) {
 		gui->set_line_width(gc, PCB_MIL_TO_COORD(10));
 		gui->draw_line(gc, 0, 0, PCB->MaxWidth, 0);
 		gui->draw_line(gc, 0, 0, 0, PCB->MaxHeight);

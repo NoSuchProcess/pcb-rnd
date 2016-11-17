@@ -553,7 +553,7 @@ static int group_showing(int g, int *c)
 	*c = PCB->LayerGroups.Entries[g][0];
 	for (i = 0; i < PCB->LayerGroups.Number[g]; i++) {
 		l = PCB->LayerGroups.Entries[g][i];
-		if (l >= 0 && l < max_copper_layer) {
+		if (l >= 0 && l < pcb_max_copper_layer) {
 			*c = l;
 			if (PCB->Data->Layer[l].On)
 				return 1;
@@ -565,8 +565,8 @@ static int group_showing(int g, int *c)
 static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_shown_side = conf_core.editor.show_solder_side;
-	int comp_group = GetLayerGroupNumberByNumber(component_silk_layer);
-	int solder_group = GetLayerGroupNumberByNumber(solder_silk_layer);
+	int comp_group = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+	int solder_group = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
 	int active_group = GetLayerGroupNumberByNumber(LayerStack[0]);
 	int comp_layer;
 	int solder_layer;
@@ -2810,11 +2810,11 @@ static void lesstif_notify_mark_change(pcb_bool changes_complete)
 static int lesstif_set_layer(const char *name, int group, int empty)
 {
 	int idx = group;
-	if (idx >= 0 && idx < max_group) {
+	if (idx >= 0 && idx < pcb_max_group) {
 		int n = PCB->LayerGroups.Number[group];
 		for (idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.Entries[group][idx];
-			if (ni >= 0 && ni < max_copper_layer + 2 && PCB->Data->Layer[ni].On)
+			if (ni >= 0 && ni < pcb_max_copper_layer + 2 && PCB->Data->Layer[ni].On)
 				break;
 		}
 		idx = PCB->LayerGroups.Entries[group][idx];
@@ -2830,7 +2830,7 @@ static int lesstif_set_layer(const char *name, int group, int empty)
 	else
 		autofade = 0;
 #endif
-	if (idx >= 0 && idx < max_copper_layer + 2)
+	if (idx >= 0 && idx < pcb_max_copper_layer + 2)
 		return pinout ? 1 : PCB->Data->Layer[idx].On;
 	if (idx < 0) {
 		switch (SL_TYPE(idx)) {

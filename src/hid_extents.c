@@ -17,10 +17,10 @@ typedef struct hid_gc_s {
 static int extents_set_layer(const char *name, int group, int empty)
 {
 	int idx = group;
-	if (idx >= 0 && idx < max_group) {
+	if (idx >= 0 && idx < pcb_max_group) {
 		idx = PCB->LayerGroups.Entries[idx][0];
 	}
-	if (idx >= 0 && idx < max_copper_layer + 2)
+	if (idx >= 0 && idx < pcb_max_copper_layer + 2)
 		return 1;
 	if (idx < 0) {
 		switch (SL_TYPE(idx)) {

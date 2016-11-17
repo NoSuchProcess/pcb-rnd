@@ -430,10 +430,10 @@ static pcb_hid_attribute_t *ps_get_export_options(int *n)
 
 static int group_for_layer(int l)
 {
-	if (l < max_copper_layer + 2 && l >= 0)
+	if (l < pcb_max_copper_layer + 2 && l >= 0)
 		return GetLayerGroupNumberByNumber(l);
 	/* else something unique */
-	return max_group + 3 + l;
+	return pcb_max_group + 3 + l;
 }
 
 static int layer_sort(const void *va, const void *vb)
@@ -649,7 +649,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	global.outline_layer = NULL;
 
-	for (i = 0; i < max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (!LAYER_IS_PCB_EMPTY(layer))
 			global.print_group[GetLayerGroupNumberByNumber(i)] = 1;
@@ -658,14 +658,14 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 			global.outline_layer = layer;
 		}
 	}
-	global.print_group[GetLayerGroupNumberByNumber(solder_silk_layer)] = 1;
-	global.print_group[GetLayerGroupNumberByNumber(component_silk_layer)] = 1;
-	for (i = 0; i < max_copper_layer; i++)
+	global.print_group[GetLayerGroupNumberByNumber(pcb_solder_silk_layer)] = 1;
+	global.print_group[GetLayerGroupNumberByNumber(pcb_component_silk_layer)] = 1;
+	for (i = 0; i < pcb_max_copper_layer; i++)
 		if (global.print_group[GetLayerGroupNumberByNumber(i)])
 			global.print_layer[i] = 1;
 
 	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
-	qsort(LayerStack, max_copper_layer, sizeof(LayerStack[0]), layer_sort);
+	qsort(LayerStack, pcb_max_copper_layer, sizeof(LayerStack[0]), layer_sort);
 
 	global.linewidth = -1;
 	/* reset static vars */
@@ -773,7 +773,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 {
 	static int lastgroup = -1;
 	time_t currenttime;
-	int idx = (group >= 0 && group < max_group)
+	int idx = (group >= 0 && group < pcb_max_group)
 		? PCB->LayerGroups.Entries[group][0]
 		: group;
 	if (name == 0)
@@ -784,7 +784,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 	if (empty)
 		return 0;
 
-	if (idx >= 0 && idx < max_copper_layer && !global.print_layer[idx])
+	if (idx >= 0 && idx < pcb_max_copper_layer && !global.print_layer[idx])
 		return 0;
 
 	if (strcmp(name, "invisible") == 0)
@@ -855,7 +855,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 
 		if (global.mirror)
 			mirror_this = !mirror_this;
-		if (global.automirror && ((idx >= 0 && group == GetLayerGroupNumberByNumber(solder_silk_layer))
+		if (global.automirror && ((idx >= 0 && group == GetLayerGroupNumberByNumber(pcb_solder_silk_layer))
 															|| (idx < 0 && SL_SIDE(idx) == SL_BOTTOM_SIDE)))
 			mirror_this = !mirror_this;
 

@@ -83,8 +83,8 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	conf_set_design("design/min_wid", "%s", "1"); PCB->minWid = 1;
 	conf_set_design("design/min_slk", "%s", "1"); PCB->minSlk = 1;
 
-	MoveLayerToGroup(max_copper_layer + COMPONENT_LAYER, 0);
-	MoveLayerToGroup(max_copper_layer + SOLDER_LAYER, 1);
+	MoveLayerToGroup(pcb_max_copper_layer + COMPONENT_LAYER, 0);
+	MoveLayerToGroup(pcb_max_copper_layer + SOLDER_LAYER, 1);
 
 	while (PCB->Data->LayerN > 4)
 		pcb_layer_move(4, -1);

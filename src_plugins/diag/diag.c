@@ -148,7 +148,7 @@ static int ActionDumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_coor
 {
 	int g, n, used, arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 
-	printf("Max: theoretical=%d current_board=%d\n", MAX_LAYER+2, max_copper_layer);
+	printf("Max: theoretical=%d current_board=%d\n", MAX_LAYER+2, pcb_max_copper_layer);
 	for(n = 0; n < MAX_LAYER+2; n++) {
 		int grp = GetGroupOfLayer(n);
 		printf(" [%d] %04x group=%d %s\n", n, pcb_layer_flags(n), grp, PCB->Data->Layer[n].Name);

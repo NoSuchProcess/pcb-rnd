@@ -744,11 +744,11 @@ static int dxf_lastY;
  * \brief Find a group for a given layer ??.
  */
 static int dxf_group_for_layer(int l) {
-	if ((l < max_copper_layer + 2) && (l >= 0)) {
+	if ((l < pcb_max_copper_layer + 2) && (l >= 0)) {
 		return GetLayerGroupNumberByNumber(l);
 	}
 	/* else something unique */
-	return max_group + 3 + l;
+	return pcb_max_group + 3 + l;
 }
 
 /*!
@@ -4303,7 +4303,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 			print_layer[tmp[i]] = 1;
 
 	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
-	qsort(LayerStack, max_copper_layer, sizeof(LayerStack[0]), dxf_layer_sort);
+	qsort(LayerStack, pcb_max_copper_layer, sizeof(LayerStack[0]), dxf_layer_sort);
 	linewidth = -1;
 	lastcap = -1;
 	lastgroup = -1;
@@ -4405,7 +4405,7 @@ static int dxf_set_layer(const char *name, int group) {
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_set_layer () function.\n", __FILE__, __LINE__);
 #endif
-	idx = (group >= 0 && group < max_group) ? PCB->LayerGroups.Entries[group][0] : group;
+	idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
 
 	if (name == 0) {
 		/* if none given, get the layer name from pcb */
@@ -4418,7 +4418,7 @@ static int dxf_set_layer(const char *name, int group) {
 		/* do nothing here to export all layers */
 	}
 	else {
-		if (idx >= 0 && idx < max_copper_layer && !print_layer[idx]) {
+		if (idx >= 0 && idx < pcb_max_copper_layer && !print_layer[idx]) {
 			/* do not export empty layers */
 			if (dxf_verbose) {
 				fprintf(stderr, "DXF: Warning, Layer %s contains no exportable items and is not set.\n", name);

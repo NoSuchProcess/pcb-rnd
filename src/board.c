@@ -171,11 +171,11 @@ void pcb_colors_from_settings(pcb_board_t *ptr)
 		ptr->Data->Layer[i].Color = conf_core.appearance.color.layer[i];
 		ptr->Data->Layer[i].SelectedColor = conf_core.appearance.color.layer_selected[i];
 	}
-	ptr->Data->Layer[component_silk_layer].Color =
+	ptr->Data->Layer[pcb_component_silk_layer].Color =
 		conf_core.editor.show_solder_side ? conf_core.appearance.color.invisible_objects : conf_core.appearance.color.element;
-	ptr->Data->Layer[component_silk_layer].SelectedColor = conf_core.appearance.color.element_selected;
-	ptr->Data->Layer[solder_silk_layer].Color = conf_core.editor.show_solder_side ? conf_core.appearance.color.element : conf_core.appearance.color.invisible_objects;
-	ptr->Data->Layer[solder_silk_layer].SelectedColor = conf_core.appearance.color.element_selected;
+	ptr->Data->Layer[pcb_component_silk_layer].SelectedColor = conf_core.appearance.color.element_selected;
+	ptr->Data->Layer[pcb_solder_silk_layer].Color = conf_core.editor.show_solder_side ? conf_core.appearance.color.element : conf_core.appearance.color.invisible_objects;
+	ptr->Data->Layer[pcb_solder_silk_layer].SelectedColor = conf_core.appearance.color.element_selected;
 }
 
 typedef struct {

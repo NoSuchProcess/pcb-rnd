@@ -144,7 +144,7 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_bo
  */
 static void PrintAssembly(int side, const pcb_box_t * drawn_area)
 {
-	int side_group = GetLayerGroupNumberByNumber(max_copper_layer + side);
+	int side_group = GetLayerGroupNumberByNumber(pcb_max_copper_layer + side);
 
 	pcb_draw_doing_assy = pcb_true;
 	gui->set_draw_faded(Output.fgGC, 1);
@@ -190,7 +190,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	PCB->Data->BACKSILKLAYER.Color = PCB->InvisibleObjectsColor;
 
 	memset(do_group, 0, sizeof(do_group));
-	for (ngroups = 0, i = 0; i < max_copper_layer; i++) {
+	for (ngroups = 0, i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *l = LAYER_ON_STACK(i);
 		int group = GetLayerGroupNumberByNumber(LayerStack[i]);
 		if (l->On && !do_group[group]) {
@@ -199,8 +199,8 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		}
 	}
 
-	component = GetLayerGroupNumberByNumber(component_silk_layer);
-	solder = GetLayerGroupNumberByNumber(solder_silk_layer);
+	component = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+	solder = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
 
 	/*
 	 * first draw all 'invisible' stuff
@@ -211,7 +211,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		if (PCB->ElementOn) {
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 			pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
-			pcb_draw_layer(&(PCB->Data->Layer[max_copper_layer + side]), drawn_area);
+			pcb_draw_layer(&(PCB->Data->Layer[pcb_max_copper_layer + side]), drawn_area);
 		}
 		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		gui->end_layer();
@@ -305,8 +305,8 @@ static void DrawEverything(const pcb_box_t * drawn_area)
  */
 static void DrawPPV(int group, const pcb_box_t * drawn_area)
 {
-	int component_group = GetLayerGroupNumberByNumber(component_silk_layer);
-	int solder_group = GetLayerGroupNumberByNumber(solder_silk_layer);
+	int component_group = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+	int solder_group = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
 	int side;
 
 	if (PCB->PinOn || !gui->gui) {
@@ -350,7 +350,7 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 	if (gui->poly_before) {
 		gui->use_mask(HID_MASK_BEFORE);
 #endif
-		pcb_draw_layer(LAYER_PTR(max_copper_layer + side), drawn_area);
+		pcb_draw_layer(LAYER_PTR(pcb_max_copper_layer + side), drawn_area);
 		/* draw package */
 		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 		pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
@@ -364,7 +364,7 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 
 	if (gui->poly_after) {
 		gui->use_mask(HID_MASK_AFTER);
-		pcb_draw_layer(LAYER_PTR(max_copper_layer + layer), drawn_area);
+		pcb_draw_layer(LAYER_PTR(pcb_max_copper_layer + layer), drawn_area);
 		/* draw package */
 		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 		pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
@@ -481,7 +481,7 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 		Layer = PCB->Data->Layer + layers[i];
 		if (strcmp(Layer->Name, "outline") == 0 || strcmp(Layer->Name, "route") == 0)
 			rv = 0;
-		if (layernum < max_copper_layer && Layer->On)
+		if (layernum < pcb_max_copper_layer && Layer->On)
 			pcb_draw_layer(Layer, drawn_area);
 	}
 	if (n_entries > 1)

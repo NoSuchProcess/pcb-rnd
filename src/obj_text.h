@@ -73,14 +73,14 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 #define	PCB_TEXT_ALL_LOOP(top) do {                        \
 	pcb_cardinal_t l;                                   \
 	pcb_layer_t *layer = (top)->Layer;                  \
-	for (l = 0; l < max_copper_layer + 2; l++, layer++) \
+	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++) \
 	{                                                   \
 		PCB_TEXT_LOOP(layer)
 
 #define PCB_TEXT_VISIBLE_LOOP(board) do {                       \
 	pcb_cardinal_t l;                                        \
 	pcb_layer_t *layer = (board)->Data->Layer;               \
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)      \
+	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++)      \
 	{                                                        \
 		PCB_TEXT_LOOP(layer);                                      \
 		if (pcb_text_is_visible((board), layer, text))

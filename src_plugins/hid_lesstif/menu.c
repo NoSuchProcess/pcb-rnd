@@ -167,7 +167,7 @@ static int LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			}
 			XtSetValues(lb->w[i], stdarg_args, stdarg_n);
 
-			if (i >= max_copper_layer && i < MAX_LAYER)
+			if (i >= pcb_max_copper_layer && i < MAX_LAYER)
 				XtUnmanageChild(lb->w[i]);
 			else
 				XtManageChild(lb->w[i]);
@@ -250,12 +250,12 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	}
 
 	show_one_layer_button(layer, set);
-	if (layer < max_copper_layer) {
+	if (layer < pcb_max_copper_layer) {
 		int i;
 		int group = GetLayerGroupNumberByNumber(layer);
 		for (i = 0; i < PCB->LayerGroups.Number[group]; i++) {
 			l = PCB->LayerGroups.Entries[group][i];
-			if (l != layer && l < max_copper_layer) {
+			if (l != layer && l < pcb_max_copper_layer) {
 				show_one_layer_button(l, set);
 				PCB->Data->Layer[l].On = set;
 			}
@@ -270,7 +270,7 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 	const char *name;
 	PCB->RatDraw = (layer == LB_RATS);
 	PCB->SilkActive = (layer == LB_SILK);
-	if (layer < max_copper_layer)
+	if (layer < pcb_max_copper_layer)
 		ChangeGroupVisibility(layer, 1, 1);
 	for (l = 0; l < num_layer_buttons; l++) {
 		LayerButtons *lb = layer_button_list + l;
@@ -366,7 +366,7 @@ static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		layer_button_callback(0, LB_BACK, 0);
 	else {
 		l = -1;
-		for (i = 0; i < max_copper_layer + 2; i++)
+		for (i = 0; i < pcb_max_copper_layer + 2; i++)
 			if (strcmp(argv[0], PCB->Data->Layer[i].Name) == 0) {
 				l = i;
 				break;
@@ -400,11 +400,11 @@ static void insert_layerview_buttons(Widget menu)
 		switch (i) {
 		case LB_SILK:
 			name = "Silk";
-			/*accel_idx = max_copper_layer;*/
+			/*accel_idx = pcb_max_copper_layer;*/
 			break;
 		case LB_RATS:
 			name = "Rat Lines";
-			/*accel_idx = max_copper_layer + 1;*/
+			/*accel_idx = pcb_max_copper_layer + 1;*/
 			break;
 		case LB_PINS:
 			name = "Pins/Pads";
@@ -455,12 +455,12 @@ static void insert_layerpick_buttons(Widget menu)
 		switch (i) {
 		case LB_SILK:
 			name = "Silk";
-			/*accel_idx = max_copper_layer;*/
+			/*accel_idx = pcb_max_copper_layer;*/
 			strcpy(av, "SelectLayer(Silk)");
 			break;
 		case LB_RATS:
 			name = "Rat Lines";
-			/*accel_idx = max_copper_layer + 1;*/
+			/*accel_idx = pcb_max_copper_layer + 1;*/
 			strcpy(av, "SelectLayer(Rats)");
 			break;
 		default:

@@ -49,7 +49,7 @@ int addedLines;
 void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb)
 {
 	if ((lacb != NULL) || (lcb != NULL) || (acb != NULL) || (tcb != NULL) || (pocb != NULL)) {
-		LAYER_LOOP(PCB->Data, max_copper_layer + 2);
+		LAYER_LOOP(PCB->Data, pcb_max_copper_layer + 2);
 		{
 			if (lacb != NULL)
 				if (lacb(ctx, PCB, layer, 1))
@@ -258,7 +258,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 
 	hasNoObjects = (pinlist_length(&Data->Via) == 0);
 	hasNoObjects &= (elementlist_length(&Data->Element) == 0);
-	for (i = 0; i < max_copper_layer + 2; i++)
+	for (i = 0; i < pcb_max_copper_layer + 2; i++)
 		hasNoObjects = hasNoObjects && LAYER_IS_PCB_EMPTY(&(Data->Layer[i]));
 	return (hasNoObjects);
 }

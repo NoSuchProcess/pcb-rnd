@@ -407,7 +407,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 		pcb_message(PCB_MSG_DEFAULT, _("You can't mirror a buffer that has elements!\n"));
 		return;
 	}
-	for (i = 0; i < max_copper_layer + 2; i++) {
+	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 		pcb_layer_t *layer = Buffer->Data->Layer + i;
 		if (textlist_length(&layer->Text)) {
 			pcb_message(PCB_MSG_DEFAULT, _("You can't mirror a buffer that has text!\n"));
@@ -529,24 +529,24 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 	}
 	ENDALL_LOOP;
 	/* swap silkscreen layers */
-	swap = Buffer->Data->Layer[solder_silk_layer];
-	Buffer->Data->Layer[solder_silk_layer] = Buffer->Data->Layer[component_silk_layer];
-	Buffer->Data->Layer[component_silk_layer] = swap;
+	swap = Buffer->Data->Layer[pcb_solder_silk_layer];
+	Buffer->Data->Layer[pcb_solder_silk_layer] = Buffer->Data->Layer[pcb_component_silk_layer];
+	Buffer->Data->Layer[pcb_component_silk_layer] = swap;
 
 	/* swap layer groups when balanced */
-	sgroup = GetLayerGroupNumberByNumber(solder_silk_layer);
-	cgroup = GetLayerGroupNumberByNumber(component_silk_layer);
+	sgroup = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+	cgroup = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
 	if (PCB->LayerGroups.Number[cgroup] == PCB->LayerGroups.Number[sgroup]) {
 		for (j = k = 0; j < PCB->LayerGroups.Number[sgroup]; j++) {
 			int t1, t2;
 			pcb_cardinal_t cnumber = PCB->LayerGroups.Entries[cgroup][k];
 			pcb_cardinal_t snumber = PCB->LayerGroups.Entries[sgroup][j];
 
-			if (snumber >= max_copper_layer)
+			if (snumber >= pcb_max_copper_layer)
 				continue;
 			swap = Buffer->Data->Layer[snumber];
 
-			while (cnumber >= max_copper_layer) {
+			while (cnumber >= pcb_max_copper_layer) {
 				k++;
 				cnumber = PCB->LayerGroups.Entries[cgroup][k];
 			}
@@ -632,7 +632,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 	ctx.copy.DeltaY = Y - PCB_PASTEBUFFER->Y;
 
 	/* paste all layers */
-	for (i = 0; i < max_copper_layer + 2; i++) {
+	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 		pcb_layer_t *sourcelayer = &PCB_PASTEBUFFER->Data->Layer[i], *destlayer = LAYER_PTR(i);
 
 		if (destlayer->On) {

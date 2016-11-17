@@ -537,20 +537,20 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 
 	memset(group_data, 0, sizeof(group_data));
 #ifdef SOLDER_LAYER
-	group_data[GetLayerGroupNumberByNumber(max_copper_layer + SOLDER_LAYER)].solder = 1;
-	group_data[GetLayerGroupNumberByNumber(max_copper_layer + COMPONENT_LAYER)].component = 1;
+	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + SOLDER_LAYER)].solder = 1;
+	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + COMPONENT_LAYER)].component = 1;
 #else
-	group_data[GetLayerGroupNumberByNumber(max_copper_layer + BOTTOM_SIDE)].solder = 1;
-	group_data[GetLayerGroupNumberByNumber(max_copper_layer + TOP_SIDE)].component = 1;
+	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + BOTTOM_SIDE)].solder = 1;
+	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + TOP_SIDE)].component = 1;
 #endif
-	for (i = 0; i < max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_copper_layer; i++) {
 		layer = PCB->Data->Layer + i;
 		if (!IsLayerEmpty(layer))
 			group_data[GetLayerGroupNumberByNumber(i)].draw = 1;
 	}
 
 	inner_layers = 0;
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		if (group_data[i].draw && !(group_data[i].component || group_data[i].solder)) {
 			inner_layers++;
 		}
@@ -558,7 +558,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 
 	layer_spacing = BOARD_THICKNESS / ((float) inner_layers + 1);
 	layer_offset = BOARD_THICKNESS / 2. - layer_spacing;
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		if (group_data[i].component) {
 			group_data[i].z_offset = (BOARD_THICKNESS / 2.) + (OUTER_COPPER_THICKNESS / 2.);
 		}
@@ -634,7 +634,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 	}
 
 	if (opt_exp_copper) {
-		for (i = 0; i < max_group; i++) {
+		for (i = 0; i < pcb_max_group; i++) {
 			if (group_data[i].exp) {
 /*        printf("%d\n",i); */
 
@@ -727,7 +727,7 @@ static void scad_parse_arguments(int *argc, char ***argv)
 
 static int scad_set_layer(const char *name, int group, int empty)
 {
-	int idx = (group >= 0 && group < max_group) ? PCB->LayerGroups.Entries[group][0] : group;
+	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
 	int layer_ok;
 
 	if (layer_open) {
@@ -756,7 +756,7 @@ static int scad_set_layer(const char *name, int group, int empty)
 	if (strcmp(name, "route") == 0)
 		return 0;
 
-	if (group >= 0 && group < max_group) {
+	if (group >= 0 && group < pcb_max_group) {
 		layer_ok = (opt_exp_inner_layers || group_data[group].component || group_data[group].solder) && opt_exp_copper;
 	}
 	else {
@@ -778,7 +778,7 @@ static int scad_set_layer(const char *name, int group, int empty)
 	if (!layer_ok)
 		return 0;
 
-	if (group >= 0 && group < max_group) {
+	if (group >= 0 && group < pcb_max_group) {
 		if (!group_data[group].draw)
 			return 0;
 		scaled_layer_thickness = (group_data[group].solder

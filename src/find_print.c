@@ -135,7 +135,7 @@ static pcb_bool PrepareNextLoop(FILE * FP)
 	pcb_cardinal_t layer;
 
 	/* reset found LOs for the next pin */
-	for (layer = 0; layer < max_copper_layer; layer++) {
+	for (layer = 0; layer < pcb_max_copper_layer; layer++) {
 		LineList[layer].Location = LineList[layer].Number = 0;
 		ArcList[layer].Location = ArcList[layer].Number = 0;
 		PolygonList[layer].Location = PolygonList[layer].Number = 0;

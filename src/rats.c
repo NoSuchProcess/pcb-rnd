@@ -198,8 +198,8 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 	badnet = pcb_false;
 
 	/* find layer groups of the component side and solder side */
-	SLayer = GetLayerGroupNumberByNumber(solder_silk_layer);
-	CLayer = GetLayerGroupNumberByNumber(component_silk_layer);
+	SLayer = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+	CLayer = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
 
 	Wantlist = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	if (Wantlist) {
@@ -835,7 +835,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 
 	/* will work for pins to since the FLAG is common */
 	group1 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
-						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
+						GetLayerGroupNumberByNumber(pcb_solder_silk_layer) : GetLayerGroupNumberByNumber(pcb_component_silk_layer));
 	strcpy(name1, pcb_connection_name(found, ptr1, ptr2));
 	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 5);
@@ -848,7 +848,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 		return (NULL);
 	}
 	group2 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
-						GetLayerGroupNumberByNumber(solder_silk_layer) : GetLayerGroupNumberByNumber(component_silk_layer));
+						GetLayerGroupNumberByNumber(pcb_solder_silk_layer) : GetLayerGroupNumberByNumber(pcb_component_silk_layer));
 	name2 = pcb_connection_name(found, ptr1, ptr2);
 
 	menu = pcb_netnode_to_netname(name1);

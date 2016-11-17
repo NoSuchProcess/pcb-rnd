@@ -171,7 +171,7 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type)
 	/* thermal flags per layer */
 	lst = lht_dom_node_alloc(LHT_HASH, "thermal");
 
-	for(layer = 0; layer < max_copper_layer; layer++) {
+	for(layer = 0; layer < pcb_max_copper_layer; layer++) {
 		if (PCB_FLAG_THERM_TEST_ANY(&fh)) {
 			int t = PCB_FLAG_THERM_GET(layer, &fh);
 			if (t != 0) {
@@ -474,7 +474,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 
 	layers = lht_dom_node_alloc(LHT_LIST, "layers");
 
-	for(n = 0; n < max_copper_layer + 2; n++)
+	for(n = 0; n < pcb_max_copper_layer + 2; n++)
 		lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, pcb_layer_lookup_group(n)));
 
 	return layers;

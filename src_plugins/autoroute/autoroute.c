@@ -415,7 +415,7 @@ static int total_via_count = 0;
 #ifndef NDEBUG
 static int __routepcb_box_is_good(routebox_t * rb)
 {
-	assert(rb && (rb->group < max_group) &&
+	assert(rb && (rb->group < pcb_max_group) &&
 				 (rb->box.X1 <= rb->box.X2) && (rb->box.Y1 <= rb->box.Y2) &&
 				 (rb->flags.homeless ?
 					(rb->box.X1 != rb->box.X2) || (rb->box.Y1 != rb->box.Y2) : (rb->box.X1 != rb->box.X2) && (rb->box.Y1 != rb->box.Y2)));
@@ -588,7 +588,7 @@ static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb
 	routebox_t **rbpp, *lastrb = NULL;
 	int i, ht;
 	/* a pin cuts through every layer group */
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[i]);
 		*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
 		memset((void *) *rbpp, 0, sizeof(**rbpp));
@@ -630,7 +630,7 @@ static routebox_t *AddPad(PointerListType layergroupboxes[], pcb_element_t *elem
 	pcb_coord_t halfthick;
 	routebox_t **rbpp;
 	int layergroup = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? back : front);
-	assert(0 <= layergroup && layergroup < max_group);
+	assert(0 <= layergroup && layergroup < pcb_max_group);
 	assert(PCB->LayerGroups.Number[layergroup] > 0);
 	rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[layergroup]);
 	assert(rbpp);
@@ -664,7 +664,7 @@ static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, pc
 {
 	routebox_t **rbpp;
 	assert(layergroupboxes && line);
-	assert(0 <= layergroup && layergroup < max_group);
+	assert(0 <= layergroup && layergroup < pcb_max_group);
 	assert(PCB->LayerGroups.Number[layergroup] > 0);
 
 	rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[layergroup]);
@@ -708,7 +708,7 @@ static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
 	pcb_coord_t keep = style->Clearance;
 	assert(layergroupboxes && parent);
 	assert(X1 <= X2 && Y1 <= Y2);
-	assert(0 <= layergroup && layergroup < max_group);
+	assert(0 <= layergroup && layergroup < pcb_max_group);
 	assert(PCB->LayerGroups.Number[layergroup] > 0);
 
 	rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[layergroup]);
@@ -731,7 +731,7 @@ static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t 
 	int is_not_rectangle = 1;
 	int layergroup = GetLayerGroupNumberByNumber(layer);
 	routebox_t *rb;
-	assert(0 <= layergroup && layergroup < max_group);
+	assert(0 <= layergroup && layergroup < pcb_max_group);
 	rb = AddIrregularObstacle(layergroupboxes,
 														polygon->BoundingBox.X1,
 														polygon->BoundingBox.Y1,
@@ -858,10 +858,10 @@ static routedata_t *CreateRouteData()
 
 	/* check which layers are active first */
 	routing_layers = 0;
-	for (group = 0; group < max_group; group++) {
+	for (group = 0; group < pcb_max_group; group++) {
 		for (i = 0; i < PCB->LayerGroups.Number[group]; i++)
-			/* layer must be 1) not silk (ie, < max_copper_layer) and 2) on */
-			if ((PCB->LayerGroups.Entries[group][i] < max_copper_layer) && PCB->Data->Layer[PCB->LayerGroups.Entries[group][i]].On) {
+			/* layer must be 1) not silk (ie, < pcb_max_copper_layer) and 2) on */
+			if ((PCB->LayerGroups.Entries[group][i] < pcb_max_copper_layer) && PCB->Data->Layer[PCB->LayerGroups.Entries[group][i]].On) {
 				routing_layers++;
 				is_layer_group_active[group] = pcb_true;
 				break;
@@ -871,10 +871,10 @@ static routedata_t *CreateRouteData()
 	}
 	/* if via visibility is turned off, don't use them */
 	AutoRouteParameters.use_vias = routing_layers > 1 && PCB->ViaOn;
-	front = GetLayerGroupNumberByNumber(component_silk_layer);
-	back = GetLayerGroupNumberByNumber(solder_silk_layer);
+	front = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+	back = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
 	/* determine preferred routing direction on each group */
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		if (i != back && i != front) {
 			x_cost[i] = (i & 1) ? 2 : 1;
 			y_cost[i] = (i & 1) ? 1 : 2;
@@ -913,7 +913,7 @@ static routedata_t *CreateRouteData()
 	}
 
 	/* initialize pointerlisttype */
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		layergroupboxes[i].Ptr = NULL;
 		layergroupboxes[i].PtrN = 0;
 		layergroupboxes[i].PtrMax = 0;
@@ -1066,7 +1066,7 @@ static routedata_t *CreateRouteData()
 	}
 	END_LOOP;
 
-	for (i = 0; i < max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_copper_layer; i++) {
 		int layergroup = GetLayerGroupNumberByNumber(i);
 		/* add all (non-rat) lines */
 		PCB_LINE_LOOP(LAYER_PTR(i));
@@ -1125,7 +1125,7 @@ static routedata_t *CreateRouteData()
 	}
 
 	/* create r-trees from pointer lists */
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		/* create the r-tree */
 		rd->layergrouptree[i] = pcb_r_create_tree((const pcb_box_t **) layergroupboxes[i].Ptr, layergroupboxes[i].PtrN, 1);
 	}
@@ -1135,7 +1135,7 @@ static routedata_t *CreateRouteData()
 
 		/* create "empty-space" structures for via placement (now that we know
 		 * appropriate clearances for all the fixed elements) */
-		for (i = 0; i < max_group; i++) {
+		for (i = 0; i < pcb_max_group; i++) {
 			POINTER_LOOP(&layergroupboxes[i]);
 			{
 				routebox_t *rb = (routebox_t *) * ptr;
@@ -1146,7 +1146,7 @@ static routedata_t *CreateRouteData()
 		}
 	}
 	/* free pointer lists */
-	for (i = 0; i < max_group; i++)
+	for (i = 0; i < pcb_max_group; i++)
 		FreePointerListMemory(&layergroupboxes[i]);
 	/* done! */
 	return rd;
@@ -1155,7 +1155,7 @@ static routedata_t *CreateRouteData()
 void DestroyRouteData(routedata_t ** rd)
 {
 	int i;
-	for (i = 0; i < max_group; i++)
+	for (i = 0; i < pcb_max_group; i++)
 		pcb_r_destroy_tree(&(*rd)->layergrouptree[i]);
 	if (AutoRouteParameters.use_vias)
 		mtspace_destroy(&(*rd)->mtspace);
@@ -1282,7 +1282,7 @@ static pcb_cost_t pcb_cost_to_routebox(const pcb_cheap_point_t * p, pcb_cardinal
 	if ((p2.X - p->X) * (p2.Y - p->Y) != 0)
 		trial += AutoRouteParameters.JogPenalty;
 	/* special case for defered via searching */
-	if (point_layer > max_group || point_layer == rb->group)
+	if (point_layer > pcb_max_group || point_layer == rb->group)
 		return trial + PCB_ABS(p2.X - p->X) + PCB_ABS(p2.Y - p->Y);
 	/* if this target is only a via away, then the via is cheaper than the congestion */
 	if (p->X == p2.X && p->Y == p2.Y)
@@ -1338,17 +1338,17 @@ static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 #if 1
 	if (b.Y1 == b.Y2 || b.X1 == b.X2)
 		thickness = 5;
-	line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X2, b.Y1, thickness, 0, pcb_flag_make(0));
-	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
+	line = pcb_line_new(LAYER_PTR(pcb_component_silk_layer), b.X1, b.Y1, b.X2, b.Y1, thickness, 0, pcb_flag_make(0));
+	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(pcb_component_silk_layer), line, line);
 	if (b.Y1 != b.Y2) {
-		line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X1, b.Y2, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
-		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
+		line = pcb_line_new(LAYER_PTR(pcb_component_silk_layer), b.X1, b.Y2, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
+		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(pcb_component_silk_layer), line, line);
 	}
-	line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X1, b.Y1, b.X1, b.Y2, thickness, 0, pcb_flag_make(0));
-	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
+	line = pcb_line_new(LAYER_PTR(pcb_component_silk_layer), b.X1, b.Y1, b.X1, b.Y2, thickness, 0, pcb_flag_make(0));
+	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(pcb_component_silk_layer), line, line);
 	if (b.X1 != b.X2) {
-		line = pcb_line_new(LAYER_PTR(component_silk_layer), b.X2, b.Y1, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
-		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(component_silk_layer), line, line);
+		line = pcb_line_new(LAYER_PTR(pcb_component_silk_layer), b.X2, b.Y1, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
+		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(pcb_component_silk_layer), line, line);
 	}
 #endif
 }
@@ -1388,7 +1388,7 @@ static void showedge(edge_t * e)
 #if defined(ROUTE_DEBUG)
 static void showroutebox(routebox_t * rb)
 {
-	showbox(rb->sbox, rb->flags.source ? 20 : (rb->flags.target ? 10 : 1), rb->flags.is_via ? component_silk_layer : rb->group);
+	showbox(rb->sbox, rb->flags.source ? 20 : (rb->flags.target ? 10 : 1), rb->flags.is_via ? pcb_component_silk_layer : rb->group);
 }
 #endif
 
@@ -2864,7 +2864,7 @@ static void RD_DrawVia(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	}
 
 	/* a via cuts through every layer group */
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		if (!is_layer_group_active[i])
 			continue;
 		rb = (routebox_t *) malloc(sizeof(*rb));
@@ -3276,7 +3276,7 @@ CreateSearchEdge(struct routeone_state *s, vetting_t * work, edge_t * parent,
 	assert(__routepcb_box_is_good(rb));
 	/* find the cheapest target */
 #if 0
-	target = minpcb_cost_target_to_point(&parent->cost_point, max_group + 1, targets, parent->minpcb_cost_target);
+	target = minpcb_cost_target_to_point(&parent->cost_point, pcb_max_group + 1, targets, parent->minpcb_cost_target);
 #else
 	target = parent->minpcb_cost_target;
 #endif
@@ -3408,7 +3408,7 @@ do_via_search(edge_t * search, struct routeone_state *s,
 			free(area);
 			assert(pcb_box_is_good(&cliparea));
 			count++;
-			for (j = 0; j < max_group; j++) {
+			for (j = 0; j < pcb_max_group; j++) {
 				edge_t *ne;
 				if (j == within->group || !is_layer_group_active[j])
 					continue;
@@ -4033,7 +4033,7 @@ static void InitAutoRouteParameters(int pass, pcb_route_style_t * style, pcb_boo
 	AutoRouteParameters.JogPenalty = 1000 * (is_smoothing ? 20 : 4);
 	AutoRouteParameters.CongestionPenalty = 1e6;
 	AutoRouteParameters.MinPenalty = EXPENSIVE;
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		if (is_layer_group_active[i]) {
 			AutoRouteParameters.MinPenalty = MIN(x_cost[i], AutoRouteParameters.MinPenalty);
 			AutoRouteParameters.MinPenalty = MIN(y_cost[i], AutoRouteParameters.MinPenalty);
@@ -4067,7 +4067,7 @@ pcb_bool no_expansion_boxes(routedata_t * rd)
 	big.X2 = MAX_COORD;
 	big.Y1 = 0;
 	big.Y2 = MAX_COORD;
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		if (pcb_r_search(rd->layergrouptree[i], &big, NULL, bad_boy, NULL, NULL))
 			return pcb_false;
 	}
@@ -4688,7 +4688,7 @@ donerouting:
 	if (conf_core.editor.live_routing) {
 		int i;
 		pcb_box_t big = { 0, 0, MAX_COORD, MAX_COORD };
-		for (i = 0; i < max_group; i++) {
+		for (i = 0; i < pcb_max_group; i++) {
 			pcb_r_search(rd->layergrouptree[i], &big, NULL, ripout_livedraw_obj_cb, NULL, NULL);
 		}
 	}

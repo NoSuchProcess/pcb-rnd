@@ -84,7 +84,7 @@ int pcb_hid_get_flag(const char *name)
 void pcb_hid_save_and_show_layer_ons(int *save_array)
 {
 	int i;
-	for (i = 0; i < max_copper_layer + 2; i++) {
+	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 		save_array[i] = PCB->Data->Layer[i].On;
 		PCB->Data->Layer[i].On = 1;
 	}
@@ -93,6 +93,6 @@ void pcb_hid_save_and_show_layer_ons(int *save_array)
 void pcb_hid_restore_layer_ons(int *save_array)
 {
 	int i;
-	for (i = 0; i < max_copper_layer + 2; i++)
+	for (i = 0; i < pcb_max_copper_layer + 2; i++)
 		PCB->Data->Layer[i].On = save_array[i];
 }

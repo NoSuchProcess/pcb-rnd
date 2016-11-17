@@ -146,8 +146,8 @@ static void UpdateXY(pcb_netlist_t *Nets)
 	pcb_cardinal_t SLayer, CLayer;
 	pcb_cardinal_t i, j;
 	/* find layer groups of the component side and solder side */
-	SLayer = GetLayerGroupNumberByNumber(solder_silk_layer);
-	CLayer = GetLayerGroupNumberByNumber(component_silk_layer);
+	SLayer = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+	CLayer = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
 	/* update all nets */
 	for (i = 0; i < Nets->NetN; i++) {
 		for (j = 0; j < Nets->Net[i].ConnectionN; j++) {
@@ -194,7 +194,7 @@ static PointerListType collectSelectedElements()
 static void showboxes(pcb_box_list_t *blist)
 {
 	pcb_cardinal_t i;
-	pcb_layer_t *SLayer = &(PCB->Data->Layer[solder_silk_layer]);
+	pcb_layer_t *SLayer = &(PCB->Data->Layer[pcb_solder_silk_layer]);
 	for (i = 0; i < blist->BoxN; i++) {
 		pcb_line_new(SLayer, blist->Box[i].X1, blist->Box[i].Y1, blist->Box[i].X2, blist->Box[i].Y1, 1, 1, 0);
 		pcb_line_new(SLayer, blist->Box[i].X1, blist->Box[i].Y2, blist->Box[i].X2, blist->Box[i].Y2, 1, 1, 0);

@@ -1178,7 +1178,7 @@ guint groupcount(void)
 	int group;
 	guint count = 0;
 
-	for (group = 0; group < max_group; group++) {
+	for (group = 0; group < pcb_max_group; group++) {
 		if (PCB->LayerGroups.Number[group] > 0)
 			count++;
 	}
@@ -1804,8 +1804,8 @@ int read_pads(toporouter_t * r, toporouter_layer_t * l, guint layer)
 	GList *vlist = NULL;
 	toporouter_bbox_t *bbox = NULL;
 
-	guint front = GetLayerGroupNumberByNumber(component_silk_layer);
-	guint back = GetLayerGroupNumberByNumber(solder_silk_layer);
+	guint front = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+	guint back = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
 
 /*  printf("read_pads: front = %d back = %d layer = %d\n", 
        front, back, layer);*/
@@ -2789,7 +2789,7 @@ void import_geometry(toporouter_t * r)
 	int group;
 
 #ifdef DEBUG_IMPORT
-	for (group = 0; group < max_group; group++) {
+	for (group = 0; group < pcb_max_group; group++) {
 		printf("Group %d: Number %d:\n", group, PCB->LayerGroups.Number[group]);
 
 		for (int entry = 0; entry < PCB->LayerGroups.Number[group]; entry++) {
@@ -2801,7 +2801,7 @@ void import_geometry(toporouter_t * r)
 	cur_layer = r->layers = (toporouter_layer_t *) malloc(groupcount() * sizeof(toporouter_layer_t));
 
 	/* Foreach layer, read in pad vertices and constraints, and build CDT */
-	for (group = 0; group < max_group; group++) {
+	for (group = 0; group < pcb_max_group; group++) {
 #ifdef DEBUG_IMPORT
 		printf("*** LAYER GROUP %d ***\n", group);
 #endif
@@ -8007,9 +8007,9 @@ void parse_arguments(toporouter_t * r, int argc, char **argv)
 		}
 	}
 
-	for (group = 0; group < max_group; group++)
+	for (group = 0; group < pcb_max_group; group++)
 		for (i = 0; i < PCB->LayerGroups.Number[group]; i++)
-			if ((PCB->LayerGroups.Entries[group][i] < max_copper_layer) && !(PCB->Data->Layer[PCB->LayerGroups.Entries[group][i]].On)) {
+			if ((PCB->LayerGroups.Entries[group][i] < pcb_max_copper_layer) && !(PCB->Data->Layer[PCB->LayerGroups.Entries[group][i]].On)) {
 				gdouble *layer = (gdouble *) malloc(sizeof(gdouble));
 				*layer = (double) group;
 				r->keepoutlayers = g_list_prepend(r->keepoutlayers, layer);

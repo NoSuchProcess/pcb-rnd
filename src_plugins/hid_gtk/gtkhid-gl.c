@@ -107,11 +107,11 @@ int ghid_set_layer(const char *name, int group, int empty)
 {
 	render_priv *priv = gport->render_priv;
 	int idx = group;
-	if (idx >= 0 && idx < max_group) {
+	if (idx >= 0 && idx < pcb_max_group) {
 		int n = PCB->LayerGroups.Number[group];
 		for (idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.Entries[group][idx];
-			if (ni >= 0 && ni < max_copper_layer + 2 && PCB->Data->Layer[ni].On)
+			if (ni >= 0 && ni < pcb_max_copper_layer + 2 && PCB->Data->Layer[ni].On)
 				break;
 		}
 		idx = PCB->LayerGroups.Entries[group][idx];
@@ -120,7 +120,7 @@ int ghid_set_layer(const char *name, int group, int empty)
 	end_subcomposite();
 	start_subcomposite();
 
-	if (idx >= 0 && idx < max_copper_layer + 2) {
+	if (idx >= 0 && idx < pcb_max_copper_layer + 2) {
 		priv->trans_lines = pcb_true;
 		return PCB->Data->Layer[idx].On;
 	}

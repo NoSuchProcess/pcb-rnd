@@ -128,7 +128,7 @@ int ActionLoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ret = sscanf(str, "          (path %s %ld", lname, &dim1);
 		if (ret == 2) {
 			rlayer = 0;
-			LAYER_LOOP(PCB->Data, max_group) {
+			LAYER_LOOP(PCB->Data, pcb_max_group) {
 				if (!strcmp(layer->Name, lname))
 					rlayer = layer;
 			}

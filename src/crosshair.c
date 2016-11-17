@@ -289,7 +289,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 	y = pcb_crosshair.Y - Buffer->Y;
 
 	/* draw all visible layers */
-	for (i = 0; i < max_copper_layer + 2; i++)
+	for (i = 0; i < pcb_max_copper_layer + 2; i++)
 		if (PCB->Data->Layer[i].On) {
 			pcb_layer_t *layer = &Buffer->Data->Layer[i];
 
@@ -833,7 +833,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 	info.X = X;
 	info.Y = Y;
 
-	for (i = 0; i < max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *layer = &PCB->Data->Layer[i];
 		/* Only find points of arcs and lines on currently visible layers. */
 		if (!layer->On)
@@ -1060,8 +1060,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		}
 
 		/* find layer groups of the component side and solder side */
-		SLayer = GetLayerGroupNumberByNumber(solder_silk_layer);
-		CLayer = GetLayerGroupNumberByNumber(component_silk_layer);
+		SLayer = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+		CLayer = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
 		desired_group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SLayer : CLayer;
 
 		GROUP_LOOP(PCB->Data, desired_group);

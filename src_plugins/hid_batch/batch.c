@@ -85,8 +85,8 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	printf("Filename: %s\n", PCB->Filename);
 	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->MaxWidth, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
-	cg = GetLayerGroupNumberByNumber(component_silk_layer);
-	sg = GetLayerGroupNumberByNumber(solder_silk_layer);
+	cg = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+	sg = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
 	for (i = 0; i < MAX_LAYER; i++) {
 
 		int lg = GetLayerGroupNumberByNumber(i);

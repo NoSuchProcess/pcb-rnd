@@ -149,10 +149,10 @@ static int comp_layer, solder_layer;
 
 static int group_for_layer(int l)
 {
-	if (l < max_copper_layer + 2 && l >= 0)
+	if (l < pcb_max_copper_layer + 2 && l >= 0)
 		return GetLayerGroupNumberByNumber(l);
 	/* else something unique */
-	return max_group + 3 + l;
+	return pcb_max_group + 3 + l;
 }
 
 static int layer_sort(const void *va, const void *vb)
@@ -163,7 +163,7 @@ static int layer_sort(const void *va, const void *vb)
 	int bl = group_for_layer(b);
 	int d = bl - al;
 
-	if (a >= 0 && a <= max_copper_layer + 1) {
+	if (a >= 0 && a <= pcb_max_copper_layer + 1) {
 		int aside = (al == solder_layer ? 0 : al == comp_layer ? 2 : 1);
 		int bside = (bl == solder_layer ? 0 : bl == comp_layer ? 2 : 1);
 		if (bside != aside)
@@ -204,7 +204,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	memset(print_layer, 0, sizeof(print_layer));
 
 	/* Figure out which layers actually have stuff on them.  */
-	for (i = 0; i < max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (layer->On)
 			if (!LAYER_IS_PCB_EMPTY(layer))
@@ -215,14 +215,14 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	   erase logic.  Otherwise, we have to use the expensive multi-mask
 	   erase.  */
 	fast_erase = 0;
-	for (i = 0; i < max_group; i++)
+	for (i = 0; i < pcb_max_group; i++)
 		if (print_group[i])
 			fast_erase++;
 
 	/* If NO layers had anything on them, at least print the component
 	   layer to get the pins.  */
 	if (fast_erase == 0) {
-		print_group[GetLayerGroupNumberByNumber(component_silk_layer)] = 1;
+		print_group[GetLayerGroupNumberByNumber(pcb_component_silk_layer)] = 1;
 		fast_erase = 1;
 	}
 
@@ -231,7 +231,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	/* Now, for each group we're printing, mark its layers for
 	   printing.  */
-	for (i = 0; i < max_copper_layer; i++)
+	for (i = 0; i < pcb_max_copper_layer; i++)
 		if (print_group[GetLayerGroupNumberByNumber(i)])
 			print_layer[i] = 1;
 
@@ -247,9 +247,9 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
 	as_shown = options[HA_as_shown].int_value;
 	if (!options[HA_as_shown].int_value) {
-		comp_layer = GetLayerGroupNumberByNumber(component_silk_layer);
-		solder_layer = GetLayerGroupNumberByNumber(solder_silk_layer);
-		qsort(LayerStack, max_copper_layer, sizeof(LayerStack[0]), layer_sort);
+		comp_layer = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+		solder_layer = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+		qsort(LayerStack, pcb_max_copper_layer, sizeof(LayerStack[0]), layer_sort);
 	}
 	fprintf(f, "%%!PS-Adobe-3.0 EPSF-3.0\n");
 	linewidth = -1;
@@ -346,11 +346,11 @@ static int is_drill;
 
 static int eps_set_layer(const char *name, int group, int empty)
 {
-	int idx = (group >= 0 && group < max_group) ? PCB->LayerGroups.Entries[group][0] : group;
+	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
 	if (name == 0)
 		name = PCB->Data->Layer[idx].Name;
 
-	if (idx >= 0 && idx < max_copper_layer && !print_layer[idx])
+	if (idx >= 0 && idx < pcb_max_copper_layer && !print_layer[idx])
 		return 0;
 	if (SL_TYPE(idx) == SL_ASSY || SL_TYPE(idx) == SL_FAB)
 		return 0;

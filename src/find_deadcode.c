@@ -96,7 +96,7 @@ static pcb_bool LOTouchesLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup)
 		pcb_cardinal_t layer = PCB->LayerGroups.Entries[LayerGroup][entry];
 
 		/* handle normal layers */
-		if (layer < max_copper_layer) {
+		if (layer < pcb_max_copper_layer) {
 			gdl_iterator_t it;
 			pcb_polygon_t *polygon;
 
@@ -120,7 +120,7 @@ static pcb_bool LOTouchesLine(pcb_line_t *Line, pcb_cardinal_t LayerGroup)
 		}
 		else {
 			/* handle special 'pad' layers */
-			info.layer = layer - max_copper_layer;
+			info.layer = layer - pcb_max_copper_layer;
 			if (setjmp(info.env) == 0)
 				pcb_r_search(PCB->Data->pad_tree, &info.line.BoundingBox, NULL, LOT_Padcallback, &info, NULL);
 			else

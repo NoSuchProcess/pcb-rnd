@@ -92,17 +92,17 @@ char *LayerGroupsToString(pcb_layer_group_t *);
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[LayerStack[(n)]])
 #define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
 #define	CURRENT			(PCB->SilkActive ? &PCB->Data->Layer[ \
-				(conf_core.editor.show_solder_side ? solder_silk_layer : component_silk_layer)] \
+				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer)] \
 				: LAYER_ON_STACK(0))
 #define	INDEXOFCURRENT		(PCB->SilkActive ? \
-				(conf_core.editor.show_solder_side ? solder_silk_layer : component_silk_layer) \
+				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer) \
 				: LayerStack[0])
 #define SILKLAYER		Layer[ \
-				(conf_core.editor.show_solder_side ? solder_silk_layer : component_silk_layer)]
+				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer)]
 #define BACKSILKLAYER		Layer[ \
-				(conf_core.editor.show_solder_side ? component_silk_layer : solder_silk_layer)]
+				(conf_core.editor.show_solder_side ? pcb_component_silk_layer : pcb_solder_silk_layer)]
 
-#define TEST_SILK_LAYER(layer)	(GetLayerNumber (PCB->Data, layer) >= max_copper_layer)
+#define TEST_SILK_LAYER(layer)	(GetLayerNumber (PCB->Data, layer) >= pcb_max_copper_layer)
 
 /* These decode the set_layer index. */
 #define SL_TYPE(x) ((x) < 0 ? (x) & 0x0f0 : 0)
@@ -134,7 +134,7 @@ char *LayerGroupsToString(pcb_layer_group_t *);
 		pcb_layer_t *layer;		\
 		pcb_cardinal_t number; 		\
 		number = ((pcb_board_t *)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
-		if (number >= max_copper_layer)	\
+		if (number >= pcb_max_copper_layer)	\
 		  continue;			\
 		layer = &data->Layer[number];
 

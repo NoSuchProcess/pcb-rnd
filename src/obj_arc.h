@@ -77,21 +77,21 @@ void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, 
 #define PCB_ARC_ALL_LOOP(top) do {		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l =0; l < max_copper_layer + 2; l++, layer++)		\
+	for (l =0; l < pcb_max_copper_layer + 2; l++, layer++)		\
 	{ \
 		PCB_ARC_LOOP(layer)
 
 #define PCB_ARC_COPPER_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l =0; l < max_copper_layer; l++, layer++)		\
+	for (l =0; l < pcb_max_copper_layer; l++, layer++)		\
 	{ \
 		PCB_ARC_LOOP(layer)
 
 #define PCB_ARC_SILK_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	layer += max_copper_layer;			\
+	layer += pcb_max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
 		PCB_ARC_LOOP(layer)
@@ -99,7 +99,7 @@ void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, 
 #define PCB_ARC_VISIBLE_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
+	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++)	\
 	{ \
 		if (layer->On)				\
 			PCB_ARC_LOOP(layer)

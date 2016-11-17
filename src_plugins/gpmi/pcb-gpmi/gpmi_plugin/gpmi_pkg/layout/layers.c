@@ -42,12 +42,12 @@ int layout_get_max_possible_layer()
 
 int layout_get_max_copper_layer()
 {
-	return max_copper_layer;
+	return pcb_max_copper_layer;
 }
 
 int layout_get_max_layer()
 {
-	return max_copper_layer+2;
+	return pcb_max_copper_layer+2;
 }
 
 

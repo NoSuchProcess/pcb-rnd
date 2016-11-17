@@ -66,7 +66,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (argc > 0 && strcasecmp(argv[0], "sides") == 0)
 		sides = 1;
 	printf("argc %d argv %s sides %d\n", argc, argc > 0 ? argv[0] : "", sides);
-	LAYER_LOOP(PCB->Data, max_copper_layer + 2);
+	LAYER_LOOP(PCB->Data, pcb_max_copper_layer + 2);
 	{
 		PCB_LINE_LOOP(layer);
 		{

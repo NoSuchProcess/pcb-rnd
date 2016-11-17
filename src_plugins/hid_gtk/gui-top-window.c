@@ -432,7 +432,7 @@ static void layer_selector_select_callback(GHidLayerSelector * ls, int layer, gp
 		PCB->RatOn = pcb_true;
 		pcb_hid_action("LayersChanged");
 	}
-	else if (layer < max_copper_layer)
+	else if (layer < pcb_max_copper_layer)
 		ChangeGroupVisibility(layer, TRUE, pcb_true);
 
 	ignore_layer_update = pcb_false;
@@ -667,7 +667,7 @@ static void make_layer_buttons(GtkWidget * layersel)
 	const gchar *color_string;
 	gboolean active = TRUE;
 
-	for (i = 0; i < max_copper_layer; ++i) {
+	for (i = 0; i < pcb_max_copper_layer; ++i) {
 		layer_process(&color_string, &text, &active, i);
 		ghid_layer_selector_add_layer(GHID_LAYER_SELECTOR(layersel), i, text, color_string, active, TRUE);
 	}
@@ -677,7 +677,7 @@ static void make_layer_buttons(GtkWidget * layersel)
 /*! \brief callback for ghid_layer_selector_delete_layers */
 gboolean get_layer_delete(gint layer)
 {
-	return layer >= max_copper_layer;
+	return layer >= pcb_max_copper_layer;
 }
 
 /*! \brief Synchronize layer selector widget with current PCB state
@@ -1597,7 +1597,7 @@ static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		l = LAYER_BUTTON_FARSIDE;
 	else {
 		l = -1;
-		for (i = 0; i < max_copper_layer + 2; i++)
+		for (i = 0; i < pcb_max_copper_layer + 2; i++)
 			if (strcmp(argv[0], PCB->Data->Layer[i].Name) == 0) {
 				l = i;
 				break;

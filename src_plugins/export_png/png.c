@@ -383,10 +383,10 @@ static int comp_layer, solder_layer;
 
 static int group_for_layer(int l)
 {
-	if (l < max_copper_layer + 2 && l >= 0)
+	if (l < pcb_max_copper_layer + 2 && l >= 0)
 		return GetLayerGroupNumberByNumber(l);
 	/* else something unique */
-	return max_group + 3 + l;
+	return pcb_max_group + 3 + l;
 }
 
 static int layer_sort(const void *va, const void *vb)
@@ -397,7 +397,7 @@ static int layer_sort(const void *va, const void *vb)
 	int bl = group_for_layer(b);
 	int d = bl - al;
 
-	if (a >= 0 && a <= max_copper_layer + 1) {
+	if (a >= 0 && a <= pcb_max_copper_layer + 1) {
 		int aside = (al == solder_layer ? 0 : al == comp_layer ? 2 : 1);
 		int bside = (bl == solder_layer ? 0 : bl == comp_layer ? 2 : 1);
 		if (bside != aside)
@@ -448,14 +448,14 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	memset(print_group, 0, sizeof(print_group));
 	memset(print_layer, 0, sizeof(print_layer));
 
-	for (i = 0; i < max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (!LAYER_IS_PCB_EMPTY(layer))
 			print_group[GetLayerGroupNumberByNumber(i)] = 1;
 	}
-	print_group[GetLayerGroupNumberByNumber(solder_silk_layer)] = 1;
-	print_group[GetLayerGroupNumberByNumber(component_silk_layer)] = 1;
-	for (i = 0; i < max_copper_layer; i++)
+	print_group[GetLayerGroupNumberByNumber(pcb_solder_silk_layer)] = 1;
+	print_group[GetLayerGroupNumberByNumber(pcb_component_silk_layer)] = 1;
+	for (i = 0; i < pcb_max_copper_layer; i++)
 		if (print_group[GetLayerGroupNumberByNumber(i)])
 			print_layer[i] = 1;
 
@@ -469,9 +469,9 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 		conf_force_set_bool(conf_core.editor.show_mask, 0);
 
-		comp_layer = GetLayerGroupNumberByNumber(component_silk_layer);
-		solder_layer = GetLayerGroupNumberByNumber(solder_silk_layer);
-		qsort(LayerStack, max_copper_layer, sizeof(LayerStack[0]), layer_sort);
+		comp_layer = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+		solder_layer = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+		qsort(LayerStack, pcb_max_copper_layer, sizeof(LayerStack[0]), layer_sort);
 
 		if (photo_mode) {
 			int i, n = 0;
@@ -514,7 +514,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	if (!photo_mode && conf_core.editor.show_solder_side) {
 		int i, j;
-		for (i = 0, j = max_copper_layer - 1; i < j; i++, j--) {
+		for (i = 0, j = pcb_max_copper_layer - 1; i < j; i++, j--) {
 			int k = LayerStack[i];
 			LayerStack[i] = LayerStack[j];
 			LayerStack[j] = k;
@@ -946,13 +946,13 @@ static int is_drill;
 
 static int png_set_layer(const char *name, int group, int empty)
 {
-	int idx = (group >= 0 && group < max_group) ? PCB->LayerGroups.Entries[group][0] : group;
+	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
 	if (name == 0)
 		name = PCB->Data->Layer[idx].Name;
 
 	doing_outline = 0;
 
-	if (idx >= 0 && idx < max_copper_layer && !print_layer[idx])
+	if (idx >= 0 && idx < pcb_max_copper_layer && !print_layer[idx])
 		return 0;
 	if (SL_TYPE(idx) == SL_ASSY || SL_TYPE(idx) == SL_FAB)
 		return 0;

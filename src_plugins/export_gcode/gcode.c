@@ -257,7 +257,7 @@ void gcode_choose_groups()
 	/* Set entire array to 0 (don't export any layer groups by default */
 	memset(gcode_export_group, 0, sizeof(gcode_export_group));
 
-	for (n = 0; n < max_copper_layer; n++) {
+	for (n = 0; n < pcb_max_copper_layer; n++) {
 		layer = &PCB->Data->Layer[n];
 
 		if (!LAYER_IS_PCB_EMPTY(layer)) {
@@ -406,9 +406,9 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 			gcode_cur_group = i;
 
 			/* magic */
-			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			printf("idx=%d %s\n", idx, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
-			is_solder = (GetLayerGroupNumberByNumber(idx) == GetLayerGroupNumberByNumber(solder_silk_layer)) ? 1 : 0;
+			is_solder = (GetLayerGroupNumberByNumber(idx) == GetLayerGroupNumberByNumber(pcb_solder_silk_layer)) ? 1 : 0;
 			save_drill = is_solder;		/* save drills for one layer only */
 			gcode_start_png(gcode_basename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
 			pcb_hid_save_and_show_layer_ons(save_ons);
@@ -538,7 +538,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 
 static int gcode_set_layer(const char *name, int group, int empty)
 {
-	int idx = (group >= 0 && group < max_group) ? PCB->LayerGroups.Entries[group][0] : group;
+	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
 
 	if (name == 0) {
 		name = PCB->Data->Layer[idx].Name;

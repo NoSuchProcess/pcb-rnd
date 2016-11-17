@@ -505,7 +505,7 @@ int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WriteViaData(FP, buff->Data);
 	io_pcb_WriteElementData(ctx, FP, buff->Data);
-	for (i = 0; i < max_copper_layer + 2; i++)
+	for (i = 0; i < pcb_max_copper_layer + 2; i++)
 		WriteLayerData(FP, i, &(buff->Data->Layer[i]));
 	return (STATUS_OK);
 }
@@ -527,7 +527,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	WriteViaData(FP, PCB->Data);
 	io_pcb_WriteElementData(ctx, FP, PCB->Data);
 	WritePCBRatData(FP);
-	for (i = 0; i < max_copper_layer + 2; i++)
+	for (i = 0; i < pcb_max_copper_layer + 2; i++)
 		WriteLayerData(FP, i, &(PCB->Data->Layer[i]));
 	WritePCBNetlistData(FP);
 	WritePCBNetlistPatchData(FP);

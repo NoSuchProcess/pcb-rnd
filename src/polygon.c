@@ -990,7 +990,7 @@ static pcb_r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
 static int Group(pcb_data_t *Data, pcb_cardinal_t layer)
 {
 	pcb_cardinal_t i, j;
-	for (i = 0; i < max_group; i++)
+	for (i = 0; i < pcb_max_group; i++)
 		for (j = 0; j < ((pcb_board_t *) (Data->pcb))->LayerGroups.Number[i]; j++)
 			if (layer == ((pcb_board_t *) (Data->pcb))->LayerGroups.Entries[i][j])
 				return i;
@@ -1005,10 +1005,10 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	pcb_cardinal_t group;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)
-			|| GetLayerNumber(Data, Layer) >= max_copper_layer)
+			|| GetLayerNumber(Data, Layer) >= pcb_max_copper_layer)
 		return 0;
 	group = Group(Data, GetLayerNumber(Data, Layer));
-	info.solder = (group == Group(Data, solder_silk_layer));
+	info.solder = (group == Group(Data, pcb_solder_silk_layer));
 	info.data = Data;
 	info.other = here;
 	info.layer = Layer;
@@ -1023,7 +1023,7 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 		r = 0;
 		info.accumulate = NULL;
 		info.batch_size = 0;
-		if (info.solder || group == Group(Data, component_silk_layer)) {
+		if (info.solder || group == Group(Data, pcb_component_silk_layer)) {
 			pcb_r_search(Data->pad_tree, &region, NULL, pad_sub_callback, &info, &seen);
 			r += seen;
 		}
@@ -1472,7 +1472,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
 		if (type == PCB_TYPE_PIN || ptr1 == ptr2 || ptr1 == NULL) {
-			LAYER_LOOP(Data, max_copper_layer);
+			LAYER_LOOP(Data, pcb_max_copper_layer);
 			{
 				info.layer = layer;
 				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
@@ -1497,7 +1497,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_line_t *) ptr2))
 			return 0;
 		/* silk doesn't plow */
-		if (GetLayerNumber(Data, (pcb_layer_t *) ptr1) >= max_copper_layer)
+		if (GetLayerNumber(Data, (pcb_layer_t *) ptr1) >= pcb_max_copper_layer)
 			return 0;
 		GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((pcb_layer_t *) ptr1))));
 		{
@@ -1510,7 +1510,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 	case PCB_TYPE_PAD:
 		{
 			pcb_cardinal_t group = GetLayerGroupNumberByNumber(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
-																									 solder_silk_layer : component_silk_layer);
+																									 pcb_solder_silk_layer : pcb_component_silk_layer);
 			GROUP_LOOP(Data, group);
 			{
 				info.layer = layer;

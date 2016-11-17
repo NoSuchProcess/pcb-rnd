@@ -259,7 +259,7 @@ static void nelma_write_space(FILE * out)
 	z = 10;
 	for (i = 0; i < MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
-			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
 
 			if (z != 10) {
@@ -324,7 +324,7 @@ static void nelma_write_nets(FILE * out)
 
 			for (i = 0; i < MAX_LAYER; i++)
 				if (nelma_export_group[i]) {
-					idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
+					idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 					ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
 
 					if (m != 0 || i != 0)
@@ -395,7 +395,7 @@ static void nelma_write_layers(FILE * out)
 	z = 10;
 	for (i = 0; i < MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
-			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
 
 			if (z != 10) {
@@ -429,7 +429,7 @@ static void nelma_write_object(FILE * out, pcb_lib_entry_t *pin)
 
 	for (i = 0; i < MAX_LAYER; i++)
 		if (nelma_export_group[i]) {
-			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
 
 			fprintf(out, "object %s-%s {\n", pin->ListEntry, ext);
@@ -502,7 +502,7 @@ void nelma_choose_groups()
 	/* Set entire array to 0 (don't export any layer groups by default */
 	memset(nelma_export_group, 0, sizeof(nelma_export_group));
 
-	for (n = 0; n < max_copper_layer; n++) {
+	for (n = 0; n < pcb_max_copper_layer; n++) {
 		layer = &PCB->Data->Layer[n];
 
 		if (!LAYER_IS_PCB_EMPTY(layer)) {
@@ -632,7 +632,7 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 			nelma_cur_group = i;
 
 			/* magic */
-			idx = (i >= 0 && i < max_group) ? PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 
 			nelma_start_png(nelma_basename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
 
@@ -669,7 +669,7 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 
 static int nelma_set_layer(const char *name, int group, int empty)
 {
-	int idx = (group >= 0 && group < max_group) ? PCB->LayerGroups.Entries[group][0] : group;
+	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
 
 	if (name == 0) {
 		name = PCB->Data->Layer[idx].Name;

@@ -83,21 +83,21 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon);
 #define	PCB_POLY_ALL_LOOP(top)	do {		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
+	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++)	\
 	{ \
 		PCB_POLY_LOOP(layer)
 
 #define	PCB_POLY_COPPER_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer; l++, layer++)	\
+	for (l = 0; l < pcb_max_copper_layer; l++, layer++)	\
 	{ \
 		PCB_POLY_LOOP(layer)
 
 #define	PCB_POLY_SILK_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	layer += max_copper_layer;			\
+	layer += pcb_max_copper_layer;			\
 	for (l = 0; l < 2; l++, layer++)		\
 	{ \
 		PCB_POLY_LOOP(layer)
@@ -105,7 +105,7 @@ void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon);
 #define	PCB_POLY_VISIBLE_LOOP(top) do	{	\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < max_copper_layer + 2; l++, layer++)	\
+	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++)	\
 	{ \
 		if (layer->On)				\
 			PCB_POLY_LOOP(layer)

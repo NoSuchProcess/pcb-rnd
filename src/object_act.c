@@ -125,7 +125,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			if (layername) {
 				int i;
 				layer = NULL;
-				for (i = 0; i < max_copper_layer; i++)
+				for (i = 0; i < pcb_max_copper_layer; i++)
 					if (strcmp(PCB->Data->Layer[i].Name, layername) == 0) {
 						layer = &(PCB->Data->Layer[i]);
 						break;
@@ -1069,7 +1069,7 @@ int MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	else if (strcmp(argv[1], "down") == 0) {
 		new_index = INDEXOFCURRENT + 1;
-		if (new_index >= max_copper_layer)
+		if (new_index >= pcb_max_copper_layer)
 			return 1;
 		new_top = new_index;
 	}
@@ -1081,7 +1081,7 @@ int MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	if (new_index == -1) {
 		new_top = old_index;
-		if (new_top >= max_copper_layer)
+		if (new_top >= pcb_max_copper_layer)
 			new_top--;
 		new_index = new_top;
 	}

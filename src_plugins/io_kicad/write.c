@@ -70,7 +70,7 @@ int io_kicad_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 	pcb_write_element_data(FP, buff->Data, "kicadl");
 
 	/*
-		for (i = 0; i < max_copper_layer + 2; i++)
+		for (i = 0; i < pcb_max_copper_layer + 2; i++)
 		WriteLayerData(FP, i, &(buff->Data->Layer[i]));
 	*/
 	return (STATUS_OK);

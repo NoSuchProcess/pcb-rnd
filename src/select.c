@@ -296,7 +296,7 @@ do { \
 	END_LOOP;
 
 	/* check layers */
-	LAYER_LOOP(PCB->Data, max_copper_layer + 2);
+	LAYER_LOOP(PCB->Data, pcb_max_copper_layer + 2);
 	{
 		if (layer == &PCB->Data->SILKLAYER) {
 			if (!(PCB->ElementOn || !Flag))

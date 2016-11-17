@@ -38,7 +38,7 @@ static pcb_bool ListsEmpty(pcb_bool AndRats)
 	empty = (PVList.Location >= PVList.Number);
 	if (AndRats)
 		empty = empty && (RatList.Location >= RatList.Number);
-	for (i = 0; i < max_copper_layer && empty; i++)
+	for (i = 0; i < pcb_max_copper_layer && empty; i++)
 		empty = empty && LineList[i].Location >= LineList[i].Number
 			&& ArcList[i].Location >= ArcList[i].Number && PolygonList[i].Location >= PolygonList[i].Number;
 	return (empty);
@@ -48,7 +48,7 @@ static void reassign_no_drc_flags(void)
 {
 	int layer;
 
-	for (layer = 0; layer < max_copper_layer; layer++) {
+	for (layer = 0; layer < pcb_max_copper_layer; layer++) {
 		pcb_layer_t *l = LAYER_PTR(layer);
 		l->no_drc = pcb_attrib_get(l, "PCB::skip-drc") != NULL;
 	}
@@ -87,7 +87,7 @@ static void DrawNewConnections(void)
 	pcb_cardinal_t position;
 
 	/* decrement 'i' to keep layerstack order */
-	for (i = max_copper_layer - 1; i != -1; i--) {
+	for (i = pcb_max_copper_layer - 1; i != -1; i--) {
 		pcb_cardinal_t layer = LayerStack[i];
 
 		if (PCB->Data->Layer[layer].On) {
@@ -234,7 +234,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 																	(pcb_layer_t *) ptr1);
 
 			/* don't mess with non-conducting objects! */
-			if (laynum >= max_copper_layer || ((pcb_layer_t *) ptr1)->no_drc)
+			if (laynum >= pcb_max_copper_layer || ((pcb_layer_t *) ptr1)->no_drc)
 				return;
 		}
 	}
@@ -430,7 +430,7 @@ static void DumpList(void)
 	PVList.Number = 0;
 	PVList.Location = 0;
 
-	for (i = 0; i < max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_copper_layer; i++) {
 		LineList[i].Location = 0;
 		LineList[i].DrawLocation = 0;
 		LineList[i].Number = 0;

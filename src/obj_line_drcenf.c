@@ -279,12 +279,12 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 		length = coord_abs(dy);
 	}
 	group = GetGroupOfLayer(INDEXOFCURRENT);
-	comp = max_group + 10;				/* this out-of-range group might save a call */
-	if (GetLayerGroupNumberByNumber(solder_silk_layer) == group)
+	comp = pcb_max_group + 10;				/* this out-of-range group might save a call */
+	if (GetLayerGroupNumberByNumber(pcb_solder_silk_layer) == group)
 		info.solder = pcb_true;
 	else {
 		info.solder = pcb_false;
-		comp = GetLayerGroupNumberByNumber(component_silk_layer);
+		comp = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
 	}
 	temp = length;
 	/* assume the worst */
@@ -434,12 +434,12 @@ static void drc_line(pcb_point_t *end)
 
 	/* prepare for the intersection search */
 	group = GetGroupOfLayer(INDEXOFCURRENT);
-	comp = max_group + 10;  /* this out-of-range group might save a call */
-	if (GetLayerGroupNumberByNumber(solder_silk_layer) == group)
+	comp = pcb_max_group + 10;  /* this out-of-range group might save a call */
+	if (GetLayerGroupNumberByNumber(pcb_solder_silk_layer) == group)
 		info.solder = pcb_true;
 	else {
 		info.solder = pcb_false;
-		comp = GetLayerGroupNumberByNumber(component_silk_layer);
+		comp = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
 	}
 
 	/* search for intersection */
@@ -478,7 +478,7 @@ void EnforceLineDRC(void)
 	/* Silence a bogus compiler warning by storing this in a variable */
 	int layer_idx = INDEXOFCURRENT;
 
-	if (gui->mod1_is_pressed() || gui->control_is_pressed() || PCB->RatDraw || layer_idx >= max_copper_layer)
+	if (gui->mod1_is_pressed() || gui->control_is_pressed() || PCB->RatDraw || layer_idx >= pcb_max_copper_layer)
 		return;
 
 	rs.X = r45.X = pcb_crosshair.X;

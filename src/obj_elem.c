@@ -204,9 +204,9 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 		pcb_via_new(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
 	}
 	END_LOOP;
-	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? solder_silk_layer : component_silk_layer);
+	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? pcb_solder_silk_layer : pcb_component_silk_layer);
 	clayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
-	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? component_silk_layer : solder_silk_layer);
+	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? pcb_component_silk_layer : pcb_solder_silk_layer);
 	slayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
 	PCB_PAD_LOOP(element);
 	{
@@ -294,11 +294,11 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 		int onsolderflag;
 
 		if ((!onsolder) == (!SWAP_IDENT)) {
-			silk_layer = component_silk_layer;
+			silk_layer = pcb_component_silk_layer;
 			onsolderflag = PCB_FLAG_NO;
 		}
 		else {
-			silk_layer = solder_silk_layer;
+			silk_layer = pcb_solder_silk_layer;
 			onsolderflag = PCB_FLAG_ONSOLDER;
 		}
 

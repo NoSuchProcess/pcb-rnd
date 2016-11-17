@@ -53,10 +53,10 @@ struct pcb_data_s {
 };
 
 
-#define max_group (PCB->Data->LayerN)
-#define max_copper_layer (PCB->Data->LayerN)
-#define solder_silk_layer (max_copper_layer + SOLDER_LAYER)
-#define component_silk_layer (max_copper_layer + COMPONENT_LAYER)
+#define pcb_max_group (PCB->Data->LayerN)
+#define pcb_max_copper_layer (PCB->Data->LayerN)
+#define pcb_solder_silk_layer (pcb_max_copper_layer + SOLDER_LAYER)
+#define pcb_component_silk_layer (pcb_max_copper_layer + COMPONENT_LAYER)
 
 extern pcb_buffer_t Buffers[MAX_BUFFER];
 

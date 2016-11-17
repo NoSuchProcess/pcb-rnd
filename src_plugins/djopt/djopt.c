@@ -471,7 +471,7 @@ static void new_line(corner_s * s, corner_s * e, int layer, pcb_line_t * example
 {
 	line_s *ls;
 
-	if (layer >= max_copper_layer)
+	if (layer >= pcb_max_copper_layer)
 		dj_abort("layer %d\n", layer);
 
 	if (example == NULL)
@@ -1739,7 +1739,7 @@ static int vianudge()
 			counts[c->lines[i]->layer]++;
 			directions[c->lines[i]->layer] |= o;
 		}
-		for (o = 0, i = 0; i < max_copper_layer; i++)
+		for (o = 0, i = 0; i < pcb_max_copper_layer; i++)
 			if (counts[i] == 1) {
 				o = directions[i];
 				break;
@@ -1756,7 +1756,7 @@ static int vianudge()
 		default:
 			continue;
 		}
-		for (i = 0; i < max_copper_layer; i++)
+		for (i = 0; i < pcb_max_copper_layer; i++)
 			if (counts[i] && directions[i] != o && directions[i] != oboth)
 				goto vianudge_continue;
 
@@ -2290,7 +2290,7 @@ static void pinsnap()
 			}
 
 			dprintf("%s x %#mS-%#mS y %#mS-%#mS\n", corner_name(c), left, right, bottom, top);
-			for (l = 0; l <= max_copper_layer; l++) {
+			for (l = 0; l <= pcb_max_copper_layer; l++) {
 				best_dist[l] = close * 2;
 				best_c[l] = 0;
 			}
@@ -2323,10 +2323,10 @@ static void pinsnap()
 					}
 				}
 				if (!got_one && c->n_lines == (c->pad ? 1 : 0)) {
-					for (l = 0; l <= max_copper_layer; l++)
+					for (l = 0; l <= pcb_max_copper_layer; l++)
 						if (best_c[l])
 							dprintf("best[%d] = %s\n", l, corner_name(best_c[l]));
-					for (l = 0; l <= max_copper_layer; l++)
+					for (l = 0; l <= pcb_max_copper_layer; l++)
 						if (best_c[l]) {
 							dprintf("move %s to %s\n", corner_name(best_c[l]), corner_name(c));
 							connect_corners(best_c[l], c);
@@ -2466,20 +2466,20 @@ static void grok_layer_groups()
 	pcb_layer_group_t *l = &(PCB->LayerGroups);
 
 	solder_layer = component_layer = -1;
-	for (i = 0; i < max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_copper_layer; i++) {
 		layer_type[i] = 0;
 		layer_groupings[i] = 0;
 	}
-	for (i = 0; i < max_group; i++) {
+	for (i = 0; i < pcb_max_group; i++) {
 		f = 0;
 		for (j = 0; j < l->Number[i]; j++) {
-			if (l->Entries[i][j] == solder_silk_layer)
+			if (l->Entries[i][j] == pcb_solder_silk_layer)
 				f |= LT_SOLDER;
-			if (l->Entries[i][j] == component_silk_layer)
+			if (l->Entries[i][j] == pcb_component_silk_layer)
 				f |= LT_COMPONENT;
 		}
 		for (j = 0; j < l->Number[i]; j++) {
-			if (l->Entries[i][j] < max_copper_layer) {
+			if (l->Entries[i][j] < pcb_max_copper_layer) {
 				layer_type[l->Entries[i][j]] |= f;
 				layer_groupings[l->Entries[i][j]] = i;
 				if (solder_layer == -1 && f == LT_SOLDER)
@@ -2607,7 +2607,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		return 0;
 	}
 
-	for (layn = 0; layn < max_copper_layer; layn++) {
+	for (layn = 0; layn < pcb_max_copper_layer; layn++) {
 		pcb_layer_t *layer = LAYER_PTR(layn);
 
 		PCB_LINE_LOOP(layer);

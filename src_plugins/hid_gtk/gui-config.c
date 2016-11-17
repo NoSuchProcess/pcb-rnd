@@ -1266,14 +1266,14 @@ static gchar *make_layer_group_string(pcb_layer_group_t * lg)
 
 	string = g_string_new("");
 
-	for (group = 0; group < max_group; group++) {
+	for (group = 0; group < pcb_max_group; group++) {
 		if (lg->Number[group] == 0)
 			continue;
 		for (entry = 0; entry < lg->Number[group]; entry++) {
 			layer = lg->Entries[group][entry];
-			if (layer == component_silk_layer)
+			if (layer == pcb_component_silk_layer)
 				string = g_string_append(string, "c");
-			else if (layer == solder_silk_layer)
+			else if (layer == pcb_solder_silk_layer)
 				string = g_string_append(string, "s");
 			else
 				g_string_append_printf(string, "%d", layer + 1);
@@ -1281,7 +1281,7 @@ static gchar *make_layer_group_string(pcb_layer_group_t * lg)
 			if (entry != lg->Number[group] - 1)
 				string = g_string_append(string, ",");
 		}
-		if (group != max_group - 1)
+		if (group != pcb_max_group - 1)
 			string = g_string_append(string, ":");
 	}
 	return g_string_free(string, FALSE);	/* Don't free string->str */
@@ -1298,7 +1298,7 @@ static void config_layers_apply(void)
 	/* Get each layer name entry and dup if modified into the PCB layer names
 	   |  and, if to use as default, the Settings layer names.
 	 */
-	for (i = 0; i < max_copper_layer; ++i) {
+	for (i = 0; i < pcb_max_copper_layer; ++i) {
 		layer = &PCB->Data->Layer[i];
 		s = ghid_entry_get_text(layer_entry[i]);
 		if (dup_string((char**)&layer->Name, s))
@@ -1315,16 +1315,16 @@ static void config_layers_apply(void)
 	if (groups_modified) {				/* If any group radio buttons were toggled. */
 		/* clear all entries and read layer by layer
 		 */
-		for (group = 0; group < max_group; group++)
+		for (group = 0; group < pcb_max_group; group++)
 			layer_groups.Number[group] = 0;
 
-		for (i = 0; i < max_copper_layer + 2; i++) {
+		for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 			group = config_layer_group[i] - 1;
 			layer_groups.Entries[group][layer_groups.Number[group]++] = i;
 
-			if (i == component_silk_layer)
+			if (i == pcb_component_silk_layer)
 				componentgroup = group;
-			else if (i == solder_silk_layer)
+			else if (i == pcb_solder_silk_layer)
 				soldergroup = group;
 		}
 
@@ -1353,7 +1353,7 @@ static void config_layer_group_button_state_update(void)
 	/* Set button active corresponding to layer group state.
 	 */
 	groups_holdoff = TRUE;
-	for (g = 0; g < max_group; g++)
+	for (g = 0; g < pcb_max_group; g++)
 		for (i = 0; i < layer_groups.Number[g]; i++) {
 /*			printf("layer %d in group %d\n", layer_groups.Entries[g][i], g +1); */
 			config_layer_group[layer_groups.Entries[g][i]] = g + 1;
@@ -1392,14 +1392,14 @@ void ghid_config_groups_changed(void)
 		gtk_widget_destroy(config_groups_window);
 
 	config_groups_window = scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_set_size_request(scrolled_window, (max_group + 1)*34, 300);
+	gtk_widget_set_size_request(scrolled_window, (pcb_max_group + 1)*34, 300);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 3);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
 	gtk_widget_show(scrolled_window);
 
 
-	table = gtk_table_new(max_copper_layer + 3, max_group + 1, FALSE);
+	table = gtk_table_new(pcb_max_copper_layer + 3, pcb_max_group + 1, FALSE);
 	config_groups_table = table;
 	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), table);
@@ -1412,7 +1412,7 @@ void ghid_config_groups_changed(void)
 	gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 1, 0, 1);
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
 
-	for (i = 1; i < max_group + 1; ++i) {
+	for (i = 1; i < pcb_max_group + 1; ++i) {
 		pcb_snprintf(buf, sizeof(buf), "% 3d", i);
 		label = gtk_label_new(buf);
 		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
@@ -1422,15 +1422,15 @@ void ghid_config_groups_changed(void)
 	/* Create a row of radio toggle buttons for layer.  So each layer
 	   |  can have an active radio button set for the group it needs to be in.
 	 */
-	for (layer = 0; layer < max_copper_layer + 2; ++layer) {
-		if (layer == component_silk_layer)
+	for (layer = 0; layer < pcb_max_copper_layer + 2; ++layer) {
+		if (layer == pcb_component_silk_layer)
 			name = _("component side");
-		else if (layer == solder_silk_layer)
+		else if (layer == pcb_solder_silk_layer)
 			name = _("solder side");
 		else
 			name = (gchar *) PCB_UNKNOWN(PCB->Data->Layer[layer].Name);
 
-		if (layer >= max_copper_layer) {
+		if (layer >= pcb_max_copper_layer) {
 			label = gtk_label_new(name);
 			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 			gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 1, layer + 1, layer + 2);
@@ -1443,7 +1443,7 @@ void ghid_config_groups_changed(void)
 		}
 
 		group = NULL;
-		for (i = 0; i < max_group; ++i) {
+		for (i = 0; i < pcb_max_group; ++i) {
 			button = gtk_radio_button_new(group);
 
 			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(button));
@@ -1485,7 +1485,7 @@ void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
 	s = make_layer_group_string(&PCB->LayerGroups);
 
 	/* change default layer names to the current ones in dest */
-	for (n = 0; n < max_copper_layer; n++) {
+	for (n = 0; n < pcb_max_copper_layer; n++) {
 		pcb_layer_t *layer;
 		char lnp[128];
 		lht_node_t *nd;
