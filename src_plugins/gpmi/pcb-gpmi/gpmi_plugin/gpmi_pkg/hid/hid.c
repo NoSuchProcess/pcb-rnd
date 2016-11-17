@@ -41,8 +41,8 @@ gpmi_hid_t *hid_create(char *hid_name, char *description)
 
 	h->hid->name        = pcb_strdup(hid_name);
 	h->hid->description = pcb_strdup(description);
-	h->hid->pcb_exporter    = 1;
-	h->hid->pcb_gui         = 0;
+	h->hid->exporter    = 1;
+	h->hid->gui         = 0;
 	h->hid->struct_size = sizeof(pcb_hid_t);
 
 	h->hid->get_export_options = gpmi_hid_get_export_options;
