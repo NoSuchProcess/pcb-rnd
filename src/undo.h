@@ -80,28 +80,28 @@ int ActionAtomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
  * note these must be separate bits now
  */
 typedef enum {
-	UNDO_CHANGENAME        = 0x000001, /* change of names */
-	UNDO_MOVE              = 0x000002, /* moving objects */
-	UNDO_REMOVE            = 0x000004, /* removing objects */
-	UNDO_REMOVE_POINT      = 0x000008, /* removing polygon/... points */
-	UNDO_INSERT_POINT      = 0x000010, /* inserting polygon/... points */
-	UNDO_REMOVE_CONTOUR    = 0x000020, /* removing a contour from a polygon */
-	UNDO_INSERT_CONTOUR    = 0x000040, /* inserting a contour from a polygon */
-	UNDO_ROTATE            = 0x000080, /* rotations */
-	UNDO_CREATE            = 0x000100, /* creation of objects */
-	UNDO_MOVETOLAYER       = 0x000200, /* moving objects to */
-	UNDO_FLAG              = 0x000400, /* toggling SELECTED flag */
-	UNDO_CHANGESIZE        = 0x000800, /* change size of object */
-	UNDO_CHANGE2NDSIZE     = 0x001000, /* change 2ndSize of object */
-	UNDO_MIRROR            = 0x002000, /* change side of board */
-	UNDO_CHANGECLEARSIZE   = 0x004000, /* change clearance size */
-	UNDO_CHANGEMASKSIZE    = 0x008000, /* change mask size */
-	UNDO_CHANGEANGLES      = 0x010000, /* change arc angles */
-	UNDO_LAYERCHANGE       = 0x020000, /* layer new/delete/move */
-	UNDO_CLEAR             = 0x040000, /* clear/restore to polygons */
-	UNDO_NETLISTCHANGE     = 0x080000, /* netlist change */
-	UNDO_CHANGEPINNUM      = 0x100000, /* change of pin number */
-	UNDO_CHANGERADII       = 0x200000  /* change arc radii */
+	PCB_UNDO_CHANGENAME        = 0x000001, /* change of names */
+	PCB_UNDO_MOVE              = 0x000002, /* moving objects */
+	PCB_UNDO_REMOVE            = 0x000004, /* removing objects */
+	PCB_UNDO_REMOVE_POINT      = 0x000008, /* removing polygon/... points */
+	PCB_UNDO_INSERT_POINT      = 0x000010, /* inserting polygon/... points */
+	PCB_UNDO_REMOVE_CONTOUR    = 0x000020, /* removing a contour from a polygon */
+	PCB_UNDO_INSERT_CONTOUR    = 0x000040, /* inserting a contour from a polygon */
+	PCB_UNDO_ROTATE            = 0x000080, /* rotations */
+	PCB_UNDO_CREATE            = 0x000100, /* creation of objects */
+	PCB_UNDO_MOVETOLAYER       = 0x000200, /* moving objects to */
+	PCB_UNDO_FLAG              = 0x000400, /* toggling SELECTED flag */
+	PCB_UNDO_CHANGESIZE        = 0x000800, /* change size of object */
+	PCB_UNDO_CHANGE2NDSIZE     = 0x001000, /* change 2ndSize of object */
+	PCB_UNDO_MIRROR            = 0x002000, /* change side of board */
+	PCB_UNDO_CHANGECLEARSIZE   = 0x004000, /* change clearance size */
+	PCB_UNDO_CHANGEMASKSIZE    = 0x008000, /* change mask size */
+	PCB_UNDO_CHANGEANGLES      = 0x010000, /* change arc angles */
+	PCB_UNDO_LAYERCHANGE       = 0x020000, /* layer new/delete/move */
+	PCB_UNDO_CLEAR             = 0x040000, /* clear/restore to polygons */
+	PCB_UNDO_NETLISTCHANGE     = 0x080000, /* netlist change */
+	PCB_UNDO_CHANGEPINNUM      = 0x100000, /* change of pin number */
+	PCB_UNDO_CHANGERADII       = 0x200000  /* change arc radii */
 } pcb_undo_op_t;
 
 #endif

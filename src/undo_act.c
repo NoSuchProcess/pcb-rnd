@@ -165,7 +165,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				if ((type = pcb_undo(pcb_true)))
 					pcb_board_set_changed_flag(pcb_true);
 				/* check that the undo was of the right type */
-				if ((type & UNDO_CREATE) == 0) {
+				if ((type & PCB_UNDO_CREATE) == 0) {
 					/* wrong undo type, restore anchor points */
 					Crosshair.AttachedLine.Point2.X = Crosshair.AttachedLine.Point1.X;
 					Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedLine.Point1.Y;
@@ -176,7 +176,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X;
 				Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y;
 				/* check if an intermediate point was removed */
-				if (type & UNDO_REMOVE) {
+				if (type & PCB_UNDO_REMOVE) {
 					/* this search should find the restored line */
 					pcb_search_obj_by_location(PCB_TYPE_LINE | PCB_TYPE_RATLINE, &ptr1,
 																 &ptrtmp, &ptr3, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y, 0);
