@@ -380,7 +380,7 @@ int main(int argc, char *argv[])
 
 	pcb_events_init();
 
-	buildin_init();
+	pcb_buildin_init();
 	pcb_hid_init();
 	pcb_plugins_init();
 
