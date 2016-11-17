@@ -68,7 +68,7 @@ void hyp_init(void)
  * called by pcb-rnd to load hyperlynx file 
  */
 
-int hyp_parse(const char *fname, int debug)
+int hyp_parse(pcb_data_t *dest, const char *fname, int debug)
 {
   int retval;
 

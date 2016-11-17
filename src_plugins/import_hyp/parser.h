@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include "pcb_bool.h"
+#include "board.h"
 
   /* 
    * Parameters passed on by the parser.
@@ -219,7 +220,7 @@
   pcb_bool exec_key(parse_param *h);
 
   /* called by pcb-rnd to load hyperlynx file */
-  pcb_bool hyp_parse(const char *fname, int debug);
+  pcb_bool hyp_parse(pcb_data_t *dest, const char *fname, int debug);
   void hyp_error(const char *msg);
 
 #endif 

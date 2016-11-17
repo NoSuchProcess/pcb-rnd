@@ -42,6 +42,7 @@
 #undef VERSION
 
 #include "parser.h"
+#include "board.h"
 
 static const char *hyp_cookie = "hyp importer";
 
@@ -74,7 +75,7 @@ int ActionLoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (debug > 0)
 		pcb_message(PCB_MSG_INFO, _("Importing Hyperlynx file '%s', debug level %d\n"), fname, debug);
 
-	if (hyp_parse(fname, debug))
+	if (hyp_parse(PCB->Data, fname, debug))
 		PCB_AFAIL(load_hyp);
 
 	return 0;
