@@ -574,15 +574,15 @@ void pcb_notify_mode(void)
 			 * (Note.Moving) or clicked on a MOVE_TYPE
 			 * (Note.Hit)
 			 */
-			for (test = (SELECT_TYPES | MOVE_TYPES) & ~PCB_TYPE_RATLINE; test; test &= ~type) {
+			for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES) & ~PCB_TYPE_RATLINE; test; test &= ~type) {
 				type = pcb_search_screen(Note.X, Note.Y, test, &ptr1, &ptr2, &ptr3);
-				if (!Note.Hit && (type & MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2)) {
+				if (!Note.Hit && (type & PCB_MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2)) {
 					Note.Hit = type;
 					Note.ptr1 = ptr1;
 					Note.ptr2 = ptr2;
 					Note.ptr3 = ptr3;
 				}
-				if (!Note.Moving && (type & SELECT_TYPES) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr2))
+				if (!Note.Moving && (type & PCB_SELECT_TYPES) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_pin_t *) ptr2))
 					Note.Moving = pcb_true;
 				if ((Note.Hit && Note.Moving) || type == PCB_TYPE_NONE)
 					break;
@@ -1101,7 +1101,7 @@ void pcb_notify_mode(void)
 		}
 
 	case PCB_MODE_REMOVE:
-		if ((type = pcb_search_screen(Note.X, Note.Y, REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+		if ((type = pcb_search_screen(Note.X, Note.Y, PCB_REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_line_t *) ptr2)) {
 				pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				break;
@@ -1141,7 +1141,7 @@ void pcb_notify_mode(void)
 			/* first notify, lookup object */
 		case STATE_FIRST:
 			{
-				int types = (conf_core.editor.mode == PCB_MODE_COPY) ? COPY_TYPES : MOVE_TYPES;
+				int types = (conf_core.editor.mode == PCB_MODE_COPY) ? PCB_COPY_TYPES : PCB_MOVE_TYPES;
 
 				Crosshair.AttachedObject.Type =
 					pcb_search_screen(Note.X, Note.Y, types,
@@ -1188,7 +1188,7 @@ void pcb_notify_mode(void)
 			/* first notify, lookup object */
 		case STATE_FIRST:
 			Crosshair.AttachedObject.Type =
-				pcb_search_screen(Note.X, Note.Y, INSERT_TYPES,
+				pcb_search_screen(Note.X, Note.Y, PCB_INSERT_TYPES,
 										 &Crosshair.AttachedObject.Ptr1, &Crosshair.AttachedObject.Ptr2, &Crosshair.AttachedObject.Ptr3);
 
 			if (Crosshair.AttachedObject.Type != PCB_TYPE_NONE) {

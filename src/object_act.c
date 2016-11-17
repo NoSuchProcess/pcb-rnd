@@ -377,7 +377,7 @@ static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	ny = pcb_get_value(y_str, units, &absolute1, NULL);
 	nx = pcb_get_value(x_str, units, &absolute2, NULL);
 
-	type = pcb_search_screen(x, y, MOVE_TYPES, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen(x, y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE) {
 		pcb_message(PCB_MSG_DEFAULT, _("Nothing found under crosshair\n"));
 		return 1;
@@ -421,7 +421,7 @@ static int ActionMoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, 
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
 						pcb_board_set_changed_flag(pcb_true);
 				break;

@@ -115,7 +115,7 @@ pcb_bool pcb_select_object(void)
 
 	pcb_bool changed = pcb_true;
 
-	type = pcb_search_screen(Crosshair.X, Crosshair.Y, SELECT_TYPES, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_SELECT_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 		return (pcb_false);
 	switch (type) {

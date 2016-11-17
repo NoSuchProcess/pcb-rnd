@@ -31,8 +31,6 @@
 
 #include "global_typedefs.h"
 
-#define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_VIA | PCB_TYPE_POLYGON
-
 /* Event handler to set the cursor according to the X pointer position
    called from inside main.c */
 void pcb_event_move_crosshair(int ev_x, int ev_y);

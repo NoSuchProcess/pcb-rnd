@@ -34,7 +34,7 @@
 /* ---------------------------------------------------------------------------
  * some defines
  */
-#define	COPY_TYPES              \
+#define	PCB_COPY_TYPES              \
 	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_TEXT | \
 	PCB_TYPE_ELEMENT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_POLYGON | PCB_TYPE_ARC)
 

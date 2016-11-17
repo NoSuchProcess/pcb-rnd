@@ -81,12 +81,12 @@ static int ActionChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb
 
 		if (funcid == F_Object) {
 			gui->get_coords(_("Select an Object"), &x, &y);
-			type = pcb_search_screen(x, y, CHANGECLEARSIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(x, y, PCB_CHANGECLEARSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
 		if (strcmp(argv[1], "style") == 0) {
-			if ((type == PCB_TYPE_NONE) || (type == PCB_TYPE_POLYGON))	/* workaround: pcb_search_screen(CHANGECLEARSIZE_TYPES) wouldn't return elements */
-				type = pcb_search_screen(x, y, CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			if ((type == PCB_TYPE_NONE) || (type == PCB_TYPE_POLYGON))	/* workaround: pcb_search_screen(PCB_CHANGECLEARSIZE_TYPES) wouldn't return elements */
+				type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 			if (pcb_get_style_size(funcid, &value, type, 2) != 0)
 				return 1;
 			absolute = 1;
@@ -124,7 +124,7 @@ static int ActionChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb
 			break;
 		case F_Selected:
 		case F_SelectedObjects:
-			if (pcb_chg_selected_clear_size(CHANGECLEARSIZE_TYPES, value, absolute))
+			if (pcb_chg_selected_clear_size(PCB_CHANGECLEARSIZE_TYPES, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}
@@ -195,7 +195,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 			int type;
 			void *ptr1, *ptr2, *ptr3;
 
-			if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+			if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
 					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
@@ -240,7 +240,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 
 	case F_Selected:
 	case F_SelectedObjects:
-		if (set_selected(CHANGESIZE_TYPES))
+		if (set_selected(PCB_CHANGESIZE_TYPES))
 			pcb_board_set_changed_flag(pcb_true);
 		break;
 	}
@@ -394,7 +394,7 @@ static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
-			type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		if (strcmp(argv[1], "style") == 0) {
 			if (pcb_get_style_size(funcid, &value, type, 0) != 0)
@@ -462,7 +462,7 @@ static int ActionChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		case F_Selected:
 		case F_SelectedObjects:
-			if (pcb_chg_selected_size(CHANGESIZE_TYPES, value, absolute))
+			if (pcb_chg_selected_size(PCB_CHANGESIZE_TYPES, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}
@@ -497,7 +497,7 @@ static int ActionChange2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 		if (funcid == F_Object) {
 			gui->get_coords(_("Select an Object"), &x, &y);
-			type = pcb_search_screen(x, y, CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
 		if (strcmp(argv[1], "style") == 0) {
@@ -658,7 +658,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+				if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_undo_save_serial();
 					if ((pinnums != NULL) && (strcasecmp(pinnums, "Number") == 0))
 						pinnum = 1;
@@ -735,7 +735,7 @@ static int ActionChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_chg_obj_join(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -753,7 +753,7 @@ static int ActionChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 		case F_Selected:
 		case F_SelectedObjects:
-			if (pcb_chg_selected_join(CHANGEJOIN_TYPES))
+			if (pcb_chg_selected_join(PCB_CHANGEJOIN_TYPES))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}
@@ -790,7 +790,7 @@ static int ActionChangeNonetlist(int argc, const char **argv, pcb_coord_t x, pcb
 				gui->get_coords(_("Select an Element"), &x, &y);
 
 				ptr3 = NULL;
-				type = pcb_search_screen(x, y, CHANGENONETLIST_TYPES, &ptr1, &ptr2, &ptr3);
+				type = pcb_search_screen(x, y, PCB_CHANGENONETLIST_TYPES, &ptr1, &ptr2, &ptr3);
 				if (pcb_chg_obj_nonetlist(type, ptr1, ptr2, ptr3))
 					pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -836,7 +836,7 @@ static int ActionChangeSquare(int argc, const char **argv, pcb_coord_t x, pcb_co
 				gui->get_coords(_("Select an Object"), &x, &y);
 
 				ptr3 = NULL;
-				type = pcb_search_screen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3);
+				type = pcb_search_screen(x, y, PCB_CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3);
 
 				if (ptr3 != NULL) {
 					int qstyle = PCB_FLAG_SQUARE_GET((pcb_pin_t *) ptr3);
@@ -896,7 +896,7 @@ static int ActionSetSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_set_obj_square(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -948,7 +948,7 @@ static int ActionClearSquare(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_clr_obj_square(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -999,7 +999,7 @@ static int ActionChangeOctagon(int argc, const char **argv, pcb_coord_t x, pcb_c
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_chg_obj_octagon(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -1054,7 +1054,7 @@ static int ActionSetOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(x, y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(x, y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_set_obj_octagon(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -1110,7 +1110,7 @@ static int ActionClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_co
 				void *ptr1, *ptr2, *ptr3;
 
 				gui->get_coords(_("Select an Object"), &x, &y);
-				if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
+				if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_clr_obj_octagon(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
 				break;
@@ -1186,7 +1186,7 @@ static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		if (absolute)
 			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
-				if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+				if ((type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind);
 					pcb_undo_inc_serial();
 					pcb_draw();
@@ -1200,7 +1200,7 @@ static int ActionSetThermal(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				break;
 			case F_Selected:
 			case F_SelectedElements:
-				pcb_chg_selected_thermals(CHANGETHERMAL_TYPES, kind);
+				pcb_chg_selected_thermals(PCB_CHANGETHERMAL_TYPES, kind);
 				break;
 			default:
 				err = 1;
@@ -1395,7 +1395,7 @@ static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
-			type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		{ /* convert angle from string */
 			char *end;
@@ -1429,7 +1429,7 @@ static int ActionChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 		case F_Selected:
 		case F_SelectedObjects:
-			if (pcb_chg_selected_angle(CHANGESIZE_TYPES, which, value, absolute))
+			if (pcb_chg_selected_angle(PCB_CHANGESIZE_TYPES, which, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}
@@ -1467,7 +1467,7 @@ static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_co
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object)
-			type = pcb_search_screen(Crosshair.X, Crosshair.Y, CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
+			type = pcb_search_screen(Crosshair.X, Crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 
 		value = pcb_get_value(delta, units, &absolute, NULL);
 
@@ -1492,7 +1492,7 @@ static int ActionChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 		case F_Selected:
 		case F_SelectedObjects:
-			if (pcb_chg_selected_radius(CHANGESIZE_TYPES, which, value, absolute))
+			if (pcb_chg_selected_radius(PCB_CHANGESIZE_TYPES, which, value, absolute))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		}

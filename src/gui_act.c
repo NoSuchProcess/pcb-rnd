@@ -46,6 +46,7 @@
 #include "obj_pinvia_draw.h"
 #include "obj_pad_draw.h"
 
+#define CLONE_TYPES PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_VIA | PCB_TYPE_POLYGON
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
