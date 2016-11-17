@@ -5532,7 +5532,7 @@ gdouble export_pcb_drawline(guint layer, guint x0, guint y0, guint x1, guint y1,
 	gdouble d = 0.;
 	pcb_line_t *line;
 	line = pcb_line_new_merge(LAYER_PTR(layer), x0, y0, x1, y1,
-																thickness, clearance, pcb_flag_make(PCB_FLAG_AUTO | (PCB_FLAG_TEST(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
+																thickness, clearance, pcb_flag_make(PCB_FLAG_AUTO | (PCB_FLAG_TEST(PCB_CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
 
 	if (line) {
 		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(layer), line, line);
@@ -5581,7 +5581,7 @@ gdouble export_pcb_drawarc(guint layer, toporouter_arc_t * a, guint thickness, g
 
 	arc = pcb_arc_new(LAYER_PTR(layer), vx(a->centre), vy(a->centre), a->r, a->r,
 														sa, da, thickness, clearance,
-														pcb_flag_make(PCB_FLAG_AUTO | (PCB_FLAG_TEST(CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
+														pcb_flag_make(PCB_FLAG_AUTO | (PCB_FLAG_TEST(PCB_CLEARNEWFLAG, PCB) ? PCB_FLAG_CLEARLINE : 0)));
 
 	if (arc) {
 		pcb_undo_add_obj_to_create(PCB_TYPE_ARC, LAYER_PTR(layer), arc, arc);

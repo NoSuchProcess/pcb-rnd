@@ -208,29 +208,29 @@ static void WritePCBDataHeader(FILE * FP)
 
 	/* set binary flags from conf hash; these flags used to be checked
 	   with PCB_FLAG_TEST() but got moved to the conf system */
-	conf_update_pcb_flag(&pcb_flags, "plugins/mincut/enable", ENABLEPCB_FLAG_MINCUT);
-	conf_update_pcb_flag(&pcb_flags, "editor/show_number", SHOWNUMBERFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/show_drc", SHOWPCB_FLAG_DRC);
-	conf_update_pcb_flag(&pcb_flags, "editor/rubber_band_mode", RUBBERBANDFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/auto_drc", AUTOPCB_FLAG_DRC);
-	conf_update_pcb_flag(&pcb_flags, "editor/all_direction_lines", ALLDIRECTIONFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/swap_start_direction", SWAPSTARTDIRFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/unique_names", UNIQUENAMEFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/clear_line", CLEARNEWFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/full_poly", NEWPCB_FLAG_FULLPOLY);
-	conf_update_pcb_flag(&pcb_flags, "editor/snap_pin", SNAPPCB_FLAG_PIN);
-	conf_update_pcb_flag(&pcb_flags, "editor/orthogonal_moves", ORTHOMOVEFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/live_routing", LIVEROUTEFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/lock_names", LOCKNAMESFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/only_names", ONLYNAMESFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/hide_names", HIDENAMESFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/thin_draw", THINDRAWFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/thin_draw_poly", THINDRAWPOLYFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/local_ref", LOCALREFFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/check_planes",CHECKPLANESFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/description", DESCRIPTIONFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/name_on_pcb", NAMEONPCBFLAG);
-	conf_update_pcb_flag(&pcb_flags, "editor/show_mask", SHOWMASKFLAG);
+	conf_update_pcb_flag(&pcb_flags, "plugins/mincut/enable", PCB_ENABLEPCB_FLAG_MINCUT);
+	conf_update_pcb_flag(&pcb_flags, "editor/show_number", PCB_SHOWNUMBERFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/show_drc", PCB_SHOWPCB_FLAG_DRC);
+	conf_update_pcb_flag(&pcb_flags, "editor/rubber_band_mode", PCB_RUBBERBANDFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/auto_drc", PCB_AUTOPCB_FLAG_DRC);
+	conf_update_pcb_flag(&pcb_flags, "editor/all_direction_lines", PCB_ALLDIRECTIONFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/swap_start_direction", PCB_SWAPSTARTDIRFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/unique_names", PCB_UNIQUENAMEFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/clear_line", PCB_CLEARNEWFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/full_poly", PCB_NEWPCB_FLAG_FULLPOLY);
+	conf_update_pcb_flag(&pcb_flags, "editor/snap_pin", PCB_SNAPPCB_FLAG_PIN);
+	conf_update_pcb_flag(&pcb_flags, "editor/orthogonal_moves", PCB_ORTHOMOVEFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/live_routing", PCB_LIVEROUTEFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/lock_names", PCB_LOCKNAMESFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/only_names", PCB_ONLYNAMESFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/hide_names", PCB_HIDENAMESFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/thin_draw", PCB_THINDRAWFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/thin_draw_poly", PCB_THINDRAWPOLYFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/local_ref", PCB_LOCALREFFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/check_planes",PCB_CHECKPLANESFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/description", PCB_DESCRIPTIONFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/name_on_pcb", PCB_NAMEONPCBFLAG);
+	conf_update_pcb_flag(&pcb_flags, "editor/show_mask", PCB_SHOWMASKFLAG);
 
 	fprintf(FP, "\n# To read pcb files, the pcb version (or the git source date) must be >= the file version\n");
 	fprintf(FP, "FileVersion[%i]\n", PCBFileVersionNeeded());
