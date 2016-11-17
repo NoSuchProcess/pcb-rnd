@@ -17,8 +17,8 @@
 #include "compat_inc.h"
 #include "fptr_cast.h"
 
-pcb_hid_t **hid_list = 0;
-int hid_num_hids = 0;
+pcb_hid_t **pcb_hid_list = 0;
+int pcb_hid_num_hids = 0;
 
 pcb_hid_t *pcb_gui = NULL;
 pcb_hid_t *pcb_next_gui = NULL;
@@ -116,14 +116,14 @@ void pcb_hid_init()
 
 void pcb_hid_uninit(void)
 {
-	if (hid_num_hids > 0) {
+	if (pcb_hid_num_hids > 0) {
 		int i;
-		for (i = hid_num_hids-1; i >= 0; i--) {
-			if (hid_list[i]->uninit != NULL)
-				hid_list[i]->uninit(hid_list[i]);
+		for (i = pcb_hid_num_hids-1; i >= 0; i--) {
+			if (pcb_hid_list[i]->uninit != NULL)
+				pcb_hid_list[i]->uninit(pcb_hid_list[i]);
 		}
 	}
-	free(hid_list);
+	free(pcb_hid_list);
 
 	pcb_hid_actions_uninit();
 	pcb_hid_attributes_uninit();
@@ -132,36 +132,36 @@ void pcb_hid_uninit(void)
 void pcb_hid_register_hid(pcb_hid_t * hid)
 {
 	int i;
-	int sz = (hid_num_hids + 2) * sizeof(pcb_hid_t *);
+	int sz = (pcb_hid_num_hids + 2) * sizeof(pcb_hid_t *);
 
 	if (hid->struct_size != sizeof(pcb_hid_t)) {
 		fprintf(stderr, "Warning: hid \"%s\" has an incompatible ABI.\n", hid->name);
 		return;
 	}
 
-	for (i = 0; i < hid_num_hids; i++)
-		if (hid == hid_list[i])
+	for (i = 0; i < pcb_hid_num_hids; i++)
+		if (hid == pcb_hid_list[i])
 			return;
 
-	hid_num_hids++;
-	if (hid_list)
-		hid_list = (pcb_hid_t **) realloc(hid_list, sz);
+	pcb_hid_num_hids++;
+	if (pcb_hid_list)
+		pcb_hid_list = (pcb_hid_t **) realloc(pcb_hid_list, sz);
 	else
-		hid_list = (pcb_hid_t **) malloc(sz);
+		pcb_hid_list = (pcb_hid_t **) malloc(sz);
 
-	hid_list[hid_num_hids - 1] = hid;
-	hid_list[hid_num_hids] = 0;
+	pcb_hid_list[pcb_hid_num_hids - 1] = hid;
+	pcb_hid_list[pcb_hid_num_hids] = 0;
 }
 
 void pcb_hid_remove_hid(pcb_hid_t * hid)
 {
 	int i;
 
-	for (i = 0; i < hid_num_hids; i++) {
-		if (hid == hid_list[i]) {
-			hid_list[i] = hid_list[hid_num_hids - 1];
-			hid_list[hid_num_hids - 1] = 0;
-			hid_num_hids--;
+	for (i = 0; i < pcb_hid_num_hids; i++) {
+		if (hid == pcb_hid_list[i]) {
+			pcb_hid_list[i] = pcb_hid_list[pcb_hid_num_hids - 1];
+			pcb_hid_list[pcb_hid_num_hids - 1] = 0;
+			pcb_hid_num_hids--;
 			return;
 		}
 	}
@@ -173,15 +173,15 @@ pcb_hid_t *pcb_hid_find_gui(const char *preference)
 	int i;
 
 	if (preference != NULL) {
-		for (i = 0; i < hid_num_hids; i++)
-			if (!hid_list[i]->printer && !hid_list[i]->exporter && !strcmp(hid_list[i]->name, preference))
-				return hid_list[i];
+		for (i = 0; i < pcb_hid_num_hids; i++)
+			if (!pcb_hid_list[i]->printer && !pcb_hid_list[i]->exporter && !strcmp(pcb_hid_list[i]->name, preference))
+				return pcb_hid_list[i];
 		return NULL;
 	}
 
-	for (i = 0; i < hid_num_hids; i++)
-		if (!hid_list[i]->printer && !hid_list[i]->exporter)
-			return hid_list[i];
+	for (i = 0; i < pcb_hid_num_hids; i++)
+		if (!pcb_hid_list[i]->printer && !pcb_hid_list[i]->exporter)
+			return pcb_hid_list[i];
 
 	fprintf(stderr, "Error: No GUI available.\n");
 	exit(1);
@@ -191,9 +191,9 @@ pcb_hid_t *pcb_hid_find_printer()
 {
 	int i;
 
-	for (i = 0; i < hid_num_hids; i++)
-		if (hid_list[i]->printer)
-			return hid_list[i];
+	for (i = 0; i < pcb_hid_num_hids; i++)
+		if (pcb_hid_list[i]->printer)
+			return pcb_hid_list[i];
 
 	return 0;
 }
@@ -202,14 +202,14 @@ pcb_hid_t *pcb_hid_find_exporter(const char *which)
 {
 	int i;
 
-	for (i = 0; i < hid_num_hids; i++)
-		if (hid_list[i]->exporter && strcmp(which, hid_list[i]->name) == 0)
-			return hid_list[i];
+	for (i = 0; i < pcb_hid_num_hids; i++)
+		if (pcb_hid_list[i]->exporter && strcmp(which, pcb_hid_list[i]->name) == 0)
+			return pcb_hid_list[i];
 
 	fprintf(stderr, "Invalid exporter %s, available ones:", which);
-	for (i = 0; i < hid_num_hids; i++)
-		if (hid_list[i]->exporter)
-			fprintf(stderr, " %s", hid_list[i]->name);
+	for (i = 0; i < pcb_hid_num_hids; i++)
+		if (pcb_hid_list[i]->exporter)
+			fprintf(stderr, " %s", pcb_hid_list[i]->name);
 	fprintf(stderr, "\n");
 
 	return 0;
@@ -217,5 +217,5 @@ pcb_hid_t *pcb_hid_find_exporter(const char *which)
 
 pcb_hid_t **pcb_hid_enumerate()
 {
-	return hid_list;
+	return pcb_hid_list;
 }

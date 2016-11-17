@@ -7,10 +7,10 @@
    hid_register_hid, used by hid_find_*() and pcb_hid_enumerate().  The
    order in this list is the same as the order of hid_register_hid
    calls.  */
-extern pcb_hid_t **hid_list;
+extern pcb_hid_t **pcb_hid_list;
 
 /* Count of entries in the above.  */
-extern int hid_num_hids;
+extern int pcb_hid_num_hids;
 
 /* Call this as soon as possible from main().  No other HID calls are
    valid until this is called.  */
@@ -42,7 +42,7 @@ pcb_hid_t **pcb_hid_enumerate(void);
    Xt parser, but the Postscript HID can use this function.  */
 void pcb_hid_parse_command_line(int *argc, char ***argv);
 
-/* Called by the init funcs, used to set up hid_list.  */
+/* Called by the init funcs, used to set up pcb_hid_list.  */
 extern void pcb_hid_register_hid(pcb_hid_t * hid);
 void pcb_hid_remove_hid(pcb_hid_t * hid);
 
