@@ -249,7 +249,7 @@ void pcb_clear_warnings()
 			DrawPin(pin);
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, via)) {
@@ -257,7 +257,7 @@ void pcb_clear_warnings()
 			DrawVia(via);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pad)) {
@@ -265,7 +265,7 @@ void pcb_clear_warnings()
 			DrawPad(pad);
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_LINE_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, line)) {
@@ -273,7 +273,7 @@ void pcb_clear_warnings()
 			DrawLine(layer, line);
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc)) {
@@ -281,7 +281,7 @@ void pcb_clear_warnings()
 			DrawArc(layer, arc);
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon)) {
@@ -289,7 +289,7 @@ void pcb_clear_warnings()
 			DrawPolygon(layer, polygon);
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	pcb_draw();
 }
@@ -689,13 +689,13 @@ void pcb_notify_mode(void)
 					PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, pin);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pin);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				PCB_PAD_LOOP(element);
 				{
 					PCB_FLAG_TOGGLE(PCB_FLAG_LOCK, pad);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, pad);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, element);
 				/* always re-draw it since I'm too lazy
 				 * to tell if a selected flag changed
@@ -1130,8 +1130,8 @@ void pcb_notify_mode(void)
 		break;
 
 	case PCB_MODE_ROTATE:
-		pcb_screen_obj_rotate90(Note.X, Note.Y, pcb_gui->shift_is_pressed()? (SWAP_IDENT ? 1 : 3)
-											 : (SWAP_IDENT ? 3 : 1));
+		pcb_screen_obj_rotate90(Note.X, Note.Y, pcb_gui->shift_is_pressed()? (PCB_SWAP_IDENT ? 1 : 3)
+											 : (PCB_SWAP_IDENT ? 3 : 1));
 		break;
 
 		/* both are almost the same */

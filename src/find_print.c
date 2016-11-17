@@ -76,7 +76,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 			}
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* check all pads in element */
 	PCB_PAD_LOOP(Element);
@@ -117,7 +117,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 				return (pcb_true);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* print separator if element has unused pins or pads */
 	if (!first) {
@@ -181,7 +181,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 		if (PrepareNextLoop(FP))
 			return (pcb_true);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* check all pads in element */
 	PCB_PAD_LOOP(Element);
@@ -205,7 +205,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 		if (PrepareNextLoop(FP))
 			return (pcb_true);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	fputs("}\n\n", FP);
 	return (pcb_false);
 }
@@ -228,7 +228,7 @@ void pcb_lookup_unused_pins(FILE * FP)
 		if (PrintAndSelectUnusedPinsAndPadsOfElement(element, FP))
 			break;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
@@ -279,7 +279,7 @@ void pcb_lookup_conns_to_all_elements(FILE * FP)
 		if (conf_core.editor.reset_after_element && gdl_it_idx(&__it__) != 1)
 			pcb_reset_conns(pcb_false);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (conf_core.editor.beep_when_finished)
 		pcb_gui->beep();
 	pcb_reset_conns(pcb_false);

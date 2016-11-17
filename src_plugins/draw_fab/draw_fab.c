@@ -268,17 +268,17 @@ static void DrawFab(pcb_hid_gc_t gc)
 		{
 			pcb_gui->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_ARC_LOOP(layer);
 		{
 			pcb_gui->draw_arc(gc, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_TEXT_LOOP(layer);
 		{
 			DrawTextLowLevel(text, 0);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		pcb_gui->set_line_width(gc, FAB_LINE_W);
 		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
 	}

@@ -237,7 +237,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			{
 				EraseElementName(element);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			switch (id) {
 			case F_Value:
 				if (conf_core.editor.description || conf_core.editor.name_on_pcb) {
@@ -268,7 +268,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			{
 				DrawElementName(element);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			pcb_draw();
 			break;
 
@@ -468,7 +468,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 						pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, ptr1, pin, pin);
 						PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, pin);
 					}
-					END_LOOP;
+					PCB_END_LOOP;
 					PCB_PAD_LOOP((pcb_element_t *) ptr1);
 					{
 						if (PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pad))
@@ -478,7 +478,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 						pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, ptr1, pad, pad);
 						PCB_FLAG_TOGGLE(PCB_FLAG_DISPLAYNAME, pad);
 					}
-					END_LOOP;
+					PCB_END_LOOP;
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_undo_inc_serial();
 					pcb_draw();
@@ -942,7 +942,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 						changed = pcb_true;
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				if (changed) {
 					pcb_draw();
 					pcb_undo_inc_serial();

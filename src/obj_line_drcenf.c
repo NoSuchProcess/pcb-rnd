@@ -371,7 +371,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 						pcb_r_search(layer->arc_tree, &line2.BoundingBox, NULL, drcArc_callback, &info, NULL);
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				/* no intersector! */
 				blocker = pcb_false;
 				f2 += s2;
@@ -456,7 +456,7 @@ static void drc_line(pcb_point_t *end)
 			pcb_r_search(layer->line_tree, &line.BoundingBox, NULL, drcLine_callback, &info, NULL);
 			pcb_r_search(layer->arc_tree, &line.BoundingBox, NULL, drcArc_callback, &info, NULL);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* no intersector! */
 		auto_good:;
 		last_good.X = end->X = line.Point2.X;

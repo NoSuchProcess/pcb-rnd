@@ -548,10 +548,10 @@ int pcb_save_buffer_elements(const char *Filename, const char *fmt)
 {
 	int result;
 
-	if (SWAP_IDENT)
+	if (PCB_SWAP_IDENT)
 		pcb_swap_buffers();
 	result = pcb_write_pipe(Filename, pcb_false, fmt);
-	if (SWAP_IDENT)
+	if (PCB_SWAP_IDENT)
 		pcb_swap_buffers();
 	return (result);
 }

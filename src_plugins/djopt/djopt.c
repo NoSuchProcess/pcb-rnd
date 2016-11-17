@@ -126,15 +126,15 @@ static const char *element_name_for(corner_s * c)
 			if (pin == c->pin)
 				return element->Name[1].TextString;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			if (pad == c->pad)
 				return element->Name[1].TextString;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return "unknown";
 }
 
@@ -2455,7 +2455,7 @@ static void padcleaner()
 				goto next_line;
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	next_line:;
 	}
 }
@@ -2569,7 +2569,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		c = find_corner(pin->X, pin->Y, -1);
 		c->pin = pin;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(element);
 	{
 		int layern = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? solder_layer : component_layer;
@@ -2587,8 +2587,8 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		add_line_to_corner(ls, ls->e);
 
 	}
-	END_LOOP;
-	END_LOOP;
+	PCB_END_LOOP;
+	PCB_END_LOOP;
 	PCB_VIA_LOOP(PCB->Data);
 	/* hace don't mess with vias that have thermals */
 	/* but then again don't bump into them
@@ -2598,7 +2598,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		c = find_corner(via->X, via->Y, -1);
 		c->via = via;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	check(0, 0);
 
 	if (PCB_NSTRCMP(arg, "splitlines") == 0) {
@@ -2637,7 +2637,7 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			add_line_to_corner(ls, ls->e);
 			ls->layer = layn;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	check(0, 0);

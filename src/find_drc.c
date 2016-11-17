@@ -357,7 +357,7 @@ int pcb_drc_all(void)
 				break;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (IsBad)
 			break;
 		PCB_PAD_LOOP(element);
@@ -373,11 +373,11 @@ int pcb_drc_all(void)
 				break;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (IsBad)
 			break;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (!IsBad)
 		PCB_VIA_LOOP(PCB->Data);
 	{
@@ -387,7 +387,7 @@ int pcb_drc_all(void)
 			break;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	TheFlag = (IsBad) ? PCB_FLAG_DRC : (PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED);
 	pcb_reset_conns(pcb_false);
@@ -423,7 +423,7 @@ int pcb_drc_all(void)
 				pcb_undo(pcb_false);
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 	if (!IsBad) {
 		PCB_ARC_COPPER_LOOP(PCB->Data);
@@ -454,7 +454,7 @@ int pcb_drc_all(void)
 				pcb_undo(pcb_false);
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 	if (!IsBad) {
 		PCB_PIN_ALL_LOOP(PCB->Data);
@@ -508,7 +508,7 @@ int pcb_drc_all(void)
 				pcb_undo(pcb_false);
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 	if (!IsBad) {
 		PCB_PAD_ALL_LOOP(PCB->Data);
@@ -539,7 +539,7 @@ int pcb_drc_all(void)
 				pcb_undo(pcb_false);
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 	if (!IsBad) {
 		PCB_VIA_LOOP(PCB->Data);
@@ -593,7 +593,7 @@ int pcb_drc_all(void)
 				pcb_undo(pcb_false);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	pcb_conn_lookup_uninit();
@@ -626,7 +626,7 @@ int pcb_drc_all(void)
 				}
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 
 	/* check silkscreen minimum widths inside of elements */
@@ -641,7 +641,7 @@ int pcb_drc_all(void)
 				if (line->Thickness < PCB->minSlk)
 					tmpcnt++;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			if (tmpcnt > 0) {
 				const char *title;
 				const char *name;
@@ -680,7 +680,7 @@ int pcb_drc_all(void)
 				}
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 

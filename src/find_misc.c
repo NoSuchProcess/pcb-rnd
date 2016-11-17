@@ -307,7 +307,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 			change = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PCB_PIN_LOOP(element);
@@ -321,7 +321,7 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 				change = pcb_true;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(TheFlag, pad)) {
@@ -333,9 +333,9 @@ pcb_bool pcb_reset_found_pins_vias_pads(pcb_bool AndDraw)
 				change = pcb_true;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (change)
 		pcb_board_set_changed_flag(pcb_true);
 	return change;
@@ -359,7 +359,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 			change = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_LINE_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, line)) {
@@ -371,7 +371,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 			change = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, arc)) {
@@ -383,7 +383,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 			change = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_POLY_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(TheFlag, polygon)) {
@@ -395,7 +395,7 @@ pcb_bool pcb_reset_found_lines_polys(pcb_bool AndDraw)
 			change = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	if (change)
 		pcb_board_set_changed_flag(pcb_true);
 	return change;

@@ -231,14 +231,14 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 		pcb_pin_bbox(via);
 		pcb_r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* elements */
 	PCB_ELEMENT_LOOP(Buffer->Data);
 	{
 		pcb_element_rotate90(Buffer->Data, element, Buffer->X, Buffer->Y, Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* all layer related objects */
 	PCB_LINE_ALL_LOOP(Buffer->Data);
@@ -247,28 +247,28 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_uint8_t Number)
 		pcb_line_rotate90(line, Buffer->X, Buffer->Y, Number);
 		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		pcb_arc_rotate90(arc, Buffer->X, Buffer->Y, Number);
 		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
 		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 		pcb_text_rotate90(text, Buffer->X, Buffer->Y, Number);
 		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
 		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 		pcb_poly_rotate90(polygon, Buffer->X, Buffer->Y, Number);
 		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	/* finally the origin and the bounding box */
 	PCB_COORD_ROTATE90(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
@@ -291,14 +291,14 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 		pcb_pin_bbox(via);
 		pcb_r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* elements */
 	PCB_ELEMENT_LOOP(Buffer->Data);
 	{
 		pcb_element_rotate(Buffer->Data, element, Buffer->X, Buffer->Y, cosa, sina, angle);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* all layer related objects */
 	PCB_LINE_ALL_LOOP(Buffer->Data);
@@ -309,7 +309,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 		pcb_line_bbox(line);
 		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
@@ -317,7 +317,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 		arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
 		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	/* FIXME: rotate text */
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
@@ -326,11 +326,11 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 		{
 			pcb_rotate(&point->X, &point->Y, Buffer->X, Buffer->Y, cosa, sina);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		pcb_poly_bbox(polygon);
 		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	pcb_set_buffer_bbox(Buffer);
 }
@@ -422,7 +422,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 		via->X = PCB_SWAP_X(via->X);
 		via->Y = PCB_SWAP_Y(via->Y);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		line->Point1.X = PCB_SWAP_X(line->Point1.X);
@@ -430,7 +430,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 		line->Point2.X = PCB_SWAP_X(line->Point2.X);
 		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		arc->X = PCB_SWAP_X(arc->X);
@@ -439,7 +439,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 		arc->Delta = SWAP_DELTA(arc->Delta);
 		pcb_arc_bbox(arc);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
 		PCB_POLY_POINT_LOOP(polygon);
@@ -447,10 +447,10 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 			point->X = PCB_SWAP_X(point->X);
 			point->Y = PCB_SWAP_Y(point->Y);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		pcb_poly_bbox(polygon);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	pcb_set_buffer_bbox(Buffer);
 }
 
@@ -469,7 +469,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		r_delete_element(Buffer->Data, element);
 		pcb_element_mirror(Buffer->Data, element, 0);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	/* set buffer offset to 'mark' position */
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
@@ -481,7 +481,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		pcb_pin_bbox(via);
 		pcb_r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
@@ -492,7 +492,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		pcb_line_bbox(line);
 		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
@@ -503,7 +503,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		pcb_arc_bbox(arc);
 		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
 		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
@@ -512,12 +512,12 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 			point->X = PCB_SWAP_X(point->X);
 			point->Y = PCB_SWAP_Y(point->Y);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		pcb_poly_bbox(polygon);
 		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
 		/* hmmm, how to handle clip */
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
 		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
@@ -527,7 +527,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		pcb_text_bbox(&PCB->Font, text);
 		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	/* swap silkscreen layers */
 	swap = Buffer->Data->Layer[pcb_solder_silk_layer];
 	Buffer->Data->Layer[pcb_solder_silk_layer] = Buffer->Data->Layer[pcb_component_silk_layer];
@@ -561,7 +561,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 				PCB_FLAG_THERM_ASSIGN(snumber, t2, pin);
 				PCB_FLAG_THERM_ASSIGN(cnumber, t1, pin);
 			}
-			ENDALL_LOOP;
+			PCB_ENDALL_LOOP;
 			PCB_VIA_LOOP(Buffer->Data);
 			{
 				t1 = PCB_FLAG_THERM_TEST(snumber, via);
@@ -569,7 +569,7 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 				PCB_FLAG_THERM_ASSIGN(snumber, t2, via);
 				PCB_FLAG_THERM_ASSIGN(cnumber, t1, via);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
 	pcb_set_buffer_bbox(Buffer);
@@ -641,22 +641,22 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 			{
 				CopyLine(&ctx, destlayer, line);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_ARC_LOOP(sourcelayer);
 			{
 				CopyArc(&ctx, destlayer, arc);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_TEXT_LOOP(sourcelayer);
 			{
 				CopyText(&ctx, destlayer, text);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_POLY_LOOP(sourcelayer);
 			{
 				CopyPolygon(&ctx, destlayer, polygon);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
 
@@ -672,7 +672,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 				changed = pcb_true;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	/* finally the vias */
@@ -682,7 +682,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_coord_t X, pcb_coord_t Y)
 		{
 			CopyVia(&ctx, via);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	if (changed) {

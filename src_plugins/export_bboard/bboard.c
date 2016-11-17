@@ -536,14 +536,14 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) {
 		bboard_export_element_cairo(element, 1);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* write out components on component side */
 	PCB_ELEMENT_LOOP(PCB->Data);
 	if (!PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (element))) {
 		bboard_export_element_cairo(element, 0);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* draw all wires from all valid layers */
 	for (i = pcb_max_copper_layer - 1; i >= 0; i--) {
@@ -554,7 +554,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 			{
 				bboard_draw_line_cairo(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_ARC_LOOP(&(PCB->Data->Layer[i]));
 			{
 #warning TODO: remove x1;y1;x2;y2
@@ -562,7 +562,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 															arc->Point2.X, arc->Point2.Y,*/
 															arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
 

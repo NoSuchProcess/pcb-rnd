@@ -1037,7 +1037,7 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 			pcb_r_search(layer->text_tree, &region, NULL, text_sub_callback, &info, &seen);
 			r += seen;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		pcb_r_search(Data->via_tree, &region, NULL, pin_sub_callback, &info, &seen);
 		r += seen;
 		pcb_r_search(Data->pin_tree, &region, NULL, pin_sub_callback, &info, &seen);
@@ -1478,7 +1478,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
 				r += seen;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 		else {
 			GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((pcb_layer_t *) ptr1))));
@@ -1487,7 +1487,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
 				r += seen;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 		break;
 	case PCB_TYPE_LINE:
@@ -1505,7 +1505,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
 			r += seen;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		break;
 	case PCB_TYPE_PAD:
 		{
@@ -1517,7 +1517,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
 				r += seen;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 		break;
 
@@ -1527,12 +1527,12 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			{
 				pcb_poly_plows(Data, PCB_TYPE_PIN, ptr1, pin, call_back);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_PAD_LOOP((pcb_element_t *) ptr1);
 			{
 				pcb_poly_plows(Data, PCB_TYPE_PAD, ptr1, pad, call_back);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 		break;
 	}

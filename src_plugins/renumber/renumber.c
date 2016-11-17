@@ -180,7 +180,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			element_list[i] = element;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 
 	/*

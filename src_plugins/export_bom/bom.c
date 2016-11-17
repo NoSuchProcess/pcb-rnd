@@ -243,7 +243,7 @@ static int PrintBOM(void)
 		bom = bom_insert((char *) PCB_UNKNOWN(NAMEONPCB_NAME(element)),
 										 (char *) PCB_UNKNOWN(DESCRIPTION_NAME(element)), (char *) PCB_UNKNOWN(VALUE_NAME(element)), bom);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	fp = fopen(bom_filename, "w");
 	if (!fp) {

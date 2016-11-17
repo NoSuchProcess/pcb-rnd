@@ -215,7 +215,7 @@ static int PrintXY(void)
 				}
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		PCB_PAD_LOOP(element);
 		{
@@ -239,7 +239,7 @@ static int PrintXY(void)
 				}
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		if (pin_cnt > 0) {
 			centroidx = sumx / (double) pin_cnt;
@@ -318,7 +318,7 @@ static int PrintXY(void)
 		free(descr);
 		free(value);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	fclose(fp);
 

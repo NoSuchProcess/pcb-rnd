@@ -543,7 +543,7 @@ void scad_process_components(int mode)
 		}
 	}
 
-	END_LOOP;
+	PCB_END_LOOP;
 
 	fprintf(scad_output, "}\n\n");
 

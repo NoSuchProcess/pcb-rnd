@@ -207,7 +207,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	 */
 	if (!conf_core.editor.check_planes
 			&& pcb_gui->set_layer("invisible", SL(INVISIBLE, 0), 0)) {
-		side = SWAP_IDENT ? COMPONENT_LAYER : SOLDER_LAYER;
+		side = PCB_SWAP_IDENT ? COMPONENT_LAYER : SOLDER_LAYER;
 		if (PCB->ElementOn) {
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 			pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
@@ -232,7 +232,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	/* Draw pins, pads, vias below silk */
 	if (pcb_gui->gui)
-		DrawPPV(SWAP_IDENT ? solder : component, drawn_area);
+		DrawPPV(PCB_SWAP_IDENT ? solder : component, drawn_area);
 	else if (!pcb_gui->holes_after)
 		DrawEverything_holes(drawn_area);
 

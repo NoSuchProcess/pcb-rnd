@@ -99,12 +99,12 @@ void pcb_lib_free(pcb_lib_t *lib)
 			if (!entry->ListEntry_dontfree)
 				free((char*)entry->ListEntry);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		free(menu->Entry);
 		free(menu->Name);
 		free(menu->directory);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	free(lib->Menu);
 
 	/* clear struct */

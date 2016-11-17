@@ -142,7 +142,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 						swapdrill = savedrill;
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				if (AllDrills->Drill[AllDrills->DrillN - 1].DrillSize < pin->DrillingHole) {
 					Drill = GetDrillInfoDrillMemory(AllDrills);
 					InitializeDrill(Drill, pin, element);
@@ -150,7 +150,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 			}
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_VIA_LOOP(top);
 	{
 		if (!DrillFound) {
@@ -169,7 +169,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 						break;
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				if (Drill->DrillSize != via->DrillingHole) {
 					Drill = GetDrillInfoDrillMemory(AllDrills);
 					Drill->DrillSize = via->DrillingHole;
@@ -180,7 +180,7 @@ DrillInfoTypePtr GetDrillInfo(pcb_data_t *top)
 				FillDrill(Drill, NULL, via);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	qsort(AllDrills->Drill, AllDrills->DrillN, sizeof(DrillType), DrillQSort);
 	return (AllDrills);
 }
@@ -244,7 +244,7 @@ void FreeDrillInfo(DrillInfoTypePtr Drills)
 		free(drill->Element);
 		free(drill->Pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	free(Drills->Drill);
 	free(Drills);
 }

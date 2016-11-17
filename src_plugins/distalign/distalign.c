@@ -249,7 +249,7 @@ static int sort_elements_by_pos(int op, int dir, int point)
 			continue;
 		nsel++;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (!nsel)
 		return 0;
 	elements_by_pos = malloc(nsel * sizeof(*elements_by_pos));
@@ -262,7 +262,7 @@ static int sort_elements_by_pos(int op, int dir, int point)
 		elements_by_pos[nsel].element = element;
 		elements_by_pos[nsel++].pos = coord(element, dir, point);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	qsort(elements_by_pos, nelements_by_pos, sizeof(*elements_by_pos), cmp_ebp);
 	return nelements_by_pos;
 }
@@ -303,7 +303,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 			q += coord(element, dir, point);
 			nsel++;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (nsel)
 			q /= nsel;
 		break;
@@ -435,7 +435,7 @@ static int align(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			changed = 1;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (changed) {
 		pcb_undo_inc_serial();
 		pcb_redraw();

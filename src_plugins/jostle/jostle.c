@@ -520,7 +520,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	{
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	do {
 		info.box = pcb_polyarea_t_boundingBox(info.brush);
 		Debugpcb_polyarea_t(info.brush, NULL);

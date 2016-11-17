@@ -113,7 +113,7 @@ int PCBFileVersionNeeded(void)
 		if (polygon->HoleIndexN > 0)
 			return PCB_FILE_VERSION_HOLES;
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	return PCB_FILE_VERSION_BASELINE;
 }

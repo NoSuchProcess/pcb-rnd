@@ -235,7 +235,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		PCB_FLAG_SET(PCB_FLAG_VISIT, pad);
 	}
 
-	END_LOOP;											/* Pad. */
+	PCB_END_LOOP;											/* Pad. */
 	PCB_PIN_LOOP(element);
 	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pin)) {	/* Non plated? */
@@ -309,8 +309,8 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 
 	}
 
-	END_LOOP;											/* Pin. */
-	END_LOOP;											/* Element */
+	PCB_END_LOOP;											/* Pin. */
+	PCB_END_LOOP;											/* Element */
 
 	PCB_VIA_LOOP(PCB->Data);
 	if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via)) {
@@ -377,7 +377,7 @@ void IPCD356_WriteNet(FILE * fd, char *net)
 		PCB_FLAG_SET(PCB_FLAG_VISIT, via);
 	}
 
-	END_LOOP;											/* Via. */
+	PCB_END_LOOP;											/* Via. */
 }
 
 
@@ -443,7 +443,7 @@ int IPCD356_Netlist(void)
 		}
 		IPCD356_WriteNet(fp, net);
 	}
-	END_LOOP;											/* Pin. */
+	PCB_END_LOOP;											/* Pin. */
 	PCB_PAD_LOOP(element);
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, pad)) {
 		pcb_clear_flag_on_lines_polys(pcb_true, PCB_FLAG_FOUND);
@@ -461,9 +461,9 @@ int IPCD356_Netlist(void)
 		}
 		IPCD356_WriteNet(fp, net);
 	}
-	END_LOOP;											/* Pad. */
+	PCB_END_LOOP;											/* Pad. */
 
-	END_LOOP;											/* Element. */
+	PCB_END_LOOP;											/* Element. */
 
 	PCB_VIA_LOOP(PCB->Data);
 	if (!PCB_FLAG_TEST(PCB_FLAG_VISIT, via)) {
@@ -473,7 +473,7 @@ int IPCD356_Netlist(void)
 		strcpy(net, "N/C");
 		IPCD356_WriteNet(fp, net);
 	}
-	END_LOOP;											/* Via. */
+	PCB_END_LOOP;											/* Via. */
 
 	IPCD356_End(fp);
 	fclose(fp);
@@ -493,15 +493,15 @@ void ResetVisitPinsViasAndPads()
 {
 	PCB_VIA_LOOP(PCB->Data);
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, via);
-	END_LOOP;											/* Via. */
+	PCB_END_LOOP;											/* Via. */
 	PCB_ELEMENT_LOOP(PCB->Data);
 	PCB_PIN_LOOP(element);
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, pin);
-	END_LOOP;											/* Pin. */
+	PCB_END_LOOP;											/* Pin. */
 	PCB_PAD_LOOP(element);
 	PCB_FLAG_CLEAR(PCB_FLAG_VISIT, pad);
-	END_LOOP;											/* Pad. */
-	END_LOOP;											/* Element. */
+	PCB_END_LOOP;											/* Pad. */
+	PCB_END_LOOP;											/* Element. */
 }
 
 int IPCD356_WriteAliases(FILE * fd, IPCD356_AliasList * aliaslist)
@@ -572,7 +572,7 @@ int IPCD356_SanityCheck()
 		pcb_message(PCB_MSG_ERROR, "Error: Found unnamed element. All elements need to be named to create an IPC-D-356 netlist.\n");
 		return (1);
 	}
-	END_LOOP;											/* Element. */
+	PCB_END_LOOP;											/* Element. */
 	return (0);
 }
 

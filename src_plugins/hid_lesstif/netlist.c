@@ -178,14 +178,14 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 			pcb_remove_object(PCB_TYPE_LINE, layer, line, line);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	PCB_ARC_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
 			pcb_remove_object(PCB_TYPE_ARC, layer, arc, arc);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	if (PCB->ViaOn)
 		PCB_VIA_LOOP(PCB->Data);
@@ -193,7 +193,7 @@ static void nbcb_ripup(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * c
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via))
 			pcb_remove_object(PCB_TYPE_VIA, via, via, via);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
@@ -222,7 +222,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 					return;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_PAD_LOOP(element);
 			{
 				if (strcmp(pad->Number, pname) == 0) {
@@ -233,10 +233,10 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 					return;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	free(ename);
 }
 

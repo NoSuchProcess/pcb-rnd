@@ -123,7 +123,7 @@ static pcb_point_t get_centroid(pcb_element_t * element)
 		sumy += (double) pin->Y;
 		pin_cnt++;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_PAD_LOOP(element);
 	{
@@ -131,7 +131,7 @@ static pcb_point_t get_centroid(pcb_element_t * element)
 		sumy += (pad->Point1.Y + pad->Point2.Y) / 2.0;
 		pin_cnt++;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (pin_cnt > 0) {
 		centroid.X = sumx / (double) pin_cnt;
@@ -198,7 +198,7 @@ static void print_structure(FILE * fp)
 								 "\"%s\", DSN files do not have layer groups.", layer->Name, first_layer->Name);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	if (PCB->Data->Layer[bot_layer].On) {
@@ -265,7 +265,7 @@ static void print_placement(FILE * fp)
 		pcb_fprintf(fp, "    )\n");
 		g_free(ename);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_VIA_LOOP(PCB->Data);
 	{ /* add mounting holes */
@@ -273,7 +273,7 @@ static void print_placement(FILE * fp)
 		pcb_fprintf(fp, "      (place %d %.6mm %.6mm %s 0 (PN 0))\n", via->ID, via->X, (PCB->MaxHeight - via->Y), "front");
 		pcb_fprintf(fp, "    )\n");
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	fprintf(fp, "  )\n");
 }
 
@@ -318,7 +318,7 @@ static void print_library(FILE * fp)
 			else
 				g_free(padstack);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		PCB_PAD_LOOP(element);
 		{
@@ -357,10 +357,10 @@ static void print_library(FILE * fp)
 			else
 				g_free(padstack);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		fprintf(fp, "    )\n");
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_VIA_LOOP(PCB->Data);
 	{ /* add mounting holes and vias */
@@ -374,7 +374,7 @@ static void print_library(FILE * fp)
 		else
 			g_free(padstack);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* loop thru padstacks and define them all */
 	for (iter = pads; iter; iter = g_list_next(iter)) {
@@ -465,7 +465,7 @@ static void print_wires(FILE * fp)
 									(PCB->MaxHeight - line->Point1.Y), line->Point2.X, (PCB->MaxHeight - line->Point2.Y));
 			fprintf(fp, "            (type protect))\n");
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	fprintf(fp, "\n    )\n)\n"); /* close all braces */
 }

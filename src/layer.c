@@ -464,7 +464,7 @@ pcb_bool IsPasteEmpty(int side)
 			break;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	return paste_empty;
 }
 
@@ -886,13 +886,13 @@ static void move_all_thermals(int old_index, int new_index)
 	{
 		move_one_thermal(old_index, new_index, via);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
 		move_one_thermal(old_index, new_index, pin);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 }
 
 static int LastLayerInComponentGroup(int layer)

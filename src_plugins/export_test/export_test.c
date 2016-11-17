@@ -183,7 +183,7 @@ static int Printexport_test(void)
 				found_pin2 = 1;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		PCB_PAD_LOOP(element);
 		{
@@ -209,7 +209,7 @@ static int Printexport_test(void)
 			}
 
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		if (pin_cnt > 0) {
 			x = sumx / (double) pin_cnt;
@@ -262,7 +262,7 @@ static int Printexport_test(void)
 			free(value);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	fclose(fp);
 

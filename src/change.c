@@ -726,7 +726,7 @@ pcb_bool pcb_chg_selected_hole(void)
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, via))
 			change |= pcb_pin_change_hole(via);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -747,7 +747,7 @@ pcb_bool pcb_chg_selected_paste(void)
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad))
 			change |= pcb_pad_change_paste(pad);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();

@@ -335,7 +335,7 @@ static void apply_vendor_map(void)
 				}
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		/* and now the pins */
 		PCB_ELEMENT_LOOP(PCB->Data);
@@ -369,10 +369,10 @@ static void apply_vendor_map(void)
 						}
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		pcb_message(PCB_MSG_DEFAULT, _("Updated %d drill sizes out of %d total\n"), changed, tot);
 

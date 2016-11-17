@@ -132,7 +132,7 @@ int ActionLoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				if (!strcmp(layer->Name, lname))
 					rlayer = layer;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			linethick = dim1;
 			x0 = 0;
 			y0 = 0;

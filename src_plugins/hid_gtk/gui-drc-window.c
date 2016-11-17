@@ -99,7 +99,7 @@ static void unset_found_flags(int AndDraw)
 			change = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		PCB_PIN_LOOP(element);
@@ -111,7 +111,7 @@ static void unset_found_flags(int AndDraw)
 				change = pcb_true;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(flag, pad)) {
@@ -121,9 +121,9 @@ static void unset_found_flags(int AndDraw)
 				change = pcb_true;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_RAT_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, line)) {
@@ -133,7 +133,7 @@ static void unset_found_flags(int AndDraw)
 			change = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_LINE_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, line)) {
@@ -143,7 +143,7 @@ static void unset_found_flags(int AndDraw)
 			change = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, arc)) {
@@ -153,7 +153,7 @@ static void unset_found_flags(int AndDraw)
 			change = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_POLY_COPPER_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(flag, polygon)) {
@@ -163,7 +163,7 @@ static void unset_found_flags(int AndDraw)
 			change = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	if (change) {
 		pcb_board_set_changed_flag(pcb_true);
 		if (AndDraw) {

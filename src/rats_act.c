@@ -100,7 +100,7 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 					shorty = line;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			if (shorty) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_RATLINE, shorty, shorty, shorty);
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, shorty);

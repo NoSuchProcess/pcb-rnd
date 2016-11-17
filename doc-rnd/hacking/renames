@@ -1085,3 +1085,6 @@ hid_list -> pcb_hid_list
 hid_num_hids -> pcb_hid_num_hids
 MENU_LOOP -> PCB_MENU_LOOP
 ENTRY_LOOP -> PCB_ENTRY_LOOP
+SWAP_IDENT -> PCB_SWAP_IDENT
+END_LOOP -> PCB_END_LOOP
+ENDALL_LOOP -> PCB_ENDALL_LOOP

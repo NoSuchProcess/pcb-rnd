@@ -174,7 +174,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			set_visited(element);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* initialize variables for place() */
 	minx = GAP;
@@ -220,7 +220,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			place(ea);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* Place larger nets, still grouping by net */
 	PCB_NET_LOOP(Nets);
@@ -240,9 +240,9 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			set_visited(element);
 			place(element);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* Place up anything else */
 	PCB_ELEMENT_LOOP(PCB->Data);
@@ -251,7 +251,7 @@ static int smartdisperse(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			place(element);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	htpi_uninit(&visited);
 

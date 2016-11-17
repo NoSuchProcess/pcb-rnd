@@ -214,7 +214,7 @@ parsepcb
 			{
 			  pcb_poly_init_clip(yyData, layer, polygon);
 			}
-			ENDALL_LOOP;
+			PCB_ENDALL_LOOP;
 			PCB = pcb_save;
 			}
 

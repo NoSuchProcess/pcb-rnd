@@ -60,7 +60,7 @@ static pcb_element_t *find_element_by_refdes(const char *refdes)
 			return element_cache;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return NULL;
 }
 
@@ -153,7 +153,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 					n_found++;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			if (n_found > 1) {
 				pcb_message(PCB_MSG_DEFAULT, _("Too many elements selected\n"));
 				return 1;
@@ -288,7 +288,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 		}
 
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* done with our action so increment the undo # */
 	pcb_undo_inc_serial();
@@ -494,7 +494,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		{
 			PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		element_cache = NULL;
 		number_of_footprints_not_found = 0;
 		return 0;
@@ -511,7 +511,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, element);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (number_of_footprints_not_found > 0)
 			pcb_gui->confirm_dialog("Not all requested footprints were found.\n" "See the message log for details", "Ok", NULL);
 		return 0;
@@ -674,7 +674,7 @@ static int ActionElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_
 			break;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (!e) {
 		pcb_message(PCB_MSG_DEFAULT, _("Cannot change attribute of %s - element not found\n"), refdes);
@@ -737,7 +737,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					changed = pcb_true;
 				}
 			}
-			ENDALL_LOOP;
+			PCB_ENDALL_LOOP;
 			PCB_ARC_ALL_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
@@ -745,7 +745,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					changed = pcb_true;
 				}
 			}
-			ENDALL_LOOP;
+			PCB_ENDALL_LOOP;
 			PCB_VIA_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, via) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, via)) {
@@ -753,7 +753,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					changed = pcb_true;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 
 			if (changed) {
 				pcb_undo_inc_serial();
@@ -769,7 +769,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					changed = pcb_true;
 				}
 			}
-			ENDALL_LOOP;
+			PCB_ENDALL_LOOP;
 			if (PCB->ViaOn)
 				PCB_VIA_LOOP(PCB->Data);
 			{
@@ -779,7 +779,7 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					changed = pcb_true;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			if (changed) {
 				pcb_undo_inc_serial();
 				pcb_board_set_changed_flag(pcb_true);
@@ -858,7 +858,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				pcb_undo_restore_serial();
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			if (!PCB_FLAGS_TEST(flags, pad))
@@ -868,9 +868,9 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				pcb_undo_restore_serial();
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, via))
@@ -880,7 +880,7 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			pcb_undo_restore_serial();
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
 	return 0;
@@ -932,7 +932,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				pcb_undo_restore_serial();
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			if (!PCB_FLAGS_TEST(flags, pad))
@@ -942,9 +942,9 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				pcb_undo_restore_serial();
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, via))
@@ -954,7 +954,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			pcb_undo_restore_serial();
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, line))
@@ -964,7 +964,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			pcb_undo_restore_serial();
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAGS_TEST(flags, arc))
@@ -974,7 +974,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			pcb_undo_restore_serial();
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
 	return 0;
@@ -987,7 +987,7 @@ int ActionListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	{
 		printf("%d %s\n", pcb_element_get_orientation(element), NAMEONPCB_NAME(element));
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	return 0;
 }

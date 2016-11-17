@@ -69,9 +69,9 @@ static int pcb_netlist_swap()
 				next++;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (next < 2) {
 		pcb_message(PCB_MSG_DEFAULT, "Exactly two pins should be selected for swap (less than 2 selected at the moment)\n");

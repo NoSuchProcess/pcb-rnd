@@ -208,13 +208,13 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 			pin->Spare = NULL;
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 		PCB_PAD_ALL_LOOP(PCB->Data);
 		{
 			pad->Spare = NULL;
 			PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 		PCB_MENU_LOOP(net_menu);
 		{
 			if (menu->Name[0] == '*' || menu->flag == 0) {
@@ -267,21 +267,21 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 						((pcb_pad_t *) LastPoint.ptr2)->Spare = (void *) menu;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	/* clear all visit marks */
 	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC, pin);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC, pad);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	return (Wantlist);
 }
 
@@ -299,7 +299,7 @@ static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *De
 		conn = pcb_rat_connection_alloc(DestNet);
 		*conn = *connection;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	DestNet->Style = SourceNet->Style;
 	/* free the connection memory */
 	pcb_net_free(SourceNet);
@@ -339,7 +339,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 					break;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			if (newone) {
 				menu = GetPointerMemory(generic);
 				*menu = pin->Spare;
@@ -349,7 +349,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			}
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		pcb_element_t *e = pad->Element;
@@ -370,7 +370,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 					break;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			if (newone) {
 				menu = GetPointerMemory(generic);
 				*menu = pad->Spare;
@@ -380,7 +380,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			}
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	FreePointerListMemory(generic);
 	free(generic);
 	return (warn);
@@ -443,7 +443,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn->menu = NULL;
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 		/* add polygons so the auto-router can see them as targets */
 		PCB_POLY_ALL_LOOP(PCB->Data);
 		{
@@ -459,7 +459,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn->menu = NULL;			/* agnostic view of where it belongs */
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 		PCB_VIA_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_DRC, via)) {
@@ -472,7 +472,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn->group = SLayer;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (!NoWarn)
 			Warned |= CheckShorts(a->Connection[0].menu);
 	}
@@ -690,12 +690,12 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 				lonesome->Style = net->Style;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		Warned |= GatherSubnets(Nets, SelectedOnly, pcb_true);
 		if (Nets->NetN > 0)
 			changed |= DrawShortestRats(Nets, funcp);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_netlist_free(Nets);
 	free(Nets);
 	pcb_conn_lookup_uninit();
@@ -775,11 +775,11 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 				lonesome->Style = net->Style;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* Note that AndRats is *pcb_false* here! */
 		GatherSubnets(Nets, SelectedOnly, pcb_false);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_conn_lookup_uninit();
 	pcb_restore_find_flag();
 	return result;
@@ -799,7 +799,7 @@ static int rat_used(char *name)
 		if (menu->Name && (strcmp(menu->Name, name) == 0))
 			return 1;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	return 0;
 }

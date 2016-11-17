@@ -1831,7 +1831,7 @@ yyreduce:
 			{
 			  pcb_poly_init_clip(yyData, layer, polygon);
 			}
-			ENDALL_LOOP;
+			PCB_ENDALL_LOOP;
 			PCB = pcb_save;
 			}
 #line 1838 "parse_y.c" /* yacc.c:1646  */

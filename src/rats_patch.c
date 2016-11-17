@@ -395,7 +395,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 			break;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (!(found)) {
 		pcb_message(PCB_MSG_DEFAULT, "ReplaceFootprint works on selected elements, please select elements first!\n");
@@ -436,7 +436,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 			pcb_element_remove(element);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return 0;
 }
 

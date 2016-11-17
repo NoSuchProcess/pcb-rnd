@@ -174,14 +174,14 @@ static int sort_texts_by_pos(int op, int dir, int point)
 			continue;
 		nsel++;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		nsel++;
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	if (!nsel)
 		return 0;
 	texts_by_pos = malloc(nsel * sizeof(*texts_by_pos));
@@ -197,7 +197,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		texts_by_pos[nsel].type = PCB_TYPE_ELEMENT_NAME;
 		texts_by_pos[nsel++].pos = coord(text, dir, point);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
@@ -206,7 +206,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 		texts_by_pos[nsel].type = PCB_TYPE_TEXT;
 		texts_by_pos[nsel++].pos = coord(text, dir, point);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	qsort(texts_by_pos, ntexts_by_pos, sizeof(*texts_by_pos), cmp_tbp);
 	return ntexts_by_pos;
 }
@@ -385,7 +385,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			changed = 1;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	/* Selected bare text objects */
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
@@ -412,7 +412,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			}
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	if (changed) {
 		pcb_undo_restore_serial();
 		pcb_undo_inc_serial();

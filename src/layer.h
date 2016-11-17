@@ -107,7 +107,7 @@ char *LayerGroupsToString(pcb_layer_group_t *);
 /* These decode the set_layer index. */
 #define SL_TYPE(x) ((x) < 0 ? (x) & 0x0f0 : 0)
 #define SL_SIDE(x) ((x) & 0x00f)
-#define SL_MYSIDE(x) ((((x) & SL_BOTTOM_SIDE)!=0) == (SWAP_IDENT != 0))
+#define SL_MYSIDE(x) ((((x) & SL_BOTTOM_SIDE)!=0) == (PCB_SWAP_IDENT != 0))
 
 #define SL_0_SIDE	0x0000
 #define SL_TOP_SIDE	0x0001

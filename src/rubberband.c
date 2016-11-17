@@ -199,7 +199,7 @@ static void CheckPadForRubberbandConnection(pcb_pad_t *Pad)
 			pcb_r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 struct rinfo {
@@ -346,7 +346,7 @@ static void CheckLinePointForRubberbandConnection(pcb_layer_t *Layer, pcb_line_t
 			pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 /* ---------------------------------------------------------------------------
@@ -380,10 +380,10 @@ static void CheckPolygonForRubberbandConnection(pcb_layer_t *Layer, pcb_polygon_
 				if (pcb_poly_is_point_in_p(line->Point2.X, line->Point2.Y, thick, Polygon))
 					pcb_rubber_band_create(layer, line, &line->Point2);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 /* ---------------------------------------------------------------------------
@@ -412,12 +412,12 @@ void pcb_rubber_band_lookup_lines(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 			{
 				CheckPinForRubberbandConnection(pin);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_PAD_LOOP(element);
 			{
 				CheckPadForRubberbandConnection(pad);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			break;
 		}
 
@@ -459,12 +459,12 @@ void pcb_rubber_band_lookup_rat_lines(int Type, void *Ptr1, void *Ptr2, void *Pt
 			{
 				CheckPinForRat(pin);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_PAD_LOOP(element);
 			{
 				CheckPadForRat(pad);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			break;
 		}
 

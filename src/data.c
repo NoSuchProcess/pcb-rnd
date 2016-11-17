@@ -59,7 +59,7 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 				{
 					lcb(ctx, PCB, layer, line);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 
 			if (acb != NULL) {
@@ -67,7 +67,7 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 				{
 					acb(ctx, PCB, layer, arc);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 
 			if (tcb != NULL) {
@@ -75,7 +75,7 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 				{
 					tcb(ctx, PCB, layer, text);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 
 			if (pocb != NULL) {
@@ -83,12 +83,12 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 				{
 					pocb(ctx, PCB, layer, polygon);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 			if (lacb != NULL)
 				lacb(ctx, PCB, layer, 0);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 }
 
@@ -106,7 +106,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 				{
 					elcb(ctx, PCB, element, line);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 
 			if (eacb != NULL) {
@@ -114,7 +114,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 				{
 					eacb(ctx, PCB, element, arc);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 
 			if (etcb != NULL) {
@@ -122,7 +122,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 				{
 					etcb(ctx, PCB, element, text);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 
 			if (epicb != NULL) {
@@ -130,7 +130,7 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 				{
 					epicb(ctx, PCB, element, pin);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 
 
@@ -139,13 +139,13 @@ void pcb_loop_elements(void *ctx, pcb_element_cb_t ecb, pcb_eline_cb_t elcb, pcb
 				{
 					epacb(ctx, PCB, element, pad);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 
 			if (ecb != NULL)
 				ecb(ctx, PCB, element, 0);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 }
 
@@ -156,7 +156,7 @@ void pcb_loop_vias(void *ctx, pcb_via_cb_t vcb)
 		{
 			vcb(ctx, PCB, via);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 }
 
@@ -186,13 +186,13 @@ void pcb_data_free(pcb_data_t * data)
 	{
 		free(via->Name);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	list_map0(&data->Via, pcb_pin_t, pcb_via_free);
 	PCB_ELEMENT_LOOP(data);
 	{
 		pcb_element_destroy(element);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	list_map0(&data->Element, pcb_element_t, pcb_element_free);
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
@@ -202,7 +202,7 @@ void pcb_data_free(pcb_data_t * data)
 		{
 			free(text->TextString);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (layer->Name)
 			free((char*)layer->Name);
 		PCB_LINE_LOOP(layer);
@@ -210,7 +210,7 @@ void pcb_data_free(pcb_data_t * data)
 			if (line->Number)
 				free(line->Number);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		list_map0(&layer->Line, pcb_line_t, pcb_line_free);
 		list_map0(&layer->Arc,  pcb_arc_t,  pcb_arc_free);
@@ -219,7 +219,7 @@ void pcb_data_free(pcb_data_t * data)
 		{
 			pcb_poly_free_fields(polygon);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		list_map0(&layer->Polygon, pcb_polygon_t, pcb_poly_free);
 		if (layer->line_tree)
 			pcb_r_destroy_tree(&layer->line_tree);
@@ -284,7 +284,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		box.X2 = MAX(box.X2, via->X + via->Thickness / 2);
 		box.Y2 = MAX(box.Y2, via->Y + via->Thickness / 2);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ELEMENT_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, element->BoundingBox.X1);
@@ -299,7 +299,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 			box.Y2 = MAX(box.Y2, text->BoundingBox.Y2);
 		};
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, line->Point1.X - line->Thickness / 2);
@@ -311,7 +311,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		box.X2 = MAX(box.X2, line->Point2.X + line->Thickness / 2);
 		box.Y2 = MAX(box.Y2, line->Point2.Y + line->Thickness / 2);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, arc->BoundingBox.X1);
@@ -319,7 +319,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		box.X2 = MAX(box.X2, arc->BoundingBox.X2);
 		box.Y2 = MAX(box.Y2, arc->BoundingBox.Y2);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, text->BoundingBox.X1);
@@ -327,7 +327,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		box.X2 = MAX(box.X2, text->BoundingBox.X2);
 		box.Y2 = MAX(box.Y2, text->BoundingBox.Y2);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Data);
 	{
 		box.X1 = MIN(box.X1, polygon->BoundingBox.X1);
@@ -335,7 +335,7 @@ pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
 		box.X2 = MAX(box.X2, polygon->BoundingBox.X2);
 		box.Y2 = MAX(box.Y2, polygon->BoundingBox.Y2);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	return (pcb_data_is_empty(Data) ? NULL : &box);
 }
 

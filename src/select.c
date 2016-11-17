@@ -61,24 +61,24 @@ void pcb_select_element(pcb_element_t *element, pcb_change_flag_t how, int redra
 		pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(element);
 	{
 		pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ELEMENT_PCB_TEXT_LOOP(element);
 	{
 		pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, text, text);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT, element, element, element);
 	PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, element);
 
 	if (redraw) {
-		if (PCB->ElementOn && ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn))
+		if (PCB->ElementOn && ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || PCB->InvisibleObjectsOn))
 			if (PCB->ElementOn) {
 				DrawElementName(element);
 				DrawElementPackage(element);
@@ -96,7 +96,7 @@ void pcb_select_element_name(pcb_element_t *element, pcb_change_flag_t how, int 
 		pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, text, text);
 		PCB_FLAG_CHANGE(how, PCB_FLAG_SELECTED, text);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (redraw)
 		DrawElementName(element);
@@ -293,7 +293,7 @@ do { \
 				DrawRat(line);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* check layers */
 	LAYER_LOOP(PCB->Data, pcb_max_copper_layer + 2);
@@ -319,7 +319,7 @@ do { \
 					DrawLine(layer, line);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_ARC_LOOP(layer);
 		{
 			if (PCB_ARC_NEAR_BOX(arc, Box)
@@ -330,7 +330,7 @@ do { \
 					DrawArc(layer, arc);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_TEXT_LOOP(layer);
 		{
 			if (!Flag || pcb_text_is_visible(PCB, layer, text)) {
@@ -343,7 +343,7 @@ do { \
 				}
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_POLY_LOOP(layer);
 		{
 			if (PCB_POLYGON_NEAR_BOX(polygon, Box)
@@ -354,9 +354,9 @@ do { \
 					DrawPolygon(layer, polygon);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* elements */
 	PCB_ELEMENT_LOOP(PCB->Data);
@@ -365,7 +365,7 @@ do { \
 			pcb_bool gotElement = pcb_false;
 			if ((PCB->ElementOn || !Flag)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
-					&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn)) {
+					&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || PCB->InvisibleObjectsOn)) {
 				if (PCB_BOX_NEAR_BOX(&ELEMENT_TEXT(PCB, element).BoundingBox, Box)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, &ELEMENT_TEXT(PCB, element))
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)) != Flag) {
@@ -374,7 +374,7 @@ do { \
 					{
 						append(PCB_TYPE_ELEMENT_NAME, element, text);
 					}
-					END_LOOP;
+					PCB_END_LOOP;
 					if (PCB->ElementOn)
 						DrawElementName(element);
 				}
@@ -389,7 +389,7 @@ do { \
 									DrawPin(pin);
 							}
 						}
-						END_LOOP;
+						PCB_END_LOOP;
 						PCB_PAD_LOOP(element);
 						{
 							if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad) != Flag) {
@@ -398,7 +398,7 @@ do { \
 									DrawPad(pad);
 							}
 						}
-						END_LOOP;
+						PCB_END_LOOP;
 						if (PCB->PinOn)
 							DrawElement(element);
 						gotElement = pcb_true;
@@ -414,22 +414,22 @@ do { \
 							DrawPin(pin);
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				PCB_PAD_LOOP(element);
 				{
 					if (PCB_PAD_NEAR_BOX(pad, Box)
 							&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad) != Flag
-							&& (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == SWAP_IDENT || PCB->InvisibleObjectsOn || !Flag)) {
+							&& (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) == PCB_SWAP_IDENT || PCB->InvisibleObjectsOn || !Flag)) {
 						append(PCB_TYPE_PAD, element, pad);
 						if (PCB->PinOn)
 							DrawPad(pad);
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	/* end with vias */
 	if (PCB->ViaOn || !Flag)
 		PCB_VIA_LOOP(PCB->Data);
@@ -442,7 +442,7 @@ do { \
 				DrawVia(via);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (changed) {
 		pcb_draw();
@@ -573,7 +573,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 			changed = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	/* check arcs */
 	if (type & PCB_TYPE_ARC && F->Arc)
@@ -588,7 +588,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 			changed = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	/* check text */
 	if (type & PCB_TYPE_TEXT && F->Text)
@@ -603,7 +603,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 			changed = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	/* check polygons */
 	if (type & PCB_TYPE_POLYGON && F->Polygon)
@@ -618,7 +618,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 			changed = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	/* elements silkscreen */
 	if (type & PCB_TYPE_ELEMENT && PCB->ElementOn && F->Element)
@@ -633,7 +633,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 			changed = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (type & PCB_TYPE_ELEMENT_NAME && PCB->ElementOn && F->ElementName)
 		PCB_ELEMENT_LOOP(PCB->Data);
 	{
@@ -646,7 +646,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 			changed = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (type & PCB_TYPE_PIN && PCB->PinOn && F->Pin)
 		PCB_ELEMENT_LOOP(PCB->Data);
@@ -662,9 +662,9 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 				changed = pcb_true;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (type & PCB_TYPE_PAD && PCB->PinOn && F->Pad)
 		PCB_ELEMENT_LOOP(PCB->Data);
@@ -680,9 +680,9 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 				changed = pcb_true;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* process vias */
 	if (type & PCB_TYPE_VIA && PCB->ViaOn && F->Via)
@@ -697,7 +697,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 			changed = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	/* and rat-lines */
 	if (type & PCB_TYPE_RATLINE && PCB->RatOn && F->Rat)
 		PCB_RAT_LOOP(PCB->Data);
@@ -711,7 +711,7 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 			changed = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (Reset && changed)
 		pcb_undo_inc_serial();
 	return (changed);
@@ -738,7 +738,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 			changed = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_LINE_VISIBLE_LOOP(PCB->Data);
 	{
@@ -749,7 +749,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 			changed = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
@@ -759,7 +759,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 			changed = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_POLY_VISIBLE_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)) {
@@ -769,7 +769,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 			changed = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	if (PCB->PinOn && PCB->ElementOn) {
 		PCB_PIN_ALL_LOOP(PCB->Data);
@@ -781,7 +781,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 				changed = pcb_true;
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 		PCB_PAD_ALL_LOOP(PCB->Data);
 		{
 			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element) && PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
@@ -791,7 +791,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 				changed = pcb_true;
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 
 	if (PCB->ViaOn)
@@ -804,7 +804,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
 			changed = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return (changed);
 }
 
@@ -898,13 +898,13 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 			changed = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	if (PCB->ElementOn && (Type & PCB_TYPE_ELEMENT))
 		PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
-				&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn)
+				&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || PCB->InvisibleObjectsOn)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) != Flag) {
 			const char* name = ELEMENT_NAME(PCB, element);
 			if (name && REGEXEC(name)) {
@@ -915,26 +915,26 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 					pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, element, pin, pin);
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pin);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				PCB_PAD_LOOP(element);
 				{
 					pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, pad);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				PCB_ELEMENT_PCB_TEXT_LOOP(element);
 				{
 					pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, text, text);
 					PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, text);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				DrawElementName(element);
 				DrawElement(element);
 				changed = pcb_true;
 			}
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (PCB->PinOn && (Type & PCB_TYPE_PIN))
 		PCB_PIN_ALL_LOOP(PCB->Data);
 	{
@@ -947,12 +947,12 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 			changed = pcb_true;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	if (PCB->PinOn && (Type & PCB_TYPE_PAD))
 		PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
-				&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) != 0) == SWAP_IDENT || PCB->InvisibleObjectsOn)
+				&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) != 0) == PCB_SWAP_IDENT || PCB->InvisibleObjectsOn)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, pad) != Flag)
 			if (pad->Name && REGEXEC(pad->Name)) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, element, pad, pad);
@@ -961,7 +961,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 				changed = pcb_true;
 			}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	if (PCB->ViaOn && (Type & PCB_TYPE_VIA))
 		PCB_VIA_LOOP(PCB->Data);
 	{
@@ -973,7 +973,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 			changed = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (Type & PCB_TYPE_NET) {
 		pcb_conn_lookup_init();
 		changed = pcb_reset_conns(pcb_true) || changed;
@@ -991,7 +991,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 						pcb_rat_find_hook(conn.type, conn.ptr1, conn.ptr2, conn.ptr2, pcb_true, pcb_true);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		changed = pcb_select_connection(Flag) || changed;
 		changed = pcb_reset_conns(pcb_false) || changed;

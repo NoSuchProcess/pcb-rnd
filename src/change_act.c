@@ -584,7 +584,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 					changed = 1;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 
 			PCB_PAD_LOOP(element);
 			{
@@ -599,10 +599,10 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 					changed = 1;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	/*
 	 * done with our action so increment the undo # if we actually
 	 * changed anything

@@ -336,12 +336,12 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 				break;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		if (netname != NULL)
 			break;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	description = g_strdup_printf("Element name: %s\n"
 																"Pinname : %s\n"

@@ -124,7 +124,7 @@ void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, uns
 	{
 		PCB_COORD_ROTATE90(point->X, point->Y, X, Y, Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_box_rotate90(&Polygon->BoundingBox, X, Y, Number);
 }
 
@@ -143,7 +143,7 @@ void pcb_poly_bbox(pcb_polygon_t *Polygon)
 	}
 	/* boxes don't include the lower right corner */
 	pcb_close_box(&Polygon->BoundingBox);
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 /* creates a new polygon from the old formats rectangle data */
@@ -345,7 +345,7 @@ void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY)
 	{
 		PCB_MOVE(point->X, point->Y, DX, DY);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_BOX_MOVE_LOWLEVEL(&Polygon->BoundingBox, DX, DY);
 }
 

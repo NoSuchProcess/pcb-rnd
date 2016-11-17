@@ -421,7 +421,7 @@ void DrawPaste(int side, const pcb_box_t * drawn_area)
 				_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 }
 
 static void GatherPadName(pcb_pad_t *Pad)

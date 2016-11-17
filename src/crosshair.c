@@ -234,21 +234,21 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 		{
 			pcb_gui->draw_line(pcb_crosshair.GC, DX + line->Point1.X, DY + line->Point1.Y, DX + line->Point2.X, DY + line->Point2.Y);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		/* arc coordinates and angles have to be converted to X11 notation */
 		PCB_ARC_LOOP(Element);
 		{
 			pcb_gui->draw_arc(pcb_crosshair.GC, DX + arc->X, DY + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	/* pin coordinates and angles have to be converted to X11 notation */
 	PCB_PIN_LOOP(Element);
 	{
 		thindraw_moved_pv(pin, DX, DY);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* pads */
 	PCB_PAD_LOOP(Element);
@@ -264,7 +264,7 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 			pcb_gui->thindraw_pcb_pad(pcb_crosshair.GC, &moved_pad, pcb_false, pcb_false);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	/* mark */
 	pcb_gui->draw_line(pcb_crosshair.GC,
 								 Element->MarkX + DX - PCB_EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY - PCB_EMARK_SIZE);
@@ -302,18 +302,18 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 */
 				pcb_gui->draw_line(pcb_crosshair.GC, x + line->Point1.X, y + line->Point1.Y, x + line->Point2.X, y + line->Point2.Y);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_ARC_LOOP(layer);
 			{
 				pcb_gui->draw_arc(pcb_crosshair.GC, x + arc->X, y + arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_TEXT_LOOP(layer);
 			{
 				pcb_box_t *box = &text->BoundingBox;
 				pcb_gui->draw_rect(pcb_crosshair.GC, x + box->X1, y + box->Y1, x + box->X2, y + box->Y2);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			/* the tmp polygon has n+1 points because the first
 			 * and the last one are set to the same coordinates
 			 */
@@ -321,7 +321,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 			{
 				XORPolygon(polygon, x, y, 0);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 
 	/* draw elements if visible */
@@ -331,7 +331,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 		if (PCB_FRONT(element) || PCB->InvisibleObjectsOn)
 			XORDrawElement(element, x, y);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* and the vias */
 	if (PCB->ViaOn)
@@ -339,7 +339,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 	{
 		thindraw_moved_pv(via, x, y);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1071,7 +1071,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 				break;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		if (found_our_layer == pcb_false)
 			ans = PCB_TYPE_NONE;

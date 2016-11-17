@@ -212,7 +212,7 @@ void pcb_component_lookup_init(void)
 		else
 			NumberOfPads[COMPONENT_LAYER]++;
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	for (i = 0; i < 2; i++) {
 /*fprintf(stderr, "PadList alloc %d: %d\n", i, NumberOfPads[i]);*/
 
@@ -579,7 +579,7 @@ static pcb_bool LookupPVConnectionsToPVList(void)
 						ADD_PV_TO_LIST(pin, PCB_TYPE_PIN, orig_pin, PCB_FCT_INTERNAL);
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 
 
@@ -1255,7 +1255,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 					}
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
 

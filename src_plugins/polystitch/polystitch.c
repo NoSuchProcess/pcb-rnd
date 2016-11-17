@@ -97,9 +97,9 @@ static void find_crosshair_poly(int x, int y)
 				best = dist;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	if (!inner_poly) {
 		pcb_message(PCB_MSG_ERROR, "Cannot find any polygons");
 		return;
@@ -125,7 +125,7 @@ static void find_enclosing_poly()
 			return;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_message(PCB_MSG_ERROR, "Cannot find a polygon enclosing the one you selected");
 }
 

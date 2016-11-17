@@ -176,20 +176,20 @@ static pcb_hid_gc_t ar_gc = 0;
   /* fail-fast: check subnet_processed flags */\
   LIST_LOOP(net, same_net, p); \
   assert(!p->flags.subnet_processed);\
-  END_LOOP;\
+  PCB_END_LOOP;\
   /* iterate through *distinct* subnets */\
   LIST_LOOP(net, same_net, p); \
   if (!p->flags.subnet_processed) {\
     LIST_LOOP(p, same_subnet, _pp_);\
     _pp_->flags.subnet_processed=1;\
-    END_LOOP
+    PCB_END_LOOP
 #define END_FOREACH(net, p) \
   }; \
-  END_LOOP;\
+  PCB_END_LOOP;\
   /* reset subnet_processed flags */\
   LIST_LOOP(net, same_net, p); \
   p->flags.subnet_processed=0;\
-  END_LOOP;\
+  PCB_END_LOOP;\
 } while (0)
 #define SWAP(t, f, s) do { t a=s; s=f; f=a; } while (0)
 /* notes:
@@ -924,7 +924,7 @@ static routedata_t *CreateRouteData()
 			else
 				usedGroup[i] = pcb_false;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	usedGroup[front] = pcb_true;
 	usedGroup[back] = pcb_true;
@@ -1019,14 +1019,14 @@ static routedata_t *CreateRouteData()
 					rd->max_bloat = MAX(rd->max_bloat, BLOAT(rb->style));
 					rd->max_keep = MAX(rd->max_keep, rb->style->Clearance);
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			if (last_net && last_in_net)
 				MergeNets(last_net, last_in_net, DIFFERENT_NET);
 			last_net = last_in_net;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		rd->first_net = last_net;
 	}
 	pcb_netlist_list_free(&Nets);
@@ -1036,7 +1036,7 @@ static routedata_t *CreateRouteData()
 		routebox_t *net;
 		LIST_LOOP(rd->first_net, different_net, net);
 		ResetSubnet(net);
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	/* add pins and pads of elements */
@@ -1047,7 +1047,7 @@ static routedata_t *CreateRouteData()
 		else
 			AddPin(layergroupboxes, pin, pcb_false, rd->styles[rd->max_styles]);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_DRC, pad))
@@ -1055,7 +1055,7 @@ static routedata_t *CreateRouteData()
 		else
 			AddPad(layergroupboxes, element, pad, rd->styles[rd->max_styles]);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	/* add all vias */
 	PCB_VIA_LOOP(PCB->Data);
 	{
@@ -1064,7 +1064,7 @@ static routedata_t *CreateRouteData()
 		else
 			AddPin(layergroupboxes, via, pcb_true, rd->styles[rd->max_styles]);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		int layergroup = GetLayerGroupNumberByNumber(i);
@@ -1100,7 +1100,7 @@ static routedata_t *CreateRouteData()
 				AddLine(layergroupboxes, layergroup, line, line, rd->styles[rd->max_styles]);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* add all polygons */
 		PCB_POLY_LOOP(LAYER_PTR(i));
 		{
@@ -1109,19 +1109,19 @@ static routedata_t *CreateRouteData()
 			else
 				AddPolygon(layergroupboxes, i, polygon, rd->styles[rd->max_styles]);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* add all copper text */
 		PCB_TEXT_LOOP(LAYER_PTR(i));
 		{
 			AddText(layergroupboxes, layergroup, text, rd->styles[rd->max_styles]);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* add all arcs */
 		PCB_ARC_LOOP(LAYER_PTR(i));
 		{
 			AddArc(layergroupboxes, layergroup, arc, rd->styles[rd->max_styles]);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	/* create r-trees from pointer lists */
@@ -1142,7 +1142,7 @@ static routedata_t *CreateRouteData()
 				if (!rb->flags.clear_poly)
 					mtspace_add(rd->mtspace, &rb->box, FIXED, rb->style->Clearance);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
 	/* free pointer lists */
@@ -1200,7 +1200,7 @@ static void ResetSubnet(routebox_t * net)
 	/* reset connectivity of everything on this net */
 	LIST_LOOP(net, same_net, rb);
 	rb->same_subnet = rb->original_subnet;
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 static inline pcb_cost_t pcb_cost_to_point_on_layer(const pcb_cheap_point_t * p1, const pcb_cheap_point_t * p2, pcb_cardinal_t point_layer)
@@ -1446,7 +1446,7 @@ static void touch_conflicts(vector_t * conflicts, int touch)
 		LIST_LOOP(rb, same_net, p);
 		if (!p->flags.fixed)
 			p->flags.touched = touch;
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	if (!touch) {
 		last = NULL;
@@ -3465,7 +3465,7 @@ static pcb_bool net_id(routebox_t * rb, long int id)
 	LIST_LOOP(rb, same_net, p);
 	if (p->flags.source && p->parent.pad->ID == id)
 		return pcb_true;
-	END_LOOP;
+	PCB_END_LOOP;
 	return pcb_false;
 }
 
@@ -3508,7 +3508,7 @@ static void show_sources(routebox_t * rb)
 	LIST_LOOP(rb, same_net, p);
 	if (p->flags.source)
 		show_one(p);
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 #endif
@@ -3563,12 +3563,12 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 	/* no targets on to/from net need clearance areas */
 	LIST_LOOP(from, same_net, p);
 	p->flags.nobloat = 1;
-	END_LOOP;
+	PCB_END_LOOP;
 	/* set 'source' flags */
 	LIST_LOOP(from, same_subnet, p);
 	if (!p->flags.nonstraight)
 		p->flags.source = 1;
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* count up the targets */
 	num_targets = 0;
@@ -3584,7 +3584,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 			LIST_LOOP(from, same_net, p);
 			if (p == to)
 				seen = 1;
-			END_LOOP;
+			PCB_END_LOOP;
 #endif
 			assert(seen);							/* otherwise from and to are on different nets! */
 			/* set target flags only on 'to's subnet */
@@ -3593,7 +3593,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 				p->flags.target = 1;
 				num_targets++;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
 	else {
@@ -3604,14 +3604,14 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 			p->flags.target = 1;
 			num_targets++;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	/* if no targets, then net is done!  reset flags and return. */
 	if (num_targets == 0) {
 		LIST_LOOP(from, same_net, p);
 		p->flags.source = p->flags.target = p->flags.nobloat = 0;
-		END_LOOP;
+		PCB_END_LOOP;
 		result.found_route = pcb_false;
 		result.net_completely_routed = pcb_true;
 		result.best_route_cost = 0;
@@ -3634,7 +3634,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 		showroutebox(p);
 #endif
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	targets = pcb_r_create_tree((const pcb_box_t **) target_list, i, 0);
 	assert(i <= num_targets);
 	free(target_list);
@@ -3643,7 +3643,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 	/* touch the source subnet to prepare check for conflictors */
 	LIST_LOOP(from, same_subnet, p);
 	p->flags.touched = 1;
-	END_LOOP;
+	PCB_END_LOOP;
 	LIST_LOOP(from, same_subnet, p);
 	{
 		/* we need the test for 'source' because this box may be nonstraight */
@@ -3669,10 +3669,10 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 			vector_append(source_vec, e);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	LIST_LOOP(from, same_subnet, p);
 	p->flags.touched = 0;
-	END_LOOP;
+	PCB_END_LOOP;
 	/* break source edges; some edges may be too near obstacles to be able
 	 * to exit from. */
 
@@ -4011,7 +4011,7 @@ static struct routeone_status RouteOne(routedata_t * rd, routebox_t * from, rout
 	if (p->flags.source && p->conflicts_with)
 		vector_destroy(&p->conflicts_with);
 	p->flags.touched = p->flags.source = p->flags.target = p->flags.nobloat = 0;
-	END_LOOP;
+	PCB_END_LOOP;
 
 	vector_destroy(&vss.free_space_vec);
 	vector_destroy(&vss.lo_conflict_space_vec);
@@ -4157,11 +4157,11 @@ struct routeall_status RouteAll(routedata_t * rd)
 			PCB_MAKE_MAX(bb.X2, p->sbox.X2);
 			PCB_MAKE_MAX(bb.Y2, p->sbox.Y2);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		area = (double) (bb.X2 - bb.X1) * (bb.Y2 - bb.Y1);
 		pcb_heap_insert(this_pass, area, net);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	ras.total_nets_routed = 0;
 	/* refinement/finishing passes */
@@ -4194,7 +4194,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 						rip = pcb_true;
 						break;
 					}
-					END_LOOP;
+					PCB_END_LOOP;
 				}
 
 				LIST_LOOP(net, same_net, p);
@@ -4228,7 +4228,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 						p->flags.is_odd = AutoRouteParameters.is_odd;
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				if (conf_core.editor.live_routing)
 					pcb_draw();
 				/* reset to original connectivity */
@@ -4274,7 +4274,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 #endif
 										(b.Y2 - b.Y1) * (p->type == PLANE ? -1 : (p->type == PAD ? 1 : 10)), p);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			ros.net_completely_routed = 0;
 			while (!pcb_heap_is_empty(net_heap)) {
 				p = (routebox_t *) pcb_heap_remove_smallest(net_heap);
@@ -4305,7 +4305,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 						/* don't bother trying any other source in this subnet */
 						LIST_LOOP(p, same_subnet, pp);
 						pp->flags.subnet_processed = 1;
-						END_LOOP;
+						PCB_END_LOOP;
 						break;
 					}
 					/* note that we can infer nothing about ras.total_subnets based
@@ -4323,7 +4323,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 				}
 			}
 #ifndef NET_HEAP
-			END_LOOP;
+			PCB_END_LOOP;
 #endif
 			if (!ros.net_completely_routed)
 				net->flags.is_bad = 1;	/* don't skip this the next round */
@@ -4342,7 +4342,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 			{
 				p->flags.subnet_processed = 0;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 		/* swap this_pass and next_pass and do it all over again! */
 		ro = 0;
@@ -4509,7 +4509,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 					assert(0);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* loop again to place all the thermals now that the vias are down */
 		LIST_LOOP(net, same_net, p);
 		{
@@ -4528,9 +4528,9 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				}
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return changed;
 }
 
@@ -4572,7 +4572,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 			if (!selected || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 				i++;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 #ifdef ROUTE_VERBOSE
 		printf("%d nets!\n", i);
 #endif
@@ -4603,7 +4603,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 				changed = RouteOne(rd, a, b, 150000).found_route || changed;
 				goto donerouting;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 		/* otherwise, munge the netlists so that only the selected rats
 		 * get connected. */
@@ -4626,10 +4626,10 @@ pcb_bool AutoRoute(pcb_bool selected)
 			{
 				rb->same_net = rb->same_subnet;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			/* at this point all nets are equal to their subnets */
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (last) {
 			last->different_net.next = rd->first_net;
 			rd->first_net->different_net.prev = last;
@@ -4655,19 +4655,19 @@ pcb_bool AutoRoute(pcb_bool selected)
 			/* merge subnets into a net! */
 			MergeNets(a, b, NET);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* now 'different_net' may point to too many different nets.  Reset. */
 		LIST_LOOP(rd->first_net, different_net, net);
 		{
 			if (!net->flags.touched) {
 				LIST_LOOP(net, same_net, rb);
 				rb->flags.touched = 1;
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 			else											/* this is not a "different net"! */
 				RemoveFromNet(net, DIFFERENT_NET);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* reset "touched" flag */
 		LIST_LOOP(rd->first_net, different_net, net);
 		{
@@ -4676,9 +4676,9 @@ pcb_bool AutoRoute(pcb_bool selected)
 				assert(rb->flags.touched);
 				rb->flags.touched = 0;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	/* okay, rd's idea of netlist now corresponds to what we want routed */
 	/* auto-route all nets */

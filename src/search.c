@@ -420,9 +420,9 @@ static pcb_bool SearchPointByLocation(int locked, pcb_layer_t ** Layer, pcb_poly
 				found = pcb_true;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (found)
 		return (pcb_true);
 	return (pcb_false);
@@ -1151,7 +1151,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_LINE_POINT);
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 	if (type == PCB_TYPE_ARC) {
 		PCB_ARC_ALL_LOOP(Base);
@@ -1162,7 +1162,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_ARC);
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 
 	if (type == PCB_TYPE_TEXT) {
@@ -1174,7 +1174,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_TEXT);
 			}
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 
 	if (type == PCB_TYPE_POLYGON || type == PCB_TYPE_POLYGON_POINT) {
@@ -1195,9 +1195,9 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 					return (PCB_TYPE_POLYGON_POINT);
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
-		ENDALL_LOOP;
+		PCB_ENDALL_LOOP;
 	}
 	if (type == PCB_TYPE_VIA) {
 		PCB_VIA_LOOP(Base);
@@ -1207,7 +1207,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_VIA);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	if (type == PCB_TYPE_RATLINE || type == PCB_TYPE_LINE_POINT) {
@@ -1230,7 +1230,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_LINE_POINT);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	if (type == PCB_TYPE_ELEMENT || type == PCB_TYPE_PAD || type == PCB_TYPE_PIN
@@ -1251,7 +1251,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_ELEMENT_LINE);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (type == PCB_TYPE_ELEMENT_ARC)
 			PCB_ARC_LOOP(element);
 		{
@@ -1261,7 +1261,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_ELEMENT_ARC);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (type == PCB_TYPE_ELEMENT_NAME)
 			PCB_ELEMENT_PCB_TEXT_LOOP(element);
 		{
@@ -1271,7 +1271,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_ELEMENT_NAME);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (type == PCB_TYPE_PIN)
 			PCB_PIN_LOOP(element);
 		{
@@ -1281,7 +1281,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_PIN);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (type == PCB_TYPE_PAD)
 			PCB_PAD_LOOP(element);
 		{
@@ -1291,9 +1291,9 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 				return (PCB_TYPE_PAD);
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	pcb_message(PCB_MSG_DEFAULT, "hace: Internal error, search for ID %d failed\n", ID);
 	return (PCB_TYPE_NONE);
@@ -1314,7 +1314,7 @@ pcb_element_t *pcb_search_elem_by_name(pcb_data_t *Base, const char *Name)
 			return (result);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return result;
 }
 

@@ -141,31 +141,31 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		pcb_element_move(PCB->Data, element, dx, dy);
 		pcb_undo_add_obj_to_move(PCB_TYPE_ELEMENT, NULL, NULL, element, dx, dy);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		MyMoveViaLowLevel(PCB->Data, via, dx, dy);
 		pcb_undo_add_obj_to_move(PCB_TYPE_VIA, NULL, NULL, via, dx, dy);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(PCB->Data);
 	{
 		MyMoveLineLowLevel(PCB->Data, layer, line, dx, dy);
 		pcb_undo_add_obj_to_move(PCB_TYPE_LINE, NULL, NULL, line, dx, dy);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(PCB->Data);
 	{
 		MyMoveArcLowLevel(PCB->Data, layer, arc, dx, dy);
 		pcb_undo_add_obj_to_move(PCB_TYPE_ARC, NULL, NULL, arc, dx, dy);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(PCB->Data);
 	{
 		MyMoveTextLowLevel(layer, text, dx, dy);
 		pcb_undo_add_obj_to_move(PCB_TYPE_TEXT, NULL, NULL, text, dx, dy);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(PCB->Data);
 	{
 		/*
@@ -176,7 +176,7 @@ static void MoveAll(pcb_coord_t dx, pcb_coord_t dy)
 		Mypcb_poly_move(PCB->Data, layer, polygon, dx, dy);
 		pcb_undo_add_obj_to_move(PCB_TYPE_POLYGON, NULL, NULL, polygon, dx, dy);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 }
 
 static int autocrop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)

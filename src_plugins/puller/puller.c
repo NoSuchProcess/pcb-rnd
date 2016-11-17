@@ -948,11 +948,11 @@ static void find_pairs()
 	PCB_ARC_LOOP(CURRENT); {
 		Extra *e = new_arc_extra(arc);
 		fix_arc_extra(arc, e);
-	} END_LOOP;
+	} PCB_END_LOOP;
 
 	PCB_LINE_LOOP(CURRENT); {
 		new_line_extra(line);
-	} END_LOOP;
+	} PCB_END_LOOP;
 
 	PCB_LINE_LOOP(CURRENT); {
 		Extra *e = LINE2EXTRA(line);
@@ -961,7 +961,7 @@ static void find_pairs()
 			find_pairs_1(line, &e->end.next, line->Point2.X, line->Point2.Y);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_ARC_LOOP(CURRENT); {
 		Extra *e = ARC2EXTRA(arc);
@@ -970,7 +970,7 @@ static void find_pairs()
 			find_pairs_1(arc, &e->end.next, e->end.x, e->end.y);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_PIN_ALL_LOOP(PCB->Data); {
 		pcb_box_t box;
@@ -981,7 +981,7 @@ static void find_pairs()
 		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_pinline_callback, pin, NULL);
 		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_pinarc_callback, pin, NULL);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	PCB_VIA_LOOP(PCB->Data); {
 		pcb_box_t box;
@@ -992,7 +992,7 @@ static void find_pairs()
 		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_pinline_callback, via, NULL);
 		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_pinarc_callback, via, NULL);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_PAD_ALL_LOOP(PCB->Data); {
 		pcb_box_t box;
@@ -1004,7 +1004,7 @@ static void find_pairs()
 		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_padarc_callback, pad, NULL);
 
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	g_hash_table_foreach(lines, (GHFunc) null_multi_next_ends, NULL);
 	g_hash_table_foreach(arcs, (GHFunc) null_multi_next_ends, NULL);
@@ -1173,11 +1173,11 @@ static void trace_paths()
 	PCB_LINE_LOOP(CURRENT); {
 		e = LINE2EXTRA(line);
 		trace_path(e);
-	} END_LOOP;
+	} PCB_END_LOOP;
 	PCB_ARC_LOOP(CURRENT); {
 		e = ARC2EXTRA(arc);
 		trace_path(e);
-	} END_LOOP;
+	} PCB_END_LOOP;
 }
 #endif
 
@@ -2339,7 +2339,7 @@ static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 #endif
 				/*pcb_gui->progress(0,0,0); */
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
 	}
 
@@ -2357,14 +2357,14 @@ static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		if (LINE2EXTRA(line)->deleted)
 			pcb_line_destroy(CURRENT, line);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_ARC_LOOP(CURRENT);
 	{
 		if (ARC2EXTRA(arc)->deleted)
 			pcb_arc_destroy(CURRENT, arc);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	g_hash_table_unref(lines);
 	g_hash_table_unref(arcs);

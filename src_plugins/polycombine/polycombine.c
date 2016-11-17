@@ -309,7 +309,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 		/*pcb_poly_remove(layer, polygon);*/
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	/* Now perform a traversal of the tree, computing a polygon */
 	res = compute_polygon_recursive(root, NULL);
@@ -328,7 +328,7 @@ static int polycombine(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 		pcb_poly_remove(layer, polygon);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	/* Now de-construct the resulting polygon into raw PCB polygons */
 	pcb_poly_to_polygons_on_layer(PCB->Data, Layer, res, pcb_strflg_board_s2f("clearpoly", NULL));

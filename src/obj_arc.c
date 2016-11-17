@@ -182,7 +182,7 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 				pcb_normalize_angle(arc->StartAngle) == pcb_normalize_angle(sa) && arc->Delta == dir)
 			return (NULL);						/* prevent stacked arcs */
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	Arc = pcb_arc_alloc(Layer);
 	if (!Arc)
 		return (Arc);

@@ -3965,7 +3965,7 @@ static int dxf_export_xref_file(void)
 		 */
 		dxf = dxf_insert(PCB_UNKNOWN(NAMEONPCB_NAME(element)), PCB_UNKNOWN(DESCRIPTION_NAME(element)), PCB_UNKNOWN(VALUE_NAME(element)), dxf);
 	}
-	END_LOOP;											/* End of ELEMENT_LOOP  */
+	PCB_END_LOOP;											/* End of ELEMENT_LOOP  */
 	/*
 	 * now write a single block definition for every unique element to
 	 * the BLOCKS section of the DXF file.
@@ -4036,7 +4036,7 @@ static int dxf_export_xref_file(void)
 				found_pin2 = 1;
 			}
 		}
-		END_LOOP;										/* End of PIN_LOOP  */
+		PCB_END_LOOP;										/* End of PIN_LOOP  */
 		PCB_PAD_LOOP(element);
 		{
 			sumx += (pad->Point1.X + pad->Point2.X) / 2.0;
@@ -4063,7 +4063,7 @@ static int dxf_export_xref_file(void)
 				found_pin2 = 1;
 			}
 		}
-		END_LOOP;										/* End of PAD_LOOP  */
+		PCB_END_LOOP;										/* End of PAD_LOOP  */
 		if (pin_cnt > 0) {
 			x = sumx / (double) pin_cnt;
 			y = sumy / (double) pin_cnt;
@@ -4169,7 +4169,7 @@ static int dxf_export_xref_file(void)
 		}
 		dxf_id_code++;
 	}
-	END_LOOP;											/* End of ELEMENT_LOOP  */
+	PCB_END_LOOP;											/* End of ELEMENT_LOOP  */
 	/*
 	 * write an ENDSEC marker to the DXF file.
 	 */

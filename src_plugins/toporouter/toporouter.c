@@ -1958,9 +1958,9 @@ int read_pads(toporouter_t * r, toporouter_layer_t * l, guint layer)
 
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	return 0;
 }
@@ -2008,9 +2008,9 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 				bbox->point = GTS_POINT(insert_vertex(r, l, x, y, bbox));
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_VIA_LOOP(PCB->Data);
 	{
@@ -2046,7 +2046,7 @@ int read_points(toporouter_t * r, toporouter_layer_t * l, int layer)
 
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return 0;
 }
 
@@ -2085,7 +2085,7 @@ int read_lines(toporouter_t * r, toporouter_layer_t * l, pcb_layer_t * layer, in
 				g_list_concat(bbox->constraints, insert_constraint_edge(r, l, xs[0], ys[0], 0, xs[1], ys[1], 0, bbox));
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	return 0;
 }
@@ -2769,16 +2769,16 @@ void import_clusters(toporouter_t * r)
 
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 #ifdef DEBUG_MERGING
 				printf("\n");
 #endif
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_netlist_list_free(&nets);
 }
 
@@ -2831,7 +2831,7 @@ void import_geometry(toporouter_t * r)
 				read_lines(r, cur_layer, layer, number);
 
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 
 
 
@@ -8067,12 +8067,12 @@ void acquire_twonets(toporouter_t * r)
 	PCB_RAT_LOOP(PCB->Data);
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 		import_route(r, line);
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (!r->routes->len) {
 		PCB_RAT_LOOP(PCB->Data);
 		import_route(r, line);
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 }
 
@@ -8217,8 +8217,8 @@ static int escape(int argc, char **argv, pcb_coord_t x, pcb_coord_t y)
 
 		}
 	}
-	END_LOOP;
-	END_LOOP;
+	PCB_END_LOOP;
+	PCB_END_LOOP;
 
 	pcb_undo_inc_serial();
 	pcb_draw();

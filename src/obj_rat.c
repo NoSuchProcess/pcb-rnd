@@ -113,7 +113,7 @@ pcb_bool pcb_rats_destroy(pcb_bool selected)
 			RemoveRat(&ctx, line);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (changed) {
 		pcb_draw();
 		pcb_undo_inc_serial();

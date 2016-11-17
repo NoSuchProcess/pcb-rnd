@@ -73,13 +73,13 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 	{
 		PCB_FLAG_SET(PCB_FLAG_DISPLAYNAME, pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_PAD_LOOP(&pinout->element);
 	{
 		PCB_FLAG_SET(PCB_FLAG_DISPLAYNAME, pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 
 	pcb_element_move(NULL, &pinout->element,
@@ -92,7 +92,7 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 	{
 		line->Thickness = 0;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_ARC_LOOP(&pinout->element);
 	{
@@ -103,7 +103,7 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 		 */
 		arc->Thickness = 1;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 

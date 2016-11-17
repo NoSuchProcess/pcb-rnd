@@ -186,7 +186,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				if (pin == Pin)
 					break;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			if (PCB_FLAG_TEST(PCB_FLAG_HOLE, Pin))
 				report = pcb_strdup_printf("%m+PIN ID# %ld; Flags:%s\n"
 										"(X,Y) = %$mD.\n"
@@ -342,7 +342,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 						break;
 				}
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			len = pcb_distance(Pad->Point1.X, Pad->Point1.Y, Pad->Point2.X, Pad->Point2.Y);
 			report = pcb_strdup_printf("%m+PAD ID# %ld;  Flags:%s\n"
 									"FirstPoint(X,Y)  = %$mD; ID = %ld.\n"
@@ -486,15 +486,15 @@ static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin))
 				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pin->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad))
 				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pad->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	pcb_gui->report_dialog("Report", list.array);
 	gds_uninit(&list);
@@ -529,7 +529,7 @@ static double XYtoNetLength(pcb_coord_t x, pcb_coord_t y, int *found)
 			*found = 1;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	PCB_ARC_ALL_LOOP(PCB->Data);
 	{
@@ -541,7 +541,7 @@ static double XYtoNetLength(pcb_coord_t x, pcb_coord_t y, int *found)
 			*found = 1;
 		}
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	return length;
 }
@@ -590,7 +590,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 						break;
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 				PCB_PAD_LOOP(element);
 				{
 					if (strcmp(pad->Number, pname) == 0) {
@@ -600,10 +600,10 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 						break;
 					}
 				}
-				END_LOOP;
+				PCB_END_LOOP;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 
 		if (got_one) {
 			char buf[50];
@@ -678,7 +678,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				}
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
@@ -699,9 +699,9 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				}
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 got_net_name:
 	pcb_reset_conns(pcb_false);

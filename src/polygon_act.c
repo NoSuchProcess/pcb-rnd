@@ -82,7 +82,7 @@ static int ActionMorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_co
 				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 					pcb_poly_morph(layer, polygon);
 			}
-			ENDALL_LOOP;
+			PCB_ENDALL_LOOP;
 			pcb_draw();
 			pcb_undo_inc_serial();
 			break;

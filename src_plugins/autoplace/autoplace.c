@@ -185,7 +185,7 @@ static PointerListType collectSelectedElements()
 			*epp = element;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return list;
 }
 
@@ -390,7 +390,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 		EXPANDRECTXY(box,
 									 pin->X - (thickness + clearance),
 									 pin->Y - (thickness + clearance), pin->X + (thickness + clearance), pin->Y + (thickness + clearance))}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			thickness = pad->Thickness / 2;
@@ -404,7 +404,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 																						 clearance),
 									 MAX(pad->Point1.X,
 												 pad->Point2.X) + (thickness + clearance), MAX(pad->Point1.Y, pad->Point2.Y) + (thickness + clearance))}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* add a box for each pin to the "opposite side":
 		 * surface mount components can't sit on top of pins */
 		if (!CostParameter.fast)
@@ -434,12 +434,12 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			else
 				lastbox = box;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* assess out of bounds penalty */
 		if (element->VBox.X1 < 0 || element->VBox.Y1 < 0 || element->VBox.X2 > PCB->MaxWidth || element->VBox.Y2 > PCB->MaxHeight)
 			delta3 += CostParameter.out_of_bounds_penalty;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	/* compute intersection area of module areas box list */
 	delta2 = sqrt(fabs(pcb_intersect_box_box(&solderside) +
 										 pcb_intersect_box_box(&componentside))) *
@@ -480,7 +480,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			(*boxpp)->box = element->VBox;
 			(*boxpp)->element = element;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		rt_s = pcb_r_create_tree((const pcb_box_t **) seboxes.Ptr, seboxes.PtrN, 1);
 		rt_c = pcb_r_create_tree((const pcb_box_t **) ceboxes.Ptr, ceboxes.PtrN, 1);
 		FreePointerListMemory(&seboxes);
@@ -512,7 +512,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 					element->VBox.Y2 == boxp->element->VBox.Y1 || element->VBox.Y2 == boxp->element->VBox.Y2)
 				delta4 += factor * CostParameter.aligned_neighbor_bonus;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		/* free k-d tree memory */
 		pcb_r_destroy_tree(&rt_s);
 		pcb_r_destroy_tree(&rt_c);
@@ -528,7 +528,7 @@ static double ComputeCost(pcb_netlist_t *Nets, double T0, double T)
 			PCB_MAKE_MAX(maxX, element->VBox.X2);
 			PCB_MAKE_MAX(maxY, element->VBox.Y2);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (minX < maxX && minY < maxY)
 			delta5 = CostParameter.overall_area_penalty * sqrt(PCB_COORD_TO_MIL(maxX - minX) * PCB_COORD_TO_MIL(maxY - minY));
 	}

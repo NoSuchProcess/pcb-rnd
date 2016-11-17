@@ -73,13 +73,13 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			FLIP(line->Point1.Y);
 			FLIP(line->Point2.Y);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_TEXT_LOOP(layer);
 		{
 			FLIP(text->Y);
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_POLY_LOOP(layer);
 		{
 			int i, j;
@@ -87,7 +87,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			{
 				FLIP(point->Y);
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			i = 0;
 			j = polygon->PointN - 1;
 			while (i < j) {
@@ -99,21 +99,21 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			}
 			pcb_poly_init_clip(PCB->Data, layer, polygon);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_ARC_LOOP(layer);
 		{
 			FLIP(arc->Y);
 			NEG(arc->StartAngle);
 			NEG(arc->Delta);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_VIA_LOOP(PCB->Data);
 	{
 		FLIP(via->Y);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		FLIP(element->MarkY);
@@ -124,25 +124,25 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			FLIP(text->Y);
 			PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_ELEMENT_PCB_LINE_LOOP(element);
 		{
 			FLIP(line->Point1.Y);
 			FLIP(line->Point2.Y);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_ELEMENT_ARC_LOOP(element);
 		{
 			FLIP(arc->Y);
 			NEG(arc->StartAngle);
 			NEG(arc->Delta);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PIN_LOOP(element);
 		{
 			FLIP(pin->Y);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			FLIP(pad->Point1.Y);
@@ -150,15 +150,15 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			if (sides)
 				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, pad);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_RAT_LOOP(PCB->Data);
 	{
 		FLIP(line->Point1.Y);
 		FLIP(line->Point2.Y);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return 0;
 }
 

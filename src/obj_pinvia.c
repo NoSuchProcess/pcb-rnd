@@ -98,7 +98,7 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 				return (NULL);					/* don't allow via stacking */
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	Via = pcb_via_alloc(Data);

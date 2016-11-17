@@ -987,7 +987,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	{
 		pcb_poly_init_clip(pcb->Data, layer, polygon);
 	}
-	ENDALL_LOOP;
+	PCB_ENDALL_LOOP;
 
 	return 0;
 }

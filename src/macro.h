@@ -35,8 +35,8 @@
  * macros to transform coord systems
  * draw.c uses a different definition of TO_SCREEN
  */
-#ifndef	SWAP_IDENT
-#define	SWAP_IDENT			conf_core.editor.show_solder_side
+#ifndef	PCB_SWAP_IDENT
+#define	PCB_SWAP_IDENT			conf_core.editor.show_solder_side
 #endif
 
 #define PCB_ENTRIES(x)         (sizeof((x))/sizeof((x)[0]))
@@ -56,7 +56,7 @@
  *  Determines if object is on front or back
  */
 #define PCB_FRONT(o)	\
-	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (o)) != 0) == SWAP_IDENT)
+	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (o)) != 0) == PCB_SWAP_IDENT)
 
 /* ---------------------------------------------------------------------------
  *  Determines if an object is on the given side. side is either SOLDER_LAYER
@@ -74,8 +74,8 @@
  * all data is relative to an objects name 'top' which can be either
  * PCB or PasteBuffer
  */
-#define END_LOOP  }} while (0)
+#define PCB_END_LOOP  }} while (0)
 
-#define ENDALL_LOOP }} while (0); }} while(0)
+#define PCB_ENDALL_LOOP }} while (0); }} while(0)
 
 #endif

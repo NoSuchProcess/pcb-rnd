@@ -85,19 +85,19 @@ void pcb_element_destroy(pcb_element_t * element)
 	{
 		free(textstring);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PIN_LOOP(element);
 	{
 		free(pin->Name);
 		free(pin->Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(element);
 	{
 		free(pad->Name);
 		free(pad->Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	list_map0(&element->Pin,  pcb_pin_t,  pcb_pin_free);
 	list_map0(&element->Pad,  pcb_pad_t,  pcb_pad_free);
@@ -187,13 +187,13 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 		if (line)
 			line->Number = pcb_strdup_null(NAMEONPCB_NAME(element));
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(element);
 	{
 		pcb_arc_new(&Buffer->Data->SILKLAYER,
 												arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness, 0, pcb_no_flags());
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PIN_LOOP(element);
 	{
 		pcb_flag_t f = pcb_no_flags();
@@ -203,10 +203,10 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 
 		pcb_via_new(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
 	}
-	END_LOOP;
-	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? pcb_solder_silk_layer : pcb_component_silk_layer);
+	PCB_END_LOOP;
+	group = GetLayerGroupNumberByNumber(PCB_SWAP_IDENT ? pcb_solder_silk_layer : pcb_component_silk_layer);
 	clayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
-	group = GetLayerGroupNumberByNumber(SWAP_IDENT ? pcb_component_silk_layer : pcb_solder_silk_layer);
+	group = GetLayerGroupNumberByNumber(PCB_SWAP_IDENT ? pcb_component_silk_layer : pcb_solder_silk_layer);
 	slayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
 	PCB_PAD_LOOP(element);
 	{
@@ -217,7 +217,7 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 		if (line)
 			line->Number = pcb_strdup_null(pad->Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_element_destroy(element);
 	pcb_element_free(element);
 	return (pcb_true);
@@ -267,7 +267,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 
 	Element = pcb_element_new(PCB->Data, NULL, &PCB->Font, pcb_no_flags(),
 														 NULL, NULL, NULL, PCB_PASTEBUFFER->X,
-														 PCB_PASTEBUFFER->Y, 0, 100, pcb_flag_make(SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
+														 PCB_PASTEBUFFER->Y, 0, 100, pcb_flag_make(PCB_SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
 	if (!Element)
 		return (pcb_false);
 	PCB_VIA_LOOP(Buffer->Data);
@@ -287,13 +287,13 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 		}
 		hasParts = pcb_true;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	for (onsolder = 0; onsolder < 2; onsolder++) {
 		int silk_layer;
 		int onsolderflag;
 
-		if ((!onsolder) == (!SWAP_IDENT)) {
+		if ((!onsolder) == (!PCB_SWAP_IDENT)) {
 			silk_layer = pcb_component_silk_layer;
 			onsolderflag = PCB_FLAG_NO;
 		}
@@ -328,7 +328,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 				MAYBE_WARN();
 				hasParts = pcb_true;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 			PCB_POLY_LOOP(layer);
 			{
 				pcb_coord_t x1, y1, x2, y2, w, h, t;
@@ -353,9 +353,9 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 				MAYBE_WARN();
 				hasParts = pcb_true;
 			}
-			END_LOOP;
+			PCB_END_LOOP;
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 
 	/* now add the silkscreen. NOTE: elements must have pads or pins too */
@@ -366,13 +366,13 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 		pcb_element_line_new(Element, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
 		hasParts = pcb_true;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(&Buffer->Data->SILKLAYER);
 	{
 		pcb_element_arc_new(Element, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
 		hasParts = pcb_true;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (!hasParts) {
 		pcb_destroy_object(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 		pcb_message(PCB_MSG_DEFAULT, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
@@ -382,7 +382,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 		pcb_message(PCB_MSG_DEFAULT, _("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
 	Element->MarkX = Buffer->X;
 	Element->MarkY = Buffer->Y;
-	if (SWAP_IDENT)
+	if (PCB_SWAP_IDENT)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, Element);
 	pcb_element_bbox(PCB->Data, Element, &PCB->Font);
 	pcb_buffer_clear(Buffer);
@@ -405,7 +405,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 			pcb_r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
 		pcb_text_rotate90(text, X, Y, Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 #endif
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
@@ -413,7 +413,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 		pcb_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
 		pcb_line_bbox(line);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PIN_LOOP(Element);
 	{
 		/* pre-delete the pins from the pin-tree before their coordinates change */
@@ -423,7 +423,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 		pcb_rotate(&pin->X, &pin->Y, X, Y, cosa, sina);
 		pcb_pin_bbox(pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
 		/* pre-delete the pads before their coordinates change */
@@ -434,13 +434,13 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 		pcb_rotate(&pad->Point2.X, &pad->Point2.Y, X, Y, cosa, sina);
 		pcb_line_bbox((pcb_line_t *) pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
 		pcb_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
 		arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	pcb_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
 	pcb_element_bbox(Data, Element, &PCB->Font);
@@ -472,7 +472,7 @@ pcb_bool pcb_selected_element_change_side(void)
 			change |= pcb_element_change_side(element, 0);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -531,25 +531,25 @@ pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_eleme
 		pcb_element_line_new(Dest, line->Point1.X + dx,
 													 line->Point1.Y + dy, line->Point2.X + dx, line->Point2.Y + dy, line->Thickness);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PIN_LOOP(Src);
 	{
 		pcb_element_pin_new(Dest, pin->X + dx, pin->Y + dy, pin->Thickness,
 								 pin->Clearance, pin->Mask, pin->DrillingHole, pin->Name, pin->Number, pcb_flag_mask(pin->Flags, PCB_FLAG_FOUND));
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Src);
 	{
 		pcb_element_pad_new(Dest, pad->Point1.X + dx, pad->Point1.Y + dy,
 								 pad->Point2.X + dx, pad->Point2.Y + dy, pad->Thickness,
 								 pad->Clearance, pad->Mask, pad->Name, pad->Number, pcb_flag_mask(pad->Flags, PCB_FLAG_FOUND));
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(Src);
 	{
 		pcb_element_arc_new(Dest, arc->X + dx, arc->Y + dy, arc->Width, arc->Height, arc->StartAngle, arc->Delta, arc->Thickness);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	for (i = 0; i < Src->Attributes.Number; i++)
 		pcb_attribute_put(&Dest->Attributes, Src->Attributes.List[i].name, Src->Attributes.List[i].value, 0);
@@ -672,14 +672,14 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 		line->Point2.X = PCB_SWAP_X(line->Point2.X);
 		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y) + yoff;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PIN_LOOP(Element);
 	{
 		pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
 		pin->X = PCB_SWAP_X(pin->X);
 		pin->Y = PCB_SWAP_Y(pin->Y) + yoff;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
 		pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
@@ -689,7 +689,7 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 		pad->Point2.Y = PCB_SWAP_Y(pad->Point2.Y) + yoff;
 		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
 		arc->X = PCB_SWAP_X(arc->X);
@@ -697,14 +697,14 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
 		arc->Delta = SWAP_DELTA(arc->Delta);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		text->X = PCB_SWAP_X(text->X);
 		text->Y = PCB_SWAP_Y(text->Y) + yoff;
 		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	Element->MarkX = PCB_SWAP_X(Element->MarkX);
 	Element->MarkY = PCB_SWAP_Y(Element->MarkY) + yoff;
 
@@ -733,7 +733,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		if (Data)
 			pcb_r_insert_entry(Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* do not include the elementnames bounding box which
 	 * is handled separately
@@ -754,7 +754,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		PCB_MAKE_MAX(box->X2, line->Point2.X + (line->Thickness + 1) / 2);
 		PCB_MAKE_MAX(box->Y2, line->Point2.Y + (line->Thickness + 1) / 2);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
 		pcb_arc_bbox(arc);
@@ -763,7 +763,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		PCB_MAKE_MAX(box->X2, arc->BoundingBox.X2);
 		PCB_MAKE_MAX(box->Y2, arc->BoundingBox.Y2);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	*vbox = *box;
 	PCB_PIN_LOOP(Element);
 	{
@@ -784,7 +784,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		PCB_MAKE_MAX(vbox->X2, pin->X + pin->Thickness / 2);
 		PCB_MAKE_MAX(vbox->Y2, pin->Y + pin->Thickness / 2);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
 		if (Data && Data->pad_tree)
@@ -804,7 +804,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		PCB_MAKE_MAX(vbox->X2, MAX(pad->Point1.X, pad->Point2.X) + pad->Thickness / 2);
 		PCB_MAKE_MAX(vbox->Y2, MAX(pad->Point1.Y, pad->Point2.Y) + pad->Thickness / 2);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	/* now we set the PCB_FLAG_EDGE2 of the pad if Point2
 	 * is closer to the outside edge than Point1
 	 */
@@ -825,7 +825,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 				PCB_FLAG_CLEAR(PCB_FLAG_EDGE2, pad);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	/* mark pins with component orientation */
 	if ((box->X2 - box->X1) > (box->Y2 - box->Y1)) {
@@ -833,14 +833,14 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 		{
 			PCB_FLAG_SET(PCB_FLAG_EDGE2, pin);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	else {
 		PCB_PIN_LOOP(Element);
 		{
 			PCB_FLAG_CLEAR(PCB_FLAG_EDGE2, pin);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	pcb_close_box(box);
 	pcb_close_box(vbox);
@@ -895,7 +895,7 @@ char *pcb_element_uniq_name(pcb_data_t *Data, char *Name)
 				break;
 			}
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		if (unique)
 			return (Name);
 		unique = pcb_true;
@@ -909,17 +909,17 @@ void r_delete_element(pcb_data_t * data, pcb_element_t * element)
 	{
 		pcb_r_delete_entry(data->pin_tree, (pcb_box_t *) pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(element);
 	{
 		pcb_r_delete_entry(data->pad_tree, (pcb_box_t *) pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ELEMENT_PCB_TEXT_LOOP(element);
 	{
 		pcb_r_delete_entry(data->name_tree[n], (pcb_box_t *) text);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 /* Returns a best guess about the orientation of an element.  The
@@ -953,7 +953,7 @@ int pcb_element_get_orientation(pcb_element_t * e)
 			found_pin2 = 1;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_PAD_LOOP(e);
 	{
@@ -968,7 +968,7 @@ int pcb_element_get_orientation(pcb_element_t * e)
 			found_pin2 = 1;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (found_pin1 && found_pin2) {
 		dx = pin2x - pin1x;
@@ -999,7 +999,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 	{
 		pcb_line_move(line, DX, DY);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PIN_LOOP(Element);
 	{
 		if (Data) {
@@ -1012,7 +1012,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 			pcb_poly_clear_from_poly(Data, PCB_TYPE_PIN, Element, pin);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
 		if (Data) {
@@ -1025,12 +1025,12 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 			pcb_poly_clear_from_poly(Data, PCB_TYPE_PAD, Element, pad);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
 		pcb_arc_move(arc, DX, DY);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		if (Data && Data->name_tree[n])
@@ -1039,7 +1039,7 @@ void pcb_element_move(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t DX, 
 		if (Data && Data->name_tree[n])
 			pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_BOX_MOVE_LOWLEVEL(&Element->BoundingBox, DX, DY);
 	PCB_BOX_MOVE_LOWLEVEL(&Element->VBox, DX, DY);
 	PCB_MOVE(Element->MarkX, Element->MarkY, DX, DY);
@@ -1072,12 +1072,12 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 			pcb_r_delete_entry(Data->name_tree[n], (pcb_box_t *) text);
 		pcb_text_rotate90(text, X, Y, Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ELEMENT_PCB_LINE_LOOP(Element);
 	{
 		pcb_line_rotate90(line, X, Y, Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PIN_LOOP(Element);
 	{
 		/* pre-delete the pins from the pin-tree before their coordinates change */
@@ -1086,7 +1086,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		pcb_poly_restore_to_poly(Data, PCB_TYPE_PIN, Element, pin);
 		PCB_PIN_ROTATE90(pin, X, Y, Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
 		/* pre-delete the pads before their coordinates change */
@@ -1095,12 +1095,12 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 		pcb_poly_restore_to_poly(Data, PCB_TYPE_PAD, Element, pad);
 		PCB_PAD_ROTATE90(pad, X, Y, Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
 		pcb_arc_rotate90(arc, X, Y, Number);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_COORD_ROTATE90(Element->MarkX, Element->MarkY, X, Y, Number);
 	/* SetElementBoundingBox reenters the rtree data */
 	pcb_element_bbox(Data, Element, &PCB->Font);
@@ -1122,17 +1122,17 @@ void *AddElementToBuffer(pcb_opctx_t *ctx, pcb_element_t *Element)
 		{
 			PCB_FLAG_CLEAR(ctx->buffer.extraflg, text);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PIN_LOOP(element);
 		{
 			PCB_FLAG_CLEAR(PCB_FLAG_FOUND | ctx->buffer.extraflg, pin);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			PCB_FLAG_CLEAR(PCB_FLAG_FOUND | ctx->buffer.extraflg, pad);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	return (element);
 }
@@ -1154,13 +1154,13 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 		pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_PIN, element, pin);
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(element);
 	{
 		pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_PAD, element, pad);
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_element_bbox(ctx->buffer.dst, element, &PCB->Font);
 	/*
 	 * Now clear the from the polygons in the destination
@@ -1169,12 +1169,12 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 	{
 		pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_PIN, element, pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(element);
 	{
 		pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_TYPE_PAD, element, pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	return element;
 }
@@ -1207,7 +1207,7 @@ void *ChangeElement2ndSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			DrawPin(pin);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (changed)
 		return (Element);
 	else
@@ -1239,7 +1239,7 @@ void *ChangeElement1stSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			DrawPin(pin);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (changed)
 		return (Element);
 	else
@@ -1273,7 +1273,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			DrawPin(pin);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	PCB_PAD_LOOP(Element);
 	{
@@ -1296,7 +1296,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			DrawPad(pad);
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 
 	if (changed)
 		return (Element);
@@ -1323,7 +1323,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			changed = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
 		value = (ctx->chgsize.absolute) ? ctx->chgsize.absolute : arc->Thickness + ctx->chgsize.delta;
@@ -1333,7 +1333,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			changed = pcb_true;
 		}
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	if (PCB->ElementOn) {
 		DrawElement(Element);
 	}
@@ -1360,7 +1360,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			pcb_text_bbox(&PCB->Font, text);
 			pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		DrawElementName(Element);
 		return (Element);
 	}
@@ -1402,12 +1402,12 @@ void *ChangeElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 	{
 		ans = ChangePinSquare(ctx, Element, pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
 		ans = ChangePadSquare(ctx, Element, pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return (ans);
 }
 
@@ -1422,12 +1422,12 @@ void *SetElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 	{
 		ans = SetPinSquare(ctx, Element, pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
 		ans = SetPadSquare(ctx, Element, pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return (ans);
 }
 
@@ -1442,12 +1442,12 @@ void *ClrElementSquare(pcb_opctx_t *ctx, pcb_element_t *Element)
 	{
 		ans = ClrPinSquare(ctx, Element, pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
 		ans = ClrPadSquare(ctx, Element, pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return (ans);
 }
 
@@ -1463,7 +1463,7 @@ void *ChangeElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 		ChangePinOctagon(ctx, Element, pin);
 		result = Element;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return (result);
 }
 
@@ -1479,7 +1479,7 @@ void *SetElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 		SetPinOctagon(ctx, Element, pin);
 		result = Element;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return (result);
 }
 
@@ -1495,7 +1495,7 @@ void *ClrElementOctagon(pcb_opctx_t *ctx, pcb_element_t *Element)
 		ClrPinOctagon(ctx, Element, pin);
 		result = Element;
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	return (result);
 }
 
@@ -1540,7 +1540,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 			if (PCB->Data->name_tree[n])
 				pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		DrawElementName(Element);
 		pcb_draw();
 	}
@@ -1553,7 +1553,7 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 			if (PCB->Data->name_tree[n])
 				pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	return (Element);
 }
@@ -1594,21 +1594,21 @@ void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 		{
 			pcb_r_delete_entry(ctx->remove.destroy_target->pin_tree, (pcb_box_t *) pin);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	if (ctx->remove.destroy_target->pad_tree) {
 		PCB_PAD_LOOP(Element);
 		{
 			pcb_r_delete_entry(ctx->remove.destroy_target->pad_tree, (pcb_box_t *) pad);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 	}
 	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
 	{
 		if (ctx->remove.destroy_target->name_tree[n])
 			pcb_r_delete_entry(ctx->remove.destroy_target->name_tree[n], (pcb_box_t *) text);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	pcb_element_destroy(Element);
 
 	pcb_element_free(Element);
@@ -1651,7 +1651,7 @@ void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 		pcb_text_rotate90(text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 		pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	DrawElementName(Element);
 	pcb_draw();
 	return (Element);
@@ -1701,12 +1701,12 @@ void draw_element_pins_and_pads(pcb_element_t * element)
 		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || PCB_FRONT(pad) || PCB->InvisibleObjectsOn)
 			draw_pad(pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PIN_LOOP(element);
 	{
 		draw_pin(pin, pcb_true);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 
@@ -1727,12 +1727,12 @@ void draw_element_package(pcb_element_t * element)
 	{
 		_draw_line(line);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(element);
 	{
 		_draw_arc(arc);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 void draw_element(pcb_element_t *element)
@@ -1804,12 +1804,12 @@ void EraseElement(pcb_element_t *Element)
 	{
 		EraseLine(line);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
 		EraseArc(arc);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	EraseElementName(Element);
 	EraseElementPinsAndPads(Element);
 	pcb_flag_erase(&Element->Flags);
@@ -1821,12 +1821,12 @@ void EraseElementPinsAndPads(pcb_element_t *Element)
 	{
 		ErasePin(pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PAD_LOOP(Element);
 	{
 		ErasePad(pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 void EraseElementName(pcb_element_t *Element)
@@ -1857,12 +1857,12 @@ void DrawElementPackage(pcb_element_t *Element)
 	{
 		DrawLine(NULL, line);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_ARC_LOOP(Element);
 	{
 		DrawArc(NULL, arc);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 
 void DrawElementPinsAndPads(pcb_element_t *Element)
@@ -1872,11 +1872,11 @@ void DrawElementPinsAndPads(pcb_element_t *Element)
 		if (pcb_draw_doing_pinout || pcb_draw_doing_assy || PCB_FRONT(pad) || PCB->InvisibleObjectsOn)
 			DrawPad(pad);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 	PCB_PIN_LOOP(Element);
 	{
 		DrawPin(pin);
 	}
-	END_LOOP;
+	PCB_END_LOOP;
 }
 

@@ -296,7 +296,7 @@ void pcb_netlist_free(pcb_netlist_t *Netlist)
 		{
 			pcb_net_free(net);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		free(Netlist->Net);
 		memset(Netlist, 0, sizeof(pcb_netlist_t));
 	}
@@ -312,7 +312,7 @@ void pcb_netlist_list_free(pcb_netlist_list_t *Netlistlist)
 		{
 			pcb_netlist_free(netlist);
 		}
-		END_LOOP;
+		PCB_END_LOOP;
 		free(Netlistlist->NetList);
 		memset(Netlistlist, 0, sizeof(pcb_netlist_list_t));
 	}
