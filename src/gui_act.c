@@ -382,7 +382,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 					pcb_undo_inc_serial();
 					pcb_draw();
 				}
-				if (Crosshair.AttachedLine.State != STATE_FIRST)
+				if (Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
 					pcb_lookup_conn(Crosshair.AttachedLine.Point1.X, Crosshair.AttachedLine.Point1.Y, pcb_true, 1, PCB_FLAG_FOUND);
 			}
 			pcb_notify_crosshair_change(pcb_true);
@@ -666,7 +666,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_LINE:
-					if (Crosshair.AttachedLine.State == STATE_FIRST)
+					if (Crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -675,7 +675,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_RECTANGLE:
-					if (Crosshair.AttachedBox.State == STATE_FIRST)
+					if (Crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -684,7 +684,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_POLYGON:
-					if (Crosshair.AttachedLine.State == STATE_FIRST)
+					if (Crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -693,7 +693,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_POLYGON_HOLE:
-					if (Crosshair.AttachedLine.State == STATE_FIRST)
+					if (Crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -702,7 +702,7 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 					break;
 
 				case PCB_MODE_ARC:
-					if (Crosshair.AttachedBox.State == STATE_FIRST)
+					if (Crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
 						pcb_crosshair_set_mode(PCB_MODE_ARROW);
 					else {
 						pcb_crosshair_set_mode(PCB_MODE_NO);
@@ -754,14 +754,14 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			/* Handle middle mouse button restarts of drawing mode.  If not in
 			   |  a drawing mode, middle mouse button will select objects.
 			 */
-			if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != STATE_FIRST) {
+			if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
 				pcb_crosshair_set_mode(PCB_MODE_LINE);
 			}
-			else if (conf_core.editor.mode == PCB_MODE_ARC && Crosshair.AttachedBox.State != STATE_FIRST)
+			else if (conf_core.editor.mode == PCB_MODE_ARC && Crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
 				pcb_crosshair_set_mode(PCB_MODE_ARC);
-			else if (conf_core.editor.mode == PCB_MODE_RECTANGLE && Crosshair.AttachedBox.State != STATE_FIRST)
+			else if (conf_core.editor.mode == PCB_MODE_RECTANGLE && Crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
 				pcb_crosshair_set_mode(PCB_MODE_RECTANGLE);
-			else if (conf_core.editor.mode == PCB_MODE_POLYGON && Crosshair.AttachedLine.State != STATE_FIRST)
+			else if (conf_core.editor.mode == PCB_MODE_POLYGON && Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
 				pcb_crosshair_set_mode(PCB_MODE_POLYGON);
 			else {
 				pcb_crosshair_save_mode();

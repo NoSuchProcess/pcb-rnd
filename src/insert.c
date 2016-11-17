@@ -90,7 +90,7 @@ pcb_point_t *pcb_adjust_insert_point(void)
 	pcb_coord_t x, y, m1, m2;
 	pcb_line_t *line = (pcb_line_t *) Crosshair.AttachedObject.Ptr2;
 
-	if (Crosshair.AttachedObject.State == STATE_FIRST)
+	if (Crosshair.AttachedObject.State == PCB_CH_STATE_FIRST)
 		return NULL;
 	Crosshair.AttachedObject.Ptr3 = &InsertedPoint;
 	if (gui->shift_is_pressed()) {

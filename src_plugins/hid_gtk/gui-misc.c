@@ -279,9 +279,9 @@ static gboolean run_get_location_loop(const gchar * message)
 	oldLineState = Crosshair.AttachedLine.State;
 	oldBoxState = Crosshair.AttachedBox.State;
 	pcb_notify_crosshair_change(pcb_false);
-	Crosshair.AttachedObject.State = STATE_FIRST;
-	Crosshair.AttachedLine.State = STATE_FIRST;
-	Crosshair.AttachedBox.State = STATE_FIRST;
+	Crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+	Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 	ghid_hand_cursor();
 	pcb_notify_crosshair_change(pcb_true);
 

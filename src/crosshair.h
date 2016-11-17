@@ -92,9 +92,9 @@ typedef struct {								/* holds cursor information */
 /* ---------------------------------------------------------------------------
  * all possible states of an attached object
  */
-#define	STATE_FIRST		0					/* initial state */
-#define	STATE_SECOND	1
-#define	STATE_THIRD		2
+#define PCB_CH_STATE_FIRST  0  /* initial state */
+#define PCB_CH_STATE_SECOND 1
+#define PCB_CH_STATE_THIRD  2
 
 pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset);
 void pcb_notify_crosshair_change(pcb_bool changes_complete);

@@ -47,7 +47,7 @@ void AdjustAttachedLine(void)
 	pcb_attached_line_t *line = &Crosshair.AttachedLine;
 
 	/* I need at least one point */
-	if (line->State == STATE_FIRST)
+	if (line->State == PCB_CH_STATE_FIRST)
 		return;
 	/* don't draw outline when ctrl key is pressed */
 	if (conf_core.editor.mode == PCB_MODE_LINE && gui->control_is_pressed()) {
@@ -152,7 +152,7 @@ void AdjustTwoLine(pcb_bool way)
 	pcb_coord_t dx, dy;
 	pcb_attached_line_t *line = &Crosshair.AttachedLine;
 
-	if (Crosshair.AttachedLine.State == STATE_FIRST)
+	if (Crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 		return;
 	/* don't draw outline when ctrl key is pressed */
 	if (gui->control_is_pressed()) {

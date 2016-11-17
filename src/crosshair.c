@@ -520,7 +520,7 @@ void pcb_draw_attached(void)
 	case PCB_MODE_POLYGON:
 	case PCB_MODE_POLYGON_HOLE:
 		/* draw only if starting point is set */
-		if (Crosshair.AttachedLine.State != STATE_FIRST)
+		if (Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
 			gui->draw_line(Crosshair.GC,
 										 Crosshair.AttachedLine.Point1.X,
 										 Crosshair.AttachedLine.Point1.Y, Crosshair.AttachedLine.Point2.X, Crosshair.AttachedLine.Point2.Y);
@@ -532,7 +532,7 @@ void pcb_draw_attached(void)
 		break;
 
 	case PCB_MODE_ARC:
-		if (Crosshair.AttachedBox.State != STATE_FIRST) {
+		if (Crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
 			XORDrawAttachedArc(conf_core.design.line_thickness);
 			if (conf_core.editor.show_drc) {
 				gui->set_color(Crosshair.GC, conf_core.appearance.color.cross);
@@ -545,7 +545,7 @@ void pcb_draw_attached(void)
 
 	case PCB_MODE_LINE:
 		/* draw only if starting point exists and the line has length */
-		if (Crosshair.AttachedLine.State != STATE_FIRST && Crosshair.AttachedLine.draw) {
+		if (Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && Crosshair.AttachedLine.draw) {
 			XORDrawAttachedLine(Crosshair.AttachedLine.Point1.X,
 													Crosshair.AttachedLine.Point1.Y,
 													Crosshair.AttachedLine.Point2.X,
@@ -585,7 +585,7 @@ void pcb_draw_attached(void)
 	}
 
 	/* an attached box does not depend on a special mode */
-	if (Crosshair.AttachedBox.State == STATE_SECOND || Crosshair.AttachedBox.State == STATE_THIRD) {
+	if (Crosshair.AttachedBox.State == PCB_CH_STATE_SECOND || Crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {
 		pcb_coord_t x1, y1, x2, y2;
 
 		x1 = Crosshair.AttachedBox.Point1.X;
@@ -1147,7 +1147,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 			pcb_hid_actionl("PointCursor", "True", NULL);
 	}
 
-	if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != STATE_FIRST && conf_core.editor.auto_drc)
+	if (conf_core.editor.mode == PCB_MODE_LINE && Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
 		EnforceLineDRC();
 
 	gui->set_crosshair(Crosshair.X, Crosshair.Y, HID_SC_DO_NOTHING);
@@ -1302,7 +1302,7 @@ void pcb_crosshair_set_mode(int Mode)
 	pcb_notify_crosshair_change(pcb_false);
 	addedLines = 0;
 	Crosshair.AttachedObject.Type = PCB_TYPE_NONE;
-	Crosshair.AttachedObject.State = STATE_FIRST;
+	Crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	Crosshair.AttachedPolygon.PointN = 0;
 	if (PCB->RatDraw) {
 		if (Mode == PCB_MODE_ARC || Mode == PCB_MODE_RECTANGLE ||
@@ -1312,16 +1312,16 @@ void pcb_crosshair_set_mode(int Mode)
 			Mode = PCB_MODE_NO;
 		}
 	}
-	if (conf_core.editor.mode == PCB_MODE_LINE && Mode == PCB_MODE_ARC && Crosshair.AttachedLine.State != STATE_FIRST) {
-		Crosshair.AttachedLine.State = STATE_FIRST;
-		Crosshair.AttachedBox.State = STATE_SECOND;
+	if (conf_core.editor.mode == PCB_MODE_LINE && Mode == PCB_MODE_ARC && Crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
+		Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
+		Crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 		Crosshair.AttachedBox.Point1.X = Crosshair.AttachedBox.Point2.X = Crosshair.AttachedLine.Point1.X;
 		Crosshair.AttachedBox.Point1.Y = Crosshair.AttachedBox.Point2.Y = Crosshair.AttachedLine.Point1.Y;
 		pcb_adjust_attached_objects();
 	}
-	else if (conf_core.editor.mode == PCB_MODE_ARC && Mode == PCB_MODE_LINE && Crosshair.AttachedBox.State != STATE_FIRST) {
-		Crosshair.AttachedBox.State = STATE_FIRST;
-		Crosshair.AttachedLine.State = STATE_SECOND;
+	else if (conf_core.editor.mode == PCB_MODE_ARC && Mode == PCB_MODE_LINE && Crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
+		Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		Crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
 		Crosshair.AttachedLine.Point1.X = Crosshair.AttachedLine.Point2.X = Crosshair.AttachedBox.Point1.X;
 		Crosshair.AttachedLine.Point1.Y = Crosshair.AttachedLine.Point2.Y = Crosshair.AttachedBox.Point1.Y;
 		sprintf(sMode, "%d", Mode);
@@ -1331,8 +1331,8 @@ void pcb_crosshair_set_mode(int Mode)
 	else {
 		if (conf_core.editor.mode == PCB_MODE_ARC || conf_core.editor.mode == PCB_MODE_LINE)
 			pcb_crosshair_set_local_ref(0, 0, pcb_false);
-		Crosshair.AttachedBox.State = STATE_FIRST;
-		Crosshair.AttachedLine.State = STATE_FIRST;
+		Crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+		Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		if (Mode == PCB_MODE_LINE && conf_core.editor.auto_drc) {
 			if (pcb_reset_conns(pcb_true)) {
 				pcb_undo_inc_serial();

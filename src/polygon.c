@@ -1279,7 +1279,7 @@ void pcb_polygon_go_to_prev_point(void)
 		/* reset number of points and 'PCB_MODE_LINE' state */
 	case 1:
 		Crosshair.AttachedPolygon.PointN = 0;
-		Crosshair.AttachedLine.State = STATE_FIRST;
+		Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		addedLines = 0;
 		break;
 
@@ -1352,7 +1352,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	pcb_board_set_changed_flag(pcb_true);
 
 	/* reset state of attached line */
-	Crosshair.AttachedLine.State = STATE_FIRST;
+	Crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 	addedLines = 0;
 
 	/* add to undo list */
