@@ -195,17 +195,17 @@ are affected.
 static enum pcb_crosshair_shape_e CrosshairShapeIncrement(enum pcb_crosshair_shape_e shape)
 {
 	switch (shape) {
-	case Basic_Crosshair_Shape:
-		shape = Union_Jack_Crosshair_Shape;
+	case pcb_ch_shape_basic:
+		shape = pcb_ch_shape_union_jack;
 		break;
-	case Union_Jack_Crosshair_Shape:
-		shape = Dozen_Crosshair_Shape;
+	case pcb_ch_shape_union_jack:
+		shape = pcb_ch_shape_dozen;
 		break;
-	case Dozen_Crosshair_Shape:
-		shape = Crosshair_Shapes_Number;
+	case pcb_ch_shape_dozen:
+		shape = pcb_ch_shape_NUM;
 		break;
-	case Crosshair_Shapes_Number:
-		shape = Basic_Crosshair_Shape;
+	case pcb_ch_shape_NUM:
+		shape = pcb_ch_shape_basic;
 		break;
 	}
 	return shape;
@@ -294,8 +294,8 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 		case F_CycleCrosshair:
 			pcb_notify_crosshair_change(pcb_false);
 			Crosshair.shape = CrosshairShapeIncrement(Crosshair.shape);
-			if (Crosshair_Shapes_Number == Crosshair.shape)
-				Crosshair.shape = Basic_Crosshair_Shape;
+			if (pcb_ch_shape_NUM == Crosshair.shape)
+				Crosshair.shape = pcb_ch_shape_basic;
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 

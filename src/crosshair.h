@@ -62,10 +62,10 @@ typedef struct {
 } pcb_mark_t;
 
 enum pcb_crosshair_shape_e {
-	Basic_Crosshair_Shape = 0,		/*  4-ray */
-	Union_Jack_Crosshair_Shape,		/*  8-ray */
-	Dozen_Crosshair_Shape,				/* 12-ray */
-	Crosshair_Shapes_Number
+	pcb_ch_shape_basic = 0,		/*  4-ray */
+	pcb_ch_shape_union_jack,		/*  8-ray */
+	pcb_ch_shape_dozen,				/* 12-ray */
+	pcb_ch_shape_NUM
 };
 
 typedef struct {								/* holds cursor information */

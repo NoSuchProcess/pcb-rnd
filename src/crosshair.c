@@ -1229,7 +1229,7 @@ void pcb_crosshair_init(void)
 	gui->set_line_width(Crosshair.GC, 1);
 
 	/* set initial shape */
-	Crosshair.shape = Basic_Crosshair_Shape;
+	Crosshair.shape = pcb_ch_shape_basic;
 
 	/* set default limits */
 	Crosshair.MinX = Crosshair.MinY = 0;

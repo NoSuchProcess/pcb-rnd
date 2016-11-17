@@ -951,3 +951,7 @@ LIKELY -> PCB_LIKELY
 STATE_FIRST -> PCB_CH_STATE_FIRST
 STATE_SECOND -> PCB_CH_STATE_SECOND
 STATE_THIRD -> PCB_CH_STATE_THIRD
+Basic_Crosshair_Shape -> pcb_ch_shape_basic
+Union_Jack_Crosshair_Shape -> pcb_ch_shape_union_jack
+Dozen_Crosshair_Shape -> pcb_ch_shape_dozen
+Crosshair_Shapes_Number -> pcb_ch_shape_NUM
