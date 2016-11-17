@@ -4302,8 +4302,8 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 		if (!IsLayerNumEmpty(tmp[i]))
 			print_layer[tmp[i]] = 1;
 
-	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
-	qsort(LayerStack, pcb_max_copper_layer, sizeof(LayerStack[0]), dxf_layer_sort);
+	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
+	qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), dxf_layer_sort);
 	linewidth = -1;
 	lastcap = -1;
 	lastgroup = -1;
@@ -4321,7 +4321,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	c_layerapps = 0;
 	dxf_finding_apertures = 0;
 	pcb_hid_expose_callback(&dxf_hid, &region, 0);
-	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
+	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	dxf_maybe_close_file();
 	pcb_hid_restore_layer_ons(save_ons);
 #if DEBUG

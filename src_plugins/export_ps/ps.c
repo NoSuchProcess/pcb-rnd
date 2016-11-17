@@ -664,8 +664,8 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		if (global.print_group[GetLayerGroupNumberByNumber(i)])
 			global.print_layer[i] = 1;
 
-	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
-	qsort(LayerStack, pcb_max_copper_layer, sizeof(LayerStack[0]), layer_sort);
+	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
+	qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 
 	global.linewidth = -1;
 	/* reset static vars */
@@ -698,7 +698,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	if (the_file)
 		fprintf(the_file, "showpage\n");
 
-	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
+	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	conf_update(NULL); /* restore forced sets */
 }
 

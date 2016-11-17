@@ -41,7 +41,7 @@
 
 static struct {
 	pcb_bool ElementOn, InvisibleObjectsOn, PinOn, ViaOn, RatOn;
-	int LayerStack[MAX_LAYER];
+	int pcb_layer_stack[MAX_LAYER];
 	pcb_bool LayerOn[MAX_LAYER];
 	int cnt;
 } SavedStack;
@@ -180,13 +180,13 @@ static void PushOnTopOfLayerStack(int NewTop)
 	if (NewTop < pcb_max_copper_layer) {
 		/* first find position of passed one */
 		for (i = 0; i < pcb_max_copper_layer; i++)
-			if (LayerStack[i] == NewTop)
+			if (pcb_layer_stack[i] == NewTop)
 				break;
 
 		/* bring this element to the top of the stack */
 		for (; i; i--)
-			LayerStack[i] = LayerStack[i - 1];
-		LayerStack[0] = NewTop;
+			pcb_layer_stack[i] = pcb_layer_stack[i - 1];
+		pcb_layer_stack[0] = NewTop;
 	}
 }
 
@@ -270,7 +270,7 @@ void LayerStringToLayerStack(const char *layer_string)
 
 	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 		if (i < pcb_max_copper_layer)
-			LayerStack[i] = i;
+			pcb_layer_stack[i] = i;
 		PCB->Data->Layer[i].On = pcb_false;
 	}
 	PCB->ElementOn = pcb_false;
@@ -380,7 +380,7 @@ void ResetStackAndVisibility(void)
 	assert(PCB->Data->LayerN <= MAX_LAYER);
 	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 		if (i < pcb_max_copper_layer)
-			LayerStack[i] = i;
+			pcb_layer_stack[i] = i;
 		PCB->Data->Layer[i].On = pcb_true;
 	}
 	PCB->ElementOn = pcb_true;
@@ -414,7 +414,7 @@ void SaveStackAndVisibility(void)
 
 	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 		if (i < pcb_max_copper_layer)
-			SavedStack.LayerStack[i] = LayerStack[i];
+			SavedStack.pcb_layer_stack[i] = pcb_layer_stack[i];
 		SavedStack.LayerOn[i] = PCB->Data->Layer[i].On;
 	}
 	SavedStack.ElementOn = PCB->ElementOn;
@@ -442,7 +442,7 @@ void RestoreStackAndVisibility(void)
 
 	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 		if (i < pcb_max_copper_layer)
-			LayerStack[i] = SavedStack.LayerStack[i];
+			pcb_layer_stack[i] = SavedStack.pcb_layer_stack[i];
 		PCB->Data->Layer[i].On = SavedStack.LayerOn[i];
 	}
 	PCB->ElementOn = SavedStack.ElementOn;
@@ -977,9 +977,9 @@ int pcb_layer_move(int old_index, int new_index)
 		lp->Color = conf_core.appearance.color.layer[new_index];
 		lp->SelectedColor = conf_core.appearance.color.layer_selected[new_index];
 		for (l = 0; l < pcb_max_copper_layer; l++)
-			if (LayerStack[l] >= new_index)
-				LayerStack[l]++;
-		LayerStack[pcb_max_copper_layer - 1] = new_index;
+			if (pcb_layer_stack[l] >= new_index)
+				pcb_layer_stack[l]++;
+		pcb_layer_stack[pcb_max_copper_layer - 1] = new_index;
 	}
 	else if (new_index == -1) {
 		/* Delete the layer at old_index */
@@ -988,12 +988,12 @@ int pcb_layer_move(int old_index, int new_index)
 		memset(&PCB->Data->Layer[pcb_max_copper_layer + 1], 0, sizeof(pcb_layer_t));
 		memmove(&groups[old_index], &groups[old_index + 1], (pcb_max_copper_layer - old_index + 2 - 1) * sizeof(int));
 		for (l = 0; l < pcb_max_copper_layer; l++)
-			if (LayerStack[l] == old_index)
-				memmove(LayerStack + l, LayerStack + l + 1, (pcb_max_copper_layer - l - 1) * sizeof(LayerStack[0]));
+			if (pcb_layer_stack[l] == old_index)
+				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (pcb_max_copper_layer - l - 1) * sizeof(pcb_layer_stack[0]));
 		pcb_max_copper_layer--;
 		for (l = 0; l < pcb_max_copper_layer; l++)
-			if (LayerStack[l] > old_index)
-				LayerStack[l]--;
+			if (pcb_layer_stack[l] > old_index)
+				pcb_layer_stack[l]--;
 	}
 	else {
 		/* Move an existing layer */

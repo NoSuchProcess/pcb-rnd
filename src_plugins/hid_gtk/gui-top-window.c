@@ -703,7 +703,7 @@ void ghid_layer_buttons_update(void)
 	else if (PCB->SilkActive)
 		layer = LAYER_BUTTON_SILK;
 	else
-		layer = LayerStack[0];
+		layer = pcb_layer_stack[0];
 
 	ghid_layer_selector_select_layer(GHID_LAYER_SELECTOR(ghidgui->layer_selector), layer);
 }

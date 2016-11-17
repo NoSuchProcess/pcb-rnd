@@ -1124,7 +1124,7 @@ void pcb_undo_restore_serial(void)
  */
 void pcb_undo_save_serial(void)
 {
-	Bumped = pcb_false;
+	pcb_bumped = pcb_false;
 	between_increment_and_restore = pcb_false;
 	added_undo_between_increment_and_restore = pcb_false;
 	SavedSerial = Serial;
@@ -1142,7 +1142,7 @@ void pcb_undo_inc_serial(void)
 		if (UndoN > 0 && UndoList[UndoN - 1].Serial == Serial)
 			pcb_board_set_changed_flag(pcb_true);
 		Serial++;
-		Bumped = pcb_true;
+		pcb_bumped = pcb_true;
 		between_increment_and_restore = pcb_true;
 	}
 }

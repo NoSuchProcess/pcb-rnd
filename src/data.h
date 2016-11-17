@@ -58,11 +58,11 @@ struct pcb_data_s {
 #define pcb_solder_silk_layer (pcb_max_copper_layer + SOLDER_LAYER)
 #define pcb_component_silk_layer (pcb_max_copper_layer + COMPONENT_LAYER)
 
-extern pcb_buffer_t Buffers[MAX_BUFFER];
-extern int addedLines;
-extern int LayerStack[MAX_LAYER];
+extern pcb_buffer_t pcb_buffers[MAX_BUFFER];
+extern int pcb_added_lines;
+extern int pcb_layer_stack[MAX_LAYER];
 
-extern pcb_bool Bumped;
+extern pcb_bool pcb_bumped;
 
 /****** callback based loops *****/
 

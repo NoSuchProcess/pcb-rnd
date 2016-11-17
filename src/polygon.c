@@ -1280,7 +1280,7 @@ void pcb_polygon_go_to_prev_point(void)
 	case 1:
 		pcb_crosshair.AttachedPolygon.PointN = 0;
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-		addedLines = 0;
+		pcb_added_lines = 0;
 		break;
 
 		/* back-up one point */
@@ -1353,7 +1353,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 
 	/* reset state of attached line */
 	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-	addedLines = 0;
+	pcb_added_lines = 0;
 
 	/* add to undo list */
 	pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);

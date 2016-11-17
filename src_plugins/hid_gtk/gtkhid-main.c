@@ -1322,7 +1322,7 @@ side'' of the board.
 
 static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	int active_group = GetLayerGroupNumberByNumber(LayerStack[0]);
+	int active_group = GetLayerGroupNumberByNumber(pcb_layer_stack[0]);
 	int comp_group = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
 	int solder_group = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
 	pcb_bool comp_on = LAYER_PTR(PCB->LayerGroups.Entries[comp_group][0])->On;

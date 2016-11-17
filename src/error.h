@@ -29,11 +29,6 @@
 #ifndef	PCB_ERROR_H
 #define	PCB_ERROR_H
 
-/* Common return codes. */
-#define	STATUS_OK		0
-#define	STATUS_BREAK	1
-#define	STATUS_ERROR	-1
-
 typedef enum pcb_message_level {
 	/* MSG_DEFAULT is the default level when a message is not converted yet
 	   to any of the levels below. This level will go away once all messages

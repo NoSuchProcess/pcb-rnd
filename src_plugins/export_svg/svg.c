@@ -203,7 +203,7 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	f = the_file;
 
-	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
+	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
 	{
 		conf_force_set_bool(conf_core.editor.thin_draw, 0);

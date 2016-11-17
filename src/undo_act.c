@@ -95,7 +95,7 @@ int ActionAtomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		break;
 	case F_Block:
 		pcb_undo_restore_serial();
-		if (Bumped)
+		if (pcb_bumped)
 			pcb_undo_inc_serial();
 		break;
 	}
@@ -191,7 +191,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				}
 				pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
 				pcb_adjust_attached_objects();
-				if (--addedLines == 0) {
+				if (--pcb_added_lines == 0) {
 					pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
 					lastLayer = CURRENT;
 				}
@@ -222,7 +222,7 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = bx->X1;
 				pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = bx->Y1;
 				pcb_adjust_attached_objects();
-				if (--addedLines == 0)
+				if (--pcb_added_lines == 0)
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 			}
 		}
@@ -275,7 +275,7 @@ int ActionRedo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			pcb_line_t *line = linelist_last(&CURRENT->Line);
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = line->Point2.X;
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = line->Point2.Y;
-			addedLines++;
+			pcb_added_lines++;
 		}
 	}
 	pcb_notify_crosshair_change(pcb_true);

@@ -37,12 +37,12 @@
 /* ---------------------------------------------------------------------------
  * some shared identifiers
  */
-int LayerStack[MAX_LAYER];			/* determines the layer draw order */
+int pcb_layer_stack[MAX_LAYER];			/* determines the layer draw order */
 
-pcb_buffer_t Buffers[MAX_BUFFER]; /* my buffers */
-pcb_bool Bumped;                /* if the undo serial number has changed */
+pcb_buffer_t pcb_buffers[MAX_BUFFER]; /* my buffers */
+pcb_bool pcb_bumped;                /* if the undo serial number has changed */
 
-int addedLines;
+int pcb_added_lines;
 
 
 /* callback based loops */

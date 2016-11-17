@@ -385,7 +385,7 @@ void pcb_init_buffers(void)
 	int i;
 
 	for (i = 0; i < MAX_BUFFER; i++)
-		Buffers[i].Data = pcb_buffer_new();
+		pcb_buffers[i].Data = pcb_buffer_new();
 }
 
 void pcb_uninit_buffers(void)
@@ -393,8 +393,8 @@ void pcb_uninit_buffers(void)
 	int i;
 
 	for (i = 0; i < MAX_BUFFER; i++) {
-		pcb_buffer_clear(Buffers+i);
-		free(Buffers[i].Data);
+		pcb_buffer_clear(pcb_buffers+i);
+		free(pcb_buffers[i].Data);
 	}
 }
 
@@ -580,7 +580,7 @@ void pcb_swap_buffers(void)
 	int i;
 
 	for (i = 0; i < MAX_BUFFER; i++)
-		pcb_buffer_swap(&Buffers[i]);
+		pcb_buffer_swap(&pcb_buffers[i]);
 	pcb_crosshair_range_to_buffer();
 }
 

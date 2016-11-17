@@ -244,12 +244,12 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		eps_hid.poly_after = 1;
 	}
 
-	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
+	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	as_shown = options[HA_as_shown].int_value;
 	if (!options[HA_as_shown].int_value) {
 		comp_layer = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
 		solder_layer = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
-		qsort(LayerStack, pcb_max_copper_layer, sizeof(LayerStack[0]), layer_sort);
+		qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 	}
 	fprintf(f, "%%!PS-Adobe-3.0 EPSF-3.0\n");
 	linewidth = -1;
@@ -299,7 +299,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	fprintf(f, "cleartomark countdictstack exch sub { end } repeat restore\n");
 	fprintf(f, "%%%%EOF\n");
 
-	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
+	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	conf_update(NULL); /* restore forced sets */
 }
 

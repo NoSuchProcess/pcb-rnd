@@ -70,7 +70,7 @@ int io_kicad_legacy_write_buffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *bu
 		for (i = 0; i < pcb_max_copper_layer + 2; i++)
 		WriteLayerData(FP, i, &(buff->Data->Layer[i]));
 	*/
-	return (STATUS_OK);
+	return (0);
 }
 
 /* ---------------------------------------------------------------------------
@@ -457,7 +457,7 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fil
 	free(topSilk);
 	free(bottomSilk);
 	free(outlineLayers);
-	return (STATUS_OK);
+	return (0);
 }
 
 /* ---------------------------------------------------------------------------

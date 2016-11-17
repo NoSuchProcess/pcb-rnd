@@ -411,7 +411,7 @@ void pcb_release_mode(void)
 		pcb_undo_restore_serial();
 		if (pcb_select_block(&box, pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
-		else if (Bumped)
+		else if (pcb_bumped)
 			pcb_undo_inc_serial();
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 	}
@@ -667,7 +667,7 @@ void pcb_notify_mode(void)
 						pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = bx->Y2;
 						pcb_undo_add_obj_to_create(PCB_TYPE_ARC, CURRENT, arc, arc);
 						pcb_undo_inc_serial();
-						addedLines++;
+						pcb_added_lines++;
 						DrawArc(CURRENT, arc);
 						pcb_draw();
 						pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
@@ -757,7 +757,7 @@ void pcb_notify_mode(void)
 		if (PCB->RatDraw) {
 			pcb_rat_t *line;
 			if ((line = pcb_rat_add_net())) {
-				addedLines++;
+				pcb_added_lines++;
 				pcb_undo_add_obj_to_create(PCB_TYPE_RATLINE, line, line, line);
 				pcb_undo_inc_serial();
 				DrawRat(line);
@@ -806,7 +806,7 @@ void pcb_notify_mode(void)
 																							 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 				pcb_pin_t *via;
 
-				addedLines++;
+				pcb_added_lines++;
 				pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
 				DrawLine(CURRENT, line);
 				/* place a via if vias are visible, the layer is
@@ -844,7 +844,7 @@ void pcb_notify_mode(void)
 																		 2 * conf_core.design.clearance,
 																		 pcb_flag_make((conf_core.editor.auto_drc ? PCB_FLAG_FOUND : 0) |
 																							 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
-				addedLines++;
+				pcb_added_lines++;
 				pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
 				pcb_undo_inc_serial();
 				DrawLine(CURRENT, line);
@@ -1031,7 +1031,7 @@ void pcb_notify_mode(void)
 						memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
 						pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 						pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-						addedLines = 0;
+						pcb_added_lines = 0;
 
 						break;
 					}

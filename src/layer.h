@@ -89,14 +89,14 @@ int MoveLayerToGroup(int layer, int group);
 /* Returns pointer to private buffer */
 char *LayerGroupsToString(pcb_layer_group_t *);
 
-#define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[LayerStack[(n)]])
+#define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])
 #define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
 #define	CURRENT			(PCB->SilkActive ? &PCB->Data->Layer[ \
 				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer)] \
 				: LAYER_ON_STACK(0))
 #define	INDEXOFCURRENT		(PCB->SilkActive ? \
 				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer) \
-				: LayerStack[0])
+				: pcb_layer_stack[0])
 #define SILKLAYER		Layer[ \
 				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer)]
 #define BACKSILKLAYER		Layer[ \

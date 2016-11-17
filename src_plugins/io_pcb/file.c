@@ -507,7 +507,7 @@ int io_pcb_WriteBuffer(pcb_plug_io_t *ctx, FILE * FP, pcb_buffer_t *buff)
 	io_pcb_WriteElementData(ctx, FP, buff->Data);
 	for (i = 0; i < pcb_max_copper_layer + 2; i++)
 		WriteLayerData(FP, i, &(buff->Data->Layer[i]));
-	return (STATUS_OK);
+	return (0);
 }
 
 /* ---------------------------------------------------------------------------
@@ -532,7 +532,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 	WritePCBNetlistData(FP);
 	WritePCBNetlistPatchData(FP);
 
-	return (STATUS_OK);
+	return (0);
 }
 
 /* ---------------------------------------------------------------------------

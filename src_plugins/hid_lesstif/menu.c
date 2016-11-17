@@ -115,7 +115,7 @@ static int LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	else if (PCB->SilkActive)
 		current_layer = LB_SILK;
 	else
-		current_layer = LayerStack[0];
+		current_layer = pcb_layer_stack[0];
 
 	for (l = 0; l < num_layer_buttons; l++) {
 		LayerButtons *lb = layer_button_list + l;

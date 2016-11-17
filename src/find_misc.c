@@ -88,7 +88,7 @@ static void DrawNewConnections(void)
 
 	/* decrement 'i' to keep layerstack order */
 	for (i = pcb_max_copper_layer - 1; i != -1; i--) {
-		pcb_cardinal_t layer = LayerStack[i];
+		pcb_cardinal_t layer = pcb_layer_stack[i];
 
 		if (PCB->Data->Layer[layer].On) {
 			/* draw all new lines */

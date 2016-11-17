@@ -72,6 +72,6 @@ void pcb_buffer_set_number(int Number);
 /* ---------------------------------------------------------------------------
  * access macro for current buffer
  */
-#define	PCB_PASTEBUFFER (&Buffers[conf_core.editor.buffer_number])
+#define	PCB_PASTEBUFFER (&pcb_buffers[conf_core.editor.buffer_number])
 
 #endif

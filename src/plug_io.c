@@ -782,7 +782,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 
 	if ((fp = fopen(Filename, "w")) == NULL) {
 		pcb_open_error_message(Filename);
-		return (STATUS_ERROR);
+		return (-1);
 	}
 
 	result = pcb_write_file(fp, thePcb, fn_tmp, Filename, fmt, emergency);
@@ -827,12 +827,12 @@ int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 	printf("write to pipe \"%s\"\n", command.array);
 	if ((fp = popen(command.array, "w")) == NULL) {
 		pcb_popen_error_message(command.array);
-		return (STATUS_ERROR);
+		return (-1);
 	}
 
 	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt, pcb_false);
 
-	return (pclose(fp) ? STATUS_ERROR : result);
+	return (pclose(fp) ? (-1) : result);
 }
 
 

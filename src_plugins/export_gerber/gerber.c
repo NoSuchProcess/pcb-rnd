@@ -561,8 +561,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 		if (print_group[GetLayerGroupNumberByNumber(i)])
 			print_layer[i] = 1;
 
-	memcpy(saved_layer_stack, LayerStack, sizeof(LayerStack));
-	qsort(LayerStack, pcb_max_copper_layer, sizeof(LayerStack[0]), layer_sort);
+	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
+	qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 	linewidth = -1;
 	lastcap = -1;
 	lastgroup = -1;
@@ -585,7 +585,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	finding_apertures = 0;
 	pcb_hid_expose_callback(&gerber_hid, &region, 0);
 
-	memcpy(LayerStack, saved_layer_stack, sizeof(LayerStack));
+	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 
 	maybe_close_f(f);
 	f = NULL;

@@ -192,7 +192,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	memset(do_group, 0, sizeof(do_group));
 	for (ngroups = 0, i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *l = LAYER_ON_STACK(i);
-		int group = GetLayerGroupNumberByNumber(LayerStack[i]);
+		int group = GetLayerGroupNumberByNumber(pcb_layer_stack[i]);
 		if (l->On && !do_group[group]) {
 			do_group[group] = 1;
 			drawn_groups[ngroups++] = group;

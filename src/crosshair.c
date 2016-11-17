@@ -1302,7 +1302,7 @@ void pcb_crosshair_set_mode(int Mode)
 		return;
 	recursing = pcb_true;
 	pcb_notify_crosshair_change(pcb_false);
-	addedLines = 0;
+	pcb_added_lines = 0;
 	pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedPolygon.PointN = 0;

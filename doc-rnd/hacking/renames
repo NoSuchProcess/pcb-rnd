@@ -961,3 +961,9 @@ max_group -> pcb_max_group
 max_copper_layer -> pcb_max_copper_layer
 solder_silk_layer -> pcb_solder_silk_layer
 component_silk_layer -> pcb_component_silk_layer
+Buffers -> pcb_buffers
+addedLines -> pcb_added_lines
+LayerStack -> pcb_layer_stack
+Bumped -> pcb_bumped
+STATUS_OK -> 0
+STATUS_ERROR -> -1
