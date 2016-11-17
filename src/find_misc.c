@@ -154,14 +154,14 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
 		{
-			if (ADD_PV_TO_LIST((pcb_pin_t *) ptr2, 0, NULL, FCT_START))
+			if (ADD_PV_TO_LIST((pcb_pin_t *) ptr2, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
 
 	case PCB_TYPE_RATLINE:
 		{
-			if (ADD_RAT_TO_LIST((pcb_rat_t *) ptr1, 0, NULL, FCT_START))
+			if (ADD_RAT_TO_LIST((pcb_rat_t *) ptr1, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
@@ -171,7 +171,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 			int layer = GetLayerNumber(PCB->Data,
 																 (pcb_layer_t *) ptr1);
 
-			if (ADD_LINE_TO_LIST(layer, (pcb_line_t *) ptr2, 0, NULL, FCT_START))
+			if (ADD_LINE_TO_LIST(layer, (pcb_line_t *) ptr2, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
@@ -181,7 +181,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 			int layer = GetLayerNumber(PCB->Data,
 																 (pcb_layer_t *) ptr1);
 
-			if (ADD_ARC_TO_LIST(layer, (pcb_arc_t *) ptr2, 0, NULL, FCT_START))
+			if (ADD_ARC_TO_LIST(layer, (pcb_arc_t *) ptr2, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
@@ -191,7 +191,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 			int layer = GetLayerNumber(PCB->Data,
 																 (pcb_layer_t *) ptr1);
 
-			if (ADD_POLYGON_TO_LIST(layer, (pcb_polygon_t *) ptr2, 0, NULL, FCT_START))
+			if (ADD_POLYGON_TO_LIST(layer, (pcb_polygon_t *) ptr2, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
@@ -199,7 +199,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_PAD:
 		{
 			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
-			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, FCT_START))
+			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}
@@ -224,12 +224,12 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 
 	reassign_no_drc_flags();
 
-	type = pcb_search_obj_by_location(LOOKUP_FIRST, &ptr1, &ptr2, &ptr3, X, Y, Range);
+	type = pcb_search_obj_by_location(PCB_LOOKUP_FIRST, &ptr1, &ptr2, &ptr3, X, Y, Range);
 	if (type == PCB_TYPE_NONE) {
-		type = pcb_search_obj_by_location(LOOKUP_MORE, &ptr1, &ptr2, &ptr3, X, Y, Range);
+		type = pcb_search_obj_by_location(PCB_LOOKUP_MORE, &ptr1, &ptr2, &ptr3, X, Y, Range);
 		if (type == PCB_TYPE_NONE)
 			return;
-		if (type & SILK_TYPE) {
+		if (type & PCB_SILK_TYPE) {
 			int laynum = GetLayerNumber(PCB->Data,
 																	(pcb_layer_t *) ptr1);
 

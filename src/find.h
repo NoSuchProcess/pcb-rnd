@@ -33,11 +33,11 @@
 #include "config.h"
 
 typedef enum {
-	FCT_COPPER = 1,								/* copper connection */
-	FCT_INTERNAL = 2,							/* element-internal connection */
-	FCT_RAT = 4,									/* connected by a rat line */
-	FCT_ELEMENT = 8,							/* pin/pad is part of an element whose pins/pads are being listed */
-	FCT_START = 16								/* starting object of a query */
+	PCB_FCT_COPPER   = 1, /* copper connection */
+	PCB_FCT_INTERNAL = 2, /* element-internal connection */
+	PCB_FCT_RAT      = 4, /* connected by a rat line */
+	PCB_FCT_ELEMENT  = 8, /* pin/pad is part of an element whose pins/pads are being listed */
+	PCB_FCT_START    = 16 /* starting object of a query */
 } pcb_found_conn_type_t;
 
 typedef void (*find_callback_t) (int current_type, void *current_ptr, int from_type, void *from_ptr,
@@ -53,11 +53,11 @@ extern find_callback_t find_callback;
 /* ---------------------------------------------------------------------------
  * some local defines
  */
-#define LOOKUP_FIRST	\
+#define PCB_LOOKUP_FIRST	\
 	(PCB_TYPE_PIN | PCB_TYPE_PAD)
-#define LOOKUP_MORE	\
+#define PCB_LOOKUP_MORE	\
 	(PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_RATLINE | PCB_TYPE_POLYGON | PCB_TYPE_ARC)
-#define SILK_TYPE	\
+#define PCB_SILK_TYPE	\
 	(PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON)
 
 pcb_bool pcb_intersect_line_line(pcb_line_t *, pcb_line_t *);

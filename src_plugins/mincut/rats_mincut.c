@@ -263,7 +263,7 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 
 			from = lut_by_oid[n->from_id];
 			/* weight: 1 for connections we can break, large value for connections we shall not break */
-			if ((n->type == FCT_COPPER) || (n->type == FCT_START)) {
+			if ((n->type == PCB_FCT_COPPER) || (n->type == PCB_FCT_START)) {
 				/* connection to a pin/pad is slightly stronger than the
 				   strongest obj-obj conn; obj-obj conns are weaker at junctions where many
 				   objects connect */

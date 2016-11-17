@@ -307,7 +307,7 @@ static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
 		return NULL;
 
 	/* don't mess with silk objects! */
-	if (type & SILK_TYPE && GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1) >= pcb_max_copper_layer)
+	if (type & PCB_SILK_TYPE && GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1) >= pcb_max_copper_layer)
 		return NULL;
 
 	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD)

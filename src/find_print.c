@@ -170,7 +170,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 			fputs("\t\t__CHECKED_BEFORE__\n\t}\n", FP);
 			continue;
 		}
-		if (ADD_PV_TO_LIST(pin, PCB_TYPE_ELEMENT, Element, FCT_ELEMENT))
+		if (ADD_PV_TO_LIST(pin, PCB_TYPE_ELEMENT, Element, PCB_FCT_ELEMENT))
 			return pcb_true;
 		DoIt(pcb_true, AndDraw);
 		/* printout all found connections */
@@ -194,7 +194,7 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 			continue;
 		}
 		layer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
-		if (ADD_PAD_TO_LIST(layer, pad, PCB_TYPE_ELEMENT, Element, FCT_ELEMENT))
+		if (ADD_PAD_TO_LIST(layer, pad, PCB_TYPE_ELEMENT, Element, PCB_FCT_ELEMENT))
 			return pcb_true;
 		DoIt(pcb_true, AndDraw);
 		/* print all found connections */
