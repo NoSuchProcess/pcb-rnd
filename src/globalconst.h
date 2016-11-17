@@ -83,11 +83,11 @@
 #define PCB_MAX_SIZE PCB_MAX_PINORVIASIZE
 #endif
 
-#ifndef MAXPATHLEN   /* maximum path length */
+#ifndef PCB_PATH_MAX   /* maximum path length */
 #ifdef PATH_MAX
-#define MAXPATHLEN PATH_MAX
+#define PCB_PATH_MAX PATH_MAX
 #else
-#define MAXPATHLEN 2048
+#define PCB_PATH_MAX 2048
 #endif
 #endif
 

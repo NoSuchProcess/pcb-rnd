@@ -53,8 +53,8 @@ extern char *canonicalize_file_name(const char *);
 #if defined (PATH_MAX)
 #define REALPATH_LIMIT PATH_MAX
 #else
-#if defined (MAXPATHLEN)
-#define REALPATH_LIMIT MAXPATHLEN
+#if defined (PCB_PATH_MAX)
+#define REALPATH_LIMIT PCB_PATH_MAX
 #endif
 #endif
 #else

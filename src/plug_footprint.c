@@ -329,7 +329,7 @@ void fp_dump()
  */
 static int fp_read_lib_all_(const char *searchpath)
 {
-	char toppath[MAXPATHLEN + 1];	/* String holding abs path to top level library dir */
+	char toppath[PCB_PATH_MAX + 1];	/* String holding abs path to top level library dir */
 	char *libpaths;								/* String holding list of library paths to search */
 	char *p;											/* Helper string used in iteration */
 	int n_footprints = 0;					/* Running count of footprints found */

@@ -59,9 +59,9 @@
 char *pcb_get_wd(char *path)
 {
 #if defined(HAVE_GETCWD)
-	return getcwd(path, MAXPATHLEN);
+	return getcwd(path, PCB_PATH_MAX);
 #elif defined(HAVE__GETCWD)
-	return _getcwd(path, MAXPATHLEN);
+	return _getcwd(path, PCB_PATH_MAX);
 #else
 	/* seems that some BSD releases lack of a prototype for getwd() */
 	return getwd(path);

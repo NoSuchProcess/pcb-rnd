@@ -480,7 +480,7 @@ FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool A
 {
 	FILE *fp = NULL;
 	struct stat buffer;
-	char message[MAXPATHLEN + 80];
+	char message[PCB_PATH_MAX + 80];
 	int response;
 
 	if (Filename && *Filename) {

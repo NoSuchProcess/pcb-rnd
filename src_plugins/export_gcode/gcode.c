@@ -418,7 +418,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 /* ***************** gcode conversion *************************** */
 /* potrace uses a different kind of bitmap; for simplicity gcode_im is copied to this format */
 			bm = bm_new(gdImageSX(gcode_im), gdImageSY(gcode_im));
-			filename = (char *) malloc(MAXPATHLEN);
+			filename = (char *) malloc(PCB_PATH_MAX);
 			plist = NULL;
 			if (is_solder) {					/* only for back layer */
 				gdImagePtr temp_im = gdImageCreate(gdImageSX(gcode_im), gdImageSY(gcode_im));

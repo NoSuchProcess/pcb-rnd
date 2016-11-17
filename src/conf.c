@@ -282,7 +282,7 @@ static int conf_parse_increments(pcb_increments_t *inc, lht_node_t *node)
 
 const char *conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
 {
-	static char res[MAXPATHLEN];
+	static char res[PCB_PATH_MAX];
 	static const char *project_name = "project.lht";
 	FILE *f;
 
