@@ -132,11 +132,11 @@ static int TheFlag = PCB_FLAG_FOUND;
 static int OldFlag = PCB_FLAG_FOUND;
 static void *thing_ptr1, *thing_ptr2, *thing_ptr3;
 static int thing_type;
-find_callback_t find_callback = NULL;
+pcb_find_callback_t pcb_find_callback = NULL;
 #define make_callback(current_type, current_ptr, from_type, from_ptr, type) \
 	do { \
-		if (find_callback != NULL) \
-			find_callback(current_type, current_ptr, from_type, from_ptr, type); \
+		if (pcb_find_callback != NULL) \
+			pcb_find_callback(current_type, current_ptr, from_type, from_ptr, type); \
 	} while(0)
 
 static pcb_bool User = pcb_false;				/* user action causing this */

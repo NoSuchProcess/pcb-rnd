@@ -98,7 +98,7 @@ static void proc_short_cb(int current_type, void *current_obj, int from_type, vo
 /* returns 0 on succes */
 static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 {
-	find_callback_t old_cb;
+	pcb_find_callback_t old_cb;
 	pcb_coord_t x, y;
 	short_conn_t *n, **lut_by_oid, **lut_by_gid, *next;
 	int gids;
@@ -143,8 +143,8 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 	short_conns_maxid = 0;
 
 	/* perform a search using PCB_FLAG_MINCUT, calling back proc_short_cb() with the connections */
-	old_cb = find_callback;
-	find_callback = proc_short_cb;
+	old_cb = pcb_find_callback;
+	pcb_find_callback = proc_short_cb;
 	pcb_save_find_flag(PCB_FLAG_MINCUT);
 	pcb_lookup_conn(x, y, pcb_false, 1, PCB_FLAG_MINCUT);
 
@@ -330,7 +330,7 @@ static int proc_short(pcb_pin_t * pin, pcb_pad_t * pad, int ignore)
 	pcb_reset_found_pins_vias_pads(pcb_false);
 	pcb_restore_find_flag();
 
-	find_callback = old_cb;
+	pcb_find_callback = old_cb;
 	return bad_gr;
 }
 

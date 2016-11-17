@@ -985,3 +985,5 @@ FCT_INTERNAL -> PCB_FCT_INTERNAL
 FCT_RAT -> PCB_FCT_RAT
 FCT_ELEMENT -> PCB_FCT_ELEMENT
 FCT_START -> PCB_FCT_START
+find_callback_t -> pcb_find_callback_t
+find_callback -> pcb_find_callback
