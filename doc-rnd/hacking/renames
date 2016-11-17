@@ -1088,3 +1088,8 @@ ENTRY_LOOP -> PCB_ENTRY_LOOP
 SWAP_IDENT -> PCB_SWAP_IDENT
 END_LOOP -> PCB_END_LOOP
 ENDALL_LOOP -> PCB_ENDALL_LOOP
+pcb_create_be_lenient -> pcb_create_being_lenient
+CreateBeLenient -> pcb_create_be_lenient
+CreateIDBump -> pcb_create_ID_bump
+CreateIDReset -> pcb_create_ID_reset
+CreateIDGet -> pcb_create_ID_get

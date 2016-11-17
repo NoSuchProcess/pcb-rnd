@@ -90,7 +90,7 @@ pcb_pad_t *pcb_element_pad_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coord
 	pad->Number = pcb_strdup_null(Number);
 	pad->Flags = Flags;
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN, pad);
-	pad->ID = CreateIDGet();
+	pad->ID = pcb_create_ID_get();
 	pad->Element = Element;
 	return (pad);
 }

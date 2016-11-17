@@ -190,7 +190,7 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 		return -1;
 	}
 
-	CreateIDBump(tmp+1);
+	pcb_create_ID_bump(tmp+1);
 
 	*res = tmp;
 	return 0;
@@ -811,7 +811,7 @@ static void post_ids_assign(vtptr_t *ids)
 	int n;
 	for(n = 0; n < vtptr_len(ids); n++) {
 		long int *id = ids->array[n];
-		*id = CreateIDGet();
+		*id = pcb_create_ID_get();
 	}
 	vtptr_uninit(ids);
 }

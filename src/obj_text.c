@@ -97,7 +97,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 {
 	/* calculate size of the bounding box */
 	pcb_text_bbox(PCBFont, text);
-	text->ID = CreateIDGet();
+	text->ID = pcb_create_ID_get();
 	if (!Layer->text_tree)
 		Layer->text_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) text, 0);

@@ -187,7 +187,7 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_c
 	if (!Arc)
 		return (Arc);
 
-	Arc->ID = CreateIDGet();
+	Arc->ID = pcb_create_ID_get();
 	Arc->Flags = Flags;
 	Arc->Thickness = Thickness;
 	Arc->Clearance = Clearance;

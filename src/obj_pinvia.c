@@ -89,7 +89,7 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 {
 	pcb_pin_t *Via;
 
-	if (!pcb_create_be_lenient) {
+	if (!pcb_create_being_lenient) {
 		PCB_VIA_LOOP(Data);
 		{
 			if (pcb_distance(X, Y, via->X, via->Y) <= via->DrillingHole / 2 + DrillingHole / 2) {
@@ -121,7 +121,7 @@ pcb_pin_t *pcb_via_new(pcb_data_t *Data, pcb_coord_t X, pcb_coord_t Y, pcb_coord
 	Via->Flags = Flags;
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN, Via);
 	PCB_FLAG_SET(PCB_FLAG_VIA, Via);
-	Via->ID = CreateIDGet();
+	Via->ID = pcb_create_ID_get();
 
 	/*
 	 * don't complain about PCB_MIN_PINORVIACOPPER on a mounting hole (pure
@@ -153,7 +153,7 @@ pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 	pin->Flags = Flags;
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN, pin);
 	PCB_FLAG_SET(PCB_FLAG_PIN, pin);
-	pin->ID = CreateIDGet();
+	pin->ID = pcb_create_ID_get();
 	pin->Element = Element;
 
 	/*

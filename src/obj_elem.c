@@ -585,7 +585,7 @@ pcb_element_t *pcb_element_new(pcb_data_t *Data, pcb_element_t *Element,
 	NAMEONPCB_TEXT(Element).Element = Element;
 	VALUE_TEXT(Element).Element = Element;
 	Element->Flags = Flags;
-	Element->ID = CreateIDGet();
+	Element->ID = pcb_create_ID_get();
 
 #ifdef DEBUG
 	printf("  .... Leaving CreateNewElement.\n");
@@ -618,7 +618,7 @@ pcb_arc_t *pcb_element_arc_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 	arc->StartAngle = angle;
 	arc->Delta = delta;
 	arc->Thickness = Thickness;
-	arc->ID = CreateIDGet();
+	arc->ID = pcb_create_ID_get();
 	return arc;
 }
 
@@ -639,7 +639,7 @@ pcb_line_t *pcb_element_line_new(pcb_element_t *Element, pcb_coord_t X1, pcb_coo
 	line->Point2.Y = Y2;
 	line->Thickness = Thickness;
 	line->Flags = pcb_no_flags();
-	line->ID = CreateIDGet();
+	line->ID = pcb_create_ID_get();
 	return line;
 }
 
@@ -658,7 +658,7 @@ void pcb_element_text_set(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, 
 
 	/* calculate size of the bounding box */
 	pcb_text_bbox(PCBFont, Text);
-	Text->ID = CreateIDGet();
+	Text->ID = pcb_create_ID_get();
 }
 
 /* mirrors the coordinates of an element; an additional offset is passed */

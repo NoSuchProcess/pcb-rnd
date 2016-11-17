@@ -198,17 +198,17 @@ pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb
 	Line = pcb_line_alloc(Layer);
 	if (!Line)
 		return (Line);
-	Line->ID = CreateIDGet();
+	Line->ID = pcb_create_ID_get();
 	Line->Flags = Flags;
 	PCB_FLAG_CLEAR(PCB_FLAG_RAT, Line);
 	Line->Thickness = Thickness;
 	Line->Clearance = Clearance;
 	Line->Point1.X = X1;
 	Line->Point1.Y = Y1;
-	Line->Point1.ID = CreateIDGet();
+	Line->Point1.ID = pcb_create_ID_get();
 	Line->Point2.X = X2;
 	Line->Point2.Y = Y2;
-	Line->Point2.ID = CreateIDGet();
+	Line->Point2.ID = pcb_create_ID_get();
 	pcb_add_line_on_layer(Layer, Line);
 	return (Line);
 }

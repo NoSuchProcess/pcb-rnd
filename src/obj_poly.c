@@ -177,7 +177,7 @@ pcb_polygon_t *pcb_poly_new(pcb_layer_t *Layer, pcb_flag_t Flags)
 
 	/* copy values */
 	polygon->Flags = Flags;
-	polygon->ID = CreateIDGet();
+	polygon->ID = pcb_create_ID_get();
 	polygon->Clipped = NULL;
 	polygon->NoHoles = NULL;
 	polygon->NoHolesValid = 0;
@@ -192,7 +192,7 @@ pcb_point_t *pcb_poly_point_new(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord
 	/* copy values */
 	point->X = X;
 	point->Y = Y;
-	point->ID = CreateIDGet();
+	point->ID = pcb_create_ID_get();
 	return (point);
 }
 

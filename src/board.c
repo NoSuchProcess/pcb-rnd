@@ -90,7 +90,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	ptr->Zoom = conf_core.editor.zoom;
 	ptr->MaxWidth = conf_core.design.max_width;
 	ptr->MaxHeight = conf_core.design.max_height;
-	ptr->ID = CreateIDGet();
+	ptr->ID = pcb_create_ID_get();
 	ptr->ThermScale = 0.5;
 
 	ptr->Bloat = conf_core.design.bloat;

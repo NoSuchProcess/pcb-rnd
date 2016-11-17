@@ -65,28 +65,28 @@ pcb_box_t *GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 /* current object ID; incremented after each creation of an object */
 long int ID = 1;
 
-pcb_bool pcb_create_be_lenient = pcb_false;
+pcb_bool pcb_create_being_lenient = pcb_false;
 
 /* ---------------------------------------------------------------------------
  *  Set the lenience mode.
  */
-void CreateBeLenient(pcb_bool v)
+void pcb_create_be_lenient(pcb_bool v)
 {
-	pcb_create_be_lenient = v;
+	pcb_create_being_lenient = v;
 }
 
-void CreateIDBump(int min_id)
+void pcb_create_ID_bump(int min_id)
 {
 	if (ID < min_id)
 		ID = min_id;
 }
 
-void CreateIDReset(void)
+void pcb_create_ID_reset(void)
 {
 	ID = 1;
 }
 
-long int CreateIDGet(void)
+long int pcb_create_ID_get(void)
 {
 	return ID++;
 }

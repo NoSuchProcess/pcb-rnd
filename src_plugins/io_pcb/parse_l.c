@@ -2429,7 +2429,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 		 * on termination.
 		 */
 
-	CreateBeLenient (pcb_true);
+	pcb_create_be_lenient(pcb_true);
 
 #if !defined(HAS_ATEXIT)
 	if (PCB && PCB->Data)
@@ -2442,7 +2442,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	/* clean up parse buffer */
 	pcb__delete_buffer(YY_CURRENT_BUFFER);
 
-	CreateBeLenient (pcb_false);
+	pcb_create_be_lenient(pcb_false);
 
 	if (Pipe != NULL)
 		return returncode;

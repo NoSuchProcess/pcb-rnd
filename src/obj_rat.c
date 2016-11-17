@@ -76,16 +76,16 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, pcb_coord_t X1, pcb_coord_t Y1, pcb_coo
 	if (!Line)
 		return (Line);
 
-	Line->ID = CreateIDGet();
+	Line->ID = pcb_create_ID_get();
 	Line->Flags = Flags;
 	PCB_FLAG_SET(PCB_FLAG_RAT, Line);
 	Line->Thickness = Thickness;
 	Line->Point1.X = X1;
 	Line->Point1.Y = Y1;
-	Line->Point1.ID = CreateIDGet();
+	Line->Point1.ID = pcb_create_ID_get();
 	Line->Point2.X = X2;
 	Line->Point2.Y = Y2;
-	Line->Point2.ID = CreateIDGet();
+	Line->Point2.ID = pcb_create_ID_get();
 	Line->group1 = group1;
 	Line->group2 = group2;
 	pcb_line_bbox((pcb_line_t *) Line);
