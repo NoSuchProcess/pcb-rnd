@@ -267,13 +267,13 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 	END_LOOP;
 	/* mark */
 	gui->draw_line(pcb_crosshair.GC,
-								 Element->MarkX + DX - EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY - EMARK_SIZE);
+								 Element->MarkX + DX - PCB_EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY - PCB_EMARK_SIZE);
 	gui->draw_line(pcb_crosshair.GC,
-								 Element->MarkX + DX + EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY - EMARK_SIZE);
+								 Element->MarkX + DX + PCB_EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY - PCB_EMARK_SIZE);
 	gui->draw_line(pcb_crosshair.GC,
-								 Element->MarkX + DX - EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY + EMARK_SIZE);
+								 Element->MarkX + DX - PCB_EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY + PCB_EMARK_SIZE);
 	gui->draw_line(pcb_crosshair.GC,
-								 Element->MarkX + DX + EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY + EMARK_SIZE);
+								 Element->MarkX + DX + PCB_EMARK_SIZE, Element->MarkY + DY, Element->MarkX + DX, Element->MarkY + DY + PCB_EMARK_SIZE);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1257,7 +1257,7 @@ void pcb_crosshair_uninit(void)
 
 /************************* mode *************************************/
 static int mode_position = 0;
-static int mode_stack[MAX_MODESTACK_DEPTH];
+static int mode_stack[PCB_MAX_MODESTACK_DEPTH];
 
 /* sets the crosshair range to the current buffer extents */
 void pcb_crosshair_range_to_buffer(void)
@@ -1275,7 +1275,7 @@ void pcb_crosshair_range_to_buffer(void)
 void pcb_crosshair_save_mode(void)
 {
 	mode_stack[mode_position] = conf_core.editor.mode;
-	if (mode_position < MAX_MODESTACK_DEPTH - 1)
+	if (mode_position < PCB_MAX_MODESTACK_DEPTH - 1)
 		mode_position++;
 }
 

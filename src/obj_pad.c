@@ -335,7 +335,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 
 	text.Flags = pcb_no_flags();
 	/* Set font height to approx 90% of pin thickness */
-	text.Scale = 90 * pad->Thickness / FONT_CAPHEIGHT;
+	text.Scale = 90 * pad->Thickness / PCB_FONT_CAPHEIGHT;
 	text.X = box.X1;
 	text.Y = box.Y1;
 	text.Direction = vert ? 1 : 0;

@@ -233,7 +233,7 @@ void pcb_data_free(pcb_data_t * data)
 
 	if (data->element_tree)
 		pcb_r_destroy_tree(&data->element_tree);
-	for (i = 0; i < MAX_ELEMENTNAMES; i++)
+	for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++)
 		if (data->name_tree[i])
 			pcb_r_destroy_tree(&data->name_tree[i]);
 	if (data->via_tree)

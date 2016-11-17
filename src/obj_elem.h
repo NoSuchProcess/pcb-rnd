@@ -39,7 +39,7 @@
 
 struct pcb_element_s {
 	PCB_ANYOBJECTFIELDS;
-	pcb_text_t Name[MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see NAME_INDEX() below */
+	pcb_text_t Name[PCB_MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see NAME_INDEX() below */
 	pcb_coord_t MarkX, MarkY;               /* position mark */
 	pinlist_t Pin;
 	padlist_t Pad;
@@ -130,14 +130,14 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 #define	PCB_ELEMENT_PCB_TEXT_LOOP(element) do { 	\
 	pcb_cardinal_t	n;				\
 	pcb_text_t *text;				\
-	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)	\
+	for (n = PCB_MAX_ELEMENTNAMES-1; n != -1; n--)	\
 	{						\
 		text = &(element)->Name[n]
 
 #define	PCB_ELEMENT_NAME_LOOP(element) do	{ 			\
 	pcb_cardinal_t	n;					\
 	char		*textstring;				\
-	for (n = MAX_ELEMENTNAMES-1; n != -1; n--)		\
+	for (n = PCB_MAX_ELEMENTNAMES-1; n != -1; n--)		\
 	{							\
 		textstring = (element)->Name[n].TextString
 

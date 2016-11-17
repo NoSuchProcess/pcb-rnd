@@ -1055,7 +1055,7 @@ void pcb_notify_mode(void)
 
 	case PCB_MODE_PASTE_BUFFER:
 		{
-			pcb_text_t estr[MAX_ELEMENTNAMES];
+			pcb_text_t estr[PCB_MAX_ELEMENTNAMES];
 			pcb_element_t *e = 0;
 
 			if (gui->shift_is_pressed()) {
@@ -1066,8 +1066,8 @@ void pcb_notify_mode(void)
 					if (e) {
 						int i;
 
-						memcpy(estr, e->Name, MAX_ELEMENTNAMES * sizeof(pcb_text_t));
-						for (i = 0; i < MAX_ELEMENTNAMES; ++i)
+						memcpy(estr, e->Name, PCB_MAX_ELEMENTNAMES * sizeof(pcb_text_t));
+						for (i = 0; i < PCB_MAX_ELEMENTNAMES; ++i)
 							estr[i].TextString = estr[i].TextString ? pcb_strdup(estr[i].TextString) : NULL;
 						pcb_element_remove(e);
 					}
@@ -1084,7 +1084,7 @@ void pcb_notify_mode(void)
 
 					save_n = NAME_INDEX();
 
-					for (i = 0; i < MAX_ELEMENTNAMES; i++) {
+					for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++) {
 						if (i == save_n)
 							EraseElementName(e);
 						pcb_r_delete_entry(PCB->Data->name_tree[i], (pcb_box_t *) & (e->Name[i]));

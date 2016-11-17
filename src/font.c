@@ -68,12 +68,12 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	pcb_line_t *line;
 	pcb_coord_t totalminy = PCB_MAX_COORD;
 
-	/* calculate cell with and height (is at least DEFAULT_CELLSIZE)
+	/* calculate cell with and height (is at least PCB_DEFAULT_CELLSIZE)
 	 * maximum cell width and height
 	 * minimum x and y position of all lines
 	 */
-	Ptr->MaxWidth = DEFAULT_CELLSIZE;
-	Ptr->MaxHeight = DEFAULT_CELLSIZE;
+	Ptr->MaxWidth = PCB_DEFAULT_CELLSIZE;
+	Ptr->MaxHeight = PCB_DEFAULT_CELLSIZE;
 	for (i = 0, symbol = Ptr->Symbol; i <= PCB_MAX_FONTPOSITION; i++, symbol++) {
 		pcb_coord_t minx, miny, maxx, maxy;
 

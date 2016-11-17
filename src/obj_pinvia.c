@@ -835,7 +835,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 
 	text.Flags = pcb_no_flags();
 	/* Set font height to approx 56% of pin thickness */
-	text.Scale = 56 * pv->Thickness / FONT_CAPHEIGHT;
+	text.Scale = 56 * pv->Thickness / PCB_FONT_CAPHEIGHT;
 	text.X = box.X1;
 	text.Y = box.Y1;
 	text.Direction = vert ? 1 : 0;

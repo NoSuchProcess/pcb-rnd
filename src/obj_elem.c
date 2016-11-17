@@ -1754,7 +1754,7 @@ pcb_r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
 
 static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool invisible)
 {
-	pcb_coord_t mark_size = EMARK_SIZE;
+	pcb_coord_t mark_size = PCB_EMARK_SIZE;
 	if (!PCB->InvisibleObjectsOn && invisible)
 		return;
 

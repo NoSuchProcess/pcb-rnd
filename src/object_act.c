@@ -607,7 +607,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		if (er != pr)
 			pcb_element_rotate90(PCB_PASTEBUFFER->Data, pe, pe->MarkX, pe->MarkY, (er - pr + 4) % 4);
 
-		for (i = 0; i < MAX_ELEMENTNAMES; i++) {
+		for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++) {
 			pe->Name[i].X = e->Name[i].X - mx + pe->MarkX;
 			pe->Name[i].Y = e->Name[i].Y - my + pe->MarkY;
 			pe->Name[i].Direction = e->Name[i].Direction;

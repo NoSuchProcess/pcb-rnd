@@ -91,25 +91,20 @@
 #endif
 #endif
 
-#define MAX_LINE_POINT_DISTANCE		0	/* maximum distance when searching */
-						/* line points */
-#define MAX_POLYGON_POINT_DISTANCE	0	/* maximum distance when searching */
-						/* polygon points */
-#define MAX_ELEMENTNAMES		3	/* number of supported names of */
-						/* an element */
-#define MAX_NETLIST_LINE_LENGTH		255	/* maximum line length for netlist files */
-#define MAX_MODESTACK_DEPTH		16	/* maximum depth of mode stack */
-#define MIN_GRID_DISTANCE		4	/* minimum distance between point */
-						/* to enable grid drawing */
-	/* size of diamond element mark */
-#define EMARK_SIZE	PCB_MIL_TO_COORD (10)
+#define PCB_MAX_LINE_POINT_DISTANCE     0   /* maximum distance when searching line points */
+#define PCB_MAX_POLYGON_POINT_DISTANCE  0   /* maximum distance when searching polygon points */
+#define PCB_MAX_ELEMENTNAMES            3   /* number of supported names of an element */
+#define PCB_MAX_NETLIST_LINE_LENGTH     255 /* maximum line length for netlist files */
+#define PCB_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
+#define PCB_MIN_GRID_DISTANCE           4   /* minimum distance between point to enable grid drawing */
+#define PCB_EMARK_SIZE                  PCB_MIL_TO_COORD(10) 	/* size of diamond element mark */
 
 
 /**** Font ***/
 /* These are used in debug draw font rendering (e.g. pin names) and reverse
    scale calculations (e.g. when report is trying to figure how the font
    is scaled. Changing these values is not really supported. */
-#define  FONT_CAPHEIGHT    PCB_MIL_TO_COORD (45)   /* (Approximate) capheight size of the default PCB font */
-#define  DEFAULT_CELLSIZE  50                  /* default cell size for symbols */
+#define  PCB_FONT_CAPHEIGHT    PCB_MIL_TO_COORD (45)   /* (Approximate) capheight size of the default PCB font */
+#define  PCB_DEFAULT_CELLSIZE  50                  /* default cell size for symbols */
 
 #endif

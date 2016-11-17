@@ -394,7 +394,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									PCB_EMPTY(element->Name[0].TextString),
 									PCB_EMPTY(element->Name[1].TextString),
 									PCB_EMPTY(element->Name[2].TextString),
-									PCB_SCALE_TEXT(FONT_CAPHEIGHT, element->Name[1].Scale),
+									PCB_SCALE_TEXT(PCB_FONT_CAPHEIGHT, element->Name[1].Scale),
 									element->Name[1].X, element->Name[1].Y,
 									PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) ? ",\n  but it's hidden" : "",
 									element->MarkX, element->MarkY,
@@ -432,7 +432,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									"The bounding box is %$mD %$mD.\n"
 									"%s\n"
 									"%s", USER_UNITMASK, text->ID, pcb_strflg_f2s(text->Flags, PCB_TYPE_TEXT),
-									text->X, text->Y, PCB_SCALE_TEXT(FONT_CAPHEIGHT, text->Scale),
+									text->X, text->Y, PCB_SCALE_TEXT(PCB_FONT_CAPHEIGHT, text->Scale),
 									text->TextString, text->Direction,
 									text->BoundingBox.X1, text->BoundingBox.Y1,
 									text->BoundingBox.X2, text->BoundingBox.Y2,

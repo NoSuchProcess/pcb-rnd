@@ -390,7 +390,7 @@ static pcb_bool SearchLinePointByLocation(int locked, pcb_layer_t ** Layer, pcb_
 	info.Line = Line;
 	info.Point = Point;
 	*Point = NULL;
-	info.least = MAX_LINE_POINT_DISTANCE + SearchRadius;
+	info.least = PCB_MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
 		return pcb_true;
@@ -406,7 +406,7 @@ static pcb_bool SearchPointByLocation(int locked, pcb_layer_t ** Layer, pcb_poly
 	double d, least;
 	pcb_bool found = pcb_false;
 
-	least = SearchRadius + MAX_POLYGON_POINT_DISTANCE;
+	least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
 	*Layer = SearchLayer;
 	PCB_POLY_LOOP(*Layer);
 	{

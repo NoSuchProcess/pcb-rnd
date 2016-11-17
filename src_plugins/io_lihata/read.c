@@ -683,7 +683,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 
 	if (onsld) {
 		int n;
-		for(n = 0; n < MAX_ELEMENTNAMES; n++)
+		for(n = 0; n < PCB_MAX_ELEMENTNAMES; n++)
 			PCB_FLAG_SET(PCB_FLAG_ONSOLDER, &elem->Name[n]);
 	}
 

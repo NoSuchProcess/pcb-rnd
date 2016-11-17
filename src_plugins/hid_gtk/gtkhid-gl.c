@@ -174,7 +174,7 @@ pcb_hid_gc_t ghid_make_gc(void)
 
 static void ghid_draw_grid(pcb_box_t *drawn_area)
 {
-	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
+	if (Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE)
 		return;
 
 	if (gdk_color_parse(conf_core.appearance.color.grid, &gport->grid_color)) {

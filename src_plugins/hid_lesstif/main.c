@@ -2177,7 +2177,7 @@ static void draw_grid()
 
 	if (!conf_core.editor.draw_grid)
 		return;
-	if (Vz(PCB->Grid) < MIN_GRID_DISTANCE)
+	if (Vz(PCB->Grid) < PCB_MIN_GRID_DISTANCE)
 		return;
 	if (!grid_gc) {
 		grid_gc = XCreateGC(display, window, 0, 0);
