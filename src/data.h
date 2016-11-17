@@ -59,9 +59,6 @@ struct pcb_data_s {
 #define pcb_component_silk_layer (pcb_max_copper_layer + COMPONENT_LAYER)
 
 extern pcb_buffer_t Buffers[MAX_BUFFER];
-
-/*extern	DeviceInfoType	PrintingDevice[];*/
-
 extern char *InputTranslations;
 
 extern int addedLines;
