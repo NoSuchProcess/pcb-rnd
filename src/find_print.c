@@ -231,7 +231,7 @@ void pcb_lookup_unused_pins(FILE * FP)
 	END_LOOP;
 
 	if (conf_core.editor.beep_when_finished)
-		gui->beep();
+		pcb_gui->beep();
 	pcb_conn_lookup_uninit();
 	pcb_undo_inc_serial();
 	User = pcb_false;
@@ -251,7 +251,7 @@ void pcb_lookup_element_conns(pcb_element_t *Element, FILE * FP)
 	PrintElementConnections(Element, FP, pcb_true);
 	pcb_board_set_changed_flag(pcb_true);
 	if (conf_core.editor.beep_when_finished)
-		gui->beep();
+		pcb_gui->beep();
 	pcb_conn_lookup_uninit();
 	pcb_undo_inc_serial();
 	User = pcb_false;
@@ -281,7 +281,7 @@ void pcb_lookup_conns_to_all_elements(FILE * FP)
 	}
 	END_LOOP;
 	if (conf_core.editor.beep_when_finished)
-		gui->beep();
+		pcb_gui->beep();
 	pcb_reset_conns(pcb_false);
 	pcb_conn_lookup_uninit();
 	pcb_redraw();

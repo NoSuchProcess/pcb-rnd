@@ -88,7 +88,7 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 #ifndef DEBUG_pcb_polyarea_t
 	return;
 #endif
-	ddraw = gui->request_debug_draw();
+	ddraw = pcb_gui->request_debug_draw();
 	ddgc = ddraw->make_gc();
 
 	p = s;
@@ -102,13 +102,13 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 				y[i++] = v->point[1];
 			}
 			if (1) {
-				gui->set_color(ddgc, color ? color : PCB->ConnectedColor);
-				gui->set_line_width(ddgc, 1);
+				pcb_gui->set_color(ddgc, color ? color : PCB->ConnectedColor);
+				pcb_gui->set_line_width(ddgc, 1);
 				for (i = 0; i < n - 1; i++) {
-					gui->draw_line(ddgc, x[i], y[i], x[i + 1], y[i + 1]);
-					/*  gui->fill_circle (ddgc, x[i], y[i], 30);*/
+					pcb_gui->draw_line(ddgc, x[i], y[i], x[i + 1], y[i + 1]);
+					/*  pcb_gui->fill_circle (ddgc, x[i], y[i], 30);*/
 				}
-				gui->draw_line(ddgc, x[n - 1], y[n - 1], x[0], y[0]);
+				pcb_gui->draw_line(ddgc, x[n - 1], y[n - 1], x[0], y[0]);
 			}
 			free(x);
 			free(y);

@@ -310,7 +310,7 @@ int ghid_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr
 
 static void exporter_clicked_cb(GtkButton * button, pcb_hid_t * exporter)
 {
-	ghid_dialog_print(exporter);
+	ghid_dialog_print(pcb_exporter);
 }
 
 void ghid_dialog_print(pcb_hid_t * hid)
@@ -324,9 +324,9 @@ void ghid_dialog_print(pcb_hid_t * hid)
 	if (export_dialog)
 		gtk_dialog_response(GTK_DIALOG(export_dialog), GTK_RESPONSE_CANCEL);
 
-	exporter = hid;
+	pcb_exporter = hid;
 
-	attr = exporter->get_export_options(&n);
+	attr = pcb_exporter->get_export_options(&n);
 	if (n > 0) {
 		results = (pcb_hid_attr_val_t *) malloc(n * sizeof(pcb_hid_attr_val_t));
 		if (results == NULL) {
@@ -335,12 +335,12 @@ void ghid_dialog_print(pcb_hid_t * hid)
 		}
 
 		/* non-zero means cancel was picked */
-		if (ghid_attribute_dialog(attr, n, results, _("PCB Print Layout"), exporter->description))
+		if (ghid_attribute_dialog(attr, n, results, _("PCB Print Layout"), pcb_exporter->description))
 			return;
 
 	}
 
-	exporter->do_export(results);
+	pcb_exporter->do_export(results);
 
 	for (i = 0; i < n; i++) {
 		if (results[i].str_value)
@@ -350,7 +350,7 @@ void ghid_dialog_print(pcb_hid_t * hid)
 	if (results)
 		free(results);
 
-	exporter = NULL;
+	pcb_exporter = NULL;
 }
 
 void ghid_dialog_export(void)

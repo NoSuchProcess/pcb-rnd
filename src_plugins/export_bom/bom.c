@@ -247,7 +247,7 @@ static int PrintBOM(void)
 
 	fp = fopen(bom_filename, "w");
 	if (!fp) {
-		gui->log("Cannot open file %s for writing\n", bom_filename);
+		pcb_gui->log("Cannot open file %s for writing\n", bom_filename);
 		print_and_free(NULL, bom);
 		return 1;
 	}

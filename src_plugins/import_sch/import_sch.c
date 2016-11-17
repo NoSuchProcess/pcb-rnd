@@ -189,7 +189,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		units = PCB_ACTION_ARG(2);
 		if (!ds) {
 			const char *as = pcb_attrib_get(PCB, "import::disperse");
-			ds = gui->prompt_for(_("Enter dispersion:"), as ? as : "0");
+			ds = pcb_gui->prompt_for(_("Enter dispersion:"), as ? as : "0");
 		}
 		if (units) {
 			sprintf(buf, "%s%s", ds, units);
@@ -212,7 +212,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		units = PCB_ACTION_ARG(3);
 
 		if (!xs) {
-			gui->get_coords(_("Click on a location"), &x, &y);
+			pcb_gui->get_coords(_("Click on a location"), &x, &y);
 		}
 		else if (strcasecmp(xs, "center") == 0) {
 			pcb_attrib_remove(PCB, "import::newX");

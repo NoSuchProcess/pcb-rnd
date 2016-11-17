@@ -11,7 +11,7 @@ static pcb_hid_t *ddh = NULL;
 
 int debug_draw_request(void)
 {
-	ddh = gui->request_debug_draw();
+	ddh = pcb_gui->request_debug_draw();
 	if (ddh == NULL)
 		return 0;
 	return 1;
@@ -20,14 +20,14 @@ int debug_draw_request(void)
 void debug_draw_flush(void)
 {
 	need_ddh;
-	gui->flush_debug_draw();
+	pcb_gui->flush_debug_draw();
 }
 
 void debug_draw_finish(dctx_t *ctx)
 {
 	need_ddh;
 	ddh->destroy_gc(ctx->gc);
-	gui->finish_debug_draw();
+	pcb_gui->finish_debug_draw();
 	free(ctx);
 	ddh = NULL;
 }

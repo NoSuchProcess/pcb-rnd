@@ -111,7 +111,7 @@ void pcb_draw(void)
 	if (pcb_draw_inhibit)
 		return;
 	if (pcb_draw_invalidated.X1 <= pcb_draw_invalidated.X2 && pcb_draw_invalidated.Y1 <= pcb_draw_invalidated.Y2)
-		gui->invalidate_lr(pcb_draw_invalidated.X1, pcb_draw_invalidated.X2, pcb_draw_invalidated.Y1, pcb_draw_invalidated.Y2);
+		pcb_gui->invalidate_lr(pcb_draw_invalidated.X1, pcb_draw_invalidated.X2, pcb_draw_invalidated.Y1, pcb_draw_invalidated.Y2);
 
 	/* shrink the update block */
 	pcb_draw_invalidated.X1 = pcb_draw_invalidated.Y1 = MAXINT;
@@ -123,7 +123,7 @@ void pcb_draw(void)
  */
 void pcb_redraw(void)
 {
-	gui->invalidate_all();
+	pcb_gui->invalidate_all();
 }
 
 static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_box_t * drawn_area)
@@ -147,9 +147,9 @@ static void PrintAssembly(int side, const pcb_box_t * drawn_area)
 	int side_group = GetLayerGroupNumberByNumber(pcb_max_copper_layer + side);
 
 	pcb_draw_doing_assy = pcb_true;
-	gui->set_draw_faded(Output.fgGC, 1);
+	pcb_gui->set_draw_faded(Output.fgGC, 1);
 	DrawLayerGroup(side_group, drawn_area);
-	gui->set_draw_faded(Output.fgGC, 0);
+	pcb_gui->set_draw_faded(Output.fgGC, 0);
 
 	/* draw package */
 	DrawSilk(side, drawn_area);
@@ -161,14 +161,14 @@ static void DrawEverything_holes(const pcb_box_t * drawn_area)
 	int plated, unplated;
 	pcb_board_count_holes(&plated, &unplated, drawn_area);
 
-	if (plated && gui->set_layer("plated-drill", SL(PDRILL, 0), 0)) {
+	if (plated && pcb_gui->set_layer("plated-drill", SL(PDRILL, 0), 0)) {
 		DrawHoles(pcb_true, pcb_false, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
-	if (unplated && gui->set_layer("unplated-drill", SL(UDRILL, 0), 0)) {
+	if (unplated && pcb_gui->set_layer("unplated-drill", SL(UDRILL, 0), 0)) {
 		DrawHoles(pcb_false, pcb_true, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 }
 
@@ -206,7 +206,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	 * first draw all 'invisible' stuff
 	 */
 	if (!conf_core.editor.check_planes
-			&& gui->set_layer("invisible", SL(INVISIBLE, 0), 0)) {
+			&& pcb_gui->set_layer("invisible", SL(INVISIBLE, 0), 0)) {
 		side = SWAP_IDENT ? COMPONENT_LAYER : SOLDER_LAYER;
 		if (PCB->ElementOn) {
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
@@ -214,88 +214,88 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 			pcb_draw_layer(&(PCB->Data->Layer[pcb_max_copper_layer + side]), drawn_area);
 		}
 		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
 	/* draw all layers in layerstack order */
 	for (i = ngroups - 1; i >= 0; i--) {
 		int group = drawn_groups[i];
 
-		if (gui->set_layer(0, group, 0)) {
+		if (pcb_gui->set_layer(0, group, 0)) {
 			DrawLayerGroup(group, drawn_area);
-			gui->end_layer();
+			pcb_gui->end_layer();
 		}
 	}
 
-	if (conf_core.editor.check_planes && gui->gui)
+	if (conf_core.editor.check_planes && pcb_gui->gui)
 		return;
 
 	/* Draw pins, pads, vias below silk */
-	if (gui->gui)
+	if (pcb_gui->gui)
 		DrawPPV(SWAP_IDENT ? solder : component, drawn_area);
-	else if (!gui->holes_after)
+	else if (!pcb_gui->holes_after)
 		DrawEverything_holes(drawn_area);
 
 	/* Draw the solder mask if turned on */
-	if (gui->set_layer("componentmask", SL(MASK, TOP), 0)) {
+	if (pcb_gui->set_layer("componentmask", SL(MASK, TOP), 0)) {
 		DrawMask(COMPONENT_LAYER, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
-	if (gui->set_layer("soldermask", SL(MASK, BOTTOM), 0)) {
+	if (pcb_gui->set_layer("soldermask", SL(MASK, BOTTOM), 0)) {
 		DrawMask(SOLDER_LAYER, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
-	if (gui->set_layer("topsilk", SL(SILK, TOP), 0)) {
+	if (pcb_gui->set_layer("topsilk", SL(SILK, TOP), 0)) {
 		DrawSilk(COMPONENT_LAYER, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
-	if (gui->set_layer("bottomsilk", SL(SILK, BOTTOM), 0)) {
+	if (pcb_gui->set_layer("bottomsilk", SL(SILK, BOTTOM), 0)) {
 		DrawSilk(SOLDER_LAYER, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
-	if (gui->holes_after)
+	if (pcb_gui->holes_after)
 		DrawEverything_holes(drawn_area);
 
-	if (gui->gui) {
+	if (pcb_gui->gui) {
 		/* Draw element Marks */
 		if (PCB->PinOn)
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
 		/* Draw rat lines on top */
-		if (gui->set_layer("rats", SL(RATS, 0), 0)) {
+		if (pcb_gui->set_layer("rats", SL(RATS, 0), 0)) {
 			DrawRats(drawn_area);
-			gui->end_layer();
+			pcb_gui->end_layer();
 		}
 	}
 
 	paste_empty = IsPasteEmpty(COMPONENT_LAYER);
-	if (gui->set_layer("toppaste", SL(PASTE, TOP), paste_empty)) {
+	if (pcb_gui->set_layer("toppaste", SL(PASTE, TOP), paste_empty)) {
 		DrawPaste(COMPONENT_LAYER, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
 	paste_empty = IsPasteEmpty(SOLDER_LAYER);
-	if (gui->set_layer("bottompaste", SL(PASTE, BOTTOM), paste_empty)) {
+	if (pcb_gui->set_layer("bottompaste", SL(PASTE, BOTTOM), paste_empty)) {
 		DrawPaste(SOLDER_LAYER, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
-	if (gui->set_layer("topassembly", SL(ASSY, TOP), 0)) {
+	if (pcb_gui->set_layer("topassembly", SL(ASSY, TOP), 0)) {
 		PrintAssembly(COMPONENT_LAYER, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
-	if (gui->set_layer("bottomassembly", SL(ASSY, BOTTOM), 0)) {
+	if (pcb_gui->set_layer("bottomassembly", SL(ASSY, BOTTOM), 0)) {
 		PrintAssembly(SOLDER_LAYER, drawn_area);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 
-	if (gui->set_layer("fab", SL(FAB, 0), 0)) {
+	if (pcb_gui->set_layer("fab", SL(FAB, 0), 0)) {
 		pcb_stub_draw_fab(Output.fgGC);
-		gui->end_layer();
+		pcb_gui->end_layer();
 	}
 }
 
@@ -309,7 +309,7 @@ static void DrawPPV(int group, const pcb_box_t * drawn_area)
 	int solder_group = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
 	int side;
 
-	if (PCB->PinOn || !gui->gui) {
+	if (PCB->PinOn || !pcb_gui->gui) {
 		/* draw element pins */
 		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_pin_callback, NULL, NULL);
 
@@ -326,7 +326,7 @@ static void DrawPPV(int group, const pcb_box_t * drawn_area)
 	}
 
 	/* draw vias */
-	if (PCB->ViaOn || !gui->gui) {
+	if (PCB->ViaOn || !pcb_gui->gui) {
 		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, draw_via_callback, NULL, NULL);
 		pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, draw_hole_callback, NULL, NULL);
 	}
@@ -347,8 +347,8 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 #endif
 
 #if 0
-	if (gui->poly_before) {
-		gui->use_mask(HID_MASK_BEFORE);
+	if (pcb_gui->poly_before) {
+		pcb_gui->use_mask(HID_MASK_BEFORE);
 #endif
 		pcb_draw_layer(LAYER_PTR(pcb_max_copper_layer + side), drawn_area);
 		/* draw package */
@@ -357,19 +357,19 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 #if 0
 	}
 
-	gui->use_mask(HID_MASK_CLEAR);
+	pcb_gui->use_mask(HID_MASK_CLEAR);
 	pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
 	pcb_r_search(PCB->Data->via_tree, drawn_area, NULL, clear_pin_callback, NULL, NULL);
 	pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, clear_pad_callback, &side, NULL);
 
-	if (gui->poly_after) {
-		gui->use_mask(HID_MASK_AFTER);
+	if (pcb_gui->poly_after) {
+		pcb_gui->use_mask(HID_MASK_AFTER);
 		pcb_draw_layer(LAYER_PTR(pcb_max_copper_layer + layer), drawn_area);
 		/* draw package */
 		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 		pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 	}
-	gui->use_mask(HID_MASK_OFF);
+	pcb_gui->use_mask(HID_MASK_OFF);
 #endif
 }
 
@@ -377,15 +377,15 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 static void DrawMaskBoardArea(int mask_type, const pcb_box_t * drawn_area)
 {
 	/* Skip the mask drawing if the GUI doesn't want this type */
-	if ((mask_type == HID_MASK_BEFORE && !gui->poly_before) || (mask_type == HID_MASK_AFTER && !gui->poly_after))
+	if ((mask_type == HID_MASK_BEFORE && !pcb_gui->poly_before) || (mask_type == HID_MASK_AFTER && !pcb_gui->poly_after))
 		return;
 
-	gui->use_mask(mask_type);
-	gui->set_color(Output.fgGC, PCB->MaskColor);
+	pcb_gui->use_mask(mask_type);
+	pcb_gui->set_color(Output.fgGC, PCB->MaskColor);
 	if (drawn_area == NULL)
-		gui->fill_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+		pcb_gui->fill_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	else
-		gui->fill_rect(Output.fgGC, drawn_area->X1, drawn_area->Y1, drawn_area->X2, drawn_area->Y2);
+		pcb_gui->fill_rect(Output.fgGC, drawn_area->X1, drawn_area->Y1, drawn_area->X2, drawn_area->Y2);
 }
 
 /* ---------------------------------------------------------------------------
@@ -396,10 +396,10 @@ static void DrawMask(int side, const pcb_box_t * screen)
 	int thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly;
 
 	if (thin)
-		gui->set_color(Output.pmGC, PCB->MaskColor);
+		pcb_gui->set_color(Output.pmGC, PCB->MaskColor);
 	else {
 		DrawMaskBoardArea(HID_MASK_BEFORE, screen);
-		gui->use_mask(HID_MASK_CLEAR);
+		pcb_gui->use_mask(HID_MASK_CLEAR);
 	}
 
 	pcb_r_search(PCB->Data->pin_tree, screen, NULL, clear_pin_callback, NULL, NULL);
@@ -407,10 +407,10 @@ static void DrawMask(int side, const pcb_box_t * screen)
 	pcb_r_search(PCB->Data->pad_tree, screen, NULL, clear_pad_callback, &side, NULL);
 
 	if (thin)
-		gui->set_color(Output.pmGC, "erase");
+		pcb_gui->set_color(Output.pmGC, "erase");
 	else {
 		DrawMaskBoardArea(HID_MASK_AFTER, screen);
-		gui->use_mask(HID_MASK_OFF);
+		pcb_gui->use_mask(HID_MASK_OFF);
 	}
 }
 
@@ -422,13 +422,13 @@ static void DrawRats(const pcb_box_t * drawn_area)
 	 * XXX using the mask here is to get rat transparency
 	 */
 #warning TODO: make this a pcb_hid_t struct item instead
-	int can_mask = strcmp(gui->name, "lesstif") == 0;
+	int can_mask = strcmp(pcb_gui->name, "lesstif") == 0;
 
 	if (can_mask)
-		gui->use_mask(HID_MASK_CLEAR);
+		pcb_gui->use_mask(HID_MASK_CLEAR);
 	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, draw_rat_callback, NULL, NULL);
 	if (can_mask)
-		gui->use_mask(HID_MASK_OFF);
+		pcb_gui->use_mask(HID_MASK_OFF);
 }
 
 void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
@@ -453,14 +453,14 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	/* draw the layer text on screen */
 	pcb_r_search(Layer->text_tree, screen, NULL, draw_text_callback, Layer, NULL);
 
-	/* We should check for gui->gui here, but it's kinda cool seeing the
+	/* We should check for pcb_gui->gui here, but it's kinda cool seeing the
 	   auto-outline magically disappear when you first add something to
 	   the "outline" layer.  */
 	if (IsLayerEmpty(Layer)
 			&& (strcmp(Layer->Name, "outline") == 0 || strcmp(Layer->Name, "route") == 0)) {
-		gui->set_color(Output.fgGC, Layer->Color);
-		gui->set_line_width(Output.fgGC, PCB->minWid);
-		gui->draw_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
+		pcb_gui->set_color(Output.fgGC, Layer->Color);
+		pcb_gui->set_line_width(Output.fgGC, PCB->minWid);
+		pcb_gui->draw_rect(Output.fgGC, 0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	}
 }
 
@@ -487,7 +487,7 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 	if (n_entries > 1)
 		rv = 1;
 
-	if (rv && !gui->gui)
+	if (rv && !pcb_gui->gui)
 		DrawPPV(group, drawn_area);
 }
 
@@ -578,12 +578,12 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
 
 void pcb_hid_expose_callback(pcb_hid_t * hid, pcb_box_t * region, void *item)
 {
-	pcb_hid_t *old_gui = gui;
+	pcb_hid_t *old_gui = pcb_gui;
 
-	gui = hid;
-	Output.fgGC = gui->make_gc();
-	Output.bgGC = gui->make_gc();
-	Output.pmGC = gui->make_gc();
+	pcb_gui = hid;
+	Output.fgGC = pcb_gui->make_gc();
+	Output.bgGC = pcb_gui->make_gc();
+	Output.pmGC = pcb_gui->make_gc();
 
 	hid->set_color(Output.pmGC, "erase");
 	hid->set_color(Output.bgGC, "drill");
@@ -596,8 +596,8 @@ void pcb_hid_expose_callback(pcb_hid_t * hid, pcb_box_t * region, void *item)
 	else
 		DrawEverything(region);
 
-	gui->destroy_gc(Output.fgGC);
-	gui->destroy_gc(Output.bgGC);
-	gui->destroy_gc(Output.pmGC);
-	gui = old_gui;
+	pcb_gui->destroy_gc(Output.fgGC);
+	pcb_gui->destroy_gc(Output.bgGC);
+	pcb_gui->destroy_gc(Output.pmGC);
+	pcb_gui = old_gui;
 }

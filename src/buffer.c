@@ -367,7 +367,7 @@ int ActionFreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	const char *angle_s;
 
 	if (argc < 1)
-		angle_s = gui->prompt_for("Enter Rotation (degrees, CCW):", "0");
+		angle_s = pcb_gui->prompt_for("Enter Rotation (degrees, CCW):", "0");
 	else
 		angle_s = argv[0];
 
@@ -822,7 +822,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			}
 			free_name = pcb_false;
 			if (argc <= 1) {
-				name = gui->fileselect(_("Save Paste Buffer As ..."),
+				name = pcb_gui->fileselect(_("Save Paste Buffer As ..."),
 															 _("Choose a file to save the contents of the\n"
 																 "paste buffer to.\n"), default_file, ".fp", "footprint", 0);
 
@@ -844,7 +844,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 				if ((!force) && ((exist = fopen(name, "r")))) {
 					fclose(exist);
-					if (gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0))
+					if (pcb_gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0))
 						pcb_save_buffer_elements(name, fmt);
 				}
 				else

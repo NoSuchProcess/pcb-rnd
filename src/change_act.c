@@ -80,7 +80,7 @@ static int ActionChangeClearSize(int argc, const char **argv, pcb_coord_t x, pcb
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
-			gui->get_coords(_("Select an Object"), &x, &y);
+			pcb_gui->get_coords(_("Select an Object"), &x, &y);
 			type = pcb_search_screen(x, y, PCB_CHANGECLEARSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
@@ -270,7 +270,7 @@ static int ActionChangeHole(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_TYPE_VIA, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pin_change_hole((pcb_pin_t *) ptr3))
 					pcb_undo_inc_serial();
 				break;
@@ -312,7 +312,7 @@ static int ActionChangePaste(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE && pcb_pad_change_paste((pcb_pad_t *) ptr3))
 					pcb_undo_inc_serial();
 				break;
@@ -496,7 +496,7 @@ static int ActionChange2ndSize(int argc, const char **argv, pcb_coord_t x, pcb_c
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
-			gui->get_coords(_("Select an Object"), &x, &y);
+			pcb_gui->get_coords(_("Select an Object"), &x, &y);
 			type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
 
@@ -612,7 +612,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 			defer_needs_update = 1;
 		else {
 			pcb_undo_inc_serial();
-			gui->invalidate_all();
+			pcb_gui->invalidate_all();
 		}
 	}
 
@@ -657,7 +657,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_undo_save_serial();
 					if ((pinnums != NULL) && (strcasecmp(pinnums, "Number") == 0))
@@ -689,7 +689,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 			/* change the layout's name */
 		case F_Layout:
-			name = gui->prompt_for(_("Enter the layout name:"), PCB_EMPTY(PCB->Name));
+			name = pcb_gui->prompt_for(_("Enter the layout name:"), PCB_EMPTY(PCB->Name));
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
 				pcb_board_set_changed_flag(pcb_true);
@@ -697,7 +697,7 @@ int ActionChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 			/* change the name of the active layer */
 		case F_Layer:
-			name = gui->prompt_for(_("Enter the layer name:"), PCB_EMPTY(CURRENT->Name));
+			name = pcb_gui->prompt_for(_("Enter the layer name:"), PCB_EMPTY(CURRENT->Name));
 			/* NB: ChangeLayerName takes ownership of the passed memory */
 			if (name && pcb_layer_change_name(CURRENT, name))
 				pcb_board_set_changed_flag(pcb_true);
@@ -734,7 +734,7 @@ static int ActionChangeJoin(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_chg_obj_join(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
@@ -787,7 +787,7 @@ static int ActionChangeNonetlist(int argc, const char **argv, pcb_coord_t x, pcb
 			{
 				int type;
 				void *ptr1, *ptr2, *ptr3;
-				gui->get_coords(_("Select an Element"), &x, &y);
+				pcb_gui->get_coords(_("Select an Element"), &x, &y);
 
 				ptr3 = NULL;
 				type = pcb_search_screen(x, y, PCB_CHANGENONETLIST_TYPES, &ptr1, &ptr2, &ptr3);
@@ -833,7 +833,7 @@ static int ActionChangeSquare(int argc, const char **argv, pcb_coord_t x, pcb_co
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 
 				ptr3 = NULL;
 				type = pcb_search_screen(x, y, PCB_CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3);
@@ -895,7 +895,7 @@ static int ActionSetSquare(int argc, const char **argv, pcb_coord_t x, pcb_coord
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_set_obj_square(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
@@ -947,7 +947,7 @@ static int ActionClearSquare(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGESQUARE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_clr_obj_square(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
@@ -998,7 +998,7 @@ static int ActionChangeOctagon(int argc, const char **argv, pcb_coord_t x, pcb_c
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_chg_obj_octagon(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
@@ -1053,7 +1053,7 @@ static int ActionSetOctagon(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_set_obj_octagon(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);
@@ -1109,7 +1109,7 @@ static int ActionClearOctagon(int argc, const char **argv, pcb_coord_t x, pcb_co
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGEOCTAGON_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_clr_obj_octagon(type, ptr1, ptr2, ptr3))
 						pcb_board_set_changed_flag(pcb_true);

@@ -20,11 +20,11 @@
 pcb_hid_t **hid_list = 0;
 int hid_num_hids = 0;
 
-pcb_hid_t *gui = NULL;
-pcb_hid_t *next_gui = NULL;
-pcb_hid_t *exporter = NULL;
+pcb_hid_t *pcb_gui = NULL;
+pcb_hid_t *pcb_next_gui = NULL;
+pcb_hid_t *pcb_exporter = NULL;
 
-int pixel_slop = 1;
+int pcb_pixel_slop = 1;
 
 static void hid_load_dir(char *dirname)
 {
@@ -97,7 +97,7 @@ void pcb_hid_init()
 	pcb_hid_actions_init();
 
 	/* Setup a "nogui" default HID */
-	gui = pcb_hid_nogui_get_hid();
+	pcb_gui = pcb_hid_nogui_get_hid();
 
 #warning TODO: make this configurable
 	hid_load_dir(pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",

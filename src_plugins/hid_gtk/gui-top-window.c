@@ -1312,7 +1312,7 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 
 
 	if (condition & G_IO_HUP) {
-		gui->log("Read end of pipe died!\n");
+		pcb_gui->log("Read end of pipe died!\n");
 		return FALSE;
 	}
 
@@ -1325,17 +1325,17 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 			break;
 
 		case G_IO_STATUS_ERROR:
-			gui->log("ERROR status from g_io_channel_read_line\n");
+			pcb_gui->log("ERROR status from g_io_channel_read_line\n");
 			return FALSE;
 			break;
 
 		case G_IO_STATUS_EOF:
-			gui->log("Input pipe returned EOF.  The --listen option is \n" "probably not running anymore in this session.\n");
+			pcb_gui->log("Input pipe returned EOF.  The --listen option is \n" "probably not running anymore in this session.\n");
 			return FALSE;
 			break;
 
 		case G_IO_STATUS_AGAIN:
-			gui->log("AGAIN status from g_io_channel_read_line\n");
+			pcb_gui->log("AGAIN status from g_io_channel_read_line\n");
 			return FALSE;
 			break;
 
@@ -1427,7 +1427,7 @@ void ghid_parse_arguments(int *argc, char ***argv)
 
 	gport = &ghid_port;
 	gport->view.coord_per_px = 300.0;
-	pixel_slop = 300;
+	pcb_pixel_slop = 300;
 
 	ghid_init_renderer(argc, argv, gport);
 

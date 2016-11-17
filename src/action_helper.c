@@ -299,7 +299,7 @@ static void click_cb(pcb_hidval_t hv)
 	if (Note.Click) {
 		pcb_notify_crosshair_change(pcb_false);
 		Note.Click = pcb_false;
-		if (Note.Moving && !gui->shift_is_pressed()) {
+		if (Note.Moving && !pcb_gui->shift_is_pressed()) {
 			Note.Buffer = conf_core.editor.buffer_number;
 			pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 			pcb_buffer_clear(PCB_PASTEBUFFER);
@@ -310,12 +310,12 @@ static void click_cb(pcb_hidval_t hv)
 			saved_mode = pcb_true;
 			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		}
-		else if (Note.Hit && !gui->shift_is_pressed()) {
+		else if (Note.Hit && !pcb_gui->shift_is_pressed()) {
 			pcb_box_t box;
 
 			pcb_crosshair_save_mode();
 			saved_mode = pcb_true;
-			pcb_crosshair_set_mode(gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
+			pcb_crosshair_set_mode(pcb_gui->control_is_pressed()? PCB_MODE_COPY : PCB_MODE_MOVE);
 			pcb_crosshair.AttachedObject.Ptr1 = Note.ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = Note.ptr2;
 			pcb_crosshair.AttachedObject.Ptr3 = Note.ptr3;
@@ -327,10 +327,10 @@ static void click_cb(pcb_hidval_t hv)
 			}
 			pcb_crosshair.dragx = Note.X;
 			pcb_crosshair.dragy = Note.Y;
-			box.X1 = Note.X + SLOP * pixel_slop;
-			box.X2 = Note.X - SLOP * pixel_slop;
-			box.Y1 = Note.Y + SLOP * pixel_slop;
-			box.Y2 = Note.Y - SLOP * pixel_slop;
+			box.X1 = Note.X + SLOP * pcb_pixel_slop;
+			box.X2 = Note.X - SLOP * pcb_pixel_slop;
+			box.Y1 = Note.Y + SLOP * pcb_pixel_slop;
+			box.Y2 = Note.Y - SLOP * pcb_pixel_slop;
 			pcb_crosshair.drags = pcb_list_block(&box, &pcb_crosshair.drags_len);
 			pcb_crosshair.drags_current = 0;
 			AttachForCopy(Note.X, Note.Y);
@@ -346,7 +346,7 @@ static void click_cb(pcb_hidval_t hv)
 			box.X2 = PCB_MAX_COORD;
 			box.Y2 = PCB_MAX_COORD;
 			/* unselect first if shift key not down */
-			if (!gui->shift_is_pressed() && pcb_select_block(&box, pcb_false))
+			if (!pcb_gui->shift_is_pressed() && pcb_select_block(&box, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
 			pcb_notify_block();
 			pcb_crosshair.AttachedBox.Point1.X = Note.X;
@@ -371,7 +371,7 @@ void pcb_release_mode(void)
 		Note.Click = pcb_false;					/* inhibit timer action */
 		pcb_undo_save_serial();
 		/* unselect first if shift key not down */
-		if (!gui->shift_is_pressed()) {
+		if (!pcb_gui->shift_is_pressed()) {
 			if (pcb_select_block(&box, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
 			if (Note.Moving) {
@@ -427,7 +427,7 @@ void pcb_release_mode(void)
 static void AdjustAttachedBox(void)
 {
 	if (conf_core.editor.mode == PCB_MODE_ARC) {
-		pcb_crosshair.AttachedBox.otherway = gui->shift_is_pressed();
+		pcb_crosshair.AttachedBox.otherway = pcb_gui->shift_is_pressed();
 		return;
 	}
 	switch (pcb_crosshair.AttachedBox.State) {
@@ -493,7 +493,7 @@ void pcb_notify_line(void)
 	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
 		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr1, &ptr1) == PCB_TYPE_NONE) {
-			gui->beep();
+			pcb_gui->beep();
 			break;
 		}
 		if (conf_core.editor.auto_drc && conf_core.editor.mode == PCB_MODE_LINE) {
@@ -568,7 +568,7 @@ void pcb_notify_mode(void)
 
 			Note.Click = pcb_true;
 			/* do something after click time */
-			gui->add_timer(click_cb, conf_core.editor.click_time, hv);
+			pcb_gui->add_timer(click_cb, conf_core.editor.click_time, hv);
 
 			/* see if we clicked on something already selected
 			 * (Note.Moving) or clicked on a MOVE_TYPE
@@ -602,7 +602,7 @@ void pcb_notify_mode(void)
 															conf_core.design.via_thickness, 2 * conf_core.design.clearance,
 															0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
 				pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
-				if (gui->shift_is_pressed())
+				if (pcb_gui->shift_is_pressed())
 					pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
 				pcb_undo_inc_serial();
 				DrawVia(via);
@@ -722,7 +722,7 @@ void pcb_notify_mode(void)
 		{
 			if (((type = pcb_search_screen(Note.X, Note.Y, PCB_TYPEMASK_PIN, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_pin_t *) ptr3)) {
-				if (gui->shift_is_pressed()) {
+				if (pcb_gui->shift_is_pressed()) {
 					int tstyle = PCB_FLAG_THERM_GET(INDEXOFCURRENT, (pcb_pin_t *) ptr3);
 					tstyle++;
 					if (tstyle > 5)
@@ -903,7 +903,7 @@ void pcb_notify_mode(void)
 		{
 			char *string;
 
-			if ((string = gui->prompt_for(_("Enter text:"), "")) != NULL) {
+			if ((string = pcb_gui->prompt_for(_("Enter text:"), "")) != NULL) {
 				if (strlen(string) > 0) {
 					pcb_text_t *text;
 					int flag = PCB_FLAG_CLEARLINE;
@@ -1058,7 +1058,7 @@ void pcb_notify_mode(void)
 			pcb_text_t estr[PCB_MAX_ELEMENTNAMES];
 			pcb_element_t *e = 0;
 
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				int type = pcb_search_screen(Note.X, Note.Y, PCB_TYPE_ELEMENT, &ptr1, &ptr2,
 																&ptr3);
 				if (type == PCB_TYPE_ELEMENT) {
@@ -1130,7 +1130,7 @@ void pcb_notify_mode(void)
 		break;
 
 	case PCB_MODE_ROTATE:
-		pcb_screen_obj_rotate90(Note.X, Note.Y, gui->shift_is_pressed()? (SWAP_IDENT ? 1 : 3)
+		pcb_screen_obj_rotate90(Note.X, Note.Y, pcb_gui->shift_is_pressed()? (SWAP_IDENT ? 1 : 3)
 											 : (SWAP_IDENT ? 3 : 1));
 		break;
 

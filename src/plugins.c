@@ -127,7 +127,7 @@ static int ActionManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb_c
 		gds_append_str(&str, " (none)\n");
 
 	gds_append_str(&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
-	gui->report_dialog("Manage plugins", str.array);
+	pcb_gui->report_dialog("Manage plugins", str.array);
 	gds_uninit(&str);
 	return 0;
 }

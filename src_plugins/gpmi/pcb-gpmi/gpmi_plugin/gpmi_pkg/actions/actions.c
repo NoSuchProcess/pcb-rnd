@@ -32,7 +32,7 @@ const char *action_arg(int argn)
 
 static int action_cb(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	acontext_t *ctx = (acontext_t *)current_action;
+	acontext_t *ctx = (acontext_t *)pcb_current_action;
 	int action_argc_old;
 	const char **action_argv_old;
 
@@ -98,5 +98,5 @@ int action(const char *cmdline)
 
 void create_menu(const char *path, const char *action, const char *mnemonic, const char *hotkey, const char *tooltip)
 {
-	gui->create_menu(path, action, mnemonic, hotkey, tooltip, "TODO#2");
+	pcb_gui->create_menu(path, action, mnemonic, hotkey, tooltip, "TODO#2");
 }

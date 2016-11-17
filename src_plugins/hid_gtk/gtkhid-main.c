@@ -117,7 +117,7 @@ static void ghid_zoom_view_abs(pcb_coord_t center_x, pcb_coord_t center_y, doubl
 	ytmp = (SIDE_Y(center_y) - gport->view.y0) / (double) gport->view.height;
 
 	gport->view.coord_per_px = new_zoom;
-	pixel_slop = new_zoom;
+	pcb_pixel_slop = new_zoom;
 	ghid_port_ranges_scale();
 
 	gport->view.x0 = SIDE_X(center_x) - xtmp * gport->view.width;
@@ -1386,7 +1386,7 @@ static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 
 	if (printer == NULL) {
-		gui->log(_("Can't find a suitable printer HID"));
+		pcb_gui->log(_("Can't find a suitable printer HID"));
 		return -1;
 	}
 
@@ -1395,7 +1395,7 @@ static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ghid_dialog_print(printer);
 	}
 	else
-		gui->log(_("Can't print empty layout"));
+		pcb_gui->log(_("Can't print empty layout"));
 
 	return 0;
 }
@@ -1430,7 +1430,7 @@ static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);
 
-	if (gui->attribute_dialog(printer_calibrate_attrs, 3,
+	if (pcb_gui->attribute_dialog(printer_calibrate_attrs, 3,
 														printer_calibrate_values,
 														_("Printer Calibration Values"), _("Enter calibration values for your printer")))
 		return 1;
@@ -1448,7 +1448,7 @@ static int Export(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ghid_dialog_export();
 	}
 	else
-		gui->log(_("Can't export empty layout"));
+		pcb_gui->log(_("Can't export empty layout"));
 
 	return 0;
 }
@@ -1602,7 +1602,7 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		dy = -dy;
 
 	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
-	gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
+	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
 
 	return 0;
 }

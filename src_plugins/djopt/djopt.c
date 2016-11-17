@@ -781,7 +781,7 @@ static void move_corner(corner_s * c, int x, int y)
 				break;
 			}
 		}
-	gui->progress(0, 0, 0);
+	pcb_gui->progress(0, 0, 0);
 	check(c, 0);
 }
 

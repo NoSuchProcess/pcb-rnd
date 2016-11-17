@@ -78,8 +78,8 @@ static gds_t drc_dialog_message;
 static void reset_drc_dialog_message(void)
 {
 	gds_truncate(&drc_dialog_message, 0);
-	if (gui->drc_gui != NULL)
-		gui->drc_gui->reset_drc_dialog_message();
+	if (pcb_gui->drc_gui != NULL)
+		pcb_gui->drc_gui->reset_drc_dialog_message();
 }
 
 static void append_drc_dialog_message(const char *fmt, ...)
@@ -181,8 +181,8 @@ static void LocateError(pcb_coord_t * x, pcb_coord_t * y)
 
 static void append_drc_violation(pcb_drc_violation_t * violation)
 {
-	if (gui->drc_gui != NULL) {
-		gui->drc_gui->append_drc_violation(violation);
+	if (pcb_gui->drc_gui != NULL) {
+		pcb_gui->drc_gui->append_drc_violation(violation);
 	}
 	else {
 		/* Fallback to formatting the violation message as text */
@@ -191,7 +191,7 @@ static void append_drc_violation(pcb_drc_violation_t * violation)
 		GotoError();
 	}
 
-	if (gui->drc_gui == NULL || gui->drc_gui->log_drc_violations) {
+	if (pcb_gui->drc_gui == NULL || pcb_gui->drc_gui->log_drc_violations) {
 		pcb_message(PCB_MSG_DEFAULT, _("WARNING!  Design Rule error - %s\n"), violation->title);
 		pcb_message(PCB_MSG_DEFAULT, _("%m+near location %$mD\n"), conf_core.editor.grid_unit->allow, violation->x, violation->y);
 	}
@@ -210,13 +210,13 @@ static int throw_drc_dialog(void)
 {
 	int r;
 
-	if (gui->drc_gui != NULL) {
-		r = gui->drc_gui->throw_drc_dialog();
+	if (pcb_gui->drc_gui != NULL) {
+		r = pcb_gui->drc_gui->throw_drc_dialog();
 	}
 	else {
 		/* Fallback to formatting the violation message as text */
 		append_drc_dialog_message(DRC_CONTINUE);
-		r = gui->confirm_dialog(drc_dialog_message.array, DRC_CANCEL, DRC_NEXT);
+		r = pcb_gui->confirm_dialog(drc_dialog_message.array, DRC_CANCEL, DRC_NEXT);
 		reset_drc_dialog_message();
 	}
 	return r;
@@ -691,7 +691,7 @@ int pcb_drc_all(void)
 
 	RestoreStackAndVisibility();
 	pcb_hid_action("LayersChanged");
-	gui->invalidate_all();
+	pcb_gui->invalidate_all();
 
 	if (nopastecnt > 0) {
 		pcb_message(PCB_MSG_DEFAULT, _("Warning:  %d pad%s the nopaste flag set.\n"), nopastecnt, nopastecnt > 1 ? "s have" : " has");

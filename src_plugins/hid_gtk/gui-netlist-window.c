@@ -269,7 +269,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 				pcb_pin_t *pin = (pcb_pin_t *) conn.ptr2;
 				x = pin->X;
 				y = pin->Y;
-				gui->set_crosshair(x, y, 0);
+				pcb_gui->set_crosshair(x, y, 0);
 				ghid_lead_user_to_location(x, y);
 				break;
 			}
@@ -278,7 +278,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 				pcb_pad_t *pad = (pcb_pad_t *) conn.ptr2;
 				x = pad->Point1.X + (pad->Point2.X - pad->Point1.X) / 2;
 				y = pad->Point1.Y + (pad->Point2.Y - pad->Point2.Y) / 2;
-				gui->set_crosshair(x, y, 0);
+				pcb_gui->set_crosshair(x, y, 0);
 				ghid_lead_user_to_location(x, y);
 				break;
 			}

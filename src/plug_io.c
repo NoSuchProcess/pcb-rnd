@@ -358,7 +358,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		if (pcb_hid_get_flag("GetStyle()") < 0)
 			pcb_use_route_style_idx(&PCB->RouteStyle, 0);
 
-		if (((how == 0) || (revert)) && (gui != NULL)) {
+		if (((how == 0) || (revert)) && (pcb_gui != NULL)) {
 			if (revert)
 				pcb_hid_actionl("PCBChanged", "revert", NULL);
 			else
@@ -368,7 +368,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 #ifdef DEBUG
 		end = clock();
 		elapsed = ((double) (end - start)) / CLOCKS_PER_SEC;
-		gui->log("Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
+		pcb_gui->log("Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
 #endif
 
 		return (0);
@@ -384,7 +384,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		}
 	}
 
-	if (gui != NULL)
+	if (pcb_gui != NULL)
 		pcb_hid_action("PCBChanged");
 
 	/* release unused memory */
@@ -491,9 +491,9 @@ FILE *pcb_check_and_open_file(const char *Filename, pcb_bool Confirm, pcb_bool A
 			if (WasCancelButton)
 				*WasCancelButton = pcb_false;
 			if (AllButton)
-				response = gui->confirm_dialog(message, "Cancel", "Ok", AllButton ? "Sequence OK" : 0);
+				response = pcb_gui->confirm_dialog(message, "Cancel", "Ok", AllButton ? "Sequence OK" : 0);
 			else
-				response = gui->confirm_dialog(message, "Cancel", "Ok", "Sequence OK");
+				response = pcb_gui->confirm_dialog(message, "Cancel", "Ok", "Sequence OK");
 
 			switch (response) {
 			case 2:
@@ -522,7 +522,7 @@ FILE *pcb_open_connection_file(void)
 	pcb_bool result;									/* not used */
 
 	/* CheckAndOpenFile deals with the case where fname already exists */
-	fname = gui->fileselect(_("Save Connection Data As ..."),
+	fname = pcb_gui->fileselect(_("Save Connection Data As ..."),
 													_("Choose a file to save all connection data to."), default_file, ".net", "connection_data", 0);
 	if (fname == NULL)
 		return NULL;
@@ -563,12 +563,12 @@ int pcb_save_pcb(const char *file, const char *fmt)
 {
 	int retcode;
 
-	if (gui->notify_save_pcb == NULL)
+	if (pcb_gui->notify_save_pcb == NULL)
 		return pcb_write_pipe(file, pcb_true, fmt);
 
-	gui->notify_save_pcb(file, pcb_false);
+	pcb_gui->notify_save_pcb(file, pcb_false);
 	retcode = pcb_write_pipe(file, pcb_true, fmt);
-	gui->notify_save_pcb(file, pcb_true);
+	pcb_gui->notify_save_pcb(file, pcb_true);
 
 	return retcode;
 }
@@ -665,8 +665,8 @@ static void backup_cb(pcb_hidval_t data)
 {
 	backup_timer.ptr = NULL;
 	pcb_backup();
-	if (conf_core.rc.backup_interval > 0 && gui->add_timer)
-		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, data);
+	if (conf_core.rc.backup_interval > 0 && pcb_gui->add_timer)
+		backup_timer = pcb_gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, data);
 }
 
 void pcb_enable_autosave(void)
@@ -676,13 +676,13 @@ void pcb_enable_autosave(void)
 	x.ptr = NULL;
 
 	/* If we already have a timer going, then cancel it out */
-	if (backup_timer.ptr != NULL && gui->stop_timer)
-		gui->stop_timer(backup_timer);
+	if (backup_timer.ptr != NULL && pcb_gui->stop_timer)
+		pcb_gui->stop_timer(backup_timer);
 
 	backup_timer.ptr = NULL;
 	/* Start up a new timer */
-	if (conf_core.rc.backup_interval > 0 && gui->add_timer)
-		backup_timer = gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
+	if (conf_core.rc.backup_interval > 0 && pcb_gui->add_timer)
+		backup_timer = pcb_gui->add_timer(backup_cb, 1000 * conf_core.rc.backup_interval, x);
 }
 
 /* ---------------------------------------------------------------------------

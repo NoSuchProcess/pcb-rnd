@@ -270,7 +270,7 @@ void *ChangePolygonClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t
 {
 	static int shown_this_message = 0;
 	if (!shown_this_message) {
-		gui->confirm_dialog(_("To change the clearance of objects in a polygon, "
+		pcb_gui->confirm_dialog(_("To change the clearance of objects in a polygon, "
 													"change the objects, not the polygon.\n"
 													"Hint: To set a minimum clearance for a group of objects, "
 													"select them all then :MinClearGap(Selected,=10,mil)"), "Ok", NULL);
@@ -656,19 +656,19 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 	}
 	else
 		color = i->layer->Color;
-	gui->set_color(Output.fgGC, color);
+	pcb_gui->set_color(Output.fgGC, color);
 
-	if ((gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))
-		gui->thindraw_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
+	if ((pcb_gui->thindraw_pcb_polygon != NULL) && (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly))
+		pcb_gui->thindraw_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
 	else
-		gui->fill_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
+		pcb_gui->fill_pcb_polygon(Output.fgGC, polygon, i->drawn_area);
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
-	if (gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
+	if (pcb_gui->thindraw_pcb_polygon != NULL && conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
 		pcb_polygon_t poly = *polygon;
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)
-			gui->thindraw_pcb_polygon(Output.fgGC, &poly, i->drawn_area);
+			pcb_gui->thindraw_pcb_polygon(Output.fgGC, &poly, i->drawn_area);
 	}
 
 	return R_DIR_FOUND_CONTINUE;

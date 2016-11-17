@@ -320,11 +320,11 @@ static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	}
 
 	if (argc > 2 && !pin_found) {
-		gui->log("Net %s has no pin %s\n", argv[1], argv[2]);
+		pcb_gui->log("Net %s has no pin %s\n", argv[1], argv[2]);
 		return 1;
 	}
 	else if (!net_found) {
-		gui->log("No net named %s\n", argv[1]);
+		pcb_gui->log("No net named %s\n", argv[1]);
 	}
 
 	if (use_re)

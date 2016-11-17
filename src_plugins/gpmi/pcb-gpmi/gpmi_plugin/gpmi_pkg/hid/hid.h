@@ -50,7 +50,7 @@ typedef struct gpmi_hid_s {
 } gpmi_hid_t;
 
 /* Creates a new hid context. Name and description matters only if the hid is
-registered as an exporter later. */
+registered as an pcb_exporter later. */
 gpmi_hid_t *hid_create(char *hid_name, char *description);
 
 /* Append an attribute in a hid previously created using hid_create().

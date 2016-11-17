@@ -11,7 +11,7 @@
 #include "src/hid_attrib.h"
 
 
-extern pcb_hid_t *gui;
+extern pcb_hid_t *pcb_gui;
 
 #define attr_make_label(attr, name_, help_) \
 do { \
@@ -68,7 +68,7 @@ static hid_gpmi_script_info_t *choose_script(const char **operations, int *opera
 	if (operations != NULL)
 		attr_make_enum(&attr[1],  "operation", "Choose what to do with the script", operations, *operation);
 
-	res = gui->attribute_dialog(attr, 1 + (operations != NULL), result, "GPMI manage scripts - select script", "Select one of the scripts already loaded");
+	res = pcb_gui->attribute_dialog(attr, 1 + (operations != NULL), result, "GPMI manage scripts - select script", "Select one of the scripts already loaded");
 
 	/* free scrl slots before return */
 	for(s = scrl; *s != NULL; s++)
@@ -121,7 +121,7 @@ static hid_gpmi_script_info_t *load_script(void)
 	                          "stutter", "ghli", "perl", "php", "cli", NULL };
 
 
-	fn = gui->fileselect("Load script", "Load a GPMI script", NULL, NULL, "gpmi_load_script", HID_FILESELECT_READ);
+	fn = pcb_gui->fileselect("Load script", "Load a GPMI script", NULL, NULL, "gpmi_load_script", HID_FILESELECT_READ);
 
 	if (fn == NULL)
 		return NULL;
@@ -149,7 +149,7 @@ static hid_gpmi_script_info_t *load_script(void)
 
 	attr_make_enum(&attr[0],  "module", "Select a GPMI module to interpret the script", modules, default_mod);
 
-	if (gui->attribute_dialog(attr, 1, result, "GPMI manage scripts - select module", "Select one of GPMI modules to interpret the script"))
+	if (pcb_gui->attribute_dialog(attr, 1, result, "GPMI manage scripts - select module", "Select one of GPMI modules to interpret the script"))
 		return NULL;
 
 	if (result[0].int_value < 0)
@@ -157,7 +157,7 @@ static hid_gpmi_script_info_t *load_script(void)
 
 	info = hid_gpmi_load_module(NULL, modules[result[0].int_value], fn, NULL);
 	if (info == NULL)
-		gui->report_dialog("GPMI script load", "Error loading the script.\nPlease consult the message log for details.");
+		pcb_gui->report_dialog("GPMI script load", "Error loading the script.\nPlease consult the message log for details.");
 	return info;
 }
 
@@ -173,7 +173,7 @@ static void script_details(hid_gpmi_script_info_t *i)
 	attr_make_label_str(&attr[0], "File name:   ", i->name, "File name of the script (if not absolute, it's relative to the config file)");
 	attr_make_label_str(&attr[1], "GPMI module: ", i->module_name, "Name of the GPMI module that is interpreting the script");
 	attr_make_label_str(&attr[2], "Config file: ", cf, "Name of config file that requested the script to be loaded ");
-	gui->attribute_dialog(attr, 3, result, "GPMI manage scripts - script details", "Displaying detailed info on a script already loaded");
+	pcb_gui->attribute_dialog(attr, 3, result, "GPMI manage scripts - script details", "Displaying detailed info on a script already loaded");
 	free((char *)attr[0].name);
 	free((char *)attr[1].name);
 	free((char *)attr[2].name);
@@ -193,24 +193,24 @@ void gpmi_hid_manage_scripts(void)
 			if (i != NULL)
 				script_details(i);
 			else
-				gui->report_dialog("GPMI script details", err_no_script);
+				pcb_gui->report_dialog("GPMI script details", err_no_script);
 			break;
 		case 1:
 			if (i != NULL) {
 				i = hid_gpmi_reload_module(i);
 				if (i == NULL)
-					gui->report_dialog("GPMI script reload", "Error reloading the script.\nThe script is now unloaded.\n" CONSULT "\n(e.g. there may be syntax errors in the script source).");
+					pcb_gui->report_dialog("GPMI script reload", "Error reloading the script.\nThe script is now unloaded.\n" CONSULT "\n(e.g. there may be syntax errors in the script source).");
 			}
 			else
-				gui->report_dialog("GPMI script reload", err_no_script);
+				pcb_gui->report_dialog("GPMI script reload", err_no_script);
 			break;
 		case 2:
 			if (i != NULL) {
 				if (gpmi_hid_script_unload(i) != 0)
-					gui->report_dialog("GPMI script unload", "Error unloading the script.\n" CONSULT "\n");
+					pcb_gui->report_dialog("GPMI script unload", "Error unloading the script.\n" CONSULT "\n");
 			}
 			else
-				gui->report_dialog("GPMI script unload", err_no_script);
+				pcb_gui->report_dialog("GPMI script unload", err_no_script);
 			break;
 		case 3:
 			if (i != NULL) {
@@ -223,11 +223,11 @@ void gpmi_hid_manage_scripts(void)
 					             (r1 ? "couldnt't remove the script from the config file;" : ""), 
 					             (r2 ? "couldnt't unload the script;" : ""),
 					             "\n" CONSULT "\n", NULL);
-					gui->report_dialog("GPMI script unload and remove", msg);
+					pcb_gui->report_dialog("GPMI script unload and remove", msg);
 					free(msg);
 				}
 			else
-				gui->report_dialog("GPMI script unload and remove", err_no_script);
+				pcb_gui->report_dialog("GPMI script unload and remove", err_no_script);
 			}
 			break;
 		case 4:
@@ -237,7 +237,7 @@ void gpmi_hid_manage_scripts(void)
 			i = load_script();
 			if (i != NULL) {
 				if (gpmi_hid_script_addcfg(i) != 0)
-					gui->report_dialog("GPMI script add to config", "Error adding the script in user configuration.\n" CONSULT "\n");
+					pcb_gui->report_dialog("GPMI script add to config", "Error adding the script in user configuration.\n" CONSULT "\n");
 			}
 			break;
 	}

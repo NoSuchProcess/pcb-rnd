@@ -1052,3 +1052,6 @@ MIN_GRID_DISTANCE -> PCB_MIN_GRID_DISTANCE
 EMARK_SIZE -> PCB_EMARK_SIZE
 FONT_CAPHEIGHT -> PCB_FONT_CAPHEIGHT
 DEFAULT_CELLSIZE -> PCB_DEFAULT_CELLSIZE
+next_gui -> pcb_next_gui
+current_action -> pcb_current_action
+pixel_slop -> pcb_pixel_slop

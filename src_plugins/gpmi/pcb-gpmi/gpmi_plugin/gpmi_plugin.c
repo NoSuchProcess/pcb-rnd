@@ -31,7 +31,7 @@ static void ev_gui_init(void *user_data, int argc, pcb_event_arg_t *argv[])
 	hid_gpmi_script_info_t *i;
 	const char *menu = "/main_menu/Plugins/GPMI scripting/Scripts";
 
-	gui->create_menu(menu, "gpmi_scripts()", "S", "Alt<Key>g", "Manage GPMI scripts", gpmi_cookie);
+	pcb_gui->create_menu(menu, "gpmi_scripts()", "S", "Alt<Key>g", "Manage GPMI scripts", gpmi_cookie);
 
 	ev = gpmi_event_find("ACTE_gui_init", &ev_args);
 	if (ev >= 0) {

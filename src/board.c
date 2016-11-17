@@ -221,7 +221,7 @@ pcb_bool pcb_board_change_name(char *Name)
 {
 	free(PCB->Name);
 	PCB->Name = Name;
-	if (gui != NULL)
+	if (pcb_gui != NULL)
 		pcb_hid_action("PCBChanged");
 	return (pcb_true);
 }
@@ -243,7 +243,7 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 	else
 		pcb_crosshair_set_range(0, 0, Width, Height);
 
-	if (gui != NULL)
+	if (pcb_gui != NULL)
 		pcb_hid_action("PCBChanged");
 }
 

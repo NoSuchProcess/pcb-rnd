@@ -50,7 +50,7 @@ void AdjustAttachedLine(void)
 	if (line->State == PCB_CH_STATE_FIRST)
 		return;
 	/* don't draw outline when ctrl key is pressed */
-	if (conf_core.editor.mode == PCB_MODE_LINE && gui->control_is_pressed()) {
+	if (conf_core.editor.mode == PCB_MODE_LINE && pcb_gui->control_is_pressed()) {
 		line->draw = pcb_false;
 		return;
 	}
@@ -155,7 +155,7 @@ void AdjustTwoLine(pcb_bool way)
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 		return;
 	/* don't draw outline when ctrl key is pressed */
-	if (gui->control_is_pressed()) {
+	if (pcb_gui->control_is_pressed()) {
 		line->draw = pcb_false;
 		return;
 	}
@@ -167,7 +167,7 @@ void AdjustTwoLine(pcb_bool way)
 		return;
 	}
 	/* swap the modes if shift is held down */
-	if (gui->shift_is_pressed())
+	if (pcb_gui->shift_is_pressed())
 		way = !way;
 	dx = pcb_crosshair.X - line->Point1.X;
 	dy = pcb_crosshair.Y - line->Point1.Y;
@@ -478,7 +478,7 @@ void EnforceLineDRC(void)
 	/* Silence a bogus compiler warning by storing this in a variable */
 	int layer_idx = INDEXOFCURRENT;
 
-	if (gui->mod1_is_pressed() || gui->control_is_pressed() || PCB->RatDraw || layer_idx >= pcb_max_copper_layer)
+	if (pcb_gui->mod1_is_pressed() || pcb_gui->control_is_pressed() || PCB->RatDraw || layer_idx >= pcb_max_copper_layer)
 		return;
 
 	rs.X = r45.X = pcb_crosshair.X;
@@ -498,7 +498,7 @@ void EnforceLineDRC(void)
 #undef sqr
 	}
 	/* shift<Key> forces the line lookahead path to refract the alternate way */
-	shift = gui->shift_is_pressed();
+	shift = pcb_gui->shift_is_pressed();
 
 	if (PCB_XOR(r1 > r2, shift)) {
 		if (conf_core.editor.line_refraction != 0) {

@@ -1660,21 +1660,21 @@ void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 /*** draw ***/
 void draw_element_name(pcb_element_t * element)
 {
-	if ((conf_core.editor.hide_names && gui->gui) || PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
+	if ((conf_core.editor.hide_names && pcb_gui->gui) || PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
 		return;
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		gui->set_color(Output.fgGC, PCB->ElementColor);
+		pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)))
-		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
+		pcb_gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
 	else if (PCB_FRONT(element)) {
 #warning TODO: why do we test for Names flag here instead of elements flag?
 		if (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, element))
-			gui->set_color(Output.fgGC, PCB->ElementColor_nonetlist);
+			pcb_gui->set_color(Output.fgGC, PCB->ElementColor_nonetlist);
 		else
-			gui->set_color(Output.fgGC, PCB->ElementColor);
+			pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
 	}
 	else
-		gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
+		pcb_gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
 
 	DrawTextLowLevel(&ELEMENT_TEXT(PCB, element), PCB->minSlk);
 
@@ -1714,13 +1714,13 @@ void draw_element_package(pcb_element_t * element)
 {
 	/* set color and draw lines, arcs, text and pins */
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
-		gui->set_color(Output.fgGC, PCB->ElementColor);
+		pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
 	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, element))
-		gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
+		pcb_gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
 	else if (PCB_FRONT(element))
-		gui->set_color(Output.fgGC, PCB->ElementColor);
+		pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
 	else
-		gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
+		pcb_gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
 
 	/* draw lines, arcs, text and pins */
 	PCB_ELEMENT_PCB_LINE_LOOP(element);
@@ -1771,13 +1771,13 @@ static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool i
 		mark_size = MIN(mark_size, pad0->Thickness / 2);
 	}
 
-	gui->set_color(Output.fgGC, invisible ? PCB->InvisibleMarkColor : PCB->ElementColor);
-	gui->set_line_cap(Output.fgGC, Trace_Cap);
-	gui->set_line_width(Output.fgGC, 0);
-	gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y - mark_size);
-	gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y - mark_size);
-	gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y + mark_size);
-	gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y + mark_size);
+	pcb_gui->set_color(Output.fgGC, invisible ? PCB->InvisibleMarkColor : PCB->ElementColor);
+	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
+	pcb_gui->set_line_width(Output.fgGC, 0);
+	pcb_gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y - mark_size);
+	pcb_gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y - mark_size);
+	pcb_gui->draw_line(Output.fgGC, X - mark_size, Y, X, Y + mark_size);
+	pcb_gui->draw_line(Output.fgGC, X + mark_size, Y, X, Y + mark_size);
 
 	/*
 	 * If an element is locked, place a "L" on top of the "diamond".
@@ -1785,8 +1785,8 @@ static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool i
 	 * works even for color blind users.
 	 */
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, e)) {
-		gui->draw_line(Output.fgGC, X, Y, X + 2 * mark_size, Y);
-		gui->draw_line(Output.fgGC, X, Y, X, Y - 4 * mark_size);
+		pcb_gui->draw_line(Output.fgGC, X, Y, X + 2 * mark_size, Y);
+		pcb_gui->draw_line(Output.fgGC, X, Y, X, Y - 4 * mark_size);
 	}
 }
 

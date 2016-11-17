@@ -228,7 +228,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 				if (strcmp(pad->Number, pname) == 0) {
 					int x = (pad->Point1.X + pad->Point2.X) / 2;
 					int y = (pad->Point1.Y + pad->Point2.Y) / 2;
-					gui->set_crosshair(x, y, HID_SC_PAN_VIEWPORT);
+					pcb_gui->set_crosshair(x, y, HID_SC_PAN_VIEWPORT);
 					free(ename);
 					return;
 				}

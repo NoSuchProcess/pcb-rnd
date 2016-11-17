@@ -81,7 +81,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		 * We deal with the case where name already exists in this
 		 * function so the GUI doesn't need to deal with it
 		 */
-		name = gui->fileselect(_("Save Renumber Annotation File As ..."),
+		name = pcb_gui->fileselect(_("Save Renumber Annotation File As ..."),
 													 _("Choose a file to record the renumbering to.\n"
 														 "This file may be used to back annotate the\n"
 														 "change to the schematics.\n"), default_file, ".eco", "eco", 0);
@@ -102,7 +102,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	if ((out = fopen(name, "r"))) {
 		fclose(out);
-		if (!gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0)) {
+		if (!pcb_gui->confirm_dialog(_("File exists!  Ok to overwrite?"), 0)) {
 			if (free_name && name)
 				free((char*)name);
 			return 0;

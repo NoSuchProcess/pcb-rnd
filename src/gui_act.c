@@ -440,10 +440,10 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 				void *ptrtmp;
 				pcb_coord_t x, y;
 
-				gui->get_coords(_("Click on an element"), &x, &y);
+				pcb_gui->get_coords(_("Click on an element"), &x, &y);
 				if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE) {
 					element = (pcb_element_t *) ptrtmp;
-					gui->show_item(element);
+					pcb_gui->show_item(element);
 				}
 				break;
 			}
@@ -453,7 +453,7 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 			{
 				void *ptr1, *ptr2, *ptr3;
 				pcb_coord_t x, y;
-				gui->get_coords(_("Click on an element"), &x, &y);
+				pcb_gui->get_coords(_("Click on an element"), &x, &y);
 
 				switch (pcb_search_screen(x, y,
 														 PCB_TYPE_ELEMENT | PCB_TYPE_PIN | PCB_TYPE_PAD |
@@ -800,7 +800,7 @@ static const char cycledrag_syntax[] = "CycleDrag()\n";
 
 static const char cycledrag_help[] = "Cycle through which object is being dragged";
 
-#define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (SLOP * pixel_slop)) : ((a)-(b) > -(SLOP * pixel_slop)))
+#define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (SLOP * pcb_pixel_slop)) : ((a)-(b) > -(SLOP * pcb_pixel_slop)))
 static int ActionCycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -916,7 +916,7 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_undo_add_obj_to_flag(type, ptr1, ptr2, ptr3);
 					EraseElementName((pcb_element_t *) ptr2);
@@ -1058,13 +1058,13 @@ static const char createmenu_help[] = "Creates a new menu, popup (only path spec
 
 static int ActionCreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	if (gui == NULL) {
+	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_DEFAULT, "Error: can't create menu, there's no GUI hid loaded\n");
 		return 1;
 	}
 
 	if (argc > 0) {
-		gui->create_menu(argv[0], (argc > 1) ? argv[1] : NULL, (argc > 2) ? argv[2] : NULL, (argc > 3) ? argv[3] : NULL, (argc > 4) ? argv[4] : NULL, (argc > 5) ? argv[5] : NULL);
+		pcb_gui->create_menu(argv[0], (argc > 1) ? argv[1] : NULL, (argc > 2) ? argv[2] : NULL, (argc > 3) ? argv[3] : NULL, (argc > 4) ? argv[4] : NULL, (argc > 5) ? argv[5] : NULL);
 		return 0;
 	}
 
@@ -1082,18 +1082,18 @@ static const char removemenu_help[] = "Recursively removes a new menu, popup (on
 
 static int ActionRemoveMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	if (gui == NULL) {
+	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
 		return 1;
 	}
 
-	if (gui->remove_menu == NULL) {
+	if (pcb_gui->remove_menu == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
 		return 1;
 	}
 
 	if (argc > 0) {
-		if (gui->remove_menu(argv[0]) != 0)
+		if (pcb_gui->remove_menu(argv[0]) != 0)
 			pcb_message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
 		return 0;
 	}
@@ -1203,7 +1203,7 @@ static int ActionSwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		return 1;
 	}
 
-	next_gui = ng;
+	pcb_next_gui = ng;
 	chg = PCB->Changed;
 	pcb_quit_app();
 	PCB->Changed = chg;

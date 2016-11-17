@@ -131,7 +131,7 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	}
 
 	else if (strcasecmp(function, "Layout") == 0) {
-		if (!PCB->Changed || gui->confirm_dialog(_("OK to override layout data?"), 0))
+		if (!PCB->Changed || pcb_gui->confirm_dialog(_("OK to override layout data?"), 0))
 			pcb_load_pcb(name, format, pcb_true, 0);
 	}
 
@@ -148,7 +148,7 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			pcb_netlist_changed(1);
 	}
 	else if (strcasecmp(function, "Revert") == 0 && PCB->Filename
-					 && (!PCB->Changed || gui->confirm_dialog(_("OK to override changes?"), 0))) {
+					 && (!PCB->Changed || pcb_gui->confirm_dialog(_("OK to override changes?"), 0))) {
 		pcb_revert_pcb();
 	}
 
@@ -172,11 +172,11 @@ static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	const char *argument_name = PCB_ACTION_ARG(0);
 	char *name = NULL;
 
-	if (!PCB->Changed || gui->confirm_dialog(_("OK to clear layout data?"), 0)) {
+	if (!PCB->Changed || pcb_gui->confirm_dialog(_("OK to clear layout data?"), 0)) {
 		if (argument_name)
 			name = pcb_strdup(argument_name);
 		else
-			name = gui->prompt_for(_("Enter the layout name:"), "");
+			name = pcb_gui->prompt_for(_("Enter the layout name:"), "");
 
 		if (!name)
 			return 1;
@@ -200,7 +200,7 @@ static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_center_display(PCB->MaxWidth / 2, PCB->MaxHeight / 2);
 		pcb_redraw();
 
-		if (gui != NULL)
+		if (pcb_gui != NULL)
 			pcb_hid_action("PCBChanged");
 		pcb_notify_crosshair_change(pcb_true);
 		return 0;
@@ -254,8 +254,8 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (strcasecmp(function, "Layout") == 0) {
 		if (pcb_save_pcb(PCB->Filename, NULL) == 0)
 			pcb_board_set_changed_flag(pcb_false);
-		if (gui->notify_filename_changed != NULL)
-			gui->notify_filename_changed();
+		if (pcb_gui->notify_filename_changed != NULL)
+			pcb_gui->notify_filename_changed();
 		return 0;
 	}
 
@@ -270,8 +270,8 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_board_set_changed_flag(pcb_false);
 			free(PCB->Filename);
 			PCB->Filename = pcb_strdup(name);
-			if (gui->notify_filename_changed != NULL)
-				gui->notify_filename_changed();
+			if (pcb_gui->notify_filename_changed != NULL)
+				pcb_gui->notify_filename_changed();
 		}
 		return 0;
 	}
@@ -342,7 +342,7 @@ static int ActionQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		PCB->Changed = 0;
 		exit(0);
 	}
-	if (!PCB->Changed || gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
+	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
 		pcb_quit_app();
 	return 1;
 }

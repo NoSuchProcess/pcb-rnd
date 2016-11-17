@@ -706,13 +706,13 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 /*** draw ***/
 void _draw_line(pcb_line_t * line)
 {
-	gui->set_line_cap(Output.fgGC, Trace_Cap);
+	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
 	if (conf_core.editor.thin_draw)
-		gui->set_line_width(Output.fgGC, 0);
+		pcb_gui->set_line_width(Output.fgGC, 0);
 	else
-		gui->set_line_width(Output.fgGC, line->Thickness);
+		pcb_gui->set_line_width(Output.fgGC, line->Thickness);
 
-	gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+	pcb_gui->draw_line(Output.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 }
 
 void draw_line(pcb_layer_t * layer, pcb_line_t * line)
@@ -737,7 +737,7 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 		color = buf;
 	}
 
-	gui->set_color(Output.fgGC, color);
+	pcb_gui->set_color(Output.fgGC, color);
 	_draw_line(line);
 }
 

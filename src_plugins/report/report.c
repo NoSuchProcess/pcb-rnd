@@ -105,7 +105,7 @@ static int ReportDrills(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 	FreeDrillInfo(AllDrills);
 	/* create dialog box */
-	gui->report_dialog("Drill Report", stringlist);
+	pcb_gui->report_dialog("Drill Report", stringlist);
 
 	free(stringlist);
 	return 0;
@@ -137,7 +137,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		{
 			pcb_pin_t *via;
 #ifndef NDEBUG
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				pcb_r_dump_tree(PCB->Data->via_tree->root, 0);
 				return 0;
 			}
@@ -173,7 +173,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_pin_t *Pin;
 			pcb_element_t *element;
 #ifndef NDEBUG
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				pcb_r_dump_tree(PCB->Data->pin_tree->root, 0);
 				return 0;
 			}
@@ -220,7 +220,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		{
 			pcb_line_t *line;
 #ifndef NDEBUG
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				pcb_r_dump_tree(layer->line_tree->root, 0);
 				return 0;
@@ -246,7 +246,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		{
 			pcb_rat_t *line;
 #ifndef NDEBUG
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				pcb_r_dump_tree(PCB->Data->rat_tree->root, 0);
 				return 0;
 			}
@@ -267,7 +267,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_arc_t *Arc;
 			pcb_box_t *box;
 #ifndef NDEBUG
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				pcb_r_dump_tree(layer->arc_tree->root, 0);
 				return 0;
@@ -299,7 +299,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		{
 			pcb_polygon_t *Polygon;
 #ifndef NDEBUG
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 				pcb_r_dump_tree(layer->polygon_tree->root, 0);
 				return 0;
@@ -327,7 +327,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_pad_t *Pad;
 			pcb_element_t *element;
 #ifndef NDEBUG
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				pcb_r_dump_tree(PCB->Data->pad_tree->root, 0);
 				return 0;
 			}
@@ -373,7 +373,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		{
 			pcb_element_t *element;
 #ifndef NDEBUG
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				pcb_r_dump_tree(PCB->Data->element_tree->root, 0);
 				return 0;
 			}
@@ -404,7 +404,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		}
 	case PCB_TYPE_TEXT:
 #ifndef NDEBUG
-		if (gui->shift_is_pressed()) {
+		if (pcb_gui->shift_is_pressed()) {
 			pcb_layer_t *layer = (pcb_layer_t *) ptr1;
 			pcb_r_dump_tree(layer->text_tree->root, 0);
 			return 0;
@@ -415,7 +415,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			char laynum[32];
 			pcb_text_t *text;
 #ifndef NDEBUG
-			if (gui->shift_is_pressed()) {
+			if (pcb_gui->shift_is_pressed()) {
 				pcb_r_dump_tree(PCB->Data->name_tree[NAME_INDEX()]->root, 0);
 				return 0;
 			}
@@ -466,7 +466,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	if (report != NULL) {
 		/* create dialog box */
-		gui->report_dialog("Report", report);
+		pcb_gui->report_dialog("Report", report);
 		free(report);
 	}
 	return 0;
@@ -496,7 +496,7 @@ static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	}
 	END_LOOP;
 
-	gui->report_dialog("Report", list.array);
+	pcb_gui->report_dialog("Report", list.array);
 	gds_uninit(&list);
 	return 0;
 }
@@ -619,7 +619,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 			pcb_reset_conns(pcb_false);
 
 			pcb_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
-			gui->log("Net %s length %s\n", netname, buf);
+			pcb_gui->log("Net %s length %s\n", netname, buf);
 		}
 	}
 
@@ -634,7 +634,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	char *netname = 0;
 	int found = 0;
 
-	gui->get_coords("Click on a connection", &x, &y);
+	pcb_gui->get_coords("Click on a connection", &x, &y);
 
 	/* Reset all connection flags and save an undo-state to get back
 	 * to the state the board was in when we started this function.
@@ -652,7 +652,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	if (!found) {
 		pcb_reset_conns(pcb_false);
 		pcb_undo(pcb_true);
-		gui->log("No net under cursor.\n");
+		pcb_gui->log("No net under cursor.\n");
 		return 1;
 	}
 
@@ -711,9 +711,9 @@ got_net_name:
 		char buf[50];
 		pcb_snprintf(buf, sizeof(buf), "%$m*", conf_core.editor.grid_unit->suffix, length);
 		if (netname)
-			gui->log("Net \"%s\" length: %s\n", netname, buf);
+			pcb_gui->log("Net \"%s\" length: %s\n", netname, buf);
 		else
-			gui->log("Net length: %s\n", buf);
+			pcb_gui->log("Net length: %s\n", buf);
 	}
 
 	return 0;
@@ -783,7 +783,7 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 	}
 
 	if (!net_found) {
-		gui->log("No net named %s\n", tofind);
+		pcb_gui->log("No net named %s\n", tofind);
 		return 1;
 	}
 
@@ -809,9 +809,9 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 
 	if (!found) {
 		if (net_found)
-			gui->log("Net found, but no lines or arcs were flagged.\n");
+			pcb_gui->log("Net found, but no lines or arcs were flagged.\n");
 		else
-			gui->log("Net not found.\n");
+			pcb_gui->log("Net not found.\n");
 
 		return 1;
 	}
@@ -820,9 +820,9 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 		char buf[50];
 		pcb_snprintf(buf, sizeof(buf), "%$m*", conf_core.editor.grid_unit->suffix, length);
 		if (netname)
-			gui->log("Net \"%s\" length: %s\n", netname, buf);
+			pcb_gui->log("Net \"%s\" length: %s\n", netname, buf);
 		else
-			gui->log("Net length: %s\n", buf);
+			pcb_gui->log("Net length: %s\n", buf);
 	}
 
 	return 0;
@@ -871,7 +871,7 @@ static int Report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if ((argc < 1) || (argc > 2))
 		AUSAGE(report);
 	else if (strcasecmp(argv[0], "Object") == 0) {
-		gui->get_coords("Click on an object", &x, &y);
+		pcb_gui->get_coords("Click on an object", &x, &y);
 		return ReportDialog(argc - 1, argv + 1, x, y);
 	}
 	else if (strcasecmp(argv[0], "DrillReport") == 0)

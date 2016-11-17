@@ -387,11 +387,11 @@ int main(int argc, char *argv[])
 
 	/* Export pcb from command line if requested.  */
 	switch(do_what) {
-		case DO_PRINT:   exporter = gui = pcb_hid_find_printer(); break;
-		case DO_EXPORT:  exporter = gui = pcb_hid_find_exporter(hid_name); break;
+		case DO_PRINT:   pcb_exporter = pcb_gui = pcb_hid_find_printer(); break;
+		case DO_EXPORT:  pcb_exporter = pcb_gui = pcb_hid_find_exporter(hid_name); break;
 		case DO_GUI:
-			gui = pcb_hid_find_gui(argv[2]);
-			if (gui == NULL) {
+			pcb_gui = pcb_hid_find_gui(argv[2]);
+			if (pcb_gui == NULL) {
 				pcb_message(PCB_MSG_DEFAULT, "Can't find the gui requested.\n");
 				exit(1);
 			}
@@ -401,23 +401,23 @@ int main(int argc, char *argv[])
 			int n;
 			const char *g;
 
-			gui = NULL;
+			pcb_gui = NULL;
 			conf_loop_list_str(&conf_core.rc.preferred_gui, i, g, n) {
-				gui = pcb_hid_find_gui(g);
-				if (gui != NULL)
+				pcb_gui = pcb_hid_find_gui(g);
+				if (pcb_gui != NULL)
 					break;
 			}
 
 			/* try anything */
-			if (gui == NULL) {
+			if (pcb_gui == NULL) {
 				pcb_message(PCB_MSG_DEFAULT, "Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
-				gui = pcb_hid_find_gui(NULL);
+				pcb_gui = pcb_hid_find_gui(NULL);
 			}
 		}
 	}
 
 	/* Exit with error if GUI failed to start. */
-	if (!gui)
+	if (!pcb_gui)
 		exit(1);
 
 /* Initialize actions only when the gui is already known so only the right
@@ -433,7 +433,7 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	gui->parse_arguments(&hid_argc, &hid_argv);
+	pcb_gui->parse_arguments(&hid_argc, &hid_argv);
 
 	/* Create a new PCB object in memory */
 	PCB = pcb_board_new();
@@ -450,7 +450,7 @@ int main(int argc, char *argv[])
 
 	ResetStackAndVisibility();
 
-	if (gui->gui)
+	if (pcb_gui->gui)
 		pcb_crosshair_init();
 	InitHandler();
 	pcb_init_buffers();
@@ -483,10 +483,10 @@ int main(int argc, char *argv[])
 		pcb_hid_parse_actions(conf_core.rc.action_string);
 	}
 
-	if (gui->printer || gui->exporter) {
+	if (pcb_gui->printer || pcb_gui->exporter) {
 		/* Workaround to fix batch output for non-C locales */
 		setlocale(LC_NUMERIC, "C");
-		gui->do_export(0);
+		pcb_gui->do_export(0);
 		exit(0);
 	}
 
@@ -494,18 +494,18 @@ int main(int argc, char *argv[])
 
 	/* main loop */
 	do {
-		gui->do_export(0);
-		gui = next_gui;
-		next_gui = NULL;
-		if (gui != NULL) {
+		pcb_gui->do_export(0);
+		pcb_gui = pcb_next_gui;
+		pcb_next_gui = NULL;
+		if (pcb_gui != NULL) {
 			/* init the next GUI */
-			gui->parse_arguments(&hid_argc, &hid_argv);
-			if (gui->gui)
+			pcb_gui->parse_arguments(&hid_argc, &hid_argv);
+			if (pcb_gui->gui)
 				pcb_crosshair_init();
 			pcb_crosshair_set_mode(PCB_MODE_ARROW);
 				pcb_hid_action("LibraryChanged");
 		}
-	} while(gui != NULL);
+	} while(pcb_gui != NULL);
 
 	pcb_main_uninit();
 

@@ -21,7 +21,7 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 		y[i++] = v->point[1];
 	}
 
-	gui->fill_polygon(gc, n, x, y);
+	pcb_gui->fill_polygon(gc, n, x, y);
 
 	free(x);
 	free(y);
@@ -33,12 +33,12 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	pcb_coord_t last_x, last_y;
 	pcb_coord_t this_x, this_y;
 
-	gui->set_line_width(gc, 0);
-	gui->set_line_cap(gc, Round_Cap);
+	pcb_gui->set_line_width(gc, 0);
+	pcb_gui->set_line_cap(gc, Round_Cap);
 
 	/* If the contour is round, use an arc drawing routine. */
 	if (pl->is_round) {
-		gui->draw_arc(gc, pl->cx, pl->cy, pl->radius, pl->radius, 0, 360);
+		pcb_gui->draw_arc(gc, pl->cx, pl->cy, pl->radius, pl->radius, 0, 360);
 		return;
 	}
 
@@ -54,8 +54,8 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 		this_x = v->point[0];
 		this_y = v->point[1];
 
-		gui->draw_line(gc, last_x, last_y, this_x, this_y);
-		/* gui->fill_circle (gc, this_x, this_y, 30); */
+		pcb_gui->draw_line(gc, last_x, last_y, this_x, this_y);
+		/* pcb_gui->fill_circle (gc, this_x, this_y, 30); */
 
 		last_x = this_x;
 		last_y = this_y;
@@ -198,8 +198,8 @@ void pcb_dhlp_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear,
 		y1 = y2;
 		y2 = temp_y;
 	}
-	gui->set_line_cap(gc, Round_Cap);
-	gui->set_line_width(gc, 0);
+	pcb_gui->set_line_cap(gc, Round_Cap);
+	pcb_gui->set_line_width(gc, 0);
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) {
 		/* slanted square pad */
 		double tx, ty, theta;
@@ -214,13 +214,13 @@ void pcb_dhlp_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear,
 		tx = t * cos(theta + M_PI / 4) * sqrt(2.0);
 		ty = t * sin(theta + M_PI / 4) * sqrt(2.0);
 
-		gui->draw_line(gc, x1 - tx, y1 - ty, x2 + ty, y2 - tx);
-		gui->draw_line(gc, x2 + ty, y2 - tx, x2 + tx, y2 + ty);
-		gui->draw_line(gc, x2 + tx, y2 + ty, x1 - ty, y1 + tx);
-		gui->draw_line(gc, x1 - ty, y1 + tx, x1 - tx, y1 - ty);
+		pcb_gui->draw_line(gc, x1 - tx, y1 - ty, x2 + ty, y2 - tx);
+		pcb_gui->draw_line(gc, x2 + ty, y2 - tx, x2 + tx, y2 + ty);
+		pcb_gui->draw_line(gc, x2 + tx, y2 + ty, x1 - ty, y1 + tx);
+		pcb_gui->draw_line(gc, x1 - ty, y1 + tx, x1 - tx, y1 - ty);
 	}
 	else if (x1 == x2 && y1 == y2) {
-		gui->draw_arc(gc, x1, y1, t, t, 0, 360);
+		pcb_gui->draw_arc(gc, x1, y1, t, t, 0, 360);
 	}
 	else {
 		/* Slanted round-end pads.  */
@@ -233,13 +233,13 @@ void pcb_dhlp_thindraw_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear,
 		ox = dy * h + 0.5 * SGN(dy);
 		oy = -(dx * h + 0.5 * SGN(dx));
 
-		gui->draw_line(gc, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
+		pcb_gui->draw_line(gc, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
 
-		if (labs(ox) >= pixel_slop || coord_abs(oy) >= pixel_slop) {
+		if (labs(ox) >= pcb_pixel_slop || coord_abs(oy) >= pcb_pixel_slop) {
 			pcb_angle_t angle = atan2(dx, dy) * 57.295779;
-			gui->draw_line(gc, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
-			gui->draw_arc(gc, x1, y1, t, t, angle - 180, 180);
-			gui->draw_arc(gc, x2, y2, t, t, angle, 180);
+			pcb_gui->draw_line(gc, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
+			pcb_gui->draw_arc(gc, x1, y1, t, t, angle - 180, 180);
+			pcb_gui->draw_arc(gc, x2, y2, t, t, angle, 180);
 		}
 	}
 }
@@ -256,17 +256,17 @@ void pcb_dhlp_fill_pcb_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb
 			b = pad->Point1.Y - w / 2;
 			r = l + w;
 			t = b + w;
-			gui->fill_rect(gc, l, b, r, t);
+			pcb_gui->fill_rect(gc, l, b, r, t);
 		}
 		else {
-			gui->fill_circle(gc, pad->Point1.X, pad->Point1.Y, w / 2);
+			pcb_gui->fill_circle(gc, pad->Point1.X, pad->Point1.Y, w / 2);
 		}
 	}
 	else {
-		gui->set_line_cap(gc, PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad) ? Square_Cap : Round_Cap);
-		gui->set_line_width(gc, w);
+		pcb_gui->set_line_cap(gc, PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad) ? Square_Cap : Round_Cap);
+		pcb_gui->set_line_width(gc, w);
 
-		gui->draw_line(gc, pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y);
+		pcb_gui->draw_line(gc, pad->Point1.X, pad->Point1.Y, pad->Point2.X, pad->Point2.Y);
 	}
 }
 
@@ -325,15 +325,15 @@ static void draw_square_pin_poly(pcb_hid_gc_t gc, pcb_coord_t X, pcb_coord_t Y, 
 
 	if (thin_draw) {
 		int i;
-		gui->set_line_cap(gc, Round_Cap);
-		gui->set_line_width(gc, 0);
+		pcb_gui->set_line_cap(gc, Round_Cap);
+		pcb_gui->set_line_width(gc, 0);
 		polygon_x[8] = X + scaled_x[0] * xm[0];
 		polygon_y[8] = Y + scaled_y[0] * ym[0];
 		for (i = 0; i < 8; i++)
-			gui->draw_line(gc, polygon_x[i], polygon_y[i], polygon_x[i + 1], polygon_y[i + 1]);
+			pcb_gui->draw_line(gc, polygon_x[i], polygon_y[i], polygon_x[i + 1], polygon_y[i + 1]);
 	}
 	else
-		gui->fill_polygon(gc, 8, polygon_x, polygon_y);
+		pcb_gui->fill_polygon(gc, 8, polygon_x, polygon_y);
 }
 
 static void draw_octagon_poly(pcb_hid_gc_t gc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t thin_draw)
@@ -349,12 +349,12 @@ void pcb_dhlp_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv
 
 	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 		if (mask)
-			gui->fill_circle(bg_gc, pv->X, pv->Y, r);
+			pcb_gui->fill_circle(bg_gc, pv->X, pv->Y, r);
 		if (drawHole) {
-			gui->fill_circle(bg_gc, pv->X, pv->Y, r);
-			gui->set_line_cap(fg_gc, Round_Cap);
-			gui->set_line_width(fg_gc, 0);
-			gui->draw_arc(fg_gc, pv->X, pv->Y, r, r, 0, 360);
+			pcb_gui->fill_circle(bg_gc, pv->X, pv->Y, r);
+			pcb_gui->set_line_cap(fg_gc, Round_Cap);
+			pcb_gui->set_line_width(fg_gc, 0);
+			pcb_gui->draw_arc(fg_gc, pv->X, pv->Y, r, r, 0, 360);
 		}
 		return;
 	}
@@ -366,7 +366,7 @@ void pcb_dhlp_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv
 			pcb_coord_t b = pv->Y - r;
 			pcb_coord_t r = l + w;
 			pcb_coord_t t = b + w;
-			gui->fill_rect(fg_gc, l, b, r, t);
+			pcb_gui->fill_rect(fg_gc, l, b, r, t);
 		}
 		else
 			draw_square_pin_poly(fg_gc, pv->X, pv->Y, w, pcb_false, PCB_FLAG_SQUARE_GET(pv));
@@ -374,11 +374,11 @@ void pcb_dhlp_fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv
 	else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv))
 		draw_octagon_poly(fg_gc, pv->X, pv->Y, w, pcb_false);
 	else													/* draw a round pin or via */
-		gui->fill_circle(fg_gc, pv->X, pv->Y, r);
+		pcb_gui->fill_circle(fg_gc, pv->X, pv->Y, r);
 
 	/* and the drilling hole  (which is always round) */
 	if (drawHole)
-		gui->fill_circle(bg_gc, pv->X, pv->Y, pv->DrillingHole / 2);
+		pcb_gui->fill_circle(bg_gc, pv->X, pv->Y, pv->DrillingHole / 2);
 }
 
 void pcb_dhlp_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t * pv, pcb_bool drawHole, pcb_bool mask)
@@ -388,12 +388,12 @@ void pcb_dhlp_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t 
 
 	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 		if (mask)
-			gui->draw_arc(fg_gc, pv->X, pv->Y, r, r, 0, 360);
+			pcb_gui->draw_arc(fg_gc, pv->X, pv->Y, r, r, 0, 360);
 		if (drawHole) {
 			r = pv->DrillingHole / 2;
-			gui->set_line_cap(bg_gc, Round_Cap);
-			gui->set_line_width(bg_gc, 0);
-			gui->draw_arc(bg_gc, pv->X, pv->Y, r, r, 0, 360);
+			pcb_gui->set_line_cap(bg_gc, Round_Cap);
+			pcb_gui->set_line_width(bg_gc, 0);
+			pcb_gui->draw_arc(bg_gc, pv->X, pv->Y, r, r, 0, 360);
 		}
 		return;
 	}
@@ -404,12 +404,12 @@ void pcb_dhlp_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t 
 		pcb_coord_t r = l + w;
 		pcb_coord_t t = b + w;
 
-		gui->set_line_cap(fg_gc, Round_Cap);
-		gui->set_line_width(fg_gc, 0);
-		gui->draw_line(fg_gc, r, t, r, b);
-		gui->draw_line(fg_gc, l, t, l, b);
-		gui->draw_line(fg_gc, r, t, l, t);
-		gui->draw_line(fg_gc, r, b, l, b);
+		pcb_gui->set_line_cap(fg_gc, Round_Cap);
+		pcb_gui->set_line_width(fg_gc, 0);
+		pcb_gui->draw_line(fg_gc, r, t, r, b);
+		pcb_gui->draw_line(fg_gc, l, t, l, b);
+		pcb_gui->draw_line(fg_gc, r, t, l, t);
+		pcb_gui->draw_line(fg_gc, r, b, l, b);
 
 	}
 	else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv)) {
@@ -417,16 +417,16 @@ void pcb_dhlp_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t 
 	}
 	else {												/* draw a round pin or via */
 
-		gui->set_line_cap(fg_gc, Round_Cap);
-		gui->set_line_width(fg_gc, 0);
-		gui->draw_arc(fg_gc, pv->X, pv->Y, r, r, 0, 360);
+		pcb_gui->set_line_cap(fg_gc, Round_Cap);
+		pcb_gui->set_line_width(fg_gc, 0);
+		pcb_gui->draw_arc(fg_gc, pv->X, pv->Y, r, r, 0, 360);
 	}
 
 	/* and the drilling hole  (which is always round */
 	if (drawHole) {
-		gui->set_line_cap(bg_gc, Round_Cap);
-		gui->set_line_width(bg_gc, 0);
-		gui->draw_arc(bg_gc, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
+		pcb_gui->set_line_cap(bg_gc, Round_Cap);
+		pcb_gui->set_line_width(bg_gc, 0);
+		pcb_gui->draw_arc(bg_gc, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
 	}
 }
 

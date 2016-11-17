@@ -124,7 +124,7 @@ static const char bell_help[] = "Attempt to produce audible notification (e.g. b
 
 static int ActionBell(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	gui->beep();
+	pcb_gui->beep();
 	return 0;
 }
 

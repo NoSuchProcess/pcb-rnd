@@ -559,12 +559,12 @@ void _draw_arc(pcb_arc_t * arc)
 		return;
 
 	if (conf_core.editor.thin_draw)
-		gui->set_line_width(Output.fgGC, 0);
+		pcb_gui->set_line_width(Output.fgGC, 0);
 	else
-		gui->set_line_width(Output.fgGC, arc->Thickness);
-	gui->set_line_cap(Output.fgGC, Trace_Cap);
+		pcb_gui->set_line_width(Output.fgGC, arc->Thickness);
+	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
 
-	gui->draw_arc(Output.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+	pcb_gui->draw_arc(Output.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 }
 
 void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
@@ -588,7 +588,7 @@ void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
 		pcb_lighten_color(color, buf, 1.75);
 		color = buf;
 	}
-	gui->set_color(Output.fgGC, color);
+	pcb_gui->set_color(Output.fgGC, color);
 	_draw_arc(arc);
 }
 

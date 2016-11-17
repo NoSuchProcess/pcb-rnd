@@ -555,23 +555,23 @@ void pcb_hid_expose_callback(pcb_hid_t * hid_, pcb_box_t *region_, void *item_);
 
 /* This is initially set to a "no-gui" gui, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. */
-extern pcb_hid_t *gui;
+extern pcb_hid_t *pcb_gui;
 
 /* When not NULL, auto-start the next gui after the current one quits */
-extern pcb_hid_t *next_gui;
+extern pcb_hid_t *pcb_next_gui;
 
 /* This is either NULL or points to the current HID that is being called to
    do the exporting. The gui HIDs set and unset this var.*/
-extern pcb_hid_t *exporter;
+extern pcb_hid_t *pcb_exporter;
 
 /* This is either NULL or points to the current pcb_hid_action_t that is being
    called. The action launcher sets and unsets this variable. */
-extern const pcb_hid_action_t *current_action;
+extern const pcb_hid_action_t *pcb_current_action;
 
 /* The GUI may set this to be approximately the PCB size of a pixel,
    to allow for near-misses in selection and changes in drawing items
    smaller than a screen pixel.  */
-extern int pixel_slop;
+extern int pcb_pixel_slop;
 
 /* Init and uninit the whole action framework */
 void pcb_hid_actions_init(void);

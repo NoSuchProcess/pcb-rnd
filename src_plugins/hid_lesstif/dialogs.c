@@ -936,7 +936,7 @@ static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 {
 	pcb_hid_t *printer = pcb_hid_find_printer();
 	printer->calibrate(0.0, 0.0);
-	if (gui->attribute_dialog(printer_calibrate_attrs, 3,
+	if (pcb_gui->attribute_dialog(printer_calibrate_attrs, 3,
 														printer_calibrate_values,
 														"Printer Calibration Values", "Enter calibration values for your printer"))
 		return 1;
@@ -1011,7 +1011,7 @@ static int Export(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 1;
 	printer = hids[i - 1];
 
-	exporter = printer;
+	pcb_exporter = printer;
 
 	opts = printer->get_export_options(&n);
 	vals = (pcb_hid_attr_val_t *) calloc(n, sizeof(pcb_hid_attr_val_t));
@@ -1021,7 +1021,7 @@ static int Export(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	printer->do_export(vals);
 	free(vals);
-	exporter = NULL;
+	pcb_exporter = NULL;
 	return 0;
 }
 
@@ -1315,7 +1315,7 @@ static void lgbutton_input(Widget w, XtPointer u, XmDrawingAreaCallbackStruct * 
 	group = MoveLayerToGroup(layer, group);
 	lg_setcol[layer] = group;
 	lgbutton_expose(w, 0, 0);
-	gui->invalidate_all();
+	pcb_gui->invalidate_all();
 }
 
 static void lgbutton_resize(Widget w, XtPointer u, XmDrawingAreaCallbackStruct * cbs)

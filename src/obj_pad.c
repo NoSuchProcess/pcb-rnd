@@ -331,7 +331,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 		box.Y1 += conf_core.appearance.pinout.text_offset_y;
 	}
 
-	gui->set_color(Output.fgGC, PCB->PinNameColor);
+	pcb_gui->set_color(Output.fgGC, PCB->PinNameColor);
 
 	text.Flags = pcb_no_flags();
 	/* Set font height to approx 90% of pin thickness */
@@ -349,9 +349,9 @@ static void _draw_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool
 		return;
 
 	if (conf_core.editor.thin_draw || (clear && conf_core.editor.thin_draw_poly))
-		gui->thindraw_pcb_pad(gc, pad, clear, mask);
+		pcb_gui->thindraw_pcb_pad(gc, pad, clear, mask);
 	else
-		gui->fill_pcb_pad(gc, pad, clear, mask);
+		pcb_gui->fill_pcb_pad(gc, pad, clear, mask);
 }
 
 void draw_pad(pcb_pad_t * pad)
@@ -360,7 +360,7 @@ void draw_pad(pcb_pad_t * pad)
 	char buf[sizeof("#XXXXXX")];
 
 	if (pcb_draw_doing_pinout)
-		gui->set_color(Output.fgGC, PCB->PinColor);
+		pcb_gui->set_color(Output.fgGC, PCB->PinColor);
 	else if (PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, pad)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pad))
 			color = PCB->WarnColor;
@@ -381,7 +381,7 @@ void draw_pad(pcb_pad_t * pad)
 	}
 
 	if (color != NULL)
-		gui->set_color(Output.fgGC, color);
+		pcb_gui->set_color(Output.fgGC, color);
 
 	_draw_pad(Output.fgGC, pad, pcb_false, pcb_false);
 
@@ -411,7 +411,7 @@ pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 /* draws solder paste layer for a given side of the board - only pads get paste */
 void DrawPaste(int side, const pcb_box_t * drawn_area)
 {
-	gui->set_color(Output.fgGC, PCB->ElementColor);
+	pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
 	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_ON_SIDE(pad, side) && !PCB_FLAG_TEST(PCB_FLAG_NOPASTE, pad) && pad->Mask > 0) {

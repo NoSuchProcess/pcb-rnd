@@ -107,7 +107,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if (!function)
 		PCB_AFAIL(attributes);
 
-	if (!gui->edit_attributes) {
+	if (!pcb_gui->edit_attributes) {
 		pcb_message(PCB_MSG_DEFAULT, _("This GUI doesn't support Attribute Editing\n"));
 		return 1;
 	}
@@ -115,7 +115,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	switch (pcb_funchash_get(function, NULL)) {
 	case F_Layout:
 		{
-			gui->edit_attributes("Layout Attributes", &(PCB->Attributes));
+			pcb_gui->edit_attributes("Layout Attributes", &(PCB->Attributes));
 			return 0;
 		}
 
@@ -137,7 +137,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			}
 			buf = (char *) malloc(strlen(layer->Name) + strlen("Layer X Attributes"));
 			sprintf(buf, "Layer %s Attributes", layer->Name);
-			gui->edit_attributes(buf, &(layer->Attributes));
+			pcb_gui->edit_attributes(buf, &(layer->Attributes));
 			free(buf);
 			return 0;
 		}
@@ -160,7 +160,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			}
 			if (n_found == 0) {
 				void *ptrtmp;
-				gui->get_coords(_("Click on an element"), &x, &y);
+				pcb_gui->get_coords(_("Click on an element"), &x, &y);
 				if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
 					e = (pcb_element_t *) ptrtmp;
 				else {
@@ -176,7 +176,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			else {
 				buf = pcb_strdup("Unnamed Element Attributes");
 			}
-			gui->edit_attributes(buf, &(e->Attributes));
+			pcb_gui->edit_attributes(buf, &(e->Attributes));
 			free(buf);
 			break;
 		}
@@ -420,7 +420,7 @@ static int ActionMoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, 
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
-				gui->get_coords(_("Select an Object"), &x, &y);
+				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, CURRENT, pcb_false))
 						pcb_board_set_changed_flag(pcb_true);
@@ -513,7 +513,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		}
 		END_LOOP;
 		if (number_of_footprints_not_found > 0)
-			gui->confirm_dialog("Not all requested footprints were found.\n" "See the message log for details", "Ok", NULL);
+			pcb_gui->confirm_dialog("Not all requested footprints were found.\n" "See the message log for details", "Ok", NULL);
 		return 0;
 	}
 

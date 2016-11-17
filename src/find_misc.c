@@ -260,7 +260,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 	if (AndDraw)
 		pcb_draw();
 	if (AndDraw && conf_core.editor.beep_when_finished)
-		gui->beep();
+		pcb_gui->beep();
 	pcb_conn_lookup_uninit();
 }
 

@@ -95,7 +95,7 @@ int ActionExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	defer_updates = 0;
 	if (defer_needs_update) {
 		pcb_undo_inc_serial();
-		gui->invalidate_all();
+		pcb_gui->invalidate_all();
 	}
 	fclose(fp);
 	return 0;

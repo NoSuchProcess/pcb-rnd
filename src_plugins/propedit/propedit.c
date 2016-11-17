@@ -39,7 +39,7 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	pe_ctx_t ctx;
 	htsp_entry_t *pe;
 
-	if ((gui == NULL) || (gui->propedit_start == NULL)) {
+	if ((pcb_gui == NULL) || (pcb_gui->propedit_start == NULL)) {
 		pcb_message(PCB_MSG_DEFAULT, "Error: there's no GUI or the active GUI can't edit properties.\n");
 		return 1;
 	}
@@ -47,11 +47,11 @@ int propedit_action(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	ctx.core_props = pcb_props_init();
 	pcb_propsel_map_core(ctx.core_props);
 
-	gui->propedit_start(&ctx, ctx.core_props->fill, propedit_query);
+	pcb_gui->propedit_start(&ctx, ctx.core_props->fill, propedit_query);
 	for (pe = htsp_first(ctx.core_props); pe; pe = htsp_next(ctx.core_props, pe))
 		propedit_ins_prop(&ctx, pe);
 
-	gui->propedit_end(&ctx);
+	pcb_gui->propedit_end(&ctx);
 	pcb_props_uninit(ctx.core_props);
 	return 0;
 }

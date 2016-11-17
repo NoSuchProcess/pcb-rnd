@@ -531,7 +531,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 			defaultsymbol.Y1 += Text->Y;
 			defaultsymbol.X2 += Text->X;
 			defaultsymbol.Y2 += Text->Y;
-			gui->fill_rect(Output.fgGC, defaultsymbol.X1, defaultsymbol.Y1, defaultsymbol.X2, defaultsymbol.Y2);
+			pcb_gui->fill_rect(Output.fgGC, defaultsymbol.X1, defaultsymbol.Y1, defaultsymbol.X2, defaultsymbol.Y2);
 
 			/* move on to next cursor position */
 			x += size;
@@ -548,9 +548,9 @@ pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 	int min_silk_line;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
-		gui->set_color(Output.fgGC, layer->SelectedColor);
+		pcb_gui->set_color(Output.fgGC, layer->SelectedColor);
 	else
-		gui->set_color(Output.fgGC, layer->Color);
+		pcb_gui->set_color(Output.fgGC, layer->Color);
 	if (layer == &PCB->Data->SILKLAYER || layer == &PCB->Data->BACKSILKLAYER)
 		min_silk_line = PCB->minSlk;
 	else

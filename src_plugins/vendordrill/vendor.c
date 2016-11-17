@@ -166,7 +166,7 @@ int ActionLoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	fname = argc ? argv[0] : NULL;
 
 	if (!fname || !*fname) {
-		fname = gui->fileselect(_("Load Vendor Resource File..."),
+		fname = pcb_gui->fileselect(_("Load Vendor Resource File..."),
 														_("Picks a vendor resource file to load.\n"
 															"This file can contain drc settings for a\n"
 															"particular vendor as well as a list of\n"

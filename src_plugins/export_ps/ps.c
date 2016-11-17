@@ -1499,7 +1499,7 @@ void ps_calibrate_1(double xval, double yval, int use_command)
 		ps_calib_attribute_list[0].default_val.str_value = pcb_strdup("lpr");
 	}
 
-	if (gui->
+	if (pcb_gui->
 			attribute_dialog(ps_calib_attribute_list, 1, vals, _("Print Calibration Page"),
 											 _("Generates a printer calibration page")))
 		return;

@@ -404,7 +404,7 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 
 	/* fetch the name of the new footprint */
 	if (argc == 0) {
-		fpname = gui->prompt_for("Footprint name", "");
+		fpname = pcb_gui->prompt_for("Footprint name", "");
 		if (fpname == NULL) {
 			pcb_message(PCB_MSG_DEFAULT, "No footprint name supplied\n");
 			return 1;
@@ -469,7 +469,7 @@ static int ActionSavePatch(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		else
 			default_file = pcb_strdup("unnamed.bap");
 
-		fn = gui->fileselect(_("Save netlist patch as ..."),
+		fn = pcb_gui->fileselect(_("Save netlist patch as ..."),
 												 _("Choose a file to save netlist patch to\n"
 													 "for back annotation\n"), default_file, ".bap", "patch", 0);
 

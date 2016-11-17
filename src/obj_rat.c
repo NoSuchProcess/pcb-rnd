@@ -226,24 +226,24 @@ pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, rat))
-			gui->set_color(Output.fgGC, PCB->RatSelectedColor);
+			pcb_gui->set_color(Output.fgGC, PCB->RatSelectedColor);
 		else
-			gui->set_color(Output.fgGC, PCB->ConnectedColor);
+			pcb_gui->set_color(Output.fgGC, PCB->ConnectedColor);
 	}
 	else
-		gui->set_color(Output.fgGC, PCB->RatColor);
+		pcb_gui->set_color(Output.fgGC, PCB->RatColor);
 
 	if (conf_core.appearance.rat_thickness < 20)
-		rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
+		rat->Thickness = pcb_pixel_slop * conf_core.appearance.rat_thickness;
 	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, rat)) {
 		int w = rat->Thickness;
 
 		if (conf_core.editor.thin_draw)
-			gui->set_line_width(Output.fgGC, 0);
+			pcb_gui->set_line_width(Output.fgGC, 0);
 		else
-			gui->set_line_width(Output.fgGC, w);
-		gui->draw_arc(Output.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
+			pcb_gui->set_line_width(Output.fgGC, w);
+		pcb_gui->draw_arc(Output.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
 	}
 	else
 		_draw_line((pcb_line_t *) rat);
@@ -271,7 +271,7 @@ void EraseRat(pcb_rat_t *Rat)
 void DrawRat(pcb_rat_t *Rat)
 {
 	if (conf_core.appearance.rat_thickness < 20)
-		Rat->Thickness = pixel_slop * conf_core.appearance.rat_thickness;
+		Rat->Thickness = pcb_pixel_slop * conf_core.appearance.rat_thickness;
 	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, Rat)) {
 		pcb_coord_t w = Rat->Thickness;

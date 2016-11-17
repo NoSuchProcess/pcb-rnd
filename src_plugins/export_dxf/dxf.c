@@ -2603,7 +2603,7 @@ static void dxf_write_header()
 		fclose(f_temp);
 	}
 	else {
-		gui->log("Error in dxf_write_header_from_template (): cannot open file %s for reading.\n", dxf_header_filename);
+		pcb_gui->log("Error in dxf_write_header_from_template (): cannot open file %s for reading.\n", dxf_header_filename);
 		if (dxf_metric) {
 			dxf_write_header_metric_new();
 		}
@@ -3211,7 +3211,7 @@ static void dxf_write_footer()
 		fclose(f_temp);
 	}
 	else {
-		gui->log("Error in dxf_write_footer (): cannot open file %s for reading.\n", dxf_footer_filename);
+		pcb_gui->log("Error in dxf_write_footer (): cannot open file %s for reading.\n", dxf_footer_filename);
 		if (dxf_metric) {
 			dxf_write_footer_metric_new();
 		}
@@ -3925,7 +3925,7 @@ static int dxf_export_xref_file(void)
 
 	fp = fopen(dxf_xref_filename, "w");
 	if (!fp) {
-		gui->log("Error in dxf.c|dxf_export_xref_file (): cannot open file %s for writing.\n", dxf_xref_filename);
+		pcb_gui->log("Error in dxf.c|dxf_export_xref_file (): cannot open file %s for writing.\n", dxf_xref_filename);
 		return 1;
 	}
 	/*

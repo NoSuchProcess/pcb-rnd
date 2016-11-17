@@ -64,7 +64,7 @@ static char *gui_get_pat(pcb_search_method_t * method)
 	attrs[1].enumerations = methods;
 	attrs[1].default_val.int_value = results[1].int_value;
 
-	gui->attribute_dialog(attrs, nattr, results, "Find element", "Find element by name");
+	pcb_gui->attribute_dialog(attrs, nattr, results, "Find element", "Find element by name");
 
 	*method = results[1].int_value;
 	if (results[0].str_value == NULL)
@@ -221,7 +221,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				Note.Buffer = conf_core.editor.buffer_number;
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB_PASTEBUFFER);
-				gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
+				pcb_gui->get_coords(_("Select the Element's Mark Location"), &x, &y);
 				x = pcb_grid_fit(x, PCB->Grid, PCB->GridOffsetX);
 				y = pcb_grid_fit(y, PCB->Grid, PCB->GridOffsetY);
 				pcb_buffer_add_selected(PCB_PASTEBUFFER, x, y, pcb_true);

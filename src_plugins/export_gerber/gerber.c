@@ -774,19 +774,19 @@ emit_outline:
 		if (outline_layer && outline_layer != PCB->Data->Layer + idx)
 			pcb_draw_layer(outline_layer, &region);
 		else if (!outline_layer) {
-			pcb_hid_gc_t gc = gui->make_gc();
+			pcb_hid_gc_t gc = pcb_gui->make_gc();
 			printf("name %s idx %d\n", name, idx);
 			if (SL_TYPE(idx) == SL_SILK)
-				gui->set_line_width(gc, PCB->minSlk);
+				pcb_gui->set_line_width(gc, PCB->minSlk);
 			else if (group >= 0)
-				gui->set_line_width(gc, PCB->minWid);
+				pcb_gui->set_line_width(gc, PCB->minWid);
 			else
-				gui->set_line_width(gc, AUTO_OUTLINE_WIDTH);
-			gui->draw_line(gc, 0, 0, PCB->MaxWidth, 0);
-			gui->draw_line(gc, 0, 0, 0, PCB->MaxHeight);
-			gui->draw_line(gc, PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
-			gui->draw_line(gc, 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
-			gui->destroy_gc(gc);
+				pcb_gui->set_line_width(gc, AUTO_OUTLINE_WIDTH);
+			pcb_gui->draw_line(gc, 0, 0, PCB->MaxWidth, 0);
+			pcb_gui->draw_line(gc, 0, 0, 0, PCB->MaxHeight);
+			pcb_gui->draw_line(gc, PCB->MaxWidth, 0, PCB->MaxWidth, PCB->MaxHeight);
+			pcb_gui->draw_line(gc, 0, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
+			pcb_gui->destroy_gc(gc);
 		}
 	}
 

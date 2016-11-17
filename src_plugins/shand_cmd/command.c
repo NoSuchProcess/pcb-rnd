@@ -125,7 +125,7 @@ static int CommandLoadLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		return (1);
 	}
 
-	if (!PCB->Changed || gui->confirm_dialog("OK to override layout data?", 0))
+	if (!PCB->Changed || pcb_gui->confirm_dialog("OK to override layout data?", 0))
 		pcb_load_pcb(filename, format, pcb_true, 0);
 	return (0);
 }
@@ -216,7 +216,7 @@ save) before quitting.
 
 static int CommandQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	if (!PCB->Changed || gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
+	if (!PCB->Changed || pcb_gui->close_confirm_dialog() == HID_CLOSE_CONFIRM_OK)
 		pcb_quit_app();
 	return 0;
 }
@@ -327,8 +327,8 @@ static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			pcb_board_set_changed_flag(pcb_false);
 			free(PCB->Filename);
 			PCB->Filename = pcb_strdup(argv[0]);
-			if (gui->notify_filename_changed != NULL)
-				gui->notify_filename_changed();
+			if (pcb_gui->notify_filename_changed != NULL)
+				pcb_gui->notify_filename_changed();
 		}
 		break;
 

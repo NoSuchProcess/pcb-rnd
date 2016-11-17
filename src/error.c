@@ -61,9 +61,9 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 
 	/* TODO(hzeller): do something useful with the level, e.g. color coding. */
 
-	if (gui != NULL) {
+	if (pcb_gui != NULL) {
 		va_start(args, Format);
-		gui->logv(level, Format, args);
+		pcb_gui->logv(level, Format, args);
 		va_end(args);
 	}
 

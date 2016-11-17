@@ -70,8 +70,8 @@ static void io_watch_handler_dbus_freed(void *data)
 	handler = (IOWatchHandler *) data;
 
 	/* Remove the watch registered with the HID */
-	if (gui != NULL)
-		gui->unwatch_file(handler->pcb_watch);
+	if (pcb_gui != NULL)
+		pcb_gui->unwatch_file(handler->pcb_watch);
 	free(handler);
 }
 
@@ -115,7 +115,7 @@ static void timeout_handler_dbus_freed(void *data)
 	handler = (TimeoutHandler *) data;
 
 	/* Remove the timeout registered with the HID */
-	gui->stop_timer(handler->pcb_timer);
+	pcb_gui->stop_timer(handler->pcb_timer);
 	free(handler);
 }
 
@@ -128,7 +128,7 @@ void timeout_handler_cb(pcb_hidval_t data)
 	/* Re-add the timeout, as PCB will remove the current one
 	   Do this before calling to dbus, incase DBus removes the timeout.
 	   We can't touch handler after libdbus has been run for this reason. */
-	handler->pcb_timer = gui->add_timer(timeout_handler_cb, handler->interval, data);
+	handler->pcb_timer = pcb_gui->add_timer(timeout_handler_cb, handler->interval, data);
 
 	dbus_timeout_handle(handler->dbus_timeout);
 }
@@ -163,7 +163,7 @@ static dbus_bool_t watch_add(DBusWatch * dbus_watch, void *data)
 	handler = (IOWatchHandler *) malloc(sizeof(IOWatchHandler));
 	temp.ptr = (void *) handler;
 	handler->dbus_watch = dbus_watch;
-	handler->pcb_watch = gui->watch_file(fd, pcb_condition, io_watch_handler_cb, temp);
+	handler->pcb_watch = pcb_gui->watch_file(fd, pcb_condition, io_watch_handler_cb, temp);
 
 	dbus_watch_set_data(dbus_watch, handler, io_watch_handler_dbus_freed);
 	return TRUE;
@@ -191,7 +191,7 @@ static dbus_bool_t timeout_add(DBusTimeout * timeout, void *data)
 	pcb_hidval_t temp;
 
 	/* We can't create a timeout without a GUI */
-	if (gui == NULL)
+	if (pcb_gui == NULL)
 		return TRUE;
 
 	/* We won't create a timeout until it becomes enabled. */
@@ -206,7 +206,7 @@ static dbus_bool_t timeout_add(DBusTimeout * timeout, void *data)
 	temp.ptr = (void *) handler;
 	handler->dbus_timeout = timeout;
 	handler->interval = dbus_timeout_get_interval(timeout);
-	handler->pcb_timer = gui->add_timer(timeout_handler_cb, handler->interval, temp);
+	handler->pcb_timer = pcb_gui->add_timer(timeout_handler_cb, handler->interval, temp);
 
 	dbus_timeout_set_data(timeout, handler, timeout_handler_dbus_freed);
 	return TRUE;
@@ -277,7 +277,7 @@ void pcb_dbus_connection_setup_with_mainloop(DBusConnection * connection)
 
 	/* Register a new mainloop hook to mop up any unfinished IO. */
 	temp.ptr = (void *) connection;
-	gui->add_block_hook(block_hook_cb, temp);
+	pcb_gui->add_block_hook(block_hook_cb, temp);
 
 	return;
 nomem:

@@ -473,7 +473,7 @@ static int Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 
 	pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
 
-	gui->invalidate_all();
+	pcb_gui->invalidate_all();
 	pcb_undo_inc_serial();
 
 	return 1;
@@ -2170,7 +2170,7 @@ static void maybe_pull_1(pcb_line_t *line)
 #if TRACE0
 	printf("\033[35mdid_something: recursing\033[0m\n");
 	{
-		int i = gui->confirm_dialog("recurse?", 0);
+		int i = pcb_gui->confirm_dialog("recurse?", 0);
 		printf("confirm = %d\n", i);
 		if (i == 0)
 			return;
@@ -2331,13 +2331,13 @@ static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				if (did_something != old_did_something) {
 					pcb_undo_inc_serial();
 					old_did_something = did_something;
-					if (gui->confirm_dialog("more?", 0) == 0) {
+					if (pcb_gui->confirm_dialog("more?", 0) == 0) {
 						did_something = 0;
 						break;
 					}
 				}
 #endif
-				/*gui->progress(0,0,0); */
+				/*pcb_gui->progress(0,0,0); */
 			}
 			END_LOOP;
 		}

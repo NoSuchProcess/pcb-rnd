@@ -159,7 +159,7 @@ static int PrintXY(void)
 
 	fp = fopen(xy_filename, "w");
 	if (!fp) {
-		gui->log("Cannot open file %s for writing\n", xy_filename);
+		pcb_gui->log("Cannot open file %s for writing\n", xy_filename);
 		return 1;
 	}
 

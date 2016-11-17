@@ -50,12 +50,12 @@ void pcb_quit_app(void)
 	else
 		pcb_disable_emergency_save();
 
-	if (gui->do_exit == NULL) {
+	if (pcb_gui->do_exit == NULL) {
 		pcb_main_uninit();
 		exit(0);
 	}
 	else
-		gui->do_exit(gui);
+		pcb_gui->do_exit(pcb_gui);
 }
 
 /* ---------------------------------------------------------------------------

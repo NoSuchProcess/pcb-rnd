@@ -798,7 +798,7 @@ static void SetPVColor(pcb_pin_t *Pin, int Type)
 			color = PCB->PinColor;
 	}
 
-	gui->set_color(Output.fgGC, color);
+	pcb_gui->set_color(Output.fgGC, color);
 }
 
 static void _draw_pv_name(pcb_pin_t * pv)
@@ -831,7 +831,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 		box.Y1 = pv->Y - pv->Thickness / 2 + conf_core.appearance.pinout.text_offset_y;
 	}
 
-	gui->set_color(Output.fgGC, PCB->PinNameColor);
+	pcb_gui->set_color(Output.fgGC, PCB->PinNameColor);
 
 	text.Flags = pcb_no_flags();
 	/* Set font height to approx 56% of pin thickness */
@@ -840,19 +840,19 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	text.Y = box.Y1;
 	text.Direction = vert ? 1 : 0;
 
-	if (gui->gui)
+	if (pcb_gui->gui)
 		pcb_draw_doing_pinout++;
 	DrawTextLowLevel(&text, 0);
-	if (gui->gui)
+	if (pcb_gui->gui)
 		pcb_draw_doing_pinout--;
 }
 
 static void _draw_pv(pcb_pin_t *pv, pcb_bool draw_hole)
 {
 	if (conf_core.editor.thin_draw)
-		gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
+		pcb_gui->thindraw_pcb_pv(Output.fgGC, Output.fgGC, pv, draw_hole, pcb_false);
 	else
-		gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, pcb_false);
+		pcb_gui->fill_pcb_pv(Output.fgGC, Output.bgGC, pv, draw_hole, pcb_false);
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) && PCB_FLAG_TEST(PCB_FLAG_DISPLAYNAME, pv))
 		_draw_pv_name(pv);
@@ -874,9 +874,9 @@ pcb_r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	if (conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly)
-		gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
+		pcb_gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
 	else
-		gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
+		pcb_gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
 	return R_DIR_FOUND_CONTINUE;
 }
 
@@ -905,13 +905,13 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 
 	if (conf_core.editor.thin_draw) {
 		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
-			gui->set_line_cap(Output.fgGC, Round_Cap);
-			gui->set_line_width(Output.fgGC, 0);
-			gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
+			pcb_gui->set_line_cap(Output.fgGC, Round_Cap);
+			pcb_gui->set_line_width(Output.fgGC, 0);
+			pcb_gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
 		}
 	}
 	else
-		gui->fill_circle(Output.bgGC, pv->X, pv->Y, pv->DrillingHole / 2);
+		pcb_gui->fill_circle(Output.bgGC, pv->X, pv->Y, pv->DrillingHole / 2);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_WARN, pv))
@@ -926,11 +926,11 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 			pcb_lighten_color(color, buf, 1.75);
 			color = buf;
 		}
-		gui->set_color(Output.fgGC, color);
+		pcb_gui->set_color(Output.fgGC, color);
 
-		gui->set_line_cap(Output.fgGC, Round_Cap);
-		gui->set_line_width(Output.fgGC, 0);
-		gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
+		pcb_gui->set_line_cap(Output.fgGC, Round_Cap);
+		pcb_gui->set_line_width(Output.fgGC, 0);
+		pcb_gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
 	}
 	return R_DIR_FOUND_CONTINUE;
 }

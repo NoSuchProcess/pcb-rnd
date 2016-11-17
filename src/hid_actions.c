@@ -29,7 +29,7 @@ static int action_legal_unknown(const char *name)
 }
 
 static htsp_t *all_actions = NULL;
-const pcb_hid_action_t *current_action = NULL;
+const pcb_hid_action_t *pcb_current_action = NULL;
 
 static const char *check_action_name(const char *s)
 {
@@ -226,7 +226,7 @@ int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 	const pcb_hid_action_t *old_action;
 
 	if (a->need_coord_msg)
-		gui->get_coords(_(a->need_coord_msg), &x, &y);
+		pcb_gui->get_coords(_(a->need_coord_msg), &x, &y);
 
 	if (conf_core.rc.verbose) {
 		printf("Action: \033[34m%s(", a->name);
@@ -235,10 +235,10 @@ int pcb_hid_actionv_(const pcb_hid_action_t *a, int argc, const char **argv)
 		printf(")\033[0m\n");
 	}
 
-	old_action = current_action;
-	current_action = a;
-	ret = current_action->trigger_cb(argc, argv, x, y);
-	current_action = old_action;
+	old_action = pcb_current_action;
+	pcb_current_action = a;
+	ret = pcb_current_action->trigger_cb(argc, argv, x, y);
+	pcb_current_action = old_action;
 
 	return ret;
 }

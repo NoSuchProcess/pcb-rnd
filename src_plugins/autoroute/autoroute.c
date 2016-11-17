@@ -4313,7 +4313,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 					 * to route a net from a particular starting point, but perfectly
 					 * able to route it from some other. */
 					percent = calculate_progress(this_heap_item, this_heap_size, &ras);
-					request_cancel = gui->progress(percent * 100., 100, _("Autorouting tracks"));
+					request_cancel = pcb_gui->progress(percent * 100., 100, _("Autorouting tracks"));
 					if (request_cancel) {
 						ras.total_nets_routed = 0;
 						ras.conflict_subnets = 0;
@@ -4544,7 +4544,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 	total_via_count = 0;
 
 #ifdef ROUTE_DEBUG
-	ddraw = gui->request_debug_draw();
+	ddraw = pcb_gui->request_debug_draw();
 	if (ddraw != NULL) {
 		ar_gc = ddraw->make_gc();
 		ddraw->set_line_cap(ar_gc, Round_Cap);
@@ -4684,7 +4684,7 @@ pcb_bool AutoRoute(pcb_bool selected)
 	/* auto-route all nets */
 	changed = (RouteAll(rd).total_nets_routed > 0) || changed;
 donerouting:
-	gui->progress(0, 0, NULL);
+	pcb_gui->progress(0, 0, NULL);
 	if (conf_core.editor.live_routing) {
 		int i;
 		pcb_box_t big = { 0, 0, PCB_MAX_COORD, PCB_MAX_COORD };

@@ -136,7 +136,7 @@ static void real_stroke_finish(void)
 		}
 	}
 	else
-		gui->beep();
+		pcb_gui->beep();
 }
 
 static void real_stroke_record(int ev_x, int ev_y)

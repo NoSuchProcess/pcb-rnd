@@ -864,7 +864,7 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		dy = -dy;
 
 	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
-	gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
+	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
 
 	return 0;
 }
@@ -1123,7 +1123,7 @@ static void zoom_max()
 	view_left_x = -(view_width * new_zoom - PCB->MaxWidth) / 2;
 	view_top_y = -(view_height * new_zoom - PCB->MaxHeight) / 2;
 	view_zoom = new_zoom;
-	pixel_slop = view_zoom;
+	pcb_pixel_slop = view_zoom;
 	lesstif_pan_fixup();
 }
 
@@ -1159,7 +1159,7 @@ static void zoom_to(double new_zoom, int x, int y)
 
 	if (view_zoom != new_zoom) {
 		view_zoom = new_zoom;
-		pixel_slop = view_zoom;
+		pcb_pixel_slop = view_zoom;
 
 		view_left_x = cx - view_width * xfrac * view_zoom;
 		view_top_y = cy - view_height * yfrac * view_zoom;
