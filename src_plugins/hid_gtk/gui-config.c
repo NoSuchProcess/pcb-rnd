@@ -1466,7 +1466,7 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 		return;
 
 	argv = g_strsplit(data, ",", -1);
-	pcb_act_MoveLayerAction(2, argv, 0, 0);
+	pcb_act_MoveLayer(2, argv, 0, 0);
 	g_strfreev(argv);
 }
 
