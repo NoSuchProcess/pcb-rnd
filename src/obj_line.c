@@ -227,7 +227,7 @@ void pcb_line_bbox(pcb_line_t *Line)
 	pcb_coord_t width = (Line->Thickness + Line->Clearance + 1) / 2;
 
 	/* Adjust for our discrete polygon approximation */
-	width = (double) width *POLY_CIRC_RADIUS_ADJ + 0.5;
+	width = (double) width *PCB_POLY_CIRC_RADIUS_ADJ + 0.5;
 
 	Line->BoundingBox.X1 = MIN(Line->Point1.X, Line->Point2.X) - width;
 	Line->BoundingBox.X2 = MAX(Line->Point1.X, Line->Point2.X) + width;

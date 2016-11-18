@@ -104,8 +104,8 @@ static double rotate_circle_seg[4];
 
 void pcb_polygon_init(void)
 {
-	double cos_ang = cos(2.0 * M_PI / POLY_CIRC_SEGS_F);
-	double sin_ang = sin(2.0 * M_PI / POLY_CIRC_SEGS_F);
+	double cos_ang = cos(2.0 * M_PI / PCB_POLY_CIRC_SEGS_F);
+	double sin_ang = sin(2.0 * M_PI / PCB_POLY_CIRC_SEGS_F);
 
 	rotate_circle_seg[0] = cos_ang;
 	rotate_circle_seg[1] = -sin_ang;
@@ -404,11 +404,11 @@ void pcb_poly_frac_cicle(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vect
 
 	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
 	/* move vector to origin */
-	e1 = (v[0] - X) * POLY_CIRC_RADIUS_ADJ;
-	e2 = (v[1] - Y) * POLY_CIRC_RADIUS_ADJ;
+	e1 = (v[0] - X) * PCB_POLY_CIRC_RADIUS_ADJ;
+	e2 = (v[1] - Y) * PCB_POLY_CIRC_RADIUS_ADJ;
 
 	/* NB: the caller adds the last vertex, hence the -1 */
-	range = POLY_CIRC_SEGS / range - 1;
+	range = PCB_POLY_CIRC_SEGS / range - 1;
 	for (i = 0; i < range; i++) {
 		/* rotate the vector */
 		t1 = rotate_circle_seg[0] * e1 + rotate_circle_seg[1] * e2;
@@ -494,7 +494,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	segs = 1;
 	if (thick > 0)
 		segs = MAX(segs, a->Delta * M_PI / 360 *
-							 sqrt(sqrt((double) rx * rx + (double) ry * ry) / POLY_ARC_MAX_DEVIATION / 2 / thick));
+							 sqrt(sqrt((double) rx * rx + (double) ry * ry) / PCB_POLY_ARC_MAX_DEVIATION / 2 / thick));
 	segs = MAX(segs, a->Delta / ARC_ANGLE);
 
 	ang = a->StartAngle;

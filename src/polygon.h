@@ -37,17 +37,17 @@
 
 /* Implementation constants */
 
-#define POLY_CIRC_SEGS 40
-#define POLY_CIRC_SEGS_F ((float)POLY_CIRC_SEGS)
+#define PCB_POLY_CIRC_SEGS 40
+#define PCB_POLY_CIRC_SEGS_F ((float)PCB_POLY_CIRC_SEGS)
 
 /* adjustment to make the segments outline the circle rather than connect
  * points on the circle: 1 - cos (\alpha / 2) < (\alpha / 2) ^ 2 / 2
  */
-#define POLY_CIRC_RADIUS_ADJ (1.0 + M_PI / POLY_CIRC_SEGS_F * \
-                                    M_PI / POLY_CIRC_SEGS_F / 2.0)
+#define PCB_POLY_CIRC_RADIUS_ADJ (1.0 + M_PI / PCB_POLY_CIRC_SEGS_F * \
+                                    M_PI / PCB_POLY_CIRC_SEGS_F / 2.0)
 
 /* polygon diverges from modelled arc no more than MAX_ARC_DEVIATION * thick */
-#define POLY_ARC_MAX_DEVIATION 0.02
+#define PCB_POLY_ARC_MAX_DEVIATION 0.02
 
 /* Prototypes */
 

@@ -220,7 +220,7 @@ void pcb_pin_bbox(pcb_pin_t *Pin)
 	width = MAX(Pin->Clearance + PIN_SIZE(Pin), Pin->Mask) / 2;
 
 	/* Adjust for our discrete polygon approximation */
-	width = (double) width *POLY_CIRC_RADIUS_ADJ + 0.5;
+	width = (double) width *PCB_POLY_CIRC_RADIUS_ADJ + 0.5;
 
 	Pin->BoundingBox.X1 = Pin->X - width;
 	Pin->BoundingBox.Y1 = Pin->Y - width;

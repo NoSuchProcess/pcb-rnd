@@ -129,7 +129,7 @@ void pcb_pad_bbox(pcb_pad_t *Pad)
 	}
 	else {
 		/* Adjust for our discrete polygon approximation */
-		width = (double) width *POLY_CIRC_RADIUS_ADJ + 0.5;
+		width = (double) width *PCB_POLY_CIRC_RADIUS_ADJ + 0.5;
 
 		Pad->BoundingBox.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - width;
 		Pad->BoundingBox.X2 = MAX(Pad->Point1.X, Pad->Point2.X) + width;

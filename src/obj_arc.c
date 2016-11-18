@@ -121,7 +121,7 @@ void pcb_arc_bbox(pcb_arc_t *Arc)
 	width = (Arc->Thickness + Arc->Clearance) / 2;
 
 	/* Adjust for our discrete polygon approximation */
-	width = (double) width *MAX(POLY_CIRC_RADIUS_ADJ, (1.0 + POLY_ARC_MAX_DEVIATION)) + 0.5;
+	width = (double) width *MAX(PCB_POLY_CIRC_RADIUS_ADJ, (1.0 + PCB_POLY_ARC_MAX_DEVIATION)) + 0.5;
 
 	Arc->BoundingBox.X1 -= width;
 	Arc->BoundingBox.X2 += width;
