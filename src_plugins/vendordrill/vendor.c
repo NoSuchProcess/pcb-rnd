@@ -103,7 +103,7 @@ This will modify all of your drill holes to match the list of allowed
 sizes for your vendor.
 %end-doc */
 
-int ActionApplyVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_ApplyVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_hid_action("Busy");
 	apply_vendor_map();
@@ -124,7 +124,7 @@ static const char unload_vendor_help[] = "Unloads the current vendor drill mappi
 
 %end-doc */
 
-int ActionUnloadVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_UnloadVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	cached_drill = -1;
 
@@ -152,7 +152,7 @@ be prompted to enter one.
 
 %end-doc */
 
-int ActionLoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_LoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
 	static char *default_file = NULL;
@@ -640,13 +640,13 @@ static pcb_bool rematch(const char *re, const char *s)
 static const char *vendor_cookie = "vendor drill mapping";
 
 pcb_hid_action_t vendor_action_list[] = {
-	{"ApplyVendor", 0, ActionApplyVendor,
+	{"ApplyVendor", 0, pcb_act_ApplyVendor,
 	 apply_vendor_help, apply_vendor_syntax}
 	,
-	{"UnloadVendor", 0, ActionUnloadVendor,
+	{"UnloadVendor", 0, pcb_act_UnloadVendor,
 	 unload_vendor_help, unload_vendor_syntax}
 	,
-	{"LoadVendorFrom", 0, ActionLoadVendorFrom,
+	{"LoadVendorFrom", 0, pcb_act_LoadVendorFrom,
 	 load_vendor_help, load_vendor_syntax}
 };
 

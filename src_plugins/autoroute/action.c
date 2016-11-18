@@ -34,9 +34,9 @@
 /* action routines for the autorouter
  */
 
-static const char autoroute_syntax[] = "AutoRoute(AllRats|SelectedRats)";
+static const char pcb_acts_AutoRoute[] = "AutoRoute(AllRats|SelectedRats)";
 
-static const char autoroute_help[] = "Auto-route some or all rat lines.";
+static const char pcb_acth_AutoRoute[] = "Auto-route some or all rat lines.";
 
 /* %start-doc actions AutoRoute
 
@@ -61,7 +61,7 @@ responsive.
 
 %end-doc */
 
-static int ActionAutoRoute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AutoRoute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_hid_action("Busy");
@@ -81,8 +81,8 @@ static int ActionAutoRoute(int argc, const char **argv, pcb_coord_t x, pcb_coord
 static const char *autoroute_cookie = "autoroute plugin";
 
 pcb_hid_action_t autoroute_action_list[] = {
-	{"AutoRoute", 0, ActionAutoRoute,
-	 autoroute_help, autoroute_syntax}
+	{"AutoRoute", 0, pcb_act_AutoRoute,
+	 pcb_acth_AutoRoute, pcb_acts_AutoRoute}
 	,
 };
 

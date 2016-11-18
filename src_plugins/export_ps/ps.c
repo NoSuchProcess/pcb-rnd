@@ -1544,14 +1544,14 @@ static void ps_set_crosshair(int x, int y, int action)
 {
 }
 
-static int ActionPSCalib(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_PSCalib(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	ps_calibrate(0.0, 0.0);
 	return 0;
 }
 
 pcb_hid_action_t hidps_action_list[] = {
-	{"pscalib", 0, ActionPSCalib}
+	{"pscalib", 0, pcb_act_PSCalib}
 };
 
 PCB_REGISTER_ACTIONS(hidps_action_list, ps_cookie)
