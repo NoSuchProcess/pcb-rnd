@@ -163,7 +163,7 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 		value = value_local;
 
 	if (allow == 0)
-		allow = ALLOW_ALL;
+		allow = PCB_UNIT_ALLOW_ALL;
 
 	i = printf_spec_->used + 64;
 	if (i > sizeof(printf_spec_new_local))
@@ -172,9 +172,9 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 		printf_spec_new = printf_spec_new_local;
 
 	/* Check our freedom in choosing units */
-	if ((allow & ALLOW_IMPERIAL) == 0)
+	if ((allow & PCB_UNIT_ALLOW_IMPERIAL) == 0)
 		family = PCB_UNIT_METRIC;
-	else if ((allow & ALLOW_METRIC) == 0)
+	else if ((allow & PCB_UNIT_ALLOW_METRIC) == 0)
 		family = PCB_UNIT_IMPERIAL;
 	else {
 		int met_votes = 0, imp_votes = 0;
@@ -279,8 +279,8 @@ typedef struct {
 
 /* Conversion preference table */
 static human_coord_t human_coord[] = {
-	{2, ALLOW_MM,  0.001, ALLOW_UM, 1000.0, ALLOW_M     ,NULL,NULL,NULL},
-	{1, ALLOW_MIL, 0,     0,        1000.0, ALLOW_IN    ,NULL,NULL,NULL}
+	{2, PCB_UNIT_ALLOW_MM,  0.001, PCB_UNIT_ALLOW_UM, 1000.0, PCB_UNIT_ALLOW_M     ,NULL,NULL,NULL},
+	{1, PCB_UNIT_ALLOW_MIL, 0,     0,        1000.0, PCB_UNIT_ALLOW_IN    ,NULL,NULL,NULL}
 };
 #define NUM_HUMAN_COORD (sizeof(human_coord) / sizeof(human_coord[0]))
 
@@ -399,7 +399,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 	char tmp[128]; /* large enough for rendering a long long int */
 	int tmplen, retval = -1, slot_recursion = 0;
 	char *free_fmt = NULL;
-	enum pcb_allow_e mask = ALLOW_ALL;
+	enum pcb_allow_e mask = PCB_UNIT_ALLOW_ALL;
 
 	gds_init(&spec);
 
@@ -464,7 +464,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 
 			/* Get our sub-specifiers */
 			if (*fmt == '#') {
-				mask = ALLOW_CMIL;			/* This must be pcb's base unit */
+				mask = PCB_UNIT_ALLOW_CMIL;			/* This must be pcb's base unit */
 				fmt++;
 			}
 			if (*fmt == '$') {
@@ -555,28 +555,28 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				count = 1;
 				switch (*fmt) {
 				case 'I':
-					if (CoordsToString(string, value, 1, &spec, ALLOW_NM, PCB_UNIT_NO_SUFFIX) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, PCB_UNIT_ALLOW_NM, PCB_UNIT_NO_SUFFIX) != 0) goto err;
 					break;
 				case 's':
-					if (CoordsToString(string, value, 1, &spec, ALLOW_MM | ALLOW_MIL, suffix) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, PCB_UNIT_ALLOW_MM | PCB_UNIT_ALLOW_MIL, suffix) != 0) goto err;
 					break;
 				case 'S':
-					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_NATURAL, suffix) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, mask & PCB_UNIT_ALLOW_NATURAL, suffix) != 0) goto err;
 					break;
 				case 'H':
 					if (CoordsToHumanString(string, value[0], &spec, suffix) != 0) goto err;
 					break;
 				case 'M':
-					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_METRIC, suffix) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, mask & PCB_UNIT_ALLOW_METRIC, suffix) != 0) goto err;
 					break;
 				case 'L':
-					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_IMPERIAL, suffix) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, mask & PCB_UNIT_ALLOW_IMPERIAL, suffix) != 0) goto err;
 					break;
 				case 'k':
-					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_DMIL, suffix) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, mask & PCB_UNIT_ALLOW_DMIL, suffix) != 0) goto err;
 					break;
 				case 'r':
-					if (CoordsToString(string, value, 1, &spec, ALLOW_READABLE, PCB_UNIT_NO_SUFFIX) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, PCB_UNIT_ALLOW_READABLE, PCB_UNIT_NO_SUFFIX) != 0) goto err;
 					break;
 					/* All these fallthroughs are deliberate */
 				case '9':
@@ -596,11 +596,11 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				case '2':
 				case 'D':
 					value[count++] = va_arg(args, pcb_coord_t);
-					if (CoordsToString(string, value, count, &spec, mask & ALLOW_ALL, suffix) != 0) goto err;
+					if (CoordsToString(string, value, count, &spec, mask & PCB_UNIT_ALLOW_ALL, suffix) != 0) goto err;
 					break;
 				case 'd':
 					value[1] = va_arg(args, pcb_coord_t);
-					if (CoordsToString(string, value, 2, &spec, ALLOW_MM | ALLOW_MIL, suffix) != 0) goto err;
+					if (CoordsToString(string, value, 2, &spec, PCB_UNIT_ALLOW_MM | PCB_UNIT_ALLOW_MIL, suffix) != 0) goto err;
 					break;
 				case '*':
 					{
@@ -613,7 +613,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 							}
 						}
 						if (!found)
-							if (CoordsToString(string, value, 1, &spec, mask & ALLOW_ALL, suffix) != 0) goto err;
+							if (CoordsToString(string, value, 1, &spec, mask & PCB_UNIT_ALLOW_ALL, suffix) != 0) goto err;
 					}
 					break;
 				case 'a':
@@ -644,7 +644,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 							}
 						}
 						if (!found)
-							if (CoordsToString(string, value, 1, &spec, ALLOW_ALL, suffix) != 0) goto err;
+							if (CoordsToString(string, value, 1, &spec, PCB_UNIT_ALLOW_ALL, suffix) != 0) goto err;
 					}
 					break;
 				}

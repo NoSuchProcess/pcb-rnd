@@ -50,10 +50,10 @@ int main()
 			PCB_PRINTF("ma=%ma\n", 130.1234);
 			PCB_PRINTF("ma=%ma\n", 555.1234);
 
-			PCB_PRINTF("m+=%m+%mS mil\n", ALLOW_MIL, c[n]);
-			PCB_PRINTF("m+=%m+%mS mm\n", ALLOW_MM, c[n]);
-			PCB_PRINTF("m+=%m+%mS m\n", ALLOW_M, c[n]);
-			PCB_PRINTF("m+=%m+%mS mm or m\n", ALLOW_MM | ALLOW_M, c[n]);
+			PCB_PRINTF("m+=%m+%mS mil\n", PCB_UNIT_ALLOW_MIL, c[n]);
+			PCB_PRINTF("m+=%m+%mS mm\n", PCB_UNIT_ALLOW_MM, c[n]);
+			PCB_PRINTF("m+=%m+%mS m\n", PCB_UNIT_ALLOW_M, c[n]);
+			PCB_PRINTF("m+=%m+%mS mm or m\n", PCB_UNIT_ALLOW_MM | PCB_UNIT_ALLOW_M, c[n]);
 		}
 	}
 

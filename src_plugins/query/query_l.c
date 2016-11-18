@@ -1112,37 +1112,37 @@ YY_RULE_SETUP
 case 42:
 YY_RULE_SETUP
 #line 90 "query_l.l"
-{ qry_lval.u = get_unit_struct_by_allow(ALLOW_MM); return T_UNIT; }
+{ qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_MM); return T_UNIT; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 91 "query_l.l"
-{ qry_lval.u = get_unit_struct_by_allow(ALLOW_M); return T_UNIT; }
+{ qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_M); return T_UNIT; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 92 "query_l.l"
-{ qry_lval.u = get_unit_struct_by_allow(ALLOW_UM); return T_UNIT; }
+{ qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_UM); return T_UNIT; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 93 "query_l.l"
-{ qry_lval.u = get_unit_struct_by_allow(ALLOW_CM); return T_UNIT; }
+{ qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_CM); return T_UNIT; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 94 "query_l.l"
-{ qry_lval.u = get_unit_struct_by_allow(ALLOW_NM); return T_UNIT; }
+{ qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_NM); return T_UNIT; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 95 "query_l.l"
-{ qry_lval.u = get_unit_struct_by_allow(ALLOW_MIL); return T_UNIT; }
+{ qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_MIL); return T_UNIT; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 96 "query_l.l"
-{ qry_lval.u = get_unit_struct_by_allow(ALLOW_IN); return T_UNIT; }
+{ qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_IN); return T_UNIT; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP

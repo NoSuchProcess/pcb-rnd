@@ -87,13 +87,13 @@ a[.]            { return T_FLD_A; }
 
 
 
-mm              { qry_lval.u = get_unit_struct_by_allow(ALLOW_MM); return T_UNIT; }
-m               { qry_lval.u = get_unit_struct_by_allow(ALLOW_M); return T_UNIT; }
-um              { qry_lval.u = get_unit_struct_by_allow(ALLOW_UM); return T_UNIT; }
-cm              { qry_lval.u = get_unit_struct_by_allow(ALLOW_CM); return T_UNIT; }
-nm              { qry_lval.u = get_unit_struct_by_allow(ALLOW_NM); return T_UNIT; }
-mil             { qry_lval.u = get_unit_struct_by_allow(ALLOW_MIL); return T_UNIT; }
-inch            { qry_lval.u = get_unit_struct_by_allow(ALLOW_IN); return T_UNIT; }
+mm              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_MM); return T_UNIT; }
+m               { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_M); return T_UNIT; }
+um              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_UM); return T_UNIT; }
+cm              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_CM); return T_UNIT; }
+nm              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_NM); return T_UNIT; }
+mil             { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_MIL); return T_UNIT; }
+inch            { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_IN); return T_UNIT; }
 
 [|][|]          { return T_OR; }
 [&][&]          { return T_AND; }

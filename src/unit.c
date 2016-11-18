@@ -44,35 +44,35 @@
  * to largest -- the code uses this ordering when finding
  * the best scale to use for a group of measures */
 pcb_unit_t Units[] = {
-	{0, "km", NULL, 'k', 0.000001, PCB_UNIT_METRIC, ALLOW_KM, 5,
+	{0, "km", NULL, 'k', 0.000001, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_KM, 5,
 	 0.00005, 0.0005, 0.0025, 0.05, 0.25,
 	 {""}},
-	{0, "m", NULL, 'f', 0.001, PCB_UNIT_METRIC, ALLOW_M, 5,
+	{0, "m", NULL, 'f', 0.001, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_M, 5,
 	 0.0005, 0.005, 0.025, 0.5, 2.5,
 	 {""}},
-	{0, "cm", NULL, 'e', 0.1, PCB_UNIT_METRIC, ALLOW_CM, 5,
+	{0, "cm", NULL, 'e', 0.1, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_CM, 5,
 	 0.005, 0.05, 0.25, 5, 25,
 	 {""}},
-	{0, "mm", NULL, 'm', 1, PCB_UNIT_METRIC, ALLOW_MM, 4,
+	{0, "mm", NULL, 'm', 1, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_MM, 4,
 	 0.005, 0.05, 0.25, 5, 25,
 	 {""}},
-	{0, "um", NULL, 'u', 1000, PCB_UNIT_METRIC, ALLOW_UM, 2,
+	{0, "um", NULL, 'u', 1000, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_UM, 2,
 	 0.005, 0.05, 0.25, 5, 25,
 	 {""}},
-	{0, "nm", NULL, 'n', 1000000, PCB_UNIT_METRIC, ALLOW_NM, 0,
+	{0, "nm", NULL, 'n', 1000000, PCB_UNIT_METRIC, PCB_UNIT_ALLOW_NM, 0,
 	 5, 50, 2500, 5000, 25000,
 	 {""}},
 
-	{0, "in", NULL, 'i', 0.001, PCB_UNIT_IMPERIAL, ALLOW_IN, 5,
+	{0, "in", NULL, 'i', 0.001, PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_IN, 5,
 	 0.1, 1.0, 5.0, 25, 100,
 	 {"inch"}},
-	{0, "mil", NULL, 'l', 1, PCB_UNIT_IMPERIAL, ALLOW_MIL, 2,
+	{0, "mil", NULL, 'l', 1, PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_MIL, 2,
 	 0.1, 1.0, 10, 100, 1000,
 	 {""}},
-	{0, "dmil", NULL, 'k', 10, PCB_UNIT_IMPERIAL, ALLOW_DMIL, 1,	/* kicad legacy decimil unit */
+	{0, "dmil", NULL, 'k', 10, PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_DMIL, 1,	/* kicad legacy decimil unit */
 	 0.1, 1.0, 10, 100, 1000,				/* wild guess at factors */
 	 {""}},
-	{0, "cmil", NULL, 'c', 100, PCB_UNIT_IMPERIAL, ALLOW_CMIL, 0,
+	{0, "cmil", NULL, 'c', 100, PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_CMIL, 0,
 	 1, 10, 100, 1000, 10000,
 	 {"pcb"}}
 };

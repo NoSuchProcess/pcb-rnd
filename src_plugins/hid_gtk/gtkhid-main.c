@@ -1714,7 +1714,7 @@ static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 0;
 
 	new_unit = get_unit_struct(argv[0]);
-	if (new_unit != NULL && new_unit->allow != NO_PRINT) {
+	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT) {
 		conf_set(CFR_DESIGN, "editor/grid_unit", -1, argv[0], POL_OVERWRITE);
 		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
 	}
