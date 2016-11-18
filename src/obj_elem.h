@@ -112,12 +112,12 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 
 #define PCB_ELEM_NAME_VISIBLE(p,e)   ((e)->Name[PCB_ELEMNAME_IDX_VISIBLE()].TextString)
 #define PCB_ELEM_NAME_DESCRIPTION(e) ((e)->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString)
-#define PCB_ELEM_NAME_REFDES(e)   ((e)->Name[PCB_ELEMNAME_IDX_REFDES].TextString)
+#define PCB_ELEM_NAME_REFDES(e)      ((e)->Name[PCB_ELEMNAME_IDX_REFDES].TextString)
 #define PCB_ELEM_NAME_VALUE(e)       ((e)->Name[PCB_ELEMNAME_IDX_VALUE].TextString)
 
 #define PCB_ELEM_TEXT_VISIBLE(p,e)   ((e)->Name[PCB_ELEMNAME_IDX_VISIBLE()])
 #define PCB_ELEM_TEXT_DESCRIPTION(e) ((e)->Name[PCB_ELEMNAME_IDX_DESCRIPTION])
-#define PCB_ELEM_TEXT_REFDES(e)   ((e)->Name[PCB_ELEMNAME_IDX_REFDES])
+#define PCB_ELEM_TEXT_REFDES(e)      ((e)->Name[PCB_ELEMNAME_IDX_REFDES])
 #define PCB_ELEM_TEXT_VALUE(e)       ((e)->Name[PCB_ELEMNAME_IDX_VALUE])
 
 /*** loops ***/
