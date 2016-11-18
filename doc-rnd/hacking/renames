@@ -1349,3 +1349,9 @@ movelayeraction_syntax -> pcb_acts_MoveLayerAction
 Action_fp_rehash -> pcb_act__fp_rehash
 _fp_rehash_help -> pcb_acth__fp_rehash
 _fp_rehash_syntax -> pcb_acts__fp_rehash
+ActionMorphPolygon -> pcb_act_MorphPolygon
+morphpolygon_help -> pcb_acth_MorphPolygon
+morphpolygon_syntax -> pcb_acts_MorphPolygon
+ActionPolygon -> pcb_act_Polygon
+polygon_help -> pcb_acth_Polygon
+polygon_syntax -> pcb_acts_Polygon

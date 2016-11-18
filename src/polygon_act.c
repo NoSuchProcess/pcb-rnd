@@ -45,7 +45,7 @@
 
 static const char morphpcb_polygon_syntax[] = "pcb_poly_morph(Object|Selected)";
 
-static const char morphpolygon_help[] = "Converts dead polygon islands into separate polygons.";
+static const char pcb_acth_MorphPolygon[] = "Converts dead polygon islands into separate polygons.";
 
 /* %start-doc actions MorphPolygon
 
@@ -57,7 +57,7 @@ off are automatically deleted.
 
 %end-doc */
 
-static int ActionMorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
@@ -95,7 +95,7 @@ static int ActionMorphPolygon(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 static const char pcb_polygon_syntax[] = "Polygon(Close|PreviousPoint)";
 
-static const char polygon_help[] = "Some polygon related stuff.";
+static const char pcb_acth_Polygon[] = "Some polygon related stuff.";
 
 /* %start-doc actions Polygon
 
@@ -115,7 +115,7 @@ will call Polygon(PreviousPoint) when appropriate to do so.
 
 %end-doc */
 
-static int ActionPolygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Polygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function && conf_core.editor.mode == PCB_MODE_POLYGON) {
@@ -138,11 +138,11 @@ static int ActionPolygon(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 
 pcb_hid_action_t polygon_action_list[] = {
-	{"MorphPolygon", 0, ActionMorphPolygon,
-	 morphpolygon_help, morphpcb_polygon_syntax}
+	{"MorphPolygon", 0, pcb_act_MorphPolygon,
+	 pcb_acth_MorphPolygon, morphpcb_polygon_syntax}
 	,
-	{"Polygon", 0, ActionPolygon,
-	 polygon_help, pcb_polygon_syntax}
+	{"Polygon", 0, pcb_act_Polygon,
+	 pcb_acth_Polygon, pcb_polygon_syntax}
 };
 
 PCB_REGISTER_ACTIONS(polygon_action_list, NULL)
