@@ -56,7 +56,7 @@ void *pcb_move_obj_to_buffer(pcb_data_t *, pcb_data_t *, int, void *, void *, vo
 void *pcb_copy_obj_to_buffer(pcb_data_t *, pcb_data_t *, int, void *, void *, void *);
 
 /* This action is called from ActionElementAddIf() */
-int pcb_load_footprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 /* pastes the contents of the buffer to the layout. Only visible objects
    are handled by the routine. */

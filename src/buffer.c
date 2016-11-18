@@ -138,9 +138,9 @@ void pcb_buffer_add_selected(pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y,
 
 /*---------------------------------------------------------------------------*/
 
-static const char loadfootprint_syntax[] = "pcb_load_footprint(filename[,refdes,value])";
+static const char pcb_acts_LoadFootprint[] = "pcb_load_footprint(filename[,refdes,value])";
 
-static const char loadfootprint_help[] = "Loads a single footprint by name.";
+static const char pcb_acth_LoadFootprint[] = "Loads a single footprint by name.";
 
 /* %start-doc actions LoadFootprint
 
@@ -150,7 +150,7 @@ into the footprint as well.  The footprint remains in the paste buffer.
 
 %end-doc */
 
-int pcb_load_footprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_LoadFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *name = PCB_ACTION_ARG(0);
 	const char *refdes = PCB_ACTION_ARG(1);
@@ -158,7 +158,7 @@ int pcb_load_footprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	pcb_element_t *e;
 
 	if (!name)
-		PCB_AFAIL(loadfootprint);
+		PCB_ACT_FAIL(LoadFootprint);
 
 	if (pcb_element_load_footprint_by_name(PCB_PASTEBUFFER, name))
 		return 1;
@@ -349,9 +349,9 @@ pcb_data_t *pcb_buffer_new(void)
 
 /* -------------------------------------------------------------------------- */
 
-static const char freerotatebuffer_syntax[] = "pcb_buffer_free_rotate([Angle])";
+static const char pcb_acts_FreeRotateBuffer[] = "pcb_buffer_free_rotate([Angle])";
 
-static const char freerotatebuffer_help[] =
+static const char pcb_acth_FreeRotateBuffer[] =
 	"Rotates the current paste buffer contents by the specified angle.  The\n"
 	"angle is given in degrees.  If no angle is given, the user is prompted\n" "for one.\n";
 
@@ -362,7 +362,7 @@ angle is given, the user is prompted for one.
 
 %end-doc */
 
-int ActionFreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_FreeRotateBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *angle_s;
 
@@ -710,11 +710,11 @@ void pcb_buffer_set_number(int Number)
 
 /* ---------------------------------------------------------------------- */
 
-static const char pastebuffer_syntax[] =
+static const char pcb_acts_PasteBuffer[] =
 	"PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)\n"
 	"PasteBuffer(Rotate, 1..3)\n" "PasteBuffer(Convert|Restore|Mirror)\n" "PasteBuffer(ToLayout, X, Y, units)\n" "PasteBuffer(Save, Filename, [format], [force])";
 
-static const char pastebuffer_help[] = "Various operations on the paste buffer.";
+static const char pcb_acth_PasteBuffer[] = "Various operations on the paste buffer.";
 
 /* %start-doc actions PasteBuffer
 
@@ -769,7 +769,7 @@ Selects the given buffer to be the current paste buffer.
 
 %end-doc */
 
-static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_PasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = argc ? argv[0] : "";
 	const char *sbufnum = argc > 1 ? argv[1] : "";
@@ -874,7 +874,7 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				}
 				else {
 					pcb_notify_crosshair_change(pcb_true);
-					PCB_AFAIL(pastebuffer);
+					PCB_ACT_FAIL(PasteBuffer);
 				}
 
 				oldx = x;
@@ -903,14 +903,14 @@ static int ActionPasteBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coo
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t buffer_action_list[] = {
-	{"FreeRotateBuffer", 0, ActionFreeRotateBuffer,
-	 freerotatebuffer_help, freerotatebuffer_syntax}
+	{"FreeRotateBuffer", 0, pcb_act_FreeRotateBuffer,
+	 pcb_acth_FreeRotateBuffer, pcb_acts_FreeRotateBuffer}
 	,
-	{"LoadFootprint", 0, pcb_load_footprint,
-	 loadfootprint_help, loadfootprint_syntax}
+	{"LoadFootprint", 0, pcb_act_LoadFootprint,
+	 pcb_acth_LoadFootprint, pcb_acts_LoadFootprint}
 	,
-	{"PasteBuffer", 0, ActionPasteBuffer,
-	 pastebuffer_help, pastebuffer_syntax}
+	{"PasteBuffer", 0, pcb_act_PasteBuffer,
+	 pcb_acth_PasteBuffer, pcb_acts_PasteBuffer}
 };
 
 PCB_REGISTER_ACTIONS(buffer_action_list, NULL)

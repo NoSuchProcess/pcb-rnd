@@ -549,7 +549,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		printf("  ... Footprint not on board, need to add it.\n");
 #endif
 		/* Not on board, need to add it. */
-		if (pcb_load_footprint(argc, args, x, y)) {
+		if (pcb_act_LoadFootprint(argc, args, x, y)) {
 			number_of_footprints_not_found++;
 			return 1;
 		}
@@ -590,7 +590,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		pcb_element_t *pe;
 
 		/* Different footprint, we need to swap them out.  */
-		if (pcb_load_footprint(argc, args, x, y)) {
+		if (pcb_act_LoadFootprint(argc, args, x, y)) {
 			number_of_footprints_not_found++;
 			return 1;
 		}

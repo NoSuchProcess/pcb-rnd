@@ -1415,3 +1415,9 @@ chkgridunits_syntax -> pcb_acts_ChkGridUnits
 ActionChkBuffer -> pcb_act_ChkBuffer
 chkbuffer_help -> pcb_acth_ChkBuffer
 chkbuffer_syntax -> pcb_acts_ChkBuffer
+ActionFreeRotateBuffer -> pcb_act_FreeRotateBuffer
+freerotatebuffer_help -> pcb_acth_FreeRotateBuffer
+freerotatebuffer_syntax -> pcb_acts_FreeRotateBuffer
+ActionPasteBuffer -> pcb_act_PasteBuffer
+pastebuffer_help -> pcb_acth_PasteBuffer
+pastebuffer_syntax -> pcb_acts_PasteBuffer

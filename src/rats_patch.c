@@ -416,7 +416,7 @@ static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, 
 	/* check if the footprint is available */
 	a[0] = fpname;
 	a[1] = NULL;
-	if (pcb_load_footprint(1, a, x, y) != 0) {
+	if (pcb_act_LoadFootprint(1, a, x, y) != 0) {
 		pcb_message(PCB_MSG_DEFAULT, "Can't load footprint %s\n", fpname);
 		return 1;
 	}
@@ -430,7 +430,7 @@ static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, 
 			a[1] = element->Name[1].TextString;
 			a[2] = element->Name[2].TextString;
 			a[3] = NULL;
-			pcb_load_footprint(3, a, element->MarkX, element->MarkY);
+			pcb_act_LoadFootprint(3, a, element->MarkX, element->MarkY);
 			pcb_buffer_copy_to_layout(element->MarkX, element->MarkY);
 			pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, a[1], "footprint", fpname);
 			pcb_element_remove(element);
