@@ -56,7 +56,7 @@
 #include <locale.h>
 #endif
 
-extern int MoveLayerAction(int argc, char **argv, int x, int y);
+extern int pcb_act_MoveLayerAction(int argc, char **argv, int x, int y);
 conf_hid_gtk_t conf_hid_gtk;
 window_geometry_t hid_gtk_wgeo, hid_gtk_wgeo_old;
 
@@ -1466,7 +1466,7 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 		return;
 
 	argv = g_strsplit(data, ",", -1);
-	MoveLayerAction(2, argv, 0, 0);
+	pcb_act_MoveLayerAction(2, argv, 0, 0);
 	g_strfreev(argv);
 }
 

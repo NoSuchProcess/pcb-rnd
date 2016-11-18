@@ -85,9 +85,9 @@ static void delete_attr(pcb_attribute_list_t *list, pcb_attribute_t * attr)
 
 /* ------------------------------------------------------------ */
 
-static const char attributes_syntax[] = "Attributes(Layout|Layer|Element)\n" "Attributes(Layer,layername)";
+static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element)\n" "Attributes(Layer,layername)";
 
-static const char attributes_help[] =
+static const char pcb_acth_Attributes[] =
 	"Let the user edit the attributes of the layout, current or given\n" "layer, or selected element.";
 
 /* %start-doc actions Attributes
@@ -98,14 +98,14 @@ pcb, an element, or a layer.
 %end-doc */
 
 
-static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *layername = PCB_ACTION_ARG(1);
 	char *buf;
 
 	if (!function)
-		PCB_AFAIL(attributes);
+		PCB_ACT_FAIL(Attributes);
 
 	if (!pcb_gui->edit_attributes) {
 		pcb_message(PCB_MSG_DEFAULT, _("This GUI doesn't support Attribute Editing\n"));
@@ -182,7 +182,7 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		}
 
 	default:
-		PCB_AFAIL(attributes);
+		PCB_ACT_FAIL(Attributes);
 	}
 
 	return 0;
@@ -190,9 +190,9 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 /* --------------------------------------------------------------------------- */
 
-static const char disperseelements_syntax[] = "DisperseElements(All|Selected)";
+static const char pcb_acts_DisperseElements[] = "DisperseElements(All|Selected)";
 
-static const char disperseelements_help[] = "Disperses elements.";
+static const char pcb_acth_DisperseElements[] = "Disperses elements.";
 
 /* %start-doc actions DisperseElements
 
@@ -206,7 +206,7 @@ from.
 
 #define GAP PCB_MIL_TO_COORD(100)
 
-static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DisperseElements(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
@@ -231,7 +231,7 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 	}
 
 	if (bad) {
-		PCB_AFAIL(disperseelements);
+		PCB_ACT_FAIL(DisperseElements);
 	}
 
 
@@ -303,9 +303,9 @@ static int ActionDisperseElements(int argc, const char **argv, pcb_coord_t x, pc
 
 /* -------------------------------------------------------------------------- */
 
-static const char flip_syntax[] = "Flip(Object|Selected|SelectedElements)";
+static const char pcb_acts_Flip[] = "Flip(Object|Selected|SelectedElements)";
 
-static const char flip_help[] = "Flip an element to the opposite side of the board.";
+static const char pcb_acth_Flip[] = "Flip an element to the opposite side of the board.";
 
 /* %start-doc actions Flip
 
@@ -317,7 +317,7 @@ other, not their absolute positions on the board.
 
 %end-doc */
 
-static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Flip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_element_t *element;
@@ -346,13 +346,13 @@ static int ActionFlip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			return 0;
 	}
 
-	PCB_AFAIL(flip);
+	PCB_ACT_FAIL(Flip);
 }
 /* --------------------------------------------------------------------------- */
 
-static const char moveobject_syntax[] = "pcb_move_obj(X,Y,dim)";
+static const char pcb_acts_MoveObject[] = "pcb_move_obj(X,Y,dim)";
 
-static const char moveobject_help[] = "Moves the object under the crosshair.";
+static const char pcb_acth_MoveObject[] = "Moves the object under the crosshair.";
 
 /* %start-doc actions MoveObject
 
@@ -364,7 +364,7 @@ units, currently 1/100 mil.
 
 %end-doc */
 
-static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *x_str = PCB_ACTION_ARG(0);
 	const char *y_str = PCB_ACTION_ARG(1);
@@ -398,9 +398,9 @@ static int ActionMoveObject(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 /* --------------------------------------------------------------------------- */
 
-static const char movetocurrentlayer_syntax[] = "MoveToCurrentLayer(Object|SelectedObjects)";
+static const char pcb_acts_MoveToCurrentLayer[] = "MoveToCurrentLayer(Object|SelectedObjects)";
 
-static const char movetocurrentlayer_help[] = "Moves objects to the current layer.";
+static const char pcb_acth_MoveToCurrentLayer[] = "Moves objects to the current layer.";
 
 /* %start-doc actions MoveToCurrentLayer
 
@@ -410,7 +410,7 @@ or from solder to component, won't automatically flip it.  Use the
 
 %end-doc */
 
-static int ActionMoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
@@ -438,9 +438,9 @@ static int ActionMoveToCurrentLayer(int argc, const char **argv, pcb_coord_t x, 
 }
 
 /* ---------------------------------------------------------------- */
-static const char elementlist_syntax[] = "ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)";
+static const char pcb_acts_ElementList[] = "ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)";
 
-static const char elementlist_help[] = "Adds the given element if it doesn't already exist.";
+static const char pcb_acth_ElementList[] = "Adds the given element if it doesn't already exist.";
 
 /* %start-doc actions elementlist
 
@@ -477,7 +477,7 @@ static int parse_layout_attribute_units(const char *name, int def)
 	return pcb_get_value(as, NULL, NULL, NULL);
 }
 
-static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_element_t *e = NULL;
 	const char *refdes, *value, *footprint;
@@ -486,7 +486,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	char *old;
 
 #ifdef DEBUG
-	printf("Entered ActionElementList, executing function %s\n", function);
+	printf("Entered pcb_act_ElementList, executing function %s\n", function);
 #endif
 
 	if (strcasecmp(function, "start") == 0) {
@@ -518,10 +518,10 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	}
 
 	if (strcasecmp(function, "need") != 0)
-		PCB_AFAIL(elementlist);
+		PCB_ACT_FAIL(ElementList);
 
 	if (argc != 4)
-		PCB_AFAIL(elementlist);
+		PCB_ACT_FAIL(ElementList);
 
 	argc--;
 	argv++;
@@ -634,16 +634,16 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	PCB_FLAG_SET(PCB_FLAG_FOUND, e);
 
 #ifdef DEBUG
-	printf(" ... Leaving ActionElementList.\n");
+	printf(" ... Leaving pcb_act_ElementList.\n");
 #endif
 
 	return 0;
 }
 
 /* ---------------------------------------------------------------- */
-static const char elementsetattr_syntax[] = "ElementSetAttr(refdes,name[,value])";
+static const char pcb_acts_ElementSetAttr[] = "ElementSetAttr(refdes,name[,value])";
 
-static const char elementsetattr_help[] = "Sets or clears an element-specific attribute.";
+static const char pcb_acth_ElementSetAttr[] = "Sets or clears an element-specific attribute.";
 
 /* %start-doc actions elementsetattr
 
@@ -653,14 +653,14 @@ not specified, the given attribute is removed if present.
 
 %end-doc */
 
-static int ActionElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_element_t *e = NULL;
 	const char *refdes, *name, *value;
 	pcb_attribute_t *attr;
 
 	if (argc < 2) {
-		PCB_AFAIL(elementsetattr);
+		PCB_ACT_FAIL(ElementSetAttr);
 	}
 
 	refdes = argv[0];
@@ -699,9 +699,9 @@ static int ActionElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_
 
 /* --------------------------------------------------------------------------- */
 
-static const char ripup_syntax[] = "RipUp(All|Selected|Element)";
+static const char pcb_acts_RipUp[] = "RipUp(All|Selected|Element)";
 
-static const char ripup_help[] = "Ripup auto-routed tracks, or convert an element to parts.";
+static const char pcb_acth_RipUp[] = "Ripup auto-routed tracks, or convert an element to parts.";
 
 /* %start-doc actions RipUp
 
@@ -722,7 +722,7 @@ that this uses the highest numbered paste buffer.
 
 %end-doc */
 
-static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_RipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_bool changed = pcb_false;
@@ -814,9 +814,9 @@ static int ActionRipUp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 /* ---------------------------------------------------------------------------  */
 
-static const char minmaskgap_syntax[] = "MinMaskGap(delta)\n" "MinMaskGap(Selected, delta)";
+static const char pcb_acts_MinMaskGap[] = "MinMaskGap(delta)\n" "MinMaskGap(Selected, delta)";
 
-static const char minmaskgap_help[] = "Ensures the mask is a minimum distance from pins and pads.";
+static const char pcb_acth_MinMaskGap[] = "Ensures the mask is a minimum distance from pins and pads.";
 
 /* %start-doc actions MinMaskGap
 
@@ -826,7 +826,7 @@ the mask edge.
 
 %end-doc */
 
-static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *delta = PCB_ACTION_ARG(1);
@@ -888,9 +888,9 @@ static int ActionMinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 /* ---------------------------------------------------------------------------  */
 
-static const char mincleargap_syntax[] = "MinClearGap(delta)\n" "MinClearGap(Selected, delta)";
+static const char pcb_acts_MinClearGap[] = "MinClearGap(delta)\n" "MinClearGap(Selected, delta)";
 
-static const char mincleargap_help[] = "Ensures that polygons are a minimum distance from objects.";
+static const char pcb_acth_MinClearGap[] = "Ensures that polygons are a minimum distance from objects.";
 
 /* %start-doc actions MinClearGap
 
@@ -900,7 +900,7 @@ polygon edges.
 
 %end-doc */
 
-static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	const char *delta = PCB_ACTION_ARG(1);
@@ -981,7 +981,7 @@ static int ActionMinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_coo
 }
 
 /* ---------------------------------------------------------------------------  */
-int ActionListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_ListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
@@ -1041,7 +1041,7 @@ Creates a new layer.
 
 %end-doc */
 
-int MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_index, new_index;
 	int new_top = -1;
@@ -1096,40 +1096,40 @@ int MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 
 pcb_hid_action_t object_action_list[] = {
-	{"Attributes", 0, ActionAttributes,
-	 attributes_help, attributes_syntax}
+	{"Attributes", 0, pcb_act_Attributes,
+	 pcb_acth_Attributes, pcb_acts_Attributes}
 	,
-	{"DisperseElements", 0, ActionDisperseElements,
-	 disperseelements_help, disperseelements_syntax}
+	{"DisperseElements", 0, pcb_act_DisperseElements,
+	 pcb_acth_DisperseElements, pcb_acts_DisperseElements}
 	,
-	{"Flip", N_("Click on Object or Flip Point"), ActionFlip,
-	 flip_help, flip_syntax}
+	{"Flip", N_("Click on Object or Flip Point"), pcb_act_Flip,
+	 pcb_acth_Flip, pcb_acts_Flip}
 	,
-	{"ListRotations", 0, ActionListRotations,
+	{"ListRotations", 0, pcb_act_ListRotations,
 	 0, 0}
 	,
-	{"MoveObject", N_("Select an Object"), ActionMoveObject,
-	 moveobject_help, moveobject_syntax}
+	{"MoveObject", N_("Select an Object"), pcb_act_MoveObject,
+	 pcb_acth_MoveObject, pcb_acts_MoveObject}
 	,
-	{"MoveToCurrentLayer", 0, ActionMoveToCurrentLayer,
-	 movetocurrentlayer_help, movetocurrentlayer_syntax}
+	{"MoveToCurrentLayer", 0, pcb_act_MoveToCurrentLayer,
+	 pcb_acth_MoveToCurrentLayer, pcb_acts_MoveToCurrentLayer}
 	,
-	{"ElementList", 0, ActionElementList,
-	 elementlist_help, elementlist_syntax}
+	{"ElementList", 0, pcb_act_ElementList,
+	 pcb_acth_ElementList, pcb_acts_ElementList}
 	,
-	{"ElementSetAttr", 0, ActionElementSetAttr,
-	 elementsetattr_help, elementsetattr_syntax}
+	{"ElementSetAttr", 0, pcb_act_ElementSetAttr,
+	 pcb_acth_ElementSetAttr, pcb_acts_ElementSetAttr}
 	,
-	{"RipUp", 0, ActionRipUp,
-	 ripup_help, ripup_syntax}
+	{"RipUp", 0, pcb_act_RipUp,
+	 pcb_acth_RipUp, pcb_acts_RipUp}
 	,
-	{"MinMaskGap", 0, ActionMinMaskGap,
-	 minmaskgap_help, minmaskgap_syntax}
+	{"MinMaskGap", 0, pcb_act_MinMaskGap,
+	 pcb_acth_MinMaskGap, pcb_acts_MinMaskGap}
 	,
-	{"MinClearGap", 0, ActionMinClearGap,
-	 mincleargap_help, mincleargap_syntax}
+	{"MinClearGap", 0, pcb_act_MinClearGap,
+	 pcb_acth_MinClearGap, pcb_acts_MinClearGap}
 	,
-	{"MoveLayer", 0, MoveLayerAction,
+	{"MoveLayer", 0, pcb_act_MoveLayerAction,
 	 movelayer_help, movelayer_syntax}
 };
 

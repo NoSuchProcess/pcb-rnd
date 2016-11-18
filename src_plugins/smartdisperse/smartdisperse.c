@@ -51,7 +51,7 @@ static pcb_coord_t maxy;
  *
  * Must initialize statics above before calling for the first time.
  *
- * This is taken almost entirely from ActionDisperseElements, with cleanup
+ * This is taken almost entirely from pcb_act_DisperseElements, with cleanup
  */
 static void place(pcb_element_t * element)
 {
