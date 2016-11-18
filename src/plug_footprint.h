@@ -62,9 +62,9 @@ extern pcb_plug_fp_t *plug_fp_chain;
 
 /* Optional pcb-rnd-side glue for some implementations */
 
-extern pcb_fplibrary_t library; /* the footprint library */
+extern pcb_fplibrary_t pcb_library; /* the footprint library */
 
-#define pcb_get_library_memory(parent) vtlib_alloc_append(((parent) == NULL ? &library.data.dir.children : &(parent)->data.dir.children), 1);
+#define pcb_get_library_memory(parent) vtlib_alloc_append(((parent) == NULL ? &pcb_library.data.dir.children : &(parent)->data.dir.children), 1);
 
 void pcb_fp_free_children(pcb_fplibrary_t *parent);
 void pcb_fp_sort_children(pcb_fplibrary_t *parent);

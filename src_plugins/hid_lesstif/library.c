@@ -126,7 +126,7 @@ static void lib_dfs(pcb_fplibrary_t *parent, int level)
 static int LibraryChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i;
-	if (library.data.dir.children.used == 0)
+	if (pcb_library.data.dir.children.used == 0)
 		return 0;
 	if (build_library_dialog())
 		return 0;
@@ -138,7 +138,7 @@ static int LibraryChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	vtptr_truncate(&picks, 0);
 	vtptr_truncate(&pick_names, 0);
 
-	lib_dfs(&library, 0);
+	lib_dfs(&pcb_library, 0);
 
 
 	if (library_strings)

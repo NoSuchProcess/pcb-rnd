@@ -260,7 +260,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 
 static int fp_fs_load_dir(pcb_plug_fp_t *ctx, const char *path)
 {
-	return fp_fs_load_dir_(&library, ".", path, 1);
+	return fp_fs_load_dir_(&pcb_library, ".", path, 1);
 }
 
 typedef struct {
@@ -314,7 +314,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 		pcb_path_resolve(path, &fpath, 0);
 /*		fprintf(stderr, " in '%s'\n", fpath);*/
 
-		fp_fs_list(&library, fpath, 1, fp_search_cb, &ctx, 1, 0);
+		fp_fs_list(&pcb_library, fpath, 1, fp_search_cb, &ctx, 1, 0);
 		if (ctx.path != NULL) {
 			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, ctx.real_name);
 			free(ctx.path);

@@ -109,7 +109,7 @@ static void dump_lib_any(int level, pcb_fplibrary_t *l)
 
 static int ActionDumpLibrary(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	dump_lib_any(0, &library);
+	dump_lib_any(0, &pcb_library);
 
 	return 0;
 }

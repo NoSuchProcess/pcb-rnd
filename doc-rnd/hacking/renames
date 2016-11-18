@@ -1109,3 +1109,6 @@ AdjustAttachedLine -> pcb_line_adjust_attached
 AdjustTwoLine -> pcb_line_adjust_attached_2lines
 FortyFiveLine -> pcb_line_45
 EnforceLineDRC -> pcb_line_enforce_drc
+library -> pcb_library
+gui -> pcb_gui
+exporter -> pcb_exporter

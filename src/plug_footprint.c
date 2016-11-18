@@ -36,7 +36,7 @@
 #include "compat_misc.h"
 
 pcb_plug_fp_t *plug_fp_chain = NULL;
-pcb_fplibrary_t library;
+pcb_fplibrary_t pcb_library;
 
 int pcb_fp_dupname(const char *name, char **basename, char **params)
 {
@@ -81,14 +81,14 @@ const void *pcb_fp_tag(const char *tag, int alloc)
 
 void pcb_fp_init()
 {
-	library.type = LIB_DIR;
-	library.name = pcb_strdup("/");  /* All names are eventually free()'d */
+	pcb_library.type = LIB_DIR;
+	pcb_library.name = pcb_strdup("/");  /* All names are eventually free()'d */
 }
 
 void pcb_fp_uninit()
 {
 	htsp_entry_t *e;
-	pcb_fp_free_children(&library);
+	pcb_fp_free_children(&pcb_library);
 	if (fp_tags != NULL) {
 		for (e = htsp_first(fp_tags); e; e = htsp_next(fp_tags, e))
 			free(e->key);
@@ -196,7 +196,7 @@ pcb_fplibrary_t *pcb_fp_mkdir_p(const char *path)
 	/* search for the last existing dir in the path */
 
 	while(*path == '/') path++;
-	for(parent = l = &library; l != NULL; parent = l,path = next) {
+	for(parent = l = &pcb_library; l != NULL; parent = l,path = next) {
 		next = strchr(path, '/');
 		if (next == NULL)
 			l = pcb_fp_lib_search(l, path);
@@ -316,7 +316,7 @@ void fp_dump_dir(pcb_fplibrary_t *dir, int level)
 
 void fp_dump()
 {
-	fp_dump_dir(&library, 0);
+	fp_dump_dir(&pcb_library, 0);
 }
 
 /* This function loads the newlib footprints into the Library.
@@ -390,7 +390,7 @@ int pcb_fp_read_lib_all(void)
 	 * library.
 	 */
 	if (fp_read_lib_all_(pcb_fp_default_search_path()) > 0 || resultFP != NULL) {
-		pcb_fp_sort_children(&library);
+		pcb_fp_sort_children(&pcb_library);
 		return 0;
 	}
 
@@ -399,6 +399,6 @@ int pcb_fp_read_lib_all(void)
 
 int pcb_fp_rehash(void)
 {
-	pcb_fp_free_children(&library);
+	pcb_fp_free_children(&pcb_library);
 	return pcb_fp_read_lib_all();
 }

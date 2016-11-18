@@ -576,7 +576,7 @@ static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore *tree, GhidLibra
 static GtkTreeModel *create_lib_tree_model(GhidLibraryWindow *library_window)
 {
 	GtkTreeStore *tree = gtk_tree_store_new(N_MENU_COLUMNS, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_POINTER);
-	return create_lib_tree_model_recurse(tree, library_window, &library, NULL);
+	return create_lib_tree_model_recurse(tree, library_window, &pcb_library, NULL);
 }
 
 #if 0

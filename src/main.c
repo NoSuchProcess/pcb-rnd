@@ -471,7 +471,7 @@ int main(int argc, char *argv[])
 
 	/* read the library file and display it if it's not empty
 	 */
-	if (!pcb_fp_read_lib_all() && library.data.dir.children.used)
+	if (!pcb_fp_read_lib_all() && pcb_library.data.dir.children.used)
 		pcb_hid_action("LibraryChanged");
 
 	if (conf_core.rc.script_filename) {
