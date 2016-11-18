@@ -113,12 +113,12 @@ do { \
 static int inline append_suffix(gds_t *dest, enum pcb_suffix_e suffix_type, const char *suffix)
 {
 	switch (suffix_type) {
-	case NO_SUFFIX:
+	case PCB_UNIT_NO_SUFFIX:
 		break;
-	case SUFFIX:
+	case PCB_UNIT_SUFFIX:
 		if (gds_append(dest, ' ') != 0) return -1;
 		/* deliberate fall-thru */
-	case FILE_MODE:
+	case PCB_UNIT_FILE_MODE:
 		if (gds_append_str(dest, suffix) != 0) return -1;
 		break;
 	}
@@ -173,9 +173,9 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 
 	/* Check our freedom in choosing units */
 	if ((allow & ALLOW_IMPERIAL) == 0)
-		family = METRIC;
+		family = PCB_UNIT_METRIC;
 	else if ((allow & ALLOW_METRIC) == 0)
-		family = IMPERIAL;
+		family = PCB_UNIT_IMPERIAL;
 	else {
 		int met_votes = 0, imp_votes = 0;
 
@@ -186,18 +186,18 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 				++met_votes;
 
 		if (imp_votes > met_votes)
-			family = IMPERIAL;
+			family = PCB_UNIT_IMPERIAL;
 		else
-			family = METRIC;
+			family = PCB_UNIT_METRIC;
 	}
 
 	/* Set base unit */
 	for (i = 0; i < n_coords; ++i) {
 		switch (family) {
-		case METRIC:
+		case PCB_UNIT_METRIC:
 			value[i] = PCB_COORD_TO_MM(coord[i]);
 			break;
-		case IMPERIAL:
+		case PCB_UNIT_IMPERIAL:
 			value[i] = PCB_COORD_TO_MIL(coord[i]);
 			break;
 		}
@@ -236,12 +236,12 @@ static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const 
 		if (gds_append(dest,  '(') != 0)
 			goto err;
 
-	sprintf_lc_safe((suffix_type == FILE_MODE), filemode_buff, printf_spec_new + 2, value[0]);
+	sprintf_lc_safe((suffix_type == PCB_UNIT_FILE_MODE), filemode_buff, printf_spec_new + 2, value[0]);
 	if (gds_append_str(dest, filemode_buff) != 0)
 		goto err;
 
 	for (i = 1; i < n_coords; ++i) {
-		sprintf_lc_safe((suffix_type == FILE_MODE), filemode_buff, printf_spec_new, value[i]);
+		sprintf_lc_safe((suffix_type == PCB_UNIT_FILE_MODE), filemode_buff, printf_spec_new, value[i]);
 		if (gds_append_str(dest, filemode_buff) != 0)
 			goto err;
 	}
@@ -291,7 +291,7 @@ static inline int try_human_coord(pcb_coord_t coord, const pcb_unit_t *unit, dou
 	unsigned int score;
 
 	/* convert the value to the proposed unit */
-	if (unit->family == METRIC)
+	if (unit->family == PCB_UNIT_METRIC)
 		v = PCB_COORD_TO_MM(coord);
 	else
 		v = PCB_COORD_TO_MIL(coord);
@@ -364,13 +364,13 @@ static int CoordsToHumanString(gds_t *dest, pcb_coord_t coord, const gds_t *prin
 	}
 
 	make_printf_spec(printf_spec_new, printf_spec, 8, &trunc0);
-	sprintf_lc_safe((suffix_type == FILE_MODE), filemode_buff, printf_spec_new + 2, value);
+	sprintf_lc_safe((suffix_type == PCB_UNIT_FILE_MODE), filemode_buff, printf_spec_new + 2, value);
 	if (gds_append_str(dest, filemode_buff) != 0)
 		goto err;
 
 	if (value != 0) {
-		if (suffix_type == NO_SUFFIX)
-			suffix_type = SUFFIX;
+		if (suffix_type == PCB_UNIT_NO_SUFFIX)
+			suffix_type = PCB_UNIT_SUFFIX;
 		if (append_suffix(dest, suffix_type, suffix) != 0)
 			goto err;
 	}
@@ -405,7 +405,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 
 	new_fmt:;
 	while (*fmt) {
-		enum pcb_suffix_e suffix = NO_SUFFIX;
+		enum pcb_suffix_e suffix = PCB_UNIT_NO_SUFFIX;
 
 		if (*fmt == '%') {
 			const char *ext_unit = "";
@@ -468,11 +468,11 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				fmt++;
 			}
 			if (*fmt == '$') {
-				suffix = SUFFIX;
+				suffix = PCB_UNIT_SUFFIX;
 				fmt++;
 				if (*fmt == '$') {
 					fmt++;
-					suffix = FILE_MODE;
+					suffix = PCB_UNIT_FILE_MODE;
 				}
 			}
 			/* Tack full specifier onto specifier */
@@ -555,7 +555,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 				count = 1;
 				switch (*fmt) {
 				case 'I':
-					if (CoordsToString(string, value, 1, &spec, ALLOW_NM, NO_SUFFIX) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, ALLOW_NM, PCB_UNIT_NO_SUFFIX) != 0) goto err;
 					break;
 				case 's':
 					if (CoordsToString(string, value, 1, &spec, ALLOW_MM | ALLOW_MIL, suffix) != 0) goto err;
@@ -576,7 +576,7 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					if (CoordsToString(string, value, 1, &spec, mask & ALLOW_DMIL, suffix) != 0) goto err;
 					break;
 				case 'r':
-					if (CoordsToString(string, value, 1, &spec, ALLOW_READABLE, NO_SUFFIX) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, ALLOW_READABLE, PCB_UNIT_NO_SUFFIX) != 0) goto err;
 					break;
 					/* All these fallthroughs are deliberate */
 				case '9':
@@ -618,14 +618,14 @@ int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
 					break;
 				case 'a':
 					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
-					if (suffix == SUFFIX)
+					if (suffix == PCB_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;
 					tmplen = sprintf(tmp, spec.array, (double) va_arg(args, pcb_angle_t));
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case 'A':
 					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
-					/* if (suffix == SUFFIX)
+					/* if (suffix == PCB_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;*/
 					tmplen = sprintf(tmp, spec.array, 10*((double) va_arg(args, pcb_angle_t))); /* kicad legacy needs decidegrees */
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;

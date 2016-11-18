@@ -110,9 +110,9 @@ do { \
 	if (negative) \
 		dst = -dst; \
 	if (unit != NULL) { \
-		if (unit->family == IMPERIAL) \
+		if (unit->family == PCB_UNIT_IMPERIAL) \
 			dst = PCB_MIL_TO_COORD(dst); \
-		else if (unit->family == METRIC) \
+		else if (unit->family == PCB_UNIT_METRIC) \
 			dst = PCB_MM_TO_COORD(dst); \
 		dst /= unit->scale_factor; \
 	} \

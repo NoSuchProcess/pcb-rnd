@@ -694,8 +694,8 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 	{
 		arc->X = PCB_SWAP_X(arc->X);
 		arc->Y = PCB_SWAP_Y(arc->Y) + yoff;
-		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
-		arc->Delta = SWAP_DELTA(arc->Delta);
+		arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
+		arc->Delta = PCB_SWAP_DELTA(arc->Delta);
 	}
 	PCB_END_LOOP;
 	PCB_ELEMENT_PCB_TEXT_LOOP(Element);

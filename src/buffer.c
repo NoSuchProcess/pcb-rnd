@@ -435,8 +435,8 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 	{
 		arc->X = PCB_SWAP_X(arc->X);
 		arc->Y = PCB_SWAP_Y(arc->Y);
-		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
-		arc->Delta = SWAP_DELTA(arc->Delta);
+		arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
+		arc->Delta = PCB_SWAP_DELTA(arc->Delta);
 		pcb_arc_bbox(arc);
 	}
 	PCB_ENDALL_LOOP;
@@ -498,8 +498,8 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		arc->X = PCB_SWAP_X(arc->X);
 		arc->Y = PCB_SWAP_Y(arc->Y);
-		arc->StartAngle = SWAP_ANGLE(arc->StartAngle);
-		arc->Delta = SWAP_DELTA(arc->Delta);
+		arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
+		arc->Delta = PCB_SWAP_DELTA(arc->Delta);
 		pcb_arc_bbox(arc);
 		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}

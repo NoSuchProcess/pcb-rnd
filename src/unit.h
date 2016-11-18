@@ -63,8 +63,8 @@ enum pcb_allow_e {
 	ALLOW_ALL = ~0
 };
 
-enum pcb_family_e { METRIC, IMPERIAL };
-enum pcb_suffix_e { NO_SUFFIX, SUFFIX, FILE_MODE };
+enum pcb_family_e { PCB_UNIT_METRIC, PCB_UNIT_IMPERIAL };
+enum pcb_suffix_e { PCB_UNIT_NO_SUFFIX, PCB_UNIT_SUFFIX, PCB_UNIT_FILE_MODE };
 
 struct pcb_unit_s {
 	int index;										/* Index into Unit[] list */
@@ -133,7 +133,7 @@ void pcb_units_init(void);
 #define PCB_COORD_TO_DECIMIL(n)    (PCB_COORD_TO_MIL(n) * 10.0)
 #define PCB_DECIMIL_TO_COORD(n)    (PCB_MIL_TO_COORD(n) / 10.0)
 
-#define	SWAP_ANGLE(a)		(-(a))
-#define	SWAP_DELTA(d)		(-(d))
+#define	PCB_SWAP_ANGLE(a)		(-(a))
+#define	PCB_SWAP_DELTA(d)		(-(d))
 
 #endif
