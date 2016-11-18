@@ -1204,7 +1204,7 @@ void *pcb_chg_obj_name_query(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int p
 		break;
 
 	case PCB_TYPE_ELEMENT:
-		name = pcb_gui->prompt_for(_("Elementname:"), PCB_EMPTY(ELEMENT_NAME(PCB, (pcb_element_t *) Ptr2)));
+		name = pcb_gui->prompt_for(_("Elementname:"), PCB_EMPTY(PCB_ELEM_NAME_VISIBLE(PCB, (pcb_element_t *) Ptr2)));
 		break;
 	}
 	if (name) {

@@ -295,21 +295,21 @@ static int PrintXY(void)
 					pcb_message
 						(PCB_MSG_WARNING, "PrintBOM(): unable to figure out angle because I could\n"
 						 "     not find a suitable reference pin of element %s\n"
-						 "     Setting to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
+						 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
 				}
 				else if (!found_any_not_at_centroid) {
 					pcb_message
 						(PCB_MSG_WARNING, "PrintBOM(): unable to figure out angle of element\n"
 						 "     %s because the reference pin(s) are at the centroid of the part.\n"
-						 "     Setting to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
+						 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
 				}
 			}
 		}
 
 
-		name = CleanBOMString((char *) PCB_UNKNOWN(NAMEONPCB_NAME(element)));
-		descr = CleanBOMString((char *) PCB_UNKNOWN(DESCRIPTION_NAME(element)));
-		value = CleanBOMString((char *) PCB_UNKNOWN(VALUE_NAME(element)));
+		name = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)));
+		descr = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)));
+		value = CleanBOMString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)));
 
 		y = PCB->MaxHeight - y;
 		pcb_fprintf(fp, "%m+%s,\"%s\",\"%s\",%mS,%.2mS,%g,%s\n",

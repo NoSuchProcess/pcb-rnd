@@ -795,17 +795,17 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Dat
 			 information
 
 			 fprintf(FP, "\nDS %s ", F2S(element, PCB_TYPE_ELEMENT));
-			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(DESCRIPTION_NAME(element)));
+			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element)));
 			 fputc(' ', FP);
-			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(NAMEONPCB_NAME(element)));
+			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)));
 			 fputc(' ', FP);
-			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(VALUE_NAME(element)));
+			 pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)));
 			 pcb_fprintf(FP, " %mm %mm %mm %mm %d %d %s]\n(\n",
 			 element->MarkX, element->MarkY,
-			 DESCRIPTION_TEXT(element).X - element->MarkX,
-			 DESCRIPTION_TEXT(element).Y - element->MarkY,
-			 DESCRIPTION_TEXT(element).Direction,
-			 DESCRIPTION_TEXT(element).Scale, F2S(&(DESCRIPTION_TEXT(element)), PCB_TYPE_ELEMENT_NAME));
+			 PCB_ELEM_TEXT_DESCRIPTION(element).X - element->MarkX,
+			 PCB_ELEM_TEXT_DESCRIPTION(element).Y - element->MarkY,
+			 PCB_ELEM_TEXT_DESCRIPTION(element).Direction,
+			 PCB_ELEM_TEXT_DESCRIPTION(element).Scale, F2S(&(PCB_ELEM_TEXT_DESCRIPTION(element)), PCB_TYPE_ELEMENT_NAME));
 
 		*/
 

@@ -484,13 +484,13 @@ static int ReportFoundPins(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		PCB_PIN_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin))
-				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pin->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
+				pcb_append_printf(&list, "%s-%s,%c", PCB_ELEM_NAME_REFDES(element), pin->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 		}
 		PCB_END_LOOP;
 		PCB_PAD_LOOP(element);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad))
-				pcb_append_printf(&list, "%s-%s,%c", NAMEONPCB_NAME(element), pad->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
+				pcb_append_printf(&list, "%s-%s,%c", PCB_ELEM_NAME_REFDES(element), pad->Number, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 		}
 		PCB_END_LOOP;
 	}

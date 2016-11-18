@@ -153,8 +153,8 @@ static int Printexport_test(void)
 		found_pin2 = 0;
 
 		/* insert this component into the bill of materials list */
-		export_test = export_test_insert((char *) PCB_UNKNOWN(NAMEONPCB_NAME(element)),
-										 (char *) PCB_UNKNOWN(DESCRIPTION_NAME(element)), (char *) PCB_UNKNOWN(VALUE_NAME(element)), export_test);
+		export_test = export_test_insert((char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)),
+										 (char *) PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)), (char *) PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), export_test);
 
 
 		/*
@@ -235,7 +235,7 @@ static int Printexport_test(void)
 								("Printexport_test(): unable to figure out angle of element\n"
 								 "     %s because pin #1 is at the centroid of the part.\n"
 								 "     and I could not find pin #2's location\n"
-								 "     Setting to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
+								 "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
 						}
 					}
 					else
@@ -247,12 +247,12 @@ static int Printexport_test(void)
 				theta = 0.0;
 				Message
 					("Printexport_test(): unable to figure out angle because I could\n"
-					 "     not find pin #1 of element %s\n" "     Setting to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
+					 "     not find pin #1 of element %s\n" "     Setting to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
 			}
 
-			name = Cleanexport_testString((char *) PCB_UNKNOWN(NAMEONPCB_NAME(element)));
-			descr = Cleanexport_testString((char *) PCB_UNKNOWN(DESCRIPTION_NAME(element)));
-			value = Cleanexport_testString((char *) PCB_UNKNOWN(VALUE_NAME(element)));
+			name = Cleanexport_testString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)));
+			descr = Cleanexport_testString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)));
+			value = Cleanexport_testString((char *) PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)));
 
 			y = PCB->MaxHeight - y;
 			pcb_fprintf(fp, "%m+%s,\"%s\",\"%s\",%mS,%.2mS,%g,%s\n",

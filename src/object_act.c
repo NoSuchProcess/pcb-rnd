@@ -48,14 +48,14 @@ static pcb_element_t *element_cache = NULL;
 
 static pcb_element_t *find_element_by_refdes(const char *refdes)
 {
-	if (element_cache && NAMEONPCB_NAME(element_cache)
-			&& strcmp(NAMEONPCB_NAME(element_cache), refdes) == 0)
+	if (element_cache && PCB_ELEM_NAME_REFDES(element_cache)
+			&& strcmp(PCB_ELEM_NAME_REFDES(element_cache), refdes) == 0)
 		return element_cache;
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		if (NAMEONPCB_NAME(element)
-				&& strcmp(NAMEONPCB_NAME(element), refdes) == 0) {
+		if (PCB_ELEM_NAME_REFDES(element)
+				&& strcmp(PCB_ELEM_NAME_REFDES(element), refdes) == 0) {
 			element_cache = element;
 			return element_cache;
 		}
@@ -169,9 +169,9 @@ static int ActionAttributes(int argc, const char **argv, pcb_coord_t x, pcb_coor
 				}
 			}
 
-			if (NAMEONPCB_NAME(e)) {
-				buf = (char *) malloc(strlen(NAMEONPCB_NAME(e)) + strlen("Element X Attributes"));
-				sprintf(buf, "Element %s Attributes", NAMEONPCB_NAME(e));
+			if (PCB_ELEM_NAME_REFDES(e)) {
+				buf = (char *) malloc(strlen(PCB_ELEM_NAME_REFDES(e)) + strlen("Element X Attributes"));
+				sprintf(buf, "Element %s Attributes", PCB_ELEM_NAME_REFDES(e));
 			}
 			else {
 				buf = pcb_strdup("Unnamed Element Attributes");
@@ -506,7 +506,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, element)) {
 				PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
 			}
-			else if (!PCB_EMPTY_STRING_P(NAMEONPCB_NAME(element))) {
+			else if (!PCB_EMPTY_STRING_P(PCB_ELEM_NAME_REFDES(element))) {
 				/* Unnamed elements should remain untouched */
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, element);
 			}
@@ -581,7 +581,7 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			pcb_board_set_changed_flag(pcb_true);
 	}
 
-	else if (e && strcmp(DESCRIPTION_NAME(e), footprint) != 0) {
+	else if (e && strcmp(PCB_ELEM_NAME_DESCRIPTION(e), footprint) != 0) {
 #ifdef DEBUG
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
@@ -669,7 +669,7 @@ static int ActionElementSetAttr(int argc, const char **argv, pcb_coord_t x, pcb_
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		if (PCB_NSTRCMP(refdes, NAMEONPCB_NAME(element)) == 0) {
+		if (PCB_NSTRCMP(refdes, PCB_ELEM_NAME_REFDES(element)) == 0) {
 			e = element;
 			break;
 		}
@@ -985,7 +985,7 @@ int ActionListRotations(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 {
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		printf("%d %s\n", pcb_element_get_orientation(element), NAMEONPCB_NAME(element));
+		printf("%d %s\n", pcb_element_get_orientation(element), PCB_ELEM_NAME_REFDES(element));
 	}
 	PCB_END_LOOP;
 

@@ -255,7 +255,7 @@ static void print_placement(FILE * fp)
 		char *ename;
 		pcb_point_t ecentroid = get_centroid(element);
 		char *side = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) ? "back" : "front";
-		ename = NAMEONPCB_NAME(element);
+		ename = PCB_ELEM_NAME_REFDES(element);
 		if (ename != NULL)
 			ename = pcb_strdup(ename);
 		else

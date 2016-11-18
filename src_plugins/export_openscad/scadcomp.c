@@ -497,7 +497,7 @@ static void scad_export_element(pcb_element_t * element, pcb_bool simple)
 		}
 		else {
 			/* still no model found, try model, based on description */
-			model_name = DESCRIPTION_NAME(element);
+			model_name = PCB_ELEM_NAME_DESCRIPTION(element);
 			if (model_name) {
 				scad_writeout_element(element, model_name, SCAD_STANDARD, imported_model, simple);
 			}

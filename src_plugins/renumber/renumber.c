@@ -151,7 +151,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			 */
 			pcb_fprintf(out,
 									"*WARN* Element \"%s\" at %$md is locked and will not be renumbered.\n",
-									PCB_UNKNOWN(NAMEONPCB_NAME(element)), element->MarkX, element->MarkY);
+									PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), element->MarkX, element->MarkY);
 			locked_element_list[lock_cnt] = element;
 			lock_cnt++;
 		}
@@ -199,9 +199,9 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	cnt_list = (struct _cnt_list *) calloc(cnt_list_sz, sizeof(struct _cnt_list));
 	for (i = 0; i < cnt; i++) {
 		/* If there is no refdes, maybe just spit out a warning */
-		if (NAMEONPCB_NAME(element_list[i])) {
+		if (PCB_ELEM_NAME_REFDES(element_list[i])) {
 			/* figure out the prefix */
-			tmps = pcb_strdup(NAMEONPCB_NAME(element_list[i]));
+			tmps = pcb_strdup(PCB_ELEM_NAME_REFDES(element_list[i]));
 			j = 0;
 			while (tmps[j] && (tmps[j] < '0' || tmps[j] > '9')
 						 && tmps[j] != '?')
@@ -262,7 +262,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				 * elements) names
 				 */
 				for (k = 0; k < lock_cnt; k++) {
-					if (strcmp(PCB_UNKNOWN(NAMEONPCB_NAME(locked_element_list[k])), tmps) == 0) {
+					if (strcmp(PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(locked_element_list[k])), tmps) == 0) {
 						ok = 0;
 						break;
 					}
@@ -271,15 +271,15 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			}
 			while (!ok);
 
-			if (strcmp(tmps, NAMEONPCB_NAME(element_list[i])) != 0) {
-				fprintf(out, "*RENAME* \"%s\" \"%s\"\n", NAMEONPCB_NAME(element_list[i]), tmps);
+			if (strcmp(tmps, PCB_ELEM_NAME_REFDES(element_list[i])) != 0) {
+				fprintf(out, "*RENAME* \"%s\" \"%s\"\n", PCB_ELEM_NAME_REFDES(element_list[i]), tmps);
 
 				/* add this rename to our table of renames so we can update the netlist */
-				was[c_cnt] = pcb_strdup(NAMEONPCB_NAME(element_list[i]));
+				was[c_cnt] = pcb_strdup(PCB_ELEM_NAME_REFDES(element_list[i]));
 				is[c_cnt] = pcb_strdup(tmps);
 				c_cnt++;
 
-				pcb_undo_add_obj_to_change_name(PCB_TYPE_ELEMENT, NULL, NULL, element_list[i], NAMEONPCB_NAME(element_list[i]));
+				pcb_undo_add_obj_to_change_name(PCB_TYPE_ELEMENT, NULL, NULL, element_list[i], PCB_ELEM_NAME_REFDES(element_list[i]));
 
 				pcb_chg_obj_name(PCB_TYPE_ELEMENT, element_list[i], NULL, NULL, tmps);
 				changed = pcb_true;

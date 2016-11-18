@@ -185,7 +185,7 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 		pcb_line_new(&Buffer->Data->SILKLAYER,
 												 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness, 0, pcb_no_flags());
 		if (line)
-			line->Number = pcb_strdup_null(NAMEONPCB_NAME(element));
+			line->Number = pcb_strdup_null(PCB_ELEM_NAME_REFDES(element));
 	}
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(element);
@@ -361,8 +361,8 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	/* now add the silkscreen. NOTE: elements must have pads or pins too */
 	PCB_LINE_LOOP(&Buffer->Data->SILKLAYER);
 	{
-		if (line->Number && !NAMEONPCB_NAME(Element))
-			NAMEONPCB_NAME(Element) = pcb_strdup(line->Number);
+		if (line->Number && !PCB_ELEM_NAME_REFDES(Element))
+			PCB_ELEM_NAME_REFDES(Element) = pcb_strdup(line->Number);
 		pcb_element_line_new(Element, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
 		hasParts = pcb_true;
 	}
@@ -516,11 +516,11 @@ pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_eleme
 	/* both coordinates and flags are the same */
 	Dest = pcb_element_new(Data, Dest, &PCB->Font,
 													pcb_flag_mask(Src->Flags, PCB_FLAG_FOUND),
-													DESCRIPTION_NAME(Src), NAMEONPCB_NAME(Src),
-													VALUE_NAME(Src), DESCRIPTION_TEXT(Src).X + dx,
-													DESCRIPTION_TEXT(Src).Y + dy,
-													DESCRIPTION_TEXT(Src).Direction,
-													DESCRIPTION_TEXT(Src).Scale, pcb_flag_mask(DESCRIPTION_TEXT(Src).Flags, PCB_FLAG_FOUND), uniqueName);
+													PCB_ELEM_NAME_DESCRIPTION(Src), PCB_ELEM_NAME_REFDES(Src),
+													PCB_ELEM_NAME_VALUE(Src), PCB_ELEM_TEXT_DESCRIPTION(Src).X + dx,
+													PCB_ELEM_TEXT_DESCRIPTION(Src).Y + dy,
+													PCB_ELEM_TEXT_DESCRIPTION(Src).Direction,
+													PCB_ELEM_TEXT_DESCRIPTION(Src).Scale, pcb_flag_mask(PCB_ELEM_TEXT_DESCRIPTION(Src).Flags, PCB_FLAG_FOUND), uniqueName);
 
 	/* abort on error */
 	if (!Dest)
@@ -576,14 +576,14 @@ pcb_element_t *pcb_element_new(pcb_data_t *Data, pcb_element_t *Element,
 
 	/* copy values and set additional information */
 	TextScale = MAX(PCB_MIN_TEXTSCALE, TextScale);
-	pcb_element_text_set(&DESCRIPTION_TEXT(Element), PCBFont, TextX, TextY, Direction, Description, TextScale, TextFlags);
+	pcb_element_text_set(&PCB_ELEM_TEXT_DESCRIPTION(Element), PCBFont, TextX, TextY, Direction, Description, TextScale, TextFlags);
 	if (uniqueName)
 		NameOnPCB = pcb_element_uniq_name(Data, NameOnPCB);
-	pcb_element_text_set(&NAMEONPCB_TEXT(Element), PCBFont, TextX, TextY, Direction, NameOnPCB, TextScale, TextFlags);
-	pcb_element_text_set(&VALUE_TEXT(Element), PCBFont, TextX, TextY, Direction, Value, TextScale, TextFlags);
-	DESCRIPTION_TEXT(Element).Element = Element;
-	NAMEONPCB_TEXT(Element).Element = Element;
-	VALUE_TEXT(Element).Element = Element;
+	pcb_element_text_set(&PCB_ELEM_TEXT_REFDES(Element), PCBFont, TextX, TextY, Direction, NameOnPCB, TextScale, TextFlags);
+	pcb_element_text_set(&PCB_ELEM_TEXT_VALUE(Element), PCBFont, TextX, TextY, Direction, Value, TextScale, TextFlags);
+	PCB_ELEM_TEXT_DESCRIPTION(Element).Element = Element;
+	PCB_ELEM_TEXT_REFDES(Element).Element = Element;
+	PCB_ELEM_TEXT_VALUE(Element).Element = Element;
 	Element->Flags = Flags;
 	Element->ID = pcb_create_ID_get();
 
@@ -889,7 +889,7 @@ char *pcb_element_uniq_name(pcb_data_t *Data, char *Name)
 	for (;;) {
 		PCB_ELEMENT_LOOP(Data);
 		{
-			if (NAMEONPCB_NAME(element) && PCB_NSTRCMP(NAMEONPCB_NAME(element), Name) == 0) {
+			if (PCB_ELEM_NAME_REFDES(element) && PCB_NSTRCMP(PCB_ELEM_NAME_REFDES(element), Name) == 0) {
 				Name = BumpName(Name);
 				unique = pcb_false;
 				break;
@@ -1346,7 +1346,7 @@ void *ChangeElementSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	int value = ctx->chgsize.absolute ? PCB_COORD_TO_MIL(ctx->chgsize.absolute)
-		: DESCRIPTION_TEXT(Element).Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
+		: PCB_ELEM_TEXT_DESCRIPTION(Element).Scale + PCB_COORD_TO_MIL(ctx->chgsize.delta);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
@@ -1664,7 +1664,7 @@ void draw_element_name(pcb_element_t * element)
 		return;
 	if (pcb_draw_doing_pinout || pcb_draw_doing_assy)
 		pcb_gui->set_color(Output.fgGC, PCB->ElementColor);
-	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)))
+	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element)))
 		pcb_gui->set_color(Output.fgGC, PCB->ElementSelectedColor);
 	else if (PCB_FRONT(element)) {
 #warning TODO: why do we test for Names flag here instead of elements flag?
@@ -1676,7 +1676,7 @@ void draw_element_name(pcb_element_t * element)
 	else
 		pcb_gui->set_color(Output.fgGC, PCB->InvisibleObjectsColor);
 
-	DrawTextLowLevel(&ELEMENT_TEXT(PCB, element), PCB->minSlk);
+	DrawTextLowLevel(&PCB_ELEM_TEXT_VISIBLE(PCB, element), PCB->minSlk);
 
 }
 
@@ -1834,7 +1834,7 @@ void EraseElementName(pcb_element_t *Element)
 	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element)) {
 		return;
 	}
-	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
+	DrawText(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
 }
 
 void DrawElement(pcb_element_t *Element)
@@ -1848,7 +1848,7 @@ void DrawElementName(pcb_element_t *Element)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, Element))
 		return;
-	DrawText(NULL, &ELEMENT_TEXT(PCB, Element));
+	DrawText(NULL, &PCB_ELEM_TEXT_VISIBLE(PCB, Element));
 }
 
 void DrawElementPackage(pcb_element_t *Element)

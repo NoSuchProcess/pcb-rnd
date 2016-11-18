@@ -212,7 +212,7 @@ static void check_pin(pcb_pin_t * _pin)
 	fprintf(stderr, "Pin %s (%s) at %.6f, %.6f (element %s, %s, %s)\n", PCB_EMPTY(pin->Number), PCB_EMPTY(pin->Name),
 					/* 0.01 * pin->X, 0.01 * pin->Y, */
 					PCB_COORD_TO_MM(pin->X), PCB_COORD_TO_MM(pin->Y),
-					PCB_EMPTY(NAMEONPCB_NAME(element)), PCB_EMPTY(VALUE_NAME(element)), PCB_EMPTY(DESCRIPTION_NAME(element)));
+					PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)), PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)), PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element)));
 
 	for (layer = 0; layer < pcb_max_copper_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
@@ -259,7 +259,7 @@ static void check_pad(pcb_pad_t * _pad)
 					PCB_EMPTY(pad->Number), PCB_EMPTY(pad->Name),
 					PCB_COORD_TO_MM((pad->BoundingBox.X1 + pad->BoundingBox.X2) / 2),
 					PCB_COORD_TO_MM((pad->BoundingBox.Y1 + pad->BoundingBox.Y2) / 2),
-					PCB_EMPTY(NAMEONPCB_NAME(element)), PCB_EMPTY(VALUE_NAME(element)), PCB_EMPTY(DESCRIPTION_NAME(element)));
+					PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)), PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)), PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element)));
 
 	/* fprintf(stderr, */
 	/*   "Pad %s (%s) at ((%.6f, %.6f), (%.6f, %.6f)) (element %s, %s, %s) \n", */
@@ -268,9 +268,9 @@ static void check_pad(pcb_pad_t * _pad)
 	/*           PCB_COORD_TO_MM(pad->BoundingBox.Y1), */
 	/*           PCB_COORD_TO_MM(pad->BoundingBox.X2), */
 	/*           PCB_COORD_TO_MM(pad->BoundingBox.Y2), */
-	/*           PCB_EMPTY(NAMEONPCB_NAME (element)), */
-	/*           PCB_EMPTY(VALUE_NAME (element)), */
-	/*           PCB_EMPTY(DESCRIPTION_NAME (element))); */
+	/*           PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)), */
+	/*           PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)), */
+	/*           PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element))); */
 
 	for (layer = 0; layer < pcb_max_copper_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);

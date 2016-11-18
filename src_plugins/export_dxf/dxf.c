@@ -3963,7 +3963,7 @@ static int dxf_export_xref_file(void)
 		/*
 		 * insert the elements into the dxf list.
 		 */
-		dxf = dxf_insert(PCB_UNKNOWN(NAMEONPCB_NAME(element)), PCB_UNKNOWN(DESCRIPTION_NAME(element)), PCB_UNKNOWN(VALUE_NAME(element)), dxf);
+		dxf = dxf_insert(PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)), PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), dxf);
 	}
 	PCB_END_LOOP;											/* End of ELEMENT_LOOP  */
 	/*
@@ -4091,7 +4091,7 @@ static int dxf_export_xref_file(void)
 											"     unable to figure out angle of element\n"
 											"     %s because pin #1 is at the centroid of the part\n"
 											"     and I could not find pin #2's location.\n"
-											"     Setting to %g degrees.\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
+											"     Setting to %g degrees.\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
 						}
 					}
 					else
@@ -4104,9 +4104,9 @@ static int dxf_export_xref_file(void)
 				pcb_message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
 								"     unable to figure out angle because I could\n"
 								"     not find pin #1 of element %s.\n"
-								"     Setting to %g degrees.\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), theta);
+								"     Setting to %g degrees.\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), theta);
 			}
-			dxf_block_name = pcb_strdup(dxf_clean_string(PCB_UNKNOWN(DESCRIPTION_NAME(element))));
+			dxf_block_name = pcb_strdup(dxf_clean_string(PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element))));
 			if (dxf_metric) {
 				/* convert mils to mm */
 				dxf_x0 = PCB_COORD_TO_MM(x);
@@ -4148,7 +4148,7 @@ static int dxf_export_xref_file(void)
 				pcb_message(PCB_MSG_WARNING, "dxf.c|dxf_export_xref_file ():\n"
 								"     unable to figure out angle of dxf block\n"
 								"     %s because pcb angle theta is not Cardinal [0.0, 90.0, 180.0, 270.0].\n"
-								"     Setting dxf_rot_angle to %g degrees\n", PCB_UNKNOWN(NAMEONPCB_NAME(element)), dxf_rot_angle);
+								"     Setting dxf_rot_angle to %g degrees\n", PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), dxf_rot_angle);
 			}
 #endif
 			dxf_write_insert(fp, dxf_id_code, dxf_block_name, DXF_DEFAULT_LINETYPE,	/* dxf_linetype, */

@@ -55,7 +55,7 @@ void ghid_pinout_window_show(GHidPort * out, pcb_element_t * element)
 	if (!element)
 		return;
 	title = g_strdup_printf("%s [%s,%s]",
-													PCB_UNKNOWN(DESCRIPTION_NAME(element)), PCB_UNKNOWN(NAMEONPCB_NAME(element)), PCB_UNKNOWN(VALUE_NAME(element)));
+													PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)), PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)));
 
 	top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(top_window), title);

@@ -235,7 +235,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 					if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2))
 						pcb_message(PCB_MSG_DEFAULT, _
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
-										NAMEONPCB_NAME((pcb_element_t *) LastPoint.ptr1),
+										PCB_ELEM_NAME_REFDES((pcb_element_t *) LastPoint.ptr1),
 										(LastPoint.type ==
 										 PCB_TYPE_PIN) ? ((pcb_pin_t *) LastPoint.ptr2)->Number : ((pcb_pad_t *) LastPoint.ptr2)->Number);
 					else {
@@ -327,7 +327,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			warn = pcb_true;
 			if (!pin->Spare) {
 				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to %s pin %s\n"),
-								&theNet->Name[2], PCB_UNKNOWN(NAMEONPCB_NAME(element)), PCB_UNKNOWN(pin->Number));
+								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pin->Number));
 				pcb_stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 				continue;
 			}
@@ -358,7 +358,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			warn = pcb_true;
 			if (!pad->Spare) {
 				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
-								&theNet->Name[2], PCB_UNKNOWN(NAMEONPCB_NAME(element)), PCB_UNKNOWN(pad->Number));
+								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pad->Number));
 				pcb_stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 				continue;
 			}
@@ -828,7 +828,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 		pcb_message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
-	if (NAMEONPCB_NAME((pcb_element_t *) ptr1) == NULL || *NAMEONPCB_NAME((pcb_element_t *) ptr1) == 0) {
+	if (PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == NULL || *PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == 0) {
 		pcb_message(PCB_MSG_DEFAULT, _("You must name the starting element first\n"));
 		return (NULL);
 	}
@@ -843,7 +843,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 		pcb_message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
-	if (NAMEONPCB_NAME((pcb_element_t *) ptr1) == NULL || *NAMEONPCB_NAME((pcb_element_t *) ptr1) == 0) {
+	if (PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == NULL || *PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == 0) {
 		pcb_message(PCB_MSG_DEFAULT, _("You must name the ending element first\n"));
 		return (NULL);
 	}
@@ -919,7 +919,7 @@ char *pcb_connection_name(int type, void *ptr1, void *ptr2)
 	default:
 		return (NULL);
 	}
-	strcpy(name, PCB_UNKNOWN(NAMEONPCB_NAME((pcb_element_t *) ptr1)));
+	strcpy(name, PCB_UNKNOWN(PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1)));
 	strcat(name, "-");
 	strcat(name, PCB_UNKNOWN(num));
 	return (name);

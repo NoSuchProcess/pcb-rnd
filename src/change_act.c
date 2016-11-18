@@ -570,7 +570,7 @@ static int ActionChangePinName(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		if (PCB_NSTRCMP(refdes, NAMEONPCB_NAME(element)) == 0) {
+		if (PCB_NSTRCMP(refdes, PCB_ELEM_NAME_REFDES(element)) == 0) {
 			PCB_PIN_LOOP(element);
 			{
 				if (PCB_NSTRCMP(pinnum, pin->Number) == 0) {

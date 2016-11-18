@@ -504,9 +504,9 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	else if (el != NULL) {
 		if (role == NULL)
 			return -1;
-		if (strcmp(role->data.text.value, "desc") == 0) text = &DESCRIPTION_TEXT(el);
-		else if (strcmp(role->data.text.value, "name") == 0) text = &NAMEONPCB_TEXT(el);
-		else if (strcmp(role->data.text.value, "value") == 0) text = &VALUE_TEXT(el);
+		if (strcmp(role->data.text.value, "desc") == 0) text = &PCB_ELEM_TEXT_DESCRIPTION(el);
+		else if (strcmp(role->data.text.value, "name") == 0) text = &PCB_ELEM_TEXT_REFDES(el);
+		else if (strcmp(role->data.text.value, "value") == 0) text = &PCB_ELEM_TEXT_VALUE(el);
 		else
 			return -1;
 	}

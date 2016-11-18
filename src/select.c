@@ -366,9 +366,9 @@ do { \
 			if ((PCB->ElementOn || !Flag)
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
 					&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || PCB->InvisibleObjectsOn)) {
-				if (PCB_BOX_NEAR_BOX(&ELEMENT_TEXT(PCB, element).BoundingBox, Box)
-						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, &ELEMENT_TEXT(PCB, element))
-						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element)) != Flag) {
+				if (PCB_BOX_NEAR_BOX(&PCB_ELEM_TEXT_VISIBLE(PCB, element).BoundingBox, Box)
+						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, &PCB_ELEM_TEXT_VISIBLE(PCB, element))
+						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element)) != Flag) {
 					/* select all names of element */
 					PCB_ELEMENT_PCB_TEXT_LOOP(element);
 					{
@@ -637,10 +637,10 @@ pcb_bool pcb_selected_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Rese
 	if (type & PCB_TYPE_ELEMENT_NAME && PCB->ElementOn && F->ElementName)
 		PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element))) {
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element))) {
 			if (Reset) {
-				pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, &ELEMENT_TEXT(PCB, element), &ELEMENT_TEXT(PCB, element));
-				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, &ELEMENT_TEXT(PCB, element));
+				pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT_NAME, element, &PCB_ELEM_TEXT_VISIBLE(PCB, element), &PCB_ELEM_TEXT_VISIBLE(PCB, element));
+				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, &PCB_ELEM_TEXT_VISIBLE(PCB, element));
 			}
 			F->ElementName(ctx, element);
 			changed = pcb_true;
@@ -906,7 +906,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, element)
 				&& ((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) != 0) == PCB_SWAP_IDENT || PCB->InvisibleObjectsOn)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, element) != Flag) {
-			const char* name = ELEMENT_NAME(PCB, element);
+			const char* name = PCB_ELEM_NAME_VISIBLE(PCB, element);
 			if (name && REGEXEC(name)) {
 				pcb_undo_add_obj_to_flag(PCB_TYPE_ELEMENT, element, element, element);
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, element);
