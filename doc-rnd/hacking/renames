@@ -1439,3 +1439,15 @@ disablevendor_syntax -> pcb_acts_DisableVendor
 ActionImport -> pcb_act_Import
 import_help -> pcb_acth_Import
 import_syntax -> pcb_acts_Import
+ActionLoadhypFrom -> pcb_act_LoadhypFrom
+loadhypfrom_help -> pcb_acth_LoadhypFrom
+loadhypfrom_syntax -> pcb_acts_LoadhypFrom
+ActionRenumber -> pcb_act_Renumber
+renumber_help -> pcb_acth_Renumber
+renumber_syntax -> pcb_acts_Renumber
+ActionRenumberBlock -> pcb_act_RenumberBlock
+renumberblock_help -> pcb_acth_RenumberBlock
+renumberblock_syntax -> pcb_acts_RenumberBlock
+ActionRenumberBuffer -> pcb_act_RenumberBuffer
+renumberbuffer_help -> pcb_acth_RenumberBuffer
+renumberbuffer_syntax -> pcb_acts_RenumberBuffer

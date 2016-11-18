@@ -50,7 +50,7 @@ static const char load_hyp_syntax[] = "LoadhypFrom(filename[, \"debug\"]...)";
 
 static const char load_hyp_help[] = "Loads the specified Hyperlynx file.";
 
-int ActionLoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_LoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
 	int debug = 0;
@@ -82,7 +82,7 @@ int ActionLoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t hyp_action_list[] = {
-	{"LoadhypFrom", 0, ActionLoadhypFrom, load_hyp_help, load_hyp_syntax}
+	{"LoadhypFrom", 0, pcb_act_LoadhypFrom, load_hyp_help, load_hyp_syntax}
 };
 
 PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)

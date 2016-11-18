@@ -42,9 +42,9 @@
 
 /* --------------------------------------------------------------------------- */
 
-static const char renumber_syntax[] = "Renumber()\n" "Renumber(filename)";
+static const char pcb_acts_Renumber[] = "Renumber()\n" "Renumber(filename)";
 
-static const char renumber_help[] =
+static const char pcb_acth_Renumber[] =
 	"Renumber all elements.  The changes will be recorded to filename\n"
 	"for use in backannotating these changes to the schematic.";
 
@@ -54,7 +54,7 @@ static const char renumber_help[] =
 
 #define WTF 0
 
-static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_bool changed = pcb_false;
 	pcb_element_t **element_list;
@@ -135,7 +135,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	was = (char **) calloc(numele, sizeof(char *));
 	is = (char **) calloc(numele, sizeof(char *));
 	if (element_list == NULL || locked_element_list == NULL || was == NULL || is == NULL) {
-		fprintf(stderr, "calloc() failed in ActionRenumber\n");
+		fprintf(stderr, "calloc() failed in pcb_act_Renumber\n");
 		exit(1);
 	}
 
@@ -217,7 +217,7 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 				cnt_list_sz += 100;
 				cnt_list = (struct _cnt_list *) realloc(cnt_list, cnt_list_sz);
 				if (cnt_list == NULL) {
-					fprintf(stderr, "realloc() failed in ActionRenumber\n");
+					fprintf(stderr, "realloc() failed in pcb_act_Renumber\n");
 					exit(1);
 				}
 				/* zero out the memory that we added */
@@ -352,18 +352,18 @@ static int ActionRenumber(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	return 0;
 }
 
-int action_renumber_block(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
-int action_renumber_buffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+int pcb_act_RenumberBlock(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+int pcb_act_RenumberBuffer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 
 static const char *renumber_cookie = "renumber plugin";
 
 pcb_hid_action_t renumber_action_list[] = {
-	{"Renumber", 0, ActionRenumber,
-	 renumber_help, renumber_syntax},
-	{"RenumberBlock", NULL, action_renumber_block,
+	{"Renumber", 0, pcb_act_Renumber,
+	 pcb_acth_Renumber, pcb_acts_Renumber},
+	{"RenumberBlock", NULL, pcb_act_RenumberBlock,
 		NULL, NULL},
-	{"RenumberBuffer", NULL, action_renumber_buffer,
+	{"RenumberBuffer", NULL, pcb_act_RenumberBuffer,
 		NULL, NULL}
 };
 
