@@ -1355,3 +1355,12 @@ morphpolygon_syntax -> pcb_acts_MorphPolygon
 ActionPolygon -> pcb_act_Polygon
 polygon_help -> pcb_acth_Polygon
 polygon_syntax -> pcb_acts_Polygon
+ActionAddRats -> pcb_act_AddRats
+addrats_help -> pcb_acth_AddRats
+addrats_syntax -> pcb_acts_AddRats
+ActionConnection -> pcb_act_Connection
+connection_help -> pcb_acth_Connection
+connection_syntax -> pcb_acts_Connection
+ActionDeleteRats -> pcb_act_DeleteRats
+deleterats_help -> pcb_acth_DeleteRats
+deleterats_syntax -> pcb_acts_DeleteRats

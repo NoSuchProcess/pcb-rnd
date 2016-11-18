@@ -45,9 +45,9 @@
 
 /* --------------------------------------------------------------------------- */
 
-static const char addrats_syntax[] = "AddRats(AllRats|SelectedRats|Close)";
+static const char pcb_acts_AddRats[] = "AddRats(AllRats|SelectedRats|Close)";
 
-static const char addrats_help[] = "Add one or more rat lines to the board.";
+static const char pcb_acth_AddRats[] = "Add one or more rat lines to the board.";
 
 /* %start-doc actions AddRats
 
@@ -68,7 +68,7 @@ Selects the shortest unselected rat on the board.
 
 %end-doc */
 
-static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	pcb_rat_t *shorty;
@@ -116,9 +116,9 @@ static int ActionAddRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 /* --------------------------------------------------------------------------- */
 
-static const char connection_syntax[] = "Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)";
+static const char pcb_acts_Connection[] = "Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)";
 
-static const char connection_help[] = "Searches connections of the object at the cursor position.";
+static const char pcb_acth_Connection[] = "Searches connections of the object at the cursor position.";
 
 /* %start-doc actions Connection
 
@@ -143,7 +143,7 @@ All ``found'' objects are marked ``not found''.
 
 %end-doc */
 
-static int ActionConnection(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Connection(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
@@ -179,20 +179,20 @@ static int ActionConnection(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		return 0;
 	}
 
-	PCB_AFAIL(connection);
+	PCB_ACT_FAIL(Connection);
 }
 
 /* --------------------------------------------------------------------------- */
 
-static const char deleterats_syntax[] = "DeleteRats(AllRats|Selected|SelectedRats)";
+static const char pcb_acts_DeleteRats[] = "DeleteRats(AllRats|Selected|SelectedRats)";
 
-static const char deleterats_help[] = "Delete rat lines.";
+static const char pcb_acth_DeleteRats[] = "Delete rat lines.";
 
 /* %start-doc actions DeleteRats
 
 %end-doc */
 
-static int ActionDeleteRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DeleteRats(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
@@ -215,14 +215,14 @@ static int ActionDeleteRats(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 
 pcb_hid_action_t rats_action_list[] = {
-	{"AddRats", 0, ActionAddRats,
-	 addrats_help, addrats_syntax}
+	{"AddRats", 0, pcb_act_AddRats,
+	 pcb_acth_AddRats, pcb_acts_AddRats}
 	,
-	{"Connection", 0, ActionConnection,
-	 connection_help, connection_syntax}
+	{"Connection", 0, pcb_act_Connection,
+	 pcb_acth_Connection, pcb_acts_Connection}
 	,
-	{"DeleteRats", 0, ActionDeleteRats,
-	 deleterats_help, deleterats_syntax}
+	{"DeleteRats", 0, pcb_act_DeleteRats,
+	 pcb_acth_DeleteRats, pcb_acts_DeleteRats}
 };
 
 PCB_REGISTER_ACTIONS(rats_action_list, NULL)
