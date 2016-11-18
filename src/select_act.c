@@ -76,14 +76,14 @@ static char *gui_get_pat(pcb_search_method_t * method)
 
 /* --------------------------------------------------------------------------- */
 
-static const char select_syntax[] =
+static const char pcb_acts_Select[] =
 	"Select(Object|ToggleObject)\n"
 	"Select(All|Block|Connection)\n"
 	"Select(ElementByName|ObjectByName|PadByName|PinByName)\n"
 	"Select(ElementByName|ObjectByName|PadByName|PinByName, Name)\n"
 	"Select(TextByName|ViaByName|NetByName)\n" "Select(TextByName|ViaByName|NetByName, Name)\n" "Select(Convert)";
 
-static const char select_help[] = "Toggles or sets the selection.";
+static const char pcb_acth_Select[] = "Toggles or sets the selection.";
 
 /* %start-doc actions Select
 
@@ -123,7 +123,7 @@ numbered paste buffer.
 
 %end-doc */
 
-static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Select(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
@@ -235,7 +235,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			break;
 
 		default:
-			PCB_AFAIL(select);
+			PCB_ACT_FAIL(Select);
 			break;
 		}
 	}
@@ -244,13 +244,13 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 /* --------------------------------------------------------------------------- */
 
-static const char unselect_syntax[] =
+static const char pcb_acts_Unselect[] =
 	"Unselect(All|Block|Connection)\n"
 	"Unselect(ElementByName|ObjectByName|PadByName|PinByName)\n"
 	"Unselect(ElementByName|ObjectByName|PadByName|PinByName, Name)\n"
 	"Unselect(TextByName|ViaByName)\n" "Unselect(TextByName|ViaByName, Name)\n";
 
-static const char unselect_help[] = "Unselects the object at the pointer location or the specified objects.";
+static const char pcb_acth_Unselect[] = "Unselects the object at the pointer location or the specified objects.";
 
 /* %start-doc actions Unselect
 
@@ -282,7 +282,7 @@ type specified are unselected.
 
 %end-doc */
 
-static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Unselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function) {
@@ -368,7 +368,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			break;
 
 		default:
-			PCB_AFAIL(unselect);
+			PCB_ACT_FAIL(Unselect);
 			break;
 
 		}
@@ -377,11 +377,11 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 }
 
 pcb_hid_action_t select_action_list[] = {
-	{"Select", 0, ActionSelect,
-	 select_help, select_syntax}
+	{"Select", 0, pcb_act_Select,
+	 pcb_acth_Select, pcb_acts_Select}
 	,
-	{"Unselect", 0, ActionUnselect,
-	 unselect_help, unselect_syntax}
+	{"Unselect", 0, pcb_act_Unselect,
+	 pcb_acth_Unselect, pcb_acts_Unselect}
 };
 
 PCB_REGISTER_ACTIONS(select_action_list, NULL)

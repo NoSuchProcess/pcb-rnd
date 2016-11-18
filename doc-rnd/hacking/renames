@@ -1370,3 +1370,9 @@ delete_syntax -> pcb_acts_Delete
 ActionRemoveSelected -> pcb_act_RemoveSelected
 removeselected_help -> pcb_acth_RemoveSelected
 removeselected_syntax -> pcb_acts_RemoveSelected
+ActionSelect -> pcb_act_Select
+select_help -> pcb_acth_Select
+select_syntax -> pcb_acts_Select
+ActionUnselect -> pcb_act_Unselect
+unselect_help -> pcb_acth_Unselect
+unselect_syntax -> pcb_acts_Unselect
