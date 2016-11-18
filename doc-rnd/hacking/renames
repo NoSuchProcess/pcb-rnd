@@ -1120,3 +1120,10 @@ PLF_INV -> PCB_PLF_INV
 PLF_MARK -> PCB_PLF_MARK
 VertexEqu -> pcb_vertex_equ
 VertexCpy -> pcb_vertex_cpy
+err_no_memory -> pcb_err_no_memory
+err_bad_parm -> pcb_err_bad_parm
+err_ok -> pcb_err_ok
+PBO_UNITE -> PCB_PBO_UNITE
+PBO_ISECT -> PCB_PBO_ISECT
+PBO_SUB -> PCB_PBO_SUB
+PBO_XOR -> PCB_PBO_XOR

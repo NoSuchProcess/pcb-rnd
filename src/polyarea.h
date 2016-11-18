@@ -49,9 +49,9 @@ typedef pcb_vertex_t pcb_vector_t;
 extern pcb_vector_t vect_zero;
 
 enum {
-	err_no_memory = 2,
-	err_bad_parm = 3,
-	err_ok = 0
+	pcb_err_no_memory = 2,
+	pcb_err_bad_parm = 3,
+	pcb_err_ok = 0
 };
 
 
@@ -148,10 +148,10 @@ void pcb_poly_contours_free(pcb_pline_t ** pl);
 pcb_bool pcb_poly_valid(pcb_polyarea_t * p);
 
 enum pcb_poly_bool_op_e {
-	PBO_UNITE,
-	PBO_ISECT,
-	PBO_SUB,
-	PBO_XOR
+	PCB_PBO_UNITE,
+	PCB_PBO_ISECT,
+	PCB_PBO_SUB,
+	PCB_PBO_XOR
 };
 
 double pcb_vect_dist2(pcb_vector_t v1, pcb_vector_t v2);

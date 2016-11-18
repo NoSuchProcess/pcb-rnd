@@ -98,7 +98,7 @@ int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_
 
 #define MemGet(ptr, type) \
   if (PCB_UNLIKELY(((ptr) = (type *)malloc(sizeof(type))) == NULL))	\
-    error(err_no_memory);
+    error(pcb_err_no_memory);
 
 #undef DEBUG_LABEL
 #undef DEBUG_ALL_LABELS
@@ -848,14 +848,14 @@ static void M_pcb_polyarea_t_intersect(jmp_buf * e, pcb_polyarea_t * afst, pcb_p
 	pcb_cvc_list_t *the_list = NULL;
 
 	if (a == NULL || b == NULL)
-		error(err_bad_parm);
+		error(pcb_err_bad_parm);
 	do {
 		do {
 			if (a->contours->xmax >= b->contours->xmin &&
 					a->contours->ymax >= b->contours->ymin &&
 					a->contours->xmin <= b->contours->xmax && a->contours->ymin <= b->contours->ymax) {
 				if (PCB_UNLIKELY(intersect(e, a, b, add)))
-					error(err_no_memory);
+					error(pcb_err_no_memory);
 			}
 		}
 		while (add && (a = a->f) != afst);
@@ -863,7 +863,7 @@ static void M_pcb_polyarea_t_intersect(jmp_buf * e, pcb_polyarea_t * afst, pcb_p
 			if (curcB->Flags.status == ISECTED) {
 				the_list = add_descriptors(curcB, 'B', the_list);
 				if (PCB_UNLIKELY(the_list == NULL))
-					error(err_no_memory);
+					error(pcb_err_no_memory);
 			}
 	}
 	while (add && (b = b->f) != bfst);
@@ -872,7 +872,7 @@ static void M_pcb_polyarea_t_intersect(jmp_buf * e, pcb_polyarea_t * afst, pcb_p
 			if (curcA->Flags.status == ISECTED) {
 				the_list = add_descriptors(curcA, 'A', the_list);
 				if (PCB_UNLIKELY(the_list == NULL))
-					error(err_no_memory);
+					error(pcb_err_no_memory);
 			}
 	}
 	while (add && (a = a->f) != afst);
@@ -1190,7 +1190,7 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 	if (*src == NULL)
 		return;											/* empty hole list */
 	if (dest == NULL)
-		error(err_bad_parm);				/* empty contour list */
+		error(pcb_err_bad_parm);				/* empty contour list */
 
 	/* Count dest polyareas */
 	curc = dest;
@@ -1231,7 +1231,7 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 #endif
 #endif
 			pcb_poly_contour_del(&curh);
-			error(err_bad_parm);
+			error(pcb_err_bad_parm);
 		}
 		/* Now search the heap for the container. If there was only one item
 		 * in the heap, assume it is the container without the expense of
@@ -1264,7 +1264,7 @@ static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
 #endif
 			curh->next = NULL;
 			pcb_poly_contour_del(&curh);
-			error(err_bad_parm);
+			error(pcb_err_bad_parm);
 		}
 		else {
 			/* Need to check if this new hole means we need to kick out any old ones for reprocessing */
@@ -1468,11 +1468,11 @@ static int Gather(pcb_vnode_t * start, pcb_pline_t ** result, J_Rule v_rule, DIR
 		if (!*result) {
 			*result = pcb_poly_contour_new(cur->point);
 			if (*result == NULL)
-				return err_no_memory;
+				return pcb_err_no_memory;
 		}
 		else {
 			if ((newn = pcb_poly_node_create(cur->point)) == NULL)
-				return err_no_memory;
+				return pcb_err_no_memory;
 			pcb_poly_vertex_include((*result)->head.prev, newn);
 		}
 #ifdef DEBUG_GATHER
@@ -1489,14 +1489,14 @@ static int Gather(pcb_vnode_t * start, pcb_pline_t ** result, J_Rule v_rule, DIR
 		cur = (dir == FORW ? cur->next : cur->prev);
 	}
 	while (1);
-	return err_ok;
+	return pcb_err_ok;
 }																/* Gather */
 
 static void Collect1(jmp_buf * e, pcb_vnode_t * cur, DIRECTION dir, pcb_polyarea_t ** contours, pcb_pline_t ** holes, J_Rule j_rule)
 {
 	pcb_pline_t *p = NULL;							/* start making contour */
-	int errc = err_ok;
-	if ((errc = Gather(dir == FORW ? cur : cur->next, &p, j_rule, dir)) != err_ok) {
+	int errc = pcb_err_ok;
+	if ((errc = Gather(dir == FORW ? cur : cur->next, &p, j_rule, dir)) != pcb_err_ok) {
 		if (p != NULL)
 			pcb_poly_contour_del(&p);
 		error(errc);
@@ -1544,23 +1544,23 @@ cntr_Collect(jmp_buf * e, pcb_pline_t ** A, pcb_polyarea_t ** contours, pcb_plin
 
 	if ((*A)->Flags.status == ISECTED) {
 		switch (action) {
-		case PBO_UNITE:
+		case PCB_PBO_UNITE:
 			Collect(e, *A, contours, holes, UniteS_Rule, UniteJ_Rule);
 			break;
-		case PBO_ISECT:
+		case PCB_PBO_ISECT:
 			Collect(e, *A, contours, holes, IsectS_Rule, IsectJ_Rule);
 			break;
-		case PBO_XOR:
+		case PCB_PBO_XOR:
 			Collect(e, *A, contours, holes, XorS_Rule, XorJ_Rule);
 			break;
-		case PBO_SUB:
+		case PCB_PBO_SUB:
 			Collect(e, *A, contours, holes, SubS_Rule, SubJ_Rule);
 			break;
 		};
 	}
 	else {
 		switch (action) {
-		case PBO_ISECT:
+		case PCB_PBO_ISECT:
 			if ((*A)->Flags.status == INSIDE) {
 				tmprev = *A;
 				/* disappear this contour (rtree entry removed in PutContour) */
@@ -1570,7 +1570,7 @@ cntr_Collect(jmp_buf * e, pcb_pline_t ** A, pcb_polyarea_t ** contours, pcb_plin
 				return pcb_true;
 			}
 			break;
-		case PBO_XOR:
+		case PCB_PBO_XOR:
 			if ((*A)->Flags.status == INSIDE) {
 				tmprev = *A;
 				/* disappear this contour (rtree entry removed in PutContour) */
@@ -1581,8 +1581,8 @@ cntr_Collect(jmp_buf * e, pcb_pline_t ** A, pcb_polyarea_t ** contours, pcb_plin
 				return pcb_true;
 			}
 			/* break; *//* Fall through (I think this is correct! pcjc2) */
-		case PBO_UNITE:
-		case PBO_SUB:
+		case PCB_PBO_UNITE:
+		case PCB_PBO_SUB:
 			if ((*A)->Flags.status == OUTSIDE) {
 				tmprev = *A;
 				/* disappear this contour (rtree entry removed in PutContour) */
@@ -1611,10 +1611,10 @@ static void M_B_AREA_Collect(jmp_buf * e, pcb_polyarea_t * bfst, pcb_polyarea_t 
 
 			if ((*cur)->Flags.status == INSIDE)
 				switch (action) {
-				case PBO_XOR:
-				case PBO_SUB:
+				case PCB_PBO_XOR:
+				case PCB_PBO_SUB:
 					pcb_poly_contour_inv(*cur);
-				case PBO_ISECT:
+				case PCB_PBO_ISECT:
 					tmp = *cur;
 					*cur = tmp->next;
 					next = cur;
@@ -1622,13 +1622,13 @@ static void M_B_AREA_Collect(jmp_buf * e, pcb_polyarea_t * bfst, pcb_polyarea_t 
 					tmp->Flags.status = UNKNWN;
 					PutContour(e, tmp, contours, holes, b, NULL, NULL);
 					break;
-				case PBO_UNITE:
+				case PCB_PBO_UNITE:
 					break;								/* nothing to do - already included */
 				}
 			else if ((*cur)->Flags.status == OUTSIDE)
 				switch (action) {
-				case PBO_XOR:
-				case PBO_UNITE:
+				case PCB_PBO_XOR:
+				case PCB_PBO_UNITE:
 					/* include */
 					tmp = *cur;
 					*cur = tmp->next;
@@ -1637,8 +1637,8 @@ static void M_B_AREA_Collect(jmp_buf * e, pcb_polyarea_t * bfst, pcb_polyarea_t 
 					tmp->Flags.status = UNKNWN;
 					PutContour(e, tmp, contours, holes, b, NULL, NULL);
 					break;
-				case PBO_ISECT:
-				case PBO_SUB:
+				case PCB_PBO_ISECT:
+				case PCB_PBO_SUB:
 					break;								/* do nothing, not included */
 				}
 		}
@@ -1790,14 +1790,14 @@ static void M_pcb_polyarea_t_update_primary(jmp_buf * e, pcb_polyarea_t ** piece
 		return;
 
 	switch (action) {
-	case PBO_ISECT:
+	case PCB_PBO_ISECT:
 		del_outside = 1;
 		break;
-	case PBO_UNITE:
-	case PBO_SUB:
+	case PCB_PBO_UNITE:
+	case PCB_PBO_SUB:
 		del_inside = 1;
 		break;
-	case PBO_XOR:								/* NOT IMPLEMENTED OR USED */
+	case PCB_PBO_XOR:								/* NOT IMPLEMENTED OR USED */
 		/* inv_inside = 1; */
 		assert(0);
 		break;
@@ -2054,7 +2054,7 @@ int pcb_polyarea_boolean(const pcb_polyarea_t * a_org, const pcb_polyarea_t * b_
 	pcb_polyarea_t *a = NULL, *b = NULL;
 
 	if (!pcb_polyarea_m_copy0(&a, a_org) || !pcb_polyarea_m_copy0(&b, b_org))
-		return err_no_memory;
+		return pcb_err_no_memory;
 
 	return pcb_polyarea_boolean_free(a, b, res, action);
 }																/* poly_Boolean */
@@ -2072,28 +2072,28 @@ int pcb_polyarea_boolean_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb_poly
 
 	if (!a) {
 		switch (action) {
-		case PBO_XOR:
-		case PBO_UNITE:
+		case PCB_PBO_XOR:
+		case PCB_PBO_UNITE:
 			*res = bi;
-			return err_ok;
-		case PBO_SUB:
-		case PBO_ISECT:
+			return pcb_err_ok;
+		case PCB_PBO_SUB:
+		case PCB_PBO_ISECT:
 			if (b != NULL)
 				pcb_polyarea_free(&b);
-			return err_ok;
+			return pcb_err_ok;
 		}
 	}
 	if (!b) {
 		switch (action) {
-		case PBO_SUB:
-		case PBO_XOR:
-		case PBO_UNITE:
+		case PCB_PBO_SUB:
+		case PCB_PBO_XOR:
+		case PCB_PBO_UNITE:
 			*res = ai;
-			return err_ok;
-		case PBO_ISECT:
+			return pcb_err_ok;
+		case PCB_PBO_ISECT:
 			if (a != NULL)
 				pcb_polyarea_free(&a);
-			return err_ok;
+			return pcb_err_ok;
 		}
 	}
 
@@ -2184,7 +2184,7 @@ int pcb_polyarea_and_subtract_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb
 		M_pcb_polyarea_t_label(a, b, pcb_false);
 		M_pcb_polyarea_t_label(b, a, pcb_false);
 
-		M_pcb_polyarea_t_Collect(&e, a, aandb, &holes, PBO_ISECT, pcb_false);
+		M_pcb_polyarea_t_Collect(&e, a, aandb, &holes, PCB_PBO_ISECT, pcb_false);
 		InsertHoles(&e, *aandb, &holes);
 		assert(pcb_poly_valid(*aandb));
 		/* delete holes if any left */
@@ -2195,7 +2195,7 @@ int pcb_polyarea_and_subtract_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb
 		holes = NULL;
 		clear_marks(a);
 		clear_marks(b);
-		M_pcb_polyarea_t_Collect(&e, a, aminusb, &holes, PBO_SUB, pcb_false);
+		M_pcb_polyarea_t_Collect(&e, a, aminusb, &holes, PCB_PBO_SUB, pcb_false);
 		InsertHoles(&e, *aminusb, &holes);
 		pcb_polyarea_free(&a);
 		pcb_polyarea_free(&b);

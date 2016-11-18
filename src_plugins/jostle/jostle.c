@@ -286,7 +286,7 @@ static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vecto
 	line = Createpcb_vector_tLineOnLayer(layer, a, b, orig->Thickness, orig->Clearance, orig->Flags);
 	if (line && expandp) {
 		pcb_polyarea_t *p = pcb_poly_from_line(line, line->Thickness + line->Clearance);
-		pcb_polyarea_boolean_free(*expandp, p, expandp, PBO_UNITE);
+		pcb_polyarea_boolean_free(*expandp, p, expandp, PCB_PBO_UNITE);
 	}
 	return line;
 }
@@ -411,9 +411,9 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 	lp = pcb_poly_from_line(line, 1);
 	if (!pcb_polyarea_m_copy0(&copy, info->brush))
 		return 0;
-	r = pcb_polyarea_boolean_free(copy, lp, &tmp, PBO_SUB);
-	if (r != err_ok) {
-		pcb_fprintf(stderr, "Error while jostling PBO_SUB: %d\n", r);
+	r = pcb_polyarea_boolean_free(copy, lp, &tmp, PCB_PBO_SUB);
+	if (r != pcb_err_ok) {
+		pcb_fprintf(stderr, "Error while jostling PCB_PBO_SUB: %d\n", r);
 		return 0;
 	}
 	if (tmp == tmp->f) {
@@ -422,9 +422,9 @@ static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
 		 */
 		pcb_fprintf(stderr, "try isect??\n");
 		lp = pcb_poly_from_line(line, line->Thickness);
-		r = pcb_polyarea_boolean_free(tmp, lp, &tmp, PBO_ISECT);
-		if (r != err_ok) {
-			fprintf(stderr, "Error while jostling PBO_ISECT: %d\n", r);
+		r = pcb_polyarea_boolean_free(tmp, lp, &tmp, PCB_PBO_ISECT);
+		if (r != pcb_err_ok) {
+			fprintf(stderr, "Error while jostling PCB_PBO_ISECT: %d\n", r);
 			return 0;
 		}
 		nocentroid = 1;
@@ -532,7 +532,7 @@ static int jostle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			expand = NULL;
 			MakeBypassingLines(info.smallest, info.layer, info.line, info.side, &expand);
 			pcb_polyarea_free(&info.smallest);
-			pcb_polyarea_boolean_free(info.brush, expand, &info.brush, PBO_UNITE);
+			pcb_polyarea_boolean_free(info.brush, expand, &info.brush, PCB_PBO_UNITE);
 		}
 	} while (found);
 	pcb_board_set_changed_flag(pcb_true);

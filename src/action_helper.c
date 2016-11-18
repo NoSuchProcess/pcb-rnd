@@ -1013,7 +1013,7 @@ void pcb_notify_mode(void)
 						new_hole = pcb_poly_from_poly(&pcb_crosshair.AttachedPolygon);
 
 						/* Subtract the hole from the original polygon shape */
-						pcb_polyarea_boolean_free(original, new_hole, &result, PBO_SUB);
+						pcb_polyarea_boolean_free(original, new_hole, &result, PCB_PBO_SUB);
 
 						/* Convert the resulting polygon(s) into a new set of nodes
 						 * and place them on the page. Delete the original polygon.

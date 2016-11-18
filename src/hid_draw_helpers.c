@@ -85,8 +85,8 @@ static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const pcb_bo
 	pcb_poly_contour_copy(&pl_copy, pl);
 	piece_poly = pcb_polyarea_create();
 	pcb_polyarea_contour_include(piece_poly, pl_copy);
-	x = pcb_polyarea_boolean_free(piece_poly, clip_poly, &clipped_pieces, PBO_ISECT);
-	if (x != err_ok || clipped_pieces == NULL)
+	x = pcb_polyarea_boolean_free(piece_poly, clip_poly, &clipped_pieces, PCB_PBO_ISECT);
+	if (x != pcb_err_ok || clipped_pieces == NULL)
 		return;
 
 	draw_piece = clipped_pieces;

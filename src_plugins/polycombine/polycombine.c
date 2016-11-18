@@ -256,7 +256,7 @@ static pcb_polyarea_t *compute_polygon_recursive(poly_tree * root, pcb_polyarea_
 	for (cur_node = root; cur_node != NULL; cur_node = cur_node->next) {
 		/* Process this element */
 /*      printf ("Processing node %ld %s\n", cur_node->polygon->ID, cur_node->forward ? "FWD" : "BWD");*/
-		pcb_polyarea_boolean_free(accumulate, cur_node->polyarea, &res, cur_node->forward ? PBO_UNITE : PBO_SUB);
+		pcb_polyarea_boolean_free(accumulate, cur_node->polyarea, &res, cur_node->forward ? PCB_PBO_UNITE : PCB_PBO_SUB);
 		accumulate = res;
 
 		/* And its children if it has them */
