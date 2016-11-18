@@ -105,9 +105,9 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
  * access macros for elements name structure
  */
 #define PCB_ELEMNAME_IDX_DESCRIPTION 0
-#define PCB_ELEMNAME_IDX_REFDES   1
+#define PCB_ELEMNAME_IDX_REFDES      1
 #define PCB_ELEMNAME_IDX_VALUE       2
-#define PCB_ELEMNAME_IDX_VISIBLE()      (conf_core.editor.name_on_pcb ? PCB_ELEMNAME_IDX_REFDES :\
+#define PCB_ELEMNAME_IDX_VISIBLE()   (conf_core.editor.name_on_pcb ? PCB_ELEMNAME_IDX_REFDES :\
 	(conf_core.editor.description ? PCB_ELEMNAME_IDX_DESCRIPTION : PCB_ELEMNAME_IDX_VALUE))
 
 #define ELEMENT_NAME(p,e) ((e)->Name[PCB_ELEMNAME_IDX_VISIBLE()].TextString)
@@ -121,34 +121,34 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 
 /*** loops ***/
 
-#define PCB_ELEMENT_LOOP(top) do {                                      \
-  pcb_element_t *element;                                             \
-  gdl_iterator_t __it__;                                            \
-  pinlist_foreach(&(top)->Element, &__it__, element) {
+#define PCB_ELEMENT_LOOP(top) do {                                  \
+	pcb_element_t *element;                                           \
+	gdl_iterator_t __it__;                                            \
+	pinlist_foreach(&(top)->Element, &__it__, element) {
 
-#define	PCB_ELEMENT_PCB_TEXT_LOOP(element) do { 	\
-	pcb_cardinal_t	n;				\
-	pcb_text_t *text;				\
-	for (n = PCB_MAX_ELEMENTNAMES-1; n != -1; n--)	\
-	{						\
+#define	PCB_ELEMENT_PCB_TEXT_LOOP(element) do { \
+	pcb_cardinal_t n; \
+	pcb_text_t *text; \
+	for (n = PCB_MAX_ELEMENTNAMES-1; n != -1; n--) \
+	{	\
 		text = &(element)->Name[n]
 
-#define	PCB_ELEMENT_NAME_LOOP(element) do	{ 			\
-	pcb_cardinal_t	n;					\
-	char		*textstring;				\
-	for (n = PCB_MAX_ELEMENTNAMES-1; n != -1; n--)		\
-	{							\
+#define	PCB_ELEMENT_NAME_LOOP(element) do	{ \
+	pcb_cardinal_t n; \
+	char *textstring; \
+	for (n = PCB_MAX_ELEMENTNAMES-1; n != -1; n--) \
+	{ \
 		textstring = (element)->Name[n].TextString
 
-#define PCB_ELEMENT_PCB_LINE_LOOP(element) do {                              \
-  pcb_line_t *line;                                                   \
-  gdl_iterator_t __it__;                                            \
-  linelist_foreach(&(element)->Line, &__it__, line) {
+#define PCB_ELEMENT_PCB_LINE_LOOP(element) do {                     \
+	pcb_line_t *line;                                                 \
+	gdl_iterator_t __it__;                                            \
+	linelist_foreach(&(element)->Line, &__it__, line) {
 
-#define PCB_ELEMENT_ARC_LOOP(element) do {                               \
-  pcb_arc_t *arc;                                                     \
-  gdl_iterator_t __it__;                                            \
-  linelist_foreach(&(element)->Arc, &__it__, arc) {
+#define PCB_ELEMENT_ARC_LOOP(element) do {                          \
+	pcb_arc_t *arc;                                                   \
+	gdl_iterator_t __it__;                                            \
+	linelist_foreach(&(element)->Arc, &__it__, arc) {
 
 #endif
 
