@@ -227,7 +227,7 @@ pcb_lib_menu_t *pcb_netlist_find_net4pin(pcb_board_t *pcb, const pcb_pin_t *pin)
 	if (e == NULL)
 		return NULL;
 
-	return pcb_netlist_find_net4pin_any(pcb, e->Name[NAMEONPCB_INDEX].TextString, pin->Number);
+	return pcb_netlist_find_net4pin_any(pcb, e->Name[PCB_ELEMNAME_IDX_REFDES].TextString, pin->Number);
 }
 
 
@@ -238,7 +238,7 @@ pcb_lib_menu_t *pcb_netlist_find_net4pad(pcb_board_t *pcb, const pcb_pad_t *pad)
 	if (e == NULL)
 		return NULL;
 
-	return pcb_netlist_find_net4pin_any(pcb, e->Name[NAMEONPCB_INDEX].TextString, pad->Number);
+	return pcb_netlist_find_net4pin_any(pcb, e->Name[PCB_ELEMNAME_IDX_REFDES].TextString, pad->Number);
 }
 
 pcb_cardinal_t pcb_netlist_net_idx(pcb_board_t *pcb, pcb_lib_menu_t *net)

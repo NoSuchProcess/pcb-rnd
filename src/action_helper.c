@@ -1082,7 +1082,7 @@ void pcb_notify_mode(void)
 					int i, save_n;
 					e = (pcb_element_t *) ptr1;
 
-					save_n = NAME_INDEX();
+					save_n = PCB_ELEMNAME_IDX_VISIBLE();
 
 					for (i = 0; i < PCB_MAX_ELEMENTNAMES; i++) {
 						if (i == save_n)

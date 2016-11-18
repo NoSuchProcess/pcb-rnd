@@ -212,7 +212,7 @@ static void netnode_browse(Widget w, XtPointer v, XmListCallbackStruct * cbs)
 
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
-		char *es = element->Name[NAMEONPCB_INDEX].TextString;
+		char *es = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
 		if (es && strcmp(es, ename) == 0) {
 			PCB_PIN_LOOP(element);
 			{

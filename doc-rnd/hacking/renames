@@ -1093,3 +1093,7 @@ CreateBeLenient -> pcb_create_be_lenient
 CreateIDBump -> pcb_create_ID_bump
 CreateIDReset -> pcb_create_ID_reset
 CreateIDGet -> pcb_create_ID_get
+DESCRIPTION_INDEX -> PCB_ELEMNAME_IDX_DESCRIPTION
+NAMEONPCB_INDEX -> PCB_ELEMNAME_IDX_REFDES
+VALUE_INDEX -> PCB_ELEMNAME_IDX_VALUE
+NAME_INDEX -> PCB_ELEMNAME_IDX_VISIBLE

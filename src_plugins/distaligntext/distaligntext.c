@@ -169,7 +169,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_text_t *text;
-		text = &(element)->Name[NAME_INDEX()];
+		text = &(element)->Name[PCB_ELEMNAME_IDX_VISIBLE()];
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		nsel++;
@@ -190,7 +190,7 @@ static int sort_texts_by_pos(int op, int dir, int point)
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_text_t *text;
-		text = &(element)->Name[NAME_INDEX()];
+		text = &(element)->Name[PCB_ELEMNAME_IDX_VISIBLE()];
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		texts_by_pos[nsel].text = text;
@@ -361,7 +361,7 @@ static int aligntext(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	PCB_ELEMENT_LOOP(PCB->Data);
 	{
 		pcb_text_t *text;
-		text = &(element)->Name[NAME_INDEX()];
+		text = &(element)->Name[PCB_ELEMNAME_IDX_VISIBLE()];
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 			continue;
 		/* find delta from reference point to reference point */

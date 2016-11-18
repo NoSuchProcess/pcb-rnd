@@ -416,7 +416,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			pcb_text_t *text;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
-				pcb_r_dump_tree(PCB->Data->name_tree[NAME_INDEX()]->root, 0);
+				pcb_r_dump_tree(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()]->root, 0);
 				return 0;
 			}
 #endif
@@ -579,7 +579,7 @@ static int ReportAllNetLengths(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 		PCB_ELEMENT_LOOP(PCB->Data);
 		{
-			char *es = element->Name[NAMEONPCB_INDEX].TextString;
+			char *es = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
 			if (es && strcmp(es, ename) == 0) {
 				PCB_PIN_LOOP(element);
 				{
@@ -662,7 +662,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pin)) {
 				int ni, nei;
-				char *ename = element->Name[NAMEONPCB_INDEX].TextString;
+				char *ename = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
 				char *pname = pin->Number;
 				char *n;
 
@@ -683,7 +683,7 @@ static int ReportNetLength(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, pad)) {
 				int ni, nei;
-				char *ename = element->Name[NAMEONPCB_INDEX].TextString;
+				char *ename = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
 				char *pname = pad->Number;
 				char *n;
 

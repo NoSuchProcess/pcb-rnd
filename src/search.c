@@ -468,7 +468,7 @@ SearchElementNameByLocation(int locked, pcb_element_t ** Element, pcb_text_t ** 
 		info.area = PCB_SQUARE(PCB_MAX_COORD);
 		info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 		info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
-		if (pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], &SearchBox, NULL, name_callback, &info, NULL))
+		if (pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], &SearchBox, NULL, name_callback, &info, NULL))
 			return pcb_true;
 	}
 	return (pcb_false);

@@ -508,9 +508,9 @@ static int field_element(pcb_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		case query_fields_x:            PCB_QRY_RET_INT(res, p->MarkX);
 		case query_fields_y:            PCB_QRY_RET_INT(res, p->MarkY);
 		case query_fields_refdes:       /* alias of: */
-		case query_fields_name:         PCB_QRY_RET_STR(res, p->Name[NAMEONPCB_INDEX].TextString);
-		case query_fields_description:  PCB_QRY_RET_STR(res, p->Name[DESCRIPTION_INDEX].TextString);
-		case query_fields_value:        PCB_QRY_RET_STR(res, p->Name[VALUE_INDEX].TextString);
+		case query_fields_name:         PCB_QRY_RET_STR(res, p->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
+		case query_fields_description:  PCB_QRY_RET_STR(res, p->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString);
+		case query_fields_value:        PCB_QRY_RET_STR(res, p->Name[PCB_ELEMNAME_IDX_VALUE].TextString);
 
 		default:;
 	}

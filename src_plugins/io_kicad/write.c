@@ -1089,11 +1089,11 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 		if (currentElementName == NULL) {
 			currentElementName = "unknown";
 		}
-		currentElementRef = element->Name[NAMEONPCB_INDEX].TextString;
+		currentElementRef = element->Name[PCB_ELEMNAME_IDX_REFDES].TextString;
 		if (currentElementRef == NULL) {
 			currentElementRef = "unknown";
 		}
-		currentElementVal = element->Name[VALUE_INDEX].TextString;
+		currentElementVal = element->Name[PCB_ELEMNAME_IDX_VALUE].TextString;
 		if (currentElementVal == NULL) {
 			currentElementVal = "unknown";
 		}

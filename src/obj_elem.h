@@ -39,7 +39,7 @@
 
 struct pcb_element_s {
 	PCB_ANYOBJECTFIELDS;
-	pcb_text_t Name[PCB_MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see NAME_INDEX() below */
+	pcb_text_t Name[PCB_MAX_ELEMENTNAMES]; /* the elements names: description text, name on PCB second, value third - see PCB_ELEMNAME_IDX_VISIBLE() below */
 	pcb_coord_t MarkX, MarkY;               /* position mark */
 	pinlist_t Pin;
 	padlist_t Pad;
@@ -104,21 +104,20 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 /* ---------------------------------------------------------------------------
  * access macros for elements name structure
  */
-#define	DESCRIPTION_INDEX	0
-#define	NAMEONPCB_INDEX		1
-#define	VALUE_INDEX		2
-#define	NAME_INDEX()		(conf_core.editor.name_on_pcb ? NAMEONPCB_INDEX :\
-				(conf_core.editor.description ?		\
-				DESCRIPTION_INDEX : VALUE_INDEX))
+#define PCB_ELEMNAME_IDX_DESCRIPTION 0
+#define PCB_ELEMNAME_IDX_REFDES   1
+#define PCB_ELEMNAME_IDX_VALUE       2
+#define PCB_ELEMNAME_IDX_VISIBLE()      (conf_core.editor.name_on_pcb ? PCB_ELEMNAME_IDX_REFDES :\
+	(conf_core.editor.description ? PCB_ELEMNAME_IDX_DESCRIPTION : PCB_ELEMNAME_IDX_VALUE))
 
-#define ELEMENT_NAME(p,e) ((e)->Name[NAME_INDEX()].TextString)
-#define DESCRIPTION_NAME(e) ((e)->Name[DESCRIPTION_INDEX].TextString)
-#define NAMEONPCB_NAME(e) ((e)->Name[NAMEONPCB_INDEX].TextString)
-#define VALUE_NAME(e) ((e)->Name[VALUE_INDEX].TextString)
-#define ELEMENT_TEXT(p,e) ((e)->Name[NAME_INDEX()])
-#define DESCRIPTION_TEXT(e) ((e)->Name[DESCRIPTION_INDEX])
-#define NAMEONPCB_TEXT(e) ((e)->Name[NAMEONPCB_INDEX])
-#define VALUE_TEXT(e) ((e)->Name[VALUE_INDEX])
+#define ELEMENT_NAME(p,e) ((e)->Name[PCB_ELEMNAME_IDX_VISIBLE()].TextString)
+#define DESCRIPTION_NAME(e) ((e)->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString)
+#define NAMEONPCB_NAME(e) ((e)->Name[PCB_ELEMNAME_IDX_REFDES].TextString)
+#define VALUE_NAME(e) ((e)->Name[PCB_ELEMNAME_IDX_VALUE].TextString)
+#define ELEMENT_TEXT(p,e) ((e)->Name[PCB_ELEMNAME_IDX_VISIBLE()])
+#define DESCRIPTION_TEXT(e) ((e)->Name[PCB_ELEMNAME_IDX_DESCRIPTION])
+#define NAMEONPCB_TEXT(e) ((e)->Name[PCB_ELEMNAME_IDX_REFDES])
+#define VALUE_TEXT(e) ((e)->Name[PCB_ELEMNAME_IDX_VALUE])
 
 /*** loops ***/
 

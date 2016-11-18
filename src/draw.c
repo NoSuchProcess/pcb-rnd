@@ -210,7 +210,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		side = PCB_SWAP_IDENT ? COMPONENT_LAYER : SOLDER_LAYER;
 		if (PCB->ElementOn) {
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-			pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
+			pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 			pcb_draw_layer(&(PCB->Data->Layer[pcb_max_copper_layer + side]), drawn_area);
 		}
 		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
@@ -353,7 +353,7 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 		pcb_draw_layer(LAYER_PTR(pcb_max_copper_layer + side), drawn_area);
 		/* draw package */
 		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-		pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
+		pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 #if 0
 	}
 
@@ -367,7 +367,7 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 		pcb_draw_layer(LAYER_PTR(pcb_max_copper_layer + layer), drawn_area);
 		/* draw package */
 		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
-		pcb_r_search(PCB->Data->name_tree[NAME_INDEX()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
+		pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
 	}
 	pcb_gui->use_mask(HID_MASK_OFF);
 #endif

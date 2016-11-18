@@ -395,9 +395,9 @@ static lht_node_t *build_element(pcb_element_t *elem)
 	lst = lht_dom_node_alloc(LHT_LIST, "objects");
 	lht_dom_hash_put(obj, lst);
 
-	lht_dom_list_append(lst, build_pcb_text("desc", &elem->Name[DESCRIPTION_INDEX]));
-	lht_dom_list_append(lst, build_pcb_text("name", &elem->Name[NAMEONPCB_INDEX]));
-	lht_dom_list_append(lst, build_pcb_text("value", &elem->Name[VALUE_INDEX]));
+	lht_dom_list_append(lst, build_pcb_text("desc", &elem->Name[PCB_ELEMNAME_IDX_DESCRIPTION]));
+	lht_dom_list_append(lst, build_pcb_text("name", &elem->Name[PCB_ELEMNAME_IDX_REFDES]));
+	lht_dom_list_append(lst, build_pcb_text("value", &elem->Name[PCB_ELEMNAME_IDX_VALUE]));
 	lht_dom_hash_put(obj, build_textf("x", CFMT, elem->MarkX));
 	lht_dom_hash_put(obj, build_textf("y", CFMT, elem->MarkY));
 

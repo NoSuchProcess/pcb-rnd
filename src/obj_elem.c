@@ -489,7 +489,7 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 	printf("In ChangeElementText, updating old TextString %s to %s\n", old, new_name);
 #endif
 
-	if (pcb && which == NAME_INDEX())
+	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
 		EraseElementName(Element);
 
 	pcb_r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
@@ -499,7 +499,7 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 
 	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
 
-	if (pcb && which == NAME_INDEX())
+	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
 		DrawElementName(Element);
 
 	return old;
@@ -1372,14 +1372,14 @@ void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, &Element->Name[0]))
 		return (NULL);
-	if (NAME_INDEX() == NAMEONPCB_INDEX) {
+	if (PCB_ELEMNAME_IDX_VISIBLE() == PCB_ELEMNAME_IDX_REFDES) {
 		if (conf_core.editor.unique_names && pcb_element_uniq_name(PCB->Data, ctx->chgname.new_name) != ctx->chgname.new_name) {
 			pcb_message(PCB_MSG_DEFAULT, _("Error: The name \"%s\" is not unique!\n"), ctx->chgname.new_name);
 			return ((char *) -1);
 		}
 	}
 
-	return pcb_element_text_change(PCB, PCB->Data, Element, NAME_INDEX(), ctx->chgname.new_name);
+	return pcb_element_text_change(PCB, PCB->Data, Element, PCB_ELEMNAME_IDX_VISIBLE(), ctx->chgname.new_name);
 }
 
 void *ChangeElementNonetlist(pcb_opctx_t *ctx, pcb_element_t *Element)

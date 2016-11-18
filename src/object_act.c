@@ -624,10 +624,10 @@ static int ActionElementList(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	element_cache = NULL;
 	e = find_element_by_refdes(refdes);
 
-	old = pcb_element_text_change(PCB, PCB->Data, e, NAMEONPCB_INDEX, pcb_strdup(refdes));
+	old = pcb_element_text_change(PCB, PCB->Data, e, PCB_ELEMNAME_IDX_REFDES, pcb_strdup(refdes));
 	if (old)
 		free(old);
-	old = pcb_element_text_change(PCB, PCB->Data, e, VALUE_INDEX, pcb_strdup(value));
+	old = pcb_element_text_change(PCB, PCB->Data, e, PCB_ELEMNAME_IDX_VALUE, pcb_strdup(value));
 	if (old)
 		free(old);
 
