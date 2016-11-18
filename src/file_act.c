@@ -42,9 +42,9 @@
 #include "compat_nls.h"
 
 /* ---------------------------------------------------------------- */
-static const char execcommand_syntax[] = "ExecCommand(command)";
+static const char pcb_acts_ExecCommand[] = "ExecCommand(command)";
 
-static const char execcommand_help[] = "Runs a command.";
+static const char pcb_acth_ExecCommand[] = "Runs a command.";
 
 /* %start-doc actions execcommand
 
@@ -52,12 +52,12 @@ Runs the given command, which is a system executable.
 
 %end-doc */
 
-static int ActionExecCommand(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ExecCommand(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *command;
 
 	if (argc < 1) {
-		PCB_AFAIL(execcommand);
+		PCB_ACT_FAIL(ExecCommand);
 	}
 
 	command = PCB_ACTION_ARG(0);
@@ -69,9 +69,9 @@ static int ActionExecCommand(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 /* --------------------------------------------------------------------------- */
 
-static const char loadfrom_syntax[] = "LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format])";
+static const char pcb_acts_LoadFrom[] = "LoadFrom(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert,filename[,format])";
 
-static const char loadfrom_help[] = "Load layout data from a file.";
+static const char pcb_acth_LoadFrom[] = "Load layout data from a file.";
 
 /* %start-doc actions LoadFrom
 
@@ -104,12 +104,12 @@ you may have made.
 
 %end-doc */
 
-static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_LoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function, *name, *format = NULL;
 
 	if (argc < 2)
-		PCB_AFAIL(loadfrom);
+		PCB_ACT_FAIL(LoadFrom);
 
 	function = argv[0];
 	name = argv[1];
@@ -157,9 +157,9 @@ static int ActionLoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 /* --------------------------------------------------------------------------- */
 
-static const char new_syntax[] = "New([name])";
+static const char pcb_acts_New[] = "New([name])";
 
-static const char new_help[] = "Starts a new layout.";
+static const char pcb_acth_New[] = "Starts a new layout.";
 
 /* %start-doc actions New
 
@@ -167,7 +167,7 @@ If a name is not given, one is prompted for.
 
 %end-doc */
 
-static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_New(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *argument_name = PCB_ACTION_ARG(0);
 	char *name = NULL;
@@ -210,11 +210,11 @@ static int ActionNew(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char saveto_syntax[] =
+static const char pcb_acts_SaveTo[] =
 	"SaveTo(Layout|LayoutAs,filename)\n"
 	"SaveTo(AllConnections|AllUnusedPins|ElementConnections,filename)\n" "SaveTo(PasteBuffer,filename)";
 
-static const char saveto_help[] = "Saves data to a file.";
+static const char pcb_acth_SaveTo[] = "Saves data to a file.";
 
 /* %start-doc actions SaveTo
 
@@ -242,7 +242,7 @@ Save the content of the active Buffer to a file. This is the graphical way to cr
 
 %end-doc */
 
-static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function;
 	const char *name;
@@ -260,7 +260,7 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	}
 
 	if ((argc != 2) && (argc != 3))
-		PCB_AFAIL(saveto);
+		PCB_ACT_FAIL(SaveTo);
 
 	if (argc >= 3)
 		fmt = argv[2];
@@ -319,14 +319,14 @@ static int ActionSaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		return pcb_save_buffer_elements(name, fmt);
 	}
 
-	PCB_AFAIL(saveto);
+	PCB_ACT_FAIL(SaveTo);
 }
 
 /* --------------------------------------------------------------------------- */
 
-static const char quit_syntax[] = "Quit()";
+static const char pcb_acts_Quit[] = "Quit()";
 
-static const char quit_help[] = "Quits the application after confirming.";
+static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 
 /* %start-doc actions Quit
 
@@ -335,7 +335,7 @@ save) before quitting.
 
 %end-doc */
 
-static int ActionQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Quit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *force = PCB_ACTION_ARG(0);
 	if (force && strcasecmp(force, "force") == 0) {
@@ -349,20 +349,20 @@ static int ActionQuit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 
 pcb_hid_action_t file_action_list[] = {
-	{"ExecCommand", 0, ActionExecCommand,
-	 execcommand_help, execcommand_syntax}
+	{"ExecCommand", 0, pcb_act_ExecCommand,
+	 pcb_acth_ExecCommand, pcb_acts_ExecCommand}
 	,
-	{"LoadFrom", 0, ActionLoadFrom,
-	 loadfrom_help, loadfrom_syntax}
+	{"LoadFrom", 0, pcb_act_LoadFrom,
+	 pcb_acth_LoadFrom, pcb_acts_LoadFrom}
 	,
-	{"New", 0, ActionNew,
-	 new_help, new_syntax}
+	{"New", 0, pcb_act_New,
+	 pcb_acth_New, pcb_acts_New}
 	,
-	{"SaveTo", 0, ActionSaveTo,
-	 saveto_help, saveto_syntax}
+	{"SaveTo", 0, pcb_act_SaveTo,
+	 pcb_acth_SaveTo, pcb_acts_SaveTo}
 	,
-	{"Quit", 0, ActionQuit,
-	 quit_help, quit_syntax}
+	{"Quit", 0, pcb_act_Quit,
+	 pcb_acth_Quit, pcb_acts_Quit}
 };
 
 PCB_REGISTER_ACTIONS(file_action_list, NULL)
