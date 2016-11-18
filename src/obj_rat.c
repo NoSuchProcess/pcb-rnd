@@ -247,7 +247,7 @@ pcb_r_dir_t draw_rat_callback(const pcb_box_t * b, void *cl)
 	}
 	else
 		_draw_line((pcb_line_t *) rat);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 void EraseRat(pcb_rat_t *Rat)

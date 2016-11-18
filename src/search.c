@@ -83,13 +83,13 @@ static pcb_r_dir_t pinorvia_callback(const pcb_box_t * box, void *cl)
 	pcb_any_obj_t *ptr1 = pin->Element ? pin->Element : pin;
 
 	if (PCB_FLAG_TEST(i->locked, ptr1))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (!pcb_is_point_in_pin(PosX, PosY, SearchRadius, pin))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	*i->ptr1 = ptr1;
 	*i->ptr2 = *i->ptr3 = pin;
-	return R_DIR_CANCEL; /* found, stop searching */
+	return PCB_R_DIR_CANCEL; /* found, stop searching */
 }
 
 static pcb_bool SearchViaByLocation(int locked, pcb_pin_t ** Via, pcb_pin_t ** Dummy1, pcb_pin_t ** Dummy2)
@@ -105,7 +105,7 @@ static pcb_bool SearchViaByLocation(int locked, pcb_pin_t ** Via, pcb_pin_t ** D
 	info.ptr3 = (void **) Dummy2;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (pcb_r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(PCB->Data->via_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -126,7 +126,7 @@ static pcb_bool SearchPinByLocation(int locked, pcb_element_t ** Element, pcb_pi
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (pcb_r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL)  != R_DIR_NOT_FOUND)
+	if (pcb_r_search(PCB->Data->pin_tree, &SearchBox, NULL, pinorvia_callback, &info, NULL)  != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -138,16 +138,16 @@ static pcb_r_dir_t pad_callback(const pcb_box_t * b, void *cl)
 	pcb_any_obj_t *ptr1 = pad->Element;
 
 	if (PCB_FLAG_TEST(i->locked, ptr1))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FRONT(pad) || i->BackToo) {
 		if (pcb_is_point_in_pad(PosX, PosY, SearchRadius, pad)) {
 			*i->ptr1 = ptr1;
 			*i->ptr2 = *i->ptr3 = pad;
-			return R_DIR_CANCEL; /* found */
+			return PCB_R_DIR_CANCEL; /* found */
 		}
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -166,7 +166,7 @@ static pcb_bool SearchPadByLocation(int locked, pcb_element_t ** Element, pcb_pa
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
-	if (pcb_r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(PCB->Data->pad_tree, &SearchBox, NULL, pad_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -188,14 +188,14 @@ static pcb_r_dir_t line_callback(const pcb_box_t * box, void *cl)
 	pcb_line_t *l = (pcb_line_t *) box;
 
 	if (PCB_FLAG_TEST(i->locked, l))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (!pcb_is_point_in_pad(PosX, PosY, SearchRadius, (pcb_pad_t *) l))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	*i->Line = l;
 	*i->Point = (pcb_point_t *) l;
 
-	return R_DIR_CANCEL; /* found what we were looking for */
+	return PCB_R_DIR_CANCEL; /* found what we were looking for */
 }
 
 
@@ -208,7 +208,7 @@ static pcb_bool SearchLineByLocation(int locked, pcb_layer_t ** Layer, pcb_line_
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	*Layer = SearchLayer;
-	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 
 	return pcb_false;
@@ -220,15 +220,15 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 	struct ans_info *i = (struct ans_info *) cl;
 
 	if (PCB_FLAG_TEST(i->locked, line))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, line) ?
 			(pcb_distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
 			 line->Thickness * 2 + SearchRadius) : pcb_is_point_on_line(PosX, PosY, SearchRadius, line)) {
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
-		return R_DIR_CANCEL;
+		return PCB_R_DIR_CANCEL;
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -243,7 +243,7 @@ static pcb_bool SearchRatLineByLocation(int locked, pcb_rat_t ** Line, pcb_rat_t
 	info.ptr3 = (void **) Dummy2;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (pcb_r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -262,13 +262,13 @@ static pcb_r_dir_t arc_callback(const pcb_box_t * box, void *cl)
 	pcb_arc_t *a = (pcb_arc_t *) box;
 
 	if (PCB_FLAG_TEST(i->locked, a))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (!pcb_is_point_on_arc(PosX, PosY, SearchRadius, a))
 		return 0;
 	*i->Arc = a;
 	*i->Dummy = a;
-	return R_DIR_CANCEL; /* found */
+	return PCB_R_DIR_CANCEL; /* found */
 }
 
 
@@ -281,7 +281,7 @@ static pcb_bool SearchArcByLocation(int locked, pcb_layer_t ** Layer, pcb_arc_t 
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
 	*Layer = SearchLayer;
-	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -292,13 +292,13 @@ static pcb_r_dir_t text_callback(const pcb_box_t * box, void *cl)
 	struct ans_info *i = (struct ans_info *) cl;
 
 	if (PCB_FLAG_TEST(i->locked, text))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		*i->ptr2 = *i->ptr3 = text;
-		return R_DIR_CANCEL; /* found */
+		return PCB_R_DIR_CANCEL; /* found */
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -313,7 +313,7 @@ static pcb_bool SearchTextByLocation(int locked, pcb_layer_t ** Layer, pcb_text_
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (pcb_r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -324,13 +324,13 @@ static pcb_r_dir_t polygon_callback(const pcb_box_t * box, void *cl)
 	struct ans_info *i = (struct ans_info *) cl;
 
 	if (PCB_FLAG_TEST(i->locked, polygon))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (pcb_poly_is_point_in_p(PosX, PosY, SearchRadius, polygon)) {
 		*i->ptr2 = *i->ptr3 = polygon;
-		return R_DIR_CANCEL; /* found */
+		return PCB_R_DIR_CANCEL; /* found */
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 
@@ -346,7 +346,7 @@ static pcb_bool SearchPolygonByLocation(int locked, pcb_layer_t ** Layer, pcb_po
 	info.ptr3 = (void **) Dummy;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 
-	if (pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != R_DIR_NOT_FOUND)
+	if (pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -355,11 +355,11 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct line_info *i = (struct line_info *) cl;
-	pcb_r_dir_t ret_val = R_DIR_NOT_FOUND;
+	pcb_r_dir_t ret_val = PCB_R_DIR_NOT_FOUND;
 	double d;
 
 	if (PCB_FLAG_TEST(i->locked, line))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	/* some stupid code to check both points */
 	d = pcb_distance(PosX, PosY, line->Point1.X, line->Point1.Y);
@@ -367,7 +367,7 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 		i->least = d;
 		*i->Line = line;
 		*i->Point = &line->Point1;
-		ret_val = R_DIR_FOUND_CONTINUE;
+		ret_val = PCB_R_DIR_FOUND_CONTINUE;
 	}
 
 	d = pcb_distance(PosX, PosY, line->Point2.X, line->Point2.Y);
@@ -375,7 +375,7 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 		i->least = d;
 		*i->Line = line;
 		*i->Point = &line->Point2;
-		ret_val = R_DIR_FOUND_CONTINUE;
+		ret_val = PCB_R_DIR_FOUND_CONTINUE;
 	}
 	return ret_val;
 }
@@ -436,7 +436,7 @@ static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
 	double newarea;
 
 	if (PCB_FLAG_TEST(i->locked, text))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if ((PCB_FRONT(element) || i->BackToo) && !PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element) && PCB_POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		/* use the text with the smallest bounding box */
@@ -446,9 +446,9 @@ static pcb_r_dir_t name_callback(const pcb_box_t * box, void *cl)
 			*i->ptr1 = element;
 			*i->ptr2 = *i->ptr3 = text;
 		}
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -481,7 +481,7 @@ static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
 	double newarea;
 
 	if (PCB_FLAG_TEST(i->locked, element))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if ((PCB_FRONT(element) || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &element->VBox)) {
 		/* use the element with the smallest bounding box */
@@ -489,10 +489,10 @@ static pcb_r_dir_t element_callback(const pcb_box_t * box, void *cl)
 		if (newarea < i->area) {
 			i->area = newarea;
 			*i->ptr1 = *i->ptr2 = *i->ptr3 = element;
-			return R_DIR_FOUND_CONTINUE;
+			return PCB_R_DIR_FOUND_CONTINUE;
 		}
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------

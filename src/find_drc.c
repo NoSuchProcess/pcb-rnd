@@ -286,7 +286,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_polygo
 	default:
 		pcb_message(PCB_MSG_DEFAULT, "hace: Bad Plow object in callback\n");
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 
 doIsBad:
 	pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, layer, polygon, polygon);
@@ -306,11 +306,11 @@ doIsBad:
 	free(object_type_list);
 	if (!throw_drc_dialog()) {
 		IsBad = pcb_true;
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
 	pcb_undo_inc_serial();
 	pcb_undo(pcb_true);
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 

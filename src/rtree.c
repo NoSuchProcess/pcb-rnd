@@ -432,11 +432,11 @@ int __r_search(struct rtree_node *node, const pcb_box_t * query, r_arg * arg)
 						(node->u.rects[i].bounds.Y1 < query->Y2) &&
 						(node->u.rects[i].bounds.Y2 > query->Y1)) {
 					res = arg->found_it(node->u.rects[i].bptr, arg->closure);
-					if (res == R_DIR_CANCEL) {
+					if (res == PCB_R_DIR_CANCEL) {
 						arg->cancel = 1;
 						return seen;
 					}
-					if (res != R_DIR_NOT_FOUND)
+					if (res != PCB_R_DIR_NOT_FOUND)
 						seen++;
 				}
 			}
@@ -464,7 +464,7 @@ int __r_search(struct rtree_node *node, const pcb_box_t * query, r_arg * arg)
 					(*n)->box.Y1 >= query->Y2 || (*n)->box.Y2 <= query->Y1)
 				continue;
 			res = arg->check_it(&(*n)->box, arg->closure);
-			if (res == R_DIR_CANCEL) {
+			if (res == PCB_R_DIR_CANCEL) {
 				arg->cancel = 1;
 				return seen;
 			}
@@ -539,10 +539,10 @@ ret:;
 	if (num_found != NULL)
 		*num_found = res;
 	if (arg.cancel)
-		return R_DIR_CANCEL;
+		return PCB_R_DIR_CANCEL;
 	if (res == 0)
-		return R_DIR_NOT_FOUND;
-	return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_NOT_FOUND;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /*------ r_region_is_empty ------*/

@@ -554,11 +554,11 @@ static pcb_r_dir_t do_hole(const pcb_box_t * b, void *cl)
 
 	/* Ignore the outer contour - we draw it first explicitly */
 	if (curc->Flags.orient == PCB_PLF_DIR) {
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	}
 
 	tesselate_contour(info->tobj, curc, info->vertices, info->scale);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static GLint stencil_bits;

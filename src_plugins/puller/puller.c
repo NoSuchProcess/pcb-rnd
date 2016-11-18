@@ -297,7 +297,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 		printf("picked, exact %d\n", line_exact);
 #endif
 	}
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static pcb_r_dir_t arc_callback(const pcb_box_t * b, void *cl)
@@ -331,7 +331,7 @@ static pcb_r_dir_t arc_callback(const pcb_box_t * b, void *cl)
 		printf("picked, exact %d\n", arc_exact);
 #endif
 	}
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static int find_pair(int Px, int Py)
@@ -656,7 +656,7 @@ static pcb_r_dir_t find_pair_line_callback(const pcb_box_t * b, void *cl)
 	FindPairCallbackStruct *fpcs = (FindPairCallbackStruct *) cl;
 
 	if (line == fpcs->me)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 #ifdef CHECK_LINE_PT_NEG
 	if (line->Point1.X < 0)
 		abort1();
@@ -679,7 +679,7 @@ static pcb_r_dir_t find_pair_line_callback(const pcb_box_t * b, void *cl)
 #endif
 		}
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t find_pair_arc_callback(const pcb_box_t * b, void *cl)
@@ -689,7 +689,7 @@ static pcb_r_dir_t find_pair_arc_callback(const pcb_box_t * b, void *cl)
 	FindPairCallbackStruct *fpcs = (FindPairCallbackStruct *) cl;
 
 	if (arc == fpcs->me)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 #if TRACE1
 	pcb_printf(" - %p arc %#mD or %#mD\n", (void *)e, e->start.x, e->start.y, e->end.x, e->end.y);
 #endif
@@ -704,7 +704,7 @@ static pcb_r_dir_t find_pair_arc_callback(const pcb_box_t * b, void *cl)
 		else
 			*fpcs->extra_ptr = e;
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static void find_pairs_1(void *me, Extra ** e, int x, int y)
@@ -765,7 +765,7 @@ static pcb_r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 	hits += check_point_in_pin(pin, line->Point2.X, line->Point2.Y, &(e->end));
 
 	if (hits)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	/* See if the line passes through this pin.  */
 	/* FIXME: this assumes round pads, but it's good enough for square
@@ -778,7 +778,7 @@ static pcb_r_dir_t find_pair_pinline_callback(const pcb_box_t * b, void *cl)
 		unlink_end(e, &e->start.next);
 		unlink_end(e, &e->end.next);
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
@@ -790,7 +790,7 @@ static pcb_r_dir_t find_pair_pinarc_callback(const pcb_box_t * b, void *cl)
 
 	hits = check_point_in_pin(pin, e->start.x, e->start.y, &(e->start));
 	hits += check_point_in_pin(pin, e->end.x, e->end.y, &(e->end));
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t check_point_in_pad(pcb_pad_t *pad, int x, int y, End * e)
@@ -832,9 +832,9 @@ static pcb_r_dir_t check_point_in_pad(pcb_pad_t *pad, int x, int y, End * e)
 			e->at_pin = 1;
 		e->pin = pad;
 		e->is_pad = 1;
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
@@ -849,11 +849,11 @@ static pcb_r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)) {
 		if (!current_is_solder)
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 	}
 	else {
 		if (!current_is_component)
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 	}
 
 #ifdef CHECK_LINE_PT_NEG
@@ -865,7 +865,7 @@ static pcb_r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 	hits += check_point_in_pad(pad, line->Point2.X, line->Point2.Y, &(e->end));
 
 	if (hits)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	/* Ok, something strange.  The line intersects our space, but
 	   doesn't end in our space.  See if it just passes through us, and
@@ -892,7 +892,7 @@ static pcb_r_dir_t find_pair_padline_callback(const pcb_box_t * b, void *cl)
 		unlink_end(e, &e->end.next);
 	}
 
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
@@ -904,16 +904,16 @@ static pcb_r_dir_t find_pair_padarc_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)) {
 		if (!current_is_solder)
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 	}
 	else {
 		if (!current_is_component)
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 	}
 
 	hits = check_point_in_pad(pad, e->start.x, e->start.y, &(e->start));
 	hits += check_point_in_pad(pad, e->end.x, e->end.y, &(e->end));
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static void null_multi_next_ends(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
@@ -1495,9 +1495,9 @@ static pcb_r_dir_t gp_line_cb(const pcb_box_t * b, void *cb)
 	const pcb_line_t *l = (pcb_line_t *) b;
 	Extra *e = LINE2EXTRA(l);
 	if (l == start_line || l == end_line)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (e->deleted)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 #ifdef CHECK_LINE_PT_NEG
 	if (l->Point1.X < 0)
 		abort1();
@@ -1506,7 +1506,7 @@ static pcb_r_dir_t gp_line_cb(const pcb_box_t * b, void *cb)
 		gp_point(l->Point1.X, l->Point1.Y, l->Thickness / 2, &e->start);
 	if (!e->end.next || !EXTRA_IS_ARC(e->end.next))
 		gp_point(l->Point2.X, l->Point2.Y, l->Thickness / 2, &e->end);
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t gp_arc_cb(const pcb_box_t * b, void *cb)
@@ -1514,21 +1514,21 @@ static pcb_r_dir_t gp_arc_cb(const pcb_box_t * b, void *cb)
 	const pcb_arc_t *a = (pcb_arc_t *) b;
 	Extra *e = ARC2EXTRA(a);
 	if (a == start_arc || a == end_arc)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (e->deleted)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	gp_point_2(a->X, a->Y, a->Width + a->Thickness / 2, 0, a->StartAngle, a->Delta, "gp_arc_cb");
 	if (start_arc && a->X == start_arc->X && a->Y == start_arc->Y)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (end_arc && a->X != end_arc->X && a->Y != end_arc->Y)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (e->start.next || e->end.next)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	gp_point(e->start.x, e->start.y, a->Thickness / 2, 0);
 	gp_point(e->end.x, e->end.y, a->Thickness / 2, 0);
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t gp_text_cb(const pcb_box_t * b, void *cb)
@@ -1539,7 +1539,7 @@ static pcb_r_dir_t gp_text_cb(const pcb_box_t * b, void *cb)
 	gp_point(t->BoundingBox.X1, t->BoundingBox.Y2, 0, 0);
 	gp_point(t->BoundingBox.X2, t->BoundingBox.Y2, 0, 0);
 	gp_point(t->BoundingBox.X2, t->BoundingBox.Y1, 0, 0);
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
@@ -1548,7 +1548,7 @@ static pcb_r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
 	const pcb_polygon_t *p = (pcb_polygon_t *) b;
 	for (i = 0; i < p->PointN; i++)
 		gp_point(p->Points[i].X, p->Points[i].Y, 0, 0);
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
@@ -1557,7 +1557,7 @@ static pcb_r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
 	int t2 = (p->Thickness + 1) / 2;
 
 	if (p == start_pinpad || p == end_pinpad)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	/* FIXME: we lump octagonal pins in with square; safe, but not
 	   optimal.  */
@@ -1570,7 +1570,7 @@ static pcb_r_dir_t gp_pin_cb(const pcb_box_t * b, void *cb)
 	else {
 		gp_point(p->X, p->Y, t2, 0);
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
@@ -1579,15 +1579,15 @@ static pcb_r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
 	int t2 = (p->Thickness + 1) / 2;
 
 	if (p == start_pinpad || p == end_pinpad)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, p)) {
 		if (!current_is_solder)
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 	}
 	else {
 		if (!current_is_component)
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 	}
 
 	/* FIXME: we lump octagonal pads in with square; safe, but not
@@ -1616,7 +1616,7 @@ static pcb_r_dir_t gp_pad_cb(const pcb_box_t * b, void *cb)
 		gp_point(p->Point1.X, p->Point1.Y, t2, 0);
 		gp_point(p->Point2.X, p->Point2.Y, t2, 0);
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_line_t *create_line(pcb_line_t *sample, int x1, int y1, int x2, int y2)

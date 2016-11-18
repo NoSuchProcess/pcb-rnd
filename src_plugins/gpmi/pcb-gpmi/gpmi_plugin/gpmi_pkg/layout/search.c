@@ -34,7 +34,7 @@ static inline void search_append(layout_search_t *s, void *obj)
 static pcb_r_dir_t search_callback (const pcb_box_t * b, void *cl)
 {
 	search_append(cl, (void *)b);
-  return R_DIR_FOUND_CONTINUE;
+  return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 hash_t *layout_searches = NULL;

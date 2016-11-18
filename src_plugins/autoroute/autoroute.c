@@ -784,15 +784,15 @@ static pcb_r_dir_t __found_one_on_lg(const pcb_box_t * box, void *cl)
 	pcb_box_t sb;
 
 	if (rb->flags.nonstraight)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	sb = pcb_shrink_box(&rb->box, rb->style->Clearance);
 	if (inf->query.X1 >= sb.X2 || inf->query.X2 <= sb.X1 || inf->query.Y1 >= sb.Y2 || inf->query.Y2 <= sb.Y1)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	inf->winner = rb;
 	if (rb->type == PLANE)
-		return R_DIR_FOUND_CONTINUE;										/* keep looking for something smaller if a plane was found */
+		return PCB_R_DIR_FOUND_CONTINUE;										/* keep looking for something smaller if a plane was found */
 	longjmp(inf->env, 1);
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static routebox_t *FindRouteBoxOnLayerGroup(routedata_t * rd, pcb_coord_t X, pcb_coord_t Y, pcb_cardinal_t layergroup)
@@ -1477,13 +1477,13 @@ static pcb_r_dir_t __region_within_guess(const pcb_box_t * region, void *cl)
 	struct minpcb_cost_target_closure *mtc = (struct minpcb_cost_target_closure *) cl;
 	pcb_cost_t pcb_cost_to_region;
 	if (mtc->nearest == NULL)
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	pcb_cost_to_region = pcb_cost_to_layerless_box(mtc->CostPoint, mtc->CostPointLayer, region);
 	assert(pcb_cost_to_region >= 0);
 	/* if no guess yet, all regions are "close enough" */
 	/* note that cost is *strictly more* than minimum distance, so we'll
 	 * always search a region large enough. */
-	return (pcb_cost_to_region < mtc->nearest_cost) ? R_DIR_FOUND_CONTINUE : R_DIR_NOT_FOUND;
+	return (pcb_cost_to_region < mtc->nearest_cost) ? PCB_R_DIR_FOUND_CONTINUE : PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
@@ -1496,10 +1496,10 @@ static pcb_r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
 	if (pcb_cost_to_guess < mtc->nearest_cost) {
 		mtc->nearest = guess;
 		mtc->nearest_cost = pcb_cost_to_guess;	/* this is our new guess! */
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
 	else
-		return R_DIR_NOT_FOUND;										/* not less expensive than our last guess */
+		return PCB_R_DIR_NOT_FOUND;										/* not less expensive than our last guess */
 }
 
 /* target_guess is our guess at what the nearest target is, or NULL if we
@@ -1858,7 +1858,7 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 
 	/* we don't see conflicts already encountered */
 	if (rb->flags.touched)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	/* The inflated box outer edges include its own
 	 * track width plus its own clearance.
@@ -1876,7 +1876,7 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 		bloat = res->bloat;
 		if (rbox.X2 <= res->inflated.X1 + bloat ||
 				rbox.X1 >= res->inflated.X2 - bloat || rbox.Y1 >= res->inflated.Y2 - bloat || rbox.Y2 <= res->inflated.Y1 + bloat)
-			return R_DIR_NOT_FOUND;									/* doesn't touch */
+			return PCB_R_DIR_NOT_FOUND;									/* doesn't touch */
 	}
 	else {
 		if (rb->style->Clearance > res->keep)
@@ -1886,13 +1886,13 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 
 		if (rbox.X2 <= res->inflated.X1 || rbox.X1 >= res->inflated.X2
 				|| rbox.Y1 >= res->inflated.Y2 || rbox.Y2 <= res->inflated.Y1)
-			return R_DIR_NOT_FOUND;									/* doesn't touch */
+			return PCB_R_DIR_NOT_FOUND;									/* doesn't touch */
 		bloat = 0;
 	}
 
 	/* this is an intersecting box; it has to jump through a few more hoops */
 	if (rb == res->parent || rb->parent.expansion_area == res->parent)
-		return R_DIR_NOT_FOUND;										/* don't see what we came from */
+		return PCB_R_DIR_NOT_FOUND;										/* don't see what we came from */
 
 	/* if we are expanding a source edge, don't let other sources
 	 * or their expansions stop us.
@@ -1900,7 +1900,7 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 #if 1
 	if (res->parent->flags.source)
 		if (rb->flags.source || (rb->type == EXPANSION_AREA && rb->parent.expansion_area->flags.source))
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 #endif
 
 	/* we ignore via expansion boxes because maybe its
@@ -1908,12 +1908,12 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 	 * the path we're exploring  now.
 	 */
 	if (rb->flags.is_via && rb->type == EXPANSION_AREA)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (rb->type == PLANE) {			/* expanding inside a plane is not good */
 		if (rbox.X1 < res->orig.X1 && rbox.X2 > res->orig.X2 && rbox.Y1 < res->orig.Y1 && rbox.Y2 > res->orig.Y2) {
 			res->inflated = pcb_bloat_box(&res->orig, res->bloat);
-			return R_DIR_FOUND_CONTINUE;
+			return PCB_R_DIR_FOUND_CONTINUE;
 		}
 	}
 	/* calculate the distances from original box to this blocker */
@@ -1927,7 +1927,7 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 	if (!(res->done & _WEST) && rbox.X1 <= res->orig.X1 && rbox.X2 > res->inflated.X1)
 		dw = res->orig.X1 - rbox.X2;
 	if (dn <= 0 && de <= 0 && ds <= 0 && dw <= 0)
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	/* now shrink the inflated box to the largest blocking direction */
 	if (dn >= de && dn >= ds && dn >= dw) {
 		res->inflated.Y1 = rbox.Y2 - bloat;
@@ -1945,7 +1945,7 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 		res->inflated.X1 = rbox.X2 - bloat;
 		res->w = rb;
 	}
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static pcb_bool boink_box(routebox_t * rb, struct E_result *res, pcb_direction_t dir)
@@ -2391,17 +2391,17 @@ static pcb_r_dir_t __GatherBlockers(const pcb_box_t * box, void *cl)
 	pcb_box_t b;
 
 	if (bi->parent == rb || rb->flags.touched || bi->parent->parent.expansion_area == rb)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (rb->flags.source && bi->ignore_source)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	b = rb->sbox;
 	if (rb->style->Clearance > AutoRouteParameters.style->Clearance)
 		b = pcb_bloat_box(&b, rb->style->Clearance - AutoRouteParameters.style->Clearance);
 	if (b.X2 <= bi->box.X1 || b.X1 >= bi->box.X2 || b.Y1 >= bi->box.Y2 || b.Y2 <= bi->box.Y1)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (blocker_to_heap(bi->heap, rb, &bi->box, bi->dir))
-		return R_DIR_FOUND_CONTINUE;
-	return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 /* shrink the box to the last limit for the previous direction,
@@ -2728,16 +2728,16 @@ static pcb_r_dir_t foib_rect_in_reg(const pcb_box_t * box, void *cl)
 	pcb_box_t rbox;
 	routebox_t *rb = (routebox_t *) box;
 	if (rb->flags.touched)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 /*  if (rb->type == EXPANSION_AREA && !rb->flags.is_via)*/
-	/*   return R_DIR_NOT_FOUND; */
+	/*   return PCB_R_DIR_NOT_FOUND; */
 	rbox = bloat_routebox(rb);
 	if (!pcb_box_intersect(&rbox, foib->box))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	/* this is an intersector! */
 	foib->intersect = (routebox_t *) box;
 	longjmp(foib->env, 1);				/* skip to the end! */
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static routebox_t *FindOneInBox(pcb_rtree_t * rtree, routebox_t * rb)
@@ -2766,16 +2766,16 @@ static pcb_r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
 	pcb_box_t sq, sb;
 
 	if (rbox->type != PIN && rbox->type != VIA && rbox->type != VIA_SHADOW)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (rbox->group != ti->plane->group)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	sb = shrink_routebox(rbox);
 	switch (rbox->type) {
 	case PIN:
 		sq = pcb_shrink_box(&ti->query, rbox->parent.pin->Thickness);
 		if (!pcb_box_intersect(&sb, &sq))
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 		sb.X1 = rbox->parent.pin->X;
 		sb.Y1 = rbox->parent.pin->Y;
 		break;
@@ -2791,12 +2791,12 @@ static pcb_r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
 			sb.Y1 = PCB_BOX_CENTER_Y(sb);
 		}
 		if (!pcb_box_intersect(&sb, &sq))
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 		break;
 	case VIA_SHADOW:
 		sq = pcb_shrink_box(&ti->query, rbox->style->Diameter);
 		if (!pcb_box_intersect(&sb, &sq))
-			return R_DIR_NOT_FOUND;
+			return PCB_R_DIR_NOT_FOUND;
 		sb.X1 = PCB_BOX_CENTER_X(sb);
 		sb.Y1 = PCB_BOX_CENTER_Y(sb);
 		break;
@@ -2805,7 +2805,7 @@ static pcb_r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
 	}
 	ti->plane = rbox;
 	longjmp(ti->env, 1);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* check for a pin or via target that a polygon can just use a thermal to connect to */
@@ -3517,13 +3517,13 @@ static pcb_r_dir_t __conflict_source(const pcb_box_t * box, void *cl)
 {
 	routebox_t *rb = (routebox_t *) box;
 	if (rb->flags.touched || rb->flags.fixed)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	else {
 		routebox_t *dis = (routebox_t *) cl;
 		path_conflicts(dis, rb, pcb_false);
 		touch_conflicts(dis->conflicts_with, 1);
 	}
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static void source_conflicts(pcb_rtree_t * tree, routebox_t * rb)
@@ -4055,8 +4055,8 @@ pcb_r_dir_t bad_boy(const pcb_box_t * b, void *cl)
 {
 	routebox_t *box = (routebox_t *) b;
 	if (box->type == EXPANSION_AREA)
-		return R_DIR_FOUND_CONTINUE;
-	return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 pcb_bool no_expansion_boxes(routedata_t * rd)
@@ -4094,7 +4094,7 @@ static pcb_r_dir_t ripout_livedraw_obj_cb(const pcb_box_t * b, void *cl)
 {
 	routebox_t *box = (routebox_t *) b;
 	ripout_livedraw_obj(box);
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 struct routeall_status {
@@ -4398,7 +4398,7 @@ static pcb_r_dir_t fpin_rect(const pcb_box_t * b, void *cl)
 		info->pin = (pcb_pin_t *) b;
 		longjmp(info->env, 1);
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static int FindPin(const pcb_box_t * box, pcb_pin_t ** pin)

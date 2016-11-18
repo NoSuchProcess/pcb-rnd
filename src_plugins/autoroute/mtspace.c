@@ -137,7 +137,7 @@ static pcb_r_dir_t mts_remove_one(const pcb_box_t * b, void *cl)
 		pcb_r_delete_entry(info->tree, b);
 		longjmp(info->env, 1);
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 pcb_rtree_t *which_tree(mtspace_t * mtspace, mtspace_type_t which)
@@ -220,7 +220,7 @@ static pcb_r_dir_t query_one(const pcb_box_t * box, void *cl)
 	 * then we didn't actually touch this box */
 	if (qc->cbox->X1 + shrink >= mtsb->box.X2 ||
 			qc->cbox->X2 - shrink <= mtsb->box.X1 || qc->cbox->Y1 + shrink >= mtsb->box.Y2 || qc->cbox->Y2 - shrink <= mtsb->box.Y1)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	/* ok, we do touch this box, now create up to 4 boxes that don't */
 	if (mtsb->box.Y1 > qc->cbox->Y1 + shrink) {	/* top region exists */
 		pcb_coord_t Y1 = qc->cbox->Y1;
@@ -284,7 +284,7 @@ static pcb_r_dir_t query_one(const pcb_box_t * box, void *cl)
 	else
 		free(qc->cbox);							/* done with this one */
 	longjmp(qc->env, 1);
-	return R_DIR_FOUND_CONTINUE;											/* never reached */
+	return PCB_R_DIR_FOUND_CONTINUE;											/* never reached */
 }
 
 /* qloop takes a vector (or heap) of regions to check (checking) if they don't intersect

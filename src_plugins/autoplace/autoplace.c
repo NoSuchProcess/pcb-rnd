@@ -233,8 +233,8 @@ static pcb_r_dir_t __r_find_neighbor_reg_in_sea(const pcb_box_t * region, void *
 	 *   trap.x1    trap.x2   sides at 45-degree angle
 	 */
 	if ((query.Y2 > ni->trap.Y1) && (query.Y1 < ni->trap.Y2) && (query.X2 + ni->trap.Y2 > ni->trap.X1 + query.Y1) && (query.X1 + query.Y1 < ni->trap.X2 + ni->trap.Y2))
-		return R_DIR_FOUND_CONTINUE;
-	return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl)
@@ -256,7 +256,7 @@ static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl
 		ni->trap.Y1 = query.Y2;
 		ni->neighbor = box;
 	}
-	return r ? R_DIR_FOUND_CONTINUE : R_DIR_NOT_FOUND;
+	return r ? PCB_R_DIR_FOUND_CONTINUE : PCB_R_DIR_NOT_FOUND;
 }
 
 /* main r_find_neighbor routine.  Returns NULL if no neighbor in the

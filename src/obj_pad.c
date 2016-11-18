@@ -396,7 +396,7 @@ pcb_r_dir_t draw_pad_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_ON_SIDE(pad, *side))
 		draw_pad(pad);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
@@ -405,7 +405,7 @@ pcb_r_dir_t clear_pad_callback(const pcb_box_t * b, void *cl)
 	int *side = cl;
 	if (PCB_ON_SIDE(pad, *side) && pad->Mask)
 		_draw_pad(Output.pmGC, pad, pcb_true, pcb_true);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* draws solder paste layer for a given side of the board - only pads get paste */

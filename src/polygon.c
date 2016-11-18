@@ -877,16 +877,16 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 
 	if (pin->Clearance == 0)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	i = GetLayerNumber(info->data, info->layer);
 	if (PCB_FLAG_THERM_TEST(i, pin)) {
 		np = ThermPoly((pcb_board_t *) (info->data->pcb), pin, i);
 		if (!np)
-			return R_DIR_FOUND_CONTINUE;
+			return PCB_R_DIR_FOUND_CONTINUE;
 	}
 	else {
 		np = pcb_poly_from_pin(pin, PIN_SIZE(pin), pin->Clearance);
@@ -902,7 +902,7 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 	if (info->batch_size == SUBTRACT_PIN_VIA_BATCH_SIZE)
 		subtract_accumulated(info, polygon);
 
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static pcb_r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
@@ -913,13 +913,13 @@ static pcb_r_dir_t arc_sub_callback(const pcb_box_t * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (SubtractArc(arc, polygon) < 0)
 		longjmp(info->env, 1);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static pcb_r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
@@ -930,16 +930,16 @@ static pcb_r_dir_t pad_sub_callback(const pcb_box_t * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (pad->Clearance == 0)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (PCB_XOR(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad), !info->solder)) {
 		if (SubtractPad(pad, polygon) < 0)
 			longjmp(info->env, 1);
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
@@ -952,9 +952,9 @@ static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 
 	if (!(np = pcb_poly_from_line(line, line->Thickness + line->Clearance)))
@@ -967,7 +967,7 @@ static pcb_r_dir_t line_sub_callback(const pcb_box_t * b, void *cl)
 	if (info->batch_size == SUBTRACT_LINE_BATCH_SIZE)
 		subtract_accumulated(info, polygon);
 
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static pcb_r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
@@ -978,13 +978,13 @@ static pcb_r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	polygon = info->polygon;
 	if (SubtractText(text, polygon) < 0)
 		longjmp(info->env, 1);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static int Group(pcb_data_t *Data, pcb_cardinal_t layer)
@@ -1401,25 +1401,25 @@ static pcb_r_dir_t subtract_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polyg
 	case PCB_TYPE_VIA:
 		SubtractPin(Data, (pcb_pin_t *) ptr2, Layer, Polygon);
 		Polygon->NoHolesValid = 0;
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
 		SubtractLine((pcb_line_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_ARC:
 		SubtractArc((pcb_arc_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PAD:
 		SubtractPad((pcb_pad_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_TEXT:
 		SubtractText((pcb_text_t *) ptr2, Polygon);
 		Polygon->NoHolesValid = 0;
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t *Polygon, int type, void *ptr1, void *ptr2)
@@ -1428,21 +1428,21 @@ static pcb_r_dir_t add_plow(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t 
 	case PCB_TYPE_PIN:
 	case PCB_TYPE_VIA:
 		UnsubtractPin((pcb_pin_t *) ptr2, Layer, Polygon);
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_LINE:
 		UnsubtractLine((pcb_line_t *) ptr2, Layer, Polygon);
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_ARC:
 		UnsubtractArc((pcb_arc_t *) ptr2, Layer, Polygon);
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_PAD:
 		UnsubtractPad((pcb_pad_t *) ptr2, Layer, Polygon);
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	case PCB_TYPE_TEXT:
 		UnsubtractText((pcb_text_t *) ptr2, Layer, Polygon);
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static pcb_r_dir_t plow_callback(const pcb_box_t * b, void *cl)
@@ -1452,7 +1452,7 @@ static pcb_r_dir_t plow_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon))
 		return plow->callback(plow->data, plow->layer, polygon, plow->type, plow->ptr1, plow->ptr2);
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 int

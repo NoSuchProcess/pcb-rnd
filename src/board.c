@@ -191,7 +191,7 @@ static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 		hcs->nunplated++;
 	else
 		hcs->nplated++;
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 void pcb_board_count_holes(int *plated, int *unplated, const pcb_box_t * within_area)

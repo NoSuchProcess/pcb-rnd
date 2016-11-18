@@ -28,10 +28,7 @@
  *
  */
 
-
-
-/* prototypes for r-tree routines.
- */
+/* r-tree: efficient lookup of screenobjects */
 
 #ifndef PCB_RTREE_H
 #define PCB_RTREE_H
@@ -45,9 +42,9 @@ struct pcb_rtree_s {
 
 /* callback direction to the search engine */
 typedef enum pcb_r_dir_e {
-	R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */
-	R_DIR_FOUND_CONTINUE = 1,    /* object found or accepted, go on searching */
-	R_DIR_CANCEL                 /* cancel the search and return immediately */
+	PCB_R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */
+	PCB_R_DIR_FOUND_CONTINUE = 1,    /* object found or accepted, go on searching */
+	PCB_R_DIR_CANCEL                 /* cancel the search and return immediately */
 } pcb_r_dir_t;
 
 /* create an rtree from the list of boxes.  if 'manage' is pcb_true, then

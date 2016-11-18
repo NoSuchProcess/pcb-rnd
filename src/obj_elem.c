@@ -1687,11 +1687,11 @@ pcb_r_dir_t draw_element_name_callback(const pcb_box_t * b, void *cl)
 	int *side = cl;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_HIDENAME, element))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_ON_SIDE(element, *side))
 		draw_element_name(element);
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 void draw_element_pins_and_pads(pcb_element_t * element)
@@ -1749,7 +1749,7 @@ pcb_r_dir_t draw_element_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_ON_SIDE(element, *side))
 		draw_element_package(element);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static void DrawEMark(pcb_element_t *e, pcb_coord_t X, pcb_coord_t Y, pcb_bool invisible)
@@ -1795,7 +1795,7 @@ pcb_r_dir_t draw_element_mark_callback(const pcb_box_t * b, void *cl)
 	pcb_element_t *element = (pcb_element_t *) b;
 
 	DrawEMark(element, element->MarkX, element->MarkY, !PCB_FRONT(element));
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 void EraseElement(pcb_element_t *Element)

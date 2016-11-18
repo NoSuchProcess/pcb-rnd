@@ -68,9 +68,9 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	t = line->Thickness / 2;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (line == i->line)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	/*
 	 * Check to see if the line touches a rectangular region.
 	 * To do this we need to look for the intersection of a circular
@@ -133,7 +133,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 				found++;
 			}
 		}
-		return found ? R_DIR_FOUND_CONTINUE : R_DIR_NOT_FOUND;
+		return found ? PCB_R_DIR_FOUND_CONTINUE : PCB_R_DIR_NOT_FOUND;
 	}
 	/* circular search region */
 	if (i->radius < 0)
@@ -154,7 +154,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	dist2 = x + y - rad;
 
 	if (dist1 > 0 && dist2 > 0)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 #ifdef CLOSEST_ONLY							/* keep this to remind me */
 	if (dist1 < dist2)
@@ -167,7 +167,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	if (dist2 <= 0)
 		pcb_rubber_band_create(i->layer, line, &line->Point2);
 #endif
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* ---------------------------------------------------------------------------
@@ -249,7 +249,7 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 	default:
 		pcb_message(PCB_MSG_DEFAULT, "hace: bad rubber-rat lookup callback\n");
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static void CheckPadForRat(pcb_pad_t *Pad)

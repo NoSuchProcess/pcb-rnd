@@ -867,7 +867,7 @@ void draw_pin(pcb_pin_t *pin, pcb_bool draw_hole)
 pcb_r_dir_t draw_pin_callback(const pcb_box_t * b, void *cl)
 {
 	draw_pin((pcb_pin_t *) b, pcb_false);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 pcb_r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl)
@@ -877,7 +877,7 @@ pcb_r_dir_t clear_pin_callback(const pcb_box_t * b, void *cl)
 		pcb_gui->thindraw_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
 	else
 		pcb_gui->fill_pcb_pv(Output.pmGC, Output.pmGC, pin, pcb_false, pcb_true);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 
@@ -890,7 +890,7 @@ static void draw_via(pcb_pin_t *via, pcb_bool draw_hole)
 pcb_r_dir_t draw_via_callback(const pcb_box_t * b, void *cl)
 {
 	draw_via((pcb_pin_t *) b, pcb_false);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
@@ -901,7 +901,7 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 	char buf[sizeof("#XXXXXX")];
 
 	if ((plated == 0 && !PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) || (plated == 1 && PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)))
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (conf_core.editor.thin_draw) {
 		if (!PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
@@ -932,7 +932,7 @@ pcb_r_dir_t draw_hole_callback(const pcb_box_t * b, void *cl)
 		pcb_gui->set_line_width(Output.fgGC, 0);
 		pcb_gui->draw_arc(Output.fgGC, pv->X, pv->Y, pv->DrillingHole / 2, pv->DrillingHole / 2, 0, 360);
 	}
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 static void GatherPVName(pcb_pin_t *Ptr)

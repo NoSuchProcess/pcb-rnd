@@ -141,7 +141,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 			}
 		}
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 
@@ -558,7 +558,7 @@ static pcb_r_dir_t remove_point(const pcb_box_t * b, void *cl)
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct rlp_info *info = (struct rlp_info *) cl;
 	if (line == info->line)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if ((line->Point1.X == info->point->X)
 			&& (line->Point1.Y == info->point->Y)) {
 		info->line = line;
@@ -571,7 +571,7 @@ static pcb_r_dir_t remove_point(const pcb_box_t * b, void *cl)
 		info->point = &line->Point2;
 		longjmp(info->env, 1);
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 /* removes a line point, or a line if the selected point is the end */
@@ -744,7 +744,7 @@ void draw_line(pcb_layer_t * layer, pcb_line_t * line)
 pcb_r_dir_t draw_line_callback(const pcb_box_t * b, void *cl)
 {
 	draw_line((pcb_layer_t *) cl, (pcb_line_t *) b);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* erases a line on a layer */

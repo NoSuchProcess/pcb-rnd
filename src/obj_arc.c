@@ -595,7 +595,7 @@ void draw_arc(pcb_layer_t * layer, pcb_arc_t * arc)
 pcb_r_dir_t draw_arc_callback(const pcb_box_t * b, void *cl)
 {
 	draw_arc((pcb_layer_t *) cl, (pcb_arc_t *) b);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* erases an arc on a layer */

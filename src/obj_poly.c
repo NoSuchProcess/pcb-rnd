@@ -411,14 +411,14 @@ pcb_r_dir_t mptl_pin_callback(const pcb_box_t * b, void *cl)
 	struct mptlc *d = (struct mptlc *) cl;
 	pcb_pin_t *pin = (pcb_pin_t *) b;
 	if (!PCB_FLAG_THERM_TEST(d->snum, pin) || !pcb_poly_is_point_in_p(pin->X, pin->Y, pin->Thickness + pin->Clearance + 2, d->polygon))
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (d->type == PCB_TYPE_PIN)
 		pcb_undo_add_obj_to_flag(PCB_TYPE_PIN, pin->Element, pin, pin);
 	else
 		pcb_undo_add_obj_to_flag(PCB_TYPE_VIA, pin, pin, pin);
 	PCB_FLAG_THERM_ASSIGN(d->dnum, PCB_FLAG_THERM_GET(d->snum, pin), pin);
 	PCB_FLAG_THERM_CLEAR(d->snum, pin);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* moves a polygon between layers */
@@ -641,7 +641,7 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 	char buf[sizeof("#XXXXXX")];
 
 	if (!polygon->Clipped)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_WARN, polygon))
 		color = PCB->WarnColor;
@@ -671,7 +671,7 @@ pcb_r_dir_t draw_poly_callback(const pcb_box_t * b, void *cl)
 			pcb_gui->thindraw_pcb_polygon(Output.fgGC, &poly, i->drawn_area);
 	}
 
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* erases a polygon on a layer */

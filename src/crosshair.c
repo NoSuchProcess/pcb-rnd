@@ -733,10 +733,10 @@ static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 		vtop_append(&crosshair->onpoint_objs, op);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) line);
 		DrawLine(NULL, line);
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
 	else {
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	}
 }
 
@@ -763,10 +763,10 @@ static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 		vtop_append(&crosshair->onpoint_objs, op);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) arc);
 		DrawArc(NULL, arc);
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	}
 	else {
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	}
 }
 

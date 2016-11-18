@@ -541,14 +541,14 @@ static pcb_r_dir_t seg_in_region(const pcb_box_t * b, void *cl)
 	double y1, y2;
 	/* for zero slope the search is aligned on the axis so it is already pruned */
 	if (i->m == 0.)
-		return R_DIR_FOUND_CONTINUE;
+		return PCB_R_DIR_FOUND_CONTINUE;
 	y1 = i->m * b->X1 + i->b;
 	y2 = i->m * b->X2 + i->b;
 	if (min(y1, y2) >= b->Y2)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (max(y1, y2) < b->Y1)
-		return R_DIR_NOT_FOUND;
-	return R_DIR_FOUND_CONTINUE;											/* might intersect */
+		return PCB_R_DIR_NOT_FOUND;
+	return PCB_R_DIR_FOUND_CONTINUE;											/* might intersect */
 }
 
 /* Prepend a deferred node-insertion task to a list */
@@ -585,11 +585,11 @@ static pcb_r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 	 * already been intersected this pass, skip it until the next pass.
 	 */
 	if (s->intersected || i->s->intersected)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 
 	cnt = pcb_vect_inters2(s->v->point, s->v->next->point, i->v->point, i->v->next->point, s1, s2);
 	if (!cnt)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (i->touch)									/* if checking touches one find and we're done */
 		longjmp(*i->touch, TOUCHES);
 	i->s->p->Flags.status = ISECTED;
@@ -612,7 +612,7 @@ static pcb_r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 #endif
 			i->node_insert_list = prepend_insert_node_task(i->node_insert_list, s, new_node);
 			s->intersected = 1;
-			return R_DIR_NOT_FOUND;									/* Keep looking for intersections with segment "i" */
+			return PCB_R_DIR_NOT_FOUND;									/* Keep looking for intersections with segment "i" */
 		}
 		/* Skip any remaining r_search hits against segment i, as any further
 		 * intersections will be rejected until the next pass anyway.
@@ -620,7 +620,7 @@ static pcb_r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 		if (done_insert_on_i)
 			longjmp(*i->env, 1);
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static void *make_edge_tree(pcb_pline_t * pb)
@@ -662,9 +662,9 @@ static pcb_r_dir_t get_seg(const pcb_box_t * b, void *cl)
 	struct seg *s = (struct seg *) b;
 	if (i->v == s->v) {
 		i->s = s;
-		return R_DIR_CANCEL; /* found */
+		return PCB_R_DIR_CANCEL; /* found */
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 /*
@@ -735,7 +735,7 @@ static pcb_r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 
 		/* fill in the segment in info corresponding to this node */
 		rres = pcb_r_search(looping_over->tree, &box, NULL, get_seg, &info, NULL);
-		assert(rres == R_DIR_CANCEL);
+		assert(rres == PCB_R_DIR_CANCEL);
 
 		/* If we're going to have another pass anyway, skip this */
 		if (info.s->intersected && info.node_insert_list != NULL)
@@ -758,7 +758,7 @@ static pcb_r_dir_t contour_bounds_touch(const pcb_box_t * b, void *cl)
 	c_info->node_insert_list = info.node_insert_list;
 	if (info.need_restart)
 		c_info->need_restart = 1;
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static int intersect_impl(jmp_buf * jb, pcb_polyarea_t * b, pcb_polyarea_t * a, int add)
@@ -893,8 +893,8 @@ static pcb_r_dir_t count_contours_i_am_inside(const pcb_box_t * b, void *cl)
 	pcb_pline_t *check = (pcb_pline_t *) b;
 
 	if (pcb_poly_contour_in_contour(check, me))
-		return R_DIR_FOUND_CONTINUE;
-	return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 /* cntr_in_M_pcb_polyarea_t
@@ -1150,9 +1150,9 @@ static pcb_r_dir_t heap_it(const pcb_box_t * b, void *cl)
 	struct polyarea_info *pa_info = (struct polyarea_info *) b;
 	pcb_pline_t *p = pa_info->pa->contours;
 	if (p->Count == 0)
-		return R_DIR_NOT_FOUND;										/* how did this happen? */
+		return PCB_R_DIR_NOT_FOUND;										/* how did this happen? */
 	pcb_heap_insert(heap, p->area, pa_info);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 struct find_inside_info {
@@ -1168,13 +1168,13 @@ static pcb_r_dir_t find_inside(const pcb_box_t * b, void *cl)
 	/* Do test on check to see if it inside info->want_inside */
 	/* If it is: */
 	if (check->Flags.orient == PCB_PLF_DIR) {
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	}
 	if (pcb_poly_contour_in_contour(info->want_inside, check)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 static void InsertHoles(jmp_buf * e, pcb_polyarea_t * dest, pcb_pline_t ** src)
@@ -1762,15 +1762,15 @@ static pcb_r_dir_t find_inside_m_pa(const pcb_box_t * b, void *cl)
 	pcb_pline_t *check = (pcb_pline_t *) b;
 	/* Don't report for the main contour */
 	if (check->Flags.orient == PCB_PLF_DIR)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	/* Don't look at contours marked as being intersected */
 	if (check->Flags.status == ISECTED)
-		return R_DIR_NOT_FOUND;
+		return PCB_R_DIR_NOT_FOUND;
 	if (cntr_in_M_pcb_polyarea_t(check, info->want_inside, pcb_false)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
-	return R_DIR_NOT_FOUND;
+	return PCB_R_DIR_NOT_FOUND;
 }
 
 
@@ -2365,7 +2365,7 @@ static pcb_r_dir_t flip_cb(const pcb_box_t * b, void *cl)
 {
 	struct seg *s = (struct seg *) b;
 	s->v = s->v->prev;
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 void pcb_poly_contour_inv(pcb_pline_t * c)
@@ -2574,7 +2574,7 @@ static pcb_r_dir_t crossing(const pcb_box_t * b, void *cl)
 				p->f -= 1;
 		}
 	}
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 int pcb_poly_contour_inside(pcb_pline_t * c, pcb_vector_t p)

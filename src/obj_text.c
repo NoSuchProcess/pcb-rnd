@@ -556,7 +556,7 @@ pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 	else
 		min_silk_line = PCB->minWid;
 	DrawTextLowLevel(text, min_silk_line);
-	return R_DIR_FOUND_CONTINUE;
+	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
 /* erases a text on a layer */
