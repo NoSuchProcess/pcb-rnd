@@ -1376,3 +1376,12 @@ select_syntax -> pcb_acts_Select
 ActionUnselect -> pcb_act_Unselect
 unselect_help -> pcb_acth_Unselect
 unselect_syntax -> pcb_acts_Unselect
+ActionAtomic -> pcb_act_Atomic
+atomic_help -> pcb_acth_Atomic
+atomic_syntax -> pcb_acts_Atomic
+ActionUndo -> pcb_act_Undo
+undo_help -> pcb_acth_Undo
+undo_syntax -> pcb_acts_Undo
+ActionRedo -> pcb_act_Redo
+redo_help -> pcb_acth_Redo
+redo_syntax -> pcb_acts_Redo

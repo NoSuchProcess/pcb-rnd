@@ -81,7 +81,7 @@ static void real_stroke_finish(void)
 			pcb_crosshair_set_mode(PCB_MODE_ARROW);
 			break;
 		case 1478963:
-			ActionUndo(0, NULL, 0, 0);
+			pcb_act_Undo(0, NULL, 0, 0);
 			break;
 		case 147423:
 		case 147523:

@@ -41,9 +41,9 @@
 
 /* --------------------------------------------------------------------------- */
 
-static const char atomic_syntax[] = "Atomic(Save|Restore|Close|Block)";
+static const char pcb_acts_Atomic[] = "Atomic(Save|Restore|Close|Block)";
 
-static const char atomic_help[] = "Save or restore the undo serial number.";
+static const char pcb_acth_Atomic[] = "Save or restore the undo serial number.";
 
 /* %start-doc actions Atomic
 
@@ -77,10 +77,10 @@ Does a Restore if there was nothing to undo, else does a Close.
 
 %end-doc */
 
-int ActionAtomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_Atomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (argc != 1)
-		PCB_AFAIL(atomic);
+		PCB_ACT_FAIL(Atomic);
 
 	switch (pcb_funchash_get(argv[0], NULL)) {
 	case F_Save:
@@ -104,9 +104,9 @@ int ActionAtomic(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char undo_syntax[] = "pcb_undo()\n" "pcb_undo(ClearList)";
+static const char pcb_acts_Undo[] = "pcb_undo()\n" "pcb_undo(ClearList)";
 
-static const char undo_help[] = "Undo recent changes.";
+static const char pcb_acth_Undo[] = "Undo recent changes.";
 
 /* %start-doc actions Undo
 
@@ -123,7 +123,7 @@ same serial number will be undone (or redone) as a group.  See
 
 %end-doc */
 
-int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_Undo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
@@ -244,9 +244,9 @@ int ActionUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char redo_syntax[] = "pcb_redo()";
+static const char pcb_acts_Redo[] = "pcb_redo()";
 
-static const char redo_help[] = "Redo recent \"undo\" operations.";
+static const char pcb_acth_Redo[] = "Redo recent \"undo\" operations.";
 
 /* %start-doc actions Redo
 
@@ -263,7 +263,7 @@ three "undone" lines.
 
 %end-doc */
 
-int ActionRedo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_Redo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (((conf_core.editor.mode == PCB_MODE_POLYGON ||
 				conf_core.editor.mode == PCB_MODE_POLYGON_HOLE) && pcb_crosshair.AttachedPolygon.PointN) || pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND)
@@ -284,14 +284,14 @@ int ActionRedo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 
 pcb_hid_action_t undo_action_list[] = {
-	{"Atomic", 0, ActionAtomic,
-	 atomic_help, atomic_syntax}
+	{"Atomic", 0, pcb_act_Atomic,
+	 pcb_acth_Atomic, pcb_acts_Atomic}
 	,
-	{"Undo", 0, ActionUndo,
-	 undo_help, undo_syntax}
+	{"Undo", 0, pcb_act_Undo,
+	 pcb_acth_Undo, pcb_acts_Undo}
 	,
-	{"Redo", 0, ActionRedo,
-	 redo_help, redo_syntax}
+	{"Redo", 0, pcb_act_Redo,
+	 pcb_acth_Redo, pcb_acts_Redo}
 };
 
 PCB_REGISTER_ACTIONS(undo_action_list, NULL)
