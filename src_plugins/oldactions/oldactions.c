@@ -53,9 +53,9 @@ static void conf_toggle(conf_role_t role, const char *path)
 
 /* -------------------------------------------------------------------------- */
 
-static const char dumplibrary_syntax[] = "DumpLibrary()";
+static const char pcb_acts_DumpLibrary[] = "DumpLibrary()";
 
-static const char dumplibrary_help[] = "Display the entire contents of the libraries.";
+static const char pcb_acth_DumpLibrary[] = "Display the entire contents of the libraries.";
 
 /* %start-doc actions DumpLibrary
 
@@ -107,7 +107,7 @@ static void dump_lib_any(int level, pcb_fplibrary_t *l)
 }
 
 
-static int ActionDumpLibrary(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DumpLibrary(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	dump_lib_any(0, &pcb_library);
 
@@ -118,11 +118,11 @@ static int ActionDumpLibrary(int argc, const char **argv, pcb_coord_t x, pcb_coo
  * no operation, just for testing purposes
  * syntax: Bell(volume)
  */
-static const char bell_syntax[] = "Bell()";
+static const char pcb_acts_Bell[] = "Bell()";
 
-static const char bell_help[] = "Attempt to produce audible notification (e.g. beep the speaker).";
+static const char pcb_acth_Bell[] = "Attempt to produce audible notification (e.g. beep the speaker).";
 
-static int ActionBell(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Bell(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_gui->beep();
 	return 0;
@@ -130,9 +130,9 @@ static int ActionBell(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* --------------------------------------------------------------------------- */
 
-static const char debug_syntax[] = "Debug(...)";
+static const char pcb_acts_debug[] = "Debug(...)";
 
-static const char debug_help[] = "Debug action.";
+static const char pcb_acth_debug[] = "Debug action.";
 
 /* %start-doc actions Debug
 
@@ -141,9 +141,9 @@ arguments to stdout.
 
 %end-doc */
 
-static const char debugxy_syntax[] = "DebugXY(...)";
+static const char pcb_acts_debugxy[] = "DebugXY(...)";
 
-static const char debugxy_help[] = "Debug action, with coordinates";
+static const char pcb_acth_debugxy[] = "Debug action, with coordinates";
 
 /* %start-doc actions DebugXY
 
@@ -153,7 +153,7 @@ on one.
 
 %end-doc */
 
-static int Debug(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Debug(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i;
 	printf("Debug:");
@@ -163,9 +163,9 @@ static int Debug(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static const char return_syntax[] = "Return(0|1)";
+static const char pcb_acts_return[] = "Return(0|1)";
 
-static const char return_help[] = "Simulate a passing or failing action.";
+static const char pcb_acth_return[] = "Simulate a passing or failing action.";
 
 /* %start-doc actions Return
 
@@ -174,15 +174,15 @@ passed a 1, does nothing but pretends to fail.
 
 %end-doc */
 
-static int Return(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Return(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return atoi(argv[0]);
 }
 
 
-static const char djopt_sao_syntax[] = "OptAutoOnly()";
+static const char pcb_acts_djopt_sao[] = "OptAutoOnly()";
 
-static const char djopt_sao_help[] = "Toggles the optimize-only-autorouted flag.";
+static const char pcb_acth_djopt_sao[] = "Toggles the optimize-only-autorouted flag.";
 
 /* %start-doc actions OptAutoOnly
 
@@ -198,7 +198,7 @@ optimize hand-routed traces also.
 
 
 
-int djopt_set_auto_only(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_djopt_set_auto_only(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	conf_toggle(CFR_DESIGN, "plugins/djopt/auto_only");
 	return 0;
@@ -206,9 +206,9 @@ int djopt_set_auto_only(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 /* ************************************************************ */
 
-static const char toggle_vendor_syntax[] = "ToggleVendor()";
+static const char pcb_acts_toggle_vendor[] = "ToggleVendor()";
 
-static const char toggle_vendor_help[] = "Toggles the state of automatic drill size mapping.";
+static const char pcb_acth_toggle_vendor[] = "Toggles the state of automatic drill size mapping.";
 
 /* %start-doc actions ToggleVendor
 
@@ -224,7 +224,7 @@ loaded first.
 
 %end-doc */
 
-int ActionToggleVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_ToggleVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	conf_toggle(CFR_DESIGN, "plugins/vendor/enable");
 	return 0;
@@ -232,9 +232,9 @@ int ActionToggleVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 /* ************************************************************ */
 
-static const char enable_vendor_syntax[] = "EnableVendor()";
+static const char pcb_acts_enable_vendor[] = "EnableVendor()";
 
-static const char enable_vendor_help[] = "Enables automatic drill size mapping.";
+static const char pcb_acth_enable_vendor[] = "Enables automatic drill size mapping.";
 
 /* %start-doc actions EnableVendor
 
@@ -250,7 +250,7 @@ loaded first.
 
 %end-doc */
 
-int ActionEnableVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_EnableVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
 	return 0;
@@ -258,9 +258,9 @@ int ActionEnableVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 /* ************************************************************ */
 
-static const char disable_vendor_syntax[] = "DisableVendor()";
+static const char pcb_acts_disable_vendor[] = "DisableVendor()";
 
-static const char disable_vendor_help[] = "Disables automatic drill size mapping.";
+static const char pcb_acth_disable_vendor[] = "Disables automatic drill size mapping.";
 
 /* %start-doc actions DisableVendor
 
@@ -274,7 +274,7 @@ specified in the currently loaded vendor drill table.
 
 %end-doc */
 
-int ActionDisableVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_DisableVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
 	return 0;
@@ -282,24 +282,24 @@ int ActionDisableVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 
 pcb_hid_action_t oldactions_action_list[] = {
-	{"DumpLibrary", 0, ActionDumpLibrary,
-	 dumplibrary_help, dumplibrary_syntax},
-	{"Bell", 0, ActionBell,
-	 bell_help, bell_syntax},
-	{"Debug", 0, Debug,
-	 debug_help, debug_syntax},
-	{"DebugXY", "Click X,Y for Debug", Debug,
-	 debugxy_help, debugxy_syntax},
-	{"Return", 0, Return,
-	 return_help, return_syntax},
-	{"OptAutoOnly", 0, djopt_set_auto_only,
-	 djopt_sao_help, djopt_sao_syntax},
-	{"ToggleVendor", 0, ActionToggleVendor,
-	 toggle_vendor_help, toggle_vendor_syntax},
-	{"EnableVendor", 0, ActionEnableVendor,
-	 enable_vendor_help, enable_vendor_syntax},
-	{"DisableVendor", 0, ActionDisableVendor,
-	 disable_vendor_help, disable_vendor_syntax}
+	{"DumpLibrary", 0, pcb_act_DumpLibrary,
+	 pcb_acth_DumpLibrary, pcb_acts_DumpLibrary},
+	{"Bell", 0, pcb_act_Bell,
+	 pcb_acth_Bell, pcb_acts_Bell},
+	{"Debug", 0, pcb_act_Debug,
+	 pcb_acth_debug, pcb_acts_debug},
+	{"DebugXY", "Click X,Y for Debug", pcb_act_Debug,
+	 pcb_acth_debugxy, pcb_acts_debugxy},
+	{"Return", 0, pcb_act_Return,
+	 pcb_acth_return, pcb_acts_return},
+	{"OptAutoOnly", 0, pcb_act_djopt_set_auto_only,
+	 pcb_acth_djopt_sao, pcb_acts_djopt_sao},
+	{"ToggleVendor", 0, pcb_act_ToggleVendor,
+	 pcb_acth_toggle_vendor, pcb_acts_toggle_vendor},
+	{"EnableVendor", 0, pcb_act_EnableVendor,
+	 pcb_acth_enable_vendor, pcb_acts_enable_vendor},
+	{"DisableVendor", 0, pcb_act_DisableVendor,
+	 pcb_acth_disable_vendor, pcb_acts_disable_vendor}
 };
 
 static const char *oldactions_cookie = "oldactions plugin";
