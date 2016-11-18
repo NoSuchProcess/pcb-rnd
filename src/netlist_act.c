@@ -140,10 +140,10 @@ static int pcb_netlist_add(const char *netname, const char *pinname)
 	return 0;
 }
 
-static const char netlist_syntax[] =
+static const char pcb_acts_Netlist[] =
 	"Net(find|select|rats|norats|clear[,net[,pin]])\n" "Net(freeze|thaw|forcethaw)\n" "Net(swap)\n" "Net(add,net,pin)";
 
-static const char netlist_help[] = "Perform various actions on netlists.";
+static const char pcb_acth_Netlist[] = "Perform various actions on netlists.";
 
 /* %start-doc actions Netlist
 
@@ -202,7 +202,7 @@ updates the GUI.
 
 typedef void (*NFunc) (pcb_lib_menu_t *, pcb_lib_entry_t *);
 
-static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Netlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	NFunc func;
 	int i, j;
@@ -216,7 +216,7 @@ static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	if (!PCB)
 		return 1;
 	if (argc == 0) {
-		pcb_message(PCB_MSG_DEFAULT, netlist_syntax);
+		pcb_message(PCB_MSG_DEFAULT, pcb_acts_Netlist);
 		return 1;
 	}
 	if (strcasecmp(argv[0], "find") == 0)
@@ -265,7 +265,7 @@ static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 		return 0;
 	}
 	else {
-		pcb_message(PCB_MSG_DEFAULT, netlist_syntax);
+		pcb_message(PCB_MSG_DEFAULT, pcb_acts_Netlist);
 		return 1;
 	}
 
@@ -334,11 +334,11 @@ static int ActionNetlist(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 }
 
 pcb_hid_action_t netlist_action_list[] = {
-	{"net", 0, ActionNetlist,
-	 netlist_help, netlist_syntax}
+	{"net", 0, pcb_act_Netlist,
+	 pcb_acth_Netlist, pcb_acts_Netlist}
 	,
-	{"netlist", 0, ActionNetlist,
-	 netlist_help, netlist_syntax}
+	{"netlist", 0, pcb_act_Netlist,
+	 pcb_acth_Netlist, pcb_acts_Netlist}
 };
 
 PCB_REGISTER_ACTIONS(netlist_action_list, NULL)

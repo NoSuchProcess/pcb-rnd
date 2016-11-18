@@ -1304,3 +1304,9 @@ printcopyright_syntax -> pcb_acts_PrintCopyright
 ActionPrintPaths -> pcb_act_PrintPaths
 printpaths_help -> pcb_acth_PrintPaths
 printpaths_syntax -> pcb_acts_PrintPaths
+ActionNetlist -> pcb_act_Netlist
+netlist_help -> pcb_acth_Netlist
+netlist_syntax -> pcb_acts_Netlist
+ActionNetlist -> pcb_act_Netlist
+netlist_help -> pcb_acth_Netlist
+netlist_syntax -> pcb_acts_Netlist
