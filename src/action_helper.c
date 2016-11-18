@@ -463,14 +463,14 @@ void pcb_adjust_attached_objects(void)
 		/* polygon creation mode */
 	case PCB_MODE_POLYGON:
 	case PCB_MODE_POLYGON_HOLE:
-		AdjustAttachedLine();
+		pcb_line_adjust_attached();
 		break;
 		/* line creation mode */
 	case PCB_MODE_LINE:
 		if (PCB->RatDraw || conf_core.editor.line_refraction == 0)
-			AdjustAttachedLine();
+			pcb_line_adjust_attached();
 		else
-			AdjustTwoLine(conf_core.editor.line_refraction - 1);
+			pcb_line_adjust_attached_2lines(conf_core.editor.line_refraction - 1);
 		break;
 		/* point insertion mode */
 	case PCB_MODE_INSERT_POINT:

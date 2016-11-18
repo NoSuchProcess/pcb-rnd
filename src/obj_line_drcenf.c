@@ -42,7 +42,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way);
 /* ---------------------------------------------------------------------------
  * Adjust the attached line to 45 degrees if necessary
  */
-void AdjustAttachedLine(void)
+void pcb_line_adjust_attached(void)
 {
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 
@@ -62,7 +62,7 @@ void AdjustAttachedLine(void)
 		line->Point2.Y = pcb_crosshair.Y;
 		return;
 	}
-	FortyFiveLine(line);
+	pcb_line_45(line);
 }
 
 /* ---------------------------------------------------------------------------
@@ -76,7 +76,7 @@ void AdjustAttachedLine(void)
  *          5 3
  *           4
  */
-void FortyFiveLine(pcb_attached_line_t *Line)
+void pcb_line_45(pcb_attached_line_t *Line)
 {
 	pcb_coord_t dx, dy, min;
 	unsigned direction = 0;
@@ -147,7 +147,7 @@ void FortyFiveLine(pcb_attached_line_t *Line)
 /* ---------------------------------------------------------------------------
  *  adjusts the insert lines to make them 45 degrees as necessary
  */
-void AdjustTwoLine(pcb_bool way)
+void pcb_line_adjust_attached_2lines(pcb_bool way)
 {
 	pcb_coord_t dx, dy;
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
@@ -428,7 +428,7 @@ static void drc_line(pcb_point_t *end)
 	/* check where the line wants to end */
 	aline.Point1.X = pcb_crosshair.AttachedLine.Point1.X;
 	aline.Point1.Y = pcb_crosshair.AttachedLine.Point1.Y;
-	FortyFiveLine(&aline);
+	pcb_line_45(&aline);
 	line.Point1 = aline.Point1;
 	line.Point2 = aline.Point2;
 
@@ -469,7 +469,7 @@ static void drc_line(pcb_point_t *end)
 	end->Y = last_good.Y;
 }
 
-void EnforceLineDRC(void)
+void pcb_line_enforce_drc(void)
 {
 	pcb_point_t r45, rs;
 	pcb_bool shift;

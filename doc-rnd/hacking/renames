@@ -1105,3 +1105,7 @@ ELEMENT_TEXT -> PCB_ELEM_TEXT_VISIBLE
 DESCRIPTION_TEXT -> PCB_ELEM_TEXT_DESCRIPTION
 NAMEONPCB_TEXT -> PCB_ELEM_TEXT_REFDES
 VALUE_TEXT -> PCB_ELEM_TEXT_VALUE
+AdjustAttachedLine -> pcb_line_adjust_attached
+AdjustTwoLine -> pcb_line_adjust_attached_2lines
+FortyFiveLine -> pcb_line_45
+EnforceLineDRC -> pcb_line_enforce_drc

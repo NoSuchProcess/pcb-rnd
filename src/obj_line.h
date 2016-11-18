@@ -61,10 +61,10 @@ void pcb_line_bbox(pcb_line_t *Line);
 void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 /*** DRC enforcement (obj_line_drcenf.c) ***/
-void AdjustAttachedLine(void);
-void AdjustTwoLine(pcb_bool);
-void FortyFiveLine(pcb_attached_line_t *);
-void EnforceLineDRC(void);
+void pcb_line_adjust_attached(void);
+void pcb_line_adjust_attached_2lines(pcb_bool);
+void pcb_line_45(pcb_attached_line_t *);
+void pcb_line_enforce_drc(void);
 
 /* Rather than mode the line bounding box, we set it so the point bounding
  * boxes are updated too.

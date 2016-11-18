@@ -101,7 +101,7 @@ pcb_point_t *pcb_adjust_insert_point(void)
 			myline.Point1 = myline.Point2 = line->Point1;
 		else
 			myline.Point1 = myline.Point2 = line->Point2;
-		FortyFiveLine(&myline);
+		pcb_line_45(&myline);
 		InsertedPoint.X = myline.Point2.X;
 		InsertedPoint.Y = myline.Point2.Y;
 		return &InsertedPoint;

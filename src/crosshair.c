@@ -1150,7 +1150,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	}
 
 	if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
-		EnforceLineDRC();
+		pcb_line_enforce_drc();
 
 	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, HID_SC_DO_NOTHING);
 }
