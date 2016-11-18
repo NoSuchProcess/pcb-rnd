@@ -1478,3 +1478,15 @@ loadvendorfrom_syntax -> pcb_acts_LoadVendorFrom
 ActionAutoRoute -> pcb_act_AutoRoute
 autoroute_help -> pcb_acth_AutoRoute
 autoroute_syntax -> pcb_acts_AutoRoute
+GlobalPuller -> pcb_act_GlobalPuller
+globalpuller_help -> pcb_acth_GlobalPuller
+globalpuller_syntax -> pcb_acts_GlobalPuller
+Puller -> pcb_act_Puller
+puller_help -> pcb_acth_Puller
+puller_syntax -> pcb_acts_Puller
+ActionAutoPlaceSelected -> pcb_act_AutoPlaceSelected
+autoplaceselected_help -> pcb_acth_AutoPlaceSelected
+autoplaceselected_syntax -> pcb_acts_AutoPlaceSelected
+ActionDJopt -> pcb_act_DJopt
+djopt_help -> pcb_acth_DJopt
+djopt_syntax -> pcb_acts_DJopt

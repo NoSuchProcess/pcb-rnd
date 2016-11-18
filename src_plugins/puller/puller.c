@@ -270,7 +270,7 @@ static double dist_lsp(int x1, int y1, int x2, int y2, int px, int py)
 
 /*****************************************************************************/
 /*                                                                           */
-/*                       Single Point Puller                                 */
+/*                       Single Point pcb_act_Puller                                 */
 /*                                                                           */
 /*****************************************************************************/
 
@@ -362,13 +362,13 @@ static int find_pair(int Px, int Py)
 }
 
 
-static const char puller_syntax[] = "Puller()";
+static const char pcb_acts_Puller[] = "pcb_act_Puller()";
 
-static const char puller_help[] = "Pull an arc-line junction tight.";
+static const char pcb_acth_Puller[] = "Pull an arc-line junction tight.";
 
-/* %start-doc actions Puller
+/* %start-doc actions pcb_act_Puller
 
-The @code{Puller()} action is a special-purpose optimization.  When
+The @code{pcb_act_Puller()} action is a special-purpose optimization.  When
 invoked while the crosshair is over the junction of an arc and a line,
 it will adjust the arc's angle and the connecting line's endpoint such
 that the line intersects the arc at a tangent.  In the example below,
@@ -382,7 +382,7 @@ arc-line intersection was moved to.
 
 %end-doc */
 
-static int Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
+static int pcb_act_Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 {
 	double arc_angle, base_angle;
 #if TRACE1
@@ -481,15 +481,15 @@ static int Puller(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 
 /*****************************************************************************/
 /*                                                                           */
-/*                          Global Puller                                    */
+/*                          Global pcb_act_Puller                                    */
 /*                                                                           */
 /*****************************************************************************/
 
-static const char globalpuller_syntax[] = "GlobalPuller()";
+static const char pcb_acts_GlobalPuller[] = "pcb_act_GlobalPuller()";
 
-static const char globalpuller_help[] = "Pull all traces tight.";
+static const char pcb_acth_GlobalPuller[] = "Pull all traces tight.";
 
-/* %start-doc actions GlobalPuller
+/* %start-doc actions pcb_act_GlobalPuller
 
 %end-doc */
 
@@ -2264,7 +2264,7 @@ static void trace_print_lines_arcs(void)
 }
 #endif
 
-static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int select_flags = 0;
 
@@ -2380,11 +2380,11 @@ static int GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 /*****************************************************************************/
 
 pcb_hid_action_t puller_action_list[] = {
-	{"Puller", "Click on a line-arc intersection or line segment", Puller,
-	 puller_help, puller_syntax}
+	{"pcb_act_Puller", "Click on a line-arc intersection or line segment", pcb_act_Puller,
+	 pcb_acth_Puller, pcb_acts_Puller}
 	,
-	{"GlobalPuller", 0, GlobalPuller,
-	 globalpuller_help, globalpuller_syntax}
+	{"pcb_act_GlobalPuller", 0, pcb_act_GlobalPuller,
+	 pcb_acth_GlobalPuller, pcb_acts_GlobalPuller}
 };
 
 static const char *puller_cookie = "puller plugin";

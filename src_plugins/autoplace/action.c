@@ -43,7 +43,7 @@ connecting them are minimized.  Note that you cannot undo this.
 
 %end-doc */
 
-static int ActionAutoPlaceSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_AutoPlaceSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_hid_action("Busy");
 	if (pcb_gui->confirm_dialog(_("Auto-placement can NOT be undone.\n" "Do you want to continue anyway?\n"), 0)) {
@@ -56,7 +56,7 @@ static int ActionAutoPlaceSelected(int argc, const char **argv, pcb_coord_t x, p
 static const char *autoplace_cookie = "autoplace plugin";
 
 pcb_hid_action_t autoplace_action_list[] = {
-	{"AutoPlaceSelected", 0, ActionAutoPlaceSelected,
+	{"AutoPlaceSelected", 0, pcb_act_AutoPlaceSelected,
 	 autoplace_help, autoplace_syntax}
 	,
 };

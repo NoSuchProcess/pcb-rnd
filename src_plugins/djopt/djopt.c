@@ -2491,10 +2491,10 @@ static void grok_layer_groups()
 	}
 }
 
-static const char djopt_syntax[] =
+static const char pcb_acts_DJopt[] =
 	"djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)\n" "djopt(auto) - all of the above\n" "djopt(miter)";
 
-static const char djopt_help[] = "Perform various optimizations on the current board.";
+static const char pcb_acth_DJopt[] = "Perform various optimizations on the current board.";
 
 /* %start-doc actions djopt
 
@@ -2546,7 +2546,7 @@ RF losses and trace length.
 
 %end-doc */
 
-static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *arg = argc > 0 ? argv[0] : NULL;
 	int layn, saved = 0;
@@ -2678,8 +2678,8 @@ static int ActionDJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 }
 
 pcb_hid_action_t djopt_action_list[] = {
-	{"djopt", 0, ActionDJopt,
-	 djopt_help, djopt_syntax}
+	{"djopt", 0, pcb_act_DJopt,
+	 pcb_acth_DJopt, pcb_acts_DJopt}
 };
 
 PCB_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
