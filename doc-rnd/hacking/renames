@@ -1436,3 +1436,6 @@ enablevendor_syntax -> pcb_acts_EnableVendor
 ActionDisableVendor -> pcb_act_DisableVendor
 disablevendor_help -> pcb_acth_DisableVendor
 disablevendor_syntax -> pcb_acts_DisableVendor
+ActionImport -> pcb_act_Import
+import_help -> pcb_acth_Import
+import_syntax -> pcb_acts_Import

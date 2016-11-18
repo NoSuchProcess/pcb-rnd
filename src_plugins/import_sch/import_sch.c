@@ -54,11 +54,11 @@ conf_import_sch_t conf_import_sch;
 extern int pcb_act_ExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 /* ---------------------------------------------------------------- */
-static const char import_syntax[] =
+static const char pcb_acts_Import[] =
 	"Import()\n"
 	"Import([gnetlist|make[,source,source,...]])\n" "Import(setnewpoint[,(mark|center|X,Y)])\n" "Import(setdisperse,D,units)\n";
 
-static const char import_help[] = "Import schematics.";
+static const char pcb_acth_Import[] = "Import schematics.";
 
 /* %start-doc actions Import
 
@@ -169,14 +169,14 @@ smallest board dimension.  Dispersion is saved in the
 
 %end-doc */
 
-static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *mode;
 	const char **sources = NULL;
 	int nsources = 0;
 
 #ifdef DEBUG
-	printf("ActionImport:  ===========  Entering ActionImport  ============\n");
+	printf("pcb_act_Import:  ===========  Entering pcb_act_Import  ============\n");
 #endif
 
 	mode = PCB_ACTION_ARG(0);
@@ -332,7 +332,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		cmd[6 + nsources] = NULL;
 
 #ifdef DEBUG
-		printf("ActionImport:  ===========  About to run gnetlist  ============\n");
+		printf("pcb_act_Import:  ===========  About to run gnetlist  ============\n");
 		printf("%s %s %s %s %s %s %s ...\n", cmd[0], cmd[1], cmd[2], cmd[3], cmd[4], cmd[5], cmd[6]);
 #endif
 
@@ -342,7 +342,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		}
 
 #ifdef DEBUG
-		printf("ActionImport:  ===========  About to run pcb_act_ExecuteFile, file = %s  ============\n", tmpfile);
+		printf("pcb_act_Import:  ===========  About to run pcb_act_ExecuteFile, file = %s  ============\n", tmpfile);
 #endif
 
 		cmd[0] = tmpfile;
@@ -438,7 +438,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	pcb_rat_add_all(pcb_false, NULL);
 
 #ifdef DEBUG
-	printf("ActionImport:  ===========  Leaving ActionImport  ============\n");
+	printf("pcb_act_Import:  ===========  Leaving pcb_act_Import  ============\n");
 #endif
 
 	return 0;
@@ -447,8 +447,8 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 static const char *import_sch_cookie = "import_sch plugin";
 
 pcb_hid_action_t import_sch_action_list[] = {
-	{"Import", 0, ActionImport,
-	 import_help, import_syntax}
+	{"Import", 0, pcb_act_Import,
+	 pcb_acth_Import, pcb_acts_Import}
 };
 
 PCB_REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
