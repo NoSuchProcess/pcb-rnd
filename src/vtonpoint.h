@@ -5,7 +5,7 @@
 #include <string.h>
 #include "global_typedefs.h"
 
-typedef struct onpoint_st {
+typedef struct pcb_onpoint_st {
 	int type;
 	union {
 		void *any;
