@@ -36,22 +36,22 @@
 
 /* --------------------------------------------------------------------------- */
 
-static const char printactions_syntax[] = "PrintActions()";
+static const char pcb_acts_PrintActions[] = "PrintActions()";
 
-static const char printactions_help[] = "Print all actions available.";
+static const char pcb_acth_PrintActions[] = "Print all actions available.";
 
-int ActionPrintActions(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintActions(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_print_actions();
 	return 0;
 }
 /* --------------------------------------------------------------------------- */
 
-static const char dumpactions_syntax[] = "DumpActions()";
+static const char pcb_acts_DumpActions[] = "DumpActions()";
 
-static const char dumpactions_help[] = "Dump all actions available.";
+static const char pcb_acth_DumpActions[] = "Dump all actions available.";
 
-int ActionDumpActions(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_DumpActions(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_dump_actions();
 	return 0;
@@ -67,11 +67,11 @@ static inline void u(const char *fmt, ...)
 	va_end(ap);
 }
 
-static const char printusage_syntax[] =
+static const char pcb_acts_PrintUsage[] =
 	"PrintUsage()\n"
 	"PrintUsage(plugin)";
 
-static const char printusage_help[] = "Print command line arguments of pcb-rnd or a plugin loaded.";
+static const char pcb_acth_PrintUsage[] = "Print command line arguments of pcb-rnd or a plugin loaded.";
 
 static int help0(void)
 {
@@ -142,7 +142,7 @@ static int help_invoc(void)
 	return 0;
 }
 
-int ActionPrintUsage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintUsage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	u("");
 	if (argc > 0) {
@@ -170,22 +170,22 @@ int ActionPrintUsage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 
 /* --------------------------------------------------------------------------- */
-static const char printversion_syntax[] = "PrintVersion()";
+static const char pcb_acts_PrintVersion[] = "PrintVersion()";
 
-static const char printversion_help[] = "Print version.";
+static const char pcb_acth_PrintVersion[] = "Print version.";
 
-int ActionPrintVersion(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintVersion(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	printf("PCB version %s\n", VERSION);
 	return 0;
 }
 
 /* --------------------------------------------------------------------------- */
-static const char printcopyright_syntax[] = "PrintCopyright()";
+static const char pcb_acts_PrintCopyright[] = "PrintCopyright()";
 
-static const char printcopyright_help[] = "Print copyright notice.";
+static const char pcb_acth_PrintCopyright[] = "Print copyright notice.";
 
-int ActionPrintCopyright(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintCopyright(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	printf("\n"
 				 "                COPYRIGHT for the original pcb program:\n\n"
@@ -210,9 +210,9 @@ int ActionPrintCopyright(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 }
 
 /* --------------------------------------------------------------------------- */
-static const char printpaths_syntax[] = "PrintPaths()";
+static const char pcb_acts_PrintPaths[] = "PrintPaths()";
 
-static const char printpaths_help[] = "Print full paths and search paths.";
+static const char pcb_acth_PrintPaths[] = "Print full paths and search paths.";
 
 static void print_list(const conflist_t *cl)
 {
@@ -227,7 +227,7 @@ static void print_list(const conflist_t *cl)
 	printf("\"\n");
 }
 
-int ActionPrintPaths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_PrintPaths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	htsp_entry_t *e;
 	conf_fields_foreach(e) {
@@ -245,23 +245,23 @@ int ActionPrintPaths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t main_action_list[] = {
-	{"PrintActions", 0, ActionPrintActions,
-	 printactions_help, printactions_syntax}
+	{"PrintActions", 0, pcb_act_PrintActions,
+	 pcb_acth_PrintActions, pcb_acts_PrintActions}
 	,
-	{"DumpActions", 0, ActionDumpActions,
-	 dumpactions_help, dumpactions_syntax}
+	{"DumpActions", 0, pcb_act_DumpActions,
+	 pcb_acth_DumpActions, pcb_acts_DumpActions}
 	,
-	{"PrintUsage", 0, ActionPrintUsage,
-	 printusage_help, printusage_syntax}
+	{"PrintUsage", 0, pcb_act_PrintUsage,
+	 pcb_acth_PrintUsage, pcb_acts_PrintUsage}
 	,
-	{"PrintVersion", 0, ActionPrintVersion,
-	 printversion_help, printversion_syntax}
+	{"PrintVersion", 0, pcb_act_PrintVersion,
+	 pcb_acth_PrintVersion, pcb_acts_PrintVersion}
 	,
-	{"PrintCopyright", 0, ActionPrintCopyright,
-	 printcopyright_help, printcopyright_syntax}
+	{"PrintCopyright", 0, pcb_act_PrintCopyright,
+	 pcb_acth_PrintCopyright, pcb_acts_PrintCopyright}
 	,
-	{"PrintPaths", 0, ActionPrintPaths,
-	 printpaths_help, printpaths_syntax}
+	{"PrintPaths", 0, pcb_act_PrintPaths,
+	 pcb_acth_PrintPaths, pcb_acts_PrintPaths}
 };
 
 PCB_REGISTER_ACTIONS(main_action_list, NULL)
