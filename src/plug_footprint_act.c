@@ -27,9 +27,9 @@
 #include "hid.h"
 #include "plug_footprint.h"
 
-static const char fp_rehash_syntax[] = "fp_rehash()" ;
-static const char fp_rehash_help[] = "Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.";
-static int Action_fp_rehash(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char pcb_acts_fp_rehash[] = "fp_rehash()" ;
+static const char pcb_acth_fp_rehash[] = "Flush the library index; rescan all library search paths and rebuild the library index. Useful if there are changes in the library during a pcb-rnd session.";
+static int pcb_act_fp_rehash(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_fp_rehash();
 	return 0;
@@ -37,8 +37,8 @@ static int Action_fp_rehash(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 
 pcb_hid_action_t conf_plug_footprint_list[] = {
-	{"fp_rehash", 0, Action_fp_rehash,
-	 fp_rehash_help, fp_rehash_syntax}
+	{"fp_rehash", 0, pcb_act_fp_rehash,
+	 pcb_acth_fp_rehash, pcb_acts_fp_rehash}
 };
 
 PCB_REGISTER_ACTIONS(conf_plug_footprint_list, NULL)

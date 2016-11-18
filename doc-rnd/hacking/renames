@@ -1346,3 +1346,6 @@ mincleargap_syntax -> pcb_acts_MinClearGap
 MoveLayerAction -> pcb_act_MoveLayerAction
 movelayeraction_help -> pcb_acth_MoveLayerAction
 movelayeraction_syntax -> pcb_acts_MoveLayerAction
+Action_fp_rehash -> pcb_act__fp_rehash
+_fp_rehash_help -> pcb_acth__fp_rehash
+_fp_rehash_syntax -> pcb_acts__fp_rehash
