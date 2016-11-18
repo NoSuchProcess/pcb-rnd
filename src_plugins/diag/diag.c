@@ -43,7 +43,7 @@ static const char dump_conf_syntax[] =
 static const char dump_conf_help[] = "Perform various operations on the configuration tree.";
 
 extern lht_doc_t *conf_root[];
-static int ActionDumpConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DumpConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *cmd = argc > 0 ? argv[0] : NULL;
 
@@ -90,7 +90,7 @@ static const char eval_conf_syntax[] =
 
 static const char eval_conf_help[] = "Perform various operations on the configuration tree.";
 
-static int ActionEvalConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_EvalConf(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *path = argc > 0 ? argv[0] : NULL;
 	conf_native_t *nat;
@@ -144,7 +144,7 @@ static const char dump_layers_syntax[] =
 static const char dump_layers_help[] = "Print info about each layer";
 
 extern lht_doc_t *conf_root[];
-static int ActionDumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int g, n, used, arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 
@@ -179,11 +179,11 @@ static int ActionDumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 
 pcb_hid_action_t diag_action_list[] = {
-	{"dumpconf", 0, ActionDumpConf,
+	{"dumpconf", 0, pcb_act_DumpConf,
 	 dump_conf_help, dump_conf_syntax},
-	{"dumplayers", 0, ActionDumpLayers,
+	{"dumplayers", 0, pcb_act_DumpLayers,
 	 dump_layers_help, dump_layers_syntax},
-	{"EvalConf", 0, ActionEvalConf,
+	{"EvalConf", 0, pcb_act_EvalConf,
 	 eval_conf_help, eval_conf_syntax}
 };
 

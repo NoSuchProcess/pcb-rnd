@@ -1451,3 +1451,15 @@ renumberblock_syntax -> pcb_acts_RenumberBlock
 ActionRenumberBuffer -> pcb_act_RenumberBuffer
 renumberbuffer_help -> pcb_acth_RenumberBuffer
 renumberbuffer_syntax -> pcb_acts_RenumberBuffer
+ActionLoadDsnFrom -> pcb_act_LoadDsnFrom
+loaddsnfrom_help -> pcb_acth_LoadDsnFrom
+loaddsnfrom_syntax -> pcb_acts_LoadDsnFrom
+ActionDumpConf -> pcb_act_DumpConf
+dumpconf_help -> pcb_acth_DumpConf
+dumpconf_syntax -> pcb_acts_DumpConf
+ActionDumpLayers -> pcb_act_DumpLayers
+dumplayers_help -> pcb_acth_DumpLayers
+dumplayers_syntax -> pcb_acts_DumpLayers
+ActionEvalConf -> pcb_act_EvalConf
+evalconf_help -> pcb_acth_EvalConf
+evalconf_syntax -> pcb_acts_EvalConf

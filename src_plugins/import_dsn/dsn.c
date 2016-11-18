@@ -83,7 +83,7 @@ be prompted to enter one.
 
 %end-doc */
 
-int ActionLoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
 	static char *default_file = NULL;
@@ -159,7 +159,7 @@ int ActionLoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t dsn_action_list[] = {
-	{"LoadDsnFrom", 0, ActionLoadDsnFrom, load_dsn_help, load_dsn_syntax}
+	{"LoadDsnFrom", 0, pcb_act_LoadDsnFrom, load_dsn_help, load_dsn_syntax}
 };
 
 PCB_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
