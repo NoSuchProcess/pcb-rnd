@@ -310,7 +310,7 @@ int ghid_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr
 
 static void exporter_clicked_cb(GtkButton * button, pcb_hid_t * exporter)
 {
-	ghid_dialog_print(pcb_exporter);
+	ghid_dialog_print(exporter);
 }
 
 void ghid_dialog_print(pcb_hid_t * hid)
