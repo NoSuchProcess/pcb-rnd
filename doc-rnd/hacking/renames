@@ -1160,3 +1160,6 @@ ALLOW_IMPERIAL -> PCB_UNIT_ALLOW_IMPERIAL
 ALLOW_READABLE -> PCB_UNIT_ALLOW_READABLE
 ALLOW_NATURAL -> PCB_UNIT_ALLOW_NATURAL
 ALLOW_ALL -> PCB_UNIT_ALLOW_ALL
+ActionExecuteFile -> pcb_act_ExecuteFile
+executefile_help -> pcb_acth_ExecuteFile
+executefile_syntax -> pcb_acts_ExecuteFile

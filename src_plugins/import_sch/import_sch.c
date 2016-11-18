@@ -51,7 +51,7 @@
 
 conf_import_sch_t conf_import_sch;
 
-extern int ActionExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
+extern int pcb_act_ExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 /* ---------------------------------------------------------------- */
 static const char import_syntax[] =
@@ -342,12 +342,12 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		}
 
 #ifdef DEBUG
-		printf("ActionImport:  ===========  About to run ActionExecuteFile, file = %s  ============\n", tmpfile);
+		printf("ActionImport:  ===========  About to run pcb_act_ExecuteFile, file = %s  ============\n", tmpfile);
 #endif
 
 		cmd[0] = tmpfile;
 		cmd[1] = NULL;
-		ActionExecuteFile(1, cmd, 0, 0);
+		pcb_act_ExecuteFile(1, cmd, 0, 0);
 
 		free(cmd);
 		pcb_tempfile_unlink(tmpfile);
@@ -421,7 +421,7 @@ static int ActionImport(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 		cmd[0] = tmpfile;
 		cmd[1] = NULL;
-		ActionExecuteFile(1, cmd, 0, 0);
+		pcb_act_ExecuteFile(1, cmd, 0, 0);
 
 		free((char*)cmd[2]);
 		free((char*)cmd[3]);

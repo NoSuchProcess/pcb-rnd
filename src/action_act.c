@@ -37,9 +37,9 @@
  */
 /* --------------------------------------------------------------------------- */
 
-static const char executefile_syntax[] = "ExecuteFile(filename)";
+static const char pcb_acts_ExecuteFile[] = "ExecuteFile(filename)";
 
-static const char executefile_help[] = "Run actions from the given file.";
+static const char pcb_acth_ExecuteFile[] = "Run actions from the given file.";
 
 /* %start-doc actions ExecuteFile
 
@@ -47,7 +47,7 @@ Lines starting with @code{#} are ignored.
 
 %end-doc */
 
-int ActionExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_ExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	FILE *fp;
 	const char *fname;
@@ -56,7 +56,7 @@ int ActionExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	char *sp;
 
 	if (argc != 1)
-		PCB_AFAIL(executefile);
+		PCB_ACT_FAIL(ExecuteFile);
 
 	fname = argv[0];
 
@@ -104,8 +104,8 @@ int ActionExecuteFile(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 /* --------------------------------------------------------------------------- */
 
 pcb_hid_action_t action_action_list[] = {
-	{"ExecuteFile", 0, ActionExecuteFile,
-	 executefile_help, executefile_syntax}
+	{"ExecuteFile", 0, pcb_act_ExecuteFile,
+	 pcb_acth_ExecuteFile, pcb_acts_ExecuteFile}
 };
 
 PCB_REGISTER_ACTIONS(action_action_list, NULL)
