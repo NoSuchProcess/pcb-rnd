@@ -1364,3 +1364,9 @@ connection_syntax -> pcb_acts_Connection
 ActionDeleteRats -> pcb_act_DeleteRats
 deleterats_help -> pcb_acth_DeleteRats
 deleterats_syntax -> pcb_acts_DeleteRats
+ActionDelete -> pcb_act_Delete
+delete_help -> pcb_acth_Delete
+delete_syntax -> pcb_acts_Delete
+ActionRemoveSelected -> pcb_act_RemoveSelected
+removeselected_help -> pcb_acth_RemoveSelected
+removeselected_syntax -> pcb_acts_RemoveSelected

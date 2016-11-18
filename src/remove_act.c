@@ -34,15 +34,15 @@
 
 /* --------------------------------------------------------------------------- */
 
-static const char delete_syntax[] = "Delete(Object|Selected)\n" "Delete(AllRats|SelectedRats)";
+static const char pcb_acts_Delete[] = "Delete(Object|Selected)\n" "Delete(AllRats|SelectedRats)";
 
-static const char delete_help[] = "Delete stuff.";
+static const char pcb_acth_Delete[] = "Delete stuff.";
 
 /* %start-doc actions Delete
 
 %end-doc */
 
-static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Delete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	int id = pcb_funchash_get(function, NULL);
@@ -80,15 +80,15 @@ static int ActionDelete(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 /* --------------------------------------------------------------------------- */
 
-static const char removeselected_syntax[] = "pcb_remove_selected()";
+static const char pcb_acts_RemoveSelected[] = "pcb_remove_selected()";
 
-static const char removeselected_help[] = "Removes any selected objects.";
+static const char pcb_acth_RemoveSelected[] = "Removes any selected objects.";
 
 /* %start-doc actions RemoveSelected
 
 %end-doc */
 
-static int ActionRemoveSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_RemoveSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (pcb_remove_selected())
 		pcb_board_set_changed_flag(pcb_true);
@@ -97,11 +97,11 @@ static int ActionRemoveSelected(int argc, const char **argv, pcb_coord_t x, pcb_
 
 
 pcb_hid_action_t remove_action_list[] = {
-	{"Delete", 0, ActionDelete,
-	 delete_help, delete_syntax}
+	{"Delete", 0, pcb_act_Delete,
+	 pcb_acth_Delete, pcb_acts_Delete}
 	,
-	{"RemoveSelected", 0, ActionRemoveSelected,
-	 removeselected_help, removeselected_syntax}
+	{"RemoveSelected", 0, pcb_act_RemoveSelected,
+	 pcb_acth_RemoveSelected, pcb_acts_RemoveSelected}
 	,
 };
 
