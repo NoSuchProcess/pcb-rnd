@@ -1,0 +1,10 @@
+#!/bin/sh
+echo "Renaming action $1" >&2
+
+na=`echo $1 | sed "s/^Action//"`
+lc=`echo $na | tr "[A-Z]" "[a-z]"`
+
+./renameo.sh "$1"            "pcb_act_$na"
+./renameo.sh "${lc}_help"    "pcb_acth_$na"
+./renameo.sh "${lc}_syntax"  "pcb_acts_$na"
+./renameo.sh "AFAIL($lc)"    "PCB_ACT_FAIL($na)"
