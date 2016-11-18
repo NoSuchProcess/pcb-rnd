@@ -56,7 +56,7 @@
 #include <locale.h>
 #endif
 
-extern int pcb_act_MoveLayerAction(int argc, char **argv, int x, int y);
+extern int pcb_act_MoveLayer(int argc, char **argv, int x, int y);
 conf_hid_gtk_t conf_hid_gtk;
 window_geometry_t hid_gtk_wgeo, hid_gtk_wgeo_old;
 
