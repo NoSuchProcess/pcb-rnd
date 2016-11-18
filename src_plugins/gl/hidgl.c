@@ -553,7 +553,7 @@ static pcb_r_dir_t do_hole(const pcb_box_t * b, void *cl)
 	pcb_pline_t *curc = (pcb_pline_t *) b;
 
 	/* Ignore the outer contour - we draw it first explicitly */
-	if (curc->Flags.orient == PLF_DIR) {
+	if (curc->Flags.orient == PCB_PLF_DIR) {
 		return R_DIR_NOT_FOUND;
 	}
 

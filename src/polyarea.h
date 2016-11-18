@@ -25,9 +25,9 @@
 #ifndef	PCB_POLYAREA_H
 #define	PCB_POLYAREA_H
 
-#define PLF_DIR 1
-#define PLF_INV 0
-#define PLF_MARK 1
+#define PCB_PLF_DIR 1
+#define PCB_PLF_INV 0
+#define PCB_PLF_MARK 1
 
 #ifndef min
 #define min(x, y) ((x) < (y) ? (x) : (y))
@@ -42,8 +42,8 @@ typedef pcb_coord_t pcb_vertex_t[2];				/* longing point representation of
 																   coordinates */
 typedef pcb_vertex_t pcb_vector_t;
 
-#define VertexEqu(a,b) (memcmp((a),(b),sizeof(pcb_vector_t))==0)
-#define VertexCpy(a,b) memcpy((a),(b),sizeof(pcb_vector_t))
+#define pcb_vertex_equ(a,b) (memcmp((a),(b),sizeof(pcb_vector_t))==0)
+#define pcb_vertex_cpy(a,b) memcpy((a),(b),sizeof(pcb_vector_t))
 
 
 extern pcb_vector_t vect_zero;

@@ -238,7 +238,7 @@ pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
 {
 	pcb_polyarea_t *p;
 	pcb_poly_contour_pre(contour, pcb_true);
-	assert(contour->Flags.orient == PLF_DIR);
+	assert(contour->Flags.orient == PCB_PLF_DIR);
 	if (!(p = pcb_polyarea_create()))
 		return NULL;
 	pcb_polyarea_contour_include(p, contour);
@@ -277,9 +277,9 @@ static pcb_polyarea_t *original_poly(pcb_polygon_t * p)
 			pcb_poly_contour_pre(contour, pcb_true);
 
 			/* make sure it is a positive contour (outer) or negative (hole) */
-			if (contour->Flags.orient != (hole ? PLF_INV : PLF_DIR))
+			if (contour->Flags.orient != (hole ? PCB_PLF_INV : PCB_PLF_DIR))
 				pcb_poly_contour_inv(contour);
-			assert(contour->Flags.orient == (hole ? PLF_INV : PLF_DIR));
+			assert(contour->Flags.orient == (hole ? PCB_PLF_INV : PCB_PLF_DIR));
 
 			pcb_polyarea_contour_include(np, contour);
 			contour = NULL;

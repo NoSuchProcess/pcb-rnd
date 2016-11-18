@@ -1096,7 +1096,7 @@ PutContour(jmp_buf * e, pcb_pline_t * cntr, pcb_polyarea_t ** contours, pcb_plin
 	assert(cntr->Count > 2);
 	cntr->next = NULL;
 
-	if (cntr->Flags.orient == PLF_DIR) {
+	if (cntr->Flags.orient == PCB_PLF_DIR) {
 		if (owner != NULL)
 			pcb_r_delete_entry(owner->contour_tree, (pcb_box_t *) cntr);
 		InsCntr(e, cntr, contours);
@@ -1167,7 +1167,7 @@ static pcb_r_dir_t find_inside(const pcb_box_t * b, void *cl)
 	pcb_pline_t *check = (pcb_pline_t *) b;
 	/* Do test on check to see if it inside info->want_inside */
 	/* If it is: */
-	if (check->Flags.orient == PLF_DIR) {
+	if (check->Flags.orient == PCB_PLF_DIR) {
 		return R_DIR_NOT_FOUND;
 	}
 	if (pcb_poly_contour_in_contour(info->want_inside, check)) {
@@ -1761,7 +1761,7 @@ static pcb_r_dir_t find_inside_m_pa(const pcb_box_t * b, void *cl)
 	struct find_inside_m_pa_info *info = (struct find_inside_m_pa_info *) cl;
 	pcb_pline_t *check = (pcb_pline_t *) b;
 	/* Don't report for the main contour */
-	if (check->Flags.orient == PLF_DIR)
+	if (check->Flags.orient == PCB_PLF_DIR)
 		return R_DIR_NOT_FOUND;
 	/* Don't look at contours marked as being intersected */
 	if (check->Flags.status == ISECTED)
@@ -2357,7 +2357,7 @@ void pcb_poly_contour_pre(pcb_pline_t * C, pcb_bool optimize)
 	}
 	C->area = PCB_ABS(area);
 	if (C->Count > 2)
-		C->Flags.orient = ((area < 0) ? PLF_INV : PLF_DIR);
+		C->Flags.orient = ((area < 0) ? PCB_PLF_INV : PCB_PLF_DIR);
 	C->tree = (pcb_rtree_t *) make_edge_tree(C);
 }																/* poly_PreContour */
 
@@ -2515,7 +2515,7 @@ pcb_bool pcb_polyarea_contour_include(pcb_polyarea_t * p, pcb_pline_t * c)
 
 	if ((c == NULL) || (p == NULL))
 		return pcb_false;
-	if (c->Flags.orient == PLF_DIR) {
+	if (c->Flags.orient == PCB_PLF_DIR) {
 		if (p->contours != NULL)
 			return pcb_false;
 		p->contours = c;
@@ -2705,7 +2705,7 @@ static void poly_ComputeInteriorPoint(pcb_pline_t * poly, pcb_vector_t v)
 	pcb_vnode_t *min_q = NULL;
 	double dist;
 	double min_dist = 0.0;
-	double dir = (poly->Flags.orient == PLF_DIR) ? 1. : -1;
+	double dir = (poly->Flags.orient == PCB_PLF_DIR) ? 1. : -1;
 
 	/* Find a convex node on the polygon */
 	pt1 = &poly->head;
@@ -2933,11 +2933,11 @@ pcb_bool pcb_poly_valid(pcb_polyarea_t * p)
 	if ((p == NULL) || (p->contours == NULL))
 		return pcb_false;
 
-	if (p->contours->Flags.orient == PLF_INV || pcb_polyarea_contour_check(p->contours)) {
+	if (p->contours->Flags.orient == PCB_PLF_INV || pcb_polyarea_contour_check(p->contours)) {
 #ifndef NDEBUG
 		pcb_vnode_t *v, *n;
 		DEBUGP("Invalid Outer pcb_pline_t\n");
-		if (p->contours->Flags.orient == PLF_INV)
+		if (p->contours->Flags.orient == PCB_PLF_INV)
 			DEBUGP("failed orient\n");
 		if (pcb_polyarea_contour_check(p->contours))
 			DEBUGP("failed self-intersection\n");
@@ -2951,11 +2951,11 @@ pcb_bool pcb_poly_valid(pcb_polyarea_t * p)
 		return pcb_false;
 	}
 	for (c = p->contours->next; c != NULL; c = c->next) {
-		if (c->Flags.orient == PLF_DIR || pcb_polyarea_contour_check(c) || !pcb_poly_contour_in_contour(p->contours, c)) {
+		if (c->Flags.orient == PCB_PLF_DIR || pcb_polyarea_contour_check(c) || !pcb_poly_contour_in_contour(p->contours, c)) {
 #ifndef NDEBUG
 			pcb_vnode_t *v, *n;
 			DEBUGP("Invalid Inner pcb_pline_t orient = %d\n", c->Flags.orient);
-			if (c->Flags.orient == PLF_DIR)
+			if (c->Flags.orient == PCB_PLF_DIR)
 				DEBUGP("failed orient\n");
 			if (pcb_polyarea_contour_check(c))
 				DEBUGP("failed self-intersection\n");

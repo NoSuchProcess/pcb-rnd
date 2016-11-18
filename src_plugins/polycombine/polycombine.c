@@ -72,12 +72,12 @@ static pcb_polyarea_t *original_poly(pcb_polygon_t *p, pcb_bool *forward)
 
 			/* Log the direction in which the outer contour was specified */
 			if (hole == 0)
-				*forward = (contour->Flags.orient == PLF_DIR);
+				*forward = (contour->Flags.orient == PCB_PLF_DIR);
 
 			/* make sure it is a positive contour (outer) or negative (hole) */
-			if (contour->Flags.orient != (hole ? PLF_INV : PLF_DIR))
+			if (contour->Flags.orient != (hole ? PCB_PLF_INV : PCB_PLF_DIR))
 				pcb_poly_contour_inv(contour);
-			assert(contour->Flags.orient == (hole ? PLF_INV : PLF_DIR));
+			assert(contour->Flags.orient == (hole ? PCB_PLF_INV : PCB_PLF_DIR));
 
 			pcb_polyarea_contour_include(np, contour);
 			contour = NULL;

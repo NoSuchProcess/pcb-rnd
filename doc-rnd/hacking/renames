@@ -1115,3 +1115,8 @@ exporter -> pcb_exporter
 plug_fp_chain -> pcb_plug_fp_chain
 plug_import_chain -> pcb_plug_import_chain
 plug_io_chain -> pcb_plug_io_chain
+PLF_DIR -> PCB_PLF_DIR
+PLF_INV -> PCB_PLF_INV
+PLF_MARK -> PCB_PLF_MARK
+VertexEqu -> pcb_vertex_equ
+VertexCpy -> pcb_vertex_cpy
