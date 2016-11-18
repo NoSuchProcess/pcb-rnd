@@ -377,11 +377,11 @@ int pcb_ratspatch_fexport(pcb_board_t *pcb, FILE *f, int fmt_pcb)
 
 
 /* ---------------------------------------------------------------- */
-static const char replacefootprint_syntax[] = "ReplaceFootprint()\n";
+static const char pcb_acts_ReplaceFootprint[] = "ReplaceFootprint()\n";
 
-static const char replacefootprint_help[] = "Replace the footprint of the selected components with the footprint specified.";
+static const char pcb_acth_ReplaceFootprint[] = "Replace the footprint of the selected components with the footprint specified.";
 
-static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *a[4];
 	const char *fpname;
@@ -440,14 +440,14 @@ static int ActionReplaceFootprint(int argc, const char **argv, pcb_coord_t x, pc
 	return 0;
 }
 
-static const char savepatch_syntax[] = "SavePatch(filename)";
+static const char pcb_acts_SavePatch[] = "SavePatch(filename)";
 
-static const char savepatch_help[] = "Save netlist patch for back annotation.";
+static const char pcb_acth_SavePatch[] = "Save netlist patch for back annotation.";
 
 /* %start-doc actions SavePatch
 Save netlist patch for back annotation.
 %end-doc */
-static int ActionSavePatch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SavePatch(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fn;
 	FILE *f;
@@ -488,11 +488,11 @@ static int ActionSavePatch(int argc, const char **argv, pcb_coord_t x, pcb_coord
 }
 
 pcb_hid_action_t rats_patch_action_list[] = {
-	{"ReplaceFootprint", 0, ActionReplaceFootprint,
-	 replacefootprint_help, replacefootprint_syntax}
+	{"ReplaceFootprint", 0, pcb_act_ReplaceFootprint,
+	 pcb_acth_ReplaceFootprint, pcb_acts_ReplaceFootprint}
 	,
-	{"SavePatch", 0, ActionSavePatch,
-	 savepatch_help, savepatch_syntax}
+	{"SavePatch", 0, pcb_act_SavePatch,
+	 pcb_acth_SavePatch, pcb_acts_SavePatch}
 };
 
 PCB_REGISTER_ACTIONS(rats_patch_action_list, NULL)

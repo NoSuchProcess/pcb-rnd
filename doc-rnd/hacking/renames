@@ -1385,3 +1385,9 @@ undo_syntax -> pcb_acts_Undo
 ActionRedo -> pcb_act_Redo
 redo_help -> pcb_acth_Redo
 redo_syntax -> pcb_acts_Redo
+ActionReplaceFootprint -> pcb_act_ReplaceFootprint
+replacefootprint_help -> pcb_acth_ReplaceFootprint
+replacefootprint_syntax -> pcb_acts_ReplaceFootprint
+ActionSavePatch -> pcb_act_SavePatch
+savepatch_help -> pcb_acth_SavePatch
+savepatch_syntax -> pcb_acts_SavePatch
