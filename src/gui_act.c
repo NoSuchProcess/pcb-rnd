@@ -50,7 +50,7 @@
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
-static const char display_syntax[] =
+static const char pcb_acts_Display[] =
 	"Display(NameOnPCB|Description|Value)\n"
 	"Display(Grid|Redraw)\n"
 	"Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)\n"
@@ -61,7 +61,7 @@ static const char display_syntax[] =
 	"Display(ToggleCheckPlanes|ToggleShowDRC|ToggleAutoDRC)\n"
 	"Display(ToggleLiveRoute|LockNames|OnlyNames)\n" "Display(Pinout|PinOrPadName)";
 
-static const char display_help[] = "Several display-related actions.";
+static const char pcb_acth_Display[] = "Several display-related actions.";
 
 /* %start-doc actions Display
 
@@ -211,7 +211,7 @@ static enum pcb_crosshair_shape_e CrosshairShapeIncrement(enum pcb_crosshair_sha
 	return shape;
 }
 
-static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_coord_t childY)
+static int pcb_act_Display(int argc, const char **argv, pcb_coord_t childX, pcb_coord_t childY)
 {
 	const char *function, *str_dir;
 	int id;
@@ -545,15 +545,15 @@ static int ActionDisplay(int argc, const char **argv, pcb_coord_t childX, pcb_co
 	if (!err)
 		return 0;
 
-	PCB_AFAIL(display);
+	PCB_ACT_FAIL(Display);
 }
 /* --------------------------------------------------------------------------- */
 
-static const char mode_syntax[] =
+static const char pcb_acts_Mode[] =
 	"Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)\n"
 	"Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)\n" "Mode(Notify|Release|Cancel|Stroke)\n" "Mode(Save|Restore)";
 
-static const char mode_help[] = "Change or use the tool mode.";
+static const char pcb_acth_Mode[] = "Change or use the tool mode.";
 
 /* %start-doc actions Mode
 
@@ -607,7 +607,7 @@ Restores the tool to the last saved tool.
 
 %end-doc */
 
-static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Mode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 
@@ -792,16 +792,16 @@ static int ActionMode(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 0;
 	}
 
-	PCB_AFAIL(mode);
+	PCB_ACT_FAIL(Mode);
 }
 
 /* ---------------------------------------------------------------- */
-static const char cycledrag_syntax[] = "CycleDrag()\n";
+static const char pcb_acts_CycleDrag[] = "CycleDrag()\n";
 
-static const char cycledrag_help[] = "Cycle through which object is being dragged";
+static const char pcb_acth_CycleDrag[] = "Cycle through which object is being dragged";
 
 #define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (PCB_SLOP * pcb_pixel_slop)) : ((a)-(b) > -(PCB_SLOP * pcb_pixel_slop)))
-static int ActionCycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
@@ -865,9 +865,9 @@ static int ActionCycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 /* -------------------------------------------------------------------------- */
 
-static const char message_syntax[] = "pcb_message(message)";
+static const char pcb_acts_Message[] = "pcb_message(message)";
 
-static const char message_help[] = "Writes a message to the log window.";
+static const char pcb_acth_Message[] = "Writes a message to the log window.";
 
 /* %start-doc actions Message
 
@@ -878,12 +878,12 @@ followed by a newline.
 
 %end-doc */
 
-static int ActionMessage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Message(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i;
 
 	if (argc < 1)
-		PCB_AFAIL(message);
+		PCB_ACT_FAIL(Message);
 
 	for (i = 0; i < argc; i++) {
 		pcb_message(PCB_MSG_DEFAULT, argv[i]);
@@ -895,9 +895,9 @@ static int ActionMessage(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 /* --------------------------------------------------------------------------- */
 
-static const char togglehidename_syntax[] = "ToggleHideName(Object|SelectedElements)";
+static const char pcb_acts_ToggleHideName[] = "ToggleHideName(Object|SelectedElements)";
 
-static const char togglehidename_help[] = "Toggles the visibility of element names.";
+static const char pcb_acth_ToggleHideName[] = "Toggles the visibility of element names.";
 
 /* %start-doc actions ToggleHideName
 
@@ -906,7 +906,7 @@ appear on the silk layer when you print the layout.
 
 %end-doc */
 
-static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (function && PCB->ElementOn) {
@@ -955,9 +955,9 @@ static int ActionToggleHideName(int argc, const char **argv, pcb_coord_t x, pcb_
 
 /* --------------------------------------------------------------------------- */
 
-static const char markcrosshair_syntax[] = "MarkCrosshair()\n" "MarkCrosshair(Center)";
+static const char pcb_acts_MarkCrosshair[] = "MarkCrosshair()\n" "MarkCrosshair(Center)";
 
-static const char markcrosshair_help[] = "Set/Reset the pcb_crosshair mark.";
+static const char pcb_acth_MarkCrosshair[] = "Set/Reset the pcb_crosshair mark.";
 
 /* %start-doc actions MarkCrosshair
 
@@ -973,7 +973,7 @@ cursor location.
 
 %end-doc */
 
-static int ActionMarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_MarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
 	if (!function || !*function) {
@@ -1003,15 +1003,15 @@ static int ActionMarkCrosshair(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 /* --------------------------------------------------------------------------- */
 
-static const char routestyle_syntax[] = "RouteStyle(1|2|3|4)";
+static const char pcb_acts_RouteStyle[] = "RouteStyle(1|2|3|4)";
 
-static const char routestyle_help[] = "Copies the indicated routing style into the current sizes.";
+static const char pcb_acth_RouteStyle[] = "Copies the indicated routing style into the current sizes.";
 
 /* %start-doc actions RouteStyle
 
 %end-doc */
 
-static int ActionRouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_RouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *str = PCB_ACTION_ARG(0);
 	pcb_route_style_t *rts;
@@ -1049,14 +1049,14 @@ static int ActionRouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 /* --------------------------------------------------------------------------- */
 
-static const char createmenu_syntax[] = "CreateMenu(path | path, action, mnemonic, accel, tooltip, cookie)";
-static const char createmenu_help[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
+static const char pcb_acts_CreateMenu[] = "CreateMenu(path | path, action, mnemonic, accel, tooltip, cookie)";
+static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
 
 /* %start-doc actions RouteStyle
 
 %end-doc */
 
-static int ActionCreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_CreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_DEFAULT, "Error: can't create menu, there's no GUI hid loaded\n");
@@ -1068,19 +1068,19 @@ static int ActionCreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		return 0;
 	}
 
-	PCB_AFAIL(message);
+	PCB_ACT_FAIL(CreateMenu);
 }
 
 /* --------------------------------------------------------------------------- */
 
-static const char removemenu_syntax[] = "RemoveMenu(path|cookie)";
-static const char removemenu_help[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
+static const char pcb_acts_RemoveMenu[] = "RemoveMenu(path|cookie)";
+static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
 
 /* %start-doc actions RouteStyle
 
 %end-doc */
 
-static int ActionRemoveMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_RemoveMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
@@ -1098,14 +1098,14 @@ static int ActionRemoveMenu(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		return 0;
 	}
 
-	PCB_AFAIL(message);
+	PCB_ACT_FAIL(RemoveMenu);
 }
 
 /* --------------------------------------------------------------------------- */
 
-static const char setsame_syntax[] = "SetSame()";
+static const char pcb_acts_SetSame[] = "SetSame()";
 
-static const char setsame_help[] = "Sets current layer and sizes to match indicated item.";
+static const char pcb_acth_SetSame[] = "Sets current layer and sizes to match indicated item.";
 
 /* %start-doc actions SetSame
 
@@ -1129,7 +1129,7 @@ static void set_same_(pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole,
 		pcb_use_route_style_idx(&PCB->RouteStyle, known);
 }
 
-static int ActionSetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
@@ -1183,9 +1183,9 @@ static int ActionSetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 /* --------------------------------------------------------------------------- */
 
-static const char switchhid_syntax[] = "SwitchHID(lesstif|gtk|batch)";
+static const char pcb_acts_SwitchHID[] = "SwitchHID(lesstif|gtk|batch)";
 
-static const char switchhid_help[] = "Switch to another HID.";
+static const char pcb_acth_SwitchHID[] = "Switch to another HID.";
 
 /* %start-doc actions SwitchHID
 
@@ -1193,7 +1193,7 @@ Switch to another HID.
 
 %end-doc */
 
-static int ActionSwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_SwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_hid_t *ng = pcb_hid_find_gui(argv[0]);
 	int chg;
@@ -1215,11 +1215,11 @@ static int ActionSwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coord
 /* --------------------------------------------------------------------------- */
 
 /* This action is provided for CLI convience */
-static const char fullscreen_syntax[] = "FullScreen(on|off|toggle)\n";
+static const char pcb_acts_FullScreen[] = "pcb_act_FullScreen(on|off|toggle)\n";
 
-static const char fullscreen_help[] = "Hide widgets to get edit area full screen";
+static const char pcb_acth_FullScreen[] = "Hide widgets to get edit area full screen";
 
-static int FullScreen(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_FullScreen(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *op = argv == NULL ? NULL : argv[0];
 
@@ -1237,40 +1237,40 @@ static int FullScreen(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 
 pcb_hid_action_t gui_action_list[] = {
-	{"Display", 0, ActionDisplay,
-	 display_help, display_syntax}
+	{"Display", 0, pcb_act_Display,
+	 pcb_acth_Display, pcb_acts_Display}
 	,
-	{"CycleDrag", 0, ActionCycleDrag,
-	 cycledrag_help, cycledrag_syntax}
+	{"CycleDrag", 0, pcb_act_CycleDrag,
+	 pcb_acth_CycleDrag, pcb_acts_CycleDrag}
 	,
-	{"FullScreen", 0, FullScreen, fullscreen_help, fullscreen_syntax}
+	{"pcb_act_FullScreen", 0, pcb_act_FullScreen, pcb_acth_FullScreen, pcb_acts_FullScreen}
 	,
-	{"MarkCrosshair", 0, ActionMarkCrosshair,
-	 markcrosshair_help, markcrosshair_syntax}
+	{"MarkCrosshair", 0, pcb_act_MarkCrosshair,
+	 pcb_acth_MarkCrosshair, pcb_acts_MarkCrosshair}
 	,
-	{"Message", 0, ActionMessage,
-	 message_help, message_syntax}
+	{"Message", 0, pcb_act_Message,
+	 pcb_acth_Message, pcb_acts_Message}
 	,
-	{"Mode", 0, ActionMode,
-	 mode_help, mode_syntax}
+	{"Mode", 0, pcb_act_Mode,
+	 pcb_acth_Mode, pcb_acts_Mode}
 	,
-	{"ToggleHideName", 0, ActionToggleHideName,
-	 togglehidename_help, togglehidename_syntax}
+	{"ToggleHideName", 0, pcb_act_ToggleHideName,
+	 pcb_acth_ToggleHideName, pcb_acts_ToggleHideName}
 	,
-	{"SetSame", N_("Select item to use attributes from"), ActionSetSame,
-	 setsame_help, setsame_syntax}
+	{"SetSame", N_("Select item to use attributes from"), pcb_act_SetSame,
+	 pcb_acth_SetSame, pcb_acts_SetSame}
 	,
-	{"RouteStyle", 0, ActionRouteStyle,
-	 routestyle_help, routestyle_syntax}
+	{"RouteStyle", 0, pcb_act_RouteStyle,
+	 pcb_acth_RouteStyle, pcb_acts_RouteStyle}
 	,
-	{"CreateMenu", 0, ActionCreateMenu,
-	 createmenu_help, createmenu_syntax}
+	{"CreateMenu", 0, pcb_act_CreateMenu,
+	 pcb_acth_CreateMenu, pcb_acts_CreateMenu}
 	,
-	{"RemoveMenu", 0, ActionRemoveMenu,
-	 removemenu_help, removemenu_syntax}
+	{"RemoveMenu", 0, pcb_act_RemoveMenu,
+	 pcb_acth_RemoveMenu, pcb_acts_RemoveMenu}
 	,
-	{"SwitchHID", 0, ActionSwitchHID,
-	 switchhid_help, switchhid_syntax}
+	{"SwitchHID", 0, pcb_act_SwitchHID,
+	 pcb_acth_SwitchHID, pcb_acts_SwitchHID}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

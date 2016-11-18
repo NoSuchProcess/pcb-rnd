@@ -27,7 +27,7 @@ TODO:
 
 -what about stuff like this:
 
-	/* Set to ! because ActionDisplay toggles it */
+	/* Set to ! because pcb_act_Display toggles it */
 conf_core.editor.draw_grid = !gtk_toggle_action_get_active(action);
 pcb_hid_actionl("Display", "Grid", "", NULL);
 ghid_set_status_line_label();
