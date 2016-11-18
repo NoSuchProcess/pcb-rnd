@@ -800,7 +800,7 @@ static const char cycledrag_syntax[] = "CycleDrag()\n";
 
 static const char cycledrag_help[] = "Cycle through which object is being dragged";
 
-#define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (SLOP * pcb_pixel_slop)) : ((a)-(b) > -(SLOP * pcb_pixel_slop)))
+#define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (PCB_SLOP * pcb_pixel_slop)) : ((a)-(b) > -(PCB_SLOP * pcb_pixel_slop)))
 static int ActionCycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;

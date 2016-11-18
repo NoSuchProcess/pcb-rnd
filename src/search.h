@@ -35,7 +35,7 @@
 
 int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2);
 
-#define SLOP 5
+#define PCB_SLOP 5
 /* ---------------------------------------------------------------------------
  * some useful macros
  */

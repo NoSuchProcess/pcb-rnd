@@ -327,10 +327,10 @@ static void click_cb(pcb_hidval_t hv)
 			}
 			pcb_crosshair.dragx = Note.X;
 			pcb_crosshair.dragy = Note.Y;
-			box.X1 = Note.X + SLOP * pcb_pixel_slop;
-			box.X2 = Note.X - SLOP * pcb_pixel_slop;
-			box.Y1 = Note.Y + SLOP * pcb_pixel_slop;
-			box.Y2 = Note.Y - SLOP * pcb_pixel_slop;
+			box.X1 = Note.X + PCB_SLOP * pcb_pixel_slop;
+			box.X2 = Note.X - PCB_SLOP * pcb_pixel_slop;
+			box.Y1 = Note.Y + PCB_SLOP * pcb_pixel_slop;
+			box.Y2 = Note.Y - PCB_SLOP * pcb_pixel_slop;
 			pcb_crosshair.drags = pcb_list_block(&box, &pcb_crosshair.drags_len);
 			pcb_crosshair.drags_current = 0;
 			AttachForCopy(Note.X, Note.Y);

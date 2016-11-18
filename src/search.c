@@ -1325,7 +1325,7 @@ int pcb_search_screen(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, vo
 {
 	int ans;
 
-	ans = pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, SLOP * pcb_pixel_slop);
+	ans = pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, PCB_SLOP * pcb_pixel_slop);
 	return (ans);
 }
 
