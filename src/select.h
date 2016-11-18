@@ -47,8 +47,8 @@ pcb_bool pcb_select_connection(pcb_bool);
 
 
 typedef enum {
-	SM_REGEX = 0,
-	SM_LIST = 1
+	PCB_SM_REGEX = 0,
+	PCB_SM_LIST = 1
 } pcb_search_method_t;
 
 pcb_bool pcb_select_object_by_name(int, const char *, pcb_bool, pcb_search_method_t);

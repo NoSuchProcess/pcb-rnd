@@ -814,7 +814,7 @@ pcb_bool pcb_select_connection(pcb_bool Flag)
  * returns pcb_true if any object has been selected
  */
 #define REGEXEC(arg) \
-	(method == SM_REGEX ? regexec_match_all(regex, (arg)) : strlst_match(pat, (arg)))
+	(method == PCB_SM_REGEX ? regexec_match_all(regex, (arg)) : strlst_match(pat, (arg)))
 
 static int regexec_match_all(re_sei_t *preg, const char *string)
 {
@@ -838,7 +838,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 	char *pattern_copy = NULL;
 	re_sei_t *regex;
 
-	if (method == SM_REGEX) {
+	if (method == PCB_SM_REGEX) {
 		/* compile the regular expression */
 		regex = re_sei_comp(name_pattern);
 		if (re_sei_errno(regex) != 0) {
@@ -998,7 +998,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 		pcb_conn_lookup_uninit();
 	}
 
-	if (method == SM_REGEX)
+	if (method == PCB_SM_REGEX)
 		re_sei_free(regex);
 
 	if (changed) {

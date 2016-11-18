@@ -155,7 +155,7 @@ static int ActionSelect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		commonByName:
 			{
 				const char *pattern = PCB_ACTION_ARG(1);
-				pcb_search_method_t method = SM_REGEX;
+				pcb_search_method_t method = PCB_SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (pcb_select_object_by_name(type, pattern, pcb_true, method))
@@ -314,7 +314,7 @@ static int ActionUnselect(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		commonByName:
 			{
 				const char *pattern = PCB_ACTION_ARG(1);
-				pcb_search_method_t method = SM_REGEX;
+				pcb_search_method_t method = PCB_SM_REGEX;
 
 				if (pattern || (pattern = gui_get_pat(&method)) != NULL) {
 					if (pcb_select_object_by_name(type, pattern, pcb_false, method))
