@@ -45,7 +45,7 @@ not the current style settings.
 
 %end-doc */
 
-static int ActionDRCheck(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_DRCheck(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int count;
 
@@ -68,7 +68,7 @@ static int ActionDRCheck(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 }
 
 pcb_hid_action_t find_action_list[] = {
-	{"DRC", 0, ActionDRCheck,
+	{"DRC", 0, pcb_act_DRCheck,
 	 drc_help, drc_syntax}
 };
 

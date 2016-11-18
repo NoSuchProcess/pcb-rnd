@@ -1247,3 +1247,6 @@ saveto_syntax -> pcb_acts_SaveTo
 ActionQuit -> pcb_act_Quit
 quit_help -> pcb_acth_Quit
 quit_syntax -> pcb_acts_Quit
+ActionDRCheck -> pcb_act_DRCheck
+drcheck_help -> pcb_acth_DRCheck
+drcheck_syntax -> pcb_acts_DRCheck
