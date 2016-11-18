@@ -1391,3 +1391,6 @@ replacefootprint_syntax -> pcb_acts_ReplaceFootprint
 ActionSavePatch -> pcb_act_SavePatch
 savepatch_help -> pcb_acth_SavePatch
 savepatch_syntax -> pcb_acts_SavePatch
+ActionManagePlugins -> pcb_act_ManagePlugins
+manageplugins_help -> pcb_acth_ManagePlugins
+manageplugins_syntax -> pcb_acts_ManagePlugins

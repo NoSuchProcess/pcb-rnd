@@ -1041,7 +1041,7 @@ Creates a new layer.
 
 %end-doc */
 
-int pcb_act_MoveLayerAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_index, new_index;
 	int new_top = -1;
@@ -1129,7 +1129,7 @@ pcb_hid_action_t object_action_list[] = {
 	{"MinClearGap", 0, pcb_act_MinClearGap,
 	 pcb_acth_MinClearGap, pcb_acts_MinClearGap}
 	,
-	{"MoveLayer", 0, pcb_act_MoveLayerAction,
+	{"MoveLayer", 0, pcb_act_MoveLayer,
 	 movelayer_help, movelayer_syntax}
 };
 

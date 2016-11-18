@@ -80,11 +80,11 @@ void pcb_plugins_uninit(void)
 
 
 /* ---------------------------------------------------------------- */
-static const char manageplugins_syntax[] = "ManagePlugins()\n";
+static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
 
-static const char manageplugins_help[] = "Manage plugins dialog.";
+static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
 
-static int ActionManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_ManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_plugin_info_t *i;
 	int nump = 0, numb = 0;
@@ -134,8 +134,8 @@ static int ActionManagePlugins(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 
 pcb_hid_action_t plugins_action_list[] = {
-	{"ManagePlugins", 0, ActionManagePlugins,
-	 manageplugins_help, manageplugins_syntax}
+	{"ManagePlugins", 0, pcb_act_ManagePlugins,
+	 pcb_acth_ManagePlugins, pcb_acts_ManagePlugins}
 };
 
 PCB_REGISTER_ACTIONS(plugins_action_list, NULL)
