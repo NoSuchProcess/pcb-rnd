@@ -6,7 +6,7 @@
 #undef strdup
 char *pcb_strdup(const char *s) { return strdup(s); }
 
-pcb_plug_fp_t *plug_fp_chain = NULL;
+pcb_plug_fp_t *pcb_plug_fp_chain = NULL;
 
 library_t ltmp;
 library_t *pcb_fp_mkdir_p(const char *path)

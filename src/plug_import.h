@@ -52,7 +52,7 @@ struct pcb_plug_import_s {
 	int (*import)(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn);
 };
 
-extern pcb_plug_import_t *plug_import_chain;
+extern pcb_plug_import_t *pcb_plug_import_chain;
 
 /********** hook wrappers **********/
 int pcb_import(char *filename, unsigned int aspect);

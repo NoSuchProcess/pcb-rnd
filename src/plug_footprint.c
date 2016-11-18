@@ -35,7 +35,7 @@
 #include "error.h"
 #include "compat_misc.h"
 
-pcb_plug_fp_t *plug_fp_chain = NULL;
+pcb_plug_fp_t *pcb_plug_fp_chain = NULL;
 pcb_fplibrary_t pcb_library;
 
 int pcb_fp_dupname(const char *name, char **basename, char **params)
@@ -105,7 +105,7 @@ const char *pcb_fp_tagname(const void *tagid)
 FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 {
 	FILE *res = NULL;
-	PCB_HOOK_CALL(pcb_plug_fp_t, plug_fp_chain, fopen, res, != NULL, (self, path, name, fctx));
+	PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fopen, res, != NULL, (self, path, name, fctx));
 	return res;
 }
 
@@ -352,7 +352,7 @@ static int fp_read_lib_all_(const char *searchpath)
 
 		/* Next read in any footprints in the top level dir */
 		res = -1;
-		PCB_HOOK_CALL(pcb_plug_fp_t, plug_fp_chain, load_dir, res, >= 0, (self, toppath));
+		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, load_dir, res, >= 0, (self, toppath));
 		if (res >= 0)
 			n_footprints += res;
 		else

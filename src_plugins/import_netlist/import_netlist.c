@@ -186,7 +186,7 @@ pcb_uninit_t hid_import_netlist_init(void)
 	import_netlist.fmt_support_prio = netlist_support_prio;
 	import_netlist.import           = netlist_import;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, plug_import_chain, &import_netlist);
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_netlist);
 
 	return hid_import_netlist_uninit;
 }

@@ -87,7 +87,7 @@ struct pcb_plug_io_s {
 
 	int save_preference_prio; /* all available save plugins are sorted by this before presenting them to the user to choose one */
 };
-extern pcb_plug_io_t *plug_io_chain;
+extern pcb_plug_io_t *pcb_plug_io_chain;
 
 
 /********** hook wrappers **********/

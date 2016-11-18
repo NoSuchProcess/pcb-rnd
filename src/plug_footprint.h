@@ -57,7 +57,7 @@ struct pcb_plug_fp_s {
 	void (*fclose)(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx);
 };
 
-extern pcb_plug_fp_t *plug_fp_chain;
+extern pcb_plug_fp_t *pcb_plug_fp_chain;
 
 
 /* Optional pcb-rnd-side glue for some implementations */

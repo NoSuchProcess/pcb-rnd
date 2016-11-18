@@ -86,7 +86,7 @@ pcb_uninit_t hid_import_edif_init(void)
 	import_edif.fmt_support_prio = edif_support_prio;
 	import_edif.import           = edif_import;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, plug_import_chain, &import_edif);
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_edif);
 
 	return hid_import_edif_uninit;
 }

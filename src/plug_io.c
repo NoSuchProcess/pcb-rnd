@@ -67,7 +67,7 @@
 /* for opendir */
 #include "compat_inc.h"
 
-pcb_plug_io_t *plug_io_chain = NULL;
+pcb_plug_io_t *pcb_plug_io_chain = NULL;
 int pcb_io_err_inhibit = 0;
 
 static void plug_io_err(int res, const char *what, const char *filename)
@@ -76,7 +76,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 		return;
 	if (res != 0) {
 		const char *reason = "", *comment = "";
-		if (plug_io_chain != NULL) {
+		if (pcb_plug_io_chain != NULL) {
 			if (filename == NULL) {
 				reason = "none of io plugins could successfully write the file";
 				filename = "";
@@ -130,7 +130,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 		}
 	}
 	else /* try all parsers until we find one that works */
-		PCB_HOOK_CALL_DO(pcb_plug_io_t, plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings), if (Ptr->Data->loader == NULL) Ptr->Data->loader = self);
+		PCB_HOOK_CALL_DO(pcb_plug_io_t, pcb_plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings), if (Ptr->Data->loader == NULL) Ptr->Data->loader = self);
 
 	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);
@@ -147,7 +147,7 @@ int pcb_parse_element(pcb_data_t *Ptr, const char *name)
 	int res = -1;
 
 	Ptr->loader = NULL;
-	PCB_HOOK_CALL_DO(pcb_plug_io_t, plug_io_chain, parse_element, res, == 0, (self, Ptr, name), Ptr->loader = self);
+	PCB_HOOK_CALL_DO(pcb_plug_io_t, pcb_plug_io_chain, parse_element, res, == 0, (self, Ptr, name), Ptr->loader = self);
 
 	plug_io_err(res, "load element", name);
 	return res;
@@ -156,7 +156,7 @@ int pcb_parse_element(pcb_data_t *Ptr, const char *name)
 int pcb_parse_font(pcb_font_t *Ptr, char *Filename)
 {
 	int res = -1;
-	PCB_HOOK_CALL(pcb_plug_io_t, plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
+	PCB_HOOK_CALL(pcb_plug_io_t, pcb_plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
 
 	plug_io_err(res, "load font", Filename);
 	return res;
@@ -187,7 +187,7 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, pcb_plug_iot_t typ, int
 		} \
 	} while(0)
 
-	PCB_HOOK_CALL_ALL(pcb_plug_io_t, plug_io_chain, fmt_support_prio, cb_append, (self, typ, is_wr, (fmt == NULL ? self->default_fmt : fmt)));
+	PCB_HOOK_CALL_ALL(pcb_plug_io_t, pcb_plug_io_chain, fmt_support_prio, cb_append, (self, typ, is_wr, (fmt == NULL ? self->default_fmt : fmt)));
 
 	if (len > 0)
 		qsort(available, len, sizeof(available[0]), find_prio_cmp);

@@ -63,7 +63,7 @@ pcb_uninit_t hid_io_lihata_init(void)
 	io_lihata.description = "lihata board";
 	io_lihata.save_preference_prio = 20;
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, plug_io_chain, &io_lihata);
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_lihata);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_io_lihata, field,isarray,type_name,cpath,cname,desc,flags);

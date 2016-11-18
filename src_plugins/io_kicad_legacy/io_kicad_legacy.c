@@ -64,7 +64,7 @@ pcb_uninit_t hid_io_kicad_legacy_init(void)
 	io_kicad_legacy.description = "Kicad, legacy format";
 	io_kicad_legacy.save_preference_prio = 90;
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, plug_io_chain, &io_kicad_legacy);
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad_legacy);
 
 	/* TODO: Alloc plugin-globals here. */
 

@@ -64,7 +64,7 @@ pcb_uninit_t hid_io_kicad_init(void)
 	io_kicad.description = "Kicad, s-expression";
 	io_kicad.save_preference_prio = 92;
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, plug_io_chain, &io_kicad);
+	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
 
 	/* TODO: Alloc plugin-globals here. */
 

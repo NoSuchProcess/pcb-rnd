@@ -500,7 +500,7 @@ static pcb_plug_fp_t fp_fs;
 
 void hid_fp_fs_uninit(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_fp_t, plug_fp_chain, &fp_fs);
+	PCB_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
 }
 
 pcb_uninit_t hid_fp_fs_init(void)
@@ -509,6 +509,6 @@ pcb_uninit_t hid_fp_fs_init(void)
 	fp_fs.load_dir = fp_fs_load_dir;
 	fp_fs.fopen = fp_fs_fopen;
 	fp_fs.fclose = fp_fs_fclose;
-	PCB_HOOK_REGISTER(pcb_plug_fp_t, plug_fp_chain, &fp_fs);
+	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
 	return hid_fp_fs_uninit;
 }

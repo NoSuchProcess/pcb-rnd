@@ -1112,3 +1112,6 @@ EnforceLineDRC -> pcb_line_enforce_drc
 library -> pcb_library
 gui -> pcb_gui
 exporter -> pcb_exporter
+plug_fp_chain -> pcb_plug_fp_chain
+plug_import_chain -> pcb_plug_import_chain
+plug_io_chain -> pcb_plug_io_chain
