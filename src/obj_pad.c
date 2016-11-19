@@ -166,11 +166,11 @@ int pcb_pad_eq(const pcb_element_t *e1, const pcb_pad_t *p1, const pcb_element_t
 unsigned int pcb_pad_hash(const pcb_element_t *e, const pcb_pad_t *p)
 {
 	return
-		h_coord(p->Thickness) ^ h_coord(p->Clearance) ^
-		h_coordox(e, p->Point1.X) ^ h_coordoy(e, p->Point1.Y) ^
-		h_coordox(e, p->Point2.X) ^ h_coordoy(e, p->Point2.Y) ^
-		h_coord(p->Mask) ^
-		h_str(p->Name) ^ h_str(p->Number);
+		pcb_hash_coord(p->Thickness) ^ pcb_hash_coord(p->Clearance) ^
+		pcb_hash_element_ox(e, p->Point1.X) ^ pcb_hash_element_oy(e, p->Point1.Y) ^
+		pcb_hash_element_ox(e, p->Point2.X) ^ pcb_hash_element_oy(e, p->Point2.Y) ^
+		pcb_hash_coord(p->Mask) ^
+		pcb_hash_str(p->Name) ^ pcb_hash_str(p->Number);
 }
 
 

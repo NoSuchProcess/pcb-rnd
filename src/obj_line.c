@@ -251,10 +251,10 @@ int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element
 unsigned int pcb_line_hash(const pcb_element_t *e, const pcb_line_t *l)
 {
 	return
-		h_coord(l->Thickness) ^ h_coord(l->Clearance) ^
-		h_coordox(e, l->Point1.X) ^ h_coordoy(e, l->Point1.Y) ^
-		h_coordox(e, l->Point2.X) ^ h_coordoy(e, l->Point2.Y) ^
-		h_str(l->Number);
+		pcb_hash_coord(l->Thickness) ^ pcb_hash_coord(l->Clearance) ^
+		pcb_hash_element_ox(e, l->Point1.X) ^ pcb_hash_element_oy(e, l->Point1.Y) ^
+		pcb_hash_element_ox(e, l->Point2.X) ^ pcb_hash_element_oy(e, l->Point2.Y) ^
+		pcb_hash_str(l->Number);
 }
 
 

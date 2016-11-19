@@ -252,10 +252,10 @@ int pcb_pin_eq(const pcb_element_t *e1, const pcb_pin_t *p1, const pcb_element_t
 unsigned int pcb_pin_hash(const pcb_element_t *e, const pcb_pin_t *p)
 {
 	return
-		h_coord(p->Thickness) ^ h_coord(p->Clearance) ^
-		h_coord(p->Mask) ^ h_coord(p->DrillingHole) ^
-		h_coordox(e, p->X) ^ h_coordoy(e, p->Y) ^
-		h_str(p->Name) ^ h_str(p->Number);
+		pcb_hash_coord(p->Thickness) ^ pcb_hash_coord(p->Clearance) ^
+		pcb_hash_coord(p->Mask) ^ pcb_hash_coord(p->DrillingHole) ^
+		pcb_hash_element_ox(e, p->X) ^ pcb_hash_element_oy(e, p->Y) ^
+		pcb_hash_str(p->Name) ^ pcb_hash_str(p->Number);
 }
 
 

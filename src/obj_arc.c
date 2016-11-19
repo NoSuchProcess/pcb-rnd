@@ -231,10 +231,10 @@ int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t
 unsigned int pcb_arc_hash(const pcb_element_t *e, const pcb_arc_t *a)
 {
 	return 
-		h_coord(a->Thickness) ^ h_coord(a->Clearance) ^
-		h_coord(a->Width) ^ h_coord(a->Height) ^
-		h_coordox(e, a->X) ^ h_coordoy(e, a->Y) ^
-		h_coord(a->StartAngle) ^ h_coord(a->Delta);
+		pcb_hash_coord(a->Thickness) ^ pcb_hash_coord(a->Clearance) ^
+		pcb_hash_coord(a->Width) ^ pcb_hash_coord(a->Height) ^
+		pcb_hash_element_ox(e, a->X) ^ pcb_hash_element_oy(e, a->Y) ^
+		pcb_hash_coord(a->StartAngle) ^ pcb_hash_coord(a->Delta);
 }
 
 /***** operations *****/
