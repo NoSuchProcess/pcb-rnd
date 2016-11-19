@@ -1490,3 +1490,7 @@ autoplaceselected_syntax -> pcb_acts_AutoPlaceSelected
 ActionDJopt -> pcb_act_DJopt
 djopt_help -> pcb_acth_DJopt
 djopt_syntax -> pcb_acts_DJopt
+h_str -> pcb_hash_str
+h_coordox -> pcb_hash_element_ox
+h_coordoy -> pcb_hash_element_oy
+h_coord -> pcb_hash_coord
