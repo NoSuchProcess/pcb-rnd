@@ -10,7 +10,7 @@
 #warning TODO: move these in the big split
 
 /* compare two strings and return 0 if they are equal. NULL == NULL means equal. */
-static int neqs(const char *s1, const char *s2)
+static int pcb_neqs(const char *s1, const char *s2)
 {
 	if ((s1 == NULL) && (s2 == NULL)) return 0;
 	if ((s1 == NULL) || (s2 == NULL)) return 1;
@@ -18,11 +18,11 @@ static int neqs(const char *s1, const char *s2)
 }
 
 /* compare two fields and return 0 if they are equal */
-#define neq(s1, s2, f) ((s1)->f != (s2)->f)
+#define pcb_field_neq(s1, s2, f) ((s1)->f != (s2)->f)
 
-#define eoffs(e,ef, s,sf) ((e == NULL) ? (s)->sf : ((s)->sf) - ((e)->ef))
-#define neqox(e1, x1, e2, x2, f) (eoffs(e1, MarkX, x1, f) != eoffs(e2, MarkX, x2, f))
-#define neqoy(e1, y1, e2, y2, f) (eoffs(e1, MarkY, y1, f) != eoffs(e2, MarkY, y2, f))
+#define pcb_element_offs(e,ef, s,sf) ((e == NULL) ? (s)->sf : ((s)->sf) - ((e)->ef))
+#define pcb_element_neq_offsx(e1, x1, e2, x2, f) (pcb_element_offs(e1, MarkX, x1, f) != pcb_element_offs(e2, MarkX, x2, f))
+#define pcb_element_neq_offsy(e1, y1, e2, y2, f) (pcb_element_offs(e1, MarkY, y1, f) != pcb_element_offs(e2, MarkY, y2, f))
 
 static inline unsigned h_coord(pcb_coord_t c)
 {
@@ -36,11 +36,11 @@ static inline unsigned h_coord(pcb_coord_t c)
 
 int pcb_pin_eq(const pcb_element_t *e1, const pcb_pin_t *p1, const pcb_element_t *e2, const pcb_pin_t *p2)
 {
-	if (neq(p1, p2, Thickness) || neq(p1, p2, Clearance)) return 0;
-	if (neq(p1, p2, Mask) || neq(p1, p2, DrillingHole)) return 0;
-	if (neqox(e1, p1, e2, p2, X) || neqoy(e1, p1, e2, p2, Y)) return 0;
-	if (neqs(p1->Name, p2->Name)) return 0;
-	if (neqs(p1->Number, p2->Number)) return 0;
+	if (pcb_field_neq(p1, p2, Thickness) || pcb_field_neq(p1, p2, Clearance)) return 0;
+	if (pcb_field_neq(p1, p2, Mask) || pcb_field_neq(p1, p2, DrillingHole)) return 0;
+	if (pcb_element_neq_offsx(e1, p1, e2, p2, X) || pcb_element_neq_offsy(e1, p1, e2, p2, Y)) return 0;
+	if (pcb_neqs(p1->Name, p2->Name)) return 0;
+	if (pcb_neqs(p1->Number, p2->Number)) return 0;
 	return 1;
 }
 
@@ -55,12 +55,12 @@ unsigned int pcb_pin_hash(const pcb_element_t *e, const pcb_pin_t *p)
 
 int pcb_pad_eq(const pcb_element_t *e1, const pcb_pad_t *p1, const pcb_element_t *e2, const pcb_pad_t *p2)
 {
-	if (neq(p1, p2, Thickness) || neq(p1, p2, Clearance)) return 0;
-	if (neqox(e1, p1, e2, p2, Point1.X) || neqoy(e1, p1, e2, p2, Point1.Y)) return 0;
-	if (neqox(e1, p1, e2, p2, Point2.X) || neqoy(e1, p1, e2, p2, Point2.Y)) return 0;
-	if (neq(p1, p2, Mask)) return 0;
-	if (neqs(p1->Name, p2->Name)) return 0;
-	if (neqs(p1->Number, p2->Number)) return 0;
+	if (pcb_field_neq(p1, p2, Thickness) || pcb_field_neq(p1, p2, Clearance)) return 0;
+	if (pcb_element_neq_offsx(e1, p1, e2, p2, Point1.X) || pcb_element_neq_offsy(e1, p1, e2, p2, Point1.Y)) return 0;
+	if (pcb_element_neq_offsx(e1, p1, e2, p2, Point2.X) || pcb_element_neq_offsy(e1, p1, e2, p2, Point2.Y)) return 0;
+	if (pcb_field_neq(p1, p2, Mask)) return 0;
+	if (pcb_neqs(p1->Name, p2->Name)) return 0;
+	if (pcb_neqs(p1->Number, p2->Number)) return 0;
 	return 1;
 }
 
@@ -77,10 +77,10 @@ unsigned int pcb_pad_hash(const pcb_element_t *e, const pcb_pad_t *p)
 
 int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element_t *e2, const pcb_line_t *l2)
 {
-	if (neq(l1, l2, Thickness) || neq(l1, l2, Clearance)) return 0;
-	if (neqox(e1, l1, e2, l2, Point1.X) || neqoy(e1, l1, e2, l2, Point1.Y)) return 0;
-	if (neqox(e1, l1, e2, l2, Point2.X) || neqoy(e1, l1, e2, l2, Point2.Y)) return 0;
-	if (neqs(l1->Number, l2->Number)) return 0;
+	if (pcb_field_neq(l1, l2, Thickness) || pcb_field_neq(l1, l2, Clearance)) return 0;
+	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point1.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point1.Y)) return 0;
+	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point2.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point2.Y)) return 0;
+	if (pcb_neqs(l1->Number, l2->Number)) return 0;
 	return 1;
 }
 
@@ -96,10 +96,10 @@ unsigned int pcb_line_hash(const pcb_element_t *e, const pcb_line_t *l)
 
 int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t *e2, const pcb_arc_t *a2)
 {
-	if (neq(a1, a2, Thickness) || neq(a1, a2, Clearance)) return 0;
-	if (neq(a1, a2, Width) || neq(a1, a2, Height)) return 0;
-	if (neqox(e1, a1, e2, a2, X) || neqoy(e1, a1, e2, a2, Y)) return 0;
-	if (neq(a1, a2, StartAngle) || neq(a1, a2, Delta)) return 0;
+	if (pcb_field_neq(a1, a2, Thickness) || pcb_field_neq(a1, a2, Clearance)) return 0;
+	if (pcb_field_neq(a1, a2, Width) || pcb_field_neq(a1, a2, Height)) return 0;
+	if (pcb_element_neq_offsx(e1, a1, e2, a2, X) || pcb_element_neq_offsy(e1, a1, e2, a2, Y)) return 0;
+	if (pcb_field_neq(a1, a2, StartAngle) || pcb_field_neq(a1, a2, Delta)) return 0;
 
 	return 1;
 }
