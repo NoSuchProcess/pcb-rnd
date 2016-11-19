@@ -95,17 +95,6 @@ void CreateQuotedString(gds_t *DS, char *S)
 	gds_append(DS, '"');
 }
 
-int FileExists(const char *name)
-{
-	FILE *f;
-	f = fopen(name, "r");
-	if (f) {
-		fclose(f);
-		return 1;
-	}
-	return 0;
-}
-
 
 pcb_uninit_t hid_lib_legacy_func_init(void)
 {
