@@ -257,10 +257,7 @@ static void bboard_draw_line_cairo(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x
 	cairo_stroke(bboard_cairo_ctx);
 }
 
-#warning TODO: remove x1;y1;x2;y2
-static void
-bboard_draw_arc_cairo(/*pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2,*/ pcb_coord_t x,
-											pcb_coord_t y, pcb_coord_t w, pcb_coord_t h, pcb_angle_t sa, pcb_angle_t a, pcb_coord_t thickness)
+static void bboard_draw_arc_cairo(pcb_coord_t x, pcb_coord_t y, pcb_coord_t w, pcb_coord_t h, pcb_angle_t sa, pcb_angle_t a, pcb_coord_t thickness)
 {
 	ASSERT_CAIRO;
 
