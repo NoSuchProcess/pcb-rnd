@@ -1,6 +1,8 @@
 #ifndef PCB_HT_ELEMENT_H
 #define PCB_HT_ELEMENT_H
 
+/* Hash: element -> pointer */
+
 /* hash instance */
 typedef const pcb_element_t *htep_key_t;
 typedef int htep_value_t;
