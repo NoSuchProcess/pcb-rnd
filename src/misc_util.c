@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <genvector/gds_char.h>
 #include <math.h>
 #include <ctype.h>
 #include "misc_util.h"
@@ -151,25 +152,16 @@ double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute,
 
 char *pcb_concat(const char *first, ...)
 {
-	char *rv;
-	int len;
+	gds_t buf;
 	va_list a;
-#warning TODO: rewrite this with gds
-	len = strlen(first);
-	rv = (char *) malloc(len + 1);
-	strcpy(rv, first);
+	const char *s;
 
+	gds_init(&buf);
 	va_start(a, first);
-	while (1) {
-		const char *s = va_arg(a, const char *);
-		if (!s)
-			break;
-		len += strlen(s);
-		rv = (char *) realloc(rv, len + 1);
-		strcat(rv, s);
-	}
+	for(s = first; s != NULL; s = va_arg(a, const char *))
+		gds_append_str(&buf, s);
 	va_end(a);
-	return rv;
+	return buf.array;
 }
 
 pcb_coord_t pcb_get_num(char **s, const char *default_unit)
