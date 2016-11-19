@@ -52,6 +52,10 @@ pcb_pin_t *pcb_element_pin_new(pcb_element_t *Element, pcb_coord_t X, pcb_coord_
 void pcb_add_via(pcb_data_t *Data, pcb_pin_t *Via);
 void pcb_pin_bbox(pcb_pin_t *Pin);
 
+void pcb_via_rotate(pcb_data_t *Data, pcb_pin_t *Via, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
+
+
+
 pcb_bool pcb_pin_change_hole(pcb_pin_t *Via);
 
 /* This is the extents of a Pin or Via, depending on whether it's a

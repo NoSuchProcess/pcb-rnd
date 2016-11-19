@@ -35,6 +35,7 @@
 #include "compat_nls.h"
 #include "compat_misc.h"
 #include "stub_vendor.h"
+#include "rotate.h"
 
 #include "obj_pinvia.h"
 #include "obj_pinvia_op.h"
@@ -227,6 +228,14 @@ void pcb_pin_bbox(pcb_pin_t *Pin)
 	Pin->BoundingBox.X2 = Pin->X + width;
 	Pin->BoundingBox.Y2 = Pin->Y + width;
 	pcb_close_box(&Pin->BoundingBox);
+}
+
+void pcb_via_rotate(pcb_data_t *Data, pcb_pin_t *Via, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina)
+{
+	pcb_r_delete_entry(Data->via_tree, (pcb_box_t *) Via);
+	pcb_rotate(&Via->X, &Via->Y, X, Y, cosa, sina);
+	pcb_pin_bbox(Via);
+	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) Via, 0);
 }
 
 

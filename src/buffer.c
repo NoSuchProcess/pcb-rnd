@@ -286,10 +286,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	/* rotate vias */
 	PCB_VIA_LOOP(Buffer->Data);
 	{
-		pcb_r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
-		pcb_rotate(&via->X, &via->Y, Buffer->X, Buffer->Y, cosa, sina);
-		pcb_pin_bbox(via);
-		pcb_r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
+		pcb_via_rotate(Buffer->Data, via, Buffer->X, Buffer->Y, cosa, sina);
 	}
 	PCB_END_LOOP;
 
