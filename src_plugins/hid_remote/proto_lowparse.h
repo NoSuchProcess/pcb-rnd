@@ -150,6 +150,9 @@ static parse_res_t parse_char(proto_ctx_t *ctx, int c)
 			if (c == '\n') {
 				if (ctx->tcurr != NULL) /* unbalanced: newline before enough closes */
 					return -1;
+				if (ctx->pcmd_next >= 16) /* command name too long */
+					return -1;
+				ctx->pcmd[ctx->pcmd_next++] = '\0';
 				ctx->pst = PST_MSG;
 				return PRES_GOT_MSG;
 			}
