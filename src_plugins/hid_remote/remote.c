@@ -124,7 +124,7 @@ static void remote_invalidate_all(void)
 static int remote_set_layer(const char *name, int idx, int empty)
 {
 	proto_send_set_layer(name, idx, empty);
-	return 0;
+	return 1; /* do draw */
 }
 
 typedef struct {
