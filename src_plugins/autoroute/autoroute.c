@@ -75,13 +75,12 @@
 #include "pcb-printf.h"
 #include "layer.h"
 #include "compat_nls.h"
+#include "vtptr.h"
 #include "obj_all.h"
 
 #include "obj_line_draw.h"
 #include "obj_pinvia_draw.h"
 
-#warning TODO: remove this in favor of vtptr
-#include "ptrlist.h"
 
 /* #defines to enable some debugging output */
 /*
@@ -583,13 +582,13 @@ static inline pcb_bool point_in_shrunk_box(const routebox_t * box, pcb_coord_t X
  * routedata initialization functions.
  */
 
-static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb_bool is_via, pcb_route_style_t * style)
+static routebox_t *AddPin(vtptr_t layergroupboxes[], pcb_pin_t *pin, pcb_bool is_via, pcb_route_style_t * style)
 {
 	routebox_t **rbpp, *lastrb = NULL;
 	int i, ht;
 	/* a pin cuts through every layer group */
 	for (i = 0; i < pcb_max_group; i++) {
-		rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[i]);
+		rbpp = (routebox_t **)vtptr_alloc_append(&layergroupboxes[i], 1);
 		*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
 		memset((void *) *rbpp, 0, sizeof(**rbpp));
 		(*rbpp)->group = i;
@@ -625,14 +624,14 @@ static routebox_t *AddPin(PointerListType layergroupboxes[], pcb_pin_t *pin, pcb
 	return lastrb;
 }
 
-static routebox_t *AddPad(PointerListType layergroupboxes[], pcb_element_t *element, pcb_pad_t *pad, pcb_route_style_t * style)
+static routebox_t *AddPad(vtptr_t layergroupboxes[], pcb_element_t *element, pcb_pad_t *pad, pcb_route_style_t * style)
 {
 	pcb_coord_t halfthick;
 	routebox_t **rbpp;
 	int layergroup = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? back : front);
 	assert(0 <= layergroup && layergroup < pcb_max_group);
 	assert(PCB->LayerGroups.Number[layergroup] > 0);
-	rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[layergroup]);
+	rbpp = (routebox_t **) vtptr_alloc_append(&layergroupboxes[layergroup], 1);
 	assert(rbpp);
 	*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
 	assert(*rbpp);
@@ -659,7 +658,7 @@ static routebox_t *AddPad(PointerListType layergroupboxes[], pcb_element_t *elem
 	return *rbpp;
 }
 
-static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, pcb_line_t *line,
+static routebox_t *AddLine(vtptr_t layergroupboxes[], int layergroup, pcb_line_t *line,
 													 pcb_line_t *ptr, pcb_route_style_t * style)
 {
 	routebox_t **rbpp;
@@ -667,7 +666,7 @@ static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, pc
 	assert(0 <= layergroup && layergroup < pcb_max_group);
 	assert(PCB->LayerGroups.Number[layergroup] > 0);
 
-	rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[layergroup]);
+	rbpp = (routebox_t **) vtptr_alloc_append(&layergroupboxes[layergroup], 1);
 	*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
 	memset(*rbpp, 0, sizeof(**rbpp));
 	(*rbpp)->group = layergroup;
@@ -700,7 +699,7 @@ static routebox_t *AddLine(PointerListType layergroupboxes[], int layergroup, pc
 	return *rbpp;
 }
 
-static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
+static routebox_t *AddIrregularObstacle(vtptr_t layergroupboxes[],
 																				pcb_coord_t X1, pcb_coord_t Y1,
 																				pcb_coord_t X2, pcb_coord_t Y2, pcb_cardinal_t layergroup, void *parent, pcb_route_style_t * style)
 {
@@ -711,7 +710,7 @@ static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
 	assert(0 <= layergroup && layergroup < pcb_max_group);
 	assert(PCB->LayerGroups.Number[layergroup] > 0);
 
-	rbpp = (routebox_t **) GetPointerMemory(&layergroupboxes[layergroup]);
+	rbpp = (routebox_t **) vtptr_alloc_append(&layergroupboxes[layergroup], 1);
 	*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
 	memset(*rbpp, 0, sizeof(**rbpp));
 	(*rbpp)->group = layergroup;
@@ -726,7 +725,7 @@ static routebox_t *AddIrregularObstacle(PointerListType layergroupboxes[],
 	return *rbpp;
 }
 
-static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t layer, pcb_polygon_t *polygon, pcb_route_style_t * style)
+static routebox_t *AddPolygon(vtptr_t layergroupboxes[], pcb_cardinal_t layer, pcb_polygon_t *polygon, pcb_route_style_t * style)
 {
 	int is_not_rectangle = 1;
 	int layergroup = GetLayerGroupNumberByNumber(layer);
@@ -757,14 +756,14 @@ static routebox_t *AddPolygon(PointerListType layergroupboxes[], pcb_cardinal_t 
 	return rb;
 }
 
-static void AddText(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, pcb_text_t *text, pcb_route_style_t * style)
+static void AddText(vtptr_t layergroupboxes[], pcb_cardinal_t layergroup, pcb_text_t *text, pcb_route_style_t * style)
 {
 	AddIrregularObstacle(layergroupboxes,
 											 text->BoundingBox.X1, text->BoundingBox.Y1,
 											 text->BoundingBox.X2, text->BoundingBox.Y2, layergroup, text, style);
 }
 
-static routebox_t *AddArc(PointerListType layergroupboxes[], pcb_cardinal_t layergroup, pcb_arc_t *arc, pcb_route_style_t * style)
+static routebox_t *AddArc(vtptr_t layergroupboxes[], pcb_cardinal_t layergroup, pcb_arc_t *arc, pcb_route_style_t * style)
 {
 	return AddIrregularObstacle(layergroupboxes,
 															arc->BoundingBox.X1, arc->BoundingBox.Y1,
@@ -851,7 +850,7 @@ static void DumpRouteBox(routebox_t * rb)
 static routedata_t *CreateRouteData()
 {
 	pcb_netlist_list_t Nets;
-	PointerListType layergroupboxes[PCB_MAX_LAYER];
+	vtptr_t layergroupboxes[PCB_MAX_LAYER];
 	pcb_box_t bbox;
 	routedata_t *rd;
 	int group, i;
@@ -912,11 +911,9 @@ static routedata_t *CreateRouteData()
 		rd->styles[i] = style;
 	}
 
-	/* initialize pointerlisttype */
+	/* initialize pointer vectors */
 	for (i = 0; i < pcb_max_group; i++) {
-		layergroupboxes[i].Ptr = NULL;
-		layergroupboxes[i].PtrN = 0;
-		layergroupboxes[i].PtrMax = 0;
+		vtptr_init(&layergroupboxes[i]);
 		GROUP_LOOP(PCB->Data, i);
 		{
 			if (linelist_length(&layer->Line) || arclist_length(&layer->Arc))
@@ -1127,7 +1124,7 @@ static routedata_t *CreateRouteData()
 	/* create r-trees from pointer lists */
 	for (i = 0; i < pcb_max_group; i++) {
 		/* create the r-tree */
-		rd->layergrouptree[i] = pcb_r_create_tree((const pcb_box_t **) layergroupboxes[i].Ptr, layergroupboxes[i].PtrN, 1);
+		rd->layergrouptree[i] = pcb_r_create_tree((const pcb_box_t **) layergroupboxes[i].array, vtptr_len(&layergroupboxes[i]), 1);
 	}
 
 	if (AutoRouteParameters.use_vias) {
@@ -1136,18 +1133,18 @@ static routedata_t *CreateRouteData()
 		/* create "empty-space" structures for via placement (now that we know
 		 * appropriate clearances for all the fixed elements) */
 		for (i = 0; i < pcb_max_group; i++) {
-			POINTER_LOOP(&layergroupboxes[i]);
-			{
+			int ip;
+			for(ip = 0; ip < vtptr_len(&layergroupboxes[i]); ip++) {
+				void **ptr = &layergroupboxes[i].array[ip];
 				routebox_t *rb = (routebox_t *) * ptr;
 				if (!rb->flags.clear_poly)
 					mtspace_add(rd->mtspace, &rb->box, FIXED, rb->style->Clearance);
 			}
-			PCB_END_LOOP;
 		}
 	}
 	/* free pointer lists */
 	for (i = 0; i < pcb_max_group; i++)
-		FreePointerListMemory(&layergroupboxes[i]);
+		vtptr_uninit(&layergroupboxes[i]);
 	/* done! */
 	return rd;
 }
