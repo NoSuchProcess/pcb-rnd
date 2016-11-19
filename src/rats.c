@@ -45,11 +45,8 @@
 #include "compat_misc.h"
 #include "netlist.h"
 #include "compat_nls.h"
-
+#include "vtptr.h"
 #include "obj_rat_draw.h"
-
-#warning TODO: remove this in favor of vtptr
-#include "ptrlist.h"
 
 #define STEP_POINT 100
 
@@ -312,12 +309,15 @@ static void TransferNet(pcb_netlist_t *Netl, pcb_net_t *SourceNet, pcb_net_t *De
 static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 {
 	pcb_bool newone, warn = pcb_false;
-	PointerListTypePtr generic = (PointerListTypePtr) calloc(1, sizeof(PointerListType));
+	int i;
+	vtptr_t generic;
 	/* the first connection was starting point so
 	 * the menu is always non-null
 	 */
-	void **menu = GetPointerMemory(generic);
+	void **menu;
 
+	vtptr_init(&generic);
+	menu = vtptr_alloc_append(&generic, 1);
 	*menu = theNet;
 	PCB_PIN_ALL_LOOP(PCB->Data);
 	{
@@ -332,16 +332,15 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 				continue;
 			}
 			newone = pcb_true;
-			POINTER_LOOP(generic);
-			{
-				if (*ptr == pin->Spare) {
+			for(i = 0; i < vtptr_len(&generic); i++) {
+				if (generic.array[i] == pin->Spare) {
 					newone = pcb_false;
 					break;
 				}
 			}
-			PCB_END_LOOP;
+
 			if (newone) {
-				menu = GetPointerMemory(generic);
+				menu = vtptr_alloc_append(&generic, 1);
 				*menu = pin->Spare;
 				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((pcb_lib_menu_t *) (pin->Spare))->Name[2]);
@@ -363,16 +362,15 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 				continue;
 			}
 			newone = pcb_true;
-			POINTER_LOOP(generic);
-			{
-				if (*ptr == pad->Spare) {
+			for(i = 0; i < vtptr_len(&generic); i++) {
+				if (generic.array[i] == pad->Spare) {
 					newone = pcb_false;
 					break;
 				}
 			}
-			PCB_END_LOOP;
+
 			if (newone) {
-				menu = GetPointerMemory(generic);
+				menu = vtptr_alloc_append(&generic, 1);
 				*menu = pad->Spare;
 				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((pcb_lib_menu_t *) (pad->Spare))->Name[2]);
@@ -381,8 +379,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 		}
 	}
 	PCB_ENDALL_LOOP;
-	FreePointerListMemory(generic);
-	free(generic);
+	vtptr_uninit(&generic);
 	return (warn);
 }
 

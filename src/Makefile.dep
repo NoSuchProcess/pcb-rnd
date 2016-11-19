@@ -1703,17 +1703,63 @@
  rats_patch.h plug_io.h
 ../src_plugins/import_hyp/hyp_l.o: ../src_plugins/import_hyp/hyp_l.c \
  ../src_plugins/import_hyp/hyp_y.h ../src_plugins/import_hyp/parser.h \
- pcb_bool.h
+ pcb_bool.h board.h ../config.h const.h macro.h global_typedefs.h \
+ pcb_bool.h unit.h vtroutestyle.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h attrib.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genlist/gendlist.h \
+ flag.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h board.h \
+ font.h box.h math_helper.h move.h misc_util.h
 ../src_plugins/import_hyp/hyp_y.o: ../src_plugins/import_hyp/hyp_y.c \
- ../src_plugins/import_hyp/parser.h pcb_bool.h
+ ../src_plugins/import_hyp/parser.h pcb_bool.h board.h ../config.h \
+ const.h macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h attrib.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genlist/gendlist.h \
+ flag.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h board.h \
+ font.h box.h math_helper.h move.h misc_util.h
 ../src_plugins/import_hyp/import_hyp.o: \
  ../src_plugins/import_hyp/import_hyp.c ../config.h action_helper.h \
  global_typedefs.h pcb_bool.h unit.h compat_nls.h hid.h error.h drc.h \
  attrib.h hid_draw_helpers.h hid_nogui.h hid_actions.h hid.h hid_init.h \
  hid_attrib.h hid_helper.h plugins.h ../src_plugins/import_hyp/parser.h \
- pcb_bool.h dolists.h
+ pcb_bool.h board.h const.h macro.h vtroutestyle.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genlist/gendlist.h \
+ flag.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h board.h \
+ font.h box.h math_helper.h move.h misc_util.h dolists.h
 ../src_plugins/import_hyp/parser.o: ../src_plugins/import_hyp/parser.c \
- ../src_plugins/import_hyp/parser.h pcb_bool.h \
+ ../src_plugins/import_hyp/parser.h pcb_bool.h board.h ../config.h \
+ const.h macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h attrib.h \
+ obj_all_list.h obj_arc_list.h obj_common.h ../src_3rd/genlist/gendlist.h \
+ flag.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h ht_element.h \
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
+ ../src_3rd/liblihata/genht/hash.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h board.h \
+ font.h box.h math_helper.h move.h misc_util.h \
  ../src_plugins/import_hyp/hyp_l.h ../src_plugins/import_hyp/hyp_y.h \
  error.h
 ../src_plugins/import_netlist/import_netlist.o: \
@@ -3793,7 +3839,7 @@ rats.o: rats.c ../config.h conf_core.h conf.h global_typedefs.h \
  misc_util.h data.h crosshair.h rubberband.h vtonpoint.h hid.h error.h \
  drc.h buffer.h draw.h find.h polygon.h rtree.h rats.h netlist.h \
  route_style.h search.h undo.h stub_mincut.h compat_misc.h compat_nls.h \
- obj_rat_draw.h ptrlist.h
+ vtptr.h obj_rat_draw.h
 rats_act.o: rats_act.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
