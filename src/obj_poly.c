@@ -128,6 +128,18 @@ void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, uns
 	pcb_box_rotate90(&Polygon->BoundingBox, X, Y, Number);
 }
 
+void pcb_poly_rotate(pcb_layer_t *layer, pcb_polygon_t *polygon, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina)
+{
+	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
+	PCB_POLY_POINT_LOOP(polygon);
+	{
+		pcb_rotate(&point->X, &point->Y, X, Y, cosa, sina);
+	}
+	PCB_END_LOOP;
+	pcb_poly_bbox(polygon);
+	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+}
+
 
 /* sets the bounding box of a polygons */
 void pcb_poly_bbox(pcb_polygon_t *Polygon)

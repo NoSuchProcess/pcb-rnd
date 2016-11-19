@@ -62,6 +62,8 @@ pcb_polygon_t *pcb_poly_hole_new(pcb_polygon_t * Polygon);
 void *pcb_poly_remove(pcb_layer_t *Layer, pcb_polygon_t *Polygon);
 
 void pcb_poly_rotate90(pcb_polygon_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
+void pcb_poly_rotate(pcb_layer_t *layer, pcb_polygon_t *poly, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
+
 void pcb_poly_move(pcb_polygon_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
 pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src);
 

@@ -311,14 +311,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	/* FIXME: rotate text */
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
-		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
-		PCB_POLY_POINT_LOOP(polygon);
-		{
-			pcb_rotate(&point->X, &point->Y, Buffer->X, Buffer->Y, cosa, sina);
-		}
-		PCB_END_LOOP;
-		pcb_poly_bbox(polygon);
-		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+		pcb_poly_rotate(layer, polygon, Buffer->X, Buffer->Y, cosa, sina);
 	}
 	PCB_ENDALL_LOOP;
 
