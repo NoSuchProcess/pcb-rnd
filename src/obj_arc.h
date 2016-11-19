@@ -56,6 +56,8 @@ void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);
 /*** Utility ***/
 void pcb_arc_bbox(pcb_arc_t *Arc);
 void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
+void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle);
+
 
 pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc);
 void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);

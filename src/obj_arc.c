@@ -540,6 +540,14 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 	pcb_box_rotate90(&Arc->BoundingBox, X, Y, Number);
 }
 
+void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
+{
+	pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
+	pcb_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
+	arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
+	pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+}
+
 /* rotates an arc */
 void *RotateArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
