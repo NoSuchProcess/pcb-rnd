@@ -119,7 +119,7 @@ int proto_send_make_gc(void)
 	if (gcs == NULL)
 		return -1;
 	gci = atoi(gcs);
-	printf("New GC: %s\n", gcs);
+/*	printf("New GC: %s\n", gcs);*/
 	proto_node_free(targ);
 	return gci;
 }
