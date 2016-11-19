@@ -49,7 +49,7 @@
  compat_misc.h compat_nls.h data.h crosshair.h rubberband.h vtonpoint.h \
  hid.h error.h drc.h buffer.h draw.h error.h layer.h intersect.h rtree.h \
  macro.h move.h rats.h netlist.h route_style.h remove.h rotate.h \
- obj_pinvia.h obj_rat.h ptrlist.h
+ obj_pinvia.h obj_rat.h  
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
  ../config.h ../src_plugins/autoroute/autoroute.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
@@ -89,7 +89,7 @@
  ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h \
  polygon.h rtree.h rats.h netlist.h route_style.h remove.h \
  obj_pinvia_therm.h undo.h pcb-printf.h layer.h compat_nls.h obj_all.h \
- obj_line_draw.h obj_pinvia_draw.h ptrlist.h
+ obj_line_draw.h obj_pinvia_draw.h  
 ../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
  ../config.h box.h math_helper.h global_typedefs.h pcb_bool.h unit.h \
  macro.h move.h obj_common.h ../src_3rd/genlist/gendlist.h flag.h \
@@ -3817,8 +3817,6 @@ polygon_act.o: polygon_act.c ../config.h conf_core.h conf.h \
  drc.h buffer.h action_helper.h undo.h funchash_core.h funchash.h \
  funchash_core_list.h polygon.h rtree.h draw.h search.h rats.h netlist.h \
  route_style.h compat_nls.h
-ptrlist.o: ptrlist.c global_typedefs.h ../config.h pcb_bool.h unit.h \
- ptrlist.h
 rats.o: rats.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \

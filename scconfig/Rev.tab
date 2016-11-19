@@ -1,3 +1,4 @@
+5108	configure	cleanup: remove old pointer list and use genvt
 5019	configure	unravel - remove set.[ch]
 4616	configure	unravel - the big cleanup, moving code
 4904	make clean,configure	unravel2 - regenerate action registration because regiestrator function name changed
