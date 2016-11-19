@@ -183,6 +183,11 @@ struct hid_s {
 	   punches through everything. */
 	unsigned holes_after:1;
 
+	/* lesstif allows positive AND negative drawing in HID_MASK_CLEAR.
+	   gtk only allows negative drawing.
+	   using the mask is to get rat transparency */
+	unsigned can_mask_clear_rats:1;
+
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are

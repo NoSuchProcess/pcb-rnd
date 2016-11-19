@@ -417,17 +417,14 @@ static void DrawMask(int side, const pcb_box_t * screen)
 static void DrawRats(const pcb_box_t * drawn_area)
 {
 	/*
-	 * XXX lesstif allows positive AND negative drawing in HID_MASK_CLEAR.
-	 * XXX gtk only allows negative drawing.
-	 * XXX using the mask here is to get rat transparency
+	 * lesstif allows positive AND negative drawing in HID_MASK_CLEAR.
+	 * gtk only allows negative drawing.
+	 * using the mask here is to get rat transparency
 	 */
-#warning TODO: make this a pcb_hid_t struct item instead
-	int can_mask = strcmp(pcb_gui->name, "lesstif") == 0;
-
-	if (can_mask)
+	if (pcb_gui->can_mask_clear_rats)
 		pcb_gui->use_mask(HID_MASK_CLEAR);
 	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, draw_rat_callback, NULL, NULL);
-	if (can_mask)
+	if (pcb_gui->can_mask_clear_rats)
 		pcb_gui->use_mask(HID_MASK_OFF);
 }
 
