@@ -343,7 +343,7 @@ static char *bboard_get_model_filename(char *basename, char *value, pcb_bool nes
 */
 	s = pcb_strdup("TODO_fn1");
 	if (s != NULL) {
-		if (!FileExists(s)) {
+		if (!pcb_file_readable(s)) {
 			free(s);
 			s = NULL;
 		}
