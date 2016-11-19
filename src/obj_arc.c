@@ -218,6 +218,25 @@ void pcb_arc_free(pcb_arc_t * data)
 }
 
 
+int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t *e2, const pcb_arc_t *a2)
+{
+	if (pcb_field_neq(a1, a2, Thickness) || pcb_field_neq(a1, a2, Clearance)) return 0;
+	if (pcb_field_neq(a1, a2, Width) || pcb_field_neq(a1, a2, Height)) return 0;
+	if (pcb_element_neq_offsx(e1, a1, e2, a2, X) || pcb_element_neq_offsy(e1, a1, e2, a2, Y)) return 0;
+	if (pcb_field_neq(a1, a2, StartAngle) || pcb_field_neq(a1, a2, Delta)) return 0;
+
+	return 1;
+}
+
+unsigned int pcb_arc_hash(const pcb_element_t *e, const pcb_arc_t *a)
+{
+	return 
+		h_coord(a->Thickness) ^ h_coord(a->Clearance) ^
+		h_coord(a->Width) ^ h_coord(a->Height) ^
+		h_coordox(e, a->X) ^ h_coordoy(e, a->Y) ^
+		h_coord(a->StartAngle) ^ h_coord(a->Delta);
+}
+
 /***** operations *****/
 
 /* copies an arc to buffer */

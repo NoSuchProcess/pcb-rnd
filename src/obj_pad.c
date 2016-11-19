@@ -152,6 +152,28 @@ pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad)
 	return (pcb_true);
 }
 
+int pcb_pad_eq(const pcb_element_t *e1, const pcb_pad_t *p1, const pcb_element_t *e2, const pcb_pad_t *p2)
+{
+	if (pcb_field_neq(p1, p2, Thickness) || pcb_field_neq(p1, p2, Clearance)) return 0;
+	if (pcb_element_neq_offsx(e1, p1, e2, p2, Point1.X) || pcb_element_neq_offsy(e1, p1, e2, p2, Point1.Y)) return 0;
+	if (pcb_element_neq_offsx(e1, p1, e2, p2, Point2.X) || pcb_element_neq_offsy(e1, p1, e2, p2, Point2.Y)) return 0;
+	if (pcb_field_neq(p1, p2, Mask)) return 0;
+	if (pcb_neqs(p1->Name, p2->Name)) return 0;
+	if (pcb_neqs(p1->Number, p2->Number)) return 0;
+	return 1;
+}
+
+unsigned int pcb_pad_hash(const pcb_element_t *e, const pcb_pad_t *p)
+{
+	return
+		h_coord(p->Thickness) ^ h_coord(p->Clearance) ^
+		h_coordox(e, p->Point1.X) ^ h_coordoy(e, p->Point1.Y) ^
+		h_coordox(e, p->Point2.X) ^ h_coordoy(e, p->Point2.Y) ^
+		h_coord(p->Mask) ^
+		h_str(p->Name) ^ h_str(p->Number);
+}
+
+
 /*** ops ***/
 
 /* changes the size of a pad */

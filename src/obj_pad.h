@@ -49,6 +49,10 @@ void pcb_pad_bbox(pcb_pad_t *Pad);
 
 pcb_bool pcb_pad_change_paste(pcb_pad_t *Pad);
 
+/* hash */
+int pcb_pad_eq(const pcb_element_t *e1, const pcb_pad_t *p1, const pcb_element_t *e2, const pcb_pad_t *p2);
+unsigned int pcb_pad_hash(const pcb_element_t *e, const pcb_pad_t *p);
+
 
 /* Rather than move the line bounding box, we set it so the point bounding
  * boxes are updated too.

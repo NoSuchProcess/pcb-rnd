@@ -72,6 +72,10 @@ pcb_bool pcb_selected_element_change_side(void);
    comparing two similar footprints.  */
 int pcb_element_get_orientation(pcb_element_t * e);
 
+/* hash */
+unsigned int pcb_element_hash(const pcb_element_t *e);
+int pcb_element_eq(const pcb_element_t *e1, const pcb_element_t *e2);
+
 
 pcb_bool pcb_element_load_to_buffer(pcb_buffer_t *Buffer, const char *Name);
 int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footprint);

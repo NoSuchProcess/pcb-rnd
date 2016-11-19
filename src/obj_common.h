@@ -27,7 +27,9 @@
 #ifndef PCB_OBJ_COMMON_H
 #define PCB_OBJ_COMMON_H
 
+#include <genht/hash.h>
 #include <genlist/gendlist.h>
+#include <string.h>
 #include "flag.h"
 #include "attrib.h"
 #include "global_typedefs.h"
@@ -100,5 +102,33 @@ typedef struct {
 typedef struct {
 	PCB_ANYLINEFIELDS;
 } pcb_any_line_t;
+
+/*** Functions and macros used for hashing ***/
+
+/* compare two strings and return 0 if they are equal. NULL == NULL means equal. */
+static inline PCB_FUNC_UNUSED int pcb_neqs(const char *s1, const char *s2)
+{
+	if ((s1 == NULL) && (s2 == NULL)) return 0;
+	if ((s1 == NULL) || (s2 == NULL)) return 1;
+	return strcmp(s1, s2) != 0;
+}
+
+static inline PCB_FUNC_UNUSED unsigned h_coord(pcb_coord_t c)
+{
+	return murmurhash(&(c), sizeof(pcb_coord_t));
+}
+
+
+/* compare two fields and return 0 if they are equal */
+#define pcb_field_neq(s1, s2, f) ((s1)->f != (s2)->f)
+
+#define h_coordox(e, c) ((e) == NULL ? h_coord(c) : h_coord(c - e->MarkX))
+#define h_coordoy(e, c) ((e) == NULL ? h_coord(c) : h_coord(c - e->MarkY))
+
+#define h_str(s) ((s) == NULL ? 0 : strhash(s))
+
+#define pcb_element_offs(e,ef, s,sf) ((e == NULL) ? (s)->sf : ((s)->sf) - ((e)->ef))
+#define pcb_element_neq_offsx(e1, x1, e2, x2, f) (pcb_element_offs(e1, MarkX, x1, f) != pcb_element_offs(e2, MarkX, x2, f))
+#define pcb_element_neq_offsy(e1, y1, e2, y2, f) (pcb_element_offs(e1, MarkY, y1, f) != pcb_element_offs(e2, MarkY, y2, f))
 
 #endif

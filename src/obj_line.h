@@ -61,6 +61,11 @@ void pcb_line_bbox(pcb_line_t *Line);
 void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
 
+/* hash */
+int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element_t *e2, const pcb_line_t *l2);
+unsigned int pcb_line_hash(const pcb_element_t *e, const pcb_line_t *l);
+
+
 /*** DRC enforcement (obj_line_drcenf.c) ***/
 void pcb_line_adjust_attached(void);
 void pcb_line_adjust_attached_2lines(pcb_bool);

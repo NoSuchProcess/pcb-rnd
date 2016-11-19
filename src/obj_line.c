@@ -238,6 +238,25 @@ void pcb_line_bbox(pcb_line_t *Line)
 	pcb_set_point_bounding_box(&Line->Point2);
 }
 
+int pcb_line_eq(const pcb_element_t *e1, const pcb_line_t *l1, const pcb_element_t *e2, const pcb_line_t *l2)
+{
+	if (pcb_field_neq(l1, l2, Thickness) || pcb_field_neq(l1, l2, Clearance)) return 0;
+	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point1.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point1.Y)) return 0;
+	if (pcb_element_neq_offsx(e1, l1, e2, l2, Point2.X) || pcb_element_neq_offsy(e1, l1, e2, l2, Point2.Y)) return 0;
+	if (pcb_neqs(l1->Number, l2->Number)) return 0;
+	return 1;
+}
+
+
+unsigned int pcb_line_hash(const pcb_element_t *e, const pcb_line_t *l)
+{
+	return
+		h_coord(l->Thickness) ^ h_coord(l->Clearance) ^
+		h_coordox(e, l->Point1.X) ^ h_coordoy(e, l->Point1.Y) ^
+		h_coordox(e, l->Point2.X) ^ h_coordoy(e, l->Point2.Y) ^
+		h_str(l->Number);
+}
+
 
 
 

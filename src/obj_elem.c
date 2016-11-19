@@ -1107,6 +1107,106 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
+unsigned int pcb_element_hash(const pcb_element_t *e)
+{
+	unsigned int val = 0;
+	gdl_iterator_t it;
+
+	{
+		pcb_pin_t *p;
+		pinlist_foreach(&e->Pin, &it, p) {
+			val ^= pcb_pin_hash(e, p);
+		}
+	}
+
+	{
+		pcb_pad_t *p;
+		padlist_foreach(&e->Pad, &it, p) {
+			val ^= pcb_pad_hash(e, p);
+		}
+	}
+
+	{
+		pcb_line_t *l;
+		linelist_foreach(&e->Line, &it, l) {
+			val ^= pcb_line_hash(e, l);
+		}
+	}
+
+	{
+		pcb_arc_t *a;
+		linelist_foreach(&e->Arc, &it, a) {
+			val ^= pcb_arc_hash(e, a);
+		}
+	}
+
+	return val;
+}
+
+int pcb_element_eq(const pcb_element_t *e1, const pcb_element_t *e2)
+{
+	/* Require the same objects in the same order - bail out at the first mismatch */
+
+	{
+		pcb_pin_t *p1, *p2;
+		p1 = pinlist_first((pinlist_t *)&e1->Pin);
+		p2 = pinlist_first((pinlist_t *)&e2->Pin);
+		for(;;) {
+			if ((p1 == NULL) && (p2 == NULL))
+				break;
+			if (!pcb_pin_eq(e1, p1, e2, p2))
+				return 0;
+			p1 = pinlist_next(p1);
+			p2 = pinlist_next(p2);
+		}
+	}
+
+	{
+		pcb_pad_t *p1, *p2;
+		p1 = padlist_first((padlist_t *)&e1->Pad);
+		p2 = padlist_first((padlist_t *)&e2->Pad);
+		for(;;) {
+			if ((p1 == NULL) && (p2 == NULL))
+				break;
+			if (!pcb_pad_eq(e1, p1, e2, p2))
+				return 0;
+			p1 = padlist_next(p1);
+			p2 = padlist_next(p2);
+		}
+	}
+
+	{
+		pcb_line_t *l1, *l2;
+		l1 = linelist_first((linelist_t *)&e1->Line);
+		l2 = linelist_first((linelist_t *)&e2->Line);
+		for(;;) {
+			if ((l1 == NULL) && (l2 == NULL))
+				break;
+			if (!pcb_line_eq(e1, l1, e2, l2))
+				return 0;
+			l1 = linelist_next(l1);
+			l2 = linelist_next(l2);
+		}
+	}
+
+	{
+		pcb_arc_t *a1, *a2;
+		a1 = arclist_first((arclist_t *)&e1->Arc);
+		a2 = arclist_first((arclist_t *)&e2->Arc);
+		for(;;) {
+			if ((a1 == NULL) && (a2 == NULL))
+				break;
+			if (!pcb_arc_eq(e1, a1, e2, a2))
+				return 0;
+			a1 = arclist_next(a1);
+			a2 = arclist_next(a2);
+		}
+	}
+
+	return 1;
+}
+
+
 
 /*** ops ***/
 /* copies a element to buffer */
