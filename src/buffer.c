@@ -300,11 +300,7 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	/* all layer related objects */
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
-		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
-		pcb_rotate(&line->Point1.X, &line->Point1.Y, Buffer->X, Buffer->Y, cosa, sina);
-		pcb_rotate(&line->Point2.X, &line->Point2.Y, Buffer->X, Buffer->Y, cosa, sina);
-		pcb_line_bbox(line);
-		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
+		pcb_line_rotate(layer, line, Buffer->X, Buffer->Y, cosa, sina);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
