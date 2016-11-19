@@ -282,7 +282,6 @@ void pcb_buffer_free_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle)
 	cosa = cos(angle * M_PI / 180.0);
 	sina = sin(angle * M_PI / 180.0);
 
-#warning unravel: move these to the corresponding obj_*.[ch]
 	/* rotate vias */
 	PCB_VIA_LOOP(Buffer->Data);
 	{
