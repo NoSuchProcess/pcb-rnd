@@ -297,7 +297,7 @@ static int aint(proto_node_t *nd, int badval)
 	return l;
 }
 
-static int adbl(proto_node_t *nd, double badval)
+static double adbl(proto_node_t *nd, double badval)
 {
 	char *s = astr(nd), *end;
 	double d;
