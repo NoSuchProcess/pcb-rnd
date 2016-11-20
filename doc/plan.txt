@@ -1,6 +1,6 @@
 user manual
-	intro: what is pcb-rnd; place in the generic workflow
-	model of the world
+	1. intro: what is pcb-rnd; place in the generic workflow
+	2. model of the world
 		intro
 			real boards (terminology)
 			pcb-rnd terminology
@@ -14,11 +14,11 @@ user manual
 			polygons
 		composite objects
 			elements
-	where data is
+	3. where data is
 		board
 		paste buffers
 		footprint libraries
-	user interface
+	4. user interface (hid plugins)
 		under the hood: actions
 		gtk
 			main window
@@ -29,9 +29,10 @@ user manual
 			library dialog
 			propedit dialog
 			preferences dialog
-	invocation
+	5. invocation
 		TODO
-	plugins
+	6. feature plugins
 		autoplace
 		autoroute
 		... (TODO)
+	7. io plugins
