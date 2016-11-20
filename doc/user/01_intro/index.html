@@ -6,3 +6,20 @@
 pcb-rnd is a highly modular, interactive <i>Printed Circuit Board</i> editor
 with a <a href="history.html"> very long history </a>.
 
+
+<h3> 1.1. Place in the workflow </h3>
+<p>
+The main purpose of pcb-rnd is to edit the geometry of the board. This
+includes board shape, copper shape, layer stackup, holes drilled, slots
+routed.
+<p>
+The <b>input</b> of the layout process is usually a netlist derived from
+schematics. Pcb-rnd can read different netlist formats and it can help the
+user to realize the given netlist in copper or to change the netlist and back
+annotate the changes. Pcb-rnd, however, does not display or edit schematics
+directly.
+<p>
+The <b>output</b> is most often a vector format, e.g. gerber, that is sent
+to a fab house to get the board manufactured. Pcb-rnd supports a variety
+of vector and raster output formats making it easy to print boards, publish
+them on web pages, include them in documentation.
