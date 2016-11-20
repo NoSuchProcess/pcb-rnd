@@ -2575,7 +2575,6 @@ static void dxf_write_header_metric_new()
 static void dxf_write_header()
 {
 	FILE *f_temp;
-	char *temp = NULL;
 	static char *dxf_header_filename;
 
 
@@ -2592,12 +2591,14 @@ static void dxf_write_header()
 	 * read-only  */
 	f_temp = fopen(dxf_header_filename, "r");
 	if (f_temp) {
+		char buff[1024];
 		/* do until EOF of the template file:
 		 * copy line by line from template file (f_temp) to
 		 * destination file (fp) */
 		while (!feof(f_temp)) {
-			fscanf(f_temp, "%s", temp);
-			fprintf(fp, "%s", temp);
+			int len = fread(buff, 1, sizeof(buff), f_temp);
+			if (len > 0)
+				fwrite(buff, 1, len, fp);
 		}
 		/* when we're done close the template file */
 		fclose(f_temp);
