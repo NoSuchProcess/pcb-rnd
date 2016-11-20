@@ -1,0 +1,49 @@
+digraph flow {
+	rankdir=LR
+
+	subgraph in {
+		rank=same
+		sch   [label="schematics editor\ne.g. gschem"]
+	}
+
+	subgraph edit {
+		rank=same
+		pcb   [label="pcb-rnd" shape=octagon width=2 height=2]
+		lib   [lable="local footprint\nlibrary"]
+		wlib  [lable="remote footprint\nlibrary (e.g. on the web)" color=grey fontcolor=grey]
+	}
+
+
+	subgraph out {
+		rank=same
+		fab   [label="fab house"]
+		tt    [label="etching at home:\ntoner transfer"]
+		web   [label="web page"]
+		doc   [label="printed\ndocumentation"]
+	}
+
+	subgraph edit {
+		rank=same
+		kicad [label="collaboration with\nsomeone using kicad" color=grey fontcolor=grey]
+		gpcb  [label="collaboration with\nsomeone using gEDA/PCB" color=grey fontcolor=grey]
+	}
+
+
+	sch -> pcb [label="fwd annotation"]
+	pcb -> sch [label="back annotation" color=grey fontcolor=grey]
+	pcb -> fab [label="e.g. gerber, bom, xy"]
+	pcb -> tt  [label="e.g. ps or png"]
+	pcb -> web [label="e.g. svg"]
+	pcb -> doc [label="e.g. ps, eps, png, jpg"]
+
+	lib -> pcb [label=".fp" dir=both weight=1000]
+
+	wlib -> pcb [label="import footprint" dir=back color=grey fontcolor=grey]
+
+	pcb -> kicad [label="kicad's\nnative format" dir=both color=grey fontcolor=grey]
+	pcb -> gpcb  [label="gEDA\nnative format" dir=both color=grey fontcolor=grey]
+
+
+#	pcb -> kicad [label="JAJJJ" weigth=1000]
+
+}
