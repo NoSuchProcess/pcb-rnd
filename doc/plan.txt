@@ -30,3 +30,7 @@ user manual
 			preferences dialog
 	invocation
 		TODO
+	plugins
+		autoplace
+		autoroute
+		... (TODO)
