@@ -1,0 +1,55 @@
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<link rel="stylesheet" type="text/css" href="../default.css">
+</head>
+<body>
+<h1> pcb-rnd - user manual </h1>
+
+<h2> 2. Model of the world  </h2>
+<p>
+pcb-rnd is designed to handle geometric data of a PCB. This section describes
+how pcb-rnd represents reality (e.g. copper shapes) in memory.
+
+<h3> 2.1. layers </h3>
+<p>
+Unlike a <i>physical layer</i>, a pcb-rnd layer has no thickness. It is a
+2 dimensional, logical canvas, similar to layers in image manipulation software
+like gimp. There are <i>explicit</i> and <i>virtual</i> layers. An explicit
+layer contains drawing primitives (objects) placed by the user. The user has
+full control over an explicit layer: objects can be added or removed or
+changed any time. A virtual layer has no such flexibility: pcb-rnd computes
+its content from explicit layers and there's no way to change the result
+directly. A layer has a type and a location.
+<p>
+Layer types are:
+<ul>
+	<li> copper for singal layers
+	<li> silk for silkscreen layers
+	<li> outline for the contour of the board and slots and cutouts
+	<li> (mask for solder masks - this is a virtual layer)
+	<li> (paste for solder paste - this is a virtual layer)
+</ul>
+<p>
+Note: pcb-rnd does not model substrate layers.
+<p>
+Layer locations are:
+<ul>
+	<li> top (used to be the "component side" in the age of thru-hole components)
+	<li> bottom (used to be the "solder side" in the age of thru-hole components)
+	<li> internal (sandiwched between other layers)
+	<li> global (affects all physical layers, thus has no specific location)
+</ul>
+<p>
+Not all combination of type and location are supported, for example an internal
+silk layer does not make much sense. The table below lists whether a
+combination is supported or not.
+<p>
+<table border=1>
+	<tr><th> &nbsp; <th> top <th> bottom <th> intern <th> global
+	<tr><th> copper <td> yes <td> yes    <td> yes    <td> no
+	<tr><th> silk   <td> yes <td> yes    <td> no     <td> no
+	<tr><th> outline<td> no  <td> no     <td> no     <td> yes
+	<tr><th> mask   <td> yes <td> yes    <td> no     <td> no
+	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no
+</table>
