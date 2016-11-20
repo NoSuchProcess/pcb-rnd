@@ -9,8 +9,8 @@ digraph flow {
 	subgraph edit {
 		rank=same
 		pcb   [label="pcb-rnd" shape=octagon width=2 height=2]
-		lib   [lable="local footprint\nlibrary"]
-		wlib  [lable="remote footprint\nlibrary (e.g. on the web)" color=grey fontcolor=grey]
+		lib   [label="local footprint\nlibrary"]
+		wlib  [label="remote footprint\nlibrary (e.g. on the web)" color=grey fontcolor=grey]
 	}
 
 
