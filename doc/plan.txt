@@ -1,0 +1,32 @@
+user manual
+	intro: what is pcb-rnd; place in the generic workflow
+	model of the world
+		intro
+			real boards (terminology)
+			pcb-rnd terminology
+			limitations
+		board, global properties
+		layer groups and layers
+		atomic objects
+			lines
+			arcs
+			vias
+			polygons
+		composite objects
+			elements
+	where data is
+		board
+		paste buffers
+		footprint libraries
+	user interface
+		gtk
+			main window
+			menu + keys
+			misc dialogs
+				log window
+				cli
+			library dialog
+			propedit dialog
+			preferences dialog
+	invocation
+		TODO
