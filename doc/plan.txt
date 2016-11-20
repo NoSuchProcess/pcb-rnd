@@ -39,3 +39,5 @@ user manual
 	8. appendix
 		glossary
 		full index/catalog of actions (generated)
+		full index/catalog of all plugins
+		how to build
