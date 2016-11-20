@@ -31,9 +31,10 @@ th {
 
 ul.toc {
 	list-style-type: none;
-	padding: 50px;
+	padding: 20px;
 }
 
 ul.toc li {
 	padding: 5px;
+	font-size: 120%;
 }
