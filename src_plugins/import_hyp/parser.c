@@ -38,8 +38,28 @@ double conformal_epsilon_r;    /* dielectric constant of conformal coating */
 /* Hyperlynx UNIT and OPTIONS */
 double unit;                   /* conversion factor: pcb length units to meters */
 double metal_thickness_unit;   /* conversion factor: metal thickness to meters */
+
 pcb_bool use_die_for_metal;    /* use dielectric constant and loss tangent of dielectric for metal layers */
-double plane_separation;       /* distance between PLANE polygon and copper of different nets; -1 if not set */
+pcb_coord_t plane_separation;       /* distance between PLANE polygon and copper of different nets; -1 if not set */
+
+/*
+ * Conversion from hyperlynx to pcb_coord_t - igor2
+ */
+
+/* x, y coordinates to pcb_coord_t */
+
+pcb_coord_t inline xy2coord(double f)
+{
+  return ((pcb_coord_t) PCB_MM_TO_COORD(1000.0 * unit * f));
+}
+
+/* z coordinates to pcb_coord_t */
+
+pcb_coord_t inline z2coord(double f)
+{
+  return ((pcb_coord_t) PCB_MM_TO_COORD(1000.0 * metal_thickness_unit * f));
+}
+
 
 /*
  * initialize physical constants 
@@ -59,7 +79,7 @@ void hyp_init(void)
   fr4_epsilon_r = 4.3;
   fr4_loss_tangent = 0.020;
   conformal_epsilon_r = 3.3; /* dielectric constant of conformal layer */
-  plane_separation = -1.0; /* distance between PLANE polygon and copper of different nets; -1 if not set */
+  plane_separation = -1; /* distance between PLANE polygon and copper of different nets; -1 if not set */
 
   return;
 }
@@ -167,10 +187,55 @@ pcb_bool exec_units(parse_param *h)
   return 0;
 }
 
-pcb_bool exec_plane_sep(parse_param *h){return(0);}
-pcb_bool exec_perimeter_segment(parse_param *h){return(0);}
-pcb_bool exec_perimeter_arc(parse_param *h){return(0);}
-pcb_bool exec_board_attribute(parse_param *h){return(0);}
+/*
+ * Hyperlynx 'PLANE_SEP' record.
+ * Defines default trace to plane separation
+ */
+
+pcb_bool exec_plane_sep(parse_param *h)
+{
+  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "plane_sep: default_plane_separation = %d\n", h->plane_separation);
+
+  plane_separation = xy2coord(h->plane_separation);
+
+  return 0;
+}
+
+/*
+ * Hyperlynx 'PERIMETER_SEGMENT' subrecord of 'BOARD' record.
+ * Draws linear board outline segment.
+ */
+
+pcb_bool exec_perimeter_segment(parse_param *h)
+{
+  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "perimeter_segment: x1 = %f y1 = %f x2 = %f y2 = %f\n", h->x1, h->y1, h->x2, h->y2);
+
+  return 0;
+}
+
+/*
+ * Hyperlynx 'PERIMETER_ARC' subrecord of 'BOARD' record.
+ * Draws arc segment of board outline. Arc drawn counterclockwise.
+ */
+
+pcb_bool exec_perimeter_arc(parse_param *h)
+{
+  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "perimeter_arc: x1 = %f y1 = %f x2 = %f y2 = %f xc = %f yc = %f r = %f\n", h->x1, h->y1, h->x2, h->y2, h->xc, h->yc, h->r);
+
+  return 0;
+}
+
+/*
+ * Hyperlynx 'A' attribute subrecord of 'BOARD' record.
+ * Defines board attributes as name/value pairs.
+ */
+
+pcb_bool exec_board_attribute(parse_param *h)
+{
+  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "board_attribute: name = %s value = %s\n", h->name, h->value);
+
+  return 0;
+}
 
 pcb_bool exec_options(parse_param *h){return(0);}
 pcb_bool exec_signal(parse_param *h){return(0);}
