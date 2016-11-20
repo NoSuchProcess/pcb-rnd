@@ -19,6 +19,7 @@ user manual
 		paste buffers
 		footprint libraries
 	user interface
+		under the hood: actions
 		gtk
 			main window
 			menu + keys
