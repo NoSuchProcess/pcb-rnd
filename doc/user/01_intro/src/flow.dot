@@ -42,8 +42,4 @@ digraph flow {
 
 	pcb -> kicad [label="kicad's\nnative format" dir=both color=grey fontcolor=grey]
 	pcb -> gpcb  [label="gEDA\nnative format" dir=both color=grey fontcolor=grey]
-
-
-#	pcb -> kicad [label="JAJJJ" weigth=1000]
-
 }
