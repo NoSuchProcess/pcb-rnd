@@ -14,15 +14,17 @@ includes board shape, copper shape, layer stackup, holes drilled, slots
 routed.
 <p>
 The <b>input</b> of the layout process is usually a netlist derived from
-schematics. Pcb-rnd can read different netlist formats and it can help the
-user to realize the given netlist in copper or to change the netlist and back
-annotate the changes. Pcb-rnd, however, does not display or edit schematics
-directly.
+schematics, and occasionally layouts drawn from scratch or created from
+schematic without importable netlist. Pcb-rnd can read different netlist
+formats and it can help the user to realize the given netlist in copper or to
+change the netlist and back annotate the changes. Pcb-rnd, however, does not
+display or edit schematics directly.
 <p>
-The <b>output</b> is most often a vector format, e.g. gerber, that is sent
-to a fab house to get the board manufactured. Pcb-rnd supports a variety
-of vector and raster output formats making it easy to print boards, publish
-them on web pages, include them in documentation.
+The <b>output</b> of pcb-rnd is most often a vector format (e.g. gerber
+RS274D), that is sent to a pcb fab house for manufacturing or is utilized for
+auto-fabrication. Pcb-rnd supports a variety of vector and raster output
+formats making it easy to print boards, publish them on web pages, and include
+them in documentation.
 <p>
 The typical workflows are:
 <br>
