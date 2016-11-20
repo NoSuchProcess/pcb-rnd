@@ -278,9 +278,33 @@ static int is_str(proto_node_t *nd)
 	return (nd != NULL) && !nd->is_list;
 }
 
-static char *str(proto_node_t *nd)
+static char *astr(proto_node_t *nd)
 {
 	if ((nd != NULL) && !nd->is_list)
 		return nd->data.s.str;
 	return NULL;
+}
+
+static int aint(proto_node_t *nd, int badval)
+{
+	char *s = astr(nd), *end;
+	long int l;
+	if (s == NULL)
+		return badval;
+	l = strtol(s, &end, 10);
+	if (*end != '\0')
+		return badval;
+	return l;
+}
+
+static int adbl(proto_node_t *nd, double badval)
+{
+	char *s = astr(nd), *end;
+	double d;
+	if (s == NULL)
+		return badval;
+	d = strtod(s, &end);
+	if (*end != '\0')
+		return badval;
+	return d;
 }
