@@ -28,3 +28,12 @@ th {
 	background-color: #e0e0e0;
 	padding: 5px;
 }
+
+ul.toc {
+	list-style-type: none;
+	padding: 50px;
+}
+
+ul.toc li {
+	padding: 5px;
+}
