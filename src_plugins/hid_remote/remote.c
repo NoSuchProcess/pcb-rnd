@@ -91,6 +91,7 @@ static void remote_do_export(pcb_hid_attr_val_t * options)
 #warning TODO: wait for a connection?
 	remote_proto_send_ver();
 	remote_proto_send_unit();
+	remote_proto_send_brddim(PCB->MaxWidth, PCB->MaxHeight);
 	if (remote_proto_send_ready() != 0)
 		exit(1);
 

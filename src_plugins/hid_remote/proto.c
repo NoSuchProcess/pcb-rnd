@@ -56,6 +56,16 @@ void remote_proto_send_unit()
 	send_end(&pctx);
 }
 
+void remote_proto_send_brddim(pcb_coord_t w, pcb_coord_t h)
+{
+	send_begin(&pctx, "brddim");
+	send_open(&pctx, 0);
+	sendf(&pctx, cfmt, w);
+	sendf(&pctx, cfmt, h);
+	send_close(&pctx);
+	send_end(&pctx);
+}
+
 int remote_proto_send_ready()
 {
 	proto_node_t *targ;
