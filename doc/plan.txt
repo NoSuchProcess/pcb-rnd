@@ -36,3 +36,6 @@ user manual
 		autoroute
 		... (TODO)
 	7. io plugins
+	8. appendix
+		glossary
+		full index/catalog of actions (generated)
