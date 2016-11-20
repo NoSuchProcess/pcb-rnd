@@ -30,6 +30,14 @@ client needs to answer with a Ready() message before the server proceeds.
 Arguments: none.
 
 
+<h3> brddim(w h) </h3>
+Announce board dimensions. Some layers may extend beyond the board.
+<p>
+Arguments:
+<ul>
+	<li> w: width  (x size) in coordinate units
+	<li> h: height (y size) in coordinate units
+</ul>
 
 <h3> inval(x1 x2 y1 y2) </h3>
 Invalidate a rectangular section of the screen; the client should redraw
