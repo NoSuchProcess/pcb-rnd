@@ -41,6 +41,7 @@
 #include "data.h"
 #include "plugins.h"
 #include "pcb-printf.h"
+#include "compat_misc.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -76,6 +77,10 @@ pcb_hid_attribute_t stat_attribute_list[] = {
 	{"number of boards built", "how many actual/physical boards got built",
 	 HID_Integer, 0, 1000000, {0, 0, 0}, 0, 0},
 #define HA_built 3
+
+	{"first pcb-rnd version", "the version of pcb-rnd you first used on this board",
+	 HID_String, 0, 0, {0, VERSION, 0}, 0, 0},
+#define HA_first_ver 4
 
 };
 
@@ -144,6 +149,12 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "		built=%d\n", stat_values[HA_built].int_value);
 	fprintf(f, "		lht_built=%s\n", (stat_values[HA_lht_built].int_value ? "yes" : "no"));
 	fprintf(f, "		orig_rnd=%s\n", (stat_values[HA_orig].int_value ? "yes" : "no"));
+	fprintf(f, "		first_ver=%s\n", stat_values[HA_first_ver].str_value);
+	fprintf(f, "		curr_ver=%s\n", VERSION);
+#ifdef REVISION
+	fprintf(f, "		curr_rev=%s\n", REVISION);
+#endif
+
 	fprintf(f, "	}\n");
 
 	fprintf(f, "	li:logical_layers {\n");
