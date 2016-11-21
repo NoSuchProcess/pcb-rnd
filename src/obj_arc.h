@@ -52,7 +52,6 @@ void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc);
 void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc);
 
 
-
 /*** Utility ***/
 void pcb_arc_bbox(pcb_arc_t *Arc);
 void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
@@ -66,6 +65,11 @@ unsigned int pcb_arc_hash(const pcb_element_t *e, const pcb_arc_t *a);
 pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc);
 void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);
 void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height);
+
+pcb_coord_t pcb_arc_length(const pcb_arc_t *arc);
+pcb_coord_t pcb_arc_area(const pcb_arc_t *arc);
+
+
 
 #define	pcb_arc_move(a,dx,dy)                                     \
 	do {                                                            \

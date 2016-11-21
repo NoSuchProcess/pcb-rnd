@@ -36,6 +36,7 @@
 #include "rotate.h"
 #include "move.h"
 #include "conf_core.h"
+#include "compat_misc.h"
 
 #include "obj_arc.h"
 #include "obj_arc_op.h"
@@ -236,6 +237,21 @@ unsigned int pcb_arc_hash(const pcb_element_t *e, const pcb_arc_t *a)
 		pcb_hash_element_ox(e, a->X) ^ pcb_hash_element_oy(e, a->Y) ^
 		pcb_hash_coord(a->StartAngle) ^ pcb_hash_coord(a->Delta);
 }
+
+pcb_coord_t pcb_arc_length(const pcb_arc_t *arc)
+{
+	double da = pcb_normalize_angle(arc->Delta);
+	double r = (arc->Width + arc->Height) / 2.0; /* TODO: lame approximation */
+	return pcb_round(2.0*r*M_PI*da/360.0);
+}
+
+pcb_coord_t pcb_arc_area(const pcb_arc_t *arc)
+{
+	return
+		pcb_arc_length(arc) * arc->Thickness /* body */
+		+ arc->Thickness * arc->Thickness * M_PI; /* cap circles */
+}
+
 
 /***** operations *****/
 
