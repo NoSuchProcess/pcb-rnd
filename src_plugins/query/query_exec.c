@@ -404,6 +404,8 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_VAR:
 			assert((node->data.crd >= 0) && (node->data.crd < ctx->iter->num_vars));
 			res->type = PCBQ_VT_OBJ;
+			if (ctx->iter->it[node->data.crd] == NULL)
+				return -1;
 			res->data.obj = *ctx->iter->it[node->data.crd];
 			return 0;
 
