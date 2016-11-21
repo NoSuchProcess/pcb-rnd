@@ -14,6 +14,8 @@
 	- selection bugs:
 		- north-east to south-west selection box fails to select, if a poly or line is fully within the box
 		- selection-direction inverts on solder side?
+	- segmentation fault when using 
+	- `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug)
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -171,3 +173,5 @@ Low prio:
 - push&shove
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
 - examine current handling of long options [miloh]
+- --show-actions ends with segfault
+- --dump-actions shows gpmi paths ( is this related? it looks unexpected to me) 
