@@ -64,16 +64,16 @@ pcb_hid_attribute_t stat_attribute_list[] = {
 	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_statfile 0
 
-	{"orig_rnd", "This design started its life in pcb-rnd",
+	{"started in pcb-rnd", "This design started its life in pcb-rnd",
 	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_orig 1
 
-	{"lth_built", "This design was already in lihata when real boards got built",
+	{"built board from lht", "This design was already in lihata when real boards got built",
 	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_lht_built 2
 
 
-	{"built", "how many actual/physical boards got built",
+	{"number of boards built", "how many actual/physical boards got built",
 	 HID_Integer, 0, 1000000, {0, 0, 0}, 0, 0},
 #define HA_built 3
 
