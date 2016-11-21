@@ -1,6 +1,7 @@
 PCBRND=pcb-rnd
 
-all: ../objects_basic.png ../objects_complex.png ../obj_line.png
+all: ../objects_basic.png ../objects_complex.png ../obj_line.png \
+     ../obj_arc.png
 
 ../objects_basic.png: objects_basic.lht
 	$(PCBRND) -x png --dpi 450 objects_basic.lht
@@ -13,5 +14,9 @@ all: ../objects_basic.png ../objects_complex.png ../obj_line.png
 ../obj_line.png: obj_line.lht
 	$(PCBRND) -x png --dpi 450 obj_line.lht
 	mv obj_line.lht.png ../obj_line.png
+
+../obj_arc.png: obj_arc.lht
+	$(PCBRND) -x png --dpi 450 obj_arc.lht
+	mv obj_arc.lht.png ../obj_arc.png
 
 
