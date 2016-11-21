@@ -841,6 +841,7 @@ static int parse_styles(vtroutestyle_t *styles, lht_node_t *nd)
 		parse_coord(&s->Diameter, lht_dom_hash_get(stn, "diameter"));
 		parse_coord(&s->Hole, lht_dom_hash_get(stn, "hole"));
 		parse_coord(&s->Clearance, lht_dom_hash_get(stn, "clearance"));
+		parse_attributes(&s->attr, lht_dom_hash_get(stn, "attributes"));
 	}
 	return 0;
 }

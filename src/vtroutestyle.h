@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "unit.h"
+#include "attrib.h"
 
 /* Elem=RouteStyle; init=0 */
 
@@ -12,7 +13,7 @@ typedef struct {
 	  Hole,            /* via drill hole */
 	  Clearance;       /* min. separation from other nets */
 	char name[32];     /* fixed length name to save malloc/free */
-/*	int index;*/
+	pcb_attribute_list_t attr;
 } pcb_route_style_t;
 
 /* all public symbols are wrapped in GVT() - see vt_t(7) */

@@ -578,6 +578,7 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 		lht_dom_hash_put(sn, build_textf("diameter", CFMT, s->Diameter));
 		lht_dom_hash_put(sn, build_textf("hole", CFMT, s->Hole));
 		lht_dom_hash_put(sn, build_textf("clearance", CFMT, s->Clearance));
+		lht_dom_hash_put(sn, build_attributes(&s->attr));
 	}
 	return stl;
 }
