@@ -62,6 +62,7 @@ struct _GHidRouteStyleSelector {
 	struct _route_style *active_style;
 
 	GtkTreeIter new_iter;     /* iter for the <new> item */
+
 };
 
 struct _GHidRouteStyleSelectorClass {
@@ -100,6 +101,9 @@ struct _dialog {
 	GtkWidget *clearance_entry;
 
 	GtkWidget *select_box;
+
+	GtkWidget *attr_table;
+	GtkListStore *attr_model;
 
 	int inhibit_style_change; /* when 1, do not do anything when style changes */
 };
@@ -163,15 +167,71 @@ static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 	gtk_combo_box_set_active(GTK_COMBO_BOX(dialog->select_box), 0);
 }
 
+/***** attr table *****/
+
+static int get_sel(struct _dialog *dlg, GtkTreeIter *iter)
+{
+	GtkTreeSelection *tsel;
+	GtkTreeModel *tm;
+	GtkTreePath *path;
+	int *i;
+
+	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dlg->attr_table));
+	if (tsel == NULL)
+		return -1;
+
+	gtk_tree_selection_get_selected(tsel, &tm, iter);
+	if (iter->stamp == 0)
+		return -1;
+	path = gtk_tree_model_get_path(tm, iter);
+	if (path != NULL) {
+		i = gtk_tree_path_get_indices(path);
+		if (i != NULL)
+			return i[0];
+	}
+	return -1;
+}
+
+
+static void attr_edited_cb(GtkCellRendererText *cell, gchar *path, gchar *new_text, struct _dialog *dlg)
+{
+	GtkTreeIter iter;
+	int idx = get_sel(dlg, &iter);
+
+/*	cl->editing = 0;*/
+
+	printf("edit %d to %s!\n", idx, new_text);
+/*	gtk_list_store_set(cl->l, &iter, cl->col_data, new_text, -1);
+	rebuild(cl);*/
+}
+
+static void attr_edit_started_cb(GtkCellRendererText *cell, GtkCellEditable *e,gchar *path, struct _dialog *dlg)
+{
+/*	cl->editing = 1;*/
+}
+
+static void attr_edit_canceled_cb(GtkCellRendererText *cell, struct _dialog *dlg)
+{
+/*	cl->editing = 0;*/
+}
+
+
+/**** dialog creation ****/
+
 /* \brief Helper for edit_button_cb */
-static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkWidget ** entry, pcb_coord_t min, pcb_coord_t max)
+static void _table_attach_(GtkWidget * table, gint row, const gchar *label, GtkWidget *entry)
 {
 	GtkWidget *label_w = gtk_label_new(label);
 	gtk_misc_set_alignment(GTK_MISC(label_w), 1.0, 0.5);
-
-	*entry = ghid_coord_entry_new(min, max, 0, conf_core.editor.grid_unit, CE_SMALL);
 	gtk_table_attach(GTK_TABLE(table), label_w, 0, 1, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
-	gtk_table_attach(GTK_TABLE(table), *entry, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
+	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
+}
+
+/* \brief Helper for edit_button_cb */
+static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkWidget ** entry, pcb_coord_t min, pcb_coord_t max)
+{
+	*entry = ghid_coord_entry_new(min, max, 0, conf_core.editor.grid_unit, CE_SMALL);
+	_table_attach_(table, row, label, *entry);
 }
 
 static void add_new_iter(GHidRouteStyleSelector * rss)
@@ -239,6 +299,43 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 								&dialog_data.via_size_entry, PCB_MIN_PINORVIAHOLE + PCB_MIN_PINORVIACOPPER, PCB_MAX_PINORVIASIZE);
 	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE);
 
+	_table_attach_(table, 5, "", NULL);
+
+	/* create attrib table */
+	{
+		GType *ty;
+		GtkCellRenderer *renderer;
+		GtkTreeIter iter;
+
+		dialog_data.attr_table = gtk_tree_view_new();
+
+		ty = malloc(sizeof(GType) * 2);
+		ty[0] = G_TYPE_STRING;
+		ty[1] = G_TYPE_STRING;
+		dialog_data.attr_model = gtk_list_store_newv(2, ty);
+		free(ty);
+
+		renderer = gtk_cell_renderer_text_new();
+		g_object_set(renderer, "editable", TRUE, NULL);
+		g_signal_connect(renderer, "edited", G_CALLBACK(attr_edited_cb), &dialog_data);
+		g_signal_connect(renderer, "editing-started", G_CALLBACK(attr_edit_started_cb), &dialog_data);
+		g_signal_connect(renderer, "editing-canceled", G_CALLBACK(attr_edit_canceled_cb), &dialog_data);
+
+		gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(dialog_data.attr_table), -1, "key", renderer, "text", 0, NULL);
+		gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(dialog_data.attr_table), -1, "value", renderer, "text", 1, NULL);
+
+		gtk_list_store_append(dialog_data.attr_model, &iter);
+
+		gtk_list_store_set(dialog_data.attr_model, &iter, 0, "<new>", -1);
+		gtk_list_store_set(dialog_data.attr_model, &iter, 1, "<new>", -1);
+
+
+
+		gtk_tree_view_set_model(GTK_TREE_VIEW(dialog_data.attr_table), GTK_TREE_MODEL(dialog_data.attr_model));
+	}
+	_table_attach_(table, 6, _("Attributes:"), dialog_data.attr_table);
+
+
 	/* create delete button */
 	button = gtk_button_new_with_label (_("Delete Style"));
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(delete_button_cb), &dialog_data);
@@ -247,7 +344,6 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
 	check_box = gtk_check_button_new_with_label(_("Save route style settings as default"));
 	gtk_box_pack_start(GTK_BOX(sub_vbox), check_box, TRUE, TRUE, 0);
-
 
 	add_new_iter(rss);
 
