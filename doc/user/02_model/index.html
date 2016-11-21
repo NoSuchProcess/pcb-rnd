@@ -8,10 +8,33 @@
 
 <h2> 2. Model of the world  </h2>
 <p>
-pcb-rnd is designed to handle geometric data of a PCB. This section describes
+Pcb-rnd is designed to handle geometric data of a PCB. This section describes
 how pcb-rnd represents reality (e.g. copper shapes) in memory.
 
-<h3> 2.1. layers </h3>
+<h3> 2.1. board </h3>
+<p>
+Each design pcb-rnd handles is a board. The has global properties and hosts
+layers. Most drawing primitives (objects) are on layers. This section describes
+the most important global properties.
+<p>
+<b>Board size</b> is given as a width and a height. For rectangular boards
+this can be the real board size, but more commonly it is used to simply
+determine the on-screen drawing area and the final board dimensions are
+specified using the outline layer. If the board is not rectagnular, the
+contour must be specified on the outline layer and the board size must be
+large enough that the outline fits in it.
+<p>
+<b>Netlist</b> is the list of logical connections to be realized in copper.
+A netlist is a list of named <i>nets</i>. Each net consists of a list of
+<i>terminals</i> (pins or pads) to connect. A terminal is given as
+elementname-pinname, e.g. U4-7 means "pin number 7 in element called U4".
+<p>
+<b>Font</b>, which is always embedded in the design file to guarantee
+that the file can be ported and will look the same on different hosts.
+<p>
+Misc editor settings, such as grid size and offset.
+
+<h3> 2.2. layers </h3>
 <p>
 Unlike a <i>physical layer</i>, a pcb-rnd layer has no thickness. It is a
 2 dimensional, logical canvas, similar to layers in image manipulation software
@@ -54,7 +77,7 @@ combination is supported or not.
 	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no
 </table>
 
-<h3> 2.2. layer groups </h3>
+<h3> 2.3. layer groups </h3>
 <p>
 One or more explicit layers form a <i>layer group</i>. All pcb-rnd layers
 of a layer group will end up on the same physical layer. The visibility of
