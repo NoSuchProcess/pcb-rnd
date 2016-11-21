@@ -139,28 +139,62 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "		orig_rnd=%s\n", (stat_values[HA_orig].int_value ? "yes" : "no"));
 	fprintf(f, "	}\n");
 
-	fprintf(f, "	li:copper_layers {\n");
+	fprintf(f, "	li:logical_layers {\n");
 	for(lid = 0; lid < pcb_max_copper_layer; lid++) {
 		pcb_layer_t *l = PCB->Data->Layer+lid;
 		int empty = IsLayerEmpty(l);
 		lgid = GetLayerGroupNumberByNumber(lid);
-		lgs = &lgss[lgid];
-		memset(&ls, 0, sizeof(ls));
+		lgs = lgss + lgid;
 
 		fprintf(f, "		ha:layer_%d {\n", lid);
 		fprintf(f, "			name={%s}\n", l->Name);
 		fprintf(f, "			empty=%s\n", empty ? "yes" : "no");
-		fprintf(f, "		}\n");
+		fprintf(f, "			grp=%d\n", lgid);
+
+		memset(&ls, 0, sizeof(ls));
+
+		PCB_LINE_LOOP(l) {
+			lgs->lines++;
+			ls.lines++;
+		}
+		PCB_END_LOOP;
+
+		PCB_ARC_LOOP(l) {
+			lgs->arcs++;
+			ls.arcs++;
+		}
+		PCB_END_LOOP;
+
+		PCB_POLY_LOOP(l) {
+			lgs->polys++;
+			ls.polys++;
+		}
+		PCB_END_LOOP;
 
 		if (!empty)
 			group_not_empty[lgid] = 1;
+
+		fprintf(f, "			lines=%lu\n", ls.lines);
+		fprintf(f, "			arcs=%lu\n",  ls.arcs);
+		fprintf(f, "			polys=%lu\n", ls.polys);
+
+		fprintf(f, "		}\n");
 	}
 	fprintf(f, "	}\n");
 
 	phg = 0;
-	for(lgid = 0; lgid < pcb_max_copper_layer; lgid++)
-		if (group_not_empty[lgid])
+	fprintf(f, "	li:physical_layers {\n");
+	for(lgid = 0; lgid < pcb_max_copper_layer; lgid++) {
+		if (group_not_empty[lgid]) {
 			phg++;
+			fprintf(f, "		ha:layergroup_%d {\n", lgid);
+			fprintf(f, "			lines=%lu\n", lgss[lgid].lines);
+			fprintf(f, "			arcs=%lu\n",  lgss[lgid].arcs);
+			fprintf(f, "			polys=%lu\n", lgss[lgid].polys);
+			fprintf(f, "		}\n");
+		}
+	}
+	fprintf(f, "	}\n");
 
 	fprintf(f, "	ha:board {\n");
 	pcb_fprintf(f, "		width=%$mm\n", PCB->MaxWidth);
