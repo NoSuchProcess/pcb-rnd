@@ -70,17 +70,24 @@ int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char 
 	return 0;
 }
 
+int pcb_attribute_remove_idx(pcb_attribute_list_t * list, int idx)
+{
+	int j;
+	free(list->List[idx].name);
+	free(list->List[idx].value);
+	for (j = idx; j < list->Number-1; j++)
+		list->List[j] = list->List[j + 1];
+	list->Number--;
+	return 0;
+}
+
 int pcb_attribute_remove(pcb_attribute_list_t * list, const char *name)
 {
-	int i, j, found = 0;
+	int i, found = 0;
 	for (i = 0; i < list->Number; i++)
 		if (strcmp(name, list->List[i].name) == 0) {
-			free(list->List[i].name);
-			free(list->List[i].value);
 			found++;
-			for (j = i; j < list->Number - i; j++)
-				list->List[j] = list->List[j + 1];
-			list->Number--;
+			pcb_attribute_remove_idx(list, i);
 		}
 	return found;
 }

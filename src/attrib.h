@@ -57,6 +57,9 @@ int pcb_attribute_remove(pcb_attribute_list_t * list, const char *name);
 /* Simplistic version of Remove.  */
 #define pcb_attrib_remove(OBJ, name) pcb_attribute_remove(&(OBJ->Attributes), name)
 
+/* remove item by index - WARNING: no checks are made, idx has to be valid! */
+int pcb_attribute_remove_idx(pcb_attribute_list_t * list, int idx);
+
 /* Frees memory used by an attribute list */
 void pcb_attribute_free(pcb_attribute_list_t *list);
 
