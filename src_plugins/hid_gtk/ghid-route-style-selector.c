@@ -106,6 +106,7 @@ struct _dialog {
 	GtkListStore *attr_model;
 
 	int inhibit_style_change; /* when 1, do not do anything when style changes */
+	int attr_editing; /* set to 1 when an attribute key or value text is being edited */
 };
 
 /* Rebuild the gtk table for attribute list from style */
@@ -190,8 +191,9 @@ static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 
 /***** attr table *****/
 
-static int get_sel(struct _dialog *dlg, GtkTreeIter *iter)
+static int get_sel(struct _dialog *dlg)
 {
+	GtkTreeIter iter;
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
 	GtkTreePath *path;
@@ -201,39 +203,76 @@ static int get_sel(struct _dialog *dlg, GtkTreeIter *iter)
 	if (tsel == NULL)
 		return -1;
 
-	gtk_tree_selection_get_selected(tsel, &tm, iter);
-	if (iter->stamp == 0)
+	gtk_tree_selection_get_selected(tsel, &tm, &iter);
+	if (iter.stamp == 0)
 		return -1;
-	path = gtk_tree_model_get_path(tm, iter);
+
+	path = gtk_tree_model_get_path(tm, &iter);
 	if (path != NULL) {
 		i = gtk_tree_path_get_indices(path);
-		if (i != NULL)
+		if (i != NULL) {
+/*			gtk_tree_model_get(GTK_TREE_MODEL(dlg->attr_model), &iter, 0, nkey, 1, nval, -1);*/
 			return i[0];
+		}
 	}
 	return -1;
 }
 
 
-static void attr_edited_cb(GtkCellRendererText *cell, gchar *path, gchar *new_text, struct _dialog *dlg)
+static void attr_edited(int col, GtkCellRendererText *cell, gchar *path, gchar *new_text, struct _dialog *dlg)
 {
 	GtkTreeIter iter;
-	int idx = get_sel(dlg, &iter);
+	struct _route_style *style;
+	int idx = get_sel(dlg);
 
-/*	cl->editing = 0;*/
+	dlg->attr_editing = 0;
 
-	printf("edit %d to %s!\n", idx, new_text);
-/*	gtk_list_store_set(cl->l, &iter, cl->col_data, new_text, -1);
-	rebuild(cl);*/
+	gtk_combo_box_get_active_iter(GTK_COMBO_BOX(dlg->select_box), &iter);
+	gtk_tree_model_get(GTK_TREE_MODEL(dlg->rss->model), &iter, DATA_COL, &style, -1);
+
+	if (style == NULL)
+		return;
+
+	if (idx >= style->rst->attr.Number) { /* add new */
+		if (col == 0)
+			pcb_attribute_put(&style->rst->attr, new_text, "n/a", 0);
+		else
+			pcb_attribute_put(&style->rst->attr, "n/a", new_text, 0);
+	}
+	else { /* overwrite existing */
+		char **dest;
+		if (col == 0)
+			dest = &style->rst->attr.List[idx].name;
+		else
+			dest = &style->rst->attr.List[idx].value;
+		if (*dest != NULL)
+			free(*dest);
+		*dest = pcb_strdup(new_text);
+	}
+
+	/* rebuild the table to keep it in sync - expensive, but it happens rarely */
+	update_attrib(dlg, style);
 }
+
+static void attr_edited_key_cb(GtkCellRendererText *cell, gchar *path, gchar *new_text, struct _dialog *dlg)
+{
+	attr_edited(0, cell, path, new_text, dlg);
+}
+
+static void attr_edited_val_cb(GtkCellRendererText *cell, gchar *path, gchar *new_text, struct _dialog *dlg)
+{
+	attr_edited(1, cell, path, new_text, dlg);
+}
+
 
 static void attr_edit_started_cb(GtkCellRendererText *cell, GtkCellEditable *e,gchar *path, struct _dialog *dlg)
 {
-/*	cl->editing = 1;*/
+	dlg->attr_editing = 1;
 }
 
 static void attr_edit_canceled_cb(GtkCellRendererText *cell, struct _dialog *dlg)
 {
-/*	cl->editing = 0;*/
+	dlg->attr_editing = 0;
 }
 
 
@@ -337,11 +376,17 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 		renderer = gtk_cell_renderer_text_new();
 		g_object_set(renderer, "editable", TRUE, NULL);
-		g_signal_connect(renderer, "edited", G_CALLBACK(attr_edited_cb), &dialog_data);
+		g_signal_connect(renderer, "edited", G_CALLBACK(attr_edited_key_cb), &dialog_data);
 		g_signal_connect(renderer, "editing-started", G_CALLBACK(attr_edit_started_cb), &dialog_data);
 		g_signal_connect(renderer, "editing-canceled", G_CALLBACK(attr_edit_canceled_cb), &dialog_data);
-
 		gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(dialog_data.attr_table), -1, "key", renderer, "text", 0, NULL);
+
+
+		renderer = gtk_cell_renderer_text_new();
+		g_object_set(renderer, "editable", TRUE, NULL);
+		g_signal_connect(renderer, "edited", G_CALLBACK(attr_edited_val_cb), &dialog_data);
+		g_signal_connect(renderer, "editing-started", G_CALLBACK(attr_edit_started_cb), &dialog_data);
+		g_signal_connect(renderer, "editing-canceled", G_CALLBACK(attr_edit_canceled_cb), &dialog_data);
 		gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(dialog_data.attr_table), -1, "value", renderer, "text", 1, NULL);
 
 
