@@ -53,3 +53,14 @@ combination is supported or not.
 	<tr><th> mask   <td> yes <td> yes    <td> no     <td> no
 	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no
 </table>
+
+<h3> 2.2. layer groups </h3>
+<p>
+One or more explicit layers form a <i>layer group</i>. All pcb-rnd layers
+of a layer group will end up on the same physical layer. The visibility of
+layers in a layer group are toggled together. The main use of layer groups
+is to exploit that layers have different drawing color on screen: there
+can be a signal and a gnd layers with different color in the same layer group,
+on the same physical layer.
+
+
