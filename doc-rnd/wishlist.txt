@@ -1,24 +1,23 @@
 Active user wishes:
 	W1: cschem [Chris]
-	*W2: proper primitives [Chris]
-	*W3: more generic footprints [Chris, Evan]
+	W2: (BLOCKED: lihata testing) proper primitives [Chris]
+	W3: (BLOCKED: lihata testing) more generic footprints [Chris, Evan]
 	W4: user doc [Miloh]
-	*W5: 3d modeller export [Miloh, Evan]
-	W6: GUI access to object attributes: gtk editor, find/select by attrib [James]
-	W7: programmable drc (star grounding) [James]
-	W8: gl support [Erich, Evan]
+	W5: (BLOCKED: lihata testing) 3d modeller export [Miloh, Evan]
+	W7: (BLOCKED: lihata testing) programmable drc (star grounding) [James]
+	W8: (BLOCKED: need resources) gl support [Erich, Evan]
 	W9: push & shove [Erich, Evan]
 
-(Items marked with * are blocked until the lihata board format collects
-enough mileage.)
+User wishes fulfilled:
+	W6:  GUI access to object attributes: gtk editor, find/select by attrib [James]
 
 Plan (parallel threads of development):
 
 	A. file format and model
 		Steps:
-			1. lihata persistency
-			2. native lihata file format
-			3. extend the file format
+			1. (done) lihata persistency
+			2. (done) native lihata file format
+			3. (done) extend the file format
 				- everything should have an attribute hash -> W6
 				- footprints should have optional attachments (e.g. 3d models) -> W5
 		This helps us testing out the persistent-lihata idea that'd be
@@ -27,9 +26,9 @@ Plan (parallel threads of development):
 
 	B. visible attribute support
 		Steps:
-			1. GTK dialog box for attribute edition
-			2. search & select should work by attribute
-			3. extend the routing style system to auto-add attributes
+			1. (done) GTK dialog box for attribute edition
+			2. (done) search & select should work by attribute
+			3. (done) extend the routing style system to auto-add attributes
 			   (this needs A., the new file format)
 		Allows the user to manage properties like "50 ohm net" in attributes,
 		to group objects by property, and to select them by property. -> W6
