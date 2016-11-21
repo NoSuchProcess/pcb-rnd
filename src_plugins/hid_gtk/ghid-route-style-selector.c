@@ -275,6 +275,38 @@ static void attr_edit_canceled_cb(GtkCellRendererText *cell, struct _dialog *dlg
 	dlg->attr_editing = 0;
 }
 
+static gboolean attr_key_release_cb(GtkWidget *widget, GdkEventKey *event, struct _dialog *dlg)
+{
+	unsigned short int kv = event->keyval;
+
+	if (dlg->attr_editing)
+		return FALSE;
+
+	switch(kv) {
+#ifdef GDK_KEY_KP_Delete
+		case GDK_KEY_KP_Delete:
+#endif
+#ifdef GDK_KEY_Delete
+		case GDK_KEY_Delete:
+#endif
+		case 'd': 
+			{
+				int idx = get_sel(dlg);
+				GtkTreeIter iter;
+				struct _route_style *style;
+				gtk_combo_box_get_active_iter(GTK_COMBO_BOX(dlg->select_box), &iter);
+				gtk_tree_model_get(GTK_TREE_MODEL(dlg->rss->model), &iter, DATA_COL, &style, -1);
+				if (style == NULL)
+					return;
+				if ((idx >= 0) && (idx < style->rst->attr.Number)) {
+					pcb_attribute_remove_idx(&style->rst->attr, idx);
+					update_attrib(dlg, style);
+				}
+			}
+			break;
+	}
+	return FALSE;
+}
 
 /**** dialog creation ****/
 
@@ -389,8 +421,9 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		g_signal_connect(renderer, "editing-canceled", G_CALLBACK(attr_edit_canceled_cb), &dialog_data);
 		gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(dialog_data.attr_table), -1, "value", renderer, "text", 1, NULL);
 
-
 		gtk_tree_view_set_model(GTK_TREE_VIEW(dialog_data.attr_table), GTK_TREE_MODEL(dialog_data.attr_model));
+		g_signal_connect(G_OBJECT(dialog_data.attr_table), "key-release-event", G_CALLBACK(attr_key_release_cb), &dialog_data);
+
 	}
 	_table_attach_(table, 6, _("Attributes:"), dialog_data.attr_table);
 
