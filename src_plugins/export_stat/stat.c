@@ -68,9 +68,15 @@ pcb_hid_attribute_t stat_attribute_list[] = {
 	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_orig 1
 
+	{"lth_built", "This design was already in lihata when real boards got built",
+	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_lht_built 2
+
+
 	{"built", "how many actual/physical boards got built",
 	 HID_Integer, 0, 1000000, {0, 0, 0}, 0, 0},
-#define HA_built 2
+#define HA_built 3
+
 };
 
 #define NUM_OPTIONS (sizeof(stat_attribute_list)/sizeof(stat_attribute_list[0]))
@@ -136,6 +142,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "	ha:meta {\n");
 	fprintf(f, "		date=%s\n", buff);
 	fprintf(f, "		built=%d\n", stat_values[HA_built].int_value);
+	fprintf(f, "		lht_built=%s\n", (stat_values[HA_lht_built].int_value ? "yes" : "no"));
 	fprintf(f, "		orig_rnd=%s\n", (stat_values[HA_orig].int_value ? "yes" : "no"));
 	fprintf(f, "	}\n");
 
