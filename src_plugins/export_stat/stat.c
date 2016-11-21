@@ -105,7 +105,7 @@ static pcb_hid_attribute_t *stat_get_export_options(int *n)
 
 typedef struct layer_stat_s {
 	pcb_coord_t trace_len;
-	pcb_coord_t copper_area;
+	double copper_area;
 	unsigned long int lines, arcs, polys, elements;
 } layer_stat_t;
 
@@ -199,8 +199,12 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		PCB_END_LOOP;
 
 		PCB_POLY_LOOP(l) {
+			double v;
 			lgs->polys++;
 			ls.polys++;
+			v = pcb_poly_area(polygon);
+			ls.copper_area += v;
+			lgs->copper_area += v;
 		}
 		PCB_END_LOOP;
 
