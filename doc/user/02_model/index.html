@@ -86,6 +86,40 @@ is to exploit that layers have different drawing color on screen: there
 can be a signal and a gnd layers with different color in the same layer group,
 on the same physical layer.
 
+<h3> 2.4. Basic drawing objects </h3>
+<p>
+Pcb-rnd supports a small number of basic drawing objects, from which complex
+objects can be build. The following figure demonstrates all basic objects:
+<p>
+<img src="objects_basic.png">
+<p>
+
+<h4> 2.4.1. Lines </h4>
+<p>
+Lines are round ended straight line segments with a width and
+a clearance. The above image shows 3 lines connected. Lines are mainly
+used to construct traces. A line is always on a specific layer. The user
+interface allows drawing lines aligned to 90 or 45 degree axes or
+lines with random angle.
+<p>
+A line is specified by its two endpoints, width and clearance:
+<p>
+<img src="obj_line.png">
+<p>
+A <i>clearance</i> is the gap between a line and the sorrunding polygon
+in the same layer group. The gap is made only if the sorrunding polygon has
+the "clearpoly" flag set and the line has the "clearline" flag set. If either
+of these flags is not set, no gap is made - or in pcb-rnd terminology,
+the line is joined to the polygon.
+
+<h4> 2.4.2. Arcs </h4>
+Arcs are round ended circular arcs with trace width and clearance. They
+behave like lines in all respects.
+
+<h4> 2.4.3. Polygons </h4>
+
+
+
 
 
 <h3> 2.x. comparison of terms </h3>
