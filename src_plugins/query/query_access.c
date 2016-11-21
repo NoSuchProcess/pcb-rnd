@@ -677,7 +677,7 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 	if (fh1 == query_fields_a) {
 		const char *s2;
-		fld2str_req(s2, fld, 0);
+		fld2str_req(s2, fld, 1);
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ))
 			PCB_QRY_RET_INV(res);
 		PCB_QRY_RET_STR(res, pcb_attribute_get(&obj->data.anyobj->Attributes, s2));
