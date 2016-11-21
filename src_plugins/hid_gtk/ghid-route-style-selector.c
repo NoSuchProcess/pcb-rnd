@@ -108,6 +108,25 @@ struct _dialog {
 	int inhibit_style_change; /* when 1, do not do anything when style changes */
 };
 
+/* Rebuild the gtk table for attribute list from style */
+static void update_attrib(struct _dialog *dialog, struct _route_style *style)
+{
+	GtkTreeIter iter;
+	int i;
+
+	gtk_list_store_clear(dialog->attr_model);
+
+	for(i = 0; i < style->rst->attr.Number; i++) {
+		gtk_list_store_append(dialog->attr_model, &iter);
+		gtk_list_store_set(dialog->attr_model, &iter, 0, style->rst->attr.List[i].name, -1);
+		gtk_list_store_set(dialog->attr_model, &iter, 1, style->rst->attr.List[i].value, -1);
+	}
+
+	gtk_list_store_append(dialog->attr_model, &iter);
+	gtk_list_store_set(dialog->attr_model, &iter, 0, "<new>", -1);
+	gtk_list_store_set(dialog->attr_model, &iter, 1, "<new>", -1);
+}
+
 /*! \brief Callback for dialog box's combobox being changed
  *  \par Function Description
  *  When a different layer is selected, this function loads
@@ -146,22 +165,7 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 	else
 		dialog->rss->selected = style->rst - PCB->RouteStyle.array;
 
-	{ /* update the attribute list */
-		GtkTreeIter iter;
-		int i;
-
-		gtk_list_store_clear(dialog->attr_model);
-
-		for(i = 0; i < style->rst->attr.Number; i++) {
-			gtk_list_store_append(dialog->attr_model, &iter);
-			gtk_list_store_set(dialog->attr_model, &iter, 0, style->rst->attr.List[i].name, -1);
-			gtk_list_store_set(dialog->attr_model, &iter, 1, style->rst->attr.List[i].value, -1);
-
-		}
-		gtk_list_store_append(dialog->attr_model, &iter);
-		gtk_list_store_set(dialog->attr_model, &iter, 0, "<new>", -1);
-		gtk_list_store_set(dialog->attr_model, &iter, 1, "<new>", -1);
-	}
+	update_attrib(dialog, style);
 }
 
 /*  Callback for Delete route style button */
