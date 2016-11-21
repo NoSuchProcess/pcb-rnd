@@ -97,3 +97,12 @@ void pcb_attribute_free(pcb_attribute_list_t *list)
 	list->List = NULL;
 	list->Max = 0;
 }
+
+void pcb_attribute_copy_all(pcb_attribute_list_t *dest, pcb_attribute_list_t *src, int replace)
+{
+	int i;
+
+	for (i = 0; i < src->Number; i++)
+		pcb_attribute_put(dest, src->List[i].name, src->List[i].value, replace);
+}
+
