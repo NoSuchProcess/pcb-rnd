@@ -60,6 +60,7 @@ plugin_def("export_openscad", "openscad pcb_exporter",         sdisable, 0)
 plugin_def("export_dsn",      "specctra .dsn pcb_exporter",    sdisable, 0)
 plugin_def("export_ipcd356",  "IPC-D-356 Netlist pcb_exporter",sdisable, 0)
 plugin_def("export_svg",      "SVG pcb_exporter",              sbuildin, 1)
+plugin_def("export_stat",     "exporter board statistics",     sbuildin, 1)
 
 plugin_header("\nIO plugins (file formats):\n")
 plugin_def("io_lihata",       "lihata board format",       sbuildin, 1)

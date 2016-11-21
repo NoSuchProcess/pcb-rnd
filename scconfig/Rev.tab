@@ -1,3 +1,4 @@
+5199	configure	new export plugin: export_stat
 5108	configure	cleanup: remove old pointer list and use genvt
 5019	configure	unravel - remove set.[ch]
 4616	configure	unravel - the big cleanup, moving code

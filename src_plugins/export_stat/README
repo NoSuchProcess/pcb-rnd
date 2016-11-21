@@ -1,0 +1,5 @@
+Export various board statistics in lihata format
+
+#state: works
+#default: buildin
+#implements: export

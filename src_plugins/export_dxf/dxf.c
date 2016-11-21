@@ -208,6 +208,8 @@ typedef struct _StringList {
 } StringList;
 
 
+void d1() {}
+
 /*!
  * \brief List with pcb element header data.
  */
@@ -4513,6 +4515,7 @@ static int dxf_set_layer(const char *name, int group) {
 		}
 		strcpy(dxf_filesuffix, pcb_layer_type_to_file_name(idx, PCB_FNS_first));
 		strcat(dxf_filesuffix, sext);
+printf("SET LAYER: %s\n", dxf_filename);
 		fp = fopen(dxf_filename, "w");
 		if (fp == NULL) {
 			pcb_message(PCB_MSG_ERROR, "DXF: could not open %s for writing.\n", dxf_filename);
@@ -4839,6 +4842,7 @@ static void dxf_draw_rect(pcb_hid_gc_t gc,
 	 * return if no valid file pointer exists.
 	 */
 	if (!fp) {
+		d1();
 		fprintf(stderr, "Warning: no valid file pointer exists.\n");
 		return;
 	}
@@ -5027,6 +5031,7 @@ static void dxf_draw_line(pcb_hid_gc_t gc,
 	m = pcb_false;
 	if (!fp) {
 		/* return if no valid file pointer exists */
+		d1();
 		fprintf(stderr, "Warning: no valid file pointer exists.\n");
 		return;
 	}
@@ -5338,6 +5343,7 @@ static void dxf_draw_arc(pcb_hid_gc_t gc,
 #endif
 	if (!fp) {
 		/* return if no valid file pointer exists */
+		d1();
 		fprintf(stderr, "Warning: no valid file pointer exists.\n");
 		return;
 	}
@@ -5606,6 +5612,7 @@ static void dxf_fill_circle(pcb_hid_gc_t gc,
 	 * return if no valid file pointer exists.
 	 */
 	if (!fp) {
+		d1();
 		fprintf(stderr, "Warning: no valid file pointer exists.\n");
 		return;
 	}
@@ -5711,6 +5718,8 @@ static void dxf_fill_polygon(pcb_hid_gc_t gc,
 	 * return if no valid file pointer exists.
 	 */
 	if (!fp) {
+		d1();
+
 		fprintf(stderr, "Warning: no valid file pointer exists.\n");
 		return;
 	}
@@ -5812,6 +5821,8 @@ static void dxf_fill_rect(pcb_hid_gc_t gc,
 	 * return if no valid file pointer exists.
 	 */
 	if (!fp) {
+		d1();
+
 		fprintf(stderr, "Warning: no valid file pointer exists.\n");
 		return;
 	}
