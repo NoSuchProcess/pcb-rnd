@@ -63,7 +63,7 @@ pcb_hid_attribute_t stat_attribute_list[] = {
 	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_statfile 0
 
-	{"orig", "This design started its life in pcb-rnd",
+	{"orig_rnd", "This design started its life in pcb-rnd",
 	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_orig 1
 
@@ -120,8 +120,10 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	strftime(buff, sizeof(buff), "%y-%d-%m %H:%M:%S", localtime(&t));
 
 	fprintf(f, "ha:pcb-rnd-board-stats-v1 {\n");
-	fprintf(f, "	ha:generation {\n");
+	fprintf(f, "	ha:meta {\n");
 	fprintf(f, "		date=%s\n", buff);
+	fprintf(f, "		built=%d\n", stat_values[HA_built].int_value);
+	fprintf(f, "		orig_rnd=%s\n", (stat_values[HA_orig].int_value ? "yes" : "no"));
 	fprintf(f, "	}\n");
 	fprintf(f, "	ha:board {\n");
 	pcb_fprintf(f, "		width=%$mm\n", PCB->MaxWidth);
