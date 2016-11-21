@@ -145,6 +145,23 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 		dialog->rss->selected = -1;
 	else
 		dialog->rss->selected = style->rst - PCB->RouteStyle.array;
+
+	{ /* update the attribute list */
+		GtkTreeIter iter;
+		int i;
+
+		gtk_list_store_clear(dialog->attr_model);
+
+		for(i = 0; i < style->rst->attr.Number; i++) {
+			gtk_list_store_append(dialog->attr_model, &iter);
+			gtk_list_store_set(dialog->attr_model, &iter, 0, style->rst->attr.List[i].name, -1);
+			gtk_list_store_set(dialog->attr_model, &iter, 1, style->rst->attr.List[i].value, -1);
+
+		}
+		gtk_list_store_append(dialog->attr_model, &iter);
+		gtk_list_store_set(dialog->attr_model, &iter, 0, "<new>", -1);
+		gtk_list_store_set(dialog->attr_model, &iter, 1, "<new>", -1);
+	}
 }
 
 /*  Callback for Delete route style button */
@@ -305,7 +322,6 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	{
 		GType *ty;
 		GtkCellRenderer *renderer;
-		GtkTreeIter iter;
 
 		dialog_data.attr_table = gtk_tree_view_new();
 
@@ -324,12 +340,6 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(dialog_data.attr_table), -1, "key", renderer, "text", 0, NULL);
 		gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(dialog_data.attr_table), -1, "value", renderer, "text", 1, NULL);
 
-		gtk_list_store_append(dialog_data.attr_model, &iter);
-
-		gtk_list_store_set(dialog_data.attr_model, &iter, 0, "<new>", -1);
-		gtk_list_store_set(dialog_data.attr_model, &iter, 1, "<new>", -1);
-
-
 
 		gtk_tree_view_set_model(GTK_TREE_VIEW(dialog_data.attr_table), GTK_TREE_MODEL(dialog_data.attr_model));
 	}
@@ -339,7 +349,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	/* create delete button */
 	button = gtk_button_new_with_label (_("Delete Style"));
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(delete_button_cb), &dialog_data);
-	gtk_box_pack_start(GTK_BOX(vbox), button , TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), button , TRUE, FALSE, 0);
 
 	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
 	check_box = gtk_check_button_new_with_label(_("Save route style settings as default"));
