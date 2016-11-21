@@ -21,6 +21,7 @@
 	- ind: symbol height is not in-line on the output
 	- ind: indentation bug in via and netlists
 	- ind: indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
+	- ind: style attribute members in a fresh save
 	- keep numeric format: test all
 	- keep unknown subtrees
 
