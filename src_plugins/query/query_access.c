@@ -34,7 +34,7 @@
 #define APPEND(_ctx_, _type_, _obj_, _parenttype_, _parent_) \
 do { \
 	pcb_objlist_t *lst = (pcb_objlist_t *)_ctx_; \
-	pcb_obj_t *o = malloc(sizeof(pcb_obj_t)); \
+	pcb_obj_t *o = calloc(sizeof(pcb_obj_t), 1); \
 	o->type = _type_; \
 	o->data.any = _obj_; \
 	o->parent_type = _parenttype_; \
