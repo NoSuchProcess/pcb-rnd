@@ -105,7 +105,7 @@ static pcb_hid_attribute_t *stat_get_export_options(int *n)
 
 typedef struct layer_stat_s {
 	pcb_coord_t trace_len;
-	double copper_area; /* in mm^2 */
+	pcb_coord_t copper_area;
 	unsigned long int lines, arcs, polys, elements;
 } layer_stat_t;
 
@@ -172,14 +172,29 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		memset(&ls, 0, sizeof(ls));
 
 		PCB_LINE_LOOP(l) {
+			pcb_coord_t v;
 			lgs->lines++;
 			ls.lines++;
+			v = pcb_line_length(line);
+			ls.trace_len += v;
+			lgs->trace_len += v;
+			v = pcb_line_area(line);
+			ls.copper_area += v;
+			lgs->copper_area += v;
+			
 		}
 		PCB_END_LOOP;
 
 		PCB_ARC_LOOP(l) {
+			pcb_coord_t v;
 			lgs->arcs++;
 			ls.arcs++;
+			v = pcb_arc_length(arc);
+			ls.trace_len += v;
+			lgs->trace_len += v;
+			v = pcb_arc_area(arc);
+			ls.copper_area += v;
+			lgs->copper_area += v;
 		}
 		PCB_END_LOOP;
 
@@ -195,6 +210,8 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		fprintf(f, "			lines=%lu\n", ls.lines);
 		fprintf(f, "			arcs=%lu\n",  ls.arcs);
 		fprintf(f, "			polys=%lu\n", ls.polys);
+		pcb_fprintf(f, "			trace_len=%$mm\n", ls.trace_len);
+		fprintf(f, "			copper_area={%f mm^2}\n", (double)ls.copper_area / (double)PCB_MM_TO_COORD(1) / (double)PCB_MM_TO_COORD(1));
 
 		fprintf(f, "		}\n");
 	}
@@ -209,6 +226,8 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 			fprintf(f, "			lines=%lu\n", lgss[lgid].lines);
 			fprintf(f, "			arcs=%lu\n",  lgss[lgid].arcs);
 			fprintf(f, "			polys=%lu\n", lgss[lgid].polys);
+			pcb_fprintf(f, "			trace_len=%$mm\n", lgss[lgid].trace_len);
+			fprintf(f, "			copper_area={%f mm^2}\n", (double)lgss[lgid].copper_area / (double)PCB_MM_TO_COORD(1) / (double)PCB_MM_TO_COORD(1));
 			fprintf(f, "		}\n");
 		}
 	}
