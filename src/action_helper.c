@@ -601,6 +601,7 @@ void pcb_notify_mode(void)
 			if ((via = pcb_via_new(PCB->Data, Note.X, Note.Y,
 															conf_core.design.via_thickness, 2 * conf_core.design.clearance,
 															0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
+				pcb_obj_add_attribs(via, PCB->pen_attr);
 				pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
 				if (pcb_gui->shift_is_pressed())
 					pcb_chg_obj_thermal(PCB_TYPE_VIA, via, via, via, PCB->ThermStyle);
@@ -662,6 +663,7 @@ void pcb_notify_mode(void)
 																												pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) {
 						pcb_box_t *bx;
 
+						pcb_obj_add_attribs(arc, PCB->pen_attr);
 						bx = pcb_arc_get_ends(arc);
 						pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = bx->X2;
 						pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = bx->Y2;
@@ -807,6 +809,7 @@ void pcb_notify_mode(void)
 				pcb_pin_t *via;
 
 				pcb_added_lines++;
+				pcb_obj_add_attribs(line, PCB->pen_attr);
 				pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
 				DrawLine(CURRENT, line);
 				/* place a via if vias are visible, the layer is
@@ -825,6 +828,7 @@ void pcb_notify_mode(void)
 														 pcb_crosshair.AttachedLine.Point1.Y,
 														 conf_core.design.via_thickness,
 														 2 * conf_core.design.clearance, 0, conf_core.design.via_drilling_hole, NULL, pcb_no_flags())) != NULL) {
+					pcb_obj_add_attribs(via, PCB->pen_attr);
 					pcb_undo_add_obj_to_create(PCB_TYPE_VIA, via, via, via);
 					DrawVia(via);
 				}
@@ -845,6 +849,7 @@ void pcb_notify_mode(void)
 																		 pcb_flag_make((conf_core.editor.auto_drc ? PCB_FLAG_FOUND : 0) |
 																							 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 				pcb_added_lines++;
+				pcb_obj_add_attribs(line, PCB->pen_attr);
 				pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
 				pcb_undo_inc_serial();
 				DrawLine(CURRENT, line);
@@ -888,6 +893,7 @@ void pcb_notify_mode(void)
 																									 pcb_crosshair.AttachedBox.Point1.Y,
 																									 pcb_crosshair.AttachedBox.Point2.X,
 																									 pcb_crosshair.AttachedBox.Point2.Y, pcb_flag_make(flags))) != NULL) {
+				pcb_obj_add_attribs(polygon, PCB->pen_attr);
 				pcb_undo_add_obj_to_create(PCB_TYPE_POLYGON, CURRENT, polygon, polygon);
 				pcb_undo_inc_serial();
 				DrawPolygon(CURRENT, polygon);
