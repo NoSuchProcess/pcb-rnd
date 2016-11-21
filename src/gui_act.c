@@ -1124,6 +1124,7 @@ static void set_same_(pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole,
 		if (Clearance != 0) { pcb_custom_route_style.Clearance = Clearance; conf_set_design("design/clearance", "%$mS", Clearance); }
 		if (Diameter != 0)  { pcb_custom_route_style.Diameter  = Diameter;  conf_set_design("design/via_thickness", "%$mS", Diameter); }
 		if (Hole != 0)      { pcb_custom_route_style.Hole      = Hole;      conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
+		PCB->pen_attr = NULL;
 	}
 	else
 		pcb_use_route_style_idx(&PCB->RouteStyle, known);

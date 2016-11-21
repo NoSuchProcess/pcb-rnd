@@ -34,7 +34,6 @@
 #include "attrib.h"
 #include "global_typedefs.h"
 
-
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */
 	pcb_coord_t X, Y, X2, Y2;   /* so Point type can be cast as pcb_box_t */
@@ -66,6 +65,8 @@ extern pcb_bool pcb_create_being_lenient;
 void pcb_create_ID_bump(int min_id);
 void pcb_create_ID_reset(void);
 long int pcb_create_ID_get(void);
+
+void pcb_obj_add_attribs(void *obj, pcb_attribute_list_t *src);
 
 /* ---------------------------------------------------------------------------
  * Do not change the following definitions even if they're not very

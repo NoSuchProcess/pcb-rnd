@@ -32,6 +32,7 @@
 #include "error.h"
 #include "conf.h"
 #include "misc_util.h"
+#include "board.h"
 
 pcb_route_style_t pcb_custom_route_style;
 
@@ -154,6 +155,7 @@ void pcb_use_route_style(pcb_route_style_t * rst)
 	conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
 	conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
 	conf_set_design("design/clearance", "%$mS", rst->Clearance);
+	PCB->pen_attr = &rst->attr;
 }
 
 int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx)

@@ -104,6 +104,9 @@ struct pcb_board_s {
 
 	pcb_bool is_footprint;						/* If set, the user has loaded a footprint, not a pcb. */
 
+	const pcb_attribute_list_t *pen_attr;
+
+
 /* netlist states */
 	int netlist_frozen;                /* counter */
 	unsigned netlist_needs_update:1;

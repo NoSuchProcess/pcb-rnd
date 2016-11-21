@@ -32,6 +32,7 @@
 #include "global_typedefs.h"
 #include "const.h"
 #include "error.h"
+#include "obj_common.h"
 
 
 /* returns a pointer to an objects bounding box;
@@ -89,4 +90,10 @@ void pcb_create_ID_reset(void)
 long int pcb_create_ID_get(void)
 {
 	return ID++;
+}
+
+void pcb_obj_add_attribs(void *obj, pcb_attribute_list_t *src)
+{
+	pcb_any_obj_t *o = obj;
+	pcb_attribute_copy_all(&o->Attributes, src, 0);
 }
