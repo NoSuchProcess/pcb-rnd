@@ -258,6 +258,19 @@ unsigned int pcb_line_hash(const pcb_element_t *e, const pcb_line_t *l)
 }
 
 
+pcb_coord_t pcb_line_length(const pcb_line_t *line)
+{
+	pcb_coord_t dx = line->Point1.X - line->Point2.X;
+	pcb_coord_t dy = line->Point1.Y - line->Point2.Y;
+	return pcb_round(sqrt(dx*dx + dy*dy));
+}
+
+pcb_coord_t pcb_line_area(const pcb_line_t *line)
+{
+	return
+		pcb_line_length(line) * line->Thickness /* body */
+		+ line->Thickness * line->Thickness * M_PI; /* cap circles */
+}
 
 
 /*** ops ***/
