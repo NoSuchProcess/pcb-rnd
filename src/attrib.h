@@ -61,6 +61,6 @@ int pcb_attribute_remove(pcb_attribute_list_t * list, const char *name);
 void pcb_attribute_free(pcb_attribute_list_t *list);
 
 /* Copy eacg attribute from src to dest */
-void pcb_attribute_copy_all(pcb_attribute_list_t *dest, pcb_attribute_list_t *src, int replace);
+void pcb_attribute_copy_all(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src, int replace);
 
 #endif

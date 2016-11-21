@@ -92,7 +92,7 @@ long int pcb_create_ID_get(void)
 	return ID++;
 }
 
-void pcb_obj_add_attribs(void *obj, pcb_attribute_list_t *src)
+void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src)
 {
 	pcb_any_obj_t *o = obj;
 	pcb_attribute_copy_all(&o->Attributes, src, 0);

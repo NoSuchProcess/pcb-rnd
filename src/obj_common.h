@@ -66,7 +66,7 @@ void pcb_create_ID_bump(int min_id);
 void pcb_create_ID_reset(void);
 long int pcb_create_ID_get(void);
 
-void pcb_obj_add_attribs(void *obj, pcb_attribute_list_t *src);
+void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
 
 /* ---------------------------------------------------------------------------
  * Do not change the following definitions even if they're not very
