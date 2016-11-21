@@ -38,6 +38,7 @@
 
 #include "math_helper.h"
 #include "board.h"
+#include "data.h"
 #include "plugins.h"
 #include "pcb-printf.h"
 
@@ -91,13 +92,24 @@ static pcb_hid_attribute_t *stat_get_export_options(int *n)
 	return stat_attribute_list;
 }
 
+typedef struct layer_stat_s {
+	pcb_coord_t trace_len;
+	double copper_area; /* in mm^2 */
+	unsigned long int lines, arcs, polys, elements;
+} layer_stat_t;
+
 static void stat_do_export(pcb_hid_attr_val_t * options)
 {
 	FILE *f;
 	const char *filename;
-	int i;
+	int i, lid, lgid;
 	char buff[1024];
 	time_t t;
+	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYER];
+	int phg, hp, hup, group_not_empty[PCB_MAX_LAYER];
+
+	memset(lgss, 0, sizeof(lgss));
+	memset(group_not_empty, 0, sizeof(group_not_empty));
 
 	if (!options) {
 		stat_get_export_options(0);
@@ -116,6 +128,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		return;
 	}
 
+	pcb_board_count_holes(&hp, &hup, NULL);
 	t = time(NULL);
 	strftime(buff, sizeof(buff), "%y-%d-%m %H:%M:%S", localtime(&t));
 
@@ -125,10 +138,37 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "		built=%d\n", stat_values[HA_built].int_value);
 	fprintf(f, "		orig_rnd=%s\n", (stat_values[HA_orig].int_value ? "yes" : "no"));
 	fprintf(f, "	}\n");
+
+	fprintf(f, "	li:copper_layers {\n");
+	for(lid = 0; lid < pcb_max_copper_layer; lid++) {
+		pcb_layer_t *l = PCB->Data->Layer+lid;
+		int empty = IsLayerEmpty(l);
+		lgid = GetLayerGroupNumberByNumber(lid);
+		lgs = &lgss[lgid];
+		memset(&ls, 0, sizeof(ls));
+
+		fprintf(f, "		ha:layer_%d {\n", lid);
+		fprintf(f, "			name={%s}\n", l->Name);
+		fprintf(f, "			empty=%s\n", empty ? "yes" : "no");
+		fprintf(f, "		}\n");
+
+		if (!empty)
+			group_not_empty[lgid] = 1;
+	}
+	fprintf(f, "	}\n");
+
+	phg = 0;
+	for(lgid = 0; lgid < pcb_max_copper_layer; lgid++)
+		if (group_not_empty[lgid])
+			phg++;
+
 	fprintf(f, "	ha:board {\n");
 	pcb_fprintf(f, "		width=%$mm\n", PCB->MaxWidth);
 	pcb_fprintf(f, "		height=%$mm\n", PCB->MaxHeight);
 	fprintf(f, "		gross_area={%.4f mm^2}\n", (double)PCB_COORD_TO_MM(PCB->MaxWidth) * (double)PCB_COORD_TO_MM(PCB->MaxWidth));
+	fprintf(f, "		holes_plated=%d\n", hp);
+	fprintf(f, "		holes_unplated=%d\n", hup);
+	fprintf(f, "		physical_copper_layers=%d\n", phg);
 	fprintf(f, "	}\n");
 
 	fprintf(f, "}\n");
