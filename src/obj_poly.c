@@ -235,6 +235,41 @@ pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src)
 	return (Dest);
 }
 
+static double poly_area(pcb_point_t *points, pcb_cardinal_t n_points)
+{
+	double area = 0;
+	int n;
+
+	for(n = 1; n < n_points; n++)
+		area += (double)(points[n-1].X - points[n].X) * (double)(points[n-1].Y + points[n].Y);
+	area +=(double)(points[n_points-1].X - points[0].X) * (double)(points[n_points-1].Y + points[0].Y);
+
+	if (area > 0)
+		area /= 2.0;
+	else
+		area /= -2.0;
+
+	return area;
+}
+
+double pcb_poly_area(const pcb_polygon_t *poly)
+{
+	double area;
+
+	if (poly->HoleIndexN > 0) {
+		int h;
+		area = poly_area(poly->Points, poly->HoleIndex[0]);
+		for(h = 0; h < poly->HoleIndexN - 1; h++)
+			area -= poly_area(poly->Points + poly->HoleIndex[h], poly->HoleIndex[h+1] - poly->HoleIndex[h]);
+		area -= poly_area(poly->Points + poly->HoleIndex[h], poly->PointN - poly->HoleIndex[h]);
+	}
+	else
+		area = poly_area(poly->Points, poly->PointN);
+
+	return area;
+}
+
+
 
 /*** ops ***/
 /* copies a polygon to buffer */

@@ -70,6 +70,8 @@ pcb_polygon_t *pcb_poly_copy(pcb_polygon_t *Dest, pcb_polygon_t *Src);
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_polygon_on_layer(pcb_layer_t *Layer, pcb_polygon_t *polygon);
 
+double pcb_poly_area(const pcb_polygon_t *poly);
+
 #define PCB_POLY_LOOP(layer) do {                                    \
   pcb_polygon_t *polygon;                                             \
   gdl_iterator_t __it__;                                            \
