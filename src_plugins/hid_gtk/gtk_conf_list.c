@@ -193,7 +193,7 @@ static void cell_edit_canceled_cb(GtkCellRendererText *cell, gtk_conf_list_t *cl
 }
 
 /* bind a few intuitive keys so that the list can be used without mouse */
-gboolean key_release_cb(GtkWidget *widget, GdkEventKey *event, gtk_conf_list_t *cl)
+static gboolean key_release_cb(GtkWidget *widget, GdkEventKey *event, gtk_conf_list_t *cl)
 {
 	unsigned short int kv = event->keyval;
 	if (cl->editing)
