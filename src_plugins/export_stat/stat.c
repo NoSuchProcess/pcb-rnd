@@ -118,6 +118,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	time_t t;
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYER];
 	int phg, hp, hup, group_not_empty[PCB_MAX_LAYER];
+	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0;
 
 	memset(lgss, 0, sizeof(lgss));
 	memset(group_not_empty, 0, sizeof(group_not_empty));
@@ -237,6 +238,22 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	}
 	fprintf(f, "	}\n");
 
+	PCB_ELEMENT_LOOP(PCB->Data) {
+		int pal, pil;
+		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element))
+			num_ebottom++;
+		else
+			num_etop++;
+		pal = padlist_length(&element->Pad);
+		pil = pinlist_length(&element->Pin);
+		if (pal > pil)
+			num_esmd++;
+		num_epads += pal;
+		num_epins += pil;
+	}
+	PCB_END_LOOP;
+
+
 	fprintf(f, "	ha:board {\n");
 	pcb_fprintf(f, "		width=%$mm\n", PCB->MaxWidth);
 	pcb_fprintf(f, "		height=%$mm\n", PCB->MaxHeight);
@@ -244,6 +261,14 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "		holes_plated=%d\n", hp);
 	fprintf(f, "		holes_unplated=%d\n", hup);
 	fprintf(f, "		physical_copper_layers=%d\n", phg);
+	fprintf(f, "		ha:elements {\n");
+	fprintf(f, "			total=%ld\n", (long int)num_ebottom + num_etop);
+	fprintf(f, "			top_side=%ld\n", (long int)num_etop);
+	fprintf(f, "			bottom_side=%ld\n", (long int)num_ebottom);
+	fprintf(f, "			smd=%ld\n", (long int)num_esmd);
+	fprintf(f, "			pads=%ld\n", (long int)num_epads);
+	fprintf(f, "			pins=%ld\n", (long int)num_epins);
+	fprintf(f, "		}\n");
 	fprintf(f, "	}\n");
 
 	fprintf(f, "}\n");
