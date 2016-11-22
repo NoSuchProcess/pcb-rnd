@@ -391,7 +391,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 								&dialog_data.via_size_entry, PCB_MIN_PINORVIAHOLE + PCB_MIN_PINORVIACOPPER, PCB_MAX_PINORVIASIZE);
 	_table_attach(table, 4, _("Clearance:"), &dialog_data.clearance_entry, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE);
 
-	_table_attach_(table, 5, "", NULL);
+	_table_attach_(table, 5, "", gtk_label_new(""));
 
 	/* create attrib table */
 	{
