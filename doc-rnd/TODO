@@ -16,6 +16,7 @@
 		- selection-direction inverts on solder side?
 	- segmentation fault when using 
 	- `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug)
+	- extend the io_ API so that plugins can be requested to check file headers and decide if they can load the file; this would supress the pcb-related error messages when loading a lihata
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
