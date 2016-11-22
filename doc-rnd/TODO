@@ -142,6 +142,7 @@ FEATURES
 - BUILD: menuconfig and a config file for scconfig
 
 Low prio:
+- zoom in too deep onto board edge and the implicit outline rectangle behaves strangely [report:Evan]
 - scconfig: check if it picks up settings from env vars (for a gentoo build)
 - replace mkdtemp() with something safer
 - display net names on pins, vias (and maybe tracks?) when zoomed in enough
