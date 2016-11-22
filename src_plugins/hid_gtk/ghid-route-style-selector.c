@@ -297,7 +297,7 @@ static gboolean attr_key_release_cb(GtkWidget *widget, GdkEventKey *event, struc
 				gtk_combo_box_get_active_iter(GTK_COMBO_BOX(dlg->select_box), &iter);
 				gtk_tree_model_get(GTK_TREE_MODEL(dlg->rss->model), &iter, DATA_COL, &style, -1);
 				if (style == NULL)
-					return;
+					return FALSE;
 				if ((idx >= 0) && (idx < style->rst->attr.Number)) {
 					pcb_attribute_remove_idx(&style->rst->attr, idx);
 					update_attrib(dlg, style);
