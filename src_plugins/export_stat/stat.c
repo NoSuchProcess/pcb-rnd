@@ -87,6 +87,10 @@ pcb_hid_attribute_t stat_attribute_list[] = {
 	 HID_String, 0, 0, {0, VERSION, 0}, 0, 0},
 #define HA_first_ver 5
 
+	{"license", "license of the design",
+	 HID_String, 0, 0, {0, "proprietary/private", 0}, 0, 0},
+#define HA_license 6
+
 };
 
 #define NUM_OPTIONS (sizeof(stat_attribute_list)/sizeof(stat_attribute_list[0]))
@@ -278,6 +282,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 
 	fprintf(f, "	ha:board {\n");
 	fprintf(f, "		id={%s}\n", options[HA_board_id].str_value);
+	fprintf(f, "		license={%s}\n", options[HA_license].str_value);
 	fprintf(f, "		format={%s}\n", PCB->Data->loader == NULL ? "unknown" : PCB->Data->loader->description);
 	pcb_fprintf(f, "		width=%$mm\n", PCB->MaxWidth);
 	pcb_fprintf(f, "		height=%$mm\n", PCB->MaxHeight);
