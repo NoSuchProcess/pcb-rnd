@@ -117,7 +117,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	char buff[1024];
 	time_t t;
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYER];
-	int phg, hp, hup, group_not_empty[PCB_MAX_LAYER];
+	int nl, phg, hp, hup, group_not_empty[PCB_MAX_LAYER];
 	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0;
 
 	memset(lgss, 0, sizeof(lgss));
@@ -235,6 +235,20 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 			fprintf(f, "			copper_area={%f mm^2}\n", (double)lgss[lgid].copper_area / (double)PCB_MM_TO_COORD(1) / (double)PCB_MM_TO_COORD(1));
 			fprintf(f, "		}\n");
 		}
+	}
+	fprintf(f, "	}\n");
+
+	fprintf(f, "	li:netlist {\n");
+	for(nl = 0; nl < PCB_NUM_NETLISTS; nl++) {
+		pcb_cardinal_t m, terms = 0;
+		fprintf(f, "		ha:%s {\n", pcb_netlist_names[nl]);
+		for(m = 0; m < PCB->NetlistLib[nl].MenuN; m++) {
+			pcb_lib_menu_t *menu = &PCB->NetlistLib[nl].Menu[m];
+			terms += menu->EntryN;
+		}
+		fprintf(f, "			nets=%ld\n", (long int)PCB->NetlistLib[nl].MenuN);
+		fprintf(f, "			terminals=%ld\n", (long int)terms);
+		fprintf(f, "		}\n");
 	}
 	fprintf(f, "	}\n");
 
