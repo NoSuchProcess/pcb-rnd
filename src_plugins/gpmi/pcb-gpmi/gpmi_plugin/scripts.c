@@ -372,7 +372,7 @@ int gpmi_hid_script_addcfg(hid_gpmi_script_info_t *i)
 	else
 		fn = pcb_concat("plugins" PCB_DIR_SEPARATOR_S, CONFNAME, NULL);
 
-		f = fopen(fn, "a");
+	f = fopen(fn, "a");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_DEFAULT, "gpmi_hid_script_addcfg: can't open %s for write\n", fn);
 		return -1;
