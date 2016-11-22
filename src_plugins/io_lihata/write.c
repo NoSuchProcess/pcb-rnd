@@ -767,7 +767,7 @@ int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename,
 		
 		orig_fn = PCB->Filename;
 		PCB->Filename = NULL;
-		fprintf(stderr, "NOTE: io_lihata_write_pcb will save to '%s' but first saves in '%s': %d\n", new_filename, pcb_fn, pcb_hid_actionl("SaveTo", "LayoutAs", pcb_fn, "pcb", NULL));
+		fprintf(stderr, "NOTE: io_lihata_write_pcb will save to '%s' but first saves in '%s': res=%d (expected: 0)\n", new_filename, pcb_fn, pcb_hid_actionl("SaveTo", "LayoutAs", pcb_fn, "pcb", NULL));
 		free(pcb_fn);
 		
 		/* restore these because SaveTo() has changed them */
@@ -795,6 +795,17 @@ int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename,
 		events.output_rules = io_lihata_out_rules;
 
 		res = lhtpers_fsave_as(&events, brd, inf, FP, old_filename, &errmsg);
+		if (res != 0) {
+			FILE *fe;
+			char *fe_name = pcb_concat(old_filename, ".mem.lht");
+			fe = fopen(fe_name, "w");
+			if (fe != NULL) {
+				res = lht_dom_export(brd->root, fe, "");
+				fclose(fe);
+			}
+			pcb_message(PCB_MSG_ERROR, "lhtpers_fsave_as() failed. Please include files %s and %s and %s in your bugreport\n", inf, old_filename, fe_name);
+			pcb_message(PCB_MSG_ERROR, "in case this broke your file %s, please use the emergency save %s instead.\n", old_filename, fe_name);
+		}
 		fflush(FP);
 		if (inf != NULL)
 			fclose(inf);
