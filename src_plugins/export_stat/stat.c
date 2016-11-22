@@ -240,14 +240,17 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 
 	fprintf(f, "	li:netlist {\n");
 	for(nl = 0; nl < PCB_NUM_NETLISTS; nl++) {
-		pcb_cardinal_t m, terms = 0;
+		pcb_cardinal_t m, terms = 0, best_terms = 0;
 		fprintf(f, "		ha:%s {\n", pcb_netlist_names[nl]);
 		for(m = 0; m < PCB->NetlistLib[nl].MenuN; m++) {
 			pcb_lib_menu_t *menu = &PCB->NetlistLib[nl].Menu[m];
 			terms += menu->EntryN;
+			if (menu->EntryN > best_terms)
+				best_terms = menu->EntryN;
 		}
 		fprintf(f, "			nets=%ld\n", (long int)PCB->NetlistLib[nl].MenuN);
 		fprintf(f, "			terminals=%ld\n", (long int)terms);
+		fprintf(f, "			max_term_per_net=%ld\n", (long int)best_terms);
 		fprintf(f, "		}\n");
 	}
 	fprintf(f, "	}\n");
