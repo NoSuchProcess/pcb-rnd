@@ -379,20 +379,25 @@ static void print_library(FILE * fp)
 	/* loop thru padstacks and define them all */
 	for (iter = pads; iter; iter = g_list_next(iter)) {
 		pcb_coord_t dim1, dim2;
+		long int dim1l, dim2l;
 		padstack = iter->data;
 		fprintf(fp, "    (padstack %s\n", padstack);
 
 		/* print info about pad here */
-		if (sscanf(padstack, "Smd_rect_%ldx%ld", &dim1, &dim2) == 2) {	/* then pad is smd */
+		if (sscanf(padstack, "Smd_rect_%ldx%ld", &dim1l, &dim2l) == 2) { /* then pad is smd */
+			dim1 = dim1l;
+			dim2 = dim2l;
 			pcb_fprintf(fp,
 									"      (shape (rect \"%s\" %.6mm %.6mm %.6mm %.6mm))\n",
 									((pcb_layer_t *) (g_list_first(layerlist)->data))->Name, dim1 / -2, dim2 / -2, dim1 / 2, dim2 / 2);
 		}
-		else if (sscanf(padstack, "Th_square_%ld", &dim1) == 1) {
+		else if (sscanf(padstack, "Th_square_%ld", &dim1l) == 1) {
+			dim1 = dim1l;
 			pcb_fprintf(fp, "      (shape (rect signal %.6mm %.6mm %.6mm %.6mm))\n", dim1 / -2, dim1 / -2, dim1 / 2, dim1 / 2);
 		}
 		else {
-			sscanf(padstack, "Th_round_%ld", &dim1);
+			sscanf(padstack, "Th_round_%ld", &dim1l);
+			dim1 = dim1l;
 			pcb_fprintf(fp, "      (shape (circle signal %.6mm))\n", dim1);
 		}
 		fprintf(fp, "      (attach off)\n");
