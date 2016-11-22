@@ -42,6 +42,7 @@
 #include "plugins.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "plug_io.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -65,22 +66,26 @@ pcb_hid_attribute_t stat_attribute_list[] = {
 	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_statfile 0
 
-	{"started in pcb-rnd", "This design started its life in pcb-rnd",
+	{"board_id", "Short name of the board so it can be identified for updates",
+	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_board_id 1
+
+	{"orig", "This design started its life in pcb-rnd",
 	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_orig 1
+#define HA_orig 2
 
-	{"built board from lht", "This design was already in lihata when real boards got built",
+	{"lht_built", "This design was already in lihata when real boards got built",
 	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_lht_built 2
+#define HA_lht_built 3
 
 
-	{"number of boards built", "how many actual/physical boards got built",
+	{"built", "how many actual/physical boards got built",
 	 HID_Integer, 0, 1000000, {0, 0, 0}, 0, 0},
-#define HA_built 3
+#define HA_built 4
 
-	{"first pcb-rnd version", "the version of pcb-rnd you first used on this board",
+	{"first_ver", "the version of pcb-rnd you first used on this board",
 	 HID_String, 0, 0, {0, VERSION, 0}, 0, 0},
-#define HA_first_ver 4
+#define HA_first_ver 5
 
 };
 
@@ -272,6 +277,8 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 
 
 	fprintf(f, "	ha:board {\n");
+	fprintf(f, "		id={%s}\n", options[HA_board_id].str_value);
+	fprintf(f, "		format={%s}\n", PCB->Data->loader == NULL ? "unknown" : PCB->Data->loader->description);
 	pcb_fprintf(f, "		width=%$mm\n", PCB->MaxWidth);
 	pcb_fprintf(f, "		height=%$mm\n", PCB->MaxHeight);
 	fprintf(f, "		gross_area={%.4f mm^2}\n", (double)PCB_COORD_TO_MM(PCB->MaxWidth) * (double)PCB_COORD_TO_MM(PCB->MaxWidth));
