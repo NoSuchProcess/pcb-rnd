@@ -94,7 +94,7 @@ objects can be build. The following figure demonstrates all basic objects:
 <img src="objects_basic.png">
 <p>
 
-<h4> 2.4.1. Lines </h4>
+<h4> 2.4.1. Line objects </h4>
 <p>
 Lines are round ended straight line segments with a width and
 a clearance. The above image shows 3 lines connected. Lines are mainly
@@ -112,7 +112,8 @@ the "clearpoly" flag set and the line has the "clearline" flag set. If either
 of these flags is not set, no gap is made - or in pcb-rnd terminology,
 the line is joined to the polygon.
 
-<h4> 2.4.2. Arcs </h4>
+<h4> 2.4.2. Arc objects </h4>
+<p>
 Arcs are round ended circular arcs with trace width and clearance. They
 behave like lines in all respects.
 <p>
@@ -122,13 +123,52 @@ Although the arc is described with it's center, radius, start and end
 angles, the user interface may offer drawing arcs by endpoints.
 
 
-<h4> 2.4.3. Polygons </h4>
+<h4> 2.4.3. Polygon objects </h4>
+<p>
+Polygons are solid, filled copper areas with optional holes in them. Polygon
+contour consits of lines - when they look curvy, it's really high resolution
+line approximation. There are two type of holes in a polygon: <i>explicit</i>,
+user drawn holes and <i>clerance</i> cutouts. User drawn holes are "negative"
+polygons drawn manually. To keep polygons simple, if an user drawn hole
+touches the contour of a polygon, the hole is removed and the contour is
+modified; if two holes touch, they are merged into one hole.
+<p>
+If the polygon has the "clearpoly" flag set (default), clearance cutouts are
+automatically inserted around objects on the same layer group:
+<ul>
+	<li> lines and arcs, if they have the "clearline" flag set (default)
+	<li> vias and pins, if they are not connected to the polygon by thermals
+	<li> pads
+</ul>
+<p>
+Overlapping or touching polygons are not automatically merged. An object
+with the "clearline" flag set will clear all "clearpolys" it is over -
+if there are multiple such polygons overlapping under the objects (on
+the same layer group), all such polygons get the clearance cutout.
+<p>
+If a polgyon is cut into multiple islands, the behaviour depends on the
+"fullpoly" flag of the polygon. If it is not set (default), only the largest
+island is kept, else all islands are kept. In the "fullpoly" mode islands
+will have no galvanic connection (unless the user adds vias and connect them
+on another layer), still the program will handle all islands as a single
+polygon. This is risky: the program will indicate connection between polygon
+islands that are not really connected, only because they are part of the same
+polygon!
+
+<h4> 2.4.4. text objects </h4>
+
+<h4> 2.4.5. via objects </h4>
+
+<h4> 2.4.6. element objects </h4>
+
+<h4> 2.4.7. pins of elements </h4>
+
+<h4> 2.4.8. pads of elements </h4>
 
 
 
 
-
-<h3> 2.x. comparison of terms </h3>
+<h3> 2.5. comparison of terms </h3>
 <p>
 <table border=1>
 	<tr><th> phyisical board term    <th> pcb-rnd term
