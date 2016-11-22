@@ -2308,6 +2308,8 @@ static conf_role_t config_auto_get_edited_role(void)
 	int role = CFR_invalid;
 
 	gtk_tree_view_get_cursor(GTK_TREE_VIEW(auto_tab_widgets.src_t), &p, NULL);
+	if (p == NULL)
+		return CFR_invalid;
 	i = gtk_tree_path_get_indices(p);
 	if (i != NULL)
 		role = i[0];
