@@ -42,6 +42,8 @@
 /* ---------------------------------------------------------------------------
  * some local prototypes
  */
+static pcb_rubberband_t *pcb_rubber_band_alloc(void);
+static pcb_rubberband_t *pcb_rubber_band_create(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint);
 static void CheckPadForRubberbandConnection(pcb_pad_t *);
 static void CheckPinForRubberbandConnection(pcb_pin_t *);
 static void CheckLinePointForRubberbandConnection(pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
@@ -491,7 +493,7 @@ void pcb_rubber_band_lookup_rat_lines(int Type, void *Ptr1, void *Ptr2, void *Pt
 /* ---------------------------------------------------------------------------
  * get next slot for a rubberband connection, allocates memory if necessary
  */
-pcb_rubberband_t *pcb_rubber_band_alloc(void)
+static pcb_rubberband_t *pcb_rubber_band_alloc(void)
 {
 	pcb_rubberband_t *ptr = pcb_crosshair.AttachedObject.Rubberband;
 
@@ -509,7 +511,7 @@ pcb_rubberband_t *pcb_rubber_band_alloc(void)
  * adds a new line to the rubberband list of 'pcb_crosshair.AttachedObject'
  * if Layer == 0  it is a rat line
  */
-pcb_rubberband_t *pcb_rubber_band_create(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint)
+static pcb_rubberband_t *pcb_rubber_band_create(pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *MovedPoint)
 {
 	pcb_rubberband_t *ptr = pcb_rubber_band_alloc();
 
