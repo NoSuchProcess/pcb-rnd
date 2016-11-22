@@ -93,6 +93,17 @@ objects can be build. The following figure demonstrates all basic objects:
 <p>
 <img src="objects_basic.png">
 <p>
+Objects have flags that control their behavior. The following flags are common
+to all objects:
+<p>
+<table>
+	<tr><th>name        <th> description
+	<tr><td>selected    <td> selected by the user ("cyan")
+	<tr><td>found       <td> found as a galvanic connection in the last connection lookup ("green")
+	<tr><td>warn        <td> offending object e.g. in a short circuit ("orange")
+	<tr><td>lock        <td> locked by the user: can't be selected, moved or changed
+</table>
+
 
 <h4> 2.4.1. Line objects </h4>
 <p>
@@ -111,6 +122,13 @@ in the same layer group. The gap is made only if the sorrunding polygon has
 the "clearpoly" flag set and the line has the "clearline" flag set. If either
 of these flags is not set, no gap is made - or in pcb-rnd terminology,
 the line is joined to the polygon.
+<p>
+Extra object flags:
+<p>
+<table>
+	<tr><th>name        <th> description
+	<tr><td>clearline   <td> clears polygons with the "clearpoly" flag in the same layer group
+</table>
 
 <h4> 2.4.2. Arc objects </h4>
 <p>
@@ -121,7 +139,13 @@ behave like lines in all respects.
 <p>
 Although the arc is described with it's center, radius, start and end
 angles, the user interface may offer drawing arcs by endpoints.
-
+<p>
+Extra object flags:
+<p>
+<table>
+	<tr><th>name        <th> description
+	<tr><td>clearline   <td> clears polygons with the "clearpoly" flag in the same layer group
+</table>
 
 <h4> 2.4.3. Polygon objects </h4>
 <p>
@@ -154,6 +178,14 @@ on another layer), still the program will handle all islands as a single
 polygon. This is risky: the program will indicate connection between polygon
 islands that are not really connected, only because they are part of the same
 polygon!
+<p>
+Extra object flags:
+<p>
+<table>
+	<tr><th>name        <th> description
+	<tr><td>clearpoly   <td> should have clearance around objects, if the objects have the appropriate flags too
+	<tr><td>fullpoly    <td> keep all islands, not only the largest
+</table>
 
 <h4> 2.4.4. text objects </h4>
 
@@ -165,6 +197,7 @@ polygon!
 
 <h4> 2.4.8. pads of elements </h4>
 
+<h4> 2.4.9. rat line objects </h4>
 
 
 
