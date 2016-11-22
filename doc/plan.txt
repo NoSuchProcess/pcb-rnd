@@ -18,6 +18,9 @@ user manual
 		board
 		paste buffers
 		footprint libraries
+			pcblib
+				static footprints
+				generated footprints
 	4. user interface (hid plugins)
 		under the hood: actions
 		gtk
