@@ -41,6 +41,7 @@
 #include "find.h"
 #include "layer.h"
 #include "pcb-printf.h"
+#include "compat_misc.h"
 #include "plugins.h"
 #include "hid_flags.h"
 #include "hid_actions.h"
@@ -51,10 +52,6 @@
 conf_djopt_t conf_djopt;
 
 static const char *djopt_cookie = "djopt";
-
-#ifndef HAVE_RINT
-#define rint(x)  (ceil((x) - 0.5))
-#endif
 
 #define dprintf if(0)pcb_printf
 
@@ -277,7 +274,7 @@ static int dist(int x1, int y1, int x2, int y2)
 	dy2 = (double) y2;
 
 	d = sqrt((dx1 - dx2) * (dx1 - dx2) + (dy1 - dy2) * (dy1 - dy2));
-	d = rint(d);
+	d = pcb_round(d);
 
 	return (int) d;
 }
