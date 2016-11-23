@@ -213,8 +213,8 @@ void ghid_config_groups_changed(void);
 
 void ghid_config_init(void);
 void ghid_wgeo_save(int save_to_file, int skip_user);
-void ghid_conf_save_pre_wgeo(void *user_data, int argc, pcb_event_arg_t * argv[]);
-void ghid_conf_load_post_wgeo(void *user_data, int argc, pcb_event_arg_t * argv[]);
+void ghid_conf_save_pre_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
+void ghid_conf_load_post_wgeo(void *user_data, int argc, pcb_event_arg_t argv[]);
 
 void ghid_mode_buttons_update(void);
 void ghid_pack_mode_buttons(void);

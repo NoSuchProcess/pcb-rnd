@@ -363,7 +363,7 @@ static void pcb_dbus_finish(void)
 	dbus_shutdown();
 }
 
-static void dbus_gui_init(void *user_data, int argc, pcb_event_arg_t * argv[])
+static void dbus_gui_init(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 
 	/* this can not be done from init, before the gui starts, as it needs
