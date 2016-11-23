@@ -40,12 +40,7 @@ typedef struct {								/* rubberband lines for element moves */
 	pcb_point_t *MovedPoint;			/* and finally the point */
 } pcb_rubberband_t;
 
-
-void pcb_rubber_band_lookup_lines(int, void *, void *, void *);
-void pcb_rubber_band_lookup_rat_lines(int, void *, void *, void *);
-
 /* temporary call until rubber band is moved out into a plugin */
 void pcb_rubberband_init(void);
-
 
 #endif

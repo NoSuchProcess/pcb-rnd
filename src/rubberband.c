@@ -41,6 +41,7 @@
 #include "undo.h"
 #include "operation.h"
 #include "rotate.h"
+#include "draw.h"
 #include "obj_rat_draw.h"
 #include "obj_line_op.h"
 #include "obj_line_draw.h"
@@ -666,7 +667,7 @@ static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int type = argv[1].d.i;
 	void *ptr1 = argv[2].d.p, *ptr2 = argv[3].d.p, *ptr3 = argv[4].d.p;
-	int pinnum = argv[5].d.i;
+/*	int pinnum = argv[5].d.i;*/
 
 	if (type == PCB_TYPE_ELEMENT) {
 		pcb_rubberband_t *ptr;
@@ -686,6 +687,23 @@ static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
+static void rbe_lookup_lines(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	int type = argv[1].d.i;
+	void *ptr1 = argv[2].d.p, *ptr2 = argv[3].d.p, *ptr3 = argv[4].d.p;
+
+	pcb_rubber_band_lookup_lines(type, ptr1, ptr2, ptr3);
+}
+
+static void rbe_lookup_rats(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	int type = argv[1].d.i;
+	void *ptr1 = argv[2].d.p, *ptr2 = argv[3].d.p, *ptr3 = argv[4].d.p;
+
+	pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
+}
+
+
 static const char *rubber_cookie = "old rubberband";
 
 void pcb_rubberband_init(void)
@@ -697,4 +715,6 @@ void pcb_rubberband_init(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_ROTATE90, rbe_rotate90, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_RENAME, rbe_rename, ctx, rubber_cookie);
+	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_LINES, rbe_lookup_lines, ctx, rubber_cookie);
+	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_RATS, rbe_lookup_rats, ctx, rubber_cookie);
 }

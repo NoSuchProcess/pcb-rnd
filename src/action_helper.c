@@ -136,14 +136,12 @@ static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 
 	/* get all attached objects if necessary */
 	if ((conf_core.editor.mode != PCB_MODE_COPY) && conf_core.editor.rubber_band_mode)
-		pcb_rubber_band_lookup_lines(pcb_crosshair.AttachedObject.Type,
-													pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	if (conf_core.editor.mode != PCB_MODE_COPY &&
 			(pcb_crosshair.AttachedObject.Type == PCB_TYPE_ELEMENT ||
 			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_VIA ||
 			 pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE || pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))
-		pcb_rubber_band_lookup_rat_lines(pcb_crosshair.AttachedObject.Type,
-									 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+		pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 }
 
 

@@ -389,9 +389,9 @@ static int pcb_act_MoveObject(int argc, const char **argv, pcb_coord_t x, pcb_co
 		ny -= y;
 	pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 	if (conf_core.editor.rubber_band_mode)
-		pcb_rubber_band_lookup_lines(type, ptr1, ptr2, ptr3);
+		pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 	if (type == PCB_TYPE_ELEMENT)
-		pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
+		pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx, ny);
 	pcb_board_set_changed_flag(pcb_true);
 	return 0;

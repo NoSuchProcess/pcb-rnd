@@ -114,9 +114,9 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 		}
 		pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 		if (conf_core.editor.rubber_band_mode)
-			pcb_rubber_band_lookup_lines(type, ptr1, ptr2, ptr3);
+			pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 		if (type == PCB_TYPE_ELEMENT)
-			pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
+			pcb_event(PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate90(type, ptr1, ptr2, ptr3, X, Y, Steps);
 		pcb_board_set_changed_flag(pcb_true);
 	}
