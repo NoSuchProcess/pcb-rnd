@@ -37,6 +37,10 @@
 #include "board.h"
 #include "data.h"
 #include "error.h"
+#include "event.h"
+#include "undo.h"
+#include "obj_rat_draw.h"
+
 #include "polygon.h"
 
 /* ---------------------------------------------------------------------------
@@ -522,4 +526,39 @@ static pcb_rubberband_t *pcb_rubber_band_create(pcb_layer_t *Layer, pcb_line_t *
 	ptr->Line = Line;
 	ptr->MovedPoint = MovedPoint;
 	return (ptr);
+}
+
+/*** event handlers ***/
+static void rbe_reset(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_crosshair.AttachedObject.RubberbandN = 0;
+}
+
+static void rbe_remove_element(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_rubberband_t *ptr;
+	void *ptr1 = argv[1].d.p, *ptr2 = argv[2].d.p, *ptr3 = argv[3].d.p;
+	int i, type = PCB_TYPE_ELEMENT;
+
+	pcb_crosshair.AttachedObject.RubberbandN = 0;
+	pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
+	ptr = pcb_crosshair.AttachedObject.Rubberband;
+	for (i = 0; i < pcb_crosshair.AttachedObject.RubberbandN; i++) {
+		if (PCB->RatOn)
+			EraseRat((pcb_rat_t *) ptr->Line);
+		if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line))
+			pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
+		else
+			PCB_FLAG_TOGGLE(PCB_FLAG_RUBBEREND, ptr->Line);	/* only remove line once */
+		ptr++;
+	}
+}
+
+static const char *rubber_cookie = "old rubberband";
+
+void pcb_rubberband_init(void)
+{
+	void *ctx = NULL;
+	pcb_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
+	pcb_event_bind(PCB_EVENT_RUBBER_REMOVE_ELEMENT, rbe_remove_element, ctx, rubber_cookie);
 }

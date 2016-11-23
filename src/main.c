@@ -362,6 +362,7 @@ int main(int argc, char *argv[])
 	pcb_funchash_init();
 	pcb_units_init();
 	pcb_polygon_init();
+	pcb_rubberband_init();
 
 	/* This must be called before any other atexit functions
 	 * are registered, as it configures an atexit function to

@@ -50,6 +50,7 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "event.h"
 
 #include "obj_pinvia_draw.h"
 #include "obj_pad_draw.h"
@@ -108,7 +109,7 @@ static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 	pcb_box_t *box;
 	pcb_coord_t mx = 0, my = 0;
 
-	pcb_crosshair.AttachedObject.RubberbandN = 0;
+	pcb_event(PCB_EVENT_RUBBER_RESET, "");
 	if (!conf_core.editor.snap_pin) {
 		/* dither the grab point so that the mark, center, etc
 		 * will end up on a grid coordinate
@@ -1112,23 +1113,8 @@ void pcb_notify_mode(void)
 				pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 				break;
 			}
-			if (type == PCB_TYPE_ELEMENT) {
-				pcb_rubberband_t *ptr;
-				int i;
-
-				pcb_crosshair.AttachedObject.RubberbandN = 0;
-				pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
-				ptr = pcb_crosshair.AttachedObject.Rubberband;
-				for (i = 0; i < pcb_crosshair.AttachedObject.RubberbandN; i++) {
-					if (PCB->RatOn)
-						EraseRat((pcb_rat_t *) ptr->Line);
-					if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line))
-						pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
-					else
-						PCB_FLAG_TOGGLE(PCB_FLAG_RUBBEREND, ptr->Line);	/* only remove line once */
-					ptr++;
-				}
-			}
+			if (type == PCB_TYPE_ELEMENT)
+				pcb_event(PCB_EVENT_RUBBER_REMOVE_ELEMENT, "ppp", ptr1, ptr2, ptr3);
 			pcb_remove_object(type, ptr1, ptr2, ptr3);
 			pcb_undo_inc_serial();
 			pcb_board_set_changed_flag(pcb_true);
