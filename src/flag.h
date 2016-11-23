@@ -186,7 +186,6 @@ When set, element names are not drawn.
 
 /* For passing modified flags to other functions. */
 pcb_flag_t pcb_flag_make(unsigned int);
-pcb_flag_t pcb_flag_old(unsigned int);
 pcb_flag_t pcb_flag_add(pcb_flag_t, unsigned int);
 pcb_flag_t pcb_flag_mask(pcb_flag_t, unsigned int);
 void pcb_flag_erase(pcb_flag_t *f);
