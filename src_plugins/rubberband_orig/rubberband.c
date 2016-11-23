@@ -45,6 +45,7 @@
 #include "obj_rat_draw.h"
 #include "obj_line_op.h"
 #include "obj_line_draw.h"
+#include "plugins.h"
 
 #include "polygon.h"
 
@@ -742,8 +743,12 @@ static void rbe_lookup_rats(void *user_data, int argc, pcb_event_arg_t argv[])
 
 static const char *rubber_cookie = "old rubberband";
 
+void rb_uninit(void)
+{
+	pcb_event_unbind_allcookie(rubber_cookie);
+}
 
-void pcb_rubberband_init(void)
+pcb_uninit_t hid_rubberband_orig_init(void)
 {
 	void *ctx = &rubber_band_state;
 	pcb_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
@@ -754,4 +759,7 @@ void pcb_rubberband_init(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_RENAME, rbe_rename, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_LINES, rbe_lookup_lines, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_RATS, rbe_lookup_rats, ctx, rubber_cookie);
+
+	return rb_uninit;
 }
+

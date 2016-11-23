@@ -115,7 +115,6 @@ put /local/pcb/OBJS [@
 	rotate.o
 	route_style.o
 	rtree.o
-	rubberband.o
 	search.o
 	select.o
 	select_act.o
