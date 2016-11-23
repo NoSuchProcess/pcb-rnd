@@ -35,6 +35,7 @@ typedef enum {
 
 	PCB_EVENT_RUBBER_RESET,           /* rubber band: reset attached */
 	PCB_EVENT_RUBBER_REMOVE_ELEMENT,  /* rubber band: removed an element with rubber bands attached */
+	PCB_EVENT_RUBBER_MOVE,            /* rubber band: object moved */
 
 	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;

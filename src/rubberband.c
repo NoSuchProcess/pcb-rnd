@@ -40,6 +40,8 @@
 #include "event.h"
 #include "undo.h"
 #include "obj_rat_draw.h"
+#include "operation.h"
+#include "obj_line_op.h"
 
 #include "polygon.h"
 
@@ -554,6 +556,34 @@ static void rbe_remove_element(void *user_data, int argc, pcb_event_arg_t argv[]
 	}
 }
 
+static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_rubberband_t *ptr;
+	pcb_coord_t DX = argv[1].d.c, DY = argv[2].d.c;
+	pcb_opctx_t *ctx = argv[3].d.p;
+
+	if (DX == 0 && DY == 0) {
+		int n;
+
+		/* first clear any marks that we made in the line flags */
+		for(n = 0, ptr = pcb_crosshair.AttachedObject.Rubberband; n < pcb_crosshair.AttachedObject.RubberbandN; n++, ptr++)
+			PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
+
+		return;
+	}
+
+	/* move all the lines... and reset the counter */
+	ptr = pcb_crosshair.AttachedObject.Rubberband;
+	while (pcb_crosshair.AttachedObject.RubberbandN) {
+		/* first clear any marks that we made in the line flags */
+		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
+		pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
+		MoveLinePoint(ctx, ptr->Layer, ptr->Line, ptr->MovedPoint);
+		pcb_crosshair.AttachedObject.RubberbandN--;
+		ptr++;
+	}
+}
+
 static const char *rubber_cookie = "old rubberband";
 
 void pcb_rubberband_init(void)
@@ -561,4 +591,5 @@ void pcb_rubberband_init(void)
 	void *ctx = NULL;
 	pcb_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_REMOVE_ELEMENT, rbe_remove_element, ctx, rubber_cookie);
+	pcb_event_bind(PCB_EVENT_RUBBER_MOVE, rbe_move, ctx, rubber_cookie);
 }

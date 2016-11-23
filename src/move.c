@@ -40,6 +40,7 @@
 #include "move.h"
 #include "select.h"
 #include "undo.h"
+#include "event.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "obj_all_op.h"
@@ -86,7 +87,6 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
  */
 void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
 {
-	pcb_rubberband_t *ptr;
 	pcb_opctx_t ctx;
 	void *ptr2;
 
@@ -96,26 +96,10 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	ctx.move.dx = DX;
 	ctx.move.dy = DY;
 
-	if (DX == 0 && DY == 0) {
-		int n;
+	pcb_event(PCB_EVENT_RUBBER_MOVE, "ccp", DX, DY, &ctx);
 
-		/* first clear any marks that we made in the line flags */
-		for(n = 0, ptr = pcb_crosshair.AttachedObject.Rubberband; n < pcb_crosshair.AttachedObject.RubberbandN; n++, ptr++)
-			PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
-
-		return (NULL);
-	}
-
-	/* move all the lines... and reset the counter */
-	ptr = pcb_crosshair.AttachedObject.Rubberband;
-	while (pcb_crosshair.AttachedObject.RubberbandN) {
-		/* first clear any marks that we made in the line flags */
-		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
-		pcb_undo_add_obj_to_move(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, DX, DY);
-		MoveLinePoint(&ctx, ptr->Layer, ptr->Line, ptr->MovedPoint);
-		pcb_crosshair.AttachedObject.RubberbandN--;
-		ptr++;
-	}
+	if (DX == 0 && DY == 0)
+		return NULL;
 
 	pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 	ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
