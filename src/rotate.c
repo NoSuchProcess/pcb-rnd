@@ -41,6 +41,7 @@
 #include "search.h"
 #include "select.h"
 #include "undo.h"
+#include "event.h"
 #include "conf_core.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
@@ -80,9 +81,8 @@ void pcb_point_rotate90(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsign
  */
 void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 {
-	pcb_rubberband_t *ptr;
 	void *ptr2;
-	pcb_bool changed = pcb_false;
+	int changed = 0;
 	pcb_opctx_t ctx;
 
 	/* setup default  global identifiers */
@@ -91,33 +91,8 @@ void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t
 	ctx.rotate.center_x = X;
 	ctx.rotate.center_y = Y;
 
-	/* move all the rubberband lines... and reset the counter */
-	ptr = pcb_crosshair.AttachedObject.Rubberband;
-	while (pcb_crosshair.AttachedObject.RubberbandN) {
-		changed = pcb_true;
-		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
-		pcb_undo_add_obj_to_rotate(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
-		EraseLine(ptr->Line);
-		if (ptr->Layer) {
-			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
-			pcb_r_delete_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
-		}
-		else
-			pcb_r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
-		pcb_point_rotate90(ptr->MovedPoint, ctx.rotate.center_x, ctx.rotate.center_y, Steps);
-		pcb_line_bbox(ptr->Line);
-		if (ptr->Layer) {
-			pcb_r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
-			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
-			DrawLine(ptr->Layer, ptr->Line);
-		}
-		else {
-			pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);
-			DrawRat((pcb_rat_t *) ptr->Line);
-		}
-		pcb_crosshair.AttachedObject.RubberbandN--;
-		ptr++;
-	}
+	pcb_event(PCB_EVENT_RUBBER_ROTATE90, "ipppccip", Type, Ptr1, Ptr2, Ptr2, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number, &changed);
+
 	pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
 	ptr2 = pcb_object_operation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	changed |= (ptr2 != NULL);

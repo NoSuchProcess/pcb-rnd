@@ -39,9 +39,11 @@
 #include "error.h"
 #include "event.h"
 #include "undo.h"
-#include "obj_rat_draw.h"
 #include "operation.h"
+#include "rotate.h"
+#include "obj_rat_draw.h"
 #include "obj_line_op.h"
+#include "obj_line_draw.h"
 
 #include "polygon.h"
 
@@ -619,7 +621,45 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 		ptr++;
 		i--;
 	}
+}
 
+static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_rubberband_t *ptr;
+/*	int Type = argv[1].d.i; */
+/*	void *ptr1 = argv[2].d.p, *ptr2 = argv[3].d.p, *ptr3 = argv[4].d.p; */
+	pcb_coord_t cx = argv[5].d.c, cy = argv[6].d.c;
+	int steps = argv[7].d.i;
+	int *changed = argv[8].d.p;
+
+
+	/* move all the rubberband lines... and reset the counter */
+	ptr = pcb_crosshair.AttachedObject.Rubberband;
+	while (pcb_crosshair.AttachedObject.RubberbandN) {
+		*changed = 1;
+		PCB_FLAG_CLEAR(PCB_FLAG_RUBBEREND, ptr->Line);
+		pcb_undo_add_obj_to_rotate(PCB_TYPE_LINE_POINT, ptr->Layer, ptr->Line, ptr->MovedPoint, cx, cy, steps);
+		EraseLine(ptr->Line);
+		if (ptr->Layer) {
+			pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
+			pcb_r_delete_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
+		}
+		else
+			pcb_r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
+		pcb_point_rotate90(ptr->MovedPoint, cx, cy, steps);
+		pcb_line_bbox(ptr->Line);
+		if (ptr->Layer) {
+			pcb_r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line, 0);
+			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, ptr->Layer, ptr->Line);
+			DrawLine(ptr->Layer, ptr->Line);
+		}
+		else {
+			pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line, 0);
+			DrawRat((pcb_rat_t *) ptr->Line);
+		}
+		pcb_crosshair.AttachedObject.RubberbandN--;
+		ptr++;
+	}
 }
 
 static const char *rubber_cookie = "old rubberband";
@@ -631,4 +671,5 @@ void pcb_rubberband_init(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_REMOVE_ELEMENT, rbe_remove_element, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE, rbe_move, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);
+	pcb_event_bind(PCB_EVENT_RUBBER_ROTATE90, rbe_rotate90, ctx, rubber_cookie);
 }
