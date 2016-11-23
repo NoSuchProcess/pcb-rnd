@@ -33,6 +33,7 @@
 #include "change.h"
 #include "error.h"
 #include "undo.h"
+#include "event.h"
 #include "funchash_core.h"
 
 #include "search.h"
@@ -386,7 +387,7 @@ static int pcb_act_MoveObject(int argc, const char **argv, pcb_coord_t x, pcb_co
 		nx -= x;
 	if (absolute2)
 		ny -= y;
-	pcb_crosshair.AttachedObject.RubberbandN = 0;
+	pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 	if (conf_core.editor.rubber_band_mode)
 		pcb_rubber_band_lookup_lines(type, ptr1, ptr2, ptr3);
 	if (type == PCB_TYPE_ELEMENT)

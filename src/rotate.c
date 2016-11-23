@@ -112,7 +112,7 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 			pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
 			return;
 		}
-		pcb_crosshair.AttachedObject.RubberbandN = 0;
+		pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 		if (conf_core.editor.rubber_band_mode)
 			pcb_rubber_band_lookup_lines(type, ptr1, ptr2, ptr3);
 		if (type == PCB_TYPE_ELEMENT)

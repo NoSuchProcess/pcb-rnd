@@ -109,7 +109,7 @@ static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 	pcb_box_t *box;
 	pcb_coord_t mx = 0, my = 0;
 
-	pcb_event(PCB_EVENT_RUBBER_RESET, "");
+	pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
 	if (!conf_core.editor.snap_pin) {
 		/* dither the grab point so that the mark, center, etc
 		 * will end up on a grid coordinate
