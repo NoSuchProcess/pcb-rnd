@@ -62,7 +62,6 @@ static void XORPolygon(pcb_polygon_t *, pcb_coord_t, pcb_coord_t, int);
 static void XORDrawElement(pcb_element_t *, pcb_coord_t, pcb_coord_t);
 static void XORDrawBuffer(pcb_buffer_t *);
 static void XORDrawInsertPointObject(void);
-static void XORDrawMoveOrpcb_copy_obj(void);
 static void XORDrawAttachedLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
 static void XORDrawAttachedArc(pcb_coord_t);
 
@@ -359,7 +358,7 @@ static void XORDrawInsertPointObject(void)
 /* ---------------------------------------------------------------------------
  * draws the attached object while in PCB_MODE_MOVE or PCB_MODE_COPY
  */
-static void XORDrawMoveOrpcb_copy_obj(void)
+static void XORDrawMoveOrCopy(void)
 {
 	pcb_rubberband_t *ptr;
 	pcb_cardinal_t i;
@@ -578,7 +577,7 @@ void pcb_draw_attached(void)
 
 	case PCB_MODE_COPY:
 	case PCB_MODE_MOVE:
-		XORDrawMoveOrpcb_copy_obj();
+		XORDrawMoveOrCopy();
 		break;
 
 	case PCB_MODE_INSERT_POINT:
