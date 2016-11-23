@@ -30,16 +30,6 @@
 #ifndef	PCB_RUBBERBAND_H
 #define	PCB_RUBBERBAND_H
 
-/* ---------------------------------------------------------------------------
- * some types for cursor drawing, setting of block and lines
- * as well as for merging of elements
- */
-typedef struct {								/* rubberband lines for element moves */
-	pcb_layer_t *Layer;						/* layer that holds the line */
-	pcb_line_t *Line;							/* the line itself */
-	pcb_point_t *MovedPoint;			/* and finally the point */
-} pcb_rubberband_t;
-
 /* temporary call until rubber band is moved out into a plugin */
 void pcb_rubberband_init(void);
 

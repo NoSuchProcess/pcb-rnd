@@ -51,9 +51,6 @@ typedef struct {								/* currently attached object */
 	void *Ptr1,										/* three pointers to data, see */
 	 *Ptr2,												/* search.c */
 	 *Ptr3;
-	pcb_cardinal_t RubberbandN,					/* number of lines in array */
-	  RubberbandMax;
-	pcb_rubberband_t *Rubberband;
 } pcb_attached_object_t;
 
 typedef struct {
