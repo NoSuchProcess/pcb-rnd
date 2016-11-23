@@ -141,6 +141,18 @@ void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
 				a->type = PCB_EVARG_STR;
 				a->d.s = va_arg(ap, const char *);
 				break;
+			case 'p':
+				a->type = PCB_EVARG_PTR;
+				a->d.p = va_arg(ap, void *);
+				break;
+			case 'c':
+				a->type = PCB_EVARG_COORD;
+				a->d.c = va_arg(ap, pcb_coord_t);
+				break;
+			case 'a':
+				a->type = PCB_EVARG_ANGLE;
+				a->d.a = va_arg(ap, pcb_angle_t);
+				break;
 			default:
 				a->type = PCB_EVARG_INT;
 				a->d.i = 0;

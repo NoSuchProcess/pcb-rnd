@@ -22,6 +22,9 @@
 
 #ifndef PCB_EVENT_H
 #define PCB_EVENT_H
+#include "config.h"
+#include "unit.h"
+
 typedef enum {
 	PCB_EVENT_GUI_INIT,               /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
 	PCB_EVENT_CLI_ENTER,              /* the user pressed enter on a CLI command - called before parsing the line for actions; args: (str commandline) */
@@ -29,6 +32,10 @@ typedef enum {
 	PCB_EVENT_SAVE_POST,              /* called after saving the design */
 	PCB_EVENT_LOAD_PRE,               /* called before loading a new design */
 	PCB_EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not */
+
+	PCB_EVENT_RUBBER_RESET,           /* rubber band: reset attached */
+	PCB_EVENT_RUBBER_REMOVE_ELEMENT,  /* rubber band: removed an element with rubber bands attached */
+
 	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
 
@@ -39,7 +46,10 @@ typedef enum {
 typedef enum {
 	PCB_EVARG_INT,											/* format char: i */
 	PCB_EVARG_DOUBLE,										/* format char: d */
-	PCB_EVARG_STR												/* format char: s */
+	PCB_EVARG_STR,											/* format char: s */
+	PCB_EVARG_PTR,											/* format char: p */
+	PCB_EVARG_COORD,										/* format char: c */
+	PCB_EVARG_ANGLE											/* format char: a */
 } pcb_event_argtype_t;
 
 
@@ -50,6 +60,9 @@ typedef struct {
 		int i;
 		double d;
 		const char *s;
+		void *p;
+		pcb_coord_t c;
+		pcb_angle_t a;
 	} d;
 } pcb_event_arg_t;
 
