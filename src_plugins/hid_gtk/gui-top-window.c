@@ -78,7 +78,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "rats.h"
 #include "remove.h"
 #include "rotate.h"
-#include "rubberband.h"
 #include "search.h"
 #include "select.h"
 #include "undo.h"
