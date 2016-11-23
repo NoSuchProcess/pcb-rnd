@@ -30,7 +30,6 @@
 #define	PCB_CROSSHAIR_H
 
 #include "config.h"
-#include "rubberband.h"
 #include "vtonpoint.h"
 #include "hid.h"
 #include "obj_line.h"
