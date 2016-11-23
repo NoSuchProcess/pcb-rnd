@@ -584,6 +584,44 @@ static void rbe_move(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
+static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_rubberband_t *ptr;
+	pcb_cardinal_t i;
+	pcb_coord_t dx = argv[1].d.c, dy = argv[2].d.c;
+
+
+	/* draw the attached rubberband lines too */
+	i = pcb_crosshair.AttachedObject.RubberbandN;
+	ptr = pcb_crosshair.AttachedObject.Rubberband;
+	while (i) {
+		pcb_point_t *point1, *point2;
+
+		if (PCB_FLAG_TEST(PCB_FLAG_VIA, ptr->Line)) {
+			/* this is a rat going to a polygon.  do not draw for rubberband */ ;
+		}
+		else if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line)) {
+			/* 'point1' is always the fix-point */
+			if (ptr->MovedPoint == &ptr->Line->Point1) {
+				point1 = &ptr->Line->Point2;
+				point2 = &ptr->Line->Point1;
+			}
+			else {
+				point1 = &ptr->Line->Point1;
+				point2 = &ptr->Line->Point2;
+			}
+			XORDrawAttachedLine(point1->X, point1->Y, point2->X + dx, point2->Y + dy, ptr->Line->Thickness);
+		}
+		else if (ptr->MovedPoint == &ptr->Line->Point1)
+			XORDrawAttachedLine(ptr->Line->Point1.X + dx,
+													ptr->Line->Point1.Y + dy, ptr->Line->Point2.X + dx, ptr->Line->Point2.Y + dy, ptr->Line->Thickness);
+
+		ptr++;
+		i--;
+	}
+
+}
+
 static const char *rubber_cookie = "old rubberband";
 
 void pcb_rubberband_init(void)
@@ -592,4 +630,5 @@ void pcb_rubberband_init(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_REMOVE_ELEMENT, rbe_remove_element, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE, rbe_move, ctx, rubber_cookie);
+	pcb_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);
 }

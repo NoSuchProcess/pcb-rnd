@@ -124,4 +124,8 @@ void pcb_crosshair_restore_mode(void);
 void pcb_crosshair_set_mode(int Mode);
 void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing);
 
+
+/*** utility for plugins ***/
+void XORDrawAttachedLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
+
 #endif

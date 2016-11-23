@@ -42,6 +42,7 @@
 #include "vtonpoint.h"
 #include "find.h"
 #include "undo.h"
+#include "event.h"
 #include "action_helper.h"
 
 #include "obj_line_draw.h"
@@ -62,7 +63,6 @@ static void XORPolygon(pcb_polygon_t *, pcb_coord_t, pcb_coord_t, int);
 static void XORDrawElement(pcb_element_t *, pcb_coord_t, pcb_coord_t);
 static void XORDrawBuffer(pcb_buffer_t *);
 static void XORDrawInsertPointObject(void);
-static void XORDrawAttachedLine(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
 static void XORDrawAttachedArc(pcb_coord_t);
 
 static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
@@ -186,7 +186,7 @@ static void XORDrawAttachedArc(pcb_coord_t thick)
 /*-----------------------------------------------------------
  * Draws the outline of a line
  */
-static void XORDrawAttachedLine(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
+void XORDrawAttachedLine(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
 {
 	pcb_coord_t dx, dy, ox, oy;
 	double h;
@@ -360,8 +360,6 @@ static void XORDrawInsertPointObject(void)
  */
 static void XORDrawMoveOrCopy(void)
 {
-	pcb_rubberband_t *ptr;
-	pcb_cardinal_t i;
 	pcb_coord_t dx = pcb_crosshair.X - pcb_crosshair.AttachedObject.X, dy = pcb_crosshair.Y - pcb_crosshair.AttachedObject.Y;
 
 	switch (pcb_crosshair.AttachedObject.Type) {
@@ -457,34 +455,7 @@ static void XORDrawMoveOrCopy(void)
 		break;
 	}
 
-	/* draw the attached rubberband lines too */
-	i = pcb_crosshair.AttachedObject.RubberbandN;
-	ptr = pcb_crosshair.AttachedObject.Rubberband;
-	while (i) {
-		pcb_point_t *point1, *point2;
-
-		if (PCB_FLAG_TEST(PCB_FLAG_VIA, ptr->Line)) {
-			/* this is a rat going to a polygon.  do not draw for rubberband */ ;
-		}
-		else if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line)) {
-			/* 'point1' is always the fix-point */
-			if (ptr->MovedPoint == &ptr->Line->Point1) {
-				point1 = &ptr->Line->Point2;
-				point2 = &ptr->Line->Point1;
-			}
-			else {
-				point1 = &ptr->Line->Point1;
-				point2 = &ptr->Line->Point2;
-			}
-			XORDrawAttachedLine(point1->X, point1->Y, point2->X + dx, point2->Y + dy, ptr->Line->Thickness);
-		}
-		else if (ptr->MovedPoint == &ptr->Line->Point1)
-			XORDrawAttachedLine(ptr->Line->Point1.X + dx,
-													ptr->Line->Point1.Y + dy, ptr->Line->Point2.X + dx, ptr->Line->Point2.Y + dy, ptr->Line->Thickness);
-
-		ptr++;
-		i--;
-	}
+	pcb_event(PCB_EVENT_RUBBER_MOVE_DRAW, "cc", dx, dy);
 }
 
 /* ---------------------------------------------------------------------------
