@@ -164,7 +164,7 @@ void pcb_event(pcb_event_id_t ev, const char *fmt, ...)
 	}
 
 	for (e = events[ev]; e != NULL; e = e->next)
-		e->handler(e->user_data, argc, (pcb_event_arg_t **) & argv);
+		e->handler(e->user_data, argc, argv);
 }
 
 void pcb_events_init(void)
