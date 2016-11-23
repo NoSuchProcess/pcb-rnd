@@ -662,6 +662,30 @@ static void rbe_rotate90(void *user_data, int argc, pcb_event_arg_t argv[])
 	}
 }
 
+static void rbe_rename(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	int type = argv[1].d.i;
+	void *ptr1 = argv[2].d.p, *ptr2 = argv[3].d.p, *ptr3 = argv[4].d.p;
+	int pinnum = argv[5].d.i;
+
+	if (type == PCB_TYPE_ELEMENT) {
+		pcb_rubberband_t *ptr;
+		int i;
+
+		pcb_undo_restore_serial();
+		pcb_crosshair.AttachedObject.RubberbandN = 0;
+		pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
+		ptr = pcb_crosshair.AttachedObject.Rubberband;
+		for (i = 0; i < pcb_crosshair.AttachedObject.RubberbandN; i++, ptr++) {
+			if (PCB->RatOn)
+				EraseRat((pcb_rat_t *) ptr->Line);
+			pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
+		}
+		pcb_undo_inc_serial();
+		pcb_draw();
+	}
+}
+
 static const char *rubber_cookie = "old rubberband";
 
 void pcb_rubberband_init(void)
@@ -672,4 +696,5 @@ void pcb_rubberband_init(void)
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE, rbe_move, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);
 	pcb_event_bind(PCB_EVENT_RUBBER_ROTATE90, rbe_rotate90, ctx, rubber_cookie);
+	pcb_event_bind(PCB_EVENT_RUBBER_RENAME, rbe_rename, ctx, rubber_cookie);
 }

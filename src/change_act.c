@@ -41,6 +41,7 @@
 #include "draw.h"
 #include "search.h"
 #include "undo.h"
+#include "event.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "obj_rat_draw.h"
@@ -666,22 +667,7 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 						pinnum = 0;
 					if (pcb_chg_obj_name_query(type, ptr1, ptr2, ptr3, pinnum)) {
 						pcb_board_set_changed_flag(pcb_true);
-						if (type == PCB_TYPE_ELEMENT) {
-							pcb_rubberband_t *ptr;
-							int i;
-
-							pcb_undo_restore_serial();
-							pcb_crosshair.AttachedObject.RubberbandN = 0;
-							pcb_rubber_band_lookup_rat_lines(type, ptr1, ptr2, ptr3);
-							ptr = pcb_crosshair.AttachedObject.Rubberband;
-							for (i = 0; i < pcb_crosshair.AttachedObject.RubberbandN; i++, ptr++) {
-								if (PCB->RatOn)
-									EraseRat((pcb_rat_t *) ptr->Line);
-								pcb_undo_move_obj_to_remove(PCB_TYPE_RATLINE, ptr->Line, ptr->Line, ptr->Line);
-							}
-							pcb_undo_inc_serial();
-							pcb_draw();
-						}
+						pcb_event(PCB_EVENT_RUBBER_RENAME, "ipppi", type, ptr1, ptr2, ptr3, pinnum);
 					}
 				}
 				break;
