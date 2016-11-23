@@ -38,24 +38,6 @@ pcb_flag_t pcb_flag_make(unsigned int flags)
 	return rv;
 }
 
-/* This converts old flag bits (from saved PCB files) to new format.  */
-pcb_flag_t pcb_flag_old(unsigned int flags)
-{
-	pcb_flag_t rv;
-	int i, f;
-	memset(&rv, 0, sizeof(rv));
-	/* If we move flag bits around, this is where we map old bits to them.  */
-	rv.f = flags & 0xffff;
-	f = 0x10000;
-	for (i = 0; i < 8; i++) {
-		/* use the closest thing to the old thermal style */
-		if (flags & f)
-			rv.t[i / 2] |= (1 << (4 * (i % 2)));
-		f <<= 1;
-	}
-	return rv;
-}
-
 pcb_flag_t pcb_flag_add(pcb_flag_t flag, unsigned int flags)
 {
 	flag.f |= flags;
