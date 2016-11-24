@@ -189,6 +189,21 @@ Extra object flags:
 
 <h4> 2.4.4. text objects </h4>
 
+A text object is string and a series of symbols (pcb-rnd's terminology for
+glyph). Symbols are built of lines and are stored in the font. Each board
+can have its own font, but there can be only one font per board. When
+the string of the text is edited, the object is rendered again so that the
+new string appears.
+<p>
+Text objects can be placed on copper and silk layers. Text can be rotated
+only in 90 degree steps. Each text object has a scale parameter that
+determines its size in percentage. A scale of 100% means symbols are
+rendered in 1:1 size.
+<p>
+The clearance around text is rendered as a round corner rectangular cutout.
+Bug: copper text can not participate in short circuits, the galvanic connection
+checker code skips texts.
+
 <h4> 2.4.5. via objects </h4>
 
 <h4> 2.4.6. element objects </h4>
