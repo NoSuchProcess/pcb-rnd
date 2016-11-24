@@ -21,6 +21,15 @@ user manual
 			pcblib
 				static footprints
 				generated footprints
+		file formats
+			board
+				lihata
+				pcb
+				kicadl
+				kicad
+			footprint
+			import
+			export
 	4. user interface (hid plugins)
 		under the hood: actions
 		gtk
