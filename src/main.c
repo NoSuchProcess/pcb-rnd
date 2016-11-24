@@ -503,7 +503,7 @@ int main(int argc, char *argv[])
 			if (pcb_gui->gui)
 				pcb_crosshair_init();
 			pcb_crosshair_set_mode(PCB_MODE_ARROW);
-				pcb_hid_action("LibraryChanged");
+			pcb_hid_action("LibraryChanged");
 		}
 	} while(pcb_gui != NULL);
 
