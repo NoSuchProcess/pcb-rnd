@@ -33,6 +33,9 @@
 #include "conf.h"
 #include "misc_util.h"
 #include "board.h"
+#include "funchash_core.h"
+#include "conf_core.h"
+#include "compat_nls.h"
 
 pcb_route_style_t pcb_custom_route_style;
 
@@ -183,3 +186,51 @@ int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_
 }
 #undef cmp
 
+
+int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
+{
+	switch (funcid) {
+	case F_Object:
+		switch (type) {
+		case PCB_TYPE_ELEMENT:					/* we'd set pin/pad properties, so fall thru */
+		case PCB_TYPE_VIA:
+		case PCB_TYPE_PIN:
+			return pcb_get_style_size(F_SelectedVias, out, 0, size_id);
+		case PCB_TYPE_PAD:
+			return pcb_get_style_size(F_SelectedPads, out, 0, size_id);
+		case PCB_TYPE_LINE:
+			return pcb_get_style_size(F_SelectedLines, out, 0, size_id);
+		case PCB_TYPE_ARC:
+			return pcb_get_style_size(F_SelectedArcs, out, 0, size_id);
+		}
+		pcb_message(PCB_MSG_DEFAULT, _("Sorry, can't fetch the style of that object type (%x)\n"), type);
+		return -1;
+	case F_SelectedPads:
+		if (size_id != 2)						/* don't mess with pad size */
+			return -1;
+	case F_SelectedVias:
+	case F_SelectedPins:
+	case F_SelectedObjects:
+	case F_Selected:
+	case F_SelectedElements:
+		if (size_id == 0)
+			*out = conf_core.design.via_thickness;
+		else if (size_id == 1)
+			*out = conf_core.design.via_drilling_hole;
+		else
+			*out = conf_core.design.clearance;
+		break;
+	case F_SelectedArcs:
+	case F_SelectedLines:
+		if (size_id == 2)
+			*out = conf_core.design.clearance;
+		else
+			*out = conf_core.design.line_thickness;
+		return 0;
+	case F_SelectedTexts:
+	case F_SelectedNames:
+		pcb_message(PCB_MSG_DEFAULT, _("Sorry, can't change style of every selected object\n"));
+		return -1;
+	}
+	return 0;
+}

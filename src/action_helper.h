@@ -40,10 +40,6 @@ void pcb_adjust_attached_objects(void);
 
 #define PCB_ACTION_ARG(n) (argc > (n) ? argv[n] : NULL)
 
-/* helper: get route style size for a function and selected object type.
-   size_id: 0=main size; 1=2nd size (drill); 2=clearance */
-int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id);
-
 
 extern int defer_updates;
 extern int defer_needs_update;

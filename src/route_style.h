@@ -50,3 +50,7 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
 int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name);
 
 extern pcb_route_style_t pcb_custom_route_style;
+
+/* helper: get route style size for a function and selected object type.
+   size_id: 0=main size; 1=2nd size (drill); 2=clearance */
+int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id);
