@@ -151,22 +151,12 @@ static void XORDrawAttachedArc(pcb_coord_t thick)
 	if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
 		arc.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
 		sa = (wx >= 0) ? 0 : 180;
-#ifdef ARC45
-		if (coord_abs(wy) >= 2 * coord_abs(wx))
-			dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 45 : -45;
-		else
-#endif
-			dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
+		dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
 	}
 	else {
 		arc.Y = pcb_crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
 		sa = (wy >= 0) ? -90 : 90;
-#ifdef ARC45
-		if (coord_abs(wx) >= 2 * coord_abs(wy))
-			dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -45 : 45;
-		else
-#endif
-			dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
+		dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
 		wy = wx;
 	}
 	wy = coord_abs(wy);

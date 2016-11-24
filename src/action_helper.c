@@ -632,22 +632,12 @@ void pcb_notify_mode(void)
 					if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
 						pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
 						sa = (wx >= 0) ? 0 : 180;
-#ifdef ARC45
-						if (abs(wy) / 2 >= abs(wx))
-							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 45 : -45;
-						else
-#endif
-							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
+						dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
 					}
 					else {
 						pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
 						sa = (wy >= 0) ? -90 : 90;
-#ifdef ARC45
-						if (abs(wx) / 2 >= abs(wy))
-							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -45 : 45;
-						else
-#endif
-							dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
+						dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
 						wy = wx;
 					}
 					if (coord_abs(wy) > 0 && (arc = pcb_arc_new(CURRENT,
