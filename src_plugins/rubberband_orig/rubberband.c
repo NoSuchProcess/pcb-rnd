@@ -93,9 +93,13 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	rubber_ctx_t *rbnd = i->rbnd;
 	double x, y, rad, dist1, dist2;
 	pcb_coord_t t;
-	int touches = 0;
+	int n, touches = 0;
 
 	t = line->Thickness / 2;
+
+	for(n = 0; n < rbnd->RubberbandN; n++)
+		if (rbnd->Rubberband[n].Line == line)
+			return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 		return PCB_R_DIR_NOT_FOUND;
