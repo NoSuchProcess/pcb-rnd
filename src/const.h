@@ -38,7 +38,7 @@
  * modes
  */
 typedef enum {
-	PCB_MODE_NO              = 0,   /* no mode selected */
+	PCB_MODE_NO              = 0,   /* no mode selected - panning */
 	PCB_MODE_VIA             = 1,   /* draw vias */
 	PCB_MODE_LINE            = 2,   /* draw lines */
 	PCB_MODE_RECTANGLE       = 3,   /* create rectangles */
@@ -54,7 +54,6 @@ typedef enum {
 	PCB_MODE_THERMAL         = 108, /* toggle thermal layer flag */
 	PCB_MODE_ARC             = 109, /* draw arcs */
 	PCB_MODE_ARROW           = 110, /* selection with arrow mode */
-	PCB_MODE_PAN             = 0,   /* same as no mode */
 	PCB_MODE_LOCK            = 111, /* lock/unlock objects */
 	PCB_MODE_POLYGON_HOLE    = 112  /* cut holes in filled polygons */
 } pcb_mode_t;
