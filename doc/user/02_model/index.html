@@ -181,14 +181,14 @@ polygon!
 <p>
 Extra object flags:
 <p>
-<table>
+<table border=1>
 	<tr><th>name        <th> description
 	<tr><td>clearpoly   <td> should have clearance around objects, if the objects have the appropriate flags too
 	<tr><td>fullpoly    <td> keep all islands, not only the largest
 </table>
 
 <h4> 2.4.4. text objects </h4>
-
+<p>
 A text object is string and a series of symbols (pcb-rnd's terminology for
 glyph). Symbols are built of lines and are stored in the font. Each board
 can have its own font, but there can be only one font per board. When
@@ -205,6 +205,34 @@ Bug: copper text can not participate in short circuits, the galvanic connection
 checker code skips texts.
 
 <h4> 2.4.5. via objects </h4>
+<p>
+A via is a galvanized hole that connects copper rings on multiple layers.
+Pcb-rnd currently has two limitations: there are no blind or buried vias -
+a hole always punches all layers; there's no pad stack support, the copper
+ring around the hole on each layer have the same sizes.
+<p>
+A copper ring also has a per layer property whether or how it connects to
+the sorrunding polygon on the given layer; this is called the thermal style
+of the via. The following options are available:
+<table border=1>
+	<tr><th>thermal style <th> appearance
+	<tr><td>no connecton <td> <img src=TODO>
+	<tr><td>solid        <td> <img src=TODO>
+	<tr><td>round x 90   <td> <img src=TODO>
+	<tr><td>round x 45   <td> <img src=TODO>
+	<tr><td>sharp x 90   <td> <img src=TODO>
+	<tr><td>sharp x 45   <td> <img src=TODO>
+</table>
+<p>
+The shape of the copper annulus (the ring) is also selectable from a predefined
+set of symmetrical and asymmetrical set:
+<table border=1>
+	<tr><th>shape          <th> appearance
+	<tr><td>ring (default) <td> <img src=TODO>
+	<tr><td>square         <td> <img src=TODO>
+	<tr><td>octagon        <td> <img src=TODO>
+	<tr><td>asymmetrical   <td> <img src=TODO>
+</table>
 
 <h4> 2.4.6. element objects </h4>
 
