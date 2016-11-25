@@ -33,7 +33,7 @@ LoadFrom(Layout, '$fn'.orig.pcb)
 SaveTo(LayoutAs, '$fn'.trgt.'$ext', '$fmt')
 LoadFrom(Layout, '$fn'.trgt.'$ext', '$fmt')
 SaveTo(LayoutAs, '$fn'.new.pcb, pcb)
-' | $valg $bin --gui batch "$fn"
+' | $valg $pcb_rnd_bin --gui batch "$fn"
 
 	if test -f "$fn.orig.pcb" -a -f "$fn.new.pcb"
 	then
@@ -81,7 +81,10 @@ help()
 fmt="lihata"
 fn=""
 remtgt=""
-bin="pcb-rnd"
+if test -z "$pcb_rnd_bin"
+then
+	pcb_rnd_bin="pcb-rnd"
+fi
 valg=""
 
 while test $# -gt 0
@@ -90,7 +93,7 @@ do
 	in
 		--help) help "$0"; exit 0;;
 		-f) fmt=$2; shift 1;;
-		-b) bin=$2; shift 1;;
+		-b) pcb_rnd_bin=$2; shift 1;;
 		-V) valg="valgrind -v";;
 		-r) remtgt=1;;
 		*)
