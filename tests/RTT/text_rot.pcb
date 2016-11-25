@@ -1,0 +1,95 @@
+# release: pcb-rnd 1.1.1
+
+# To read pcb files, the pcb version (or the git source date) must be >= the file version
+FileVersion[20070407]
+
+PCB["text rotations" 12700000nm 12700000nm]
+
+Grid[635000nm 0 0 1]
+Cursor[0 0 0.000000]
+PolyArea[3100.006200]
+Thermal[0.500000]
+DRC[304800nm 228600nm 254000nm 177800nm 381000nm 254000nm]
+Flags("nameonpcb,clearnew,snappin")
+Groups("1,3,c:2,4,s:5:6:7")
+Styles["style1,254000nm,1999995nm,800100nm,508000nm:style2,508000nm,2199894nm,999997nm,508000nm:style3,2032000nm,3500119nm,1199895nm,635000nm:style4,2540000nm,1625600nm,800100nm,2540000nm"]
+
+Symbol['A' 304800nm]
+(
+	SymbolLine[0 508000nm 0 1270000nm 203200nm]
+	SymbolLine[0 508000nm 177800nm 254000nm 203200nm]
+	SymbolLine[177800nm 254000nm 457200nm 254000nm 203200nm]
+	SymbolLine[457200nm 254000nm 635000nm 508000nm 203200nm]
+	SymbolLine[635000nm 508000nm 635000nm 1270000nm 203200nm]
+	SymbolLine[0 762000nm 635000nm 762000nm 203200nm]
+)
+Symbol['1' 304800nm]
+(
+	SymbolLine[0 457200nm 203200nm 254000nm 203200nm]
+	SymbolLine[203200nm 254000nm 203200nm 1270000nm 203200nm]
+	SymbolLine[0 1270000nm 381000nm 1270000nm 203200nm]
+)
+Symbol['2' 304800nm]
+(
+	SymbolLine[0 381000nm 127000nm 254000nm 203200nm]
+	SymbolLine[127000nm 254000nm 508000nm 254000nm 203200nm]
+	SymbolLine[508000nm 254000nm 635000nm 381000nm 203200nm]
+	SymbolLine[635000nm 381000nm 635000nm 635000nm 203200nm]
+	SymbolLine[0 1270000nm 635000nm 635000nm 203200nm]
+	SymbolLine[0 1270000nm 635000nm 1270000nm 203200nm]
+)
+Symbol['3' 304800nm]
+(
+	SymbolLine[0 381000nm 127000nm 254000nm 203200nm]
+	SymbolLine[127000nm 254000nm 381000nm 254000nm 203200nm]
+	SymbolLine[381000nm 254000nm 508000nm 381000nm 203200nm]
+	SymbolLine[381000nm 1270000nm 508000nm 1143000nm 203200nm]
+	SymbolLine[127000nm 1270000nm 381000nm 1270000nm 203200nm]
+	SymbolLine[0 1143000nm 127000nm 1270000nm 203200nm]
+	SymbolLine[127000nm 711200nm 381000nm 711200nm 203200nm]
+	SymbolLine[508000nm 381000nm 508000nm 584200nm 203200nm]
+	SymbolLine[508000nm 838200nm 508000nm 1143000nm 203200nm]
+	SymbolLine[508000nm 838200nm 381000nm 711200nm 203200nm]
+	SymbolLine[508000nm 584200nm 381000nm 711200nm 203200nm]
+)
+Symbol['4' 304800nm]
+(
+	SymbolLine[0 889000nm 508000nm 254000nm 203200nm]
+	SymbolLine[0 889000nm 635000nm 889000nm 203200nm]
+	SymbolLine[508000nm 254000nm 508000nm 1270000nm 203200nm]
+)
+
+Attribute("PCB::grid::unit" "mil")
+Attribute("PCB::conf::editor/draw_grid" "true")
+
+Layer(1 "comp1")
+(
+)
+Layer(2 "solder1")
+(
+)
+Layer(3 "com2")
+(
+)
+Layer(4 "solder2")
+(
+)
+Layer(5 "inner1")
+(
+)
+Layer(6 "inner2")
+(
+)
+Layer(7 "outline")
+(
+)
+Layer(8 "silk")
+(
+)
+Layer(9 "silk")
+(
+	Text[5715000nm 3810000nm 0 100 "A1" "clearline"]
+	Text[3810000nm 6985000nm 1 100 "A2" "clearline"]
+	Text[6985000nm 8890000nm 2 100 "A3" "clearline"]
+	Text[8890000nm 5715000nm 3 100 "A4" "clearline"]
+)

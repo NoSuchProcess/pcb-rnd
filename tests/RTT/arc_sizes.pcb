@@ -1,0 +1,47 @@
+# release: pcb-rnd 1.1.0
+
+# To read pcb files, the pcb version (or the git source date) must be >= the file version
+FileVersion[20070407]
+
+PCB["arcs with different strange sizes" 12700000nm 12700000nm]
+
+Grid[635000nm 0 0 1]
+Cursor[0 635000nm 0.000000]
+PolyArea[3100.006200]
+Thermal[0.500000]
+DRC[304800nm 228600nm 254000nm 177800nm 381000nm 254000nm]
+Flags("nameonpcb,clearnew,snappin")
+Groups("1,3,c:2,4,s:5:6:7")
+Styles["style1,254000nm,1999995nm,800100nm,508000nm:style2,508000nm,2199894nm,999997nm,508000nm:style3,2032000nm,3500119nm,1199895nm,635000nm:style4,2540000nm,1625600nm,800100nm,2540000nm"]
+
+Layer(1 "comp1")
+(
+	Arc[100mil 200mil 0mil 50mil 254000nm 1016000nm 0 90 ""]
+	Arc[200mil 200mil 50mil 0mil 254000nm 1016000nm 0 90 ""]
+	Arc[300mil 200mil 0mil 0mil 254000nm 1016000nm 0 90 ""]
+
+)
+Layer(2 "solder1")
+(
+)
+Layer(3 "com2")
+(
+)
+Layer(4 "solder2")
+(
+)
+Layer(5 "inner1")
+(
+)
+Layer(6 "inner2")
+(
+)
+Layer(7 "outline")
+(
+)
+Layer(8 "silk")
+(
+)
+Layer(9 "silk")
+(
+)
