@@ -15,6 +15,9 @@ set_fmt_args()
 			fmt_args="--dpi 1200"
 			ext=.png
 			;;
+		svg)
+			ext=.svg
+			;;
 	esac
 }
 
