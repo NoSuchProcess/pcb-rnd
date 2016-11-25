@@ -11,10 +11,6 @@ do
 	cnt=$(($cnt+1))
 	echo "----------------------$n"
 	echo "----------------------$n $cnt/$num_all" >&2
-	pcb-rtrip $n | grep -v "PCBChanged\|readres=-1\|No PCB loaded\|pcb-gpmi hid is loaded\|has no font information, using default font"
-	if test -f core
-	then
-		mv core $n.core
-	fi
+	./Rtt.sh $n "$@"
 done > All.log
 
