@@ -78,6 +78,7 @@ static pcb_rubberband_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t 
 static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *);
 static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *);
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, pcb_bool);
+static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, int *, pcb_bool);
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_polygon_t *);
 static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_point_t *);
 static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl);
@@ -103,8 +104,10 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 		return PCB_R_DIR_NOT_FOUND;
+
 	if (line == i->line)
 		return PCB_R_DIR_NOT_FOUND;
+
 	/*
 	 * Check to see if the line touches a rectangular region.
 	 * To do this we need to look for the intersection of a circular
@@ -394,6 +397,50 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 }
 
 /* ---------------------------------------------------------------------------
+ * checks all visible lines which belong to the same group as the passed arc.
+ * If one of the endpoints of the line is on the selected arc end,
+ * the scanned line is added to the 'rubberband' list
+ */
+static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int *end_pt, pcb_bool Exact)
+{
+	pcb_cardinal_t group;
+	struct rubber_info info;
+	pcb_coord_t t = Arc->Thickness / 2, ex, ey;
+	pcb_box_t *ends = pcb_arc_get_ends(Arc);
+
+	if (end_pt == NULL) {
+		ex = ends->X1;
+		ey = ends->Y1;
+	}
+	else {
+		ex = ends->X2;
+		ey = ends->Y2;
+	}
+
+	/* lookup layergroup and check all visible lines in this group */
+	info.radius = Exact ? -1 : MAX(Arc->Thickness / 2, 1);
+	info.box.X1 = ex - t;
+	info.box.X2 = ex + t;
+	info.box.Y1 = ey - t;
+	info.box.Y2 = ey + t;
+	info.line = NULL; /* used only to make sure the current object is not added - we are adding lines only and the current object is an arc */
+	info.rbnd = rbnd;
+	info.X = ex;
+	info.Y = ey;
+
+	group = GetLayerGroupNumberByPointer(Layer);
+	GROUP_LOOP(PCB->Data, group);
+	{
+		/* check all visible lines of the group member */
+		if (layer->On) {
+			info.layer = layer;
+			pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+		}
+	}
+	PCB_END_LOOP;
+}
+
+/* ---------------------------------------------------------------------------
  * checks all visible lines which belong to the same group as the passed polygon.
  * If one of the endpoints of the line lays inside the passed polygon,
  * the scanned line is added to the 'rubberband' list
@@ -479,6 +526,11 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 	case PCB_TYPE_LINE_POINT:
 		if (GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
 			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
+		break;
+
+	case PCB_TYPE_ARC_POINT:
+		if (GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
+			CheckArcPointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3, pcb_true);
 		break;
 
 	case PCB_TYPE_VIA:
