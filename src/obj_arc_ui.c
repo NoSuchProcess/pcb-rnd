@@ -27,11 +27,27 @@
 
 #include "config.h"
 #include "obj_arc_ui.h"
+#include "obj_arc.h"
+#include "box.h"
 
 #include <stdio.h>
 
 void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch)
 {
 	fprintf(stderr, "Moving arc endpoint: not yet implemented\n");
+}
+
+int pcb_obj_ui_arc_point_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res)
+{
+	pcb_arc_t *arc = Ptr2;
+	int *end_pt = Ptr3;
+	pcb_box_t *ends = pcb_arc_get_ends(arc);
+
+	if (end_pt == NULL)
+		*res = pcb_point_box(ends->X1, ends->Y1);
+	else
+		*res = pcb_point_box(ends->X2, ends->Y2);
+
+	return 0;
 }
 

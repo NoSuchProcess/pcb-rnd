@@ -27,4 +27,5 @@
 #include "crosshair.h"
 
 void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch);
+int pcb_obj_ui_arc_point_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
 
