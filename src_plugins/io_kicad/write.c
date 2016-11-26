@@ -613,7 +613,6 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	gdl_iterator_t it;
 	pcb_arc_t *arc;
 	pcb_arc_t localArc; /* for converting ellipses to circular arcs */
-	pcb_box_t *boxResult; /* for figuring out arc ends */
 	pcb_cardinal_t currentLayer = number;
 	pcb_coord_t radius, xStart, yStart, xEnd, yEnd;
 	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
@@ -638,7 +637,14 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 				radius = arc->Width;
 				localArc.Height = radius;
 			}
-		boxResult = pcb_arc_get_ends(&localArc);
+
+/* Return the x;y coordinate of the endpoint of an arc; if which is 0, return
+   the endpoint that corresponds to StartAngle, else return the end angle's.
+void pcb_arc_get_end(pcb_arc_t *Arc, int which, pcb_coord_t *x, pcb_coord_t *y);
+
+Obsolete: please use pcb_arc_get_end() instead
+pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc); */
+
 			if (arc->Delta == 360.0 || arc->Delta == -360.0 ) { /* it's a circle */
 				kicadArcShape = 3;
 			} else { /* it's an arc */
@@ -646,10 +652,12 @@ int write_kicad_layout_arcs(FILE * FP, pcb_cardinal_t number,
 			}
 			xStart = localArc.X + xOffset;
 			yStart = localArc.Y + yOffset;
-			xEnd = boxResult->X2 + xOffset; 
-			yEnd = boxResult->Y2 + yOffset; 
-			copperStartX = boxResult->X1 + xOffset;
-			copperStartY = boxResult->Y1 + yOffset; 
+			pcb_arc_get_end(&localArc, 1, &xEnd, &yEnd);
+			xEnd += xOffset; 
+			yEnd += yOffset; 
+			pcb_arc_get_end(&localArc, 0, &copperStartX, &copperStartY);
+			copperStartX += xOffset;
+			copperStartY += yOffset;
 			if ((currentLayer < 16) || (currentLayer == 28)) { /* a copper arc, i.e. track, or edge cut, is unsupported by kicad, and will be exported as a line */
 				fprintf(FP, "%*s", indentation, "");
 				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
@@ -804,7 +812,6 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 	pcb_line_t *line;
 	pcb_arc_t *arc;
 	pcb_element_t *element;
-	pcb_box_t *boxResult;
 
 	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc exporting */
 
@@ -873,11 +880,8 @@ int io_kicad_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Data)
 		}
 
 		arclist_foreach(&element->Arc, &it, arc) {
-			boxResult = pcb_arc_get_ends(arc);
-			arcStartX = boxResult->X1;
-			arcStartY = boxResult->Y1;
-			arcEndX = boxResult->X2; 
-			arcEndY = boxResult->Y2; 
+			pcb_arc_get_end(arc, 0, &arcStartX, &arcStartY);
+			pcb_arc_get_end(arc, 1, &arcEndX, &arcEndY);
 			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
 				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
 										arc->X - element->MarkX, /* x_1 centre */
@@ -1131,11 +1135,8 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 
 		arclist_foreach(&element->Arc, &it, arc) {
 
-			pcb_box_t *boxResult = pcb_arc_get_ends(arc);
-			arcStartX = boxResult->X1;
-			arcStartY = boxResult->Y1;
-			arcEndX = boxResult->X2; 
-			arcEndY = boxResult->Y2; 
+			pcb_arc_get_end(arc, 0, &arcStartX, &arcStartY);
+			pcb_arc_get_end(arc, 1, &arcEndX, &arcEndY);
 
 			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
 				fprintf(FP, "%*s", indentation +2, "");
