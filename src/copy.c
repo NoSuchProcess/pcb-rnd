@@ -54,6 +54,7 @@ static pcb_opfunc_t CopyFunctions = {
 	NULL,
 	NULL,
 	CopyArc,
+	NULL,
 	NULL
 };
 

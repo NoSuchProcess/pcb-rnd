@@ -47,6 +47,7 @@
 
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
+#include "obj_arc_ui.h"
 
 typedef struct {
 	int x, y;
@@ -401,6 +402,10 @@ static void XORDrawMoveOrCopy(void)
 			break;
 		}
 
+	case PCB_TYPE_ARC_POINT:
+		pcb_arc_ui_move_or_copy(&pcb_crosshair);
+		break;
+
 	case PCB_TYPE_POLYGON_POINT:
 		{
 			pcb_polygon_t *polygon;
@@ -741,12 +746,10 @@ void DrawLineOrArc(int type, void *obj)
 		 */
 		DrawLine(NULL, (pcb_line_t *) obj);
 		break;
-#if 0
-	case ARCPOINT_TYPE:
+	case PCB_TYPE_ARC_POINT:
 		/* See comment above */
 		DrawArc(NULL, (pcb_arc_t *) obj);
 		break;
-#endif
 	}
 }
 
@@ -900,7 +903,8 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 	if ((conf_core.editor.mode != PCB_MODE_LINE || CURRENT != ptr1) &&
 			(conf_core.editor.mode != PCB_MODE_MOVE ||
 			 pcb_crosshair.AttachedObject.Ptr1 != ptr1 ||
-			 pcb_crosshair.AttachedObject.Type != PCB_TYPE_LINE_POINT || pcb_crosshair.AttachedObject.Ptr2 == line))
+			 pcb_crosshair.AttachedObject.Type != PCB_TYPE_LINE_POINT
+			 || pcb_crosshair.AttachedObject.Ptr2 == line))
 		return;
 
 	dx = line->Point2.X - line->Point1.X;

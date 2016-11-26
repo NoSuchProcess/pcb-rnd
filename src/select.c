@@ -502,6 +502,11 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 			return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3));
 		break;
 
+	case PCB_TYPE_ARC_POINT:
+		if (F->ArcPoint)
+			return (F->ArcPoint(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (int *) Ptr3));
+		break;
+
 	case PCB_TYPE_TEXT:
 		if (F->Text)
 			return (F->Text(ctx, (pcb_layer_t *) Ptr1, (pcb_text_t *) Ptr2));

@@ -56,6 +56,7 @@ static pcb_opfunc_t ChangeSizeFunctions = {
 	NULL,
 	NULL,
 	ChangeArcSize,
+	NULL,
 	NULL
 };
 
@@ -71,6 +72,7 @@ static pcb_opfunc_t Change1stSizeFunctions = {
 	NULL,
 	NULL,
 	ChangeArcSize,
+	NULL,
 	NULL
 };
 
@@ -82,6 +84,7 @@ static pcb_opfunc_t Change2ndSizeFunctions = {
 	ChangeElement2ndSize,
 	NULL,
 	ChangePin2ndSize,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -101,6 +104,7 @@ static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL,
 	NULL
 };
 
@@ -116,6 +120,7 @@ static pcb_opfunc_t ChangeClearSizeFunctions = {
 	NULL,
 	NULL,
 	ChangeArcClearSize,
+	NULL,
 	NULL
 };
 
@@ -128,6 +133,7 @@ static pcb_opfunc_t ChangeNameFunctions = {
 	NULL,
 	ChangePinName,
 	ChangePadName,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -146,6 +152,7 @@ static pcb_opfunc_t ChangePinnumFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL,
 	NULL
 };
 
@@ -161,6 +168,7 @@ static pcb_opfunc_t ChangeSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL,
 	NULL
 };
 
@@ -170,6 +178,7 @@ static pcb_opfunc_t ChangeNonetlistFunctions = {
 	NULL,
 	NULL,
 	ChangeElementNonetlist,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -191,6 +200,7 @@ static pcb_opfunc_t ChangeJoinFunctions = {
 	NULL,
 	NULL,
 	ChangeArcJoin,
+	NULL,
 	NULL
 };
 
@@ -202,6 +212,7 @@ static pcb_opfunc_t ChangeOctagonFunctions = {
 	ChangeElementOctagon,
 	NULL,
 	ChangePinOctagon,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -225,6 +236,7 @@ static pcb_opfunc_t ChangeMaskSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL,
 	NULL
 };
 
@@ -237,6 +249,7 @@ static pcb_opfunc_t SetSquareFunctions = {
 	NULL,
 	SetPinSquare,
 	SetPadSquare,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -255,6 +268,7 @@ static pcb_opfunc_t SetJoinFunctions = {
 	NULL,
 	NULL,
 	SetArcJoin,
+	NULL,
 	NULL
 };
 
@@ -266,6 +280,7 @@ static pcb_opfunc_t SetOctagonFunctions = {
 	SetElementOctagon,
 	NULL,
 	SetPinOctagon,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -285,6 +300,7 @@ static pcb_opfunc_t ClrSquareFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL,
 	NULL
 };
 
@@ -300,6 +316,7 @@ static pcb_opfunc_t ClrJoinFunctions = {
 	NULL,
 	NULL,
 	ClrArcJoin,
+	NULL,
 	NULL
 };
 
@@ -311,6 +328,7 @@ static pcb_opfunc_t ClrOctagonFunctions = {
 	ClrElementOctagon,
 	NULL,
 	ClrPinOctagon,
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -330,6 +348,7 @@ static pcb_opfunc_t ChangeRadiusFunctions = {
 	NULL,
 	NULL,
 	ChangeArcRadius,
+	NULL,
 	NULL
 };
 
@@ -345,6 +364,7 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 	NULL,
 	NULL,
 	ChangeArcAngle,
+	NULL,
 	NULL
 };
 

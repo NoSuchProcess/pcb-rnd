@@ -22,5 +22,9 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
-
 /* Arc UI logics */
+
+#include "crosshair.h"
+
+void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch);
+

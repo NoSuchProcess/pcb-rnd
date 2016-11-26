@@ -25,3 +25,13 @@
 
 /* Arc UI logics */
 
+#include "config.h"
+#include "obj_arc_ui.h"
+
+#include <stdio.h>
+
+void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch)
+{
+	fprintf(stderr, "Moving arc endpoint: not yet implemented\n");
+}
+

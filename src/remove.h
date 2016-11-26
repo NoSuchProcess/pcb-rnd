@@ -34,9 +34,9 @@
 /* ---------------------------------------------------------------------------
  * some constants
  */
-#define PCB_REMOVE_TYPES            \
-	(PCB_TYPE_VIA | PCB_TYPE_LINE_POINT | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT |	\
-	PCB_TYPE_POLYGON_POINT | PCB_TYPE_POLYGON | PCB_TYPE_RATLINE | PCB_TYPE_ARC)
+#define PCB_REMOVE_TYPES \
+	(PCB_TYPE_VIA | PCB_TYPE_LINE_POINT | PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT | \
+	PCB_TYPE_POLYGON_POINT | PCB_TYPE_POLYGON | PCB_TYPE_RATLINE | PCB_TYPE_ARC | PCB_TYPE_ARC_POINT)
 
 pcb_bool pcb_remove_selected(void);
 void *pcb_remove_object(int, void *, void *, void *);

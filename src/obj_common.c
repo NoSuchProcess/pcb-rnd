@@ -55,6 +55,9 @@ pcb_box_t *GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	case PCB_TYPE_POLYGON_POINT:
 	case PCB_TYPE_LINE_POINT:
 		return (pcb_box_t *) Ptr3;
+	case PCB_TYPE_ARC_POINT:
+/*		abort();*/
+		
 	default:
 		pcb_message(PCB_MSG_DEFAULT, "Request for bounding box of unsupported type %d\n", Type);
 		return (pcb_box_t *) Ptr2;

@@ -60,9 +60,13 @@ static pcb_opfunc_t MoveFunctions = {
 	MoveLinePoint,
 	MovePolygonPoint,
 	MoveArc,
-	NULL
-}, MoveToLayerFunctions = {
-MoveLineToLayer, MoveTextToLayer, MovePolygonToLayer, NULL, NULL, NULL, NULL, NULL, NULL, NULL, MoveArcToLayer, MoveRatToLayer};
+	NULL,
+	MoveArcPoint
+};
+
+static pcb_opfunc_t MoveToLayerFunctions = {
+MoveLineToLayer, MoveTextToLayer, MovePolygonToLayer, NULL, NULL, NULL, NULL, NULL, NULL, NULL, MoveArcToLayer, MoveRatToLayer, NULL
+};
 
 /* ---------------------------------------------------------------------------
  * moves the object identified by its data pointers and the type
@@ -101,9 +105,15 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	if (DX == 0 && DY == 0)
 		return NULL;
 
-	pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
-	ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	pcb_undo_inc_serial();
+	if (Type == PCB_TYPE_ARC_POINT) {
+		/* moving the endpoint of an arc is not really a move, but a change of arc properties */
+		pcb_message(PCB_MSG_ERROR, "Unsupported: moving arc endpoint\n");
+	}
+	else {
+		pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
+		ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+		pcb_undo_inc_serial();
+	}
 
 	pcb_draw_inhibit_dec();
 	pcb_draw();

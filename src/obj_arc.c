@@ -595,6 +595,43 @@ void *RotateArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	return (Arc);
 }
 
+void *MoveArcPoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc, int *end_id)
+{
+#if 0
+	if (Layer) {
+		if (Layer->On)
+			EraseLine(Line);
+		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_r_delete_entry(Layer->line_tree, &Line->BoundingBox);
+		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
+		pcb_line_bbox(Line);
+		pcb_r_insert_entry(Layer->line_tree, &Line->BoundingBox, 0);
+		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		if (Layer->On) {
+			DrawLine(Layer, Line);
+			pcb_draw();
+		}
+		return (Line);
+	}
+	else {												/* must be a rat */
+
+		if (PCB->RatOn)
+			EraseRat((pcb_rat_t *) Line);
+		pcb_r_delete_entry(PCB->Data->rat_tree, &Line->BoundingBox);
+		PCB_MOVE(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
+		pcb_line_bbox(Line);
+		pcb_r_insert_entry(PCB->Data->rat_tree, &Line->BoundingBox, 0);
+		if (PCB->RatOn) {
+			DrawRat((pcb_rat_t *) Line);
+			pcb_draw();
+		}
+		return (Line);
+	}
+#endif
+	return NULL;
+}
+
+
 /*** draw ***/
 void _draw_arc(pcb_arc_t * arc)
 {

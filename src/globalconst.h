@@ -91,7 +91,7 @@
 #endif
 #endif
 
-#define PCB_MAX_LINE_POINT_DISTANCE     0   /* maximum distance when searching line points */
+#define PCB_MAX_LINE_POINT_DISTANCE     0   /* maximum distance when searching line points; same for arc point */
 #define PCB_MAX_POLYGON_POINT_DISTANCE  0   /* maximum distance when searching polygon points */
 #define PCB_MAX_ELEMENTNAMES            3   /* number of supported names of an element */
 #define PCB_MAX_NETLIST_LINE_LENGTH     255 /* maximum line length for netlist files */

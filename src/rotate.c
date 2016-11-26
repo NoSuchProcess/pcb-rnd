@@ -64,6 +64,7 @@ static pcb_opfunc_t RotateFunctions = {
 	RotateLinePoint,
 	NULL,
 	RotateArc,
+	NULL,
 	NULL
 };
 
