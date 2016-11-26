@@ -597,7 +597,7 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord
 }
 
 /* rotates an arc */
-void *RotateArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
+void *Rotate90Arc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	EraseArc(Arc);
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);

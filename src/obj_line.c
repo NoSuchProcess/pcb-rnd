@@ -711,7 +711,7 @@ static void rotate_line2(pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* rotates a line's point */
-void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
+void *Rotate90LinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	pcb_point_t *center;
 
@@ -728,8 +728,8 @@ void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 	return Line;
 }
 
-/* rotates a line's */
-void *RotateLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
+/* rotates a line */
+void *Rotate90Line(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
 	rotate_line1(Layer, Line);
 	pcb_point_rotate90(&Line->Point1, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);

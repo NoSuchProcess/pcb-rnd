@@ -48,6 +48,6 @@ void *MoveElementName(pcb_opctx_t *ctx, pcb_element_t *Element);
 void *MoveElement(pcb_opctx_t *ctx, pcb_element_t *Element);
 void *DestroyElement(pcb_opctx_t *ctx, pcb_element_t *Element);
 void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *RotateElement(pcb_opctx_t *ctx, pcb_element_t *Element);
-void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *Rotate90Element(pcb_opctx_t *ctx, pcb_element_t *Element);
+void *Rotate90ElementName(pcb_opctx_t *ctx, pcb_element_t *Element);
 

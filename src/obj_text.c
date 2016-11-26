@@ -450,7 +450,7 @@ void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned 
 }
 
 /* rotates a text object and redraws it */
-void *RotateText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
+void *Rotate90Text(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	EraseText(Layer, Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);

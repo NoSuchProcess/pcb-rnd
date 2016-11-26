@@ -1730,7 +1730,7 @@ void *RemoveElement_op(pcb_opctx_t *ctx, pcb_element_t *Element)
 }
 
 /* rotates an element */
-void *RotateElement(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *Rotate90Element(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	EraseElement(Element);
 	pcb_element_rotate90(PCB->Data, Element, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
@@ -1742,7 +1742,7 @@ void *RotateElement(pcb_opctx_t *ctx, pcb_element_t *Element)
 /* ----------------------------------------------------------------------
  * rotates the name of an element
  */
-void *RotateElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
+void *Rotate90ElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 {
 	EraseElementName(Element);
 	PCB_ELEMENT_PCB_TEXT_LOOP(Element);
