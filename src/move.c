@@ -65,7 +65,19 @@ static pcb_opfunc_t MoveFunctions = {
 };
 
 static pcb_opfunc_t MoveToLayerFunctions = {
-MoveLineToLayer, MoveTextToLayer, MovePolygonToLayer, NULL, NULL, NULL, NULL, NULL, NULL, NULL, MoveArcToLayer, MoveRatToLayer, NULL
+	MoveLineToLayer,
+	MoveTextToLayer,
+	MovePolygonToLayer,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	MoveArcToLayer,
+	MoveRatToLayer,
+	NULL
 };
 
 /* ---------------------------------------------------------------------------
