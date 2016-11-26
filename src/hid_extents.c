@@ -4,10 +4,6 @@
 #include "hid_draw_helpers.h"
 #include "hid_extents.h"
 
-#ifndef MAXINT
-#define MAXINT (((unsigned int)(~0))>>1)
-#endif
-
 static pcb_box_t box;
 
 typedef struct hid_gc_s {
@@ -164,15 +160,15 @@ pcb_box_t *pcb_hid_get_extents(void *item)
 	/* As this isn't a real "HID", we need to ensure we are initialised. */
 	hid_extents_init();
 
-	box.X1 = MAXINT;
-	box.Y1 = MAXINT;
-	box.X2 = -MAXINT;
-	box.Y2 = -MAXINT;
+	box.X1 = COORD_MAX;
+	box.Y1 = COORD_MAX;
+	box.X2 = -COORD_MAX;
+	box.Y2 = -COORD_MAX;
 
-	region.X1 = -MAXINT;
-	region.Y1 = -MAXINT;
-	region.X2 = MAXINT;
-	region.Y2 = MAXINT;
+	region.X1 = -COORD_MAX;
+	region.Y1 = -COORD_MAX;
+	region.X2 = COORD_MAX;
+	region.Y2 = COORD_MAX;
 	pcb_hid_expose_callback(&extents_hid, &region, item);
 
 	return &box;

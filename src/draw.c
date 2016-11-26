@@ -52,10 +52,6 @@
 #undef NDEBUG
 #include <assert.h>
 
-#ifndef MAXINT
-#define MAXINT (((unsigned int)(~0))>>1)
-#endif
-
 #define	SMALL_SMALL_TEXT_SIZE	0
 #define	SMALL_TEXT_SIZE			1
 #define	NORMAL_TEXT_SIZE		2
@@ -68,7 +64,7 @@ pcb_output_t Output;							/* some widgets ... used for drawing */
  * some local identifiers
  */
 
-pcb_box_t pcb_draw_invalidated = { MAXINT, MAXINT, -MAXINT, -MAXINT };
+pcb_box_t pcb_draw_invalidated = { COORD_MAX, COORD_MAX, -COORD_MAX, -COORD_MAX };
 
 int pcb_draw_doing_pinout = 0;
 pcb_bool pcb_draw_doing_assy = pcb_false;
@@ -114,8 +110,8 @@ void pcb_draw(void)
 		pcb_gui->invalidate_lr(pcb_draw_invalidated.X1, pcb_draw_invalidated.X2, pcb_draw_invalidated.Y1, pcb_draw_invalidated.Y2);
 
 	/* shrink the update block */
-	pcb_draw_invalidated.X1 = pcb_draw_invalidated.Y1 = MAXINT;
-	pcb_draw_invalidated.X2 = pcb_draw_invalidated.Y2 = -MAXINT;
+	pcb_draw_invalidated.X1 = pcb_draw_invalidated.Y1 = COORD_MAX;
+	pcb_draw_invalidated.X2 = pcb_draw_invalidated.Y2 = -COORD_MAX;
 }
 
 /* ----------------------------------------------------------------------
