@@ -1191,51 +1191,45 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 			*/
 		}
 		padlist_foreach(&element->Pad, &it, pad) {
-			fputs("$PAD\n",FP);	 /* start pad descriptor for an smd pad */
-
-			pcb_fprintf(FP, "Po %.3mm %.3mm\n", /* positions of pad */
+			fprintf(FP, "%*s", indentation + 2, "");
+			fputs("(pad ", FP);
+			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Number));
+			fputs(" smd rect ",FP); /* square for now */
+			pcb_fprintf(FP, "(at %.3mm %.3mm)", /* positions of pad */
 									(pad->Point1.X + pad->Point2.X)/2- element->MarkX,
 									(pad->Point1.Y + pad->Point2.Y)/2- element->MarkY);
-
-			fputs("Sh ",FP); /* pin shape descriptor */
-			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pad->Number));
-			fputs(" R ",FP); /* rectangular, not a pin */
-
+			pcb_fprintf(FP, " (size ");
 			if ((pad->Point1.X-pad->Point2.X) <= 0
 					&& (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-				pcb_fprintf(FP, "%.0mk %.0mk ",
+				pcb_fprintf(FP, "%.3mm %.3mm)\n",
 										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
 										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) <= 0
 								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%.0mk %.0mk ",
+				pcb_fprintf(FP, "%.3mm %.3mm)\n",
 										pad->Point2.X-pad->Point1.X + pad->Thickness,	 /* width */
 										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 								 && (pad->Point1.Y-pad->Point2.Y) > 0 ) {
-				pcb_fprintf(FP, "%.0mk %.0mk ",
+				pcb_fprintf(FP, "%.3mm %.3mm)\n",
 										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
 										pad->Point1.Y-pad->Point2.Y + pad->Thickness); /* height */
 			} else if ((pad->Point1.X-pad->Point2.X) > 0
 								 && (pad->Point1.Y-pad->Point2.Y) <= 0 ) {
-				pcb_fprintf(FP, "%.0mk %.0mk ",
+				pcb_fprintf(FP, "%.3mm %.3mm)\n",
 										pad->Point1.X-pad->Point2.X + pad->Thickness,	 /* width */
 										pad->Point2.Y-pad->Point1.Y + pad->Thickness); /* height */
 			}
 
-			fputs("0 0 0\n",FP); /* deltaX deltaY Orientation as float in decidegrees */
-
-			fputs("Dr 0 0 0\n",FP); /* drill details; zero size; x,y pos vs pad location */
-
-			fputs("At SMD N 00888000\n", FP); /* SMD pin, need to use right layer mask */
-
-			current_pad_menu = pcb_netlist_find_net4pad(Layout, pad);
-			if ((current_pad_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pad_menu) != PCB_NETLIST_INVALID_INDEX)) {
-				fprintf(FP, "Ne %d \"%s\"\n", (1 + pcb_netlist_net_idx(Layout, current_pad_menu)), pcb_netlist_name(current_pad_menu)); /* library parts have empty net descriptors, in a .brd they don't */
+			fprintf(FP, "%*s", indentation + 4, "");
+			fprintf(FP, "(layers *.Cu  *.Paste *.Mask)\n"); /* define included layers for pad; needs fixing */
+			current_pin_menu = pcb_netlist_find_net4pad(Layout, pad);
+			fprintf(FP, "%*s", indentation + 4, "");
+			if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX)) {
+				fprintf(FP, "(net %d \"%s\")\n", (1 + pcb_netlist_net_idx(Layout, current_pin_menu)), pcb_netlist_name(current_pin_menu)); /* library parts have empty net descriptors, in a .brd they don't */
 			} else {
-				fprintf(FP, "Ne 0 \"\"\n"); /* a net number of 0 indicates an unconnected pad in pcbnew */
-			} 
-
+				fprintf(FP, "(net 0 \"\")\n"); /* unconnected pads have zero for net */
+			}
 			fprintf(FP, "%*s)\n", indentation + 2, "");
 
 		}
