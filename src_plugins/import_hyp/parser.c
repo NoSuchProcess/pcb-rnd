@@ -1,6 +1,6 @@
 /*
  * read hyperlynx files
- * Copyright 2012 Koen De Vleeschauwer.
+ * Copyright 2016 Koen De Vleeschauwer.
  *
  * This file is part of pcb-rnd.
  *
@@ -22,6 +22,29 @@
 #include "hyp_l.h"
 #include "hyp_y.h"
 #include "error.h"
+#include "pcb-printf.h"
+
+/*
+ * board outline is doubly linked list of arcs and line segments.
+ */
+
+typedef struct outline_s {
+  pcb_coord_t x1;
+  pcb_coord_t y1;
+  pcb_coord_t x2;
+  pcb_coord_t y2;
+  pcb_coord_t xc;
+  pcb_coord_t yc;
+  pcb_coord_t r;
+  pcb_bool_t is_arc; /* arc or line */
+  pcb_bool_t used; /* already included in outline */
+  struct outline_s *next;
+  } outline_t;
+
+outline_t *outline_head;
+outline_t *outline_tail;
+
+void hyp_perimeter(); /* add board outline to pcb */
 
 int hyp_debug; /* logging on/off switch */
 
@@ -46,20 +69,26 @@ pcb_coord_t plane_separation;       /* distance between PLANE polygon and copper
  * Conversion from hyperlynx to pcb_coord_t - igor2
  */
 
+/* meter to pcb_coord_t */
+
+pcb_coord_t inline meter2coord(double m)
+{
+  return ((pcb_coord_t) PCB_MM_TO_COORD(1000.0 * m));
+}
+
 /* x, y coordinates to pcb_coord_t */
 
 pcb_coord_t inline xy2coord(double f)
 {
-  return ((pcb_coord_t) PCB_MM_TO_COORD(1000.0 * unit * f));
+  return (meter2coord(unit * f));
 }
 
 /* z coordinates to pcb_coord_t */
 
 pcb_coord_t inline z2coord(double f)
 {
-  return ((pcb_coord_t) PCB_MM_TO_COORD(1000.0 * metal_thickness_unit * f));
+  return (meter2coord(metal_thickness_unit * f));
 }
-
 
 /*
  * initialize physical constants 
@@ -80,6 +109,9 @@ void hyp_init(void)
   fr4_loss_tangent = 0.020;
   conformal_epsilon_r = 3.3; /* dielectric constant of conformal layer */
   plane_separation = -1; /* distance between PLANE polygon and copper of different nets; -1 if not set */
+
+  outline_head = NULL;
+  outline_tail = NULL;
 
   return;
 }
@@ -105,6 +137,9 @@ int hyp_parse(pcb_data_t *dest, const char *fname, int debug)
   retval = hyyparse();
   fclose(hyyin);
 
+  /* add board outline */
+  hyp_perimeter();
+
   return(retval);
 }
  
@@ -123,7 +158,7 @@ void hyp_error(const char *msg)
 
 pcb_bool exec_board_file(parse_param *h)
 {
-  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "board\n");
+  if (hyp_debug) pcb_printf(PCB_MSG_DEBUG, "board\n");
 
   return 0;
 }
@@ -136,7 +171,7 @@ pcb_bool exec_board_file(parse_param *h)
 
 pcb_bool exec_version(parse_param *h)
 {
-  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "version: vers = %f\n", h->vers);
+  if (hyp_debug) pcb_printf("version: vers = %f\n", h->vers);
 
   if (h->vers < 1.0) pcb_message(PCB_MSG_DEBUG, "warning: version 1.x deprecated\n");
 
@@ -151,7 +186,7 @@ pcb_bool exec_version(parse_param *h)
 
 pcb_bool exec_data_mode(parse_param *h)
 {
-  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "data_mode: detailed = %i\n", h->detailed);
+  if (hyp_debug) pcb_printf("data_mode: detailed = %i\n", h->detailed);
 
   return 0;
 }
@@ -163,7 +198,7 @@ pcb_bool exec_data_mode(parse_param *h)
 
 pcb_bool exec_units(parse_param *h)
 {
-  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "units: unit_system_english = %d metal_thickness_weight = %d\n", h->unit_system_english, h->metal_thickness_weight);
+  if (hyp_debug) pcb_printf("units: unit_system_english = %d metal_thickness_weight = %d\n", h->unit_system_english, h->metal_thickness_weight);
 
   /* convert everything to meter */
 
@@ -182,7 +217,7 @@ pcb_bool exec_units(parse_param *h)
       metal_thickness_unit = unit;                /* metal thickness in centimeters */
     }
 
-  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "units: unit = %f metal_thickness_unit = %f\n", unit, metal_thickness_unit);
+  if (hyp_debug) pcb_printf("units: unit = %f metal_thickness_unit = %f\n", unit, metal_thickness_unit);
 
   return 0;
 }
@@ -194,9 +229,9 @@ pcb_bool exec_units(parse_param *h)
 
 pcb_bool exec_plane_sep(parse_param *h)
 {
-  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "plane_sep: default_plane_separation = %d\n", h->plane_separation);
-
   plane_separation = xy2coord(h->plane_separation);
+
+  if (hyp_debug) pcb_printf("plane_sep: default_plane_separation = %mm\n", plane_separation);
 
   return 0;
 }
@@ -204,23 +239,75 @@ pcb_bool exec_plane_sep(parse_param *h)
 /*
  * Hyperlynx 'PERIMETER_SEGMENT' subrecord of 'BOARD' record.
  * Draws linear board outline segment.
+ * Linear segment drawn from (x1, y1) to (x2, y2).
  */
 
 pcb_bool exec_perimeter_segment(parse_param *h)
 {
-  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "perimeter_segment: x1 = %f y1 = %f x2 = %f y2 = %f\n", h->x1, h->y1, h->x2, h->y2);
+  outline_t *peri_seg;
+
+  peri_seg = malloc(sizeof(outline_t));
+
+  peri_seg->x1 = xy2coord(h->x1);
+  peri_seg->y1 = xy2coord(h->y1);
+  peri_seg->x2 = xy2coord(h->x2);
+  peri_seg->y2 = xy2coord(h->y2);
+  peri_seg->xc = 0;
+  peri_seg->yc = 0;
+  peri_seg->r = 0;
+  peri_seg->is_arc = pcb_false;
+  peri_seg->used = pcb_false;
+  peri_seg->next = NULL;
+
+  if (hyp_debug) pcb_printf("perimeter_segment: x1 = %mm y1 = %mm x2 = %mm y2 = %mm\n", peri_seg->x1, peri_seg->y1, peri_seg->x2, peri_seg->y2);
+
+  /* append at end of doubly linked list */
+  if (outline_tail == NULL) {
+    outline_head = peri_seg;
+    outline_tail = peri_seg;
+    }
+  else {
+    outline_tail->next = peri_seg;
+    outline_tail = peri_seg;
+    }
 
   return 0;
 }
 
 /*
  * Hyperlynx 'PERIMETER_ARC' subrecord of 'BOARD' record.
- * Draws arc segment of board outline. Arc drawn counterclockwise.
+ * Draws arc segment of board outline. 
+ * Arc drawn counterclockwise from (x1, y1) to (x2, y2) with center (xc, yc) and radius r.
  */
 
 pcb_bool exec_perimeter_arc(parse_param *h)
 {
-  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "perimeter_arc: x1 = %f y1 = %f x2 = %f y2 = %f xc = %f yc = %f r = %f\n", h->x1, h->y1, h->x2, h->y2, h->xc, h->yc, h->r);
+  outline_t *peri_arc;
+
+  peri_arc = malloc(sizeof(outline_t));
+
+  peri_arc->x1 = xy2coord(h->x1);
+  peri_arc->y1 = xy2coord(h->y1);
+  peri_arc->x2 = xy2coord(h->x2);
+  peri_arc->y2 = xy2coord(h->y2);
+  peri_arc->xc = xy2coord(h->xc);
+  peri_arc->yc = xy2coord(h->yc);
+  peri_arc->r = xy2coord(h->r);
+  peri_arc->is_arc = pcb_true;
+  peri_arc->used = pcb_false;
+  peri_arc->next = NULL;
+
+  if (hyp_debug) pcb_printf("perimeter_arc: x1 = %mm y1 = %mm x2 = %mm y2 = %mm xc = %mm yc = %mm r = %mm\n", peri_arc->x1, peri_arc->y1, peri_arc->x2, peri_arc->y2, peri_arc->xc, peri_arc->yc, peri_arc->r);
+
+  /* append at end of doubly linked list */
+  if (outline_tail == NULL) {
+    outline_head = peri_arc;
+    outline_tail = peri_arc;
+    }
+  else {
+    outline_tail->next = peri_arc;
+    outline_tail = peri_arc;
+    }
 
   return 0;
 }
@@ -232,9 +319,150 @@ pcb_bool exec_perimeter_arc(parse_param *h)
 
 pcb_bool exec_board_attribute(parse_param *h)
 {
-  if (hyp_debug) pcb_message(PCB_MSG_DEBUG, "board_attribute: name = %s value = %s\n", h->name, h->value);
+  if (hyp_debug) pcb_printf("board_attribute: name = %s value = %s\n", h->name, h->value);
 
   return 0;
+}
+
+/*
+ * add segment to board outline
+ */
+
+void perimeter_segment_add(outline_t *s, pcb_bool_t forward)
+{
+  s->used = pcb_true;
+  if (forward)
+    pcb_printf("\tperimeter segments: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x1, s->y1, s->x2, s->y2);
+  else /* add segment back to front */
+    pcb_printf("\tperimeter segments: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);
+}
+
+/* 
+ * Check whether point (x1, y1) is connected to point (begin_x, begin_y) via un-used segments
+ */
+#ifdef XXXX
+pcb_bool_t segment_distance(pcb_coord_t begin_x, pcb_coord_t begin_y, outline_t *s)
+{
+  outline_t *i;
+  
+  
+  s->used = pcb_true;
+
+  for (i = outline_head; i != NULL; i = i->next)
+  {
+    if (i->used) continue;
+
+    /* recursive descent */
+    if ((i->x1 == s->x1) && (i->y1 == s->y1))
+    {
+      if ((i->x2 == begin_x) && (i->y2 == begin_y)) return pcb_true;
+      else if segment_distance(begin_x, begin_y, i) return pcb_true;
+    }
+    if ((i->x2 == s->x1) && (i->y2 == s->y1))
+    {
+      if ((i->x1 == begin_x) && (i->y1 == begin_y)) return pcb_true;
+      else if segment_distance(begin_x, begin_y, i) return pcb_true;
+    }
+  }
+
+  s->used = pcb_false;
+
+  return min_dist;
+}
+#endif
+
+/* 
+ * Draw board perimeter.
+ * The first segment is part of the first polygon.
+ * The first polygon of the board perimeter is positive, the rest are holes.
+ * Segments do not necesarily occur in order.
+ */
+
+void hyp_perimeter()
+{
+  pcb_bool_t segment_found;
+  pcb_bool_t polygon_closed;
+  pcb_coord_t begin_x, begin_y, last_x, last_y;
+  outline_t *i;
+  outline_t *j;
+
+  /* iterate over perimeter polygons */
+  while (pcb_true)
+  {
+
+    /* find first free segment */
+    for (i = outline_head; i != NULL; i = i->next)
+      if (i->used == pcb_false) break;
+
+    /* exit if no segments found */
+    if (i == NULL) break;
+
+    /* first point of polygon (begin_x, begin_y) */
+    begin_x = i->x1;
+    begin_y = i->y1;
+
+    /* last point of polygon (last_x, last_y) */
+    last_x = i->x2;
+    last_y = i->y2;
+
+    /* add segment */
+    perimeter_segment_add(i, pcb_true);
+
+    /* add polygon segments until the polygon is closed */
+    polygon_closed = pcb_false;
+    while (!polygon_closed)
+    {
+
+#undef XXX
+#ifdef XXX
+      pcb_printf("perimeter: last_x = %mm last_y = %mm\n", last_x, last_y);
+      for (i = outline_head; i != NULL; i = i->next)
+        if (!i->used) pcb_printf("perimeter segments available: %s from (%mm, %mm) to (%mm, %mm)\n", i->is_arc ? "arc" : "line", i->x1, i->y1, i->x2, i->y2);
+#endif
+
+      /* find segment to add to current polygon */
+      segment_found = pcb_false;
+
+      for (i = outline_head; i != NULL; i = i->next)
+      {
+        if (i->used) continue;
+
+        if ((last_x == i->x1) && (last_y == i->y1))
+        {
+          /* first point of segment is last point of current edge: add segment to edge */
+          segment_found = pcb_true;
+          perimeter_segment_add(i, pcb_true);
+          last_x = i->x2;
+          last_y = i->y2;
+        }
+        else if ((last_x == i->x2) && (last_y == i->y2))
+        {
+          /* last point of segment is last point of current edge: add segment to edge back to front */
+          segment_found = pcb_true;
+          /* add segment back to front */
+          perimeter_segment_add(i, pcb_false);
+          last_x = i->x1;
+          last_y = i->y1;
+        }
+        if (segment_found) break;
+      }
+      polygon_closed = (begin_x == last_x) && (begin_y == last_y);
+      if (!polygon_closed && !segment_found)
+        break;                   /* can't find anything suitable */
+    }
+    if (polygon_closed) pcb_printf("perimeter: closed\n");
+    else pcb_printf("perimeter: open\n");
+  }
+
+  /* free segment memory */
+  for (i = outline_head; i != NULL; i = j)
+  {
+    j = i->next;
+    free (i);
+  }
+  outline_head = outline_tail = NULL;
+
+  return;
 }
 
 pcb_bool exec_options(parse_param *h){return(0);}
