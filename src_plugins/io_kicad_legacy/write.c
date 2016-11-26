@@ -574,7 +574,6 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	gdl_iterator_t it;
 	pcb_arc_t *arc;
 	pcb_arc_t localArc; /* for converting ellipses to circular arcs */
-	pcb_box_t *boxResult; /* for figuring out arc ends */
 	pcb_cardinal_t currentLayer = number;
 	pcb_coord_t radius, xStart, yStart, xEnd, yEnd;
 	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
@@ -599,18 +598,21 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 				radius = arc->Width;
 				localArc.Height = radius;
 			}
-		boxResult = pcb_arc_get_ends(&localArc);
 			if (arc->Delta == 360.0 || arc->Delta == -360.0 ) { /* it's a circle */
 				kicadArcShape = 3;
 			} else { /* it's an arc */
 				kicadArcShape = 2;
 			}
+
 			xStart = localArc.X + xOffset;
 			yStart = localArc.Y + yOffset;
-			xEnd = boxResult->X2 + xOffset; 
-			yEnd = boxResult->Y2 + yOffset; 
-			copperStartX = boxResult->X1 + xOffset;
-			copperStartY = boxResult->Y1 + yOffset; 
+			pcb_arc_get_end(&localArc, 1, &xEnd, &yEnd);
+			xEnd += xOffset; 
+			yEnd += yOffset; 
+			pcb_arc_get_end(&localArc, 0, &copperStartX, &copperStartY);
+			copperStartX += xOffset;
+			copperStartY += yOffset;
+
 			if (currentLayer < 16) { /* a copper arc, i.e. track, is unsupported by kicad, and will be exported as a line */
 				kicadArcShape = 0; /* make it a line for copper layers - kicad doesn't do arcs on copper */ 
 				pcb_fprintf(FP, "Po %d %.0mk %.0mk %.0mk %.0mk %.0mk\n",
@@ -764,7 +766,6 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Dat
 	pcb_line_t *line;
 	pcb_arc_t *arc;
 	pcb_element_t *element;
-	pcb_box_t *boxResult;
 
 	pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY; /* for arc exporting */
 
@@ -833,11 +834,8 @@ int io_kicad_legacy_write_element(pcb_plug_io_t *ctx, FILE * FP, pcb_data_t *Dat
 		}
 
 		arclist_foreach(&element->Arc, &it, arc) {
-			boxResult = pcb_arc_get_ends(arc);
-			arcStartX = boxResult->X1;
-			arcStartY = boxResult->Y1;
-			arcEndX = boxResult->X2; 
-			arcEndY = boxResult->Y2; 
+			pcb_arc_get_end(arc, 0, &arcStartX, &arcStartY);
+			pcb_arc_get_end(arc, 1, &arcEndX, &arcEndY);
 			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
 				pcb_fprintf(FP, "DC %.3mm %.3mm %.3mm %.3mm %.3mm ",
 										arc->X - element->MarkX, /* x_1 centre */
@@ -1144,11 +1142,8 @@ int write_kicad_legacy_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_
 
 		arclist_foreach(&element->Arc, &it, arc) {
 
-			pcb_box_t *boxResult = pcb_arc_get_ends(arc);
-			arcStartX = boxResult->X1;
-			arcStartY = boxResult->Y1;
-			arcEndX = boxResult->X2; 
-			arcEndY = boxResult->Y2; 
+			pcb_arc_get_end(arc, 0, &arcStartX, &arcStartY);
+			pcb_arc_get_end(arc, 1, &arcEndX, &arcEndY);
 
 			if ((arc->Delta == 360.0) || (arc->Delta == -360.0)) { /* it's a circle */
 				pcb_fprintf(FP, "DC %.0mk %.0mk %.0mk %.0mk %.0mk ",
