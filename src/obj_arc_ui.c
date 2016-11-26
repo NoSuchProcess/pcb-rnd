@@ -82,6 +82,10 @@ void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch)
 		delta = new_delta;
 	}
 
+	/* remember the result of the calculation so the actual move code can reuse them */
+	ch->AttachedObject.start_angle = start;
+	ch->AttachedObject.delta_angle = delta;
+
 	pcb_gui->draw_arc(ch->GC, arc->X, arc->Y, arc->Width, arc->Height, start, delta);
 	pcb_gui->draw_line(ch->GC, arc->X-mark, arc->Y, arc->X+mark, arc->Y);
 	pcb_gui->draw_line(ch->GC, arc->X, arc->Y-mark, arc->X, arc->Y+mark);

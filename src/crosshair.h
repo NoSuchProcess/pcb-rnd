@@ -50,6 +50,7 @@ typedef struct {								/* currently attached object */
 	void *Ptr1,										/* three pointers to data, see */
 	 *Ptr2,												/* search.c */
 	 *Ptr3;
+	pcb_angle_t start_angle, delta_angle;
 } pcb_attached_object_t;
 
 typedef struct {
