@@ -41,6 +41,7 @@
 #include "hid_actions.h"
 #include "hid_init.h"
 #include "compat_nls.h"
+#include "event.h"
 
 #include "obj_elem_draw.h"
 #include "obj_pinvia_draw.h"
@@ -824,14 +825,14 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = &l->Point1;
-				return 0;
+				goto switched;
 			}
 			if (close_enough(Note.X, l->Point2.X) && close_enough(Note.Y, l->Point2.Y)) {
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_LINE_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = &l->Point2;
-				return 0;
+				goto switched;
 			}
 		}
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_ARC_POINT) != PCB_TYPE_NONE) {
@@ -841,14 +842,14 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = NULL;
-				return 0;
+				goto switched;
 			}
 			if (close_enough(Note.X, b->X2) && close_enough(Note.Y, b->Y2)) {
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = 0x1;
-				return 0;
+				goto switched;
 			}
 		}
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_VIA) != PCB_TYPE_NONE) {
@@ -856,26 +857,29 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 			pcb_crosshair.AttachedObject.Ptr3 = ptr3;
-			return 0;
+			goto switched;
 		}
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_PAD) != PCB_TYPE_NONE) {
 			pcb_crosshair.AttachedObject.Type = PCB_TYPE_ELEMENT;
 			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = ptr1;
 			pcb_crosshair.AttachedObject.Ptr3 = ptr1;
-			return 0;
+			goto switched;
 		}
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_ARC) != PCB_TYPE_NONE) {
 			pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC;
 			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 			pcb_crosshair.AttachedObject.Ptr3 = ptr3;
-			return 0;
+			goto switched;
 		}
 
 	} while (over <= 1);
 
 	return -1;
+	switched:;
+	pcb_event(PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+	return 0;
 }
 
 #undef close_enough
