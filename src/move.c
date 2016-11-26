@@ -61,7 +61,7 @@ static pcb_opfunc_t MoveFunctions = {
 	MovePolygonPoint,
 	MoveArc,
 	NULL,
-	MoveArcPoint
+	NULL
 };
 
 static pcb_opfunc_t MoveToLayerFunctions = {

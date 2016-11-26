@@ -34,7 +34,7 @@
 
 #include <stdio.h>
 
-void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch)
+void pcb_arc_ui_move_or_copy_angle(pcb_crosshair_t *ch)
 {
 	int *end_pt = ch->AttachedObject.Ptr3;
 	pcb_arc_t *arc = (pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2;
@@ -90,6 +90,23 @@ void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch)
 	pcb_gui->draw_line(ch->GC, arc->X-mark, arc->Y, arc->X+mark, arc->Y);
 	pcb_gui->draw_line(ch->GC, arc->X, arc->Y-mark, arc->X, arc->Y+mark);
 }
+
+void pcb_arc_ui_move_or_copy_endp(pcb_crosshair_t *ch)
+{
+	int *end_pt = ch->AttachedObject.Ptr3;
+	pcb_arc_t *arc = (pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2;
+
+}
+
+
+void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch)
+{
+	if (pcb_gui->control_is_pressed())
+		pcb_arc_ui_move_or_copy_endp(ch);
+	else
+		pcb_arc_ui_move_or_copy_angle(ch);
+}
+
 
 int pcb_obj_ui_arc_point_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res)
 {
