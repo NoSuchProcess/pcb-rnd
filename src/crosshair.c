@@ -1075,9 +1075,17 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	ans = PCB_TYPE_NONE;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE_POINT | PCB_TYPE_ARC_POINT, &ptr1, &ptr2, &ptr3);
 
-	if (ans != PCB_TYPE_NONE) {
+	if (ans == PCB_TYPE_ARC_POINT) {
+		/* Arc point needs special handling as it's not a real point but has to be calculated */
+		pcb_box_t *ends = pcb_arc_get_ends((pcb_arc_t *)ptr2);
+		if (ptr3 == NULL)
+			check_snap_object(&snap_data, ends->X1, ends->Y1, pcb_true);
+		else
+			check_snap_object(&snap_data, ends->X2, ends->Y2, pcb_true);
+	}
+	else if (ans != PCB_TYPE_NONE) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true);
 	}
