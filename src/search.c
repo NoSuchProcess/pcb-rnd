@@ -63,6 +63,7 @@ static pcb_bool SearchPadByLocation(int, pcb_element_t **, pcb_pad_t **, pcb_pad
 static pcb_bool SearchViaByLocation(int, pcb_pin_t **, pcb_pin_t **, pcb_pin_t **);
 static pcb_bool SearchElementNameByLocation(int, pcb_element_t **, pcb_text_t **, pcb_text_t **, pcb_bool);
 static pcb_bool SearchLinePointByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_point_t **);
+static pcb_bool SearchArcPointByLocation(int, pcb_layer_t **, pcb_arc_t **, int *);
 static pcb_bool SearchPointByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_point_t **);
 static pcb_bool SearchElementByLocation(int, pcb_element_t **, pcb_element_t **, pcb_element_t **, pcb_bool);
 
@@ -254,6 +255,8 @@ static pcb_bool SearchRatLineByLocation(int locked, pcb_rat_t ** Line, pcb_rat_t
 struct arc_info {
 	pcb_arc_t **Arc, **Dummy;
 	int locked;
+	int *arc_pt; /* 0=start, 1=end (start+delta) */
+	double least;
 };
 
 static pcb_r_dir_t arc_callback(const pcb_box_t * box, void *cl)
@@ -380,6 +383,38 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 	return ret_val;
 }
 
+static pcb_r_dir_t arcpoint_callback(const pcb_box_t * b, void *cl)
+{
+	pcb_box_t *ab;
+	pcb_arc_t *arc = (pcb_arc_t *) b;
+	struct arc_info *i = (struct arc_info *) cl;
+	pcb_r_dir_t ret_val = PCB_R_DIR_NOT_FOUND;
+	double d;
+
+
+	if (PCB_FLAG_TEST(i->locked, arc))
+		return PCB_R_DIR_NOT_FOUND;
+
+	/* some stupid code to check both points */
+	ab = pcb_arc_get_ends(arc);
+	d = pcb_distance(PosX, PosY, ab->X1, ab->Y1);
+	if (d < i->least) {
+		i->least = d;
+		*i->Arc = arc;
+		*i->arc_pt = 0;
+		ret_val = PCB_R_DIR_FOUND_CONTINUE;
+	}
+
+	d = pcb_distance(PosX, PosY, ab->X2, ab->Y2);
+	if (d < i->least) {
+		i->least = d;
+		*i->Arc = arc;
+		*i->arc_pt = 1;
+		ret_val = PCB_R_DIR_FOUND_CONTINUE;
+	}
+	return ret_val;
+}
+
 /* ---------------------------------------------------------------------------
  * searches a line-point on all the search layer
  */
@@ -393,6 +428,23 @@ static pcb_bool SearchLinePointByLocation(int locked, pcb_layer_t ** Layer, pcb_
 	info.least = PCB_MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
+		return pcb_true;
+	return pcb_false;
+}
+
+/* ---------------------------------------------------------------------------
+ * searches a line-point on all the search layer
+ */
+static pcb_bool SearchArcPointByLocation(int locked, pcb_layer_t ** Layer, pcb_arc_t ** Arc, int *Point)
+{
+	struct arc_info info;
+	*Layer = SearchLayer;
+	info.Arc = Arc;
+	info.arc_pt = Point;
+	*Point = -1;
+	info.least = PCB_MAX_LINE_POINT_DISTANCE + SearchRadius;
+	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
+	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arcpoint_callback, &info, NULL))
 		return pcb_true;
 	return pcb_false;
 }
@@ -1045,6 +1097,11 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 					SearchLinePointByLocation(locked, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_point_t **) Result3))
 				return (PCB_TYPE_LINE_POINT);
 
+			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
+					Type & PCB_TYPE_ARC_POINT &&
+					SearchArcPointByLocation(locked, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (int *) Result3))
+				return (PCB_TYPE_ARC_POINT);
+
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_LINE
 					&& SearchLineByLocation(locked, (pcb_layer_t **) Result1, (pcb_line_t **) Result2, (pcb_line_t **) Result3))
 				return (PCB_TYPE_LINE);
@@ -1153,7 +1210,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 		}
 		PCB_ENDALL_LOOP;
 	}
-	if (type == PCB_TYPE_ARC) {
+	if (type == PCB_TYPE_ARC || type == PCB_TYPE_ARC_POINT) {
 		PCB_ARC_ALL_LOOP(Base);
 		{
 			if (arc->ID == ID) {

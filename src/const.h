@@ -82,6 +82,8 @@ typedef enum {
 	PCB_TYPE_LOCKED        = 0x10000, /* used to tell search to include locked items. */
 	PCB_TYPE_NET           = 0x20000, /* used to select whole net. */
 
+	PCB_TYPE_ARC_POINT     = 0x40000,
+
 	/* groups/properties */
 	PCB_TYPEMASK_PIN       = (PCB_TYPE_VIA | PCB_TYPE_PIN),
 	PCB_TYPEMASK_LOCK      = (PCB_TYPE_VIA | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_POLYGON | PCB_TYPE_ELEMENT | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_LOCKED),
