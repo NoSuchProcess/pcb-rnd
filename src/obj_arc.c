@@ -131,6 +131,19 @@ void pcb_arc_bbox(pcb_arc_t *Arc)
 	pcb_close_box(&Arc->BoundingBox);
 }
 
+
+void pcb_arc_get_end(pcb_arc_t *Arc, int which, pcb_coord_t *x, pcb_coord_t *y)
+{
+	if (which == 0) {
+		*x = Arc->X - Arc->Width * cos(Arc->StartAngle * PCB_M180);
+		*y = Arc->Y + Arc->Height * sin(Arc->StartAngle * PCB_M180);
+	}
+	else {
+		*x = Arc->X - Arc->Width * cos((Arc->StartAngle + Arc->Delta) * PCB_M180);
+		*y = Arc->Y + Arc->Height * sin((Arc->StartAngle + Arc->Delta) * PCB_M180);
+	}
+}
+
 pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc)
 {
 	static pcb_box_t box;
