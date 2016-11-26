@@ -122,7 +122,7 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 
 static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 {
-	pcb_box_t *box;
+	pcb_box_t box;
 	pcb_coord_t mx = 0, my = 0;
 
 	pcb_event(PCB_EVENT_RUBBER_RESET, NULL);
@@ -143,12 +143,11 @@ static void AttachForCopy(pcb_coord_t PlaceX, pcb_coord_t PlaceY)
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 
 	/* get boundingbox of object and set cursor range */
-	box = GetObjectBoundingBox(pcb_crosshair.AttachedObject.Type,
-														 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
-	pcb_crosshair_set_range(pcb_crosshair.AttachedObject.X - box->X1,
-										pcb_crosshair.AttachedObject.Y - box->Y1,
-										PCB->MaxWidth - (box->X2 - pcb_crosshair.AttachedObject.X),
-										PCB->MaxHeight - (box->Y2 - pcb_crosshair.AttachedObject.Y));
+	GetObjectBoundingBox(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, &box);
+	pcb_crosshair_set_range(pcb_crosshair.AttachedObject.X - box.X1,
+										pcb_crosshair.AttachedObject.Y - box.Y1,
+										PCB->MaxWidth - (box.X2 - pcb_crosshair.AttachedObject.X),
+										PCB->MaxHeight - (box.Y2 - pcb_crosshair.AttachedObject.Y));
 
 	/* get all attached objects if necessary */
 	if ((conf_core.editor.mode != PCB_MODE_COPY) && conf_core.editor.rubber_band_mode)

@@ -45,7 +45,7 @@ struct pcb_box_s {  /* a bounding box */
 	pcb_coord_t X2, Y2;     /* and lower right corner */
 };
 
-pcb_box_t *GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
 
 /* memset object to 0, but keep the link field */
 #define reset_obj_mem(type, obj) \
