@@ -51,6 +51,7 @@ typedef struct {								/* currently attached object */
 	 *Ptr2,												/* search.c */
 	 *Ptr3;
 	pcb_angle_t start_angle, delta_angle;
+	pcb_coord_t radius;
 } pcb_attached_object_t;
 
 typedef struct {
