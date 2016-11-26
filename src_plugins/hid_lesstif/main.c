@@ -2730,7 +2730,7 @@ void lesstif_need_idle_proc()
 	idle_proc_set = 1;
 }
 
-static void lesstif_invalidate_lr(int l, int r, int t, int b)
+static void lesstif_invalidate_lr(pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
 {
 	if (!window)
 		return;

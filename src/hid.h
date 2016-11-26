@@ -214,7 +214,7 @@ struct hid_s {
 	void (*parse_arguments) (int *argc_, char ***argv_);
 
 	/* This may be called to ask the GUI to force a redraw of a given area */
-	void (*invalidate_lr) (int left_, int right_, int top_, int bottom_);
+	void (*invalidate_lr) (pcb_coord_t left_, pcb_coord_t right_, pcb_coord_t top_, pcb_coord_t bottom_);
 	void (*invalidate_all) (void);
 	void (*notify_crosshair_change) (pcb_bool changes_complete);
 	void (*notify_mark_change) (pcb_bool changes_complete);

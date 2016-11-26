@@ -35,7 +35,7 @@ static void nogui_parse_arguments(int *argc, char ***argv)
 	CRASH("parse_arguments");
 }
 
-static void nogui_invalidate_lr(int l, int r, int t, int b)
+static void nogui_invalidate_lr(pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
 {
 	CRASH("invalidate_lr");
 }

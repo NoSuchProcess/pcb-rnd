@@ -112,7 +112,7 @@ static void remote_parse_arguments(int *argc, char ***argv)
 	pcb_hid_parse_command_line(argc, argv);
 }
 
-static void remote_invalidate_lr(int l, int r, int t, int b)
+static void remote_invalidate_lr(pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
 {
 	proto_send_invalidate(l,r, t, b);
 }

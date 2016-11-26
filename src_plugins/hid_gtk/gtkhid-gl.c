@@ -542,7 +542,7 @@ void ghid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t
 	hidgl_fill_rect(x1, y1, x2, y2);
 }
 
-void ghid_invalidate_lr(int left, int right, int top, int bottom)
+void ghid_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	ghid_invalidate_all();
 }

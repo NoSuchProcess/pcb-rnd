@@ -31,7 +31,7 @@ static void log_parse_arguments(int *argc, char ***argv) {
 	delegatee_->parse_arguments(argc, argv);
 }
 
-static void log_invalidate_lr(int left, int right, int top, int bottom) {
+static void log_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom) {
 	pcb_fprintf(out_, "invalidate_lr(%mm, %mm, %mm, %mm)\n", left, right, top, bottom);
 	delegatee_->invalidate_lr(left, right, top, bottom);
 }

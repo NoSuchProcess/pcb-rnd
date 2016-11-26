@@ -833,7 +833,7 @@ static void redraw_region(GdkRectangle * rect)
 	gdk_gc_set_clip_mask(priv->bg_gc, NULL);
 }
 
-void ghid_invalidate_lr(int left, int right, int top, int bottom)
+void ghid_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
 	int dleft, dright, dtop, dbottom;
 	int minx, maxx, miny, maxy;

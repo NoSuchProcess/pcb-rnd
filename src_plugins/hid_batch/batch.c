@@ -165,7 +165,7 @@ static void batch_parse_arguments(int *argc, char ***argv)
 	pcb_hid_parse_command_line(argc, argv);
 }
 
-static void batch_invalidate_lr(int l, int r, int t, int b)
+static void batch_invalidate_lr(pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
 {
 }
 
