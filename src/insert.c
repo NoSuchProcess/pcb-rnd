@@ -108,7 +108,7 @@ pcb_point_t *pcb_adjust_insert_point(void)
 		InsertedPoint.Y = myline.Point2.Y;
 		return &InsertedPoint;
 	}
-	if (conf_core.editor.all_direction_lines) {
+	if (PCB->RatDraw || conf_core.editor.all_direction_lines) {
 		InsertedPoint.X = pcb_crosshair.X;
 		InsertedPoint.Y = pcb_crosshair.Y;
 		return &InsertedPoint;
