@@ -608,6 +608,33 @@ void *RotateArc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	return (Arc);
 }
 
+void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
+{
+	pcb_angle_t end_ang = arc->StartAngle + arc->Delta;
+	pcb_coord_t x = pcb_crosshair.X, y = pcb_crosshair.Y;
+	pcb_angle_t angle = atan2(-(y - arc->Y), (x - arc->X)) * 180.0 / M_PI + 180.0;
+	pcb_arc_t *new_arc;
+
+	if (end_ang > 360.0)
+		end_ang -= 360.0;
+	if (end_ang < -360.0)
+		end_ang += 360.0;
+
+	if ((arc->Delta < 0) || (arc->Delta > 180))
+		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle + 360.0, arc->Thickness, arc->Clearance, arc->Flags);
+	else
+		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle, arc->Thickness, arc->Clearance, arc->Flags);
+
+	if (new_arc != NULL) {
+		PCB_FLAG_CHANGE(PCB_CHGFLG_SET, PCB_FLAG_FOUND, new_arc);
+		if (arc->Delta < 0)
+			pcb_arc_set_angles(Layer, arc, arc->StartAngle, angle - arc->StartAngle - 360.0);
+		else
+			pcb_arc_set_angles(Layer, arc, arc->StartAngle, angle - arc->StartAngle);
+	}
+	return new_arc;
+}
+
 /*** draw ***/
 void _draw_arc(pcb_arc_t * arc)
 {

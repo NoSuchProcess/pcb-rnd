@@ -37,6 +37,7 @@
 #include "undo.h"
 
 #include "obj_line_op.h"
+#include "obj_arc_op.h"
 #include "obj_rat_op.h"
 #include "obj_poly_op.h"
 
@@ -54,7 +55,7 @@ static pcb_opfunc_t InsertFunctions = {
 	NULL,
 	NULL,
 	NULL,
-	NULL,
+	pcb_arc_insert_point,
 	InsertPointIntoRat,
 	NULL
 };

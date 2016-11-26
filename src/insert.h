@@ -31,7 +31,7 @@
 
 #include "config.h"
 
-#define	PCB_INSERT_TYPES	(PCB_TYPE_POLYGON | PCB_TYPE_LINE | PCB_TYPE_RATLINE)
+#define	PCB_INSERT_TYPES	(PCB_TYPE_POLYGON | PCB_TYPE_LINE | PCB_TYPE_ARC | PCB_TYPE_RATLINE)
 
 /* ---------------------------------------------------------------------------
  * prototypes
