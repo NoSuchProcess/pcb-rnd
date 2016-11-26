@@ -53,7 +53,7 @@
  * some local identifiers
  */
 static pcb_opfunc_t Rotate90Functions = {
-	NULL,
+	RotateLine,
 	RotateText,
 	NULL,
 	NULL,

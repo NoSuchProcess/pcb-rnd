@@ -716,6 +716,34 @@ void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 	return (Line);
 }
 
+/* rotates a line's */
+void *RotateLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
+{
+	EraseLine(Line);
+	if (Layer) {
+		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
+	}
+	else
+		pcb_r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) Line);
+
+	pcb_point_rotate90(&Line->Point1, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+	pcb_point_rotate90(&Line->Point2, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+
+	pcb_line_bbox(Line);
+	if (Layer) {
+		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
+		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
+		DrawLine(Layer, Line);
+	}
+	else {
+		pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) Line, 0);
+		DrawRat((pcb_rat_t *) Line);
+	}
+	pcb_draw();
+	return (Line);
+}
+
 /* inserts a point into a line */
 void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {

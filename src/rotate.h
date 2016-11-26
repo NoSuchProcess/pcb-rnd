@@ -52,7 +52,7 @@
 		}											\
 	} while(0)
 
-#define PCB_ROTATE_TYPES (PCB_TYPE_ELEMENT | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_ARC | PCB_TYPE_LINE_POINT)
+#define PCB_ROTATE_TYPES (PCB_TYPE_ELEMENT | PCB_TYPE_TEXT | PCB_TYPE_ELEMENT_NAME | PCB_TYPE_ARC | PCB_TYPE_LINE_POINT | PCB_TYPE_LINE)
 
 void *pcb_obj_rotate90(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, unsigned);
 void pcb_screen_obj_rotate90(pcb_coord_t, pcb_coord_t, unsigned);
