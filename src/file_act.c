@@ -40,6 +40,7 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "hid_init.h"
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_ExecCommand[] = "ExecCommand(command)";
@@ -348,9 +349,42 @@ static int pcb_act_Quit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 }
 
 
+/* --------------------------------------------------------------------------- */
+static const char pcb_acts_Export[] = "Export(exporter, [exporter-args])";
+static const char pcb_acth_Export[] = "Export the current layout, e.g. Export(png, --dpi, 600)";
+static int pcb_act_Export(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	if (argc < 1) {
+		pcb_message(PCB_MSG_ERROR, "Export() needs at least one argument, the name of the export plugin\n");
+		return 1;
+	}
+
+	pcb_exporter = pcb_hid_find_exporter(argv[0]);
+	if (pcb_exporter == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Export plugin %s not found. Was it enabled in ./configure?\n", argv[0]);
+		return 1;
+	}
+
+	/* remove the name of the exporter */
+	argc--;
+	argv++;
+
+	/* call the exporter */
+	pcb_exporter->parse_arguments(&argc, (char ***)&argv);
+	pcb_exporter->do_export(NULL);
+
+	pcb_exporter = NULL;
+	return 0;
+}
+
+
+
 pcb_hid_action_t file_action_list[] = {
 	{"ExecCommand", 0, pcb_act_ExecCommand,
 	 pcb_acth_ExecCommand, pcb_acts_ExecCommand}
+	,
+	{"Export", 0, pcb_act_Export,
+	 pcb_acth_Export, pcb_acts_Export}
 	,
 	{"LoadFrom", 0, pcb_act_LoadFrom,
 	 pcb_acth_LoadFrom, pcb_acts_LoadFrom}
