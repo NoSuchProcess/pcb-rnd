@@ -687,6 +687,7 @@ void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_co
 /* rotates a line's point */
 void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *Point)
 {
+	pcb_point_t *center;
 	EraseLine(Line);
 	if (Layer) {
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_LINE, Layer, Line);
@@ -694,7 +695,13 @@ void *RotateLinePoint(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line, pc
 	}
 	else
 		pcb_r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) Line);
-	pcb_point_rotate90(Point, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
+
+	if ((Point->X == Line->Point1.X) && (Point->Y == Line->Point1.Y))
+		center = &Line->Point2;
+	else
+		center = &Line->Point1;
+
+	pcb_point_rotate90(Point, center->X, center->Y, ctx->rotate.number);
 	pcb_line_bbox(Line);
 	if (Layer) {
 		pcb_r_insert_entry(Layer->line_tree, (pcb_box_t *) Line, 0);
