@@ -944,9 +944,9 @@ static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	return 0;
 }
 
-static const char export_syntax[] = "Export()";
+static const char exportgui_syntax[] = "ExportGUI()";
 
-static const char export_help[] = "Export the layout.";
+static const char exportgui_help[] = "Export the layout. Export is configured using dialog a box.";
 
 /* %start-doc actions Export
 
@@ -955,7 +955,7 @@ that exporter's options, and exports the layout.
 
 %end-doc */
 
-static int Export(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	static Widget selector = 0;
 	pcb_hid_attribute_t *opts;
@@ -1931,8 +1931,8 @@ pcb_hid_action_t lesstif_dialog_action_list[] = {
 	{"PrintCalibrate", 0, PrintCalibrate,
 	 printcalibrate_help, printcalibrate_syntax}
 	,
-	{"Export", 0, Export,
-	 export_help, export_syntax}
+	{"ExportGUI", 0, ExportGUI,
+	 exportgui_help, exportgui_syntax}
 	,
 	{"AdjustSizes", 0, AdjustSizes,
 	 adjustsizes_help, adjustsizes_syntax}

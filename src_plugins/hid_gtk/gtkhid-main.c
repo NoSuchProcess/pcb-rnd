@@ -1440,7 +1440,7 @@ static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 /* ------------------------------------------------------------ */
 
-static int Export(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 
 	/* check if layout is empty */
@@ -1931,7 +1931,7 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"DoWindows", 0, DoWindows, dowindows_help, dowindows_syntax}
 	,
-	{"Export", 0, Export}
+	{"ExportGUI", 0, ExportGUI}
 	,
 	{"GetXY", "", GetXY, getxy_help, getxy_syntax}
 	,

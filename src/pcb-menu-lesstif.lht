@@ -43,7 +43,7 @@ ha:{
 				ha:Load netlist file = { action=Load(Netlist) }
 				ha:Load vendor resource file = { action=LoadVendor() }
 				ha:Print layout... = { action=Print() }
-				ha:Export layout... = { action=Export() }
+				ha:Export layout... = { action=ExportGUI() }
 				ha:Maintenance {
 					li:submenu {
 						ha:Calibrate Printer...           = { action=PrintCalibrate() }

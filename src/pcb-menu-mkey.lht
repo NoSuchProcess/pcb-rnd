@@ -66,7 +66,7 @@ ha:{
 				}
 				-
 				ha:Print layout...      = { a={<key>f;<key>p}; action=Print()}
-				ha:Export layout...     = { a={<key>f;<key>i}; action=Export()}
+				ha:Export layout...     = { a={<key>f;<key>i}; action=ExportGUI()}
 				ha:Maintenance {
 					li:submenu {
 						ha:Calibrate Printer...           = { action=PrintCalibrate() }
