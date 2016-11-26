@@ -330,46 +330,52 @@ pcb_bool exec_board_attribute(parse_param *h)
 
 void perimeter_segment_add(outline_t *s, pcb_bool_t forward)
 {
+  /* mark segment as used, so we don't use it twice */
   s->used = pcb_true;
+  /* debugging */
   if (forward)
-    pcb_printf("\tperimeter segments: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x1, s->y1, s->x2, s->y2);
+    pcb_printf("perimeter: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x1, s->y1, s->x2, s->y2);
   else /* add segment back to front */
-    pcb_printf("\tperimeter segments: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);
+    pcb_printf("perimeter: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);
 }
 
 /* 
- * Check whether point (x1, y1) is connected to point (begin_x, begin_y) via un-used segments
+ * Check whether point (end_x, end_y) is connected to point (begin_x, begin_y) via un-used segment s and other un-used segments.
  */
-#ifdef XXXX
-pcb_bool_t segment_distance(pcb_coord_t begin_x, pcb_coord_t begin_y, outline_t *s)
+
+pcb_bool_t segment_connected(pcb_coord_t begin_x, pcb_coord_t begin_y, pcb_coord_t end_x, pcb_coord_t end_y, outline_t *s)
 {
   outline_t *i;
-  
-  
-  s->used = pcb_true;
+  pcb_bool_t connected;
 
-  for (i = outline_head; i != NULL; i = i->next)
+  connected = (begin_x == end_x) && (begin_y == end_y); /* trivial case */
+
+  if (!connected)
   {
-    if (i->used) continue;
-
     /* recursive descent */
-    if ((i->x1 == s->x1) && (i->y1 == s->y1))
+    s->used = pcb_true;
+
+    for (i = outline_head; i != NULL; i = i->next)
     {
-      if ((i->x2 == begin_x) && (i->y2 == begin_y)) return pcb_true;
-      else if segment_distance(begin_x, begin_y, i) return pcb_true;
+      if (i->used) continue;
+      if ((i->x1 == begin_x) && (i->y1 == begin_y))
+      {
+        connected = ((i->x2 == end_x) && (i->y2 == end_y)) || segment_connected(i->x2, i->y2, end_x, end_y, i);
+        if (connected) break;
+      }
+      /* try back-to-front */
+      if ((i->x2 == begin_x) && (i->y2 == begin_y))
+      {
+        connected = ((i->x1 == end_x) && (i->y1 == end_y)) || segment_connected(i->x1, i->y1, end_x, end_y, i);
+        if (connected) break;
+      }
     }
-    if ((i->x2 == s->x1) && (i->y2 == s->y1))
-    {
-      if ((i->x1 == begin_x) && (i->y1 == begin_y)) return pcb_true;
-      else if segment_distance(begin_x, begin_y, i) return pcb_true;
-    }
+
+    s->used = pcb_false;
   }
 
-  s->used = pcb_false;
-
-  return min_dist;
+  return connected;
 }
-#endif
 
 /* 
  * Draw board perimeter.
@@ -380,11 +386,14 @@ pcb_bool_t segment_distance(pcb_coord_t begin_x, pcb_coord_t begin_y, outline_t 
 
 void hyp_perimeter()
 {
+  pcb_bool_t warn_not_closed;
   pcb_bool_t segment_found;
   pcb_bool_t polygon_closed;
   pcb_coord_t begin_x, begin_y, last_x, last_y;
   outline_t *i;
   outline_t *j;
+
+  warn_not_closed = pcb_false;
 
   /* iterate over perimeter polygons */
   while (pcb_true)
@@ -423,12 +432,15 @@ void hyp_perimeter()
       /* find segment to add to current polygon */
       segment_found = pcb_false;
 
+      /* XXX prefer closed polygon over open polyline */
+
       for (i = outline_head; i != NULL; i = i->next)
       {
         if (i->used) continue;
 
         if ((last_x == i->x1) && (last_y == i->y1))
         {
+          if (!segment_connected(i->x2, i->y2, begin_x, begin_y, i)) continue; /* XXX Checkme */
           /* first point of segment is last point of current edge: add segment to edge */
           segment_found = pcb_true;
           perimeter_segment_add(i, pcb_true);
@@ -437,6 +449,7 @@ void hyp_perimeter()
         }
         else if ((last_x == i->x2) && (last_y == i->y2))
         {
+          if (!segment_connected(i->x1, i->y1, begin_x, begin_y, i)) continue; /* XXX Checkme */
           /* last point of segment is last point of current edge: add segment to edge back to front */
           segment_found = pcb_true;
           /* add segment back to front */
@@ -451,7 +464,11 @@ void hyp_perimeter()
         break;                   /* can't find anything suitable */
     }
     if (polygon_closed) pcb_printf("perimeter: closed\n");
-    else pcb_printf("perimeter: open\n");
+    else 
+      {
+        pcb_printf("perimeter: open\n");
+        warn_not_closed = pcb_true;
+      }
   }
 
   /* free segment memory */
@@ -462,6 +479,7 @@ void hyp_perimeter()
   }
   outline_head = outline_tail = NULL;
 
+  if (warn_not_closed) pcb_message(PCB_MSG_DEBUG, "warning: board outline not closed\n");
   return;
 }
 
