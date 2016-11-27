@@ -62,7 +62,7 @@ pcb_uninit_t hid_io_kicad_legacy_init(void)
 	io_kicad_legacy.write_pcb = io_kicad_legacy_write_pcb;
 	io_kicad_legacy.default_fmt = "kicadl";
 	io_kicad_legacy.description = "Kicad, legacy format";
-	io_kicad_legacy.save_preference_prio = 90;
+	io_kicad_legacy.save_preference_prio = 70;
 	io_kicad_legacy.default_extension = ".brd";
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad_legacy);

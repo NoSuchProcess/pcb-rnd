@@ -62,7 +62,7 @@ pcb_uninit_t hid_io_kicad_init(void)
 	io_kicad.write_pcb = io_kicad_write_pcb;
 	io_kicad.default_fmt = "kicad";
 	io_kicad.description = "Kicad, s-expression";
-	io_kicad.save_preference_prio = 92;
+	io_kicad.save_preference_prio = 80;
 	io_kicad.default_extension = ".kicad_pcb";
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
