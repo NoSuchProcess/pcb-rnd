@@ -46,7 +46,7 @@
 #include "obj_arc_draw.h"
 
 static int pcb_arc_end_addr = 1;
-extern int *pcb_arc_start_ptr = NULL, *pcb_arc_end_ptr = &pcb_arc_end_addr;
+int *pcb_arc_start_ptr = NULL, *pcb_arc_end_ptr = &pcb_arc_end_addr;
 
 pcb_arc_t *pcb_arc_alloc(pcb_layer_t * layer)
 {
