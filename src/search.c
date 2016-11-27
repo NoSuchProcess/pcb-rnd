@@ -63,7 +63,7 @@ static pcb_bool SearchPadByLocation(int, pcb_element_t **, pcb_pad_t **, pcb_pad
 static pcb_bool SearchViaByLocation(int, pcb_pin_t **, pcb_pin_t **, pcb_pin_t **);
 static pcb_bool SearchElementNameByLocation(int, pcb_element_t **, pcb_text_t **, pcb_text_t **, pcb_bool);
 static pcb_bool SearchLinePointByLocation(int, pcb_layer_t **, pcb_line_t **, pcb_point_t **);
-static pcb_bool SearchArcPointByLocation(int, pcb_layer_t **, pcb_arc_t **, int *);
+static pcb_bool SearchArcPointByLocation(int, pcb_layer_t **, pcb_arc_t **, int **);
 static pcb_bool SearchPointByLocation(int, pcb_layer_t **, pcb_polygon_t **, pcb_point_t **);
 static pcb_bool SearchElementByLocation(int, pcb_element_t **, pcb_element_t **, pcb_element_t **, pcb_bool);
 
@@ -255,7 +255,7 @@ static pcb_bool SearchRatLineByLocation(int locked, pcb_rat_t ** Line, pcb_rat_t
 struct arc_info {
 	pcb_arc_t **Arc, **Dummy;
 	int locked;
-	int *arc_pt; /* 0=start, 1=end (start+delta) */
+	int **arc_pt; /* 0=start, 1=end (start+delta) */
 	double least;
 };
 
@@ -435,13 +435,13 @@ static pcb_bool SearchLinePointByLocation(int locked, pcb_layer_t ** Layer, pcb_
 /* ---------------------------------------------------------------------------
  * searches a line-point on all the search layer
  */
-static pcb_bool SearchArcPointByLocation(int locked, pcb_layer_t ** Layer, pcb_arc_t ** Arc, int *Point)
+static pcb_bool SearchArcPointByLocation(int locked, pcb_layer_t ** Layer, pcb_arc_t ** Arc, int **Point)
 {
 	struct arc_info info;
 	*Layer = SearchLayer;
 	info.Arc = Arc;
 	info.arc_pt = Point;
-	*Point = -1;
+	*Point = NULL;
 	info.least = PCB_MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.locked = (locked & PCB_TYPE_LOCKED) ? 0 : PCB_FLAG_LOCK;
 	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arcpoint_callback, &info, NULL))
@@ -1099,7 +1099,7 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 &&
 					Type & PCB_TYPE_ARC_POINT &&
-					SearchArcPointByLocation(locked, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (int *) Result3))
+					SearchArcPointByLocation(locked, (pcb_layer_t **) Result1, (pcb_arc_t **) Result2, (int **) Result3))
 				return (PCB_TYPE_ARC_POINT);
 
 			if ((HigherAvail & (PCB_TYPE_PIN | PCB_TYPE_PAD)) == 0 && Type & PCB_TYPE_LINE
