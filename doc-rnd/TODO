@@ -4,7 +4,6 @@
 	- save as: change format, save as again: it sets back the format to default but the file name is wrong [report:Erich]
 	- missing rotate polygon (mainline too)
 	- insert drag&drop strangeness (mainline too)
-	- mirror buffer left/right with arcs in it -> rtree assert in debug mode
 	- `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	- extend the io_ API so that plugins can be requested to check file headers and decide if they can load the file; this would supress the pcb-related error messages when loading a lihata
 
