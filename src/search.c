@@ -385,7 +385,7 @@ static pcb_r_dir_t linepoint_callback(const pcb_box_t * b, void *cl)
 
 static pcb_r_dir_t arcpoint_callback(const pcb_box_t * b, void *cl)
 {
-	pcb_box_t *ab;
+	pcb_box_t ab;
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct arc_info *i = (struct arc_info *) cl;
 	pcb_r_dir_t ret_val = PCB_R_DIR_NOT_FOUND;
@@ -396,8 +396,10 @@ static pcb_r_dir_t arcpoint_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* some stupid code to check both points */
-	ab = pcb_arc_get_ends(arc);
-	d = pcb_distance(PosX, PosY, ab->X1, ab->Y1);
+	pcb_arc_get_end(arc, 0, &ab.X1, &ab.Y1);
+	pcb_arc_get_end(arc, 1, &ab.X2, &ab.Y2);
+
+	d = pcb_distance(PosX, PosY, ab.X1, ab.Y1);
 	if (d < i->least) {
 		i->least = d;
 		*i->Arc = arc;
@@ -405,7 +407,7 @@ static pcb_r_dir_t arcpoint_callback(const pcb_box_t * b, void *cl)
 		ret_val = PCB_R_DIR_FOUND_CONTINUE;
 	}
 
-	d = pcb_distance(PosX, PosY, ab->X2, ab->Y2);
+	d = pcb_distance(PosX, PosY, ab.X2, ab.Y2);
 	if (d < i->least) {
 		i->least = d;
 		*i->Arc = arc;
