@@ -406,16 +406,8 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 	pcb_cardinal_t group;
 	struct rubber_info info;
 	pcb_coord_t t = Arc->Thickness / 2, ex, ey;
-	pcb_box_t *ends = pcb_arc_get_ends(Arc);
 
-	if (end_pt == NULL) {
-		ex = ends->X1;
-		ey = ends->Y1;
-	}
-	else {
-		ex = ends->X2;
-		ey = ends->Y2;
-	}
+	pcb_arc_get_end(Arc, (end_pt != pcb_arc_start_ptr), &ex, &ey);
 
 	/* lookup layergroup and check all visible lines in this group */
 	info.radius = Exact ? -1 : MAX(Arc->Thickness / 2, 1);
