@@ -54,6 +54,7 @@ void pcb_pin_bbox(pcb_pin_t *Pin);
 
 void pcb_via_rotate(pcb_data_t *Data, pcb_pin_t *Via, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
 void pcb_via_mirror(pcb_data_t *Data, pcb_pin_t *Via);
+void pcb_via_flip_side(pcb_data_t *Data, pcb_pin_t *via);
 
 /* hash */
 int pcb_pin_eq(const pcb_element_t *e1, const pcb_pin_t *p1, const pcb_element_t *e2, const pcb_pin_t *p2);

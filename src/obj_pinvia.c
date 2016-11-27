@@ -244,6 +244,15 @@ void pcb_via_mirror(pcb_data_t *Data, pcb_pin_t *via)
 	via->Y = PCB_SWAP_Y(via->Y);
 }
 
+void pcb_via_flip_side(pcb_data_t *Data, pcb_pin_t *via)
+{
+	pcb_r_delete_entry(Data->via_tree, (pcb_box_t *) via);
+	via->X = PCB_SWAP_X(via->X);
+	via->Y = PCB_SWAP_Y(via->Y);
+	pcb_pin_bbox(via);
+	pcb_r_insert_entry(Data->via_tree, (pcb_box_t *) via, 0);
+}
+
 int pcb_pin_eq(const pcb_element_t *e1, const pcb_pin_t *p1, const pcb_element_t *e2, const pcb_pin_t *p2)
 {
 	if (pcb_field_neq(p1, p2, Thickness) || pcb_field_neq(p1, p2, Clearance)) return 0;

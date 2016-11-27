@@ -151,6 +151,21 @@ void pcb_poly_mirror(pcb_layer_t *layer, pcb_polygon_t *polygon)
 	pcb_poly_bbox(polygon);
 }
 
+void pcb_poly_flip_side(pcb_layer_t *layer, pcb_polygon_t *polygon)
+{
+	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
+	PCB_POLY_POINT_LOOP(polygon);
+	{
+		point->X = PCB_SWAP_X(point->X);
+		point->Y = PCB_SWAP_Y(point->Y);
+	}
+	PCB_END_LOOP;
+	pcb_poly_bbox(polygon);
+	pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
+	/* hmmm, how to handle clip */
+}
+
+
 /* sets the bounding box of a polygons */
 void pcb_poly_bbox(pcb_polygon_t *Polygon)
 {

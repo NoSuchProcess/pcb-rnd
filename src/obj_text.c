@@ -463,6 +463,16 @@ void *Rotate90Text(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	return (Text);
 }
 
+void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text)
+{
+	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
+	text->X = PCB_SWAP_X(text->X);
+	text->Y = PCB_SWAP_Y(text->Y);
+	PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
+	pcb_text_bbox(&PCB->Font, text);
+	pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
+}
+
 /*** draw ***/
 
 /* ---------------------------------------------------------------------------

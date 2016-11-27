@@ -445,57 +445,27 @@ void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
 	PCB_VIA_LOOP(Buffer->Data);
 	{
-		pcb_r_delete_entry(Buffer->Data->via_tree, (pcb_box_t *) via);
-		via->X = PCB_SWAP_X(via->X);
-		via->Y = PCB_SWAP_Y(via->Y);
-		pcb_pin_bbox(via);
-		pcb_r_insert_entry(Buffer->Data->via_tree, (pcb_box_t *) via, 0);
+		pcb_via_flip_side(Buffer->Data, via);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
-		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
-		line->Point1.X = PCB_SWAP_X(line->Point1.X);
-		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y);
-		line->Point2.X = PCB_SWAP_X(line->Point2.X);
-		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y);
-		pcb_line_bbox(line);
-		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
+		pcb_line_flip_side(layer, line);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
-		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
-		arc->X = PCB_SWAP_X(arc->X);
-		arc->Y = PCB_SWAP_Y(arc->Y);
-		arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
-		arc->Delta = PCB_SWAP_DELTA(arc->Delta);
-		pcb_arc_bbox(arc);
-		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+		pcb_arc_flip_side(layer, arc);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
-		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
-		PCB_POLY_POINT_LOOP(polygon);
-		{
-			point->X = PCB_SWAP_X(point->X);
-			point->Y = PCB_SWAP_Y(point->Y);
-		}
-		PCB_END_LOOP;
-		pcb_poly_bbox(polygon);
-		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon, 0);
-		/* hmmm, how to handle clip */
+		pcb_poly_flip_side(layer, polygon);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
-		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
-		text->X = PCB_SWAP_X(text->X);
-		text->Y = PCB_SWAP_Y(text->Y);
-		PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
-		pcb_text_bbox(&PCB->Font, text);
-		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
+		pcb_text_flip_side(layer, text);
 	}
 	PCB_ENDALL_LOOP;
 	/* swap silkscreen layers */
