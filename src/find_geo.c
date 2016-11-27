@@ -419,7 +419,7 @@ pcb_bool pcb_intersect_line_line(pcb_line_t *Line1, pcb_line_t *Line2)
 pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
-	pcb_box_t *box;
+	pcb_coord_t ex, ey;
 
 	dx = Line->Point2.X - Line->Point1.X;
 	dy = Line->Point2.Y - Line->Point1.Y;
@@ -454,11 +454,14 @@ pcb_bool pcb_intersect_line_arc(pcb_line_t *Line, pcb_arc_t *Arc)
 	if (r >= 0 && r <= 1
 			&& pcb_is_point_on_arc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
 		return (pcb_true);
+
 	/* check arc end points */
-	box = pcb_arc_get_ends(Arc);
-	if (pcb_is_point_in_pad(box->X1, box->Y1, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
+	pcb_arc_get_end(Arc, 0, &ex, &ey);
+	if (pcb_is_point_in_pad(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
 		return pcb_true;
-	if (pcb_is_point_in_pad(box->X2, box->Y2, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
+
+	pcb_arc_get_end(Arc, 1, &ex, &ey);
+	if (pcb_is_point_in_pad(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_pad_t *) Line))
 		return pcb_true;
 	return pcb_false;
 }
