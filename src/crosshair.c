@@ -138,7 +138,7 @@ static void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, i
 static void XORDrawAttachedArc(pcb_coord_t thick)
 {
 	pcb_arc_t arc;
-	pcb_box_t *bx;
+	pcb_box_t bx;
 	pcb_coord_t wx, wy;
 	pcb_angle_t sa, dir;
 	pcb_coord_t wid = thick / 2;
@@ -164,13 +164,16 @@ static void XORDrawAttachedArc(pcb_coord_t thick)
 	arc.StartAngle = sa;
 	arc.Delta = dir;
 	arc.Width = arc.Height = wy;
-	bx = pcb_arc_get_ends(&arc);
+
+	pcb_arc_get_end(&arc, 0, &bx.X1, &bx.Y1);
+	pcb_arc_get_end(&arc, 1, &bx.X2, &bx.Y2);
+
 	/*  sa = sa - 180; */
 	pcb_gui->draw_arc(pcb_crosshair.GC, arc.X, arc.Y, wy + wid, wy + wid, sa, dir);
 	if (wid > pcb_pixel_slop) {
 		pcb_gui->draw_arc(pcb_crosshair.GC, arc.X, arc.Y, wy - wid, wy - wid, sa, dir);
-		pcb_gui->draw_arc(pcb_crosshair.GC, bx->X1, bx->Y1, wid, wid, sa, -180 * SGN(dir));
-		pcb_gui->draw_arc(pcb_crosshair.GC, bx->X2, bx->Y2, wid, wid, sa + dir, 180 * SGN(dir));
+		pcb_gui->draw_arc(pcb_crosshair.GC, bx.X1, bx.Y1, wid, wid, sa, -180 * SGN(dir));
+		pcb_gui->draw_arc(pcb_crosshair.GC, bx.X2, bx.Y2, wid, wid, sa + dir, 180 * SGN(dir));
 	}
 }
 
@@ -1079,11 +1082,9 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	if (ans == PCB_TYPE_ARC_POINT) {
 		/* Arc point needs special handling as it's not a real point but has to be calculated */
-		pcb_box_t *ends = pcb_arc_get_ends((pcb_arc_t *)ptr2);
-		if (ptr3 == NULL)
-			check_snap_object(&snap_data, ends->X1, ends->Y1, pcb_true);
-		else
-			check_snap_object(&snap_data, ends->X2, ends->Y2, pcb_true);
+		pcb_coord_t ex, ey;
+		pcb_arc_get_end((pcb_arc_t *)ptr2, (ptr3 != pcb_arc_start_ptr), &ex, &ey);
+		check_snap_object(&snap_data, ex, ey, pcb_true);
 	}
 	else if (ans != PCB_TYPE_NONE) {
 		pcb_point_t *pnt = (pcb_point_t *) ptr3;
