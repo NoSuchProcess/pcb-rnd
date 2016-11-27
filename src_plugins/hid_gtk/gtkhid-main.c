@@ -2004,6 +2004,7 @@ static void ghid_conf_regs()
 	init_conf_watch(&cbs_direction,   "editor/all_direction_lines",  ghid_confchg_all_direction_lines);
 	init_conf_watch(&cbs_refraction,  "editor/line_refraction",      ghid_confchg_line_refraction);
 	init_conf_watch(&cbs_fullscreen,  "editor/fullscreen",           ghid_confchg_fullscreen);
+	init_conf_watch(&cbs_fullscreen,  "editor/show_solder_side",     ghid_confchg_flip);
 }
 
 void hid_hid_gtk_uninit()

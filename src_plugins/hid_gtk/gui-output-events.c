@@ -518,6 +518,14 @@ void ghid_confchg_all_direction_lines(conf_native_t *cfg)
 	ghid_set_status_line_label();
 }
 
+void ghid_confchg_flip(conf_native_t *cfg)
+{
+	/* test if PCB struct doesn't exist at startup */
+	if (!PCB)
+		return;
+	ghid_set_status_line_label();
+}
+
 void ghid_confchg_fullscreen(conf_native_t *cfg)
 {
 	if (gtkhid_active)
