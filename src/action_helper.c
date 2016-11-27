@@ -646,12 +646,10 @@ void pcb_notify_mode(void)
 																												conf_core.design.line_thickness,
 																												2 * conf_core.design.clearance,
 																												pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) {
-						pcb_box_t *bx;
-
 						pcb_obj_add_attribs(arc, PCB->pen_attr);
-						bx = pcb_arc_get_ends(arc);
-						pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = bx->X2;
-						pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = bx->Y2;
+						pcb_arc_get_end(arc, 1, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
+						pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
+						pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
 						pcb_undo_add_obj_to_create(PCB_TYPE_ARC, CURRENT, arc, arc);
 						pcb_undo_inc_serial();
 						pcb_added_lines++;
