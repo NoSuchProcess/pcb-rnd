@@ -1236,12 +1236,22 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 	else {
+		int num_fmts, n;
 		prompt = _("Save layout as");
-		if (pcb_io_list(&avail, PCB_IOT_PCB, 1, 1) > 0) {
+		num_fmts = pcb_io_list(&avail, PCB_IOT_PCB, 1, 1);
+		if (num_fmts > 0) {
 			formats_param = (const char **)avail.digest;
 			extensions_param = (const char **)avail.extension;
 			fmt_param = &fmt;
 			fmt = 0;
+			if (PCB->Data->loader != NULL) {
+				for(n = 0; n < num_fmts; n++) {
+					if (avail.plug[n] == PCB->Data->loader) {
+						fmt = n;
+						break;
+					}
+				}
+			}
 		}
 		else {
 			pcb_message(PCB_MSG_DEFAULT, "Error: no IO plugin avaialble for saving a buffer.");
