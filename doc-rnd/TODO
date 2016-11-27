@@ -29,7 +29,7 @@
 		- pad area
 		- pin area
 		- line (and pad) length and length^2
-	- make a run on alarge board, speed test, with -O0 and -O3:
+	- make a run on a large board, speed test, with -O0 and -O3:
 		- iteration speed (a simple @)
 		- eval speed (a simple @ with a lot of constants in an expr)
 		- geo speed
@@ -37,9 +37,6 @@
 
 CLEANUP #5
 - src/check_icon.data - is it used?
-- save/load bugs:
-	- gtk load dialog extension filter should reflect known formats
-	- there should be an "auto" or "guess by extension" option in the save dialog format
 - search for move.dst_layer - don't compare pointer to -1!
 - make uninstall doesn't remove an scm
 - convert PCBChanged into an event (and provide a core action for compatibility)
@@ -128,6 +125,7 @@ FEATURES
 - BUILD: menuconfig and a config file for scconfig
 
 Low prio:
+- GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
 - insert drag&drop strangeness (mainline too):
 	insert should just insert a new point and stop there, not starting a drag&drop
 	move; the new point should be marked somehow (e.g. green-find one half of the
