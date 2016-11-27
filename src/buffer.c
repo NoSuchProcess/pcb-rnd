@@ -428,7 +428,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 /* ---------------------------------------------------------------------------
  * flip components/tracks from one side to the other
  */
-void pcb_buffer_swap(pcb_buffer_t *Buffer)
+void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 {
 	int j, k;
 	pcb_cardinal_t sgroup, cgroup;
@@ -545,12 +545,12 @@ void pcb_buffer_swap(pcb_buffer_t *Buffer)
 	pcb_set_buffer_bbox(Buffer);
 }
 
-void pcb_swap_buffers(void)
+void pcb_buffers_flip_side(void)
 {
 	int i;
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++)
-		pcb_buffer_swap(&pcb_buffers[i]);
+		pcb_buffer_flip_side(&pcb_buffers[i]);
 	pcb_crosshair_range_to_buffer();
 }
 

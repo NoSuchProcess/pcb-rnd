@@ -41,14 +41,14 @@ struct pcb_buffer_s {								/* information about the paste buffer */
 /* ---------------------------------------------------------------------------
  * prototypes
  */
-void pcb_buffer_swap(pcb_buffer_t *Buffer);
+void pcb_buffer_flip_side(pcb_buffer_t *Buffer);
 void pcb_set_buffer_bbox(pcb_buffer_t *);
 void pcb_buffer_clear(pcb_buffer_t *);
 void pcb_buffer_add_selected(pcb_buffer_t *, pcb_coord_t, pcb_coord_t, pcb_bool);
 pcb_bool pcb_buffer_load_layout(pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
 void pcb_buffer_rotate(pcb_buffer_t *, pcb_uint8_t);
 void pcb_buffer_select_paste(int);
-void pcb_swap_buffers(void);
+void pcb_buffers_flip_side(void);
 void pcb_buffer_mirror(pcb_buffer_t *);
 void pcb_init_buffers(void);
 void pcb_uninit_buffers(void);

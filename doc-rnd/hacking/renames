@@ -1494,3 +1494,5 @@ h_str -> pcb_hash_str
 h_coordox -> pcb_hash_element_ox
 h_coordoy -> pcb_hash_element_oy
 h_coord -> pcb_hash_coord
+pcb_buffer_swap -> pcb_buffer_flip_side
+pcb_swap_buffers -> pcb_buffers_flip_side
