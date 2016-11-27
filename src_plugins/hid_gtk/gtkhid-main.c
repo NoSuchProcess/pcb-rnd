@@ -1224,7 +1224,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	if (strcasecmp(function, "PasteBuffer") == 0) {
 		prompt = _("Save element as");
-		if (pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1) > 0) {
+		if (pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP) > 0) {
 			formats_param = (const char **)avail.digest;
 			extensions_param = (const char **)avail.extension;
 			fmt_param = &fmt;
@@ -1238,7 +1238,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	else {
 		int num_fmts, n;
 		prompt = _("Save layout as");
-		num_fmts = pcb_io_list(&avail, PCB_IOT_PCB, 1, 1);
+		num_fmts = pcb_io_list(&avail, PCB_IOT_PCB, 1, 1, PCB_IOL_EXT_BOARD);
 		if (num_fmts > 0) {
 			formats_param = (const char **)avail.digest;
 			extensions_param = (const char **)avail.extension;

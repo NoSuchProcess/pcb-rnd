@@ -137,11 +137,17 @@ typedef struct {
 	const char *extension[PCB_IO_MAX_FORMATS+1];  /* default file extension, with the leading . (not strdup'd) */
 } pcb_io_formats_t;
 
+typedef enum {
+	PCB_IOL_EXT_NONE,
+	PCB_IOL_EXT_BOARD,
+	PCB_IOL_EXT_FP
+} pcb_io_list_ext_t;
+
 /* Search all io plugins to see if typ/wr is supported. Return an ordered
    list in out. If do_digest is non-zero, fill in the digest field. Returns
    number of suitable io plugins. Call pcb_io_list_free() on out when it is not
    needed anymore. */
-int pcb_io_list(pcb_io_formats_t *out, pcb_plug_iot_t typ, int wr, int do_digest);
+int pcb_io_list(pcb_io_formats_t *out, pcb_plug_iot_t typ, int wr, int do_digest, pcb_io_list_ext_t ext);
 void pcb_io_list_free(pcb_io_formats_t *out);
 
 extern int pcb_io_err_inhibit;

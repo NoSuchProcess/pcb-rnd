@@ -836,7 +836,7 @@ int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt)
 }
 
 
-int pcb_io_list(pcb_io_formats_t *out, pcb_plug_iot_t typ, int wr, int do_digest)
+int pcb_io_list(pcb_io_formats_t *out, pcb_plug_iot_t typ, int wr, int do_digest, pcb_io_list_ext_t ext)
 {
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
 	int n;
@@ -849,7 +849,11 @@ int pcb_io_list(pcb_io_formats_t *out, pcb_plug_iot_t typ, int wr, int do_digest
 
 	for(n = 0; n < out->len; n++) {
 		out->plug[n] = available[n].plug;
-		out->extension[n] = out->plug[n]->default_extension;
+		switch(ext) {
+			case PCB_IOL_EXT_NONE:  out->extension[n] = NULL; break;
+			case PCB_IOL_EXT_BOARD: out->extension[n] = out->plug[n]->default_extension; break;
+			case PCB_IOL_EXT_FP:    out->extension[n] = out->plug[n]->fp_extension; break;
+		}
 	}
 
 	if (do_digest) {

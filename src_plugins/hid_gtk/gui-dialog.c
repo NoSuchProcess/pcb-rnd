@@ -273,7 +273,7 @@ gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gc
 			|| (strcmp(title, _("Load layout file to buffer")) == 0)) {
 		/* add a filter for layout files */
 		pcb_io_formats_t fmts;
-		int n, num_fmts = pcb_io_list(&fmts, PCB_IOT_PCB, 0, 0);
+		int n, num_fmts = pcb_io_list(&fmts, PCB_IOT_PCB, 0, 0, PCB_IOL_EXT_BOARD);
 		for(n = 0; n < num_fmts; n++) {
 			int i;
 			char *ext;
