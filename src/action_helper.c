@@ -93,30 +93,11 @@ static void GetGridLockCoordinates(int type, void *ptr1, void *ptr2, void *ptr3,
 		*y = ((pcb_point_t *) ptr3)->Y;
 		break;
 	case PCB_TYPE_ARC:
-		{
-			pcb_box_t *box;
-
-			box = pcb_arc_get_ends((pcb_arc_t *) ptr2);
-			*x = box->X1;
-			*y = box->Y1;
-			break;
-		}
-
+		pcb_arc_get_end((pcb_arc_t *) ptr2, 0, x, y);
+		break;
 	case PCB_TYPE_ARC_POINT:
-		{
-			pcb_box_t *box;
-
-			box = pcb_arc_get_ends((pcb_arc_t *) ptr2);
-			if ((*(int *)ptr3) == 0) {
-				*x = box->X1;
-				*y = box->Y1;
-			}
-			else {
-				*x = box->X2;
-				*y = box->Y2;
-			}
-			break;
-		}
+		pcb_arc_get_end((pcb_arc_t *) ptr2, ((*(int **)ptr3) != pcb_arc_start_ptr), x, y);
+		break;
 	}
 }
 
