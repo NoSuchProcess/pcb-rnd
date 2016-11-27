@@ -6,9 +6,6 @@
 	- insert drag&drop strangeness (mainline too)
 	- mirror buffer left/right with arcs in it -> rtree assert in debug mode
 	- tab changes side, gtk HID doesn't refresh bottom line
-	- selection bugs:
-		- north-east to south-west selection box fails to select, if a poly or line is fully within the box
-		- selection-direction inverts on solder side?
 	- `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	- extend the io_ API so that plugins can be requested to check file headers and decide if they can load the file; this would supress the pcb-related error messages when loading a lihata
 
