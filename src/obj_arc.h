@@ -77,7 +77,7 @@ pcb_coord_t pcb_arc_length(const pcb_arc_t *arc);
 pcb_coord_t pcb_arc_area(const pcb_arc_t *arc);
 
 /* ptr3 values for start and end point */
-extern int *pcb_arc_start_ptr, pcb_arc_end_ptr;
+extern int *pcb_arc_start_ptr, *pcb_arc_end_ptr;
 
 
 #define	pcb_arc_move(a,dx,dy)                                     \
