@@ -265,7 +265,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	case PCB_TYPE_ARC:
 		{
 			pcb_arc_t *Arc;
-			pcb_box_t *box;
+			pcb_box_t box;
 #ifndef NDEBUG
 			if (pcb_gui->shift_is_pressed()) {
 				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
@@ -274,7 +274,8 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			}
 #endif
 			Arc = (pcb_arc_t *) ptr2;
-			box = pcb_arc_get_ends(Arc);
+		pcb_arc_get_end(Arc, 0, &box.X1, &box.Y1);
+		pcb_arc_get_end(Arc, 1, &box.X2, &box.Y2);
 
 			report = pcb_strdup_printf("%m+ARC ID# %ld;  Flags:%s\n"
 									"CenterPoint(X,Y) = %$mD.\n"
@@ -290,8 +291,8 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 									Arc->Clearance / 2, Arc->StartAngle, Arc->Delta,
 									Arc->BoundingBox.X1, Arc->BoundingBox.Y1,
 									Arc->BoundingBox.X2, Arc->BoundingBox.Y2,
-									box->X1, box->Y1,
-									box->X2, box->Y2,
+									box.X1, box.Y1,
+									box.X2, box.Y2,
 									GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1), PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) ? "It is LOCKED.\n" : "");
 			break;
 		}
