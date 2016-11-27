@@ -68,10 +68,6 @@ unsigned int pcb_arc_hash(const pcb_element_t *e, const pcb_arc_t *a);
    the endpoint that corresponds to StartAngle, else return the end angle's. */
 void pcb_arc_get_end(pcb_arc_t *Arc, int which, pcb_coord_t *x, pcb_coord_t *y);
 
-/* Obsolete: please use pcb_arc_get_end() instead */
-pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc);
-
-
 void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);
 void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height);
 

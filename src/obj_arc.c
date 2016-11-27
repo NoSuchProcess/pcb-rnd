@@ -146,16 +146,6 @@ void pcb_arc_get_end(pcb_arc_t *Arc, int which, pcb_coord_t *x, pcb_coord_t *y)
 	}
 }
 
-pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc)
-{
-	static pcb_box_t box;
-	box.X1 = Arc->X - Arc->Width * cos(Arc->StartAngle * PCB_M180);
-	box.Y1 = Arc->Y + Arc->Height * sin(Arc->StartAngle * PCB_M180);
-	box.X2 = Arc->X - Arc->Width * cos((Arc->StartAngle + Arc->Delta) * PCB_M180);
-	box.Y2 = Arc->Y + Arc->Height * sin((Arc->StartAngle + Arc->Delta) * PCB_M180);
-	return &box;
-}
-
 /* doesn't these belong in change.c ?? */
 void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da)
 {
