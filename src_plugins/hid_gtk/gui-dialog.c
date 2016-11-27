@@ -31,6 +31,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "build_run.h"
+#include "plug_io.h"
 
 #include "data.h"
 #include "gui.h"
@@ -234,7 +235,7 @@ gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gc
 	GtkWidget *dialog;
 	gchar *result = NULL, *folder, *seed;
 	GHidPort *out = &ghid_port;
-	GtkFileFilter *no_filter;
+	GtkFileFilter *no_filter, *any_filter;
 
 	dialog = gtk_file_chooser_dialog_new(title,
 																			 GTK_WINDOW(out->top_window),
@@ -249,6 +250,11 @@ gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gc
 	gtk_file_filter_add_pattern(no_filter, "*.*");
 	gtk_file_filter_add_pattern(no_filter, "*");
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), no_filter);
+
+	any_filter = gtk_file_filter_new();
+	gtk_file_filter_set_name(any_filter, "any known format");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), any_filter);
+
 
 	/* in case we have a dialog for loading a footprint file */
 	if (strcmp(title, _("Load element to buffer")) == 0) {
@@ -266,13 +272,39 @@ gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gc
 	if ((strcmp(title, _("Load layout file")) == 0)
 			|| (strcmp(title, _("Load layout file to buffer")) == 0)) {
 		/* add a filter for layout files */
-		GtkFileFilter *pcb_filter;
-		pcb_filter = gtk_file_filter_new();
-		gtk_file_filter_set_name(pcb_filter, "pcb");
-		gtk_file_filter_add_mime_type(pcb_filter, "application/x-pcb-layout");
-		gtk_file_filter_add_pattern(pcb_filter, "*.pcb");
-		gtk_file_filter_add_pattern(pcb_filter, "*.PCB");
-		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), pcb_filter);
+		pcb_io_formats_t fmts;
+		int n, num_fmts = pcb_io_list(&fmts, PCB_IOT_PCB, 0, 0);
+		for(n = 0; n < num_fmts; n++) {
+			int i;
+			char *ext;
+			GtkFileFilter *filter;
+
+			/* register each short name only once - slow O(N^2), but we don't have too many formats anyway */
+			for(i = 0; i < n; i++)
+				if (strcmp(fmts.plug[n]->default_fmt, fmts.plug[i]->default_fmt) == 0)
+					goto next_fmt;
+
+			filter = gtk_file_filter_new();
+			gtk_file_filter_set_name(filter, fmts.plug[n]->default_fmt);
+			if (fmts.plug[n]->mime_type != NULL) {
+				gtk_file_filter_add_mime_type(filter, fmts.plug[n]->mime_type);
+				gtk_file_filter_add_mime_type(any_filter, fmts.plug[n]->mime_type);
+			}
+			if (fmts.plug[n]->default_extension != NULL) {
+				char *s;
+				ext = pcb_concat("*", fmts.plug[n]->default_extension, NULL);
+				gtk_file_filter_add_pattern(filter, ext);
+				gtk_file_filter_add_pattern(any_filter, ext);
+				for(s = ext; *s != '\0'; s++)
+					*s = toupper(*s);
+				gtk_file_filter_add_pattern(filter, ext);
+				gtk_file_filter_add_pattern(any_filter, ext);
+				free(ext);
+			}
+			gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+			next_fmt:;
+		}
+		pcb_io_list_free(&fmts);
 	}
 
 	/* in case we have a dialog for loading a netlist file */
