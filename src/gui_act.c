@@ -836,15 +836,17 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			}
 		}
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_TYPE_ARC_POINT) != PCB_TYPE_NONE) {
-			pcb_box_t *b = pcb_arc_get_ends((pcb_arc_t *)ptr2);
-			if (close_enough(Note.X, b->X1) && close_enough(Note.Y, b->Y1)) {
+			pcb_coord_t ex, ey;
+			pcb_arc_get_end((pcb_arc_t *)ptr2, 0, &ex, &ey);
+			if (close_enough(Note.X, ex) && close_enough(Note.Y, ey)) {
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = pcb_arc_start_ptr;
 				goto switched;
 			}
-			if (close_enough(Note.X, b->X2) && close_enough(Note.Y, b->Y2)) {
+			pcb_arc_get_end((pcb_arc_t *)ptr2, 1, &ex, &ey);
+			if (close_enough(Note.X, ex) && close_enough(Note.Y, ey)) {
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
