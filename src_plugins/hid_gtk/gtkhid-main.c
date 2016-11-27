@@ -1259,7 +1259,15 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 
-	name = ghid_dialog_file_select_save(prompt, &current_dir, PCB->Filename, conf_core.rc.file_path, formats_param, extensions_param, fmt_param);
+	{ /* invent an input file name if needed and run the save dialog to get an output file name */
+		char *name_in;
+		if (PCB->Filename == NULL)
+			name_in = pcb_concat("unnamed", extensions_param[fmt], NULL);
+		else
+			name_in = pcb_strdup(PCB->Filename);
+		name = ghid_dialog_file_select_save(prompt, &current_dir, name_in, conf_core.rc.file_path, formats_param, extensions_param, fmt_param);
+		free(name_in);
+	}
 
 	if (name) {
 		if (conf_core.rc.verbose)
