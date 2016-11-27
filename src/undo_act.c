@@ -214,13 +214,12 @@ int pcb_act_Undo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			}
 			if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {
 				void *ptr1, *ptr2, *ptr3;
-				pcb_box_t *bx;
 				/* guaranteed to succeed */
 				pcb_search_obj_by_location(PCB_TYPE_ARC, &ptr1, &ptr2, &ptr3,
 															 pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point1.Y, 0);
-				bx = pcb_arc_get_ends((pcb_arc_t *) ptr2);
-				pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = bx->X1;
-				pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = bx->Y1;
+				pcb_arc_get_end((pcb_arc_t *) ptr2, 0, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
+				pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
+				pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
 				pcb_adjust_attached_objects();
 				if (--pcb_added_lines == 0)
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
