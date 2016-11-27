@@ -40,7 +40,6 @@ CLEANUP #5
 - src/check_icon.data - is it used?
 - save/load bugs:
 	- gtk load dialog extension filter should reflect known formats
-	- when changing format in the save dialog, the file extension is not modified
 	- there should be an "auto" or "guess by extension" option in the save dialog format
 - search for move.dst_layer - don't compare pointer to -1!
 - make uninstall doesn't remove an scm
