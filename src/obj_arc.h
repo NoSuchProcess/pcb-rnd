@@ -76,6 +76,8 @@ void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, 
 pcb_coord_t pcb_arc_length(const pcb_arc_t *arc);
 pcb_coord_t pcb_arc_area(const pcb_arc_t *arc);
 
+/* ptr3 values for start and end point */
+extern int *pcb_arc_start_ptr, pcb_arc_end_ptr;
 
 
 #define	pcb_arc_move(a,dx,dy)                                     \

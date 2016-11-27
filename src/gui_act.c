@@ -841,14 +841,14 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
-				pcb_crosshair.AttachedObject.Ptr3 = NULL;
+				pcb_crosshair.AttachedObject.Ptr3 = pcb_arc_start_ptr;
 				goto switched;
 			}
 			if (close_enough(Note.X, b->X2) && close_enough(Note.Y, b->Y2)) {
 				pcb_crosshair.AttachedObject.Type = PCB_TYPE_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
-				pcb_crosshair.AttachedObject.Ptr3 = 0x1;
+				pcb_crosshair.AttachedObject.Ptr3 = pcb_arc_end_ptr;
 				goto switched;
 			}
 		}

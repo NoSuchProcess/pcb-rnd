@@ -47,7 +47,7 @@ static void pcb_arc_ui_move_or_copy_angle(pcb_crosshair_t *ch)
 	pcb_arc_t *arc = (pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2;
 	pcb_angle_t start = arc->StartAngle, delta = arc->Delta;
 
-	if (end_pt == NULL) {
+	if (end_pt == pcb_arc_start_ptr) {
 		double end2, new_delta, new_start = atan2(-(ch->Y - arc->Y), (ch->X - arc->X)) * 180.0 / M_PI + 180.0;
 
 		end2 = start + delta;

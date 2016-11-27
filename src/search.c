@@ -401,7 +401,7 @@ static pcb_r_dir_t arcpoint_callback(const pcb_box_t * b, void *cl)
 	if (d < i->least) {
 		i->least = d;
 		*i->Arc = arc;
-		*i->arc_pt = 0;
+		*i->arc_pt = pcb_arc_start_ptr;
 		ret_val = PCB_R_DIR_FOUND_CONTINUE;
 	}
 
@@ -409,7 +409,7 @@ static pcb_r_dir_t arcpoint_callback(const pcb_box_t * b, void *cl)
 	if (d < i->least) {
 		i->least = d;
 		*i->Arc = arc;
-		*i->arc_pt = 1;
+		*i->arc_pt = pcb_arc_end_ptr;
 		ret_val = PCB_R_DIR_FOUND_CONTINUE;
 	}
 	return ret_val;
