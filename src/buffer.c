@@ -417,11 +417,13 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
+		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
 		arc->X = PCB_SWAP_X(arc->X);
 		arc->Y = PCB_SWAP_Y(arc->Y);
 		arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
 		arc->Delta = PCB_SWAP_DELTA(arc->Delta);
 		pcb_arc_bbox(arc);
+		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
