@@ -125,9 +125,10 @@ pcb_board_t *pcb_board_new(void)
 	if (dpcb == 0) {
 		nw = PCB;
 		if (nw->Filename != NULL) {
-			/* make sure the new PCB doesn't inherit the name of the default pcb */
+			/* make sure the new PCB doesn't inherit the name and loader of the default pcb */
 			free(nw->Filename);
 			nw->Filename = NULL;
+			nw->Data->loader = NULL;
 		}
 	}
 	else {
