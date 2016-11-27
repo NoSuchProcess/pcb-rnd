@@ -403,38 +403,22 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
 	PCB_VIA_LOOP(Buffer->Data);
 	{
-		via->X = PCB_SWAP_X(via->X);
-		via->Y = PCB_SWAP_Y(via->Y);
+		pcb_via_mirror(Buffer->Data, via);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
-		line->Point1.X = PCB_SWAP_X(line->Point1.X);
-		line->Point1.Y = PCB_SWAP_Y(line->Point1.Y);
-		line->Point2.X = PCB_SWAP_X(line->Point2.X);
-		line->Point2.Y = PCB_SWAP_Y(line->Point2.Y);
+		pcb_line_mirror(layer, line);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
-		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
-		arc->X = PCB_SWAP_X(arc->X);
-		arc->Y = PCB_SWAP_Y(arc->Y);
-		arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
-		arc->Delta = PCB_SWAP_DELTA(arc->Delta);
-		pcb_arc_bbox(arc);
-		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+		pcb_arc_mirror(layer, arc);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
-		PCB_POLY_POINT_LOOP(polygon);
-		{
-			point->X = PCB_SWAP_X(point->X);
-			point->Y = PCB_SWAP_Y(point->Y);
-		}
-		PCB_END_LOOP;
-		pcb_poly_bbox(polygon);
+		pcb_poly_mirror(layer, polygon);
 	}
 	PCB_ENDALL_LOOP;
 	pcb_set_buffer_bbox(Buffer);

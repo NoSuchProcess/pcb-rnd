@@ -684,6 +684,15 @@ void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_co
 	pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line, 0);
 }
 
+void pcb_line_mirror(pcb_layer_t *layer, pcb_line_t *line)
+{
+	line->Point1.X = PCB_SWAP_X(line->Point1.X);
+	line->Point1.Y = PCB_SWAP_Y(line->Point1.Y);
+	line->Point2.X = PCB_SWAP_X(line->Point2.X);
+	line->Point2.Y = PCB_SWAP_Y(line->Point2.Y);
+}
+
+
 static void rotate_line1(pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	EraseLine(Line);

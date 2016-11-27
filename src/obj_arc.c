@@ -598,6 +598,18 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord
 	pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
 }
 
+void pcb_arc_mirror(pcb_layer_t *layer, pcb_arc_t *arc)
+{
+	pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
+	arc->X = PCB_SWAP_X(arc->X);
+	arc->Y = PCB_SWAP_Y(arc->Y);
+	arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
+	arc->Delta = PCB_SWAP_DELTA(arc->Delta);
+	pcb_arc_bbox(arc);
+	pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc, 0);
+}
+
+
 /* rotates an arc */
 void *Rotate90Arc(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
