@@ -33,6 +33,7 @@
 #include "const.h"
 #include "error.h"
 #include "obj_common.h"
+#include "obj_arc_ui.h"
 
 
 /* returns a pointer to an objects bounding box;
