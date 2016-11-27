@@ -85,6 +85,7 @@ struct pcb_plug_io_s {
 	const char *default_fmt;
 	const char *description;
 	const char *default_extension; /* used to generate save-as filename */
+	const char *mime_type;
 
 	int save_preference_prio; /* all available save plugins are sorted by this before presenting them to the user to choose one */
 };
