@@ -72,6 +72,7 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb[0].description = "geda/pcb - mainline (centimils)";
 	io_pcb[0].save_preference_prio = 89;
 	io_pcb[0].default_extension = ".pcb";
+	io_pcb[0].mime_type = "application/x-pcb-layout";
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[0]));
 
 	ctx[1].write_coord_fmt = pcb_printf_slot[9];
@@ -84,6 +85,7 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb[1].description = "geda/pcb - readable units";
 	io_pcb[1].save_preference_prio = 90;
 	io_pcb[1].default_extension = ".pcb";
+	io_pcb[1].mime_type = "application/x-pcb-layout";
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[1]));
 
 	ctx[2].write_coord_fmt = "%$$mn";
@@ -96,6 +98,7 @@ pcb_uninit_t hid_io_pcb_init(void)
 	io_pcb[2].description = "geda/pcb - nanometer";
 	io_pcb[2].save_preference_prio = 88;
 	io_pcb[2].default_extension = ".pcb";
+	io_pcb[2].mime_type = "application/x-pcb-layout";
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[2]));
 
 	return hid_io_pcb_uninit;

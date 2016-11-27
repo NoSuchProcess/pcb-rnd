@@ -63,6 +63,8 @@ pcb_uninit_t hid_io_lihata_init(void)
 	io_lihata.description = "lihata board";
 	io_lihata.save_preference_prio = 100;
 	io_lihata.default_extension = ".lht";
+	io_lihata.mime_type = "application/x-pcbrnd-board";
+
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_lihata);
 

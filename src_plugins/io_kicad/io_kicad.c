@@ -64,6 +64,8 @@ pcb_uninit_t hid_io_kicad_init(void)
 	io_kicad.description = "Kicad, s-expression";
 	io_kicad.save_preference_prio = 80;
 	io_kicad.default_extension = ".kicad_pcb";
+	io_kicad.mime_type = "application/x-kicad-pcb";
+
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
 
