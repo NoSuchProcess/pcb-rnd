@@ -1275,7 +1275,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 		if (strcasecmp(function, "PasteBuffer") == 0) {
 			pcb_hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->description, "1", NULL);
-			pcb_io_list_free(&avail);
+
 		}
 		else {
 			const char *sfmt = NULL;
@@ -1293,8 +1293,10 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 				pcb_hid_actionl("SaveTo", function, name, sfmt, NULL);
 		}
 		g_free(name);
+		pcb_io_list_free(&avail);
 	}
 	else {
+		pcb_io_list_free(&avail);
 		return 1;
 	}
 
