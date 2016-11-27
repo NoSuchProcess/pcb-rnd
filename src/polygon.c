@@ -474,7 +474,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
 	pcb_vector_t v;
-	pcb_box_t *ends;
+	pcb_box_t ends;
 	int i, segs;
 	double ang, da, rx, ry;
 	long half;
@@ -487,7 +487,10 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 		a->Delta = -a->Delta;
 	}
 	half = (thick + 1) / 2;
-	ends = pcb_arc_get_ends(a);
+
+	pcb_arc_get_end(a, 0, &ends.X1, &ends.Y1);
+	pcb_arc_get_end(a, 1, &ends.X2, &ends.Y2);
+
 	/* start with inner radius */
 	rx = MAX(a->Width - half, 0);
 	ry = MAX(a->Height - half, 0);
@@ -515,7 +518,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
 	v[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
 	/* add the round cap at the end */
-	pcb_poly_frac_cicle(contour, ends->X2, ends->Y2, v, 2);
+	pcb_poly_frac_cicle(contour, ends.X2, ends.Y2, v, 2);
 	/* and now do the outer arc (going backwards) */
 	rx = (a->Width + half) * (1 + radius_adj);
 	ry = (a->Width + half) * (1 + radius_adj);
@@ -530,7 +533,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_arc_t * a, pcb_coord_t thick)
 	ang = a->StartAngle;
 	v[0] = a->X - rx * cos(ang * PCB_M180) * (1 - radius_adj);
 	v[1] = a->Y + ry * sin(ang * PCB_M180) * (1 - radius_adj);
-	pcb_poly_frac_cicle(contour, ends->X1, ends->Y1, v, 2);
+	pcb_poly_frac_cicle(contour, ends.X1, ends.Y1, v, 2);
 	/* now we have the whole contour */
 	if (!(np = pcb_poly_from_contour(contour)))
 		return NULL;
