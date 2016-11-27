@@ -314,21 +314,83 @@ gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gc
 	return result;
 }
 
+
+/* Callback to change the file name in the "save as" dialog according to
+   format selection */
+typedef struct {
+	GtkWidget *dialog;
+	const char **formats, **extensions;
+} ghid_save_ctx_t;
+
+static void fmt_changed_cb(GtkWidget *combo_box, ghid_save_ctx_t *ctx)
+{
+	char *fn, *s, *bn;
+	const char *ext;
+	gint active;
+
+	if (ctx->extensions == NULL)
+		return;
+
+	active = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
+	if (active < 0)
+		return;
+
+	fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ctx->dialog));
+	if (fn == NULL)
+		return;
+
+	/* find and truncate extension */
+	for(s = fn+strlen(fn)-1; *s != '.'; s--) {
+		if ((s <= fn) || (*s == '/') || (*s == '\\')) {
+			g_free(fn);
+			return;
+		}
+	}
+	*s = '\0';
+
+	/* calculate basename in bn */
+	bn = strrchr(fn, '/');
+	if (bn == NULL) {
+		bn = strrchr(fn, '\\');
+		if (bn == NULL)
+			bn = fn;
+		else
+			bn++;
+	}
+	else
+		bn++;
+
+	/* fetch the desired extension */
+	ext = ctx->extensions[active];
+	if (ext == NULL)
+		ext = ".";
+
+	/* build a new file name with the right extension */
+	s = pcb_concat(bn, ext, NULL);
+	gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(ctx->dialog), s);
+
+	free(s);
+	g_free(fn);
+}
+
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename. */
-gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gchar * file, const gchar * shortcuts, const char **formats, int *format)
+gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gchar * file, const gchar * shortcuts, const char **formats, const char **extensions, int *format)
 {
-	GtkWidget *dialog, *fmt, *tmp, *fmt_combo;
+	GtkWidget *fmt, *tmp, *fmt_combo;
 	gchar *result = NULL, *folder, *seed;
 	GHidPort *out = &ghid_port;
+	ghid_save_ctx_t ctx;
 
-	dialog = gtk_file_chooser_dialog_new(title,
+	ctx.formats = formats;
+	ctx.extensions = extensions;
+	ctx.dialog = gtk_file_chooser_dialog_new(title,
 																			 GTK_WINDOW(out->top_window),
 																			 GTK_FILE_CHOOSER_ACTION_SAVE,
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
-	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
-	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(ctx.dialog), TRUE);
+	gtk_dialog_set_default_response(GTK_DIALOG(ctx.dialog), GTK_RESPONSE_OK);
 
 	/* Create and add the file format widget */
 	if (format != NULL) {
@@ -348,31 +410,32 @@ gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gc
 			gtk_combo_box_append_text(GTK_COMBO_BOX(fmt_combo), *s);
 
 		gtk_combo_box_set_active(GTK_COMBO_BOX(fmt_combo), *format);
+		g_signal_connect(G_OBJECT(fmt_combo), "changed", G_CALLBACK(fmt_changed_cb), &ctx);
 
 		gtk_widget_show_all(fmt);
-		gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(dialog), fmt);
+		gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(ctx.dialog), fmt);
 	}
 
 	if (path && *path && **path)
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), *path);
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(ctx.dialog), *path);
 
 	if (file && *file) {
-		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), g_path_get_basename(file));
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), g_path_get_dirname(file));
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(ctx.dialog), g_path_get_basename(file));
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(ctx.dialog), g_path_get_dirname(file));
 	}
 
 	if (shortcuts && *shortcuts) {
 		folder = g_strdup(shortcuts);
 		seed = folder;
 		while ((folder = strtok(seed, ":")) != NULL) {
-			gtk_file_chooser_add_shortcut_folder(GTK_FILE_CHOOSER(dialog), folder, NULL);
+			gtk_file_chooser_add_shortcut_folder(GTK_FILE_CHOOSER(ctx.dialog), folder, NULL);
 			seed = NULL;
 		}
 		g_free(folder);
 	}
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
-		result = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));
+	if (gtk_dialog_run(GTK_DIALOG(ctx.dialog)) == GTK_RESPONSE_OK) {
+		result = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ctx.dialog));
+		folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(ctx.dialog));
 		if (folder && path) {
 			dup_string(path, folder);
 			g_free(folder);
@@ -382,7 +445,7 @@ gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gc
 	if (format != NULL)
 		*format = gtk_combo_box_get_active(GTK_COMBO_BOX(fmt_combo));
 
-	gtk_widget_destroy(dialog);
+	gtk_widget_destroy(ctx.dialog);
 
 	return result;
 }

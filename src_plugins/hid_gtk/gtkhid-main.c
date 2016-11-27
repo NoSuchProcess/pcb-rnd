@@ -1205,7 +1205,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	char *name;
 	const char *prompt;
 	pcb_io_formats_t avail;
-	const char **formats_param = NULL;
+	const char **formats_param = NULL, **extensions_param = NULL;
 	int fmt, *fmt_param = NULL;
 
 	static gchar *current_dir = NULL;
@@ -1226,6 +1226,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		prompt = _("Save element as");
 		if (pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1) > 0) {
 			formats_param = (const char **)avail.digest;
+			extensions_param = (const char **)avail.extension;
 			fmt_param = &fmt;
 			fmt = 0;
 		}
@@ -1238,6 +1239,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		prompt = _("Save layout as");
 		if (pcb_io_list(&avail, PCB_IOT_PCB, 1, 1) > 0) {
 			formats_param = (const char **)avail.digest;
+			extensions_param = (const char **)avail.extension;
 			fmt_param = &fmt;
 			fmt = 0;
 		}
@@ -1247,7 +1249,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 
-	name = ghid_dialog_file_select_save(prompt, &current_dir, PCB->Filename, conf_core.rc.file_path, formats_param, fmt_param);
+	name = ghid_dialog_file_select_save(prompt, &current_dir, PCB->Filename, conf_core.rc.file_path, formats_param, extensions_param, fmt_param);
 
 	if (name) {
 		if (conf_core.rc.verbose)
