@@ -847,14 +847,17 @@ int pcb_io_list(pcb_io_formats_t *out, pcb_plug_iot_t typ, int wr, int do_digest
 	if (out->len == 0)
 		return 0;
 
-	for(n = 0; n < out->len; n++)
+	for(n = 0; n < out->len; n++) {
 		out->plug[n] = available[n].plug;
+		out->extension[n] = out->plug[n]->default_extension;
+	}
 
 	if (do_digest) {
 		for(n = 0; n < out->len; n++)
 			out->digest[n] = pcb_strdup_printf("%s (%s)", out->plug[n]->default_fmt, out->plug[n]->description);
 		out->digest[n] = NULL;
 	}
+
 	return out->len;
 }
 

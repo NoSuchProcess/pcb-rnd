@@ -84,6 +84,7 @@ struct pcb_plug_io_s {
 
 	const char *default_fmt;
 	const char *description;
+	const char *default_extension; /* used to generate save-as filename */
 
 	int save_preference_prio; /* all available save plugins are sorted by this before presenting them to the user to choose one */
 };
@@ -130,7 +131,8 @@ void pcb_tmp_data_remove(void);
 typedef struct {
 	int len;
 	const pcb_plug_io_t *plug[PCB_IO_MAX_FORMATS+1];
-	char *digest[PCB_IO_MAX_FORMATS+1];           /* string that contains the format identifier and the description */
+	char *digest[PCB_IO_MAX_FORMATS+1];           /* string that contains the format identifier and the description (strdup'd) */
+	const char *extension[PCB_IO_MAX_FORMATS+1];  /* default file extension, with the leading . (not strdup'd) */
 } pcb_io_formats_t;
 
 /* Search all io plugins to see if typ/wr is supported. Return an ordered
