@@ -205,13 +205,13 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx);
    The plain version require exact match (look for a specific layer),
    the  _any version allows partial match so work with PCB_LYT_ANY*.
 */
-int pcb_layer_list(pcb_layer_type_t mask, int *res, int res_len);
-int pcb_layer_list_any(pcb_layer_type_t mask, int *res, int res_len);
+int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
+int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
 
 /* Same as pcb_layer_list but lists layer groups. A group is matching
    if any layer in that group matches mask. */
-int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len);
-int pcb_layer_group_list_any(pcb_layer_type_t mask, int *res, int res_len);
+int pcb_layer_group_list(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
+int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
 
 /* Looks up which group a layer is in. Returns group ID. */
 pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id);

@@ -608,7 +608,7 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 			used++; \
 	} while(0)
 
-int pcb_layer_list(pcb_layer_type_t mask, int *res, int res_len)
+int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
@@ -624,7 +624,7 @@ int pcb_layer_list(pcb_layer_type_t mask, int *res, int res_len)
 	return used;
 }
 
-int pcb_layer_list_any(pcb_layer_type_t mask, int *res, int res_len)
+int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
@@ -640,7 +640,7 @@ int pcb_layer_list_any(pcb_layer_type_t mask, int *res, int res_len)
 	return used;
 }
 
-int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len)
+int pcb_layer_group_list(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
 	int group, layeri, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
@@ -656,7 +656,7 @@ int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len)
 	return used;
 }
 
-int pcb_layer_group_list_any(pcb_layer_type_t mask, int *res, int res_len)
+int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
 	int group, layeri, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
