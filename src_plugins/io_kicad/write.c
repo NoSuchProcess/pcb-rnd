@@ -183,16 +183,21 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	
 	layer = 0;
 	if (physicalLayerCount >= 1) {
-		fprintf(FP, "%*s(%d bottom_side.Cu signal)\n", baseSExprIndent + 2, "", layer);
+		fprintf(FP, "%*s(%d B.Cu signal)\n", baseSExprIndent + 2, "", layer);
 	}
 	if (physicalLayerCount > 1) { /* seems we need to ignore layers > 16 due to kicad limitation */
 		for (layer = 1; (layer < (kicadLayerCount - 1)) && (layer < 15); layer++ ) {
 			fprintf(FP, "%*s(%d Inner%d.Cu signal)\n", baseSExprIndent + 2, "", layer, layer);
 		}
-		fprintf(FP, "%*s(15 top_side.Cu signal)\n", baseSExprIndent + 2, "");	
+		fprintf(FP, "%*s(15 F.Cu signal)\n", baseSExprIndent + 2, "");	
 	}
+	fprintf(FP, "%*s(18 B.Paste user)\n", baseSExprIndent + 2, "");
+	fprintf(FP, "%*s(19 F.Paste user)\n", baseSExprIndent + 2, "");
 	fprintf(FP, "%*s(20 B.SilkS user)\n", baseSExprIndent + 2, "");
 	fprintf(FP, "%*s(21 F.SilkS user)\n", baseSExprIndent + 2, "");
+	fprintf(FP, "%*s(22 B.Mask user)\n", baseSExprIndent + 2, "");
+	fprintf(FP, "%*s(23 F.Mask user)\n", baseSExprIndent + 2, "");
+
 	fprintf(FP, "%*s(28 Edge.Cuts user)\n", baseSExprIndent + 2, "");
 	fprintf(FP, "%*s)\n", baseSExprIndent, "");
 
@@ -520,7 +525,7 @@ static char * kicad_sexpr_layer_to_text(int layer)
 {
 	switch (layer) {
 		case 0:
-			return "bottom_side.Cu";
+			return "B.Cu";
 		case 1:
 			return "Inner1.Cu";
 		case 2:
@@ -550,7 +555,7 @@ static char * kicad_sexpr_layer_to_text(int layer)
 		case 14:
 			return "Inner14.Cu";
 		case 15:
-			return "top_side.Cu";
+			return "F.Cu";
 		case 20:
 			return "B.SilkS";
 		case 21:
@@ -1222,7 +1227,12 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 			}
 
 			fprintf(FP, "%*s", indentation + 4, "");
-			fprintf(FP, "(layers *.Cu  *.Paste *.Mask)\n"); /* define included layers for pad; needs fixing */
+			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)) {
+				fprintf(FP, "(layers B.Cu B.Paste B.Mask)\n"); /* May break if odd layer names */
+			} else {
+				fprintf(FP, "(layers F.Cu F.Paste F.Mask)\n"); /* May break if odd layer names */
+			}
+
 			current_pin_menu = pcb_netlist_find_net4pad(Layout, pad);
 			fprintf(FP, "%*s", indentation + 4, "");
 			if ((current_pin_menu != NULL) && (pcb_netlist_net_idx(Layout, current_pin_menu) != PCB_NETLIST_INVALID_INDEX)) {
