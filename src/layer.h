@@ -58,7 +58,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 
 
 /* Returns pcb_true if all layers in a group are empty */
-pcb_bool IsLayerGroupEmpty(int);
+pcb_bool pcb_is_layergrp_empty(int);
 
 
 /************ OLD API - new code should not use these **************/

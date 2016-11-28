@@ -78,7 +78,7 @@ pcb_bool pcb_layer_is_empty(pcb_layer_id_t num)
 	return pcb_false;
 }
 
-pcb_bool IsLayerGroupEmpty(int num)
+pcb_bool pcb_is_layergrp_empty(int num)
 {
 	int i;
 	for (i = 0; i < PCB->LayerGroups.Number[num]; i++)
