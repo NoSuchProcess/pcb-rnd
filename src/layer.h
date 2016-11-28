@@ -163,18 +163,23 @@ char *LayerGroupsToString(pcb_layer_group_t *);
 /* Layer type bitfield */
 typedef enum {
 	/* Stack-up (vertical position): */
-	PCB_LYT_TOP      = 0x0001, /* layer is on the top side of the board */
-	PCB_LYT_BOTTOM   = 0x0002, /* layer is on the bottom side of the board */
-	PCB_LYT_INTERN   = 0x0004, /* layer is internal */
-	PCB_LYT_ANYWHERE = 0x00FF, /* MASK: layer is anywhere on the stack */
+	PCB_LYT_TOP      = 0x000001, /* layer is on the top side of the board */
+	PCB_LYT_BOTTOM   = 0x000002, /* layer is on the bottom side of the board */
+	PCB_LYT_INTERN   = 0x000004, /* layer is internal */
+	PCB_LYT_VIRTUAL  = 0x000008, /* not in the layer stackup (logical or aux drawing layer ) */
+	PCB_LYT_ANYWHERE = 0x0000FF, /* MASK: layer is anywhere on the stack */
 
 	/* What the layer consists of */
-	PCB_LYT_COPPER   = 0x0100, /* copper objects */
-	PCB_LYT_SILK     = 0x0200, /* silk objects */
-	PCB_LYT_MASK     = 0x0400, /* solder mask */
-	PCB_LYT_PASTE    = 0x0800, /* paste */
-	PCB_LYT_OUTLINE  = 0x1000, /* outline (contour of the board) */
-	PCB_LYT_ANYTHING = 0xFF00  /* MASK */
+	PCB_LYT_COPPER   = 0x000100, /* copper objects */
+	PCB_LYT_SILK     = 0x000200, /* silk objects */
+	PCB_LYT_MASK     = 0x000400, /* solder mask */
+	PCB_LYT_PASTE    = 0x000800, /* paste */
+	PCB_LYT_OUTLINE  = 0x001000, /* outline (contour of the board) */
+	PCB_LYT_RAT      = 0x002000, /* (virtual) rats nest (one, not in the stackup) */
+	PCB_LYT_INVIS    = 0x004000, /* (virtual) layer is invisible (one, not in the stackup) */
+	PCB_LYT_ASSY     = 0x008000, /* (virtual) assembly drawing (top and bottom) */
+	PCB_LYT_FAB      = 0x010000, /* (virtual) fab drawing (one, not in the stackup) */
+	PCB_LYT_ANYTHING = 0xFFFF00  /* MASK: layers consist anything */
 } pcb_layer_type_t;
 
 
