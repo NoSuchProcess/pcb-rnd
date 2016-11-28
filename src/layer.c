@@ -960,13 +960,12 @@ static int LastLayerInSolderGroup(int layer)
 	return 0;
 }
 
-/* changes the name of a layer; memory has to be already allocated */
-pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name)
+int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 {
-	free((char*)CURRENT->Name);
-	CURRENT->Name = Name;
+	free((char*)Layer->Name);
+	Layer->Name = Name;
 	pcb_hid_action("LayersChanged");
-	return (pcb_true);
+	return 0;
 }
 
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)

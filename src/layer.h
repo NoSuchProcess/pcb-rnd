@@ -227,14 +227,16 @@ void pcb_layers_reset();
    */
 pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname);
 
-/* Rename an existing layer */
+/* Rename an existing layer by idx */
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname);
+
+/* changes the name of a layer; memory has to be already allocated */
+int pcb_layer_rename_(pcb_layer_t *Layer, char *Name);
+
 
 /* Needs to be called once at the end, when all layers has been added */
 void pcb_layers_finalize();
 
-/* changes the name of a layer; memory has to be already allocated */
-pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name);
 
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is
