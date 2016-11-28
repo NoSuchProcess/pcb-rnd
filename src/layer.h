@@ -163,6 +163,12 @@ char *LayerGroupsToString(pcb_layer_group_t *);
 typedef long int pcb_layer_id_t;
 typedef long int pcb_layergrp_id_t;
 
+/* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
+pcb_layer_t *pcb_layer(pcb_layer_id_t id);
+
+/* Return the name of a layer (real or virtual) or NULL on error */
+const char *pcb_get_layer_name(pcb_layer_id_t id);
+
 /* Layer type bitfield */
 typedef enum {
 	/* Stack-up (vertical position): */
@@ -249,6 +255,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index);
 typedef struct pcb_virt_layer_s {
 	char *name;
 	unsigned int old_id;
+	pcb_layer_id_t new_id;
 	pcb_layer_type_t type;
 } pcb_virt_layer_t;
 

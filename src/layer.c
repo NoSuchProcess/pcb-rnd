@@ -35,19 +35,22 @@
 #include "undo.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
-	{"invisible",      SL(INVISIBLE, 0),  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
-	{"componentmask",  SL(MASK, TOP),     PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_TOP },
-	{"soldermask",     SL(MASK, BOTTOM),  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
-	{"topsilk",        SL(SILK, TOP),     PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
-	{"bottomsilk",     SL(SILK, BOTTOM),  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_BOTTOM },
-	{"rats",           SL(RATS, 0),       PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
-	{"toppaste",       SL(PASTE, TOP),    PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
-	{"bottompaste",    SL(PASTE, BOTTOM), PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
-	{"topassembly",    SL(ASSY, TOP),     PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
-	{"bottomassembly", SL(ASSY, BOTTOM),  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
-	{"fab",            SL(FAB, 0),        PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
+	{"invisible",      SL(INVISIBLE, 0),  PCB_LYT_VIRTUAL + 1,  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
+	{"componentmask",  SL(MASK, TOP),     PCB_LYT_VIRTUAL + 2,  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_TOP },
+	{"soldermask",     SL(MASK, BOTTOM),  PCB_LYT_VIRTUAL + 3,  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
+	{"topsilk",        SL(SILK, TOP),     PCB_LYT_VIRTUAL + 4,  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
+	{"bottomsilk",     SL(SILK, BOTTOM),  PCB_LYT_VIRTUAL + 5,  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_BOTTOM },
+	{"rats",           SL(RATS, 0),       PCB_LYT_VIRTUAL + 6,  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
+	{"toppaste",       SL(PASTE, TOP),    PCB_LYT_VIRTUAL + 7,  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
+	{"bottompaste",    SL(PASTE, BOTTOM), PCB_LYT_VIRTUAL + 8,  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
+	{"topassembly",    SL(ASSY, TOP),     PCB_LYT_VIRTUAL + 9,  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
+	{"bottomassembly", SL(ASSY, BOTTOM),  PCB_LYT_VIRTUAL + 10, PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
+	{"fab",            SL(FAB, 0),        PCB_LYT_VIRTUAL + 11, PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
 	{ NULL, 0 },
 };
+
+#define PCB_LAYER_VIRT_MIN PCB_LYT_VIRTUAL + 1
+#define PCB_LAYER_VIRT_MAX PCB_LYT_VIRTUAL + 11
 
 
 /*
@@ -608,11 +611,16 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 int pcb_layer_list(pcb_layer_type_t mask, int *res, int res_len)
 {
 	int n, used = 0;
+	pcb_virt_layer_t *v;
 
-	for (n = 0; n < PCB_MAX_LAYER + 2; n++) {
+	for(v = pcb_virt_layers; v->name != NULL; v++)
+		if ((v->type & mask) == mask)
+			APPEND(v->new_id);
+
+	for (n = 0; n < PCB_MAX_LAYER + 2; n++)
 		if ((pcb_layer_flags(n) & mask) == mask)
 			APPEND(n);
-	}
+
 	return used;
 }
 
@@ -1081,4 +1089,22 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	pcb_hid_action("LayersChanged");
 	pcb_gui->invalidate_all();
 	return 0;
+}
+
+const char *pcb_layer_name(pcb_layer_id_t id)
+{
+	if (id < 0)
+		return NULL;
+	if (id < pcb_max_copper_layer+2)
+		return PCB->Data->Layer[id].Name;
+	if ((id >= PCB_LAYER_VIRT_MIN) && (id <= PCB_LAYER_VIRT_MAX))
+		return pcb_virt_layers[id-PCB_LAYER_VIRT_MIN].name;
+	return NULL;
+}
+
+pcb_layer_t *pcb_layer(pcb_layer_id_t id)
+{
+	if ((id >= 0) && (id < pcb_max_copper_layer+2))
+		return &PCB->Data->Layer[id];
+	return NULL;
 }
