@@ -78,6 +78,21 @@ pcb_hid_action_t remote_action_list[] = {
 
 PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)
 
+
+static void remote_send_all_layers()
+{
+	pcb_layer_id_t arr[128];
+	int n, used;
+
+	used = pcb_layer_list_any(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
+	for(n = 0; n < used; n++) {
+		pcb_layer_id_t layer_id = arr[n];
+		pcb_layergrp_id_t grp = GetGroupOfLayer(layer_id);
+		pcb_remote_new_layer(pcb_layer_name(layer_id), layer_id, pcb_layer_flags(layer_id));
+	}
+}
+
+
 /* ----------------------------------------------------------------------------- */
 static int remote_stay;
 static void remote_do_export(pcb_hid_attr_val_t * options)
@@ -92,6 +107,7 @@ static void remote_do_export(pcb_hid_attr_val_t * options)
 	remote_proto_send_ver();
 	remote_proto_send_unit();
 	remote_proto_send_brddim(PCB->MaxWidth, PCB->MaxHeight);
+	remote_send_all_layers();
 	if (remote_proto_send_ready() != 0)
 		exit(1);
 

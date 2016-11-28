@@ -30,6 +30,7 @@ int remote_proto_send_ready();
 void proto_send_invalidate(int l, int r, int t, int b);
 void proto_send_invalidate_all();
 int proto_send_set_layer(const char *name, int idx, int empty);
+int pcb_remote_new_layer(const char *name, int idx, unsigned int flags);
 int proto_send_make_gc(void);
 int proto_send_del_gc(int gc);
 void proto_send_set_color(int gc, const char *name);

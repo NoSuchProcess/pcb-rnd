@@ -112,6 +112,17 @@ int proto_send_set_layer(const char *name, int idx, int empty)
 	return 0;
 }
 
+int pcb_remote_new_layer(const char *name, int idx, unsigned int flags)
+{
+	send_begin(&pctx, "newly");
+	send_open(&pctx, str_is_bin(name));
+	sends(&pctx, name);
+	sendf(&pctx, "%d", idx);
+	send_close(&pctx);
+	send_end(&pctx);
+	return 0;
+}
+
 int proto_send_make_gc(void)
 {
 	proto_node_t *targ;
