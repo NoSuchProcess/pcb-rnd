@@ -547,7 +547,7 @@ char *LayerGroupsToString(pcb_layer_group_t *lg)
 	return buf;
 }
 
-unsigned int pcb_layer_flags(int layer_idx)
+unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 {
 	unsigned int res = 0;
 
@@ -632,7 +632,7 @@ int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len)
 	return used;
 }
 
-int pcb_layer_by_name(const char *name)
+pcb_layer_id_t pcb_layer_by_name(const char *name)
 {
 	int n;
 	for (n = 0; n < pcb_max_copper_layer + 2; n++)
@@ -641,7 +641,7 @@ int pcb_layer_by_name(const char *name)
 	return -1;
 }
 
-int pcb_layer_lookup_group(int layer_id)
+pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id)
 {
 	int group, layeri;
 	for (group = 0; group < pcb_max_group; group++) {
@@ -654,7 +654,7 @@ int pcb_layer_lookup_group(int layer_id)
 	return -1;
 }
 
-void pcb_layer_add_in_group(int layer_id, int group_id)
+void pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
 {
 	int glen = PCB->LayerGroups.Number[group_id];
 	PCB->LayerGroups.Entries[group_id][glen] = layer_id;
@@ -694,11 +694,13 @@ void pcb_layers_reset()
 	PCB->Data->Layer[SOLDER_LAYER].Name = pcb_strdup("<bottom>");
 }
 
-int pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname)
+pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname)
 {
-	int id, grp = -1, found;
-	unsigned int loc  = type & PCB_LYT_ANYWHERE;
-	unsigned int role = type & PCB_LYT_ANYTHING;
+	pcb_layer_id_t id;
+	pcb_layergrp_id_t grp = -1;
+	int found;;
+	pcb_layer_type_t loc  = type & PCB_LYT_ANYWHERE;
+	pcb_layer_type_t role = type & PCB_LYT_ANYTHING;
 
 	/* look for an existing layer if reuse is enabled */
 	if (reuse_layer) {
@@ -763,7 +765,7 @@ int pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reu
 			case PCB_LYT_MASK:
 			case PCB_LYT_PASTE:
 			case PCB_LYT_SILK:
-				return -1; /* do not create silk, paste or mask layers, they are special */
+				return -1; /* do not create virtual layers */
 
 			case PCB_LYT_COPPER:
 				switch(loc) {
@@ -848,7 +850,7 @@ static void hack_in_silks()
 	}
 }
 
-int pcb_layer_rename(int layer, const char *lname)
+int pcb_layer_rename(pcb_layer_id_t layer, const char *lname)
 {
 	if (PCB->Data->Layer[layer].Name != NULL)
 		free((char *)PCB->Data->Layer[layer].Name);
@@ -938,7 +940,7 @@ pcb_bool pcb_layer_change_name(pcb_layer_t *Layer, char *Name)
 	return (pcb_true);
 }
 
-int pcb_layer_move(int old_index, int new_index)
+int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
 	int groups[PCB_MAX_LAYER + 2], l, g;
 	pcb_layer_t saved_layer;
