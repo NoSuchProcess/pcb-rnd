@@ -112,12 +112,13 @@ int proto_send_set_layer(const char *name, int idx, int empty)
 	return 0;
 }
 
-int pcb_remote_new_layer(const char *name, int idx, unsigned int flags)
+int pcb_remote_new_layer(const char *name, int idx, unsigned int flags, unsigned int group)
 {
 	send_begin(&pctx, "newly");
 	send_open(&pctx, str_is_bin(name));
 	sends(&pctx, name);
 	sendf(&pctx, "%d", idx);
+	sendf(&pctx, "%d", group);
 	send_close(&pctx);
 	send_end(&pctx);
 	return 0;
