@@ -170,7 +170,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "	li:logical_layers {\n");
 	for(lid = 0; lid < pcb_max_copper_layer; lid++) {
 		pcb_layer_t *l = PCB->Data->Layer+lid;
-		int empty = IsLayerEmpty(l);
+		int empty = pcb_layer_is_empty_(l);
 		lgid = GetLayerGroupNumberByNumber(lid);
 		lgs = lgss + lgid;
 

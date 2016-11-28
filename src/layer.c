@@ -66,21 +66,21 @@ static struct {
 } SavedStack;
 
 
-pcb_bool IsLayerEmpty(pcb_layer_t *layer)
+pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
 {
-	return LAYER_IS_PCB_EMPTY(layer);
+	return PCB_LAYER_IS_EMPTY(layer);
 }
 
-pcb_bool IsLayerNumEmpty(int num)
+pcb_bool pcb_layer_is_empty(int num)
 {
-	return IsLayerEmpty(PCB->Data->Layer + num);
+	return pcb_layer_is_empty_(PCB->Data->Layer + num);
 }
 
 pcb_bool IsLayerGroupEmpty(int num)
 {
 	int i;
 	for (i = 0; i < PCB->LayerGroups.Number[num]; i++)
-		if (!IsLayerNumEmpty(PCB->LayerGroups.Entries[num][i]))
+		if (!pcb_layer_is_empty(PCB->LayerGroups.Entries[num][i]))
 			return pcb_false;
 	return pcb_true;
 }

@@ -1496,3 +1496,7 @@ h_coordoy -> pcb_hash_element_oy
 h_coord -> pcb_hash_coord
 pcb_buffer_swap -> pcb_buffer_flip_side
 pcb_swap_buffers -> pcb_buffers_flip_side
+LAYER_IS_PCB_EMPTY -> PCB_LAYER_IS_EMPTY
+LAYER_IS_PCB_EMPTY -> PCB_LAYER_IS_EMPTY
+IsLayerEmpty -> pcb_layer_is_empty_
+IsLayerNumEmpty -> pcb_layer_is_empty

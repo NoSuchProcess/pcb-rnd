@@ -545,7 +545,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 #endif
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		layer = PCB->Data->Layer + i;
-		if (!IsLayerEmpty(layer))
+		if (!pcb_layer_is_empty_(layer))
 			group_data[GetLayerGroupNumberByNumber(i)].draw = 1;
 	}
 

@@ -4302,7 +4302,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 
 	len = pcb_layer_list(PCB_LYT_SILK | PCB_LYT_COPPER, tmp, sizeof(tmp));
 	for(i = 0; i < len; i++)
-		if (!IsLayerNumEmpty(tmp[i]))
+		if (!pcb_layer_is_empty(tmp[i]))
 			print_layer[tmp[i]] = 1;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));

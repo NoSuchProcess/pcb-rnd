@@ -450,7 +450,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
-		if (!LAYER_IS_PCB_EMPTY(layer))
+		if (!PCB_LAYER_IS_EMPTY(layer))
 			print_group[GetLayerGroupNumberByNumber(i)] = 1;
 	}
 	print_group[GetLayerGroupNumberByNumber(pcb_solder_silk_layer)] = 1;

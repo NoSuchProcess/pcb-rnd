@@ -260,7 +260,7 @@ void gcode_choose_groups()
 	for (n = 0; n < pcb_max_copper_layer; n++) {
 		layer = &PCB->Data->Layer[n];
 
-		if (!LAYER_IS_PCB_EMPTY(layer)) {
+		if (!PCB_LAYER_IS_EMPTY(layer)) {
 			/* layer isn't empty */
 
 			/*

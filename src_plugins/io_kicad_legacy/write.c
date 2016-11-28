@@ -536,7 +536,7 @@ int write_kicad_legacy_layout_tracks(FILE * FP, pcb_cardinal_t number,
 	pcb_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!PCB_LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
 			fprintf(FP, "Layer(%i ", (int) Number + 1);
 			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->Name));
@@ -580,7 +580,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!PCB_LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
 			fprintf(FP, "Layer(%i ", (int) Number + 1);
 			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->Name));
@@ -658,7 +658,7 @@ int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 	pcb_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!PCB_LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		/*
 			fprintf(FP, "Layer(%i ", (int) Number + 1);
 			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->Name));
@@ -1188,7 +1188,7 @@ int write_kicad_legacy_layout_polygons(FILE * FP, pcb_cardinal_t number,
 	pcb_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!PCB_LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		int localFlag = 0;
 		polylist_foreach(&layer->Polygon, &it, polygon) {
 			if (polygon->HoleIndexN == 0) { /* no holes defined within polygon, which we implement support for first */

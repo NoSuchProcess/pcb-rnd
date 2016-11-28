@@ -444,7 +444,7 @@ static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
 	pcb_polygon_t *polygon;
 
 	/* write information about non empty layers */
-	if (!LAYER_IS_PCB_EMPTY(layer) || (layer->Name && *layer->Name)) {
+	if (!PCB_LAYER_IS_EMPTY(layer) || (layer->Name && *layer->Name)) {
 		fprintf(FP, "Layer(%i ", (int) Number + 1);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(layer->Name));
 		fputs(")\n(\n", FP);

@@ -552,7 +552,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	pcb_hid_save_and_show_layer_ons(save_ons);
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
-		if (!LAYER_IS_PCB_EMPTY(layer))
+		if (!PCB_LAYER_IS_EMPTY(layer))
 			print_group[GetLayerGroupNumberByNumber(i)] = 1;
 	}
 	print_group[GetLayerGroupNumberByNumber(pcb_solder_silk_layer)] = 1;
