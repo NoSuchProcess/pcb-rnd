@@ -698,9 +698,12 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 {
 	pcb_layer_id_t id;
 	pcb_layergrp_id_t grp = -1;
-	int found;;
-	pcb_layer_type_t loc  = type & PCB_LYT_ANYWHERE;
+	int found;
+	unsigned long loc  = type & PCB_LYT_ANYWHERE;
 	pcb_layer_type_t role = type & PCB_LYT_ANYTHING;
+
+	if ((type & PCB_LYT_VIRTUAL) || (type & PCB_LYT_LOGICAL))
+		return -1;
 
 	/* look for an existing layer if reuse is enabled */
 	if (reuse_layer) {
@@ -708,7 +711,20 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 			case PCB_LYT_MASK:
 			case PCB_LYT_PASTE:
 			case PCB_LYT_SILK:
-				return -1; /* do not create silk, paste or mask layers, they are special */
+			case PCB_LYT_FAB:
+			case PCB_LYT_ASSY:
+			case PCB_LYT_RAT:
+			case PCB_LYT_INVIS:
+			case PCB_LYT_VIRTUAL:
+			case PCB_LYT_ANYTHING:
+			case PCB_LYT_ANYWHERE:
+				return -1; /* do not create virtual layers */
+
+			case PCB_LYT_INTERN:
+			case PCB_LYT_TOP:
+			case PCB_LYT_BOTTOM:
+			case PCB_LYT_LOGICAL:
+				return -1; /* suppress compiler warnings */
 
 			case PCB_LYT_COPPER:
 				switch(loc) {
@@ -765,7 +781,20 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 			case PCB_LYT_MASK:
 			case PCB_LYT_PASTE:
 			case PCB_LYT_SILK:
+			case PCB_LYT_FAB:
+			case PCB_LYT_ASSY:
+			case PCB_LYT_RAT:
+			case PCB_LYT_INVIS:
+			case PCB_LYT_VIRTUAL:
+			case PCB_LYT_ANYTHING:
+			case PCB_LYT_ANYWHERE:
 				return -1; /* do not create virtual layers */
+
+			case PCB_LYT_INTERN:
+			case PCB_LYT_TOP:
+			case PCB_LYT_BOTTOM:
+			case PCB_LYT_LOGICAL:
+				return -1; /* suppress compiler warnings */
 
 			case PCB_LYT_COPPER:
 				switch(loc) {
