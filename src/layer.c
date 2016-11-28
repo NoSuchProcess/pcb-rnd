@@ -351,6 +351,9 @@ int GetGroupOfLayer(int Layer)
 {
 	int group, i;
 
+	if ((Layer < 0) || (Layer > pcb_max_copper_layer))
+		return -1;
+
 	if (Layer == pcb_max_copper_layer)
 		return pcb_max_group;
 	for (group = 0; group < pcb_max_group; group++)
