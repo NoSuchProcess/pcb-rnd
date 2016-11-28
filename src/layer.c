@@ -34,6 +34,22 @@
 #include "compat_misc.h"
 #include "undo.h"
 
+pcb_virt_layer_t pcb_virt_layers[] = {
+	{"invisible",      SL(INVISIBLE, 0),  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
+	{"componentmask",  SL(MASK, TOP),     PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_TOP },
+	{"soldermask",     SL(MASK, BOTTOM),  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
+	{"topsilk",        SL(SILK, TOP),     PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
+	{"bottomsilk",     SL(SILK, BOTTOM),  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_BOTTOM },
+	{"rats",           SL(RATS, 0),       PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
+	{"toppaste",       SL(PASTE, TOP),    PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
+	{"bottompaste",    SL(PASTE, BOTTOM), PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
+	{"topassembly",    SL(ASSY, TOP),     PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
+	{"bottomassembly", SL(ASSY, BOTTOM),  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
+	{"fab",            SL(FAB, 0),        PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
+	{ NULL, 0 },
+};
+
+
 /*
  * Used by SaveStackAndVisibility() and
  * RestoreStackAndVisibility()
