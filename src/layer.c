@@ -49,8 +49,8 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 	{ NULL, 0 },
 };
 
-#define PCB_LAYER_VIRT_MIN PCB_LYT_VIRTUAL + 1
-#define PCB_LAYER_VIRT_MAX PCB_LYT_VIRTUAL + 11
+#define PCB_LAYER_VIRT_MIN (PCB_LYT_VIRTUAL + 1)
+#define PCB_LAYER_VIRT_MAX (PCB_LYT_VIRTUAL + 11)
 
 
 /*
@@ -556,6 +556,9 @@ char *LayerGroupsToString(pcb_layer_group_t *lg)
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 {
 	unsigned int res = 0;
+
+	if ((layer_idx >= PCB_LAYER_VIRT_MIN) && (layer_idx <= PCB_LAYER_VIRT_MAX))
+		return pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].type;
 
 	if (layer_idx == pcb_solder_silk_layer)
 		return PCB_LYT_SILK | PCB_LYT_BOTTOM;
