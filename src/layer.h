@@ -145,8 +145,8 @@ char *LayerGroupsToString(pcb_layer_group_t *);
 	   pcb_layer_t *layer = (&data->Layer[(n)]);
 
 
-#define PCB_LAYER_IS_EMPTY(layer) LAYER_IS_EMPTY_((layer))
-#define LAYER_IS_EMPTY_(layer) \
+#define PCB_LAYER_IS_EMPTY(layer) PCB_LAYER_IS_EMPTY_((layer))
+#define PCB_LAYER_IS_EMPTY_(layer) \
  ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (polylist_length(&layer->Polygon) == 0) && (textlist_length(&layer->Text) == 0))
 
 
