@@ -684,8 +684,8 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 			/* change the name of the active layer */
 		case F_Layer:
 			name = pcb_gui->prompt_for(_("Enter the layer name:"), PCB_EMPTY(CURRENT->Name));
-			/* NB: ChangeLayerName takes ownership of the passed memory */
-			if (name && (pcb_layer_rename(CURRENT, name) == 0))
+			/* NB: pcb_layer_rename_ takes ownership of the passed memory */
+			if (name && (pcb_layer_rename_(CURRENT, name) == 0))
 				pcb_board_set_changed_flag(pcb_true);
 			else
 				free(name);
