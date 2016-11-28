@@ -57,14 +57,26 @@ Same as inval(x1 x2 y1 y2) but invalidates the whole screen.
 <p>
 Arguments: none
 
-<h3> setly(name groups is_empty) </h3>
+<h3> newly(name id flags groups) </h3>
 Inform the client that the next set of drawing commands are for a specific
 layer.
 <p>
 Arguments:
 <ul>
 	<li> name: name of the layer (can be empty)
-	<li> groups: TODO (will be converted to a list)
+	<li> id: unique group ID
+	<li> flags: TODO (will be converted to a list)
+	<li> group: group ID; layers in the same group are turned on/off together and are considered to be on the same physical layer
+</ul>
+
+<h3> setly(name id is_empty) </h3>
+Inform the client that the next set of drawing commands are for a specific
+layer.
+<p>
+Arguments:
+<ul>
+	<li> name: name of the layer (can be empty)
+	<li> id: unique group ID
 	<li> is_empty: 1 if the layer is empty, 0 if the layer is not empty
 </ul>
 
