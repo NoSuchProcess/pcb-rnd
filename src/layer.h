@@ -56,11 +56,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 	int no_drc;                    /* whether to ignore the layer when checking the design rules */
 };
 
-
-/* Returns pcb_true if all layers in a group are empty */
-pcb_bool pcb_is_layergrp_empty(int);
-
-
 /************ OLD API - new code should not use these **************/
 
 int ParseGroupString(const char *, pcb_layer_group_t *, int /* LayerN */ );
@@ -170,6 +165,8 @@ const char *pcb_layer_name(pcb_layer_id_t id);
 pcb_bool pcb_layer_is_empty_(pcb_layer_t *ly);
 pcb_bool pcb_layer_is_empty(pcb_layer_id_t ly);
 
+/* Returns pcb_true if all layers in a group are empty */
+pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t lgrp);
 
 /* Layer type bitfield */
 typedef enum {
