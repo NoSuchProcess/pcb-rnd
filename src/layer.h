@@ -163,23 +163,26 @@ char *LayerGroupsToString(pcb_layer_group_t *);
 /* Layer type bitfield */
 typedef enum {
 	/* Stack-up (vertical position): */
-	PCB_LYT_TOP      = 0x000001, /* layer is on the top side of the board */
-	PCB_LYT_BOTTOM   = 0x000002, /* layer is on the bottom side of the board */
-	PCB_LYT_INTERN   = 0x000004, /* layer is internal */
-	PCB_LYT_VIRTUAL  = 0x000008, /* not in the layer stackup (logical or aux drawing layer ) */
-	PCB_LYT_ANYWHERE = 0x0000FF, /* MASK: layer is anywhere on the stack */
+	PCB_LYT_TOP      = 0x00000001, /* layer is on the top side of the board */
+	PCB_LYT_BOTTOM   = 0x00000002, /* layer is on the bottom side of the board */
+	PCB_LYT_INTERN   = 0x00000004, /* layer is internal */
+	PCB_LYT_LOGICAL  = 0x00000008, /* not in the layer stackup (typically aux drawing layer ) */
+	PCB_LYT_ANYWHERE = 0x000000FF, /* MASK: layer is anywhere on the stack */
 
 	/* What the layer consists of */
-	PCB_LYT_COPPER   = 0x000100, /* copper objects */
-	PCB_LYT_SILK     = 0x000200, /* silk objects */
-	PCB_LYT_MASK     = 0x000400, /* solder mask */
-	PCB_LYT_PASTE    = 0x000800, /* paste */
-	PCB_LYT_OUTLINE  = 0x001000, /* outline (contour of the board) */
-	PCB_LYT_RAT      = 0x002000, /* (virtual) rats nest (one, not in the stackup) */
-	PCB_LYT_INVIS    = 0x004000, /* (virtual) layer is invisible (one, not in the stackup) */
-	PCB_LYT_ASSY     = 0x008000, /* (virtual) assembly drawing (top and bottom) */
-	PCB_LYT_FAB      = 0x010000, /* (virtual) fab drawing (one, not in the stackup) */
-	PCB_LYT_ANYTHING = 0xFFFF00  /* MASK: layers consist anything */
+	PCB_LYT_COPPER   = 0x00000100, /* copper objects */
+	PCB_LYT_SILK     = 0x00000200, /* silk objects */
+	PCB_LYT_MASK     = 0x00000400, /* solder mask */
+	PCB_LYT_PASTE    = 0x00000800, /* paste */
+	PCB_LYT_OUTLINE  = 0x00001000, /* outline (contour of the board) */
+	PCB_LYT_RAT      = 0x00002000, /* (virtual) rats nest (one, not in the stackup) */
+	PCB_LYT_INVIS    = 0x00004000, /* (virtual) layer is invisible (one, not in the stackup) */
+	PCB_LYT_ASSY     = 0x00008000, /* (virtual) assembly drawing (top and bottom) */
+	PCB_LYT_FAB      = 0x00010000, /* (virtual) fab drawing (one, not in the stackup) */
+	PCB_LYT_ANYTHING = 0x00FFFF00, /* MASK: layers consist anything */
+
+	/* misc properties */
+	PCB_LYT_VIRTUAL  = 0x01000000 /* the layer is not in the layer array (generated layer) */
 } pcb_layer_type_t;
 
 
