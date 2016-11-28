@@ -56,9 +56,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 	int no_drc;                    /* whether to ignore the layer when checking the design rules */
 };
 
-/* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
-pcb_bool pcb_layer_is_empty_(pcb_layer_t *);
-pcb_bool pcb_layer_is_empty(int);
 
 /* Returns pcb_true if all layers in a group are empty */
 pcb_bool IsLayerGroupEmpty(int);
@@ -168,6 +165,11 @@ pcb_layer_t *pcb_get_layer(pcb_layer_id_t id);
 
 /* Return the name of a layer (real or virtual) or NULL on error */
 const char *pcb_layer_name(pcb_layer_id_t id);
+
+/* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
+pcb_bool pcb_layer_is_empty_(pcb_layer_t *ly);
+pcb_bool pcb_layer_is_empty(pcb_layer_id_t ly);
+
 
 /* Layer type bitfield */
 typedef enum {

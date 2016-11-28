@@ -71,9 +71,11 @@ pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
 	return PCB_LAYER_IS_EMPTY(layer);
 }
 
-pcb_bool pcb_layer_is_empty(int num)
+pcb_bool pcb_layer_is_empty(pcb_layer_id_t num)
 {
-	return pcb_layer_is_empty_(PCB->Data->Layer + num);
+	if ((num >= 0) && (num < pcb_max_copper_layer+2))
+		return pcb_layer_is_empty_(PCB->Data->Layer + num);
+	return pcb_false;
 }
 
 pcb_bool IsLayerGroupEmpty(int num)
