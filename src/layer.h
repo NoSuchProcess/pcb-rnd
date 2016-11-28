@@ -164,10 +164,10 @@ typedef long int pcb_layer_id_t;
 typedef long int pcb_layergrp_id_t;
 
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
-pcb_layer_t *pcb_layer(pcb_layer_id_t id);
+pcb_layer_t *pcb_get_layer(pcb_layer_id_t id);
 
 /* Return the name of a layer (real or virtual) or NULL on error */
-const char *pcb_get_layer_name(pcb_layer_id_t id);
+const char *pcb_layer_name(pcb_layer_id_t id);
 
 /* Layer type bitfield */
 typedef enum {

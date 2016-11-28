@@ -1140,7 +1140,7 @@ const char *pcb_layer_name(pcb_layer_id_t id)
 	return NULL;
 }
 
-pcb_layer_t *pcb_layer(pcb_layer_id_t id)
+pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
 {
 	if ((id >= 0) && (id < pcb_max_copper_layer+2))
 		return &PCB->Data->Layer[id];
