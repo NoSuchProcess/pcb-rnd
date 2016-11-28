@@ -146,31 +146,36 @@ static const char dump_layers_help[] = "Print info about each layer";
 extern lht_doc_t *conf_root[];
 static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	int g, n, used, arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
+	int g, n, used;
+	pcb_layer_id_t arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
+	pcb_layergrp_id_t garr[128]; /* WARNING: this assumes we won't have more than 128 layers */
+
 
 	printf("Max: theoretical=%d current_board=%d\n", PCB_MAX_LAYER+2, pcb_max_copper_layer);
-	for(n = 0; n < PCB_MAX_LAYER+2; n++) {
-		int grp = GetGroupOfLayer(n);
-		printf(" [%d] %04x group=%d %s\n", n, pcb_layer_flags(n), grp, PCB->Data->Layer[n].Name);
+	used = pcb_layer_list_any(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
+	for(n = 0; n < used; n++) {
+		pcb_layer_id_t layer_id = arr[n];
+		pcb_layergrp_id_t grp = GetGroupOfLayer(layer_id);
+		printf(" [%lx] %04x group=%d %s\n", layer_id, pcb_layer_flags(layer_id), grp, pcb_layer_name(layer_id));
 	}
 
 	/* query by logical layer: any bottom copper */
 	used = pcb_layer_list(PCB_LYT_COPPER | PCB_LYT_BOTTOM, arr, sizeof(arr)/sizeof(arr[0]));
 	printf("All %d bottom copper layers are:\n", used);
 	for(n = 0; n < used; n++) {
-		int layer_id = arr[n];
-		printf(" [%d] %s \n", layer_id, PCB->Data->Layer[layer_id].Name);
+		pcb_layer_id_t layer_id = arr[n];
+		printf(" [%lx] %s \n", layer_id, PCB->Data->Layer[layer_id].Name);
 	}
 
 	/* query by groups (physical layers): any copper in group */
-	used = pcb_layer_group_list(PCB_LYT_COPPER, arr, sizeof(arr)/sizeof(arr[0]));
+	used = pcb_layer_group_list(PCB_LYT_COPPER, garr, sizeof(garr)/sizeof(garr[0]));
 	printf("All %d groups containing copper layers are:\n", used);
 	for(g = 0; g < used; g++) {
-		int group_id = arr[g];
+		int group_id = garr[g];
 		printf(" group %d\n", group_id);
 		for(n = 0; n < PCB->LayerGroups.Number[group_id]; n++) {
 			int layer_id = PCB->LayerGroups.Entries[group_id][n];
-			printf("  [%d] %s\n", layer_id, PCB->Data->Layer[layer_id].Name);
+			printf("  [%lx] %s\n", layer_id, PCB->Data->Layer[layer_id].Name);
 		}
 	}
 
