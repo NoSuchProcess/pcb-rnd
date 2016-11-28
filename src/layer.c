@@ -624,6 +624,22 @@ int pcb_layer_list(pcb_layer_type_t mask, int *res, int res_len)
 	return used;
 }
 
+int pcb_layer_list_any(pcb_layer_type_t mask, int *res, int res_len)
+{
+	int n, used = 0;
+	pcb_virt_layer_t *v;
+
+	for(v = pcb_virt_layers; v->name != NULL; v++)
+		if ((v->type & mask))
+			APPEND(v->new_id);
+
+	for (n = 0; n < PCB_MAX_LAYER + 2; n++)
+		if ((pcb_layer_flags(n) & mask))
+			APPEND(n);
+
+	return used;
+}
+
 int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len)
 {
 	int group, layeri, used = 0;
@@ -631,6 +647,22 @@ int pcb_layer_group_list(pcb_layer_type_t mask, int *res, int res_len)
 		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
 			int layer = PCB->LayerGroups.Entries[group][layeri];
 			if ((pcb_layer_flags(layer) & mask) == mask) {
+				APPEND(group);
+				goto added; /* do not add a group twice */
+			}
+		}
+		added:;
+	}
+	return used;
+}
+
+int pcb_layer_group_list_any(pcb_layer_type_t mask, int *res, int res_len)
+{
+	int group, layeri, used = 0;
+	for (group = 0; group < pcb_max_group; group++) {
+		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
+			int layer = PCB->LayerGroups.Entries[group][layeri];
+			if ((pcb_layer_flags(layer) & mask)) {
 				APPEND(group);
 				goto added; /* do not add a group twice */
 			}
