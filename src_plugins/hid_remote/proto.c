@@ -118,6 +118,9 @@ int pcb_remote_new_layer(const char *name, int idx, unsigned int flags, unsigned
 	send_open(&pctx, str_is_bin(name));
 	sends(&pctx, name);
 	sendf(&pctx, "%d", idx);
+/*	send_open(&pctx, 0);*/
+	sendf(&pctx, "0x%lx", flags);
+/*	send_close(&pctx);*/
 	sendf(&pctx, "%d", group);
 	send_close(&pctx);
 	send_end(&pctx);
