@@ -49,6 +49,35 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 	{ NULL, 0 },
 };
 
+
+typedef struct {
+	pcb_layer_type_t type;
+	int class;
+	const char *name;
+} pcb_layer_type_name_t;
+
+static const pcb_layer_type_name_t pcb_layer_type_names[] = {
+	{ PCB_LYT_TOP,     1, "top" },
+	{ PCB_LYT_BOTTOM,  1, "bottom" },
+	{ PCB_LYT_INTERN,  1, "intern" },
+	{ PCB_LYT_LOGICAL, 1, "logical" },
+	{ PCB_LYT_COPPER,  2, "copper" },
+	{ PCB_LYT_SILK,    2, "silk" },
+	{ PCB_LYT_MASK,    2, "mask" },
+	{ PCB_LYT_PASTE,   2, "paste" },
+	{ PCB_LYT_OUTLINE, 2, "outline" },
+	{ PCB_LYT_RAT,     2, "rat" },
+	{ PCB_LYT_INVIS,   2, "invis" },
+	{ PCB_LYT_ASSY,    2, "assy" },
+	{ PCB_LYT_FAB,     2, "fab" },
+	{ PCB_LYT_VIRTUAL, 3, "virtual" },
+	{ 0, 0, NULL }
+};
+
+static const char *pcb_layer_type_class_names[] = {
+	"INVALID", "location", "purpose", "property"
+};
+
 #define PCB_LAYER_VIRT_MIN (PCB_LYT_VIRTUAL + 1)
 #define PCB_LAYER_VIRT_MAX (PCB_LYT_VIRTUAL + 11)
 
@@ -1147,4 +1176,17 @@ pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
 	if ((id >= 0) && (id < pcb_max_copper_layer+2))
 		return &PCB->Data->Layer[id];
 	return NULL;
+}
+
+int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name))
+{
+	const pcb_layer_type_name_t *n;
+	int found = 0;
+	for(n = pcb_layer_type_names; n->name != NULL; n++) {
+		if (type & n->type) {
+			cb(ctx, n->type, n->name, n->class, pcb_layer_type_class_names[n->class]);
+			found++;
+		}
+	}
+	return found;
 }
