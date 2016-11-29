@@ -38,8 +38,8 @@
  * on/off together.
  */
 struct pcb_layer_group_s {
-	pcb_cardinal_t Number[PCB_MAX_LAYER],      /* number of entries per groups */
-	  Entries[PCB_MAX_LAYER][PCB_MAX_LAYER + 2];
+	pcb_cardinal_t Number[PCB_MAX_LAYERGRP],      /* number of entries per groups */
+	  Entries[PCB_MAX_LAYERGRP][PCB_MAX_LAYER + 2];
 };
 
 struct pcb_layer_s {              /* holds information about one layer */

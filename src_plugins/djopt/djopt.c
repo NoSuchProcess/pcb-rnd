@@ -109,7 +109,7 @@ typedef struct rect_s {
 static corner_s *corners, *next_corner = 0;
 static line_s *lines;
 
-static int layer_groupings[PCB_MAX_LAYER];
+static int layer_groupings[PCB_MAX_LAYERGRP];
 static char layer_type[PCB_MAX_LAYER];
 #define LT_COMPONENT 1
 #define LT_SOLDER 2

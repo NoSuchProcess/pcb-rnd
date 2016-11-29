@@ -96,7 +96,7 @@ int ParseGroupString(const char *s, pcb_layer_group_t *LayerGroup, int LayerN)
 	int group, member, layer;
 	pcb_bool c_set = pcb_false,						/* flags for the two special layers to */
 		s_set = pcb_false;							/* provide a default setting for old formats */
-	int groupnum[PCB_MAX_LAYER + 2];
+	int groupnum[PCB_MAX_LAYERGRP + 2];
 
 	/* clear struct */
 	memset(LayerGroup, 0, sizeof(pcb_layer_group_t));
@@ -722,7 +722,7 @@ void pcb_layers_reset()
 	}
 
 	/* reset layer groups */
-	for(n = 0; n < PCB_MAX_LAYER; n++)
+	for(n = 0; n < PCB_MAX_LAYERGRP; n++)
 		PCB->LayerGroups.Number[n] = 0;
 
 	/* set up one copper layer on top and one on bottom */
@@ -779,7 +779,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 					case PCB_LYT_TOP:    return COMPONENT_LAYER;
 					case PCB_LYT_BOTTOM: return SOLDER_LAYER;
 					case PCB_LYT_INTERN:
-						for(grp = 2; grp < PCB_MAX_LAYER; grp++) {
+						for(grp = 2; grp < PCB_MAX_LAYERGRP; grp++) {
 							if (PCB->LayerGroups.Number[grp] > 0) {
 								id = PCB->LayerGroups.Entries[grp][0];
 								if (strcmp(PCB->Data->Layer[id].Name, "outline") != 0)
@@ -791,7 +791,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 				break;
 
 			case PCB_LYT_OUTLINE:
-				for(grp = 2; grp < PCB_MAX_LAYER; grp++) {
+				for(grp = 2; grp < PCB_MAX_LAYERGRP; grp++) {
 					if (PCB->LayerGroups.Number[grp] > 0) {
 						id = PCB->LayerGroups.Entries[grp][0];
 						if (strcmp(PCB->Data->Layer[id].Name, "outline") == 0)
@@ -851,7 +851,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 						abort(); /* can't get here */
 					case PCB_LYT_INTERN:
 						/* find the first internal layer */
-						for(found = 0, grp = 2; grp < PCB_MAX_LAYER; grp++) {
+						for(found = 0, grp = 2; grp < PCB_MAX_LAYERGRP; grp++) {
 							if (PCB->LayerGroups.Number[grp] > 0) {
 								id = PCB->LayerGroups.Entries[grp][0];
 								if (strcmp(PCB->Data->Layer[id].Name, "outline") != 0) {
@@ -872,10 +872,10 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 
 	if (grp < 0) {
 		/* Also need to create a group */
-		for(grp = 0; grp < PCB_MAX_LAYER; grp++)
+		for(grp = 0; grp < PCB_MAX_LAYERGRP; grp++)
 			if (PCB->LayerGroups.Number[grp] == 0)
 				break;
-		if (grp >= PCB_MAX_LAYER)
+		if (grp >= PCB_MAX_LAYERGRP)
 			return -2;
 	}
 
@@ -1018,7 +1018,7 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
-	int groups[PCB_MAX_LAYER + 2], l, g;
+	int groups[PCB_MAX_LAYERGRP + 2], l, g;
 	pcb_layer_t saved_layer;
 	int saved_group;
 
@@ -1046,10 +1046,10 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		return 1;
 	}
 
-	for (g = 0; g < PCB_MAX_LAYER + 2; g++)
+	for (g = 0; g < PCB_MAX_LAYERGRP + 2; g++)
 		groups[g] = -1;
 
-	for (g = 0; g < PCB_MAX_LAYER; g++)
+	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
 		for (l = 0; l < PCB->LayerGroups.Number[g]; l++)
 			groups[PCB->LayerGroups.Entries[g][l]] = g;
 
@@ -1107,7 +1107,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 
 	move_all_thermals(old_index, new_index);
 
-	for (g = 0; g < PCB_MAX_LAYER; g++)
+	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
 		PCB->LayerGroups.Number[g] = 0;
 	for (l = 0; l < pcb_max_copper_layer + 2; l++) {
 		int i;
@@ -1118,12 +1118,12 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		}
 	}
 
-	for (g = 0; g < PCB_MAX_LAYER; g++)
+	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
 		if (PCB->LayerGroups.Number[g] == 0) {
 			memmove(&PCB->LayerGroups.Number[g],
-							&PCB->LayerGroups.Number[g + 1], (PCB_MAX_LAYER - g - 1) * sizeof(PCB->LayerGroups.Number[g]));
+							&PCB->LayerGroups.Number[g + 1], (PCB_MAX_LAYERGRP - g - 1) * sizeof(PCB->LayerGroups.Number[g]));
 			memmove(&PCB->LayerGroups.Entries[g],
-							&PCB->LayerGroups.Entries[g + 1], (PCB_MAX_LAYER - g - 1) * sizeof(PCB->LayerGroups.Entries[g]));
+							&PCB->LayerGroups.Entries[g + 1], (PCB_MAX_LAYERGRP - g - 1) * sizeof(PCB->LayerGroups.Entries[g]));
 		}
 
 	pcb_hid_action("LayersChanged");

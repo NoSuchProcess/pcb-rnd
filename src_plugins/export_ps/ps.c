@@ -379,7 +379,7 @@ static struct {
 	FILE *f;
 	int pagecount;
 	pcb_coord_t linewidth;
-	pcb_bool print_group[PCB_MAX_LAYER];
+	pcb_bool print_group[PCB_MAX_LAYERGRP];
 	pcb_bool print_layer[PCB_MAX_LAYER];
 	double fade_ratio;
 	pcb_bool multi_file;

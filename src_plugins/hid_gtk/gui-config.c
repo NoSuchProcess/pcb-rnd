@@ -1184,9 +1184,9 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 static GtkWidget *config_groups_table, *config_groups_vbox, *config_groups_window;
 
 static GtkWidget *layer_entry[PCB_MAX_LAYER];
-static GtkWidget *group_button[PCB_MAX_LAYER + 2][PCB_MAX_LAYER];
+static GtkWidget *group_button[PCB_MAX_LAYERGRP + 2][PCB_MAX_LAYER];
 
-static gint config_layer_group[PCB_MAX_LAYER + 2];
+static gint config_layer_group[PCB_MAX_LAYERGRP + 2];
 
 static pcb_layer_group_t layer_groups,	/* Working copy */
  *lg_monitor;										/* Keep track if our working copy */

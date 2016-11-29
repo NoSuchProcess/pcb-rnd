@@ -83,7 +83,7 @@ static struct {
 	float z_offset;
 	int solder;
 	int component;
-} group_data[PCB_MAX_LAYER];
+} group_data[PCB_MAX_LAYERGRP];
 
 
 #define HA_bboardfile 		0

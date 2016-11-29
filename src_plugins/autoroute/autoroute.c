@@ -298,7 +298,7 @@ typedef struct routebox {
 typedef struct routedata {
 	int max_styles;
 	/* one rtree per layer *group */
-	pcb_rtree_t *layergrouptree[PCB_MAX_LAYER];	/* no silkscreen layers here =) */
+	pcb_rtree_t *layergrouptree[PCB_MAX_LAYERGRP];	/* no silkscreen layers here =) */
 	/* root pointer into connectivity information */
 	routebox_t *first_net;
 	/* default routing style */
@@ -400,9 +400,9 @@ static void showroutebox(routebox_t * rb);
  */
 /* group number of groups that hold surface mount pads */
 static pcb_cardinal_t front, back;
-static pcb_bool usedGroup[PCB_MAX_LAYER];
-static int x_cost[PCB_MAX_LAYER], y_cost[PCB_MAX_LAYER];
-static pcb_bool is_layer_group_active[PCB_MAX_LAYER];
+static pcb_bool usedGroup[PCB_MAX_LAYERGRP];
+static int x_cost[PCB_MAX_LAYERGRP], y_cost[PCB_MAX_LAYERGRP];
+static pcb_bool is_layer_group_active[PCB_MAX_LAYERGRP];
 static int ro = 0;
 static int smoothes = 1;
 static int passes = 12;
@@ -850,7 +850,7 @@ static void DumpRouteBox(routebox_t * rb)
 static routedata_t *CreateRouteData()
 {
 	pcb_netlist_list_t Nets;
-	vtptr_t layergroupboxes[PCB_MAX_LAYER];
+	vtptr_t layergroupboxes[PCB_MAX_LAYERGRP];
 	pcb_box_t bbox;
 	routedata_t *rd;
 	int group, i;

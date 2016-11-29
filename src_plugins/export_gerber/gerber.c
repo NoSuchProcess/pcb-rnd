@@ -277,7 +277,7 @@ static int linewidth = -1;
 static int lastgroup = -1;
 static int lastcap = -1;
 static int lastcolor = -1;
-static int print_group[PCB_MAX_LAYER];
+static int print_group[PCB_MAX_LAYERGRP];
 static int print_layer[PCB_MAX_LAYER];
 static int lastX, lastY;				/* the last X and Y coordinate */
 
