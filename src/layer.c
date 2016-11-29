@@ -204,7 +204,7 @@ error:
 	return (1);
 }
 
-int pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
+pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 {
 	int i;
 

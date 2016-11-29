@@ -424,7 +424,7 @@ static int ReportDialog(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			text = (pcb_text_t *) ptr2;
 
 			if (type == PCB_TYPE_TEXT)
-				sprintf(laynum, "It is on layer %d.", pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1));
+				sprintf(laynum, "It is on layer %ld.", pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1));
 			report = pcb_strdup_printf("%m+TEXT ID# %ld;  Flags:%s\n"
 									"Located at (X,Y) = %$mD.\n"
 									"Characters are %$mS tall.\n"

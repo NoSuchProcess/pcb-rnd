@@ -33,6 +33,9 @@
 #include "attrib.h"
 #include "obj_all_list.h"
 
+typedef long int pcb_layer_id_t;
+typedef long int pcb_layergrp_id_t;
+
 /* ----------------------------------------------------------------------
  * layer group. A layer group identifies layers which are always switched
  * on/off together.
@@ -61,7 +64,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 int pcb_layer_parse_group_string(const char *, pcb_layer_group_t *, int /* LayerN */ );
 
 /* returns the layer number for the passed copper or silk layer pointer */
-int pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
+pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
 
 int GetLayerGroupNumberByPointer(pcb_layer_t *);
 int GetLayerGroupNumberByNumber(pcb_cardinal_t);
@@ -151,8 +154,6 @@ int MoveLayerToGroup(int layer, int group);
 
 /************ NEW API - new code should use these **************/
 
-typedef long int pcb_layer_id_t;
-typedef long int pcb_layergrp_id_t;
 
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
 pcb_layer_t *pcb_get_layer(pcb_layer_id_t id);
