@@ -59,12 +59,12 @@ struct pcb_layer_s {              /* holds information about one layer */
 	int no_drc;                    /* whether to ignore the layer when checking the design rules */
 };
 
-/************ OLD API - new code should not use these **************/
-
-int pcb_layer_parse_group_string(const char *, pcb_layer_group_t *, int /* LayerN */ );
 
 /* returns the layer number for the passed copper or silk layer pointer */
 pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
+
+
+/************ OLD API - new code should not use these **************/
 
 int GetLayerGroupNumberByPointer(pcb_layer_t *);
 int GetLayerGroupNumberByNumber(pcb_cardinal_t);
@@ -271,5 +271,11 @@ typedef struct pcb_virt_layer_s {
 extern pcb_virt_layer_t pcb_virt_layers[];
 
 
+/********* OBSOLETE functions, do not use in new code *********/
+
+/* parses the group definition string which is a colon separated list of
+   comma separated layer numbers (1,2,b:4,6,8,t). OBSOLETE, do not use in new
+   code: only the conf system and io_pcb may need this. */
+int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, int LayerN);
 
 #endif

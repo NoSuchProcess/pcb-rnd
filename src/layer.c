@@ -116,10 +116,6 @@ pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
-/* ----------------------------------------------------------------------
- * parses the group definition string which is a colon separated list of
- * comma separated layer numbers (1,2,b:4,6,8,t)
- */
 int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, int LayerN)
 {
 	int group, member, layer;
