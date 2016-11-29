@@ -795,6 +795,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 			case PCB_LYT_VIRTUAL:
 			case PCB_LYT_ANYTHING:
 			case PCB_LYT_ANYWHERE:
+			case PCB_LYT_ANYPROP:
 				return -1; /* do not create virtual layers */
 
 			case PCB_LYT_INTERN:
@@ -865,6 +866,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 			case PCB_LYT_VIRTUAL:
 			case PCB_LYT_ANYTHING:
 			case PCB_LYT_ANYWHERE:
+			case PCB_LYT_ANYPROP:
 				return -1; /* do not create virtual layers */
 
 			case PCB_LYT_INTERN:
