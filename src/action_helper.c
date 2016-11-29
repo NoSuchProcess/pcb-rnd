@@ -289,7 +289,10 @@ void pcb_clear_warnings()
 	pcb_draw();
 }
 
-static void click_cb(pcb_hidval_t hv)
+/* Called some time after the click if there was a release but no second click
+   a.k.a. finalize single click (some things are already done in pcb_notify_mode
+   at the initial click event) */
+static void click_timer_cb(pcb_hidval_t hv)
 {
 	if (Note.Click) {
 		pcb_notify_crosshair_change(pcb_false);
@@ -563,7 +566,7 @@ void pcb_notify_mode(void)
 
 			Note.Click = pcb_true;
 			/* do something after click time */
-			pcb_gui->add_timer(click_cb, conf_core.editor.click_time, hv);
+			pcb_gui->add_timer(click_timer_cb, conf_core.editor.click_time, hv);
 
 			/* see if we clicked on something already selected
 			 * (Note.Moving) or clicked on a MOVE_TYPE
