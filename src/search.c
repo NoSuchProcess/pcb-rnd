@@ -962,6 +962,8 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 	double p_cos = (X - Arc->X) / p_dist;
 	pcb_angle_t p_ang = acos(p_cos) * PCB_RAD_TO_DEG;
 	pcb_angle_t ang1, ang2;
+#define angle_in_range(r1, r2, ang) (((ang) >= (r1)) && ((ang) <= (r2)))
+
 
 	/* Convert StartAngle, Delta into bounding angles in [0, 720) */
 	if (Arc->Delta > 0) {
@@ -982,10 +984,13 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 		p_ang = -p_ang;
 	p_ang += 180;
 
-	/* Check point is outside arc range, check distance from endpoints */
-	if (ang1 >= p_ang || ang2 <= p_ang) {
-		pcb_coord_t ArcX, ArcY;
 
+	/* Check point is outside arc range, check distance from endpoints
+	   Need to check p_ang+360 too, because after the angle swaps above ang2
+	   mght be larger than 360 and that section of the arc shouldn't be missed
+	   either. */
+	if (!angle_in_range(ang1, ang2, p_ang) && !angle_in_range(ang1, ang2, p_ang+360)) {
+		pcb_coord_t ArcX, ArcY;
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Width * sin((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
 		if (pcb_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
@@ -997,8 +1002,10 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 			return pcb_true;
 		return pcb_false;
 	}
+
 	/* If point is inside the arc range, just compare it to the arc */
 	return fabs(pcb_distance(X, Y, Arc->X, Arc->Y) - Arc->Width) < Radius + Arc->Thickness / 2;
+#undef angle_in_range
 }
 
 /* ---------------------------------------------------------------------------
