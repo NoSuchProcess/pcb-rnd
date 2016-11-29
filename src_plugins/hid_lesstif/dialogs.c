@@ -1212,10 +1212,10 @@ static int AdjustSizes(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 static Widget layer_groups_form = 0;
 static Widget lg_buttonform = 0;
 
-static int lg_setcol[PCB_MAX_LAYER + 2];
+static int lg_setcol[PCB_MAX_LAYERGRP + 2];
 static int lg_width, lg_height;
 static int lg_r[PCB_MAX_LAYER + 3];
-static int lg_c[PCB_MAX_LAYER + 1];
+static int lg_c[PCB_MAX_LAYERGRP + 1];
 static int lg_label_width, lg_fa, lg_fd;
 static GC lg_gc = 0;
 
@@ -1338,7 +1338,7 @@ static void lgbutton_resize(Widget w, XtPointer u, XmDrawingAreaCallbackStruct *
 
 void lesstif_update_layer_groups()
 {
-	int sets[PCB_MAX_LAYER + 2][PCB_MAX_LAYER];
+	int sets[PCB_MAX_LAYERGRP + 2][PCB_MAX_LAYER];
 	int i, j;
 	pcb_layer_group_t *l = &(PCB->LayerGroups);
 
@@ -1398,7 +1398,7 @@ void lesstif_update_layer_groups()
 		}
 	}
 	XtUnmanageChild(lg_buttonform);
-	for (i = 0; i < PCB_MAX_LAYER + 2; i++)
+	for (i = 0; i < PCB_MAX_LAYERGRP + 2; i++)
 		for (j = 0; j < PCB_MAX_LAYER; j++) {
 			if (i < pcb_max_copper_layer + 2 && j < pcb_max_group) {
 				XtManageChild(lgbuttons[i][j]);
