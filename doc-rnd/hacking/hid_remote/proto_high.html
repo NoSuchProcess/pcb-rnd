@@ -64,10 +64,17 @@ layer.
 Arguments:
 <ul>
 	<li> name: name of the layer (can be empty)
-	<li> id: unique group ID
-	<li> flags: TODO (will be converted to a list)
-	<li> group: group ID; layers in the same group are turned on/off together and are considered to be on the same physical layer
+	<li> id: unique group ID (decimal integer)
+	<li> flags: a list of 3 items: location, purpose and properites. Each item is a list of values (or an empty list).
+	<li> group: group ID; layers in the same group are turned on/off together and are considered to be on the same physical layer; -1 means not part of any group
 </ul>
+<p>
+Example:
+<pre>
+newly(bottomassembly 16777226 ((bottom) (assy) (virtual)) -1)
+</pre>
+Creates the bottom assembly virtual layer with ID 16777226. It is not part of
+any layer group and is called "bottomassembly".
 
 <h3> setly(name id is_empty) </h3>
 Inform the client that the next set of drawing commands are for a specific
