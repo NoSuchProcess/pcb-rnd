@@ -67,8 +67,16 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
 pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer);
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
 
-/* side is COMPONENT_LAYER or SOLDER_LAYER */
-pcb_bool pcb_layer_is_paste_empty(int side);
+/* ---------------------------------------------------------------------------
+ * the layer-numbers of the two additional special layers
+ * 'component' and 'solder'. The offset of PCB_MAX_LAYER is not added
+ */
+typedef enum {
+	SOLDER_LAYER    = 0,
+	COMPONENT_LAYER = 1
+} pcb_side_t;
+
+pcb_bool pcb_layer_is_paste_empty(pcb_side_t side);
 
 
 /************ OLD API - new code should not use these **************/
@@ -146,13 +154,6 @@ int MoveLayerToGroup(int layer, int group);
 #define PCB_LAYER_IS_EMPTY_(layer) \
  ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (polylist_length(&layer->Polygon) == 0) && (textlist_length(&layer->Text) == 0))
 
-
-/* ---------------------------------------------------------------------------
- * the layer-numbers of the two additional special layers
- * 'component' and 'solder'. The offset of PCB_MAX_LAYER is not added
- */
-#define	SOLDER_LAYER		0
-#define	COMPONENT_LAYER		1
 
 
 /************ NEW API - new code should use these **************/

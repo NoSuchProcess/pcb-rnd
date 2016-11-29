@@ -471,7 +471,7 @@ void RestoreStackAndVisibility(void)
 	SavedStack.cnt--;
 }
 
-pcb_bool pcb_layer_is_paste_empty(int side)
+pcb_bool pcb_layer_is_paste_empty(pcb_side_t side)
 {
 	pcb_bool paste_empty = pcb_true;
 	PCB_PAD_ALL_LOOP(PCB->Data);
