@@ -78,9 +78,6 @@ void RestoreStackAndVisibility(void);
 /* Returns group actually moved to (i.e. either group or previous) */
 int MoveLayerToGroup(int layer, int group);
 
-/* Returns pointer to private buffer */
-char *LayerGroupsToString(pcb_layer_group_t *);
-
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])
 #define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
 #define	CURRENT			(PCB->SilkActive ? &PCB->Data->Layer[ \

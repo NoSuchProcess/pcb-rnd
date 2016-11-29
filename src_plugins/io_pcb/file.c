@@ -142,6 +142,41 @@ static const char *c_dtostr(double d)
 	return buf;
 }
 
+/* Returns pointer to private buffer */
+static char *LayerGroupsToString(pcb_layer_group_t *lg)
+{
+#if PCB_MAX_LAYER < 9998
+	/* Allows for layer numbers 0..9999 */
+	static char buf[(PCB_MAX_LAYER + 2) * 5 + 1];
+#endif
+	char *cp = buf;
+	char sep = 0;
+	int group, entry;
+	for (group = 0; group < pcb_max_group; group++)
+		if (PCB->LayerGroups.Number[group]) {
+			if (sep)
+				*cp++ = ':';
+			sep = 1;
+			for (entry = 0; entry < PCB->LayerGroups.Number[group]; entry++) {
+				int layer = PCB->LayerGroups.Entries[group][entry];
+				if (layer == pcb_component_silk_layer) {
+					*cp++ = 'c';
+				}
+				else if (layer == pcb_solder_silk_layer) {
+					*cp++ = 's';
+				}
+				else {
+					sprintf(cp, "%d", layer + 1);
+					while (*++cp);
+				}
+				if (entry != PCB->LayerGroups.Number[group] - 1)
+					*cp++ = ',';
+			}
+		}
+	*cp++ = 0;
+	return buf;
+}
+
 
 /* ---------------------------------------------------------------------------
  * writes out an attribute list
