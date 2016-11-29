@@ -246,7 +246,7 @@ int ChangeGroupVisibility(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 		printf("ChangeGroupVisibility(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
 
 	/* decrement 'i' to keep stack in order of layergroup */
-	if ((group = pcb_layer_get_group(Layer)) < pcb_max_group)
+	if ((group = pcb_layer_get_group(Layer)) >= 0) {
 		for (i = PCB->LayerGroups.Number[group]; i;) {
 			int layer = PCB->LayerGroups.Entries[group][--i];
 
@@ -260,6 +260,7 @@ int ChangeGroupVisibility(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 				changed++;
 			}
 		}
+	}
 
 	/* change at least the passed layer */
 	PCB->Data->Layer[Layer].On = On;
@@ -375,7 +376,7 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 		for (i = 0; i < PCB->LayerGroups.Number[group]; i++)
 			if (PCB->LayerGroups.Entries[group][i] == Layer)
 				return (group);
-	return pcb_max_group;
+	return -1;
 }
 
 
