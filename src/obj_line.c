@@ -279,7 +279,7 @@ pcb_coord_t pcb_line_area(const pcb_line_t *line)
 void *AddLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_t *line;
-	pcb_layer_t *layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
+	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
 
 	line = pcb_line_new(layer, Line->Point1.X, Line->Point1.Y,
 															Line->Point2.X, Line->Point2.Y,
@@ -292,7 +292,7 @@ void *AddLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 /* moves a line to buffer */
 void *MoveLineToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_line_t * line)
 {
-	pcb_layer_t *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
+	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_TYPE_LINE, layer, line);
 	pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);

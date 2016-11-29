@@ -302,7 +302,7 @@ double pcb_poly_area(const pcb_polygon_t *poly)
 /* copies a polygon to buffer */
 void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
-	pcb_layer_t *layer = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, Layer)];
+	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
 	pcb_polygon_t *polygon;
 
 	polygon = pcb_poly_new(layer, Polygon->Flags);
@@ -324,7 +324,7 @@ void *AddPolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_polygon_t *Po
 /* moves a polygon to buffer. Doesn't allocate memory for the points */
 void *MovePolygonToBuffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_polygon_t * polygon)
 {
-	pcb_layer_t *lay = &ctx->buffer.dst->Layer[GetLayerNumber(ctx->buffer.src, layer)];
+	pcb_layer_t *lay = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, layer)];
 
 	pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 
@@ -511,8 +511,8 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 	if (Layer->On)
 		ErasePolygon(Polygon);
 	/* Move all of the thermals with the polygon */
-	d.snum = GetLayerNumber(PCB->Data, Layer);
-	d.dnum = GetLayerNumber(PCB->Data, ctx->move.dst_layer);
+	d.snum = pcb_layer_id(PCB->Data, Layer);
+	d.dnum = pcb_layer_id(PCB->Data, ctx->move.dst_layer);
 	d.polygon = Polygon;
 	d.type = PCB_TYPE_PIN;
 	pcb_r_search(PCB->Data->pin_tree, &Polygon->BoundingBox, NULL, mptl_pin_callback, &d, NULL);

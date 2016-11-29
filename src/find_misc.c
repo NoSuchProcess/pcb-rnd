@@ -168,7 +168,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 
 	case PCB_TYPE_LINE:
 		{
-			int layer = GetLayerNumber(PCB->Data,
+			int layer = pcb_layer_id(PCB->Data,
 																 (pcb_layer_t *) ptr1);
 
 			if (ADD_LINE_TO_LIST(layer, (pcb_line_t *) ptr2, 0, NULL, PCB_FCT_START))
@@ -178,7 +178,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 
 	case PCB_TYPE_ARC:
 		{
-			int layer = GetLayerNumber(PCB->Data,
+			int layer = pcb_layer_id(PCB->Data,
 																 (pcb_layer_t *) ptr1);
 
 			if (ADD_ARC_TO_LIST(layer, (pcb_arc_t *) ptr2, 0, NULL, PCB_FCT_START))
@@ -188,7 +188,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 
 	case PCB_TYPE_POLYGON:
 		{
-			int layer = GetLayerNumber(PCB->Data,
+			int layer = pcb_layer_id(PCB->Data,
 																 (pcb_layer_t *) ptr1);
 
 			if (ADD_POLYGON_TO_LIST(layer, (pcb_polygon_t *) ptr2, 0, NULL, PCB_FCT_START))
@@ -230,7 +230,7 @@ void pcb_lookup_conn(pcb_coord_t X, pcb_coord_t Y, pcb_bool AndDraw, pcb_coord_t
 		if (type == PCB_TYPE_NONE)
 			return;
 		if (type & PCB_SILK_TYPE) {
-			int laynum = GetLayerNumber(PCB->Data,
+			int laynum = pcb_layer_id(PCB->Data,
 																	(pcb_layer_t *) ptr1);
 
 			/* don't mess with non-conducting objects! */

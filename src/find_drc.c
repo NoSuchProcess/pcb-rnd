@@ -835,7 +835,7 @@ static void GotoError(void)
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_POLYGON:
-		ChangeGroupVisibility(GetLayerNumber(PCB->Data, (pcb_layer_t *) thing_ptr1), pcb_true, pcb_true);
+		ChangeGroupVisibility(pcb_layer_id(PCB->Data, (pcb_layer_t *) thing_ptr1), pcb_true, pcb_true);
 	}
 	pcb_center_display(X, Y);
 }

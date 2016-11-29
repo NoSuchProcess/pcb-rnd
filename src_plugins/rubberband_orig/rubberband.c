@@ -508,7 +508,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		{
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
 			pcb_line_t *line = (pcb_line_t *) Ptr2;
-			if (GetLayerNumber(PCB->Data, layer) < pcb_max_copper_layer) {
+			if (pcb_layer_id(PCB->Data, layer) < pcb_max_copper_layer) {
 				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1, pcb_false);
 				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2, pcb_false);
 			}
@@ -516,12 +516,12 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		}
 
 	case PCB_TYPE_LINE_POINT:
-		if (GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
+		if (pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
 			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
 		break;
 
 	case PCB_TYPE_ARC_POINT:
-		if (GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
+		if (pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
 			CheckArcPointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3, pcb_true);
 		break;
 
@@ -530,7 +530,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		break;
 
 	case PCB_TYPE_POLYGON:
-		if (GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
+		if (pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
 			CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_polygon_t *) Ptr2);
 		break;
 	}

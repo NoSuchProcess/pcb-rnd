@@ -204,12 +204,7 @@ error:
 	return (1);
 }
 
-
-
-/* ---------------------------------------------------------------------------
- * returns the layer number for the passed pointer
- */
-int GetLayerNumber(pcb_data_t *Data, pcb_layer_t *Layer)
+int pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 {
 	int i;
 
@@ -400,7 +395,7 @@ int GetGroupOfLayer(int Layer)
  */
 int GetLayerGroupNumberByPointer(pcb_layer_t *Layer)
 {
-	return (GetLayerGroupNumberByNumber(GetLayerNumber(PCB->Data, Layer)));
+	return (GetLayerGroupNumberByNumber(pcb_layer_id(PCB->Data, Layer)));
 }
 
 /* ---------------------------------------------------------------------------

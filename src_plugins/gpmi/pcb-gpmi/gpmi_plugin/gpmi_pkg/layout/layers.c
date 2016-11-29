@@ -21,7 +21,7 @@ void layout_switch_to_layer(int layer)
 
 int layout_get_current_layer()
 {
-	return GetLayerNumber(PCB->Data, CURRENT);
+	return pcb_layer_id(PCB->Data, CURRENT);
 }
 
 int layout_resolve_layer(const char *name)

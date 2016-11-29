@@ -247,7 +247,7 @@ static void DrawRecoveredObject(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (Type & (PCB_TYPE_LINE | PCB_TYPE_TEXT | PCB_TYPE_POLYGON | PCB_TYPE_ARC)) {
 		pcb_layer_t *layer;
 
-		layer = LAYER_PTR(GetLayerNumber(RemoveList, (pcb_layer_t *) Ptr1));
+		layer = LAYER_PTR(pcb_layer_id(RemoveList, (pcb_layer_t *) Ptr1));
 		pcb_draw_obj(Type, (void *) layer, Ptr2);
 	}
 	else
@@ -650,7 +650,7 @@ static pcb_bool UndoMoveToLayer(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_TYPE_NONE) {
-		swap = GetLayerNumber(PCB->Data, (pcb_layer_t *) ptr1);
+		swap = pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1);
 		pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, LAYER_PTR(Entry->Data.MoveToLayer.OriginalLayer), pcb_true);
 		Entry->Data.MoveToLayer.OriginalLayer = swap;
 		return (pcb_true);
@@ -1365,7 +1365,7 @@ void pcb_undo_add_obj_to_move_to_layer(int Type, void *Ptr1, void *Ptr2, void *P
 
 	if (!Locked) {
 		undo = GetUndoSlot(PCB_UNDO_MOVETOLAYER, PCB_OBJECT_ID(Ptr3), Type);
-		undo->Data.MoveToLayer.OriginalLayer = GetLayerNumber(PCB->Data, (pcb_layer_t *) Ptr1);
+		undo->Data.MoveToLayer.OriginalLayer = pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1);
 	}
 }
 

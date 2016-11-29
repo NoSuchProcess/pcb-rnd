@@ -783,7 +783,7 @@ static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_pol
 
 	if (pin->Clearance == 0)
 		return 0;
-	i = GetLayerNumber(d, l);
+	i = pcb_layer_id(d, l);
 	np = pin_clearance_poly(i, d->pcb, pin);
 
 	if (PCB_FLAG_THERM_TEST(i, pin)) {
@@ -885,7 +885,7 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 
 	if (pin->Clearance == 0)
 		return PCB_R_DIR_NOT_FOUND;
-	i = GetLayerNumber(info->data, info->layer);
+	i = pcb_layer_id(info->data, info->layer);
 	if (PCB_FLAG_THERM_TEST(i, pin)) {
 		np = ThermPoly((pcb_board_t *) (info->data->pcb), pin, i);
 		if (!np)
@@ -1008,9 +1008,9 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	pcb_cardinal_t group;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)
-			|| GetLayerNumber(Data, Layer) >= pcb_max_copper_layer)
+			|| pcb_layer_id(Data, Layer) >= pcb_max_copper_layer)
 		return 0;
-	group = Group(Data, GetLayerNumber(Data, Layer));
+	group = Group(Data, pcb_layer_id(Data, Layer));
 	info.solder = (group == Group(Data, pcb_solder_silk_layer));
 	info.data = Data;
 	info.other = here;
@@ -1484,7 +1484,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			PCB_END_LOOP;
 		}
 		else {
-			GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((pcb_layer_t *) ptr1))));
+			GROUP_LOOP(Data, GetLayerGroupNumberByNumber(pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
 			{
 				info.layer = layer;
 				pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);
@@ -1500,9 +1500,9 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_line_t *) ptr2))
 			return 0;
 		/* silk doesn't plow */
-		if (GetLayerNumber(Data, (pcb_layer_t *) ptr1) >= pcb_max_copper_layer)
+		if (pcb_layer_id(Data, (pcb_layer_t *) ptr1) >= pcb_max_copper_layer)
 			return 0;
-		GROUP_LOOP(Data, GetLayerGroupNumberByNumber(GetLayerNumber(Data, ((pcb_layer_t *) ptr1))));
+		GROUP_LOOP(Data, GetLayerGroupNumberByNumber(pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
 		{
 			info.layer = layer;
 			pcb_r_search(layer->polygon_tree, &sb, NULL, plow_callback, &info, &seen);

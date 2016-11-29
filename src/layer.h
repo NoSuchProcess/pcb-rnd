@@ -60,7 +60,9 @@ struct pcb_layer_s {              /* holds information about one layer */
 
 int pcb_layer_parse_group_string(const char *, pcb_layer_group_t *, int /* LayerN */ );
 
-int GetLayerNumber(pcb_data_t *, pcb_layer_t *);
+/* returns the layer number for the passed copper or silk layer pointer */
+int pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
+
 int GetLayerGroupNumberByPointer(pcb_layer_t *);
 int GetLayerGroupNumberByNumber(pcb_cardinal_t);
 int GetGroupOfLayer(int);
@@ -91,7 +93,7 @@ int MoveLayerToGroup(int layer, int group);
 #define BACKSILKLAYER		Layer[ \
 				(conf_core.editor.show_solder_side ? pcb_component_silk_layer : pcb_solder_silk_layer)]
 
-#define TEST_SILK_LAYER(layer)	(GetLayerNumber (PCB->Data, layer) >= pcb_max_copper_layer)
+#define TEST_SILK_LAYER(layer)	(pcb_layer_id(PCB->Data, layer) >= pcb_max_copper_layer)
 
 /* These decode the set_layer index. */
 #define SL_TYPE(x) ((x) < 0 ? (x) & 0x0f0 : 0)

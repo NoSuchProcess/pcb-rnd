@@ -1002,7 +1002,7 @@ static routedata_t *CreateRouteData()
 						case PCB_TYPE_POLYGON:
 							rb =
 								AddPolygon(layergroupboxes,
-													 GetLayerNumber(PCB->Data, (pcb_layer_t *) connection->ptr1),
+													 pcb_layer_id(PCB->Data, (pcb_layer_t *) connection->ptr1),
 													 (struct pcb_polygon_s *) connection->ptr2, rd->styles[j]);
 							break;
 						}
