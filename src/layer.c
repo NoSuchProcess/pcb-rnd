@@ -206,12 +206,10 @@ error:
 
 pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 {
-	int i;
+	if ((Layer >= Data->Layer) && (Layer < (Data->Layer + PCB_MAX_LAYER + 2)))
+		return Layer - Data->Layer;
 
-	for (i = 0; i < PCB_MAX_LAYER + 2; i++)
-		if (Layer == &Data->Layer[i])
-			break;
-	return (i);
+	return -1;
 }
 
 /* ---------------------------------------------------------------------------
