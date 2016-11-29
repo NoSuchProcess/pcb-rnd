@@ -199,7 +199,7 @@ static pcb_bool ListStart(int type, void *ptr1, void *ptr2, void *ptr3)
 	case PCB_TYPE_PAD:
 		{
 			pcb_pad_t *pad = (pcb_pad_t *) ptr2;
-			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, PCB_FCT_START))
+			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE, pad, 0, NULL, PCB_FCT_START))
 				return pcb_true;
 			break;
 		}

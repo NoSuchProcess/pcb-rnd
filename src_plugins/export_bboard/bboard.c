@@ -513,8 +513,8 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	memset(group_data, 0, sizeof(group_data));
 
-	group_data[pcb_layer_get_group(pcb_max_copper_layer + SOLDER_LAYER)].solder = 1;
-	group_data[pcb_layer_get_group(pcb_max_copper_layer + COMPONENT_LAYER)].component = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + PCB_SOLDER_SIDE)].solder = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + PCB_COMPONENT_SIDE)].component = 1;
 
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		layer = PCB->Data->Layer + i;

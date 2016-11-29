@@ -59,11 +59,11 @@
 	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (o)) != 0) == PCB_SWAP_IDENT)
 
 /* ---------------------------------------------------------------------------
- *  Determines if an object is on the given side. side is either SOLDER_LAYER
- *  or COMPONENT_LAYER.
+ *  Determines if an object is on the given side. side is either PCB_SOLDER_SIDE
+ *  or PCB_COMPONENT_SIDE.
  */
 #define PCB_ON_SIDE(element, side) \
-        (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) == (side == SOLDER_LAYER))
+        (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, element) == (side == PCB_SOLDER_SIDE))
 
 /* ---------------------------------------------------------------------------
  * some loop shortcuts

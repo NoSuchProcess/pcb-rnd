@@ -203,7 +203,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	 */
 	if (!conf_core.editor.check_planes
 			&& pcb_gui->set_layer("invisible", SL(INVISIBLE, 0), 0)) {
-		side = PCB_SWAP_IDENT ? COMPONENT_LAYER : SOLDER_LAYER;
+		side = PCB_SWAP_IDENT ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
 		if (PCB->ElementOn) {
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 			pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
@@ -234,22 +234,22 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	/* Draw the solder mask if turned on */
 	if (pcb_gui->set_layer("componentmask", SL(MASK, TOP), 0)) {
-		DrawMask(COMPONENT_LAYER, drawn_area);
+		DrawMask(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	if (pcb_gui->set_layer("soldermask", SL(MASK, BOTTOM), 0)) {
-		DrawMask(SOLDER_LAYER, drawn_area);
+		DrawMask(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	if (pcb_gui->set_layer("topsilk", SL(SILK, TOP), 0)) {
-		DrawSilk(COMPONENT_LAYER, drawn_area);
+		DrawSilk(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	if (pcb_gui->set_layer("bottomsilk", SL(SILK, BOTTOM), 0)) {
-		DrawSilk(SOLDER_LAYER, drawn_area);
+		DrawSilk(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
@@ -267,25 +267,25 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		}
 	}
 
-	paste_empty = pcb_layer_is_paste_empty(COMPONENT_LAYER);
+	paste_empty = pcb_layer_is_paste_empty(PCB_COMPONENT_SIDE);
 	if (pcb_gui->set_layer("toppaste", SL(PASTE, TOP), paste_empty)) {
-		DrawPaste(COMPONENT_LAYER, drawn_area);
+		DrawPaste(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	paste_empty = pcb_layer_is_paste_empty(SOLDER_LAYER);
+	paste_empty = pcb_layer_is_paste_empty(PCB_SOLDER_SIDE);
 	if (pcb_gui->set_layer("bottompaste", SL(PASTE, BOTTOM), paste_empty)) {
-		DrawPaste(SOLDER_LAYER, drawn_area);
+		DrawPaste(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	if (pcb_gui->set_layer("topassembly", SL(ASSY, TOP), 0)) {
-		PrintAssembly(COMPONENT_LAYER, drawn_area);
+		PrintAssembly(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	if (pcb_gui->set_layer("bottomassembly", SL(ASSY, BOTTOM), 0)) {
-		PrintAssembly(SOLDER_LAYER, drawn_area);
+		PrintAssembly(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
@@ -311,12 +311,12 @@ static void DrawPPV(int group, const pcb_box_t * drawn_area)
 
 		/* draw element pads */
 		if (group == component_group) {
-			side = COMPONENT_LAYER;
+			side = PCB_COMPONENT_SIDE;
 			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		}
 
 		if (group == solder_group) {
-			side = SOLDER_LAYER;
+			side = PCB_SOLDER_SIDE;
 			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		}
 	}

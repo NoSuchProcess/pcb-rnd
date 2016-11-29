@@ -204,13 +204,13 @@ void pcb_component_lookup_init(void)
 	/* initialize pad data; start by counting the total number
 	 * on each of the two possible layers
 	 */
-	NumberOfPads[COMPONENT_LAYER] = NumberOfPads[SOLDER_LAYER] = 0;
+	NumberOfPads[PCB_COMPONENT_SIDE] = NumberOfPads[PCB_SOLDER_SIDE] = 0;
 	PCB_PAD_ALL_LOOP(PCB->Data);
 	{
 		if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))
-			NumberOfPads[SOLDER_LAYER]++;
+			NumberOfPads[PCB_SOLDER_SIDE]++;
 		else
-			NumberOfPads[COMPONENT_LAYER]++;
+			NumberOfPads[PCB_COMPONENT_SIDE]++;
 	}
 	PCB_ENDALL_LOOP;
 	for (i = 0; i < 2; i++) {
@@ -323,7 +323,7 @@ static pcb_r_dir_t LOCtoPVpad_callback(const pcb_box_t * b, void *cl)
 
 	if (!PCB_FLAG_TEST(TheFlag, pad) && IS_PV_ON_PAD(&i->pv, pad) &&
 			!PCB_FLAG_TEST(PCB_FLAG_HOLE, &i->pv) &&
-			ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER, pad, PCB_TYPE_PIN, &i->pv, PCB_FCT_COPPER))
+			ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE, pad, PCB_TYPE_PIN, &i->pv, PCB_FCT_COPPER))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
 }
@@ -856,7 +856,7 @@ static pcb_r_dir_t LOCtoArcPad_callback(const pcb_box_t * b, void *cl)
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
+	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)
 			&& pcb_intersect_arc_pad(&i->arc, pad) && ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_ARC, &i->arc, PCB_FCT_COPPER))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
@@ -968,7 +968,7 @@ static pcb_r_dir_t LOCtoLinePad_callback(const pcb_box_t * b, void *cl)
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
+	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)
 			&& pcb_intersect_line_pad(&i->line, pad) && ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_LINE, &i->line, PCB_FCT_COPPER))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
@@ -1079,7 +1079,7 @@ static pcb_r_dir_t LOCtoPad_callback(const pcb_box_t * b, void *cl)
 	struct rat_info *i = (struct rat_info *) cl;
 
 	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer ==
-			(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER) &&
+			(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE) &&
 			((pad->Point1.X == i->Point->X && pad->Point1.Y == i->Point->Y) ||
 			 (pad->Point2.X == i->Point->X && pad->Point2.Y == i->Point->Y) ||
 			 ((pad->Point1.X + pad->Point2.X) / 2 == i->Point->X &&
@@ -1203,7 +1203,7 @@ static pcb_r_dir_t LOCtoPadPad_callback(const pcb_box_t * b, void *cl)
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
+	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)
 			&& PadPadIntersect(pad, &i->pad) && ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_PAD, &i->pad, PCB_FCT_COPPER))
 		longjmp(i->env, 1);
 	return PCB_R_DIR_NOT_FOUND;
@@ -1233,10 +1233,10 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 			pcb_cardinal_t layer;
 			layer = PCB->LayerGroups.Entries[LayerGroup][entry];
 /*fprintf(stderr, "lg: %d\n", layer);*/
-			if (layer == COMPONENT_LAYER)
-				tlayer = COMPONENT_LAYER;
-			else if (layer == SOLDER_LAYER)
-				tlayer = SOLDER_LAYER;
+			if (layer == PCB_COMPONENT_SIDE)
+				tlayer = PCB_COMPONENT_SIDE;
+			else if (layer == PCB_SOLDER_SIDE)
+				tlayer = PCB_SOLDER_SIDE;
 		}
 
 /*fprintf(stderr, "tlayer=%d\n", tlayer);*/
@@ -1245,8 +1245,8 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 			PCB_PAD_LOOP(e);
 			{
 				if ((orig_pad != pad) && (ic == PCB_FLAG_INTCONN_GET(pad))) {
-					int padlayer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
-/*fprintf(stderr, "layergroup1: %d {%d %d %d} %d \n", tlayer, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad), SOLDER_LAYER, COMPONENT_LAYER, padlayer);*/
+					int padlayer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE;
+/*fprintf(stderr, "layergroup1: %d {%d %d %d} %d \n", tlayer, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad), PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE, padlayer);*/
 					if ((!PCB_FLAG_TEST(TheFlag, pad)) && (tlayer != padlayer)) {
 /*fprintf(stderr, "layergroup2\n");*/
 						ADD_PAD_TO_LIST(padlayer, pad, PCB_TYPE_PAD, orig_pad, PCB_FCT_INTERNAL);
@@ -1340,7 +1340,7 @@ static pcb_r_dir_t LOCtoPolyPad_callback(const pcb_box_t * b, void *cl)
 	pcb_pad_t *pad = (pcb_pad_t *) b;
 	struct lo_info *i = (struct lo_info *) cl;
 
-	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER)
+	if (!PCB_FLAG_TEST(TheFlag, pad) && i->layer == (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)
 			&& pcb_is_pad_in_poly(pad, &i->polygon)) {
 		if (ADD_PAD_TO_LIST(i->layer, pad, PCB_TYPE_POLYGON, &i->polygon, PCB_FCT_COPPER))
 			longjmp(i->env, 1);

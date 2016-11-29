@@ -55,8 +55,8 @@ struct pcb_data_s {
 
 #define pcb_max_group (PCB->Data->LayerN)
 #define pcb_max_copper_layer (PCB->Data->LayerN)
-#define pcb_solder_silk_layer (pcb_max_copper_layer + SOLDER_LAYER)
-#define pcb_component_silk_layer (pcb_max_copper_layer + COMPONENT_LAYER)
+#define pcb_solder_silk_layer (pcb_max_copper_layer + PCB_SOLDER_SIDE)
+#define pcb_component_silk_layer (pcb_max_copper_layer + PCB_COMPONENT_SIDE)
 
 extern pcb_buffer_t pcb_buffers[PCB_MAX_BUFFER];
 extern int pcb_added_lines;

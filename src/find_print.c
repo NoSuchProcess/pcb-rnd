@@ -48,7 +48,7 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 				if (ADD_PV_TO_LIST(pin, 0, NULL, 0))
 					return pcb_true;
 				DoIt(pcb_true, pcb_true);
-				number = PadList[COMPONENT_LAYER].Number + PadList[SOLDER_LAYER].Number + PVList.Number;
+				number = PadList[PCB_COMPONENT_SIDE].Number + PadList[PCB_SOLDER_SIDE].Number + PVList.Number;
 				/* the pin has no connection if it's the only
 				 * list entry; don't count vias
 				 */
@@ -86,10 +86,10 @@ static pcb_bool PrintAndSelectUnusedPinsAndPadsOfElement(pcb_element_t *Element,
 		if (!PCB_FLAG_TEST(TheFlag, pad) && FP) {
 			int i;
 			if (ADD_PAD_TO_LIST(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad)
-													? SOLDER_LAYER : COMPONENT_LAYER, pad, 0, NULL, 0))
+													? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE, pad, 0, NULL, 0))
 				return pcb_true;
 			DoIt(pcb_true, pcb_true);
-			number = PadList[COMPONENT_LAYER].Number + PadList[SOLDER_LAYER].Number + PVList.Number;
+			number = PadList[PCB_COMPONENT_SIDE].Number + PadList[PCB_SOLDER_SIDE].Number + PVList.Number;
 			/* the pin has no connection if it's the only
 			 * list entry; don't count vias
 			 */
@@ -175,8 +175,8 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 		DoIt(pcb_true, AndDraw);
 		/* printout all found connections */
 		PrintPinConnections(FP, pcb_true);
-		PrintPadConnections(COMPONENT_LAYER, FP, pcb_false);
-		PrintPadConnections(SOLDER_LAYER, FP, pcb_false);
+		PrintPadConnections(PCB_COMPONENT_SIDE, FP, pcb_false);
+		PrintPadConnections(PCB_SOLDER_SIDE, FP, pcb_false);
 		fputs("\t}\n", FP);
 		if (PrepareNextLoop(FP))
 			return (pcb_true);
@@ -193,13 +193,13 @@ static pcb_bool PrintElementConnections(pcb_element_t *Element, FILE * FP, pcb_b
 			fputs("\t\t__CHECKED_BEFORE__\n\t}\n", FP);
 			continue;
 		}
-		layer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SOLDER_LAYER : COMPONENT_LAYER;
+		layer = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE;
 		if (ADD_PAD_TO_LIST(layer, pad, PCB_TYPE_ELEMENT, Element, PCB_FCT_ELEMENT))
 			return pcb_true;
 		DoIt(pcb_true, AndDraw);
 		/* print all found connections */
 		PrintPadConnections(layer, FP, pcb_true);
-		PrintPadConnections(layer == (COMPONENT_LAYER ? SOLDER_LAYER : COMPONENT_LAYER), FP, pcb_false);
+		PrintPadConnections(layer == (PCB_COMPONENT_SIDE ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE), FP, pcb_false);
 		PrintPinConnections(FP, pcb_false);
 		fputs("\t}\n", FP);
 		if (PrepareNextLoop(FP))

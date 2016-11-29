@@ -2321,7 +2321,7 @@ yyreduce:
 				if ((yyvsp[-1].integer) & PCB_FLAG_ONSILK)
 				{
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
-						(((yyvsp[-1].integer) & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
+						(((yyvsp[-1].integer) & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)];
 
 					pcb_text_new(lay ,yyFont, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].string),
 						      pcb_flag_old((yyvsp[-1].integer)));
@@ -2347,7 +2347,7 @@ yyreduce:
 				if ((yyvsp[-1].flagtype).f & PCB_FLAG_ONSILK)
 				{
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
-						(((yyvsp[-1].flagtype).f & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
+						(((yyvsp[-1].flagtype).f & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)];
 
 					pcb_text_new(lay, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				}

@@ -1080,7 +1080,7 @@ text_newformat
 				if ($8 & PCB_FLAG_ONSILK)
 				{
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
-						(($8 & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
+						(($8 & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)];
 
 					pcb_text_new(lay ,yyFont, OU ($3), OU ($4), $5, $6, $7,
 						      pcb_flag_old($8));
@@ -1105,7 +1105,7 @@ text_hi_format
 				if ($8.f & PCB_FLAG_ONSILK)
 				{
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
-						(($8.f & PCB_FLAG_ONSOLDER) ? SOLDER_LAYER : COMPONENT_LAYER)];
+						(($8.f & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)];
 
 					pcb_text_new(lay, yyFont, NU ($3), NU ($4), $5, $6, $7, $8);
 				}

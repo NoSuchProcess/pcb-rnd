@@ -67,13 +67,12 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
 pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer);
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
 
-/* ---------------------------------------------------------------------------
- * the layer-numbers of the two additional special layers
- * 'component' and 'solder'. The offset of PCB_MAX_LAYER is not added
- */
+/* the offsets of the two additional special layers (e.g. silk) for 'component'
+   and 'solder'. The offset of PCB_MAX_LAYER is not added here. Also can be
+   used to address side of the board without referencing to groups or layers. */
 typedef enum {
-	SOLDER_LAYER    = 0,
-	COMPONENT_LAYER = 1
+	PCB_SOLDER_SIDE    = 0,
+	PCB_COMPONENT_SIDE = 1
 } pcb_side_t;
 
 pcb_bool pcb_layer_is_paste_empty(pcb_side_t side);

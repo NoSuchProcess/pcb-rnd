@@ -1507,3 +1507,5 @@ GetGroupOfLayer -> pcb_layer_get_group
 GetLayerGroupNumberByPointer -> pcb_layer_get_group_
 GetLayerGroupNumberByNumber -> pcb_layer_get_group
 IsPasteEmpty -> pcb_layer_is_paste_empty
+SOLDER_LAYER -> PCB_SOLDER_SIDE
+COMPONENT_LAYER -> PCB_COMPONENT_SIDE

@@ -145,7 +145,7 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, i
 			case 'C':
 			case 't':
 			case 'T':
-				layer = LayerN + COMPONENT_LAYER;
+				layer = LayerN + PCB_COMPONENT_SIDE;
 				c_set = pcb_true;
 				break;
 
@@ -153,7 +153,7 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, i
 			case 'S':
 			case 'b':
 			case 'B':
-				layer = LayerN + SOLDER_LAYER;
+				layer = LayerN + PCB_SOLDER_SIDE;
 				s_set = pcb_true;
 				break;
 
@@ -163,7 +163,7 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, i
 				layer = atoi(s) - 1;
 				break;
 			}
-			if (layer > LayerN + MAX(SOLDER_LAYER, COMPONENT_LAYER) || member >= LayerN + 1)
+			if (layer > LayerN + MAX(PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE) || member >= LayerN + 1)
 				goto error;
 			groupnum[layer] = group;
 			LayerGroup->Entries[group][member++] = layer;
@@ -182,9 +182,9 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, i
 			s++;
 	}
 	if (!s_set)
-		LayerGroup->Entries[SOLDER_LAYER][LayerGroup->Number[SOLDER_LAYER]++] = LayerN + SOLDER_LAYER;
+		LayerGroup->Entries[PCB_SOLDER_SIDE][LayerGroup->Number[PCB_SOLDER_SIDE]++] = LayerN + PCB_SOLDER_SIDE;
 	if (!c_set)
-		LayerGroup->Entries[COMPONENT_LAYER][LayerGroup->Number[COMPONENT_LAYER]++] = LayerN + COMPONENT_LAYER;
+		LayerGroup->Entries[PCB_COMPONENT_SIDE][LayerGroup->Number[PCB_COMPONENT_SIDE]++] = LayerN + PCB_COMPONENT_SIDE;
 
 	for (layer = 0; layer < LayerN && group < LayerN; layer++)
 		if (groupnum[layer] == -1) {
@@ -686,19 +686,19 @@ void pcb_layers_reset()
 
 	/* set up one copper layer on top and one on bottom */
 	PCB->Data->LayerN = 2;
-	PCB->LayerGroups.Number[SOLDER_LAYER] = 1;
-	PCB->LayerGroups.Number[COMPONENT_LAYER] = 1;
-	PCB->LayerGroups.Entries[SOLDER_LAYER][0] = SOLDER_LAYER;
-	PCB->LayerGroups.Entries[COMPONENT_LAYER][0] = COMPONENT_LAYER;
+	PCB->LayerGroups.Number[PCB_SOLDER_SIDE] = 1;
+	PCB->LayerGroups.Number[PCB_COMPONENT_SIDE] = 1;
+	PCB->LayerGroups.Entries[PCB_SOLDER_SIDE][0] = PCB_SOLDER_SIDE;
+	PCB->LayerGroups.Entries[PCB_COMPONENT_SIDE][0] = PCB_COMPONENT_SIDE;
 
 	/* Name top and bottom layers */
-	if (PCB->Data->Layer[COMPONENT_LAYER].Name != NULL)
-		free((char *)PCB->Data->Layer[COMPONENT_LAYER].Name);
-	PCB->Data->Layer[COMPONENT_LAYER].Name = pcb_strdup("<top>");
+	if (PCB->Data->Layer[PCB_COMPONENT_SIDE].Name != NULL)
+		free((char *)PCB->Data->Layer[PCB_COMPONENT_SIDE].Name);
+	PCB->Data->Layer[PCB_COMPONENT_SIDE].Name = pcb_strdup("<top>");
 
-	if (PCB->Data->Layer[SOLDER_LAYER].Name != NULL)
-		free((char *)PCB->Data->Layer[SOLDER_LAYER].Name);
-	PCB->Data->Layer[SOLDER_LAYER].Name = pcb_strdup("<bottom>");
+	if (PCB->Data->Layer[PCB_SOLDER_SIDE].Name != NULL)
+		free((char *)PCB->Data->Layer[PCB_SOLDER_SIDE].Name);
+	PCB->Data->Layer[PCB_SOLDER_SIDE].Name = pcb_strdup("<bottom>");
 }
 
 pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname)
@@ -736,8 +736,8 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 
 			case PCB_LYT_COPPER:
 				switch(loc) {
-					case PCB_LYT_TOP:    return COMPONENT_LAYER;
-					case PCB_LYT_BOTTOM: return SOLDER_LAYER;
+					case PCB_LYT_TOP:    return PCB_COMPONENT_SIDE;
+					case PCB_LYT_BOTTOM: return PCB_SOLDER_SIDE;
 					case PCB_LYT_INTERN:
 						for(grp = 2; grp < PCB_MAX_LAYERGRP; grp++) {
 							if (PCB->LayerGroups.Number[grp] > 0) {
@@ -779,8 +779,8 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 	/* there's only one top and bottom group, always reuse them */
 	if (role == PCB_LYT_COPPER) {
 		switch(loc) {
-			case PCB_LYT_TOP:    grp = COMPONENT_LAYER; reuse_group = 0; break;
-			case PCB_LYT_BOTTOM: grp = SOLDER_LAYER; reuse_group = 0; break;
+			case PCB_LYT_TOP:    grp = PCB_COMPONENT_SIDE; reuse_group = 0; break;
+			case PCB_LYT_BOTTOM: grp = PCB_SOLDER_SIDE; reuse_group = 0; break;
 		}
 	}
 
@@ -860,28 +860,28 @@ static void hack_in_silks()
 {
 	int sl, cl, found, n;
 
-	sl = SOLDER_LAYER + PCB->Data->LayerN;
-	for(found = 0, n = 0; n < PCB->LayerGroups.Number[SOLDER_LAYER]; n++)
-		if (PCB->LayerGroups.Entries[SOLDER_LAYER][n] == sl)
+	sl = PCB_SOLDER_SIDE + PCB->Data->LayerN;
+	for(found = 0, n = 0; n < PCB->LayerGroups.Number[PCB_SOLDER_SIDE]; n++)
+		if (PCB->LayerGroups.Entries[PCB_SOLDER_SIDE][n] == sl)
 			found = 1;
 
 	if (!found) {
-		PCB->LayerGroups.Entries[SOLDER_LAYER][PCB->LayerGroups.Number[SOLDER_LAYER]] = sl;
-		PCB->LayerGroups.Number[SOLDER_LAYER]++;
+		PCB->LayerGroups.Entries[PCB_SOLDER_SIDE][PCB->LayerGroups.Number[PCB_SOLDER_SIDE]] = sl;
+		PCB->LayerGroups.Number[PCB_SOLDER_SIDE]++;
 		if (PCB->Data->Layer[sl].Name != NULL)
 			free((char *)PCB->Data->Layer[sl].Name);
 		PCB->Data->Layer[sl].Name = pcb_strdup("silk");
 	}
 
 
-	cl = COMPONENT_LAYER + PCB->Data->LayerN;
-	for(found = 0, n = 0; n < PCB->LayerGroups.Number[COMPONENT_LAYER]; n++)
-		if (PCB->LayerGroups.Entries[COMPONENT_LAYER][n] == cl)
+	cl = PCB_COMPONENT_SIDE + PCB->Data->LayerN;
+	for(found = 0, n = 0; n < PCB->LayerGroups.Number[PCB_COMPONENT_SIDE]; n++)
+		if (PCB->LayerGroups.Entries[PCB_COMPONENT_SIDE][n] == cl)
 			found = 1;
 
 	if (!found) {
-		PCB->LayerGroups.Entries[COMPONENT_LAYER][PCB->LayerGroups.Number[COMPONENT_LAYER]] = cl;
-		PCB->LayerGroups.Number[COMPONENT_LAYER]++;
+		PCB->LayerGroups.Entries[PCB_COMPONENT_SIDE][PCB->LayerGroups.Number[PCB_COMPONENT_SIDE]] = cl;
+		PCB->LayerGroups.Number[PCB_COMPONENT_SIDE]++;
 		if (PCB->Data->Layer[cl].Name != NULL)
 			free((char *)PCB->Data->Layer[cl].Name);
 		PCB->Data->Layer[cl].Name = pcb_strdup("silk");
@@ -953,7 +953,7 @@ static void move_all_thermals(int old_index, int new_index)
 
 static int LastLayerInComponentGroup(int layer)
 {
-	int cgroup = pcb_layer_get_group(pcb_max_group + COMPONENT_LAYER);
+	int cgroup = pcb_layer_get_group(pcb_max_group + PCB_COMPONENT_SIDE);
 	int lgroup = pcb_layer_get_group(layer);
 	if (cgroup == lgroup && PCB->LayerGroups.Number[lgroup] == 2)
 		return 1;
@@ -962,7 +962,7 @@ static int LastLayerInComponentGroup(int layer)
 
 static int LastLayerInSolderGroup(int layer)
 {
-	int sgroup = pcb_layer_get_group(pcb_max_group + SOLDER_LAYER);
+	int sgroup = pcb_layer_get_group(pcb_max_group + PCB_SOLDER_SIDE);
 	int lgroup = pcb_layer_get_group(layer);
 	if (sgroup == lgroup && PCB->LayerGroups.Number[lgroup] == 2)
 		return 1;

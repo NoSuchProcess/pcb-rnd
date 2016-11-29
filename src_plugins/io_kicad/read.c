@@ -840,11 +840,11 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 	int id = -1;
 	switch(lnum) {
 		case 0:
-			id = SOLDER_LAYER;
+			id = PCB_SOLDER_SIDE;
 			pcb_layer_rename(id, lname);
 			break;
 		case 15:
-			id = COMPONENT_LAYER;
+			id = PCB_COMPONENT_SIDE;
 			pcb_layer_rename(id, lname);
 			break;
 		default:
