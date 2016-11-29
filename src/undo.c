@@ -809,7 +809,7 @@ static pcb_bool UndoInsertContour(UndoListTypePtr Entry)
  * undo a layer change
  * returns pcb_true on success
  */
-static pcb_bool UndoLayerChange(UndoListTypePtr Entry)
+static pcb_bool UndoLayerMove(UndoListTypePtr Entry)
 {
 	LayerChangeTypePtr l = &Entry->Data.LayerChange;
 	int tmp;
@@ -1030,9 +1030,9 @@ static int PerformUndo(UndoListTypePtr ptr)
 			return (PCB_UNDO_CHANGERADII);
 		break;
 
-	case PCB_UNDO_LAYERCHANGE:
-		if (UndoLayerChange(ptr))
-			return (PCB_UNDO_LAYERCHANGE);
+	case PCB_UNDO_LAYERMOVE:
+		if (UndoLayerMove(ptr))
+			return (PCB_UNDO_LAYERMOVE);
 		break;
 
 	case PCB_UNDO_NETLISTCHANGE:
@@ -1522,12 +1522,12 @@ void pcb_undo_add_obj_to_change_radii(int Type, void *Ptr1, void *Ptr2, void *Pt
 /* ---------------------------------------------------------------------------
  * adds a layer change (new, delete, move) to the undo list.
  */
-void pcb_undo_add_layer_change(int old_index, int new_index)
+void pcb_undo_add_layer_move(int old_index, int new_index)
 {
 	UndoListTypePtr undo;
 
 	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_LAYERCHANGE, 0, 0);
+		undo = GetUndoSlot(PCB_UNDO_LAYERMOVE, 0, 0);
 		undo->Data.LayerChange.old_index = old_index;
 		undo->Data.LayerChange.new_index = new_index;
 	}
@@ -1643,7 +1643,7 @@ static const char *undo_type2str(int type)
 		case PCB_UNDO_CHANGEMASKSIZE: return "changemasksize";
 		case PCB_UNDO_CHANGEANGLES: return "changeangles";
 		case PCB_UNDO_CHANGERADII: return "changeradii";
-		case PCB_UNDO_LAYERCHANGE: return "layerchange";
+		case PCB_UNDO_LAYERMOVE: return "layermove";
 		case PCB_UNDO_CLEAR: return "clear";
 		case PCB_UNDO_NETLISTCHANGE: return "netlistchange";
 		case PCB_UNDO_CHANGEPINNUM: return "changepinnum";

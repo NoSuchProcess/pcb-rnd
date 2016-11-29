@@ -1022,7 +1022,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	pcb_layer_t saved_layer;
 	int saved_group;
 
-	pcb_undo_add_layer_change(old_index, new_index);
+	pcb_undo_add_layer_move(old_index, new_index);
 	pcb_undo_inc_serial();
 
 	if (old_index < -1 || old_index >= pcb_max_copper_layer) {

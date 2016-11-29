@@ -63,7 +63,7 @@ void pcb_undo_add_obj_to_mask_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_angles(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_radii(int, void *, void *, void *);
 void pcb_undo_add_obj_to_clear_poly(int, void *, void *, void *, pcb_bool);
-void pcb_undo_add_layer_change(int, int);
+void pcb_undo_add_layer_move(int, int);
 void pcb_undo_add_netlist_lib(pcb_lib_t *);
 
 void pcb_undo_lock(void);
@@ -97,7 +97,7 @@ typedef enum {
 	PCB_UNDO_CHANGECLEARSIZE   = 0x004000, /* change clearance size */
 	PCB_UNDO_CHANGEMASKSIZE    = 0x008000, /* change mask size */
 	PCB_UNDO_CHANGEANGLES      = 0x010000, /* change arc angles */
-	PCB_UNDO_LAYERCHANGE       = 0x020000, /* layer new/delete/move */
+	PCB_UNDO_LAYERMOVE         = 0x020000, /* layer new/delete/move */
 	PCB_UNDO_CLEAR             = 0x040000, /* clear/restore to polygons */
 	PCB_UNDO_NETLISTCHANGE     = 0x080000, /* netlist change */
 	PCB_UNDO_CHANGEPINNUM      = 0x100000, /* change of pin number */
