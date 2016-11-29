@@ -379,13 +379,9 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 	return -1;
 }
 
-
-/* ---------------------------------------------------------------------------
- * returns the layergroup number for the passed pointer
- */
-int pcb_layer_get_group_(pcb_layer_t *Layer)
+pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 {
-	return (GetLayerGroupNumberByNumber(pcb_layer_id(PCB->Data, Layer)));
+	return GetLayerGroupNumberByNumber(pcb_layer_id(PCB->Data, Layer));
 }
 
 /* ---------------------------------------------------------------------------
