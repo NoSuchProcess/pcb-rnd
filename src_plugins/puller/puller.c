@@ -2282,9 +2282,9 @@ static int pcb_act_GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_
 	/* This canonicalizes all the lines, and cleans up near-misses.  */
 	/* pcb_hid_actionl("djopt", "puller", 0); */
 
-	current_is_solder = (GetLayerGroupNumberByPointer(CURRENT)
+	current_is_solder = (pcb_layer_get_group_(CURRENT)
 											 == GetLayerGroupNumberByNumber(pcb_solder_silk_layer));
-	current_is_component = (GetLayerGroupNumberByPointer(CURRENT)
+	current_is_component = (pcb_layer_get_group_(CURRENT)
 													== GetLayerGroupNumberByNumber(pcb_component_silk_layer));
 
 	lines = g_hash_table_new_full(NULL, NULL, NULL, (GDestroyNotify) FreeExtra);

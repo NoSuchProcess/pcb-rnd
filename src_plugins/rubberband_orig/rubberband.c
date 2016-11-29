@@ -319,7 +319,7 @@ static void CheckPinForRat(rubber_ctx_t *rbnd, pcb_pin_t *Pin)
 static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_point_t *Point)
 {
 	struct rinfo info;
-	info.group = GetLayerGroupNumberByPointer(Layer);
+	info.group = pcb_layer_get_group_(Layer);
 	info.point = Point;
 	info.type = PCB_TYPE_LINE_POINT;
 	info.rbnd = rbnd;
@@ -384,7 +384,7 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 	info.X = LinePoint->X;
 	info.Y = LinePoint->Y;
 
-	group = GetLayerGroupNumberByPointer(Layer);
+	group = pcb_layer_get_group_(Layer);
 	GROUP_LOOP(PCB->Data, group);
 	{
 		/* check all visible lines of the group member */
@@ -420,7 +420,7 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 	info.X = ex;
 	info.Y = ey;
 
-	group = GetLayerGroupNumberByPointer(Layer);
+	group = pcb_layer_get_group_(Layer);
 	GROUP_LOOP(PCB->Data, group);
 	{
 		/* check all visible lines of the group member */
@@ -442,7 +442,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 	pcb_cardinal_t group;
 
 	/* lookup layergroup and check all visible lines in this group */
-	group = GetLayerGroupNumberByPointer(Layer);
+	group = pcb_layer_get_group_(Layer);
 	GROUP_LOOP(PCB->Data, group);
 	{
 		if (layer->On) {

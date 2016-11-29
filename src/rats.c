@@ -428,7 +428,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn->type = PCB_TYPE_LINE;
 				conn->ptr1 = layer;
 				conn->ptr2 = line;
-				conn->group = GetLayerGroupNumberByPointer(layer);
+				conn->group = pcb_layer_get_group_(layer);
 				conn->menu = NULL;			/* agnostic view of where it belongs */
 				conn = pcb_rat_connection_alloc(a);
 				conn->X = line->Point2.X;
@@ -436,7 +436,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn->type = PCB_TYPE_LINE;
 				conn->ptr1 = layer;
 				conn->ptr2 = line;
-				conn->group = GetLayerGroupNumberByPointer(layer);
+				conn->group = pcb_layer_get_group_(layer);
 				conn->menu = NULL;
 			}
 		}
@@ -452,7 +452,7 @@ static pcb_bool GatherSubnets(pcb_netlist_t *Netl, pcb_bool NoWarn, pcb_bool And
 				conn->type = PCB_TYPE_POLYGON;
 				conn->ptr1 = layer;
 				conn->ptr2 = polygon;
-				conn->group = GetLayerGroupNumberByPointer(layer);
+				conn->group = pcb_layer_get_group_(layer);
 				conn->menu = NULL;			/* agnostic view of where it belongs */
 			}
 		}

@@ -361,7 +361,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 	textlist_remove(text);
 	textlist_append(&Destination->Text, text);
 
-	if (GetLayerGroupNumberByNumber(pcb_solder_silk_layer) == GetLayerGroupNumberByPointer(Destination))
+	if (GetLayerGroupNumberByNumber(pcb_solder_silk_layer) == pcb_layer_get_group_(Destination))
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, text);
 	else
 		PCB_FLAG_CLEAR(PCB_FLAG_ONSOLDER, text);

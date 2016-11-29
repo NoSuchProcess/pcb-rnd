@@ -65,12 +65,9 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
 
 /* lookup the group to which a layer belongs to returns -1 if no group is found */
 pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer);
-
-
+int pcb_layer_get_group_(pcb_layer_t *Layer);
 
 /************ OLD API - new code should not use these **************/
-
-int GetLayerGroupNumberByPointer(pcb_layer_t *);
 int GetLayerGroupNumberByNumber(pcb_cardinal_t);
 
 

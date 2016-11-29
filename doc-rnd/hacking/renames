@@ -1504,3 +1504,4 @@ IsLayerGroupEmpty -> pcb_is_layergrp_empty
 ParseGroupString -> pcb_layer_parse_group_string
 GetLayerNumber -> pcb_layer_id
 GetGroupOfLayer -> pcb_layer_get_group
+GetLayerGroupNumberByPointer -> pcb_layer_get_group_
