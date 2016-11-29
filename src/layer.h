@@ -64,7 +64,8 @@ struct pcb_layer_s {              /* holds information about one layer */
 pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
 
 /* lookup the group to which a layer belongs to returns -1 if no group is found */
-int pcb_layer_get_group(int);
+pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer);
+
 
 
 /************ OLD API - new code should not use these **************/

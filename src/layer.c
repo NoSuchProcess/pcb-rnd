@@ -362,9 +362,9 @@ void LayerStringToLayerStack(const char *layer_string)
 	}
 }
 
-int pcb_layer_get_group(int Layer)
+pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 {
-	int group, i;
+	pcb_layergrp_id_t group, i;
 
 	if ((Layer < 0) || (Layer > pcb_max_copper_layer))
 		return -1;
