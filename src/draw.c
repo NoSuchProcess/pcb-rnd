@@ -267,13 +267,13 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		}
 	}
 
-	paste_empty = IsPasteEmpty(COMPONENT_LAYER);
+	paste_empty = pcb_layer_is_paste_empty(COMPONENT_LAYER);
 	if (pcb_gui->set_layer("toppaste", SL(PASTE, TOP), paste_empty)) {
 		DrawPaste(COMPONENT_LAYER, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	paste_empty = IsPasteEmpty(SOLDER_LAYER);
+	paste_empty = pcb_layer_is_paste_empty(SOLDER_LAYER);
 	if (pcb_gui->set_layer("bottompaste", SL(PASTE, BOTTOM), paste_empty)) {
 		DrawPaste(SOLDER_LAYER, drawn_area);
 		pcb_gui->end_layer();

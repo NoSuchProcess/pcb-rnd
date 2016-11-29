@@ -67,12 +67,15 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
 pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer);
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
 
+/* side is COMPONENT_LAYER or SOLDER_LAYER */
+pcb_bool pcb_layer_is_paste_empty(int side);
+
+
 /************ OLD API - new code should not use these **************/
 
 int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
 void LayerStringToLayerStack(const char *);
 
-pcb_bool IsPasteEmpty(int side);
 
 void ResetStackAndVisibility(void);
 void SaveStackAndVisibility(void);
