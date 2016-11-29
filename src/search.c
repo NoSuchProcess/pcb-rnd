@@ -1389,10 +1389,7 @@ pcb_element_t *pcb_search_elem_by_name(pcb_data_t *Base, const char *Name)
  */
 int pcb_search_screen(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
 {
-	int ans;
-
-	ans = pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, PCB_SLOP * pcb_pixel_slop);
-	return (ans);
+	return pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, PCB_SLOP * pcb_pixel_slop);
 }
 
 /* ---------------------------------------------------------------------------
