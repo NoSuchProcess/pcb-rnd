@@ -1804,8 +1804,8 @@ int read_pads(toporouter_t * r, toporouter_layer_t * l, guint layer)
 	GList *vlist = NULL;
 	toporouter_bbox_t *bbox = NULL;
 
-	guint front = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
-	guint back = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+	guint front = pcb_layer_get_group(pcb_component_silk_layer);
+	guint back = pcb_layer_get_group(pcb_solder_silk_layer);
 
 /*  printf("read_pads: front = %d back = %d layer = %d\n", 
        front, back, layer);*/
@@ -2074,7 +2074,7 @@ int read_lines(toporouter_t * r, toporouter_layer_t * l, pcb_layer_t * layer, in
 			vlist = g_list_prepend(NULL, gts_vertex_new(vertex_class, xs[0], ys[0], l - r->layers));
 			vlist = g_list_prepend(vlist, gts_vertex_new(vertex_class, xs[1], ys[1], l - r->layers));
 			/* TODO: replace this with surface version */
-			bbox = toporouter_bbox_create_from_points(GetLayerGroupNumberByNumber(ln), vlist, LINE, line);
+			bbox = toporouter_bbox_create_from_points(pcb_layer_get_group(ln), vlist, LINE, line);
 			r->bboxes = g_slist_prepend(r->bboxes, bbox);
 			/*new;;
 			   //insert_constraints_from_list(r, l, vlist, bbox); */

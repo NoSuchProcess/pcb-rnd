@@ -900,7 +900,7 @@ void pcb_notify_mode(void)
 					pcb_text_t *text;
 					int flag = PCB_FLAG_CLEARLINE;
 
-					if (GetLayerGroupNumberByNumber(INDEXOFCURRENT) == GetLayerGroupNumberByNumber(pcb_solder_silk_layer))
+					if (pcb_layer_get_group(INDEXOFCURRENT) == pcb_layer_get_group(pcb_solder_silk_layer))
 						flag |= PCB_FLAG_ONSOLDER;
 					if ((text = pcb_text_new(CURRENT, &PCB->Font, Note.X,
 																		Note.Y, 0, conf_core.design.text_scale, string, pcb_flag_make(flag))) != NULL) {

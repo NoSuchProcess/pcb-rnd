@@ -280,11 +280,11 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 	}
 	group = pcb_layer_get_group(INDEXOFCURRENT);
 	comp = pcb_max_group + 10;				/* this out-of-range group might save a call */
-	if (GetLayerGroupNumberByNumber(pcb_solder_silk_layer) == group)
+	if (pcb_layer_get_group(pcb_solder_silk_layer) == group)
 		info.solder = pcb_true;
 	else {
 		info.solder = pcb_false;
-		comp = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+		comp = pcb_layer_get_group(pcb_component_silk_layer);
 	}
 	temp = length;
 	/* assume the worst */
@@ -435,11 +435,11 @@ static void drc_line(pcb_point_t *end)
 	/* prepare for the intersection search */
 	group = pcb_layer_get_group(INDEXOFCURRENT);
 	comp = pcb_max_group + 10;  /* this out-of-range group might save a call */
-	if (GetLayerGroupNumberByNumber(pcb_solder_silk_layer) == group)
+	if (pcb_layer_get_group(pcb_solder_silk_layer) == group)
 		info.solder = pcb_true;
 	else {
 		info.solder = pcb_false;
-		comp = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+		comp = pcb_layer_get_group(pcb_component_silk_layer);
 	}
 
 	/* search for intersection */

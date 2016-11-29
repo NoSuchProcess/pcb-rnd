@@ -537,16 +537,16 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 
 	memset(group_data, 0, sizeof(group_data));
 #ifdef SOLDER_LAYER
-	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + SOLDER_LAYER)].solder = 1;
-	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + COMPONENT_LAYER)].component = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + SOLDER_LAYER)].solder = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + COMPONENT_LAYER)].component = 1;
 #else
-	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + BOTTOM_SIDE)].solder = 1;
-	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + TOP_SIDE)].component = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + BOTTOM_SIDE)].solder = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + TOP_SIDE)].component = 1;
 #endif
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		layer = PCB->Data->Layer + i;
 		if (!pcb_layer_is_empty_(layer))
-			group_data[GetLayerGroupNumberByNumber(i)].draw = 1;
+			group_data[pcb_layer_get_group(i)].draw = 1;
 	}
 
 	inner_layers = 0;

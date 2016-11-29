@@ -747,7 +747,7 @@ static int dxf_lastY;
  */
 static int dxf_group_for_layer(int l) {
 	if ((l < pcb_max_copper_layer + 2) && (l >= 0)) {
-		return GetLayerGroupNumberByNumber(l);
+		return pcb_layer_get_group(l);
 	}
 	/* else something unique */
 	return pcb_max_group + 3 + l;

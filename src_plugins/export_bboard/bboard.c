@@ -513,18 +513,18 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	memset(group_data, 0, sizeof(group_data));
 #ifdef SOLDER_LAYER
-	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + SOLDER_LAYER)].solder = 1;
-	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + COMPONENT_LAYER)].component = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + SOLDER_LAYER)].solder = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + COMPONENT_LAYER)].component = 1;
 #else
-	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + BOTTOM_SIDE)].solder = 1;
-	group_data[GetLayerGroupNumberByNumber(pcb_max_copper_layer + TOP_SIDE)].component = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + BOTTOM_SIDE)].solder = 1;
+	group_data[pcb_layer_get_group(pcb_max_copper_layer + TOP_SIDE)].component = 1;
 #endif
 
 
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		layer = PCB->Data->Layer + i;
 		if (linelist_length(&layer->Line) > 0)
-			group_data[GetLayerGroupNumberByNumber(i)].draw = 1;
+			group_data[pcb_layer_get_group(i)].draw = 1;
 	}
 
 	bboard_init_board_cairo(PCB->MaxWidth, PCB->MaxHeight, bboard_bgcolor, options[HA_antialias].int_value);
@@ -545,7 +545,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	/* draw all wires from all valid layers */
 	for (i = pcb_max_copper_layer - 1; i >= 0; i--) {
-		if (bboard_validate_layer(PCB->Data->Layer[i].Name, GetLayerGroupNumberByNumber(i), options[HA_skipsolder].int_value)) {
+		if (bboard_validate_layer(PCB->Data->Layer[i].Name, pcb_layer_get_group(i), options[HA_skipsolder].int_value)) {
 			bboard_get_layer_color(&(PCB->Data->Layer[i]), &clr_r, &clr_g, &clr_b);
 			bboard_set_color_cairo(clr_r, clr_g, clr_b);
 			PCB_LINE_LOOP(&(PCB->Data->Layer[i]));

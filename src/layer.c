@@ -372,36 +372,19 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 
 	if (Layer == pcb_max_copper_layer)
 		return pcb_max_group;
+
 	for (group = 0; group < pcb_max_group; group++)
 		for (i = 0; i < PCB->LayerGroups.Number[group]; i++)
 			if (PCB->LayerGroups.Entries[group][i] == Layer)
 				return (group);
+
 	return -1;
 }
 
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 {
-	return GetLayerGroupNumberByNumber(pcb_layer_id(PCB->Data, Layer));
+	return pcb_layer_get_group(pcb_layer_id(PCB->Data, Layer));
 }
-
-/* ---------------------------------------------------------------------------
- * returns the layergroup number for the passed layernumber
- */
-int GetLayerGroupNumberByNumber(pcb_cardinal_t Layer)
-{
-	int group, entry;
-
-	for (group = 0; group < pcb_max_group; group++)
-		for (entry = 0; entry < PCB->LayerGroups.Number[group]; entry++)
-			if (PCB->LayerGroups.Entries[group][entry] == Layer)
-				return (group);
-
-	/* since every layer belongs to a group it is safe to return
-	 * the value without boundary checking
-	 */
-	return (group);
-}
-
 
 /* ---------------------------------------------------------------------------
  * resets the layerstack setting
@@ -424,7 +407,7 @@ void ResetStackAndVisibility(void)
 	PCB->RatOn = pcb_true;
 
 	/* Bring the component group to the front and make it active.  */
-	comp_group = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+	comp_group = pcb_layer_get_group(pcb_component_silk_layer);
 	ChangeGroupVisibility(PCB->LayerGroups.Entries[comp_group][0], 1, 1);
 }
 
@@ -512,9 +495,9 @@ int MoveLayerToGroup(int layer, int group)
 
 	if (layer < 0 || layer > pcb_max_copper_layer + 1)
 		return -1;
-	prev = GetLayerGroupNumberByNumber(layer);
-	if ((layer == pcb_solder_silk_layer && group == GetLayerGroupNumberByNumber(pcb_component_silk_layer))
-			|| (layer == pcb_component_silk_layer && group == GetLayerGroupNumberByNumber(pcb_solder_silk_layer))
+	prev = pcb_layer_get_group(layer);
+	if ((layer == pcb_solder_silk_layer && group == pcb_layer_get_group(pcb_component_silk_layer))
+			|| (layer == pcb_component_silk_layer && group == pcb_layer_get_group(pcb_solder_silk_layer))
 			|| (group < 0 || group >= pcb_max_group) || (prev == group))
 		return prev;
 
@@ -970,8 +953,8 @@ static void move_all_thermals(int old_index, int new_index)
 
 static int LastLayerInComponentGroup(int layer)
 {
-	int cgroup = GetLayerGroupNumberByNumber(pcb_max_group + COMPONENT_LAYER);
-	int lgroup = GetLayerGroupNumberByNumber(layer);
+	int cgroup = pcb_layer_get_group(pcb_max_group + COMPONENT_LAYER);
+	int lgroup = pcb_layer_get_group(layer);
 	if (cgroup == lgroup && PCB->LayerGroups.Number[lgroup] == 2)
 		return 1;
 	return 0;
@@ -979,8 +962,8 @@ static int LastLayerInComponentGroup(int layer)
 
 static int LastLayerInSolderGroup(int layer)
 {
-	int sgroup = GetLayerGroupNumberByNumber(pcb_max_group + SOLDER_LAYER);
-	int lgroup = GetLayerGroupNumberByNumber(layer);
+	int sgroup = pcb_layer_get_group(pcb_max_group + SOLDER_LAYER);
+	int lgroup = pcb_layer_get_group(layer);
 	if (sgroup == lgroup && PCB->LayerGroups.Number[lgroup] == 2)
 		return 1;
 	return 0;

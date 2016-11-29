@@ -431,7 +431,7 @@ static pcb_hid_attribute_t *ps_get_export_options(int *n)
 static int group_for_layer(int l)
 {
 	if (l < pcb_max_copper_layer + 2 && l >= 0)
-		return GetLayerGroupNumberByNumber(l);
+		return pcb_layer_get_group(l);
 	/* else something unique */
 	return pcb_max_group + 3 + l;
 }
@@ -652,16 +652,16 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (!PCB_LAYER_IS_EMPTY(layer))
-			global.print_group[GetLayerGroupNumberByNumber(i)] = 1;
+			global.print_group[pcb_layer_get_group(i)] = 1;
 
 		if (strcmp(layer->Name, "outline") == 0 || strcmp(layer->Name, "route") == 0) {
 			global.outline_layer = layer;
 		}
 	}
-	global.print_group[GetLayerGroupNumberByNumber(pcb_solder_silk_layer)] = 1;
-	global.print_group[GetLayerGroupNumberByNumber(pcb_component_silk_layer)] = 1;
+	global.print_group[pcb_layer_get_group(pcb_solder_silk_layer)] = 1;
+	global.print_group[pcb_layer_get_group(pcb_component_silk_layer)] = 1;
 	for (i = 0; i < pcb_max_copper_layer; i++)
-		if (global.print_group[GetLayerGroupNumberByNumber(i)])
+		if (global.print_group[pcb_layer_get_group(i)])
 			global.print_layer[i] = 1;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
@@ -855,7 +855,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 
 		if (global.mirror)
 			mirror_this = !mirror_this;
-		if (global.automirror && ((idx >= 0 && group == GetLayerGroupNumberByNumber(pcb_solder_silk_layer))
+		if (global.automirror && ((idx >= 0 && group == pcb_layer_get_group(pcb_solder_silk_layer))
 															|| (idx < 0 && SL_SIDE(idx) == SL_BOTTOM_SIDE)))
 			mirror_this = !mirror_this;
 

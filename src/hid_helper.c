@@ -64,15 +64,15 @@ const char *pcb_layer_type_to_file_name(int idx, int style)
 	case SL(ASSY, BOTTOM):
 		return "bottomassembly";
 	default:
-		group = GetLayerGroupNumberByNumber(idx);
+		group = pcb_layer_get_group(idx);
 		nlayers = PCB->LayerGroups.Number[group];
 		single_name = PCB->Data->Layer[idx].Name;
-		if (group == GetLayerGroupNumberByNumber(pcb_component_silk_layer)) {
+		if (group == pcb_layer_get_group(pcb_component_silk_layer)) {
 			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
 				return single_name;
 			return "top";
 		}
-		else if (group == GetLayerGroupNumberByNumber(pcb_solder_silk_layer)) {
+		else if (group == pcb_layer_get_group(pcb_solder_silk_layer)) {
 			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
 				return single_name;
 			return "bottom";

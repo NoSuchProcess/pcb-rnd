@@ -204,9 +204,9 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 		pcb_via_new(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
 	}
 	PCB_END_LOOP;
-	group = GetLayerGroupNumberByNumber(PCB_SWAP_IDENT ? pcb_solder_silk_layer : pcb_component_silk_layer);
+	group = pcb_layer_get_group(PCB_SWAP_IDENT ? pcb_solder_silk_layer : pcb_component_silk_layer);
 	clayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
-	group = GetLayerGroupNumberByNumber(PCB_SWAP_IDENT ? pcb_component_silk_layer : pcb_solder_silk_layer);
+	group = pcb_layer_get_group(PCB_SWAP_IDENT ? pcb_component_silk_layer : pcb_solder_silk_layer);
 	slayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
 	PCB_PAD_LOOP(element);
 	{
@@ -313,7 +313,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	    } \
 
 		/* get the component-side SM pads */
-		group = GetLayerGroupNumberByNumber(silk_layer);
+		group = pcb_layer_get_group(silk_layer);
 		GROUP_LOOP(Buffer->Data, group);
 		{
 			char num[8];

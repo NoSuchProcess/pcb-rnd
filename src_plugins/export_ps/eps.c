@@ -150,7 +150,7 @@ static int comp_layer, solder_layer;
 static int group_for_layer(int l)
 {
 	if (l < pcb_max_copper_layer + 2 && l >= 0)
-		return GetLayerGroupNumberByNumber(l);
+		return pcb_layer_get_group(l);
 	/* else something unique */
 	return pcb_max_group + 3 + l;
 }
@@ -208,7 +208,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (layer->On)
 			if (!PCB_LAYER_IS_EMPTY(layer))
-				print_group[GetLayerGroupNumberByNumber(i)] = 1;
+				print_group[pcb_layer_get_group(i)] = 1;
 	}
 
 	/* Now, if only one layer has real stuff on it, we can use the fast
@@ -222,7 +222,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	/* If NO layers had anything on them, at least print the component
 	   layer to get the pins.  */
 	if (fast_erase == 0) {
-		print_group[GetLayerGroupNumberByNumber(pcb_component_silk_layer)] = 1;
+		print_group[pcb_layer_get_group(pcb_component_silk_layer)] = 1;
 		fast_erase = 1;
 	}
 
@@ -232,7 +232,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	/* Now, for each group we're printing, mark its layers for
 	   printing.  */
 	for (i = 0; i < pcb_max_copper_layer; i++)
-		if (print_group[GetLayerGroupNumberByNumber(i)])
+		if (print_group[pcb_layer_get_group(i)])
 			print_layer[i] = 1;
 
 	if (fast_erase) {
@@ -247,8 +247,8 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	as_shown = options[HA_as_shown].int_value;
 	if (!options[HA_as_shown].int_value) {
-		comp_layer = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
-		solder_layer = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+		comp_layer = pcb_layer_get_group(pcb_component_silk_layer);
+		solder_layer = pcb_layer_get_group(pcb_solder_silk_layer);
 		qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 	}
 	fprintf(f, "%%!PS-Adobe-3.0 EPSF-3.0\n");

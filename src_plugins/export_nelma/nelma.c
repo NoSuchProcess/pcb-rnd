@@ -515,7 +515,7 @@ void nelma_choose_groups()
 
 			if (SL_TYPE(n) == 0) {
 				/* layer is a copper layer */
-				m = GetLayerGroupNumberByNumber(n);
+				m = pcb_layer_get_group(n);
 
 				/* the export layer */
 				nelma_export_group[m] = 1;

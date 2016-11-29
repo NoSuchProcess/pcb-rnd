@@ -474,8 +474,8 @@ void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 	Buffer->Data->Layer[pcb_component_silk_layer] = swap;
 
 	/* swap layer groups when balanced */
-	sgroup = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
-	cgroup = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+	sgroup = pcb_layer_get_group(pcb_solder_silk_layer);
+	cgroup = pcb_layer_get_group(pcb_component_silk_layer);
 	if (PCB->LayerGroups.Number[cgroup] == PCB->LayerGroups.Number[sgroup]) {
 		for (j = k = 0; j < PCB->LayerGroups.Number[sgroup]; j++) {
 			int t1, t2;

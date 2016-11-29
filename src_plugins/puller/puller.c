@@ -2283,9 +2283,9 @@ static int pcb_act_GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_
 	/* pcb_hid_actionl("djopt", "puller", 0); */
 
 	current_is_solder = (pcb_layer_get_group_(CURRENT)
-											 == GetLayerGroupNumberByNumber(pcb_solder_silk_layer));
+											 == pcb_layer_get_group(pcb_solder_silk_layer));
 	current_is_component = (pcb_layer_get_group_(CURRENT)
-													== GetLayerGroupNumberByNumber(pcb_component_silk_layer));
+													== pcb_layer_get_group(pcb_component_silk_layer));
 
 	lines = g_hash_table_new_full(NULL, NULL, NULL, (GDestroyNotify) FreeExtra);
 	arcs = g_hash_table_new_full(NULL, NULL, NULL, (GDestroyNotify) FreeExtra);

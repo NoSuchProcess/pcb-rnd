@@ -226,7 +226,7 @@ static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 	info.line = NULL;
 	info.rbnd = rbnd;
 	i = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? pcb_solder_silk_layer : pcb_component_silk_layer;
-	group = GetLayerGroupNumberByNumber(i);
+	group = pcb_layer_get_group(i);
 
 	/* check all visible layers in the same group */
 	GROUP_LOOP(PCB->Data, group);
@@ -298,7 +298,7 @@ static void CheckPadForRat(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 	pcb_cardinal_t i;
 
 	i = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? pcb_solder_silk_layer : pcb_component_silk_layer;
-	info.group = GetLayerGroupNumberByNumber(i);
+	info.group = pcb_layer_get_group(i);
 	info.pad = Pad;
 	info.type = PCB_TYPE_PAD;
 	info.rbnd = rbnd;

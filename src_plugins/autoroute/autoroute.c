@@ -728,7 +728,7 @@ static routebox_t *AddIrregularObstacle(vtptr_t layergroupboxes[],
 static routebox_t *AddPolygon(vtptr_t layergroupboxes[], pcb_cardinal_t layer, pcb_polygon_t *polygon, pcb_route_style_t * style)
 {
 	int is_not_rectangle = 1;
-	int layergroup = GetLayerGroupNumberByNumber(layer);
+	int layergroup = pcb_layer_get_group(layer);
 	routebox_t *rb;
 	assert(0 <= layergroup && layergroup < pcb_max_group);
 	rb = AddIrregularObstacle(layergroupboxes,
@@ -870,8 +870,8 @@ static routedata_t *CreateRouteData()
 	}
 	/* if via visibility is turned off, don't use them */
 	AutoRouteParameters.use_vias = routing_layers > 1 && PCB->ViaOn;
-	front = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
-	back = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+	front = pcb_layer_get_group(pcb_component_silk_layer);
+	back = pcb_layer_get_group(pcb_solder_silk_layer);
 	/* determine preferred routing direction on each group */
 	for (i = 0; i < pcb_max_group; i++) {
 		if (i != back && i != front) {
@@ -1064,7 +1064,7 @@ static routedata_t *CreateRouteData()
 	PCB_END_LOOP;
 
 	for (i = 0; i < pcb_max_copper_layer; i++) {
-		int layergroup = GetLayerGroupNumberByNumber(i);
+		int layergroup = pcb_layer_get_group(i);
 		/* add all (non-rat) lines */
 		PCB_LINE_LOOP(LAYER_PTR(i));
 		{

@@ -85,11 +85,11 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	printf("Filename: %s\n", PCB->Filename);
 	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->MaxWidth, PCB->MaxHeight, PCB->MaxWidth, PCB->MaxHeight);
-	cg = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
-	sg = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+	cg = pcb_layer_get_group(pcb_component_silk_layer);
+	sg = pcb_layer_get_group(pcb_solder_silk_layer);
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 
-		int lg = GetLayerGroupNumberByNumber(i);
+		int lg = pcb_layer_get_group(i);
 		for (j = 0; j < PCB_MAX_LAYER; j++)
 			putchar(j == lg ? '#' : '-');
 		printf(" %c %s\n", lg == cg ? 'c' : lg == sg ? 's' : '-', PCB->Data->Layer[i].Name);

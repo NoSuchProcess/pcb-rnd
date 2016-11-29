@@ -565,9 +565,9 @@ static int group_showing(int g, int *c)
 static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_shown_side = conf_core.editor.show_solder_side;
-	int comp_group = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
-	int solder_group = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
-	int active_group = GetLayerGroupNumberByNumber(pcb_layer_stack[0]);
+	int comp_group = pcb_layer_get_group(pcb_component_silk_layer);
+	int solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
+	int active_group = pcb_layer_get_group(pcb_layer_stack[0]);
 	int comp_layer;
 	int solder_layer;
 	int comp_showing = group_showing(comp_group, &comp_layer);
@@ -2820,7 +2820,7 @@ static int lesstif_set_layer(const char *name, int group, int empty)
 		idx = PCB->LayerGroups.Entries[group][idx];
 #if 0
 		if (idx == pcb_layer_stack[0]
-				|| GetLayerGroupNumberByNumber(idx) == GetLayerGroupNumberByNumber(pcb_layer_stack[0]))
+				|| pcb_layer_get_group(idx) == pcb_layer_get_group(pcb_layer_stack[0]))
 			autofade = 0;
 		else
 			autofade = 1;

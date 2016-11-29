@@ -270,7 +270,7 @@ void gcode_choose_groups()
 
 			if (SL_TYPE(n) == 0) {
 				/* layer is a copper layer */
-				m = GetLayerGroupNumberByNumber(n);
+				m = pcb_layer_get_group(n);
 
 				/* the export layer */
 				gcode_export_group[m] = 1;
@@ -408,7 +408,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 			/* magic */
 			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
 			printf("idx=%d %s\n", idx, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
-			is_solder = (GetLayerGroupNumberByNumber(idx) == GetLayerGroupNumberByNumber(pcb_solder_silk_layer)) ? 1 : 0;
+			is_solder = (pcb_layer_get_group(idx) == pcb_layer_get_group(pcb_solder_silk_layer)) ? 1 : 0;
 			save_drill = is_solder;		/* save drills for one layer only */
 			gcode_start_png(gcode_basename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
 			pcb_hid_save_and_show_layer_ons(save_ons);

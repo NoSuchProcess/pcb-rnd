@@ -365,7 +365,7 @@ static pcb_hid_attribute_t *gerber_get_export_options(int *n)
 static int group_for_layer(int l)
 {
 	if (l < pcb_max_copper_layer + 2 && l >= 0)
-		return GetLayerGroupNumberByNumber(l);
+		return pcb_layer_get_group(l);
 	/* else something unique */
 	return pcb_max_group + 3 + l;
 }
@@ -440,12 +440,12 @@ static void assign_eagle_file_suffix(char *dest, int idx)
 		break;
 
 	default:
-		group = GetLayerGroupNumberByNumber(idx);
+		group = pcb_layer_get_group(idx);
 		nlayers = PCB->LayerGroups.Number[group];
-		if (group == GetLayerGroupNumberByNumber(pcb_component_silk_layer)) {
+		if (group == pcb_layer_get_group(pcb_component_silk_layer)) {
 			suff = "cmp";
 		}
-		else if (group == GetLayerGroupNumberByNumber(pcb_solder_silk_layer)) {
+		else if (group == pcb_layer_get_group(pcb_solder_silk_layer)) {
 			suff = "sol";
 		}
 		else if (nlayers == 1
@@ -553,12 +553,12 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (!PCB_LAYER_IS_EMPTY(layer))
-			print_group[GetLayerGroupNumberByNumber(i)] = 1;
+			print_group[pcb_layer_get_group(i)] = 1;
 	}
-	print_group[GetLayerGroupNumberByNumber(pcb_solder_silk_layer)] = 1;
-	print_group[GetLayerGroupNumberByNumber(pcb_component_silk_layer)] = 1;
+	print_group[pcb_layer_get_group(pcb_solder_silk_layer)] = 1;
+	print_group[pcb_layer_get_group(pcb_component_silk_layer)] = 1;
 	for (i = 0; i < pcb_max_copper_layer; i++)
-		if (print_group[GetLayerGroupNumberByNumber(i)])
+		if (print_group[pcb_layer_get_group(i)])
 			print_layer[i] = 1;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));

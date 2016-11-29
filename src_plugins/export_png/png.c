@@ -384,7 +384,7 @@ static int comp_layer, solder_layer;
 static int group_for_layer(int l)
 {
 	if (l < pcb_max_copper_layer + 2 && l >= 0)
-		return GetLayerGroupNumberByNumber(l);
+		return pcb_layer_get_group(l);
 	/* else something unique */
 	return pcb_max_group + 3 + l;
 }
@@ -451,12 +451,12 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (!PCB_LAYER_IS_EMPTY(layer))
-			print_group[GetLayerGroupNumberByNumber(i)] = 1;
+			print_group[pcb_layer_get_group(i)] = 1;
 	}
-	print_group[GetLayerGroupNumberByNumber(pcb_solder_silk_layer)] = 1;
-	print_group[GetLayerGroupNumberByNumber(pcb_component_silk_layer)] = 1;
+	print_group[pcb_layer_get_group(pcb_solder_silk_layer)] = 1;
+	print_group[pcb_layer_get_group(pcb_component_silk_layer)] = 1;
 	for (i = 0; i < pcb_max_copper_layer; i++)
-		if (print_group[GetLayerGroupNumberByNumber(i)])
+		if (print_group[pcb_layer_get_group(i)])
 			print_layer[i] = 1;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
@@ -469,8 +469,8 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 		conf_force_set_bool(conf_core.editor.show_mask, 0);
 
-		comp_layer = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
-		solder_layer = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
+		comp_layer = pcb_layer_get_group(pcb_component_silk_layer);
+		solder_layer = pcb_layer_get_group(pcb_solder_silk_layer);
 		qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 
 		if (photo_mode) {

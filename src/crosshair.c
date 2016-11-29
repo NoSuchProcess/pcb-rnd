@@ -1027,8 +1027,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		}
 
 		/* find layer groups of the component side and solder side */
-		SLayer = GetLayerGroupNumberByNumber(pcb_solder_silk_layer);
-		CLayer = GetLayerGroupNumberByNumber(pcb_component_silk_layer);
+		SLayer = pcb_layer_get_group(pcb_solder_silk_layer);
+		CLayer = pcb_layer_get_group(pcb_component_silk_layer);
 		desired_group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SLayer : CLayer;
 
 		GROUP_LOOP(PCB->Data, desired_group);

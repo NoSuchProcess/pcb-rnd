@@ -1505,3 +1505,4 @@ ParseGroupString -> pcb_layer_parse_group_string
 GetLayerNumber -> pcb_layer_id
 GetGroupOfLayer -> pcb_layer_get_group
 GetLayerGroupNumberByPointer -> pcb_layer_get_group_
+GetLayerGroupNumberByNumber -> pcb_layer_get_group

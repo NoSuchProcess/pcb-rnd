@@ -68,8 +68,6 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer);
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
 
 /************ OLD API - new code should not use these **************/
-int GetLayerGroupNumberByNumber(pcb_cardinal_t);
-
 
 int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
 void LayerStringToLayerStack(const char *);
