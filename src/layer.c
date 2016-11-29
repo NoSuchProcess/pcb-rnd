@@ -246,7 +246,7 @@ int ChangeGroupVisibility(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 		printf("ChangeGroupVisibility(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
 
 	/* decrement 'i' to keep stack in order of layergroup */
-	if ((group = GetGroupOfLayer(Layer)) < pcb_max_group)
+	if ((group = pcb_layer_get_group(Layer)) < pcb_max_group)
 		for (i = PCB->LayerGroups.Number[group]; i;) {
 			int layer = PCB->LayerGroups.Entries[group][--i];
 
@@ -362,12 +362,7 @@ void LayerStringToLayerStack(const char *layer_string)
 	}
 }
 
-/* ----------------------------------------------------------------------
- * lookup the group to which a layer belongs to
- * returns pcb_max_group if no group is found, or is
- * passed Layer is equal to pcb_max_copper_layer
- */
-int GetGroupOfLayer(int Layer)
+int pcb_layer_get_group(int Layer)
 {
 	int group, i;
 

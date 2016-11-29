@@ -155,7 +155,7 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 	used = pcb_layer_list_any(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
 	for(n = 0; n < used; n++) {
 		pcb_layer_id_t layer_id = arr[n];
-		pcb_layergrp_id_t grp = GetGroupOfLayer(layer_id);
+		pcb_layergrp_id_t grp = pcb_layer_get_group(layer_id);
 		printf(" [%lx] %04x group=%d %s\n", layer_id, pcb_layer_flags(layer_id), grp, pcb_layer_name(layer_id));
 	}
 

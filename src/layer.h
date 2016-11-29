@@ -63,12 +63,16 @@ struct pcb_layer_s {              /* holds information about one layer */
 /* returns the layer number for the passed copper or silk layer pointer */
 pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
 
+/* lookup the group to which a layer belongs to returns -1 if no group is found */
+int pcb_layer_get_group(int);
+
 
 /************ OLD API - new code should not use these **************/
 
 int GetLayerGroupNumberByPointer(pcb_layer_t *);
 int GetLayerGroupNumberByNumber(pcb_cardinal_t);
-int GetGroupOfLayer(int);
+
+
 int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
 void LayerStringToLayerStack(const char *);
 
