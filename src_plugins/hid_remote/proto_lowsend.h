@@ -89,9 +89,14 @@ static int sends(proto_ctx_t *ctx, const char *s)
 }
 
 
-static int send_open(proto_ctx_t *ctx, int bin)
+static int send_open(proto_ctx_t *ctx, int bin, int first_arg)
 {
 	int res;
+
+	if (!first_arg) {
+		if (send_raw(ctx, " ", 1) != 1)
+		return -1;
+	}
 
 	if (bin || (ctx->bindepth > 0)) {
 		res = send_raw(ctx, "{", 1);

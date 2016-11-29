@@ -41,7 +41,7 @@ static proto_node_t *remote_proto_parse(const char *wait_for, int cache_msgs);
 void remote_proto_send_ver()
 {
 	send_begin(&pctx, "ver");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%ld", proto_ver);
 	send_close(&pctx);
 	send_end(&pctx);
@@ -50,7 +50,7 @@ void remote_proto_send_ver()
 void remote_proto_send_unit()
 {
 	send_begin(&pctx, "unit");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "mm");
 	send_close(&pctx);
 	send_end(&pctx);
@@ -59,7 +59,7 @@ void remote_proto_send_unit()
 void remote_proto_send_brddim(pcb_coord_t w, pcb_coord_t h)
 {
 	send_begin(&pctx, "brddim");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, cfmt, w);
 	sendf(&pctx, cfmt, h);
 	send_close(&pctx);
@@ -70,7 +70,7 @@ int remote_proto_send_ready()
 {
 	proto_node_t *targ;
 	send_begin(&pctx, "ready");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	send_close(&pctx);
 	send_end(&pctx);
 	targ = remote_proto_parse("Ready", 0);
@@ -83,7 +83,7 @@ int remote_proto_send_ready()
 void proto_send_invalidate(int l, int r, int t, int b)
 {
 	send_begin(&pctx, "inval");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%d", l);
 	sendf(&pctx, "%d", r);
 	sendf(&pctx, "%d", t);
@@ -95,7 +95,7 @@ void proto_send_invalidate(int l, int r, int t, int b)
 void proto_send_invalidate_all()
 {
 	send_begin(&pctx, "inval");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	send_close(&pctx);
 	send_end(&pctx);
 }
@@ -103,7 +103,7 @@ void proto_send_invalidate_all()
 int proto_send_set_layer(const char *name, int idx, int empty)
 {
 	send_begin(&pctx, "setly");
-	send_open(&pctx, str_is_bin(name));
+	send_open(&pctx, str_is_bin(name), 1);
 	sends(&pctx, name);
 	sendf(&pctx, "%d", idx);
 	sendf(&pctx, "%d", empty);
@@ -115,12 +115,12 @@ int proto_send_set_layer(const char *name, int idx, int empty)
 int pcb_remote_new_layer(const char *name, int idx, unsigned int flags, unsigned int group)
 {
 	send_begin(&pctx, "newly");
-	send_open(&pctx, str_is_bin(name));
+	send_open(&pctx, str_is_bin(name), 1);
 	sends(&pctx, name);
 	sendf(&pctx, "%d", idx);
-/*	send_open(&pctx, 0);*/
+	send_open(&pctx, 0, 0);
 	sendf(&pctx, "0x%lx", flags);
-/*	send_close(&pctx);*/
+	send_close(&pctx);
 	sendf(&pctx, "%d", group);
 	send_close(&pctx);
 	send_end(&pctx);
@@ -134,7 +134,7 @@ int proto_send_make_gc(void)
 	int gci;
 
 	send_begin(&pctx, "makeGC");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	send_close(&pctx);
 	send_end(&pctx);
 	targ = remote_proto_parse("MakeGC", 1);
@@ -151,7 +151,7 @@ int proto_send_make_gc(void)
 int proto_send_del_gc(int gc)
 {
 	send_begin(&pctx, "delGC");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%d", gc);
 	send_close(&pctx);
 	send_end(&pctx);
@@ -161,7 +161,7 @@ int proto_send_del_gc(int gc)
 void proto_send_set_color(int gc, const char *name)
 {
 	send_begin(&pctx, "clr");
-	send_open(&pctx, str_is_bin(name));
+	send_open(&pctx, str_is_bin(name), 1);
 	sendf(&pctx, "%d", gc);
 	sends(&pctx, name);
 	send_close(&pctx);
@@ -171,7 +171,7 @@ void proto_send_set_color(int gc, const char *name)
 void proto_send_set_line_cap(int gc, char style)
 {
 	send_begin(&pctx, "cap");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%d", gc);
 	sendf(&pctx, "%c", style);
 	send_close(&pctx);
@@ -181,7 +181,7 @@ void proto_send_set_line_cap(int gc, char style)
 void proto_send_set_line_width(int gc, pcb_coord_t width)
 {
 	send_begin(&pctx, "linwid");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%d", gc);
 	sendf(&pctx, cfmt, width);
 	send_close(&pctx);
@@ -191,7 +191,7 @@ void proto_send_set_line_width(int gc, pcb_coord_t width)
 void proto_send_set_draw_xor(int gc, int xor_set)
 {
 	send_begin(&pctx, "setxor");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%d", gc);
 	sendf(&pctx, "%d", xor_set);
 	send_close(&pctx);
@@ -201,7 +201,7 @@ void proto_send_set_draw_xor(int gc, int xor_set)
 void proto_send_draw_line(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	send_begin(&pctx, "line");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%d", gc);
 	sendf(&pctx, cfmt, x1);
 	sendf(&pctx, cfmt, y1);
@@ -214,7 +214,7 @@ void proto_send_draw_line(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2
 void proto_send_draw_rect(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int is_filled)
 {
 	send_begin(&pctx, "rect");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%d", gc);
 	sendf(&pctx, cfmt, x1);
 	sendf(&pctx, cfmt, y1);
@@ -228,7 +228,7 @@ void proto_send_draw_rect(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2
 void proto_send_fill_circle(int gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
 {
 	send_begin(&pctx, "fcirc");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%d", gc);
 	sendf(&pctx, cfmt, cx);
 	sendf(&pctx, cfmt, cy);
@@ -241,12 +241,12 @@ void proto_send_draw_poly(int gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y
 {
 	int n;
 	send_begin(&pctx, "poly");
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%d", gc);
 	sendf(&pctx, "%d", n_coords);
-	send_open(&pctx, 0);
+	send_open(&pctx, 0, 1);
 	for(n = 0; n < n_coords; n++) {
-		send_open(&pctx, 0);
+		send_open(&pctx, 0, 1);
 		sendf(&pctx, cfmt, x[n]);
 		sendf(&pctx, cfmt, y[n]);
 		send_close(&pctx);
@@ -259,7 +259,7 @@ void proto_send_draw_poly(int gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y
 int proto_send_use_mask(const char *name)
 {
 	send_begin(&pctx, "umask");
-	send_open(&pctx, str_is_bin(name));
+	send_open(&pctx, str_is_bin(name), 1);
 	sends(&pctx, name);
 	send_close(&pctx);
 	send_end(&pctx);
