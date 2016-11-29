@@ -58,7 +58,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 
 /************ OLD API - new code should not use these **************/
 
-int ParseGroupString(const char *, pcb_layer_group_t *, int /* LayerN */ );
+int pcb_layer_parse_group_string(const char *, pcb_layer_group_t *, int /* LayerN */ );
 
 int GetLayerNumber(pcb_data_t *, pcb_layer_t *);
 int GetLayerGroupNumberByPointer(pcb_layer_t *);
