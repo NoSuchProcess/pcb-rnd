@@ -489,9 +489,9 @@ pcb_bool pcb_layer_is_paste_empty(pcb_side_t side)
  * Layer Group Functions
  */
 
-int MoveLayerToGroup(int layer, int group)
+pcb_layergrp_id_t MoveLayerToGroup(pcb_layer_id_t layer, pcb_layergrp_id_t group)
 {
-	int prev, i, j;
+	pcb_layergrp_id_t prev, i, j;
 
 	if (layer < 0 || layer > pcb_max_copper_layer + 1)
 		return -1;
