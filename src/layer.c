@@ -485,10 +485,6 @@ pcb_bool pcb_layer_is_paste_empty(pcb_side_t side)
 	return paste_empty;
 }
 
-/***********************************************************************
- * Layer Group Functions
- */
-
 pcb_layergrp_id_t MoveLayerToGroup(pcb_layer_id_t layer, pcb_layergrp_id_t group)
 {
 	pcb_layergrp_id_t prev, i, j;
