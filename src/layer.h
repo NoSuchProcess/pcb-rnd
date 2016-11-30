@@ -146,15 +146,7 @@ void RestoreStackAndVisibility(void);
 	{ \
 	   pcb_layer_t *layer = (&data->Layer[(n)]);
 
-
-#define PCB_LAYER_IS_EMPTY(layer) PCB_LAYER_IS_EMPTY_((layer))
-#define PCB_LAYER_IS_EMPTY_(layer) \
- ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (polylist_length(&layer->Polygon) == 0) && (textlist_length(&layer->Text) == 0))
-
-
-
 /************ NEW API - new code should use these **************/
-
 
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
 pcb_layer_t *pcb_get_layer(pcb_layer_id_t id);
@@ -165,6 +157,10 @@ const char *pcb_layer_name(pcb_layer_id_t id);
 /* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
 pcb_bool pcb_layer_is_empty_(pcb_layer_t *ly);
 pcb_bool pcb_layer_is_empty(pcb_layer_id_t ly);
+#define PCB_LAYER_IS_EMPTY(layer) PCB_LAYER_IS_EMPTY_((layer))
+#define PCB_LAYER_IS_EMPTY_(layer) \
+ ((linelist_length(&layer->Line) == 0) && (arclist_length(&layer->Arc) == 0) && (polylist_length(&layer->Polygon) == 0) && (textlist_length(&layer->Text) == 0))
+
 
 /* Returns pcb_true if all layers in a group are empty */
 pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t lgrp);
