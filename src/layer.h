@@ -78,20 +78,18 @@ typedef enum {
 pcb_bool pcb_layer_is_paste_empty(pcb_side_t side);
 
 
+/* Returns group actually moved to (i.e. either group or previous) */
+pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_t group);
+
 /************ OLD API - new code should not use these **************/
 
 int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
 void LayerStringToLayerStack(const char *);
 
-
 void ResetStackAndVisibility(void);
 void SaveStackAndVisibility(void);
 void RestoreStackAndVisibility(void);
 
-/* Layer Group Functions */
-
-/* Returns group actually moved to (i.e. either group or previous) */
-pcb_layergrp_id_t MoveLayerToGroup(pcb_layer_id_t layer, pcb_layergrp_id_t group);
 
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])
 #define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])

@@ -1245,7 +1245,7 @@ static void lgbutton_cb(Widget w, int ij, void *cbs)
 
 	layer = ij / pcb_max_group;
 	group = ij % pcb_max_group;
-	group = MoveLayerToGroup(layer, group);
+	group = pcb_layer_move_to_group(layer, group);
 	for (k = 0; k < pcb_max_group; k++) {
 		if (k == group)
 			XmToggleButtonSetState(lgbuttons[layer][k], 1, 0);
@@ -1312,7 +1312,7 @@ static void lgbutton_input(Widget w, XtPointer u, XmDrawingAreaCallbackStruct * 
 		return;
 	layer = cbs->event->xbutton.y * (pcb_max_copper_layer + 2) / lg_height;
 	group = (cbs->event->xbutton.x - lg_label_width) * pcb_max_group / (lg_width - lg_label_width);
-	group = MoveLayerToGroup(layer, group);
+	group = pcb_layer_move_to_group(layer, group);
 	lg_setcol[layer] = group;
 	lgbutton_expose(w, 0, 0);
 	pcb_gui->invalidate_all();

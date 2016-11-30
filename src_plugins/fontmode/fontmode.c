@@ -83,13 +83,13 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	conf_set_design("design/min_wid", "%s", "1"); PCB->minWid = 1;
 	conf_set_design("design/min_slk", "%s", "1"); PCB->minSlk = 1;
 
-	MoveLayerToGroup(pcb_max_copper_layer + PCB_COMPONENT_SIDE, 0);
-	MoveLayerToGroup(pcb_max_copper_layer + PCB_SOLDER_SIDE, 1);
+	pcb_layer_move_to_group(pcb_max_copper_layer + PCB_COMPONENT_SIDE, 0);
+	pcb_layer_move_to_group(pcb_max_copper_layer + PCB_SOLDER_SIDE, 1);
 
 	while (PCB->Data->LayerN > 4)
 		pcb_layer_move(4, -1);
 	for (l = 0; l < 4; l++) {
-		MoveLayerToGroup(l, l);
+		pcb_layer_move_to_group(l, l);
 	}
 	PCB->MaxWidth = CELL_SIZE * 18;
 	PCB->MaxHeight = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
