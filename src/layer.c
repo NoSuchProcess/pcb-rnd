@@ -40,7 +40,7 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 	{"soldermask",     SL(MASK, BOTTOM),  PCB_LYT_VIRTUAL + 3,  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
 	{"topsilk",        SL(SILK, TOP),     PCB_LYT_VIRTUAL + 4,  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
 	{"bottomsilk",     SL(SILK, BOTTOM),  PCB_LYT_VIRTUAL + 5,  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_BOTTOM },
-	{"rats",           SL(RATS, 0),       PCB_LYT_VIRTUAL + 6,  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
+	{"rats",           SL(RATS, 0),       PCB_LYT_VIRTUAL + 6,  PCB_LYT_VIRTUAL | PCB_LYT_RAT },
 	{"toppaste",       SL(PASTE, TOP),    PCB_LYT_VIRTUAL + 7,  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
 	{"bottompaste",    SL(PASTE, BOTTOM), PCB_LYT_VIRTUAL + 8,  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
 	{"topassembly",    SL(ASSY, TOP),     PCB_LYT_VIRTUAL + 9,  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
