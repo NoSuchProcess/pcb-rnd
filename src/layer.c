@@ -35,17 +35,17 @@
 #include "undo.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
-	{"invisible",      SL(INVISIBLE, 0),  PCB_LYT_VIRTUAL + 1,  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
-	{"componentmask",  SL(MASK, TOP),     PCB_LYT_VIRTUAL + 2,  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_TOP },
-	{"soldermask",     SL(MASK, BOTTOM),  PCB_LYT_VIRTUAL + 3,  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
-	{"topsilk",        SL(SILK, TOP),     PCB_LYT_VIRTUAL + 4,  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
-	{"bottomsilk",     SL(SILK, BOTTOM),  PCB_LYT_VIRTUAL + 5,  PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_BOTTOM },
-	{"rats",           SL(RATS, 0),       PCB_LYT_VIRTUAL + 6,  PCB_LYT_VIRTUAL | PCB_LYT_RAT },
-	{"toppaste",       SL(PASTE, TOP),    PCB_LYT_VIRTUAL + 7,  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
-	{"bottompaste",    SL(PASTE, BOTTOM), PCB_LYT_VIRTUAL + 8,  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
-	{"topassembly",    SL(ASSY, TOP),     PCB_LYT_VIRTUAL + 9,  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
-	{"bottomassembly", SL(ASSY, BOTTOM),  PCB_LYT_VIRTUAL + 10, PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
-	{"fab",            SL(FAB, 0),        PCB_LYT_VIRTUAL + 11, PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
+	{"invisible",      SL(INVISIBLE, 0),  PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
+	{"componentmask",  SL(MASK, TOP),     PCB_LYT_VIRTUAL + 2,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_TOP },
+	{"soldermask",     SL(MASK, BOTTOM),  PCB_LYT_VIRTUAL + 3,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
+	{"topsilk",        SL(SILK, TOP),     PCB_LYT_VIRTUAL + 4,  +PCB_SOLDER_SIDE,    PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
+	{"bottomsilk",     SL(SILK, BOTTOM),  PCB_LYT_VIRTUAL + 5,  +PCB_COMPONENT_SIDE, PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_BOTTOM },
+	{"rats",           SL(RATS, 0),       PCB_LYT_VIRTUAL + 6,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_RAT },
+	{"toppaste",       SL(PASTE, TOP),    PCB_LYT_VIRTUAL + 7,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
+	{"bottompaste",    SL(PASTE, BOTTOM), PCB_LYT_VIRTUAL + 8,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
+	{"topassembly",    SL(ASSY, TOP),     PCB_LYT_VIRTUAL + 9,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
+	{"bottomassembly", SL(ASSY, BOTTOM),  PCB_LYT_VIRTUAL + 10, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
+	{"fab",            SL(FAB, 0),        PCB_LYT_VIRTUAL + 11, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
 	{ NULL, 0 },
 };
 
@@ -571,6 +571,18 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 			used++; \
 	} while(0)
 
+/* For now, return only non-silks */
+#define APPEND_VIRT(v) \
+do { \
+	if (v->data_layer_offs < 0) \
+		APPEND(v->new_id); \
+} while(0)
+
+/* this would be how we returned silks from here
+		APPEND(pcb_max_copper_layer + v->data_layer_offs); \
+	else \
+*/
+
 int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
@@ -578,7 +590,7 @@ int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 
 	for(v = pcb_virt_layers; v->name != NULL; v++)
 		if ((v->type & mask) == mask)
-			APPEND(v->new_id);
+			APPEND_VIRT(v);
 
 	for (n = 0; n < PCB_MAX_LAYER + 2; n++)
 		if ((pcb_layer_flags(n) & mask) == mask)
@@ -594,7 +606,7 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 
 	for(v = pcb_virt_layers; v->name != NULL; v++)
 		if ((v->type & mask))
-			APPEND(v->new_id);
+			APPEND_VIRT(v);
 
 	for (n = 0; n < PCB_MAX_LAYER + 2; n++)
 		if ((pcb_layer_flags(n) & mask))

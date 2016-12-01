@@ -261,7 +261,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index);
 typedef struct pcb_virt_layer_s {
 	char *name;
 	unsigned int old_id;
-	pcb_layer_id_t new_id;
+	pcb_layer_id_t new_id, data_layer_offs;
 	pcb_layer_type_t type;
 } pcb_virt_layer_t;
 
