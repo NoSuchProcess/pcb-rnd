@@ -61,8 +61,7 @@ pronouns: write to avoid pronouns, use user/developer, use she
 organization:  hierarchial with lots of links for people who have tunneled deep?
 naviagation: ? don't add navigation in page, rely on browser navs
 html strict:  use standard html VERSION??? , no extra scripting
-assets: generate assets (use dot, etc), assume make and same system
+assets: generate assets (use dot, etc), assume make and same system is able to build pcb-rnd
 tables: use zebra styling for ease of reading 
-deps/requirements for pcb-rnd itself (we need an appendix table to live create the actions list
+deps/requirements for pcb-rnd itself (we need an appendix table to live createthe actions list)
 naming sections: despite lowercasing urls, keep naming concise so links have names that lead to sections with same names
-
