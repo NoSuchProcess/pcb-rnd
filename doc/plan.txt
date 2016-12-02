@@ -41,6 +41,10 @@ user manual
 			library dialog
 			propedit dialog
 			preferences dialog
+		batch
+		(lesstif: low prio)
+		(remote: not finished yet)
+		(sdl: not even started yet)
 	5. invocation
 		TODO
 	6. feature plugins
