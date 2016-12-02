@@ -60,7 +60,8 @@ urls all lowercased (eg. GTK becomes gtk)
 pronouns: write to avoid pronouns, use user/developer, use she
 organization:  hierarchial with lots of links for people who have tunneled deep?
 naviagation: ? don't add navigation in page, rely on browser navs
-html strict:  use standard html VERSION??? , no extra scripting
+html strict:  use standard html 1.0 
+css:  use css for looks without content modification 
 assets: generate assets (use dot, etc), assume make and same system is able to build pcb-rnd
 tables: use zebra styling for ease of reading 
 deps/requirements for pcb-rnd itself (we need an appendix table to live createthe actions list)
