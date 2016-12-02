@@ -591,8 +591,10 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	}
 
 
-	if(delta_angle >= +360.0) { delta_angle = 359.999; diff=1; }
-	if(delta_angle <= -360.0) { delta_angle = 359.999; diff=1; }
+	if (delta_angle >= +360.0) { delta_angle = 359.999; diff=1; }
+	if (delta_angle <= -360.0) { delta_angle = 359.999; diff=1; }
+
+	if (fabs(delta_angle) <= 0.001) { delta_angle = 0.001; diff=1; }
 
 	sa = start_angle;
 	ea = start_angle + delta_angle;
