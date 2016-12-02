@@ -558,26 +558,26 @@ static void draw_arc(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_
 		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sbright);
-			pcb_append_printf(&sbright, "<path d=\"M %mm %mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			pcb_append_printf(&sbright, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 				x1-photo_offs, y1-photo_offs, r, r, large, sweep, x2-photo_offs, y2-photo_offs, gc->width, photo_palette[photo_color].bright, CAPS(gc->cap));
 			indent(&sdark);
-			pcb_append_printf(&sdark, "<path d=\"M %mm %mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			pcb_append_printf(&sdark, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 				x1+photo_offs, y1+photo_offs, r, r, large, sweep, x2+photo_offs, y2+photo_offs, gc->width, photo_palette[photo_color].dark, CAPS(gc->cap));
 		}
 		indent(&snormal);
-		pcb_append_printf(&snormal, "<path d=\"M %mm %mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		pcb_append_printf(&snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, r, r, large, sweep, x2, y2, gc->width, photo_palette[photo_color].normal, CAPS(gc->cap));
 	}
 	else {
 		indent(&snormal);
-		pcb_append_printf(&snormal, "<path d=\"M %mm %mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		pcb_append_printf(&snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, r, r, large, sweep, x2, y2, gc->width, gc->color, CAPS(gc->cap));
 	}
 }
 
 static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	pcb_coord_t x1, y1, x2, y2;
+	pcb_coord_t x1, y1, x2, y2, diff = 0;
 	pcb_angle_t sa, ea;
 
 	TRX(cx); TRY(cy);
@@ -590,14 +590,18 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 		delta_angle = -delta_angle;
 	}
 
+
+	if(delta_angle >= +360.0) { delta_angle = 359.999; diff=1; }
+	if(delta_angle <= -360.0) { delta_angle = 359.999; diff=1; }
+
 	sa = start_angle;
 	ea = start_angle + delta_angle;
 
 	/* calculate the endpoints */
 	x2 = cx + (width * cos(sa * M_PI / 180));
 	y2 = cy + (width * sin(sa * M_PI / 180));
-	x1 = cx + (width * cos(ea * M_PI / 180));
-	y1 = cy + (width * sin(ea * M_PI / 180));
+	x1 = cx + (width * cos(ea * M_PI / 180))+diff;
+	y1 = cy + (width * sin(ea * M_PI / 180))+diff;
 
 	draw_arc(gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
 }
