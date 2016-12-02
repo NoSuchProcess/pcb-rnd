@@ -23,6 +23,16 @@
 #include "hyp_y.h"
 #include "error.h"
 #include "pcb-printf.h"
+#include "obj_all.h"
+#include "flag_str.h"
+#include "board.h"
+#include "layer.h"
+#include "data.h"
+
+/*
+ * the board is shared between all routines.
+ */
+pcb_data_t *hyp_dest;
 
 /*
  * board outline is doubly linked list of arcs and line segments.
@@ -44,6 +54,7 @@ typedef struct outline_s {
 outline_t *outline_head;
 outline_t *outline_tail;
 
+void hyp_set_origin(); /* set origin so all coordinates are positive */
 void hyp_perimeter(); /* add board outline to pcb */
 
 int hyp_debug; /* logging on/off switch */
@@ -65,29 +76,48 @@ double metal_thickness_unit;   /* conversion factor: metal thickness to meters *
 pcb_bool use_die_for_metal;    /* use dielectric constant and loss tangent of dielectric for metal layers */
 pcb_coord_t plane_separation;       /* distance between PLANE polygon and copper of different nets; -1 if not set */
 
+/* origin. Chosen so all coordinates are positive. */
+pcb_coord_t origin_x;
+pcb_coord_t origin_y;
+
 /*
  * Conversion from hyperlynx to pcb_coord_t - igor2
  */
 
 /* meter to pcb_coord_t */
 
-pcb_coord_t inline meter2coord(double m)
+pcb_coord_t inline m2coord(double m)
 {
   return ((pcb_coord_t) PCB_MM_TO_COORD(1000.0 * m));
 }
 
-/* x, y coordinates to pcb_coord_t */
+/* xy coordinates to pcb_coord_t, without offset */
 
 pcb_coord_t inline xy2coord(double f)
 {
-  return (meter2coord(unit * f));
+  return (m2coord(unit * f));
 }
 
-/* z coordinates to pcb_coord_t */
+
+/* x coordinates to pcb_coord_t, with offset */
+
+pcb_coord_t inline x2coord(double f)
+{
+  return (m2coord(unit * f) - origin_x);
+}
+
+/* y coordinates to pcb_coord_t, with offset */
+
+pcb_coord_t inline y2coord(double f)
+{
+  return (m2coord(unit * f) - origin_y);
+}
+
+/* z coordinates to pcb_coord_t. No offset needed. */
 
 pcb_coord_t inline z2coord(double f)
 {
-  return (meter2coord(metal_thickness_unit * f));
+  return (m2coord(metal_thickness_unit * f));
 }
 
 /*
@@ -131,14 +161,24 @@ int hyp_parse(pcb_data_t *dest, const char *fname, int debug)
   hyydebug = (debug > 1);  /* switch bison logging on */
   hyp_debug = (debug > 0); /* switch hyperlynx logging on */
 
+  /* set shared board */
+  hyp_dest = dest;
+
+  /* set origin */
+  origin_x = 0;
+  origin_y = 0;
+
   /* parse hyperlynx file */
   hyyin =  fopen(fname, "r");
   if (hyyin == NULL) return (1);
   retval = hyyparse();
   fclose(hyyin);
 
-  /* add board outline */
+  /* add board outline last */
   hyp_perimeter();
+
+  /* clear */
+  hyp_dest = NULL;
 
   return(retval);
 }
@@ -229,7 +269,7 @@ pcb_bool exec_units(parse_param *h)
 
 pcb_bool exec_plane_sep(parse_param *h)
 {
-  plane_separation = xy2coord(h->plane_separation);
+  plane_separation = m2coord(h->plane_separation);
 
   if (hyp_debug) pcb_printf("plane_sep: default_plane_separation = %mm\n", plane_separation);
 
@@ -248,6 +288,7 @@ pcb_bool exec_perimeter_segment(parse_param *h)
 
   peri_seg = malloc(sizeof(outline_t));
 
+  /* convert coordinates */
   peri_seg->x1 = xy2coord(h->x1);
   peri_seg->y1 = xy2coord(h->y1);
   peri_seg->x2 = xy2coord(h->x2);
@@ -270,6 +311,9 @@ pcb_bool exec_perimeter_segment(parse_param *h)
     outline_tail->next = peri_seg;
     outline_tail = peri_seg;
     }
+
+  /* set origin so all coordinates are positive */
+  hyp_set_origin();
 
   return 0;
 }
@@ -309,6 +353,9 @@ pcb_bool exec_perimeter_arc(parse_param *h)
     outline_tail = peri_arc;
     }
 
+  /* set origin so all coordinates are positive */
+  hyp_set_origin();
+
   return 0;
 }
 
@@ -330,13 +377,40 @@ pcb_bool exec_board_attribute(parse_param *h)
 
 void perimeter_segment_add(outline_t *s, pcb_bool_t forward)
 {
+  pcb_layer_t *outline_layer;
+
+  /* get outline layer */
+  int outlineCount = 0;
+  int outlineLayerCount = 0;
+  int *outlineLayers = NULL;
+  /* count outline layers */
+  outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0);
+  outlineLayers = malloc(sizeof(int) * outlineLayerCount);
+  outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
+  pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
+  /* XXX fix: add outline layer if necessary */
+  outline_layer = &(hyp_dest->Layer[outlineLayers[0]]);
+  if (outline_layer == NULL) return;
+
   /* mark segment as used, so we don't use it twice */
   s->used = pcb_true;
+
   /* debugging */
-  if (forward)
-    pcb_printf("perimeter: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x1, s->y1, s->x2, s->y2);
-  else /* add segment back to front */
-    pcb_printf("perimeter: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);
+  if (hyp_debug) {
+    if (forward) pcb_printf("outline: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x1, s->y1, s->x2, s->y2);
+    else pcb_printf("outline: %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1); /* add segment back to front */
+    }
+
+  if (s->is_arc) {
+    if (forward)
+      hyp_arc_new(outline_layer, s->x1, s->y1, s->x2, s->y2, s->xc, s->yc, s->r, s->r, pcb_false, 1, 0, pcb_no_flags());
+    else
+      hyp_arc_new(outline_layer, s->x2, s->y2, s->x1, s->y1, s->xc, s->yc, s->r, s->r, pcb_false, 1, 0, pcb_no_flags());
+    }
+  else 
+    pcb_line_new(outline_layer, s->x1, s->y1, s->x2, s->y2, 1, 0, pcb_no_flags());
+
+  return;
 }
 
 /* 
@@ -378,6 +452,31 @@ pcb_bool_t segment_connected(pcb_coord_t begin_x, pcb_coord_t begin_y, pcb_coord
 }
 
 /* 
+ * Sets (origin_x, origin_y)
+ * Choose origin so that all coordinates are posive. 
+ */
+
+void hyp_set_origin()
+{
+  pcb_bool_t first;
+  outline_t *i;
+
+  first = pcb_true;
+  for (i = outline_head; i != NULL; i = i->next) {
+    /* set origin so all coordinates are positive */
+    if ((i->x1 < origin_x) || first) origin_x = i->x1;
+    if ((i->x2 < origin_x) || first) origin_x = i->x2;
+    if ((i->y1 < origin_y) || first) origin_x = i->y1;
+    if ((i->y2 < origin_y) || first) origin_x = i->y2;
+    if (i->is_arc) {
+      if ((i->xc - i->r < origin_x) || first) origin_x = i->xc - i->r;
+      if ((i->yc - i->r < origin_y) || first) origin_y = i->yc - i->r;
+      }
+    first = pcb_false;
+    }
+}
+
+/* 
  * Draw board perimeter.
  * The first segment is part of the first polygon.
  * The first polygon of the board perimeter is positive, the rest are holes.
@@ -394,6 +493,19 @@ void hyp_perimeter()
   outline_t *j;
 
   warn_not_closed = pcb_false;
+
+  /* iterate over perimeter segments and adjust origin */
+  for (i = outline_head; i != NULL; i = i->next) {
+    /* set origin so all coordinates are positive */
+    i->x1 -= origin_x;
+    i->y1 -= origin_y;
+    i->x2 -= origin_x;
+    i->y2 -= origin_y;
+    if (i->is_arc) {
+      i->xc -= origin_x;
+      i->yc -= origin_y;
+      }
+    }
 
   /* iterate over perimeter polygons */
   while (pcb_true)
@@ -463,10 +575,12 @@ void hyp_perimeter()
       if (!polygon_closed && !segment_found)
         break;                   /* can't find anything suitable */
     }
-    if (polygon_closed) pcb_printf("perimeter: closed\n");
+    if (polygon_closed) { 
+      if (hyp_debug) pcb_printf("outline: closed\n");
+      }
     else 
       {
-        pcb_printf("perimeter: open\n");
+        if (hyp_debug) pcb_printf("outline: open\n");
         warn_not_closed = pcb_true;
       }
   }
@@ -480,6 +594,7 @@ void hyp_perimeter()
   outline_head = outline_tail = NULL;
 
   if (warn_not_closed) pcb_message(PCB_MSG_DEBUG, "warning: board outline not closed\n");
+
   return;
 }
 
@@ -521,5 +636,34 @@ pcb_bool exec_net_class_attribute(parse_param *h){return(0);}
 
 pcb_bool exec_end(parse_param *h){return(0);}
 pcb_bool exec_key(parse_param *h){return(0);}
+
+/*
+ * Draw arc from (x1, y1) to (x2, y2) with center (xc, yc) and radius r. 
+ * Direction of arc is clockwise or counter-clockwise, depending upon value of pcb_bool_t Clockwise.
+ */
+
+pcb_arc_t *hyp_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t XC, pcb_coord_t YC, pcb_coord_t Width, pcb_coord_t Height, pcb_bool_t Clockwise, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
+{
+  pcb_angle_t start_angle;
+  pcb_angle_t end_angle;
+  pcb_angle_t delta;
+
+  if (Width < 1) {
+    start_angle = 0.0;
+    delta = 360.0; /* XXX !!! */
+    }
+  else {
+    start_angle = 180*atan2(Y1 - YC, X1 - XC)/M_PI;
+    end_angle = 180*atan2(Y2 - YC, X2 - XC)/M_PI;
+    delta = end_angle - start_angle;
+    }
+
+  if (Clockwise && (delta < 0.0)) delta += 360.0;
+  if (!Clockwise && (delta > 0.0)) delta = 360.0 - delta;
+
+  /* for circle width = height = radius? XXX */
+
+  return pcb_arc_new(Layer, XC, YC, Width, Height, start_angle, delta, Thickness, Clearance, Flags);
+}
 
 /* not truncated */

@@ -223,6 +223,9 @@
   pcb_bool hyp_parse(pcb_data_t *dest, const char *fname, int debug);
   void hyp_error(const char *msg);
 
+  /* create arc, hyperlynx-style */
+  pcb_arc_t *hyp_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t XC, pcb_coord_t YC, pcb_coord_t Width, pcb_coord_t Height, pcb_bool_t Clockwise, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
+
 #endif 
 
   /* not truncated */
