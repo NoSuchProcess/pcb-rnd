@@ -12,6 +12,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "compat_misc.h"
+#include "event.h"
 
 #include "proto.h"
 
@@ -56,8 +57,6 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t remote_action_list[] = {
-	{"PCBChanged", 0, PCBChanged}
-	,
 	{"RouteStylesChanged", 0, nop}
 	,
 	{"NetlistChanged", 0, nop}
@@ -387,7 +386,7 @@ static void remote_propedit_add_stat(void *pe, const char *propname, void *propc
 static void hid_hid_remote_uninit()
 {
 	pcb_hid_remove_actions_by_cookie(remote_cookie);
-	pcb_event_unbind_allcookie(batch_cookie);
+	pcb_event_unbind_allcookie(remote_cookie);
 }
 
 pcb_uninit_t hid_hid_remote_init()
