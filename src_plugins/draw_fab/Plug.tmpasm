@@ -2,6 +2,7 @@ put /local/pcb/mod {draw_fab}
 append /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/draw_fab/draw_fab.o
 @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/draw_fab/draw_fab_conf.h}
 
 switch /local/pcb/draw_fab/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

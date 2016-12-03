@@ -37,9 +37,12 @@
 #include "obj_all.h"
 #include "plugins.h"
 #include "stub_draw_fab.h"
+#include "draw_fab_conf.h"
 
 #include "obj_text_draw.h"
 
+
+conf_draw_fab_t conf_draw_fab;
 
 /* ---------------------------------------------------------------------------
  * prints a FAB drawing.
@@ -169,7 +172,6 @@ static void DrawFab(pcb_hid_gc_t gc)
 {
 	DrillInfoTypePtr AllDrills;
 	int i, n, yoff, total_drills = 0, ds = 0;
-	time_t currenttime;
 	char utcTime[64];
 	AllDrills = GetDrillInfo(PCB->Data);
 	RoundDrillInfo(AllDrills, PCB_MIL_TO_COORD(1));
@@ -230,12 +232,15 @@ static void DrawFab(pcb_hid_gc_t gc)
 	text_at(gc, 0, yoff, 0,
 					"There are %d different drill sizes used in this layout, %d holes total", AllDrills->DrillN, total_drills);
 	/* Create a portable timestamp. */
-	currenttime = time(NULL);
-	{
-		/* avoid gcc complaints */
+
+	if (!conf_draw_fab.plugins.draw_fab.omit_date) {
 		const char *fmt = "%c UTC";
+		time_t currenttime = time(NULL);
 		strftime(utcTime, sizeof utcTime, fmt, gmtime(&currenttime));
 	}
+	else
+		strcpy(utcTime, "<date>");
+
 	yoff = -TEXT_LINE;
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *l = LAYER_PTR(i);
@@ -283,6 +288,7 @@ static void DrawFab(pcb_hid_gc_t gc)
 		text_at(gc, PCB->MaxWidth / 2, PCB->MaxHeight + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
 	}
 	yoff -= TEXT_LINE;
+
 	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Date: %s", utcTime);
 	yoff -= TEXT_LINE;
 	text_at(gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Author: %s", pcb_author());
@@ -298,5 +304,11 @@ pcb_uninit_t hid_draw_fab_init(void)
 {
 	pcb_stub_draw_fab = DrawFab;
 	pcb_stub_draw_fab_overhang = DrawFab_overhang;
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	conf_reg_field(conf_draw_fab, field,isarray,type_name,cpath,cname,desc,flags);
+#include "draw_fab_conf_fields.h"
+
+
 	return hid_draw_fab_uninit;
 }
