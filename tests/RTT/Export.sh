@@ -1,6 +1,7 @@
 #!/bin/sh
 
 all=0
+valg=0
 TRUNK=../..
 if test -z "$pcb_rnd_bin"
 then
@@ -98,9 +99,14 @@ cmp_fmt()
 
 run_test()
 {
-	local fn="$1"
+	local fn="$1" valgr
 
-	$pcb_rnd_bin -x "$fmt" $fmt_args "$fn"
+	if test "$valg" -gt 0
+	then
+		valgr="valgrind -v --log-file=$fn.vlog"
+	fi
+
+	$valgr $pcb_rnd_bin -x "$fmt" $fmt_args "$fn"
 
 	base=${fn%%.pcb}
 	ref_fn=ref/$base$ext
@@ -118,6 +124,7 @@ do
 		-f|-x) fmt=$2; shift 1;;
 		-b) pcb_rnd_bin=$2; shift 1;;
 		-a) all=1;;
+		-V) valg=1;;
 		*)
 			if test -z "$fn"
 			then
