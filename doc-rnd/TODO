@@ -39,7 +39,6 @@ CLEANUP #5
 - src/check_icon.data - is it used?
 - search for move.dst_layer - don't compare pointer to -1!
 - make uninstall doesn't remove an scm
-- convert PCBChanged into an event (and provide a core action for compatibility)
 - rework the gpmi plugin to make it more standard in regard of the build system and to remove a few directories
 - dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - grid status line label doesn't update when using setvalue(grid,delta) add another hook to update this value [miloh]
@@ -164,5 +163,4 @@ Low prio:
 - push&shove
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
 - examine current handling of long options [miloh]
-- --show-actions ends with segfault
 - --dump-actions shows gpmi paths ( is this related? it looks unexpected to me) 
