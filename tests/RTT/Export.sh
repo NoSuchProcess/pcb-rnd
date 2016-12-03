@@ -1,8 +1,11 @@
 #!/bin/sh
 
+TRUNK=../..
+
 all=0
 valg=0
-TRUNK=../..
+global_args="-c rc/quiet=1"
+
 if test -z "$pcb_rnd_bin"
 then
 	pcb_rnd_bin="$TRUNK/src/pcb-rnd"
@@ -107,7 +110,7 @@ run_test()
 		valgr="valgrind -v --log-file=$fn.vlog"
 	fi
 
-	$valgr $pcb_rnd_bin -x "$fmt" $fmt_args "$fn"
+	$valgr $pcb_rnd_bin -x "$fmt" $global_args $fmt_args "$fn"
 
 	base=${fn%%.pcb}
 	ref_fn=ref/$base$ext
