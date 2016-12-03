@@ -48,6 +48,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "obj_pinvia.h"
+#include "event.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
@@ -105,7 +106,7 @@ sizes for your vendor.
 
 int pcb_act_ApplyVendor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_hid_action("Busy");
+	pcb_event(PCB_EVENT_BUSY, NULL);
 	apply_vendor_map();
 	return 0;
 }

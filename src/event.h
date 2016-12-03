@@ -39,6 +39,8 @@ typedef enum {
 	PCB_EVENT_LAYERS_CHANGED,         /* called after layers or layer groups change (used to be the LayersChanged action) */
 	PCB_EVENT_LIBRARY_CHANGED,        /* called after a change in the footprint lib (used to be the LibraryChanged action) */
 
+	PCB_EVENT_BUSY,                   /* called before CPU-intensive task begins */
+
 	PCB_EVENT_RUBBER_RESET,           /* rubber band: reset attached */
 	PCB_EVENT_RUBBER_REMOVE_ELEMENT,  /* rubber band: removed an element with rubber bands attached */
 	PCB_EVENT_RUBBER_MOVE,            /* rubber band: object moved */

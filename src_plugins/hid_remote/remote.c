@@ -36,11 +36,6 @@ static pcb_hid_attribute_t *remote_get_export_options(int *n_ret)
 
 /* ----------------------------------------------------------------------------- */
 
-static int nop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	return 0;
-}
-
 static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 }
@@ -57,8 +52,6 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t remote_action_list[] = {
-	{"Busy", 0, nop}
-	,
 	{"Help", 0, help}
 	,
 	{"Info", 0, info}

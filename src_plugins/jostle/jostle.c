@@ -37,6 +37,7 @@
 #include "conf_core.h"
 #include "misc_util.h"
 #include "obj_line.h"
+#include "event.h"
 
 /*#define DEBUG_pcb_polyarea_t*/
 
@@ -115,7 +116,7 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 		}
 	} while ((p = p->f) != s);
 	ddraw->flush_debug_draw();
-	pcb_hid_action("Busy");
+	pcb_event(PCB_EVENT_BUSY, NULL);
 	sleep(3);
 	ddraw->finish_debug_draw();
 }

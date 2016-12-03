@@ -1925,18 +1925,15 @@ static int SaveWinGeo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 
 /* ------------------------------------------------------------ */
-static int Busy(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void ghid_Busy(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	ghid_watch_cursor();
-	return 0;
 }
 
 pcb_hid_action_t ghid_main_action_list[] = {
 	{"About", 0, About, about_help, about_syntax}
 	,
 	{"Benchmark", 0, Benchmark}
-	,
-	{"Busy", 0, Busy}
 	,
 	{"Center", N_("Click on a location to center"), Center, center_help, center_syntax}
 	,
@@ -2148,6 +2145,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, GhidNetlistChanged, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, RouteStylesChanged, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, ghid_LayersChanged, NULL, ghid_cookie);
+	pcb_event_bind(PCB_EVENT_BUSY, ghid_Busy, NULL, ghid_cookie);
 
 	return hid_hid_gtk_uninit;
 }

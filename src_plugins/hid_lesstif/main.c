@@ -309,7 +309,7 @@ static const char *cur_clip()
 
 /* Called from the core when it's busy doing something and we need to
    indicate that to the user.  */
-static int Busy(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void LesstifBusy(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	static Cursor busy_cursor = 0;
 	if (busy_cursor == 0)
@@ -317,7 +317,7 @@ static int Busy(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	XDefineCursor(display, window, busy_cursor);
 	XFlush(display);
 	old_cursor_mode = -1;
-	return 0;
+	return;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -897,8 +897,6 @@ pcb_hid_action_t lesstif_main_action_list[] = {
 	{"PointCursor", 0, PointCursor}
 	,
 	{"Center", "Click on a location to center", Center}
-	,
-	{"Busy", 0, Busy}
 	,
 	{"Cursor", 0, CursorAction,
 	 cursor_help, cursor_syntax}
@@ -3844,6 +3842,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, LesstifRouteStylesChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, LesstifLayersChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
+	pcb_event_bind(PCB_EVENT_BUSY, LesstifBusy, NULL, lesstif_cookie);
 
 	pcb_hid_register_hid(&lesstif_hid);
 

@@ -31,6 +31,7 @@
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "board.h"
+#include "event.h"
 
 static const char autoplace_syntax[] = "AutoPlaceSelected()";
 
@@ -45,7 +46,7 @@ connecting them are minimized.  Note that you cannot undo this.
 
 static int pcb_act_AutoPlaceSelected(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_hid_action("Busy");
+	pcb_event(PCB_EVENT_BUSY, NULL);
 	if (pcb_gui->confirm_dialog(_("Auto-placement can NOT be undone.\n" "Do you want to continue anyway?\n"), 0)) {
 		if (AutoPlaceSelected())
 			pcb_board_set_changed_flag(pcb_true);

@@ -50,11 +50,6 @@ static void hid_batch_uninit(void)
 	}
 }
 
-static int nop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	return 0;
-}
-
 static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (prompt != NULL)
@@ -101,8 +96,6 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t batch_action_list[] = {
-	{"Busy", 0, nop}
-	,
 	{"Help", 0, help}
 	,
 	{"Info", 0, info}

@@ -96,7 +96,6 @@ extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char 
 /* Note that PCB expects the gui to provide the following actions:
 
    LibraryChanged()
-   Busy()
  */
 
 /* File Watch flags */

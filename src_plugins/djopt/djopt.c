@@ -48,6 +48,7 @@
 #include "djopt_conf.h"
 #include "obj_line.h"
 #include "obj_pinvia.h"
+#include "event.h"
 
 conf_djopt_t conf_djopt;
 
@@ -2553,7 +2554,7 @@ static int pcb_act_DJopt(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	SwitchDrawingWindow(PCB->Zoom, Output.drawing_area->window, conf_core.editor.show_solder_side, pcb_false);
 #endif
 
-	pcb_hid_action("Busy");
+	pcb_event(PCB_EVENT_BUSY, NULL);
 
 	lines = 0;
 	corners = 0;

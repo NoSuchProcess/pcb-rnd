@@ -30,6 +30,7 @@
 #include "action_helper.h"
 #include "plugins.h"
 #include "hid_actions.h"
+#include "event.h"
 
 /* action routines for the autorouter
  */
@@ -64,7 +65,7 @@ responsive.
 static int pcb_act_AutoRoute(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function = PCB_ACTION_ARG(0);
-	pcb_hid_action("Busy");
+	pcb_event(PCB_EVENT_BUSY, NULL);
 	if (function) {								/* one parameter */
 		if (strcmp(function, "AllRats") == 0) {
 			if (AutoRoute(pcb_false))
