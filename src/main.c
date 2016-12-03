@@ -415,9 +415,9 @@ int main(int argc, char *argv[])
 		case DO_PRINT:   pcb_exporter = pcb_gui = pcb_hid_find_printer(); break;
 		case DO_EXPORT:  pcb_exporter = pcb_gui = pcb_hid_find_exporter(hid_name); break;
 		case DO_GUI:
-			pcb_gui = pcb_hid_find_gui(argv[2]);
+			pcb_gui = pcb_hid_find_gui(hid_name);
 			if (pcb_gui == NULL) {
-				pcb_message(PCB_MSG_DEFAULT, "Can't find the gui requested.\n");
+				pcb_message(PCB_MSG_DEFAULT, "Can't find the gui (%s) requested.\n", hid_name);
 				exit(1);
 			}
 			break;
