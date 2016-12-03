@@ -1116,10 +1116,14 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	if (conf_core.editor.mode == PCB_MODE_ARROW) {
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_TYPE_LINE_POINT, &ptr1, &ptr2, &ptr3);
-		if (ans == PCB_TYPE_NONE)
-			pcb_hid_action("PointCursor");
-		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2))
-			pcb_hid_actionl("PointCursor", "True", NULL);
+		if (ans == PCB_TYPE_NONE) {
+			if ((pcb_gui != NULL) && (pcb_gui->point_cursor != NULL))
+				pcb_gui->point_cursor(pcb_false);
+		}
+		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2)) {
+			if ((pcb_gui != NULL) && (pcb_gui->point_cursor != NULL))
+				pcb_gui->point_cursor(pcb_true);
+		}
 	}
 
 	if (conf_core.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)

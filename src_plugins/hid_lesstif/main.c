@@ -324,9 +324,9 @@ static void LesstifBusy(void *user_data, int argc, pcb_event_arg_t argv[])
 
 /* Local actions.  */
 
-static int PointCursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void PointCursor(pcb_bool grabbed)
 {
-	if (argc > 0)
+	if (grabbed > 0)
 		over_point = 1;
 	else
 		over_point = 0;
@@ -893,8 +893,6 @@ pcb_hid_action_t lesstif_main_action_list[] = {
 	,
 	{"Benchmark", 0, Benchmark,
 	 benchmark_help, benchmark_syntax}
-	,
-	{"PointCursor", 0, PointCursor}
 	,
 	{"Center", "Click on a location to center", Center}
 	,
@@ -3829,6 +3827,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 	lesstif_hid.beep = lesstif_beep;
 	lesstif_hid.progress = lesstif_progress;
 	lesstif_hid.edit_attributes = lesstif_attributes_dialog;
+	lesstif_hid.point_cursor = PointCursor;
 
 	lesstif_hid.request_debug_draw = lesstif_request_debug_draw;
 	lesstif_hid.flush_debug_draw = lesstif_flush_debug_draw;

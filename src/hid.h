@@ -501,6 +501,9 @@ struct hid_s {
 	int (*usage)(const char *subtopic);
 
 
+	/* Optional: change cursor to indicate if an object is grabbed (or not) */
+	void (*point_cursor)(pcb_bool grabbed);
+
 	/*** PROPEDIT (optional) ****/
 	/* Optional: start a propedit session: a series of propedit calls will follow
 	   Return 0 on success; non-zero aborts the session.

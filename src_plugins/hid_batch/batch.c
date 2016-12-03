@@ -99,8 +99,6 @@ pcb_hid_action_t batch_action_list[] = {
 	{"Help", 0, help}
 	,
 	{"Info", 0, info}
-	,
-	{"PointCursor", 0, info}
 };
 
 PCB_REGISTER_ACTIONS(batch_action_list, batch_cookie)

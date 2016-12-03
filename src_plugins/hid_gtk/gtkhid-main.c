@@ -1051,16 +1051,15 @@ static int GetXY(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* ---------------------------------------------------------------------- */
 
-static int PointCursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void PointCursor(pcb_bool grabbed)
 {
 	if (!ghidgui)
-		return 0;
+		return;
 
-	if (argc > 0)
+	if (grabbed > 0)
 		ghid_point_cursor();
 	else
 		ghid_mode_cursor(conf_core.editor.mode);
-	return 0;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1955,8 +1954,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"Pan", 0, PanAction, pan_help, pan_syntax}
 	,
-	{"PointCursor", 0, PointCursor}
-	,
 	{"Popup", 0, Popup, popup_help, popup_syntax}
 	,
 	{"Print", 0, Print,
@@ -2108,7 +2105,9 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_hid.show_item = ghid_show_item;
 	ghid_hid.beep = ghid_beep;
 	ghid_hid.progress = ghid_progress;
-	ghid_hid.drc_gui = &ghid_drc_gui, ghid_hid.edit_attributes = ghid_attributes;
+	ghid_hid.drc_gui = &ghid_drc_gui;
+	ghid_hid.edit_attributes = ghid_attributes;
+	ghid_hid.point_cursor = PointCursor;
 
 	ghid_hid.request_debug_draw = ghid_request_debug_draw;
 	ghid_hid.flush_debug_draw = ghid_flush_debug_draw;

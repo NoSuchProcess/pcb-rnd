@@ -12,22 +12,6 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
-/* do not throw "unknown action" warning for these: they are known
-   actions, the GUI HID may register them, but nothing bad happens if
-   they are not registered or not handled by the GUI. */
-static const char *action_no_warn[] = {
-	"PointCursor",
-	NULL
-};
-static int action_legal_unknown(const char *name)
-{
-	const char **s;
-	for(s = action_no_warn; *s != NULL; s++)
-		if (strcmp(*s, name) == 0)
-			return 1;
-	return 0;
-}
-
 static htsp_t *all_actions = NULL;
 const pcb_hid_action_t *pcb_current_action = NULL;
 
@@ -132,8 +116,7 @@ const pcb_hid_action_t *pcb_hid_find_action(const char *name)
 	if (ca)
 		return ca->action;
 
-	if (!action_legal_unknown(name))
-		pcb_message(PCB_MSG_DEFAULT, "unknown action `%s'\n", name);
+	pcb_message(PCB_MSG_DEFAULT, "unknown action `%s'\n", name);
 	return 0;
 }
 
@@ -253,8 +236,6 @@ int pcb_hid_actionv(const char *name, int argc, const char **argv)
 	a = pcb_hid_find_action(name);
 	if (!a) {
 		int i;
-		if (action_legal_unknown(name))
-			return 1;
 		pcb_message(PCB_MSG_DEFAULT, "no action %s(", name);
 		for (i = 0; i < argc; i++)
 			pcb_message(PCB_MSG_DEFAULT, "%s%s", i ? ", " : "", argv[i]);
