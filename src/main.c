@@ -305,7 +305,7 @@ int main(int argc, char *argv[])
 					main_action = "PrintUsage()";
 				goto next_arg;
 			}
-			if ((strcmp(cmd, "g") == 0) || (strcmp(cmd, "-gui") == 0)) {
+			if ((strcmp(cmd, "g") == 0) || (strcmp(cmd, "-gui") == 0) || (strcmp(cmd, "-hid") == 0)) {
 				do_what = DO_GUI;
 				hid_name = arg;
 				n++;
