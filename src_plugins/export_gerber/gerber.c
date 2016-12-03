@@ -989,6 +989,11 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	arcStartX = cx - width * cos(PCB_TO_RADIANS(start_angle));
 	arcStartY = cy + height * sin(PCB_TO_RADIANS(start_angle));
 
+	if (fabs(delta_angle) < 0.01) {
+		gerber_draw_line(gc, arcStartX, arcStartY, arcStartX, arcStartY);
+		return;
+	}
+
 	/* I checked three different gerber viewers, and they all disagreed
 	   on how ellipses should be drawn.  The spec just calls G74/G75
 	   "circular interpolation" so there's a chance it just doesn't
