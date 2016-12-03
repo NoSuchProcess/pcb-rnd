@@ -1,5 +1,5 @@
 Load and save the design and elements in Kicad's legacy format.
 
-#state: work-in-progress
+#state: works
 #default: buildin
 #implements: io
