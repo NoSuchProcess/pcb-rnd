@@ -85,10 +85,8 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fil
 	/*fputs("io_kicad_legacy_write_pcb()", FP);*/
 
 	pcb_cardinal_t i;
-	int physicalLayerCount = 0;
 	int kicadLayerCount = 0;
-	int silkLayerCount= 0;
-	int outlineLayerCount = 0;
+	int physicalLayerCount = 0;
 	int layer = 0;
 	int currentKicadLayer = 0;
 	int currentGroup = 0;
@@ -215,8 +213,6 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fil
         bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
 	if (bottomCount > 0 ) {
 		bottomLayers = malloc(sizeof(pcb_layer_id_t) * bottomCount);
-		/*int bottomLayers[physicalLayerCount];
-		bottomCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0); */
 		pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, bottomCount);
 	} else {
 		bottomLayers = NULL;
@@ -226,8 +222,6 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fil
         innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
 	if (innerCount > 0 ) {
 		innerLayers = malloc(sizeof(pcb_layer_id_t) * innerCount);
-		/*int innerLayers[physicalLayerCount];
-		innerCount = pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0); */
 		pcb_layer_list(PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, innerCount);
 	} else {
 		innerLayers = NULL;
@@ -237,49 +231,33 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fil
         topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
 	if (topCount > 0 ) {
 		topLayers = malloc(sizeof(pcb_layer_id_t) * topCount);
-		/*int topLayers[physicalLayerCount];
-		topCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0); */
 		pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, topCount);
 	} else {
 		topLayers = NULL;
 	}
 
-	/*silkLayerCount = pcb_layer_group_list(PCB_LYT_SILK, NULL, 0);*/
-
 	/* figure out which pcb layers are bottom silk and make a list */
         bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
 	if (bottomSilkCount > 0 ) {
 		bottomSilk = malloc(sizeof(pcb_layer_id_t) * bottomSilkCount);
-		/*int bottomSilk[silkLayerCount];
-		bottomSilkCount = pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0); */
 		pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, bottomSilkCount);
 	} else {
 		bottomSilk = NULL;
 	}
 
-
 	/* figure out which pcb layers are top silk and make a list */
 	topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	if (topSilkCount > 0) {
 		topSilk = malloc(sizeof(pcb_layer_id_t) * topSilkCount);
-		/*int topSilk[silkLayerCount];
-		topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0); */
 		pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, topSilkCount);
 	} else {
 		topSilk = NULL;
 	}
 
-	/*outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0);
-	printf("outlineLayerCount : %d \n", outlineLayerCount); */
 	/* figure out which pcb layers are outlines and make a list */
  	outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
 	if (outlineCount > 0) {
-                /*outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);*/
                 outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineCount);
-/*		outlineLayers = malloc(sizeof(int) * outlineLayerCount); changed */
-
-/*		outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0); previous spot */
-        	printf("outlineCount : %d \n", outlineCount);
 		pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
 	} else {
 		outlineLayers = NULL;
