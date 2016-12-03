@@ -252,13 +252,14 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
 
 	/* here we count outline layers */
-	outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0);
-
-	/* figure out which pcb layers are outlines and make a list */
-	outlineLayers = malloc(sizeof(int) * outlineLayerCount);
+	/* outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0); */
 	outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
-	pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
-
+	/* figure out which pcb layers (if any) are outlines and make a list */
+        if (outlineCount > 0) {
+		outlineLayers = malloc(sizeof(int) * outlineCount);
+		/*outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0); */
+		pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
+	}
 
 	/* we now proceed to write the bottom silk lines, arcs, text to the kicad legacy file, using layer 20 */
 	currentKicadLayer = 20; /* 20 is the bottom silk layer in kicad */
@@ -364,7 +365,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 
 	/* we now proceed to write the outline tracks to the kicad file, layer by layer */
 	currentKicadLayer = 28; /* 28 is the edge cuts layer in kicad */
-	if (outlineCount != 0) {
+	if (outlineCount > 0) {
 		for (i = 0; i < outlineCount; i++) /* write outline tracks, if any */
 			{
 				write_kicad_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[outlineLayers[i]]),
@@ -453,13 +454,19 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, 
 	fputs(")\n",FP); /* finish off the board */
 
 	/* now free memory from arrays that were used */
-	free(bottomLayers);
-	free(innerLayers);
-	free(topLayers);
-	free(topSilk);
-	free(bottomSilk);
-	free(outlineLayers);
-	return (0);
+        if (physicalLayerCount > 0) {
+                free(bottomLayers);
+                free(innerLayers);
+                free(topLayers);
+        }
+        if (silkLayerCount > 0) {
+                free(topSilk);
+                free(bottomSilk);
+        }
+        if (outlineCount > 0) {
+                free(outlineLayers);
+        }
+        return (0);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1111,18 +1118,18 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 		fprintf(FP,  "(module %s (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n",
 								currentElementName, kicad_sexpr_layer_to_text(copperLayer));
 		fprintf(FP, "%*s", indentation + 2, "");
-		pcb_fprintf(FP, "(at %.3mm %.3mm)\n", xPos, yPos);
+		pcb_fprintf(FP, "(at %.3mm %.3mm)\n", xPos, yPos); 
 
 		fprintf(FP, "%*s", indentation + 2, "");
-		pcb_fprintf(FP, "(fp_text reference %s (at 0 0.127) (layer %s)\n",
-								currentElementRef, kicad_sexpr_layer_to_text(silkLayer));
+		pcb_fprintf(FP, "(fp_text reference %s (at %.3mm %.3mm) (layer %s)\n",
+								xPos, yPos + PCB_MM_TO_COORD(0.127), currentElementRef, kicad_sexpr_layer_to_text(silkLayer));
 		fprintf(FP, "%*s", indentation + 4, "");
 		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
 		fprintf(FP, "%*s)\n", indentation + 2, "");
 
 		fprintf(FP, "%*s", indentation + 2, "");
-		pcb_fprintf(FP, "(fp_text value %s (at 0 0.127) (layer %s)\n",
-								currentElementVal, kicad_sexpr_layer_to_text(silkLayer));
+		pcb_fprintf(FP, "(fp_text value %s (at %.3mm %.3mm) (layer %s)\n",
+								xPos, yPos + PCB_MM_TO_COORD(0.254), currentElementVal, kicad_sexpr_layer_to_text(silkLayer));
 		fprintf(FP, "%*s", indentation + 4, "");
 		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
 		fprintf(FP, "%*s)\n", indentation + 2, "");
