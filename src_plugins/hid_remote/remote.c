@@ -40,9 +40,8 @@ static int nop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	return 0;
 }
 
 static int help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -388,6 +387,7 @@ static void remote_propedit_add_stat(void *pe, const char *propname, void *propc
 static void hid_hid_remote_uninit()
 {
 	pcb_hid_remove_actions_by_cookie(remote_cookie);
+	pcb_event_unbind_allcookie(batch_cookie);
 }
 
 pcb_uninit_t hid_hid_remote_init()
@@ -448,6 +448,7 @@ pcb_uninit_t hid_hid_remote_init()
 
 	pcb_hid_register_hid(&remote_hid);
 
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, remote_cookie);
 
 	return hid_hid_remote_uninit;
 }

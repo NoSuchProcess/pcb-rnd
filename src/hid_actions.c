@@ -463,19 +463,6 @@ these directly.
 
 %end-doc */
 
-
-static const char pcbchanged_syntax[] = "PCBChanged([revert])";
-static const char pcbchanged_help[] =
-	"Tells the GUI that the whole PCB has changed. The optional \"revert\""
-	"parameter can be used as a hint to the GUI that the same design is being"
-	"reloaded, and that it might keep some viewport settings";
-
-/* %start-doc actions PCBChanged
-
-@hidaction
-
-%end-doc */
-
 static const char routestyleschanged_syntax[] = "RouteStylesChanged()";
 static const char routestyleschanged_help[] = "Tells the GUI that the routing styles have changed.";
 

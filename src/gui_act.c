@@ -1258,7 +1258,17 @@ static int pcb_act_FullScreen(int argc, const char **argv, pcb_coord_t x, pcb_co
 	return 0;
 }
 
-
+static const char pcb_acts_PCBChanged[] = "PCBChanged([revert])";
+static const char pcb_acth_PCBChanged[] =
+	"Tells the GUI that the whole PCB has changed. The optional \"revert\""
+	"parameter can be used as a hint to the GUI that the same design is being"
+	"reloaded, and that it might keep some viewport settings";
+static int pcb_act_PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	const char *rv = argv == NULL ? NULL : argv[0];
+	pcb_board_changed((rv != NULL) && (strcasecmp(rv, "revert") == 0));
+	return 0;
+}
 
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
@@ -1267,7 +1277,8 @@ pcb_hid_action_t gui_action_list[] = {
 	{"CycleDrag", 0, pcb_act_CycleDrag,
 	 pcb_acth_CycleDrag, pcb_acts_CycleDrag}
 	,
-	{"pcb_act_FullScreen", 0, pcb_act_FullScreen, pcb_acth_FullScreen, pcb_acts_FullScreen}
+	{"FullScreen", 0, pcb_act_FullScreen,
+	 pcb_acth_FullScreen, pcb_acts_FullScreen}
 	,
 	{"MarkCrosshair", 0, pcb_act_MarkCrosshair,
 	 pcb_acth_MarkCrosshair, pcb_acts_MarkCrosshair}
@@ -1295,6 +1306,9 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"SwitchHID", 0, pcb_act_SwitchHID,
 	 pcb_acth_SwitchHID, pcb_acts_SwitchHID}
+	,
+	{"PCBChanged", 0, pcb_act_PCBChanged,
+	 pcb_acth_PCBChanged, pcb_acts_PCBChanged}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

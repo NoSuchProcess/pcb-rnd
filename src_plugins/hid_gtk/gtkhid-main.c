@@ -1079,16 +1079,16 @@ static int RouteStylesChanged(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 /* ---------------------------------------------------------------------- */
 
-int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!ghidgui)
-		return 0;
+	if ((!ghidgui) || (!gtkhid_active))
+		return;
 
 	if (PCB != NULL)
 		ghid_window_set_name_label(PCB->Name);
 
 	if (!gport->pixmap)
-		return 0;
+		return;
 
 	if (ghidgui->route_style_selector) {
 		ghid_route_style_selector_empty(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
@@ -1099,7 +1099,6 @@ int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	ghid_port_ranges_scale();
 	ghid_zoom_view_fit();
 	ghid_sync_with_new_layout();
-	return 0;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1971,8 +1970,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"Pan", 0, PanAction, pan_help, pan_syntax}
 	,
-	{"PCBChanged", 0, PCBChanged}
-	,
 	{"PointCursor", 0, PointCursor}
 	,
 	{"Popup", 0, Popup, popup_help, popup_syntax}
@@ -2159,6 +2156,7 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, ghid_conf_save_pre_wgeo, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_LOAD_POST, ghid_conf_load_post_wgeo, NULL, ghid_cookie);
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, ghid_cookie);
 
 	return hid_hid_gtk_uninit;
 }

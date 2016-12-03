@@ -334,10 +334,10 @@ static int PointCursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	return 0;
 }
 
-static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (work_area == 0)
-		return 0;
+		return;
 	/*pcb_printf("PCB Changed! %$mD\n", PCB->MaxWidth, PCB->MaxHeight); */
 	stdarg_n = 0;
 	stdarg(XmNminimum, 0);
@@ -366,7 +366,7 @@ static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		stdarg(XmNtitle, cp ? cp + 1 : PCB->Filename);
 		XtSetValues(appwidget, stdarg_args, stdarg_n);
 	}
-	return 0;
+	return;
 }
 
 
@@ -870,9 +870,6 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 }
 
 pcb_hid_action_t lesstif_main_action_list[] = {
-	{"PCBChanged", 0, PCBChanged,
-	 pcbchanged_help, pcbchanged_syntax}
-	,
 	{"SetUnits", 0, SetUnits,
 	 setunits_help, setunits_syntax}
 	,
@@ -1850,7 +1847,7 @@ static void lesstif_do_export(pcb_hid_attr_val_t * options)
 		XtDispatchEvent(&e);
 	}
 
-	PCBChanged(0, 0, 0, 0);
+	pcb_board_changed(0);
 
 	lesstif_menubar = menu;
 	pcb_event(PCB_EVENT_GUI_INIT, NULL);
@@ -3760,6 +3757,11 @@ static int lesstif_usage(const char *topic)
 
 void lesstif_create_menu(const char *menu, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 
+static void hid_lesstif_uninit(void)
+{
+	pcb_event_unbind_allcookie(lesstif_cookie);
+}
+
 pcb_uninit_t hid_hid_lesstif_init()
 {
 	memset(&lesstif_hid, 0, sizeof(pcb_hid_t));
@@ -3831,9 +3833,11 @@ pcb_uninit_t hid_hid_lesstif_init()
 	lesstif_hid.create_menu = lesstif_create_menu;
 	lesstif_hid.usage = lesstif_usage;
 
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, lesstif_cookie);
+
 	pcb_hid_register_hid(&lesstif_hid);
 
-	return NULL;
+	return hid_lesstif_uninit;
 }
 
 static void lesstif_begin(void)

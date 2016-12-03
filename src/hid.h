@@ -95,7 +95,6 @@ extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char 
 
 /* Note that PCB expects the gui to provide the following actions:
 
-   PCBChanged();
    RouteStylesChanged()
    NetlistChanged()  (but core should call "void NetlistChanged(int);" in netlist.c)
    LayersChanged()

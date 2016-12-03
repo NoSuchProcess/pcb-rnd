@@ -282,7 +282,7 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
  * if successful, update some other stuff
  *
  * If revert is pcb_true, we pass "revert" as a parameter
- * to the HID's PCBChanged action.
+ * to the pcb changed event.
  */
 static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert, pcb_bool require_font, int how)
 {
@@ -358,12 +358,8 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		if (pcb_hid_get_flag("GetStyle()") < 0)
 			pcb_use_route_style_idx(&PCB->RouteStyle, 0);
 
-		if (((how == 0) || (revert)) && (pcb_gui != NULL)) {
-			if (revert)
-				pcb_hid_actionl("PCBChanged", "revert", NULL);
-			else
-				pcb_hid_action("PCBChanged");
-		}
+		if ((how == 0) || (revert))
+			pcb_board_changed(revert);
 
 #ifdef DEBUG
 		end = clock();
@@ -384,8 +380,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		}
 	}
 
-	if (pcb_gui != NULL)
-		pcb_hid_action("PCBChanged");
+	pcb_board_changed(0);
 
 	/* release unused memory */
 	pcb_board_remove(newPCB);

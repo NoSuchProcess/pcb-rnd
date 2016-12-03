@@ -278,7 +278,7 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 			gdk_color_white(gport->colormap, &gport->offlimits_color);
 		first_time_done = TRUE;
 		ghid_drawing_area_configure_hook(out);
-		PCBChanged(0, NULL, 0, 0);
+		pcb_board_changed(0);
 	}
 	else {
 		ghid_drawing_area_configure_hook(out);

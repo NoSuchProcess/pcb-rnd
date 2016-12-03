@@ -200,9 +200,7 @@ static int pcb_act_New(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 		pcb_center_display(PCB->MaxWidth / 2, PCB->MaxHeight / 2);
 		pcb_redraw();
-
-		if (pcb_gui != NULL)
-			pcb_hid_action("PCBChanged");
+		pcb_board_changed(0);
 		pcb_notify_crosshair_change(pcb_true);
 		return 0;
 	}

@@ -173,5 +173,6 @@ void pcb_board_set_text_scale(int Scale);
 /* sets or resets changed flag and redraws status */
 void pcb_board_set_changed_flag(pcb_bool New);
 
+void pcb_board_changed(int reverted);
 
 #endif

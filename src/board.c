@@ -34,6 +34,7 @@
 #include "rtree.h"
 #include "undo.h"
 #include "draw.h"
+#include "event.h"
 
 pcb_board_t *PCB;
 
@@ -222,8 +223,7 @@ pcb_bool pcb_board_change_name(char *Name)
 {
 	free(PCB->Name);
 	PCB->Name = Name;
-	if (pcb_gui != NULL)
-		pcb_hid_action("PCBChanged");
+	pcb_board_changed(0);
 	return (pcb_true);
 }
 
@@ -244,8 +244,7 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 	else
 		pcb_crosshair_set_range(0, 0, Width, Height);
 
-	if (pcb_gui != NULL)
-		pcb_hid_action("PCBChanged");
+	pcb_board_changed(0);
 }
 
 void pcb_board_remove(pcb_board_t *Ptr)
@@ -318,3 +317,8 @@ void pcb_board_set_changed_flag(pcb_bool New)
 	PCB->Changed = New;
 }
 
+
+void pcb_board_changed(int reverted)
+{
+	pcb_event(PCB_EVENT_BOARD_CHANGED, "i", reverted);
+}

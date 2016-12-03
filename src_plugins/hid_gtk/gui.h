@@ -446,9 +446,6 @@ void ghid_cancel_lead_user(void);
 /* gtkhid-main.c */
 void ghid_pan_view_rel(pcb_coord_t dx, pcb_coord_t dy);
 void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y);
-gint PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
-
-
 
 
 extern GdkPixmap *XC_hand_source, *XC_hand_mask;

@@ -12,6 +12,7 @@
 #include "pcb-printf.h"
 #include "plugins.h"
 #include "compat_misc.h"
+#include "event.h"
 
 #include "hid_draw_helpers.h"
 #include "hid_nogui.h"
@@ -42,8 +43,11 @@ static char *prompt = NULL;
 static void hid_batch_uninit(void)
 {
 	pcb_hid_remove_actions_by_cookie(batch_cookie);
-	if (prompt != NULL)
+	pcb_event_unbind_allcookie(batch_cookie);
+	if (prompt != NULL) {
 		free(prompt);
+		prompt = NULL;
+	}
 }
 
 static int nop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -51,7 +55,7 @@ static int nop(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (prompt != NULL)
 		free(prompt);
@@ -66,7 +70,6 @@ static int PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	else
 		prompt = pcb_strdup("no-board");
-	return 0;
 }
 
 static int help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -98,8 +101,6 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t batch_action_list[] = {
-	{"PCBChanged", 0, PCBChanged}
-	,
 	{"RouteStylesChanged", 0, nop}
 	,
 	{"NetlistChanged", 0, nop}
@@ -339,6 +340,7 @@ static void batch_propedit_add_stat(void *pe, const char *propname, void *propct
 
 static pcb_hid_t batch_hid;
 
+
 pcb_uninit_t hid_hid_batch_init()
 {
 	memset(&batch_hid, 0, sizeof(pcb_hid_t));
@@ -393,9 +395,10 @@ pcb_uninit_t hid_hid_batch_init()
 	batch_hid.propedit_add_value = batch_propedit_add_value;
 	batch_hid.propedit_add_stat = batch_propedit_add_stat;
 
+	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
 
 	pcb_hid_register_hid(&batch_hid);
-	return NULL;
+	return hid_batch_uninit;
 }
 
 static void batch_begin(void)
