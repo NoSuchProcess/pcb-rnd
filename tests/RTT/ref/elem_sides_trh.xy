@@ -1,0 +1,10 @@
+# $Id$
+# PcbXY Version 1.0
+# Date: Sat Dec  3 04:33:20 2016 UTC
+# Author: 
+# Title: thru-hole elements on both sides - PCB X-Y
+# RefDes, Description, Value, X, Y, rotation, top/bottom
+# X,Y in mil.  rotation in degrees.
+# --------------------------------------------
+U1,"dip(2)","2*300",250.00,350.00,0,top
+U2,"dip(2)","2*300",250.00,150.00,180,bottom

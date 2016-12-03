@@ -1,0 +1,9 @@
+# $Id$
+# PcbXY Version 1.0
+# Date: Sat Dec  3 04:33:20 2016 UTC
+# Author: 
+# Title: element with pads on both sides - PCB X-Y
+# RefDes, Description, Value, X, Y, rotation, top/bottom
+# X,Y in mil.  rotation in degrees.
+# --------------------------------------------
+(unknown),"(unknown)","(unknown)",243.75,318.75,0,top

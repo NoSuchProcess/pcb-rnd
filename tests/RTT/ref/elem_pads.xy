@@ -1,0 +1,10 @@
+# $Id$
+# PcbXY Version 1.0
+# Date: Sat Dec  3 04:33:20 2016 UTC
+# Author: 
+# Title: pads with different geometry - PCB X-Y
+# RefDes, Description, Value, X, Y, rotation, top/bottom
+# X,Y in mil.  rotation in degrees.
+# --------------------------------------------
+R1,"Standard SMT resistor, capacitor etc","1206",250.00,400.00,0,top
+U1,"SMT transistor, 5 pins","SOT325",249.60,167.00,90,top

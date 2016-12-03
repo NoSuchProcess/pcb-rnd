@@ -1,0 +1,8 @@
+# $Id$
+# PcbXY Version 1.0
+# Date: Sat Dec  3 04:33:22 2016 UTC
+# Author: 
+# Title: thermals vs. multiple layer polygons - PCB X-Y
+# RefDes, Description, Value, X, Y, rotation, top/bottom
+# X,Y in mil.  rotation in degrees.
+# --------------------------------------------

@@ -1,0 +1,10 @@
+# $Id$
+# PcbXY Version 1.0
+# Date: Sat Dec  3 04:33:20 2016 UTC
+# Author: 
+# Title: pins with different shapes - PCB X-Y
+# RefDes, Description, Value, X, Y, rotation, top/bottom
+# X,Y in mil.  rotation in degrees.
+# --------------------------------------------
+U1,"dip(2)","2*300",225.00,375.00,0,top
+U2,"dip(2)","2*300",225.00,175.00,0,top

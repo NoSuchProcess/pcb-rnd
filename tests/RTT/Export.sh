@@ -14,6 +14,8 @@ set_fmt_args()
 		bom) ext=.bom ;;
 		dsn) ext=.dsn ;;
 		IPC-D-356) ext=.net;;
+		ps) ext=.ps ;;
+		XY) ext=.xy ;;
 		png)
 			fmt_args="--dpi 1200"
 			ext=.png
@@ -38,8 +40,9 @@ move_out()
 			mkdir -p $final_out.gbr
 			mv $raw_out.*.gbr $final_out.gbr
 			;;
-		remote)
-			gzip $out_fn
+		remote|ps)
+			gzip $raw_out
+			mv $raw_out.gz $final_out.gz
 			;;
 		*)
 			# common, single file output
