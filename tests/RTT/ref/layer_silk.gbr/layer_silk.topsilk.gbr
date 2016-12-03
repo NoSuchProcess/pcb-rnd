@@ -1,0 +1,14 @@
+G04 start of page 2 for group -4079 idx -4079 *
+G04 Title: one line on each silk layer, topsilk *
+G04 Creator: pcb-rnd 1.1.3 *
+G04 CreationDate: Sat Dec  3 04:00:25 2016 UTC *
+G04 For:  *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNTOPSILK*%
+%ADD11C,0.0100*%
+G54D11*X5000Y45000D02*Y7500D01*
+M02*

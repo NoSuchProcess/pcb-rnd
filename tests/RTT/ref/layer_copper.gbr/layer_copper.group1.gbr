@@ -1,0 +1,14 @@
+G04 start of page 3 for group 1 idx 1 *
+G04 Title: one line per each type of copper layer, solder1 *
+G04 Creator: pcb-rnd 1.1.3 *
+G04 CreationDate: Sat Dec  3 04:00:25 2016 UTC *
+G04 For:  *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNGROUP1*%
+%ADD12C,0.0100*%
+G54D12*X7500Y42500D02*X40000D01*
+M02*
