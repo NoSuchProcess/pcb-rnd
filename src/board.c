@@ -85,7 +85,7 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	pcb_layer_parse_group_string(conf_core.design.groups, &ptr->LayerGroups, PCB_MAX_LAYER);
 	save = PCB;
 	PCB = ptr;
-	pcb_hid_action("RouteStylesChanged");
+	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	PCB = save;
 
 	ptr->Zoom = conf_core.editor.zoom;

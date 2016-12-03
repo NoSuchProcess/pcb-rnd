@@ -1308,7 +1308,7 @@ static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_ViaDrillingHole:
 			pcb_board_set_via_drilling_hole(absolute ? value : value + conf_core.design.via_drilling_hole, pcb_false);
-			pcb_hid_action("RouteStylesChanged");
+			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 			break;
 
 		case F_Grid:
@@ -1329,13 +1329,13 @@ static int pcb_act_SetValue(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		case F_LineSize:
 		case F_Line:
 			pcb_board_set_line_width(absolute ? value : value + conf_core.design.line_thickness);
-			pcb_hid_action("RouteStylesChanged");
+			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 			break;
 
 		case F_Via:
 		case F_ViaSize:
 			pcb_board_set_via_size(absolute ? value : value + conf_core.design.via_thickness, pcb_false);
-			pcb_hid_action("RouteStylesChanged");
+			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 			break;
 
 		case F_Text:

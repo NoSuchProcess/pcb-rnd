@@ -1062,7 +1062,7 @@ static int pcb_act_RouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_co
 			pcb_board_set_via_size(rts->Diameter, pcb_true);
 			pcb_board_set_via_drilling_hole(rts->Hole, pcb_true);
 			pcb_board_set_clearance(rts->Clearance);
-			pcb_hid_action("RouteStylesChanged");
+			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		}
 		else
 			pcb_message(PCB_MSG_DEFAULT, "Error: invalid route style name or index\n");
@@ -1169,7 +1169,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		if (conf_core.editor.mode != PCB_MODE_LINE)
 			pcb_crosshair_set_mode(PCB_MODE_LINE);
 		pcb_notify_crosshair_change(pcb_true);
-		pcb_hid_action("RouteStylesChanged");
+		pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
 	case PCB_TYPE_ARC:
@@ -1179,7 +1179,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		if (conf_core.editor.mode != PCB_MODE_ARC)
 			pcb_crosshair_set_mode(PCB_MODE_ARC);
 		pcb_notify_crosshair_change(pcb_true);
-		pcb_hid_action("RouteStylesChanged");
+		pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
 	case PCB_TYPE_POLYGON:
@@ -1192,7 +1192,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		if (conf_core.editor.mode != PCB_MODE_VIA)
 			pcb_crosshair_set_mode(PCB_MODE_VIA);
 		pcb_notify_crosshair_change(pcb_true);
-		pcb_hid_action("RouteStylesChanged");
+		pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
 	default:
@@ -1279,6 +1279,13 @@ static int pcb_act_NetlistChanged(int argc, const char **argv, pcb_coord_t x, pc
 }
 
 
+static const char pcb_acts_RouteStylesChanged[] = "RouteStylesChanged()";
+static const char pcb_acth_RouteStylesChanged[] = "Tells the GUI that the routing styles have changed.";
+static int pcb_act_RouteStylesChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+	return 0;
+}
 
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
@@ -1322,6 +1329,9 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"NetlistChanged", 0, pcb_act_NetlistChanged,
 	 pcb_acth_NetlistChanged, pcb_acts_NetlistChanged}
+	,
+	{"RouteStylesChanged", 0, pcb_act_RouteStylesChanged,
+	 pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

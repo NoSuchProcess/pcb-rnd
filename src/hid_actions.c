@@ -16,7 +16,7 @@
    actions, the GUI HID may register them, but nothing bad happens if
    they are not registered or not handled by the GUI. */
 static const char *action_no_warn[] = {
-	"LayersChanged", "PointCursor", "LibraryChanged", "RouteStylesChanged",
+	"LayersChanged", "PointCursor", "LibraryChanged",
 	NULL
 };
 static int action_legal_unknown(const char *name)
@@ -460,15 +460,6 @@ that the GUI may not know about.  The user normally does not invoke
 these directly.
 
 @end macro
-
-%end-doc */
-
-static const char routestyleschanged_syntax[] = "RouteStylesChanged()";
-static const char routestyleschanged_help[] = "Tells the GUI that the routing styles have changed.";
-
-/* %start-doc actions RouteStylesChanged
-
-@hidaction
 
 %end-doc */
 

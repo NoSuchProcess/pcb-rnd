@@ -1065,16 +1065,16 @@ static int PointCursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 /* ---------------------------------------------------------------------- */
 
-static int RouteStylesChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (!ghidgui || !ghidgui->route_style_selector)
-		return 0;
+		return;
 
 	ghid_route_style_selector_sync
 		(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector),
 		 conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance);
 
-	return 0;
+	return;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1094,7 +1094,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 		ghid_route_style_selector_empty(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
 		make_route_style_buttons(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
 	}
-	RouteStylesChanged(0, NULL, 0, 0);
+	RouteStylesChanged(0, 0, NULL);
 
 	ghid_port_ranges_scale();
 	ghid_zoom_view_fit();
@@ -1980,8 +1980,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"PrintCalibrate", 0, PrintCalibrate,
 	 printcalibrate_help, printcalibrate_syntax}
 	,
-	{"RouteStylesChanged", 0, RouteStylesChanged}
-	,
 	{"Save", 0, Save, save_help, save_syntax}
 	,
 	{"SaveWindowGeometry", 0, SaveWinGeo, savewingeo_help, savewingeo_syntax}
@@ -2160,6 +2158,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	pcb_event_bind(PCB_EVENT_LOAD_POST, ghid_conf_load_post_wgeo, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, GhidNetlistChanged, NULL, ghid_cookie);
+	pcb_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, RouteStylesChanged, NULL, ghid_cookie);
 
 	return hid_hid_gtk_uninit;
 }

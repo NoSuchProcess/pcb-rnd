@@ -17,6 +17,7 @@
 #include "hid_flags.h"
 #include "stdarg.h"
 #include "misc_util.h"
+#include "event.h"
 
 /* There are three places where styles are kept:
 
@@ -35,6 +36,9 @@
 
    So, we need to do PCB->RouteStyle <-> active style.
 */
+
+void LesstifRouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
+
 
 typedef enum {
 	SSthick, SSdiam, SShole, SSkeep,
@@ -78,8 +82,6 @@ static int hash(char *cp)
 static const char *value_names[] = {
 	"Thickness", "Diameter", "Hole", "Clearance"
 };
-
-static int RouteStylesChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 static void update_one_value(int i, pcb_coord_t v)
 {
@@ -218,7 +220,7 @@ static void style_name_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
 	PCB->RouteStyle.array[i].name[sizeof(PCB->RouteStyle.array[i].name)-1] = '\0';
 	free(newname);
 
-	RouteStylesChanged(0, 0, 0, 0);
+	LesstifRouteStylesChanged(0, 0, 0);
 }
 
 static void style_set_cb(Widget w, int i, XmToggleButtonCallbackStruct * cbs)
@@ -371,14 +373,14 @@ static int AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	return 0;
 }
 
-static int RouteStylesChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+void LesstifRouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int i, j, h;
 	if (!PCB || vtroutestyle_len(&PCB->RouteStyle) == 0)
-		return 0;
+		return;
 	update_style_buttons();
 	if (!style_dialog)
-		return 0;
+		return;
 	for (j = 0; j < vtroutestyle_len(&PCB->RouteStyle); j++) {
 		h = hash(PCB->RouteStyle.array[j].name);
 		if (name_hashes[j] == h)
@@ -392,7 +394,7 @@ static int RouteStylesChanged(int argc, const char **argv, pcb_coord_t x, pcb_co
 			XtSetValues(style_button_list[i].w[j], stdarg_args, stdarg_n);
 	}
 	update_values();
-	return 0;
+	return;
 }
 
 void lesstif_insert_style_buttons(Widget menu)
@@ -428,9 +430,6 @@ void lesstif_insert_style_buttons(Widget menu)
 pcb_hid_action_t lesstif_styles_action_list[] = {
 	{"AdjustStyle", 0, AdjustStyle,
 	 adjuststyle_help, adjuststyle_syntax}
-	,
-	{"RouteStylesChanged", 0, RouteStylesChanged,
-	 routestyleschanged_help, routestyleschanged_syntax}
 };
 
 PCB_REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)

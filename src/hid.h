@@ -95,7 +95,6 @@ extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char 
 
 /* Note that PCB expects the gui to provide the following actions:
 
-   RouteStylesChanged()
    LayersChanged()
    LibraryChanged()
    Busy()
@@ -103,8 +102,6 @@ extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char 
 
 extern const char pcbchanged_help[];
 extern const char pcbchanged_syntax[];
-extern const char routestyleschanged_help[];
-extern const char routestyleschanged_syntax[];
 extern const char layerschanged_help[];
 extern const char layerschanged_syntax[];
 extern const char librarychanged_help[];
