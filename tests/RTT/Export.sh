@@ -61,12 +61,28 @@ cmp_fmt()
 	esac
 }
 
+run_test()
+{
+	local fn="$1"
+
+	$pcb_rnd_bin -x "$fmt" $fmt_args "$fn"
+
+	base=${fn%%.pcb}
+	ref_fn=ref/$base$ext
+	fmt_fn=$base$ext
+	out_fn=out/$base$ext
+
+	move_out "$fmt_fn" "$out_fn"
+	cmp_fmt "$ref_fn" "$out_fn"
+}
+
 while test $# -gt 0
 do
 	case "$1"
 	in
 		-f|-x) fmt=$2; shift 1;;
 		-b) pcb_rnd_bin=$2; shift 1;;
+		-a) all=1; shift 1;;
 		*)
 			if test -z "$fn"
 			then
@@ -87,12 +103,12 @@ fi
 
 set_fmt_args
 
-$pcb_rnd_bin -x "$fmt" $fmt_args "$fn"
-
-base=${fn%%.pcb}
-ref_fn=ref/$base$ext
-fmt_fn=$base$ext
-out_fn=out/$base$ext
-
-move_out "$fmt_fn" "$out_fn"
-cmp_fmt "$ref_fn" "$out_fn"
+if test "$all" -gt 0
+then
+	for n in `ls *.lht *.pcb`
+	do
+		run_test "$n"
+	done
+else
+	run_test "$fn"
+fi
