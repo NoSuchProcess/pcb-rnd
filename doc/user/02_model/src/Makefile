@@ -1,4 +1,5 @@
 PCBRND=pcb-rnd
+CLEANFILES= ../*.png
 
 all: ../objects_basic.png ../objects_complex.png ../obj_line.png \
      ../obj_arc.png
@@ -19,4 +20,5 @@ all: ../objects_basic.png ../objects_complex.png ../obj_line.png \
 	$(PCBRND) -x png --dpi 450 obj_arc.lht
 	mv obj_arc.lht.png ../obj_arc.png
 
-
+clean: $(CLEANRULES) 
+	-rm $(CLEANFILES)
