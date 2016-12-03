@@ -986,6 +986,28 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	if (!f)
 		return;
 
+	/* full circle is full.... truncate so that the arc split code never needs to
+	   do more than 180 deg */
+	if (delta_angle < -360.0)
+		delta_angle = -360.0;
+	if (delta_angle > +360.0)
+		delta_angle = +360.0;
+
+
+	/* some gerber interpreters (gerbv for one) have hard time dealing with
+	   full-circle arcs - split large arcs up into 2 smaller ones */
+	if (delta_angle < -180.0) {
+		gerber_draw_arc(gc, cx, cy, width, height, start_angle, -180.0);
+		gerber_draw_arc(gc, cx, cy, width, height, start_angle-180, delta_angle+180.0);
+		return;
+	}
+	if (delta_angle > +180.0) {
+		gerber_draw_arc(gc, cx, cy, width, height, start_angle, 180.0);
+		gerber_draw_arc(gc, cx, cy, width, height, start_angle+180, delta_angle-180.0);
+		return;
+	}
+
+
 	arcStartX = cx - width * cos(PCB_TO_RADIANS(start_angle));
 	arcStartY = cy + height * sin(PCB_TO_RADIANS(start_angle));
 
