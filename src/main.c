@@ -53,6 +53,7 @@
 #include "funchash.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "vtptr.h"
 
 #include "hid_actions.h"
 #include "hid_init.h"
@@ -270,6 +271,7 @@ int main(int argc, char *argv[])
 	const char **cs;
 	const char *main_action = NULL;
 	char *command_line_pcb = NULL;
+	vtptr_t plugin_cli_conf;
 
 	hid_argv_orig = hid_argv = calloc(sizeof(char *), argc);
 	/* init application:
@@ -284,6 +286,8 @@ int main(int argc, char *argv[])
 	conf_init();
 	conf_core_init();
 	conf_core_postproc(); /* to get all the paths initialized */
+
+	vtptr_init(&plugin_cli_conf);
 
 	/* process arguments */
 	for(n = 1; n < argc; n++) {
@@ -330,9 +334,19 @@ int main(int argc, char *argv[])
 			if (arg_match(cmd, "c", "-conf")) {
 				const char *why;
 				n++; /* eat up arg */
-				if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
-					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
-					exit(1);
+				if (strncmp(arg, "plugins/", 8)  == 0) {
+					/* plugins are not yet loaded or initialized so their configs are
+					   unavailable. Store these settings until plugins are up. This
+					   should not happen to non-plugin config items as those might
+					   affect how plugins are searched/loaded. */
+					void **a = vtptr_alloc_append(&plugin_cli_conf, 1);
+					*a = arg;
+				}
+				else {
+					if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
+						fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
+						exit(1);
+					}
 				}
 				goto next_arg;
 			}
@@ -384,6 +398,17 @@ int main(int argc, char *argv[])
 	pcb_hid_init();
 	pcb_plugins_init();
 
+	{ /* Now that plugins are already initialized, apply plugin config items */
+		int n;
+		for(n = 0; n < vtptr_len(&plugin_cli_conf); n++) {
+			const char *why, *arg = plugin_cli_conf.array[n];
+			if (conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
+				fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
+				exit(1);
+			}
+		}
+		vtptr_uninit(&plugin_cli_conf);
+	}
 
 	/* Export pcb from command line if requested.  */
 	switch(do_what) {
