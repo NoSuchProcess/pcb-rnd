@@ -15,8 +15,35 @@ set_fmt_args()
 			fmt_args="--dpi 1200"
 			ext=.png
 			;;
+		gerber)
+# multifile: do not set ext
+			;;
+		remote)
+			ext=.remote
+			;;
 		svg)
 			ext=.svg
+			;;
+	esac
+}
+
+move_out()
+{
+	local raw_out="$1" final_out="$2"
+	case "$fmt" in
+		gerber)
+			mkdir -p $final_out.gbr
+			mv $raw_out.*.gbr $final_out.gbr
+			;;
+		remote)
+			gzip $out_fn
+			;;
+		*)
+			# common, single file output
+			if test -f "$fmt_fn"
+			then
+				mv $raw_out $final_out
+			fi
 			;;
 	esac
 }
@@ -27,6 +54,10 @@ cmp_fmt()
 	case "$fmt" in
 		png)
 			echo "$ref" "$out"
+			;;
+		svg)
+			diff -u "$ref" "$out"
+			;;
 	esac
 }
 
@@ -62,8 +93,6 @@ base=${fn%%.pcb}
 ref_fn=ref/$base$ext
 fmt_fn=$base$ext
 out_fn=out/$base$ext
-if test -f "$fmt_fn"
-then
-	mv $fmt_fn out
-fi
+
+move_out "$fmt_fn" "$out_fn"
 cmp_fmt "$ref_fn" "$out_fn"
