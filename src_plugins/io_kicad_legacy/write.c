@@ -243,16 +243,23 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fil
 	topSilkCount = pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, topSilk, silkLayerCount);
 
-	outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0);
-
+	/*outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0);
+	printf("outlineLayerCount : %d \n", outlineLayerCount); */
 	/* figure out which pcb layers are outlines and make a list */
-	outlineLayers = malloc(sizeof(int) * outlineLayerCount);
-	outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
-	pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
+	if (outlineLayerCount > 0) {
+
+                outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
+                outlineLayers = malloc(sizeof(int) * outlineCount);
+/*		outlineLayers = malloc(sizeof(int) * outlineLayerCount); changed */
+
+/*		outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0); previous spot */
+        	printf("outlineCount : %d \n", outlineCount);
+		pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
+	}
 
 	/* we now proceed to write the outline tracks to the kicad file, layer by layer */
 	currentKicadLayer = 28; /* 28 is the edge cuts layer in kicad */
-	if (outlineCount != 0) {
+	if (outlineCount > 0) {
 		for (i = 0; i < outlineCount; i++) /* write top copper tracks, if any */
 			{
 				write_kicad_legacy_layout_tracks(FP, currentKicadLayer, &(PCB->Data->Layer[outlineLayers[i]]),
@@ -451,12 +458,18 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fil
 	fputs("$EndBOARD\n",FP);
 
 	/* now free memory from arrays that were used */
-	free(bottomLayers);
-	free(innerLayers);
-	free(topLayers);
-	free(topSilk);
-	free(bottomSilk);
-	free(outlineLayers);
+	if (physicalLayerCount > 0) {
+		free(bottomLayers);
+		free(innerLayers);
+		free(topLayers);
+	}
+	if (silkLayerCount > 0) {
+		free(topSilk);
+		free(bottomSilk);
+	}
+	if (outlineCount > 0) {
+		free(outlineLayers);
+	}
 	return (0);
 }
 
