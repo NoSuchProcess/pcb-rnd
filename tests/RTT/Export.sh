@@ -23,6 +23,7 @@ set_fmt_args()
 			ext=.png
 			;;
 		gerber)
+			fmt_args="-c plugins/draw_fab/omit_date=1"
 # multifile: do not set ext
 			;;
 		remote)
