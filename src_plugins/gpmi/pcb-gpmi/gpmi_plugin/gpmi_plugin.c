@@ -153,7 +153,7 @@ static void load_base_and_cfg(void)
 
 	hdirh = pcb_path_resolve_inplace(pcb_concat(home, PCB_DIR_SEPARATOR_S ".pcb" PCB_DIR_SEPARATOR_S "plugins" PCB_DIR_SEPARATOR_S, HOST, NULL), 0);
 
-	fprintf(stderr, "gpmi dirs: lg=%s lh=%s wh=%s w=%s hh=%s\n", libdirg, libdirh, wdirh, wdir, hdirh);
+	pcb_message(PCB_MSG_DEBUG, "gpmi dirs: lg=%s lh=%s wh=%s w=%s hh=%s\n", libdirg, libdirh, wdirh, wdir, hdirh);
 
 	/* first add package search path to all host-specific plugin dirs
 	   This is needed because a script installed in ~/.pcb/plugins/ *.conf
@@ -221,7 +221,6 @@ static void plugin_gpmi_uninit(void)
 
 pcb_uninit_t hid_gpmi_init(void)
 {
-	pcb_trace("pcb-gpmi hid is loaded.\n");
 	gpmi_init();
 	load_base_and_cfg();
 	return plugin_gpmi_uninit;
