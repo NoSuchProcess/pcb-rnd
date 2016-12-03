@@ -18,6 +18,7 @@
 #include "crosshair.h"
 #include "draw.h"
 #include "obj_all.h"
+#include "event.h"
 
 #include "hid.h"
 #include "hid_actions.h"
@@ -31,8 +32,6 @@ static XmString *netlist_strings = 0;
 static XmString *netnode_strings = 0;
 static int n_netnode_strings;
 static int last_pick = -1;
-
-static int LesstifNetlistChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 static void pick_net(int pick)
 {
@@ -343,13 +342,13 @@ static int build_netlist_dialog()
 	return 0;
 }
 
-static int LesstifNetlistChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int i;
 	if (!PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN)
-		return 0;
+		return;
 	if (build_netlist_dialog())
-		return 0;
+		return;
 	last_pick = -1;
 	if (netlist_strings)
 		free(netlist_strings);
@@ -361,7 +360,7 @@ static int LesstifNetlistChanged(int argc, const char **argv, pcb_coord_t x, pcb
 	stdarg(XmNitemCount, PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN);
 	XtSetValues(netlist_list, stdarg_args, stdarg_n);
 	pick_net(0);
-	return 0;
+	return;
 }
 
 static const char netlistshow_syntax[] = "NetlistShow(pinname|netname)";
@@ -432,8 +431,6 @@ void lesstif_show_netlist()
 }
 
 pcb_hid_action_t lesstif_netlist_action_list[] = {
-	{"NetlistChanged", 0, LesstifNetlistChanged,
-	 netlistchanged_help, netlistchanged_syntax},
 	{"NetlistShow", 0, LesstifNetlistShow,
 	 netlistshow_help, netlistshow_syntax}
 };

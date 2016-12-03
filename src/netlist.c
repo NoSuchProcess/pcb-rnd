@@ -40,6 +40,7 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "netlist.h"
+#include "event.h"
 
 #define STEP_POINT 100
 
@@ -62,7 +63,7 @@ void pcb_netlist_changed(int force_unfreeze)
 		PCB->netlist_needs_update = 1;
 	else {
 		PCB->netlist_needs_update = 0;
-		pcb_hid_action("NetlistChanged");
+		pcb_event(PCB_EVENT_NETLIST_CHANGED, NULL);
 	}
 }
 

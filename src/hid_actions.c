@@ -472,15 +472,6 @@ static const char routestyleschanged_help[] = "Tells the GUI that the routing st
 
 %end-doc */
 
-static const char netlistchanged_syntax[] = "NetlistChanged()";
-static const char netlistchanged_help[] = "Tells the GUI that the netlist has changed.";
-
-/* %start-doc actions NetlistChanged
-
-@hidaction
-
-%end-doc */
-
 static const char layerschanged_syntax[] = "LayersChanged()";
 static const char layerschanged_help[] = "Tells the GUI that the layers have changed.";
 

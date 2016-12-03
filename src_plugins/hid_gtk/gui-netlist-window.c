@@ -917,13 +917,12 @@ void ghid_netlist_window_update(gboolean init_nodes)
 		node_model_update((&PCB->NetlistLib[PCB_NETLIST_EDITED])->Menu);
 }
 
-static gint GhidNetlistChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	loading_new_netlist = TRUE;
 	ghid_netlist_window_update(TRUE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_all_button), FALSE);
 	loading_new_netlist = FALSE;
-	return 0;
 }
 
 static const char netlistshow_syntax[] = "NetlistShow(pinname|netname)";
@@ -950,9 +949,6 @@ static gint GhidNetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_c
 }
 
 pcb_hid_action_t ghid_netlist_action_list[] = {
-	{"NetlistChanged", 0, GhidNetlistChanged,
-	 netlistchanged_help, netlistchanged_syntax}
-	,
 	{"NetlistShow", 0, GhidNetlistShow,
 	 netlistshow_help, netlistshow_syntax}
 	,

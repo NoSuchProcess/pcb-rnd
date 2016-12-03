@@ -59,8 +59,6 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 pcb_hid_action_t remote_action_list[] = {
 	{"RouteStylesChanged", 0, nop}
 	,
-	{"NetlistChanged", 0, nop}
-	,
 	{"LayersChanged", 0, nop}
 	,
 	{"LibraryChanged", 0, nop}

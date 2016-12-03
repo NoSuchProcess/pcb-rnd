@@ -1270,6 +1270,16 @@ static int pcb_act_PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_co
 	return 0;
 }
 
+static const char pcb_acts_NetlistChanged[] = "NetlistChanged()";
+static const char pcb_acth_NetlistChanged[] = "Tells the GUI that the netlist has changed.";
+static int pcb_act_NetlistChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_netlist_changed(0);
+	return 0;
+}
+
+
+
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
 	 pcb_acth_Display, pcb_acts_Display}
@@ -1309,6 +1319,9 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"PCBChanged", 0, pcb_act_PCBChanged,
 	 pcb_acth_PCBChanged, pcb_acts_PCBChanged}
+	,
+	{"NetlistChanged", 0, pcb_act_NetlistChanged,
+	 pcb_acth_NetlistChanged, pcb_acts_NetlistChanged}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

@@ -2037,6 +2037,8 @@ void hid_hid_gtk_uninit()
 	conf_hid_unreg(ghid_menu_cookie);
 }
 
+void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
+
 pcb_uninit_t hid_hid_gtk_init()
 {
 #ifdef WIN32
@@ -2157,6 +2159,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, ghid_conf_save_pre_wgeo, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_LOAD_POST, ghid_conf_load_post_wgeo, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, ghid_cookie);
+	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, GhidNetlistChanged, NULL, ghid_cookie);
 
 	return hid_hid_gtk_uninit;
 }
