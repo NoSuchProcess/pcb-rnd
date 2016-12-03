@@ -13,6 +13,7 @@ set_fmt_args()
 	case "$fmt" in
 		bom) ext=.bom ;;
 		dsn) ext=.dsn ;;
+		IPC-D-356) ext=.net;;
 		png)
 			fmt_args="--dpi 1200"
 			ext=.png
