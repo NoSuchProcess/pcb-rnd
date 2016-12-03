@@ -1287,6 +1287,15 @@ static int pcb_act_RouteStylesChanged(int argc, const char **argv, pcb_coord_t x
 	return 0;
 }
 
+static const char pcb_acts_LibraryChanged[] = "LibraryChanged()";
+static const char pcb_acth_LibraryChanged[] = "Tells the GUI that the libraries have changed.";
+static int pcb_act_LibraryChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
+	return 0;
+}
+
+
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
 	 pcb_acth_Display, pcb_acts_Display}
@@ -1332,6 +1341,9 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"RouteStylesChanged", 0, pcb_act_RouteStylesChanged,
 	 pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged}
+	,
+	{"LibraryChanged", 0, pcb_act_LibraryChanged,
+	 pcb_acth_LibraryChanged, pcb_acts_LibraryChanged}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)

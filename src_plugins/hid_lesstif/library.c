@@ -17,6 +17,7 @@
 #include "hid.h"
 #include "lesstif.h"
 #include "stdarg.h"
+#include "event.h"
 
 static Widget library_dialog = 0;
 static Widget library_list, libnode_list;
@@ -123,13 +124,13 @@ static void lib_dfs(pcb_fplibrary_t *parent, int level)
 		lib_dfs(l, level+1);
 }
 
-static int LibraryChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+void LesstifLibraryChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int i;
 	if (pcb_library.data.dir.children.used == 0)
-		return 0;
+		return;
 	if (build_library_dialog())
-		return 0;
+		return;
 	last_pick = -1;
 
 	for (i = 0; i < pick_names.used; i++)
@@ -153,7 +154,7 @@ static int LibraryChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	XtSetValues(library_list, stdarg_args, stdarg_n);
 
 	pick_net(0);
-	return 0;
+	return;
 }
 
 static const char libraryshow_syntax[] = "LibraryShow()";
@@ -175,15 +176,12 @@ void lesstif_show_library()
 {
 	if (mainwind) {
 		if (!library_dialog)
-			LibraryChanged(0, 0, 0, 0);
+			LesstifLibraryChanged(0, 0, 0);
 		XtManageChild(library_dialog);
 	}
 }
 
 pcb_hid_action_t lesstif_library_action_list[] = {
-	{"LibraryChanged", 0, LibraryChanged,
-	 librarychanged_help, librarychanged_syntax}
-	,
 	{"LibraryShow", 0, LibraryShow,
 	 libraryshow_help, libraryshow_syntax}
 	,

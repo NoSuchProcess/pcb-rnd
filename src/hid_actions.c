@@ -16,7 +16,7 @@
    actions, the GUI HID may register them, but nothing bad happens if
    they are not registered or not handled by the GUI. */
 static const char *action_no_warn[] = {
-	"PointCursor", "LibraryChanged",
+	"PointCursor",
 	NULL
 };
 static int action_legal_unknown(const char *name)
@@ -474,11 +474,3 @@ This includes layer names, colors, stacking order, visibility, etc.
 
 %end-doc */
 
-static const char librarychanged_syntax[] = "LibraryChanged()";
-static const char librarychanged_help[] = "Tells the GUI that the libraries have changed.";
-
-/* %start-doc actions LibraryChanged
-
-@hidaction
-
-%end-doc */

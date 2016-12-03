@@ -1111,16 +1111,6 @@ static int LayerGroupsChanged(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 /* ---------------------------------------------------------------------- */
 
-static int LibraryChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	/* No need to show the library window every time it changes...
-	 *  ghid_library_window_show (&ghid_port, FALSE);
-	 */
-	return 0;
-}
-
-/* ---------------------------------------------------------------------- */
-
 static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	ghid_handle_user_command(TRUE);
@@ -1963,8 +1953,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"ImportGUI", 0, ImportGUI, importgui_help, importgui_syntax}
 	,
 	{"LayerGroupsChanged", 0, LayerGroupsChanged}
-	,
-	{"LibraryChanged", 0, LibraryChanged}
 	,
 	{"Load", 0, Load}
 	,

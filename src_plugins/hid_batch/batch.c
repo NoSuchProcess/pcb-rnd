@@ -101,8 +101,6 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 pcb_hid_action_t batch_action_list[] = {
-	{"LibraryChanged", 0, nop}
-	,
 	{"Busy", 0, nop}
 	,
 	{"Help", 0, help}
