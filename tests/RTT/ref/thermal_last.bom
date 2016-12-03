@@ -1,6 +1,6 @@
 # $Id$
 # PcbBOM Version 1.0
-# Date: Sat Dec  3 04:22:59 2016 UTC
+# Date: <date>
 # Author: 
 # Title: thermals on the last 2 layers - catch off-by-one bugs due to the 0-base index of thermals - PCB BOM
 # Quantity, Description, Value, RefDes
