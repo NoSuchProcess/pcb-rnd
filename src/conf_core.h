@@ -82,6 +82,7 @@ typedef struct {
 
 	const struct rc {
 		CFT_INTEGER verbose;
+		CFT_INTEGER quiet;                 /* print only errors on stderr */
 		CFT_INTEGER backup_interval;       /* time between two backups in seconds */
 		CFT_STRING font_command;           /* file name template; if not empty, run this command and read its outout for loading the font; %f is the file name  */
 		CFT_STRING file_command;           /* file name template; if not empty, run this command and read its outout for loading a pcb file; %f is the file name, %p is the conf setting rc.file_path */

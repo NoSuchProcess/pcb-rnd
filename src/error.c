@@ -37,6 +37,7 @@
 #include "plug_io.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "conf_core.h"
 
 #define utf8_dup_string(a,b) *(a) = pcb_strdup(b)
 
@@ -58,6 +59,7 @@ extern char *sys_errlist[];			/* array of error messages */
 void pcb_message(enum pcb_message_level level, const char *Format, ...)
 {
 	va_list args;
+	pcb_message_level_t min_level = PCB_MSG_INFO;
 
 	/* TODO(hzeller): do something useful with the level, e.g. color coding. */
 
@@ -67,9 +69,14 @@ void pcb_message(enum pcb_message_level level, const char *Format, ...)
 		va_end(args);
 	}
 
-	va_start(args, Format);
-	pcb_vfprintf(stderr, Format, args);
-	va_end(args);
+	if (conf_core.rc.quiet)
+		min_level = PCB_MSG_ERROR;
+
+	if ((level >= min_level) || (conf_core.rc.verbose)) {
+		va_start(args, Format);
+		pcb_vfprintf(stderr, Format, args);
+		va_end(args);
+	}
 }
 
 void pcb_trace(const char *Format, ...)
