@@ -7,6 +7,7 @@
 #include "hid.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "conf_core.h"
 
 /* This is the "gui" that is installed at startup, and is used when
    there is no other real GUI to use.  For the most part, it just
@@ -229,6 +230,11 @@ static void nogui_log(const char *fmt, ...)
 
 static void nogui_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 {
+	if ((conf_core.rc.quiet) && (level < PCB_MSG_ERROR))
+		return;
+	if ((!conf_core.rc.verbose) && (level < PCB_MSG_INFO))
+		return;
+
 	switch (level) {
 	case PCB_MSG_DEBUG:
 		printf("D:");
