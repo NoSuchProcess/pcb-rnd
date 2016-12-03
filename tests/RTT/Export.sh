@@ -11,6 +11,7 @@ fmt_args=""
 set_fmt_args()
 {
 	case "$fmt" in
+		bom) ext=.bom ;;
 		png)
 			fmt_args="--dpi 1200"
 			ext=.png
@@ -55,7 +56,8 @@ cmp_fmt()
 		png)
 			echo "$ref" "$out"
 			;;
-		svg)
+		*)
+			# simple text files: byte-to-byte match required
 			diff -u "$ref" "$out"
 			;;
 	esac

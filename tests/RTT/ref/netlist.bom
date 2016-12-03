@@ -1,0 +1,8 @@
+# $Id$
+# PcbBOM Version 1.0
+# Date: Sat Dec  3 04:22:58 2016 UTC
+# Author: 
+# Title: board with minimal netlist - PCB BOM
+# Quantity, Description, Value, RefDes
+# --------------------------------------------
+1,"dip(4)","4*300",U1 

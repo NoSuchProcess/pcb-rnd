@@ -1,0 +1,8 @@
+# $Id$
+# PcbBOM Version 1.0
+# Date: Sat Dec  3 04:22:57 2016 UTC
+# Author: 
+# Title: pins with different shapes - PCB BOM
+# Quantity, Description, Value, RefDes
+# --------------------------------------------
+2,"dip(2)","2*300",U1 U2 
