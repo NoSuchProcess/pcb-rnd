@@ -1,5 +1,6 @@
 #!/bin/sh
 
+all=0
 TRUNK=../..
 if test -z "$pcb_rnd_bin"
 then
@@ -76,10 +77,17 @@ move_out()
 
 cmp_fmt()
 {
-	local ref="$1" out="$2"
+	local ref="$1" out="$2" n bn
 	case "$fmt" in
 		png)
 			echo "$ref" "$out"
+			;;
+		gerber)
+			for n in $ref.gbr/*.gbr
+			do
+				bn=`basename $n`
+				diff -u "$n" "$out.gbr/$bn"
+			done
 			;;
 		*)
 			# simple text files: byte-to-byte match required
