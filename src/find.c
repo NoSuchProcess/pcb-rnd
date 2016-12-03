@@ -75,6 +75,7 @@
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "layer.h"
+#include "event.h"
 
 #include "obj_all.h"
 

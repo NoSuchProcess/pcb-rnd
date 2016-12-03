@@ -33,6 +33,7 @@
 #include "hid_actions.h"
 #include "compat_misc.h"
 #include "undo.h"
+#include "event.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      SL(INVISIBLE, 0),  PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
@@ -268,7 +269,7 @@ int ChangeGroupVisibility(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 		PushOnTopOfLayerStack(Layer);
 
 	/* update control panel and exit */
-	pcb_hid_action("LayersChanged");
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return (changed);
 }
 
@@ -981,7 +982,7 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 {
 	free((char*)Layer->Name);
 	Layer->Name = Name;
-	pcb_hid_action("LayersChanged");
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
 
@@ -1095,7 +1096,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 							&PCB->LayerGroups.Entries[g + 1], (PCB_MAX_LAYERGRP - g - 1) * sizeof(PCB->LayerGroups.Entries[g]));
 		}
 
-	pcb_hid_action("LayersChanged");
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
 	return 0;
 }

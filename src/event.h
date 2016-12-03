@@ -36,6 +36,7 @@ typedef enum {
 	PCB_EVENT_BOARD_CHANGED,          /* called after the board being edited got replaced (used to be the PCBChanged action) */
 	PCB_EVENT_ROUTE_STYLES_CHANGED,   /* called after any route style change (used to be the RouteStylesChanged action) */
 	PCB_EVENT_NETLIST_CHANGED,        /* called after any netlist change (used to be the NetlistChanged action) */
+	PCB_EVENT_LAYERS_CHANGED,         /* called after layers or layer groups change (used to be the LayersChanged action) */
 
 	PCB_EVENT_RUBBER_RESET,           /* rubber band: reset attached */
 	PCB_EVENT_RUBBER_REMOVE_ELEMENT,  /* rubber band: removed an element with rubber bands attached */

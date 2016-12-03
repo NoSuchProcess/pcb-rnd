@@ -95,13 +95,10 @@ extern void pcb_hid_register_actions(const pcb_hid_action_t *a, int, const char 
 
 /* Note that PCB expects the gui to provide the following actions:
 
-   LayersChanged()
    LibraryChanged()
    Busy()
  */
 
-extern const char pcbchanged_help[];
-extern const char pcbchanged_syntax[];
 extern const char layerschanged_help[];
 extern const char layerschanged_syntax[];
 extern const char librarychanged_help[];

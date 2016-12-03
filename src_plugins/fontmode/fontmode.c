@@ -47,6 +47,7 @@
 #include "plugins.h"
 #include "hid_actions.h"
 #include "compat_misc.h"
+#include "event.h"
 
 /* FIXME - we currently hardcode the grid and PCB size.  What we
    should do in the future is scan the font for its extents, and size
@@ -98,8 +99,8 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	PCB->Data->Layer[1].Name = pcb_strdup("OrigFont");
 	PCB->Data->Layer[2].Name = pcb_strdup("Width");
 	PCB->Data->Layer[3].Name = pcb_strdup("Grid");
-	pcb_hid_action("PCBChanged");
-	pcb_hid_action("LayersChanged");
+	pcb_event(PCB_EVENT_BOARD_CHANGED, NULL);
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 
 	lfont = PCB->Data->Layer + 0;
 	lorig = PCB->Data->Layer + 1;

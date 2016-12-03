@@ -425,11 +425,11 @@ static void layer_selector_select_callback(GHidLayerSelector * ls, int layer, gp
 	PCB->RatDraw = (layer == LAYER_BUTTON_RATS);
 	if (layer == LAYER_BUTTON_SILK) {
 		PCB->ElementOn = pcb_true;
-		pcb_hid_action("LayersChanged");
+		ghid_LayersChanged(0, 0, 0);
 	}
 	else if (layer == LAYER_BUTTON_RATS) {
 		PCB->RatOn = pcb_true;
-		pcb_hid_action("LayersChanged");
+		ghid_LayersChanged(0, 0, 0);
 	}
 	else if (layer < pcb_max_copper_layer)
 		ChangeGroupVisibility(layer, TRUE, pcb_true);
@@ -1532,10 +1532,10 @@ static gboolean get_layer_visible_cb(int id)
 	return visible;
 }
 
-gint LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (!ghidgui || !ghidgui->menu_bar)
-		return 0;
+		return;
 
 	ghid_config_groups_changed();
 	ghid_layer_buttons_update();
@@ -1547,7 +1547,7 @@ gint LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	   |  the way it will be when the pcb is reloaded.
 	 */
 	pcb_colors_from_settings(PCB);
-	return 0;
+	return;
 }
 
 static const char toggleview_syntax[] =
@@ -1652,9 +1652,6 @@ static int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 
 
 pcb_hid_action_t gtk_topwindow_action_list[] = {
-	{"LayersChanged", 0, LayersChanged,
-	 layerschanged_help, layerschanged_syntax}
-	,
 	{"SelectLayer", 0, SelectLayer,
 	 selectlayer_help, selectlayer_syntax}
 	,

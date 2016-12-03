@@ -335,7 +335,7 @@ int pcb_drc_all(void)
 	drcerr_count = 0;
 	SaveStackAndVisibility();
 	ResetStackAndVisibility();
-	pcb_hid_action("LayersChanged");
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_conn_lookup_init();
 
 	TheFlag = PCB_FLAG_FOUND | PCB_FLAG_DRC | PCB_FLAG_SELECTED;
@@ -690,7 +690,7 @@ int pcb_drc_all(void)
 
 
 	RestoreStackAndVisibility();
-	pcb_hid_action("LayersChanged");
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
 
 	if (nopastecnt > 0) {

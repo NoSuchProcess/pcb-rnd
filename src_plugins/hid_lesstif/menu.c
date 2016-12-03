@@ -23,6 +23,7 @@
 #include "hid_actions.h"
 #include "hid_flags.h"
 #include "stdarg.h"
+#include "event.h"
 #include "compat_misc.h"
 #include <genht/hash.h>
 
@@ -78,14 +79,14 @@ static int bg_color;
 
 extern Widget lesstif_m_layer;
 
-static int LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int l, i, set;
 	const char *name;
 	int current_layer;
 
 	if (!layer_button_list)
-		return 0;
+		return;
 	if (PCB && PCB->Data) {
 		pcb_data_t *d = PCB->Data;
 		for (i = 0; i < PCB_MAX_LAYER; i++)
@@ -194,7 +195,7 @@ static int LayersChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 
 	lesstif_update_layer_groups();
 
-	return 0;
+	return;
 }
 
 static void show_one_layer_button(int layer, int set)
@@ -429,7 +430,7 @@ static void insert_layerview_buttons(Widget menu)
 			note_widget_flag(btn, XmNset, "showmask");
 	}
 	lb->is_pick = 0;
-	LayersChanged(0, 0, 0, 0);
+	LesstifLayersChanged(0, 0, 0);
 }
 
 static void insert_layerpick_buttons(Widget menu)
@@ -475,7 +476,7 @@ static void insert_layerpick_buttons(Widget menu)
 		lb->w[i] = btn;
 	}
 	lb->is_pick = 1;
-	LayersChanged(0, 0, 0, 0);
+	LesstifLayersChanged(0, 0, 0);
 }
 
 /*-----------------------------------------------------------------------------*/
@@ -528,8 +529,6 @@ void lesstif_update_widget_flags()
 pcb_hid_action_t lesstif_menu_action_list[] = {
 	{"GetXY", "", GetXY,
 	 getxy_help, getxy_syntax},
-	{"LayersChanged", 0, LayersChanged,
-	 layerschanged_help, layerschanged_syntax},
 	{"ToggleView", 0, ToggleView,
 	 toggleview_help, toggleview_syntax},
 	{"SelectLayer", 0, SelectLayer,

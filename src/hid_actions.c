@@ -16,7 +16,7 @@
    actions, the GUI HID may register them, but nothing bad happens if
    they are not registered or not handled by the GUI. */
 static const char *action_no_warn[] = {
-	"LayersChanged", "PointCursor", "LibraryChanged",
+	"PointCursor", "LibraryChanged",
 	NULL
 };
 static int action_legal_unknown(const char *name)
