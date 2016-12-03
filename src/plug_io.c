@@ -332,7 +332,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* enable default font if necessary */
 		if (!PCB->Font.Valid) {
 			if (require_font)
-				pcb_message(PCB_MSG_DEFAULT, _("File '%s' has no font information, using default font\n"), new_filename);
+				pcb_message(PCB_MSG_WARNING, _("File '%s' has no font information, using default font\n"), new_filename);
 			PCB->Font.Valid = pcb_true;
 		}
 
