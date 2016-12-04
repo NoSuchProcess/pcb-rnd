@@ -332,7 +332,6 @@ static void PointCursor(pcb_bool grabbed)
 	else
 		over_point = 0;
 	old_cursor_mode = -1;
-	return 0;
 }
 
 extern void LesstifNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
