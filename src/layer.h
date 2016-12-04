@@ -176,6 +176,8 @@ typedef enum {
 	PCB_LYT_INVIS    = 0x00004000, /* (virtual) layer is invisible (one, not in the stackup) */
 	PCB_LYT_ASSY     = 0x00008000, /* (virtual) assembly drawing (top and bottom) */
 	PCB_LYT_FAB      = 0x00010000, /* (virtual) fab drawing (one, not in the stackup) */
+	PCB_LYT_PDRILL   = 0x00020000, /* (virtual) plated drills (affects all physical layers) */
+	PCB_LYT_UDRILL   = 0x00040000, /* (virtual) unplated drills (affects all physical layers) */
 	PCB_LYT_ANYTHING = 0x00FFFF00, /* MASK: layers consist anything */
 
 	/* misc properties */

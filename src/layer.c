@@ -47,6 +47,8 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 	{"topassembly",    SL(ASSY, TOP),     PCB_LYT_VIRTUAL + 9,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
 	{"bottomassembly", SL(ASSY, BOTTOM),  PCB_LYT_VIRTUAL + 10, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
 	{"fab",            SL(FAB, 0),        PCB_LYT_VIRTUAL + 11, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
+	{"plateddrill",    SL(PDRILL, 0),     PCB_LYT_VIRTUAL + 12, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
+	{"unplateddrill",  SL(UDRILL, 0),     PCB_LYT_VIRTUAL + 13, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
 	{ NULL, 0 },
 };
 
@@ -71,6 +73,8 @@ static const pcb_layer_type_name_t pcb_layer_type_names[] = {
 	{ PCB_LYT_INVIS,   2, "invis" },
 	{ PCB_LYT_ASSY,    2, "assy" },
 	{ PCB_LYT_FAB,     2, "fab" },
+	{ PCB_LYT_PDRILL,  2, "plateddrill" },
+	{ PCB_LYT_UDRILL,  2, "unplateddrill" },
 	{ PCB_LYT_VIRTUAL, 3, "virtual" },
 	{ 0, 0, NULL }
 };
@@ -80,7 +84,7 @@ static const char *pcb_layer_type_class_names[] = {
 };
 
 #define PCB_LAYER_VIRT_MIN (PCB_LYT_VIRTUAL + 1)
-#define PCB_LAYER_VIRT_MAX (PCB_LYT_VIRTUAL + 11)
+#define PCB_LAYER_VIRT_MAX (PCB_LYT_VIRTUAL + 13)
 
 
 pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
