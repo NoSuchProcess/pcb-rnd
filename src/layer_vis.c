@@ -37,8 +37,8 @@
 #include "compat_misc.h"
 
 /*
- * Used by SaveStackAndVisibility() and
- * RestoreStackAndVisibility()
+ * Used by pcb_layervis_save_stack() and
+ * pcb_layervis_restore_stack()
  */
 static struct {
 	pcb_bool ElementOn, InvisibleObjectsOn, PinOn, ViaOn, RatOn;
@@ -53,7 +53,7 @@ static struct {
  * to correspond.
 */
 
-void LayerStringToLayerStack(const char *layer_string)
+void pcb_layervis_parse_string(const char *layer_string)
 {
 	static int listed_layers = 0;
 	int l = strlen(layer_string);
@@ -115,13 +115,13 @@ void LayerStringToLayerStack(const char *layer_string)
 			conf_set_editor(show_solder_side, 1);
 		else if (isdigit((int) args[i][0])) {
 			lno = atoi(args[i]);
-			ChangeGroupVisibility(lno, pcb_true, pcb_true);
+			pcb_layervis_change_group_vis(lno, pcb_true, pcb_true);
 		}
 		else {
 			int found = 0;
 			for (lno = 0; lno < pcb_max_copper_layer; lno++)
 				if (strcasecmp(args[i], PCB->Data->Layer[lno].Name) == 0) {
-					ChangeGroupVisibility(lno, pcb_true, pcb_true);
+					pcb_layervis_change_group_vis(lno, pcb_true, pcb_true);
 					found = 1;
 					break;
 				}
@@ -165,7 +165,7 @@ static void PushOnTopOfLayerStack(int NewTop)
  * changes the visibility of all layers in a group
  * returns the number of changed layers
  */
-int ChangeGroupVisibility(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
+int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 {
 	int group, i, changed = 1;		/* at least the current layer changes */
 
@@ -174,7 +174,7 @@ int ChangeGroupVisibility(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 	 */
 
 	if (conf_core.rc.verbose)
-		printf("ChangeGroupVisibility(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
+		printf("pcb_layervis_change_group_vis(Layer=%d, On=%d, ChangeStackOrder=%d)\n", Layer, On, ChangeStackOrder);
 
 	/* decrement 'i' to keep stack in order of layergroup */
 	if ((group = pcb_layer_get_group(Layer)) >= 0) {
@@ -206,7 +206,7 @@ int ChangeGroupVisibility(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 /* ---------------------------------------------------------------------------
  * resets the layerstack setting
  */
-void ResetStackAndVisibility(void)
+void pcb_layervis_reset_stack(void)
 {
 	int comp_group;
 	pcb_cardinal_t i;
@@ -225,13 +225,13 @@ void ResetStackAndVisibility(void)
 
 	/* Bring the component group to the front and make it active.  */
 	comp_group = pcb_layer_get_group(pcb_component_silk_layer);
-	ChangeGroupVisibility(PCB->LayerGroups.Entries[comp_group][0], 1, 1);
+	pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[comp_group][0], 1, 1);
 }
 
 /* ---------------------------------------------------------------------------
  * saves the layerstack setting
  */
-void SaveStackAndVisibility(void)
+void pcb_layervis_save_stack(void)
 {
 	pcb_cardinal_t i;
 	static pcb_bool run = pcb_false;
@@ -243,7 +243,7 @@ void SaveStackAndVisibility(void)
 
 	if (SavedStack.cnt != 0) {
 		fprintf(stderr,
-						"SaveStackAndVisibility()  layerstack was already saved and not" "yet restored.  cnt = %d\n", SavedStack.cnt);
+						"pcb_layervis_save_stack()  layerstack was already saved and not" "yet restored.  cnt = %d\n", SavedStack.cnt);
 	}
 
 	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
@@ -262,16 +262,16 @@ void SaveStackAndVisibility(void)
 /* ---------------------------------------------------------------------------
  * restores the layerstack setting
  */
-void RestoreStackAndVisibility(void)
+void pcb_layervis_restore_stack(void)
 {
 	pcb_cardinal_t i;
 
 	if (SavedStack.cnt == 0) {
-		fprintf(stderr, "RestoreStackAndVisibility()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);
+		fprintf(stderr, "pcb_layervis_restore_stack()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);
 		return;
 	}
 	else if (SavedStack.cnt != 1) {
-		fprintf(stderr, "RestoreStackAndVisibility()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
+		fprintf(stderr, "pcb_layervis_restore_stack()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
 	}
 
 	for (i = 0; i < pcb_max_copper_layer + 2; i++) {

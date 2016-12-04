@@ -1200,7 +1200,7 @@ static int pcb_act_SetSame(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		return 1;
 	}
 	if (layer != CURRENT) {
-		ChangeGroupVisibility(pcb_layer_id(PCB->Data, layer), pcb_true, pcb_true);
+		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, layer), pcb_true, pcb_true);
 		pcb_redraw();
 	}
 	return 0;

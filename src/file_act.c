@@ -197,7 +197,7 @@ static int pcb_act_New(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 		free(PCB->Name);
 		PCB->Name = name;
 
-		ResetStackAndVisibility();
+		pcb_layervis_reset_stack();
 		pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 		pcb_center_display(PCB->MaxWidth / 2, PCB->MaxHeight / 2);
 		pcb_redraw();

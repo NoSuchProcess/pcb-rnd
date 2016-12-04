@@ -474,7 +474,7 @@ int main(int argc, char *argv[])
 	if (hid_argc > 0)
 		command_line_pcb = hid_argv[0];
 
-	ResetStackAndVisibility();
+	pcb_layervis_reset_stack();
 
 	if (pcb_gui->gui)
 		pcb_crosshair_init();
@@ -492,7 +492,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (conf_core.design.initial_layer_stack && conf_core.design.initial_layer_stack[0]) {
-		LayerStringToLayerStack(conf_core.design.initial_layer_stack);
+		pcb_layervis_parse_string(conf_core.design.initial_layer_stack);
 	}
 
 	/* read the library file and display it if it's not empty

@@ -1091,7 +1091,7 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		new_top = new_index;
 
 	if (new_top != -1)
-		ChangeGroupVisibility(new_index, 1, 1);
+		pcb_layervis_change_group_vis(new_index, 1, 1);
 
 	return 0;
 }

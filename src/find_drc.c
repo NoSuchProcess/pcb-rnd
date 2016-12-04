@@ -333,8 +333,8 @@ int pcb_drc_all(void)
 
 	IsBad = pcb_false;
 	drcerr_count = 0;
-	SaveStackAndVisibility();
-	ResetStackAndVisibility();
+	pcb_layervis_save_stack();
+	pcb_layervis_reset_stack();
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_conn_lookup_init();
 
@@ -689,7 +689,7 @@ int pcb_drc_all(void)
 	}
 
 
-	RestoreStackAndVisibility();
+	pcb_layervis_restore_stack();
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
 
@@ -835,7 +835,7 @@ static void GotoError(void)
 	case PCB_TYPE_LINE:
 	case PCB_TYPE_ARC:
 	case PCB_TYPE_POLYGON:
-		ChangeGroupVisibility(pcb_layer_id(PCB->Data, (pcb_layer_t *) thing_ptr1), pcb_true, pcb_true);
+		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, (pcb_layer_t *) thing_ptr1), pcb_true, pcb_true);
 	}
 	pcb_center_display(X, Y);
 }

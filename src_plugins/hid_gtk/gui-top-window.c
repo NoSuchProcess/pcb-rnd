@@ -433,7 +433,7 @@ static void layer_selector_select_callback(GHidLayerSelector * ls, int layer, gp
 		ghid_LayersChanged(0, 0, 0);
 	}
 	else if (layer < pcb_max_copper_layer)
-		ChangeGroupVisibility(layer, TRUE, pcb_true);
+		pcb_layervis_change_group_vis(layer, TRUE, pcb_true);
 
 	ignore_layer_update = pcb_false;
 
@@ -482,7 +482,7 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 		break;
 	default:
 		/* Flip the visibility */
-		ChangeGroupVisibility(layer, active, pcb_false);
+		pcb_layervis_change_group_vis(layer, active, pcb_false);
 		redraw = TRUE;
 		break;
 	}

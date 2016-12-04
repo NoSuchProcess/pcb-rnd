@@ -1368,8 +1368,8 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
 		pcb_bool new_solder_vis = conf_core.editor.show_solder_side;
 
-		ChangeGroupVisibility(PCB->LayerGroups.Entries[comp_group][0], !new_solder_vis, !new_solder_vis);
-		ChangeGroupVisibility(PCB->LayerGroups.Entries[solder_group][0], new_solder_vis, new_solder_vis);
+		pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[comp_group][0], !new_solder_vis, !new_solder_vis);
+		pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[solder_group][0], new_solder_vis, new_solder_vis);
 	}
 
 	return 0;

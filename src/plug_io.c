@@ -319,7 +319,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		pcb_board_remove(oldPCB);
 
 		pcb_board_new_postproc(PCB, 0);
-		ResetStackAndVisibility();
+		pcb_layervis_reset_stack();
 
 		if (how == 0) {
 			/* update cursor location */

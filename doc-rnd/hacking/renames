@@ -1509,3 +1509,8 @@ GetLayerGroupNumberByNumber -> pcb_layer_get_group
 IsPasteEmpty -> pcb_layer_is_paste_empty
 SOLDER_LAYER -> PCB_SOLDER_SIDE
 COMPONENT_LAYER -> PCB_COMPONENT_SIDE
+LayerStringToLayerStack -> pcb_layervis_parse_string
+ChangeGroupVisibility -> pcb_layervis_change_group_vis
+ResetStackAndVisibility -> pcb_layervis_reset_stack
+SaveStackAndVisibility -> pcb_layervis_save_stack
+RestoreStackAndVisibility -> pcb_layervis_restore_stack

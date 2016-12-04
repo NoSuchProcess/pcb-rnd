@@ -273,7 +273,7 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 	PCB->RatDraw = (layer == LB_RATS);
 	PCB->SilkActive = (layer == LB_SILK);
 	if (layer < pcb_max_copper_layer)
-		ChangeGroupVisibility(layer, 1, 1);
+		pcb_layervis_change_group_vis(layer, 1, 1);
 	for (l = 0; l < num_layer_buttons; l++) {
 		LayerButtons *lb = layer_button_list + l;
 		if (!lb->is_pick)

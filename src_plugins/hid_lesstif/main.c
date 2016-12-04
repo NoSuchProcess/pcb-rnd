@@ -626,15 +626,15 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		if (conf_core.editor.show_solder_side) {
 			if (active_group == comp_group) {
 				if (comp_showing && !solder_showing)
-					ChangeGroupVisibility(comp_layer, 0, 0);
-				ChangeGroupVisibility(solder_layer, 1, 1);
+					pcb_layervis_change_group_vis(comp_layer, 0, 0);
+				pcb_layervis_change_group_vis(solder_layer, 1, 1);
 			}
 		}
 		else {
 			if (active_group == solder_group) {
 				if (solder_showing && !comp_showing)
-					ChangeGroupVisibility(solder_layer, 0, 0);
-				ChangeGroupVisibility(comp_layer, 1, 1);
+					pcb_layervis_change_group_vis(solder_layer, 0, 0);
+				pcb_layervis_change_group_vis(comp_layer, 1, 1);
 			}
 		}
 	}
