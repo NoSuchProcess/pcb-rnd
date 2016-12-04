@@ -362,7 +362,7 @@ static pcb_hid_attribute_t *gerber_get_export_options(int *n)
 	return gerber_options;
 }
 
-static int group_for_layer(int l)
+static pcb_layergrp_id_t group_for_layer(int l)
 {
 	if (l < pcb_max_copper_layer + 2 && l >= 0)
 		return pcb_layer_get_group(l);
@@ -397,7 +397,7 @@ static pcb_box_t region;
    three-character suffix compatible with Eagle's defaults.  */
 static void assign_eagle_file_suffix(char *dest, int idx)
 {
-	int group;
+	pcb_layergrp_id_t group;
 	int nlayers;
 	const char *suff = "out";
 
@@ -454,7 +454,7 @@ static void assign_eagle_file_suffix(char *dest, int idx)
 		}
 		else {
 			static char buf[20];
-			sprintf(buf, "ly%d", group);
+			sprintf(buf, "ly%ld", group);
 			suff = buf;
 		}
 		break;

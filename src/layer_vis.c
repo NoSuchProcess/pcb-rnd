@@ -167,7 +167,8 @@ static void PushOnTopOfLayerStack(int NewTop)
  */
 int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOrder)
 {
-	int group, i, changed = 1;		/* at least the current layer changes */
+	pcb_layergrp_id_t group;
+	int i, changed = 1;		/* at least the current layer changes */
 
 	/* Warning: these special case values must agree with what gui-top-window.c
 	   |  thinks the are.
@@ -208,7 +209,7 @@ int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOr
  */
 void pcb_layervis_reset_stack(void)
 {
-	int comp_group;
+	pcb_layergrp_id_t comp_group;
 	pcb_cardinal_t i;
 
 	assert(PCB->Data->LayerN <= PCB_MAX_LAYER);

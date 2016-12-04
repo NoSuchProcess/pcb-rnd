@@ -1804,8 +1804,8 @@ int read_pads(toporouter_t * r, toporouter_layer_t * l, guint layer)
 	GList *vlist = NULL;
 	toporouter_bbox_t *bbox = NULL;
 
-	guint front = pcb_layer_get_group(pcb_component_silk_layer);
-	guint back = pcb_layer_get_group(pcb_solder_silk_layer);
+	pcb_layergrp_id_t front = pcb_layer_get_group(pcb_component_silk_layer);
+	pcb_layergrp_id_t back = pcb_layer_get_group(pcb_solder_silk_layer);
 
 /*  printf("read_pads: front = %d back = %d layer = %d\n", 
        front, back, layer);*/

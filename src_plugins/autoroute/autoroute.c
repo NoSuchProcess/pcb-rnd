@@ -399,7 +399,7 @@ static void showroutebox(routebox_t * rb);
  * some local identifiers
  */
 /* group number of groups that hold surface mount pads */
-static pcb_cardinal_t front, back;
+static pcb_layergrp_id_t front, back;
 static pcb_bool usedGroup[PCB_MAX_LAYERGRP];
 static int x_cost[PCB_MAX_LAYERGRP], y_cost[PCB_MAX_LAYERGRP];
 static pcb_bool is_layer_group_active[PCB_MAX_LAYERGRP];
@@ -728,7 +728,7 @@ static routebox_t *AddIrregularObstacle(vtptr_t layergroupboxes[],
 static routebox_t *AddPolygon(vtptr_t layergroupboxes[], pcb_cardinal_t layer, pcb_polygon_t *polygon, pcb_route_style_t * style)
 {
 	int is_not_rectangle = 1;
-	int layergroup = pcb_layer_get_group(layer);
+	pcb_layergrp_id_t layergroup = pcb_layer_get_group(layer);
 	routebox_t *rb;
 	assert(0 <= layergroup && layergroup < pcb_max_group);
 	rb = AddIrregularObstacle(layergroupboxes,
@@ -1064,7 +1064,7 @@ static routedata_t *CreateRouteData()
 	PCB_END_LOOP;
 
 	for (i = 0; i < pcb_max_copper_layer; i++) {
-		int layergroup = pcb_layer_get_group(i);
+		pcb_layergrp_id_t layergroup = pcb_layer_get_group(i);
 		/* add all (non-rat) lines */
 		PCB_LINE_LOOP(LAYER_PTR(i));
 		{

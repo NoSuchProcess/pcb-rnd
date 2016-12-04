@@ -68,7 +68,7 @@ static void TransferNet(pcb_netlist_t *, pcb_net_t *, pcb_net_t *);
  * some local identifiers
  */
 static pcb_bool badnet = pcb_false;
-static pcb_cardinal_t SLayer, CLayer;	/* layer group holding solder/component side */
+static pcb_layergrp_id_t SLayer, CLayer;	/* layer group holding solder/component side */
 
 /* ---------------------------------------------------------------------------
  * parse a connection description from a string

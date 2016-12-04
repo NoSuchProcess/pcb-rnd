@@ -140,7 +140,7 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_bo
  */
 static void PrintAssembly(int side, const pcb_box_t * drawn_area)
 {
-	int side_group = pcb_layer_get_group(pcb_max_copper_layer + side);
+	pcb_layergrp_id_t side_group = pcb_layer_get_group(pcb_max_copper_layer + side);
 
 	pcb_draw_doing_assy = pcb_true;
 	pcb_gui->set_draw_faded(Output.fgGC, 1);
@@ -174,7 +174,7 @@ static void DrawEverything_holes(const pcb_box_t * drawn_area)
 static void DrawEverything(const pcb_box_t * drawn_area)
 {
 	int i, ngroups, side;
-	int component, solder;
+	pcb_layergrp_id_t component, solder;
 	/* This is the list of layer groups we will draw.  */
 	int do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
@@ -188,7 +188,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	memset(do_group, 0, sizeof(do_group));
 	for (ngroups = 0, i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *l = LAYER_ON_STACK(i);
-		int group = pcb_layer_get_group(pcb_layer_stack[i]);
+		pcb_layergrp_id_t group = pcb_layer_get_group(pcb_layer_stack[i]);
 		if (l->On && !do_group[group]) {
 			do_group[group] = 1;
 			drawn_groups[ngroups++] = group;
@@ -301,8 +301,8 @@ static void DrawEverything(const pcb_box_t * drawn_area)
  */
 static void DrawPPV(int group, const pcb_box_t * drawn_area)
 {
-	int component_group = pcb_layer_get_group(pcb_component_silk_layer);
-	int solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
+	pcb_layergrp_id_t component_group = pcb_layer_get_group(pcb_component_silk_layer);
+	pcb_layergrp_id_t solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
 	int side;
 
 	if (PCB->PinOn || !pcb_gui->gui) {

@@ -730,8 +730,8 @@ static void move_all_thermals(int old_index, int new_index)
 
 static int LastLayerInComponentGroup(int layer)
 {
-	int cgroup = pcb_layer_get_group(pcb_max_group + PCB_COMPONENT_SIDE);
-	int lgroup = pcb_layer_get_group(layer);
+	pcb_layergrp_id_t cgroup = pcb_layer_get_group(pcb_max_group + PCB_COMPONENT_SIDE);
+	pcb_layergrp_id_t lgroup = pcb_layer_get_group(layer);
 	if (cgroup == lgroup && PCB->LayerGroups.Number[lgroup] == 2)
 		return 1;
 	return 0;

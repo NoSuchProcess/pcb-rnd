@@ -431,7 +431,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 {
 	int j, k;
-	pcb_cardinal_t sgroup, cgroup;
+	pcb_layergrp_id_t sgroup, cgroup;
 	pcb_layer_t swap;
 
 	PCB_ELEMENT_LOOP(Buffer->Data);

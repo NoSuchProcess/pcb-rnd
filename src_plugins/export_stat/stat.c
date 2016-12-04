@@ -122,7 +122,8 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 {
 	FILE *f;
 	const char *filename;
-	int i, lid, lgid;
+	int i, lid;
+	pcb_layergrp_id_t lgid;
 	char buff[1024];
 	time_t t;
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYERGRP];
@@ -177,7 +178,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 		fprintf(f, "		ha:layer_%d {\n", lid);
 		fprintf(f, "			name={%s}\n", l->Name);
 		fprintf(f, "			empty=%s\n", empty ? "yes" : "no");
-		fprintf(f, "			grp=%d\n", lgid);
+		fprintf(f, "			grp=%ld\n", lgid);
 
 		memset(&ls, 0, sizeof(ls));
 
@@ -236,7 +237,7 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	for(lgid = 0; lgid < pcb_max_copper_layer; lgid++) {
 		if (group_not_empty[lgid]) {
 			phg++;
-			fprintf(f, "		ha:layergroup_%d {\n", lgid);
+			fprintf(f, "		ha:layergroup_%ld {\n", lgid);
 			fprintf(f, "			lines=%lu\n", lgss[lgid].lines);
 			fprintf(f, "			arcs=%lu\n",  lgss[lgid].arcs);
 			fprintf(f, "			polys=%lu\n", lgss[lgid].polys);

@@ -141,7 +141,7 @@ typedef struct {
  */
 static void UpdateXY(pcb_netlist_t *Nets)
 {
-	pcb_cardinal_t SLayer, CLayer;
+	pcb_layergrp_id_t SLayer, CLayer;
 	pcb_cardinal_t i, j;
 	/* find layer groups of the component side and solder side */
 	SLayer = pcb_layer_get_group(pcb_solder_silk_layer);

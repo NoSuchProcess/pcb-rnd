@@ -161,7 +161,7 @@ int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footpri
 pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 {
 	pcb_element_t *element;
-	pcb_cardinal_t group;
+	pcb_layergrp_id_t group;
 	pcb_layer_t *clayer, *slayer;
 
 	if (elementlist_length(&Buffer->Data->Element) != 1) {
@@ -256,7 +256,7 @@ static int polygon_is_rectangle(pcb_polygon_t *poly)
 pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 {
 	pcb_element_t *Element;
-	pcb_cardinal_t group;
+	pcb_layergrp_id_t group;
 	pcb_cardinal_t pin_n = 1;
 	pcb_bool hasParts = pcb_false, crooked = pcb_false;
 	int onsolder;

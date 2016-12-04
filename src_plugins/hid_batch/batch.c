@@ -76,7 +76,7 @@ static int help(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i, j;
-	int cg, sg;
+	pcb_layergrp_id_t cg, sg;
 	if (!PCB || !PCB->Data || !PCB->Filename) {
 		printf("No PCB loaded.\n");
 		return 0;
@@ -87,7 +87,7 @@ static int info(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	sg = pcb_layer_get_group(pcb_solder_silk_layer);
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 
-		int lg = pcb_layer_get_group(i);
+		pcb_layergrp_id_t lg = pcb_layer_get_group(i);
 		for (j = 0; j < PCB_MAX_LAYER; j++)
 			putchar(j == lg ? '#' : '-');
 		printf(" %c %s\n", lg == cg ? 'c' : lg == sg ? 's' : '-', PCB->Data->Layer[i].Name);

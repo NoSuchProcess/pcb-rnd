@@ -147,7 +147,7 @@ PCB_REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 
 static int comp_layer, solder_layer;
 
-static int group_for_layer(int l)
+static pcb_layergrp_id_t group_for_layer(int l)
 {
 	if (l < pcb_max_copper_layer + 2 && l >= 0)
 		return pcb_layer_get_group(l);

@@ -215,7 +215,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 {
 	pcb_coord_t half = Pad->Thickness / 2;
-	pcb_cardinal_t i, group;
+	pcb_layergrp_id_t i, group;
 	struct rubber_info info;
 
 	info.box.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - half;
@@ -242,7 +242,7 @@ static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 
 struct rinfo {
 	int type;
-	pcb_cardinal_t group;
+	pcb_layergrp_id_t group;
 	pcb_pin_t *pin;
 	pcb_pad_t *pad;
 	pcb_point_t *point;
@@ -369,7 +369,7 @@ static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *Pin)
  */
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, pcb_bool Exact)
 {
-	pcb_cardinal_t group;
+	pcb_layergrp_id_t group;
 	struct rubber_info info;
 	pcb_coord_t t = Line->Thickness / 2;
 
@@ -403,7 +403,7 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
  */
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int *end_pt, pcb_bool Exact)
 {
-	pcb_cardinal_t group;
+	pcb_layergrp_id_t group;
 	struct rubber_info info;
 	pcb_coord_t t = Arc->Thickness / 2, ex, ey;
 
@@ -439,7 +439,7 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
  */
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_polygon_t *Polygon)
 {
-	pcb_cardinal_t group;
+	pcb_layergrp_id_t group;
 
 	/* lookup layergroup and check all visible lines in this group */
 	group = pcb_layer_get_group_(Layer);

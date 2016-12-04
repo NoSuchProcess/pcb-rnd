@@ -254,7 +254,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 	pcb_coord_t dx, dy, temp, last, length;
 	pcb_coord_t temp2, last2, length2;
 	pcb_line_t line1, line2;
-	pcb_cardinal_t group, comp;
+	pcb_layergrp_id_t group, comp;
 	struct drc_info info;
 	pcb_bool two_lines, x_is_long, blocker;
 	pcb_point_t ans;
@@ -412,7 +412,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 static void drc_line(pcb_point_t *end)
 {
 	struct drc_info info;
-	pcb_cardinal_t group, comp;
+	pcb_layergrp_id_t group, comp;
 	pcb_line_t line;
 	pcb_attached_line_t aline;
 	static pcb_point_t last_good; /* internal state of last good endpoint - we cna do thsi cheat, because... */

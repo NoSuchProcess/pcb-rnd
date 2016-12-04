@@ -571,9 +571,9 @@ static int group_showing(int g, int *c)
 static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_shown_side = conf_core.editor.show_solder_side;
-	int comp_group = pcb_layer_get_group(pcb_component_silk_layer);
-	int solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
-	int active_group = pcb_layer_get_group(pcb_layer_stack[0]);
+	pcb_layergrp_id_t comp_group = pcb_layer_get_group(pcb_component_silk_layer);
+	pcb_layergrp_id_t solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
+	pcb_layergrp_id_t active_group = pcb_layer_get_group(pcb_layer_stack[0]);
 	int comp_layer;
 	int solder_layer;
 	int comp_showing = group_showing(comp_group, &comp_layer);

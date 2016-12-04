@@ -1017,8 +1017,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 			(conf_core.editor.mode == PCB_MODE_LINE || (conf_core.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_TYPE_LINE_POINT))) {
 		pcb_pad_t *pad = (pcb_pad_t *) ptr2;
 		pcb_layer_t *desired_layer;
-		pcb_cardinal_t desired_group;
-		pcb_cardinal_t SLayer, CLayer;
+		pcb_layergrp_id_t desired_group;
+		pcb_layergrp_id_t SLayer, CLayer;
 		int found_our_layer = pcb_false;
 
 		desired_layer = CURRENT;

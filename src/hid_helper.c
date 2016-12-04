@@ -34,7 +34,7 @@
 
 const char *pcb_layer_type_to_file_name(int idx, int style)
 {
-	int group;
+	pcb_layergrp_id_t group;
 	int nlayers;
 	const char *single_name;
 
@@ -85,7 +85,7 @@ const char *pcb_layer_type_to_file_name(int idx, int style)
 			static char buf[20];
 			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 1))
 				return single_name;
-			sprintf(buf, "group%d", group);
+			sprintf(buf, "group%ld", group);
 			return buf;
 		}
 		break;

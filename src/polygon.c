@@ -1512,7 +1512,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		break;
 	case PCB_TYPE_PAD:
 		{
-			pcb_cardinal_t group = pcb_layer_get_group(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
+			pcb_layergrp_id_t group = pcb_layer_get_group(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
 																									 pcb_solder_silk_layer : pcb_component_silk_layer);
 			GROUP_LOOP(Data, group);
 			{

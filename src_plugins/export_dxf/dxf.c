@@ -253,7 +253,7 @@ static void dxf_fill_circle(pcb_hid_gc_t gc, int cx, int cy, int radius);
 static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, int *x, int *y);
 static void dxf_fill_rect(pcb_hid_gc_t gc, int x1, int y1, int x2, int y2);
 static pcb_hid_attribute_t *dxf_get_export_options(int *n);
-static int dxf_group_for_layer(int l);
+static pcb_layergrp_id_t dxf_group_for_layer(int l);
 static DxfList *dxf_insert(char *refdes, char *descr, char *value, DxfList * dxf);
 static int dxf_layer_sort(const void *va, const void *vb);
 static pcb_hid_gc_t dxf_make_gc(void);
@@ -745,7 +745,7 @@ static int dxf_lastY;
 /*!
  * \brief Find a group for a given layer ??.
  */
-static int dxf_group_for_layer(int l) {
+static pcb_layergrp_id_t dxf_group_for_layer(int l) {
 	if ((l < pcb_max_copper_layer + 2) && (l >= 0)) {
 		return pcb_layer_get_group(l);
 	}
