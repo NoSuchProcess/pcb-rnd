@@ -181,7 +181,7 @@ typedef enum layer_field_e {
 void layout_switch_to_layer(int layer);
 
 /* returns the number of the current layer */
-int layout_get_current_layer();
+pcb_layer_id_t layout_get_current_layer();
 
 /* resolve layer number by name (case sensitive); returns negative number if not found */
 int layout_resolve_layer(const char *name);

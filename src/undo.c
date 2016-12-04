@@ -645,7 +645,8 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 static pcb_bool UndoMoveToLayer(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
-	int type, swap;
+	int type;
+	pcb_layer_id_t swap;
 
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);

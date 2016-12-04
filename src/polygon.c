@@ -779,7 +779,7 @@ static pcb_polyarea_t *pin_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *
 static int SubtractPin(pcb_data_t * d, pcb_pin_t * pin, pcb_layer_t * l, pcb_polygon_t * p)
 {
 	pcb_polyarea_t *np;
-	pcb_cardinal_t i;
+	pcb_layer_id_t i;
 
 	if (pin->Clearance == 0)
 		return 0;
@@ -876,7 +876,7 @@ static pcb_r_dir_t pin_sub_callback(const pcb_box_t * b, void *cl)
 	pcb_polygon_t *polygon;
 	pcb_polyarea_t *np;
 	pcb_polyarea_t *merged;
-	pcb_cardinal_t i;
+	pcb_layer_id_t i;
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
@@ -990,7 +990,7 @@ static pcb_r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static int Group(pcb_data_t *Data, pcb_cardinal_t layer)
+static int Group(pcb_data_t *Data, pcb_layer_id_t layer)
 {
 	pcb_cardinal_t i, j;
 	for (i = 0; i < pcb_max_group; i++)

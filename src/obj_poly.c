@@ -475,7 +475,7 @@ void *MovePolygonToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_pol
 }
 
 struct mptlc {
-	pcb_cardinal_t snum, dnum;
+	pcb_layer_id_t snum, dnum;
 	int type;
 	pcb_polygon_t *polygon;
 } mptlc;
