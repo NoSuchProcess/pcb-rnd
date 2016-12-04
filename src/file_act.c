@@ -41,6 +41,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "hid_init.h"
+#include "layer_vis.h"
 
 /* ---------------------------------------------------------------- */
 static const char pcb_acts_ExecCommand[] = "ExecCommand(command)";

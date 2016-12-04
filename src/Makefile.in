@@ -68,6 +68,7 @@ put /local/pcb/OBJS [@
 	insert.o
 	intersect.o
 	layer.o
+	layer_vis.o
 	library.o
 	list_conf.o
 	main.o

@@ -45,6 +45,7 @@
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"
 #include "obj_poly_draw.h"
+#include "layer_vis.h"
 
 
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100

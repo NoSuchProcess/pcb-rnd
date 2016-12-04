@@ -83,14 +83,6 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_
 
 /************ OLD API - new code should not use these **************/
 
-int ChangeGroupVisibility(int, pcb_bool, pcb_bool);
-void LayerStringToLayerStack(const char *);
-
-void ResetStackAndVisibility(void);
-void SaveStackAndVisibility(void);
-void RestoreStackAndVisibility(void);
-
-
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])
 #define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
 #define	CURRENT			(PCB->SilkActive ? &PCB->Data->Layer[ \

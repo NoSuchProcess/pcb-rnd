@@ -54,6 +54,7 @@
 #include "conf.h"
 #include "conf_core.h"
 #include "vtptr.h"
+#include "layer_vis.h"
 
 #include "hid_actions.h"
 #include "hid_init.h"

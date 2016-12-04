@@ -6,6 +6,7 @@
 #include "src/draw.h"
 #include "src/conf_core.h"
 #include "src/layer.h"
+#include "src/layer_vis.h"
 
 #define layer_check(layer) \
 	if ((layer < 0) || (layer >= PCB_MAX_LAYER+2)) \

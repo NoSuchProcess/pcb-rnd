@@ -42,6 +42,7 @@
 #include "hid_init.h"
 #include "compat_nls.h"
 #include "event.h"
+#include "layer_vis.h"
 
 #include "obj_elem_draw.h"
 #include "obj_pinvia_draw.h"

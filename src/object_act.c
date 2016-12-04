@@ -42,6 +42,7 @@
 #include "remove.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "layer_vis.h"
 
 /* --------------------------------------------------------------------------- */
 

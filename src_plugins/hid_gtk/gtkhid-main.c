@@ -26,6 +26,7 @@
 #include "layer.h"
 #include "ghid-search.h"
 #include "compat_nls.h"
+#include "layer_vis.h"
 
 #include "gtkhid.h"
 

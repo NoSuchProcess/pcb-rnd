@@ -63,6 +63,7 @@
 #include "route_style.h"
 #include "compat_fs.h"
 #include "compat_nls.h"
+#include "layer_vis.h"
 
 /* for opendir */
 #include "compat_inc.h"

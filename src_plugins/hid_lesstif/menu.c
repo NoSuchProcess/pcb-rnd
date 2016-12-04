@@ -25,6 +25,7 @@
 #include "stdarg.h"
 #include "event.h"
 #include "compat_misc.h"
+#include "layer_vis.h"
 #include <genht/hash.h>
 
 Widget lesstif_menubar;
