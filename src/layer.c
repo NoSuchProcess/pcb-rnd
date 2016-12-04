@@ -307,6 +307,19 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 	return res;
 }
 
+unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group_idx)
+{
+	unsigned int res = 0;
+	pcb_layergrp_id_t group;
+	int layeri;
+
+	for (group = 0; group < pcb_max_group; group++)
+		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++)
+			res |= pcb_layer_flags(PCB->LayerGroups.Entries[group][layeri]);
+
+	return res;
+}
+
 #define APPEND(n) \
 	do { \
 		if (res != NULL) { \

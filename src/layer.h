@@ -186,6 +186,7 @@ typedef enum {
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx);
+unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group_idx);
 
 /* map bits of a layer type (call cb for each bit set); return number of bits
    found. */
