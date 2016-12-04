@@ -1138,19 +1138,17 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 
 		fprintf(FP, "%*s", indentation + 2, "");
 
-		pcb_fprintf(FP, "(fp_text reference %s (at %.3mm %.3mm) ",
-								currentElementRef, xPos, yPos); /* + PCB_MM_TO_COORD(0.127)); */
+		pcb_fprintf(FP, "(fp_text reference %s (at 0.0 -2.56) ", currentElementRef); 
 		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(silkLayer));
 
 		fprintf(FP, "%*s", indentation + 4, "");
-		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
+		fprintf(FP, "(effects (font (size 1.397 -1.27) (thickness 0.2032)))\n");
 		fprintf(FP, "%*s)\n", indentation + 2, "");
 
 		fprintf(FP, "%*s", indentation + 2, "");
 		printf("Element SilkLayer: %s\n", kicad_sexpr_layer_to_text(silkLayer));
 
-		pcb_fprintf(FP, "(fp_text value %s (at %.3mm %.3mm) ",
-								currentElementVal, xPos, yPos); /* + PCB_MM_TO_COORD(0.254)); */
+		pcb_fprintf(FP, "(fp_text value %s (at 0.0 -1.27) ", currentElementVal);
 		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(silkLayer));
 
 		fprintf(FP, "%*s", indentation + 4, "");
