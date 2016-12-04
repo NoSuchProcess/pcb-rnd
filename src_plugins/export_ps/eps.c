@@ -615,7 +615,7 @@ void hid_eps_init()
 	eps_hid.get_export_options = eps_get_export_options;
 	eps_hid.do_export = eps_do_export;
 	eps_hid.parse_arguments = eps_parse_arguments;
-	eps_hid.set_layer = eps_set_layer;
+	eps_hid.set_layer_old = eps_set_layer;
 	eps_hid.make_gc = eps_make_gc;
 	eps_hid.destroy_gc = eps_destroy_gc;
 	eps_hid.use_mask = eps_use_mask;

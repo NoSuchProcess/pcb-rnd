@@ -3787,7 +3787,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 	lesstif_hid.invalidate_all = lesstif_invalidate_all;
 	lesstif_hid.notify_crosshair_change = lesstif_notify_crosshair_change;
 	lesstif_hid.notify_mark_change = lesstif_notify_mark_change;
-	lesstif_hid.set_layer = lesstif_set_layer;
+	lesstif_hid.set_layer_old = lesstif_set_layer;
 	lesstif_hid.make_gc = lesstif_make_gc;
 	lesstif_hid.destroy_gc = lesstif_destroy_gc;
 	lesstif_hid.use_mask = lesstif_use_mask;

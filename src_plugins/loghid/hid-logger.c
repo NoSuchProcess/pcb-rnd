@@ -48,7 +48,7 @@ static void log_pcb_notify_mark_change(pcb_bool changes_complete) {
 
 static int log_set_layer(const char *name, int group, int empty) {
 	pcb_fprintf(out_, "set_layer(name=%s, group=%d, empty=%s", name, group, empty ? "true" : "false");
-	return delegatee_->set_layer(name, group, empty);
+	return delegatee_->set_layer_old(name, group, empty);
 }
 
 static void log_end_layer() {

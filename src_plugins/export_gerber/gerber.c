@@ -1205,7 +1205,7 @@ pcb_uninit_t hid_export_gerber_init()
 	gerber_hid.get_export_options = gerber_get_export_options;
 	gerber_hid.do_export = gerber_do_export;
 	gerber_hid.parse_arguments = gerber_parse_arguments;
-	gerber_hid.set_layer = gerber_set_layer;
+	gerber_hid.set_layer_old = gerber_set_layer;
 	gerber_hid.make_gc = gerber_make_gc;
 	gerber_hid.destroy_gc = gerber_destroy_gc;
 	gerber_hid.use_mask = gerber_use_mask;

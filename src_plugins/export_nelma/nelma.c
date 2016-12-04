@@ -1000,7 +1000,7 @@ pcb_uninit_t hid_export_nelma_init()
 	nelma_hid.get_export_options = nelma_get_export_options;
 	nelma_hid.do_export = nelma_do_export;
 	nelma_hid.parse_arguments = nelma_parse_arguments;
-	nelma_hid.set_layer = nelma_set_layer;
+	nelma_hid.set_layer_old = nelma_set_layer;
 	nelma_hid.make_gc = nelma_make_gc;
 	nelma_hid.destroy_gc = nelma_destroy_gc;
 	nelma_hid.use_mask = nelma_use_mask;

@@ -209,12 +209,13 @@ struct hid_s {
 	   functions should be called.  If it returns pcb_true (nonzero), the
 	   items in that layer [group] should be drawn using the various
 	   drawing functions.  In addition to the MAX_LAYERS copper layer
-	   groups, you may select layers indicated by the macros SL_*
-	   defined above, or any others with an index of -1.  For copper
+	   groups, you may select virtual layers with an index of -1.  For copper
 	   layer groups, you may pass NULL for name to have a name fetched
-	   from the PCB struct.  The EMPTY argument is a hint - if set, the
+	   from the PCB struct.  The _empty argument is a hint - if set, the
 	   layer is empty, if zero it may be non-empty.  */
-	int (*set_layer) (const char *name_, int group_, int _empty);
+	int (*set_layer_old) (const char *name_, int group_, int _empty);
+/*	int (*set_layer) (const char *name_, pcb_layergrp_id_t group_, int _empty);*/
+
 
 	/* Tell the GUI the layer last selected has been finished with */
 	void (*end_layer) (void);

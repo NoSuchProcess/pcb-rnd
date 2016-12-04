@@ -1144,7 +1144,7 @@ pcb_uninit_t hid_export_openscad_init()
 	scad_hid.get_export_options = scad_get_export_options;
 	scad_hid.do_export = scad_do_export;
 	scad_hid.parse_arguments = scad_parse_arguments;
-	scad_hid.set_layer = scad_set_layer;
+	scad_hid.set_layer_old = scad_set_layer;
 	scad_hid.calibrate = scad_calibrate;
 	scad_hid.set_crosshair = scad_set_crosshair;
 

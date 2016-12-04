@@ -711,7 +711,7 @@ pcb_uninit_t hid_export_svg_init()
 	svg_hid.get_export_options = svg_get_export_options;
 	svg_hid.do_export = svg_do_export;
 	svg_hid.parse_arguments = svg_parse_arguments;
-	svg_hid.set_layer = svg_set_layer;
+	svg_hid.set_layer_old = svg_set_layer;
 	svg_hid.make_gc = svg_make_gc;
 	svg_hid.destroy_gc = svg_destroy_gc;
 	svg_hid.use_mask = svg_use_mask;

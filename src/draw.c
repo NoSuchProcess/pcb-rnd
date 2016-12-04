@@ -157,12 +157,12 @@ static void DrawEverything_holes(const pcb_box_t * drawn_area)
 	int plated, unplated;
 	pcb_board_count_holes(&plated, &unplated, drawn_area);
 
-	if (plated && pcb_gui->set_layer("plated-drill", SL(PDRILL, 0), 0)) {
+	if (plated && pcb_gui->set_layer_old("plated-drill", SL(PDRILL, 0), 0)) {
 		DrawHoles(pcb_true, pcb_false, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (unplated && pcb_gui->set_layer("unplated-drill", SL(UDRILL, 0), 0)) {
+	if (unplated && pcb_gui->set_layer_old("unplated-drill", SL(UDRILL, 0), 0)) {
 		DrawHoles(pcb_false, pcb_true, drawn_area);
 		pcb_gui->end_layer();
 	}
@@ -202,7 +202,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	 * first draw all 'invisible' stuff
 	 */
 	if (!conf_core.editor.check_planes
-			&& pcb_gui->set_layer("invisible", SL(INVISIBLE, 0), 0)) {
+			&& pcb_gui->set_layer_old("invisible", SL(INVISIBLE, 0), 0)) {
 		side = PCB_SWAP_IDENT ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
 		if (PCB->ElementOn) {
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
@@ -217,7 +217,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	for (i = ngroups - 1; i >= 0; i--) {
 		int group = drawn_groups[i];
 
-		if (pcb_gui->set_layer(0, group, 0)) {
+		if (pcb_gui->set_layer_old(0, group, 0)) {
 			DrawLayerGroup(group, drawn_area);
 			pcb_gui->end_layer();
 		}
@@ -233,22 +233,22 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		DrawEverything_holes(drawn_area);
 
 	/* Draw the solder mask if turned on */
-	if (pcb_gui->set_layer("componentmask", SL(MASK, TOP), 0)) {
+	if (pcb_gui->set_layer_old("componentmask", SL(MASK, TOP), 0)) {
 		DrawMask(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_gui->set_layer("soldermask", SL(MASK, BOTTOM), 0)) {
+	if (pcb_gui->set_layer_old("soldermask", SL(MASK, BOTTOM), 0)) {
 		DrawMask(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_gui->set_layer("topsilk", SL(SILK, TOP), 0)) {
+	if (pcb_gui->set_layer_old("topsilk", SL(SILK, TOP), 0)) {
 		DrawSilk(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_gui->set_layer("bottomsilk", SL(SILK, BOTTOM), 0)) {
+	if (pcb_gui->set_layer_old("bottomsilk", SL(SILK, BOTTOM), 0)) {
 		DrawSilk(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
@@ -261,35 +261,35 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		if (PCB->PinOn)
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_mark_callback, NULL, NULL);
 		/* Draw rat lines on top */
-		if (pcb_gui->set_layer("rats", SL(RATS, 0), 0)) {
+		if (pcb_gui->set_layer_old("rats", SL(RATS, 0), 0)) {
 			DrawRats(drawn_area);
 			pcb_gui->end_layer();
 		}
 	}
 
 	paste_empty = pcb_layer_is_paste_empty(PCB_COMPONENT_SIDE);
-	if (pcb_gui->set_layer("toppaste", SL(PASTE, TOP), paste_empty)) {
+	if (pcb_gui->set_layer_old("toppaste", SL(PASTE, TOP), paste_empty)) {
 		DrawPaste(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	paste_empty = pcb_layer_is_paste_empty(PCB_SOLDER_SIDE);
-	if (pcb_gui->set_layer("bottompaste", SL(PASTE, BOTTOM), paste_empty)) {
+	if (pcb_gui->set_layer_old("bottompaste", SL(PASTE, BOTTOM), paste_empty)) {
 		DrawPaste(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_gui->set_layer("topassembly", SL(ASSY, TOP), 0)) {
+	if (pcb_gui->set_layer_old("topassembly", SL(ASSY, TOP), 0)) {
 		PrintAssembly(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_gui->set_layer("bottomassembly", SL(ASSY, BOTTOM), 0)) {
+	if (pcb_gui->set_layer_old("bottomassembly", SL(ASSY, BOTTOM), 0)) {
 		PrintAssembly(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_gui->set_layer("fab", SL(FAB, 0), 0)) {
+	if (pcb_gui->set_layer_old("fab", SL(FAB, 0), 0)) {
 		pcb_stub_draw_fab(Output.fgGC);
 		pcb_gui->end_layer();
 	}

@@ -1505,7 +1505,7 @@ pcb_uninit_t hid_export_png_init()
 	png_hid.get_export_options = png_get_export_options;
 	png_hid.do_export = png_do_export;
 	png_hid.parse_arguments = png_parse_arguments;
-	png_hid.set_layer = png_set_layer;
+	png_hid.set_layer_old = png_set_layer;
 	png_hid.make_gc = png_make_gc;
 	png_hid.destroy_gc = png_destroy_gc;
 	png_hid.use_mask = png_use_mask;

@@ -1569,7 +1569,7 @@ void ps_ps_init(pcb_hid_t * hid)
 	hid->get_export_options = ps_get_export_options;
 	hid->do_export = ps_do_export;
 	hid->parse_arguments = ps_parse_arguments;
-	hid->set_layer = ps_set_layer;
+	hid->set_layer_old = ps_set_layer;
 	hid->make_gc = ps_make_gc;
 	hid->destroy_gc = ps_destroy_gc;
 	hid->use_mask = ps_use_mask;

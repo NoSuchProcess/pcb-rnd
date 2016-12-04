@@ -406,7 +406,7 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->parse_arguments = nogui_parse_arguments;
 	hid->invalidate_lr = nogui_invalidate_lr;
 	hid->invalidate_all = nogui_invalidate_all;
-	hid->set_layer = nogui_set_layer;
+	hid->set_layer_old = nogui_set_layer;
 	hid->end_layer = nogui_end_layer;
 	hid->make_gc = nogui_make_gc;
 	hid->destroy_gc = nogui_destroy_gc;

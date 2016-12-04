@@ -5955,7 +5955,7 @@ pcb_uninit_t hid_export_dxf_init()
 	dxf_hid.get_export_options = dxf_get_export_options;
 	dxf_hid.do_export = dxf_do_export;
 	dxf_hid.parse_arguments = dxf_parse_arguments;
-	dxf_hid.set_layer = dxf_set_layer;
+	dxf_hid.set_layer_old = dxf_set_layer;
 	dxf_hid.calibrate = dxf_calibrate;
 	dxf_hid.set_crosshair = dxf_set_crosshair;
 	dxf_hid.show_item = dxf_show_item;

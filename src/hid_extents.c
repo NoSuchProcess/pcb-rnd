@@ -10,7 +10,7 @@ typedef struct hid_gc_s {
 	int width;
 } hid_gc_s;
 
-static int extents_set_layer(const char *name, int group, int empty)
+static int extents_set_layer_old(const char *name, int group, int empty)
 {
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group) {
@@ -135,7 +135,7 @@ void hid_extents_init(void)
 	extents_hid.description = "used to calculate extents";
 	extents_hid.poly_before = 1;
 
-	extents_hid.set_layer = extents_set_layer;
+	extents_hid.set_layer_old = extents_set_layer_old;
 	extents_hid.make_gc = extents_make_gc;
 	extents_hid.destroy_gc = extents_destroy_gc;
 	extents_hid.use_mask = extents_use_mask;

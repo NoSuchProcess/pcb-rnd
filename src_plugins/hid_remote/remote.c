@@ -390,7 +390,7 @@ pcb_uninit_t hid_hid_remote_init()
 	remote_hid.parse_arguments = remote_parse_arguments;
 	remote_hid.invalidate_lr = remote_invalidate_lr;
 	remote_hid.invalidate_all = remote_invalidate_all;
-	remote_hid.set_layer = remote_set_layer;
+	remote_hid.set_layer_old = remote_set_layer;
 	remote_hid.make_gc = remote_make_gc;
 	remote_hid.destroy_gc = remote_destroy_gc;
 	remote_hid.use_mask = remote_use_mask;

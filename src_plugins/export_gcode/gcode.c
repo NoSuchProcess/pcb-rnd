@@ -891,7 +891,7 @@ pcb_uninit_t hid_export_gcode_init()
 	gcode_hid.get_export_options = gcode_get_export_options;
 	gcode_hid.do_export = gcode_do_export;
 	gcode_hid.parse_arguments = gcode_parse_arguments;
-	gcode_hid.set_layer = gcode_set_layer;
+	gcode_hid.set_layer_old = gcode_set_layer;
 	gcode_hid.make_gc = gcode_make_gc;
 	gcode_hid.destroy_gc = gcode_destroy_gc;
 	gcode_hid.use_mask = gcode_use_mask;
