@@ -915,3 +915,17 @@ int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;
 }
+
+int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty)
+{
+	/* if there's no GUI, that means no draw should be done */
+	if (pcb_gui == NULL)
+		return 0;
+
+	if (pcb_gui->set_layer_old != NULL)
+		return pcb_gui->set_layer_old(NULL, grp, is_empty);
+
+	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
+	return 1;
+}
+

@@ -216,7 +216,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	for (i = ngroups - 1; i >= 0; i--) {
 		pcb_layergrp_id_t group = drawn_groups[i];
 
-		if (pcb_gui->set_layer_old(0, group, 0)) {
+		if (pcb_layer_gui_set_glayer(group, 0)) {
 			DrawLayerGroup(group, drawn_area);
 			pcb_gui->end_layer();
 		}
