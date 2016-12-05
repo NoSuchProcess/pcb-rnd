@@ -52,6 +52,9 @@ user manual
 		autoroute
 		... (TODO)
 	7. io plugins
+		lihata
+		kicadl
+		kicad s expr
 	8. appendix
 		glossary
 		full index/catalog of actions (generated)
