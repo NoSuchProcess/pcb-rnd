@@ -348,6 +348,18 @@ do { \
 	else \
 */
 
+
+const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask)
+{
+	mask |= PCB_LYT_VIRTUAL;
+	const pcb_virt_layer_t *v;
+	for(v = pcb_virt_layers; v->name != NULL; v++)
+		if ((v->type & mask) == mask)
+			return v;
+	return NULL;
+}
+
+
 int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 {
 	int n, used = 0;

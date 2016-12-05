@@ -286,6 +286,9 @@ typedef struct pcb_virt_layer_s {
 
 extern pcb_virt_layer_t pcb_virt_layers[];
 
+/* Return the first virtual layer that fully matches mask */
+const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask);
+
 
 /********* OBSOLETE functions, do not use in new code *********/
 
