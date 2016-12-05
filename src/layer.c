@@ -47,8 +47,8 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 	{"topassembly",    SL(ASSY, TOP),     PCB_LYT_VIRTUAL + 9,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
 	{"bottomassembly", SL(ASSY, BOTTOM),  PCB_LYT_VIRTUAL + 10, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
 	{"fab",            SL(FAB, 0),        PCB_LYT_VIRTUAL + 11, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
-	{"plateddrill",    SL(PDRILL, 0),     PCB_LYT_VIRTUAL + 12, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
-	{"unplateddrill",  SL(UDRILL, 0),     PCB_LYT_VIRTUAL + 13, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
+	{"plated-drill",   SL(PDRILL, 0),     PCB_LYT_VIRTUAL + 12, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
+	{"unplated-drill", SL(UDRILL, 0),     PCB_LYT_VIRTUAL + 13, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
 	{ NULL, 0 },
 };
 
