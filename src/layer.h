@@ -119,7 +119,7 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_
 #define SL(type,side) (~0xfff | SL_##type | SL_##side##_SIDE)
 
 
-#define LAYER_IS_OUTLINE(idx) (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[idx].Name, "outline") == 0)
+#define LAYER_IS_OUTLINE(idx) (((idx) > 0) && ((idx) <= pcb_max_copper_layer) && (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0))
 
 #define GROUP_LOOP(data, group) do { 	\
 	pcb_cardinal_t entry; \

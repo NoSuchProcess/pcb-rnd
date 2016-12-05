@@ -38,6 +38,7 @@ const char *pcb_layer_type_to_file_name(int idx, int style)
 	pcb_layergrp_id_t group;
 	int nlayers;
 	const char *single_name;
+	unsigned int flags = pcb_layer_flags(idx);
 
 	switch (idx) {
 	case SL(SILK, TOP):
@@ -68,18 +69,18 @@ const char *pcb_layer_type_to_file_name(int idx, int style)
 		group = pcb_layer_get_group(idx);
 		nlayers = PCB->LayerGroups.Number[group];
 		single_name = PCB->Data->Layer[idx].Name;
-		if (group == pcb_layer_get_group(pcb_component_silk_layer)) {
+printf("JAJJ '%s' %x\n", single_name, flags);
+		if (flags & PCB_LYT_TOP) {
 			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
 				return single_name;
 			return "top";
 		}
-		else if (group == pcb_layer_get_group(pcb_solder_silk_layer)) {
+		else if (flags & PCB_LYT_BOTTOM) {
 			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
 				return single_name;
 			return "bottom";
 		}
-		else if (nlayers == 1
-						 && (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[idx].Name, "outline") == 0)) {
+		else if (flags & PCB_LYT_OUTLINE) {
 			return "outline";
 		}
 		else {
