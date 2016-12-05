@@ -83,8 +83,8 @@ static const char *pcb_layer_type_class_names[] = {
 	"INVALID", "location", "purpose", "property"
 };
 
-#define PCB_LAYER_VIRT_MIN (PCB_LYT_VIRTUAL + 1)
-#define PCB_LAYER_VIRT_MAX (PCB_LYT_VIRTUAL + 13)
+#define PCB_LAYER_VIRT_MIN (PCB_VLY_first + 1)
+#define PCB_LAYER_VIRT_MAX (PCB_VLY_end)
 
 
 pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)

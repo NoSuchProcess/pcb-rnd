@@ -186,6 +186,26 @@ typedef enum {
 } pcb_layer_type_t;
 
 
+typedef enum {
+	PCB_VLY_INVISIBLE,
+	PCB_VLY_TOP_MASK,
+	PCB_VLY_BOTTOM_MASK,
+	PCB_VLY_TOP_SILK,
+	PCB_VLY_BOTTOM_SILK,
+	PCB_VLY_RATS,
+	PCB_VLY_TOP_PASTE,
+	PCB_VLY_BOTTOM_PASTE,
+	PCB_VLY_TOP_ASSY,
+	PCB_VLY_BOTTOM_ASSY,
+	PCB_VLY_FAB,
+	PCB_VLY_PLATED_DRILL,
+	PCB_VLY_UNPLATED_DRILL,
+
+	/* for determining the range, do not use */
+	PCB_VLY_end,
+	PCB_VLY_first = PCB_VLY_INVISIBLE
+} pcb_virtual_layer_t;
+
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx);
 unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group_idx);
