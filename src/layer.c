@@ -84,7 +84,7 @@ static const char *pcb_layer_type_class_names[] = {
 };
 
 #define PCB_LAYER_VIRT_MIN (PCB_VLY_first + 1)
-#define PCB_LAYER_VIRT_MAX (PCB_VLY_end)
+#define PCB_LAYER_VIRT_MAX (PCB_VLY_end - 1)
 
 
 pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
@@ -898,4 +898,20 @@ int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, p
 		}
 	}
 	return found;
+}
+
+int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
+{
+	pcb_virt_layer_t *v = &pcb_virt_layers[vid];
+	assert((vid >= 0) && (vid < PCB_VLY_end));
+
+	/* if there's no GUI, that means no draw should be done */
+	if (pcb_gui == NULL)
+		return 0;
+
+	if (pcb_gui->set_layer_old != NULL)
+		return pcb_gui->set_layer_old(v->name, v->old_id, is_empty);
+
+	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
+	return 1;
 }

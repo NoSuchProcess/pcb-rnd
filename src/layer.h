@@ -206,6 +206,9 @@ typedef enum {
 	PCB_VLY_first = PCB_VLY_INVISIBLE
 } pcb_virtual_layer_t;
 
+/* call the gui to set a virtual layer */
+int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty);
+
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx);
 unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group_idx);
