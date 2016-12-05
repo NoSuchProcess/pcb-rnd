@@ -176,9 +176,9 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	int i, ngroups, side;
 	pcb_layergrp_id_t component, solder;
 	/* This is the list of layer groups we will draw.  */
-	int do_group[PCB_MAX_LAYERGRP];
+	pcb_layergrp_id_t do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
-	int drawn_groups[PCB_MAX_LAYERGRP];
+	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 
 	pcb_bool paste_empty;
 
@@ -214,7 +214,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	/* draw all layers in layerstack order */
 	for (i = ngroups - 1; i >= 0; i--) {
-		int group = drawn_groups[i];
+		pcb_layergrp_id_t group = drawn_groups[i];
 
 		if (pcb_gui->set_layer_old(0, group, 0)) {
 			DrawLayerGroup(group, drawn_area);
