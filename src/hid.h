@@ -8,6 +8,7 @@
 #include "drc.h"
 #include "global_typedefs.h"
 #include "attrib.h"
+#include "layer.h"
 
 typedef struct pcb_hid_attr_val_s  pcb_hid_attr_val_t;
 typedef struct pcb_hid_attribute_s pcb_hid_attribute_t;
@@ -203,18 +204,18 @@ struct hid_s {
 	void (*notify_crosshair_change) (pcb_bool changes_complete);
 	void (*notify_mark_change) (pcb_bool changes_complete);
 
-	/* During redraw or print/export cycles, this is called once per
-	   layer (or layer group, for copper layers).  If it returns false
-	   (zero), the HID does not want that layer, and none of the drawing
-	   functions should be called.  If it returns pcb_true (nonzero), the
-	   items in that layer [group] should be drawn using the various
-	   drawing functions.  In addition to the MAX_LAYERS copper layer
-	   groups, you may select virtual layers with an index of -1.  For copper
-	   layer groups, you may pass NULL for name to have a name fetched
-	   from the PCB struct.  The _empty argument is a hint - if set, the
-	   layer is empty, if zero it may be non-empty.  */
+	/* During redraw or print/export cycles, this is called once per layer group
+	   (physical layer); layer is the first layer in the group.
+	   TODO: The group may be -1 until the layer rewrite is finished.
+	   If it returns false (zero), the HID does not want that layer, and none of
+	   the drawing functions should be called.  If it returns pcb_true (nonzero),
+	   the items in that layer [group] should be drawn using the various drawing
+	   functions.  In addition to the copper layer groups, you may select virtual
+	   layers. The is_empty argument is a hint - if set, the layer is empty, if
+	   zero it may be non-empty. */
+	int (*set_layer_group)(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
+
 	int (*set_layer_old) (const char *name_, int group_, int _empty);
-/*	int (*set_layer) (const char *name_, pcb_layergrp_id_t group_, int _empty);*/
 
 
 	/* Tell the GUI the layer last selected has been finished with */

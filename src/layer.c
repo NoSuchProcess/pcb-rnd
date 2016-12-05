@@ -909,6 +909,10 @@ int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 	if (pcb_gui == NULL)
 		return 0;
 
+#warning TODO: need to pass the flags of the group, not the flags of the layer once we have a group for each layer
+	if (pcb_gui->set_layer_group != NULL)
+		return pcb_gui->set_layer_group(pcb_layer_lookup_group(vid), vid, pcb_layer_flags(vid), is_empty);
+
 	if (pcb_gui->set_layer_old != NULL)
 		return pcb_gui->set_layer_old(v->name, v->old_id, is_empty);
 
@@ -921,6 +925,9 @@ int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty)
 	/* if there's no GUI, that means no draw should be done */
 	if (pcb_gui == NULL)
 		return 0;
+
+	if (pcb_gui->set_layer_group != NULL)
+		return pcb_gui->set_layer_group(grp, PCB->LayerGroups.Entries[grp][0], pcb_layergrp_flags(grp), is_empty);
 
 	if (pcb_gui->set_layer_old != NULL)
 		return pcb_gui->set_layer_old(NULL, grp, is_empty);
