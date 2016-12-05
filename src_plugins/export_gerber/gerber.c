@@ -41,7 +41,6 @@ const char *gerber_cookie = "gerber HID";
 static pcb_hid_attribute_t *gerber_get_export_options(int *n);
 static void gerber_do_export(pcb_hid_attr_val_t * options);
 static void gerber_parse_arguments(int *argc, char ***argv);
-static int gerber_set_layer(const char *name, int group, int empty);
 static pcb_hid_gc_t gerber_make_gc(void);
 static void gerber_destroy_gc(pcb_hid_gc_t gc);
 static void gerber_use_mask(int use_it);
@@ -274,7 +273,7 @@ static int lncount = 0;
 static int finding_apertures = 0;
 static int pagecount = 0;
 static int linewidth = -1;
-static int lastgroup = -1;
+static pcb_layergrp_id_t lastgroup = -1;
 static int lastcap = -1;
 static int lastcolor = -1;
 static int print_group[PCB_MAX_LAYERGRP];
@@ -395,75 +394,52 @@ static pcb_box_t region;
 
 /* Very similar to pcb_layer_type_to_file_name() but appends only a
    three-character suffix compatible with Eagle's defaults.  */
-static void assign_eagle_file_suffix(char *dest, int idx)
+static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
 {
-	pcb_layergrp_id_t group;
-	int nlayers;
 	const char *suff = "out";
 
-	switch (idx) {
-	case SL(SILK, TOP):
+#define fmatch(flags, bits) (((flags) & (bits)) == (bits))
+	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_SILK))
 		suff = "plc";
-		break;
-	case SL(SILK, BOTTOM):
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_SILK))
 		suff = "pls";
-		break;
-	case SL(MASK, TOP):
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_MASK))
 		suff = "stc";
-		break;
-	case SL(MASK, BOTTOM):
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
 		suff = "sts";
-		break;
-	case SL(PDRILL, 0):
+	else if (fmatch(flags, PCB_LYT_PDRILL))
 		suff = "drd";
-		break;
-	case SL(UDRILL, 0):
+	else if (fmatch(flags, PCB_LYT_UDRILL))
 		suff = "dru";
-		break;
-	case SL(PASTE, TOP):
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
 		suff = "crc";
-		break;
-	case SL(PASTE, BOTTOM):
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_PASTE))
 		suff = "crs";
-		break;
-	case SL(INVISIBLE, 0):
+	else if (fmatch(flags, PCB_LYT_INVIS))
 		suff = "inv";
-		break;
-	case SL(FAB, 0):
+	else if (fmatch(flags, PCB_LYT_FAB))
 		suff = "fab";
-		break;
-	case SL(ASSY, TOP):
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_ASSY))
 		suff = "ast";
-		break;
-	case SL(ASSY, BOTTOM):
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_ASSY))
 		suff = "asb";
-		break;
-
-	default:
-		group = pcb_layer_get_group(idx);
-		nlayers = PCB->LayerGroups.Number[group];
-		if (group == pcb_layer_get_group(pcb_component_silk_layer)) {
-			suff = "cmp";
-		}
-		else if (group == pcb_layer_get_group(pcb_solder_silk_layer)) {
-			suff = "sol";
-		}
-		else if (nlayers == 1
-						 && (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[idx].Name, "outline") == 0)) {
-			suff = "oln";
-		}
-		else {
-			static char buf[20];
-			sprintf(buf, "ly%ld", group);
-			suff = buf;
-		}
-		break;
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_COPPER))
+		suff = "cmp";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_COPPER))
+		suff = "sol";
+	else if (fmatch(flags, PCB_LYT_OUTLINE))
+		suff = "oln";
+	else {
+		static char buf[20];
+		pcb_layergrp_id_t group = pcb_layer_lookup_group(lid);
+		sprintf(buf, "ly%ld", group);
+		suff = buf;
 	}
-
+#undef fmatch
 	strcpy(dest, suff);
 }
 
-static void assign_file_suffix(char *dest, int idx)
+static void assign_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
 {
 	int fns_style;
 	const char *sext = ".gbr";
@@ -480,20 +456,14 @@ static void assign_file_suffix(char *dest, int idx)
 		fns_style = PCB_FNS_first;
 		break;
 	case NAME_STYLE_EAGLE:
-		assign_eagle_file_suffix(dest, idx);
+		assign_eagle_file_suffix(dest, lid, flags);
 		return;
 	}
 
-	switch (idx) {
-	case SL(PDRILL, 0):
+	if ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL))
 		sext = ".cnc";
-		break;
-	case SL(UDRILL, 0):
-		sext = ".cnc";
-		break;
-	}
 
-	strcpy(dest, pcb_layer_type_to_file_name(idx, fns_style));
+	pcb_layer_to_file_name(dest, lid, flags, name_style);
 	strcat(dest, sext);
 }
 
@@ -610,25 +580,23 @@ static int drill_sort(const void *va, const void *vb)
 	return b->y - b->y;
 }
 
-static int gerber_set_layer(const char *name, int group, int empty)
+static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	int want_outline;
 	char *cp;
-	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
+	const char *group_name;
 
-	if (name == NULL)
-		name = PCB->Data->Layer[idx].Name;
-
-	if (idx >= 0 && idx < pcb_max_copper_layer && !print_layer[idx])
+	if (layer >= 0 && layer < pcb_max_copper_layer && !print_layer[layer])
 		return 0;
 
-	if (strcmp(name, "invisible") == 0)
+	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY))
 		return 0;
-	if (SL_TYPE(idx) == SL_ASSY)
-		return 0;
+
+#warning TODO
+	group_name = "TODO:group_name";
 
 	flash_drills = 0;
-	if (strcmp(name, "outline") == 0 || strcmp(name, "route") == 0)
+	if (flags & PCB_LYT_OUTLINE)
 		flash_drills = 1;
 
 	if (is_drill && n_pending_drills) {
@@ -647,8 +615,8 @@ static int gerber_set_layer(const char *name, int group, int empty)
 		pending_drills = NULL;
 	}
 
-	is_drill = (SL_TYPE(idx) == SL_PDRILL || SL_TYPE(idx) == SL_UDRILL);
-	is_mask = (SL_TYPE(idx) == SL_MASK);
+	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	is_mask = !!(flags & PCB_LYT_MASK);
 	current_mask = 0;
 #if 0
 	printf("Layer %s group %d drill %d mask %d\n", name, group, is_drill, is_mask);
@@ -679,7 +647,7 @@ static int gerber_set_layer(const char *name, int group, int empty)
 		f = NULL;
 
 		pagecount++;
-		assign_file_suffix(filesuff, idx);
+		assign_file_suffix(filesuff, layer, flags);
 		f = fopen(filename, "wb");	/* Binary needed to force CR-LF */
 		if (f == NULL) {
 			pcb_message(PCB_MSG_DEFAULT, "Error:  Could not open %s for writing.\n", filename);
@@ -704,7 +672,7 @@ static int gerber_set_layer(const char *name, int group, int empty)
 			return 1;
 		}
 
-		fprintf(f, "G04 start of page %d for group %d idx %d *\r\n", pagecount, group, idx);
+		fprintf(f, "G04 start of page %d for group %d layer_idx %d *\r\n", pagecount, group, layer);
 
 		/* Create a portable timestamp. */
 		currenttime = time(NULL);
@@ -714,7 +682,7 @@ static int gerber_set_layer(const char *name, int group, int empty)
 			strftime(utcTime, sizeof utcTime, fmt, gmtime(&currenttime));
 		}
 		/* Print a cute file header at the beginning of each file. */
-		fprintf(f, "G04 Title: %s, %s *\r\n", PCB_UNKNOWN(PCB->Name), PCB_UNKNOWN(name));
+		fprintf(f, "G04 Title: %s, %s *\r\n", PCB_UNKNOWN(PCB->Name), PCB_UNKNOWN(group_name));
 		fprintf(f, "G04 Creator: pcb-rnd " VERSION " *\r\n");
 		fprintf(f, "G04 CreationDate: %s *\r\n", utcTime);
 
@@ -760,23 +728,21 @@ emit_outline:
 	   and we want to "print outlines", and we have an outline layer,
 	   print the outline layer on this layer also.  */
 	want_outline = 0;
-	if (copy_outline_mode == COPY_OUTLINE_MASK && SL_TYPE(idx) == SL_MASK)
+	if (copy_outline_mode == COPY_OUTLINE_MASK && (flags & PCB_LYT_MASK))
 		want_outline = 1;
-	if (copy_outline_mode == COPY_OUTLINE_SILK && SL_TYPE(idx) == SL_SILK)
-		want_outline = 1;
-	if (copy_outline_mode == COPY_OUTLINE_ALL
-			&& (SL_TYPE(idx) == SL_SILK
-					|| SL_TYPE(idx) == SL_MASK || SL_TYPE(idx) == SL_FAB || SL_TYPE(idx) == SL_ASSY || SL_TYPE(idx) == 0))
+	if (copy_outline_mode == COPY_OUTLINE_SILK && (flags & PCB_LYT_SILK))
 		want_outline = 1;
 
-	if (want_outline && strcmp(name, "outline")
-			&& strcmp(name, "route")) {
-		if (outline_layer && outline_layer != PCB->Data->Layer + idx)
+#warning TODO: || SL_TYPE(idx) == 0))
+	if (copy_outline_mode == COPY_OUTLINE_ALL && ((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_ASSY)))
+		want_outline = 1;
+
+	if (want_outline && !(flags & PCB_LYT_OUTLINE)) {
+		if (outline_layer && outline_layer != PCB->Data->Layer + layer)
 			pcb_draw_layer(outline_layer, &region);
 		else if (!outline_layer) {
 			pcb_hid_gc_t gc = pcb_gui->make_gc();
-			printf("name %s idx %d\n", name, idx);
-			if (SL_TYPE(idx) == SL_SILK)
+			if (flags & PCB_LYT_SILK)
 				pcb_gui->set_line_width(gc, PCB->minSlk);
 			else if (group >= 0)
 				pcb_gui->set_line_width(gc, PCB->minWid);
@@ -1205,7 +1171,7 @@ pcb_uninit_t hid_export_gerber_init()
 	gerber_hid.get_export_options = gerber_get_export_options;
 	gerber_hid.do_export = gerber_do_export;
 	gerber_hid.parse_arguments = gerber_parse_arguments;
-	gerber_hid.set_layer_old = gerber_set_layer;
+	gerber_hid.set_layer_group = gerber_set_layer_group;
 	gerber_hid.make_gc = gerber_make_gc;
 	gerber_hid.destroy_gc = gerber_destroy_gc;
 	gerber_hid.use_mask = gerber_use_mask;
