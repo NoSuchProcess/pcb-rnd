@@ -32,6 +32,7 @@
 #include "hid_attrib.h"
 #include "compat_misc.h"
 
+#warning TODO: layer support: kill this
 const char *pcb_layer_type_to_file_name(int idx, int style)
 {
 	pcb_layergrp_id_t group;
