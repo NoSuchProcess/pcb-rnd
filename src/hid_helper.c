@@ -30,6 +30,7 @@
 #include "data.h"
 #include "hid_helper.h"
 #include "hid_attrib.h"
+#include "hid_helper.h"
 #include "compat_misc.h"
 
 #warning TODO: layer support: kill this
@@ -69,7 +70,6 @@ const char *pcb_layer_type_to_file_name(int idx, int style)
 		group = pcb_layer_get_group(idx);
 		nlayers = PCB->LayerGroups.Number[group];
 		single_name = PCB->Data->Layer[idx].Name;
-printf("JAJJ '%s' %x\n", single_name, flags);
 		if (flags & PCB_LYT_TOP) {
 			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
 				return single_name;
@@ -93,6 +93,56 @@ printf("JAJJ '%s' %x\n", single_name, flags);
 		break;
 	}
 }
+
+char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, pcb_file_name_style_t style)
+{
+	pcb_virt_layer_t *v;
+	pcb_layergrp_id_t group;
+	int nlayers;
+	const char *single_name, *res = NULL;
+
+	if (flags == 0)
+		flags = pcb_layer_flags(lid);
+
+	if (flags & PCB_LYT_OUTLINE) {
+		strcpy(dest, "outline");
+		return dest;
+	}
+
+	v = pcb_vlayer_get_first(flags);
+	if (v != NULL) {
+		strcpy(dest, v->name);
+		return dest;
+	}
+
+	
+	group = pcb_layer_get_group(lid);
+	nlayers = PCB->LayerGroups.Number[group];
+	single_name = pcb_layer_name(lid);
+
+	if (flags & PCB_LYT_TOP) {
+		if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
+			res = single_name;
+		res = "top";
+	}
+	else if (flags & PCB_LYT_BOTTOM) {
+		if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
+			res = single_name;
+		res = "bottom";
+	}
+	else {
+		static char buf[20];
+		if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 1))
+			res = single_name;
+		sprintf(buf, "group%ld", group);
+		res = buf;
+	}
+
+	assert(res != NULL);
+	strcpy(dest, res);
+	return dest;
+}
+
 
 void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * filename_attrib, const char *suffix, char **memory)
 {
