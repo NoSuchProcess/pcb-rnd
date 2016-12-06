@@ -316,10 +316,8 @@ unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group)
 	unsigned int res = 0;
 	int layeri;
 
-	for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
-		pcb_layer_id_t lid = (PCB->LayerGroups.Entries[group][layeri]);
+	for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++)
 		res |= pcb_layer_flags(PCB->LayerGroups.Entries[group][layeri]);
-	}
 
 	return res;
 }
@@ -924,9 +922,10 @@ int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 #warning TODO: need to pass the flags of the group, not the flags of the layer once we have a group for each layer
 	if (pcb_gui->set_layer_group != NULL) {
 		pcb_layer_id_t lid = v->data_layer_offs;
+		pcb_layergrp_id_t grp;
 		if (lid >= 0)
 			lid += pcb_max_copper_layer;
-		pcb_layergrp_id_t grp = pcb_layer_lookup_group(lid);
+		grp = pcb_layer_lookup_group(lid);
 		return pcb_gui->set_layer_group(grp, lid, v->type, is_empty);
 	}
 
