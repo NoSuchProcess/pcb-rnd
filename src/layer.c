@@ -39,8 +39,8 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      SL(INVISIBLE, 0),  PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
 	{"topmask",        SL(MASK, TOP),     PCB_LYT_VIRTUAL + 2,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_TOP },
 	{"bottommask",     SL(MASK, BOTTOM),  PCB_LYT_VIRTUAL + 3,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
-	{"topsilk",        SL(SILK, TOP),     PCB_LYT_VIRTUAL + 4,  +PCB_SOLDER_SIDE,    PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_TOP },
-	{"bottomsilk",     SL(SILK, BOTTOM),  PCB_LYT_VIRTUAL + 5,  +PCB_COMPONENT_SIDE, PCB_LYT_VIRTUAL | PCB_LYT_SILK | PCB_LYT_BOTTOM },
+	{"topsilk",        SL(SILK, TOP),     PCB_LYT_VIRTUAL + 4,  +PCB_SOLDER_SIDE,    PCB_LYT_SILK | PCB_LYT_TOP },
+	{"bottomsilk",     SL(SILK, BOTTOM),  PCB_LYT_VIRTUAL + 5,  +PCB_COMPONENT_SIDE, PCB_LYT_SILK | PCB_LYT_BOTTOM },
 	{"rats",           SL(RATS, 0),       PCB_LYT_VIRTUAL + 6,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_RAT },
 	{"toppaste",       SL(PASTE, TOP),    PCB_LYT_VIRTUAL + 7,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
 	{"bottompaste",    SL(PASTE, BOTTOM), PCB_LYT_VIRTUAL + 8,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
@@ -83,8 +83,8 @@ static const char *pcb_layer_type_class_names[] = {
 	"INVALID", "location", "purpose", "property"
 };
 
-#define PCB_LAYER_VIRT_MIN (PCB_VLY_first + 1)
-#define PCB_LAYER_VIRT_MAX (PCB_VLY_end - 1)
+#define PCB_LAYER_VIRT_MIN (PCB_LYT_VIRTUAL + PCB_VLY_first + 1)
+#define PCB_LAYER_VIRT_MAX (PCB_LYT_VIRTUAL + PCB_VLY_end - 1)
 
 
 pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
@@ -266,14 +266,14 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 {
 	unsigned int res = 0;
 
-	if ((layer_idx >= PCB_LAYER_VIRT_MIN) && (layer_idx <= PCB_LAYER_VIRT_MAX))
-		return pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].type;
-
 	if (layer_idx == pcb_solder_silk_layer)
 		return PCB_LYT_SILK | PCB_LYT_BOTTOM;
 
 	if (layer_idx == pcb_component_silk_layer)
 		return PCB_LYT_SILK | PCB_LYT_TOP;
+
+	if ((layer_idx >= PCB_LAYER_VIRT_MIN) && (layer_idx <= PCB_LAYER_VIRT_MAX))
+		return pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].type;
 
 	if (layer_idx > pcb_max_copper_layer+2)
 		return 0;
@@ -311,15 +311,15 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 	return res;
 }
 
-unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group_idx)
+unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group)
 {
 	unsigned int res = 0;
-	pcb_layergrp_id_t group;
 	int layeri;
 
-	for (group = 0; group < pcb_max_group; group++)
-		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++)
-			res |= pcb_layer_flags(PCB->LayerGroups.Entries[group][layeri]);
+	for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
+		pcb_layer_id_t lid = (PCB->LayerGroups.Entries[group][layeri]);
+		res |= pcb_layer_flags(PCB->LayerGroups.Entries[group][layeri]);
+	}
 
 	return res;
 }
@@ -351,10 +351,10 @@ do { \
 
 const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask)
 {
-	mask |= PCB_LYT_VIRTUAL;
 	const pcb_virt_layer_t *v;
+	mask &= (~PCB_LYT_VIRTUAL);
 	for(v = pcb_virt_layers; v->name != NULL; v++)
-		if ((v->type & mask) == mask)
+		if (((v->type & (~PCB_LYT_VIRTUAL)) & mask) == mask)
 			return v;
 	return NULL;
 }
@@ -922,8 +922,13 @@ int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 		return 0;
 
 #warning TODO: need to pass the flags of the group, not the flags of the layer once we have a group for each layer
-	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(pcb_layer_lookup_group(vid), vid, pcb_layer_flags(vid), is_empty);
+	if (pcb_gui->set_layer_group != NULL) {
+		pcb_layer_id_t lid = v->data_layer_offs;
+		if (lid >= 0)
+			lid += pcb_max_copper_layer;
+		pcb_layergrp_id_t grp = pcb_layer_lookup_group(lid);
+		return pcb_gui->set_layer_group(grp, lid, v->type, is_empty);
+	}
 
 	if (pcb_gui->set_layer_old != NULL)
 		return pcb_gui->set_layer_old(v->name, v->old_id, is_empty);
