@@ -276,8 +276,6 @@ static int linewidth = -1;
 static pcb_layergrp_id_t lastgroup = -1;
 static int lastcap = -1;
 static int lastcolor = -1;
-static int print_group[PCB_MAX_LAYERGRP];
-static int print_layer[PCB_MAX_LAYER];
 static int lastX, lastY;				/* the last X and Y coordinate */
 
 static const char *copy_outline_names[] = {
@@ -462,7 +460,6 @@ static void assign_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flag
 
 	if ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL))
 		sext = ".cnc";
-
 	pcb_layer_to_file_name(dest, lid, flags, name_style);
 	strcat(dest, sext);
 }
@@ -510,26 +507,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	strcat(filename, ".");
 	filesuff = filename + strlen(filename);
 
-	if (all_layers) {
-		memset(print_group, 1, sizeof(print_group));
-		memset(print_layer, 1, sizeof(print_layer));
-	}
-	else {
-		memset(print_group, 0, sizeof(print_group));
-		memset(print_layer, 0, sizeof(print_layer));
-	}
-
 	pcb_hid_save_and_show_layer_ons(save_ons);
-	for (i = 0; i < pcb_max_copper_layer; i++) {
-		pcb_layer_t *layer = PCB->Data->Layer + i;
-		if (!PCB_LAYER_IS_EMPTY(layer))
-			print_group[pcb_layer_get_group(i)] = 1;
-	}
-	print_group[pcb_layer_get_group(pcb_solder_silk_layer)] = 1;
-	print_group[pcb_layer_get_group(pcb_component_silk_layer)] = 1;
-	for (i = 0; i < pcb_max_copper_layer; i++)
-		if (print_group[pcb_layer_get_group(i)])
-			print_layer[i] = 1;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
@@ -586,11 +564,19 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 	char *cp;
 	const char *group_name;
 
-	if (layer >= 0 && layer < pcb_max_copper_layer && !print_layer[layer])
-		return 0;
+#if 0
+	printf(" Layer %s group %lx drill %d mask %d flags=%lx\n", pcb_layer_name(layer), group, is_drill, is_mask, flags);
+#endif
 
-	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY))
+
+	if (!all_layers)
+		if (pcb_is_layergrp_empty(group))
+			return 0;
+
+	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY)) {
+/*		printf("  nope: invis %d or assy %d\n", (flags & PCB_LYT_INVIS), (flags & PCB_LYT_ASSY));*/
 		return 0;
+	}
 
 #warning TODO
 	group_name = "TODO:group_name";
@@ -618,10 +604,6 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
 	is_mask = !!(flags & PCB_LYT_MASK);
 	current_mask = 0;
-#if 0
-	printf("Layer %s group %d drill %d mask %d\n", name, group, is_drill, is_mask);
-#endif
-
 	if (group < 0 || group != lastgroup) {
 		time_t currenttime;
 		char utcTime[64];
