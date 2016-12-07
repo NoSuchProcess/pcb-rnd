@@ -89,7 +89,41 @@ static const char *pcb_layer_type_class_names[] = {
 
 pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
 {
-	return PCB_LAYER_IS_EMPTY(layer);
+	unsigned int flags;
+	pcb_layer_id_t lid = pcb_layer_id(PCB->Data, layer);
+
+	if (lid < 0)
+		return 1;
+
+	flags = pcb_layer_flags(lid);
+
+	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_TOP)) { /* if our layer is the top copper layer and we have an element pad on it, it's non-empty */
+		PCB_PAD_ALL_LOOP(PCB->Data);
+		{
+			if (!PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))
+				return 0;
+		}
+		PCB_ENDALL_LOOP;
+	}
+
+
+	if ((flags & PCB_LYT_COPPER) && (flags & PCB_LYT_BOTTOM)) { /* if our layer is the bottom copper layer and we have an element pad on it, it's non-empty */
+		PCB_PAD_ALL_LOOP(PCB->Data);
+		{
+			if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad))
+				return 0;
+		}
+		PCB_ENDALL_LOOP;
+	}
+
+#warning TODO: check top silk and bottom silk for elements
+
+	/* normal case: a layer is empty if all lists are empty */
+	return
+		(linelist_length(&layer->Line) == 0) &&
+		(arclist_length(&layer->Arc) == 0) &&
+		(polylist_length(&layer->Polygon) == 0) &&
+		(textlist_length(&layer->Text) == 0);
 }
 
 pcb_bool pcb_layer_is_empty(pcb_layer_id_t num)
