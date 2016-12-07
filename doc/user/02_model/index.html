@@ -234,7 +234,46 @@ set of symmetrical and asymmetrical set:
 	<tr><td>asymmetrical   <td> <img src=TODO>
 </table>
 
-<h4> 2.4.6. element objects </h4>
+<h4> 2.4.6. element objects and footprints </h4>
+
+<p>
+An element is an instance of a footprint that is already placed on the
+board or loaded into a paste buffer.
+
+<p>
+In the footprint form the construct is small and flexible. Ot describes
+all the physical parts, like pins, pads, silk lines. In the same time a
+footprint leaves many details blank, e.g. it doesn't specify exact layers,
+it doesn't a have font and the refdes is random.
+
+<p>
+When the footprint is loaded, it becomes an element. The element inherits all
+the physical properties and the blank details are filled in with the data taken
+from the current board: the layer binding is done, all parts of the element
+lands on a specific board layer; the refdes is rendered using the font in
+the current board.
+
+<p>
+The footprint -&gt; element instantiation is also a copy. Once the element
+is created from a footprint, the element is a self-containing object and
+does not have any direct reference to the footprint it was once derived from.
+Changes to the original footprint will <b>not</b> affect the elements.
+
+<p>
+In other words, a footprint is an abstract recipe, part of a
+library, while an element is a land pattern already embedded in a
+specific design and describes actual copper and silk.
+
+<p>
+Currently an element or footprint can contain the following objects:
+<ul>
+	<li> pins - same as vias, but also have a pin number and pin name within the element; they affect all layers
+	<li> pads - short lines, usually with rectangle end cap; pads also have number and name; they affect the top or bottom copper layer only
+	<li> silk lines - on top or bottom silk layer
+	<li> silk arcs - on top or bottom silk layer
+	<li> silk text - limited: only one of refdes, element name and element value is displayed at the time
+</ul>
+
 
 <h4> 2.4.7. pins of elements </h4>
 
