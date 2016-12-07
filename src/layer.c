@@ -238,11 +238,9 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 {
 	pcb_layergrp_id_t group, i;
 
-	if ((Layer < 0) || (Layer > pcb_max_copper_layer))
+#warning TODO: layer group cleanup: remove this +2 for the silks
+	if ((Layer < 0) || (Layer > pcb_max_copper_layer+2))
 		return -1;
-
-	if (Layer == pcb_max_copper_layer)
-		return pcb_max_group;
 
 	for (group = 0; group < pcb_max_group; group++)
 		for (i = 0; i < PCB->LayerGroups.Number[group]; i++)
