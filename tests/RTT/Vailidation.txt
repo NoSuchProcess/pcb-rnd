@@ -1,0 +1,17 @@
+# Validation state of references
+#
+# Each line is a file from ref/, in the following format:
+#  The first word is the file name, relative to ref/
+#  The second word is either "good" or "bad"
+#  The third word is the revision number the output file had at the moment of
+#   check (the "Last Changed Revision line in 'svn info ref/filename')
+#  The rest of the line is a real short summary on whaty's broken, if the
+#   second column was "bad".
+#
+# There's no particular order of lines. If you recheck a file, edit the exiting
+# line, each ref file should have only one line in this file. If you are doing
+# checks, please insert new lines somewhere in the list, preferrably not at the
+# end, so we can avoid svn conflicts in concurrent edits.
+
+Proto.bom good r5452
+arc_angles.bom good r5452
