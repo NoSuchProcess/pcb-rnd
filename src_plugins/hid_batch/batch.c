@@ -157,7 +157,7 @@ static void batch_invalidate_all(void)
 {
 }
 
-static int batch_set_layer(const char *name, int idx, int empty)
+static int batch_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	return 0;
 }
@@ -342,7 +342,7 @@ pcb_uninit_t hid_hid_batch_init()
 	batch_hid.parse_arguments = batch_parse_arguments;
 	batch_hid.invalidate_lr = batch_invalidate_lr;
 	batch_hid.invalidate_all = batch_invalidate_all;
-	batch_hid.set_layer_old = batch_set_layer;
+	batch_hid.set_layer_group = batch_set_layer_group;
 	batch_hid.make_gc = batch_make_gc;
 	batch_hid.destroy_gc = batch_destroy_gc;
 	batch_hid.use_mask = batch_use_mask;
