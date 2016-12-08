@@ -36,7 +36,7 @@
 
 const char *ps_cookie = "ps HID";
 
-static int ps_set_layer(const char *name, int group, int empty);
+static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 static void use_gc(pcb_hid_gc_t gc);
 
 typedef struct hid_gc_s {
@@ -379,8 +379,6 @@ static struct {
 	FILE *f;
 	int pagecount;
 	pcb_coord_t linewidth;
-	pcb_bool print_group[PCB_MAX_LAYERGRP];
-	pcb_bool print_layer[PCB_MAX_LAYER];
 	double fade_ratio;
 	pcb_bool multi_file;
 	pcb_coord_t media_width, media_height, ps_width, ps_height;
@@ -598,8 +596,8 @@ static FILE *psopen(const char *base, const char *which)
    or eps.  */
 void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
-	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
+	pcb_layer_id_t lid;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -644,32 +642,19 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		global.scale_factor *= MIN(zx, zy);
 	}
 
-	memset(global.print_group, 0, sizeof(global.print_group));
-	memset(global.print_layer, 0, sizeof(global.print_layer));
-
-	global.outline_layer = NULL;
-
-	for (i = 0; i < pcb_max_copper_layer; i++) {
-		pcb_layer_t *layer = PCB->Data->Layer + i;
-		if (!PCB_LAYER_IS_EMPTY(layer))
-			global.print_group[pcb_layer_get_group(i)] = 1;
-
-		if (strcmp(layer->Name, "outline") == 0 || strcmp(layer->Name, "route") == 0) {
-			global.outline_layer = layer;
-		}
-	}
-	global.print_group[pcb_layer_get_group(pcb_solder_silk_layer)] = 1;
-	global.print_group[pcb_layer_get_group(pcb_component_silk_layer)] = 1;
-	for (i = 0; i < pcb_max_copper_layer; i++)
-		if (global.print_group[pcb_layer_get_group(i)])
-			global.print_layer[i] = 1;
+	lid = -1;
+	pcb_layer_list(PCB_LYT_OUTLINE, &lid, 1);
+	if (lid >= 0)
+		global.outline_layer = pcb_get_layer(lid);
+	else
+		global.outline_layer = NULL;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 
 	global.linewidth = -1;
 	/* reset static vars */
-	ps_set_layer(NULL, 0, -1);
+	ps_set_layer_group(-1, -1, 0, -1);
 	use_gc(NULL);
 
 	global.region.X1 = 0;
@@ -692,7 +677,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	global.pagecount = 1;					/* Reset 'pagecount' if single file */
 	global.doing_toc = 0;
-	ps_set_layer(NULL, 0, -1);		/* reset static vars */
+	ps_set_layer_group(-1, -1, 0, -1); /* reset static vars */
 	pcb_hid_expose_callback(&ps_hid, &global.region, 0);
 
 	if (the_file)
@@ -769,32 +754,36 @@ static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, pcb_coord_t dx, pcb_
 	fprintf(fh, "stroke grestore\n");
 }
 
-static int ps_set_layer(const char *name, int group, int empty)
+static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
+	char tmp_fn[PCB_PATH_MAX];
+	char tmp_ln[PCB_PATH_MAX];
 	static int lastgroup = -1;
 	time_t currenttime;
-	int idx = (group >= 0 && group < pcb_max_group)
-		? PCB->LayerGroups.Entries[group][0]
-		: group;
-	if (name == 0)
-		name = PCB->Data->Layer[idx].Name;
+	const char *name;
 
-	if (empty == -1)
+	if (is_empty == -1) {
 		lastgroup = -1;
-	if (empty)
+		return 0;
+	}
+
+	if (is_empty)
 		return 0;
 
-	if (idx >= 0 && idx < pcb_max_copper_layer && !global.print_layer[idx])
+	if ((group >= 0) && pcb_is_layergrp_empty(group))
 		return 0;
 
-	if (strcmp(name, "invisible") == 0)
+	if (flags & PCB_LYT_INVIS)
 		return 0;
 
-	global.is_drill = (SL_TYPE(idx) == SL_PDRILL || SL_TYPE(idx) == SL_UDRILL);
-	global.is_mask = (SL_TYPE(idx) == SL_MASK);
-	global.is_assy = (SL_TYPE(idx) == SL_ASSY);
-	global.is_copper = (SL_TYPE(idx) == 0);
-	global.is_paste = (SL_TYPE(idx) == SL_PASTE);
+	name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
+
+	global.is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	global.is_mask = !!(flags & PCB_LYT_MASK);
+	global.is_assy = !!(flags & PCB_LYT_ASSY);
+	global.is_copper = !!(flags & PCB_LYT_COPPER);
+	global.is_paste = !!(flags & PCB_LYT_PASTE);
+
 #if 0
 	printf("Layer %s group %d drill %d mask %d\n", name, group, global.is_drill, global.is_mask);
 #endif
@@ -834,7 +823,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 				ps_end_file(global.f);
 				fclose(global.f);
 			}
-			global.f = psopen(global.filename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
+			global.f = psopen(global.filename, pcb_layer_to_file_name(tmp_fn, layer, flags, PCB_FNS_fixed));
 			if (!global.f) {
 				perror(global.filename);
 				return 0;
@@ -851,21 +840,20 @@ static int ps_set_layer(const char *name, int group, int empty)
 		 * ordinal page number must reflect the position of that page in
 		 * the body of the PostScript file and must start with 1, not 0.
 		 */
-		fprintf(global.f, "%%%%Page: %s %d\n", pcb_layer_type_to_file_name(idx, PCB_FNS_fixed), global.pagecount);
+		fprintf(global.f, "%%%%Page: %s %d\n", pcb_layer_to_file_name(tmp_fn, layer, flags, PCB_FNS_fixed), global.pagecount);
 
 		if (global.mirror)
 			mirror_this = !mirror_this;
-		if (global.automirror && ((idx >= 0 && group == pcb_layer_get_group(pcb_solder_silk_layer))
-															|| (idx < 0 && SL_SIDE(idx) == SL_BOTTOM_SIDE)))
+		if (global.automirror && (flags & PCB_LYT_BOTTOM))
 			mirror_this = !mirror_this;
 
 		fprintf(global.f, "/Helvetica findfont 10 scalefont setfont\n");
 		if (global.legend) {
 			fprintf(global.f, "30 30 moveto (%s) show\n", PCB->Filename);
 			if (PCB->Name)
-				fprintf(global.f, "30 41 moveto (%s, %s) show\n", PCB->Name, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
+				fprintf(global.f, "30 41 moveto (%s, %s) show\n", PCB->Name, pcb_layer_to_file_name(tmp_fn, layer, flags, PCB_FNS_fixed));
 			else
-				fprintf(global.f, "30 41 moveto (%s) show\n", pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
+				fprintf(global.f, "30 41 moveto (%s) show\n", pcb_layer_to_file_name(tmp_fn, layer, flags, PCB_FNS_fixed));
 			if (mirror_this)
 				fprintf(global.f, "( \\(mirrored\\)) show\n");
 
@@ -890,14 +878,14 @@ static int ps_set_layer(const char *name, int group, int empty)
 		if (mirror_this)
 			fprintf(global.f, "1 -1 scale\n");
 
-		fprintf(global.f, "%g dup neg scale\n", (SL_TYPE(idx) == SL_FAB) ? 1.0 : global.scale_factor);
+		fprintf(global.f, "%g dup neg scale\n", (flags & PCB_LYT_FAB) ? 1.0 : global.scale_factor);
 		pcb_fprintf(global.f, "%mi %mi translate\n", -PCB->MaxWidth / 2, -PCB->MaxHeight / 2);
 
 		/* Keep the drill list from falling off the left edge of the paper,
 		 * even if it means some of the board falls off the right edge.
 		 * If users don't want to make smaller boards, or use fewer drill
 		 * sizes, they can always ignore this sheet. */
-		if (SL_TYPE(idx) == SL_FAB) {
+		if (flags & PCB_LYT_FAB) {
 			pcb_coord_t natural = boffset - PCB_MIL_TO_COORD(500) - PCB->MaxHeight / 2;
 			pcb_coord_t needed = pcb_stub_draw_fab_overhang();
 			pcb_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
@@ -949,7 +937,7 @@ static int ps_set_layer(const char *name, int group, int empty)
 #if 0
 	/* Try to outsmart ps2pdf's heuristics for page rotation, by putting
 	 * text on all pages -- even if that text is blank */
-	if (SL_TYPE(idx) != SL_FAB)
+	if (!(flags & PCB_LYT_FAB))
 		fprintf(global.f, "gsave tx ty translate 1 -1 scale 0 0 moveto (Layer %s) show grestore newpath /ty ty ts sub def\n", name);
 	else
 		fprintf(global.f, "gsave tx ty translate 1 -1 scale 0 0 moveto ( ) show grestore newpath /ty ty ts sub def\n");
@@ -960,7 +948,8 @@ static int ps_set_layer(const char *name, int group, int empty)
 	   print the outline layer on this layer also.  */
 	if (global.outline &&
 			global.outline_layer != NULL &&
-			global.outline_layer != PCB->Data->Layer + idx && strcmp(name, "outline") != 0 && strcmp(name, "route") != 0) {
+			global.outline_layer != pcb_get_layer(layer) &&
+			!(flags & PCB_LYT_OUTLINE)) {
 		pcb_draw_layer(global.outline_layer, &global.region);
 	}
 
@@ -1569,7 +1558,7 @@ void ps_ps_init(pcb_hid_t * hid)
 	hid->get_export_options = ps_get_export_options;
 	hid->do_export = ps_do_export;
 	hid->parse_arguments = ps_parse_arguments;
-	hid->set_layer_old = ps_set_layer;
+	hid->set_layer_group = ps_set_layer_group;
 	hid->make_gc = ps_make_gc;
 	hid->destroy_gc = ps_destroy_gc;
 	hid->use_mask = ps_use_mask;
