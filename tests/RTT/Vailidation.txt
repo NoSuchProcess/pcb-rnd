@@ -12,6 +12,12 @@
 # line, each ref file should have only one line in this file. If you are doing
 # checks, please insert new lines somewhere in the list, preferrably not at the
 # end, so we can avoid svn conflicts in concurrent edits.
+#
+# Test method: open the .pcb file with pcb-rnd, open the ref/ file with
+# the appropriate viewer, look at them side by side and decide if the reference
+# output fully matches the input, in all relevant details. What relevent
+# details are can be file format specific.
+#
 
 Proto.bom good r5452
 arc_angles.bom good r5452
