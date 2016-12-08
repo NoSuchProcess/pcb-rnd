@@ -286,6 +286,10 @@ extern pcb_virt_layer_t pcb_virt_layers[];
 /* Return the first virtual layer that fully matches mask */
 const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask);
 
+/* Returns whether the given unsigned int layer flags corresponds to a layer
+   that's on the visible side of the board at the moment. */
+#define PCB_LAYERFLG_ON_VISIBLE_SIDE(uint_flags) \
+	(!!(conf_core.editor.show_solder_side ? ((uint_flags) & PCB_LYT_BOTTOM) : ((uint_flags) & PCB_LYT_TOP)))
 
 /********* OBSOLETE functions, do not use in new code *********/
 
