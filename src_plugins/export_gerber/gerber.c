@@ -570,7 +570,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 
 
 	if (!all_layers)
-		if (pcb_is_layergrp_empty(group))
+		if ((group >= 0) && pcb_is_layergrp_empty(group))
 			return 0;
 
 	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY)) {
