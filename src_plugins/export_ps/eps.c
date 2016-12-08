@@ -31,7 +31,7 @@
 static pcb_hid_attribute_t *eps_get_export_options(int *n);
 static void eps_do_export(pcb_hid_attr_val_t * options);
 static void eps_parse_arguments(int *argc, char ***argv);
-static int eps_set_layer(const char *name, int group, int empty);
+static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 static pcb_hid_gc_t eps_make_gc(void);
 static void eps_destroy_gc(pcb_hid_gc_t gc);
 static void eps_use_mask(int use_it);
@@ -344,48 +344,43 @@ static int is_mask;
 static int is_paste;
 static int is_drill;
 
-static int eps_set_layer(const char *name, int group, int empty)
+static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
-	if (name == 0)
-		name = PCB->Data->Layer[idx].Name;
+	char tmp_ln[PCB_PATH_MAX];
+	const char *name;
 
-	if (idx >= 0 && idx < pcb_max_copper_layer && !print_layer[idx])
-		return 0;
-	if (SL_TYPE(idx) == SL_ASSY || SL_TYPE(idx) == SL_FAB)
+	if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_INVIS))
 		return 0;
 
-	if (strcmp(name, "invisible") == 0)
+	if ((group >= 0) && pcb_is_layergrp_empty(group))
 		return 0;
 
-	is_drill = (SL_TYPE(idx) == SL_PDRILL || SL_TYPE(idx) == SL_UDRILL);
-	is_mask = (SL_TYPE(idx) == SL_MASK);
-	is_paste = (SL_TYPE(idx) == SL_PASTE);
+
+	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	is_mask = (flags & PCB_LYT_MASK);
+	is_paste = !!(flags & PCB_LYT_PASTE);
 
 	if (is_mask || is_paste)
 		return 0;
+
+	name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
+
 #if 0
 	printf("Layer %s group %d drill %d mask %d\n", name, group, is_drill, is_mask);
 #endif
-	fprintf(f, "%% Layer %s group %d drill %d mask %d\n", name, group, is_drill, is_mask);
+	fprintf(f, "%% Layer %s group %ld drill %d mask %d\n", name, group, is_drill, is_mask);
 
 	if (as_shown) {
-		switch (idx) {
-		case SL(SILK, TOP):
-		case SL(SILK, BOTTOM):
-			if (SL_MYSIDE(idx))
-				return PCB->ElementOn;
-			else
-				return 0;
-		}
+		if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
+			return PCB->ElementOn;
+		else
+			return 0;
 	}
 	else {
-		switch (idx) {
-		case SL(SILK, TOP):
+		if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_TOP))
 			return 1;
-		case SL(SILK, BOTTOM):
+		if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_BOTTOM))
 			return 0;
-		}
 	}
 
 	return 1;
@@ -615,7 +610,7 @@ void hid_eps_init()
 	eps_hid.get_export_options = eps_get_export_options;
 	eps_hid.do_export = eps_do_export;
 	eps_hid.parse_arguments = eps_parse_arguments;
-	eps_hid.set_layer_old = eps_set_layer;
+	eps_hid.set_layer_group = eps_set_layer_group;
 	eps_hid.make_gc = eps_make_gc;
 	eps_hid.destroy_gc = eps_destroy_gc;
 	eps_hid.use_mask = eps_use_mask;
