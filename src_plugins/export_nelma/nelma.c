@@ -504,6 +504,7 @@ void nelma_choose_groups()
 
 	for (n = 0; n < pcb_max_copper_layer; n++) {
 		layer = &PCB->Data->Layer[n];
+		unsigned int flags = pcb_layer_flags(n);
 
 		if (!PCB_LAYER_IS_EMPTY(layer)) {
 			/* layer isn't empty */
@@ -513,7 +514,7 @@ void nelma_choose_groups()
 			 * layers have negative indexes?
 			 */
 
-			if (SL_TYPE(n) == 0) {
+			if (flags & PCB_LYT_COPPER) {
 				/* layer is a copper layer */
 				m = pcb_layer_get_group(n);
 
@@ -667,18 +668,16 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 
 /* *** PNG export (slightly modified code from PNG export HID) ************* */
 
-static int nelma_set_layer(const char *name, int group, int empty)
+static int nelma_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
-
-	if (name == 0) {
-		name = PCB->Data->Layer[idx].Name;
-	}
-	if (strcmp(name, "invisible") == 0) {
+	if (flags & PCB_LYT_INVIS)
 		return 0;
-	}
-	is_drill = (SL_TYPE(idx) == SL_PDRILL || SL_TYPE(idx) == SL_UDRILL);
-	is_mask = (SL_TYPE(idx) == SL_MASK);
+
+	if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK)
+		return 0;
+
+	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	is_mask = !!(flags & PCB_LYT_MASK);
 
 	if (is_mask) {
 		/* Don't print masks */
@@ -1000,7 +999,7 @@ pcb_uninit_t hid_export_nelma_init()
 	nelma_hid.get_export_options = nelma_get_export_options;
 	nelma_hid.do_export = nelma_do_export;
 	nelma_hid.parse_arguments = nelma_parse_arguments;
-	nelma_hid.set_layer_old = nelma_set_layer;
+	nelma_hid.set_layer_group = nelma_set_layer_group;
 	nelma_hid.make_gc = nelma_make_gc;
 	nelma_hid.destroy_gc = nelma_destroy_gc;
 	nelma_hid.use_mask = nelma_use_mask;
