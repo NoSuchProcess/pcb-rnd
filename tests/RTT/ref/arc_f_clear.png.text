@@ -1,0 +1,24 @@
+
+polygone
+width 541 pixels
+height 391 pixels
+
+small near circle completely in polygon
+width 13 pixels
+clearance on the left 22 pixels
+clearance on the right 25 pixels
+clearance on the top 23 pixels
+clearance on the bottom 25 pixels
+
+longer arc completely in polygon
+line width 13 pixels
+width 163 pixels
+height 162 pixels
+clearance on the bottom right end 25 pixels
+clearance on the top right end 23 pixels
+clearance on the end right end 25 pixels
+clearance on the right top end 22 pixels
+clearance on the left top end 23 pixels
+
+
+
