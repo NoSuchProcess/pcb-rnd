@@ -110,7 +110,7 @@ static char *finish_color_table[] = {
 
 static pcb_hid_t scad_hid;
 
-static int silk_layer, drill_layer, outline_layer, mask_layer;
+static int /*silk_layer,*/ drill_layer, outline_layer, mask_layer;
 static int layer_open, fresh_layer;
 static char layer_id[64];
 
@@ -720,45 +720,31 @@ static void scad_parse_arguments(int *argc, char ***argv)
 	pcb_hid_parse_command_line(argc, argv);
 }
 
-static int scad_set_layer(const char *name, int group, int empty)
+static int scad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
 	int layer_ok;
 
 	if (layer_open) {
 		scad_close_layer();
 	}
 
-
-
-	if (name == 0)
-		name = PCB->Data->Layer[idx].Name;
-
-/*  printf("%s\n",name); */
-
-	silk_layer = 0;
+/*	silk_layer = 0;*/
 	drill_layer = 0;
 	mask_layer = 0;
 	outline_layer = 0;
 	fresh_layer = 1;
 
-	if (strcmp(name, "invisible") == 0)
+	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY))
 		return 0;
 
-	if (SL_TYPE(idx) == SL_ASSY)
-		return 0;
-
-	if (strcmp(name, "route") == 0)
-		return 0;
-
-	if (group >= 0 && group < pcb_max_group) {
+	if (flags & PCB_LYT_COPPER) {
 		layer_ok = (opt_exp_inner_layers || group_data[group].component || group_data[group].solder) && opt_exp_copper;
 	}
 	else {
 		layer_ok = 1;
 	}
 
-	if (strcmp(name, "outline") == 0) {
+	if ((flags & PCB_LYT_OUTLINE)) {
 		if (opt_outline_type == SCAD_OUTLINE_OUTLINE) {
 			outline_layer = 1;
 			layer_ok = 1;
@@ -778,38 +764,38 @@ static int scad_set_layer(const char *name, int group, int empty)
 			return 0;
 		scaled_layer_thickness = (group_data[group].solder
 															|| group_data[group].component) ? OUTER_COPPER_THICKNESS : INNER_COPPER_THICKNESS;
-		sprintf(layer_id, "layer_%02d", group);
+		sprintf(layer_id, "layer_%02ld", group);
 		if (!outline_layer) {
 			group_data[group].exp = 1;
 		}
 	}
 	else {
-		if (SL_TYPE(group) == SL_PDRILL) {
+		if (flags & PCB_LYT_PDRILL) {
 			drill_layer = SL_TYPE(group);
 			strcpy(layer_id, "layer_pdrill");
 		}
-		else if (SL_TYPE(group) == SL_UDRILL) {
+		else if (flags & PCB_LYT_UDRILL) {
 			drill_layer = SL_TYPE(group);
 			strcpy(layer_id, "layer_udrill");
 		}
-		else if (SL_TYPE(group) == SL_SILK) {
+		else if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) {
 			if (!opt_exp_silk)
 				return 0;
 			scaled_layer_thickness = SILK_LAYER_THICKNESS;
-			silk_layer = SL_TYPE(group);
-			if (SL_SIDE(group) == SL_TOP_SIDE) {
+/*			silk_layer = SL_TYPE(group);*/
+			if (flags & PCB_LYT_TOP) {
 				strcpy(layer_id, "layer_topsilk");
 			}
 			else {
 				strcpy(layer_id, "layer_bottomsilk");
 			}
 		}
-		else if (SL_TYPE(group) == SL_MASK) {
+		else if (flags & PCB_LYT_MASK) {
 			if (opt_mask_color == SCAD_MASK_NONE || opt_outline_type == SCAD_OUTLINE_NONE)
 				return 0;
 			scaled_layer_thickness = MASK_THICKNESS * 2.;
-			silk_layer = SL_TYPE(group);
-			if (SL_SIDE(group) == SL_TOP_SIDE) {
+/*			silk_layer = SL_TYPE(group);*/
+			if ((flags & PCB_LYT_TOP)) {
 				strcpy(layer_id, "layer_topmask");
 			}
 			else {
@@ -824,6 +810,8 @@ static int scad_set_layer(const char *name, int group, int empty)
 	layer_open = 1;
 
 	if (!outline_layer) {
+		char tmp_ln[PCB_PATH_MAX];
+		const char *name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
 		fprintf(scad_output, "// START_OF_LAYER: %s\n", name);
 		if (drill_layer) {
 			fprintf(scad_output, "%s_list=[\n", layer_id);
@@ -1144,7 +1132,7 @@ pcb_uninit_t hid_export_openscad_init()
 	scad_hid.get_export_options = scad_get_export_options;
 	scad_hid.do_export = scad_do_export;
 	scad_hid.parse_arguments = scad_parse_arguments;
-	scad_hid.set_layer_old = scad_set_layer;
+	scad_hid.set_layer_group = scad_set_layer_group;
 	scad_hid.calibrate = scad_calibrate;
 	scad_hid.set_crosshair = scad_set_crosshair;
 
