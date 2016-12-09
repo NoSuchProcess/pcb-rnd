@@ -1,0 +1,23 @@
+
+
+rectangle
+width 541 pixels
+height 541 pixels
+
+veritcal line
+width 12 pixels
+length 312 pixels
+clearance 49/51 pixels (left/right)
+
+horizontal line
+width 348 pixels
+length 348 pixels
+clearance 14/15 pixels (top/bottom)
+
+left diangonal line
+45 degrees
+
+right diagonal line
+18 degrees
+
+

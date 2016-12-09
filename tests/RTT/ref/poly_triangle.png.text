@@ -1,0 +1,31 @@
+
+upper left triangle
+121 pixels wide
+121 pixels tall
+
+gap from lower left triangle to upper left triangle
+29 pixels horizontally
+29 pixels vertically
+
+lower left triangle
+151 pixels wide
+151 pixels tall
+
+gap from lower left triangle to far right piramid
+29 pixels
+
+far right piramid
+151 pixels height
+301 pixels base
+
+bottom triangle
+331 pixels across
+211 pixels up
+top edge
+332.4 pixels long 5.18 degrees
+side edge
+213.1 pixels long 91.91 degrees
+bottom edge
+351.2 pixels long 31.02 degrees
+
+
