@@ -98,8 +98,6 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_
 
 #define TEST_SILK_LAYER(layer)	(pcb_layer_id(PCB->Data, layer) >= pcb_max_copper_layer)
 
-#define LAYER_IS_OUTLINE(idx) (((idx) > 0) && ((idx) <= pcb_max_copper_layer) && (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0))
-
 #define GROUP_LOOP(data, group) do { 	\
 	pcb_cardinal_t entry; \
         for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.Number[(group)]; entry++) \

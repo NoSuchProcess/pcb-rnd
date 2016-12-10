@@ -294,6 +294,9 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_
 	return group;
 }
 
+#warning TODO: remove this once we have explicit outline layer
+#define LAYER_IS_OUTLINE(idx) (((idx) > 0) && ((idx) <= pcb_max_copper_layer) && (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0))
+
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 {
 	unsigned int res = 0;
