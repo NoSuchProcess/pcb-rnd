@@ -329,38 +329,39 @@ static void svg_parse_arguments(int *argc, char ***argv)
 	pcb_hid_parse_command_line(argc, argv);
 }
 
-static int svg_set_layer(const char *name, int group, int empty)
+static int svg_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	int opa, our_mask, our_silk;
-	unsigned int our_side;
+	int opa, is_our_mask = 0, is_our_silk = 0;
 
-	if (flip) {
-		our_mask = SL(MASK, BOTTOM);
-		our_silk = SL(SILK, BOTTOM);
-		our_side = PCB_LYT_BOTTOM;
-	}
-	else {
-		our_mask = SL(MASK, TOP);
-		our_silk = SL(SILK, TOP);
-		our_side = PCB_LYT_TOP;
-	}
+	if (flags & PCB_LYT_INVIS)
+		return 0;
 
 	/* don't draw the mask if we are not in the photo mode */
-	if (!photo_mode && ((group == SL(MASK, TOP)) || (group == SL(MASK, BOTTOM))))
+	if (!photo_mode && (flags & PCB_LYT_MASK))
 		return 0;
 
-	if ((group < 0) && (group != our_silk) && (group != our_mask) && (group != SL(UDRILL, 0)) && (group != SL(PDRILL, 0)))
+	switch(flags & PCB_LYT_ANYTHING) {
+		case PCB_LYT_MASK: is_our_mask = PCB_LAYERFLG_ON_VISIBLE_SIDE(flags); break;
+		case PCB_LYT_SILK: is_our_silk = PCB_LAYERFLG_ON_VISIBLE_SIDE(flags); break;
+		default:;
+	}
+
+	if (!(flags & PCB_LYT_COPPER) && (!is_our_silk) && (!is_our_mask) && !(flags & PCB_LYT_PDRILL) && !(flags & PCB_LYT_PDRILL) && !(flags & PCB_LYT_OUTLINE))
 		return 0;
+
 	while(group_open) {
 		group_close();
 		group_open--;
 	}
-	if (name == NULL)
-		name = "copper";
-	fprintf(f, "<g id=\"layer_%d_%s\"", group, name);
-	drawing_mask = (group == our_mask);
+
+	{
+		char tmp_ln[PCB_PATH_MAX];
+		const char *name = name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
+		fprintf(f, "<g id=\"layer_%ld_%s\"", group, name);
+	}
+
 	opa = opacity;
-	if (drawing_mask)
+	if (is_our_mask)
 		opa *= mask_opacity_factor;
 	if (opa != 100)
 		fprintf(f, " opacity=\"%.2f\"", ((float)opa) / 100.0);
@@ -368,22 +369,19 @@ static int svg_set_layer(const char *name, int group, int empty)
 	group_open = 1;
 
 	if (photo_mode) {
-		if (group == our_silk)
+		if (is_our_silk)
 			photo_color = PHOTO_SILK;
-		if (group == our_mask)
+		if (is_our_mask)
 			photo_color = PHOTO_MASK;
 		else if (group >= 0) {
-			int ly = PCB->LayerGroups.Entries[group][0];
-			unsigned int fl;
-			fl = pcb_layer_flags(ly) & PCB_LYT_ANYWHERE;
-			if (fl == our_side)
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				photo_color = PHOTO_COPPER;
 			else
 				photo_color = PHOTO_INNER;
 		}
 	}
 
-	drawing_hole = (group == SL(UDRILL, 0)) || (group == SL(PDRILL, 0));
+	drawing_hole = (flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL);
 
 	return 1;
 }
@@ -711,7 +709,7 @@ pcb_uninit_t hid_export_svg_init()
 	svg_hid.get_export_options = svg_get_export_options;
 	svg_hid.do_export = svg_do_export;
 	svg_hid.parse_arguments = svg_parse_arguments;
-	svg_hid.set_layer_old = svg_set_layer;
+	svg_hid.set_layer_group = svg_set_layer_group;
 	svg_hid.make_gc = svg_make_gc;
 	svg_hid.destroy_gc = svg_destroy_gc;
 	svg_hid.use_mask = svg_use_mask;
