@@ -1151,17 +1151,17 @@ static int Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	function = argc ? argv[0] : "Layout";
 
-	if (strcasecmp(function, "Netlist") == 0) {
+	if (pcb_strcasecmp(function, "Netlist") == 0) {
 		name = ghid_dialog_file_select_open(_("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
 	}
-	else if (strcasecmp(function, "ElementToBuffer") == 0) {
+	else if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
 		gchar *path = (gchar *)pcb_fp_default_search_path();
 		name = ghid_dialog_file_select_open(_("Load element to buffer"), &current_element_dir, path);
 	}
-	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
+	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0) {
 		name = ghid_dialog_file_select_open(_("Load layout file to buffer"), &current_layout_dir, conf_core.rc.file_path);
 	}
-	else if (strcasecmp(function, "Layout") == 0) {
+	else if (pcb_strcasecmp(function, "Layout") == 0) {
 		name = ghid_dialog_file_select_open(_("Load layout file"), &current_layout_dir, conf_core.rc.file_path);
 	}
 
@@ -1211,11 +1211,11 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	function = argc ? argv[0] : "Layout";
 
-	if (strcasecmp(function, "Layout") == 0)
+	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
 			return pcb_hid_actionl("SaveTo", "Layout", PCB->Filename, NULL);
 
-	if (strcasecmp(function, "PasteBuffer") == 0) {
+	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
 		prompt = _("Save element as");
 		if (pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP) > 0) {
 			formats_param = (const char **)avail.digest;
@@ -1266,7 +1266,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		if (conf_core.rc.verbose)
 			fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, name);
 
-		if (strcasecmp(function, "PasteBuffer") == 0) {
+		if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
 			pcb_hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->description, "1", NULL);
 
 		}
@@ -1280,7 +1280,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			 */
 			if (fmt_param != NULL)
 				sfmt = avail.plug[fmt]->description;
-			if (strcasecmp(function, "Layout") == 0)
+			if (pcb_strcasecmp(function, "Layout") == 0)
 				pcb_hid_actionl("SaveTo", "LayoutAs", name, sfmt, NULL);
 			else
 				pcb_hid_actionl("SaveTo", function, name, sfmt, NULL);
@@ -1602,9 +1602,9 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (argc != 4)
 		PCB_AFAIL(cursor);
 
-	if (strcasecmp(argv[0], "pan") == 0)
+	if (pcb_strcasecmp(argv[0], "pan") == 0)
 		pan_warp = HID_SC_PAN_VIEWPORT;
-	else if (strcasecmp(argv[0], "warp") == 0)
+	else if (pcb_strcasecmp(argv[0], "warp") == 0)
 		pan_warp = HID_SC_WARP_POINTER;
 	else
 		PCB_AFAIL(cursor);
@@ -1676,24 +1676,24 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			raise = FALSE;
 	}
 
-	if (strcmp(a, "1") == 0 || strcasecmp(a, "Layout") == 0) {
+	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
 	}
-	else if (strcmp(a, "2") == 0 || strcasecmp(a, "Library") == 0) {
+	else if (strcmp(a, "2") == 0 || pcb_strcasecmp(a, "Library") == 0) {
 		ghid_library_window_show(gport, raise);
 	}
-	else if (strcmp(a, "3") == 0 || strcasecmp(a, "Log") == 0) {
+	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
 		ghid_log_window_show(raise);
 	}
-	else if (strcmp(a, "4") == 0 || strcasecmp(a, "Netlist") == 0) {
+	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
 		ghid_netlist_window_show(gport, raise);
 	}
-	else if (strcmp(a, "5") == 0 || strcasecmp(a, "Preferences") == 0) {
+	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
 		ghid_config_window_show();
 	}
-	else if (strcmp(a, "6") == 0 || strcasecmp(a, "DRC") == 0) {
+	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
 		ghid_drc_window_show(raise);
 	}
-	else if (strcmp(a, "7") == 0 || strcasecmp(a, "search") == 0) {
+	else if (strcmp(a, "7") == 0 || pcb_strcasecmp(a, "search") == 0) {
 		ghid_search_window_show(raise);
 	}
 	else {
@@ -1776,13 +1776,13 @@ static int ScrollAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (argc == 2)
 		div = atoi(argv[1]);
 
-	if (strcasecmp(argv[0], "up") == 0)
+	if (pcb_strcasecmp(argv[0], "up") == 0)
 		dy = -gport->view.height / div;
-	else if (strcasecmp(argv[0], "down") == 0)
+	else if (pcb_strcasecmp(argv[0], "down") == 0)
 		dy = gport->view.height / div;
-	else if (strcasecmp(argv[0], "right") == 0)
+	else if (pcb_strcasecmp(argv[0], "right") == 0)
 		dx = gport->view.width / div;
-	else if (strcasecmp(argv[0], "left") == 0)
+	else if (pcb_strcasecmp(argv[0], "left") == 0)
 		dx = -gport->view.width / div;
 	else
 		PCB_AFAIL(scroll);

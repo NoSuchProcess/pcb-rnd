@@ -661,7 +661,7 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 				pcb_gui->get_coords(_("Select an Object"), &x, &y);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 					pcb_undo_save_serial();
-					if ((pinnums != NULL) && (strcasecmp(pinnums, "Number") == 0))
+					if ((pinnums != NULL) && (pcb_strcasecmp(pinnums, "Number") == 0))
 						pinnum = 1;
 					else
 						pinnum = 0;
@@ -1371,9 +1371,9 @@ static int pcb_act_ChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_c
 	int type = PCB_TYPE_NONE, which;
 	void *ptr1, *ptr2, *ptr3;
 
-	if (strcasecmp(prim, "start") == 0) which = 0;
-	else if (strcasecmp(prim, "delta") == 0) which = 1;
-	else if (strcasecmp(prim, "both") == 0) which = 2;
+	if (pcb_strcasecmp(prim, "start") == 0) which = 0;
+	else if (pcb_strcasecmp(prim, "delta") == 0) which = 1;
+	else if (pcb_strcasecmp(prim, "both") == 0) which = 2;
 	else {
 		pcb_message(PCB_MSG_ERROR, "Second argument of ChangeAngle must be start, delta or both\n");
 		return -1;
@@ -1443,9 +1443,9 @@ static int pcb_act_ChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_
 	int type = PCB_TYPE_NONE, which;
 	void *ptr1, *ptr2, *ptr3;
 
-	if ((strcasecmp(prim, "width") == 0) || (strcasecmp(prim, "x") == 0)) which = 0;
-	else if ((strcasecmp(prim, "height") == 0) || (strcasecmp(prim, "y") == 0)) which = 1;
-	else if (strcasecmp(prim, "both") == 0) which = 2;
+	if ((pcb_strcasecmp(prim, "width") == 0) || (pcb_strcasecmp(prim, "x") == 0)) which = 0;
+	else if ((pcb_strcasecmp(prim, "height") == 0) || (pcb_strcasecmp(prim, "y") == 0)) which = 1;
+	else if (pcb_strcasecmp(prim, "both") == 0) which = 2;
 	else {
 		pcb_message(PCB_MSG_ERROR, "Second argument of ChangeRadius must be width, x, height, y or both\n");
 		return -1;

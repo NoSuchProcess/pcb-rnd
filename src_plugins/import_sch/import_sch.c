@@ -43,6 +43,7 @@
 #include "import_sch_conf.h"
 #include "misc_util.h"
 #include "compat_nls.h"
+#include "compat_misc.h"
 #include "obj_rat.h"
 
 #ifdef HAVE_UNISTD_H
@@ -181,7 +182,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 
 	mode = PCB_ACTION_ARG(0);
 
-	if (mode && strcasecmp(mode, "setdisperse") == 0) {
+	if (mode && pcb_strcasecmp(mode, "setdisperse") == 0) {
 		const char *ds, *units;
 		char buf[50];
 
@@ -202,7 +203,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		return 0;
 	}
 
-	if (mode && strcasecmp(mode, "setnewpoint") == 0) {
+	if (mode && pcb_strcasecmp(mode, "setnewpoint") == 0) {
 		const char *xs, *ys, *units;
 		pcb_coord_t x, y;
 		char buf[50];
@@ -214,12 +215,12 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		if (!xs) {
 			pcb_gui->get_coords(_("Click on a location"), &x, &y);
 		}
-		else if (strcasecmp(xs, "center") == 0) {
+		else if (pcb_strcasecmp(xs, "center") == 0) {
 			pcb_attrib_remove(PCB, "import::newX");
 			pcb_attrib_remove(PCB, "import::newY");
 			return 0;
 		}
-		else if (strcasecmp(xs, "mark") == 0) {
+		else if (pcb_strcasecmp(xs, "mark") == 0) {
 			if (pcb_marked.status) {
 				x = pcb_marked.X;
 				y = pcb_marked.Y;
@@ -305,7 +306,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		nsources = 1;
 	}
 
-	if (strcasecmp(mode, "gnetlist") == 0) {
+	if (pcb_strcasecmp(mode, "gnetlist") == 0) {
 		char *tmpfile = pcb_tempfile_name_new("gnetlist_output");
 		const char **cmd;
 		int i;
@@ -352,7 +353,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		free(cmd);
 		pcb_tempfile_unlink(tmpfile);
 	}
-	else if (strcasecmp(mode, "make") == 0) {
+	else if (pcb_strcasecmp(mode, "make") == 0) {
 		int must_free_tmpfile = 0;
 		char *tmpfile;
 		const char *cmd[10];

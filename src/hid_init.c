@@ -1,5 +1,4 @@
 #include "config.h"
-#include <strings.h>
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -45,9 +44,9 @@ static void hid_load_dir(char *dirname)
 		struct stat st;
 
 		basename = pcb_strdup(de->d_name);
-		if (strlen(basename) > 3 && strcasecmp(basename + strlen(basename) - 3, ".so") == 0)
+		if (strlen(basename) > 3 && pcb_strcasecmp(basename + strlen(basename) - 3, ".so") == 0)
 			basename[strlen(basename) - 3] = 0;
-		else if (strlen(basename) > 4 && strcasecmp(basename + strlen(basename) - 4, ".dll") == 0)
+		else if (strlen(basename) > 4 && pcb_strcasecmp(basename + strlen(basename) - 4, ".dll") == 0)
 			basename[strlen(basename) - 4] = 0;
 		path = pcb_concat(dirname, PCB_DIR_SEPARATOR_S, de->d_name, NULL);
 

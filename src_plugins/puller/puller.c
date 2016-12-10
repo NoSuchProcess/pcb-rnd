@@ -67,6 +67,7 @@
 #include "hid_actions.h"
 #include "misc_util.h"
 #include "obj_all.h"
+#include "compat_misc.h"
 
 #define abort1() fprintf(stderr, "abort at line %d\n", __LINE__), abort()
 
@@ -2273,9 +2274,9 @@ static int pcb_act_GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_
 	npulled = 0;
 	printf("puller! %s\n", argc > 0 ? argv[0] : "");
 
-	if (argc > 0 && strcasecmp(argv[0], "selected") == 0)
+	if (argc > 0 && pcb_strcasecmp(argv[0], "selected") == 0)
 		select_flags = PCB_FLAG_SELECTED;
-	if (argc > 0 && strcasecmp(argv[0], "found") == 0)
+	if (argc > 0 && pcb_strcasecmp(argv[0], "found") == 0)
 		select_flags = PCB_FLAG_FOUND;
 
 	printf("optimizing...\n");

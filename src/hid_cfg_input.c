@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <strings.h>
 #include <ctype.h>
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
@@ -34,6 +33,7 @@
 #include "hid_cfg_input.h"
 #include "hid_cfg_action.h"
 #include "error.h"
+#include "compat_misc.h"
 
 /* split value into a list of '-' separated words; examine each word
    and set the bitmask of modifiers */
@@ -80,14 +80,14 @@ static pcb_hid_cfg_mod_t button_name2mask(const char *name)
 	   mouse button number.  */
 	if (!name)
 		return 0;
-	else if (strcasecmp(name, "left") == 0)   return PCB_MB_LEFT;
-	else if (strcasecmp(name, "middle") == 0) return PCB_MB_MIDDLE;
-	else if (strcasecmp(name, "right") == 0)  return PCB_MB_RIGHT;
+	else if (pcb_strcasecmp(name, "left") == 0)   return PCB_MB_LEFT;
+	else if (pcb_strcasecmp(name, "middle") == 0) return PCB_MB_MIDDLE;
+	else if (pcb_strcasecmp(name, "right") == 0)  return PCB_MB_RIGHT;
 
-	else if (strcasecmp(name, "scroll-up") == 0)     return PCB_MB_SCROLL_UP;
-	else if (strcasecmp(name, "scroll-down") == 0)   return PCB_MB_SCROLL_DOWN;
-	else if (strcasecmp(name, "scroll-left") == 0)   return PCB_MB_SCROLL_UP;
-	else if (strcasecmp(name, "scroll-right") == 0)  return PCB_MB_SCROLL_DOWN;
+	else if (pcb_strcasecmp(name, "scroll-up") == 0)     return PCB_MB_SCROLL_UP;
+	else if (pcb_strcasecmp(name, "scroll-down") == 0)   return PCB_MB_SCROLL_DOWN;
+	else if (pcb_strcasecmp(name, "scroll-left") == 0)   return PCB_MB_SCROLL_UP;
+	else if (pcb_strcasecmp(name, "scroll-right") == 0)  return PCB_MB_SCROLL_DOWN;
 	else {
 		pcb_message(PCB_MSG_DEFAULT, "Error: unknown mouse button: %s\n", name);
 		return 0;
@@ -232,7 +232,7 @@ static unsigned short int translate_key(pcb_hid_cfg_keys_t *km, const char *desc
 	if (km->auto_tr != NULL) {
 		const pcb_hid_cfg_keytrans_t *t;
 		for(t = km->auto_tr; t->name != NULL; t++) {
-			if (strcasecmp(tmp, t->name) == 0) {
+			if (pcb_strcasecmp(tmp, t->name) == 0) {
 				tmp[0] = t->sym;
 				tmp[1] = '\0';
 				len = 1;

@@ -27,6 +27,7 @@
 /* This file written by Bill Wilson for the PCB Gtk port
 */
 
+#include <ctype.h>
 #include "config.h"
 #include "conf_core.h"
 #include "conf_hid.h"
@@ -184,10 +185,10 @@ static gint GhidLogShowOnAppend(int argc, const char **argv, pcb_coord_t x, pcb_
 {
 	const char *a = argc == 1 ? argv[0] : "";
 
-	if (strncasecmp(a, "t", 1) == 0) {
+	if (tolower(*a) == 't') {
 		log_show_on_append = TRUE;
 	}
-	else if (strncasecmp(a, "f", 1) == 0) {
+	else if (tolower(*a) == 'f') {
 		log_show_on_append = FALSE;
 	}
 	return 0;

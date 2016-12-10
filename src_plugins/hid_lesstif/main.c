@@ -471,7 +471,7 @@ static int ZoomAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 0;
 	}
 	vp = argv[0];
-	if (strcasecmp(vp, "toggle") == 0) {
+	if (pcb_strcasecmp(vp, "toggle") == 0) {
 		zoom_toggle(x, y);
 		return 0;
 	}
@@ -504,7 +504,7 @@ static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int mode;
 
 	if (argc == 2) {
-		pan_thumb_mode = (strcasecmp(argv[0], "thumb") == 0) ? 1 : 0;
+		pan_thumb_mode = (pcb_strcasecmp(argv[0], "thumb") == 0) ? 1 : 0;
 		mode = atoi(argv[1]);
 	}
 	else {
@@ -855,9 +855,9 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	if (argc != 4)
 		PCB_AFAIL(cursor);
 
-	if (strcasecmp(argv[0], "pan") == 0)
+	if (pcb_strcasecmp(argv[0], "pan") == 0)
 		pan_warp = HID_SC_PAN_VIEWPORT;
-	else if (strcasecmp(argv[0], "warp") == 0)
+	else if (pcb_strcasecmp(argv[0], "warp") == 0)
 		pan_warp = HID_SC_WARP_POINTER;
 	else
 		PCB_AFAIL(cursor);
@@ -1674,7 +1674,7 @@ static unsigned short int lesstif_translate_key(const char *desc, int len)
 {
 	KeySym key;
 
-	if (strcasecmp(desc, "enter") == 0) desc = "Return";
+	if (pcb_strcasecmp(desc, "enter") == 0) desc = "Return";
 
 	key = XStringToKeysym(desc);
 	if (key == NoSymbol && len > 1) {

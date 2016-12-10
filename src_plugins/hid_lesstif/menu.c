@@ -316,9 +316,9 @@ static int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	int newl;
 	if (argc == 0)
 		return 1;
-	if (strcasecmp(argv[0], "silk") == 0)
+	if (pcb_strcasecmp(argv[0], "silk") == 0)
 		newl = LB_SILK;
-	else if (strcasecmp(argv[0], "rats") == 0)
+	else if (pcb_strcasecmp(argv[0], "rats") == 0)
 		newl = LB_RATS;
 	else
 		newl = atoi(argv[0]) - 1;

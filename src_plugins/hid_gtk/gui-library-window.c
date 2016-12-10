@@ -204,7 +204,7 @@ static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter 
 	g_assert(GHID_IS_LIBRARY_WINDOW(data));
 
 	text_ = gtk_entry_get_text(library_window->entry_filter);
-	if (g_ascii_strcasecmp(text_, "") == 0) {
+	if (strcmp(text_, "") == 0) {
 		return TRUE;
 	}
 
@@ -518,7 +518,7 @@ static void library_window_callback_filter_entry_changed(GtkEditable * editable,
 	/* turns button off if filter entry is empty */
 	/* turns it on otherwise */
 	button = GTK_WIDGET(library_window->button_clear);
-	sensitive = (g_ascii_strcasecmp(gtk_entry_get_text(library_window->entry_filter), "") != 0);
+	sensitive = (strcmp(gtk_entry_get_text(library_window->entry_filter), "") != 0);
 	gtk_widget_set_sensitive(button, sensitive);
 
 	/* Cancel any pending update of the footprint list filter */

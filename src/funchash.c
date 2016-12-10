@@ -22,13 +22,13 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include <stdio.h>
 #include <genht/htpi.h>
 #include <genht/hash.h>
 #include "funchash_core.h"
 #include "config.h"
 #include "macro.h"
+#include "compat_misc.h"
 
 #define action_entry(x) { #x, F_ ## x},
 static pcb_funchash_table_t Functions[] = {
@@ -49,7 +49,7 @@ static int keyeq(const void *a_, const void *b_)
 	const fh_key_t *a = a_, *b = b_;
 	if (a->cookie != b->cookie)
 		return 1;
-	return !strcasecmp(a->key, b->key);
+	return !pcb_strcasecmp(a->key, b->key);
 }
 
 static unsigned fh_hash(const void *key)

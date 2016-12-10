@@ -41,6 +41,7 @@
 #include "hid_actions.h"
 #include "hid_init.h"
 #include "compat_nls.h"
+#include "compat_misc.h"
 #include "event.h"
 #include "layer_vis.h"
 
@@ -1050,7 +1051,7 @@ static int pcb_act_RouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_co
 			number = -1;
 			for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
 				rts = &PCB->RouteStyle.array[n];
-				if (strcasecmp(rts->name, str) == 0) {
+				if (pcb_strcasecmp(rts->name, str) == 0) {
 					number = n + 1;
 					break;
 				}
@@ -1267,7 +1268,7 @@ static const char pcb_acth_PCBChanged[] =
 static int pcb_act_PCBChanged(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *rv = argv == NULL ? NULL : argv[0];
-	pcb_board_changed((rv != NULL) && (strcasecmp(rv, "revert") == 0));
+	pcb_board_changed((rv != NULL) && (pcb_strcasecmp(rv, "revert") == 0));
 	return 0;
 }
 

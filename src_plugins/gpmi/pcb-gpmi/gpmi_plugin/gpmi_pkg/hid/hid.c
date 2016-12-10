@@ -148,7 +148,7 @@ pcb_hid_attr_val_t hid_string2val(const hid_attr_type_t type, const char *str)
 	memset(&v, 0, sizeof(v));
 	switch(type) {
 		case HIDA_Boolean:
-			if ((strcasecmp(str, "true") == 0) || (strcasecmp(str, "yes") == 0) || (strcasecmp(str, "1") == 0))
+			if ((pcb_strcasecmp(str, "true") == 0) || (pcb_strcasecmp(str, "yes") == 0) || (pcb_strcasecmp(str, "1") == 0))
 				v.int_value = 1;
 			else
 				v.int_value = 0;

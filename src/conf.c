@@ -22,7 +22,6 @@
 
 #include <assert.h>
 #include <string.h>
-#include <strings.h>
 #include <ctype.h>
 #include <genht/hash.h>
 #include <liblihata/tree.h>
@@ -135,10 +134,10 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 
 conf_policy_t conf_policy_parse(const char *s)
 {
-	if (strcasecmp(s, "overwrite") == 0)  return  POL_OVERWRITE;
-	if (strcasecmp(s, "prepend") == 0)    return  POL_PREPEND;
-	if (strcasecmp(s, "append") == 0)     return  POL_APPEND;
-	if (strcasecmp(s, "disable") == 0)    return  POL_DISABLE;
+	if (pcb_strcasecmp(s, "overwrite") == 0)  return  POL_OVERWRITE;
+	if (pcb_strcasecmp(s, "prepend") == 0)    return  POL_PREPEND;
+	if (pcb_strcasecmp(s, "append") == 0)     return  POL_APPEND;
+	if (pcb_strcasecmp(s, "disable") == 0)    return  POL_DISABLE;
 	return POL_invalid;
 }
 
@@ -156,14 +155,14 @@ const char *conf_policy_name(conf_policy_t p)
 
 conf_role_t conf_role_parse(const char *s)
 {
-	if (strcasecmp(s, "internal") == 0)   return CFR_INTERNAL;
-	if (strcasecmp(s, "system") == 0)     return CFR_SYSTEM;
-	if (strcasecmp(s, "defaultpcb") == 0) return CFR_DEFAULTPCB;
-	if (strcasecmp(s, "user") == 0)       return CFR_USER;
-	if (strcasecmp(s, "env") == 0)        return CFR_ENV;
-	if (strcasecmp(s, "project") == 0)    return CFR_PROJECT;
-	if (strcasecmp(s, "design") == 0)     return CFR_DESIGN;
-	if (strcasecmp(s, "cli") == 0)        return CFR_CLI;
+	if (pcb_strcasecmp(s, "internal") == 0)   return CFR_INTERNAL;
+	if (pcb_strcasecmp(s, "system") == 0)     return CFR_SYSTEM;
+	if (pcb_strcasecmp(s, "defaultpcb") == 0) return CFR_DEFAULTPCB;
+	if (pcb_strcasecmp(s, "user") == 0)       return CFR_USER;
+	if (pcb_strcasecmp(s, "env") == 0)        return CFR_ENV;
+	if (pcb_strcasecmp(s, "project") == 0)    return CFR_PROJECT;
+	if (pcb_strcasecmp(s, "design") == 0)     return CFR_DESIGN;
+	if (pcb_strcasecmp(s, "cli") == 0)        return CFR_CLI;
 	return CFR_invalid;
 }
 
@@ -342,12 +341,12 @@ int conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const cha
 		case CFN_BOOLEAN:
 			while(isspace(*text)) text++;
 			for(s = strue; *s != NULL; s++)
-				if (strncasecmp(*s, text, strlen(*s)) == 0) {
+				if (pcb_strncasecmp(*s, text, strlen(*s)) == 0) {
 					dst->boolean[idx] = 1;
 					return 0;
 				}
 			for(s = sfalse; *s != NULL; s++)
-				if (strncasecmp(*s, text, strlen(*s)) == 0) {
+				if (pcb_strncasecmp(*s, text, strlen(*s)) == 0) {
 					dst->boolean[idx] = 0;
 					return 0;
 				}

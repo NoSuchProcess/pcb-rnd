@@ -741,7 +741,7 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 	use_re = 1;
 	for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; i++) {
 		net = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + i;
-		if (strcasecmp(tofind, net->Name + 2) == 0)
+		if (pcb_strcasecmp(tofind, net->Name + 2) == 0)
 			use_re = 0;
 	}
 	if (use_re) {
@@ -761,7 +761,7 @@ static int ReportNetLengthByName(const char *tofind, int x, int y)
 				continue;
 		}
 		else {
-			if (strcasecmp(net->Name + 2, tofind))
+			if (pcb_strcasecmp(net->Name + 2, tofind))
 				continue;
 		}
 
@@ -871,19 +871,19 @@ static int Report(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if ((argc < 1) || (argc > 2))
 		AUSAGE(report);
-	else if (strcasecmp(argv[0], "Object") == 0) {
+	else if (pcb_strcasecmp(argv[0], "Object") == 0) {
 		pcb_gui->get_coords("Click on an object", &x, &y);
 		return ReportDialog(argc - 1, argv + 1, x, y);
 	}
-	else if (strcasecmp(argv[0], "DrillReport") == 0)
+	else if (pcb_strcasecmp(argv[0], "DrillReport") == 0)
 		return ReportDrills(argc - 1, argv + 1, x, y);
-	else if (strcasecmp(argv[0], "FoundPins") == 0)
+	else if (pcb_strcasecmp(argv[0], "FoundPins") == 0)
 		return ReportFoundPins(argc - 1, argv + 1, x, y);
-	else if ((strcasecmp(argv[0], "NetLength") == 0) && (argc == 1))
+	else if ((pcb_strcasecmp(argv[0], "NetLength") == 0) && (argc == 1))
 		return ReportNetLength(argc - 1, argv + 1, x, y);
-	else if (strcasecmp(argv[0], "AllNetLengths") == 0)
+	else if (pcb_strcasecmp(argv[0], "AllNetLengths") == 0)
 		return ReportAllNetLengths(argc - 1, argv + 1, x, y);
-	else if ((strcasecmp(argv[0], "NetLength") == 0) && (argc == 2))
+	else if ((pcb_strcasecmp(argv[0], "NetLength") == 0) && (argc == 2))
 		return ReportNetLengthByName(argv[1], x, y);
 	else if (argc == 2)
 		AUSAGE(report);

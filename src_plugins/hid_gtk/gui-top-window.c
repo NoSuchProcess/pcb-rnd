@@ -92,6 +92,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "hid_flags.h"
 #include "route_style.h"
 #include "compat_nls.h"
+#include "compat_misc.h"
 #include "obj_line.h"
 #include "layer_vis.h"
 
@@ -1455,7 +1456,7 @@ static unsigned short int ghid_translate_key(const char *desc, int len)
 {
 	guint key;
 
-	if (strcasecmp(desc, "enter") == 0) desc = "Return";
+	if (pcb_strcasecmp(desc, "enter") == 0) desc = "Return";
 
 	key = gdk_keyval_from_name(desc);
 	if (key > 0xffff) {
@@ -1632,9 +1633,9 @@ static int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	if (argc == 0)
 		PCB_AFAIL(selectlayer);
 
-	if (strcasecmp(argv[0], "silk") == 0)
+	if (pcb_strcasecmp(argv[0], "silk") == 0)
 		newl = LAYER_BUTTON_SILK;
-	else if (strcasecmp(argv[0], "rats") == 0)
+	else if (pcb_strcasecmp(argv[0], "rats") == 0)
 		newl = LAYER_BUTTON_RATS;
 	else
 		newl = atoi(argv[0]) - 1;

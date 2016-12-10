@@ -99,19 +99,19 @@ void pcb_layervis_parse_string(const char *layer_string)
 	conf_set_editor(show_solder_side, 0);
 
 	for (i = argn - 1; i >= 0; i--) {
-		if (strcasecmp(args[i], "rats") == 0)
+		if (pcb_strcasecmp(args[i], "rats") == 0)
 			PCB->RatOn = pcb_true;
-		else if (strcasecmp(args[i], "invisible") == 0)
+		else if (pcb_strcasecmp(args[i], "invisible") == 0)
 			PCB->InvisibleObjectsOn = pcb_true;
-		else if (strcasecmp(args[i], "pins") == 0)
+		else if (pcb_strcasecmp(args[i], "pins") == 0)
 			PCB->PinOn = pcb_true;
-		else if (strcasecmp(args[i], "vias") == 0)
+		else if (pcb_strcasecmp(args[i], "vias") == 0)
 			PCB->ViaOn = pcb_true;
-		else if (strcasecmp(args[i], "elements") == 0 || strcasecmp(args[i], "silk") == 0)
+		else if (pcb_strcasecmp(args[i], "elements") == 0 || pcb_strcasecmp(args[i], "silk") == 0)
 			PCB->ElementOn = pcb_true;
-		else if (strcasecmp(args[i], "mask") == 0)
+		else if (pcb_strcasecmp(args[i], "mask") == 0)
 			conf_set_editor(show_mask, 1);
-		else if (strcasecmp(args[i], "solderside") == 0)
+		else if (pcb_strcasecmp(args[i], "solderside") == 0)
 			conf_set_editor(show_solder_side, 1);
 		else if (isdigit((int) args[i][0])) {
 			lno = atoi(args[i]);
@@ -120,7 +120,7 @@ void pcb_layervis_parse_string(const char *layer_string)
 		else {
 			int found = 0;
 			for (lno = 0; lno < pcb_max_copper_layer; lno++)
-				if (strcasecmp(args[i], PCB->Data->Layer[lno].Name) == 0) {
+				if (pcb_strcasecmp(args[i], PCB->Data->Layer[lno].Name) == 0) {
 					pcb_layervis_change_group_vis(lno, pcb_true, pcb_true);
 					found = 1;
 					break;

@@ -462,7 +462,7 @@ static int pcb_act_SavePatch(int argc, const char **argv, pcb_coord_t x, pcb_coo
 			default_file = malloc(len + 8);
 			memcpy(default_file, PCB->Filename, len + 1);
 			end = strrchr(default_file, '.');
-			if ((end == NULL) || (strcasecmp(end, ".pcb") != 0))
+			if ((end == NULL) || (pcb_strcasecmp(end, ".pcb") != 0))
 				end = default_file + len;
 			strcpy(end, ".bap");
 		}

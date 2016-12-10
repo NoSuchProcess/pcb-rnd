@@ -24,6 +24,7 @@
 #include "stdarg.h"
 #include "misc_util.h"
 #include "compat_nls.h"
+#include "compat_misc.h"
 
 static int ok;
 
@@ -103,9 +104,9 @@ static int Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	setup_fsb_dialog();
 
-	if (strcasecmp(function, "Netlist") == 0)
+	if (pcb_strcasecmp(function, "Netlist") == 0)
 		pattern = xms_net;
-	else if (strcasecmp(function, "ElementToBuffer") == 0)
+	else if (pcb_strcasecmp(function, "ElementToBuffer") == 0)
 		pattern = xms_fp;
 	else
 		pattern = xms_pcb;
@@ -212,7 +213,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	function = argc ? argv[0] : "Layout";
 
-	if (strcasecmp(function, "Layout") == 0)
+	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->Filename)
 			return pcb_hid_actionl("SaveTo", "Layout", PCB->Filename, NULL);
 
@@ -241,7 +242,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &name);
 
-	if (strcasecmp(function, "PasteBuffer") == 0)
+	if (pcb_strcasecmp(function, "PasteBuffer") == 0)
 		pcb_hid_actionl("PasteBuffer", "Save", name, NULL);
 	else {
 		/*
@@ -250,7 +251,7 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		 * ActionSaveTo() will ignore the new file name we
 		 * just obtained.
 		 */
-		if (strcasecmp(function, "Layout") == 0)
+		if (pcb_strcasecmp(function, "Layout") == 0)
 			pcb_hid_actionl("SaveTo", "LayoutAs", name, NULL);
 		else
 			pcb_hid_actionl("SaveTo", function, name, NULL);
@@ -824,17 +825,17 @@ Open the netlist window.
 static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *a = argc == 1 ? argv[0] : "";
-	if (strcmp(a, "1") == 0 || strcasecmp(a, "Layout") == 0) {
+	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
 	}
-	else if (strcmp(a, "2") == 0 || strcasecmp(a, "Library") == 0) {
+	else if (strcmp(a, "2") == 0 || pcb_strcasecmp(a, "Library") == 0) {
 		lesstif_show_library();
 	}
-	else if (strcmp(a, "3") == 0 || strcasecmp(a, "Log") == 0) {
+	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
 		if (log_form == 0)
 			lesstif_log("");
 		XtManageChild(log_form);
 	}
-	else if (strcmp(a, "4") == 0 || strcasecmp(a, "Netlist") == 0) {
+	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
 		lesstif_show_netlist();
 	}
 	else {

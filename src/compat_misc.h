@@ -25,6 +25,7 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <math.h>
 
 long pcb_rand(void);
@@ -38,5 +39,8 @@ char *pcb_strdup(const char *s);
 #define pcb_strdup_null(x) (((x) != NULL) ? pcb_strdup (x) : NULL)
 
 double pcb_round(double x);
+
+int pcb_strcasecmp(const char *s1, const char *s2);
+int pcb_strncasecmp(const char *s1, const char *s2, size_t n);
 
 #endif /* PCB_COMPAT_MISC_H */

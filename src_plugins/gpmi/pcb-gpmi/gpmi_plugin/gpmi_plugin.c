@@ -5,6 +5,7 @@
 #include <gpmi.h>
 #include "src/global_typedefs.h"
 #include "src/misc_util.h"
+#include "src/compat_misc.h"
 #include "src/conf_core.h"
 #include "src/event.h"
 #include "src/paths.h"
@@ -64,13 +65,13 @@ static int action_gpmi_scripts(int argc, const char **argv, pcb_coord_t x, pcb_c
 		gpmi_hid_manage_scripts();
 		return 0;
 	}
-	if (strcasecmp(argv[0], "reload") == 0) {
+	if (pcb_strcasecmp(argv[0], "reload") == 0) {
 		if (argc > 1)
 			cmd_reload(argv[1]);
 		else
 			cmd_reload(NULL);
 	}
-	else if (strcasecmp(argv[0], "load") == 0) {
+	else if (pcb_strcasecmp(argv[0], "load") == 0) {
 		if (argc == 3) {
 			if (hid_gpmi_load_module(NULL, argv[1], argv[2], NULL) == NULL)
 				pcb_message(PCB_MSG_DEFAULT, "Failed to load %s %s\n", argv[1], argv[2]);
@@ -78,7 +79,7 @@ static int action_gpmi_scripts(int argc, const char **argv, pcb_coord_t x, pcb_c
 		else
 			pcb_message(PCB_MSG_DEFAULT, "Invalid number of arguments for load\n");
 	}
-	else if (strcasecmp(argv[0], "unload") == 0) {
+	else if (pcb_strcasecmp(argv[0], "unload") == 0) {
 		if (argc == 2) {
 			hid_gpmi_script_info_t *i = hid_gpmi_lookup(argv[1]);
 			if (i != NULL) {

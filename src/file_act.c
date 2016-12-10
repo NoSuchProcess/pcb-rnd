@@ -118,26 +118,26 @@ static int pcb_act_LoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	if (argc > 2)
 		format = argv[2];
 
-	if (strcasecmp(function, "ElementToBuffer") == 0) {
+	if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
 		pcb_notify_crosshair_change(pcb_false);
 		if (pcb_element_load_to_buffer(PCB_PASTEBUFFER, name))
 			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 
-	else if (strcasecmp(function, "LayoutToBuffer") == 0) {
+	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0) {
 		pcb_notify_crosshair_change(pcb_false);
 		if (pcb_buffer_load_layout(PCB_PASTEBUFFER, name, format))
 			pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 
-	else if (strcasecmp(function, "Layout") == 0) {
+	else if (pcb_strcasecmp(function, "Layout") == 0) {
 		if (!PCB->Changed || pcb_gui->confirm_dialog(_("OK to override layout data?"), 0))
 			pcb_load_pcb(name, format, pcb_true, 0);
 	}
 
-	else if (strcasecmp(function, "Netlist") == 0) {
+	else if (pcb_strcasecmp(function, "Netlist") == 0) {
 		if (PCB->Netlistname)
 			free(PCB->Netlistname);
 		PCB->Netlistname = pcb_strdup_strip_wspace(name);
@@ -149,7 +149,7 @@ static int pcb_act_LoadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 		if (!pcb_import_netlist(PCB->Netlistname))
 			pcb_netlist_changed(1);
 	}
-	else if (strcasecmp(function, "Revert") == 0 && PCB->Filename
+	else if (pcb_strcasecmp(function, "Revert") == 0 && PCB->Filename
 					 && (!PCB->Changed || pcb_gui->confirm_dialog(_("OK to override changes?"), 0))) {
 		pcb_revert_pcb();
 	}
@@ -251,7 +251,7 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	function = argv[0];
 	name = argv[1];
 
-	if (strcasecmp(function, "Layout") == 0) {
+	if (pcb_strcasecmp(function, "Layout") == 0) {
 		if (pcb_save_pcb(PCB->Filename, NULL) == 0)
 			pcb_board_set_changed_flag(pcb_false);
 		if (pcb_gui->notify_filename_changed != NULL)
@@ -265,7 +265,7 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	if (argc >= 3)
 		fmt = argv[2];
 
-	if (strcasecmp(function, "LayoutAs") == 0) {
+	if (pcb_strcasecmp(function, "LayoutAs") == 0) {
 		if (pcb_save_pcb(name, fmt) == 0) {
 			pcb_board_set_changed_flag(pcb_false);
 			free(PCB->Filename);
@@ -276,7 +276,7 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		return 0;
 	}
 
-	if (strcasecmp(function, "AllConnections") == 0) {
+	if (pcb_strcasecmp(function, "AllConnections") == 0) {
 		FILE *fp;
 		pcb_bool result;
 		if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
@@ -287,7 +287,7 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		return 0;
 	}
 
-	if (strcasecmp(function, "AllUnusedPins") == 0) {
+	if (pcb_strcasecmp(function, "AllUnusedPins") == 0) {
 		FILE *fp;
 		pcb_bool result;
 		if ((fp = pcb_check_and_open_file(name, pcb_true, pcb_false, &result, NULL)) != NULL) {
@@ -298,7 +298,7 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		return 0;
 	}
 
-	if (strcasecmp(function, "ElementConnections") == 0) {
+	if (pcb_strcasecmp(function, "ElementConnections") == 0) {
 		pcb_element_t *element;
 		void *ptrtmp;
 		FILE *fp;
@@ -315,7 +315,7 @@ static int pcb_act_SaveTo(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		return 0;
 	}
 
-	if (strcasecmp(function, "PasteBuffer") == 0) {
+	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
 		return pcb_save_buffer_elements(name, fmt);
 	}
 
@@ -338,7 +338,7 @@ save) before quitting.
 static int pcb_act_Quit(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *force = PCB_ACTION_ARG(0);
-	if (force && strcasecmp(force, "force") == 0) {
+	if (force && pcb_strcasecmp(force, "force") == 0) {
 		PCB->Changed = 0;
 		exit(0);
 	}

@@ -38,6 +38,7 @@
 #include "plugins.h"
 #include "obj_all.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 
 
 /* Things that need to be flipped:
@@ -63,7 +64,7 @@ static int boardflip(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int h = PCB->MaxHeight;
 	int sides = 0;
 
-	if (argc > 0 && strcasecmp(argv[0], "sides") == 0)
+	if (argc > 0 && pcb_strcasecmp(argv[0], "sides") == 0)
 		sides = 1;
 	printf("argc %d argv %s sides %d\n", argc, argc > 0 ? argv[0] : "", sides);
 	LAYER_LOOP(PCB->Data, pcb_max_copper_layer + 2);

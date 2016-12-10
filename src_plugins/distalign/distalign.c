@@ -113,6 +113,7 @@
 #include "plugins.h"
 #include "action_helper.h"
 #include "hid_actions.h"
+#include "compat_misc.h"
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
@@ -167,7 +168,7 @@ static int keyword(const char *s)
 		return K_none;
 	}
 	for (i = 0; i < PCB_ENTRIES(keywords); ++i) {
-		if (keywords[i] && strcasecmp(s, keywords[i]) == 0)
+		if (keywords[i] && pcb_strcasecmp(s, keywords[i]) == 0)
 			return i;
 	}
 	return -1;

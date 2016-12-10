@@ -37,6 +37,7 @@
 #include "hid_actions.h"
 #include "conf_core.h"
 #include "box.h"
+#include "compat_misc.h"
 
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
@@ -89,7 +90,7 @@ static int keyword(const char *s)
 		return K_none;
 	}
 	for (i = 0; i < PCB_ENTRIES(keywords); ++i) {
-		if (keywords[i] && strcasecmp(s, keywords[i]) == 0)
+		if (keywords[i] && pcb_strcasecmp(s, keywords[i]) == 0)
 			return i;
 	}
 	return -1;

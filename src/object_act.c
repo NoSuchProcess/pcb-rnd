@@ -491,7 +491,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 	printf("Entered pcb_act_ElementList, executing function %s\n", function);
 #endif
 
-	if (strcasecmp(function, "start") == 0) {
+	if (pcb_strcasecmp(function, "start") == 0) {
 		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			PCB_FLAG_CLEAR(PCB_FLAG_FOUND, element);
@@ -502,7 +502,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		return 0;
 	}
 
-	if (strcasecmp(function, "done") == 0) {
+	if (pcb_strcasecmp(function, "done") == 0) {
 		PCB_ELEMENT_LOOP(PCB->Data);
 		{
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, element)) {
@@ -519,7 +519,7 @@ static int pcb_act_ElementList(int argc, const char **argv, pcb_coord_t x, pcb_c
 		return 0;
 	}
 
-	if (strcasecmp(function, "need") != 0)
+	if (pcb_strcasecmp(function, "need") != 0)
 		PCB_ACT_FAIL(ElementList);
 
 	if (argc != 4)
@@ -839,7 +839,7 @@ static int pcb_act_MinMaskGap(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 	if (!function)
 		return 1;
-	if (strcasecmp(function, "Selected") == 0)
+	if (pcb_strcasecmp(function, "Selected") == 0)
 		flags = PCB_FLAG_SELECTED;
 	else {
 		units = delta;
@@ -913,7 +913,7 @@ static int pcb_act_MinClearGap(int argc, const char **argv, pcb_coord_t x, pcb_c
 
 	if (!function)
 		return 1;
-	if (strcasecmp(function, "Selected") == 0)
+	if (pcb_strcasecmp(function, "Selected") == 0)
 		flags = PCB_FLAG_SELECTED;
 	else {
 		units = delta;
