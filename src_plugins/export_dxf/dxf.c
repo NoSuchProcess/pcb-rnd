@@ -4377,8 +4377,6 @@ static int dxf_drill_sort(const void *va, const void *vb) {
  * the drawing functions should be called.\n
  * If it returns true (nonzero), the items in that layer [group] should be
  * drawn using the various drawing functions.\n
- * In addition to the MAX_LAYERS copper layer groups, you may select layers
- * indicated by the macros SL_* defined, or any others with an index of -1.\n
  * For copper layer groups, you may pass NULL for name to have a name fetched
  * from the PCB struct.\n
  * \n
@@ -4436,9 +4434,9 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 		}
 #endif
 		if (flags & PCB_LYT_ASSY) {
-			/* do not export the layers with the type SL_ASSY */
+			/* do not export the layers with the type ASSY */
 			if (dxf_verbose) {
-				fprintf(stderr, "DXF: Warning, Layer %ld with type SL_ASSY not set.\n", group);
+				fprintf(stderr, "DXF: Warning, Layer %ld with type ASSY not set.\n", group);
 				fprintf(stderr, "[File: %s: line: %d] Leaving dxf_set_layer () function.\n", __FILE__, __LINE__);
 			}
 			return 0;
