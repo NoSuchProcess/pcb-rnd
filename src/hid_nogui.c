@@ -46,9 +46,9 @@ static void nogui_invalidate_all(void)
 	CRASH("invalidate_all");
 }
 
-static int nogui_set_layer(const char *name, int idx, int empty)
+static int nogui_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	CRASH("set_layer");
+	CRASH("set_layer_group");
 	return 0;
 }
 
@@ -406,7 +406,7 @@ void pcb_hid_nogui_init(pcb_hid_t * hid)
 	hid->parse_arguments = nogui_parse_arguments;
 	hid->invalidate_lr = nogui_invalidate_lr;
 	hid->invalidate_all = nogui_invalidate_all;
-	hid->set_layer_old = nogui_set_layer;
+	hid->set_layer_group = nogui_set_layer_group;
 	hid->end_layer = nogui_end_layer;
 	hid->make_gc = nogui_make_gc;
 	hid->destroy_gc = nogui_destroy_gc;
