@@ -76,15 +76,15 @@ newly(bottomassembly 16777226 ((bottom) (assy) (virtual)) -1)
 Creates the bottom assembly virtual layer with ID 16777226. It is not part of
 any layer group and is called "bottomassembly".
 
-<h3> setly(name id is_empty) </h3>
+<h3> setlg(group_id group_flags is_empty) </h3>
 Inform the client that the next set of drawing commands are for a specific
-layer.
+layer group.
 <p>
 Arguments:
 <ul>
-	<li> name: name of the layer (can be empty)
-	<li> id: unique group ID
-	<li> is_empty: 1 if the layer is empty, 0 if the layer is not empty
+	<li> group_id: unique ID of the layer group
+	<li> flags: TODO
+	<li> is_empty: 1 if the layer group may be empty, 0 if the layer is not empty
 </ul>
 
 <h3> makeGC() </h3>
