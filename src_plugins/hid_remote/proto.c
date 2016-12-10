@@ -101,13 +101,13 @@ void proto_send_invalidate_all()
 	send_end(&pctx);
 }
 
-int proto_send_set_layer(const char *name, int idx, int empty)
+int proto_send_set_layer_group(pcb_layergrp_id_t group, unsigned int flags, int is_empty)
 {
-	send_begin(&pctx, "setly");
-	send_open(&pctx, str_is_bin(name), 1);
-	sends(&pctx, name);
-	sendf(&pctx, "%d", idx);
-	sendf(&pctx, "%d", empty);
+	send_begin(&pctx, "setlg");
+	send_open(&pctx, 0, 1);
+	sendf(&pctx, "%ld", group);
+	sendf(&pctx, "%lx", flags);
+	sendf(&pctx, "%d", is_empty);
 	send_close(&pctx);
 	send_end(&pctx);
 	return 0;
