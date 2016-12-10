@@ -110,7 +110,7 @@ static char *finish_color_table[] = {
 
 static pcb_hid_t scad_hid;
 
-static int /*silk_layer,*/ drill_layer, outline_layer, mask_layer;
+static int drill_layer, outline_layer, mask_layer;
 static int layer_open, fresh_layer;
 static char layer_id[64];
 
@@ -728,7 +728,6 @@ static int scad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, u
 		scad_close_layer();
 	}
 
-/*	silk_layer = 0;*/
 	drill_layer = 0;
 	mask_layer = 0;
 	outline_layer = 0;
@@ -771,18 +770,17 @@ static int scad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, u
 	}
 	else {
 		if (flags & PCB_LYT_PDRILL) {
-			drill_layer = SL_TYPE(group);
+			drill_layer = 1;
 			strcpy(layer_id, "layer_pdrill");
 		}
 		else if (flags & PCB_LYT_UDRILL) {
-			drill_layer = SL_TYPE(group);
+			drill_layer = 1;
 			strcpy(layer_id, "layer_udrill");
 		}
 		else if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) {
 			if (!opt_exp_silk)
 				return 0;
 			scaled_layer_thickness = SILK_LAYER_THICKNESS;
-/*			silk_layer = SL_TYPE(group);*/
 			if (flags & PCB_LYT_TOP) {
 				strcpy(layer_id, "layer_topsilk");
 			}
@@ -794,7 +792,6 @@ static int scad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, u
 			if (opt_mask_color == SCAD_MASK_NONE || opt_outline_type == SCAD_OUTLINE_NONE)
 				return 0;
 			scaled_layer_thickness = MASK_THICKNESS * 2.;
-/*			silk_layer = SL_TYPE(group);*/
 			if ((flags & PCB_LYT_TOP)) {
 				strcpy(layer_id, "layer_topmask");
 			}
