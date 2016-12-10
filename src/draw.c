@@ -426,9 +426,20 @@ static void DrawRats(const pcb_box_t * drawn_area)
 void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 {
 	struct pcb_draw_poly_info_s info;
+	pcb_box_t scr2;
+
+	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
+		scr2 = *screen;
+		screen = &scr2;
+		if (scr2.X2 <= scr2.X1)
+			scr2.X2 = scr2.X1+1;
+		if (scr2.Y2 <= scr2.Y1)
+			scr2.Y2 = scr2.Y1+1;
+	}
 
 	info.drawn_area = screen;
 	info.layer = Layer;
+
 
 	/* print the non-clearing polys */
 	pcb_r_search(Layer->polygon_tree, screen, NULL, draw_poly_callback, &info, NULL);
