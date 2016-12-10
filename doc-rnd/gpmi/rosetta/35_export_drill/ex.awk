@@ -29,8 +29,8 @@ function destroy_gc(event_id, hid, gc) {
 	}
 }
 
-function set_layer(event_id, hid, name, group, empty) {
-	if (name == "topassembly")
+function set_layer(event_id, hid, group, layer, flags, empty) {
+	if ((layer_flag_is_set(flags, "LYT_ASSY") == "1") && (layer_flag_is_set(flags, "LYT_TOP") == "1"))
 		green_light = 1
 	else
 		green_light = 0
@@ -55,6 +55,6 @@ function fill_circle(event_id, hid, gc, cx, cy, r      ,dia) {
 BEGIN {
 	Bind("HIDE_make_gc", "make_gc")
 	Bind("HIDE_destroy_gc", "destroy_gc")
-	Bind("HIDE_set_layer", "set_layer")
+	Bind("HIDE_set_layer_group", "set_layer_group")
 	Bind("HIDE_fill_circle", "fill_circle")
 }

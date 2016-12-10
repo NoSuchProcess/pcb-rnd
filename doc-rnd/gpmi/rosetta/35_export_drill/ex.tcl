@@ -33,10 +33,10 @@ proc destroy_gc {event_id hid gc} {
 	}
 }
 
-proc set_layer {event_id hid name group empty} {
+proc set_layer_group {event_id hid group layer flags empty} {
 	global green_light
 
-	if { $name eq "topassembly" } { set green_light 1 } { set green_light 0 }
+	if { [layer_flag_is_set $flags "LYT_ASSY"] && [layer_flag_is_set $flags "LYT_TOP"] } { set green_light 1; puts "!!!!!!!!!!!!!!!"} { set green_light 0 }
 }
 
 proc fill_circle {event_id hid gc cx cy r} {
@@ -59,5 +59,7 @@ proc fill_circle {event_id hid gc cx cy r} {
 
 Bind HIDE_make_gc make_gc
 Bind HIDE_destroy_gc destroy_gc
-Bind HIDE_set_layer set_layer
+Bind HIDE_set_layer_group set_layer_group
 Bind HIDE_fill_circle fill_circle
+
+puts "NA?"
