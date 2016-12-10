@@ -262,7 +262,6 @@ static void dxf_parse_arguments(int *argc, char ***argv);
 static void dxf_progress(int dxf_so_far, int dxf_total, const char *dxf_message);
 static void dxf_set_color(pcb_hid_gc_t gc, const char *name);
 static void dxf_set_crosshair(int x, int y);
-static int dxf_set_layer(const char *name, int group);
 static void dxf_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style);
 static void dxf_set_line_width(pcb_hid_gc_t gc, int width);
 static void dxf_show_item(void *item);
@@ -729,8 +728,6 @@ static int lastgroup = -1;
 static int lastcap = -1;
 
 static int lastcolor = -1;
-
-static int print_layer[PCB_MAX_LAYER];
 
 /*!
  * \brief The last X coordinate.
@@ -4294,16 +4291,10 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	strcpy(dxf_filename, dxf_fnbase);
 	strcat(dxf_filename, "_");
 	dxf_filesuffix = dxf_filename + strlen(dxf_filename);
-	memset(print_layer, 0, sizeof(print_layer));
 	/*
 	 * use this to temporarily enable all layers.
 	 */
 	pcb_hid_save_and_show_layer_ons(save_ons);
-
-	len = pcb_layer_list(PCB_LYT_SILK | PCB_LYT_COPPER, tmp, sizeof(tmp));
-	for(i = 0; i < len; i++)
-		if (!pcb_layer_is_empty(tmp[i]))
-			print_layer[tmp[i]] = 1;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), dxf_layer_sort);
@@ -4400,44 +4391,42 @@ static int dxf_drill_sort(const void *va, const void *vb) {
  * <li>Layers without exportable items are not set for DXF export.
  * </ul>
  */
-static int dxf_set_layer(const char *name, int group) {
+static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+{
 	char *cp;
-	int idx;
 	const char *fmt;
+	char tmp_ln[PCB_PATH_MAX];
+	const char *name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
 
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_set_layer () function.\n", __FILE__, __LINE__);
 #endif
-	idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
 
-	if (name == 0) {
-		/* if none given, get the layer name from pcb */
-		name = PCB->Data->Layer[idx].Name;
-	}
 	if (dxf_verbose) {
-		fprintf(stderr, "DXF: now processing Layer %s group %d\n", name, group);
+		fprintf(stderr, "DXF: now processing Layer group %ld, flags %lx\n", group, flags);
 	}
 	if (dxf_export_all_layers) {
 		/* do nothing here to export all layers */
 	}
 	else {
-		if (idx >= 0 && idx < pcb_max_copper_layer && !print_layer[idx]) {
+		if (pcb_is_layergrp_empty(group)) {
 			/* do not export empty layers */
 			if (dxf_verbose) {
-				fprintf(stderr, "DXF: Warning, Layer %s contains no exportable items and is not set.\n", name);
+				fprintf(stderr, "DXF: Warning, Layer %ld contains no exportable items and is not set.\n", group);
 				fprintf(stderr, "[File: %s: line: %d] Leaving dxf_set_layer () function.\n", __FILE__, __LINE__);
 			}
 			return 0;
 		}
-		if (strcmp(name, "invisible") == 0) {
+		if (flags & PCB_LYT_INVIS) {
 			/* do not export the layer with the name "invisible" */
 			if (dxf_verbose) {
-				fprintf(stderr, "DXF: Warning, Layer %s not set.\n", name);
+				fprintf(stderr, "DXF: Warning, Layer %ld not set.\n", group);
 				fprintf(stderr, "[File: %s: line: %d] Leaving dxf_set_layer () function.\n", __FILE__, __LINE__);
 			}
 			return 0;
 		}
-		if (strcmp(name, "keepout") == 0) {
+#if 0
+		if (flags & PCB_LYT_KEEPOUT) {
 			/* do not export the layer with the name "keepout" */
 			if (dxf_verbose) {
 				fprintf(stderr, "DXF: Warning, Layer %s not set.\n", name);
@@ -4445,15 +4434,20 @@ static int dxf_set_layer(const char *name, int group) {
 			}
 			return 0;
 		}
-		if (SL_TYPE(idx) == SL_ASSY) {
+#endif
+		if (flags & PCB_LYT_ASSY) {
 			/* do not export the layers with the type SL_ASSY */
 			if (dxf_verbose) {
-				fprintf(stderr, "DXF: Warning, Layer %s with type SL_ASSY not set.\n", name);
+				fprintf(stderr, "DXF: Warning, Layer %ld with type SL_ASSY not set.\n", group);
 				fprintf(stderr, "[File: %s: line: %d] Leaving dxf_set_layer () function.\n", __FILE__, __LINE__);
 			}
 			return 0;
 		}
 	}
+
+	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	is_mask = !!(flags & PCB_LYT_MASK);
+
 	if (is_drill && dxf_n_pending_drills) {
 		int i;
 		/* dump pending drills in sequence */
@@ -4481,8 +4475,6 @@ static int dxf_set_layer(const char *name, int group) {
 		dxf_n_pending_drills = dxf_max_pending_drills = 0;
 		dxf_pending_drills = 0;
 	}
-	is_drill = (SL_TYPE(idx) == SL_PDRILL || SL_TYPE(idx) == SL_UDRILL);
-	is_mask = (SL_TYPE(idx) == SL_MASK);
 	current_mask = 0;
 	if (group < 0 || group != lastgroup) {
 		time_t currenttime;
@@ -4505,15 +4497,9 @@ static int dxf_set_layer(const char *name, int group) {
       }*/
 		dxf_maybe_close_file();
 		pagecount++;
-		switch (idx) {
-		case SL(PDRILL, 0):
+		if (is_drill)
 			sext = ".dxf";
-			break;
-		case SL(UDRILL, 0):
-			sext = ".dxf";
-			break;
-		}
-		strcpy(dxf_filesuffix, pcb_layer_type_to_file_name(idx, PCB_FNS_first));
+		strcpy(dxf_filesuffix, name);
 		strcat(dxf_filesuffix, sext);
 printf("SET LAYER: %s\n", dxf_filename);
 		fp = fopen(dxf_filename, "w");
@@ -4533,7 +4519,7 @@ printf("SET LAYER: %s\n", dxf_filename);
 		 * whatever form instead of being put on stderr.
 		 */
 		if (dxf_verbose) {
-			fprintf(stderr, "DXF: Start of page %d for group %d idx %d\n", pagecount, group, idx);
+			fprintf(stderr, "DXF: Start of page %d for group %ld flags %lx\n", pagecount, group, flags);
 		}
 		if (group < 0 || group != lastgroup) {
 			/* create a portable timestamp */
@@ -5955,7 +5941,7 @@ pcb_uninit_t hid_export_dxf_init()
 	dxf_hid.get_export_options = dxf_get_export_options;
 	dxf_hid.do_export = dxf_do_export;
 	dxf_hid.parse_arguments = dxf_parse_arguments;
-	dxf_hid.set_layer_old = dxf_set_layer;
+	dxf_hid.set_layer_group = dxf_set_layer_group;
 	dxf_hid.calibrate = dxf_calibrate;
 	dxf_hid.set_crosshair = dxf_set_crosshair;
 	dxf_hid.show_item = dxf_show_item;
