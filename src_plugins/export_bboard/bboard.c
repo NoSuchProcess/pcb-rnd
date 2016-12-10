@@ -173,28 +173,13 @@ static pcb_hid_attribute_t *bboard_get_export_options(int *n)
 	return bboard_options;
 }
 
-static int bboard_validate_layer(const char *name, int group, int skipsolder)
+static int bboard_validate_layer(unsigned long flags, int group, int skipsolder)
 {
-	int idx = (group >= 0 && group < pcb_max_group) ? PCB->LayerGroups.Entries[group][0] : group;
-
-	if (name == 0)
-		name = PCB->Data->Layer[idx].Name;
-
-	if (strcmp(name, "invisible") == 0)
-		return 0;
-
-	if (SL_TYPE(idx) == SL_ASSY)
-		return 0;
-
-	if (strcmp(name, "route") == 0)
-		return 0;
-
-	if (strcmp(name, "outline") == 0)
+	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY) || (flags & PCB_LYT_OUTLINE))
 		return 0;
 
 	if (group_data[group].solder && skipsolder)
 		return 0;
-
 
 	if (group >= 0 && group < pcb_max_group) {
 		if (!group_data[group].draw)
@@ -540,7 +525,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	/* draw all wires from all valid layers */
 	for (i = pcb_max_copper_layer - 1; i >= 0; i--) {
-		if (bboard_validate_layer(PCB->Data->Layer[i].Name, pcb_layer_get_group(i), options[HA_skipsolder].int_value)) {
+		if (bboard_validate_layer(pcb_layer_flags(i), pcb_layer_get_group(i), options[HA_skipsolder].int_value)) {
 			bboard_get_layer_color(&(PCB->Data->Layer[i]), &clr_r, &clr_g, &clr_b);
 			bboard_set_color_cairo(clr_r, clr_g, clr_b);
 			PCB_LINE_LOOP(&(PCB->Data->Layer[i]));
