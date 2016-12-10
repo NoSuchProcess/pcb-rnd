@@ -927,17 +927,9 @@ static void png_parse_arguments(int *argc, char ***argv)
 static int is_mask;
 static int is_drill;
 
-static int png_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+
+static int png_set_layer_group_photo(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	doing_outline = 0;
-
-	if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_PASTE) || (flags & PCB_LYT_INVIS))
-		return 0;
-
-	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
-	is_mask = (flags & PCB_LYT_MASK);
-
-	if (photo_mode) {
 		if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_TOP)) {
 			if (photo_flip)
 				return 0;
@@ -1005,7 +997,20 @@ static int png_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 		}
 		im = *photo_im;
 		return 1;
-	}
+}
+
+static int png_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+{
+	doing_outline = 0;
+
+	if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_PASTE) || (flags & PCB_LYT_INVIS))
+		return 0;
+
+	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
+	is_mask = (flags & PCB_LYT_MASK);
+
+	if (photo_mode)
+		return png_set_layer_group_photo(group, layer, flags, is_empty);
 
 	if (as_shown) {
 		if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) {
