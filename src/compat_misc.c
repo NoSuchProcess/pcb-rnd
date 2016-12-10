@@ -148,14 +148,17 @@ int pcb_strcasecmp(const char *s1, const char *s2)
 
 int pcb_strncasecmp(const char *s1, const char *s2, size_t n)
 {
-	do {
+	if (n == 0)
+		return 0;
+
+	while(tolower(*s1) == tolower(*s2)) {
+		n--;
 		if (n == 0)
 			return 0;
 		if (*s1 == '\0')
 			return 0;
 		s1++;
 		s2++;
-		n--;
-	} while(tolower(*s1) == tolower(*s2));
+	}
 	return tolower(*s1) - tolower(*s2);
 }
