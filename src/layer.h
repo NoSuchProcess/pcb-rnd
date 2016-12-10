@@ -98,27 +98,6 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_
 
 #define TEST_SILK_LAYER(layer)	(pcb_layer_id(PCB->Data, layer) >= pcb_max_copper_layer)
 
-/* These decode the set_layer index. */
-#define SL_TYPE(x) ((x) < 0 ? (x) & 0x0f0 : 0)
-#define SL_SIDE(x) ((x) & 0x00f)
-#define SL_MYSIDE(x) ((((x) & SL_BOTTOM_SIDE)!=0) == (PCB_SWAP_IDENT != 0))
-
-#define SL_0_SIDE	0x0000
-#define SL_TOP_SIDE	0x0001
-#define SL_BOTTOM_SIDE	0x0002
-#define SL_SILK		0x0010
-#define SL_MASK		0x0020
-#define SL_PDRILL	0x0030
-#define SL_UDRILL	0x0040
-#define SL_PASTE	0x0050
-#define SL_INVISIBLE	0x0060
-#define SL_FAB		0x0070
-#define SL_ASSY		0x0080
-#define SL_RATS		0x0090
-/* Callers should use this.  */
-#define SL(type,side) (~0xfff | SL_##type | SL_##side##_SIDE)
-
-
 #define LAYER_IS_OUTLINE(idx) (((idx) > 0) && ((idx) <= pcb_max_copper_layer) && (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0))
 
 #define GROUP_LOOP(data, group) do { 	\
@@ -276,7 +255,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index);
    have a real layer in the array */
 typedef struct pcb_virt_layer_s {
 	char *name;
-	unsigned int old_id;
 	pcb_layer_id_t new_id, data_layer_offs;
 	pcb_layer_type_t type;
 } pcb_virt_layer_t;

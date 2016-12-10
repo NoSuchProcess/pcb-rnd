@@ -36,19 +36,19 @@
 #include "event.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
-	{"invisible",      SL(INVISIBLE, 0),  PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
-	{"topmask",        SL(MASK, TOP),     PCB_LYT_VIRTUAL + 2,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_TOP },
-	{"bottommask",     SL(MASK, BOTTOM),  PCB_LYT_VIRTUAL + 3,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
-	{"topsilk",        SL(SILK, TOP),     PCB_LYT_VIRTUAL + 4,  +PCB_COMPONENT_SIDE, PCB_LYT_SILK | PCB_LYT_TOP },
-	{"bottomsilk",     SL(SILK, BOTTOM),  PCB_LYT_VIRTUAL + 5,  +PCB_SOLDER_SIDE,    PCB_LYT_SILK | PCB_LYT_BOTTOM },
-	{"rats",           SL(RATS, 0),       PCB_LYT_VIRTUAL + 6,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_RAT },
-	{"toppaste",       SL(PASTE, TOP),    PCB_LYT_VIRTUAL + 7,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
-	{"bottompaste",    SL(PASTE, BOTTOM), PCB_LYT_VIRTUAL + 8,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
-	{"topassembly",    SL(ASSY, TOP),     PCB_LYT_VIRTUAL + 9,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
-	{"bottomassembly", SL(ASSY, BOTTOM),  PCB_LYT_VIRTUAL + 10, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
-	{"fab",            SL(FAB, 0),        PCB_LYT_VIRTUAL + 11, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
-	{"plated-drill",   SL(PDRILL, 0),     PCB_LYT_VIRTUAL + 12, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
-	{"unplated-drill", SL(UDRILL, 0),     PCB_LYT_VIRTUAL + 13, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
+	{"invisible",      PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
+	{"topmask",        PCB_LYT_VIRTUAL + 2,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_TOP },
+	{"bottommask",     PCB_LYT_VIRTUAL + 3,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
+	{"topsilk",        PCB_LYT_VIRTUAL + 4,  +PCB_COMPONENT_SIDE, PCB_LYT_SILK | PCB_LYT_TOP },
+	{"bottomsilk",     PCB_LYT_VIRTUAL + 5,  +PCB_SOLDER_SIDE,    PCB_LYT_SILK | PCB_LYT_BOTTOM },
+	{"rats",           PCB_LYT_VIRTUAL + 6,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_RAT },
+	{"toppaste",       PCB_LYT_VIRTUAL + 7,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
+	{"bottompaste",    PCB_LYT_VIRTUAL + 8,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
+	{"topassembly",    PCB_LYT_VIRTUAL + 9,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
+	{"bottomassembly", PCB_LYT_VIRTUAL + 10, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
+	{"fab",            PCB_LYT_VIRTUAL + 11, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
+	{"plated-drill",   PCB_LYT_VIRTUAL + 12, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
+	{"unplated-drill", PCB_LYT_VIRTUAL + 13, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
 	{ NULL, 0 },
 };
 
@@ -961,9 +961,6 @@ int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 		return pcb_gui->set_layer_group(grp, lid, v->type, is_empty);
 	}
 
-	if (pcb_gui->set_layer_old != NULL)
-		return pcb_gui->set_layer_old(v->name, v->old_id, is_empty);
-
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;
 }
@@ -976,9 +973,6 @@ int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty)
 
 	if (pcb_gui->set_layer_group != NULL)
 		return pcb_gui->set_layer_group(grp, PCB->LayerGroups.Entries[grp][0], pcb_layergrp_flags(grp), is_empty);
-
-	if (pcb_gui->set_layer_old != NULL)
-		return pcb_gui->set_layer_old(NULL, grp, is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;

@@ -215,9 +215,6 @@ struct hid_s {
 	   zero it may be non-empty. */
 	int (*set_layer_group)(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 
-	int (*set_layer_old) (const char *name_, int group_, int _empty);
-
-
 	/* Tell the GUI the layer last selected has been finished with */
 	void (*end_layer) (void);
 

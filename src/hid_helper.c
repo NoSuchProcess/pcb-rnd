@@ -33,67 +33,6 @@
 #include "hid_helper.h"
 #include "compat_misc.h"
 
-#warning TODO: layer support: kill this
-const char *pcb_layer_type_to_file_name(int idx, int style)
-{
-	pcb_layergrp_id_t group;
-	int nlayers;
-	const char *single_name;
-	unsigned int flags = pcb_layer_flags(idx);
-
-	switch (idx) {
-	case SL(SILK, TOP):
-		return "topsilk";
-	case SL(SILK, BOTTOM):
-		return "bottomsilk";
-	case SL(MASK, TOP):
-		return "topmask";
-	case SL(MASK, BOTTOM):
-		return "bottommask";
-	case SL(PDRILL, 0):
-		return "plated-drill";
-	case SL(UDRILL, 0):
-		return "unplated-drill";
-	case SL(PASTE, TOP):
-		return "toppaste";
-	case SL(PASTE, BOTTOM):
-		return "bottompaste";
-	case SL(INVISIBLE, 0):
-		return "invisible";
-	case SL(FAB, 0):
-		return "fab";
-	case SL(ASSY, TOP):
-		return "topassembly";
-	case SL(ASSY, BOTTOM):
-		return "bottomassembly";
-	default:
-		group = pcb_layer_get_group(idx);
-		nlayers = PCB->LayerGroups.Number[group];
-		single_name = PCB->Data->Layer[idx].Name;
-		if (flags & PCB_LYT_TOP) {
-			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
-				return single_name;
-			return "top";
-		}
-		else if (flags & PCB_LYT_BOTTOM) {
-			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
-				return single_name;
-			return "bottom";
-		}
-		else if (flags & PCB_LYT_OUTLINE) {
-			return "outline";
-		}
-		else {
-			static char buf[20];
-			if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 1))
-				return single_name;
-			sprintf(buf, "group%ld", group);
-			return buf;
-		}
-		break;
-	}
-}
-
 char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, pcb_file_name_style_t style)
 {
 	pcb_virt_layer_t *v;
