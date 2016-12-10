@@ -10,25 +10,17 @@ typedef struct hid_gc_s {
 	int width;
 } hid_gc_s;
 
-static int extents_set_layer_old(const char *name, int group, int empty)
+static int extents_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	int idx = group;
-	if (idx >= 0 && idx < pcb_max_group) {
-		idx = PCB->LayerGroups.Entries[idx][0];
-	}
-	if (idx >= 0 && idx < pcb_max_copper_layer + 2)
-		return 1;
-	if (idx < 0) {
-		switch (SL_TYPE(idx)) {
-		case SL_INVISIBLE:
-		case SL_MASK:
-		case SL_ASSY:
-			return 0;
-		case SL_SILK:
-		case SL_PDRILL:
-		case SL_UDRILL:
+	switch (flags & PCB_LYT_ANYTHING) {
+		case PCB_LYT_COPPER:
+		case PCB_LYT_OUTLINE:
+		case PCB_LYT_SILK:
+		case PCB_LYT_PDRILL:
+		case PCB_LYT_UDRILL:
 			return 1;
-		}
+		default:
+			return 0;
 	}
 	return 0;
 }
@@ -135,7 +127,7 @@ void hid_extents_init(void)
 	extents_hid.description = "used to calculate extents";
 	extents_hid.poly_before = 1;
 
-	extents_hid.set_layer_old = extents_set_layer_old;
+	extents_hid.set_layer_group = extents_set_layer_group;
 	extents_hid.make_gc = extents_make_gc;
 	extents_hid.destroy_gc = extents_destroy_gc;
 	extents_hid.use_mask = extents_use_mask;
