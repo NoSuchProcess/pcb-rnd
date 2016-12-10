@@ -390,7 +390,7 @@ static void maybe_close_f(FILE * f)
 
 static pcb_box_t region;
 
-/* Very similar to pcb_layer_type_to_file_name() but appends only a
+/* Very similar to pcb_layer_to_file_name() but appends only a
    three-character suffix compatible with Eagle's defaults.  */
 static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
 {
