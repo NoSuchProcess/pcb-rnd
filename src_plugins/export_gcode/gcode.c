@@ -269,7 +269,7 @@ void gcode_choose_groups()
 			 * layers have negative indexes?
 			 */
 
-			if (flags & PCB_LYT_COPPER) {
+			if ((flags & PCB_LYT_COPPER) || (flags & PCB_LYT_OUTLINE)) {
 				m = pcb_layer_get_group(n);
 
 				/* the export layer */
