@@ -407,7 +407,7 @@ void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args);
 void ghid_pinout_window_show(GHidPort * out, pcb_element_t *Element);
 
 /* gtkhid-gdk.c AND gtkhid-gl.c */
-int ghid_set_layer(const char *name, int group, int empty);
+int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 pcb_hid_gc_t ghid_make_gc(void);
 void ghid_destroy_gc(pcb_hid_gc_t);
 void ghid_use_mask(int use_it);

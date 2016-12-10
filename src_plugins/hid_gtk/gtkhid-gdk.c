@@ -58,7 +58,7 @@ typedef struct hid_gc_s {
 static void draw_lead_user(render_priv * priv);
 
 
-int ghid_set_layer(const char *name, int group, int empty)
+int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group) {
@@ -73,24 +73,25 @@ int ghid_set_layer(const char *name, int group, int empty)
 
 	if (idx >= 0 && idx < pcb_max_copper_layer + 2)
 		return /*pinout ? 1 : */ PCB->Data->Layer[idx].On;
-	if (idx < 0) {
-		switch (SL_TYPE(idx)) {
-		case SL_INVISIBLE:
+
+	{
+		switch (flags & PCB_LYT_ANYTHING) {
+		case PCB_LYT_INVIS:
 			return /* pinout ? 0 : */ PCB->InvisibleObjectsOn;
-		case SL_MASK:
-			if (SL_MYSIDE(idx) /*&& !pinout */ )
+		case PCB_LYT_MASK:
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) /*&& !pinout */ )
 				return conf_core.editor.show_mask;
 			return 0;
-		case SL_SILK:
-			if (SL_MYSIDE(idx) /*|| pinout */ )
+		case PCB_LYT_SILK:
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) /*|| pinout */ )
 				return PCB->ElementOn;
 			return 0;
-		case SL_ASSY:
+		case PCB_LYT_ASSY:
 			return 0;
-		case SL_PDRILL:
-		case SL_UDRILL:
+		case PCB_LYT_PDRILL:
+		case PCB_LYT_UDRILL:
 			return 1;
-		case SL_RATS:
+		case PCB_LYT_RAT:
 			return PCB->RatOn;
 		}
 	}

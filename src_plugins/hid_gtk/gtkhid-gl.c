@@ -103,7 +103,7 @@ static void end_subcomposite(void)
 }
 
 
-int ghid_set_layer(const char *name, int group, int empty)
+int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	render_priv *priv = gport->render_priv;
 	int idx = group;
@@ -124,25 +124,26 @@ int ghid_set_layer(const char *name, int group, int empty)
 		priv->trans_lines = pcb_true;
 		return PCB->Data->Layer[idx].On;
 	}
-	if (idx < 0) {
-		switch (SL_TYPE(idx)) {
-		case SL_INVISIBLE:
+
+	{
+		switch (flags & PCB_LYT_ANYTHING) {
+		case PCB_LYT_INVIS:
 			return PCB->InvisibleObjectsOn;
-		case SL_MASK:
-			if (SL_MYSIDE(idx))
+		case PCB_LYT_MASK:
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return PCB_FLAG_TEST(PCB_SHOWMASKFLAG, PCB);
 			return 0;
-		case SL_SILK:
+		case PCB_LYT_SILK:
 			priv->trans_lines = pcb_true;
-			if (SL_MYSIDE(idx))
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return PCB->ElementOn;
 			return 0;
-		case SL_ASSY:
+		case PCB_LYT_ASSY:
 			return 0;
-		case SL_PDRILL:
-		case SL_UDRILL:
+		case PCB_LYT_PDRILL:
+		case PCB_LYT_UDRILL:
 			return 1;
-		case SL_RATS:
+		case PCB_LYT_RATS:
 			if (PCB->RatOn)
 				priv->trans_lines = pcb_true;
 			return PCB->RatOn;
