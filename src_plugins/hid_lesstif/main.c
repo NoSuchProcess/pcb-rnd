@@ -2806,7 +2806,7 @@ static void lesstif_notify_mark_change(pcb_bool changes_complete)
 		invalidate_depth++;
 }
 
-static int lesstif_set_layer(const char *name, int group, int empty)
+static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group) {
@@ -2829,26 +2829,29 @@ static int lesstif_set_layer(const char *name, int group, int empty)
 	else
 		autofade = 0;
 #endif
-	if (idx >= 0 && idx < pcb_max_copper_layer + 2)
+
+	if (flags & PCB_LYT_COPPER)
 		return pinout ? 1 : PCB->Data->Layer[idx].On;
-	if (idx < 0) {
-		switch (SL_TYPE(idx)) {
-		case SL_INVISIBLE:
+
+	{
+		switch (flags & PCB_LYT_ANYTHING) {
+		case PCB_LYT_INVIS:
 			return pinout ? 0 : PCB->InvisibleObjectsOn;
-		case SL_MASK:
-			if (SL_MYSIDE(idx) && !pinout)
+		case PCB_LYT_MASK:
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && !pinout)
 				return conf_core.editor.show_mask;
 			return 0;
-		case SL_SILK:
-			if (SL_MYSIDE(idx) || pinout)
+		case PCB_LYT_SILK:
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) || pinout) {
 				return PCB->ElementOn;
+			}
 			return 0;
-		case SL_ASSY:
+		case PCB_LYT_ASSY:
 			return 0;
-		case SL_UDRILL:
-		case SL_PDRILL:
+		case PCB_LYT_UDRILL:
+		case PCB_LYT_PDRILL:
 			return 1;
-		case SL_RATS:
+		case PCB_LYT_RAT:
 			return PCB->RatOn;
 		}
 	}
@@ -3787,7 +3790,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 	lesstif_hid.invalidate_all = lesstif_invalidate_all;
 	lesstif_hid.notify_crosshair_change = lesstif_notify_crosshair_change;
 	lesstif_hid.notify_mark_change = lesstif_notify_mark_change;
-	lesstif_hid.set_layer_old = lesstif_set_layer;
+	lesstif_hid.set_layer_group = lesstif_set_layer_group;
 	lesstif_hid.make_gc = lesstif_make_gc;
 	lesstif_hid.destroy_gc = lesstif_destroy_gc;
 	lesstif_hid.use_mask = lesstif_use_mask;
