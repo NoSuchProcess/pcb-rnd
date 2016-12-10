@@ -111,6 +111,9 @@ void pcb_loop_all(void *ctx,
 
 void pcb_data_free(pcb_data_t *);
 pcb_bool pcb_data_is_empty(pcb_data_t *);
-pcb_box_t *pcb_data_bbox(pcb_data_t *Data);
+
+/* gets minimum and maximum coordinates
+ * returns NULL if layout is empty */
+pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data);
 
 #endif

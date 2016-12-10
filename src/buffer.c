@@ -86,7 +86,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
  */
 void pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 {
-	pcb_box_t *box = pcb_data_bbox(Buffer->Data);
+	pcb_box_t tmp, *box = pcb_data_bbox(&tmp, Buffer->Data);
 
 	if (box)
 		Buffer->BoundingBox = *box;

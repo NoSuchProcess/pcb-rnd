@@ -182,7 +182,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_box_t region;
+	pcb_box_t tmp, region;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -196,7 +196,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	region.Y2 = PCB->MaxHeight;
 
 	if (options[HA_only_visible].int_value)
-		bounds = pcb_data_bbox(PCB->Data);
+		bounds = pcb_data_bbox(&tmp, PCB->Data);
 	else
 		bounds = &region;
 

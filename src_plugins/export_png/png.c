@@ -428,7 +428,7 @@ static void parse_bloat(const char *str)
 void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_box_t region;
+	pcb_box_t tmp, region;
 
 	f = the_file;
 
@@ -438,7 +438,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	region.Y2 = PCB->MaxHeight;
 
 	if (options[HA_only_visible].int_value)
-		bounds = pcb_data_bbox(PCB->Data);
+		bounds = pcb_data_bbox(&tmp, PCB->Data);
 	else
 		bounds = &region;
 
@@ -584,7 +584,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 {
 	int save_ons[PCB_MAX_LAYER + 2];
 	int i;
-	pcb_box_t *bbox;
+	pcb_box_t tmp, *bbox;
 	int w, h;
 	int xmax, ymax, dpi;
 	const char *fmt;
@@ -630,7 +630,7 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 
 	/* figure out width and height of the board */
 	if (options[HA_only_visible].int_value) {
-		bbox = pcb_data_bbox(PCB->Data);
+		bbox = pcb_data_bbox(&tmp, PCB->Data);
 		x_shift = bbox->X1;
 		y_shift = bbox->Y1;
 		h = bbox->Y2 - bbox->Y1;

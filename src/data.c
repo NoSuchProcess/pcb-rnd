@@ -263,79 +263,74 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 	return (hasNoObjects);
 }
 
-/* ---------------------------------------------------------------------------
- * gets minimum and maximum coordinates
- * returns NULL if layout is empty
- */
-pcb_box_t *pcb_data_bbox(pcb_data_t *Data)
+pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data)
 {
-	static pcb_box_t box;
 	/* FIX ME: use r_search to do this much faster */
 
 	/* preset identifiers with highest and lowest possible values */
-	box.X1 = box.Y1 = PCB_MAX_COORD;
-	box.X2 = box.Y2 = -PCB_MAX_COORD;
+	out->X1 = out->Y1 = PCB_MAX_COORD;
+	out->X2 = out->Y2 = -PCB_MAX_COORD;
 
 	/* now scan for the lowest/highest X and Y coordinate */
 	PCB_VIA_LOOP(Data);
 	{
-		box.X1 = MIN(box.X1, via->X - via->Thickness / 2);
-		box.Y1 = MIN(box.Y1, via->Y - via->Thickness / 2);
-		box.X2 = MAX(box.X2, via->X + via->Thickness / 2);
-		box.Y2 = MAX(box.Y2, via->Y + via->Thickness / 2);
+		out->X1 = MIN(out->X1, via->X - via->Thickness / 2);
+		out->Y1 = MIN(out->Y1, via->Y - via->Thickness / 2);
+		out->X2 = MAX(out->X2, via->X + via->Thickness / 2);
+		out->Y2 = MAX(out->Y2, via->Y + via->Thickness / 2);
 	}
 	PCB_END_LOOP;
 	PCB_ELEMENT_LOOP(Data);
 	{
-		box.X1 = MIN(box.X1, element->BoundingBox.X1);
-		box.Y1 = MIN(box.Y1, element->BoundingBox.Y1);
-		box.X2 = MAX(box.X2, element->BoundingBox.X2);
-		box.Y2 = MAX(box.Y2, element->BoundingBox.Y2);
+		out->X1 = MIN(out->X1, element->BoundingBox.X1);
+		out->Y1 = MIN(out->Y1, element->BoundingBox.Y1);
+		out->X2 = MAX(out->X2, element->BoundingBox.X2);
+		out->Y2 = MAX(out->Y2, element->BoundingBox.Y2);
 		{
 			pcb_text_t *text = &PCB_ELEM_TEXT_REFDES(element);
-			box.X1 = MIN(box.X1, text->BoundingBox.X1);
-			box.Y1 = MIN(box.Y1, text->BoundingBox.Y1);
-			box.X2 = MAX(box.X2, text->BoundingBox.X2);
-			box.Y2 = MAX(box.Y2, text->BoundingBox.Y2);
+			out->X1 = MIN(out->X1, text->BoundingBox.X1);
+			out->Y1 = MIN(out->Y1, text->BoundingBox.Y1);
+			out->X2 = MAX(out->X2, text->BoundingBox.X2);
+			out->Y2 = MAX(out->Y2, text->BoundingBox.Y2);
 		};
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Data);
 	{
-		box.X1 = MIN(box.X1, line->Point1.X - line->Thickness / 2);
-		box.Y1 = MIN(box.Y1, line->Point1.Y - line->Thickness / 2);
-		box.X1 = MIN(box.X1, line->Point2.X - line->Thickness / 2);
-		box.Y1 = MIN(box.Y1, line->Point2.Y - line->Thickness / 2);
-		box.X2 = MAX(box.X2, line->Point1.X + line->Thickness / 2);
-		box.Y2 = MAX(box.Y2, line->Point1.Y + line->Thickness / 2);
-		box.X2 = MAX(box.X2, line->Point2.X + line->Thickness / 2);
-		box.Y2 = MAX(box.Y2, line->Point2.Y + line->Thickness / 2);
+		out->X1 = MIN(out->X1, line->Point1.X - line->Thickness / 2);
+		out->Y1 = MIN(out->Y1, line->Point1.Y - line->Thickness / 2);
+		out->X1 = MIN(out->X1, line->Point2.X - line->Thickness / 2);
+		out->Y1 = MIN(out->Y1, line->Point2.Y - line->Thickness / 2);
+		out->X2 = MAX(out->X2, line->Point1.X + line->Thickness / 2);
+		out->Y2 = MAX(out->Y2, line->Point1.Y + line->Thickness / 2);
+		out->X2 = MAX(out->X2, line->Point2.X + line->Thickness / 2);
+		out->Y2 = MAX(out->Y2, line->Point2.Y + line->Thickness / 2);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Data);
 	{
-		box.X1 = MIN(box.X1, arc->BoundingBox.X1);
-		box.Y1 = MIN(box.Y1, arc->BoundingBox.Y1);
-		box.X2 = MAX(box.X2, arc->BoundingBox.X2);
-		box.Y2 = MAX(box.Y2, arc->BoundingBox.Y2);
+		out->X1 = MIN(out->X1, arc->BoundingBox.X1);
+		out->Y1 = MIN(out->Y1, arc->BoundingBox.Y1);
+		out->X2 = MAX(out->X2, arc->BoundingBox.X2);
+		out->Y2 = MAX(out->Y2, arc->BoundingBox.Y2);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Data);
 	{
-		box.X1 = MIN(box.X1, text->BoundingBox.X1);
-		box.Y1 = MIN(box.Y1, text->BoundingBox.Y1);
-		box.X2 = MAX(box.X2, text->BoundingBox.X2);
-		box.Y2 = MAX(box.Y2, text->BoundingBox.Y2);
+		out->X1 = MIN(out->X1, text->BoundingBox.X1);
+		out->Y1 = MIN(out->Y1, text->BoundingBox.Y1);
+		out->X2 = MAX(out->X2, text->BoundingBox.X2);
+		out->Y2 = MAX(out->Y2, text->BoundingBox.Y2);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Data);
 	{
-		box.X1 = MIN(box.X1, polygon->BoundingBox.X1);
-		box.Y1 = MIN(box.Y1, polygon->BoundingBox.Y1);
-		box.X2 = MAX(box.X2, polygon->BoundingBox.X2);
-		box.Y2 = MAX(box.Y2, polygon->BoundingBox.Y2);
+		out->X1 = MIN(out->X1, polygon->BoundingBox.X1);
+		out->Y1 = MIN(out->Y1, polygon->BoundingBox.Y1);
+		out->X2 = MAX(out->X2, polygon->BoundingBox.X2);
+		out->Y2 = MAX(out->Y2, polygon->BoundingBox.Y2);
 	}
 	PCB_ENDALL_LOOP;
-	return (pcb_data_is_empty(Data) ? NULL : &box);
+	return (pcb_data_is_empty(Data) ? NULL : out);
 }
 
