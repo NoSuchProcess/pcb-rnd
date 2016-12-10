@@ -239,10 +239,7 @@ static char *nelma_get_png_name(const char *basename, const char *suffix)
 static void nelma_write_space(FILE * out)
 {
 	double xh, zh;
-
-	int z;
-	int i, idx;
-	const char *ext;
+	int z, i;
 
 	xh = 2.54e-2 / ((double) nelma_dpi);
 	zh = nelma_copperh * 1e-6;
@@ -259,8 +256,8 @@ static void nelma_write_space(FILE * out)
 	z = 10;
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++)
 		if (nelma_export_group[i]) {
-			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
+			char tmp_ln[PCB_PATH_MAX];
+			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
 
 			if (z != 10) {
 				fprintf(out, ",\n");
@@ -301,9 +298,7 @@ static void nelma_write_nets(FILE * out)
 	pcb_lib_menu_t *net;
 	pcb_lib_entry_t *pin;
 
-	int n, m, i, idx;
-
-	const char *ext;
+	int n, m, i;
 
 	netlist = PCB->NetlistLib[PCB_NETLIST_EDITED];
 
@@ -324,8 +319,8 @@ static void nelma_write_nets(FILE * out)
 
 			for (i = 0; i < PCB_MAX_LAYERGRP; i++)
 				if (nelma_export_group[i]) {
-					idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-					ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
+					char tmp_ln[PCB_PATH_MAX];
+					const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
 
 					if (m != 0 || i != 0)
 						fprintf(out, ",\n");
@@ -375,13 +370,8 @@ static void nelma_write_layer(FILE * out, int z, int h, const char *name, int fu
 
 static void nelma_write_layers(FILE * out)
 {
-	int i, idx;
-	int z;
-
-	const char *ext;
+	int i, subh, z;
 	char buf[100];
-
-	int subh;
 
 	subh = nelma_substrateh / nelma_copperh;
 
@@ -395,8 +385,8 @@ static void nelma_write_layers(FILE * out)
 	z = 10;
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++)
 		if (nelma_export_group[i]) {
-			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
+			char tmp_ln[PCB_PATH_MAX];
+			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
 
 			if (z != 10) {
 				sprintf(buf, "substrate-%d", z);
@@ -415,12 +405,9 @@ static void nelma_write_layers(FILE * out)
 
 static void nelma_write_object(FILE * out, pcb_lib_entry_t *pin)
 {
-	int i, idx;
 	pcb_coord_t px = 0, py = 0;
-	int x, y;
-
+	int x, y, i;
 	char *f;
-	const char *ext;
 
 	pcb_pin_name_to_xy(pin, &px, &py);
 
@@ -429,8 +416,8 @@ static void nelma_write_object(FILE * out, pcb_lib_entry_t *pin)
 
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++)
 		if (nelma_export_group[i]) {
-			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-			ext = pcb_layer_type_to_file_name(idx, PCB_FNS_fixed);
+			char tmp_ln[PCB_PATH_MAX];
+			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
 
 			fprintf(out, "object %s-%s {\n", pin->ListEntry, ext);
 			fprintf(out, "\tposition = { 0, 0 }\n");
@@ -503,8 +490,8 @@ void nelma_choose_groups()
 	memset(nelma_export_group, 0, sizeof(nelma_export_group));
 
 	for (n = 0; n < pcb_max_copper_layer; n++) {
-		layer = &PCB->Data->Layer[n];
 		unsigned int flags = pcb_layer_flags(n);
+		layer = &PCB->Data->Layer[n];
 
 		if (!PCB_LAYER_IS_EMPTY(layer)) {
 			/* layer isn't empty */
@@ -598,11 +585,9 @@ void nelma_start_png_export()
 static void nelma_do_export(pcb_hid_attr_val_t * options)
 {
 	int save_ons[PCB_MAX_LAYER + 2];
-	int i, idx;
+	int i, len;
 	FILE *nelma_config;
 	char *buf;
-	int len;
-
 	time_t t;
 
 	if (!options) {
@@ -629,13 +614,12 @@ static void nelma_do_export(pcb_hid_attr_val_t * options)
 
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++) {
 		if (nelma_export_group[i]) {
+			char tmp_ln[PCB_PATH_MAX];
+			const char *ext = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
 
 			nelma_cur_group = i;
 
-			/* magic */
-			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-
-			nelma_start_png(nelma_basename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
+			nelma_start_png(nelma_basename, ext);
 
 			pcb_hid_save_and_show_layer_ons(save_ons);
 			nelma_start_png_export();
