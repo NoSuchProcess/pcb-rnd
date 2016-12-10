@@ -715,7 +715,6 @@ emit_outline:
 	if (copy_outline_mode == COPY_OUTLINE_SILK && (flags & PCB_LYT_SILK))
 		want_outline = 1;
 
-#warning TODO: || SL_TYPE(idx) == 0))
 	if (copy_outline_mode == COPY_OUTLINE_ALL && ((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_ASSY)))
 		want_outline = 1;
 
