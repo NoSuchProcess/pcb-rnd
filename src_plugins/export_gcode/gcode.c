@@ -402,15 +402,16 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 
 	for (i = 0; i < PCB_MAX_LAYERGRP; i++) {
 		if (gcode_export_group[i]) {
-
+			char tmp_ln[PCB_PATH_MAX];
+			const char *name = pcb_layer_to_file_name(tmp_ln, -1, pcb_layergrp_flags(i), PCB_FNS_fixed);
 			gcode_cur_group = i;
 
 			/* magic */
 			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
-			printf("idx=%d %s\n", idx, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
+			printf("idx=%d %s\n", idx, name);
 			is_solder = (pcb_layer_get_group(idx) == pcb_layer_get_group(pcb_solder_silk_layer)) ? 1 : 0;
 			save_drill = is_solder;		/* save drills for one layer only */
-			gcode_start_png(gcode_basename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
+			gcode_start_png(gcode_basename, name);
 			pcb_hid_save_and_show_layer_ons(save_ons);
 			gcode_start_png_export();
 			pcb_hid_restore_layer_ons(save_ons);
@@ -430,7 +431,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 				}
 				gdImageDestroy(temp_im);
 			}
-			sprintf(filename, "%s.%s.cnc", gcode_basename, pcb_layer_type_to_file_name(idx, PCB_FNS_fixed));
+			sprintf(filename, "%s.%s.cnc", gcode_basename, name);
 			for (r = 0; r < gdImageSX(gcode_im); r++) {
 				for (c = 0; c < gdImageSY(gcode_im); c++) {
 					v = gdImageGetPixel(gcode_im, r, gdImageSY(gcode_im) - 1 - c);
