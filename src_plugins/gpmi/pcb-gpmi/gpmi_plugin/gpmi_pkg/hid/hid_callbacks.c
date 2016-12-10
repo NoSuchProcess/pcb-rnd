@@ -83,10 +83,10 @@ void gpmi_hid_set_crosshair(int x, int y, int cursor_action)
 	/* Do nothing */
 }
 
-int gpmi_hid_set_layer(const char *name, int group, int empty)
+int gpmi_hid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(pcb_exporter);
-	gpmi_event(h->module, HIDE_set_layer, h, name, group, empty);
+	gpmi_event(h->module, HIDE_set_layer_group, h, group, layer, flags, is_empty);
 	return 1;
 }
 

@@ -12,7 +12,7 @@ gpmi_define_event(HIDE_do_export_finish)(void *hid);
 /* DRAWING */
 
 /* PCB callback events for drawing: change layer */
-gpmi_define_event(HIDE_set_layer)(void *hid, const char *name, int group, int empty);
+gpmi_define_event(HIDE_set_layer_group)(void *hid, long int group, long int layer, unsigned int flags, int is_empty);
 
 /* PCB callback events for drawing: change drawing color */
 gpmi_define_event(HIDE_set_color)(void *hid, void *gc, const char *name);

@@ -77,3 +77,8 @@ int layout_layer_field(int layer, layer_field_t fld)
 	}
 	return -1;
 }
+
+int layer_flag_is_set(unsigned int flags, multiple layer_type_t flg)
+{
+	return !!(flags & flg);
+}

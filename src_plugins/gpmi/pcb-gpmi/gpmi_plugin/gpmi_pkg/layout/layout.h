@@ -76,6 +76,32 @@ typedef enum layout_flag_e {
 } layout_flag_t;
 gpmi_keyword *kw_layout_flag_e; /* of layout_flag_t */
 
+/* Layer type bitfield */
+typedef enum layer_flag_e {
+	LYT_TOP       = PCB_LYT_TOP,
+	LYT_BOTTOM    = PCB_LYT_BOTTOM,
+	LYT_INTERN    = PCB_LYT_INTERN,
+	LYT_LOGICAL   = PCB_LYT_LOGICAL,
+	LYT_ANYWHERE  = PCB_LYT_ANYWHERE,
+
+	LYT_COPPER    = PCB_LYT_COPPER,
+	LYT_SILK      = PCB_LYT_SILK,
+	LYT_MASK      = PCB_LYT_MASK,
+	LYT_PASTE     = PCB_LYT_PASTE,
+	LYT_OUTLINE   = PCB_LYT_OUTLINE,
+	LYT_RAT       = PCB_LYT_RAT,
+	LYT_INVIS     = PCB_LYT_INVIS,
+	LYT_ASSY      = PCB_LYT_ASSY,
+	LYT_FAB       = PCB_LYT_FAB,
+	LYT_PDRILL    = PCB_LYT_PDRILL,
+	LYT_UDRILL    = PCB_LYT_UDRILL,
+	LYT_ANYTHING  = PCB_LYT_ANYTHING,
+
+	LYT_VIRTUAL   = PCB_LYT_VIRTUAL,
+	LYT_ANYPROP   = PCB_LYT_ANYPROP 
+} layer_type_t;
+gpmi_keyword *kw_layer_flag_e; /* of layer_type_t */
+
 
 
 typedef struct layout_object_s {
@@ -265,3 +291,6 @@ void fill_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t *pv, pcb_bool
 void thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t *pv, pcb_bool drawHole, pcb_bool mask);
 void fill_rect(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 */
+
+/* Returns 1 if flg is set in flags */
+int layer_flag_is_set(unsigned int flags, multiple layer_type_t flg);

@@ -52,7 +52,7 @@ gpmi_hid_t *hid_create(char *hid_name, char *description)
 	h->hid->do_export          = gpmi_hid_do_export;
 	h->hid->parse_arguments    = gpmi_hid_parse_arguments;
 	h->hid->set_crosshair      = gpmi_hid_set_crosshair;
-	h->hid->set_layer_old      = gpmi_hid_set_layer;
+	h->hid->set_layer_group    = gpmi_hid_set_layer_group;
 	h->hid->set_color          = gpmi_hid_set_color;
 	h->hid->set_line_cap       = gpmi_hid_set_line_cap;
 	h->hid->set_line_width     = gpmi_hid_set_line_width;
