@@ -46,9 +46,9 @@ static void log_pcb_notify_mark_change(pcb_bool changes_complete) {
 	delegatee_->pcb_notify_mark_change(changes_complete);
 }
 
-static int log_set_layer(const char *name, int group, int empty) {
-	pcb_fprintf(out_, "set_layer(name=%s, group=%d, empty=%s", name, group, empty ? "true" : "false");
-	return delegatee_->set_layer_old(name, group, empty);
+static int log_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
+	pcb_fprintf(out_, "set_layer(group=%ld, layer=%ld, flags=%lx, empty=%s", group, layer, flags, empty ? "true" : "false");
+	return delegatee_->set_layer_group(group, layer, flags, is_empty);
 }
 
 static void log_end_layer() {
@@ -201,7 +201,7 @@ pcb_hid_t *create_log_hid(FILE *log_out, pcb_hid_t *delegatee) {
 	REGISTER_IF_NOT_NULL(invalidate_lr);
 	REGISTER_IF_NOT_NULL(invalidate_all);
 	REGISTER_IF_NOT_NULL(notify_mark_change);
-	REGISTER_IF_NOT_NULL(set_layer);
+	REGISTER_IF_NOT_NULL(set_layer_group);
 	REGISTER_IF_NOT_NULL(end_layer);
 	REGISTER_IF_NOT_NULL(make_gc);
 	REGISTER_IF_NOT_NULL(destroy_gc);
