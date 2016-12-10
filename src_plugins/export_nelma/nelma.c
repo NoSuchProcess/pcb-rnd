@@ -501,7 +501,7 @@ void nelma_choose_groups()
 			 * layers have negative indexes?
 			 */
 
-			if (flags & PCB_LYT_COPPER) {
+			if ((flags & PCB_LYT_COPPER) || (flags & PCB_LYT_OUTLINE)) {
 				/* layer is a copper layer */
 				m = pcb_layer_get_group(n);
 
