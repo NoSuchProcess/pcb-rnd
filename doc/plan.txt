@@ -55,7 +55,8 @@ user manual
 		lihata
 		kicadl
 		kicad s expr
-	8. appendix
+	8. utilities
+	9. appendix
 		glossary
 		full index/catalog of actions (generated)
 		full index/catalog of all plugins
