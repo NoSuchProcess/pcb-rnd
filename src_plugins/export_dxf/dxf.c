@@ -4230,7 +4230,6 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t region;
 	int save_ons[PCB_MAX_LAYER + 2];
-	int tmp[128], len;
 
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_do_export () function.\n", __FILE__, __LINE__);
@@ -4401,7 +4400,7 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 #endif
 
 	if (dxf_verbose) {
-		fprintf(stderr, "DXF: now processing Layer group %ld, flags %lx\n", group, flags);
+		fprintf(stderr, "DXF: now processing Layer group %ld, flags %x\n", group, flags);
 	}
 	if (dxf_export_all_layers) {
 		/* do nothing here to export all layers */
@@ -4466,7 +4465,7 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 				 * \todo this output should go to file in
 				 * whatever form instead of being put on stderr.
 				 */
-				fprintf(stderr, "DXF: X:%06d Y:%06ld\n", DXF_X(PCB, dxf_pending_drills[i].x), DXF_Y(PCB, dxf_pending_drills[i].y));
+				fprintf(stderr, "DXF: X:%06d Y:%06d\n", DXF_X(PCB, dxf_pending_drills[i].x), DXF_Y(PCB, dxf_pending_drills[i].y));
 			}
 		}
 		free(dxf_pending_drills);
@@ -4517,7 +4516,7 @@ printf("SET LAYER: %s\n", dxf_filename);
 		 * whatever form instead of being put on stderr.
 		 */
 		if (dxf_verbose) {
-			fprintf(stderr, "DXF: Start of page %d for group %ld flags %lx\n", pagecount, group, flags);
+			fprintf(stderr, "DXF: Start of page %d for group %ld flags %x\n", pagecount, group, flags);
 		}
 		if (group < 0 || group != lastgroup) {
 			/* create a portable timestamp */
@@ -4541,7 +4540,7 @@ printf("SET LAYER: %s\n", dxf_filename);
 				pcb_fprintf(stderr, "PCB Dimensions: %.0ml x %.0ml.\n", PCB->MaxWidth, PCB->MaxHeight);
 			}
 			fprintf(stderr, "PCB Coordinate Origin: lower left.\n");
-			fprintf(stderr, "DXF: Now processing Layer %s group %d drill %d mask %d\n", name, group, is_drill, is_mask);
+			fprintf(stderr, "DXF: Now processing Layer %s group %ld drill %d mask %d\n", name, group, is_drill, is_mask);
 		}
 		/* build a legal identifier */
 		if (dxf_layername) {
