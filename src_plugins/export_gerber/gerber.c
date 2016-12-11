@@ -460,7 +460,7 @@ static void assign_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flag
 
 	if ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL))
 		sext = ".cnc";
-	pcb_layer_to_file_name(dest, lid, flags, name_style);
+	pcb_layer_to_file_name(dest, lid, flags, fns_style);
 	strcat(dest, sext);
 }
 
