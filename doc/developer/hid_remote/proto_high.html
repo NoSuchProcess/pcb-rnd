@@ -1,0 +1,224 @@
+<html>
+<body>
+<H1> remote HID protocol, high level </H1>
+
+<H2> reference </H2>
+
+<h3> ver(protver) </h3>
+Sends the protocol version the server will speak. If the client doesn't
+support that version, it should break the connection.
+<p>
+Arguments:
+<ul>
+	<li> protver: an integer value; 1 for the current version
+</ul>
+
+<h3> unit(abbrev) </h3>
+Sends the coordinate unit used in subsequent communication. This is not
+necessarily the unit used for displaying values on the user interface,
+but the unit used to interpret numeric coordinate values sent in commands.
+<p>
+Arguments:
+<ul>
+	<li> abbrev: unit name abbreviation; e.g. mm or nm or mil
+</ul>
+
+<h3> ready() </h3>
+Informs the client that the server is ready to start the session. The
+client needs to answer with a Ready() message before the server proceeds.
+<p>
+Arguments: none.
+
+
+<h3> brddim(w h) </h3>
+Announce board dimensions. Some layers may extend beyond the board.
+<p>
+Arguments:
+<ul>
+	<li> w: width  (x size) in coordinate units
+	<li> h: height (y size) in coordinate units
+</ul>
+
+<h3> inval(x1 x2 y1 y2) </h3>
+Invalidate a rectangular section of the screen; the client should redraw
+this area. Clients implementing their own mechanism to keep track on
+drawing are free to ignore these requests 
+<p>
+Arguments:
+<ul>
+	<li> x1: left coordinate
+	<li> x2: right coordinate
+	<li> y1: top coordinate
+	<li> y2: bottom coordinate
+</ul>
+
+<h3> inval() </h3>
+Same as inval(x1 x2 y1 y2) but invalidates the whole screen.
+<p>
+Arguments: none
+
+<h3> newly(name id flags groups) </h3>
+Inform the client that the next set of drawing commands are for a specific
+layer.
+<p>
+Arguments:
+<ul>
+	<li> name: name of the layer (can be empty)
+	<li> id: unique group ID (decimal integer)
+	<li> flags: a list of 3 items: location, purpose and properites. Each item is a list of values (or an empty list).
+	<li> group: group ID; layers in the same group are turned on/off together and are considered to be on the same physical layer; -1 means not part of any group
+</ul>
+<p>
+Example:
+<pre>
+newly(bottomassembly 16777226 ((bottom) (assy) (virtual)) -1)
+</pre>
+Creates the bottom assembly virtual layer with ID 16777226. It is not part of
+any layer group and is called "bottomassembly".
+
+<h3> setlg(group_id group_flags is_empty) </h3>
+Inform the client that the next set of drawing commands are for a specific
+layer group.
+<p>
+Arguments:
+<ul>
+	<li> group_id: unique ID of the layer group
+	<li> flags: TODO
+	<li> is_empty: 1 if the layer group may be empty, 0 if the layer is not empty
+</ul>
+
+<h3> makeGC() </h3>
+Request the client to make a new graphical context. The client should
+allocate a GC and return an integer ID using the MadeGC(ID) message.
+The ID uniquely identifies the GC; it should be small positive integer
+(between 0 and 31 for now).
+<p>
+Arguments: none
+
+
+
+
+<h3> delGC(ID) </h3>
+Inform the client that a given GC is not needed anymore. The server
+will not reference the GC again and the GC can be destroyed (but graphics
+drawn on the screen should not be affected). The ID may be reused by the
+client in a subsequent madeGC() message).
+<p>
+Arguments:
+<ul>
+	<li> ID: integer ID of the GC
+</ul>
+
+<h3> clr(gci colorstring) </h3>
+Change the color subsequent drawing commands of a given GC will use.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> colorstring: name of the color, specified in the usual "web" format: #rrggbb (with 3 hex numbers)
+</ul>
+
+<h3> cap(gci style) </h3>
+Set the line ending cap style. Note: the cap extends half-line-width beyond
+the end coordinates, e.g. the end point of a line is the center of the round-cap
+circle.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> style: r for round cap (circle), s for square cap, b for beveled (octagon)
+</ul>
+
+
+<h3> linwid(gci width) </h3>
+Sets line width (pen tip diameter).
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> width: diameter of the circular aperture of the pen in coord units
+</ul>
+
+<h3> setxor(gci state) </h3>
+Sets whether to perform "xor-drawing" for subsequent drawing commands in
+the selected GC.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> xor: 0 means normal drawing, 1 means xor drawing
+</ul>
+
+
+<h3> line(gci x1 y1 x2 y2) </h3>
+Draw a line using the current GC. The line inherits line width, color
+and cap style from the GC.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> x1: 1st endpoint's X coord (in coord units)
+	<li> y1: 1st endpoint's Y coord (in coord units)
+	<li> x2: 2nd endpoint's X coord (in coord units)
+	<li> y2: 2nd endpoint's Y coord (in coord units)
+</ul>
+
+<h3> rect(gci x1 y1 x2 y2 filled) </h3>
+Draw a rectangle. The rectangle inherits only color from the GC.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> x1: 1st corner X coord (in coord units); x1 &lt;= x2
+	<li> y1: 1st corner Y coord (in coord units); y1 &lt;= y2
+	<li> x2: 2nd corner X coord (in coord units)
+	<li> y2: 2nd corner Y coord (in coord units)
+	<li> filled: 1 if the rectangle should be filled; a non-filled rectanlge is a frame of 1 pixel wide lines
+</ul>
+
+
+<h3> fcirc(gci cx cy r) </h3>
+Draw a filled circle. The circle inherits only color from the GC.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> cx1: center X coord (in coord units)
+	<li> cy1: center Y coord (in coord units)
+	<li> r: radius (in coord units)
+</ul>
+
+<h3> poly(gci len ptlist) </h3>
+Draw a filled polygon. The polygon inherits only color from the GC.
+<p>
+Arguments:
+<ul>
+	<li> gci: ID of the GC
+	<li> len: number of contour points
+	<li> ptlist: an ordered list of (x y) coordinates (all in coord units)
+</ul>
+
+<h3> umask(m) </h3>
+"use mask" m. The server uses this message to make an announcement before it
+starts drawing certain things.
+<p>
+Arguments:
+<ul>
+	<li> m: mask name:
+	<ul>
+		<li> off: flush the buffer and return to non-mask operation.
+		<li> before: Polygons being drawn before clears.
+		<li> clear: Clearances being drawn.
+		<li> after: Polygons being drawn after clears.
+	</ul>
+</ul>
+
+
+<!--
+<h3> () </h3>
+<p>
+Arguments:
+<ul>
+	<li>
+</ul>
+-->

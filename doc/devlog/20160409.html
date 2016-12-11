@@ -1,0 +1,48 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> Keyboard via poll </H2>
+
+<H3> Results </h3>
+
+I received 9 partial answers to the poll - thanks everyone who
+answered. This is a small sample, but this is the best I could get
+(I can't reach more pcb users).
+<p>
+<a href="20160409/poll.html">Raw results</a> are available in html, tsv and
+csv format.
+
+<H3> My interpretation </h3>
+
+(<i>User </i> obviously means "those users who answered the poll")
+
+<ul>
+	<li> 1. very few users use the lesstif hid, still user count is more than 1
+	<li> 2. users are open to try alternative menu/hotkey layouts...
+	<li> 3. ... and only a few users change the default layout
+	<li> 4. ... because they are happy with the defaults and/or don't want to maintain the diffs on upgrades
+	<li> 5. there is a strong demand for multikey in the GTK HID
+	<li> 7. use of vendor (drill) mapping is rare
+</ul>
+
+<H3> My conclusions </h3>
+pcb-rnd: the GTK HID needs multi-key support.
+<p>
+Community: although users express their needs, they do not contribute
+even in smallish, non-programming tasks like designing the hotkey layout.
+This is probably in-line with the answers for 4: they don't really customize
+things, they want to use the software as is.
+<p>
+Conclusion: it is worth shipping multiple menu/keyboard layouts as long as
+they are all maintained in the central repo (questions 2, 3 and 4). It is
+pointless to invest in tools that make customization easier or to prepare
+for collecting user-customized menu files, as users won't invest any time in
+this.
+
+
+
+
+
+
+

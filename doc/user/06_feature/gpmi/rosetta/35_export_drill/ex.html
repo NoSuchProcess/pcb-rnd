@@ -1,0 +1,60 @@
+<!-- TODO: move this to the high level doc -->
+An exporter is a hid registered. During the export
+process, pcb-rnd calls the exporter to draw objects on layers. The GPMI
+layer converts these calls to bindable events. An exporter script catches
+the drawing events relevant to the output format and draws everything from
+event handlers. 
+<p>
+An exporter is sort of a drawing backend: pcb-rnd sets up graphic contexts
+(gc for short) and draws on them. The first gc set up should open the
+output file, the last gc closed should flush/close the file.
+<p>
+<hr>
+
+<h3>Theory of operation</h3>
+Assume only <b>filled circles</b> on the 
+<b>top assembly layer</b> are holes. Emit a line for each of these
+and ignore everything else.
+
+<h3> Implementation </h3>
+Load packages the script depends on:
+<ul>
+	<li> <ref>hid</ref> for registering the new exporter;
+	<li> <ref>layout</ref> for unit conversion;
+	<li> <ref>dialogs</ref> for error reporting.
+</ul>
+<p>
+Set up an exporter hid, storing the handle of each object created in
+a global variable:
+<ul>
+	<li> create a hid using <ref>hid_create</ref>
+	<li> add two attributes (fields) to the dialog using <ref>hid_add_attribute</ref>
+	<li> register the new hid using <ref>hid_register</ref> - this makes it an exporter
+</ul>
+<p>
+Set up global state variables:
+<ul>
+	<li> fmt will be a cache for the format selected by the user
+	<li> conv is the conversion scale between mm and PCB internal coordinate unit
+	<li> channel specifies a file handle or indicates that the output file is open
+	<li> green_light indicates that the exporter is drawing the relevant layer
+</ul>
+<p>
+Define a <i>make_gc</i> callback. It is called when a new graphic
+context is created (e.g. for layers).  An exporter is sort of a drawing
+backend: pcb-rnd sets up gc's and draws on them. The first gc set up
+should open the output file, the last gc closed should flush/close the file.
+Define a <i>destroy_gc</i> callback for the latter. GCs are
+destroyed at the end of the export process. Use global variable <i>channel</i>
+to make sure the file is open/close only once (see TODO <ref>script context</ref>).
+<p>
+Define a <i>set_layer</i> callback that sets green_light to true if
+layer name is "topasssembly", false otherwise.
+<p>
+Callback <i>fill_circle</i> is the workhorse: check if we have the green
+light to emit lines, then convert coordinates and diameter to mm and
+decide what format to use for printing a line for each filled circle.
+<p>
+Finally, bind all four callbacks to exporter events.
+
+

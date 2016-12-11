@@ -1,0 +1,3 @@
+Create a new action hello() that prints "Hello world!" in a popup window, create a menu (under "Plugins/GPMI scripting/") that executes the action.
+
+

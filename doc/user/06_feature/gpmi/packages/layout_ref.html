@@ -1,0 +1,305 @@
+<html>
+<body>
+<h1>PCB GPMI</h1>
+<h2>Reference manual for package layout</h2>
+<small>Automatically generated from layout.h</small>
+
+<h3> Enums </h3>
+<dl>
+<p>Enum values should be passed on as strings.
+<a id="layout_object_mask_e">
+<H4> layout_object_mask_e</H4>
+<pre>
+ Object type search mask bits 
+</pre>
+<table border=1>
+<tr><th>value <th>meaning
+<tr><td> OM_LINE <td>  lines (traces, silk lines, not font) 
+<tr><td> OM_TEXT <td>  text written using the font 
+<tr><td> OM_POLYGON <td>  polygons, including rectangles 
+<tr><td> OM_ARC <td>  arcs, circles 
+<tr><td> OM_VIA <td>  vias and holes which are not part of a footprint 
+<tr><td> OM_PIN <td>  pins/pads of a footprint 
+<tr><td> OM_ANY <td>  shorthand for "find anything" 
+</table>
+<a id="layout_object_coord_e">
+<H4> layout_object_coord_e</H4>
+<pre>
+ Which coordinate of the object is referenced 
+</pre>
+<table border=1>
+<tr><th>value <th>meaning
+<tr><td> OC_BX1 <td>  bounding box X1 
+<tr><td> OC_BX2 <td>  bounding box X2 
+<tr><td> OC_BY1 <td>  bounding box Y1 
+<tr><td> OC_BY2 <td>  bounding box Y2 
+<tr><td> OC_P1X <td>  point 1 X 
+<tr><td> OC_P2X <td>  point 2 X 
+<tr><td> OC_P1Y <td>  point 1 Y 
+<tr><td> OC_P2Y <td>  point 2 Y 
+<tr><td> OC_OBJ <td>  the whole object 
+<tr><td> OC_P1 <td>  point 1 is P1X
+<tr><td> OC_P2 <td>  point 2 is P2X 
+</table>
+<a id="layout_flag_e">
+<H4> layout_flag_e</H4>
+<pre>
+ of layout_object_coord_t 
+</pre>
+<table border=1>
+<tr><th>value <th>meaning
+<tr><td> FL_NONE <td> &lt;comment missing in the header&gt;
+<tr><td> FL_SHOWNUMBER <td> &lt;comment missing in the header&gt;
+<tr><td> FL_LOCALREF <td> &lt;comment missing in the header&gt;
+<tr><td> FL_CHECKPLANS <td> &lt;comment missing in the header&gt;
+<tr><td> FL_SHOWDRC <td> &lt;comment missing in the header&gt;
+<tr><td> FL_RUBBERBAND <td> &lt;comment missing in the header&gt;
+<tr><td> FL_DESCRIPTION <td> &lt;comment missing in the header&gt;
+<tr><td> FL_NAMEONPCB <td> &lt;comment missing in the header&gt;
+<tr><td> FL_AUTODRC <td> &lt;comment missing in the header&gt;
+<tr><td> FL_ALLDIRECTION <td> &lt;comment missing in the header&gt;
+<tr><td> FL_SWAPSTARTDIR <td> &lt;comment missing in the header&gt;
+<tr><td> FL_UNIQUENAME <td> &lt;comment missing in the header&gt;
+<tr><td> FL_CLEARNEW <td> &lt;comment missing in the header&gt;
+<tr><td> FL_SNAPPIN <td> &lt;comment missing in the header&gt;
+<tr><td> FL_SHOWMASK <td> &lt;comment missing in the header&gt;
+<tr><td> FL_THINDRAW <td> &lt;comment missing in the header&gt;
+<tr><td> FL_ORTHOMOVE <td> &lt;comment missing in the header&gt;
+<tr><td> FL_LIVEROUTE <td> &lt;comment missing in the header&gt;
+<tr><td> FL_THINDRAWPOLY <td> &lt;comment missing in the header&gt;
+<tr><td> FL_LOCKNAMES <td> &lt;comment missing in the header&gt;
+<tr><td> FL_ONLYNAMES <td> &lt;comment missing in the header&gt;
+<tr><td> FL_NEWFULLPOLY <td> &lt;comment missing in the header&gt;
+<tr><td> FL_HIDENAMES <td> &lt;comment missing in the header&gt;
+<tr><td> FL_THERMALSTYLE1 <td> &lt;comment missing in the header&gt;
+<tr><td> FL_THERMALSTYLE2 <td> &lt;comment missing in the header&gt;
+<tr><td> FL_THERMALSTYLE3 <td> &lt;comment missing in the header&gt;
+<tr><td> FL_THERMALSTYLE4 <td> &lt;comment missing in the header&gt;
+<tr><td> FL_THERMALSTYLE5 <td> &lt;comment missing in the header&gt;
+</table>
+<a id="layer_field_e">
+<H4> layer_field_e</H4>
+<pre>
+ Field name of the layer structure 
+</pre>
+<table border=1>
+<tr><th>value <th>meaning
+<tr><td> LFLD_NUM_LINES <td>  number of lines on the layer 
+<tr><td> LFLD_NUM_TEXTS <td>  number of texts on the layer 
+<tr><td> LFLD_NUM_POLYS <td>  number of polygons on the layer 
+<tr><td> LFLD_NUM_ARCS <td>  number of arcs on the layer 
+<tr><td> LFLD_VISIBLE <td>  non-zero if the layer is visible 
+<tr><td> LFLD_NODRC <td>  non-zero if the layer doesn't use DRC 
+</table>
+</dl>
+<h3> Functions </h3>
+<dl>
+<p>The following functions are registered in script context.
+<a id="layout_search_box">
+<H4>  int layout_search_box(const char* search_ID, layout_object_mask_t obj_types, int x1, int y1, int x2, int y2)  </H4>
+<pre>
+ creates a new search and adds all objects that matches obj_types mask within the given rectangle on the current layer
+   Arguments:
+     search_ID: unique name of the search (overwrites existing search on the same name)
+     obj_types: on or more object types
+     x1, y1, x2, y2: box the search is done within (PCB coords)
+   Returns the number of object on the search list. 
+</pre>
+<a id="layout_search_selected">
+<H4>  int layout_search_selected(const char* search_ID, layout_object_mask_t obj_types)  </H4>
+<pre>
+ creates a new search and adds all selected objects
+   Arguments:
+     search_ID: unique name of the search (overwrites existing search on the same name)
+     obj_types: on or more object types
+   Returns the number of object on the search list. 
+</pre>
+<a id="layout_search_found">
+<H4>  int layout_search_found(const char* search_ID, layout_object_mask_t obj_types)  </H4>
+<pre>
+ creates a new search and adds all found objects (the green highlight)
+   Arguments:
+     search_ID: unique name of the search (overwrites existing search on the same name)
+     obj_types: on or more object types
+   Returns the number of object on the search list. 
+</pre>
+<a id="layout_search_get">
+<H4>  layout_object_t* layout_search_get(const char* search_ID, int n)  </H4>
+<pre>
+ Returns the nth object from a search list (or NULL pointer if n is beyond the list) 
+</pre>
+<a id="layout_search_free">
+<H4>  int layout_search_free(const char* search_ID)  </H4>
+<pre>
+ Frees all memory related to a search. Returns 0 on success.
+   Argument:
+     search_ID: unique name of the search (requires an existing search) 
+</pre>
+<a id="layout_obj_coord">
+<H4>  int layout_obj_coord(layout_object_t* obj, layout_object_coord_t coord)  </H4>
+<pre>
+ Return the requested coord of an object; except for the bounding box
+    coordinates, the meaning of coordinates are object-specific.
+    Point 1 and point 2 are usually endpoints of the object (line, arc),
+    "the whole object" coordinate is a central point. 
+</pre>
+<a id="layout_obj_type">
+<H4>  layout_object_mask_t layout_obj_type(layout_object_t* obj)  </H4>
+<pre>
+ Return the type of an object (always a single bit) 
+</pre>
+<a id="layout_obj_move">
+<H4>  int layout_obj_move(layout_object_t* obj, layout_object_coord_t coord, int dx, int dy)  </H4>
+<pre>
+ Change location of an object or parts of the object (like move endpoint of a line);
+   Arguments:
+     obj: the object
+     coord: which coordinate to drag (e.g. move only the endpoint)
+     dx, dy: relative x and y coordinates the selected coordinate is displaced by
+   Returns 0 on success 
+</pre>
+<a id="layout_arc_angles">
+<H4>  int layout_arc_angles(layout_object_t* obj, int relative, int start, int delta)  </H4>
+<pre>
+ change angles of an arc; start and delate are relative if relative is non-zero; returns 0 on success 
+</pre>
+<a id="layout_create_line">
+<H4>  int layout_create_line(int x1, int y1, int x2, int y2, int thickness, int clearance, layout_flag_t flags)  </H4>
+<pre>
+ create a line 
+</pre>
+<a id="layout_create_via">
+<H4>  int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char* name, layout_flag_t flags)  </H4>
+<pre>
+ create a named via 
+</pre>
+<a id="layout_create_arc">
+<H4>  int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, layout_flag_t flags)  </H4>
+<pre>
+ create a new arc; sa is start angle, dir is delta angle 
+</pre>
+<a id="layout_switch_to_layer">
+<H4>  void layout_switch_to_layer(int layer)  </H4>
+<pre>
+ switch to layer (further layer-specific actions will take place there) 
+</pre>
+<a id="layout_get_current_layer">
+<H4>  int layout_get_current_layer()  </H4>
+<pre>
+ returns the number of the current layer 
+</pre>
+<a id="layout_resolve_layer">
+<H4>  int layout_resolve_layer(const char* name)  </H4>
+<pre>
+ resolve layer number by name (case sensitive); returns negative number if not found 
+</pre>
+<a id="layout_get_max_possible_layer">
+<H4>  int layout_get_max_possible_layer()  </H4>
+<pre>
+ return the theoretical number of layers supported by PCB 
+</pre>
+<a id="layout_get_max_copper_layer">
+<H4>  int layout_get_max_copper_layer()  </H4>
+<pre>
+ return the actual number of copper layers on the current design 
+</pre>
+<a id="layout_get_max_layer">
+<H4>  int layout_get_max_layer()  </H4>
+<pre>
+ return the actual number of layers on the current design 
+</pre>
+<a id="layout_layer_name">
+<H4>  const char* layout_layer_name(int layer)  </H4>
+<pre>
+ return the name of a layer 
+</pre>
+<a id="layout_layer_color">
+<H4>  const char* layout_layer_color(int layer)  </H4>
+<pre>
+ return the color of a layer 
+</pre>
+<a id="layout_layer_field">
+<H4>  int layout_layer_field(int layer, layer_field_t fld)  </H4>
+<pre>
+ return an integer field of a layer 
+</pre>
+<a id="layout_get_page_width">
+<H4>  int layout_get_page_width()  </H4>
+<pre>
+ query or set width and height of the drawing 
+</pre>
+<a id="layout_get_page_height">
+<H4>  int layout_get_page_height()  </H4>
+<pre>
+&lt;comment missing in the header&gt;
+</pre>
+<a id="layout_set_page_size">
+<H4>  void layout_set_page_size(int width, int height)  </H4>
+<pre>
+&lt;comment missing in the header&gt;
+</pre>
+<a id="mil2pcb_multiplier">
+<H4>  double mil2pcb_multiplier()  </H4>
+<pre>
+ -- coordinate system -- (coord.c) 
+</pre>
+<a id="mm2pcb_multiplier">
+<H4>  double mm2pcb_multiplier()  </H4>
+<pre>
+&lt;comment missing in the header&gt;
+</pre>
+<a id="current_grid_unit">
+<H4>  const char* current_grid_unit()  </H4>
+<pre>
+&lt;comment missing in the header&gt;
+</pre>
+<a id="debug_draw_request">
+<H4>  int debug_draw_request(void)  </H4>
+<pre>
+ Initialize debug drawing; returns 1 if worked, 0 if denied 
+</pre>
+<a id="debug_draw_flush">
+<H4>  void debug_draw_flush(void)  </H4>
+<pre>
+ Flush the drawing 
+</pre>
+<a id="debug_draw_finish">
+<H4>  void debug_draw_finish(dctx_t* ctx)  </H4>
+<pre>
+ Finish (close) drawing 
+</pre>
+<a id="debug_draw_dctx">
+<H4>  dctx_t* debug_draw_dctx(void)  </H4>
+<pre>
+ Get the draw context of debug draw 
+</pre>
+<a id="draw_set_color">
+<H4>  void draw_set_color(dctx_t* ctx, const char* name)  </H4>
+<pre>
+ Debug draw style: set drawing color 
+</pre>
+<a id="draw_set_line_width">
+<H4>  void draw_set_line_width(dctx_t* ctx, int width)  </H4>
+<pre>
+ Debug draw style: set line width 
+</pre>
+<a id="draw_set_draw_xor">
+<H4>  void draw_set_draw_xor(dctx_t* ctx, int xor)  </H4>
+<pre>
+ Debug draw style: set whether drawing should happen in xor 
+</pre>
+<a id="draw_set_draw_faded">
+<H4>  void draw_set_draw_faded(dctx_t* ctx, int faded)  </H4>
+<pre>
+ Debug draw style: set whether drawing should happen in faded mode  
+</pre>
+<a id="draw_line">
+<H4>  void draw_line(dctx_t* ctx, int x1_, int y1_, int x2_, int y2_)  </H4>
+<pre>
+ Debug draw: draw a line using the current style settings 
+</pre>
+</dl>
+
+</body>
+</html>
+

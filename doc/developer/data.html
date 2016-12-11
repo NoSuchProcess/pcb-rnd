@@ -1,0 +1,103 @@
+<html>
+<body>
+
+<h1> pcb-rnd internals </h1>
+
+<h2> concepts </h2>
+
+Convention: typedef'd types are called pcb_*_t - the corresponding struct
+is pcb_*_s.
+
+<h3> board </h3>
+There is only one board being edited. A board is the model of the whole world
+for pcb-rnd - any other, auxiliary data is only a partial description of a board.
+The data struct for board is <i>pcb_board_t</i>. As of now, pcb-rnd edits only one
+board at a time, and it is stored in a global variable called <i>PCB</i>.
+The code is single threaded and is not reentrant.
+<p>
+Half of the board structure describes global board properties:
+<ul>
+	<li> layer stack
+	<li> netlist
+	<li> editor settings (e.g. routing styles, which layers are visible)
+	<li> metadata (such as name of the author, size of the board).
+</ul>
+The other half is the actual board data, stored in a <i>pcb_data_t</i> field.
+<p>
+Relevant structs, variables and functions are in board.[ch].
+
+<h3> data </h3>
+A <i>pcb_data_t</i> contains everything to describe a "subcircuit" related
+to an existing board:
+<ul>
+	<li> per-layer objects (e.g. lines, arcs, polygons)
+	<li> global objects (e.g. elements, vias)
+	<li> temporary logical connections (rat lines)
+</ul>
+<p>
+Relevant structs, variables and functions are in data.[ch].
+
+<h3> buffers </h3>
+Paste buffers are <i>pcb_buffer_t</i>; the main field is <i>pcb_data_t</i>.
+<p>
+Relevant structs, variables and functions are in buffer.[ch].
+
+<h3> terminology: layers and layer groups</h3>
+<i>Layers</i> are abstract canvases also serving as a logical grouping
+of drawing primitives. Every <i>layer</i> is part of exactly one <i>layer
+group</i>. A <i>layer group</i> is close to what a physical layer is on
+the FR4.
+<p>
+Limitations:
+<ul>
+	<li> as of now pcb-rnd does not have Z-coordinate: layers have no thickness;
+	<li> substrate is not represented at all in the layers stack.
+</ul>
+<p>
+The location of a <i>layer group</i> on of:
+<ul>
+	<li> top (component) side
+	<li> bottom (solder) side
+	<li> inner (signal)
+	<li> global (affects all locations, e.g. the outline layer for routing)
+</ul>
+<p>
+In pcb-rnd only copper layers and the outline layer are fully explicit.
+There are two hardwired silk layers, one for the top and one for the bottom side.
+The silk layers are semi-explicit: they are existing layers in all structs
+but:
+<ul>
+	<li> they are not part of the <i>layer group</i> system
+	<li> unlike explicit layers they have fixed index (+1 and +2 beyond the last explicit layer)
+	<li> created an moved by the core automatically
+	<li> can not be removed
+</ul>
+<p>
+The <i>outline layer</i> is a hack: it's really an internal copper layer. If
+the code detects the name of the layer is "outline" anywhere, it branches.
+<p>
+There are a few virtual layers:
+<ul>
+	<li> solder mask - no layer struct, calculated on-the-fly from pad data
+	<li> paste - no layer struct, calculated on-the-fly from pad data
+	<li> fab - no layer struct, calculated on-the-fly from drill/hole data
+</ul>
+
+<h3> pcb_data_t: global data </h3>
+Global data affect all layers. The most trivial example is <i>via</i>:
+it has a hole and the same copper ring on all layers. The other global
+object pcb_data_t holds is an element. An element can have pads
+on two copper layers and pins that affect all layers the same way as vias.
+
+<h3> pcb_data_t: layer-local data </h3>
+The data struct has a <i>pcb_layer_t</i> for each logical layer, to host
+the per layer objects (drawing primitives).
+
+<h3> the layer struct </h3>
+Layer data is stored in struct <i>pcb_layer_t</i>. A layer has a list
+for each object type (drawing primitive type): arcs, lines, polygons, etc.
+<p>
+Relevant structs, variables and functions are in layer.[ch].
+
+<h2> map </h2>
+<img src="data1.png">

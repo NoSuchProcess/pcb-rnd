@@ -1,0 +1,64 @@
+<html>
+<body>
+<h1> pcb-rnd hacking - how importers work </h1>
+
+<h2> Introduction </h2>
+This document describes the common aspects of import code, be it an
+import_ plugin or the load part of an io_plugin, importing a footprint,
+loading a board or a netlist.
+
+<h2> Data structures </h2>
+
+The board is stored in PCBType *. Some import code, like the one
+that loads a design (an io plugin's ->parse_pcb function), gets the
+target in an argument. (Other, non-import code usually operate on
+the global variable that represents the current board:
+<i>PCBType *PCB.</i>).
+<p>
+In either case, PCBType's most important field is <i>PCBDataType *data</i>,
+which holds lists and vectors to store <b>all objects on the board</b>. When
+the target is a buffer (e.g. io plugin's ->parse_element function), it's
+a <i>DataType *buf</i> which also have a <i>PCBDataType *data</i> containing
+the same data a board could. 
+<p>
+A PCBDataType struct in turn has three sets of important fields:
+<ul>
+	<li> lists for layer-independent objects (e.g. rat lines, vias, elements)
+	<li> number of layers in use (LayerN) and an array of layers (see later)
+	<li> rtree structures - these are used for looking up objects for locations
+</ul>
+Each layer is a LayerType structure. A layer has the following fields:
+<ul>
+	<li> lists for lines, texts, arcs, polygons
+	<li> some generic layer attributes (colors, flags, key-value pairs)
+	<li> an rtree struct for each object type.
+</ul>
+<p>
+Any code that needs to create objects should use the functions in create.[ch].
+The functions that operate layer-independently usually get a destination as
+<i>PCBDataType</i>, so they can operate both on boards and buffers. A typical
+example is <i>PinTypePtr CreateNewVia(DataTypePtr Data, ...)</i> that returns
+NULL or the pointer to the new via that is already added to the corresponding list
+of Data and in the rtree.
+<p>
+Layer object creation is done referencing the layer as <i>LayerType *</i>. A
+typical example is <i>LineTypePtr CreateDrawnLineOnLayer(LayerTypePtr Layer, ...)</i>
+which returns NULL on error or a pointer to the new line object created (inserted
+in the layer's line list, added to the rtree).
+<p>
+Code should <b>avoid</b> manipulating the lists and rtree structures directly.
+<table border=1>
+<tr><td><img src="data1.png">
+<br>
+Figure 1. simplified map of object related data structures
+<br>
+<small>diamond: variable; rectangle: struct; round: struct field</small>
+</table>
+
+
+<h2> Extra steps around creating a new board </h2>
+TODO: postproc, post*, other setup
+
+
+
+

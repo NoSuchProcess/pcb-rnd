@@ -1,0 +1,63 @@
+digraph g {
+	rankdir=LR
+	splines="polyline"
+#	nodesep=1
+#	ranksep=1.5
+
+	subgraph cluster_0 {
+		label="pcb-rnd"
+#		core [label="pcb-rnd core|{{<f0>HID system|<f1>plugin system}}" shape=record]
+		core [label="core" shape=box]
+		hids [label="HID system" shape=box height=2]
+		plugins [label="plugin system" shape=box height=2]
+	}
+
+	subgraph cluster_1 {
+		label="GPMI"
+		gpmi_hid [label="gpmi HID"]
+		gpmi_pkg [label="gpmi package\n(host glue layer)"]
+		gpmi_mod1 [label="gpmi lua module\n(script glue layer)"]
+		gpmi_scr1 [label="lua script"]
+		gpmi_mod2 [label="gpmi mawk module\n(script glue layer)"]
+		gpmi_scr2 [label="awk script"]
+	}
+
+
+
+	gui [label="the active\nGUI HID\n(e.g. gtk)"]
+	exp1 [label="PS exporer"]
+	exp2 [label="PNG exporer"]
+
+
+	exp1 -> hids [label="register"]
+	exp2 -> hids [label="register"]
+
+	hids -> exp1 [label="drawing"]
+	hids -> exp2 [label="drawing"]
+	hids -> gui [label="drawing"]
+
+	plugins -> gpmi_hid [label="load plugin" color=red]
+	gpmi_hid -> hids [label="register"]
+	hids -> gpmi_hid [label="drawing"]
+	core -> gpmi_hid [label="event"]
+
+	gpmi_pkg -> core [label="calls & variables"]
+	gpmi_pkg -> hids [label="calls & variables"]
+	gpmi_pkg -> gpmi_hid [label="calls & variables" color=green]
+	gpmi_pkg -> plugins [label="calls & variables"]
+
+
+	gpmi_hid -> gpmi_mod1 [label="load script" color=red]
+	gpmi_hid -> gpmi_mod1 [label="event"]
+	gpmi_hid -> gpmi_mod2 [label="load script"]
+	gpmi_hid -> gpmi_mod2 [label="event"]
+
+	gpmi_mod1 -> gpmi_scr1 [label="load and exec" color=red]
+	gpmi_mod1 -> gpmi_scr1 [label="event" style=dashed]
+	gpmi_scr1 -> gpmi_pkg [label="function calls" style=dashed color=green]
+
+	gpmi_mod2 -> gpmi_scr2 [label="load and exec"]
+	gpmi_mod2 -> gpmi_scr2 [label="event" style=dashed]
+	gpmi_scr2 -> gpmi_pkg [label="function calls" style=dashed]
+
+}

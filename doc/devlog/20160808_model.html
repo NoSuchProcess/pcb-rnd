@@ -1,0 +1,101 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> How to represent the world in pcb-rnd </H2>
+
+<H3> Proper implementation </H3>
+
+&lt;daydreaming&gt;
+<p>
+In a proper model there's no element/footprint. There are a few simple 
+primitives and there are groups, like the ones in svg: groups contain 
+metadata, primitives and groups.
+<p>
+An element is just a group. The whole design may contain groups of groups 
+of groups. A stereo amplifier may be a group for a PSU and two instances 
+of a single-channel amp group that match square-unit to square-unit.
+<p>
+What makes up an element now is a refdes, its pins/pads we can identify 
+(for the netlist-related things) and the feature that you can drag the 
+whole thing as one. A group could do all these as well: refdes is just 
+metadata, silk lines are just primitives, pins/pads are just small groups 
+of primitives and metadata.
+<p>
+There could be "group types" and type-specific code handling them. In such 
+a setup you probably don't need to have a text object: just a group that 
+consists of mostly lines (or polygons) and some metadata (the string 
+version of the text); the group type would assigns the text-handling code 
+with to the group. So for the rest of the code, text is not a special 
+thing, not a bounding box, but just a set of primitives. When you edit it, 
+you can edit it either line-by-line or as text with the assigned code.
+<p>
+This would allow us to have a very small amount of primitives: line, arc, 
+poly, hole (without a ring - a via is just a group of a few primitives). 
+Each primitive would have a layer-span field; this would solve the 
+blind/buried via question for good. (In theory line and arc could be one 
+thing, spline oslt, but I don't think performance penalty is worth that.)
+<p>
+However, this means a total rewrite as almost every non-trivial piece of 
+the code depends on the object model, from find/search/drc to the whole 
+polygon code, just to name two huge ones. The file format thing is the 
+smallest of this all. The only major parts I think we could keep are the 
+GUI and the new conf system. At the current rate of development this would 
+take more than a year to have a mostly working version and probably yet 
+another year to get everything tested out and reach current level of 
+service again.
+<p>
+I am not against such a rewrite, but it would really need a very strong 
+user/tester backing and maybe more developers than the current amount.
+<p>
+Also, Imagine we'd have a pcb program you couldn't trust on 
+anything: e.g. losing your data, generating broken gerber, etc. for a very 
+long time...
+<p>
+So I generally agree that we should do this, but for practical reasons I 
+am a bit skeptic whether this would work out in the current situation. 
+It'd kill any cschem plans for years, and because of the long development 
+cycle it would most probably kill pcb-rnd too.
+<p>
+&lt;/daydreaming&gt;
+
+<H3>Improper implementation</h3>
+
+However, I see an alternative that is not as good as the real thing, but 
+might be good enough that users don't see much difference. It's 
+possible to implement it step by step, without long years of "nothing 
+works as used to" phases. The alternative is:
+<p>
+<ul>
+<li>1. Add io_lihata, first as a second native file format option, but long 
+term as the primary file format; it's because we can't really extend the 
+code without breaking compatibility with mainline on the .pcb format. In 
+other words, we either _pretend_ we are compatible, but using any new 
+feature would break compatibility (current state) or we admit that new 
+features are implemented only in the lihata syntax and when you save to 
+.pcb it's like saving png from gimp, losing some extra layer info. This 
+step will happen either way, for other reasons.
+
+<li> 2. rearrange some internals; the core is currently split per operation
+(e.g. there's create.c for creating all sort of objects and remove.c
+for removing them). The new setup should be per object type (e.g. arc.c
+that knows how to create or remove arcs).
+
+<li>3. Once lihata is in place, we can extend/rewrite some parts. An option 
+is to rewrite footprint support to allow them to be sort of a small pcb 
+design. So objects on arbitrary layers, footprint-in-footprint, etc.
+
+<li>4. When 3. is done, we could extend element handling so that pcb-rnd knows 
+which element is there for why. So you could have some real elements, with 
+refdes, part of the netlist, etc, but you could also do a panelization as 
+a matrix of full pcb designs place like if they were elements.
+</ul>
+<p>
+This 3.,4. would not be the same as building up everything from generic 
+atoms, but would be close to it and would be much simpler to implement 
+(still a big one, tho). I believe in practice, for end users, it would 
+probably be 99% the same as the proper solution.
+<p>
+I believe 3.,4. would be more or less the pcb-rnd equivalent of gschem's 
+implementation of schematics and symbols with about the same level of 
+generalism. Not perfect, but maybe good enough.

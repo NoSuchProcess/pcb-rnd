@@ -1,0 +1,49 @@
+<html>
+<head>
+	<title> pcb-rnd - different default settings </title>
+<!--AUTO head begin-->
+	<link rel="icon" href="http://repo.hu/projects/pcb-rnd/logo16.png">
+<!--AUTO head end-->
+</head>
+<body>
+
+<!--AUTO navbar begin-->
+<table border=0 cellspacing=2 cellpadding=10  bgcolor=#eeeeee width=100%>
+<tr>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/"> Main </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/news.html"> News </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi">People</a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=events">Events</a> & <a href="http://www.repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=timeline"> timeline </a>
+<td align=right width=60%> <font size=+2><i>pcb-rnd</i></font> <img src="http://repo.hu/projects/pcb-rnd/logo32.png">
+</table>
+<!--AUTO navbar end-->
+
+<h1> pcb-rnd - settings </h1>
+
+There are a few minor changes in default settings compared to mainline
+pcb.
+<table border=1>
+<tr>
+	<th> name
+	<th> description
+	<th> where to change
+
+<tr>
+	<td> layers
+	<td> the default layer stack is optimized for two sided boards with 3 layers on both sides
+	<td> edit or replace /usr/share/pcb-rnd/default.pcb
+
+<tr>
+	<td> styles & DRC
+	<td> default styles and DRC settings are optimized for toner transfer
+	<td> edit or replace /usr/share/pcb-rnd/default.pcb
+
+<tr>
+	<td> grid
+	<td> on startup "enable visible grid" is on and grid is set to 25 mil
+	<td> change editor/draw_grid in pcb-conf.lht (in system install dir, in user dir) or in project.lht
+
+</table>
+
+</body>
+</html>

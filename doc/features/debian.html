@@ -1,0 +1,50 @@
+<html>
+<head>
+	<title> pcb-rnd - [debian] </title>
+<!--AUTO head begin-->
+	<link rel="icon" href="http://repo.hu/projects/pcb-rnd/logo16.png">
+<!--AUTO head end-->
+</head>
+<body>
+
+<!--AUTO navbar begin-->
+<table border=0 cellspacing=2 cellpadding=10  bgcolor=#eeeeee width=100%>
+<tr>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/"> Main </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/news.html"> News </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi">People</a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=events">Events</a> & <a href="http://www.repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=timeline"> timeline </a>
+<td align=right width=60%> <font size=+2><i>pcb-rnd</i></font> <img src="http://repo.hu/projects/pcb-rnd/logo32.png">
+</table>
+<!--AUTO navbar end-->
+
+<h1> pcb-rnd - the [debian] patch </h1>
+
+Our current Debian packaging reflects the modularity of pcb-rnd: it has
+most plugins in separate packages. The main package is called
+<b>pcb-rnd-core</b>: this provides the executable and the footprint library
+and the batch HID. The GUI HIDs are in <b>pcb-rnd-gtk</b> and
+<b>pcb-rnd-lesstif</b> - it's possible to install neither, either or both.
+When there are multiple HIDs installed, the user can select one by the
+--gui command line parameter or by changing the GUI preference in the
+configuration (the default preference is gtk &gt; lesstif &gt; batch).
+<p>
+The rest of the packages are features, importers and exporters, e.g.
+<b>pcb-rnd-svg</b> is the SVG exporter, <b>pcb-rnd-query</b> is the object
+query language needed for the advanced search.
+<p>
+A metapackage called <b>pcb-rnd</b> is provided for convenience: it installs
+the packages for the most common, yet small setup, with the GTK HID.
+<p>
+How to get the packages:
+<ul>
+	<li> decide which packages you need; this <a href="debian_list.html"> package list </a> may help
+	<li> use <i>apt-get install</i> after configuring <a href="http://repo.hu/debian"> repo.hu's debian repository </a> as source in your /etc/apt/sources.list
+	<li> use <i>dpkg -i</i> after manually downloading the packages from repo.hu's <a href="http://repo.hu/debian/list.html"> flat package list </a> or from <a href="http://repo.hu/debian/pool/main/p/pcb-rnd"> the package pool </a>
+	<li> build them on your Debian box: use svn trunk, install debhelper and all the build dependencies of pcb-rnd and run "fakeroot debian/rules binary" in trunk (shorthand: "make deb")
+</ul>
+
+<h2> plans </h2>
+No plans - this feature is fully implemented.
+</body>
+</html>

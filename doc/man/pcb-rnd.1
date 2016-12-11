@@ -1,0 +1,47 @@
+.\" pcb-rnd - manual
+.\" Copyright (C) 2016 Tibor 'Igor2' Palinkas
+.\" 
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\" 
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU General Public License for more details.
+.\" 
+.\" You should have received a copy of the GNU General Public License along
+.\" with this program; if not, write to the Free Software Foundation, Inc.,
+.\" 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+.\" 
+.\" Contact: pcb-rnd[removethis]@igor2.repo.hu
+.TH pcb-rnd 1 2016-10-29 "" "pcb-rnd manual"
+.SH NAME
+pcb-rnd - Printed Circuit Board editor
+.SH SYNPOSIS
+.nf
+.sp
+\fBpcb-rnd [\fIoptions\fB] [\fIinputfile\fB]
+.fi
+.SH DECSRIPTION
+
+.BR pcb-rnd
+is a modular PCB editor. The main use is interactive editing. If no \fI-x\fR is specified on the command line, the graphical editor mode is initiated. Automated, headless processing is also possible with \fI-x\fR or \fI--gui batch\fR.
+.SH OPTIONS
+
+
+.TP
+
+.B -x \fIexporter\fR [\fIexportflags] \fIinputfile\fR\fR 
+Instead of interactive editing, export the design (loaded from \fIinputfile\fR) to a file using the specified \fIexporter\fR plugin. A list of exporter-specific parameters may follow to control the details of the process. 
+.TP
+
+.B --gui \fIhid\fR 
+Use the \fIhid\fR plugin for the "gui" frontend. Common choices are "gtk" or "lesstif" for graphical user intrfaces and "batch" for a headless command-line interface (or automated batch processing). 
+.TP
+
+.B -c \fIpath=val\fR 
+Set a config node in role CFR_CLI. The path of the node is \fIpath\fR (e.g. editor/grid) and the new value is \fIval\fR (e.g. 5mm).
+.PP
+

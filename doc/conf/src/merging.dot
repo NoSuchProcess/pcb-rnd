@@ -1,0 +1,103 @@
+digraph g {
+	rankdir=LR;
+
+	subgraph cluster_memtree {
+		label="in-memory lihata trees"
+		bgcolor=grey
+		rank=same
+		CFR_INTERNAL    [label="CFR_INTERNAL\nultimate fallback"]
+		CFR_SYSTEM      [label="CFR_SYSTEM\nsystem level configuration"]
+		CFR_DEFAULTPCB  [label="CFR_DEFAULTPCB"]
+		CFR_USER        [label="CFR_USER\nuser level configuration"]
+		CFR_ENV         [label="CFR_ENV"]
+		CFR_PROJECT     [label="CFR_PROJECT\nproject level configuration"]
+		CFR_DESIGN      [label="CFR_DESIGN"]
+		CFR_CLI         [label="CFR_CLI"]
+	}
+
+	subgraph cluster_fields {
+		label="string -> conf_native_t hash"
+		bgcolor=grey
+		conf_fields     [label="conf_fields\ncentral hash\nof all\nknown settings"]
+	}
+
+	subgraph cluster_native {
+		label="native C structures\nper module"
+		bgcolor=grey
+		conf_core       [label="conf_core\npcb-rnd core settings"]
+		conf_hid_gtk    [label="conf_hid_gtk\nthe hid_gtk plugin's settings"]
+		conf_mincut     [label="conf_mincut\nthe mincut plugin's settings"]
+		conf_report     [label="conf_report\nthe report plugin's settings"]
+		conf_other      [label="...\nother plugin's settings"]
+	}
+
+	CFR_INTERNAL    -> conf_fields [color=red]
+	CFR_SYSTEM      -> conf_fields [color=red]
+	CFR_DEFAULTPCB  -> conf_fields [color=red]
+	CFR_USER        -> conf_fields [color=red]
+	CFR_ENV         -> conf_fields [color=red]
+	CFR_PROJECT     -> conf_fields [color=red]
+	CFR_DESIGN      -> conf_fields [color=red]
+	CFR_CLI         -> conf_fields [color=red]
+
+
+#	CFR_INTERNAL    -> CFR_SYSTEM
+#	CFR_SYSTEM      -> CFR_DEFAULTPCB
+#	CFR_DEFAULTPCB  -> CFR_USER
+#	CFR_USER        -> CFR_ENV
+#	CFR_ENV         -> CFR_PROJECT
+#	CFR_PROJECT     -> CFR_DESIGN
+#	CFR_DESIGN      -> CFR_CLI
+
+	conf_fields -> conf_core      [color=red]
+	conf_fields -> conf_hid_gtk   [color=red]
+	conf_fields -> conf_mincut    [color=red]
+	conf_fields -> conf_report    [color=red]
+	conf_fields -> conf_other     [color=red]
+
+
+
+	subgraph cluster_files {
+		label="config files"
+		bgcolor=grey
+		lht_system        [label="/usr/share/pcb-rnd/pcb-conf.lht" shape=hexagon]
+		pcb_default       [label="/usr/share/pcb-rnd/default.pcb" shape=hexagon]
+		project           [label="./project.lht" shape=hexagon]
+		lht_user          [label="~/.pcb-rnd/pcb-conf.lht" shape=hexagon]
+	}
+
+	subgraph cluster_exec_env {
+		label="execution environment"
+		bgcolor=grey
+		env               [label="environmental variables"]
+		cli               [label="command line arguments\ne.g. -c or\npluginspecific args"]
+	}
+
+	lht_internal      [label="hardwired\nin the\nexecutable"]
+	design            [label="settings\nin the\n.pcb file" shape=hexagon]
+
+	lht_internal -> CFR_INTERNAL    [label="program startup"]
+	lht_system   -> CFR_SYSTEM      [label="loaded at startup"]
+	pcb_default  -> CFR_DEFAULTPCB  [label="loadad in CreateNewPCB()"]
+	lht_user     -> CFR_USER        [label="loaded at startup" dir=both]
+	env          -> CFR_ENV         [label="built at startup"]
+	project      -> CFR_PROJECT     [label="loaded when a\nnew .pcb or project\nis loaded" dir=both]
+	design       -> CFR_DESIGN      [label="extracted when loading a design" dir=both]
+	cli          -> CFR_CLI         [label="built during\ncommand line argument\nparsing"]
+
+
+	hid_gtk [label="the GTK HID"]
+
+	conf_core     -> hid_gtk [weight=100]
+	conf_hid_gtk  -> hid_gtk
+
+	hid_gtk -> CFR_DESIGN  [color=blue weigth=0]
+	hid_gtk -> CFR_PROJECT [color=blue weigth=0 style=dashed]
+	hid_gtk -> CFR_USER    [color=blue weigth=0 style=dashed]
+
+
+	editor  [label="core:\nediting pcb"]
+	conf_core -> editor   [weight=100]
+	editor -> CFR_DESIGN  [color=blue weigth=0]
+
+}

@@ -1,0 +1,38 @@
+<title>pcb-rnd</title>
+<sect>1</sect>
+<date>2016-10-29</date>
+
+<name> pcb-rnd - Printed Circuit Board editor </name>
+<syn> <call>pcb-rnd</call> [<arg>options</arg>] [<arg>inputfile</arg>] </syn>
+
+<description>
+<call>pcb-rnd</call> is a modular PCB editor. The main use is interactive
+editing. If no <arg>-x</arg> is specified on the command line, the
+graphical editor mode is initiated. Automated, headless processing
+is also possible with <arg>-x</arg> or <arg>--gui batch</arg>.
+</description>
+
+<options>
+<kvlist>
+	<item>
+		<key> -x <arg>exporter</arg> [<arg>exportflags] <arg>inputfile</arg> </key>
+		<value> Instead of interactive editing, export the design (loaded from
+		        <arg>inputfile</arg>) to a file using the specified
+		        <arg>exporter</arg> plugin. A list of exporter-specific parameters
+		        may follow to control the details of the process. </value>
+	</item>
+	<item>
+		<key> --gui <arg>hid</arg> </key>
+		<value> Use the <arg>hid</arg> plugin for the "gui" frontend. Common
+		        choices are "gtk" or "lesstif" for graphical user intrfaces
+		        and "batch" for a headless command-line interface (or automated
+		        batch processing). </value>
+	</item>
+	<item>
+		<key> -c <arg>path=val</arg> </key>
+		<value> Set a config node in role CFR_CLI. The path of the node is
+		        <arg>path</arg> (e.g. editor/grid) and the new value is
+		        <arg>val</arg> (e.g. 5mm). </value>
+	</item>
+</kvlist>
+</options>

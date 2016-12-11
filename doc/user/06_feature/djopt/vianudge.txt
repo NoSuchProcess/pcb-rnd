@@ -1,0 +1,3 @@
+Looks for vias where all traces leave in the same direction.  Tries to
+move via in that direction to eliminate one of the traces (and thus a
+corner).

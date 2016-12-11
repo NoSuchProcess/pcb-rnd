@@ -1,0 +1,5 @@
+Currently the project works on Linux only. GPMI is portable, so we need
+only Makefile tweakings on pcb-gpmi to be able to compile it anywhere
+where GPMI compiles. However, first I want to see some test results
+from Linux users.
+

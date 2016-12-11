@@ -1,0 +1,49 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> unglib: glib removal </H2>
+
+<H3> glib problems </h3>
+
+As mentioned in a previous post, <a href="20151028_glib.html"> glib is
+sometimes dangerous</a>. Even if it was not, it's still huge and contradicts
+the UNIX philosophy: <i>Do One Thing and Do It Well</i>. Glib tries to do a lot
+of things. I do not doubt it is trying to do each of these things well, but as
+a combination it's pretty much impossible to <i>Keep It Simple, Stupid</i>.
+While glib is modular in design, from the viewpoint of an application it is
+not modular: it's highly unlikely that the application can replace a part
+of glib while keeping the rest.
+<p>
+The source of these problems is that glib is a "megalib" that tries to solve
+a host of problems as a package.
+
+<H3> The solution </h3>
+
+The solution is to replace the megalib with
+a set of independent minilibs. Each minilib:
+<ul>
+	<li> tries to do one thing - e.g. linked lists, without coupling it with a custom memory allocator
+	<li> is simple - the API is so small that it's easy to learn it in minutes
+	<li> is small - so that if anything breaks it's very easy to find and fix the bug (when did you last debug internals of glib?)
+	<li> is replaceable - since they are independent, if one doesn't work up to expectations, it's real easy to replace it without affecting any other part; e.g. replacing linked lists without replacing hash tables
+</ul>
+<p>
+The minilibs are imported as svn externals in trunk/src_3rd. They are small
+enough so that they can be distributed together with pcb sources.
+
+<H3> Current state </h3>
+
+The "unglib" patch is mostly done. All references of glib are removed
+from the core and the lesstif hid. There are a three components that
+still depend on glib, but they each can be disabled:
+<ul>
+	<li> the GTK HID: because gtk is already coupled with glib, it doesn't make much sense to remove glib from the gtk HID code
+	<li> the toporouter plugin: the code is huge and will be potentially deprecated anyway (lack of developer resources/user interest)
+	<li> the puller: glib should be removed from the puller long term but the code is big and there's no much user need for it in pcb-rnd
+</ul>
+<p>
+This means pcb-rnd can be compiled with lesstif (or a compatible motif)
+on a UNIX box without depending on glib. Together with the earlier effort
+that removed autotools, it means a UNIX box without any "GNU infection"
+should be able to compile and run pcb-rnd.

@@ -1,0 +1,257 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> Fork FAQ </H2>
+
+This document contains my short answers to questions commonly popping up
+in endless flamewars on the geda mailing list. <b>The purpose of this
+document is not to convince anyone about any of the questions</b>, only
+to save me some time typing the same answers when someone asks me
+one these questions for the 100th time. As I don't want to convince you
+that my answers are the best ones, please don't try to convince me that
+they are bad. Been there, done that, never worked in either way: e.g.
+I never convinced any git fanboy to switch to svn, and they never
+convince me to switch to git.
+
+<H3> 1. Why did you fork? </H3>
+<a id="1"><a id="fork">
+<H4> 1.1. Fragmentation is bad, your fork is harmful! </H4>
+I agree that fragmentation is bad. I believe the same aspects of
+the current project management and especially the choice of VCS inevitably
+leads to forks (just look at how many git forks are out there!). Such
+fragmentation of developer and user resources may be bad for a project.
+However, these decisions are not mine: the project is set up like
+that, I can't change it
+<p>
+My fork is just a fork, just like any of the other forks. My fork happens to
+be in an svn repository. I don't think it changes anything important from the
+mainline's point of view.
+
+<H4> 1.2. ... but how will you get all these merged with mainline? </H4>
+I won't. I haven't really used the official, current mainline since like
+2011. I don't really care in what directions it evolves or whether it
+takes features, code or ideas from pcb-rnd or not.
+
+<H4> 1.3. ... but you are in the best position for a merge! </H4>
+I don't think so. I know my changes, but I don't know the changes happened
+in the mainline since ages. I am also not efficient with git. It wouldn't
+take me any less time than for mainline developers. Also please read point 1.2.:
+I have no motivation in spending any time on a merge.
+
+<H4> 1.4. Ok then, but you won't have too many users. </H4>
+Fine. My main intention was to produce a pcb editor for my own use. I am
+happy if it's also useful for others, so I publish it. Having users
+may increase code quality - but other than that, I don't get paid for having
+more users, the project doesn't die if I code it alone, so I am not worried
+about this.
+<p>
+<b>Update (Aug 2016):</b> an active user/contributor community is forming
+around pcb-rnd. It is not a one-man-show anymore.
+
+<H4> 1.5. I'd like to merge something from pcb-rnd to mainline </H4>
+Go ahead. I can help you by explaining my code. I won't generate
+patches, make changes to get my code compatible with the mainline or
+test how it performs in mainline versions.
+
+<H4> 1.6. I'd like to merge something from mainline to pcb-rnd </H4>
+If the feature is in line with the goals of pcb-rnd, fine, I'll give
+you svn commit access from day 0.
+
+<h4> 1.7. Would you abandon the development of pcb-rnd and join the mainline, if... </H4>
+Unlikely. There are many things I have in pcb-rnd which I believe won't ever
+happen in mainline. There are a few which I find critical: if I'd need to
+give up any single item from this list, that would be a deal-breaker for me:
+<ul>
+	<li> simple, centralized VCS (not just the UI, the whole thing)
+	<li> VCS based, zero-administration release and publish interface
+	<li> a sane build system instead of autotools
+	<li> the code won't switch to C++
+</ul>
+
+
+<h4> 1.8. Would you join the development of gschem? </h4>
+Unlikely. See point 1.7. Gschem is not aiming to a C++ transition AFAIK,
+but has a lot of scheme. I don't consider joining or contributing to
+gschem until those points listed in 1.7. are fixed and a new scheme
+policy is introduced. The new policy should be: "from now on
+do not write new code in scheme, use C; while making changes and fixes,
+convert affected scheme code to C. Long term, explicit plan: convert all
+scheme code to C and remove the guile dependency."
+<p>
+I don't expect any of this to happen.
+<p>
+<b>Update (Aug 2016):</b> Instead, I'll launch <a href="20160101_cschem.html"> cschem </a>.
+
+
+<H3> 2. git: did you know... </H3>
+<a id="2"><a id="git">
+Preface: I don't try to convince you not to use git in your project; in
+return, please don't try to convince me I should use git in mine.
+
+<H4> 2.1. ... that there was an svn frontend to git? </H4>
+Yes. 2/3 of my problems with git and DVCS in general are not of technical
+nature. I know the <b>concepts</b> of DVCS and I find them suboptimal in
+case of small teams. A different UI or a good document won't help in that.
+
+<H4> 2.2. ... that there was this great document about git? </H4>
+See 2.1.
+
+<H4> 2.3. ... that DVCS is the future, anything centralized is bad, svn is obsolete? </H4>
+These are not facts, but slogans I don't believe in.
+
+<H4> 2.4. What if someone has to develop offline for long? </H4>
+In the 21th century, when we have cheap mobile internet even in eastern
+Europe?
+
+<H4> 2.5. But feature X is harder with svn! </H4>
+Almost all those features are bad for team work in my experience. They
+are not even needed. Yes, some aspects of the development have to be
+done differently without those - but this is good for the project.
+
+<H4> 2.6. But there are no local repositories and you have to commit unfinished stuff and worry if anything breaks! And branching is hard </H4>
+This is the point. I do not branch. I do not attempt to work offline for long,
+whatever technical support the VCS may provide for that. I try to work in
+a team, on a common code base.
+<p>
+I commit small things. I make sure I do a big transition using
+these small commits in a way that the code stays compilable in between any
+two commits. It rarely breaks trunk/ for longer than a few minutes. I
+need a real branch once a decade.
+
+<H4> 2.7. But that's extra effort and makes life harder! </H4>
+Yes and no. It's certainly harder to design and carry out a big
+reorganization in small steps. This is an extra cost. However, the
+benefits outweight this: everyone working in the same repo,
+other developers see and comment what you are working on, if done right,
+merging is nearly never needed and conflicts are as rare as bugfree
+release of a multi-million line proprietary software.
+
+<h4> 2.8. I don't agree with any of this, git is better! </H4>
+Cool, so go on using git. I didn't try to convince you not to, I just
+explained why I won't.
+
+<H3> 3. opengl </H3>
+<a id="3"><a id="opengl">
+<H4> 3.1. But I need opengl! </H4>
+Use the mainline then. Or contribute the code for sane opengl support
+in pcb-rnd. 
+<p>
+<b>Update (Aug 2016):</b> GUI HIDs are plugins now, multiple GUIs can
+be compiled and chosen run-time. Default GUI is a runtime configuration too.
+All we need to have an opengl GUI HID now is a gl-capable volunteer.
+
+<H4> 3.2. ... good, then please make that opengl hid!</H4>
+No, thanks. I don't need it, I wouldn't use it, there's no point in spending
+my time on it. If you need it, I invite you to do it.
+<p>
+<b>Update (Aug 2016):</b> I can do the build system and plugin administration
+part for you.
+
+<H4> 3.3. Did you know that opengl can be turned off in mainline? </H4>
+Yes. If I have a fork, I want its defaults to reflect my preferences.
+
+<H4> 3.4. But transparent renders are so good on a board with many layers! </H4>
+Not for me: transparency made even a 2 layer board cryptic when I tried. See
+3.1.
+
+
+<H3> 4. programming languages, file formats </H3>
+<a id="4"><a id="c">
+<H4> 4.1. switch to C++, it is so much better </H4>
+Nope. I prefer C.
+
+<H4> 4.2. but pcb-rnd doesn't compile with a C++ compiled </H4>
+Correct: pcb-rnd is written in C. It also doesn't compile with a Pascal
+compiler.
+
+<H4> 4.3. but mainline already invested in preparing a C++ transition </H4>
+Good for them. If I didn't have a fork, I'd fork the day when the first
+C++ class is committed.
+
+<H4> 4.4. we need SQL for the file format </H4>
+No, we don't. I prefer human readable text formats. No, converters won't
+solve that. No, I don't care if python has support for loading SQL files.
+<p>
+<b>Update (Aug 2016):</b> the file format is a replacable plugin now;
+it's even possible to have multiple alternative formats active in the same
+time. It's up to you to implement your format in a plugin.
+
+<H4> 4.3. we need to switch to xml/json (or python or perl arrays) </H4>
+No, we don't need to.
+<p>
+<b>Update (Aug 2016):</b> ... unless you implement it in a plugin, see point 4.4.
+
+<h4> 4.4. ... but they are easier to parse because of existing libs </h4>
+Yup, but in any real life task that part of the parsing is like 5%. The
+rest 95% needs to be programmed anyway. The costs of such a file format change
+is not justified by this minor gain.
+
+<h4> 4.5. ... but the current file format doesn't support feature X </h4>
+<small>
+True. And that's because the internal model (the in-core representation
+and <b>all the code handling that</b>) doesn't support the feature either.
+Changing the file format won't help that. It's similar to point 4.4.: 95%
+of the effort is needed to get the code to support the feature, and by that
+time the cost of getting it into the file format is very small. Costs
+are not justified.
+</small>
+<p>
+<b>Update (Aug 2016):</b> long term the new primary file format will be
+lihata to overcome the above limitations. Later on the internal representation
+may change too.
+
+<H4> 4.6. ... but I can't build a database of the current lib </h4>
+Too bad. Either figure how to do it, or just don't do it. pcb-rnd
+offers scripting, even in languages that have SQL support. In theory
+it wouldn't be that hard to write scripts running in PCB manipulating
+the buffer or even the in-core footprints on one end and connecting
+an SQL database on the other end.
+
+
+<H3> 5. scconfig, autotools, build systems </H3>
+<a id="5"><a id="scconfig">
+<h4> 5.1. scconfig doesn't support feature X that autotools does </h4>
+Are you sure? Maybe it does, just uses a different syntax. If not, did
+you try to send me a feature request?
+
+<h4> 5.2. scconfig's syntax is different </h4>
+Yes. Scconfig has a totally different internal model thus the UI differs
+too. Same as vim has a different UI than emacs, while they are both text
+editors and the two communities are not trying too hard to unify the UIs.
+
+<h4> 5.3. But ./configure has to have the same UI as autotools </h4>
+False.
+
+<h4> 5.4. Most people know autotools, there are merits in supporting the same features or UI </h4>
+I do realize that. I've been working on scconfig since 2008. I've invested
+a lot of time in it. Believe me, I did think it over before I decided that
+the benefits would overweight the drawbacks of developing/using a custom
+config/build system.
+
+<h4> 5.5. But autotools is so much better! </H4>
+No, it isn't. My experience is that with random open source projects
+on anything different from Linux, modern BSD, and sometimes windows, it
+just breaks at least 8 times out of 10. Try it once on IRIX or minix.
+
+<h4> 5.6. So why don't you rather fix autotools? </H4>
+I believe there are multiple design problems in autotools and most of
+the practical problems I faced when using it were directly caused by those.
+In a sense, I did fix these design problems by using a different design.
+The different design is called scconfig and it was much easier to
+write it from scratch.
+
+<h4> 5.7. But scconfig doesn't do cross compilation! </H4>
+False. It does. It's been supported since May 2008. It's been added
+about 1.5 months after the very first file.
+<p>
+<b>Update (Aug 2016):</b> as a practical example, windows .exe has
+been cross-compiled on a Linux box.
+
+<h4> 5.8. I just don't like scconfig. </H4>
+If you have something particular that makes you dislike scconfig,
+a missing feature for example, please let me know.
+<p>
+Else maybe you don't like using anything else than autotools. It's your
+choice; mine is that I do keep on using scconfig in my projects.
+

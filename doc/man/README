@@ -1,0 +1,10 @@
+Manual pages are written in the manual markup format and are compiled into
+manual and html using mml. Do not edit the generated manual or html pages.
+
+The generated files are commited in the repository so dependencies are not
+required for casual users to build the project.
+
+The required tools and dependencies are:
+ svn://repo.hu/libmawk/trunk
+ svn://repo.hu/web3.0/trunk
+ svn://repo.hu/shscripts/trunk/manmarkup

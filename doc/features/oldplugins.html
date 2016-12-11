@@ -1,0 +1,69 @@
+<html>
+<head>
+	<title> pcb-rnd - [oldplugins] </title>
+<!--AUTO head begin-->
+	<link rel="icon" href="http://repo.hu/projects/pcb-rnd/logo16.png">
+<!--AUTO head end-->
+</head>
+<body>
+
+<!--AUTO navbar begin-->
+<table border=0 cellspacing=2 cellpadding=10  bgcolor=#eeeeee width=100%>
+<tr>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/"> Main </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/projects/pcb-rnd/news.html"> News </a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi">People</a>
+<th align=center bgcolor=#ccc0cc> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=events">Events</a> & <a href="http://www.repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=timeline"> timeline </a>
+<td align=right width=60%> <font size=+2><i>pcb-rnd</i></font> <img src="http://repo.hu/projects/pcb-rnd/logo32.png">
+</table>
+<!--AUTO navbar end-->
+
+<h1> pcb-rnd - the [oldplugins] </h1>
+
+In this effort I imported a set of old PCB plugins to be core plugins of
+pcb-rnd. This will make it easier to keep them up to date, to defeat
+the bitrot effect. The feature plugins that got imported so far:
+<ul>
+	<li> autocrop
+	<li> boardflip
+	<li> distalign
+	<li> distaligntext
+	<li> jostle - doesn't work properly
+	<li> polycombine
+	<li> polystich - segfaults
+	<li> teardrops
+	<li> renumberblock - as part of the renumber plugin
+	<li> smaprtdisperse
+</ul>
+<p>
+The import/export plugins improted over the default set of the last official
+mainline release:
+<ul>
+	<li> import_dsn - specctra importer - compiles, parser needs a full rewrite, it tries to read an s-expression line by line with fgets()
+	<li> export_dsn - specctra exporter - compiles, produces valid-looking output - <b>need tester</b> to validate the output
+	<li> export_bboard - breadboard exporter - compiles, produces valid-looking output - <b>need tester</b>
+	<li> export_dxf - mechanical cad export - compiles, missing header data renders exported files unusable
+	<li> export_ipcd356 - electrical test output - compiles, produces valid-looking output - <b>need tester</b>
+	<li> export_openscad - 3d modeling - compiles, output sort of works, models not yet imported, <b>need tester</b>
+</ul>
+
+Plugins that won't be imported:
+<ul>
+	<li> findelement - <a href="query.html">[query]</a> takes care of that
+	<li> findrat - <a href="query.html">[query]</a> will take care of that
+	<li> join-found - not clear what it would do
+	<li> lockelements - <a href="query.html">[query]</a> can select elements then SetFlag() should be able to lock them
+	<li> sedrename - <a href="query.html">[query]</a> will take care of that
+	<li> upth2pth - <a href="query.html">[query]</a> will take care of that
+	<li> ratsel - written in C++
+	<li> stipple - written in C++
+</ul>
+
+<h2> save/load and compatibility </h2>
+Not affected.
+
+<h2> plans </h2>
+Any interesting plugin is subject to be imported.
+
+</body>
+</html>

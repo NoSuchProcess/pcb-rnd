@@ -1,0 +1,12 @@
+<html>
+<body>
+<h1> pcb-rnd hacking - plugin naming conventions </h1>
+	<ul>
+		<li> export plugins start with export_; these render to a non-native format that can not be then loaded
+		<li> native formats are prefixed with io_; even if your plugin can now only load or save, if it's possible to do a load-save-load round-trip without data loss, it's an io_
+		<li> interactive, often GUI, frontends are prefixed with hid_
+		<li> footprint access plugins start with fp_
+		<li> anything else is considered a feature plugin and has no specific prefix.
+	</ul>
+</body>
+</html>
