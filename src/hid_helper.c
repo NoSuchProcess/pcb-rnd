@@ -35,7 +35,7 @@
 
 char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, pcb_file_name_style_t style)
 {
-	pcb_virt_layer_t *v;
+	const pcb_virt_layer_t *v;
 	pcb_layergrp_id_t group;
 	int nlayers;
 	const char *single_name, *res = NULL;
