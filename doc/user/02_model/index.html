@@ -273,6 +273,25 @@ Currently an element or footprint can contain the following objects:
 	<li> silk arcs - on top or bottom silk layer
 	<li> silk text - limited: only one of refdes, element name and element value is displayed at the time
 </ul>
+<p>
+An element has the following properties:
+<p>
+<table border=1>
+	<tr><th>element property   <th> description
+	<tr><td> name: refdes      <td> unique identifier, e.g. "C42"
+	<tr><td> name: value       <td> informal value, e.g. "15 pF"
+	<tr><td> name: description <td> informal element or footprint description, e.g. "1206"
+</table>
+<p>
+Extra object flags:
+<p>
+<table border=1>
+	<tr><th>name        <th> description
+	<tr><td>ONSOLDER    <td> when set, the element is on the bottom side, else it's on the top side
+	<tr><td>NONETLIST   <td> when set, the element is not intended to be on the netlist; useful for elements that are not present on the schematics and are placed during the layout design
+	<tr><td>HIDENAME    <td> when set the name of the element is hidden
+	<tr><td>DISPLAYNAME <td> when set the names of pins are shown
+</table>
 
 <h4> 2.4.7. pins of elements </h4>
 
@@ -287,16 +306,19 @@ Each element has its own list of pins. Pin rings can overlap (which will
 make galvanic connection). There may be duplicate pin numbers and pin names.
 
 <h4> 2.4.8. pads of elements </h4>
+<p>
 A pad is an smd pad of an element. It is modelled as a line segment, usually
 with square cap - this makes the pad look like a rectangle. A pad has
 the same metadata and capabilities as pins. Overlapping pads are supported.
 A pad is always on either the top or the bottom copper layer group.
 
 <h4> 2.4.9. rat line objects </h4>
+<p>
 A rat line represents a logical connection that is not yet realized in copper.
 It connects two drawing primitives.
 
 <h4> 2.4.10. netlists </h4>
+<p>
 A netlist is a list of named logical networks. Each network is a list of
 netlist terminals that should be connected. A netlist terminal is a pair
 of element-refdes and pin-number (or pad-number). Thus a typical netlist
