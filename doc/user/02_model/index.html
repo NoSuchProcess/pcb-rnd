@@ -274,10 +274,24 @@ Currently an element or footprint can contain the following objects:
 	<li> silk text - limited: only one of refdes, element name and element value is displayed at the time
 </ul>
 
-
 <h4> 2.4.7. pins of elements </h4>
 
+A pin of an element is really a via, plus some metadata and capabilities:
+<ul>
+	<li> pin name
+	<li> pin number
+	<li> the capability to act as a netlist terminal
+</ul>
+
+Each element has its own list of pins. Pin rings can overlap (which will
+make galvanic connection). There may be duplicate pin numbers and pin names.
+
 <h4> 2.4.8. pads of elements </h4>
+A pad is an smd pad of an element. It is modelled as a line segment, usually
+with square cap - this makes the pad look like a rectangle. A pad has
+the same metadata and capabilities as pins. Overlapping pads are supported.
+A pad is always on either the top or the bottom copper layer group.
+
 
 <h4> 2.4.9. rat line objects </h4>
 
