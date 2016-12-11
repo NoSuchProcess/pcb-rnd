@@ -47,11 +47,11 @@ static pcb_hid_cfg_mod_t parse_mods(const char *value, const char **last, unsign
 
 	if (*value != '<') {
 	for(;;) {
-		if ((vlen >= 5) && (strncasecmp(value, "shift", 5) == 0))        m |= PCB_M_Shift;
-		else if ((vlen >= 4) && (strncasecmp(value, "ctrl", 4) == 0))    m |= PCB_M_Ctrl;
-		else if ((vlen >= 3) && (strncasecmp(value, "alt", 3) == 0))     m |= PCB_M_Alt;
-		else if ((vlen >= 7) && (strncasecmp(value, "release", 7) == 0)) m |= PCB_M_Release;
-		else if ((vlen >= 5) && (strncasecmp(value, "press", 5) == 0))   press = 1;
+		if ((vlen >= 5) && (pcb_strncasecmp(value, "shift", 5) == 0))        m |= PCB_M_Shift;
+		else if ((vlen >= 4) && (pcb_strncasecmp(value, "ctrl", 4) == 0))    m |= PCB_M_Ctrl;
+		else if ((vlen >= 3) && (pcb_strncasecmp(value, "alt", 3) == 0))     m |= PCB_M_Alt;
+		else if ((vlen >= 7) && (pcb_strncasecmp(value, "release", 7) == 0)) m |= PCB_M_Release;
+		else if ((vlen >= 5) && (pcb_strncasecmp(value, "press", 5) == 0))   press = 1;
 		else
 			pcb_message(PCB_MSG_DEFAULT, "Unknown modifier: %s\n", value);
 		/* skip to next word */
