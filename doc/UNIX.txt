@@ -1,0 +1,31 @@
+State on UNIX systems
+~~~~~~~~~~~~~~~~~~~~~
+
+Source releases starting from 1.1.2 should compile and run out-of-the-box
+on old UNIX systems, such as IRIX. Does NOT require any GNU installed.
+
+Requirements:
+  - x11 and motif (for the GUI)
+  - an awk implementation that supports gsub(), e.g. nawk
+
+1. If your C compiler does not support #warning, run a script to patch
+   the source:
+
+     # cwd is the root of the distribution
+     util/workarounds/unwarn_all.sh
+
+   This will take a while and will modify a lot of .c files.
+
+2. ./configure
+
+3. make
+
+Considerations listed in ../INSTALL apply.
+
+The above procedure has been tested on IRIX 5.3 on IP22.
+
+Expected compilation times [minute:second]:
+
+./configure       compile, -O0     compile -O3   system
+-------------------------------------------------------------------------------
+1:55              7:40             14:27         IRIX 5.3, IP22 @ 100 MHz
