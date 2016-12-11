@@ -1,4 +1,4 @@
-ROOT=../../..
+ROOT=../../../../..
 GPMIDIR=$(ROOT)/src_plugins/gpmi/pcb-gpmi
 ALL= actions dialogs hid layout
 
