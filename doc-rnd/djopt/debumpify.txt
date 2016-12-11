@@ -1,2 +1,0 @@
-Looks for U-shaped traces (with 90 degree corners) that can be shortened
-or eliminated.

@@ -1,2 +1,0 @@
-Looks for corners which could be flipped to eliminate one or more
-corners (i.e. jaggy lines become simpler).

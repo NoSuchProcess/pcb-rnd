@@ -6,4 +6,4 @@
 	s/\\([^a-zA-Z0-9_]\\)${1}$/\\1$2/g;
 "
 
-echo "$1 -> $2" >> doc-rnd/hacking/renames
+echo "$1 -> $2" >> doc/developer/renames

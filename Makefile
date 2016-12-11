@@ -8,11 +8,11 @@ clean: FORCE
 	cd src && make clean
 	cd util && make clean
 	cd pcblib && make clean
-	cd doc-rnd && make clean
+	cd doc && make clean
 
 distclean: FORCE
 	make clean ; true
-	cd doc-rnd && make distclean
+	cd doc && make distclean
 	cd scconfig && make clean ; true
 	cd src_3rd/genlist && make clean ; true
 	cd src_3rd/genregex && make clean ; true
@@ -26,19 +26,19 @@ install: FORCE
 	cd src && make install
 	cd util && make install
 	cd pcblib && make install
-	cd doc-rnd && make install
+	cd doc && make install
 
 linstall: FORCE
 	cd src && make linstall
 	cd util && make linstall
 	cd pcblib && make linstall
-	cd doc-rnd && make linstall
+	cd doc && make linstall
 
 uninstall: FORCE
 	cd src && make uninstall
 	cd util && make uninstall
 	cd pcblib && make uninstall
-	cd doc-rnd && make uninstall
+	cd doc && make uninstall
 
 deb: FORCE
 	fakeroot debian/rules clean
