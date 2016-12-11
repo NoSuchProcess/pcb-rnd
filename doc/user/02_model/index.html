@@ -292,10 +292,60 @@ with square cap - this makes the pad look like a rectangle. A pad has
 the same metadata and capabilities as pins. Overlapping pads are supported.
 A pad is always on either the top or the bottom copper layer group.
 
-
 <h4> 2.4.9. rat line objects </h4>
+A rat line represents a logical connection that is not yet realized in copper.
+It connects two drawing primitives.
 
-
+<h4> 2.4.10. netlists </h4>
+A netlist is a list of named logical networks. Each network is a list of
+netlist terminals that should be connected. A netlist terminal is a pair
+of element-refdes and pin-number (or pad-number). Thus a typical netlist
+looks like the following:
+<ul>
+	<li> net: GND
+		<ul>
+			<li> U1-2
+			<li> U2-7
+			<li> U3-7
+			<li> C1-1
+		</ul>
+	<li> net: Vcc
+		<ul>
+			<li> U1-3
+			<li> U2-14
+			<li> U3-14
+			<li> C1-2
+		</ul>
+	<li> net: strobe
+		<ul>
+			<li> U2-2
+			<li> U3-5
+		</ul>
+</ul>
+<p>
+The netlist assumes element refdes are unique. If an element has multiple
+instances of the same pin (or pad) number, the engine picks one randomly and
+assumes there's an inivisible, internal connection within the element.
+<p>
+Rat lines can be regenerated from the current netlist for missing connections.
+Connections that are realized in copper but not present on the netlist, pcb-rnd
+gives a "short circuit" warning. Both happens when the net is "optimized"
+(upon user request).
+<p>
+The netlist is typically derived from a schematics by external tools
+(such as gnetlist). The netlist can be imported (updated) any time. This
+process is called "forward annotation".
+<p>
+It is also possible to make changes to the netlist from within pcb-rnd:
+pins can be swapped, element packages replaced using <i>back annotation
+actions</b>. Such actions will keep a list of intended netlist and element
+changes, called the netlist patch. Pcb-rnd will keep these changes even
+if a new version of the netlist is imported. It is possible to export the
+netlist patch that can be imported in the schematics editor to change the
+schematics - this process is called "back annotation". A new forward
+annotation from the schematics editor to pcb-rnd will then cancel
+the netlist/element changes as the new netlist import netlist matches
+the intended (changed) netlist.
 
 <h3> 2.5. comparison of terms </h3>
 <p>
