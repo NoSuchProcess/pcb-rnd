@@ -654,7 +654,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 			return 1;
 		}
 
-		fprintf(f, "G04 start of page %d for group %d layer_idx %d *\r\n", pagecount, group, layer);
+		fprintf(f, "G04 start of page %d for group %ld layer_idx %ld *\r\n", pagecount, group, layer);
 
 		/* Create a portable timestamp. */
 		currenttime = time(NULL);
