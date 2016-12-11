@@ -304,6 +304,24 @@ A pin of an element is really a via, plus some metadata and capabilities:
 
 Each element has its own list of pins. Pin rings can overlap (which will
 make galvanic connection). There may be duplicate pin numbers and pin names.
+Pin numbers are in the same namespace as pad numbers.
+
+A pin has the following properties:
+<p>
+<table border=1>
+	<tr><th>name        <th> description
+	<tr><td>name        <td> pin name, e.g. "base"
+	<tr><td>number      <td> pin name, e.g. 2
+	<tr><td>intconn     <td> internal element connections (see section TODO)
+</table>
+
+Extra object flags:
+<p>
+<table border=1>
+	<tr><th>name        <th> description
+	<tr><td>via flags   <td> (extra flags listed for vias are applicable to pins too)
+	<tr><td>WARN        <td> the pin contributes to a short circuit ("orange mark")
+</table>
 
 <h4> 2.4.8. pads of elements </h4>
 <p>
@@ -311,6 +329,24 @@ A pad is an smd pad of an element. It is modelled as a line segment, usually
 with square cap - this makes the pad look like a rectangle. A pad has
 the same metadata and capabilities as pins. Overlapping pads are supported.
 A pad is always on either the top or the bottom copper layer group.
+<p>
+A pad has the following properties:
+<p>
+<table border=1>
+	<tr><th>name        <th> description
+	<tr><td>name        <td> pin name, e.g. "base"
+	<tr><td>number      <td> pin name, e.g. 2
+	<tr><td>intconn     <td> internal element connections (see section TODO)
+</table>
+
+Extra object flags:
+<p>
+<table border=1>
+	<tr><th>name        <th> description
+	<tr><td>via flags   <td> (extra flags listed for vias are applicable to pins too)
+	<tr><td>WARN        <td> the pin contributes to a short circuit ("orange mark")
+	<tr><td>EDGE2       <td> indicates that the second point is closer to the edge.  For pins, indicates that the pin is closer to a horizontal edge and thus pinout text should be vertical. (Padr.Point2 is closer to outside edge also pinout text for pins is vertical)
+</table>
 
 <h4> 2.4.9. rat line objects </h4>
 <p>
