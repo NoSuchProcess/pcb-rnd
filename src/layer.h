@@ -57,6 +57,8 @@ struct pcb_layer_s {              /* holds information about one layer */
 	const char *SelectedColor;
 	pcb_attribute_list_t Attributes;
 	int no_drc;                    /* whether to ignore the layer when checking the design rules */
+
+	const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
 };
 
 

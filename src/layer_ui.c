@@ -26,4 +26,48 @@
 
 /* Virtual layers for UI and debug */
 #include "config.h"
+#define GVT_DONT_UNDEF
 #include "layer_ui.h"
+#include <genvector/genvector_impl.c>
+
+vtlayer_t pcb_uilayer;
+
+pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const char *color)
+{
+	int n;
+	pcb_layer_t *l;
+
+	if (cookie == NULL)
+		return NULL;
+
+	for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
+		l = &pcb_uilayer.array[n];
+		if (l->cookie == NULL) {
+			l->cookie = cookie;
+			goto found;
+		}
+	}
+
+	l = vtlayer_alloc_append(&pcb_uilayer, 1);
+found:;
+	l->cookie = cookie;
+	l->Color = color;
+	l->Name = name;
+	l->On = 1;
+	return l;
+}
+
+void pcb_uilayer_free_all_cookie(const char *cookie)
+{
+	int n;
+	for(n = 0; n < vtlayer_len(&pcb_uilayer); n++) {
+		pcb_layer_t *l = &pcb_uilayer.array[n];
+		if (l->cookie == cookie) {
+#warning TODO: free all objects
+			l->cookie = NULL;
+			l->Color = l->Name = NULL;
+			l->On = 0;
+		}
+	}
+}
+

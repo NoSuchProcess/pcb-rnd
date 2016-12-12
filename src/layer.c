@@ -34,6 +34,7 @@
 #include "compat_misc.h"
 #include "undo.h"
 #include "event.h"
+#include "layer_ui.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
@@ -232,6 +233,9 @@ pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 	if ((Layer >= Data->Layer) && (Layer < (Data->Layer + PCB_MAX_LAYER + 2)))
 		return Layer - Data->Layer;
 
+	if ((Layer >= pcb_uilayer.array) && (Layer < pcb_uilayer.array + vtlayer_len(&pcb_uilayer)))
+		return (Layer - pcb_uilayer.array) | PCB_LYT_UI;
+
 	return -1;
 }
 
@@ -301,6 +305,9 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 {
 	unsigned int res = 0;
+
+	if (layer_idx & PCB_LYT_UI)
+		return PCB_LYT_UI | PCB_LYT_VIRTUAL;
 
 	if (layer_idx == pcb_solder_silk_layer)
 		return PCB_LYT_SILK | PCB_LYT_BOTTOM;
@@ -547,6 +554,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 			case PCB_LYT_ANYPROP:
 			case PCB_LYT_UDRILL:
 			case PCB_LYT_PDRILL:
+			case PCB_LYT_UI:
 				return -1; /* do not create virtual layers */
 
 			case PCB_LYT_INTERN:
@@ -620,6 +628,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 			case PCB_LYT_ANYPROP:
 			case PCB_LYT_UDRILL:
 			case PCB_LYT_PDRILL:
+			case PCB_LYT_UI:
 				return -1; /* do not create virtual layers */
 
 			case PCB_LYT_INTERN:
@@ -930,6 +939,11 @@ pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
 {
 	if ((id >= 0) && (id < pcb_max_copper_layer+2))
 		return &PCB->Data->Layer[id];
+	if (id & PCB_LYT_UI) {
+		id &= ~(PCB_LYT_VIRTUAL | PCB_LYT_UI);
+		if ((id >= 0) && (id < vtlayer_len(&pcb_uilayer)))
+			return &(pcb_uilayer.array[id]);
+	}
 	return NULL;
 }
 
