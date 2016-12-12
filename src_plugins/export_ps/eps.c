@@ -349,12 +349,14 @@ static int eps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	char tmp_ln[PCB_PATH_MAX];
 	const char *name;
 
+	if (flags & PCB_LYT_UI)
+		return 0;
+
 	if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_INVIS))
 		return 0;
 
 	if ((group >= 0) && pcb_is_layergrp_empty(group))
 		return 0;
-
 
 	is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
 	is_mask = (flags & PCB_LYT_MASK);

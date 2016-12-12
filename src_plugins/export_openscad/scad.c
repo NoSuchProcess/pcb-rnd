@@ -733,6 +733,9 @@ static int scad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, u
 	outline_layer = 0;
 	fresh_layer = 1;
 
+	if (flags & PCB_LYT_UI)
+		return 0;
+
 	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY))
 		return 0;
 

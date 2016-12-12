@@ -39,6 +39,7 @@
 #include "rtree.h"
 #include "stub_draw_fab.h"
 #include "obj_all.h"
+#include "layer_ui.h"
 
 #include "obj_pad_draw.h"
 #include "obj_pinvia_draw.h"

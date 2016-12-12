@@ -4395,6 +4395,9 @@ static int dxf_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 	char tmp_ln[PCB_PATH_MAX];
 	const char *name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
 
+	if (flags & PCB_LYT_UI)
+		return 0;
+
 #if DEBUG
 	fprintf(stderr, "[File: %s: line: %d] Entering dxf_set_layer () function.\n", __FILE__, __LINE__);
 #endif

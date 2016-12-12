@@ -1003,6 +1003,9 @@ static int png_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, un
 {
 	doing_outline = 0;
 
+	if (flags & PCB_LYT_UI)
+		return 0;
+
 	if ((flags & PCB_LYT_ASSY) || (flags & PCB_LYT_FAB) || (flags & PCB_LYT_PASTE) || (flags & PCB_LYT_INVIS))
 		return 0;
 

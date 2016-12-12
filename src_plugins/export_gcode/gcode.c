@@ -539,6 +539,8 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 
 static int gcode_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
+	if (flags & PCB_LYT_UI)
+		return 0;
 
 	if (flags & PCB_LYT_INVIS)
 		return 0;

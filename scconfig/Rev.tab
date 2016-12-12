@@ -1,4 +1,5 @@
-5487	configure	layer cleanup: layer visibility ina  new source file
+5611	configure	new feature: UI layer
+5487	configure	layer cleanup: layer visibility in a new source file
 5472	configure	draw_fab config subtree
 5278	configure	prepare for arc UI extension: blank arc_ui.[ch] to move arc UI logics into
 5256	configure	move rubberband code into a plugin

@@ -75,6 +75,7 @@ static const pcb_layer_type_name_t pcb_layer_type_names[] = {
 	{ PCB_LYT_FAB,     2, "fab" },
 	{ PCB_LYT_PDRILL,  2, "plateddrill" },
 	{ PCB_LYT_UDRILL,  2, "unplateddrill" },
+	{ PCB_LYT_UI,      2, "userinterface" },
 	{ PCB_LYT_VIRTUAL, 3, "virtual" },
 	{ 0, 0, NULL }
 };
