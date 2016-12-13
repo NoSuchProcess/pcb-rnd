@@ -365,6 +365,7 @@ static void layer_process(const gchar ** color_string, const char **text, int *s
 	int tmp;
 	const char *tmps;
 	const gchar *tmpc;
+	pcb_layer_t *l;
 
 	/* cheap hack to let users pass in NULL for either text or set if
 	 * they don't care about the result
@@ -410,10 +411,21 @@ static void layer_process(const gchar ** color_string, const char **text, int *s
 		*text = _("solder mask");
 		*set = conf_core.editor.show_mask;
 		break;
+	case LAYER_BUTTON_UI:
 	default:											/* layers */
-		*color_string = conf_core.appearance.color.layer[i];
-		*text = (char *) PCB_UNKNOWN(PCB->Data->Layer[i].Name);
-		*set = PCB->Data->Layer[i].On;
+		if (i >= LAYER_BUTTON_UI) {
+			i -= LAYER_BUTTON_UI;
+			l = pcb_get_layer(PCB_LYT_UI + i);
+			*color_string = l->Color;
+			*text = l->Name;
+			*set = l->On;
+		}
+		else {
+			/* plain old copper layer */
+			*color_string = conf_core.appearance.color.layer[i];
+			*text = (char *) PCB_UNKNOWN(PCB->Data->Layer[i].Name);
+			*set = PCB->Data->Layer[i].On;
+		}
 		break;
 	}
 }
