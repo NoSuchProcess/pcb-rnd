@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
  *
- *  This module, debug, was written and is Copyright (C) 2016 by Tibor Palinkas
+ *  This module, diag, was written and is Copyright (C) 2016 by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -192,7 +192,7 @@ pcb_hid_action_t diag_action_list[] = {
 	 eval_conf_help, eval_conf_syntax}
 };
 
-static const char *diag_cookie = "debug plugin";
+static const char *diag_cookie = "diag plugin";
 
 PCB_REGISTER_ACTIONS(diag_action_list, diag_cookie)
 
