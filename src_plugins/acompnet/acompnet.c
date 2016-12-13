@@ -33,13 +33,47 @@
 #include "hid_actions.h"
 #include "plugins.h"
 #include "conf.h"
+#include "conf_core.h"
 #include "error.h"
+
+static pcb_layer_t *ly;
+
+pcb_flag_t flg_mesh_pt;
+static void acompnet_mesh_addpt(double x, double y)
+{
+	x = pcb_round(x);
+	y = pcb_round(y);
+	
+	pcb_line_new(ly, x, y, x, y, conf_core.design.via_thickness, conf_core.design.clearance, flg_mesh_pt);
+}
+
+static void acompnet_mesh()
+{
+	double sep = conf_core.design.via_thickness + conf_core.design.clearance;
+	PCB_LINE_LOOP(CURRENT) {
+		double len, vx, vy, x1, y1, x2, y2;
+		x1 = line->Point1.X;
+		x2 = line->Point2.X;
+		y1 = line->Point1.Y;
+		y2 = line->Point2.Y;
+		vx = x2 - x1;
+		vy = y2 - y1;
+		len = sqrt(vx*vx + vy*vy);
+		vx = vx/len;
+		vy = vy/len;
+		acompnet_mesh_addpt(x1 - vx*sep, y1 - vy*sep);
+		acompnet_mesh_addpt(x2 + vx*sep, y2 + vy*sep);
+	}
+	PCB_END_LOOP;
+}
+
 
 static const char pcb_acts_acompnet[] = "acompnet()\n" ;
 static const char pcb_acth_acompnet[] = "Attempt to auto-complete the current network";
 
 static int pcb_act_acompnet(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+	acompnet_mesh();
 	return 0;
 }
 
@@ -55,11 +89,14 @@ PCB_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
 static void hid_acompnet_uninit(void)
 {
 	pcb_hid_remove_actions_by_cookie(acompnet_cookie);
+	pcb_uilayer_free_all_cookie(acompnet_cookie);
 }
 
 #include "dolists.h"
 pcb_uninit_t hid_acompnet_init(void)
 {
 	PCB_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
+	ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", "#c09920");
+
 	return hid_acompnet_uninit;
 }
