@@ -84,15 +84,20 @@ layout_object_mask_t layout_obj_type(layout_object_t *obj)
 int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, int dy)
 {
 	void *what = NULL;;
+	pcb_layer_t *ly;
 
 	if (obj == NULL)
+		return -1;
+
+	ly = pcb_get_layer(obj->layer);
+	if (ly == NULL)
 		return -1;
 
 	switch(obj->type) {
 		case OM_LINE:
 			switch(coord) {
 				case OC_OBJ:
-					pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, obj->obj.l, &(obj->obj.l->Point2), dx, dy);
+					pcb_move_obj(PCB_TYPE_LINE_POINT, ly, obj->obj.l, &(obj->obj.l->Point2), dx, dy);
 					/* intended falltrough */
 				case OC_P1X:
 				case OC_P1Y: what = &(obj->obj.l->Point1); break;
@@ -101,10 +106,10 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 				default: /* we do not handle anything else for now */
 					;
 			}
-			pcb_move_obj(PCB_TYPE_LINE_POINT, CURRENT, obj->obj.l, what, dx, dy);
+			pcb_move_obj(PCB_TYPE_LINE_POINT, ly, obj->obj.l, what, dx, dy);
 			return 0;
 		case OM_TEXT:
-			pcb_move_obj(PCB_TYPE_TEXT, CURRENT, obj->obj.t, obj->obj.t, dx, dy);
+			pcb_move_obj(PCB_TYPE_TEXT, ly, obj->obj.t, obj->obj.t, dx, dy);
 			return 0;
 		case OM_VIA:
 			pcb_move_obj(PCB_TYPE_VIA, obj->obj.v, obj->obj.v, obj->obj.v, dx, dy);
@@ -115,7 +120,7 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 		case OM_ARC:
 			switch(coord) {
 				case OC_OBJ:
-					pcb_move_obj(PCB_TYPE_ARC, CURRENT, obj->obj.a, obj->obj.a, dx, dy);
+					pcb_move_obj(PCB_TYPE_ARC, ly, obj->obj.a, obj->obj.a, dx, dy);
 					return 0;
 				default: /* we do not handle anything else for now */
 					;
@@ -133,6 +138,12 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 
 int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta)
 {
+	pcb_layer_t *ly;
+
+	ly = pcb_get_layer(obj->layer);
+	if (ly == NULL)
+		return -1;
+
 	if (obj == NULL)
 		return -1;
 	if (obj->type != OM_ARC)
@@ -141,6 +152,6 @@ int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta)
 		start += obj->obj.a->StartAngle;
 		delta += obj->obj.a->Delta;
 	}
-	pcb_arc_set_angles(CURRENT, obj->obj.a, start, delta);
+	pcb_arc_set_angles(ly, obj->obj.a, start, delta);
 	return 0;
 }
