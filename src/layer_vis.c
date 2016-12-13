@@ -32,6 +32,7 @@
 #include "data.h"
 #include "conf_core.h"
 #include "layer.h"
+#include "layer_ui.h"
 #include "layer_vis.h"
 #include "event.h"
 #include "compat_misc.h"
@@ -170,6 +171,15 @@ int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOr
 	pcb_layergrp_id_t group;
 	int i, changed = 1;		/* at least the current layer changes */
 
+	if (Layer & PCB_LYT_UI) {
+		Layer &= ~(PCB_LYT_UI | PCB_LYT_VIRTUAL);
+		if (Layer >= vtlayer_len(&pcb_uilayer))
+			return 0;
+		pcb_uilayer.array[Layer].On = On;
+		changed = 1;
+		goto done;
+	}
+
 	/* Warning: these special case values must agree with what gui-top-window.c
 	   |  thinks the are.
 	 */
@@ -199,6 +209,7 @@ int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOr
 	if (On && ChangeStackOrder)
 		PushOnTopOfLayerStack(Layer);
 
+	done:;
 	/* update control panel and exit */
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return (changed);
