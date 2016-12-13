@@ -1,0 +1,14 @@
+G04 start of page 2 for group 0 layer_idx 8 *
+G04 Title: one line on each silk layer, TODO:group_name *
+G04 Creator: <version>
+G04 CreationDate: <date>
+G04 For:  *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNTOPSILK*%
+%ADD11C,0.0100*%
+G54D11*X5000Y45000D02*Y7500D01*
+M02*

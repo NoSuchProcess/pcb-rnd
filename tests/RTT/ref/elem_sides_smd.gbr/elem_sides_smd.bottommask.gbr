@@ -1,0 +1,15 @@
+G04 start of page 5 for group -1 layer_idx -1 *
+G04 Title: smd elements on both sides, TODO:group_name *
+G04 Creator: <version>
+G04 CreationDate: <date>
+G04 For:  *
+G04 Format: Gerber/RS-274X *
+G04 PCB-Dimensions: 50000 50000 *
+G04 PCB-Coordinate-Origin: lower left *
+%MOIN*%
+%FSLAX25Y25*%
+%LNBOTTOMMASK*%
+%ADD14R,0.0572X0.0572*%
+G54D14*X16595Y16181D02*Y13819D01*
+X28405Y16181D02*Y13819D01*
+M02*
