@@ -12,7 +12,7 @@ High level (new/destroy):
 
 	pcb_*_new_*():
 		Same as pcb_*_new(), but may do clever things so the object created may
-		not be 1:1 what was reqested or may not even be a new object (e.g.
+		not be 1:1 what was requested or may not even be a new object (e.g.
 		overlapping line merging)
 
 	pcb_element_*_new():
@@ -66,7 +66,7 @@ Accessors:
 		state, e.g. "change side" would move the object to the currently viewed
 		side.
 
-Trasformations:
+Transformations:
 	pcb_*_move():
 		move the object within its parent (x;y); it's often implemented as a
 		macro

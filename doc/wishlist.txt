@@ -21,7 +21,7 @@ Plan (parallel threads of development):
 				- everything should have an attribute hash -> W6
 				- footprints should have optional attachments (e.g. 3d models) -> W5
 		This helps us testing out the persistent-lihata idea that'd be
-		later used in chscem from the start -> W1
+		later used in cschem from the start -> W1
 		This is also needed for more generic footprint implementation -> W3
 
 	B. visible attribute support

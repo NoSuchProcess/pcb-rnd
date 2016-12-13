@@ -18,11 +18,11 @@ PCB)
 b. yes, sometimes, rarely (e.g. I once had to do something repeatedly and 
 added a key binding for that)
 c. never, I know where I'd perform the changes if I ever needed 
-them but defalts are good enough for now
+them but defaults are good enough for now
 d. never, I don't know what a menu resource file is
 
 
-4. If you do not costumize your menu resource file, it's because (select 
+4. If you do not customize your menu resource file, it's because (select 
 zero or more):
 a. I don't need to
 b. the file is too long
@@ -31,7 +31,7 @@ d. I don't like the format of the file
 e. I don't like the idea of editing text config files, I want a GUI for 
 this
 f. I don't want to diverge from the default settings (e.g. because of 
-potetial hassle at a later upgrade)
+potential hassle at a later upgrade)
 
 
 5. Do you miss multi-key sequences from the GTK hid? (select one)

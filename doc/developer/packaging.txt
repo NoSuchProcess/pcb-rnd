@@ -48,7 +48,7 @@ by ./configure.
 
 3. typical ./configure options - scconfig vs. auto*
 
-./configurfe --prefix works as expected. DESTDIR is called install_root.
+./configure --prefix works as expected. DESTDIR is called install_root.
 
 Typical commands for configuring pcb-rnd for packaging would be:
 

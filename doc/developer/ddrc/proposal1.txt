@@ -146,7 +146,7 @@ P49. Comments are lines starting with #
 
 P70 list(LISTNAME)
     Within an expression, a reference to a list may become an iterator and
-    refer to a single object. In case the expression needs the listm the
+    refer to a single object. In case the expression needs the list, the
     list() function protects LISTNAME from becoming an iterator. For
     example llen(list(@)) is the number of all objects the design consists.
 

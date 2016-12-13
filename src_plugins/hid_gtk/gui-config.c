@@ -2781,7 +2781,7 @@ void ghid_config_window_show(void)
 	/* build the tree */
 	model = gtk_tree_store_new(N_CONFIG_COLUMNS, G_TYPE_STRING, G_TYPE_INT, G_TYPE_POINTER, G_TYPE_POINTER);
 
-	config_tree_sect(model, NULL, &user_pov,   _("User PoV"),   _("\n<b>User PoV</b>\nA subset of configuration settings regroupped,\npresented in the User's Point of View."));
+	config_tree_sect(model, NULL, &user_pov,   _("User PoV"),   _("\n<b>User PoV</b>\nA subset of configuration settings regrouped,\npresented in the User's Point of View."));
 	config_tree_sect(model, NULL, &config_pov, _("Config PoV"), _("\n<b>Config PoV</b>\nAccess all configuration fields presented in\na tree that matches the configuration\nfile (lht) structure."));
 
 	config_tree_leaf(model, &user_pov, _("General"), config_general_tab_create);
