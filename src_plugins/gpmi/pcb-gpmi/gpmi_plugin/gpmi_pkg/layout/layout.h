@@ -304,3 +304,5 @@ layer_id_t layer_list(multiple layer_type_t flags, int idx);
    length of matches, else return the idxth match, */
 layer_id_t layer_list_any(multiple layer_type_t flags, int idx);
 
+/* Allocate a new UI layer */
+layer_id_t uilayer_alloc(const char *name, const char *color);
