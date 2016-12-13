@@ -115,7 +115,7 @@ typedef struct layout_object_s {
 		pcb_pin_t     *v;
 		pcb_pin_t     *pin;
 	} obj;
-	int layer;
+	pcb_layer_id_t layer;
 } layout_object_t;
 
 
@@ -152,6 +152,10 @@ int layout_search_found(const char *search_ID, multiple layout_object_mask_t obj
 /* Returns the nth object from a search list (or NULL pointer if n is beyond the list) */
 layout_object_t *layout_search_get(const char *search_ID, int n);
 
+/* Creates a new, empty search list. Useful for search list manipulation.
+   Returns 0 on succes. */
+int layout_search_empty(const char *search_ID);
+
 /* Frees all memory related to a search. Returns 0 on success.
    Argument:
      search_ID: unique name of the search (requires an existing search) */
@@ -179,8 +183,13 @@ int layout_obj_move(layout_object_t *obj, layout_object_coord_t coord, int dx, i
 int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta);
 
 /* -- create new objects -- (create.c) */
+/* if search_id is not empty, a referece to the new object is stored
+   on that search list and a persistent pointer is returned on success. If
+   search_id is empty, a temporary pointer is returned that should not be
+   used for anything else than checking against NULL. */
+
 /* create a line */
-int layout_create_line(layer_id_t layer_id, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags);
+layout_object_t *layout_create_line(const char *search_id, layer_id_t layer_id, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags);
 
 /* same as layout_create_line(), but appends the result to a list and
    returns the index of the new object on the list (can be used as n for
@@ -188,10 +197,10 @@ int layout_create_line(layer_id_t layer_id, int x1, int y1, int x2, int y2, int 
 int layout_lcreate_line(const char *search_ID, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags);*/
 
 /* create a named via */
-int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags);
+layout_object_t *layout_create_via(const char *search_id, int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags);
 
 /* create a new arc; sa is start angle, dir is delta angle */
-int layout_create_arc(layer_id_t layer_id, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags);
+layout_object_t *layout_create_arc(const char *search_id, layer_id_t layer_id, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags);
 
 /* -- layer manipulation -- (layers.c) */
 /* Field name of the layer structure */
@@ -306,3 +315,9 @@ layer_id_t layer_list_any(multiple layer_type_t flags, int idx);
 
 /* Allocate a new UI layer */
 layer_id_t uilayer_alloc(const char *name, const char *color);
+
+/* Internal: */
+/* Append a newly created object to a search list or put it in a static var and
+   return the object */
+nowrap layout_object_t *search_persist_created(const char *search_id, pcb_layer_id_t layer, void *obj, layout_object_mask_t type);
+

@@ -78,12 +78,14 @@ static void *layout_create_line_(pcb_layer_t *layer, int x1, int y1, int x2, int
 	return NULL;
 }
 
-int layout_create_line(layer_id_t layer_id, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
+layout_object_t *layout_create_line(const char *search_id, layer_id_t layer_id, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
 {
 	pcb_layer_t *layer = pcb_get_layer(layer_id);
+	void *res;
 	if (layer == NULL)
 		return 0;
-	return layout_create_line_(layer, x1, y1, x2, y2, thickness, clearance, flags) != NULL;
+	res = layout_create_line_(layer, x1, y1, x2, y2, thickness, clearance, flags);
+	return search_persist_created(search_id, layer_id, res, OM_LINE);
 }
 
 static void *layout_create_via_(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags)
@@ -99,9 +101,10 @@ static void *layout_create_via_(int x, int y, int thickness, int clearance, int 
 	return NULL;
 }
 
-int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags)
+layout_object_t *layout_create_via(const char *search_id, int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags)
 {
-	return layout_create_via_(x, y, thickness, clearance, mask, hole, name, flags) != NULL;
+	void *res = layout_create_via_(x, y, thickness, clearance, mask, hole, name, flags);
+	return search_persist_created(search_id, -1, res, OM_VIA);
 }
 
 static void *layout_create_arc_(pcb_layer_t *layer, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
@@ -115,11 +118,18 @@ static void *layout_create_arc_(pcb_layer_t *layer, int x, int y, int width, int
 	return NULL;
 }
 
-int layout_create_arc(layer_id_t layer_id, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
+layout_object_t *layout_create_arc(const char *search_id, layer_id_t layer_id, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
 {
+	layout_search_t *s;
+	void *res;
 	pcb_layer_t *layer = pcb_get_layer(layer_id);
+
 	if (layer == NULL)
-		return 0;
-	return layout_create_arc_(layer, x, y, width, height, sa, dir, thickness, clearance, flags) != NULL;
+		return NULL;
+
+	res = layout_create_arc_(layer, x, y, width, height, sa, dir, thickness, clearance, flags);
+	return search_persist_created(search_id, layer_id, res, OM_ARC);
 }
+
+
 

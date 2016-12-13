@@ -8,7 +8,7 @@
 #include "layout.h"
 #include "config.h"
 
-static inline void search_append(layout_search_t *s, void *obj)
+static inline layout_object_t *search_append(layout_search_t *s, void *obj)
 {
 	layout_object_t *o;
 	if (s->used >= s->alloced) {
@@ -29,6 +29,7 @@ static inline void search_append(layout_search_t *s, void *obj)
 		default:
 			assert(!"Unimplemented object type");
 	}
+	return o;
 }
 
 static pcb_r_dir_t search_callback (const pcb_box_t * b, void *cl)
@@ -53,6 +54,15 @@ static layout_search_t *new_search(const char *search_ID)
 	hash_store(layout_searches, search_ID, s);
 	return s;
 }
+
+int layout_search_empty(const char *search_ID)
+{
+	layout_search_t *s = new_search(search_ID);
+	if (s != NULL)
+		return 0;
+	return -1;
+}
+
 
 int layout_search_box(const char *search_ID, layout_object_mask_t obj_types, int x1, int y1, int x2, int y2)
 {
@@ -184,4 +194,24 @@ int layout_search_free(const char *search_ID)
 		return 0;
 	}
 	return 2;
+}
+
+
+layout_object_t *search_persist_created(const char *search_id, pcb_layer_id_t layer, void *obj, layout_object_mask_t type)
+{
+	layout_search_t *s = NULL;
+	static layout_object_t temp;
+
+	if ((search_id != NULL) && (*search_id != '\0'))
+		s = (layout_search_t *)hash_find(layout_searches, search_id);
+
+	if (s == NULL) {
+		temp.layer = layer;
+		temp.obj.l = obj;
+		temp.type = type;
+		return &temp;
+	}
+	s->searching = type;
+	s->layer = layer;
+	return search_append(s, obj);
 }
