@@ -28,6 +28,7 @@
 #include "config.h"
 #define GVT_DONT_UNDEF
 #include "layer_ui.h"
+#include "event.h"
 #include <genvector/genvector_impl.c>
 
 vtlayer_t pcb_uilayer;
@@ -54,6 +55,7 @@ found:;
 	l->Color = color;
 	l->Name = name;
 	l->On = 1;
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	return l;
 }
 
@@ -67,6 +69,7 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 			l->cookie = NULL;
 			l->Color = l->Name = NULL;
 			l->On = 0;
+			pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
 	}
 }
