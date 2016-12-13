@@ -34,24 +34,30 @@
 #include "plugins.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "compat_misc.h"
 #include "error.h"
+
+#include "obj_all.h"
+
 
 static pcb_layer_t *ly;
 
 pcb_flag_t flg_mesh_pt;
-static void acompnet_mesh_addpt(double x, double y)
+static void acompnet_mesh_addpt(double x, double y, int score)
 {
 	x = pcb_round(x);
 	y = pcb_round(y);
 	
-	pcb_line_new(ly, x, y, x, y, conf_core.design.via_thickness, conf_core.design.clearance, flg_mesh_pt);
+	pcb_line_new(ly, x, y, x, y, conf_core.design.line_thickness, PCB->Bloat, flg_mesh_pt);
 }
 
 static void acompnet_mesh()
 {
-	double sep = conf_core.design.via_thickness + conf_core.design.clearance;
+	double sep = conf_core.design.line_thickness + PCB->Bloat;
+	int n;
+
 	PCB_LINE_LOOP(CURRENT) {
-		double len, vx, vy, x1, y1, x2, y2;
+		double len, vx, vy, x1, y1, x2, y2, nx, ny;
 		x1 = line->Point1.X;
 		x2 = line->Point2.X;
 		y1 = line->Point1.Y;
@@ -61,8 +67,18 @@ static void acompnet_mesh()
 		len = sqrt(vx*vx + vy*vy);
 		vx = vx/len;
 		vy = vy/len;
-		acompnet_mesh_addpt(x1 - vx*sep, y1 - vy*sep);
-		acompnet_mesh_addpt(x2 + vx*sep, y2 + vy*sep);
+		nx = vy;
+		ny = -vx;
+
+		for(n = 1; n <= 2; n++) {
+			acompnet_mesh_addpt(x1 - n*vx*sep, y1 - n*vy*sep, n-1);
+			acompnet_mesh_addpt(x1 - n*vx*sep + nx*sep, y1 - n*vy*sep + ny*sep, n);
+			acompnet_mesh_addpt(x1 - n*vx*sep - nx*sep, y1 - n*vy*sep - ny*sep, n);
+
+			acompnet_mesh_addpt(x2 + n*vx*sep, y2 + n*vy*sep, n-1);
+			acompnet_mesh_addpt(x2 + n*vx*sep + nx*sep, y2 + n*vy*sep + ny*sep, n);
+			acompnet_mesh_addpt(x2 + n*vx*sep - nx*sep, y2 + n*vy*sep - ny*sep, n);
+		}
 	}
 	PCB_END_LOOP;
 }
