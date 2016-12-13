@@ -202,6 +202,9 @@ layout_object_t *layout_create_via(const char *search_id, int x, int y, int thic
 /* create a new arc; sa is start angle, dir is delta angle */
 layout_object_t *layout_create_arc(const char *search_id, layer_id_t layer_id, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags);
 
+/* create a new text (TODO) */
+layout_object_t *layout_create_text(const char *search_id, layer_id_t layer_id, int x, int y, int direction, int scale, const char *str, multiple layout_flag_t flags);
+
 /* -- layer manipulation -- (layers.c) */
 /* Field name of the layer structure */
 typedef enum layer_field_e {

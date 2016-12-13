@@ -6,6 +6,7 @@
 #include "src/undo.h"
 #include "src/conf_core.h"
 #include "src/layer.h"
+#include "src/compat_misc.h"
 
 
 typedef struct flag_tr_s {
@@ -128,6 +129,19 @@ layout_object_t *layout_create_arc(const char *search_id, layer_id_t layer_id, i
 		return NULL;
 
 	res = layout_create_arc_(layer, x, y, width, height, sa, dir, thickness, clearance, flags);
+	return search_persist_created(search_id, layer_id, res, OM_ARC);
+}
+
+layout_object_t *layout_create_text(const char *search_id, layer_id_t layer_id, int x, int y, int direction, int scale, const char *str, multiple layout_flag_t flags)
+{
+	layout_search_t *s;
+	void *res;
+	pcb_layer_t *layer = pcb_get_layer(layer_id);
+
+	if (layer == NULL)
+		return NULL;
+
+	res = pcb_text_new(layer, &PCB->Font, x, y, direction, scale, pcb_strdup(str), get_flags(flags));
 	return search_persist_created(search_id, layer_id, res, OM_ARC);
 }
 
