@@ -23,6 +23,21 @@ void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
 	pcb_message(PCB_MSG_DEFAULT, "[GPMI] %s\n", string);
 }
 
+static void start_timer(void);
+static void timer_cb(pcb_hidval_t hv)
+{
+	static int mono = 0;
+	hid_gpmi_script_info_t *i;
+	for(i = hid_gpmi_script_info; i != NULL; i = i->next)
+		gpmi_call_RunTick(i->module, mono++);
+	start_timer();
+}
+
+static void start_timer(void)
+{
+	pcb_hidval_t hv;
+	pcb_gui->add_timer(timer_cb, 100, hv);
+}
 
 int gpmi_hid_gui_inited = 0;
 static void ev_gui_init(void *user_data, int argc, pcb_event_arg_t argv[])
@@ -41,6 +56,8 @@ static void ev_gui_init(void *user_data, int argc, pcb_event_arg_t argv[])
 				gpmi_event(i->module, ev, argc, argv);
 	}
 	gpmi_hid_gui_inited = 1;
+
+	start_timer();
 }
 
 static void cmd_reload(const char *name)
