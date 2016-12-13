@@ -1473,7 +1473,7 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
 {
 	gchar *s;
-	int n;
+	pcb_cardinal_t n;
 	const char *paths[] = {
 		"design/groups",
 		"design/default_layer_name",

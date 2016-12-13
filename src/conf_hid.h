@@ -47,7 +47,7 @@ void conf_pcb_hid_uninit(void);
 /* Call the local callback of a native item */
 #define conf_hid_local_cb(native, cb) \
 do { \
-	int __n__; \
+	unsigned int __n__; \
 	for(__n__ = 0; __n__ < vtp0_len(&((native)->hid_callbacks)); __n__++) { \
 		const conf_hid_callbacks_t *cbs = (native)->hid_callbacks.array[__n__]; \
 		if ((cbs != NULL) && (cbs->cb != NULL)) \

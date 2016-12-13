@@ -40,7 +40,7 @@
 /* Generic container object that can hold subcircuits with layer-global
    objects (e.g. vias and rats) and layer-locals (lines, arcs) */
 struct pcb_data_s {
-	int LayerN;                        /* number of layers in this board */
+	pcb_cardinal_t LayerN;                        /* number of layers in this board */
 	pinlist_t Via;
 	elementlist_t Element;
 /**/
