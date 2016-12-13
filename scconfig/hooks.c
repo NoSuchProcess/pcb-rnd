@@ -657,7 +657,7 @@ static void print_sum_cfg_val(const char *node, const char *desc)
 int hook_generate()
 {
 	char *rev = "non-svn", *tmp;
-	int manual_config = 0, generr = 0;
+	int generr = 0;
 
 	tmp = svn_info(0, "../src", "Revision:");
 	if (tmp != NULL) {
