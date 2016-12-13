@@ -66,21 +66,24 @@ static pcb_flag_t get_flags(int in)
 	return out;
 }
 
-static void *layout_create_line_(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
+static void *layout_create_line_(pcb_layer_t *layer, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
 {
 	void *line;
 
-	line = pcb_line_new(CURRENT, x1, y1, x2, y2, thickness, clearance, get_flags(flags));
+	line = pcb_line_new(layer, x1, y1, x2, y2, thickness, clearance, get_flags(flags));
 	if (line != NULL) {
-		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, CURRENT, line, line);
+		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, layer, line, line);
 		return line;
 	}
 	return NULL;
 }
 
-int layout_create_line(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
+int layout_create_line(layer_id_t layer_id, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags)
 {
-	return layout_create_line_(x1, y1, x2, y2, thickness, clearance, flags) != NULL;
+	pcb_layer_t *layer = pcb_get_layer(layer_id);
+	if (layer == NULL)
+		return 0;
+	return layout_create_line_(layer, x1, y1, x2, y2, thickness, clearance, flags) != NULL;
 }
 
 static void *layout_create_via_(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags)
@@ -101,19 +104,22 @@ int layout_create_via(int x, int y, int thickness, int clearance, int mask, int 
 	return layout_create_via_(x, y, thickness, clearance, mask, hole, name, flags) != NULL;
 }
 
-static void *layout_create_arc_(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
+static void *layout_create_arc_(pcb_layer_t *layer, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
 {
 	void *arc;
-	arc = pcb_arc_new(CURRENT, x, y, width, height, sa, dir, thickness, clearance, get_flags(flags));
+	arc = pcb_arc_new(layer, x, y, width, height, sa, dir, thickness, clearance, get_flags(flags));
 	if (arc != NULL) {
-		pcb_undo_add_obj_to_create(PCB_TYPE_ARC, CURRENT, arc, arc);
+		pcb_undo_add_obj_to_create(PCB_TYPE_ARC, layer, arc, arc);
 		return 0;
 	}
 	return NULL;
 }
 
-int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
+int layout_create_arc(layer_id_t layer_id, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags)
 {
-	return layout_create_arc_(x, y, width, height, sa, dir, thickness, clearance, flags) != NULL;
+	pcb_layer_t *layer = pcb_get_layer(layer_id);
+	if (layer == NULL)
+		return 0;
+	return layout_create_arc_(layer, x, y, width, height, sa, dir, thickness, clearance, flags) != NULL;
 }
 

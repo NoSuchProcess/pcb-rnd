@@ -20,7 +20,7 @@ void layout_switch_to_layer(int layer)
 	pcb_redraw();
 }
 
-pcb_layer_id_t layout_get_current_layer()
+layer_id_t layout_get_current_layer()
 {
 	return pcb_layer_id(PCB->Data, CURRENT);
 }

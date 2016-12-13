@@ -8,6 +8,7 @@
 #undef snprintf
 #define snprintf pcb_snprintf
 
+typedef long int layer_id_t;
 
 /* Object type search mask bits */
 typedef enum layout_object_mask_e {
@@ -179,7 +180,7 @@ int layout_arc_angles(layout_object_t *obj, int relative, int start, int delta);
 
 /* -- create new objects -- (create.c) */
 /* create a line */
-int layout_create_line(int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags);
+int layout_create_line(layer_id_t layer_id, int x1, int y1, int x2, int y2, int thickness, int clearance, multiple layout_flag_t flags);
 
 /* same as layout_create_line(), but appends the result to a list and
    returns the index of the new object on the list (can be used as n for
@@ -190,7 +191,7 @@ int layout_lcreate_line(const char *search_ID, int x1, int y1, int x2, int y2, i
 int layout_create_via(int x, int y, int thickness, int clearance, int mask, int hole, const char *name, multiple layout_flag_t flags);
 
 /* create a new arc; sa is start angle, dir is delta angle */
-int layout_create_arc(int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags);
+int layout_create_arc(layer_id_t layer_id, int x, int y, int width, int height, int sa, int dir, int thickness, int clearance, multiple layout_flag_t flags);
 
 /* -- layer manipulation -- (layers.c) */
 /* Field name of the layer structure */
@@ -207,7 +208,7 @@ typedef enum layer_field_e {
 void layout_switch_to_layer(int layer);
 
 /* returns the number of the current layer */
-pcb_layer_id_t layout_get_current_layer();
+layer_id_t layout_get_current_layer();
 
 /* resolve layer number by name (case sensitive); returns negative number if not found */
 int layout_resolve_layer(const char *name);
