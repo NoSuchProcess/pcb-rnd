@@ -7,6 +7,7 @@
 	- `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	- extend the io_ API so that plugins can be requested to check file headers and decide if they can load the file; this would supress the pcb-related error messages when loading a lihata
 	- tab doesn't work in the lesstif hid (was already broken in 1.1.2)
+	- GTK preferences: delete layer stopped working
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
