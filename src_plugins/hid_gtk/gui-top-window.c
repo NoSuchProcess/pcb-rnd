@@ -481,6 +481,9 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 			conf_set_editor(show_mask, 0);
 		redraw = TRUE;
 		break;
+	case LAYER_BUTTON_UI:
+#warning layer TODO
+		break;
 	default:
 		/* Flip the visibility */
 		pcb_layervis_change_group_vis(layer, active, pcb_false);
@@ -630,6 +633,7 @@ static void make_virtual_layer_buttons(GtkWidget * layer_selector)
 	const gchar *text;
 	const gchar *color_string;
 	gboolean active;
+	pcb_layer_id_t ui[16], numui, n;
 
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_SILK);
 	ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_SILK, text, color_string, active, TRUE);
@@ -643,6 +647,12 @@ static void make_virtual_layer_buttons(GtkWidget * layer_selector)
 	ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_FARSIDE, text, color_string, active, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_MASK);
 	ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_MASK, text, color_string, active, FALSE);
+
+	numui = pcb_layer_list(PCB_LYT_UI, ui, sizeof(ui)/sizeof(ui[0]));
+	for(n = 0; n < numui; n++) {
+		pcb_layer_t *l = pcb_get_layer(ui[n]);
+		ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_UI, l->Name, l->Color, 1, FALSE);
+	}
 }
 
 /*! \brief callback for ghid_layer_selector_update_colors */
@@ -1606,7 +1616,7 @@ static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		if (l == -1) {
 			PCB_AFAIL(toggleview);
 		}
-
+#warning layer TODO: also check for UI layer names
 	}
 
 	/* Now that we've figured out which toggle button ought to control
