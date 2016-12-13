@@ -493,11 +493,13 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 			conf_set_editor(show_mask, 0);
 		redraw = TRUE;
 		break;
-	case LAYER_BUTTON_UI:
-#warning layer TODO
-		break;
 	default:
 		/* Flip the visibility */
+		if (layer >= LAYER_BUTTON_UI) {
+			layer -= LAYER_BUTTON_UI;
+			layer |= PCB_LYT_UI;
+		}
+
 		pcb_layervis_change_group_vis(layer, active, pcb_false);
 		redraw = TRUE;
 		break;
