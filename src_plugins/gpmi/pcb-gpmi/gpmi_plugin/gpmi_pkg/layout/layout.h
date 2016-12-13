@@ -295,3 +295,12 @@ void fill_rect(dctx_t *ctx, int x1_, int y1_, int x2_, int y2_);
 
 /* Returns 1 if flg is set in flags */
 int layer_flag_is_set(unsigned int flags, multiple layer_type_t flg);
+
+/* List layers IDs with exact match on flags. If idx is -1, return the
+   length of matches, else return the idxth match, */
+layer_id_t layer_list(multiple layer_type_t flags, int idx);
+
+/* List layers IDs with any match on flags. If idx is -1, return the
+   length of matches, else return the idxth match, */
+layer_id_t layer_list_any(multiple layer_type_t flags, int idx);
+

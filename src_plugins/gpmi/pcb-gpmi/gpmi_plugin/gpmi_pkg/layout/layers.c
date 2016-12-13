@@ -8,6 +8,8 @@
 #include "src/layer.h"
 #include "src/layer_vis.h"
 
+#define LAYER_SEARCH_MAX 32
+
 #define layer_check(layer) \
 	if ((layer < 0) || (layer >= PCB_MAX_LAYER+2)) \
 		return
@@ -81,4 +83,26 @@ int layout_layer_field(int layer, layer_field_t fld)
 int layer_flag_is_set(unsigned int flags, multiple layer_type_t flg)
 {
 	return !!(flags & flg);
+}
+
+layer_id_t layer_list(multiple layer_type_t flags, int idx)
+{
+	pcb_layer_id_t ids[LAYER_SEARCH_MAX];
+	int len = pcb_layer_list(flags, ids, LAYER_SEARCH_MAX);
+	if (idx < 0)
+		return len;
+	if (idx >= len)
+		return -1;
+	return ids[idx];
+}
+
+layer_id_t layer_list_any(multiple layer_type_t flags, int idx)
+{
+	pcb_layer_id_t ids[LAYER_SEARCH_MAX];
+	int len = pcb_layer_list_any(flags, ids, LAYER_SEARCH_MAX);
+	if (idx < 0)
+		return len;
+	if (idx >= len)
+		return -1;
+	return ids[idx];
 }
