@@ -1582,7 +1582,8 @@ the same as a special layer, the layer is chosen over the special layer.
 
 static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	int i, l;
+	pcb_cardinal_t i;
+	int l;
 
 #ifdef DEBUG_MENUS
 	puts("Starting ToggleView().");
@@ -1608,15 +1609,15 @@ static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		l = LAYER_BUTTON_FARSIDE;
 	else {
 		l = -1;
-		for (i = 0; i < pcb_max_copper_layer + 2; i++)
+		for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 			if (strcmp(argv[0], PCB->Data->Layer[i].Name) == 0) {
 				l = i;
 				break;
 			}
-		if (l == -1) {
-			PCB_AFAIL(toggleview);
 		}
 #warning layer TODO: also check for UI layer names
+		if (l == -1)
+			PCB_AFAIL(toggleview);
 	}
 
 	/* Now that we've figured out which toggle button ought to control
