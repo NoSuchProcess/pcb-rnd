@@ -32,4 +32,5 @@ include {../src_plugins/propedit/Plug.tmpasm}
 include {../src_plugins/diag/Plug.tmpasm}
 include {../src_plugins/loghid/Plug.tmpasm}
 include {../src_plugins/query/Plug.tmpasm}
+include {../src_plugins/acompnet/Plug.tmpasm}
 include {../src_plugins/rubberband_orig/Plug.tmpasm}

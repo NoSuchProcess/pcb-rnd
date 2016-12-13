@@ -32,6 +32,7 @@ plugin_def("shand_cmd",       "command shorthands",        sbuildin, 1)
 plugin_def("propedit",        "object property editor",    sbuildin, 1)
 plugin_def("loghid",          "diagnostics: log HID calls",sdisable, 1)
 plugin_def("query",           "query language",            sbuildin, 1)
+plugin_def("acompnet",        "net auto-completion",       sdisable, 1)
 plugin_def("rubberband_orig", "the original rubberband",   sbuildin, 1)
 
 plugin_header("\nFootprint backends:\n")
