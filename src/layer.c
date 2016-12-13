@@ -414,6 +414,10 @@ int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 		if ((pcb_layer_flags(n) & mask) == mask)
 			APPEND(n);
 
+	if (mask == PCB_LYT_UI)
+		for (n = 0; n < vtlayer_len(&pcb_uilayer); n++)
+			APPEND(n | PCB_LYT_UI | PCB_LYT_VIRTUAL);
+
 	return used;
 }
 
@@ -429,6 +433,10 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 	for (n = 0; n < PCB_MAX_LAYER + 2; n++)
 		if ((pcb_layer_flags(n) & mask))
 			APPEND(n);
+
+	if (mask & PCB_LYT_UI)
+		for (n = 0; n < vtlayer_len(&pcb_uilayer); n++)
+			APPEND(n | PCB_LYT_UI | PCB_LYT_VIRTUAL);
 
 	return used;
 }
