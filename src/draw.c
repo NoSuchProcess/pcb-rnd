@@ -180,6 +180,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	pcb_layergrp_id_t do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
+	pcb_layer_t *first;
 
 	pcb_bool paste_empty;
 
@@ -293,6 +294,24 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_stub_draw_fab(Output.fgGC);
 		pcb_gui->end_layer();
 	}
+
+	/* find the first ui layer in use */
+	first = NULL;
+	for(i = 0; i < vtlayer_len(&pcb_uilayer); i++) {
+		if (pcb_uilayer.array[i].cookie != NULL) {
+			first = pcb_uilayer.array+i;
+			break;
+		}
+	}
+
+	/* if there's any UI layer, try to draw them */
+	if ((first != NULL) && pcb_layer_gui_set_g_ui(first, 0)) {
+		for(i = 0; i < vtlayer_len(&pcb_uilayer); i++)
+			if ((pcb_uilayer.array[i].cookie != NULL) && (pcb_uilayer.array[i].On))
+				pcb_draw_layer(pcb_uilayer.array+i, drawn_area);
+		pcb_gui->end_layer();
+	}
+
 }
 
 /* ---------------------------------------------------------------------------
