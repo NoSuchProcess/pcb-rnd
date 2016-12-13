@@ -23,9 +23,11 @@ int main(int argc, char *argv[])
 {
 	char line[8192];
 	int res = 0, stamp = 0, banner = 0;
-	FILE *f;
+	FILE *f = NULL;
 
-	f = fopen(argv[1], "r");
+	if (argc > 1) {
+		f = fopen(argv[1], "r");
+	}
 	if (f != NULL) {
 		fscanf(f, "%d", &stamp);
 		fclose(f);
