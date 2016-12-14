@@ -76,10 +76,12 @@ void wplc_place(wplc_win_t id, GtkWidget *new_win)
 	}
 	else {
 		win = wplc_windows[id];
-		if (HAVE(nw) && HAVE(nh))
-			gtk_window_resize(GTK_WINDOW(win), nw->val.integer[0], nh->val.integer[0]);
-		if (HAVE(nx) && HAVE(ny))
-			gtk_window_move(GTK_WINDOW(win), nx->val.integer[0], ny->val.integer[0]);
+		if (win != NULL) {
+			if (HAVE(nw) && HAVE(nh))
+				gtk_window_resize(GTK_WINDOW(win), nw->val.integer[0], nh->val.integer[0]);
+			if (HAVE(nx) && HAVE(ny))
+				gtk_window_move(GTK_WINDOW(win), nx->val.integer[0], ny->val.integer[0]);
+		}
 	}
 }
 #undef HAVE
