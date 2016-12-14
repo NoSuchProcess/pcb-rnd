@@ -1,0 +1,21 @@
+feature	supported	partial_support	unsupported	reason	test_case
+round pins	Y	X	X	universal	x
+octagonal pins	X	Y	X	gEDA native, no kicad support, export as round	x
+rectangular SMD	Y	X	X	gEDA native, kicad native support	x
+trapezoidal SMD	X	Y	X	converted to rectangular on import	x
+rounded corner SMD X       Y       X       converted to rectangular on import      x
+copper arcs	X	Y	X	converted to lines on export	x
+copper line	Y	X	X	universal, lossless	x
+silk line	Y	X	X	universal, lossless	x
+silk arc	X	Y	X	kicad supports multiples of 90deg only	x
+silk circle	Y	X	X	universal, lossless	x
+element value, name	X	Y	X	gEDA does not store text label locations	x
+layout modules/footprints	Y	X	X	geometry preserved	x
+track netlist	X	X	Y	gEDA does not store netlist for tracks	x
+via	X	Y	X	kicad uses polygonal zones to manage thermal properties within it	x
+copper pours	X	Y	X	kicad applied pullback to margins of polygonal zones	x
+polygon windows	X	X	Y	yet to be implemented	x
+text labels	X	Y	X	font kerning, placement not exact	x
+text style	X	X	Y	italic, bold, unsupported on import	x
+text size	X	Y	X	font size, kerning, placement not exact	x
+
