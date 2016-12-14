@@ -46,11 +46,14 @@ void wplc_place(wplc_win_t id, GtkWidget *new_win)
 	conf_native_t *nx, *ny, *nw, *nh;
 	GtkWidget *win;
 
-	if (!conf_core.editor.auto_place)
-		return; /* feature disabled */
-
 	if ((id < 0) || (id >= WPLC_max))
 		return; /* invalid window */
+
+	if (!conf_core.editor.auto_place) {
+		if (new_win != NULL) /* remember window widgets in case editor.auto_place gets enabled later */
+			wplc_windows[id] = new_win;
+		return; /* feature disabled */
+	}
 
 	/* build base path for the specific window */
 	pe = path;
