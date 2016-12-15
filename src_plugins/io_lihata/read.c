@@ -1008,3 +1008,55 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	lht_dom_uninit(doc);
 	return res;
 }
+
+
+
+typedef enum {
+	TPS_UNDECIDED,
+	TPS_GOOD,
+	TPS_BAD,
+} test_parse_t;
+
+/* expect root to be a ha:pcb-rnd-board-v* */
+void test_parse_ev(lht_parse_t *ctx, lht_event_t ev, lht_node_type_t nt, const char *name, const char *value)
+{
+	test_parse_t *state = ctx->user_data;
+	if (ev == LHT_OPEN) {
+		if ((nt == LHT_HASH) && (strncmp(name, "pcb-rnd-board-v", 15) == 0))
+			*state = TPS_GOOD;
+		else
+			*state = TPS_BAD;
+	}
+}
+
+
+/* run an event parser for the first 32k of the file; accept the file if it
+   has a valid looking root; refuse if:
+    - no root in the first 32k (or till eof)
+    - not a valid lihata doc (parser error)
+    - lihata, but the wrong root
+*/
+int io_lihata_test_parse_pcb(pcb_plug_io_t *plug_ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+{
+	lht_parse_t ctx;
+	int count;
+	test_parse_t state = TPS_UNDECIDED;
+
+	lht_parser_init(&ctx);
+	ctx.event = test_parse_ev;
+	ctx.user_data = &state;
+
+	for(count = 0; count < 32768; count++) {
+		int c = fgetc(f);
+		if (lht_parser_char(&ctx, c) != LHTE_SUCCESS) {
+			/* parse error or end */
+			state = TPS_BAD;
+			break;
+		}
+		if (state != TPS_UNDECIDED)
+			break;
+	}
+	lht_parser_uninit(&ctx);
+	printf("LIHATA TEST RESULT: %d\n", state);
+	return (state == TPS_GOOD);
+}

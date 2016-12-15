@@ -53,6 +53,7 @@ pcb_uninit_t hid_io_lihata_init(void)
 	/* register the IO hook */
 	io_lihata.plugin_data = NULL;
 	io_lihata.fmt_support_prio = io_lihata_fmt;
+	io_lihata.test_parse_pcb = io_lihata_test_parse_pcb;
 	io_lihata.parse_pcb = io_lihata_parse_pcb;
 	io_lihata.parse_element = NULL;
 	io_lihata.parse_font = NULL;
