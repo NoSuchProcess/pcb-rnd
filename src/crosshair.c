@@ -1240,12 +1240,15 @@ static int mode_stack[PCB_MAX_MODESTACK_DEPTH];
 void pcb_crosshair_range_to_buffer(void)
 {
 	if (conf_core.editor.mode == PCB_MODE_PASTE_BUFFER) {
-		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
-		pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
+		if (pcb_set_buffer_bbox(PCB_PASTEBUFFER) == 0) {
+			pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
 											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->BoundingBox.Y1,
 											PCB->MaxWidth -
 											(PCB_PASTEBUFFER->BoundingBox.X2 - PCB_PASTEBUFFER->X),
 											PCB->MaxHeight - (PCB_PASTEBUFFER->BoundingBox.Y2 - PCB_PASTEBUFFER->Y));
+		}
+		else /* failed to calculate the bounding box of the buffer, it's probably a single-object move, allow the whole page */
+			pcb_crosshair_set_range(0, 0, PCB->MaxWidth, PCB->MaxHeight);
 	}
 }
 

@@ -42,7 +42,10 @@ struct pcb_buffer_s {								/* information about the paste buffer */
  * prototypes
  */
 void pcb_buffer_flip_side(pcb_buffer_t *Buffer);
-void pcb_set_buffer_bbox(pcb_buffer_t *);
+
+/* returns 0 on success */
+int pcb_set_buffer_bbox(pcb_buffer_t *);
+
 void pcb_buffer_clear(pcb_buffer_t *);
 void pcb_buffer_add_selected(pcb_buffer_t *, pcb_coord_t, pcb_coord_t, pcb_bool);
 pcb_bool pcb_buffer_load_layout(pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
