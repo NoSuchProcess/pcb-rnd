@@ -505,7 +505,7 @@ int main(int argc, char *argv[])
 		pcb_hid_actionl("ExecuteFile", conf_core.rc.script_filename, NULL);
 	}
 	if (conf_core.rc.action_string) {
-		pcb_message(PCB_MSG_DEFAULT, _("Executing startup action %s\n"), conf_core.rc.action_string);
+		pcb_message(PCB_MSG_INFO, _("Executing startup action %s\n"), conf_core.rc.action_string);
 		pcb_hid_parse_actions(conf_core.rc.action_string);
 	}
 

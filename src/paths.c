@@ -47,7 +47,7 @@ void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int e
 			if (**in == '~') {
 				int l1, l2;
 				if (conf_core.rc.path.home == NULL) {
-					pcb_message(PCB_MSG_DEFAULT, "can't resolve home dir required for path %s\n", *in);
+					pcb_message(PCB_MSG_ERROR, "can't resolve home dir required for path %s\n", *in);
 					exit(1);
 				}
 				subst_to = conf_core.rc.path.home;
@@ -88,7 +88,7 @@ void pcb_paths_resolve(const char **in, char **out, int numpaths, unsigned int e
 							}
 						}
 					}
-					pcb_message(PCB_MSG_DEFAULT, "can't resolve conf-hash dir required for path %s\n", *in);
+					pcb_message(PCB_MSG_WARNING, "can't resolve conf-hash dir required for path %s\n", *in);
 					*out = NULL;
 				}
 				else

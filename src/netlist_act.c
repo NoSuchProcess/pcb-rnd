@@ -59,7 +59,7 @@ static int pcb_netlist_swap()
 				int le, lp;
 
 				if (next > 2) {
-					pcb_message(PCB_MSG_DEFAULT, "Exactly two pins should be selected for swap (more than 2 selected at the moment)\n");
+					pcb_message(PCB_MSG_ERROR, "Exactly two pins should be selected for swap (more than 2 selected at the moment)\n");
 					goto quit;
 				}
 
@@ -75,7 +75,7 @@ static int pcb_netlist_swap()
 	PCB_END_LOOP;
 
 	if (next < 2) {
-		pcb_message(PCB_MSG_DEFAULT, "Exactly two pins should be selected for swap (less than 2 selected at the moment)\n");
+		pcb_message(PCB_MSG_ERROR, "Exactly two pins should be selected for swap (less than 2 selected at the moment)\n");
 		goto quit;
 	}
 
@@ -83,11 +83,11 @@ static int pcb_netlist_swap()
 	nets[0] = pcb_netlist_find_net4pinname(PCB, pins[0]);
 	nets[1] = pcb_netlist_find_net4pinname(PCB, pins[1]);
 	if ((nets[0] == NULL) || (nets[1] == NULL)) {
-		pcb_message(PCB_MSG_DEFAULT, "That pin is not on a net.\n");
+		pcb_message(PCB_MSG_ERROR, "That pin is not on a net.\n");
 		goto quit;
 	}
 	if (nets[0] == nets[1]) {
-		pcb_message(PCB_MSG_DEFAULT, "Those two pins are on the same net, can't swap them.\n");
+		pcb_message(PCB_MSG_ERROR, "Those two pins are on the same net, can't swap them.\n");
 		goto quit;
 	}
 
