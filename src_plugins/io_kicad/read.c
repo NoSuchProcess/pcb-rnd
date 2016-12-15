@@ -2068,3 +2068,24 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 
 	return readres;
 }
+
+int io_kicad_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+{
+	char line[1024], *s;
+
+	while(!(feof(f))) {
+		if (fgets(line, sizeof(line), f) != NULL) {
+			s = line;
+			while(isspace(*s)) s++; /* strip leading whitespace */
+			if (strncmp(s, "(kicad_pcb", 10) == 0) /* valid root */
+				return 1;
+			if ((*s == '\r') || (*s == '\n') || (*s == '#') || (*s == '\0')) /* ignore empty lines and comments */
+				continue;
+			/* non-comment, non-empty line - and we don't have our root -> it's not an s-expression */
+			return 0;
+		}
+	}
+
+	/* hit eof before seeing a valid root -> bad */
+	return 0;
+}

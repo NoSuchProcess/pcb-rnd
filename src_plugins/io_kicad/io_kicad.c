@@ -54,6 +54,7 @@ pcb_uninit_t hid_io_kicad_init(void)
 	/* register the IO hook */
 	io_kicad.plugin_data = NULL;
 	io_kicad.fmt_support_prio = io_kicad_fmt;
+	io_kicad.test_parse_pcb = io_kicad_test_parse_pcb;
 	io_kicad.parse_pcb = io_kicad_read_pcb;
 	io_kicad.parse_element = NULL;
 	io_kicad.parse_font = NULL;
