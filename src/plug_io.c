@@ -125,26 +125,29 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), PCB_IOT_PCB, 0, fmt);
 	if (fmt != NULL) {
 		/* explicit format */
-		if (len <= 0) {
+		for(n = 0; n < len; n++) {
+			if (available[n].plug->parse_pcb != NULL) {
+				accepts[n] = 1; /* force-accept - if it can handle the format, and the user explicitly wanted this format, let's try it */
+				accept_total++;
+			}
+		}
+
+		if (accept_total <= 0) {
 			pcb_message(PCB_MSG_ERROR, "can't find a IO_ plugin to load a PCB using format %s\n", fmt);
 			fclose(ft);
 			return -1;
 		}
-		if (len != 1) {
+
+		if (accept_total > 1) {
 			pcb_message(PCB_MSG_INFO, "multiple IO_ plugins can handle format %s - I'm going to try them all, but you may want to be more specific next time; formats found:\n", fmt);
 			for(n = 0; n < len; n++)
 				pcb_message(PCB_MSG_INFO, "    %s\n", available[n].plug->description);
-		}
-
-		for(n = 0; n < len; n++) {
-			accepts[n] = 1; /* force-accept - if it can handle the format, and the user explicitly wanted this format, let's try it */
-			accept_total++;
 		}
 	}
 	else {
 		/* test-parse with all plugins to see who can handle the syntax */
 		for(n = 0; n < len; n++) {
-			if ((available[0].plug->test_parse_pcb == NULL) || (available[0].plug->test_parse_pcb(available[0].plug, Ptr, Filename, ft))) {
+			if ((available[n].plug->test_parse_pcb == NULL) || (available[n].plug->test_parse_pcb(available[n].plug, Ptr, Filename, ft))) {
 				accepts[n] = 1;
 				accept_total++;
 				rewind(ft);
