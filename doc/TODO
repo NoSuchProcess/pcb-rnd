@@ -9,6 +9,7 @@
 	- tab doesn't work in the lesstif hid (was already broken in 1.1.2)
 	- lihata doesn't save config?! (window size settings) [report:Larry]
 	- GTK preferences: delete layer stopped working
+	- liblihata shouldn't compile genht (different cflags)
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
