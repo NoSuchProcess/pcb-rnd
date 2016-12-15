@@ -608,3 +608,35 @@ void PostLoadElementPCB()
 	yyPCB->MaxHeight = e->BoundingBox.Y2;
 	yyPCB->is_footprint = 1;
 }
+
+
+int io_pcb_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f)
+{
+	char line[1024];
+	int bad = 0;
+
+/*
+	Look for any of these in the top few lines of the file:
+	# release: pcb-bin 20050609
+	PCB["name" 600000 500000]
+*/
+
+	while(!(feof(f))) {
+		if (fgets(line, sizeof(line), f) != NULL) {
+			char *s = line;
+			while(isspace(*s)) s++;
+			if ((strncmp(s, "# release: pcb", 14) == 0) || (strncmp(s, "PCB[", 4) == 0))
+				return 1;
+			if ((*s == '\r') || (*s == '\n') || (*s == '#') || (*s == '\0')) /* ignore empty lines and comments */
+				continue;
+			/* non-comment, non-empty line: tolerate at most 16 of these before giving up */
+			bad++;
+			if (bad > 16)
+				return 0;
+		}
+	}
+
+	/* hit eof before finding anything familiar or too many bad lines: the file
+	is surely not a .pcb */
+	return 0;
+}

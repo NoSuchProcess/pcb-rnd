@@ -54,7 +54,9 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const
 void PreLoadElementPCB(void);
 void PostLoadElementPCB(void);
 
-/* 
+int io_pcb_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f);
+
+/*
  * Whenever the pcb file format is modified, this version number
  * should be updated to the date when the new code is committed.
  * It will be written out to the file and also used by pcb to give
