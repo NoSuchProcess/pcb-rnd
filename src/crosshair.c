@@ -651,7 +651,7 @@ void pcb_crosshair_hide(void)
 {
 	static pcb_bool warned_old_api = pcb_false;
 	if (!warned_old_api) {
-		pcb_message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API pcb_crosshair_hide().\n"
+		pcb_message(PCB_MSG_WARNING, _("WARNING: A plugin is using the deprecated API pcb_crosshair_hide().\n"
 							"         This API may be removed in a future release of PCB.\n"));
 		warned_old_api = pcb_true;
 	}
@@ -664,7 +664,7 @@ void pcb_crosshair_restore(void)
 {
 	static pcb_bool warned_old_api = pcb_false;
 	if (!warned_old_api) {
-		pcb_message(PCB_MSG_DEFAULT, _("WARNING: A plugin is using the deprecated API pcb_crosshair_restore().\n"
+		pcb_message(PCB_MSG_WARNING, _("WARNING: A plugin is using the deprecated API pcb_crosshair_restore().\n"
 							"         This API may be removed in a future release of PCB.\n"));
 		warned_old_api = pcb_true;
 	}

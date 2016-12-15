@@ -98,7 +98,7 @@ void pcb_open_error_message(const char *Filename)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, Filename);
-	pcb_message(PCB_MSG_DEFAULT, _("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, strerror(errno));
+	pcb_message(PCB_MSG_ERROR, _("Can't open file\n" "   '%s'\nfopen() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 
@@ -110,7 +110,7 @@ void pcb_popen_error_message(const char *Filename)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, Filename);
-	pcb_message(PCB_MSG_DEFAULT, _("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), utf8, strerror(errno));
+	pcb_message(PCB_MSG_ERROR, _("Can't execute command\n" "   '%s'\npopen() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 
@@ -122,7 +122,7 @@ void pcb_opendir_error_message(const char *DirName)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, DirName);
-	pcb_message(PCB_MSG_DEFAULT, _("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), utf8, strerror(errno));
+	pcb_message(PCB_MSG_ERROR, _("Can't scan directory\n" "   '%s'\nopendir() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }
 
@@ -134,6 +134,6 @@ void pcb_chdir_error_message(const char *DirName)
 	char *utf8 = NULL;
 
 	utf8_dup_string(&utf8, DirName);
-	pcb_message(PCB_MSG_DEFAULT, _("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror(errno));
+	pcb_message(PCB_MSG_ERROR, _("Can't change working directory to\n" "   '%s'\nchdir() returned: '%s'\n"), utf8, strerror(errno));
 	free(utf8);
 }

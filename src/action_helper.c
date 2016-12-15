@@ -594,7 +594,7 @@ void pcb_notify_mode(void)
 			pcb_pin_t *via;
 
 			if (!PCB->ViaOn) {
-				pcb_message(PCB_MSG_DEFAULT, _("You must turn via visibility on before\n" "you can place vias\n"));
+				pcb_message(PCB_MSG_WARNING, _("You must turn via visibility on before\n" "you can place vias\n"));
 				break;
 			}
 			if ((via = pcb_via_new(PCB->Data, Note.X, Note.Y,
@@ -967,13 +967,13 @@ void pcb_notify_mode(void)
 											 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
 				if (pcb_crosshair.AttachedObject.Type == PCB_TYPE_NONE) {
-					pcb_message(PCB_MSG_DEFAULT, "The first point of a polygon hole must be on a polygon.\n");
+					pcb_message(PCB_MSG_WARNING, "The first point of a polygon hole must be on a polygon.\n");
 					break; /* don't start doing anything if clicket out of polys */
 				}
 
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_polygon_t *)
 											pcb_crosshair.AttachedObject.Ptr2)) {
-					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					break;
 				}
@@ -1096,7 +1096,7 @@ void pcb_notify_mode(void)
 	case PCB_MODE_REMOVE:
 		if ((type = pcb_search_screen(Note.X, Note.Y, PCB_REMOVE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_line_t *) ptr2)) {
-				pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+				pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 				break;
 			}
 			if (type == PCB_TYPE_ELEMENT)
@@ -1127,7 +1127,7 @@ void pcb_notify_mode(void)
 				if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 					if (conf_core.editor.mode == PCB_MODE_MOVE && PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *)
 																											pcb_crosshair.AttachedObject.Ptr2)) {
-						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+						pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 						pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					}
 					else
@@ -1172,7 +1172,7 @@ void pcb_notify_mode(void)
 			if (pcb_crosshair.AttachedObject.Type != PCB_TYPE_NONE) {
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_polygon_t *)
 											pcb_crosshair.AttachedObject.Ptr2)) {
-					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 					pcb_crosshair.AttachedObject.Type = PCB_TYPE_NONE;
 					break;
 				}

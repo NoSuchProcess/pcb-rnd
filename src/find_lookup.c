@@ -501,7 +501,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 					/* try all new pads */
 					layer -= pcb_max_copper_layer;
 					if (layer > 1) {
-						pcb_message(PCB_MSG_DEFAULT, _("bad layer number %d pcb_max_copper_layer=%d in find.c\n"), layer, pcb_max_copper_layer);
+						pcb_message(PCB_MSG_ERROR, _("bad layer number %d pcb_max_copper_layer=%d in find.c\n"), layer, pcb_max_copper_layer);
 						return pcb_false;
 					}
 					position = &padposition[layer];
@@ -539,9 +539,9 @@ static pcb_r_dir_t pv_pv_callback(const pcb_box_t * b, void *cl)
 			PCB_FLAG_SET(PCB_FLAG_WARN, pin);
 			conf_core.temp.rat_warn = pcb_true;
 			if (pin->Element)
-				pcb_message(PCB_MSG_DEFAULT, _("WARNING: Hole too close to pin.\n"));
+				pcb_message(PCB_MSG_WARNING, _("Hole too close to pin.\n"));
 			else
-				pcb_message(PCB_MSG_DEFAULT, _("WARNING: Hole too close to via.\n"));
+				pcb_message(PCB_MSG_WARNING, _("Hole too close to via.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pin, PCB_TYPE_PIN, &i->pv, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
@@ -617,7 +617,7 @@ static pcb_r_dir_t pv_line_callback(const pcb_box_t * b, void *cl)
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 			PCB_FLAG_SET(PCB_FLAG_WARN, pv);
 			conf_core.temp.rat_warn = pcb_true;
-			pcb_message(PCB_MSG_DEFAULT, _("WARNING: Hole too close to line.\n"));
+			pcb_message(PCB_MSG_WARNING, _("Hole too close to line.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, PCB_TYPE_LINE, &i->line, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
@@ -634,7 +634,7 @@ static pcb_r_dir_t pv_pad_callback(const pcb_box_t * b, void *cl)
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 			PCB_FLAG_SET(PCB_FLAG_WARN, pv);
 			conf_core.temp.rat_warn = pcb_true;
-			pcb_message(PCB_MSG_DEFAULT, _("WARNING: Hole too close to pad.\n"));
+			pcb_message(PCB_MSG_WARNING, _("Hole too close to pad.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, PCB_TYPE_PAD, &i->pad, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
@@ -651,7 +651,7 @@ static pcb_r_dir_t pv_arc_callback(const pcb_box_t * b, void *cl)
 		if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv)) {
 			PCB_FLAG_SET(PCB_FLAG_WARN, pv);
 			conf_core.temp.rat_warn = pcb_true;
-			pcb_message(PCB_MSG_DEFAULT, _("WARNING: Hole touches arc.\n"));
+			pcb_message(PCB_MSG_WARNING, _("Hole touches arc.\n"));
 		}
 		else if (ADD_PV_TO_LIST(pv, PCB_TYPE_ARC, &i->arc, PCB_FCT_COPPER))
 			longjmp(i->env, 1);
