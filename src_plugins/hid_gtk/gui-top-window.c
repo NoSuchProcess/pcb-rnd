@@ -1560,7 +1560,7 @@ static gboolean get_layer_visible_cb(int id)
 
 void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!ghidgui || !ghidgui->menu_bar)
+	if (!ghidgui || !ghidgui->menu_bar || PCB == NULL)
 		return;
 
 	ghid_config_groups_changed();
