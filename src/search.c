@@ -1361,7 +1361,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 	}
 	PCB_END_LOOP;
 
-	pcb_message(PCB_MSG_DEFAULT, "hace: Internal error, search for ID %d failed\n", ID);
+	pcb_message(PCB_MSG_ERROR, "hace: Internal error, search for ID %d failed\n", ID);
 	return (PCB_TYPE_NONE);
 }
 

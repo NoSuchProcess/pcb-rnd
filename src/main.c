@@ -418,7 +418,7 @@ int main(int argc, char *argv[])
 		case DO_GUI:
 			pcb_gui = pcb_hid_find_gui(hid_name);
 			if (pcb_gui == NULL) {
-				pcb_message(PCB_MSG_DEFAULT, "Can't find the gui (%s) requested.\n", hid_name);
+				pcb_message(PCB_MSG_ERROR, "Can't find the gui (%s) requested.\n", hid_name);
 				exit(1);
 			}
 			break;
@@ -436,7 +436,7 @@ int main(int argc, char *argv[])
 
 			/* try anything */
 			if (pcb_gui == NULL) {
-				pcb_message(PCB_MSG_DEFAULT, "Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
+				pcb_message(PCB_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
 				pcb_gui = pcb_hid_find_gui(NULL);
 			}
 		}
@@ -501,7 +501,7 @@ int main(int argc, char *argv[])
 		pcb_event(PCB_EVENT_LIBRARY_CHANGED, NULL);
 
 	if (conf_core.rc.script_filename) {
-		pcb_message(PCB_MSG_DEFAULT, _("Executing startup script file %s\n"), conf_core.rc.script_filename);
+		pcb_message(PCB_MSG_INFO, _("Executing startup script file %s\n"), conf_core.rc.script_filename);
 		pcb_hid_actionl("ExecuteFile", conf_core.rc.script_filename, NULL);
 	}
 	if (conf_core.rc.action_string) {

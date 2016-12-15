@@ -99,7 +99,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 			if (filename == NULL)
 				filename = "";
 		}
-		pcb_message(PCB_MSG_DEFAULT, "IO error during %s: %s %s %s\n", what, reason, filename, comment);
+		pcb_message(PCB_MSG_ERROR, "IO error during %s: %s %s %s\n", what, reason, filename, comment);
 	}
 }
 
@@ -113,7 +113,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 
 	ft = fopen(Filename, "r");
 	if (ft == NULL) {
-		pcb_message(PCB_MSG_DEFAULT, "Error: can't open %s for reading (format is %s)\n", Filename, fmt);
+		pcb_message(PCB_MSG_ERROR, "Error: can't open %s for reading (format is %s)\n", Filename, fmt);
 		return -1;
 	}
 
@@ -417,7 +417,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* bozo: we are trying to revert back to a non-existing pcb... create one to avoid a segfault */
 		PCB = pcb_board_new_(pcb_false);
 		if (PCB == NULL) {
-			pcb_message(PCB_MSG_DEFAULT, "FATAL: can't create a new empty pcb!");
+			pcb_message(PCB_MSG_ERROR, "FATAL: can't create a new empty pcb!");
 			exit(1);
 		}
 	}
@@ -663,7 +663,7 @@ void pcb_save_in_tmp(void)
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
-		pcb_message(PCB_MSG_DEFAULT, _("Trying to save your layout in '%s'\n"), filename);
+		pcb_message(PCB_MSG_INFO, _("Trying to save your layout in '%s'\n"), filename);
 		pcb_write_pcb_file(filename, pcb_true, DEFAULT_FMT, pcb_true);
 	}
 }

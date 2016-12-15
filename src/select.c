@@ -847,7 +847,7 @@ pcb_bool pcb_select_object_by_name(int Type, const char *name_pattern, pcb_bool 
 		/* compile the regular expression */
 		regex = re_sei_comp(name_pattern);
 		if (re_sei_errno(regex) != 0) {
-			pcb_message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+			pcb_message(PCB_MSG_ERROR, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 			re_sei_free(regex);
 			return (pcb_false);
 		}

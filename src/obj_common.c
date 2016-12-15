@@ -62,7 +62,7 @@ int GetObjectBoundingBox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t
 	case PCB_TYPE_ARC_POINT:
 		return pcb_obj_ui_arc_point_bbox(Type, Ptr1, Ptr2, Ptr3, res);
 	default:
-		pcb_message(PCB_MSG_DEFAULT, "Request for bounding box of unsupported type %d\n", Type);
+		pcb_message(PCB_MSG_ERROR, "Request for bounding box of unsupported type %d\n", Type);
 		*res = *(pcb_box_t *)Ptr2;
 		return -1;
 	}

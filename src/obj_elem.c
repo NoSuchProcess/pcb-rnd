@@ -165,7 +165,7 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 	pcb_layer_t *clayer, *slayer;
 
 	if (elementlist_length(&Buffer->Data->Element) != 1) {
-		pcb_message(PCB_MSG_DEFAULT, _("Error!  Buffer doesn't contain a single element\n"));
+		pcb_message(PCB_MSG_ERROR, _("Error!  Buffer doesn't contain a single element\n"));
 		return (pcb_false);
 	}
 	/*
@@ -375,11 +375,11 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	PCB_END_LOOP;
 	if (!hasParts) {
 		pcb_destroy_object(PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
-		pcb_message(PCB_MSG_DEFAULT, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
+		pcb_message(PCB_MSG_ERROR, _("There was nothing to convert!\n" "Elements must have some silk, pads or pins.\n"));
 		return (pcb_false);
 	}
 	if (crooked)
-		pcb_message(PCB_MSG_DEFAULT, _("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
+		pcb_message(PCB_MSG_ERROR, _("There were polygons that can't be made into pins!\n" "So they were not included in the element\n"));
 	Element->MarkX = Buffer->X;
 	Element->MarkY = Buffer->Y;
 	if (PCB_SWAP_IDENT)
@@ -1474,7 +1474,7 @@ void *ChangeElementName(pcb_opctx_t *ctx, pcb_element_t *Element)
 		return (NULL);
 	if (PCB_ELEMNAME_IDX_VISIBLE() == PCB_ELEMNAME_IDX_REFDES) {
 		if (conf_core.editor.unique_names && pcb_element_uniq_name(PCB->Data, ctx->chgname.new_name) != ctx->chgname.new_name) {
-			pcb_message(PCB_MSG_DEFAULT, _("Error: The name \"%s\" is not unique!\n"), ctx->chgname.new_name);
+			pcb_message(PCB_MSG_ERROR, _("Error: The name \"%s\" is not unique!\n"), ctx->chgname.new_name);
 			return ((char *) -1);
 		}
 	}

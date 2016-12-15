@@ -1226,7 +1226,7 @@ void pcb_crosshair_save_mode(void)
 void pcb_crosshair_restore_mode(void)
 {
 	if (mode_position == 0) {
-		pcb_message(PCB_MSG_DEFAULT, "hace: underflow of restore mode\n");
+		pcb_message(PCB_MSG_ERROR, "hace: underflow of restore mode\n");
 		return;
 	}
 	pcb_crosshair_set_mode(mode_stack[--mode_position]);
@@ -1254,7 +1254,7 @@ void pcb_crosshair_set_mode(int Mode)
 		if (Mode == PCB_MODE_ARC || Mode == PCB_MODE_RECTANGLE ||
 				Mode == PCB_MODE_VIA || Mode == PCB_MODE_POLYGON ||
 				Mode == PCB_MODE_POLYGON_HOLE || Mode == PCB_MODE_TEXT || Mode == PCB_MODE_THERMAL) {
-			pcb_message(PCB_MSG_DEFAULT, _("That mode is NOT allowed when drawing ratlines!\n"));
+			pcb_message(PCB_MSG_WARNING, _("That mode is NOT allowed when drawing ratlines!\n"));
 			Mode = PCB_MODE_NO;
 		}
 	}
