@@ -1057,6 +1057,5 @@ int io_lihata_test_parse_pcb(pcb_plug_io_t *plug_ctx, pcb_board_t *Ptr, const ch
 			break;
 	}
 	lht_parser_uninit(&ctx);
-	printf("LIHATA TEST RESULT: %d\n", state);
 	return (state == TPS_GOOD);
 }
