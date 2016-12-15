@@ -105,33 +105,71 @@ static void plug_io_err(int res, const char *what, const char *filename)
 
 int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings)
 {
-	int res = -1;
+	int res = -1, len, n;
+	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
+	int accepts[PCB_IO_MAX_FORMATS]; /* test-parse output */
+	FILE *ft;
+	int accept_total = 0;
+
+	ft = fopen(Filename, "r");
+	if (ft == NULL) {
+		pcb_message(PCB_MSG_DEFAULT, "Error: can't open %s for reading (format is %s)\n", Filename, fmt);
+		return -1;
+	}
 
 	if (load_settings)
 		pcb_event(PCB_EVENT_LOAD_PRE, "s", Filename);
 
 	Ptr->Data->loader = NULL;
 
+	len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), PCB_IOT_PCB, 0, fmt);
 	if (fmt != NULL) {
-		pcb_find_io_t available[PCB_IO_MAX_FORMATS];
-		int len, n;
-		len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), PCB_IOT_PCB, 0, fmt);
+		/* explicit format */
 		if (len <= 0) {
-			pcb_message(PCB_MSG_DEFAULT, "Error: can't find a IO_ plugin to load a PCB using format %s\n", fmt);
+			pcb_message(PCB_MSG_ERROR, "can't find a IO_ plugin to load a PCB using format %s\n", fmt);
+			fclose(ft);
 			return -1;
 		}
+		if (len != 1) {
+			pcb_message(PCB_MSG_INFO, "multiple IO_ plugins can handle format %s - I'm going to try them all, but you may want to be more specific next time; formats found:\n", fmt);
+			for(n = 0; n < len; n++)
+				pcb_message(PCB_MSG_INFO, "    %s\n", available[n].plug->description);
+		}
+
 		for(n = 0; n < len; n++) {
-			if (available[0].plug->parse_pcb == NULL)
-				continue;
-			res = available[0].plug->parse_pcb(available[0].plug, Ptr, Filename, load_settings);
-			if (res == 0) {
-				Ptr->Data->loader = available[0].plug;
-				break;
-			}
+			accepts[n] = 1; /* force-accept - if it can handle the format, and the user explicitly wanted this format, let's try it */
+			accept_total++;
 		}
 	}
-	else /* try all parsers until we find one that works */
-		PCB_HOOK_CALL_DO(pcb_plug_io_t, pcb_plug_io_chain, parse_pcb, res, == 0, (self, Ptr, Filename, load_settings), if (Ptr->Data->loader == NULL) Ptr->Data->loader = self);
+	else {
+		/* test-parse with all plugins to see who can handle the syntax */
+		for(n = 0; n < len; n++) {
+			if ((available[0].plug->test_parse_pcb == NULL) || (available[0].plug->test_parse_pcb(available[0].plug, Ptr, Filename, ft))) {
+				accepts[n] = 1;
+				accept_total++;
+				rewind(ft);
+			}
+			else
+				accepts[n] = 0;
+		}
+	}
+	fclose(ft);
+
+	if (accept_total == 0) {
+		pcb_message(PCB_MSG_ERROR, "none of the IO_ plugin recognized the file format of %s - it's either not a valid board file or does not match the format specified\n", Filename);
+		return -1;
+	}
+
+	/* try all plugins that said it could handle the file */
+	for(n = 0; n < len; n++) {
+		if ((available[n].plug->parse_pcb == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
+			continue;
+		res = available[n].plug->parse_pcb(available[n].plug, Ptr, Filename, load_settings);
+		if (res == 0) {
+			Ptr->Data->loader = available[n].plug;
+			break;
+		}
+	}
 
 	if ((res == 0) && (load_settings))
 		conf_load_project(NULL, Filename);

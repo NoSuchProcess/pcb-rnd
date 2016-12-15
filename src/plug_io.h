@@ -55,6 +55,14 @@ struct pcb_plug_io_s {
 	   */
 	int (*fmt_support_prio)(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt);
 
+	/* Test if the given board is readable by the plugin. The plugin should return
+	   1 if it can handle the file or 0 if it can not. This check is not a deep
+	   synatx analysis; the plugin should read barely enough headers to decide if
+	   the file contains a the format it expect, then return error from parse_pcb
+	   if there are syntax errors later. The file is open for read and positioned
+	   to file begin in f */
+	int (*test_parse_pcb)(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, FILE *f);
+
 	/* Attempt to load a pcb design from Filename to Ptr.
 	   Conf subtree at settings_dest is replaced by settings loaded from the
 	   file unless it's CFR_invalid.
