@@ -827,11 +827,11 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	pcb_undo_inc_serial();
 
 	if (old_index < -1 || old_index >= pcb_max_copper_layer) {
-		pcb_message(PCB_MSG_DEFAULT, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb_max_copper_layer - 1);
+		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb_max_copper_layer - 1);
 		return 1;
 	}
 	if (new_index < -1 || new_index > pcb_max_copper_layer || new_index >= PCB_MAX_LAYER) {
-		pcb_message(PCB_MSG_DEFAULT, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb_max_copper_layer);
+		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb_max_copper_layer);
 		return 1;
 	}
 	if (old_index == new_index)
@@ -857,7 +857,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	if (old_index == -1) {
 		pcb_layer_t *lp;
 		if (pcb_max_copper_layer == PCB_MAX_LAYER) {
-			pcb_message(PCB_MSG_DEFAULT, "No room for new layers\n");
+			pcb_message(PCB_MSG_ERROR, "No room for new layers\n");
 			return 1;
 		}
 		/* Create a new layer at new_index. */

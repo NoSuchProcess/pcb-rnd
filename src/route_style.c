@@ -81,7 +81,7 @@ int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const cha
 	if (len > sizeof(routeStyle->name)-1) {
 		memcpy(routeStyle->name, Name, sizeof(routeStyle->name)-1);
 		routeStyle->name[sizeof(routeStyle->name)-1] = '\0';
-		pcb_message(PCB_MSG_DEFAULT, "Route style name '%s' too long, truncated to '%s'\n", Name, routeStyle->name);
+		pcb_message(PCB_MSG_WARNING, "Route style name '%s' too long, truncated to '%s'\n", Name, routeStyle->name);
 	}
 	else
 		strcpy(routeStyle->name, Name);
@@ -203,7 +203,7 @@ int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 		case PCB_TYPE_ARC:
 			return pcb_get_style_size(F_SelectedArcs, out, 0, size_id);
 		}
-		pcb_message(PCB_MSG_DEFAULT, _("Sorry, can't fetch the style of that object type (%x)\n"), type);
+		pcb_message(PCB_MSG_ERROR, _("Sorry, can't fetch the style of that object type (%x)\n"), type);
 		return -1;
 	case F_SelectedPads:
 		if (size_id != 2)						/* don't mess with pad size */
@@ -229,7 +229,7 @@ int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 		return 0;
 	case F_SelectedTexts:
 	case F_SelectedNames:
-		pcb_message(PCB_MSG_DEFAULT, _("Sorry, can't change style of every selected object\n"));
+		pcb_message(PCB_MSG_ERROR, _("Sorry, can't change style of every selected object\n"));
 		return -1;
 	}
 	return 0;

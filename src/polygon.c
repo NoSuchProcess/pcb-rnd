@@ -729,7 +729,7 @@ static int Subtract(pcb_polyarea_t * np1, pcb_polygon_t * p, pcb_bool fnp)
 	p->Clipped = biggest(merged);
 	assert(!p->Clipped || pcb_poly_valid(p->Clipped));
 	if (!p->Clipped)
-		pcb_message(PCB_MSG_DEFAULT, "Polygon cleared out of existence near (%d, %d)\n",
+		pcb_message(PCB_MSG_WARNING, "Polygon cleared out of existence near (%d, %d)\n",
 						(p->BoundingBox.X1 + p->BoundingBox.X2) / 2, (p->BoundingBox.Y1 + p->BoundingBox.Y2) / 2);
 	return 1;
 }
@@ -1326,7 +1326,7 @@ void pcb_polygon_close_poly(void)
 		pcb_draw();
 	}
 	else
-		pcb_message(PCB_MSG_DEFAULT, _("A polygon has to have at least 3 points\n"));
+		pcb_message(PCB_MSG_ERROR, _("A polygon has to have at least 3 points\n"));
 }
 
 /* ---------------------------------------------------------------------------
