@@ -35,3 +35,6 @@ char *ExpandFilename(char *dirname, char *filename);
  * some special characters are quoted
  */
 void CreateQuotedString(gds_t *, char *);
+
+void pcb_crosshair_hide(void);
+void pcb_crosshair_restore(void);

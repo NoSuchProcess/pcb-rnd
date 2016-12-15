@@ -637,42 +637,6 @@ void pcb_notify_mark_change(pcb_bool changes_complete)
 }
 
 
-/* ---------------------------------------------------------------------------
- * Convenience for plugins using the old {Hide,Restore}pcb_crosshair API.
- * This links up to notify the GUI of the expected changes using the new APIs.
- *
- * Use of this old API is deprecated, as the names don't necessarily reflect
- * what all GUIs may do in response to the notifications. Keeping these APIs
- * is aimed at easing transition to the newer API, they will emit a harmless
- * warning at the time of their first use.
- *
- */
-void pcb_crosshair_hide(void)
-{
-	static pcb_bool warned_old_api = pcb_false;
-	if (!warned_old_api) {
-		pcb_message(PCB_MSG_WARNING, _("WARNING: A plugin is using the deprecated API pcb_crosshair_hide().\n"
-							"         This API may be removed in a future release of PCB.\n"));
-		warned_old_api = pcb_true;
-	}
-
-	pcb_notify_crosshair_change(pcb_false);
-	pcb_notify_mark_change(pcb_false);
-}
-
-void pcb_crosshair_restore(void)
-{
-	static pcb_bool warned_old_api = pcb_false;
-	if (!warned_old_api) {
-		pcb_message(PCB_MSG_WARNING, _("WARNING: A plugin is using the deprecated API pcb_crosshair_restore().\n"
-							"         This API may be removed in a future release of PCB.\n"));
-		warned_old_api = pcb_true;
-	}
-
-	pcb_notify_crosshair_change(pcb_true);
-	pcb_notify_mark_change(pcb_true);
-}
-
 /*
  * Below is the implementation of the "highlight on endpoint" functionality.
  * This highlights lines and arcs when the crosshair is on of their (two)
