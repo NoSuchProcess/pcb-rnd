@@ -20,4 +20,14 @@
 #
 
 Proto.bom good r5452
+coord_rounding.bom good r5652
+elem_pads.bom good r5652
+elem_pads_ds.bom good r5652
+elem_pins.bom good r5652
+elem_sides_smd.bom good r5652
+elem_sides_trh.bom good r5652
+arc_f_clear.bom good r5652
+arc_normal.bom good r5652
+arc_offpage.bom good r5652
+arc_sizes.bom good r5652
 arc_angles.bom good r5452
