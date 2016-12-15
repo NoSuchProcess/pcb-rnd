@@ -502,7 +502,7 @@ void *MovePolygonToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_polygon_t * 
 	struct mptlc d;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon)) {
-		pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+		pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 		return NULL;
 	}
 	if (((long int) ctx->move.dst_layer == -1) || (Layer == ctx->move.dst_layer))

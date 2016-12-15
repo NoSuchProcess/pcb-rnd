@@ -89,7 +89,7 @@ int pcb_import(char *filename, unsigned int aspect)
 	FILE *fp;
 
 	if (!filename) {
-		pcb_message(PCB_MSG_DEFAULT, "Error: need a file name for pcb_import_netlist()\n");
+		pcb_message(PCB_MSG_ERROR, "Error: need a file name for pcb_import_netlist()\n");
 		return (1); /* nothing to do */
 	}
 	fp = fopen(filename, "r");
@@ -97,11 +97,11 @@ int pcb_import(char *filename, unsigned int aspect)
 	plug = find_importer(aspect, fp, filename);
 	if (plug == NULL) {
 		if (fp != NULL) {
-			pcb_message(PCB_MSG_DEFAULT, "Error: can't find a suitable netlist parser for %s\n", filename);
+			pcb_message(PCB_MSG_ERROR, "Error: can't find a suitable netlist parser for %s\n", filename);
 			fclose(fp);
 		}
 		else
-			pcb_message(PCB_MSG_DEFAULT, "Error: can't find a suitable netlist parser for %s - might be related: can't open %s for reading\n", filename, filename);
+			pcb_message(PCB_MSG_ERROR, "Error: can't find a suitable netlist parser for %s - might be related: can't open %s for reading\n", filename, filename);
 		return 1;
 	}
 
