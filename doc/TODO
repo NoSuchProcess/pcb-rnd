@@ -10,7 +10,8 @@
 	- liblihata shouldn't compile genht (different cflags)
 	- GTK: redraws the board twice after tab-flip: first mirrored then mirrored+new-stack-vis (second redraw doesn't hit the screen on mac) [report:James]
 	- GTK: the full screen support broke
-	- gsch2pcb-rnd: footprint not found results PKG() line in the .new.pcb
+	- gsch2pcb-rnd: footprint not found results PKG() line in the .new.pcb [report:Evan]
+	- do not complain about missing ./default.pcb when running from installed [report:Evan]
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
