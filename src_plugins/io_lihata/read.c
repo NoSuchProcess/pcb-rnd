@@ -946,7 +946,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	lht_node_t *sub;
 
 	if ((nd->type != LHT_HASH) || (strcmp(nd->name, "pcb-rnd-board-v1"))) {
-		pcb_message(PCB_MSG_DEFAULT, "Not a board lihata.\n");
+		pcb_message(PCB_MSG_ERROR, "Not a board lihata.\n");
 		return -1;
 	}
 
@@ -1000,7 +1000,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	lht_doc_t *doc = lht_dom_load(Filename, &errmsg);
 
 	if (doc == NULL) {
-/*		pcb_message(PCB_MSG_DEFAULT, "Error loading '%s': %s\n", Filename, errmsg);*/
+		pcb_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
 		return -1;
 	}
 
