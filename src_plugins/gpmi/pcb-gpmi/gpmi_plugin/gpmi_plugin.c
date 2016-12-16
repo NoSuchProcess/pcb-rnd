@@ -20,7 +20,7 @@ const char *gpmi_cookie = "GPMI plugin cookie";
 /* This function is used to print a detailed GPMI error message */
 void gpmi_hid_print_error(gpmi_err_stack_t *entry, char *string)
 {
-	pcb_message(PCB_MSG_DEFAULT, "[GPMI] %s\n", string);
+	pcb_message(PCB_MSG_ERROR, "[GPMI] %s\n", string);
 }
 
 static void start_timer(void);
@@ -68,7 +68,7 @@ static void cmd_reload(const char *name)
 		if (i != NULL)
 			hid_gpmi_reload_module(i);
 		else
-			pcb_message(PCB_MSG_DEFAULT, "Script %s not found\n", name);
+			pcb_message(PCB_MSG_ERROR, "Script %s not found\n", name);
 	}
 	else {
 		for(i = hid_gpmi_script_info; i != NULL; i = i->next)
@@ -91,32 +91,32 @@ static int action_gpmi_scripts(int argc, const char **argv, pcb_coord_t x, pcb_c
 	else if (pcb_strcasecmp(argv[0], "load") == 0) {
 		if (argc == 3) {
 			if (hid_gpmi_load_module(NULL, argv[1], argv[2], NULL) == NULL)
-				pcb_message(PCB_MSG_DEFAULT, "Failed to load %s %s\n", argv[1], argv[2]);
+				pcb_message(PCB_MSG_ERROR, "Failed to load %s %s\n", argv[1], argv[2]);
 		}
 		else
-			pcb_message(PCB_MSG_DEFAULT, "Invalid number of arguments for load\n");
+			pcb_message(PCB_MSG_ERROR, "Invalid number of arguments for load\n");
 	}
 	else if (pcb_strcasecmp(argv[0], "unload") == 0) {
 		if (argc == 2) {
 			hid_gpmi_script_info_t *i = hid_gpmi_lookup(argv[1]);
 			if (i != NULL) {
 				if (gpmi_hid_script_unload(i) != 0) {
-					pcb_message(PCB_MSG_DEFAULT, "Failed to unload %s\n", argv[1]);
+					pcb_message(PCB_MSG_ERROR, "Failed to unload %s\n", argv[1]);
 					return 1;
 				}
 			}
 			else {
-				pcb_message(PCB_MSG_DEFAULT, "Failed to unload %s: not loaded\n", argv[1]);
+				pcb_message(PCB_MSG_ERROR, "Failed to unload %s: not loaded\n", argv[1]);
 				return 1;
 			}
 		}
 		else {
-			pcb_message(PCB_MSG_DEFAULT, "Invalid number of arguments for unload\n");
+			pcb_message(PCB_MSG_ERROR, "Invalid number of arguments for unload\n");
 			return 1;
 		}
 	}
 	else {
-		pcb_message(PCB_MSG_DEFAULT, "Invalid arguments in gpmi_scripts()\n");
+		pcb_message(PCB_MSG_ERROR, "Invalid arguments in gpmi_scripts()\n");
 		return 1;
 	}
 	return 0;
