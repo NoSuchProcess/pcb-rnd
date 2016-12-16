@@ -9,7 +9,7 @@ void dialog_log(const char *msg)
 	if (pcb_gui == NULL)
 		fprintf(stderr, "couldn't find gui for log: \"%s\"\n", msg);
 	else
-		pcb_message(PCB_MSG_DEFAULT, "%s", msg);
+		pcb_message(PCB_MSG_INFO, "%s", msg);
 }
 
 #define empty(s) (((s) == NULL) || ((*s) == '\0'))

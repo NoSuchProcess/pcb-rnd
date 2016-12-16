@@ -163,7 +163,7 @@ static void UpdateXY(pcb_netlist_t *Nets)
 				c->Y = ((pcb_pin_t *) c->ptr2)->Y;
 				break;
 			default:
-				pcb_message(PCB_MSG_DEFAULT, "Odd connection type encountered in " "UpdateXY");
+				pcb_message(PCB_MSG_ERROR, "Odd connection type encountered in " "UpdateXY");
 				break;
 			}
 		}
@@ -690,13 +690,13 @@ pcb_bool AutoPlaceSelected(void)
 	 */
 	Nets = pcb_rat_proc_netlist(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
 	if (!Nets) {
-		pcb_message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
+		pcb_message(PCB_MSG_ERROR, _("Can't add rat lines because no netlist is loaded.\n"));
 		goto done;
 	}
 
 	Selected = collectSelectedElements();
 	if (vtptr_len(&Selected) == 0) {
-		pcb_message(PCB_MSG_DEFAULT, _("No elements selected to autoplace.\n"));
+		pcb_message(PCB_MSG_ERROR, _("No elements selected to autoplace.\n"));
 		goto done;
 	}
 

@@ -635,7 +635,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 		assign_file_suffix(filesuff, layer, flags);
 		f = fopen(filename, "wb");	/* Binary needed to force CR-LF */
 		if (f == NULL) {
-			pcb_message(PCB_MSG_DEFAULT, "Error:  Could not open %s for writing.\n", filename);
+			pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
 			return 1;
 		}
 

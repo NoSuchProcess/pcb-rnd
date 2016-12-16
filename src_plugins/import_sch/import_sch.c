@@ -231,7 +231,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			y = pcb_get_value(ys, units, NULL, NULL);
 		}
 		else {
-			pcb_message(PCB_MSG_DEFAULT, _("Bad syntax for Import(setnewpoint)"));
+			pcb_message(PCB_MSG_ERROR, _("Bad syntax for Import(setnewpoint)"));
 			return 1;
 		}
 
@@ -431,7 +431,7 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			pcb_tempfile_unlink(tmpfile);
 	}
 	else {
-		pcb_message(PCB_MSG_DEFAULT, _("Unknown import mode: %s\n"), mode);
+		pcb_message(PCB_MSG_ERROR, _("Unknown import mode: %s\n"), mode);
 		return 1;
 	}
 

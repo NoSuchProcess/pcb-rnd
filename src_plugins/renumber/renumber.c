@@ -110,7 +110,7 @@ static int pcb_act_Renumber(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	}
 
 	if ((out = fopen(name, "w")) == NULL) {
-		pcb_message(PCB_MSG_DEFAULT, _("Could not open %s\n"), name);
+		pcb_message(PCB_MSG_ERROR, _("Could not open %s\n"), name);
 		if (free_name && name)
 			free((char*)name);
 		return 1;

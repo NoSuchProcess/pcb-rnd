@@ -77,7 +77,7 @@ static const char h_help[] = "Print a help message for commands.";
 
 static int CommandHelp(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_message(PCB_MSG_DEFAULT, "following commands are supported:\n"
+	pcb_message(PCB_MSG_INFO, "following commands are supported:\n"
 					"  Command()   execute an action command (too numerous to list)\n"
 					"              see the manual for the list of action commands\n"
 					"  h           display this help message\n"
@@ -121,7 +121,7 @@ static int CommandLoadLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		break;
 
 	default: /* usage */
-		pcb_message(PCB_MSG_DEFAULT, "Usage: l [name]\n  loads layout data\n");
+		pcb_message(PCB_MSG_ERROR, "Usage: l [name]\n  loads layout data\n");
 		return (1);
 	}
 
@@ -157,7 +157,7 @@ static int CommandLoadElementToBuffer(int argc, const char **argv, pcb_coord_t x
 		break;
 
 	default:											/* usage */
-		pcb_message(PCB_MSG_DEFAULT, pcb_false, "Usage: le [name]\n  loads element data to buffer\n");
+		pcb_message(PCB_MSG_ERROR, pcb_false, "Usage: le [name]\n  loads element data to buffer\n");
 		return (1);
 	}
 	return (0);
@@ -193,7 +193,7 @@ static int CommandLoadLayoutToBuffer(int argc, const char **argv, pcb_coord_t x,
 		break;
 
 	default:  /* usage */
-		pcb_message(PCB_MSG_DEFAULT, "Usage: m [name]\n  loads layout data to buffer\n");
+		pcb_message(PCB_MSG_ERROR, "Usage: m [name]\n  loads layout data to buffer\n");
 		return (1);
 	}
 	return (0);
@@ -270,7 +270,7 @@ static int CommandLoadNetlist(int argc, const char **argv, pcb_coord_t x, pcb_co
 		break;
 
 	default:											/* usage */
-		pcb_message(PCB_MSG_DEFAULT, "Usage: rn [name]\n  reads in a netlist file\n");
+		pcb_message(PCB_MSG_ERROR, "Usage: rn [name]\n  reads in a netlist file\n");
 		return (1);
 	}
 	if (PCB->Netlistname)
@@ -319,7 +319,7 @@ static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 				pcb_board_set_changed_flag(pcb_false);
 		}
 		else
-			pcb_message(PCB_MSG_DEFAULT, "No filename to save to yet\n");
+			pcb_message(PCB_MSG_ERROR, "No filename to save to yet\n");
 		break;
 
 	case 1:
@@ -333,7 +333,7 @@ static int CommandSaveLayout(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		break;
 
 	default:
-		pcb_message(PCB_MSG_DEFAULT, "Usage: s [name] | w [name]\n  saves layout data\n");
+		pcb_message(PCB_MSG_ERROR, "Usage: s [name] | w [name]\n  saves layout data\n");
 		return (1);
 	}
 	return (0);

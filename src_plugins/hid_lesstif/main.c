@@ -1678,7 +1678,7 @@ static unsigned short int lesstif_translate_key(const char *desc, int len)
 
 	key = XStringToKeysym(desc);
 	if (key == NoSymbol && len > 1) {
-		pcb_message(PCB_MSG_DEFAULT, "no symbol for %s\n", desc);
+		pcb_message(PCB_MSG_INFO, "lesstif_translate_key: no symbol for %s\n", desc);
 		return 0;
 	}
 	return key;

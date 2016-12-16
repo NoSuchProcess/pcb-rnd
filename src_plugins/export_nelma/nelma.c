@@ -554,7 +554,7 @@ static void nelma_finish_png()
 #ifdef HAVE_GDIMAGEPNG
 	gdImagePng(nelma_im, nelma_f);
 #else
-	pcb_message(PCB_MSG_DEFAULT, "NELMA: PNG not supported by gd. Can't write layer mask.\n");
+	pcb_message(PCB_MSG_WARNING, "NELMA: PNG not supported by gd. Can't write layer mask.\n");
 #endif
 	gdImageDestroy(nelma_im);
 	fclose(nelma_f);
