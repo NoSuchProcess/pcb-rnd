@@ -42,6 +42,9 @@
 		- regex and string cmp match speed vs. select by name
 
 CLEANUP #5
+- unravel the undo code
+	- grid size change should be undoable?
+	- maybe other conf settings too?
 - src/check_icon.data - is it used?
 - search for move.dst_layer - don't compare pointer to -1!
 - make uninstall doesn't remove an scm
