@@ -144,7 +144,7 @@ pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
-int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, int LayerN)
+int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, int LayerN, int oldfmt)
 {
 	int group, member, layer;
 	pcb_bool c_set = pcb_false,						/* flags for the two special layers to */
@@ -191,8 +191,17 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, i
 				layer = atoi(s) - 1;
 				break;
 			}
-			if (layer > LayerN + MAX(PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE) || member >= LayerN + 1)
+			if (member >= LayerN + 1)
 				goto error;
+			if (oldfmt) {
+				/* the old format didn't always have the silks */
+				if (layer > LayerN + MAX(PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE) + 2)
+					goto error;
+			}
+			else {
+				if (layer > LayerN + MAX(PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE))
+					goto error;
+			}
 			groupnum[layer] = group;
 			LayerGroup->Entries[group][member++] = layer;
 			while (*++s && isdigit((int) *s));

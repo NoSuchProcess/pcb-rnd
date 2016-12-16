@@ -599,7 +599,7 @@ void PostLoadElementPCB()
 		return;
 
 	pcb_board_new_postproc(yyPCB, 0);
-	pcb_layer_parse_group_string("1,c:2,s", &yyPCB->LayerGroups, yyData->LayerN);
+	pcb_layer_parse_group_string("1,c:2,s", &yyPCB->LayerGroups, yyData->LayerN, 0);
 	e = elementlist_first(&yyPCB->Data->Element);	/* we know there's only one */
 	PCB = yyPCB;
 	pcb_element_move(yyPCB->Data, e, -e->BoundingBox.X1, -e->BoundingBox.Y1);

@@ -63,6 +63,7 @@ static	pcb_symbol_t *Symbol;
 static	int		pin_num;
 static	pcb_lib_menu_t *Menu;
 static	pcb_bool			LayerFlag[PCB_MAX_LAYER + 2];
+static	int	oldfmt; /* 1 if we are reading a PCB(), 0 if PCB[] */
 
 extern	char			*yytext;		/* defined by LEX */
 extern	pcb_board_t *	yyPCB;
@@ -181,6 +182,7 @@ parsepcb
 				yyData->LayerN = 0;
 				yyPCB->NetlistPatches = yyPCB->NetlistPatchLast = NULL;
 				layer_group_string = NULL;
+				oldfmt = 0;
 			}
 		  pcbfileversion
 		  pcbname
@@ -201,7 +203,7 @@ parsepcb
 			  if ((yy_settings_dest != CFR_invalid) && (layer_group_string != NULL))
 					conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, POL_OVERWRITE);
 			  pcb_board_new_postproc(yyPCB, 0);
-			  if (pcb_layer_parse_group_string(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN))
+			  if (pcb_layer_parse_group_string(layer_group_string, &yyPCB->LayerGroups, yyData->LayerN, oldfmt))
 			    {
 			      pcb_message(PCB_MSG_ERROR, "illegal layer-group string\n");
 			      YYABORT;
@@ -332,18 +334,21 @@ pcbname
 				yyPCB->Name = $3;
 				yyPCB->MaxWidth = PCB_MAX_COORD;
 				yyPCB->MaxHeight = PCB_MAX_COORD;
+				old_fmt = 1;
 			}
 		| T_PCB '(' STRING measure measure ')'
 			{
 				yyPCB->Name = $3;
 				yyPCB->MaxWidth = OU ($4);
 				yyPCB->MaxHeight = OU ($5);
+				old_fmt = 1;
 			}
 		| T_PCB '[' STRING measure measure ']'
 			{
 				yyPCB->Name = $3;
 				yyPCB->MaxWidth = NU ($4);
 				yyPCB->MaxHeight = NU ($5);
+				old_fmt = 0;
 			}
 		;
 
