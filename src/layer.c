@@ -195,6 +195,11 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, i
 				goto error;
 			if (oldfmt) {
 				/* the old format didn't always have the silks */
+				if (layer > LayerN + MAX(PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE)) {
+					/* UGLY HACK: we assume oldfmt is 1 only when called from io_pcb .y */
+					PCB->Data->LayerN++;
+					LayerN++;
+				}
 				if (layer > LayerN + MAX(PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE) + 2)
 					goto error;
 			}
