@@ -189,7 +189,7 @@ int pcb_act_LoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	/* load the resource file */
 	doc = pcb_hid_cfg_load_lht(fname);
 	if (doc == NULL) {
-		pcb_message(PCB_MSG_DEFAULT, _("Could not load vendor resource file \"%s\"\n"), fname);
+		pcb_message(PCB_MSG_ERROR, _("Could not load vendor resource file \"%s\"\n"), fname);
 		return 1;
 	}
 
@@ -211,7 +211,7 @@ int pcb_act_LoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		sf = PCB_MM_TO_COORD(1);
 	}
 	else {
-		pcb_message(PCB_MSG_DEFAULT, "\"%s\" is not a supported units.  Defaulting to inch\n", sval);
+		pcb_message(PCB_MSG_ERROR, "\"%s\" is not a supported units.  Defaulting to inch\n", sval);
 		sf = PCB_INCH_TO_COORD(1);
 	}
 
@@ -226,7 +226,7 @@ int pcb_act_LoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			rounding_method = CLOSEST;
 		}
 		else {
-			pcb_message(PCB_MSG_DEFAULT, _("\"%s\" is not a valid rounding type.  Defaulting to up\n"), sval);
+			pcb_message(PCB_MSG_ERROR, _("\"%s\" is not a valid rounding type.  Defaulting to up\n"), sval);
 			rounding_method = ROUND_UP;
 		}
 	}
@@ -245,49 +245,49 @@ int pcb_act_LoadVendorFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord
 					add_to_drills(n->data.text.value);
 			}
 		}
-		pcb_message(PCB_MSG_DEFAULT, _("Broken drillmap: /drillmap should be a list\n"));
+		pcb_message(PCB_MSG_ERROR, _("Broken drillmap: /drillmap should be a list\n"));
 	}
 	else
-		pcb_message(PCB_MSG_DEFAULT, _("No drillmap resource found\n"));
+		pcb_message(PCB_MSG_ERROR, _("No drillmap resource found\n"));
 
 	sval = pcb_hid_cfg_text_value(doc, "/drc/copper_space");
 	if (sval != NULL) {
 		PCB->Bloat = floor(sf * atof(sval) + 0.5);
-		pcb_message(PCB_MSG_DEFAULT, _("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->Bloat);
+		pcb_message(PCB_MSG_INFO, _("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->Bloat);
 	}
 
 	sval = pcb_hid_cfg_text_value(doc, "/drc/copper_overlap");
 	if (sval != NULL) {
 		PCB->Shrink = floor(sf * atof(sval) + 0.5);
-		pcb_message(PCB_MSG_DEFAULT, _("Set DRC minimum copper overlap to %.2f mils\n"), 0.01 * PCB->Shrink);
+		pcb_message(PCB_MSG_INFO, _("Set DRC minimum copper overlap to %.2f mils\n"), 0.01 * PCB->Shrink);
 	}
 
 	sval = pcb_hid_cfg_text_value(doc, "/drc/copper_width");
 	if (sval != NULL) {
 		PCB->minWid = floor(sf * atof(sval) + 0.5);
-		pcb_message(PCB_MSG_DEFAULT, _("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->minWid);
+		pcb_message(PCB_MSG_INFO, _("Set DRC minimum copper spacing to %.2f mils\n"), 0.01 * PCB->minWid);
 	}
 
 	sval = pcb_hid_cfg_text_value(doc, "/drc/silk_width");
 	if (sval != NULL) {
 		PCB->minSlk = floor(sf * atof(sval) + 0.5);
-		pcb_message(PCB_MSG_DEFAULT, _("Set DRC minimum silk width to %.2f mils\n"), 0.01 * PCB->minSlk);
+		pcb_message(PCB_MSG_INFO, _("Set DRC minimum silk width to %.2f mils\n"), 0.01 * PCB->minSlk);
 	}
 
 	sval = pcb_hid_cfg_text_value(doc, "/drc/min_drill");
 	if (sval != NULL) {
 		PCB->minDrill = floor(sf * atof(sval) + 0.5);
-		pcb_message(PCB_MSG_DEFAULT, _("Set DRC minimum drill diameter to %.2f mils\n"), 0.01 * PCB->minDrill);
+		pcb_message(PCB_MSG_INFO, _("Set DRC minimum drill diameter to %.2f mils\n"), 0.01 * PCB->minDrill);
 	}
 
 	sval = pcb_hid_cfg_text_value(doc, "/drc/min_ring");
 	if (sval != NULL) {
 		PCB->minRing = floor(sf * atof(sval) + 0.5);
-		pcb_message(PCB_MSG_DEFAULT, _("Set DRC minimum annular ring to %.2f mils\n"), 0.01 * PCB->minRing);
+		pcb_message(PCB_MSG_INFO, _("Set DRC minimum annular ring to %.2f mils\n"), 0.01 * PCB->minRing);
 	}
 
-	pcb_message(PCB_MSG_DEFAULT, _("Loaded %d vendor drills from %s\n"), n_vendor_drills, fname);
-	pcb_message(PCB_MSG_DEFAULT, _("Loaded %d RefDes skips, %d Value skips, %d Descr skips\n"), n_refdes, n_value, n_descr);
+	pcb_message(PCB_MSG_INFO, _("Loaded %d vendor drills from %s\n"), n_vendor_drills, fname);
+	pcb_message(PCB_MSG_INFO, _("Loaded %d RefDes skips, %d Value skips, %d Descr skips\n"), n_refdes, n_value, n_descr);
 
 	conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
 
@@ -325,14 +325,14 @@ static void apply_vendor_map(void)
 					if (pcb_chg_obj_2nd_size(PCB_TYPE_VIA, via, NULL, NULL, vendorDrillMap(via->DrillingHole), pcb_true, pcb_false))
 						changed++;
 					else {
-						pcb_message(PCB_MSG_DEFAULT, _
+						pcb_message(PCB_MSG_WARNING, _
 										("Via at %.2f, %.2f not changed.  Possible reasons:\n"
 										 "\t- pad size too small\n"
 										 "\t- new size would be too large or too small\n"), 0.01 * via->X, 0.01 * via->Y);
 					}
 				}
 				else {
-					pcb_message(PCB_MSG_DEFAULT, _("Locked via at %.2f, %.2f not changed.\n"), 0.01 * via->X, 0.01 * via->Y);
+					pcb_message(PCB_MSG_WARNING, _("Locked via at %.2f, %.2f not changed.\n"), 0.01 * via->X, 0.01 * via->Y);
 				}
 			}
 		}
@@ -355,7 +355,7 @@ static void apply_vendor_map(void)
 							if (pcb_chg_obj_2nd_size(PCB_TYPE_PIN, element, pin, NULL, vendorDrillMap(pin->DrillingHole), pcb_true, pcb_false))
 								changed++;
 							else {
-								pcb_message(PCB_MSG_DEFAULT, _
+								pcb_message(PCB_MSG_WARNING, _
 												("Pin %s (%s) at %.2f, %.2f (element %s, %s, %s) not changed.\n"
 												 "\tPossible reasons:\n"
 												 "\t- pad size too small\n"
@@ -366,7 +366,7 @@ static void apply_vendor_map(void)
 							}
 						}
 						else {
-							pcb_message(PCB_MSG_DEFAULT, _("Locked pin at %-6.2f, %-6.2f not changed.\n"), 0.01 * pin->X, 0.01 * pin->Y);
+							pcb_message(PCB_MSG_WARNING, _("Locked pin at %-6.2f, %-6.2f not changed.\n"), 0.01 * pin->X, 0.01 * pin->Y);
 						}
 					}
 				}
@@ -375,7 +375,7 @@ static void apply_vendor_map(void)
 		}
 		PCB_END_LOOP;
 
-		pcb_message(PCB_MSG_DEFAULT, _("Updated %d drill sizes out of %d total\n"), changed, tot);
+		pcb_message(PCB_MSG_INFO, _("Updated %d drill sizes out of %d total\n"), changed, tot);
 
 #warning TODO: this should not happen; modify some local setting?
 #if 0
@@ -442,7 +442,7 @@ int vendorDrillMap(int in)
 
 	/* are we larger than the largest drill? */
 	if (in > vendor_drills[n_vendor_drills - 1]) {
-		pcb_message(PCB_MSG_DEFAULT, _("Vendor drill list does not contain a drill >= %6.2f mil\n"
+		pcb_message(PCB_MSG_ERROR, _("Vendor drill list does not contain a drill >= %6.2f mil\n"
 							"Using %6.2f mil instead.\n"), 0.01 * in, 0.01 * vendor_drills[n_vendor_drills - 1]);
 		cached_map = vendor_drills[n_vendor_drills - 1];
 		return vendor_drills[n_vendor_drills - 1];
@@ -580,7 +580,7 @@ pcb_bool vendorIsElementMappable(pcb_element_t *element)
 	for (i = 0; i < n_refdes; i++) {
 		if ((PCB_NSTRCMP(PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), ignore_refdes[i]) == 0)
 				|| rematch(ignore_refdes[i], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)))) {
-			pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because refdes = %s matches %s\n"), PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), ignore_refdes[i]);
+			pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because refdes = %s matches %s\n"), PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), ignore_refdes[i]);
 			noskip = 0;
 		}
 	}
@@ -588,7 +588,7 @@ pcb_bool vendorIsElementMappable(pcb_element_t *element)
 		for (i = 0; i < n_value; i++) {
 			if ((PCB_NSTRCMP(PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), ignore_value[i]) == 0)
 					|| rematch(ignore_value[i], PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)))) {
-				pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because value = %s matches %s\n"), PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), ignore_value[i]);
+				pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because value = %s matches %s\n"), PCB_UNKNOWN(PCB_ELEM_NAME_VALUE(element)), ignore_value[i]);
 				noskip = 0;
 			}
 		}
@@ -598,7 +598,7 @@ pcb_bool vendorIsElementMappable(pcb_element_t *element)
 			if ((PCB_NSTRCMP(PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)), ignore_descr[i])
 					 == 0)
 					|| rematch(ignore_descr[i], PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)))) {
-				pcb_message(PCB_MSG_DEFAULT, _
+				pcb_message(PCB_MSG_INFO, _
 								("Vendor mapping skipped because descr = %s matches %s\n"),
 								PCB_UNKNOWN(PCB_ELEM_NAME_DESCRIPTION(element)), ignore_descr[i]);
 				noskip = 0;
@@ -606,7 +606,7 @@ pcb_bool vendorIsElementMappable(pcb_element_t *element)
 		}
 
 	if (noskip && PCB_FLAG_TEST(PCB_FLAG_LOCK, element)) {
-		pcb_message(PCB_MSG_DEFAULT, _("Vendor mapping skipped because element %s is locked\n"), PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)));
+		pcb_message(PCB_MSG_INFO, _("Vendor mapping skipped because element %s is locked\n"), PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)));
 		noskip = 0;
 	}
 
@@ -624,7 +624,7 @@ static pcb_bool rematch(const char *re, const char *s)
 	/* compile the regular expression */
 	regex = re_sei_comp(re);
 	if (re_sei_errno(regex) != 0) {
-		pcb_message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+		pcb_message(PCB_MSG_ERROR, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 		re_sei_free(regex);
 		return pcb_false;
 	}
