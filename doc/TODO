@@ -10,6 +10,7 @@
 	- liblihata shouldn't compile genht (different cflags)
 	- GTK: redraws the board twice after tab-flip: first mirrored then mirrored+new-stack-vis (second redraw doesn't hit the screen on mac) [report:James]
 	- GTK: the full screen support broke
+	- gsch2pcb-rnd: footprint not found results PKG() line in the .new.pcb
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -43,6 +44,7 @@
 		- regex and string cmp match speed vs. select by name
 
 CLEANUP #5
+- pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
 - unravel the undo code
 	- grid size change should be undoable? [report:Evan]
 	- maybe other conf settings too?
