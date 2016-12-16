@@ -43,7 +43,7 @@
 
 CLEANUP #5
 - unravel the undo code
-	- grid size change should be undoable?
+	- grid size change should be undoable? [report:Evan]
 	- maybe other conf settings too?
 - src/check_icon.data - is it used?
 - search for move.dst_layer - don't compare pointer to -1!
@@ -134,7 +134,7 @@ FEATURES
 - BUILD: menuconfig and a config file for scconfig
 
 Low prio:
-- bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it
+- bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
 - GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
 - insert drag&drop strangeness (mainline too):
 	insert should just insert a new point and stop there, not starting a drag&drop
