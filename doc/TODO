@@ -9,6 +9,7 @@
 	- lihata doesn't save config?! (window size settings) [report:Larry]
 	- liblihata shouldn't compile genht (different cflags)
 	- GTK: redraws the board twice after tab-flip: first mirrored then mirrored+new-stack-vis (second redraw doesn't hit the screen on mac) [report:James]
+	- GTK: the full screen support broke
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
