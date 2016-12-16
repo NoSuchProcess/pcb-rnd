@@ -110,7 +110,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 		PCB_ACT_FAIL(Attributes);
 
 	if (!pcb_gui->edit_attributes) {
-		pcb_message(PCB_MSG_DEFAULT, _("This GUI doesn't support Attribute Editing\n"));
+		pcb_message(PCB_MSG_ERROR, _("This GUI doesn't support Attribute Editing\n"));
 		return 1;
 	}
 
@@ -133,7 +133,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 						break;
 					}
 				if (layer == NULL) {
-					pcb_message(PCB_MSG_DEFAULT, _("No layer named %s\n"), layername);
+					pcb_message(PCB_MSG_ERROR, _("No layer named %s\n"), layername);
 					return 1;
 				}
 			}
@@ -157,7 +157,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 			}
 			PCB_END_LOOP;
 			if (n_found > 1) {
-				pcb_message(PCB_MSG_DEFAULT, _("Too many elements selected\n"));
+				pcb_message(PCB_MSG_ERROR, _("Too many elements selected\n"));
 				return 1;
 			}
 			if (n_found == 0) {
@@ -166,7 +166,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 				if ((pcb_search_screen(x, y, PCB_TYPE_ELEMENT, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_TYPE_NONE)
 					e = (pcb_element_t *) ptrtmp;
 				else {
-					pcb_message(PCB_MSG_DEFAULT, _("No element found there\n"));
+					pcb_message(PCB_MSG_ERROR, _("No element found there\n"));
 					return 1;
 				}
 			}
@@ -381,7 +381,7 @@ static int pcb_act_MoveObject(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 	type = pcb_search_screen(x, y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_TYPE_NONE) {
-		pcb_message(PCB_MSG_DEFAULT, _("Nothing found under crosshair\n"));
+		pcb_message(PCB_MSG_ERROR, _("Nothing found under crosshair\n"));
 		return 1;
 	}
 	if (absolute1)
@@ -679,7 +679,7 @@ static int pcb_act_ElementSetAttr(int argc, const char **argv, pcb_coord_t x, pc
 	PCB_END_LOOP;
 
 	if (!e) {
-		pcb_message(PCB_MSG_DEFAULT, _("Cannot change attribute of %s - element not found\n"), refdes);
+		pcb_message(PCB_MSG_ERROR, _("Cannot change attribute of %s - element not found\n"), refdes);
 		return 1;
 	}
 
@@ -1049,7 +1049,7 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	int new_top = -1;
 
 	if (argc != 2) {
-		pcb_message(PCB_MSG_DEFAULT, "Usage; MoveLayer(old,new)");
+		pcb_message(PCB_MSG_ERROR, "Usage; MoveLayer(old,new)");
 		return 1;
 	}
 
