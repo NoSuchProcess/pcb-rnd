@@ -12,6 +12,7 @@
 	- GTK: the full screen support broke
 	- gsch2pcb-rnd: footprint not found results PKG() line in the .new.pcb [report:Evan]
 	- do not complain about missing ./default.pcb when running from installed [report:Evan]
+	- save buffer element to file - format is pcb, file name is .lht [report:Evan]
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
