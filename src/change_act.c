@@ -186,7 +186,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		set_selected = value ? pcb_clr_selected_join : pcb_set_selected_join;
 	}
 	else {
-		pcb_message(PCB_MSG_DEFAULT, _("%s():  Flag \"%s\" is not valid\n"), cmd_name, flag_name);
+		pcb_message(PCB_MSG_ERROR, _("%s():  Flag \"%s\" is not valid\n"), cmd_name, flag_name);
 		return;
 	}
 
@@ -198,7 +198,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 
 			if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE)
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
-					pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+					pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 			if (set_object(type, ptr1, ptr2, ptr3))
 				pcb_board_set_changed_flag(pcb_true);
 			break;
@@ -410,7 +410,7 @@ static int pcb_act_ChangeSize(int argc, const char **argv, pcb_coord_t x, pcb_co
 			{
 				if (type != PCB_TYPE_NONE)
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
-						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+						pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 				if (tostyle) {
 					if (pcb_chg_obj_1st_size(type, ptr1, ptr2, ptr3, value, absolute))
 						pcb_board_set_changed_flag(pcb_true);
@@ -1401,7 +1401,7 @@ static int pcb_act_ChangeAngle(int argc, const char **argv, pcb_coord_t x, pcb_c
 			{
 				if (type != PCB_TYPE_NONE) {
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
-						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+						pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 					else {
 						if (pcb_chg_obj_angle(type, ptr1, ptr2, ptr3, which, value, absolute))
 							pcb_board_set_changed_flag(pcb_true);
@@ -1464,7 +1464,7 @@ static int pcb_act_ChangeRadius(int argc, const char **argv, pcb_coord_t x, pcb_
 			{
 				if (type != PCB_TYPE_NONE) {
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_pin_t *) ptr2))
-						pcb_message(PCB_MSG_DEFAULT, _("Sorry, the object is locked\n"));
+						pcb_message(PCB_MSG_WARNING, _("Sorry, the object is locked\n"));
 					else {
 						if (pcb_chg_obj_radius(type, ptr1, ptr2, ptr3, which, value, absolute))
 							pcb_board_set_changed_flag(pcb_true);

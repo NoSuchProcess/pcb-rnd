@@ -217,7 +217,7 @@ static int pcb_act_Netlist(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	if (!PCB)
 		return 1;
 	if (argc == 0) {
-		pcb_message(PCB_MSG_DEFAULT, pcb_acts_Netlist);
+		pcb_message(PCB_MSG_ERROR, pcb_acts_Netlist);
 		return 1;
 	}
 	if (pcb_strcasecmp(argv[0], "find") == 0)
@@ -266,7 +266,7 @@ static int pcb_act_Netlist(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		return 0;
 	}
 	else {
-		pcb_message(PCB_MSG_DEFAULT, pcb_acts_Netlist);
+		pcb_message(PCB_MSG_ERROR, pcb_acts_Netlist);
 		return 1;
 	}
 
@@ -280,7 +280,7 @@ static int pcb_act_Netlist(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		if (use_re) {
 			regex = re_sei_comp(argv[1]);
 			if (re_sei_errno(regex) != 0) {
-				pcb_message(PCB_MSG_DEFAULT, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
+				pcb_message(PCB_MSG_ERROR, _("regexp error: %s\n"), re_error_str(re_sei_errno(regex)));
 				re_sei_free(regex);
 				return (1);
 			}

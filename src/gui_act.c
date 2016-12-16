@@ -911,8 +911,8 @@ static int pcb_act_Message(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		PCB_ACT_FAIL(Message);
 
 	for (i = 0; i < argc; i++) {
-		pcb_message(PCB_MSG_DEFAULT, argv[i]);
-		pcb_message(PCB_MSG_DEFAULT, "\n");
+		pcb_message(PCB_MSG_INFO, argv[i]);
+		pcb_message(PCB_MSG_INFO, "\n");
 	}
 
 	return 0;
@@ -1067,7 +1067,7 @@ static int pcb_act_RouteStyle(int argc, const char **argv, pcb_coord_t x, pcb_co
 			pcb_event(PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		}
 		else
-			pcb_message(PCB_MSG_DEFAULT, "Error: invalid route style name or index\n");
+			pcb_message(PCB_MSG_ERROR, "Error: invalid route style name or index\n");
 	}
 	return 0;
 }
@@ -1084,7 +1084,7 @@ static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path 
 static int pcb_act_CreateMenu(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	if (pcb_gui == NULL) {
-		pcb_message(PCB_MSG_DEFAULT, "Error: can't create menu, there's no GUI hid loaded\n");
+		pcb_message(PCB_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
 		return 1;
 	}
 
@@ -1225,7 +1225,7 @@ static int pcb_act_SwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	int chg;
 
 	if (ng == NULL) {
-		pcb_message(PCB_MSG_DEFAULT, "No such HID.");
+		pcb_message(PCB_MSG_ERROR, "No such HID.");
 		return 1;
 	}
 

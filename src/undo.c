@@ -189,7 +189,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 
 #ifdef DEBUG_ID
 	if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, ID, Kind) == PCB_TYPE_NONE)
-		pcb_message(PCB_MSG_DEFAULT, "hace: ID (%d) and Type (%x) mismatch in AddObject...\n", ID, Kind);
+		pcb_message(PCB_MSG_ERROR, "hace: ID (%d) and Type (%x) mismatch in AddObject...\n", ID, Kind);
 #endif
 
 	/* allocate memory */
@@ -205,7 +205,7 @@ static UndoListTypePtr GetUndoSlot(int CommandType, int ID, int Kind)
 		if (size > limit) {
 			size_t l2;
 			l2 = (size / limit + 1) * limit;
-			pcb_message(PCB_MSG_DEFAULT, _("Size of 'undo-list' exceeds %li kb\n"), (long) (l2 >> 10));
+			pcb_message(PCB_MSG_INFO, _("Size of 'undo-list' exceeds %li kb\n"), (long) (l2 >> 10));
 		}
 	}
 
@@ -544,8 +544,8 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 			pcb_draw_obj(type, ptr1, ptr2);
 		return (pcb_true);
 	}
-	pcb_message(PCB_MSG_DEFAULT, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
-	pcb_message(PCB_MSG_DEFAULT, "for UndoFlag Operation. Previous flags: %s\n", pcb_strflg_f2s(Entry->Data.Flags, 0));
+	pcb_message(PCB_MSG_ERROR, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
+	pcb_message(PCB_MSG_ERROR, "for UndoFlag Operation. Previous flags: %s\n", pcb_strflg_f2s(Entry->Data.Flags, 0));
 	return (pcb_false);
 }
 
@@ -569,7 +569,7 @@ static pcb_bool UndoMirror(UndoListTypePtr Entry)
 			DrawElement(element);
 		return (pcb_true);
 	}
-	pcb_message(PCB_MSG_DEFAULT, "hace Internal error: UndoMirror on object type %d\n", type);
+	pcb_message(PCB_MSG_ERROR, "hace Internal error: UndoMirror on object type %d\n", type);
 	return (pcb_false);
 }
 
@@ -881,12 +881,12 @@ int pcb_undo(pcb_bool draw)
 	andDraw = draw;
 
 	if (Serial == 0) {
-		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Attempt to pcb_undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
+		pcb_message(PCB_MSG_ERROR, _("ERROR: Attempt to pcb_undo() with Serial == 0\n" "       Please save your work and report this bug.\n"));
 		return 0;
 	}
 
 	if (UndoN == 0) {
-		pcb_message(PCB_MSG_DEFAULT, _("Nothing to undo - buffer is empty\n"));
+		pcb_message(PCB_MSG_INFO, _("Nothing to undo - buffer is empty\n"));
 		return 0;
 	}
 
@@ -895,7 +895,7 @@ int pcb_undo(pcb_bool draw)
 	ptr = &UndoList[UndoN - 1];
 
 	if (ptr->Serial > Serial) {
-		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
+		pcb_message(PCB_MSG_ERROR, _("ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
 							"       Please save your work and report this bug.\n"), ptr->Serial, Serial);
 
 	/* It is likely that the serial number got corrupted through some bad
@@ -922,7 +922,7 @@ int pcb_undo(pcb_bool draw)
 	pcb_undo_unlock();
 
 	if (error_undoing)
-		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Failed to undo some operations\n"));
+		pcb_message(PCB_MSG_ERROR, _("ERROR: Failed to undo some operations\n"));
 
 	if (Types && andDraw)
 		pcb_draw();
@@ -1063,14 +1063,14 @@ int pcb_redo(pcb_bool draw)
 	andDraw = draw;
 
 	if (RedoN == 0) {
-		pcb_message(PCB_MSG_DEFAULT, _("Nothing to redo. Perhaps changes have been made since last undo\n"));
+		pcb_message(PCB_MSG_INFO, _("Nothing to redo. Perhaps changes have been made since last undo\n"));
 		return 0;
 	}
 
 	ptr = &UndoList[UndoN];
 
 	if (ptr->Serial < Serial) {
-		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
+		pcb_message(PCB_MSG_ERROR, _("ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
 							"       Please save your work and report this bug.\n"), ptr->Serial, Serial);
 
 		/* It is likely that the serial number got corrupted through some bad
@@ -1100,7 +1100,7 @@ int pcb_redo(pcb_bool draw)
 	pcb_undo_unlock();
 
 	if (error_undoing)
-		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Failed to redo some operations\n"));
+		pcb_message(PCB_MSG_ERROR, _("ERROR: Failed to redo some operations\n"));
 
 	if (Types && andDraw)
 		pcb_draw();
@@ -1114,7 +1114,7 @@ int pcb_redo(pcb_bool draw)
 void pcb_undo_restore_serial(void)
 {
 	if (added_undo_between_increment_and_restore)
-		pcb_message(PCB_MSG_DEFAULT, _("ERROR: Operations were added to the Undo stack with an incorrect serial number\n"));
+		pcb_message(PCB_MSG_ERROR, _("ERROR: Operations were added to the Undo stack with an incorrect serial number\n"));
 	between_increment_and_restore = pcb_false;
 	added_undo_between_increment_and_restore = pcb_false;
 	Serial = SavedSerial;

@@ -94,7 +94,7 @@ static pcb_bool ParseConnection(const char *InString, char *ElementName, char *P
 	}
 	else {
 		ElementName[j] = '\0';
-		pcb_message(PCB_MSG_DEFAULT, _("Bad net-list format encountered near: \"%s\"\n"), ElementName);
+		pcb_message(PCB_MSG_ERROR, _("Bad net-list format encountered near: \"%s\"\n"), ElementName);
 		return (pcb_true);
 	}
 }
@@ -160,7 +160,7 @@ pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_
 		return (pcb_false);
 	for (j = 0; PinNum[j] != '\0'; j++);
 	if (j == 0) {
-		pcb_message(PCB_MSG_DEFAULT, _("Error! Netlist file is missing pin!\n" "white space after \"%s-\"\n"), ElementName);
+		pcb_message(PCB_MSG_ERROR, _("Error! Netlist file is missing pin!\n" "white space after \"%s-\"\n"), ElementName);
 		badnet = pcb_true;
 	}
 	else {
@@ -169,11 +169,11 @@ pcb_bool pcb_rat_seek_pad(pcb_lib_entry_t * entry, pcb_connection_t * conn, pcb_
 		if (Same)
 			return (pcb_false);
 		if (PinNum[j - 1] < '0' || PinNum[j - 1] > '9') {
-			pcb_message(PCB_MSG_DEFAULT, "WARNING! Pin number ending with '%c'"
+			pcb_message(PCB_MSG_WARNING, "WARNING! Pin number ending with '%c'"
 							" encountered in netlist file\n" "Probably a bad netlist file format\n", PinNum[j - 1]);
 		}
 	}
-	pcb_message(PCB_MSG_DEFAULT, _("Can't find %s pin %s called for in netlist.\n"), ElementName, PinNum);
+	pcb_message(PCB_MSG_WARNING, _("Can't find %s pin %s called for in netlist.\n"), ElementName, PinNum);
 	return (pcb_false);
 }
 
@@ -230,7 +230,7 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 			{
 				if (pcb_rat_seek_pad(entry, &LastPoint, pcb_false)) {
 					if (PCB_FLAG_TEST(PCB_FLAG_DRC, (pcb_pin_t *) LastPoint.ptr2))
-						pcb_message(PCB_MSG_DEFAULT, _
+						pcb_message(PCB_MSG_ERROR, _
 										("Error! Element %s pin %s appears multiple times in the netlist file.\n"),
 										PCB_ELEM_NAME_REFDES((pcb_element_t *) LastPoint.ptr1),
 										(LastPoint.type ==
@@ -326,7 +326,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pin)) && (!(e->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = pcb_true;
 			if (!pin->Spare) {
-				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to %s pin %s\n"),
+				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to %s pin %s\n"),
 								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pin->Number));
 				pcb_stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 				continue;
@@ -342,7 +342,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			if (newone) {
 				menu = vtptr_alloc_append(&generic, 1);
 				*menu = pin->Spare;
-				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
+				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((pcb_lib_menu_t *) (pin->Spare))->Name[2]);
 				pcb_stub_rat_found_short(pin, NULL, &theNet->Name[2]);
 			}
@@ -356,7 +356,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 		if ((PCB_FLAG_TEST(PCB_FLAG_DRC, pad)) && (!(e->Flags.f & PCB_FLAG_NONETLIST)) && (!(e->Name->Flags.f & PCB_FLAG_NONETLIST))) {
 			warn = pcb_true;
 			if (!pad->Spare) {
-				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
+				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted  to %s pad %s\n"),
 								&theNet->Name[2], PCB_UNKNOWN(PCB_ELEM_NAME_REFDES(element)), PCB_UNKNOWN(pad->Number));
 				pcb_stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 				continue;
@@ -372,7 +372,7 @@ static pcb_bool CheckShorts(pcb_lib_menu_t *theNet)
 			if (newone) {
 				menu = vtptr_alloc_append(&generic, 1);
 				*menu = pad->Spare;
-				pcb_message(PCB_MSG_DEFAULT, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
+				pcb_message(PCB_MSG_WARNING, _("Warning! Net \"%s\" is shorted to net \"%s\"\n"),
 								&theNet->Name[2], &((pcb_lib_menu_t *) (pad->Spare))->Name[2]);
 				pcb_stub_rat_found_short(NULL, pad, &theNet->Name[2]);
 			}
@@ -656,7 +656,7 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 	 */
 	Wantlist = pcb_rat_proc_netlist(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
 	if (!Wantlist) {
-		pcb_message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
+		pcb_message(PCB_MSG_WARNING, _("Can't add rat lines because no netlist is loaded.\n"));
 		return (pcb_false);
 	}
 	changed = pcb_false;
@@ -711,15 +711,15 @@ pcb_rat_add_all(pcb_bool SelectedOnly,
 	if (changed) {
 		pcb_undo_inc_serial();
 		if (ratlist_length(&PCB->Data->Rat) > 0) {
-			pcb_message(PCB_MSG_DEFAULT, "%d rat line%s remaining\n", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) > 1 ? "s" : "");
+			pcb_message(PCB_MSG_WARNING, "%d rat line%s remaining\n", ratlist_length(&PCB->Data->Rat), ratlist_length(&PCB->Data->Rat) > 1 ? "s" : "");
 		}
 		return (pcb_true);
 	}
 	if (!SelectedOnly && !Warned) {
 		if (!ratlist_length(&PCB->Data->Rat) && !badnet)
-			pcb_message(PCB_MSG_DEFAULT, _("Congratulations!!\n" "The layout is complete and has no shorted nets.\n"));
+			pcb_message(PCB_MSG_WARNING, _("Congratulations!!\n" "The layout is complete and has no shorted nets.\n"));
 		else
-			pcb_message(PCB_MSG_DEFAULT, _("Nothing more to add, but there are\n"
+			pcb_message(PCB_MSG_WARNING, _("Nothing more to add, but there are\n"
 								"either rat-lines in the layout, disabled nets\n" "in the net-list, or missing components\n"));
 	}
 	return (pcb_false);
@@ -742,7 +742,7 @@ pcb_netlist_list_t pcb_rat_collect_subnets(pcb_bool SelectedOnly)
 	 */
 	Wantlist = pcb_rat_proc_netlist(&(PCB->NetlistLib[PCB_NETLIST_EDITED]));
 	if (!Wantlist) {
-		pcb_message(PCB_MSG_DEFAULT, _("Can't add rat lines because no netlist is loaded.\n"));
+		pcb_message(PCB_MSG_WARNING, _("Can't add rat lines because no netlist is loaded.\n"));
 		return result;
 	}
 	/* initialize finding engine */
@@ -822,11 +822,11 @@ pcb_rat_t *pcb_rat_add_net(void)
 	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, 5);
 	if (found == PCB_TYPE_NONE) {
-		pcb_message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
+		pcb_message(PCB_MSG_ERROR, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
 	if (PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == NULL || *PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == 0) {
-		pcb_message(PCB_MSG_DEFAULT, _("You must name the starting element first\n"));
+		pcb_message(PCB_MSG_ERROR, _("You must name the starting element first\n"));
 		return (NULL);
 	}
 
@@ -837,11 +837,11 @@ pcb_rat_t *pcb_rat_add_net(void)
 	found = pcb_search_obj_by_location(PCB_TYPE_PAD | PCB_TYPE_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 5);
 	if (found == PCB_TYPE_NONE) {
-		pcb_message(PCB_MSG_DEFAULT, _("No pad/pin under rat line\n"));
+		pcb_message(PCB_MSG_ERROR, _("No pad/pin under rat line\n"));
 		return (NULL);
 	}
 	if (PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == NULL || *PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1) == 0) {
-		pcb_message(PCB_MSG_DEFAULT, _("You must name the ending element first\n"));
+		pcb_message(PCB_MSG_ERROR, _("You must name the ending element first\n"));
 		return (NULL);
 	}
 	group2 = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
@@ -851,7 +851,7 @@ pcb_rat_t *pcb_rat_add_net(void)
 	menu = pcb_netnode_to_netname(name1);
 	if (menu) {
 		if (pcb_netnode_to_netname(name2)) {
-			pcb_message(PCB_MSG_DEFAULT, _("Both connections already in netlist - cannot merge nets\n"));
+			pcb_message(PCB_MSG_ERROR, _("Both connections already in netlist - cannot merge nets\n"));
 			return (NULL);
 		}
 		entry = pcb_lib_entry_new(menu);
