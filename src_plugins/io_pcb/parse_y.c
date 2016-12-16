@@ -3211,7 +3211,7 @@ static int
 check_file_version (int ver)
 {
   if ( ver > PCB_FILE_VERSION ) {
-    pcb_message(PCB_MSG_DEFAULT, "ERROR:  The file you are attempting to load is in a format\n"
+    pcb_message(PCB_MSG_ERROR, "ERROR:  The file you are attempting to load is in a format\n"
 	     "which is too new for this version of pcb.  To load this file\n"
 	     "you need a version of pcb which is >= %d.  If you are\n"
 	     "using a version built from git source, the source date\n"

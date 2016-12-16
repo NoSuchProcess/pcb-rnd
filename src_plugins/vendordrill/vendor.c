@@ -383,7 +383,7 @@ static void apply_vendor_map(void)
 		if (conf_core.design.via_drilling_hole != vendorDrillMap(Settings.ViaDrillingHole)) {
 			changed++;
 			Settings.ViaDrillingHole = vendorDrillMap(Settings.ViaDrillingHole);
-			pcb_message(PCB_MSG_DEFAULT, _("Adjusted active via hole size to be %6.2f mils\n"), 0.01 * Settings.ViaDrillingHole);
+			pcb_message(PCB_MSG_INFO, _("Adjusted active via hole size to be %6.2f mils\n"), 0.01 * Settings.ViaDrillingHole);
 		}
 
 		/* and update the vias for the various routing styles */
@@ -391,12 +391,12 @@ static void apply_vendor_map(void)
 			if (PCB->RouteStyle[i].Hole != vendorDrillMap(PCB->RouteStyle[i].Hole)) {
 				changed++;
 				PCB->RouteStyle[i].Hole = vendorDrillMap(PCB->RouteStyle[i].Hole);
-				pcb_message(PCB_MSG_DEFAULT, _
+				pcb_message(PCB_MSG_INFO, _
 								("Adjusted %s routing style via hole size to be %6.2f mils\n"),
 								PCB->RouteStyle[i].Name, 0.01 * PCB->RouteStyle[i].Hole);
 				if (PCB->RouteStyle[i].Diameter < PCB->RouteStyle[i].Hole + PCB_MIN_PINORVIACOPPER) {
 					PCB->RouteStyle[i].Diameter = PCB->RouteStyle[i].Hole + PCB_MIN_PINORVIACOPPER;
-					pcb_message(PCB_MSG_DEFAULT, _
+					pcb_message(PCB_MSG_INFO, _
 									("Increased %s routing style via diameter to %6.2f mils\n"),
 									PCB->RouteStyle[i].Name, 0.01 * PCB->RouteStyle[i].Diameter);
 				}
