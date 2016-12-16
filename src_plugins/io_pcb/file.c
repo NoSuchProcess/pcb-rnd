@@ -619,13 +619,18 @@ int io_pcb_test_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *File
 	Look for any of these in the top few lines of the file:
 	# release: pcb-bin 20050609
 	PCB["name" 600000 500000]
+
+	or
+	PCB("name" 600000 500000]
 */
 
 	while(!(feof(f))) {
 		if (fgets(line, sizeof(line), f) != NULL) {
 			char *s = line;
 			while(isspace(*s)) s++;
-			if ((strncmp(s, "# release: pcb", 14) == 0) || (strncmp(s, "PCB[", 4) == 0))
+			if ((strncmp(s, "# release: pcb", 14) == 0) )
+				return 1;
+			if ((strncmp(s, "PCB", 3) == 0) && ((s[3] == '(') || (s[3] == '[')))
 				return 1;
 			if ((*s == '\r') || (*s == '\n') || (*s == '#') || (*s == '\0')) /* ignore empty lines and comments */
 				continue;
