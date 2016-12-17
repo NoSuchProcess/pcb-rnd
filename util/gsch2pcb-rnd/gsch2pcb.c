@@ -91,23 +91,6 @@ char *fix_spaces(char * str)
 	return str;
 }
 
-char *search_element(PcbElement * el)
-{
-	char *elname = NULL, *path = NULL;
-
-	if (!elname)
-		elname = pcb_strdup(el->description);
-
-	if (!strcmp(elname, "unknown")) {
-		free(elname);
-		return NULL;
-	}
-	if (conf_g2pr.utils.gsch2pcb_rnd.verbose > 1)
-		printf("\tSearching directories looking for file element: %s\n", elname);
-	free(elname);
-	return path;
-}
-
 static void add_schematic(char * sch)
 {
 	char **n;

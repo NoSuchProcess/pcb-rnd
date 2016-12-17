@@ -98,6 +98,24 @@ static PcbElement *pcb_element_exists(PcbElement * el_test, int record)
 	return NULL;
 }
 
+/*
+static char *search_element(PcbElement * el)
+{
+	char *elname = NULL, *path = NULL;
+
+	if (!elname)
+		elname = pcb_strdup(el->description);
+
+	if (!strcmp(elname, "unknown")) {
+		free(elname);
+		return NULL;
+	}
+	if (conf_g2pr.utils.gsch2pcb_rnd.verbose > 1)
+		printf("\tSearching directories looking for file element: %s\n", elname);
+	free(elname);
+	return path;
+}
+*/
 
 	/* As of 1/9/2004 CVS hi_res Element[] line format:
 	 *   Element[element_flags, description, pcb-name, value, mark_x, mark_y,
