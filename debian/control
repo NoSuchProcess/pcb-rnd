@@ -299,7 +299,7 @@ Description: printed circuit board (pcb) design program - smart dispenser
  .
  This package implements a smart algorithm to disperse elements. It is
  useful after importing a new design from the schematics. It is an
- alternative to autplace.
+ alternative to autoplace.
 
 Package: pcb-rnd-stroke
 Architecture: any
