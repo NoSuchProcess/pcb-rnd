@@ -321,20 +321,22 @@ static int pcb_act_Import(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 			return 1;
 		}
 
-		cmd = (const char **) malloc((7 + nsources) * sizeof(char *));
+		cmd = (const char **) malloc((9 + nsources) * sizeof(char *));
 		cmd[0] = conf_import_sch.plugins.import_sch.gnetlist_program;
-		cmd[1] = "-g";
-		cmd[2] = "pcbrndfwd";
-		cmd[3] = "-o";
-		cmd[4] = tmpfile;
-		cmd[5] = "--";
+		cmd[1] = "-L";
+		cmd[2] = PCBLIBDIR;
+		cmd[3] = "-g";
+		cmd[4] = "pcbrndfwd";
+		cmd[5] = "-o";
+		cmd[6] = tmpfile;
+		cmd[7] = "--";
 		for (i = 0; i < nsources; i++)
-			cmd[6 + i] = sources[i];
-		cmd[6 + nsources] = NULL;
+			cmd[8 + i] = sources[i];
+		cmd[8 + nsources] = NULL;
 
 #ifdef DEBUG
 		printf("pcb_act_Import:  ===========  About to run gnetlist  ============\n");
-		printf("%s %s %s %s %s %s %s ...\n", cmd[0], cmd[1], cmd[2], cmd[3], cmd[4], cmd[5], cmd[6]);
+		printf("%s %s %s %s %s %s %s %s %s ...\n", cmd[0], cmd[1], cmd[2], cmd[3], cmd[4], cmd[5], cmd[6], cmd[7], cmd[8]);
 #endif
 
 		if (pcb_spawnvp(cmd)) {
