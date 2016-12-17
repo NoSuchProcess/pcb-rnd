@@ -664,6 +664,16 @@ void fmt_pcb_go()
 	free(bak_file_name);
 }
 
+int fmt_pcb_guess_out_name(void)
+{
+	int res;
+	char *name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
+	res = pcb_file_readable(name);
+	free(name);
+	return res;
+}
+
+
 void fmt_pcb_uninit(void)
 {
 	if (pcb_new_file_name != NULL)
@@ -678,5 +688,6 @@ void fmt_pcb_register(void)
 	fmt_pcb.init = fmt_pcb_init;
 	fmt_pcb.go = fmt_pcb_go;
 	fmt_pcb.uninit = fmt_pcb_uninit;
+	fmt_pcb.guess_out_name = fmt_pcb_guess_out_name;
 	fmt_register(&fmt_pcb);
 }

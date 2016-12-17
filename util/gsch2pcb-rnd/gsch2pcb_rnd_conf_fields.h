@@ -6,3 +6,4 @@ conf_reg(utils.gsch2pcb_rnd.fix_elements,     scalar, CFN_BOOLEAN,     "utils/gs
 conf_reg(utils.gsch2pcb_rnd.sch_basename,     scalar, CFN_STRING,      "utils/gsch2pcb_rnd",     "sch_basename",           "<sch_basename>", 0)
 conf_reg(utils.gsch2pcb_rnd.default_pcb,      scalar, CFN_STRING,      "utils/gsch2pcb_rnd",     "default_pcb",            "override default pcb with a given file", 0)
 conf_reg(utils.gsch2pcb_rnd.empty_footprint_name, scalar, CFN_STRING,      "utils/gsch2pcb_rnd",     "empty_footprint_name",   "<empty_footprint_name>", 0)
+conf_reg(utils.gsch2pcb_rnd.method,           scalar, CFN_STRING,      "utils/gsch2pcb_rnd",     "method",                 "<method>", 0)

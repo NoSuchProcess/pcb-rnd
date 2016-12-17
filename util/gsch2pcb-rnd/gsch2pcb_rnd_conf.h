@@ -14,6 +14,7 @@ typedef struct {
 			CFT_STRING sch_basename;
 			CFT_STRING default_pcb;            /* override default pcb with a given file */
 			CFT_STRING empty_footprint_name;
+			CFT_STRING method;
 		} gsch2pcb_rnd;
 	} utils;
 } conf_gsch2pcb_rnd_t;

@@ -44,6 +44,8 @@
 #include "fmt_pcb.h"
 #include "fmt_pkg.h"
 
+static const char *want_fmt_default = "pcb";
+
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
 
@@ -231,6 +233,7 @@ static void load_extra_project_files(void)
 	done = TRUE;
 }
 
+int have_project_file = 0;
 static void get_args(int argc, char ** argv)
 {
 	char *opt, *arg;
@@ -289,6 +292,7 @@ static void get_args(int argc, char ** argv)
 			if (loc_str_has_suffix(argv[i], ".sch", 4) == NULL) {
 				load_extra_project_files();
 				load_project(argv[i]);
+				have_project_file = 1;
 			}
 			else
 				add_schematic(argv[i]);
@@ -320,7 +324,7 @@ const char *local_project_pcb_name = NULL;
 /************************ main ***********************/
 int main(int argc, char ** argv)
 {
-	const char *want_fmt = "pcb";
+	const char *want_fmt;
 	if (argc < 2)
 		usage();
 
@@ -349,21 +353,40 @@ int main(int argc, char ** argv)
 
 	load_extra_project_files();
 
+
 	conf_update(NULL); /* because of CLI changes */
 
-	if (gadl_length(&schematics) == 0)
-		usage();
 
-	current_fmt = fmt_find(want_fmt);
+	want_fmt = conf_g2pr.utils.gsch2pcb_rnd.method;
+	if (want_fmt == NULL) {
+		fmt_t *f;
+		for(f = fmts; f != NULL; f = f->next) {
+			if (f->guess_out_name()) {
+				current_fmt = f;
+				break;
+			}
+		}
+		if (current_fmt == NULL) {
+			want_fmt = want_fmt_default;
+			pcb_message(PCB_MSG_WARNING, "Warning: method not specified for a project without a board; defaulting to %s", want_fmt);
+		}
+	}
+
 	if (current_fmt == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error: can't find method %s\n", want_fmt);
-		exit(1);
+		current_fmt = fmt_find(want_fmt);
+		if (current_fmt == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Error: can't find method %s\n", want_fmt);
+			exit(1);
+		}
 	}
 
 	current_fmt->init();
 	conf_update(NULL);
 
-	if (local_project_pcb_name != NULL)
+	if (gadl_length(&schematics) == 0)
+		usage();
+
+	if ((local_project_pcb_name != NULL) && (!have_project_file))
 		conf_load_project(NULL, local_project_pcb_name);
 	conf_update(NULL); /* because of the project file */
 
