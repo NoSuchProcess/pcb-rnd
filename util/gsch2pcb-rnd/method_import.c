@@ -35,26 +35,36 @@
 
 char *cmd_file_name;
 char *pcb_file_name;
+char *net_file_name;
 
 static void method_import_init(void)
 {
-	cmd_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".cmd", NULL);
 	pcb_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
+	cmd_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".cmd", NULL);
+	net_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".net", NULL);
 	local_project_pcb_name = pcb_file_name;
 }
 
-static void method_import_go()
+static void import_go(int sep_net)
 {
 	char *verbose_str = NULL;
-	const char *gnetlist;
+	const char *gnetlist, *backend;
 
 	gnetlist = gnetlist_name();
 	if (!conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		verbose_str = "-q";
 
-	if (!build_and_run_command("%s %s -L %s -g pcbrndfwd -o %s %L %L", gnetlist, verbose_str, PCBLIBDIR, cmd_file_name, &extra_gnetlist_arg_list, &schematics)) {
-		fprintf(stderr, "Failed to run gnetlist\n");
+	backend = sep_net ? "pcbrndfwd_elem" : "pcbrndfwd";
+	if (!build_and_run_command("%s %s -L %s -g %s -o %s %L %L", gnetlist, verbose_str, PCBLIBDIR, backend, cmd_file_name, &extra_gnetlist_arg_list, &schematics)) {
+		fprintf(stderr, "Failed to run gnetlist with backend %s to generate the elements\n", backend);
 		exit(1);
+	}
+
+	if (sep_net) {
+		if (!build_and_run_command("%s %s -L %s -g PCB -o %s %L %L", gnetlist, verbose_str, PCBLIBDIR, net_file_name, &extra_gnetlist_arg_list, &schematics)) {
+			fprintf(stderr, "Failed to run gnetlist net file\n");
+			exit(1);
+		}
 	}
 
 	/* Tell user what to do next */
@@ -62,7 +72,26 @@ static void method_import_go()
 	printf("1.  Run pcb-rnd on your board file (or on an empty board if it's the first time).\n");
 	printf("2.  From within pcb-rnd, enter\n\n");
 	printf("    :ExecuteFile(%s)\n\n", cmd_file_name);
+
+	if (sep_net) {
+		printf("    (this will update the elements)\n\n");
+		printf("3.  From within pcb-rnd, select \"File -> Load netlist file\" and select \n");
+		printf("    %s to load the updated netlist.\n\n", net_file_name);
+	}
+	else
+		printf("    (this will update the elements and the netlist)\n\n");
 }
+
+static void method_import_go()
+{
+	import_go(0);
+}
+
+static void method_import_sep_go()
+{
+	import_go(1);
+}
+
 
 static int method_import_guess_out_name(void)
 {
@@ -86,17 +115,28 @@ static void method_import_uninit(void)
 		free(pcb_file_name);
 	if (cmd_file_name != NULL)
 		free(cmd_file_name);
+	if (net_file_name != NULL)
+		free(net_file_name);
 }
 
 static method_t method_import;
+static method_t method_import_sep;
 
 void method_import_register(void)
 {
 	method_import.name = "import";
-	method_import.desc = "import schematics (pure action script variant)";
+	method_import.desc = "import schematics (pure action script)";
 	method_import.init = method_import_init;
 	method_import.go = method_import_go;
 	method_import.uninit = method_import_uninit;
 	method_import.guess_out_name = method_import_guess_out_name;
 	method_register(&method_import);
+
+	method_import_sep.name = "importsep";
+	method_import_sep.desc = "import schematics (separate action script and netlist)";
+	method_import_sep.init = method_import_init;
+	method_import_sep.go = method_import_sep_go;
+	method_import_sep.uninit = method_import_uninit;
+	method_import_sep.guess_out_name = method_import_guess_out_name;
+	method_register(&method_import_sep);
 }

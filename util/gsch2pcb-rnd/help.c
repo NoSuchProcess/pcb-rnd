@@ -146,7 +146,7 @@ void usage(void)
 
 	printf("\nMethods available:\n");
 	for(m = methods; m != NULL; m = m->next)
-		printf("  %-8s %s\n", m->name, m->desc);
+		printf("  %-12s %s\n", m->name, m->desc);
 	printf("\n");
 	printf("%s", usage_string_foot);
 	exit(0);
