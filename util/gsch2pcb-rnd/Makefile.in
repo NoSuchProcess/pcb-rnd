@@ -52,6 +52,7 @@ OBJS = \
  help.o \
  netlister.o \
  run.o \
+ glue.o \
  fmt_pcb.o \
  fmt_pkg.o
 

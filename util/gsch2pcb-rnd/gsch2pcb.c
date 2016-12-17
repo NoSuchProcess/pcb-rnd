@@ -79,44 +79,6 @@ static char *loc_str_has_suffix(char *inp, const char *suffix, int suff_len)
 	return NULL;
 }
 
-void pcb_chdir_error_message(const char *DirName)
-{
-	fprintf(stderr, "gsch2pcb-rnd: warning: can't cd to %s\n", DirName);
-}
-
-void pcb_opendir_error_message(const char *DirName)
-{
-	fprintf(stderr, "gsch2pcb-rnd: warning: can't opendir %s\n", DirName);
-}
-
-void pcb_popen_error_message(const char *cmd)
-{
-	fprintf(stderr, "gsch2pcb-rnd: warning: can't popen %s\n", cmd);
-}
-
-void pcb_message(enum pcb_message_level level, const char *fmt, ...)
-{
-	va_list args;
-	fprintf(stderr, "gsch2pcb-rnd: ");
-	va_start(args, fmt);
-	vfprintf(stderr, fmt, args);
-	va_end(args);
-	fprintf(stderr, "\n");
-}
-
-void pcb_trace(const char *Format, ...)
-{
-#ifndef NDEBUG
-	va_list args;
-	va_start(args, Format);
-	vfprintf(stderr, Format, args);
-	va_end(args);
-#endif
-}
-
-const char *pcb_board_get_filename(void) { return NULL; }
-const char *pcb_board_get_name(void) { return NULL; }
-
 char *fix_spaces(char * str)
 {
 	char *s;
