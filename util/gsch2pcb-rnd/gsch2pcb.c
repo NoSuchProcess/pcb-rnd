@@ -37,14 +37,14 @@
 #include "../src/error.h"
 #include "../src/plugins.h"
 #include "../src/compat_misc.h"
-#include "fmt.h"
+#include "method.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
 #include "gsch2pcb.h"
-#include "fmt_pcb.h"
-#include "fmt_pkg.h"
+#include "method_pcb.h"
+#include "method_pkg.h"
 
-static const char *want_fmt_default = "pcb";
+static const char *want_method_default = "pcb";
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
@@ -57,20 +57,20 @@ int bak_done, need_PKG_purge;
 
 conf_gsch2pcb_rnd_t conf_g2pr;
 
-fmt_t *fmts = NULL, *current_fmt;
+method_t *methods = NULL, *current_method;
 
-void fmt_register(fmt_t *fmt)
+void method_register(method_t *method)
 {
-	fmt->next = fmts;
-	fmts = fmt;
+	method->next = methods;
+	methods = method;
 }
 
-fmt_t *fmt_find(const char *name)
+method_t *method_find(const char *name)
 {
-	fmt_t *f;
-	for(f = fmts; f != NULL; f = f->next)
-		if (strcmp(f->name, name) == 0)
-			return f;
+	method_t *m;
+	for(m = methods; m != NULL; m = m->next)
+		if (strcmp(m->name, name) == 0)
+			return m;
 	return NULL;
 }
 
@@ -257,7 +257,7 @@ static void get_args(int argc, char ** argv)
 				continue;
 			}
 			else if (!strcmp(opt, "m") || !strcmp(opt, "method")) {
-				if (fmt_find(arg) == NULL) {
+				if (method_find(arg) == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Error: can't use unknown method '%s'; try --help\n", arg);
 					exit(1);
 				}
@@ -333,9 +333,9 @@ const char *local_project_pcb_name = NULL;
 /************************ main ***********************/
 int main(int argc, char ** argv)
 {
-	const char *want_fmt;
+	const char *want_method;
 
-	fmt_pcb_register();
+	method_pcb_register();
 
 	if (argc < 2)
 		usage();
@@ -366,30 +366,30 @@ int main(int argc, char ** argv)
 
 	conf_update(NULL); /* because of CLI changes */
 
-	want_fmt = conf_g2pr.utils.gsch2pcb_rnd.method;
-	if (want_fmt == NULL) {
-		fmt_t *f;
-		for(f = fmts; f != NULL; f = f->next) {
-			if (f->guess_out_name()) {
-				current_fmt = f;
+	want_method = conf_g2pr.utils.gsch2pcb_rnd.method;
+	if (want_method == NULL) {
+		method_t *m;
+		for(m = methods; m != NULL; m = m->next) {
+			if (m->guess_out_name()) {
+				current_method = m;
 				break;
 			}
 		}
-		if (current_fmt == NULL) {
-			want_fmt = want_fmt_default;
-			pcb_message(PCB_MSG_WARNING, "Warning: method not specified for a project without a board; defaulting to %s. This warning is harmless if you are running gsch2pcb-rnd for the first time on this project and you are fine with this default method.", want_fmt);
+		if (current_method == NULL) {
+			want_method = want_method_default;
+			pcb_message(PCB_MSG_WARNING, "Warning: method not specified for a project without a board; defaulting to %s. This warning is harmless if you are running gsch2pcb-rnd for the first time on this project and you are fine with this default method.", want_method);
 		}
 	}
 
-	if (current_fmt == NULL) {
-		current_fmt = fmt_find(want_fmt);
-		if (current_fmt == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Error: can't find method %s\n", want_fmt);
+	if (current_method == NULL) {
+		current_method = method_find(want_method);
+		if (current_method == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Error: can't find method %s\n", want_method);
 			exit(1);
 		}
 	}
 
-	current_fmt->init();
+	current_method->init();
 	conf_update(NULL);
 
 	if (gadl_length(&schematics) == 0)
@@ -399,9 +399,9 @@ int main(int argc, char ** argv)
 		conf_load_project(NULL, local_project_pcb_name);
 	conf_update(NULL); /* because of the project file */
 
-	current_fmt->go(); /* the traditional, "parse element and edit the pcb file" approach */
+	current_method->go(); /* the traditional, "parse element and edit the pcb file" approach */
 
-	current_fmt->uninit();
+	current_method->uninit();
 
 	conf_uninit();
 

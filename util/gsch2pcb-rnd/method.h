@@ -1,15 +1,15 @@
-typedef struct fmt_s  fmt_t;
+typedef struct method_s  method_t;
 
-struct fmt_s {
+struct method_s {
 	const char *name;
 	const char *desc;
 	void (*init)(void);
 	void (*go)(void);
 	void (*uninit)(void);
 	int (*guess_out_name)(void); /* returns 1 if the output file of the format exists for the current project */
-	fmt_t *next;
+	method_t *next;
 };
 
-extern fmt_t *fmts;
+extern method_t *methods;
 
-void fmt_register(fmt_t *fmt);
+void method_register(method_t *fmt);

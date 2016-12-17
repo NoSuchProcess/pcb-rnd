@@ -23,11 +23,11 @@
 #include <ctype.h>
 #include "gsch2pcb.h"
 #include "gsch2pcb_rnd_conf.h"
-#include "fmt_pkg.h"
-#include "fmt_pcb.h"
+#include "method_pkg.h"
+#include "method_pcb.h"
 #include "run.h"
 #include "netlister.h"
-#include "fmt.h"
+#include "method.h"
 #include "../src/plug_footprint.h"
 #include "../src/paths.h"
 #include "../src/conf.h"
@@ -521,7 +521,7 @@ static int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * 
 
 static char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name;
 
-void fmt_pcb_init(void)
+void method_pcb_init(void)
 {
 	pcb_fp_init();
 	pins_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".cmd", NULL);
@@ -556,7 +556,7 @@ static void next_steps(int initial_pcb, int quiet_mode)
 	}
 }
 
-void fmt_pcb_go()
+void method_pcb_go()
 {
 	int initial_pcb = TRUE;
 	int created_pcb_file = TRUE;
@@ -664,7 +664,7 @@ void fmt_pcb_go()
 	free(bak_file_name);
 }
 
-int fmt_pcb_guess_out_name(void)
+int method_pcb_guess_out_name(void)
 {
 	int res;
 	char *name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
@@ -674,21 +674,21 @@ int fmt_pcb_guess_out_name(void)
 }
 
 
-void fmt_pcb_uninit(void)
+void method_pcb_uninit(void)
 {
 	if (pcb_new_file_name != NULL)
 		free(pcb_new_file_name);
 }
 
-static fmt_t fmt_pcb;
+static method_t method_pcb;
 
-void fmt_pcb_register(void)
+void method_pcb_register(void)
 {
-	fmt_pcb.name = "pcb";
-	fmt_pcb.desc = "traditional: load footprints and edit the .pcb files";
-	fmt_pcb.init = fmt_pcb_init;
-	fmt_pcb.go = fmt_pcb_go;
-	fmt_pcb.uninit = fmt_pcb_uninit;
-	fmt_pcb.guess_out_name = fmt_pcb_guess_out_name;
-	fmt_register(&fmt_pcb);
+	method_pcb.name = "pcb";
+	method_pcb.desc = "traditional: load footprints and edit the .pcb files";
+	method_pcb.init = method_pcb_init;
+	method_pcb.go = method_pcb_go;
+	method_pcb.uninit = method_pcb_uninit;
+	method_pcb.guess_out_name = method_pcb_guess_out_name;
+	method_register(&method_pcb);
 }

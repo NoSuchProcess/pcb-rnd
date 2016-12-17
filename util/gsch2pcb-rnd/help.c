@@ -25,7 +25,7 @@
   - use popen() instead of glib's spawn (stderr is always printed to stderr)
  */
 #include "config.h"
-#include "fmt.h"
+#include "method.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -130,7 +130,7 @@ static char *usage_string_foot =
 
 void usage(void)
 {
-	fmt_t *f;
+	method_t *m;
 	printf("%s", usage_string0a);
 	printf("%s", usage_string0b);
 	printf("%s", usage_string0c);
@@ -145,8 +145,8 @@ void usage(void)
 	printf("%s", usage_string1c);
 
 	printf("\nMethods available:\n");
-	for(f = fmts; f != NULL; f = f->next)
-		printf("  %-8s %s\n", f->name, f->desc);
+	for(m = methods; m != NULL; m = m->next)
+		printf("  %-8s %s\n", m->name, m->desc);
 	printf("\n");
 	printf("%s", usage_string_foot);
 	exit(0);

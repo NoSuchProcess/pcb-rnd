@@ -53,8 +53,8 @@ OBJS = \
  netlister.o \
  run.o \
  glue.o \
- fmt_pcb.o \
- fmt_pkg.o
+ method_pcb.o \
+ method_pkg.o
 
 all:
 	make revcheck
