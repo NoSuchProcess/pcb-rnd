@@ -336,6 +336,7 @@ int main(int argc, char ** argv)
 	const char *want_method;
 
 	method_pcb_register();
+	method_import_register();
 
 	if (argc < 2)
 		usage();

@@ -6,3 +6,6 @@
 int run_gnetlist(const char *pins_file, const char *net_file, const char *pcb_file, const char * basename, const gadl_list_t *largs);
 
 
+/* Return the name of gnetlist that should be executed */
+const char *gnetlist_name(void);
+

@@ -42,23 +42,29 @@
 #include "gsch2pcb.h"
 #include "run.h"
 
-int run_gnetlist(const char *pins_file, const char *net_file, const char *pcb_file, const char * basename, const gadl_list_t *largs)
+const char *gnetlist_name(void)
 {
-	struct stat st;
-	time_t mtime;
-	static const char *gnetlist = NULL;
-	gadl_iterator_t it;
-	char **sp;
-	char *verbose_str = NULL;
-
+	const char *gnetlist;
 	/* Allow the user to specify a full path or a different name for
 	 * the gnetlist command.  Especially useful if multiple copies
 	 * are installed at once.
 	 */
-	if (gnetlist == NULL)
-		gnetlist = getenv("GNETLIST");
+	gnetlist = getenv("GNETLIST");
 	if (gnetlist == NULL)
 		gnetlist = "gnetlist";
+	return gnetlist;
+}
+
+int run_gnetlist(const char *pins_file, const char *net_file, const char *pcb_file, const char * basename, const gadl_list_t *largs)
+{
+	struct stat st;
+	time_t mtime;
+	const char *gnetlist;
+	gadl_iterator_t it;
+	char **sp;
+	char *verbose_str = NULL;
+
+	gnetlist = gnetlist_name();
 
 	if (!conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		verbose_str = "-q";
