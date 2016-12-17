@@ -34,6 +34,8 @@
 #include "../src/plugins.h"
 #include "../src/plug_footprint.h"
 
+static const char *element_search_path = NULL; /* queried once from the config, when the config is already stable */
+
 /* Copies the content of fn to fout and returns 0 on success. */
 static int CatPCB(FILE * fout, const char *fn)
 {
@@ -510,3 +512,7 @@ int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * refdes,
 	return retval;
 }
 
+void fmt_pcb_init(void)
+{
+	element_search_path = pcb_fp_default_search_path();
+}

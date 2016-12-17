@@ -68,8 +68,6 @@ int bak_done, need_PKG_purge;
 
 conf_gsch2pcb_rnd_t conf_g2pr;
 
-const char *element_search_path = NULL; /* queried once from the config, when the config is already stable */
-
 /* Return a pointer to the suffix if inp ends in that suffix */
 static char *loc_str_has_suffix(char *inp, const char *suffix, int suff_len)
 {
@@ -353,8 +351,6 @@ int main(int argc, char ** argv)
 
 	pcb_fp_init();
 
-	element_search_path = pcb_fp_default_search_path();
-
 	if (gadl_length(&schematics) == 0)
 		usage();
 
@@ -363,6 +359,7 @@ int main(int argc, char ** argv)
 	pcb_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
 
 	conf_load_project(NULL, pcb_file_name);
+	fmt_pcb_init();
 	conf_update(NULL); /* because of the project file */
 
 	{ /* set bak_file_name, finding the first number that results in a non-existing bak */
