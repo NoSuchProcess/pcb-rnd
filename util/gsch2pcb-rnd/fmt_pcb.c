@@ -27,6 +27,7 @@
 #include "fmt_pcb.h"
 #include "run.h"
 #include "netlister.h"
+#include "fmt.h"
 #include "../src/plug_footprint.h"
 #include "../src/paths.h"
 #include "../src/conf.h"
@@ -669,3 +670,13 @@ void fmt_pcb_uninit(void)
 		free(pcb_new_file_name);
 }
 
+static fmt_t fmt_pcb;
+
+void fmt_pcb_register(void)
+{
+	fmt_pcb.name = "pcb";
+	fmt_pcb.init = fmt_pcb_init;
+	fmt_pcb.go = fmt_pcb_go;
+	fmt_pcb.uninit = fmt_pcb_uninit;
+	fmt_register(&fmt_pcb);
+}

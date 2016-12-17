@@ -37,12 +37,12 @@
 #include "../src/error.h"
 #include "../src/plugins.h"
 #include "../src/compat_misc.h"
+#include "fmt.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
 #include "gsch2pcb.h"
 #include "fmt_pcb.h"
 #include "fmt_pkg.h"
-
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
@@ -54,6 +54,23 @@ int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
 int bak_done, need_PKG_purge;
 
 conf_gsch2pcb_rnd_t conf_g2pr;
+
+fmt_t *fmts = NULL, *current_fmt;
+
+void fmt_register(fmt_t *fmt)
+{
+	fmt->next = fmts;
+	fmts = fmt;
+}
+
+fmt_t *fmt_find(const char *name)
+{
+	fmt_t *f;
+	for(f = fmts; f != NULL; f = f->next)
+		if (strcmp(f->name, name) == 0)
+			return f;
+	return NULL;
+}
 
 /* Return a pointer to the suffix if inp ends in that suffix */
 static char *loc_str_has_suffix(char *inp, const char *suffix, int suff_len)
@@ -303,8 +320,11 @@ const char *local_project_pcb_name = NULL;
 /************************ main ***********************/
 int main(int argc, char ** argv)
 {
+	const char *want_fmt = "pcb";
 	if (argc < 2)
 		usage();
+
+	fmt_pcb_register();
 
 	conf_init();
 	conf_core_init();
@@ -334,22 +354,28 @@ int main(int argc, char ** argv)
 	if (gadl_length(&schematics) == 0)
 		usage();
 
-	fmt_pcb_init();
+	current_fmt = fmt_find(want_fmt);
+	if (current_fmt == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Error: can't find method %s\n", want_fmt);
+		exit(1);
+	}
+
+	current_fmt->init();
 	conf_update(NULL);
 
 	if (local_project_pcb_name != NULL)
 		conf_load_project(NULL, local_project_pcb_name);
 	conf_update(NULL); /* because of the project file */
 
-	fmt_pcb_go(); /* the traditional, "parse element and edit the pcb file" approach */
+	current_fmt->go(); /* the traditional, "parse element and edit the pcb file" approach */
+
+	current_fmt->uninit();
 
 	conf_uninit();
 
 	free_strlist(&schematics);
 	free_strlist(&extra_gnetlist_arg_list);
 	free_strlist(&extra_gnetlist_list);
-
-	fmt_pcb_uninit();
 
 	return 0;
 }
