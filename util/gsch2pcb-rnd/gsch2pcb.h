@@ -43,4 +43,6 @@ extern int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
 
 extern int bak_done, need_PKG_purge;
 
+extern const char *element_search_path;
+
 char *fix_spaces(char * str);
