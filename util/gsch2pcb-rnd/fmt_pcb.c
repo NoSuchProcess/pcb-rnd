@@ -38,6 +38,8 @@
 
 static const char *element_search_path = NULL; /* queried once from the config, when the config is already stable */
 
+static int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * refdes, char * value);
+
 /* Copies the content of fn to fout and returns 0 on success. */
 static int CatPCB(FILE * fout, const char *fn)
 {
@@ -136,7 +138,7 @@ static char *search_element(PcbElement * el)
 	 *   is now relative.  The hi_res mark_x,mark_y and text_x,text_y resolutions
 	 *   are 100x the other formats.
 	 */
-PcbElement *pcb_element_line_parse(char * line)
+static PcbElement *pcb_element_line_parse(char * line)
 {
 	PcbElement *el = NULL;
 	char *s, *t, close_char;
@@ -208,7 +210,7 @@ PcbElement *pcb_element_line_parse(char * line)
 }
 
 
-void get_pcb_element_list(char * pcb_file)
+static void get_pcb_element_list(char * pcb_file)
 {
 	FILE *f;
 	PcbElement *el;
@@ -229,7 +231,7 @@ void get_pcb_element_list(char * pcb_file)
 	fclose(f);
 }
 
-void prune_elements(char * pcb_file, char * bak)
+static void prune_elements(char * pcb_file, char * bak)
 {
 	FILE *f_in, *f_out;
 	PcbElement *el, *el_exists;
@@ -317,7 +319,7 @@ void prune_elements(char * pcb_file, char * bak)
  * If there was an existing pcb file, strip out any elements if they are
  * already present so that the new pcb file will only have new elements.
  */
-int add_elements(char * pcb_file)
+static int add_elements(char * pcb_file)
 {
 	FILE *f_in, *f_out, *fp;
 	PcbElement *el = NULL;
@@ -419,7 +421,7 @@ int add_elements(char * pcb_file)
 	return total;
 }
 
-void update_element_descriptions(char * pcb_file, char * bak)
+static void update_element_descriptions(char * pcb_file, char * bak)
 {
 	FILE *f_in, *f_out;
 	PcbElement *el, *el_exists;
@@ -489,7 +491,7 @@ static void simple_translate(PcbElement * el)
 	el->y = pcb_strdup("0");
 }
 
-int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * refdes, char * value)
+static int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * refdes, char * value)
 {
 	PcbElement *el;
 	char *fmt, *s, buf[1024];
