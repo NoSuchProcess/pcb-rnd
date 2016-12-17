@@ -640,7 +640,7 @@ static int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * 
 
 static char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name;
 
-void method_pcb_init(void)
+static void method_pcb_init(void)
 {
 	pcb_fp_init();
 	pins_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".cmd", NULL);
@@ -675,7 +675,7 @@ static void next_steps(int initial_pcb, int quiet_mode)
 	}
 }
 
-void method_pcb_go()
+static void method_pcb_go()
 {
 	int initial_pcb = TRUE;
 	int created_pcb_file = TRUE;
@@ -783,7 +783,7 @@ void method_pcb_go()
 	free(bak_file_name);
 }
 
-int method_pcb_guess_out_name(void)
+static int method_pcb_guess_out_name(void)
 {
 	int res;
 	char *name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
