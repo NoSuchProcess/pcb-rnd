@@ -42,7 +42,7 @@
 #include "gsch2pcb_rnd_conf.h"
 #include "gsch2pcb.h"
 #include "method_pcb.h"
-#include "method_pkg.h"
+#include "method_import.h"
 
 static const char *want_method_default = "pcb";
 

@@ -54,7 +54,6 @@ OBJS = \
  run.o \
  glue.o \
  method_pcb.o \
- method_pkg.o \
  method_import.o
 
 all:

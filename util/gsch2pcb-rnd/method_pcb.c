@@ -23,7 +23,6 @@
 #include <ctype.h>
 #include "gsch2pcb.h"
 #include "gsch2pcb_rnd_conf.h"
-#include "method_pkg.h"
 #include "method_pcb.h"
 #include "run.h"
 #include "netlister.h"
@@ -40,6 +39,126 @@
 static const char *element_search_path = NULL; /* queried once from the config, when the config is already stable */
 
 static int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * refdes, char * value);
+
+static char *token(char * string, char ** next, int * quoted_ret, int parenth)
+{
+	static char *str;
+	char *s, *ret;
+	int quoted = FALSE;
+
+	if (string)
+		str = string;
+	if (!str || !*str) {
+		if (next)
+			*next = str;
+		return pcb_strdup("");
+	}
+	while (*str == ' ' || *str == '\t' || *str == ',' || *str == '\n')
+		++str;
+
+	if (*str == '"') {
+		quoted = TRUE;
+		if (quoted_ret)
+			*quoted_ret = TRUE;
+		++str;
+		for (s = str; *s && *s != '"' && *s != '\n'; ++s);
+	}
+	else {
+		if (quoted_ret)
+			*quoted_ret = FALSE;
+		for (s = str; *s != '\0'; ++s) {
+			if ((parenth) && (*s == '(')) {
+				quoted = TRUE;
+				if (quoted_ret)
+					*quoted_ret = TRUE;
+				for (; *s && *s != ')' && *s != '\n'; ++s);
+				/* preserve closing ')' */
+				if (*s == ')')
+					s++;
+				break;
+			}
+			if (*s == ' ' || *s == '\t' || *s == ',' || *s == '\n')
+				break;
+		}
+	}
+	ret = pcb_strndup(str, s - str);
+	str = (quoted && *s) ? s + 1 : s;
+	if (next)
+		*next = str;
+	return ret;
+}
+
+static PcbElement *pkg_to_element(FILE * f, char * pkg_line)
+{
+	PcbElement *el;
+	char *s, *end, *refdes, *fp, *value;
+
+/*fprintf(stderr, "--- %s\n", pkg_line);*/
+
+	if (strncmp(pkg_line, "PKG", 3)
+			|| (s = strchr(pkg_line, (int) '(')) == NULL)
+		return NULL;
+
+/* remove trailing ")" */
+	end = s + strlen(s) - 2;
+	if (*end == ')')
+		*end = '\0';
+
+/* tokenize the line keeping () */
+	fp = token(s + 1, NULL, NULL, 1);
+	refdes = token(NULL, NULL, NULL, 1);
+	value = token(NULL, NULL, NULL, 1);
+
+
+/*fprintf(stderr, "refdes: %s\n", refdes);
+fprintf(stderr, "    fp: %s\n", fp);
+fprintf(stderr, "   val: %s\n", value);*/
+
+
+	if (!refdes || !fp || !value) {
+		if (refdes != NULL)
+			free(refdes);
+		if (fp != NULL)
+			free(fp);
+		if (value != NULL)
+			free(value);
+		fprintf(stderr, "Bad package line: %s\n", pkg_line);
+		return NULL;
+	}
+
+	fix_spaces(refdes);
+	fix_spaces(value);
+
+	el = calloc(sizeof(PcbElement), 1);
+	el->description = fp;
+	el->refdes = refdes;
+	el->value = value;
+
+/*
+// wtf?
+//  if ((s = strchr (el->value, (int) ')')) != NULL)
+//    *s = '\0';
+*/
+
+	if (conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name && !strcmp(el->description, conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name)) {
+		if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
+			printf("%s: has the empty footprint attribute \"%s\" so won't be in the layout.\n", el->refdes, el->description);
+		n_empty += 1;
+		el->omit_PKG = TRUE;
+	}
+	else if (!strcmp(el->description, "none")) {
+		fprintf(stderr, "WARNING: %s has a footprint attribute \"%s\" so won't be in the layout.\n", el->refdes, el->description);
+		n_none += 1;
+		el->omit_PKG = TRUE;
+	}
+	else if (!strcmp(el->description, "unknown")) {
+		fprintf(stderr, "WARNING: %s has no footprint attribute so won't be in the layout.\n", el->refdes);
+		n_unknown += 1;
+		el->omit_PKG = TRUE;
+	}
+	return el;
+}
+
 
 /* Copies the content of fn to fout and returns 0 on success. */
 static int CatPCB(FILE * fout, const char *fn)

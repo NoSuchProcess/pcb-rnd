@@ -23,7 +23,6 @@
 #include <ctype.h>
 #include "gsch2pcb.h"
 #include "gsch2pcb_rnd_conf.h"
-#include "method_pkg.h"
 #include "method_pcb.h"
 #include "run.h"
 #include "netlister.h"
