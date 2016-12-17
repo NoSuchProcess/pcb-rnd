@@ -377,7 +377,7 @@ int main(int argc, char ** argv)
 		}
 		if (current_fmt == NULL) {
 			want_fmt = want_fmt_default;
-			pcb_message(PCB_MSG_WARNING, "Warning: method not specified for a project without a board; defaulting to %s", want_fmt);
+			pcb_message(PCB_MSG_WARNING, "Warning: method not specified for a project without a board; defaulting to %s. This warning is harmless if you are running gsch2pcb-rnd for the first time on this project and you are fine with this default method.", want_fmt);
 		}
 	}
 
