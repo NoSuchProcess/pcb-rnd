@@ -48,6 +48,7 @@
 #include "../src/plugins.h"
 #include "../src/plug_footprint.h"
 #include "../src/compat_misc.h"
+#include "../src/compat_fs.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
 #include "gsch2pcb.h"
@@ -75,17 +76,6 @@ static char *loc_str_has_suffix(char *inp, const char *suffix, int suff_len)
 	if ((len >= suff_len) && (strcmp(inp + len - suff_len, suffix) == 0))
 		return inp + len - suff_len;
 	return NULL;
-}
-
-/* Checks if a file exists and is readable */
-static int file_exists(const char *fn)
-{
-	FILE *f;
-	f = fopen(fn, "r");
-	if (f == NULL)
-		return 0;
-	fclose(f);
-	return 1;
 }
 
 void pcb_chdir_error_message(const char *DirName)
@@ -1021,11 +1011,11 @@ int main(int argc, char ** argv)
 		strcpy(end, ".pcb.bak");
 		end += 8;
 
-		for (i = 0; file_exists(bak_file_name); ++i)
+		for (i = 0; pcb_file_readable(bak_file_name); ++i)
 			sprintf(end, "%d", i);
 	}
 
-	if (file_exists(pcb_file_name)) {
+	if (pcb_file_readable(pcb_file_name)) {
 		initial_pcb = FALSE;
 		pcb_new_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".new.pcb", NULL);
 		get_pcb_element_list(pcb_file_name);
