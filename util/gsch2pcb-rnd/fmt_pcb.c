@@ -26,11 +26,13 @@
 #include "fmt_pkg.h"
 #include "fmt_pcb.h"
 #include "run.h"
+#include "netlister.h"
 #include "../src/plug_footprint.h"
 #include "../src/paths.h"
 #include "../src/conf.h"
 #include "../src/conf_core.h"
 #include "../src/compat_misc.h"
+#include "../src/compat_fs.h"
 #include "../src/plugins.h"
 #include "../src/plug_footprint.h"
 
@@ -512,7 +514,156 @@ int insert_element(FILE * f_out, FILE * f_elem, char * footprint, char * refdes,
 	return retval;
 }
 
+/********************** The actual actions we perform ************************/
+
+static char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name;
+
 void fmt_pcb_init(void)
 {
-	element_search_path = pcb_fp_default_search_path();
+	pcb_fp_init();
+	pins_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".cmd", NULL);
+	net_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".net", NULL);
+	pcb_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
+	local_project_pcb_name = pcb_file_name;
 }
+
+static void next_steps(int initial_pcb, int quiet_mode)
+{
+	if (initial_pcb) {
+		printf("\nNext step:\n");
+		printf("1.  Run pcb on your file %s.\n", pcb_file_name);
+		printf("    You will find all your footprints in a bundle ready for you to place\n");
+		printf("    or disperse with \"Select -> Disperse all elements\" in PCB.\n\n");
+		printf("2.  From within PCB, select \"File -> Load netlist file\" and select \n");
+		printf("    %s to load the netlist.\n\n", net_file_name);
+		printf("3.  From within PCB, enter\n\n");
+		printf("           :ExecuteFile(%s)\n\n", pins_file_name);
+		printf("    to propagate the pin names of all footprints to the layout.\n\n");
+	}
+	else if (!quiet_mode) {
+		printf("\nNext steps:\n");
+		printf("1.  Run pcb on your file %s.\n", pcb_file_name);
+		printf("2.  From within PCB, select \"File -> Load layout data to paste buffer\"\n");
+		printf("    and select %s to load the new footprints into your existing layout.\n", pcb_new_file_name);
+		printf("3.  From within PCB, select \"File -> Load netlist file\" and select \n");
+		printf("    %s to load the updated netlist.\n\n", net_file_name);
+		printf("4.  From within PCB, enter\n\n");
+		printf("           :ExecuteFile(%s)\n\n", pins_file_name);
+		printf("    to update the pin names of all footprints.\n\n");
+	}
+}
+
+void fmt_pcb_go()
+{
+	int initial_pcb = TRUE;
+	int created_pcb_file = TRUE;
+
+	element_search_path = pcb_fp_default_search_path();
+
+	{ /* set bak_file_name, finding the first number that results in a non-existing bak */
+		int len;
+		char *end;
+		int i;
+
+		len = strlen(conf_g2pr.utils.gsch2pcb_rnd.sch_basename);
+		bak_file_name = malloc(len+8+64); /* make room for ".pcb.bak" and an integer */
+		memcpy(bak_file_name, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, len);
+		end = bak_file_name + len;
+		strcpy(end, ".pcb.bak");
+		end += 8;
+
+		for (i = 0; pcb_file_readable(bak_file_name); ++i)
+			sprintf(end, "%d", i);
+	}
+
+	if (pcb_file_readable(pcb_file_name)) {
+		initial_pcb = FALSE;
+		pcb_new_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".new.pcb", NULL);
+		get_pcb_element_list(pcb_file_name);
+	}
+	else
+		pcb_new_file_name = pcb_strdup(pcb_file_name);
+
+	if (!run_gnetlist(pins_file_name, net_file_name, pcb_new_file_name, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, &schematics)) {
+		fprintf(stderr, "Failed to run gnetlist\n");
+		exit(1);
+	}
+
+	if (add_elements(pcb_new_file_name) == 0) {
+		build_and_run_command("rm %s", pcb_new_file_name);
+		if (initial_pcb) {
+			printf("No elements found, so nothing to do.\n");
+			exit(0);
+		}
+	}
+
+	if (conf_g2pr.utils.gsch2pcb_rnd.fix_elements)
+		update_element_descriptions(pcb_file_name, bak_file_name);
+	prune_elements(pcb_file_name, bak_file_name);
+
+	/* Report work done during processing */
+	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
+		printf("\n");
+	printf("\n----------------------------------\n");
+	printf("Done processing.  Work performed:\n");
+	if (n_deleted > 0 || n_fixed > 0 || need_PKG_purge || n_changed_value > 0)
+		printf("%s is backed up as %s.\n", pcb_file_name, bak_file_name);
+	if (pcb_element_list.length && n_deleted > 0)
+		printf("%d elements deleted from %s.\n", n_deleted, pcb_file_name);
+
+	if (n_added_ef > 0)
+		printf("%d file elements added to %s.\n", n_added_ef, pcb_new_file_name);
+	else if (n_not_found == 0) {
+		printf("No elements to add so not creating %s\n", pcb_new_file_name);
+		created_pcb_file = FALSE;
+	}
+
+	if (n_not_found > 0) {
+		printf("%d not found elements added to %s.\n", n_not_found, pcb_new_file_name);
+	}
+	if (n_unknown > 0)
+		printf("%d components had no footprint attribute and are omitted.\n", n_unknown);
+	if (n_none > 0)
+		printf("%d components with footprint \"none\" omitted from %s.\n", n_none, pcb_new_file_name);
+	if (n_empty > 0)
+		printf("%d components with empty footprint \"%s\" omitted from %s.\n", n_empty, conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name, pcb_new_file_name);
+	if (n_changed_value > 0)
+		printf("%d elements had a value change in %s.\n", n_changed_value, pcb_file_name);
+	if (n_fixed > 0)
+		printf("%d elements fixed in %s.\n", n_fixed, pcb_file_name);
+	if (n_PKG_removed_old > 0) {
+		printf("%d elements could not be found.", n_PKG_removed_old);
+		if (created_pcb_file)
+			printf("  So %s is incomplete.\n", pcb_file_name);
+		else
+			printf("\n");
+	}
+	if (n_PKG_removed_new > 0) {
+		printf("%d elements could not be found.", n_PKG_removed_new);
+		if (created_pcb_file)
+			printf("  So %s is incomplete.\n", pcb_new_file_name);
+		else
+			printf("\n");
+	}
+	if (n_preserved > 0)
+		printf("%d elements not in the schematic preserved in %s.\n", n_preserved, pcb_file_name);
+
+	/* Tell user what to do next */
+	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
+		printf("\n");
+
+	if (n_added_ef > 0)
+		next_steps(initial_pcb, conf_g2pr.utils.gsch2pcb_rnd.quiet_mode);
+
+	free(net_file_name);
+	free(pins_file_name);
+	free(pcb_file_name);
+	free(bak_file_name);
+}
+
+void fmt_pcb_uninit(void)
+{
+	if (pcb_new_file_name != NULL)
+		free(pcb_new_file_name);
+}
+

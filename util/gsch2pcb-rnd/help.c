@@ -142,29 +142,3 @@ void usage(void)
 	printf("%s", usage_string1d);
 	exit(0);
 }
-
-void next_steps(int initial_pcb, int quiet_mode)
-{
-	if (initial_pcb) {
-		printf("\nNext step:\n");
-		printf("1.  Run pcb on your file %s.\n", pcb_file_name);
-		printf("    You will find all your footprints in a bundle ready for you to place\n");
-		printf("    or disperse with \"Select -> Disperse all elements\" in PCB.\n\n");
-		printf("2.  From within PCB, select \"File -> Load netlist file\" and select \n");
-		printf("    %s to load the netlist.\n\n", net_file_name);
-		printf("3.  From within PCB, enter\n\n");
-		printf("           :ExecuteFile(%s)\n\n", pins_file_name);
-		printf("    to propagate the pin names of all footprints to the layout.\n\n");
-	}
-	else if (!quiet_mode) {
-		printf("\nNext steps:\n");
-		printf("1.  Run pcb on your file %s.\n", pcb_file_name);
-		printf("2.  From within PCB, select \"File -> Load layout data to paste buffer\"\n");
-		printf("    and select %s to load the new footprints into your existing layout.\n", pcb_new_file_name);
-		printf("3.  From within PCB, select \"File -> Load netlist file\" and select \n");
-		printf("    %s to load the updated netlist.\n\n", net_file_name);
-		printf("4.  From within PCB, enter\n\n");
-		printf("           :ExecuteFile(%s)\n\n", pins_file_name);
-		printf("    to update the pin names of all footprints.\n\n");
-	}
-}
