@@ -20,7 +20,7 @@ the most important global properties.
 <b>Board size</b> is given as a width and a height. For rectangular boards
 this can be the real board size, but more commonly it is used to simply
 determine the on-screen drawing area and the final board dimensions are
-specified using the outline layer. If the board is not rectagnular, the
+specified using the outline layer. If the board is not rectangular, the
 contour must be specified on the outline layer and the board size must be
 large enough that the outline fits in it.
 <p>
@@ -117,8 +117,8 @@ A line is specified by its two endpoints, width and clearance:
 <p>
 <img src="obj_line.png">
 <p>
-A <i>clearance</i> is the gap between a line and the sorrunding polygon
-in the same layer group. The gap is made only if the sorrunding polygon has
+A <i>clearance</i> is the gap between a line and the sorrounding polygon
+in the same layer group. The gap is made only if the sorrounding polygon has
 the "clearpoly" flag set and the line has the "clearline" flag set. If either
 of these flags is not set, no gap is made - or in pcb-rnd terminology,
 the line is joined to the polygon.
@@ -150,9 +150,9 @@ Extra object flags:
 <h4> 2.4.3. Polygon objects </h4>
 <p>
 Polygons are solid, filled copper areas with optional holes in them. Polygon
-contour consits of lines - when they look curvy, it's really high resolution
+contour consists of lines - when they look curvy, it's really high resolution
 line approximation. There are two type of holes in a polygon: <i>explicit</i>,
-user drawn holes and <i>clerance</i> cutouts. User drawn holes are "negative"
+user drawn holes and <i>clearance</i> cutouts. User drawn holes are "negative"
 polygons drawn manually. To keep polygons simple, if an user drawn hole
 touches the contour of a polygon, the hole is removed and the contour is
 modified; if two holes touch, they are merged into one hole.
@@ -170,7 +170,7 @@ with the "clearline" flag set will clear all "clearpolys" it is over -
 if there are multiple such polygons overlapping under the objects (on
 the same layer group), all such polygons get the clearance cutout.
 <p>
-If a polgyon is cut into multiple islands, the behaviour depends on the
+If a polygyn is cut into multiple islands, the behaviour depends on the
 "fullpoly" flag of the polygon. If it is not set (default), only the largest
 island is kept, else all islands are kept. In the "fullpoly" mode islands
 will have no galvanic connection (unless the user adds vias and connect them
@@ -212,11 +212,11 @@ a hole always punches all layers; there's no pad stack support, the copper
 ring around the hole on each layer have the same sizes.
 <p>
 A copper ring also has a per layer property whether or how it connects to
-the sorrunding polygon on the given layer; this is called the thermal style
+the sorrounding polygon on the given layer; this is called the thermal style
 of the via. The following options are available:
 <table border=1>
 	<tr><th>thermal style <th> appearance
-	<tr><td>no connecton <td> <img src=TODO>
+	<tr><td>no connection <td> <img src=TODO>
 	<tr><td>solid        <td> <img src=TODO>
 	<tr><td>round x 90   <td> <img src=TODO>
 	<tr><td>round x 45   <td> <img src=TODO>
@@ -241,7 +241,7 @@ An element is an instance of a footprint that is already placed on the
 board or loaded into a paste buffer.
 
 <p>
-In the footprint form the construct is small and flexible. Ot describes
+In the footprint form the construct is small and flexible. It describes
 all the physical parts, like pins, pads, silk lines. In the same time a
 footprint leaves many details blank, e.g. it doesn't specify exact layers,
 it doesn't a have font and the refdes is random.
@@ -383,7 +383,7 @@ looks like the following:
 <p>
 The netlist assumes element refdes are unique. If an element has multiple
 instances of the same pin (or pad) number, the engine picks one randomly and
-assumes there's an inivisible, internal connection within the element.
+assumes there's an invisible, internal connection within the element.
 <p>
 Rat lines can be regenerated from the current netlist for missing connections.
 Connections that are realized in copper but not present on the netlist, pcb-rnd
@@ -408,7 +408,7 @@ the intended (changed) netlist.
 <h3> 2.5. comparison of terms </h3>
 <p>
 <table border=1>
-	<tr><th> phyisical board term    <th> pcb-rnd term
+	<tr><th> physical board term     <th> pcb-rnd term
 	<tr><td> layer                   <td> layer group
 	<tr><td> copper layer            <td> layer group with copper layers
 	<tr><td> substrate               <td> N/A

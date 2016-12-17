@@ -19,7 +19,7 @@ The full list of config sources is:
     <td> 200
     <td> /usr/share/pcb-rnd/pcb-conf.lht
     <td> recommended
-    <td> should hold system and installation specific settigns, e.g. path to the system-wise installed footprint library
+    <td> should hold system and installation specific settings, e.g. path to the system-wise installed footprint library
 
 <tr><td> default.pcb
     <td> 300
@@ -36,12 +36,12 @@ The full list of config sources is:
 <tr><td> environment
     <td> 500
     <td> environment variables (TODO)
-    <td> occassional
+    <td> occasional
     <td> inject the same (temporary) settings in multiple pcb-rnd sessions without having to change config files
 
 <tr><td> project
     <td> 600
-    <td> projdect.lht in the project directory
+    <td> project.lht in the project directory
     <td> optional
     <td> local project settings - useful for large projects with multiple design (.pcb) files
 
@@ -54,7 +54,7 @@ The full list of config sources is:
 <tr><td> cli
     <td> 800
     <td> command line argument
-    <td> occassional
+    <td> occasional
     <td> inject/change a setting for a single session; useful in batch/automated processing
 </table>
 
@@ -63,7 +63,7 @@ Pcb-rnd reads them all, then merges all settings into a master binary
 representation. If a setting is specified in multiple sources, the one
 with the higher priority wins, except for lists where it is also possible
 to prepend/append items. Default priorities are designed to result
-precedence in an intuitive way (e.g. design settigns overwrite user settings).
+precedence in an intuitive way (e.g. design settings overwrite user settings).
 However, <a href="prio.html">priority can be changed</a> per setting, resulting
 in weak settings ("use this value if it was not already set") or strong settings
 ("I always want to use mincut, so I enable it from my user's config with high

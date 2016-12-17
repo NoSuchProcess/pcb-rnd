@@ -24,7 +24,7 @@ is also possible with <arg>-x</arg> or <arg>--gui batch</arg>.
 	<item>
 		<key> --gui <arg>hid</arg> </key>
 		<value> Use the <arg>hid</arg> plugin for the "gui" frontend. Common
-		        choices are "gtk" or "lesstif" for graphical user intrfaces
+		        choices are "gtk" or "lesstif" for graphical user interfaces
 		        and "batch" for a headless command-line interface (or automated
 		        batch processing). </value>
 	</item>

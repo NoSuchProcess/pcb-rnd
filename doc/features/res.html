@@ -22,13 +22,13 @@
 
 PCB used to have an own file format for describing resources (menu structure
 and hotkey bindings, vendor drill mapping). The resource format was generic
-enough to describe these things, but the syntax was somewhat wierd: mixed
+enough to describe these things, but the syntax was somewhat weird: mixed
 positional and named fields. More precisely, composite nodes could contain
 named and anonymous subnodes, and the meaning of anonymous subnodes depended
 on their position in the anon-subnode-list.
 <p>
 The code that dealt with the in-memory representation of the resource tree
-was wierd and big chunks duplicated in the HIDs and vendor drill module. It
+was weird and big chunks duplicated in the HIDs and vendor drill module. It
 was also hard to parse a resource file with external tools.
 <p>
 Since version 1.0.10, pcb-rnd replaces resource files with 
@@ -45,7 +45,7 @@ files outside of the pcb executable.
 
 <h2> menu files </h2>
 There are pcb-menu-gtk.lht and pcb-menu-lesstif.lht. They are in trunk/src
-in the source tree and are instaslled in the SHAREDIR. Currently each GUI
+in the source tree and are installed in the SHAREDIR. Currently each GUI
 HID (lesstif, gtk) loads the corresponding menu file.
 
 <h2> menu resource lihata structure </h2>
@@ -56,7 +56,7 @@ children:
 	<li> <i>li:main_menu</i> for describing the main menu
 	<li> <i>li:popups</i> for describing the popup menus
 </ul>
-All children are optional, but recommended. Thus the file stucture, zoomed
+All children are optional, but recommended. Thus the file structure, zoomed
 out, is:
 <pre>
 ha:{
@@ -100,7 +100,7 @@ recursively. Each normal item is a hash with the following children:
 Special menu items are text nodes instead of hashes; they are:
 <ul>
 	<li> starting with @, are dynamic, auto-generated items (e.g. layers; might be HID-dependent)
-	<li> a singel dash: separator
+	<li> a single dash: separator
 </ul>
 <p>
 A key description is a text in the form of:

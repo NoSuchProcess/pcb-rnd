@@ -16,7 +16,7 @@ genht was compiled without --std while the rest of the code compiled with
 functions for performance, maybe that's why.
 <p>
 So I tried to reproduce the situation in a hello-world like program and 
-tried all combinaton of --std, -DNDEBUG, -rdynamic and all build flags 
+tried all combination of --std, -DNDEBUG, -rdynamic and all build flags 
 used in pcb-rnd for the genht lib and the test program, but all combination 
 worked. It looked like it broke only in pcb-rnd.
 <p>
@@ -33,7 +33,7 @@ the --std setting.
 <p>
 The morale of the story is... Well, I have multiple conclusions.
 <ul>
-<li> glib is not a lib that tries to solve something, it is a prorgamming 
+<li> glib is not a lib that tries to solve something, it is a proggamming 
 environment that tries to supersede C.
 
 <li> As such, it feels free to mess with the environment, redefine C 
@@ -54,7 +54,7 @@ And in return glib breaks inline...
 </ul>
 
 <p>
-In a nuthsell this is why I don't believe in glib-like solve-all megalibs. I 
+In a nutshell this is why I don't believe in glib-like solve-all megalibs. I 
 don't say size alone determines this, but size is a good indication of 
 potential problems.
 <p>

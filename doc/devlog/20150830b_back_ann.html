@@ -95,7 +95,7 @@ but pcb-rnd has no chance to decide if netlist adding B1 to n3 should affect
 the table adding B1 to n2, so that rule is kept.
 <p>
 <b>net_info</b> is used to describe the <b>original</b> members of a net, in
-the state they were before any change on the netlist occured.
+the state they were before any change on the netlist occurred.
 
 <H3> Support in pcb-rnd: GUI </H3>
 A trivial idea is to extend the netlist window so that pins can be moved in
@@ -218,7 +218,7 @@ multipage schematics, hierarchies, slots, split symbols.
 
 <H3> Amendment 1: other parameters (1st sep)</H3>
 I originally forgot to mention my other intentions in the above document:
-back annotate non-netlist properites. It probably happened because netlist
+back annotate non-netlist properties. It probably happened because netlist
 related stuff are the hardest to solve.
 <p>
 There are other parameters that sometimes change during routing. A common case
@@ -268,7 +268,7 @@ simplest plain text form.
 del_conn netname1 U1-1
 add_conn netname2 U1-1
 	</pre>
-	<li> the user may need to load the netlist patch in ghscem
+	<li> the user may need to load the netlist patch in gschem
 	<li> In gschem there would be an indication that highlights any U1-1 pin or
 	U1 symbol that makes a connection to netname 1, graphically or using
 	attributes. When asked, gschem UI would also tell the user that U1-1 is
@@ -285,7 +285,7 @@ add_conn netname2 U1-1
 <ul>
 	<li> The user creates the schematics and imports it in pcb; originally
 	     U1 has an attribute footprint=DIP(8).
-	<li> during the layout the user figures using the footpritn SO(8) is
+	<li> during the layout the user figures using the footprint SO(8) is
 	     more appropriate. He does the change in pcb-rnd.
 	<li> pcb-rnd emits the following netlist patch for this:
 	<pre>
@@ -293,12 +293,12 @@ change_attrib U1 footprint=DIP(8) footprint=SO(8)
 	</pre>
 	<p>
 	(or it could be a del_attrib and add_attrib pair, like with connections)
-	<li> the user may need to load the netlist patch in ghscem
+	<li> the user may need to load the netlist patch in gschem
 	<li> In gschem there would be an indication that highlights any U1 instances
 	     that has footprint=DIP(8)
 	<li> The user would find this indication and would resolve the situation
 	     by whatever changes he finds appropriate (e.g. change the attribute)
 	<li> gschem would rerun the patch commands and would figure the change is
-	     no longer requred and would remove the indication
+	     no longer required and would remove the indication
 </ul>
 

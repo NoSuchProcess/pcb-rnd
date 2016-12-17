@@ -10,7 +10,7 @@ The hid package has two purposes:
 
 <H2> Building a custom dialog box</H2>
 First hid_create() needs to be called. It returns a new hid_t, which is
-an opaq structure for the package that is used to describe attributes of
+an opaque structure for the package that is used to describe attributes of
 an attribute dialog or an exporter hid. Attributes are added using
 hid_add_attribute(), which returns an unique ID of the attribute. The
 attribute ID can be used later for querying attribute value set by the
@@ -26,7 +26,7 @@ The process of building a dialog box is closed by a call to
 
 <H2> Registering an exporter</H2>
 	Function hid_register() registers the hid as an exporter. Should be
-	called after all attributes have been added using hid_add_atrtibute().
+	called after all attributes have been added using hid_add_attribute().
 	The export is coordinated by pcb core; when the user request an export
 	using the exporter, a series of events are delivered to the script:
 	<ol>
@@ -39,7 +39,7 @@ The process of building a dialog box is closed by a call to
 		<UL>
 			<LI>HIDE_get_export_options(void *hid): Generated before get_exporter_options returns the option list to the GUI hid
 			<LI>HIDE_do_export_start(void *hid): Generated before export redraw starts
-			<LI>HIDE_do_export_finish(void *hid): Generated after export redraw finihsed
+			<LI>HIDE_do_export_finish(void *hid): Generated after export redraw finished
 		</UL>
 
 	<H3> Drawing: events generated during exporting </H3>

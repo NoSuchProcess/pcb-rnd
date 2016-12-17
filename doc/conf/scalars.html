@@ -26,7 +26,7 @@ Merge iterations:
 	<tr><td> 2.   <td> apply <i>user</i>   <td> A       <td> "not defined" doesn't mean "empty", so the list is not deleted - no change
 	<tr><td> 3.   <td> apply <i>project</i><td> Q       <td> replace the original output because of the overwrite policy
 </table>
-<p>Example scenario: system default overriden by a project setting.
+<p>Example scenario: system default overridden by a project setting.
 
 <h3> user-forced value </h3>
 Config sources append:
@@ -48,7 +48,7 @@ Merge iterations:
 <p>Example scenario: user preference enforced: even if the project file would use
 'Q' for the given setting, the user prefers 'E'. This affects runtime
 (the value of the setting after the merge, in other words how pcb-rnd works),
-but does nto change the project configuration. This allows the given user to
+but does not change the project configuration. This allows the given user to
 always use 'E' for the given setting while lets other users working on the
 same project use the value set in the project file.
 

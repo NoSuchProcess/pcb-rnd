@@ -22,7 +22,7 @@
 <table border=0>
 <tr><td valign=top>
 The footprint library shipped with mainline pcb is cluttered with
-special puprose parts. I believe PCB encourages the user from
+special purpose parts. I believe PCB encourages the user from
 an early stage to build his own library. Thus the purpose of
 the library shipped with PCB should be
 to provide a minimal collection of real essential footprints ...
@@ -40,13 +40,13 @@ the library and <a href="http://igor2.repo.hu/cgi-bin/pcblib-param.cgi">
 an online interface to the parametric footprint generators. </a>
 
 <h2> Design decisions </h2>
-Parts are sorted only in a few directories: smd, tru-hole, connector and
-parametric. I believe there are so many orthogonal properties of footpritns
-that there's no obvious hierarchy. Also, pcblib contains much fewer footpritns
+Parts are sorted only in a few directories: smd, thru-hole, connector and
+parametric. I believe there are so many orthogonal properties of footprints
+that there's no obvious hierarchy. Also, pcblib contains much fewer footprints
 than newlib so it should be still easy to navigate.
 <p>
 Parametric footprints are in a separate directory for now, even tho they
-would fit under smd, tru-hole or connector. The reason is purely historical
+would fit under smd, thru-hole or connector. The reason is purely historical
 and the layout may change in the future.
 
 <h2> Example </h2>
@@ -55,9 +55,9 @@ open. Note how few smd parts are there. Still, smd/ is the most crowded
 subdirectory!
 
 <h2> [fp_fs] </h2>
-As of vesion 1.0.10, the footprint list/search/load of footprints is a plugin.
+As of version 1.0.10, the footprint list/search/load of footprints is a plugin.
 The original code that handles local file system footprint libraries (e.g.
-pcblib or newlib) is now a plugin. Altnerative plugins can be provided that work
+pcblib or newlib) is now a plugin. Alternative plugins can be provided that work
 from databases or <a href="fp_wget.html"> from the web</a>. In extreme
 situations the file system based footprint plugin can even be disabled.
 

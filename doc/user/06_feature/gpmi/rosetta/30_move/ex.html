@@ -17,7 +17,7 @@ When the action event is called, first set up:
 </ul>
 A loop then iterates over the objects on the list:
 <ul>
-	<li> resolve the Nth element of the list using <ref>layout_search_get</ref>, referecing the list by name ("mv_search") and specifying which element to get (the Nth); the result is an object pointer;
+	<li> resolve the Nth element of the list using <ref>layout_search_get</ref>, referencing the list by name ("mv_search") and specifying which element to get (the Nth); the result is an object pointer;
 	<li> move the object using <ref>layout_obj_move</ref>; specify the object pointer, then which part of the object should be moved ("OC_OBJ" means the whole object) and relative offsets (dx and dy calculated earlier)
 </ul>
 Finally the search list shall be destroyed to reclaim memory, using <ref>layout_search_free</ref>.

@@ -5,7 +5,7 @@
 
 <h2> scope </h2>
 
-pcb-rnd from version 1.1.3 features a flexible advnced search that helps
+pcb-rnd from version 1.1.3 features a flexible advanced search that helps
 the user selecting/unselecting objects that match a given logical expression.
 The core of the feature is the pcb-rnd query language. The same language
 is used in the programmable DRC (see also: <a href="../../../developer/ddrc/proposal1.txt">
@@ -38,7 +38,7 @@ that selects all objects looks like this:
 <pre>
 query(select, '@')
 </pre>
-The actual query experssion was a single @ in this case. This made
+The actual query expression was a single @ in this case. This made
 the iteration happen, got the expression evaluated one each object. The
 result of each evaluation was the given object. Since these objects
 were all existing, valid objects, they were taken as logical value TRUE,
@@ -67,7 +67,7 @@ and the expression is ran only once:
 query(eval, '1')
 </pre>
 This will calculate the value of 1 and prints it to the standard output. Since
-theres no iteration, this can not result in changes in selection. However,
+there's no iteration, this can not result in changes in selection. However,
 it makes it easy to demonstrate some basic concepts of the query language.
 <p>
 Note: if @ is present multiple times in the expression, it's still only
@@ -92,7 +92,7 @@ arithmetic and logical operators work as expected:
 	<tr><td>1 &amp;&amp; 0<td> 0   <td> logical AND - the result is 1 if both operands were TRUE, 0 else
 	<tr><td>1 || 0     <td> 1      <td> logical OR  - the result is 1 if either operand was TRUE, 0 else
 	<tr><td>!2         <td> 0      <td> logical NOT - 2 is non-zero, so it is TRUE, negate this to get the result (FALSE, which is 0)
-	<tr><td>4 > 2      <td> 1      <td> because four is greater than two; all the usual relational operats work: == is equal, != is not-equal, &lt;, &lt=,  &gt; and &gt=.
+	<tr><td>4 > 2      <td> 1      <td> because four is greater than two; all the usual relational operators work: == is equal, != is not-equal, &lt;, &lt=,  &gt; and &gt=.
 </table>
 
 <H2> grammar: object properties </h2>
@@ -119,7 +119,7 @@ or any trace that's too thin or too thick:
 	(@.thickness &lt; 10 mil) || (@.thickness &gt; 30 mil)
 </pre>
 <p>
-or traces that don't match our preferred 8, 10 and 15 mil thicnkess values:
+or traces that don't match our preferred 8, 10 and 15 mil thickness values:
 <pre>
 	(@.thickness != 8 mil) &amp;&amp; (@.thickness != 10 mil) &amp;&amp; (@.thickness != 15 mil)
 </pre>
@@ -158,11 +158,11 @@ and the "name of the layer the current object is on":
 Referencing non-existing properties yields an error, e.g. @.thickness.layer
 is an error - in contrast with @.layer, which may evaluate to the
 <i>invalid value</i> (e.g. for vias or nets, because they don't have layers).
-The difference is that tickness can not have a layer ever (thus is an error)
+The difference is that thickness can not have a layer ever (thus is an error)
 while @.layer is either applicable or not, but potentially could work, this
 when it doesn't, it's only an invalid value.
 <p>
-Further useful property combinatons:
+Further useful property combinations:
 TODO
 <p>
 There is a <a href="props.html">full list of all properties</a>.

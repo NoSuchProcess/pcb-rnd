@@ -1,16 +1,16 @@
 <html>
 <body>
-Protocol parser state machine of the referece implementation:
+Protocol parser state machine of the reference implementation:
 <img src="proto_parse.svg">
 Legend:
 <ul>
 	<li> yellow boxes are states
 	<li> blue arrows are optional features for a more tolerant parser
 	<li> round nodes are actions that shall be taken
-	<li> arrow with text: execute aciton or switch state if condition is true
+	<li> arrow with text: execute action or switch state if condition is true
 	<li> arrow without text: do this if no other condition is met
 </ul>
-<h3>Notes on the refernece implementation </H3>
+<h3>Notes on the reference implementation </H3>
 The reference implementation builds a <b>tree of nodes</b> for the arguments.
 Each node is either a list or a text. A node has a pointer to its parent, its
 first child and its next sibling. While parsing list-of-lists, the parser

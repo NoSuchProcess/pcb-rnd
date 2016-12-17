@@ -18,7 +18,7 @@ are constantly reading these in-memory representations to decide how to
 carry out their tasks.
 <p>
 Config settings are imported from multiple sources: from different files,
-from environment vareiables, from command line arguments, from the .pcb
+from environment variables, from command line arguments, from the .pcb
 files on load. Any source can define any part of the <i>config tree</i>.
 When the configuration is processed, each source is read into a temporary
 tree and then all the temporary trees are merged into the final
@@ -34,7 +34,7 @@ tree representing a <i>role</i>: the role or
 <a href="sources.html">purpose of the source</a>. The next
 step is following the red arrows in two steps:
 <ul>
-	<li> first merge all the role treesinto a flat list; this determines the value of each setting;
+	<li> first merge all the role trees into a flat list; this determines the value of each setting;
 	<li> then dispatch the values to the right component of the code.
 </ul>
 Some components may change some of the settings run-time. The trivial example
@@ -43,7 +43,7 @@ the user to change settings. Such a change is always fed back (blue arrow)
 to the design role tree directly, from where the new value is again merged
 and dispatched along the red arrows. Changes in the design role are saved
 with the .pcb file (thus the bidirectional black arrow between the source and
-the in-memory tree for the design role). Occassionally the user wants to
+the in-memory tree for the design role). Occasionally the user wants to
 save parts of the setting as a <a href="sources.html"> project setting or
 as an user setting</a> - in this case, along the dashed blue lines, the
 corresponding project or user roles are modified. This again results in updating
@@ -60,7 +60,7 @@ sources defining value for the same setting) or blind spots (no source
 sets a given item).
 
 <h3> overlaps </h3>
-Each setting in each source has a <a href="prio.html">prioirty.</a> The
+Each setting in each source has a <a href="prio.html">priority.</a> The
 priority can be defined in the source, or if it is not defined, each source
 inherits a fallback default priority. The fallback is designed to provide
 the intuitive order: cli &gt; design &gt; project &gt; user &gt; system.
@@ -79,7 +79,7 @@ There are some settings that are represented as an array or list of
 values. They are described in a lihata list item ("li:") in the config
 files and are generally called lists in this document. How lists
 are merged is controlled by the merging <i>policy</i>, which can be
-in each source, just like the prioirty is set. Check out the
+in each source, just like the priority is set. Check out the
 <a href="lists.html">list merging section</a> for more details.
 
 <h3> blind spots </h3>
