@@ -6,7 +6,7 @@ device=7805
 T 24500 58800 5 10 1 1 0 6 1
 refdes=U1
 T 23400 58800 5 10 1 1 0 0 1
-footprint=to220
+footprint=TO220
 }
 C 21100 57200 1 0 1 connector3-2.sym
 {
