@@ -68,22 +68,6 @@ conf_gsch2pcb_rnd_t conf_g2pr;
 
 static const char *element_search_path = NULL; /* queried once from the config, when the config is already stable */
 
-static char *loc_strndup(const char *str, size_t len)
-{
-	char *s;
-	int l;
-
-	if (str == NULL)
-		return NULL;
-	l = strlen(str);
-	if (l < len)
-		len = l;
-	s = malloc(len+1);
-	memcpy(s, str, len);
-	s[len] = '\0';
-	return s;
-}
-
 /* Return a pointer to the suffix if inp ends in that suffix */
 static char *loc_str_has_suffix(char *inp, const char *suffix, int suff_len)
 {
@@ -183,7 +167,7 @@ static char *token(char * string, char ** next, int * quoted_ret, int parenth)
 				break;
 		}
 	}
-	ret = loc_strndup(str, s - str);
+	ret = pcb_strndup(str, s - str);
 	str = (quoted && *s) ? s + 1 : s;
 	if (next)
 		*next = str;
@@ -761,7 +745,7 @@ static void add_schematic(char * sch)
 	if (!conf_g2pr.utils.gsch2pcb_rnd.sch_basename) {
 		char *suff = loc_str_has_suffix(sch, ".sch", 4);
 		if (suff != NULL) {
-			char *tmp = loc_strndup(sch, suff - sch);
+			char *tmp = pcb_strndup(sch, suff - sch);
 			conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, tmp, POL_OVERWRITE);
 			free(tmp);
 		}

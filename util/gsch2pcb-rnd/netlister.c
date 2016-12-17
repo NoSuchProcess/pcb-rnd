@@ -91,7 +91,7 @@ int run_gnetlist(const char *pins_file, const char *net_file, const char *pcb_fi
 		}
 		else {
 			out_file = pcb_strdup(s2 + 4);
-			backend = loc_strndup(s, s2 - s);
+			backend = pcb_strndup(s, s2 - s);
 		}
 
 		if (!build_and_run_command("%s %s -g %s -o %s %L %L",
