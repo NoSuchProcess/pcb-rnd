@@ -1,0 +1,8 @@
+conf_reg(utils.gsch2pcb_rnd.remove_unfound_elements, scalar, CFN_BOOLEAN,     "utils/gsch2pcb_rnd",     "remove_unfound_elements", "= TRUE", 0)
+conf_reg(utils.gsch2pcb_rnd.quiet_mode,       scalar, CFN_BOOLEAN,     "utils/gsch2pcb_rnd",     "quiet_mode",             "= FALSE", 0)
+conf_reg(utils.gsch2pcb_rnd.verbose,          scalar, CFN_INTEGER,     "utils/gsch2pcb_rnd",     "verbose",                "<verbose>", 0)
+conf_reg(utils.gsch2pcb_rnd.preserve,         scalar, CFN_BOOLEAN,     "utils/gsch2pcb_rnd",     "preserve",               "<preserve>", 0)
+conf_reg(utils.gsch2pcb_rnd.fix_elements,     scalar, CFN_BOOLEAN,     "utils/gsch2pcb_rnd",     "fix_elements",           "<fix_elements>", 0)
+conf_reg(utils.gsch2pcb_rnd.sch_basename,     scalar, CFN_STRING,      "utils/gsch2pcb_rnd",     "sch_basename",           "<sch_basename>", 0)
+conf_reg(utils.gsch2pcb_rnd.default_pcb,      scalar, CFN_STRING,      "utils/gsch2pcb_rnd",     "default_pcb",            "override default pcb with a given file", 0)
+conf_reg(utils.gsch2pcb_rnd.empty_footprint_name, scalar, CFN_STRING,      "utils/gsch2pcb_rnd",     "empty_footprint_name",   "<empty_footprint_name>", 0)

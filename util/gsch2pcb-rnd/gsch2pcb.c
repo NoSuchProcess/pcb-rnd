@@ -25,10 +25,6 @@
   - use pcb-rnd's conf system
   - use popen() instead of glib's spawn (stderr is always printed to stderr)
  */
-/* for popen() */
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-
 #include "config.h"
 
 #include <stdarg.h>
@@ -54,47 +50,17 @@
 #include "../src/compat_misc.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
+#include "gsch2pcb.h"
+#include "netlister.h"
+#include "run.h"
 
-#define TRUE 1
-#define FALSE 0
-
-#define GSCH2PCB_RND_VERSION "1.0.1"
-
-#define DEFAULT_PCB_INC "pcb.inc"
-
-#define SEP_STRING "--------\n"
-
-/* from scconfig str lib: */
-char *str_concat(const char *sep, ...);
-
-typedef struct {
-	char *refdes, *value, *description, *changed_description, *changed_value;
-	char *flags, *tail;
-	char *x, *y;
-	char *pkg_name_fix;
-	char res_char;
-
-	gdl_elem_t all_elems;
-
-	unsigned still_exists:1;
-	unsigned new_format:1;
-	unsigned hi_res_format:1;
-	unsigned quoted_flags:1;
-	unsigned omit_PKG:1;
-	unsigned nonetlist:1;
-
-} PcbElement;
-
-typedef struct {
-	char *part_number, *element_name;
-} ElementMap;
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
 
-static int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
-           n_PKG_removed_old, n_preserved, n_changed_value, n_not_found,
-           n_unknown, n_none, n_empty;
+int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
+    n_PKG_removed_old, n_preserved, n_changed_value, n_not_found,
+    n_unknown, n_none, n_empty;
 
 static int bak_done, need_PKG_purge;
 
@@ -175,187 +141,6 @@ void pcb_trace(const char *Format, ...)
 
 const char *pcb_board_get_filename(void) { return NULL; }
 const char *pcb_board_get_name(void) { return NULL; }
-
-/**
- * Build and run a command. No redirection or error handling is
- * done.  Format string is split on whitespace. Specifiers %l and %s
- * are replaced with contents of positional args. To be recognized,
- * specifiers must be separated from other arguments in the format by
- * whitespace.
- *  - %L expects a gadl_list_t vith char * payload, contents used as separate arguments
- *  - %s expects a char*, contents used as a single argument (omitted if NULL)
- * @param[in] format  used to specify command to be executed
- * @param[in] ...     positional parameters
- */
-static int build_and_run_command(const char * format_, ...)
-{
-	va_list vargs;
-	int result = FALSE;
-	vts0_t args;
-	char *format, *s, *start;
-
-	/* Translate the format string; args elements point to const char *'s
-	   within a copy of the format string. The format string is copied so
-	   that these parts can be terminated by overwriting whitepsace with \0 */
-	va_start(vargs, format_);
-	format = pcb_strdup(format_);
-	vts0_init(&args);
-	for(s = start = format; *s != '\0'; s++) {
-		/* if word separator is reached, save the previous word */
-		if (isspace(s[0])) {
-			if (start == s) { /* empty word - skip */
-				start++;
-				continue;
-			}
-			*s = '\0';
-			vts0_append(&args, start);
-			start = s+1;
-			continue;
-		}
-
-		/* check if current word is a format */
-		if ((s == start) && (s[0] == '%') && (s[1] != '\0') && ((s[2] == '\0') || isspace(s[2]))) {
-			switch(s[1]) {
-				case 'L': /* append contents of char * gadl_list_t */
-					{
-						gadl_list_t *list = va_arg(vargs, gadl_list_t *);
-						gadl_iterator_t it;
-						char **s;
-						gadl_foreach(list, &it, s) {
-							vts0_append(&args, *s);
-						}
-					}
-					start = s+2;
-					s++;
-					continue;
-				case 's':
-					{
-						char *arg = va_arg(vargs, char *);
-						if (arg != NULL)
-							vts0_append(&args, arg);
-						start = s+2;
-						s++;
-					}
-					continue;
-			}
-		}
-	}
-	va_end(vargs);
-
-	if (args.used > 0) {
-		int i, l;
-		char *cmd, *end, line[1024];
-		FILE *f;
-
-		l = 0;
-		for (i = 0; i < args.used; i++)
-			l += strlen(args.array[i]) + 3;
-
-		end = cmd = malloc(l+1);
-		for (i = 0; i < args.used; i++) {
-			l = strlen(args.array[i]);
-			*end = '"'; end++;
-			memcpy(end, args.array[i], l);
-			end += l;
-			*end = '"'; end++;
-			*end = ' '; end++;
-		}
-		end--;
-		*end = '\0';
-
-		/* we have something in the list, build & call command */
-		if (conf_g2pr.utils.gsch2pcb_rnd.verbose) {
-			printf("Running command:\n\t%s\n", cmd);
-			printf("%s", SEP_STRING);
-		}
-
-		f = popen(cmd, "r");
-		while(fgets(line, sizeof(line), f) != NULL) {
-			if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
-				fputs(line, stdout);
-		}
-
-		if (pclose(f) == 0)
-			result = TRUE;
-		else
-			fprintf(stderr, "Failed to execute external program\n");
-		free(cmd);
-
-		if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
-			printf("\n%s", SEP_STRING);
-	}
-
-	free(format);
-	vts0_uninit(&args);
-	return result;
-}
-
-/* Run gnetlist to generate a netlist and a PCB board file.  gnetlist
- * has exit status of 0 even if it's given an invalid arg, so do some
- * stat() hoops to decide if gnetlist successfully generated the PCB
- * board file (only gnetlist >= 20030901 recognizes -m).
- */
-static int run_gnetlist(const char * pins_file, const char * net_file, const char * pcb_file, const char * basename, const gadl_list_t *largs)
-{
-	struct stat st;
-	time_t mtime;
-	static const char *gnetlist = NULL;
-	gadl_iterator_t it;
-	char **sp;
-	char *verbose_str = NULL;
-
-	/* Allow the user to specify a full path or a different name for
-	 * the gnetlist command.  Especially useful if multiple copies
-	 * are installed at once.
-	 */
-	if (gnetlist == NULL)
-		gnetlist = getenv("GNETLIST");
-	if (gnetlist == NULL)
-		gnetlist = "gnetlist";
-
-	if (!conf_g2pr.utils.gsch2pcb_rnd.verbose)
-		verbose_str = "-q";
-
-	if (!build_and_run_command("%s %s -g pcbpins -o %s %L %L", gnetlist, verbose_str, pins_file, &extra_gnetlist_arg_list, largs))
-		return FALSE;
-
-	if (!build_and_run_command("%s %s -g PCB -o %s %L %L", gnetlist, verbose_str, net_file, &extra_gnetlist_arg_list, largs))
-		return FALSE;
-
-	mtime = (stat(pcb_file, &st) == 0) ? st.st_mtime : 0;
-
-	if (!build_and_run_command("%s %s -L " SCMDIR " -g gsch2pcb-rnd -o %s %L %L",
-														 gnetlist, verbose_str, pcb_file, &extra_gnetlist_arg_list, largs)) {
-		if (stat(pcb_file, &st) != 0 || mtime == st.st_mtime) {
-			fprintf(stderr, "gsch2pcb: gnetlist command failed, `%s' not updated\n", pcb_file);
-			return FALSE;
-		}
-		return FALSE;
-	}
-
-	gadl_foreach(&extra_gnetlist_list, &it, sp) {
-		const char *s = *sp;
-		const char *s2 = strstr(s, " -o ");
-		char *out_file;
-		char *backend;
-		if (!s2) {
-			out_file = str_concat(NULL, basename, ".", s, NULL);
-			backend = pcb_strdup(s);
-		}
-		else {
-			out_file = pcb_strdup(s2 + 4);
-			backend = loc_strndup(s, s2 - s);
-		}
-
-		if (!build_and_run_command("%s %s -g %s -o %s %L %L",
-															 gnetlist, verbose_str, backend, out_file, &extra_gnetlist_arg_list, largs))
-			return FALSE;
-		free(out_file);
-		free(backend);
-	}
-
-	return TRUE;
-}
 
 static char *token(char * string, char ** next, int * quoted_ret, int parenth)
 {
@@ -815,7 +600,7 @@ static int add_elements(char * pcb_file)
 				}
 				else {
 					++n_not_found;
-					fputs(buf, f_out);		/* Copy PKG_ line */
+					fprintf(f_out, "# gsch2pcb-rnd: element not found: %s\n", buf); /* Copy PKG_ line as comment */
 				}
 			}
 			if (fp != NULL)
