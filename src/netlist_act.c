@@ -111,30 +111,51 @@ quit:;
 
 /* The primary purpose of this action is to rebuild a netlist from a
    script, in conjunction with the clear action above.  */
-static int pcb_netlist_add(const char *netname, const char *pinname)
+static int pcb_netlist_add(int patch, const char *netname, const char *pinname)
 {
 	int ni, pi;
-	pcb_lib_t *netlist = &PCB->NetlistLib[PCB_NETLIST_EDITED];
+	pcb_lib_t *netlist = patch ? &PCB->NetlistLib[PCB_NETLIST_EDITED] : &PCB->NetlistLib[PCB_NETLIST_INPUT];
 	pcb_lib_menu_t *net = NULL;
 	pcb_lib_entry_t *pin = NULL;
 
-	for (ni = 0; ni < netlist->MenuN; ni++)
+	for (ni = 0; ni < netlist->MenuN; ni++) {
 		if (strcmp(netlist->Menu[ni].Name + 2, netname) == 0) {
 			net = &(netlist->Menu[ni]);
 			break;
 		}
-	if (net == NULL) {
-		net = pcb_lib_net_new(netlist, (char *) netname, NULL);
 	}
 
-	for (pi = 0; pi < net->EntryN; pi++)
+
+	if (net == NULL) {
+		if (!patch) {
+			net = pcb_lib_menu_new(netlist, NULL);
+			net->Name = pcb_strdup_printf("  %s", netname);
+			net->flag = 1;
+			PCB->netlist_needs_update=1;
+		}
+		else
+			net = pcb_lib_net_new(netlist, (char *) netname, NULL);
+	}
+
+	for (pi = 0; pi < net->EntryN; pi++) {
 		if (strcmp(net->Entry[pi].ListEntry, pinname) == 0) {
 			pin = &(net->Entry[pi]);
 			break;
 		}
+	}
+
+
 	if (pin == NULL) {
-		pin = pcb_lib_conn_new(net, (char *) pinname);
-		pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pin->ListEntry, net->Name + 2, NULL);
+		if (!patch) {
+			pcb_lib_entry_t *entry = pcb_lib_entry_new(net);
+			entry->ListEntry = pcb_strdup_printf("%s", pinname);
+			entry->ListEntry_dontfree = 0;
+			PCB->netlist_needs_update=1;
+		}
+		else {
+			pin = pcb_lib_conn_new(net, (char *) pinname);
+			pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pin->ListEntry, net->Name + 2, NULL);
+		}
 	}
 
 	pcb_netlist_changed(0);
@@ -241,10 +262,11 @@ static int pcb_act_Netlist(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		return pcb_netlist_swap();
 	else if (pcb_strcasecmp(argv[0], "add") == 0) {
 		/* Add is different, because the net/pin won't already exist.  */
-		return pcb_netlist_add(PCB_ACTION_ARG(1), PCB_ACTION_ARG(2));
+		return pcb_netlist_add(0, PCB_ACTION_ARG(1), PCB_ACTION_ARG(2));
 	}
 	else if (pcb_strcasecmp(argv[0], "sort") == 0) {
 		pcb_sort_netlist();
+		pcb_ratspatch_make_edited(PCB);
 		return 0;
 	}
 	else if (pcb_strcasecmp(argv[0], "freeze") == 0) {
@@ -272,8 +294,8 @@ static int pcb_act_Netlist(int argc, const char **argv, pcb_coord_t x, pcb_coord
 
 	if (argc > 1) {
 		use_re = 1;
-		for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN; i++) {
-			net = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + i;
+		for (i = 0; i < PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN; i++) {
+			net = PCB->NetlistLib[PCB_NETLIST_INPUT].Menu + i;
 			if (pcb_strcasecmp(argv[1], net->Name + 2) == 0)
 				use_re = 0;
 		}
@@ -287,8 +309,9 @@ static int pcb_act_Netlist(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		}
 	}
 
-	for (i = PCB->NetlistLib[PCB_NETLIST_EDITED].MenuN - 1; i >= 0; i--) {
-		net = PCB->NetlistLib[PCB_NETLIST_EDITED].Menu + i;
+/* This code is for changing the netlist style */
+	for (i = PCB->NetlistLib[PCB_NETLIST_INPUT].MenuN - 1; i >= 0; i--) {
+		net = PCB->NetlistLib[PCB_NETLIST_INPUT].Menu + i;
 
 		if (argc > 1) {
 			if (use_re) {
