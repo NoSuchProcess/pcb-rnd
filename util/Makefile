@@ -13,6 +13,7 @@ install_:
 	$(CPC) "`pwd`/fp2anim" "$(BINDIR)/fp2anim"
 	$(CPC) "`pwd`/pcb-strip" "$(BINDIR)/pcb-strip"
 	$(CPC) "`pwd`/gnet-pcbrndfwd.scm" "$(LIBDIR)/gnet-pcbrndfwd.scm"
+	$(CPC) "`pwd`/gnet-pcbrndfwd_elem.scm" "$(LIBDIR)/gnet-pcbrndfwd_elem.scm"
 	cd gsch2pcb-rnd && make install_ CPC="$(CPC)"
 
 install:
@@ -25,4 +26,5 @@ uninstall:
 	$(RM) "$(BINDIR)/fp2anim"
 	$(RM) "$(BINDIR)/pcb-strip"
 	$(RM) "$(LIBDIR)/gnet-pcbrndfwd.scm"
+	$(RM) "$(LIBDIR)/gnet-pcbrndfwd_elem.scm"
 	cd gsch2pcb-rnd && make uninstall
