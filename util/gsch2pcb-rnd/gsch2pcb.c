@@ -54,6 +54,8 @@
 #include "gsch2pcb.h"
 #include "netlister.h"
 #include "run.h"
+#include "fmt_pcb.h"
+#include "fmt_pkg.h"
 
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
@@ -63,7 +65,7 @@ int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
     n_PKG_removed_old, n_preserved, n_changed_value, n_not_found,
     n_unknown, n_none, n_empty;
 
-static int bak_done, need_PKG_purge;
+int bak_done, need_PKG_purge;
 
 conf_gsch2pcb_rnd_t conf_g2pr;
 
@@ -116,55 +118,7 @@ void pcb_trace(const char *Format, ...)
 const char *pcb_board_get_filename(void) { return NULL; }
 const char *pcb_board_get_name(void) { return NULL; }
 
-static char *token(char * string, char ** next, int * quoted_ret, int parenth)
-{
-	static char *str;
-	char *s, *ret;
-	int quoted = FALSE;
-
-	if (string)
-		str = string;
-	if (!str || !*str) {
-		if (next)
-			*next = str;
-		return pcb_strdup("");
-	}
-	while (*str == ' ' || *str == '\t' || *str == ',' || *str == '\n')
-		++str;
-
-	if (*str == '"') {
-		quoted = TRUE;
-		if (quoted_ret)
-			*quoted_ret = TRUE;
-		++str;
-		for (s = str; *s && *s != '"' && *s != '\n'; ++s);
-	}
-	else {
-		if (quoted_ret)
-			*quoted_ret = FALSE;
-		for (s = str; *s != '\0'; ++s) {
-			if ((parenth) && (*s == '(')) {
-				quoted = TRUE;
-				if (quoted_ret)
-					*quoted_ret = TRUE;
-				for (; *s && *s != ')' && *s != '\n'; ++s);
-				/* preserve closing ')' */
-				if (*s == ')')
-					s++;
-				break;
-			}
-			if (*s == ' ' || *s == '\t' || *s == ',' || *s == '\n')
-				break;
-		}
-	}
-	ret = pcb_strndup(str, s - str);
-	str = (quoted && *s) ? s + 1 : s;
-	if (next)
-		*next = str;
-	return ret;
-}
-
-static char *fix_spaces(char * str)
+char *fix_spaces(char * str)
 {
 	char *s;
 
@@ -174,92 +128,6 @@ static char *fix_spaces(char * str)
 		if (*s == ' ' || *s == '\t')
 			*s = '_';
 	return str;
-}
-
-	/* As of 1/9/2004 CVS hi_res Element[] line format:
-	 *   Element[element_flags, description, pcb-name, value, mark_x, mark_y,
-	 *       text_x, text_y, text_direction, text_scale, text_flags]
-	 *   New PCB 1.7 / 1.99 Element() line format:
-	 *   Element(element_flags, description, pcb-name, value, mark_x, mark_y,
-	 *       text_x, text_y, text_direction, text_scale, text_flags)
-	 *   Old PCB 1.6 Element() line format:
-	 *   Element(element_flags, description, pcb-name, value,
-	 *       text_x, text_y, text_direction, text_scale, text_flags)
-	 *
-	 *   (mark_x, mark_y) is the element position (mark) and (text_x,text_y)
-	 *   is the description text position which is absolute in pre 1.7 and
-	 *   is now relative.  The hi_res mark_x,mark_y and text_x,text_y resolutions
-	 *   are 100x the other formats.
-	 */
-PcbElement *pcb_element_line_parse(char * line)
-{
-	PcbElement *el = NULL;
-	char *s, *t, close_char;
-	int state = 0, elcount = 0, tmp;
-
-	if (strncmp(line, "Element", 7))
-		return NULL;
-
-	el = calloc(sizeof(PcbElement), 1);
-
-	s = line + 7;
-	while (*s == ' ' || *s == '\t')
-		++s;
-
-	if (*s == '[')
-		el->hi_res_format = TRUE;
-	else if (*s != '(') {
-		free(el);
-		return NULL;
-	}
-
-	el->res_char = el->hi_res_format ? '[' : '(';
-	close_char = el->hi_res_format ? ']' : ')';
-
-	el->flags = token(s + 1, NULL, &tmp, 0); el->quoted_flags = tmp;
-	el->description = token(NULL, NULL, NULL, 0);
-	el->refdes = token(NULL, NULL, NULL, 0);
-	el->value = token(NULL, NULL, NULL, 0);
-
-	el->x = token(NULL, NULL, NULL, 0);
-	el->y = token(NULL, &t, NULL, 0);
-
-	el->tail = pcb_strdup(t ? t : "");
-	if ((s = strrchr(el->tail, (int) '\n')) != NULL)
-		*s = '\0';
-
-	/* Count the tokens in tail to decide if it's new or old format.
-	 * Old format will have 3 tokens, new format will have 5 tokens.
-	 */
-	for (s = el->tail; *s && *s != close_char; ++s) {
-		if (*s != ' ') {
-			if (state == 0)
-				++elcount;
-			state = 1;
-		}
-		else
-			state = 0;
-	}
-	el->nonetlist = 0;
-	if (elcount > 4) {
-		el->new_format = TRUE;
-		if (strstr(el->tail, "nonetlist") != NULL)
-			el->nonetlist = 1;
-	}
-
-	fix_spaces(el->description);
-	fix_spaces(el->refdes);
-	fix_spaces(el->value);
-
-	/* Don't allow elements with no refdes to ever be deleted because
-	 * they may be desired pc board elements not in schematics.  So
-	 * initialize still_exists to TRUE if empty or non-alphanumeric
-	 * refdes.
-	 */
-	if (!*el->refdes || !isalnum((int) (*el->refdes)))
-		el->still_exists = TRUE;
-
-	return el;
 }
 
 static void pcb_element_free(PcbElement * el)
@@ -277,27 +145,6 @@ static void pcb_element_free(PcbElement * el)
 	free(el->tail);
 	free(el->pkg_name_fix);
 	free(el);
-}
-
-static void get_pcb_element_list(char * pcb_file)
-{
-	FILE *f;
-	PcbElement *el;
-	char *s, buf[1024];
-
-	if ((f = fopen(pcb_file, "r")) == NULL)
-		return;
-	while ((fgets(buf, sizeof(buf), f)) != NULL) {
-		for (s = buf; *s == ' ' || *s == '\t'; ++s);
-		if (!strncmp(s, "PKG_", 4)) {
-			need_PKG_purge = TRUE;
-			continue;
-		}
-		if ((el = pcb_element_line_parse(s)) == NULL)
-			continue;
-		gdl_append(&pcb_element_list, el, all_elems);
-	}
-	fclose(f);
 }
 
 static PcbElement *pcb_element_exists(PcbElement * el_test, int record)
@@ -387,82 +234,6 @@ char *search_element(PcbElement * el)
 		printf("\tSearching directories looking for file element: %s\n", elname);
 	free(elname);
 	return path;
-}
-
-/* The gnetlist backend gnet-gsch2pcb-rnd.scm generates PKG lines:
- *
- *        PKG(footprint,refdes,value)
- *
- */
-static PcbElement *pkg_to_element(FILE * f, char * pkg_line)
-{
-	PcbElement *el;
-	char *s, *end, *refdes, *fp, *value;
-
-/*fprintf(stderr, "--- %s\n", pkg_line);*/
-
-	if (strncmp(pkg_line, "PKG", 3)
-			|| (s = strchr(pkg_line, (int) '(')) == NULL)
-		return NULL;
-
-/* remove trailing ")" */
-	end = s + strlen(s) - 2;
-	if (*end == ')')
-		*end = '\0';
-
-/* tokenize the line keeping () */
-	fp = token(s + 1, NULL, NULL, 1);
-	refdes = token(NULL, NULL, NULL, 1);
-	value = token(NULL, NULL, NULL, 1);
-
-
-/*fprintf(stderr, "refdes: %s\n", refdes);
-fprintf(stderr, "    fp: %s\n", fp);
-fprintf(stderr, "   val: %s\n", value);*/
-
-
-	if (!refdes || !fp || !value) {
-		if (refdes != NULL)
-			free(refdes);
-		if (fp != NULL)
-			free(fp);
-		if (value != NULL)
-			free(value);
-		fprintf(stderr, "Bad package line: %s\n", pkg_line);
-		return NULL;
-	}
-
-	fix_spaces(refdes);
-	fix_spaces(value);
-
-	el = calloc(sizeof(PcbElement), 1);
-	el->description = fp;
-	el->refdes = refdes;
-	el->value = value;
-
-/*
-// wtf?
-//  if ((s = strchr (el->value, (int) ')')) != NULL)
-//    *s = '\0';
-*/
-
-	if (conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name && !strcmp(el->description, conf_g2pr.utils.gsch2pcb_rnd.empty_footprint_name)) {
-		if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
-			printf("%s: has the empty footprint attribute \"%s\" so won't be in the layout.\n", el->refdes, el->description);
-		n_empty += 1;
-		el->omit_PKG = TRUE;
-	}
-	else if (!strcmp(el->description, "none")) {
-		fprintf(stderr, "WARNING: %s has a footprint attribute \"%s\" so won't be in the layout.\n", el->refdes, el->description);
-		n_none += 1;
-		el->omit_PKG = TRUE;
-	}
-	else if (!strcmp(el->description, "unknown")) {
-		fprintf(stderr, "WARNING: %s has no footprint attribute so won't be in the layout.\n", el->refdes);
-		n_unknown += 1;
-		el->omit_PKG = TRUE;
-	}
-	return el;
 }
 
 /* Copies the content of fn to fout and returns 0 on success. */

@@ -51,7 +51,9 @@ OBJS = \
  gsch2pcb.o \
  help.o \
  netlister.o \
- run.o
+ run.o \
+ fmt_pcb.o \
+ fmt_pkg.o
 
 all:
 	make revcheck

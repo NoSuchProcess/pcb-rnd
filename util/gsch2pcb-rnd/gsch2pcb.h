@@ -41,3 +41,6 @@ extern int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
            n_PKG_removed_old, n_preserved, n_changed_value, n_not_found,
            n_unknown, n_none, n_empty;
 
+extern int bak_done, need_PKG_purge;
+
+char *fix_spaces(char * str);
