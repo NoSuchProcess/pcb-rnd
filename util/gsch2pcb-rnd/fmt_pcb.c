@@ -685,6 +685,7 @@ static fmt_t fmt_pcb;
 void fmt_pcb_register(void)
 {
 	fmt_pcb.name = "pcb";
+	fmt_pcb.desc = "traditional: load footprints and edit the .pcb files";
 	fmt_pcb.init = fmt_pcb_init;
 	fmt_pcb.go = fmt_pcb_go;
 	fmt_pcb.uninit = fmt_pcb_uninit;

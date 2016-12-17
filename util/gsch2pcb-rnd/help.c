@@ -25,7 +25,7 @@
   - use popen() instead of glib's spawn (stderr is always printed to stderr)
  */
 #include "config.h"
-
+#include "fmt.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -65,7 +65,9 @@ static char *usage_string0d =
 	"                           are searched if they exist. See the default\n"
 	"                           search paths at the end of this text."
 	"   -c, --elements-dir-clr  Clear the elements dir. Useful before a series\n"
-	"                           if -d's to flush defaults.\n";
+	"                           if -d's to flush defaults.\n"
+	"   -m, --method M          Use method M for the import. See available\n"
+	"                           methods below.\n";
 static char *usage_string0e =
 	"   -s, --elements-shell S  Use S as a prefix for running parametric footrint\n"
 	"                           generators. It is useful on systems where popen()\n"
@@ -117,7 +119,8 @@ static char *usage_string1c =
 	"   GNETLIST              If set, this specifies the name of the gnetlist program\n"
 	"                         to execute.\n"
 	"\n";
-static char *usage_string1d =
+
+static char *usage_string_foot =
 	"Additional Resources:\n"
 	"\n"
 	"  gnetlist user guide:  http://wiki.geda-project.org/geda:gnetlist_ug\n"
@@ -127,6 +130,7 @@ static char *usage_string1d =
 
 void usage(void)
 {
+	fmt_t *f;
 	printf("%s", usage_string0a);
 	printf("%s", usage_string0b);
 	printf("%s", usage_string0c);
@@ -139,6 +143,11 @@ void usage(void)
 	printf("%s", usage_string1a);
 	printf("%s", usage_string1b);
 	printf("%s", usage_string1c);
-	printf("%s", usage_string1d);
+
+	printf("\nMethods available:\n");
+	for(f = fmts; f != NULL; f = f->next)
+		printf("  %-8s %s\n", f->name, f->desc);
+	printf("\n");
+	printf("%s", usage_string_foot);
 	exit(0);
 }

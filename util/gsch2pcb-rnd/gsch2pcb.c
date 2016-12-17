@@ -256,6 +256,15 @@ static void get_args(int argc, char ** argv)
 				conf_set(CFR_CLI, "utils/gsch2pcb_rnd/verbose", -1, tmp, POL_OVERWRITE);
 				continue;
 			}
+			else if (!strcmp(opt, "m") || !strcmp(opt, "method")) {
+				if (fmt_find(arg) == NULL) {
+					pcb_message(PCB_MSG_ERROR, "Error: can't use unknown method '%s'; try --help\n", arg);
+					exit(1);
+				}
+				conf_set(CFR_CLI, "utils/gsch2pcb_rnd/method", -1, arg, POL_OVERWRITE);
+				i++;
+				continue;
+			}
 			else if (!strcmp(opt, "c") || !strcmp(opt, "conf")) {
 				const char *stmp;
 				if (conf_set_from_cli(NULL, arg, NULL, &stmp) != 0) {
@@ -325,10 +334,11 @@ const char *local_project_pcb_name = NULL;
 int main(int argc, char ** argv)
 {
 	const char *want_fmt;
-	if (argc < 2)
-		usage();
 
 	fmt_pcb_register();
+
+	if (argc < 2)
+		usage();
 
 	conf_init();
 	conf_core_init();
@@ -355,7 +365,6 @@ int main(int argc, char ** argv)
 
 
 	conf_update(NULL); /* because of CLI changes */
-
 
 	want_fmt = conf_g2pr.utils.gsch2pcb_rnd.method;
 	if (want_fmt == NULL) {
