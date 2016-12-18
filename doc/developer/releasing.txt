@@ -6,6 +6,5 @@ release check list
 2. update the changelog
 3. rewrite the release notes
 4. modify version number in scconfig
-5. update changelog in debian/
-6. commit trunk
-7. svn tag using URLs
+5. commit trunk
+6. svn tag using URLs
