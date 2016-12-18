@@ -1,10 +1,12 @@
-put /local/pcb/CFLAGS {-I../.. -I../../src_3rd -I../../src_3rd/liblihata -DSCMDIR="\\"$(LIBDIR)\\""}
+put /local/pcb/CFLAGS cc/cflags
+append /local/pcb/CFLAGS {-I../.. -I../../src_3rd -I../../src_3rd/liblihata -DSCMDIR="\\"$(LIBDIR)\\""}
+append /local/pcb/LDFLAGS cc/ldflags
 include {../scconfig/template/debug.tmpasm}
 
 print [@
 PLUGDIR=../../src_plugins
 CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
-LDFLAGS=-lm
+LDFLAGS=-lm @/local/pcb/LDFLAGS@
 CC=@cc/cc@
 
 HASHOBJ=../../src_3rd/liblihata/genht/hash.o ../../src_3rd/liblihata/genht/htsp.o ../../src_3rd/liblihata/genht/htpp.o
