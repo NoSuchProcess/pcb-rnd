@@ -365,8 +365,12 @@ int hook_detect_target()
 	if (want_gtk)
 		want_glib = 1;
 
-	if (plug_is_enabled("toporouter"))
+	if (plug_is_enabled("toporouter")) {
+		put("/local/gts/enable", strue);
 		want_glib = 1;
+	}
+	else
+		put("/local/gts/enable", sfalse);
 
 	if (plug_is_enabled("export_dsn"))
 		want_glib = 1;

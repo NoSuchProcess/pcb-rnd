@@ -1,7 +1,6 @@
 put /local/pcb/mod {toporouter}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/toporouter/toporouter.o @]
 
-append /local/pcb/CFLAGS  {-I../src_3rd/gts}
 
 put /local/pcb/toporouter_rules [@
 ../src_3rd/gts/libgts.a:
@@ -10,12 +9,14 @@ put /local/pcb/toporouter_rules [@
 
 switch /local/pcb/toporouter/controls
 	case {buildin}
+		append /local/pcb/CFLAGS          {-I../src_3rd/gts}
 		append /local/pcb/RULES           /local/pcb/toporouter_rules
 		append /local/pcb/LIBS            { ../src_3rd/gts/libgts.a }
 		append /local/pcb/EXEDEPS         { ../src_3rd/gts/libgts.a }
 		include /local/pcb/tmpasm/buildin
 		end;
 	case {plugin}
+		append /local/mod/CFLAGS          {-I../src_3rd/gts}
 		append /local/pcb/RULES           /local/pcb/toporouter_rules
 		append /local/pcb/toporouter/OBJS { ../src_3rd/gts/libgts.a }
 		include /local/pcb/tmpasm/plugin

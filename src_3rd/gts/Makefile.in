@@ -1,3 +1,5 @@
+if /local/gts/enable
+then
 put /local/gts/CFLAGS [@-I. -I.. -I../.. -DG_LOG_DOMAIN=\"Gts\" @libs/sul/glib/cflags@@]
 put /local/gts/OBJS [@
 	object.o
@@ -61,3 +63,12 @@ include {../../scconfig/Makefile.comp.inc}
 put /local/dep/CFLAGS /local/gts/CFLAGS
 put /local/dep/SRCS /local/gts/SRCS
 include {../../scconfig/Makefile.dep.inc}
+else
+print [@
+all:
+
+libgts.a:
+
+clean:
+@]
+end
