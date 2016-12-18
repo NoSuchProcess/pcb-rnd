@@ -40,11 +40,4 @@ uninstall: FORCE
 	cd pcblib && make uninstall
 	cd doc && make uninstall
 
-deb: FORCE
-	fakeroot debian/rules clean
-	fakeroot debian/rules binary
-
-debclean: FORCE
-	fakeroot debian/rules clean
-
 FORCE:
