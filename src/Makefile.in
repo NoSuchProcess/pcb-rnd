@@ -210,6 +210,9 @@ uniq /local/pcb/CFLAGS
 uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
 uniq /local/pcb/ACTION_REG_SRC
+uniq /local/pcb/EXEDEPS
+uniq /local/pcb/CLEANFILES
+uniq /local/pcb/CLEANRULES
 put /local/pcb/SRCS /local/pcb/OBJS 
 append /local/pcb/SRCS ?/local/pcb/OBJS_C99
 gsub /local/pcb/SRCS {.o } {.c }
