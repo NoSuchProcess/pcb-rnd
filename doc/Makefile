@@ -12,10 +12,6 @@ keys.html: $(MENU_RES) $(KEYLIST)
 keys_mkey.html: $(MENU_RES_MKEY) $(KEYLIST)
 	$(KEYLIST) $(MENU_RES_MKEY) > keys_mkey.html
 
-features/debian_list.html: ../debian/control
-	$(DEBLIST) < ../debian/control > features/debian_list.html
-	./Autostyle.sh features/debian_list.html
-
 install:
 	cd man && make install
 
