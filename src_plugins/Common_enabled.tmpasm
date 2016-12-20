@@ -64,6 +64,7 @@ switch /local/pcb/mod/CONF
 		put /local/pcb/mod/CONFOUT /local/pcb/mod/CONF
 		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
 		append /local/pcb/CLEANFILES /local/pcb/mod/CONFOUT
+		append /local/pcb/CLEANFILES ?/local/pcb/mod/CLEANFILES
 		append /local/pcb/RULES [@
 # conf generation for @/local/pcb/mod@ '@/local/pcb/mod/CONF@'
 @/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
@@ -102,6 +103,8 @@ switch ?/local/pcb/mod/SPHASH
 @/local/bn@_sphash.c @/local/bn@_sphash.h: $(SPHASH) @/local/n@
 	$(SPHASH) @/local/aux@ --prefix @/local/pcb/mod@_@/local/pr@ --out @/local/bn@_sphash < @/local/n@
 @]
+			append /local/pcb/CLEANFILES [@@/local/bn@_sphash.c@]
+			append /local/pcb/CLEANFILES [@@/local/bn@_sphash.h@]
 		end
 	end
 end
