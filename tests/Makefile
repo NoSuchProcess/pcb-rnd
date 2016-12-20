@@ -6,7 +6,7 @@ test:
 	cd uniq_name && $(MAKE) all && $(MAKE) test
 	cd propedit && $(MAKE) all && $(MAKE) test
 	cd remote && $(MAKE) all && $(MAKE) test
-	cd gsch2pcb-rnd && $(MAKE) all && $(MAKE) test
+#	cd gsch2pcb-rnd && $(MAKE) all && $(MAKE) test
 	@echo " "
 	@echo "+-------------------------------------------------+"
 	@echo "+  All tests passed, pcb-rnd is safe to install.  +"
