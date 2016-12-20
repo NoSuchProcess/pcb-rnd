@@ -11,3 +11,14 @@ test:
 	@echo "+-------------------------------------------------+"
 	@echo "+  All tests passed, pcb-rnd is safe to install.  +"
 	@echo "+-------------------------------------------------+"
+
+clean:
+	cd pcbflags && $(MAKE) clean
+	cd conf && $(MAKE) clean
+	cd strflags && $(MAKE) clean
+	cd pcb-printf && $(MAKE) clean
+	cd uniq_name && $(MAKE) clean
+	cd propedit && $(MAKE) clean
+	cd remote && $(MAKE) clean
+#	cd gsch2pcb-rnd && $(MAKE) clean
+
