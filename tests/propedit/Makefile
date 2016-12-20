@@ -22,6 +22,7 @@ test: tester.diff
 	@rm tester.out
 
 tester: $(OBJS) $(LIB_OBJS)
+	$(CC) $(LDFLAGS) -o tester $(OBJS) $(LIB_OBJS)
 
 tester.o: tester.c $(PED)/props.h
 

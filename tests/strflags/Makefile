@@ -11,6 +11,7 @@ test: tester.diff
 	@rm tester.stdout
 
 tester: tester.o $(GDS)
+	$(CC) $(LDFLAGS) -o tester tester.o $(GDS)
 
 tester.o: tester.c
 	$(CC) -c $(CFLAGS) -o $@ tester.c

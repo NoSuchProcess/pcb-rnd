@@ -18,8 +18,10 @@ prcli: prcli.o $(SRC)/pcb-printf.o $(SRC)/misc_util.o $(LIBPCB_BASE) $(GDS)
 prcli.o: prcli.c
 
 tester: tester.o $(SRC)/pcb-printf.o $(LIBPCB_BASE)  $(GDS)
+	$(CC) $(LDFLAGS) -o tester tester.o $(SRC)/pcb-printf.o $(LIBPCB_BASE)  $(GDS)
 
 tester_spd: tester_spd.o $(SRC)/pcb-printf_spd.o $(LIBPCB_BASE) $(GDS)
+	$(CC) $(LDFLAGS) -o tester_spd tester_spd.o $(SRC)/pcb-printf_spd.o $(LIBPCB_BASE) $(GDS)
 
 tester.o: tester.c
 	$(CC) -c $(CFLAGS) -o $@ tester.c

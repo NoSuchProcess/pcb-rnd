@@ -14,6 +14,7 @@ test: tester.diff
 	@rm tester.out
 
 tester: tester.o $(UNM)/uniq_name.o $(LIB_OBJS)
+	$(CC) $(LDFLAGS) -o tester tester.o $(UNM)/uniq_name.o $(LIB_OBJS)
 
 tester.o: tester.c $(UNM)/uniq_name.h
 
