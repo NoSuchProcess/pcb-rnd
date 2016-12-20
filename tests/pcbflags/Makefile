@@ -1,4 +1,4 @@
 all:
 
 test:
-	@./test.sh
+	@./test.sh && echo "pcbflags:    *** QC pass ***"
