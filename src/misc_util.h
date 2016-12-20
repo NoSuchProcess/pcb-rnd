@@ -29,6 +29,7 @@
 #ifndef	PCB_MISC_UTIL_H
 #define	PCB_MISC_UTIL_H
 
+#include "unit.h"
 #include "pcb_bool.h"
 
 double pcb_distance(double x1, double y1, double x2, double y2);
