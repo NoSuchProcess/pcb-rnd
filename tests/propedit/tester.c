@@ -2,6 +2,24 @@
 #include <assert.h>
 #include "props.h"
 
+void *pcb_gui = NULL;
+
+int pcb_propsel_set(const char *prop, const char *value)
+{
+	return 0;
+}
+
+int pcb_propsel_del(const char *key)
+{
+	return 0;
+}
+
+void pcb_propsel_map_core(htsp_t *props)
+{
+}
+
+
+
 static void print_val(pcb_prop_type_t type, pcb_propval_t val)
 {
 	switch(type) {

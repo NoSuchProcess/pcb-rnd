@@ -4,6 +4,7 @@ LHT=$(ROOT)/src_3rd/liblihata
 SRC=$(ROOT)/src
 
 CFLAGS = -g -Wall -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd
+LDFLAGS = -lm
 LIB_OBJS = \
  $(LHT)/genht/htsp.o \
  $(LHT)/genht/hash.o \
