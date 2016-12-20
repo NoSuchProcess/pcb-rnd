@@ -16,7 +16,7 @@ LIB_PCB_OBJS= \
 	../../src/compat_fs.o
 
 LIB_PLUGIN_OBJS=\
-	../../src_plugins/debug/debug_conf.o
+	../../src_plugins/diag/diag_conf.o
 
 LIB_3RD_OBJS= \
 	../../src_3rd/liblihata/parser.o \

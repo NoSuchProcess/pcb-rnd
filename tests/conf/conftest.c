@@ -5,14 +5,14 @@
 #include "conf_hid.h"
 #include "conf_core.h"
 #include "compat_misc.h"
-#include "src_plugins/debug/debug_conf.h"
+#include "src_plugins/diag/diag_conf.h"
 
 int lineno = 0;
 int global_notify = 0;
 conf_hid_id_t hid_id;
 const char *hid_cookie = "conftest cookie";
 
-void pcb_message(const char *Format, ...)
+void pcb_message(enum pcb_message_level level, const char *Format, ...)
 {
 	va_list args;
 
@@ -24,6 +24,17 @@ void pcb_message(const char *Format, ...)
 
 	fprintf(stderr, "\n");
 }
+
+const char *pcb_board_get_filename(void)
+{
+	return "dummy_brd.lht";
+}
+
+const char *pcb_board_get_name(void)
+{
+	return "dummy_brd";
+}
+
 
 void watch_pre(conf_native_t *cfg)
 {
@@ -55,7 +66,7 @@ extern lht_doc_t *conf_root[];
 void cmd_dump(char *arg)
 {
 	if (arg == NULL) {
-		pcb_message("Need an arg: native or lihata");
+		pcb_message(PCB_MSG_ERROR, "Need an arg: native or lihata");
 		return;
 	}
 	if (strncmp(arg, "native", 6) == 0) {
@@ -68,7 +79,7 @@ void cmd_dump(char *arg)
 		while(isspace(*arg)) arg++;
 		conf_role_t role = conf_role_parse(arg);
 		if (role == CFR_invalid) {
-			pcb_message("Invalid role: '%s'", arg);
+			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
 		if (conf_root[role] != NULL)
@@ -77,7 +88,7 @@ void cmd_dump(char *arg)
 			printf("<empty>\n");
 	}
 	else
-		pcb_message("Invalid dump mode: '%s'", arg);
+		pcb_message(PCB_MSG_ERROR, "Invalid dump mode: '%s'", arg);
 }
 
 void cmd_print(char *arg)
@@ -86,12 +97,12 @@ void cmd_print(char *arg)
 	gds_t s;
 
 	if (arg == NULL) {
-		pcb_message("Need an arg: a native path");
+		pcb_message(PCB_MSG_ERROR, "Need an arg: a native path");
 		return;
 	}
 	node = conf_get_field(arg);
 	if (node == NULL) {
-		pcb_message("No such path: '%s'", arg);
+		pcb_message(PCB_MSG_ERROR, "No such path: '%s'", arg);
 		return;
 	}
 	gds_init(&s);
@@ -107,7 +118,7 @@ void cmd_load(char *arg, int is_text)
 
 	if (arg == NULL) {
 		help:;
-		pcb_message("Need 2 args: role and %s", (is_text ? "lihata text" : "file name"));
+		pcb_message(PCB_MSG_ERROR, "Need 2 args: role and %s", (is_text ? "lihata text" : "file name"));
 		return;
 	}
 
@@ -125,7 +136,7 @@ void cmd_load(char *arg, int is_text)
 
 	role = conf_role_parse(arg);
 	if (role == CFR_invalid) {
-		pcb_message("Invalid role: '%s'", arg);
+		pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 		return;
 	}
 	printf("Result: %d\n", conf_load_as(role, fn, is_text));
@@ -139,7 +150,7 @@ void cmd_policy(char *arg)
 {
 	conf_policy_t np = conf_policy_parse(arg);
 	if (np == POL_invalid)
-		pcb_message("Invalid/unknown policy: '%s'", arg);
+		pcb_message(PCB_MSG_ERROR, "Invalid/unknown policy: '%s'", arg);
 	else
 		current_policy = np;
 }
@@ -148,7 +159,7 @@ void cmd_role(char *arg)
 {
 	conf_role_t nr = conf_role_parse(arg);
 	if (nr == CFR_invalid)
-		pcb_message("Invalid/unknown role: '%s'", arg);
+		pcb_message(PCB_MSG_ERROR, "Invalid/unknown role: '%s'", arg);
 	else
 		current_role = nr;
 }
@@ -160,7 +171,7 @@ void cmd_chprio(char *arg)
 	lht_node_t *first;
 
 	if ((*end != '\0') || (np < 0)) {
-		pcb_message("Invalid integer prio: '%s'", arg);
+		pcb_message(PCB_MSG_ERROR, "Invalid integer prio: '%s'", arg);
 		return;
 	}
 	first = conf_lht_get_first(current_role);
@@ -183,12 +194,12 @@ void cmd_chpolicy(char *arg)
 	lht_node_t *first;
 
 	if (arg == NULL) {
-		pcb_message("need a policy", arg);
+		pcb_message(PCB_MSG_ERROR, "need a policy", arg);
 		return;
 	}
 	np = conf_policy_parse(arg);
 	if (np == POL_invalid) {
-		pcb_message("Invalid integer policy: '%s'", arg);
+		pcb_message(PCB_MSG_ERROR, "Invalid integer policy: '%s'", arg);
 		return;
 	}
 
@@ -218,7 +229,7 @@ void cmd_set(char *arg)
 	path = arg;
 	val = strpbrk(path, " \t=");
 	if (val == NULL) {
-		pcb_message("set needs a value");
+		pcb_message(PCB_MSG_ERROR, "set needs a value");
 		return;
 	}
 	*val = '\0';
@@ -234,7 +245,7 @@ void cmd_watch(char *arg, int add)
 {
 	conf_native_t *n = conf_get_field(arg);
 	if (n == NULL) {
-		pcb_message("unknown path");
+		pcb_message(PCB_MSG_ERROR, "unknown path");
 		return;
 	}
 	conf_hid_set_cb(n, hid_id, (add ? &watch_cbs : NULL));
@@ -270,7 +281,7 @@ void cmd_reset(char *arg)
 	else {
 		conf_role_t role = conf_role_parse(arg);
 		if (role == CFR_invalid) {
-			pcb_message("Invalid role: '%s'", arg);
+			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
 		conf_reset(role, "<cmd_reset role>");
@@ -373,7 +384,7 @@ int main()
 		else if (strcmp(cmd, "help") == 0)
 			cmd_help(arg);
 		else
-			pcb_message("unknown command '%s'", cmd);
+			pcb_message(PCB_MSG_ERROR, "unknown command '%s'", cmd);
 	}
 
 	conf_hid_unreg(hid_cookie);
