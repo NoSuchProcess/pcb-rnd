@@ -4,6 +4,9 @@ all: FORCE
 	cd pcblib && $(MAKE)
 #	cd doc && $(MAKE)
 
+test: FORCE
+	cd tests && $(MAKE) test
+
 clean: FORCE
 	cd src && $(MAKE) clean
 	cd util && $(MAKE) clean
