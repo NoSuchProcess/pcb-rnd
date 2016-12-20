@@ -45,6 +45,7 @@ OBJS = conftest.o help.o
 all: conftest
 
 conftest: $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS) -o conftest
 
 conftest.o: conftest.c
 
