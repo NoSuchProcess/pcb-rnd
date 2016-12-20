@@ -63,7 +63,7 @@ typedef struct {
 		} view;
 
 		struct selection {
-			CFT_BOOLEAN disable_negative;    /* selection box behaviour: diable the negative-direction selection - any selection box will select only what's fully within the box */
+			CFT_BOOLEAN disable_negative;    /* selection box behaviour: disable the negative-direction selection - any selection box will select only what's fully within the box */
 			CFT_BOOLEAN symmetric_negative;  /* selection box behaviour: when set, the selection direction is considered negative only if the box has negative size in the X direction */
 		} selection;
 
