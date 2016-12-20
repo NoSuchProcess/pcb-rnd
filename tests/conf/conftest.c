@@ -389,4 +389,5 @@ int main()
 
 	conf_hid_unreg(hid_cookie);
 	conf_uninit();
+	return 0;
 }
