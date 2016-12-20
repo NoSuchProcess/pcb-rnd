@@ -21,6 +21,11 @@
 
 <h1> pcb-rnd - the [debian] patch </h1>
 
+Our new goal is to get official Debian packages in Debian testing. The old,
+home grown packaging is already removed to ease the official packaging, but
+the official packages are not yet available. Please be patient.
+
+<small>
 Our current Debian packaging reflects the modularity of pcb-rnd: it has
 most plugins in separate packages. The main package is called
 <b>pcb-rnd-core</b>: this provides the executable and the footprint library
@@ -44,6 +49,7 @@ How to get the packages:
 	<li> use <i>dpkg -i</i> after manually downloading the packages from repo.hu's <a href="http://repo.hu/debian/list.html"> flat package list </a> or from <a href="http://repo.hu/debian/pool/main/p/pcb-rnd"> the package pool </a>
 	<li> build them on your Debian box: use svn trunk, install debhelper and all the build dependencies of pcb-rnd and run "fakeroot debian/rules binary" in trunk (shorthand: "make deb")
 </ul>
+</small>
 
 <h2> plans </h2>
 No plans - this feature is fully implemented.
