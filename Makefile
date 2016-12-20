@@ -16,7 +16,7 @@ clean: FORCE
 distclean: FORCE
 	$(MAKE) clean ; true
 	cd doc && $(MAKE) distclean
-	cd scconfig && $(MAKE) clean ; true
+	cd scconfig && $(MAKE) distclean ; true
 	cd src_3rd/genlist && $(MAKE) clean ; true
 	cd src_3rd/genregex && $(MAKE) clean ; true
 	cd src_3rd/genvector && $(MAKE) clean ; true

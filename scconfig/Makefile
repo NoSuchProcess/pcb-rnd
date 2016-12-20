@@ -93,5 +93,8 @@ src/util/arg_auto_set.o: src/util/arg_auto_set.c src/util/arg_auto_set.h
 cquote: cquote.c
 
 clean:
-	rm $(OBJS) $(DEFAULT_MAIN_OBJS) configure revtest revtest.o
+	-rm $(OBJS) $(DEFAULT_MAIN_OBJS) configure revtest revtest.o cquote core
 
+distclean:
+	-rm ../config.h config.cache config.log Rev.stamp
+	-$(MAKE) clean
