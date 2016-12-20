@@ -216,7 +216,8 @@ do { \
 	} \
 } while(0)
 
-#define PCB_FLAG_EQ(F1,F2)	(memcmp (&F1, &F2, sizeof(pcb_flag_t)) == 0)
+int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2);
+#define PCB_FLAG_EQ(F1,F2)	pcb_flag_eq(&(F1), &(F2))
 
 #define PCB_FLAG_THERM(L)		(0xf << (4 *((L) % 2)))
 
