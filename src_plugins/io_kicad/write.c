@@ -1142,7 +1142,7 @@ int write_kicad_layout_elements(FILE * FP, pcb_board_t *Layout, pcb_data_t *Data
 		pcb_fprintf(FP, "(layer %s)\n", kicad_sexpr_layer_to_text(silkLayer));
 
 		fprintf(FP, "%*s", indentation + 4, "");
-		fprintf(FP, "(effects (font (size 1.397 -1.27) (thickness 0.2032)))\n");
+		fprintf(FP, "(effects (font (size 1.397 1.27) (thickness 0.2032)))\n");
 		fprintf(FP, "%*s)\n", indentation + 2, "");
 
 		fprintf(FP, "%*s", indentation + 2, "");
