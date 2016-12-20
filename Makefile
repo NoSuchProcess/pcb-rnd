@@ -11,13 +11,13 @@ clean: FORCE
 	cd src && $(MAKE) clean
 	cd util && $(MAKE) clean
 	cd pcblib && $(MAKE) clean
-	cd doc && $(MAKE) clean
+#	cd doc && $(MAKE) clean
 	cd tests && $(MAKE) clean
 	cd src_3rd/sphash && $(MAKE) clean
 
 distclean: FORCE
 	$(MAKE) clean ; true
-	cd doc && $(MAKE) distclean
+#	cd doc && $(MAKE) distclean
 	cd src && $(MAKE) distclean
 	cd util/gsch2pcb-rnd && $(MAKE) distclean
 	cd src_3rd/genlist && $(MAKE) clean ; true
