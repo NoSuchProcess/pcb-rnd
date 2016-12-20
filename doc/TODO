@@ -1,4 +1,9 @@
 - BUGS
+	- bugs found by Dima while doing the Debian package for 1.1.4:
+		- tests/ doesn't really work
+		- a module dep mismatch after an explicit --buildin or --plugin should be an error
+		- reviese make clean and make distclean, make sure they remove what they need to
+		- retest the plugin system on x86_64, with the debian package's CFLAGS and LDFLAGS
 	- "unselectable" arc rotated on ps [report:Evan]
 	- gerber top layer doesn't have pads on A.pcb (layer cleanup) [report:James]
 	- gerber layer group name [report:James]
