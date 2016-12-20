@@ -67,6 +67,13 @@ dumpconf(lihata,design)
 	return 0
 }
 
+diag=`cd "$src_dir" && ./pcb-rnd --dump-plugins | grep diag`
+if test -z "$diag"
+then
+	echo "pcbflags: can't run tests because the diag plugin is not compiled."
+	exit 0
+fi
+
 
 test_flag "plugins/mincut/enable" "true" "enablemincut"
 test_flag "editor/show_number" "true" "shownumber"
