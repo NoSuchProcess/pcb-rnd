@@ -1,7 +1,6 @@
 #include <time.h>
 #include <locale.h>
 #include "config.h"
-#include "global.h"
 #include "pcb-printf.h"
 
 #ifdef SPEED
@@ -20,7 +19,7 @@
 
 int main()
 {
-	Coord c[] = {0, 1, 1024, 1024*1024, 1024*1024*1024};
+	pcb_coord_t c[] = {0, 1, 1024, 1024*1024, 1024*1024*1024};
 	char *fmt[] = {
 	"%mI",  "%mm",  "%mM",  "%ml",  "%mL",  "%ms",  "%mS",  "%md",  "%mD",  "%m3",  "%mr",
 	"%$mI", "%$mm", "%$mM", "%$ml", "%$mL", "%$ms", "%$mS", "%$md", "%$mD", "%$m3", "%$mr",
