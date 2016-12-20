@@ -40,9 +40,11 @@ LIB_3RD_OBJS= \
 	../../src_3rd/genvector/gds_char.o \
 	../../src_3rd/genvector/vtp0.o
 
+OBJS = conftest.o help.o
+
 all: conftest
 
-conftest: conftest.o help.o $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS)
+conftest: $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS)
 
 conftest.o: conftest.c
 
@@ -53,3 +55,6 @@ $(LIB_3RD_OBJS) $(LIB_PCB_OBJS):
 
 test:
 	cd tests && $(MAKE) all
+
+clean:
+	-rm conftest tests/*.out $(OBJS)
