@@ -17,7 +17,7 @@ done
 
 if test $fail = 0
 then
-	echo "*** QC PASS ***"
+	echo "remote:  *** QC PASS ***"
 else
-	echo "FAIL: $fail of $all"
+	echo "remote:  FAIL: $fail of $all"
 fi
