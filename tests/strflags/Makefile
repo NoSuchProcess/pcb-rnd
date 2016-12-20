@@ -1,6 +1,7 @@
 TRUNK=../..
 IO=$(TRUNK)/src_plugins/io_pcb
 CFLAGS = -O3 -I$(TRUNK) -I$(TRUNK)/src -I$(IO) -I$(TRUNK)/src_3rd
+LDFLAGS = -lm
 GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 
 all: tester

@@ -31,8 +31,8 @@
 #include "compat_misc.h"
 
 #define FLAG_TEST
-#include "strflags.c"
-#include "flags.c"
+#include "flag_str.c"
+#include "flag.c"
 #include "compat_misc.c"
 
 static void dump_flag(pcb_flag_t * f)
@@ -42,15 +42,6 @@ static void dump_flag(pcb_flag_t * f)
 	for (l = 0; l < (PCB_MAX_LAYER + 7) / 8; l++)
 		printf(" %02x", f->t[l]);
 	printf("]");
-}
-
-
-int pcb_mem_any_set(unsigned char *ptr, int bytes)
-{
-	while (bytes--)
-		if (*ptr++)
-			return 1;
-	return 0;
 }
 
 int main()
@@ -87,16 +78,16 @@ int main()
 
 		otype = PCB_TYPEMASK_ALL;
 		fh.Flags = empty_flags;
-		for (i = 0; i < PCB_ENTRIES(object_flagbits); i++) {
-			if (PCB_FLAG_TEST(object_flagbits[i].mask, &fh))
+		for (i = 0; i < PCB_ENTRIES(pcb_object_flagbits); i++) {
+			if (PCB_FLAG_TEST(pcb_object_flagbits[i].mask, &fh))
 				continue;
-			if ((otype & object_flagbits[i].object_types) == 0)
+			if ((otype & pcb_object_flagbits[i].object_types) == 0)
 				continue;
 			if ((random() & 4) == 0)
 				continue;
 
-			otype &= object_flagbits[i].object_types;
-			PCB_FLAG_SET(object_flagbits[i].mask, &fh);
+			otype &= pcb_object_flagbits[i].object_types;
+			PCB_FLAG_SET(pcb_object_flagbits[i].mask, &fh);
 		}
 
 		if (otype & PCB_TYPEMASK_PIN)
