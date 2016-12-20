@@ -32,6 +32,7 @@
 #include "hid_actions.h"
 #include "hid_init.h"
 #include "conf_core.h"
+#include "plugins.h"
 
 
 /* --------------------------------------------------------------------------- */
@@ -241,6 +242,18 @@ int pcb_act_PrintPaths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	return 0;
 }
 
+/* --------------------------------------------------------------------------- */
+static const char pcb_acts_PrintPlugins[] = "PrintPlugins()";
+
+static const char pcb_acth_PrintPlugins[] = "Print plugins loaded.";
+
+int pcb_act_PrintPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_plugin_info_t *i;
+	for(i = plugins; i != NULL; i = i->next)
+		printf("%s\n", i->name);
+}
+
 
 /* --------------------------------------------------------------------------- */
 
@@ -262,6 +275,10 @@ pcb_hid_action_t main_action_list[] = {
 	,
 	{"PrintPaths", 0, pcb_act_PrintPaths,
 	 pcb_acth_PrintPaths, pcb_acts_PrintPaths}
+	,
+	{"PrintPlugins", 0, pcb_act_PrintPlugins,
+	 pcb_acth_PrintPlugins, pcb_acts_PrintPlugins}
+
 };
 
 PCB_REGISTER_ACTIONS(main_action_list, NULL)
