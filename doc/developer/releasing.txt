@@ -8,3 +8,4 @@ release check list
 4. modify version number in scconfig
 5. commit trunk
 6. svn tag using URLs
+7. update the timeline, events and doc/news.html
