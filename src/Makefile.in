@@ -213,6 +213,7 @@ uniq /local/pcb/ACTION_REG_SRC
 uniq /local/pcb/EXEDEPS
 uniq /local/pcb/CLEANFILES
 uniq /local/pcb/CLEANRULES
+uniq /local/pcb/all
 put /local/pcb/SRCS /local/pcb/OBJS 
 append /local/pcb/SRCS ?/local/pcb/OBJS_C99
 gsub /local/pcb/SRCS {.o } {.c }
