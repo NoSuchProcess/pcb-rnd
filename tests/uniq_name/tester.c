@@ -55,4 +55,5 @@ int main()
 
 	/* Release all memory */
 	unm_uninit(&group1);
+	return 0;
 }
