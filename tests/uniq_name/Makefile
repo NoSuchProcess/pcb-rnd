@@ -10,7 +10,7 @@ LIB_OBJS=$(LHT)/genht/htsp.o $(LHT)/genht/hash.o $(SRC)/compat_misc.o
 all: tester
 
 test: tester.diff
-	@echo "uniq_name: *** QC passed ***"
+	@echo "uniq_name:           *** QC PASS ***"
 	@rm tester.out
 
 tester: tester.o $(UNM)/uniq_name.o $(LIB_OBJS)

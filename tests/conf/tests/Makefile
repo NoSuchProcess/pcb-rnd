@@ -8,8 +8,7 @@ TESTS =  \
 .SUFFIXES: .ref .test .out .diff .REF
 
 all: $(TESTS)
-	@echo "*** QC pass. ***"
-
+	@echo "conf:                *** QC PASS ***"
 
 .test.out:
 	@../conftest < $*.test >$*.out

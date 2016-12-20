@@ -10,7 +10,7 @@ LIBPCB_BASE= $(SRC)/unit.o $(SRC)/compat_misc.o
 all: tester_spd prcli
 
 test: tester.diff
-	@echo "*** all ok, QC PASS ***"
+	@echo "pcb-printf:          *** QC PASS ***"
 	@rm tester.stdout ; true
 
 prcli: prcli.o $(SRC)/pcb-printf.o $(SRC)/misc_util.o $(LIBPCB_BASE) $(GDS)

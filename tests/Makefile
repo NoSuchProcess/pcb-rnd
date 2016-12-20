@@ -7,6 +7,7 @@ test:
 	cd propedit && $(MAKE) all && $(MAKE) test
 	cd remote && $(MAKE) all && $(MAKE) test
 	cd gsch2pcb-rnd && $(MAKE) all && $(MAKE) test
-	@echo "***"
-	@echo "*** All tests passed. ***"
-	@echo "***"
+	@echo " "
+	@echo "+-------------------------------------------------+"
+	@echo "+  All tests passed, pcb-rnd is safe to install.  +"
+	@echo "+-------------------------------------------------+"

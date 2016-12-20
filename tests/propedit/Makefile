@@ -16,7 +16,7 @@ LIB_OBJS = \
 all: tester
 
 test: tester.diff
-	@echo "propedit:   *** QC passed ***"
+	@echo "propedit:            *** QC PASS ***"
 	@rm tester.out
 
 tester: tester.o $(PED)/props.o $(LIB_OBJS)

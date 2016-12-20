@@ -7,7 +7,7 @@ GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 all: tester
 
 test: tester.diff
-	@echo "strflags: *** QC PASS ***"
+	@echo "strflags:            *** QC PASS ***"
 	@rm tester.stdout
 
 tester: tester.o $(GDS)
