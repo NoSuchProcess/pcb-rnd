@@ -25,6 +25,7 @@ switch /local/pcb/hid_lesstif/controls
 			@?/target/libs/gui/xrender/ldflags@
 		@]
 
+		put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/hid_lesstif/menu_lht.c }
 		append /local/pcb/RULES [@
 ### lesstif menu embed
 $(PLUGDIR)/hid_lesstif/menu_lht.c: pcb-menu-lesstif.lht

@@ -212,6 +212,7 @@ uniq /local/pcb/LIBS
 uniq /local/pcb/ACTION_REG_SRC
 uniq /local/pcb/EXEDEPS
 uniq /local/pcb/CLEANFILES
+uniq /local/pcb/DISTCLEANFILES
 uniq /local/pcb/CLEANRULES
 uniq /local/pcb/all
 put /local/pcb/SRCS /local/pcb/OBJS 
@@ -303,11 +304,13 @@ conf_internal.c: pcb-conf.lht
 FORCE:
 
 
-DISTCLEANFILES= core_lists.h
+DISTCLEANFILES = core_lists.h buildin.c compat_inc.h conf_core_fields.h conf_internal.c generated_lists.h @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	-rm pcb-rnd $(OBJS) $(OBJS_C99) $(CLEANFILES)
 
+distclean: FORCE
+	-rm $(DISTCLEANFILES)
 
 install_:
 	$(MKDIR) $(BINDIR) $(DATADIR) $(LIBDIR) $(LIBDIR)/plugins

@@ -129,7 +129,10 @@ uninstall:
 
 
 clean:
-	$(RM) gsch2pcb-rnd$(EXE) $(OBJS) gsch2pcb_rnd_conf_fields.h
+	-$(RM) gsch2pcb-rnd$(EXE) $(OBJS) gsch2pcb_rnd_conf_fields.h
+
+distclean: clean
+	-$(RM) fp_init.c fp_init.h
 
 include ../../Makefile.conf
 

@@ -12,11 +12,12 @@ clean: FORCE
 	cd util && $(MAKE) clean
 	cd pcblib && $(MAKE) clean
 	cd doc && $(MAKE) clean
+	cd src_3rd/sphash && $(MAKE) clean
 
 distclean: FORCE
 	$(MAKE) clean ; true
 	cd doc && $(MAKE) distclean
-	cd scconfig && $(MAKE) distclean ; true
+	cd src && $(MAKE) distclean
 	cd src_3rd/genlist && $(MAKE) clean ; true
 	cd src_3rd/genregex && $(MAKE) clean ; true
 	cd src_3rd/genvector && $(MAKE) clean ; true
@@ -24,6 +25,8 @@ distclean: FORCE
 	cd src_3rd/liblihata && $(MAKE) clean ; true
 	cd src_3rd/liblihata/genht && $(MAKE) clean ; true
 	cd src_3rd/qparse && $(MAKE) clean ; true
+	cd scconfig && $(MAKE) distclean ; true
+
 
 install: FORCE
 	cd src && $(MAKE) install

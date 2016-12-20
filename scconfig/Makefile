@@ -96,5 +96,5 @@ clean:
 	-rm $(OBJS) $(DEFAULT_MAIN_OBJS) configure revtest revtest.o cquote core
 
 distclean:
-	-rm ../config.h config.cache config.log Rev.stamp
+	-rm ../config.h ../Makefile.conf ../src/Makefile ../util/gsch2pcb-rnd/Makefile ../src_3rd/gts/Makefile config.cache config.log Rev.stamp
 	-$(MAKE) clean
