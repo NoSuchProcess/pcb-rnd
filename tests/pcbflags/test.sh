@@ -10,7 +10,10 @@ run_pcb()
 	then
 		fn="$pwd/$1"
 	fi
-	shift 1
+	if test $# -gt 1
+	then
+		shift 1
+	fi
 	(
 		cd "$src_dir"
 		if test -z "$fn"
