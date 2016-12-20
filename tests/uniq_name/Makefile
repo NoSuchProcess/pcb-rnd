@@ -25,3 +25,5 @@ tester.diff: tester.ref tester.out
 tester.out: tester
 	./tester > tester.out
 
+clean:
+	-rm tester.out tester tester.o
