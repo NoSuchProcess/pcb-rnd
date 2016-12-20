@@ -21,5 +21,8 @@ switch /local/pcb/toporouter/controls
 		append /local/pcb/toporouter/OBJS { ../src_3rd/gts/libgts.a }
 		include /local/pcb/tmpasm/plugin
 		end
-	case {disable}   include /local/pcb/tmpasm/disable; end;
+	case {disable}
+		put /local/pcb/mod/OBJS {}
+		include /local/pcb/tmpasm/disable
+		end
 end
