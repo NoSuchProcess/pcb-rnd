@@ -1,7 +1,7 @@
 TRUNK=../..
 IO=$(TRUNK)/src_plugins/io_pcb
 CFLAGS = -O3 -I$(TRUNK) -I$(TRUNK)/src -I$(IO) -I$(TRUNK)/src_3rd
-LDFLAGS = -lm
+LDLIBS = -lm
 GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 
 all: tester
@@ -11,7 +11,7 @@ test: tester.diff
 	@rm tester.stdout
 
 tester: tester.o $(GDS)
-	$(CC) $(LDFLAGS) -o tester tester.o $(GDS)
+	$(CC) $(LDFLAGS) -o tester tester.o $(GDS) $(LDLIBS)
 
 tester.o: tester.c
 	$(CC) -c $(CFLAGS) -o $@ tester.c

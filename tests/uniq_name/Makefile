@@ -4,7 +4,7 @@ LHT=$(ROOT)/src_3rd/liblihata
 SRC=$(ROOT)/src
 
 CFLAGS = -Wall -I$(UNM) -I$(LHT) -I$(SRC) -I$(ROOT)
-LDFLAGS = -lm
+LDLIBS = -lm
 LIB_OBJS=$(LHT)/genht/htsp.o $(LHT)/genht/hash.o $(SRC)/compat_misc.o
 
 all: tester
@@ -14,7 +14,7 @@ test: tester.diff
 	@rm tester.out
 
 tester: tester.o $(UNM)/uniq_name.o $(LIB_OBJS)
-	$(CC) $(LDFLAGS) -o tester tester.o $(UNM)/uniq_name.o $(LIB_OBJS)
+	$(CC) $(LDFLAGS) -o tester tester.o $(UNM)/uniq_name.o $(LIB_OBJS)  $(LDLIBS)
 
 tester.o: tester.c $(UNM)/uniq_name.h
 

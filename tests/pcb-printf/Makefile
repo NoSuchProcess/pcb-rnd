@@ -2,7 +2,7 @@ TRUNK = ../..
 SRC=$(TRUNK)/src
 CFLAGS_OP = -O3
 CFLAGS = -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
-LDFLAGS = -lm
+LDLIBS = -lm
 
 GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 LIBPCB_BASE= $(SRC)/unit.o $(SRC)/compat_misc.o
@@ -18,10 +18,10 @@ prcli: prcli.o $(SRC)/pcb-printf.o $(SRC)/misc_util.o $(LIBPCB_BASE) $(GDS)
 prcli.o: prcli.c
 
 tester: tester.o $(SRC)/pcb-printf.o $(LIBPCB_BASE)  $(GDS)
-	$(CC) $(LDFLAGS) -o tester tester.o $(SRC)/pcb-printf.o $(LIBPCB_BASE)  $(GDS)
+	$(CC) $(LDFLAGS) -o tester tester.o $(SRC)/pcb-printf.o $(LIBPCB_BASE)  $(GDS) $(LDLIBS)
 
 tester_spd: tester_spd.o $(SRC)/pcb-printf_spd.o $(LIBPCB_BASE) $(GDS)
-	$(CC) $(LDFLAGS) -o tester_spd tester_spd.o $(SRC)/pcb-printf_spd.o $(LIBPCB_BASE) $(GDS)
+	$(CC) $(LDFLAGS) -o tester_spd tester_spd.o $(SRC)/pcb-printf_spd.o $(LIBPCB_BASE) $(GDS) $(LDLIBS)
 
 tester.o: tester.c
 	$(CC) -c $(CFLAGS) -o $@ tester.c

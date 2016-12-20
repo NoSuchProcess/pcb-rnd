@@ -1,5 +1,5 @@
 CFLAGS = -Wall -g -I../.. -I../../src_3rd -I../../src
-LDFLAGS = -lm
+LDLIBS = -lm
 
 LIB_PCB_OBJS= \
 	../../src/hid_cfg.o \
@@ -45,7 +45,7 @@ OBJS = conftest.o help.o
 all: conftest
 
 conftest: $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS) -o conftest
+	$(CC) $(LDFLAGS) $(OBJS) $(LIB_3RD_OBJS) $(LIB_PCB_OBJS) $(LIB_PLUGIN_OBJS) $(LDLIBS) -o conftest
 
 conftest.o: conftest.c
 

@@ -4,7 +4,7 @@ LHT=$(ROOT)/src_3rd/liblihata
 SRC=$(ROOT)/src
 
 CFLAGS = -g -Wall -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd
-LDFLAGS = -lm
+LDLIBS = -lm
 LIB_OBJS = \
  $(LHT)/genht/htsp.o \
  $(LHT)/genht/hash.o \
@@ -22,7 +22,7 @@ test: tester.diff
 	@rm tester.out
 
 tester: $(OBJS) $(LIB_OBJS)
-	$(CC) $(LDFLAGS) -o tester $(OBJS) $(LIB_OBJS)
+	$(CC) $(LDFLAGS) -o tester $(OBJS) $(LIB_OBJS)  $(LDLIBS)
 
 tester.o: tester.c $(PED)/props.h
 
