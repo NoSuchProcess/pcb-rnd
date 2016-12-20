@@ -16,12 +16,12 @@ install_:
 	$(CPC) "`pwd`/tru-hole"/* "$(DATADIR)/pcblib/tru-hole"
 
 install:
-	make install_ CPC="$(CP)"
+	$(MAKE) install_ CPC="$(CP)"
 
 # hack: pcb's chdir() based approach gets fooled on symlinks because of "cd .."
 # returns to the wrong dir - rather symlink the whole dir
 linstall:
-	make uninstall
+	$(MAKE) uninstall
 	$(MKDIR) "$(DATADIR)"
 	$(LN) "`pwd`" "$(DATADIR)/pcblib"
 

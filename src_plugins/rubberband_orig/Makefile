@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_rubberband_orig
+	cd ../../src && $(MAKE) mod_rubberband_orig
 	
 
 clean:

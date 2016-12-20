@@ -49,10 +49,10 @@ uninstall:
 	$(RM) "$(MAN1DIR)/gsch2pcb-rnd.1"
 
 install:
-	make install_ CPC="$(CP)"
+	$(MAKE) install_ CPC="$(CP)"
 
 linstall:
-	make install_ CPC="$(LN)"
+	$(MAKE) install_ CPC="$(LN)"
 
 include ../../Makefile.conf
 

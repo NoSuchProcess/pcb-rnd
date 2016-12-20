@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_report
+	cd ../../src && $(MAKE) mod_report
 	
 
 clean:

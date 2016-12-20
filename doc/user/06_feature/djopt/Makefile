@@ -9,16 +9,16 @@ CASES = \
  viatrim.$(TARGET)
 
 all:
-	make conv TARGET=out.png
-	make conv TARGET=png
-	make index
+	$(MAKE) conv TARGET=out.png
+	$(MAKE) conv TARGET=png
+	$(MAKE) index
 
 index:
-	make index.html TARGET=txt
+	$(MAKE) index.html TARGET=txt
 
 index.html: Pre.html Post.html $(CASES) Makefile
 	cat Pre.html > $(HTML)
-	make conv TARGET=tbl
+	$(MAKE) conv TARGET=tbl
 	cat Post.html >>$(HTML)
 
 conv: $(CASES)

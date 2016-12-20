@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_export_test
+	cd ../../src && $(MAKE) mod_export_test
 	
 
 clean:

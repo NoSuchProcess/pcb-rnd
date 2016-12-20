@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_renumber
+	cd ../../src && $(MAKE) mod_renumber
 	
 
 clean:

@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_polystitch
+	cd ../../src && $(MAKE) mod_polystitch
 
 clean:
 	rm *.o *.so 2>/dev/null ; true

@@ -1,43 +1,43 @@
 all: FORCE
-	cd src && make
-	cd util && make
-	cd pcblib && make
-#	cd doc-rnd && make
+	cd src && $(MAKE)
+	cd util && $(MAKE)
+	cd pcblib && $(MAKE)
+#	cd doc && $(MAKE)
 
 clean: FORCE
-	cd src && make clean
-	cd util && make clean
-	cd pcblib && make clean
-	cd doc && make clean
+	cd src && $(MAKE) clean
+	cd util && $(MAKE) clean
+	cd pcblib && $(MAKE) clean
+	cd doc && $(MAKE) clean
 
 distclean: FORCE
-	make clean ; true
-	cd doc && make distclean
-	cd scconfig && make clean ; true
-	cd src_3rd/genlist && make clean ; true
-	cd src_3rd/genregex && make clean ; true
-	cd src_3rd/genvector && make clean ; true
-	cd src_3rd/gts && make clean ; true
-	cd src_3rd/liblihata && make clean ; true
-	cd src_3rd/liblihata/genht && make clean ; true
-	cd src_3rd/qparse && make clean ; true
+	$(MAKE) clean ; true
+	cd doc && $(MAKE) distclean
+	cd scconfig && $(MAKE) clean ; true
+	cd src_3rd/genlist && $(MAKE) clean ; true
+	cd src_3rd/genregex && $(MAKE) clean ; true
+	cd src_3rd/genvector && $(MAKE) clean ; true
+	cd src_3rd/gts && $(MAKE) clean ; true
+	cd src_3rd/liblihata && $(MAKE) clean ; true
+	cd src_3rd/liblihata/genht && $(MAKE) clean ; true
+	cd src_3rd/qparse && $(MAKE) clean ; true
 
 install: FORCE
-	cd src && make install
-	cd util && make install
-	cd pcblib && make install
-	cd doc && make install
+	cd src && $(MAKE) install
+	cd util && $(MAKE) install
+	cd pcblib && $(MAKE) install
+	cd doc && $(MAKE) install
 
 linstall: FORCE
-	cd src && make linstall
-	cd util && make linstall
-	cd pcblib && make linstall
-	cd doc && make linstall
+	cd src && $(MAKE) linstall
+	cd util && $(MAKE) linstall
+	cd pcblib && $(MAKE) linstall
+	cd doc && $(MAKE) linstall
 
 uninstall: FORCE
-	cd src && make uninstall
-	cd util && make uninstall
-	cd pcblib && make uninstall
-	cd doc && make uninstall
+	cd src && $(MAKE) uninstall
+	cd util && $(MAKE) uninstall
+	cd pcblib && $(MAKE) uninstall
+	cd doc && $(MAKE) uninstall
 
 FORCE:

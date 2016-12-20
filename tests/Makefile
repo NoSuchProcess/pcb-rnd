@@ -1,8 +1,8 @@
 test:
-	cd pcbflags && make all && make test
-	cd conf && make all && make test
-	cd strflags && make all && make test
-	cd pcb-printf && make all && make test
-	cd uniq_name && make all && make test
-	cd propedit && make all && make test
-	cd remote && make all && make test
+	cd pcbflags && $(MAKE) all && $(MAKE) test
+	cd conf && $(MAKE) all && $(MAKE) test
+	cd strflags && $(MAKE) all && $(MAKE) test
+	cd pcb-printf && $(MAKE) all && $(MAKE) test
+	cd uniq_name && $(MAKE) all && $(MAKE) test
+	cd propedit && $(MAKE) all && $(MAKE) test
+	cd remote && $(MAKE) all && $(MAKE) test

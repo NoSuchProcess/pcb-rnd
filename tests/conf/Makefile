@@ -52,4 +52,4 @@ $(LIB_3RD_OBJS) $(LIB_PCB_OBJS):
 	cd ../../src && make
 
 test:
-	cd tests && make all
+	cd tests && $(MAKE) all

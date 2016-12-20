@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_query
+	cd ../../src && $(MAKE) mod_query
 	
 
 clean:

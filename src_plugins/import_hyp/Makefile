@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_import_hyp
+	cd ../../src && $(MAKE) mod_import_hyp
 
 hyp_l.o: hyp_y.h
 

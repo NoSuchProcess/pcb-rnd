@@ -1,13 +1,13 @@
 PCB_GPMI_ROOT=.
 
 all:
-	cd gpmi_plugin; make all
+	cd gpmi_plugin; $(MAKE) all
 
 include ../../../Makefile.conf
 PLUGIN_DIR=$(LIBDIR)/plugins
 
 clean:
-	cd gpmi_plugin; make clean
+	cd gpmi_plugin; $(MAKE) clean
 
 test: all
 	cd host_lib; ./test.sh

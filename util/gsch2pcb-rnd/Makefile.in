@@ -59,8 +59,8 @@ OBJS = \
  method_import.o
 
 all:
-	make revcheck
-	make gsch2pcb-rnd$(EXE)
+	$(MAKE) revcheck
+	$(MAKE) gsch2pcb-rnd$(EXE)
 
 revcheck:
 	cd ../../scconfig && ./revtest Rev.stamp < Rev.tab
@@ -118,10 +118,10 @@ install_:
 	$(CPC) "`pwd`/gnet-gsch2pcb-rnd.scm" "$(LIBDIR)/gnet-gsch2pcb-rnd.scm"
 
 install:
-	make install_ CPC="$(CP)"
+	$(MAKE) install_ CPC="$(CP)"
 
 linstall:
-	make install_ CPC="$(LN)"
+	$(MAKE) install_ CPC="$(LN)"
 
 uninstall:
 	$(RM) "$(BINDIR)/gsch2pcb-rnd$(EXE)"

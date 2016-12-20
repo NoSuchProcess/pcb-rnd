@@ -13,16 +13,16 @@ keys_mkey.html: $(MENU_RES_MKEY) $(KEYLIST)
 	$(KEYLIST) $(MENU_RES_MKEY) > keys_mkey.html
 
 install:
-	cd man && make install
+	cd man && $(MAKE) install
 
 linstall:
-	cd man && make linstall
+	cd man && $(MAKE) linstall
 
 uninstall:
-	cd man && make uninstall
+	cd man && $(MAKE) uninstall
 
 clean:
-	cd man && make clean
+	cd man && $(MAKE) clean
 
 distclean:
-	cd man && make distclean
+	cd man && $(MAKE) distclean

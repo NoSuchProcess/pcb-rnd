@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_import_dsn
+	cd ../../src && $(MAKE) mod_import_dsn
 
 clean:
 	rm *.o *.so 2>/dev/null ; true

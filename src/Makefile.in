@@ -249,8 +249,8 @@ SPHASH_PATH=../src_3rd/sphash
 SPHASH=$(SPHASH_PATH)/sphash
 
 all:
-	make revcheck
-	make all_exe
+	$(MAKE) revcheck
+	$(MAKE) all_exe
 
 include ../Makefile.conf
 
@@ -319,10 +319,10 @@ install_:
 
 
 install:
-	make install_ CPC="$(CP)"@/local/pcb/rules/install@
+	$(MAKE) install_ CPC="$(CP)"@/local/pcb/rules/install@
 
 linstall:
-	make install_ CPC="$(LN)"@/local/pcb/rules/linstall@
+	$(MAKE) install_ CPC="$(LN)"@/local/pcb/rules/linstall@
 
 
 uninstall:

@@ -51,10 +51,10 @@ install_:
 		-i $(theme_icons)
 
 install:
-	make install_ CPC="$(CP)"
+	$(MAKE) install_ CPC="$(CP)"
 
 linstall:
-	make install_ CPC="$(LN)"
+	$(MAKE) install_ CPC="$(LN)"
 
 uninstall:
 	$(RM) $(DOCDIR)/examples/tut1.pcb

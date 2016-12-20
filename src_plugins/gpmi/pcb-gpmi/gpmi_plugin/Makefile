@@ -34,4 +34,4 @@ manage_scripts.o: manage_scripts.c
 
 clean:
 	rm gpmi_plugin.o gpmi_plugin.so gpmi_buildin.a gpmi_buildin.o $(COMMON_OBJS) 2>/dev/null ; true
-	cd gpmi_pkg; make clean
+	cd gpmi_pkg; $(MAKE) clean

@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_dbus
+	cd ../../src && $(MAKE) mod_dbus
 
 clean:
 	rm *.o *.so 2>/dev/null ; true

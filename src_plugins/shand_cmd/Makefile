@@ -1,5 +1,5 @@
 all:
-	cd ../../src && make mod_shand_cmd
+	cd ../../src && $(MAKE) mod_shand_cmd
 	
 
 clean:
