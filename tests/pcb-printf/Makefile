@@ -41,5 +41,5 @@ $(SRC)/pcb-printf_spd.o: $(SRC)/pcb-printf.c $(SRC)/pcb-printf.h
 	$(CC) -c $(CFLAGS_OP) -DSPEED $(CFLAGS) -o $@ $(SRC)/pcb-printf.c
 
 clean:
-	rm tester tester.o prcli prcli.o tester_spd tester_spd.o 2>/dev/null ; true
+	-rm tester tester.o prcli prcli.o tester_spd tester_spd.o $(SRC)/pcb-printf_spd.o  2>/dev/null
 
