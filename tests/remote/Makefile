@@ -10,3 +10,6 @@ test_parse.o: test_parse.c $(REM)/proto_lowcommon.h $(REM)/proto_lowparse.h $(RE
 
 test:
 	@./test_all.sh
+
+clean:
+	-rm test_parse test_parse.o
