@@ -13,13 +13,15 @@ LIB_OBJS = \
  $(SRC)/unit.o \
  $(ROOT)/src_3rd/genvector/gds_char.o
 
+OBJS = tester.o $(PED)/props.o
+
 all: tester
 
 test: tester.diff
 	@echo "propedit:            *** QC PASS ***"
 	@rm tester.out
 
-tester: tester.o $(PED)/props.o $(LIB_OBJS)
+tester: $(OBJS) $(LIB_OBJS)
 
 tester.o: tester.c $(PED)/props.h
 
@@ -31,3 +33,5 @@ tester.diff: tester.ref tester.out
 tester.out: tester
 	./tester > tester.out
 
+clean:
+	-rm tester.out tester $(OBJS)
