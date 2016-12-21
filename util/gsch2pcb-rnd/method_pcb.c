@@ -680,6 +680,9 @@ static void method_pcb_go()
 	int initial_pcb = TRUE;
 	int created_pcb_file = TRUE;
 
+	if (!conf_g2pr.utils.gsch2pcb_rnd.quiet_mode)
+		fprintf(stderr, "gsch2pcb-rnd: WARNING: Please consider switching from -m pcb to -m import because -m pcb is deprecated. (This warning can be suppressed with -q).\n");
+
 	element_search_path = pcb_fp_default_search_path();
 
 	{ /* set bak_file_name, finding the first number that results in a non-existing bak */
