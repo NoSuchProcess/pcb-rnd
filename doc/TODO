@@ -15,6 +15,7 @@
 	- GTK: the full screen support broke
 	- do not complain about missing ./default.pcb when running from installed [report:Evan]
 	- save buffer element to file - format is pcb, file name is .lht [report:Evan]
+	- gsch2pcb: add warnings, check if the scm scripts are accessible at the path for -L
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -46,6 +47,10 @@
 		- eval speed (a simple @ with a lot of constants in an expr)
 		- geo speed
 		- regex and string cmp match speed vs. select by name
+
+- gsch2pcb-rnd migration
+	- remove old project file support, introduce a tool for converting to lihata
+	- remove -m pcb
 
 CLEANUP #5
 - import hackvana gerber naming scheme from mainline [report:Erich]
