@@ -29,6 +29,7 @@
 #include "method.h"
 #include "../src/plug_footprint.h"
 #include "../src/paths.h"
+#include "../src/error.h"
 #include "../src/conf.h"
 #include "../src/conf_core.h"
 #include "../src/compat_misc.h"
@@ -147,12 +148,12 @@ fprintf(stderr, "   val: %s\n", value);*/
 		el->omit_PKG = TRUE;
 	}
 	else if (!strcmp(el->description, "none")) {
-		fprintf(stderr, "WARNING: %s has a footprint attribute \"%s\" so won't be in the layout.\n", el->refdes, el->description);
+		pcb_message(PCB_MSG_WARNING, "WARNING: %s has a footprint attribute \"%s\" so won't be in the layout.\n", el->refdes, el->description);
 		n_none += 1;
 		el->omit_PKG = TRUE;
 	}
 	else if (!strcmp(el->description, "unknown")) {
-		fprintf(stderr, "WARNING: %s has no footprint attribute so won't be in the layout.\n", el->refdes);
+		pcb_message(PCB_MSG_WARNING, "WARNING: %s has no footprint attribute so won't be in the layout.\n", el->refdes);
 		n_unknown += 1;
 		el->omit_PKG = TRUE;
 	}
@@ -681,7 +682,7 @@ static void method_pcb_go()
 	int created_pcb_file = TRUE;
 
 	if (!conf_g2pr.utils.gsch2pcb_rnd.quiet_mode)
-		fprintf(stderr, "gsch2pcb-rnd: WARNING: Please consider switching from -m pcb to -m import because -m pcb is deprecated. (This warning can be suppressed with -q).\n");
+		pcb_message(PCB_MSG_WARNING, "WARNING: Please consider switching from -m pcb to -m import because -m pcb is deprecated. (This warning can be suppressed with -q).\n");
 
 	element_search_path = pcb_fp_default_search_path();
 

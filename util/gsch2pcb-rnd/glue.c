@@ -24,17 +24,17 @@
 
 void pcb_chdir_error_message(const char *DirName)
 {
-	fprintf(stderr, "gsch2pcb-rnd: warning: can't cd to %s\n", DirName);
+	pcb_message(PCB_MSG_WARNING, "warning: can't cd to %s\n", DirName);
 }
 
 void pcb_opendir_error_message(const char *DirName)
 {
-	fprintf(stderr, "gsch2pcb-rnd: warning: can't opendir %s\n", DirName);
+	pcb_message(PCB_MSG_WARNING, "warning: can't opendir %s\n", DirName);
 }
 
 void pcb_popen_error_message(const char *cmd)
 {
-	fprintf(stderr, "gsch2pcb-rnd: warning: can't popen %s\n", cmd);
+	pcb_message(PCB_MSG_WARNING, "warning: can't popen %s\n", cmd);
 }
 
 void pcb_message(enum pcb_message_level level, const char *fmt, ...)

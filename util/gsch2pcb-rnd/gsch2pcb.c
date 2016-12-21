@@ -170,7 +170,7 @@ static int parse_config(char * config, char * arg)
 	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d")) {
 		static int warned = 0;
 		if (!warned) {
-			fprintf(stderr, "WARNING: using elements-dir from %s - this overrides the normal pcb-rnd configured library search paths\n", config);
+			pcb_message(PCB_MSG_WARNING, "WARNING: using elements-dir from %s - this overrides the normal pcb-rnd configured library search paths\n", config);
 			warned = 1;
 		}
 		conf_set(CFR_CLI, "rc/library_search_paths", -1, arg, POL_PREPEND);
@@ -331,7 +331,7 @@ void require_gnetlist_backend(const char *dir, char *backend)
 {
 	char *path = pcb_strdup_printf("%s/gnet-%s.scm", dir, backend);
 	if (!pcb_file_readable(path))
-		fprintf(stderr, "WARNING: %s is not found, gnetlist will probably fail; please check your pcb-rnd installation!\n", path);
+		pcb_message(PCB_MSG_WARNING, "WARNING: %s is not found, gnetlist will probably fail; please check your pcb-rnd installation!\n", path);
 	free(path);
 }
 
