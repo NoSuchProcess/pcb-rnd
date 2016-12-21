@@ -46,3 +46,5 @@ extern int bak_done, need_PKG_purge;
 const char *local_project_pcb_name; /* file name of the design from which the local project file name shall be derived */
 
 char *fix_spaces(char * str);
+void require_gnetlist_backend(const char *dir, char *backend);
+
