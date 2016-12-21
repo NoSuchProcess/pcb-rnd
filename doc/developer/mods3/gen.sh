@@ -1,6 +1,6 @@
 #!/bin/sh
 
-path=../../src_plugins
+path=../../../src_plugins
 
 sloc()
 {
