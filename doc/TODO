@@ -14,6 +14,8 @@
 	- GTK: the full screen support broke
 	- do not complain about missing ./default.pcb when running from installed [report:Evan]
 	- save buffer element to file - format is pcb, file name is .lht [report:Evan]
+	- gsch2pcb-rnd bugs with -m import [report:Evan]
+		- adapter-art.lht -> adapter.cmd, why?
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
