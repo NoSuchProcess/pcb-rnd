@@ -1,3 +1,4 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<title> pcb-rnd - gtk grid fixes </title>
@@ -49,7 +50,7 @@ demonstrate the settings.
 The most trivial optimization is that grid points off the board are simply
 not drawn:
 <p>
-<img src="grid_edge.png">
+<img src="grid_edge.png" alt="[screenshot showing of grid]">
 <p>
 Next, the compile-time configurable "minimum distance between grid points
 before it is too dense" setting is user configurable now. The default value
@@ -60,14 +61,14 @@ when the configured density is reached while zooming out, there are two options.
 The first, default option is to do the same that the original code did: just
 hide the grid:
 <p>
-<img src="grid_global_nosparse.png">
+<img src="grid_global_nosparse.png" alt="[screenshot with grid option menu]">
 <p>
 An alternative is to use <i>sparse global grid</i> which means only
 every 2nd, 3rd, 4th, ... Nth grid point is drawn. The cursor still snaps
 to every real grid point, so the grid got sparse only on the display. Note
 how the line is drawn on invisible grid points:
 <p>
-<img src="grid_global_sparse.png">
+<img src="grid_global_sparse.png" alt="[screenshot with grid option menu]">
 
 <h3> Introduction of the local grid </h3>
 Another approach is to use a local grid. The grid helps finding whether
@@ -77,12 +78,12 @@ less interesting on the other end of the board. Local grid draws the grid
 points only near the crosshair. Such local grid follows the crosshair
 everywhere:
 <p>
-<img src="grid_local_4.png">
+<img src="grid_local_4.png" alt="[screenshot with grid option menu]">
 <p>
 The user can configure or interactively set the radius in which the grid
 points are drawn:
 <p>
-<img src="grid_local_16.png">
+<img src="grid_local_16.png" alt="[screenshot with grid option menu]">
 <p>
 The radius is given in "number of grid points", thus the local grid yields
 a constant number of points that is independent of the actual grid size. When
