@@ -86,6 +86,11 @@ Below is a table with the summary of core plugins.
 <tr><th>module <th>size [sloc] <th> status <th> configure<br>default <th> class <th> description
 
 
+<tr><th align=left>acompnet<td>74
+<td  > WIP
+<td bgcolor="red"> disable
+<td> (feature)
+<td> Auto-complete the current network. A very limited autorouter/assistant. 
 <tr><th align=left>autocrop<td>157
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -101,7 +106,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Automatically route selected or all rats. This is the original autorouter. 
-<tr><th align=left>boardflip<td>132
+<tr><th align=left>boardflip<td>133
 <td  > WIP
 <br> (doesn't update rtrees)
 <td bgcolor="red"> disabled
@@ -118,12 +123,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Actions for pcb-rnd core diagnostics, intended for developers. These are not in core because end users normally don't need these. As a plugin, due to dynamic loading, it can be dropped on an existing pcb-rnd installation with minimal risk of scaring away a reproducible bug. 
-<tr><th align=left>distalign<td>426
+<tr><th align=left>distalign<td>427
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Introducing Align() and Distribute(), which work much like the similarly named functions in Visio. Given that PCB does not have the concept of "first selected object" to draw on, the reference points can be selected by arguments. 
-<tr><th align=left>distaligntext<td>465
+<tr><th align=left>distaligntext<td>466
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
@@ -138,7 +143,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Draw the fab layer (for various exporters). 
-<tr><th align=left>export_bboard<td>419
+<tr><th align=left>export_bboard<td>410
 <td  > WIP
 <td bgcolor="red"> disabled
 <td> export
@@ -153,17 +158,17 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disable
 <td> export
 <td> Export specctra .dsn files 
-<tr><th align=left>export_dxf<td>3999
+<tr><th align=left>export_dxf<td>3987
 <td  > WIP
 <td bgcolor="red"> disabled
 <td> export
 <td> Export dxf 
-<tr><th align=left>export_gcode<td>2468
+<tr><th align=left>export_gcode<td>2470
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to gcode 
-<tr><th align=left>export_gerber<td>989
+<tr><th align=left>export_gerber<td>939
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
@@ -178,32 +183,32 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to lpr (using export_ps to generate postscript) 
-<tr><th align=left>export_nelma<td>678
+<tr><th align=left>export_nelma<td>668
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to nelma (Numerical capacitance calculator) 
-<tr><th align=left>export_openscad<td>1379
+<tr><th align=left>export_openscad<td>1373
 <td  > WIP
 <td bgcolor="red"> disabled
 <td> export
 <td> Export openscad 
-<tr><th align=left>export_png<td>1119
+<tr><th align=left>export_png<td>1090
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to png, gif and jpeg 
-<tr><th align=left>export_ps<td>1638
+<tr><th align=left>export_ps<td>1623
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export postscript or embedded postscript. 
-<tr><th align=left>export_stat<td>258
+<tr><th align=left>export_stat<td>259
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export various board statistics in lihata format 
-<tr><th align=left>export_svg<td>566
+<tr><th align=left>export_svg<td>562
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
@@ -240,7 +245,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (feature)
 <td> Common gl functions for hids. 
-<tr><th align=left>gpmi<td>3056
+<tr><th align=left>gpmi<td>3221
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <br> (if gpmi is installed)
@@ -251,12 +256,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> HID without GUI; read actions from stdin. 
-<tr><th align=left>hid_gtk<td>16254
+<tr><th align=left>hid_gtk<td>16287
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> GUI: the GTK HID. 
-<tr><th align=left>hid_lesstif<td>6917
+<tr><th align=left>hid_lesstif<td>6919
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
@@ -286,12 +291,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import plugin for netlists in the classic pcb netlist format. 
-<tr><th align=left>import_sch<td>302
+<tr><th align=left>import_sch<td>305
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Imports element and netlist data from the schematics (or some other source). 
-<tr><th align=left>io_kicad<td>2971
+<tr><th align=left>io_kicad<td>2987
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
@@ -301,12 +306,12 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Export the design and elements in Kicad's legacy format. 
-<tr><th align=left>io_lihata<td>1935
+<tr><th align=left>io_lihata<td>1973
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Load and save the design and elements in the lihata board format. 
-<tr><th align=left>io_pcb<td>2172
+<tr><th align=left>io_pcb<td>2200
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
@@ -321,7 +326,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (lib)
 <td> S-expression parser lib 
-<tr><th align=left>lib_legacy_func<td>63
+<tr><th align=left>lib_legacy_func<td>87
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (lib)
@@ -356,7 +361,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> List and edit properties of a group of objects. 
-<tr><th align=left>puller<td>1887
+<tr><th align=left>puller<td>1888
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
