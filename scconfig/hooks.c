@@ -159,7 +159,7 @@ void plugin_dep1(int require, const char *plugin, const char *deps_on)
 			if (strcmp(st_deps_on, sbuildin) != 0) {
 				sprintf(buff, "WARNING: disabling %s because the %s is not enabled as a buildin...\n", plugin, deps_on);
 				report_repeat(buff);
-				sprintf(buff, "disable-%s", plugin);
+				sprintf(buff, "Disable-%s", plugin);
 				hook_custom_arg(buff, NULL);
 			}
 		}
@@ -331,7 +331,7 @@ int hook_detect_target()
 		require("libs/gui/libstroke/presents", 0, 0);
 		if (!istrue(get("libs/gui/libstroke/presents"))) {
 			report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");
-			hook_custom_arg("disable-stroke", NULL);
+			hook_custom_arg("Disable-stroke", NULL);
 		}
 	}
 
@@ -339,7 +339,7 @@ int hook_detect_target()
 		require("libs/gui/gtk2/presents", 0, 0);
 		if (!istrue(get("libs/gui/gtk2/presents"))) {
 			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid...\n");
-			hook_custom_arg("disable-hid_gtk", NULL);
+			hook_custom_arg("Disable-hid_gtk", NULL);
 		}
 	}
 
@@ -351,14 +351,14 @@ int hook_detect_target()
 		}
 		else {
 			report_repeat("WARNING: Since there's no lesstif2 found, disabling the lesstif HID and xinerama and xrender...\n");
-			hook_custom_arg("disable-xinerama", NULL);
-			hook_custom_arg("disable-xrender", NULL);
-			hook_custom_arg("disable-hid_lesstif", NULL);
+			hook_custom_arg("Disable-xinerama", NULL);
+			hook_custom_arg("Disable-xrender", NULL);
+			hook_custom_arg("Disable-hid_lesstif", NULL);
 		}
 	}
 	else {
-		hook_custom_arg("disable-xinerama", NULL);
-		hook_custom_arg("disable-xrender", NULL);
+		hook_custom_arg("Disable-xinerama", NULL);
+		hook_custom_arg("Disable-xrender", NULL);
 	}
 
 
@@ -383,19 +383,19 @@ int hook_detect_target()
 		if (!istrue(get("libs/sul/glib/presents"))) {
 			if (want_gtk) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
-				hook_custom_arg("disable-gtk", NULL);
+				hook_custom_arg("Disable-gtk", NULL);
 			}
 			if (plug_is_enabled("toporouter")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the toporouter...\n");
-				hook_custom_arg("disable-toporouter", NULL);
+				hook_custom_arg("Disable-toporouter", NULL);
 			}
 			if (plug_is_enabled("puller")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
-				hook_custom_arg("disable-puller", NULL);
+				hook_custom_arg("Disable-puller", NULL);
 			}
 			if (plug_is_enabled("export_dsn")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the dsn pcb_exporter...\n");
-				hook_custom_arg("disable-export_dsn", NULL);
+				hook_custom_arg("Disable-export_dsn", NULL);
 			}
 		}
 	}
@@ -416,12 +416,12 @@ int hook_detect_target()
 		require("libs/gui/gd/presents", 0, 0);
 		if (!istrue(get("libs/gui/gd/presents"))) {
 			report_repeat("WARNING: Since there's no libgd, disabling gd based exports (png, nelma, gcode)...\n");
-			hook_custom_arg("disable-gd-gif", NULL);
-			hook_custom_arg("disable-gd-png", NULL);
-			hook_custom_arg("disable-gd-jpg", NULL);
-			hook_custom_arg("disable-export_png", NULL);
-			hook_custom_arg("disable-export_nelma", NULL);
-			hook_custom_arg("disable-export_gcode", NULL);
+			hook_custom_arg("Disable-gd-gif", NULL);
+			hook_custom_arg("Disable-gd-png", NULL);
+			hook_custom_arg("Disable-gd-jpg", NULL);
+			hook_custom_arg("Disable-export_png", NULL);
+			hook_custom_arg("Disable-export_nelma", NULL);
+			hook_custom_arg("Disable-export_gcode", NULL);
 			want_gd = 0;
 			goto disable_gd_formats;
 		}
@@ -498,7 +498,7 @@ int hook_detect_target()
 		require("libs/sul/dbus/presents", 0, 0);
 		if (!istrue(get("libs/sul/dbus/presents"))) {
 			report_repeat("WARNING: disabling the DBUS interface plugin because libdbus is not found or not configured...\n");
-			hook_custom_arg("disable-dbus", NULL);
+			hook_custom_arg("Disable-dbus", NULL);
 		}
 	}
 
@@ -508,7 +508,7 @@ int hook_detect_target()
 		require("libs/script/gpmi/presents", 0, 0);
 		if (!istrue(get("libs/script/gpmi/presents"))) {
 			report_repeat("WARNING: disabling the gpmi scripting because libgpmi is not found or not configured...\n");
-			hook_custom_arg("disable-gpmi", NULL);
+			hook_custom_arg("Disable-gpmi", NULL);
 		}
 	}
 

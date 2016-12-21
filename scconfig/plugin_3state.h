@@ -23,16 +23,24 @@
 /* auto-set tables to change control to the desired value */
 const arg_auto_set_node_t arg_disable[] = {
 	{"controls",    sdisable},
+	{"explicit",    sdisable},
+	{NULL, NULL}
+};
+
+const arg_auto_set_node_t arg_Disable[] = {
+	{"controls",    sdisable},
 	{NULL, NULL}
 };
 
 const arg_auto_set_node_t arg_buildin[] = {
 	{"controls",    sbuildin},
+	{"explicit",    sbuildin},
 	{NULL, NULL}
 };
 
 const arg_auto_set_node_t arg_plugin[] = {
 	{"controls",    splugin},
+	{"explicit",    splugin},
 	{NULL, NULL}
 };
 
@@ -40,6 +48,7 @@ const arg_auto_set_node_t arg_plugin[] = {
 /* plugin_def implementation to create CLI args */
 #define plugin3_args(name, desc) \
 	{"disable-" name, "/local/pcb/" name,  arg_disable,   "$do not compile " desc}, \
+	{"Disable-" name, "/local/pcb/" name,  arg_Disable,   NULL }, \
 	{"buildin-" name, "/local/pcb/" name,  arg_buildin,   "$static link " desc " into the executable"}, \
 	{"plugin-"  name, "/local/pcb/" name,  arg_plugin,    "$" desc " is a dynamic loadable plugin"},
 
