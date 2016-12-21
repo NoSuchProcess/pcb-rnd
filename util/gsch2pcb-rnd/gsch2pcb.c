@@ -45,7 +45,7 @@
 #include "method_pcb.h"
 #include "method_import.h"
 
-static const char *want_method_default = "pcb";
+static const char *want_method_default = "import";
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
