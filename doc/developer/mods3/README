@@ -1,0 +1,10 @@
+Run ./gne.sh to regenerate index.html.
+
+It depends on the following tools to be installed:
+
+- shell, awk
+- sloccount
+- netpbm
+- animator (svn://repo.hu/animator/trunk)
+- animpie - needs to be symlinked or copied to path from animator/test (sorry)
+
