@@ -85,7 +85,7 @@ steps:
 <H2> 2. GPMI intro </H2>
 
 <H3> 2.1. GPMI's place in the pcb-rnd world </H3>
-<table border=0 widht=100%><tr><td valign=top>
+<table border=0 width="100%"><tr><td valign=top>
 GPMI is a plugin/buildin HID. Instead of doing actual work, it loads scripts
 and provides a glue layer between pcb-rnd and the scripts. The actual work
 is performed by the scripts.
@@ -98,7 +98,7 @@ Arrows drawn with dashed line represents a slow, <i>string based communication</
 <td><img src="gpmi_flow.png"></table>
 
 <H3> 2.2. Module, script, script context, packages </H3>
-<table border=0 widht=100%><tr><td valign=top>
+<table border=0 width="100%"><tr><td valign=top>
 Each time a script needs to be loaded, first a module is loaded and the name
 of the script is passed to the module. During module initialization, the module
 sets up a script interpreter and script context and loads the script into the
@@ -129,7 +129,7 @@ Packages are loaded only once and are globally accessible for multiple modules.
 <td><img src="gpmi_flow_load.png"></table>
 
 <H3> 2.3. Binding events, registering actions, creating menus </H3>
-<table border=0 widht=100%><tr><td valign=top>
+<table border=0 width="100%"><tr><td valign=top>
 Binding an event in a script is done by calling the Bind() function
 (this is implemented in a package automatically loaded). The first
 argument is the name of the event, the second argument is the name of
@@ -148,7 +148,7 @@ is generated. This has two implications:
 </ul>
 <td><img src="gpmi_flow_reg.png"></table>
 
-<table border=0 widht=100%><tr><td valign=top>
+<table border=0 width="100%"><tr><td valign=top>
 Menus are created using the create_menu() call. <b>Menus can be
 created only when the GUI is already set up - this may happen only
 after some of the scripts are already loaded</b>. Thus scripts shall
@@ -161,7 +161,7 @@ menu.
 <td><img src="gpmi_flow_menu.png"></table>
 
 <H3> 2.4. Exporting </H3>
-<table border=0 widht=100%><tr><td valign=top>
+<table border=0 width="100%"><tr><td valign=top>
 Exporter scripts first have to set up an exporter hid. This typically
 happens from their on-load main part. Related calls are in the hid
 package. The following map shows this process with red arrows:
