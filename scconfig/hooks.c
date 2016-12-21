@@ -232,6 +232,33 @@ int hook_postinit()
 	return 0;
 }
 
+static int all_plugin_check_explicit(void)
+{
+	char pwanted[1024], pgot[1024];
+	const char *wanted, *got;
+	int tainted = 0;
+
+#undef plugin_def
+#undef plugin_header
+#undef plugin_dep
+#define plugin_def(name, desc, default_, all_) \
+	sprintf(pwanted, "/local/pcb/%s/explicit", name); \
+	wanted = get(pwanted); \
+	if (wanted != NULL) { \
+		sprintf(pgot, "/local/pcb/%s/controls", name); \
+		got = get(pgot); \
+		if (strcmp(got, wanted) != 0) {\
+			report("ERROR: %s was requested to be %s but I had to %s it\n", name, wanted, got); \
+			tainted = 1; \
+		} \
+	}
+#define plugin_header(sect)
+#define plugin_dep(plg, on)
+#include "plugins.h"
+	return tainted;
+}
+
+
 /* Runs after all arguments are read and parsed */
 int hook_postarg()
 {
@@ -662,6 +689,7 @@ int hook_generate()
 {
 	char *rev = "non-svn", *tmp;
 	int generr = 0;
+	int res = 0;
 
 	tmp = svn_info(0, "../src", "Revision:");
 	if (tmp != NULL) {
@@ -714,6 +742,13 @@ int hook_generate()
 		printf("\n%s\n", repeat);
 	}
 
+	if (all_plugin_check_explicit()) {
+		printf("\nNevertheless the configuration is complete, if you accept these differences\nyou can go on compiling.\n\n");
+		res = 1;
+	}
+	else
+		printf("\nConfiguration complete, ready to compile.\n\n");
+
 	{
 		FILE *f;
 		f = fopen("Rev.stamp", "w");
@@ -722,10 +757,12 @@ int hook_generate()
 	}
 
 	}
-	else
+	else {
 		fprintf(stderr, "Error generating some of the files\n");
+		res = 1;
+	}
 
-	return 0;
+	return res;
 }
 
 /* Runs before everything is uninitialized */
