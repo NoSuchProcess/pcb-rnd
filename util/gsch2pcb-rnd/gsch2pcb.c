@@ -327,7 +327,7 @@ void free_strlist(gadl_list_t *lst)
 	}
 }
 
-void require_gnetlist_backend(const char *dir, char *backend)
+void require_gnetlist_backend(const char *dir, const char *backend)
 {
 	char *path = pcb_strdup_printf("%s/gnet-%s.scm", dir, backend);
 	if (!pcb_file_readable(path))
