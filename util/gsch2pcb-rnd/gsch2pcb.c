@@ -37,6 +37,7 @@
 #include "../src/error.h"
 #include "../src/plugins.h"
 #include "../src/compat_misc.h"
+#include "../src/compat_fs.h"
 #include "method.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
@@ -325,6 +326,15 @@ void free_strlist(gadl_list_t *lst)
 		free(str);
 	}
 }
+
+void require_gnetlist_backend(const char *dir, char *backend)
+{
+	char *path = pcb_strdup_printf("%s/gnet-%s.scm", dir, backend);
+	if (!pcb_file_readable(path))
+		fprintf(stderr, "WARNING: %s is not found, gnetlist will probably fail; please check your pcb-rnd installation!\n", path);
+	free(path);
+}
+
 
 #include "fp_init.h"
 

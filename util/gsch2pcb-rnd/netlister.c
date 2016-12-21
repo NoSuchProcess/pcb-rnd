@@ -69,6 +69,7 @@ int run_gnetlist(const char *pins_file, const char *net_file, const char *pcb_fi
 	if (!conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		verbose_str = "-q";
 
+
 	if (!build_and_run_command("%s %s -g pcbpins -o %s %L %L", gnetlist, verbose_str, pins_file, &extra_gnetlist_arg_list, largs))
 		return FALSE;
 
@@ -76,6 +77,8 @@ int run_gnetlist(const char *pins_file, const char *net_file, const char *pcb_fi
 		return FALSE;
 
 	mtime = (stat(pcb_file, &st) == 0) ? st.st_mtime : 0;
+
+	require_gnetlist_backend(SCMDIR, "gsch2pcb-rnd");
 
 	if (!build_and_run_command("%s %s -L " SCMDIR " -g gsch2pcb-rnd -o %s %L %L",
 														 gnetlist, verbose_str, pcb_file, &extra_gnetlist_arg_list, largs)) {

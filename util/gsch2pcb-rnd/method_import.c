@@ -54,6 +54,7 @@ static void import_go(int sep_net)
 		verbose_str = "-q";
 
 	backend = sep_net ? "pcbrndfwd_elem" : "pcbrndfwd";
+	require_gnetlist_backend(SCMDIR, backend);
 	if (!build_and_run_command("%s %s -L %s -g %s -o %s %L %L", gnetlist, verbose_str, PCBLIBDIR, backend, cmd_file_name, &extra_gnetlist_arg_list, &schematics)) {
 		fprintf(stderr, "Failed to run gnetlist with backend %s to generate the elements\n", backend);
 		exit(1);
