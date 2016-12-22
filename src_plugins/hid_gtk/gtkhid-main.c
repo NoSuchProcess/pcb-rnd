@@ -10,6 +10,7 @@
 #include "action_helper.h"
 #include "crosshair.h"
 #include "error.h"
+#include "draw.h"
 #include "gui.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"
@@ -144,6 +145,8 @@ static void ghid_flip_view(pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool 
 {
 	int widget_x, widget_y;
 
+	pcb_draw_inhibit_inc();
+
 	/* Work out where on the screen the flip point is */
 	ghid_pcb_to_event_coords(center_x, center_y, &widget_x, &widget_y);
 
@@ -152,6 +155,8 @@ static void ghid_flip_view(pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool 
 
 	/* Pan the board so the center location remains in the same place */
 	ghid_pan_view_abs(center_x, center_y, widget_x, widget_y);
+
+	pcb_draw_inhibit_dec();
 
 	ghid_invalidate_all();
 }
