@@ -243,11 +243,11 @@ int pcb_act_PrintPaths(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 }
 
 /* --------------------------------------------------------------------------- */
-static const char pcb_acts_PrintPlugins[] = "PrintPlugins()";
+static const char pcb_acts_DumpPlugins[] = "DumpPlugins()";
 
-static const char pcb_acth_PrintPlugins[] = "Print plugins loaded.";
+static const char pcb_acth_DumpPlugins[] = "Print plugins loaded.";
 
-int pcb_act_PrintPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_act_DumpPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_plugin_info_t *i;
 	for(i = plugins; i != NULL; i = i->next)
@@ -276,8 +276,8 @@ pcb_hid_action_t main_action_list[] = {
 	{"PrintPaths", 0, pcb_act_PrintPaths,
 	 pcb_acth_PrintPaths, pcb_acts_PrintPaths}
 	,
-	{"PrintPlugins", 0, pcb_act_PrintPlugins,
-	 pcb_acth_PrintPlugins, pcb_acts_PrintPlugins}
+	{"DumpPlugins", 0, pcb_act_DumpPlugins,
+	 pcb_acth_DumpPlugins, pcb_acts_DumpPlugins}
 
 };
 
