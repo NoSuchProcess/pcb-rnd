@@ -1,9 +1,7 @@
 - BUGS
-	- bugs found by Dima while doing the Debian package for 1.1.4:
-		- retest the plugin system on x86_64, with the debian package's CFLAGS and LDFLAGS
 	- "unselectable" arc rotated on ps [report:Evan]
-	- gerber top layer doesn't have pads on A.pcb (layer cleanup) [report:James]
-	- gerber layer group name [report:James]
+	+ gerber top layer doesn't have pads on A.pcb (layer cleanup) [report:James]
+	+ gerber layer group name [report:James]
 	? all route styles deleted when using 'File>load layout data to paste buffer'
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
@@ -11,11 +9,9 @@
 	- lihata doesn't save config?! (window size settings) [report:Larry]
 	- liblihata shouldn't compile genht (different cflags)
 	- GTK: redraws the board twice after tab-flip: first mirrored then mirrored+new-stack-vis (second redraw doesn't hit the screen on mac) [report:James]
-	- GTK: the full screen support broke
-	- do not complain about missing ./default.pcb when running from installed [report:Evan]
 	- save buffer element to file - format is pcb, file name is .lht [report:Evan]
 	- gsch2pcb-rnd bugs with -m import [report:Evan]
-		- adapter-art.lht -> adapter.cmd, why?
+		? adapter-art.lht -> adapter.cmd, why?
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
