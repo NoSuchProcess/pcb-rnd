@@ -42,6 +42,19 @@ void hid_append_dir(char *dirname, int count)
 	pcb_plugin_dir_last = pd;
 }
 
+static unsigned int plugin_hash(const char *fn)
+{
+	unsigned int h = 0;
+	FILE *f = fopen(fn, "r");
+	if (f != NULL) {
+		char buff[256];
+		int len = fread(buff, 1, sizeof(buff), f);
+		h ^= jenhash(buff, len);
+		fclose(f);
+	}
+	return h;
+}
+
 /* dirname must be strdup()'d on the caller's side! */
 static int hid_load_dir(char *dirname)
 {
@@ -55,6 +68,7 @@ static int hid_load_dir(char *dirname)
 		return 0;
 	}
 	while ((de = readdir(dir)) != NULL) {
+		unsigned int phash;
 		void *sym;
 		pcb_uninit_t (*symv) ();
 		pcb_uninit_t uninit;
@@ -84,6 +98,7 @@ static int hid_load_dir(char *dirname)
 			}
 			else {
 				pcb_plugin_info_t *inf = plugin_find(basename);
+				phash = plugin_hash(path);
 				if (inf == NULL) {
 					symname = pcb_concat("hid_", basename, "_init", NULL);
 					if ((sym = dlsym(so, symname)) != NULL) {
@@ -96,11 +111,12 @@ static int hid_load_dir(char *dirname)
 					}
 					else
 						uninit = NULL;
-					pcb_plugin_register(basename, path, so, 1, uninit);
+					inf = pcb_plugin_register(basename, path, so, 1, uninit);
+					inf->hash = phash;
 					count++;
 					free(symname);
 				}
-				else
+				else if (phash != inf->hash) /* warn only if this is not the very same file in yet-another-copy */
 					pcb_message(PCB_MSG_ERROR, "Can't load %s because it'd provide plugin %s that is already loaded from %s\n", path, basename, (*inf->path == '<' ? "<buildin>" : inf->path));
 			}
 		}
@@ -126,11 +142,9 @@ void pcb_hid_init()
 	found += hid_load_dir(pcb_concat(conf_core.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib",
 											PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", NULL));
 
-	if (found == 0) {
-		/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
-		hid_load_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
-		hid_load_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", NULL));
-	}
+	/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
+	hid_load_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL));
+	hid_load_dir(pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", NULL));
 
 	/* conf_core.rc.path.home is set by the conf_core immediately on startup */
 	if (conf_core.rc.path.home != NULL) {
