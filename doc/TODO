@@ -1,5 +1,4 @@
 - BUGS
-	- "unselectable" arc rotated on ps [report:Evan]
 	+ gerber top layer doesn't have pads on A.pcb (layer cleanup) [report:James]
 	+ gerber layer group name [report:James]
 	? all route styles deleted when using 'File>load layout data to paste buffer'
