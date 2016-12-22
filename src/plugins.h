@@ -35,6 +35,7 @@ struct pcb_plugin_info_s {
 	char *path;
 	void *handle;
 	int dynamic_loaded;
+	unsigned int hash;
 	pcb_uninit_t uninit;
 	pcb_plugin_info_t *next;
 };
@@ -48,7 +49,7 @@ void pcb_plugins_init(void);
 void pcb_plugins_uninit(void);
 
 /* Register a new plugin (or buildin) */
-void pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic, pcb_uninit_t uninit);
+pcb_plugin_info_t *pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic, pcb_uninit_t uninit);
 
 /* Find a plugin by name */
 pcb_plugin_info_t *plugin_find(const char *name);

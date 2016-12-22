@@ -44,7 +44,7 @@ pcb_plugin_info_t *plugin_find(const char *name)
 	return NULL;
 }
 
-void pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
+pcb_plugin_info_t *pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
 {
 	pcb_plugin_info_t *i = malloc(sizeof(pcb_plugin_info_t));
 
@@ -53,9 +53,11 @@ void pcb_plugin_register(const char *name, const char *path, void *handle, int d
 	i->handle = handle;
 	i->dynamic_loaded = dynamic_loaded;
 	i->uninit = uninit;
+	i->hash = 0;
 
 	i->next = plugins;
 	plugins = i;
+	return i;
 }
 
 void pcb_plugins_init(void)
