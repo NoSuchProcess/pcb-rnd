@@ -251,7 +251,7 @@ int pcb_act_DumpPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 {
 	pcb_plugin_info_t *i;
 	for(i = plugins; i != NULL; i = i->next)
-		printf("%s\n", i->name);
+		printf("%s\t%s\n", i->name, i->path);
 }
 
 
