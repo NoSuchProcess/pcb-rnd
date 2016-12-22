@@ -10,6 +10,7 @@
 
 #include "plugins.h"
 #include "hid_attrib.h"
+#include "hid_init.h"
 #include "misc_util.h"
 #include "conf_core.h"
 #include "compat_misc.h"
@@ -25,6 +26,23 @@ pcb_hid_t *pcb_exporter = NULL;
 
 int pcb_pixel_slop = 1;
 
+pcb_plugin_dir_t *pcb_plugin_dir_first = NULL, *pcb_plugin_dir_last = NULL;
+
+void hid_append_dir(char *dirname, int count)
+{
+	pcb_plugin_dir_t *pd;
+	pd = malloc(sizeof(pcb_plugin_dir_t));
+	pd->path = dirname;
+	pd->num_plugins = count;
+	pd->next = NULL;
+	if (pcb_plugin_dir_first == NULL)
+		pcb_plugin_dir_first = pd;
+	if (pcb_plugin_dir_last != NULL)
+		pcb_plugin_dir_last->next = pd;
+	pcb_plugin_dir_last = pd;
+}
+
+/* dirname must be strdup()'d on the caller's side! */
 static int hid_load_dir(char *dirname)
 {
 	DIR *dir;
@@ -33,8 +51,8 @@ static int hid_load_dir(char *dirname)
 
 	dir = opendir(dirname);
 	if (!dir) {
-		free(dirname);
-		return;
+		hid_append_dir(dirname, 0);
+		return 0;
 	}
 	while ((de = readdir(dir)) != NULL) {
 		void *sym;
@@ -89,8 +107,9 @@ static int hid_load_dir(char *dirname)
 		free(basename);
 		free(path);
 	}
-	free(dirname);
 	closedir(dir);
+	hid_append_dir(dirname, count);
+	return count;
 }
 
 void pcb_hid_init()
@@ -124,6 +143,8 @@ void pcb_hid_init()
 
 void pcb_hid_uninit(void)
 {
+	pcb_plugin_dir_t *pd, *next;
+
 	if (pcb_hid_num_hids > 0) {
 		int i;
 		for (i = pcb_hid_num_hids-1; i >= 0; i--) {
@@ -135,6 +156,13 @@ void pcb_hid_uninit(void)
 
 	pcb_hid_actions_uninit();
 	pcb_hid_attributes_uninit();
+
+	for(pd = pcb_plugin_dir_first; pd != NULL; pd = next) {
+		next = pd->next;
+		free(pd->path);
+		free(pd);
+	}
+	pcb_plugin_dir_first = pcb_plugin_dir_last = NULL;
 }
 
 void pcb_hid_register_hid(pcb_hid_t * hid)

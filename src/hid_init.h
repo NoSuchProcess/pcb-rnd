@@ -46,4 +46,14 @@ void pcb_hid_parse_command_line(int *argc, char ***argv);
 extern void pcb_hid_register_hid(pcb_hid_t * hid);
 void pcb_hid_remove_hid(pcb_hid_t * hid);
 
+typedef struct pcb_plugin_dir_s pcb_plugin_dir_t;
+struct pcb_plugin_dir_s {
+	char *path;
+	int num_plugins;
+	pcb_plugin_dir_t *next;
+};
+
+extern pcb_plugin_dir_t *pcb_plugin_dir_first, *pcb_plugin_dir_last;
+
+
 #endif
