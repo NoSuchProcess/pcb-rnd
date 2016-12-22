@@ -616,7 +616,7 @@ void pcb_hid_expose_callback(pcb_hid_t * hid, pcb_box_t * region, void *item)
 		draw_element((pcb_element_t *) item);
 		pcb_draw_doing_pinout = pcb_false;
 	}
-	else
+	else if (!pcb_draw_inhibit)
 		DrawEverything(region);
 
 	pcb_gui->destroy_gc(Output.fgGC);
