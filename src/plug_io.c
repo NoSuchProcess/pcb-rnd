@@ -103,7 +103,7 @@ static void plug_io_err(int res, const char *what, const char *filename)
 	}
 }
 
-int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings)
+int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings, int ignore_missing)
 {
 	int res = -1, len, n;
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
@@ -113,7 +113,8 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 
 	ft = fopen(Filename, "r");
 	if (ft == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error: can't open %s for reading (format is %s)\n", Filename, fmt);
+		if (!ignore_missing)
+			pcb_message(PCB_MSG_ERROR, "Error: can't open %s for reading (format is %s)\n", Filename, fmt);
 		return -1;
 	}
 
@@ -348,7 +349,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	/* mark the default font invalid to know if the file has one */
 	newPCB->Font.Valid = pcb_false;
 
-	switch(how) {
+	switch(how & 0x0F) {
 		case 0: settings_dest = CFR_DESIGN; break;
 		case 1: settings_dest = CFR_DEFAULTPCB; break;
 		case 2: settings_dest = CFR_invalid; break;
@@ -356,7 +357,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	}
 
 	/* new data isn't added to the undo list */
-	if (!pcb_parse_pcb(PCB, new_filename, fmt, settings_dest)) {
+	if (!pcb_parse_pcb(PCB, new_filename, fmt, settings_dest, how & 0x10)) {
 		pcb_board_remove(oldPCB);
 
 		pcb_board_new_postproc(PCB, 0);
@@ -624,7 +625,7 @@ int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int h
  */
 int pcb_revert_pcb(void)
 {
-	return real_load_pcb(PCB->Filename, NULL, pcb_true, pcb_true, pcb_true);
+	return real_load_pcb(PCB->Filename, NULL, pcb_true, pcb_true, 1);
 }
 
 /* ---------------------------------------------------------------------------

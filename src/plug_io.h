@@ -102,7 +102,7 @@ extern pcb_plug_io_t *pcb_plug_io_chain;
 
 
 /********** hook wrappers **********/
-int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings);
+int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int load_settings, int ignore_missing);
 int pcb_parse_element(pcb_data_t *Ptr, const char *name);
 int pcb_parse_font(pcb_font_t *Ptr, char *Filename);
 int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt);
@@ -112,7 +112,7 @@ int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt);
 FILE *pcb_check_and_open_file(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);
 FILE *pcb_open_connection_file(void);
 int pcb_save_pcb(const char *, const char *fmt);
-int pcb_load_pcb(const char *name, const char *fmt, pcb_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) */
+int pcb_load_pcb(const char *name, const char *fmt, pcb_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) | 0x10: ignore missing file */
 void pcb_enable_autosave(void);
 void pcb_backup(void);
 void pcb_save_in_tmp(void);
