@@ -1348,6 +1348,7 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	pcb_bool comp_on = LAYER_PTR(PCB->LayerGroups.Entries[comp_group][0])->On;
 	pcb_bool solder_on = LAYER_PTR(PCB->LayerGroups.Entries[solder_group][0])->On;
 
+	pcb_draw_inhibit_inc();
 	if (argc > 0) {
 		switch (argv[0][0]) {
 		case 'h':
@@ -1364,6 +1365,7 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			conf_toggle_editor(show_solder_side); /* Swapped back below */
 			break;
 		default:
+			pcb_draw_inhibit_dec();
 			return 1;
 		}
 	}
@@ -1376,6 +1378,10 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[comp_group][0], !new_solder_vis, !new_solder_vis);
 		pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[solder_group][0], new_solder_vis, new_solder_vis);
 	}
+
+	pcb_draw_inhibit_dec();
+
+	ghid_invalidate_all();
 
 	return 0;
 }
