@@ -438,7 +438,7 @@ int main(int argc, char *argv[])
 
 			/* try anything */
 			if (pcb_gui == NULL) {
-				pcb_message(PCB_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\n");
+				pcb_message(PCB_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\nYou may want to check if the plugin is loaded, try --dump_plugins and --dump-plugindirs");
 				pcb_gui = pcb_hid_find_gui(NULL);
 			}
 		}
