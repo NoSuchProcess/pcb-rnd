@@ -252,6 +252,20 @@ int pcb_act_DumpPlugins(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	pcb_plugin_info_t *i;
 	for(i = plugins; i != NULL; i = i->next)
 		printf("%s\t%s\n", i->name, i->path);
+	return 0;
+}
+
+/* --------------------------------------------------------------------------- */
+static const char pcb_acts_DumpPluginDirs[] = "DumpPluginDirs()";
+
+static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories and the number of plugins loaded from each.";
+
+int pcb_act_DumpPluginDirs(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	const pcb_plugin_dir_t *d;
+	for(d = pcb_plugin_dir_first; d != NULL; d = d->next)
+		printf("%s\t%d\n", d->path, d->num_plugins);
+	return 0;
 }
 
 
@@ -278,6 +292,9 @@ pcb_hid_action_t main_action_list[] = {
 	,
 	{"DumpPlugins", 0, pcb_act_DumpPlugins,
 	 pcb_acth_DumpPlugins, pcb_acts_DumpPlugins}
+	,
+	{"DumpPluginDirs", 0, pcb_act_DumpPluginDirs,
+	 pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs}
 
 };
 
