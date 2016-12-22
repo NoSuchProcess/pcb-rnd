@@ -8,7 +8,7 @@
 	- tab doesn't work in the lesstif hid (was already broken in 1.1.2)
 	- lihata doesn't save config?! (window size settings) [report:Larry]
 	- liblihata shouldn't compile genht (different cflags)
-	- GTK: redraws the board twice after tab-flip: first mirrored then mirrored+new-stack-vis (second redraw doesn't hit the screen on mac) [report:James]
+	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
 	- save buffer element to file - format is pcb, file name is .lht [report:Evan]
 	- gsch2pcb-rnd bugs with -m import [report:Evan]
 		? adapter-art.lht -> adapter.cmd, why?
