@@ -23,7 +23,7 @@
 
 typedef enum qp_state_e {
 	qp_normal,
-	qp_dquote,
+	qp_dquote
 } qp_state_t;
 
 #define qpush(chr) \
