@@ -153,6 +153,10 @@ void conf_load_all(const char *project_fn, const char *pcb_fn);
 /* Load a file or a string as a role */
 int conf_load_as(conf_role_t role, const char *fn, int fn_is_text);
 
+/* copy root to be the new config of role; root must be a li:pcb-rnd-conf-v1
+   return 0 on success and removes/invalidates root */
+int conf_insert_tree_as(conf_role_t role, lht_node_t *root);
+
 /* Load a project file into CFR_PROJECT. Both project_fn and pcb_fn can't be NULL.
    Leaves an initialized but empty CFR_PROJECT root if no project file was
    found. Runs conf_update(NULL); */
