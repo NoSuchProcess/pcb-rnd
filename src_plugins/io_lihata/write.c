@@ -723,7 +723,6 @@ static lht_node_t *build_conf()
 		for(s = del_paths; *s != NULL; s++) {
 			lht_node_t *sub = lht_tree_path_(n->doc, n, *s, 0, 0, NULL);
 			if (sub != NULL) {
-				printf("**** CONF Removing %s\n", *s);
 				lht_tree_del(sub);
 			}
 		}
