@@ -124,6 +124,12 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 		return -1;
 	}
 
+	if (d->root == NULL) {
+		/* empty project file */
+		lht_dom_uninit(d);
+		return 0;
+	}
+
 	if ((d->root->type == LHT_LIST) && (strcmp(d->root->name, "pcb-rnd-conf-v1") == 0)) {
 		conf_root[role] = d;
 		return 0;
