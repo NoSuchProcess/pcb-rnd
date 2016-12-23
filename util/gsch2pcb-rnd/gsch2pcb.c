@@ -176,7 +176,7 @@ static int parse_config(char * config, char * arg)
 		conf_set(CFR_CLI, "rc/library_search_paths", -1, arg, POL_PREPEND);
 	}
 	else if (!strcmp(config, "output-name") || !strcmp(config, "o"))
-		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_base", -1, arg, POL_OVERWRITE);
+		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, arg, POL_OVERWRITE);
 	else if (!strcmp(config, "default-pcb") || !strcmp(config, "P"))
 		conf_set(CFR_CLI, "utils/gsch2pcb_rnd/default_pcb", -1, arg, POL_OVERWRITE);
 	else if (!strcmp(config, "schematics"))
