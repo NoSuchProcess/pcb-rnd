@@ -422,7 +422,7 @@ void ghid_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t
 void ghid_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
 void ghid_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y);
 void ghid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-void ghid_invalidate_lr(int left, int right, int top, int bottom);
+void ghid_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
 void ghid_invalidate_all();
 void ghid_notify_crosshair_change(pcb_bool changes_complete);
 void ghid_notify_mark_change(pcb_bool changes_complete);
