@@ -1033,7 +1033,7 @@
  obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h obj_pad.h \
  obj_pinvia_list.h obj_pinvia.h obj_text.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h obj_poly_list.h obj_poly.h polyarea.h \
- obj_text_list.h obj_rat_list.h obj_rat.h error.h \
+ obj_text_list.h obj_rat_list.h obj_rat.h error.h draw.h \
  ../src_plugins/hid_gtk/gui.h board.h const.h macro.h vtroutestyle.h \
  library.h rats_patch.h board.h font.h box.h math_helper.h move.h \
  misc_util.h hid.h hid_cfg.h hid_cfg_input.h \
@@ -3419,7 +3419,7 @@ hid_init.o: hid_init.c ../config.h hid.h error.h drc.h unit.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_rat_list.h \
  obj_rat.h hid_nogui.h compat_dl.h compat_inc.h plugins.h hid_attrib.h \
- misc_util.h conf_core.h conf.h pcb-printf.h \
+ hid_init.h misc_util.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -3578,7 +3578,8 @@ main_act.o: main_act.c ../config.h hid_actions.h hid.h error.h drc.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h
+ ../src_3rd/liblihata/genht/ht.h ../src_3rd/genvector/vtp0.h list_conf.h \
+ plugins.h
 misc_util.o: misc_util.c ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h misc_util.h unit.h pcb_bool.h
