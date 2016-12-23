@@ -818,7 +818,7 @@ int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename,
 		res = lhtpers_fsave_as(&events, brd, inf, FP, old_filename, &errmsg);
 		if (res != 0) {
 			FILE *fe;
-			char *fe_name = pcb_concat(old_filename, ".mem.lht");
+			char *fe_name = pcb_concat(old_filename, ".mem.lht", NULL);
 			fe = fopen(fe_name, "w");
 			if (fe != NULL) {
 				res = lht_dom_export(brd->root, fe, "");
