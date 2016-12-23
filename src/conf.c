@@ -78,6 +78,25 @@ static lht_node_t *conf_lht_get_confroot(lht_node_t *cwd)
 	return lht_dom_hash_get(cwd, conf_list_name);
 }
 
+int conf_insert_tree_as(conf_role_t role, lht_node_t *root)
+{
+	lht_doc_t *d;
+
+	if ((root->type != LHT_LIST) || (strcmp(root->name, "pcb-rnd-conf-v1") != 0))
+		return -1;
+
+	if (conf_root[role] != NULL) {
+		lht_dom_uninit(conf_root[role]);
+		conf_root[role] = NULL;
+	}
+
+	d = lht_dom_init();
+	d->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+	d->root->doc = d;
+	lht_tree_merge(d->root, root);
+	conf_root[role] = d;
+	return 0;
+}
 
 int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 {
