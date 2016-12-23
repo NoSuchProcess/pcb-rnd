@@ -710,6 +710,27 @@ static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_lib_t *netlists, pcb_rat
 	return nls;
 }
 
+extern lht_doc_t *conf_root[CFR_max_alloc];
+static lht_node_t *build_conf()
+{
+	const char **s, *del_paths[] = { "editor/mode", NULL };
+	lht_node_t *root, *n;
+	if ((conf_root[CFR_DESIGN] == NULL) || (conf_root[CFR_DESIGN]->root == NULL) || (conf_root[CFR_DESIGN]->root->type != LHT_LIST))
+		return lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+
+	root = conf_root[CFR_DESIGN]->root;
+	for(n = root->data.list.first; n != NULL; n = n->next) {
+		for(s = del_paths; *s != NULL; s++) {
+			lht_node_t *sub = lht_tree_path_(n->doc, n, *s, 0, 0, NULL);
+			if (sub != NULL) {
+				printf("**** CONF Removing %s\n", *s);
+				lht_tree_del(sub);
+			}
+		}
+	}
+
+	return lht_dom_duptree(root);
+}
 
 static lht_doc_t *build_board(pcb_board_t *pcb)
 {
@@ -722,6 +743,7 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	lht_dom_hash_put(brd->root, build_font(&pcb->Font));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
 	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->NetlistLib, pcb->NetlistPatches, PCB_NUM_NETLISTS));
+	lht_dom_hash_put(brd->root, build_conf());
 	return brd;
 }
 
