@@ -318,8 +318,9 @@ do { \
 #define conf_force_set_str(var, val) *((CFT_STRING *)(&var)) = val
 
 /* get the first config subtree node (it's a hash and its children
-   are "design", "rc", ...) */
-lht_node_t *conf_lht_get_first(conf_role_t target);
+   are "design", "rc", ...); if create is 1, and the subtree doesn't
+   exist, create an "overwrite". */
+lht_node_t *conf_lht_get_first(conf_role_t target, int create);
 
 /* loop helper */
 conf_listitem_t *conf_list_first_str(conflist_t *list, const char **item_str, int *idx);

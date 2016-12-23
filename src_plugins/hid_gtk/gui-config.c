@@ -1075,7 +1075,7 @@ static void pre_rebuild(gtk_conf_list_t *cl)
 	lht_node_t *m;
 	lht_clean_list(config_library_lst);
 
-	m = conf_lht_get_first(CFR_DESIGN);
+	m = conf_lht_get_first(CFR_DESIGN, 0);
 
 	cl->lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	if (cl->lst == NULL) {

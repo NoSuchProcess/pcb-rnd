@@ -125,8 +125,14 @@ int conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 	}
 
 	if (d->root == NULL) {
-		/* empty project file */
-		lht_dom_uninit(d);
+		lht_node_t *prjroot, *confroot;
+		prjroot = lht_dom_node_alloc(LHT_HASH, "geda-project-v1");
+		confroot = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+		lht_dom_hash_put(prjroot, confroot);
+		prjroot->doc = d;
+		confroot->doc = d;
+		d->root = prjroot;
+		conf_root[role] = d;
 		return 0;
 	}
 
@@ -837,32 +843,43 @@ void conf_update(const char *path)
 	conf_rev++;
 }
 
-static lht_node_t *conf_lht_get_first_(lht_node_t *cwd)
+static lht_node_t *conf_lht_get_first_(lht_node_t *cwd, int create)
 {
+	lht_node_t *ov; /* normally the "overwrite" node */
+
 	/* assume root is a li and add to the first hash */
 	cwd = conf_lht_get_confroot(cwd);
 	if (cwd == NULL)
 		return NULL;
-	cwd = cwd->data.list.first;
-	if ((cwd == NULL) || (cwd->type != LHT_HASH))
+	ov = cwd->data.list.first;
+	if (ov == NULL) {
+		lht_node_t *new_ov;
+		if (!create)
+			return NULL;
+		new_ov = lht_dom_node_alloc(LHT_HASH, "overwrite");
+		lht_dom_list_append(cwd, new_ov);
+		ov = new_ov;
+	}
+	else if (ov->type != LHT_HASH)
 		return NULL;
-	return cwd;
+
+	return ov;
 }
 
-lht_node_t *conf_lht_get_first(conf_role_t target)
+lht_node_t *conf_lht_get_first(conf_role_t target, int create)
 {
 	assert(target != CFR_invalid);
 	assert(target >= 0);
 	assert(target < CFR_max_alloc);
 	if (conf_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(conf_root[target]->root);
+	return conf_lht_get_first_(conf_root[target]->root, create);
 }
 
 static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, const char *lht_path, int create)
 {
-	lht_node_t *n, *r;
-	n = conf_lht_get_first(target);
+	lht_node_t *n, *r = NULL;
+	n = conf_lht_get_first(target, create);
 	if (n == NULL)
 		return NULL;
 	r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
@@ -1078,7 +1095,7 @@ int conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char 
 		return -1;
 	}
 
-	cwd = conf_lht_get_first(target);
+	cwd = conf_lht_get_first(target, 0);
 	if (cwd == NULL) {
 		free(path);
 		return -1;
@@ -1498,7 +1515,7 @@ int conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t
 int conf_save_file(const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn)
 {
 	int fail = 1;
-	lht_node_t *r = conf_lht_get_first(role);
+	lht_node_t *r = conf_lht_get_first(role, 0);
 	const char *try;
 	char *efn;
 
