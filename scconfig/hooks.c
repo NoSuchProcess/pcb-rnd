@@ -696,6 +696,7 @@ int hook_generate()
 		rev = str_concat("", "svn r", tmp, NULL);
 		free(tmp);
 	}
+	logprintf(0, "scconfig generate version info: version='%s' rev='%s'\n", version, rev);
 	put("/local/revision", rev);
 	put("/local/version",  version);
 
