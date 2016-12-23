@@ -1200,7 +1200,7 @@ called with that filename.
 static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function;
-	char *name;
+	char *name, *name_in = NULL;
 	const char *prompt;
 	pcb_io_formats_t avail;
 	const char **formats_param = NULL, **extensions_param = NULL;
@@ -1221,12 +1221,20 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			return pcb_hid_actionl("SaveTo", "Layout", PCB->Filename, NULL);
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
+		int num_fmts, n;
 		prompt = _("Save element as");
-		if (pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP) > 0) {
+		num_fmts = pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP);
+		if (num_fmts > 0) {
 			formats_param = (const char **)avail.digest;
 			extensions_param = (const char **)avail.extension;
 			fmt_param = &fmt;
 			fmt = 0;
+			for(n = 0; n < num_fmts; n++) {
+				if (strstr(avail.plug[n]->description, "mainline") != NULL) {
+					fmt = n;
+					name_in = pcb_concat("unnamed.fp", NULL);
+				}
+			}
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
@@ -1258,11 +1266,12 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 
 	{ /* invent an input file name if needed and run the save dialog to get an output file name */
-		char *name_in;
-		if (PCB->Filename == NULL)
-			name_in = pcb_concat("unnamed", extensions_param[fmt], NULL);
-		else
-			name_in = pcb_strdup(PCB->Filename);
+		if (name_in == NULL) {
+			if (PCB->Filename == NULL)
+				name_in = pcb_concat("unnamed", extensions_param[fmt], NULL);
+			else
+				name_in = pcb_strdup(PCB->Filename);
+		}
 		name = ghid_dialog_file_select_save(prompt, &current_dir, name_in, conf_core.rc.file_path, formats_param, extensions_param, fmt_param);
 		free(name_in);
 	}
