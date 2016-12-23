@@ -5,7 +5,6 @@
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
-	- editor bug: grab an element, stay in place, nothing is ever drawn again (probably draw inhibit stuck)
 	- start pcb-rnd as ./pcb-rnd foo.lht; draw; save -> file content is in pcb format
 	- conf loaded from lht board: source becomes invalid string (prepend our own library search path)
 
