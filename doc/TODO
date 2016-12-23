@@ -8,8 +8,10 @@
 	- scconfig:
 		- include command line args in the log
 		- include svn version info (revtest and friends?) too
+	- lihata board format:
+		- refdes text IDs are mangled (changed to 0) on load?
 	- start pcb-rnd as ./pcb-rnd foo.lht; draw; save -> file content is in pcb format
-	- conf loaded from lht board: source becomes invalid string
+	- conf loaded from lht board: source becomes invalid string (prepend our own library search path)
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
