@@ -6,7 +6,7 @@
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
 	- start pcb-rnd as ./pcb-rnd foo.lht; draw; save -> file content is in pcb format
-
+	- conf loaded from lht board: source becomes invalid string
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
