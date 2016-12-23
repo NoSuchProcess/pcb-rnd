@@ -106,8 +106,6 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	pcb_opctx_t ctx;
 	void *ptr2;
 
-	pcb_draw_inhibit_inc();
-
 	ctx.move.pcb = PCB;
 	ctx.move.dx = DX;
 	ctx.move.dy = DY;
@@ -116,6 +114,8 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 
 	if (DX == 0 && DY == 0)
 		return NULL;
+
+	pcb_draw_inhibit_inc();
 
 	if (Type == PCB_TYPE_ARC_POINT) {
 		/* moving the endpoint of an arc is not really a move, but a change of arc properties */
