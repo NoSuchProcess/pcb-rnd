@@ -749,7 +749,7 @@ void pcb_backup(void)
 		}
 	}
 
-	pcb_write_pcb_file(filename, pcb_true, DEFAULT_FMT, pcb_true);
+	pcb_write_pcb_file(filename, pcb_true, NULL, pcb_true);
 	free(filename);
 }
 
@@ -763,7 +763,7 @@ void pcb_backup(void)
 void pcb_tmp_data_save(void)
 {
 	char *fn = pcb_build_fn(conf_core.rc.emergency_name);
-	pcb_write_pcb_file(fn, pcb_true, DEFAULT_FMT, pcb_true);
+	pcb_write_pcb_file(fn, pcb_true, NULL, pcb_true);
 	if (TMPFilename != NULL)
 		free(TMPFilename);
 	TMPFilename = fn;
