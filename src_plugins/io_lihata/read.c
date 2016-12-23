@@ -941,6 +941,15 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 	return 0;
 }
 
+static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
+{
+	if (conf_insert_tree_as(CFR_DESIGN, sub) != 0)
+		pcb_message(PCB_MSG_ERROR, "Failed to insert the config subtree found in %s\n", pcb->Filename);
+	else
+		conf_update(NULL);
+}
+
+
 static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *sub;
@@ -989,6 +998,10 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		pcb_poly_init_clip(pcb->Data, layer, polygon);
 	}
 	PCB_ENDALL_LOOP;
+
+	sub = lht_dom_hash_get(nd, "pcb-rnd-conf-v1");
+	if (sub != NULL)
+		parse_conf(pcb, sub);
 
 	return 0;
 }
