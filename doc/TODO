@@ -9,8 +9,6 @@
 	- liblihata shouldn't compile genht (different cflags)
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
 	- save buffer element to file - format is pcb, file name is .lht [report:Evan]
-	- gsch2pcb-rnd bugs with -m import [report:Evan]
-		? adapter-art.lht -> adapter.cmd, why?
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
