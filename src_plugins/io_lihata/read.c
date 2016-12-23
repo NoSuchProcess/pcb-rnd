@@ -511,6 +511,8 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 			return -1;
 	}
 
+	parse_id(&text->ID, obj, 5);
+
 	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&text->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_TEXT);
 	parse_int(&text->Scale, lht_dom_hash_get(obj, "scale"));
