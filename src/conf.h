@@ -300,11 +300,14 @@ do { \
 #define conf_set_editor(field, val) \
 	conf_set(CFR_DESIGN, "editor/" #field, -1, val ? "1" : "0", POL_OVERWRITE)
 
+#define conf_set_editor_(sfield, val) \
+	conf_set(CFR_DESIGN, sfield, -1, val ? "1" : "0", POL_OVERWRITE)
+
 #define conf_toggle_editor(field) \
 	conf_set_editor(field, !conf_core.editor.field)
 
 #define conf_toggle_editor_(sfield, field) \
-	conf_set_editor(sfield, !conf_core.editor.field)
+	conf_set_editor_("editor/" sfield, !conf_core.editor.field)
 
 /* For temporary modification/restoration of variables (hack) */
 #define conf_force_set_bool(var, val) *((CFT_BOOLEAN *)(&var)) = val
