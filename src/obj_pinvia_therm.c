@@ -381,7 +381,7 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 			/* fix me needs error checking */
 			if (style == 2) {
 				/* t is the theoretically required length, but we use twice that
-				 * to avoid descritisation errors in our circle approximation.
+				 * to avoid discretisation errors in our circle approximation.
 				 */
 				pa = pcb_poly_from_rect(pin->X - t * 2, pin->X + t * 2, pin->Y - w, pin->Y + w);
 				pcb_polyarea_boolean_free(m, pa, &arc, PCB_PBO_SUB);
@@ -389,7 +389,7 @@ pcb_polyarea_t *ThermPoly(pcb_board_t *p, pcb_pin_t *pin, pcb_cardinal_t laynum)
 			}
 			else {
 				/* t is the theoretically required length, but we use twice that
-				 * to avoid descritisation errors in our circle approximation.
+				 * to avoid discretisation errors in our circle approximation.
 				 */
 				pa = diag_line(pin->X, pin->Y, t * 2, w, pcb_true);
 				pcb_polyarea_boolean_free(m, pa, &arc, PCB_PBO_SUB);

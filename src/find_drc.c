@@ -125,7 +125,7 @@ static void BuildObjectList(int *object_count, long int **object_id_list, int **
 
 
 /*----------------------------------------------------------------------------
- * Locate the coordinatates of offending item (thing)
+ * Locate the coordinates of offending item (thing)
  */
 static void LocateError(pcb_coord_t * x, pcb_coord_t * y)
 {

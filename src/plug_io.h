@@ -57,7 +57,7 @@ struct pcb_plug_io_s {
 
 	/* Test if the given board is readable by the plugin. The plugin should return
 	   1 if it can handle the file or 0 if it can not. This check is not a deep
-	   synatx analysis; the plugin should read barely enough headers to decide if
+	   syntax analysis; the plugin should read barely enough headers to decide if
 	   the file contains a the format it expect, then return error from parse_pcb
 	   if there are syntax errors later. The file is open for read and positioned
 	   to file begin in f */

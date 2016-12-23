@@ -275,7 +275,7 @@ const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask);
 /********* OBSOLETE functions, do not use in new code *********/
 /* parses the group definition string which is a colon separated list of
    comma separated layer numbers (1,2,b:4,6,8,t); oldfmt is 0 or 1
-   depending on PCB() or PCB[] in the fiel header.
+   depending on PCB() or PCB[] in the file header.
 
    OBSOLETE, do not use in new code: only the conf system and io_pcb
    may need this. */

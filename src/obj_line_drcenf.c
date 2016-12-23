@@ -415,7 +415,7 @@ static void drc_line(pcb_point_t *end)
 	pcb_layergrp_id_t group, comp;
 	pcb_line_t line;
 	pcb_attached_line_t aline;
-	static pcb_point_t last_good; /* internal state of last good endpoint - we cna do thsi cheat, because... */
+	static pcb_point_t last_good; /* internal state of last good endpoint - we can do this cheat, because... */
 
 	/* ... we hardwire the assumption on how a line is drawn: it starts out as a 0 long segment, which is valid: */
 	if ((pcb_crosshair.AttachedLine.Point1.X == pcb_crosshair.X) && (pcb_crosshair.AttachedLine.Point1.Y == pcb_crosshair.Y)) {

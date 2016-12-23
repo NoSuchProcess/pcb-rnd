@@ -66,7 +66,7 @@ void pcb_r_insert_entry(pcb_rtree_t * rtree, const pcb_box_t * which, int manage
  * The search will find all rectangles matching the criteria given
  * by region_in_search and rectangle_in_region and return a count of
  * how many things rectangle_in_region returned pcb_true for. closure is
- * used to abort the search if desired from within rectangel_in_region
+ * used to abort the search if desired from within rectangle_in_region
  * Look at the implementation of r_region_is_empty for how to
  * abort the search if that is the desired behavior.
  */

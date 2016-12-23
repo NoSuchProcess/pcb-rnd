@@ -57,7 +57,7 @@ fully enclosed in any of pcb_polyarea_t.contours.next... (the holes)".
 
 The polygon dicer (NoHolesPolygonDicer and r_NoHolesPolygonDicer)
 emits a series of "simple" pcb_pline_t shapes.  That is, the pcb_pline_t isn't
-linked to any other "holes" oulines).  That's the meaning of the first
+linked to any other "holes" outlines).  That's the meaning of the first
 test in r_NoHolesPolygonDicer.  It is testing to see if the pcb_pline_t
 contour (the first, making it a solid outline) has a valid next
 pointer (which would point to one or more holes).  The dicer works by

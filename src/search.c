@@ -987,7 +987,7 @@ pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 
 	/* Check point is outside arc range, check distance from endpoints
 	   Need to check p_ang+360 too, because after the angle swaps above ang2
-	   mght be larger than 360 and that section of the arc shouldn't be missed
+	   might be larger than 360 and that section of the arc shouldn't be missed
 	   either. */
 	if (!angle_in_range(ang1, ang2, p_ang) && !angle_in_range(ang1, ang2, p_ang+360)) {
 		pcb_coord_t ArcX, ArcY;

@@ -1240,7 +1240,7 @@ static int pcb_act_SwitchHID(int argc, const char **argv, pcb_coord_t x, pcb_coo
 
 /* --------------------------------------------------------------------------- */
 
-/* This action is provided for CLI convience */
+/* This action is provided for CLI convenience */
 static const char pcb_acts_FullScreen[] = "pcb_act_FullScreen(on|off|toggle)\n";
 
 static const char pcb_acth_FullScreen[] = "Hide widgets to get edit area full screen";
