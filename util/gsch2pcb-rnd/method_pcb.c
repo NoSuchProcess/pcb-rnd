@@ -813,5 +813,6 @@ void method_pcb_register(void)
 	method_pcb.go = method_pcb_go;
 	method_pcb.uninit = method_pcb_uninit;
 	method_pcb.guess_out_name = method_pcb_guess_out_name;
+	method_pcb.not_by_guess = 0;
 	method_register(&method_pcb);
 }

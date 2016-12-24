@@ -423,6 +423,8 @@ int main(int argc, char ** argv)
 	if (want_method == NULL) {
 		method_t *m;
 		for(m = methods; m != NULL; m = m->next) {
+			if (m->not_by_guess)
+				continue;
 			if (m->guess_out_name()) {
 				current_method = m;
 				break;

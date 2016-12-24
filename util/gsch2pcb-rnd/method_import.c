@@ -130,6 +130,7 @@ void method_import_register(void)
 	method_import.go = method_import_go;
 	method_import.uninit = method_import_uninit;
 	method_import.guess_out_name = method_import_guess_out_name;
+	method_import.not_by_guess = 0;
 	method_register(&method_import);
 
 	method_import_sep.name = "importsep";
@@ -138,5 +139,6 @@ void method_import_register(void)
 	method_import_sep.go = method_import_sep_go;
 	method_import_sep.uninit = method_import_uninit;
 	method_import_sep.guess_out_name = method_import_guess_out_name;
+	method_import_sep.not_by_guess = 1;
 	method_register(&method_import_sep);
 }
