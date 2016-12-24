@@ -174,7 +174,7 @@ void cmd_chprio(char *arg)
 		pcb_message(PCB_MSG_ERROR, "Invalid integer prio: '%s'", arg);
 		return;
 	}
-	first = conf_lht_get_first(current_role);
+	first = conf_lht_get_first(current_role, 0);
 	if (first != NULL) {
 		char tmp[128];
 		char *end;
@@ -203,7 +203,7 @@ void cmd_chpolicy(char *arg)
 		return;
 	}
 
-	first = conf_lht_get_first(current_role);
+	first = conf_lht_get_first(current_role, 0);
 	if (first != NULL) {
 		char tmp[128];
 		char *end;
