@@ -32,6 +32,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "../src/plug_footprint.h"
 #include "../src/conf.h"
 #include "../src/conf_core.h"
@@ -202,10 +203,30 @@ static void load_project(char * path)
 {
 	FILE *f;
 	char *s, buf[1024], config[32], arg[768];
+	int n;
 
 	f = fopen(path, "r");
 	if (!f)
 		return;
+
+	/* check if we have a lihata project file or config file by looking at the first 16 non-comments */
+	for(n = 0; n < 16;) {
+		if (fgets(buf, sizeof(buf), f) == NULL)
+			break;
+		s = buf;
+		while(isspace(*s)) s++;
+		if ((*s == '#') || (*s == '\r') || (*s == '\n') || (*s == '\0'))
+			continue;
+		/* look for known lihata roots */
+		if (strncmp(s, "ha:geda-project-v1", 18) == 0)
+			goto lihata_prj;
+		if (strncmp(s, "li:pcb-rnd-conf-v1", 18) == 0)
+			goto lihata_prj;
+		n++;
+	}
+
+	rewind(f);
+
 	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 		printf("Reading project file: %s\n", path);
 	while (fgets(buf, sizeof(buf), f)) {
@@ -217,6 +238,15 @@ static void load_project(char * path)
 		parse_config(config, arg);
 	}
 	fclose(f);
+	return;
+
+lihata_prj:;
+	fclose(f);
+	if (conf_load_as(CFR_PROJECT, path, 0) != 0) {
+		pcb_message(PCB_MSG_ERROR, "Failed to parse project file %s.\n", path);
+		exit(1);
+	}
+	conf_update(NULL); /* because of our new project file */
 }
 
 static void load_extra_project_files(void)
