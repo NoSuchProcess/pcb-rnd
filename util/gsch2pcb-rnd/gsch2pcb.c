@@ -386,11 +386,35 @@ int main(int argc, char ** argv)
 			pcb_message(PCB_MSG_ERROR, "Don't know what to do: no project or schematics given, no local project file %s found. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
 			exit(1);
 		}
+		if (conf_load_as(CFR_PROJECT, LOCAL_PROJECT_FILE, 0) != 0) {
+			pcb_message(PCB_MSG_ERROR, "Failed to load project file %s. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
+			exit(1);
+		}
+		conf_update(NULL); /* because of our new project file */
 	}
 	else if ((local_project_pcb_name != NULL) && (!have_cli_project_file))
 		conf_load_project(NULL, local_project_pcb_name);
-	else if (gadl_length(&schematics) == 0)
+
+	if (!have_cli_schematics) {  /* load all schematics from the project file unless we have schematics from the cli */
+		conf_native_t *nat = conf_get_field("utils/gsch2pcb_rnd/schematics");
+		if (nat != NULL) {
+			conf_listitem_t *ci;
+			for (ci = conflist_first(nat->val.list); ci != NULL; ci = conflist_next(ci)) {
+				const char *p = ci->val.string[0];
+				if (ci->type != CFN_STRING)
+					continue;
+				add_schematic(p);
+			}
+		}
+		else {
+			pcb_message(PCB_MSG_ERROR, "No schematics specified on the cli or in project files. Try %s --help\n", argv[0]);
+			exit(1);
+		}
+	}
+
+	if (gadl_length(&schematics) == 0)
 		usage();
+
 	conf_update(NULL); /* because of the project file */
 
 	want_method = conf_g2pr.utils.gsch2pcb_rnd.method;
