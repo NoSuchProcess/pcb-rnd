@@ -37,8 +37,8 @@ prj2lht() {
 		function parse() {
 			name = $1
 			$1=""
-			CFG[$1] = $0
-			sub("^[ \t]*", "", CFG[$1])
+			CFG[name] = $0
+			sub("^[ \t]*", "", CFG[name])
 		}
 	
 		function list_add(key, val) {
