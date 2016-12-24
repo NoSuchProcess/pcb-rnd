@@ -334,6 +334,10 @@ static void get_args(int argc, char ** argv)
 		}
 		else {
 			if (loc_str_has_suffix(argv[i], ".sch", 4) == NULL) {
+				if (have_cli_project_file) {
+					pcb_message(PCB_MSG_ERROR, "ERROR: multiple project files specified on the command line (last one: %s). Either use multiple schematics or a single project file. Try %s --help\n", argv[i], argv[0]);
+					exit(1);
+				}
 				load_extra_project_files();
 				load_project(argv[i]);
 				have_cli_project_file = 1;
