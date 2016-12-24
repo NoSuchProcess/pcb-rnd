@@ -79,7 +79,7 @@ method_t *method_find(const char *name)
 }
 
 /* Return a pointer to the suffix if inp ends in that suffix */
-static char *loc_str_has_suffix(char *inp, const char *suffix, int suff_len)
+static const char *loc_str_has_suffix(const char *inp, const char *suffix, int suff_len)
 {
 	int len = strlen(inp);
 	if ((len >= suff_len) && (strcmp(inp + len - suff_len, suffix) == 0))
@@ -99,14 +99,14 @@ char *fix_spaces(char * str)
 	return str;
 }
 
-static void add_schematic(char * sch)
+static void add_schematic(const char *sch)
 {
 	char **n;
 	n = gadl_new(&schematics);
 	*n = pcb_strdup(sch);
 	gadl_append(&schematics, n);
 	if (!conf_g2pr.utils.gsch2pcb_rnd.sch_basename) {
-		char *suff = loc_str_has_suffix(sch, ".sch", 4);
+		const char *suff = loc_str_has_suffix(sch, ".sch", 4);
 		if (suff != NULL) {
 			char *tmp = pcb_strndup(sch, suff - sch);
 			conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, tmp, POL_OVERWRITE);
