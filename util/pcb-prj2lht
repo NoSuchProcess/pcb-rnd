@@ -1,0 +1,139 @@
+#!/bin/sh
+#   pcb-prj2lht - convert an old gsch2pcb project file to geda project lht
+#   Copyright (C) 2016 Tibor 'Igor2' Palinkas
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+#   http://repo.hu/projects/pcb-rnd
+
+# Convert and old gsch2pcb-rnd project file to the new, multi-program
+# geda project lihata file format.
+
+prj2lht() {
+	awk '
+		BEGIN {
+			INDENT["elements-dir"] = "     "
+			INDENT["schematics"] = "      "
+		}
+	
+		function lht_quote(s) {
+			if (s ~ "[^a-zA-Z0-9_.-]")
+				return "{" s "}"
+			return s
+		}
+	
+		function parse() {
+			name = $1
+			$1=""
+			CFG[$1] = $0
+			sub("^[ \t]*", "", CFG[$1])
+		}
+	
+		function list_add(key, val) {
+			CFG[key] = CFG[key] INDENT[key] lht_quote(val) "\n"
+		}
+	
+		function list_add_split(key, val   ,n,v,T) {
+			v = split(val, T, "[ \t]+")
+			for(n = 1; n <= v; n++)
+				if (T[n] != "")
+					list_add(key, T[n])
+		}
+	
+		function qparse(    tmp,name) {
+			name = $1
+			$1=""
+			tmp=$0
+			sub("^[ \t]*", "", tmp)
+			while(match(tmp, "\"[^\"]*\"")) {
+				list_add_split(name, substr(tmp, 1, RSTART-1))
+				list_add(name, substr(tmp, RSTART+1, RLENGTH-2))
+				tmp = substr(tmp, RSTART+RLENGTH, length(tmp))
+			}
+			# leftover after the last quote
+			list_add_split(name, tmp)
+		}
+
+		($1 == "elements-dir")    { qparse() }
+		($1 == "elements-shell")  { parse() }
+		($1 == "schematics")      { qparse() }
+		($1 == "output-name")     { parse() }
+		($1 == "remove-unfound")  { CFG["remove-unfound"] = 1 }
+		($1 == "keep-unfound")    { CFG["remove-unfound"] = 0 }
+		($1 == "quiet")           { CFG[$1] = 1 }
+		($1 == "preserve")        { CFG[$1] = 1 }
+		($1 == "default-pcb")     { parse() }
+		($1 == "gnetlist")        { parse() }
+		($1 == "enpty-footprint") { parse() }
+
+		function print_val(cfgkey, outkey) {
+			if (cfgkey in CFG)
+				print "     " outkey " = " lht_quote(CFG[cfgkey])
+		}
+
+		END {
+			print "ha:geda-project-v1 {"
+			print " li:pcb-rnd-conf-v1 {"
+	
+			print "  ha:overwrite {"
+			print "   ha:utils {"
+			print "    ha:gsch2pcb_rnd {"
+			print_val("remove-unfound", "remove_unfound_elements")
+			print_val("quiet", "quiet_mode")
+			print_val("preserve", "preserve")
+			print_val("output-name", "sch_basename")
+			print_val("default-pcb", "default_pcb")
+			print_val("gnetlist", "gnetlist")
+			print_val("empty-footprint", "empty_footprint_name")
+			if ("schematics" in CFG) {
+				print "     li:schematics {"
+				printf("%s", CFG["schematics"])
+				print "     }"
+			}
+			print "    }"
+			print "   }"
+			print "   ha:rc {"
+			print_val("elements-shell", "library_shell")
+			print "   }"
+			print "  }"
+	
+			if ("elements-dir" in CFG) {
+				print "  ha:prepend {"
+				print "   ha:rc {"
+				print "    li:library_search_paths {"
+				printf("%s", CFG["elements-dir"])
+				print "    }"
+				print "   }"
+				print "  }"
+			}
+	
+			print " }"
+			print "}"
+		}
+	'
+}
+
+
+if test $# -gt 0
+then
+	for n in "$@"
+	do
+		out=${n%%.prj}.lht
+		prj2lht < $n > $out || echo "Failed to convert $n to $out" >&2
+	done
+else
+	# stdio operation
+	prj2lht
+fi
