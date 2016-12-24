@@ -412,8 +412,10 @@ int main(int argc, char ** argv)
 		}
 	}
 
-	if (gadl_length(&schematics) == 0)
-		usage();
+	if (gadl_length(&schematics) == 0) {
+		pcb_message(PCB_MSG_ERROR, "No schematics specified on the cli; can't find any in the project files/configs either. Try %s --help\n", argv[0]);
+		exit(1);
+	}
 
 	conf_update(NULL); /* because of the project file */
 
