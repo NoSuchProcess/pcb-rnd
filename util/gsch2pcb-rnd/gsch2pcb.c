@@ -25,7 +25,10 @@
   - use pcb-rnd's conf system
   - use popen() instead of glib's spawn (stderr is always printed to stderr)
  */
+
 #include "config.h"
+
+#define LOCAL_PROJECT_FILE "project.lht"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -234,7 +237,8 @@ static void load_extra_project_files(void)
 	done = TRUE;
 }
 
-int have_project_file = 0;
+int have_cli_project_file = 0;
+int have_cli_schematics = 0;
 static void get_args(int argc, char ** argv)
 {
 	char *opt, *arg;
@@ -302,10 +306,12 @@ static void get_args(int argc, char ** argv)
 			if (loc_str_has_suffix(argv[i], ".sch", 4) == NULL) {
 				load_extra_project_files();
 				load_project(argv[i]);
-				have_project_file = 1;
+				have_cli_project_file = 1;
 			}
-			else
+			else {
 				add_schematic(argv[i]);
+				have_cli_schematics = 1;
+			}
 		}
 	}
 }
@@ -350,9 +356,6 @@ int main(int argc, char ** argv)
 	method_pcb_register();
 	method_import_register();
 
-	if (argc < 2)
-		usage();
-
 	conf_init();
 	conf_core_init();
 	conf_core_postproc(); /* to get all the paths initialized */
@@ -376,9 +379,19 @@ int main(int argc, char ** argv)
 	}
 
 	load_extra_project_files();
-
-
 	conf_update(NULL); /* because of CLI changes */
+
+	if (!have_cli_project_file && !have_cli_schematics) {
+		if (!pcb_file_readable(LOCAL_PROJECT_FILE)) {
+			pcb_message(PCB_MSG_ERROR, "Don't know what to do: no project or schematics given, no local project file %s found. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
+			exit(1);
+		}
+	}
+	else if ((local_project_pcb_name != NULL) && (!have_cli_project_file))
+		conf_load_project(NULL, local_project_pcb_name);
+	else if (gadl_length(&schematics) == 0)
+		usage();
+	conf_update(NULL); /* because of the project file */
 
 	want_method = conf_g2pr.utils.gsch2pcb_rnd.method;
 	if (want_method == NULL) {
@@ -406,12 +419,6 @@ int main(int argc, char ** argv)
 	current_method->init();
 	conf_update(NULL);
 
-	if (gadl_length(&schematics) == 0)
-		usage();
-
-	if ((local_project_pcb_name != NULL) && (!have_project_file))
-		conf_load_project(NULL, local_project_pcb_name);
-	conf_update(NULL); /* because of the project file */
 
 	current_method->go(); /* the traditional, "parse element and edit the pcb file" approach */
 
