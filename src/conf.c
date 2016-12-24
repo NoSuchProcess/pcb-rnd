@@ -602,7 +602,8 @@ int conf_merge_patch_item(const char *path, lht_node_t *n, int default_prio, con
 			break;
 		case LHT_LIST:
 			if (target == NULL)
-				pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht; may it be that it should be a hash instead of a list?\n", path);
+				if ((strncmp(path, "plugins/", 8) != 0) && (strncmp(path, "utils/", 6) != 0))/* it is normal to have configuration for plugins and utils not loaded - ignore these */
+					pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s' - check your lht; may it be that it should be a hash instead of a list?\n", path);
 			else if (target->type == CFN_LIST)
 				res |= conf_merge_patch_list(target, n, default_prio, default_policy);
 			else if (target->array_size > 1)
