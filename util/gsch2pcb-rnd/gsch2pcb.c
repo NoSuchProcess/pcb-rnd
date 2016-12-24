@@ -355,6 +355,7 @@ int main(int argc, char ** argv)
 
 	conf_init();
 	conf_core_init();
+	conf_core_postproc(); /* to get all the paths initialized */
 
 	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
