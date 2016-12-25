@@ -246,8 +246,22 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 	int len;
 
 	if (fmt == NULL) {
-#warning TODO: make this configurable, default to lihata
-		fmt = "pcb";
+		if (PCB->Filename != NULL) { /* have a file name, guess from extension */
+			int fn_len = strlen(PCB->Filename);
+			const char *end = PCB->Filename + fn_len;
+			pcb_plug_io_t *n;
+			for(n = pcb_plug_io_chain; n != NULL; n = n->next) {
+				if (n->default_extension != NULL) {
+					int elen = strlen(n->default_extension);
+					printf("save cmp: %d < %d: '%s' == '%s'\n", elen , fn_len, end-elen, n->default_extension);
+					if ((elen < fn_len) && (strcmp(end-elen, n->default_extension) == 0))
+						return n;
+				}
+			}
+		}
+		/* no file name or format hint, or file name not recognized: choose the ultimate default */
+#warning TODO: make this configurable
+		fmt = "lihata";
 	}
 
 	len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, fmt);
