@@ -264,9 +264,10 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 			pcb_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, no value configured in rc/save_final_fallback_fmt - CAN NOT SAVE FILE, try save as.\n");
 			return NULL;
 		}
-		else
-			pcb_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, falling back to %s as configured in rc/save_final_fallback_fmt\n", fmt);
-
+		else {
+			if (PCB->Filename != NULL)
+				pcb_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, falling back to %s as configured in rc/save_final_fallback_fmt\n", fmt);
+		}
 	}
 
 	len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, fmt);
