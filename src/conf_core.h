@@ -105,6 +105,8 @@ typedef struct {
 
 		CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
 
+		CFT_STRING save_final_fallback_fmt;/* when a new file is created (by running pcb-rnd with the file name) there won't be a known format; pcb-rnd will guess from the file name (extension) but eventhat may fail. This format is the final fallback that'll be used if no other guessing mechanism worked. The user can override this by save as. */
+
 		/***** automatically set (in postproc) *****/
 		CFT_BOOLEAN have_regex;            /* whether we have regex compiled in */
 		struct path {

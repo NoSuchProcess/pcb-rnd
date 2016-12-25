@@ -253,15 +253,20 @@ static pcb_plug_io_t *find_writer(pcb_plug_iot_t typ, const char *fmt)
 			for(n = pcb_plug_io_chain; n != NULL; n = n->next) {
 				if (n->default_extension != NULL) {
 					int elen = strlen(n->default_extension);
-					printf("save cmp: %d < %d: '%s' == '%s'\n", elen , fn_len, end-elen, n->default_extension);
 					if ((elen < fn_len) && (strcmp(end-elen, n->default_extension) == 0))
 						return n;
 				}
 			}
 		}
 		/* no file name or format hint, or file name not recognized: choose the ultimate default */
-#warning TODO: make this configurable
-		fmt = "lihata";
+		fmt = conf_core.rc.save_final_fallback_fmt;
+		if (fmt == NULL) {
+			pcb_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, no value configured in rc/save_final_fallback_fmt - CAN NOT SAVE FILE, try save as.\n");
+			return NULL;
+		}
+		else
+			pcb_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, falling back to %s as configured in rc/save_final_fallback_fmt\n", fmt);
+
 	}
 
 	len = pcb_find_io(available, sizeof(available)/sizeof(available[0]), typ, 1, fmt);
