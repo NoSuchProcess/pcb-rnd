@@ -271,8 +271,8 @@ static void rebuild(void)
 				if (!or_first)
 					gds_append_str(&s, " || ");
 				or_first = 0;
+				gds_append_str(&s, o->code);
 			}
-			gds_append_str(&s, o->code);
 		}
 
 		if (ors > 1)
