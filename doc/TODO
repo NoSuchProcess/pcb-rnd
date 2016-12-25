@@ -5,7 +5,6 @@
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
-	- conf loaded from lht board: source becomes invalid string (prepend our own library search path)
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -44,7 +43,7 @@
 
 CLEANUP #5
 - lihata board:
-	move generates much more diff than reasonable: does it renumber IDs?
+	- move generates much more diff than reasonable: does it renumber IDs?
 - BUG: liblihata shouldn't compile genht (different cflags)
 - BUG: redraw after pin renumber in gtk with shift+ctrl+n
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
