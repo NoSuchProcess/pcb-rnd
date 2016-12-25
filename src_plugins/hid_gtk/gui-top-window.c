@@ -555,7 +555,7 @@ void ghid_window_set_name_label(gchar * name)
 		ghidgui->name_label_string = g_strdup(_("Unnamed"));
 
 	if (!PCB->Filename || !*PCB->Filename)
-		filename = g_strdup(_("Unsaved.pcb"));
+		filename = g_strdup(_("<board with no file name or format>"));
 	else
 		filename = g_strdup(PCB->Filename);
 
