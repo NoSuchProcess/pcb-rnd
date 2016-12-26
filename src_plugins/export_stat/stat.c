@@ -184,28 +184,30 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 
 		PCB_LINE_LOOP(l) {
 			pcb_coord_t v;
+			double d;
 			lgs->lines++;
 			ls.lines++;
 			v = pcb_line_length(line);
 			ls.trace_len += v;
 			lgs->trace_len += v;
-			v = pcb_line_area(line);
-			ls.copper_area += v;
-			lgs->copper_area += v;
+			d = pcb_line_area(line);
+			ls.copper_area += d;
+			lgs->copper_area += d;
 			
 		}
 		PCB_END_LOOP;
 
 		PCB_ARC_LOOP(l) {
 			pcb_coord_t v;
+			double d;
 			lgs->arcs++;
 			ls.arcs++;
 			v = pcb_arc_length(arc);
 			ls.trace_len += v;
 			lgs->trace_len += v;
-			v = pcb_arc_area(arc);
-			ls.copper_area += v;
-			lgs->copper_area += v;
+			d = pcb_arc_area(arc);
+			ls.copper_area += d;
+			lgs->copper_area += d;
 		}
 		PCB_END_LOOP;
 
