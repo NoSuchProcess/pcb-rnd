@@ -254,7 +254,7 @@ pcb_coord_t pcb_arc_length(const pcb_arc_t *arc)
 	return pcb_round(2.0*r*M_PI*da/360.0);
 }
 
-pcb_coord_t pcb_arc_area(const pcb_arc_t *arc)
+double pcb_arc_area(const pcb_arc_t *arc)
 {
 	return
 		(pcb_arc_length(arc) * (double)arc->Thickness /* body */

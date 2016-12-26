@@ -64,7 +64,7 @@ void pcb_line_mirror(pcb_layer_t *layer, pcb_line_t *line);
 void pcb_line_flip_side(pcb_layer_t *layer, pcb_line_t *line);
 
 pcb_coord_t pcb_line_length(const pcb_line_t *line);
-pcb_coord_t pcb_line_area(const pcb_line_t *line);
+double pcb_line_area(const pcb_line_t *line);
 
 
 /* hash */

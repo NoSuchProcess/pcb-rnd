@@ -265,11 +265,11 @@ pcb_coord_t pcb_line_length(const pcb_line_t *line)
 	return pcb_round(sqrt((double)dx*(double)dx + (double)dy*(double)dy));
 }
 
-pcb_coord_t pcb_line_area(const pcb_line_t *line)
+double pcb_line_area(const pcb_line_t *line)
 {
 	return
-		pcb_line_length(line) * line->Thickness /* body */
-		+ line->Thickness * line->Thickness * M_PI; /* cap circles */
+		pcb_line_length(line) * (double)line->Thickness /* body */
+		+ (double)line->Thickness * (double)line->Thickness * M_PI; /* cap circles */
 }
 
 
