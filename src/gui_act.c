@@ -809,7 +809,7 @@ static int pcb_act_CycleDrag(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
 
-	if (pcb_crosshair.drags == NULL)
+	if ((pcb_crosshair.drags == NULL) || (conf_core.editor.rubber_band_mode))
 		return 0;
 
 	do {
