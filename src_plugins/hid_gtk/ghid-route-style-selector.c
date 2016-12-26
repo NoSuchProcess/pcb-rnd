@@ -169,6 +169,20 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 	update_attrib(dialog, style);
 }
 
+#warning TODO: this should be in core
+static void copy_route_style(int idx)
+{
+	pcb_route_style_t *drst;
+
+	if ((idx < 0) || (idx >= vtroutestyle_len(&PCB->RouteStyle)))
+		return;
+	drst = PCB->RouteStyle.array + idx;
+	pcb_custom_route_style.Thick     = drst->Thick;
+	pcb_custom_route_style.Clearance = drst->Clearance;
+	pcb_custom_route_style.Diameter  = drst->Diameter;
+	pcb_custom_route_style.Hole      = drst->Hole;
+}
+
 /*  Callback for Delete route style button */
 static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 {
@@ -177,6 +191,10 @@ static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
 
 	dialog->inhibit_style_change = 1;
 	ghid_route_style_selector_empty(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
+
+#warning TODO: some of these should be in core
+	copy_route_style(dialog->rss->selected);
+
 	vtroutestyle_remove(&PCB->RouteStyle, dialog->rss->selected, 1);
 	dialog->rss->active_style = NULL;
 	make_route_style_buttons(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
@@ -675,8 +693,11 @@ struct _route_style *ghid_route_style_selector_real_add_route_style(GHidRouteSty
 void ghid_route_style_selector_add_route_style(GHidRouteStyleSelector * rss, pcb_route_style_t * data)
 {
 	if (!rss->hidden_button) {
-		memset(&pcb_custom_route_style, 0, sizeof(pcb_custom_route_style));
-		strcpy(pcb_custom_route_style.name, "<custom>");
+		if (*pcb_custom_route_style.name == '\0') {
+			memset(&pcb_custom_route_style, 0, sizeof(pcb_custom_route_style));
+			strcpy(pcb_custom_route_style.name, "<custom>");
+			copy_route_style(0);
+		}
 		ghid_route_style_selector_real_add_route_style(rss, &pcb_custom_route_style, 1);
 		rss->hidden_button = 1;
 	}
