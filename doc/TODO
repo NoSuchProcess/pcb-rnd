@@ -5,7 +5,8 @@
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
-	- cycledrag broke
+	- backup save shouldn't change the window title in gtk
+
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
