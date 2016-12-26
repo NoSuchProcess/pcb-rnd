@@ -49,8 +49,13 @@ int main()
 	   Warning: order is not guaranteed. */
 	{
 		htsp_entry_t *e;
-		for (e = htsp_first(&group1.seen); e; e = htsp_next(&group1.seen, e))
-			printf("name='%s' user_data='%p'\n", e->key, e->value);
+		for (e = htsp_first(&group1.seen); e; e = htsp_next(&group1.seen, e)) {
+			printf("name='%s' user_data='", e->key);
+			if (e->value == NULL)
+				printf("(nil)'\n");
+			else
+				printf("%p'\n", e->value);
+		}
 	}
 
 	/* Release all memory */
