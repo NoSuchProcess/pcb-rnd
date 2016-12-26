@@ -46,6 +46,7 @@
 #include "obj_line_op.h"
 #include "obj_line_draw.h"
 #include "plugins.h"
+#include "conf_core.h"
 
 #include "polygon.h"
 
@@ -776,7 +777,8 @@ static void rbe_lookup_lines(void *user_data, int argc, pcb_event_arg_t argv[])
 	int type = argv[1].d.i;
 	void *ptr1 = argv[2].d.p, *ptr2 = argv[3].d.p, *ptr3 = argv[4].d.p;
 
-	pcb_rubber_band_lookup_lines(rbnd, type, ptr1, ptr2, ptr3);
+	if (conf_core.editor.rubber_band_mode)
+		pcb_rubber_band_lookup_lines(rbnd, type, ptr1, ptr2, ptr3);
 }
 
 static void rbe_lookup_rats(void *user_data, int argc, pcb_event_arg_t argv[])
