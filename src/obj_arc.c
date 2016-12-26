@@ -245,16 +245,20 @@ unsigned int pcb_arc_hash(const pcb_element_t *e, const pcb_arc_t *a)
 
 pcb_coord_t pcb_arc_length(const pcb_arc_t *arc)
 {
-	double da = pcb_normalize_angle(arc->Delta);
-	double r = (arc->Width + arc->Height) / 2.0; /* TODO: lame approximation */
+	double da = arc->Delta;
+	double r = ((double)arc->Width + (double)arc->Height) / 2.0; /* TODO: lame approximation */
+	if (da < 0)
+		da = -da;
+	while(da > 360.0)
+		da = 360.0;
 	return pcb_round(2.0*r*M_PI*da/360.0);
 }
 
 pcb_coord_t pcb_arc_area(const pcb_arc_t *arc)
 {
 	return
-		pcb_arc_length(arc) * arc->Thickness /* body */
-		+ arc->Thickness * arc->Thickness * M_PI; /* cap circles */
+		(pcb_arc_length(arc) * (double)arc->Thickness /* body */
+		+ (double)arc->Thickness * (double)arc->Thickness * (double)M_PI); /* cap circles */
 }
 
 

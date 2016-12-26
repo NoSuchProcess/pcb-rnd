@@ -262,7 +262,7 @@ pcb_coord_t pcb_line_length(const pcb_line_t *line)
 {
 	pcb_coord_t dx = line->Point1.X - line->Point2.X;
 	pcb_coord_t dy = line->Point1.Y - line->Point2.Y;
-	return pcb_round(sqrt(dx*dx + dy*dy));
+	return pcb_round(sqrt((double)dx*(double)dx + (double)dy*(double)dy));
 }
 
 pcb_coord_t pcb_line_area(const pcb_line_t *line)
