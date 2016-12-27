@@ -775,6 +775,17 @@ static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node
 	return LHTPERS_DISK;
 }
 
+static void clean_invalid(lht_node_t *node)
+{
+	lht_node_t *n;
+	lht_dom_iterator_t it;
+	for(n = lht_dom_first(&it, node); n != NULL; n = lht_dom_next(&it)) {
+		if (n->type == LHT_INVALID_TYPE)
+			lht_tree_del(n);
+		else
+			clean_invalid(n);
+	}
+}
 
 int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
 {
@@ -799,6 +810,7 @@ int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename,
 
 	if ((emergency) || ((old_filename == NULL) && (new_filename == NULL))) {
 		/* emergency or pipe save: use the canonical form */
+		clean_invalid(brd->root); /* remove invalid nodes placed for persistency */
 		res = lht_dom_export(brd->root, FP, "");
 	}
 	else {
