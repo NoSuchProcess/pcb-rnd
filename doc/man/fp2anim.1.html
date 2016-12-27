@@ -1,0 +1,98 @@
+<HTML><BODY>
+<!--
+pcb-rnd - manual
+Copyright (C) 2016 Tibor 'Igor2' Palinkas
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Contact: pcb-rnd[removethis]@igor2.repo.hu
+-->
+<table width=100%>
+<TR>
+		<TH align=left>   fp2anim 1
+		<TH align=middle> 2016-12-27
+		<TH align=right>  pcb-rnd manual
+</table>
+
+
+
+<H3>NAME</H3>
+<blockquote>
+fp2anim - convert a gEDA/PCB footprint to animator script
+</blockquote>
+
+<H3>SYNPOSIS</H3>
+<blockquote>
+<P>
+<tt><B>fp2anim</B> [<I>options</I>] [<I>inputfile</I>]</tt>
+
+
+
+</blockquote>
+
+<H3>DESCRIPTION</H3>
+<blockquote>
+<B>fp2anim</B> converts a footprint to a script that can be run through animator(1). It's main use is to have a automated, light-weight footprint preview generator on hosts where installing pcb-rnd would be too expensive (e.g. on web servers). 
+<P>
+If <I>inputfile</I> is not specified, <B>fp2anim</B> reads its STDIN for the footprint.
+
+</blockquote>
+
+
+<H3>OPTIONS</H3>
+<blockquote>
+
+<table border=1>
+
+	<TR>
+
+		<TD> --photo 
+		<TD> draw the footprint in "photo realistic mode" 
+	<TR>
+
+		<TD> -p 
+		<TD> same as --photo 
+	<TR>
+
+		<TD> --grid unit 
+		<TD> set grid unit e.g. to mm or mil 
+	<TR>
+
+		<TD> -g unit 
+		<TD> same as --grid 
+	<TR>
+
+		<TD> --mm 
+		<TD> use an mm grid instead of a mil grid; shorthand for -g mm 
+	<TR>
+
+		<TD> --diamond 
+		<TD> draw a small diamond to mark at footprint origin 
+	<TR>
+
+		<TD> --annotation types 
+		<TD> turn on annotation types; types is a string that may consist "pins" for pin numbers, "dimname" and "dimvalue" for dimension names and values and "background" for drawing a background under annotation text
+</table>
+</blockquote>
+<P>
+<table width=100%>
+<TR>
+		<TH align=left>   fp2anim 1
+		<TH align=middle> 2016-12-27
+		<TH align=right>  pcb-rnd manual
+</table>
+
+
+</BODY></HTML>
