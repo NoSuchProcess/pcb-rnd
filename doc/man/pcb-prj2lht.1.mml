@@ -1,0 +1,14 @@
+<title>pcb-prj2lht</title>
+<sect>1</sect>
+<date>2016-12-27</date>
+
+<name> pcb-prj2lht - convert old gsch2pcb project file to pcb-rnd project </name>
+<syn> <call>pcb-prj2lht</call> [<arg>inputfile</arg>] </syn>
+
+<description>
+<call>pcb-prj2lht</call> converts the old gsch2pcb project file to the
+new, lihata project file format that is usable with pcb-rnd and
+gsch2pcb-rnd. If <arg>inputfile</arg> is specified, the file is modified
+in-place, else <call>pcb-prj2lht</call> reads from STDIN and writes the
+result to STDOUT.
+</description>
