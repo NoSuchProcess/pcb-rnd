@@ -1,7 +1,7 @@
 # This Makefile is a plain old hand written one; all configuration settings
 # are included from ../../Makefile.conf which is scconfig generated
 
-IN=pcb-rnd.1.mml
+IN=pcb-rnd.1.mml pcb-strip.1.mml
 OUT_HTML = pcb-rnd.1.html pcb-strip.1.html
 OUT_MAN1 = pcb-rnd.1 pcb-strip.1
 OUT_LINT = pcb-rnd.1.lint pcb-strip.1.lint
@@ -24,7 +24,7 @@ lint: $(OUT_LINT)
 .mml_linkmap:
 	$(MML) -i copyright.mml -f linkmap $(IN) > $@
 
-index.html:
+index.html: $(IN)
 	@echo "<HTML><BODY>" > $@
 	$(MML) -i copyright.mml -f indexhtml $(IN) >> $@
 	@echo "</BODY></HTML>" >> $@
