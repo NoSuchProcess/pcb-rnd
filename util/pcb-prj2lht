@@ -125,6 +125,25 @@ prj2lht() {
 	'
 }
 
+help()
+{
+	echo "pcb-prj2lht - convert a gsch2pcb project file to pcb-rnd lihata project file"
+	echo ""
+	echo "Invocation: pcb-prj2lht [something.prj]"
+	echo ""
+	echo "If the project file is specified, a new file is created with the .prj"
+	echo "part replaced with .lht. If no file name specified, read the project"
+	echo "on STDIN and write the result to STDOUT."
+	echo ""
+}
+
+########## main ##########
+
+if test "$1" = "--help"
+then
+	help
+	exit
+fi
 
 if test $# -gt 0
 then
