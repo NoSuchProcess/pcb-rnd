@@ -188,3 +188,4 @@ Low prio:
 	- keep 45-deg knee when grabbing a point for drag&drop in non-all-dir
 - examine current handling of long options [miloh]
 - --dump-actions shows gpmi paths ( is this related? it looks unexpected to me) 
+- unify gui invocation options: why do pcb --help gtk & pcb --help lesstif show differerent input methods [report:miloh] 
