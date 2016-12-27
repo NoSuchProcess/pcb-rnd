@@ -21,8 +21,8 @@ Contact: pcb-rnd[removethis]@igor2.repo.hu
 -->
 <table width=100%>
 <TR>
-		<TH align=left>   pcb-rnd 1
-		<TH align=middle> 2016-10-29
+		<TH align=left>   pcb-strip 1
+		<TH align=middle> 2016-12-27
 		<TH align=right>  pcb-rnd manual
 </table>
 
@@ -30,13 +30,13 @@ Contact: pcb-rnd[removethis]@igor2.repo.hu
 
 <H3>NAME</H3>
 <blockquote>
-pcb-rnd - Printed Circuit Board editor
+pcb-strip - remove sections of a pcb file
 </blockquote>
 
 <H3>SYNPOSIS</H3>
 <blockquote>
 <P>
-<tt><B>pcb-rnd</B> [<I>options</I>] [<I>inputfile</I>]</tt>
+<tt><B>pcb-strip</B> [<I>options</I>] [<I>inputfile</I>]</tt>
 
 
 
@@ -44,7 +44,7 @@ pcb-rnd - Printed Circuit Board editor
 
 <H3>DESCRIPTION</H3>
 <blockquote>
-<B>pcb-rnd</B> is a modular PCB editor. The main use is interactive editing. If no <I>-x</I> is specified on the command line, the graphical editor mode is initiated. Automated, headless processing is also possible with <I>-x</I> or <I>--gui batch</I>.
+<B>pcb-strip</B> removes sections of a pcb file. If <I>inputfile</I> is specified, the file is modified in-place, else <B>pcb-strip</B> reads from STDIN and writes the result to STDOUT.
 </blockquote>
 
 
@@ -55,23 +55,19 @@ pcb-rnd - Printed Circuit Board editor
 
 	<TR>
 
-		<TD> -x <I>exporter</I> [<I>exportflags] <I>inputfile</I></I> 
-		<TD> Instead of interactive editing, export the design (loaded from <I>inputfile</I>) to a file using the specified <I>exporter</I> plugin. A list of exporter-specific parameters may follow to control the details of the process. 
+		<TD> -s 
+		<TD> Remove symbols (the font). The pcb file stops being self-containing, pcb-rnd (or pcb) will load and apply the default font when the file is loaded. Useful for reducing the file size for test input and example files where font correctness is not required. 
 	<TR>
 
-		<TD> --gui <I>hid</I> 
-		<TD> Use the <I>hid</I> plugin for the "gui" frontend. Common choices are "gtk" or "lesstif" for graphical user interfaces and "batch" for a headless command-line interface (or automated batch processing). 
-	<TR>
-
-		<TD> -c <I>path=val</I> 
-		<TD> Set a config node in role CFR_CLI. The path of the node is <I>path</I> (e.g. editor/grid) and the new value is <I>val</I> (e.g. 5mm).
+		<TD> -a 
+		<TD> Remove board attributes. Useful for deleting local configuration
 </table>
 </blockquote>
 <P>
 <table width=100%>
 <TR>
-		<TH align=left>   pcb-rnd 1
-		<TH align=middle> 2016-10-29
+		<TH align=left>   pcb-strip 1
+		<TH align=middle> 2016-12-27
 		<TH align=right>  pcb-rnd manual
 </table>
 

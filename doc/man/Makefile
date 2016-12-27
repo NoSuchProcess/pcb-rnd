@@ -2,16 +2,16 @@
 # are included from ../../Makefile.conf which is scconfig generated
 
 IN=pcb-rnd.1.mml
-OUT_HTML = pcb-rnd.1.html
-OUT_MAN1 = pcb-rnd.1
-OUT_LINT = pcb-rnd.1.lint
+OUT_HTML = pcb-rnd.1.html pcb-strip.1.html
+OUT_MAN1 = pcb-rnd.1 pcb-strip.1
+OUT_LINT = pcb-rnd.1.lint pcb-strip.1.lint
 
 OUTPUT = $(OUT_HTML) $(OUT_MAN1) index.html
 MML = /usr/bin/mml
 
 all: $(OUTPUT)
 
-lint: pcb-rnd.1.lint
+lint: $(OUT_LINT)
 
 .SUFFIXES: .html .mml .lint
 
