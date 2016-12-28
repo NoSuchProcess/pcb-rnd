@@ -299,6 +299,8 @@ static const char *name_style_names[] = {
 	"first",
 #define NAME_STYLE_EAGLE 3
 	"eagle",
+#define NAME_STYLE_HACKVANA 4
+	"hackvana",
 	NULL
 };
 
@@ -390,13 +392,14 @@ static void maybe_close_f(FILE * f)
 
 static pcb_box_t region;
 
+#define fmatch(flags, bits) (((flags) & (bits)) == (bits))
+
 /* Very similar to pcb_layer_to_file_name() but appends only a
    three-character suffix compatible with Eagle's defaults.  */
 static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
 {
 	const char *suff = "out";
 
-#define fmatch(flags, bits) (((flags) & (bits)) == (bits))
 	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_SILK))
 		suff = "plc";
 	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_SILK))
@@ -433,9 +436,57 @@ static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned in
 		sprintf(buf, "ly%ld", group);
 		suff = buf;
 	}
-#undef fmatch
 	strcpy(dest, suff);
 }
+
+/* Very similar to layer_type_to_file_name() but appends only a
+   three-character suffix compatible with Hackvana's naming requirements  */
+static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
+{
+	char *suff;
+
+	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_COPPER))
+		suff = "gtl";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_COPPER))
+		suff = "gbl";
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_SILK))
+		suff = "gto";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_SILK))
+		suff = "gbo";
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_MASK))
+		suff = "gts";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
+		suff = "gbs";
+	else if (fmatch(flags, PCB_LYT_PDRILL))
+		suff = "drl";
+	else if (fmatch(flags, PCB_LYT_UDRILL))
+		suff = "_NPTH.drl";
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
+		suff = "gtp";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_PASTE))
+		suff = "gbp";
+	else if (fmatch(flags, PCB_LYT_INVIS))
+		suff = "inv";
+	else if (fmatch(flags, PCB_LYT_FAB))
+		suff = "fab";
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_ASSY))
+		suff = "ast";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_ASSY))
+		suff = "asb";
+	else if (fmatch(flags, PCB_LYT_OUTLINE))
+		suff = "gm1";
+	else {
+		static char buf[20];
+		pcb_layergrp_id_t group = pcb_layer_lookup_group(lid);
+		sprintf(buf, "g%ld", group);
+		suff = buf;
+	}
+	strcpy(dest, suff);
+}
+
+
+#undef fmatch
+
 
 static void assign_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags)
 {
@@ -455,6 +506,9 @@ static void assign_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flag
 		break;
 	case NAME_STYLE_EAGLE:
 		assign_eagle_file_suffix(dest, lid, flags);
+		return;
+	case NAME_STYLE_HACKVANA:
+		assign_hackvana_file_suffix(dest, lid, flags);
 		return;
 	}
 
