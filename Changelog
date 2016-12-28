@@ -1,4 +1,4 @@
-pcb-rnd 1.2.0 (rxxxx)
+pcb-rnd 1.2.0 (r5966)
 ~~~~~~~~~~~~~~~~~~~~~
 	[unravel]
 		- Cleanup: reorganize the code around object types instead of the old, action-oriented approach
