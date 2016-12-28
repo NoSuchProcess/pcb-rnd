@@ -52,7 +52,6 @@ CLEANUP #5
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
 - BUG: liblihata shouldn't compile genht (different cflags)
-- BUG: recompile scconfig's str.c for gsch2pcb-rnd (or consider removing it) because of the different compiler flags; fix: use pcb_concat instead [report:debian's QA page for kfreebsd]
 - BUG: redraw after pin renumber in gtk with shift+ctrl+n
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
 - import hackvana gerber naming scheme from mainline [report:Erich]
