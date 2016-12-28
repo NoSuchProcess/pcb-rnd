@@ -400,7 +400,11 @@ static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned in
 {
 	const char *suff = "out";
 
-	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_SILK))
+	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_COPPER))
+		suff = "cmp";
+	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_COPPER))
+		suff = "sol";
+	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_SILK))
 		suff = "plc";
 	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_SILK))
 		suff = "pls";
@@ -424,10 +428,6 @@ static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned in
 		suff = "ast";
 	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_ASSY))
 		suff = "asb";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_COPPER))
-		suff = "cmp";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_COPPER))
-		suff = "sol";
 	else if (fmatch(flags, PCB_LYT_OUTLINE))
 		suff = "oln";
 	else {
