@@ -15,6 +15,6 @@ introduce new objects.
 The second part of the cleanup was to add pcb_ and PCB_ prefix to global
 symbols in core API. This will allow us to split core into libs with
 external, public API later, without risking name clashes. This will provide
-better code reuse.
+better code reuse and cleaner, more stable API to external plugins.
 
 Among with the large cleanup, a lot of bugs have been found and fixed.
