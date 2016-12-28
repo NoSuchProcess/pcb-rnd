@@ -351,14 +351,6 @@ static void get_args(int argc, char ** argv)
 	}
 }
 
-pcb_plugin_info_t *pcb_plugin_register(const char *name, const char *path, void *handle, int dynamic_loaded, void (*uninit)(void))
-{
-	static pcb_plugin_info_t pif;
-	if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
-		printf("Plugin loaded: %s (%s)\n", name, path);
-	return &pif;
-}
-
 void free_strlist(gadl_list_t *lst)
 {
 	char **s;
