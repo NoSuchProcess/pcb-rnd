@@ -1,3 +1,16 @@
+pcb-rnd 1.1.4 (r5778)
+~~~~~~~~~~~~~~~~~~~~~
+	[gsch2pcb-rnd]
+		-Add: method infrastructure
+		-Add: a method that uses the same mechanism as import_sch
+		-Add: a method that uses import_sch's gnetlist backend for elements but a the usual PCB backend for the netlist
+	
+	[import_sch]
+		-Fix: install and use the .scm script from our own directory instead of guessing gnetlist's installation
+
+	[debian]
+		-Del: remove debian/ to ease official packaging
+
 pcb-rnd 1.1.3 (r4479)
 ~~~~~~~~~~~~~~~~~~~~~
 	[mods]
