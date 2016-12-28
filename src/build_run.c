@@ -77,10 +77,10 @@ char *pcb_get_infostr(void)
 		gds_init(&info);
 		gds_append_str(&info, "This is PCB-rnd " VERSION " (" REVISION ")" "\n an interactive\n");
 		gds_append_str(&info, "printed circuit board editor\n");
-		gds_append_str(&info, "PCB-rnd forked from gEDA/PCB.");
+		gds_append_str(&info, "pcb-rnd forked from gEDA/PCB.");
 		gds_append_str(&info, "\n\n" "PCB is by harry eaton and others\n\n");
-		gds_append_str(&info, "\nPCB-rnd adds a collection of\n");
-		gds_append_str(&info, "useful-looking random patches.\n");
+		gds_append_str(&info, "\npcb-rnd is a refactored version\n");
+		gds_append_str(&info, "with many new features and improvements.\n");
 		gds_append_str(&info, "\n");
 		gds_append_str(&info, "Copyright (C) Thomas Nau 1994, 1995, 1996, 1997\n");
 		gds_append_str(&info, "Copyright (C) harry eaton 1998-2007\n");
