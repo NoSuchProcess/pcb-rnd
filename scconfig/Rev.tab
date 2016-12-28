@@ -1,3 +1,4 @@
+5982	make clean	gsch2pcb-rnd build fix
 5611	configure	new feature: UI layer
 5487	configure	layer cleanup: layer visibility in a new source file
 5472	configure	draw_fab config subtree
