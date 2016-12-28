@@ -44,6 +44,7 @@
 
 CLEANUP #5
 - del on arc endpoint should remove the arc, just like del on line endpoint remvoes the line [report:Evan]
+- BUG: arcbug1.lht: draw a polygon over the rightmost ^ arc andit will calculate a self-intersecting clearance [report:Evan]
 - draw code: pin numbers/names are drawn under the silk [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
