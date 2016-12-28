@@ -555,6 +555,11 @@ void *RemoveArc_op(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	return NULL;
 }
 
+void *RemoveArcPoint_op(pcb_opctx_t *ctx, pcb_layer_t *l, pcb_arc_t *a, int *end_id)
+{
+	return RemoveArc_op(ctx, l, a);
+}
+
 void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_opctx_t ctx;
