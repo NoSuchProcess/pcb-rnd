@@ -1,5 +1,131 @@
-pcb-rnd 1.1.4 (r5778)
+pcb-rnd 1.2.0 (rxxxx)
 ~~~~~~~~~~~~~~~~~~~~~
+	[unravel]
+		- Cleanup: reorganize the code around object types instead of the old, action-oriented approach
+		- Cleanup: prefix almost all core symbols with pcb_ or PCB_ so the code can be reused as a lib later
+
+	[doc]
+		-Add: start writing a new user doc
+
+	[arc]
+		-Fix: broken is-point-on-arc check for large angles (thanks Evan for the bugreport)
+		-Add: angle/radius edit UI
+
+	[conf]
+		-Fix: don't crash on empty project file
+		-Fix: when creating a new project file root, use the geda project file hash, not the pcb-rnd-config node - the project file is shared among programs
+
+
+	[gerber]
+		-Fix: emulate 0 long arc with a 0 long line to work around a gerbv bug
+		-Fix: simpler "do we print this layer?" logics, without caching
+		-Workaround: split >180 deg arcs because some viewers (e.g. gerbv) have hard time interpreting them
+
+	[gtk]
+		-Fix: <custom> route style logics: start out with the copy of style 0; after a deletion inherit the sizes from the deleted style
+		-Fix: don't reuse the static conf chg binding struct of fullscreen with solder side swap - it'll probably ruin both
+		-Fix: update bottom status line after flipping the board
+
+	[mods]
+		-Move: drill.[ch] to the report plugin
+		-Move: original rubberband code into a feature plugin
+		-Cleanup: convert some GUI HID actions to events so that multiple GUIs can bind to them
+		-Add: plugin frame for import_hyp
+		-Add: remote plugin (HID-level remote control over sockets)
+		-Add: draw_fab plugin behind a stub, move draw fab code from core to the new plugin
+		-Add: new export plugin: export_stat (board statistics)
+
+	[io]
+		-Add: an extra flag bit to allow non-fatal loads; make sure missing default.pcb doesn't generate an error message
+		-Add: proper handling of multiple file formats and file name extensions
+		-Fix: add new test parse call - fixes false alarm parser error messages
+		-Fix: don't change format on backup and tmp saves
+		-Fix: don't throw the "no font" warnign after loading a footprint because footprints are expected not to have font embedded
+
+	[io_kicad]
+		- Save and load in the kicad s-expression format
+
+	[io_lihata]
+		-Fix: don't save invalid nodes in the canonical format (backup saves)
+		-Add: (somewhat selectively) save and load the config subtree
+		-Add: one more emergency save on lihata merge failure and verbose error message with instructions
+
+	[layer]
+		-Add: UI layers (dynamic allocated debug layers with permanent objects)
+		-Add: new layer name generator, based on flags and virtual layer names
+		-Rename: mask layer names: use top/bottom instead of component/solder for consistency
+		-Split: move layer visibility (stack) functions out of layer.c
+		-Cleanup: convert magic number macros to enum
+		-Cleanup: introduce layer id and layer group id types
+		-Cleanup: more explicit virtual layers
+		-Cleanup: remove the old layer API, including all the SL_ macros
+		-Cleanup: renames and refactoring to make the logical layer vs. physical layer concept more clear
+
+	[pcblib-param]
+		-Fix: don't lose pad thickness unit when calculating new defaults for qf()
+		-Change: center pad of qf() is generated with no-paste (requested by John G)
+		-Add: qf() center pad paste matrix option (requested by John G)
+		-Add: qf() central pad mask option with cpad_mask; when not set, calculate it from pad geometry
+		-Add: qf() got a new rpad_round boolean; when manually set to true, generates round pads
+
+	[svg]
+		-Fix: arc support: use the large and sweep flags of svg path arc to get true PCB arcs
+		-Workaround: full circle arcs - the two endpoints should differ
+		-Workaround: make endpoints differ in a 0 deg long arc
+
+	[tests]
+		-Cleanup: update and enable most of the tests, unified output, central make test
+
+	[util]
+		-Add: prj2lht: script to convert old projects to new
+		-Fix: install the import schematics scm script in our own LIBDIR, because it's not reliable to find the gschem installation, rather use -L for gnetlist
+
+	[scconfig]
+		-Change: use $(MAKE) instead of make - this allows GNU make to run recursive parallel compilations (reported by Dima)
+		-Change: disable bison by default; use --enable-bison for developing the grammar
+		-Change: do not use gts for anything if toporouter is not configured
+		-Add: extra error if explicitly requested things differ from the results we got
+		-Add: make clean/distclean removes more scconfig related leftovers
+		-Add: optional support for DESTDIR for Debian
+
+	[core]
+		-Fix: C89: do not depend on <strings.h> or strcasecmp, implement our own
+		-Fix: HID API bug: invalidate_lr needs pcb_coord_t instead of int
+		-Fix: action Netlist() subcommand add modifies the INPUT netlist, not the EDITED because this is used bu import_sch
+		-Fix: attribute deletion by index didn't move all items properly (affects mainline as well)
+		-Fix: disable cycledrag when rubberband is enabled (they are incompatible)
+		-Fix: don't close a polygon twice on normal finish (fixes the excess need 3-point error message)
+		-Fix: don't crash when a pin/pad number is NULL
+		-Fix: don't warn for second hit on a plugin alreayd loaded as long as the hash is the same
+		-Fix: get rid of pointerlist in favor of vtptr
+		-Fix: incorrect flag struct comparison; may have caused unpredictable undo bugs
+		-Fix: line-line intersect code detects and handles the corner case of parallel lines properly (checking wheter endpoints of lines are on the other line)
+		-Fix: make data bounding box function reentrant
+		-Fix: make move macros safer with the standard do { } while(0) wrapping
+		-Fix: make text, arc, line, pad, pin/via move macro safe: don't evaluate arguments twice, wrap in do {} while
+		-Fix: move an object by 0 pixels shouldn't inhibit all subsequent redraw
+		-Fix: negative selection box: limit box coord orders to two canonical forms, one positive, and one negative (fixes north-east to south-west selection on component-side view)
+		-Fix: pin move is really the same thing as via move, use the same macro
+		-Fix: polygon mirror should update the rtree (reported by Chad)
+		-Fix: rename old, gui-hid-defined Export() actions to ExportGUI (matching the ImportGUI()) - Export() is the name of the builtin, core action
+		-Fix: text rtree handling bug: EraseText should NOT have the side effect of removing the text from the rtree but the callers should do all rtree manipulation as needed
+		-Fix: undo text flag bug: add text join undo as text flag change, not as line flag change
+		-Fix: update rtree when mirroring arc in buffer
+		-Fix: use COORD_MAX for large coord values, don't assume coords will be 32 bits
+		-Fix: use the hid name passed with --gui, even if --gui is not the first argument; also allow using --hid instead of --gui (less confusing)
+		-Fix: when snap off, don't crash when action helper is trying to figure the endpoint of an arc
+		-Cleanup: classify all messages to be warnings, errors or info - no more PCB_MSG_DEFAULT
+		-Cleanup: remove unsafe (non-reentrant) arc ends query
+		-Add: --dump-plugins --dump-plugindirs CLI commands and DumpPlugins() and DumpPluginDirs() actions
+		-Add: central Export() action instead of gui-specific ones - this works without a GUI HID
+		-Add: conf setting to disable negative-box selection
+		-Add: conf setting to make negative-box selection symmetric (ignore Y coord sign)
+		-Add: support route style attributes
+
+pcb-rnd 1.1.4
+~~~~~~~~~~~~~~~~~~~~~
+	(1.1.4 is really an 1.1.3 with some bugfixes backported from 1.2.0)
+
 	[gsch2pcb-rnd]
 		-Add: method infrastructure
 		-Add: a method that uses the same mechanism as import_sch
