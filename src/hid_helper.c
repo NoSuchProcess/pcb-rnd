@@ -32,6 +32,7 @@
 #include "hid_attrib.h"
 #include "hid_helper.h"
 #include "compat_misc.h"
+#include "plug_io.h"
 
 char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags, pcb_file_name_style_t style)
 {
@@ -101,10 +102,18 @@ void pcb_derive_default_filename(const char *pcbfile, pcb_hid_attribute_t * file
 		*memory = buf;
 	if (buf) {
 		size_t bl;
+		pcb_plug_io_t *i;
 		strcpy(buf, pf);
 		bl = strlen(buf);
-		if (bl > 4 && strcmp(buf + bl - 4, ".pcb") == 0)
-			buf[bl - 4] = 0;
+		for(i = pcb_plug_io_chain; i != NULL; i = i->next) {
+			if (i->default_extension != NULL) {
+				int slen = strlen(i->default_extension);
+				if (bl > slen && strcmp(buf + bl - slen, i->default_extension) == 0) {
+					buf[bl - slen] = 0;
+					break;
+				}
+			}
+		}
 		strcat(buf, suffix);
 		if (filename_attrib->default_val.str_value)
 			free((void *) filename_attrib->default_val.str_value);
