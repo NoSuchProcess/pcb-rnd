@@ -36,6 +36,7 @@
 #include "../src/compat_fs.h"
 #include "../src/plugins.h"
 #include "../src/plug_footprint.h"
+#include "../src/misc_util.h"
 
 static const char *element_search_path = NULL; /* queried once from the config, when the config is already stable */
 
@@ -383,7 +384,7 @@ static void prune_elements(char * pcb_file, char * bak)
 		fprintf(stderr, "error: can not read %s\n", pcb_file);
 		return;
 	}
-	tmp = str_concat(NULL, pcb_file, ".tmp", NULL);
+	tmp = pcb_concat(pcb_file, ".tmp", NULL);
 	if ((f_out = fopen(tmp, "wb")) == NULL) {
 		fprintf(stderr, "error: can not write %s\n", tmp);
 		fclose(f_in);
@@ -452,7 +453,7 @@ static int add_elements(char * pcb_file)
 
 	if ((f_in = fopen(pcb_file, "r")) == NULL)
 		return 0;
-	tmp_file = str_concat(NULL, pcb_file, ".tmp", NULL);
+	tmp_file = pcb_concat(pcb_file, ".tmp", NULL);
 	if ((f_out = fopen(tmp_file, "wb")) == NULL) {
 		fclose(f_in);
 		free(tmp_file);
@@ -559,7 +560,7 @@ static void update_element_descriptions(char * pcb_file, char * bak)
 	}
 	if ((f_in = fopen(pcb_file, "r")) == NULL)
 		return;
-	tmp = str_concat(NULL, pcb_file, ".tmp", NULL);
+	tmp = pcb_concat(pcb_file, ".tmp", NULL);
 	if ((f_out = fopen(tmp, "wb")) == NULL) {
 		fclose(f_in);
 		return;
@@ -644,9 +645,9 @@ static char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name,
 static void method_pcb_init(void)
 {
 	pcb_fp_init();
-	pins_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".cmd", NULL);
-	net_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".net", NULL);
-	pcb_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
+	pins_file_name = pcb_concat(conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".cmd", NULL);
+	net_file_name = pcb_concat(conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".net", NULL);
+	pcb_file_name = pcb_concat(conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
 	local_project_pcb_name = pcb_file_name;
 }
 
@@ -704,7 +705,7 @@ static void method_pcb_go()
 
 	if (pcb_file_readable(pcb_file_name)) {
 		initial_pcb = FALSE;
-		pcb_new_file_name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".new.pcb", NULL);
+		pcb_new_file_name = pcb_concat(conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".new.pcb", NULL);
 		get_pcb_element_list(pcb_file_name);
 	}
 	else
@@ -790,7 +791,7 @@ static void method_pcb_go()
 static int method_pcb_guess_out_name(void)
 {
 	int res;
-	char *name = str_concat(NULL, conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
+	char *name = pcb_concat(conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb", NULL);
 	res = pcb_file_readable(name);
 	free(name);
 	return res;

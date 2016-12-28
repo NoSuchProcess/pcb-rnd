@@ -42,6 +42,7 @@
 #include "../src/plugins.h"
 #include "../src/compat_misc.h"
 #include "../src/compat_fs.h"
+#include "../src/misc_util.h"
 #include "method.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
@@ -260,7 +261,7 @@ static void load_extra_project_files(void)
 	load_project("/etc/gsch2pcb");
 	load_project("/usr/local/etc/gsch2pcb");
 
-	path = str_concat(PCB_DIR_SEPARATOR_S, conf_core.rc.path.home, ".gEDA", "gsch2pcb", NULL);
+	path = pcb_concat(conf_core.rc.path.home, PCB_DIR_SEPARATOR_S, ".gEDA", PCB_DIR_SEPARATOR_S, "gsch2pcb", NULL);
 	load_project(path);
 	free(path);
 

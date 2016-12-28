@@ -40,6 +40,7 @@
 #include "../src/compat_misc.h"
 #include "gsch2pcb_rnd_conf.h"
 #include "gsch2pcb.h"
+#include "../src/misc_util.h"
 #include "run.h"
 
 const char *gnetlist_name(void)
@@ -95,7 +96,7 @@ int run_gnetlist(const char *pins_file, const char *net_file, const char *pcb_fi
 		char *out_file;
 		char *backend;
 		if (!s2) {
-			out_file = str_concat(NULL, basename, ".", s, NULL);
+			out_file = pcb_concat(basename, ".", s, NULL);
 			backend = pcb_strdup(s);
 		}
 		else {

@@ -10,9 +10,6 @@
 
 #define SEP_STRING "--------\n"
 
-/* from scconfig str lib: */
-char *str_concat(const char *sep, ...);
-
 typedef struct {
 	char *refdes, *value, *description, *changed_description, *changed_value;
 	char *flags, *tail;
