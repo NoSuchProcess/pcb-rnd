@@ -326,10 +326,14 @@ static void draw_pad_name(pcb_pad_t * pad)
 	char buff[128];
 	const char *pn;
 
-	if (!pad->Name || !pad->Name[0])
+	if (!pad->Name || !pad->Name[0]) {
 		pn = PCB_EMPTY(pad->Number);
-	else
+	}
+	else {
 		pn = conf_core.editor.show_number ? pad->Number : pad->Name;
+		if (pn == NULL)
+			pn = "n/a";
+	}
 
 	if (PCB_FLAG_INTCONN_GET(pad) > 0)
 		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, PCB_FLAG_INTCONN_GET(pad));
