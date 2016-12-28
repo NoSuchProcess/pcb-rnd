@@ -851,10 +851,14 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	char buff[128];
 	const char *pn;
 
-	if (!pv->Name || !pv->Name[0])
+	if (!pv->Name || !pv->Name[0]) {
 		pn = PCB_EMPTY(pv->Number);
-	else
+	}
+	else {
 		pn = PCB_EMPTY(conf_core.editor.show_number ? pv->Number : pv->Name);
+		if (pn == NULL)
+			pn = "n/a";
+	}
 
 	if (PCB_FLAG_INTCONN_GET(pv) > 0)
 		pcb_snprintf(buff, sizeof(buff), "%s[%d]", pn, PCB_FLAG_INTCONN_GET(pv));
