@@ -48,10 +48,9 @@
 CLEANUP #5
 - del on arc endpoint should remove the arc, just like del on line endpoint remvoes the line [report:Evan]
 - BUG: arcbug1.lht: draw a polygon over the rightmost ^ arc andit will calculate a self-intersecting clearance [report:Evan]
-- draw code: pin numbers/names are drawn under the silk [report:Evan]
+- draw code: pin numbers/names are drawn under the silk: pins/pads are drawn in one go, both copper and the numebring, and the copper needs to go under the silk so the number ends up there too [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
-- BUG: redraw after pin renumber in gtk with shift+ctrl+n
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
 - gsch2pcb-rnd: plugin_register() should be in glue.c
 - pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
