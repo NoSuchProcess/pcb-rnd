@@ -70,30 +70,13 @@ gsch2pcb-rnd$(EXE): $(OBJS)  $(CONF_OBJS) $(HASHOBJ) $(VECTOBJ) $(LISTOBJ) $(QPA
 gsch2pcb.o: gsch2pcb.c ../../config.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
 
-../../src/pcb-rnd:
-	cd ../../src && make
-
-$(HASHOBJ): ../../src/pcb-rnd
-
-$(QPARSE): ../../src/pcb-rnd
-
-../../src_3rd/genvector/gds_char.o:
-	$(CC) -c $(CFLAGS) ../../src_3rd/genvector/gds_char.c -o ../../src_3rd/genvector/gds_char.o
-
-../../src_3rd/genvector/vtp0.o:
-	$(CC) -c $(CFLAGS) ../../src_3rd/genvector/vtp0.c -o ../../src_3rd/genvector/vtp0.o
-
-../../src_3rd/genvector/vts0.o:
-	$(CC) -c $(CFLAGS) ../../src_3rd/genvector/vts0.c -o ../../src_3rd/genvector/vts0.o
-
-../../src_3rd/genadlist/genadlist.o:
-	$(CC) -c $(CFLAGS) ../../src_3rd/genlist/genadlist.c -o ../../src_3rd/genlist/genadlist.o
-
+# TODO: this should be the base lib only
+# run the Makefile in src for the common objects:
+$(HASHOBJ) $(QPARSE) $(LHTOBJ) \
+../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o \
+../../src_3rd/genvector/vts0.o ../../src_3rd/genadlist/genadlist.o \
 ../../src_3rd/genadlist/genlistalloc.o:
-	$(CC) -c $(CFLAGS) ../../src_3rd/genlist/genlistalloc.c -o ../../src_3rd/genlist/genlistalloc.o
-
-
-
+	cd ../../src && make
 
 ##### module rules begin #####
 @/local/pcb/RULES@
