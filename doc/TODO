@@ -43,6 +43,7 @@
 	- remove -m pcb
 
 CLEANUP #5
+- draw code: pin numbers/names are drawn under the silk [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
 - BUG: liblihata shouldn't compile genht (different cflags)
