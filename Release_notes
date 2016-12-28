@@ -1,17 +1,20 @@
-pcb-rnd 1.1.3
+pcb-rnd 1.2.0
 ~~~~~~~~~~~~~~
-The main features of this release are kicad compatibility, the new
-query/advanced-search, a bunch of mainline and old plugins imported and
-that the lihata board format has reached production quality.
+Finally, the long postponed major core cleanup has been implemented. This
+probably has been among the top 5 cleanups in the project history back to
+the 90s.
 
-The lihata board format introduces a feature that is rare in this class
-of applications: it can load and save board files preserving comments,
-the original indentation, bracing style, units and even numerical
-formats. This reduces unwanted diffs.
+First, the code is now reorganized to build up around object types
+instead of actions. This means there's an obj_line.c, obj_arc.c, etc.
+that know how to do everything with lines, arc, etc. The old code had
+everything built around actions, so there was move.c, rotate.c, etc.,
+that knew how to move, rotate, etc. all object types. The new
+organization makes it much simpler to change how objects behave or to
+introduce new objects.
 
-This is the last release before a major cleanup of internal data structures.
-The lihata board format had to be sorted out so that new core features
-can be saved and loaded without breaking the inflexible .pcb format. Since
-the cleanup will break the remaining binary compatibility with mainline,
-this was also the last moment we could import old plugins with reasonable
-effort.
+The second part of the cleanup was to add pcb_ and PCB_ prefix to global
+symbols in core API. This will allow us to split core into libs with
+external, public API later, without risking name clashes. This will provide
+better code reuse.
+
+Among with the large cleanup, a lot of bugs have been found and fixed.
