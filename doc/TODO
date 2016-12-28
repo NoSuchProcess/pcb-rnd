@@ -53,7 +53,6 @@ CLEANUP #5
 	- move generates much more diff than reasonable: does it renumber IDs?
 - BUG: redraw after pin renumber in gtk with shift+ctrl+n
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
-- import hackvana gerber naming scheme from mainline [report:Erich]
 - gsch2pcb-rnd: plugin_register() should be in glue.c
 - pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
 - unravel the undo code
