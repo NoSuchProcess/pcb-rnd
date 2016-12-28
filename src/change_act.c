@@ -666,6 +666,7 @@ int pcb_act_ChangeName(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 					else
 						pinnum = 0;
 					if (pcb_chg_obj_name_query(type, ptr1, ptr2, ptr3, pinnum)) {
+						pcb_redraw();
 						pcb_board_set_changed_flag(pcb_true);
 						pcb_event(PCB_EVENT_RUBBER_RENAME, "ipppi", type, ptr1, ptr2, ptr3, pinnum);
 					}
