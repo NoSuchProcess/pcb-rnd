@@ -43,6 +43,7 @@
 	- remove -m pcb
 
 CLEANUP #5
+- del on arc endpoint should remove the arc, just like del on line endpoint remvoes the line [report:Evan]
 - draw code: pin numbers/names are drawn under the silk [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
@@ -149,6 +150,7 @@ FEATURES
 - BUILD: menuconfig and a config file for scconfig
 
 Low prio:
+- bug: redrawbug1: grap c1, the diagonal trace gets dran over U1's silk - it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap [report:Evan]
 - bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
 - GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
 - insert drag&drop strangeness (mainline too):
