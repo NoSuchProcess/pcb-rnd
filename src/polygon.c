@@ -1346,10 +1346,9 @@ void pcb_polygon_copy_attached_to_layer(void)
 	if (conf_core.editor.full_poly)
 		PCB_FLAG_SET(PCB_FLAG_FULLPOLY, polygon);
 	memset(&pcb_crosshair.AttachedPolygon, 0, sizeof(pcb_polygon_t));
-	pcb_poly_bbox(polygon);
-	if (!CURRENT->polygon_tree)
-		CURRENT->polygon_tree = pcb_r_create_tree(NULL, 0, 0);
-	pcb_r_insert_entry(CURRENT->polygon_tree, (pcb_box_t *) polygon, 0);
+
+	pcb_add_polygon_on_layer(CURRENT, polygon);
+
 	pcb_poly_init_clip(PCB->Data, CURRENT, polygon);
 	DrawPolygon(CURRENT, polygon);
 	pcb_board_set_changed_flag(pcb_true);
