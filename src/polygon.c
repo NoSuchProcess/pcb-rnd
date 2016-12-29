@@ -1329,6 +1329,12 @@ void pcb_polygon_close_poly(void)
 		pcb_message(PCB_MSG_ERROR, _("A polygon has to have at least 3 points\n"));
 }
 
+static void poly_copy_data(pcb_polygon_t *dst, pcb_polygon_t *src)
+{
+	pcb_polygon_t p;
+	memcpy(dst, src, ((char *)&p.link - (char *)&p));
+}
+
 /* ---------------------------------------------------------------------------
  * moves the data of the attached (new) polygon to the current layer
  */
@@ -1340,7 +1346,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 	/* move data to layer and clear attached struct */
 	polygon = pcb_poly_new(CURRENT, pcb_no_flags());
 	saveID = polygon->ID;
-	*polygon = pcb_crosshair.AttachedPolygon;
+	poly_copy_data(polygon, &pcb_crosshair.AttachedPolygon);
 	polygon->ID = saveID;
 	PCB_FLAG_SET(PCB_FLAG_CLEARPOLY, polygon);
 	if (conf_core.editor.full_poly)
