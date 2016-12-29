@@ -794,6 +794,7 @@ void *InsertPointIntoLine(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 /*** draw ***/
 void _draw_line(pcb_line_t * line)
 {
+	PCB_DRAW_BBOX(line);
 	pcb_gui->set_line_cap(Output.fgGC, Trace_Cap);
 	if (conf_core.editor.thin_draw)
 		pcb_gui->set_line_width(Output.fgGC, 0);

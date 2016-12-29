@@ -851,6 +851,8 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	char buff[128];
 	const char *pn;
 
+	PCB_DRAW_BBOX(pv);
+
 	if (!pv->Name || !pv->Name[0]) {
 		pn = PCB_EMPTY(pv->Number);
 	}

@@ -666,6 +666,8 @@ void _draw_arc(pcb_arc_t * arc)
 	if (!arc->Thickness)
 		return;
 
+	PCB_DRAW_BBOX(arc);
+
 	if (conf_core.editor.thin_draw)
 		pcb_gui->set_line_width(Output.fgGC, 0);
 	else

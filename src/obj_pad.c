@@ -374,6 +374,8 @@ static void _draw_pad(pcb_hid_gc_t gc, pcb_pad_t * pad, pcb_bool clear, pcb_bool
 	if (clear && !mask && pad->Clearance <= 0)
 		return;
 
+	PCB_DRAW_BBOX(pad);
+
 	if (conf_core.editor.thin_draw || (clear && conf_core.editor.thin_draw_poly))
 		pcb_gui->thindraw_pcb_pad(gc, pad, clear, mask);
 	else

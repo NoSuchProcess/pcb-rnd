@@ -82,4 +82,17 @@ void pcb_draw_obj(int, void *, void *);
 void pcb_draw_layer(pcb_layer_t *, const pcb_box_t *);
 void pcb_erase_obj(int, void *, void *);
 
+/*#define PCB_BBOX_DEBUG*/
+
+#ifdef PCB_BBOX_DEBUG
+#define PCB_DRAW_BBOX(obj) \
+	do { \
+		pcb_gui->set_line_width(Output.fgGC, 0); \
+		pcb_gui->draw_rect(Output.fgGC, obj->BoundingBox.X1, obj->BoundingBox.Y1, obj->BoundingBox.X2, obj->BoundingBox.Y2); \
+	} while(0)
+#else
+#define PCB_DRAW_BBOX(obj)
+#endif
+
+
 #endif
