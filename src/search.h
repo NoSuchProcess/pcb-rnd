@@ -34,6 +34,7 @@
 #include "misc_util.h"
 
 int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2);
+pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 
 #define PCB_SLOP 5
 /* ---------------------------------------------------------------------------
@@ -70,8 +71,10 @@ int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_c
 #define	PCB_ELEMENT_IN_BOX(e,b)	\
 	(PCB_BOX_IN_BOX(&((e)->BoundingBox), (b)))
 
+/* the bounding box is much larger than the minimum, use it to decide it
+   it is worth doing the expensive precise calculations */
 #define PCB_ARC_IN_BOX(a,b)		\
-	(PCB_BOX_IN_BOX(&((a)->BoundingBox), (b)))
+	((PCB_BOX_TOUCHES_BOX(&((a)->BoundingBox), (b))) && (pcb_arc_in_box(a,b)))
 
 /* == the same but accept if any part of the object touches the box == */
 #define PCB_POINT_IN_CIRCLE(x, y, cx, cy, r) \

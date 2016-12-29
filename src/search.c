@@ -951,6 +951,16 @@ pcb_bool pcb_is_point_in_box(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_c
 	return range < Radius;
 }
 
+pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b)
+{
+	pcb_box_t ab = pcb_arc_mini_bbox(arc);
+
+	pcb_printf("mini %mm %mm - %mm %mm\n", ab.X1, ab.Y1, ab.X2, ab.Y2);
+	pcb_printf("     %mm %mm - %mm %mm\n", b->X1, b->Y1, b->X2, b->Y2);
+
+	return PCB_BOX_IN_BOX(&ab, b);
+}
+
 /* TODO: this code is BROKEN in the case of non-circular arcs,
  *       and in the case that the arc thickness is greater than
  *       the radius.
