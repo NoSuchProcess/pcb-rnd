@@ -58,6 +58,8 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle);
 void pcb_arc_mirror(pcb_layer_t *layer, pcb_arc_t *arc);
 void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc);
+pcb_box_t pcb_arc_mini_bbox(const pcb_arc_t *arc);
+
 
 /*** hash ***/
 int pcb_arc_eq(const pcb_element_t *e1, const pcb_arc_t *a1, const pcb_element_t *e2, const pcb_arc_t *a2);

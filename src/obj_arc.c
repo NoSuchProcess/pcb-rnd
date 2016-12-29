@@ -69,29 +69,30 @@ pcb_arc_t *pcb_element_arc_alloc(pcb_element_t *Element)
 
 
 /* computes the bounding box of an arc */
-void pcb_arc_bbox(pcb_arc_t *Arc)
+static pcb_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 {
 	double ca1, ca2, sa1, sa2;
-	double minx, maxx, miny, maxy;
+	double minx, maxx, miny, maxy, delta;
 	pcb_angle_t ang1, ang2;
 	pcb_coord_t width;
+	pcb_box_t res;
 
 	/* first put angles into standard form:
 	 *  ang1 < ang2, both angles between 0 and 720 */
-	Arc->Delta = PCB_CLAMP(Arc->Delta, -360, 360);
+	delta = PCB_CLAMP(Arc->Delta, -360, 360);
 
-	if (Arc->Delta > 0) {
+	if (delta > 0) {
 		ang1 = pcb_normalize_angle(Arc->StartAngle);
-		ang2 = pcb_normalize_angle(Arc->StartAngle + Arc->Delta);
+		ang2 = pcb_normalize_angle(Arc->StartAngle + delta);
 	}
 	else {
-		ang1 = pcb_normalize_angle(Arc->StartAngle + Arc->Delta);
+		ang1 = pcb_normalize_angle(Arc->StartAngle + delta);
 		ang2 = pcb_normalize_angle(Arc->StartAngle);
 	}
 	if (ang1 > ang2)
 		ang2 += 360;
 	/* Make sure full circles aren't treated as zero-length arcs */
-	if (Arc->Delta == 360 || Arc->Delta == -360)
+	if (delta == 360 || delta == -360)
 		ang2 = ang1 + 360;
 
 	/* calculate sines, cosines */
@@ -116,21 +117,31 @@ void pcb_arc_bbox(pcb_arc_t *Arc)
 		miny = -1;
 
 	/* Finally, calculate bounds, converting sane geometry into pcb geometry */
-	Arc->BoundingBox.X1 = Arc->X - Arc->Width * maxx;
-	Arc->BoundingBox.X2 = Arc->X - Arc->Width * minx;
-	Arc->BoundingBox.Y1 = Arc->Y + Arc->Height * miny;
-	Arc->BoundingBox.Y2 = Arc->Y + Arc->Height * maxy;
+	res.X1 = Arc->X - Arc->Width * maxx;
+	res.X2 = Arc->X - Arc->Width * minx;
+	res.Y1 = Arc->Y + Arc->Height * miny;
+	res.Y2 = Arc->Y + Arc->Height * maxy;
 
-	width = (Arc->Thickness + Arc->Clearance) / 2;
+	if (!mini) {
+		width = (Arc->Thickness + Arc->Clearance) / 2;
+		/* Adjust for our discrete polygon approximation */
+		width = (double) width *MAX(PCB_POLY_CIRC_RADIUS_ADJ, (1.0 + PCB_POLY_ARC_MAX_DEVIATION)) + 0.5;
+	}
+	else
+		width = Arc->Thickness / 2;
 
-	/* Adjust for our discrete polygon approximation */
-	width = (double) width *MAX(PCB_POLY_CIRC_RADIUS_ADJ, (1.0 + PCB_POLY_ARC_MAX_DEVIATION)) + 0.5;
+	res.X1 -= width;
+	res.X2 += width;
+	res.Y1 -= width;
+	res.Y2 += width;
+	pcb_close_box(&res);
+	return res;
+}
 
-	Arc->BoundingBox.X1 -= width;
-	Arc->BoundingBox.X2 += width;
-	Arc->BoundingBox.Y1 -= width;
-	Arc->BoundingBox.Y2 += width;
-	pcb_close_box(&Arc->BoundingBox);
+
+void pcb_arc_bbox(pcb_arc_t *Arc)
+{
+	Arc->BoundingBox = pcb_arc_bbox_(Arc, 0);
 }
 
 
@@ -261,6 +272,10 @@ double pcb_arc_area(const pcb_arc_t *arc)
 		+ (double)arc->Thickness * (double)arc->Thickness * (double)M_PI); /* cap circles */
 }
 
+pcb_box_t pcb_arc_mini_bbox(const pcb_arc_t *arc)
+{
+	return pcb_arc_bbox_(arc, 1);
+}
 
 /***** operations *****/
 
