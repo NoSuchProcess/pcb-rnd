@@ -984,6 +984,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int moduleDefined = 0;
 	int PCBLayer = 0;
 	int kicadLayer = 15; /* default = top side */
+	int moduleOnTop = 1;
 	int SMD = 0;
 	int square = 0;
 	int throughHole = 0;
@@ -1022,6 +1023,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 							TextFlags = pcb_flag_make(PCB_FLAG_ONSOLDER);
+							moduleOnTop = 0;
 					}
 				} else {
 					return -1;
@@ -1389,12 +1391,15 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								if (l->str != NULL) {
 									PCBLayer = kicad_get_layeridx(st, l->str);
 									if (PCBLayer == -1) {
-										printf("Unknown layer definition: %s", l->str);
-										return -1;
+										printf("Unknown layer definition: %s\n", l->str);
+										printf("Default placement of pad is copper layer defined for module as a whole\n"); 
+										/*return -1;*/
+										if (!moduleOnTop) {
+											kicadLayer = 0;
+										}
 									} else if (PCBLayer < -1) {
 										printf("\tUnimplemented layer definition: %s", l->str);
 									} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
-										Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 										kicadLayer = 0;
 									}
 									pcb_printf("\tpad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str));
