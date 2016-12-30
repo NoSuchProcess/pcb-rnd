@@ -54,7 +54,29 @@ typedef struct embf_font_s {
 
 static void pcb_font_load_internal(pcb_board_t *pcb)
 {
-	
+	int n, l;
+	memset(&pcb->Font, 0, sizeof(pcb->Font));
+	pcb->Font.MaxWidth  = embf_maxx - embf_minx;
+	pcb->Font.MaxHeight = embf_maxy - embf_miny;
+	for(n = 0; n < sizeof(embf_font) / sizeof(embf_font[0]); n++) {
+		if (embf_font[n].delta != 0) {
+			pcb_symbol_t *s = pcb->Font.Symbol + n;
+			embf_line_t *lines = embf_font[n].lines;
+
+			for(l = 0; l < embf_font[n].num_lines; l++) {
+				pcb_coord_t x1 = PCB_MIL_TO_COORD(lines[l].x1);
+				pcb_coord_t y1 = PCB_MIL_TO_COORD(lines[l].y1);
+				pcb_coord_t x2 = PCB_MIL_TO_COORD(lines[l].x2);
+				pcb_coord_t y2 = PCB_MIL_TO_COORD(lines[l].y2);
+				pcb_coord_t th = PCB_MIL_TO_COORD(lines[l].th);
+				pcb_font_new_line_in_sym(s, x1, y1, x2, y2, th);
+			}
+
+			s->Valid = 1;
+			s->Delta = PCB_MIL_TO_COORD(embf_font[n].delta);
+		}
+	}
+	pcb_font_set_info(&pcb->Font);
 }
 
 /* parses a file with font information and installs it into the provided PCB
