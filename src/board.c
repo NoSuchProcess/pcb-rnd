@@ -113,17 +113,34 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 
 pcb_board_t *pcb_board_new(void)
 {
-	pcb_board_t *old, *nw;
+	pcb_board_t *old, *nw = NULL;
 	int dpcb;
 
 	old = PCB;
-
 	PCB = NULL;
 
 	dpcb = -1;
 	pcb_io_err_inhibit_inc();
 	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, pcb_load_pcb(__path__, NULL, pcb_false, 1 | 0x10));
 	pcb_io_err_inhibit_dec();
+
+	if (dpcb != 0) { /* no default PCB in file, use embedded version */
+		FILE *f;
+		const char *tmp_fn = ".pcb-rnd.default.pcb";
+
+		/* We can parse from file only, make a temp file */
+		f = fopen(tmp_fn, "wb");
+		if (f != NULL) {
+			fwrite(default_pcb_internal, strlen(default_pcb_internal), 1, f);
+			fclose(f);
+			dpcb = pcb_load_pcb(tmp_fn, NULL, pcb_false, 1 | 0x10);
+			if (dpcb == 0)
+				pcb_message(PCB_MSG_WARNING, "Couldn't find default.pcb - using the embedded fallback\n");
+			else
+				pcb_message(PCB_MSG_ERROR, "Couldn't find default.pcb and failed to load the embedded fallback\n");
+			remove(tmp_fn);
+		}
+	}
 
 	if (dpcb == 0) {
 		nw = PCB;
@@ -133,10 +150,6 @@ pcb_board_t *pcb_board_new(void)
 			nw->Filename = NULL;
 			nw->Data->loader = NULL;
 		}
-	}
-	else {
-		/* no default PCB in file, use embedded version */
-		nw = NULL;
 	}
 
 	PCB = old;
