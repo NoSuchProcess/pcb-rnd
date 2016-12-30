@@ -985,6 +985,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int PCBLayer = 0;
 	int kicadLayer = 15; /* default = top side */
 	int moduleOnTop = 1;
+	int padLayerDefCount = 0;
 	int SMD = 0;
 	int square = 0;
 	int throughHole = 0;
@@ -1321,6 +1322,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			/* pads next  - have thru_hole, circle, rect, roundrect, to think about*/ 
 			} else if (n->str != NULL && strcmp("pad", n->str) == 0) {
 				featureTally = 0;
+				padLayerDefCount = 0;
 				if (n->children != 0 && n->children->str != NULL) {
 					printf("pad name found: %s\n", n->children->str);
 					pinName = n->children->str;
@@ -1391,16 +1393,27 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 								if (l->str != NULL) {
 									PCBLayer = kicad_get_layeridx(st, l->str);
 									if (PCBLayer == -1) {
+										/* we ignore *.mask, *.paste, etc., if valid layer def already found */
 										printf("Unknown layer definition: %s\n", l->str);
-										printf("Default placement of pad is copper layer defined for module as a whole\n"); 
-										/*return -1;*/
-										if (!moduleOnTop) {
-											kicadLayer = 0;
+										if (!padLayerDefCount) {
+											printf("Default placement of pad is the copper layer defined for module as a whole\n");
+
+											/*return -1;*/
+											if (!moduleOnTop) {
+												kicadLayer = 0;
+											}
 										}
 									} else if (PCBLayer < -1) {
-										printf("\tUnimplemented layer definition: %s", l->str);
+										printf("\tUnimplemented layer definition: %s\n", l->str);
 									} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
 										kicadLayer = 0;
+										padLayerDefCount++;
+									} else if (padLayerDefCount) {
+										printf("More than one valid pad layer found, only using the first one found for layer.\n");
+										padLayerDefCount++;
+									} else {
+										padLayerDefCount++;
+										printf("Valid layer defs found for current pad: %d\n", padLayerDefCount);
 									}
 									pcb_printf("\tpad layer: '%s',  PCB layer number %d\n", (l->str), kicad_get_layeridx(st, l->str));
 								} else {
