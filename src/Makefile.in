@@ -301,6 +301,10 @@ conf_core_fields.h: conf_core.h
 conf_internal.c: pcb-conf.lht
 	$(CQUOTE) -n conf_internal < pcb-conf.lht > conf_internal.c
 
+# do not make this automatic, most users won't need to regenerate font_internal.c
+gen_font:
+	../util/devhelpers/font2c.sh < default_font > font_internal.c
+
 FORCE:
 
 

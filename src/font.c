@@ -40,6 +40,23 @@
 
 #define STEP_SYMBOLLINE 10
 
+typedef struct embf_line_s {
+	int x1, y1, x2, y2, th;
+} embf_line_t;
+
+typedef struct embf_font_s {
+	int delta;
+	embf_line_t *lines;
+	int num_lines;
+} embf_font_t;
+
+#include "font_internal.c"
+
+static void pcb_font_load_internal(pcb_board_t *pcb)
+{
+	
+}
+
 /* parses a file with font information and installs it into the provided PCB
  * checks directories given as colon separated list by resource fontPath
  * if the fonts filename doesn't contain a directory component */
@@ -54,7 +71,8 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		const char *s;
 		gds_t buff;
 		s = conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
-		pcb_message(PCB_MSG_ERROR, _("Can't find font-symbol-file - there won't be font in this design. Searched: '%s'\n"), s);
+		pcb_message(PCB_MSG_WARNING, _("Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n"), s);
+		pcb_font_load_internal(pcb);
 		gds_uninit(&buff);
 	}
 }
