@@ -109,6 +109,8 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 	return (ptr);
 }
 
+#include "defpcb_internal.c"
+
 pcb_board_t *pcb_board_new(void)
 {
 	pcb_board_t *old, *nw;
@@ -133,6 +135,7 @@ pcb_board_t *pcb_board_new(void)
 		}
 	}
 	else {
+		/* no default PCB in file, use embedded version */
 		nw = NULL;
 	}
 
