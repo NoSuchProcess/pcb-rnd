@@ -46,13 +46,11 @@
 	- remove -m pcb
 
 CLEANUP #5
-- del on arc endpoint should remove the arc, just like del on line endpoint remvoes the line [report:Evan]
 - BUG: arcbug1.lht: draw a polygon over the rightmost ^ arc andit will calculate a self-intersecting clearance [report:Evan]
 - draw code: pin numbers/names are drawn under the silk: pins/pads are drawn in one go, both copper and the numebring, and the copper needs to go under the silk so the number ends up there too [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
 - save buffer element to file - preferred format is hardwired and file name guess is crude (function Save() in gtkhid-main.c)
-- gsch2pcb-rnd: plugin_register() should be in glue.c
 - pcb_act_Attributes -> this could be handled by the property editor maybe? but what about layout attributes and the lesstif hid?
 - unravel the undo code
 	- grid size change should be undoable? [report:Evan]
@@ -81,9 +79,6 @@ CLEANUP #5
 	- switch the lesstif HID over from attribs to conf
 	- remove redundancy: don't store values in the PCB struct that are in the design conf
 	- increments are not really implemented
-	- if font file is not found:
-		- embedded version?
-		- warn when try to write text on pcb?
 - action bug: gui_act.c shouldn't reference Crosshair.X directly; check d-fix.patch about how to fix it
 - next_gui: keep them open, hide
 - look for #warnings
@@ -133,9 +128,7 @@ CLEANUP #6:
 	- mods:
 		- gpmi (and other buildins/plugins) not showing up in the about box
 - self contained
-	- files
-		- default font
-	- action (--show-paths!) and dialog box to print where the actual files are coming from
+	- action (--show-paths!) and dialog box to print where the actual files are coming from, including if the font came from embedded/internal
 	- project specific menus from extra lihata files - maybe from project.lht
 - main.c:
 	- SIGPIPE - detect it (needed for popen)
