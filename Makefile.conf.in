@@ -15,5 +15,6 @@ RM=@/host/fstools/rm@
 CP=@/host/fstools/cp@
 LN=@/host/fstools/ln@
 MKDIR=@/host/fstools/mkdir@
+SCCBOX=$(ROOT)/scconfig/sccbox
 EXE=@/target/sys/ext_exe@
 @]

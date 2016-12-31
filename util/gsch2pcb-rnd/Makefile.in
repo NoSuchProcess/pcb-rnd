@@ -4,6 +4,7 @@ append /local/pcb/LDFLAGS cc/ldflags
 include {../scconfig/template/debug.tmpasm}
 
 print [@
+ROOT=../..
 PLUGDIR=../../src_plugins
 CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=-lm @/local/pcb/LDFLAGS@
@@ -94,29 +95,27 @@ gsch2pcb.o: gsch2pcb_rnd_conf_fields.h
 gsch2pcb_rnd_conf_fields.h: gsch2pcb_rnd_conf.h
 	AWK=@/host/fstools/awk@ ../../scconfig/gen_conf.sh < gsch2pcb_rnd_conf.h > gsch2pcb_rnd_conf_fields.h
 
-install_:
-	$(MKDIR) "$(BINDIR)" "$(LIBDIR)"
-	$(CPC) "`pwd`/gsch2pcb-rnd$(EXE)" "$(BINDIR)/gsch2pcb-rnd$(EXE)"
-	$(CPC) "`pwd`/gnet-gsch2pcb-rnd.scm" "$(LIBDIR)/gnet-gsch2pcb-rnd.scm"
+install_all:
+	$(SCCBOX) mkdir -p "$(BINDIR)" "$(LIBDIR)"
+	$(SCCBOX) $(HOW) "gsch2pcb-rnd$(EXE)" "$(BINDIR)/gsch2pcb-rnd$(EXE)"
+	$(SCCBOX) $(HOW) "gnet-gsch2pcb-rnd.scm" "$(LIBDIR)/gnet-gsch2pcb-rnd.scm"
 
 install:
-	$(MAKE) install_ CPC="$(CP)"
+	$(MAKE) install_all HOW="install"
 
 linstall:
-	$(MAKE) install_ CPC="$(LN)"
+	$(MAKE) install_all HOW="linstall -f"
 
 uninstall:
-	$(RM) "$(BINDIR)/gsch2pcb-rnd$(EXE)"
-	$(RM) "$(LIBDIR)/gnet-gsch2pcb-rnd.scm"
-
+	$(MAKE) install_all HOW="uninstall"
 
 clean:
-	-$(RM) gsch2pcb-rnd$(EXE) $(OBJS) gsch2pcb_rnd_conf_fields.h
+	$(SCCBOX) rm -f -q gsch2pcb-rnd$(EXE) $(OBJS) gsch2pcb_rnd_conf_fields.h
 
 distclean: clean
-	-$(RM) fp_init.c fp_init.h
+	$(SCCBOX) rm -f -q fp_init.c fp_init.h
 
-include ../../Makefile.conf
+include $(ROOT)/Makefile.conf
 
 @]
 
