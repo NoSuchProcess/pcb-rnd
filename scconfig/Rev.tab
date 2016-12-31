@@ -1,3 +1,4 @@
+6007	configure	switch over Makefiles to use sccbox
 6004	distclean,configure	scconfig compiles sccbox thast will ease portable clean and installation rules
 5982	make clean	gsch2pcb-rnd build fix
 5611	configure	new feature: UI layer
