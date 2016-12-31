@@ -64,7 +64,7 @@ OBJS = $(USER_OBJS) hooks.o $(DEFAULT_NOMAIN_OBJS) $(SCRIPT_OBJS) $(PARSER_OBJS)
 CFLAGS = $(USER_CFLAGS) $(DEFAULT_CFLAGS) $(SCRIPT_CFLAGS) $(PARSER_CFLAGS) $(GENERATOR_CFLAGS) $(TMPASM_CFLAGS) $(C99_CFLAGS) $(PARSGEN_CFLAGS) $(MATH_CFLAGS) $(SOCKET_CFLAGS) $(USERPASS_CFLAGS) $(GUI_CFLAGS)  $(SUL_CFLAGS) $(MENULIB_CFLAGS) -Isrc/default
 LDFLAGS = $(USER_LDFLAGS) $(DEFAULT_LDFLAGS) $(SCRIPT_LDFLAGS) $(PARSER_LDFLAGS) $(GENERATOR_LDFLAGS) $(TMPASM_LDFLAGS) $(C99_LDFLAGS) $(PARSGEN_LDFLAGS) $(MATH_LDFLAGS) $(SOCKET_LDFLAGS) $(USERPASS_LDFLAGS) $(GUI_LDFLAGS) $(SUL_LDFLAGS) $(MENULIB_LDFLAGS)
 
-all: configure revtest
+all: configure revtest sccbox
 
 revtest: revtest.o
 	$(CC) -o revtest revtest.o
@@ -89,6 +89,11 @@ hooks.o: plugin_3state.h plugins.h Rev.h
 src/util/arg_auto_set.o: src/util/arg_auto_set.c src/util/arg_auto_set.h
 	$(CC) -c $(CFLAGS) -o src/util/arg_auto_set.o src/util/arg_auto_set.c
 
+src/util/sccbox.o: src/util/sccbox.o
+	$(CC) -c $(CFLAGS) -o src/util/sccbox.o src/util/sccbox.c
+
+sccbox: src/util/sccbox.o
+	$(CC) $(LDFLAGS) -o sccbox src/util/sccbox.o
 
 cquote: cquote.c
 
