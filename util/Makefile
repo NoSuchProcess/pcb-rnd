@@ -1,32 +1,34 @@
 # plain old hand crafted Makefile
+ROOT=..
 
 all:
 	cd gsch2pcb-rnd && $(MAKE) all
 
-include ../Makefile.conf
+include $(ROOT)/Makefile.conf
 
 clean:
 	cd gsch2pcb-rnd && $(MAKE) clean
 
-install_:
-	$(MKDIR) "$(BINDIR)" "$(LIBDIR)"
-	$(CPC) "`pwd`/fp2anim" "$(BINDIR)/fp2anim"
-	$(CPC) "`pwd`/pcb-strip" "$(BINDIR)/pcb-strip"
-	$(CPC) "`pwd`/pcb-prj2lht" "$(BINDIR)/pcb-prj2lht"
-	$(CPC) "`pwd`/gnet-pcbrndfwd.scm" "$(LIBDIR)/gnet-pcbrndfwd.scm"
-	$(CPC) "`pwd`/gnet-pcbrndfwd_elem.scm" "$(LIBDIR)/gnet-pcbrndfwd_elem.scm"
-	cd gsch2pcb-rnd && $(MAKE) install_ CPC="$(CPC)"
+distclean:
+	cd gsch2pcb-rnd && $(MAKE) distclean
+
+install_all:
+	$(SCCBOX) mkdir -p  "$(BINDIR)" "$(LIBDIR)"
+	$(SCCBOX) $(HOW) "fp2anim" "$(BINDIR)/fp2anim"
+	$(SCCBOX) $(HOW) "pcb-strip" "$(BINDIR)/pcb-strip"
+	$(SCCBOX) $(HOW) "pcb-prj2lht" "$(BINDIR)/pcb-prj2lht"
+	$(SCCBOX) $(HOW) "gnet-pcbrndfwd.scm" "$(LIBDIR)/gnet-pcbrndfwd.scm"
+	$(SCCBOX) $(HOW) "gnet-pcbrndfwd_elem.scm" "$(LIBDIR)/gnet-pcbrndfwd_elem.scm"
 
 install:
-	$(MAKE) install_ CPC="$(CP)"
+	$(MAKE) install_all HOW="install -f"
+	cd gsch2pcb-rnd && $(MAKE) install
 
 linstall:
-	$(MAKE) install_ CPC="$(LN)"
+	$(MAKE) install_all HOW="linstall -f"
+	cd gsch2pcb-rnd && $(MAKE) linstall
 
 uninstall:
-	$(RM) "$(BINDIR)/fp2anim"
-	$(RM) "$(BINDIR)/pcb-strip"
-	$(RM) "$(BINDIR)/pcb-prj2lht"
-	$(RM) "$(LIBDIR)/gnet-pcbrndfwd.scm"
-	$(RM) "$(LIBDIR)/gnet-pcbrndfwd_elem.scm"
+	$(MAKE) install_all HOW="uninstall"
 	cd gsch2pcb-rnd && $(MAKE) uninstall
+
