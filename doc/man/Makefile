@@ -1,5 +1,6 @@
 # This Makefile is a plain old hand written one; all configuration settings
-# are included from ../../Makefile.conf which is scconfig generated
+# are included from $(ROOT)/Makefile.conf which is scconfig generated
+ROOT=../..
 
 IN=pcb-rnd.1.mml pcb-strip.1.mml pcb-prj2lht.1.mml fp2anim.1.mml
 OUT_HTML = pcb-rnd.1.html pcb-strip.1.html pcb-prj2lht.1.html fp2anim.1.html
@@ -39,26 +40,22 @@ genclean:
 .mml.lint:
 	$(MML) -i copyright.mml -f lint $<
 
-install_:
-	$(MKDIR) "$(MAN1DIR)"
-	$(CPC) "`pwd`/pcb-rnd.1" "$(MAN1DIR)/pcb-rnd.1"
-	$(CPC) "`pwd`/pcb-strip.1" "$(MAN1DIR)/pcb-strip.1"
-	$(CPC) "`pwd`/pcb-prj2lht.1" "$(MAN1DIR)/pcb-prj2lht.1"
-	$(CPC) "`pwd`/gsch2pcb-rnd.1" "$(MAN1DIR)/gsch2pcb-rnd.1"
-	$(CPC) "`pwd`/fp2anim.1" "$(MAN1DIR)/fp2anim.1"
-
-uninstall:
-	$(RM) "$(MAN1DIR)/pcb-rnd.1"
-	$(RM) "$(MAN1DIR)/pcb-strip.1"
-	$(RM) "$(MAN1DIR)/pcb-prj2lht.1"
-	$(RM) "$(MAN1DIR)/gsch2pcb-rnd.1"
-	$(RM) "$(MAN1DIR)/fp2anim.1"
+install_all:
+	$(SCCBOX) mkdir -p "$(MAN1DIR)"
+	$(SCCBOX) $(HOW) "pcb-rnd.1" "$(MAN1DIR)/pcb-rnd.1"
+	$(SCCBOX) $(HOW) "pcb-strip.1" "$(MAN1DIR)/pcb-strip.1"
+	$(SCCBOX) $(HOW) "pcb-prj2lht.1" "$(MAN1DIR)/pcb-prj2lht.1"
+	$(SCCBOX) $(HOW) "gsch2pcb-rnd.1" "$(MAN1DIR)/gsch2pcb-rnd.1"
+	$(SCCBOX) $(HOW) "fp2anim.1" "$(MAN1DIR)/fp2anim.1"
 
 install:
-	$(MAKE) install_ CPC="$(CP)"
+	$(MAKE) install_all HOW="install -f"
 
 linstall:
-	$(MAKE) install_ CPC="$(LN)"
+	$(MAKE) install_all HOW="linstall -f"
 
-include ../../Makefile.conf
+uninstall:
+	$(MAKE) install_all HOW="uninstall"
+
+include $(ROOT)/Makefile.conf
 
