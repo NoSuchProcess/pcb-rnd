@@ -123,7 +123,7 @@ CLEANUP #6:
 	- mods:
 		- gpmi (and other buildins/plugins) not showing up in the about box
 - self contained
-	- action (--show-paths!) and dialog box to print where the actual files are coming from, including if the font came from embedded/internal
+	- dialog box to print where the actual files are coming from, including if the font came from embedded/internal (gui version of --show-paths)
 	- project specific menus from extra lihata files - maybe from project.lht
 - main.c:
 	- SIGPIPE - detect it (needed for popen)
