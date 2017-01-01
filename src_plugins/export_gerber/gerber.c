@@ -546,14 +546,12 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	copy_outline_mode = options[HA_copy_outline].int_value;
 	name_style = options[HA_name_style].int_value;
 
+#warning layer TODO: this assumes there is only one outline layer; instead of this, just use a boolthat says whether we had an outline layer and redo the search
 	outline_layer = NULL;
 
-	for (i = 0; i < pcb_max_copper_layer; i++) {
-		pcb_layer_t *layer = PCB->Data->Layer + i;
-		if (strcmp(layer->Name, "outline") == 0 || strcmp(layer->Name, "route") == 0) {
-			outline_layer = layer;
-		}
-	}
+	for (i = 0; i < pcb_max_copper_layer; i++)
+		if (pcb_layer_flags(i) & PCB_LYT_OUTLINE)
+			outline_layer = PCB->Data->Layer + i;
 
 	i = strlen(fnbase);
 	filename = (char *) realloc(filename, i + 40);
