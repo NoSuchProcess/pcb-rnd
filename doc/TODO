@@ -9,7 +9,6 @@
 		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
 		- probably IDs are messed too: copy and paste new arc loaded that way a few times and it will disappear after other edits (silk)
 
-
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: space in ha:layer name
@@ -19,9 +18,6 @@
 	- ind: style attribute members in a fresh save
 	- keep numeric format: test all
 	- keep unknown subtrees
-
-- unravel:
-	- replace "outline" and "route" layer name checks with a central layer call
 
 - replace settings with lihata (conf_*)
 	- TEST:
@@ -46,7 +42,7 @@
 	- remove -m pcb
 
 CLEANUP #5
-- BUG: arcbug1.lht: draw a polygon over the rightmost ^ arc andit will calculate a self-intersecting clearance [report:Evan]
+- BUG: arcbug1.lht: draw a polygon over the rightmost ^ arc and it will calculate a self-intersecting clearance [report:Evan]
 - draw code: pin numbers/names are drawn under the silk: pins/pads are drawn in one go, both copper and the numebring, and the copper needs to go under the silk so the number ends up there too [report:Evan]
 - lihata board:
 	- move generates much more diff than reasonable: does it renumber IDs?
