@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include "compat_dl.h"
+#include "compat_cc.h"
 
 #ifdef USE_LOADLIBRARY
 #include <windows.h>
@@ -50,7 +51,7 @@ char *dlerror()
 	dw = GetLastError();
 
 	/* get the corresponding error message */
-	Formatpcb_message(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+	pcb_message(FORMAT_MESSAGE_ALLOCATE_BUFFER |
 								FORMAT_MESSAGE_FROM_SYSTEM |
 								FORMAT_MESSAGE_IGNORE_INSERTS,
 								NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) & lpMsgBuf, 0, NULL);
