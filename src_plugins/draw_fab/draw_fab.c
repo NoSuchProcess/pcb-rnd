@@ -244,12 +244,8 @@ static void DrawFab(pcb_hid_gc_t gc)
 	yoff = -TEXT_LINE;
 	for (i = 0; i < pcb_max_copper_layer; i++) {
 		pcb_layer_t *l = LAYER_PTR(i);
-		if (l->Name && (linelist_length(&l->Line) || arclist_length(&l->Arc))) {
-			if (strcmp("route", l->Name) == 0)
-				break;
-			if (strcmp("outline", l->Name) == 0)
-				break;
-		}
+		if ((pcb_layer_flags(i) & PCB_LYT_OUTLINE) && (linelist_length(&l->Line) || arclist_length(&l->Arc)))
+			break;
 	}
 	if (i == pcb_max_copper_layer) {
 		pcb_gui->set_line_width(gc, PCB_MIL_TO_COORD(10));
