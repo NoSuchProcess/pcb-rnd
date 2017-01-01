@@ -485,7 +485,7 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 	/* The implicit outline rectangle (or automatic outline rectanlge).
 	   We should check for pcb_gui->gui here, but it's kinda cool seeing the
 	   auto-outline magically disappear when you first add something to
-	   the "outline" layer.  */
+	   the outline layer.  */
 	if ((lflg & PCB_LYT_OUTLINE) && pcb_layer_is_empty_(Layer)) {
 		pcb_gui->set_color(Output.fgGC, Layer->Color);
 		pcb_gui->set_line_width(Output.fgGC, PCB->minWid);
@@ -500,15 +500,15 @@ void pcb_draw_layer(pcb_layer_t *Layer, const pcb_box_t * screen)
 static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 {
 	int i, rv = 1;
-	int layernum;
+	pcb_layer_id_t layernum;
 	pcb_layer_t *Layer;
 	int n_entries = PCB->LayerGroups.Number[group];
 	pcb_cardinal_t *layers = PCB->LayerGroups.Entries[group];
 
 	for (i = n_entries - 1; i >= 0; i--) {
 		layernum = layers[i];
-		Layer = PCB->Data->Layer + layers[i];
-		if (strcmp(Layer->Name, "outline") == 0 || strcmp(Layer->Name, "route") == 0)
+		Layer = PCB->Data->Layer + layernum;
+		if (pcb_layer_flags(layernum) & PCB_LYT_OUTLINE)
 			rv = 0;
 		if (layernum < pcb_max_copper_layer && Layer->On)
 			pcb_draw_layer(Layer, drawn_area);
