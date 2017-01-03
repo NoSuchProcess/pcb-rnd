@@ -112,7 +112,8 @@ cmp_fmt()
 		png)
 			bn=`basename $out`
 			res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
-			test "$res" -gt 8
+			test "$res" -lt 8 && rm diff/$bn
+			test "$res" -lt 8
 			;;
 		gerber)
 			for n in $ref.gbr/*.gbr
