@@ -31,3 +31,4 @@ arc_normal.bom good r5652
 arc_offpage.bom good r5652
 arc_sizes.bom good r5652
 arc_angles.bom good r5452
+arc_sizes.svg broken r6023 ellipticals not handled
