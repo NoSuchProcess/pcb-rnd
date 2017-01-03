@@ -1338,6 +1338,10 @@ static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 {
 	pcb_angle_t sa, ea;
 
+	use_gc(gc);
+	gdImageSetThickness(im, 0);
+	linewidth = 0;
+
 	/*
 	 * zero angle arcs need special handling as gd will output either
 	 * nothing at all or a full circle when passed delta angle of 0 or 360.
@@ -1384,9 +1388,6 @@ static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	printf("gdImageArc (%p, %d, %d, %d, %d, %d, %d, %d)\n",
 				 (void *)im, SCALE_X(cx), SCALE_Y(cy), SCALE(width), SCALE(height), sa, ea, gc->color->c);
 #endif
-	use_gc(gc);
-	gdImageSetThickness(im, 0);
-	linewidth = 0;
 	gdImageArc(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * width), SCALE(2 * height), sa, ea, gdBrushed);
 }
 
