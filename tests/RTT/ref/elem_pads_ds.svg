@@ -19,5 +19,12 @@
 <g id="layer_0_topsilk">
 <!--normal-->
  <line x1="4.4450" y1="3.8100" x2="4.4450" y2="6.3500" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="4.4450" y1="2.3622" x2="4.8260" y2="2.3622" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
+ <line x1="4.4450" y1="2.9210" x2="4.9530" y2="2.9210" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
+ <line x1="4.4450" y1="1.9050" x2="4.4450" y2="2.9210" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
+ <line x1="4.4450" y1="1.9050" x2="4.9530" y2="1.9050" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
+ <line x1="5.2578" y1="2.1082" x2="5.4610" y2="1.9050" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
+ <line x1="5.4610" y1="1.9050" x2="5.4610" y2="2.9210" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
+ <line x1="5.2578" y1="2.9210" x2="5.6388" y2="2.9210" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
 </g>
 </svg>

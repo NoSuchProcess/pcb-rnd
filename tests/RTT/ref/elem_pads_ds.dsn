@@ -37,7 +37,7 @@
   )
   (placement
     (component 9
-      (place "null" 6.191250 8.096250 front 0 (PN 0))
+      (place "E1" 6.191250 8.096250 front 0 (PN 0))
     )
   )
   (library
