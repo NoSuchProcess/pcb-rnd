@@ -1,6 +1,8 @@
 # This Makefile is a plain old hand written one; all configuration settings
 # are included from ../Makefile.conf which is scconfig generated
 
+ROOT=..
+
 all:
 
 # NOTE: this rule is _not_ called from linstall
@@ -30,5 +32,5 @@ uninstall:
 
 clean:
 
-include ../Makefile.conf
+include $(ROOT)/Makefile.conf
 
