@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="1625.6000" height="1625.6000" viewBox="-2.0000 -2.0000 17.7000 17.7000">
-<g id="layer_4_copper">
+<g id="layer_4_outline">
 <!--normal-->
  <rect x="0.0000" y="0.0000" width="12.7000" height="12.7000" stroke-width="0.2540" stroke="#00868b" stroke-linecap="round" fill="none"/>
 </g>
-<g id="layer_3_copper">
+<g id="layer_3_group3">
 <!--normal-->
  <rect x="0.8890" y="2.1590" width="2.0320" height="2.0320" fill="#4d4d4d" stroke="none"/>
  <circle cx="9.5250" cy="3.1750" r="1.0160" stroke-width="0.2540" fill="#4d4d4d" stroke="none"/>
@@ -15,7 +15,7 @@
  <circle cx="1.9050" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="9.5250" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
-<g id="layer_2_copper">
+<g id="layer_2_group2">
 <!--normal-->
  <rect x="0.8890" y="2.1590" width="2.0320" height="2.0320" fill="#4d4d4d" stroke="none"/>
  <circle cx="9.5250" cy="3.1750" r="1.0160" stroke-width="0.2540" fill="#4d4d4d" stroke="none"/>
@@ -26,7 +26,7 @@
  <circle cx="1.9050" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="9.5250" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
-<g id="layer_1_copper">
+<g id="layer_1_bottom">
 <!--normal-->
  <rect x="0.8890" y="2.1590" width="2.0320" height="2.0320" fill="#4d4d4d" stroke="none"/>
  <circle cx="9.5250" cy="3.1750" r="1.0160" stroke-width="0.2540" fill="#4d4d4d" stroke="none"/>
@@ -37,7 +37,7 @@
  <circle cx="1.9050" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="9.5250" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
-<g id="layer_0_copper">
+<g id="layer_0_top">
 <!--normal-->
  <rect x="0.8890" y="2.1590" width="2.0320" height="2.0320" fill="#4d4d4d" stroke="none"/>
  <circle cx="9.5250" cy="3.1750" r="1.0160" stroke-width="0.2540" fill="#4d4d4d" stroke="none"/>
@@ -48,20 +48,20 @@
  <circle cx="1.9050" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="9.5250" cy="8.2550" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
 </g>
-<g id="layer_-4079_topsilk">
+<g id="layer_0_topsilk">
 <!--normal-->
  <line x1="0.6350" y1="1.9050" x2="0.6350" y2="4.4450" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="10.7950" y1="4.4450" x2="0.6350" y2="4.4450" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="10.7950" y1="4.4450" x2="10.7950" y2="1.9050" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="0.6350" y1="1.9050" x2="4.4450" y2="1.9050" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="6.9850" y1="1.9050" x2="10.7950" y2="1.9050" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
- <path d="M 4.4450 1.9050 A 1.2700 1.2700 0 0 0 6.9850 1.9050" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 6.98500000 1.90500000 A 1.2700 1.2700 0 0 1 4.4450 1.9050" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
  <line x1="0.6350" y1="6.9850" x2="0.6350" y2="9.5250" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="10.7950" y1="9.5250" x2="0.6350" y2="9.5250" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="10.7950" y1="9.5250" x2="10.7950" y2="6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="0.6350" y1="6.9850" x2="4.4450" y2="6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="6.9850" y1="6.9850" x2="10.7950" y2="6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
- <path d="M 4.4450 6.9850 A 1.2700 1.2700 0 0 0 6.9850 6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 6.98500000 6.98500000 A 1.2700 1.2700 0 0 1 4.4450 6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
  <line x1="1.9050" y1="0.6350" x2="1.9050" y2="1.5240" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
  <line x1="1.9050" y1="1.5240" x2="2.0320" y2="1.6510" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
  <line x1="2.0320" y1="1.6510" x2="2.2860" y2="1.6510" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
@@ -82,7 +82,7 @@
  <line x1="2.7178" y1="6.7310" x2="3.3528" y2="6.0960" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
  <line x1="2.7178" y1="6.7310" x2="3.3528" y2="6.7310" stroke-width="0.1778" stroke="#000000" stroke-linecap="round"/>
 </g>
-<g id="layer_-4048_plated-drill">
+<g id="layer_-1_plated-drill">
 <!--normal-->
  <circle cx="1.9050" cy="3.1750" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
  <circle cx="9.5250" cy="3.1750" r="0.5000" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
