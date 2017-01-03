@@ -5,6 +5,7 @@ TRUNK=../..
 all=0
 valg=0
 global_args="-c rc/quiet=1"
+test_announce=0
 
 if test -z "$pcb_rnd_bin"
 then
@@ -98,7 +99,9 @@ cmp_fmt()
 	local ref="$1" out="$2" n bn
 	case "$fmt" in
 		png)
-			echo "$ref" "$out"
+			bn=`basename $out`
+			res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
+			test "$res" -gt 8
 			;;
 		gerber)
 			for n in $ref.gbr/*.gbr
@@ -138,6 +141,7 @@ while test $# -gt 0
 do
 	case "$1"
 	in
+		-t) test_announce=1;;
 		-f|-x) fmt=$2; shift 1;;
 		-b) pcb_rnd_bin=$2; shift 1;;
 		-a) all=1;;
@@ -162,12 +166,28 @@ fi
 
 set_fmt_args
 
+if test "$test_announce" -gt 0
+then
+	echo -n "$fmt: ... "
+fi
+
+bad=0
 if test "$all" -gt 0
 then
-	for n in `ls *.lht *.pcb`
+	for n in `ls *.lht *.pcb 2>/dev/null`
 	do
-		run_test "$n"
+		run_test "$n" || bad=1
 	done
 else
-	run_test "$fn"
+	run_test "$fn" || bad=1
 fi
+
+if test $bad -gt 0
+then
+	echo "$fmt: ... BROKEN"
+else
+	echo "ok"
+fi
+
+exit $bad
+
