@@ -1364,31 +1364,38 @@ static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 		return;
 	}
 
-	/* 
-	 * in gdImageArc, 0 degrees is to the right and +90 degrees is down
-	 * in pcb, 0 degrees is to the left and +90 degrees is down
-	 */
-	start_angle = 180 - start_angle;
-	delta_angle = -delta_angle;
-	if (show_solder_side) {
-		start_angle = -start_angle;
-		delta_angle = -delta_angle;
-	}
-	if (delta_angle > 0) {
-		sa = start_angle;
-		ea = start_angle + delta_angle;
+	if ((delta_angle >= 360) || (delta_angle <= -360)) {
+		/* save some expensive calculations if we are going to draw a full circle anyway */
+		sa = 0;
+		ea = 360;
 	}
 	else {
-		sa = start_angle + delta_angle;
-		ea = start_angle;
-	}
+		/*
+		 * in gdImageArc, 0 degrees is to the right and +90 degrees is down
+		 * in pcb, 0 degrees is to the left and +90 degrees is down
+		 */
+		start_angle = 180 - start_angle;
+		delta_angle = -delta_angle;
+		if (show_solder_side) {
+			start_angle = -start_angle;
+			delta_angle = -delta_angle;
+		}
+		if (delta_angle > 0) {
+			sa = start_angle;
+			ea = start_angle + delta_angle;
+		}
+		else {
+			sa = start_angle + delta_angle;
+			ea = start_angle;
+		}
 
-	/* 
-	 * make sure we start between 0 and 360 otherwise gd does
-	 * strange things
-	 */
-	sa = pcb_normalize_angle(sa);
-	ea = pcb_normalize_angle(ea);
+		/*
+		 * make sure we start between 0 and 360 otherwise gd does
+		 * strange things
+		 */
+		sa = pcb_normalize_angle(sa);
+		ea = pcb_normalize_angle(ea);
+	}
 
 	have_outline |= doing_outline;
 
