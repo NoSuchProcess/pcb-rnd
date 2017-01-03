@@ -23,6 +23,7 @@ set_fmt_args()
 		IPC-D-356) ext=.net;;
 		ps) ext=.ps ;;
 		XY) ext=.xy ;;
+		openscad) ext=.scad ;;
 		png)
 			fmt_args="--dpi 1200"
 			ext=.png
