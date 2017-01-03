@@ -22,7 +22,10 @@ set_fmt_args()
 		bom) ext=.bom ;;
 		dsn) ext=.dsn ;;
 		IPC-D-356) ext=.net;;
-		ps) ext=.ps ;;
+		ps)
+			ext=.ps
+			fmt_args="-c plugins/draw_fab/omit_date=1"
+			;;
 		XY) ext=.xy ;;
 		openscad) ext=.scad ;;
 		png)
@@ -62,6 +65,14 @@ move_out()
 				s/^G04 CreationDate:.*$/G04 CreationDate: <date>/
 				s/^G04 Creator:.*$/G04 Creator: <version>/
 			' $raw_out.*.gbr
+			;;
+		ps)
+			sed -i '
+				s@%%CreationDate:.*@%%CreationDate: date@
+				s@%%Creator:.*@%%Creator: pcb-rnd@
+				s@%%Version:.*@%%Version: ver@
+				s@^[(]Created on.*@(Created on date@
+			' $raw_out
 			;;
 	esac
 
@@ -109,6 +120,11 @@ cmp_fmt()
 				bn=`basename $n`
 				diff -u "$n" "$out.gbr/$bn"
 			done
+			;;
+		ps)
+			zcat "$ref.gz" > "$ref"
+			zcat "$out.gz" > "$out"
+			diff -u "$ref" "$out" && rm "$ref" "$out"
 			;;
 		*)
 			# simple text files: byte-to-byte match required
