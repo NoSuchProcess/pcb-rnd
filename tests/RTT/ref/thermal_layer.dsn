@@ -36,23 +36,20 @@
     )
   )
   (placement
-    (component 5
-      (place 5 2.540000 10.160000 front 0 (PN 0))
-    )
     (component 6
-      (place 6 6.985000 10.160000 front 0 (PN 0))
+      (place 6 2.540000 10.160000 front 0 (PN 0))
     )
     (component 7
-      (place 7 2.540000 5.715000 front 0 (PN 0))
+      (place 7 6.985000 10.160000 front 0 (PN 0))
     )
     (component 8
-      (place 8 6.985000 5.715000 front 0 (PN 0))
+      (place 8 2.540000 5.715000 front 0 (PN 0))
+    )
+    (component 9
+      (place 9 6.985000 5.715000 front 0 (PN 0))
     )
   )
   (library
-    (image 5
-      (pin Th_round_3015995 1 0 0)
-    )
     (image 6
       (pin Th_round_3015995 1 0 0)
     )
@@ -60,6 +57,9 @@
       (pin Th_round_3015995 1 0 0)
     )
     (image 8
+      (pin Th_round_3015995 1 0 0)
+    )
+    (image 9
       (pin Th_round_3015995 1 0 0)
     )
     (padstack Th_round_3015995

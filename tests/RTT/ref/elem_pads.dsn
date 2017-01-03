@@ -36,19 +36,19 @@
     )
   )
   (placement
-    (component 8
+    (component 9
       (place "R1" 6.350000 10.160000 front 0 (PN 0))
     )
-    (component 16
+    (component 17
       (place "U1" 6.339840 4.241800 front 0 (PN 0))
     )
   )
   (library
-    (image 8
+    (image 9
       (pin Smd_rect_1299972x1899920 "1" -1.499870 0.000000)
       (pin Smd_rect_1299972x1899920 "2" 1.499870 0.000000)
     )
-    (image 16
+    (image 17
       (pin Smd_rect_381000x889000 "1" -0.650240 -1.066800)
       (pin Smd_rect_381000x889000 "2" 0.645160 -1.066800)
       (pin Smd_rect_381000x889000 "3" 0.645160 0.711200)

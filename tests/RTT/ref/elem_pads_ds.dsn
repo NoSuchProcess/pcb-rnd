@@ -36,12 +36,12 @@
     )
   )
   (placement
-    (component 8
+    (component 9
       (place "null" 6.191250 8.096250 front 0 (PN 0))
     )
   )
   (library
-    (image 8
+    (image 9
       (pin Smd_rect_2159000x254000 "1" -0.793750 0.793750)
       (pin Smd_rect_254000x2159000 "2" 0.793750 -0.793750)
     )
