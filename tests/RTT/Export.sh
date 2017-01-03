@@ -16,6 +16,7 @@ fmt_args=""
 set_fmt_args()
 {
 	case "$fmt" in
+		bboard) ext=.bbrd.png ;;
 		bom) ext=.bom ;;
 		dsn) ext=.dsn ;;
 		IPC-D-356) ext=.net;;
@@ -62,6 +63,9 @@ move_out()
 # move the output file(s) to their final subdir (for multifile formats) and/or
 # compress them (for large text files)
 	case "$fmt" in
+		bboard)
+			mv ${raw_out%%.bbrd.png}.png $final_out
+			;;
 		gerber)
 			mkdir -p $final_out.gbr
 			mv $raw_out.*.gbr $final_out.gbr
