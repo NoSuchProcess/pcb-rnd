@@ -112,6 +112,7 @@ static int linewidth = -1;
 static int lastgroup = -1;
 static gdImagePtr lastbrush = (gdImagePtr) ((void *) -1);
 static int lastcap = -1;
+static int last_color_r, last_color_g, last_color_b, last_cap;
 
 /* For photo-mode we need the following layers as monochrome masks:
 
@@ -492,6 +493,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	lastcap = -1;
 	lastgroup = -1;
 	show_solder_side = conf_core.editor.show_solder_side;
+	last_color_r = last_color_g = last_color_b = last_cap = -1;
 
 	in_mono = options[HA_mono].int_value;
 
@@ -1166,6 +1168,8 @@ static void use_gc(pcb_hid_gc_t gc)
 		need_brush = 1;
 	}
 
+	need_brush |= (gc->color->r != last_color_r) || (gc->color->g != last_color_g) || (gc->color->b != last_color_b) || (gc->cap != last_cap);
+
 	if (lastbrush != gc->brush || need_brush) {
 		pcb_hidval_t bval;
 		char name[256];
@@ -1193,6 +1197,11 @@ static void use_gc(pcb_hid_gc_t gc)
 		}
 
 		sprintf(name, "#%.2x%.2x%.2x_%c_%d", gc->color->r, gc->color->g, gc->color->b, type, r);
+
+		last_color_r = gc->color->r;
+		last_color_g = gc->color->g;
+		last_color_b = gc->color->b;
+		last_cap = gc->cap;
 
 		if (pcb_hid_cache_color(0, name, &bval, &brush_cache)) {
 			gc->brush = (gdImagePtr) bval.ptr;
