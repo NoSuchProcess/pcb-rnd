@@ -163,7 +163,7 @@ static void print_structure(FILE * fp)
 		layerlist = g_list_append(layerlist, &PCB->Data->Layer[top_layer]);
 	}
 	else {
-		pcb_gui->log("WARNING! DSN export does not include the top layer. "
+		pcb_message(PCB_MSG_WARNING, "WARNING! DSN export does not include the top layer. "
 						 "Router will consider an inner layer to be the \"top\" layer.\n");
 	}
 
@@ -182,19 +182,19 @@ static void print_structure(FILE * fp)
 		layerlist = g_list_append(layerlist, first_layer);
 
 		if (group < top_group) {
-			pcb_gui->log("WARNING! DSN export moved layer group with the \"%s\" layer "
+			pcb_message(PCB_MSG_WARNING, "WARNING! DSN export moved layer group with the \"%s\" layer "
 							 "after the top layer group.  DSN files must have the top " "layer first.\n", first_layer->Name);
 		}
 
 		if (group > bot_group) {
-			pcb_gui->log("WARNING! DSN export moved layer group with the \"%s\" layer "
+			pcb_message(PCB_MSG_WARNING, "WARNING! DSN export moved layer group with the \"%s\" layer "
 							 "before the bottom layer group.  DSN files must have the " "bottom layer last.\n", first_layer->Name);
 		}
 
 		GROUP_LOOP(PCB->Data, group);
 		{
 			if (entry > 0) {
-				pcb_gui->log("WARNING! DSN export squashed layer \"%s\" into layer "
+				pcb_message(PCB_MSG_WARNING, "WARNING! DSN export squashed layer \"%s\" into layer "
 								 "\"%s\", DSN files do not have layer groups.", layer->Name, first_layer->Name);
 			}
 		}
@@ -205,7 +205,7 @@ static void print_structure(FILE * fp)
 		layerlist = g_list_append(layerlist, &PCB->Data->Layer[bot_layer]);
 	}
 	else {
-		pcb_gui->log("WARNING! DSN export does not include the bottom layer. "
+		pcb_message(PCB_MSG_WARNING, "WARNING! DSN export does not include the bottom layer. "
 						 "Router will consider an inner layer to be the \"bottom\" layer.\n");
 	}
 
@@ -481,7 +481,7 @@ static int PrintSPECCTRA(void)
 	/* Print out the dsn .dsn file. */
 	fp = fopen(dsn_filename, "w");
 	if (!fp) {
-		pcb_gui->log("Cannot open file %s for writing\n", dsn_filename);
+		pcb_message(PCB_MSG_WARNING, "Cannot open file %s for writing\n", dsn_filename);
 		return 1;
 	}
 
