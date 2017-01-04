@@ -51,6 +51,7 @@
 #include "compat_nls.h"
 #include "fptr_cast.h"
 #include <liblihata/tree.h>
+#include "../src_plugins/lib_gtk_common/util_str.h"
 
 #if 0
 #include <locale.h>

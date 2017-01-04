@@ -32,20 +32,6 @@
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>
 
-/* Not a gui function, but no better place to put it...
- */
-gboolean dup_string(gchar ** dst, const gchar * src)
-{
-	if ((dst == NULL) || ((*dst == NULL) && (src == NULL)))
-		return FALSE;
-	if (*dst) {
-		if (src && !strcmp(*dst, src))
-			return FALSE;
-		g_free(*dst);
-	}
-	*dst = g_strdup(src);
-	return TRUE;
-}
 
 void free_glist_and_data(GList ** list_head)
 {

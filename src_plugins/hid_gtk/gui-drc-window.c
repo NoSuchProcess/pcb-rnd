@@ -47,6 +47,7 @@
 #include "obj_poly_draw.h"
 #include "layer_vis.h"
 
+#include "../src_plugins/lib_gtk_common/util_str.h"
 
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5

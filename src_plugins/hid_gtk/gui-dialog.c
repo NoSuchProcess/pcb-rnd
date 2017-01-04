@@ -36,6 +36,9 @@
 #include "data.h"
 #include "gui.h"
 
+#include "../src_plugins/lib_gtk_common/util_str.h"
+
+
 /* ---------------------------------------------- */
 gchar *ghid_dialog_input(const char *prompt, const char *initial)
 {

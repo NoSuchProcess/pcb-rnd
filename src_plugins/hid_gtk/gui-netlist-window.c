@@ -51,7 +51,7 @@
 #include "obj_all.h"
 
 #include "gui.h"
-
+#include "../src_plugins/lib_gtk_common/util_str.h"
 
 #define NET_HIERARCHY_SEPARATOR "/"
 

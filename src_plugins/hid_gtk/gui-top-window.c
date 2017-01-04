@@ -96,6 +96,8 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "obj_line.h"
 #include "layer_vis.h"
 
+#include "../src_plugins/lib_gtk_common/util_str.h"
+
 static pcb_bool ignore_layer_update;
 
 static GtkWidget *ghid_load_menus(void);

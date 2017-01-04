@@ -17,6 +17,9 @@
 
 #include "ghid-cell-renderer-visibility.h"
 
+#include "../src_plugins/lib_gtk_common/util_str.h"
+
+
 enum {
 	TOGGLED,
 	LAST_SIGNAL
