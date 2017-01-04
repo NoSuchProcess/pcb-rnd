@@ -56,10 +56,13 @@
 #include "hid_helper.h"
 #include "hid_flags.h"
 
-/* rouding correctioin to get the original pixels back - should be 0 after
+/* rouding correction to get the original pixels back - should be 0 after
    the validation */
 #define PNG_SCALE_HACK1 1
 
+/* do not round, floor() - this is how the old code behaved on the platform we
+   are couting pixels for validation. After the validation we should probably
+   switch to pcb_round() if the 1 pixel errors are within the range */
 #define pcb_hack_round(d) ( \
 		(fabs(d - pcb_round(d)) < 0.00001) ? \
 		d : floor(d) \
