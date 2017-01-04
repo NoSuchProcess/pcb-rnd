@@ -305,7 +305,6 @@ void make_route_style_buttons(GHidRouteStyleSelector * rss);
 
 /* gui-utils.c
 */
-void free_glist_and_data(GList ** list_head);
 
 ModifierKeysState ghid_modifier_keys_state(GdkModifierType * state);
 ButtonState ghid_button_state(GdkModifierType * state);

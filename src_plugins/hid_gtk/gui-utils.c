@@ -33,20 +33,6 @@
 #include <gdk/gdkkeysyms.h>
 
 
-void free_glist_and_data(GList ** list_head)
-{
-	GList *list;
-
-	if (*list_head == NULL)
-		return;
-	for (list = *list_head; list; list = list->next)
-		if (list->data)
-			g_free(list->data);
-	g_list_free(*list_head);
-	*list_head = NULL;
-}
-
-
 gboolean ghid_is_modifier_key_sym(gint ksym)
 {
 	if (ksym == GDK_Shift_R || ksym == GDK_Shift_L || ksym == GDK_Control_R || ksym == GDK_Control_L)
