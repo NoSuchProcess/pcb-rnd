@@ -60,6 +60,12 @@
    the validation */
 #define PNG_SCALE_HACK1 1
 
+#define pcb_hack_round(d) ( \
+		(fabs(d - pcb_round(d)) < 0.00001) ? \
+		d : floor(d) \
+	)
+
+
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", func); abort()
 
 static pcb_hid_t png_hid;
@@ -74,9 +80,9 @@ static double scale = 1;
 static pcb_coord_t x_shift = 0;
 static pcb_coord_t y_shift = 0;
 static int show_solder_side;
-#define SCALE(w)   ((int)((w)/scale + 0.5))
-#define SCALE_X(x) ((int)(((x) - x_shift)/scale))
-#define SCALE_Y(y) ((int)(((show_solder_side ? (PCB->MaxHeight-(y)) : (y)) - y_shift)/scale))
+#define SCALE(w)   ((int)pcb_round((w)/scale))
+#define SCALE_X(x) ((int)pcb_hack_round(((x) - x_shift)/scale))
+#define SCALE_Y(y) ((int)pcb_hack_round(((show_solder_side ? (PCB->MaxHeight-(y)) : (y)) - y_shift)/scale))
 #define SWAP_IF_SOLDER(a,b) do { int c; if (show_solder_side) { c=a; a=b; b=c; }} while (0)
 
 /* Used to detect non-trivial outlines */
