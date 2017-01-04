@@ -33,6 +33,6 @@
 
 #include <glib.h>
 
-gboolean dup_string(gchar ** dst, const gchar * src);
+gboolean pcb_gtk_g_strdup(gchar ** dst, const gchar * src);
 
 #endif

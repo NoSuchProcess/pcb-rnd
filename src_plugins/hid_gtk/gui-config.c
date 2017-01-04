@@ -1302,7 +1302,7 @@ static void config_layers_apply(void)
 	for (i = 0; i < pcb_max_copper_layer; ++i) {
 		layer = &PCB->Data->Layer[i];
 		s = ghid_entry_get_text(layer_entry[i]);
-		if (dup_string((char**)&layer->Name, s))
+		if (pcb_gtk_g_strdup((char**)&layer->Name, s))
 			layers_modified = TRUE;
 	}
 	/* Layer names can be changed from the menus and that can update the
@@ -1371,7 +1371,7 @@ static void layer_name_entry_cb(GtkWidget * entry, gpointer data)
 
 	layer = &PCB->Data->Layer[i];
 	name = ghid_entry_get_text(entry);
-	if (dup_string((char**)&layer->Name, name))
+	if (pcb_gtk_g_strdup((char**)&layer->Name, name))
 		ghid_layer_buttons_update();
 }
 

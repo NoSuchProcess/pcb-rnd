@@ -253,7 +253,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	 */
 	gtk_tree_model_get(model, &iter, NODE_LIBRARY_COLUMN, &node, -1);
 
-	dup_string(&node_name, node->ListEntry);
+	pcb_gtk_g_strdup(&node_name, node->ListEntry);
 	node_selected_net = selected_net;
 
 	/* Now just toggle a select of the node on the layout

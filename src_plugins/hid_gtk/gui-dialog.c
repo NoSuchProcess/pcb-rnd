@@ -339,7 +339,7 @@ gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gc
 		result = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));
 		if (folder && path) {
-			dup_string(path, folder);
+			pcb_gtk_g_strdup(path, folder);
 			g_free(folder);
 		}
 	}
@@ -472,7 +472,7 @@ gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gc
 		result = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ctx.dialog));
 		folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(ctx.dialog));
 		if (folder && path) {
-			dup_string(path, folder);
+			pcb_gtk_g_strdup(path, folder);
 			g_free(folder);
 		}
 	}

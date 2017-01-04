@@ -552,7 +552,7 @@ void ghid_window_set_name_label(gchar * name)
 	if (ghidgui == NULL)
 		return;
 
-	dup_string(&(ghidgui->name_label_string), name);
+	pcb_gtk_g_strdup(&(ghidgui->name_label_string), name);
 	if (!ghidgui->name_label_string || !*ghidgui->name_label_string)
 		ghidgui->name_label_string = g_strdup(_("Unnamed"));
 
