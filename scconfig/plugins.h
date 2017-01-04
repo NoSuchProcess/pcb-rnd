@@ -1,6 +1,7 @@
 plugin_header("\nLibrary plugins:\n")
 plugin_def("lib_gensexpr",    "#s-expression library",     sdisable, 0)
 plugin_def("lib_legacy_func", "legacy functions",          sbuildin, 1)
+plugin_def("lib_gtk_common",  "all-hid_gtk common code",   sdisable, 0)
 
 plugin_header("\nFeature plugins:\n")
 plugin_def("gpmi",            "GPMI scripting",            sbuildin, 1)
@@ -79,6 +80,7 @@ plugin_def("hid_remote",      "remote HID server",         sdisable, 1)
 plugin_dep("export_lpr", "export_ps")
 plugin_dep("export_xy", "export_bom")
 plugin_dep("io_kicad", "lib_gensexpr")
+plugin_dep("hid_gtk", "lib_gtk_common")
 
 /* for the uniq name lib: */
 plugin_dep("io_kicad_legacy", "io_kicad")

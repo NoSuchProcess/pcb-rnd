@@ -1,0 +1,6 @@
+hid_gtk* common code (regardless of gtk version or drawing mechanism: for 
+both gtk2 and gtk3 and for both sw rendering and gl)
+
+#state: WIP
+#default: disabled
+#implements: (lib)
