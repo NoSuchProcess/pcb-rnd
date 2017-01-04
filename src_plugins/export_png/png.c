@@ -56,6 +56,9 @@
 #include "hid_helper.h"
 #include "hid_flags.h"
 
+/* rouding correctioin to get the original pixels back - should be 0 after
+   the validation */
+#define PNG_SCALE_HACK1 1
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", func); abort()
 
@@ -687,8 +690,8 @@ static void png_do_export(pcb_hid_attr_val_t * options)
 		 * a scale of 10 means 1 pixel is 10 inches
 		 */
 		scale = PCB_INCH_TO_COORD(1) / dpi;
-		w = w / scale;
-		h = h / scale;
+		w = pcb_round(w / scale) - PNG_SCALE_HACK1;
+		h = pcb_round(h / scale) - PNG_SCALE_HACK1;
 	}
 	else if (xmax == 0 && ymax == 0) {
 		fprintf(stderr, "ERROR:  You may not set both xmax, ymax," "and xy-max to zero\n");
