@@ -1306,12 +1306,12 @@ static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 		   are brought in by a pixel to make sure we have contiguous
 		   outlines.  */
 		if (x1 == PCB->MaxWidth && x2 == PCB->MaxWidth) {
-			x1 -= scale / 2;
-			x2 -= scale / 2;
+			x1 -= pcb_round(scale / 2);
+			x2 -= pcb_round(scale / 2);
 		}
 		if (y1 == PCB->MaxHeight && y2 == PCB->MaxHeight) {
-			y1 -= scale / 2;
-			y2 -= scale / 2;
+			y1 -= pcb_round(scale / 2);
+			y2 -= pcb_round(scale / 2);
 		}
 	}
 
