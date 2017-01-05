@@ -139,6 +139,7 @@ typedef struct {
 	GdkCursor *X_cursor;					/* used X cursor */
 	GdkCursorType X_cursor_shape;	/* and its shape */
 
+	/* TOOD: move all bools and coords below to view */
 	gboolean has_entered;
 	gboolean panning;
 
