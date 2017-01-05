@@ -161,6 +161,12 @@ put /local/pcb/OBJS [@
 	../src_3rd/genregex/regex.o
 @]
 
+# We do not compile these in the executable but we need rules for these for utils
+put /local/pcb/UTIL_OBJS [@
+	../src_3rd/genvector/vts0.o
+	../src_3rd/qparse/qparse.o
+@]
+
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
 	action_act.c buffer.c change_act.c conf_act.c file_act.c find_act.c
@@ -344,6 +350,12 @@ uninstall:
 # generate explicit rules for .c -> .o
 put /local/comp/OBJS /local/pcb/OBJS
 put /local/comp/OBJS_C99 ?/local/pcb/OBJS_C99
+include {../scconfig/Makefile.comp.inc}
+
+print [@
+# for extern utils:@]
+
+put /local/comp/OBJS /local/pcb/UTIL_OBJS
 include {../scconfig/Makefile.comp.inc}
 
 # generate deps
