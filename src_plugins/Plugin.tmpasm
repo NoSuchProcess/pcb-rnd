@@ -20,7 +20,7 @@ include {../scconfig/Makefile.comp_var.inc}
 append /local/pcb/all   [@ $(PLUGIDIR)/@/local/pcb/mod@.so @]
 
 append /local/pcb/rules/install_ [@
-	$(CPC) "`pwd`/$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so" "$(LIBDIR)/plugins/@/local/pcb/mod@.so"@]
+	$(SCCBOX) $(HOW) "$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so" "$(LIBDIR)/plugins/@/local/pcb/mod@.so"@]
 
 append /local/pcb/CLEANFILES [@ $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so $(PLUGIDIR)/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@  @/local/pcb/mod/OBJS_C99@ @]
 
