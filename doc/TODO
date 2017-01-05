@@ -91,7 +91,6 @@ CLEANUP #5
 - check whether local copy of gts is needed, bisect when toporouter broke 
 - check gpmi when pcb-rnd is fully linstalled - broken symlinks?
 - multi-key: display state on the gui
-- implement loglevels and log style tags in the lesstif HID
 - TODO#3: works only on US keyboard
 - gtk hid: display element numbers; flip board with tab: numbers get mirrored [report:Evan]
 - layer rewrite:
