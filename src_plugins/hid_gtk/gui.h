@@ -131,7 +131,7 @@ typedef struct {
 	pcb_coord_t height;
 
 	gint canvas_width, canvas_height;
-} view_data;
+} pcb_gtk_view_t;
 
 	/* The output viewport
 	 */
@@ -153,7 +153,7 @@ typedef struct {
 	gboolean has_entered;
 	gboolean panning;
 
-	view_data view;
+	pcb_gtk_view_t view;
 	pcb_coord_t pcb_x, pcb_y;						/* PCB coordinates of the mouse pointer */
 	pcb_coord_t crosshair_x, crosshair_y;	/* PCB coordinates of the crosshair     */
 } GHidPort;

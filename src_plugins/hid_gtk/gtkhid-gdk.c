@@ -1140,7 +1140,7 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	GdkWindow *window = gtk_widget_get_window(widget);
 	GdkDrawable *save_drawable;
 	GtkAllocation allocation;
-	view_data save_view;
+	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz;
 	render_priv *priv = gport->render_priv;
@@ -1186,7 +1186,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 {
 	GdkPixmap *pixmap;
 	GdkDrawable *save_drawable;
-	view_data save_view;
+	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	pcb_box_t region;
 	render_priv *priv = gport->render_priv;

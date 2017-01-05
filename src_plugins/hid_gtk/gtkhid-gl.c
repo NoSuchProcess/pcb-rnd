@@ -897,7 +897,7 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GhidPinoutPreview *pinout = GHID_PINOUT_PREVIEW(widget);
 	GtkAllocation allocation;
-	view_data save_view;
+	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz;
 
@@ -986,7 +986,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	GdkGLPixmap *glpixmap;
 	GdkGLContext *glcontext;
 	GdkGLDrawable *gldrawable;
-	view_data save_view;
+	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	pcb_box_t region;
 
