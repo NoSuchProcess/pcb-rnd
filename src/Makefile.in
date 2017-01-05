@@ -162,7 +162,7 @@ put /local/pcb/OBJS [@
 @]
 
 # We do not compile these in the executable but we need rules for these for utils
-put /local/pcb/UTIL_OBJS [@
+put /local/pcb/OBJS_UTIL [@
 	../src_3rd/genvector/vts0.o
 	../src_3rd/qparse/qparse.o
 @]
@@ -209,9 +209,11 @@ append /local/pcb/LIBS    /target/libs/sul/dmalloc/ldflags
 
 # ---- logic ----
 
+
 # Clean up variables
 uniq /local/pcb/OBJS
 uniq /local/pcb/OBJS_C99
+uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
@@ -245,6 +247,7 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 @/local/pcb/TOPVARS@
 OBJS=@/local/pcb/OBJS@
 OBJS_C99=@/local/pcb/OBJS_C99@
+OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@/local/pcb/CFLAGS@
 C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
@@ -316,6 +319,8 @@ defpcb_internal.c: default.pcb
 gen_font:
 	$(ROOT)/util/devhelpers/font2c.sh < default_font > font_internal.c
 
+util_deps: $(OBJS) $(OBJS_UTIL)
+
 FORCE:
 
 
@@ -355,7 +360,7 @@ include {../scconfig/Makefile.comp.inc}
 print [@
 # for extern utils:@]
 
-put /local/comp/OBJS /local/pcb/UTIL_OBJS
+put /local/comp/OBJS /local/pcb/OBJS_UTIL
 include {../scconfig/Makefile.comp.inc}
 
 # generate deps
