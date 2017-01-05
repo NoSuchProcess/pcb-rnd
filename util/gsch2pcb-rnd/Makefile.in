@@ -77,7 +77,7 @@ $(HASHOBJ) $(QPARSE) $(LHTOBJ) \
 ../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o \
 ../../src_3rd/genvector/vts0.o ../../src_3rd/genadlist/genadlist.o \
 ../../src_3rd/genadlist/genlistalloc.o:
-	cd ../../src && make util_deps
+	cd ../../src && $(MAKE) util_deps
 
 ##### module rules begin #####
 @/local/pcb/RULES@
