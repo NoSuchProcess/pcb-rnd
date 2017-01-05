@@ -281,7 +281,6 @@ static void log_dismiss(Widget w, void *up, void *cbp)
 
 void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 {
-	/* TODO(hzeller): do something useful with level (color etc.) */
 	char *buf, *scan;
 	if (!mainwind) {
 		vprintf(fmt, ap);
@@ -336,6 +335,13 @@ void lesstif_logv(enum pcb_message_level level, const char *fmt, va_list ap)
 		pending_newline++;
 		*scan-- = 0;
 	}
+	switch(level) {
+		case PCB_MSG_ERROR:   XmTextInsert(log_text, log_size, "Err: "); break;
+		case PCB_MSG_WARNING: XmTextInsert(log_text, log_size, "Wrn: "); break;
+		case PCB_MSG_INFO:    XmTextInsert(log_text, log_size, "Inf: "); break;
+		case PCB_MSG_DEBUG:   XmTextInsert(log_text, log_size, "Dbg: "); break;
+	}
+	log_size += 5;
 	XmTextInsert(log_text, log_size, buf);
 	log_size += strlen(buf);
 
