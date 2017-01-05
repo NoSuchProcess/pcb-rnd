@@ -902,8 +902,8 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	double xz, yz;
 
 	save_view = gport->view;
-	save_width = gport->width;
-	save_height = gport->height;
+	save_width = gport->view.canvas_width;
+	save_height = gport->view.canvas_height;
 
 	/* Setup zoom factor for drawing routines */
 
@@ -915,8 +915,8 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	else
 		gport->view.coord_per_px = yz;
 
-	gport->width = allocation.width;
-	gport->height = allocation.height;
+	gport->view.canvas_width = allocation.width;
+	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
 	gport->view.height = allocation.height * gport->view.coord_per_px;
 	gport->view.x0 = (pinout->x_max - gport->view.width) / 2;
@@ -972,8 +972,8 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	gdk_gl_drawable_gl_end(pGlDrawable);
 
 	gport->view = save_view;
-	gport->width = save_width;
-	gport->height = save_height;
+	gport->view.canvas_width = save_width;
+	gport->view.canvas_height = save_height;
 
 	return FALSE;
 }
@@ -991,8 +991,8 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	pcb_box_t region;
 
 	save_view = gport->view;
-	save_width = gport->width;
-	save_height = gport->height;
+	save_width = gport->view.canvas_width;
+	save_height = gport->view.canvas_height;
 
 	/* Setup rendering context for drawing routines
 	 */
@@ -1007,8 +1007,8 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	/* Setup zoom factor for drawing routines */
 
 	gport->view.coord_per_px = zoom;
-	gport->width = width;
-	gport->height = height;
+	gport->view.canvas_width = width;
+	gport->view.canvas_height = height;
 	gport->view.width = width * gport->view.coord_per_px;
 	gport->view.height = height * gport->view.coord_per_px;
 	gport->view.x0 = conf_core.editor.view.flip_x ? PCB->MaxWidth - cx : cx;
@@ -1052,10 +1052,10 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	glTranslatef(gport->view.flip_x ? gport->view.x0 - PCB->MaxWidth :
 							 -gport->view.x0, gport->view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
 
-	region.X1 = MIN(Px(0), Px(gport->width + 1));
-	region.Y1 = MIN(Py(0), Py(gport->height + 1));
-	region.X2 = MAX(Px(0), Px(gport->width + 1));
-	region.Y2 = MAX(Py(0), Py(gport->height + 1));
+	region.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
+	region.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
+	region.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
+	region.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
 
 	region.X1 = MAX(0, MIN(PCB->MaxWidth, region.X1));
 	region.X2 = MAX(0, MIN(PCB->MaxWidth, region.X2));
@@ -1078,8 +1078,8 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	g_object_unref(glcontext);
 
 	gport->view = save_view;
-	gport->width = save_width;
-	gport->height = save_height;
+	gport->view.canvas_width = save_width;
+	gport->view.canvas_height = save_height;
 
 	return pixmap;
 }

@@ -47,7 +47,7 @@ static void ghid_zoom_view_rel(pcb_coord_t center_x, pcb_coord_t center_y, doubl
 void ghid_zoom_view_fit(void)
 {
 	ghid_pan_view_abs(SIDE_X(0), SIDE_Y(0), 0, 0);
-	ghid_zoom_view_abs(SIDE_X(0), SIDE_Y(0), MAX(PCB->MaxWidth / gport->width, PCB->MaxHeight / gport->height));
+	ghid_zoom_view_abs(SIDE_X(0), SIDE_Y(0), MAX(PCB->MaxWidth / gport->view.canvas_width, PCB->MaxHeight / gport->view.canvas_height));
 }
 
 void ghid_flip_view(pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)

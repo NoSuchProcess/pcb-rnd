@@ -84,7 +84,7 @@ void ghid_zoom_view_abs(pcb_coord_t center_x, pcb_coord_t center_y, double new_z
 	 * the entire board just fits inside the viewport
 	 */
 	min_zoom = 200;
-	max_zoom = MAX(PCB->MaxWidth / gport->width, PCB->MaxHeight / gport->height) * ALLOW_ZOOM_OUT_BY;
+	max_zoom = MAX(PCB->MaxWidth / gport->view.canvas_width, PCB->MaxHeight / gport->view.canvas_height) * ALLOW_ZOOM_OUT_BY;
 	new_zoom = MIN(MAX(min_zoom, new_zoom), max_zoom);
 
 	if ((new_zoom > max_zoom) || (new_zoom < min_zoom))
@@ -94,8 +94,8 @@ void ghid_zoom_view_abs(pcb_coord_t center_x, pcb_coord_t center_y, double new_z
 		return;
 
 	/* Do not allow zoom level that'd overflow the coord type */
-	cmaxx = gport->width  * (new_zoom / 2.0);
-	cmaxy = gport->height * (new_zoom / 2.0);
+	cmaxx = gport->view.canvas_width  * (new_zoom / 2.0);
+	cmaxy = gport->view.canvas_height * (new_zoom / 2.0);
 	if ((cmaxx >= COORD_MAX/2) || (cmaxy >= COORD_MAX/2)) {
 		return;
 	}
@@ -1412,8 +1412,8 @@ static int Center(int argc, const char **argv, pcb_coord_t pcb_x, pcb_coord_t pc
 		PCB_AFAIL(center);
 
 	/* Aim to put the given x, y PCB coordinates in the center of the widget */
-	widget_x = gport->width / 2;
-	widget_y = gport->height / 2;
+	widget_x = gport->view.canvas_width / 2;
+	widget_y = gport->view.canvas_height / 2;
 
 	ghid_pan_view_abs(pcb_x, pcb_y, widget_x, widget_y);
 

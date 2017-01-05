@@ -71,8 +71,8 @@ void ghid_port_ranges_scale(void)
 	   |  drawing area size in pixels to PCB units and that will be
 	   |  the page size for the Gtk adjustment.
 	 */
-	gport->view.width = gport->width * gport->view.coord_per_px;
-	gport->view.height = gport->height * gport->view.coord_per_px;
+	gport->view.width = gport->view.canvas_width * gport->view.coord_per_px;
+	gport->view.height = gport->view.canvas_height * gport->view.coord_per_px;
 
 	adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->h_range));
 	page_size = MIN(gport->view.width, PCB->MaxWidth);
@@ -256,13 +256,13 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 {
 	static gboolean first_time_done;
 
-	gport->width = ev->width;
-	gport->height = ev->height;
+	gport->view.canvas_width = ev->width;
+	gport->view.canvas_height = ev->height;
 
 	if (gport->pixmap)
 		gdk_pixmap_unref(gport->pixmap);
 
-	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(widget), gport->width, gport->height, -1);
+	gport->pixmap = gdk_pixmap_new(gtk_widget_get_window(widget), gport->view.canvas_width, gport->view.canvas_height, -1);
 	gport->drawable = gport->pixmap;
 
 	if (!first_time_done) {

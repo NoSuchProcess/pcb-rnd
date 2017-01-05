@@ -130,6 +130,7 @@ typedef struct {
 	pcb_coord_t width;
 	pcb_coord_t height;
 
+	gint canvas_width, canvas_height;
 } view_data;
 
 	/* The output viewport
@@ -139,7 +140,6 @@ typedef struct {
 	 *drawing_area;								/* and its drawing area */
 	GdkPixmap *pixmap, *mask;
 	GdkDrawable *drawable;				/* Current drawable for drawing routines */
-	gint width, height;
 
 	struct render_priv *render_priv;
 

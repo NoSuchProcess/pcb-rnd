@@ -165,9 +165,9 @@ static inline void ghid_draw_grid_global(void)
 		x1 += grd;
 	if (Vy(y1) < 0)
 		y1 += grd;
-	if (Vx(x2) >= gport->width)
+	if (Vx(x2) >= gport->view.canvas_width)
 		x2 -= grd;
-	if (Vy(y2) >= gport->height)
+	if (Vy(y2) >= gport->view.canvas_height)
 		y2 -= grd;
 
 
@@ -380,7 +380,7 @@ void ghid_use_mask(int use_it)
 
 	case HID_MASK_CLEAR:
 		if (!gport->mask)
-			gport->mask = gdk_pixmap_new(0, gport->width, gport->height, 1);
+			gport->mask = gdk_pixmap_new(0, gport->view.canvas_width, gport->view.canvas_height, 1);
 		gport->drawable = gport->mask;
 		mask_seq = 0;
 		if (!priv->mask_gc) {
@@ -390,7 +390,7 @@ void ghid_use_mask(int use_it)
 		}
 		color.pixel = 1;
 		gdk_gc_set_foreground(priv->mask_gc, &color);
-		gdk_draw_rectangle(gport->drawable, priv->mask_gc, TRUE, 0, 0, gport->width, gport->height);
+		gdk_draw_rectangle(gport->drawable, priv->mask_gc, TRUE, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
 		color.pixel = 0;
 		gdk_gc_set_foreground(priv->mask_gc, &color);
 		break;
@@ -598,7 +598,7 @@ void ghid_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t
 	dx2 = Vx((double) x2);
 	dy2 = Vy((double) y2);
 
-	if (!pcb_line_clip(0, 0, gport->width, gport->height, &dx1, &dy1, &dx2, &dy2, gc->width / gport->view.coord_per_px))
+	if (!pcb_line_clip(0, 0, gport->view.canvas_width, gport->view.canvas_height, &dx1, &dy1, &dx2, &dy2, gc->width / gport->view.coord_per_px))
 		return;
 
 	USE_GC(gc);
@@ -611,8 +611,8 @@ void ghid_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t 
 	gint w, h, radius;
 	render_priv *priv = gport->render_priv;
 
-	w = gport->width * gport->view.coord_per_px;
-	h = gport->height * gport->view.coord_per_px;
+	w = gport->view.canvas_width * gport->view.coord_per_px;
+	h = gport->view.canvas_height * gport->view.coord_per_px;
 	radius = (xradius > yradius) ? xradius : yradius;
 	if (SIDE_X(cx) < gport->view.x0 - radius
 			|| SIDE_X(cx) > gport->view.x0 + w + radius
@@ -646,8 +646,8 @@ void ghid_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t
 	render_priv *priv = gport->render_priv;
 
 	lw = gc->width;
-	w = gport->width * gport->view.coord_per_px;
-	h = gport->height * gport->view.coord_per_px;
+	w = gport->view.canvas_width * gport->view.coord_per_px;
+	h = gport->view.canvas_height * gport->view.coord_per_px;
 
 	if ((SIDE_X(x1) < gport->view.x0 - lw && SIDE_X(x2) < gport->view.x0 - lw)
 			|| (SIDE_X(x1) > gport->view.x0 + w + lw && SIDE_X(x2) > gport->view.x0 + w + lw)
@@ -681,8 +681,8 @@ void ghid_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord
 	gint w, h, vr;
 	render_priv *priv = gport->render_priv;
 
-	w = gport->width * gport->view.coord_per_px;
-	h = gport->height * gport->view.coord_per_px;
+	w = gport->view.canvas_width * gport->view.coord_per_px;
+	h = gport->view.canvas_height * gport->view.coord_per_px;
 	if (SIDE_X(cx) < gport->view.x0 - radius
 			|| SIDE_X(cx) > gport->view.x0 + w + radius
 			|| SIDE_Y(cy) < gport->view.y0 - radius || SIDE_Y(cy) > gport->view.y0 + h + radius)
@@ -718,8 +718,8 @@ void ghid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t
 	render_priv *priv = gport->render_priv;
 
 	lw = gc->width;
-	w = gport->width * gport->view.coord_per_px;
-	h = gport->height * gport->view.coord_per_px;
+	w = gport->view.canvas_width * gport->view.coord_per_px;
+	h = gport->view.canvas_height * gport->view.coord_per_px;
 
 	if ((SIDE_X(x1) < gport->view.x0 - lw && SIDE_X(x2) < gport->view.x0 - lw)
 			|| (SIDE_X(x1) > gport->view.x0 + w + lw && SIDE_X(x2) > gport->view.x0 + w + lw)
@@ -761,8 +761,8 @@ static void redraw_region(GdkRectangle * rect)
 	else {
 		priv->clip_rect.x = 0;
 		priv->clip_rect.y = 0;
-		priv->clip_rect.width = gport->width;
-		priv->clip_rect.height = gport->height;
+		priv->clip_rect.width = gport->view.canvas_width;
+		priv->clip_rect.height = gport->view.canvas_height;
 		priv->clip = pcb_false;
 	}
 
@@ -797,21 +797,21 @@ static void redraw_region(GdkRectangle * rect)
 	}
 
 	if (eleft > 0)
-		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, 0, 0, eleft, gport->height);
+		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, 0, 0, eleft, gport->view.canvas_height);
 	else
 		eleft = 0;
-	if (eright < gport->width)
-		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eright, 0, gport->width - eright, gport->height);
+	if (eright < gport->view.canvas_width)
+		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eright, 0, gport->view.canvas_width - eright, gport->view.canvas_height);
 	else
-		eright = gport->width;
+		eright = gport->view.canvas_width;
 	if (etop > 0)
 		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eleft, 0, eright - eleft + 1, etop);
 	else
 		etop = 0;
-	if (ebottom < gport->height)
-		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eleft, ebottom, eright - eleft + 1, gport->height - ebottom);
+	if (ebottom < gport->view.canvas_height)
+		gdk_draw_rectangle(gport->drawable, priv->offlimits_gc, 1, eleft, ebottom, eright - eleft + 1, gport->view.canvas_height - ebottom);
 	else
-		ebottom = gport->height;
+		ebottom = gport->view.canvas_height;
 
 	gdk_draw_rectangle(gport->drawable, priv->bg_gc, 1, eleft, etop, eright - eleft + 1, ebottom - etop + 1);
 
@@ -940,8 +940,8 @@ static void draw_right_cross(GdkGC * xor_gc, gint x, gint y)
 {
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 
-	gdk_draw_line(window, xor_gc, x, 0, x, gport->height);
-	gdk_draw_line(window, xor_gc, 0, y, gport->width, y);
+	gdk_draw_line(window, xor_gc, x, 0, x, gport->view.canvas_height);
+	gdk_draw_line(window, xor_gc, 0, y, gport->view.canvas_width, y);
 }
 
 static void draw_slanted_cross(GdkGC * xor_gc, gint x, gint y)
@@ -949,24 +949,24 @@ static void draw_slanted_cross(GdkGC * xor_gc, gint x, gint y)
 	GdkWindow *window = gtk_widget_get_window(gport->drawing_area);
 	gint x0, y0, x1, y1;
 
-	x0 = x + (gport->height - y);
-	x0 = MAX(0, MIN(x0, gport->width));
+	x0 = x + (gport->view.canvas_height - y);
+	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
 	x1 = x - y;
-	x1 = MAX(0, MIN(x1, gport->width));
-	y0 = y + (gport->width - x);
-	y0 = MAX(0, MIN(y0, gport->height));
+	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
+	y0 = y + (gport->view.canvas_width - x);
+	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
 	y1 = y - x;
-	y1 = MAX(0, MIN(y1, gport->height));
+	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
 	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
-	x0 = x - (gport->height - y);
-	x0 = MAX(0, MIN(x0, gport->width));
+	x0 = x - (gport->view.canvas_height - y);
+	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
 	x1 = x + y;
-	x1 = MAX(0, MIN(x1, gport->width));
+	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
 	y0 = y + x;
-	y0 = MAX(0, MIN(y0, gport->height));
-	y1 = y - (gport->width - x);
-	y1 = MAX(0, MIN(y1, gport->height));
+	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
+	y1 = y - (gport->view.canvas_width - x);
+	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
 	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 }
 
@@ -976,44 +976,44 @@ static void draw_dozen_cross(GdkGC * xor_gc, gint x, gint y)
 	gint x0, y0, x1, y1;
 	gdouble tan60 = sqrt(3);
 
-	x0 = x + (gport->height - y) / tan60;
-	x0 = MAX(0, MIN(x0, gport->width));
+	x0 = x + (gport->view.canvas_height - y) / tan60;
+	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
 	x1 = x - y / tan60;
-	x1 = MAX(0, MIN(x1, gport->width));
-	y0 = y + (gport->width - x) * tan60;
-	y0 = MAX(0, MIN(y0, gport->height));
+	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
+	y0 = y + (gport->view.canvas_width - x) * tan60;
+	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
 	y1 = y - x * tan60;
-	y1 = MAX(0, MIN(y1, gport->height));
+	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
 	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
-	x0 = x + (gport->height - y) * tan60;
-	x0 = MAX(0, MIN(x0, gport->width));
+	x0 = x + (gport->view.canvas_height - y) * tan60;
+	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
 	x1 = x - y * tan60;
-	x1 = MAX(0, MIN(x1, gport->width));
-	y0 = y + (gport->width - x) / tan60;
-	y0 = MAX(0, MIN(y0, gport->height));
+	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
+	y0 = y + (gport->view.canvas_width - x) / tan60;
+	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
 	y1 = y - x / tan60;
-	y1 = MAX(0, MIN(y1, gport->height));
+	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
 	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
-	x0 = x - (gport->height - y) / tan60;
-	x0 = MAX(0, MIN(x0, gport->width));
+	x0 = x - (gport->view.canvas_height - y) / tan60;
+	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
 	x1 = x + y / tan60;
-	x1 = MAX(0, MIN(x1, gport->width));
+	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
 	y0 = y + x * tan60;
-	y0 = MAX(0, MIN(y0, gport->height));
-	y1 = y - (gport->width - x) * tan60;
-	y1 = MAX(0, MIN(y1, gport->height));
+	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
+	y1 = y - (gport->view.canvas_width - x) * tan60;
+	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
 	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 
-	x0 = x - (gport->height - y) * tan60;
-	x0 = MAX(0, MIN(x0, gport->width));
+	x0 = x - (gport->view.canvas_height - y) * tan60;
+	x0 = MAX(0, MIN(x0, gport->view.canvas_width));
 	x1 = x + y * tan60;
-	x1 = MAX(0, MIN(x1, gport->width));
+	x1 = MAX(0, MIN(x1, gport->view.canvas_width));
 	y0 = y + x / tan60;
-	y0 = MAX(0, MIN(y0, gport->height));
-	y1 = y - (gport->width - x) / tan60;
-	y1 = MAX(0, MIN(y1, gport->height));
+	y0 = MAX(0, MIN(y0, gport->view.canvas_height));
+	y1 = y - (gport->view.canvas_width - x) / tan60;
+	y1 = MAX(0, MIN(y1, gport->view.canvas_height));
 	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
 }
 
@@ -1103,7 +1103,7 @@ void ghid_drawing_area_configure_hook(GHidPort * port)
 
 	if (port->mask) {
 		gdk_pixmap_unref(port->mask);
-		port->mask = gdk_pixmap_new(0, port->width, port->height, 1);
+		port->mask = gdk_pixmap_new(0, port->view.canvas_width, port->view.canvas_height, 1);
 	}
 }
 
@@ -1115,7 +1115,7 @@ void ghid_screen_update(void)
 	if (gport->pixmap == NULL)
 		return;
 
-	gdk_draw_drawable(window, priv->bg_gc, gport->pixmap, 0, 0, 0, 0, gport->width, gport->height);
+	gdk_draw_drawable(window, priv->bg_gc, gport->pixmap, 0, 0, 0, 0, gport->view.canvas_width, gport->view.canvas_height);
 	show_crosshair(TRUE);
 }
 
@@ -1149,8 +1149,8 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	 */
 	save_drawable = gport->drawable;
 	save_view = gport->view;
-	save_width = gport->width;
-	save_height = gport->height;
+	save_width = gport->view.canvas_width;
+	save_height = gport->view.canvas_height;
 
 	gtk_widget_get_allocation(widget, &allocation);
 	xz = (double) pinout->x_max / allocation.width;
@@ -1161,8 +1161,8 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 		gport->view.coord_per_px = yz;
 
 	gport->drawable = window;
-	gport->width = allocation.width;
-	gport->height = allocation.height;
+	gport->view.canvas_width = allocation.width;
+	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
 	gport->view.height = allocation.height * gport->view.coord_per_px;
 	gport->view.x0 = (pinout->x_max - gport->view.width) / 2;
@@ -1176,8 +1176,8 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 
 	gport->drawable = save_drawable;
 	gport->view = save_view;
-	gport->width = save_width;
-	gport->height = save_height;
+	gport->view.canvas_width = save_width;
+	gport->view.canvas_height = save_height;
 
 	return FALSE;
 }
@@ -1193,8 +1193,8 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 
 	save_drawable = gport->drawable;
 	save_view = gport->view;
-	save_width = gport->width;
-	save_height = gport->height;
+	save_width = gport->view.canvas_width;
+	save_height = gport->view.canvas_height;
 
 	pixmap = gdk_pixmap_new(NULL, width, height, depth);
 
@@ -1203,8 +1203,8 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 
 	gport->drawable = pixmap;
 	gport->view.coord_per_px = zoom;
-	gport->width = width;
-	gport->height = height;
+	gport->view.canvas_width = width;
+	gport->view.canvas_height = height;
 	gport->view.width = width * gport->view.coord_per_px;
 	gport->view.height = height * gport->view.coord_per_px;
 	gport->view.x0 = conf_core.editor.view.flip_x ? PCB->MaxWidth - cx : cx;
@@ -1216,10 +1216,10 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	gdk_draw_rectangle(pixmap, priv->bg_gc, TRUE, 0, 0, width, height);
 
 	/* call the drawing routine */
-	region.X1 = MIN(Px(0), Px(gport->width + 1));
-	region.Y1 = MIN(Py(0), Py(gport->height + 1));
-	region.X2 = MAX(Px(0), Px(gport->width + 1));
-	region.Y2 = MAX(Py(0), Py(gport->height + 1));
+	region.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
+	region.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
+	region.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
+	region.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
 
 	region.X1 = MAX(0, MIN(PCB->MaxWidth, region.X1));
 	region.X2 = MAX(0, MIN(PCB->MaxWidth, region.X2));
@@ -1230,8 +1230,8 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 
 	gport->drawable = save_drawable;
 	gport->view = save_view;
-	gport->width = save_width;
-	gport->height = save_height;
+	gport->view.canvas_width = save_width;
+	gport->view.canvas_height = save_height;
 
 	return pixmap;
 }
