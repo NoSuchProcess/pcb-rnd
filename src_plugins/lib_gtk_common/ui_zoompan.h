@@ -21,6 +21,11 @@
  *
  */
 
+
+#ifndef PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
+#define PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
+
+
 	/* Go from from the grid units in use (millimeters or mils) to PCB units
 	   |  and back again.
 	   |  PCB keeps values internally higher precision, but gui
@@ -39,6 +44,17 @@
 #define	EVENT_TO_PCB_Y(y) SIDE_Y((gint)((y) * gport->view.coord_per_px + gport->view.y0))
 
 
+typedef struct {
+	double coord_per_px;					/* Zoom level described as PCB units per screen pixel */
+
+	pcb_coord_t x0;
+	pcb_coord_t y0;
+	pcb_coord_t width;
+	pcb_coord_t height;
+
+	gint canvas_width, canvas_height;
+} pcb_gtk_view_t;
+
 void ghid_flip_view(pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y);
 void ghid_pan_view_abs(pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y);
 void ghid_zoom_view_fit(void);
@@ -48,4 +64,4 @@ extern const char zoom_syntax[];
 extern const char zoom_help[];
 int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
-
+#endif
