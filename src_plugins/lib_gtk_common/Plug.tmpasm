@@ -4,6 +4,11 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_gtk_common/util_str.o
 @]
 
+put /local/pcb/mod/OBJS_C99 [@
+  $(PLUGDIR)/lib_gtk_common/ui_zoompan.o
+@]
+
+
 switch /local/pcb/lib_gtk_common/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;

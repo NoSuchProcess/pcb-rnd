@@ -1,5 +1,5 @@
+6063	configure	start splitting up hid_gtk: new plugin that hid_gtk depends on: lib_gtk_common
 6056	configure	gschp2pcb-rnd build deps bug
-6049	configure	start splitting up hid_gtk: new plugin that hid_gtk depends on: lib_gtk_common
 6007	configure	switch over Makefiles to use sccbox
 6004	distclean,configure	scconfig compiles sccbox thast will ease portable clean and installation rules
 5982	make clean	gsch2pcb-rnd build fix

@@ -44,6 +44,13 @@
 
 #include "hid_gtk_conf.h"
 
+
+
+
+/* TODO: REMOVE THIS */
+#include "../src_plugins/lib_gtk_common/ui_zoompan.h"
+
+
 	/* Silk and rats lines are the two additional selectable to draw on.
 	   |  gui code in gui-top-window.c and group code in misc.c must agree
 	   |  on what layer is what!
@@ -58,23 +65,6 @@
 #define LAYER_BUTTON_MASK			(PCB_MAX_LAYER + 5)
 #define LAYER_BUTTON_UI			(PCB_MAX_LAYER + 6)
 #define N_LAYER_BUTTONS				(PCB_MAX_LAYER + 7)
-
-	/* Go from from the grid units in use (millimeters or mils) to PCB units
-	   |  and back again.
-	   |  PCB keeps values internally higher precision, but gui
-	   |  widgets (spin buttons, labels, etc) need mils or millimeters.
-	 */
-#define	FROM_PCB_UNITS(v)	pcb_coord_to_unit(conf_core.editor.grid_unit, v)
-#define	TO_PCB_UNITS(v)		pcb_unit_to_coord(conf_core.editor.grid_unit, v)
-
-#define SIDE_X(x)         ((conf_core.editor.view.flip_x ? PCB->MaxWidth - (x) : (x)))
-#define SIDE_Y(y)         ((conf_core.editor.view.flip_y ? PCB->MaxHeight - (y) : (y)))
-
-#define	DRAW_X(x)         (gint)((SIDE_X(x) - gport->view.x0) / gport->view.coord_per_px)
-#define	DRAW_Y(y)         (gint)((SIDE_Y(y) - gport->view.y0) / gport->view.coord_per_px)
-
-#define	EVENT_TO_PCB_X(x) SIDE_X((gint)((x) * gport->view.coord_per_px + gport->view.x0))
-#define	EVENT_TO_PCB_Y(y) SIDE_Y((gint)((y) * gport->view.coord_per_px + gport->view.y0))
 
 /*
  * Used to intercept "special" hotkeys that gtk doesn't usually pass
