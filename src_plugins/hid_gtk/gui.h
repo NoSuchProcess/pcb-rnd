@@ -413,9 +413,6 @@ void ghid_finish_debug_draw(void);
 void ghid_lead_user_to_location(pcb_coord_t x, pcb_coord_t y);
 void ghid_cancel_lead_user(void);
 
-/* gtkhid-main.c */
-void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y);
-
 
 extern GdkPixmap *XC_hand_source, *XC_hand_mask;
 extern GdkPixmap *XC_lock_source, *XC_lock_mask;

@@ -271,3 +271,13 @@ int pcb_gtk_act_center(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 
 	return 0;
 }
+
+void pcb_gtk_get_coords(pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y)
+{
+	if (!vw->has_entered && msg)
+		ghid_get_user_xy(msg);
+	if (vw->has_entered) {
+		*x = vw->pcb_x;
+		*y = vw->pcb_y;
+	}
+}

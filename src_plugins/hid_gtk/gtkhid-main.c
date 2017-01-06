@@ -1667,6 +1667,11 @@ int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
+static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y)
+{
+	pcb_gtk_get_coords(&gport->view, msg, x, y);
+}
+
 
 pcb_hid_action_t ghid_main_action_list[] = {
 	{"About", 0, About, about_help, about_syntax}

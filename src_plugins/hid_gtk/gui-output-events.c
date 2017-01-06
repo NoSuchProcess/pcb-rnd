@@ -93,21 +93,6 @@ void ghid_port_ranges_scale(void)
 													 page_size);	/* page_size      */
 }
 
-
-/* ----------------------------------------------------------------------
- * handles all events from PCB drawing area
- */
-
-void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
-{
-	if (!ghid_port.view.has_entered && msg)
-		ghid_get_user_xy(msg);
-	if (ghid_port.view.has_entered) {
-		*x = gport->view.pcb_x;
-		*y = gport->view.pcb_y;
-	}
-}
-
 void ghid_note_event_location(GdkEventButton * ev)
 {
 	gint event_x, event_y;
