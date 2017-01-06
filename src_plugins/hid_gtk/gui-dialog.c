@@ -114,21 +114,6 @@ gint ghid_dialog_confirm_all(gchar * all_message)
 }
 
 /* ---------------------------------------------- */
-void ghid_dialog_message(gchar * message)
-{
-	GtkWidget *dialog;
-	GHidPort *out = &ghid_port;
-
-	dialog = gtk_message_dialog_new(GTK_WINDOW(out->top_window),
-																	(GtkDialogFlags) (GTK_DIALOG_MODAL |
-																										GTK_DIALOG_DESTROY_WITH_PARENT),
-																	GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "%s", message);
-
-	gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
-}
-
-/* ---------------------------------------------- */
 gboolean ghid_dialog_confirm(const gchar * message, const gchar * cancelmsg, const gchar * okmsg)
 {
 	static gint x = -1, y = -1;
