@@ -103,7 +103,7 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 	if (subtree->str != NULL) {
 		int ver = atoi(subtree->str);
 		printf("kicad version: '%s' == %d\n", subtree->str, ver);
-		if (ver == 3) /* accept version 3 */
+		if (ver == 3 || ver == 4) /* accept version 3 */
 			return 0;
 	}
 	return -1;
@@ -1043,6 +1043,12 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				} else {
 					return -1;
 				}
+			} else if (n->str != NULL && strcmp("attr", n->str) == 0) {
+				if (n->children != NULL && n->children->str != NULL) {
+					pcb_printf("\tmodule attribute \"attr\": '%s' (not used)\n", (n->children->str));
+				} else {
+					return -1;
+				}
 			} else if (n->str != NULL && strcmp("at", n->str) == 0) {
 				SEEN_NO_DUP(tally, 4);
 				if (n->children != NULL && n->children->str != NULL) {
@@ -1119,7 +1125,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							X = PCB_MM_TO_COORD(val);
 							if (foundRefdes) {
 								refdesX = X;
-								pcb_printf("\tRefdesX = %mm", refdesX);
+								pcb_printf("\tRefdesX = %mm\n", refdesX);
 
 							}
 						}
@@ -1136,7 +1142,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							Y = PCB_MM_TO_COORD(val);
 							if (foundRefdes) {
 								refdesY = Y;
-								pcb_printf("\tRefdesX = %mm", refdesY);
+								pcb_printf("\tRefdesY = %mm\n", refdesY);
 							}
 						}	
 						if (l->children->next->next != NULL && l->children->next->next->str != NULL) {
@@ -1166,13 +1172,17 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					pcb_printf("\ttext layer: '%s'\n", (l->children->str));
 					PCBLayer = kicad_get_layeridx(st, l->children->str);
 					if (PCBLayer == -1) {
-						return -1;
+						pcb_printf("\ttext layer not defined for module text, default being used.\n");
+						Flags = pcb_flag_make(0);
+						/*return -1;*/
 					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 					}
 				} else {
 					return -1;
 				}
+			} else if (l->str != NULL && strcmp("hide", l->str) == 0) {
+					pcb_printf("\ttext hidden flag \"hide\" found and ignored.\n");
 			} else if (l->str != NULL && strcmp("effects", l->str) == 0) {
 				SEEN_NO_DUP(featureTally, 5);
 				for(m = l->children; m != NULL; m = m->next) {
