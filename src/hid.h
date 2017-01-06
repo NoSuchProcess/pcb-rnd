@@ -298,7 +298,13 @@ struct hid_s {
 	int (*shift_is_pressed) (void);
 	int (*control_is_pressed) (void);
 	int (*mod1_is_pressed) (void);
+
 	void (*get_coords) (const char *msg_, pcb_coord_t * x_, pcb_coord_t * y_);
+
+	/* Fill in width and height with the sizes of the current view in
+	   pcb coordinates. used by action "Cursor" to determine max cursor pos.
+	   Width and height are never NULL. */
+	void (*get_view_size)(pcb_coord_t *width, pcb_coord_t *height);
 
 	/* Sets the crosshair, which may differ from the pointer depending
 	   on grid and pad snap.  Note that the HID is responsible for

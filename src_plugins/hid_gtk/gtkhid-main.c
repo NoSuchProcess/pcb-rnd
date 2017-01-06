@@ -37,6 +37,12 @@ conf_hid_id_t ghid_conf_id = -1;
 conf_hid_id_t ghid_menuconf_id = -1;
 GdkModifierType ghid_glob_mask;
 
+static void ghid_get_view_size(pcb_coord_t *width, pcb_coord_t *height)
+{
+	*width = gport->view.width;
+	*height = gport->view.height;
+}
+
 void pcb_gtk_pan_common(void)
 {
 	int event_x, event_y;
@@ -1387,86 +1393,6 @@ static int Center(int argc, const char **argv, pcb_coord_t pcb_x, pcb_coord_t pc
 }
 
 /* ------------------------------------------------------------ */
-static const char cursor_syntax[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
-
-static const char cursor_help[] = N_("Move the cursor.");
-
-/* %start-doc actions Cursor
-
-This action moves the mouse cursor.  Unlike other actions which take
-coordinates, this action's coordinates are always relative to the
-user's view of the board.  Thus, a positive @var{DeltaUp} may move the
-cursor towards the board origin if the board is inverted.
-
-Type is one of @samp{Pan} or @samp{Warp}.  @samp{Pan} causes the
-viewport to move such that the crosshair is under the mouse cursor.
-@samp{Warp} causes the mouse cursor to move to be above the crosshair.
-
-@var{Units} can be one of the following:
-
-@table @samp
-
-@item mil
-@itemx mm
-The cursor is moved by that amount, in board units.
-
-@item grid
-The cursor is moved by that many grid points.
-
-@item view
-The values are percentages of the viewport's view.  Thus, a pan of
-@samp{100} would scroll the viewport by exactly the width of the
-current view.
-
-@item board
-The values are percentages of the board size.  Thus, a move of
-@samp{50,50} moves you halfway across the board.
-
-@end table
-
-%end-doc */
-
-static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	pcb_unit_list_t extra_units_x = {
-		{"grid", PCB->Grid, 0},
-		{"view", gport->view.width, UNIT_PERCENT},
-		{"board", PCB->MaxWidth, UNIT_PERCENT},
-		{"", 0, 0}
-	};
-	pcb_unit_list_t extra_units_y = {
-		{"grid", PCB->Grid, 0},
-		{"view", gport->view.height, UNIT_PERCENT},
-		{"board", PCB->MaxHeight, UNIT_PERCENT},
-		{"", 0, 0}
-	};
-	int pan_warp = HID_SC_DO_NOTHING;
-	double dx, dy;
-
-	if (argc != 4)
-		PCB_AFAIL(cursor);
-
-	if (pcb_strcasecmp(argv[0], "pan") == 0)
-		pan_warp = HID_SC_PAN_VIEWPORT;
-	else if (pcb_strcasecmp(argv[0], "warp") == 0)
-		pan_warp = HID_SC_WARP_POINTER;
-	else
-		PCB_AFAIL(cursor);
-
-	dx = pcb_get_value_ex(argv[1], argv[3], NULL, extra_units_x, "", NULL);
-	if (conf_core.editor.view.flip_x)
-		dx = -dx;
-	dy = pcb_get_value_ex(argv[2], argv[3], NULL, extra_units_y, "", NULL);
-	if (!conf_core.editor.view.flip_y)
-		dy = -dy;
-
-	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
-	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
-
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
 
 static const char dowindows_syntax[] = "DoWindows(1|2|3|4|5|6|7,[false])\n" "DoWindows(Layout|Library|Log|Netlist|Preferences|DRC,[false])";
 
@@ -1788,8 +1714,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"Command", 0, Command}
 	,
-	{"Cursor", 0, CursorAction, cursor_help, cursor_syntax}
-	,
 	{"DoWindows", 0, DoWindows, dowindows_help, dowindows_syntax}
 	,
 	{"ExportGUI", 0, ExportGUI}
@@ -1935,7 +1859,9 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_hid.calibrate = ghid_calibrate;
 	ghid_hid.shift_is_pressed = ghid_shift_is_pressed;
 	ghid_hid.control_is_pressed = ghid_control_is_pressed;
-	ghid_hid.mod1_is_pressed = ghid_mod1_is_pressed, ghid_hid.get_coords = ghid_get_coords;
+	ghid_hid.mod1_is_pressed = ghid_mod1_is_pressed;
+	ghid_hid.get_coords = ghid_get_coords;
+	ghid_hid.get_view_size = ghid_get_view_size;
 	ghid_hid.set_crosshair = ghid_set_crosshair;
 	ghid_hid.add_timer = ghid_add_timer;
 	ghid_hid.stop_timer = ghid_stop_timer;

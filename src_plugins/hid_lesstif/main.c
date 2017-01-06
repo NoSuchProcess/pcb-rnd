@@ -788,93 +788,6 @@ static int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-static const char cursor_syntax[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
-
-static const char cursor_help[] = "Move the cursor.";
-
-/* %start-doc actions Cursor
-
-This action moves the mouse cursor.  Unlike other actions which take
-coordinates, this action's coordinates are always relative to the
-user's view of the board.  Thus, a positive @var{DeltaUp} may move the
-cursor towards the board origin if the board is inverted.
-
-Type is one of @samp{Pan} or @samp{Warp}.  @samp{Pan} causes the
-viewport to move such that the crosshair is under the mouse cursor.
-@samp{Warp} causes the mouse cursor to move to be above the crosshair.
-
-@var{Units} can be one of the following:
-
-@table @samp
-
-@item mil
-@itemx mm
-The cursor is moved by that amount, in board units.
-
-@item grid
-The cursor is moved by that many grid points.
-
-@item view
-The values are percentages of the viewport's view.  Thus, a pan of
-@samp{100} would scroll the viewport by exactly the width of the
-current view.
-
-@item board
-The values are percentages of the board size.  Thus, a move of
-@samp{50,50} moves you halfway across the board.
-
-@end table
-
-%end-doc */
-
-static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	pcb_unit_list_t extra_units_x = {
-		{"grid", 0, 0},
-		{"view", 0, UNIT_PERCENT},
-		{"board", 0, UNIT_PERCENT},
-		{"", 0, 0}
-	};
-	pcb_unit_list_t extra_units_y = {
-		{"grid", 0, 0},
-		{"view", 0, UNIT_PERCENT},
-		{"board", 0, UNIT_PERCENT},
-		{"", 0, 0}
-	};
-	int pan_warp = HID_SC_DO_NOTHING;
-	double dx, dy;
-
-	extra_units_x[0].scale = PCB->Grid;
-	extra_units_x[1].scale = Pz(view_width);
-	extra_units_x[2].scale = PCB->MaxWidth;
-
-	extra_units_y[0].scale = PCB->Grid;
-	extra_units_y[1].scale = Pz(view_height);
-	extra_units_y[2].scale = PCB->MaxHeight;
-
-	if (argc != 4)
-		PCB_AFAIL(cursor);
-
-	if (pcb_strcasecmp(argv[0], "pan") == 0)
-		pan_warp = HID_SC_PAN_VIEWPORT;
-	else if (pcb_strcasecmp(argv[0], "warp") == 0)
-		pan_warp = HID_SC_WARP_POINTER;
-	else
-		PCB_AFAIL(cursor);
-
-	dx = pcb_get_value_ex(argv[1], argv[3], NULL, extra_units_x, "mil", NULL);
-	if (conf_core.editor.view.flip_x)
-		dx = -dx;
-	dy = pcb_get_value_ex(argv[2], argv[3], NULL, extra_units_y, "mil", NULL);
-	if (!conf_core.editor.view.flip_y)
-		dy = -dy;
-
-	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
-	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
-
-	return 0;
-}
-
 pcb_hid_action_t lesstif_main_action_list[] = {
 	{"SetUnits", 0, SetUnits,
 	 setunits_help, setunits_syntax}
@@ -895,9 +808,6 @@ pcb_hid_action_t lesstif_main_action_list[] = {
 	 benchmark_help, benchmark_syntax}
 	,
 	{"Center", "Click on a location to center", Center}
-	,
-	{"Cursor", 0, CursorAction,
-	 cursor_help, cursor_syntax}
 	,
 };
 
@@ -3750,6 +3660,13 @@ static void lesstif_finish_debug_draw(void)
 	 */
 }
 
+static void lesstif_get_view_size(pcb_coord_t *width, pcb_coord_t *height)
+{
+	*width = Pz(view_width);
+	*width = Pz(view_height);
+}
+
+
 static int lesstif_usage(const char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
@@ -3810,6 +3727,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 	lesstif_hid.control_is_pressed = lesstif_control_is_pressed;
 	lesstif_hid.mod1_is_pressed = lesstif_mod1_is_pressed;
 	lesstif_hid.get_coords = lesstif_get_coords;
+	lesstif_hid.get_view_size = lesstif_get_view_size;
 	lesstif_hid.set_crosshair = lesstif_set_crosshair;
 	lesstif_hid.add_timer = lesstif_add_timer;
 	lesstif_hid.stop_timer = lesstif_stop_timer;

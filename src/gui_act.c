@@ -1297,6 +1297,91 @@ static int pcb_act_LibraryChanged(int argc, const char **argv, pcb_coord_t x, pc
 	return 0;
 }
 
+static const char cursor_syntax[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
+static const char cursor_help[] = "Move the cursor.";
+/* %start-doc actions Cursor
+
+This action moves the mouse cursor.  Unlike other actions which take
+coordinates, this action's coordinates are always relative to the
+user's view of the board.  Thus, a positive @var{DeltaUp} may move the
+cursor towards the board origin if the board is inverted.
+
+Type is one of @samp{Pan} or @samp{Warp}.  @samp{Pan} causes the
+viewport to move such that the crosshair is under the mouse cursor.
+@samp{Warp} causes the mouse cursor to move to be above the crosshair.
+
+@var{Units} can be one of the following:
+
+@table @samp
+
+@item mil
+@itemx mm
+The cursor is moved by that amount, in board units.
+
+@item grid
+The cursor is moved by that many grid points.
+
+@item view
+The values are percentages of the viewport's view.  Thus, a pan of
+@samp{100} would scroll the viewport by exactly the width of the
+current view.
+
+@item board
+The values are percentages of the board size.  Thus, a move of
+@samp{50,50} moves you halfway across the board.
+
+@end table
+
+%end-doc */
+
+static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_unit_list_t extra_units_x = {
+		{"grid", 0, 0},
+		{"view", 0, UNIT_PERCENT},
+		{"board", 0, UNIT_PERCENT},
+		{"", 0, 0}
+	};
+	pcb_unit_list_t extra_units_y = {
+		{"grid", 0, 0},
+		{"view", 0, UNIT_PERCENT},
+		{"board", 0, UNIT_PERCENT},
+		{"", 0, 0}
+	};
+	int pan_warp = HID_SC_DO_NOTHING;
+	double dx, dy;
+
+	extra_units_x[0].scale = PCB->Grid;
+	extra_units_x[2].scale = PCB->MaxWidth;
+
+	extra_units_y[0].scale = PCB->Grid;
+	extra_units_y[2].scale = PCB->MaxHeight;
+
+	pcb_gui->get_view_size(&extra_units_x[1].scale, &extra_units_y[1].scale);
+
+	if (argc != 4)
+		PCB_AFAIL(cursor);
+
+	if (pcb_strcasecmp(argv[0], "pan") == 0)
+		pan_warp = HID_SC_PAN_VIEWPORT;
+	else if (pcb_strcasecmp(argv[0], "warp") == 0)
+		pan_warp = HID_SC_WARP_POINTER;
+	else
+		PCB_AFAIL(cursor);
+
+	dx = pcb_get_value_ex(argv[1], argv[3], NULL, extra_units_x, "", NULL);
+	if (conf_core.editor.view.flip_x)
+		dx = -dx;
+	dy = pcb_get_value_ex(argv[2], argv[3], NULL, extra_units_y, "", NULL);
+	if (!conf_core.editor.view.flip_y)
+		dy = -dy;
+
+	pcb_event_move_crosshair(pcb_crosshair.X + dx, pcb_crosshair.Y + dy);
+	pcb_gui->set_crosshair(pcb_crosshair.X, pcb_crosshair.Y, pan_warp);
+
+	return 0;
+}
+
 
 pcb_hid_action_t gui_action_list[] = {
 	{"Display", 0, pcb_act_Display,
@@ -1346,6 +1431,8 @@ pcb_hid_action_t gui_action_list[] = {
 	,
 	{"LibraryChanged", 0, pcb_act_LibraryChanged,
 	 pcb_acth_LibraryChanged, pcb_acts_LibraryChanged}
+	,
+	{"Cursor", 0, CursorAction, cursor_help, cursor_syntax}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)
