@@ -37,7 +37,7 @@ conf_hid_id_t ghid_conf_id = -1;
 conf_hid_id_t ghid_menuconf_id = -1;
 GdkModifierType ghid_glob_mask;
 
-void pan_common(GHidPort * port)
+void pcb_gtk_pan_common(void)
 {
 	int event_x, event_y;
 
@@ -46,10 +46,10 @@ void pan_common(GHidPort * port)
 	ghid_pcb_to_event_coords(gport->pcb_x, gport->pcb_y, &event_x, &event_y);
 
 	/* Don't pan so far the board is completely off the screen */
-	port->view.x0 = MAX(-port->view.width, port->view.x0);
-	port->view.y0 = MAX(-port->view.height, port->view.y0);
-	port->view.x0 = MIN(port->view.x0, PCB->MaxWidth);
-	port->view.y0 = MIN(port->view.y0, PCB->MaxHeight);
+	gport->view.x0 = MAX(-gport->view.width, gport->view.x0);
+	gport->view.y0 = MAX(-gport->view.height, gport->view.y0);
+	gport->view.x0 = MIN(gport->view.x0, PCB->MaxWidth);
+	gport->view.y0 = MIN(gport->view.y0, PCB->MaxHeight);
 
 	/* Fix up noted event coordinates to match where we clamped. Alternatively
 	 * we could call ghid_note_event_location (NULL); to get a new pointer
@@ -110,7 +110,7 @@ void ghid_zoom_view_abs(pcb_coord_t center_x, pcb_coord_t center_y, double new_z
 	gport->view.x0 = SIDE_X(center_x) - xtmp * gport->view.width;
 	gport->view.y0 = SIDE_Y(center_y) - ytmp * gport->view.height;
 
-	pan_common(gport);
+	pcb_gtk_pan_common();
 
 	ghid_set_status_line_label();
 }
@@ -223,7 +223,7 @@ void ghid_set_crosshair(int x, int y, int action)
 		widget_y = pointer_y - offset_y;
 
 		ghid_event_to_pcb_coords(widget_x, widget_y, &pcb_x, &pcb_y);
-		ghid_pan_view_abs(pcb_x, pcb_y, widget_x, widget_y);
+		ghid_pan_view_abs(&gport->view, pcb_x, pcb_y, widget_x, widget_y);
 
 		/* Just in case we couldn't pan the board the whole way,
 		 * we warp the pointer to where the crosshair DID land.
@@ -976,7 +976,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	RouteStylesChanged(0, 0, NULL);
 
 	ghid_port_ranges_scale();
-	ghid_zoom_view_fit();
+	ghid_zoom_view_fit(&gport->view);
 	ghid_sync_with_new_layout();
 }
 
@@ -1236,15 +1236,15 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		switch (argv[0][0]) {
 		case 'h':
 		case 'H':
-			ghid_flip_view(gport->pcb_x, gport->pcb_y, pcb_true, pcb_false);
+			ghid_flip_view(&gport->view, gport->pcb_x, gport->pcb_y, pcb_true, pcb_false);
 			break;
 		case 'v':
 		case 'V':
-			ghid_flip_view(gport->pcb_x, gport->pcb_y, pcb_false, pcb_true);
+			ghid_flip_view(&gport->view, gport->pcb_x, gport->pcb_y, pcb_false, pcb_true);
 			break;
 		case 'r':
 		case 'R':
-			ghid_flip_view(gport->pcb_x, gport->pcb_y, pcb_true, pcb_true);
+			ghid_flip_view(&gport->view, gport->pcb_x, gport->pcb_y, pcb_true, pcb_true);
 			conf_toggle_editor(show_solder_side); /* Swapped back below */
 			break;
 		default:
@@ -1415,7 +1415,7 @@ static int Center(int argc, const char **argv, pcb_coord_t pcb_x, pcb_coord_t pc
 	widget_x = gport->view.canvas_width / 2;
 	widget_y = gport->view.canvas_height / 2;
 
-	ghid_pan_view_abs(pcb_x, pcb_y, widget_x, widget_y);
+	ghid_pan_view_abs(&gport->view, pcb_x, pcb_y, widget_x, widget_y);
 
 	/* Now move the mouse pointer to the place where the board location
 	 * actually ended up.
@@ -1681,7 +1681,7 @@ static int ScrollAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	else
 		PCB_AFAIL(scroll);
 
-	ghid_pan_view_rel(dx, dy);
+	ghid_pan_view_rel(&gport->view, dx, dy);
 
 	return 0;
 }
@@ -1817,12 +1817,17 @@ static int SaveWinGeo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 
-
 /* ------------------------------------------------------------ */
 static void ghid_Busy(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	ghid_watch_cursor();
 }
+
+static int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_gtk_zoom(&gport->view, argc, argv, x, y);
+}
+
 
 pcb_hid_action_t ghid_main_action_list[] = {
 	{"About", 0, About, about_help, about_syntax}

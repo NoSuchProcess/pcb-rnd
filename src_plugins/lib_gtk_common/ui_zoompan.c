@@ -29,28 +29,25 @@
 #include "board.h"
 #include "compat_nls.h"
 #include "draw.h"
-#include <glib.h>
-
-#warning TODO: this can not be done like this:
-#include "../src_plugins/hid_gtk/gui.h"
+#include "ui_zoompan.h"
 
 #warning TODO: defined in the hid for now:
 void ghid_zoom_view_abs(pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom);
-void pan_common(GHidPort * port);
+void pcb_gtk_pan_common();
 
 
-static void ghid_zoom_view_rel(pcb_coord_t center_x, pcb_coord_t center_y, double factor)
+static void ghid_zoom_view_rel(const pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double factor)
 {
-	ghid_zoom_view_abs(center_x, center_y, gport->view.coord_per_px * factor);
+	ghid_zoom_view_abs(center_x, center_y, v->coord_per_px * factor);
 }
 
-void ghid_zoom_view_fit(void)
+void ghid_zoom_view_fit(pcb_gtk_view_t *v)
 {
-	ghid_pan_view_abs(SIDE_X(0), SIDE_Y(0), 0, 0);
-	ghid_zoom_view_abs(SIDE_X(0), SIDE_Y(0), MAX(PCB->MaxWidth / gport->view.canvas_width, PCB->MaxHeight / gport->view.canvas_height));
+	ghid_pan_view_abs(v, SIDE_X(0), SIDE_Y(0), 0, 0);
+	ghid_zoom_view_abs(SIDE_X(0), SIDE_Y(0), MAX(PCB->MaxWidth / v->canvas_width, PCB->MaxHeight / v->canvas_height));
 }
 
-void ghid_flip_view(pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)
+void ghid_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)
 {
 	int widget_x, widget_y;
 
@@ -63,34 +60,33 @@ void ghid_flip_view(pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x,
 	conf_set_design("editor/view/flip_y", "%d", conf_core.editor.view.flip_y != flip_y);
 
 	/* Pan the board so the center location remains in the same place */
-	ghid_pan_view_abs(center_x, center_y, widget_x, widget_y);
+	ghid_pan_view_abs(v, center_x, center_y, widget_x, widget_y);
 
 	pcb_draw_inhibit_dec();
 
 	ghid_invalidate_all();
 }
 
-void ghid_pan_view_abs(pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y)
+void ghid_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y)
 {
-	gport->view.x0 = SIDE_X(pcb_x) - widget_x * gport->view.coord_per_px;
-	gport->view.y0 = SIDE_Y(pcb_y) - widget_y * gport->view.coord_per_px;
+	v->x0 = SIDE_X(pcb_x) - widget_x * v->coord_per_px;
+	v->y0 = SIDE_Y(pcb_y) - widget_y * v->coord_per_px;
 
-	pan_common(gport);
+	pcb_gtk_pan_common();
 }
 
-void ghid_pan_view_rel(pcb_coord_t dx, pcb_coord_t dy)
+void ghid_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 {
-	gport->view.x0 += dx;
-	gport->view.y0 += dy;
+	v->x0 += dx;
+	v->y0 += dy;
 
-	pan_common(gport);
+	pcb_gtk_pan_common();
 }
 
 
 /* ------------------------------------------------------------ */
 
 const char zoom_syntax[] = "Zoom()\n" "Zoom(factor)";
-
 
 const char zoom_help[] = N_("Various zoom factor changes.");
 
@@ -132,7 +128,7 @@ Note that zoom factors of zero are silently ignored.
 
 %end-doc */
 
-int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *vp;
 	double v;
@@ -141,7 +137,7 @@ int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		PCB_AFAIL(zoom);
 
 	if (argc < 1) {
-		ghid_zoom_view_fit();
+		ghid_zoom_view_fit(vw);
 		return 0;
 	}
 
@@ -153,11 +149,11 @@ int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		return 1;
 	switch (argv[0][0]) {
 	case '-':
-		ghid_zoom_view_rel(x, y, 1 / v);
+		ghid_zoom_view_rel(vw, x, y, 1 / v);
 		break;
 	default:
 	case '+':
-		ghid_zoom_view_rel(x, y, v);
+		ghid_zoom_view_rel(vw, x, y, v);
 		break;
 	case '=':
 		ghid_zoom_view_abs(x, y, v);
