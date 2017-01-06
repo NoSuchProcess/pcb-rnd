@@ -70,8 +70,6 @@ pcb_bool ghid_pcb_to_event_coords(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pc
 pcb_bool ghid_event_to_pcb_coords(const pcb_gtk_view_t *v, int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y);
 
 
-
-
 extern const char zoom_syntax[];
 extern const char zoom_help[];
 int pcb_gtk_zoom(pcb_gtk_view_t *v, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
@@ -84,7 +82,13 @@ extern const char swapsides_syntax[];
 extern const char swapsides_help[];
 int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
+extern const char scroll_syntax[];
+extern const char scroll_help[];
+int pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
+extern const char pan_syntax[];
+extern const char pan_help[];
+int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 void pcb_gtk_get_coords(pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y);
 

@@ -1364,89 +1364,6 @@ static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 /* ------------------------------------------------------------ */
-static const char scroll_syntax[] = "Scroll(up|down|left|right, [div])";
-
-static const char scroll_help[] = N_("Scroll the viewport.");
-
-/* % start-doc actions Scroll
-
-@item up|down|left|right
-Specifies the direction to scroll
-
-@item div
-Optional.  Specifies how much to scroll by.  The viewport is scrolled
-by 1/div of what is visible, so div = 1 scrolls a whole page. If not
-default is given, div=40.
-
-%end-doc */
-
-static int ScrollAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	gdouble dx = 0.0, dy = 0.0;
-	int div = 40;
-
-	if (!ghidgui)
-		return 0;
-
-	if (argc != 1 && argc != 2)
-		PCB_AFAIL(scroll);
-
-	if (argc == 2)
-		div = atoi(argv[1]);
-
-	if (pcb_strcasecmp(argv[0], "up") == 0)
-		dy = -gport->view.height / div;
-	else if (pcb_strcasecmp(argv[0], "down") == 0)
-		dy = gport->view.height / div;
-	else if (pcb_strcasecmp(argv[0], "right") == 0)
-		dx = gport->view.width / div;
-	else if (pcb_strcasecmp(argv[0], "left") == 0)
-		dx = -gport->view.width / div;
-	else
-		PCB_AFAIL(scroll);
-
-	ghid_pan_view_rel(&gport->view, dx, dy);
-
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
-static const char pan_syntax[] = "Pan([thumb], Mode)";
-
-static const char pan_help[] =
-N_("Start or stop panning (Mode = 1 to start, 0 to stop)\n" "Optional thumb argument is ignored for now in gtk hid.\n");
-
-/* %start-doc actions Pan
-
-Start or stop panning.  To start call with Mode = 1, to stop call with
-Mode = 0.
-
-%end-doc */
-
-static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	int mode;
-
-	if (!ghidgui)
-		return 0;
-
-	if (argc != 1 && argc != 2)
-		PCB_AFAIL(pan);
-
-	if (argc == 1)
-		mode = atoi(argv[0]);
-	else {
-		mode = atoi(argv[1]);
-		pcb_message(PCB_MSG_WARNING, _("The gtk gui currently ignores the optional first argument "
-							"to the Pan action.\nFeel free to provide patches.\n"));
-	}
-
-	gport->view.panning = mode;
-
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
 static const char popup_syntax[] = "Popup(MenuName, [Button])";
 
 static const char popup_help[] =
@@ -1567,6 +1484,22 @@ int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_swap_sides(&gport->view, argc, argv, x, y);
+}
+
+static int ScrollAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	if (ghidgui == NULL)
+		return 0;
+
+	return pcb_gtk_act_scroll(&gport->view, argc, argv, x, y);
+}
+
+static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	if (ghidgui == NULL)
+		return 0;
+
+	return pcb_gtk_act_pan(&gport->view, argc, argv, x, y);
 }
 
 
