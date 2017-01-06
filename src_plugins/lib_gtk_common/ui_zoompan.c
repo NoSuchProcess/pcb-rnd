@@ -46,7 +46,7 @@ static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
 
 	/* We need to fix up the PCB coordinates corresponding to the last
 	 * event so convert it back to event coordinates temporarily. */
-	ghid_pcb_to_event_coords(v, v->pcb_x, v->pcb_y, &event_x, &event_y);
+	pcb_gtk_coords_pcb2event(v, v->pcb_x, v->pcb_y, &event_x, &event_y);
 
 	/* Don't pan so far the board is completely off the screen */
 	v->x0 = MAX(-v->width, v->x0);
@@ -58,12 +58,12 @@ static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
 	 * we could call ghid_note_event_location (NULL); to get a new pointer
 	 * location, but this costs us an xserver round-trip (on X11 platforms)
 	 */
-	ghid_event_to_pcb_coords(v, event_x, event_y, &v->pcb_x, &v->pcb_y);
+	pcb_gtk_coords_event2pcb(v, event_x, event_y, &v->pcb_x, &v->pcb_y);
 
 	ghid_pan_common();
 }
 
-pcb_bool ghid_pcb_to_event_coords(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)
+pcb_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)
 {
 	*event_x = DRAW_X(v, pcb_x);
 	*event_y = DRAW_Y(v, pcb_y);
@@ -71,7 +71,7 @@ pcb_bool ghid_pcb_to_event_coords(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pc
 	return pcb_true;
 }
 
-pcb_bool ghid_event_to_pcb_coords(const pcb_gtk_view_t *v, int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y)
+pcb_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y)
 {
 	*pcb_x = EVENT_TO_PCB_X(v, event_x);
 	*pcb_y = EVENT_TO_PCB_Y(v, event_y);
@@ -149,7 +149,7 @@ static void pcb_gtk_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord
 	pcb_draw_inhibit_inc();
 
 	/* Work out where on the screen the flip point is */
-	ghid_pcb_to_event_coords(v, center_x, center_y, &widget_x, &widget_y);
+	pcb_gtk_coords_pcb2event(v, center_x, center_y, &widget_x, &widget_y);
 
 	conf_set_design("editor/view/flip_x", "%d", conf_core.editor.view.flip_x != flip_x);
 	conf_set_design("editor/view/flip_y", "%d", conf_core.editor.view.flip_y != flip_y);
@@ -290,7 +290,7 @@ int pcb_gtk_act_center(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	 * XXX: Should only do this if we confirm we are inside our window?
 	 */
 
-	ghid_pcb_to_event_coords(vw, pcb_x, pcb_y, &widget_x, &widget_y);
+	pcb_gtk_coords_pcb2event(vw, pcb_x, pcb_y, &widget_x, &widget_y);
 
 	*out_pointer_x = offset_x + widget_x;
 	*out_pointer_y = offset_y + widget_y;

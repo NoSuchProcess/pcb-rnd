@@ -161,7 +161,7 @@ void ghid_set_crosshair(int x, int y, int action)
 		widget_x = pointer_x - offset_x;
 		widget_y = pointer_y - offset_y;
 
-		ghid_event_to_pcb_coords(&gport->view, widget_x, widget_y, &pcb_x, &pcb_y);
+		pcb_gtk_coords_event2pcb(&gport->view, widget_x, widget_y, &pcb_x, &pcb_y);
 		pcb_gtk_pan_view_abs(&gport->view, pcb_x, pcb_y, widget_x, widget_y);
 
 		/* Just in case we couldn't pan the board the whole way,
@@ -172,7 +172,7 @@ void ghid_set_crosshair(int x, int y, int action)
 	case HID_SC_WARP_POINTER:
 		screen = gdk_display_get_default_screen(display);
 
-		ghid_pcb_to_event_coords(&gport->view, x, y, &widget_x, &widget_y);
+		pcb_gtk_coords_pcb2event(&gport->view, x, y, &widget_x, &widget_y);
 
 		pointer_x = offset_x + widget_x;
 		pointer_y = offset_y + widget_y;
