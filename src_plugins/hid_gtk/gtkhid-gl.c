@@ -1139,23 +1139,6 @@ void ghid_finish_debug_draw(void)
 	ghid_end_drawing(gport);
 }
 
-bool ghid_event_to_pcb_coords(int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y)
-{
-	*pcb_x = EVENT_TO_PCB_X(event_x);
-	*pcb_y = EVENT_TO_PCB_Y(event_y);
-
-	return pcb_true;
-}
-
-bool ghid_pcb_to_event_coords(pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)
-{
-	*event_x = DRAW_X(pcb_x);
-	*event_y = DRAW_Y(pcb_y);
-
-	return pcb_true;
-}
-
-
 #define LEAD_USER_WIDTH           0.2	/* millimeters */
 #define LEAD_USER_PERIOD          (1000 / 20)	/* 20fps (in ms) */
 #define LEAD_USER_VELOCITY        3.	/* millimeters per second */

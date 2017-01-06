@@ -1051,8 +1051,8 @@ static void show_crosshair(gboolean paint_new_location)
 		/* FIXME: when CrossColor changed from config */
 		ghid_map_color_string(conf_core.appearance.color.cross, &cross_color);
 	}
-	x = DRAW_X(gport->crosshair_x);
-	y = DRAW_Y(gport->crosshair_y);
+	x = DRAW_X(&gport->view, gport->crosshair_x);
+	y = DRAW_Y(&gport->view, gport->crosshair_y);
 
 	gdk_gc_set_foreground(xor_gc, &cross_color);
 
@@ -1255,23 +1255,6 @@ void ghid_finish_debug_draw(void)
 	/* No special tear down requirements
 	 */
 }
-
-pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y)
-{
-	*pcb_x = EVENT_TO_PCB_X(event_x);
-	*pcb_y = EVENT_TO_PCB_Y(event_y);
-
-	return pcb_true;
-}
-
-pcb_bool ghid_pcb_to_event_coords(pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)
-{
-	*event_x = DRAW_X(pcb_x);
-	*event_y = DRAW_Y(pcb_y);
-
-	return pcb_true;
-}
-
 
 #define LEAD_USER_WIDTH           0.2	/* millimeters */
 #define LEAD_USER_PERIOD          (1000 / 5)	/* 5fps (in ms) */

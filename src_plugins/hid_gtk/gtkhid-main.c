@@ -43,7 +43,7 @@ void pcb_gtk_pan_common(void)
 
 	/* We need to fix up the PCB coordinates corresponding to the last
 	 * event so convert it back to event coordinates temporarily. */
-	ghid_pcb_to_event_coords(gport->pcb_x, gport->pcb_y, &event_x, &event_y);
+	ghid_pcb_to_event_coords(&gport->view, gport->pcb_x, gport->pcb_y, &event_x, &event_y);
 
 	/* Don't pan so far the board is completely off the screen */
 	gport->view.x0 = MAX(-gport->view.width, gport->view.x0);
@@ -55,7 +55,7 @@ void pcb_gtk_pan_common(void)
 	 * we could call ghid_note_event_location (NULL); to get a new pointer
 	 * location, but this costs us an xserver round-trip (on X11 platforms)
 	 */
-	ghid_event_to_pcb_coords(event_x, event_y, &gport->pcb_x, &gport->pcb_y);
+	ghid_event_to_pcb_coords(&gport->view, event_x, event_y, &gport->pcb_x, &gport->pcb_y);
 
 	ghidgui->adjustment_changed_holdoff = TRUE;
 	gtk_range_set_value(GTK_RANGE(ghidgui->h_range), gport->view.x0);
@@ -172,7 +172,7 @@ void ghid_set_crosshair(int x, int y, int action)
 		widget_x = pointer_x - offset_x;
 		widget_y = pointer_y - offset_y;
 
-		ghid_event_to_pcb_coords(widget_x, widget_y, &pcb_x, &pcb_y);
+		ghid_event_to_pcb_coords(&gport->view, widget_x, widget_y, &pcb_x, &pcb_y);
 		ghid_pan_view_abs(&gport->view, pcb_x, pcb_y, widget_x, widget_y);
 
 		/* Just in case we couldn't pan the board the whole way,
@@ -183,7 +183,7 @@ void ghid_set_crosshair(int x, int y, int action)
 	case HID_SC_WARP_POINTER:
 		screen = gdk_display_get_default_screen(display);
 
-		ghid_pcb_to_event_coords(x, y, &widget_x, &widget_y);
+		ghid_pcb_to_event_coords(&gport->view, x, y, &widget_x, &widget_y);
 
 		pointer_x = offset_x + widget_x;
 		pointer_y = offset_y + widget_y;
@@ -1373,7 +1373,7 @@ static int Center(int argc, const char **argv, pcb_coord_t pcb_x, pcb_coord_t pc
 	 * XXX: Should only do this if we confirm we are inside our window?
 	 */
 
-	ghid_pcb_to_event_coords(pcb_x, pcb_y, &widget_x, &widget_y);
+	ghid_pcb_to_event_coords(&gport->view, pcb_x, pcb_y, &widget_x, &widget_y);
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
 
 	pointer_x = offset_x + widget_x;

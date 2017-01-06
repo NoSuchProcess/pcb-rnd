@@ -120,7 +120,7 @@ void ghid_note_event_location(GdkEventButton * ev)
 		event_y = ev->y;
 	}
 
-	ghid_event_to_pcb_coords(event_x, event_y, &gport->pcb_x, &gport->pcb_y);
+	ghid_event_to_pcb_coords(&gport->view, event_x, event_y, &gport->pcb_x, &gport->pcb_y);
 
 	pcb_event_move_crosshair(gport->pcb_x, gport->pcb_y);
 	ghid_set_cursor_position_labels();

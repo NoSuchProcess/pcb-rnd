@@ -415,8 +415,6 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 pcb_hid_t *ghid_request_debug_draw(void);
 void ghid_flush_debug_draw(void);
 void ghid_finish_debug_draw(void);
-pcb_bool ghid_event_to_pcb_coords(int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y);
-pcb_bool ghid_pcb_to_event_coords(pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y);
 
 void ghid_lead_user_to_location(pcb_coord_t x, pcb_coord_t y);
 void ghid_cancel_lead_user(void);

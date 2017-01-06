@@ -37,9 +37,22 @@ void ghid_set_status_line_label(void);
 void pcb_gtk_pan_common();
 void ghid_port_ranges_scale(void);
 void ghid_invalidate_all();
-pcb_bool ghid_pcb_to_event_coords(pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y);
 
+pcb_bool ghid_pcb_to_event_coords(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)
+{
+	*event_x = DRAW_X(v, pcb_x);
+	*event_y = DRAW_Y(v, pcb_y);
 
+	return pcb_true;
+}
+
+pcb_bool ghid_event_to_pcb_coords(const pcb_gtk_view_t *v, int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y)
+{
+	*pcb_x = EVENT_TO_PCB_X(v, event_x);
+	*pcb_y = EVENT_TO_PCB_Y(v, event_y);
+
+	return pcb_true;
+}
 
 /* gport->view.coord_per_px:
  * zoom value is PCB units per screen pixel.  Larger numbers mean zooming
@@ -111,7 +124,7 @@ void ghid_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_
 	pcb_draw_inhibit_inc();
 
 	/* Work out where on the screen the flip point is */
-	ghid_pcb_to_event_coords(center_x, center_y, &widget_x, &widget_y);
+	ghid_pcb_to_event_coords(v, center_x, center_y, &widget_x, &widget_y);
 
 	conf_set_design("editor/view/flip_x", "%d", conf_core.editor.view.flip_x != flip_x);
 	conf_set_design("editor/view/flip_y", "%d", conf_core.editor.view.flip_y != flip_y);

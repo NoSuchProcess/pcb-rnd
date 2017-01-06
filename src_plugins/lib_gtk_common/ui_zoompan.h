@@ -38,11 +38,11 @@
 #define SIDE_X(x)         ((conf_core.editor.view.flip_x ? PCB->MaxWidth - (x) : (x)))
 #define SIDE_Y(y)         ((conf_core.editor.view.flip_y ? PCB->MaxHeight - (y) : (y)))
 
-#define	DRAW_X(x)         (gint)((SIDE_X(x) - gport->view.x0) / gport->view.coord_per_px)
-#define	DRAW_Y(y)         (gint)((SIDE_Y(y) - gport->view.y0) / gport->view.coord_per_px)
+#define	DRAW_X(view, x)         (gint)((SIDE_X(x) - (view)->x0) / (view)->coord_per_px)
+#define	DRAW_Y(view, y)         (gint)((SIDE_Y(y) - (view)->y0) / (view)->coord_per_px)
 
-#define	EVENT_TO_PCB_X(x) SIDE_X((gint)((x) * gport->view.coord_per_px + gport->view.x0))
-#define	EVENT_TO_PCB_Y(y) SIDE_Y((gint)((y) * gport->view.coord_per_px + gport->view.y0))
+#define	EVENT_TO_PCB_X(view, x) SIDE_X((gint)((x) * (view)->coord_per_px + v(iew)->x0))
+#define	EVENT_TO_PCB_Y(view, y) SIDE_Y((gint)((y) * (view)->coord_per_px + (view)->y0))
 
 
 typedef struct {
@@ -60,6 +60,10 @@ void ghid_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_
 void ghid_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y);
 void ghid_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy);
 void ghid_zoom_view_fit(pcb_gtk_view_t *v);
+
+pcb_bool ghid_pcb_to_event_coords(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y);
+pcb_bool ghid_event_to_pcb_coords(const pcb_gtk_view_t *v, int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y);
+
 
 
 
