@@ -87,7 +87,7 @@ char *pcb_get_infostr(void)
 		gds_append_str(&info, "Copyright (C) C. Scott Ananian 2001\n");
 		gds_append_str(&info, "Copyright (C) DJ Delorie 2003, 2004, 2005, 2006, 2007, 2008\n");
 		gds_append_str(&info, "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
-		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013-2016 (pcb-rnd patches)\n\n");
+		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013-2017 (pcb-rnd patches)\n\n");
 		gds_append_str(&info, "It is licensed under the terms of the GNU\n");
 		gds_append_str(&info, "General Public License version 2\n");
 		gds_append_str(&info, "See the LICENSE file for more information\n\n");

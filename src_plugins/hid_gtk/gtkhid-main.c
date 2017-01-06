@@ -32,6 +32,7 @@
 #include "gtkhid.h"
 
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
+#include "../src_plugins/lib_gtk_common/dlg_about.h"
 
 conf_hid_id_t ghid_conf_id = -1;
 conf_hid_id_t ghid_menuconf_id = -1;
@@ -835,7 +836,7 @@ This just pops up a dialog telling the user which version of
 
 static int About(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	ghid_dialog_about();
+	pcb_gtk_dlg_about(gport->top_window);
 	return 0;
 }
 

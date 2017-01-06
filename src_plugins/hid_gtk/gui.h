@@ -250,7 +250,6 @@ int ghid_dialog_close_confirm(void);
 #define GUI_DIALOG_CLOSE_CONFIRM_SAVE   2
 gint ghid_dialog_confirm_all(gchar * message);
 gchar *ghid_dialog_input(const char *prompt, const char *initial);
-void ghid_dialog_about(void);
 
 char *ghid_fileselect(const char *, const char *, const char *, const char *, const char *, int);
 
