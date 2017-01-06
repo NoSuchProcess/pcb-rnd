@@ -424,18 +424,6 @@ char *ghid_prompt_for(const char *msg, const char *default_string)
 	return rv;
 }
 
-/* FIXME -- implement a proper file select dialog */
-#ifdef FIXME
-char *ghid_fileselect(const char *title, const char *descr,
-											const char *default_file, const char *default_ext, const char *history_tag, int flags)
-{
-	char *rv;
-
-	rv = ghid_dialog_input(title, default_file);
-	return rv;
-}
-#endif
-
 void ghid_show_item(void *item)
 {
 	ghid_pinout_window_show(&ghid_port, (pcb_element_t *) item);
