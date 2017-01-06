@@ -234,7 +234,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\ttext layer: '%s'\n", (n->children->str));
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer == -1) {
+					if (PCBLayer < 0) {
 						return -1;
 					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
@@ -411,7 +411,7 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("\tgr_line layer: '%s'\n", (n->children->str));
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
-						if (PCBLayer == -1) {
+						if (PCBLayer < 0) {
 							return -1;
 						}
 					} else {
@@ -557,7 +557,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("\tgr_arc layer: '%s'\n", (n->children->str));
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
-						if (PCBLayer == -1) {
+						if (PCBLayer < 0) {
 							return -1;
 						}
 					} else {
@@ -680,7 +680,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 						if (m->str != NULL) {
 							pcb_printf("\tvia layer: '%s'\n", (m->str));
 /*							PCBLayer = kicad_get_layeridx(st, m->str);
- *							if (PCBLayer == -1) {
+ *							if (PCBLayer < 0) {
  *								return -1;
  *							}   via layers not currently used in PCB
  */   
@@ -782,7 +782,7 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 					if (n->children != NULL && n->children->str != NULL) {
 						pcb_printf("\tsegment layer: '%s'\n", (n->children->str));
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
-						if (PCBLayer == -1) {
+						if (PCBLayer < 0) {
 							return -1;
 						}
 					} else {
@@ -1019,7 +1019,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\tlayer: '%s'\n", (n->children->str));
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer == -1) {
+					if (PCBLayer < 0) {
 						return -1;
 					} else if (pcb_layer_flags(PCBLayer) & PCB_LYT_BOTTOM) {
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
@@ -1171,7 +1171,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				if (l->children != NULL && l->children->str != NULL) {
 					pcb_printf("\ttext layer: '%s'\n", (l->children->str));
 					PCBLayer = kicad_get_layeridx(st, l->children->str);
-					if (PCBLayer == -1) {
+					if (PCBLayer < 0) {
 						pcb_printf("\ttext layer not defined for module text, default being used.\n");
 						Flags = pcb_flag_make(0);
 						/*return -1;*/
@@ -1402,7 +1402,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 							for(l = m->children; l != NULL; l = l->next) {
 								if (l->str != NULL) {
 									PCBLayer = kicad_get_layeridx(st, l->str);
-									if (PCBLayer == -1) {
+									if (PCBLayer < 0) {
 										/* we ignore *.mask, *.paste, etc., if valid layer def already found */
 										printf("Unknown layer definition: %s\n", l->str);
 										if (!padLayerDefCount) {
@@ -1600,7 +1600,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\tfp_line layer: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 7);
 						PCBLayer = kicad_get_layeridx(st, l->children->str);
-						if (PCBLayer == -1) {
+						if (PCBLayer < 0) {
 							return -1;
 						}
 					} else {
@@ -1745,7 +1745,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\tfp_arc layer: '%s'\n", (l->children->str));
 						SEEN_NO_DUP(featureTally, 7);
 						PCBLayer = kicad_get_layeridx(st, l->children->str);
-						if (PCBLayer == -1) {
+						if (PCBLayer < 0) {
 							return -1;
 						}
 					} else {
@@ -1917,7 +1917,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 				if (n->children != NULL && n->children->str != NULL) {
 					pcb_printf("\tzone layer:\t'%s'\n", (n->children->str));
 					PCBLayer = kicad_get_layeridx(st, n->children->str);
-					if (PCBLayer == -1) {
+					if (PCBLayer < 0) {
 						return -1;
 					}
 					polygon = pcb_poly_new(&st->PCB->Data->Layer[PCBLayer], flags);
