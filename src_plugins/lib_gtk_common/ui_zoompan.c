@@ -31,9 +31,8 @@
 #include "draw.h"
 #include "ui_zoompan.h"
 
+/* defined by the hid (gtk version or render specific): */
 void ghid_set_status_line_label(void);
-
-#warning TODO: defined in the hid for now:
 void pcb_gtk_pan_common();
 void ghid_port_ranges_scale(void);
 void ghid_invalidate_all();
