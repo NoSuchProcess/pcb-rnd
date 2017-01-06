@@ -1502,7 +1502,7 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"Benchmark", 0, Benchmark}
 	,
-	{"Center", N_("Click on a location to center"), Center, center_help, center_syntax}
+	{"Center", N_("Click on a location to center"), Center, pcb_acth_center, pcb_acts_center}
 	,
 	{"Command", 0, Command}
 	,
@@ -1518,7 +1518,7 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"Load", 0, Load}
 	,
-	{"Pan", 0, PanAction, pan_help, pan_syntax}
+	{"Pan", 0, PanAction, pcb_acth_pan, pcb_acts_pan}
 	,
 	{"Popup", 0, Popup, popup_help, popup_syntax}
 	,
@@ -1532,13 +1532,13 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"SaveWindowGeometry", 0, SaveWinGeo, savewingeo_help, savewingeo_syntax}
 	,
-	{"Scroll", N_("Click on a place to scroll"), ScrollAction, scroll_help, scroll_syntax}
+	{"Scroll", N_("Click on a place to scroll"), ScrollAction, pcb_acth_scroll, pcb_acts_scroll}
 	,
 	{"SetUnits", 0, SetUnits, setunits_help, setunits_syntax}
 	,
-	{"SwapSides", 0, SwapSides, swapsides_help, swapsides_syntax}
+	{"SwapSides", 0, SwapSides, pcb_acth_swapsides, pcb_acts_swapsides}
 	,
-	{"Zoom", N_("Click on zoom focus"), Zoom, zoom_help, zoom_syntax}
+	{"Zoom", N_("Click on zoom focus"), Zoom, pcb_acth_zoom, pcb_acts_zoom}
 };
 
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)

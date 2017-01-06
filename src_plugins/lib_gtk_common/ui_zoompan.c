@@ -181,9 +181,9 @@ void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 
 /* ------------------------------------------------------------ */
 
-const char zoom_syntax[] = "Zoom()\n" "Zoom(factor)";
+const char pcb_acts_zoom[] = "Zoom()\n" "Zoom(factor)";
 
-const char zoom_help[] = N_("Various zoom factor changes.");
+const char pcb_acth_zoom[] = N_("Various zoom factor changes.");
 
 /* %start-doc actions Zoom
 Changes the zoom (magnification) of the view of the board.  If no
@@ -229,7 +229,7 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 	double v;
 
 	if (argc > 1)
-		PCB_AFAIL(zoom);
+		PCB_ACT_FAIL(zoom);
 
 	if (argc < 1) {
 		pcb_gtk_zoom_view_fit(vw);
@@ -260,9 +260,8 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 
 /* ------------------------------------------------------------ */
 
-const char center_syntax[] = "Center()\n";
-
-const char center_help[] = N_("Moves the pointer to the center of the window.");
+const char pcb_acts_center[] = "Center()\n";
+const char pcb_acth_center[] = N_("Moves the pointer to the center of the window.");
 
 /* %start-doc actions Center
 
@@ -276,7 +275,7 @@ int pcb_gtk_act_center(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	int widget_x, widget_y;
 
 	if (argc != 0)
-		PCB_AFAIL(center);
+		PCB_ACT_FAIL(center);
 
 	/* Aim to put the given x, y PCB coordinates in the center of the widget */
 	widget_x = vw->canvas_width / 2;
@@ -299,9 +298,8 @@ int pcb_gtk_act_center(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 }
 
 /* ---------------------------------------------------------------------- */
-const char swapsides_syntax[] = "SwapSides(|v|h|r)";
-
-const char swapsides_help[] = N_("Swaps the side of the board you're looking at.");
+const char pcb_acts_swapsides[] = "SwapSides(|v|h|r)";
+const char pcb_acth_swapsides[] = N_("Swaps the side of the board you're looking at.");
 
 /* %start-doc actions SwapSides
 
@@ -384,8 +382,8 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 }
 
 /* ------------------------------------------------------------ */
-const char scroll_syntax[] = "Scroll(up|down|left|right, [div])";
-const char scroll_help[] = N_("Scroll the viewport.");
+const char pcb_acts_scroll[] = "Scroll(up|down|left|right, [div])";
+const char pcb_acth_scroll[] = N_("Scroll the viewport.");
 
 /* % start-doc actions Scroll
 
@@ -405,7 +403,7 @@ int pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	int div = 40;
 
 	if (argc != 1 && argc != 2)
-		PCB_AFAIL(scroll);
+		PCB_ACT_FAIL(scroll);
 
 	if (argc == 2)
 		div = atoi(argv[1]);
@@ -419,7 +417,7 @@ int pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	else if (pcb_strcasecmp(argv[0], "left") == 0)
 		dx = -vw->width / div;
 	else
-		PCB_AFAIL(scroll);
+		PCB_ACT_FAIL(scroll);
 
 	pcb_gtk_pan_view_rel(vw, dx, dy);
 
@@ -427,8 +425,8 @@ int pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 }
 
 /* ------------------------------------------------------------ */
-const char pan_syntax[] = "Pan([thumb], Mode)";
-const char pan_help[] = N_("Start or stop panning (Mode = 1 to start, 0 to stop)\n" "Optional thumb argument is ignored for now in gtk hid.\n");
+const char pcb_acts_pan[] = "Pan([thumb], Mode)";
+const char pcb_acth_pan[] = N_("Start or stop panning (Mode = 1 to start, 0 to stop)\n" "Optional thumb argument is ignored for now in gtk hid.\n");
 
 /* %start-doc actions Pan
 
@@ -442,7 +440,7 @@ int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t
 	int mode;
 
 	if (argc != 1 && argc != 2)
-		PCB_AFAIL(pan);
+		PCB_ACT_FAIL(pan);
 
 	if (argc == 1) {
 		mode = atoi(argv[0]);
