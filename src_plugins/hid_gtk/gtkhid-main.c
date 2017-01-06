@@ -43,26 +43,8 @@ static void ghid_get_view_size(pcb_coord_t *width, pcb_coord_t *height)
 	*height = gport->view.height;
 }
 
-void pcb_gtk_pan_common(void)
+void ghid_pan_common(void)
 {
-	int event_x, event_y;
-
-	/* We need to fix up the PCB coordinates corresponding to the last
-	 * event so convert it back to event coordinates temporarily. */
-	ghid_pcb_to_event_coords(&gport->view, gport->view.pcb_x, gport->view.pcb_y, &event_x, &event_y);
-
-	/* Don't pan so far the board is completely off the screen */
-	gport->view.x0 = MAX(-gport->view.width, gport->view.x0);
-	gport->view.y0 = MAX(-gport->view.height, gport->view.y0);
-	gport->view.x0 = MIN(gport->view.x0, PCB->MaxWidth);
-	gport->view.y0 = MIN(gport->view.y0, PCB->MaxHeight);
-
-	/* Fix up noted event coordinates to match where we clamped. Alternatively
-	 * we could call ghid_note_event_location (NULL); to get a new pointer
-	 * location, but this costs us an xserver round-trip (on X11 platforms)
-	 */
-	ghid_event_to_pcb_coords(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
-
 	ghidgui->adjustment_changed_holdoff = TRUE;
 	gtk_range_set_value(GTK_RANGE(ghidgui->h_range), gport->view.x0);
 	gtk_range_set_value(GTK_RANGE(ghidgui->v_range), gport->view.y0);

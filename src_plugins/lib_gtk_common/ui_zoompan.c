@@ -35,10 +35,33 @@
 
 /* defined by the hid (gtk version or render specific): */
 void ghid_set_status_line_label(void);
-void pcb_gtk_pan_common();
+void ghid_pan_common(void);
 void ghid_port_ranges_scale(void);
 void ghid_invalidate_all();
 void ghid_get_user_xy(const gchar *msg);
+
+static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
+{
+	int event_x, event_y;
+
+	/* We need to fix up the PCB coordinates corresponding to the last
+	 * event so convert it back to event coordinates temporarily. */
+	ghid_pcb_to_event_coords(v, v->pcb_x, v->pcb_y, &event_x, &event_y);
+
+	/* Don't pan so far the board is completely off the screen */
+	v->x0 = MAX(-v->width, v->x0);
+	v->y0 = MAX(-v->height, v->y0);
+	v->x0 = MIN(v->x0, PCB->MaxWidth);
+	v->y0 = MIN(v->y0, PCB->MaxHeight);
+
+	/* Fix up noted event coordinates to match where we clamped. Alternatively
+	 * we could call ghid_note_event_location (NULL); to get a new pointer
+	 * location, but this costs us an xserver round-trip (on X11 platforms)
+	 */
+	ghid_event_to_pcb_coords(v, event_x, event_y, &v->pcb_x, &v->pcb_y);
+
+	ghid_pan_common();
+}
 
 pcb_bool ghid_pcb_to_event_coords(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)
 {
@@ -101,7 +124,7 @@ static void ghid_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coor
 	v->x0 = SIDE_X(center_x) - xtmp * v->width;
 	v->y0 = SIDE_Y(center_y) - ytmp * v->height;
 
-	pcb_gtk_pan_common();
+	pcb_gtk_pan_common(v);
 
 	ghid_set_status_line_label();
 }
@@ -144,7 +167,7 @@ void ghid_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, 
 	v->x0 = SIDE_X(pcb_x) - widget_x * v->coord_per_px;
 	v->y0 = SIDE_Y(pcb_y) - widget_y * v->coord_per_px;
 
-	pcb_gtk_pan_common();
+	pcb_gtk_pan_common(v);
 }
 
 void ghid_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
@@ -152,7 +175,7 @@ void ghid_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 	v->x0 += dx;
 	v->y0 += dy;
 
-	pcb_gtk_pan_common();
+	pcb_gtk_pan_common(v);
 }
 
 
