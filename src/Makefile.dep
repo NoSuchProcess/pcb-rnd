@@ -2254,9 +2254,9 @@
  obj_pinvia_list.h obj_pinvia.h obj_text.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h obj_poly_list.h obj_poly.h polyarea.h \
  obj_text_list.h obj_rat_list.h obj_rat.h library.h rats_patch.h board.h \
- font.h box.h math_helper.h move.h misc_util.h compat_nls.h draw.h hid.h \
- error.h drc.h data.h crosshair.h vtonpoint.h buffer.h layer_vis.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h
+ font.h box.h math_helper.h move.h misc_util.h compat_misc.h compat_nls.h \
+ draw.h hid.h error.h drc.h data.h crosshair.h vtonpoint.h buffer.h \
+ layer_vis.h ../src_plugins/lib_gtk_common/ui_zoompan.h
 ../src_plugins/lib_gtk_common/util_str.o: \
  ../src_plugins/lib_gtk_common/util_str.c ../config.h \
  ../src_plugins/lib_gtk_common/util_str.h

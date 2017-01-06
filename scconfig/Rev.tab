@@ -1,3 +1,4 @@
+6093	distclean,configure	hid API extension for the common Cursor action
 6087	configure	start splitting up hid_gtk: new plugin that hid_gtk depends on: lib_gtk_common
 6056	configure	gschp2pcb-rnd build deps bug
 6007	configure	switch over Makefiles to use sccbox
