@@ -27,6 +27,7 @@
 #include "error.h"
 #include "conf_core.h"
 #include "board.h"
+#include "compat_misc.h"
 #include "compat_nls.h"
 #include "draw.h"
 #include "data.h"
