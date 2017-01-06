@@ -65,56 +65,6 @@ void pcb_gtk_pan_common(void)
 	ghid_port_ranges_changed();
 }
 
-/* gport->view.coord_per_px:
- * zoom value is PCB units per screen pixel.  Larger numbers mean zooming
- * out - the largest value means you are looking at the whole board.
- *
- * gport->view_width and gport->view_height are in PCB coordinates
- */
-
-#define ALLOW_ZOOM_OUT_BY 10		/* Arbitrary, and same as the lesstif HID MAX_ZOOM_SCALE */
-void ghid_zoom_view_abs(pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom)
-{
-	double min_zoom, max_zoom;
-	double xtmp, ytmp;
-	pcb_coord_t cmaxx, cmaxy;
-
-	/* Limit the "minimum" zoom constant (maximum zoom), at 1 pixel per PCB
-	 * unit, and set the "maximum" zoom constant (minimum zoom), such that
-	 * the entire board just fits inside the viewport
-	 */
-	min_zoom = 200;
-	max_zoom = MAX(PCB->MaxWidth / gport->view.canvas_width, PCB->MaxHeight / gport->view.canvas_height) * ALLOW_ZOOM_OUT_BY;
-	new_zoom = MIN(MAX(min_zoom, new_zoom), max_zoom);
-
-	if ((new_zoom > max_zoom) || (new_zoom < min_zoom))
-		return;
-
-	if (gport->view.coord_per_px == new_zoom)
-		return;
-
-	/* Do not allow zoom level that'd overflow the coord type */
-	cmaxx = gport->view.canvas_width  * (new_zoom / 2.0);
-	cmaxy = gport->view.canvas_height * (new_zoom / 2.0);
-	if ((cmaxx >= COORD_MAX/2) || (cmaxy >= COORD_MAX/2)) {
-		return;
-	}
-
-	xtmp = (SIDE_X(center_x) - gport->view.x0) / (double) gport->view.width;
-	ytmp = (SIDE_Y(center_y) - gport->view.y0) / (double) gport->view.height;
-
-	gport->view.coord_per_px = new_zoom;
-	pcb_pixel_slop = new_zoom;
-	ghid_port_ranges_scale();
-
-	gport->view.x0 = SIDE_X(center_x) - xtmp * gport->view.width;
-	gport->view.y0 = SIDE_Y(center_y) - ytmp * gport->view.height;
-
-	pcb_gtk_pan_common();
-
-	ghid_set_status_line_label();
-}
-
 /* ------------------------------------------------------------ */
 
 void ghid_calibrate(double xval, double yval)

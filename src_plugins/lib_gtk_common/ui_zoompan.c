@@ -31,20 +31,77 @@
 #include "draw.h"
 #include "ui_zoompan.h"
 
+void ghid_set_status_line_label(void);
+
 #warning TODO: defined in the hid for now:
-void ghid_zoom_view_abs(pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom);
 void pcb_gtk_pan_common();
+void ghid_port_ranges_scale(void);
+void ghid_invalidate_all();
+pcb_bool ghid_pcb_to_event_coords(pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y);
 
 
-static void ghid_zoom_view_rel(const pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double factor)
+
+/* gport->view.coord_per_px:
+ * zoom value is PCB units per screen pixel.  Larger numbers mean zooming
+ * out - the largest value means you are looking at the whole board.
+ *
+ * gport->view_width and gport->view_height are in PCB coordinates
+ */
+
+#define ALLOW_ZOOM_OUT_BY 10		/* Arbitrary, and same as the lesstif HID MAX_ZOOM_SCALE */
+static void ghid_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom)
 {
-	ghid_zoom_view_abs(center_x, center_y, v->coord_per_px * factor);
+	double min_zoom, max_zoom;
+	double xtmp, ytmp;
+	pcb_coord_t cmaxx, cmaxy;
+
+	/* Limit the "minimum" zoom constant (maximum zoom), at 1 pixel per PCB
+	 * unit, and set the "maximum" zoom constant (minimum zoom), such that
+	 * the entire board just fits inside the viewport
+	 */
+	min_zoom = 200;
+	max_zoom = MAX(PCB->MaxWidth / v->canvas_width, PCB->MaxHeight / v->canvas_height) * ALLOW_ZOOM_OUT_BY;
+	new_zoom = MIN(MAX(min_zoom, new_zoom), max_zoom);
+
+	if ((new_zoom > max_zoom) || (new_zoom < min_zoom))
+		return;
+
+	if (v->coord_per_px == new_zoom)
+		return;
+
+	/* Do not allow zoom level that'd overflow the coord type */
+	cmaxx = v->canvas_width  * (new_zoom / 2.0);
+	cmaxy = v->canvas_height * (new_zoom / 2.0);
+	if ((cmaxx >= COORD_MAX/2) || (cmaxy >= COORD_MAX/2)) {
+		return;
+	}
+
+	xtmp = (SIDE_X(center_x) - v->x0) / (double) v->width;
+	ytmp = (SIDE_Y(center_y) - v->y0) / (double) v->height;
+
+	v->coord_per_px = new_zoom;
+	pcb_pixel_slop = new_zoom;
+	ghid_port_ranges_scale();
+
+	v->x0 = SIDE_X(center_x) - xtmp * v->width;
+	v->y0 = SIDE_Y(center_y) - ytmp * v->height;
+
+	pcb_gtk_pan_common();
+
+	ghid_set_status_line_label();
+}
+
+
+
+static void ghid_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double factor)
+{
+	ghid_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
 }
 
 void ghid_zoom_view_fit(pcb_gtk_view_t *v)
 {
 	ghid_pan_view_abs(v, SIDE_X(0), SIDE_Y(0), 0, 0);
-	ghid_zoom_view_abs(SIDE_X(0), SIDE_Y(0), MAX(PCB->MaxWidth / v->canvas_width, PCB->MaxHeight / v->canvas_height));
+	ghid_zoom_view_abs(v, SIDE_X(0), SIDE_Y(0), MAX(PCB->MaxWidth / v->canvas_width, PCB->MaxHeight / v->canvas_height));
 }
 
 void ghid_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)
@@ -156,7 +213,7 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 		ghid_zoom_view_rel(vw, x, y, v);
 		break;
 	case '=':
-		ghid_zoom_view_abs(x, y, v);
+		ghid_zoom_view_abs(vw, x, y, v);
 		break;
 	}
 
