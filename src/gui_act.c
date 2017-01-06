@@ -1297,8 +1297,8 @@ static int pcb_act_LibraryChanged(int argc, const char **argv, pcb_coord_t x, pc
 	return 0;
 }
 
-static const char cursor_syntax[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
-static const char cursor_help[] = "Move the cursor.";
+static const char pcb_acts_cursor[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
+static const char pcb_acth_cursor[] = "Move the cursor.";
 /* %start-doc actions Cursor
 
 This action moves the mouse cursor.  Unlike other actions which take
@@ -1334,7 +1334,7 @@ The values are percentages of the board size.  Thus, a move of
 
 %end-doc */
 
-static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static int pcb_act_Cursor(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_unit_list_t extra_units_x = {
 		{"grid", 0, 0},
@@ -1360,14 +1360,14 @@ static int CursorAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	pcb_gui->get_view_size(&extra_units_x[1].scale, &extra_units_y[1].scale);
 
 	if (argc != 4)
-		PCB_AFAIL(cursor);
+		PCB_ACT_FAIL(cursor);
 
 	if (pcb_strcasecmp(argv[0], "pan") == 0)
 		pan_warp = HID_SC_PAN_VIEWPORT;
 	else if (pcb_strcasecmp(argv[0], "warp") == 0)
 		pan_warp = HID_SC_WARP_POINTER;
 	else
-		PCB_AFAIL(cursor);
+		PCB_ACT_FAIL(cursor);
 
 	dx = pcb_get_value_ex(argv[1], argv[3], NULL, extra_units_x, "", NULL);
 	if (conf_core.editor.view.flip_x)
@@ -1432,7 +1432,7 @@ pcb_hid_action_t gui_action_list[] = {
 	{"LibraryChanged", 0, pcb_act_LibraryChanged,
 	 pcb_acth_LibraryChanged, pcb_acts_LibraryChanged}
 	,
-	{"Cursor", 0, CursorAction, cursor_help, cursor_syntax}
+	{"Cursor", 0, pcb_act_Cursor, pcb_acth_cursor, pcb_acts_cursor}
 };
 
 PCB_REGISTER_ACTIONS(gui_action_list, NULL)
