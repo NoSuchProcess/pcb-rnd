@@ -136,13 +136,13 @@ static void ghid_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coor
 	ghid_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
 }
 
-void ghid_zoom_view_fit(pcb_gtk_view_t *v)
+void pcb_gtk_zoom_view_fit(pcb_gtk_view_t *v)
 {
-	ghid_pan_view_abs(v, SIDE_X(0), SIDE_Y(0), 0, 0);
+	pcb_gtk_pan_view_abs(v, SIDE_X(0), SIDE_Y(0), 0, 0);
 	ghid_zoom_view_abs(v, SIDE_X(0), SIDE_Y(0), MAX(PCB->MaxWidth / v->canvas_width, PCB->MaxHeight / v->canvas_height));
 }
 
-void ghid_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)
+static void pcb_gtk_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y)
 {
 	int widget_x, widget_y;
 
@@ -155,14 +155,14 @@ void ghid_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_
 	conf_set_design("editor/view/flip_y", "%d", conf_core.editor.view.flip_y != flip_y);
 
 	/* Pan the board so the center location remains in the same place */
-	ghid_pan_view_abs(v, center_x, center_y, widget_x, widget_y);
+	pcb_gtk_pan_view_abs(v, center_x, center_y, widget_x, widget_y);
 
 	pcb_draw_inhibit_dec();
 
 	ghid_invalidate_all();
 }
 
-void ghid_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y)
+void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y)
 {
 	v->x0 = SIDE_X(pcb_x) - widget_x * v->coord_per_px;
 	v->y0 = SIDE_Y(pcb_y) - widget_y * v->coord_per_px;
@@ -170,7 +170,7 @@ void ghid_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, 
 	pcb_gtk_pan_common(v);
 }
 
-void ghid_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
+void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 {
 	v->x0 += dx;
 	v->y0 += dy;
@@ -232,7 +232,7 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 		PCB_AFAIL(zoom);
 
 	if (argc < 1) {
-		ghid_zoom_view_fit(vw);
+		pcb_gtk_zoom_view_fit(vw);
 		return 0;
 	}
 
@@ -282,7 +282,7 @@ int pcb_gtk_act_center(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	widget_x = vw->canvas_width / 2;
 	widget_y = vw->canvas_height / 2;
 
-	ghid_pan_view_abs(vw, pcb_x, pcb_y, widget_x, widget_y);
+	pcb_gtk_pan_view_abs(vw, pcb_x, pcb_y, widget_x, widget_y);
 
 	/* Now move the mouse pointer to the place where the board location
 	 * actually ended up.
@@ -350,15 +350,15 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 		switch (argv[0][0]) {
 		case 'h':
 		case 'H':
-			ghid_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_true, pcb_false);
+			pcb_gtk_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_true, pcb_false);
 			break;
 		case 'v':
 		case 'V':
-			ghid_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_false, pcb_true);
+			pcb_gtk_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_false, pcb_true);
 			break;
 		case 'r':
 		case 'R':
-			ghid_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_true, pcb_true);
+			pcb_gtk_flip_view(vw, vw->pcb_x, vw->pcb_y, pcb_true, pcb_true);
 			conf_toggle_editor(show_solder_side); /* Swapped back below */
 			break;
 		default:
@@ -421,7 +421,7 @@ int pcb_gtk_act_scroll(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	else
 		PCB_AFAIL(scroll);
 
-	ghid_pan_view_rel(vw, dx, dy);
+	pcb_gtk_pan_view_rel(vw, dx, dy);
 
 	return 0;
 }

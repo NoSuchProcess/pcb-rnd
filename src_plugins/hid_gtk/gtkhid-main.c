@@ -162,7 +162,7 @@ void ghid_set_crosshair(int x, int y, int action)
 		widget_y = pointer_y - offset_y;
 
 		ghid_event_to_pcb_coords(&gport->view, widget_x, widget_y, &pcb_x, &pcb_y);
-		ghid_pan_view_abs(&gport->view, pcb_x, pcb_y, widget_x, widget_y);
+		pcb_gtk_pan_view_abs(&gport->view, pcb_x, pcb_y, widget_x, widget_y);
 
 		/* Just in case we couldn't pan the board the whole way,
 		 * we warp the pointer to where the crosshair DID land.
@@ -903,7 +903,7 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 	RouteStylesChanged(0, 0, NULL);
 
 	ghid_port_ranges_scale();
-	ghid_zoom_view_fit(&gport->view);
+	pcb_gtk_zoom_view_fit(&gport->view);
 	ghid_sync_with_new_layout();
 }
 

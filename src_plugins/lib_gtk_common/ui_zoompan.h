@@ -61,10 +61,9 @@ typedef struct {
 	pcb_coord_t crosshair_x, crosshair_y;	/* PCB coordinates of the crosshair     */
 } pcb_gtk_view_t;
 
-void ghid_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y);
-void ghid_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y);
-void ghid_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy);
-void ghid_zoom_view_fit(pcb_gtk_view_t *v);
+void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y);
+void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy);
+void pcb_gtk_zoom_view_fit(pcb_gtk_view_t *v);
 
 pcb_bool ghid_pcb_to_event_coords(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y);
 pcb_bool ghid_event_to_pcb_coords(const pcb_gtk_view_t *v, int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y);

@@ -392,7 +392,7 @@ gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPor
 		dx = gport->view.coord_per_px * (x_prev - ev->x);
 		dy = gport->view.coord_per_px * (y_prev - ev->y);
 		if (x_prev > 0)
-			ghid_pan_view_rel(&gport->view, dx, dy);
+			pcb_gtk_pan_view_rel(&gport->view, dx, dy);
 		x_prev = ev->x;
 		y_prev = ev->y;
 		return FALSE;
