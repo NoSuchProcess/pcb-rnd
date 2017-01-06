@@ -139,13 +139,7 @@ typedef struct {
 	GdkCursor *X_cursor;					/* used X cursor */
 	GdkCursorType X_cursor_shape;	/* and its shape */
 
-	/* TOOD: move all bools and coords below to view */
-	gboolean has_entered;
-	gboolean panning;
-
 	pcb_gtk_view_t view;
-	pcb_coord_t pcb_x, pcb_y;						/* PCB coordinates of the mouse pointer */
-	pcb_coord_t crosshair_x, crosshair_y;	/* PCB coordinates of the crosshair     */
 } GHidPort;
 
 extern GHidPort ghid_port, *gport;

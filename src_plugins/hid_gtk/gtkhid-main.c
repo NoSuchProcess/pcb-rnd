@@ -49,7 +49,7 @@ void pcb_gtk_pan_common(void)
 
 	/* We need to fix up the PCB coordinates corresponding to the last
 	 * event so convert it back to event coordinates temporarily. */
-	ghid_pcb_to_event_coords(&gport->view, gport->pcb_x, gport->pcb_y, &event_x, &event_y);
+	ghid_pcb_to_event_coords(&gport->view, gport->view.pcb_x, gport->view.pcb_y, &event_x, &event_y);
 
 	/* Don't pan so far the board is completely off the screen */
 	gport->view.x0 = MAX(-gport->view.width, gport->view.x0);
@@ -61,7 +61,7 @@ void pcb_gtk_pan_common(void)
 	 * we could call ghid_note_event_location (NULL); to get a new pointer
 	 * location, but this costs us an xserver round-trip (on X11 platforms)
 	 */
-	ghid_event_to_pcb_coords(&gport->view, event_x, event_y, &gport->pcb_x, &gport->pcb_y);
+	ghid_event_to_pcb_coords(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
 
 	ghidgui->adjustment_changed_holdoff = TRUE;
 	gtk_range_set_value(GTK_RANGE(ghidgui->h_range), gport->view.x0);
@@ -142,10 +142,10 @@ void ghid_set_crosshair(int x, int y, int action)
 
 	ghid_draw_grid_local(x, y);
 
-	if (gport->crosshair_x != x || gport->crosshair_y != y) {
+	if (gport->view.crosshair_x != x || gport->view.crosshair_y != y) {
 		ghid_set_cursor_position_labels();
-		gport->crosshair_x = x;
-		gport->crosshair_y = y;
+		gport->view.crosshair_x = x;
+		gport->view.crosshair_y = y;
 
 		/* FIXME - does this trigger the idle_proc stuff?  It is in the
 		 * lesstif HID.  Maybe something is needed here?
@@ -1192,15 +1192,15 @@ static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		switch (argv[0][0]) {
 		case 'h':
 		case 'H':
-			ghid_flip_view(&gport->view, gport->pcb_x, gport->pcb_y, pcb_true, pcb_false);
+			ghid_flip_view(&gport->view, gport->view.pcb_x, gport->view.pcb_y, pcb_true, pcb_false);
 			break;
 		case 'v':
 		case 'V':
-			ghid_flip_view(&gport->view, gport->pcb_x, gport->pcb_y, pcb_false, pcb_true);
+			ghid_flip_view(&gport->view, gport->view.pcb_x, gport->view.pcb_y, pcb_false, pcb_true);
 			break;
 		case 'r':
 		case 'R':
-			ghid_flip_view(&gport->view, gport->pcb_x, gport->pcb_y, pcb_true, pcb_true);
+			ghid_flip_view(&gport->view, gport->view.pcb_x, gport->view.pcb_y, pcb_true, pcb_true);
 			conf_toggle_editor(show_solder_side); /* Swapped back below */
 			break;
 		default:
@@ -1544,7 +1544,7 @@ static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 							"to the Pan action.\nFeel free to provide patches.\n"));
 	}
 
-	gport->panning = mode;
+	gport->view.panning = mode;
 
 	return 0;
 }

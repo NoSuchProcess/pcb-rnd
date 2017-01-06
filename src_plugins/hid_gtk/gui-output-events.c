@@ -100,11 +100,11 @@ void ghid_port_ranges_scale(void)
 
 void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
-	if (!ghid_port.has_entered && msg)
+	if (!ghid_port.view.has_entered && msg)
 		ghid_get_user_xy(msg);
-	if (ghid_port.has_entered) {
-		*x = gport->pcb_x;
-		*y = gport->pcb_y;
+	if (ghid_port.view.has_entered) {
+		*x = gport->view.pcb_x;
+		*y = gport->view.pcb_y;
 	}
 }
 
@@ -120,9 +120,9 @@ void ghid_note_event_location(GdkEventButton * ev)
 		event_y = ev->y;
 	}
 
-	ghid_event_to_pcb_coords(&gport->view, event_x, event_y, &gport->pcb_x, &gport->pcb_y);
+	ghid_event_to_pcb_coords(&gport->view, event_x, event_y, &gport->view.pcb_x, &gport->view.pcb_y);
 
-	pcb_event_move_crosshair(gport->pcb_x, gport->pcb_y);
+	pcb_event_move_crosshair(gport->view.pcb_x, gport->view.pcb_y);
 	ghid_set_cursor_position_labels();
 }
 
@@ -184,7 +184,7 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 		if (kv == GDK_KEY_ISO_Left_Tab) kv = GDK_KEY_Tab;
 		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, kv, seq, &seq_len);
 		if (slen > 0) {
-			ghid_port.has_entered  = 1;
+			ghid_port.view.has_entered  = 1;
 			pcb_hid_cfg_keys_action(seq, slen);
 			return TRUE;
 		}
@@ -225,7 +225,7 @@ GdkModifierType mask;
 	ghid_invalidate_all();
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();
-	if (!gport->panning)
+	if (!gport->view.panning)
 		g_idle_add(ghid_idle_cb, NULL);
 	return TRUE;
 }
@@ -363,7 +363,7 @@ static gboolean check_object_tooltips(GHidPort * out)
 	tooltip_update_timeout_id = 0;
 
 	/* check if there are any pins or pads at that position */
-	description = describe_location(out->crosshair_x, out->crosshair_y);
+	description = describe_location(out->view.crosshair_x, out->view.crosshair_y);
 
 	if (description == NULL)
 		return FALSE;
@@ -403,7 +403,7 @@ gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPor
 
 	gdk_event_request_motions(ev);
 
-	if (out->panning) {
+	if (out->view.panning) {
 		dx = gport->view.coord_per_px * (x_prev - ev->x);
 		dy = gport->view.coord_per_px * (y_prev - ev->y);
 		if (x_prev > 0)
@@ -431,7 +431,7 @@ gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPo
 	}
 
 	if (!ghidgui->command_entry_status_line_active) {
-		out->has_entered = TRUE;
+		out->view.has_entered = TRUE;
 		/* Make sure drawing area has keyboard focus when we are in it.
 		 */
 		gtk_widget_grab_focus(out->drawing_area);
@@ -463,7 +463,7 @@ gint ghid_port_window_leave_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPo
 		return FALSE;
 	}
 
-	out->has_entered = FALSE;
+	out->view.has_entered = FALSE;
 
 	ghid_screen_update();
 

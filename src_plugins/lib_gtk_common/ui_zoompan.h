@@ -54,6 +54,11 @@ typedef struct {
 	pcb_coord_t height;
 
 	gint canvas_width, canvas_height;
+
+	gboolean has_entered;
+	gboolean panning;
+	pcb_coord_t pcb_x, pcb_y;						/* PCB coordinates of the mouse pointer */
+	pcb_coord_t crosshair_x, crosshair_y;	/* PCB coordinates of the crosshair     */
 } pcb_gtk_view_t;
 
 void ghid_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, pcb_bool flip_x, pcb_bool flip_y);

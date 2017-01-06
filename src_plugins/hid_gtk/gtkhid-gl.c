@@ -684,8 +684,8 @@ void ghid_show_crosshair(gboolean paint_new_location)
 		/* FIXME: when CrossColor changed from config */
 		ghid_map_color_string(conf_core.appearance.color.cross, &cross_color);
 	}
-	x = gport->crosshair_x;
-	y = gport->crosshair_y;
+	x = gport->view.crosshair_x;
+	y = gport->view.crosshair_y;
 	z = 0;
 
 	glEnable(GL_COLOR_LOGIC_OP);
