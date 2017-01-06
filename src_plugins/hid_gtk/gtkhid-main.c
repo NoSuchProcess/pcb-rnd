@@ -1140,91 +1140,6 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------- */
-static const char swapsides_syntax[] = "SwapSides(|v|h|r)";
-
-static const char swapsides_help[] = N_("Swaps the side of the board you're looking at.");
-
-/* %start-doc actions SwapSides
-
-This action changes the way you view the board.
-
-@table @code
-
-@item v
-Flips the board over vertically (up/down).
-
-@item h
-Flips the board over horizontally (left/right), like flipping pages in
-a book.
-
-@item r
-Rotates the board 180 degrees without changing sides.
-
-@end table
-
-If no argument is given, the board isn't moved but the opposite side
-is shown.
-
-Normally, this action changes which pads and silk layer are drawn as
-pcb_true silk, and which are drawn as the "invisible" layer.  It also
-determines which solder mask you see.
-
-As a special case, if the layer group for the side you're looking at
-is visible and currently active, and the layer group for the opposite
-is not visible (i.e. disabled), then this action will also swap which
-layer group is visible and active, effectively swapping the ``working
-side'' of the board.
-
-%end-doc */
-
-
-static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	pcb_layergrp_id_t active_group = pcb_layer_get_group(pcb_layer_stack[0]);
-	pcb_layergrp_id_t comp_group = pcb_layer_get_group(pcb_component_silk_layer);
-	pcb_layergrp_id_t solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
-	pcb_bool comp_on = LAYER_PTR(PCB->LayerGroups.Entries[comp_group][0])->On;
-	pcb_bool solder_on = LAYER_PTR(PCB->LayerGroups.Entries[solder_group][0])->On;
-
-	pcb_draw_inhibit_inc();
-	if (argc > 0) {
-		switch (argv[0][0]) {
-		case 'h':
-		case 'H':
-			ghid_flip_view(&gport->view, gport->view.pcb_x, gport->view.pcb_y, pcb_true, pcb_false);
-			break;
-		case 'v':
-		case 'V':
-			ghid_flip_view(&gport->view, gport->view.pcb_x, gport->view.pcb_y, pcb_false, pcb_true);
-			break;
-		case 'r':
-		case 'R':
-			ghid_flip_view(&gport->view, gport->view.pcb_x, gport->view.pcb_y, pcb_true, pcb_true);
-			conf_toggle_editor(show_solder_side); /* Swapped back below */
-			break;
-		default:
-			pcb_draw_inhibit_dec();
-			return 1;
-		}
-	}
-
-	conf_toggle_editor(show_solder_side);
-
-	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
-		pcb_bool new_solder_vis = conf_core.editor.show_solder_side;
-
-		pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[comp_group][0], !new_solder_vis, !new_solder_vis);
-		pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[solder_group][0], new_solder_vis, new_solder_vis);
-	}
-
-	pcb_draw_inhibit_dec();
-
-	ghid_invalidate_all();
-
-	return 0;
-}
-
 /* ------------------------------------------------------------ */
 
 static const char print_syntax[] = "Print()";
@@ -1667,11 +1582,16 @@ int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
+static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_gtk_swap_sides(&gport->view, argc, argv, x, y);
+}
+
+
 static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y)
 {
 	pcb_gtk_get_coords(&gport->view, msg, x, y);
 }
-
 
 pcb_hid_action_t ghid_main_action_list[] = {
 	{"About", 0, About, about_help, about_syntax}
