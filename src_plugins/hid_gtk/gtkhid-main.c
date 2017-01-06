@@ -1345,55 +1345,6 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* ------------------------------------------------------------ */
 
-static const char center_syntax[] = "Center()\n";
-
-static const char center_help[] = N_("Moves the pointer to the center of the window.");
-
-/* %start-doc actions Center
-
-Move the pointer to the center of the window, but only if it's
-currently within the window already.
-
-%end-doc */
-
-static int Center(int argc, const char **argv, pcb_coord_t pcb_x, pcb_coord_t pcb_y)
-{
-	GdkDisplay *display;
-	GdkScreen *screen;
-	int offset_x, offset_y;
-	int widget_x, widget_y;
-	int pointer_x, pointer_y;
-
-	if (argc != 0)
-		PCB_AFAIL(center);
-
-	/* Aim to put the given x, y PCB coordinates in the center of the widget */
-	widget_x = gport->view.canvas_width / 2;
-	widget_y = gport->view.canvas_height / 2;
-
-	ghid_pan_view_abs(&gport->view, pcb_x, pcb_y, widget_x, widget_y);
-
-	/* Now move the mouse pointer to the place where the board location
-	 * actually ended up.
-	 *
-	 * XXX: Should only do this if we confirm we are inside our window?
-	 */
-
-	ghid_pcb_to_event_coords(&gport->view, pcb_x, pcb_y, &widget_x, &widget_y);
-	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
-
-	pointer_x = offset_x + widget_x;
-	pointer_y = offset_y + widget_y;
-
-	display = gdk_display_get_default();
-	screen = gdk_display_get_default_screen(display);
-	gdk_display_warp_pointer(display, screen, pointer_x, pointer_y);
-
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
-
 static const char dowindows_syntax[] = "DoWindows(1|2|3|4|5|6|7,[false])\n" "DoWindows(Layout|Library|Log|Netlist|Preferences|DRC,[false])";
 
 static const char dowindows_help[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
@@ -1702,6 +1653,18 @@ static void ghid_Busy(void *user_data, int argc, pcb_event_arg_t argv[])
 static int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	return pcb_gtk_zoom(&gport->view, argc, argv, x, y);
+}
+
+int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	int offset_x, offset_y, pointer_x, pointer_y;
+	GdkDisplay *display = gdk_display_get_default();
+	GdkScreen *screen= gdk_display_get_default_screen(display);
+
+	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
+	pcb_gtk_act_center(&gport->view, argc, argv, x, y, offset_x, offset_y, &pointer_x, &pointer_y);
+	gdk_display_warp_pointer(display, screen, pointer_x, pointer_y);
+	return 0;
 }
 
 

@@ -71,4 +71,9 @@ extern const char zoom_syntax[];
 extern const char zoom_help[];
 int pcb_gtk_zoom(pcb_gtk_view_t *v, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
+extern const char center_syntax[];
+extern const char center_help[];
+int pcb_gtk_act_center(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y);
+
+
 #endif

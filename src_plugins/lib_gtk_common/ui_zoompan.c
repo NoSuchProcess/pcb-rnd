@@ -231,3 +231,43 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 
 	return 0;
 }
+
+/* ------------------------------------------------------------ */
+
+const char center_syntax[] = "Center()\n";
+
+const char center_help[] = N_("Moves the pointer to the center of the window.");
+
+/* %start-doc actions Center
+
+Move the pointer to the center of the window, but only if it's
+currently within the window already.
+
+%end-doc */
+
+int pcb_gtk_act_center(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int offset_x, int offset_y, int *out_pointer_x, int *out_pointer_y)
+{
+	int widget_x, widget_y;
+
+	if (argc != 0)
+		PCB_AFAIL(center);
+
+	/* Aim to put the given x, y PCB coordinates in the center of the widget */
+	widget_x = vw->canvas_width / 2;
+	widget_y = vw->canvas_height / 2;
+
+	ghid_pan_view_abs(vw, pcb_x, pcb_y, widget_x, widget_y);
+
+	/* Now move the mouse pointer to the place where the board location
+	 * actually ended up.
+	 *
+	 * XXX: Should only do this if we confirm we are inside our window?
+	 */
+
+	ghid_pcb_to_event_coords(vw, pcb_x, pcb_y, &widget_x, &widget_y);
+
+	*out_pointer_x = offset_x + widget_x;
+	*out_pointer_y = offset_y + widget_y;
+
+	return 0;
+}
