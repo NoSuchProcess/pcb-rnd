@@ -83,7 +83,7 @@ void ghid_port_ranges_scale(void)
 	GtkAdjustment *adj;
 	gdouble page_size;
 
-	{
+	if (0) {
 #define ALLOW_ZOOM_OUT_BY 10		/* Arbitrary, and same as the lesstif HID MAX_ZOOM_SCALE */
 		double min_zoom, max_zoom;
 		double xtmp, ytmp;
