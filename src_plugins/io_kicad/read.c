@@ -887,7 +887,7 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 /* Register a kicad layer in the layer hash after looking up the pcb-rnd equivalent */
 static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, unsigned int mask)
 {
-	int id;
+	pcb_layer_id_t id;
 	if (pcb_layer_list(mask, &id, 1) != 1)
 		return 1;
 	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
