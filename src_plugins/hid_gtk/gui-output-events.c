@@ -84,11 +84,12 @@ void ghid_port_ranges_scale(void)
 	gdouble page_size;
 	double tmp;
 
-	if (0) {
-#define ALLOW_ZOOM_OUT_BY 10		/* Arbitrary, and same as the lesstif HID MAX_ZOOM_SCALE */
-		double min_zoom, max_zoom;
+	if (1) {
+		double min_zoom, max_zoom, max_zoom_w, max_zoom_h;
 		min_zoom = 200;
-		max_zoom = MAX(PCB->MaxWidth / gport->view.canvas_width, PCB->MaxHeight / gport->view.canvas_height) * ALLOW_ZOOM_OUT_BY;
+		max_zoom_w = (double)COORD_MAX / (double)gport->view.canvas_width;
+		max_zoom_h = (double)COORD_MAX / (double)gport->view.canvas_width;
+		max_zoom = MIN(max_zoom_w, max_zoom_h) / 2.0;
 		if (gport->view.coord_per_px < min_zoom) {
 			printf("*** TRUCATE ZOOM TO MIN\n");
 			gport->view.coord_per_px = min_zoom;
