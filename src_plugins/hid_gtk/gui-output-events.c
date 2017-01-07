@@ -270,6 +270,7 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	}
 
 	ghid_port_ranges_scale();
+	pcb_gtk_zoom_view_rel(&gport->view, gport->view.x0, gport->view.y0, 1.0);
 	ghid_invalidate_all();
 	return 0;
 }
