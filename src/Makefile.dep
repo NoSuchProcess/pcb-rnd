@@ -3591,8 +3591,8 @@ layer.o: layer.c ../config.h board.h const.h macro.h global_typedefs.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/genvector/vtp0.h list_conf.h hid_actions.h compat_misc.h \
- undo.h event.h layer_ui.h
+ ../src_3rd/genvector/vtp0.h list_conf.h compat_misc.h undo.h event.h \
+ layer_ui.h
 layer_grp.o: layer_grp.c ../config.h board.h const.h macro.h \
  global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -3607,12 +3607,7 @@ layer_grp.o: layer_grp.c ../config.h board.h const.h macro.h \
  obj_poly_list.h obj_poly.h polyarea.h obj_text_list.h obj_rat_list.h \
  obj_rat.h layer_grp.h library.h rats_patch.h font.h box.h math_helper.h \
  move.h misc_util.h data.h crosshair.h vtonpoint.h hid.h error.h drc.h \
- buffer.h conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/liblihata/genht/htsp.h ../src_3rd/liblihata/genht/ht.h \
- ../src_3rd/genvector/vtp0.h list_conf.h hid_actions.h compat_misc.h \
- undo.h event.h layer_ui.h
+ buffer.h
 layer_ui.o: layer_ui.c ../config.h layer_ui.h layer.h globalconst.h \
  global_typedefs.h pcb_bool.h unit.h attrib.h obj_all_list.h \
  obj_arc_list.h obj_common.h ../src_3rd/liblihata/genht/hash.h \

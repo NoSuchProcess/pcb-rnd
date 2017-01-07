@@ -28,13 +28,6 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
-#include "conf_core.h"
-#include "layer.h"
-#include "hid_actions.h"
-#include "compat_misc.h"
-#include "undo.h"
-#include "event.h"
-#include "layer_ui.h"
 #include "layer_grp.h"
 
 pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)

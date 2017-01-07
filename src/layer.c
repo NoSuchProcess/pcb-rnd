@@ -30,12 +30,10 @@
 #include "data.h"
 #include "conf_core.h"
 #include "layer.h"
-#include "hid_actions.h"
 #include "compat_misc.h"
 #include "undo.h"
 #include "event.h"
 #include "layer_ui.h"
-#include "layer_grp.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
