@@ -255,8 +255,8 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	if (layer < pcb_max_copper_layer) {
 		int i;
 		pcb_layergrp_id_t group = pcb_layer_get_group(layer);
-		for (i = 0; i < PCB->LayerGroups.Number[group]; i++) {
-			l = PCB->LayerGroups.Entries[group][i];
+		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
+			l = PCB->LayerGroups.grp[group].lid[i];
 			if (l != layer && l < pcb_max_copper_layer) {
 				show_one_layer_button(l, set);
 				PCB->Data->Layer[l].On = set;

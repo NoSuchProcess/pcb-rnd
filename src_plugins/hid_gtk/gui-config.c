@@ -1263,23 +1263,25 @@ static void config_layer_groups_radio_button_cb(GtkToggleButton * button, gpoint
 static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 {
 	GString *string;
-	gint group, entry, layer;
+	pcb_layergrp_id_t group;
+	pcb_layer_id_t layer;
+	gint entry;
 
 	string = g_string_new("");
 
 	for (group = 0; group < pcb_max_group; group++) {
-		if (lg->Number[group] == 0)
+		if (lg->grp[group].len == 0)
 			continue;
-		for (entry = 0; entry < lg->Number[group]; entry++) {
-			layer = lg->Entries[group][entry];
+		for (entry = 0; entry < lg->grp[group].len; entry++) {
+			layer = lg->grp[group].lid[entry];
 			if (layer == pcb_component_silk_layer)
 				string = g_string_append(string, "c");
 			else if (layer == pcb_solder_silk_layer)
 				string = g_string_append(string, "s");
 			else
-				g_string_append_printf(string, "%d", layer + 1);
+				g_string_append_printf(string, "%ld", layer + 1);
 
-			if (entry != lg->Number[group] - 1)
+			if (entry != lg->grp[group].len - 1)
 				string = g_string_append(string, ",");
 		}
 		if (group != pcb_max_group - 1)
@@ -1317,12 +1319,13 @@ static void config_layers_apply(void)
 		/* clear all entries and read layer by layer
 		 */
 		for (group = 0; group < pcb_max_group; group++)
-			layer_groups.Number[group] = 0;
+			layer_groups.grp[group].len = 0;
 
 		for (i = 0; i < pcb_max_copper_layer + 2; i++) {
 			group = config_layer_group[i] - 1;
-			layer_groups.Entries[group][layer_groups.Number[group]++] = i;
+			layer_groups.grp[group].lid[layer_groups.grp[group].len++] = i;
 
+#warning layer TODO: go by flags here
 			if (i == pcb_component_silk_layer)
 				componentgroup = group;
 			else if (i == pcb_solder_silk_layer)
@@ -1333,7 +1336,7 @@ static void config_layers_apply(void)
 		   |  solder-side and component-side must be in different groups
 		   |  solder-side and component-side must not be the only one in the group
 		 */
-		if (layer_groups.Number[soldergroup] <= 1 || layer_groups.Number[componentgroup] <= 1) {
+		if (layer_groups.grp[soldergroup].len <= 1 || layer_groups.grp[componentgroup].len <= 1) {
 			pcb_message(PCB_MSG_ERROR, _("Both 'solder side' or 'component side' layers must have at least\n" "\tone other layer in their group.\n"));
 			return;
 		}
@@ -1355,10 +1358,10 @@ static void config_layer_group_button_state_update(void)
 	 */
 	groups_holdoff = TRUE;
 	for (g = 0; g < pcb_max_group; g++)
-		for (i = 0; i < layer_groups.Number[g]; i++) {
+		for (i = 0; i < layer_groups.grp[g].len; i++) {
 /*			printf("layer %d in group %d\n", layer_groups.Entries[g][i], g +1); */
-			config_layer_group[layer_groups.Entries[g][i]] = g + 1;
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(group_button[layer_groups.Entries[g][i]][g]), TRUE);
+			config_layer_group[layer_groups.grp[g].lid[i]] = g + 1;
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(group_button[layer_groups.grp[g].lid[i]][g]), TRUE);
 		}
 	groups_holdoff = FALSE;
 }

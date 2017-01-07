@@ -1355,9 +1355,9 @@ void lesstif_update_layer_groups()
 	memset(sets, 0, sizeof(sets));
 
 	for (i = 0; i < pcb_max_group; i++)
-		for (j = 0; j < l->Number[i]; j++) {
-			sets[l->Entries[i][j]][i] = 1;
-			lg_setcol[l->Entries[i][j]] = i;
+		for (j = 0; j < l->grp[i].len; j++) {
+			sets[l->grp[i].lid[j]][i] = 1;
+			lg_setcol[l->grp[i].lid[j]] = i;
 		}
 
 	lg_label_width = 0;

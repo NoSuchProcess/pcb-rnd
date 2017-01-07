@@ -35,6 +35,7 @@
 #include "undo.h"
 #include "event.h"
 #include "layer_ui.h"
+#include "layer_grp.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
@@ -138,8 +139,8 @@ pcb_bool pcb_layer_is_empty(pcb_layer_id_t num)
 pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 {
 	int i;
-	for (i = 0; i < PCB->LayerGroups.Number[num]; i++)
-		if (!pcb_layer_is_empty(PCB->LayerGroups.Entries[num][i]))
+	for (i = 0; i < PCB->LayerGroups.grp[num].len; i++)
+		if (!pcb_layer_is_empty(PCB->LayerGroups.grp[num].lid[i]))
 			return pcb_false;
 	return pcb_true;
 }
@@ -208,7 +209,7 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_stack_t *LayerGroup, i
 					goto error;
 			}
 			groupnum[layer] = group;
-			LayerGroup->Entries[group][member++] = layer;
+			LayerGroup->grp[group].lid[member++] = layer;
 			while (*++s && isdigit((int) *s));
 
 			/* ignore white spaces and check for separator */
@@ -219,19 +220,19 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_stack_t *LayerGroup, i
 			if (*s != ',')
 				goto error;
 		}
-		LayerGroup->Number[group] = member;
+		LayerGroup->grp[group].len = member;
 		if (*s == ':')
 			s++;
 	}
 	if (!s_set)
-		LayerGroup->Entries[PCB_SOLDER_SIDE][LayerGroup->Number[PCB_SOLDER_SIDE]++] = LayerN + PCB_SOLDER_SIDE;
+		LayerGroup->grp[PCB_SOLDER_SIDE].lid[LayerGroup->grp[PCB_SOLDER_SIDE].len++] = LayerN + PCB_SOLDER_SIDE;
 	if (!c_set)
-		LayerGroup->Entries[PCB_COMPONENT_SIDE][LayerGroup->Number[PCB_COMPONENT_SIDE]++] = LayerN + PCB_COMPONENT_SIDE;
+		LayerGroup->grp[PCB_COMPONENT_SIDE].lid[LayerGroup->grp[PCB_COMPONENT_SIDE].len++] = LayerN + PCB_COMPONENT_SIDE;
 
 	for (layer = 0; layer < LayerN && group < LayerN; layer++)
 		if (groupnum[layer] == -1) {
-			LayerGroup->Entries[group][0] = layer;
-			LayerGroup->Number[group] = 1;
+			LayerGroup->grp[group].lid[0] = layer;
+			LayerGroup->grp[group].len = 1;
 			group++;
 		}
 	return (0);
@@ -257,13 +258,13 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 {
 	pcb_layergrp_id_t group, i;
 
-#warning TODO: layer group cleanup: remove this +2 for the silks
+#warning layer TODO: layer group cleanup: remove this +2 for the silks
 	if ((Layer < 0) || (Layer > pcb_max_copper_layer+2))
 		return -1;
 
 	for (group = 0; group < pcb_max_group; group++)
-		for (i = 0; i < PCB->LayerGroups.Number[group]; i++)
-			if (PCB->LayerGroups.Entries[group][i] == Layer)
+		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++)
+			if (PCB->LayerGroups.grp[group].lid[i] == Layer)
 				return (group);
 
 	return -1;
@@ -301,14 +302,14 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_
 		return prev;
 
 	/* Remove layer from prev group */
-	for (j = i = 0; i < PCB->LayerGroups.Number[prev]; i++)
-		if (PCB->LayerGroups.Entries[prev][i] != layer)
-			PCB->LayerGroups.Entries[prev][j++] = PCB->LayerGroups.Entries[prev][i];
-	PCB->LayerGroups.Number[prev]--;
+	for (j = i = 0; i < PCB->LayerGroups.grp[prev].len; i++)
+		if (PCB->LayerGroups.grp[prev].lid[i] != layer)
+			PCB->LayerGroups.grp[prev].lid[j++] = PCB->LayerGroups.grp[prev].lid[i];
+	PCB->LayerGroups.grp[prev].len--;
 
 	/* Add layer to new group.  */
-	i = PCB->LayerGroups.Number[group]++;
-	PCB->LayerGroups.Entries[group][i] = layer;
+	i = PCB->LayerGroups.grp[group].len++;
+	PCB->LayerGroups.grp[group].lid[i] = layer;
 
 	return group;
 }
@@ -340,10 +341,10 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 			/* check whether it's top, bottom or internal */
 			int group, entry;
 			for (group = 0; group < pcb_max_group; group++) {
-				if (PCB->LayerGroups.Number[group]) {
+				if (PCB->LayerGroups.grp[group].len) {
 					unsigned int my_group = 0, gf = 0;
-					for (entry = 0; entry < PCB->LayerGroups.Number[group]; entry++) {
-						int layer = PCB->LayerGroups.Entries[group][entry];
+					for (entry = 0; entry < PCB->LayerGroups.grp[group].len; entry++) {
+						pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[entry];
 						if (layer == layer_idx)
 							my_group = 1;
 						if (layer == pcb_component_silk_layer)
@@ -373,8 +374,8 @@ unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group)
 	unsigned int res = 0;
 	int layeri;
 
-	for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++)
-		res |= pcb_layer_flags(PCB->LayerGroups.Entries[group][layeri]);
+	for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++)
+		res |= pcb_layer_flags(PCB->LayerGroups.grp[group].lid[layeri]);
 
 	return res;
 }
@@ -459,8 +460,8 @@ int pcb_layer_group_list(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_
 {
 	int group, layeri, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
-			int layer = PCB->LayerGroups.Entries[group][layeri];
+		for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++) {
+			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[layeri];
 			if ((pcb_layer_flags(layer) & mask) == mask) {
 				APPEND(group);
 				goto added; /* do not add a group twice */
@@ -475,8 +476,8 @@ int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int 
 {
 	int group, layeri, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
-			int layer = PCB->LayerGroups.Entries[group][layeri];
+		for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++) {
+			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[layeri];
 			if ((pcb_layer_flags(layer) & mask)) {
 				APPEND(group);
 				goto added; /* do not add a group twice */
@@ -500,8 +501,8 @@ pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id)
 {
 	int group, layeri;
 	for (group = 0; group < pcb_max_group; group++) {
-		for (layeri = 0; layeri < PCB->LayerGroups.Number[group]; layeri++) {
-			int layer = PCB->LayerGroups.Entries[group][layeri];
+		for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++) {
+			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[layeri];
 			if (layer == layer_id)
 				return group;
 		}
@@ -511,9 +512,9 @@ pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id)
 
 void pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
 {
-	int glen = PCB->LayerGroups.Number[group_id];
-	PCB->LayerGroups.Entries[group_id][glen] = layer_id;
-	PCB->LayerGroups.Number[group_id]++;
+	int glen = PCB->LayerGroups.grp[group_id].len;
+	PCB->LayerGroups.grp[group_id].lid[glen] = layer_id;
+	PCB->LayerGroups.grp[group_id].len++;
 }
 
 
@@ -530,14 +531,15 @@ void pcb_layers_reset()
 
 	/* reset layer groups */
 	for(n = 0; n < PCB_MAX_LAYERGRP; n++)
-		PCB->LayerGroups.Number[n] = 0;
+		PCB->LayerGroups.grp[n].len = 0;
 
 	/* set up one copper layer on top and one on bottom */
+#warning layer TODO: this should use a separate group for silk
 	PCB->Data->LayerN = 2;
-	PCB->LayerGroups.Number[PCB_SOLDER_SIDE] = 1;
-	PCB->LayerGroups.Number[PCB_COMPONENT_SIDE] = 1;
-	PCB->LayerGroups.Entries[PCB_SOLDER_SIDE][0] = PCB_SOLDER_SIDE;
-	PCB->LayerGroups.Entries[PCB_COMPONENT_SIDE][0] = PCB_COMPONENT_SIDE;
+	PCB->LayerGroups.grp[PCB_SOLDER_SIDE].len = 1;
+	PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].len = 1;
+	PCB->LayerGroups.grp[PCB_SOLDER_SIDE].lid[0] = PCB_SOLDER_SIDE;
+	PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].lid[0] = PCB_COMPONENT_SIDE;
 
 	/* Name top and bottom layers */
 	if (PCB->Data->Layer[PCB_COMPONENT_SIDE].Name != NULL)
@@ -591,8 +593,8 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 					case PCB_LYT_BOTTOM: return PCB_SOLDER_SIDE;
 					case PCB_LYT_INTERN:
 						for(grp = 2; grp < PCB_MAX_LAYERGRP; grp++) {
-							if (PCB->LayerGroups.Number[grp] > 0) {
-								id = PCB->LayerGroups.Entries[grp][0];
+							if (PCB->LayerGroups.grp[grp].len > 0) {
+								id = PCB->LayerGroups.grp[grp].lid[0];
 								if (strcmp(PCB->Data->Layer[id].Name, "outline") != 0)
 									return id;
 							}
@@ -603,8 +605,8 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 
 			case PCB_LYT_OUTLINE:
 				for(grp = 2; grp < PCB_MAX_LAYERGRP; grp++) {
-					if (PCB->LayerGroups.Number[grp] > 0) {
-						id = PCB->LayerGroups.Entries[grp][0];
+					if (PCB->LayerGroups.grp[grp].len > 0) {
+						id = PCB->LayerGroups.grp[grp].lid[0];
 						if (strcmp(PCB->Data->Layer[id].Name, "outline") == 0)
 							return id;
 					}
@@ -667,8 +669,8 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 					case PCB_LYT_INTERN:
 						/* find the first internal layer */
 						for(found = 0, grp = 2; grp < PCB_MAX_LAYERGRP; grp++) {
-							if (PCB->LayerGroups.Number[grp] > 0) {
-								id = PCB->LayerGroups.Entries[grp][0];
+							if (PCB->LayerGroups.grp[grp].len > 0) {
+								id = PCB->LayerGroups.grp[grp].lid[0];
 								if (strcmp(PCB->Data->Layer[id].Name, "outline") != 0) {
 									found = 1;
 									break;
@@ -688,7 +690,7 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 	if (grp < 0) {
 		/* Also need to create a group */
 		for(grp = 0; grp < PCB_MAX_LAYERGRP; grp++)
-			if (PCB->LayerGroups.Number[grp] == 0)
+			if (PCB->LayerGroups.grp[grp].len == 0)
 				break;
 		if (grp >= PCB_MAX_LAYERGRP)
 			return -2;
@@ -703,25 +705,27 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 	}
 
 	/* add layer to group */
-	PCB->LayerGroups.Entries[grp][PCB->LayerGroups.Number[grp]] = id;
-	PCB->LayerGroups.Number[grp]++;
+	PCB->LayerGroups.grp[grp].lid[PCB->LayerGroups.grp[grp].len] = id;
+	PCB->LayerGroups.grp[grp].len++;
 
 	return id;
 }
 
+#warning layer TODO: remove this hack
 /* Temporary hack: silk layers have to be added as the last entry in the top and bottom layer groups, if they are not already in */
 static void hack_in_silks()
 {
-	int sl, cl, found, n;
+	pcb_layer_id_t sl, cl;
+	int found, n;
 
 	sl = PCB_SOLDER_SIDE + PCB->Data->LayerN;
-	for(found = 0, n = 0; n < PCB->LayerGroups.Number[PCB_SOLDER_SIDE]; n++)
-		if (PCB->LayerGroups.Entries[PCB_SOLDER_SIDE][n] == sl)
+	for(found = 0, n = 0; n < PCB->LayerGroups.grp[PCB_SOLDER_SIDE].len; n++)
+		if (PCB->LayerGroups.grp[PCB_SOLDER_SIDE].lid[n] == sl)
 			found = 1;
 
 	if (!found) {
-		PCB->LayerGroups.Entries[PCB_SOLDER_SIDE][PCB->LayerGroups.Number[PCB_SOLDER_SIDE]] = sl;
-		PCB->LayerGroups.Number[PCB_SOLDER_SIDE]++;
+		PCB->LayerGroups.grp[PCB_SOLDER_SIDE].lid[PCB->LayerGroups.grp[PCB_SOLDER_SIDE].len] = sl;
+		PCB->LayerGroups.grp[PCB_SOLDER_SIDE].len++;
 		if (PCB->Data->Layer[sl].Name != NULL)
 			free((char *)PCB->Data->Layer[sl].Name);
 		PCB->Data->Layer[sl].Name = pcb_strdup("silk");
@@ -729,13 +733,13 @@ static void hack_in_silks()
 
 
 	cl = PCB_COMPONENT_SIDE + PCB->Data->LayerN;
-	for(found = 0, n = 0; n < PCB->LayerGroups.Number[PCB_COMPONENT_SIDE]; n++)
-		if (PCB->LayerGroups.Entries[PCB_COMPONENT_SIDE][n] == cl)
+	for(found = 0, n = 0; n < PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].len; n++)
+		if (PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].lid[n] == cl)
 			found = 1;
 
 	if (!found) {
-		PCB->LayerGroups.Entries[PCB_COMPONENT_SIDE][PCB->LayerGroups.Number[PCB_COMPONENT_SIDE]] = cl;
-		PCB->LayerGroups.Number[PCB_COMPONENT_SIDE]++;
+		PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].lid[PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].len] = cl;
+		PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].len++;
 		if (PCB->Data->Layer[cl].Name != NULL)
 			free((char *)PCB->Data->Layer[cl].Name);
 		PCB->Data->Layer[cl].Name = pcb_strdup("silk");
@@ -809,7 +813,8 @@ static int LastLayerInComponentGroup(int layer)
 {
 	pcb_layergrp_id_t cgroup = pcb_layer_get_group(pcb_max_group + PCB_COMPONENT_SIDE);
 	pcb_layergrp_id_t lgroup = pcb_layer_get_group(layer);
-	if (cgroup == lgroup && PCB->LayerGroups.Number[lgroup] == 2)
+#warning layer TODO: remove this silk-specific hack?
+	if (cgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 2)
 		return 1;
 	return 0;
 }
@@ -818,7 +823,8 @@ static int LastLayerInSolderGroup(int layer)
 {
 	int sgroup = pcb_layer_get_group(pcb_max_group + PCB_SOLDER_SIDE);
 	int lgroup = pcb_layer_get_group(layer);
-	if (sgroup == lgroup && PCB->LayerGroups.Number[lgroup] == 2)
+#warning layer TODO: remove this silk-specific hack?
+	if (sgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 2)
 		return 1;
 	return 0;
 }
@@ -865,8 +871,8 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		groups[g] = -1;
 
 	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
-		for (l = 0; l < PCB->LayerGroups.Number[g]; l++)
-			groups[PCB->LayerGroups.Entries[g][l]] = g;
+		for (l = 0; l < PCB->LayerGroups.grp[g].len; l++)
+			groups[PCB->LayerGroups.grp[g].lid[l]] = g;
 
 	if (old_index == -1) {
 		pcb_layer_t *lp;
@@ -923,22 +929,22 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	move_all_thermals(old_index, new_index);
 
 	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
-		PCB->LayerGroups.Number[g] = 0;
+		PCB->LayerGroups.grp[g].len = 0;
 	for (l = 0; l < pcb_max_copper_layer + 2; l++) {
 		int i;
 		g = groups[l];
 		if (g >= 0) {
-			i = PCB->LayerGroups.Number[g]++;
-			PCB->LayerGroups.Entries[g][i] = l;
+			i = PCB->LayerGroups.grp[g].len++;
+			PCB->LayerGroups.grp[g].lid[i] = l;
 		}
 	}
 
 	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
-		if (PCB->LayerGroups.Number[g] == 0) {
-			memmove(&PCB->LayerGroups.Number[g],
-							&PCB->LayerGroups.Number[g + 1], (PCB_MAX_LAYERGRP - g - 1) * sizeof(PCB->LayerGroups.Number[g]));
-			memmove(&PCB->LayerGroups.Entries[g],
-							&PCB->LayerGroups.Entries[g + 1], (PCB_MAX_LAYERGRP - g - 1) * sizeof(PCB->LayerGroups.Entries[g]));
+		if (PCB->LayerGroups.grp[g].len == 0) {
+			memmove(&PCB->LayerGroups.grp[g].len,
+							&PCB->LayerGroups.grp[g + 1].len, (PCB_MAX_LAYERGRP - g - 1) * sizeof(PCB->LayerGroups.grp[g].len));
+			memmove(&PCB->LayerGroups.grp[g],
+							&PCB->LayerGroups.grp[g + 1], (PCB_MAX_LAYERGRP - g - 1) * sizeof(PCB->LayerGroups.grp[g]));
 		}
 
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
@@ -1012,7 +1018,7 @@ int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty)
 		return 0;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(grp, PCB->LayerGroups.Entries[grp][0], pcb_layergrp_flags(grp), is_empty);
+		return pcb_gui->set_layer_group(grp, PCB->LayerGroups.grp[grp].lid[0], pcb_layergrp_flags(grp), is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;

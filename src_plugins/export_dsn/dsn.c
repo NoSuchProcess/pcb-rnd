@@ -148,13 +148,14 @@ static GList *layerlist = NULL;  /* contain routing layers */
 
 static void print_structure(FILE * fp)
 {
-	int group, top_group, bot_group, top_layer, bot_layer;
+	pcb_layergrp_id_t group, top_group, bot_group;
+	pcb_layer_id_t top_layer, bot_layer;
 
 	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &top_group, 1);
 	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &bot_group, 1);
 
-	top_layer = PCB->LayerGroups.Entries[top_group][0];
-	bot_layer = PCB->LayerGroups.Entries[bot_group][0];
+	top_layer = PCB->LayerGroups.grp[top_group].lid[0];
+	bot_layer = PCB->LayerGroups.grp[bot_group].lid[0];
 
 
 	g_list_free(layerlist);				/* might be around from the last export */
@@ -172,10 +173,10 @@ static void print_structure(FILE * fp)
 		if (group == top_group || group == bot_group)
 			continue;
 
-		if (PCB->LayerGroups.Number[group] < 1)
+		if (PCB->LayerGroups.grp[group].len < 1)
 			continue;
 
-		first_layer = &PCB->Data->Layer[PCB->LayerGroups.Entries[group][0]];
+		first_layer = &PCB->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
 		if (!first_layer->On)
 			continue;
 

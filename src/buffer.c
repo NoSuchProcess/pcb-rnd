@@ -480,11 +480,12 @@ void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 	/* swap layer groups when balanced */
 	sgroup = pcb_layer_get_group(pcb_solder_silk_layer);
 	cgroup = pcb_layer_get_group(pcb_component_silk_layer);
-	if (PCB->LayerGroups.Number[cgroup] == PCB->LayerGroups.Number[sgroup]) {
-		for (j = k = 0; j < PCB->LayerGroups.Number[sgroup]; j++) {
+#warning layer TODO: revise this code for the generic physical layer support; move this code to layer*.c
+	if (PCB->LayerGroups.grp[cgroup].len == PCB->LayerGroups.grp[sgroup].len) {
+		for (j = k = 0; j < PCB->LayerGroups.grp[sgroup].len; j++) {
 			int t1, t2;
-			pcb_cardinal_t cnumber = PCB->LayerGroups.Entries[cgroup][k];
-			pcb_cardinal_t snumber = PCB->LayerGroups.Entries[sgroup][j];
+			pcb_layer_id_t cnumber = PCB->LayerGroups.grp[cgroup].lid[k];
+			pcb_layer_id_t snumber = PCB->LayerGroups.grp[sgroup].lid[j];
 
 			if (snumber >= pcb_max_copper_layer)
 				continue;
@@ -492,7 +493,7 @@ void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 
 			while (cnumber >= pcb_max_copper_layer) {
 				k++;
-				cnumber = PCB->LayerGroups.Entries[cgroup][k];
+				cnumber = PCB->LayerGroups.grp[cgroup].lid[k];
 			}
 			Buffer->Data->Layer[snumber] = Buffer->Data->Layer[cnumber];
 			Buffer->Data->Layer[cnumber] = swap;

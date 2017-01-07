@@ -152,13 +152,15 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 	char *cp = buf;
 	char sep = 0;
 	int group, entry;
+#warning layer TODO: revise this loop to save only what the original code saved
 	for (group = 0; group < pcb_max_group; group++)
-		if (PCB->LayerGroups.Number[group]) {
+		if (PCB->LayerGroups.grp[group].len) {
 			if (sep)
 				*cp++ = ':';
 			sep = 1;
-			for (entry = 0; entry < PCB->LayerGroups.Number[group]; entry++) {
-				int layer = PCB->LayerGroups.Entries[group][entry];
+			for (entry = 0; entry < PCB->LayerGroups.grp[group].len; entry++) {
+				pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[entry];
+#warning layer TODO: use flags instead of layer id checks
 				if (layer == pcb_component_silk_layer) {
 					*cp++ = 'c';
 				}
@@ -166,10 +168,10 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 					*cp++ = 's';
 				}
 				else {
-					sprintf(cp, "%d", layer + 1);
+					sprintf(cp, "%ld", layer + 1);
 					while (*++cp);
 				}
-				if (entry != PCB->LayerGroups.Number[group] - 1)
+				if (entry != PCB->LayerGroups.grp[group].len - 1)
 					*cp++ = ',';
 			}
 		}

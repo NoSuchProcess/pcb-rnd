@@ -502,8 +502,8 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 	int i, rv = 1;
 	pcb_layer_id_t layernum;
 	pcb_layer_t *Layer;
-	int n_entries = PCB->LayerGroups.Number[group];
-	pcb_cardinal_t *layers = PCB->LayerGroups.Entries[group];
+	pcb_cardinal_t n_entries = PCB->LayerGroups.grp[group].len;
+	pcb_layer_id_t *layers = PCB->LayerGroups.grp[group].lid;
 
 	for (i = n_entries - 1; i >= 0; i--) {
 		layernum = layers[i];

@@ -2470,20 +2470,21 @@ static void grok_layer_groups()
 	}
 	for (i = 0; i < pcb_max_group; i++) {
 		f = 0;
-		for (j = 0; j < l->Number[i]; j++) {
-			if (l->Entries[i][j] == pcb_solder_silk_layer)
+		for (j = 0; j < l->grp[i].len; j++) {
+#warning layer TODO: use flags here
+			if (l->grp[i].lid[j] == pcb_solder_silk_layer)
 				f |= LT_SOLDER;
-			if (l->Entries[i][j] == pcb_component_silk_layer)
+			if (l->grp[i].lid[j] == pcb_component_silk_layer)
 				f |= LT_COMPONENT;
 		}
-		for (j = 0; j < l->Number[i]; j++) {
-			if (l->Entries[i][j] < pcb_max_copper_layer) {
-				layer_type[l->Entries[i][j]] |= f;
-				layer_groupings[l->Entries[i][j]] = i;
+		for (j = 0; j < l->grp[i].len; j++) {
+			if (l->grp[i].lid[j] < pcb_max_copper_layer) {
+				layer_type[l->grp[i].lid[j]] |= f;
+				layer_groupings[l->grp[i].lid[j]] = i;
 				if (solder_layer == -1 && f == LT_SOLDER)
-					solder_layer = l->Entries[i][j];
+					solder_layer = l->grp[i].lid[j];
 				if (component_layer == -1 && f == LT_COMPONENT)
-					component_layer = l->Entries[i][j];
+					component_layer = l->grp[i].lid[j];
 			}
 		}
 	}

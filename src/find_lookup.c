@@ -435,7 +435,8 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 {
 	pcb_bool done;
-	pcb_cardinal_t i, group, layer, ratposition,
+	pcb_layer_id_t layer;
+	pcb_cardinal_t i, group, ratposition,
 		lineposition[PCB_MAX_LAYER], polyposition[PCB_MAX_LAYER], arcposition[PCB_MAX_LAYER], padposition[2];
 
 	/* copy the current LO list positions; the original data is changed
@@ -472,8 +473,8 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 		for (group = 0; group < pcb_max_group; group++) {
 			pcb_cardinal_t entry;
 
-			for (entry = 0; entry < PCB->LayerGroups.Number[group]; entry++) {
-				layer = PCB->LayerGroups.Entries[group][entry];
+			for (entry = 0; entry < PCB->LayerGroups.grp[group].len; entry++) {
+				layer = PCB->LayerGroups.grp[group].lid[entry];
 
 				/* be aware that the layer number equal pcb_max_copper_layer
 				 * and pcb_max_copper_layer+1 have a special meaning for pads
@@ -877,10 +878,10 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 	info.arc = *Arc;
 	EXPAND_BOUNDS(&info.arc);
 	/* loop over all layers of the group */
-	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		pcb_cardinal_t layer;
+	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
+		pcb_layer_id_t layer;
 
-		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
+		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
 		/* handle normal layers */
 		if (layer < pcb_max_copper_layer) {
@@ -996,10 +997,10 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 		return pcb_true;
 
 	/* loop over all layers of the group */
-	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		pcb_cardinal_t layer;
+	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
+		pcb_layer_id_t layer;
 
-		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
+		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
 		/* handle normal layers */
 		if (layer < pcb_max_copper_layer) {
@@ -1103,10 +1104,10 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t L
 
 	info.Point = Point;
 	/* loop over all layers of this group */
-	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		pcb_cardinal_t layer;
+	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
+		pcb_layer_id_t layer;
 
-		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
+		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 		/* handle normal layers
 		   rats don't ever touch
 		   arcs by definition
@@ -1229,9 +1230,9 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 		int tlayer = -1;
 
 /*fprintf(stderr, "lg===\n");*/
-		for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-			pcb_cardinal_t layer;
-			layer = PCB->LayerGroups.Entries[LayerGroup][entry];
+		for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
+			pcb_layer_id_t layer;
+			layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 /*fprintf(stderr, "lg: %d\n", layer);*/
 			if (layer == PCB_COMPONENT_SIDE)
 				tlayer = PCB_COMPONENT_SIDE;
@@ -1273,10 +1274,10 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 		return pcb_true;
 
 	/* loop over all layers of the group */
-	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		pcb_cardinal_t layer;
+	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
+		pcb_layer_id_t layer;
 
-		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
+		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 		/* handle normal layers */
 		if (layer < pcb_max_copper_layer) {
 			info.layer = layer;
@@ -1386,10 +1387,10 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardina
 	else
 		return pcb_true;
 /* loop over all layers of the group */
-	for (entry = 0; entry < PCB->LayerGroups.Number[LayerGroup]; entry++) {
-		pcb_cardinal_t layer;
+	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
+		pcb_layer_id_t layer;
 
-		layer = PCB->LayerGroups.Entries[LayerGroup][entry];
+		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
 		/* handle normal layers */
 		if (layer < pcb_max_copper_layer) {

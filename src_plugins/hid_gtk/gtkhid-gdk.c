@@ -62,13 +62,13 @@ int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned
 {
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group) {
-		int n = PCB->LayerGroups.Number[group];
+		int n = PCB->LayerGroups.grp[group].len;
 		for (idx = 0; idx < n - 1; idx++) {
-			int ni = PCB->LayerGroups.Entries[group][idx];
+			int ni = PCB->LayerGroups.grp[group].lid[idx];
 			if (ni >= 0 && ni < pcb_max_copper_layer + 2 && PCB->Data->Layer[ni].On)
 				break;
 		}
-		idx = PCB->LayerGroups.Entries[group][idx];
+		idx = PCB->LayerGroups.grp[group].lid[idx];
 	}
 
 	if (idx >= 0 && idx < pcb_max_copper_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))

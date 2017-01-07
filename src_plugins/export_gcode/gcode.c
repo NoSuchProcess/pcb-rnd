@@ -407,7 +407,7 @@ static void gcode_do_export(pcb_hid_attr_val_t * options)
 			gcode_cur_group = i;
 
 			/* magic */
-			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.Entries[i][0] : i;
+			idx = (i >= 0 && i < pcb_max_group) ? PCB->LayerGroups.grp[i].lid[0] : i;
 			printf("idx=%d %s\n", idx, name);
 			is_solder = (pcb_layer_get_group(idx) == pcb_layer_get_group(pcb_solder_silk_layer)) ? 1 : 0;
 			save_drill = is_solder;		/* save drills for one layer only */

@@ -630,7 +630,7 @@ static routebox_t *AddPad(vtptr_t layergroupboxes[], pcb_element_t *element, pcb
 	routebox_t **rbpp;
 	int layergroup = (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? back : front);
 	assert(0 <= layergroup && layergroup < pcb_max_group);
-	assert(PCB->LayerGroups.Number[layergroup] > 0);
+	assert(PCB->LayerGroups.grp[layergroup].len > 0);
 	rbpp = (routebox_t **) vtptr_alloc_append(&layergroupboxes[layergroup], 1);
 	assert(rbpp);
 	*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
@@ -664,7 +664,7 @@ static routebox_t *AddLine(vtptr_t layergroupboxes[], int layergroup, pcb_line_t
 	routebox_t **rbpp;
 	assert(layergroupboxes && line);
 	assert(0 <= layergroup && layergroup < pcb_max_group);
-	assert(PCB->LayerGroups.Number[layergroup] > 0);
+	assert(PCB->LayerGroups.grp[layergroup].len > 0);
 
 	rbpp = (routebox_t **) vtptr_alloc_append(&layergroupboxes[layergroup], 1);
 	*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
@@ -708,7 +708,7 @@ static routebox_t *AddIrregularObstacle(vtptr_t layergroupboxes[],
 	assert(layergroupboxes && parent);
 	assert(X1 <= X2 && Y1 <= Y2);
 	assert(0 <= layergroup && layergroup < pcb_max_group);
-	assert(PCB->LayerGroups.Number[layergroup] > 0);
+	assert(PCB->LayerGroups.grp[layergroup].len > 0);
 
 	rbpp = (routebox_t **) vtptr_alloc_append(&layergroupboxes[layergroup], 1);
 	*rbpp = (routebox_t *) malloc(sizeof(**rbpp));
@@ -858,9 +858,9 @@ static routedata_t *CreateRouteData()
 	/* check which layers are active first */
 	routing_layers = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		for (i = 0; i < PCB->LayerGroups.Number[group]; i++)
+		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++)
 			/* layer must be 1) not silk (ie, < pcb_max_copper_layer) and 2) on */
-			if ((PCB->LayerGroups.Entries[group][i] < pcb_max_copper_layer) && PCB->Data->Layer[PCB->LayerGroups.Entries[group][i]].On) {
+			if ((PCB->LayerGroups.grp[group].lid[i] < pcb_max_copper_layer) && PCB->Data->Layer[PCB->LayerGroups.grp[group].lid[i]].On) {
 				routing_layers++;
 				is_layer_group_active[group] = pcb_true;
 				break;
@@ -2981,7 +2981,7 @@ RD_DrawLine(routedata_t * rd,
 	pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box, 1);
 
 	if (conf_core.editor.live_routing) {
-		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
+		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.grp[rb->group].lid[0]);
 		pcb_line_t *line = pcb_line_new(layer, qX1, qY1, qX2, qY2,
 																					2 * qhthick, 0, pcb_flag_make(0));
 		rb->livedraw_obj.line = line;
@@ -4075,7 +4075,7 @@ pcb_bool no_expansion_boxes(routedata_t * rd)
 static void ripout_livedraw_obj(routebox_t * rb)
 {
 	if (rb->type == LINE && rb->livedraw_obj.line) {
-		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.Entries[rb->group][0]);
+		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.grp[rb->group].lid[0]);
 		EraseLine(rb->livedraw_obj.line);
 		pcb_destroy_object(PCB->Data, PCB_TYPE_LINE, layer, rb->livedraw_obj.line, NULL);
 		rb->livedraw_obj.line = NULL;
@@ -4436,10 +4436,10 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 		{
 			if (!p->flags.fixed) {
 				/* find first on layer in this group */
-				assert(PCB->LayerGroups.Number[p->group] > 0);
+				assert(PCB->LayerGroups.grp[p->group].len > 0);
 				assert(is_layer_group_active[p->group]);
-				for (i = 0, layer = NULL; i < PCB->LayerGroups.Number[p->group]; i++) {
-					layer = LAYER_PTR(PCB->LayerGroups.Entries[p->group][i]);
+				for (i = 0, layer = NULL; i < PCB->LayerGroups.grp[p->group].len; i++) {
+					layer = LAYER_PTR(PCB->LayerGroups.grp[p->group].lid[i]);
 					if (layer->On)
 						break;
 				}

@@ -205,9 +205,9 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 	}
 	PCB_END_LOOP;
 	group = pcb_layer_get_group(PCB_SWAP_IDENT ? pcb_solder_silk_layer : pcb_component_silk_layer);
-	clayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
+	clayer = &Buffer->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
 	group = pcb_layer_get_group(PCB_SWAP_IDENT ? pcb_component_silk_layer : pcb_solder_silk_layer);
-	slayer = &Buffer->Data->Layer[PCB->LayerGroups.Entries[group][0]];
+	slayer = &Buffer->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
 	PCB_PAD_LOOP(element);
 	{
 		pcb_line_t *line;

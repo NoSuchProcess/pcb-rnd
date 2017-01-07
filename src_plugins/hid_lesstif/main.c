@@ -556,9 +556,9 @@ side'' of the board.
 static int group_showing(int g, int *c)
 {
 	int i, l;
-	*c = PCB->LayerGroups.Entries[g][0];
-	for (i = 0; i < PCB->LayerGroups.Number[g]; i++) {
-		l = PCB->LayerGroups.Entries[g][i];
+	*c = PCB->LayerGroups.grp[g].lid[0];
+	for (i = 0; i < PCB->LayerGroups.grp[g].len; i++) {
+		l = PCB->LayerGroups.grp[g].lid[i];
 		if (l >= 0 && l < pcb_max_copper_layer) {
 			*c = l;
 			if (PCB->Data->Layer[l].On)
@@ -2720,13 +2720,13 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 {
 	int idx = group;
 	if (idx >= 0 && idx < pcb_max_group) {
-		int n = PCB->LayerGroups.Number[group];
+		int n = PCB->LayerGroups.grp[group].len;
 		for (idx = 0; idx < n - 1; idx++) {
-			int ni = PCB->LayerGroups.Entries[group][idx];
+			int ni = PCB->LayerGroups.grp[group].lid[idx];
 			if (ni >= 0 && ni < pcb_max_copper_layer + 2 && PCB->Data->Layer[ni].On)
 				break;
 		}
-		idx = PCB->LayerGroups.Entries[group][idx];
+		idx = PCB->LayerGroups.grp[group].lid[idx];
 #if 0
 		if (idx == pcb_layer_stack[0]
 				|| pcb_layer_get_group(idx) == pcb_layer_get_group(pcb_layer_stack[0]))

@@ -994,8 +994,8 @@ static int Group(pcb_data_t *Data, pcb_layer_id_t layer)
 {
 	pcb_cardinal_t i, j;
 	for (i = 0; i < pcb_max_group; i++)
-		for (j = 0; j < ((pcb_board_t *) (Data->pcb))->LayerGroups.Number[i]; j++)
-			if (layer == ((pcb_board_t *) (Data->pcb))->LayerGroups.Entries[i][j])
+		for (j = 0; j < ((pcb_board_t *) (Data->pcb))->LayerGroups.grp[i].len; j++)
+			if (layer == ((pcb_board_t *) (Data->pcb))->LayerGroups.grp[i].lid[j])
 				return i;
 	return i;
 }

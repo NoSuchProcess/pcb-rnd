@@ -29,6 +29,7 @@
 #define PCB_LAYER_GRP_H
 
 typedef long int pcb_layergrp_id_t;
+typedef struct pcb_layer_group_s pcb_layer_group_t;
 
 #include "layer.h"
 
@@ -37,10 +38,16 @@ typedef long int pcb_layergrp_id_t;
  * on/off together.
  */
 
+struct pcb_layer_group_s {
+	pcb_cardinal_t len;                    /* number of layer IDs in use */
+	pcb_layer_id_t lid[PCB_MAX_LAYER + 2]; /* lid=layer ID */
+};
+
+
 /* layer stack: an ordered list of layer groups (physical layers). */
 struct pcb_layer_stack_s {
-	pcb_cardinal_t Number[PCB_MAX_LAYERGRP],      /* number of entries per groups */
-	  Entries[PCB_MAX_LAYERGRP][PCB_MAX_LAYER + 2];
+	pcb_cardinal_t len;
+	pcb_layer_group_t grp[PCB_MAX_LAYERGRP];
 };
 
 /* lookup the group to which a layer belongs to returns -1 if no group is found */
@@ -81,11 +88,11 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_stack_t *LayerGroup, i
 
 #define GROUP_LOOP(data, group) do { 	\
 	pcb_cardinal_t entry; \
-        for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
+        for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.grp[(group)].len; entry++) \
         { \
 		pcb_layer_t *layer;		\
-		pcb_cardinal_t number; 		\
-		number = ((pcb_board_t *)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
+		pcb_layer_id_t number; 		\
+		number = ((pcb_board_t *)(data->pcb))->LayerGroups.grp[(group)].lid[entry]; \
 		if (number >= pcb_max_copper_layer)	\
 		  continue;			\
 		layer = &data->Layer[number];

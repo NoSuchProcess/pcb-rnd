@@ -341,8 +341,8 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(pcb_layer_stack[0]);
 	pcb_layergrp_id_t comp_group = pcb_layer_get_group(pcb_component_silk_layer);
 	pcb_layergrp_id_t solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
-	pcb_bool comp_on = LAYER_PTR(PCB->LayerGroups.Entries[comp_group][0])->On;
-	pcb_bool solder_on = LAYER_PTR(PCB->LayerGroups.Entries[solder_group][0])->On;
+	pcb_bool comp_on = LAYER_PTR(PCB->LayerGroups.grp[comp_group].lid[0])->On;
+	pcb_bool solder_on = LAYER_PTR(PCB->LayerGroups.grp[solder_group].lid[0])->On;
 
 	pcb_draw_inhibit_inc();
 	if (argc > 0) {
@@ -371,8 +371,8 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
 		pcb_bool new_solder_vis = conf_core.editor.show_solder_side;
 
-		pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[comp_group][0], !new_solder_vis, !new_solder_vis);
-		pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[solder_group][0], new_solder_vis, new_solder_vis);
+		pcb_layervis_change_group_vis(PCB->LayerGroups.grp[comp_group].lid[0], !new_solder_vis, !new_solder_vis);
+		pcb_layervis_change_group_vis(PCB->LayerGroups.grp[solder_group].lid[0], new_solder_vis, new_solder_vis);
 	}
 
 	pcb_draw_inhibit_dec();

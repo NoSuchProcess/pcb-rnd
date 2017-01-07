@@ -189,8 +189,8 @@ int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOr
 
 	/* decrement 'i' to keep stack in order of layergroup */
 	if ((group = pcb_layer_get_group(Layer)) >= 0) {
-		for (i = PCB->LayerGroups.Number[group]; i;) {
-			int layer = PCB->LayerGroups.Entries[group][--i];
+		for (i = PCB->LayerGroups.grp[group].len; i;) {
+			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[--i];
 
 			/* don't count the passed member of the group */
 			if (layer != Layer && layer < pcb_max_copper_layer) {
@@ -237,7 +237,7 @@ void pcb_layervis_reset_stack(void)
 
 	/* Bring the component group to the front and make it active.  */
 	comp_group = pcb_layer_get_group(pcb_component_silk_layer);
-	pcb_layervis_change_group_vis(PCB->LayerGroups.Entries[comp_group][0], 1, 1);
+	pcb_layervis_change_group_vis(PCB->LayerGroups.grp[comp_group].lid[0], 1, 1);
 }
 
 /* ---------------------------------------------------------------------------

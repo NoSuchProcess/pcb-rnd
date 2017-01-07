@@ -156,7 +156,7 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 	for(n = 0; n < used; n++) {
 		pcb_layer_id_t layer_id = arr[n];
 		pcb_layergrp_id_t grp = pcb_layer_get_group(layer_id);
-		printf(" [%lx] %04x group=%d %s\n", layer_id, pcb_layer_flags(layer_id), grp, pcb_layer_name(layer_id));
+		printf(" [%lx] %04x group=%ld %s\n", layer_id, pcb_layer_flags(layer_id), grp, pcb_layer_name(layer_id));
 	}
 
 	/* query by logical layer: any bottom copper */
@@ -171,10 +171,10 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 	used = pcb_layer_group_list(PCB_LYT_COPPER, garr, sizeof(garr)/sizeof(garr[0]));
 	printf("All %d groups containing copper layers are:\n", used);
 	for(g = 0; g < used; g++) {
-		int group_id = garr[g];
-		printf(" group %d\n", group_id);
-		for(n = 0; n < PCB->LayerGroups.Number[group_id]; n++) {
-			int layer_id = PCB->LayerGroups.Entries[group_id][n];
+		pcb_layergrp_id_t group_id = garr[g];
+		printf(" group %ld\n", group_id);
+		for(n = 0; n < PCB->LayerGroups.grp[group_id].len; n++) {
+			pcb_layer_id_t layer_id = PCB->LayerGroups.grp[group_id].lid[n];
 			printf("  [%lx] %s\n", layer_id, PCB->Data->Layer[layer_id].Name);
 		}
 	}
