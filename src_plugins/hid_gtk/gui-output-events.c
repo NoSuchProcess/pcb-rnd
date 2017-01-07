@@ -84,39 +84,14 @@ void ghid_port_ranges_scale(void)
 	gdouble page_size;
 	double tmp;
 
-	if (1) {
-		double min_zoom, max_zoom, max_zoom_w, max_zoom_h;
-		min_zoom = 200;
-		max_zoom_w = (double)COORD_MAX / (double)gport->view.canvas_width;
-		max_zoom_h = (double)COORD_MAX / (double)gport->view.canvas_width;
-		max_zoom = MIN(max_zoom_w, max_zoom_h) / 2.0;
-		if (gport->view.coord_per_px < min_zoom) {
-			printf("*** TRUCATE ZOOM TO MIN\n");
-			gport->view.coord_per_px = min_zoom;
-		}
-		if (gport->view.coord_per_px > max_zoom) {
-			gport->view.coord_per_px = max_zoom;
-			printf("*** TRUCATE ZOOM TO MAX\n");
-		}
-	}
 
 	/* Update the scrollbars with PCB units.  So Scale the current
 	   |  drawing area size in pixels to PCB units and that will be
 	   |  the page size for the Gtk adjustment.
 	 */
-	tmp = gport->view.canvas_width * gport->view.coord_per_px;
-	if (tmp > COORD_MAX) {
-		printf("*** TRUCATE CANVAS WIDTH TO MAX\n");
-		tmp = COORD_MAX;
-	}
-	gport->view.width = tmp;
-
-	tmp = gport->view.canvas_height * gport->view.coord_per_px;
-	if (tmp > COORD_MAX) {
-		printf("*** TRUCATE CANVAS HEIGHT TO MAX\n");
-		tmp = COORD_MAX;
-	}
-	gport->view.height = tmp;
+	gport->view.coord_per_px = pcb_gtk_clamp_zoom(&gport->view, gport->view.coord_per_px);
+	gport->view.width = gport->view.canvas_width * gport->view.coord_per_px;
+	gport->view.height = gport->view.canvas_height * gport->view.coord_per_px;
 
 	trace_view("ranges scale");
 
