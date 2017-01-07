@@ -132,7 +132,7 @@ static void ghid_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coor
 
 
 
-static void ghid_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double factor)
+void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double factor)
 {
 	ghid_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
 }
@@ -245,11 +245,11 @@ int pcb_gtk_zoom(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x,
 		return 1;
 	switch (argv[0][0]) {
 	case '-':
-		ghid_zoom_view_rel(vw, x, y, 1 / v);
+		pcb_gtk_zoom_view_rel(vw, x, y, 1 / v);
 		break;
 	default:
 	case '+':
-		ghid_zoom_view_rel(vw, x, y, v);
+		pcb_gtk_zoom_view_rel(vw, x, y, v);
 		break;
 	case '=':
 		ghid_zoom_view_abs(vw, x, y, v);
