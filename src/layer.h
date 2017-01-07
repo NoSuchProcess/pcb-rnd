@@ -28,110 +28,7 @@
 #ifndef PCB_LAYER_H
 #define PCB_LAYER_H
 
-#include "globalconst.h"
-#include "global_typedefs.h"
-#include "attrib.h"
-#include "obj_all_list.h"
-
 typedef long int pcb_layer_id_t;
-typedef long int pcb_layergrp_id_t;
-
-/* ----------------------------------------------------------------------
- * layer group. A layer group identifies layers which are always switched
- * on/off together.
- */
-struct pcb_layer_group_s {
-	pcb_cardinal_t Number[PCB_MAX_LAYERGRP],      /* number of entries per groups */
-	  Entries[PCB_MAX_LAYERGRP][PCB_MAX_LAYER + 2];
-};
-
-struct pcb_layer_s {              /* holds information about one layer */
-	const char *Name;               /* layer name */
-	linelist_t Line;
-	textlist_t Text;
-	polylist_t Polygon;
-	arclist_t Arc;
-	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
-	pcb_bool On;                   /* visible flag */
-	const char *Color;             /* color */
-	const char *SelectedColor;
-	pcb_attribute_list_t Attributes;
-	int no_drc;                    /* whether to ignore the layer when checking the design rules */
-
-	const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
-};
-
-
-/* returns the layer number for the passed copper or silk layer pointer */
-pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
-
-/* lookup the group to which a layer belongs to returns -1 if no group is found */
-pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer);
-pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
-
-/* the offsets of the two additional special layers (e.g. silk) for 'component'
-   and 'solder'. The offset of PCB_MAX_LAYER is not added here. Also can be
-   used to address side of the board without referencing to groups or layers. */
-typedef enum {
-	PCB_SOLDER_SIDE    = 0,
-	PCB_COMPONENT_SIDE = 1
-} pcb_side_t;
-
-pcb_bool pcb_layer_is_paste_empty(pcb_side_t side);
-
-
-/* Returns group actually moved to (i.e. either group or previous) */
-pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_t group);
-
-/************ OLD API - new code should not use these **************/
-
-#define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])
-#define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
-#define	CURRENT			(PCB->SilkActive ? &PCB->Data->Layer[ \
-				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer)] \
-				: LAYER_ON_STACK(0))
-#define	INDEXOFCURRENT		(PCB->SilkActive ? \
-				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer) \
-				: pcb_layer_stack[0])
-#define SILKLAYER		Layer[ \
-				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer)]
-#define BACKSILKLAYER		Layer[ \
-				(conf_core.editor.show_solder_side ? pcb_component_silk_layer : pcb_solder_silk_layer)]
-
-#define TEST_SILK_LAYER(layer)	(pcb_layer_id(PCB->Data, layer) >= pcb_max_copper_layer)
-
-#define GROUP_LOOP(data, group) do { 	\
-	pcb_cardinal_t entry; \
-        for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
-        { \
-		pcb_layer_t *layer;		\
-		pcb_cardinal_t number; 		\
-		number = ((pcb_board_t *)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
-		if (number >= pcb_max_copper_layer)	\
-		  continue;			\
-		layer = &data->Layer[number];
-
-#define LAYER_LOOP(data, ml) do { \
-        pcb_cardinal_t n; \
-	for (n = 0; n < ml; n++) \
-	{ \
-	   pcb_layer_t *layer = (&data->Layer[(n)]);
-
-/************ NEW API - new code should use these **************/
-
-/* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
-pcb_layer_t *pcb_get_layer(pcb_layer_id_t id);
-
-/* Return the name of a layer (real or virtual) or NULL on error */
-const char *pcb_layer_name(pcb_layer_id_t id);
-
-/* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
-pcb_bool pcb_layer_is_empty_(pcb_layer_t *ly);
-pcb_bool pcb_layer_is_empty(pcb_layer_id_t ly);
-#define PCB_LAYER_IS_EMPTY(layer) pcb_layer_is_empty_((layer))
-
-/* Returns pcb_true if all layers in a group are empty */
-pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t lgrp);
 
 /* Layer type bitfield */
 typedef enum {
@@ -183,15 +80,99 @@ typedef enum {
 	PCB_VLY_first = PCB_VLY_INVISIBLE
 } pcb_virtual_layer_t;
 
-/* call the gui to set a virtual layer or a layer group or the UI layer group */
+#include "globalconst.h"
+#include "global_typedefs.h"
+#include "attrib.h"
+#include "obj_all_list.h"
+#include "layer_grp.h"
+
+struct pcb_layer_s {              /* holds information about one layer */
+	const char *Name;               /* layer name */
+	linelist_t Line;
+	textlist_t Text;
+	polylist_t Polygon;
+	arclist_t Arc;
+	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
+	pcb_bool On;                   /* visible flag */
+	const char *Color;             /* color */
+	const char *SelectedColor;
+	pcb_attribute_list_t Attributes;
+	int no_drc;                    /* whether to ignore the layer when checking the design rules */
+
+	const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
+};
+
+
+/* returns the layer number for the passed copper or silk layer pointer */
+pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer);
+
+
+/* the offsets of the two additional special layers (e.g. silk) for 'component'
+   and 'solder'. The offset of PCB_MAX_LAYER is not added here. Also can be
+   used to address side of the board without referencing to groups or layers. */
+typedef enum {
+	PCB_SOLDER_SIDE    = 0,
+	PCB_COMPONENT_SIDE = 1
+} pcb_side_t;
+
+pcb_bool pcb_layer_is_paste_empty(pcb_side_t side);
+
+
+/************ OLD API - new code should not use these **************/
+
+#define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])
+#define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
+#define	CURRENT			(PCB->SilkActive ? &PCB->Data->Layer[ \
+				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer)] \
+				: LAYER_ON_STACK(0))
+#define	INDEXOFCURRENT		(PCB->SilkActive ? \
+				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer) \
+				: pcb_layer_stack[0])
+#define SILKLAYER		Layer[ \
+				(conf_core.editor.show_solder_side ? pcb_solder_silk_layer : pcb_component_silk_layer)]
+#define BACKSILKLAYER		Layer[ \
+				(conf_core.editor.show_solder_side ? pcb_component_silk_layer : pcb_solder_silk_layer)]
+
+#define TEST_SILK_LAYER(layer)	(pcb_layer_id(PCB->Data, layer) >= pcb_max_copper_layer)
+
+#define GROUP_LOOP(data, group) do { 	\
+	pcb_cardinal_t entry; \
+        for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
+        { \
+		pcb_layer_t *layer;		\
+		pcb_cardinal_t number; 		\
+		number = ((pcb_board_t *)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
+		if (number >= pcb_max_copper_layer)	\
+		  continue;			\
+		layer = &data->Layer[number];
+
+#define LAYER_LOOP(data, ml) do { \
+        pcb_cardinal_t n; \
+	for (n = 0; n < ml; n++) \
+	{ \
+	   pcb_layer_t *layer = (&data->Layer[(n)]);
+
+/************ NEW API - new code should use these **************/
+
+/* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
+pcb_layer_t *pcb_get_layer(pcb_layer_id_t id);
+
+/* Return the name of a layer (real or virtual) or NULL on error */
+const char *pcb_layer_name(pcb_layer_id_t id);
+
+/* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
+pcb_bool pcb_layer_is_empty_(pcb_layer_t *ly);
+pcb_bool pcb_layer_is_empty(pcb_layer_id_t ly);
+#define PCB_LAYER_IS_EMPTY(layer) pcb_layer_is_empty_((layer))
+
+
+/* call the gui to set a virtual layer or the UI layer group */
 int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty);
-int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty);
 int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty);
 
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx);
-unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group_idx);
 
 /* map bits of a layer type (call cb for each bit set); return number of bits
    found. */
@@ -206,17 +187,6 @@ int pcb_layer_type_map(pcb_layer_type_t type, void *ctx, void (*cb)(void *ctx, p
 */
 int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
 int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
-
-/* Same as pcb_layer_list but lists layer groups. A group is matching
-   if any layer in that group matches mask. */
-int pcb_layer_group_list(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
-int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
-
-/* Looks up which group a layer is in. Returns group ID. */
-pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id);
-
-/* Put a layer in a group (the layer should not be in any other group) */
-void pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);
 
 /* Slow linear search for a layer by name */
 pcb_layer_id_t pcb_layer_by_name(const char *name);
@@ -253,7 +223,6 @@ void pcb_layers_finalize();
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index);
 
 
-
 /* list of virtual layers: these are generated by the draw code but do not
    have a real layer in the array */
 typedef struct pcb_virt_layer_s {
@@ -271,14 +240,5 @@ const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask);
    that's on the visible side of the board at the moment. */
 #define PCB_LAYERFLG_ON_VISIBLE_SIDE(uint_flags) \
 	(!!(conf_core.editor.show_solder_side ? ((uint_flags) & PCB_LYT_BOTTOM) : ((uint_flags) & PCB_LYT_TOP)))
-
-/********* OBSOLETE functions, do not use in new code *********/
-/* parses the group definition string which is a colon separated list of
-   comma separated layer numbers (1,2,b:4,6,8,t); oldfmt is 0 or 1
-   depending on PCB() or PCB[] in the file header.
-
-   OBSOLETE, do not use in new code: only the conf system and io_pcb
-   may need this. */
-int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, int LayerN, int oldfmt);
 
 #endif
