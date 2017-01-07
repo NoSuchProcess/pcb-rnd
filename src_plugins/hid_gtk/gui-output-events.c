@@ -83,6 +83,18 @@ void ghid_port_ranges_scale(void)
 	GtkAdjustment *adj;
 	gdouble page_size;
 
+	{
+#define ALLOW_ZOOM_OUT_BY 10		/* Arbitrary, and same as the lesstif HID MAX_ZOOM_SCALE */
+		double min_zoom, max_zoom;
+		double xtmp, ytmp;
+		min_zoom = 200;
+		max_zoom = MAX(PCB->MaxWidth / gport->view.canvas_width, PCB->MaxHeight / gport->view.canvas_height) * ALLOW_ZOOM_OUT_BY;
+		if (gport->view.coord_per_px < min_zoom)
+			gport->view.coord_per_px = min_zoom;
+		if (gport->view.coord_per_px > max_zoom)
+			gport->view.coord_per_px = max_zoom;
+	}
+
 	/* Update the scrollbars with PCB units.  So Scale the current
 	   |  drawing area size in pixels to PCB units and that will be
 	   |  the page size for the Gtk adjustment.
