@@ -799,7 +799,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
 		return 0;
 
 	if (pcb_gui->set_layer_group != NULL)
-		return pcb_gui->set_layer_group(-1, first, PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty);
+		return pcb_gui->set_layer_group(-1, pcb_layer_id(PCB->Data, first), PCB_LYT_VIRTUAL | PCB_LYT_UI, is_empty);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;
