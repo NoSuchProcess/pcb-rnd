@@ -59,6 +59,22 @@ void ghid_port_ranges_changed(void)
 	ghid_invalidate_all();
 }
 
+void trace_view(const char *topic)
+{
+	char tmp[256];
+	pcb_trace("%s: zoom=%f\n", topic, gport->view.coord_per_px);
+	pcb_sprintf(tmp, "x0=%mm y0=%mm", gport->view.x0, gport->view.y0);
+	pcb_trace(" %s\n", tmp);
+	pcb_sprintf(tmp, "vw=%mm vh=%mm", gport->view.width, gport->view.height);
+	pcb_trace(" %s\n", tmp);
+	pcb_sprintf(tmp, "cw=%d ch=%d", gport->view.canvas_width, gport->view.canvas_height);
+	pcb_trace(" %s\n", tmp);
+	pcb_sprintf(tmp, "mx=%mm my=%mm", gport->view.pcb_x, gport->view.pcb_y);
+	pcb_trace(" %s\n", tmp);
+	pcb_sprintf(tmp, "cx=%mm cy=%mm", gport->view.crosshair_x, gport->view.crosshair_y);
+	pcb_trace(" %s\n", tmp);
+}
+
 /* Do scrollbar scaling based on current port drawing area size and
    |  overall PCB board size.
  */
@@ -74,8 +90,7 @@ void ghid_port_ranges_scale(void)
 	gport->view.width = gport->view.canvas_width * gport->view.coord_per_px;
 	gport->view.height = gport->view.canvas_height * gport->view.coord_per_px;
 
-	pcb_trace("ranges scale: %ld %ld\n", gport->view.width, gport->view.height);
-
+	trace_view("ranges scale");
 
 	adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->h_range));
 	page_size = MIN(gport->view.width, PCB->MaxWidth);
@@ -247,7 +262,7 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	gport->view.canvas_width = ev->width;
 	gport->view.canvas_height = ev->height;
 
-	pcb_trace("resize: configure to %d %d\n", ev->width, ev->height);
+	trace_view("resize");
 
 	if (gport->pixmap)
 		gdk_pixmap_unref(gport->pixmap);
@@ -277,18 +292,12 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	}
 
 	ghid_port_ranges_scale();
-	pcb_trace(" view1: ");
-	pcb_printf(" %mm", gport->view.x0);
-	pcb_printf(" %mm", gport->view.y0);
-	pcb_trace(" x %f\n", gport->view.coord_per_px);
+	trace_view("view1");
 	pcb_gtk_zoom_view_rel(&gport->view, gport->view.x0, gport->view.y0, 1.0);
-
-	pcb_trace(" view2: ");
-	pcb_printf(" %mm", gport->view.x0);
-	pcb_printf(" %mm", gport->view.y0);
-	pcb_trace(" x %f\n", gport->view.coord_per_px);
+	trace_view("view2");
 
 	ghid_invalidate_all();
+
 	return 0;
 }
 
