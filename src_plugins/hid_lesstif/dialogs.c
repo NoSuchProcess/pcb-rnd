@@ -1347,7 +1347,7 @@ void lesstif_update_layer_groups()
 {
 	int sets[PCB_MAX_LAYERGRP + 2][PCB_MAX_LAYER];
 	int i, j;
-	pcb_layer_group_t *l = &(PCB->LayerGroups);
+	pcb_layer_stack_t *l = &(PCB->LayerGroups);
 
 	if (!layer_groups_form)
 		return;

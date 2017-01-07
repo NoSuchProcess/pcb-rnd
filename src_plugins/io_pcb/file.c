@@ -143,7 +143,7 @@ static const char *c_dtostr(double d)
 }
 
 /* Returns pointer to private buffer */
-static char *LayerGroupsToString(pcb_layer_group_t *lg)
+static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 {
 #if PCB_MAX_LAYER < 9998
 	/* Allows for layer numbers 0..9999 */

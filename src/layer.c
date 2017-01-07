@@ -144,7 +144,7 @@ pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
-int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, int LayerN, int oldfmt)
+int pcb_layer_parse_group_string(const char *s, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt)
 {
 	int group, member, layer;
 	pcb_bool c_set = pcb_false,						/* flags for the two special layers to */
@@ -152,7 +152,7 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, i
 	int groupnum[PCB_MAX_LAYERGRP + 2];
 
 	/* clear struct */
-	memset(LayerGroup, 0, sizeof(pcb_layer_group_t));
+	memset(LayerGroup, 0, sizeof(pcb_layer_stack_t));
 
 	/* Clear assignments */
 	for (layer = 0; layer < PCB_MAX_LAYER + 2; layer++)
@@ -238,7 +238,7 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, i
 
 	/* reset structure on error */
 error:
-	memset(LayerGroup, 0, sizeof(pcb_layer_group_t));
+	memset(LayerGroup, 0, sizeof(pcb_layer_stack_t));
 	return (1);
 }
 

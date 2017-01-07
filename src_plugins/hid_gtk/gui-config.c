@@ -1189,7 +1189,7 @@ static GtkWidget *group_button[PCB_MAX_LAYERGRP + 2][PCB_MAX_LAYER];
 
 static gint config_layer_group[PCB_MAX_LAYERGRP + 2];
 
-static pcb_layer_group_t layer_groups,	/* Working copy */
+static pcb_layer_stack_t layer_groups,	/* Working copy */
  *lg_monitor;										/* Keep track if our working copy */
 										/* needs to be changed (new layout) */
 
@@ -1260,7 +1260,7 @@ static void config_layer_groups_radio_button_cb(GtkToggleButton * button, gpoint
 	/* Construct a layer group string.  Follow logic in WritePCBDataHeader(),
 	   |  but use g_string functions.
 	 */
-static gchar *make_layer_group_string(pcb_layer_group_t * lg)
+static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 {
 	GString *string;
 	gint group, entry, layer;

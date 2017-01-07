@@ -36,7 +36,9 @@ typedef long int pcb_layergrp_id_t;
  * layer group. A layer group identifies layers which are always switched
  * on/off together.
  */
-struct pcb_layer_group_s {
+
+/* layer stack: an ordered list of layer groups (physical layers). */
+struct pcb_layer_stack_s {
 	pcb_cardinal_t Number[PCB_MAX_LAYERGRP],      /* number of entries per groups */
 	  Entries[PCB_MAX_LAYERGRP][PCB_MAX_LAYER + 2];
 };
@@ -75,7 +77,7 @@ void pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
 
    OBSOLETE, do not use in new code: only the conf system and io_pcb
    may need this. */
-int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, int LayerN, int oldfmt);
+int pcb_layer_parse_group_string(const char *s, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt);
 
 #define GROUP_LOOP(data, group) do { 	\
 	pcb_cardinal_t entry; \
