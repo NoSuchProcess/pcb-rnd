@@ -82,25 +82,40 @@ void ghid_port_ranges_scale(void)
 {
 	GtkAdjustment *adj;
 	gdouble page_size;
+	double tmp;
 
 	if (0) {
 #define ALLOW_ZOOM_OUT_BY 10		/* Arbitrary, and same as the lesstif HID MAX_ZOOM_SCALE */
 		double min_zoom, max_zoom;
-		double xtmp, ytmp;
 		min_zoom = 200;
 		max_zoom = MAX(PCB->MaxWidth / gport->view.canvas_width, PCB->MaxHeight / gport->view.canvas_height) * ALLOW_ZOOM_OUT_BY;
-		if (gport->view.coord_per_px < min_zoom)
+		if (gport->view.coord_per_px < min_zoom) {
+			printf("*** TRUCATE ZOOM TO MIN\n");
 			gport->view.coord_per_px = min_zoom;
-		if (gport->view.coord_per_px > max_zoom)
+		}
+		if (gport->view.coord_per_px > max_zoom) {
 			gport->view.coord_per_px = max_zoom;
+			printf("*** TRUCATE ZOOM TO MAX\n");
+		}
 	}
 
 	/* Update the scrollbars with PCB units.  So Scale the current
 	   |  drawing area size in pixels to PCB units and that will be
 	   |  the page size for the Gtk adjustment.
 	 */
-	gport->view.width = gport->view.canvas_width * gport->view.coord_per_px;
-	gport->view.height = gport->view.canvas_height * gport->view.coord_per_px;
+	tmp = gport->view.canvas_width * gport->view.coord_per_px;
+	if (tmp > COORD_MAX) {
+		printf("*** TRUCATE CANVAS WIDTH TO MAX\n");
+		tmp = COORD_MAX;
+	}
+	gport->view.width = tmp;
+
+	tmp = gport->view.canvas_height * gport->view.coord_per_px;
+	if (tmp > COORD_MAX) {
+		printf("*** TRUCATE CANVAS HEIGHT TO MAX\n");
+		tmp = COORD_MAX;
+	}
+	gport->view.height = tmp;
 
 	trace_view("ranges scale");
 
@@ -274,7 +289,7 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	gport->view.canvas_width = ev->width;
 	gport->view.canvas_height = ev->height;
 
-	trace_view("resize");
+	trace_view("resize -----------------------------------------------");
 
 	if (gport->pixmap)
 		gdk_pixmap_unref(gport->pixmap);
@@ -304,9 +319,9 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	}
 
 	ghid_port_ranges_scale();
-	trace_view("view1");
+/*	trace_view("view1");
 	pcb_gtk_zoom_view_rel(&gport->view, gport->view.x0, gport->view.y0, 1.0);
-	trace_view("view2");
+	trace_view("view2");*/
 
 	ghid_invalidate_all();
 
