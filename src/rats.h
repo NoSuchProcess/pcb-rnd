@@ -34,6 +34,7 @@
 #include "config.h"
 #include "netlist.h"
 #include "layer.h"
+#include "layer_grp.h"
 
 /* ---------------------------------------------------------------------------
  * structure used by device drivers

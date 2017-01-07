@@ -45,6 +45,7 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "obj_all_op.h"
+#include "layer_grp.h"
 
 /* ---------------------------------------------------------------------------
  * some local identifiers

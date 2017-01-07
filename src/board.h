@@ -49,6 +49,7 @@ enum {
 #include "global_typedefs.h"
 #include "vtroutestyle.h"
 #include "layer.h"
+#include "layer_grp.h"
 #include "library.h"
 #include "attrib.h"
 #include "rats_patch.h"

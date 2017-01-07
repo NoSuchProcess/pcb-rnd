@@ -31,6 +31,7 @@
 #include "proto_lowsend.h"
 #include "proto_lowparse.h"
 #include "layer.h"
+#include "layer_grp.h"
 
 static const int proto_ver = 1;
 static proto_ctx_t pctx;

@@ -9,6 +9,7 @@
 #include "global_typedefs.h"
 #include "attrib.h"
 #include "layer.h"
+#include "layer_grp.h"
 
 typedef struct pcb_hid_attr_val_s  pcb_hid_attr_val_t;
 typedef struct pcb_hid_attribute_s pcb_hid_attribute_t;

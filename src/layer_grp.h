@@ -77,4 +77,15 @@ void pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
    may need this. */
 int pcb_layer_parse_group_string(const char *s, pcb_layer_group_t *LayerGroup, int LayerN, int oldfmt);
 
+#define GROUP_LOOP(data, group) do { 	\
+	pcb_cardinal_t entry; \
+        for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
+        { \
+		pcb_layer_t *layer;		\
+		pcb_cardinal_t number; 		\
+		number = ((pcb_board_t *)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
+		if (number >= pcb_max_copper_layer)	\
+		  continue;			\
+		layer = &data->Layer[number];
+
 #endif

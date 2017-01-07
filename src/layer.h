@@ -84,7 +84,6 @@ typedef enum {
 #include "global_typedefs.h"
 #include "attrib.h"
 #include "obj_all_list.h"
-#include "layer_grp.h"
 
 struct pcb_layer_s {              /* holds information about one layer */
 	const char *Name;               /* layer name */
@@ -134,17 +133,6 @@ pcb_bool pcb_layer_is_paste_empty(pcb_side_t side);
 				(conf_core.editor.show_solder_side ? pcb_component_silk_layer : pcb_solder_silk_layer)]
 
 #define TEST_SILK_LAYER(layer)	(pcb_layer_id(PCB->Data, layer) >= pcb_max_copper_layer)
-
-#define GROUP_LOOP(data, group) do { 	\
-	pcb_cardinal_t entry; \
-        for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.Number[(group)]; entry++) \
-        { \
-		pcb_layer_t *layer;		\
-		pcb_cardinal_t number; 		\
-		number = ((pcb_board_t *)(data->pcb))->LayerGroups.Entries[(group)][entry]; \
-		if (number >= pcb_max_copper_layer)	\
-		  continue;			\
-		layer = &data->Layer[number];
 
 #define LAYER_LOOP(data, ml) do { \
         pcb_cardinal_t n; \
