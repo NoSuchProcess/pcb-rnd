@@ -262,7 +262,7 @@ static int field_layer_from_ptr(pcb_layer_t *l, pcb_qry_node_t *fld, pcb_qry_val
 /* process from .layer */
 static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_t mask)
 {
-	int id;
+	pcb_layer_id_t id;
 	const char *s1;
 
 	if (pcb_layer_list(mask, &id, 1) != 1)

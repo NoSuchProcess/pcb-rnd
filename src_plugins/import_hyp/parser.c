@@ -383,10 +383,10 @@ void perimeter_segment_add(outline_t *s, pcb_bool_t forward)
   /* get outline layer */
   int outlineCount = 0;
   int outlineLayerCount = 0;
-  int *outlineLayers = NULL;
+  pcb_layer_id_t *outlineLayers = NULL;
   /* count outline layers */
   outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0);
-  outlineLayers = malloc(sizeof(int) * outlineLayerCount);
+  outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineLayerCount);
   outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
   pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
   /* XXX fix: add outline layer if necessary */
