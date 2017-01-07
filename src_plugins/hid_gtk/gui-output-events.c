@@ -74,6 +74,9 @@ void ghid_port_ranges_scale(void)
 	gport->view.width = gport->view.canvas_width * gport->view.coord_per_px;
 	gport->view.height = gport->view.canvas_height * gport->view.coord_per_px;
 
+	pcb_trace("ranges scale: %ld %ld\n", gport->view.width, gport->view.height);
+
+
 	adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->h_range));
 	page_size = MIN(gport->view.width, PCB->MaxWidth);
 	gtk_adjustment_configure(adj, gtk_adjustment_get_value(adj),	/* value          */
@@ -244,6 +247,8 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	gport->view.canvas_width = ev->width;
 	gport->view.canvas_height = ev->height;
 
+	pcb_trace("resize: configure to %d %d\n", ev->width, ev->height);
+
 	if (gport->pixmap)
 		gdk_pixmap_unref(gport->pixmap);
 
@@ -251,6 +256,7 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	gport->drawable = gport->pixmap;
 
 	if (!first_time_done) {
+		pcb_trace(" (first time)\n");
 		gport->colormap = gtk_widget_get_colormap(gport->top_window);
 		if (gdk_color_parse(conf_core.appearance.color.background, &gport->bg_color))
 			gdk_color_alloc(gport->colormap, &gport->bg_color);
@@ -267,10 +273,21 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	}
 	else {
 		ghid_drawing_area_configure_hook(out);
+		pcb_trace(" (subsequent)\n");
 	}
 
 	ghid_port_ranges_scale();
+	pcb_trace(" view1: ");
+	pcb_printf(" %mm", gport->view.x0);
+	pcb_printf(" %mm", gport->view.y0);
+	pcb_trace(" x %f\n", gport->view.coord_per_px);
 	pcb_gtk_zoom_view_rel(&gport->view, gport->view.x0, gport->view.y0, 1.0);
+
+	pcb_trace(" view2: ");
+	pcb_printf(" %mm", gport->view.x0);
+	pcb_printf(" %mm", gport->view.y0);
+	pcb_trace(" x %f\n", gport->view.coord_per_px);
+
 	ghid_invalidate_all();
 	return 0;
 }
