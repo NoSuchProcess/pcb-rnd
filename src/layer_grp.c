@@ -34,7 +34,7 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 {
 	pcb_layergrp_id_t group, i;
 
-	if ((Layer < 0) || (Layer >= pcb_max_group))
+	if ((Layer < 0) || (Layer >= pcb_max_layer))
 		return -1;
 
 	for (group = 0; group < pcb_max_group; group++)
