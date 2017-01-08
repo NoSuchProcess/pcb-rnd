@@ -326,7 +326,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	}
 
 	memcpy(&preview_pcb.LayerGroups, &PCB->LayerGroups, sizeof(PCB->LayerGroups));
-	preview_pcb.Data->LayerN = pcb_max_copper_layer;
+	preview_pcb.Data->LayerN = pcb_max_layer;
 	preview_pcb.Data->pcb = &preview_pcb;
 
 #warning TODO: preview_pcb is never freed

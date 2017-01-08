@@ -71,7 +71,7 @@ int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned
 		idx = PCB->LayerGroups.grp[group].lid[idx];
 	}
 
-	if (idx >= 0 && idx < pcb_max_copper_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
+	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
 		return /*pinout ? 1 : */ PCB->Data->Layer[idx].On;
 
 	{
