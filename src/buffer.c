@@ -487,11 +487,11 @@ void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 			pcb_layer_id_t cnumber = PCB->LayerGroups.grp[cgroup].lid[k];
 			pcb_layer_id_t snumber = PCB->LayerGroups.grp[sgroup].lid[j];
 
-			if (snumber >= pcb_max_copper_layer)
+			if ((pcb_layer_flags(snumber)) & PCB_LYT_SILK)
 				continue;
 			swap = Buffer->Data->Layer[snumber];
 
-			while (cnumber >= pcb_max_copper_layer) {
+			while ((pcb_layer_flags(cnumber)) & PCB_LYT_SILK) {
 				k++;
 				cnumber = PCB->LayerGroups.grp[cgroup].lid[k];
 			}
