@@ -357,9 +357,11 @@ static void CheckPinForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pin_t *Pin)
 		info.Y = Pin->Y;
 	}
 
-	for (n = 0; n < pcb_max_copper_layer; n++) {
-		info.layer = LAYER_PTR(n);
-		pcb_r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+	for (n = 0; n < pcb_max_layer; n++) {
+		if (pcb_layer_flags(n) & PCB_LYT_COPPER) {
+			info.layer = LAYER_PTR(n);
+			pcb_r_search(info.layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+		}
 	}
 }
 
@@ -509,7 +511,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		{
 			pcb_layer_t *layer = (pcb_layer_t *) Ptr1;
 			pcb_line_t *line = (pcb_line_t *) Ptr2;
-			if (pcb_layer_id(PCB->Data, layer) < pcb_max_copper_layer) {
+			if (pcb_layer_flags(pcb_layer_id(PCB->Data, layer)) & PCB_LYT_COPPER) {
 				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1, pcb_false);
 				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2, pcb_false);
 			}
@@ -517,12 +519,12 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		}
 
 	case PCB_TYPE_LINE_POINT:
-		if (pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
+		if (pcb_layer_flags(pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1)) & PCB_LYT_COPPER)
 			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
 		break;
 
 	case PCB_TYPE_ARC_POINT:
-		if (pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
+		if (pcb_layer_flags(pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1)) & PCB_LYT_COPPER)
 			CheckArcPointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3, pcb_true);
 		break;
 
@@ -531,7 +533,7 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		break;
 
 	case PCB_TYPE_POLYGON:
-		if (pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1) < pcb_max_copper_layer)
+		if (pcb_layer_flags(pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1)) & PCB_LYT_COPPER)
 			CheckPolygonForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_polygon_t *) Ptr2);
 		break;
 	}
