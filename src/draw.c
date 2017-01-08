@@ -78,7 +78,7 @@ static void DrawPPV(int group, const pcb_box_t *);
 static void DrawLayerGroup(int, const pcb_box_t *);
 static void DrawMask(int side, const pcb_box_t *);
 static void DrawRats(const pcb_box_t *);
-static void DrawSilk(int side, const pcb_box_t *);
+static void DrawSilk(unsigned int lyt_side, const pcb_box_t *);
 
 #warning TODO: this should be cached
 void pcb_lighten_color(const char *orig, char buf[8], double factor)
@@ -139,9 +139,12 @@ static void DrawHoles(pcb_bool draw_plated, pcb_bool draw_unplated, const pcb_bo
 /* ---------------------------------------------------------------------------
  * prints assembly drawing.
  */
-static void PrintAssembly(int side, const pcb_box_t * drawn_area)
+static void PrintAssembly(unsigned int lyt_side, const pcb_box_t * drawn_area)
 {
-	pcb_layergrp_id_t side_group = pcb_layer_get_group(pcb_max_copper_layer + side);
+	pcb_layergrp_id_t side_group;
+
+	if (pcb_layer_group_list(PCB_LYT_SILK | lyt_side, &side_group, 1) != 1)
+		return;
 
 	pcb_draw_doing_assy = pcb_true;
 	pcb_gui->set_draw_faded(Output.fgGC, 1);
@@ -149,7 +152,7 @@ static void PrintAssembly(int side, const pcb_box_t * drawn_area)
 	pcb_gui->set_draw_faded(Output.fgGC, 0);
 
 	/* draw package */
-	DrawSilk(side, drawn_area);
+	DrawSilk(lyt_side, drawn_area);
 	pcb_draw_doing_assy = pcb_false;
 }
 
@@ -245,12 +248,12 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB_VLY_TOP_SILK, 0)) {
-		DrawSilk(PCB_COMPONENT_SIDE, drawn_area);
+		DrawSilk(PCB_LYT_TOP, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB_VLY_BOTTOM_SILK, 0)) {
-		DrawSilk(PCB_SOLDER_SIDE, drawn_area);
+		DrawSilk(PCB_LYT_BOTTOM, drawn_area);
 		pcb_gui->end_layer();
 	}
 
@@ -281,12 +284,12 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB_VLY_TOP_ASSY, 0)) {
-		PrintAssembly(PCB_COMPONENT_SIDE, drawn_area);
+		PrintAssembly(PCB_LYT_TOP, drawn_area);
 		pcb_gui->end_layer();
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB_VLY_BOTTOM_ASSY, 0)) {
-		PrintAssembly(PCB_SOLDER_SIDE, drawn_area);
+		PrintAssembly(PCB_LYT_BOTTOM, drawn_area);
 		pcb_gui->end_layer();
 	}
 
@@ -353,7 +356,7 @@ static void DrawPPV(int group, const pcb_box_t * drawn_area)
  * Draws silk layer.
  */
 
-static void DrawSilk(int side, const pcb_box_t * drawn_area)
+static void DrawSilk(unsigned int lyt_side, const pcb_box_t * drawn_area)
 {
 #if 0
 	/* This code is used when you want to mask silk to avoid exposed
@@ -365,10 +368,17 @@ static void DrawSilk(int side, const pcb_box_t * drawn_area)
 	if (pcb_gui->poly_before) {
 		pcb_gui->use_mask(HID_MASK_BEFORE);
 #endif
-		pcb_draw_layer(LAYER_PTR(pcb_max_copper_layer + side), drawn_area);
+		pcb_layer_id_t lid;
+		int side = lyt_side == PCB_LYT_TOP ? PCB_COMPONENT_SIDE : PCB_SOLDER_SIDE;
+
+		if (pcb_layer_list(PCB_LYT_SILK | lyt_side, &lid, 1) == 0)
+			return;
+
+		pcb_draw_layer(LAYER_PTR(lid), drawn_area);
 		/* draw package */
 		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 		pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
+
 #if 0
 	}
 
