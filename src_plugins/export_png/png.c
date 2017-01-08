@@ -511,7 +511,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	if (!photo_mode && conf_core.editor.show_solder_side) {
 		int i, j;
-		for (i = 0, j = pcb_max_copper_layer - 1; i < j; i++, j--) {
+		for (i = 0, j = pcb_max_layer - 1; i < j; i++, j--) {
 			int k = pcb_layer_stack[i];
 			pcb_layer_stack[i] = pcb_layer_stack[j];
 			pcb_layer_stack[j] = k;
