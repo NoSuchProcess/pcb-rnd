@@ -1301,7 +1301,7 @@ static void config_layers_apply(void)
 	/* Get each layer name entry and dup if modified into the PCB layer names
 	   |  and, if to use as default, the Settings layer names.
 	 */
-	for (i = 0; i < pcb_max_copper_layer; ++i) {
+	for (i = 0; i < pcb_max_layer; ++i) {
 		layer = &PCB->Data->Layer[i];
 		s = ghid_entry_get_text(layer_entry[i]);
 		if (pcb_gtk_g_strdup((char**)&layer->Name, s))
@@ -1403,7 +1403,7 @@ void ghid_config_groups_changed(void)
 	gtk_widget_show(scrolled_window);
 
 
-	table = gtk_table_new(pcb_max_copper_layer + 3, pcb_max_group + 1, FALSE);
+	table = gtk_table_new(pcb_max_layer + 3, pcb_max_group + 1, FALSE);
 	config_groups_table = table;
 	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), table);
@@ -1427,14 +1427,20 @@ void ghid_config_groups_changed(void)
 	   |  can have an active radio button set for the group it needs to be in.
 	 */
 	for (layer = 0; layer < pcb_max_layer; ++layer) {
-		if (layer == pcb_component_silk_layer)
+		int noedit = 0;
+#warning layer TODO: do not depend on these to exist
+		if (layer == pcb_component_silk_layer) {
 			name = _("component side");
-		else if (layer == pcb_solder_silk_layer)
+			noedit = 1;
+		}
+		else if (layer == pcb_solder_silk_layer) {
 			name = _("solder side");
+			noedit = 1;
+		}
 		else
 			name = (gchar *) PCB_UNKNOWN(PCB->Data->Layer[layer].Name);
 
-		if (layer >= pcb_max_copper_layer) {
+		if (noedit) {
 			label = gtk_label_new(name);
 			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 			gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 1, layer + 1, layer + 2);
@@ -1489,7 +1495,7 @@ void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
 	s = make_layer_group_string(&PCB->LayerGroups);
 
 	/* change default layer names to the current ones in dest */
-	for (n = 0; n < pcb_max_copper_layer; n++) {
+	for (n = 0; n < pcb_max_layer; n++) {
 		pcb_layer_t *layer;
 		char lnp[128];
 		lht_node_t *nd;
