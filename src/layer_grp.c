@@ -34,8 +34,7 @@ pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 {
 	pcb_layergrp_id_t group, i;
 
-#warning layer TODO: layer group cleanup: remove this +2 for the silks
-	if ((Layer < 0) || (Layer > pcb_max_copper_layer+2))
+	if ((Layer < 0) || (Layer >= pcb_max_group))
 		return -1;
 
 	for (group = 0; group < pcb_max_group; group++)

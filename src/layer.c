@@ -129,7 +129,7 @@ pcb_bool pcb_layer_is_empty_(pcb_layer_t *layer)
 
 pcb_bool pcb_layer_is_empty(pcb_layer_id_t num)
 {
-	if ((num >= 0) && (num < pcb_max_copper_layer+2))
+	if ((num >= 0) && (num < pcb_max_layer))
 		return pcb_layer_is_empty_(PCB->Data->Layer + num);
 	return pcb_false;
 }
@@ -178,7 +178,7 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 	if ((layer_idx >= PCB_LAYER_VIRT_MIN) && (layer_idx <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].type;
 
-	if (layer_idx > pcb_max_copper_layer+2)
+	if (layer_idx >= pcb_max_layer)
 		return 0;
 
 	if (layer_idx < pcb_max_copper_layer) {
@@ -737,7 +737,7 @@ const char *pcb_layer_name(pcb_layer_id_t id)
 {
 	if (id < 0)
 		return NULL;
-	if (id < pcb_max_copper_layer+2)
+	if (id < pcb_max_layer)
 		return PCB->Data->Layer[id].Name;
 	if ((id >= PCB_LAYER_VIRT_MIN) && (id <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[id-PCB_LAYER_VIRT_MIN].name;
@@ -746,7 +746,7 @@ const char *pcb_layer_name(pcb_layer_id_t id)
 
 pcb_layer_t *pcb_get_layer(pcb_layer_id_t id)
 {
-	if ((id >= 0) && (id < pcb_max_copper_layer+2))
+	if ((id >= 0) && (id < pcb_max_layer))
 		return &PCB->Data->Layer[id];
 	if (id & PCB_LYT_UI) {
 		id &= ~(PCB_LYT_VIRTUAL | PCB_LYT_UI);
