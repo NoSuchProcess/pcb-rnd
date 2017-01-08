@@ -43,6 +43,7 @@
 #include "error.h"
 #include "buffer.h"
 #include "layer.h"
+#include "layer_grp.h"
 #include "plugins.h"
 #include "compat_misc.h"
 #include "compat_fs.h"
@@ -480,7 +481,7 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 	int i;
 	int clr_r, clr_g, clr_b;
 	pcb_layer_t *layer;
-
+	pcb_layergrp_id_t gtop, gbottom;
 
 	if (!options) {
 		bboard_get_export_options(0);
@@ -498,10 +499,13 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 
 	memset(group_data, 0, sizeof(group_data));
 
-	group_data[pcb_layer_get_group(pcb_max_copper_layer + PCB_SOLDER_SIDE)].solder = 1;
-	group_data[pcb_layer_get_group(pcb_max_copper_layer + PCB_COMPONENT_SIDE)].component = 1;
+	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_BOTTOM, &gbottom, 1) > 0)
+		group_data[gbottom].solder = 1;
 
-	for (i = 0; i < pcb_max_copper_layer; i++) {
+	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_TOP, &gtop, 1) > 0)
+		group_data[gtop].component = 1;
+
+	for (i = 0; i < pcb_max_layer; i++) {
 		layer = PCB->Data->Layer + i;
 		if (linelist_length(&layer->Line) > 0)
 			group_data[pcb_layer_get_group(i)].draw = 1;
@@ -524,8 +528,11 @@ static void bboard_do_export(pcb_hid_attr_val_t * options)
 	PCB_END_LOOP;
 
 	/* draw all wires from all valid layers */
-	for (i = pcb_max_copper_layer - 1; i >= 0; i--) {
-		if (bboard_validate_layer(pcb_layer_flags(i), pcb_layer_get_group(i), options[HA_skipsolder].int_value)) {
+	for (i = pcb_max_layer; i >= 0; i--) {
+		unsigned int flg = pcb_layer_flags(i);
+		if (flg & PCB_LYT_SILK)
+			continue;
+		if (bboard_validate_layer(flg, pcb_layer_get_group(i), options[HA_skipsolder].int_value)) {
 			bboard_get_layer_color(&(PCB->Data->Layer[i]), &clr_r, &clr_g, &clr_b);
 			bboard_set_color_cairo(clr_r, clr_g, clr_b);
 			PCB_LINE_LOOP(&(PCB->Data->Layer[i]));
