@@ -169,74 +169,78 @@ static void stat_do_export(pcb_hid_attr_val_t * options)
 	fprintf(f, "	}\n");
 
 	fprintf(f, "	li:logical_layers {\n");
-	for(lid = 0; lid < pcb_max_copper_layer; lid++) {
+	for(lid = 0; lid < pcb_max_layer; lid++) {
 		pcb_layer_t *l = PCB->Data->Layer+lid;
 		int empty = pcb_layer_is_empty_(l);
+		unsigned int lflg = pcb_layer_flags(lid);
+
 		lgid = pcb_layer_get_group(lid);
 		lgs = lgss + lgid;
 
 		fprintf(f, "		ha:layer_%d {\n", lid);
 		fprintf(f, "			name={%s}\n", l->Name);
 		fprintf(f, "			empty=%s\n", empty ? "yes" : "no");
+		fprintf(f, "			flags=%x\n", lflg);
 		fprintf(f, "			grp=%ld\n", lgid);
 
-		memset(&ls, 0, sizeof(ls));
+		if (lflg & PCB_LYT_COPPER) {
+			memset(&ls, 0, sizeof(ls));
 
-		PCB_LINE_LOOP(l) {
-			pcb_coord_t v;
-			double d;
-			lgs->lines++;
-			ls.lines++;
-			v = pcb_line_length(line);
-			ls.trace_len += v;
-			lgs->trace_len += v;
-			d = pcb_line_area(line);
-			ls.copper_area += d;
-			lgs->copper_area += d;
-			
+			PCB_LINE_LOOP(l) {
+				pcb_coord_t v;
+				double d;
+				lgs->lines++;
+				ls.lines++;
+				v = pcb_line_length(line);
+				ls.trace_len += v;
+				lgs->trace_len += v;
+				d = pcb_line_area(line);
+				ls.copper_area += d;
+				lgs->copper_area += d;
+				
+			}
+			PCB_END_LOOP;
+
+			PCB_ARC_LOOP(l) {
+				pcb_coord_t v;
+				double d;
+				lgs->arcs++;
+				ls.arcs++;
+				v = pcb_arc_length(arc);
+				ls.trace_len += v;
+				lgs->trace_len += v;
+				d = pcb_arc_area(arc);
+				ls.copper_area += d;
+				lgs->copper_area += d;
+			}
+			PCB_END_LOOP;
+
+			PCB_POLY_LOOP(l) {
+				double v;
+				lgs->polys++;
+				ls.polys++;
+				v = pcb_poly_area(polygon);
+				ls.copper_area += v;
+				lgs->copper_area += v;
+			}
+			PCB_END_LOOP;
+
+			if (!empty)
+				group_not_empty[lgid] = 1;
+
+			fprintf(f, "			lines=%lu\n", ls.lines);
+			fprintf(f, "			arcs=%lu\n",  ls.arcs);
+			fprintf(f, "			polys=%lu\n", ls.polys);
+			pcb_fprintf(f, "			trace_len=%$mm\n", ls.trace_len);
+			fprintf(f, "			copper_area={%f mm^2}\n", (double)ls.copper_area / (double)PCB_MM_TO_COORD(1) / (double)PCB_MM_TO_COORD(1));
 		}
-		PCB_END_LOOP;
-
-		PCB_ARC_LOOP(l) {
-			pcb_coord_t v;
-			double d;
-			lgs->arcs++;
-			ls.arcs++;
-			v = pcb_arc_length(arc);
-			ls.trace_len += v;
-			lgs->trace_len += v;
-			d = pcb_arc_area(arc);
-			ls.copper_area += d;
-			lgs->copper_area += d;
-		}
-		PCB_END_LOOP;
-
-		PCB_POLY_LOOP(l) {
-			double v;
-			lgs->polys++;
-			ls.polys++;
-			v = pcb_poly_area(polygon);
-			ls.copper_area += v;
-			lgs->copper_area += v;
-		}
-		PCB_END_LOOP;
-
-		if (!empty)
-			group_not_empty[lgid] = 1;
-
-		fprintf(f, "			lines=%lu\n", ls.lines);
-		fprintf(f, "			arcs=%lu\n",  ls.arcs);
-		fprintf(f, "			polys=%lu\n", ls.polys);
-		pcb_fprintf(f, "			trace_len=%$mm\n", ls.trace_len);
-		fprintf(f, "			copper_area={%f mm^2}\n", (double)ls.copper_area / (double)PCB_MM_TO_COORD(1) / (double)PCB_MM_TO_COORD(1));
-
 		fprintf(f, "		}\n");
 	}
 	fprintf(f, "	}\n");
 
 	phg = 0;
 	fprintf(f, "	li:physical_layers {\n");
-	for(lgid = 0; lgid < pcb_max_copper_layer; lgid++) {
+	for(lgid = 0; lgid < pcb_max_group; lgid++) {
 		if (group_not_empty[lgid]) {
 			phg++;
 			fprintf(f, "		ha:layergroup_%ld {\n", lgid);

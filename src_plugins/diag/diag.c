@@ -151,7 +151,7 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 	pcb_layergrp_id_t garr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 
 
-	printf("Max: theoretical=%d current_board=%d\n", PCB_MAX_LAYER+2, pcb_max_copper_layer);
+	printf("Max: theoretical=%d current_board=%d\n", PCB_MAX_LAYER+2, pcb_max_layer);
 	used = pcb_layer_list_any(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
 	for(n = 0; n < used; n++) {
 		pcb_layer_id_t layer_id = arr[n];
