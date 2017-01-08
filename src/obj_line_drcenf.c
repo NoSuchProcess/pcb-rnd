@@ -476,9 +476,12 @@ void pcb_line_enforce_drc(void)
 	double r1, r2;
 
 	/* Silence a bogus compiler warning by storing this in a variable */
-	int layer_idx = INDEXOFCURRENT;
+	pcb_layer_id_t layer_idx = INDEXOFCURRENT;
 
-	if (pcb_gui->mod1_is_pressed() || pcb_gui->control_is_pressed() || PCB->RatDraw || layer_idx >= pcb_max_copper_layer)
+	if (pcb_gui->mod1_is_pressed() || pcb_gui->control_is_pressed() || PCB->RatDraw)
+		return;
+
+	if (!(pcb_layer_flags(layer_idx) & PCB_LYT_COPPER))
 		return;
 
 	rs.X = r45.X = pcb_crosshair.X;
