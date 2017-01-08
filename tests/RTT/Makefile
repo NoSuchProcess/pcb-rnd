@@ -11,6 +11,7 @@ test_export:
 	$E -f bom ; \
 	$E -f dsn 2>/dev/null; \
 	$E -f IPC-D-356 ; \
+	$E -f eps ; \
 	$E -f ps ; \
 	$E -f XY ; \
 	$E -f openscad ; \

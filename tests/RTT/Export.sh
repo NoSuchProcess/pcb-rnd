@@ -26,6 +26,10 @@ set_fmt_args()
 			ext=.ps
 			fmt_args="-c plugins/draw_fab/omit_date=1"
 			;;
+		eps)
+			ext=.eps
+#			fmt_args="-c plugins/draw_fab/omit_date=1"
+			;;
 		XY) ext=.xy ;;
 		openscad) ext=.scad ;;
 		png)
