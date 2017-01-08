@@ -204,8 +204,10 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	memset(print_layer, 0, sizeof(print_layer));
 
 	/* Figure out which layers actually have stuff on them.  */
-	for (i = 0; i < pcb_max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
+		if (pcb_layer_flags(i) & PCB_LYT_SILK)
+			continue;
 		if (layer->On)
 			if (!PCB_LAYER_IS_EMPTY(layer))
 				print_group[pcb_layer_get_group(i)] = 1;
@@ -231,9 +233,12 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 	/* Now, for each group we're printing, mark its layers for
 	   printing.  */
-	for (i = 0; i < pcb_max_copper_layer; i++)
+	for (i = 0; i < pcb_max_layer; i++) {
+		if (pcb_layer_flags(i) & PCB_LYT_SILK)
+			continue;
 		if (print_group[pcb_layer_get_group(i)])
 			print_layer[i] = 1;
+	}
 
 	if (fast_erase) {
 		eps_hid.poly_before = 1;
