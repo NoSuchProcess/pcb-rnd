@@ -163,7 +163,7 @@ static int layer_sort(const void *va, const void *vb)
 	int bl = group_for_layer(b);
 	int d = bl - al;
 
-	if (a >= 0 && a <= pcb_max_copper_layer + 1) {
+	if (a >= 0 && a < pcb_max_layer) {
 		int aside = (al == solder_layer ? 0 : al == comp_layer ? 2 : 1);
 		int bside = (bl == solder_layer ? 0 : bl == comp_layer ? 2 : 1);
 		if (bside != aside)
@@ -249,7 +249,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	if (!options[HA_as_shown].int_value) {
 		comp_layer = pcb_layer_get_group(pcb_component_silk_layer);
 		solder_layer = pcb_layer_get_group(pcb_solder_silk_layer);
-		qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
+		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 	}
 	fprintf(f, "%%!PS-Adobe-3.0 EPSF-3.0\n");
 	linewidth = -1;
