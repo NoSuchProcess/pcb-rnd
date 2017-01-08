@@ -282,7 +282,7 @@ static void XORDrawBuffer(pcb_buffer_t *Buffer)
 	y = pcb_crosshair.Y - Buffer->Y;
 
 	/* draw all visible layers */
-	for (i = 0; i < pcb_max_copper_layer + 2; i++)
+	for (i = 0; i < pcb_max_layer; i++)
 		if (PCB->Data->Layer[i].On) {
 			pcb_layer_t *layer = &Buffer->Data->Layer[i];
 
@@ -763,7 +763,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t
 	info.X = X;
 	info.Y = Y;
 
-	for (i = 0; i < pcb_max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *layer = &PCB->Data->Layer[i];
 		/* Only find points of arcs and lines on currently visible layers. */
 		if (!layer->On)

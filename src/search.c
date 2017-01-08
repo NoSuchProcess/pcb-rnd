@@ -1091,11 +1091,15 @@ int pcb_search_obj_by_location(unsigned Type, void **Result1, void **Result2, vo
 		HigherAvail = PCB_TYPE_ELEMENT;
 	}
 
-	for (i = -1; i < pcb_max_copper_layer + 1; i++) {
+	for (i = -1; i < pcb_max_layer + 1; i++) {
+#warning layer TODO: remove these hacks with special i values and make the loop go by groups
+		if (pcb_layer_flags(i) & PCB_LYT_SILK) /* special order for now: silks are i=-1 and i=max+1 */
+			continue;
 		if (i < 0)
 			SearchLayer = &PCB->Data->SILKLAYER;
-		else if (i < pcb_max_copper_layer)
+		else if (i < pcb_max_layer)
 			SearchLayer = LAYER_ON_STACK(i);
+
 		else {
 			SearchLayer = &PCB->Data->BACKSILKLAYER;
 			if (!PCB->InvisibleObjectsOn)
