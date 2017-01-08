@@ -47,12 +47,16 @@ struct pcb_data_s {
 	pcb_rtree_t *via_tree, *element_tree, *pin_tree, *pad_tree, *name_tree[3],	/* for element names */
 	 *rat_tree;
 	pcb_board_t *pcb;
-	pcb_layer_t Layer[PCB_MAX_LAYER + 2];    /* add 2 silkscreen layers */
+	pcb_layer_t Layer[PCB_MAX_LAYER + 2];    /* add 2 silkscreen layers; layer TODO: remove this hack */
 	pcb_plug_io_t *loader;
 	ratlist_t Rat;
 };
 
 
+/* layer TODO: update and remove +2 when the silk hack is out */
+#define pcb_max_layer (PCB->Data->LayerN+2)
+
+/* OBSOLOTE: do not use these 4 */
 #define pcb_max_group (PCB->Data->LayerN)
 #define pcb_max_copper_layer (PCB->Data->LayerN)
 #define pcb_solder_silk_layer (pcb_max_copper_layer + PCB_SOLDER_SIDE)

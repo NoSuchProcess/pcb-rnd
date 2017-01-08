@@ -33,6 +33,7 @@
 #include "rtree.h"
 #include "list_common.h"
 #include "obj_all.h"
+#include "layer_it.h"
 
 /* ---------------------------------------------------------------------------
  * some shared identifiers
@@ -49,8 +50,10 @@ int pcb_added_lines;
 void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb)
 {
 	if ((lacb != NULL) || (lcb != NULL) || (acb != NULL) || (tcb != NULL) || (pocb != NULL)) {
-		LAYER_LOOP(PCB->Data, pcb_max_copper_layer + 2);
-		{
+		pcb_layer_it_t it;
+		pcb_layer_id_t lid;
+		for(lid = pcb_layer_first_all(&PCB->LayerGroups, &it); lid != -1; lid = pcb_layer_next(&it)) {
+			pcb_layer_t *layer = PCB->Data->Layer + lid;
 			if (lacb != NULL)
 				if (lacb(ctx, PCB, layer, 1))
 					continue;
@@ -88,7 +91,6 @@ void pcb_loop_layers(void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_
 			if (lacb != NULL)
 				lacb(ctx, PCB, layer, 0);
 		}
-		PCB_END_LOOP;
 	}
 }
 
@@ -258,7 +260,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 
 	hasNoObjects = (pinlist_length(&Data->Via) == 0);
 	hasNoObjects &= (elementlist_length(&Data->Element) == 0);
-	for (i = 0; i < pcb_max_copper_layer + 2; i++)
+	for (i = 0; i < pcb_max_layer; i++)
 		hasNoObjects = hasNoObjects && PCB_LAYER_IS_EMPTY(&(Data->Layer[i]));
 	return (hasNoObjects);
 }

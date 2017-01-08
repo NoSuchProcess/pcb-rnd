@@ -27,6 +27,7 @@
 
 #include "compat_nls.h"
 #include "board.h"
+#include "layer_it.h"
 
 static inline pcb_r_dir_t r_search_pt(pcb_rtree_t * rtree, const pcb_point_t * pt,
 															int radius,
@@ -82,7 +83,7 @@ static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, pcb_pad_t *Pad, int from_type,
 	return pcb_false;
 }
 
-static pcb_bool ADD_LINE_TO_LIST(pcb_cardinal_t L, pcb_line_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
+static pcb_bool ADD_LINE_TO_LIST(pcb_layer_id_t L, pcb_line_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
 	if (User)
 		pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, LAYER_PTR(L), (Ptr), (Ptr));
@@ -170,7 +171,7 @@ void pcb_layout_lookup_uninit(void)
 {
 	pcb_cardinal_t i;
 
-	for (i = 0; i < pcb_max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_layer; i++) {
 		free(LineList[i].Data);
 		LineList[i].Data = NULL;
 		free(ArcList[i].Data);
@@ -233,10 +234,11 @@ void pcb_component_lookup_init(void)
  */
 void pcb_layout_lookup_init(void)
 {
-	pcb_cardinal_t i;
+	pcb_layer_it_t it;
+	pcb_layer_id_t i;
 
 	/* initialize line arc and polygon data */
-	for (i = 0; i < pcb_max_copper_layer; i++) {
+	for(i = pcb_layer_first_any(&PCB->LayerGroups, &it, PCB_LYT_COPPER); i != -1; i = pcb_layer_next(&it)) {
 		pcb_layer_t *layer = LAYER_PTR(i);
 
 		if (linelist_length(&layer->Line)) {
@@ -383,6 +385,7 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 {
 	pcb_cardinal_t layer;
 	struct pv_info info;
+	pcb_layer_it_t it;
 
 	/* loop over all PVs currently on list */
 	while (PVList.Location < PVList.Number) {
@@ -397,7 +400,7 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 			return pcb_true;
 
 		/* now all lines, arcs and polygons of the several layers */
-		for (layer = 0; layer < pcb_max_copper_layer; layer++) {
+		for(layer = pcb_layer_first_any(&PCB->LayerGroups, &it, PCB_LYT_COPPER); layer != -1; layer = pcb_layer_next(&it)) {
 			if (LAYER_PTR(layer)->no_drc)
 				continue;
 			info.layer = layer;
@@ -436,14 +439,15 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 {
 	pcb_bool done;
 	pcb_layer_id_t layer;
-	pcb_cardinal_t i, group, ratposition,
+	pcb_layergrp_id_t group;
+	pcb_cardinal_t i, ratposition,
 		lineposition[PCB_MAX_LAYER], polyposition[PCB_MAX_LAYER], arcposition[PCB_MAX_LAYER], padposition[2];
 
 	/* copy the current LO list positions; the original data is changed
 	 * by 'LookupPVConnectionsToLOList()' which has to check the same
 	 * list entries plus the new ones
 	 */
-	for (i = 0; i < pcb_max_copper_layer; i++) {
+	for (i = 0; i < pcb_max_layer; i++) {
 		lineposition[i] = LineList[i].Location;
 		polyposition[i] = PolygonList[i].Location;
 		arcposition[i] = ArcList[i].Location;
@@ -457,6 +461,7 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 	 */
 	do {
 		pcb_cardinal_t *position;
+		unsigned int flg;
 
 		if (AndRats) {
 			position = &ratposition;
@@ -476,10 +481,11 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 			for (entry = 0; entry < PCB->LayerGroups.grp[group].len; entry++) {
 				layer = PCB->LayerGroups.grp[group].lid[entry];
 
-				/* be aware that the layer number equal pcb_max_copper_layer
-				 * and pcb_max_copper_layer+1 have a special meaning for pads
+				/* be aware that the layer number equal pcb_max_layer
+				 * and pcb_max_layer+1 have a special meaning for pads
 				 */
-				if (layer < pcb_max_copper_layer) {
+#warning layer TODO: reindent
+				{
 					/* try all new lines */
 					position = &lineposition[layer];
 					for (; *position < LineList[layer].Number; (*position)++)
@@ -498,35 +504,35 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 						if (LookupLOConnectionsToPolygon(POLYGONLIST_ENTRY(layer, *position), group))
 							return (pcb_true);
 				}
-				else {
-					/* try all new pads */
-					layer -= pcb_max_copper_layer;
-					if (layer > 1) {
-						pcb_message(PCB_MSG_ERROR, _("bad layer number %d pcb_max_copper_layer=%d in find.c\n"), layer, pcb_max_copper_layer);
-						return pcb_false;
-					}
-					position = &padposition[layer];
-					for (; *position < PadList[layer].Number; (*position)++)
-						if (LookupLOConnectionsToPad(PADLIST_ENTRY(layer, *position), group))
-							return (pcb_true);
-				}
 			}
+
+			/* try all new pads */
+			/* handle the special pad layers */
+			flg = pcb_layergrp_flags(group);
+			if (flg & PCB_LYT_BOTTOM)    layer = PCB_SOLDER_SIDE;
+			else if (flg & PCB_LYT_TOP)  layer = PCB_COMPONENT_SIDE;
+			else continue; /* skip pads for this group */
+
+			position = &padposition[layer];
+			for (; *position < PadList[layer].Number; (*position)++)
+				if (LookupLOConnectionsToPad(PADLIST_ENTRY(layer, *position), group))
+					return (pcb_true);
 		}
 
 		/* check if all lists are done; Later for-loops
 		 * may have changed the prior lists
 		 */
 		done = !AndRats || ratposition >= RatList.Number;
-		for (layer = 0; layer < pcb_max_copper_layer + 2; layer++) {
-			if (layer < pcb_max_copper_layer)
-				done = done &&
-					lineposition[layer] >= LineList[layer].Number
-					&& arcposition[layer] >= ArcList[layer].Number && polyposition[layer] >= PolygonList[layer].Number;
-			else
-				done = done && padposition[layer - pcb_max_copper_layer] >= PadList[layer - pcb_max_copper_layer].Number;
+		for (layer = 0; layer < pcb_max_layer; layer++) {
+			done = done &&
+				lineposition[layer] >= LineList[layer].Number
+				&& arcposition[layer] >= ArcList[layer].Number && polyposition[layer] >= PolygonList[layer].Number;
 		}
-	}
-	while (!done);
+
+		/* check the two special pad layers */
+		for (layer = 0; layer < 2; layer++)
+			done = done && padposition[layer] >= PadList[layer].Number;
+	} while (!done);
 	return (pcb_false);
 }
 
@@ -709,11 +715,12 @@ static pcb_r_dir_t pv_rat_callback(const pcb_box_t * b, void *cl)
  */
 static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 {
-	pcb_cardinal_t layer;
+	pcb_layer_it_t it;
+	pcb_layer_id_t layer;
 	struct lo_info info;
 
 	/* loop over all layers */
-	for (layer = 0; layer < pcb_max_copper_layer; layer++) {
+	for(layer = pcb_layer_first_any(&PCB->LayerGroups, &it, PCB_LYT_COPPER); layer != -1; layer = pcb_layer_next(&it)) {
 		if (LAYER_PTR(layer)->no_drc)
 			continue;
 		/* do nothing if there are no PV's */
@@ -874,6 +881,7 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 {
 	pcb_cardinal_t entry;
 	struct lo_info info;
+	unsigned int flg;
 
 	info.arc = *Arc;
 	EXPAND_BOUNDS(&info.arc);
@@ -882,9 +890,8 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 		pcb_layer_id_t layer;
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
-
-		/* handle normal layers */
-		if (layer < pcb_max_copper_layer) {
+#warning layer TODO: reindent this block
+		{
 			pcb_polygon_t *polygon;
 			gdl_iterator_t it;
 
@@ -907,15 +914,20 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 					return pcb_true;
 			}
 		}
-		else {
-			info.layer = layer - pcb_max_copper_layer;
-			if (setjmp(info.env) == 0)
-				pcb_r_search(PCB->Data->pad_tree, &info.arc.BoundingBox, NULL, LOCtoArcPad_callback, &info, NULL);
-			else
-				return pcb_true;
-		}
 	}
-	return (pcb_false);
+
+	/* handle the special pad layers */
+	flg = pcb_layergrp_flags(LayerGroup);
+	if (flg & PCB_LYT_BOTTOM)    info.layer = PCB_SOLDER_SIDE;
+	else if (flg & PCB_LYT_TOP)  info.layer = PCB_COMPONENT_SIDE;
+	else return pcb_false;
+
+	if (setjmp(info.env) == 0)
+		pcb_r_search(PCB->Data->pad_tree, &info.arc.BoundingBox, NULL, LOCtoArcPad_callback, &info, NULL);
+	else
+		return pcb_true;
+
+	return pcb_false;
 }
 
 static pcb_r_dir_t LOCtoLineLine_callback(const pcb_box_t * b, void *cl)
@@ -986,6 +998,7 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 {
 	pcb_cardinal_t entry;
 	struct lo_info info;
+	unsigned int flg;
 
 	info.line = *Line;
 	info.layer = LayerGroup;
@@ -1002,8 +1015,8 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
-		/* handle normal layers */
-		if (layer < pcb_max_copper_layer) {
+#warning layer TODO: reindent
+		{
 			info.layer = layer;
 			/* add lines */
 			if (setjmp(info.env) == 0)
@@ -1027,16 +1040,20 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 				}
 			}
 		}
-		else {
-			/* handle special 'pad' layers */
-			info.layer = layer - pcb_max_copper_layer;
-			if (setjmp(info.env) == 0)
-				pcb_r_search(PCB->Data->pad_tree, &info.line.BoundingBox, NULL, LOCtoLinePad_callback, &info, NULL);
-			else
-				return pcb_true;
-		}
 	}
-	return (pcb_false);
+
+	/* handle the special pad layers */
+	flg = pcb_layergrp_flags(LayerGroup);
+	if (flg & PCB_LYT_BOTTOM)    info.layer = PCB_SOLDER_SIDE;
+	else if (flg & PCB_LYT_TOP)  info.layer = PCB_COMPONENT_SIDE;
+	else return pcb_false;
+
+	if (setjmp(info.env) == 0)
+		pcb_r_search(PCB->Data->pad_tree, &info.line.BoundingBox, NULL, LOCtoLinePad_callback, &info, NULL);
+	else
+		return pcb_true;
+
+	return pcb_false;
 }
 
 
@@ -1101,6 +1118,7 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t L
 {
 	pcb_cardinal_t entry;
 	struct rat_info info;
+	unsigned int flg;
 
 	info.Point = Point;
 	/* loop over all layers of this group */
@@ -1108,12 +1126,9 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t L
 		pcb_layer_id_t layer;
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
-		/* handle normal layers
-		   rats don't ever touch
-		   arcs by definition
-		 */
-
-		if (layer < pcb_max_copper_layer) {
+		/* handle normal layers rats don't ever touch arcs by definition */
+#warning layer TODO: reindent
+		{
 			info.layer = layer;
 			if (setjmp(info.env) == 0)
 				r_search_pt(LAYER_PTR(layer)->line_tree, Point, 1, NULL, LOCtoRat_callback, &info, NULL);
@@ -1122,16 +1137,21 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t L
 			if (setjmp(info.env) == 0)
 				r_search_pt(LAYER_PTR(layer)->polygon_tree, Point, 1, NULL, PolygonToRat_callback, &info, NULL);
 		}
-		else {
-			/* handle special 'pad' layers */
-			info.layer = layer - pcb_max_copper_layer;
-			if (setjmp(info.env) == 0)
-				r_search_pt(PCB->Data->pad_tree, Point, 1, NULL, LOCtoPad_callback, &info, NULL);
-			else
-				return pcb_true;
-		}
 	}
-	return (pcb_false);
+
+
+	/* handle the special pad layers */
+	flg = pcb_layergrp_flags(LayerGroup);
+	if (flg & PCB_LYT_BOTTOM)    info.layer = PCB_SOLDER_SIDE;
+	else if (flg & PCB_LYT_TOP)  info.layer = PCB_COMPONENT_SIDE;
+	else return pcb_false;
+
+	if (setjmp(info.env) == 0)
+		r_search_pt(PCB->Data->pad_tree, Point, 1, NULL, LOCtoPad_callback, &info, NULL);
+	else
+		return pcb_true;
+
+	return pcb_false;
 }
 
 static pcb_r_dir_t LOCtoPadLine_callback(const pcb_box_t * b, void *cl)
@@ -1220,6 +1240,7 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 	struct lo_info info;
 	int ic;
 	pcb_bool retv = pcb_false;
+	unsigned int flg;
 
 	/* Internal connection: if pads in the same element have the same
 	   internal connection group number, they are connected */
@@ -1279,7 +1300,8 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 		/* handle normal layers */
-		if (layer < pcb_max_copper_layer) {
+#warning layer TODO: reindent
+		{
 			info.layer = layer;
 			/* add lines */
 			if (setjmp(info.env) == 0)
@@ -1297,16 +1319,19 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 			else
 				return pcb_true;
 		}
-		else {
-			/* handle special 'pad' layers */
-			info.layer = layer - pcb_max_copper_layer;
-			if (setjmp(info.env) == 0)
-				pcb_r_search(PCB->Data->pad_tree, (pcb_box_t *) & info.pad, NULL, LOCtoPadPad_callback, &info, NULL);
-			else
-				return pcb_true;
-		}
-
 	}
+
+	/* handle the special pad layers */
+	flg = pcb_layergrp_flags(LayerGroup);
+	if (flg & PCB_LYT_BOTTOM)    info.layer = PCB_SOLDER_SIDE;
+	else if (flg & PCB_LYT_TOP)  info.layer = PCB_COMPONENT_SIDE;
+	else return retv;
+
+	if (setjmp(info.env) == 0)
+		pcb_r_search(PCB->Data->pad_tree, (pcb_box_t *) & info.pad, NULL, LOCtoPadPad_callback, &info, NULL);
+	else
+		return pcb_true;
+
 	return retv;
 }
 
@@ -1375,6 +1400,7 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardina
 {
 	pcb_cardinal_t entry;
 	struct lo_info info;
+	unsigned int flg;
 
 	if (!Polygon->Clipped)
 		return pcb_false;
@@ -1393,7 +1419,8 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardina
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
 		/* handle normal layers */
-		if (layer < pcb_max_copper_layer) {
+#warning layer TODO: reindent
+		{
 			gdl_iterator_t it;
 			pcb_polygon_t *polygon;
 
@@ -1417,13 +1444,18 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardina
 			else
 				return pcb_true;
 		}
-		else {
-			info.layer = layer - pcb_max_copper_layer;
-			if (setjmp(info.env) == 0)
-				pcb_r_search(PCB->Data->pad_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyPad_callback, &info, NULL);
-			else
-				return pcb_true;
-		}
 	}
-	return (pcb_false);
+
+	/* handle the special pad layers */
+	flg = pcb_layergrp_flags(LayerGroup);
+	if (flg & PCB_LYT_BOTTOM)    info.layer = PCB_SOLDER_SIDE;
+	else if (flg & PCB_LYT_TOP)  info.layer = PCB_COMPONENT_SIDE;
+	else return pcb_false;
+
+	if (setjmp(info.env) == 0)
+		pcb_r_search(PCB->Data->pad_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyPad_callback, &info, NULL);
+	else
+		return pcb_true;
+
+	return pcb_false;
 }

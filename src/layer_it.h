@@ -47,12 +47,19 @@ struct pcb_layer_it_s {
 	pcb_layergrp_id_t gid;
 	pcb_cardinal_t lidx;
 	unsigned int mask;
-	int exact;
+	unsigned int exact:1;
+	unsigned int global:1;
 };
 
 static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it)
 {
-	for(;;) {
+	if (it->global) {
+		/* over all layers, random order, without any checks - go the cheap way, bypassing groups */
+		if (it->lidx < pcb_max_layer)
+			return it->lidx++;
+		return -1;
+	}
+	else for(;;) {
 		pcb_layer_group_t *g = &(it->stack->grp[it->gid]);
 		pcb_layer_id_t lid;
 		unsigned int hit;
@@ -86,6 +93,7 @@ static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_first(pcb_layer_stack_t *
 	it->gid = 0;
 	it->lidx = 0;
 	it->exact = 1;
+	it->global = 0;
 	return pcb_layer_next(it);
 }
 
@@ -96,6 +104,15 @@ static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_first_any(pcb_layer_stack
 	it->gid = 0;
 	it->lidx = 0;
 	it->exact = 0;
+	it->global = 0;
+	return pcb_layer_next(it);
+}
+
+static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_first_all(pcb_layer_stack_t *stack, pcb_layer_it_t *it)
+{
+	it->stack = stack;
+	it->lidx = 0;
+	it->global = 1;
 	return pcb_layer_next(it);
 }
 
