@@ -706,7 +706,9 @@ static void make_layer_buttons(GtkWidget * layersel)
 /*! \brief callback for ghid_layer_selector_delete_layers */
 gboolean get_layer_delete(gint layer)
 {
-	return layer >= pcb_max_copper_layer;
+	if (pcb_layer_flags(layer) & PCB_LYT_SILK)
+		return 1;
+	return layer >= pcb_max_layer;
 }
 
 /*! \brief Synchronize layer selector widget with current PCB state
