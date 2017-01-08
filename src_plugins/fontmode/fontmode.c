@@ -72,6 +72,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid;
+	pcb_layergrp_id_t gtop, gbottom;
 	int s, l;
 
 	if (pcb_hid_actionl("New", "Font", 0))
@@ -84,8 +85,11 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	conf_set_design("design/min_wid", "%s", "1"); PCB->minWid = 1;
 	conf_set_design("design/min_slk", "%s", "1"); PCB->minSlk = 1;
 
-	pcb_layer_move_to_group(pcb_max_copper_layer + PCB_COMPONENT_SIDE, 0);
-	pcb_layer_move_to_group(pcb_max_copper_layer + PCB_SOLDER_SIDE, 1);
+	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_BOTTOM, &gbottom, 1) > 0)
+		pcb_layer_move_to_group(gbottom, 1);
+
+	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_TOP, &gtop, 1) > 0)
+		pcb_layer_move_to_group(gtop, 0);
 
 	while (PCB->Data->LayerN > 4)
 		pcb_layer_move(4, -1);
