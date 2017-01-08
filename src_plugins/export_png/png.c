@@ -408,7 +408,7 @@ static int layer_sort(const void *va, const void *vb)
 	int bl = group_for_layer(b);
 	int d = bl - al;
 
-	if (a >= 0 && a <= pcb_max_copper_layer + 1) {
+	if (a >= 0 && a < pcb_max_layer) {
 		int aside = (al == solder_layer ? 0 : al == comp_layer ? 2 : 1);
 		int bside = (bl == solder_layer ? 0 : bl == comp_layer ? 2 : 1);
 		if (bside != aside)
