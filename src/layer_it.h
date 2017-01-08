@@ -1,0 +1,103 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  pcb-rnd, interactive printed circuit board design
+ *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *  Contact addresses for paper mail and Email:
+ *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
+ *  Thomas.Nau@rz.uni-ulm.de
+ *
+ */
+
+/* Layer and layer group iterators (static inline functions) */
+
+#ifndef PCB_LAYER_IT_H
+#define PCB_LAYER_IT_H
+
+#include "layer_grp.h"
+
+typedef struct pcb_layer_it_s pcb_layer_it_t;
+
+/* Start an iteration matching exact flags or any of the flags; returns -1 if over */
+static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_first(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int exact_mask);
+static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_first_any(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int any_mask);
+
+/* next iteration; returns -1 if over */
+static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it);
+
+
+/*************** inline implementation *************************/
+struct pcb_layer_it_s {
+	pcb_layer_stack_t *stack;
+	pcb_layergrp_id_t gid;
+	pcb_cardinal_t lidx;
+	unsigned int mask;
+	int exact;
+};
+
+static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it)
+{
+	for(;;) {
+		pcb_layer_group_t *g = &(it->stack->grp[it->gid]);
+		pcb_layer_id_t lid;
+		unsigned int hit;
+		if (it->lidx >= g->len) { /* layer list over in this group */
+			it->gid++;
+			if (it->gid >= PCB_MAX_LAYERGRP) /* last group */
+				return -1;
+			it->lidx = 0;
+			continue; /* skip to next group */
+		}
+		/* TODO: check group flags against mask here for more efficiency */
+		lid = g->lid[it->lidx];
+		it->lidx++;
+		hit = pcb_layer_flags(lid) & it->mask;
+		if (it->exact) {
+			if (hit == it->mask)
+				return lid;
+		}
+		else {
+			if (hit)
+				return lid;
+		}
+		/* skip to next group */
+	}
+}
+
+static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_first(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int exact_mask)
+{
+	it->stack = stack;
+	it->mask = exact_mask;
+	it->gid = 0;
+	it->lidx = 0;
+	it->exact = 1;
+	return pcb_layer_next(it);
+}
+
+static inline PCB_FUNC_UNUSED pcb_layer_id_t pcb_layer_first_any(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int any_mask)
+{
+	it->stack = stack;
+	it->mask = any_mask;
+	it->gid = 0;
+	it->lidx = 0;
+	it->exact = 0;
+	return pcb_layer_next(it);
+}
+
+
+#endif
