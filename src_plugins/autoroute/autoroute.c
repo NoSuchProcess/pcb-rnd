@@ -76,6 +76,7 @@
 #include "layer.h"
 #include "compat_nls.h"
 #include "vtptr.h"
+#include "layer.h"
 #include "obj_all.h"
 
 #include "obj_line_draw.h"
@@ -858,15 +859,17 @@ static routedata_t *CreateRouteData()
 	/* check which layers are active first */
 	routing_layers = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++)
-			/* layer must be 1) not silk (ie, < pcb_max_copper_layer) and 2) on */
-			if ((PCB->LayerGroups.grp[group].lid[i] < pcb_max_copper_layer) && PCB->Data->Layer[PCB->LayerGroups.grp[group].lid[i]].On) {
+		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
+			pcb_layer_id_t lid = PCB->LayerGroups.grp[group].lid[i];
+			/* layer must be 1) copper and 2) on */
+			if ((pcb_layer_flags(lid) & PCB_LYT_COPPER) && PCB->Data->Layer[lid].On) {
 				routing_layers++;
 				is_layer_group_active[group] = pcb_true;
 				break;
 			}
 			else
 				is_layer_group_active[group] = pcb_false;
+		}
 	}
 	/* if via visibility is turned off, don't use them */
 	AutoRouteParameters.use_vias = routing_layers > 1 && PCB->ViaOn;
@@ -1063,8 +1066,14 @@ static routedata_t *CreateRouteData()
 	}
 	PCB_END_LOOP;
 
-	for (i = 0; i < pcb_max_copper_layer; i++) {
-		pcb_layergrp_id_t layergroup = pcb_layer_get_group(i);
+	for (i = 0; i < pcb_max_layer; i++) {
+		pcb_layergrp_id_t layergroup;
+
+		if (!(pcb_layer_flags(i) & PCB_LYT_COPPER))
+			continue;
+
+		layergroup = pcb_layer_get_group(i);
+
 		/* add all (non-rat) lines */
 		PCB_LINE_LOOP(LAYER_PTR(i));
 		{
