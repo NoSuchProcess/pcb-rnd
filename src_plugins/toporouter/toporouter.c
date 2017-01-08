@@ -8009,7 +8009,9 @@ void parse_arguments(toporouter_t * r, int argc, char **argv)
 
 	for (group = 0; group < pcb_max_group; group++)
 		for (i = 0; i < PCB->LayerGroups.Number[group]; i++)
-			if ((PCB->LayerGroups.Entries[group][i] < pcb_max_copper_layer) && !(PCB->Data->Layer[PCB->LayerGroups.Entries[group][i]].On)) {
+			pcb_layer_id_t lid = PCB->LayerGroups.Entries[group][i];
+			flg = pcb_layer_flag(lid);
+			if ((lid & PCB_LYT_COPPER) && !(PCB->Data->Layer[lid].On)) {
 				gdouble *layer = (gdouble *) malloc(sizeof(gdouble));
 				*layer = (double) group;
 				r->keepoutlayers = g_list_prepend(r->keepoutlayers, layer);

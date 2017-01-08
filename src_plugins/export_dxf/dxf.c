@@ -741,7 +741,7 @@ static int dxf_lastY;
  * \brief Find a group for a given layer ??.
  */
 static pcb_layergrp_id_t dxf_group_for_layer(int l) {
-	if ((l < pcb_max_copper_layer + 2) && (l >= 0)) {
+	if ((l < pcb_max_layer) && (l >= 0)) {
 		return pcb_layer_get_group(l);
 	}
 	/* else something unique */
@@ -4294,7 +4294,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
-	qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), dxf_layer_sort);
+	qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), dxf_layer_sort);
 	linewidth = -1;
 	lastcap = -1;
 	lastgroup = -1;

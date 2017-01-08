@@ -257,8 +257,10 @@ void gcode_choose_groups()
 	/* Set entire array to 0 (don't export any layer groups by default */
 	memset(gcode_export_group, 0, sizeof(gcode_export_group));
 
-	for (n = 0; n < pcb_max_copper_layer; n++) {
+	for (n = 0; n < pcb_max_layer; n++) {
 		unsigned int flags = pcb_layer_flags(n);
+		if (flags & PCB_LYT_SILK)
+			continue;
 		layer = &PCB->Data->Layer[n];
 
 		if (!PCB_LAYER_IS_EMPTY(layer)) {
