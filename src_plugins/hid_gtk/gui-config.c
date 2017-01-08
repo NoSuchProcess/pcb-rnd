@@ -1321,7 +1321,7 @@ static void config_layers_apply(void)
 		for (group = 0; group < pcb_max_group; group++)
 			layer_groups.grp[group].len = 0;
 
-		for (i = 0; i < pcb_max_copper_layer + 2; i++) {
+		for (i = 0; i < pcb_max_layer; i++) {
 			group = config_layer_group[i] - 1;
 			layer_groups.grp[group].lid[layer_groups.grp[group].len++] = i;
 
@@ -1426,7 +1426,7 @@ void ghid_config_groups_changed(void)
 	/* Create a row of radio toggle buttons for layer.  So each layer
 	   |  can have an active radio button set for the group it needs to be in.
 	 */
-	for (layer = 0; layer < pcb_max_copper_layer + 2; ++layer) {
+	for (layer = 0; layer < pcb_max_layer; ++layer) {
 		if (layer == pcb_component_silk_layer)
 			name = _("component side");
 		else if (layer == pcb_solder_silk_layer)

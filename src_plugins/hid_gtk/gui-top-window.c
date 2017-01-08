@@ -1625,7 +1625,7 @@ static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		l = LAYER_BUTTON_FARSIDE;
 	else {
 		l = -1;
-		for (i = 0; i < pcb_max_copper_layer + 2; i++) {
+		for (i = 0; i < pcb_max_layer; i++) {
 			if (strcmp(argv[0], PCB->Data->Layer[i].Name) == 0) {
 				l = i;
 				break;

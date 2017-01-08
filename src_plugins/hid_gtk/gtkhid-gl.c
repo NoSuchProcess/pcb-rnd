@@ -111,7 +111,7 @@ int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned
 		int n = PCB->LayerGroups.Number[group];
 		for (idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.Entries[group][idx];
-			if (ni >= 0 && ni < pcb_max_copper_layer + 2 && PCB->Data->Layer[ni].On)
+			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].On)
 				break;
 		}
 		idx = PCB->LayerGroups.Entries[group][idx];
@@ -120,7 +120,7 @@ int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned
 	end_subcomposite();
 	start_subcomposite();
 
-	if (idx >= 0 && idx < pcb_max_copper_layer + 2) {
+	if (idx >= 0 && idx < pcb_max_layer) {
 		priv->trans_lines = pcb_true;
 		return PCB->Data->Layer[idx].On;
 	}

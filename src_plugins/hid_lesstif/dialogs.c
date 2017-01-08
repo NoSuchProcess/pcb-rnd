@@ -1283,7 +1283,7 @@ static void lgbutton_expose(Widget w, XtPointer u, XmDrawingAreaCallbackStruct *
 		XDrawLine(display, win, lg_gc, lg_c[i], 0, lg_c[i], lg_height);
 	for (i = 1; i < pcb_max_copper_layer + 2; i++)
 		XDrawLine(display, win, lg_gc, lg_label_width, lg_r[i], lg_width, lg_r[i]);
-	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
+	for (i = 0; i < pcb_max_layer; i++) {
 		int dir;
 		XCharStruct size;
 		int swidth;
@@ -1302,7 +1302,7 @@ static void lgbutton_expose(Widget w, XtPointer u, XmDrawingAreaCallbackStruct *
 								(lg_r[i] + lg_r[i + 1] + lg_fd + lg_fa) / 2 - 1, name, strlen(name));
 	}
 	XSetForeground(display, lg_gc, lgr.sel);
-	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
+	for (i = 0; i < pcb_max_layer; i++) {
 		int c = lg_setcol[i];
 		int x1 = lg_c[c] + 2;
 		int x2 = lg_c[c + 1] - 2;
@@ -1317,7 +1317,7 @@ static void lgbutton_input(Widget w, XtPointer u, XmDrawingAreaCallbackStruct * 
 	int layer, group;
 	if (cbs->event->type != ButtonPress)
 		return;
-	layer = cbs->event->xbutton.y * (pcb_max_copper_layer + 2) / lg_height;
+	layer = cbs->event->xbutton.y * (pcb_max_layer) / lg_height;
 	group = (cbs->event->xbutton.x - lg_label_width) * pcb_max_group / (lg_width - lg_label_width);
 	group = pcb_layer_move_to_group(layer, group);
 	lg_setcol[layer] = group;
@@ -1338,8 +1338,8 @@ static void lgbutton_resize(Widget w, XtPointer u, XmDrawingAreaCallbackStruct *
 
 	for (i = 0; i <= pcb_max_group; i++)
 		lg_c[i] = lg_label_width + (lg_width - lg_label_width) * i / pcb_max_group;
-	for (i = 0; i <= pcb_max_copper_layer + 2; i++)
-		lg_r[i] = lg_height * i / (pcb_max_copper_layer + 2);
+	for (i = 0; i <= pcb_max_layer; i++)
+		lg_r[i] = lg_height * i / (pcb_max_layer);
 	lgbutton_expose(w, 0, 0);
 }
 
@@ -1361,7 +1361,7 @@ void lesstif_update_layer_groups()
 		}
 
 	lg_label_width = 0;
-	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
+	for (i = 0; i < pcb_max_layer; i++) {
 		int dir;
 		XCharStruct size;
 		int swidth;
@@ -1382,12 +1382,12 @@ void lesstif_update_layer_groups()
 
 	stdarg_n = 0;
 	stdarg(XmNwidth, lg_label_width + (lg_fa + lg_fd) * pcb_max_group);
-	stdarg(XmNheight, (lg_fa + lg_fd) * (pcb_max_copper_layer + 2));
+	stdarg(XmNheight, (lg_fa + lg_fd) * (pcb_max_layer));
 	XtSetValues(lg_buttonform, stdarg_args, stdarg_n);
 	lgbutton_expose(lg_buttonform, 0, 0);
 
 #if 0
-	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
+	for (i = 0; i < pcb_max_layer; i++) {
 		char *name = "unknown";
 		stdarg_n = 0;
 		if (i < pcb_max_copper_layer)
@@ -1407,11 +1407,11 @@ void lesstif_update_layer_groups()
 	XtUnmanageChild(lg_buttonform);
 	for (i = 0; i < PCB_MAX_LAYERGRP + 2; i++)
 		for (j = 0; j < PCB_MAX_LAYER; j++) {
-			if (i < pcb_max_copper_layer + 2 && j < pcb_max_group) {
+			if (i < pcb_max_layer && j < pcb_max_group) {
 				XtManageChild(lgbuttons[i][j]);
 				stdarg_n = 0;
-				stdarg(XmNleftPosition, j * (pcb_max_copper_layer + 2));
-				stdarg(XmNrightPosition, (j + 1) * (pcb_max_copper_layer + 2));
+				stdarg(XmNleftPosition, j * (pcb_max_layer));
+				stdarg(XmNrightPosition, (j + 1) * (pcb_max_layer));
 				stdarg(XmNtopPosition, i * pcb_max_group);
 				stdarg(XmNbottomPosition, (i + 1) * pcb_max_group);
 				XtSetValues(lgbuttons[i][j], stdarg_args, stdarg_n);
@@ -1420,10 +1420,10 @@ void lesstif_update_layer_groups()
 				XtUnmanageChild(lgbuttons[i][j]);
 		}
 	stdarg_n = 0;
-	stdarg(XmNfractionBase, pcb_max_copper_layer + 2);
+	stdarg(XmNfractionBase, pcb_max_layer);
 	XtSetValues(layer_groups_form, stdarg_args, stdarg_n);
 	stdarg_n = 0;
-	stdarg(XmNfractionBase, pcb_max_group * (pcb_max_copper_layer + 2));
+	stdarg(XmNfractionBase, pcb_max_group * (pcb_max_layer));
 	XtSetValues(lg_buttonform, stdarg_args, stdarg_n);
 	XtManageChild(lg_buttonform);
 #endif
@@ -1450,7 +1450,7 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	if (!layer_groups_form) {
 
 		stdarg_n = 0;
-		stdarg(XmNfractionBase, pcb_max_copper_layer + 2);
+		stdarg(XmNfractionBase, pcb_max_layer);
 		stdarg(XmNtitle, "Layer Groups");
 		layer_groups_form = XmCreateFormDialog(mainwind, XmStrCast("layers"), stdarg_args, stdarg_n);
 

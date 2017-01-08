@@ -65,7 +65,7 @@ int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned
 		int n = PCB->LayerGroups.grp[group].len;
 		for (idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.grp[group].lid[idx];
-			if (ni >= 0 && ni < pcb_max_copper_layer + 2 && PCB->Data->Layer[ni].On)
+			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].On)
 				break;
 		}
 		idx = PCB->LayerGroups.grp[group].lid[idx];
