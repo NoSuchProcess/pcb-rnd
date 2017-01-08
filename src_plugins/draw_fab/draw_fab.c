@@ -171,7 +171,7 @@ static int DrawFab_overhang(void)
 static void DrawFab(pcb_hid_gc_t gc)
 {
 	DrillInfoTypePtr AllDrills;
-	int i, n, yoff, total_drills = 0, ds = 0;
+	int i, n, yoff, total_drills = 0, ds = 0, found;
 	char utcTime[64];
 	AllDrills = GetDrillInfo(PCB->Data);
 	RoundDrillInfo(AllDrills, PCB_MIL_TO_COORD(1));
@@ -242,12 +242,14 @@ static void DrawFab(pcb_hid_gc_t gc)
 		strcpy(utcTime, "<date>");
 
 	yoff = -TEXT_LINE;
-	for (i = 0; i < pcb_max_copper_layer; i++) {
+	for (found = 0, i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *l = LAYER_PTR(i);
-		if ((pcb_layer_flags(i) & PCB_LYT_OUTLINE) && (linelist_length(&l->Line) || arclist_length(&l->Arc)))
+		if ((pcb_layer_flags(i) & PCB_LYT_OUTLINE) && (linelist_length(&l->Line) || arclist_length(&l->Arc))) {
+			found = 1;
 			break;
+		}
 	}
-	if (i == pcb_max_copper_layer) {
+	if (!found) {
 		pcb_gui->set_line_width(gc, PCB_MIL_TO_COORD(10));
 		pcb_gui->draw_line(gc, 0, 0, PCB->MaxWidth, 0);
 		pcb_gui->draw_line(gc, 0, 0, 0, PCB->MaxHeight);
