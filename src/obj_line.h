@@ -99,7 +99,7 @@ void pcb_line_enforce_drc(void);
 #define PCB_LINE_ALL_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++)	\
+	for (l = 0; l < pcb_max_layer; l++, layer++)	\
 	{ \
 		PCB_LINE_LOOP(layer)
 
@@ -121,7 +121,7 @@ void pcb_line_enforce_drc(void);
 #define PCB_LINE_VISIBLE_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++)	\
+	for (l = 0; l < pcb_max_layer; l++, layer++)	\
 	{ \
 		if (layer->On)				\
 			PCB_LINE_LOOP(layer)

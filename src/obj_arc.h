@@ -96,7 +96,7 @@ extern int *pcb_arc_start_ptr, *pcb_arc_end_ptr;
 #define PCB_ARC_ALL_LOOP(top) do {		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l =0; l < pcb_max_copper_layer + 2; l++, layer++)		\
+	for (l =0; l < pcb_max_layer; l++, layer++)		\
 	{ \
 		PCB_ARC_LOOP(layer)
 
@@ -118,7 +118,7 @@ extern int *pcb_arc_start_ptr, *pcb_arc_end_ptr;
 #define PCB_ARC_VISIBLE_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++)	\
+	for (l = 0; l < pcb_max_layer; l++, layer++)	\
 	{ \
 		if (layer->On)				\
 			PCB_ARC_LOOP(layer)

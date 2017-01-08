@@ -75,14 +75,14 @@ void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text);
 #define	PCB_TEXT_ALL_LOOP(top) do {                        \
 	pcb_cardinal_t l;                                   \
 	pcb_layer_t *layer = (top)->Layer;                  \
-	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++) \
+	for (l = 0; l < pcb_max_layer; l++, layer++) \
 	{                                                   \
 		PCB_TEXT_LOOP(layer)
 
 #define PCB_TEXT_VISIBLE_LOOP(board) do {                       \
 	pcb_cardinal_t l;                                        \
 	pcb_layer_t *layer = (board)->Data->Layer;               \
-	for (l = 0; l < pcb_max_copper_layer + 2; l++, layer++)      \
+	for (l = 0; l < pcb_max_layer; l++, layer++)      \
 	{                                                        \
 		PCB_TEXT_LOOP(layer);                                      \
 		if (pcb_text_is_visible((board), layer, text))
