@@ -214,8 +214,10 @@ static void check_pin(pcb_pin_t * _pin)
 					PCB_COORD_TO_MM(pin->X), PCB_COORD_TO_MM(pin->Y),
 					PCB_EMPTY(PCB_ELEM_NAME_REFDES(element)), PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)), PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element)));
 
-	for (layer = 0; layer < pcb_max_copper_layer; layer++) {
+	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
+		if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+			continue;
 		pcb_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
 }
@@ -236,8 +238,10 @@ static void check_via(pcb_pin_t * _pin)
 
 	fprintf(stderr, "Via at %.6f, %.6f\n", PCB_COORD_TO_MM(pin->X), PCB_COORD_TO_MM(pin->Y));
 
-	for (layer = 0; layer < pcb_max_copper_layer; layer++) {
+	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
+		if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+			continue;
 		pcb_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
 	}
 }
@@ -272,8 +276,10 @@ static void check_pad(pcb_pad_t * _pad)
 	/*           PCB_EMPTY(PCB_ELEM_NAME_VALUE(element)), */
 	/*           PCB_EMPTY(PCB_ELEM_NAME_DESCRIPTION(element))); */
 
-	for (layer = 0; layer < pcb_max_copper_layer; layer++) {
+	for (layer = 0; layer < pcb_max_layer; layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
+		if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+			continue;
 		pcb_r_search(l->line_tree, &(pad->BoundingBox), NULL, check_line_callback, l, NULL);
 	}
 }
