@@ -549,7 +549,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 #warning layer TODO: this assumes there is only one outline layer; instead of this, just use a boolthat says whether we had an outline layer and redo the search
 	outline_layer = NULL;
 
-	for (i = 0; i < pcb_max_copper_layer; i++)
+	for (i = 0; i < pcb_max_layer; i++)
 		if (pcb_layer_flags(i) & PCB_LYT_OUTLINE)
 			outline_layer = PCB->Data->Layer + i;
 
@@ -562,7 +562,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
-	qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
+	qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 	linewidth = -1;
 	lastcap = -1;
 	lastgroup = -1;
