@@ -230,7 +230,7 @@ static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 	group = pcb_layer_get_group(i);
 
 	/* check all visible layers in the same group */
-	GROUP_LOOP(PCB->Data, group);
+	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 	{
 		/* check all visible lines of the group member */
 		info.layer = layer;
@@ -386,7 +386,7 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 	info.Y = LinePoint->Y;
 
 	group = pcb_layer_get_group_(Layer);
-	GROUP_LOOP(PCB->Data, group);
+	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 	{
 		/* check all visible lines of the group member */
 		if (layer->On) {
@@ -422,7 +422,7 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 	info.Y = ey;
 
 	group = pcb_layer_get_group_(Layer);
-	GROUP_LOOP(PCB->Data, group);
+	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 	{
 		/* check all visible lines of the group member */
 		if (layer->On) {
@@ -444,7 +444,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 
 	/* lookup layergroup and check all visible lines in this group */
 	group = pcb_layer_get_group_(Layer);
-	GROUP_LOOP(PCB->Data, group);
+	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 	{
 		if (layer->On) {
 			pcb_coord_t thick;

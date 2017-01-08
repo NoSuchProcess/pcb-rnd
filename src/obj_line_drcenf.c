@@ -360,7 +360,7 @@ static double drc_lines(pcb_point_t *end, pcb_bool way)
 					if (info.solder || comp == group)
 						pcb_r_search(PCB->Data->pad_tree, &line2.BoundingBox, NULL, drcPad_callback, &info, NULL);
 				}
-				GROUP_LOOP(PCB->Data, group);
+				PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 				{
 					info.line = &line1;
 					pcb_r_search(layer->line_tree, &line1.BoundingBox, NULL, drcLine_callback, &info, NULL);
@@ -450,7 +450,7 @@ static void drc_line(pcb_point_t *end)
 		pcb_r_search(PCB->Data->pin_tree, &line.BoundingBox, NULL, drcVia_callback, &info, NULL);
 		if (info.solder || comp == group)
 			pcb_r_search(PCB->Data->pad_tree, &line.BoundingBox, NULL, drcPad_callback, &info, NULL);
-		GROUP_LOOP(PCB->Data, group);
+		PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 		{
 			info.line = &line;
 			pcb_r_search(layer->line_tree, &line.BoundingBox, NULL, drcLine_callback, &info, NULL);

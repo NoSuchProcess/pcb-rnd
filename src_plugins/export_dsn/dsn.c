@@ -192,7 +192,7 @@ static void print_structure(FILE * fp)
 							 "before the bottom layer group.  DSN files must have the " "bottom layer last.\n", first_layer->Name);
 		}
 
-		GROUP_LOOP(PCB->Data, group);
+		PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 		{
 			if (entry > 0) {
 				pcb_message(PCB_MSG_WARNING, "WARNING! DSN export squashed layer \"%s\" into layer "

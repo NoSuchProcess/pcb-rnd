@@ -314,7 +314,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 
 		/* get the component-side SM pads */
 		group = pcb_layer_get_group(silk_layer);
-		GROUP_LOOP(Buffer->Data, group);
+		PCB_COPPER_GROUP_LOOP(Buffer->Data, group);
 		{
 			char num[8];
 			PCB_LINE_LOOP(layer);

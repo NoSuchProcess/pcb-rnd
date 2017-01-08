@@ -87,14 +87,14 @@ void pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
    may need this. */
 int pcb_layer_parse_group_string(const char *s, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt);
 
-#define GROUP_LOOP(data, group) do { 	\
+#define PCB_COPPER_GROUP_LOOP(data, group) do { 	\
 	pcb_cardinal_t entry; \
         for (entry = 0; entry < ((pcb_board_t *)(data->pcb))->LayerGroups.grp[(group)].len; entry++) \
         { \
 		pcb_layer_t *layer;		\
 		pcb_layer_id_t number; 		\
 		number = ((pcb_board_t *)(data->pcb))->LayerGroups.grp[(group)].lid[entry]; \
-		if (number >= pcb_max_copper_layer)	\
+		if (!(pcb_layer_flags(number) & PCB_LYT_COPPER)) \
 		  continue;			\
 		layer = &data->Layer[number];
 

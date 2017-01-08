@@ -995,7 +995,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		CLayer = pcb_layer_get_group(pcb_component_silk_layer);
 		desired_group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SLayer : CLayer;
 
-		GROUP_LOOP(PCB->Data, desired_group);
+		PCB_COPPER_GROUP_LOOP(PCB->Data, desired_group);
 		{
 			if (layer == desired_layer) {
 				found_our_layer = pcb_true;

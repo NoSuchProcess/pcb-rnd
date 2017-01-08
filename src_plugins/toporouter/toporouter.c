@@ -2823,7 +2823,7 @@ void import_geometry(toporouter_t * r)
   #endif*/
 			read_pads(r, cur_layer, group);
 
-			GROUP_LOOP(PCB->Data, group) {
+			PCB_COPPER_GROUP_LOOP(PCB->Data, group) {
 
 #ifdef DEBUG_IMPORT
 				printf("reading lines from layer %d into group %d\n", number, group);
