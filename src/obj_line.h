@@ -106,16 +106,17 @@ void pcb_line_enforce_drc(void);
 #define PCB_LINE_COPPER_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < pcb_max_copper_layer; l++, layer++)	\
+	for (l = 0; l < pcb_max_layer; l++, layer++)	\
 	{ \
+		if (!(pcb_layer_flags(l) & PCB_LYT_COPPER)) continue; \
 		PCB_LINE_LOOP(layer)
 
 #define PCB_LINE_SILK_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	layer += pcb_max_copper_layer;			\
-	for (l = 0; l < 2; l++, layer++)		\
+	for (l = 0; l < pcb_max_layer; l++, layer++)	\
 	{ \
+		if (!(pcb_layer_flags(l) & PCB_LYT_SILK)) continue; \
 		PCB_LINE_LOOP(layer)
 
 #define PCB_LINE_VISIBLE_LOOP(top) do	{		\

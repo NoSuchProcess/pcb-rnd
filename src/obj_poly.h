@@ -96,16 +96,17 @@ double pcb_poly_area(const pcb_polygon_t *poly);
 #define	PCB_POLY_COPPER_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	for (l = 0; l < pcb_max_copper_layer; l++, layer++)	\
+	for (l = 0; l < pcb_max_layer; l++, layer++)	\
 	{ \
+		if (!(pcb_layer_flags(l) & PCB_LYT_COPPER)) continue; \
 		PCB_POLY_LOOP(layer)
 
 #define	PCB_POLY_SILK_LOOP(top) do	{		\
 	pcb_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
-	layer += pcb_max_copper_layer;			\
-	for (l = 0; l < 2; l++, layer++)		\
+	for (l = 0; l < pcb_max_layer; l++, layer++)	\
 	{ \
+		if (!(pcb_layer_flags(l) & PCB_LYT_SILK)) continue; \
 		PCB_POLY_LOOP(layer)
 
 #define	PCB_POLY_VISIBLE_LOOP(top) do	{	\
