@@ -1008,7 +1008,7 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	pcb_cardinal_t group;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)
-			|| !(pcb_layer_flags(pcb_layer_id(Data, Layer) & PCB_LYT_COPPER)))
+			|| !(pcb_layer_flags(pcb_layer_id(Data, Layer)) & PCB_LYT_COPPER))
 		return 0;
 	group = Group(Data, pcb_layer_id(Data, Layer));
 	info.solder = (group == Group(Data, pcb_solder_silk_layer));
