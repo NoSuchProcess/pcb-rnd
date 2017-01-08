@@ -776,7 +776,7 @@ void pcb_notify_mode(void)
 			}
 
 			if (conf_core.editor.auto_drc
-					&& !TEST_SILK_LAYER(CURRENT))
+					&& (pcb_layer_flags(pcb_layer_id(PCB->Data, CURRENT)) & PCB_LYT_COPPER))
 				maybe_found_flag = PCB_FLAG_FOUND;
 			else
 				maybe_found_flag = 0;

@@ -132,8 +132,6 @@ pcb_bool pcb_layer_is_paste_empty(pcb_side_t side);
 #define BACKSILKLAYER		Layer[ \
 				(conf_core.editor.show_solder_side ? pcb_component_silk_layer : pcb_solder_silk_layer)]
 
-#define TEST_SILK_LAYER(layer)	(pcb_layer_id(PCB->Data, layer) >= pcb_max_copper_layer)
-
 #define LAYER_LOOP(data, ml) do { \
         pcb_cardinal_t n; \
 	for (n = 0; n < ml; n++) \

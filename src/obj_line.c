@@ -539,7 +539,7 @@ void *MoveLineToLayer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t * Line)
 	pcb_draw();
 	if (!PCB->ViaOn || ctx->move.more_to_come ||
 			pcb_layer_get_group_(Layer) ==
-			pcb_layer_get_group_(ctx->move.dst_layer) || TEST_SILK_LAYER(Layer) || TEST_SILK_LAYER(ctx->move.dst_layer))
+			pcb_layer_get_group_(ctx->move.dst_layer) || !(pcb_layer_flags(pcb_layer_id(PCB->Data, Layer)) & PCB_LYT_COPPER) || !(pcb_layer_flags(pcb_layer_id(PCB->Data, ctx->move.dst_layer)) & PCB_LYT_COPPER))
 		return (newone);
 	/* consider via at Point1 */
 	sb.X1 = newone->Point1.X - newone->Thickness / 2;
