@@ -503,6 +503,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 	float layer_spacing, layer_offset, cut_offset = 0.;
 	pcb_box_t region;
 	pcb_layer_t *layer;
+	pcb_layergrp_id_t gbottom, gtop;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -536,9 +537,16 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 	scad_write_prologue(PCB->Filename);
 
 	memset(group_data, 0, sizeof(group_data));
-	group_data[pcb_layer_get_group(pcb_max_copper_layer + PCB_SOLDER_SIDE)].solder = 1;
-	group_data[pcb_layer_get_group(pcb_max_copper_layer + PCB_COMPONENT_SIDE)].component = 1;
-	for (i = 0; i < pcb_max_copper_layer; i++) {
+
+	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_BOTTOM, &gbottom, 1) > 0)
+		group_data[gbottom].solder = 1;
+
+	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_TOP, &gtop, 1) > 0)
+		group_data[gtop].component = 1;
+
+	for (i = 0; i < pcb_max_layer; i++) {
+		if (pcb_layer_flags(i) & PCB_LYT_SILK)
+			continue;
 		layer = PCB->Data->Layer + i;
 		if (!pcb_layer_is_empty_(layer))
 			group_data[pcb_layer_get_group(i)].draw = 1;
