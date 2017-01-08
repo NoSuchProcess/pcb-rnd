@@ -228,9 +228,6 @@ int layout_resolve_layer(const char *name);
 /* return the theoretical number of layers supported by PCB */
 int layout_get_max_possible_layer();
 
-/* return the actual number of copper layers on the current design */
-int layout_get_max_copper_layer();
-
 /* return the actual number of layers on the current design */
 int layout_get_max_layer();
 

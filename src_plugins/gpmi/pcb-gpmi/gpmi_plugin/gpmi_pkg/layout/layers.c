@@ -45,16 +45,10 @@ int layout_get_max_possible_layer()
 	return PCB_MAX_LAYER+2;
 }
 
-int layout_get_max_copper_layer()
-{
-	return pcb_max_copper_layer;
-}
-
 int layout_get_max_layer()
 {
-	return pcb_max_copper_layer+2;
+	return pcb_max_layer;
 }
-
 
 const char *layout_layer_name(int layer)
 {
