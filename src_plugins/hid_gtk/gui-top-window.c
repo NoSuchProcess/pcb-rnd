@@ -447,7 +447,7 @@ static void layer_selector_select_callback(GHidLayerSelector * ls, int layer, gp
 		PCB->RatOn = pcb_true;
 		ghid_LayersChanged(0, 0, 0);
 	}
-	else if (layer < pcb_max_copper_layer)
+	else
 		pcb_layervis_change_group_vis(layer, TRUE, pcb_true);
 
 	ignore_layer_update = pcb_false;
@@ -694,7 +694,9 @@ static void make_layer_buttons(GtkWidget * layersel)
 	const gchar *color_string;
 	gboolean active = TRUE;
 
-	for (i = 0; i < pcb_max_copper_layer; ++i) {
+	for (i = 0; i < pcb_max_layer; ++i) {
+		if (pcb_layer_flags(i) & PCB_LYT_SILK)
+			continue; /* silks have a special, common button */
 		layer_process(&color_string, &text, &active, i);
 		ghid_layer_selector_add_layer(GHID_LAYER_SELECTOR(layersel), i, text, color_string, active, TRUE);
 	}
