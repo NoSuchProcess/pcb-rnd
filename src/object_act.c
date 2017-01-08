@@ -127,7 +127,7 @@ static int pcb_act_Attributes(int argc, const char **argv, pcb_coord_t x, pcb_co
 			if (layername) {
 				int i;
 				layer = NULL;
-				for (i = 0; i < pcb_max_copper_layer; i++)
+				for (i = 0; i < pcb_max_layer; i++)
 					if (strcmp(PCB->Data->Layer[i].Name, layername) == 0) {
 						layer = &(PCB->Data->Layer[i]);
 						break;
