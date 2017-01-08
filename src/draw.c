@@ -212,7 +212,7 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 			pcb_layer_id_t lsilk;
 			pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 			pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
-			if (pcb_layer_list(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lsilk, 1) > 0)
+			if (pcb_layer_list(PCB_LYT_INVISIBLE_SIDE() | PCB_LYT_SILK, &lsilk, 1) > 0)
 				pcb_draw_layer(&(PCB->Data->Layer[lsilk]), drawn_area);
 		}
 		pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
@@ -390,8 +390,10 @@ static void DrawSilk(unsigned int lyt_side, const pcb_box_t * drawn_area)
 	pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, clear_pad_callback, &side, NULL);
 
 	if (pcb_gui->poly_after) {
+		pcb_layer_id_t lsilk;
 		pcb_gui->use_mask(HID_MASK_AFTER);
-		pcb_draw_layer(LAYER_PTR(pcb_max_copper_layer + layer), drawn_area);
+		if (pcb_layer_list(PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lsilk, 1) > 0)
+			pcb_draw_layer(LAYER_PTR(lsilk), drawn_area);
 		/* draw package */
 		pcb_r_search(PCB->Data->element_tree, drawn_area, NULL, draw_element_callback, &side, NULL);
 		pcb_r_search(PCB->Data->name_tree[PCB_ELEMNAME_IDX_VISIBLE()], drawn_area, NULL, draw_element_name_callback, &side, NULL);
@@ -522,7 +524,8 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 		Layer = PCB->Data->Layer + layernum;
 		if (pcb_layer_flags(layernum) & PCB_LYT_OUTLINE)
 			rv = 0;
-		if (layernum < pcb_max_copper_layer && Layer->On)
+#warning layer TODO: probably enough to check this on the group
+		if (!(pcb_layer_flags(layernum) & PCB_LYT_SILK) && Layer->On)
 			pcb_draw_layer(Layer, drawn_area);
 	}
 	if (n_entries > 1)

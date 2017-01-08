@@ -232,4 +232,7 @@ const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask);
 #define PCB_LYT_VISIBLE_SIDE() \
 	((conf_core.editor.show_solder_side ? PCB_LYT_BOTTOM : PCB_LYT_TOP))
 
+#define PCB_LYT_INVISIBLE_SIDE() \
+	((conf_core.editor.show_solder_side ? PCB_LYT_TOP : PCB_LYT_BOTTOM))
+
 #endif
