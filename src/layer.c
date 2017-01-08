@@ -293,7 +293,7 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 pcb_layer_id_t pcb_layer_by_name(const char *name)
 {
 	int n;
-	for (n = 0; n < pcb_max_copper_layer + 2; n++)
+	for (n = 0; n < pcb_max_layer; n++)
 		if (strcmp(PCB->Data->Layer[n].Name, name) == 0)
 			return n;
 	return -1;
@@ -711,7 +711,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 
 	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
 		PCB->LayerGroups.grp[g].len = 0;
-	for (l = 0; l < pcb_max_copper_layer + 2; l++) {
+	for (l = 0; l < pcb_max_layer; l++) {
 		int i;
 		g = groups[l];
 		if (g >= 0) {

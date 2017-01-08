@@ -85,8 +85,8 @@ void pcb_layervis_parse_string(const char *layer_string)
 		}
 	}
 
-	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
-		if (i < pcb_max_copper_layer)
+	for (i = 0; i < pcb_max_layer; i++) {
+		if (!(pcb_layer_flags(i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = i;
 		PCB->Data->Layer[i].On = pcb_false;
 	}
@@ -224,8 +224,8 @@ void pcb_layervis_reset_stack(void)
 	pcb_cardinal_t i;
 
 	assert(PCB->Data->LayerN <= PCB_MAX_LAYER);
-	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
-		if (i < pcb_max_copper_layer)
+	for (i = 0; i < pcb_max_layer; i++) {
+		if (!(pcb_layer_flags(i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = i;
 		PCB->Data->Layer[i].On = pcb_true;
 	}
@@ -258,8 +258,8 @@ void pcb_layervis_save_stack(void)
 						"pcb_layervis_save_stack()  layerstack was already saved and not" "yet restored.  cnt = %d\n", SavedStack.cnt);
 	}
 
-	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
-		if (i < pcb_max_copper_layer)
+	for (i = 0; i < pcb_max_layer; i++) {
+		if (!(pcb_layer_flags(i) & PCB_LYT_SILK))
 			SavedStack.pcb_layer_stack[i] = pcb_layer_stack[i];
 		SavedStack.LayerOn[i] = PCB->Data->Layer[i].On;
 	}
@@ -286,8 +286,8 @@ void pcb_layervis_restore_stack(void)
 		fprintf(stderr, "pcb_layervis_restore_stack()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
 	}
 
-	for (i = 0; i < pcb_max_copper_layer + 2; i++) {
-		if (i < pcb_max_copper_layer)
+	for (i = 0; i < pcb_max_layer; i++) {
+		if (!(pcb_layer_flags(i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = SavedStack.pcb_layer_stack[i];
 		PCB->Data->Layer[i].On = SavedStack.LayerOn[i];
 	}
