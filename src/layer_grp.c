@@ -54,7 +54,7 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_
 {
 	pcb_layergrp_id_t prev, i, j;
 
-	if (layer < 0 || layer > pcb_max_copper_layer + 1)
+	if (layer < 0 || layer >= pcb_max_layer)
 		return -1;
 	prev = pcb_layer_get_group(layer);
 	if ((layer == pcb_solder_silk_layer && group == pcb_layer_get_group(pcb_component_silk_layer))
