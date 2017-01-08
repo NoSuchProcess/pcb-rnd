@@ -160,7 +160,7 @@ pcb_bool pcb_layer_is_paste_empty(pcb_side_t side)
 }
 
 #warning layer TODO: remove this once we have explicit outline layer
-#define LAYER_IS_OUTLINE(idx) (((idx) > 0) && ((idx) <= pcb_max_copper_layer) && (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0))
+#define LAYER_IS_OUTLINE(idx) (((idx) > 0) && (strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0))
 
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 {
