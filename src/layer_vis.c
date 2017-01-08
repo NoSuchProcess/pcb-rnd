@@ -120,7 +120,7 @@ void pcb_layervis_parse_string(const char *layer_string)
 		}
 		else {
 			int found = 0;
-			for (lno = 0; lno < pcb_max_copper_layer; lno++)
+			for (lno = 0; lno < pcb_max_layer; lno++)
 				if (pcb_strcasecmp(args[i], PCB->Data->Layer[lno].Name) == 0) {
 					pcb_layervis_change_group_vis(lno, pcb_true, pcb_true);
 					found = 1;
@@ -131,7 +131,7 @@ void pcb_layervis_parse_string(const char *layer_string)
 				if (!listed_layers) {
 					fprintf(stderr, "Named layers in this board are:\n");
 					listed_layers = 1;
-					for (lno = 0; lno < pcb_max_copper_layer; lno++)
+					for (lno = 0; lno < pcb_max_layer; lno++)
 						fprintf(stderr, "\t%s\n", PCB->Data->Layer[lno].Name);
 					fprintf(stderr, "Also: component, solder, rats, invisible, pins, vias, elements or silk, mask, solderside.\n");
 				}
@@ -148,9 +148,9 @@ static void PushOnTopOfLayerStack(int NewTop)
 	int i;
 
 	/* ignore silk layers */
-	if (NewTop < pcb_max_copper_layer) {
+	if (NewTop < pcb_max_layer) {
 		/* first find position of passed one */
-		for (i = 0; i < pcb_max_copper_layer; i++)
+		for (i = 0; i < pcb_max_layer; i++)
 			if (pcb_layer_stack[i] == NewTop)
 				break;
 
@@ -193,7 +193,7 @@ int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOr
 			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[--i];
 
 			/* don't count the passed member of the group */
-			if (layer != Layer && layer < pcb_max_copper_layer) {
+			if (layer != Layer && layer < pcb_max_layer) {
 				PCB->Data->Layer[layer].On = On;
 
 				/* push layer on top of stack if switched on */
