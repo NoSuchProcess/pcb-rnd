@@ -467,7 +467,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 		comp_layer = pcb_layer_get_group(pcb_component_silk_layer);
 		solder_layer = pcb_layer_get_group(pcb_solder_silk_layer);
-		qsort(pcb_layer_stack, pcb_max_copper_layer, sizeof(pcb_layer_stack[0]), layer_sort);
+		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 
 		if (photo_mode) {
 			int i, n = 0;
