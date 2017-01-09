@@ -1390,7 +1390,7 @@ void lesstif_update_layer_groups()
 	for (i = 0; i < pcb_max_layer; i++) {
 		char *name = "unknown";
 		stdarg_n = 0;
-		if (i < pcb_max_copper_layer)
+		if (i < pcb_max_layer) && not-silk!
 			name = PCB->Data->Layer[i].Name;
 		else if (i == pcb_solder_silk_layer)
 			name = SOLDER_SIDE_NAME;
