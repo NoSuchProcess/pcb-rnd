@@ -1281,7 +1281,7 @@ static void lgbutton_expose(Widget w, XtPointer u, XmDrawingAreaCallbackStruct *
 	XSetForeground(display, lg_gc, lgr.fg);
 	for (i = 0; i < pcb_max_group; i++)
 		XDrawLine(display, win, lg_gc, lg_c[i], 0, lg_c[i], lg_height);
-	for (i = 1; i < pcb_max_copper_layer + 2; i++)
+	for (i = 1; i < pcb_max_layer; i++)
 		XDrawLine(display, win, lg_gc, lg_label_width, lg_r[i], lg_width, lg_r[i]);
 	for (i = 0; i < pcb_max_layer; i++) {
 		int dir;

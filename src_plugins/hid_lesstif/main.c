@@ -552,14 +552,13 @@ layer group is visible and active, effectively swapping the ``working
 side'' of the board.
 
 %end-doc */
-
 static int group_showing(int g, int *c)
 {
 	int i, l;
 	*c = PCB->LayerGroups.grp[g].lid[0];
 	for (i = 0; i < PCB->LayerGroups.grp[g].len; i++) {
 		l = PCB->LayerGroups.grp[g].lid[i];
-		if (l >= 0 && l < pcb_max_copper_layer) {
+		if (l >= 0 && l < pcb_max_layer && (!(pcb_layer_flags(l) & PCB_LYT_SILK))) {
 			*c = l;
 			if (PCB->Data->Layer[l].On)
 				return 1;
