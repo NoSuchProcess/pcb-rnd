@@ -991,18 +991,21 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		}
 
 		/* find layer groups of the component side and solder side */
-		SLayer = pcb_layer_get_group(pcb_solder_silk_layer);
-		CLayer = pcb_layer_get_group(pcb_component_silk_layer);
+		SLayer = CLayer = -1;
+		pcb_layer_group_list(PCB_LYT_BOTTOM & PCB_LYT_COPPER, &SLayer, 1);
+		pcb_layer_group_list(PCB_LYT_TOP & PCB_LYT_COPPER, &CLayer, 1);
 		desired_group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, pad) ? SLayer : CLayer;
 
-		PCB_COPPER_GROUP_LOOP(PCB->Data, desired_group);
-		{
-			if (layer == desired_layer) {
-				found_our_layer = pcb_true;
-				break;
+		if (desired_group >= 0) {
+			PCB_COPPER_GROUP_LOOP(PCB->Data, desired_group);
+			{
+				if (layer == desired_layer) {
+					found_our_layer = pcb_true;
+					break;
+				}
 			}
+			PCB_END_LOOP;
 		}
-		PCB_END_LOOP;
 
 		if (found_our_layer == pcb_false)
 			ans = PCB_TYPE_NONE;
