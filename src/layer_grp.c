@@ -225,6 +225,7 @@ int pcb_layer_group_list(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_
 		for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++) {
 			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[layeri];
 			if ((pcb_layer_flags(layer) & mask) == mask) {
+/*				printf(" lf: %x %x & %x\n", layer, pcb_layer_flags(layer), mask);*/
 				APPEND(group);
 				goto added; /* do not add a group twice */
 			}

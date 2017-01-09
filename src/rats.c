@@ -196,8 +196,8 @@ pcb_netlist_t *pcb_rat_proc_netlist(pcb_lib_t *net_menu)
 
 	/* find layer groups of the component side and solder side */
 	SLayer = CLayer = -1;
-	pcb_layer_list(PCB_LYT_BOTTOM & PCB_LYT_SILK, &SLayer, 1);
-	pcb_layer_list(PCB_LYT_TOP & PCB_LYT_SILK, &CLayer, 1);
+	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &SLayer, 1);
+	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, &CLayer, 1);
 
 	Wantlist = (pcb_netlist_t *) calloc(1, sizeof(pcb_netlist_t));
 	if (Wantlist) {
