@@ -200,8 +200,9 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		}
 	}
 
-	component = pcb_layer_get_group(pcb_component_silk_layer);
-	solder = pcb_layer_get_group(pcb_solder_silk_layer);
+	solder = component = -1;
+	pcb_layer_group_list(PCB_LYT_BOTTOM & PCB_LYT_COPPER, &solder, 1);
+	pcb_layer_group_list(PCB_LYT_TOP & PCB_LYT_COPPER, &component, 1);
 
 	/*
 	 * first draw all 'invisible' stuff
@@ -325,9 +326,11 @@ static void DrawEverything(const pcb_box_t * drawn_area)
  */
 static void DrawPPV(int group, const pcb_box_t * drawn_area)
 {
-	pcb_layergrp_id_t component_group = pcb_layer_get_group(pcb_component_silk_layer);
-	pcb_layergrp_id_t solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
+	pcb_layergrp_id_t component_group = -1, solder_group = -1;
 	int side;
+
+	pcb_layer_group_list(PCB_LYT_BOTTOM & PCB_LYT_COPPER, &solder_group, 1);
+	pcb_layer_group_list(PCB_LYT_TOP & PCB_LYT_COPPER, &component_group, 1);
 
 	if (PCB->PinOn || !pcb_gui->gui) {
 		/* draw element pins */
