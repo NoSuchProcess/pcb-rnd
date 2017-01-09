@@ -1005,13 +1005,13 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	int r = 0, seen;
 	pcb_box_t region;
 	struct cpInfo info;
-	pcb_cardinal_t group;
+	pcb_layergrp_id_t group;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)
 			|| !(pcb_layer_flags(pcb_layer_id(Data, Layer)) & PCB_LYT_COPPER))
 		return 0;
 	group = Group(Data, pcb_layer_id(Data, Layer));
-	info.solder = (group == Group(Data, pcb_solder_silk_layer));
+	info.solder = (pcb_layergrp_flags(group) & PCB_LYT_BOTTOM);
 	info.data = Data;
 	info.other = here;
 	info.layer = Layer;
@@ -1519,8 +1519,12 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 		break;
 	case PCB_TYPE_PAD:
 		{
-			pcb_layergrp_id_t group = pcb_layer_get_group(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ?
-																									 pcb_solder_silk_layer : pcb_component_silk_layer);
+			pcb_layergrp_id_t SLayer, CLayer, group;
+	
+			SLayer = CLayer = -1;
+			pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &SLayer, 1);
+			pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &CLayer, 1);
+			group = pcb_layer_get_group(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? SLayer : CLayer);
 			PCB_COPPER_GROUP_LOOP(Data, group);
 			{
 				info.layer = layer;
