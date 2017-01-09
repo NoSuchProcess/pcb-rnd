@@ -161,7 +161,7 @@ int pcb_element_load_footprint_by_name(pcb_buffer_t *Buffer, const char *Footpri
 pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 {
 	pcb_element_t *element;
-	pcb_layergrp_id_t group;
+	pcb_layergrp_id_t group, gbottom, gtop;
 	pcb_layer_t *clayer, *slayer;
 
 	if (elementlist_length(&Buffer->Data->Element) != 1) {
@@ -204,9 +204,14 @@ pcb_bool pcb_element_smash_buffer(pcb_buffer_t *Buffer)
 		pcb_via_new(Buffer->Data, pin->X, pin->Y, pin->Thickness, pin->Clearance, pin->Mask, pin->DrillingHole, pin->Number, f);
 	}
 	PCB_END_LOOP;
-	group = pcb_layer_get_group(PCB_SWAP_IDENT ? pcb_solder_silk_layer : pcb_component_silk_layer);
+
+	gbottom = gtop = -1;
+	pcb_layer_group_list(PCB_LYT_BOTTOM & PCB_LYT_COPPER, &gbottom, 1);
+	pcb_layer_group_list(PCB_LYT_TOP & PCB_LYT_COPPER,    &gtop, 1);
+
+	group = (PCB_SWAP_IDENT ? gbottom : gtop);
 	clayer = &Buffer->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
-	group = pcb_layer_get_group(PCB_SWAP_IDENT ? pcb_component_silk_layer : pcb_solder_silk_layer);
+	group = (PCB_SWAP_IDENT ? gbottom : gtop);
 	slayer = &Buffer->Data->Layer[PCB->LayerGroups.grp[group].lid[0]];
 	PCB_PAD_LOOP(element);
 	{
@@ -256,11 +261,15 @@ static int polygon_is_rectangle(pcb_polygon_t *poly)
 pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 {
 	pcb_element_t *Element;
-	pcb_layergrp_id_t group;
+	pcb_layergrp_id_t group, gbottom, gtop;
 	pcb_cardinal_t pin_n = 1;
 	pcb_bool hasParts = pcb_false, crooked = pcb_false;
 	int onsolder;
 	pcb_bool warned = pcb_false;
+
+	gbottom = gtop = -1;
+	pcb_layer_group_list(PCB_LYT_BOTTOM & PCB_LYT_COPPER, &gbottom, 1);
+	pcb_layer_group_list(PCB_LYT_TOP & PCB_LYT_COPPER,    &gtop, 1);
 
 	if (Buffer->Data->pcb == 0)
 		Buffer->Data->pcb = PCB;
@@ -294,11 +303,11 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 		int onsolderflag;
 
 		if ((!onsolder) == (!PCB_SWAP_IDENT)) {
-			silk_layer = pcb_component_silk_layer;
+			silk_layer = gtop;
 			onsolderflag = PCB_FLAG_NO;
 		}
 		else {
-			silk_layer = pcb_solder_silk_layer;
+			silk_layer = gbottom;
 			onsolderflag = PCB_FLAG_ONSOLDER;
 		}
 
