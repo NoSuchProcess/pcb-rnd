@@ -169,7 +169,7 @@ void LesstifLayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 			}
 			XtSetValues(lb->w[i], stdarg_args, stdarg_n);
 
-			if (i >= pcb_max_copper_layer && i < PCB_MAX_LAYER)
+			if ((i >= pcb_max_layer && i < PCB_MAX_LAYER) || (pcb_layer_flags(i) & PCB_LYT_SILK))
 				XtUnmanageChild(lb->w[i]);
 			else
 				XtManageChild(lb->w[i]);
@@ -252,12 +252,12 @@ static void layer_button_callback(Widget w, int layer, XmPushButtonCallbackStruc
 	}
 
 	show_one_layer_button(layer, set);
-	if (layer < pcb_max_copper_layer) {
+	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(layer) & PCB_LYT_SILK))) {
 		int i;
 		pcb_layergrp_id_t group = pcb_layer_get_group(layer);
 		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
 			l = PCB->LayerGroups.grp[group].lid[i];
-			if (l != layer && l < pcb_max_copper_layer) {
+			if (l != layer && (!(pcb_layer_flags(l) & PCB_LYT_SILK))) {
 				show_one_layer_button(l, set);
 				PCB->Data->Layer[l].On = set;
 			}
@@ -272,7 +272,7 @@ static void layerpick_button_callback(Widget w, int layer, XmPushButtonCallbackS
 	const char *name;
 	PCB->RatDraw = (layer == LB_RATS);
 	PCB->SilkActive = (layer == LB_SILK);
-	if (layer < pcb_max_copper_layer)
+	if ((layer < pcb_max_layer) && (!(pcb_layer_flags(layer) & PCB_LYT_SILK)))
 		pcb_layervis_change_group_vis(layer, 1, 1);
 	for (l = 0; l < num_layer_buttons; l++) {
 		LayerButtons *lb = layer_button_list + l;
@@ -396,17 +396,14 @@ static void insert_layerview_buttons(Widget menu)
 	for (i = 0; i < LB_NUM; i++) {
 		static char namestr[] = "Label ";
 		const char *name = namestr;
-		/*int accel_idx = i;*/
 		Widget btn;
 		namestr[5] = 'A' + i;
 		switch (i) {
 		case LB_SILK:
 			name = "Silk";
-			/*accel_idx = pcb_max_copper_layer;*/
 			break;
 		case LB_RATS:
 			name = "Rat Lines";
-			/*accel_idx = pcb_max_copper_layer + 1;*/
 			break;
 		case LB_PINS:
 			name = "Pins/Pads";
@@ -450,19 +447,16 @@ static void insert_layerpick_buttons(Widget menu)
 	for (i = 0; i < LB_NUMPICK; i++) {
 		static char namestr[] = "Label ";
 		const char *name = namestr;
-		/*int accel_idx = i;*/
 		char av[30];
 		Widget btn;
 		namestr[5] = 'A' + i;
 		switch (i) {
 		case LB_SILK:
 			name = "Silk";
-			/*accel_idx = pcb_max_copper_layer;*/
 			strcpy(av, "SelectLayer(Silk)");
 			break;
 		case LB_RATS:
 			name = "Rat Lines";
-			/*accel_idx = pcb_max_copper_layer + 1;*/
 			strcpy(av, "SelectLayer(Rats)");
 			break;
 		default:
