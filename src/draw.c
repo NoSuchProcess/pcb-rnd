@@ -74,7 +74,7 @@ pcb_bool pcb_draw_doing_assy = pcb_false;
  * some local prototypes
  */
 static void DrawEverything(const pcb_box_t *);
-static void DrawPPV(int group, const pcb_box_t *);
+static void DrawPPV(pcb_layergrp_id_t group, const pcb_box_t * drawn_area);
 static void DrawLayerGroup(int, const pcb_box_t *);
 static void DrawMask(int side, const pcb_box_t *);
 static void DrawRats(const pcb_box_t *);
@@ -323,25 +323,22 @@ static void DrawEverything(const pcb_box_t * drawn_area)
  * Draws pins pads and vias - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->PinOn and PCB->ViaOn
  */
-static void DrawPPV(int group, const pcb_box_t * drawn_area)
+static void DrawPPV(pcb_layergrp_id_t group, const pcb_box_t * drawn_area)
 {
-	pcb_layergrp_id_t component_group = -1, solder_group = -1;
 	int side;
-
-	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1);
-	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &component_group, 1);
+	unsigned int gflg = pcb_layergrp_flags(group);
 
 	if (PCB->PinOn || !pcb_gui->gui) {
 		/* draw element pins */
 		pcb_r_search(PCB->Data->pin_tree, drawn_area, NULL, draw_pin_callback, NULL, NULL);
 
 		/* draw element pads */
-		if (group == component_group) {
+		if (gflg & PCB_LYT_TOP) {
 			side = PCB_COMPONENT_SIDE;
 			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		}
 
-		if (group == solder_group) {
+		if (gflg & PCB_LYT_BOTTOM) {
 			side = PCB_SOLDER_SIDE;
 			pcb_r_search(PCB->Data->pad_tree, drawn_area, NULL, draw_pad_callback, &side, NULL);
 		}
