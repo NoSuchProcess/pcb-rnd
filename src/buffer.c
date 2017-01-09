@@ -435,6 +435,7 @@ void pcb_buffer_mirror(pcb_buffer_t *Buffer)
 void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 {
 	int j, k;
+	pcb_layer_id_t SLayer = -1, CLayer = -1;
 	pcb_layergrp_id_t sgroup, cgroup;
 	pcb_layer_t swap;
 
@@ -472,14 +473,19 @@ void pcb_buffer_flip_side(pcb_buffer_t *Buffer)
 		pcb_text_flip_side(layer, text);
 	}
 	PCB_ENDALL_LOOP;
+
 	/* swap silkscreen layers */
-	swap = Buffer->Data->Layer[pcb_solder_silk_layer];
-	Buffer->Data->Layer[pcb_solder_silk_layer] = Buffer->Data->Layer[pcb_component_silk_layer];
-	Buffer->Data->Layer[pcb_component_silk_layer] = swap;
+	pcb_layer_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &SLayer, 1);
+	pcb_layer_list(PCB_LYT_TOP | PCB_LYT_SILK, &CLayer, 1);
+	assert(SLayer != -1);
+	assert(CLayer != -1);
+	swap = Buffer->Data->Layer[SLayer];
+	Buffer->Data->Layer[SLayer] = Buffer->Data->Layer[CLayer];
+	Buffer->Data->Layer[CLayer] = swap;
 
 	/* swap layer groups when balanced */
-	sgroup = pcb_layer_get_group(pcb_solder_silk_layer);
-	cgroup = pcb_layer_get_group(pcb_component_silk_layer);
+	sgroup = pcb_layer_get_group(SLayer);
+	cgroup = pcb_layer_get_group(CLayer);
 #warning layer TODO: revise this code for the generic physical layer support; move this code to layer*.c
 	if (PCB->LayerGroups.grp[cgroup].len == PCB->LayerGroups.grp[sgroup].len) {
 		for (j = k = 0; j < PCB->LayerGroups.grp[sgroup].len; j++) {
