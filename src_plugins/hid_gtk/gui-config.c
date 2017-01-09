@@ -1260,6 +1260,7 @@ static void config_layer_groups_radio_button_cb(GtkToggleButton * button, gpoint
 	/* Construct a layer group string.  Follow logic in WritePCBDataHeader(),
 	   |  but use g_string functions.
 	 */
+#warning layer TODO: kill this func, have a centralized C89 implementation and use g_strdup for glib
 static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 {
 	GString *string;
@@ -1274,9 +1275,9 @@ static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 			continue;
 		for (entry = 0; entry < lg->grp[group].len; entry++) {
 			layer = lg->grp[group].lid[entry];
-			if (layer == pcb_component_silk_layer)
+			if ((pcb_layer_flags(layer) & PCB_LYT_TOP) && (pcb_layer_flags(layer) & PCB_LYT_COPPER))
 				string = g_string_append(string, "c");
-			else if (layer == pcb_solder_silk_layer)
+			else if ((pcb_layer_flags(layer) & PCB_LYT_BOTTOM) && (pcb_layer_flags(layer) & PCB_LYT_COPPER))
 				string = g_string_append(string, "s");
 			else
 				g_string_append_printf(string, "%ld", layer + 1);
@@ -1325,10 +1326,9 @@ static void config_layers_apply(void)
 			group = config_layer_group[i] - 1;
 			layer_groups.grp[group].lid[layer_groups.grp[group].len++] = i;
 
-#warning layer TODO: go by flags here
-			if (i == pcb_component_silk_layer)
+			if ((pcb_layer_flags(i) & PCB_LYT_TOP) && (pcb_layer_flags(i) & PCB_LYT_COPPER))
 				componentgroup = group;
-			else if (i == pcb_solder_silk_layer)
+			else if ((pcb_layer_flags(i) & PCB_LYT_BOTTOM) && (pcb_layer_flags(i) & PCB_LYT_COPPER))
 				soldergroup = group;
 		}
 
@@ -1429,11 +1429,11 @@ void ghid_config_groups_changed(void)
 	for (layer = 0; layer < pcb_max_layer; ++layer) {
 		int noedit = 0;
 #warning layer TODO: do not depend on these to exist
-		if (layer == pcb_component_silk_layer) {
+		if ((pcb_layer_flags(layer) & PCB_LYT_TOP) && (pcb_layer_flags(layer) & PCB_LYT_SILK)) {
 			name = _("component side");
 			noedit = 1;
 		}
-		else if (layer == pcb_solder_silk_layer) {
+		else if ((pcb_layer_flags(layer) & PCB_LYT_BOTTOM) && (pcb_layer_flags(layer) & PCB_LYT_SILK)) {
 			name = _("solder side");
 			noedit = 1;
 		}
