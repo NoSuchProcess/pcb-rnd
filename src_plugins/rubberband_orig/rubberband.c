@@ -47,6 +47,7 @@
 #include "obj_line_draw.h"
 #include "plugins.h"
 #include "conf_core.h"
+#include "layer_grp.h"
 
 #include "polygon.h"
 
@@ -216,8 +217,9 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 {
 	pcb_coord_t half = Pad->Thickness / 2;
-	pcb_layergrp_id_t i, group;
+	pcb_layergrp_id_t group;
 	struct rubber_info info;
+	unsigned int flg;
 
 	info.box.X1 = MIN(Pad->Point1.X, Pad->Point2.X) - half;
 	info.box.Y1 = MIN(Pad->Point1.Y, Pad->Point2.Y) - half;
@@ -226,8 +228,9 @@ static void CheckPadForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 	info.radius = 0;
 	info.line = NULL;
 	info.rbnd = rbnd;
-	i = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? pcb_solder_silk_layer : pcb_component_silk_layer;
-	group = pcb_layer_get_group(i);
+	flg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
+	if (pcb_layer_group_list(flg | PCB_LYT_COPPER, &group, 1) < 1)
+		return;
 
 	/* check all visible layers in the same group */
 	PCB_COPPER_GROUP_LOOP(PCB->Data, group);
@@ -296,10 +299,14 @@ static pcb_r_dir_t rat_callback(const pcb_box_t * box, void *cl)
 static void CheckPadForRat(rubber_ctx_t *rbnd, pcb_pad_t *Pad)
 {
 	struct rinfo info;
-	pcb_cardinal_t i;
+	unsigned int flg;
+	pcb_layergrp_id_t group;
 
-	i = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? pcb_solder_silk_layer : pcb_component_silk_layer;
-	info.group = pcb_layer_get_group(i);
+	flg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Pad) ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
+	if (pcb_layer_group_list(flg | PCB_LYT_COPPER, &group, 1) < 1)
+		return;
+
+	info.group = group;
 	info.pad = Pad;
 	info.type = PCB_TYPE_PAD;
 	info.rbnd = rbnd;
