@@ -168,6 +168,7 @@ int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults)
 void pcb_colors_from_settings(pcb_board_t *ptr)
 {
 	int i;
+	pcb_layer_id_t SLayer = -1, CLayer = -1;
 
 	/* copy default settings */
 	ptr->ConnectedColor = conf_core.appearance.color.connected;
@@ -189,11 +190,19 @@ void pcb_colors_from_settings(pcb_board_t *ptr)
 		ptr->Data->Layer[i].Color = conf_core.appearance.color.layer[i];
 		ptr->Data->Layer[i].SelectedColor = conf_core.appearance.color.layer_selected[i];
 	}
-	ptr->Data->Layer[pcb_component_silk_layer].Color =
-		conf_core.editor.show_solder_side ? conf_core.appearance.color.invisible_objects : conf_core.appearance.color.element;
-	ptr->Data->Layer[pcb_component_silk_layer].SelectedColor = conf_core.appearance.color.element_selected;
-	ptr->Data->Layer[pcb_solder_silk_layer].Color = conf_core.editor.show_solder_side ? conf_core.appearance.color.element : conf_core.appearance.color.invisible_objects;
-	ptr->Data->Layer[pcb_solder_silk_layer].SelectedColor = conf_core.appearance.color.element_selected;
+
+#warning layer TODO: remove CLayer/SLayer overwrite when silk is no longer a virtual layer
+	if (pcb_layer_list(PCB_LYT_TOP & PCB_LYT_SILK, &CLayer, 1) > 0) {
+		CLayer = (pcb_max_copper_layer + PCB_COMPONENT_SIDE);
+		ptr->Data->Layer[CLayer].Color = conf_core.editor.show_solder_side ? conf_core.appearance.color.invisible_objects : conf_core.appearance.color.element;
+		ptr->Data->Layer[CLayer].SelectedColor = conf_core.appearance.color.element_selected;
+	}
+
+	if (pcb_layer_list(PCB_LYT_BOTTOM & PCB_LYT_SILK, &SLayer, 1) > 0) {
+		SLayer = (pcb_max_copper_layer + PCB_SOLDER_SIDE);
+		ptr->Data->Layer[SLayer].Color = conf_core.editor.show_solder_side ? conf_core.appearance.color.element : conf_core.appearance.color.invisible_objects;
+		ptr->Data->Layer[SLayer].SelectedColor = conf_core.appearance.color.element_selected;
+	}
 }
 
 typedef struct {
