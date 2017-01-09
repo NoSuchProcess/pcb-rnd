@@ -27,7 +27,6 @@
 
 #include "compat_nls.h"
 #include "board.h"
-#include "layer_it.h"
 
 static inline pcb_r_dir_t r_search_pt(pcb_rtree_t * rtree, const pcb_point_t * pt,
 															int radius,
@@ -67,6 +66,9 @@ static pcb_bool ADD_PV_TO_LIST(pcb_pin_t *Pin, int from_type, void *from_ptr, pc
 
 static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, pcb_pad_t *Pad, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
+	if (PadList[L].Data == NULL)
+		return pcb_false;
+
 /*fprintf(stderr, "ADD_PAD_TO_LIST cardinal %d %p %d\n", L, Pad, from_type);*/
 	if (User)
 		pcb_undo_add_obj_to_flag(PCB_TYPE_PAD, Pad->Element, Pad, Pad);
@@ -85,6 +87,8 @@ static pcb_bool ADD_PAD_TO_LIST(pcb_cardinal_t L, pcb_pad_t *Pad, int from_type,
 
 static pcb_bool ADD_LINE_TO_LIST(pcb_layer_id_t L, pcb_line_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
+	if (LineList[L].Data == NULL)
+		return pcb_false;
 	if (User)
 		pcb_undo_add_obj_to_flag(PCB_TYPE_LINE, LAYER_PTR(L), (Ptr), (Ptr));
 	PCB_FLAG_SET(TheFlag, (Ptr));
@@ -102,6 +106,9 @@ static pcb_bool ADD_LINE_TO_LIST(pcb_layer_id_t L, pcb_line_t *Ptr, int from_typ
 
 static pcb_bool ADD_ARC_TO_LIST(pcb_cardinal_t L, pcb_arc_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
+	if (ArcList[L].Data == NULL)
+		return pcb_false;
+
 	if (User)
 		pcb_undo_add_obj_to_flag(PCB_TYPE_ARC, LAYER_PTR(L), (Ptr), (Ptr));
 	PCB_FLAG_SET(TheFlag, (Ptr));
@@ -136,6 +143,9 @@ static pcb_bool ADD_RAT_TO_LIST(pcb_rat_t *Ptr, int from_type, void *from_ptr, p
 
 static pcb_bool ADD_POLYGON_TO_LIST(pcb_cardinal_t L, pcb_polygon_t *Ptr, int from_type, void *from_ptr, pcb_found_conn_type_t type)
 {
+	if (PolygonList[L].Data == NULL)
+		return pcb_false;
+
 	if (User)
 		pcb_undo_add_obj_to_flag(PCB_TYPE_POLYGON, LAYER_PTR(L), (Ptr), (Ptr));
 	PCB_FLAG_SET(TheFlag, (Ptr));
@@ -234,12 +244,13 @@ void pcb_component_lookup_init(void)
  */
 void pcb_layout_lookup_init(void)
 {
-	pcb_layer_it_t it;
 	pcb_layer_id_t i;
 
 	/* initialize line arc and polygon data */
-	for(i = pcb_layer_first_any(&PCB->LayerGroups, &it, PCB_LYT_COPPER); i != -1; i = pcb_layer_next(&it)) {
+	for(i = 0; i < pcb_max_layer; i++) {
 		pcb_layer_t *layer = LAYER_PTR(i);
+
+		if (pcb_layer_flags(i) & PCB_LYT_COPPER) {
 
 		if (linelist_length(&layer->Line)) {
 			LineList[i].Size = linelist_length(&layer->Line);
@@ -252,6 +263,8 @@ void pcb_layout_lookup_init(void)
 		if (polylist_length(&layer->Polygon)) {
 			PolygonList[i].Size = polylist_length(&layer->Polygon);
 			PolygonList[i].Data = (void **) calloc(PolygonList[i].Size, sizeof(pcb_polygon_t *));
+		}
+
 		}
 
 		/* clear some struct members */
@@ -385,7 +398,6 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 {
 	pcb_cardinal_t layer;
 	struct pv_info info;
-	pcb_layer_it_t it;
 
 	/* loop over all PVs currently on list */
 	while (PVList.Location < PVList.Number) {
@@ -400,7 +412,9 @@ static pcb_bool LookupLOConnectionsToPVList(pcb_bool AndRats)
 			return pcb_true;
 
 		/* now all lines, arcs and polygons of the several layers */
-		for(layer = pcb_layer_first_any(&PCB->LayerGroups, &it, PCB_LYT_COPPER); layer != -1; layer = pcb_layer_next(&it)) {
+		for(layer = 0; layer < pcb_max_layer; layer++) {
+			if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+				continue;
 			if (LAYER_PTR(layer)->no_drc)
 				continue;
 			info.layer = layer;
@@ -715,12 +729,13 @@ static pcb_r_dir_t pv_rat_callback(const pcb_box_t * b, void *cl)
  */
 static pcb_bool LookupPVConnectionsToLOList(pcb_bool AndRats)
 {
-	pcb_layer_it_t it;
 	pcb_layer_id_t layer;
 	struct lo_info info;
 
 	/* loop over all layers */
-	for(layer = pcb_layer_first_any(&PCB->LayerGroups, &it, PCB_LYT_COPPER); layer != -1; layer = pcb_layer_next(&it)) {
+	for(layer = 0; layer < pcb_max_layer; layer++) {
+		if (!(pcb_layer_flags(layer) & PCB_LYT_COPPER))
+			continue;
 		if (LAYER_PTR(layer)->no_drc)
 			continue;
 		/* do nothing if there are no PV's */
