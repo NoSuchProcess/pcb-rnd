@@ -160,11 +160,12 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 			sep = 1;
 			for (entry = 0; entry < PCB->LayerGroups.grp[group].len; entry++) {
 				pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[entry];
-#warning layer TODO: use flags instead of layer id checks
-				if (layer == pcb_component_silk_layer) {
+				unsigned int lflg = pcb_layer_flags(layer);
+
+				if ((lflg & PCB_LYT_TOP) && (lflg & PCB_LYT_SILK)) {
 					*cp++ = 'c';
 				}
-				else if (layer == pcb_solder_silk_layer) {
+				else if ((lflg & PCB_LYT_BOTTOM) && (lflg & PCB_LYT_SILK)) {
 					*cp++ = 's';
 				}
 				else {
