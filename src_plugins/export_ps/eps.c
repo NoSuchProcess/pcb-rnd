@@ -145,8 +145,6 @@ PCB_REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
 	return eps_attribute_list;
 }
 
-static int comp_layer, solder_layer;
-
 static pcb_layergrp_id_t group_for_layer(int l)
 {
 	if (l < pcb_max_layer && l >= 0)
@@ -155,17 +153,20 @@ static pcb_layergrp_id_t group_for_layer(int l)
 	return pcb_max_group + 3 + l;
 }
 
+static int is_solder(pcb_layergrp_id_t grp)     { return pcb_layergrp_flags(grp) & PCB_LYT_BOTTOM; }
+static int is_component(pcb_layergrp_id_t grp)  { return pcb_layergrp_flags(grp) & PCB_LYT_TOP; }
+
 static int layer_sort(const void *va, const void *vb)
 {
 	int a = *(int *) va;
 	int b = *(int *) vb;
-	int al = group_for_layer(a);
-	int bl = group_for_layer(b);
+	pcb_layergrp_id_t al = group_for_layer(a);
+	pcb_layergrp_id_t bl = group_for_layer(b);
 	int d = bl - al;
 
 	if (a >= 0 && a < pcb_max_layer) {
-		int aside = (al == solder_layer ? 0 : al == comp_layer ? 2 : 1);
-		int bside = (bl == solder_layer ? 0 : bl == comp_layer ? 2 : 1);
+		int aside = (is_solder(al) ? 0 : is_component(al) ? 2 : 1);
+		int bside = (is_solder(bl) ? 0 : is_component(bl) ? 2 : 1);
 		if (bside != aside)
 			return bside - aside;
 	}
@@ -252,8 +253,6 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	as_shown = options[HA_as_shown].int_value;
 	if (!options[HA_as_shown].int_value) {
-		comp_layer = pcb_layer_get_group(pcb_component_silk_layer);
-		solder_layer = pcb_layer_get_group(pcb_solder_silk_layer);
 		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
 	}
 	fprintf(f, "%%!PS-Adobe-3.0 EPSF-3.0\n");
