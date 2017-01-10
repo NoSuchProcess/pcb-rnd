@@ -54,7 +54,7 @@ const char *lesstif_cookie = "lesstif HID";
 
 pcb_hid_cfg_mouse_t lesstif_mouse;
 pcb_hid_cfg_keys_t lesstif_keymap;
-
+int lesstif_active = 0;
 
 #ifndef XtRDouble
 #define XtRDouble "Double"
@@ -313,6 +313,8 @@ static const char *cur_clip()
 static void LesstifBusy(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	static Cursor busy_cursor = 0;
+	if (!lesstif_active)
+		return;
 	if (busy_cursor == 0)
 		busy_cursor = XCreateFontCursor(display, XC_watch);
 	XDefineCursor(display, window, busy_cursor);
@@ -3768,6 +3770,7 @@ pcb_uninit_t hid_hid_lesstif_init()
 	return hid_lesstif_uninit;
 }
 
+
 static void lesstif_begin(void)
 {
 	PCB_REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
@@ -3777,10 +3780,12 @@ static void lesstif_begin(void)
 	PCB_REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_menu_action_list, lesstif_cookie)
 	PCB_REGISTER_ACTIONS(lesstif_styles_action_list, lesstif_cookie)
+	lesstif_active = 1;
 }
 
 static void lesstif_end(void)
 {
 	pcb_hid_remove_actions_by_cookie(lesstif_cookie);
 	pcb_hid_remove_attributes_by_cookie(lesstif_cookie);
+	lesstif_active = 0;
 }
