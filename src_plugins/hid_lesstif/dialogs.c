@@ -1284,14 +1284,14 @@ static void lgbutton_expose(Widget w, XtPointer u, XmDrawingAreaCallbackStruct *
 	for (i = 1; i < pcb_max_layer; i++)
 		XDrawLine(display, win, lg_gc, lg_label_width, lg_r[i], lg_width, lg_r[i]);
 	for (i = 0; i < pcb_max_layer; i++) {
-		int dir;
+		int dir, swidth;
 		XCharStruct size;
-		int swidth;
+		unsigned int lflg = pcb_layer_flags(i);
 		const char *name;
 
-		if (i == pcb_solder_silk_layer)
+		if ((lflg & PCB_LYT_BOTTOM) && (lflg & PCB_LYT_SILK))
 			name = SOLDER_SIDE_NAME;
-		else if (i == pcb_component_silk_layer)
+		else if ((lflg & PCB_LYT_TOP) && (lflg & PCB_LYT_SILK))
 			name = COMPONENT_SIDE_NAME;
 		else
 			name = PCB->Data->Layer[i].Name;
@@ -1362,14 +1362,14 @@ void lesstif_update_layer_groups()
 
 	lg_label_width = 0;
 	for (i = 0; i < pcb_max_layer; i++) {
-		int dir;
+		int dir, swidth;
 		XCharStruct size;
-		int swidth;
+		unsigned int lflg = pcb_layer_flags(i);
 		const char *name;
 
-		if (i == pcb_solder_silk_layer)
+		if ((lflg & PCB_LYT_BOTTOM) && (lflg & PCB_LYT_SILK))
 			name = SOLDER_SIDE_NAME;
-		else if (i == pcb_component_silk_layer)
+		else if ((lflg & PCB_LYT_TOP) && (lflg & PCB_LYT_SILK))
 			name = COMPONENT_SIDE_NAME;
 		else
 			name = PCB->Data->Layer[i].Name;
