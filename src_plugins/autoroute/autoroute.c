@@ -873,8 +873,13 @@ static routedata_t *CreateRouteData()
 	}
 	/* if via visibility is turned off, don't use them */
 	AutoRouteParameters.use_vias = routing_layers > 1 && PCB->ViaOn;
-	front = pcb_layer_get_group(pcb_component_silk_layer);
-	back = pcb_layer_get_group(pcb_solder_silk_layer);
+
+	back = front = -1;
+	if (pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &back, 1) <= 0)
+		return NULL;
+	if (pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &front, 1) <= 0)
+		return NULL;
+
 	/* determine preferred routing direction on each group */
 	for (i = 0; i < pcb_max_group; i++) {
 		if (i != back && i != front) {
@@ -4568,6 +4573,10 @@ pcb_bool AutoRoute(pcb_bool selected)
 		return (pcb_false);
 	pcb_save_find_flag(PCB_FLAG_DRC);
 	rd = CreateRouteData();
+	if (rd == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to initialize data; might be missing\n" "top or bottom copper layer.\n");
+		return (pcb_false);
+	}
 
 	if (1) {
 		routebox_t *net, *rb, *last;
