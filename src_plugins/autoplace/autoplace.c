@@ -141,11 +141,13 @@ typedef struct {
  */
 static void UpdateXY(pcb_netlist_t *Nets)
 {
-	pcb_layergrp_id_t SLayer, CLayer;
+	pcb_layergrp_id_t SLayer = -1, CLayer = -1;
 	pcb_cardinal_t i, j;
 	/* find layer groups of the component side and solder side */
-	SLayer = pcb_layer_get_group(pcb_solder_silk_layer);
-	CLayer = pcb_layer_get_group(pcb_component_silk_layer);
+
+	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &SLayer, 1);
+	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &CLayer, 1);
+
 	/* update all nets */
 	for (i = 0; i < Nets->NetN; i++) {
 		for (j = 0; j < Nets->Net[i].ConnectionN; j++) {
