@@ -569,16 +569,21 @@ static int group_showing(int g, int *c)
 	return 0;
 }
 
+#warning TODO: ui_zoomplan.c does the same, maybe make the code common?
 static int SwapSides(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_shown_side = conf_core.editor.show_solder_side;
-	pcb_layergrp_id_t comp_group = pcb_layer_get_group(pcb_component_silk_layer);
-	pcb_layergrp_id_t solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
+	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(pcb_layer_stack[0]);
 	int comp_layer;
 	int solder_layer;
-	int comp_showing = group_showing(comp_group, &comp_layer);
-	int solder_showing = group_showing(solder_group, &solder_layer);
+	int comp_showing = 0, solder_showing = 0;
+
+	if (pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
+		solder_showing = group_showing(solder_group, &solder_layer);
+
+	if (pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
+		comp_showing = group_showing(comp_group, &comp_layer);
 
 	if (argc > 0) {
 		switch (argv[0][0]) {
