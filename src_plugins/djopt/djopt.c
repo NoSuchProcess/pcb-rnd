@@ -2478,10 +2478,10 @@ static void grok_layer_groups()
 	for (i = 0; i < pcb_max_group; i++) {
 		f = 0;
 		for (j = 0; j < l->grp[i].len; j++) {
-#warning layer TODO: use flags here
-			if (l->grp[i].lid[j] == pcb_solder_silk_layer)
+			unsigned int lflg = pcb_layer_flags(l->grp[i].lid[j]);
+			if (lflg & PCB_LYT_BOTTOM)
 				f |= LT_SOLDER;
-			if (l->grp[i].lid[j] == pcb_component_silk_layer)
+			if (lflg & PCB_LYT_TOP)
 				f |= LT_COMPONENT;
 		}
 		for (j = 0; j < l->grp[i].len; j++) {
