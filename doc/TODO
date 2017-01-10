@@ -5,6 +5,8 @@
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
+	- layer rewrite bug:
+		- autoroute stopped working
 	- RTT/arc_angles.pcb:
 		- gtk draws non-full-circle
 		- also check lesstif
