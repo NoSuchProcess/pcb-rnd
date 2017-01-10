@@ -1006,12 +1006,14 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	pcb_box_t region;
 	struct cpInfo info;
 	pcb_layergrp_id_t group;
+	unsigned int gflg;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)
 			|| !(pcb_layer_flags(pcb_layer_id(Data, Layer)) & PCB_LYT_COPPER))
 		return 0;
 	group = Group(Data, pcb_layer_id(Data, Layer));
-	info.solder = (pcb_layergrp_flags(group) & PCB_LYT_BOTTOM);
+	gflg = pcb_layergrp_flags(group);
+	info.solder = (gflg & PCB_LYT_BOTTOM);
 	info.data = Data;
 	info.other = here;
 	info.layer = Layer;
@@ -1023,10 +1025,11 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	region = pcb_bloat_box(&region, expand);
 
 	if (setjmp(info.env) == 0) {
+
 		r = 0;
 		info.accumulate = NULL;
 		info.batch_size = 0;
-		if (info.solder || group == Group(Data, pcb_component_silk_layer)) {
+		if (info.solder || (gflg & PCB_LYT_TOP)) {
 			pcb_r_search(Data->pad_tree, &region, NULL, pad_sub_callback, &info, &seen);
 			r += seen;
 		}
