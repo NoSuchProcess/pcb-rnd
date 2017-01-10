@@ -2381,10 +2381,10 @@ static int pcb_act_GlobalPuller(int argc, const char **argv, pcb_coord_t x, pcb_
 /*****************************************************************************/
 
 pcb_hid_action_t puller_action_list[] = {
-	{"pcb_act_Puller", "Click on a line-arc intersection or line segment", pcb_act_Puller,
+	{"Puller", "Click on a line-arc intersection or line segment", pcb_act_Puller,
 	 pcb_acth_Puller, pcb_acts_Puller}
 	,
-	{"pcb_act_GlobalPuller", 0, pcb_act_GlobalPuller,
+	{"GlobalPuller", 0, pcb_act_GlobalPuller,
 	 pcb_acth_GlobalPuller, pcb_acts_GlobalPuller}
 };
 
