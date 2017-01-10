@@ -351,10 +351,14 @@ side'' of the board.
 int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(pcb_layer_stack[0]);
-	pcb_layergrp_id_t comp_group = pcb_layer_get_group(pcb_component_silk_layer);
-	pcb_layergrp_id_t solder_group = pcb_layer_get_group(pcb_solder_silk_layer);
-	pcb_bool comp_on = LAYER_PTR(PCB->LayerGroups.grp[comp_group].lid[0])->On;
-	pcb_bool solder_on = LAYER_PTR(PCB->LayerGroups.grp[solder_group].lid[0])->On;
+	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
+	pcb_bool comp_on = pcb_false, solder_on = pcb_false;
+
+	if (pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
+		solder_on = LAYER_PTR(PCB->LayerGroups.grp[solder_group].lid[0])->On;
+
+	if (pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
+		comp_on = LAYER_PTR(PCB->LayerGroups.grp[comp_group].lid[0])->On;
 
 	pcb_draw_inhibit_inc();
 	if (argc > 0) {
@@ -383,8 +387,10 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
 		pcb_bool new_solder_vis = conf_core.editor.show_solder_side;
 
-		pcb_layervis_change_group_vis(PCB->LayerGroups.grp[comp_group].lid[0], !new_solder_vis, !new_solder_vis);
-		pcb_layervis_change_group_vis(PCB->LayerGroups.grp[solder_group].lid[0], new_solder_vis, new_solder_vis);
+		if (comp_group >= 0)
+			pcb_layervis_change_group_vis(PCB->LayerGroups.grp[comp_group].lid[0], !new_solder_vis, !new_solder_vis);
+		if (solder_group >= 0)
+			pcb_layervis_change_group_vis(PCB->LayerGroups.grp[solder_group].lid[0], new_solder_vis, new_solder_vis);
 	}
 
 	pcb_draw_inhibit_dec();
