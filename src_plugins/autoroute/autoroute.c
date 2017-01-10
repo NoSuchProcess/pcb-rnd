@@ -1329,7 +1329,8 @@ static pcb_box_t bloat_routebox(routebox_t * rb)
 static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 {
 	pcb_line_t *line;
-	pcb_layer_t *SLayer = LAYER_PTR(group);
+	pcb_layer_t *csl, *SLayer = LAYER_PTR(group);
+	pcb_layer_id_t cs_id;
 	if (showboxen < -1)
 		return;
 	if (showboxen != -1 && showboxen != group)
@@ -1347,19 +1348,22 @@ static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 	}
 
 #if 1
-	if (b.Y1 == b.Y2 || b.X1 == b.X2)
-		thickness = 5;
-	line = pcb_line_new(LAYER_PTR(pcb_component_silk_layer), b.X1, b.Y1, b.X2, b.Y1, thickness, 0, pcb_flag_make(0));
-	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(pcb_component_silk_layer), line, line);
-	if (b.Y1 != b.Y2) {
-		line = pcb_line_new(LAYER_PTR(pcb_component_silk_layer), b.X1, b.Y2, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
-		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(pcb_component_silk_layer), line, line);
-	}
-	line = pcb_line_new(LAYER_PTR(pcb_component_silk_layer), b.X1, b.Y1, b.X1, b.Y2, thickness, 0, pcb_flag_make(0));
-	pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(pcb_component_silk_layer), line, line);
-	if (b.X1 != b.X2) {
-		line = pcb_line_new(LAYER_PTR(pcb_component_silk_layer), b.X2, b.Y1, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
-		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, LAYER_PTR(pcb_component_silk_layer), line, line);
+	if (pcb_layer_find(PCB_LYT_TOP | PCB_LYT_SILK, &cs_id, 1) > 0)  {
+		csl = LAYER_PTR(cs_id);
+		if (b.Y1 == b.Y2 || b.X1 == b.X2)
+			thickness = 5;
+		line = pcb_line_new(csl, b.X1, b.Y1, b.X2, b.Y1, thickness, 0, pcb_flag_make(0));
+		pcb_undo_add_obj_to_create(csl, line, line);
+		if (b.Y1 != b.Y2) {
+			line = pcb_line_new(csl, b.X1, b.Y2, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
+			pcb_undo_add_obj_to_create(PCB_TYPE_LINE, csl, line, line);
+		}
+		line = pcb_line_new(csl, b.X1, b.Y1, b.X1, b.Y2, thickness, 0, pcb_flag_make(0));
+		pcb_undo_add_obj_to_create(PCB_TYPE_LINE, csl, line, line);
+		if (b.X1 != b.X2) {
+			line = pcb_line_new(csl, b.X2, b.Y1, b.X2, b.Y2, thickness, 0, pcb_flag_make(0));
+			pcb_undo_add_obj_to_create(PCB_TYPE_LINE, csl, line, line);
+		}
 	}
 #endif
 }
@@ -1399,7 +1403,9 @@ static void showedge(edge_t * e)
 #if defined(ROUTE_DEBUG)
 static void showroutebox(routebox_t * rb)
 {
-	showbox(rb->sbox, rb->flags.source ? 20 : (rb->flags.target ? 10 : 1), rb->flags.is_via ? pcb_component_silk_layer : rb->group);
+	pcb_layerid_t cs_id;
+	if (pcb_layer_find(PCB_LYT_TOP | PCB_LYT_SILK, &cs_id, 1) > 0)
+		showbox(rb->sbox, rb->flags.source ? 20 : (rb->flags.target ? 10 : 1), rb->flags.is_via ? LAYER_PTR(cs_id) : rb->group);
 }
 #endif
 
