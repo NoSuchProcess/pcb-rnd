@@ -225,8 +225,11 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	/* If NO layers had anything on them, at least print the component
 	   layer to get the pins.  */
 	if (fast_erase == 0) {
-		print_group[pcb_layer_get_group(pcb_component_silk_layer)] = 1;
-		fast_erase = 1;
+		pcb_layergrp_id_t comp_silk;
+		if (pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &comp_silk, 1) > 0) {
+			print_group[pcb_layer_get_group(comp_silk)] = 1;
+			fast_erase = 1;
+		}
 	}
 
 	/* "fast_erase" is 1 if we can just paint white to erase.  */
