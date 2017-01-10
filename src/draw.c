@@ -38,6 +38,7 @@
 #include "rotate.h"
 #include "rtree.h"
 #include "stub_draw_fab.h"
+#include "stub_draw_csect.h"
 #include "obj_all.h"
 #include "layer_ui.h"
 
@@ -297,6 +298,11 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 
 	if (pcb_layer_gui_set_vlayer(PCB_VLY_FAB, 0)) {
 		pcb_stub_draw_fab(Output.fgGC);
+		pcb_gui->end_layer();
+	}
+
+	if (pcb_layer_gui_set_vlayer(PCB_VLY_CSECT, 0)) {
+		pcb_stub_draw_csect(Output.fgGC);
 		pcb_gui->end_layer();
 	}
 

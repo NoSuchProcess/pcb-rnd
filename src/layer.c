@@ -49,6 +49,7 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 	{"fab",            PCB_LYT_VIRTUAL + 11, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
 	{"plated-drill",   PCB_LYT_VIRTUAL + 12, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
 	{"unplated-drill", PCB_LYT_VIRTUAL + 13, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
+	{"csect",          PCB_LYT_VIRTUAL + 14, -1,                  PCB_LYT_VIRTUAL | PCB_LYT_CSECT | PCB_LYT_LOGICAL },
 	{ NULL, 0 },
 };
 
@@ -75,6 +76,7 @@ static const pcb_layer_type_name_t pcb_layer_type_names[] = {
 	{ PCB_LYT_FAB,     2, "fab" },
 	{ PCB_LYT_PDRILL,  2, "plateddrill" },
 	{ PCB_LYT_UDRILL,  2, "unplateddrill" },
+	{ PCB_LYT_CSECT,   2, "fab" },
 	{ PCB_LYT_UI,      2, "userinterface" },
 	{ PCB_LYT_VIRTUAL, 3, "virtual" },
 	{ 0, 0, NULL }

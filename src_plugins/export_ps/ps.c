@@ -779,6 +779,9 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 	if (flags & PCB_LYT_INVIS)
 		return 0;
 
+	if (flags & PCB_LYT_CSECT) /* not yet finished */
+		return 0;
+
 	name = pcb_layer_to_file_name(tmp_ln, layer, flags, PCB_FNS_fixed);
 
 	global.is_drill = ((flags & PCB_LYT_PDRILL) || (flags & PCB_LYT_UDRILL));
