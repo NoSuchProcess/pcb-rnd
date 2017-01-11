@@ -58,7 +58,11 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 		const char *type_gfx;
 		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
 
-		if (!g->valid) type_gfx = "old";
+		if (!g->valid) {
+			if (g->len <= 0)
+				continue;
+			type_gfx = "old";
+		}
 		else if (g->type & PCB_LYT_OUTLINE) continue;
 		else if (g->type & PCB_LYT_VIRTUAL) continue;
 		else if (g->type & PCB_LYT_COPPER) type_gfx = "====";
