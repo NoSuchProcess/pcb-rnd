@@ -53,6 +53,8 @@ typedef enum {
 	PCB_LYT_UDRILL   = 0x00040000, /* (virtual) unplated drills (affects all physical layers) */
 	PCB_LYT_UI       = 0x00080000, /* (virtual) user interface drawings (feature plugins use this for displaying states or debug info) */
 	PCB_LYT_CSECT    = 0x00100000, /* (virtual) cross-section drawing (displaying layer groups) */
+	PCB_LYT_SUBSTRATE= 0x00200000, /* substrate / insulator */
+	PCB_LYT_MISC     = 0x00400000, /* misc physical layers (e.g. adhesive) */
 	PCB_LYT_ANYTHING = 0x00FFFF00, /* MASK: layers consist anything */
 
 	/* misc properties */

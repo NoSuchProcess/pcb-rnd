@@ -55,8 +55,19 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 	
 	for(gid = 0; gid < pcb_max_group; gid++) {
 		int i;
-		const char *type_gfx = "===";
+		const char *type_gfx;
 		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
+
+		if (!g->valid) type_gfx = "old";
+		else if (g->type & PCB_LYT_OUTLINE) continue;
+		else if (g->type & PCB_LYT_VIRTUAL) continue;
+		else if (g->type & PCB_LYT_COPPER) type_gfx = "====";
+		else if (g->type & PCB_LYT_SUBSTRATE) type_gfx = "xxxx";
+		else if (g->type & PCB_LYT_SILK) type_gfx = "silk";
+		else if (g->type & PCB_LYT_MASK) type_gfx = "mask";
+		else if (g->type & PCB_LYT_PASTE) type_gfx = "pst.";
+		else if (g->type & PCB_LYT_MISC) type_gfx = "misc";
+		else type_gfx = "????";
 
 		printf("%s [%ld]\n", type_gfx, gid);
 		for(i = 0; i < g->len; i++) {
