@@ -29,6 +29,7 @@
 #include "board.h"
 #include "data.h"
 #include "layer_grp.h"
+#include "compat_misc.h"
 
 pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 {
@@ -270,3 +271,76 @@ void pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
 	PCB->LayerGroups.grp[group_id].lid[glen] = layer_id;
 	PCB->LayerGroups.grp[group_id].len++;
 }
+
+/*
+old [0]
+  [0] component
+  [2] comp-GND
+  [3] comp-power
+  [9] silk
+old [1]
+  [1] solder
+  [4] sold-GND
+  [5] sold-power
+  [8] silk
+old [2]
+  [6] signal3
+old [3]
+  [7] outline
+*/
+
+
+#define NEWG(g, flags, gname) \
+do { \
+	g = &(newg.grp[newg.len]); \
+	g->valid = 1; \
+	if (gname != NULL) \
+		g->name = pcb_strdup(gname); \
+	else \
+		g->name = NULL; \
+	g->type = flags; \
+	newg.len++; \
+} while(0)
+
+#define APPEND_ALL(_grp_, src_grp_id, flags) \
+do { \
+	int __n__; \
+	pcb_layer_group_t *__s__ = &pcb->LayerGroups.grp[src_grp_id]; \
+	for(__n__ = 0; __n__ < (__s__)->len; __n__++) { \
+		if (pcb_layer_flags((__s__)->lid[__n__]) & flags) { \
+			_grp_->lid[_grp_->len] = __s__->lid[__n__]; \
+			_grp_->len++; \
+		} \
+	} \
+} while(0)
+
+void pcb_layer_group_from_old(pcb_board_t *pcb)
+{
+	pcb_layer_stack_t newg;
+	pcb_layer_group_t *g;
+	int n;
+
+	memset(&newg, 0, sizeof(newg));
+
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_PASTE, "top paste");
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_SILK, "top silk");      APPEND_ALL(g, 0, PCB_LYT_SILK);
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_MASK, "top mask");
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_COPPER, "top copper");  APPEND_ALL(g, 0, PCB_LYT_COPPER);
+	NEWG(g, PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, NULL);
+
+
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_COPPER, "bottom copper");  APPEND_ALL(g, 1, PCB_LYT_COPPER);
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom mask");
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom silk");      APPEND_ALL(g, 1, PCB_LYT_SILK);
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
+
+
+	memcpy(&pcb->LayerGroups, &newg, sizeof(newg));
+
+}
+
+void pcb_layer_group_to_old(pcb_board_t *pcb)
+{
+
+}
+

@@ -103,4 +103,9 @@ int pcb_layer_parse_group_string(const char *s, pcb_layer_stack_t *LayerGroup, i
 		  continue;			\
 		layer = &data->Layer[number];
 
+/* transitional code: old loaders load the old layer stack, convert to the new
+   (and back before save) */
+void pcb_layer_group_from_old(pcb_board_t *pcb);
+void pcb_layer_group_to_old(pcb_board_t *pcb);
+
 #endif
