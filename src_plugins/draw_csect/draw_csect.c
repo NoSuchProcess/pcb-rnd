@@ -32,7 +32,18 @@
 
 static void draw_csect(pcb_hid_gc_t gc)
 {
-	
+	pcb_text_t t;
+
+	pcb_gui->set_color(gc, PCB->ElementColor);
+
+	t.X = 0;
+	t.Y = 0;
+	t.TextString = "Board cross section";
+	t.Direction = 0;
+	t.Scale = 150;
+	t.Flags = pcb_no_flags();
+	DrawTextLowLevel(&t, 0);
+
 }
 
 static void hid_draw_csect_uninit(void)
