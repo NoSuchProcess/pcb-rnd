@@ -43,15 +43,52 @@ static void draw_csect(pcb_hid_gc_t gc)
 	t.Scale = 150;
 	t.Flags = pcb_no_flags();
 	DrawTextLowLevel(&t, 0);
-
 }
+
+
+static const char pcb_acts_dump_csect[] = "DumpCsect()";
+static const char pcb_acth_dump_csect[] = "Print the cross-section of the board (layer stack)";
+
+static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_layergrp_id_t gid;
+	
+	for(gid = 0; gid < pcb_max_group; gid++) {
+		int i;
+		const char *type_gfx = "===";
+		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
+
+		printf("%s [%ld]\n", type_gfx, gid);
+		for(i = 0; i < g->len; i++) {
+			pcb_layer_id_t lid = g->lid[i];
+			pcb_layer_t *l = PCB->Data->Layer+lid;
+			printf("  [%ld] %s\n", lid, l->Name);
+		}
+	}
+	return 0;
+}
+
+static const char *draw_csect_cookie = "draw_csect";
+
+pcb_hid_action_t draw_csect_action_list[] = {
+	{"DumpCsect", 0, pcb_act_dump_csect,
+	 pcb_acth_dump_csect, pcb_acts_dump_csect}
+};
+
+
+PCB_REGISTER_ACTIONS(draw_csect_action_list, draw_csect_cookie)
 
 static void hid_draw_csect_uninit(void)
 {
+	pcb_hid_remove_actions_by_cookie(draw_csect_cookie);
 }
+
+#include "dolists.h"
 
 pcb_uninit_t hid_draw_csect_init(void)
 {
+	PCB_REGISTER_ACTIONS(draw_csect_action_list, draw_csect_cookie)
+
 	pcb_stub_draw_csect = draw_csect;
 	return hid_draw_csect_uninit;
 }
