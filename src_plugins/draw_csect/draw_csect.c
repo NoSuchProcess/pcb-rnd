@@ -52,7 +52,9 @@ static const char pcb_acth_dump_csect[] = "Print the cross-section of the board 
 static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_layergrp_id_t gid;
-	
+
+/*	pcb_layer_group_from_old(PCB);*/
+
 	for(gid = 0; gid < pcb_max_group; gid++) {
 		int i;
 		const char *type_gfx;
@@ -73,11 +75,11 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 		else if (g->type & PCB_LYT_MISC) type_gfx = "misc";
 		else type_gfx = "????";
 
-		printf("%s [%ld]\n", type_gfx, gid);
+		printf("%s [%ld] %s\n", type_gfx, gid, g->name);
 		for(i = 0; i < g->len; i++) {
 			pcb_layer_id_t lid = g->lid[i];
 			pcb_layer_t *l = PCB->Data->Layer+lid;
-			printf("  [%ld] %s\n", lid, l->Name);
+			printf("      [%ld] %s\n", lid, l->Name);
 		}
 	}
 	return 0;
