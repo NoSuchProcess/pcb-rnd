@@ -533,10 +533,8 @@ struct hid_s {
 	void (*propedit_add_stat)(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg);
 };
 
-/* This function (in the common code) will be called whenever the GUI
-   needs to redraw the screen, print the board, or export a layer.  If
-   item is not NULL, only draw the given item.  Item is only non-NULL
-   if the HID was created via show_item.
+/* On of these functions (in the common code) will be called whenever the GUI
+   needs to redraw the screen, print the board, or export a layer.
 
    Each time func is called, it should do the following:
 
@@ -548,8 +546,15 @@ struct hid_s {
 
    Do *not* assume that the hid that is passed is the GUI hid.  This
    callback is also used for printing and exporting. */
-struct pcb_box_t;
-void pcb_hid_expose_callback(pcb_hid_t * hid_, pcb_box_t *region_, void *item_);
+typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, void *region);
+
+/* Normal expose: draw all layers with all flags region is (pcb_box_t *) */
+void pcb_hid_expose_all(pcb_hid_t *hid, void *region);
+
+/* Pinout preview expose: draw an element; element is (pcb_element_t *) */
+void pcb_hid_expose_pinout(pcb_hid_t *hid, void *element);
+
+
 
 /* This is initially set to a "no-gui" gui, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. */

@@ -671,14 +671,14 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		fprintf(the_file, "/tocp { /y y 12 sub def 90 y moveto rightshow } bind def\n");
 
 		global.doing_toc = 1;
-		global.pagecount = 1;				/* 'pagecount' is modified by pcb_hid_expose_callback() call */
-		pcb_hid_expose_callback(&ps_hid, &global.region, 0);
+		global.pagecount = 1;				/* 'pagecount' is modified by pcb_hid_expose_all() call */
+		pcb_hid_expose_all(&ps_hid, &global.region);
 	}
 
 	global.pagecount = 1;					/* Reset 'pagecount' if single file */
 	global.doing_toc = 0;
 	ps_set_layer_group(-1, -1, 0, -1); /* reset static vars */
-	pcb_hid_expose_callback(&ps_hid, &global.region, 0);
+	pcb_hid_expose_all(&ps_hid, &global.region);
 
 	if (the_file)
 		fprintf(the_file, "showpage\n");

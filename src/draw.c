@@ -625,7 +625,7 @@ void pcb_draw_obj(int type, void *ptr1, void *ptr2)
  * HID drawing callback.
  */
 
-void pcb_hid_expose_callback(pcb_hid_t * hid, pcb_box_t * region, void *item)
+static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 {
 	pcb_hid_t *old_gui = pcb_gui;
 
@@ -636,17 +636,33 @@ void pcb_hid_expose_callback(pcb_hid_t * hid, pcb_box_t * region, void *item)
 
 	hid->set_color(Output.pmGC, "erase");
 	hid->set_color(Output.bgGC, "drill");
+	return old_gui;
+}
 
-	if (item) {
-		pcb_draw_doing_pinout = pcb_true;
-		draw_element((pcb_element_t *) item);
-		pcb_draw_doing_pinout = pcb_false;
-	}
-	else if (!pcb_draw_inhibit)
-		DrawEverything(region);
-
+static void *expose_end(pcb_hid_t *old_gui)
+{
 	pcb_gui->destroy_gc(Output.fgGC);
 	pcb_gui->destroy_gc(Output.bgGC);
 	pcb_gui->destroy_gc(Output.pmGC);
 	pcb_gui = old_gui;
+}
+
+void pcb_hid_expose_all(pcb_hid_t * hid, void *region)
+{
+	if (!pcb_draw_inhibit) {
+		pcb_hid_t *old_gui = expose_begin(hid);
+		DrawEverything((pcb_box_t *)region);
+		expose_end(old_gui);
+	}
+}
+
+void pcb_hid_expose_pinout(pcb_hid_t * hid, void *element)
+{
+	pcb_hid_t *old_gui = expose_begin(hid);
+
+	pcb_draw_doing_pinout = pcb_true;
+	draw_element((pcb_element_t *)element);
+	pcb_draw_doing_pinout = pcb_false;
+
+	expose_end(old_gui);
 }

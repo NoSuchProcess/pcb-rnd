@@ -145,10 +145,8 @@ void hid_extents_init(void)
 	initialised = pcb_true;
 }
 
-pcb_box_t *pcb_hid_get_extents(void *item)
+pcb_box_t *pcb_hid_get_extents_pinout(void *item)
 {
-	pcb_box_t region;
-
 	/* As this isn't a real "HID", we need to ensure we are initialised. */
 	hid_extents_init();
 
@@ -157,11 +155,7 @@ pcb_box_t *pcb_hid_get_extents(void *item)
 	box.X2 = -COORD_MAX;
 	box.Y2 = -COORD_MAX;
 
-	region.X1 = -COORD_MAX;
-	region.Y1 = -COORD_MAX;
-	region.X2 = COORD_MAX;
-	region.Y2 = COORD_MAX;
-	pcb_hid_expose_callback(&extents_hid, &region, item);
+	pcb_hid_expose_pinout(&extents_hid, item);
 
 	return &box;
 }

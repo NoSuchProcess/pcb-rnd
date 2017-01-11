@@ -767,7 +767,7 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	time(&start);
 	do {
 		XFillRectangle(display, pixmap, bg_gc, 0, 0, view_width, view_height);
-		pcb_hid_expose_callback(&lesstif_hid, &region, 0);
+		pcb_hid_expose_all(&lesstif_hid, &region);
 		XSync(display, 0);
 		time(&end);
 		i++;
@@ -2343,7 +2343,7 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 		}
 		DrawBackgroundImage();
-		pcb_hid_expose_callback(&lesstif_hid, &region, 0);
+		pcb_hid_expose_all(&lesstif_hid, &region);
 		draw_grid();
 		lesstif_use_mask(0);
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */
@@ -3381,7 +3381,7 @@ lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_
 
 static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
 {
-	pcb_box_t region;
+/*	pcb_box_t region;*/
 	int save_vx, save_vy, save_vw, save_vh;
 	int save_fx, save_fy;
 	double save_vz;
@@ -3429,13 +3429,13 @@ static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStr
 	use_mask = 0;
 	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
 	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
-	region.X1 = 0;
+/*	region.X1 = 0;
 	region.Y1 = 0;
 	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	region.Y2 = PCB->MaxHeight;*/
 
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
-	pcb_hid_expose_callback(&lesstif_hid, &region, pd->item);
+	pcb_hid_expose_pinout(&lesstif_hid, pd->item);
 
 	pinout = 0;
 	view_left_x = save_vx;
@@ -3477,7 +3477,7 @@ static void lesstif_show_item(void *item)
 
 	pd->item = item;
 
-	extents = pcb_hid_get_extents(item);
+	extents = pcb_hid_get_extents_pinout(item);
 	pd->left = extents->X1;
 	pd->right = extents->X2;
 	pd->top = extents->Y1;

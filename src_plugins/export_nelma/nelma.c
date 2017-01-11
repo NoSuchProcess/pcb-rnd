@@ -575,7 +575,7 @@ void nelma_start_png_export()
 	lastbrush = (gdImagePtr) ((void *) -1);
 	lastcolor = -1;
 
-	pcb_hid_expose_callback(&nelma_hid, &region, 0);
+	pcb_hid_expose_all(&nelma_hid, &region);
 }
 
 static void nelma_do_export(pcb_hid_attr_val_t * options)

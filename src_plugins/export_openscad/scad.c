@@ -581,7 +581,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 
 	layer_open = 0;
 
-	pcb_hid_expose_callback(&scad_hid, &region, 0);
+	pcb_hid_expose_all(&scad_hid, &region);
 
 /* And now .... Board outlines */
 

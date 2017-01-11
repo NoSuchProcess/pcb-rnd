@@ -237,7 +237,7 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	gds_init(&sbright);
 	gds_init(&sdark);
 	gds_init(&snormal);
-	pcb_hid_expose_callback(&svg_hid, &region, 0);
+	pcb_hid_expose_all(&svg_hid, &region);
 
 	conf_update(NULL); /* restore forced sets */
 }

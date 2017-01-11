@@ -526,7 +526,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		}
 	}
 
-	pcb_hid_expose_callback(&png_hid, bounds, 0);
+	pcb_hid_expose_all(&png_hid, bounds);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	conf_update(NULL); /* restore forced sets */
