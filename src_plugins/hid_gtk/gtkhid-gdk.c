@@ -1136,16 +1136,18 @@ void ghid_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 {
 }
 
-gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
+gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, void *expdata, const pcb_box_t *view)
 {
-	GhidPinoutPreview *pinout = GHID_PINOUT_PREVIEW(widget);
 	GdkWindow *window = gtk_widget_get_window(widget);
 	GdkDrawable *save_drawable;
 	GtkAllocation allocation;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
-	double xz, yz;
+	double xz, yz, vw, vh;
 	render_priv *priv = gport->render_priv;
+
+	vw = view->X2 - view->X1;
+	vh = view->Y2 - view->Y1;
 
 	/* Setup drawable and zoom factor for drawing routines
 	 */
@@ -1155,8 +1157,8 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	save_height = gport->view.canvas_height;
 
 	gtk_widget_get_allocation(widget, &allocation);
-	xz = (double) pinout->x_max / allocation.width;
-	yz = (double) pinout->y_max / allocation.height;
+	xz = vw / (double)allocation.width;
+	yz = vh / (double)allocation.height;
 	if (xz > yz)
 		gport->view.coord_per_px = xz;
 	else
@@ -1167,14 +1169,14 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
 	gport->view.height = allocation.height * gport->view.coord_per_px;
-	gport->view.x0 = (pinout->x_max - gport->view.width) / 2;
-	gport->view.y0 = (pinout->y_max - gport->view.height) / 2;
+	gport->view.x0 = (vw - gport->view.width) / 2 + view->X1;
+	gport->view.y0 = (vh - gport->view.height) / 2 + view->Y1;
 
 	/* clear background */
 	gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
 
 	/* call the drawing routine */
-	pcb_hid_expose_pinout(&ghid_hid, &pinout->element);
+	expcall(&ghid_hid, expdata);
 
 	gport->drawable = save_drawable;
 	gport->view = save_view;

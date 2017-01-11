@@ -891,15 +891,17 @@ void ghid_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 	return;
 }
 
-gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
+gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, void *expdata, const pcb_box_t *view)
 {
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
-	GhidPinoutPreview *pinout = GHID_PINOUT_PREVIEW(widget);
 	GtkAllocation allocation;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
-	double xz, yz;
+	double xz, yz, vw, vh;
+
+	vw = view->X2 - view->X1;
+	vh = view->Y2 - view->Y1;
 
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
@@ -908,8 +910,9 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	/* Setup zoom factor for drawing routines */
 
 	gtk_widget_get_allocation(widget, &allocation);
-	xz = (double) pinout->x_max / allocation.width;
-	yz = (double) pinout->y_max / allocation.height;
+	save_width = gport->view.canvas_width;
+	save_height = gport->view.canvas_height;
+
 	if (xz > yz)
 		gport->view.coord_per_px = xz;
 	else
@@ -919,8 +922,8 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
 	gport->view.height = allocation.height * gport->view.coord_per_px;
-	gport->view.x0 = (pinout->x_max - gport->view.width) / 2;
-	gport->view.y0 = (pinout->y_max - gport->view.height) / 2;
+	gport->view.x0 = (vw - gport->view.width) / 2 + view->X1;
+	gport->view.y0 = (vh - gport->view.height) / 2 + view->Y1;
 
 	/* make GL-context "current" */
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
@@ -958,7 +961,9 @@ gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 					 (conf_core.editor.view.flip_y ? -1. : 1.) / gport->view.coord_per_px, 1);
 	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
 							 -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
-	pcb_hid_expose_pinout(&ghid_hid, &pinout->element);
+
+	expcall(&ghid_hid, expdata);
+
 	hidgl_flush_triangles(&buffer);
 	glPopMatrix();
 

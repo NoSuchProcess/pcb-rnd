@@ -204,6 +204,18 @@ static void ghid_pinout_preview_get_property(GObject * object, guint property_id
 
 }
 
+/* Converter: set up a pinout expose and use the generic preview expose call */
+static gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
+{
+	GhidPinoutPreview *pinout = GHID_PINOUT_PREVIEW(widget);
+	pcb_box_t view;
+
+	view.X1 = view.Y1 = 0;
+	view.X2 = pinout->x_max;
+	view.Y2 = pinout->y_max;
+
+	return ghid_preview_expose(widget, ev, pcb_hid_expose_pinout, &pinout->element, &view);
+}
 
 /*! \brief GType class initialiser for GhidPinoutPreview
  *
