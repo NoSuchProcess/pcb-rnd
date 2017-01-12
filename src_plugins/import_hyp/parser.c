@@ -74,7 +74,11 @@ double unit;                   /* conversion factor: pcb length units to meters 
 double metal_thickness_unit;   /* conversion factor: metal thickness to meters */
 
 pcb_bool use_die_for_metal;    /* use dielectric constant and loss tangent of dielectric for metal layers */
-pcb_coord_t plane_separation;       /* distance between PLANE polygon and copper of different nets; -1 if not set */
+pcb_coord_t plane_separation;  /* distance between PLANE polygon and copper of different nets; -1 if not set */
+
+/* stackup */
+pcb_bool layer_is_plane_layer[PCB_MAX_LAYER]; /* whether layer is signal or plane layer */
+pcb_coord_t layer_plane_separation[PCB_MAX_LAYER]; /* separation between fill copper and signals on layer */
 
 /* origin. Chosen so all coordinates are positive. */
 pcb_coord_t origin_x;
@@ -126,6 +130,8 @@ pcb_coord_t inline z2coord(double f)
 
 void hyp_init(void)
 {
+  int n;
+
   unit = 1;
   metal_thickness_unit = 1;
   use_die_for_metal = pcb_false;
@@ -143,6 +149,12 @@ void hyp_init(void)
   /* empty board outline */
   outline_head = NULL;
   outline_tail = NULL;
+
+  /* clear layer info */
+  for (n = 1; n < PCB_MAX_LAYER; n++) {
+    layer_is_plane_layer[n] = pcb_false; /* signal layer */
+    layer_plane_separation[n] = -1; /* no separation between fill copper and signals on layer */
+    }
 
   /* set origin */
   origin_x = 0;
@@ -177,6 +189,8 @@ int hyp_parse(pcb_data_t *dest, const char *fname, int debug)
 
   /* add board outline last */
   hyp_perimeter();
+
+  pcb_layers_finalize(); /* XXX Check. */
 
   /* clear */
   hyp_dest = NULL;
@@ -378,20 +392,19 @@ pcb_bool exec_board_attribute(parse_param *h)
 
 void perimeter_segment_add(outline_t *s, pcb_bool_t forward)
 {
+  pcb_layer_id_t outline_id;
   pcb_layer_t *outline_layer;
 
   /* get outline layer */
-  int outlineCount = 0;
-  int outlineLayerCount = 0;
-  pcb_layer_id_t *outlineLayers = NULL;
-  /* count outline layers */
-  outlineLayerCount = pcb_layer_group_list(PCB_LYT_OUTLINE, NULL, 0);
-  outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineLayerCount);
-  outlineCount = pcb_layer_list(PCB_LYT_OUTLINE, NULL, 0);
-  pcb_layer_list(PCB_LYT_OUTLINE, outlineLayers, outlineCount);
-  /* XXX fix: add outline layer if necessary */
-  outline_layer = &(hyp_dest->Layer[outlineLayers[0]]);
-  if (outline_layer == NULL) return;
+  outline_id = pcb_layer_create(PCB_LYT_OUTLINE, pcb_false, pcb_false, NULL);
+  if (outline_id < 0) outline_id = pcb_layer_create(PCB_LYT_OUTLINE, pcb_true, pcb_false, NULL);
+  outline_layer = pcb_get_layer(outline_id);
+
+  if (outline_layer == NULL) 
+  { 
+    pcb_printf("create outline layer failed.\n"); 
+    return; 
+  }
 
   /* mark segment as used, so we don't use it twice */
   s->used = pcb_true;
@@ -606,14 +619,161 @@ void hyp_perimeter()
   return;
 }
 
-pcb_bool exec_options(parse_param *h){return(0);}
-pcb_bool exec_signal(parse_param *h){return(0);}
-pcb_bool exec_dielectric(parse_param *h){return(0);}
-pcb_bool exec_plane(parse_param *h){return(0);}
+/*
+ * Hyperlynx STACKUP section 
+ */
 
-pcb_bool exec_devices(parse_param *h){return(0);}
+/*
+ * 'OPTIONS' subrecord of 'STACKUP' record.
+ * Defines dielectric constant and loss tangent of metal layers.
+ */
 
-pcb_bool exec_supplies(parse_param *h){return(0);}
+/*
+ * Debug output for layers
+ */
+
+void hyp_debug_layer(parse_param *h)
+{
+  if (hyp_debug) {
+    if (h->thickness_set) pcb_printf(" thickness = %mm", z2coord(h->thickness));
+    if (h->plating_thickness_set) pcb_printf(" plating_thickness = %mm", z2coord(h->plating_thickness));
+    if (h->bulk_resistivity_set) pcb_printf(" bulk_resistivity = %f", h->bulk_resistivity);
+    if (h->temperature_coefficient_set) pcb_printf(" temperature_coefficient = %f", h->temperature_coefficient);
+    if (h->epsilon_r_set) pcb_printf(" epsilon_r = %f", h->epsilon_r);
+    if (h->loss_tangent_set) pcb_printf(" loss_tangent = %f", h->loss_tangent);
+    if (h->conformal_set) pcb_printf(" conformal = %i", h->conformal);
+    if (h->prepreg_set) pcb_printf(" prepreg = %i", h->prepreg);
+    if (h->layer_name_set) pcb_printf(" layer_name = %s", h->layer_name);
+    if (h->material_name_set) pcb_printf(" material_name = %s", h->material_name);
+    if (h->plane_separation_set) pcb_printf(" plane_separation = %mm", m2coord(h->plane_separation));
+    pcb_printf("\n");
+    }
+
+  return;
+}
+
+pcb_bool exec_options(parse_param *h)
+{
+  /* Use dielectric for metal? */
+  if (hyp_debug) pcb_printf("options: use_die_for_metal = %f\n", h->use_die_for_metal);
+  if (h->use_die_for_metal) use_die_for_metal = pcb_true;
+  return 0;
+}
+
+/*
+ * Returns the pcb_layer_id of layer "lname". 
+ * If layer lname does not exist, a new copper layer with name "lname" is created.
+ * If the layer name is NULL, a new copper layer with a new, unused layer name is created.
+ */
+
+pcb_layer_id_t hyp_create_layer(char* lname)
+{
+  pcb_layer_id_t layer_id;
+  char new_layer_name[PCB_MAX_LAYER];
+  int n;
+
+  layer_id = -1;
+  if (lname != NULL) {
+    /* we have a layer name. check whether layer already exists */
+    layer_id = pcb_layer_by_name(new_layer_name);
+    if (layer_id >= 0) return layer_id; /* found */
+    /* create new layer */
+    layer_id = pcb_layer_create(PCB_LYT_COPPER, pcb_false, pcb_false, lname); 
+    }
+  else {
+    /* no layer name given. find unused layer name in range 1..PCB_MAX_LAYER */
+    for (n = 1; n < PCB_MAX_LAYER; n++) {
+      sprintf(new_layer_name,"%i", n);
+      if (pcb_layer_by_name(new_layer_name) < 0) {
+        /* create new layer */
+        layer_id = pcb_layer_create(PCB_LYT_COPPER, pcb_false, pcb_false, new_layer_name);
+        break;
+        }
+      }
+    }
+  /* check if layer valid */
+  if (layer_id < 0) {
+    /* layer creation failed. return the first copper layer you can find. */
+    if (hyp_debug) pcb_printf("running out of layers\n");
+    layer_id = PCB_COMPONENT_SIDE;
+    }
+  
+  return layer_id;
+}
+
+/*
+ * signal layer 
+ */
+
+pcb_bool exec_signal(parse_param *h)
+{
+  pcb_layer_id_t signal_layer_id;
+  signal_layer_id = hyp_create_layer(h->layer_name);
+
+  if (hyp_debug) pcb_printf("signal layer: \"%s\"", pcb_layer_name(signal_layer_id));
+  hyp_debug_layer(h);
+
+  /* XXX not forget adapt plane separation */
+  return 0;
+}
+
+/*
+ * dielectric layer 
+ */
+
+pcb_bool exec_dielectric(parse_param *h)
+{
+  if (hyp_debug) pcb_printf("dielectric layer: ");
+  hyp_debug_layer(h);
+  return 0;
+}
+
+/*
+ * plane layer - a layer which is flooded with copper.
+ */
+
+pcb_bool exec_plane(parse_param *h)
+{
+  pcb_layer_id_t plane_layer_id;
+  plane_layer_id = hyp_create_layer(h->layer_name);
+  
+  layer_is_plane_layer[plane_layer_id] = pcb_true;
+  if (h->plane_separation_set) layer_plane_separation[plane_layer_id] = m2coord(h->plane_separation);
+
+  if (hyp_debug) pcb_printf("plane layer: \"%s\"", pcb_layer_name(plane_layer_id));
+  hyp_debug_layer(h);
+  return 0;
+}
+
+/*
+ * devices
+ */
+
+pcb_bool exec_devices(parse_param *h)
+{
+  if (hyp_debug) {
+    pcb_printf("device: device_type = %s ref = %s", h->device_type, h->ref);
+    if (h->name_set) pcb_printf(" name = %s", h->name);
+    if (h->value_float_set) pcb_printf(" value_float = %f", h->value_float);
+    if (h->value_string_set) pcb_printf(" value_string = %s", h->value_string);
+    if (h->layer_name_set) pcb_printf(" layer_name = %s", h->layer_name);
+    if (h->package_set) pcb_printf(" package = %s", h->package);
+    pcb_printf("\n");
+    }
+
+  return 0;
+}
+
+/*
+ * supply signals 
+ */
+
+pcb_bool exec_supplies(parse_param *h)
+{
+  if (hyp_debug) pcb_printf("supplies: name = %s value_float = %f voltage_specified = %i conversion = %i\n", h->name, h->value_float, h->voltage_specified, h->conversion);
+
+  return 0;
+}
 
 pcb_bool exec_padstack_element(parse_param *h){return(0);}
 pcb_bool exec_padstack_end(parse_param *h){return(0);}
@@ -642,8 +802,19 @@ pcb_bool exec_net_class(parse_param *h){return(0);}
 pcb_bool exec_net_class_element(parse_param *h){return(0);}
 pcb_bool exec_net_class_attribute(parse_param *h){return(0);}
 
-pcb_bool exec_end(parse_param *h){return(0);}
-pcb_bool exec_key(parse_param *h){return(0);}
+pcb_bool exec_end(parse_param *h)
+{
+  if (hyp_debug) pcb_printf("end\n");
+
+  return 0;
+}
+
+pcb_bool exec_key(parse_param *h)
+{
+  if (hyp_debug) pcb_printf("key: key = %s\n", h->key);
+
+  return 0;
+}
 
 /*
  * Draw arc from (x1, y1) to (x2, y2) with center (xc, yc) and radius r. 
