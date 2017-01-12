@@ -53,8 +53,6 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 {
 	pcb_layergrp_id_t gid;
 
-/*	pcb_layer_group_from_old(PCB);*/
-
 	for(gid = 0; gid < pcb_max_group; gid++) {
 		int i;
 		const char *type_gfx;
@@ -65,7 +63,6 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 				continue;
 			type_gfx = "old";
 		}
-		else if (g->type & PCB_LYT_OUTLINE) continue;
 		else if (g->type & PCB_LYT_VIRTUAL) continue;
 		else if (g->type & PCB_LYT_COPPER) type_gfx = "====";
 		else if (g->type & PCB_LYT_SUBSTRATE) type_gfx = "xxxx";
@@ -73,12 +70,13 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 		else if (g->type & PCB_LYT_MASK) type_gfx = "mask";
 		else if (g->type & PCB_LYT_PASTE) type_gfx = "pst.";
 		else if (g->type & PCB_LYT_MISC) type_gfx = "misc";
+		else if (g->type & PCB_LYT_OUTLINE) type_gfx = "||||";
 		else type_gfx = "????";
 
-		printf("%s [%ld] %s\n", type_gfx, gid, g->name);
+		printf("%s {%ld} %s\n", type_gfx, gid, g->name);
 		for(i = 0; i < g->len; i++) {
 			pcb_layer_id_t lid = g->lid[i];
-			pcb_layer_t *l = PCB->Data->Layer+lid;
+			pcb_layer_t *l = &PCB->Data->Layer[lid];
 			printf("      [%ld] %s\n", lid, l->Name);
 		}
 	}

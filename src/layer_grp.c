@@ -96,102 +96,95 @@ pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
-int pcb_layer_parse_group_string(const char *s, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt)
+static int flush_item(const char *s, const char *start, pcb_layer_id_t *lids, int *lids_len, pcb_layer_type_t *loc)
 {
-	int group, member, layer;
-	pcb_bool c_set = pcb_false,						/* flags for the two special layers to */
-		s_set = pcb_false;							/* provide a default setting for old formats */
-	int groupnum[PCB_MAX_LAYERGRP + 2];
+	char *end;
+	pcb_layer_id_t lid;
+	switch (*start) {
+		case 'c': case 'C': case 't': case 'T': *loc = PCB_LYT_TOP; break;
+		case 's': case 'S': case 'b': case 'B': *loc = PCB_LYT_BOTTOM; break;
+		default:
+			lid = strtol(start, &end, 10);
+			if (end != s)
+				return -1;
+			if ((*lids_len) >= PCB_MAX_LAYER)
+				return -1;
+			lids[*lids_len] = lid;
+			(*lids_len)++;
+	}
+	return 0;
+}
+
+static pcb_layer_group_t *get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc)
+{
+	int n;
+	for(n = 0; n < stack->len; n++)
+		if ((stack->grp[n].type & loc) && (stack->grp[n].type & PCB_LYT_COPPER))
+			return &(stack->grp[n]);
+}
+
+static pcb_layer_group_t *get_grp_new_intern(pcb_layer_stack_t *stack)
+{
+	int bl;
+	for(bl = 0; bl < stack->len; bl++) {
+		if ((stack->grp[bl].type & PCB_LYT_BOTTOM) && (stack->grp[bl].type & PCB_LYT_COPPER)) {
+			/* insert a new internal layer here */
+			return NULL;
+		}
+	}
+	return NULL;
+}
+
+static void pcb_layer_group_setup_default(pcb_layer_stack_t *newg);
+int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt)
+{
+	const char *s, *start;
+	pcb_layer_id_t lids[PCB_MAX_LAYER];
+	int lids_len = 0;
+	pcb_layer_type_t loc = PCB_LYT_INTERN;
+	pcb_layer_group_t *g;
+	int n;
 
 	/* clear struct */
-	memset(LayerGroup, 0, sizeof(pcb_layer_stack_t));
+	pcb_layer_group_setup_default(LayerGroup);
 
-	/* Clear assignments */
-	for (layer = 0; layer < PCB_MAX_LAYER + 2; layer++)
-		groupnum[layer] = -1;
-
-	/* loop over all groups */
-	for (group = 0; s && *s && group < LayerN; group++) {
-		while (*s && isspace((int) *s))
-			s++;
-
-		/* loop over all group members */
-		for (member = 0; *s; s++) {
-			/* ignore white spaces and get layernumber */
-			while (*s && isspace((int) *s))
-				s++;
-			switch (*s) {
-			case 'c':
-			case 'C':
-			case 't':
-			case 'T':
-				layer = LayerN + PCB_COMPONENT_SIDE;
-				c_set = pcb_true;
-				break;
-
-			case 's':
-			case 'S':
-			case 'b':
-			case 'B':
-				layer = LayerN + PCB_SOLDER_SIDE;
-				s_set = pcb_true;
-				break;
-
-			default:
-				if (!isdigit((int) *s))
+	for(start = s = grp_str; ; s++) {
+		switch(*s) {
+			case ',':
+				if (flush_item(s, start, lids, &lids_len, &loc) != 0)
 					goto error;
-				layer = atoi(s) - 1;
+				start = s+1;
 				break;
-			}
-			if (member >= LayerN + 1)
-				goto error;
-			if (oldfmt) {
-				/* the old format didn't always have the silks */
-				if (layer > LayerN + MAX(PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE)) {
-					/* UGLY HACK: we assume oldfmt is 1 only when called from io_pcb .y */
-					PCB->Data->LayerN++;
-					LayerN++;
-				}
-				if (layer > LayerN + MAX(PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE) + 2)
+			case '\0':
+			case ':':
+				if (flush_item(s, start, lids, &lids_len, &loc) != 0)
 					goto error;
-			}
-			else {
-				if (layer > LayerN + MAX(PCB_SOLDER_SIDE, PCB_COMPONENT_SIDE))
-					goto error;
-			}
-			groupnum[layer] = group;
-			LayerGroup->grp[group].lid[member++] = layer;
-			while (*++s && isdigit((int) *s));
+				/* finalize group */
+				if (loc & PCB_LYT_INTERN)
+					g = get_grp_new_intern(LayerGroup);
+				else
+					g = get_grp(LayerGroup, loc);
 
-			/* ignore white spaces and check for separator */
-			while (*s && isspace((int) *s))
-				s++;
-			if (!*s || *s == ':')
+if (g != NULL) {
+				for(n = 0; n < lids_len; n++)
+					g->lid[n] = lids[n];
+				g->len = lids_len;
+}
+				/* prepare for next iteration */
+				loc = PCB_LYT_INTERN;
+				start = s+1;
 				break;
-			if (*s != ',')
-				goto error;
 		}
-		LayerGroup->grp[group].len = member;
-		if (*s == ':')
-			s++;
+		if (*s == '\0')
+			break;
 	}
-	if (!s_set)
-		LayerGroup->grp[PCB_SOLDER_SIDE].lid[LayerGroup->grp[PCB_SOLDER_SIDE].len++] = LayerN + PCB_SOLDER_SIDE;
-	if (!c_set)
-		LayerGroup->grp[PCB_COMPONENT_SIDE].lid[LayerGroup->grp[PCB_COMPONENT_SIDE].len++] = LayerN + PCB_COMPONENT_SIDE;
 
-	for (layer = 0; layer < LayerN && group < LayerN; layer++)
-		if (groupnum[layer] == -1) {
-			LayerGroup->grp[group].lid[0] = layer;
-			LayerGroup->grp[group].len = 1;
-			group++;
-		}
-	return (0);
+	return 0;
 
 	/* reset structure on error */
 error:
 	memset(LayerGroup, 0, sizeof(pcb_layer_stack_t));
-	return (1);
+	return 1;
 }
 
 int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty)
@@ -292,73 +285,33 @@ old [3]
 
 #define NEWG(g, flags, gname) \
 do { \
-	g = &(newg.grp[newg.len]); \
+	g = &(newg->grp[newg->len]); \
 	g->valid = 1; \
 	if (gname != NULL) \
 		g->name = pcb_strdup(gname); \
 	else \
 		g->name = NULL; \
 	g->type = flags; \
-	newg.len++; \
+	newg->len++; \
 } while(0)
 
-#define APPEND_ALL(_grp_, src_grp_id, flags) \
-do { \
-	int __n__; \
-	pcb_layer_group_t *__s__ = &pcb->LayerGroups.grp[src_grp_id]; \
-	for(__n__ = 0; __n__ < (__s__)->len; __n__++) { \
-		if (pcb_layer_flags((__s__)->lid[__n__]) & flags) { \
-			_grp_->lid[_grp_->len] = __s__->lid[__n__]; \
-			_grp_->len++; \
-		} \
-	} \
-} while(0)
-
-void pcb_layer_group_from_old(pcb_board_t *pcb)
+static void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 {
-	pcb_layer_stack_t newg;
 	pcb_layer_group_t *g;
-	int n;
 
-	memset(&newg, 0, sizeof(newg));
+	memset(newg, 0, sizeof(pcb_layer_stack_t));
 
 	NEWG(g, PCB_LYT_TOP | PCB_LYT_PASTE, "top paste");
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_SILK, "top silk");      APPEND_ALL(g, 0, PCB_LYT_SILK);
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_SILK, "top silk");
 	NEWG(g, PCB_LYT_TOP | PCB_LYT_MASK, "top mask");
-	NEWG(g, PCB_LYT_TOP | PCB_LYT_COPPER, "top copper");  APPEND_ALL(g, 0, PCB_LYT_COPPER);
+	NEWG(g, PCB_LYT_TOP | PCB_LYT_COPPER, "top copper");
 	NEWG(g, PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, NULL);
 
-	for(n = 2; n < PCB->Data->LayerN; n++) {
-		if (pcb_layergrp_flags(n) & PCB_LYT_COPPER) {
-			char nm[32];
-			sprintf(nm, "internal copper %d", n);
-			NEWG(g, PCB_LYT_INTERN | PCB_LYT_COPPER, nm); APPEND_ALL(g, n, PCB_LYT_COPPER);
-			NEWG(g, PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, NULL);
-		}
-	}
-
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_COPPER, "bottom copper");  APPEND_ALL(g, 1, PCB_LYT_COPPER);
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_COPPER, "bottom copper");
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom mask");
-	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom silk");      APPEND_ALL(g, 1, PCB_LYT_SILK);
+	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom silk");
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
 
-	/* collect all outline layers in a separate layer group */
-	g = NULL;
-	for(n = 2; n < PCB->Data->LayerN; n++) {
-		if (pcb_layergrp_flags(n) & PCB_LYT_OUTLINE) {
-			char nm[32];
-			sprintf(nm, "outline", n);
-			if (g == NULL)
-				NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, nm);
-			APPEND_ALL(g, n, PCB_LYT_OUTLINE);
-		}
-	}
-
-	memcpy(&pcb->LayerGroups, &newg, sizeof(newg));
-}
-
-void pcb_layer_group_to_old(pcb_board_t *pcb)
-{
-
+	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");
 }
 

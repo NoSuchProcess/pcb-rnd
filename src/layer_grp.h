@@ -28,7 +28,6 @@
 #ifndef PCB_LAYER_GRP_H
 #define PCB_LAYER_GRP_H
 
-typedef long int pcb_layergrp_id_t;
 typedef struct pcb_layer_group_s pcb_layer_group_t;
 
 #include "layer.h"

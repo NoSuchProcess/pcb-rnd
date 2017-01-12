@@ -57,7 +57,7 @@ struct pcb_data_s {
 #define pcb_max_layer (PCB->Data->LayerN+2)
 
 /* OBSOLOTE: do not use these 4 */
-#define pcb_max_group (PCB->Data->LayerN)
+#define pcb_max_group (PCB->LayerGroups.len)
 #define pcb_max_copper_layer (PCB->Data->LayerN)
 #define pcb_solder_silk_layer (pcb_max_copper_layer + PCB_SOLDER_SIDE)
 #define pcb_component_silk_layer (pcb_max_copper_layer + PCB_COMPONENT_SIDE)

@@ -47,12 +47,8 @@
 #define PCB_LARGE_VALUE      (COORD_MAX / 2 - 1) /* maximum extent of board and elements */
 
 #define PCB_MAX_LAYER        16    /* max number of layer, check source code for more changes, a *lot* more changes */
-#if 0
 /* new array size that allows substrate layers */
-#	define PCB_MAX_LAYERGRP     ((PCB_MAX_LAYER+4)*2)    /* max number of layer groups, a.k.a. physical layers */
-#else
-#	define PCB_MAX_LAYERGRP     PCB_MAX_LAYER    /* max number of layer groups, a.k.a. physical layers */
-#endif
+#	define PCB_MAX_LAYERGRP     ((PCB_MAX_LAYER+8)*2)    /* max number of layer groups, a.k.a. physical layers: a few extra outer layers per side, pluse one substrate per real layer */
 #define PCB_MIN_LINESIZE     PCB_MIL_TO_COORD(0.01)	/* thickness of lines */
 #define PCB_MAX_LINESIZE     PCB_LARGE_VALUE
 #define PCB_MIN_ARCSIZE      PCB_MIL_TO_COORD(0.01)
