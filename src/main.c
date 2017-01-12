@@ -29,6 +29,8 @@
  */
 #include "config.h"
 
+static const char *EXPERIMENTAL = "layer rewrite";
+
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
@@ -522,6 +524,13 @@ int main(int argc, char *argv[])
 
 	/* main loop */
 	do {
+		if (EXPERIMENTAL != NULL) {
+			pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
+			pcb_message(PCB_MSG_ERROR, "This revision of pcb-rnd is experimental, unstable, do NOT attempt to use\n");
+			pcb_message(PCB_MSG_ERROR, "it for production. The reason for this state is:\n");
+			pcb_message(PCB_MSG_ERROR, "%s\n", EXPERIMENTAL);
+			pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
+		}
 		pcb_gui->do_export(0);
 		pcb_gui = pcb_next_gui;
 		pcb_next_gui = NULL;
