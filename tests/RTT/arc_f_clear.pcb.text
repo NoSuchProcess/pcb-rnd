@@ -1,0 +1,22 @@
+polygone
+width 450mils
+height 325mils
+
+small near circle completely in polygon
+line width 10mils
+width 60mils
+clearance on the left ~20mils
+clearance on the right ~20.05mils
+clearance on the top ~20.05mils
+clearance on the bottom 20.05mils
+
+longer arc completely in polygon
+line width ~135mils
+width 135mils
+height 
+clearance on the bottom right end ~20.2mils
+clearance on the top right end 
+clearance on the end right end 
+clearance on the right top end ~20.05mils
+clearance on the left top end 20mils
+

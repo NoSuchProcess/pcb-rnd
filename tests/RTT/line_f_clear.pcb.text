@@ -1,0 +1,20 @@
+rectangle
+width 
+height 
+
+veritcal line
+width 10mils
+length 260mils
+clearance 42/42 mils (left/right)
+
+horizontal line
+width ~15mils
+length 290mils
+clearance 12/12 mils (top/bottom)
+
+left diangonal line
+45 degrees
+
+right diagonal line
+? degrees
+
