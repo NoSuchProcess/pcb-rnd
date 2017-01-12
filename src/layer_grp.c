@@ -328,15 +328,33 @@ void pcb_layer_group_from_old(pcb_board_t *pcb)
 	NEWG(g, PCB_LYT_TOP | PCB_LYT_COPPER, "top copper");  APPEND_ALL(g, 0, PCB_LYT_COPPER);
 	NEWG(g, PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, NULL);
 
+	for(n = 2; n < PCB->Data->LayerN; n++) {
+		if (pcb_layergrp_flags(n) & PCB_LYT_COPPER) {
+			char nm[32];
+			sprintf(nm, "internal copper %d", n);
+			NEWG(g, PCB_LYT_INTERN | PCB_LYT_COPPER, nm); APPEND_ALL(g, n, PCB_LYT_COPPER);
+			NEWG(g, PCB_LYT_INTERN | PCB_LYT_SUBSTRATE, NULL);
+		}
+	}
 
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_COPPER, "bottom copper");  APPEND_ALL(g, 1, PCB_LYT_COPPER);
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_MASK, "bottom mask");
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom silk");      APPEND_ALL(g, 1, PCB_LYT_SILK);
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
 
+	/* collect all outline layers in a separate layer group */
+	g = NULL;
+	for(n = 2; n < PCB->Data->LayerN; n++) {
+		if (pcb_layergrp_flags(n) & PCB_LYT_OUTLINE) {
+			char nm[32];
+			sprintf(nm, "outline", n);
+			if (g == NULL)
+				NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, nm);
+			APPEND_ALL(g, n, PCB_LYT_OUTLINE);
+		}
+	}
 
 	memcpy(&pcb->LayerGroups, &newg, sizeof(newg));
-
 }
 
 void pcb_layer_group_to_old(pcb_board_t *pcb)
