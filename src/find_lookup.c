@@ -498,26 +498,23 @@ static pcb_bool LookupLOConnectionsToLOList(pcb_bool AndRats)
 				/* be aware that the layer number equal pcb_max_layer
 				 * and pcb_max_layer+1 have a special meaning for pads
 				 */
-#warning layer TODO: reindent
-				{
-					/* try all new lines */
-					position = &lineposition[layer];
-					for (; *position < LineList[layer].Number; (*position)++)
-						if (LookupLOConnectionsToLine(LINELIST_ENTRY(layer, *position), group, pcb_true))
-							return (pcb_true);
+				/* try all new lines */
+				position = &lineposition[layer];
+				for (; *position < LineList[layer].Number; (*position)++)
+					if (LookupLOConnectionsToLine(LINELIST_ENTRY(layer, *position), group, pcb_true))
+						return (pcb_true);
 
-					/* try all new arcs */
-					position = &arcposition[layer];
-					for (; *position < ArcList[layer].Number; (*position)++)
-						if (LookupLOConnectionsToArc(ARCLIST_ENTRY(layer, *position), group))
-							return (pcb_true);
+				/* try all new arcs */
+				position = &arcposition[layer];
+				for (; *position < ArcList[layer].Number; (*position)++)
+					if (LookupLOConnectionsToArc(ARCLIST_ENTRY(layer, *position), group))
+						return (pcb_true);
 
-					/* try all new polygons */
-					position = &polyposition[layer];
-					for (; *position < PolygonList[layer].Number; (*position)++)
-						if (LookupLOConnectionsToPolygon(POLYGONLIST_ENTRY(layer, *position), group))
-							return (pcb_true);
-				}
+				/* try all new polygons */
+				position = &polyposition[layer];
+				for (; *position < PolygonList[layer].Number; (*position)++)
+					if (LookupLOConnectionsToPolygon(POLYGONLIST_ENTRY(layer, *position), group))
+						return (pcb_true);
 			}
 
 			/* try all new pads */
@@ -903,31 +900,28 @@ static pcb_bool LookupLOConnectionsToArc(pcb_arc_t *Arc, pcb_cardinal_t LayerGro
 	/* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
 		pcb_layer_id_t layer;
+		pcb_polygon_t *polygon;
+		gdl_iterator_t it;
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
-#warning layer TODO: reindent this block
-		{
-			pcb_polygon_t *polygon;
-			gdl_iterator_t it;
 
-			info.layer = layer;
-			/* add arcs */
-			if (setjmp(info.env) == 0)
-				pcb_r_search(LAYER_PTR(layer)->line_tree, &info.arc.BoundingBox, NULL, LOCtoArcLine_callback, &info, NULL);
-			else
+		info.layer = layer;
+		/* add arcs */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(LAYER_PTR(layer)->line_tree, &info.arc.BoundingBox, NULL, LOCtoArcLine_callback, &info, NULL);
+		else
+			return pcb_true;
+
+		if (setjmp(info.env) == 0)
+			pcb_r_search(LAYER_PTR(layer)->arc_tree, &info.arc.BoundingBox, NULL, LOCtoArcArc_callback, &info, NULL);
+		else
+			return pcb_true;
+
+		/* now check all polygons */
+		polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
+			if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_arc_in_poly(Arc, polygon)
+					&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_ARC, Arc, PCB_FCT_COPPER))
 				return pcb_true;
-
-			if (setjmp(info.env) == 0)
-				pcb_r_search(LAYER_PTR(layer)->arc_tree, &info.arc.BoundingBox, NULL, LOCtoArcArc_callback, &info, NULL);
-			else
-				return pcb_true;
-
-			/* now check all polygons */
-			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
-				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_arc_in_poly(Arc, polygon)
-						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_ARC, Arc, PCB_FCT_COPPER))
-					return pcb_true;
-			}
 		}
 	}
 
@@ -1030,29 +1024,26 @@ static pcb_bool LookupLOConnectionsToLine(pcb_line_t *Line, pcb_cardinal_t Layer
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
-#warning layer TODO: reindent
-		{
-			info.layer = layer;
-			/* add lines */
-			if (setjmp(info.env) == 0)
-				pcb_r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.line, NULL, LOCtoLineLine_callback, &info, NULL);
-			else
-				return pcb_true;
-			/* add arcs */
-			if (setjmp(info.env) == 0)
-				pcb_r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.line, NULL, LOCtoLineArc_callback, &info, NULL);
-			else
-				return pcb_true;
-			/* now check all polygons */
-			if (PolysTo) {
-				gdl_iterator_t it;
-				pcb_polygon_t *polygon;
+		info.layer = layer;
+		/* add lines */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.line, NULL, LOCtoLineLine_callback, &info, NULL);
+		else
+			return pcb_true;
+		/* add arcs */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.line, NULL, LOCtoLineArc_callback, &info, NULL);
+		else
+			return pcb_true;
+		/* now check all polygons */
+		if (PolysTo) {
+			gdl_iterator_t it;
+			pcb_polygon_t *polygon;
 
-				polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
-					if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_line_in_poly(Line, polygon)
-							&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_LINE, Line, PCB_FCT_COPPER))
-						return pcb_true;
-				}
+			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
+				if (!PCB_FLAG_TEST(TheFlag, polygon) && pcb_is_line_in_poly(Line, polygon)
+						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_LINE, Line, PCB_FCT_COPPER))
+					return pcb_true;
 			}
 		}
 	}
@@ -1142,18 +1133,14 @@ static pcb_bool LookupLOConnectionsToRatEnd(pcb_point_t *Point, pcb_cardinal_t L
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 		/* handle normal layers rats don't ever touch arcs by definition */
-#warning layer TODO: reindent
-		{
-			info.layer = layer;
-			if (setjmp(info.env) == 0)
-				r_search_pt(LAYER_PTR(layer)->line_tree, Point, 1, NULL, LOCtoRat_callback, &info, NULL);
-			else
-				return pcb_true;
-			if (setjmp(info.env) == 0)
-				r_search_pt(LAYER_PTR(layer)->polygon_tree, Point, 1, NULL, PolygonToRat_callback, &info, NULL);
-		}
+		info.layer = layer;
+		if (setjmp(info.env) == 0)
+			r_search_pt(LAYER_PTR(layer)->line_tree, Point, 1, NULL, LOCtoRat_callback, &info, NULL);
+		else
+			return pcb_true;
+		if (setjmp(info.env) == 0)
+			r_search_pt(LAYER_PTR(layer)->polygon_tree, Point, 1, NULL, PolygonToRat_callback, &info, NULL);
 	}
-
 
 	/* handle the special pad layers */
 	flg = pcb_layergrp_flags(LayerGroup);
@@ -1315,25 +1302,23 @@ static pcb_bool LookupLOConnectionsToPad(pcb_pad_t *Pad, pcb_cardinal_t LayerGro
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 		/* handle normal layers */
-#warning layer TODO: reindent
-		{
-			info.layer = layer;
-			/* add lines */
-			if (setjmp(info.env) == 0)
-				pcb_r_search(LAYER_PTR(layer)->line_tree, &info.pad.BoundingBox, NULL, LOCtoPadLine_callback, &info, NULL);
-			else
-				return pcb_true;
-			/* add arcs */
-			if (setjmp(info.env) == 0)
-				pcb_r_search(LAYER_PTR(layer)->arc_tree, &info.pad.BoundingBox, NULL, LOCtoPadArc_callback, &info, NULL);
-			else
-				return pcb_true;
-			/* add polygons */
-			if (setjmp(info.env) == 0)
-				pcb_r_search(LAYER_PTR(layer)->polygon_tree, &info.pad.BoundingBox, NULL, LOCtoPadPoly_callback, &info, NULL);
-			else
-				return pcb_true;
-		}
+
+		info.layer = layer;
+		/* add lines */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(LAYER_PTR(layer)->line_tree, &info.pad.BoundingBox, NULL, LOCtoPadLine_callback, &info, NULL);
+		else
+			return pcb_true;
+		/* add arcs */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(LAYER_PTR(layer)->arc_tree, &info.pad.BoundingBox, NULL, LOCtoPadArc_callback, &info, NULL);
+		else
+			return pcb_true;
+		/* add polygons */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(LAYER_PTR(layer)->polygon_tree, &info.pad.BoundingBox, NULL, LOCtoPadPoly_callback, &info, NULL);
+		else
+			return pcb_true;
 	}
 
 	/* handle the special pad layers */
@@ -1430,35 +1415,31 @@ static pcb_bool LookupLOConnectionsToPolygon(pcb_polygon_t *Polygon, pcb_cardina
 /* loop over all layers of the group */
 	for (entry = 0; entry < PCB->LayerGroups.grp[LayerGroup].len; entry++) {
 		pcb_layer_id_t layer;
+		gdl_iterator_t it;
+		pcb_polygon_t *polygon;
 
 		layer = PCB->LayerGroups.grp[LayerGroup].lid[entry];
 
 		/* handle normal layers */
-#warning layer TODO: reindent
-		{
-			gdl_iterator_t it;
-			pcb_polygon_t *polygon;
-
-			/* check all polygons */
-			polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
-				if (!PCB_FLAG_TEST(TheFlag, polygon)
-						&& pcb_is_poly_in_poly(polygon, Polygon)
-						&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_POLYGON, Polygon, PCB_FCT_COPPER))
-					return pcb_true;
-			}
-
-			info.layer = layer;
-			/* check all lines */
-			if (setjmp(info.env) == 0)
-				pcb_r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyLine_callback, &info, NULL);
-			else
-				return pcb_true;
-			/* check all arcs */
-			if (setjmp(info.env) == 0)
-				pcb_r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyArc_callback, &info, NULL);
-			else
+		/* check all polygons */
+		polylist_foreach(&(PCB->Data->Layer[layer].Polygon), &it, polygon) {
+			if (!PCB_FLAG_TEST(TheFlag, polygon)
+					&& pcb_is_poly_in_poly(polygon, Polygon)
+					&& ADD_POLYGON_TO_LIST(layer, polygon, PCB_TYPE_POLYGON, Polygon, PCB_FCT_COPPER))
 				return pcb_true;
 		}
+
+		info.layer = layer;
+		/* check all lines */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(LAYER_PTR(layer)->line_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyLine_callback, &info, NULL);
+		else
+			return pcb_true;
+		/* check all arcs */
+		if (setjmp(info.env) == 0)
+			pcb_r_search(LAYER_PTR(layer)->arc_tree, (pcb_box_t *) & info.polygon, NULL, LOCtoPolyArc_callback, &info, NULL);
+		else
+			return pcb_true;
 	}
 
 	/* handle the special pad layers */
