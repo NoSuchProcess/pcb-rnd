@@ -133,7 +133,7 @@ static int flush_item(const char *s, const char *start, pcb_layer_id_t *lids, in
 		case 'c': case 'C': case 't': case 'T': *loc = PCB_LYT_TOP; break;
 		case 's': case 'S': case 'b': case 'B': *loc = PCB_LYT_BOTTOM; break;
 		default:
-			lid = strtol(start, &end, 10);
+			lid = strtol(start, &end, 10)-1;
 			if (end != s)
 				return -1;
 			if ((*lids_len) >= PCB_MAX_LAYER)
@@ -144,11 +144,11 @@ static int flush_item(const char *s, const char *start, pcb_layer_id_t *lids, in
 	return 0;
 }
 
-static pcb_layer_group_t *get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc)
+static pcb_layer_group_t *get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ)
 {
 	int n;
 	for(n = 0; n < stack->len; n++)
-		if ((stack->grp[n].type & loc) && (stack->grp[n].type & PCB_LYT_COPPER))
+		if ((stack->grp[n].type & loc) && (stack->grp[n].type & typ))
 			return &(stack->grp[n]);
 	return NULL;
 }
@@ -210,7 +210,7 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 				if (loc & PCB_LYT_INTERN)
 					g = get_grp_new_intern(LayerGroup);
 				else
-					g = get_grp(LayerGroup, loc);
+					g = get_grp(LayerGroup, loc, PCB_LYT_COPPER);
 
 				for(n = 0; n < lids_len; n++)
 					g->lid[n] = lids[n];
@@ -225,6 +225,16 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 		if (*s == '\0')
 			break;
 	}
+
+	/* set the two silks */
+	g = get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
+	g->len = 1;
+	g->lid[0] = LayerN;
+
+	g = get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_COPPER);
+	g->len = 1;
+	g->lid[0] = LayerN+1;
+
 
 	return 0;
 
