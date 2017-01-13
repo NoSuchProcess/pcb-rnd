@@ -1,0 +1,31 @@
+
+upper left triangle
+100 mils wide
+100 mils tall
+
+gap from lower left triangle to upper left triangle
+25 mils horizontally
+25 mils vertically
+
+lower left triangle
+125 mils wide
+125 mils tall
+
+gap from lower left triangle to far right piramid
+25 mils
+
+far right piramid
+125 mils height
+250 mils base
+
+bottom triangle
+275 mils across
+175 mils up
+top edge
+276.13 mils long __ degrees
+side edge
+176.78 mils long __ degrees
+bottom edge
+291.55 mils long __ degrees
+
+
