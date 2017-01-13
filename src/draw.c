@@ -178,8 +178,8 @@ static void DrawEverything_holes(const pcb_box_t * drawn_area)
  */
 static void DrawEverything(const pcb_box_t * drawn_area)
 {
-	int i, ngroups, side;
-	pcb_layergrp_id_t component, solder;
+	int i, ngroups, side, slk_len;
+	pcb_layergrp_id_t component, solder, slk[16];
 	/* This is the list of layer groups we will draw.  */
 	pcb_layergrp_id_t do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
@@ -202,8 +202,9 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 	}
 
 	solder = component = -1;
-	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &solder, 1);
-	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &component, 1);
+	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder, 1);
+	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &component, 1);
+
 	/*
 	 * first draw all 'invisible' stuff
 	 */
@@ -250,14 +251,14 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB_VLY_TOP_SILK, 0)) {
-		DrawSilk(PCB_LYT_TOP, drawn_area);
-		pcb_gui->end_layer();
-	}
-
-	if (pcb_layer_gui_set_vlayer(PCB_VLY_BOTTOM_SILK, 0)) {
-		DrawSilk(PCB_LYT_BOTTOM, drawn_area);
-		pcb_gui->end_layer();
+	/* Draw silks */
+	slk_len = pcb_layer_group_list(PCB_LYT_SILK, slk, sizeof(slk) / sizeof(slk[0]));
+	for(i = 0; i < slk_len; i++) {
+		if (pcb_layer_gui_set_glayer(slk[i], 0)) {
+			unsigned int loc = pcb_layergrp_flags(slk[i]);
+			DrawSilk(loc & PCB_LYT_ANYWHERE, drawn_area);
+			pcb_gui->end_layer();
+		}
 	}
 
 	if (pcb_gui->holes_after)
