@@ -96,6 +96,35 @@ pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
+int pcb_layergrp_free(pcb_layer_stack_t *stack, pcb_layergrp_id_t id)
+{
+	if ((id >= 0) && (id < stack->len)) {
+		pcb_layer_group_t *g = stack->grp + id;
+		if (g->name != NULL)
+			free(g->name);
+#warning unlink layers from the group
+		memset(g, 0, sizeof(pcb_layer_group_t));
+		return 0;
+	}
+	return -1;
+}
+
+int pcb_layergrp_move(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src)
+{
+	pcb_layer_group_t *d, *s;
+
+	if ((src < 0) || (src >= stack->len))
+		return -1;
+	if (pcb_layergrp_free(stack, dst) != 0)
+		return -1;
+	d = stack->grp + dst;
+	s = stack->grp + src;
+	memcpy(d, s, sizeof(pcb_layer_group_t));
+#warning relink layers in d
+	memset(s, 0, sizeof(pcb_layer_group_t));
+	return 0;
+}
+
 static int flush_item(const char *s, const char *start, pcb_layer_id_t *lids, int *lids_len, pcb_layer_type_t *loc)
 {
 	char *end;
@@ -121,15 +150,33 @@ static pcb_layer_group_t *get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc
 	for(n = 0; n < stack->len; n++)
 		if ((stack->grp[n].type & loc) && (stack->grp[n].type & PCB_LYT_COPPER))
 			return &(stack->grp[n]);
+	return NULL;
 }
 
 static pcb_layer_group_t *get_grp_new_intern(pcb_layer_stack_t *stack)
 {
-	int bl;
-	for(bl = 0; bl < stack->len; bl++) {
+	int bl, n;
+
+	if (stack->len+2 >= PCB_MAX_LAYERGRP)
+		return NULL;
+
+	/* seek the bottom copper layer */
+	for(bl = stack->len; bl >= 0; bl--) {
 		if ((stack->grp[bl].type & PCB_LYT_BOTTOM) && (stack->grp[bl].type & PCB_LYT_COPPER)) {
-			/* insert a new internal layer here */
-			return NULL;
+
+			/* insert a new internal layer: move existing layers to make room */
+			for(n = stack->len-1; n >= bl; n--)
+				pcb_layergrp_move(stack, n+2, n);
+
+			stack->len += 2;
+
+			stack->grp[bl].name = pcb_strdup("Intern");
+			stack->grp[bl].type = PCB_LYT_INTERN | PCB_LYT_COPPER;
+			stack->grp[bl].valid = 1;
+			bl++;
+			stack->grp[bl].type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
+			stack->grp[bl].valid = 1;
+			return &stack->grp[bl-1];
 		}
 	}
 	return NULL;
@@ -165,11 +212,11 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 				else
 					g = get_grp(LayerGroup, loc);
 
-if (g != NULL) {
 				for(n = 0; n < lids_len; n++)
 					g->lid[n] = lids[n];
 				g->len = lids_len;
-}
+				lids_len = 0;
+
 				/* prepare for next iteration */
 				loc = PCB_LYT_INTERN;
 				start = s+1;
