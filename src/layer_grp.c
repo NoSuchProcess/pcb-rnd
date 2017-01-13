@@ -34,7 +34,7 @@
 pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
 {
 	pcb_layergrp_id_t group, i;
-
+#warning layer TODO: rewrite this
 	if ((Layer < 0) || (Layer >= pcb_max_layer))
 		return -1;
 
@@ -54,7 +54,7 @@ pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_t group)
 {
 	pcb_layergrp_id_t prev, i, j;
-
+#warning layer TODO: rewrite this; also do layer->grp cross ref
 	if (layer < 0 || layer >= pcb_max_layer)
 		return -1;
 	prev = pcb_layer_get_group(layer);
@@ -320,25 +320,8 @@ void pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
 	int glen = PCB->LayerGroups.grp[group_id].len;
 	PCB->LayerGroups.grp[group_id].lid[glen] = layer_id;
 	PCB->LayerGroups.grp[group_id].len++;
+#warning layer TODO: cross ref layer-to-group
 }
-
-/*
-old [0]
-  [0] component
-  [2] comp-GND
-  [3] comp-power
-  [9] silk
-old [1]
-  [1] solder
-  [4] sold-GND
-  [5] sold-power
-  [8] silk
-old [2]
-  [6] signal3
-old [3]
-  [7] outline
-*/
-
 
 #define NEWG(g, flags, gname) \
 do { \
