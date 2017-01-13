@@ -31,49 +31,58 @@
 #include "layer_grp.h"
 #include "compat_misc.h"
 
-pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t Layer)
+pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 {
-	pcb_layergrp_id_t group, i;
-#warning layer TODO: rewrite this
-	if ((Layer < 0) || (Layer >= pcb_max_layer))
+	return Layer->grp;
+}
+
+pcb_layergrp_id_t pcb_layer_get_group(pcb_layer_id_t lid)
+{
+	if ((lid < 0) || (lid >= pcb_max_layer))
 		return -1;
 
-	for (group = 0; group < pcb_max_group; group++)
-		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++)
-			if (PCB->LayerGroups.grp[group].lid[i] == Layer)
-				return (group);
+	return pcb_layer_get_group_(&PCB->Data->Layer[lid]);
+}
 
+int pcb_layergrp_del_layer(pcb_layergrp_id_t gid, pcb_layer_id_t lid)
+{
+	int n;
+	pcb_layer_group_t *grp;
+	pcb_layer_t *layer;
+
+	if ((lid < 0) || (lid >= pcb_max_layer))
+		return -1;
+
+	if ((gid < 0) || (gid >= PCB->LayerGroups.len))
+		return -1;
+
+	grp = &PCB->LayerGroups.grp[gid];
+	layer = PCB->Data->Layer + lid;
+
+	if (layer->grp != gid)
+		return -1;
+
+	for(n = 0; n < grp->len; n++) {
+		if (grp->lid[n] == lid) {
+			int remain = grp->len - n - 1;
+			if (remain > 0)
+				memmove(&grp->lid[n], &grp->lid[n+1], remain * sizeof(int));
+			grp->len--;
+			layer->grp = -1;
+			return 0;
+		}
+	}
+
+	/* also: broken layer group list */
 	return -1;
 }
 
-pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
+pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t lid, pcb_layergrp_id_t gid)
 {
-	return pcb_layer_get_group(pcb_layer_id(PCB->Data, Layer));
-}
-
-pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t layer, pcb_layergrp_id_t group)
-{
-	pcb_layergrp_id_t prev, i, j;
-#warning layer TODO: rewrite this; also do layer->grp cross ref
-	if (layer < 0 || layer >= pcb_max_layer)
+	if (pcb_layergrp_del_layer(gid, lid) != 0)
 		return -1;
-	prev = pcb_layer_get_group(layer);
-	if ((layer == pcb_solder_silk_layer && group == pcb_layer_get_group(pcb_component_silk_layer))
-			|| (layer == pcb_component_silk_layer && group == pcb_layer_get_group(pcb_solder_silk_layer))
-			|| (group < 0 || group >= pcb_max_group) || (prev == group))
-		return prev;
-
-	/* Remove layer from prev group */
-	for (j = i = 0; i < PCB->LayerGroups.grp[prev].len; i++)
-		if (PCB->LayerGroups.grp[prev].lid[i] != layer)
-			PCB->LayerGroups.grp[prev].lid[j++] = PCB->LayerGroups.grp[prev].lid[i];
-	PCB->LayerGroups.grp[prev].len--;
-
-	/* Add layer to new group.  */
-	i = PCB->LayerGroups.grp[group].len++;
-	PCB->LayerGroups.grp[group].lid[i] = layer;
-
-	return group;
+	pcb_layer_add_in_group(lid, gid);
+	return gid;
 }
 
 unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group)
@@ -99,10 +108,14 @@ pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 int pcb_layergrp_free(pcb_layer_stack_t *stack, pcb_layergrp_id_t id)
 {
 	if ((id >= 0) && (id < stack->len)) {
+		int n;
 		pcb_layer_group_t *g = stack->grp + id;
 		if (g->name != NULL)
 			free(g->name);
-#warning unlink layers from the group
+		for(n = 0; n < g->len; n++) {
+			pcb_layer_t *layer = PCB->Data->Layer + g->lid[n];
+			layer->grp = -1;
+		}
 		memset(g, 0, sizeof(pcb_layer_group_t));
 		return 0;
 	}
@@ -112,6 +125,7 @@ int pcb_layergrp_free(pcb_layer_stack_t *stack, pcb_layergrp_id_t id)
 int pcb_layergrp_move(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src)
 {
 	pcb_layer_group_t *d, *s;
+	int n;
 
 	if ((src < 0) || (src >= stack->len))
 		return -1;
@@ -120,7 +134,13 @@ int pcb_layergrp_move(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layer
 	d = stack->grp + dst;
 	s = stack->grp + src;
 	memcpy(d, s, sizeof(pcb_layer_group_t));
-#warning relink layers in d
+
+	/* update layer's group refs to the new grp */
+	for(n = 0; n < d->len; n++) {
+		pcb_layer_t *layer = PCB->Data->Layer + d->lid[n];
+		layer->grp = dst;
+	}
+
 	memset(s, 0, sizeof(pcb_layer_group_t));
 	return 0;
 }
@@ -213,8 +233,8 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 					g = get_grp(LayerGroup, loc, PCB_LYT_COPPER);
 
 				for(n = 0; n < lids_len; n++)
-					g->lid[n] = lids[n];
-				g->len = lids_len;
+					pcb_layer_add_in_group_(g, g - LayerGroup->grp, lids[n]);
+
 				lids_len = 0;
 
 				/* prepare for next iteration */
@@ -227,14 +247,11 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 	}
 
 	/* set the two silks */
-	g = get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
-	g->len = 1;
-	g->lid[0] = LayerN;
+	g = get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN);
 
-	g = get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_COPPER);
-	g->len = 1;
-	g->lid[0] = LayerN+1;
-
+	g = get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
+	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN+1);
 
 	return 0;
 
@@ -315,12 +332,24 @@ pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id)
 	return -1;
 }
 
-void pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
+int pcb_layer_add_in_group_(pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id)
 {
-	int glen = PCB->LayerGroups.grp[group_id].len;
-	PCB->LayerGroups.grp[group_id].lid[glen] = layer_id;
-	PCB->LayerGroups.grp[group_id].len++;
-#warning layer TODO: cross ref layer-to-group
+	if ((layer_id < 0) || (layer_id >= pcb_max_layer))
+		return -1;
+
+	grp->lid[grp->len] = layer_id;
+	grp->len++;
+	PCB->Data->Layer[layer_id].grp = group_id;
+
+	return 0;
+}
+
+int pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id)
+{
+	if ((group_id < 0) || (group_id >= PCB->LayerGroups.len))
+		return -1;
+
+	return pcb_layer_add_in_group_(&PCB->LayerGroups.grp[group_id], group_id, layer_id);
 }
 
 #define NEWG(g, flags, gname) \
