@@ -884,8 +884,8 @@ layer
 					free((char*)Layer->Name);
 				Layer->Name = $4;   /* shouldn't this be strdup()'ed ? */
 				LayerFlag[$3-1] = pcb_true;
-				if (yyData->LayerN + 2 < $3)
-				  yyData->LayerN = $3 - 2;
+				if (yyData->LayerN < $3)
+				  yyData->LayerN = $3;
 				if ($5 != NULL)
 					free($5);
 			}
@@ -1085,7 +1085,7 @@ text_newformat
 				if ($8 & PCB_FLAG_ONSILK)
 				{
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
-						(($8 & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)];
+						(($8 & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE) - 2];
 
 					pcb_text_new(lay ,yyFont, OU ($3), OU ($4), $5, $6, $7,
 						      pcb_flag_old($8));
@@ -1110,7 +1110,7 @@ text_hi_format
 				if ($8.f & PCB_FLAG_ONSILK)
 				{
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
-						(($8.f & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)];
+						(($8.f & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE) - 2];
 
 					pcb_text_new(lay, yyFont, NU ($3), NU ($4), $5, $6, $7, $8);
 				}

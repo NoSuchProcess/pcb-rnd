@@ -138,7 +138,7 @@ pcb_bool pcb_layer_is_empty(pcb_layer_id_t num)
 
 pcb_layer_id_t pcb_layer_id(pcb_data_t *Data, pcb_layer_t *Layer)
 {
-	if ((Layer >= Data->Layer) && (Layer < (Data->Layer + PCB_MAX_LAYER + 2)))
+	if ((Layer >= Data->Layer) && (Layer < (Data->Layer + PCB_MAX_LAYER)))
 		return Layer - Data->Layer;
 
 	if ((Layer >= pcb_uilayer.array) && (Layer < pcb_uilayer.array + vtlayer_len(&pcb_uilayer)))
@@ -224,7 +224,7 @@ int pcb_layer_list(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 		if ((v->type & mask) == mask)
 			APPEND_VIRT(v);
 
-	for (n = 0; n < PCB_MAX_LAYER + 2; n++)
+	for (n = 0; n < PCB_MAX_LAYER; n++)
 		if ((pcb_layer_flags(n) & mask) == mask)
 			APPEND(n);
 
@@ -244,7 +244,7 @@ int pcb_layer_list_any(pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
 		if ((v->type & mask))
 			APPEND_VIRT(v);
 
-	for (n = 0; n < PCB_MAX_LAYER + 2; n++)
+	for (n = 0; n < PCB_MAX_LAYER; n++)
 		if ((pcb_layer_flags(n) & mask))
 			APPEND(n);
 

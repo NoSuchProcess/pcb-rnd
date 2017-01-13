@@ -260,10 +260,10 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 
 	/* set the two silks */
 	g = get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
-	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN);
+	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN-2);
 
 	g = get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
-	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN+1);
+	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN-1);
 
 	return 0;
 

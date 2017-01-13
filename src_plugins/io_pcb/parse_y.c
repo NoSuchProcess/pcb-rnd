@@ -2233,8 +2233,8 @@ yyreduce:
 					free((char*)Layer->Name);
 				Layer->Name = (yyvsp[-3].string);   /* shouldn't this be strdup()'ed ? */
 				LayerFlag[(yyvsp[-4].integer)-1] = pcb_true;
-				if (yyData->LayerN + 2 < (yyvsp[-4].integer))
-				  yyData->LayerN = (yyvsp[-4].integer) - 2;
+				if (yyData->LayerN < (yyvsp[-4].integer))
+				  yyData->LayerN = (yyvsp[-4].integer);
 				if ((yyvsp[-2].string) != NULL)
 					free((yyvsp[-2].string));
 			}
@@ -2328,7 +2328,7 @@ yyreduce:
 				if ((yyvsp[-1].integer) & PCB_FLAG_ONSILK)
 				{
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
-						(((yyvsp[-1].integer) & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)];
+						(((yyvsp[-1].integer) & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE) - 2];
 
 					pcb_text_new(lay ,yyFont, OU ((yyvsp[-6].measure)), OU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].string),
 						      pcb_flag_old((yyvsp[-1].integer)));
@@ -2354,7 +2354,7 @@ yyreduce:
 				if ((yyvsp[-1].flagtype).f & PCB_FLAG_ONSILK)
 				{
 					pcb_layer_t *lay = &yyData->Layer[yyData->LayerN +
-						(((yyvsp[-1].flagtype).f & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE)];
+						(((yyvsp[-1].flagtype).f & PCB_FLAG_ONSOLDER) ? PCB_SOLDER_SIDE : PCB_COMPONENT_SIDE) - 2];
 
 					pcb_text_new(lay, yyFont, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), (yyvsp[-4].number), (yyvsp[-3].number), (yyvsp[-2].string), (yyvsp[-1].flagtype));
 				}
