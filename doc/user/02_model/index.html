@@ -43,39 +43,7 @@ layer contains drawing primitives (objects) placed by the user. The user has
 full control over an explicit layer: objects can be added or removed or
 changed any time. A virtual layer has no such flexibility: pcb-rnd computes
 its content from explicit layers and there's no way to change the result
-directly. A layer has a type and a location.
-<p>
-Layer types are:
-<ul>
-	<li> copper for signal layers
-	<li> silk for silkscreen layers
-	<li> outline for the contour of the board and slots and cutouts
-	<li> (mask for solder masks - this is a virtual layer)
-	<li> (paste for solder paste - this is a virtual layer)
-</ul>
-<p>
-Note: pcb-rnd does not model substrate layers.
-<p>
-Layer locations are:
-<ul>
-	<li> top (used to be the "component side" in the age of thru-hole components)
-	<li> bottom (used to be the "solder side" in the age of thru-hole components)
-	<li> internal (sandwiched between other layers)
-	<li> global (affects all physical layers, thus has no specific location)
-</ul>
-<p>
-Not all combination of type and location are supported, for example an internal
-silk layer does not make much sense. The table below lists whether a
-combination is supported or not.
-<p>
-<table border=1>
-	<tr><th> &nbsp; <th> top <th> bottom <th> intern <th> global
-	<tr><th> copper <td> yes <td> yes    <td> yes    <td> no
-	<tr><th> silk   <td> yes <td> yes    <td> no     <td> no
-	<tr><th> outline<td> no  <td> no     <td> no     <td> yes
-	<tr><th> mask   <td> yes <td> yes    <td> no     <td> no
-	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no
-</table>
+directly. A layer is always part of a <i>layer group</i>.
 
 <h3> 2.3. layer groups </h3>
 <p>
@@ -85,6 +53,40 @@ layers in a layer group are toggled together. The main use of layer groups
 is to exploit that layers have different drawing color on screen: there
 can be a signal and a gnd layers with different color in the same layer group,
 on the same physical layer.
+<p>
+Since <i>layer groups</i> donate the physical layers, a board stack-up
+is built of layer groups. Substrates are layer groups without drawable
+layers in them.
+<p>
+Layer group types are:
+<ul>
+	<li> copper for signal layers
+	<li> silk for silkscreen layers
+	<li> outline for the contour of the board and slots and cutouts
+	<li> (mask for solder masks - this is a virtual layer)
+	<li> (paste for solder paste - this is a virtual layer)
+</ul>
+<p>
+Layer group locations are:
+<ul>
+	<li> top (used to be the "component side" in the age of thru-hole components)
+	<li> bottom (used to be the "solder side" in the age of thru-hole components)
+	<li> internal (sandwiched between other layers)
+	<li> global (affects all physical layers, thus has no specific location)
+</ul>
+<p>
+Not all combination of type and location are supported, for an outline layer
+is always global. The table below lists whether a combination is supported
+or not.
+<p>
+<table border=1>
+	<tr><th> &nbsp; <th> top <th> bottom <th> intern <th> global
+	<tr><th> copper <td> yes <td> yes    <td> yes    <td> no
+	<tr><th> silk   <td> yes <td> yes    <td> no     <td> no
+	<tr><th> outline<td> no  <td> no     <td> no     <td> yes
+	<tr><th> mask   <td> yes <td> yes    <td> no     <td> no
+	<tr><th> paste  <td> yes <td> yes    <td> no     <td> no
+</table>
 
 <h3> 2.4. Basic drawing objects </h3>
 <p>
