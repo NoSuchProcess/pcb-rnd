@@ -1,0 +1,18 @@
+500 x 500 mil outline
+
+upper left triangle
+Top left corner to top left cutout corner 25 mils down 25 mils over
+cutout 25 mils wide
+cutout 25 mils high
+
+upper right triangle
+bottom right corner to bottom right on cutout 25 x 25 mils
+cutout 50mils wide
+cutout 25 mils high
+
+far right piramid
+cutout 50mils x 50mils
+cutout located 50mils down from the apex
+
+
+
