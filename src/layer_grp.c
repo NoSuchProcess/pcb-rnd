@@ -85,15 +85,13 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t lid, pcb_layergrp_id_t 
 	return gid;
 }
 
-unsigned int pcb_layergrp_flags(pcb_layergrp_id_t group)
+unsigned int pcb_layergrp_flags(pcb_layergrp_id_t gid)
 {
-	unsigned int res = 0;
-	int layeri;
 
-	for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++)
-		res |= pcb_layer_flags(PCB->LayerGroups.grp[group].lid[layeri]);
+	if ((gid < 0) || (gid >= PCB->LayerGroups.len))
+		return 0;
 
-	return res;
+	return PCB->LayerGroups.grp[gid].type;
 }
 
 pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)

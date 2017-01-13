@@ -169,15 +169,10 @@ pcb_bool pcb_layer_is_paste_empty(pcb_side_t side)
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 {
 	unsigned int res = 0;
+	pcb_layer_t *l;
 
 	if (layer_idx & PCB_LYT_UI)
 		return PCB_LYT_UI | PCB_LYT_VIRTUAL;
-
-	if (layer_idx == pcb_solder_silk_layer)
-		return PCB_LYT_SILK | PCB_LYT_BOTTOM;
-
-	if (layer_idx == pcb_component_silk_layer)
-		return PCB_LYT_SILK | PCB_LYT_TOP;
 
 	if ((layer_idx >= PCB_LAYER_VIRT_MIN) && (layer_idx <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].type;
@@ -185,37 +180,8 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 	if (layer_idx >= pcb_max_layer)
 		return 0;
 
-	if (layer_idx < pcb_max_copper_layer) {
-		if (!LAYER_IS_OUTLINE(layer_idx)) {
-			/* check whether it's top, bottom or internal */
-			int group, entry;
-			for (group = 0; group < pcb_max_group; group++) {
-				if (PCB->LayerGroups.grp[group].len) {
-					unsigned int my_group = 0, gf = 0;
-					for (entry = 0; entry < PCB->LayerGroups.grp[group].len; entry++) {
-						pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[entry];
-						if (layer == layer_idx)
-							my_group = 1;
-						if (layer == pcb_component_silk_layer)
-							gf |= PCB_LYT_TOP;
-						else if (layer == pcb_solder_silk_layer)
-							gf |= PCB_LYT_BOTTOM;
-					}
-					if (my_group) {
-						res |= gf;
-						if (gf == 0)
-							res |= PCB_LYT_INTERN;
-						break; /* stop searching groups */
-					}
-				}
-			}
-			res |= PCB_LYT_COPPER;
-		}
-		else
-			res |= PCB_LYT_OUTLINE;
-	}
-
-	return res;
+	l = &PCB->Data->Layer[layer_idx];
+	return pcb_layergrp_flags(l->grp);
 }
 
 #define APPEND(n) \
