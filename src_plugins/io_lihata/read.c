@@ -544,7 +544,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	if (pcb != NULL) {
 		int grp_id;
 		parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
-		pcb_layer_add_in_group(layer_id, grp_id);
+		pcb->Data->Layer[layer_id].grp = grp_id;
 	}
 
 	lst = lht_dom_hash_get(grp, "objects");
@@ -716,10 +716,28 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 	return 0;
 }
 
+static void layer_fixup(pcb_board_t *pcb)
+{
+	int n;
+	pcb_layer_group_setup_default(&pcb->LayerGroups);
+
+	for(n = 0; n < pcb->Data->LayerN; n++) {
+		pcb_layer_t *l = &pcb->Data->Layer[n];
+		if (l->grp >= 0) {
+			pcb_layergrp_id_t grp = l->grp;
+			printf("l=%d g=%ld\n", n, grp);
+/*		pcb_layer_add_in_group(layer_id, grp_id);*/
+			l->grp = -1;
+		}
+	}
+}
+
 static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 {
 	pcb_data_t *dt;
 	lht_node_t *grp;
+	int need_layer_fixup = 1;
+
 	if (nd->type != LHT_HASH)
 		return NULL;
 
@@ -728,6 +746,11 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 	grp = lht_dom_hash_get(nd, "layers");
 	if ((grp != NULL) && (grp->type == LHT_LIST))
 		parse_data_layers(pcb, dt, grp);
+
+#warning layer TODO: read layer groups - if present, set need_layer_fixup to 0
+
+	if (need_layer_fixup)
+		layer_fixup(pcb);
 
 	grp = lht_dom_hash_get(nd, "objects");
 	if (grp != NULL)
@@ -1029,7 +1052,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 typedef enum {
 	TPS_UNDECIDED,
 	TPS_GOOD,
-	TPS_BAD,
+	TPS_BAD
 } test_parse_t;
 
 /* expect root to be a ha:pcb-rnd-board-v* */
