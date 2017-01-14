@@ -625,7 +625,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 
 
 	if (!all_layers)
-		if ((group >= 0) && pcb_is_layergrp_empty(group))
+		if ((group >= 0) && pcb_is_layergrp_empty(group) && !(flags & PCB_LYT_SILK))
 			return 0;
 
 	if ((flags & PCB_LYT_INVIS) || (flags & PCB_LYT_ASSY)) {
@@ -633,7 +633,7 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 		return 0;
 	}
 
-#warning TODO
+#warning layer TODO: get the name
 	group_name = "TODO:group_name";
 
 	flash_drills = 0;
