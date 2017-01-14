@@ -540,11 +540,13 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	dt->LayerN++;
 
 	ly->Name = pcb_strdup(grp->name);
+
 	parse_bool(&ly->On, lht_dom_hash_get(grp, "visible"));
 	if (pcb != NULL) {
 		int grp_id;
 		parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
 		pcb->Data->Layer[layer_id].grp = grp_id;
+		/*pcb_trace("parse_data_layer name: %d '%s' grp=%d\n", dt->LayerN-1, ly->Name, grp_id);*/
 	}
 
 	lst = lht_dom_hash_get(grp, "objects");
@@ -577,7 +579,6 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp)
 		if (n->type == LHT_HASH)
 			parse_data_layer(pcb, dt, n, id);
 
-	dt->LayerN -= 2; /* for the silk layers... */
 	return 0;
 }
 
@@ -720,16 +721,41 @@ static void layer_fixup(pcb_board_t *pcb)
 {
 	int n;
 	pcb_layer_group_setup_default(&pcb->LayerGroups);
+	pcb_layergrp_id_t top_silk, bottom_silk;
+	pcb_layer_group_t *g;
 
-	for(n = 0; n < pcb->Data->LayerN; n++) {
+	/* old silk assumption: last two layers are silk, bottom and top */
+	bottom_silk = pcb->Data->Layer[pcb->Data->LayerN-2].grp;
+	top_silk = pcb->Data->Layer[pcb->Data->LayerN-1].grp;
+	pcb->Data->Layer[pcb->Data->LayerN-2].grp = -1;
+	pcb->Data->Layer[pcb->Data->LayerN-1].grp = -1;
+
+/*	pcb_trace("NAME: '%s' '%s'\n", pcb->Data->Layer[pcb->Data->LayerN-1].Name,pcb->Data->Layer[pcb->Data->LayerN-2].Name);*/
+
+	for(n = 0; n < pcb->Data->LayerN-2; n++) {
 		pcb_layer_t *l = &pcb->Data->Layer[n];
 		if (l->grp >= 0) {
+
 			pcb_layergrp_id_t grp = l->grp;
-			printf("l=%d g=%ld\n", n, grp);
-/*		pcb_layer_add_in_group(layer_id, grp_id);*/
+/*			pcb_trace("********* l=%d g=%ld (top=%ld bottom=%ld)\n", n, grp, top_silk, bottom_silk);*/
 			l->grp = -1;
+
+			if (grp == bottom_silk)
+				g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
+			else if (grp == top_silk)
+				g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
+			else
+				g = pcb_get_grp_new_intern(&pcb->LayerGroups);
+/*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.grp);*/
+			pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, n);
 		}
 	}
+
+	/* link in the 2 hardwired silks */
+	g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-2);
+	g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
+	pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-1);
 }
 
 static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
@@ -742,22 +768,20 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
 		return NULL;
 
 	dt = calloc(sizeof(pcb_data_t), 1);
+	dt->pcb = pcb;
+	pcb->Data = dt;
 
 	grp = lht_dom_hash_get(nd, "layers");
 	if ((grp != NULL) && (grp->type == LHT_LIST))
 		parse_data_layers(pcb, dt, grp);
 
 #warning layer TODO: read layer groups - if present, set need_layer_fixup to 0
-
 	if (need_layer_fixup)
 		layer_fixup(pcb);
 
 	grp = lht_dom_hash_get(nd, "objects");
 	if (grp != NULL)
 		parse_data_objects(pcb, dt, grp);
-
-	dt->pcb = pcb;
-
 
 	return dt;
 }
@@ -997,7 +1021,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "data");
-	if ((sub != NULL) && ((pcb->Data = parse_data(pcb, sub)) == NULL))
+	if ((sub != NULL) && ((parse_data(pcb, sub)) == NULL))
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "font");
