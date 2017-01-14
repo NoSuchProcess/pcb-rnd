@@ -1,4 +1,4 @@
-G04 start of page 8 for group -1 layer_idx -1 *
+G04 start of page 6 for group -1 layer_idx -1 *
 G04 Title: smd elements on both sides, TODO:group_name *
 G04 Creator: <version>
 G04 CreationDate: <date>
@@ -9,7 +9,7 @@ G04 PCB-Coordinate-Origin: lower left *
 %MOIN*%
 %FSLAX25Y25*%
 %LNTOPPASTE*%
-%ADD19R,0.0512X0.0512*%
-G54D19*X16595Y38681D02*Y36319D01*
+%ADD15R,0.0512X0.0512*%
+G54D15*X16595Y38681D02*Y36319D01*
 X28405Y38681D02*Y36319D01*
 M02*
