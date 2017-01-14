@@ -144,7 +144,7 @@ static void PrintAssembly(unsigned int lyt_side, const pcb_box_t * drawn_area)
 {
 	pcb_layergrp_id_t side_group;
 
-	if (pcb_layer_group_list(PCB_LYT_SILK | lyt_side, &side_group, 1) != 1)
+	if (pcb_layer_group_list(PCB_LYT_COPPER | lyt_side, &side_group, 1) != 1)
 		return;
 
 	pcb_draw_doing_assy = pcb_true;
