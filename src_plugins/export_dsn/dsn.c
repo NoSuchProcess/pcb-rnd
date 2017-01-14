@@ -151,8 +151,8 @@ static void print_structure(FILE * fp)
 	pcb_layergrp_id_t group, top_group, bot_group;
 	pcb_layer_id_t top_layer, bot_layer;
 
-	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_SILK, &top_group, 1);
-	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_SILK, &bot_group, 1);
+	pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &top_group, 1);
+	pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &bot_group, 1);
 
 	top_layer = PCB->LayerGroups.grp[top_group].lid[0];
 	bot_layer = PCB->LayerGroups.grp[bot_group].lid[0];
@@ -170,6 +170,11 @@ static void print_structure(FILE * fp)
 
 	for (group = 0; group < pcb_max_group; group++) {
 		pcb_layer_t *first_layer;
+		unsigned int gflg = pcb_layergrp_flags(group);
+
+		if (gflg & PCB_LYT_SILK)
+			continue;
+
 		if (group == top_group || group == bot_group)
 			continue;
 
