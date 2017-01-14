@@ -63,11 +63,17 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 	if (flags & PCB_LYT_TOP) {
 		if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
 			res = single_name;
-		res = "top";
+		if (flags & PCB_LYT_SILK)
+			res = "topsilk";
+		else
+			res = "top";
 	}
 	else if (flags & PCB_LYT_BOTTOM) {
 		if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
 			res = single_name;
+		if (flags & PCB_LYT_SILK)
+			res = "bottomsilk";
+		else
 		res = "bottom";
 	}
 	else {
