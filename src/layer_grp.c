@@ -162,7 +162,7 @@ static int flush_item(const char *s, const char *start, pcb_layer_id_t *lids, in
 	return 0;
 }
 
-static pcb_layer_group_t *get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ)
+pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ)
 {
 	int n;
 	for(n = 0; n < stack->len; n++)
@@ -171,7 +171,7 @@ static pcb_layer_group_t *get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc
 	return NULL;
 }
 
-static pcb_layer_group_t *get_grp_new_intern(pcb_layer_stack_t *stack)
+pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack)
 {
 	int bl, n;
 
@@ -200,7 +200,6 @@ static pcb_layer_group_t *get_grp_new_intern(pcb_layer_stack_t *stack)
 	return NULL;
 }
 
-static void pcb_layer_group_setup_default(pcb_layer_stack_t *newg);
 #define LAYER_IS_OUTLINE(idx) ((PCB->Data->Layer[idx].Name != NULL) && ((strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0)))
 int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt)
 {
@@ -227,9 +226,9 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 					goto error;
 				/* finalize group */
 				if (loc & PCB_LYT_INTERN)
-					g = get_grp_new_intern(LayerGroup);
+					g = pcb_get_grp_new_intern(LayerGroup);
 				else
-					g = get_grp(LayerGroup, loc, PCB_LYT_COPPER);
+					g = pcb_get_grp(LayerGroup, loc, PCB_LYT_COPPER);
 
 				for(n = 0; n < lids_len; n++) {
 					if (lids[n] < 0)
@@ -259,10 +258,10 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 	}
 
 	/* set the two silks */
-	g = get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	g = pcb_get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
 	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN-2);
 
-	g = get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
+	g = pcb_get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
 	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN-1);
 
 	return 0;
@@ -376,7 +375,7 @@ do { \
 	newg->len++; \
 } while(0)
 
-static void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
+void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 {
 	pcb_layer_group_t *g;
 
