@@ -60,8 +60,7 @@ int pcb_act_LoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect(_("Load .hyp file..."),
-		_("Picks a hyperlynx file to load.\n"),
-		"default.hyp", ".hyp", "hyp", HID_FILESELECT_READ);
+																_("Picks a hyperlynx file to load.\n"), "default.hyp", ".hyp", "hyp", HID_FILESELECT_READ);
 	}
 
 	if (fname == NULL)
@@ -87,7 +86,7 @@ pcb_hid_action_t hyp_action_list[] = {
 
 PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 
-static void hid_hyp_uninit()
+		 static void hid_hyp_uninit()
 {
 
 }
@@ -97,7 +96,7 @@ pcb_uninit_t hid_import_hyp_init()
 {
 #warning TODO: rather register an importer than an action
 	PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
-	return hid_hyp_uninit;
+		return hid_hyp_uninit;
 }
 
 /* not truncated */
