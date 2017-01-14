@@ -6,8 +6,11 @@
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
+	- svg arc bug:work/phys311*.pcb [report: Erich -> hackvana]
+	- gtk rendering: zoom in much and arcs are rendered a bit larger/smaller [report: Evan]
 	- layer rewrite bug:
 		- autoroute stopped working
+		- pcb_get_grp_new_intern() should get the old layer group number and shouldn't create a new internal layer if it's already done (cache). Test: a pcb file with two internals in the same group!
 	- RTT/arc_angles.pcb:
 		- gtk draws non-full-circle
 		- also check lesstif
