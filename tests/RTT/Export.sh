@@ -31,7 +31,10 @@ set_fmt_args()
 #			fmt_args="-c plugins/draw_fab/omit_date=1"
 			;;
 		XY) ext=.xy ;;
-		openscad) ext=.scad ;;
+		openscad)
+			ext=.scad
+			fmt_args="--silk_layers"
+			;;
 		png)
 			fmt_args="--dpi 1200"
 			ext=.png

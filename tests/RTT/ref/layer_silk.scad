@@ -14,6 +14,26 @@ module line_segment(length, width, thickness, x, y, a) {
 	}
 }
 
+// START_OF_LAYER: topsilk
+module layer_topsilk_body (offset) {
+translate ([0, 0, offset]) union () {
+	line_segment_r(9.525000,0.254000,0.037500,1.270000,-6.032500,90.000000,1,1,1);
+}
+}
+
+
+// END_OF_LAYER layer_topsilk
+
+// START_OF_LAYER: bottomsilk
+module layer_bottomsilk_body (offset) {
+translate ([0, 0, offset]) union () {
+	line_segment_r(8.082231,0.254000,0.037500,4.762500,-7.937500,-135.000000,1,1,1);
+}
+}
+
+
+// END_OF_LAYER layer_bottomsilk
+
 module board_outline () {
 	polygon([[0,0],[0,-12.700000],[12.700000,-12.700000],[12.700000,0]],
 [[0,1,2,3]]);
@@ -49,6 +69,12 @@ module all_components() {
 /* pre-generated modules                           */
 /*                                                 */
 /***************************************************/
+		color ([1, 1, 1])
+			layer_topsilk_body(0.818750);
+
+		color ([1, 1, 1])
+			layer_bottomsilk_body(-0.818750);
+
 		color ([0.44, 0.44, 0])
 			difference() {
 				board_body();

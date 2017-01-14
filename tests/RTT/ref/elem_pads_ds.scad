@@ -15,30 +15,30 @@ module line_segment(length, width, thickness, x, y, a) {
 }
 
 // START_OF_LAYER: topsilk
-module layer_00_body (offset) {
+module layer_topsilk_body (offset) {
 translate ([0, 0, offset]) union () {
-	line_segment_r(2.540000,0.254000,0.035000,4.445000,-5.080000,90.000000,1,1,1);
-	line_segment_r(0.381000,0.177800,0.035000,4.635500,-2.362200,180.000000,1,1,1);
-	line_segment_r(0.508000,0.177800,0.035000,4.699000,-2.921000,180.000000,1,1,1);
-	line_segment_r(1.016000,0.177800,0.035000,4.445000,-2.413000,90.000000,1,1,1);
-	line_segment_r(0.508000,0.177800,0.035000,4.699000,-1.905000,180.000000,1,1,1);
-	line_segment_r(0.287368,0.177800,0.035000,5.359401,-2.006600,-135.000000,1,1,1);
-	line_segment_r(1.016000,0.177800,0.035000,5.461001,-2.413000,90.000000,1,1,1);
-	line_segment_r(0.381000,0.177800,0.035000,5.448301,-2.921000,180.000000,1,1,1);
+	line_segment_r(2.540000,0.254000,0.037500,4.445000,-5.080000,90.000000,1,1,1);
+	line_segment_r(0.381000,0.177800,0.037500,4.635500,-2.362200,180.000000,1,1,1);
+	line_segment_r(0.508000,0.177800,0.037500,4.699000,-2.921000,180.000000,1,1,1);
+	line_segment_r(1.016000,0.177800,0.037500,4.445000,-2.413000,90.000000,1,1,1);
+	line_segment_r(0.508000,0.177800,0.037500,4.699000,-1.905000,180.000000,1,1,1);
+	line_segment_r(0.287368,0.177800,0.037500,5.359401,-2.006600,-135.000000,1,1,1);
+	line_segment_r(1.016000,0.177800,0.037500,5.461001,-2.413000,90.000000,1,1,1);
+	line_segment_r(0.381000,0.177800,0.037500,5.448301,-2.921000,180.000000,1,1,1);
 }
 }
 
 
-// END_OF_LAYER layer_00
+// END_OF_LAYER layer_topsilk
 
 // START_OF_LAYER: bottomsilk
-module layer_01_body (offset) {
+module layer_bottomsilk_body (offset) {
 translate ([0, 0, offset]) union () {
 }
 }
 
 
-// END_OF_LAYER layer_01
+// END_OF_LAYER layer_bottomsilk
 
 module board_outline () {
 	polygon([[0,0],[0,-12.700000],[12.700000,-12.700000],[12.700000,0]],
@@ -75,6 +75,12 @@ module all_components() {
 /* pre-generated modules                           */
 /*                                                 */
 /***************************************************/
+		color ([1, 1, 1])
+			layer_topsilk_body(0.818750);
+
+		color ([1, 1, 1])
+			layer_bottomsilk_body(-0.818750);
+
 		color ([0.44, 0.44, 0])
 			difference() {
 				board_body();
