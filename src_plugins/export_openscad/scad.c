@@ -770,13 +770,27 @@ static int scad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, u
 		return 0;
 
 	if (group >= 0 && group < pcb_max_group) {
-		if (!group_data[group].draw)
-			return 0;
-		scaled_layer_thickness = (group_data[group].solder
-															|| group_data[group].component) ? OUTER_COPPER_THICKNESS : INNER_COPPER_THICKNESS;
-		sprintf(layer_id, "layer_%02ld", group);
-		if (!outline_layer) {
+		if (flags & PCB_LYT_SILK) {
+			if (!opt_exp_silk)
+				return 0;
+			scaled_layer_thickness = SILK_LAYER_THICKNESS;
+			if (flags & PCB_LYT_TOP) {
+				strcpy(layer_id, "layer_topsilk");
+			}
+			else {
+				strcpy(layer_id, "layer_bottomsilk");
+			}
 			group_data[group].exp = 1;
+		}
+		else {
+			if (!group_data[group].draw)
+				return 0;
+			scaled_layer_thickness = (group_data[group].solder
+																|| group_data[group].component) ? OUTER_COPPER_THICKNESS : INNER_COPPER_THICKNESS;
+			sprintf(layer_id, "layer_%02ld", group);
+			if (!outline_layer) {
+				group_data[group].exp = 1;
+			}
 		}
 	}
 	else {
@@ -787,17 +801,6 @@ static int scad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, u
 		else if (flags & PCB_LYT_UDRILL) {
 			drill_layer = 1;
 			strcpy(layer_id, "layer_udrill");
-		}
-		else if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) {
-			if (!opt_exp_silk)
-				return 0;
-			scaled_layer_thickness = SILK_LAYER_THICKNESS;
-			if (flags & PCB_LYT_TOP) {
-				strcpy(layer_id, "layer_topsilk");
-			}
-			else {
-				strcpy(layer_id, "layer_bottomsilk");
-			}
 		}
 		else if (flags & PCB_LYT_MASK) {
 			if (opt_mask_color == SCAD_MASK_NONE || opt_outline_type == SCAD_OUTLINE_NONE)
@@ -810,9 +813,8 @@ static int scad_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, u
 				strcpy(layer_id, "layer_bottommask");
 			}
 		}
-		else {
+		else
 			return 0;
-		}
 	}
 
 	layer_open = 1;
