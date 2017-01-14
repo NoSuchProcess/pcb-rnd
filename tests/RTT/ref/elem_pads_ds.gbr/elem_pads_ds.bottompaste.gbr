@@ -1,4 +1,4 @@
-G04 start of page 7 for group -1 layer_idx -1 *
+G04 start of page 8 for group -1 layer_idx -1 *
 G04 Title: element with pads on both sides, TODO:group_name *
 G04 Creator: <version>
 G04 CreationDate: <date>
@@ -9,6 +9,6 @@ G04 PCB-Coordinate-Origin: lower left *
 %MOIN*%
 %FSLAX25Y25*%
 %LNBOTTOMPASTE*%
-%ADD16C,0.0100*%
-G54D16*X27500Y32500D02*Y25000D01*
+%ADD18C,0.0100*%
+G54D18*X27500Y32500D02*Y25000D01*
 M02*
