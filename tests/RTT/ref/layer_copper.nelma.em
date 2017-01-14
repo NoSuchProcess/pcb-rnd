@@ -31,7 +31,7 @@ layer substrate-11 {
 	z-order = 11
 	material = "composite"
 }
-layer bottom {
+layer group-1 {
 	height = 1
 	z-order = 12
 	material = "air"
@@ -44,7 +44,7 @@ layer substrate-13 {
 	z-order = 13
 	material = "composite"
 }
-layer group-1 {
+layer bottom {
 	height = 1
 	z-order = 14
 	material = "air"
@@ -83,8 +83,8 @@ space pcb {
 		"air-bottom",
 		"top",
 		"substrate-11",
-		"bottom",
+		"group-1",
 		"substrate-13",
-		"group-1"
+		"bottom"
 	}
 }
