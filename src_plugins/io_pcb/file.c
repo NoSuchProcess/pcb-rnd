@@ -155,6 +155,11 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 #warning layer TODO: revise this loop to save only what the original code saved
 	for (group = 0; group < pcb_max_group; group++)
 		if (PCB->LayerGroups.grp[group].len) {
+			unsigned int gflg = pcb_layergrp_flags(group);
+
+			if (gflg & PCB_LYT_SILK) /* silk is hacked in asusming there's a top and bottom copper */
+				continue;
+
 			if (sep)
 				*cp++ = ':';
 			sep = 1;
@@ -162,18 +167,21 @@ static char *LayerGroupsToString(pcb_layer_stack_t *lg)
 				pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[entry];
 				unsigned int lflg = pcb_layer_flags(layer);
 
-				if ((lflg & PCB_LYT_TOP) && (lflg & PCB_LYT_SILK)) {
-					*cp++ = 'c';
-				}
-				else if ((lflg & PCB_LYT_BOTTOM) && (lflg & PCB_LYT_SILK)) {
-					*cp++ = 's';
-				}
-				else {
-					sprintf(cp, "%ld", layer + 1);
-					while (*++cp);
-				}
+
+				sprintf(cp, "%ld", layer + 1);
+				while (*++cp);
+
 				if (entry != PCB->LayerGroups.grp[group].len - 1)
 					*cp++ = ',';
+			}
+
+			if ((gflg & PCB_LYT_COPPER) && (gflg & PCB_LYT_TOP)) {
+				*cp++ = ',';
+				*cp++ = 'c';
+			}
+			else if ((gflg & PCB_LYT_COPPER) && (gflg & PCB_LYT_BOTTOM)) {
+				*cp++ = ',';
+				*cp++ = 's';
 			}
 		}
 	*cp++ = 0;
