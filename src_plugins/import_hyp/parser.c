@@ -18,7 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* indent --line-length128 -brs -br -nce --tab-size2 -ut -npsl  -npcs -hnl $* */
+/* 
+ * ~/.indent.pro:
+ *   --line-length128 -brs -br -nce --tab-size2 -ut -npsl -npcs -hnl
+ * ~/.vimrc:
+ *   set tabstop=2
+ */
 
 #include "parser.h"
 #include "hyp_l.h"
@@ -34,6 +39,7 @@
 /*
  * the board is shared between all routines.
  */
+
 pcb_data_t *hyp_dest;
 
 /*
@@ -76,11 +82,16 @@ double unit;										/* conversion factor: pcb length units to meters */
 double metal_thickness_unit;		/* conversion factor: metal thickness to meters */
 
 pcb_bool use_die_for_metal;			/* use dielectric constant and loss tangent of dielectric for metal layers */
-pcb_coord_t plane_separation;		/* distance between PLANE polygon and copper of different nets; -1 if not set */
+
+pcb_coord_t board_clearance;		/* distance between PLANE polygon and copper of different nets; -1 if not set */
 
 /* stackup */
-pcb_bool layer_is_plane_layer[PCB_MAX_LAYER];	/* whether layer is signal or plane layer */
-pcb_coord_t layer_plane_separation[PCB_MAX_LAYER];	/* separation between fill copper and signals on layer */
+pcb_bool layer_is_plane[PCB_MAX_LAYER];	/* whether layer is signal or plane layer */
+pcb_coord_t layer_clearance[PCB_MAX_LAYER];	/* separation between fill copper and signals on layer */
+
+/* net */
+char *net_name;									/* current net name */
+pcb_coord_t net_clearance;			/* distance between PLANE polygon and net copper */
 
 /* origin. Chosen so all coordinates are positive. */
 pcb_coord_t origin_x;
@@ -146,7 +157,7 @@ void hyp_init(void)
 	fr4_epsilon_r = 4.3;
 	fr4_loss_tangent = 0.020;
 	conformal_epsilon_r = 3.3;		/* dielectric constant of conformal layer */
-	plane_separation = -1;				/* distance between PLANE polygon and copper of different nets; -1 if not set */
+	board_clearance = -1;					/* distance between PLANE polygon and copper of different nets; -1 if not set */
 
 	/* empty board outline */
 	outline_head = NULL;
@@ -154,8 +165,8 @@ void hyp_init(void)
 
 	/* clear layer info */
 	for (n = 1; n < PCB_MAX_LAYER; n++) {
-		layer_is_plane_layer[n] = pcb_false;	/* signal layer */
-		layer_plane_separation[n] = -1;	/* no separation between fill copper and signals on layer */
+		layer_is_plane[n] = pcb_false;	/* signal layer */
+		layer_clearance[n] = -1;		/* no separation between fill copper and signals on layer */
 	}
 
 	/* set origin */
@@ -292,10 +303,10 @@ pcb_bool exec_units(parse_param * h)
 
 pcb_bool exec_plane_sep(parse_param * h)
 {
-	plane_separation = m2coord(h->plane_separation);
+	board_clearance = m2coord(h->plane_separation);
 
 	if (hyp_debug)
-		pcb_printf("plane_sep: default_plane_separation = %mm\n", plane_separation);
+		pcb_printf("plane_sep: default_plane_separation = %mm\n", board_clearance);
 
 	return 0;
 }
@@ -750,9 +761,9 @@ pcb_bool exec_signal(parse_param * h)
 	pcb_layer_id_t signal_layer_id;
 	signal_layer_id = hyp_create_layer(h->layer_name);
 
-	layer_is_plane_layer[signal_layer_id] = pcb_false;
+	layer_is_plane[signal_layer_id] = pcb_false;
 	if (h->plane_separation_set)
-		layer_plane_separation[signal_layer_id] = xy2coord(h->plane_separation);
+		layer_clearance[signal_layer_id] = xy2coord(h->plane_separation);
 
 	if (hyp_debug)
 		pcb_printf("signal layer: \"%s\"", pcb_layer_name(signal_layer_id));
@@ -782,9 +793,11 @@ pcb_bool exec_plane(parse_param * h)
 	pcb_layer_id_t plane_layer_id;
 	plane_layer_id = hyp_create_layer(h->layer_name);
 
-	layer_is_plane_layer[plane_layer_id] = pcb_true;
+	layer_is_plane[plane_layer_id] = pcb_true;
 	if (h->plane_separation_set)
-		layer_plane_separation[plane_layer_id] = xy2coord(h->plane_separation);
+		layer_clearance[plane_layer_id] = xy2coord(h->plane_separation);
+
+	/* XXX need to flood layer with copper */
 
 	if (hyp_debug)
 		pcb_printf("plane layer: \"%s\"", pcb_layer_name(plane_layer_id));
@@ -886,16 +899,30 @@ pcb_bool exec_padstack_end(parse_param * h)
 
 pcb_bool exec_net(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("net: net_name = \"%s\"\n", h->net_name);
+
+	net_name = h->net_name;				/* XXX checkme? */
+	net_clearance = -1;
+
 	return 0;
 }
 
 pcb_bool exec_net_plane_separation(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("net_plane_separation: plane_separation = %mm\n", xy2coord(h->plane_separation));
+
+	net_clearance = xy2coord(h->plane_separation);
+
 	return 0;
 }
 
 pcb_bool exec_net_attribute(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("net_attribute: name = \"%s\" value = \"%s\"\n", h->name, h->value);
+
 	return 0;
 }
 
@@ -1045,6 +1072,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 
 	new_arc = pcb_arc_new(Layer, XC, YC, Width, Height, start_angle, delta, Thickness, Clearance, Flags);
 
+#ifdef XXX
 	/* XXX remove debugging code */
 	if (hyp_debug) {
 		pcb_coord_t x1, y1, x2, y2;
@@ -1052,6 +1080,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 		pcb_arc_get_end(new_arc, 0, &x2, &y2);
 		pcb_printf("hyp_arc: start_point: (%mm, %mm) end_point: (%mm, %mm)\n", x1, y1, x2, y2);
 	}
+#endif
 
 	return new_arc;
 }

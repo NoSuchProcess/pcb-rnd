@@ -67,7 +67,13 @@ int pcb_act_LoadhypFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		PCB_AFAIL(load_hyp);
 
 
-	/* debug level */
+	/* 
+   * debug level.
+   * one "debug" argument: hyperlynx logging.
+   * two "debug" arguments: hyperlynx and bison logging.
+   * three "debug" arguments: hyperlynx, bison and flex logging.
+   */
+
 	for (i = 0; i < argc; i++)
 		debug += (strcmp(argv[i], "debug") == 0);
 
