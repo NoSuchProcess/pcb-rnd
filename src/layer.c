@@ -268,11 +268,14 @@ void pcb_layers_reset()
 {
 	int n;
 
-	/* reset layer names */
-	for(n = 2; n < PCB_MAX_LAYER; n++) {
+	/* reset everything to empty, even if that's invalid (no top/bottom copper)
+	   for the rest of the code: the (embedded) default design will overwrite this. */
+	/* reset layers */
+	for(n = 0; n < PCB_MAX_LAYER; n++) {
 		if (PCB->Data->Layer[n].Name != NULL)
 			free((char *)PCB->Data->Layer[n].Name);
 		PCB->Data->Layer[n].Name = pcb_strdup("<pcb_layers_reset>");
+		PCB->Data->Layer[n].grp = -1;
 	}
 
 	/* reset layer groups */
@@ -281,23 +284,8 @@ void pcb_layers_reset()
 		PCB->LayerGroups.grp[n].type = 0;
 		PCB->LayerGroups.grp[n].valid = 0;
 	}
-
-	/* set up one copper layer on top and one on bottom */
-#warning layer TODO: this should use a separate group for silk
-	PCB->Data->LayerN = 2;
-	PCB->LayerGroups.grp[PCB_SOLDER_SIDE].len = 1;
-	PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].len = 1;
-	PCB->LayerGroups.grp[PCB_SOLDER_SIDE].lid[0] = PCB_SOLDER_SIDE;
-	PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].lid[0] = PCB_COMPONENT_SIDE;
-
-	/* Name top and bottom layers */
-	if (PCB->Data->Layer[PCB_COMPONENT_SIDE].Name != NULL)
-		free((char *)PCB->Data->Layer[PCB_COMPONENT_SIDE].Name);
-	PCB->Data->Layer[PCB_COMPONENT_SIDE].Name = pcb_strdup("<top>");
-
-	if (PCB->Data->Layer[PCB_SOLDER_SIDE].Name != NULL)
-		free((char *)PCB->Data->Layer[PCB_SOLDER_SIDE].Name);
-	PCB->Data->Layer[PCB_SOLDER_SIDE].Name = pcb_strdup("<bottom>");
+	PCB->LayerGroups.len = 0;
+	PCB->Data->LayerN = 0;
 }
 
 pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname)
