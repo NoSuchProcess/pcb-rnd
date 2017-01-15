@@ -127,7 +127,7 @@ int pcb_layergrp_move(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layer
 
 	if ((src < 0) || (src >= stack->len))
 		return -1;
-	if (pcb_layergrp_free(stack, dst) != 0)
+	if ((dst < stack->len) && (pcb_layergrp_free(stack, dst) != 0))
 		return -1;
 	d = stack->grp + dst;
 	s = stack->grp + src;
