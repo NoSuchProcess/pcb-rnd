@@ -550,8 +550,7 @@ static int LastLayerInComponentGroup(int layer)
 {
 	pcb_layergrp_id_t cgroup = pcb_layer_get_group(pcb_max_group + PCB_COMPONENT_SIDE);
 	pcb_layergrp_id_t lgroup = pcb_layer_get_group(layer);
-#warning layer TODO: remove this silk-specific hack?
-	if (cgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 2)
+	if (cgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 1)
 		return 1;
 	return 0;
 }
@@ -560,8 +559,7 @@ static int LastLayerInSolderGroup(int layer)
 {
 	int sgroup = pcb_layer_get_group(pcb_max_group + PCB_SOLDER_SIDE);
 	int lgroup = pcb_layer_get_group(layer);
-#warning layer TODO: remove this silk-specific hack?
-	if (sgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 2)
+	if (sgroup == lgroup && PCB->LayerGroups.grp[lgroup].len == 1)
 		return 1;
 	return 0;
 }
