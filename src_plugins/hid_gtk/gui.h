@@ -242,13 +242,13 @@ gint ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfi
 
 gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gchar * shortcuts);
 gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gchar * file, const gchar * shortcuts, const char **formats, const char **extensions, int *format);
-gboolean ghid_dialog_confirm(const gchar * message, const gchar * cancelmsg, const gchar * okmsg);
+/*gboolean ghid_dialog_confirm(const gchar * message, const gchar * cancelmsg, const gchar * okmsg);
 int ghid_dialog_close_confirm(void);
 #define GUI_DIALOG_CLOSE_CONFIRM_CANCEL 0
 #define GUI_DIALOG_CLOSE_CONFIRM_NOSAVE 1
 #define GUI_DIALOG_CLOSE_CONFIRM_SAVE   2
 gint ghid_dialog_confirm_all(gchar * message);
-gchar *ghid_dialog_input(const char *prompt, const char *initial);
+gchar *ghid_dialog_input(const char *prompt, const char *initial);*/
 
 char *ghid_fileselect(const char *, const char *, const char *, const char *, const char *, int);
 

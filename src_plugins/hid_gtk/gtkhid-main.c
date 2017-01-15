@@ -31,18 +31,20 @@
 
 #include "gtkhid.h"
 
+/* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/dlg_about.h"
-#include "../src_plugins/lib_gtk_common/dlg_print.h"
-#include "../src_plugins/lib_gtk_common/dlg_export.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
+#include "../src_plugins/lib_gtk_common/dlg_export.h"
 #include "../src_plugins/lib_gtk_common/dlg_input.h"
+#include "../src_plugins/lib_gtk_common/dlg_message.h"
+#include "../src_plugins/lib_gtk_common/dlg_print.h"
 
 conf_hid_id_t ghid_conf_id = -1;
 conf_hid_id_t ghid_menuconf_id = -1;
 GdkModifierType ghid_glob_mask;
 
-static void ghid_get_view_size(pcb_coord_t *width, pcb_coord_t *height)
+static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)
 {
 	*width = gport->view.width;
 	*height = gport->view.height;
@@ -256,7 +258,8 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 }
 
 pcb_hidval_t
-ghid_watch_file(int fd, unsigned int condition, void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+ghid_watch_file(int fd, unsigned int condition,
+								void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								pcb_hidval_t user_data)
 {
 	GuiWatch *watch = g_new0(GuiWatch, 1);
@@ -390,8 +393,23 @@ int ghid_confirm_dialog(const char *msg, ...)
 
 int ghid_close_confirm_dialog()
 {
-	switch (ghid_dialog_close_confirm()) {
-	case GUI_DIALOG_CLOSE_CONFIRM_SAVE:
+	gchar *bold_text;
+	gchar *str;
+	const char *msg;
+
+	if (PCB->Filename == NULL) {
+		bold_text = g_strdup_printf(_("Save the changes to layout before closing?"));
+	}
+	else {
+		bold_text = g_strdup_printf(_("Save the changes to layout \"%s\" before closing?"), PCB->Filename);
+	}
+	str = g_strconcat("<big><b>", bold_text, "</b></big>", NULL);
+	g_free(bold_text);
+	msg = _("If you don't save, all your changes will be permanently lost.");
+	str = g_strconcat(str, "\n\n", msg, NULL);
+
+	switch (pcb_gtk_dlg_message(str, GTK_WINDOW(ghid_port.top_window))) {
+	case GTK_RESPONSE_YES:
 		{
 			if (pcb_hid_actionl("Save", NULL)) {	/* Save failed */
 				return 0;								/* Cancel */
@@ -400,16 +418,17 @@ int ghid_close_confirm_dialog()
 				return 1;								/* Close */
 			}
 		}
-	case GUI_DIALOG_CLOSE_CONFIRM_NOSAVE:
+	case GTK_RESPONSE_NO:
 		{
 			return 1;									/* Close */
 		}
-	case GUI_DIALOG_CLOSE_CONFIRM_CANCEL:
+	case GTK_RESPONSE_CANCEL:
 	default:
 		{
 			return 0;									/* Cancel */
 		}
 	}
+	g_free(str);
 }
 
 void ghid_report_dialog(const char *title, const char *msg)
@@ -421,7 +440,7 @@ char *ghid_prompt_for(const char *msg, const char *default_string)
 {
 	char *grv, *rv;
 
-	/*grv = ghid_dialog_input(msg, default_string);*/
+	/*grv = ghid_dialog_input(msg, default_string); */
 	grv = pcb_gtk_dlg_input(msg, default_string, GTK_WINDOW(ghid_port.top_window));
 
 	/* can't assume the caller will do g_free() on it */
@@ -601,7 +620,8 @@ static int ghid_progress(int so_far, int total, const char *message)
 
 /* ---------------------------------------------------------------------- */
 
-static int ghid_propedit_start(void *pe, int num_props, const char *(*query)(void *pe, const char *cmd, const char *key, const char *val, int idx))
+static int ghid_propedit_start(void *pe, int num_props,
+															 const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
 {
 
 	ghidgui->propedit_widget = ghid_propedit_dialog_create(&ghidgui->propedit_dlg);
@@ -617,7 +637,8 @@ static void ghid_propedit_end(void *pe)
 	gtk_widget_destroy(ghidgui->propedit_widget);
 }
 
-static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min, const char *max, const char *avg)
+static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min,
+																	 const char *max, const char *avg)
 {
 	ghid_propedit_prop_add(&ghidgui->propedit_dlg, propname, most_common, min, max, avg);
 }
@@ -883,7 +904,8 @@ static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[]
 
 	ghid_route_style_selector_sync
 		(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector),
-		 conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance);
+		 conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness,
+		 conf_core.design.clearance);
 
 	return;
 }
@@ -933,7 +955,7 @@ static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 static char *dup_cwd()
 {
 #if defined (PATH_MAX)
-	char tmp[PATH_MAX+1];
+	char tmp[PATH_MAX + 1];
 #else
 	char tmp[8193];
 #endif
@@ -966,7 +988,7 @@ static int Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		name = ghid_dialog_file_select_open(_("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
 	}
 	else if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
-		gchar *path = (gchar *)pcb_fp_default_search_path();
+		gchar *path = (gchar *) pcb_fp_default_search_path();
 		name = ghid_dialog_file_select_open(_("Load element to buffer"), &current_element_dir, path);
 	}
 	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0) {
@@ -1031,11 +1053,11 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		prompt = _("Save element as");
 		num_fmts = pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP);
 		if (num_fmts > 0) {
-			formats_param = (const char **)avail.digest;
-			extensions_param = (const char **)avail.extension;
+			formats_param = (const char **) avail.digest;
+			extensions_param = (const char **) avail.extension;
 			fmt_param = &fmt;
 			fmt = 0;
-			for(n = 0; n < num_fmts; n++) {
+			for (n = 0; n < num_fmts; n++) {
 				if (strstr(avail.plug[n]->description, "mainline") != NULL) {
 					fmt = n;
 					name_in = pcb_concat("unnamed.fp", NULL);
@@ -1052,12 +1074,12 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		prompt = _("Save layout as");
 		num_fmts = pcb_io_list(&avail, PCB_IOT_PCB, 1, 1, PCB_IOL_EXT_BOARD);
 		if (num_fmts > 0) {
-			formats_param = (const char **)avail.digest;
-			extensions_param = (const char **)avail.extension;
+			formats_param = (const char **) avail.digest;
+			extensions_param = (const char **) avail.extension;
 			fmt_param = &fmt;
 			fmt = 0;
 			if (PCB->Data->loader != NULL) {
-				for(n = 0; n < num_fmts; n++) {
+				for (n = 0; n < num_fmts; n++) {
 					if (avail.plug[n] == PCB->Data->loader) {
 						fmt = n;
 						break;
@@ -1071,14 +1093,16 @@ static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		}
 	}
 
-	{ /* invent an input file name if needed and run the save dialog to get an output file name */
+	{															/* invent an input file name if needed and run the save dialog to get an output file name */
 		if (name_in == NULL) {
 			if (PCB->Filename == NULL)
 				name_in = pcb_concat("unnamed", extensions_param[fmt], NULL);
 			else
 				name_in = pcb_strdup(PCB->Filename);
 		}
-		name = ghid_dialog_file_select_save(prompt, &current_dir, name_in, conf_core.rc.file_path, formats_param, extensions_param, fmt_param);
+		name =
+			ghid_dialog_file_select_save(prompt, &current_dir, name_in, conf_core.rc.file_path, formats_param, extensions_param,
+																	 fmt_param);
 		free(name_in);
 	}
 
@@ -1187,8 +1211,8 @@ static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 	printer->calibrate(0.0, 0.0);
 
 	if (pcb_gui->attribute_dialog(printer_calibrate_attrs, 3,
-														printer_calibrate_values,
-														_("Printer Calibration Values"), _("Enter calibration values for your printer")))
+																printer_calibrate_values,
+																_("Printer Calibration Values"), _("Enter calibration values for your printer")))
 		return 1;
 	printer->calibrate(printer_calibrate_values[1].real_value, printer_calibrate_values[2].real_value);
 	return 0;
@@ -1236,7 +1260,8 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 /* ------------------------------------------------------------ */
 
-static const char dowindows_syntax[] = "DoWindows(1|2|3|4|5|6|7,[false])\n" "DoWindows(Layout|Library|Log|Netlist|Preferences|DRC,[false])";
+static const char dowindows_syntax[] =
+	"DoWindows(1|2|3|4|5|6|7,[false])\n" "DoWindows(Layout|Library|Log|Netlist|Preferences|DRC,[false])";
 
 static const char dowindows_help[] = N_("Open various GUI windows. With false, do not raise the window (no focus stealing).");
 
@@ -1378,7 +1403,7 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (argc != 1 && argc != 2)
 		PCB_AFAIL(popup);
 
-	if (strlen(argv[0]) < sizeof(name)-32) {
+	if (strlen(argv[0]) < sizeof(name) - 32) {
 		lht_node_t *menu_node;
 		sprintf(name, "/popups/%s", argv[0]);
 		menu_node = pcb_hid_cfg_get_menu(ghid_cfg, name);
@@ -1467,7 +1492,7 @@ int Center(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int offset_x, offset_y, pointer_x, pointer_y;
 	GdkDisplay *display = gdk_display_get_default();
-	GdkScreen *screen= gdk_display_get_default_screen(display);
+	GdkScreen *screen = gdk_display_get_default_screen(display);
 
 	gdk_window_get_origin(gtk_widget_get_window(gport->drawing_area), &offset_x, &offset_y);
 	pcb_gtk_act_center(&gport->view, argc, argv, x, y, offset_x, offset_y, &pointer_x, &pointer_y);
@@ -1497,7 +1522,7 @@ static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 
-static void ghid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y)
+static void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
 	pcb_gtk_get_coords(&gport->view, msg, x, y);
 }
@@ -1547,7 +1572,6 @@ pcb_hid_action_t ghid_main_action_list[] = {
 };
 
 PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-
 #include "dolists.h"
 /*
  * We will need these for finding the windows installation
@@ -1558,10 +1582,9 @@ PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 #include <windows.h>
 #include <winreg.h>
 #endif
+		 pcb_hid_t ghid_hid;
 
-pcb_hid_t ghid_hid;
-
-static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *))
+		 static void init_conf_watch(conf_hid_callbacks_t * cbs, const char *path, void (*func) (conf_native_t *))
 {
 	conf_native_t *n = conf_get_field(path);
 	if (n != NULL) {
@@ -1575,10 +1598,10 @@ static void ghid_conf_regs()
 {
 	static conf_hid_callbacks_t cbs_refraction, cbs_direction, cbs_fullscreen, cbs_show_sside;
 
-	init_conf_watch(&cbs_direction,   "editor/all_direction_lines",  ghid_confchg_all_direction_lines);
-	init_conf_watch(&cbs_refraction,  "editor/line_refraction",      ghid_confchg_line_refraction);
- 	init_conf_watch(&cbs_fullscreen,  "editor/fullscreen",           ghid_confchg_fullscreen);
-	init_conf_watch(&cbs_show_sside,  "editor/show_solder_side",     ghid_confchg_flip);
+	init_conf_watch(&cbs_direction, "editor/all_direction_lines", ghid_confchg_all_direction_lines);
+	init_conf_watch(&cbs_refraction, "editor/line_refraction", ghid_confchg_line_refraction);
+	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
+	init_conf_watch(&cbs_show_sside, "editor/show_solder_side", ghid_confchg_flip);
 }
 
 void hid_hid_gtk_uninit()
@@ -1590,7 +1613,8 @@ void hid_hid_gtk_uninit()
 
 void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
 
-static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
+static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title,
+																	const char *descr)
 {
 	return ghid_attribute_dialog(ghid_port.top_window, attrs, n_attrs, results, title, descr);
 }
@@ -1733,11 +1757,11 @@ int gtkhid_active = 0;
 void gtkhid_begin(void)
 {
 	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-	PCB_REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)
-	PCB_REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
-	PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
-	PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
-	gtkhid_active = 1;
+		PCB_REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)
+		PCB_REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
+		PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
+		PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
+		gtkhid_active = 1;
 }
 
 void gtkhid_end(void)

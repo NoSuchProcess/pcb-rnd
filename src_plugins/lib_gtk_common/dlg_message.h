@@ -1,7 +1,6 @@
 #include <gtk/gtk.h>
 
-/* This will change with next commit */
+/*FIXME: Remove this dependency : remove such: str _("text"); */
 #include "compat_nls.h"
-#include "../hid_gtk/gui.h"
 
-gint ghid_dialog_close_confirm();
+gint pcb_gtk_dlg_message(const char *message, GtkWindow * parent);
