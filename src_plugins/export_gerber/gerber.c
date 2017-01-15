@@ -633,8 +633,13 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 		return 0;
 	}
 
-#warning layer TODO: get the name
-	group_name = "TODO:group_name";
+	if ((group >= 0) && (group < pcb_max_group)) {
+		group_name = PCB->LayerGroups.grp[group].name;
+		if (group_name == NULL)
+			group_name = "<unknown>";
+	}
+	else
+		group_name = "<virtual group>";
 
 	flash_drills = 0;
 	if (flags & PCB_LYT_OUTLINE)
