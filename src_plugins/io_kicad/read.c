@@ -933,7 +933,6 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 					return -1;
 				}
 			}
-			pcb_layers_finalize();
 
 			/* set up the hash for implicit layers */
 			res = 0;
