@@ -103,6 +103,13 @@ pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 	if (g->type & PCB_LYT_MASK)
 		return pcb_false;
 
+	if (g->type & PCB_LYT_PASTE) {
+		if (g->type & PCB_LYT_TOP)
+			return pcb_layer_is_paste_empty(PCB_COMPONENT_SIDE);
+		if (g->type & PCB_LYT_BOTTOM)
+			return pcb_layer_is_paste_empty(PCB_SOLDER_SIDE);
+	}
+
 	for (i = 0; i < g->len; i++)
 		if (!pcb_layer_is_empty(g->lid[i]))
 			return pcb_false;
@@ -431,4 +438,16 @@ pcb_layergrp_id_t pcb_layergrp_get_top_mask()
 {
 	static pcb_layer_id_t cache = -1;
 	return pcb_layergrp_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_MASK);
+}
+
+pcb_layergrp_id_t pcb_layergrp_get_bottom_paste()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layergrp_get_cached(&cache, PCB_LYT_BOTTOM, PCB_LYT_PASTE);
+}
+
+pcb_layergrp_id_t pcb_layergrp_get_top_paste()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layergrp_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_PASTE);
 }

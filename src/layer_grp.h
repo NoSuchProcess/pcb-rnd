@@ -116,5 +116,7 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack);
 /* Cached layer group lookups foir a few common cases */
 pcb_layergrp_id_t pcb_layergrp_get_bottom_mask();
 pcb_layergrp_id_t pcb_layergrp_get_top_mask();
+pcb_layergrp_id_t pcb_layergrp_get_bottom_paste();
+pcb_layergrp_id_t pcb_layergrp_get_top_paste();
 
 #endif
