@@ -236,7 +236,7 @@ void pcb_layervis_reset_stack(void)
 	PCB->RatOn = pcb_true;
 
 	/* Bring the component group to the front and make it active.  */
-	comp_group = pcb_layer_get_group(pcb_component_silk_layer);
+	comp_group = pcb_layer_get_group(pcb_layer_get_top_silk());
 	pcb_layervis_change_group_vis(PCB->LayerGroups.grp[comp_group].lid[0], 1, 1);
 }
 
