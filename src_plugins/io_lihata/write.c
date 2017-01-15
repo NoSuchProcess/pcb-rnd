@@ -471,11 +471,49 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 {
 	int n;
 	lht_node_t *layers;
+	pcb_layergrp_id_t gm, grp[PCB_MAX_LAYERGRP], gtop = -1, gbottom = -1;
+	pcb_layer_group_t *g;
+	int v1_layers = 1;
 
 	layers = lht_dom_node_alloc(LHT_LIST, "layers");
 
-	for(n = 0; n < pcb_max_layer; n++)
-		lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, pcb_layer_lookup_group(n)));
+	if (v1_layers) {
+		/* produce an old layer group assignment from top to bottom */
+		gm = 0;
+		for(n = 0; n < pcb_max_group; n++) {
+			unsigned int gflg = pcb_layergrp_flags(n);
+			if (gflg & PCB_LYT_COPPER) {
+				if (gflg & PCB_LYT_TOP)
+					gtop = gm;
+				if (gflg & PCB_LYT_BOTTOM)
+					gbottom = gm;
+				grp[n] = gm;
+/*				pcb_trace("build data layers: %d -> %ld {%ld %ld}\n", n, gm, gtop, gbottom); */
+				gm++;
+			}
+			else
+				grp[n] = -1;
+		}
+
+		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+		grp[g - PCB->LayerGroups.grp] = gtop;
+
+		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
+		grp[g - PCB->LayerGroups.grp] = gbottom;
+	}
+
+	for(n = 0; n < pcb_max_layer; n++) {
+		int gid = pcb_layer_lookup_group(n);
+		if (v1_layers) {
+			if (gid >= 0) {
+				if (gid < sizeof(grp) / sizeof(grp[0]))
+					gid = grp[gid];
+				else
+					gid = -1;
+			}
+		}
+		lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid));
+	}
 
 	return layers;
 }
