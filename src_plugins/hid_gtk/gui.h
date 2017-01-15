@@ -255,7 +255,6 @@ char *ghid_fileselect(const char *, const char *, const char *, const char *, co
 
 /* gui-dialog-print.c */
 void ghid_dialog_export(void);
-void ghid_dialog_print(pcb_hid_t *);
 
 int ghid_attribute_dialog(pcb_hid_attribute_t *, int, pcb_hid_attr_val_t *, const char *, const char *);
 

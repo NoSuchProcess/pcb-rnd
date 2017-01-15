@@ -310,47 +310,7 @@ int ghid_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr
 
 static void exporter_clicked_cb(GtkButton * button, pcb_hid_t * exporter)
 {
-	ghid_dialog_print(exporter);
-}
-
-void ghid_dialog_print(pcb_hid_t * hid)
-{
-	pcb_hid_attribute_t *attr;
-	int n = 0;
-	int i;
-	pcb_hid_attr_val_t *results = NULL;
-
-	/* signal the initial export select dialog that it should close */
-	if (export_dialog)
-		gtk_dialog_response(GTK_DIALOG(export_dialog), GTK_RESPONSE_CANCEL);
-
-	pcb_exporter = hid;
-
-	attr = pcb_exporter->get_export_options(&n);
-	if (n > 0) {
-		results = (pcb_hid_attr_val_t *) malloc(n * sizeof(pcb_hid_attr_val_t));
-		if (results == NULL) {
-			fprintf(stderr, "ghid_dialog_print() -- malloc failed\n");
-			exit(1);
-		}
-
-		/* non-zero means cancel was picked */
-		if (ghid_attribute_dialog(attr, n, results, _("PCB Print Layout"), pcb_exporter->description))
-			return;
-
-	}
-
-	pcb_exporter->do_export(results);
-
-	for (i = 0; i < n; i++) {
-		if (results[i].str_value)
-			free((void *) results[i].str_value);
-	}
-
-	if (results)
-		free(results);
-
-	pcb_exporter = NULL;
+	ghid_dialog_print(exporter, export_dialog);
 }
 
 void ghid_dialog_export(void)

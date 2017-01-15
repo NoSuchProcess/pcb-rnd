@@ -1143,7 +1143,7 @@ static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	/* check if layout is empty */
 	if (!pcb_data_is_empty(PCB->Data)) {
-		ghid_dialog_print(printer);
+		ghid_dialog_print(printer, NULL);
 	}
 	else
 		pcb_gui->log(_("Can't print empty layout"));
