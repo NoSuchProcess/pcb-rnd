@@ -172,7 +172,7 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 	if ((layer_idx >= PCB_LAYER_VIRT_MIN) && (layer_idx <= PCB_LAYER_VIRT_MAX))
 		return pcb_virt_layers[layer_idx - PCB_LAYER_VIRT_MIN].type;
 
-	if (layer_idx >= pcb_max_layer)
+	if ((layer_idx < 0) || (layer_idx >= pcb_max_layer))
 		return 0;
 
 	l = &PCB->Data->Layer[layer_idx];
