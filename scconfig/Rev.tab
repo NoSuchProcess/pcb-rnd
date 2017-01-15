@@ -1,4 +1,4 @@
-6296	configure	gtk splitup
+6300	configure	gtk splitup
 6201	configure	draw cross section plugin
 6111	configure	layer vs. layer group code split
 6093	distclean,configure	hid API extension for the common Cursor action
