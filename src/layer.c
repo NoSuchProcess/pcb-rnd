@@ -453,52 +453,12 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 	return id;
 }
 
-#warning layer TODO: remove this hack
-/* Temporary hack: silk layers have to be added as the last entry in the top and bottom layer groups, if they are not already in */
-static void hack_in_silks()
-{
-	pcb_layer_id_t sl, cl;
-	int found, n;
-
-	sl = PCB_SOLDER_SIDE + PCB->Data->LayerN;
-	for(found = 0, n = 0; n < PCB->LayerGroups.grp[PCB_SOLDER_SIDE].len; n++)
-		if (PCB->LayerGroups.grp[PCB_SOLDER_SIDE].lid[n] == sl)
-			found = 1;
-
-	if (!found) {
-		PCB->LayerGroups.grp[PCB_SOLDER_SIDE].lid[PCB->LayerGroups.grp[PCB_SOLDER_SIDE].len] = sl;
-		PCB->LayerGroups.grp[PCB_SOLDER_SIDE].len++;
-		if (PCB->Data->Layer[sl].Name != NULL)
-			free((char *)PCB->Data->Layer[sl].Name);
-		PCB->Data->Layer[sl].Name = pcb_strdup("silk");
-	}
-
-
-	cl = PCB_COMPONENT_SIDE + PCB->Data->LayerN;
-	for(found = 0, n = 0; n < PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].len; n++)
-		if (PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].lid[n] == cl)
-			found = 1;
-
-	if (!found) {
-		PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].lid[PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].len] = cl;
-		PCB->LayerGroups.grp[PCB_COMPONENT_SIDE].len++;
-		if (PCB->Data->Layer[cl].Name != NULL)
-			free((char *)PCB->Data->Layer[cl].Name);
-		PCB->Data->Layer[cl].Name = pcb_strdup("silk");
-	}
-}
-
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname)
 {
 	if (PCB->Data->Layer[layer].Name != NULL)
 		free((char *)PCB->Data->Layer[layer].Name);
 	PCB->Data->Layer[layer].Name = pcb_strdup(lname);
 	return 0;
-}
-
-void pcb_layers_finalize()
-{
-	hack_in_silks();
 }
 
 #undef APPEND

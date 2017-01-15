@@ -203,10 +203,6 @@ int pcb_layer_rename(pcb_layer_id_t layer, const char *lname);
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name);
 
 
-/* Needs to be called once at the end, when all layers has been added */
-void pcb_layers_finalize();
-
-
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is
    deleted.  Returns non-zero on error, zero if OK.  */
