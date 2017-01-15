@@ -121,6 +121,11 @@ typedef enum {
 pcb_bool pcb_layer_is_paste_empty(pcb_side_t side);
 
 
+/* Cached lookup of the first silk layer in the bottom or top group */
+pcb_layer_id_t pcb_layer_get_bottom_silk();
+pcb_layer_id_t pcb_layer_get_top_silk();
+
+
 /************ OLD API - new code should not use these **************/
 
 #define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])

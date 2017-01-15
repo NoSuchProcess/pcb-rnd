@@ -720,3 +720,38 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty)
 	return 1;
 }
 
+static pcb_layer_id_t pcb_layer_get_cached(pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
+{
+	pcb_layer_group_t *g;
+
+	if (*cache < pcb_max_layer) { /* check if the cache is still pointing to the right layer */
+		pcb_layergrp_id_t gid = PCB->Data->Layer[*cache].grp;
+		if ((gid >= 0) && (gid < PCB->LayerGroups.len)) {
+			g = &(PCB->LayerGroups.grp[gid]);
+			if ((g->type & loc) && (g->type & typ) && (g->lid[0] == *cache))
+				return *cache;
+		}
+	}
+
+	/* nope: need to resolve it again */
+	g = pcb_get_grp(&PCB->LayerGroups, loc, typ);
+	if ((g == NULL) || (g->len == 0)) {
+		*cache = -1;
+		return -1;
+	}
+	*cache = g->lid[0];
+	return *cache;
+}
+
+pcb_layer_id_t pcb_layer_get_bottom_silk()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layer_get_cached(&cache, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+}
+
+pcb_layer_id_t pcb_layer_get_top_silk()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layer_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_SILK);
+}
+

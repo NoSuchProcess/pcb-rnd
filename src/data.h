@@ -54,11 +54,7 @@ struct pcb_data_s {
 
 
 #define pcb_max_layer (PCB->Data->LayerN)
-
-/* OBSOLOTE: do not use these 4 */
 #define pcb_max_group (PCB->LayerGroups.len)
-#define pcb_layer_get_bottom_silk()   (pcb_max_layer + PCB_SOLDER_SIDE - 2)
-#define pcb_layer_get_top_silk()      (pcb_max_layer + PCB_COMPONENT_SIDE - 2)
 
 extern pcb_buffer_t pcb_buffers[PCB_MAX_BUFFER];
 extern int pcb_added_lines;
