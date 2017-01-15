@@ -3,6 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  pcb-rnd Copyright (C) 2017 Alain Vigne
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,19 +25,11 @@
  *
  */
 
-/* This file written by Bill Wilson for the PCB Gtk port.
-*/
+/* This code was originally written by Bill Wilson for the PCB Gtk port. */
 
 #include "config.h"
-#include "compat_misc.h"
-#include "compat_nls.h"
-#include "build_run.h"
-#include "plug_io.h"
 
-#include "data.h"
-#include "gui.h"
-
-#include "../src_plugins/lib_gtk_common/util_str.h"
+#include "dlg_file_chooser.h"
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename.*/
