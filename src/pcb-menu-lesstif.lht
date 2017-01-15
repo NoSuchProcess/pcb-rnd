@@ -69,7 +69,7 @@ ha:{
 				ha:Spin 180° = { a=Ctrl<Key>Tab; action=SwapSides(R) }
 				ha:Swap Sides = { a=Ctrl Shift<Key>Tab; action=SwapSides() }
 				ha:Center cursor = { a=<Key>c; action=Center() }
-				ha:Show soldermask = { checked=showmask; action=Display(ToggleMask) }
+				ha:Show soldermask = { checked=editor/show_mask; action=Display(ToggleMask) }
 				-
 				ha:Displayed element-name... = { foreground=grey50; sensitive=false }
 				ha:Description = { checked=ChkElementName(1); action=Display(Description) }
