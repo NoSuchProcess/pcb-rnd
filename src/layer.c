@@ -163,7 +163,6 @@ pcb_bool pcb_layer_is_paste_empty(pcb_side_t side)
 
 unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 {
-	unsigned int res = 0;
 	pcb_layer_t *l;
 
 	if (layer_idx & PCB_LYT_UI)
@@ -316,6 +315,9 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 			case PCB_LYT_UDRILL:
 			case PCB_LYT_PDRILL:
 			case PCB_LYT_UI:
+			case PCB_LYT_CSECT:
+			case PCB_LYT_SUBSTRATE:
+			case PCB_LYT_MISC:
 				return -1; /* do not create virtual layers */
 
 			case PCB_LYT_INTERN:
@@ -390,6 +392,9 @@ pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb
 			case PCB_LYT_UDRILL:
 			case PCB_LYT_PDRILL:
 			case PCB_LYT_UI:
+			case PCB_LYT_CSECT:
+			case PCB_LYT_SUBSTRATE:
+			case PCB_LYT_MISC:
 				return -1; /* do not create virtual layers */
 
 			case PCB_LYT_INTERN:
