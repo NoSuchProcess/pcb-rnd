@@ -252,12 +252,6 @@ gchar *ghid_dialog_input(const char *prompt, const char *initial);
 
 char *ghid_fileselect(const char *, const char *, const char *, const char *, const char *, int);
 
-
-/* gui-dialog-print.c */
-void ghid_dialog_export(void);
-
-int ghid_attribute_dialog(pcb_hid_attribute_t *, int, pcb_hid_attr_val_t *, const char *, const char *);
-
 /* gui-drc-window.c */
 void ghid_drc_window_show(gboolean raise);
 void ghid_drc_window_reset_message(void);

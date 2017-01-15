@@ -8,6 +8,8 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/ui_zoompan.o
   $(PLUGDIR)/lib_gtk_common/dlg_about.o
   $(PLUGDIR)/lib_gtk_common/dlg_print.o
+  $(PLUGDIR)/lib_gtk_common/dlg_export.o
+  $(PLUGDIR)/lib_gtk_common/dlg_attribute.o
 @]
 
 

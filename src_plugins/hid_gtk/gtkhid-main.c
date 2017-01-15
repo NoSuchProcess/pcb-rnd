@@ -33,6 +33,9 @@
 
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/dlg_about.h"
+#include "../src_plugins/lib_gtk_common/dlg_print.h"
+#include "../src_plugins/lib_gtk_common/dlg_export.h"
+#include "../src_plugins/lib_gtk_common/dlg_attribute.h"
 
 conf_hid_id_t ghid_conf_id = -1;
 conf_hid_id_t ghid_menuconf_id = -1;
@@ -1143,7 +1146,7 @@ static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	/* check if layout is empty */
 	if (!pcb_data_is_empty(PCB->Data)) {
-		ghid_dialog_print(printer, NULL);
+		ghid_dialog_print(printer, NULL, ghid_port.top_window);
 	}
 	else
 		pcb_gui->log(_("Can't print empty layout"));
@@ -1196,7 +1199,7 @@ static int ExportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	/* check if layout is empty */
 	if (!pcb_data_is_empty(PCB->Data)) {
-		ghid_dialog_export();
+		ghid_dialog_export(ghid_port.top_window);
 	}
 	else
 		pcb_gui->log(_("Can't export empty layout"));
@@ -1585,6 +1588,12 @@ void hid_hid_gtk_uninit()
 
 void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
 
+static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
+{
+	return ghid_attribute_dialog(ghid_port.top_window, attrs, n_attrs, results, title, descr);
+}
+
+
 pcb_uninit_t hid_hid_gtk_init()
 {
 #ifdef WIN32
@@ -1669,7 +1678,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_hid.report_dialog = ghid_report_dialog;
 	ghid_hid.prompt_for = ghid_prompt_for;
 	ghid_hid.fileselect = ghid_fileselect;
-	ghid_hid.attribute_dialog = ghid_attribute_dialog;
+	ghid_hid.attribute_dialog = ghid_attribute_dialog_;
 	ghid_hid.show_item = ghid_show_item;
 	ghid_hid.beep = ghid_beep;
 	ghid_hid.progress = ghid_progress;

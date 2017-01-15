@@ -37,9 +37,9 @@
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
+#include "dlg_attribute.h"
 
-
-void ghid_dialog_print(pcb_hid_t * hid, GtkWidget *export_dialog)
+void ghid_dialog_print(pcb_hid_t * hid, GtkWidget *export_dialog, GtkWidget *top_window)
 {
 	pcb_hid_attribute_t *attr;
 	int n = 0;
@@ -61,7 +61,7 @@ void ghid_dialog_print(pcb_hid_t * hid, GtkWidget *export_dialog)
 		}
 
 		/* non-zero means cancel was picked */
-		if (ghid_attribute_dialog(attr, n, results, _("PCB Print Layout"), pcb_exporter->description))
+		if (ghid_attribute_dialog(top_window, attr, n, results, _("PCB Print Layout"), pcb_exporter->description))
 			return;
 
 	}

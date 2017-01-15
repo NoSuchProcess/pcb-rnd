@@ -28,9 +28,9 @@
 
 #include "config.h"
 #include "conf_core.h"
+#include "dlg_attribute.h"
 #include <stdlib.h>
 
-#include "gui.h"
 #include "pcb-printf.h"
 #include "hid_attrib.h"
 #include "hid_init.h"
@@ -38,7 +38,19 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
-static GtkWidget *export_dialog = NULL;
+#warning TODO: remove these
+#include "../src_plugins/hid_gtk/ghid-coord-entry.h"
+GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header, gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad);
+void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button,
+											gfloat value, gfloat low, gfloat high, gfloat step0,
+											gfloat step1, gint digits, gint width,
+											void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string);
+void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button,
+																 gboolean active, gboolean pack_start,
+																 gboolean expand, gboolean fill, gint pad,
+																 void (*cb_func) (GtkToggleButton *, gpointer), gpointer data, const gchar * string);
+
+
 
 static void set_flag_cb(GtkToggleButton * button, void *flag)
 {
@@ -87,19 +99,18 @@ static void enum_changed_cb(GtkWidget * combo_box, int *val)
 }
 
 
-int ghid_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
+int ghid_attribute_dialog(GtkWidget *top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
 {
 	GtkWidget *dialog;
 	GtkWidget *content_area;
 	GtkWidget *main_vbox, *vbox, *vbox1, *hbox, *entry;
 	GtkWidget *combo;
 	GtkWidget *widget;
-	GHidPort *out = &ghid_port;
 	int i, j, n;
 	int rc = 0;
 
 	dialog = gtk_dialog_new_with_buttons(_(title),
-																			 GTK_WINDOW(out->top_window),
+																			 GTK_WINDOW(top_window),
 																			 (GtkDialogFlags) (GTK_DIALOG_MODAL
 																												 | GTK_DIALOG_DESTROY_WITH_PARENT),
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_NONE, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
@@ -307,63 +318,3 @@ int ghid_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr
 }
 
 
-
-static void exporter_clicked_cb(GtkButton * button, pcb_hid_t * exporter)
-{
-	ghid_dialog_print(exporter, export_dialog);
-}
-
-void ghid_dialog_export(void)
-{
-	GtkWidget *content_area;
-	GtkWidget *vbox, *button;
-	GHidPort *out = &ghid_port;
-	int i;
-	pcb_hid_t **hids;
-	gboolean no_exporter = TRUE;
-
-	export_dialog = gtk_dialog_new_with_buttons(_("PCB Export Layout"),
-																							GTK_WINDOW(out->top_window),
-																							(GtkDialogFlags) (GTK_DIALOG_MODAL
-																																|
-																																GTK_DIALOG_DESTROY_WITH_PARENT),
-																							GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, NULL);
-	gtk_window_set_wmclass(GTK_WINDOW(export_dialog), "PCB_Export", "PCB");
-
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(export_dialog));
-
-	vbox = gtk_vbox_new(FALSE, 6);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
-	gtk_container_add(GTK_CONTAINER(content_area), vbox);
-
-	/*
-	 * Iterate over all the export HID's and build up a dialog box that
-	 * lets us choose which one we want to use.
-	 * This way, any additions to the exporter HID's automatically are
-	 * reflected in this dialog box.
-	 */
-
-	hids = pcb_hid_enumerate();
-	for (i = 0; hids[i]; i++) {
-		if (hids[i]->exporter) {
-			no_exporter = FALSE;
-			button = gtk_button_new_with_label(hids[i]->name);
-			gtk_widget_set_tooltip_text(button, hids[i]->description);
-			gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-			g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(exporter_clicked_cb), hids[i]);
-		}
-	}
-
-	if (no_exporter) {
-		GtkWidget *label;
-		label = gtk_label_new("No exporter found. Check your plugins!");
-			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-	}
-
-	gtk_widget_show_all(export_dialog);
-	gtk_dialog_run(GTK_DIALOG(export_dialog));
-
-	if (export_dialog != NULL)
-		gtk_widget_destroy(export_dialog);
-	export_dialog = NULL;
-}
