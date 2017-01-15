@@ -529,14 +529,15 @@ static void DrawLayerGroup(int group, const pcb_box_t * drawn_area)
 	pcb_layer_t *Layer;
 	pcb_cardinal_t n_entries = PCB->LayerGroups.grp[group].len;
 	pcb_layer_id_t *layers = PCB->LayerGroups.grp[group].lid;
+	unsigned int gflg = pcb_layergrp_flags(group);
+
+	if (gflg & PCB_LYT_OUTLINE)
+		rv = 0;
 
 	for (i = n_entries - 1; i >= 0; i--) {
 		layernum = layers[i];
 		Layer = PCB->Data->Layer + layernum;
-		if (pcb_layer_flags(layernum) & PCB_LYT_OUTLINE)
-			rv = 0;
-#warning layer TODO: probably enough to check this on the group
-		if (!(pcb_layer_flags(layernum) & PCB_LYT_SILK) && Layer->On)
+		if (!(gflg & PCB_LYT_SILK) && Layer->On)
 			pcb_draw_layer(Layer, drawn_area);
 	}
 	if (n_entries > 1)
