@@ -546,7 +546,7 @@ static void move_all_thermals(int old_index, int new_index)
 	PCB_ENDALL_LOOP;
 }
 
-static int LastLayerInComponentGroup(int layer)
+static int is_last_top_copper_layer(int layer)
 {
 	pcb_layergrp_id_t cgroup = pcb_layer_get_group(pcb_max_group + PCB_COMPONENT_SIDE);
 	pcb_layergrp_id_t lgroup = pcb_layer_get_group(layer);
@@ -555,7 +555,7 @@ static int LastLayerInComponentGroup(int layer)
 	return 0;
 }
 
-static int LastLayerInSolderGroup(int layer)
+static int is_last_bottom_copper_layer(int layer)
 {
 	int sgroup = pcb_layer_get_group(pcb_max_group + PCB_SOLDER_SIDE);
 	int lgroup = pcb_layer_get_group(layer);
@@ -592,12 +592,12 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	if (old_index == new_index)
 		return 0;
 
-	if (new_index == -1 && LastLayerInComponentGroup(old_index)) {
+	if (new_index == -1 && is_last_top_copper_layer(old_index)) {
 		pcb_gui->confirm_dialog("You can't delete the last top-side layer\n", "Ok", NULL);
 		return 1;
 	}
 
-	if (new_index == -1 && LastLayerInSolderGroup(old_index)) {
+	if (new_index == -1 && is_last_bottom_copper_layer(old_index)) {
 		pcb_gui->confirm_dialog("You can't delete the last bottom-side layer\n", "Ok", NULL);
 		return 1;
 	}
