@@ -193,8 +193,6 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	/* add board outline last */
 	hyp_perimeter();
 
-	pcb_layers_finalize();				/* XXX Check. */
-
 	/* clear */
 	hyp_dest = NULL;
 
