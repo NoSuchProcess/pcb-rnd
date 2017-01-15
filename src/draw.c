@@ -179,7 +179,7 @@ static void DrawEverything_holes(const pcb_box_t * drawn_area)
 static void DrawEverything(const pcb_box_t * drawn_area)
 {
 	int i, ngroups, side, slk_len;
-	pcb_layergrp_id_t component, solder, slk[16];
+	pcb_layergrp_id_t component, solder, slk[16], gid;
 	/* This is the list of layer groups we will draw.  */
 	pcb_layergrp_id_t do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
@@ -246,12 +246,14 @@ static void DrawEverything(const pcb_box_t * drawn_area)
 		DrawEverything_holes(drawn_area);
 
 	/* Draw the solder mask if turned on */
-	if (pcb_layer_gui_set_vlayer(PCB_VLY_TOP_MASK, 0)) {
+	gid = pcb_layergrp_get_top_mask();
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, 0))) {
 		DrawMask(PCB_COMPONENT_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}
 
-	if (pcb_layer_gui_set_vlayer(PCB_VLY_BOTTOM_MASK, 0)) {
+	gid = pcb_layergrp_get_bottom_mask();
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(gid, 0))) {
 		DrawMask(PCB_SOLDER_SIDE, drawn_area);
 		pcb_gui->end_layer();
 	}

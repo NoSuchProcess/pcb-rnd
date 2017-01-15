@@ -71,17 +71,22 @@ int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned
 		idx = PCB->LayerGroups.grp[group].lid[idx];
 	}
 
-	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
-		return /*pinout ? 1 : */ PCB->Data->Layer[idx].On;
-
-	{
-		switch (flags & PCB_LYT_ANYTHING) {
-		case PCB_LYT_INVIS:
-			return /* pinout ? 0 : */ PCB->InvisibleObjectsOn;
+	/* non-virtual layers with special visibility */
+	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_MASK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) /*&& !pinout */ )
 				return conf_core.editor.show_mask;
 			return 0;
+	}
+
+	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
+		return /*pinout ? 1 : */ PCB->Data->Layer[idx].On;
+
+	/* virtual layers */
+	{
+		switch (flags & PCB_LYT_ANYTHING) {
+		case PCB_LYT_INVIS:
+			return /* pinout ? 0 : */ PCB->InvisibleObjectsOn;
 		case PCB_LYT_SILK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) /*|| pinout */ )
 				return PCB->ElementOn;

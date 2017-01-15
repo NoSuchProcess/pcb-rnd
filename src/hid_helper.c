@@ -65,6 +65,8 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 			res = single_name;
 		if (flags & PCB_LYT_SILK)
 			res = "topsilk";
+		else if (flags & PCB_LYT_MASK)
+			res = "topmask";
 		else
 			res = "top";
 	}
@@ -73,6 +75,8 @@ char *pcb_layer_to_file_name(char *dest, pcb_layer_id_t lid, unsigned int flags,
 			res = single_name;
 		if (flags & PCB_LYT_SILK)
 			res = "bottomsilk";
+		else if (flags & PCB_LYT_MASK)
+			res = "bottommask";
 		else
 		res = "bottom";
 	}

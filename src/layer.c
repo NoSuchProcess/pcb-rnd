@@ -37,8 +37,6 @@
 
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
-	{"topmask",        PCB_LYT_VIRTUAL + 2,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_TOP },
-	{"bottommask",     PCB_LYT_VIRTUAL + 3,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_MASK | PCB_LYT_BOTTOM },
 	{"rats",           PCB_LYT_VIRTUAL + 6,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_RAT },
 	{"toppaste",       PCB_LYT_VIRTUAL + 7,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_TOP },
 	{"bottompaste",    PCB_LYT_VIRTUAL + 8,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PASTE | PCB_LYT_BOTTOM },
@@ -754,4 +752,3 @@ pcb_layer_id_t pcb_layer_get_top_silk()
 	static pcb_layer_id_t cache = -1;
 	return pcb_layer_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_SILK);
 }
-

@@ -2746,17 +2746,23 @@ static int lesstif_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer
 		autofade = 0;
 #endif
 
-	if (flags & PCB_LYT_COPPER)
-		return pinout ? 1 : PCB->Data->Layer[idx].On;
-
-	{
-		switch (flags & PCB_LYT_ANYTHING) {
-		case PCB_LYT_INVIS:
-			return pinout ? 0 : PCB->InvisibleObjectsOn;
+	/* layers that need special visibility rules */
+	switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_MASK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && !pinout)
 				return conf_core.editor.show_mask;
 			return 0;
+	}
+
+	/* normal layers */
+	if (flags & PCB_LYT_COPPER)
+		return pinout ? 1 : PCB->Data->Layer[idx].On;
+
+	/* virtual layers */
+	{
+		switch (flags & PCB_LYT_ANYTHING) {
+		case PCB_LYT_INVIS:
+			return pinout ? 0 : PCB->InvisibleObjectsOn;
 		case PCB_LYT_SILK:
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) || pinout) {
 				return PCB->ElementOn;

@@ -97,8 +97,14 @@ unsigned int pcb_layergrp_flags(pcb_layergrp_id_t gid)
 pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 {
 	int i;
-	for (i = 0; i < PCB->LayerGroups.grp[num].len; i++)
-		if (!pcb_layer_is_empty(PCB->LayerGroups.grp[num].lid[i]))
+	pcb_layer_group_t *g = &PCB->LayerGroups.grp[num];
+
+	/* some layers are never empty */
+	if (g->type & PCB_LYT_MASK)
+		return pcb_false;
+
+	for (i = 0; i < g->len; i++)
+		if (!pcb_layer_is_empty(g->lid[i]))
 			return pcb_false;
 	return pcb_true;
 }
@@ -395,3 +401,34 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");
 }
 
+static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
+{
+	pcb_layer_group_t *g;
+
+	/* check if the last known value is still accurate */
+	if ((*cache >= 0) && (*cache < PCB->LayerGroups.len)) {
+		g = &(PCB->LayerGroups.grp[*cache]);
+		if ((g->type & loc) && (g->type & typ))
+			return *cache;
+	}
+
+	/* nope: need to resolve it again */
+	g = pcb_get_grp(&PCB->LayerGroups, loc, typ);
+	if (g == NULL)
+		*cache = -1;
+	else
+		*cache = (g - PCB->LayerGroups.grp);
+	return *cache;
+}
+
+pcb_layergrp_id_t pcb_layergrp_get_bottom_mask()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layergrp_get_cached(&cache, PCB_LYT_BOTTOM, PCB_LYT_MASK);
+}
+
+pcb_layergrp_id_t pcb_layergrp_get_top_mask()
+{
+	static pcb_layer_id_t cache = -1;
+	return pcb_layergrp_get_cached(&cache, PCB_LYT_TOP, PCB_LYT_MASK);
+}

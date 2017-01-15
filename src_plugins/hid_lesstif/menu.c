@@ -425,7 +425,7 @@ static void insert_layerview_buttons(Widget menu)
 		lb->w[i] = btn;
 
 		if (i == LB_MASK)
-			note_widget_flag(btn, XmNset, "showmask");
+			note_widget_flag(btn, XmNset, "editor/show_mask");
 	}
 	lb->is_pick = 0;
 	LesstifLayersChanged(0, 0, 0);

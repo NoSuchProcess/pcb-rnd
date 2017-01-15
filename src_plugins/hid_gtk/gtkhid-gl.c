@@ -120,19 +120,25 @@ int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned
 	end_subcomposite();
 	start_subcomposite();
 
+	/* non-virtual layers with special visibility */
+	switch (flags & PCB_LYT_ANYTHING) {
+		case PCB_LYT_MASK:
+			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
+				return PCB_FLAG_TEST(PCB_SHOWMASKFLAG, PCB);
+			return 0;
+	}
+
+	/* normal layers */
 	if (idx >= 0 && idx < pcb_max_layer) {
 		priv->trans_lines = pcb_true;
 		return PCB->Data->Layer[idx].On;
 	}
 
+	/* virtual layers */
 	{
 		switch (flags & PCB_LYT_ANYTHING) {
 		case PCB_LYT_INVIS:
 			return PCB->InvisibleObjectsOn;
-		case PCB_LYT_MASK:
-			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
-				return PCB_FLAG_TEST(PCB_SHOWMASKFLAG, PCB);
-			return 0;
 		case PCB_LYT_SILK:
 			priv->trans_lines = pcb_true;
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
