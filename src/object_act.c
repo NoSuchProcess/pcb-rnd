@@ -1042,7 +1042,7 @@ Creates a new layer.
 @end table
 
 %end-doc */
-
+#warning layer TODO: test this
 int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_index, new_index;
@@ -1071,7 +1071,7 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	}
 	else if (strcmp(argv[1], "down") == 0) {
 		new_index = INDEXOFCURRENT + 1;
-		if (new_index >= pcb_max_copper_layer)
+		if (new_index >= pcb_max_layer)
 			return 1;
 		new_top = new_index;
 	}
@@ -1083,7 +1083,7 @@ int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 	if (new_index == -1) {
 		new_top = old_index;
-		if (new_top >= pcb_max_copper_layer)
+		if (new_top >= pcb_max_layer)
 			new_top--;
 		new_index = new_top;
 	}

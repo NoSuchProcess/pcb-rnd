@@ -197,12 +197,6 @@ do { \
 		APPEND(v->new_id); \
 } while(0)
 
-/* this would be how we returned silks from here
-		APPEND(pcb_max_copper_layer + v->data_layer_offs); \
-	else \
-*/
-
-
 const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask)
 {
 	const pcb_virt_layer_t *v;
@@ -546,12 +540,12 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	pcb_undo_add_layer_move(old_index, new_index);
 	pcb_undo_inc_serial();
 
-	if (old_index < -1 || old_index >= pcb_max_copper_layer) {
-		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb_max_copper_layer - 1);
+	if (old_index < -1 || old_index >= pcb_max_layer) {
+		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb_max_layer - 1);
 		return 1;
 	}
-	if (new_index < -1 || new_index > pcb_max_copper_layer || new_index >= PCB_MAX_LAYER) {
-		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb_max_copper_layer);
+	if (new_index < -1 || new_index > pcb_max_layer || new_index >= PCB_MAX_LAYER) {
+		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb_max_layer);
 		return 1;
 	}
 	if (old_index == new_index)
@@ -576,37 +570,39 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 
 	if (old_index == -1) {
 		pcb_layer_t *lp;
-		if (pcb_max_copper_layer == PCB_MAX_LAYER) {
+		if (pcb_max_layer == PCB_MAX_LAYER) {
 			pcb_message(PCB_MSG_ERROR, "No room for new layers\n");
 			return 1;
 		}
 		/* Create a new layer at new_index. */
 		lp = &PCB->Data->Layer[new_index];
+#warning layer TODO: what is this +2 here?
 		memmove(&PCB->Data->Layer[new_index + 1],
-						&PCB->Data->Layer[new_index], (pcb_max_copper_layer - new_index + 2) * sizeof(pcb_layer_t));
-		memmove(&groups[new_index + 1], &groups[new_index], (pcb_max_copper_layer - new_index + 2) * sizeof(int));
-		pcb_max_copper_layer++;
+						&PCB->Data->Layer[new_index], (pcb_max_layer - new_index + 2) * sizeof(pcb_layer_t));
+		memmove(&groups[new_index + 1], &groups[new_index], (pcb_max_layer - new_index + 2) * sizeof(int));
+		pcb_max_layer++;
 		memset(lp, 0, sizeof(pcb_layer_t));
 		lp->On = 1;
 		lp->Name = pcb_strdup("New Layer");
 		lp->Color = conf_core.appearance.color.layer[new_index];
 		lp->SelectedColor = conf_core.appearance.color.layer_selected[new_index];
-		for (l = 0; l < pcb_max_copper_layer; l++)
+		for (l = 0; l < pcb_max_layer; l++)
 			if (pcb_layer_stack[l] >= new_index)
 				pcb_layer_stack[l]++;
-		pcb_layer_stack[pcb_max_copper_layer - 1] = new_index;
+		pcb_layer_stack[pcb_max_layer - 1] = new_index;
 	}
 	else if (new_index == -1) {
 		/* Delete the layer at old_index */
+#warning layer TODO: what is this +2 here?
 		memmove(&PCB->Data->Layer[old_index],
-						&PCB->Data->Layer[old_index + 1], (pcb_max_copper_layer - old_index + 2 - 1) * sizeof(pcb_layer_t));
-		memset(&PCB->Data->Layer[pcb_max_copper_layer + 1], 0, sizeof(pcb_layer_t));
-		memmove(&groups[old_index], &groups[old_index + 1], (pcb_max_copper_layer - old_index + 2 - 1) * sizeof(int));
-		for (l = 0; l < pcb_max_copper_layer; l++)
+						&PCB->Data->Layer[old_index + 1], (pcb_max_layer - old_index + 2 - 1) * sizeof(pcb_layer_t));
+		memset(&PCB->Data->Layer[pcb_max_layer + 1], 0, sizeof(pcb_layer_t));
+		memmove(&groups[old_index], &groups[old_index + 1], (pcb_max_layer - old_index + 2 - 1) * sizeof(int));
+		for (l = 0; l < pcb_max_layer; l++)
 			if (pcb_layer_stack[l] == old_index)
-				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (pcb_max_copper_layer - l - 1) * sizeof(pcb_layer_stack[0]));
-		pcb_max_copper_layer--;
-		for (l = 0; l < pcb_max_copper_layer; l++)
+				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (pcb_max_layer - l - 1) * sizeof(pcb_layer_stack[0]));
+		pcb_max_layer--;
+		for (l = 0; l < pcb_max_layer; l++)
 			if (pcb_layer_stack[l] > old_index)
 				pcb_layer_stack[l]--;
 	}
@@ -702,7 +698,7 @@ int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 		pcb_layer_id_t lid = v->data_layer_offs;
 		pcb_layergrp_id_t grp;
 		if (lid >= 0)
-			lid += pcb_max_copper_layer;
+			lid += pcb_max_layer;
 		grp = pcb_layer_lookup_group(lid);
 		return pcb_gui->set_layer_group(grp, lid, v->type, is_empty);
 	}
