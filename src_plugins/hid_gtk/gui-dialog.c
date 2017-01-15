@@ -38,117 +38,6 @@
 
 #include "../src_plugins/lib_gtk_common/util_str.h"
 
-
-/* ---------------------------------------------- */
-/* TODO: Remove ; Replaced by   lib_gtk_common/dlg_input.c
-gchar *ghid_dialog_input(const char *prompt, const char *initial)
-{
-	GtkWidget *dialog;
-	GtkWidget *content_area;
-	GtkWidget *vbox, *label, *entry;
-	gchar *string;
-	gboolean response;
-	GHidPort *out = &ghid_port;
-
-	dialog = gtk_dialog_new_with_buttons("PCB User Input",
-																			 GTK_WINDOW(out->top_window),
-																			 GTK_DIALOG_MODAL,
-																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
-
-	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
-	vbox = gtk_vbox_new(FALSE, 4);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
-	label = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
-
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(label), prompt ? prompt : "Enter something");
-
-	entry = gtk_entry_new();
-	if (initial)
-		gtk_entry_set_text(GTK_ENTRY(entry), initial);
-
-	gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox), entry, TRUE, TRUE, 0);
-
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-	gtk_container_add(GTK_CONTAINER(content_area), vbox);
-	gtk_widget_show_all(dialog);
-
-	response = gtk_dialog_run(GTK_DIALOG(dialog));
-	if (response != GTK_RESPONSE_OK)
-		string = g_strdup(initial ? initial : "");
-	else
-		string = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-
-	gtk_widget_destroy(dialog);
-	return string;
-}
-*/
-
-/* ---------------------------------------------- */
-gint ghid_dialog_confirm_all(gchar * all_message)
-{
-	GtkWidget *dialog;
-	GtkWidget *content_area;
-	GtkWidget *label, *vbox;
-	gint response;
-	GHidPort *out = &ghid_port;
-
-	dialog = gtk_dialog_new_with_buttons("Confirm",
-																			 GTK_WINDOW(out->top_window),
-																			 (GtkDialogFlags) (GTK_DIALOG_MODAL |
-																												 GTK_DIALOG_DESTROY_WITH_PARENT),
-																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-																			 GTK_STOCK_OK, GTK_RESPONSE_OK, "Sequence OK", GUI_DIALOG_RESPONSE_ALL, NULL);
-
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-	vbox = ghid_framed_vbox(content_area, NULL, 6, FALSE, 4, 6);
-
-	label = gtk_label_new(all_message);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
-	gtk_widget_show_all(dialog);
-
-	response = gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
-
-	return response;
-}
-
-/* ---------------------------------------------- */
-gboolean ghid_dialog_confirm(const gchar * message, const gchar * cancelmsg, const gchar * okmsg)
-{
-	static gint x = -1, y = -1;
-	GtkWidget *dialog;
-	gboolean confirm = FALSE;
-	GHidPort *out = &ghid_port;
-
-	if (cancelmsg == NULL) {
-		cancelmsg = _("_Cancel");
-	}
-	if (okmsg == NULL) {
-		okmsg = _("_OK");
-	}
-
-	dialog = gtk_message_dialog_new(GTK_WINDOW(out->top_window),
-																	(GtkDialogFlags) (GTK_DIALOG_MODAL |
-																										GTK_DIALOG_DESTROY_WITH_PARENT),
-																	GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, "%s", message);
-	gtk_dialog_add_buttons(GTK_DIALOG(dialog), cancelmsg, GTK_RESPONSE_CANCEL, okmsg, GTK_RESPONSE_OK, NULL);
-
-	if (x != -1) {
-		gtk_window_move(GTK_WINDOW(dialog), x, y);
-	}
-
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK)
-		confirm = TRUE;
-
-	gtk_window_get_position(GTK_WINDOW(dialog), &x, &y);
-
-	gtk_widget_destroy(dialog);
-	return confirm;
-}
-
 /* ---------------------------------------------- */
 gint ghid_dialog_close_confirm()
 {
@@ -171,8 +60,7 @@ gint ghid_dialog_close_confirm()
 	str = g_strconcat(str, "\n\n", msg, NULL);
 
 	dialog = gtk_message_dialog_new(GTK_WINDOW(out->top_window),
-																	(GtkDialogFlags) (GTK_DIALOG_MODAL |
-																										GTK_DIALOG_DESTROY_WITH_PARENT),
+																	(GtkDialogFlags) (GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT),
 																	GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE, NULL);
 	gtk_message_dialog_set_markup(GTK_MESSAGE_DIALOG(dialog), str);
 	gtk_dialog_add_buttons(GTK_DIALOG(dialog),
@@ -250,13 +138,13 @@ gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gc
 		/* add a filter for layout files */
 		pcb_io_formats_t fmts;
 		int n, num_fmts = pcb_io_list(&fmts, PCB_IOT_PCB, 0, 0, PCB_IOL_EXT_BOARD);
-		for(n = 0; n < num_fmts; n++) {
+		for (n = 0; n < num_fmts; n++) {
 			int i;
 			char *ext;
 			GtkFileFilter *filter;
 
 			/* register each short name only once - slow O(N^2), but we don't have too many formats anyway */
-			for(i = 0; i < n; i++)
+			for (i = 0; i < n; i++)
 				if (strcmp(fmts.plug[n]->default_fmt, fmts.plug[i]->default_fmt) == 0)
 					goto next_fmt;
 
@@ -271,14 +159,14 @@ gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gc
 				ext = pcb_concat("*", fmts.plug[n]->default_extension, NULL);
 				gtk_file_filter_add_pattern(filter, ext);
 				gtk_file_filter_add_pattern(any_filter, ext);
-				for(s = ext; *s != '\0'; s++)
+				for (s = ext; *s != '\0'; s++)
 					*s = toupper(*s);
 				gtk_file_filter_add_pattern(filter, ext);
 				gtk_file_filter_add_pattern(any_filter, ext);
 				free(ext);
 			}
 			gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
-			next_fmt:;
+		next_fmt:;
 		}
 		pcb_io_list_free(&fmts);
 	}
@@ -330,7 +218,7 @@ typedef struct {
 	const char **formats, **extensions;
 } ghid_save_ctx_t;
 
-static void fmt_changed_cb(GtkWidget *combo_box, ghid_save_ctx_t *ctx)
+static void fmt_changed_cb(GtkWidget * combo_box, ghid_save_ctx_t * ctx)
 {
 	char *fn, *s, *bn;
 	const char *ext;
@@ -348,7 +236,7 @@ static void fmt_changed_cb(GtkWidget *combo_box, ghid_save_ctx_t *ctx)
 		return;
 
 	/* find and truncate extension */
-	for(s = fn+strlen(fn)-1; *s != '.'; s--) {
+	for (s = fn + strlen(fn) - 1; *s != '.'; s--) {
 		if ((s <= fn) || (*s == '/') || (*s == '\\')) {
 			g_free(fn);
 			return;
@@ -383,7 +271,8 @@ static void fmt_changed_cb(GtkWidget *combo_box, ghid_save_ctx_t *ctx)
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename. */
-gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gchar * file, const gchar * shortcuts, const char **formats, const char **extensions, int *format)
+gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gchar * file, const gchar * shortcuts,
+																		const char **formats, const char **extensions, int *format)
 {
 	GtkWidget *fmt, *tmp, *fmt_combo;
 	gchar *result = NULL, *folder, *seed;
@@ -393,9 +282,9 @@ gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gc
 	ctx.formats = formats;
 	ctx.extensions = extensions;
 	ctx.dialog = gtk_file_chooser_dialog_new(title,
-																			 GTK_WINDOW(out->top_window),
-																			 GTK_FILE_CHOOSER_ACTION_SAVE,
-																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+																					 GTK_WINDOW(out->top_window),
+																					 GTK_FILE_CHOOSER_ACTION_SAVE,
+																					 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
 	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(ctx.dialog), TRUE);
 	gtk_dialog_set_default_response(GTK_DIALOG(ctx.dialog), GTK_RESPONSE_OK);
@@ -414,7 +303,7 @@ gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gc
 		fmt_combo = gtk_combo_box_new_text();
 		gtk_box_pack_start(GTK_BOX(fmt), fmt_combo, FALSE, FALSE, 0);
 
-		for(s = formats; *s != NULL; s++)
+		for (s = formats; *s != NULL; s++)
 			gtk_combo_box_append_text(GTK_COMBO_BOX(fmt_combo), *s);
 
 		gtk_combo_box_set_active(GTK_COMBO_BOX(fmt_combo), *format);

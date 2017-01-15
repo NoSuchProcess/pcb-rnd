@@ -34,24 +34,24 @@
 /** ghid_dialog_input:
  *  Display a new GtkDialog to let user enter some data.
  */
-gchar *pcb_gtk_dlg_input(const char *prompt, const char *initial, GtkWindow *parent)
+gchar *pcb_gtk_dlg_input(const char *prompt, const char *initial, GtkWindow * parent)
 {
 	GtkWidget *dialog;
 	GtkWidget *content_area;
 	GtkWidget *vbox, *label, *entry;
 	gchar *string;
 	gboolean response;
-	/*GHidPort *out = &ghid_port;*/
+	/*GHidPort *out = &ghid_port; */
 
 	dialog = gtk_dialog_new_with_buttons("PCB User Input",
-																			 /*GTK_WINDOW(out->top_window),*/
+																			 /*GTK_WINDOW(out->top_window), */
 																			 parent,
 																			 GTK_DIALOG_MODAL,
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
-	/* Change to gtkc_vbox_new here*/
-  vbox = gtk_vbox_new(FALSE, 4);
+	/* Change to gtkc_vbox_new here */
+	vbox = gtk_vbox_new(FALSE, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
 	label = gtk_label_new("");
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
