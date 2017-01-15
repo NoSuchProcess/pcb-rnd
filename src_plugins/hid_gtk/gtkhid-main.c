@@ -36,6 +36,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_print.h"
 #include "../src_plugins/lib_gtk_common/dlg_export.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
+#include "../src_plugins/lib_gtk_common/dlg_input.h"
 
 conf_hid_id_t ghid_conf_id = -1;
 conf_hid_id_t ghid_menuconf_id = -1;
@@ -420,7 +421,8 @@ char *ghid_prompt_for(const char *msg, const char *default_string)
 {
 	char *grv, *rv;
 
-	grv = ghid_dialog_input(msg, default_string);
+	/*grv = ghid_dialog_input(msg, default_string);*/
+	grv = pcb_gtk_dlg_input(msg, default_string, GTK_WINDOW(ghid_port.top_window));
 
 	/* can't assume the caller will do g_free() on it */
 	rv = pcb_strdup(grv);

@@ -40,6 +40,7 @@
 
 
 /* ---------------------------------------------- */
+/* TODO: Remove ; Replaced by   lib_gtk_common/dlg_input.c
 gchar *ghid_dialog_input(const char *prompt, const char *initial)
 {
 	GtkWidget *dialog;
@@ -83,6 +84,7 @@ gchar *ghid_dialog_input(const char *prompt, const char *initial)
 	gtk_widget_destroy(dialog);
 	return string;
 }
+*/
 
 /* ---------------------------------------------- */
 gint ghid_dialog_confirm_all(gchar * all_message)
