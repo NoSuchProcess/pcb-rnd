@@ -107,7 +107,6 @@ int proto_send_set_layer_group(pcb_layergrp_id_t group, unsigned int flags, int 
 	send_begin(&pctx, "setlg");
 	send_open(&pctx, 0, 1);
 	sendf(&pctx, "%ld", group);
-	sendf(&pctx, "%lx", flags);
 	sendf(&pctx, "%d", is_empty);
 	send_close(&pctx);
 	send_end(&pctx);
