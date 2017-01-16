@@ -26,7 +26,8 @@ lint: $(OUT_LINT)
 	$(MML) -i copyright.mml -f linkmap $(IN) > $@
 
 index.html: $(IN)
-	@echo "<HTML><BODY>" > $@
+	@echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' > $@
+	@echo "<HTML><HEAD><TITLE>man page index - pcb-rnd</TITLE></HEAD><BODY>" >> $@
 	$(MML) -i copyright.mml -f indexhtml $(IN) >> $@
 	@echo "</BODY></HTML>" >> $@
 
