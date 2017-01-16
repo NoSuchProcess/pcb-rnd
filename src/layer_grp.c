@@ -94,6 +94,15 @@ unsigned int pcb_layergrp_flags(pcb_layergrp_id_t gid)
 	return PCB->LayerGroups.grp[gid].type;
 }
 
+const char *pcb_layergrp_name(pcb_layergrp_id_t gid)
+{
+
+	if ((gid < 0) || (gid >= PCB->LayerGroups.len))
+		return 0;
+
+	return PCB->LayerGroups.grp[gid].name;
+}
+
 pcb_bool pcb_is_layergrp_empty(pcb_layergrp_id_t num)
 {
 	int i;
