@@ -64,7 +64,7 @@ layer.
 Arguments:
 <ul>
 	<li> name: name of the layer (can be empty)
-	<li> id: unique group ID (decimal integer)
+	<li> id: unique group ID (decimal integer, may be large)
 	<li> flags: a list of 3 items: location, purpose and properties. Each item is a list of values (or an empty list).
 	<li> group: group ID; layers in the same group are turned on/off together and are considered to be on the same physical layer; -1 means not part of any group
 </ul>
@@ -76,15 +76,14 @@ newly(bottomassembly 16777226 ((bottom) (assy) (virtual)) -1)
 Creates the bottom assembly virtual layer with ID 16777226. It is not part of
 any layer group and is called "bottomassembly".
 
-<h3> setlg(group_id group_flags is_empty) </h3>
+<h3> setlg(group_id is_empty) </h3>
 Inform the client that the next set of drawing commands are for a specific
 layer group.
 <p>
 Arguments:
 <ul>
 	<li> group_id: unique ID of the layer group
-	<li> flags: TODO
-	<li> is_empty: 1 if the layer group may be empty, 0 if the layer is not empty
+	<li> is_empty: 1 if the layer group may be empty, 0 if the layer is not empty (TODO: this bit is not 100% reliable yet)
 </ul>
 
 <h3> makeGC() </h3>
