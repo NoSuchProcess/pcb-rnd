@@ -63,13 +63,34 @@ PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)
 static void remote_send_all_layers()
 {
 	pcb_layer_id_t arr[128];
+	pcb_layergrp_id_t garr[128];
 	int n, used;
 
+	used = pcb_layer_group_list_any(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, garr, sizeof(garr)/sizeof(garr[0]));
+	for(n = 0; n < used; n++) {
+		pcb_layergrp_id_t gid = garr[n];
+		pcb_remote_new_layer_group(pcb_layergrp_name(gid), gid, pcb_layergrp_flags(gid));
+	}
+
 	used = pcb_layer_list_any(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
+
+#warning layer TODO: remove this
+/* temporary hack for virtual layers*/
+	for(n = 0; n < used; n++) {
+		const char *name;
+		pcb_layer_id_t layer_id = arr[n];
+		pcb_layergrp_id_t gid = pcb_layer_get_group(layer_id);
+		name = pcb_layer_name(layer_id);
+		if ((gid < 0) && (name != NULL))
+			pcb_remote_new_layer_group(name, layer_id, pcb_layer_flags(layer_id));
+	}
+
+
 	for(n = 0; n < used; n++) {
 		pcb_layer_id_t layer_id = arr[n];
 		pcb_layergrp_id_t grp = pcb_layer_get_group(layer_id);
-		pcb_remote_new_layer(pcb_layer_name(layer_id), layer_id, pcb_layer_flags(layer_id), grp);
+		if (grp >= 0)
+			pcb_remote_new_layer(pcb_layer_name(layer_id), layer_id, pcb_layer_flags(layer_id));
 	}
 }
 

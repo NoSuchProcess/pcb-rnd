@@ -29,8 +29,11 @@ void remote_proto_send_unit();
 int remote_proto_send_ready();
 void proto_send_invalidate(int l, int r, int t, int b);
 void proto_send_invalidate_all();
+
+int pcb_remote_new_layer_group(const char *name, pcb_layergrp_id_t idx, unsigned int flags);
+int pcb_remote_new_layer(const char *name, pcb_layer_id_t idx, unsigned int group);
 int proto_send_set_layer_group(pcb_layergrp_id_t group, unsigned int flags, int is_empty);
-int pcb_remote_new_layer(const char *name, int idx, unsigned int flags, unsigned int group);
+
 int proto_send_make_gc(void);
 int proto_send_del_gc(int gc);
 void proto_send_set_color(int gc, const char *name);

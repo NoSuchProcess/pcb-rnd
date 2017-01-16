@@ -127,10 +127,9 @@ static void	pcb_remote_send_layer_flags(unsigned int flags, int first_arg)
 	send_close(&pctx);
 }
 
-
-int pcb_remote_new_layer(const char *name, int idx, unsigned int flags, unsigned int group)
+int pcb_remote_new_layer_group(const char *name, pcb_layergrp_id_t idx, unsigned int flags)
 {
-	send_begin(&pctx, "newly");
+	send_begin(&pctx, "newlg");
 	send_open(&pctx, str_is_bin(name), 1);
 	sends(&pctx, name);
 	sendf(&pctx, "%d", idx);
@@ -139,6 +138,18 @@ int pcb_remote_new_layer(const char *name, int idx, unsigned int flags, unsigned
 	pcb_remote_send_layer_flags(flags & PCB_LYT_ANYTHING, 0);
 	pcb_remote_send_layer_flags(flags & PCB_LYT_ANYPROP, 0);
 	send_close(&pctx);
+	send_close(&pctx);
+	send_end(&pctx);
+	return 0;
+}
+
+
+int pcb_remote_new_layer(const char *name, pcb_layer_id_t idx, unsigned int group)
+{
+	send_begin(&pctx, "newly");
+	send_open(&pctx, str_is_bin(name), 1);
+	sends(&pctx, name);
+	sendf(&pctx, "%d", idx);
 	sendf(&pctx, "%d", group);
 	send_close(&pctx);
 	send_end(&pctx);
