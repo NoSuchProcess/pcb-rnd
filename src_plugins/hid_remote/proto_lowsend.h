@@ -151,7 +151,7 @@ static int str_is_bin(const char *str)
 	if ((str == NULL) || (*str == '\0')) /* empty string can be encoded in bin only */
 		return 1;
 	for(s = str, l = 0; *s != '\0'; s++,l++)
-		if ((l > 16) && (chr_is_bin(*s)))
+		if ((l > 16) || (chr_is_bin(*s)))
 			return 1;
 	return 0;
 }
