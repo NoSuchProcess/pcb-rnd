@@ -321,33 +321,20 @@ int pcb_layer_gui_set_glayer(pcb_layergrp_id_t grp, int is_empty)
 
 int pcb_layer_group_list(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
-	int group, layeri, used = 0;
+	int group, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++) {
-			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[layeri];
-			if ((pcb_layer_flags(layer) & mask) == mask) {
-/*				printf(" lf: %x %x & %x\n", layer, pcb_layer_flags(layer), mask);*/
+		if ((pcb_layergrp_flags(group) & mask) == mask)
 				APPEND(group);
-				goto added; /* do not add a group twice */
-			}
-		}
-		added:;
 	}
 	return used;
 }
 
 int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len)
 {
-	int group, layeri, used = 0;
+	int group, used = 0;
 	for (group = 0; group < pcb_max_group; group++) {
-		for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++) {
-			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[layeri];
-			if ((pcb_layer_flags(layer) & mask)) {
+		if ((pcb_layergrp_flags(group) & mask))
 				APPEND(group);
-				goto added; /* do not add a group twice */
-			}
-		}
-		added:;
 	}
 	return used;
 }
@@ -355,6 +342,7 @@ int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int 
 pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id)
 {
 	int group, layeri;
+#warning layer TODO: remove this and return layer->grp
 	for (group = 0; group < pcb_max_group; group++) {
 		for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++) {
 			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[layeri];
