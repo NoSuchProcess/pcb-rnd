@@ -143,6 +143,8 @@ static void remote_invalidate_all(void)
 
 static int remote_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
+	if (flags & PCB_LYT_UI) /* do not draw UI layers yet, we didn't create them */
+		return 0;
 	if (group >= 0)
 		proto_send_set_layer_group(group, is_empty);
 	else {
