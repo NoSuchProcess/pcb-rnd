@@ -36,14 +36,14 @@
 #include "layer_ui.h"
 
 pcb_virt_layer_t pcb_virt_layers[] = {
-	{"invisible",      PCB_LYT_VIRTUAL + 1,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
-	{"rats",           PCB_LYT_VIRTUAL + 2,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_RAT },
-	{"topassembly",    PCB_LYT_VIRTUAL + 3,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
-	{"bottomassembly", PCB_LYT_VIRTUAL + 4,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
-	{"fab",            PCB_LYT_VIRTUAL + 5,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
-	{"plated-drill",   PCB_LYT_VIRTUAL + 6,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
-	{"unplated-drill", PCB_LYT_VIRTUAL + 7,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
-	{"csect",          PCB_LYT_VIRTUAL + 8,  -1,                  PCB_LYT_VIRTUAL | PCB_LYT_CSECT | PCB_LYT_LOGICAL },
+	{"invisible",      PCB_LYT_VIRTUAL + 1, PCB_LYT_VIRTUAL | PCB_LYT_INVIS | PCB_LYT_LOGICAL },
+	{"rats",           PCB_LYT_VIRTUAL + 2, PCB_LYT_VIRTUAL | PCB_LYT_RAT },
+	{"topassembly",    PCB_LYT_VIRTUAL + 3, PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_TOP},
+	{"bottomassembly", PCB_LYT_VIRTUAL + 4, PCB_LYT_VIRTUAL | PCB_LYT_ASSY | PCB_LYT_BOTTOM },
+	{"fab",            PCB_LYT_VIRTUAL + 5, PCB_LYT_VIRTUAL | PCB_LYT_FAB  | PCB_LYT_LOGICAL },
+	{"plated-drill",   PCB_LYT_VIRTUAL + 6, PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
+	{"unplated-drill", PCB_LYT_VIRTUAL + 7, PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
+	{"csect",          PCB_LYT_VIRTUAL + 8, PCB_LYT_VIRTUAL | PCB_LYT_CSECT | PCB_LYT_LOGICAL },
 	{ NULL, 0 },
 };
 
@@ -186,11 +186,9 @@ unsigned int pcb_layer_flags(pcb_layer_id_t layer_idx)
 			used++; \
 	} while(0)
 
-/* For now, return only non-silks */
 #define APPEND_VIRT(v) \
 do { \
-	if (v->data_layer_offs < 0) \
-		APPEND(v->new_id); \
+	APPEND(v->new_id); \
 } while(0)
 
 const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask)
@@ -691,10 +689,8 @@ int pcb_layer_gui_set_vlayer(pcb_virtual_layer_t vid, int is_empty)
 
 #warning TODO: need to pass the flags of the group, not the flags of the layer once we have a group for each layer
 	if (pcb_gui->set_layer_group != NULL) {
-		pcb_layer_id_t lid = v->data_layer_offs;
 		pcb_layergrp_id_t grp;
-		if (lid >= 0)
-			lid += pcb_max_layer;
+		pcb_layer_id_t lid = v->new_id;
 		grp = pcb_layer_lookup_group(lid);
 		return pcb_gui->set_layer_group(grp, lid, v->type, is_empty);
 	}
