@@ -87,10 +87,10 @@ static void remote_send_all_layers()
 
 
 	for(n = 0; n < used; n++) {
-		pcb_layer_id_t layer_id = arr[n];
-		pcb_layergrp_id_t grp = pcb_layer_get_group(layer_id);
-		if (grp >= 0)
-			pcb_remote_new_layer(pcb_layer_name(layer_id), layer_id, pcb_layer_flags(layer_id));
+		pcb_layer_id_t lid = arr[n];
+		pcb_layergrp_id_t gid = pcb_layer_get_group(lid);
+		if (gid >= 0)
+			pcb_remote_new_layer(pcb_layer_name(lid), lid, gid);
 	}
 }
 

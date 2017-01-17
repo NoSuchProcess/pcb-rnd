@@ -144,13 +144,13 @@ int pcb_remote_new_layer_group(const char *name, pcb_layergrp_id_t idx, unsigned
 }
 
 
-int pcb_remote_new_layer(const char *name, pcb_layer_id_t idx, unsigned int group)
+int pcb_remote_new_layer(const char *name, pcb_layer_id_t lid, unsigned int gid)
 {
 	send_begin(&pctx, "newly");
 	send_open(&pctx, str_is_bin(name), 1);
 	sends(&pctx, name);
-	sendf(&pctx, "%d", idx);
-	sendf(&pctx, "%d", group);
+	sendf(&pctx, "%ld", lid);
+	sendf(&pctx, "%ld", gid);
 	send_close(&pctx);
 	send_end(&pctx);
 	return 0;
