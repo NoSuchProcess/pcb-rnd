@@ -74,15 +74,16 @@ static void remote_send_all_layers()
 
 	used = pcb_layer_list_any(PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
 
-#warning layer TODO: remove this
-/* temporary hack for virtual layers*/
+#warning layer TODO: remove this temporary hack for virtual layers
 	for(n = 0; n < used; n++) {
 		const char *name;
 		pcb_layer_id_t layer_id = arr[n];
 		pcb_layergrp_id_t gid = pcb_layer_get_group(layer_id);
 		name = pcb_layer_name(layer_id);
-		if ((gid < 0) && (name != NULL))
+		if ((gid < 0) && (name != NULL)) {
 			pcb_remote_new_layer_group(name, layer_id, pcb_layer_flags(layer_id));
+			pcb_remote_new_layer(name, layer_id, layer_id);
+		}
 	}
 
 
