@@ -27,9 +27,9 @@ lint: $(OUT_LINT)
 
 index.html: $(IN)
 	@echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' > $@
-	@echo "<HTML><HEAD><TITLE>man page index - pcb-rnd</TITLE></HEAD><BODY>" >> $@
+	@echo '<HTML><HEAD><meta http-equiv="Content-Type" content="text/html;charset=us-ascii"><TITLE>man page index - pcb-rnd</TITLE></HEAD><BODY><UL>' >> $@
 	$(MML) -i copyright.mml -f indexhtml $(IN) >> $@
-	@echo "</BODY></HTML>" >> $@
+	@echo "</UL></BODY></HTML>" >> $@
 
 clean:
 
