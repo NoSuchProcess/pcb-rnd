@@ -341,16 +341,9 @@ int pcb_layer_group_list_any(pcb_layer_type_t mask, pcb_layergrp_id_t *res, int 
 
 pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id)
 {
-	int group, layeri;
-#warning layer TODO: remove this and return layer->grp
-	for (group = 0; group < pcb_max_group; group++) {
-		for (layeri = 0; layeri < PCB->LayerGroups.grp[group].len; layeri++) {
-			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[layeri];
-			if (layer == layer_id)
-				return group;
-		}
-	}
-	return -1;
+	if ((layer_id < 0) || (layer_id > pcb_max_layer))
+		return -1;
+	return PCB->Data->Layer[layer_id].grp;
 }
 
 int pcb_layer_add_in_group_(pcb_layer_group_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id)
