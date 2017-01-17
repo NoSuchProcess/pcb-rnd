@@ -57,24 +57,39 @@ Same as inval(x1 x2 y1 y2) but invalidates the whole screen.
 <p>
 Arguments: none
 
-<h3> newly(name id flags groups) </h3>
+<h3> newlg(name group_id flags) </h3>
+Create a new layer group.
+<p>
+Arguments:
+<ul>
+	<li> name: name of the layer group - names are <b>not</b> unique
+	<li> group_id: unique group ID (decimal integer, may be large)
+	<li> flags: a list of 3 items: location, purpose and properties. Each item is a list of values (or an empty list).
+</ul>
+<p>
+Example:
+<pre>
+newlg(topassembly 16777219 ((top) (assy) (virtual)))
+</pre>
+Creates the top assembly virtual layer with ID 16777219 with the name
+of "topassembly"
+
+<h3> newly(name layer_id group_id) </h3>
 Inform the client that the next set of drawing commands are for a specific
 layer.
 <p>
 Arguments:
 <ul>
-	<li> name: name of the layer (can be empty)
-	<li> id: unique group ID (decimal integer, may be large)
-	<li> flags: a list of 3 items: location, purpose and properties. Each item is a list of values (or an empty list).
-	<li> group: group ID; layers in the same group are turned on/off together and are considered to be on the same physical layer; -1 means not part of any group
+	<li> name: name of the layer (can be empty, <b>not</b> unique)
+	<li> layer_id: unique ID of this layer (decimal integer, may be large)
+	<li> group_id: reference to a previously created layer group which this layer is part of
 </ul>
 <p>
 Example:
 <pre>
-newly(bottomassembly 16777226 ((bottom) (assy) (virtual)) -1)
+newly(soldergnd 3 11)
 </pre>
-Creates the bottom assembly virtual layer with ID 16777226. It is not part of
-any layer group and is called "bottomassembly".
+Creates a layer 3 called "soldergnd" in group 11.
 
 <h3> setlg(group_id is_empty) </h3>
 Inform the client that the next set of drawing commands are for a specific
