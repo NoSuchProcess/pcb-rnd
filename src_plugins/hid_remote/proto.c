@@ -102,7 +102,7 @@ void proto_send_invalidate_all()
 	send_end(&pctx);
 }
 
-int proto_send_set_layer_group(pcb_layergrp_id_t group, unsigned int flags, int is_empty)
+int proto_send_set_layer_group(pcb_layergrp_id_t group, int is_empty)
 {
 	send_begin(&pctx, "setlg");
 	send_open(&pctx, 0, 1);

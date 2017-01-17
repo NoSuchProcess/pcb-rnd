@@ -143,7 +143,13 @@ static void remote_invalidate_all(void)
 
 static int remote_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty)
 {
-	proto_send_set_layer_group(group, flags, is_empty);
+	if (group >= 0)
+		proto_send_set_layer_group(group, is_empty);
+	else {
+#warning layer TODO: remove this temporary hack for virtual layers
+		proto_send_set_layer_group(layer, is_empty);
+	}
+
 	return 1; /* do draw */
 }
 
