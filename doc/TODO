@@ -7,7 +7,6 @@
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
 	- scconfig: "Include debug symbols" line should indicate enabled with --debug [report:jonh_g]
-	- svg arc bug:work/phys311*.pcb [report: Erich -> hackvana]
 	- gtk rendering: zoom in much and arcs are rendered a bit larger/smaller [report: Evan]
 	- layer rewrite bug:
 		- no layer is selected/activated after startup (and maybe board load) - affects gtk and lesstif [report:Evan]
