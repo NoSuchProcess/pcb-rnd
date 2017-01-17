@@ -75,8 +75,7 @@ Creates the top assembly virtual layer with ID 16777219 with the name
 of "topassembly"
 
 <h3> newly(name layer_id group_id) </h3>
-Inform the client that the next set of drawing commands are for a specific
-layer.
+Create a new layer within an existing layer group.
 <p>
 Arguments:
 <ul>
@@ -93,7 +92,9 @@ Creates a layer 3 called "soldergnd" in group 11.
 
 <h3> setlg(group_id is_empty) </h3>
 Inform the client that the next set of drawing commands are for a specific
-layer group.
+layer group. (Note: the reason for announcing groups and not layers:
+all layers in that group are drawn at once; visibility
+of layers within the same group are switched together.)
 <p>
 Arguments:
 <ul>
@@ -108,9 +109,6 @@ The ID uniquely identifies the GC; it should be small positive integer
 (between 0 and 31 for now).
 <p>
 Arguments: none
-
-
-
 
 <h3> delGC(ID) </h3>
 Inform the client that a given GC is not needed anymore. The server
