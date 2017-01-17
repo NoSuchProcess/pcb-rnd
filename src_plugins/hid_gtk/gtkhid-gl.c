@@ -126,6 +126,8 @@ int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 				return PCB_FLAG_TEST(PCB_SHOWMASKFLAG, PCB);
 			return 0;
+		case PCB_LYT_PASTE: /* Never draw the paste layer */
+			return 0;
 	}
 
 	/* normal layers */
