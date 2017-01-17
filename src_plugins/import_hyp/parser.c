@@ -90,7 +90,6 @@ pcb_bool layer_is_plane[PCB_MAX_LAYER];	/* whether layer is signal or plane laye
 pcb_coord_t layer_clearance[PCB_MAX_LAYER];	/* separation between fill copper and signals on layer */
 
 /* net */
-char *net_name;									/* current net name */
 pcb_coord_t net_clearance;			/* distance between PLANE polygon and net copper */
 
 /* origin. Chosen so all coordinates are positive. */
@@ -533,7 +532,7 @@ void hyp_set_origin()
  * Draw board perimeter.
  * The first segment is part of the first polygon.
  * The first polygon of the board perimeter is positive, the rest are holes.
- * Segments do not necesarily occur in order.
+ * Segments do not necessarily occur in order.
  */
 
 void hyp_perimeter()
@@ -721,6 +720,8 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 	char new_layer_name[PCB_MAX_LAYER];
 	int n;
 
+	return PCB_COMPONENT_SIDE; /* XXX XXX until layers stabilize */
+
 	layer_id = -1;
 	if (lname != NULL) {
 		/* we have a layer name. check whether layer already exists */
@@ -750,6 +751,15 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 	}
 
 	return layer_id;
+}
+
+/*
+ * convert hyperlynx layer name to pcb layer
+ */
+
+pcb_layer_t *hyp_get_layer(parse_param * h)
+{
+	return pcb_get_layer(hyp_create_layer(h->layer_name));
 }
 
 /*
@@ -902,7 +912,6 @@ pcb_bool exec_net(parse_param * h)
 	if (hyp_debug)
 		pcb_printf("net: net_name = \"%s\"\n", h->net_name);
 
-	net_name = h->net_name;				/* XXX checkme? */
 	net_clearance = -1;
 
 	return 0;
@@ -926,13 +935,83 @@ pcb_bool exec_net_attribute(parse_param * h)
 	return 0;
 }
 
+/*
+ * calculate hyperlynx-style clearance
+ * 
+ * use plane_separation of, in order:
+ * - this copper
+ * - the net this copper belongs to
+ * - the layer this copper is on
+ * - the board
+ * if neither copper, net, layer nor board have plane_separation set, do not set clearance.
+ */
+
+pcb_coord_t hyp_clearance(parse_param * h)
+{
+	pcb_coord_t clearance;
+	pcb_layer_id_t layr_id;
+
+	layr_id = hyp_create_layer(h->layer_name);
+	clearance = -1;
+
+	if (h->plane_separation_set)
+		clearance = xy2coord(h->plane_separation);
+	else if (net_clearance >= 0)
+		clearance = net_clearance;
+	else if (layer_clearance[layr_id] >= 0)
+		clearance = layer_clearance[layr_id];
+	else if (board_clearance >= 0)
+		clearance = board_clearance;
+	else
+		clearance = 0;
+
+	return clearance;
+}
+
+/*
+ * line segment 
+ */
+
 pcb_bool exec_seg(parse_param * h)
 {
+	if (hyp_debug) {
+		pcb_printf("seg: x1 = %mm y1 = %mm x2 = %mm y2 = %mm ", xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2));
+		pcb_printf(" width = %mm layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
+		if (h->plane_separation_set)
+			pcb_printf(" plane_separation = %mm ", xy2coord(h->plane_separation));
+		if (h->left_plane_separation_set)
+			pcb_printf(" left_plane_separation = %mm ", xy2coord(h->left_plane_separation));
+		pcb_printf("\n");
+	}
+
+	pcb_line_new(hyp_get_layer(h), xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2), xy2coord(h->width),
+							 hyp_clearance(h), pcb_no_flags());
+
 	return 0;
 }
 
+/*
+ * SEG subrecord of NET record.
+ * arc segment, drawn clockwise.
+ */
+
 pcb_bool exec_arc(parse_param * h)
 {
+
+	if (hyp_debug) {
+		pcb_printf("arc: x1 = %mm y1 = %mm x2 = %mm y2 = %mm", xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2));
+		pcb_printf(" xc = %mm yc = %mm r = %mm", xy2coord(h->xc), xy2coord(h->yc), xy2coord(h->r));
+		pcb_printf(" width = %mm layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
+		if (h->plane_separation_set)
+			pcb_printf(" plane_separation = %mm", xy2coord(h->plane_separation));
+		if (h->left_plane_separation_set)
+			pcb_printf(" left_plane_separation = %mm", xy2coord(h->left_plane_separation));
+		pcb_printf("\n");
+	}
+
+	hyp_arc_new(hyp_get_layer(h), xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2), xy2coord(h->xc),
+							xy2coord(h->yc), xy2coord(h->r), xy2coord(h->r), pcb_true, xy2coord(h->width), hyp_clearance(h), pcb_no_flags());
+
 	return 0;
 }
 
@@ -956,10 +1035,44 @@ pcb_bool exec_pad(parse_param * h)
 	return 0;
 }
 
+/*
+ * USEG subrecord of NET record.
+ * unrouted segment.
+ */
+
 pcb_bool exec_useg(parse_param * h)
 {
+	pcb_layergrp_id_t layer1_grp_id, layer2_grp_id;
+
+	if (hyp_debug) {
+		pcb_printf("useg: x1 = %mm y1 = %mm layer1_name = \"%s\"", xy2coord(h->x1), xy2coord(h->y1), h->layer1_name);
+		pcb_printf(" x2 = %mm y2 = %mm layer2_name = \"%s\"", xy2coord(h->x2), xy2coord(h->y2), h->layer2_name);
+		if (h->zlayer_name_set)
+			pcb_printf(" zlayer_name = \"%s\" width = %mm length = %mm", h->zlayer_name, xy2coord(h->width), xy2coord(h->length));
+		if (h->impedance_set)
+			pcb_printf(" impedance = %f delay = %f ", h->impedance, h->delay);
+		if (h->resistance_set)
+			pcb_printf(" resistance = %f ", h->resistance);
+		pcb_printf("\n");
+	}
+
+  /* lookup layer group begin and end layer are on */
+	layer1_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer1_name));
+	layer2_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer2_name));
+
+	if ((layer1_grp_id == -1) || (layer2_grp_id == -1))
+		return 0;
+
+	pcb_rat_new(hyp_dest, xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2), layer1_grp_id, layer2_grp_id,
+							xy2coord(h->width), pcb_no_flags());
+
 	return 0;
 }
+
+/* 
+ * in hyperlynx, if two polygons touch, and both have clearance ("plane separation"), the biggest clearance of the two is used.
+ * not sure how to implement this in pcb-rnd.
+ */
 
 pcb_bool exec_polygon_begin(parse_param * h)
 {
@@ -1067,8 +1180,10 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 
 	delta = end_angle - start_angle;
 
+#ifdef XXX
 	if (hyp_debug)
 		pcb_printf("hyp_arc: start_angle: %f end_angle: %f delta: %f\n", start_angle, end_angle, delta);
+#endif
 
 	new_arc = pcb_arc_new(Layer, XC, YC, Width, Height, start_angle, delta, Thickness, Clearance, Flags);
 
