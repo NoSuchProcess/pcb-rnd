@@ -1,0 +1,11 @@
+U1
+5 x 5 mils distance from silk inside top corner to pin 1
+pin 1 dimensions 80 x 80 mils
+pin 2 80 mil circle
+pin 1 to pin 2 distance 220 mils
+
+U2
+pin 1 extremes 80 mils tall 120 mils wide
+pin 2 extremes 120 mills tall 160 mils wide
+pin 1 to pin 2 distance 140 mils
+pin 1 to pin 2 vertical offset 0 mils
