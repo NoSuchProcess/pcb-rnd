@@ -1532,7 +1532,7 @@ pcb_poly_plows(pcb_data_t * Data, int type, void *ptr1, void *ptr2,
 			SLayer = CLayer = -1;
 			pcb_layer_group_list(PCB_LYT_BOTTOM | PCB_LYT_COPPER, &SLayer, 1);
 			pcb_layer_group_list(PCB_LYT_TOP | PCB_LYT_COPPER, &CLayer, 1);
-			group = pcb_layer_get_group(PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? SLayer : CLayer);
+			group = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (pcb_pad_t *) ptr2) ? SLayer : CLayer;
 			PCB_COPPER_GROUP_LOOP(Data, group);
 			{
 				info.layer = layer;
