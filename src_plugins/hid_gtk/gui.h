@@ -41,6 +41,7 @@
 #include "conf_core.h"
 #include "event.h"
 #include "compat_misc.h"
+#include "colors.h"
 
 #include "hid_gtk_conf.h"
 
@@ -278,8 +279,6 @@ gboolean ghid_mod1_is_pressed(void);
 gboolean ghid_shift_is_pressed(void);
 
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
-const gchar *ghid_get_color_name(GdkColor * color);
-void ghid_map_color_string(const gchar * color_string, GdkColor * color);
 const gchar *ghid_entry_get_text(GtkWidget * entry);
 void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button,
 																 gboolean active, gboolean pack_start,

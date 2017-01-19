@@ -115,31 +115,31 @@ void ghid_draw_area_update(GHidPort * port, GdkRectangle * rect)
 }
 
 
-const gchar *ghid_get_color_name(GdkColor * color)
-{
-	static char tmp[16];
-
-	if (!color)
-		return "#000000";
-
-	sprintf(tmp, "#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
-	return tmp;
-}
-
-void ghid_map_color_string(const char *color_string, GdkColor * color)
-{
-	static GdkColormap *colormap = NULL;
-	GHidPort *out = &ghid_port;
-
-	if (!color || !out->top_window)
-		return;
-	if (colormap == NULL)
-		colormap = gtk_widget_get_colormap(out->top_window);
-	if (color->red || color->green || color->blue)
-		gdk_colormap_free_colors(colormap, color, 1);
-	gdk_color_parse(color_string, color);
-	gdk_color_alloc(colormap, color);
-}
+//const gchar *ghid_get_color_name(GdkColor * color)
+//{
+//	static char tmp[16];
+//
+//	if (!color)
+//		return "#000000";
+//
+//	sprintf(tmp, "#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
+//	return tmp;
+//}
+//
+//void ghid_map_color_string(const char *color_string, GdkColor * color)
+//{
+//	static GdkColormap *colormap = NULL;
+//	GHidPort *out = &ghid_port;
+//
+//	if (!color || !out->top_window)
+//		return;
+//	if (colormap == NULL)
+//		colormap = gtk_widget_get_colormap(out->top_window);
+//	if (color->red || color->green || color->blue)
+//		gdk_colormap_free_colors(colormap, color, 1);
+//	gdk_color_parse(color_string, color);
+//	gdk_color_alloc(colormap, color);
+//}
 
 
 const gchar *ghid_entry_get_text(GtkWidget * entry)
