@@ -1,0 +1,10 @@
+E1
+2 pads 1 silk line + text (E1)
+
+silk line 110 mils long 10 mils wide
+
+copper pads 85 mils long 10 mils wide
+
+pad 1 shares it's terminus with the silk line
+
+pad 2's highest point is 95 x 15 mils over from the inside corner of pad 1 & the silk line
