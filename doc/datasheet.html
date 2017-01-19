@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd - datasheet </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+<!--AUTO head begin-->
+	<link rel="icon" href="http://repo.hu/projects/pcb-rnd/resources/logo16.png">
+<!--AUTO head end-->
+</head>
+<body>
+
+<!--AUTO navbar begin-->
+<table border=0 cellspacing=2 cellpadding=10  bgcolor="#eeeeee" width="100%">
+<tr>
+<th align=center bgcolor="#ccc0cc"> <a href="http://repo.hu/projects/pcb-rnd/"> Main </a>
+<th align=center bgcolor="#ccc0cc"> <a href="http://repo.hu/projects/pcb-rnd/news.html"> News </a>
+<th align=center bgcolor="#ccc0cc"> <a href="http://repo.hu/projects/pcb-rnd/doc.html"> Doc </a>
+<th align=center bgcolor="#ccc0cc"> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi">People</a>
+<th align=center bgcolor="#ccc0cc"> <a href="http://repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=events">Events</a> & <a href="http://www.repo.hu/cgi-bin/pcb-rnd-people.cgi?cmd=timeline"> timeline </a>
+<td align=right width="60%"> <font size="+2"><i>pcb-rnd</i></font> <img src="http://repo.hu/projects/pcb-rnd/resources/logo32.png" alt="[pcb-rnd logo]">
+</table>
+<!--AUTO navbar end-->
+
+<h1> pcb-rnd - datasheet </h1>
+
+<table border=1 cellspacing=0 cellpadding=5>
+<tr>
+	<td bgcolor="#ccccff"> layout characteristics
+	<td bgcolor="#ddddff"> multiple layers (16 copper, compile time tunable limit)
+                         <br> smd and through-hole components
+                         <br> solder mask, paste, assembly drawings
+                         <br> board size up to 2x2 meter at nanometer precision
+                         <br> arbitrary amount of routing styles
+                         <br> Design Rule Checker
+<tr>
+	<td bgcolor="#ccccff"> board file formats
+	<td bgcolor="#ddddff"> lihata (native), geda/PCB's .pcb, kicad's s-expr kicad_pcb
+<tr>
+	<td bgcolor="#ccccff"> other native formats
+	<td bgcolor="#ddddff"> geda/PCB's .fp for footprints (native)
+<tr>
+	<td bgcolor="#ccccff"> import formats
+	<td bgcolor="#ddddff"> gEDA/gaf sch, gEDA/gaf netlist, dsn, edif, kicad old pcb format
+<tr>
+	<td bgcolor="#ccccff"> export formats
+	<td bgcolor="#ddddff"> gerber, png, ps, svg, bom, xy, bboard, dsn, gcode, ipcd356, lpr, nelma
+<tr>
+	<td bgcolor="#ccccff"> UI options
+	<td bgcolor="#ddddff"> gtk2, lesstif (motif), batch (automated processing)
+                         <br> configurable menus, keyboard and mouse actions
+<tr>
+	<td bgcolor="#ccccff"> footprint library
+	<td bgcolor="#ddddff"> parametric footprints written in any progamming language
+	                       <br>optionally per system, per user, per project libs
+	                       <br>footprints from local files
+	                       <br>footprints from the web (gedasymbols.org)
+<tr>
+	<td bgcolor="#ccccff"> scripting
+	<td bgcolor="#ddddff"> embedded scripting using libgpmi (awk, python, lua, tcl, ruby, perl, php, scheme, lisp)
+<tr>
+	<td bgcolor="#ccccff"> layout helpers
+	<td bgcolor="#ddddff"> basic autorouter, basic autoplace, place objects in aligned grid
+	                       asymmetric pin shapes, back annotation tracking,
+	                       trace puller, teardrops
+	                       <br>understands internal connections in footprints
+	                       <br>query mini-language for finidng and selecting objects by rules
+<tr>
+	<td bgcolor="#ccccff"> misc
+	<td bgcolor="#ddddff"> flexible configuration system
+	                       <br>support for small screen (800x600)
+	                       <br>strong support for automated processing
+                         <br>modularity (most code implemented in plugins)
+                         <br>slim code, reduced external dependency, portability
+</table>
+
+<a href="features/index.html">More details on some of the features</a>, especially compared to gEDA/PCB.
+
+</body>
+</html>
