@@ -114,34 +114,6 @@ void ghid_draw_area_update(GHidPort * port, GdkRectangle * rect)
 	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
 }
 
-
-//const gchar *ghid_get_color_name(GdkColor * color)
-//{
-//	static char tmp[16];
-//
-//	if (!color)
-//		return "#000000";
-//
-//	sprintf(tmp, "#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
-//	return tmp;
-//}
-//
-//void ghid_map_color_string(const char *color_string, GdkColor * color)
-//{
-//	static GdkColormap *colormap = NULL;
-//	GHidPort *out = &ghid_port;
-//
-//	if (!color || !out->top_window)
-//		return;
-//	if (colormap == NULL)
-//		colormap = gtk_widget_get_colormap(out->top_window);
-//	if (color->red || color->green || color->blue)
-//		gdk_colormap_free_colors(colormap, color, 1);
-//	gdk_color_parse(color_string, color);
-//	gdk_color_alloc(colormap, color);
-//}
-
-
 const gchar *ghid_entry_get_text(GtkWidget * entry)
 {
 	const gchar *s = "";
@@ -352,44 +324,6 @@ ghid_table_spin_button(GtkWidget * table, gint row, gint column,
 			gtk_table_attach_defaults(GTK_TABLE(table), label, column + 1, column + 2, row, row + 1);
 		}
 	}
-}
-
-void
-ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
-									 gboolean horizontal, GtkPositionType pos,
-									 gboolean set_draw_value, gint digits, gboolean pack_start,
-									 gboolean expand, gboolean fill, guint pad, gfloat value,
-									 gfloat low, gfloat high, gfloat step0, gfloat step1, void (*cb_func) (), gpointer data)
-{
-	GtkWidget *scale;
-	GtkAdjustment *adj;
-
-	adj = (GtkAdjustment *) gtk_adjustment_new(value, low, high, step0, step1, 0.0);
-
-	if (horizontal)
-		scale = gtk_hscale_new(GTK_ADJUSTMENT(adj));
-	else
-		scale = gtk_vscale_new(GTK_ADJUSTMENT(adj));
-	gtk_scale_set_value_pos(GTK_SCALE(scale), pos);
-	gtk_scale_set_draw_value(GTK_SCALE(scale), set_draw_value);
-	gtk_scale_set_digits(GTK_SCALE(scale), digits);
-
-	/* pcb_increments_t don't make sense, use -1,1 because that does closest to
-	   |  what I want: scroll down decrements slider value.
-	 */
-	gtk_range_set_increments(GTK_RANGE(scale), -1, 1);
-
-	if (pack_start)
-		gtk_box_pack_start(GTK_BOX(box), scale, expand, fill, pad);
-	else
-		gtk_box_pack_end(GTK_BOX(box), scale, expand, fill, pad);
-
-	if (data == NULL)
-		data = (gpointer) adj;
-	if (cb_func)
-		g_signal_connect(G_OBJECT(adj), "value_changed", G_CALLBACK(cb_func), data);
-	if (scale_res)
-		*scale_res = scale;
 }
 
 GtkWidget *ghid_scrolled_vbox(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h_policy, GtkPolicyType v_policy)
@@ -629,38 +563,6 @@ void ghid_text_view_append(GtkWidget * view, const gchar * string)
 	else
 		text_view_append(view, string);
 }
-
-void ghid_text_view_append_strings(GtkWidget * view, const gchar ** string, gint n_strings)
-{
-	gchar *tag = NULL;
-	const gchar *s;
-	gint i;
-
-	for (i = 0; i < n_strings; ++i) {
-		s = string[i];
-		if (*s == '<' && ((*(s + 2) == '>' && !*(s + 3))
-											|| (*(s + 3) == '>' && !*(s + 4)))) {
-			tag = g_strdup(s);
-			continue;
-		}
-#if defined(ENABLE_NLS)
-		s = gettext(string[i]);
-#else
-		s = string[i];
-#endif
-		if (tag) {
-			char *concatenation;
-			concatenation = g_strconcat(tag, s, NULL);
-			text_view_append(view, concatenation);
-			g_free(concatenation);
-			g_free(tag);
-			tag = NULL;
-		}
-		else
-			text_view_append(view, s);
-	}
-}
-
 
 GtkWidget *ghid_scrolled_text_view(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h_policy, GtkPolicyType v_policy)
 {
