@@ -496,10 +496,10 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 		}
 
 		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_SILK);
-		grp[g - PCB->LayerGroups.grp] = gtop;
+		grp[g - PCB->LayerGroups.grp] = gbottom;
 
 		g = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
-		grp[g - PCB->LayerGroups.grp] = gbottom;
+		grp[g - PCB->LayerGroups.grp] = gtop;
 	}
 
 	for(n = 0; n < pcb_max_layer; n++) {
