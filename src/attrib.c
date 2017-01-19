@@ -44,6 +44,9 @@ int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char 
 {
 	int i;
 
+	if ((name == NULL) || (*name == '\0'))
+		return -1;
+
 	/* If we're allowed to replace an existing attribute, see if we
 	   can.  */
 	if (replace) {
