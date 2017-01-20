@@ -665,17 +665,24 @@ static void plugin_stat(const char *header, const char *path, const char *name)
 	printf("   [%s]\n", name);
 }
 
-static void print_sum_setting(const char *node, const char *desc)
+static void print_sum_setting_or(const char *node, const char *desc, int or)
 {
 	const char *res, *state;
 	state = get(node);
-	if (istrue(state))
+	if (or)
+		res = "enabled (implicit)";
+	else if (istrue(state))
 		res = "enabled";
 	else if (isfalse(state))
 		res = "disabled";
 	else
 		res = "UNKNOWN - disabled?";
 	printf("%-55s %s\n", desc, res);
+}
+
+static void print_sum_setting(const char *node, const char *desc)
+{
+	print_sum_setting_or(node, desc, 0);
 }
 
 static void print_sum_cfg_val(const char *node, const char *desc)
@@ -726,7 +733,7 @@ int hook_generate()
 	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
 	print_sum_setting("/local/pcb/want_nls",       "Internationalization with gettext");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
-	print_sum_setting("/local/pcb/symbols",        "Include debug symbols");
+	print_sum_setting_or("/local/pcb/symbols",        "Include debug symbols", istrue(get("/local/pcb/debug")));
 	print_sum_setting("libs/sul/dmalloc/presents", "Compile with dmalloc");
 	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
 	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
