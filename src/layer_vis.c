@@ -220,7 +220,7 @@ int pcb_layervis_change_group_vis(int Layer, pcb_bool On, pcb_bool ChangeStackOr
  */
 void pcb_layervis_reset_stack(void)
 {
-	pcb_layergrp_id_t comp_group;
+	pcb_layer_id_t comp;
 	pcb_cardinal_t i;
 
 	assert(PCB->Data->LayerN < PCB_MAX_LAYER);
@@ -235,9 +235,9 @@ void pcb_layervis_reset_stack(void)
 	PCB->ViaOn = pcb_true;
 	PCB->RatOn = pcb_true;
 
-	/* Bring the component group to the front and make it active.  */
-	comp_group = pcb_layer_get_group(pcb_layer_get_top_silk());
-	pcb_layervis_change_group_vis(PCB->LayerGroups.grp[comp_group].lid[0], 1, 1);
+	/* Bring the top copper group to the front and make it active.  */
+	if (pcb_layer_list(PCB_LYT_TOP | PCB_LYT_COPPER, &comp, 1) > 0)
+		pcb_layervis_change_group_vis(comp, 1, 1);
 }
 
 /* ---------------------------------------------------------------------------
