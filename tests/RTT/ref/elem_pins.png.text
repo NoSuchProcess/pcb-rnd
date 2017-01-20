@@ -1,0 +1,11 @@
+U1
+6 x 6 pixel distance from silk inside top corner to pin 1
+pin 1 dimensions 96 x 96 pixels
+pin 2 47 pixel circle
+pin 1 to pin 2 distance 264 pixels
+
+U2
+pin 1 extremes 97 pixels tall 145 wide
+pin 2 extremes 145 pixels tall 193 pixels wide
+pin 1 to pin 2 distance 167 pixels
+pin 1 to pin 2 vertical offset 0 pixels
