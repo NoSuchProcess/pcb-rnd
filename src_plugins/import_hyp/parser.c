@@ -720,7 +720,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 	char new_layer_name[PCB_MAX_LAYER];
 	int n;
 
-	return PCB_COMPONENT_SIDE; /* XXX XXX until layers stabilize */
+	return PCB_COMPONENT_SIDE;		/* XXX XXX until layers stabilize */
 
 	layer_id = -1;
 	if (lname != NULL) {
@@ -866,11 +866,29 @@ pcb_bool exec_padstack_element(parse_param * h)
 			pcb_printf(" drill_size = %mm", xy2coord(h->drill_size));
 		pcb_printf(" layer_name = \"%s\"", h->layer_name);
 		pcb_printf(" pad_shape = %f", h->pad_shape);
+		if (h->pad_shape == 0)
+			pcb_printf(" oval");
+		else if (h->pad_shape == 1)
+			pcb_printf(" rectangular");
+		else if (h->pad_shape == 2)
+			pcb_printf(" oblong");
+		else
+			pcb_printf(" ?");
 		pcb_printf(" pad_sx = %mm", xy2coord(h->pad_sx));
 		pcb_printf(" pad_sy = %mm", xy2coord(h->pad_sy));
 		pcb_printf(" pad_angle = %f", h->pad_angle);
 		if (h->pad_type_set & (h->pad_type == PAD_TYPE_THERMAL_RELIEF)) {
 			pcb_printf(" thermal_clear_shape = %f", h->thermal_clear_shape);
+			if (h->thermal_clear_shape == 0)
+				pcb_printf(" oval");
+			else if (h->thermal_clear_shape == 1)
+				pcb_printf(" rectangular");
+			else if (h->thermal_clear_shape == 2)
+				pcb_printf(" oblong");
+			else
+				pcb_printf(" ?");
+			pcb_printf(" pad_sx = %mm", xy2coord(h->pad_sx));
+			pcb_printf(" pad_sy = %mm", xy2coord(h->pad_sy));
 			pcb_printf(" thermal_clear_sx = %mm", xy2coord(h->thermal_clear_sx));
 			pcb_printf(" thermal_clear_sy = %mm", xy2coord(h->thermal_clear_sy));
 			pcb_printf(" thermal_clear_angle = %f", h->thermal_clear_angle);
@@ -969,6 +987,7 @@ pcb_coord_t hyp_clearance(parse_param * h)
 }
 
 /*
+ * SEG subrecord of NET record.
  * line segment 
  */
 
@@ -997,6 +1016,7 @@ pcb_bool exec_seg(parse_param * h)
 
 pcb_bool exec_arc(parse_param * h)
 {
+/* XXX checkme */
 
 	if (hyp_debug) {
 		pcb_printf("arc: x1 = %mm y1 = %mm x2 = %mm y2 = %mm", xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2));
@@ -1015,23 +1035,85 @@ pcb_bool exec_arc(parse_param * h)
 	return 0;
 }
 
+/*
+ * VIA subrecord of NET record. 
+ * Draws via using padstack definition.
+ */
+
 pcb_bool exec_via(parse_param * h)
 {
+	if (hyp_debug) {
+		pcb_printf("via: x = %mm y = %mm", xy2coord(h->x), xy2coord(h->y));
+		if (h->layer1_name_set)
+			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
+		if (h->layer2_name_set)
+			pcb_printf(" layer2_name = \"%s\"", h->layer2_name);
+		pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
+		pcb_printf("\n");
+	}
+
 	return 0;
 }
+
+/*
+ * VIA subrecord of NET record. 
+ * Draws deprecated v1.x via.
+ */
 
 pcb_bool exec_via_v1(parse_param * h)
 {
+	if (hyp_debug) {
+		pcb_printf("via: x = %mm y = %mm", xy2coord(h->x), xy2coord(h->y));
+		pcb_printf(" drill_size = %mm", xy2coord(h->drill_size));
+		if (h->layer1_name_set)
+			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
+		if (h->layer2_name_set)
+			pcb_printf(" layer2_name = \"%s\"", h->layer2_name);
+		pcb_printf(" pad1_shape = \"%s\" pad1_sx = %mm pad1_sy = %mm pad1_angle = %f", h->pad1_shape, xy2coord(h->pad1_sx),
+							 xy2coord(h->pad1_sy), h->pad1_angle);
+		pcb_printf(" pad2_shape = \"%s\" pad2_sx = %mm pad2_sy = %mm pad2_angle = %f", h->pad2_shape, xy2coord(h->pad2_sx),
+							 xy2coord(h->pad2_sy), h->pad2_angle);
+		pcb_printf("\n");
+	}
+
 	return 0;
 }
+
+/*
+ * PIN subrecord of NET record. 
+ * Draws PIN using padstack definiton.
+ */
 
 pcb_bool exec_pin(parse_param * h)
 {
+	if (hyp_debug) {
+		pcb_printf("pin: x = %mm y = %mm", xy2coord(h->x), xy2coord(h->y));
+		pcb_printf(" pin_reference \"%s\"= ", h->pin_reference);
+		pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
+		if (h->pin_function_set)
+			pcb_printf(" pin_function = %i", h->pin_function);
+		pcb_printf("\n");
+	}
+
 	return 0;
 }
 
+/*
+ * PAD subrecord of NET record. 
+ * Draws deprecated v1.x pad.
+ */
+
 pcb_bool exec_pad(parse_param * h)
 {
+	if (hyp_debug) {
+		pcb_printf("pad: x = %mm y = %mm", xy2coord(h->x), xy2coord(h->y));
+		if (h->layer_name_set)
+			pcb_printf(" layer_name = \"%s\"", h->layer_name);
+		pcb_printf(" pad1_shape = \"%s\" pad1_sx = %mm pad1_sy = %mm pad1_angle = %f", h->pad1_shape, xy2coord(h->pad1_sx),
+							 xy2coord(h->pad1_sy), h->pad1_angle);
+		pcb_printf("\n");
+	}
+
 	return 0;
 }
 
@@ -1056,12 +1138,15 @@ pcb_bool exec_useg(parse_param * h)
 		pcb_printf("\n");
 	}
 
-  /* lookup layer group begin and end layer are on */
+	/* lookup layer group begin and end layer are on */
 	layer1_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer1_name));
 	layer2_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer2_name));
 
-	if ((layer1_grp_id == -1) || (layer2_grp_id == -1))
+	if ((layer1_grp_id == -1) || (layer2_grp_id == -1)) {
+		if (hyp_debug)
+			pcb_printf("skipping unrouted segment\n");	/* XXX */
 		return 0;
+	}
 
 	pcb_rat_new(hyp_dest, xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2), layer1_grp_id, layer2_grp_id,
 							xy2coord(h->width), pcb_no_flags());
@@ -1071,63 +1156,220 @@ pcb_bool exec_useg(parse_param * h)
 
 /* 
  * in hyperlynx, if two polygons touch, and both have clearance ("plane separation"), the biggest clearance of the two is used.
- * not sure how to implement this in pcb-rnd.
+ * not sure how to implement this in pcb-rnd. XXX
+ */
+/*
+ * POLYGON subrecord of NET record.
+ * draws copper polygon.
  */
 
 pcb_bool exec_polygon_begin(parse_param * h)
 {
+	if (hyp_debug) {
+		pcb_printf("polygon begin:");
+		if (h->layer_name_set)
+			pcb_printf(" layer_name = \"%s\"", h->layer_name);
+		if (h->width_set)
+			pcb_printf(" width = %mm", xy2coord(h->width));
+		if (h->polygon_type_set) {
+			pcb_printf(" polygon_type = ", h->polygon_type, " ");
+			switch (h->polygon_type) {
+			case POLYGON_TYPE_PLANE:
+				pcb_printf("POLYGON_TYPE_PLANE");
+				break;
+			case POLYGON_TYPE_POUR:
+				pcb_printf("POLYGON_TYPE_POUR");
+				break;
+			case POLYGON_TYPE_COPPER:
+				pcb_printf("POLYGON_TYPE_COPPER");
+				break;
+			default:
+				pcb_printf("Error");
+				break;
+			}
+		}
+		if (h->id_set)
+			pcb_printf(" id = %i", h->id);
+		pcb_printf(" x = %mm y = %mm\n", xy2coord(h->x), xy2coord(h->y));
+	}
+
+	if (!h->layer_name_set) {
+		hyp_error("expected polygon layer L = ");
+		return pcb_true;
+	}
+
+	if (!h->id_set) {
+		hyp_error("expected polygon id ID = ");
+		return pcb_true;
+	}
+
 	return 0;
 }
 
 pcb_bool exec_polygon_end(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("polygon end:\n");
+
 	return 0;
 }
 
+/*
+ * POLYVOID subrecord of NET record.
+ * same as POLYGON, but instead of creating copper, creates a hole in copper.
+ */
+
 pcb_bool exec_polyvoid_begin(parse_param * h)
 {
+
+	if (hyp_debug) {
+		pcb_printf("polyvoid begin:");
+		if (h->id_set)
+			pcb_printf(" id = %i", h->id);
+		pcb_printf(" x = %mm y = %mm\n", xy2coord(h->x), xy2coord(h->y));
+	}
+
+	if (!h->id_set) {
+		hyp_error("expected polygon id ID = ");
+		return pcb_true;
+	}
+
 	return 0;
 }
 
 pcb_bool exec_polyvoid_end(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("polyvoid end:\n");
+
 	return 0;
 }
 
+/*
+ * POLYLINE subrecord of NET record.
+ */
+
 pcb_bool exec_polyline_begin(parse_param * h)
 {
+	if (hyp_debug) {
+		pcb_printf("polyline begin:");
+		if (h->layer_name_set)
+			pcb_printf(" layer_name = \"%s\"", h->layer_name);
+		if (h->width_set)
+			pcb_printf(" width = %mm", xy2coord(h->width));
+		if (h->polygon_type_set) {
+			pcb_printf(" polygon_type = ", h->polygon_type, " ");
+			switch (h->polygon_type) {
+			case POLYGON_TYPE_PLANE:
+				pcb_printf("POLYGON_TYPE_PLANE");
+				break;
+			case POLYGON_TYPE_POUR:
+				pcb_printf("POLYGON_TYPE_POUR");
+				break;
+			case POLYGON_TYPE_COPPER:
+				pcb_printf("POLYGON_TYPE_COPPER");
+				break;
+			default:
+				pcb_printf("Error");
+				break;
+			}
+		}
+		if (h->id_set)
+			pcb_printf(" id = %i", h->id);
+		pcb_printf(" x = %mm y = %mm\n", xy2coord(h->x), xy2coord(h->y));
+	}
+
+	if (!h->layer_name_set) {
+		hyp_error("expected polygon layer L = ");
+		return pcb_true;
+	}
+
+	if (!h->width_set) {
+		hyp_error("expected polygon width W = ");
+		return pcb_true;
+	}
+
+	if (!h->id_set) {
+		hyp_error("expected polygon id ID = ");
+		return pcb_true;
+	}
+
 	return 0;
 }
 
 pcb_bool exec_polyline_end(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("polyline end:\n");
+
 	return 0;
 }
+
+/*
+ * LINE subrecord of NET record.
+ */
 
 pcb_bool exec_line(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("line: x = %mm y = %mm\n", xy2coord(h->x), xy2coord(h->y));
+
 	return 0;
 }
+
+/*
+ * CURVE subrecord of NET record.
+ */
 
 pcb_bool exec_curve(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("curve: x1 = %mm y1 = %mm x2 = %mm y2 = %mm xc = %mm yc = %mm r = %mm\n", xy2coord(h->x1), xy2coord(h->y1),
+							 xy2coord(h->x2), xy2coord(h->y2), xy2coord(h->xc), xy2coord(h->yc), xy2coord(h->r));
+
 	return 0;
 }
+
+/*
+ * NET_CLASS record
+ */
 
 pcb_bool exec_net_class(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("net_class: net_class_name = \"%s\"\n", h->net_class_name);
+
 	return 0;
 }
+
+/*
+ * N net membership subrecord of NET_CLASS record
+ */
 
 pcb_bool exec_net_class_element(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("net_class_element: net_name = \"%s\"\n", h->net_name);
+
 	return 0;
 }
 
+/*
+ * A attribute subrecord of NET_CLASS record
+ */
+
+
 pcb_bool exec_net_class_attribute(parse_param * h)
 {
+	if (hyp_debug)
+		pcb_printf("netclass_attribute: name = \"%s\" value = \"%s\"\n", h->name, h->value);
+
 	return 0;
 }
+
+/* 
+ * END record
+ */
 
 pcb_bool exec_end(parse_param * h)
 {
@@ -1136,6 +1378,10 @@ pcb_bool exec_end(parse_param * h)
 
 	return 0;
 }
+
+/* 
+ * KEY record
+ */
 
 pcb_bool exec_key(parse_param * h)
 {
