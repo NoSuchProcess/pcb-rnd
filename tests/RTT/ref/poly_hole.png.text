@@ -1,0 +1,16 @@
+500 x 500 mil outline
+
+upper left triangle
+Top left corner to top left cutout corner 30 pixels down 31 pixels over
+cutout 29 pixels wide
+cutout 29 pixels high
+
+upper right triangle
+bottom right corner to bottom right on cutout 31 x 31 pixels
+cutout 58 pixels wide
+cutout 30 pixels high
+
+far right piramid
+cutout 59 x 60 pixels
+cutout located 60 pixels down from the apex
+

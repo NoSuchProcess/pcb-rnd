@@ -1,0 +1,8 @@
+each red polygon is 121x121 pixels
+each blue polygon is 121x121pixels
+
+clearance should be exactly 24 pixels
+copper width 95 pixels
+drill width 39 pixels
+
+lower two vias are cleared with only 23 pixels
