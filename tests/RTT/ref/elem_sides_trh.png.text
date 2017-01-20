@@ -1,0 +1,11 @@
+U1
+6 x 6 pixel distance from silk inside top corner to pin 1
+pin 1 dimensions 96 x 96 pixels
+pin 2 97 pixel diameter circle
+pin 1 to pin 2 distance 264 pixels
+
+U2
+pin 1 is 144 pixels down from U1 Pin 1
+pin 1 is 96 x 96 pixels
+pin 2 is an 97 pixel circle
+pin 1 to pin 2 distance 264 pixels
