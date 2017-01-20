@@ -8,6 +8,7 @@
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
 	- scconfig: "Include debug symbols" line should indicate enabled with --debug [report:jonh_g]
 	- gtk rendering: zoom in much and arcs are rendered a bit larger/smaller [report: Evan]
+	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- layer rewrite bug:
 		- no layer is selected/activated after startup (and maybe board load) - affects gtk and lesstif [report:Evan]
 		- autoroute stopped working
@@ -155,6 +156,7 @@ FEATURES
 - BUILD: menuconfig and a config file for scconfig
 
 Low prio:
+- bug: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
 - bug: redrawbug1: grap c1, the diagonal trace gets dran over U1's silk - it's redrawn because of the overlapping bounding box with C1, while U1 has no overlap [report:Evan]
 - bug: draw overlapping lines, a short fully under a long; click on the short, it gets selected but it's not visible because the long hides it [report:Evan]
 - GTK "save as" dialog: there should be an "auto" or "guess by extension" option in the save dialog format
