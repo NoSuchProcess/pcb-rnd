@@ -10,7 +10,6 @@
 	- gtk rendering: zoom in much and arcs are rendered a bit larger/smaller [report: Evan]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- layer rewrite bug:
-		- no layer is selected/activated after startup (and maybe board load) - affects gtk and lesstif [report:Evan]
 		- autoroute stopped working
 		- pcb_get_grp_new_intern() should get the old layer group number and shouldn't create a new internal layer if it's already done (cache). Test: a pcb file with two internals in the same group!
 	- RTT/arc_angles.pcb:
