@@ -452,9 +452,10 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 {
 	pcb_layergrp_id_t group;
 	struct rubber_info info;
+	int which;
 	pcb_coord_t t = Arc->Thickness / 2, ex, ey;
 
-	for ( int which=0; which<=1; ++which){
+	for(which=0; which<=1; ++which) {
 		pcb_arc_get_end(Arc,which,&ex, &ey);
 
 		/* lookup layergroup and check all visible lines in this group */
