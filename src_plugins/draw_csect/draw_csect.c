@@ -184,7 +184,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 
 	y = 10;
 	for(gid = 0; gid < pcb_max_group; gid++) {
-		int i, stepf, stepb, th;
+		int i, stepf = 0, stepb = 0, th;
 		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
 		const char *color = "#ff0000";
 
@@ -192,7 +192,6 @@ static void draw_csect(pcb_hid_gc_t gc)
 			continue;
 		else if (g->type & PCB_LYT_COPPER) {
 			last_copper_step = -last_copper_step;
-			stepf = stepb = 0;
 			if (last_copper_step > 0)
 				stepf = last_copper_step;
 			else
@@ -206,24 +205,24 @@ static void draw_csect(pcb_hid_gc_t gc)
 			color = COLOR_SUBSTRATE;
 		}
 		else if (g->type & PCB_LYT_SILK) {
-			stepf = stepb = 0;
-			th = 3;
+			th = 5;
 			color = COLOR_SILK;
+			stepb = 3;
 		}
 		else if (g->type & PCB_LYT_MASK) {
-			stepf = stepb = 0;
-			th = 3;
+			th = 5;
 			color = COLOR_MASK;
+			stepb = 9;
 		}
 		else if (g->type & PCB_LYT_PASTE) {
-			stepf = stepb = 0;
-			th = 3;
+			th = 5;
 			color = COLOR_PASTE;
+			stepf = 9;
 		}
 		else if (g->type & PCB_LYT_MISC) {
-			stepf = stepb = 0;
-			th = 3;
+			th = 5;
 			color = COLOR_MISC;
+			stepf = 3;
 		}
 		else if (g->type & PCB_LYT_OUTLINE) {
 			continue;
@@ -232,8 +231,8 @@ static void draw_csect(pcb_hid_gc_t gc)
 			continue;
 
 		pcb_gui->set_color(gc, color);
-		dhrect(0, y, 100, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
-		dtext_bg(gc, 20, y, 200, 0, g->name, COLOR_BG, COLOR_ANNOT);
+		dhrect(0, y, 75, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
+		dtext_bg(gc, 5, y, 200, 0, g->name, COLOR_BG, COLOR_ANNOT);
 
 		y += th + 1;
 	}
