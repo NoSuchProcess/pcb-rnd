@@ -114,15 +114,26 @@ static void hatch_box(int x1, int y1, int x2, int y2, float thick, int step)
 			dline_vclip(n+h, y1, n, y2, thick,  x1, x2);
 }
 
+enum {
+	OMIT_NONE = 0,
+	OMIT_TOP = 1,
+	OMIT_BOTTOM = 2,
+	OMIT_LEFT = 4,
+	OMIT_RIGHT = 8
+};
+
 /* draw a hatched rectangle; to turn off hatching in a directon set the
    corresponding step to 0 */
-static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick_hatch, int step_fwd, int step_back)
+static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick_hatch, int step_fwd, int step_back, unsigned omit)
 {
-
-	dline(x1, y1, x2, y1, thick_rect);
-	dline(x2, y1, x2, y2, thick_rect);
-	dline(x1, y2, x2, y2, thick_rect);
-	dline(x1, y1, x1, y2, thick_rect);
+	if (!(omit & OMIT_TOP))
+		dline(x1, y1, x2, y1, thick_rect);
+	if (!(omit & OMIT_RIGHT))
+		dline(x2, y1, x2, y2, thick_rect);
+	if (!(omit & OMIT_BOTTOM))
+		dline(x1, y2, x2, y2, thick_rect);
+	if (!(omit & OMIT_LEFT))
+		dline(x1, y1, x1, y2, thick_rect);
 
 	if (step_fwd > 0)
 		hatch_box(x1, y1, x2, y2, thick_hatch, +step_fwd);
@@ -138,7 +149,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 	pcb_gui->set_color(gc, PCB->ElementColor);
 
 	dtext(0, 0, 500, 0, "Board cross section");
-	dhrect(0, 20, 100, 40,  1, 0.5,  5, 5);
+	dhrect(0, 20, 100, 40,  1, 0.5,  5, 5, OMIT_LEFT);
 }
 
 
