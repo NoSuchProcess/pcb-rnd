@@ -52,6 +52,7 @@
 #include "fptr_cast.h"
 #include <liblihata/tree.h>
 #include "../src_plugins/lib_gtk_common/util_str.h"
+#include "../src_plugins/lib_gtk_common/wt_preview.h"
 
 #if 0
 #include <locale.h>
@@ -1516,7 +1517,7 @@ void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
 
 static void config_layers_tab_create(GtkWidget * tab_vbox)
 {
-	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *content_vbox;
+	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *content_vbox, *prv;
 	GtkWidget *hbox, *arrow;
 	gint i;
 
@@ -1526,6 +1527,11 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 
 	tabs = gtk_notebook_new();
 	gtk_box_pack_start(GTK_BOX(content_vbox), tabs, TRUE, TRUE, 0);
+
+/* -- Layer stack tab */
+	vbox = ghid_notebook_page(tabs, _("Layer Stack"), 0, 6);
+	prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, PCB_VLY_CSECT);
+	gtk_box_pack_start(GTK_BOX(vbox), prv, FALSE, FALSE, 0);
 
 /* -- Change tab */
 	vbox = ghid_notebook_page(tabs, _("Change"), 0, 6);

@@ -1177,7 +1177,8 @@
  pcb-printf.h hid_attrib.h misc_util.h \
  ../src_plugins/hid_gtk/gtk_conf_list.h paths.h plug_footprint.h \
  vtlibrary.h compat_nls.h fptr_cast.h ../src_3rd/liblihata/tree.h \
- ../src_plugins/lib_gtk_common/util_str.h
+ ../src_plugins/lib_gtk_common/util_str.h \
+ ../src_plugins/lib_gtk_common/wt_preview.h obj_elem.h layer.h
 ../src_plugins/hid_gtk/gui-drc-window.o: \
  ../src_plugins/hid_gtk/gui-drc-window.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
