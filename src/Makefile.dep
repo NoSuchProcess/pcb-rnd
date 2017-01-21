@@ -2353,12 +2353,12 @@
  ../src_plugins/lib_gtk_common/wt_preview.h obj_elem.h obj_common.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
  attrib.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
- obj_pad_list.h obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h \
- copy.h data.h layer.h obj_all_list.h obj_elem_list.h obj_elem.h \
+ obj_pad_list.h obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h hid.h \
+ error.h drc.h layer.h obj_all_list.h obj_elem_list.h obj_elem.h \
  ht_element.h ../src_3rd/liblihata/genht/ht.h obj_poly_list.h obj_poly.h \
- polyarea.h obj_text_list.h obj_rat_list.h obj_rat.h crosshair.h \
- vtonpoint.h hid.h error.h drc.h layer_grp.h buffer.h draw.h move.h \
- rotate.h obj_all.h macro.h
+ polyarea.h obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h copy.h \
+ data.h crosshair.h vtonpoint.h hid.h buffer.h draw.h move.h rotate.h \
+ obj_all.h macro.h
 ../src_plugins/lib_legacy_func/lib_legacy_func.o: \
  ../src_plugins/lib_legacy_func/lib_legacy_func.c \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \

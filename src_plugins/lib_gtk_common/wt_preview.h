@@ -34,6 +34,7 @@
 
 #include <gtk/gtk.h>
 #include "obj_elem.h"
+#include "hid.h"
 
 #define GHID_TYPE_PINOUT_PREVIEW           (pcb_gtk_preview_get_type())
 #define GHID_PINOUT_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_t))
@@ -50,6 +51,7 @@ struct pcb_gtk_preview_class_s {
 };
 
 typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget * widget, void *port);
+typedef gboolean (*pcb_gtk_preview_expose_t)(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, void *expdata, const pcb_box_t *view);
 
 struct pcb_gtk_preview_s {
 	GtkDrawingArea parent_instance;
@@ -60,6 +62,7 @@ struct pcb_gtk_preview_s {
 
 	void *gport;
 	pcb_gtk_init_drawing_widget_t init_drawing_widget;
+	pcb_gtk_preview_expose_t expose;
 };
 
 
@@ -69,7 +72,7 @@ GType pcb_gtk_preview_get_type(void);
 /* Query the natural size of a preview widget */
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height);
 
-GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_element_t *element);
+GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_element_t *element);
 
 
 #endif /* PCB_GTK_WT_REVIEW_H */

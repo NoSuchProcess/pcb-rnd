@@ -114,6 +114,7 @@ enum {
 	PROP_ELEMENT_DATA = 1,
 	PROP_GPORT = 2,
 	PROP_INIT_WIDGET = 3,
+	PROP_EXPOSE = 4,
 };
 
 
@@ -187,6 +188,9 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 	case PROP_INIT_WIDGET:
 		pinout->init_drawing_widget = (void *)g_value_get_pointer(value);
 		break;
+	case PROP_EXPOSE:
+		pinout->expose = (void *)g_value_get_pointer(value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
 	}
@@ -225,7 +229,7 @@ static gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * 
 	view.X2 = pinout->x_max;
 	view.Y2 = pinout->y_max;
 
-	return ghid_preview_expose(widget, ev, pcb_hid_expose_pinout, &pinout->element, &view);
+	return pinout->expose(widget, ev, pcb_hid_expose_pinout, &pinout->element, &view);
 }
 
 /*! \brief GType class initialiser for pcb_gtk_preview_t
@@ -258,6 +262,9 @@ static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
 
 	g_object_class_install_property(gobject_class, PROP_INIT_WIDGET,
 		g_param_spec_pointer("init-widget", "", "", G_PARAM_WRITABLE));
+
+	g_object_class_install_property(gobject_class, PROP_EXPOSE,
+		g_param_spec_pointer("expose", "", "", G_PARAM_WRITABLE));
 }
 
 
@@ -295,7 +302,7 @@ GType pcb_gtk_preview_get_type()
 }
 
 
-GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_element_t *element)
+GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_element_t *element)
 {
 	pcb_gtk_preview_t *pinout_preview;
 
@@ -303,6 +310,7 @@ GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t
 		"element-data", element,
 		"gport", gport,
 		"init-widget", init_widget,
+		"expose", expose,
 		NULL);
 
 	pinout_preview->init_drawing_widget(GTK_WIDGET(pinout_preview), pinout_preview->gport);
