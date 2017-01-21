@@ -34,6 +34,7 @@
 #include "obj_line_draw.h"
 
 static const char *COLOR_ANNOT = "#000000";
+static const char *COLOR_BG = "#f0f0f0";
 
 static const char *COLOR_COPPER = "#C05020";
 static const char *COLOR_SUBSTRATE = "#E0D090";
@@ -41,7 +42,6 @@ static const char *COLOR_SILK = "#000000";
 static const char *COLOR_MASK = "#30d030";
 static const char *COLOR_PASTE = "#60e0e0";
 static const char *COLOR_MISC = "#e0e000";
-
 
 /* Draw a text at x;y sized scale percentage */
 static void dtext(int x, int y, int scale, int dir, const char *txt)
@@ -55,6 +55,26 @@ static void dtext(int x, int y, int scale, int dir, const char *txt)
 	t.Scale = scale;
 	t.Flags = pcb_no_flags();
 	DrawTextLowLevel(&t, 0);
+}
+
+/* Draw a text at x;y with a background */
+static void dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const char *bgcolor, const char *fgcolor)
+{
+	pcb_text_t t;
+
+	t.X = PCB_MM_TO_COORD(x);
+	t.Y = PCB_MM_TO_COORD(y);
+	t.TextString = txt;
+	t.Direction = dir;
+	t.Scale = scale;
+	t.Flags = pcb_no_flags();
+
+	pcb_gui->set_color(gc, bgcolor);
+	DrawTextLowLevel(&t, 1000000);
+
+	pcb_gui->set_color(gc, fgcolor);
+	DrawTextLowLevel(&t, 0);
+
 }
 
 /* draw a line of a specific thickness */
@@ -213,7 +233,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 
 		pcb_gui->set_color(gc, color);
 		dhrect(0, y, 100, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
-		dtext(20, y, 200, 0, g->name);
+		dtext_bg(gc, 20, y, 200, 0, g->name, COLOR_BG, COLOR_ANNOT);
 
 		y += th + 1;
 	}
