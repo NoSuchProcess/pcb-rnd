@@ -62,7 +62,7 @@ struct _GhidPinoutPreview {
 
 GType ghid_pinout_preview_get_type(void);
 
-GtkWidget *ghid_pinout_preview_new(pcb_element_t * element, void *gport);
+GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element);
 void ghid_pinout_preview_get_natural_size(GhidPinoutPreview * pinout, int *width, int *height);
 
 #endif /* PCB_GTK_WT_REVIEW_H */

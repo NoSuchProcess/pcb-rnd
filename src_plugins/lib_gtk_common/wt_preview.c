@@ -298,7 +298,7 @@ GType ghid_pinout_preview_get_type()
  *
  *  \return  The GhidPinoutPreview created.
  */
-GtkWidget *ghid_pinout_preview_new(pcb_element_t * element, void *gport)
+GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element)
 {
 	GhidPinoutPreview *pinout_preview;
 
