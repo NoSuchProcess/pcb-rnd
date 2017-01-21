@@ -788,6 +788,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 																			 "gport", gport,
 																			 "init-widget", ghid_init_drawing_widget,
 																			 "expose", ghid_preview_expose,
+																			 "kind", PCB_GTK_PREVIEW_PINOUT,
 																			 /* GtkWidget */
 																			 "width-request", 150, "height-request", 150, NULL);
 

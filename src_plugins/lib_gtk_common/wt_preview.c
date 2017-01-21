@@ -115,6 +115,7 @@ enum {
 	PROP_GPORT = 2,
 	PROP_INIT_WIDGET = 3,
 	PROP_EXPOSE = 4,
+	PROP_KIND = 5,
 };
 
 
@@ -191,6 +192,9 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 	case PROP_EXPOSE:
 		pinout->expose = (void *)g_value_get_pointer(value);
 		break;
+	case PROP_KIND:
+		pinout->kind = g_value_get_int(value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
 	}
@@ -220,16 +224,21 @@ static void ghid_pinout_preview_get_property(GObject * object, guint property_id
 }
 
 /* Converter: set up a pinout expose and use the generic preview expose call */
-static gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
+static gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 {
 	pcb_gtk_preview_t *pinout = GHID_PINOUT_PREVIEW(widget);
-	pcb_box_t view;
 
-	view.X1 = view.Y1 = 0;
-	view.X2 = pinout->x_max;
-	view.Y2 = pinout->y_max;
+	if (pinout->kind == PCB_GTK_PREVIEW_PINOUT) {
+		pcb_box_t view;
+		view.X1 = view.Y1 = 0;
+		view.X2 = pinout->x_max;
+		view.Y2 = pinout->y_max;
 
-	return pinout->expose(widget, ev, pcb_hid_expose_pinout, &pinout->element, &view);
+		return pinout->expose(widget, ev, pcb_hid_expose_pinout, &pinout->element, &view);
+	}
+
+
+	return FALSE;
 }
 
 /*! \brief GType class initialiser for pcb_gtk_preview_t
@@ -250,7 +259,7 @@ static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
 	gobject_class->get_property = ghid_pinout_preview_get_property;
 	gobject_class->constructed = ghid_pinout_preview_constructed;
 
-	gtk_widget_class->expose_event = ghid_pinout_preview_expose;
+	gtk_widget_class->expose_event = ghid_preview_expose;
 
 	ghid_pinout_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
 
@@ -265,6 +274,9 @@ static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
 
 	g_object_class_install_property(gobject_class, PROP_EXPOSE,
 		g_param_spec_pointer("expose", "", "", G_PARAM_WRITABLE));
+
+	g_object_class_install_property(gobject_class, PROP_KIND,
+		g_param_spec_pointer("kind", "", "", G_PARAM_WRITABLE));
 }
 
 
@@ -311,6 +323,7 @@ GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t
 		"gport", gport,
 		"init-widget", init_widget,
 		"expose", expose,
+		"kind", PCB_GTK_PREVIEW_PINOUT,
 		NULL);
 
 	pinout_preview->init_drawing_widget(GTK_WIDGET(pinout_preview), pinout_preview->gport);
