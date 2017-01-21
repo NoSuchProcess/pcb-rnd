@@ -549,6 +549,7 @@ struct hid_s {
 
 typedef struct pcb_hid_expose_layer_s {
 	pcb_box_t view;
+	unsigned force:1; /* draw even if layer set fails */
 	union {
 		pcb_layer_id_t layer_id;
 		pcb_element_t *elem;

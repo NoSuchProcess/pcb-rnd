@@ -684,7 +684,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 	unsigned long lflg = pcb_layer_flags(e->content.layer_id);
 
 	if (lflg & PCB_LYT_CSECT) {
-		if (pcb_layer_gui_set_vlayer(PCB_VLY_CSECT, 0)) {
+		if ((pcb_layer_gui_set_vlayer(PCB_VLY_CSECT, 0)) || (e->force)) {
 			pcb_stub_draw_csect(Output.fgGC);
 			pcb_gui->end_layer();
 		}
