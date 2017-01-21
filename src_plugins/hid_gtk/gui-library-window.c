@@ -65,7 +65,7 @@
 
 static GtkWidget *library_window;
 
-#include "gui-pinout-preview.h"
+#include "../src_plugins/lib_gtk_common/wt_preview.h"
 #include "gui-library-window.h"
 
 /*! \def LIBRARY_FILTER_INTERVAL

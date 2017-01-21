@@ -3,6 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +26,14 @@
  */
 
 /* This file copied and modified by Peter Clifton, starting from
- * gui-pinout-window.c, written by Bill Wilson for the PCB Gtk port */
+ * gui-pinout-window.c, written by Bill Wilson for the PCB Gtk port
+ * then got a major refactoring by Tibor 'Igor2' Palinkas in pcb-rnd
+ */
 
 #include "config.h"
 #include "conf_core.h"
 
-#include "gui.h"
+#include "wt_preview.h"
 
 #include "copy.h"
 #include "data.h"
@@ -38,7 +41,7 @@
 #include "move.h"
 #include "rotate.h"
 #include "obj_all.h"
-#include "gui-pinout-preview.h"
+#include "macro.h"
 
 /* Just define a sensible scale, lets say (for example), 100 pixel per 150 mil */
 #define SENSIBLE_VIEW_SCALE  (100. / PCB_MIL_TO_COORD (150.))
@@ -109,6 +112,7 @@ static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
 
 enum {
 	PROP_ELEMENT_DATA = 1,
+	PROP_GPORT = 2,
 };
 
 
@@ -125,11 +129,14 @@ static GObjectClass *ghid_pinout_preview_parent_class = NULL;
  */
 static void ghid_pinout_preview_constructed(GObject * object)
 {
+	GhidPinoutPreview *pinout;
+
 	/* chain up to the parent class */
 	if (G_OBJECT_CLASS(ghid_pinout_preview_parent_class)->constructed != NULL)
 		G_OBJECT_CLASS(ghid_pinout_preview_parent_class)->constructed(object);
 
-	ghid_init_drawing_widget(GTK_WIDGET(object), gport);
+	pinout = GHID_PINOUT_PREVIEW(object);
+	ghid_init_drawing_widget(GTK_WIDGET(object), pinout->gport);
 }
 
 
@@ -175,6 +182,9 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 		pinout_set_data(pinout, (pcb_element_t *) g_value_get_pointer(value));
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
+		break;
+	case PROP_GPORT:
+		pinout->gport = (void *)g_value_get_pointer(value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
@@ -240,7 +250,10 @@ static void ghid_pinout_preview_class_init(GhidPinoutPreviewClass * klass)
 	ghid_pinout_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
 
 	g_object_class_install_property(gobject_class, PROP_ELEMENT_DATA,
-																	g_param_spec_pointer("element-data", "", "", G_PARAM_WRITABLE));
+		g_param_spec_pointer("element-data", "", "", G_PARAM_WRITABLE));
+
+	g_object_class_install_property(gobject_class, PROP_GPORT,
+		g_param_spec_pointer("gport", "", "", G_PARAM_WRITABLE));
 }
 
 
@@ -285,11 +298,11 @@ GType ghid_pinout_preview_get_type()
  *
  *  \return  The GhidPinoutPreview created.
  */
-GtkWidget *ghid_pinout_preview_new(pcb_element_t * element)
+GtkWidget *ghid_pinout_preview_new(pcb_element_t * element, void *gport)
 {
 	GhidPinoutPreview *pinout_preview;
 
-	pinout_preview = (GhidPinoutPreview *) g_object_new(GHID_TYPE_PINOUT_PREVIEW, "element-data", element, NULL);
+	pinout_preview = (GhidPinoutPreview *) g_object_new(GHID_TYPE_PINOUT_PREVIEW, "element-data", element, "gport", gport, NULL);
 
 	return GTK_WIDGET(pinout_preview);
 }

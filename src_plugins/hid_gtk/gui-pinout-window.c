@@ -38,7 +38,7 @@
 #include "move.h"
 #include "rotate.h"
 
-#include "gui-pinout-preview.h"
+#include "../src_plugins/lib_gtk_common/wt_preview.h"
 
 static void pinout_close_cb(GtkWidget * widget, GtkWidget * top_window)
 {
@@ -67,7 +67,7 @@ void ghid_pinout_window_show(GHidPort * out, pcb_element_t * element)
 	gtk_container_add(GTK_CONTAINER(top_window), vbox);
 
 
-	preview = ghid_pinout_preview_new(element);
+	preview = ghid_pinout_preview_new(element, gport);
 	gtk_box_pack_start(GTK_BOX(vbox), preview, TRUE, TRUE, 0);
 
 	ghid_pinout_preview_get_natural_size(GHID_PINOUT_PREVIEW(preview), &width, &height);

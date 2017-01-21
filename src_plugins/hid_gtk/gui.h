@@ -36,7 +36,6 @@
 #include <gtk/gtk.h>
 #include "ghid-coord-entry.h"
 #include "ghid-main-menu.h"
-#include "gui-pinout-preview.h"
 #include "ghid-propedit.h"
 #include "conf_core.h"
 #include "event.h"

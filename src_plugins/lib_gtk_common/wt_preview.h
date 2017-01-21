@@ -3,6 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,11 +25,15 @@
  *
  */
 
-/* This file written by Peter Clifton */
+/* This file was originally written by Peter Clifton
+   then got a major refactoring by Tibor 'Igor2' Palinkas in pcb-rnd
+*/
 
-#ifndef PCB_HID_GTK_GUI_PINOUT_PREVIEW_H
-#define PCB_HID_GTK_GUI_PINOUT_PREVIEW_H
+#ifndef PCB_GTK_WT_REVIEW_H
+#define PCB_GTK_WT_REVIEW_H
 
+#include <gtk/gtk.h>
+#include "obj_elem.h"
 
 #define GHID_TYPE_PINOUT_PREVIEW           (ghid_pinout_preview_get_type())
 #define GHID_PINOUT_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_PINOUT_PREVIEW, GhidPinoutPreview))
@@ -50,12 +55,14 @@ struct _GhidPinoutPreview {
 	pcb_element_t element;					/* element data to display */
 	gint x_max, y_max;
 	gint w_pixels, h_pixels;			/* natural size of element preview */
+
+	void *gport;
 };
 
 
 GType ghid_pinout_preview_get_type(void);
 
-GtkWidget *ghid_pinout_preview_new(pcb_element_t * element);
+GtkWidget *ghid_pinout_preview_new(pcb_element_t * element, void *gport);
 void ghid_pinout_preview_get_natural_size(GhidPinoutPreview * pinout, int *width, int *height);
 
-#endif /* PCB_HID_GTK_GUI_PINOUT_PREVIEW_H */
+#endif /* PCB_GTK_WT_REVIEW_H */

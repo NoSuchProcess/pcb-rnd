@@ -18,7 +18,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/gui-misc.o
 	$(PLUGDIR)/hid_gtk/gui-netlist-window.o
 	$(PLUGDIR)/hid_gtk/gui-output-events.o
-	$(PLUGDIR)/hid_gtk/gui-pinout-preview.o
 	$(PLUGDIR)/hid_gtk/gui-pinout-window.o
 	$(PLUGDIR)/hid_gtk/gui-top-window.o
 	$(PLUGDIR)/hid_gtk/gui-utils.o

@@ -6,7 +6,6 @@
 #include "crosshair.h"
 #include "clip.h"
 #include "gui.h"
-#include "gui-pinout-preview.h"
 
 /* The Linux OpenGL ABI 1.0 spec requires that we define
  * GL_GLEXT_PROTOTYPES before including gl.h or glx.h for extensions
