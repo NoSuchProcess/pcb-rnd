@@ -33,6 +33,16 @@
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
 
+static const char *COLOR_ANNOT = "#000000";
+
+static const char *COLOR_COPPER = "#C05020";
+static const char *COLOR_SUBSTRATE = "#E0D090";
+static const char *COLOR_SILK = "#000000";
+static const char *COLOR_MASK = "#30d030";
+static const char *COLOR_PASTE = "#60e0e0";
+static const char *COLOR_MISC = "#e0e000";
+
+
 /* Draw a text at x;y sized scale percentage */
 static void dtext(int x, int y, int scale, int dir, const char *txt)
 {
@@ -146,10 +156,68 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 /* Draw the cross-section layer */
 static void draw_csect(pcb_hid_gc_t gc)
 {
-	pcb_gui->set_color(gc, PCB->ElementColor);
+	pcb_layergrp_id_t gid;
+	int y, last_copper_step = 5;
 
+	pcb_gui->set_color(gc, COLOR_ANNOT);
 	dtext(0, 0, 500, 0, "Board cross section");
-	dhrect(0, 20, 100, 40,  1, 0.5,  5, 5, OMIT_LEFT);
+
+	y = 10;
+	for(gid = 0; gid < pcb_max_group; gid++) {
+		int i, stepf, stepb, th;
+		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
+		const char *color = "#ff0000";
+
+		if (!g->valid)
+			continue;
+		else if (g->type & PCB_LYT_COPPER) {
+			last_copper_step = -last_copper_step;
+			stepf = stepb = 0;
+			if (last_copper_step > 0)
+				stepf = last_copper_step;
+			else
+				stepb = -last_copper_step;
+			th = 5;
+			color = COLOR_COPPER;
+		}
+		else if (g->type & PCB_LYT_SUBSTRATE) {
+			stepf = stepb = 7;
+			th = 10;
+			color = COLOR_SUBSTRATE;
+		}
+		else if (g->type & PCB_LYT_SILK) {
+			stepf = stepb = 0;
+			th = 3;
+			color = COLOR_SILK;
+		}
+		else if (g->type & PCB_LYT_MASK) {
+			stepf = stepb = 0;
+			th = 3;
+			color = COLOR_MASK;
+		}
+		else if (g->type & PCB_LYT_PASTE) {
+			stepf = stepb = 0;
+			th = 3;
+			color = COLOR_PASTE;
+		}
+		else if (g->type & PCB_LYT_MISC) {
+			stepf = stepb = 0;
+			th = 3;
+			color = COLOR_MISC;
+		}
+		else if (g->type & PCB_LYT_OUTLINE) {
+			continue;
+		}
+		else
+			continue;
+
+		pcb_gui->set_color(gc, color);
+		dhrect(0, y, 100, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
+		dtext(20, y, 200, 0, g->name);
+
+		y += th + 1;
+	}
+
 }
 
 
