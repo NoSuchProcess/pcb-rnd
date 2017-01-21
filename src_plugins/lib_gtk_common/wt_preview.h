@@ -35,7 +35,7 @@
 #include <gtk/gtk.h>
 #include "obj_elem.h"
 
-#define GHID_TYPE_PINOUT_PREVIEW           (ghid_pinout_preview_get_type())
+#define GHID_TYPE_PINOUT_PREVIEW           (pcb_gtk_preview_get_type())
 #define GHID_PINOUT_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_t))
 #define GHID_PINOUT_PREVIEW_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_class_t))
 #define GHID_IS_PINOUT_PREVIEW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GHID_TYPE_PINOUT_PREVIEW))
@@ -60,10 +60,10 @@ struct pcb_gtk_preview_s {
 };
 
 
-GType ghid_pinout_preview_get_type(void);
+GType pcb_gtk_preview_get_type(void);
 
 GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element);
-void ghid_pinout_preview_get_natural_size(pcb_gtk_preview_t * pinout, int *width, int *height);
+void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height);
 
 
 #endif /* PCB_GTK_WT_REVIEW_H */

@@ -70,7 +70,7 @@ void ghid_pinout_window_show(GHidPort * out, pcb_element_t * element)
 	preview = ghid_pinout_preview_new(gport, element);
 	gtk_box_pack_start(GTK_BOX(vbox), preview, TRUE, TRUE, 0);
 
-	ghid_pinout_preview_get_natural_size(GHID_PINOUT_PREVIEW(preview), &width, &height);
+	pcb_gtk_preview_get_natsize(GHID_PINOUT_PREVIEW(preview), &width, &height);
 
 	gtk_window_set_default_size(GTK_WINDOW(top_window), width + 50, height + 50);
 

@@ -266,7 +266,7 @@ static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
  *
  *  \return the GType identifier associated with pcb_gtk_preview_t.
  */
-GType ghid_pinout_preview_get_type()
+GType pcb_gtk_preview_get_type()
 {
 	static GType ghid_pinout_preview_type = 0;
 
@@ -313,7 +313,7 @@ GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element)
  *  \par Function Description
  *  Convenience function to query the natural size of a pinout preview
  */
-void ghid_pinout_preview_get_natural_size(pcb_gtk_preview_t * pinout, int *width, int *height)
+void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height)
 {
 	*width = pinout->w_pixels;
 	*height = pinout->h_pixels;
