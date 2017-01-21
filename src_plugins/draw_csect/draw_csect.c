@@ -42,6 +42,7 @@ static const char *COLOR_SILK = "#000000";
 static const char *COLOR_MASK = "#30d030";
 static const char *COLOR_PASTE = "#60e0e0";
 static const char *COLOR_MISC = "#e0e000";
+static const char *COLOR_OUTLINE = "#000000";
 
 /* Draw a text at x;y sized scale percentage */
 static void dtext(int x, int y, int scale, int dir, const char *txt)
@@ -177,12 +178,13 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 static void draw_csect(pcb_hid_gc_t gc)
 {
 	pcb_layergrp_id_t gid;
-	int y, last_copper_step = 5;
+	int ystart = 10, y, last_copper_step = 5, has_outline = 0;
 
 	pcb_gui->set_color(gc, COLOR_ANNOT);
 	dtext(0, 0, 500, 0, "Board cross section");
 
-	y = 10;
+	/* draw physical layers */
+	y = ystart;
 	for(gid = 0; gid < pcb_max_group; gid++) {
 		int i, stepf = 0, stepb = 0, th;
 		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
@@ -225,6 +227,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 			stepf = 3;
 		}
 		else if (g->type & PCB_LYT_OUTLINE) {
+			has_outline = 1;
 			continue;
 		}
 		else
@@ -237,6 +240,12 @@ static void draw_csect(pcb_hid_gc_t gc)
 		y += th + 1;
 	}
 
+	/* draw global/special layers */
+	if (has_outline) {
+		pcb_gui->set_color(gc, COLOR_OUTLINE);
+		dline(0, ystart, 0, y+10, 1);
+		dtext_bg(gc, 1, y+7, 200, 0, "outline", COLOR_BG, COLOR_ANNOT);
+	}
 }
 
 
