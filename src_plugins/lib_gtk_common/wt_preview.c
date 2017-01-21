@@ -116,6 +116,7 @@ enum {
 	PROP_INIT_WIDGET = 3,
 	PROP_EXPOSE = 4,
 	PROP_KIND = 5,
+	PROP_LAYER =6,
 };
 
 
@@ -194,6 +195,9 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 		break;
 	case PROP_KIND:
 		pinout->kind = g_value_get_int(value);
+		break;
+	case PROP_LAYER:
+		pinout->layer = g_value_get_long(value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
@@ -277,6 +281,9 @@ static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
 
 	g_object_class_install_property(gobject_class, PROP_KIND,
 		g_param_spec_pointer("kind", "", "", G_PARAM_WRITABLE));
+
+	g_object_class_install_property(gobject_class, PROP_LAYER,
+		g_param_spec_pointer("layer", "", "", G_PARAM_WRITABLE));
 }
 
 
@@ -324,6 +331,23 @@ GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t
 		"init-widget", init_widget,
 		"expose", expose,
 		"kind", PCB_GTK_PREVIEW_PINOUT,
+		NULL);
+
+	pinout_preview->init_drawing_widget(GTK_WIDGET(pinout_preview), pinout_preview->gport);
+
+	return GTK_WIDGET(pinout_preview);
+}
+
+GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
+{
+	pcb_gtk_preview_t *pinout_preview;
+
+	pinout_preview = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
+		"layer", layer,
+		"gport", gport,
+		"init-widget", init_widget,
+		"expose", expose,
+		"kind", PCB_GTK_PREVIEW_LAYER,
 		NULL);
 
 	pinout_preview->init_drawing_widget(GTK_WIDGET(pinout_preview), pinout_preview->gport);

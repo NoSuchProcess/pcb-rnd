@@ -35,6 +35,7 @@
 #include <gtk/gtk.h>
 #include "obj_elem.h"
 #include "hid.h"
+#include "layer.h"
 
 #define GHID_TYPE_PINOUT_PREVIEW           (pcb_gtk_preview_get_type())
 #define GHID_PINOUT_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_t))
@@ -61,7 +62,9 @@ typedef enum pcb_gtk_preview_kind_e {
 struct pcb_gtk_preview_s {
 	GtkDrawingArea parent_instance;
 
-	pcb_element_t element;					/* element data to display */
+	pcb_element_t element;  /* element data to display, if .kind is PCB_GTK_PREVIEW_PINOUT */
+	pcb_layer_id_t layer;   /* layer to display, if .kind is PCB_GTK_PREVIEW_LAYER */
+
 	gint x_max, y_max;
 	gint w_pixels, h_pixels;			/* natural size of element preview */
 
@@ -79,6 +82,7 @@ GType pcb_gtk_preview_get_type(void);
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height);
 
 GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_element_t *element);
+GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer);
 
 
 #endif /* PCB_GTK_WT_REVIEW_H */
