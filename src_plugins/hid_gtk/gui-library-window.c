@@ -782,6 +782,8 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 																			"right-padding", 5,
 																			"top-padding", 5,
 																			"bottom-padding", 5, "xscale", 1.0, "yscale", 1.0, "xalign", 0.5, "yalign", 0.5, NULL));
+
+#warning gl TODO: this wont work with gl: use pcb_gtk_preview_pinout_new() instead and set *-request separately, because _new() has side effects
 	preview = (GtkWidget *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
 																			 /* GhidPinoutPreview */
 																			 "element-data", NULL,
