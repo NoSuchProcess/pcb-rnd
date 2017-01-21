@@ -1519,6 +1519,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *tabs, *vbox, *vbox1, *button, *text, *content_vbox, *prv;
 	GtkWidget *hbox, *arrow;
+	pcb_layer_id_t lid;
 	gint i;
 
 	content_vbox = gtk_vbox_new(FALSE, 0);
@@ -1530,8 +1531,10 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 
 /* -- Layer stack tab */
 	vbox = ghid_notebook_page(tabs, _("Layer Stack"), 0, 6);
-	prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, PCB_VLY_CSECT);
-	gtk_box_pack_start(GTK_BOX(vbox), prv, FALSE, FALSE, 0);
+	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
+		prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
+		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
+	}
 
 /* -- Change tab */
 	vbox = ghid_notebook_page(tabs, _("Change"), 0, 6);

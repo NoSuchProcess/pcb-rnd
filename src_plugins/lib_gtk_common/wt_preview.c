@@ -291,10 +291,10 @@ static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
 		g_param_spec_pointer("expose", "", "", G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_KIND,
-		g_param_spec_pointer("kind", "", "", G_PARAM_WRITABLE));
+		g_param_spec_int("kind", "", "", 0, PCB_GTK_PREVIEW_kind_max-1, 0, G_PARAM_WRITABLE));
 
 	g_object_class_install_property(gobject_class, PROP_LAYER,
-		g_param_spec_pointer("layer", "", "", G_PARAM_WRITABLE));
+		g_param_spec_long("layer", "", "", -(1UL<<31), (1UL<<31)-1, -1, G_PARAM_WRITABLE));
 }
 
 
@@ -359,8 +359,14 @@ GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t 
 		"init-widget", init_widget,
 		"expose", expose,
 		"kind", PCB_GTK_PREVIEW_LAYER,
+		"width-request", 50,
+		"height-request", 50,
 		NULL);
 
+#warning TODO: maybe expose these through the object API so the caller can set it up?
+	pinout_preview->expose_data.view.X2 = PCB_MM_TO_COORD(100);
+	pinout_preview->expose_data.view.Y2 = PCB_MM_TO_COORD(100);
+	pinout_preview->expose_data.force = 1;
 	pinout_preview->init_drawing_widget(GTK_WIDGET(pinout_preview), pinout_preview->gport);
 
 	return GTK_WIDGET(pinout_preview);

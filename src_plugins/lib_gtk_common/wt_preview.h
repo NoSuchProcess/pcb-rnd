@@ -58,6 +58,8 @@ typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_INVALID,
 	PCB_GTK_PREVIEW_PINOUT, /* render a single element */
 	PCB_GTK_PREVIEW_LAYER,  /* render a specific layer */
+
+	PCB_GTK_PREVIEW_kind_max
 } pcb_gtk_preview_kind_t;
 
 struct pcb_gtk_preview_s {
