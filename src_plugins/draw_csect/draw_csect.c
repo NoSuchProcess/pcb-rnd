@@ -45,9 +45,9 @@ static const char *COLOR_MISC = "#e0e000";
 static const char *COLOR_OUTLINE = "#000000";
 
 /* Draw a text at x;y sized scale percentage */
-static void dtext(int x, int y, int scale, int dir, const char *txt)
+static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 {
-	pcb_text_t t;
+	static pcb_text_t t;
 
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
@@ -56,12 +56,13 @@ static void dtext(int x, int y, int scale, int dir, const char *txt)
 	t.Scale = scale;
 	t.Flags = pcb_no_flags();
 	DrawTextLowLevel(&t, 0);
+	return &t;
 }
 
 /* Draw a text at x;y with a background */
-static void dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const char *bgcolor, const char *fgcolor)
+static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const char *bgcolor, const char *fgcolor)
 {
-	pcb_text_t t;
+	static pcb_text_t t;
 
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
@@ -76,6 +77,7 @@ static void dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const ch
 	pcb_gui->set_color(gc, fgcolor);
 	DrawTextLowLevel(&t, 0);
 
+	return &t;
 }
 
 /* draw a line of a specific thickness */
@@ -240,10 +242,13 @@ static void draw_csect(pcb_hid_gc_t gc)
 		/* draw layer names */
 		x = 78;
 		for(i = 0; i < g->len; i++) {
+			pcb_text_t *t;
 			pcb_layer_id_t lid = g->lid[i];
 			pcb_layer_t *l = &PCB->Data->Layer[lid];
-			dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
-			x+=10;
+			t = dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
+			pcb_text_bbox(&PCB->Font, t);
+			x += PCB_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
+			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 		}
 
 		/* increment y */
