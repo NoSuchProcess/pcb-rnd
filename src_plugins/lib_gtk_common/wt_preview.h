@@ -36,20 +36,20 @@
 #include "obj_elem.h"
 
 #define GHID_TYPE_PINOUT_PREVIEW           (ghid_pinout_preview_get_type())
-#define GHID_PINOUT_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_PINOUT_PREVIEW, GhidPinoutPreview))
-#define GHID_PINOUT_PREVIEW_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  GHID_TYPE_PINOUT_PREVIEW, GhidPinoutPreviewClass))
+#define GHID_PINOUT_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_t))
+#define GHID_PINOUT_PREVIEW_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_class_t))
 #define GHID_IS_PINOUT_PREVIEW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GHID_TYPE_PINOUT_PREVIEW))
-#define GHID_PINOUT_PREVIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  GHID_TYPE_PINOUT_PREVIEW, GhidPinoutPreviewClass))
+#define GHID_PINOUT_PREVIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_class_t))
 
-typedef struct _GhidPinoutPreviewClass GhidPinoutPreviewClass;
-typedef struct _GhidPinoutPreview GhidPinoutPreview;
+typedef struct pcb_gtk_preview_class_s pcb_gtk_preview_class_t;
+typedef struct pcb_gtk_preview_s pcb_gtk_preview_t;
 
 
-struct _GhidPinoutPreviewClass {
+struct pcb_gtk_preview_class_s {
 	GtkDrawingAreaClass parent_class;
 };
 
-struct _GhidPinoutPreview {
+struct pcb_gtk_preview_s {
 	GtkDrawingArea parent_instance;
 
 	pcb_element_t element;					/* element data to display */
@@ -63,6 +63,7 @@ struct _GhidPinoutPreview {
 GType ghid_pinout_preview_get_type(void);
 
 GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element);
-void ghid_pinout_preview_get_natural_size(GhidPinoutPreview * pinout, int *width, int *height);
+void ghid_pinout_preview_get_natural_size(pcb_gtk_preview_t * pinout, int *width, int *height);
+
 
 #endif /* PCB_GTK_WT_REVIEW_H */

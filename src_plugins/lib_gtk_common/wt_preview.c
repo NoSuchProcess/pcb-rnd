@@ -45,7 +45,7 @@
 
 /* Just define a sensible scale, lets say (for example), 100 pixel per 150 mil */
 #define SENSIBLE_VIEW_SCALE  (100. / PCB_MIL_TO_COORD (150.))
-static void pinout_set_view(GhidPinoutPreview * pinout)
+static void pinout_set_view(pcb_gtk_preview_t * pinout)
 {
 	float scale = SENSIBLE_VIEW_SCALE;
 
@@ -56,7 +56,7 @@ static void pinout_set_view(GhidPinoutPreview * pinout)
 }
 
 
-static void pinout_set_data(GhidPinoutPreview * pinout, pcb_element_t * element)
+static void pinout_set_data(pcb_gtk_preview_t * pinout, pcb_element_t * element)
 {
 	if (element == NULL) {
 		pcb_element_destroy(&pinout->element);
@@ -129,7 +129,7 @@ static GObjectClass *ghid_pinout_preview_parent_class = NULL;
  */
 static void ghid_pinout_preview_constructed(GObject * object)
 {
-	GhidPinoutPreview *pinout;
+	pcb_gtk_preview_t *pinout;
 
 	/* chain up to the parent class */
 	if (G_OBJECT_CLASS(ghid_pinout_preview_parent_class)->constructed != NULL)
@@ -144,14 +144,14 @@ static void ghid_pinout_preview_constructed(GObject * object)
 /*! \brief GObject finalise handler
  *
  *  \par Function Description
- *  Just before the GhidPinoutPreview GObject is finalized, free our
+ *  Just before the pcb_gtk_preview_t GObject is finalized, free our
  *  allocated data, and then chain up to the parent's finalize handler.
  *
  *  \param [in] widget  The GObject being finalized.
  */
 static void ghid_pinout_preview_finalize(GObject * object)
 {
-	GhidPinoutPreview *pinout = GHID_PINOUT_PREVIEW(object);
+	pcb_gtk_preview_t *pinout = GHID_PINOUT_PREVIEW(object);
 
 	/* Passing NULL for element data will free the old memory */
 	pinout_set_data(pinout, NULL);
@@ -163,7 +163,7 @@ static void ghid_pinout_preview_finalize(GObject * object)
 /*! \brief GObject property setter function
  *
  *  \par Function Description
- *  Setter function for GhidPinoutPreview's GObject properties,
+ *  Setter function for pcb_gtk_preview_t's GObject properties,
  *  "settings-name" and "toplevel".
  *
  *  \param [in]  object       The GObject whose properties we are setting
@@ -174,7 +174,7 @@ static void ghid_pinout_preview_finalize(GObject * object)
  */
 static void ghid_pinout_preview_set_property(GObject * object, guint property_id, const GValue * value, GParamSpec * pspec)
 {
-	GhidPinoutPreview *pinout = GHID_PINOUT_PREVIEW(object);
+	pcb_gtk_preview_t *pinout = GHID_PINOUT_PREVIEW(object);
 	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(pinout));
 
 	switch (property_id) {
@@ -196,7 +196,7 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 /*! \brief GObject property getter function
  *
  *  \par Function Description
- *  Getter function for GhidPinoutPreview's GObject properties,
+ *  Getter function for pcb_gtk_preview_t's GObject properties,
  *  "settings-name" and "toplevel".
  *
  *  \param [in]  object       The GObject whose properties we are getting
@@ -217,7 +217,7 @@ static void ghid_pinout_preview_get_property(GObject * object, guint property_id
 /* Converter: set up a pinout expose and use the generic preview expose call */
 static gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 {
-	GhidPinoutPreview *pinout = GHID_PINOUT_PREVIEW(widget);
+	pcb_gtk_preview_t *pinout = GHID_PINOUT_PREVIEW(widget);
 	pcb_box_t view;
 
 	view.X1 = view.Y1 = 0;
@@ -227,15 +227,15 @@ static gboolean ghid_pinout_preview_expose(GtkWidget * widget, GdkEventExpose * 
 	return ghid_preview_expose(widget, ev, pcb_hid_expose_pinout, &pinout->element, &view);
 }
 
-/*! \brief GType class initialiser for GhidPinoutPreview
+/*! \brief GType class initialiser for pcb_gtk_preview_t
  *
  *  \par Function Description
- *  GType class initialiser for GhidPinoutPreview. We override our parent
+ *  GType class initialiser for pcb_gtk_preview_t. We override our parent
  *  virtual class methods as needed and register our GObject properties.
  *
- *  \param [in]  klass       The GhidPinoutPreviewClass we are initialising
+ *  \param [in]  klass       The pcb_gtk_preview_class_t we are initialising
  */
-static void ghid_pinout_preview_class_init(GhidPinoutPreviewClass * klass)
+static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *gtk_widget_class = GTK_WIDGET_CLASS(klass);
@@ -257,14 +257,14 @@ static void ghid_pinout_preview_class_init(GhidPinoutPreviewClass * klass)
 }
 
 
-/*! \brief Function to retrieve GhidPinoutPreview's GType identifier.
+/*! \brief Function to retrieve pcb_gtk_preview_t's GType identifier.
  *
  *  \par Function Description
- *  Function to retrieve GhidPinoutPreview's GType identifier.
- *  Upon first call, this registers the GhidPinoutPreview in the GType system.
+ *  Function to retrieve pcb_gtk_preview_t's GType identifier.
+ *  Upon first call, this registers the pcb_gtk_preview_t in the GType system.
  *  Subsequently it returns the saved value from its first execution.
  *
- *  \return the GType identifier associated with GhidPinoutPreview.
+ *  \return the GType identifier associated with pcb_gtk_preview_t.
  */
 GType ghid_pinout_preview_get_type()
 {
@@ -272,19 +272,19 @@ GType ghid_pinout_preview_get_type()
 
 	if (!ghid_pinout_preview_type) {
 		static const GTypeInfo ghid_pinout_preview_info = {
-			sizeof(GhidPinoutPreviewClass),
+			sizeof(pcb_gtk_preview_class_t),
 			NULL,											/* base_init */
 			NULL,											/* base_finalize */
 			(GClassInitFunc) ghid_pinout_preview_class_init,
 			NULL,											/* class_finalize */
 			NULL,											/* class_data */
-			sizeof(GhidPinoutPreview),
+			sizeof(pcb_gtk_preview_t),
 			0,												/* n_preallocs */
 			NULL,											/* instance_init */
 		};
 
 		ghid_pinout_preview_type =
-			g_type_register_static(GTK_TYPE_DRAWING_AREA, "GhidPinoutPreview", &ghid_pinout_preview_info, (GTypeFlags) 0);
+			g_type_register_static(GTK_TYPE_DRAWING_AREA, "pcb_gtk_preview_t", &ghid_pinout_preview_info, (GTypeFlags) 0);
 	}
 
 	return ghid_pinout_preview_type;
@@ -294,15 +294,15 @@ GType ghid_pinout_preview_get_type()
 /*! \brief Convenience function to create a new pinout preview
  *
  *  \par Function Description
- *  Convenience function which creates a GhidPinoutPreview.
+ *  Convenience function which creates a pcb_gtk_preview_t.
  *
- *  \return  The GhidPinoutPreview created.
+ *  \return  The pcb_gtk_preview_t created.
  */
 GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element)
 {
-	GhidPinoutPreview *pinout_preview;
+	pcb_gtk_preview_t *pinout_preview;
 
-	pinout_preview = (GhidPinoutPreview *) g_object_new(GHID_TYPE_PINOUT_PREVIEW, "element-data", element, "gport", gport, NULL);
+	pinout_preview = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW, "element-data", element, "gport", gport, NULL);
 
 	return GTK_WIDGET(pinout_preview);
 }
@@ -313,7 +313,7 @@ GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element)
  *  \par Function Description
  *  Convenience function to query the natural size of a pinout preview
  */
-void ghid_pinout_preview_get_natural_size(GhidPinoutPreview * pinout, int *width, int *height)
+void ghid_pinout_preview_get_natural_size(pcb_gtk_preview_t * pinout, int *width, int *height)
 {
 	*width = pinout->w_pixels;
 	*height = pinout->h_pixels;
