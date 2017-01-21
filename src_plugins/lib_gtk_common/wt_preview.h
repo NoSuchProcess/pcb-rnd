@@ -62,8 +62,10 @@ struct pcb_gtk_preview_s {
 
 GType pcb_gtk_preview_get_type(void);
 
-GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element);
+/* Query the natural size of a preview widget */
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height);
+
+GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_element_t *element);
 
 
 #endif /* PCB_GTK_WT_REVIEW_H */

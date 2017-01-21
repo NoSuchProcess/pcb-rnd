@@ -291,14 +291,7 @@ GType pcb_gtk_preview_get_type()
 }
 
 
-/*! \brief Convenience function to create a new pinout preview
- *
- *  \par Function Description
- *  Convenience function which creates a pcb_gtk_preview_t.
- *
- *  \return  The pcb_gtk_preview_t created.
- */
-GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element)
+GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_element_t * element)
 {
 	pcb_gtk_preview_t *pinout_preview;
 
@@ -307,12 +300,6 @@ GtkWidget *ghid_pinout_preview_new(void *gport, pcb_element_t * element)
 	return GTK_WIDGET(pinout_preview);
 }
 
-
-/*! \brief Query the natural size of a pinout preview
- *
- *  \par Function Description
- *  Convenience function to query the natural size of a pinout preview
- */
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height)
 {
 	*width = pinout->w_pixels;
