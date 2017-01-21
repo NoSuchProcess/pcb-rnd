@@ -785,6 +785,9 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	preview = (GtkWidget *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
 																			 /* GhidPinoutPreview */
 																			 "element-data", NULL,
+																			 "gport", gport,
+																			 "init-widget", ghid_init_drawing_widget,
+																			 "expose", ghid_preview_expose,
 																			 /* GtkWidget */
 																			 "width-request", 150, "height-request", 150, NULL);
 
