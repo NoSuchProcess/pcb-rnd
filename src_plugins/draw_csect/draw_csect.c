@@ -51,7 +51,7 @@ static void dtext(int x, int y, int scale, int dir, const char *txt)
 
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
-	t.TextString = txt;
+	t.TextString = (char *)txt;
 	t.Direction = dir;
 	t.Scale = scale;
 	t.Flags = pcb_no_flags();
@@ -65,7 +65,7 @@ static void dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const ch
 
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
-	t.TextString = txt;
+	t.TextString = (char *)txt;
 	t.Direction = dir;
 	t.Scale = scale;
 	t.Flags = pcb_no_flags();
@@ -186,7 +186,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 	/* draw physical layers */
 	y = ystart;
 	for(gid = 0; gid < pcb_max_group; gid++) {
-		int i, stepf = 0, stepb = 0, th;
+		int x, i, stepf = 0, stepb = 0, th;
 		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
 		const char *color = "#ff0000";
 
@@ -237,6 +237,16 @@ static void draw_csect(pcb_hid_gc_t gc)
 		dhrect(0, y, 75, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
 		dtext_bg(gc, 5, y, 200, 0, g->name, COLOR_BG, COLOR_ANNOT);
 
+		/* draw layer names */
+		x = 78;
+		for(i = 0; i < g->len; i++) {
+			pcb_layer_id_t lid = g->lid[i];
+			pcb_layer_t *l = &PCB->Data->Layer[lid];
+			dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
+			x+=10;
+		}
+
+		/* increment y */
 		y += th + 1;
 	}
 
