@@ -748,8 +748,12 @@ static void layer_fixup(pcb_board_t *pcb)
 				g = pcb_get_grp_new_intern(&pcb->LayerGroups);
 /*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.grp);*/
 			pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, n);
+			if (strcmp(l->Name, "outline") == 0)
+				pcb_layergrp_fix_turn_to_outline(g);
 		}
 	}
+
+	pcb_layergrp_fix_old_outline(&pcb->LayerGroups);
 
 	/* link in the 2 hardwired silks */
 	g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_SILK);
