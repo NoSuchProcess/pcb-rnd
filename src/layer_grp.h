@@ -83,6 +83,10 @@ pcb_layergrp_id_t pcb_layer_lookup_group(pcb_layer_id_t layer_id);
    returns 0 on success */
 int pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);
 
+/* Remove a layer group; if del_layers is zero, layers are kept but detached
+   (.grp = -1), else layers are deleted too */
+int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_layers);
+
 
 /********* OBSOLETE functions, do not use in new code *********/
 /* parses the group definition string which is a colon separated list of
@@ -114,6 +118,9 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg);
 pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
 pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack);
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack);
+
+	/* ugly hack: remove the extra substrate we added after the outline layer */
+void pcb_layergrp_fix_old_outline(pcb_layer_stack_t *LayerGroup);
 
 
 /* Cached layer group lookups foir a few common cases */

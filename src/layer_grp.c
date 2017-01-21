@@ -234,6 +234,56 @@ pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack)
 	return pcb_get_grp_new_intern_(stack, 1);
 }
 
+int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_layers)
+{
+	int g, n, remaining;
+
+	if ((gid < 0) || (gid >= stk->len))
+		return -1;
+
+	for(n = 0; n < stk->grp[gid].len; n++) {
+		pcb_layer_t *l = pcb_get_layer(stk->grp[gid].lid[n]);
+		if (l != NULL) {
+			if (del_layers) {
+#warning layer TODO
+				pcb_message(PCB_MSG_ERROR, "Layer del is not yet implemented\n");
+				abort();
+			}
+			else {
+				/* detach only */
+				l->grp = -1;
+			}
+		}
+	}
+
+	for(g = gid+1; g < stk->len; g++) {
+		for(n = 0; n < stk->grp[g].len; n++) {
+			pcb_layer_t *l = pcb_get_layer(stk->grp[g].lid[n]);
+			if ((l != NULL) && (l->grp > 0))
+				l->grp--;
+		}
+	}
+
+
+
+	remaining = stk->len - gid;
+	if (remaining > 0)
+		memmove(&stk->grp[gid], &stk->grp[gid+1], sizeof(pcb_layer_group_t) * remaining);
+	stk->len--;
+	return 0;
+}
+
+	/* ugly hack: remove the extra substrate we added after the outline layer */
+void pcb_layergrp_fix_old_outline(pcb_layer_stack_t *LayerGroup)
+{
+	pcb_layer_group_t *g = pcb_get_grp(LayerGroup, PCB_LYT_ANYWHERE, PCB_LYT_OUTLINE);
+	if ((g != NULL) && (g[1].type & PCB_LYT_SUBSTRATE)) {
+		pcb_layergrp_id_t gid = g - LayerGroup->grp + 1;
+		pcb_layergrp_del(LayerGroup, gid, 0);
+	}
+}
+
+
 #define LAYER_IS_OUTLINE(idx) ((PCB->Data->Layer[idx].Name != NULL) && ((strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0)))
 int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt)
 {
@@ -290,6 +340,9 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 		if (*s == '\0')
 			break;
 	}
+
+	pcb_layergrp_fix_old_outline(LayerGroup);
+
 
 	/* set the two silks */
 	g = pcb_get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
