@@ -193,7 +193,7 @@ pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, p
 	return NULL;
 }
 
-pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack)
+static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_layer_stack_t *stack, int omit_substrate)
 {
 	int bl, n;
 
@@ -214,12 +214,24 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack)
 			stack->grp[bl].type = PCB_LYT_INTERN | PCB_LYT_COPPER;
 			stack->grp[bl].valid = 1;
 			bl++;
-			stack->grp[bl].type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
-			stack->grp[bl].valid = 1;
+			if (!omit_substrate) {
+				stack->grp[bl].type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
+				stack->grp[bl].valid = 1;
+			}
 			return &stack->grp[bl-1];
 		}
 	}
 	return NULL;
+}
+
+pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack)
+{
+	return pcb_get_grp_new_intern_(stack, 0);
+}
+
+pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack)
+{
+	return pcb_get_grp_new_intern_(stack, 1);
 }
 
 #define LAYER_IS_OUTLINE(idx) ((PCB->Data->Layer[idx].Name != NULL) && ((strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0)))

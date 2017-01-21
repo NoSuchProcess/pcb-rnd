@@ -113,6 +113,8 @@ void pcb_layer_group_to_old(pcb_board_t *pcb);
 void pcb_layer_group_setup_default(pcb_layer_stack_t *newg);
 pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
 pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack);
+pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack);
+
 
 /* Cached layer group lookups foir a few common cases */
 pcb_layergrp_id_t pcb_layergrp_get_bottom_mask();
