@@ -113,6 +113,7 @@ static void pinout_set_data(pcb_gtk_preview_t * pinout, pcb_element_t * element)
 enum {
 	PROP_ELEMENT_DATA = 1,
 	PROP_GPORT = 2,
+	PROP_INIT_WIDGET = 3,
 };
 
 
@@ -129,14 +130,11 @@ static GObjectClass *ghid_pinout_preview_parent_class = NULL;
  */
 static void ghid_pinout_preview_constructed(GObject * object)
 {
-	pcb_gtk_preview_t *pinout;
 
 	/* chain up to the parent class */
 	if (G_OBJECT_CLASS(ghid_pinout_preview_parent_class)->constructed != NULL)
 		G_OBJECT_CLASS(ghid_pinout_preview_parent_class)->constructed(object);
 
-	pinout = GHID_PINOUT_PREVIEW(object);
-	ghid_init_drawing_widget(GTK_WIDGET(object), pinout->gport);
 }
 
 
@@ -185,6 +183,9 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 		break;
 	case PROP_GPORT:
 		pinout->gport = (void *)g_value_get_pointer(value);
+		break;
+	case PROP_INIT_WIDGET:
+		pinout->init_drawing_widget = (void *)g_value_get_pointer(value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
@@ -254,6 +255,9 @@ static void ghid_pinout_preview_class_init(pcb_gtk_preview_class_t * klass)
 
 	g_object_class_install_property(gobject_class, PROP_GPORT,
 		g_param_spec_pointer("gport", "", "", G_PARAM_WRITABLE));
+
+	g_object_class_install_property(gobject_class, PROP_INIT_WIDGET,
+		g_param_spec_pointer("init-widget", "", "", G_PARAM_WRITABLE));
 }
 
 
@@ -291,11 +295,17 @@ GType pcb_gtk_preview_get_type()
 }
 
 
-GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_element_t * element)
+GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_element_t *element)
 {
 	pcb_gtk_preview_t *pinout_preview;
 
-	pinout_preview = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW, "element-data", element, "gport", gport, NULL);
+	pinout_preview = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
+		"element-data", element,
+		"gport", gport,
+		"init-widget", init_widget,
+		NULL);
+
+	pinout_preview->init_drawing_widget(GTK_WIDGET(pinout_preview), pinout_preview->gport);
 
 	return GTK_WIDGET(pinout_preview);
 }

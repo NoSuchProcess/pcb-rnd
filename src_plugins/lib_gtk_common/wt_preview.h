@@ -49,6 +49,8 @@ struct pcb_gtk_preview_class_s {
 	GtkDrawingAreaClass parent_class;
 };
 
+typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget * widget, void *port);
+
 struct pcb_gtk_preview_s {
 	GtkDrawingArea parent_instance;
 
@@ -57,7 +59,9 @@ struct pcb_gtk_preview_s {
 	gint w_pixels, h_pixels;			/* natural size of element preview */
 
 	void *gport;
+	pcb_gtk_init_drawing_widget_t init_drawing_widget;
 };
+
 
 
 GType pcb_gtk_preview_get_type(void);
@@ -65,7 +69,7 @@ GType pcb_gtk_preview_get_type(void);
 /* Query the natural size of a preview widget */
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height);
 
-GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_element_t *element);
+GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_element_t *element);
 
 
 #endif /* PCB_GTK_WT_REVIEW_H */

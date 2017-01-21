@@ -387,7 +387,7 @@ void ghid_notify_crosshair_change(pcb_bool changes_complete);
 void ghid_notify_mark_change(pcb_bool changes_complete);
 void ghid_init_renderer(int *, char ***, GHidPort *);
 void ghid_shutdown_renderer(GHidPort *);
-void ghid_init_drawing_widget(GtkWidget * widget, GHidPort *);
+void ghid_init_drawing_widget(GtkWidget * widget, void *gport);
 void ghid_drawing_area_configure_hook(GHidPort * port);
 void ghid_screen_update(void);
 gboolean ghid_drawing_area_expose_cb(GtkWidget *, GdkEventExpose *, GHidPort *);

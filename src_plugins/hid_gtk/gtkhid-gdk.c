@@ -1090,7 +1090,7 @@ void ghid_shutdown_renderer(GHidPort * port)
 	port->render_priv = NULL;
 }
 
-void ghid_init_drawing_widget(GtkWidget * widget, GHidPort * port)
+void ghid_init_drawing_widget(GtkWidget * widget, void * port)
 {
 }
 
