@@ -335,18 +335,18 @@ static void gcode_finish_png()
 
 void gcode_start_png_export()
 {
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t ctx;
 
-	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	ctx.view.X1 = 0;
+	ctx.view.Y1 = 0;
+	ctx.view.X2 = PCB->MaxWidth;
+	ctx.view.Y2 = PCB->MaxHeight;
 
 	linewidth = -1;
 	lastbrush = (gdImagePtr) ((void *) -1);
 	lastcolor = -1;
 
-	pcb_hid_expose_all(&gcode_hid, &region);
+	pcb_hid_expose_all(&gcode_hid, &ctx);
 }
 
 static void gcode_do_export(pcb_hid_attr_val_t * options)

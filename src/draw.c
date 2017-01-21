@@ -650,7 +650,7 @@ static pcb_hid_t *expose_begin(pcb_hid_t *hid)
 	return old_gui;
 }
 
-static void *expose_end(pcb_hid_t *old_gui)
+static void expose_end(pcb_hid_t *old_gui)
 {
 	pcb_gui->destroy_gc(Output.fgGC);
 	pcb_gui->destroy_gc(Output.bgGC);
@@ -658,22 +658,35 @@ static void *expose_end(pcb_hid_t *old_gui)
 	pcb_gui = old_gui;
 }
 
-void pcb_hid_expose_all(pcb_hid_t * hid, void *region)
+void pcb_hid_expose_all(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 {
 	if (!pcb_draw_inhibit) {
 		pcb_hid_t *old_gui = expose_begin(hid);
-		DrawEverything((pcb_box_t *)region);
+		DrawEverything(&ctx->view);
 		expose_end(old_gui);
 	}
 }
 
-void pcb_hid_expose_pinout(pcb_hid_t * hid, void *element)
+void pcb_hid_expose_pinout(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx)
 {
 	pcb_hid_t *old_gui = expose_begin(hid);
 
 	pcb_draw_doing_pinout = pcb_true;
-	draw_element((pcb_element_t *)element);
+	draw_element(ctx->content.elem);
 	pcb_draw_doing_pinout = pcb_false;
 
 	expose_end(old_gui);
 }
+
+void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
+{
+	pcb_hid_t *old_gui = expose_begin(hid);
+
+	pcb_draw_doing_pinout = pcb_true;
+	pcb_draw_layer(e->content.layer_id, &e->view);
+	pcb_draw_doing_pinout = pcb_false;
+
+	expose_end(old_gui);
+}
+
+

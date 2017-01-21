@@ -524,6 +524,7 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	int save_ons[PCB_MAX_LAYER + 2];
+	pcb_hid_expose_ctx_t ctx;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -568,10 +569,10 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	lastgroup = -1;
 	lastcolor = -1;
 
-	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	ctx.view.X1 = 0;
+	ctx.view.Y1 = 0;
+	ctx.view.X2 = PCB->MaxWidth;
+	ctx.view.Y2 = PCB->MaxHeight;
 
 	pagecount = 1;
 	resetApertures();
@@ -579,11 +580,11 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	lastgroup = -1;
 	layer_list_idx = 0;
 	finding_apertures = 1;
-	pcb_hid_expose_all(&gerber_hid, &region);
+	pcb_hid_expose_all(&gerber_hid, &ctx);
 
 	layer_list_idx = 0;
 	finding_apertures = 0;
-	pcb_hid_expose_all(&gerber_hid, &region);
+	pcb_hid_expose_all(&gerber_hid, &ctx);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 

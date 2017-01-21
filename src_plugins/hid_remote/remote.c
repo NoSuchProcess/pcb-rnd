@@ -100,11 +100,12 @@ static void remote_send_all_layers()
 static int remote_stay;
 static void remote_do_export(pcb_hid_attr_val_t * options)
 {
-	pcb_box_t region;
-	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	pcb_hid_expose_ctx_t ctx;
+
+	ctx.view.X1 = 0;
+	ctx.view.Y1 = 0;
+	ctx.view.X2 = PCB->MaxWidth;
+	ctx.view.Y2 = PCB->MaxHeight;
 
 #warning TODO: wait for a connection?
 	remote_proto_send_ver();
@@ -114,7 +115,7 @@ static void remote_do_export(pcb_hid_attr_val_t * options)
 	if (remote_proto_send_ready() != 0)
 		exit(1);
 
-	pcb_hid_expose_all(&remote_hid, &region);
+	pcb_hid_expose_all(&remote_hid, &ctx);
 
 /* main loop, parser */
 	if (remote_proto_parse_all() != 0)

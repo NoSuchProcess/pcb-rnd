@@ -184,6 +184,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t tmp, region;
+	pcb_hid_expose_ctx_t ctx;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -297,7 +298,8 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	fprintf(f, "/cc { 0 360 arc nclip } bind def\n");
 	fprintf(f, "/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
 
-	pcb_hid_expose_all(&eps_hid, bounds);
+	ctx.view = *bounds;
+	pcb_hid_expose_all(&eps_hid, &ctx);
 
 	fprintf(f, "showpage\n");
 

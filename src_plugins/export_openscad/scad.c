@@ -501,7 +501,7 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 	int i;
 	int inner_layers;
 	float layer_spacing, layer_offset, cut_offset = 0.;
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t ctx;
 	pcb_layer_t *layer;
 	pcb_layergrp_id_t gbottom, gtop;
 
@@ -574,14 +574,14 @@ static void scad_do_export(pcb_hid_attr_val_t * options)
 		}
 	}
 
-	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	ctx.view.X1 = 0;
+	ctx.view.Y1 = 0;
+	ctx.view.X2 = PCB->MaxWidth;
+	ctx.view.Y2 = PCB->MaxHeight;
 
 	layer_open = 0;
 
-	pcb_hid_expose_all(&scad_hid, &region);
+	pcb_hid_expose_all(&scad_hid, &ctx);
 
 /* And now .... Board outlines */
 

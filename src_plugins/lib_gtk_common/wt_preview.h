@@ -52,7 +52,7 @@ struct pcb_gtk_preview_class_s {
 };
 
 typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget * widget, void *port);
-typedef gboolean (*pcb_gtk_preview_expose_t)(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, void *expdata, const pcb_box_t *view);
+typedef gboolean (*pcb_gtk_preview_expose_t)(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 
 typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_PINOUT, /* render a single element */
@@ -62,8 +62,7 @@ typedef enum pcb_gtk_preview_kind_e {
 struct pcb_gtk_preview_s {
 	GtkDrawingArea parent_instance;
 
-	pcb_element_t element;  /* element data to display, if .kind is PCB_GTK_PREVIEW_PINOUT */
-	pcb_layer_id_t layer;   /* layer to display, if .kind is PCB_GTK_PREVIEW_LAYER */
+	pcb_hid_expose_ctx_t expose_data;
 
 	gint x_max, y_max;
 	gint w_pixels, h_pixels;			/* natural size of element preview */
@@ -72,6 +71,9 @@ struct pcb_gtk_preview_s {
 	pcb_gtk_init_drawing_widget_t init_drawing_widget;
 	pcb_gtk_preview_expose_t expose;
 	pcb_gtk_preview_kind_t kind;
+
+
+	pcb_element_t element;
 };
 
 

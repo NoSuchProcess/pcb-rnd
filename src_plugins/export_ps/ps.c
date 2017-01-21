@@ -402,7 +402,7 @@ static struct {
 
 	double scale_factor;
 
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t exps;
 
 	pcb_hid_attr_val_t ps_values[NUM_OPTIONS];
 
@@ -657,10 +657,10 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	ps_set_layer_group(-1, -1, 0, -1);
 	use_gc(NULL);
 
-	global.region.X1 = 0;
-	global.region.Y1 = 0;
-	global.region.X2 = PCB->MaxWidth;
-	global.region.Y2 = PCB->MaxHeight;
+	global.exps.view.X1 = 0;
+	global.exps.view.Y1 = 0;
+	global.exps.view.X2 = PCB->MaxWidth;
+	global.exps.view.Y2 = PCB->MaxHeight;
 
 	if (!global.multi_file) {
 		/* %%Page DSC requires both a label and an ordinal */
@@ -672,13 +672,13 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 
 		global.doing_toc = 1;
 		global.pagecount = 1;				/* 'pagecount' is modified by pcb_hid_expose_all() call */
-		pcb_hid_expose_all(&ps_hid, &global.region);
+		pcb_hid_expose_all(&ps_hid, &global.exps);
 	}
 
 	global.pagecount = 1;					/* Reset 'pagecount' if single file */
 	global.doing_toc = 0;
 	ps_set_layer_group(-1, -1, 0, -1); /* reset static vars */
-	pcb_hid_expose_all(&ps_hid, &global.region);
+	pcb_hid_expose_all(&ps_hid, &global.exps);
 
 	if (the_file)
 		fprintf(the_file, "showpage\n");
@@ -956,7 +956,7 @@ static int ps_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, uns
 			global.outline_layer != NULL &&
 			global.outline_layer != pcb_get_layer(layer) &&
 			!(flags & PCB_LYT_OUTLINE)) {
-		pcb_draw_layer(global.outline_layer, &global.region);
+		pcb_draw_layer(global.outline_layer, &global.exps.view);
 	}
 
 	return 1;

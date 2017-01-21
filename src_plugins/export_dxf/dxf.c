@@ -4226,7 +4226,7 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	const char *dxf_fnbase;
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t ctx;
 	int save_ons[PCB_MAX_LAYER + 2];
 
 #if DEBUG
@@ -4299,19 +4299,19 @@ static void dxf_do_export(pcb_hid_attr_val_t * options)
 	lastcap = -1;
 	lastgroup = -1;
 	lastcolor = -1;
-	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	ctx.view.X1 = 0;
+	ctx.view.Y1 = 0;
+	ctx.view.X2 = PCB->MaxWidth;
+	ctx.view.Y2 = PCB->MaxHeight;
 	pagecount = 1;
 /*  dxf_init_apertures ();*/
 	lastgroup = -1;
 	c_layerapps = 0;
 	dxf_finding_apertures = 1;
-	pcb_hid_expose_all(&dxf_hid, &region);
+	pcb_hid_expose_all(&dxf_hid, &ctx);
 	c_layerapps = 0;
 	dxf_finding_apertures = 0;
-	pcb_hid_expose_all(&dxf_hid, &region);
+	pcb_hid_expose_all(&dxf_hid, &ctx);
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	dxf_maybe_close_file();
 	pcb_hid_restore_layer_ons(save_ons);

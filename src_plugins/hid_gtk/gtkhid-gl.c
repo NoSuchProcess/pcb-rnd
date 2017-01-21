@@ -789,7 +789,7 @@ gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GH
 {
 	render_priv *priv = port->render_priv;
 	GtkAllocation allocation;
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t ctx;
 
 	gtk_widget_get_allocation(widget, &allocation);
 
@@ -837,15 +837,15 @@ gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GH
 	glStencilMask(0);
 	glStencilFunc(GL_ALWAYS, 0, 0);
 
-	region.X1 = MIN(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
-	region.X2 = MAX(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
-	region.Y1 = MIN(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
-	region.Y2 = MAX(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
+	ctx.view.X1 = MIN(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
+	ctx.view.X2 = MAX(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
+	ctx.view.Y1 = MIN(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
+	ctx.view.Y2 = MAX(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
 
-	region.X1 = MAX(0, MIN(PCB->MaxWidth, region.X1));
-	region.X2 = MAX(0, MIN(PCB->MaxWidth, region.X2));
-	region.Y1 = MAX(0, MIN(PCB->MaxHeight, region.Y1));
-	region.Y2 = MAX(0, MIN(PCB->MaxHeight, region.Y2));
+	ctx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X1));
+	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
+	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
+	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
 
 	glColor3f(port->bg_color.red / 65535., port->bg_color.green / 65535., port->bg_color.blue / 65535.);
 
@@ -860,10 +860,10 @@ gboolean ghid_drawing_area_expose_cb(GtkWidget * widget, GdkEventExpose * ev, GH
 
 	hidgl_init_triangle_array(&buffer);
 	ghid_invalidate_current_gc();
-	pcb_hid_expose_all(&ghid_hid, &region);
+	pcb_hid_expose_all(&ghid_hid, &ctx.view);
 	hidgl_flush_triangles(&buffer);
 
-	ghid_draw_grid(&region);
+	ghid_draw_grid(&ctx.view);
 
 	ghid_invalidate_current_gc();
 
@@ -899,7 +899,7 @@ void ghid_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 	return;
 }
 
-gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, void *expdata, const pcb_box_t *view)
+gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
 {
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
@@ -908,8 +908,8 @@ gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_ex
 	int save_width, save_height;
 	double xz, yz, vw, vh;
 
-	vw = view->X2 - view->X1;
-	vh = view->Y2 - view->Y1;
+	vw = ctx->view.X2 - ctx->view.X1;
+	vh = ctx->view.Y2 - ctx->view.Y1;
 
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
@@ -930,8 +930,8 @@ gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_ex
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
 	gport->view.height = allocation.height * gport->view.coord_per_px;
-	gport->view.x0 = (vw - gport->view.width) / 2 + view->X1;
-	gport->view.y0 = (vh - gport->view.height) / 2 + view->Y1;
+	gport->view.x0 = (vw - gport->view.width) / 2 + ctx->view.X1;
+	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
 
 	/* make GL-context "current" */
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
@@ -970,7 +970,7 @@ gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_ex
 	glTranslatef(conf_core.editor.view.flip_x ? gport->view.x0 - PCB->MaxWidth :
 							 -gport->view.x0, conf_core.editor.view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
 
-	expcall(&ghid_hid, expdata);
+	expcall(&ghid_hid, ctx);
 
 	hidgl_flush_triangles(&buffer);
 	glPopMatrix();
@@ -1001,7 +1001,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	GdkGLDrawable *gldrawable;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t ctx;
 
 	save_view = gport->view;
 	save_width = gport->view.canvas_width;
@@ -1065,17 +1065,17 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	glTranslatef(gport->view.flip_x ? gport->view.x0 - PCB->MaxWidth :
 							 -gport->view.x0, gport->view.flip_y ? gport->view.y0 - PCB->MaxHeight : -gport->view.y0, 0);
 
-	region.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
-	region.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
-	region.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
-	region.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
+	ctx.view.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
+	ctx.view.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
+	ctx.view.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
+	ctx.view.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
 
-	region.X1 = MAX(0, MIN(PCB->MaxWidth, region.X1));
-	region.X2 = MAX(0, MIN(PCB->MaxWidth, region.X2));
-	region.Y1 = MAX(0, MIN(PCB->MaxHeight, region.Y1));
-	region.Y2 = MAX(0, MIN(PCB->MaxHeight, region.Y2));
+	ctx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X1));
+	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
+	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
+	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
 
-	pcb_hid_expose_all(&ghid_hid, &region);
+	pcb_hid_expose_all(&ghid_hid, &ctx.view);
 	hidgl_flush_triangles(&buffer);
 	glPopMatrix();
 

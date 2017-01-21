@@ -53,20 +53,20 @@ void gpmi_hid_destroy_gc(pcb_hid_gc_t gc)
 void gpmi_hid_do_export(pcb_hid_attr_val_t * options)
 {
 	gpmi_hid_t *h = hid_gpmi_data_get(pcb_exporter);
-  int save_ons[PCB_MAX_LAYER + 2];
-  pcb_box_t region;
+	int save_ons[PCB_MAX_LAYER + 2];
+	pcb_hid_expose_ctx_t ctx;
 
 	h->result = options;
 	gpmi_event(h->module, HIDE_do_export_start, h);
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
-  region.X1 = 0;
-  region.Y1 = 0;
-  region.X2 = PCB->MaxWidth;
-  region.Y2 = PCB->MaxHeight;
+	ctx.view.X1 = 0;
+	ctx.view.Y1 = 0;
+	ctx.view.X2 = PCB->MaxWidth;
+	ctx.view.Y2 = PCB->MaxHeight;
 
-	pcb_hid_expose_all(h->hid, &region);
+	pcb_hid_expose_all(h->hid, &ctx.view);
 	pcb_hid_restore_layer_ons(save_ons);
 	gpmi_event(h->module, HIDE_do_export_finish, h);
 	h->result = NULL;

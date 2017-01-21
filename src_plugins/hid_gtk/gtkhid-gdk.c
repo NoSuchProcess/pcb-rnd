@@ -757,7 +757,7 @@ void ghid_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t
 static void redraw_region(GdkRectangle * rect)
 {
 	int eleft, eright, etop, ebottom;
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t ctx;
 	render_priv *priv = gport->render_priv;
 
 	if (!gport->pixmap)
@@ -780,15 +780,15 @@ static void redraw_region(GdkRectangle * rect)
 	set_clip(priv, priv->mask_gc);
 	set_clip(priv, priv->grid_gc);
 
-	region.X1 = MIN(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
-	region.Y1 = MIN(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
-	region.X2 = MAX(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
-	region.Y2 = MAX(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
+	ctx.view.X1 = MIN(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
+	ctx.view.Y1 = MIN(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
+	ctx.view.X2 = MAX(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
+	ctx.view.Y2 = MAX(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
 
-	region.X1 = MAX(0, MIN(PCB->MaxWidth, region.X1));
-	region.X2 = MAX(0, MIN(PCB->MaxWidth, region.X2));
-	region.Y1 = MAX(0, MIN(PCB->MaxHeight, region.Y1));
-	region.Y2 = MAX(0, MIN(PCB->MaxHeight, region.Y2));
+	ctx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X1));
+	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
+	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
+	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
 
 	eleft = Vx(0);
 	eright = Vx(PCB->MaxWidth);
@@ -826,7 +826,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	ghid_draw_bg_image();
 
-	pcb_hid_expose_all(&ghid_hid, &region);
+	pcb_hid_expose_all(&ghid_hid, &ctx.view);
 	ghid_draw_grid();
 
 	/* In some cases we are called with the crosshair still off */
@@ -1143,7 +1143,7 @@ void ghid_port_drawing_realize_cb(GtkWidget * widget, gpointer data)
 {
 }
 
-gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, void *expdata, const pcb_box_t *view)
+gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx)
 {
 	GdkWindow *window = gtk_widget_get_window(widget);
 	GdkDrawable *save_drawable;
@@ -1153,8 +1153,8 @@ gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_ex
 	double xz, yz, vw, vh;
 	render_priv *priv = gport->render_priv;
 
-	vw = view->X2 - view->X1;
-	vh = view->Y2 - view->Y1;
+	vw = ctx->view.X2 - ctx->view.X1;
+	vh = ctx->view.Y2 - ctx->view.Y1;
 
 	/* Setup drawable and zoom factor for drawing routines
 	 */
@@ -1176,14 +1176,14 @@ gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_ex
 	gport->view.canvas_height = allocation.height;
 	gport->view.width = allocation.width * gport->view.coord_per_px;
 	gport->view.height = allocation.height * gport->view.coord_per_px;
-	gport->view.x0 = (vw - gport->view.width) / 2 + view->X1;
-	gport->view.y0 = (vh - gport->view.height) / 2 + view->Y1;
+	gport->view.x0 = (vw - gport->view.width) / 2 + ctx->view.X1;
+	gport->view.y0 = (vh - gport->view.height) / 2 + ctx->view.Y1;
 
 	/* clear background */
 	gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
 
 	/* call the drawing routine */
-	expcall(&ghid_hid, expdata);
+	expcall(&ghid_hid, ctx);
 
 	gport->drawable = save_drawable;
 	gport->view = save_view;

@@ -445,6 +445,7 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	pcb_box_t tmp, region;
+	pcb_hid_expose_ctx_t ctx;
 
 	f = the_file;
 
@@ -526,7 +527,8 @@ void png_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 		}
 	}
 
-	pcb_hid_expose_all(&png_hid, bounds);
+	ctx.view = *bounds;
+	pcb_hid_expose_all(&png_hid, &ctx);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	conf_update(NULL); /* restore forced sets */

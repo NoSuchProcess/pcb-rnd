@@ -194,12 +194,12 @@ static pcb_hid_attribute_t *svg_get_export_options(int *n)
 void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t ctx;
 
-	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	ctx.view.X1 = 0;
+	ctx.view.Y1 = 0;
+	ctx.view.X2 = PCB->MaxWidth;
+	ctx.view.Y2 = PCB->MaxHeight;
 
 	f = the_file;
 
@@ -237,7 +237,7 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
 	gds_init(&sbright);
 	gds_init(&sdark);
 	gds_init(&snormal);
-	pcb_hid_expose_all(&svg_hid, &region);
+	pcb_hid_expose_all(&svg_hid, &ctx);
 
 	conf_update(NULL); /* restore forced sets */
 }

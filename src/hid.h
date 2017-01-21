@@ -546,14 +546,26 @@ struct hid_s {
 
    Do *not* assume that the hid that is passed is the GUI hid.  This
    callback is also used for printing and exporting. */
-typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, void *region);
 
-/* Normal expose: draw all layers with all flags region is (pcb_box_t *) */
-void pcb_hid_expose_all(pcb_hid_t *hid, void *region);
+typedef struct pcb_hid_expose_layer_s {
+	pcb_box_t view;
+	union {
+		pcb_layer_id_t layer_id;
+		pcb_element_t *elem;
+	} content;
+} pcb_hid_expose_ctx_t;
 
-/* Pinout preview expose: draw an element; element is (pcb_element_t *) */
-void pcb_hid_expose_pinout(pcb_hid_t *hid, void *element);
+typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx);
 
+/* Normal expose: draw all layers with all flags (no .content is used) */
+void pcb_hid_expose_all(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region);
+
+/* Pinout preview expose: draw an element; content.elem is used */
+void pcb_hid_expose_pinout(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *element);
+
+
+/* Layer preview expose: draw a single layer; content.layer_id is used */
+void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ly);
 
 
 /* This is initially set to a "no-gui" gui, and later reset by

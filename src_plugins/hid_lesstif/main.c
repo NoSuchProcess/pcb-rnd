@@ -751,23 +751,24 @@ static int Benchmark(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int i = 0;
 	time_t start, end;
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t ctx;
 	Drawable save_main;
+
 
 	save_main = main_pixmap;
 	main_pixmap = window;
 
-	region.X1 = 0;
-	region.Y1 = 0;
-	region.X2 = PCB->MaxWidth;
-	region.Y2 = PCB->MaxHeight;
+	ctx.view.X1 = 0;
+	ctx.view.Y1 = 0;
+	ctx.view.X2 = PCB->MaxWidth;
+	ctx.view.Y2 = PCB->MaxHeight;
 
 	pixmap = window;
 	XSync(display, 0);
 	time(&start);
 	do {
 		XFillRectangle(display, pixmap, bg_gc, 0, 0, view_width, view_height);
-		pcb_hid_expose_all(&lesstif_hid, &region);
+		pcb_hid_expose_all(&lesstif_hid, &ctx);
 		XSync(display, 0);
 		time(&end);
 		i++;
@@ -2274,29 +2275,30 @@ static Boolean idle_proc(XtPointer dummy)
 {
 	if (need_redraw) {
 		int mx, my;
-		pcb_box_t region;
+		pcb_hid_expose_ctx_t ctx;
+
 		lesstif_use_mask(0);
 		pixmap = main_pixmap;
 		mx = view_width;
 		my = view_height;
-		region.X1 = Px(0);
-		region.Y1 = Py(0);
-		region.X2 = Px(view_width);
-		region.Y2 = Py(view_height);
+		ctx.view.X1 = Px(0);
+		ctx.view.Y1 = Py(0);
+		ctx.view.X2 = Px(view_width);
+		ctx.view.Y2 = Py(view_height);
 		if (conf_core.editor.view.flip_x) {
-			pcb_coord_t tmp = region.X1;
-			region.X1 = region.X2;
-			region.X2 = tmp;
+			pcb_coord_t tmp = ctx.view.X1;
+			ctx.view.X1 = ctx.view.X2;
+			ctx.view.X2 = tmp;
 		}
 		if (conf_core.editor.view.flip_y) {
-			pcb_coord_t tmp = region.Y1;
-			region.Y1 = region.Y2;
-			region.Y2 = tmp;
+			pcb_coord_t tmp = ctx.view.Y1;
+			ctx.view.Y1 = ctx.view.Y2;
+			ctx.view.Y2 = tmp;
 		}
 		XSetForeground(display, bg_gc, bgcolor);
 		XFillRectangle(display, main_pixmap, bg_gc, 0, 0, mx, my);
 
-		if (region.X1 < 0 || region.Y1 < 0 || region.X2 > PCB->MaxWidth || region.Y2 > PCB->MaxHeight) {
+		if (ctx.view.X1 < 0 || ctx.view.Y1 < 0 || ctx.view.X2 > PCB->MaxWidth || ctx.view.Y2 > PCB->MaxHeight) {
 			int leftmost, rightmost, topmost, bottommost;
 
 			leftmost = Vx(0);
@@ -2343,7 +2345,7 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 		}
 		DrawBackgroundImage();
-		pcb_hid_expose_all(&lesstif_hid, &region);
+		pcb_hid_expose_all(&lesstif_hid, &ctx);
 		draw_grid();
 		lesstif_use_mask(0);
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */
@@ -3389,7 +3391,6 @@ lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_
 
 static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
 {
-/*	pcb_box_t region;*/
 	int save_vx, save_vy, save_vw, save_vh;
 	int save_fx, save_fy;
 	double save_vz;

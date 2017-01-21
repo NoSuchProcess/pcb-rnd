@@ -48,11 +48,14 @@
 static void pinout_set_view(pcb_gtk_preview_t * pinout)
 {
 	float scale = SENSIBLE_VIEW_SCALE;
+	pcb_element_t *elem = &pinout->element;
 
-	pinout->x_max = pinout->element.BoundingBox.X2 + conf_core.appearance.pinout.offset_x;
-	pinout->y_max = pinout->element.BoundingBox.Y2 + conf_core.appearance.pinout.offset_y;
-	pinout->w_pixels = scale * (pinout->element.BoundingBox.X2 - pinout->element.BoundingBox.X1);
-	pinout->h_pixels = scale * (pinout->element.BoundingBox.Y2 - pinout->element.BoundingBox.Y1);
+#warning switch for .kind here and do a zoom-to-extend on layer
+
+	pinout->x_max = elem->BoundingBox.X2 + conf_core.appearance.pinout.offset_x;
+	pinout->y_max = elem->BoundingBox.Y2 + conf_core.appearance.pinout.offset_y;
+	pinout->w_pixels = scale * (elem->BoundingBox.X2 - elem->BoundingBox.X1);
+	pinout->h_pixels = scale * (elem->BoundingBox.Y2 - elem->BoundingBox.Y1);
 }
 
 
@@ -116,7 +119,7 @@ enum {
 	PROP_INIT_WIDGET = 3,
 	PROP_EXPOSE = 4,
 	PROP_KIND = 5,
-	PROP_LAYER =6,
+	PROP_LAYER = 6,
 };
 
 
@@ -180,7 +183,9 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 
 	switch (property_id) {
 	case PROP_ELEMENT_DATA:
+		pinout->kind = PCB_GTK_PREVIEW_PINOUT;
 		pinout_set_data(pinout, (pcb_element_t *) g_value_get_pointer(value));
+		pinout->expose_data.content.elem = &pinout->element;
 		if (window != NULL)
 			gdk_window_invalidate_rect(window, NULL, FALSE);
 		break;
@@ -197,7 +202,10 @@ static void ghid_pinout_preview_set_property(GObject * object, guint property_id
 		pinout->kind = g_value_get_int(value);
 		break;
 	case PROP_LAYER:
-		pinout->layer = g_value_get_long(value);
+		pinout->kind = PCB_GTK_PREVIEW_LAYER;
+		pinout->expose_data.content.layer_id = g_value_get_long(value);
+		if (window != NULL)
+			gdk_window_invalidate_rect(window, NULL, FALSE);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
@@ -232,13 +240,16 @@ static gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 {
 	pcb_gtk_preview_t *pinout = GHID_PINOUT_PREVIEW(widget);
 
-	if (pinout->kind == PCB_GTK_PREVIEW_PINOUT) {
-		pcb_box_t view;
-		view.X1 = view.Y1 = 0;
-		view.X2 = pinout->x_max;
-		view.Y2 = pinout->y_max;
+	switch(pinout->kind) {
+		case PCB_GTK_PREVIEW_PINOUT:
+			pinout->expose_data.view.X1 = 0;
+			pinout->expose_data.view.Y1 = 0;
+			pinout->expose_data.view.X2 = pinout->x_max;
+			pinout->expose_data.view.Y2 = pinout->y_max;
+			return pinout->expose(widget, ev, pcb_hid_expose_pinout, &pinout->expose_data);
 
-		return pinout->expose(widget, ev, pcb_hid_expose_pinout, &pinout->element, &view);
+		case PCB_GTK_PREVIEW_LAYER:
+			return pinout->expose(widget, ev, pcb_hid_expose_layer, &pinout->expose_data);
 	}
 
 
