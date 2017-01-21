@@ -283,6 +283,14 @@ void pcb_layergrp_fix_old_outline(pcb_layer_stack_t *LayerGroup)
 	}
 }
 
+void pcb_layergrp_fix_turn_to_outline(pcb_layer_group_t *g)
+{
+	g->type |= PCB_LYT_OUTLINE;
+	g->type &= ~PCB_LYT_COPPER;
+	free(g->name);
+	g->name = pcb_strdup("global outline");
+}
+
 
 #define LAYER_IS_OUTLINE(idx) ((PCB->Data->Layer[idx].Name != NULL) && ((strcmp(PCB->Data->Layer[idx].Name, "route") == 0 || strcmp(PCB->Data->Layer[(idx)].Name, "outline") == 0)))
 int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGroup, int LayerN, int oldfmt)
@@ -318,12 +326,8 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 					if (lids[n] < 0)
 						continue;
 					if (LAYER_IS_OUTLINE(lids[n])) {
-						if (g->type & PCB_LYT_INTERN) {
-							g->type |= PCB_LYT_OUTLINE;
-							g->type &= ~PCB_LYT_COPPER;
-							free(g->name);
-							g->name = pcb_strdup("global outline");
-						}
+						if (g->type & PCB_LYT_INTERN)
+							pcb_layergrp_fix_turn_to_outline(g);
 						else
 							pcb_message(PCB_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
 					}

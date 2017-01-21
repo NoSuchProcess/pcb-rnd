@@ -119,8 +119,12 @@ pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, p
 pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack);
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack);
 
-	/* ugly hack: remove the extra substrate we added after the outline layer */
+/* ugly hack: remove the extra substrate we added after the outline layer */
 void pcb_layergrp_fix_old_outline(pcb_layer_stack_t *LayerGroup);
+
+/* ugly hack: turn an old intern layer group into an outline group after realizing it is really an outline (reading the old layers) */
+void pcb_layergrp_fix_turn_to_outline(pcb_layer_group_t *g);
+
 
 
 /* Cached layer group lookups foir a few common cases */
