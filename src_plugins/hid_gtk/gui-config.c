@@ -47,6 +47,7 @@
 #include "gtk_conf_list.h"
 #include "paths.h"
 #include "plug_footprint.h"
+#include "stub_draw_csect.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "fptr_cast.h"
@@ -1532,8 +1533,11 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 /* -- Layer stack tab */
 	vbox = ghid_notebook_page(tabs, _("Layer Stack"), 0, 6);
 	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
+		pcb_gtk_preview_t *p;
 		prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
+		p = (pcb_gtk_preview_t *)prv;
+		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
 	}
 
 /* -- Change tab */
