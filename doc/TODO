@@ -152,6 +152,7 @@ CLEANUP #7: the big object split
 
 FEATURES
 - BUILD: menuconfig and a config file for scconfig
+- menu item for export of multiple selected layout elements to discrete .fp files
 
 Low prio:
 - bug: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
