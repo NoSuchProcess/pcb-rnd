@@ -67,7 +67,7 @@ struct pcb_gtk_preview_s {
 
 	pcb_hid_expose_ctx_t expose_data;
 
-	gint x_max, y_max;
+	gint x_max, y_max, win_w, win_h;
 	gint w_pixels, h_pixels;			/* natural size of element preview */
 
 	void *gport;
