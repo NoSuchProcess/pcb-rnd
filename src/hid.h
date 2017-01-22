@@ -11,6 +11,13 @@
 #include "layer.h"
 #include "layer_grp.h"
 
+typedef enum {
+	PCB_HID_MOUSE_PRESS,
+	PCB_HID_MOUSE_RELEASE,
+	PCB_HID_MOUSE_MOTION
+} pcb_hid_mouse_ev_t;
+
+
 typedef struct pcb_hid_attr_val_s  pcb_hid_attr_val_t;
 typedef struct pcb_hid_attribute_s pcb_hid_attribute_t;
 
