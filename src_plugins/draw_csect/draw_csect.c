@@ -175,6 +175,10 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 		hatch_box(x1, y1, x2, y2, thick_hatch, -step_back);
 }
 
+static void reg_layer_coords(pcb_layer_id_t lid, int x1, int y1, int x2, int y2)
+{
+	
+}
 
 /* Draw the cross-section layer */
 static void draw_csect(pcb_hid_gc_t gc)
@@ -240,15 +244,18 @@ static void draw_csect(pcb_hid_gc_t gc)
 		dtext_bg(gc, 5, y, 200, 0, g->name, COLOR_BG, COLOR_ANNOT);
 
 		/* draw layer names */
-		x = 78;
-		for(i = 0; i < g->len; i++) {
-			pcb_text_t *t;
-			pcb_layer_id_t lid = g->lid[i];
-			pcb_layer_t *l = &PCB->Data->Layer[lid];
-			t = dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
-			pcb_text_bbox(&PCB->Font, t);
-			x += PCB_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
-			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
+		if (g->type & PCB_LYT_COPPER) {
+			x = 78;
+			for(i = 0; i < g->len; i++) {
+				pcb_text_t *t;
+				pcb_layer_id_t lid = g->lid[i];
+				pcb_layer_t *l = &PCB->Data->Layer[lid];
+				t = dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
+				pcb_text_bbox(&PCB->Font, t);
+				x += PCB_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
+				dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
+				reg_layer_coords(lid, PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4);
+			}
 		}
 
 		/* increment y */
