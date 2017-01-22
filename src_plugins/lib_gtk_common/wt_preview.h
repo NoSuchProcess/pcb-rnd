@@ -51,8 +51,10 @@ struct pcb_gtk_preview_class_s {
 	GtkDrawingAreaClass parent_class;
 };
 
-typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget * widget, void *port);
-typedef gboolean (*pcb_gtk_preview_expose_t)(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
+typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget *widget, void *port);
+typedef gboolean (*pcb_gtk_preview_expose_t)(GtkWidget *widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
+typedef pcb_bool (*pcb_gtk_preview_mouse_ev_t)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
+
 
 typedef enum pcb_gtk_preview_kind_e {
 	PCB_GTK_PREVIEW_INVALID,
@@ -74,7 +76,7 @@ struct pcb_gtk_preview_s {
 	pcb_gtk_init_drawing_widget_t init_drawing_widget;
 	pcb_gtk_preview_expose_t expose;
 	pcb_gtk_preview_kind_t kind;
-
+	pcb_gtk_preview_mouse_ev_t mouse_cb;
 
 	pcb_element_t element;
 };

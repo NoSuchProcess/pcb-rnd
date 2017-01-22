@@ -354,7 +354,7 @@ static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev,
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
 	preview->win_w = ev->width;
 	preview->win_h = ev->height;
-	printf("resize: %d %d\n", ev->width, ev->height);
+/*	printf("resize: %d %d\n", ev->width, ev->height); */
 }
 
 static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy)
@@ -367,25 +367,38 @@ static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy
 
 static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton * ev, gpointer data)
 {
-	pcb_coord_t cx, cy;
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
-	get_ptr(preview, &cx, &cy);
-	pcb_printf("bp %mm %mm\n", cx, cy);
+	if (preview->mouse_cb != NULL) {
+		pcb_coord_t cx, cy;
+		get_ptr(preview, &cx, &cy);
+/*		pcb_printf("bp %mm %mm\n", cx, cy); */
+		return preview->mouse_cb(w, PCB_HID_MOUSE_PRESS, cx, cy);
+	}
+	return FALSE;
 }
 
 static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton * ev, gpointer data)
 {
-	pcb_coord_t cx, cy;
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
-	get_ptr(preview, &cx, &cy);
-	pcb_printf("br %mm %mm\n", cx, cy);
+	if (preview->mouse_cb != NULL) {
+		pcb_coord_t cx, cy;
+		get_ptr(preview, &cx, &cy);
+/*		pcb_printf("br %mm %mm\n", cx, cy); */
+		return preview->mouse_cb(w, PCB_HID_MOUSE_RELEASE, cx, cy);
+	}
+	return FALSE;
 }
 
 static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion * ev, gpointer data)
 {
-	pcb_coord_t cx, cy;
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
-	get_ptr(preview, &cx, &cy);
+	if (preview->mouse_cb != NULL) {
+		pcb_coord_t cx, cy;
+		get_ptr(preview, &cx, &cy);
+/*		pcb_printf("mo %mm %mm\n", cx, cy); */
+		return preview->mouse_cb(w, PCB_HID_MOUSE_MOTION, cx, cy);
+	}
+	return FALSE;
 }
 
 
