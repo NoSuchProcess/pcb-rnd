@@ -271,6 +271,14 @@ static void draw_csect(pcb_hid_gc_t gc)
 }
 
 
+static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+{
+
+}
+
+
+
+
 static const char pcb_acts_dump_csect[] = "DumpCsect()";
 static const char pcb_acth_dump_csect[] = "Print the cross-section of the board (layer stack)";
 
@@ -332,5 +340,7 @@ pcb_uninit_t hid_draw_csect_init(void)
 	PCB_REGISTER_ACTIONS(draw_csect_action_list, draw_csect_cookie)
 
 	pcb_stub_draw_csect = draw_csect;
+	pcb_stub_draw_csect_mouse_ev = mouse_csect;
+
 	return hid_draw_csect_uninit;
 }
