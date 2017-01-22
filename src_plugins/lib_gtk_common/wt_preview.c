@@ -359,10 +359,25 @@ static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev,
 
 static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy)
 {
-	gint xp, yp;
+	gint xp, yp, ww, wh, xo = 0, yo = 0;
+	pcb_coord_t w, h;
+	double size;
 	gdk_window_get_pointer(gtk_widget_get_window(preview), &xp, &yp, NULL);
-	*cx = (double)xp * (double)(preview->expose_data.view.X2 - preview->expose_data.view.X1) / (double)preview->win_w;
-	*cy = (double)yp * (double)(preview->expose_data.view.Y2 - preview->expose_data.view.Y1) / (double)preview->win_h;
+
+	w = preview->expose_data.view.X2 - preview->expose_data.view.X1;
+	h = preview->expose_data.view.Y2 - preview->expose_data.view.Y1;
+	if (preview->win_w > preview->win_h) {
+		xo = (preview->win_w-preview->win_h)/2;
+		size = preview->win_h;
+	}
+	else if (preview->win_h > preview->win_w) {
+		yo = (preview->win_h-preview->win_w)/2;
+		size = preview->win_w;
+	}
+	else
+		size = w;
+	*cx = (double)(xp - xo) * (double)(w) / (double)size;
+	*cy = (double)(yp - yo) * (double)(h) / (double)size;
 }
 
 static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton * ev, gpointer data)
