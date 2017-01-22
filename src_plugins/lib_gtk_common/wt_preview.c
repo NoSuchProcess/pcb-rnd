@@ -381,6 +381,14 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton * ev, gpo
 	pcb_printf("br %mm %mm\n", cx, cy);
 }
 
+static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion * ev, gpointer data)
+{
+	pcb_coord_t cx, cy;
+	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
+	get_ptr(preview, &cx, &cy);
+}
+
+
 /*
 static gboolean preview_key_press_cb(GtkWidget *preview, GdkEventKey * kev, gpointer data)
 {
@@ -422,6 +430,7 @@ GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t 
 	g_signal_connect(G_OBJECT(pinout_preview), "button_press_event", G_CALLBACK(preview_button_press_cb), NULL);
 	g_signal_connect(G_OBJECT(pinout_preview), "button_release_event", G_CALLBACK(preview_button_release_cb), NULL);
 	g_signal_connect(G_OBJECT(pinout_preview), "configure_event", G_CALLBACK(preview_configure_event_cb), NULL);
+	g_signal_connect(G_OBJECT(pinout_preview), "motion_notify_event", G_CALLBACK(preview_motion_cb), NULL);
 
 /*
 	g_signal_connect(G_OBJECT(pinout_preview), "key_press_event", G_CALLBACK(preview_key_press_cb), NULL);
