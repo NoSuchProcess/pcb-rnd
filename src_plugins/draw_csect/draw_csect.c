@@ -175,16 +175,48 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 		hatch_box(x1, y1, x2, y2, thick_hatch, -step_back);
 }
 
-static void reg_layer_coords(pcb_layer_id_t lid, int x1, int y1, int x2, int y2)
+static pcb_box_t layer_crd[PCB_MAX_LAYER];
+static char layer_valid[PCB_MAX_LAYER];
+
+static void reg_layer_coords(pcb_layer_id_t lid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
-	
+	if ((lid < 0) || (lid >= PCB_MAX_LAYER))
+		return;
+	layer_crd[lid].X1 = x1;
+	layer_crd[lid].Y1 = y1;
+	layer_crd[lid].X2 = x2;
+	layer_crd[lid].Y2 = y2;
+	layer_valid[lid] = 1;
+	pcb_printf("reg: %d %mm %mm %mm %mm\n", lid, x1, y1, x2, y2);
 }
+
+static void reset_layer_coords(void)
+{
+	memset(layer_valid, 0, sizeof(layer_valid));
+}
+
+static pcb_layer_id_t get_layer_coords(pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_layer_id_t n;
+	pcb_printf("qry: %mm %mm\n", x, y);
+
+	for(n = 0; n < PCB_MAX_LAYER; n++) {
+		if (!layer_valid[n]) continue;
+		if ((layer_crd[n].X1 <= x) && (layer_crd[n].Y1 <= y) &&
+		    (layer_crd[n].X2 >= x) && (layer_crd[n].Y2 >= y))
+			return n;
+	}
+	return -1;
+}
+
 
 /* Draw the cross-section layer */
 static void draw_csect(pcb_hid_gc_t gc)
 {
 	pcb_layergrp_id_t gid;
 	int ystart = 10, y, last_copper_step = 5, has_outline = 0;
+
+	reset_layer_coords();
 
 	pcb_gui->set_color(gc, COLOR_ANNOT);
 	dtext(0, 0, 500, 0, "Board cross section");
@@ -254,7 +286,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 				pcb_text_bbox(&PCB->Font, t);
 				x += PCB_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
 				dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
-				reg_layer_coords(lid, PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4);
+				reg_layer_coords(lid, t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2+PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(y+4));
 			}
 		}
 
@@ -273,7 +305,16 @@ static void draw_csect(pcb_hid_gc_t gc)
 
 static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
-
+	pcb_layer_id_t lid;
+	switch(kind) {
+		case PCB_HID_MOUSE_PRESS:
+			lid = get_layer_coords(x, y);
+			printf("lid=%d\n", lid);
+			break;
+		case PCB_HID_MOUSE_RELEASE:
+		case PCB_HID_MOUSE_MOTION:
+			break;
+	}
 }
 
 
