@@ -393,6 +393,7 @@ void ghid_screen_update(void);
 gboolean ghid_drawing_area_expose_cb(GtkWidget *, GdkEventExpose *, GHidPort *);
 void ghid_port_drawing_realize_cb(GtkWidget *, gpointer);
 gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
+gboolean ghid_preview_draw(GtkWidget * widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth);
 pcb_hid_t *ghid_request_debug_draw(void);
 void ghid_flush_debug_draw(void);
