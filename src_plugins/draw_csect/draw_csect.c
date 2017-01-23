@@ -360,6 +360,7 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 
 static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
+	pcb_bool res = 0;
 	switch(kind) {
 		case PCB_HID_MOUSE_PRESS:
 			drag_lid = get_layer_coords(x, y);
@@ -369,13 +370,17 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			printf("lid=%d\n", drag_lid);
 			break;
 		case PCB_HID_MOUSE_RELEASE:
-			drag_lid = -1;
+			if (drag_lid >= 0) {
+				res = 1;
+				drag_lid = -1;
+			}
 			break;
 		case PCB_HID_MOUSE_MOTION:
 			cx = x;
 			cy = y;
 			break;
 	}
+	return res;
 }
 
 
