@@ -32,3 +32,17 @@ arc_offpage.bom good r5652
 arc_sizes.bom good r5652
 arc_angles.bom good r5452
 arc_sizes.svg broken r6023 ellipticals not handled
+
+arc_angles.png good 6417
+arc_f_clear.png bad 6417 rounding error limit of +-1mil exceded (i will double
+check later)
+arc_normal.png good 6417
+arc_offpage.png good 6417
+arc_sizes.png good 6417
+clearance.png bad 6417 missing pcb & text file?!
+elem_pads.png good 6417
+elem_pins.png good 6417
+elem_sides_smd.png good 6417
+elem_sides_trh.png good 6417
+layer_copper.png good 6417
+
