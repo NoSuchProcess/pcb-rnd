@@ -1538,8 +1538,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
 		p = (pcb_gtk_preview_t *)prv;
 		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
-extern void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx);
-		p->overlay_draw_cb = draw_csect_overlay;
+		p->overlay_draw_cb = pcb_stub_draw_csect_overlay;
 	}
 
 /* -- Change tab */

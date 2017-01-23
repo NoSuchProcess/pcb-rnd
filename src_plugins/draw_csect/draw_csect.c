@@ -305,13 +305,19 @@ static void draw_csect(pcb_hid_gc_t gc)
 static pcb_layer_id_t drag_lid= -1;
 static pcb_coord_t lx, ly;
 
-void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
+static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 {
 	if (drag_lid >= 0) {
-		pcb_hid_gc_t gc = pcb_gui->make_gc();
-		pcb_gui->set_color(gc, "#cccccc");
-		pcb_gui->set_draw_xor(gc, 1);
-		dtext_bg(gc, PCB_COORD_TO_MM(lx), PCB_COORD_TO_MM(ly), 200, 0, "l->Name", COLOR_BG, COLOR_ANNOT);
+		pcb_hid_t *old_gui = pcb_gui;
+		pcb_gui = hid;
+		Output.fgGC = pcb_gui->make_gc();
+
+pcb_gui->set_color(Output.fgGC, "#cccccc");
+pcb_gui->set_draw_xor(Output.fgGC, 1);
+
+		dtext_bg(Output.fgGC, PCB_COORD_TO_MM(lx), PCB_COORD_TO_MM(ly), 200, 0, "l->Name", COLOR_BG, COLOR_ANNOT);
+		pcb_gui->destroy_gc(Output.fgGC);
+		pcb_gui = old_gui;
 	}
 }
 
@@ -396,6 +402,7 @@ pcb_uninit_t hid_draw_csect_init(void)
 
 	pcb_stub_draw_csect = draw_csect;
 	pcb_stub_draw_csect_mouse_ev = mouse_csect;
+	pcb_stub_draw_csect_overlay = draw_csect_overlay;
 
 	return hid_draw_csect_uninit;
 }
