@@ -411,7 +411,9 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion * ev, gpointer da
 		pcb_coord_t cx, cy;
 		get_ptr(preview, &cx, &cy);
 /*		pcb_printf("mo %mm %mm\n", cx, cy); */
-		return preview->mouse_cb(w, PCB_HID_MOUSE_MOTION, cx, cy);
+		preview->mouse_cb(w, PCB_HID_MOUSE_MOTION, cx, cy);
+		if (preview->overlay_draw_cb != NULL)
+			ghid_preview_draw(w, preview->overlay_draw_cb, &preview->expose_data);
 	}
 	return FALSE;
 }

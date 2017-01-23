@@ -77,6 +77,8 @@ struct pcb_gtk_preview_s {
 	pcb_gtk_preview_expose_t expose;
 	pcb_gtk_preview_kind_t kind;
 	pcb_gtk_preview_mouse_ev_t mouse_cb;
+	pcb_hid_expose_t overlay_draw_cb;
+
 
 	pcb_element_t element;
 };
