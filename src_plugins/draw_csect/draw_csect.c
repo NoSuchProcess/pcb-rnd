@@ -44,6 +44,8 @@ static const char *COLOR_PASTE = "#60e0e0";
 static const char *COLOR_MISC = "#e0e000";
 static const char *COLOR_OUTLINE = "#000000";
 
+static pcb_layer_id_t drag_lid= -1;
+
 /* Draw a text at x;y sized scale percentage */
 static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 {
@@ -309,6 +311,8 @@ static void draw_csect(pcb_hid_gc_t gc)
 				pcb_text_t *t;
 				pcb_layer_id_t lid = g->lid[i];
 				pcb_layer_t *l = &PCB->Data->Layer[lid];
+				if (lid == drag_lid)
+					continue;
 				t = dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
 				pcb_text_bbox(&PCB->Font, t);
 				x += PCB_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
@@ -329,7 +333,6 @@ static void draw_csect(pcb_hid_gc_t gc)
 	}
 }
 
-static pcb_layer_id_t drag_lid= -1;
 static pcb_coord_t ox, oy, lx, ly, cx, cy;
 static int lvalid;
 
@@ -368,6 +371,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			oy = y;
 			lvalid = 0;
 			printf("lid=%d\n", drag_lid);
+			res = 1;
 			break;
 		case PCB_HID_MOUSE_RELEASE:
 			if (drag_lid >= 0) {
