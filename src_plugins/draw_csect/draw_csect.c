@@ -187,7 +187,6 @@ static void reg_layer_coords(pcb_layer_id_t lid, pcb_coord_t x1, pcb_coord_t y1,
 	layer_crd[lid].X2 = x2;
 	layer_crd[lid].Y2 = y2;
 	layer_valid[lid] = 1;
-	pcb_printf("reg: %d %mm %mm %mm %mm\n", lid, x1, y1, x2, y2);
 }
 
 static void reset_layer_coords(void)
@@ -198,7 +197,6 @@ static void reset_layer_coords(void)
 static pcb_layer_id_t get_layer_coords(pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_layer_id_t n;
-	pcb_printf("qry: %mm %mm\n", x, y);
 
 	for(n = 0; n < PCB_MAX_LAYER; n++) {
 		if (!layer_valid[n]) continue;
@@ -209,6 +207,7 @@ static pcb_layer_id_t get_layer_coords(pcb_coord_t x, pcb_coord_t y)
 	return -1;
 }
 
+static pcb_hid_gc_t csect_gc;
 
 /* Draw the cross-section layer */
 static void draw_csect(pcb_hid_gc_t gc)
@@ -217,6 +216,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 	int ystart = 10, y, last_copper_step = 5, has_outline = 0;
 
 	reset_layer_coords();
+	csect_gc = gc;
 
 	pcb_gui->set_color(gc, COLOR_ANNOT);
 	dtext(0, 0, 500, 0, "Board cross section");
@@ -302,17 +302,31 @@ static void draw_csect(pcb_hid_gc_t gc)
 	}
 }
 
+static pcb_layer_id_t drag_lid= -1;
+static pcb_coord_t lx, ly;
+
+void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
+{
+	if (drag_lid >= 0) {
+		pcb_hid_gc_t gc = pcb_gui->make_gc();
+		pcb_gui->set_color(gc, "#cccccc");
+		pcb_gui->set_draw_xor(gc, 1);
+		dtext_bg(gc, PCB_COORD_TO_MM(lx), PCB_COORD_TO_MM(ly), 200, 0, "l->Name", COLOR_BG, COLOR_ANNOT);
+	}
+}
+
 
 static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_layer_id_t lid;
 	switch(kind) {
 		case PCB_HID_MOUSE_PRESS:
-			lid = get_layer_coords(x, y);
-			printf("lid=%d\n", lid);
+			drag_lid = get_layer_coords(x, y);
+			printf("lid=%d\n", drag_lid);
 			break;
 		case PCB_HID_MOUSE_RELEASE:
 		case PCB_HID_MOUSE_MOTION:
+			lx = x;
+			ly = y;
 			break;
 	}
 }
