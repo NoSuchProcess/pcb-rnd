@@ -1,21 +1,21 @@
 
 top left arc
-25 pixel line width
-124 pixels tall
-142 pixesl wide
+25 pixel line width (20.833 mil)
+124 pixels tall (103.333 mil)
+142 pixesl wide (118.333 mil)
 
 top right arc
-37 pixel line width
-227 pixels wide
-135 pixels tall
+37 pixel line width (30.833 mil)
+227 pixels wide (189.166 mil)
+135 pixels tall (112.5 mil)
 
 lower left arc
-13 pixel line width
-162 pixels wide
+13 pixel line width (10.833 mil)
+162 pixels wide (135 mil)
 162 pixels tall
 
 lower right arc
-13 pixel line width
-72 pixels diameter
+13 pixel line width (10.833 mil)
+72 pixels diameter (60 mil)
 
 
