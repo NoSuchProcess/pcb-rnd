@@ -387,7 +387,8 @@ static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton * ev, gpoin
 		pcb_coord_t cx, cy;
 		get_ptr(preview, &cx, &cy);
 /*		pcb_printf("bp %mm %mm\n", cx, cy); */
-		return preview->mouse_cb(w, PCB_HID_MOUSE_PRESS, cx, cy);
+		if (preview->mouse_cb(w, PCB_HID_MOUSE_PRESS, cx, cy))
+			ghid_preview_expose(w, NULL);
 	}
 	return FALSE;
 }
@@ -399,9 +400,8 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton * ev, gpo
 		pcb_coord_t cx, cy;
 		get_ptr(preview, &cx, &cy);
 /*		pcb_printf("br %mm %mm\n", cx, cy); */
-		if (preview->mouse_cb(w, PCB_HID_MOUSE_RELEASE, cx, cy)) {
+		if (preview->mouse_cb(w, PCB_HID_MOUSE_RELEASE, cx, cy))
 			ghid_preview_expose(w, NULL);
-		}
 	}
 	return FALSE;
 }
