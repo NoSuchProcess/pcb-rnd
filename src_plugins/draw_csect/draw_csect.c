@@ -59,6 +59,21 @@ static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 	return &t;
 }
 
+/* Draw a text at x;y sized scale percentage */
+static pcb_text_t *dtext_(pcb_coord_t x, pcb_coord_t y, int scale, int dir, const char *txt, pcb_coord_t th)
+{
+	static pcb_text_t t;
+
+	t.X = x;
+	t.Y = y;
+	t.TextString = (char *)txt;
+	t.Direction = dir;
+	t.Scale = scale;
+	t.Flags = pcb_no_flags();
+	DrawTextLowLevel(&t, th);
+	return &t;
+}
+
 /* Draw a text at x;y with a background */
 static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const char *bgcolor, const char *fgcolor)
 {
@@ -88,6 +103,18 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 	l.Point1.Y = PCB_MM_TO_COORD(y1);
 	l.Point2.X = PCB_MM_TO_COORD(x2);
 	l.Point2.Y = PCB_MM_TO_COORD(y2);
+	l.Thickness = PCB_MM_TO_COORD(thick);
+	_draw_line(&l);
+}
+
+/* draw a line of a specific thickness */
+static void dline_(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, float thick)
+{
+	pcb_line_t l;
+	l.Point1.X = x1;
+	l.Point1.Y = y1;
+	l.Point2.X = x2;
+	l.Point2.Y = y2;
 	l.Thickness = PCB_MM_TO_COORD(thick);
 	_draw_line(&l);
 }
@@ -303,7 +330,8 @@ static void draw_csect(pcb_hid_gc_t gc)
 }
 
 static pcb_layer_id_t drag_lid= -1;
-static pcb_coord_t lx, ly;
+static pcb_coord_t ox, oy, lx, ly, cx, cy;
+static int lvalid;
 
 static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 {
@@ -311,11 +339,19 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 		pcb_hid_t *old_gui = pcb_gui;
 		pcb_gui = hid;
 		Output.fgGC = pcb_gui->make_gc();
+		pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 
-pcb_gui->set_color(Output.fgGC, "#cccccc");
-pcb_gui->set_draw_xor(Output.fgGC, 1);
+		pcb_gui->set_color(Output.fgGC, "#000000");
+		pcb_gui->set_draw_xor(Output.fgGC, 1);
 
-		dtext_bg(Output.fgGC, PCB_COORD_TO_MM(lx), PCB_COORD_TO_MM(ly), 200, 0, "l->Name", COLOR_BG, COLOR_ANNOT);
+		if ((lx != cx) && (ly != cy)) {
+			if (lvalid)
+				dtext_(lx, ly, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
+			dtext_(cx, cy, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
+			lx = cx;
+			ly = cy;
+			lvalid = 1;
+		}
 		pcb_gui->destroy_gc(Output.fgGC);
 		pcb_gui = old_gui;
 	}
@@ -327,12 +363,17 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 	switch(kind) {
 		case PCB_HID_MOUSE_PRESS:
 			drag_lid = get_layer_coords(x, y);
+			ox = x;
+			oy = y;
+			lvalid = 0;
 			printf("lid=%d\n", drag_lid);
 			break;
 		case PCB_HID_MOUSE_RELEASE:
+			drag_lid = -1;
+			break;
 		case PCB_HID_MOUSE_MOTION:
-			lx = x;
-			ly = y;
+			cx = x;
+			cy = y;
 			break;
 	}
 }
