@@ -1,11 +1,12 @@
 
 line
-width 12 pixels
-clearance 23 pixels
-length 343 pixels
+width 12 pixels (10)
+clearance 23 pixels (19.167)
+length 343 pixels (28.583)
 
 polygon
-width 520 pixels
-height 284 pixels
+width 520 pixels (433.333)
+height 284 pixels (236.667)
 
+(mil)
 
