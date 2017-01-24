@@ -403,7 +403,7 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 		pcb_gui->set_color(Output.fgGC, "#000000");
 		pcb_gui->set_draw_xor(Output.fgGC, 1);
 
-		if ((lx != cx) && (ly != cy)) {
+		if ((lx != cx) || (ly != cy)) {
 			if (lvalid) {
 				dtext_(lx, ly, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
 				lvalid = 0;
