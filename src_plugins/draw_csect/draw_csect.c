@@ -205,7 +205,9 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 }
 
 static pcb_box_t layer_crd[PCB_MAX_LAYER];
+static pcb_box_t group_crd[PCB_MAX_LAYERGRP];
 static char layer_valid[PCB_MAX_LAYER];
+static char group_valid[PCB_MAX_LAYERGRP];
 
 static void reg_layer_coords(pcb_layer_id_t lid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
@@ -218,9 +220,19 @@ static void reg_layer_coords(pcb_layer_id_t lid, pcb_coord_t x1, pcb_coord_t y1,
 	layer_valid[lid] = 1;
 }
 
+static void reg_group_coords(pcb_layergrp_id_t gid, pcb_coord_t y1, pcb_coord_t y2)
+{
+	if ((gid < 0) || (gid >= PCB_MAX_LAYER))
+		return;
+	group_crd[gid].Y1 = y1;
+	group_crd[gid].Y2 = y2;
+	group_valid[gid] = 1;
+}
+
 static void reset_layer_coords(void)
 {
 	memset(layer_valid, 0, sizeof(layer_valid));
+	memset(group_valid, 0, sizeof(group_valid));
 }
 
 static pcb_layer_id_t get_layer_coords(pcb_coord_t x, pcb_coord_t y)
@@ -235,6 +247,22 @@ static pcb_layer_id_t get_layer_coords(pcb_coord_t x, pcb_coord_t y)
 	}
 	return -1;
 }
+
+static pcb_layergrp_id_t get_group_coords(pcb_coord_t y, pcb_coord_t *y1, pcb_coord_t *y2)
+{
+	pcb_layergrp_id_t n;
+
+	for(n = 0; n < PCB_MAX_LAYERGRP; n++) {
+		if (!group_valid[n]) continue;
+		if ((group_crd[n].Y1 <= y) && (group_crd[n].Y2 >= y)) {
+			*y1 = group_crd[n].Y1;
+			*y2 = group_crd[n].Y2;
+			return n;
+		}
+	}
+	return -1;
+}
+
 
 static pcb_hid_gc_t csect_gc;
 
@@ -303,6 +331,8 @@ static void draw_csect(pcb_hid_gc_t gc)
 		pcb_gui->set_color(gc, color);
 		dhrect(0, y, 75, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
 		dtext_bg(gc, 5, y, 200, 0, g->name, COLOR_BG, COLOR_ANNOT);
+		reg_group_coords(gid, PCB_MM_TO_COORD(y), PCB_MM_TO_COORD(y+th));
+
 
 		/* draw layer names */
 		if (g->type & PCB_LYT_COPPER) {
@@ -333,28 +363,53 @@ static void draw_csect(pcb_hid_gc_t gc)
 	}
 }
 
-static pcb_coord_t ox, oy, lx, ly, cx, cy;
-static int lvalid;
+static pcb_coord_t ox, oy, lx, ly, cx, cy, gy1, gy2;
+static int lvalid, gvalid, overlay_del;
+
+static void mark_grp(pcb_coord_t y)
+{
+	pcb_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
+	pcb_layergrp_id_t g;
+
+	if ((y1 == gy1) && (y2 == gy2) && gvalid)
+		return;
+	if (gvalid) {
+		dline_(x0, gy1, PCB_MM_TO_COORD(200), gy1, 0.1);
+		dline_(x0, gy2, PCB_MM_TO_COORD(200), gy2, 0.1);
+		gvalid = 0;
+	}
+	g = get_group_coords(y, &y1, &y2);
+	if (g >= 0) {
+		gy1 = y1;
+		gy2 = y2;
+		gvalid = 1;
+		dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
+		dline_(x0, y2, PCB_MM_TO_COORD(200), y2, 0.1);
+	}
+}
 
 static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 {
 	if (drag_lid >= 0) {
 		pcb_hid_t *old_gui = pcb_gui;
+		pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 		pcb_gui = hid;
 		Output.fgGC = pcb_gui->make_gc();
-		pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 
 		pcb_gui->set_color(Output.fgGC, "#000000");
 		pcb_gui->set_draw_xor(Output.fgGC, 1);
 
 		if ((lx != cx) && (ly != cy)) {
-			if (lvalid)
+			if (lvalid) {
 				dtext_(lx, ly, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
+				lvalid = 0;
+			}
 			dtext_(cx, cy, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
 			lx = cx;
 			ly = cy;
 			lvalid = 1;
 		}
+		mark_grp(cy);
 		pcb_gui->destroy_gc(Output.fgGC);
 		pcb_gui = old_gui;
 	}
@@ -377,6 +432,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			if (drag_lid >= 0) {
 				res = 1;
 				drag_lid = -1;
+				lvalid = gvalid = 0;
 			}
 			break;
 		case PCB_HID_MOUSE_MOTION:
