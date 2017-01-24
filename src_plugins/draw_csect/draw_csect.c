@@ -204,6 +204,7 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 		hatch_box(x1, y1, x2, y2, thick_hatch, -step_back);
 }
 
+static pcb_box_t btn_addgrp, btn_delgrp;
 static pcb_box_t layer_crd[PCB_MAX_LAYER];
 static pcb_box_t group_crd[PCB_MAX_LAYERGRP];
 static char layer_valid[PCB_MAX_LAYER];
@@ -263,6 +264,18 @@ static pcb_layergrp_id_t get_group_coords(pcb_coord_t y, pcb_coord_t *y1, pcb_co
 	return -1;
 }
 
+static pcb_coord_t create_button(pcb_hid_gc_t gc, int x, int y, const char *label, pcb_box_t *box)
+{
+	pcb_text_t *t;
+	t = dtext_bg(gc, x, y, 200, 0, label, COLOR_BG, COLOR_ANNOT);
+	pcb_text_bbox(&PCB->Font, t);
+	dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
+	box->X1 = t->BoundingBox.X1;
+	box->Y1 = PCB_MM_TO_COORD(y);
+	box->X2 = t->BoundingBox.X2+PCB_MM_TO_COORD(1);
+	box->Y2 = PCB_MM_TO_COORD(y+4);
+	return PCB_COORD_TO_MM(box->X2);
+}
 
 static pcb_hid_gc_t csect_gc;
 
@@ -270,7 +283,7 @@ static pcb_hid_gc_t csect_gc;
 static void draw_csect(pcb_hid_gc_t gc)
 {
 	pcb_layergrp_id_t gid;
-	int ystart = 10, y, last_copper_step = 5, has_outline = 0;
+	int ystart = 10, x, y, last_copper_step = 5, has_outline = 0;
 
 	reset_layer_coords();
 	csect_gc = gc;
@@ -281,7 +294,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 	/* draw physical layers */
 	y = ystart;
 	for(gid = 0; gid < pcb_max_group; gid++) {
-		int x, i, stepf = 0, stepb = 0, th;
+		int i, stepf = 0, stepb = 0, th;
 		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
 		const char *color = "#ff0000";
 
@@ -361,6 +374,11 @@ static void draw_csect(pcb_hid_gc_t gc)
 		dline(0, ystart, 0, y+10, 1);
 		dtext_bg(gc, 1, y+7, 200, 0, "outline", COLOR_BG, COLOR_ANNOT);
 	}
+
+	y+=7;
+	x=20;
+	x = 2 + create_button(gc, x, y, "Add copper group", &btn_addgrp);
+	x = 2 + create_button(gc, x, y, "Del copper group", &btn_delgrp);
 }
 
 static pcb_coord_t ox, oy, lx, ly, cx, cy, gy1, gy2;
