@@ -24,14 +24,16 @@
  *
  */
 
-/* build info and run control */
-
 void pcb_quit_app(void);
 
-/* Returns a string with info about this copy of pcb. */
+char *pcb_get_info_program(void);
+char *pcb_get_info_copyright(void);
+char *pcb_get_info_websites(void);
+char *pcb_get_info_comments(void);
+char *pcb_get_info_compile_options(void);
+
 char *pcb_get_infostr(void);
 
 const char *pcb_author(void);
 
-/* catches signals which abort the program */
 void pcb_catch_signal(int Signal);

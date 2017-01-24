@@ -3,6 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996,2006 Thomas Nau
+ *  pcb-rnd Copyright (C) 2017 Alain Vigne
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,10 +35,10 @@
 #include "plug_io.h"
 #include "compat_misc.h"
 
-/* ---------------------------------------------------------------------------
- * quits application
- */
 extern void pcb_main_uninit(void);
+/** pcb_quit_app:
+ *  Quits application
+ */
 void pcb_quit_app(void)
 {
 	/*
@@ -58,12 +59,95 @@ void pcb_quit_app(void)
 		pcb_gui->do_exit(pcb_gui);
 }
 
-/* ---------------------------------------------------------------------------
- * Returns a string that has a bunch of information about the program.
- * Can be used for things like "about" dialog boxes.
+/** pcb_get_info_program:
+ *  Returns a string that has a bunch of information about this program.
  */
+char *pcb_get_info_program(void)
+{
+	static gds_t info;
+	static int first_time = 1;
 
-char *pcb_get_infostr(void)
+	if (first_time) {
+		first_time = 0;
+		gds_init(&info);
+		gds_append_str(&info, "This is PCB-rnd " VERSION " (" REVISION ")" "\n an interactive ");
+		gds_append_str(&info, "printed circuit board editor\n");
+		gds_append_str(&info, "pcb-rnd forked from gEDA/PCB.");
+		gds_append_str(&info, "\n\n" "PCB is by harry eaton and others\n\n");
+		gds_append_str(&info, "pcb-rnd is a refactored version ");
+		gds_append_str(&info, "with many new features and improvements.\n\n");
+	}
+	return info.array;
+}
+
+/** pcb_get_info_copyright:
+ *  Returns a string that has a bunch of information about the copyrights.
+ */
+char *pcb_get_info_copyright(void)
+{
+	static gds_t info;
+	static int first_time = 1;
+
+	if (first_time) {
+		first_time = 0;
+		gds_init(&info);
+		gds_append_str(&info, "Copyright (C) Thomas Nau 1994, 1995, 1996, 1997\n");
+		gds_append_str(&info, "Copyright (C) harry eaton 1998-2007\n");
+		gds_append_str(&info, "Copyright (C) C. Scott Ananian 2001\n");
+		gds_append_str(&info, "Copyright (C) DJ Delorie 2003, 2004, 2005, 2006, 2007, 2008\n");
+		gds_append_str(&info, "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
+		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013-2017 (pcb-rnd patches)");
+	}
+	return info.array;
+}
+
+/** pcb_get_info_websites:
+ *  Returns a string that has a bunch of information about the websites.
+ */
+char *pcb_get_info_websites(void)
+{
+	static gds_t info;
+	static int first_time = 1;
+
+	if (first_time) {
+		first_time = 0;
+		gds_init(&info);
+
+		gds_append_str(&info, "For more information see:\n");
+		gds_append_str(&info, "PCB-rnd homepage: http://repo.hu/projects/pcb-rnd\n");
+		gds_append_str(&info, "PCB homepage: http://pcb.geda-project.org\n");
+		gds_append_str(&info, "gEDA homepage: http://www.geda-project.org\n");
+		gds_append_str(&info, "gEDA Wiki: http://wiki.geda-project.org\n\n");
+	}
+	return info.array;
+}
+
+/** pcb_get_info_comments:
+ *  Returns a string as the concatenation of pcb_get_info_program() and pcb_get_info_websites()
+ */
+char *pcb_get_info_comments(void)
+{
+	static gds_t info;
+	static int first_time = 1;
+	char *tmp;
+
+	if (first_time) {
+		first_time = 0;
+		gds_init(&info);
+
+		tmp = pcb_get_info_program();
+		gds_append_str(&info, tmp);
+		tmp = pcb_get_info_websites();
+		gds_append_str(&info, tmp);
+	}
+	return info.array;
+}
+
+
+/** pcb_get_info_compile_options:
+ *  Returns a string that has a bunch of information about the options selected at compile time.
+ */
+char *pcb_get_info_compile_options(void)
 {
 	pcb_hid_t **hids;
 	int i;
@@ -75,27 +159,6 @@ char *pcb_get_infostr(void)
 	if (first_time) {
 		first_time = 0;
 		gds_init(&info);
-		gds_append_str(&info, "This is PCB-rnd " VERSION " (" REVISION ")" "\n an interactive\n");
-		gds_append_str(&info, "printed circuit board editor\n");
-		gds_append_str(&info, "pcb-rnd forked from gEDA/PCB.");
-		gds_append_str(&info, "\n\n" "PCB is by harry eaton and others\n\n");
-		gds_append_str(&info, "\npcb-rnd is a refactored version\n");
-		gds_append_str(&info, "with many new features and improvements.\n");
-		gds_append_str(&info, "\n");
-		gds_append_str(&info, "Copyright (C) Thomas Nau 1994, 1995, 1996, 1997\n");
-		gds_append_str(&info, "Copyright (C) harry eaton 1998-2007\n");
-		gds_append_str(&info, "Copyright (C) C. Scott Ananian 2001\n");
-		gds_append_str(&info, "Copyright (C) DJ Delorie 2003, 2004, 2005, 2006, 2007, 2008\n");
-		gds_append_str(&info, "Copyright (C) Dan McMahill 2003, 2004, 2005, 2006, 2007, 2008\n\n");
-		gds_append_str(&info, "Copyright (C) Tibor Palinkas 2013-2017 (pcb-rnd patches)\n\n");
-		gds_append_str(&info, "It is licensed under the terms of the GNU\n");
-		gds_append_str(&info, "General Public License version 2\n");
-		gds_append_str(&info, "See the LICENSE file for more information\n\n");
-		gds_append_str(&info, "For more information see:\n\n");
-		gds_append_str(&info, "PCB-rnd homepage: http://repo.hu/projects/pcb-rnd\n");
-		gds_append_str(&info, "PCB homepage: http://pcb.geda-project.org\n");
-		gds_append_str(&info, "gEDA homepage: http://www.geda-project.org\n");
-		gds_append_str(&info, "gEDA Wiki: http://wiki.geda-project.org\n\n");
 
 		gds_append_str(&info, "----- Compile Time Options -----\n");
 		hids = pcb_hid_enumerate();
@@ -136,6 +199,37 @@ char *pcb_get_infostr(void)
 	return info.array;
 }
 
+/** pcb_get_infostr:
+ *  Returns a string that has a bunch of information about this copy of pcb.
+ *  Can be used for things like "about" dialog boxes.
+ */
+char *pcb_get_infostr(void)
+{
+	static gds_t info;
+	static int first_time = 1;
+	char *tmp;
+
+	if (first_time) {
+		first_time = 0;
+		gds_init(&info);
+
+		tmp = pcb_get_info_program();
+		gds_append_str(&info, tmp);
+		tmp = pcb_get_info_copyright();
+		gds_append_str(&info, tmp);
+		gds_append_str(&info, "\n\n");
+		gds_append_str(&info, "It is licensed under the terms of the GNU\n");
+		gds_append_str(&info, "General Public License version 2\n");
+		gds_append_str(&info, "See the LICENSE file for more information\n\n");
+		tmp = pcb_get_info_websites();
+		gds_append_str(&info, tmp);
+
+		tmp = pcb_get_info_compile_options();
+		gds_append_str(&info, tmp);
+	}
+	return info.array;
+}
+
 const char *pcb_author(void)
 {
 	if (conf_core.design.fab_author && conf_core.design.fab_author[0])
@@ -144,6 +238,9 @@ const char *pcb_author(void)
 		return pcb_get_user_name();
 }
 
+/** pcb_catch_signal:
+ *  Catches signals which abort the program.
+ */
 void pcb_catch_signal(int Signal)
 {
 	const char *s;
