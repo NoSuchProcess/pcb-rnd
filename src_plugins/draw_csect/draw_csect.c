@@ -29,6 +29,7 @@
 #include "draw.h"
 #include "plugins.h"
 #include "stub_draw_csect.h"
+#include "compat_misc.h"
 
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
@@ -477,7 +478,17 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			break;
 		case PCB_HID_MOUSE_RELEASE:
 			if (drag_addgrp) {
-				printf("addgrp!\n");
+				if (gactive >= 0) {
+					pcb_layer_group_t *g;
+					g = pcb_layergrp_insert_after(&PCB->LayerGroups, gactive);
+					g->name = NULL;
+					g->type = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
+					g->valid = 1;
+					g = pcb_layergrp_insert_after(&PCB->LayerGroups, gactive);
+					g->name = pcb_strdup("Intern");
+					g->type = PCB_LYT_INTERN | PCB_LYT_COPPER;
+					g->valid = 1;
+				}
 				drag_addgrp = 0;
 				res = 1;
 			}
