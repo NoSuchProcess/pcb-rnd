@@ -87,6 +87,9 @@ int pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);
    (.grp = -1), else layers are deleted too */
 int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_layers);
 
+/* Insert a new layer group in the layer stack after the specified group */
+pcb_layer_group_t *pcb_layergrp_insert_after(pcb_layer_stack_t *stack, pcb_layergrp_id_t where);
+
 
 /********* OBSOLETE functions, do not use in new code *********/
 /* parses the group definition string which is a colon separated list of

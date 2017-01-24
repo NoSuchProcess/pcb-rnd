@@ -195,6 +195,19 @@ pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, p
 	return NULL;
 }
 
+pcb_layer_group_t *pcb_layergrp_insert_after(pcb_layer_stack_t *stack, pcb_layergrp_id_t where)
+{
+	int n;
+	if ((where <= 0) || (where >= stack->len))
+		return NULL;
+
+	for(n = stack->len-1; n > where; n--)
+		pcb_layergrp_move(stack, n+1, n);
+
+	stack->len++;
+	return stack->grp+where+1;
+}
+
 static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_layer_stack_t *stack, int omit_substrate)
 {
 	int bl, n;
