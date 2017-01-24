@@ -277,6 +277,11 @@ static pcb_coord_t create_button(pcb_hid_gc_t gc, int x, int y, const char *labe
 	return PCB_COORD_TO_MM(box->X2);
 }
 
+static int is_button(int x, int y, const pcb_box_t *box)
+{
+	return (x >= box->X1) && (x <= box->X2) && (y >= box->Y1) && (y <= box->Y2);
+}
+
 static pcb_hid_gc_t csect_gc;
 
 /* Draw the cross-section layer */
@@ -382,10 +387,10 @@ static void draw_csect(pcb_hid_gc_t gc)
 }
 
 static pcb_coord_t ox, oy, lx, ly, cx, cy, gy1, gy2;
-static int lvalid, gvalid;
+static int lvalid, gvalid, drag_addgrp;
 static pcb_layergrp_id_t gactive = -1;
 
-static void mark_grp(pcb_coord_t y, unsigned int accept_mask)
+static void mark_grp(pcb_coord_t y, unsigned int accept_mask, int middle)
 {
 	pcb_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
 	pcb_layergrp_id_t g;
@@ -393,8 +398,13 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask)
 	if ((y1 == gy1) && (y2 == gy2) && gvalid)
 		return;
 	if (gvalid) {
-		dline_(x0, gy1, PCB_MM_TO_COORD(200), gy1, 0.1);
-		dline_(x0, gy2, PCB_MM_TO_COORD(200), gy2, 0.1);
+		if (!middle) {
+			dline_(x0, gy1, PCB_MM_TO_COORD(200), gy1, 0.1);
+			dline_(x0, gy2, PCB_MM_TO_COORD(200), gy2, 0.1);
+		}
+		else
+			dline_(x0, (gy1+gy2)/2, PCB_MM_TO_COORD(200), (gy1+gy2)/2, 0.1);
+
 		gvalid = 0;
 	}
 	g = get_group_coords(y, &y1, &y2);
@@ -403,8 +413,12 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask)
 		gy2 = y2;
 		gactive = g;
 		gvalid = 1;
-		dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
-		dline_(x0, y2, PCB_MM_TO_COORD(200), y2, 0.1);
+		if (!middle) {
+			dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
+			dline_(x0, y2, PCB_MM_TO_COORD(200), y2, 0.1);
+		}
+		else
+			dline_(x0, (y1+y2)/2, PCB_MM_TO_COORD(200), (y1+y2)/2, 0.1);
 	}
 	else
 		gactive = -1;
@@ -412,7 +426,7 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask)
 
 static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 {
-	if (drag_lid >= 0) {
+	if ((drag_lid >= 0) || (drag_addgrp)) {
 		pcb_hid_t *old_gui = pcb_gui;
 		pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 		pcb_gui = hid;
@@ -420,18 +434,22 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 
 		pcb_gui->set_color(Output.fgGC, "#000000");
 		pcb_gui->set_draw_xor(Output.fgGC, 1);
-
-		if ((lx != cx) || (ly != cy)) {
-			if (lvalid) {
-				dtext_(lx, ly, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
-				lvalid = 0;
-			}
-			dtext_(cx, cy, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
-			lx = cx;
-			ly = cy;
-			lvalid = 1;
+		if (drag_addgrp) {
+			mark_grp(cy, PCB_LYT_SUBSTRATE, 1);
 		}
-		mark_grp(cy, PCB_LYT_COPPER);
+		else if (drag_lid >= 0) {
+			if ((lx != cx) || (ly != cy)) {
+				if (lvalid) {
+					dtext_(lx, ly, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
+					lvalid = 0;
+				}
+				dtext_(cx, cy, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
+				lx = cx;
+				ly = cy;
+				lvalid = 1;
+			}
+			mark_grp(cy, PCB_LYT_COPPER, 0);
+		}
 		pcb_gui->destroy_gc(Output.fgGC);
 		pcb_gui = old_gui;
 	}
@@ -443,14 +461,27 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 	pcb_bool res = 0;
 	switch(kind) {
 		case PCB_HID_MOUSE_PRESS:
-			drag_lid = get_layer_coords(x, y);
-			ox = x;
-			oy = y;
-			lvalid = 0;
-			res = 1;
+			if (is_button(x, y, &btn_addgrp)) {
+				drag_addgrp = 1;
+				res = 1;
+			}
+			else {
+				drag_lid = get_layer_coords(x, y);
+				if (drag_lid >= 0) {
+					ox = x;
+					oy = y;
+					lvalid = 0;
+					res = 1;
+				}
+			}
 			break;
 		case PCB_HID_MOUSE_RELEASE:
-			if (drag_lid >= 0) {
+			if (drag_addgrp) {
+				printf("addgrp!\n");
+				drag_addgrp = 0;
+				res = 1;
+			}
+			else if (drag_lid >= 0) {
 				if (gactive >= 0) {
 					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 					if (l->grp != gactive) {
