@@ -53,11 +53,13 @@ int pcb_layergrp_del_layer(pcb_layergrp_id_t gid, pcb_layer_id_t lid)
 	if ((lid < 0) || (lid >= pcb_max_layer))
 		return -1;
 
-	if ((gid < 0) || (gid >= PCB->LayerGroups.len))
+	layer = PCB->Data->Layer + lid;
+	if (gid < 0)
+		gid = layer->grp;
+	if (gid >= PCB->LayerGroups.len)
 		return -1;
 
 	grp = &PCB->LayerGroups.grp[gid];
-	layer = PCB->Data->Layer + lid;
 
 	if (layer->grp != gid)
 		return -1;
@@ -79,7 +81,7 @@ int pcb_layergrp_del_layer(pcb_layergrp_id_t gid, pcb_layer_id_t lid)
 
 pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t lid, pcb_layergrp_id_t gid)
 {
-	if (pcb_layergrp_del_layer(gid, lid) != 0)
+	if (pcb_layergrp_del_layer(-1, lid) != 0)
 		return -1;
 	pcb_layer_add_in_group(lid, gid);
 	return gid;
