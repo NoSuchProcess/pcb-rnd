@@ -429,11 +429,19 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			ox = x;
 			oy = y;
 			lvalid = 0;
-			printf("lid=%d\n", drag_lid);
 			res = 1;
 			break;
 		case PCB_HID_MOUSE_RELEASE:
 			if (drag_lid >= 0) {
+				if (gactive >= 0) {
+					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
+					if (l->grp != gactive) {
+						pcb_layer_move_to_group(drag_lid, gactive);
+						pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->Name, gactive);
+					}
+				}
+				else
+					pcb_message(PCB_MSG_ERROR, "Can not move copper layer onto non-copper layer group");
 				res = 1;
 				drag_lid = -1;
 				lvalid = gvalid = 0;
