@@ -364,9 +364,10 @@ static void draw_csect(pcb_hid_gc_t gc)
 }
 
 static pcb_coord_t ox, oy, lx, ly, cx, cy, gy1, gy2;
-static int lvalid, gvalid, overlay_del;
+static int lvalid, gvalid;
+static pcb_layergrp_id_t gactive = -1;
 
-static void mark_grp(pcb_coord_t y)
+static void mark_grp(pcb_coord_t y, unsigned int accept_mask)
 {
 	pcb_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
 	pcb_layergrp_id_t g;
@@ -379,13 +380,16 @@ static void mark_grp(pcb_coord_t y)
 		gvalid = 0;
 	}
 	g = get_group_coords(y, &y1, &y2);
-	if (g >= 0) {
+	if ((g >= 0) && (pcb_layergrp_flags(g) & accept_mask)) {
 		gy1 = y1;
 		gy2 = y2;
+		gactive = g;
 		gvalid = 1;
 		dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
 		dline_(x0, y2, PCB_MM_TO_COORD(200), y2, 0.1);
 	}
+	else
+		gactive = -1;
 }
 
 static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
@@ -409,7 +413,7 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 			ly = cy;
 			lvalid = 1;
 		}
-		mark_grp(cy);
+		mark_grp(cy, PCB_LYT_COPPER);
 		pcb_gui->destroy_gc(Output.fgGC);
 		pcb_gui = old_gui;
 	}
