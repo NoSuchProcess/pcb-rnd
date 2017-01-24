@@ -369,6 +369,17 @@ static void XORDrawMoveOrCopy(void)
 			pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
 
 			XORDrawAttachedLine(line->Point1.X + dx, line->Point1.Y + dy, line->Point2.X + dx, line->Point2.Y + dy, line->Thickness);
+			
+			/* Draw the DRC outline if it is enabled */
+			if (conf_core.editor.show_drc) {
+				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+				XORDrawAttachedLine(line->Point1.X + dx,
+        										line->Point1.Y + dy,
+														line->Point2.X + dx,
+ 														line->Point2.Y + dy, 
+														line->Thickness + 2 * (PCB->Bloat + 1) );
+				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+			}
 			break;
 		}
 
@@ -394,14 +405,21 @@ static void XORDrawMoveOrCopy(void)
 	case PCB_TYPE_LINE_POINT:
 		{
 			pcb_line_t *line;
-			pcb_point_t *point;
+			pcb_point_t *point1,*point2;
 
 			line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
-			point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
-			if (point == &line->Point1)
-				XORDrawAttachedLine(point->X + dx, point->Y + dy, line->Point2.X, line->Point2.Y, line->Thickness);
-			else
-				XORDrawAttachedLine(point->X + dx, point->Y + dy, line->Point1.X, line->Point1.Y, line->Thickness);
+			point1 = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
+			point2 = (point1 == &line->Point1 ? &line->Point2 : &line->Point1);
+				
+			XORDrawAttachedLine(point1->X + dx, point1->Y + dy, point2->X, point2->Y, line->Thickness);
+
+			/* Draw the DRC outline if it is enabled */
+			if (conf_core.editor.show_drc) {
+				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+				XORDrawAttachedLine(point1->X + dx, point1->Y + dy, point2->X, point2->Y,line->Thickness + 2 * (PCB->Bloat + 1) );
+				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+			}
+
 			break;
 		}
 

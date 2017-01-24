@@ -734,26 +734,46 @@ static void rbe_draw(void *user_data, int argc, pcb_event_arg_t argv[])
 	i = rbnd->RubberbandN;
 	ptr = rbnd->Rubberband;
 	while (i) {
-		pcb_point_t *point1, *point2;
 
 		if (PCB_FLAG_TEST(PCB_FLAG_VIA, ptr->Line)) {
 			/* this is a rat going to a polygon.  do not draw for rubberband */ ;
 		}
-		else if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line)) {
-			/* 'point1' is always the fix-point */
-			if (ptr->MovedPoint == &ptr->Line->Point1) {
-				point1 = &ptr->Line->Point2;
-				point2 = &ptr->Line->Point1;
+		else {
+			pcb_coord_t x1=0,y1=0,x2=0,y2=0;
+
+			if (PCB_FLAG_TEST(PCB_FLAG_RUBBEREND, ptr->Line)) {
+				/* 'point1' is always the fix-point */
+				if (ptr->MovedPoint == &ptr->Line->Point1) {
+					x1 = ptr->Line->Point2.X;
+					y1 = ptr->Line->Point2.Y;
+					x2 = ptr->Line->Point1.X + dx;
+					y2 = ptr->Line->Point1.Y + dy;
+				}
+				else {
+					x1 = ptr->Line->Point1.X;
+					y1 = ptr->Line->Point1.Y;
+					x2 = ptr->Line->Point2.X + dx;
+					y2 = ptr->Line->Point2.Y + dy;
+				}
 			}
-			else {
-				point1 = &ptr->Line->Point1;
-				point2 = &ptr->Line->Point2;
+			else if (ptr->MovedPoint == &ptr->Line->Point1)	{
+					x1 = ptr->Line->Point1.X + dx;
+					y1 = ptr->Line->Point1.Y + dy;
+					x2 = ptr->Line->Point2.X + dx;
+					y2 = ptr->Line->Point2.Y + dy;
 			}
-			XORDrawAttachedLine(point1->X, point1->Y, point2->X + dx, point2->Y + dy, ptr->Line->Thickness);
+
+			if ((x1 != x2) || (y1 != y2)) {
+				XORDrawAttachedLine(x1,y1,x2,y2, ptr->Line->Thickness);
+
+				/* Draw the DRC outline if it is enabled */
+				if (conf_core.editor.show_drc) {
+					pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+ 					XORDrawAttachedLine(x1,y1,x2,y2,ptr->Line->Thickness + 2 * (PCB->Bloat + 1) );
+        	pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+				}
+      }
 		}
-		else if (ptr->MovedPoint == &ptr->Line->Point1)
-			XORDrawAttachedLine(ptr->Line->Point1.X + dx,
-													ptr->Line->Point1.Y + dy, ptr->Line->Point2.X + dx, ptr->Line->Point2.Y + dy, ptr->Line->Thickness);
 
 		ptr++;
 		i--;
