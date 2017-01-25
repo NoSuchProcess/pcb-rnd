@@ -32,34 +32,35 @@ arc_offpage.bom good r5652
 arc_sizes.bom good r5652
 arc_angles.bom good r5452
 arc_sizes.svg broken r6023 ellipticals not handled
-
-arc_angles.png good 6417
-arc_f_clear.png bad 6417 rounding error limit of +-1mil exceded (i will double check later)
-arc_normal.png good 6417
-arc_offpage.png good 6417
-arc_sizes.png good 6417
-clearance.png bad 6417 missing pcb & text file?!
-elem_pads.png good 6417
-elem_pins.png good 6417
-elem_sides_smd.png good 6417
-elem_sides_trh.png good 6417
-layer_copper.png good 6417
-layer_silk.png good 6440
-line_f_clear.png fail 6440 (out of tollerance)
-line_normal.png good 6440
-line_offpage.png fail 6440 (requires rechecking)
-line_overlap1.png good 6440
-line_overlap2.png good 6440
-line_overlap3.png good 6440
-line_overlap4.png good 6440
-line_zerolen.png good 6440
-poly_hole.png good 6440
-poly_rect.png good 6440
-poly_triangle.png good 6440
-text_rot.png good 6440
-text_scale.png revisit 6440 I messed up need to remeasure the pcb file
-text_sides.png good 6440
-thermal_last.png fail 6440 Failed but this is a mistake recording my
+arc_angles.png good r6417
+arc_f_clear.png bad r6417 rounding error limit of +-1mil exceded (i will double check later)
+arc_normal.png good r6417
+arc_offpage.png good r6417
+arc_sizes.png good r6417
+clearance.png bad r6417 missing pcb & text file?!
+elem_pads_ds.png 
+elem_pads.png good r6417
+elem_pins.png good r6417
+elem_sides_smd.png good r6417
+elem_sides_trh.png good r6417
+layer_copper.png good r6417
+layer_silk.png good r6440
+line_f_clear.png fail r6440 (out of tollerance)
+line_offpage.png 
+line_normal.png good r6440
+line_offpage.png fail r6440 (requires rechecking)
+line_overlap1.png good r6440
+line_overlap2.png good r6440
+line_overlap3.png good r6440
+line_overlap4.png good r6440
+line_zerolen.png good r6440
+poly_hole.png good r6440
+poly_rect.png good r6440
+poly_triangle.png good r6440
+text_rot.png good r6440
+text_scale.png revisit r6440 I messed up need to remeasure the pcb file
+text_sides.png good r6440
+thermal_last.png fail r6440 Failed but this is a mistake recording my
 measurement
-thermal_layer.png good 6440
+thermal_layer.png good r6440
 
