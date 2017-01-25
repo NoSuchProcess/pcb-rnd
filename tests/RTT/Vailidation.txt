@@ -54,4 +54,8 @@ line_overlap3.png good 6440
 line_overlap4.png good 6440
 line_zerolen.png good 6440
 poly_hole.png good 6440
+poly_rect.png good 6440
+poly_triangle.png good 6440
+text_rot.png good 6440
+
 

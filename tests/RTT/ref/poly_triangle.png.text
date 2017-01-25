@@ -1,31 +1,32 @@
 
 upper left triangle
-121 pixels wide
-121 pixels tall
+121 pixels (100.833) wide
+121 pixels (100.83) tall
 
 gap from lower left triangle to upper left triangle
-29 pixels horizontally
-29 pixels vertically
+29 pixels (24.166) horizontally
+29 pixels (24.166) vertically
 
 lower left triangle
-151 pixels wide
-151 pixels tall
+151 pixels (125.833) wide
+151 pixels (125.833) tall
 
 gap from lower left triangle to far right piramid
-29 pixels
+29 pixels (24.166)
 
 far right piramid
-151 pixels height
-301 pixels base
+151 pixels (125.833) height
+301 pixels (250.833) base
 
 bottom triangle
-331 pixels across
-211 pixels up
+331 pixels (275.833) across
+211 pixels (175.833) up
 top edge
-332.4 pixels long 5.18 degrees
+332.4 pixels (277) long 5.18 degrees
 side edge
-213.1 pixels long 91.91 degrees
+213.1 pixels (177.5833) long 91.91 degrees
 bottom edge
-351.2 pixels long 31.02 degrees
+351.2 pixels (292.666) long 31.02 degrees
 
+(mil)
 
