@@ -45,7 +45,10 @@ static const char *COLOR_PASTE = "#60e0e0";
 static const char *COLOR_MISC = "#e0e000";
 static const char *COLOR_OUTLINE = "#000000";
 
-static pcb_layer_id_t drag_lid= -1;
+static pcb_layer_id_t drag_lid = -1;
+static pcb_layergrp_id_t drag_gid = -1, drag_gid_subst = -1;
+
+#define GROUP_WIDTH_MM 75
 
 /* Draw a text at x;y sized scale percentage */
 static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
@@ -304,7 +307,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 		pcb_layer_group_t *g = PCB->LayerGroups.grp + gid;
 		const char *color = "#ff0000";
 
-		if (!g->valid)
+		if ((!g->valid) || (gid == drag_gid)  || (gid == drag_gid_subst))
 			continue;
 		else if (g->type & PCB_LYT_COPPER) {
 			last_copper_step = -last_copper_step;
@@ -348,14 +351,14 @@ static void draw_csect(pcb_hid_gc_t gc)
 			continue;
 
 		pcb_gui->set_color(gc, color);
-		dhrect(0, y, 75, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
+		dhrect(0, y, GROUP_WIDTH_MM, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
 		dtext_bg(gc, 5, y, 200, 0, g->name, COLOR_BG, COLOR_ANNOT);
 		reg_group_coords(gid, PCB_MM_TO_COORD(y), PCB_MM_TO_COORD(y+th));
 
 
 		/* draw layer names */
 		if (g->type & PCB_LYT_COPPER) {
-			x = 78;
+			x = GROUP_WIDTH_MM + 3;
 			for(i = 0; i < g->len; i++) {
 				pcb_text_t *t;
 				pcb_layer_id_t lid = g->lid[i];
@@ -388,7 +391,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 }
 
 static pcb_coord_t ox, oy, lx, ly, cx, cy, gy1, gy2;
-static int lvalid, gvalid, drag_addgrp;
+static int lvalid, gvalid, dgvalid, drag_addgrp;
 static pcb_layergrp_id_t gactive = -1;
 
 static void mark_grp(pcb_coord_t y, unsigned int accept_mask, int middle)
@@ -427,18 +430,20 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, int middle)
 
 static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 {
-	if ((drag_lid >= 0) || (drag_addgrp)) {
+	if ((drag_lid >= 0) || (drag_addgrp) || (drag_gid >= 0)) {
 		pcb_hid_t *old_gui = pcb_gui;
-		pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 		pcb_gui = hid;
 		Output.fgGC = pcb_gui->make_gc();
 
 		pcb_gui->set_color(Output.fgGC, "#000000");
 		pcb_gui->set_draw_xor(Output.fgGC, 1);
+
+		/* draw the actual operation */
 		if (drag_addgrp) {
 			mark_grp(cy, PCB_LYT_SUBSTRATE, 1);
 		}
 		else if (drag_lid >= 0) {
+			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 			if ((lx != cx) || (ly != cy)) {
 				if (lvalid) {
 					dtext_(lx, ly, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
@@ -451,6 +456,17 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 			}
 			mark_grp(cy, PCB_LYT_COPPER, 0);
 		}
+		else if (drag_gid >= 0) {
+			pcb_layer_group_t *g = &PCB->LayerGroups.grp[drag_gid];
+			const char *name = g->name == NULL ? "<unnamed group>" : g->name;
+			if (dgvalid)
+				dtext_(lx, ly, 250, 0, name, PCB_MM_TO_COORD(0.01));
+			dtext_(cx, cy, 250, 0, name, PCB_MM_TO_COORD(0.01));
+			lx = cx;
+			ly = cy;
+			dgvalid = 1;
+		}
+
 		pcb_gui->destroy_gc(Output.fgGC);
 		pcb_gui = old_gui;
 	}
@@ -465,13 +481,24 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			if (is_button(x, y, &btn_addgrp)) {
 				drag_addgrp = 1;
 				res = 1;
+				break;
 			}
-			else {
-				drag_lid = get_layer_coords(x, y);
-				if (drag_lid >= 0) {
-					ox = x;
-					oy = y;
-					lvalid = 0;
+
+			drag_lid = get_layer_coords(x, y);
+			if (drag_lid >= 0) {
+				ox = x;
+				oy = y;
+				lvalid = 0;
+				res = 1;
+				break;
+			}
+			
+			if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
+				pcb_coord_t tmp;
+				drag_gid = get_group_coords(y, &tmp, &tmp);
+				if (drag_gid >= 0) {
+					gvalid = 0;
+					drag_gid_subst = drag_gid - 1;
 					res = 1;
 				}
 			}
@@ -505,6 +532,12 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				res = 1;
 				drag_lid = -1;
 				lvalid = gvalid = 0;
+			}
+			else if (drag_gid > 0) {
+				res = 1;
+				drag_gid = -1;
+				drag_gid_subst = -1;
+				dgvalid = 0;
 			}
 			break;
 		case PCB_HID_MOUSE_MOTION:
