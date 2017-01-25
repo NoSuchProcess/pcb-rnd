@@ -49,6 +49,7 @@
 
 /* TODO: REMOVE THIS */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
+#include "../src_plugins/lib_gtk_common/bu_box.h"
 
 
 	/* Silk and rats lines are the two additional selectable to draw on.
@@ -307,25 +308,11 @@ void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												gboolean pack_start, gboolean expand, gboolean fill,
 												guint pad, gfloat value, gfloat low, gfloat high,
 												gfloat step0, gfloat step1, void (*cb_func) (), gpointer data);
-GtkWidget *ghid_scrolled_vbox(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h_policy, GtkPolicyType v_policy);
-GtkWidget *ghid_framed_vbox(GtkWidget * box, gchar * label,
-														gint frame_border_width, gboolean frame_expand, gint vbox_pad, gint vbox_border_width);
-GtkWidget *ghid_framed_vbox_end(GtkWidget * box, gchar * label,
-																gint frame_border_width, gboolean frame_expand, gint vbox_pad, gint vbox_border_width);
-GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header,
-															gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad);
 GtkWidget *ghid_notebook_page(GtkWidget * tabs, const char *name, gint pad, gint border);
 GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, const char *name,
 																		 gint border, gint frame_border, gint vbox_pad, gint vbox_border);
-GtkWidget *ghid_scrolled_text_view(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h_policy, GtkPolicyType v_policy);
 void ghid_text_view_append(GtkWidget * view, const gchar * string);
 void ghid_text_view_append_strings(GtkWidget * view, const gchar ** string, gint n_strings);
-GtkTreeSelection *ghid_scrolled_selection(GtkTreeView * treeview,
-																					GtkWidget * box,
-																					GtkSelectionMode s_mode,
-																					GtkPolicyType h_policy,
-																					GtkPolicyType v_policy,
-																					void (*func_cb) (GtkTreeSelection *, gpointer), gpointer data);
 
 void ghid_dialog_report(const gchar * title, const gchar * message);
 void ghid_label_set_markup(GtkWidget * label, const gchar * text);
