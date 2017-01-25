@@ -196,48 +196,6 @@ ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t value,
 }
 
 void
-ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value,
-								 gfloat low, gfloat high, gfloat step0, gfloat step1,
-								 gint digits, gint width,
-								 void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string)
-{
-	GtkWidget *hbox = NULL, *label, *spin_but;
-	GtkSpinButton *spin;
-	GtkAdjustment *adj;
-
-	if (string && box) {
-		hbox = gtk_hbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 2);
-		box = hbox;
-	}
-	adj = (GtkAdjustment *) gtk_adjustment_new(value, low, high, step0, step1, 0.0);
-	spin_but = gtk_spin_button_new(adj, 0.5, digits);
-	if (spin_button)
-		*spin_button = spin_but;
-	if (width > 0)
-		gtk_widget_set_size_request(spin_but, width, -1);
-	spin = GTK_SPIN_BUTTON(spin_but);
-	gtk_spin_button_set_numeric(spin, TRUE);
-	if (data == NULL)
-		data = (gpointer) spin;
-	if (cb_func)
-		g_signal_connect(G_OBJECT(spin_but), "value_changed", G_CALLBACK(cb_func), data);
-	if (box) {
-		if (right_align && string) {
-			label = gtk_label_new(string);
-			gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
-			gtk_box_pack_start(GTK_BOX(box), label, TRUE, TRUE, 2);
-		}
-		gtk_box_pack_start(GTK_BOX(box), spin_but, FALSE, FALSE, 2);
-		if (!right_align && string) {
-			label = gtk_label_new(string);
-			gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-			gtk_box_pack_start(GTK_BOX(box), label, TRUE, TRUE, 2);
-		}
-	}
-}
-
-void
 ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
 											 GtkWidget ** coord_entry, pcb_coord_t value,
 											 pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size,
@@ -271,53 +229,6 @@ ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
 	}
 	else {
 		gtk_table_attach_defaults(GTK_TABLE(table), entry_widget, column, column + 1, row, row + 1);
-		if (string) {
-			label = gtk_label_new(string);
-			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-			gtk_table_attach_defaults(GTK_TABLE(table), label, column + 1, column + 2, row, row + 1);
-		}
-	}
-}
-
-
-void
-ghid_table_spin_button(GtkWidget * table, gint row, gint column,
-											 GtkWidget ** spin_button, gfloat value,
-											 gfloat low, gfloat high, gfloat step0, gfloat step1,
-											 gint digits, gint width,
-											 void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string)
-{
-	GtkWidget *label, *spin_but;
-	GtkSpinButton *spin;
-	GtkAdjustment *adj;
-
-	if (!table)
-		return;
-
-	adj = (GtkAdjustment *) gtk_adjustment_new(value, low, high, step0, step1, 0.0);
-	spin_but = gtk_spin_button_new(adj, 0.5, digits);
-
-	if (spin_button)
-		*spin_button = spin_but;
-	if (width > 0)
-		gtk_widget_set_size_request(spin_but, width, -1);
-	spin = GTK_SPIN_BUTTON(spin_but);
-	gtk_spin_button_set_numeric(spin, TRUE);
-	if (data == NULL)
-		data = (gpointer) spin;
-	if (cb_func)
-		g_signal_connect(G_OBJECT(spin_but), "value_changed", G_CALLBACK(cb_func), data);
-
-	if (right_align) {
-		gtk_table_attach_defaults(GTK_TABLE(table), spin_but, column + 1, column + 2, row, row + 1);
-		if (string) {
-			label = gtk_label_new(string);
-			gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
-			gtk_table_attach_defaults(GTK_TABLE(table), label, column, column + 1, row, row + 1);
-		}
-	}
-	else {
-		gtk_table_attach_defaults(GTK_TABLE(table), spin_but, column, column + 1, row, row + 1);
 		if (string) {
 			label = gtk_label_new(string);
 			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);

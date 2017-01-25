@@ -50,6 +50,7 @@
 /* TODO: REMOVE THIS */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/bu_box.h"
+#include "../src_plugins/lib_gtk_common/bu_spin_button.h"
 
 
 	/* Silk and rats lines are the two additional selectable to draw on.
@@ -288,19 +289,10 @@ void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t val
 											pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size, const pcb_unit_t *u,
 											gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
 											gpointer data, const gchar * string_pre, const gchar * string_post);
-void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button,
-											gfloat value, gfloat low, gfloat high, gfloat step0,
-											gfloat step1, gint digits, gint width,
-											void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string);
 void ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
 														GtkWidget ** coord_entry, pcb_coord_t value,
 														pcb_coord_t low, pcb_coord_t high, enum ce_step_size, gint width,
 														void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gboolean right_align, const gchar * string);
-void ghid_table_spin_button(GtkWidget * box, gint row, gint column,
-														GtkWidget ** spin_button, gfloat value,
-														gfloat low, gfloat high, gfloat step0,
-														gfloat step1, gint digits, gint width,
-														void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string);
 
 void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												gboolean horizontal, GtkPositionType pos,
