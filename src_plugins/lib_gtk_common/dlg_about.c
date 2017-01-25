@@ -33,7 +33,7 @@
 /** pcb_gtk_dlg_about:
  *  Display and run the modal About dialog
  */
-void pcb_gtk_dlg_about(GtkWidget * top_window)
+void pcb_gtk_dlg_about(GtkWidget *top_window)
 {
 	GtkWidget *w = gtk_about_dialog_new();
 	GtkAboutDialog *about = GTK_ABOUT_DIALOG(w);
