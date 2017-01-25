@@ -1,21 +1,26 @@
 top text A1
-A line width 
-A width 
-A height 
-1 line width 
-1 width 
-1 height 
+A line width 7 mils
+A width 32
+A height 47
+1 line width 7
+1 width 22
+1 height 47
 
-gap from A to _ is _ mils
+gap from A to 1 is 5 mils
 
 dot thing in the page
- tall
- wide
+ tall 11
+ wide 13.2
 
 bottom text A3 
-A line width 
-A width 
-A height 
-3 line width 
-3 width 
-3 height 
+A line width 12.8
+A width 92.8
+A height 140.8
+3 line width 12.8
+3 width 76.8
+3 height 140.8
+A to 3 is 25.6
+
+all measurements in mils
+
+

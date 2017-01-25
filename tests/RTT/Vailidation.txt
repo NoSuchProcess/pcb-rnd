@@ -1,4 +1,4 @@
-# Validation state of references
+ Validation state of references
 #
 # Each line is a file from ref/, in the following format:
 #  The first word is the file name, relative to ref/
@@ -45,10 +45,10 @@ elem_sides_smd.png good r6417
 elem_sides_trh.png good r6417
 layer_copper.png good r6417
 layer_silk.png good r6440
-line_f_clear.png fail r6440 (out of tollerance)
+line_f_clear.png bad r6440 (out of tollerance)
 line_offpage.png good R6440
 line_normal.png good r6440
-line_offpage.png fail r6440 (requires rechecking)
+line_offpage.png good r6440
 line_overlap1.png good r6440
 line_overlap2.png good r6440
 line_overlap3.png good r6440
@@ -58,9 +58,8 @@ poly_hole.png good r6440
 poly_rect.png good r6440
 poly_triangle.png good r6440
 text_rot.png good r6440
-text_scale.png revisit r6440 I messed up need to remeasure the pcb file
+text_scale.png good r6440 
 text_sides.png good r6440
-thermal_last.png fail r6440 Failed but this is a mistake recording my
-measurement
+thermal_last.png good r6440
 thermal_layer.png good r6440
 
