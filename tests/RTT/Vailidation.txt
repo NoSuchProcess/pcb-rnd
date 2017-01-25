@@ -38,7 +38,7 @@ arc_normal.png good r6417
 arc_offpage.png good r6417
 arc_sizes.png good r6417
 clearance.png bad r6417 missing pcb & text file?!
-elem_pads_ds.png 
+elem_pads_ds.png good r6440
 elem_pads.png good r6417
 elem_pins.png good r6417
 elem_sides_smd.png good r6417
@@ -46,7 +46,7 @@ elem_sides_trh.png good r6417
 layer_copper.png good r6417
 layer_silk.png good r6440
 line_f_clear.png fail r6440 (out of tollerance)
-line_offpage.png 
+line_offpage.png good R6440
 line_normal.png good r6440
 line_offpage.png fail r6440 (requires rechecking)
 line_overlap1.png good r6440

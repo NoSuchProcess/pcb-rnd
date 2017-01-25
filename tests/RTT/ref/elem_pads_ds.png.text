@@ -1,10 +1,10 @@
 E1
 2 pads 1 silk line + text (E1)
 
-silk line 132 pixels long 12 pixels wide
+silk line 132 pixels (110) long 12 pixels (10) wide
 
-copper pads 102 pixels long 12 pixels wide
+copper pads 102 pixels (85) long 12 pixels (10) wide
 
 pad 1 shares it's terminus with the silk line
 
-pad 2's highest point is 114 x 18 pixels over from the inside corner of pad 1 & the silk line
+pad 2's highest point is 114 x 18 pixels (95 x 15) over from the inside corner of pad 1 & the silk line
