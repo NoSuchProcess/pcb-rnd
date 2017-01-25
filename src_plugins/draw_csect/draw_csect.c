@@ -423,7 +423,7 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 		gvalid = 0;
 	}
 	g = get_group_coords(y, &y1, &y2);
-	if ((g >= 0) && (pcb_layergrp_flags(g) & accept_mask)) {
+	if ((g >= 0) && ((pcb_layergrp_flags(g) & accept_mask) == accept_mask)) {
 		gy1 = y1;
 		gy2 = y2;
 		gactive = g;
@@ -483,6 +483,10 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 			ly = cy;
 			dgvalid = 1;
 			mark_grp(cy, PCB_LYT_COPPER, MARK_GRP_TOP);
+			if (gactive < 0)
+				mark_grp(cy, PCB_LYT_SUBSTRATE, MARK_GRP_TOP);
+			if (gactive < 0)
+				mark_grp(cy, PCB_LYT_BOTTOM | PCB_LYT_MASK, MARK_GRP_TOP);
 		}
 
 		pcb_gui->destroy_gc(Output.fgGC);
