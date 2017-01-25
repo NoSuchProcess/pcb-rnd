@@ -1,5 +1,8 @@
-121 x 121 pixels for both polygons
+121 x 121 pixels (100.833 x 100.833) for both polygons
 
-via copper width 95 pixels
-Via drill width 39 pixels
-clearance 23 pixels
+via copper width 95 pixels (79.166)
+Via drill width 39 pixels (32.5)
+clearance 23 pixels (19.166)  (WRONG but i think this is a mistake on my part)
+
+
+

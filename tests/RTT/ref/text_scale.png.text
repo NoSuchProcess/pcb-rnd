@@ -1,23 +1,23 @@
 
 top text A1
-A line width 8 pixels
-A width 38 pixels
-A height 56 pixels
-1 line width 8 pixels
-1 width 26 pixels
-1 height 56 pixels
+A line width 8 (6.666) pixels
+A width 38 pixels (31.666)
+A height 56 pixels (46.666)
+1 line width 8 pixels (6.666)
+1 width 26 pixels (21.666)
+1 height 56 pixels (46.666)
 
-gap from A to 1 is 7 pixels
+gap from A to 1 is 7 pixels (5.833)
 
 dot thing in the page
-13 pixels tall
-16 pixels wide
+13 pixels (10.833) tall
+16 pixels (13.333) wide
 
 bottom text A3 
-A line width 15 pixels
-A width 111 pixels
-A height 173 pixels
-3 line width 15 pixels
-3 width 91 pixels
-3 height 169 pixels
+A line width 15 pixels (12.5)
+A width 111 pixels (9.25)
+A height 173 pixels (144.166)
+3 line width 15 pixels (12.5)
+3 width 91 pixels (75.833)
+3 height 169 pixels (140.833)
 

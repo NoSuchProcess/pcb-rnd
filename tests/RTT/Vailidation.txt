@@ -57,5 +57,9 @@ poly_hole.png good 6440
 poly_rect.png good 6440
 poly_triangle.png good 6440
 text_rot.png good 6440
-
+text_scale.png revisit 6440 I messed up need to remeasure the pcb file
+text_sides.png good 6440
+thermal_last.png fail 6440 Failed but this is a mistake recording my
+measurement
+thermal_layer.png good 6440
 
