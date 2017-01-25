@@ -394,7 +394,13 @@ static pcb_coord_t ox, oy, lx, ly, cx, cy, gy1, gy2;
 static int lvalid, gvalid, dgvalid, drag_addgrp;
 static pcb_layergrp_id_t gactive = -1;
 
-static void mark_grp(pcb_coord_t y, unsigned int accept_mask, int middle)
+typedef enum {
+	MARK_GRP_FRAME,
+	MARK_GRP_MIDDLE,
+	MARK_GRP_TOP,
+} mark_grp_loc_t;
+
+static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc)
 {
 	pcb_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
 	pcb_layergrp_id_t g;
@@ -402,12 +408,17 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, int middle)
 	if ((y1 == gy1) && (y2 == gy2) && gvalid)
 		return;
 	if (gvalid) {
-		if (!middle) {
-			dline_(x0, gy1, PCB_MM_TO_COORD(200), gy1, 0.1);
-			dline_(x0, gy2, PCB_MM_TO_COORD(200), gy2, 0.1);
+		switch(loc) {
+			case MARK_GRP_FRAME:
+				dline_(x0, gy1, PCB_MM_TO_COORD(200), gy1, 0.1);
+				dline_(x0, gy2, PCB_MM_TO_COORD(200), gy2, 0.1);
+				break;
+			case MARK_GRP_MIDDLE:
+				dline_(x0, (gy1+gy2)/2, PCB_MM_TO_COORD(200), (gy1+gy2)/2, 0.1);
+				break;
+			case MARK_GRP_TOP:
+				dline_(x0, gy1, PCB_MM_TO_COORD(200), gy1, 0.1);
 		}
-		else
-			dline_(x0, (gy1+gy2)/2, PCB_MM_TO_COORD(200), (gy1+gy2)/2, 0.1);
 
 		gvalid = 0;
 	}
@@ -417,12 +428,18 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, int middle)
 		gy2 = y2;
 		gactive = g;
 		gvalid = 1;
-		if (!middle) {
-			dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
-			dline_(x0, y2, PCB_MM_TO_COORD(200), y2, 0.1);
+		switch(loc) {
+			case MARK_GRP_FRAME:
+				dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
+				dline_(x0, y2, PCB_MM_TO_COORD(200), y2, 0.1);
+				break;
+			case MARK_GRP_MIDDLE:
+				dline_(x0, (y1+y2)/2, PCB_MM_TO_COORD(200), (y1+y2)/2, 0.1);
+				break;
+			case MARK_GRP_TOP:
+				dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
+				break;
 		}
-		else
-			dline_(x0, (y1+y2)/2, PCB_MM_TO_COORD(200), (y1+y2)/2, 0.1);
 	}
 	else
 		gactive = -1;
@@ -440,7 +457,7 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 
 		/* draw the actual operation */
 		if (drag_addgrp) {
-			mark_grp(cy, PCB_LYT_SUBSTRATE, 1);
+			mark_grp(cy, PCB_LYT_SUBSTRATE, MARK_GRP_MIDDLE);
 		}
 		else if (drag_lid >= 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
@@ -454,7 +471,7 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 				ly = cy;
 				lvalid = 1;
 			}
-			mark_grp(cy, PCB_LYT_COPPER, 0);
+			mark_grp(cy, PCB_LYT_COPPER, MARK_GRP_FRAME);
 		}
 		else if (drag_gid >= 0) {
 			pcb_layer_group_t *g = &PCB->LayerGroups.grp[drag_gid];
@@ -465,6 +482,7 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 			lx = cx;
 			ly = cy;
 			dgvalid = 1;
+			mark_grp(cy, PCB_LYT_COPPER, MARK_GRP_TOP);
 		}
 
 		pcb_gui->destroy_gc(Output.fgGC);
