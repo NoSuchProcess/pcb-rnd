@@ -45,7 +45,13 @@ elem_sides_smd.png good 6417
 elem_sides_trh.png good 6417
 layer_copper.png good 6417
 layer_silk.png good 6440
-line_f_clear.png fail 6440
+line_f_clear.png fail 6440 (out of tollerance)
 line_normal.png good 6440
-
+line_offpage.png fail 6440 (requires rechecking)
+line_overlap1.png good 6440
+line_overlap2.png good 6440
+line_overlap3.png good 6440
+line_overlap4.png good 6440
+line_zerolen.png good 6440
+poly_hole.png good 6440
 
