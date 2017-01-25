@@ -495,10 +495,18 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 			
 			if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
 				pcb_coord_t tmp;
-				drag_gid = get_group_coords(y, &tmp, &tmp);
-				if (drag_gid >= 0) {
+				pcb_layergrp_id_t gid;
+				gid = get_group_coords(y, &tmp, &tmp);
+				if ((gid >= 0) && (pcb_layergrp_flags(gid) & PCB_LYT_COPPER)) {
 					gvalid = 0;
-					drag_gid_subst = drag_gid - 1;
+					drag_gid = gid;
+					/* temporary workaround for the restricted setup */
+					if (pcb_layergrp_flags(gid - 1) & PCB_LYT_SUBSTRATE)
+						drag_gid_subst = gid - 1;
+					else if ((pcb_layergrp_flags(gid - 1) & PCB_LYT_OUTLINE) && (pcb_layergrp_flags(gid - 2) & PCB_LYT_SUBSTRATE))
+						drag_gid_subst = gid - 2;
+					else if (pcb_layergrp_flags(gid + 1) & PCB_LYT_SUBSTRATE)
+						drag_gid_subst = gid + 1;
 					res = 1;
 				}
 			}
