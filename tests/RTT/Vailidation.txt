@@ -45,7 +45,7 @@ elem_sides_smd.png good 6417
 elem_sides_trh.png good 6417
 layer_copper.png good 6417
 layer_silk.png good 6440
-line_f_clear.png good 6440
-
+line_f_clear.png fail 6440
+line_normal.png good 6440
 
 
