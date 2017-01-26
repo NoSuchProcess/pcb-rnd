@@ -359,10 +359,10 @@ static void update_expose_data(pcb_gtk_preview_t *prv)
 	prv->expose_data.view.X2 = prv->view.x0 + prv->view.width;
 	prv->expose_data.view.Y2 = prv->view.y0 + prv->view.height;
 
-/*	pcb_printf("EXPOSE_DATA: %$mm %$mm - %$mm %$mm (%f)\n",
+/*	pcb_printf("EXPOSE_DATA: %$mm %$mm - %$mm %$mm (%f %$mm)\n",
 		prv->expose_data.view.X1, prv->expose_data.view.Y1,
 		prv->expose_data.view.X2, prv->expose_data.view.Y2,
-		prv->view.coord_per_px);*/
+		prv->view.coord_per_px, prv->view.x0);*/
 }
 
 static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev, void *tmp)
@@ -389,26 +389,45 @@ static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy
 #undef SIDE_Y
 }
 
-static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton * ev, gpointer data)
+static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
+	pcb_coord_t cx, cy;
+	get_ptr(preview, &cx, &cy);
 
-	switch(ghid_mouse_button(ev->button)) {
+	switch(btn) {
 		case PCB_MB_LEFT:
 			if (preview->mouse_cb != NULL) {
-				pcb_coord_t cx, cy;
-				get_ptr(preview, &cx, &cy);
 /*				pcb_printf("bp %mm %mm\n", cx, cy); */
 				if (preview->mouse_cb(w, PCB_HID_MOUSE_PRESS, cx, cy))
 					ghid_preview_expose(w, NULL);
 			}
 			break;
-//		case PCB_MB_SCROLL_UP:
-		case PCB_MB_RIGHT:
-			pcb_gtk_zoom_view_rel(&preview->view, 0, 0, 0.8);
+		case PCB_MB_SCROLL_UP:
+			pcb_gtk_zoom_view_rel(&preview->view, cx, cy, 0.8);
 			update_expose_data(preview);
 			ghid_preview_expose(w, NULL);
 			break;
+		case PCB_MB_SCROLL_DOWN:
+			pcb_gtk_zoom_view_rel(&preview->view, cx, cy, 1.25);
+			update_expose_data(preview);
+			ghid_preview_expose(w, NULL);
+			break;
+	}
+	return FALSE;
+}
+
+static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton * ev, gpointer data)
+{
+	return button_press(w, ev->button);
+}
+
+static gboolean preview_scroll_cb(GtkWidget *w, GdkEventScroll *ev, gpointer data)
+{
+	switch (ev->direction) {
+		case GDK_SCROLL_UP:    return button_press(w, PCB_MB_SCROLL_UP);
+		case GDK_SCROLL_DOWN:  return button_press(w, PCB_MB_SCROLL_DOWN);
+		default:;
 	}
 	return FALSE;
 }
@@ -486,6 +505,7 @@ GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t 
 
 	g_signal_connect(G_OBJECT(prv), "button_press_event", G_CALLBACK(preview_button_press_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "button_release_event", G_CALLBACK(preview_button_release_cb), NULL);
+	g_signal_connect(G_OBJECT(prv), "scroll_event", G_CALLBACK(preview_scroll_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "configure_event", G_CALLBACK(preview_configure_event_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "motion_notify_event", G_CALLBACK(preview_motion_cb), NULL);
 
