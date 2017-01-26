@@ -482,11 +482,11 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 			lx = cx;
 			ly = cy;
 			dgvalid = 1;
-			mark_grp(cy, PCB_LYT_COPPER, MARK_GRP_TOP);
+			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_INTERN, MARK_GRP_TOP);
+			if (gactive < 0)
+				mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_BOTTOM, MARK_GRP_TOP);
 			if (gactive < 0)
 				mark_grp(cy, PCB_LYT_SUBSTRATE, MARK_GRP_TOP);
-			if (gactive < 0)
-				mark_grp(cy, PCB_LYT_BOTTOM | PCB_LYT_MASK, MARK_GRP_TOP);
 		}
 
 		pcb_gui->destroy_gc(Output.fgGC);
@@ -542,7 +542,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				pcb_coord_t tmp;
 				pcb_layergrp_id_t gid;
 				gid = get_group_coords(y, &tmp, &tmp);
-				if ((gid >= 0) && (pcb_layergrp_flags(gid) & PCB_LYT_COPPER)) {
+				if ((gid >= 0) && (pcb_layergrp_flags(gid) & PCB_LYT_COPPER) && (pcb_layergrp_flags(gid) & PCB_LYT_INTERN)) {
 					gvalid = 0;
 					drag_gid = gid;
 					/* temporary workaround for the restricted setup */
