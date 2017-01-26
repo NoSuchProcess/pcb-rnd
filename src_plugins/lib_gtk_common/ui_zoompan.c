@@ -101,6 +101,13 @@ pcb_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int even
 	return pcb_true;
 }
 
+void pcb_gtk_zoom_post(pcb_gtk_view_t *v)
+{
+	v->coord_per_px = pcb_gtk_clamp_zoom(v, v->coord_per_px);
+	v->width = v->canvas_width * v->coord_per_px;
+	v->height = v->canvas_height * v->coord_per_px;
+}
+
 /* gport->view.coord_per_px:
  * zoom value is PCB units per screen pixel.  Larger numbers mean zooming
  * out - the largest value means you are looking at the whole board.

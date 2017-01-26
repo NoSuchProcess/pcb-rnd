@@ -72,9 +72,7 @@ void ghid_port_ranges_scale(void)
 	   |  drawing area size in pixels to PCB units and that will be
 	   |  the page size for the Gtk adjustment.
 	 */
-	gport->view.coord_per_px = pcb_gtk_clamp_zoom(&gport->view, gport->view.coord_per_px);
-	gport->view.width = gport->view.canvas_width * gport->view.coord_per_px;
-	gport->view.height = gport->view.canvas_height * gport->view.coord_per_px;
+	pcb_gtk_zoom_post(&gport->view);
 
 	adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->h_range));
 	page_size = MIN(gport->view.width, PCB->MaxWidth);
