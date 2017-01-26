@@ -391,7 +391,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 }
 
 static pcb_coord_t ox, oy, lx, ly, cx, cy, gy1, gy2;
-static int lvalid, gvalid, dgvalid, drag_addgrp;
+static int lvalid, gvalid, dgvalid, drag_addgrp, drag_delgrp;
 static pcb_layergrp_id_t gactive = -1;
 
 typedef enum {
@@ -447,7 +447,7 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 
 static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 {
-	if ((drag_lid >= 0) || (drag_addgrp) || (drag_gid >= 0)) {
+	if ((drag_lid >= 0) || (drag_addgrp) || (drag_delgrp) || (drag_gid >= 0)) {
 		pcb_hid_t *old_gui = pcb_gui;
 		pcb_gui = hid;
 		Output.fgGC = pcb_gui->make_gc();
@@ -458,6 +458,9 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 		/* draw the actual operation */
 		if (drag_addgrp) {
 			mark_grp(cy, PCB_LYT_SUBSTRATE, MARK_GRP_MIDDLE);
+		}
+		if (drag_delgrp) {
+			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_INTERN, MARK_GRP_FRAME);
 		}
 		else if (drag_lid >= 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
@@ -539,6 +542,12 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				break;
 			}
 
+			if (is_button(x, y, &btn_delgrp)) {
+				drag_delgrp = 1;
+				res = 1;
+				break;
+			}
+
 			drag_lid = get_layer_coords(x, y);
 			if (drag_lid >= 0) {
 				ox = x;
@@ -578,6 +587,23 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 					g->valid = 1;
 				}
 				drag_addgrp = 0;
+				gactive = -1;
+				res = 1;
+			}
+			else if (drag_delgrp) {
+				if (gactive >= 0) {
+					if (PCB->LayerGroups.grp[gactive].len == 0) {
+						pcb_layergrp_del(&PCB->LayerGroups, gactive, 1);
+						if (pcb_layergrp_flags(gactive) & PCB_LYT_SUBSTRATE)
+							pcb_layergrp_del(&PCB->LayerGroups, gactive, 1);
+						else if (pcb_layergrp_flags(gactive-1) & PCB_LYT_SUBSTRATE)
+							pcb_layergrp_del(&PCB->LayerGroups, gactive-1, 1);
+					}
+					else
+						pcb_message(PCB_MSG_ERROR, "Can't remove a layer group with layers in it - move away the layers first!\n");
+				}
+				drag_delgrp = 0;
+				gactive = -1;
 				res = 1;
 			}
 			else if (drag_lid >= 0) {
