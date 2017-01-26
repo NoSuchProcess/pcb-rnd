@@ -249,9 +249,28 @@ pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack)
 	return pcb_get_grp_new_intern_(stack, 1);
 }
 
+/* Move an inclusive block of groups [from..to] by delta on the stack, assuming
+   target is already cleared and the new hole will be cleared by the caller */
+static void move_grps(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layergrp_id_t to, int delta)
+{
+	int g, remaining, n;
+
+	for(g = from; g <= to; g++) {
+		for(n = 0; n < stk->grp[g].len; n++) {
+			pcb_layer_t *l = pcb_get_layer(stk->grp[g].lid[n]);
+			if ((l != NULL) && (l->grp > 0))
+				l->grp += delta;
+		}
+	}
+
+	remaining = to - from;
+	if (remaining > 0)
+		memmove(&stk->grp[from + delta], &stk->grp[from], sizeof(pcb_layer_group_t) * remaining);
+}
+
 int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_layers)
 {
-	int g, n, remaining;
+	int n;
 
 	if ((gid < 0) || (gid >= stk->len))
 		return -1;
@@ -271,19 +290,7 @@ int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_laye
 		}
 	}
 
-	for(g = gid+1; g < stk->len; g++) {
-		for(n = 0; n < stk->grp[g].len; n++) {
-			pcb_layer_t *l = pcb_get_layer(stk->grp[g].lid[n]);
-			if ((l != NULL) && (l->grp > 0))
-				l->grp--;
-		}
-	}
-
-
-
-	remaining = stk->len - gid;
-	if (remaining > 0)
-		memmove(&stk->grp[gid], &stk->grp[gid+1], sizeof(pcb_layer_group_t) * remaining);
+	move_grps(stk, gid+1, stk->len-1, -1);
 	stk->len--;
 	return 0;
 }
@@ -361,7 +368,6 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 	}
 
 	pcb_layergrp_fix_old_outline(LayerGroup);
-
 
 	/* set the two silks */
 	g = pcb_get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
