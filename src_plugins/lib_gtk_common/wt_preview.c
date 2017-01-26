@@ -349,11 +349,22 @@ GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t
 	return GTK_WIDGET(pinout_preview);
 }
 
+static void update_expose_data(pcb_gtk_preview_t *prv)
+{
+	prv->expose_data.view.X1 = prv->view.x0;
+	prv->expose_data.view.Y1 = prv->view.y0;
+	prv->expose_data.view.X2 = prv->view.x0 + prv->view.width;
+	prv->expose_data.view.Y2 = prv->view.y0 + prv->view.height;
+}
+
 static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev, void *tmp)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
 	preview->win_w = ev->width;
 	preview->win_h = ev->height;
+
+	preview->view.canvas_width = ev->width;
+	preview->view.canvas_height = ev->height;
 /*	printf("resize: %d %d\n", ev->width, ev->height); */
 }
 
@@ -390,6 +401,8 @@ static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton * ev, gpoin
 		if (preview->mouse_cb(w, PCB_HID_MOUSE_PRESS, cx, cy))
 			ghid_preview_expose(w, NULL);
 	}
+//	update_expose_data(prv);
+
 	return FALSE;
 }
 
@@ -448,8 +461,11 @@ GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t 
 		NULL);
 
 #warning TODO: maybe expose these through the object API so the caller can set it up?
-	prv->expose_data.view.X2 = PCB_MM_TO_COORD(100);
-	prv->expose_data.view.Y2 = PCB_MM_TO_COORD(100);
+	memset(&prv->view, 0, sizeof(prv->view));
+	prv->view.width = PCB_MM_TO_COORD(110);
+	prv->view.height = PCB_MM_TO_COORD(110);
+	update_expose_data(prv);
+
 	prv->expose_data.force = 1;
 	prv->init_drawing_widget(GTK_WIDGET(prv), prv->gport);
 

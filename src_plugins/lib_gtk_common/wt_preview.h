@@ -36,6 +36,7 @@
 #include "obj_elem.h"
 #include "hid.h"
 #include "layer.h"
+#include "ui_zoompan.h"
 
 #define GHID_TYPE_PINOUT_PREVIEW           (pcb_gtk_preview_get_type())
 #define GHID_PINOUT_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_PINOUT_PREVIEW, pcb_gtk_preview_t))
@@ -68,6 +69,7 @@ struct pcb_gtk_preview_s {
 	GtkDrawingArea parent_instance;
 
 	pcb_hid_expose_ctx_t expose_data;
+	pcb_gtk_view_t view;
 
 	gint x_max, y_max, win_w, win_h;
 	gint w_pixels, h_pixels;			/* natural size of element preview */
