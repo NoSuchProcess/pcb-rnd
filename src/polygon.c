@@ -1065,7 +1065,7 @@ static int Unsubtract(pcb_polyarea_t * np1, pcb_polygon_t * p)
 	pcb_polyarea_t *orig_poly, *clipped_np;
 	int x;
 	assert(np);
-	assert(p && p->Clipped);
+	assert(p); /* NOTE: p->clipped might be NULL if a poly is "clipped out of existence" and is now coming back */
 
 	orig_poly = original_poly(p);
 
