@@ -290,6 +290,7 @@ int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_laye
 		}
 	}
 
+	pcb_layergrp_free(stk, gid);
 	move_grps(stk, gid+1, stk->len-1, -1);
 	stk->len--;
 	return 0;
