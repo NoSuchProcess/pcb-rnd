@@ -447,10 +447,11 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 
 static void draw_hover_label(int *valid, const char *str)
 {
+	int x0 = PCB_MM_TO_COORD(2.5); /* compensate for the mouse cursor (sort of random) */
 	if ((lx != cx) || (ly != cy)) {
 		if (*valid)
-			dtext_(lx, ly, 250, 0, str, PCB_MM_TO_COORD(0.01));
-		dtext_(cx, cy, 250, 0, str, PCB_MM_TO_COORD(0.01));
+			dtext_(lx+x0, ly, 250, 0, str, PCB_MM_TO_COORD(0.01));
+		dtext_(cx+x0, cy, 250, 0, str, PCB_MM_TO_COORD(0.01));
 		lx = cx;
 		ly = cy;
 		*valid = 1;
