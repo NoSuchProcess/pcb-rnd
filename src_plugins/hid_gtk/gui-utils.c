@@ -261,51 +261,6 @@ GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, const char *name, gint bo
 	return vbox;
 }
 
-void ghid_dialog_report(const gchar * title, const gchar * message)
-{
-	GtkWidget *top_win;
-	GtkWidget *dialog;
-	GtkWidget *content_area;
-	GtkWidget *scrolled;
-	GtkWidget *vbox, *vbox1;
-	GtkWidget *label;
-	const gchar *s;
-	gint nlines;
-	GHidPort *out = &ghid_port;
-
-	if (!message)
-		return;
-	top_win = out->top_window;
-	dialog = gtk_dialog_new_with_buttons(title ? title : "PCB",
-																			 GTK_WINDOW(top_win),
-																			 GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_OK, GTK_RESPONSE_NONE, NULL);
-	g_signal_connect_swapped(GTK_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), GTK_OBJECT(dialog));
-	gtk_window_set_wmclass(GTK_WINDOW(dialog), "PCB_Dialog", "PCB");
-
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-
-	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
-	gtk_box_pack_start(GTK_BOX(content_area), vbox, FALSE, FALSE, 0);
-
-	label = gtk_label_new(message);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-
-	for (nlines = 0, s = message; *s; ++s)
-		if (*s == '\n')
-			++nlines;
-	if (nlines > 20) {
-		vbox1 = ghid_scrolled_vbox(vbox, &scrolled, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-		gtk_widget_set_size_request(scrolled, -1, 300);
-		gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, FALSE, 0);
-	}
-	else
-		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-
-	gtk_widget_show_all(dialog);
-}
-
-
 void ghid_label_set_markup(GtkWidget * label, const gchar * text)
 {
 	if (label)

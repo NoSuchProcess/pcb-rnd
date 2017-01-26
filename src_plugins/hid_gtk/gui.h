@@ -306,7 +306,6 @@ GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, const char *name,
 void ghid_text_view_append(GtkWidget * view, const gchar * string);
 void ghid_text_view_append_strings(GtkWidget * view, const gchar ** string, gint n_strings);
 
-void ghid_dialog_report(const gchar * title, const gchar * message);
 void ghid_label_set_markup(GtkWidget * label, const gchar * text);
 
 void ghid_set_cursor_position_labels(void);

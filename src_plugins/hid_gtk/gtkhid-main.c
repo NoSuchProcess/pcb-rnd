@@ -39,6 +39,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_input.h"
 #include "../src_plugins/lib_gtk_common/dlg_message.h"
 #include "../src_plugins/lib_gtk_common/dlg_print.h"
+#include "../src_plugins/lib_gtk_common/dlg_report.h"
 
 conf_hid_id_t ghid_conf_id = -1;
 conf_hid_id_t ghid_menuconf_id = -1;
@@ -433,7 +434,7 @@ int ghid_close_confirm_dialog()
 
 void ghid_report_dialog(const char *title, const char *msg)
 {
-	ghid_dialog_report(title, msg);
+	pcb_gtk_dlg_report(ghid_port.top_window, title, msg);
 }
 
 char *ghid_prompt_for(const char *msg, const char *default_string)
