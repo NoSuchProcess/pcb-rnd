@@ -498,7 +498,7 @@ static do_move_grp()
 {
 	unsigned int tflg;
 
-	if (gactive < 0)
+	if ((gactive < 0) || (gactive == drag_gid+1))
 		return;
 
 	tflg = pcb_layergrp_flags(gactive);
@@ -512,8 +512,18 @@ static do_move_grp()
 		if (gactive < drag_gid_subst)
 			drag_gid_subst++; /* the move shifted this up one slot */
 
-		if (tflg & PCB_LYT_COPPER)
-			pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive+1);
+		if (tflg & PCB_LYT_COPPER) {
+			if (tflg & PCB_LYT_BOTTOM)
+				pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive);
+			else
+				pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive+1);
+		}
+		else if (tflg & PCB_LYT_SUBSTRATE) {
+			if (gactive < drag_gid)
+				pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive);
+			else
+				pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive-1);
+		}
 	}
 }
 
@@ -550,8 +560,6 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 						drag_gid_subst = gid - 1;
 					else if ((pcb_layergrp_flags(gid - 1) & PCB_LYT_OUTLINE) && (pcb_layergrp_flags(gid - 2) & PCB_LYT_SUBSTRATE))
 						drag_gid_subst = gid - 2;
-					else if (pcb_layergrp_flags(gid + 1) & PCB_LYT_SUBSTRATE)
-						drag_gid_subst = gid + 1;
 					res = 1;
 				}
 			}
