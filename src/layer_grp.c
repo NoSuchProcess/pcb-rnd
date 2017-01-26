@@ -263,7 +263,7 @@ static void move_grps(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layerg
 		}
 	}
 
-	remaining = to - from;
+	remaining = to - from+1;
 	if (remaining > 0)
 		memmove(&stk->grp[from + delta], &stk->grp[from], sizeof(pcb_layer_group_t) * remaining);
 }
