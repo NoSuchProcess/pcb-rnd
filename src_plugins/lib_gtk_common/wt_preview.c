@@ -435,9 +435,9 @@ static gboolean preview_key_release_cb(GtkWidget *preview, GdkEventKey * kev, gp
 
 GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t init_widget, pcb_gtk_preview_expose_t expose, pcb_layer_id_t layer)
 {
-	pcb_gtk_preview_t *pinout_preview;
+	pcb_gtk_preview_t *prv;
 
-	pinout_preview = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
+	prv = (pcb_gtk_preview_t *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
 		"layer", layer,
 		"gport", gport,
 		"init-widget", init_widget,
@@ -448,28 +448,28 @@ GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t 
 		NULL);
 
 #warning TODO: maybe expose these through the object API so the caller can set it up?
-	pinout_preview->expose_data.view.X2 = PCB_MM_TO_COORD(100);
-	pinout_preview->expose_data.view.Y2 = PCB_MM_TO_COORD(100);
-	pinout_preview->expose_data.force = 1;
-	pinout_preview->init_drawing_widget(GTK_WIDGET(pinout_preview), pinout_preview->gport);
+	prv->expose_data.view.X2 = PCB_MM_TO_COORD(100);
+	prv->expose_data.view.Y2 = PCB_MM_TO_COORD(100);
+	prv->expose_data.force = 1;
+	prv->init_drawing_widget(GTK_WIDGET(prv), prv->gport);
 
-	gtk_widget_add_events(GTK_WIDGET(pinout_preview), GDK_EXPOSURE_MASK
+	gtk_widget_add_events(GTK_WIDGET(prv), GDK_EXPOSURE_MASK
 		| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK | GDK_BUTTON_RELEASE_MASK
 		| GDK_BUTTON_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_KEY_PRESS_MASK
 		| GDK_FOCUS_CHANGE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
 
 
-	g_signal_connect(G_OBJECT(pinout_preview), "button_press_event", G_CALLBACK(preview_button_press_cb), NULL);
-	g_signal_connect(G_OBJECT(pinout_preview), "button_release_event", G_CALLBACK(preview_button_release_cb), NULL);
-	g_signal_connect(G_OBJECT(pinout_preview), "configure_event", G_CALLBACK(preview_configure_event_cb), NULL);
-	g_signal_connect(G_OBJECT(pinout_preview), "motion_notify_event", G_CALLBACK(preview_motion_cb), NULL);
+	g_signal_connect(G_OBJECT(prv), "button_press_event", G_CALLBACK(preview_button_press_cb), NULL);
+	g_signal_connect(G_OBJECT(prv), "button_release_event", G_CALLBACK(preview_button_release_cb), NULL);
+	g_signal_connect(G_OBJECT(prv), "configure_event", G_CALLBACK(preview_configure_event_cb), NULL);
+	g_signal_connect(G_OBJECT(prv), "motion_notify_event", G_CALLBACK(preview_motion_cb), NULL);
 
 /*
-	g_signal_connect(G_OBJECT(pinout_preview), "key_press_event", G_CALLBACK(preview_key_press_cb), NULL);
-	g_signal_connect(G_OBJECT(pinout_preview), "key_release_event", G_CALLBACK(preview_key_release_cb), NULL);
+	g_signal_connect(G_OBJECT(prv), "key_press_event", G_CALLBACK(preview_key_press_cb), NULL);
+	g_signal_connect(G_OBJECT(prv), "key_release_event", G_CALLBACK(preview_key_release_cb), NULL);
 */
 
-	return GTK_WIDGET(pinout_preview);
+	return GTK_WIDGET(prv);
 }
 
 void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t * pinout, int *width, int *height)
