@@ -485,7 +485,7 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom silk");
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
 
-	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");
+/*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
 }
 
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
