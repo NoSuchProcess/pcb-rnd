@@ -72,6 +72,8 @@ move_out()
 				s/^G04 CreationDate:.*$/G04 CreationDate: <date>/
 				s/^G04 Creator:.*$/G04 Creator: <version>/
 			' $raw_out.*.gbr
+# do not save or compare the csect yet
+			rm $raw_out.*csect*.gbr
 			;;
 		ps)
 			sed -i '
