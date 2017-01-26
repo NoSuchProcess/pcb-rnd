@@ -43,6 +43,8 @@
 #include "obj_all.h"
 #include "macro.h"
 
+#include "in_mouse.h"
+
 /* Just define a sensible scale, lets say (for example), 100 pixel per 150 mil */
 #define SENSIBLE_VIEW_SCALE  (100. / PCB_MIL_TO_COORD (150.))
 static void pinout_set_view(pcb_gtk_preview_t * pinout)
@@ -351,10 +353,16 @@ GtkWidget *pcb_gtk_preview_pinout_new(void *gport, pcb_gtk_init_drawing_widget_t
 
 static void update_expose_data(pcb_gtk_preview_t *prv)
 {
+	pcb_gtk_zoom_post(&prv->view);
 	prv->expose_data.view.X1 = prv->view.x0;
 	prv->expose_data.view.Y1 = prv->view.y0;
 	prv->expose_data.view.X2 = prv->view.x0 + prv->view.width;
 	prv->expose_data.view.Y2 = prv->view.y0 + prv->view.height;
+
+/*	pcb_printf("EXPOSE_DATA: %$mm %$mm - %$mm %$mm (%f)\n",
+		prv->expose_data.view.X1, prv->expose_data.view.Y1,
+		prv->expose_data.view.X2, prv->expose_data.view.Y2,
+		prv->view.coord_per_px);*/
 }
 
 static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev, void *tmp)
@@ -365,44 +373,43 @@ static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev,
 
 	preview->view.canvas_width = ev->width;
 	preview->view.canvas_height = ev->height;
-/*	printf("resize: %d %d\n", ev->width, ev->height); */
+
+	update_expose_data(preview);
 }
 
 static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy)
 {
-	gint xp, yp, ww, wh, xo = 0, yo = 0;
-	pcb_coord_t w, h;
-	double size;
+	gint xp, yp;
 	gdk_window_get_pointer(gtk_widget_get_window(preview), &xp, &yp, NULL);
-
-	w = preview->expose_data.view.X2 - preview->expose_data.view.X1;
-	h = preview->expose_data.view.Y2 - preview->expose_data.view.Y1;
-	if (preview->win_w > preview->win_h) {
-		xo = (preview->win_w-preview->win_h)/2;
-		size = preview->win_h;
-	}
-	else if (preview->win_h > preview->win_w) {
-		yo = (preview->win_h-preview->win_w)/2;
-		size = preview->win_w;
-	}
-	else
-		size = w;
-	*cx = (double)(xp - xo) * (double)(w) / (double)size;
-	*cy = (double)(yp - yo) * (double)(h) / (double)size;
+#define SIDE_X(x) x
+#define SIDE_Y(y) y
+	*cx = EVENT_TO_PCB_X(&preview->view, xp);
+	*cy = EVENT_TO_PCB_Y(&preview->view, yp);
+#undef SIDE_X
+#undef SIDE_Y
 }
 
 static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton * ev, gpointer data)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
-	if (preview->mouse_cb != NULL) {
-		pcb_coord_t cx, cy;
-		get_ptr(preview, &cx, &cy);
-/*		pcb_printf("bp %mm %mm\n", cx, cy); */
-		if (preview->mouse_cb(w, PCB_HID_MOUSE_PRESS, cx, cy))
-			ghid_preview_expose(w, NULL);
-	}
-//	update_expose_data(prv);
 
+	switch(ghid_mouse_button(ev->button)) {
+		case PCB_MB_LEFT:
+			if (preview->mouse_cb != NULL) {
+				pcb_coord_t cx, cy;
+				get_ptr(preview, &cx, &cy);
+/*				pcb_printf("bp %mm %mm\n", cx, cy); */
+				if (preview->mouse_cb(w, PCB_HID_MOUSE_PRESS, cx, cy))
+					ghid_preview_expose(w, NULL);
+			}
+			break;
+//		case PCB_MB_SCROLL_UP:
+		case PCB_MB_RIGHT:
+			pcb_gtk_zoom_view_rel(&preview->view, 0, 0, 0.8);
+			update_expose_data(preview);
+			ghid_preview_expose(w, NULL);
+			break;
+	}
 	return FALSE;
 }
 
@@ -464,6 +471,8 @@ GtkWidget *pcb_gtk_preview_layer_new(void *gport, pcb_gtk_init_drawing_widget_t 
 	memset(&prv->view, 0, sizeof(prv->view));
 	prv->view.width = PCB_MM_TO_COORD(110);
 	prv->view.height = PCB_MM_TO_COORD(110);
+	prv->view.coord_per_px = PCB_MM_TO_COORD(0.25);
+
 	update_expose_data(prv);
 
 	prv->expose_data.force = 1;
