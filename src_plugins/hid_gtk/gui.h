@@ -437,9 +437,7 @@ static inline pcb_coord_t Pz(int z)
 
 extern const char *ghid_cookie;
 extern const char *ghid_menu_cookie;
-extern pcb_hid_cfg_mouse_t ghid_mouse;
 extern pcb_hid_cfg_keys_t ghid_keymap;
-extern int ghid_wheel_zoom;
 
 int ghid_usage(const char *topic);
 void hid_gtk_wgeo_update(void);

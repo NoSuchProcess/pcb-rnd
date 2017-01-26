@@ -97,6 +97,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "layer_vis.h"
 
 #include "../src_plugins/lib_gtk_common/util_str.h"
+#include "../src_plugins/lib_gtk_common/in_mouse.h"
 
 static pcb_bool ignore_layer_update;
 
@@ -107,7 +108,6 @@ GhidGui _ghidgui, *ghidgui = &_ghidgui;
 GHidPort ghid_port, *gport;
 
 pcb_hid_cfg_t *ghid_cfg = NULL;
-pcb_hid_cfg_mouse_t ghid_mouse;
 pcb_hid_cfg_keys_t ghid_keymap;
 
 /*! \brief callback for ghid_main_menu_update_toggle_state () */

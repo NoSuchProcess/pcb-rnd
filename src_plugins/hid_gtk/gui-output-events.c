@@ -44,6 +44,7 @@
 #include "search.h"
 #include "rats.h"
 
+#include "../src_plugins/lib_gtk_common/in_mouse.h"
 
 #define TOOLTIP_UPDATE_DELAY 200
 
@@ -177,12 +178,6 @@ gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpo
 	}
 
 	return FALSE;
-}
-
-static pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button)
-{
-	/* GDK numbers buttons from 1..5, there seem to be no symbolic names */
-	return (PCB_MB_LEFT << (ev_button-1));
 }
 
 gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data)

@@ -33,6 +33,8 @@
 #include "misc_util.h"
 #include "compat_nls.h"
 
+#include "../src_plugins/lib_gtk_common/in_mouse.h"
+
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>
 
@@ -253,7 +255,6 @@ static gboolean loop_button_press_cb(GtkWidget * drawing_area, GdkEventButton * 
 	return TRUE;
 }
 
-int ghid_wheel_zoom = 0;
 	/* Run a glib GMainLoop which intercepts key and mouse button events from
 	   |  the top level loop.  When a mouse or key is hit in the Output drawing
 	   |  area, quit the loop so the top level loop can continue and use the
