@@ -27,7 +27,10 @@
 #include "config.h"
 
 #include "bu_box.h"
+#include "compat.h"
 
+/*TODO: The 2 following functions could be merged if an additional 
+ *  gboolean pack_start   parameter is added */
 GtkWidget *ghid_framed_vbox(GtkWidget * box, gchar * label, gint frame_border_width,
 														gboolean frame_expand, gint vbox_pad, gint vbox_border_width)
 {
@@ -37,7 +40,7 @@ GtkWidget *ghid_framed_vbox(GtkWidget * box, gchar * label, gint frame_border_wi
 	frame = gtk_frame_new(label);
 	gtk_container_set_border_width(GTK_CONTAINER(frame), frame_border_width);
 	gtk_box_pack_start(GTK_BOX(box), frame, frame_expand, frame_expand, 0);
-	vbox = gtk_vbox_new(FALSE, vbox_pad);
+	vbox = gtkc_vbox_new(FALSE, vbox_pad);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), vbox_border_width);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 	return vbox;
@@ -52,7 +55,7 @@ GtkWidget *ghid_framed_vbox_end(GtkWidget * box, gchar * label, gint frame_borde
 	frame = gtk_frame_new(label);
 	gtk_container_set_border_width(GTK_CONTAINER(frame), frame_border_width);
 	gtk_box_pack_end(GTK_BOX(box), frame, frame_expand, frame_expand, 0);
-	vbox = gtk_vbox_new(FALSE, vbox_pad);
+	vbox = gtkc_vbox_new(FALSE, vbox_pad);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), vbox_border_width);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 	return vbox;
@@ -64,7 +67,7 @@ GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header,
 	GtkWidget *vbox, *vbox1, *hbox, *label;
 	gchar *s;
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtkc_vbox_new(FALSE, 0);
 	if (pack_start)
 		gtk_box_pack_start(GTK_BOX(box), vbox, FALSE, FALSE, 0);
 	else
@@ -74,16 +77,17 @@ GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header,
 		label = gtk_label_new(NULL);
 		s = g_strconcat("<span weight=\"bold\">", category_header, "</span>", NULL);
 		gtk_label_set_markup(GTK_LABEL(label), s);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+		/*TODO: Deprecated in GTK3. Use gtk_widget_set_[h|v]align () functions ? */
+    gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, header_pad);
 		g_free(s);
 	}
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	label = gtk_label_new("     ");
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	vbox1 = gtk_vbox_new(FALSE, box_pad);
+	vbox1 = gtkc_vbox_new(FALSE, box_pad);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox1, TRUE, TRUE, 0);
 
 	if (bottom_pad) {
@@ -100,7 +104,7 @@ GtkWidget *ghid_scrolled_vbox(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h
 	scrolled = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), h_policy, v_policy);
 	gtk_box_pack_start(GTK_BOX(box), scrolled, TRUE, TRUE, 0);
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), vbox);
 	if (scr)
 		*scr = scrolled;
