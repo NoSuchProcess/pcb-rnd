@@ -74,6 +74,14 @@ static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
 	moved_pv.Y += y;
 
 	pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &moved_pv, pcb_true, pcb_false);
+
+	if (conf_core.editor.show_drc) {
+		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
+		moved_pv.Mask = conf_core.design.via_thickness + PCB->Bloat * 2;
+		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+		pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &moved_pv, pcb_false, pcb_true);
+		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+	}
 }
 
 static void draw_dashed_line(pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
