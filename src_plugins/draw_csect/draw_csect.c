@@ -445,6 +445,18 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 		gactive = -1;
 }
 
+static void draw_hover_label(int *valid, const char *str)
+{
+	if ((lx != cx) || (ly != cy)) {
+		if (*valid)
+			dtext_(lx, ly, 250, 0, str, PCB_MM_TO_COORD(0.01));
+		dtext_(cx, cy, 250, 0, str, PCB_MM_TO_COORD(0.01));
+		lx = cx;
+		ly = cy;
+		*valid = 1;
+	}
+}
+
 static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 {
 	if ((drag_lid >= 0) || (drag_addgrp) || (drag_delgrp) || (drag_gid >= 0)) {
@@ -464,27 +476,13 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 		}
 		else if (drag_lid >= 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
-			if ((lx != cx) || (ly != cy)) {
-				if (lvalid) {
-					dtext_(lx, ly, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
-					lvalid = 0;
-				}
-				dtext_(cx, cy, 250, 0, l->Name, PCB_MM_TO_COORD(0.01));
-				lx = cx;
-				ly = cy;
-				lvalid = 1;
-			}
+			draw_hover_label(&lvalid, l->Name);
 			mark_grp(cy, PCB_LYT_COPPER, MARK_GRP_FRAME);
 		}
 		else if (drag_gid >= 0) {
 			pcb_layer_group_t *g = &PCB->LayerGroups.grp[drag_gid];
 			const char *name = g->name == NULL ? "<unnamed group>" : g->name;
-			if (dgvalid)
-				dtext_(lx, ly, 250, 0, name, PCB_MM_TO_COORD(0.01));
-			dtext_(cx, cy, 250, 0, name, PCB_MM_TO_COORD(0.01));
-			lx = cx;
-			ly = cy;
-			dgvalid = 1;
+			draw_hover_label(&dgvalid, name);
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_INTERN, MARK_GRP_TOP);
 			if (gactive < 0)
 				mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_BOTTOM, MARK_GRP_TOP);
