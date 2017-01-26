@@ -143,13 +143,31 @@ static void XORPolygon(pcb_polygon_t *polygon, pcb_coord_t dx, pcb_coord_t dy, i
 /*-----------------------------------------------------------
  * Draws the outline of an arc
  */
+static void XORDrawArc(pcb_arc_t * arc)
+{
+	pcb_coord_t wid = arc->Thickness / 2;
+	pcb_coord_t x1,y1,x2,y2;
+
+	pcb_arc_get_end(arc, 0, &x1, &y1);
+	pcb_arc_get_end(arc, 1, &x2, &y2);
+
+	pcb_gui->draw_arc(pcb_crosshair.GC, arc->X, arc->Y, arc->Width + wid, arc->Height + wid, arc->StartAngle, arc->Delta);
+	if (wid > pcb_pixel_slop) {
+		pcb_gui->draw_arc(pcb_crosshair.GC, arc->X, arc->Y, arc->Width - wid, arc->Height - wid, arc->StartAngle, arc->Delta);
+		pcb_gui->draw_arc(pcb_crosshair.GC, x1, y1, wid, wid, arc->StartAngle, -180 * SGN(arc->Delta));
+		pcb_gui->draw_arc(pcb_crosshair.GC, x2, y2, wid, wid, arc->StartAngle + arc->Delta, 180 * SGN(arc->Delta));
+	}
+}
+
+/*-----------------------------------------------------------
+ * Draws the outline of an attached arc
+ */
 static void XORDrawAttachedArc(pcb_coord_t thick)
 {
 	pcb_arc_t arc;
 	pcb_box_t bx;
 	pcb_coord_t wx, wy;
 	pcb_angle_t sa, dir;
-	pcb_coord_t wid = thick / 2;
 
 	wx = pcb_crosshair.X - pcb_crosshair.AttachedBox.Point1.X;
 	wy = pcb_crosshair.Y - pcb_crosshair.AttachedBox.Point1.Y;
@@ -172,17 +190,9 @@ static void XORDrawAttachedArc(pcb_coord_t thick)
 	arc.StartAngle = sa;
 	arc.Delta = dir;
 	arc.Width = arc.Height = wy;
+	arc.Thickness = thick;
 
-	pcb_arc_get_end(&arc, 0, &bx.X1, &bx.Y1);
-	pcb_arc_get_end(&arc, 1, &bx.X2, &bx.Y2);
-
-	/*  sa = sa - 180; */
-	pcb_gui->draw_arc(pcb_crosshair.GC, arc.X, arc.Y, wy + wid, wy + wid, sa, dir);
-	if (wid > pcb_pixel_slop) {
-		pcb_gui->draw_arc(pcb_crosshair.GC, arc.X, arc.Y, wy - wid, wy - wid, sa, dir);
-		pcb_gui->draw_arc(pcb_crosshair.GC, bx.X1, bx.Y1, wid, wid, sa, -180 * SGN(dir));
-		pcb_gui->draw_arc(pcb_crosshair.GC, bx.X2, bx.Y2, wid, wid, sa + dir, 180 * SGN(dir));
-	}
+	XORDrawArc(&arc);
 }
 
 /*-----------------------------------------------------------
@@ -393,9 +403,20 @@ static void XORDrawMoveOrCopy(void)
 
 	case PCB_TYPE_ARC:
 		{
-			pcb_arc_t *Arc = (pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2;
+			/* Make a temporary arc and move it by dx,dy */
+			pcb_arc_t arc = *((pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2);
+			arc.X += dx;
+			arc.Y += dy;
 
-			pcb_gui->draw_arc(pcb_crosshair.GC, Arc->X + dx, Arc->Y + dy, Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta);
+			XORDrawArc(&arc);
+
+			/* Draw the DRC outline if it is enabled */
+			if (conf_core.editor.show_drc) {
+				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
+				arc.Thickness += 2 * (PCB->Bloat + 1);
+				XORDrawArc(&arc);
+				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
+			}
 			break;
 		}
 
