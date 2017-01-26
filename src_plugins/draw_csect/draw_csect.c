@@ -616,7 +616,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 					}
 				}
 				else
-					pcb_message(PCB_MSG_ERROR, "Can not move copper layer onto non-copper layer group");
+					pcb_message(PCB_MSG_ERROR, "Can not move copper layer onto non-copper layer group\n");
 				res = 1;
 				drag_lid = -1;
 				lvalid = gvalid = 0;
