@@ -494,6 +494,29 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 	}
 }
 
+static do_move_grp()
+{
+	unsigned int tflg;
+
+	if (gactive < 0)
+		return;
+
+	tflg = pcb_layergrp_flags(gactive);
+
+	pcb_layergrp_move(&PCB->LayerGroups, drag_gid, gactive);
+
+	if (drag_gid_subst >= 0) {
+		if ((drag_gid < drag_gid_subst) && (gactive > drag_gid))
+			drag_gid_subst--; /* the move shifted this down one slot */
+
+		if (gactive < drag_gid_subst)
+			drag_gid_subst++; /* the move shifted this up one slot */
+
+		if (tflg & PCB_LYT_COPPER)
+			pcb_layergrp_move(&PCB->LayerGroups, drag_gid_subst, gactive+1);
+	}
+}
+
 
 static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
@@ -564,6 +587,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				lvalid = gvalid = 0;
 			}
 			else if (drag_gid > 0) {
+				do_move_grp();
 				res = 1;
 				drag_gid = -1;
 				drag_gid_subst = -1;
