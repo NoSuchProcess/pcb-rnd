@@ -87,6 +87,14 @@ int pcb_layer_add_in_group(pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);
    (.grp = -1), else layers are deleted too */
 int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_layers);
 
+/** Move gfrom to to_before and shift the stack as necessary. Return -1 on range error */
+int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t gfrom, pcb_layergrp_id_t to_before);
+
+/** Move src onto dst, not shifting the stack, free()'ing and overwriting dst,
+    leaving a gap (0'd slot) at src */
+int pcb_layergrp_move_onto(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src);
+
+
 /* Insert a new layer group in the layer stack after the specified group */
 pcb_layer_group_t *pcb_layergrp_insert_after(pcb_layer_stack_t *stack, pcb_layergrp_id_t where);
 

@@ -144,7 +144,7 @@ int pcb_layergrp_free(pcb_layer_stack_t *stack, pcb_layergrp_id_t id)
 	return -1;
 }
 
-int pcb_layergrp_move(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src)
+int pcb_layergrp_move_onto(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_layergrp_id_t src)
 {
 	pcb_layer_group_t *d, *s;
 	int n;
@@ -202,7 +202,7 @@ pcb_layer_group_t *pcb_layergrp_insert_after(pcb_layer_stack_t *stack, pcb_layer
 		return NULL;
 
 	for(n = stack->len-1; n > where; n--)
-		pcb_layergrp_move(stack, n+1, n);
+		pcb_layergrp_move_onto(stack, n+1, n);
 
 	stack->len++;
 	return stack->grp+where+1;
@@ -221,7 +221,7 @@ static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_layer_stack_t *stack, int 
 
 			/* insert a new internal layer: move existing layers to make room */
 			for(n = stack->len-1; n >= bl; n--)
-				pcb_layergrp_move(stack, n+2, n);
+				pcb_layergrp_move_onto(stack, n+2, n);
 
 			stack->len += 2;
 
@@ -295,6 +295,42 @@ int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_laye
 	stk->len--;
 	return 0;
 }
+
+int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layergrp_id_t to_before)
+{
+	pcb_layer_group_t tmp;
+	int n;
+
+	if ((from < 0) || (from >= stk->len))
+		return -1;
+
+	if ((to_before < 0) || (to_before >= stk->len))
+		return -1;
+
+	if ((to_before == from + 1) || (to_before == from))
+		return 0;
+
+	memcpy(&tmp, &stk->grp[from], sizeof(pcb_layer_group_t));
+	memset(&stk->grp[from], 0, sizeof(pcb_layer_group_t));
+	if (to_before < from + 1) {
+		move_grps(stk, to_before, from-1, +1);
+		memcpy(&stk->grp[to_before], &tmp, sizeof(pcb_layer_group_t));
+	}
+	else {
+		move_grps(stk, from+1, to_before-1, -1);
+		memcpy(&stk->grp[to_before-1], &tmp, sizeof(pcb_layer_group_t));
+	}
+
+	/* fix up the group id for the layers of the group moved */
+	for(n = 0; n < stk->grp[to_before].len; n++) {
+		pcb_layer_t *l = pcb_get_layer(stk->grp[to_before].lid[n]);
+		if ((l != NULL) && (l->grp > 0))
+			l->grp = to_before;
+	}
+
+	return 0;
+}
+
 
 	/* ugly hack: remove the extra substrate we added after the outline layer */
 void pcb_layergrp_fix_old_outline(pcb_layer_stack_t *LayerGroup)
