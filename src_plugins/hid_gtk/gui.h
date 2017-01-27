@@ -186,7 +186,6 @@ void ghid_config_handle_units_changed(void);
 void ghid_config_start_backup_timer(void);
 void ghid_config_text_scale_update(void);
 void ghid_config_layer_name_update(gchar * name, gint layer);
-void ghid_config_groups_changed(void);
 
 void ghid_config_init(void);
 void ghid_wgeo_save(int save_to_file, int skip_user);

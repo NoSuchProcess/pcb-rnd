@@ -1187,15 +1187,8 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 static GtkWidget *config_groups_table, *config_groups_vbox, *config_groups_window;
 
 static GtkWidget *layer_entry[PCB_MAX_LAYER];
-static GtkWidget *group_button[PCB_MAX_LAYERGRP + 2][PCB_MAX_LAYER];
 
-static gint config_layer_group[PCB_MAX_LAYERGRP + 2];
-
-static pcb_layer_stack_t layer_groups,	/* Working copy */
- *lg_monitor;										/* Keep track if our working copy */
-										/* needs to be changed (new layout) */
-
-static gboolean groups_modified, groups_holdoff, layers_applying;
+static gboolean layers_applying;
 
 static const gchar *layer_info_text[] = {
 	N_("<h>Layer Names\n"),
@@ -1248,17 +1241,6 @@ static const gchar *layer_info_text[] = {
 	"\n"
 };
 
-static void config_layer_groups_radio_button_cb(GtkToggleButton * button, gpointer data)
-{
-	gint layer = GPOINTER_TO_INT(data) >> 8;
-	gint group = GPOINTER_TO_INT(data) & 0xff;
-
-	if (!gtk_toggle_button_get_active(button) || groups_holdoff)
-		return;
-	config_layer_group[layer] = group;
-	groups_modified = TRUE;
-}
-
 	/* Construct a layer group string.  Follow logic in WritePCBDataHeader(),
 	   |  but use g_string functions.
 	 */
@@ -1293,8 +1275,10 @@ static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 	return g_string_free(string, FALSE);	/* Don't free string->str */
 }
 
+#warning layer TODO: we should probably make changes right when the user clicked
 static void config_layers_apply(void)
 {
+#if 0
 	pcb_layer_t *layer;
 	const gchar *s;
 	gint group, i;
@@ -1350,22 +1334,7 @@ static void config_layers_apply(void)
 		ghid_invalidate_all();
 		groups_modified = FALSE;
 	}
-}
-
-static void config_layer_group_button_state_update(void)
-{
-	gint g, i;
-
-	/* Set button active corresponding to layer group state.
-	 */
-	groups_holdoff = TRUE;
-	for (g = 0; g < pcb_max_group; g++)
-		for (i = 0; i < layer_groups.grp[g].len; i++) {
-/*			printf("layer %d in group %d\n", layer_groups.Entries[g][i], g +1); */
-			config_layer_group[layer_groups.grp[g].lid[i]] = g + 1;
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(group_button[layer_groups.grp[g].lid[i]][g]), TRUE);
-		}
-	groups_holdoff = FALSE;
+#endif
 }
 
 static void layer_name_entry_cb(GtkWidget * entry, gpointer data)
@@ -1379,96 +1348,6 @@ static void layer_name_entry_cb(GtkWidget * entry, gpointer data)
 	if (pcb_gtk_g_strdup((char**)&layer->Name, name))
 		ghid_layer_buttons_update();
 }
-
-void ghid_config_groups_changed(void)
-{
-	GtkWidget *vbox, *table, *button, *label, *scrolled_window;
-	GSList *group;
-	gchar buf[32];
-	const char *name;
-	gint layer, i;
-
-	if (!config_groups_vbox)
-		return;
-	vbox = config_groups_vbox;
-
-	if (config_groups_table)
-		gtk_widget_destroy(config_groups_table);
-	if (config_groups_window)
-		gtk_widget_destroy(config_groups_window);
-
-	config_groups_window = scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_set_size_request(scrolled_window, (pcb_max_group + 1)*34, 300);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 3);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
-	gtk_widget_show(scrolled_window);
-
-
-	table = gtk_table_new(pcb_max_layer + 3, pcb_max_group + 1, FALSE);
-	config_groups_table = table;
-	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window), table);
-	gtk_widget_show(table);
-
-	layer_groups = PCB->LayerGroups;	/* working copy */
-	lg_monitor = &PCB->LayerGroups;	/* So can know if PCB changes on us */
-
-	label = gtk_label_new(_("Group #"));
-	gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 1, 0, 1);
-	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
-
-	for (i = 1; i < pcb_max_group + 1; ++i) {
-		pcb_snprintf(buf, sizeof(buf), "% 3d", i);
-		label = gtk_label_new(buf);
-		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-		gtk_table_attach_defaults(GTK_TABLE(table), label, i, i + 1, 0, 1);
-	}
-
-	/* Create a row of radio toggle buttons for layer.  So each layer
-	   |  can have an active radio button set for the group it needs to be in.
-	 */
-	for (layer = 0; layer < pcb_max_layer; ++layer) {
-		int noedit = 0;
-#warning layer TODO: do not depend on these to exist
-		if ((pcb_layer_flags(layer) & PCB_LYT_TOP) && (pcb_layer_flags(layer) & PCB_LYT_SILK)) {
-			name = _("component side");
-			noedit = 1;
-		}
-		else if ((pcb_layer_flags(layer) & PCB_LYT_BOTTOM) && (pcb_layer_flags(layer) & PCB_LYT_SILK)) {
-			name = _("solder side");
-			noedit = 1;
-		}
-		else
-			name = (gchar *) PCB_UNKNOWN(PCB->Data->Layer[layer].Name);
-
-		if (noedit) {
-			label = gtk_label_new(name);
-			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-			gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 1, layer + 1, layer + 2);
-		}
-		else {
-			layer_entry[layer] = gtk_entry_new();
-			gtk_entry_set_text(GTK_ENTRY(layer_entry[layer]), name);
-			gtk_table_attach_defaults(GTK_TABLE(table), layer_entry[layer], 0, 1, layer + 1, layer + 2);
-			g_signal_connect(G_OBJECT(layer_entry[layer]), "activate", G_CALLBACK(layer_name_entry_cb), GINT_TO_POINTER(layer));
-		}
-
-		group = NULL;
-		for (i = 0; i < pcb_max_group; ++i) {
-			button = gtk_radio_button_new(group);
-
-			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(button));
-			gtk_table_attach_defaults(GTK_TABLE(table), button, i + 1, i + 2, layer + 1, layer + 2);
-			g_signal_connect(G_OBJECT(button), "toggled",
-											 G_CALLBACK(config_layer_groups_radio_button_cb), GINT_TO_POINTER((layer << 8) | (i + 1)));
-			group_button[layer][i] = button;
-		}
-	}
-	gtk_widget_show_all(config_groups_vbox);
-	config_layer_group_button_state_update();
-}
-
 
 static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 {
@@ -1531,7 +1410,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 	gtk_box_pack_start(GTK_BOX(content_vbox), tabs, TRUE, TRUE, 0);
 
 /* -- Layer stack tab */
-	vbox = ghid_notebook_page(tabs, _("Layer Stack"), 0, 6);
+	vbox = ghid_notebook_page(tabs, _("Phyisical layer stack"), 0, 6);
 	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
 		pcb_gtk_preview_t *p;
 		prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
@@ -1542,7 +1421,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 	}
 
 /* -- Change tab */
-	vbox = ghid_notebook_page(tabs, _("Change"), 0, 6);
+	vbox = ghid_notebook_page(tabs, _("Logical layers"), 0, 6);
 	vbox1 = ghid_category_vbox(vbox, _("Operations on currently selected layer:"), 4, 2, TRUE, TRUE);
 
 	button = gtk_button_new();
@@ -1574,19 +1453,6 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 
-/* -- Groups tab */
-	vbox = ghid_notebook_page(tabs, _("Groups"), 0, 6);
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
-
-	config_groups_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), config_groups_vbox, TRUE, TRUE, 0);
-	ghid_config_groups_changed();
-
-	/* A dummy vbox on the right to take up excess horizontal space so the layer list is not scretched horizontally */
-	vbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
-
 /* -- Info tab */
 	vbox = ghid_notebook_page(tabs, _("Info"), 0, 6);
 
@@ -1605,16 +1471,6 @@ void ghid_config_layer_name_update(gchar * name, gint layer)
 	if (!config_window || layers_applying || !name)
 		return;
 	gtk_entry_set_text(GTK_ENTRY(layer_entry[layer]), name);
-
-	/* If we get a config layer name change because a new PCB is loaded
-	   |  or new layout started, need to change our working layer group copy.
-	 */
-	if (lg_monitor != &PCB->LayerGroups) {
-		layer_groups = PCB->LayerGroups;
-		lg_monitor = &PCB->LayerGroups;
-		config_layer_group_button_state_update();
-		groups_modified = FALSE;
-	}
 }
 
 	/* -------------- The Colors config page ----------------

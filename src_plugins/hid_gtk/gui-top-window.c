@@ -1569,7 +1569,6 @@ void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 	if (!ghidgui || !ghidgui->menu_bar || PCB == NULL)
 		return;
 
-	ghid_config_groups_changed();
 	ghid_layer_buttons_update();
 	ghid_layer_selector_show_layers(GHID_LAYER_SELECTOR(ghidgui->layer_selector), get_layer_visible_cb);
 
