@@ -77,38 +77,6 @@ ModifierKeysState ghid_modifier_keys_state(GdkModifierType * state)
 	return mk;
 }
 
-ButtonState ghid_button_state(GdkModifierType * state)
-{
-	GdkModifierType mask;
-	ButtonState bs;
-	gboolean button1, button2, button3;
-	GHidPort *out = &ghid_port;
-
-	if (!state) {
-		gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
-	}
-	else
-		mask = *state;
-
-	extern GdkModifierType ghid_glob_mask;
-	ghid_glob_mask = mask;
-
-	button1 = (mask & GDK_BUTTON1_MASK);
-	button2 = (mask & GDK_BUTTON2_MASK);
-	button3 = (mask & GDK_BUTTON3_MASK);
-
-	if (button1)
-		bs = BUTTON1_PRESSED;
-	else if (button2)
-		bs = BUTTON2_PRESSED;
-	else if (button3)
-		bs = BUTTON3_PRESSED;
-	else
-		bs = NO_BUTTON_PRESSED;
-
-	return bs;
-}
-
 void ghid_draw_area_update(GHidPort * port, GdkRectangle * rect)
 {
 	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
