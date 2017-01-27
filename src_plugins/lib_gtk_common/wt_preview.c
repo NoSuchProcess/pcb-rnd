@@ -359,10 +359,10 @@ static void update_expose_data(pcb_gtk_preview_t *prv)
 	prv->expose_data.view.X2 = prv->view.x0 + prv->view.width;
 	prv->expose_data.view.Y2 = prv->view.y0 + prv->view.height;
 
-	pcb_printf("EXPOSE_DATA: %$mm %$mm - %$mm %$mm (%f %$mm)\n",
+/*	pcb_printf("EXPOSE_DATA: %$mm %$mm - %$mm %$mm (%f %$mm)\n",
 		prv->expose_data.view.X1, prv->expose_data.view.Y1,
 		prv->expose_data.view.X2, prv->expose_data.view.Y2,
-		prv->view.coord_per_px, prv->view.x0);
+		prv->view.coord_per_px, prv->view.x0);*/
 }
 
 static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev, void *tmp)
