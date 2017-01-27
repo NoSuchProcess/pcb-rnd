@@ -745,7 +745,7 @@ static void layer_fixup(pcb_board_t *pcb)
 			else if (grp == top_silk)
 				g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
 			else
-				g = pcb_get_grp_new_intern(&pcb->LayerGroups);
+				g = pcb_get_grp_new_intern(&pcb->LayerGroups, grp);
 /*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.grp);*/
 			pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, n);
 			if (strcmp(l->Name, "outline") == 0)

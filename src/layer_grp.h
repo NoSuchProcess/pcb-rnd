@@ -45,6 +45,9 @@ struct pcb_layer_group_s {
 
 	unsigned valid:1;                      /* 1 if it's a new-style, valid layer group; 0 after loading old files with no layer stackup info */
 	unsigned vis:1;                        /* 1 if layer group is visible on the GUI */
+
+	/* internal: temporary states */
+	int intern_id;                         /* for the old layer import mechanism */
 };
 
 
@@ -127,7 +130,7 @@ void pcb_layer_group_to_old(pcb_board_t *pcb);
 /* for parsing old files with old layer descriptions, with no layer groups */
 void pcb_layer_group_setup_default(pcb_layer_stack_t *newg);
 pcb_layer_group_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ);
-pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack);
+pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_id);
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack);
 
 /* ugly hack: remove the extra substrate we added after the outline layer */

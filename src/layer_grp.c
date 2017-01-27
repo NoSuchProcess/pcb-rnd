@@ -239,9 +239,20 @@ static pcb_layer_group_t *pcb_get_grp_new_intern_(pcb_layer_stack_t *stack, int 
 	return NULL;
 }
 
-pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack)
+pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_id)
 {
-	return pcb_get_grp_new_intern_(stack, 0);
+	pcb_layer_group_t *g;
+
+	if (intern_id > 0) { /* look for existing intern layer first */
+		int n;
+		for(n = 0; n < stack->len; n++)
+			if (stack->grp[n].intern_id == intern_id)
+				return &stack->grp[n];
+	}
+
+	g = pcb_get_grp_new_intern_(stack, 0);
+	g->intern_id = intern_id;
+	return g;
 }
 
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack)
@@ -377,7 +388,7 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 					goto error;
 				/* finalize group */
 				if (loc & PCB_LYT_INTERN)
-					g = pcb_get_grp_new_intern(LayerGroup);
+					g = pcb_get_grp_new_intern(LayerGroup, -1);
 				else
 					g = pcb_get_grp(LayerGroup, loc, PCB_LYT_COPPER);
 
