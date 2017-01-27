@@ -31,6 +31,7 @@ static void show_layer_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbac
 		pd->y = (pd->top + pd->bottom) / 2 - pd->v_height * pd->zoom / 2;
 	}
 
+	pinout = 0;
 	save_vx = view_left_x;
 	save_vy = view_top_y;
 	save_vz = view_zoom;
@@ -39,7 +40,6 @@ static void show_layer_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbac
 	save_fx = conf_core.editor.view.flip_x;
 	save_fy = conf_core.editor.view.flip_y;
 	save_px = pixmap;
-	pinout = pd;
 	pixmap = pd->window;
 	view_left_x = pd->x;
 	view_top_y = pd->y;
@@ -53,7 +53,6 @@ static void show_layer_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbac
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
 	pcb_hid_expose_layer(&lesstif_hid, &pd->ctx);
 
-	pinout = 0;
 	view_left_x = save_vx;
 	view_top_y = save_vy;
 	view_zoom = save_vz;
@@ -84,10 +83,11 @@ static PinoutData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 
 	pd->ctx.content.layer_id = layer;
 
-	pd->left = 0;
-	pd->right = 0;
-	pd->top = PCB_MM_TO_COORD(130);
-	pd->bottom = PCB_MM_TO_COORD(130);
+	pd->ctx.view.X1 = pd->left = 0;
+	pd->ctx.view.X2 = pd->right = PCB_MM_TO_COORD(130);
+	pd->ctx.view.Y1 = pd->top = 0;
+	pd->ctx.view.Y2 = pd->bottom = PCB_MM_TO_COORD(130);
+	pd->ctx.force = 1;
 
 	pd->prev = 0;
 	pd->zoom = 0;
