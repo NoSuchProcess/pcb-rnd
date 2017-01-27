@@ -125,35 +125,6 @@ const gchar *ghid_entry_get_text(GtkWidget * entry)
 	return s;
 }
 
-
-
-void
-ghid_check_button_connected(GtkWidget * box,
-														GtkWidget ** button,
-														gboolean active,
-														gboolean pack_start,
-														gboolean expand,
-														gboolean fill,
-														gint pad, void (*cb_func) (GtkToggleButton *, gpointer), gpointer data, const gchar * string)
-{
-	GtkWidget *b;
-
-	if (string != NULL)
-		b = gtk_check_button_new_with_label(string);
-	else
-		b = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(b), active);
-	if (box && pack_start)
-		gtk_box_pack_start(GTK_BOX(box), b, expand, fill, pad);
-	else if (box && !pack_start)
-		gtk_box_pack_end(GTK_BOX(box), b, expand, fill, pad);
-
-	if (cb_func)
-		g_signal_connect(b, "clicked", G_CALLBACK(cb_func), data);
-	if (button)
-		*button = b;
-}
-
 void
 ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t value,
 								 pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size, const pcb_unit_t *u,

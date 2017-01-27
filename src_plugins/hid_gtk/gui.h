@@ -50,6 +50,7 @@
 /* TODO: REMOVE THIS */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/bu_box.h"
+#include "../src_plugins/lib_gtk_common/bu_check_button.h"
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
 
 
@@ -280,10 +281,7 @@ gboolean ghid_shift_is_pressed(void);
 
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
 const gchar *ghid_entry_get_text(GtkWidget * entry);
-void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button,
-																 gboolean active, gboolean pack_start,
-																 gboolean expand, gboolean fill, gint pad,
-																 void (*cb_func) (GtkToggleButton *, gpointer), gpointer data, const gchar * string);
+
 void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t value,
 											pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size, const pcb_unit_t *u,
 											gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
