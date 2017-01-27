@@ -13,6 +13,9 @@
 		- pcb_get_grp_new_intern() should get the old layer group number and shouldn't create a new internal layer if it's already done (cache). Test: a pcb file with two internals in the same group!
 		- lesstif doesn't run csect
 		- gtk can't change layer name
+		- adding a new layer should get it added to the top copper layer group
+		- check the strange +2 (see #warning) in the layer move code in layer.c
+		- gtk: replace the info text
 	- RTT/arc_angles.pcb:
 		- gtk draws non-full-circle
 		- also check lesstif
