@@ -28,10 +28,10 @@
 /* main program, initializes some stuff and handles user input
  */
 #include "config.h"
-
-static const char *EXPERIMENTAL = "layer rewrite";
-
 #include <stdlib.h>
+
+static const char *EXPERIMENTAL = NULL;
+
 #include <string.h>
 #include <signal.h>
 #include <sys/stat.h>
