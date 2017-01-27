@@ -1445,10 +1445,11 @@ See @ref{ChangeName Action}.
 
 %end-doc */
 
+extern void lesstif_show_layergrp_edit(void);
 static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
+#if 0
 	if (!layer_groups_form) {
-
 		stdarg_n = 0;
 		stdarg(XmNfractionBase, pcb_max_layer);
 		stdarg(XmNtitle, "Layer Groups");
@@ -1511,6 +1512,10 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	}
 	lesstif_update_layer_groups();
 	XtManageChild(layer_groups_form);
+	return 1;
+#endif
+
+	lesstif_show_layergrp_edit();
 	return 1;
 }
 
