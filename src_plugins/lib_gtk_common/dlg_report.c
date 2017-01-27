@@ -24,6 +24,12 @@
  *
  */
 
+/* Originally from gui-utils.c, was written by Bill Wilson and the functions
+ * here are Copyright (C) 2004 by Bill Wilson.  Those functions were utility
+ * functions which are taken from my other GPL'd projects gkrellm and
+ * gstocks and are copied here for the Gtk PCB port.
+ */
+
 #include "config.h"
 
 #include "dlg_report.h"
