@@ -527,9 +527,9 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
-	int groups[PCB_MAX_LAYERGRP + 2], l, g;
+	int l, g;
 	pcb_layer_t saved_layer;
-	int saved_group;
+
 
 	pcb_undo_add_layer_move(old_index, new_index);
 	pcb_undo_inc_serial();
@@ -555,13 +555,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		return 1;
 	}
 
-	for (g = 0; g < PCB_MAX_LAYERGRP + 2; g++)
-		groups[g] = -1;
-
-	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
-		for (l = 0; l < PCB->LayerGroups.grp[g].len; l++)
-			groups[PCB->LayerGroups.grp[g].lid[l]] = g;
-
 	if (old_index == -1) {
 		pcb_layer_t *lp;
 		if (pcb_max_layer == PCB_MAX_LAYER) {
@@ -573,7 +566,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 #warning layer TODO: what is this +2 here?
 		memmove(&PCB->Data->Layer[new_index + 1],
 						&PCB->Data->Layer[new_index], (pcb_max_layer - new_index + 2) * sizeof(pcb_layer_t));
-		memmove(&groups[new_index + 1], &groups[new_index], (pcb_max_layer - new_index + 2) * sizeof(int));
 		pcb_max_layer++;
 		memset(lp, 0, sizeof(pcb_layer_t));
 		lp->On = 1;
@@ -591,7 +583,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		memmove(&PCB->Data->Layer[old_index],
 						&PCB->Data->Layer[old_index + 1], (pcb_max_layer - old_index + 2 - 1) * sizeof(pcb_layer_t));
 		memset(&PCB->Data->Layer[pcb_max_layer + 1], 0, sizeof(pcb_layer_t));
-		memmove(&groups[old_index], &groups[old_index + 1], (pcb_max_layer - old_index + 2 - 1) * sizeof(int));
 		for (l = 0; l < pcb_max_layer; l++)
 			if (pcb_layer_stack[l] == old_index)
 				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (pcb_max_layer - l - 1) * sizeof(pcb_layer_stack[0]));
@@ -603,39 +594,26 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	else {
 		/* Move an existing layer */
 		memcpy(&saved_layer, &PCB->Data->Layer[old_index], sizeof(pcb_layer_t));
-		saved_group = groups[old_index];
-		if (old_index < new_index) {
+		if (old_index < new_index)
 			memmove(&PCB->Data->Layer[old_index], &PCB->Data->Layer[old_index + 1], (new_index - old_index) * sizeof(pcb_layer_t));
-			memmove(&groups[old_index], &groups[old_index + 1], (new_index - old_index) * sizeof(int));
-		}
-		else {
+		else
 			memmove(&PCB->Data->Layer[new_index + 1], &PCB->Data->Layer[new_index], (old_index - new_index) * sizeof(pcb_layer_t));
-			memmove(&groups[new_index + 1], &groups[new_index], (old_index - new_index) * sizeof(int));
-		}
 		memcpy(&PCB->Data->Layer[new_index], &saved_layer, sizeof(pcb_layer_t));
-		groups[new_index] = saved_group;
 	}
 
 	move_all_thermals(old_index, new_index);
 
-	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
+	for (g = 0; g < pcb_max_group; g++)
 		PCB->LayerGroups.grp[g].len = 0;
+
 	for (l = 0; l < pcb_max_layer; l++) {
 		int i;
-		g = groups[l];
+		g = PCB->Data->Layer[l].grp;
 		if (g >= 0) {
 			i = PCB->LayerGroups.grp[g].len++;
 			PCB->LayerGroups.grp[g].lid[i] = l;
 		}
 	}
-
-	for (g = 0; g < PCB_MAX_LAYERGRP; g++)
-		if (PCB->LayerGroups.grp[g].len == 0) {
-			memmove(&PCB->LayerGroups.grp[g].len,
-							&PCB->LayerGroups.grp[g + 1].len, (PCB_MAX_LAYERGRP - g - 1) * sizeof(PCB->LayerGroups.grp[g].len));
-			memmove(&PCB->LayerGroups.grp[g],
-							&PCB->LayerGroups.grp[g + 1], (PCB_MAX_LAYERGRP - g - 1) * sizeof(PCB->LayerGroups.grp[g]));
-		}
 
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_gui->invalidate_all();
