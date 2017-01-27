@@ -399,17 +399,21 @@ void pcb_dhlp_thindraw_pcb_pv(pcb_hid_gc_t fg_gc, pcb_hid_gc_t bg_gc, pcb_pin_t 
 	}
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv)) {
-		pcb_coord_t l = pv->X - r;
-		pcb_coord_t b = pv->Y - r;
-		pcb_coord_t r = l + w;
-		pcb_coord_t t = b + w;
+		if ((PCB_FLAG_SQUARE_GET(pv) == 0) || (PCB_FLAG_SQUARE_GET(pv) == 1)) {
+			pcb_coord_t l = pv->X - r;
+			pcb_coord_t b = pv->Y - r;
+			pcb_coord_t r = l + w;
+			pcb_coord_t t = b + w;
 
-		pcb_gui->set_line_cap(fg_gc, Round_Cap);
-		pcb_gui->set_line_width(fg_gc, 0);
-		pcb_gui->draw_line(fg_gc, r, t, r, b);
-		pcb_gui->draw_line(fg_gc, l, t, l, b);
-		pcb_gui->draw_line(fg_gc, r, t, l, t);
-		pcb_gui->draw_line(fg_gc, r, b, l, b);
+			pcb_gui->set_line_cap(fg_gc, Round_Cap);
+			pcb_gui->set_line_width(fg_gc, 0);
+			pcb_gui->draw_line(fg_gc, r, t, r, b);
+			pcb_gui->draw_line(fg_gc, l, t, l, b);
+			pcb_gui->draw_line(fg_gc, r, t, l, t);
+			pcb_gui->draw_line(fg_gc, r, b, l, b);
+		}
+		else
+			draw_square_pin_poly(fg_gc, pv->X, pv->Y, w, pcb_true, PCB_FLAG_SQUARE_GET(pv));
 
 	}
 	else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv)) {
