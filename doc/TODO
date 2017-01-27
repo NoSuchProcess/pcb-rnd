@@ -11,6 +11,8 @@
 	- layer rewrite bug:
 		- autoroute stopped working
 		- pcb_get_grp_new_intern() should get the old layer group number and shouldn't create a new internal layer if it's already done (cache). Test: a pcb file with two internals in the same group!
+		- lesstif doesn't run csect
+		- gtk can't change layer name
 	- RTT/arc_angles.pcb:
 		- gtk draws non-full-circle
 		- also check lesstif
