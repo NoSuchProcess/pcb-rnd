@@ -297,9 +297,6 @@ void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												gboolean pack_start, gboolean expand, gboolean fill,
 												guint pad, gfloat value, gfloat low, gfloat high,
 												gfloat step0, gfloat step1, void (*cb_func) (), gpointer data);
-GtkWidget *ghid_notebook_page(GtkWidget * tabs, const char *name, gint pad, gint border);
-GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, const char *name,
-																		 gint border, gint frame_border, gint vbox_pad, gint vbox_border);
 void ghid_text_view_append(GtkWidget * view, const gchar * string);
 void ghid_text_view_append_strings(GtkWidget * view, const gchar ** string, gint n_strings);
 

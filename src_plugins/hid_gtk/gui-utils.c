@@ -208,36 +208,11 @@ ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
 	}
 }
 
-GtkWidget *ghid_notebook_page(GtkWidget * tabs, const char *name, gint pad, gint border)
-{
-	GtkWidget *label;
-	GtkWidget *vbox;
-
-	vbox = gtk_vbox_new(FALSE, pad);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), border);
-
-	label = gtk_label_new(name);
-	gtk_notebook_append_page(GTK_NOTEBOOK(tabs), vbox, label);
-
-	return vbox;
-}
-
-GtkWidget *ghid_framed_notebook_page(GtkWidget * tabs, const char *name, gint border,
-																		 gint frame_border, gint vbox_pad, gint vbox_border)
-{
-	GtkWidget *vbox;
-
-	vbox = ghid_notebook_page(tabs, name, 0, border);
-	vbox = ghid_framed_vbox(vbox, NULL, frame_border, TRUE, vbox_pad, vbox_border);
-	return vbox;
-}
-
 void ghid_label_set_markup(GtkWidget * label, const gchar * text)
 {
 	if (label)
 		gtk_label_set_markup(GTK_LABEL(label), text ? text : "");
 }
-
 
 static void text_view_append(GtkWidget * view, const gchar * s)
 {
