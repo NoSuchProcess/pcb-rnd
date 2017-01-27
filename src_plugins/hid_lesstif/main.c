@@ -123,7 +123,8 @@ typedef struct PinoutData {
 	pcb_coord_t x, y;										/* PCB coordinates of upper right corner of window */
 	double zoom;									/* PCB units per screen pixel */
 	int v_width, v_height;				/* pixels */
-	void *item;
+
+	pcb_hid_expose_ctx_t ctx;
 } PinoutData;
 
 /* Linked list of all pinout windows.  */
@@ -3444,7 +3445,7 @@ static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStr
 	region.Y2 = PCB->MaxHeight;*/
 
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
-	pcb_hid_expose_pinout(&lesstif_hid, pd->item);
+	pcb_hid_expose_pinout(&lesstif_hid, &pd->ctx);
 
 	pinout = 0;
 	view_left_x = save_vx;
@@ -3477,16 +3478,16 @@ static void lesstif_show_item(void *item)
 	PinoutData *pd;
 
 	for (pd = pinouts; pd; pd = pd->next)
-		if (pd->item == item)
+		if (pd->ctx.content.elem == item)
 			return;
 	if (!mainwind)
 		return;
 
 	pd = (PinoutData *) calloc(1, sizeof(PinoutData));
 
-	pd->item = item;
+	pd->ctx.content.elem = item;
 
-	extents = pcb_hid_get_extents_pinout(item);
+	extents = pcb_hid_get_extents_pinout(&pd->ctx);
 	pd->left = extents->X1;
 	pd->right = extents->X2;
 	pd->top = extents->Y1;
