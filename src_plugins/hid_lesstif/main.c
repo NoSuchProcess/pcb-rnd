@@ -227,19 +227,18 @@ Location of the @file{pcb-menu.res} file which defines the menu for the lesstif 
 
 PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 
-		 static void lesstif_use_mask(int use_it);
-		 static void zoom_max();
-		 static void zoom_to(double factor, int x, int y);
-		 static void zoom_by(double factor, int x, int y);
-		 static void zoom_toggle(int x, int y);
-		 static void pinout_callback(Widget, PinoutData *, XmDrawingAreaCallbackStruct *);
-		 static void pinout_unmap(Widget, PinoutData *, void *);
-		 static void Pan(int mode, int x, int y);
+static void lesstif_use_mask(int use_it);
+static void zoom_max();
+static void zoom_to(double factor, int x, int y);
+static void zoom_by(double factor, int x, int y);
+static void zoom_toggle(int x, int y);
+static void pinout_callback(Widget, PinoutData *, XmDrawingAreaCallbackStruct *);
+static void pinout_unmap(Widget, PinoutData *, void *);
+static void Pan(int mode, int x, int y);
 
 /* Px converts view->pcb, Vx converts pcb->view */
 
-		 static inline int
-		   Vx(pcb_coord_t x)
+static inline int Vx(pcb_coord_t x)
 {
 	int rv = (x - view_left_x) / view_zoom + 0.5;
 	if (conf_core.editor.view.flip_x)
