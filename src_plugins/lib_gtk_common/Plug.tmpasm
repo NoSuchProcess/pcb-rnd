@@ -7,6 +7,7 @@ put /local/pcb/mod/OBJS [@
 put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/bu_box.o
   $(PLUGDIR)/lib_gtk_common/bu_check_button.o
+  $(PLUGDIR)/lib_gtk_common/bu_entry.o
   $(PLUGDIR)/lib_gtk_common/bu_notebook.o
   $(PLUGDIR)/lib_gtk_common/bu_spin_button.o
   $(PLUGDIR)/lib_gtk_common/dlg_about.o

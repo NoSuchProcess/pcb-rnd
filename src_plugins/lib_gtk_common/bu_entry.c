@@ -1,0 +1,115 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  pcb-rnd Copyright (C) 2017 Alain Vigne
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Contact addresses for paper mail and Email:
+ *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
+ *  Thomas.Nau@rz.uni-ulm.de
+ *
+ */
+
+/* This code was originally written by Bill Wilson for the PCB Gtk port. */
+
+#include "config.h"
+
+#include "bu_entry.h"
+#include "conf_core.h"
+
+void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t value,
+											pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size,
+											const pcb_unit_t * u, gint width,
+											void (*cb_func) (GHidCoordEntry *, gpointer),
+											gpointer data, const gchar * string_pre, const gchar * string_post)
+{
+	GtkWidget *hbox = NULL, *label, *entry_widget;
+	GHidCoordEntry *entry;
+
+	if (u == NULL)
+		u = conf_core.editor.grid_unit;
+
+	if ((string_pre || string_post) && box) {
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 2);
+		box = hbox;
+	}
+
+	entry_widget = ghid_coord_entry_new(low, high, value, u, step_size);
+	if (coord_entry)
+		*coord_entry = entry_widget;
+	if (width > 0)
+		gtk_widget_set_size_request(entry_widget, width, -1);
+	entry = GHID_COORD_ENTRY(entry_widget);
+	if (data == NULL)
+		data = (gpointer) entry;
+	if (cb_func)
+		g_signal_connect(G_OBJECT(entry_widget), "value_changed", G_CALLBACK(cb_func), data);
+	if (box) {
+		if (string_pre) {
+			label = gtk_label_new(string_pre);
+			gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 2);
+		}
+		gtk_box_pack_start(GTK_BOX(box), entry_widget, FALSE, FALSE, 2);
+		if (string_post) {
+			label = gtk_label_new(string_post);
+			gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+			gtk_box_pack_start(GTK_BOX(box), label, TRUE, TRUE, 2);
+		}
+	}
+}
+
+void ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
+														GtkWidget ** coord_entry, pcb_coord_t value,
+														pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size,
+														gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
+														gpointer data, gboolean right_align, const gchar * string)
+{
+	GtkWidget *label, *entry_widget;
+	GHidCoordEntry *entry;
+
+	if (!table)
+		return;
+
+	entry_widget = ghid_coord_entry_new(low, high, value, conf_core.editor.grid_unit, step_size);
+	if (coord_entry)
+		*coord_entry = entry_widget;
+	if (width > 0)
+		gtk_widget_set_size_request(entry_widget, width, -1);
+	entry = GHID_COORD_ENTRY(entry_widget);
+	if (data == NULL)
+		data = (gpointer) entry;
+	if (cb_func)
+		g_signal_connect(G_OBJECT(entry), "value_changed", G_CALLBACK(cb_func), data);
+
+	if (right_align) {
+		gtk_table_attach_defaults(GTK_TABLE(table), entry_widget, column + 1, column + 2, row, row + 1);
+		if (string) {
+			label = gtk_label_new(string);
+			gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+			gtk_table_attach_defaults(GTK_TABLE(table), label, column, column + 1, row, row + 1);
+		}
+	}
+	else {
+		gtk_table_attach_defaults(GTK_TABLE(table), entry_widget, column, column + 1, row, row + 1);
+		if (string) {
+			label = gtk_label_new(string);
+			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+			gtk_table_attach_defaults(GTK_TABLE(table), label, column + 1, column + 2, row, row + 1);
+		}
+	}
+}
