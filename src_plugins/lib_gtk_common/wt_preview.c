@@ -359,10 +359,10 @@ static void update_expose_data(pcb_gtk_preview_t *prv)
 	prv->expose_data.view.X2 = prv->view.x0 + prv->view.width;
 	prv->expose_data.view.Y2 = prv->view.y0 + prv->view.height;
 
-/*	pcb_printf("EXPOSE_DATA: %$mm %$mm - %$mm %$mm (%f %$mm)\n",
+	pcb_printf("EXPOSE_DATA: %$mm %$mm - %$mm %$mm (%f %$mm)\n",
 		prv->expose_data.view.X1, prv->expose_data.view.Y1,
 		prv->expose_data.view.X2, prv->expose_data.view.Y2,
-		prv->view.coord_per_px, prv->view.x0);*/
+		prv->view.coord_per_px, prv->view.x0);
 }
 
 static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev, void *tmp)
@@ -377,14 +377,13 @@ static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev,
 	update_expose_data(preview);
 }
 
-static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy)
+static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp)
 {
-	gint xp, yp;
-	gdk_window_get_pointer(gtk_widget_get_window(preview), &xp, &yp, NULL);
+	gdk_window_get_pointer(gtk_widget_get_window(preview), xp, yp, NULL);
 #define SIDE_X(x) x
 #define SIDE_Y(y) y
-	*cx = EVENT_TO_PCB_X(&preview->view, xp);
-	*cy = EVENT_TO_PCB_Y(&preview->view, yp);
+	*cx = EVENT_TO_PCB_X(&preview->view, *xp);
+	*cy = EVENT_TO_PCB_Y(&preview->view, *yp);
 #undef SIDE_X
 #undef SIDE_Y
 }
@@ -393,7 +392,8 @@ static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
 	pcb_coord_t cx, cy;
-	get_ptr(preview, &cx, &cy);
+	gint wx, wy;
+	get_ptr(preview, &cx, &cy, &wx, &wy);
 
 	switch(btn) {
 		case PCB_MB_LEFT:
@@ -403,23 +403,32 @@ static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 					ghid_preview_expose(w, NULL);
 			}
 			break;
+		case PCB_MB_RIGHT:
+			preview->view.panning = 1;
+			preview->grabx = cx;
+			preview->graby = cy;
+			break;
 		case PCB_MB_SCROLL_UP:
-			pcb_gtk_zoom_view_rel(&preview->view, cx, cy, 0.8);
-			update_expose_data(preview);
-			ghid_preview_expose(w, NULL);
-			break;
+			pcb_gtk_zoom_view_rel(&preview->view, 0, 0, 0.8);
+			goto do_zoom;
 		case PCB_MB_SCROLL_DOWN:
-			pcb_gtk_zoom_view_rel(&preview->view, cx, cy, 1.25);
-			update_expose_data(preview);
-			ghid_preview_expose(w, NULL);
-			break;
+			pcb_gtk_zoom_view_rel(&preview->view, 0, 0, 1.25);
+			goto do_zoom;
 	}
+	return FALSE;
+
+	do_zoom:;
+	preview->view.x0 = cx - (preview->view.canvas_width / 2) * preview->view.coord_per_px;
+	preview->view.y0 = cy - (preview->view.canvas_height / 2) * preview->view.coord_per_px;
+	update_expose_data(preview);
+	ghid_preview_expose(w, NULL);
+
 	return FALSE;
 }
 
 static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton * ev, gpointer data)
 {
-	return button_press(w, ev->button);
+	return button_press(w, ghid_mouse_button(ev->button));
 }
 
 static gboolean preview_scroll_cb(GtkWidget *w, GdkEventScroll *ev, gpointer data)
@@ -435,12 +444,22 @@ static gboolean preview_scroll_cb(GtkWidget *w, GdkEventScroll *ev, gpointer dat
 static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton * ev, gpointer data)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
-	if (preview->mouse_cb != NULL) {
-		pcb_coord_t cx, cy;
-		get_ptr(preview, &cx, &cy);
-/*		pcb_printf("br %mm %mm\n", cx, cy); */
-		if (preview->mouse_cb(w, PCB_HID_MOUSE_RELEASE, cx, cy))
-			ghid_preview_expose(w, NULL);
+
+	switch(ghid_mouse_button(ev->button)) {
+		case PCB_MB_RIGHT:
+			preview->view.panning = 0;
+			break;
+		case PCB_MB_LEFT:
+			if (preview->mouse_cb != NULL) {
+				pcb_coord_t cx, cy;
+				gint wx, wy;
+				get_ptr(preview, &cx, &cy, &wx, &wy);
+/*				pcb_printf("br %mm %mm\n", cx, cy); */
+				if (preview->mouse_cb(w, PCB_HID_MOUSE_RELEASE, cx, cy))
+					ghid_preview_expose(w, NULL);
+			}
+			break;
+		default: ;
 	}
 	return FALSE;
 }
@@ -448,9 +467,21 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton * ev, gpo
 static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion * ev, gpointer data)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
+	pcb_coord_t cx, cy;
+	gint wx, wy;
+	get_ptr(preview, &cx, &cy, &wx, &wy);
+
+	if (preview->view.panning) {
+		preview->view.x0 = preview->grabx - wx * preview->view.coord_per_px;
+		preview->view.y0 = preview->graby - wy * preview->view.coord_per_px;
+		update_expose_data(preview);
+		ghid_preview_expose(w, NULL);
+		return FALSE;
+	}
+
+
+
 	if (preview->mouse_cb != NULL) {
-		pcb_coord_t cx, cy;
-		get_ptr(preview, &cx, &cy);
 /*		pcb_printf("mo %mm %mm\n", cx, cy); */
 		preview->mouse_cb(w, PCB_HID_MOUSE_MOTION, cx, cy);
 		if (preview->overlay_draw_cb != NULL)

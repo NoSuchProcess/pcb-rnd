@@ -71,7 +71,8 @@ struct pcb_gtk_preview_s {
 	pcb_hid_expose_ctx_t expose_data;
 	pcb_gtk_view_t view;
 
-	gint x_max, y_max, win_w, win_h;
+	pcb_coord_t x_max, y_max; /* for the element preview only */
+	gint win_w, win_h;
 	gint w_pixels, h_pixels;			/* natural size of element preview */
 
 	void *gport;
@@ -80,6 +81,7 @@ struct pcb_gtk_preview_s {
 	pcb_gtk_preview_kind_t kind;
 	pcb_gtk_preview_mouse_ev_t mouse_cb;
 	pcb_hid_expose_t overlay_draw_cb;
+	pcb_coord_t grabx, graby;
 
 
 	pcb_element_t element;
