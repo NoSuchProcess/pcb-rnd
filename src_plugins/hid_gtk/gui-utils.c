@@ -33,50 +33,6 @@
 #include <gdk/gdkkeysyms.h>
 
 
-gboolean ghid_is_modifier_key_sym(gint ksym)
-{
-	if (ksym == GDK_Shift_R || ksym == GDK_Shift_L || ksym == GDK_Control_R || ksym == GDK_Control_L)
-		return TRUE;
-	return FALSE;
-}
-
-
-ModifierKeysState ghid_modifier_keys_state(GdkModifierType * state)
-{
-	GdkModifierType mask;
-	ModifierKeysState mk;
-	gboolean shift, control, mod1;
-	GHidPort *out = &ghid_port;
-
-	if (!state)
-		gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
-	else
-		mask = *state;
-
-	shift = (mask & GDK_SHIFT_MASK);
-	control = (mask & GDK_CONTROL_MASK);
-	mod1 = (mask & GDK_MOD1_MASK);
-
-	if (shift && !control && !mod1)
-		mk = SHIFT_PRESSED;
-	else if (!shift && control && !mod1)
-		mk = CONTROL_PRESSED;
-	else if (!shift && !control && mod1)
-		mk = MOD1_PRESSED;
-	else if (shift && control && !mod1)
-		mk = SHIFT_CONTROL_PRESSED;
-	else if (shift && !control && mod1)
-		mk = SHIFT_MOD1_PRESSED;
-	else if (!shift && control && mod1)
-		mk = CONTROL_MOD1_PRESSED;
-	else if (shift && control && mod1)
-		mk = SHIFT_CONTROL_MOD1_PRESSED;
-	else
-		mk = NONE_PRESSED;
-
-	return mk;
-}
-
 void ghid_draw_area_update(GHidPort * port, GdkRectangle * rect)
 {
 	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);

@@ -34,6 +34,7 @@
 #include "compat_nls.h"
 
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
+#include "../src_plugins/lib_gtk_common/in_keyboard.h"
 
 #include "gui.h"
 #include <gdk/gdkkeysyms.h>

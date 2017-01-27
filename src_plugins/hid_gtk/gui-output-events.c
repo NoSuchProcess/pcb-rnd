@@ -45,6 +45,7 @@
 #include "rats.h"
 
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
+#include "../src_plugins/lib_gtk_common/in_keyboard.h"
 
 #define TOOLTIP_UPDATE_DELAY 200
 
