@@ -116,11 +116,18 @@ move_out()
 
 cmp_fmt()
 {
-	local ref="$1" out="$2" n bn
+	local ref="$1" out="$2" n bn otmp
 	case "$fmt" in
 		png)
 			bn=`basename $out`
 			res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
+			case "$res" in
+				*widths*)
+					otmp=$out.599.png
+					convert -crop 599x599+0x0 $out  $otmp
+					res=`compare "$ref" "$otmp" -metric AE  diff/$bn 2>&1`
+					;;
+			esac
 			test "$res" -lt 8 && rm diff/$bn
 			test "$res" -lt 8
 			;;
