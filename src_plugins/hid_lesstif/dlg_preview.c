@@ -98,6 +98,15 @@ static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCal
 		return;*/
 }
 
+static void show_layer_mot_callback(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
+{
+	Window root, child;
+	unsigned int keys_buttons;
+	int root_x, root_y, pos_x, pos_y;
+	while (XCheckMaskEvent(display, PointerMotionMask, e));
+	XQueryPointer(display, e->xmotion.window, &root, &child, &root_x, &root_y, &pos_x, &pos_y, &keys_buttons);
+}
+
 
 static void show_layer_unmap(Widget w, PinoutData * pd, void *v)
 {
@@ -149,6 +158,10 @@ static PinoutData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 	XtAddCallback(da, XmNexposeCallback, (XtCallbackProc) show_layer_callback, (XtPointer) pd);
 	XtAddCallback(da, XmNresizeCallback, (XtCallbackProc) show_layer_callback, (XtPointer) pd);
 	XtAddCallback(da, XmNinputCallback, (XtCallbackProc) show_layer_inp_callback, (XtPointer) pd);
+
+	XtAddEventHandler(da,
+		PointerMotionMask | PointerMotionHintMask | EnterWindowMask | LeaveWindowMask,
+		0, show_layer_mot_callback, 0);
 
 	XtManageChild(pd->form);
 
