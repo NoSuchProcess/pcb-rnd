@@ -1291,70 +1291,9 @@ static gchar *make_layer_group_string(pcb_layer_stack_t * lg)
 	return g_string_free(string, FALSE);	/* Don't free string->str */
 }
 
-#warning layer TODO: we should probably make changes right when the user clicked
 static void config_layers_apply(void)
 {
-#if 0
-	pcb_layer_t *layer;
-	const gchar *s;
-	gint group, i;
-	gint componentgroup = 0, soldergroup = 0;
-	gboolean layers_modified = FALSE;
-
-	/* Get each layer name entry and dup if modified into the PCB layer names
-	   |  and, if to use as default, the Settings layer names.
-	 */
-	for (i = 0; i < pcb_max_layer; ++i) {
-		layer = &PCB->Data->Layer[i];
-		/*s = ghid_entry_get_text(layer_entry[i]); */
-		*s = pcb_str_strip_left(gtk_entry_get_text(GTK_ENTRY(layer_entry[i])));
-		if (pcb_gtk_g_strdup((char **) &layer->Name, s))
-			layers_modified = TRUE;
-	}
-	/* Layer names can be changed from the menus and that can update the
-	   |  config.  So holdoff the loop.
-	 */
-	layers_applying = TRUE;
-	if (layers_modified)
-		ghid_layer_buttons_update();
-	layers_applying = FALSE;
-
-	if (groups_modified) {				/* If any group radio buttons were toggled. */
-		/* clear all entries and read layer by layer
-		 */
-		for (group = 0; group < pcb_max_group; group++)
-			layer_groups.grp[group].len = 0;
-
-		for (i = 0; i < pcb_max_layer; i++) {
-			group = config_layer_group[i] - 1;
-			layer_groups.grp[group].lid[layer_groups.grp[group].len++] = i;
-
-			if ((pcb_layer_flags(i) & PCB_LYT_TOP) && (pcb_layer_flags(i) & PCB_LYT_COPPER))
-				componentgroup = group;
-			else if ((pcb_layer_flags(i) & PCB_LYT_BOTTOM) && (pcb_layer_flags(i) & PCB_LYT_COPPER))
-				soldergroup = group;
-		}
-
-		/* do some cross-checking
-		   |  solder-side and component-side must be in different groups
-		   |  solder-side and component-side must not be the only one in the group
-		 */
-		if (layer_groups.grp[soldergroup].len <= 1 || layer_groups.grp[componentgroup].len <= 1) {
-			pcb_message(PCB_MSG_ERROR,
-									_("Both 'solder side' or 'component side' layers must have at least\n"
-										"\tone other layer in their group.\n"));
-			return;
-		}
-		else if (soldergroup == componentgroup) {
-			pcb_message(PCB_MSG_ERROR,
-									_("The 'solder side' and 'component side' layers are not allowed\n" "\tto be in the same layer group #\n"));
-			return;
-		}
-		PCB->LayerGroups = layer_groups;
-		ghid_invalidate_all();
-		groups_modified = FALSE;
-	}
-#endif
+	/* Nothing to do, changes got carried out right away */
 }
 
 static void layer_name_entry_cb(GtkWidget * entry, gpointer data)
