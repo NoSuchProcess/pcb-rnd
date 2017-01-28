@@ -82,12 +82,16 @@ static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCal
 {
 	SHOW_SAVES;
 	pcb_coord_t cx, cy;
+	pcb_hid_cfg_mod_t btn;
 
 	SHOW_ENTER;
+
+	btn = lesstif_mb2cfg(cbs->event->xbutton.button);
+
 	cx = Px(cbs->event->xbutton.x);
 	cy = Py(cbs->event->xbutton.y);
 
-	pcb_printf("ev %d;%d %$mm;%$mm\n", cbs->event->xbutton.x, cbs->event->xbutton.y, cx, cy);
+	pcb_printf("ev %d;%d %$mm;%$mm %x\n", cbs->event->xbutton.x, cbs->event->xbutton.y, cx, cy, btn);
 	SHOW_LEAVE;
 
 /*	if (cbs->event->type != ButtonPress)
