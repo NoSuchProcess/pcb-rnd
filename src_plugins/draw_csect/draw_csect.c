@@ -30,6 +30,7 @@
 #include "plugins.h"
 #include "stub_draw_csect.h"
 #include "compat_misc.h"
+#include "hid_actions.h"
 
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
@@ -397,13 +398,15 @@ static pcb_layergrp_id_t gactive = -1;
 typedef enum {
 	MARK_GRP_FRAME,
 	MARK_GRP_MIDDLE,
-	MARK_GRP_TOP,
+	MARK_GRP_TOP
 } mark_grp_loc_t;
 
 static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc)
 {
 	pcb_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
 	pcb_layergrp_id_t g;
+
+	g = get_group_coords(y, &y1, &y2);
 
 	if ((y1 == gy1) && (y2 == gy2) && gvalid)
 		return;
@@ -419,10 +422,9 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 			case MARK_GRP_TOP:
 				dline_(x0, gy1, PCB_MM_TO_COORD(200), gy1, 0.1);
 		}
-
 		gvalid = 0;
 	}
-	g = get_group_coords(y, &y1, &y2);
+
 	if ((g >= 0) && ((pcb_layergrp_flags(g) & accept_mask) == accept_mask)) {
 		gy1 = y1;
 		gy2 = y2;
@@ -498,7 +500,7 @@ static void draw_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
 	}
 }
 
-static do_move_grp()
+static void do_move_grp()
 {
 	unsigned int tflg;
 
@@ -675,7 +677,7 @@ static int pcb_act_dump_csect(int argc, const char **argv, pcb_coord_t x, pcb_co
 			pcb_layer_t *l = &PCB->Data->Layer[lid];
 			printf("      [%ld] %s\n", lid, l->Name);
 			if (l->grp != gid)
-				printf("         *** broken layer-to-group cross reference: %d\n", l->grp);
+				printf("         *** broken layer-to-group cross reference: %ld\n", l->grp);
 		}
 	}
 	return 0;
