@@ -1,4 +1,31 @@
-/*! \file <gtk-pcb-coord-entry.c>
+/*
+ *                            COPYRIGHT
+ *
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  pcb-rnd Copyright (C) 2017 Alain Vigne
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Contact addresses for paper mail and Email:
+ *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
+ *  Thomas.Nau@rz.uni-ulm.de
+ *
+ */
+
+
+/*! \file <wt_coord_entry.c>
  *  \brief Implementation of GHidCoordEntry widget
  *  \par Description
  *  This widget is a modified spinbox for the user to enter
@@ -10,17 +37,13 @@
  *  From the user's perspective, it uses natural human units.
  */
 
-#include <glib.h>
-#include <glib-object.h>
-#include <gtk/gtk.h>
-
 #include "config.h"
-#include "gtkhid.h"
-#include "gui.h"
+
+#include "wt_coord_entry.h"
+
 #include "pcb-printf.h"
 #include "compat_nls.h"
 
-#include "ghid-coord-entry.h"
 
 enum {
 	UNIT_CHANGE_SIGNAL,
@@ -226,7 +249,8 @@ GType ghid_coord_entry_get_type(void)
  *
  *  \return a freshly-allocated GHidCoordEntry
  */
-GtkWidget *ghid_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_coord_t value, const pcb_unit_t * unit, enum ce_step_size step_size)
+GtkWidget *ghid_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_coord_t value, const pcb_unit_t * unit,
+																enum ce_step_size step_size)
 {
 	/* Setup spinbox min/max values */
 	double small_step, big_step;

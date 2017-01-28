@@ -34,7 +34,6 @@
 #include "data.h"
 
 #include <gtk/gtk.h>
-#include "ghid-coord-entry.h"
 #include "ghid-main-menu.h"
 #include "ghid-propedit.h"
 #include "conf_core.h"
@@ -52,6 +51,7 @@
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_check_button.h"
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
+#include "../src_plugins/lib_gtk_common/wt_coord_entry.h"
 
 
 	/* Silk and rats lines are the two additional selectable to draw on.

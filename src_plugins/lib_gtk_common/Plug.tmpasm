@@ -21,6 +21,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/in_keyboard.o
   $(PLUGDIR)/lib_gtk_common/in_mouse.o
   $(PLUGDIR)/lib_gtk_common/ui_zoompan.o
+  $(PLUGDIR)/lib_gtk_common/wt_coord_entry.o
   $(PLUGDIR)/lib_gtk_common/wt_preview.o
 @]
 

@@ -38,8 +38,8 @@
 #include "compat_misc.h"
 #include "compat_nls.h"
 
-#warning TODO: remove these
-#include "../src_plugins/hid_gtk/ghid-coord-entry.h"
+#include "wt_coord_entry.h"
+
 GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header, gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad);
 void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button,
 											gfloat value, gfloat low, gfloat high, gfloat step0,
