@@ -118,6 +118,16 @@ static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCal
 			else if (kind == PCB_HID_MOUSE_RELEASE)
 				pd->pan = 0;
 			break;
+		case PCB_MB_SCROLL_DOWN:
+			pd->zoom *= 1.25;
+			view_zoom = pd->zoom;
+			SHOW_DRAW;
+			break;
+		case PCB_MB_SCROLL_UP:
+			pd->zoom *= 0.8;
+			view_zoom = pd->zoom;
+			SHOW_DRAW;
+			break;
 	}
 
 	SHOW_LEAVE;
