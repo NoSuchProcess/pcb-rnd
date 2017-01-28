@@ -530,7 +530,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	int l, g;
 	pcb_layer_t saved_layer;
 
-
 	pcb_undo_add_layer_move(old_index, new_index);
 	pcb_undo_inc_serial();
 
@@ -555,7 +554,8 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		return 1;
 	}
 
-	if (old_index == -1) {
+	if (old_index == -1) { /* insert new layer */
+		pcb_layergrp_id_t gid;
 		pcb_layer_t *lp;
 		if (pcb_max_layer == PCB_MAX_LAYER) {
 			pcb_message(PCB_MSG_ERROR, "No room for new layers\n");
@@ -572,13 +572,20 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		lp->Name = pcb_strdup("New Layer");
 		lp->Color = conf_core.appearance.color.layer[new_index];
 		lp->SelectedColor = conf_core.appearance.color.layer_selected[new_index];
+
+		/* insert the new layer into the top copper group (or if that fails, in
+		   any copper group) */
+		gid = -1;
+		if (pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) < 1)
+			pcb_layer_group_list(PCB_LYT_COPPER, &gid, 1);
+		lp->grp = gid;
+
 		for (l = 0; l < pcb_max_layer; l++)
 			if (pcb_layer_stack[l] >= new_index)
 				pcb_layer_stack[l]++;
 		pcb_layer_stack[pcb_max_layer - 1] = new_index;
 	}
-	else if (new_index == -1) {
-		/* Delete the layer at old_index */
+	else if (new_index == -1) { /* Delete the layer at old_index */
 #warning layer TODO: what is this +2 here?
 		memmove(&PCB->Data->Layer[old_index],
 						&PCB->Data->Layer[old_index + 1], (pcb_max_layer - old_index + 2 - 1) * sizeof(pcb_layer_t));
