@@ -46,7 +46,7 @@ do { \
 	pcb_hid_expose_layer(&lesstif_hid, &pd->ctx); \
 } while(0)
 
-static void show_layer_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
+static void show_layer_callback(Widget da, PreviewData * pd, XmDrawingAreaCallbackStruct * cbs)
 {
 	SHOW_SAVES;
 	int reason = cbs ? cbs->reason : 0;
@@ -81,7 +81,7 @@ static void show_layer_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbac
 
 }
 
-static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
+static void show_layer_inp_callback(Widget da, PreviewData * pd, XmDrawingAreaCallbackStruct * cbs)
 {
 	SHOW_SAVES;
 	pcb_coord_t cx, cy;
@@ -136,7 +136,7 @@ static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCal
 
 static void show_layer_mot_callback(Widget w, XtPointer pd_, XEvent * e, Boolean * ctd)
 {
-	PinoutData *pd = pd_;
+	PreviewData *pd = pd_;
 	SHOW_SAVES;
 	Window root, child;
 	unsigned int keys_buttons;
@@ -170,7 +170,7 @@ static void show_layer_mot_callback(Widget w, XtPointer pd_, XEvent * e, Boolean
 }
 
 
-static void show_layer_unmap(Widget w, PinoutData * pd, void *v)
+static void show_layer_unmap(Widget w, PreviewData * pd, void *v)
 {
 	if (pd->pre_close != NULL)
 		pd->pre_close(pd);
@@ -179,16 +179,16 @@ static void show_layer_unmap(Widget w, PinoutData * pd, void *v)
 }
 
 
-static PinoutData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
+static PreviewData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 {
 	double scale;
 	Widget da;
-	PinoutData *pd;
+	PreviewData *pd;
 
 	if (!mainwind)
 		return NULL;
 
-	pd = (PinoutData *) calloc(1, sizeof(PinoutData));
+	pd = (PreviewData *) calloc(1, sizeof(PreviewData));
 
 	pd->ctx.content.layer_id = layer;
 
@@ -235,9 +235,9 @@ static PinoutData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 
 #include "stub_draw_csect.h"
 
-static PinoutData *layergrp_edit = NULL;
+static PreviewData *layergrp_edit = NULL;
 
-static void layergrp_pre_close(struct PinoutData *pd)
+static void layergrp_pre_close(struct PreviewData *pd)
 {
 	if (pd == layergrp_edit)
 		layergrp_edit = NULL;

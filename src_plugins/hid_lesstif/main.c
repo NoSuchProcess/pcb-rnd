@@ -115,8 +115,8 @@ static int bgred, bggreen, bgblue;
 static GC arc1_gc, arc2_gc;
 
 /* These are for the pinout windows. */
-typedef struct PinoutData {
-	struct PinoutData *prev, *next;
+typedef struct PreviewData {
+	struct PreviewData *prev, *next;
 	Widget form;
 	Window window;
 	pcb_coord_t left, right, top, bottom;	/* PCB extents of item */
@@ -126,17 +126,17 @@ typedef struct PinoutData {
 
 	pcb_hid_expose_ctx_t ctx;
 	pcb_bool (*mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
-	void (*pre_close)(struct PinoutData *pd);
+	void (*pre_close)(struct PreviewData *pd);
 	pcb_hid_expose_t overlay_draw;
 	unsigned pan:1;
 	int pan_ox, pan_oy;
 	pcb_coord_t pan_opx, pan_opy;
-} PinoutData;
+} PreviewData;
 
 /* Linked list of all pinout windows.  */
-static PinoutData *pinouts = 0;
+static PreviewData *pinouts = 0;
 /* If set, we are currently updating this pinout window.  */
-static PinoutData *pinout = 0;
+static PreviewData *pinout = 0;
 
 static int crosshair_x = 0, crosshair_y = 0;
 static int in_move_event = 0, crosshair_in_window = 1;
@@ -238,8 +238,8 @@ static void zoom_max();
 static void zoom_to(double factor, int x, int y);
 static void zoom_by(double factor, int x, int y);
 static void zoom_toggle(int x, int y);
-static void pinout_callback(Widget, PinoutData *, XmDrawingAreaCallbackStruct *);
-static void pinout_unmap(Widget, PinoutData *, void *);
+static void pinout_callback(Widget, PreviewData *, XmDrawingAreaCallbackStruct *);
+static void pinout_unmap(Widget, PreviewData *, void *);
 static void Pan(int mode, int x, int y);
 
 /* Px converts view->pcb, Vx converts pcb->view */
@@ -3395,7 +3395,7 @@ extern void lesstif_report_dialog(const char *title, const char *msg);
 extern int
 lesstif_attribute_dialog(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr);
 
-static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
+static void pinout_callback(Widget da, PreviewData * pd, XmDrawingAreaCallbackStruct * cbs)
 {
 	int save_vx, save_vy, save_vw, save_vh;
 	int save_fx, save_fy;
@@ -3463,7 +3463,7 @@ static void pinout_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStr
 	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
 }
 
-static void pinout_unmap(Widget w, PinoutData * pd, void *v)
+static void pinout_unmap(Widget w, PreviewData * pd, void *v)
 {
 	if (pd->prev)
 		pd->prev->next = pd->next;
@@ -3480,7 +3480,7 @@ static void lesstif_show_item(void *item)
 	double scale;
 	Widget da;
 	pcb_box_t *extents;
-	PinoutData *pd;
+	PreviewData *pd;
 
 	for (pd = pinouts; pd; pd = pd->next)
 		if (pd->ctx.content.elem == item)
@@ -3488,7 +3488,7 @@ static void lesstif_show_item(void *item)
 	if (!mainwind)
 		return;
 
-	pd = (PinoutData *) calloc(1, sizeof(PinoutData));
+	pd = (PreviewData *) calloc(1, sizeof(PreviewData));
 
 	pd->ctx.content.elem = item;
 
