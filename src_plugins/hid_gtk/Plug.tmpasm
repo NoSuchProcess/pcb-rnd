@@ -36,7 +36,7 @@ switch /local/pcb/hid_gtk/controls
 		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
 		put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/hid_gtk/menu_lht.c }
 		append /local/pcb/RULES [@
-### lesstif menu embed
+### gtk menu embed
 $(PLUGDIR)/hid_gtk/menu_lht.c: pcb-menu-gtk.lht
 	$(CQUOTE) -n hid_gtk_menu_default <pcb-menu-gtk.lht >$(PLUGDIR)/hid_gtk/menu_lht.c
 @]
