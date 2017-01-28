@@ -1,11 +1,49 @@
 /* Directly included by main.c for now */
 
+#define SHOW_SAVES \
+	int save_vx, save_vy, save_vw, save_vh; \
+	int save_fx, save_fy; \
+	double save_vz; \
+	Pixmap save_px
+
+#define SHOW_ENTER \
+do { \
+	pinout = 0; \
+	save_vx = view_left_x; \
+	save_vy = view_top_y; \
+	save_vz = view_zoom; \
+	save_vw = view_width; \
+	save_vh = view_height; \
+	save_fx = conf_core.editor.view.flip_x; \
+	save_fy = conf_core.editor.view.flip_y; \
+	save_px = pixmap; \
+	pixmap = pd->window; \
+	view_left_x = pd->x; \
+	view_top_y = pd->y; \
+	view_zoom = pd->zoom; \
+	view_width = pd->v_width; \
+	view_height = pd->v_height; \
+	use_mask = 0; \
+	conf_force_set_bool(conf_core.editor.view.flip_x, 0); \
+	conf_force_set_bool(conf_core.editor.view.flip_y, 0); \
+} while(0)
+
+#define SHOW_LEAVE \
+do { \
+	view_left_x = save_vx; \
+	view_top_y = save_vy; \
+	view_zoom = save_vz; \
+	view_width = save_vw; \
+	view_height = save_vh; \
+	pixmap = save_px; \
+	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx); \
+	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy); \
+} while(0)
+
+
 static void show_layer_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
 {
-	int save_vx, save_vy, save_vw, save_vh;
-	int save_fx, save_fy;
-	double save_vz;
-	Pixmap save_px;
+	SHOW_SAVES;
 	int reason = cbs ? cbs->reason : 0;
 
 	if (pd->window == 0 && reason == XmCR_RESIZE)
@@ -31,43 +69,38 @@ static void show_layer_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbac
 		pd->y = (pd->top + pd->bottom) / 2 - pd->v_height * pd->zoom / 2;
 	}
 
-	pinout = 0;
-	save_vx = view_left_x;
-	save_vy = view_top_y;
-	save_vz = view_zoom;
-	save_vw = view_width;
-	save_vh = view_height;
-	save_fx = conf_core.editor.view.flip_x;
-	save_fy = conf_core.editor.view.flip_y;
-	save_px = pixmap;
-	pixmap = pd->window;
-	view_left_x = pd->x;
-	view_top_y = pd->y;
-	view_zoom = pd->zoom;
-	view_width = pd->v_width;
-	view_height = pd->v_height;
-	use_mask = 0;
-	conf_force_set_bool(conf_core.editor.view.flip_x, 0);
-	conf_force_set_bool(conf_core.editor.view.flip_y, 0);
+	SHOW_ENTER;
 
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
 	pcb_hid_expose_layer(&lesstif_hid, &pd->ctx);
 
-	view_left_x = save_vx;
-	view_top_y = save_vy;
-	view_zoom = save_vz;
-	view_width = save_vw;
-	view_height = save_vh;
-	pixmap = save_px;
-	conf_force_set_bool(conf_core.editor.view.flip_x, save_fx);
-	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy);
+	SHOW_LEAVE;
+
 }
+
+static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
+{
+	SHOW_SAVES;
+	pcb_coord_t cx, cy;
+
+	SHOW_ENTER;
+	cx = Px(cbs->event->xbutton.x);
+	cy = Py(cbs->event->xbutton.y);
+
+	pcb_printf("ev %d;%d %$mm;%$mm\n", cbs->event->xbutton.x, cbs->event->xbutton.y, cx, cy);
+	SHOW_LEAVE;
+
+/*	if (cbs->event->type != ButtonPress)
+		return;*/
+}
+
 
 static void show_layer_unmap(Widget w, PinoutData * pd, void *v)
 {
 	XtDestroyWidget(XtParent(pd->form));
 	free(pd);
 }
+
 
 static PinoutData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 {
@@ -111,6 +144,7 @@ static PinoutData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 
 	XtAddCallback(da, XmNexposeCallback, (XtCallbackProc) show_layer_callback, (XtPointer) pd);
 	XtAddCallback(da, XmNresizeCallback, (XtCallbackProc) show_layer_callback, (XtPointer) pd);
+	XtAddCallback(da, XmNinputCallback, (XtCallbackProc) show_layer_inp_callback, (XtPointer) pd);
 
 	XtManageChild(pd->form);
 
