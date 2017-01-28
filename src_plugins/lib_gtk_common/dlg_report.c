@@ -36,45 +36,55 @@
 #include "compat.h"
 #include "bu_box.h"
 
-/*TODO: Fill, extand the scrolled window to fit during resize */
 void pcb_gtk_dlg_report(GtkWidget * top_window, const gchar * title, const gchar * message)
 {
-	GtkWidget *dialog;
+	GtkWidget *w;
+	GtkDialog *dialog;
 	GtkWidget *content_area;
 	GtkWidget *scrolled;
 	GtkWidget *vbox, *vbox1;
 	GtkWidget *label;
+	GtkTextView *text_view;
+	GtkTextBuffer *buffer;
 	const gchar *s;
 	gint nlines;
 
 	if (!message)
 		return;
-	dialog = gtk_dialog_new_with_buttons(title ? title : "PCB",
-																			 GTK_WINDOW(top_window),
-																			 GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE, GTK_RESPONSE_NONE, NULL);
-	g_signal_connect_swapped(GTK_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), GTK_OBJECT(dialog));
-	/*TODO: replace for GTK3 */
-	gtk_window_set_wmclass(GTK_WINDOW(dialog), "PCB_Dialog", "PCB");
+	w = gtk_dialog_new_with_buttons(title ? title : "PCB",
+																	GTK_WINDOW(top_window),
+																	GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE, GTK_RESPONSE_NONE, NULL);
+	dialog = GTK_DIALOG(w);
+	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+	g_signal_connect_swapped(GTK_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), GTK_OBJECT(dialog));
+	gtk_window_set_role(GTK_WINDOW(w), "PCB_Dialog");
+
+	content_area = gtk_dialog_get_content_area(dialog);
 
 	vbox = gtkc_vbox_new(FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
-	gtk_box_pack_start(GTK_BOX(content_area), vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(content_area), vbox, TRUE, TRUE, 0);
 
-	label = gtk_label_new(message);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+	label = gtk_text_view_new();
+	text_view = GTK_TEXT_VIEW(label);
+	buffer = gtk_text_view_get_buffer(text_view);
+	gtk_text_view_set_cursor_visible(text_view, FALSE);
+	gtk_text_view_set_editable(text_view, FALSE);
+	gtk_text_view_set_wrap_mode(text_view, GTK_WRAP_NONE);
+	/* The message should be NULL terminated */
+	gtk_text_buffer_set_text(buffer, message, -1);
 
 	for (nlines = 0, s = message; *s; ++s)
 		if (*s == '\n')
 			++nlines;
 	if (nlines > 20) {
 		vbox1 = ghid_scrolled_vbox(vbox, &scrolled, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+		gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled), GTK_SHADOW_IN);
 		gtk_widget_set_size_request(scrolled, -1, 300);
 		gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, FALSE, 0);
 	}
 	else
 		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-	gtk_widget_show_all(dialog);
+	gtk_widget_show_all(w);
 }
