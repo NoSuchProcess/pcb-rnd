@@ -30,6 +30,16 @@
 #include "data.h"
 #include "layer_grp.h"
 #include "compat_misc.h"
+#include "event.h"
+
+/* notify the rest of the code after layer group changes so that the GUI
+   and other parts sync up */
+#define NOTIFY() \
+do { \
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); \
+	if (pcb_gui != NULL) \
+		pcb_gui->invalidate_all(); \
+} while(0)
 
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 {
@@ -71,9 +81,11 @@ int pcb_layergrp_del_layer(pcb_layergrp_id_t gid, pcb_layer_id_t lid)
 				memmove(&grp->lid[n], &grp->lid[n+1], remain * sizeof(int));
 			grp->len--;
 			layer->grp = -1;
+			NOTIFY();
 			return 0;
 		}
 	}
+
 
 	/* also: broken layer group list */
 	return -1;
@@ -84,6 +96,7 @@ pcb_layergrp_id_t pcb_layer_move_to_group(pcb_layer_id_t lid, pcb_layergrp_id_t 
 	if (pcb_layergrp_del_layer(-1, lid) != 0)
 		return -1;
 	pcb_layer_add_in_group(lid, gid);
+	NOTIFY();
 	return gid;
 }
 
@@ -164,6 +177,7 @@ int pcb_layergrp_move_onto(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_
 	}
 
 	memset(s, 0, sizeof(pcb_layer_group_t));
+	NOTIFY();
 	return 0;
 }
 
@@ -205,6 +219,7 @@ pcb_layer_group_t *pcb_layergrp_insert_after(pcb_layer_stack_t *stack, pcb_layer
 		pcb_layergrp_move_onto(stack, n+1, n);
 
 	stack->len++;
+	NOTIFY();
 	return stack->grp+where+1;
 }
 
@@ -252,12 +267,15 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_i
 
 	g = pcb_get_grp_new_intern_(stack, 0);
 	g->intern_id = intern_id;
+	NOTIFY();
 	return g;
 }
 
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack)
 {
-	return pcb_get_grp_new_intern_(stack, 1);
+	pcb_layer_group_t *g = pcb_get_grp_new_intern_(stack, 1);
+	NOTIFY();
+	return g;
 }
 
 /* Move an inclusive block of groups [from..to] by delta on the stack, assuming
@@ -304,6 +322,7 @@ int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_laye
 	pcb_layergrp_free(stk, gid);
 	move_grps(stk, gid+1, stk->len-1, -1);
 	stk->len--;
+	NOTIFY();
 	return 0;
 }
 
@@ -339,6 +358,7 @@ int pcb_layergrp_move(pcb_layer_stack_t *stk, pcb_layergrp_id_t from, pcb_layerg
 			l->grp = to_before;
 	}
 
+	NOTIFY();
 	return 0;
 }
 
@@ -424,6 +444,7 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 	g = pcb_get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
 	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN-1);
 
+	NOTIFY();
 	return 0;
 
 	/* reset structure on error */
@@ -534,6 +555,7 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
 
 /*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
+	NOTIFY();
 }
 
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
