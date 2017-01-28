@@ -563,9 +563,8 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		}
 		/* Create a new layer at new_index. */
 		lp = &PCB->Data->Layer[new_index];
-#warning layer TODO: what is this +2 here?
 		memmove(&PCB->Data->Layer[new_index + 1],
-						&PCB->Data->Layer[new_index], (pcb_max_layer - new_index + 2) * sizeof(pcb_layer_t));
+						&PCB->Data->Layer[new_index], (pcb_max_layer - new_index) * sizeof(pcb_layer_t));
 		pcb_max_layer++;
 		memset(lp, 0, sizeof(pcb_layer_t));
 		lp->On = 1;
@@ -586,9 +585,8 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		pcb_layer_stack[pcb_max_layer - 1] = new_index;
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
-#warning layer TODO: what is this +2 here?
 		memmove(&PCB->Data->Layer[old_index],
-						&PCB->Data->Layer[old_index + 1], (pcb_max_layer - old_index + 2 - 1) * sizeof(pcb_layer_t));
+						&PCB->Data->Layer[old_index + 1], (pcb_max_layer - old_index - 1) * sizeof(pcb_layer_t));
 		memset(&PCB->Data->Layer[pcb_max_layer + 1], 0, sizeof(pcb_layer_t));
 		for (l = 0; l < pcb_max_layer; l++)
 			if (pcb_layer_stack[l] == old_index)
