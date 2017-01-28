@@ -127,6 +127,9 @@ typedef struct PinoutData {
 	pcb_hid_expose_ctx_t ctx;
 	pcb_bool (*mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
 	pcb_hid_expose_t overlay_draw;
+	unsigned pan:1;
+	int pan_ox, pan_oy;
+	pcb_coord_t pan_opx, pan_opy;
 } PinoutData;
 
 /* Linked list of all pinout windows.  */

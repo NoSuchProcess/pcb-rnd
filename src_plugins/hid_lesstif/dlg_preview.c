@@ -40,6 +40,11 @@ do { \
 	conf_force_set_bool(conf_core.editor.view.flip_y, save_fy); \
 } while(0)
 
+#define SHOW_DRAW \
+do { \
+	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height); \
+	pcb_hid_expose_layer(&lesstif_hid, &pd->ctx); \
+} while(0)
 
 static void show_layer_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbackStruct * cbs)
 {
@@ -70,9 +75,7 @@ static void show_layer_callback(Widget da, PinoutData * pd, XmDrawingAreaCallbac
 	}
 
 	SHOW_ENTER;
-
-	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
-	pcb_hid_expose_layer(&lesstif_hid, &pd->ctx);
+	SHOW_DRAW;
 
 	SHOW_LEAVE;
 
@@ -101,10 +104,19 @@ static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCal
 	switch(btn) {
 		case PCB_MB_LEFT:
 			if (pd->mouse_ev != NULL)
-				if (pd->mouse_ev(da, kind, cx, cy)) {
-					XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
-					pcb_hid_expose_layer(&lesstif_hid, &pd->ctx);
-				}
+				if (pd->mouse_ev(da, kind, cx, cy))
+					SHOW_DRAW;
+			break;
+		case PCB_MB_MIDDLE:
+			if (kind == PCB_HID_MOUSE_PRESS) {
+				pd->pan = 1;
+				pd->pan_ox = cbs->event->xbutton.x;
+				pd->pan_oy = cbs->event->xbutton.y;
+				pd->pan_opx = view_left_x;
+				pd->pan_opy = view_top_y;
+			}
+			else if (kind == PCB_HID_MOUSE_RELEASE)
+				pd->pan = 0;
 			break;
 	}
 
@@ -129,7 +141,15 @@ static void show_layer_mot_callback(Widget w, XtPointer pd_, XEvent * e, Boolean
 	cy = Py(pos_y);
 
 /*	pcb_printf("mo %d;%d %$mm;%$mm\n", pos_x, pos_y, cx, cy);*/
-	if (pd->mouse_ev != NULL) {
+	if (pd->pan) {
+/*		pcb_coord_t ol = pd->x, ot = pd->y;*/
+		pd->x = pd->pan_opx - (pos_x - pd->pan_ox) * view_zoom;
+		pd->y = pd->pan_opy - (pos_y - pd->pan_oy) * view_zoom;
+/*		pd->view_right += ol - pd->view_left_x;
+		pd->view_bottom += ot - pd->view_top_y;*/
+		SHOW_DRAW;
+	}
+	else if (pd->mouse_ev != NULL) {
 		pd->mouse_ev(w, PCB_HID_MOUSE_MOTION, cx, cy);
 		if (pd->overlay_draw != NULL)
 			pd->overlay_draw(pcb_gui, &pd->ctx);
