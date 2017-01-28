@@ -252,8 +252,11 @@ static gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev)
 
 		case PCB_GTK_PREVIEW_LAYER:
 			return pinout->expose(widget, ev, pcb_hid_expose_layer, &pinout->expose_data);
-	}
 
+		case PCB_GTK_PREVIEW_INVALID:
+		case PCB_GTK_PREVIEW_kind_max:
+			return FALSE;
+	}
 
 	return FALSE;
 }
@@ -375,11 +378,14 @@ static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure * ev,
 	preview->view.canvas_height = ev->height;
 
 	update_expose_data(preview);
+	return TRUE;
 }
 
 static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp)
 {
-	gdk_window_get_pointer(gtk_widget_get_window(preview), xp, yp, NULL);
+	gdk_window_get_pointer(gtk_widget_get_window(GTK_WIDGET(preview)), xp, yp, NULL);
+#undef SIDE_X
+#undef SIDE_Y
 #define SIDE_X(x) x
 #define SIDE_Y(y) y
 	*cx = EVENT_TO_PCB_X(&preview->view, *xp);
@@ -414,6 +420,8 @@ static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 		case PCB_MB_SCROLL_DOWN:
 			pcb_gtk_zoom_view_rel(&preview->view, 0, 0, 1.25);
 			goto do_zoom;
+		default:
+			return FALSE;
 	}
 	return FALSE;
 
@@ -463,6 +471,9 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton * ev, gpo
 	}
 	return FALSE;
 }
+
+#warning TODO: this should go in the renderer (e.g. gdk) API .h
+gboolean ghid_preview_draw(GtkWidget * widget, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 
 static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion * ev, gpointer data)
 {
