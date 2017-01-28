@@ -311,9 +311,8 @@ int pcb_layergrp_del(pcb_layer_stack_t *stk, pcb_layergrp_id_t gid, int del_laye
 		pcb_layer_t *l = pcb_get_layer(stk->grp[gid].lid[n]);
 		if (l != NULL) {
 			if (del_layers) {
-#warning layer TODO
-				pcb_message(PCB_MSG_ERROR, "Layer del is not yet implemented\n");
-				abort();
+				pcb_layer_move(stk->grp[gid].lid[n], -1);
+				n = 0; /* restart counting because the layer remove code may have changed the order */
 			}
 			else {
 				/* detach only */
