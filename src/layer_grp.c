@@ -34,11 +34,14 @@
 
 /* notify the rest of the code after layer group changes so that the GUI
    and other parts sync up */
+static int suppress_notify = 0;
 #define NOTIFY() \
 do { \
-	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); \
-	if (pcb_gui != NULL) \
-		pcb_gui->invalidate_all(); \
+	if (!suppress_notify) { \
+		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); \
+		if (pcb_gui != NULL) \
+			pcb_gui->invalidate_all(); \
+	} \
 } while(0)
 
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
@@ -392,6 +395,8 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 	pcb_layer_group_t *g;
 	int n;
 
+	suppress_notify++;
+
 	/* clear struct */
 	pcb_layer_group_setup_default(LayerGroup);
 
@@ -444,11 +449,12 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 	g = pcb_get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
 	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN-1);
 
-	NOTIFY();
+	suppress_notify--;
 	return 0;
 
 	/* reset structure on error */
 error:
+	suppress_notify--;
 	memset(LayerGroup, 0, sizeof(pcb_layer_stack_t));
 	return 1;
 }
@@ -555,7 +561,6 @@ void pcb_layer_group_setup_default(pcb_layer_stack_t *newg)
 	NEWG(g, PCB_LYT_BOTTOM | PCB_LYT_PASTE, "bottom paste");
 
 /*	NEWG(g, PCB_LYT_INTERN | PCB_LYT_OUTLINE, "outline");*/
-	NOTIFY();
 }
 
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
