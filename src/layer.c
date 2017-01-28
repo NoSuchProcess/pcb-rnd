@@ -585,6 +585,7 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		pcb_layer_stack[pcb_max_layer - 1] = new_index;
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
+#warning layer TODO remove objects, free fields
 		memmove(&PCB->Data->Layer[old_index],
 						&PCB->Data->Layer[old_index + 1], (pcb_max_layer - old_index - 1) * sizeof(pcb_layer_t));
 		memset(&PCB->Data->Layer[pcb_max_layer + 1], 0, sizeof(pcb_layer_t));
