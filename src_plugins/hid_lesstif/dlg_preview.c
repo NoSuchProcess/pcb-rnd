@@ -128,6 +128,7 @@ static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCal
 			view_zoom = pd->zoom;
 			SHOW_DRAW;
 			break;
+		default:;
 	}
 
 	SHOW_LEAVE;
@@ -180,11 +181,10 @@ static PinoutData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 {
 	double scale;
 	Widget da;
-	pcb_box_t *extents;
 	PinoutData *pd;
 
 	if (!mainwind)
-		return;
+		return NULL;
 
 	pd = (PinoutData *) calloc(1, sizeof(PinoutData));
 
