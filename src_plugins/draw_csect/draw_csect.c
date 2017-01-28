@@ -590,6 +590,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				drag_addgrp = 0;
 				gactive = -1;
 				res = 1;
+				lvalid = gvalid = 0;
 			}
 			else if (drag_delgrp) {
 				if (gactive >= 0) {
@@ -606,6 +607,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				drag_delgrp = 0;
 				gactive = -1;
 				res = 1;
+				lvalid = gvalid = 0;
 			}
 			else if (drag_lid >= 0) {
 				if (gactive >= 0) {
@@ -626,7 +628,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				res = 1;
 				drag_gid = -1;
 				drag_gid_subst = -1;
-				dgvalid = 0;
+				lvalid = gvalid = 0;
 			}
 			break;
 		case PCB_HID_MOUSE_MOTION:
