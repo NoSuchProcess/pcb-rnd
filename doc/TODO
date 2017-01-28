@@ -10,9 +10,6 @@
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- layer rewrite bug:
 		- autoroute stopped working
-		- lesstif doesn't run csect
-		- gtk can't change layer name
-		- adding a new layer should get it added to the top copper layer group
 		- check the strange +2 (see #warning) in the layer move code in layer.c
 		- gtk: replace the info text
 	- RTT/arc_angles.pcb:
