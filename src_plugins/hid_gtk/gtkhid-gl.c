@@ -557,7 +557,8 @@ void ghid_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pc
 
 void ghid_invalidate_all()
 {
-	ghid_draw_area_update(gport, NULL);
+	if (ghidgui && ghidgui->menu_bar)
+		ghid_draw_area_update(gport, NULL);
 }
 
 void ghid_notify_crosshair_change(bool changes_complete)
