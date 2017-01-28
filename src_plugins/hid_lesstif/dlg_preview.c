@@ -83,6 +83,7 @@ static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCal
 	SHOW_SAVES;
 	pcb_coord_t cx, cy;
 	pcb_hid_cfg_mod_t btn;
+	pcb_hid_mouse_ev_t kind;
 
 	SHOW_ENTER;
 
@@ -91,20 +92,50 @@ static void show_layer_inp_callback(Widget da, PinoutData * pd, XmDrawingAreaCal
 	cx = Px(cbs->event->xbutton.x);
 	cy = Py(cbs->event->xbutton.y);
 
-	pcb_printf("ev %d;%d %$mm;%$mm %x\n", cbs->event->xbutton.x, cbs->event->xbutton.y, cx, cy, btn);
-	SHOW_LEAVE;
+/*	pcb_printf("ev %d;%d %$mm;%$mm %x\n", cbs->event->xbutton.x, cbs->event->xbutton.y, cx, cy, btn);*/
 
-/*	if (cbs->event->type != ButtonPress)
-		return;*/
+	kind = -1;
+	if (cbs->event->type == ButtonPress) kind = PCB_HID_MOUSE_PRESS;
+	if (cbs->event->type == ButtonRelease) kind = PCB_HID_MOUSE_RELEASE;
+
+	switch(btn) {
+		case PCB_MB_LEFT:
+			if (pd->mouse_ev != NULL)
+				if (pd->mouse_ev(da, kind, cx, cy)) {
+					XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
+					pcb_hid_expose_layer(&lesstif_hid, &pd->ctx);
+				}
+			break;
+	}
+
+	SHOW_LEAVE;
 }
 
-static void show_layer_mot_callback(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
+static void show_layer_mot_callback(Widget w, XtPointer pd_, XEvent * e, Boolean * ctd)
 {
+	PinoutData *pd = pd_;
+	SHOW_SAVES;
 	Window root, child;
 	unsigned int keys_buttons;
 	int root_x, root_y, pos_x, pos_y;
+	pcb_coord_t cx, cy;
+
 	while (XCheckMaskEvent(display, PointerMotionMask, e));
 	XQueryPointer(display, e->xmotion.window, &root, &child, &root_x, &root_y, &pos_x, &pos_y, &keys_buttons);
+
+	SHOW_ENTER;
+
+	cx = Px(pos_x);
+	cy = Py(pos_y);
+
+/*	pcb_printf("mo %d;%d %$mm;%$mm\n", pos_x, pos_y, cx, cy);*/
+	if (pd->mouse_ev != NULL) {
+		pd->mouse_ev(w, PCB_HID_MOUSE_MOTION, cx, cy);
+		if (pd->overlay_draw != NULL)
+			pd->overlay_draw(pcb_gui, &pd->ctx);
+	}
+
+	SHOW_LEAVE;
 }
 
 
@@ -161,17 +192,24 @@ static PinoutData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 
 	XtAddEventHandler(da,
 		PointerMotionMask | PointerMotionHintMask | EnterWindowMask | LeaveWindowMask,
-		0, show_layer_mot_callback, 0);
+		0, show_layer_mot_callback, pd);
 
 	XtManageChild(pd->form);
 
 	return pd;
 }
 
+/***************** instance for layer group edit **********************/
+
+#include "stub_draw_csect.h"
+
 static PinoutData *layergrp_edit = NULL;
 void lesstif_show_layergrp_edit(void)
 {
 	pcb_layer_id_t lid;
-	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0)
+	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
 		layergrp_edit = lesstif_show_layer(lid, "Layer groups");
+		layergrp_edit->mouse_ev = pcb_stub_draw_csect_mouse_ev;
+		layergrp_edit->overlay_draw = pcb_stub_draw_csect_overlay;
+	}
 }
