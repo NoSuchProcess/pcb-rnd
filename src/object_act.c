@@ -1042,7 +1042,6 @@ Creates a new layer.
 @end table
 
 %end-doc */
-#warning layer TODO: test this
 int pcb_act_MoveLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	int old_index, new_index;
