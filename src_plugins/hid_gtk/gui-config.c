@@ -1382,6 +1382,18 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 	g_strfreev(argv);
 }
 
+static void rename_layer_button_cb(GtkWidget * widget, gchar * data)
+{
+	char *name = pcb_gui->prompt_for("Enter the name of the layer:", CURRENT->Name);
+	if (name == NULL)
+		return;
+	if (strcmp(name, CURRENT->Name) == 0)
+		return;
+	free(CURRENT->Name);
+	CURRENT->Name = name;
+	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
+}
+
 void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	gchar *s;
@@ -1441,7 +1453,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 		p->overlay_draw_cb = pcb_stub_draw_csect_overlay;
 	}
 
-/* -- Change tab */
+/* -- Logical layers tab */
 	vbox = ghid_notebook_page(tabs, _("Logical layers"), 0, 6);
 	vbox1 = ghid_category_vbox(vbox, _("Operations on currently selected layer:"), 4, 2, TRUE, TRUE);
 
@@ -1463,6 +1475,12 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 
 	button = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	g_signal_connect(G_OBJECT(button), (gchar *) "clicked", G_CALLBACK(edit_layer_button_cb), (gchar *) "c,-1");
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+
+	button = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	g_signal_connect(G_OBJECT(button), (gchar *) "clicked", G_CALLBACK(rename_layer_button_cb), NULL);
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
