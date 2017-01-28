@@ -365,8 +365,9 @@ int hook_detect_target()
 	if (want_gtk) {
 		require("libs/gui/gtk2/presents", 0, 0);
 		if (!istrue(get("libs/gui/gtk2/presents"))) {
-			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid...\n");
+			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid and lib_gtk_common...\n");
 			hook_custom_arg("Disable-hid_gtk", NULL);
+			hook_custom_arg("Disable-lib_gtk_common", NULL);
 		}
 	}
 
