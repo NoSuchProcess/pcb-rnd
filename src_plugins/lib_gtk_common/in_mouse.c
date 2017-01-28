@@ -31,9 +31,6 @@
 #include <gtk/gtk.h>
 #include "in_mouse.h"
 
-/*FIXME sad :( Needed for ButtonState, GHidPort */
-#include "../hid_gtk/gui.h"
-
 pcb_hid_cfg_mouse_t ghid_mouse;
 int ghid_wheel_zoom = 0;
 
@@ -42,37 +39,4 @@ pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button)
 {
 	/* GDK numbers buttons from 1..5, there seem to be no symbolic names */
 	return (PCB_MB_LEFT << (ev_button-1));
-}
-
-/*FIXME: Is this function used ? */
-ButtonState ghid_button_state(GdkModifierType * state)
-{
-	GdkModifierType mask;
-	ButtonState bs;
-	gboolean button1, button2, button3;
-	GHidPort *out = &ghid_port;
-
-	if (!state) {
-		gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
-	}
-	else
-		mask = *state;
-
-	extern GdkModifierType ghid_glob_mask;
-	ghid_glob_mask = mask;
-
-	button1 = (mask & GDK_BUTTON1_MASK);
-	button2 = (mask & GDK_BUTTON2_MASK);
-	button3 = (mask & GDK_BUTTON3_MASK);
-
-	if (button1)
-		bs = BUTTON1_PRESSED;
-	else if (button2)
-		bs = BUTTON2_PRESSED;
-	else if (button3)
-		bs = BUTTON3_PRESSED;
-	else
-		bs = NO_BUTTON_PRESSED;
-
-	return bs;
 }
