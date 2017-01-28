@@ -108,10 +108,12 @@ void ghid_wgeo_save(int save_to_file, int skip_user)
 	}
 }
 
-static void wgeo_save_direct(GtkButton *widget, const char *ctx)
+static void wgeo_save_direct(GtkButton * widget, const char *ctx)
 {
 	if (ctx == NULL) {
-		GtkWidget *fcd = gtk_file_chooser_dialog_new("Save window geometry to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+		GtkWidget *fcd =
+			gtk_file_chooser_dialog_new("Save window geometry to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL,
+																	GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 		if (gtk_dialog_run(GTK_DIALOG(fcd)) == GTK_RESPONSE_ACCEPT) {
 			char *fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fcd));
 			conf_reset(CFR_file, "<wgeo_save_direct>");
@@ -123,19 +125,19 @@ static void wgeo_save_direct(GtkButton *widget, const char *ctx)
 		}
 	}
 	else if (*ctx == '*') {
-		switch(ctx[1]) {
-			case 'd':
-				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_DESIGN);
-				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_DESIGN, NULL);
-				break;
-			case 'p':
-				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_PROJECT);
-				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_PROJECT, NULL);
-				break;
-			case 'u':
-				GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_USER);
-				conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL);
-				break;
+		switch (ctx[1]) {
+		case 'd':
+			GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_DESIGN);
+			conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_DESIGN, NULL);
+			break;
+		case 'p':
+			GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_PROJECT);
+			conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_PROJECT, NULL);
+			break;
+		case 'u':
+			GHID_WGEO_ALL(hid_gtk_wgeo_save_, CFR_USER);
+			conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), CFR_USER, NULL);
+			break;
 		}
 	}
 }
@@ -204,7 +206,7 @@ typedef struct {
 	void *value;
 } ConfigAttribute;
 
-extern void ghid_set_special_colors(conf_native_t *cfg);
+extern void ghid_set_special_colors(conf_native_t * cfg);
 
 void ghid_config_init(void)
 {
@@ -229,7 +231,7 @@ struct tvmap_s {
 	tvmap_t *next;
 };
 
-static void tvmap(GtkTreeView *tree, GtkTreePath *path, gpointer user_data)
+static void tvmap(GtkTreeView * tree, GtkTreePath * path, gpointer user_data)
 {
 	tvmap_t **first = user_data, *m = malloc(sizeof(tvmap_t));
 	m->path = gtk_tree_path_copy(path);
@@ -242,15 +244,15 @@ static void tvmap(GtkTreeView *tree, GtkTreePath *path, gpointer user_data)
    - a path to a config filed that presents in the hash (not a ha:subtree)
    - a subtree or multiple subtrees matching a prefix (e.g. "*appearance/color")
 */
-void config_any_replace(save_ctx_t *ctx, const char **paths)
+void config_any_replace(save_ctx_t * ctx, const char **paths)
 {
 	const char **p;
 	int need_update = 0;
 
-	for(p = paths; *p != NULL; p++) {
+	for (p = paths; *p != NULL; p++) {
 		/* wildcards - match subtree */
 		if (**p == '*') {
-			const char *wildp = (*p)+1;
+			const char *wildp = (*p) + 1;
 			int pl = strlen(wildp);
 			htsp_entry_t *e;
 			conf_fields_foreach(e) {
@@ -267,7 +269,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		else {
 			/* plain node */
 			if (conf_replace_subtree(ctx->dst_role, *p, ctx->src_role, *p) != 0)
-					pcb_message(PCB_MSG_ERROR, "Error: failed to save config item %s\n", *p);
+				pcb_message(PCB_MSG_ERROR, "Error: failed to save config item %s\n", *p);
 			if (ctx->dst_role < CFR_max_real) {
 				conf_update(*p);
 				need_update++;
@@ -277,7 +279,9 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 
 	/* present a file choose dialog box on save to custom file */
 	if (ctx->dst_role == CFR_file) {
-		GtkWidget *fcd = gtk_file_chooser_dialog_new("Save config settings to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+		GtkWidget *fcd =
+			gtk_file_chooser_dialog_new("Save config settings to...", NULL, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL,
+																	GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
 		if (gtk_dialog_run(GTK_DIALOG(fcd)) == GTK_RESPONSE_ACCEPT) {
 			char *fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fcd));
 			conf_export_to_file(fn, CFR_file, "/");
@@ -297,7 +301,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 	if ((ctx->dst_role == CFR_USER) || (ctx->dst_role == CFR_PROJECT))
 		conf_save_file(NULL, (PCB == NULL ? NULL : PCB->Filename), ctx->dst_role, NULL);
 
-	if (need_update) { /* need to reopen the preferences dialog to show the new settings */
+	if (need_update) {						/* need to reopen the preferences dialog to show the new settings */
 		tvmap_t *first = NULL, *next;
 		int page;
 
@@ -309,7 +313,7 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 		ghid_config_window_show();
 
 		/* restore expansions and notebook states */
-		for(; first != NULL; first = next) {
+		for (; first != NULL; first = next) {
 /*			printf("exp2 %s\n", gtk_tree_path_to_string(first->path));*/
 			next = first->next;
 			gtk_tree_view_expand_to_path(gui_config_treeview, first->path);
@@ -324,13 +328,13 @@ void config_any_replace(save_ctx_t *ctx, const char **paths)
 */
 static GtkWidget *config_window;
 
-static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton *widget, save_ctx_t *sctx))
+static void config_user_role_section(GtkWidget * vbox, void (*save_cb) (GtkButton * widget, save_ctx_t * sctx))
 {
 	GtkWidget *config_color_warn_label, *button, *hbox, *vbox2;
 	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_binary };
-	static save_ctx_t ctx_all2user    = { CFR_USER, CFR_binary };
-	static save_ctx_t ctx_all2file    = { CFR_file, CFR_binary };
-	static save_ctx_t ctx_int2design  = { CFR_DESIGN, CFR_INTERNAL };
+	static save_ctx_t ctx_all2user = { CFR_USER, CFR_binary };
+	static save_ctx_t ctx_all2file = { CFR_file, CFR_binary };
+	static save_ctx_t ctx_int2design = { CFR_DESIGN, CFR_INTERNAL };
 
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
@@ -338,7 +342,8 @@ static void config_user_role_section(GtkWidget * vbox, void (*save_cb)(GtkButton
 	config_color_warn_label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(config_color_warn_label), TRUE);
 	gtk_label_set_markup(GTK_LABEL(config_color_warn_label),
-											 _("<small>The above are <i>design-level</i>\nconfiguration, <u>saved</u> with the\npcb file. Use these buttons\nto save all the above settings:</small>"));
+											 _
+											 ("<small>The above are <i>design-level</i>\nconfiguration, <u>saved</u> with the\npcb file. Use these buttons\nto save all the above settings:</small>"));
 	gtk_box_pack_start(GTK_BOX(hbox), config_color_warn_label, FALSE, FALSE, 4);
 
 	vbox2 = gtk_vbox_new(FALSE, 0);
@@ -409,9 +414,11 @@ static void pref_auto_place_update(void)
 {
 	const char *warn;
 	if (conf_core.editor.auto_place)
-		warn = "Restoring window geometry is <b>enabled</b>:\npcb-rnd will attempt to move and resize windows.\nIt can be disabled in General/";
+		warn =
+			"Restoring window geometry is <b>enabled</b>:\npcb-rnd will attempt to move and resize windows.\nIt can be disabled in General/";
 	else
-		warn = "Restoring window geometry is <b>disabled</b>:\npcb-rnd will <b>not</b> attempt to move and resize windows.\nConsider changing it in General/";
+		warn =
+			"Restoring window geometry is <b>disabled</b>:\npcb-rnd will <b>not</b> attempt to move and resize windows.\nConsider changing it in General/";
 	gtk_label_set_markup(GTK_LABEL(pref_auto_place_lab), _(warn));
 }
 
@@ -443,7 +450,7 @@ static void config_history_spin_button_cb(GtkSpinButton * spin_button, gpointer 
 	conf_setf(CFR_DESIGN, "plugins/hid_gtk/history_size", -1, "%d", gtk_spin_button_get_value_as_int(spin_button));
 }
 
-void config_general_save(GtkButton *widget, save_ctx_t *ctx)
+void config_general_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	const char *paths[] = {
 		"plugins/hid_gtk/use_command_window",
@@ -491,7 +498,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox)
 	vbox = ghid_category_vbox(content_vbox, _("Backups"), 4, 2, TRUE, TRUE);
 	ghid_check_button_connected(vbox, NULL, conf_core.editor.save_in_tmp,
 															TRUE, FALSE, FALSE, 2,
-															config_general_toggle_cb, (void *)&conf_core.editor.save_in_tmp,
+															config_general_toggle_cb, (void *) &conf_core.editor.save_in_tmp,
 															_("If layout is modified at exit, save into PCB.%i.save"));
 	ghid_spin_button(vbox, NULL, conf_core.rc.backup_interval, 0.0, 60 * 60, 60.0,
 									 600.0, 0, 0, config_backup_spin_button_cb, NULL, FALSE,
@@ -542,7 +549,7 @@ static void coord_entry_cb(GHidCoordEntry * ce, void *dst)
 	*(pcb_coord_t *) dst = ghid_coord_entry_get_value(ce);
 }
 
-void config_sizes_save(GtkButton *widget, save_ctx_t *ctx)
+void config_sizes_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	const char *paths[] = {
 		"design/max_width",
@@ -593,7 +600,8 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox)
 	new_board_width = PCB->MaxWidth;
 	new_board_height = PCB->MaxHeight;
 	ghid_table_coord_entry(table, 0, 0, NULL,
-												 PCB->MaxWidth, PCB_MIN_SIZE, PCB_MAX_COORD, CE_LARGE, 0, coord_entry_cb, &new_board_width, FALSE, _("Width"));
+												 PCB->MaxWidth, PCB_MIN_SIZE, PCB_MAX_COORD, CE_LARGE, 0, coord_entry_cb, &new_board_width, FALSE,
+												 _("Width"));
 
 	ghid_table_coord_entry(table, 1, 0, NULL,
 												 PCB->MaxHeight, PCB_MIN_SIZE, PCB_MAX_COORD,
@@ -666,10 +674,16 @@ static void config_window_toggle_cb(GtkToggleButton * button, gpointer data)
 		return;
 
 	if (*ctx == '*') {
-		switch(ctx[1]) {
-			case 'd': path = "plugins/hid_gtk/auto_save_window_geometry/to_design"; break;
-			case 'p': path = "plugins/hid_gtk/auto_save_window_geometry/to_project"; break;
-			case 'u': path = "plugins/hid_gtk/auto_save_window_geometry/to_user"; break;
+		switch (ctx[1]) {
+		case 'd':
+			path = "plugins/hid_gtk/auto_save_window_geometry/to_design";
+			break;
+		case 'p':
+			path = "plugins/hid_gtk/auto_save_window_geometry/to_project";
+			break;
+		case 'u':
+			path = "plugins/hid_gtk/auto_save_window_geometry/to_user";
+			break;
 		}
 		if (path != NULL)
 			conf_set(CFR_USER, path, -1, (active ? "1" : "0"), POL_OVERWRITE);
@@ -677,7 +691,7 @@ static void config_window_toggle_cb(GtkToggleButton * button, gpointer data)
 }
 
 
-static void config_window_row(GtkWidget *parent, const char *desc, int load, const char *wgeo_save_str, CFT_BOOLEAN chk)
+static void config_window_row(GtkWidget * parent, const char *desc, int load, const char *wgeo_save_str, CFT_BOOLEAN chk)
 {
 	GtkWidget *hbox, *lab, *button;
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -691,7 +705,7 @@ static void config_window_row(GtkWidget *parent, const char *desc, int load, con
 
 	button = gtk_button_new_with_label(_("now"));
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(wgeo_save_direct), (void *)wgeo_save_str);
+	g_signal_connect(GTK_OBJECT(button), "clicked", G_CALLBACK(wgeo_save_direct), (void *) wgeo_save_str);
 
 	if (load) {
 		button = gtk_button_new_with_label(_("Load from file"));
@@ -700,14 +714,14 @@ static void config_window_row(GtkWidget *parent, const char *desc, int load, con
 	else {
 		GtkWidget *btn;
 		ghid_check_button_connected(hbox, &btn, chk,
-															TRUE, FALSE, FALSE, 2,
-															config_window_toggle_cb, (void *)wgeo_save_str, _("every time pcb-rnd exits"));
+																TRUE, FALSE, FALSE, 2,
+																config_window_toggle_cb, (void *) wgeo_save_str, _("every time pcb-rnd exits"));
 		if (wgeo_save_str == NULL)
 			gtk_widget_set_sensitive(btn, FALSE);
 	}
 }
 
-static void config_window_tab_create(GtkWidget *tab_vbox)
+static void config_window_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *lab;
 
@@ -717,14 +731,16 @@ static void config_window_tab_create(GtkWidget *tab_vbox)
 
 	lab = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
-	gtk_label_set_markup(GTK_LABEL(lab),
-											 _("<b>Save window geometry...</b>"));
+	gtk_label_set_markup(GTK_LABEL(lab), _("<b>Save window geometry...</b>"));
 	gtk_box_pack_start(GTK_BOX(config_window_vbox), lab, FALSE, FALSE, 4);
 	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
 
-	config_window_row(config_window_vbox, "... in the design (.pcb) file", 0, "*d", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_design);
-	config_window_row(config_window_vbox, "... in the project file", 0, "*p", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_project);
-	config_window_row(config_window_vbox, "... in the central user configuration", 0, "*u", conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user);
+	config_window_row(config_window_vbox, "... in the design (.pcb) file", 0, "*d",
+										conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_design);
+	config_window_row(config_window_vbox, "... in the project file", 0, "*p",
+										conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_project);
+	config_window_row(config_window_vbox, "... in the central user configuration", 0, "*u",
+										conf_hid_gtk.plugins.hid_gtk.auto_save_window_geometry.to_user);
 	config_window_row(config_window_vbox, "... in a custom file", 0, NULL, 0);
 
 
@@ -732,8 +748,7 @@ static void config_window_tab_create(GtkWidget *tab_vbox)
 
 	lab = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(lab), TRUE);
-	gtk_label_set_markup(GTK_LABEL(lab),
-											 _("<small>Note: the above checkbox values are saved in the user config</small>"));
+	gtk_label_set_markup(GTK_LABEL(lab), _("<small>Note: the above checkbox values are saved in the user config</small>"));
 	gtk_box_pack_start(GTK_BOX(config_window_vbox), lab, FALSE, FALSE, 4);
 	gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.5);
 
@@ -753,11 +768,11 @@ static void config_window_tab_create(GtkWidget *tab_vbox)
 	/* Increment/decrement values are kept in mil and mm units and not in
 	   |  PCB units.
 	 */
-GtkWidget *config_increments_tbl[4][4]; /* [col][row] */
+GtkWidget *config_increments_tbl[4][4];	/* [col][row] */
 
 static GtkWidget *config_increments_vbox = NULL, *config_increments_tab_vbox = NULL;
 
-static void increment_tbl_update_cell(GtkLabel *lab, pcb_coord_t val, const char *fmt)
+static void increment_tbl_update_cell(GtkLabel * lab, pcb_coord_t val, const char *fmt)
 {
 	char s[128];
 	pcb_snprintf(s, sizeof(s), fmt, val);
@@ -783,13 +798,13 @@ static void increment_tbl_update()
 static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 {
 	const char *path = dst;
-	conf_setf(CFR_DESIGN, path, -1, "%mr", (pcb_coord_t)ghid_coord_entry_get_value(ce));
+	conf_setf(CFR_DESIGN, path, -1, "%mr", (pcb_coord_t) ghid_coord_entry_get_value(ce));
 	increment_tbl_update();
 }
 
 static void config_increments_sect_create(GtkWidget * vbox)
 {
-	GtkWidget * hbox, *label;
+	GtkWidget *hbox, *label;
 	const int width = 128;
 	char pathmm[256], *pemm;
 	char pathmil[256], *pemil;
@@ -801,12 +816,12 @@ static void config_increments_sect_create(GtkWidget * vbox)
 	int lmil = strlen(base_pathmil);
 
 	memcpy(pathmm, base_pathmm, lmm);
-	pemm = pathmm+lmm;
+	pemm = pathmm + lmm;
 	*pemm = '/';
 	pemm++;
 
 	memcpy(pathmil, base_pathmil, lmil);
-	pemil = pathmil+lmil;
+	pemil = pathmil + lmil;
 	*pemil = '/';
 	pemil++;
 
@@ -844,19 +859,19 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mm.size,
 									 conf_core.editor.increments_mm.size_min,
 									 conf_core.editor.increments_mm.size_max,
-									 CE_SMALL, umm, width, increment_spin_button_cb,
-									 pcb_strdup(pathmm), _("Size:"), NULL);
+									 CE_SMALL, umm, width, increment_spin_button_cb, pcb_strdup(pathmm), _("Size:"), NULL);
 
 	ghid_coord_entry(hbox, NULL,
 									 conf_core.editor.increments_mil.size,
 									 conf_core.editor.increments_mil.size_min,
 									 conf_core.editor.increments_mil.size_max,
-									 CE_SMALL, umil, width, increment_spin_button_cb,
-									 pcb_strdup(pathmil), NULL, NULL);
+									 CE_SMALL, umil, width, increment_spin_button_cb, pcb_strdup(pathmil), NULL, NULL);
 
 	label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(label), _("For <small>'s' and '&lt;shift&gt;s' on lines, pads, text; '&lt;ctrl&gt;s' and '&lt;shift&gt;&lt;ctrl&gt;s' on holes.</small>"));
+	gtk_label_set_markup(GTK_LABEL(label),
+											 _
+											 ("For <small>'s' and '&lt;shift&gt;s' on lines, pads, text; '&lt;ctrl&gt;s' and '&lt;shift&gt;&lt;ctrl&gt;s' on holes.</small>"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
 
@@ -870,15 +885,13 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mm.line,
 									 conf_core.editor.increments_mm.line_min,
 									 conf_core.editor.increments_mm.line_max,
-									 CE_SMALL, umm, width, increment_spin_button_cb,
-									 pcb_strdup(pathmm), _("Line:"), NULL);
+									 CE_SMALL, umm, width, increment_spin_button_cb, pcb_strdup(pathmm), _("Line:"), NULL);
 
 	ghid_coord_entry(hbox, NULL,
 									 conf_core.editor.increments_mil.line,
 									 conf_core.editor.increments_mil.line_min,
 									 conf_core.editor.increments_mil.line_max,
-									 CE_SMALL, umil, width, increment_spin_button_cb,
-									 pcb_strdup(pathmil), NULL, NULL);
+									 CE_SMALL, umil, width, increment_spin_button_cb, pcb_strdup(pathmil), NULL, NULL);
 
 	label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
@@ -896,19 +909,18 @@ static void config_increments_sect_create(GtkWidget * vbox)
 									 conf_core.editor.increments_mm.clear,
 									 conf_core.editor.increments_mm.clear_min,
 									 conf_core.editor.increments_mm.clear_max,
-									 CE_SMALL, umm, width, increment_spin_button_cb,
-									 pcb_strdup(pathmm), _("Clear:"), NULL);
+									 CE_SMALL, umm, width, increment_spin_button_cb, pcb_strdup(pathmm), _("Clear:"), NULL);
 
 	ghid_coord_entry(hbox, NULL,
 									 conf_core.editor.increments_mil.clear,
 									 conf_core.editor.increments_mil.clear_min,
 									 conf_core.editor.increments_mil.clear_max,
-									 CE_SMALL, umil, width, increment_spin_button_cb,
-									 pcb_strdup(pathmil), NULL, NULL);
+									 CE_SMALL, umil, width, increment_spin_button_cb, pcb_strdup(pathmil), NULL, NULL);
 
 	label = gtk_label_new("");
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_markup(GTK_LABEL(label),_("<small>For 'k' and '&lt;shift&gt;k' line clearance inside polygon size change actions</small>"));
+	gtk_label_set_markup(GTK_LABEL(label),
+											 _("<small>For 'k' and '&lt;shift&gt;k' line clearance inside polygon size change actions</small>"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 2);
 
@@ -916,18 +928,18 @@ static void config_increments_sect_create(GtkWidget * vbox)
 	gtk_widget_show_all(config_increments_vbox);
 }
 
-static GtkWidget *config_increments_table_attach(GtkWidget *table, int x, int y, int colspan, const char *text)
+static GtkWidget *config_increments_table_attach(GtkWidget * table, int x, int y, int colspan, const char *text)
 {
 	GtkWidget *box, *label;
 
 	box = gtk_vbox_new(FALSE, 0);
 	label = gtk_label_new(text);
 	gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), box,  x,x+colspan,y,y+1,   0,0,10,2);
+	gtk_table_attach(GTK_TABLE(table), box, x, x + colspan, y, y + 1, 0, 0, 10, 2);
 	return label;
 }
 
-void config_increments_save(GtkButton *widget, save_ctx_t *ctx)
+void config_increments_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	const char *paths[] = {
 		"editor/increments_mm",
@@ -959,10 +971,10 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 	config_increments_tab_vbox = content_vbox;
 
 
-	catvbox = ghid_category_vbox (config_increments_vbox, "Increment Settings", 0, 0, TRUE, TRUE);
+	catvbox = ghid_category_vbox(config_increments_vbox, "Increment Settings", 0, 0, TRUE, TRUE);
 	config_increments_sect_create(catvbox);
 
-	catvbox = ghid_category_vbox (config_increments_vbox, _("Comparison table"), 0, 0, TRUE, TRUE);
+	catvbox = ghid_category_vbox(config_increments_vbox, _("Comparison table"), 0, 0, TRUE, TRUE);
 
 	/* increment summary table */
 	{
@@ -985,9 +997,9 @@ static void config_increments_tab_create(GtkWidget * tab_vbox)
 		config_increments_table_attach(table, 0, 4, 1, "line");
 		config_increments_table_attach(table, 0, 5, 1, "clear");
 
-		for(y = 0; y < 4; y++)
-			for(x = 0; x < 4; x++)
-				config_increments_tbl[x][y] = config_increments_table_attach(table, x+1, y+2, 1, "n/a");
+		for (y = 0; y < 4; y++)
+			for (x = 0; x < 4; x++)
+				config_increments_tbl[x][y] = config_increments_table_attach(table, x + 1, y + 2, 1, "n/a");
 		increment_tbl_update();
 	}
 
@@ -1005,7 +1017,7 @@ static void config_library_apply(void)
 	pcb_fp_rehash();
 }
 
-static char *get_misc_col_data(int row, int col, lht_node_t *nd)
+static char *get_misc_col_data(int row, int col, lht_node_t * nd)
 {
 	if ((nd != NULL) && (col == 1)) {
 		char *out;
@@ -1019,10 +1031,10 @@ static char *get_misc_col_data(int row, int col, lht_node_t *nd)
 lht_doc_t *config_library_lst_doc;
 lht_node_t *config_library_lst;
 
-static void lht_clean_list(lht_node_t *lst)
+static void lht_clean_list(lht_node_t * lst)
 {
 	lht_node_t *n;
-	while(lst->data.list.first != NULL) {
+	while (lst->data.list.first != NULL) {
 		n = lst->data.list.first;
 		if (n->doc == NULL) {
 			if (lst->data.list.last == n)
@@ -1075,7 +1087,7 @@ static lht_node_t *config_library_list()
 	return config_library_lst;
 }
 
-static void pre_rebuild(gtk_conf_list_t *cl)
+static void pre_rebuild(gtk_conf_list_t * cl)
 {
 	lht_node_t *m;
 	lht_clean_list(config_library_lst);
@@ -1092,7 +1104,7 @@ static void pre_rebuild(gtk_conf_list_t *cl)
 	lht_clean_list(cl->lst);
 }
 
-static void post_rebuild(gtk_conf_list_t *cl)
+static void post_rebuild(gtk_conf_list_t * cl)
 {
 	conf_update("rc/library_search_paths");
 }
@@ -1117,7 +1129,7 @@ static GtkWidget *config_library_append_paths(int post_sep)
 			conf_native_t *nat = e->value;
 			char tmp[256];
 
-			sprintf(tmp, "  $(rc.path.%s)", e->key+8);
+			sprintf(tmp, "  $(rc.path.%s)", e->key + 8);
 			label = gtk_label_new(tmp);
 			gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 			gtk_box_pack_start(GTK_BOX(vbox_key), label, FALSE, FALSE, 0);
@@ -1135,7 +1147,7 @@ static GtkWidget *config_library_append_paths(int post_sep)
 	return hbox;
 }
 
-void config_library_save(GtkButton *widget, save_ctx_t *ctx)
+void config_library_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	const char *paths[] = {
 		"rc/library_search_paths",
@@ -1148,7 +1160,7 @@ void config_library_save(GtkButton *widget, save_ctx_t *ctx)
 static void config_library_tab_create(GtkWidget * tab_vbox)
 {
 	GtkWidget *vbox, *label, *entry, *content_vbox, *paths_box;
-	const char *cnames[] = {"configured path", "actual path on the filesystem", "config source"};
+	const char *cnames[] = { "configured path", "actual path on the filesystem", "config source" };
 
 	library_cl.num_cols = 3;
 	library_cl.col_names = cnames;
@@ -1170,7 +1182,9 @@ static void config_library_tab_create(GtkWidget * tab_vbox)
 	gtk_container_set_border_width(GTK_CONTAINER(content_vbox), 6);
 	vbox = ghid_category_vbox(content_vbox, _("Element Directories"), 4, 2, TRUE, FALSE);
 
-	label = gtk_label_new(_("Ordered list of footprint library search directories; use drag&drop to reorder.\nThe following $(variables) can be used in the path:\n\n"));
+	label =
+		gtk_label_new(_
+									("Ordered list of footprint library search directories; use drag&drop to reorder.\nThe following $(variables) can be used in the path:\n\n"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
@@ -1292,8 +1306,9 @@ static void config_layers_apply(void)
 	 */
 	for (i = 0; i < pcb_max_layer; ++i) {
 		layer = &PCB->Data->Layer[i];
-		s = ghid_entry_get_text(layer_entry[i]);
-		if (pcb_gtk_g_strdup((char**)&layer->Name, s))
+		/*s = ghid_entry_get_text(layer_entry[i]); */
+		*s = pcb_str_strip_left(gtk_entry_get_text(GTK_ENTRY(layer_entry[i])));
+		if (pcb_gtk_g_strdup((char **) &layer->Name, s))
 			layers_modified = TRUE;
 	}
 	/* Layer names can be changed from the menus and that can update the
@@ -1325,11 +1340,14 @@ static void config_layers_apply(void)
 		   |  solder-side and component-side must not be the only one in the group
 		 */
 		if (layer_groups.grp[soldergroup].len <= 1 || layer_groups.grp[componentgroup].len <= 1) {
-			pcb_message(PCB_MSG_ERROR, _("Both 'solder side' or 'component side' layers must have at least\n" "\tone other layer in their group.\n"));
+			pcb_message(PCB_MSG_ERROR,
+									_("Both 'solder side' or 'component side' layers must have at least\n"
+										"\tone other layer in their group.\n"));
 			return;
 		}
 		else if (soldergroup == componentgroup) {
-			pcb_message(PCB_MSG_ERROR, _("The 'solder side' and 'component side' layers are not allowed\n" "\tto be in the same layer group #\n"));
+			pcb_message(PCB_MSG_ERROR,
+									_("The 'solder side' and 'component side' layers are not allowed\n" "\tto be in the same layer group #\n"));
 			return;
 		}
 		PCB->LayerGroups = layer_groups;
@@ -1343,11 +1361,12 @@ static void layer_name_entry_cb(GtkWidget * entry, gpointer data)
 {
 	gint i = GPOINTER_TO_INT(data);
 	pcb_layer_t *layer;
-	const gchar *name;
+	const gchar *name = "";
 
 	layer = &PCB->Data->Layer[i];
-	name = ghid_entry_get_text(entry);
-	if (pcb_gtk_g_strdup((char**)&layer->Name, name))
+	if (entry)
+		name = pcb_str_strip_left(gtk_entry_get_text(GTK_ENTRY(entry)));
+	if (pcb_gtk_g_strdup((char **) &layer->Name, name))
 		ghid_layer_buttons_update();
 }
 
@@ -1363,7 +1382,7 @@ static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 	g_strfreev(argv);
 }
 
-void config_layers_save(GtkButton *widget, save_ctx_t *ctx)
+void config_layers_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	gchar *s;
 	pcb_cardinal_t n;
@@ -1417,7 +1436,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 		pcb_gtk_preview_t *p;
 		prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
-		p = (pcb_gtk_preview_t *)prv;
+		p = (pcb_gtk_preview_t *) prv;
 		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
 		p->overlay_draw_cb = pcb_stub_draw_csect_overlay;
 	}
@@ -1477,8 +1496,7 @@ void ghid_config_layer_name_update(gchar * name, gint layer)
 
 	/* -------------- The Colors config page ----------------
 	 */
-static GtkWidget *config_colors_vbox,
-	*config_colors_tab_vbox;
+static GtkWidget *config_colors_vbox, *config_colors_tab_vbox;
 
 static void config_colors_tab_create(GtkWidget * tab_vbox);
 
@@ -1489,7 +1507,7 @@ typedef struct {
 	GtkWidget *button;
 } cfg_color_idx_t;
 
-static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t *ci)
+static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 {
 	GdkColor new_color;
 	const char *str;
@@ -1504,7 +1522,7 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t *ci)
 	}
 }
 
-static void config_color_button_create(GtkWidget * box, conf_native_t *cfg, int idx)
+static void config_color_button_create(GtkWidget * box, conf_native_t * cfg, int idx)
 {
 	GtkWidget *hbox, *label;
 	gchar *title;
@@ -1535,10 +1553,10 @@ static void config_color_button_create(GtkWidget * box, conf_native_t *cfg, int 
 	g_signal_connect(G_OBJECT(ci->button), "color-set", G_CALLBACK(config_color_set_cb), ci);
 }
 
-void config_color_button_update(conf_native_t *cfg, int idx)
+void config_color_button_update(conf_native_t * cfg, int idx)
 {
 	if (idx < 0) {
-		for(idx = 0; idx < cfg->array_size; idx++)
+		for (idx = 0; idx < cfg->array_size; idx++)
 			config_color_button_update(cfg, idx);
 	}
 	else {
@@ -1549,7 +1567,7 @@ void config_color_button_update(conf_native_t *cfg, int idx)
 	}
 }
 
-void config_colors_tab_create_scalar(GtkWidget *parent_vbox, const char *path_prefix, int selected)
+void config_colors_tab_create_scalar(GtkWidget * parent_vbox, const char *path_prefix, int selected)
 {
 	htsp_entry_t *e;
 	int pl = strlen(path_prefix);
@@ -1564,18 +1582,18 @@ void config_colors_tab_create_scalar(GtkWidget *parent_vbox, const char *path_pr
 	}
 }
 
-void config_colors_tab_create_array(GtkWidget *parent_vbox, const char *path)
+void config_colors_tab_create_array(GtkWidget * parent_vbox, const char *path)
 {
 	conf_native_t *cfg = conf_get_field(path);
 	int n;
 	if (cfg->type != CFN_COLOR)
 		return;
 
-	for(n = 0; n < cfg->used; n++)
+	for (n = 0; n < cfg->used; n++)
 		config_color_button_create(parent_vbox, cfg, n);
 }
 
-void config_colors_save(GtkButton *widget, save_ctx_t *ctx)
+void config_colors_save(GtkButton * widget, save_ctx_t * ctx)
 {
 	const char *paths[] = {
 		"*appearance/color/",
@@ -1658,7 +1676,7 @@ static GtkWidget *config_page_create(GtkTreeStore * tree, GtkTreeIter * iter, Gt
 void ghid_config_handle_units_changed(void)
 {
 	char *text = pcb_strdup_printf("<b>%s</b>",
-																		conf_core.editor.grid_unit->in_suffix);
+																 conf_core.editor.grid_unit->in_suffix);
 	ghid_set_cursor_position_labels();
 	gtk_label_set_markup(GTK_LABEL(ghidgui->grid_units_label), text);
 	free(text);
@@ -1716,14 +1734,14 @@ static void config_selection_changed_cb(GtkTreeSelection * selection, gpointer d
 		return;
 	gtk_tree_model_get(model, &iter, CONFIG_PAGE_COLUMN, &page, CONFIG_PAGE_UPDATE_CB, &cb, CONFIG_PAGE_DATA, &page_data, -1);
 	if (cb != NULL) {
-		void (*fnc)(void *data) = pcb_cast_d2f(cb);
+		void (*fnc) (void *data) = pcb_cast_d2f(cb);
 		fnc(page_data);
 	}
 	gtk_notebook_set_current_page(config_notebook, page);
 }
 
 /* Create a root (e.g. Config PoV) top level in the preference tree; iter is output and acts as a parent for further nodes */
-static void config_tree_sect(GtkTreeStore *model, GtkTreeIter *parent, GtkTreeIter *iter, const char *name, const char *desc)
+static void config_tree_sect(GtkTreeStore * model, GtkTreeIter * parent, GtkTreeIter * iter, const char *name, const char *desc)
 {
 	GtkWidget *vbox, *label;
 	gtk_tree_store_append(model, iter, parent);
@@ -1736,7 +1754,8 @@ static void config_tree_sect(GtkTreeStore *model, GtkTreeIter *parent, GtkTreeIt
 }
 
 /* Create a leaf node with a custom tab */
-static GtkWidget *config_tree_leaf_(GtkTreeStore *model, GtkTreeIter *parent, const char *name, void (*tab_create)(GtkWidget *tab_vbox), GtkTreeIter *iter)
+static GtkWidget *config_tree_leaf_(GtkTreeStore * model, GtkTreeIter * parent, const char *name,
+																		void (*tab_create) (GtkWidget * tab_vbox), GtkTreeIter * iter)
 {
 	GtkWidget *vbox = NULL;
 
@@ -1749,7 +1768,8 @@ static GtkWidget *config_tree_leaf_(GtkTreeStore *model, GtkTreeIter *parent, co
 	return vbox;
 }
 
-static GtkWidget *config_tree_leaf(GtkTreeStore *model, GtkTreeIter *parent, const char *name, void (*tab_create)(GtkWidget *tab_vbox))
+static GtkWidget *config_tree_leaf(GtkTreeStore * model, GtkTreeIter * parent, const char *name,
+																	 void (*tab_create) (GtkWidget * tab_vbox))
 {
 	GtkTreeIter iter;
 	return config_tree_leaf_(model, parent, name, tab_create, &iter);
@@ -1774,7 +1794,7 @@ static struct {
 	GtkWidget *edit_list;
 
 	GtkWidget *result;
-	GtkWidget *finalize; /* finalzie hbox */
+	GtkWidget *finalize;					/* finalzie hbox */
 
 	GtkWidget *btn_apply;
 	GtkWidget *btn_reset;
@@ -1794,14 +1814,14 @@ static struct {
 	conf_native_t *nat;
 } auto_tab_widgets;
 
-static void config_auto_src_changed_cb(GtkTreeView *tree, void *data);
-static void config_auto_idx_changed_cb(GtkTreeView *tree, void *data);
-static void config_auto_idx_create_cb(GtkButton *btn, void *data);
-static void config_auto_idx_remove_cb(GtkButton *btn, void *data);
-static void config_auto_apply_cb(GtkButton *btn, void *data);
-static void config_auto_reset_cb(GtkButton *btn, void *data);
-static void config_auto_remove_cb(GtkButton *btn, void *data);
-static void config_auto_create_cb(GtkButton *btn, void *data);
+static void config_auto_src_changed_cb(GtkTreeView * tree, void *data);
+static void config_auto_idx_changed_cb(GtkTreeView * tree, void *data);
+static void config_auto_idx_create_cb(GtkButton * btn, void *data);
+static void config_auto_idx_remove_cb(GtkButton * btn, void *data);
+static void config_auto_apply_cb(GtkButton * btn, void *data);
+static void config_auto_reset_cb(GtkButton * btn, void *data);
+static void config_auto_remove_cb(GtkButton * btn, void *data);
+static void config_auto_create_cb(GtkButton * btn, void *data);
 static void config_page_update_auto(void *data);
 
 /* Evaluates to 1 if the user canedit the config for this role */
@@ -1837,13 +1857,13 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 
 	/* upper-left: sources */
 	{
-		static const char *col_names[] = {"role", "prio", "policy", "value"};
-		static GType ty[] = {G_TYPE_STRING,G_TYPE_STRING,G_TYPE_STRING,G_TYPE_STRING};
+		static const char *col_names[] = { "role", "prio", "policy", "value" };
+		static GType ty[] = { G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING };
 		const char **s;
-		int n, num_cols = sizeof(col_names)/sizeof(col_names[0]);
+		int n, num_cols = sizeof(col_names) / sizeof(col_names[0]);
 		auto_tab_widgets.src_t = gtk_tree_view_new();
 		auto_tab_widgets.src_l = gtk_list_store_newv(num_cols, ty);
-		for(n = 0, s = col_names; n < num_cols; n++,s++) {
+		for (n = 0, s = col_names; n < num_cols; n++, s++) {
 			GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 			gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(auto_tab_widgets.src_t), -1, *s, renderer, "text", n, NULL);
 		}
@@ -1859,17 +1879,15 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	auto_tab_widgets.src = gtk_label_new("source");
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.src, FALSE, FALSE, 0);
 
-	{ /* array index bar */
+	{															/* array index bar */
 		auto_tab_widgets.edit_idx_box = gtk_hbox_new(FALSE, 4);
 		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_idx_box, FALSE, FALSE, 4);
 
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), gtk_label_new("Array index:"), FALSE, FALSE, 4);
 
-		auto_tab_widgets.edit_idx_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10,
-		                                                                  0, /* min */
-		                                                                  4,
-		                                                                  1, 1, /* steps */
-		                                                                  0.0));
+		auto_tab_widgets.edit_idx_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
+																																			4, 1, 1,	/* steps */
+																																			0.0));
 		g_signal_connect(G_OBJECT(auto_tab_widgets.edit_idx_adj), "value-changed", G_CALLBACK(config_auto_idx_changed_cb), NULL);
 		auto_tab_widgets.edit_idx = gtk_spin_button_new(auto_tab_widgets.edit_idx_adj, 1, 4);
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), auto_tab_widgets.edit_idx, FALSE, FALSE, 4);
@@ -1892,25 +1910,19 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	auto_tab_widgets.edit_coord = ghid_coord_entry_new(10, PCB_MM_TO_COORD(1000), 0, conf_core.editor.grid_unit, CE_TINY);
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_coord, FALSE, FALSE, 4);
 
-	auto_tab_widgets.edit_int_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10,
-	                                                                  0, /* min */
-	                                                                  20000,
-	                                                                  1, 10, /* steps */
-	                                                                  0.0));
+	auto_tab_widgets.edit_int_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
+																																		20000, 1, 10,	/* steps */
+																																		0.0));
 	auto_tab_widgets.edit_int = gtk_spin_button_new(auto_tab_widgets.edit_int_adj, 1, 4);
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_int, FALSE, FALSE, 4);
 
-	auto_tab_widgets.edit_real_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10,
-	                                                                   0, /* min */
-	                                                                   20000,
-	                                                                   1, 10, /* steps */
-	                                                                   0.0));
+	auto_tab_widgets.edit_real_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
+																																		 20000, 1, 10,	/* steps */
+																																		 0.0));
 	auto_tab_widgets.edit_real = gtk_spin_button_new(auto_tab_widgets.edit_real_adj, 1, 4);
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_real, FALSE, FALSE, 4);
 
-	ghid_check_button_connected(src_right, &auto_tab_widgets.edit_boolean, 0,
-	                            TRUE, FALSE, FALSE, 2,
-	                            NULL, NULL, NULL);
+	ghid_check_button_connected(src_right, &auto_tab_widgets.edit_boolean, 0, TRUE, FALSE, FALSE, 2, NULL, NULL, NULL);
 
 	auto_tab_widgets.edit_color = gtk_color_button_new();
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_color, FALSE, FALSE, 4);
@@ -1920,8 +1932,8 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	gtk_combo_box_append_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), "mil");
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_unit, FALSE, FALSE, 4);
 
-	{ /* list */
-		static const char *col_names[] = {"list items"};
+	{															/* list */
+		static const char *col_names[] = { "list items" };
 		auto_tab_widgets.cl.num_cols = 1;
 		auto_tab_widgets.cl.col_names = col_names;
 		auto_tab_widgets.cl.col_data = 0;
@@ -1954,7 +1966,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 
 		gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.finalize, FALSE, FALSE, 0);
 	}
-	
+
 	auto_tab_widgets.txt_apply = gtk_label_new("");
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.txt_apply, FALSE, FALSE, 0);
 	gtk_misc_set_alignment(GTK_MISC(auto_tab_widgets.txt_apply), 0., 0.);
@@ -1974,13 +1986,13 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	gtk_misc_set_alignment(GTK_MISC(w), 0., 0.);
 
 	{
-		static const char *col_names[] = {"index", "role & prio", "value"};
-		static GType ty[] = {G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING};
+		static const char *col_names[] = { "index", "role & prio", "value" };
+		static GType ty[] = { G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING };
 		const char **s;
-		int n, num_cols = sizeof(col_names)/sizeof(col_names[0]);
+		int n, num_cols = sizeof(col_names) / sizeof(col_names[0]);
 		auto_tab_widgets.res_t = gtk_tree_view_new();
 		auto_tab_widgets.res_l = gtk_list_store_newv(num_cols, ty);
-		for(n = 0, s = col_names; n < num_cols; n++,s++) {
+		for (n = 0, s = col_names; n < num_cols; n++, s++) {
 			GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 			gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(auto_tab_widgets.res_t), -1, *s, renderer, "text", n, NULL);
 		}
@@ -2007,7 +2019,7 @@ static void config_auto_src_hide(void)
 
 /* Return the nth child of a list - only if it's really a list; if idx < 0,
    use the index adjustment value */
-static lht_node_t *config_auto_get_nth(const lht_node_t *list, int idx)
+static lht_node_t *config_auto_get_nth(const lht_node_t * list, int idx)
 {
 	const lht_node_t *nd;
 
@@ -2017,13 +2029,13 @@ static lht_node_t *config_auto_get_nth(const lht_node_t *list, int idx)
 	if (idx < 0)
 		idx = gtk_adjustment_get_value(auto_tab_widgets.edit_idx_adj);
 
-	for(nd = list->data.list.first; (idx > 0) && (nd != NULL); nd = nd->next, idx--) ;
+	for (nd = list->data.list.first; (idx > 0) && (nd != NULL); nd = nd->next, idx--);
 
-	return (lht_node_t *)nd;
+	return (lht_node_t *) nd;
 }
 
 /* set up all source edit widgets for a lihata source node */
-static void config_auto_src_show(lht_node_t *nd)
+static void config_auto_src_show(lht_node_t * nd)
 {
 	conf_native_t *nat = auto_tab_widgets.nat;
 	char *tmp;
@@ -2058,78 +2070,78 @@ static void config_auto_src_show(lht_node_t *nd)
 
 	memset(&citem, 0, sizeof(citem));
 
-	switch(nat->type) {
-		case CFN_STRING:
-			gtk_entry_set_text(GTK_ENTRY(auto_tab_widgets.edit_string), nd->data.text.value);
-			gtk_widget_show(auto_tab_widgets.edit_string);
-			break;
-		case CFN_COORD:
-			{
-				pcb_coord_t coord = 0;
-				citem.coord = &coord;
-				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
-				ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), coord);
-				gtk_widget_show(auto_tab_widgets.edit_coord);
-			}
-			break;
-		case CFN_INTEGER:
-			{
-				long i = 0;
-				citem.integer = &i;
-				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj), i);
-				gtk_widget_show(auto_tab_widgets.edit_int);
-			}
-			break;
-		case CFN_REAL:
-			{
-				double d = 0;
-				citem.real = &d;
-				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_real_adj), d);
-				gtk_widget_show(auto_tab_widgets.edit_real);
-			}
-			break;
-		case CFN_BOOLEAN:
-			{
-				int b = 0;
-				citem.boolean = &b;
-				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean), b);
-				gtk_widget_show(auto_tab_widgets.edit_boolean);
-			}
-			break;
-		case CFN_COLOR:
-			ghid_map_color_string(nd->data.text.value, &auto_tab_widgets.color);
-			gtk_color_button_set_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &auto_tab_widgets.color);
-			gtk_widget_show(auto_tab_widgets.edit_color);
-			break;
-		case CFN_UNIT:
-			{
-				const pcb_unit_t *u = NULL;
-				citem.unit = &u;
-				conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
-				if (citem.unit[0] == NULL)
-					l = -1;
-				else if (strcmp(citem.unit[0]->suffix, "mm") == 0)
-					l = 0;
-				else if (strcmp(citem.unit[0]->suffix, "mil") == 0)
-					l = 1;
-				else
-					l = -1;
-				gtk_combo_box_set_active(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), l);
-				gtk_widget_show(auto_tab_widgets.edit_unit);
-			}
-			break;
-		case CFN_LIST:
-			gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
-			gtk_widget_show(auto_tab_widgets.edit_list);
-			break;
+	switch (nat->type) {
+	case CFN_STRING:
+		gtk_entry_set_text(GTK_ENTRY(auto_tab_widgets.edit_string), nd->data.text.value);
+		gtk_widget_show(auto_tab_widgets.edit_string);
+		break;
+	case CFN_COORD:
+		{
+			pcb_coord_t coord = 0;
+			citem.coord = &coord;
+			conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+			ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), coord);
+			gtk_widget_show(auto_tab_widgets.edit_coord);
+		}
+		break;
+	case CFN_INTEGER:
+		{
+			long i = 0;
+			citem.integer = &i;
+			conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj), i);
+			gtk_widget_show(auto_tab_widgets.edit_int);
+		}
+		break;
+	case CFN_REAL:
+		{
+			double d = 0;
+			citem.real = &d;
+			conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+			gtk_adjustment_set_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_real_adj), d);
+			gtk_widget_show(auto_tab_widgets.edit_real);
+		}
+		break;
+	case CFN_BOOLEAN:
+		{
+			int b = 0;
+			citem.boolean = &b;
+			conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean), b);
+			gtk_widget_show(auto_tab_widgets.edit_boolean);
+		}
+		break;
+	case CFN_COLOR:
+		ghid_map_color_string(nd->data.text.value, &auto_tab_widgets.color);
+		gtk_color_button_set_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &auto_tab_widgets.color);
+		gtk_widget_show(auto_tab_widgets.edit_color);
+		break;
+	case CFN_UNIT:
+		{
+			const pcb_unit_t *u = NULL;
+			citem.unit = &u;
+			conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
+			if (citem.unit[0] == NULL)
+				l = -1;
+			else if (strcmp(citem.unit[0]->suffix, "mm") == 0)
+				l = 0;
+			else if (strcmp(citem.unit[0]->suffix, "mil") == 0)
+				l = 1;
+			else
+				l = -1;
+			gtk_combo_box_set_active(GTK_COMBO_BOX(auto_tab_widgets.edit_unit), l);
+			gtk_widget_show(auto_tab_widgets.edit_unit);
+		}
+		break;
+	case CFN_LIST:
+		gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
+		gtk_widget_show(auto_tab_widgets.edit_list);
+		break;
 	}
 	gtk_widget_show(auto_tab_widgets.finalize);
 }
 
-static void config_auto_res_show_add(const char *s_idx, const confprop_t *prop, const char *val)
+static void config_auto_res_show_add(const char *s_idx, const confprop_t * prop, const char *val)
 {
 	GtkTreeIter iter;
 	char s_pol_prio[256];
@@ -2140,11 +2152,7 @@ static void config_auto_res_show_add(const char *s_idx, const confprop_t *prop, 
 		sprintf(s_pol_prio, "%d", prop->prio);
 
 	gtk_list_store_append(auto_tab_widgets.res_l, &iter);
-	gtk_list_store_set(auto_tab_widgets.res_l, &iter,
-		0, s_idx,
-		1, s_pol_prio,
-		2, val,
-		-1);
+	gtk_list_store_set(auto_tab_widgets.res_l, &iter, 0, s_idx, 1, s_pol_prio, 2, val, -1);
 }
 
 /* Fill in the result table on the bottom using the native value */
@@ -2158,24 +2166,24 @@ static void config_auto_res_show(void)
 
 	/* This code addmitedly does not handle array of lists - for now; once the
 	   list-loop below is moved to config_auto_res_show_add, it will work */
-	if(nat->type == CFN_LIST) {
+	if (nat->type == CFN_LIST) {
 		conf_listitem_t *n;
-		for(n = conflist_first(nat->val.list); n != NULL; n = conflist_next(n)) {
+		for (n = conflist_first(nat->val.list); n != NULL; n = conflist_next(n)) {
 			gds_init(&buff);
-			conf_print_native_field((conf_pfn)pcb_append_printf, &buff, 0, &n->val, n->type, &n->prop, 0);
+			conf_print_native_field((conf_pfn) pcb_append_printf, &buff, 0, &n->val, n->type, &n->prop, 0);
 			config_auto_res_show_add("0", &n->prop, buff.array);
 			gds_uninit(&buff);
 		}
 	}
 	else {
 		pcb_cardinal_t n;
-		for(n = 0; n < nat->used; n++) {
+		for (n = 0; n < nat->used; n++) {
 			if (nat->array_size >= 2)
 				sprintf(s_idx, "%d", n);
 			else
 				*s_idx = '\0';
 			gds_init(&buff);
-			conf_print_native_field((conf_pfn)pcb_append_printf, &buff, 0, &nat->val, nat->type, nat->prop, n);
+			conf_print_native_field((conf_pfn) pcb_append_printf, &buff, 0, &nat->val, nat->type, nat->prop, n);
 			config_auto_res_show_add(s_idx, &nat->prop[n], buff.array);
 			gds_uninit(&buff);
 		}
@@ -2208,7 +2216,7 @@ static conf_auto_set_edited_role(conf_role_t r)
 
 
 /* Update the conf item edit section; called when a source is clicked */
-static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
+static void config_auto_src_changed_cb(GtkTreeView * tree, void *data)
 {
 	int role = config_auto_get_edited_role(), idx, len = 0;
 	lht_node_t *nd;
@@ -2224,7 +2232,7 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 			allow_idx = 0;
 			if (nd->type == LHT_LIST) {
 				lht_node_t *n;
-				for(n = nd->data.list.first; n != NULL; n = n->next)
+				for (n = nd->data.list.first; n != NULL; n = n->next)
 					len++;
 			}
 		}
@@ -2253,15 +2261,15 @@ static void config_auto_src_changed_cb(GtkTreeView *tree, void *data)
 	/* adjust array index widget state and max according to our actual array size */
 	idx = gtk_adjustment_get_value(auto_tab_widgets.edit_idx_adj);
 	if (idx >= len)
-		gtk_adjustment_set_value(auto_tab_widgets.edit_idx_adj, len-1);
+		gtk_adjustment_set_value(auto_tab_widgets.edit_idx_adj, len - 1);
 
-	gtk_adjustment_set_upper(auto_tab_widgets.edit_idx_adj, len-1);
+	gtk_adjustment_set_upper(auto_tab_widgets.edit_idx_adj, len - 1);
 
 	if ((allow_idx) && (auto_tab_widgets.nat->array_size > 1))
 		gtk_widget_show(auto_tab_widgets.edit_idx_box);
 }
 
-static void config_auto_idx_changed_cb(GtkTreeView *tree, void *data)
+static void config_auto_idx_changed_cb(GtkTreeView * tree, void *data)
 {
 	int role = config_auto_get_edited_role();
 	if (role != CFR_invalid) {
@@ -2286,12 +2294,12 @@ static void config_auto_idx_deladd_cb(int del)
 	}
 }
 
-static void config_auto_idx_create_cb(GtkButton *btn, void *data)
+static void config_auto_idx_create_cb(GtkButton * btn, void *data)
 {
 	config_auto_idx_deladd_cb(0);
 }
 
-static void config_auto_idx_remove_cb(GtkButton *btn, void *data)
+static void config_auto_idx_remove_cb(GtkButton * btn, void *data)
 {
 	config_auto_idx_deladd_cb(1);
 }
@@ -2320,7 +2328,7 @@ static void config_auto_save(conf_role_t role)
 	conf_save_file(NULL, pcbfn, role, NULL);
 }
 
-static void config_auto_apply_cb(GtkButton *btn, void *data)
+static void config_auto_apply_cb(GtkButton * btn, void *data)
 {
 	conf_native_t *nat = auto_tab_widgets.nat;
 	conf_role_t role = config_auto_get_edited_role();
@@ -2329,63 +2337,63 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 	int arr_idx = -1;
 	int update_clr = 0;
 
-	switch(nat->type) {
-		case CFN_STRING:
-			new_val = gtk_entry_get_text(GTK_ENTRY(auto_tab_widgets.edit_string));
-			break;
-		case CFN_COORD:
-			ghid_coord_entry_get_value_str(auto_tab_widgets.edit_coord, buff, sizeof(buff));
+	switch (nat->type) {
+	case CFN_STRING:
+		new_val = gtk_entry_get_text(GTK_ENTRY(auto_tab_widgets.edit_string));
+		break;
+	case CFN_COORD:
+		ghid_coord_entry_get_value_str(auto_tab_widgets.edit_coord, buff, sizeof(buff));
+		new_val = buff;
+		break;
+	case CFN_INTEGER:
+		sprintf(buff, "%.0f", gtk_adjustment_get_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj)));
+		new_val = buff;
+		break;
+	case CFN_REAL:
+		sprintf(buff, "%.16f", gtk_adjustment_get_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj)));
+		new_val = buff;
+		break;
+	case CFN_BOOLEAN:
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean)))
+			new_val = "1";
+		else
+			new_val = "0";
+		break;
+	case CFN_COLOR:
+		{
+			GdkColor clr;
+			gtk_color_button_get_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &clr);
+			sprintf(buff, "#%02x%02x%02x", (clr.red >> 8) & 0xFF, (clr.green >> 8) & 0xFF, (clr.blue >> 8) & 0xFF);
 			new_val = buff;
-			break;
-		case CFN_INTEGER:
-			sprintf(buff, "%.0f", gtk_adjustment_get_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj)));
+			update_clr = 1;
+		}
+		break;
+	case CFN_UNIT:
+		{
+			char *s = gtk_combo_box_get_active_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit));
+			strcpy(buff, s);
 			new_val = buff;
-			break;
-		case CFN_REAL:
-			sprintf(buff, "%.16f", gtk_adjustment_get_value(GTK_ADJUSTMENT(auto_tab_widgets.edit_int_adj)));
-			new_val = buff;
-			break;
-		case CFN_BOOLEAN:
-			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auto_tab_widgets.edit_boolean)))
-				new_val = "1";
-			else
-				new_val = "0";
-			break;
-		case CFN_COLOR:
-			{
-				GdkColor clr;
-				gtk_color_button_get_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &clr);
-				sprintf(buff, "#%02x%02x%02x", (clr.red >> 8) & 0xFF, (clr.green >> 8) & 0xFF, (clr.blue >> 8) & 0xFF);
-				new_val = buff;
-				update_clr = 1;
-			}
-			break;
-		case CFN_UNIT:
-			{
-				char *s = gtk_combo_box_get_active_text(GTK_COMBO_BOX(auto_tab_widgets.edit_unit));
-				strcpy(buff, s);
-				new_val = buff;
+			g_free(s);
+		}
+		break;
+	case CFN_LIST:
+		{
+			GtkTreeModel *tm = gtk_tree_view_get_model(GTK_TREE_VIEW(auto_tab_widgets.cl.t));
+			GtkTreeIter it;
+			gboolean valid;
+			int n;
+
+			for (valid = gtk_tree_model_get_iter_first(tm, &it), n = 0; valid; valid = gtk_tree_model_iter_next(tm, &it), n++) {
+				gchar *s;
+				gtk_tree_model_get(tm, &it, auto_tab_widgets.cl.col_data, &s, -1);
+				conf_set_dry(role, nat->hash_path, -1, pcb_strdup(s), (n == 0) ? POL_OVERWRITE : POL_APPEND);
 				g_free(s);
 			}
-			break;
-		case CFN_LIST:
-			{
-				GtkTreeModel *tm = gtk_tree_view_get_model(GTK_TREE_VIEW(auto_tab_widgets.cl.t));
-				GtkTreeIter it;
-				gboolean valid;
-				int n;
-
-				for(valid = gtk_tree_model_get_iter_first(tm, &it), n = 0; valid; valid = gtk_tree_model_iter_next(tm, &it), n++) {
-					gchar *s;
-					gtk_tree_model_get(tm, &it, auto_tab_widgets.cl.col_data, &s, -1);
-					conf_set_dry(role, nat->hash_path, -1, pcb_strdup(s), (n == 0) ? POL_OVERWRITE : POL_APPEND);
-					g_free(s);
-				}
-				conf_update(nat->hash_path);
-				config_auto_save(role);
-			}
-			new_val = NULL; /* do not run conf_set, but run the rest of the updates */
-			break;
+			conf_update(nat->hash_path);
+			config_auto_save(role);
+		}
+		new_val = NULL;							/* do not run conf_set, but run the rest of the updates */
+		break;
 	}
 
 	if (nat->array_size > 1)
@@ -2405,12 +2413,12 @@ static void config_auto_apply_cb(GtkButton *btn, void *data)
 	}
 }
 
-static void config_auto_reset_cb(GtkButton *btn, void *data)
+static void config_auto_reset_cb(GtkButton * btn, void *data)
 {
 	config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), NULL);
 }
 
-static void config_auto_remove_cb(GtkButton *btn, void *data)
+static void config_auto_remove_cb(GtkButton * btn, void *data)
 {
 	conf_native_t *nat = auto_tab_widgets.nat;
 	conf_role_t role = config_auto_get_edited_role();
@@ -2427,7 +2435,7 @@ static void config_auto_remove_cb(GtkButton *btn, void *data)
 	conf_auto_set_edited_role(role);
 }
 
-static void config_auto_create_cb(GtkButton *btn, void *data)
+static void config_auto_create_cb(GtkButton * btn, void *data)
 {
 	gds_t s;
 	char *val;
@@ -2436,13 +2444,14 @@ static void config_auto_create_cb(GtkButton *btn, void *data)
 
 	/* create the config node in the source lht */
 	gds_init(&s);
-	conf_print_native_field((conf_pfn)pcb_append_printf, &s, 0, &nat->val, nat->type, &nat->prop[0], 0);
+	conf_print_native_field((conf_pfn) pcb_append_printf, &s, 0, &nat->val, nat->type, &nat->prop[0], 0);
 	val = s.array;
 
 	/* strip {} from arrays */
 	if (nat->array_size > 1) {
 		int end;
-		while(*val == '{') val++;
+		while (*val == '{')
+			val++;
 		end = gds_len(&s) - (val - s.array);
 		if (end > 0)
 			s.array[end] = '\0';
@@ -2473,7 +2482,7 @@ static void config_page_update_auto(void *data)
 
 	/* split long description strings at whitepsace to make the preferences window narrower */
 	tmp = malloc(strlen(nat->description) * 2);
-	for(si = nat->description, so = tmp, l = 0; *si != '\0'; si++,so++,l++) {
+	for (si = nat->description, so = tmp, l = 0; *si != '\0'; si++, so++, l++) {
 		if (isspace(*si) && (l > 64))
 			*so = '\n';
 		else
@@ -2490,7 +2499,7 @@ static void config_page_update_auto(void *data)
 
 	/* build the source table */
 	gtk_list_store_clear(auto_tab_widgets.src_l);
-	for(n = 0; n < CFR_max_real; n++) {
+	for (n = 0; n < CFR_max_real; n++) {
 		GtkTreeIter iter;
 		long prio = conf_default_prio[n];
 		conf_policy_t pol = POL_OVERWRITE;
@@ -2504,26 +2513,31 @@ static void config_page_update_auto(void *data)
 			char sprio[32];
 			const char *val;
 
-			switch(nd->type) {
-				case LHT_TEXT: val = nd->data.text.value; break;
-				case LHT_LIST: val = "<list>"; break;
-				case LHT_HASH: val = "<hash>"; break;
-				case LHT_TABLE: val = "<table>"; break;
-				case LHT_SYMLINK: val = "<symlink>"; break;
-				case LHT_INVALID_TYPE: val = "<invalid>"; break;
+			switch (nd->type) {
+			case LHT_TEXT:
+				val = nd->data.text.value;
+				break;
+			case LHT_LIST:
+				val = "<list>";
+				break;
+			case LHT_HASH:
+				val = "<hash>";
+				break;
+			case LHT_TABLE:
+				val = "<table>";
+				break;
+			case LHT_SYMLINK:
+				val = "<symlink>";
+				break;
+			case LHT_INVALID_TYPE:
+				val = "<invalid>";
+				break;
 			}
 			sprintf(sprio, "%ld", prio);
-			gtk_list_store_set(auto_tab_widgets.src_l, &iter,
-				0, conf_role_name(n),
-				1, sprio,
-				2, conf_policy_name(pol),
-				3, val,
-				-1);
+			gtk_list_store_set(auto_tab_widgets.src_l, &iter, 0, conf_role_name(n), 1, sprio, 2, conf_policy_name(pol), 3, val, -1);
 		}
 		else {
-			gtk_list_store_set(auto_tab_widgets.src_l, &iter,
-				0, conf_role_name(n),
-				-1);
+			gtk_list_store_set(auto_tab_widgets.src_l, &iter, 0, conf_role_name(n), -1);
 		}
 	}
 	gtk_widget_hide(auto_tab_widgets.edit_idx_box);
@@ -2532,7 +2546,7 @@ static void config_page_update_auto(void *data)
 	config_auto_res_show();
 }
 
-static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore *model, GtkTreeIter *main_parent, htsp_t *dirs, char *path)
+static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore * model, GtkTreeIter * main_parent, htsp_t * dirs, char *path)
 {
 	char *basename;
 	GtkTreeIter *parent, *cwd;
@@ -2561,13 +2575,13 @@ static GtkTreeIter *config_tree_auto_mkdirp(GtkTreeStore *model, GtkTreeIter *ma
 
 static int config_tree_auto_cmp(const void *v1, const void *v2)
 {
-	const htsp_entry_t **e1 = (const htsp_entry_t **)v1, **e2 = (const htsp_entry_t **)v2;
+	const htsp_entry_t **e1 = (const htsp_entry_t **) v1, **e2 = (const htsp_entry_t **) v2;
 	return strcmp((*e1)->key, (*e2)->key);
 }
 
 
 /* Automatically create a subtree using the central config field hash */
-static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
+static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent)
 {
 	htsp_t *dirs;
 	htsp_entry_t *e;
@@ -2600,7 +2614,7 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 		GtkTreeIter iter;
 		char *basename;
 		e = sorted[n];
-		if (strlen(e->key) > sizeof(path)-1) {
+		if (strlen(e->key) > sizeof(path) - 1) {
 			pcb_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: path too long\n", e->key);
 			continue;
 		}
@@ -2614,7 +2628,8 @@ static void config_tree_auto(GtkTreeStore *model, GtkTreeIter *main_parent)
 		basename++;
 		parent = config_tree_auto_mkdirp(model, main_parent, dirs, path);
 		config_tree_leaf_(model, parent, basename, NULL, &iter);
-		gtk_tree_store_set(model, &iter, CONFIG_PAGE_COLUMN, auto_page, CONFIG_PAGE_UPDATE_CB, config_page_update_auto, CONFIG_PAGE_DATA, e->value, -1);
+		gtk_tree_store_set(model, &iter, CONFIG_PAGE_COLUMN, auto_page, CONFIG_PAGE_UPDATE_CB, config_page_update_auto,
+											 CONFIG_PAGE_DATA, e->value, -1);
 	}
 	htsp_free(dirs);
 	free(sorted);
@@ -2663,8 +2678,12 @@ void ghid_config_window_show(void)
 	/* build the tree */
 	model = gtk_tree_store_new(N_CONFIG_COLUMNS, G_TYPE_STRING, G_TYPE_INT, G_TYPE_POINTER, G_TYPE_POINTER);
 
-	config_tree_sect(model, NULL, &user_pov,   _("User PoV"),   _("\n<b>User PoV</b>\nA subset of configuration settings regrouped,\npresented in the User's Point of View."));
-	config_tree_sect(model, NULL, &config_pov, _("Config PoV"), _("\n<b>Config PoV</b>\nAccess all configuration fields presented in\na tree that matches the configuration\nfile (lht) structure."));
+	config_tree_sect(model, NULL, &user_pov, _("User PoV"),
+									 _
+									 ("\n<b>User PoV</b>\nA subset of configuration settings regrouped,\npresented in the User's Point of View."));
+	config_tree_sect(model, NULL, &config_pov, _("Config PoV"),
+									 _
+									 ("\n<b>Config PoV</b>\nAccess all configuration fields presented in\na tree that matches the configuration\nfile (lht) structure."));
 
 	config_tree_leaf(model, &user_pov, _("General"), config_general_tab_create);
 	config_tree_leaf(model, &user_pov, _("Window"), config_window_tab_create);

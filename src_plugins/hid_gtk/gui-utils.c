@@ -38,17 +38,6 @@ void ghid_draw_area_update(GHidPort * port, GdkRectangle * rect)
 	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
 }
 
-const gchar *ghid_entry_get_text(GtkWidget * entry)
-{
-	const gchar *s = "";
-
-	if (entry)
-		s = gtk_entry_get_text(GTK_ENTRY(entry));
-	while (*s == ' ' || *s == '\t')
-		++s;
-	return s;
-}
-
 void ghid_label_set_markup(GtkWidget * label, const gchar * text)
 {
 	if (label)

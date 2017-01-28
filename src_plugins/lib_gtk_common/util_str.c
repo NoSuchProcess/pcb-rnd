@@ -43,3 +43,15 @@ gboolean pcb_gtk_g_strdup(gchar ** dst, const gchar * src)
 	*dst = g_strdup(src);
 	return TRUE;
 }
+
+const gchar *pcb_str_strip_left(gchar * s)
+{
+	const gchar *r = "";
+
+	if (s) {
+		r = s;
+		while (*r == ' ' || *r == '\t')
+			++r;
+	}
+	return r;
+}

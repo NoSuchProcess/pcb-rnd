@@ -276,16 +276,6 @@ gboolean ghid_mod1_is_pressed(void);
 gboolean ghid_shift_is_pressed(void);
 
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
-const gchar *ghid_entry_get_text(GtkWidget * entry);
-
-//void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t value,
-//											pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size, const pcb_unit_t *u,
-//											gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
-//											gpointer data, const gchar * string_pre, const gchar * string_post);
-//void ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
-//														GtkWidget ** coord_entry, pcb_coord_t value,
-//														pcb_coord_t low, pcb_coord_t high, enum ce_step_size, gint width,
-//														void (*cb_func) (GHidCoordEntry *, gpointer), gpointer data, gboolean right_align, const gchar * string);
 
 void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												gboolean horizontal, GtkPositionType pos,

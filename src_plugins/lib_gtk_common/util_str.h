@@ -35,4 +35,6 @@
 
 gboolean pcb_gtk_g_strdup(gchar ** dst, const gchar * src);
 
+/** Moves the @s pointer starting from the beginning, skipping spaces. */
+const gchar *pcb_str_strip_left(gchar * s);
 #endif

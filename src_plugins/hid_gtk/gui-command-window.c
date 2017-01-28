@@ -37,6 +37,8 @@
 #include "hid_gtk_conf.h"
 #include "compat_nls.h"
 
+#include "../src_plugins/lib_gtk_common/util_str.h"
+
 static GtkWidget *command_window;
 static GtkWidget *combo_vbox;
 static GList *history_list;
@@ -186,7 +188,8 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 {
 	gchar *command;
 
-	command = g_strdup(ghid_entry_get_text(GTK_WIDGET(ghidgui->command_entry)));
+	/*command = g_strdup(ghid_entry_get_text(GTK_WIDGET(ghidgui->command_entry))); */
+	command = g_strdup(pcb_str_strip_left(gtk_entry_get_text(GTK_ENTRY(ghidgui->command_entry))));
 	gtk_entry_set_text(ghidgui->command_entry, "");
 
 	if (*command)
@@ -413,7 +416,8 @@ void ghid_handle_user_command(gboolean raise)
 	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
 		ghid_command_window_show(raise);
 	else {
-		command = ghid_command_entry_get(_("Enter command:"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *) "");
+		command =
+			ghid_command_entry_get(_("Enter command:"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *) "");
 		if (command != NULL) {
 			/* copy new comand line to save buffer */
 			g_free(previous);
