@@ -34,11 +34,11 @@
 void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t value,
 											pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size,
 											const pcb_unit_t * u, gint width,
-											void (*cb_func) (GHidCoordEntry *, gpointer),
+											void (*cb_func) (pcb_gtk_coord_entry_t *, gpointer),
 											gpointer data, const gchar * string_pre, const gchar * string_post)
 {
 	GtkWidget *hbox = NULL, *label, *entry_widget;
-	GHidCoordEntry *entry;
+	pcb_gtk_coord_entry_t *entry;
 
 	if (u == NULL)
 		u = conf_core.editor.grid_unit;
@@ -76,11 +76,11 @@ void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t val
 void ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
 														GtkWidget ** coord_entry, pcb_coord_t value,
 														pcb_coord_t low, pcb_coord_t high, enum ce_step_size step_size,
-														gint width, void (*cb_func) (GHidCoordEntry *, gpointer),
+														gint width, void (*cb_func) (pcb_gtk_coord_entry_t *, gpointer),
 														gpointer data, gboolean right_align, const gchar * string)
 {
 	GtkWidget *label, *entry_widget;
-	GHidCoordEntry *entry;
+	pcb_gtk_coord_entry_t *entry;
 
 	if (!table)
 		return;

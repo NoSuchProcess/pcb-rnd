@@ -544,7 +544,7 @@ static void text_spin_button_cb(GtkSpinButton * spin, void *dst)
 	ghid_set_status_line_label();
 }
 
-static void coord_entry_cb(GHidCoordEntry * ce, void *dst)
+static void coord_entry_cb(pcb_gtk_coord_entry_t * ce, void *dst)
 {
 	*(pcb_coord_t *) dst = pcb_gtk_coord_entry_get_value(ce);
 }
@@ -795,7 +795,7 @@ static void increment_tbl_update()
 	increment_tbl_update_row(3, conf_core.editor.increments_mm.clear, conf_core.editor.increments_mil.clear);
 }
 
-static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
+static void increment_spin_button_cb(pcb_gtk_coord_entry_t * ce, void *dst)
 {
 	const char *path = dst;
 	conf_setf(CFR_DESIGN, path, -1, "%mr", (pcb_coord_t) pcb_gtk_coord_entry_get_value(ce));
