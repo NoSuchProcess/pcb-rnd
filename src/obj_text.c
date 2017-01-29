@@ -556,12 +556,17 @@ pcb_r_dir_t draw_text_callback(const pcb_box_t * b, void *cl)
 	pcb_layer_t *layer = cl;
 	pcb_text_t *text = (pcb_text_t *) b;
 	int min_silk_line;
+	unsigned int flg = 0;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text))
 		pcb_gui->set_color(Output.fgGC, layer->SelectedColor);
 	else
 		pcb_gui->set_color(Output.fgGC, layer->Color);
-	if (layer == &PCB->Data->SILKLAYER || layer == &PCB->Data->BACKSILKLAYER)
+
+	if (layer->grp >= 0)
+		flg = pcb_layergrp_flags(layer->grp);
+
+	if (flg & PCB_LYT_SILK)
 		min_silk_line = PCB->minSlk;
 	else
 		min_silk_line = PCB->minWid;
