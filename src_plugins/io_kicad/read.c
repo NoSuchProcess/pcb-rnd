@@ -962,6 +962,8 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 				return -1;
 			}
 
+			pcb_layergrp_fix_old_outline(&PCB->LayerGroups);
+
 			return 0;
 		}
 }
