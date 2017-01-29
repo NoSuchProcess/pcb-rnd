@@ -863,17 +863,19 @@ pcb_hid_actionl("dumpcsect", NULL);*/
 				pcb_layer_group_t *g = pcb_get_grp_new_intern(&PCB->LayerGroups, -1);
 				id = pcb_layer_create(g - PCB->LayerGroups.grp, lname);
 			}
-#if 0
 			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {
 				/* F. or B. layers */
 				if (strcmp(lname+2, "SilkS") == 0) return 0; /* silk layers are implicit */
+#if 0
 				if (strcmp(lname+2, "Adhes") == 0) return 0; /* pcb-rnd has no adhesive support */
 				if (strcmp(lname+2, "Paste") == 0) return 0; /* pcb-rnd has no custom paste support */
 				if (strcmp(lname+2, "Mask") == 0)  return 0; /* pcb-rnd has no custom mask support */
 				return -1; /* unknown F. or B. layer -> error */
-			}
 #endif
+				goto hack1;
+			}
 			else if (lnum > 15) {
+				hack1:;
 				/* HACK/WORKAROUND: remember kicad layers for those that are unsupported */
 				htsi_set(&st->layer_k2i, pcb_strdup(lname), -lnum);
 				return 0;
