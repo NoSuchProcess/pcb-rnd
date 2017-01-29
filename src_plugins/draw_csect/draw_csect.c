@@ -620,6 +620,7 @@ static pcb_bool mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x
 				res = 1;
 				drag_lid = -1;
 				lvalid = gvalid = 0;
+				gactive = -1;
 			}
 			else if (drag_gid > 0) {
 				do_move_grp();
