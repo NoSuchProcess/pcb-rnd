@@ -441,6 +441,28 @@ pcb_layer_id_t pcb_layer_create_old(pcb_layer_type_t type, pcb_bool reuse_layer,
 	return id;
 }
 
+pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname)
+{
+	pcb_layer_id_t id;
+
+	id = PCB->Data->LayerN++;
+
+	if (lname != NULL) {
+		if (PCB->Data->Layer[id].Name != NULL)
+			free((char *)PCB->Data->Layer[id].Name);
+		PCB->Data->Layer[id].Name = pcb_strdup(lname);
+	}
+
+	/* add layer to group */
+	if (grp >= 0) {
+		PCB->LayerGroups.grp[grp].lid[PCB->LayerGroups.grp[grp].len] = id;
+		PCB->LayerGroups.grp[grp].len++;
+	}
+	PCB->Data->Layer[id].grp = grp;
+
+	return id;
+}
+
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname)
 {
 	if (PCB->Data->Layer[layer].Name != NULL)

@@ -187,6 +187,9 @@ pcb_layer_id_t pcb_layer_by_name(const char *name);
 /* Reset layers to the bare minimum (double sided board) */
 void pcb_layers_reset();
 
+/* Create a new layer and put it in an existing group (if grp is not -1). */
+pcb_layer_id_t pcb_layer_create(pcb_layergrp_id_t grp, const char *lname);
+
 /* If reuse_layer is false, create a new layer of the given type; if
    reuse_group is true, try to put the new layer on an existing group.
    If reuse_layer is 1, first try to return an already exiting layer that
