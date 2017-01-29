@@ -39,49 +39,49 @@
 typedef struct expr1_s expr1_t;
 
 struct expr1_s {
-	GtkWidget *and;        /* only if not the first row */
+	GtkWidget *and;								/* only if not the first row */
 
-	GtkWidget *hbox;       /* only if first in row*/
-	GtkWidget *remove_row; /* only if first in row*/
-	GtkWidget *append_col; /* only if first in row*/
-	GtkWidget *spc;        /* only if first in row*/
+	GtkWidget *hbox;							/* only if first in row */
+	GtkWidget *remove_row;				/* only if first in row */
+	GtkWidget *append_col;				/* only if first in row */
+	GtkWidget *spc;								/* only if first in row */
 
 	GtkWidget *remove, *remove_button;
-	GtkWidget *content;    /* the actual expression */
-	GtkWidget *or;         /* only if not the first in the row */
+	GtkWidget *content;						/* the actual expression */
+	GtkWidget *or;								/* only if not the first in the row */
 
-	gdl_elem_t next_or;   /* --> */
-	gdl_elem_t next_and;  /* v */
-	gdl_list_t ors;       /* only in the first; the row-first is not on this list, so it collects the subseqent siblings only */
+	gdl_elem_t next_or;						/* --> */
+	gdl_elem_t next_and;					/* v */
+	gdl_list_t ors;								/* only in the first; the row-first is not on this list, so it collects the subseqent siblings only */
 
-	expr1_t *row;         /* only if not the first */
+	expr1_t *row;									/* only if not the first */
 
 	gulong sig_remove_row;
 	gulong sig_append_col;
 
-	char *code;          /* ... to use in the query script */
+	char *code;										/* ... to use in the query script */
 };
 
 typedef struct {
 	GtkWidget *window;
-	GtkWidget *expr;          /* manual expression entry */
-	GtkWidget *action;        /* what-to-do combo box */
-	GtkWidget *wizard_enable; /* checkbox */
+	GtkWidget *expr;							/* manual expression entry */
+	GtkWidget *action;						/* what-to-do combo box */
+	GtkWidget *wizard_enable;			/* checkbox */
 	GtkWidget *wizard_vbox;
 	GtkWidget *new_row;
 
-	gdl_list_t wizard;       /* of expr1_t */
+	gdl_list_t wizard;						/* of expr1_t */
 } ghid_search_dialog_t;
 
 static ghid_search_dialog_t sdlg;
 
-static void new_col_cb(GtkWidget *button, void *data);
-static void remove_row_cb(GtkWidget *button, void *data);
-static void remove_expr_cb(GtkWidget *button, void *data);
-static void edit_expr_cb(GtkWidget *button, void *data);
-static void expr_wizard_dialog(expr1_t *e);
+static void new_col_cb(GtkWidget * button, void *data);
+static void remove_row_cb(GtkWidget * button, void *data);
+static void remove_expr_cb(GtkWidget * button, void *data);
+static void edit_expr_cb(GtkWidget * button, void *data);
+static void expr_wizard_dialog(expr1_t * e);
 
-static void build_expr1(expr1_t *e, GtkWidget *parent_box)
+static void build_expr1(expr1_t * e, GtkWidget * parent_box)
 {
 	e->content = gtk_button_new_with_label("<expr>");
 	gtk_button_set_image(GTK_BUTTON(e->content), gtk_image_new_from_icon_name("gtk-new", GTK_ICON_SIZE_MENU));
@@ -100,7 +100,7 @@ static void build_expr1(expr1_t *e, GtkWidget *parent_box)
 }
 
 /* e is not part of any list by the time of the call */
-static void destroy_expr1(expr1_t *e)
+static void destroy_expr1(expr1_t * e)
 {
 #	define destroy(w) if (w != NULL) gtk_widget_destroy(w)
 	destroy(e->and);
@@ -150,7 +150,7 @@ static expr1_t *append_row()
 	return e;
 }
 
-static expr1_t *append_col(expr1_t *row)
+static expr1_t *append_col(expr1_t * row)
 {
 	expr1_t *e = calloc(sizeof(expr1_t), 1);
 
@@ -165,11 +165,11 @@ static expr1_t *append_col(expr1_t *row)
 	return e;
 }
 
-static void remove_row(expr1_t *row)
+static void remove_row(expr1_t * row)
 {
 	expr1_t *o;
 	gdl_remove(&sdlg.wizard, row, next_and);
-	for(o = gdl_first(&row->ors); o != NULL; o = gdl_next(&row->ors, o))
+	for (o = gdl_first(&row->ors); o != NULL; o = gdl_next(&row->ors, o))
 		destroy_expr1(o);
 	destroy_expr1(row);
 
@@ -181,7 +181,7 @@ static void remove_row(expr1_t *row)
 	}
 }
 
-static void remove_expr(expr1_t *e)
+static void remove_expr(expr1_t * e)
 {
 	if (e->row == NULL) {
 		/* first item in a row */
@@ -200,7 +200,7 @@ static void remove_expr(expr1_t *e)
 #			undef inherit
 			/* move the list, reparenting it */
 			memcpy(&o2->ors, &e->ors, sizeof(e->ors));
-			for(o = gdl_first(&o2->ors); o != NULL; o = gdl_next(&o2->ors, o))
+			for (o = gdl_first(&o2->ors); o != NULL; o = gdl_next(&o2->ors, o))
 				o->next_or.parent = &o2->ors;
 
 			o2->row = NULL;
@@ -228,13 +228,13 @@ static void remove_expr(expr1_t *e)
 	destroy_expr1(e);
 }
 
-static int num_ors(expr1_t *head)
+static int num_ors(expr1_t * head)
 {
 	int count = 0;
 	expr1_t *o;
 	if (head->code != NULL)
 		count++;
-	for(o = gdl_first(&head->ors); o != NULL; o = gdl_next(&head->ors, o))
+	for (o = gdl_first(&head->ors); o != NULL; o = gdl_next(&head->ors, o))
 		if (o->code != NULL)
 			count++;
 	return count;
@@ -247,7 +247,7 @@ static void rebuild(void)
 	expr1_t *a, *o;
 	gds_init(&s);
 
-	for(a = gdl_first(&sdlg.wizard); a != NULL; a = gdl_next(&sdlg.wizard, a)) {
+	for (a = gdl_first(&sdlg.wizard); a != NULL; a = gdl_next(&sdlg.wizard, a)) {
 		int or_first = 1;
 		int ors = num_ors(a);
 		if (ors == 0)
@@ -266,7 +266,7 @@ static void rebuild(void)
 			or_first = 0;
 		}
 
-		for(o = gdl_first(&a->ors); o != NULL; o = gdl_next(&a->ors, o)) {
+		for (o = gdl_first(&a->ors); o != NULL; o = gdl_next(&a->ors, o)) {
 			if (o->code != NULL) {
 				if (!or_first)
 					gds_append_str(&s, " || ");
@@ -283,40 +283,40 @@ static void rebuild(void)
 }
 
 /* button callbacks */
-static void new_row_cb(GtkWidget *button, void *data)
+static void new_row_cb(GtkWidget * button, void *data)
 {
 	append_row();
 	gtk_widget_show_all(sdlg.window);
 }
 
-static void remove_row_cb(GtkWidget *button, void *data)
+static void remove_row_cb(GtkWidget * button, void *data)
 {
-	expr1_t *row = (expr1_t *)data;
+	expr1_t *row = (expr1_t *) data;
 	remove_row(row);
 	rebuild();
 	gtk_widget_show_all(sdlg.window);
 }
 
-static void remove_expr_cb(GtkWidget *button, void *data)
+static void remove_expr_cb(GtkWidget * button, void *data)
 {
-	remove_expr((expr1_t *)data);
+	remove_expr((expr1_t *) data);
 	rebuild();
 	gtk_widget_show_all(sdlg.window);
 }
 
-static void edit_expr_cb(GtkWidget *button, void *data)
+static void edit_expr_cb(GtkWidget * button, void *data)
 {
-	expr_wizard_dialog((expr1_t *)data);
+	expr_wizard_dialog((expr1_t *) data);
 }
 
-static void new_col_cb(GtkWidget *button, void *data)
+static void new_col_cb(GtkWidget * button, void *data)
 {
-	expr1_t *row = (expr1_t *)data;
+	expr1_t *row = (expr1_t *) data;
 	append_col(row);
 	gtk_widget_show_all(sdlg.window);
 }
 
-static void wizard_toggle_cb(GtkCheckButton *button, void *data)
+static void wizard_toggle_cb(GtkCheckButton * button, void *data)
 {
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
 		gtk_widget_show(sdlg.wizard_vbox);
@@ -345,27 +345,27 @@ static void expr_wizard_init_model()
 		return;
 
 	/* render operator models */
-	for(o = op_tab; o->ops != NULL; o++) {
+	for (o = op_tab; o->ops != NULL; o++) {
 		o->model = gtk_list_store_newv(1, model_op);
-		for(s = o->ops; *s != NULL; s++)
-			gtk_list_store_insert_with_values(o->model, NULL, -1,  0, *s,  -1);
+		for (s = o->ops; *s != NULL; s++)
+			gtk_list_store_insert_with_values(o->model, NULL, -1, 0, *s, -1);
 	}
 
 	/* render right constant models */
-	for(o = right_const_tab; o->ops != NULL; o++) {
+	for (o = right_const_tab; o->ops != NULL; o++) {
 		o->model = gtk_list_store_newv(1, model_op);
-		for(s = o->ops; *s != NULL; s++)
-			gtk_list_store_insert_with_values(o->model, NULL, -1,  0, *s,  -1);
+		for (s = o->ops; *s != NULL; s++)
+			gtk_list_store_insert_with_values(o->model, NULL, -1, 0, *s, -1);
 	}
 
-	{ /* create the left tree model */
+	{															/* create the left tree model */
 		GtkTreeIter *parent = NULL, iter, iparent;
 		expr_wizard_dlg.md_left = gtk_tree_store_newv(2, model_op);
-		for(w = expr_tab; w->left_desc != NULL; w++) {
+		for (w = expr_tab; w->left_desc != NULL; w++) {
 			if (w->left_var == NULL)
 				parent = NULL;
 			gtk_tree_store_append(expr_wizard_dlg.md_left, &iter, parent);
-			gtk_tree_store_set(expr_wizard_dlg.md_left, &iter, 0,w->left_desc, 1,w, -1);
+			gtk_tree_store_set(expr_wizard_dlg.md_left, &iter, 0, w->left_desc, 1, w, -1);
 			if (w->left_var == NULL) {
 				/* new section */
 				iparent = iter;
@@ -403,7 +403,7 @@ static const expr_wizard_t *left_get_wiz(void)
 }
 
 /* Returns the string current value of a single-column-string-tree */
-static const char *wiz_get_tree_str(GtkWidget *tr)
+static const char *wiz_get_tree_str(GtkWidget * tr)
 {
 	const char *s;
 	GtkTreeSelection *tsel;
@@ -422,7 +422,7 @@ static const char *wiz_get_tree_str(GtkWidget *tr)
 	return s;
 }
 
-static void left_chg_cb(GtkTreeView *t, gpointer *data)
+static void left_chg_cb(GtkTreeView * t, gpointer * data)
 {
 	const expr_wizard_t *w = left_get_wiz();
 
@@ -433,14 +433,20 @@ static void left_chg_cb(GtkTreeView *t, gpointer *data)
 
 	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_op), GTK_TREE_MODEL(w->ops->model));
 
-	switch(w->rtype) {
-		case RIGHT_INT: gtk_widget_show(expr_wizard_dlg.right_int); break;
-		case RIGHT_STR: gtk_widget_show(expr_wizard_dlg.right_str); break;
-		case RIGHT_COORD: gtk_widget_show(expr_wizard_dlg.right_coord); break;
-		case RIGHT_CONST:
-			gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(w->right_const->model));
-			gtk_widget_show(expr_wizard_dlg.tr_right);
-			break;
+	switch (w->rtype) {
+	case RIGHT_INT:
+		gtk_widget_show(expr_wizard_dlg.right_int);
+		break;
+	case RIGHT_STR:
+		gtk_widget_show(expr_wizard_dlg.right_str);
+		break;
+	case RIGHT_COORD:
+		gtk_widget_show(expr_wizard_dlg.right_coord);
+		break;
+	case RIGHT_CONST:
+		gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(w->right_const->model));
+		gtk_widget_show(expr_wizard_dlg.tr_right);
+		break;
 	}
 }
 
@@ -458,7 +464,7 @@ static char *expr_wizard_result(int desc)
 	gds_init(&s);
 	if (desc) {
 		/* search the parent */
-		for(parent = w; parent >= expr_tab; parent--)
+		for (parent = w; parent >= expr_tab; parent--)
 			if (parent->left_var == NULL)
 				break;
 
@@ -479,25 +485,27 @@ static char *expr_wizard_result(int desc)
 	else
 		pcb_append_printf(&s, " %s ", cs);
 
-	switch(w->rtype) {
-		case RIGHT_INT: pcb_append_printf(&s, "%.0f", gtk_adjustment_get_value(expr_wizard_dlg.right_adj)); break;
-		case RIGHT_STR:
-			if (!desc)
-				gds_append_str(&s, "\"");
-			pcb_append_printf(&s, "%s", gtk_entry_get_text(GTK_ENTRY(expr_wizard_dlg.right_str)));
-			if (!desc)
-				gds_append_str(&s, "\"");
-			break;
-		case RIGHT_COORD:
-			ghid_coord_entry_get_value_str(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), tmp, sizeof(tmp));
-			pcb_append_printf(&s, "%s", tmp);
-			break;
-		case RIGHT_CONST:
-			cs = wiz_get_tree_str(expr_wizard_dlg.tr_right);
-			if (cs == NULL)
-				goto err;
-			pcb_append_printf(&s, "%s", cs);
-			break;
+	switch (w->rtype) {
+	case RIGHT_INT:
+		pcb_append_printf(&s, "%.0f", gtk_adjustment_get_value(expr_wizard_dlg.right_adj));
+		break;
+	case RIGHT_STR:
+		if (!desc)
+			gds_append_str(&s, "\"");
+		pcb_append_printf(&s, "%s", gtk_entry_get_text(GTK_ENTRY(expr_wizard_dlg.right_str)));
+		if (!desc)
+			gds_append_str(&s, "\"");
+		break;
+	case RIGHT_COORD:
+		pcb_gtk_coord_entry_get_value_str(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), tmp, sizeof(tmp));
+		pcb_append_printf(&s, "%s", tmp);
+		break;
+	case RIGHT_CONST:
+		cs = wiz_get_tree_str(expr_wizard_dlg.tr_right);
+		if (cs == NULL)
+			goto err;
+		pcb_append_printf(&s, "%s", cs);
+		break;
 	}
 
 	if (!desc)
@@ -505,18 +513,18 @@ static char *expr_wizard_result(int desc)
 
 	return s.array;
 
-	err:;
+err:;
 	free(s.array);
 	return NULL;
 }
 
 /* look up a tab entry with a slow linear search */
-static const expr_wizard_t *find_tab_entry(const expr_wizard_t *start_at, const char *desc, int need_hdr, int *idx)
+static const expr_wizard_t *find_tab_entry(const expr_wizard_t * start_at, const char *desc, int need_hdr, int *idx)
 {
 	const expr_wizard_t *w;
 	int i = 0, initial = 1;
 
-	for(w = start_at; w->left_desc != NULL; w++) {
+	for (w = start_at; w->left_desc != NULL; w++) {
 		if (need_hdr) {
 			if (w->left_var != NULL) {
 				if (initial)
@@ -541,11 +549,11 @@ static const expr_wizard_t *find_tab_entry(const expr_wizard_t *start_at, const 
 }
 
 /* Set enum-like tree cursor from a string; returns 0 if not found, 1 if found. */
-static int set_tree_from_enum(GtkWidget *tree, const char **vals, const char *target)
+static int set_tree_from_enum(GtkWidget * tree, const char **vals, const char *target)
 {
 	int n, found;
 	const char **s;
-	for(n = 0, found = 0, s = vals; *s != NULL; s++, n++) {
+	for (n = 0, found = 0, s = vals; *s != NULL; s++, n++) {
 		if (strcmp(*s, target) == 0) {
 			found = 1;
 			break;
@@ -574,12 +582,14 @@ void expr_wizard_import(const char *desc_)
 	left = desc;
 
 	op = strchr(left, '\n');
-	if (op == NULL) goto fail;
+	if (op == NULL)
+		goto fail;
 	*op = '\0';
 	op++;
 
 	right = strchr(op, '\n');
-	if (right == NULL) goto fail;
+	if (right == NULL)
+		goto fail;
 	*right = '\0';
 	right++;
 
@@ -598,16 +608,18 @@ void expr_wizard_import(const char *desc_)
 
 /*	printf("lp='%s' ld='%s' op='%s' r='%s'\n", left_parent, left_desc, op, right);*/
 	/* Find the tab entry */
-	
+
 	if (left_parent != NULL) {
 		w = find_tab_entry(expr_tab, left_parent, 1, &l1idx);
-		if (w == NULL) goto fail;
+		if (w == NULL)
+			goto fail;
 		w++;
 	}
 	else
 		w = expr_tab;
 	w = find_tab_entry(w, left_desc, 0, &l2idx);
-	if (w == NULL) goto fail;
+	if (w == NULL)
+		goto fail;
 
 	/* set left tree widget cursor */
 	{
@@ -627,11 +639,11 @@ void expr_wizard_import(const char *desc_)
 
 	/* set value field */
 	{
-		switch(w->rtype) {
-			case RIGHT_STR:
-				gtk_entry_set_text(GTK_ENTRY(expr_wizard_dlg.right_str), right);
-				break;
-			case RIGHT_INT:
+		switch (w->rtype) {
+		case RIGHT_STR:
+			gtk_entry_set_text(GTK_ENTRY(expr_wizard_dlg.right_str), right);
+			break;
+		case RIGHT_INT:
 			{
 				char *end;
 				double d = strtod(right, &end);
@@ -639,25 +651,25 @@ void expr_wizard_import(const char *desc_)
 					gtk_spin_button_set_value(GTK_SPIN_BUTTON(expr_wizard_dlg.right_int), d);
 				break;
 			}
-			case RIGHT_COORD:
+		case RIGHT_COORD:
 			{
 				pcb_bool succ;
 				double d = pcb_get_value_ex(right, NULL, NULL, NULL, "mm", &succ);
 				if (succ)
-					ghid_coord_entry_set_value(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), d);
+					pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(expr_wizard_dlg.right_coord), d);
 				break;
 			}
-			case RIGHT_CONST:
-				set_tree_from_enum(expr_wizard_dlg.tr_right, w->right_const->ops, right);
-				break;
+		case RIGHT_CONST:
+			set_tree_from_enum(expr_wizard_dlg.tr_right, w->right_const->ops, right);
+			break;
 		}
 	}
 
-	fail:;
+fail:;
 	free(desc);
 }
 
-static void expr_wizard_dialog(expr1_t *e)
+static void expr_wizard_dialog(expr1_t * e)
 {
 	GtkWidget *dialog, *vbox, *hbox;
 	GtkCellRenderer *renderer;
@@ -667,9 +679,9 @@ static void expr_wizard_dialog(expr1_t *e)
 
 	/* Create the dialog */
 	dialog = gtk_dialog_new_with_buttons("Expression wizard",
-	                                     GTK_WINDOW(gport->top_window),
-	                                     GTK_DIALOG_MODAL,
-	                                     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+																			 GTK_WINDOW(gport->top_window),
+																			 GTK_DIALOG_MODAL,
+																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
@@ -678,7 +690,8 @@ static void expr_wizard_dialog(expr1_t *e)
 	vbox = gtk_vbox_new(FALSE, 4);
 	expr_wizard_dlg.tr_left = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), -1, "variable", renderer, "text",0,  NULL);
+	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), -1, "variable", renderer, "text", 0,
+																							NULL);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_left), GTK_TREE_MODEL(expr_wizard_dlg.md_left));
 	g_signal_connect(G_OBJECT(expr_wizard_dlg.tr_left), "cursor-changed", G_CALLBACK(left_chg_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_left, FALSE, TRUE, 4);
@@ -705,23 +718,22 @@ static void expr_wizard_dialog(expr1_t *e)
 
 	expr_wizard_dlg.tr_right = gtk_tree_view_new();
 	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), -1, "constant", renderer, "text", 0, NULL);
+	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), -1, "constant", renderer, "text", 0,
+																							NULL);
 /*	gtk_tree_view_set_model(GTK_TREE_VIEW(expr_wizard_dlg.tr_right), GTK_TREE_MODEL(expr_wizard_dlg.md_objtype));*/
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.tr_right, FALSE, TRUE, 4);
 
 	expr_wizard_dlg.right_str = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_str, FALSE, TRUE, 4);
 
-	expr_wizard_dlg.right_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10,
-	                                                              0, /* min */
-	                                                              8,
-	                                                              1, 1, /* steps */
-	                                                              0.0));
+	expr_wizard_dlg.right_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
+																																8, 1, 1,	/* steps */
+																																0.0));
 /*	g_signal_connect(G_OBJECT(expr_wizard_dlg.right_adj), "value-changed", G_CALLBACK(config_auto_idx_changed_cb), NULL); */
 	expr_wizard_dlg.right_int = gtk_spin_button_new(expr_wizard_dlg.right_adj, 1, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_int, FALSE, TRUE, 4);
 
-	expr_wizard_dlg.right_coord = ghid_coord_entry_new(0, PCB_MM_TO_COORD(2100), 0, conf_core.editor.grid_unit, CE_MEDIUM);
+	expr_wizard_dlg.right_coord = pcb_gtk_coord_entry_new(0, PCB_MM_TO_COORD(2100), 0, conf_core.editor.grid_unit, CE_MEDIUM);
 	gtk_box_pack_start(GTK_BOX(vbox), expr_wizard_dlg.right_coord, FALSE, TRUE, 4);
 
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, TRUE, 4);
@@ -751,19 +763,19 @@ static void expr_wizard_dialog(expr1_t *e)
 
 
 /******** Advanced search window creation and administration ********/
-static void dialog_cb(GtkDialog *dlg, gint response_id, gpointer *data)
+static void dialog_cb(GtkDialog * dlg, gint response_id, gpointer * data)
 {
 	const char *act, *script;
 
-	switch(response_id) {
-		case GTK_RESPONSE_APPLY:
-			script = gtk_entry_get_text(GTK_ENTRY(sdlg.expr));
-			act = gtk_combo_box_get_active_text(GTK_COMBO_BOX(sdlg.action));
-			pcb_hid_actionl("query", act, script, NULL);
-			break;
-		case GTK_RESPONSE_CLOSE:
-			gtk_widget_destroy(GTK_WIDGET(dlg));
-			break;
+	switch (response_id) {
+	case GTK_RESPONSE_APPLY:
+		script = gtk_entry_get_text(GTK_ENTRY(sdlg.expr));
+		act = gtk_combo_box_get_active_text(GTK_COMBO_BOX(sdlg.action));
+		pcb_hid_actionl("query", act, script, NULL);
+		break;
+	case GTK_RESPONSE_CLOSE:
+		gtk_widget_destroy(GTK_WIDGET(dlg));
+		break;
 	}
 }
 
@@ -787,9 +799,9 @@ static void ghid_search_window_create()
 
 	sdlg.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	sdlg.window = gtk_dialog_new_with_buttons(_("Advanced search"),
-																			 GTK_WINDOW(top_window),
-																			 GTK_DIALOG_DESTROY_WITH_PARENT,
-																			 GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, GTK_STOCK_APPLY, GTK_RESPONSE_APPLY, NULL);
+																						GTK_WINDOW(top_window),
+																						GTK_DIALOG_DESTROY_WITH_PARENT,
+																						GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, GTK_STOCK_APPLY, GTK_RESPONSE_APPLY, NULL);
 
 	g_signal_connect(sdlg.window, "response", G_CALLBACK(dialog_cb), NULL);
 
@@ -811,7 +823,7 @@ static void ghid_search_window_create()
 
 		sdlg.action = gtk_combo_box_new_text();
 		gtk_widget_set_tooltip_text(sdlg.action, "Do this with any object matching the query expression");
-		for(s = actions; *s != NULL; s++)
+		for (s = actions; *s != NULL; s++)
 			gtk_combo_box_append_text(GTK_COMBO_BOX(sdlg.action), *s);
 		gtk_box_pack_start(GTK_BOX(hbox), sdlg.action, FALSE, FALSE, 0);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(sdlg.action), 0);

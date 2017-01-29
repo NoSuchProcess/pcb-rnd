@@ -49,7 +49,7 @@ void ghid_coord_entry(GtkWidget * box, GtkWidget ** coord_entry, pcb_coord_t val
 		box = hbox;
 	}
 
-	entry_widget = ghid_coord_entry_new(low, high, value, u, step_size);
+	entry_widget = pcb_gtk_coord_entry_new(low, high, value, u, step_size);
 	if (coord_entry)
 		*coord_entry = entry_widget;
 	if (width > 0)
@@ -85,7 +85,7 @@ void ghid_table_coord_entry(GtkWidget * table, gint row, gint column,
 	if (!table)
 		return;
 
-	entry_widget = ghid_coord_entry_new(low, high, value, conf_core.editor.grid_unit, step_size);
+	entry_widget = pcb_gtk_coord_entry_new(low, high, value, conf_core.editor.grid_unit, step_size);
 	if (coord_entry)
 		*coord_entry = entry_widget;
 	if (width > 0)

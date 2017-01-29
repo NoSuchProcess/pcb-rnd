@@ -40,15 +40,14 @@
 
 #include "wt_coord_entry.h"
 
-GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header, gint header_pad, gint box_pad, gboolean pack_start, gboolean bottom_pad);
-void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button,
-											gfloat value, gfloat low, gfloat high, gfloat step0,
-											gfloat step1, gint digits, gint width,
-											void (*cb_func) (GtkSpinButton *, gpointer), gpointer data, gboolean right_align, const gchar * string);
-void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button,
-																 gboolean active, gboolean pack_start,
-																 gboolean expand, gboolean fill, gint pad,
-																 void (*cb_func) (GtkToggleButton *, gpointer), gpointer data, const gchar * string);
+GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header, gint header_pad, gint box_pad,
+															gboolean pack_start, gboolean bottom_pad);
+void ghid_spin_button(GtkWidget * box, GtkWidget ** spin_button, gfloat value, gfloat low, gfloat high, gfloat step0,
+											gfloat step1, gint digits, gint width, void (*cb_func) (GtkSpinButton *, gpointer), gpointer data,
+											gboolean right_align, const gchar * string);
+void ghid_check_button_connected(GtkWidget * box, GtkWidget ** button, gboolean active, gboolean pack_start, gboolean expand,
+																 gboolean fill, gint pad, void (*cb_func) (GtkToggleButton *, gpointer), gpointer data,
+																 const gchar * string);
 
 
 
@@ -99,7 +98,8 @@ static void enum_changed_cb(GtkWidget * combo_box, int *val)
 }
 
 
-int ghid_attribute_dialog(GtkWidget *top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title, const char *descr)
+int ghid_attribute_dialog(GtkWidget * top_window, pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results,
+													const char *title, const char *descr)
 {
 	GtkWidget *dialog;
 	GtkWidget *content_area;
@@ -163,8 +163,8 @@ int ghid_attribute_dialog(GtkWidget *top_window, pcb_hid_attribute_t * attrs, in
 			hbox = gtk_hbox_new(FALSE, 4);
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-			entry = ghid_coord_entry_new(attrs[j].min_val, attrs[j].max_val,
-																	 attrs[j].default_val.coord_value, conf_core.editor.grid_unit, CE_SMALL);
+			entry = pcb_gtk_coord_entry_new(attrs[j].min_val, attrs[j].max_val,
+																			attrs[j].default_val.coord_value, conf_core.editor.grid_unit, CE_SMALL);
 			gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
 			if (attrs[j].default_val.str_value != NULL)
 				gtk_entry_set_text(GTK_ENTRY(entry), attrs[j].default_val.str_value);
@@ -316,5 +316,3 @@ int ghid_attribute_dialog(GtkWidget *top_window, pcb_hid_attribute_t * attrs, in
 
 	return rc;
 }
-
-

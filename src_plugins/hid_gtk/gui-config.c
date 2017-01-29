@@ -546,7 +546,7 @@ static void text_spin_button_cb(GtkSpinButton * spin, void *dst)
 
 static void coord_entry_cb(GHidCoordEntry * ce, void *dst)
 {
-	*(pcb_coord_t *) dst = ghid_coord_entry_get_value(ce);
+	*(pcb_coord_t *) dst = pcb_gtk_coord_entry_get_value(ce);
 }
 
 void config_sizes_save(GtkButton * widget, save_ctx_t * ctx)
@@ -798,7 +798,7 @@ static void increment_tbl_update()
 static void increment_spin_button_cb(GHidCoordEntry * ce, void *dst)
 {
 	const char *path = dst;
-	conf_setf(CFR_DESIGN, path, -1, "%mr", (pcb_coord_t) ghid_coord_entry_get_value(ce));
+	conf_setf(CFR_DESIGN, path, -1, "%mr", (pcb_coord_t) pcb_gtk_coord_entry_get_value(ce));
 	increment_tbl_update();
 }
 
@@ -1864,7 +1864,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 	auto_tab_widgets.edit_string = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_string, FALSE, FALSE, 4);
 
-	auto_tab_widgets.edit_coord = ghid_coord_entry_new(10, PCB_MM_TO_COORD(1000), 0, conf_core.editor.grid_unit, CE_TINY);
+	auto_tab_widgets.edit_coord = pcb_gtk_coord_entry_new(10, PCB_MM_TO_COORD(1000), 0, conf_core.editor.grid_unit, CE_TINY);
 	gtk_box_pack_start(GTK_BOX(src_right), auto_tab_widgets.edit_coord, FALSE, FALSE, 4);
 
 	auto_tab_widgets.edit_int_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
@@ -2037,7 +2037,7 @@ static void config_auto_src_show(lht_node_t * nd)
 			pcb_coord_t coord = 0;
 			citem.coord = &coord;
 			conf_parse_text(&citem, 0, nat->type, nd->data.text.value, nd);
-			ghid_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), coord);
+			pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), coord);
 			gtk_widget_show(auto_tab_widgets.edit_coord);
 		}
 		break;
@@ -2299,7 +2299,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 		new_val = gtk_entry_get_text(GTK_ENTRY(auto_tab_widgets.edit_string));
 		break;
 	case CFN_COORD:
-		ghid_coord_entry_get_value_str(auto_tab_widgets.edit_coord, buff, sizeof(buff));
+		pcb_gtk_coord_entry_get_value_str(auto_tab_widgets.edit_coord, buff, sizeof(buff));
 		new_val = buff;
 		break;
 	case CFN_INTEGER:

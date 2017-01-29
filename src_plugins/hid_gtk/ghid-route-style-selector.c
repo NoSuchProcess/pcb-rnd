@@ -55,13 +55,13 @@ struct _GHidRouteStyleSelector {
 	GtkActionGroup *action_group;
 	GtkAccelGroup *accel_group;
 
-	int hidden_button; /* whether the hidden button is created */
-	int selected; /* index of the currently selected route style */
+	int hidden_button;						/* whether the hidden button is created */
+	int selected;									/* index of the currently selected route style */
 
 	GtkListStore *model;
 	struct _route_style *active_style;
 
-	GtkTreeIter new_iter;     /* iter for the <new> item */
+	GtkTreeIter new_iter;					/* iter for the <new> item */
 
 };
 
@@ -105,8 +105,8 @@ struct _dialog {
 	GtkWidget *attr_table;
 	GtkListStore *attr_model;
 
-	int inhibit_style_change; /* when 1, do not do anything when style changes */
-	int attr_editing; /* set to 1 when an attribute key or value text is being edited */
+	int inhibit_style_change;			/* when 1, do not do anything when style changes */
+	int attr_editing;							/* set to 1 when an attribute key or value text is being edited */
 };
 
 /* Rebuild the gtk table for attribute list from style */
@@ -117,7 +117,7 @@ static void update_attrib(struct _dialog *dialog, struct _route_style *style)
 
 	gtk_list_store_clear(dialog->attr_model);
 
-	for(i = 0; i < style->rst->attr.Number; i++) {
+	for (i = 0; i < style->rst->attr.Number; i++) {
 		gtk_list_store_append(dialog->attr_model, &iter);
 		gtk_list_store_set(dialog->attr_model, &iter, 0, style->rst->attr.List[i].name, -1);
 		gtk_list_store_set(dialog->attr_model, &iter, 1, style->rst->attr.List[i].value, -1);
@@ -156,10 +156,10 @@ static void dialog_style_changed_cb(GtkComboBox * combo, struct _dialog *dialog)
 	}
 
 	gtk_entry_set_text(GTK_ENTRY(dialog->name_entry), style->rst->name);
-	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->line_entry), style->rst->Thick);
-	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_hole_entry), style->rst->Hole);
-	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_size_entry), style->rst->Diameter);
-	ghid_coord_entry_set_value(GHID_COORD_ENTRY(dialog->clearance_entry), style->rst->Clearance);
+	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->line_entry), style->rst->Thick);
+	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_hole_entry), style->rst->Hole);
+	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->via_size_entry), style->rst->Diameter);
+	pcb_gtk_coord_entry_set_value(GHID_COORD_ENTRY(dialog->clearance_entry), style->rst->Clearance);
 
 	if (style->hidden)
 		dialog->rss->selected = -1;
@@ -177,14 +177,14 @@ static void copy_route_style(int idx)
 	if ((idx < 0) || (idx >= vtroutestyle_len(&PCB->RouteStyle)))
 		return;
 	drst = PCB->RouteStyle.array + idx;
-	pcb_custom_route_style.Thick     = drst->Thick;
+	pcb_custom_route_style.Thick = drst->Thick;
 	pcb_custom_route_style.Clearance = drst->Clearance;
-	pcb_custom_route_style.Diameter  = drst->Diameter;
-	pcb_custom_route_style.Hole      = drst->Hole;
+	pcb_custom_route_style.Diameter = drst->Diameter;
+	pcb_custom_route_style.Hole = drst->Hole;
 }
 
 /*  Callback for Delete route style button */
-static void delete_button_cb(GtkButton *button, struct _dialog *dialog)
+static void delete_button_cb(GtkButton * button, struct _dialog *dialog)
 {
 	if (dialog->rss->selected < 0)
 		return;
@@ -237,7 +237,7 @@ static int get_sel(struct _dialog *dlg)
 }
 
 
-static void attr_edited(int col, GtkCellRendererText *cell, gchar *path, gchar *new_text, struct _dialog *dlg)
+static void attr_edited(int col, GtkCellRendererText * cell, gchar * path, gchar * new_text, struct _dialog *dlg)
 {
 	GtkTreeIter iter;
 	struct _route_style *style;
@@ -251,13 +251,13 @@ static void attr_edited(int col, GtkCellRendererText *cell, gchar *path, gchar *
 	if (style == NULL)
 		return;
 
-	if (idx >= style->rst->attr.Number) { /* add new */
+	if (idx >= style->rst->attr.Number) {	/* add new */
 		if (col == 0)
 			pcb_attribute_put(&style->rst->attr, new_text, "n/a", 0);
 		else
 			pcb_attribute_put(&style->rst->attr, "n/a", new_text, 0);
 	}
-	else { /* overwrite existing */
+	else {												/* overwrite existing */
 		char **dest;
 		if (col == 0)
 			dest = &style->rst->attr.List[idx].name;
@@ -272,56 +272,56 @@ static void attr_edited(int col, GtkCellRendererText *cell, gchar *path, gchar *
 	update_attrib(dlg, style);
 }
 
-static void attr_edited_key_cb(GtkCellRendererText *cell, gchar *path, gchar *new_text, struct _dialog *dlg)
+static void attr_edited_key_cb(GtkCellRendererText * cell, gchar * path, gchar * new_text, struct _dialog *dlg)
 {
 	attr_edited(0, cell, path, new_text, dlg);
 }
 
-static void attr_edited_val_cb(GtkCellRendererText *cell, gchar *path, gchar *new_text, struct _dialog *dlg)
+static void attr_edited_val_cb(GtkCellRendererText * cell, gchar * path, gchar * new_text, struct _dialog *dlg)
 {
 	attr_edited(1, cell, path, new_text, dlg);
 }
 
 
-static void attr_edit_started_cb(GtkCellRendererText *cell, GtkCellEditable *e,gchar *path, struct _dialog *dlg)
+static void attr_edit_started_cb(GtkCellRendererText * cell, GtkCellEditable * e, gchar * path, struct _dialog *dlg)
 {
 	dlg->attr_editing = 1;
 }
 
-static void attr_edit_canceled_cb(GtkCellRendererText *cell, struct _dialog *dlg)
+static void attr_edit_canceled_cb(GtkCellRendererText * cell, struct _dialog *dlg)
 {
 	dlg->attr_editing = 0;
 }
 
-static gboolean attr_key_release_cb(GtkWidget *widget, GdkEventKey *event, struct _dialog *dlg)
+static gboolean attr_key_release_cb(GtkWidget * widget, GdkEventKey * event, struct _dialog *dlg)
 {
 	unsigned short int kv = event->keyval;
 
 	if (dlg->attr_editing)
 		return FALSE;
 
-	switch(kv) {
+	switch (kv) {
 #ifdef GDK_KEY_KP_Delete
-		case GDK_KEY_KP_Delete:
+	case GDK_KEY_KP_Delete:
 #endif
 #ifdef GDK_KEY_Delete
-		case GDK_KEY_Delete:
+	case GDK_KEY_Delete:
 #endif
-		case 'd': 
-			{
-				int idx = get_sel(dlg);
-				GtkTreeIter iter;
-				struct _route_style *style;
-				gtk_combo_box_get_active_iter(GTK_COMBO_BOX(dlg->select_box), &iter);
-				gtk_tree_model_get(GTK_TREE_MODEL(dlg->rss->model), &iter, DATA_COL, &style, -1);
-				if (style == NULL)
-					return FALSE;
-				if ((idx >= 0) && (idx < style->rst->attr.Number)) {
-					pcb_attribute_remove_idx(&style->rst->attr, idx);
-					update_attrib(dlg, style);
-				}
+	case 'd':
+		{
+			int idx = get_sel(dlg);
+			GtkTreeIter iter;
+			struct _route_style *style;
+			gtk_combo_box_get_active_iter(GTK_COMBO_BOX(dlg->select_box), &iter);
+			gtk_tree_model_get(GTK_TREE_MODEL(dlg->rss->model), &iter, DATA_COL, &style, -1);
+			if (style == NULL)
+				return FALSE;
+			if ((idx >= 0) && (idx < style->rst->attr.Number)) {
+				pcb_attribute_remove_idx(&style->rst->attr, idx);
+				update_attrib(dlg, style);
 			}
-			break;
+		}
+		break;
 	}
 	return FALSE;
 }
@@ -329,7 +329,7 @@ static gboolean attr_key_release_cb(GtkWidget *widget, GdkEventKey *event, struc
 /**** dialog creation ****/
 
 /* \brief Helper for edit_button_cb */
-static void _table_attach_(GtkWidget * table, gint row, const gchar *label, GtkWidget *entry)
+static void _table_attach_(GtkWidget * table, gint row, const gchar * label, GtkWidget * entry)
 {
 	GtkWidget *label_w = gtk_label_new(label);
 	gtk_misc_set_alignment(GTK_MISC(label_w), 1.0, 0.5);
@@ -338,9 +338,10 @@ static void _table_attach_(GtkWidget * table, gint row, const gchar *label, GtkW
 }
 
 /* \brief Helper for edit_button_cb */
-static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkWidget ** entry, pcb_coord_t min, pcb_coord_t max)
+static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkWidget ** entry, pcb_coord_t min,
+													pcb_coord_t max)
 {
-	*entry = ghid_coord_entry_new(min, max, 0, conf_core.editor.grid_unit, CE_SMALL);
+	*entry = pcb_gtk_coord_entry_new(min, max, 0, conf_core.editor.grid_unit, CE_SMALL);
 	_table_attach_(table, row, label, *entry);
 }
 
@@ -366,7 +367,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 	GtkWidget *button;
 	const char *new_name;
 
-	memset(&dialog_data, 0, sizeof(dialog_data)); /* make sure all flags are cleared */
+	memset(&dialog_data, 0, sizeof(dialog_data));	/* make sure all flags are cleared */
 
 	/* Build dialog */
 	dialog = gtk_dialog_new_with_buttons(_("Edit Route Styles"),
@@ -447,9 +448,9 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 
 	/* create delete button */
-	button = gtk_button_new_with_label (_("Delete Style"));
+	button = gtk_button_new_with_label(_("Delete Style"));
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(delete_button_cb), &dialog_data);
-	gtk_box_pack_start(GTK_BOX(vbox), button , TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), button, TRUE, FALSE, 0);
 
 	sub_vbox = ghid_category_vbox(vbox, _("Set as Default"), 4, 2, TRUE, TRUE);
 	check_box = gtk_check_button_new_with_label(_("Save route style settings as default"));
@@ -486,10 +487,11 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 
 		new_name = gtk_entry_get_text(GTK_ENTRY(dialog_data.name_entry));
 
-		while(isspace(*new_name)) new_name++;
+		while (isspace(*new_name))
+			new_name++;
 		if (strcmp(rst->name, new_name) != 0) {
-			strncpy(rst->name, new_name, sizeof(rst->name)-1);
-			rst->name[sizeof(rst->name)-1] = '0';
+			strncpy(rst->name, new_name, sizeof(rst->name) - 1);
+			rst->name[sizeof(rst->name) - 1] = '0';
 			changed = 1;
 		}
 
@@ -502,10 +504,10 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 			dst = __tmp__; \
 		} \
 	} while(0)
-		rst_modify(changed, rst->Thick, ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.line_entry)));
-		rst_modify(changed, rst->Hole, ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_hole_entry)));
-		rst_modify(changed, rst->Diameter, ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry)));
-		rst_modify(changed, rst->Clearance, ghid_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry)));
+		rst_modify(changed, rst->Thick, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.line_entry)));
+		rst_modify(changed, rst->Hole, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_hole_entry)));
+		rst_modify(changed, rst->Diameter, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.via_size_entry)));
+		rst_modify(changed, rst->Clearance, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry)));
 #undef rst_modify
 		save = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_box));
 		if (style == NULL)
@@ -528,7 +530,7 @@ void ghid_route_style_selector_edit_dialog(GHidRouteStyleSelector * rss)
 		}
 	}
 	else {
-		cancel:;
+	cancel:;
 		gtk_widget_destroy(dialog);
 		gtk_list_store_remove(rss->model, &rss->new_iter);
 	}
@@ -797,7 +799,8 @@ GtkAccelGroup *ghid_route_style_selector_get_accel_group(GHidRouteStyleSelector 
  *  \param [in] Diameter  pcb_coord_t to match selection to
  *  \param [in] Clearance  pcb_coord_t to match selection to
  */
-void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, pcb_coord_t Thick, pcb_coord_t Hole, pcb_coord_t Diameter, pcb_coord_t Clearance)
+void ghid_route_style_selector_sync(GHidRouteStyleSelector * rss, pcb_coord_t Thick, pcb_coord_t Hole, pcb_coord_t Diameter,
+																		pcb_coord_t Clearance)
 {
 	GtkTreeIter iter;
 	int target, n;

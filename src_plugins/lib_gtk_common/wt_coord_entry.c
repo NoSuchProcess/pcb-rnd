@@ -216,7 +216,7 @@ static void ghid_coord_entry_class_init(GHidCoordEntryClass * klass)
 }
 
 /* PUBLIC FUNCTIONS */
-GType ghid_coord_entry_get_type(void)
+GType pcb_gtk_coord_entry_get_type(void)
 {
 	static GType ce_type = 0;
 
@@ -239,18 +239,8 @@ GType ghid_coord_entry_get_type(void)
 	return ce_type;
 }
 
-/*! \brief Create a new GHidCoordEntry
- *
- *  \param [in] min_val    The minimum allowed value, in pcb coords
- *  \param [in] max_val    The maximum allowed value, in pcb coords
- *  \param [in] value      The default value, in pcb coords
- *  \param [in] unit       The default unit
- *  \param [in] step_size  How large the default increments should be
- *
- *  \return a freshly-allocated GHidCoordEntry
- */
-GtkWidget *ghid_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_coord_t value, const pcb_unit_t * unit,
-																enum ce_step_size step_size)
+GtkWidget *pcb_gtk_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_coord_t value, const pcb_unit_t * unit,
+																	 enum ce_step_size step_size)
 {
 	/* Setup spinbox min/max values */
 	double small_step, big_step;
@@ -294,22 +284,19 @@ GtkWidget *ghid_coord_entry_new(pcb_coord_t min_val, pcb_coord_t max_val, pcb_co
 	return GTK_WIDGET(ce);
 }
 
-/*! \brief Gets a GHidCoordEntry's value, in pcb coords */
-pcb_coord_t ghid_coord_entry_get_value(GHidCoordEntry * ce)
+pcb_coord_t pcb_gtk_coord_entry_get_value(GHidCoordEntry * ce)
 {
 	return ce->value;
 }
 
-/*! \brief Gets a GHidCoordEntry's value as text */
-int ghid_coord_entry_get_value_str(GHidCoordEntry * ce, char *out, int out_len)
+int pcb_gtk_coord_entry_get_value_str(GHidCoordEntry * ce, char *out, int out_len)
 {
 	GtkAdjustment *adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(ce));
 	double value = gtk_adjustment_get_value(adj);
 	return pcb_snprintf(out, out_len, "%.*f %s", ce->unit->default_prec, value, ce->unit->suffix);
 }
 
-/*! \brief Sets a GHidCoordEntry's value, in pcb coords */
-void ghid_coord_entry_set_value(GHidCoordEntry * ce, pcb_coord_t val)
+void pcb_gtk_coord_entry_set_value(GHidCoordEntry * ce, pcb_coord_t val)
 {
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ce), pcb_coord_to_unit(ce->unit, val));
 }
