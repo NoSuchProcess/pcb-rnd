@@ -928,6 +928,22 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 		} else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
 			pcb_layer_group_setup_default(&PCB->LayerGroups);
 
+			/* set up the hash for implicit layers */
+			res = 0;
+			res |= kicad_reg_layer(st, "F.SilkS", PCB_LYT_SILK | PCB_LYT_TOP);
+			res |= kicad_reg_layer(st, "B.SilkS", PCB_LYT_SILK | PCB_LYT_BOTTOM);
+
+			/*
+			We don't have custom mask layers yet
+			res |= kicad_reg_layer(st, "F.Mask",  PCB_LYT_MASK | PCB_LYT_TOP);
+			res |= kicad_reg_layer(st, "B.Mask",  PCB_LYT_MASK | PCB_LYT_BOTTOM);
+			*/
+
+			if (res != 0) {
+				pcb_message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
+				return -1;
+			}
+
 			pcb_printf("Board layer descriptions:\n");
 			for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
 				if ((n->str != NULL) && (n->children->str != NULL) && (n->children->next != NULL) && (n->children->next->str != NULL) ) {
@@ -944,22 +960,6 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 					printf("unexpected board layer definition(s) encountered.\n");
 					return -1;
 				}
-			}
-
-			/* set up the hash for implicit layers */
-			res = 0;
-			res |= kicad_reg_layer(st, "F.SilkS", PCB_LYT_SILK | PCB_LYT_TOP);
-			res |= kicad_reg_layer(st, "B.SilkS", PCB_LYT_SILK | PCB_LYT_BOTTOM);
-
-			/*
-			We don't have custom mask layers yet
-			res |= kicad_reg_layer(st, "F.Mask",  PCB_LYT_MASK | PCB_LYT_TOP);
-			res |= kicad_reg_layer(st, "B.Mask",  PCB_LYT_MASK | PCB_LYT_BOTTOM);
-			*/
-
-			if (res != 0) {
-				pcb_message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
-				return -1;
 			}
 
 			pcb_layergrp_fix_old_outline(&PCB->LayerGroups);
