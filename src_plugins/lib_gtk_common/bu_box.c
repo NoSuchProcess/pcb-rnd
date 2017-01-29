@@ -84,7 +84,7 @@ GtkWidget *ghid_category_vbox(GtkWidget * box, const gchar * category_header,
 		s = g_strconcat("<span weight=\"bold\">", category_header, "</span>", NULL);
 		gtk_label_set_markup(GTK_LABEL(label), s);
 		/*TODO: Deprecated in GTK3. Use gtk_widget_set_[h|v]align () functions ? */
-    gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
 		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, header_pad);
 		g_free(s);
 	}
@@ -115,33 +115,6 @@ GtkWidget *ghid_scrolled_vbox(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h
 	if (scr)
 		*scr = scrolled;
 	return vbox;
-}
-
-GtkWidget *ghid_scrolled_text_view(GtkWidget * box, GtkWidget ** scr, GtkPolicyType h_policy, GtkPolicyType v_policy)
-{
-	GtkWidget *scrolled, *view;
-	GtkTextBuffer *buffer;
-
-	scrolled = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), h_policy, v_policy);
-	gtk_box_pack_start(GTK_BOX(box), scrolled, TRUE, TRUE, 0);
-
-	view = gtk_text_view_new();
-	gtk_text_view_set_editable(GTK_TEXT_VIEW(view), FALSE);
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
-	gtk_text_buffer_create_tag(buffer, "heading", "weight", PANGO_WEIGHT_BOLD, "size", 14 * PANGO_SCALE, NULL);
-	gtk_text_buffer_create_tag(buffer, "italic", "style", PANGO_STYLE_ITALIC, NULL);
-	gtk_text_buffer_create_tag(buffer, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
-	gtk_text_buffer_create_tag(buffer, "center", "justification", GTK_JUSTIFY_CENTER, NULL);
-	gtk_text_buffer_create_tag(buffer, "underline", "underline", PANGO_UNDERLINE_SINGLE, NULL);
-	gtk_text_buffer_create_tag(buffer, "red", "foreground", "#aa0000", NULL);
-	gtk_text_buffer_create_tag(buffer, "green", "foreground", "#00aa00", NULL);
-	gtk_text_buffer_create_tag(buffer, "blue", "foreground", "#0000aa", NULL);
-
-	gtk_container_add(GTK_CONTAINER(scrolled), view);
-	if (scr)
-		*scr = scrolled;
-	return view;
 }
 
 GtkTreeSelection *ghid_scrolled_selection(GtkTreeView * treeview, GtkWidget * box,

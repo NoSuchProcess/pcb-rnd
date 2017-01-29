@@ -49,6 +49,7 @@
 /* TODO: REMOVE THIS */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/bu_box.h"
+#include "../src_plugins/lib_gtk_common/bu_text_view.h"
 #include "../src_plugins/lib_gtk_common/bu_check_button.h"
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
 #include "../src_plugins/lib_gtk_common/wt_coord_entry.h"
@@ -283,8 +284,6 @@ void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												gboolean pack_start, gboolean expand, gboolean fill,
 												guint pad, gfloat value, gfloat low, gfloat high,
 												gfloat step0, gfloat step1, void (*cb_func) (), gpointer data);
-void ghid_text_view_append(GtkWidget * view, const gchar * string);
-void ghid_text_view_append_strings(GtkWidget * view, const gchar ** string, gint n_strings);
 
 void ghid_set_cursor_position_labels(void);
 void ghid_set_status_line_label(void);
