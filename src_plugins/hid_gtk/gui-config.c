@@ -1382,7 +1382,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox)
 	gtk_box_pack_start(GTK_BOX(content_vbox), tabs, TRUE, TRUE, 0);
 
 /* -- Layer stack tab */
-	vbox = ghid_notebook_page(tabs, _("Phyisical layer stack"), 0, 6);
+	vbox = ghid_notebook_page(tabs, _("Physical layer stack"), 0, 6);
 	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
 		pcb_gtk_preview_t *p;
 		prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
