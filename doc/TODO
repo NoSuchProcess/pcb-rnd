@@ -6,7 +6,6 @@
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
-	- gtk: alt+p and alt+* in general is not handled by core, gtk takes it over for the menu; fix: ignore mnemonics for the main menu
 	- gtk rendering: zoom in much and arcs are rendered a bit larger/smaller [report: Evan]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- layer rewrite bug:
