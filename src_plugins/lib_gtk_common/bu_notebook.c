@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include "bu_notebook.h"
+#include "bu_box.h"
 
 GtkWidget *ghid_notebook_page(GtkWidget * tabs, const char *name, gint pad, gint border)
 {
