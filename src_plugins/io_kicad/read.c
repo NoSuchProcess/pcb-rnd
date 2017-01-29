@@ -837,24 +837,37 @@ static int kicad_parse_segment(read_state_t *st, gsxl_node_t *subtree)
 /* Parse a layer definition and do all the administration needed for the layer */
 static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, const char *ltype)
 {
-	int id = -1;
+	pcb_layer_id_t id = -1;
+	pcb_layergrp_id_t gid = -1;
 	switch(lnum) {
 		case 0:
-			id = PCB_SOLDER_SIDE;
-			pcb_layer_rename(id, lname);
+/*pcb_hid_actionl("dumpcsect", NULL);*/
+			id = pcb_layer_create(PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0, 0, lname);
+			if (pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) > 0)
+				pcb_layer_add_in_group(id, gid);
+/*printf("------------------------------\n");
+pcb_hid_actionl("dumpcsect", NULL);*/
 			break;
 		case 15:
-			id = PCB_COMPONENT_SIDE;
-			pcb_layer_rename(id, lname);
+			id = pcb_layer_create(PCB_LYT_COPPER | PCB_LYT_TOP, 0, 0, lname);
+			if (pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) > 0)
+				pcb_layer_add_in_group(id, gid);
 			break;
 		default:
 			if (strcmp(lname, "Edge.Cuts") == 0) {
 				/* Edge must be the outline */
+				pcb_layer_group_t *g = pcb_get_grp_new_intern(&PCB->LayerGroups, -1);
+				pcb_layergrp_fix_turn_to_outline(g);
 				id = pcb_layer_create(PCB_LYT_OUTLINE, 0, 0, "outline");
+				pcb_layer_add_in_group(id, g - PCB->LayerGroups.grp);
+			printf("outline: %ld\n",id);
 			}
 			else if ((strcmp(ltype, "signal") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
 				/* Create a new inner layer for signals and for emulating misc layers */
+				pcb_layer_group_t *g = pcb_get_grp_new_intern(&PCB->LayerGroups, -1);
 				id = pcb_layer_create(PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0, lname);
+				pcb_layer_add_in_group(id, g - PCB->LayerGroups.grp);
+			printf("signal: %ld\n",id);
 			}
 #if 0
 			else if ((lname[1] == '.') && ((lname[0] == 'F') || (lname[0] == 'B'))) {
@@ -877,7 +890,7 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 
 /* valid layer, save it in the hash */
 	if (id >= 0) {
-	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
+		htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
 	} else {
 		assert(id < -1);
 	}
@@ -888,8 +901,12 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, unsigned int mask)
 {
 	pcb_layer_id_t id;
-	if (pcb_layer_list(mask, &id, 1) != 1)
-		return 1;
+	if (pcb_layer_list(mask, &id, 1) != 1) {
+		pcb_layergrp_id_t gid;
+		id = pcb_layer_create(mask, 0, 0, kicad_name);
+		if (pcb_layer_group_list(mask, &gid, 1) > 0)
+			pcb_layer_add_in_group(id, gid);
+	}
 	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
 	return 0;
 }
@@ -911,11 +928,13 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 	int i;
 	unsigned int res;
 
+
 		if (strcmp(subtree->parent->parent->str, "kicad_pcb") != 0) { /* test if deeper in tree than layer definitions for entire board */  
 			pcb_printf("layer definitions encountered in unexpected place in kicad layout\n");
 			return -1;
 		} else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
-			pcb_layers_reset();
+			pcb_layer_group_setup_default(&PCB->LayerGroups);
+
 			pcb_printf("Board layer descriptions:\n");
 			for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
 				if ((n->str != NULL) && (n->children->str != NULL) && (n->children->next != NULL) && (n->children->next->str != NULL) ) {
