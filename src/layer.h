@@ -194,8 +194,10 @@ void pcb_layers_reset();
    Upon creating a new layer, name it according to lname if it is not NULL
    Returns a layer index (or -1 on error)
    Do not create: mask, silk, paste; they are special layers.
+
+   OLD API: tries to handle groups together with layers - DO NOT USE
    */
-pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname);
+pcb_layer_id_t pcb_layer_create_old(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname);
 
 /* Rename an existing layer by idx */
 int pcb_layer_rename(pcb_layer_id_t layer, const char *lname);

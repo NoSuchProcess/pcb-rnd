@@ -420,9 +420,9 @@ void perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 	pcb_layer_t *outline_layer;
 
 	/* get outline layer */
-	outline_id = pcb_layer_create(PCB_LYT_OUTLINE, pcb_false, pcb_false, NULL);
+	outline_id = pcb_layer_create_old(PCB_LYT_OUTLINE, pcb_false, pcb_false, NULL);
 	if (outline_id < 0)
-		outline_id = pcb_layer_create(PCB_LYT_OUTLINE, pcb_true, pcb_false, NULL);
+		outline_id = pcb_layer_create_old(PCB_LYT_OUTLINE, pcb_true, pcb_false, NULL);
 	outline_layer = pcb_get_layer(outline_id);
 
 	if (outline_layer == NULL) {
@@ -729,7 +729,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 		if (layer_id >= 0)
 			return layer_id;					/* found */
 		/* create new layer */
-		layer_id = pcb_layer_create(PCB_LYT_COPPER, pcb_false, pcb_false, lname);
+		layer_id = pcb_layer_create_old(PCB_LYT_COPPER, pcb_false, pcb_false, lname);
 	}
 	else {
 		/* no layer name given. find unused layer name in range 1..PCB_MAX_LAYER */
@@ -737,7 +737,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 			sprintf(new_layer_name, "%i", n);
 			if (pcb_layer_by_name(new_layer_name) < 0) {
 				/* create new layer */
-				layer_id = pcb_layer_create(PCB_LYT_COPPER, pcb_false, pcb_false, new_layer_name);
+				layer_id = pcb_layer_create_old(PCB_LYT_COPPER, pcb_false, pcb_false, new_layer_name);
 				break;
 			}
 		}

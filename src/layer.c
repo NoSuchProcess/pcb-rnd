@@ -275,7 +275,7 @@ void pcb_layers_reset()
 	PCB->Data->LayerN = 0;
 }
 
-pcb_layer_id_t pcb_layer_create(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname)
+pcb_layer_id_t pcb_layer_create_old(pcb_layer_type_t type, pcb_bool reuse_layer, pcb_bool_t reuse_group, const char *lname)
 {
 	pcb_layer_id_t id;
 	pcb_layergrp_id_t grp = -1;

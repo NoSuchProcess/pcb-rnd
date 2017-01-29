@@ -842,14 +842,14 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 	switch(lnum) {
 		case 0:
 /*pcb_hid_actionl("dumpcsect", NULL);*/
-			id = pcb_layer_create(PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0, 0, lname);
+			id = pcb_layer_create_old(PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0, 0, lname);
 			if (pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) > 0)
 				pcb_layer_add_in_group(id, gid);
 /*printf("------------------------------\n");
 pcb_hid_actionl("dumpcsect", NULL);*/
 			break;
 		case 15:
-			id = pcb_layer_create(PCB_LYT_COPPER | PCB_LYT_TOP, 0, 0, lname);
+			id = pcb_layer_create_old(PCB_LYT_COPPER | PCB_LYT_TOP, 0, 0, lname);
 			if (pcb_layer_group_list(PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) > 0)
 				pcb_layer_add_in_group(id, gid);
 			break;
@@ -858,14 +858,14 @@ pcb_hid_actionl("dumpcsect", NULL);*/
 				/* Edge must be the outline */
 				pcb_layer_group_t *g = pcb_get_grp_new_intern(&PCB->LayerGroups, -1);
 				pcb_layergrp_fix_turn_to_outline(g);
-				id = pcb_layer_create(PCB_LYT_OUTLINE, 0, 0, "outline");
+				id = pcb_layer_create_old(PCB_LYT_OUTLINE, 0, 0, "outline");
 				pcb_layer_add_in_group(id, g - PCB->LayerGroups.grp);
 			printf("outline: %ld\n",id);
 			}
 			else if ((strcmp(ltype, "signal") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
 				/* Create a new inner layer for signals and for emulating misc layers */
 				pcb_layer_group_t *g = pcb_get_grp_new_intern(&PCB->LayerGroups, -1);
-				id = pcb_layer_create(PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0, lname);
+				id = pcb_layer_create_old(PCB_LYT_INTERN | PCB_LYT_COPPER, 0, 0, lname);
 				pcb_layer_add_in_group(id, g - PCB->LayerGroups.grp);
 			printf("signal: %ld\n",id);
 			}
@@ -903,7 +903,7 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 	pcb_layer_id_t id;
 	if (pcb_layer_list(mask, &id, 1) != 1) {
 		pcb_layergrp_id_t gid;
-		id = pcb_layer_create(mask, 0, 0, kicad_name);
+		id = pcb_layer_create_old(mask, 0, 0, kicad_name);
 		if (pcb_layer_group_list(mask, &gid, 1) > 0)
 			pcb_layer_add_in_group(id, gid);
 	}
