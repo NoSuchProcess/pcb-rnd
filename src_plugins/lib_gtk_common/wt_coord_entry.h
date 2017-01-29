@@ -15,8 +15,6 @@ G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_COORD_ENTRY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GHID_COORD_ENTRY_TYPE, pcb_gtk_coord_entry_class_t))
 #define IS_GHID_COORD_ENTRY(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GHID_COORD_ENTRY_TYPE))
 #define IS_GHID_COORD_ENTRY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GHID_COORD_ENTRY_TYPE))
-//typedef struct _GHidCoordEntry GHidCoordEntry;
-//typedef struct _GHidCoordEntryClass GHidCoordEntryClass;
 typedef struct pcb_gtk_coord_entry_s pcb_gtk_coord_entry_t;
 typedef struct pcb_gtk_coord_entry_class_s pcb_gtk_coord_entry_class_t;
 
