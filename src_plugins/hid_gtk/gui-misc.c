@@ -55,6 +55,12 @@ GdkPixmap *XC_clock_source, *XC_clock_mask, *XC_hand_source, *XC_hand_mask, *XC_
 
 static GdkCursorType oldCursor;
 
+static void ghid_label_set_markup(GtkWidget * label, const gchar * text)
+{
+	if (label)
+		gtk_label_set_markup(GTK_LABEL(label), text ? text : "");
+}
+
 void ghid_status_line_set_text(const gchar * text)
 {
 	if (ghidgui->command_entry_status_line_active)

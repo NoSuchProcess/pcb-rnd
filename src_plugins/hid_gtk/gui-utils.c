@@ -30,18 +30,11 @@
 #include "conf_core.h"
 
 #include "gui.h"
-#include <gdk/gdkkeysyms.h>
 
 
 void ghid_draw_area_update(GHidPort * port, GdkRectangle * rect)
 {
 	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
-}
-
-void ghid_label_set_markup(GtkWidget * label, const gchar * text)
-{
-	if (label)
-		gtk_label_set_markup(GTK_LABEL(label), text ? text : "");
 }
 
 static void text_view_append(GtkWidget * view, const gchar * s)

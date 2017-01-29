@@ -286,8 +286,6 @@ void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 void ghid_text_view_append(GtkWidget * view, const gchar * string);
 void ghid_text_view_append_strings(GtkWidget * view, const gchar ** string, gint n_strings);
 
-void ghid_label_set_markup(GtkWidget * label, const gchar * text);
-
 void ghid_set_cursor_position_labels(void);
 void ghid_set_status_line_label(void);
 
