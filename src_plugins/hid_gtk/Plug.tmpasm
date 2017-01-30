@@ -2,7 +2,6 @@ put /local/pcb/mod {hid_gtk}
 put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/colors.o
 	$(PLUGDIR)/hid_gtk/ghid-cell-renderer-visibility.o
-	$(PLUGDIR)/hid_gtk/ghid-layer-selector.o
 	$(PLUGDIR)/hid_gtk/ghid-main-menu.o
 	$(PLUGDIR)/hid_gtk/ghid-route-style-selector.o
 	$(PLUGDIR)/hid_gtk/ghid-propedit.o

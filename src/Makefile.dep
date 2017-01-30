@@ -810,7 +810,7 @@
  ../src_3rd/liblihata/genht/ht.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
@@ -844,7 +844,7 @@
  misc_util.h hid.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -855,8 +855,8 @@
  ../src_plugins/lib_gtk_common/wt_coord_entry.h unit.h compat_nls.h \
  ../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h \
  ../src_plugins/lib_gtk_common/util_str.h
-../src_plugins/hid_gtk/ghid-layer-selector.o: \
- ../src_plugins/hid_gtk/ghid-layer-selector.c ../config.h \
+../src_plugins/lib_gtk_common/wt_layer_selector.o: \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.c ../config.h \
  ../src_plugins/hid_gtk/gtkhid.h conf_hid.h conf.h global_typedefs.h \
  pcb_bool.h unit.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -878,7 +878,7 @@
  misc_util.h hid.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -911,7 +911,7 @@
  misc_util.h hid.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -942,7 +942,7 @@
  ../src_3rd/liblihata/genht/ht.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
@@ -977,7 +977,7 @@
  misc_util.h hid.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1008,7 +1008,7 @@
  hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
  crosshair.h vtonpoint.h hid.h buffer.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
@@ -1060,7 +1060,7 @@
  misc_util.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h buffer.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1093,7 +1093,7 @@
  misc_util.h hid.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h buffer.h \
  ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1136,7 +1136,7 @@
  error.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1168,7 +1168,7 @@
  misc_util.h hid.h error.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1211,7 +1211,7 @@
  board.h font.h box.h math_helper.h move.h hid.h hid_cfg.h \
  hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h \
  crosshair.h vtonpoint.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1246,7 +1246,7 @@
  ../src_3rd/liblihata/genht/ht.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
@@ -1280,7 +1280,7 @@
  error.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1315,7 +1315,7 @@
  misc_util.h hid.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1352,7 +1352,7 @@
  vtroutestyle.h library.h rats_patch.h board.h font.h box.h math_helper.h \
  move.h misc_util.h hid.h hid_cfg.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-main-menu.h \
- ../src_plugins/lib_gtk_common/../hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/../lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-route-style-selector.h \
  route_style.h ../src_plugins/lib_gtk_common/../hid_gtk/ghid-propedit.h \
  event.h compat_misc.h ../src_plugins/lib_gtk_common/../hid_gtk/colors.h \
@@ -1386,7 +1386,7 @@
  error.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1420,7 +1420,7 @@
  error.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1456,7 +1456,7 @@
  error.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1479,7 +1479,7 @@
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  vtroutestyle.h attrib.h ../src_plugins/hid_gtk/gtkhid.h conf_hid.h \
  error.h ../src_plugins/hid_gtk/gui.h board.h const.h macro.h layer.h \
@@ -1532,7 +1532,7 @@
  error.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1563,7 +1563,7 @@
  ../src_3rd/liblihata/genht/ht.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
  ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
@@ -2355,7 +2355,7 @@
  drc.h hid_cfg.h hid_cfg_input.h ../src_3rd/liblihata/genht/htip.h \
  hid_cfg.h data.h crosshair.h vtonpoint.h hid.h buffer.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-main-menu.h \
- ../src_plugins/lib_gtk_common/../hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/../lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-route-style-selector.h \
  route_style.h ../src_plugins/lib_gtk_common/../hid_gtk/ghid-propedit.h \
  conf_core.h event.h compat_misc.h \
@@ -2420,7 +2420,7 @@
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-main-menu.h \
- ../src_plugins/lib_gtk_common/../hid_gtk/ghid-layer-selector.h \
+ ../src_plugins/lib_gtk_common/../lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-route-style-selector.h \
  route_style.h ../src_plugins/lib_gtk_common/../hid_gtk/ghid-propedit.h \
  conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \

@@ -52,9 +52,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 */
 #include "config.h"
 #include "conf_core.h"
-
 #include <locale.h>
-#include "ghid-layer-selector.h"
 #include "ghid-route-style-selector.h"
 #include "gtkhid.h"
 #include "gui.h"
@@ -95,10 +93,9 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "compat_misc.h"
 #include "obj_line.h"
 #include "layer_vis.h"
-
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
-
+#include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
 static pcb_bool ignore_layer_update;
 
 static GtkWidget *ghid_load_menus(void);
@@ -432,8 +429,8 @@ static void layer_process(const gchar ** color_string, const char **text, int *s
 	}
 }
 
-/*! \brief Callback for GHidLayerSelector layer selection */
-static void layer_selector_select_callback(GHidLayerSelector * ls, int layer, gpointer d)
+/*! \brief Callback for pcb_gtk_layer_selector_t layer selection */
+static void layer_selector_select_callback(pcb_gtk_layer_selector_t * ls, int layer, gpointer d)
 {
 	ignore_layer_update = pcb_true;
 	/* Select Layer */
@@ -455,8 +452,8 @@ static void layer_selector_select_callback(GHidLayerSelector * ls, int layer, gp
 	ghid_invalidate_all();
 }
 
-/*! \brief Callback for GHidLayerSelector layer toggling */
-static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gpointer d)
+/*! \brief Callback for pcb_gtk_layer_selector_t layer toggling */
+static void layer_selector_toggle_callback(pcb_gtk_layer_selector_t * ls, int layer, gpointer d)
 {
 	gboolean redraw = FALSE;
 	gboolean active;
@@ -513,7 +510,7 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 	 * will never have an invisible layer selected.
 	 */
 	if (!active)
-		ghid_layer_selector_select_next_visible(ls);
+		pcb_gtk_layer_selector_select_next_visible(ls);
 
 	ignore_layer_update = pcb_false;
 
@@ -525,7 +522,7 @@ static void layer_selector_toggle_callback(GHidLayerSelector * ls, int layer, gp
 void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui)
 {
 	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu_bar)));
-	gtk_window_add_accel_group(window, ghid_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
+	gtk_window_add_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
 	gtk_window_add_accel_group
 		(window, ghid_route_style_selector_get_accel_group(GHID_ROUTE_STYLE_SELECTOR(gui->route_style_selector)));
 }
@@ -534,7 +531,7 @@ void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui)
 void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui)
 {
 	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu_bar)));
-	gtk_window_remove_accel_group(window, ghid_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
+	gtk_window_remove_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
 	gtk_window_remove_accel_group
 		(window, ghid_route_style_selector_get_accel_group(GHID_ROUTE_STYLE_SELECTOR(gui->route_style_selector)));
 }
@@ -645,33 +642,33 @@ static void make_cursor_position_labels(GtkWidget * hbox, GHidPort * port)
 /* \brief Add "virtual layers" to a layer selector */
 static void make_virtual_layer_buttons(GtkWidget * layer_selector)
 {
-	GHidLayerSelector *layersel = GHID_LAYER_SELECTOR(layer_selector);
+	pcb_gtk_layer_selector_t *layersel = GHID_LAYER_SELECTOR(layer_selector);
 	const gchar *text;
 	const gchar *color_string;
 	gboolean active;
 	pcb_layer_id_t ui[16], numui, n;
 
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_SILK);
-	ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_SILK, text, color_string, active, TRUE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_SILK, text, color_string, active, TRUE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_RATS);
-	ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_RATS, text, color_string, active, TRUE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_RATS, text, color_string, active, TRUE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_PINS);
-	ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_PINS, text, color_string, active, FALSE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_PINS, text, color_string, active, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_VIAS);
-	ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_VIAS, text, color_string, active, FALSE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_VIAS, text, color_string, active, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_FARSIDE);
-	ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_FARSIDE, text, color_string, active, FALSE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_FARSIDE, text, color_string, active, FALSE);
 	layer_process(&color_string, &text, &active, LAYER_BUTTON_MASK);
-	ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_MASK, text, color_string, active, FALSE);
+	pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_MASK, text, color_string, active, FALSE);
 
-	numui = pcb_layer_list(PCB_LYT_UI, ui, sizeof(ui)/sizeof(ui[0]));
-	for(n = 0; n < numui; n++) {
+	numui = pcb_layer_list(PCB_LYT_UI, ui, sizeof(ui) / sizeof(ui[0]));
+	for (n = 0; n < numui; n++) {
 		pcb_layer_t *l = pcb_get_layer(ui[n]);
-		ghid_layer_selector_add_layer(layersel, LAYER_BUTTON_UI, l->Name, l->Color, 1, FALSE);
+		pcb_gtk_layer_selector_add_layer(layersel, LAYER_BUTTON_UI, l->Name, l->Color, 1, FALSE);
 	}
 }
 
-/*! \brief callback for ghid_layer_selector_update_colors */
+/*! \brief callback for pcb_gtk_layer_selector_update_colors */
 const gchar *get_layer_color(gint layer)
 {
 	const gchar *rv;
@@ -682,7 +679,7 @@ const gchar *get_layer_color(gint layer)
 /*! \brief Update a layer selector's color scheme */
 void ghid_layer_buttons_color_update(void)
 {
-	ghid_layer_selector_update_colors(GHID_LAYER_SELECTOR(ghidgui->layer_selector), get_layer_color);
+	pcb_gtk_layer_selector_update_colors(GHID_LAYER_SELECTOR(ghidgui->layer_selector), get_layer_color);
 	pcb_colors_from_settings(PCB);
 }
 
@@ -696,14 +693,14 @@ static void make_layer_buttons(GtkWidget * layersel)
 
 	for (i = 0; i < pcb_max_layer; ++i) {
 		if (pcb_layer_flags(i) & PCB_LYT_SILK)
-			continue; /* silks have a special, common button */
+			continue;									/* silks have a special, common button */
 		layer_process(&color_string, &text, &active, i);
-		ghid_layer_selector_add_layer(GHID_LAYER_SELECTOR(layersel), i, text, color_string, active, TRUE);
+		pcb_gtk_layer_selector_add_layer(GHID_LAYER_SELECTOR(layersel), i, text, color_string, active, TRUE);
 	}
 }
 
 
-/*! \brief callback for ghid_layer_selector_delete_layers */
+/*! \brief callback for pcb_gtk_layer_selector_delete_layers */
 gboolean get_layer_delete(gint layer)
 {
 	if (pcb_layer_flags(layer) & PCB_LYT_SILK)
@@ -723,7 +720,7 @@ void ghid_layer_buttons_update(void)
 	if (ignore_layer_update)
 		return;
 
-	ghid_layer_selector_delete_layers(GHID_LAYER_SELECTOR(ghidgui->layer_selector), get_layer_delete);
+	pcb_gtk_layer_selector_delete_layers(GHID_LAYER_SELECTOR(ghidgui->layer_selector), get_layer_delete);
 	make_layer_buttons(ghidgui->layer_selector);
 	make_virtual_layer_buttons(ghidgui->layer_selector);
 	ghid_main_menu_install_layer_selector(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_LAYER_SELECTOR(ghidgui->layer_selector));
@@ -736,7 +733,7 @@ void ghid_layer_buttons_update(void)
 	else
 		layer = pcb_layer_stack[0];
 
-	ghid_layer_selector_select_layer(GHID_LAYER_SELECTOR(ghidgui->layer_selector), layer);
+	pcb_gtk_layer_selector_select_layer(GHID_LAYER_SELECTOR(ghidgui->layer_selector), layer);
 }
 
 /*! \brief Called when user clicks OK on route style dialog */
@@ -1055,7 +1052,7 @@ static void fix_topbar_theming(void)
 	g_signal_connect(settings, "notify::gtk-font-name", G_CALLBACK(do_fix_topbar_theming), NULL);
 }
 
-static void fullscreen_cb(GtkButton *btn, void *data)
+static void fullscreen_cb(GtkButton * btn, void *data)
 {
 	conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !conf_core.editor.fullscreen, POL_OVERWRITE);
 }
@@ -1096,7 +1093,7 @@ static void ghid_build_pcb_top_window(void)
 	gtk_box_pack_start(GTK_BOX(ghidgui->menu_hbox), ghidgui->menubar_toolbar_vbox, FALSE, FALSE, 0);
 
 	/* Build layer menus */
-	ghidgui->layer_selector = ghid_layer_selector_new();
+	ghidgui->layer_selector = pcb_gtk_layer_selector_new();
 	make_layer_buttons(ghidgui->layer_selector);
 	make_virtual_layer_buttons(ghidgui->layer_selector);
 	g_signal_connect(G_OBJECT(ghidgui->layer_selector), "select_layer", G_CALLBACK(layer_selector_select_callback), NULL);
@@ -1486,7 +1483,8 @@ static unsigned short int ghid_translate_key(const char *desc, int len)
 {
 	guint key;
 
-	if (pcb_strcasecmp(desc, "enter") == 0) desc = "Return";
+	if (pcb_strcasecmp(desc, "enter") == 0)
+		desc = "Return";
 
 	key = gdk_keyval_from_name(desc);
 	if (key > 0xffff) {
@@ -1502,7 +1500,7 @@ int ghid_key_name(unsigned short int key_char, char *out, int out_len)
 	if (name == NULL)
 		return -1;
 	strncpy(out, name, out_len);
-	out[out_len-1] = '\0';
+	out[out_len - 1] = '\0';
 	return 0;
 }
 
@@ -1537,7 +1535,7 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 	gtkhid_end();
 }
 
-void ghid_do_exit(pcb_hid_t *hid)
+void ghid_do_exit(pcb_hid_t * hid)
 {
 	gtk_main_quit();
 }
@@ -1570,7 +1568,7 @@ void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 		return;
 
 	ghid_layer_buttons_update();
-	ghid_layer_selector_show_layers(GHID_LAYER_SELECTOR(ghidgui->layer_selector), get_layer_visible_cb);
+	pcb_gtk_layer_selector_show_layers(GHID_LAYER_SELECTOR(ghidgui->layer_selector), get_layer_visible_cb);
 
 	/* FIXME - if a layer is moved it should retain its color.  But layers
 	   |  currently can't do that because color info is not saved in the
@@ -1642,7 +1640,7 @@ static int ToggleView(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	/* Now that we've figured out which toggle button ought to control
 	 * this layer, simply hit the button and let the pre-existing code deal
 	 */
-	ghid_layer_selector_toggle_layer(GHID_LAYER_SELECTOR(ghidgui->layer_selector), l);
+	pcb_gtk_layer_selector_toggle_layer(GHID_LAYER_SELECTOR(ghidgui->layer_selector), l);
 	return 0;
 }
 
@@ -1677,7 +1675,7 @@ static int SelectLayer(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	/* Now that we've figured out which radio button ought to select
 	 * this layer, simply hit the button and let the pre-existing code deal
 	 */
-	ghid_layer_selector_select_layer(GHID_LAYER_SELECTOR(ghidgui->layer_selector), newl);
+	pcb_gtk_layer_selector_select_layer(GHID_LAYER_SELECTOR(ghidgui->layer_selector), newl);
 
 	return 0;
 }
@@ -1693,7 +1691,7 @@ pcb_hid_action_t gtk_topwindow_action_list[] = {
 
 PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 
-static GtkWidget *ghid_load_menus(void)
+		 static GtkWidget *ghid_load_menus(void)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;
@@ -1715,7 +1713,7 @@ static GtkWidget *ghid_load_menus(void)
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
-			for(n = mr->data.list.first; n != NULL; n = n->next)
+			for (n = mr->data.list.first; n != NULL; n = n->next)
 				ghid_main_menu_add_popup_node(GHID_MAIN_MENU(menu_bar), n);
 		}
 		else

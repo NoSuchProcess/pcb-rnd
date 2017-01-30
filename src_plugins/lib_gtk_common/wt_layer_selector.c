@@ -1,23 +1,45 @@
-/*! \file <gtk-pcb-layer-selector.c>
- *  \brief Implementation of GHidLayerSelector widget
+/*
+ *                            COPYRIGHT
+ *
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  pcb-rnd Copyright (C) 2017 Alain Vigne
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Contact addresses for paper mail and Email:
+ *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
+ *  Thomas.Nau@rz.uni-ulm.de
+ *
+ */
+
+/*! \file <wt_layer_selector.c>
+ *  \brief Implementation of pcb_gtk_layer_selector_t widget
  *  \par Description
  *  This widget is the layer selector on the left side of the Gtk
  *  GUI. It also builds the relevant sections of the menu for layer
  *  selection and visibility toggling, and keeps these in sync.
  */
 
-#include <glib.h>
-#include <glib-object.h>
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
-
 #include "config.h"
-#include "gtkhid.h"
-#include "gui.h"
+
+#include "wt_layer_selector.h"
+#include "../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h"
+
+#include "../src_plugins/hid_gtk/gui.h"
 #include "pcb-printf.h"
 
-#include "ghid-layer-selector.h"
-#include "ghid-cell-renderer-visibility.h"
 
 #define INITIAL_ACTION_MAX	40
 
@@ -49,7 +71,7 @@ enum {
 static GtkTreeView *ghid_layer_selector_parent_class;
 static guint ghid_layer_selector_signals[LAST_SIGNAL] = { 0 };
 
-struct _GHidLayerSelector {
+struct pcb_gtk_layer_selector_s {
 	GtkTreeView parent;
 
 	GtkListStore *list_store;
@@ -69,11 +91,11 @@ struct _GHidLayerSelector {
 	gulong selection_changed_sig_id;
 };
 
-struct _GHidLayerSelectorClass {
+struct pcb_gtk_layer_selector_class_s {
 	GtkTreeViewClass parent_class;
 
-	void (*select_layer) (GHidLayerSelector *, gint);
-	void (*toggle_layer) (GHidLayerSelector *, gint);
+	void (*select_layer) (pcb_gtk_layer_selector_t *, gint);
+	void (*toggle_layer) (pcb_gtk_layer_selector_t *, gint);
 };
 
 struct _layer {
@@ -86,7 +108,7 @@ struct _layer {
 };
 
 /*! \brief Deletes the action and accelerator from a layer */
-static void free_ldata(GHidLayerSelector * ls, struct _layer *ldata)
+static void free_ldata(pcb_gtk_layer_selector_t * ls, struct _layer *ldata)
 {
 	if (ldata->pick_action) {
 		gtk_action_disconnect_accelerator(GTK_ACTION(ldata->pick_action));
@@ -108,7 +130,7 @@ static void free_ldata(GHidLayerSelector * ls, struct _layer *ldata)
 }
 
 /*! \brief internal set-visibility function -- emits no signals */
-static void set_visibility(GHidLayerSelector * ls, GtkTreeIter * iter, struct _layer *ldata, gboolean state)
+static void set_visibility(pcb_gtk_layer_selector_t * ls, GtkTreeIter * iter, struct _layer *ldata, gboolean state)
 {
 	gtk_list_store_set(ls->list_store, iter, VISIBLE_COL, state, -1);
 
@@ -119,7 +141,7 @@ static void set_visibility(GHidLayerSelector * ls, GtkTreeIter * iter, struct _l
 	}
 }
 
-/*! \brief Flip the visibility state of a given layer 
+/*! \brief Flips the visibility state of a given layer 
  *  \par Function Description
  *  Changes the internal toggle state and menu checkbox state
  *  of the layer pointed to by iter. Emits a toggle-layer signal.
@@ -128,7 +150,7 @@ static void set_visibility(GHidLayerSelector * ls, GtkTreeIter * iter, struct _l
  *  \param [in] iter  A GtkTreeIter pointed at the relevant layer
  *  \param [in] emit  Whether or not to emit a signal
  */
-static void toggle_visibility(GHidLayerSelector * ls, GtkTreeIter * iter, gboolean emit)
+static void toggle_visibility(pcb_gtk_layer_selector_t * ls, GtkTreeIter * iter, gboolean emit)
 {
 	gint user_id;
 	struct _layer *ldata;
@@ -139,7 +161,7 @@ static void toggle_visibility(GHidLayerSelector * ls, GtkTreeIter * iter, gboole
 		g_signal_emit(ls, ghid_layer_selector_signals[TOGGLE_LAYER_SIGNAL], 0, user_id);
 }
 
-/*! \brief Decide if a GtkListStore entry is a layer or separator */
+/*! \brief Decides if a GtkListStore entry is a layer or separator */
 static gboolean tree_view_separator_func(GtkTreeModel * model, GtkTreeIter * iter, gpointer data)
 {
 	gboolean ret_val;
@@ -147,9 +169,9 @@ static gboolean tree_view_separator_func(GtkTreeModel * model, GtkTreeIter * ite
 	return ret_val;
 }
 
-/*! \brief Decide if a GtkListStore entry may be selected */
-static gboolean
-tree_selection_func(GtkTreeSelection * selection, GtkTreeModel * model, GtkTreePath * path, gboolean selected, gpointer data)
+/*! \brief Decides if a GtkListStore entry may be selected */
+static gboolean tree_selection_func(GtkTreeSelection * selection,
+																		GtkTreeModel * model, GtkTreePath * path, gboolean selected, gpointer data)
 {
 	GtkTreeIter iter;
 
@@ -164,7 +186,7 @@ tree_selection_func(GtkTreeSelection * selection, GtkTreeModel * model, GtkTreeP
 
 /* SIGNAL HANDLERS */
 /*! \brief Callback for mouse-click: toggle visibility */
-static gboolean button_press_cb(GHidLayerSelector * ls, GdkEventButton * event)
+static gboolean button_press_cb(pcb_gtk_layer_selector_t * ls, GdkEventButton * event)
 {
 	/* Handle visibility independently to prevent changing the active
 	 *  layer, which will happen if we let this event propagate.  */
@@ -193,7 +215,7 @@ static gboolean button_press_cb(GHidLayerSelector * ls, GdkEventButton * event)
 }
 
 /*! \brief Callback for layer selection change: sync menu, emit signal */
-static void selection_changed_cb(GtkTreeSelection * selection, GHidLayerSelector * ls)
+static void selection_changed_cb(GtkTreeSelection * selection, pcb_gtk_layer_selector_t * ls)
 {
 	GtkTreeIter iter;
 	if (gtk_tree_selection_get_selected(selection, NULL, &iter)) {
@@ -213,7 +235,7 @@ static void selection_changed_cb(GtkTreeSelection * selection, GHidLayerSelector
 /*! \brief Callback for menu actions: sync layer selection list, emit signal */
 static void menu_view_cb(GtkToggleAction * action, struct _layer *ldata)
 {
-	GHidLayerSelector *ls;
+	pcb_gtk_layer_selector_t *ls;
 	GtkTreeModel *model = gtk_tree_row_reference_get_model(ldata->rref);
 	GtkTreePath *path = gtk_tree_row_reference_get_path(ldata->rref);
 	gboolean state = gtk_toggle_action_get_active(action);
@@ -234,7 +256,7 @@ static void menu_pick_cb(GtkRadioAction * action, struct _layer *ldata)
 	/* We only care about the activation signal (as opposed to deactivation).
 	 * A row we are /deactivating/ might not even exist anymore! */
 	if (gtk_toggle_action_get_active(GTK_TOGGLE_ACTION(action))) {
-		GHidLayerSelector *ls;
+		pcb_gtk_layer_selector_t *ls;
 		GtkTreeModel *model = gtk_tree_row_reference_get_model(ldata->rref);
 		GtkTreePath *path = gtk_tree_row_reference_get_path(ldata->rref);
 		GtkTreeIter iter;
@@ -252,12 +274,12 @@ static void menu_pick_cb(GtkRadioAction * action, struct _layer *ldata)
 }
 
 /* CONSTRUCTOR */
-static void ghid_layer_selector_init(GHidLayerSelector * ls)
+static void ghid_layer_selector_init(pcb_gtk_layer_selector_t * ls)
 {
 	/* Hookup signal handlers */
 }
 
-static void ghid_layer_selector_class_init(GHidLayerSelectorClass * klass)
+static void ghid_layer_selector_class_init(pcb_gtk_layer_selector_class_t * klass)
 {
 	GObjectClass *object_class = (GObjectClass *) klass;
 
@@ -265,24 +287,23 @@ static void ghid_layer_selector_class_init(GHidLayerSelectorClass * klass)
 		g_signal_new("select-layer",
 								 G_TYPE_FROM_CLASS(klass),
 								 G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
-								 G_STRUCT_OFFSET(GHidLayerSelectorClass, select_layer),
+								 G_STRUCT_OFFSET(pcb_gtk_layer_selector_class_t, select_layer),
 								 NULL, NULL, g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
 	ghid_layer_selector_signals[TOGGLE_LAYER_SIGNAL] =
 		g_signal_new("toggle-layer",
 								 G_TYPE_FROM_CLASS(klass),
 								 G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
-								 G_STRUCT_OFFSET(GHidLayerSelectorClass, toggle_layer),
+								 G_STRUCT_OFFSET(pcb_gtk_layer_selector_class_t, toggle_layer),
 								 NULL, NULL, g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
 
 	object_class->finalize = ghid_layer_selector_finalize;
 }
 
-/*! \brief Clean up object before garbage collection
- */
+/*! \brief Cleans up object before garbage collection */
 static void ghid_layer_selector_finalize(GObject * object)
 {
 	GtkTreeIter iter;
-	GHidLayerSelector *ls = (GHidLayerSelector *) object;
+	pcb_gtk_layer_selector_t *ls = (pcb_gtk_layer_selector_t *) object;
 
 	g_object_unref(ls->accel_group);
 	g_object_unref(ls->action_group);
@@ -299,34 +320,30 @@ static void ghid_layer_selector_finalize(GObject * object)
 }
 
 /* PUBLIC FUNCTIONS */
-GType ghid_layer_selector_get_type(void)
+GType pcb_gtk_layer_selector_get_type(void)
 {
 	static GType ls_type = 0;
 
 	if (!ls_type) {
 		const GTypeInfo ls_info = {
-			sizeof(GHidLayerSelectorClass),
+			sizeof(pcb_gtk_layer_selector_class_t),
 			NULL,											/* base_init */
 			NULL,											/* base_finalize */
 			(GClassInitFunc) ghid_layer_selector_class_init,
 			NULL,											/* class_finalize */
 			NULL,											/* class_data */
-			sizeof(GHidLayerSelector),
+			sizeof(pcb_gtk_layer_selector_t),
 			0,												/* n_preallocs */
 			(GInstanceInitFunc) ghid_layer_selector_init,
 		};
 
-		ls_type = g_type_register_static(GTK_TYPE_TREE_VIEW, "GHidLayerSelector", &ls_info, 0);
+		ls_type = g_type_register_static(GTK_TYPE_TREE_VIEW, "pcb_gtk_layer_selector_t", &ls_info, 0);
 	}
 
 	return ls_type;
 }
 
-/*! \brief Create a new GHidLayerSelector
- *
- *  \return a freshly-allocated GHidLayerSelector.
- */
-GtkWidget *ghid_layer_selector_new(void)
+GtkWidget *pcb_gtk_layer_selector_new(void)
 {
 	int i;
 	GtkCellRenderer *renderer1 = ghid_cell_renderer_visibility_new();
@@ -339,7 +356,7 @@ GtkWidget *ghid_layer_selector_new(void)
 																																				 "font", FONT_COL,
 																																				 NULL);
 
-	GHidLayerSelector *ls = g_object_new(GHID_LAYER_SELECTOR_TYPE, NULL);
+	pcb_gtk_layer_selector_t *ls = g_object_new(GHID_LAYER_SELECTOR_TYPE, NULL);
 
 	/* action index, active, color, text, font, is_separator */
 	ls->list_store = gtk_list_store_new(N_COLS, G_TYPE_POINTER, G_TYPE_INT,
@@ -372,27 +389,9 @@ GtkWidget *ghid_layer_selector_new(void)
 	return GTK_WIDGET(ls);
 }
 
-/*! \brief Add a layer to a GHidLayerSelector.
- *  \par Function Description
- *  This function adds an entry to a GHidLayerSelector, which will
- *  appear in the layer-selection list as well as visibility and selection
- *  menus (assuming this is a selectable layer). For the first 20 layers,
- *  keyboard accelerators will be added for selection/visibility toggling.
- *
- *  If the user_id passed already exists in the layer selector, that layer
- *  will have its data overwritten with the new stuff.
- *
- *  \param [in] ls            The selector to be acted on
- *  \param [in] user_id       An ID used to identify the layer; will be passed to selection/visibility callbacks
- *  \param [in] name          The name of the layer; will be used on selector and menus
- *  \param [in] color_string  The color of the layer on selector
- *  \param [in] visibile      Whether the layer is visible
- *  \param [in] activatable   Whether the layer appears in menus and can be selected
- */
-void
-ghid_layer_selector_add_layer(GHidLayerSelector * ls,
-															gint user_id,
-															const gchar * name, const gchar * color_string, gboolean visible, gboolean activatable)
+void pcb_gtk_layer_selector_add_layer(pcb_gtk_layer_selector_t * ls,
+																			gint user_id,
+																			const gchar * name, const gchar * color_string, gboolean visible, gboolean activatable)
 {
 	struct _layer *new_layer = NULL;
 	gchar *pname, *vname;
@@ -516,18 +515,7 @@ ghid_layer_selector_add_layer(GHidLayerSelector * ls,
 	ls->n_actions++;
 }
 
-/*! \brief Install the "Current Layer" menu items for a layer selector
- *  \par Function Description
- *  Takes a menu shell and installs menu items for layer selection in
- *  the shell, at the given position.
- *
- *  \param [in] ls      The selector to be acted on
- *  \param [in] shell   The menu to install the items in
- *  \param [in] pos     The position in the menu to install items
- *
- *  \return the number of items installed
- */
-gint ghid_layer_selector_install_pick_items(GHidLayerSelector * ls, GtkMenuShell * shell, gint pos)
+gint pcb_gtk_layer_selector_install_pick_items(pcb_gtk_layer_selector_t * ls, GtkMenuShell * shell, gint pos)
 {
 	GtkTreeIter iter;
 	int n = 0;
@@ -548,18 +536,7 @@ gint ghid_layer_selector_install_pick_items(GHidLayerSelector * ls, GtkMenuShell
 	return n;
 }
 
-/*! \brief Install the "Shown Layers" menu items for a layer selector
- *  \par Function Description
- *  Takes a menu shell and installs menu items for layer selection in
- *  the shell, at the given position.
- *
- *  \param [in] ls      The selector to be acted on
- *  \param [in] shell   The menu to install the items in
- *  \param [in] pos     The position in the menu to install items
- *
- *  \return the number of items installed
- */
-gint ghid_layer_selector_install_view_items(GHidLayerSelector * ls, GtkMenuShell * shell, gint pos)
+gint pcb_gtk_layer_selector_install_view_items(pcb_gtk_layer_selector_t * ls, GtkMenuShell * shell, gint pos)
 {
 	GtkTreeIter iter;
 	int n = 0;
@@ -580,14 +557,7 @@ gint ghid_layer_selector_install_view_items(GHidLayerSelector * ls, GtkMenuShell
 	return n;
 }
 
-/*! \brief Returns the GtkAccelGroup of a layer selector
- *  \par Function Description
- *
- *  \param [in] ls            The selector to be acted on
- *
- *  \return the accel group of the selector
- */
-GtkAccelGroup *ghid_layer_selector_get_accel_group(GHidLayerSelector * ls)
+GtkAccelGroup *pcb_gtk_layer_selector_get_accel_group(pcb_gtk_layer_selector_t * ls)
 {
 	return ls->accel_group;
 }
@@ -596,8 +566,8 @@ GtkAccelGroup *ghid_layer_selector_get_accel_group(GHidLayerSelector * ls)
 static gboolean toggle_foreach_func(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data)
 {
 	gint id;
-	GHidLayerSelector *ls = g_object_get_data(G_OBJECT(model),
-																						"layer-selector");
+	pcb_gtk_layer_selector_t *ls = g_object_get_data(G_OBJECT(model),
+																									 "layer-selector");
 
 	gtk_tree_model_get(model, iter, USER_ID_COL, &id, -1);
 	if (id == *(gint *) data) {
@@ -607,14 +577,7 @@ static gboolean toggle_foreach_func(GtkTreeModel * model, GtkTreePath * path, Gt
 	return FALSE;
 }
 
-/*! \brief Toggle a layer's visibility
- *  \par Function Description
- *  Toggle the layer indicated by user_id, emitting a layer-toggle signal.
- *
- *  \param [in] ls       The selector to be acted on
- *  \param [in] user_id  The ID of the layer to be affected
- */
-void ghid_layer_selector_toggle_layer(GHidLayerSelector * ls, gint user_id)
+void pcb_gtk_layer_selector_toggle_layer(pcb_gtk_layer_selector_t * ls, gint user_id)
 {
 	gtk_tree_model_foreach(GTK_TREE_MODEL(ls->list_store), toggle_foreach_func, &user_id);
 }
@@ -623,8 +586,8 @@ void ghid_layer_selector_toggle_layer(GHidLayerSelector * ls, gint user_id)
 static gboolean select_foreach_func(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data)
 {
 	gint id;
-	GHidLayerSelector *ls = g_object_get_data(G_OBJECT(model),
-																						"layer-selector");
+	pcb_gtk_layer_selector_t *ls = g_object_get_data(G_OBJECT(model),
+																									 "layer-selector");
 
 	gtk_tree_model_get(model, iter, USER_ID_COL, &id, -1);
 	if (id == *(gint *) data) {
@@ -634,30 +597,12 @@ static gboolean select_foreach_func(GtkTreeModel * model, GtkTreePath * path, Gt
 	return FALSE;
 }
 
-/*! \brief Select a layer
- *  \par Function Description
- *  Select the layer indicated by user_id, emitting a layer-select signal.
- *
- *  \param [in] ls       The selector to be acted on
- *  \param [in] user_id  The ID of the layer to be affected
- */
-void ghid_layer_selector_select_layer(GHidLayerSelector * ls, gint user_id)
+void pcb_gtk_layer_selector_select_layer(pcb_gtk_layer_selector_t * ls, gint user_id)
 {
 	gtk_tree_model_foreach(GTK_TREE_MODEL(ls->list_store), select_foreach_func, &user_id);
 }
 
-/*! \brief Selects the next visible layer
- *  \par Function Description
- *  Used to ensure hidden layers are not active; if the active layer is
- *  visible, this function is a noop. Otherwise, it will look for the
- *  next layer that IS visible, and select that. Failing that, it will
- *  return FALSE.
- *
- *  \param [in] ls       The selector to be acted on
- *
- *  \return TRUE on success, FALSE if all selectable layers are hidden
- */
-gboolean ghid_layer_selector_select_next_visible(GHidLayerSelector * ls)
+gboolean pcb_gtk_layer_selector_select_next_visible(pcb_gtk_layer_selector_t * ls)
 {
 	GtkTreeIter iter;
 	if (gtk_tree_selection_get_selected(ls->selection, NULL, &iter)) {
@@ -689,35 +634,7 @@ gboolean ghid_layer_selector_select_next_visible(GHidLayerSelector * ls)
 	return FALSE;
 }
 
-/*! \brief Makes the selected layer visible
- *  \par Function Description
- *  Used to ensure hidden layers are not active; un-hides the currently
- *  selected layer.
- *
- *  \param [in] ls       The selector to be acted on
- */
-void ghid_layer_selector_make_selected_visible(GHidLayerSelector * ls)
-{
-	GtkTreeIter iter;
-	if (gtk_tree_selection_get_selected(ls->selection, NULL, &iter)) {
-		gboolean visible;
-		gtk_tree_model_get(GTK_TREE_MODEL(ls->list_store), &iter, VISIBLE_COL, &visible, -1);
-		if (!visible)
-			toggle_visibility(ls, &iter, FALSE);
-	}
-}
-
-/*! \brief Sets the colors of all layers in a layer-selector
- *  \par Function Description
- *  Updates the colors of a layer selector via a callback mechanism:
- *  the user_id of each layer is passed to the callback function,
- *  which returns a color string to update the layer's color, or NULL
- *  to leave it alone.
- *
- *  \param [in] ls       The selector to be acted on
- *  \param [in] callback Takes the user_id of the layer and returns a color string
- */
-void ghid_layer_selector_update_colors(GHidLayerSelector * ls, const gchar * (*callback) (int user_id))
+void pcb_gtk_layer_selector_update_colors(pcb_gtk_layer_selector_t * ls, const gchar * (*callback) (int user_id))
 {
 	GtkTreeIter iter;
 	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(ls->list_store), &iter);
@@ -732,19 +649,7 @@ void ghid_layer_selector_update_colors(GHidLayerSelector * ls, const gchar * (*c
 	while (gtk_tree_model_iter_next(GTK_TREE_MODEL(ls->list_store), &iter));
 }
 
-/*! \brief Deletes layers from a layer selector
- *  \par Function Description
- *  Deletes layers according to a callback function: a return value of TRUE
- *  means delete, FALSE means leave it alone. Do not try to delete all layers
- *  using this function; with nothing left to select, pcb will likely go into
- *  an infinite recursion between pcb_hid_action() and g_signal().
- *
- *  Separators will be deleted if the layer AFTER them is deleted.
- *
- *  \param [in] ls       The selector to be acted on
- *  \param [in] callback Takes the user_id of the layer and returns a boolean
- */
-void ghid_layer_selector_delete_layers(GHidLayerSelector * ls, gboolean(*callback) (int user_id))
+void pcb_gtk_layer_selector_delete_layers(pcb_gtk_layer_selector_t * ls, gboolean(*callback) (int user_id))
 {
 	GtkTreeIter iter, last_iter;
 
@@ -781,15 +686,7 @@ void ghid_layer_selector_delete_layers(GHidLayerSelector * ls, gboolean(*callbac
 	}
 }
 
-/*! \brief Sets the visibility toggle-state of all layers
- *  \par Function Description
- *  Shows layers according to a callback function: a return value of TRUE
- *  means show, FALSE means hide.
- *
- *  \param [in] ls       The selector to be acted on
- *  \param [in] callback Takes the user_id of the layer and returns a boolean
- */
-void ghid_layer_selector_show_layers(GHidLayerSelector * ls, gboolean(*callback) (int user_id))
+void pcb_gtk_layer_selector_show_layers(pcb_gtk_layer_selector_t * ls, gboolean(*callback) (int user_id))
 {
 	GtkTreeIter iter;
 	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(ls->list_store), &iter);
