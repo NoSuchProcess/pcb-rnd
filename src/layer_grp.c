@@ -268,7 +268,9 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_i
 				return &stack->grp[n];
 	}
 
+	suppress_notify++;
 	g = pcb_get_grp_new_intern_(stack, 0);
+	suppress_notify--;
 	g->intern_id = intern_id;
 	NOTIFY();
 	return g;
@@ -276,7 +278,9 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_i
 
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack)
 {
+	suppress_notify++;
 	pcb_layer_group_t *g = pcb_get_grp_new_intern_(stack, 1);
+	suppress_notify--;
 	NOTIFY();
 	return g;
 }
