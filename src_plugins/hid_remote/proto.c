@@ -240,6 +240,23 @@ void proto_send_draw_line(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2
 	send_end(&pctx);
 }
 
+void proto_send_draw_arc(int gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+{
+	send_begin(&pctx, "arc");
+	send_open(&pctx, 0, 1);
+	sendf(&pctx, "%d", gc);
+	sendf(&pctx, cfmt, cx);
+	sendf(&pctx, cfmt, cy);
+	sendf(&pctx, cfmt, width);
+	sendf(&pctx, cfmt, height);
+	sendf(&pctx, "%f", start_angle);
+	sendf(&pctx, "%f", delta_angle);
+	send_close(&pctx);
+	send_end(&pctx);
+}
+
+
+
 void proto_send_draw_rect(int gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int is_filled)
 {
 	send_begin(&pctx, "rect");

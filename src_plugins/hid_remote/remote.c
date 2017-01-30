@@ -264,9 +264,11 @@ static void remote_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 		proto_send_draw_line(idx, x1, y1, x2, y2);
 }
 
-static void remote_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
+static void remote_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-#warning TODO
+	int idx = gc2idx(gc);
+	if (idx >= 0)
+		proto_send_draw_arc(idx, cx, cy, width, height, start_angle, delta_angle);
 }
 
 static void remote_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
