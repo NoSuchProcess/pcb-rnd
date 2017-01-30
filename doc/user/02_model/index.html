@@ -1,6 +1,8 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 	<link rel="stylesheet" type="text/css" href="../default.css">
 </head>
 <body>
@@ -93,7 +95,7 @@ or not.
 Pcb-rnd supports a small number of basic drawing objects, from which complex
 objects can be build. The following figure demonstrates all basic objects:
 <p>
-<img src="objects_basic.png">
+<img src="objects_basic.png" alt="[Arc, Line, Polygon, Pin, Via]">
 <p>
 Objects have flags that control their behavior. The following flags are common
 to all objects:
@@ -117,7 +119,7 @@ lines with random angle.
 <p>
 A line is specified by its two endpoints, width and clearance:
 <p>
-<img src="obj_line.png">
+<img src="obj_line.png" alt="[Line interacting with a polygon]">
 <p>
 A <i>clearance</i> is the gap between a line and the sorrounding polygon
 in the same layer group. The gap is made only if the sorrounding polygon has
@@ -137,7 +139,7 @@ Extra object flags:
 Arcs are round ended circular arcs with trace width and clearance. They
 behave like lines in all respects.
 <p>
-<img src="obj_arc.png">
+<img src="obj_arc.png" alt="[Arc interacting with a polygon]">
 <p>
 Although the arc is described with it's center, radius, start and end
 angles, the user interface may offer drawing arcs by endpoints.
@@ -218,22 +220,22 @@ the sorrounding polygon on the given layer; this is called the thermal style
 of the via. The following options are available:
 <table border=1>
 	<tr><th>thermal style <th> appearance
-	<tr><td>no connection <td> <img src=TODO>
-	<tr><td>solid        <td> <img src=TODO>
-	<tr><td>round x 90   <td> <img src=TODO>
-	<tr><td>round x 45   <td> <img src=TODO>
-	<tr><td>sharp x 90   <td> <img src=TODO>
-	<tr><td>sharp x 45   <td> <img src=TODO>
+	<tr><td>no connection <td> <img src=TODO alt="TODO">
+	<tr><td>solid        <td> <img src=TODO alt="TODO">
+	<tr><td>round x 90   <td> <img src=TODO alt="TODO">
+	<tr><td>round x 45   <td> <img src=TODO alt="TODO">
+	<tr><td>sharp x 90   <td> <img src=TODO alt="TODO">
+	<tr><td>sharp x 45   <td> <img src=TODO alt="TODO">
 </table>
 <p>
 The shape of the copper annulus (the ring) is also selectable from a predefined
 set of symmetrical and asymmetrical set:
 <table border=1>
 	<tr><th>shape          <th> appearance
-	<tr><td>ring (default) <td> <img src=TODO>
-	<tr><td>square         <td> <img src=TODO>
-	<tr><td>octagon        <td> <img src=TODO>
-	<tr><td>asymmetrical   <td> <img src=TODO>
+	<tr><td>ring (default) <td> <img src=TODO alt="TODO">
+	<tr><td>square         <td> <img src=TODO alt="TODO">
+	<tr><td>octagon        <td> <img src=TODO alt="TODO">
+	<tr><td>asymmetrical   <td> <img src=TODO alt="TODO">
 </table>
 
 <h4> 2.4.6. element objects and footprints </h4>
@@ -398,7 +400,7 @@ process is called "forward annotation".
 <p>
 It is also possible to make changes to the netlist from within pcb-rnd:
 pins can be swapped, element packages replaced using <i>back annotation
-actions</b>. Such actions will keep a list of intended netlist and element
+actions</i>. Such actions will keep a list of intended netlist and element
 changes, called the netlist patch. Pcb-rnd will keep these changes even
 if a new version of the netlist is imported. It is possible to export the
 netlist patch that can be imported in the schematics editor to change the
