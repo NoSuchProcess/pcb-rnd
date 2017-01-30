@@ -36,7 +36,7 @@
 #include "compat.h"
 #include "bu_box.h"
 
-void pcb_gtk_dlg_report(GtkWidget * top_window, const gchar * title, const gchar * message)
+void pcb_gtk_dlg_report(GtkWidget * top_window, const gchar * title, const gchar * message, gboolean modal)
 {
 	GtkWidget *w;
 	GtkDialog *dialog;
@@ -55,6 +55,8 @@ void pcb_gtk_dlg_report(GtkWidget * top_window, const gchar * title, const gchar
 																	GTK_WINDOW(top_window),
 																	GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE, GTK_RESPONSE_NONE, NULL);
 	dialog = GTK_DIALOG(w);
+	gtk_dialog_set_default_response(dialog, GTK_RESPONSE_CLOSE);
+
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 
 	g_signal_connect_swapped(GTK_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), GTK_OBJECT(dialog));
@@ -87,4 +89,5 @@ void pcb_gtk_dlg_report(GtkWidget * top_window, const gchar * title, const gchar
 		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	gtk_widget_show_all(w);
+	gtk_window_set_modal(GTK_WINDOW(dialog), modal);
 }

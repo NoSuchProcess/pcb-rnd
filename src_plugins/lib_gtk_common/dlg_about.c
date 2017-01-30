@@ -30,25 +30,37 @@
 #include "compat_nls.h"
 #include "build_run.h"
 
-/** pcb_gtk_dlg_about:
- *  Display and run the modal About dialog
- */
-void pcb_gtk_dlg_about(GtkWidget *top_window)
+#include "dlg_report.h"
+
+static void display_options_dialog(GtkWidget * button, gpointer data)
 {
+	const gchar *text = pcb_get_info_compile_options();
+	GtkWidget *about = (GtkWidget *) data;
+
+	pcb_gtk_dlg_report(about, "Compile time Options", text, TRUE);
+}
+
+void pcb_gtk_dlg_about(GtkWidget * top_window)
+{
+	GtkWidget *button;
 	GtkWidget *w = gtk_about_dialog_new();
 	GtkAboutDialog *about = GTK_ABOUT_DIALOG(w);
-	gtk_dialog_add_button(GTK_DIALOG(about), "Options", 5);
-	/*TODO: If button is clicked, open another window with the compile options text:
-	   pcb_get_info_compile_options()
-	 */
 
-	/*FIXME: find a proper way to include authors ... */
-	const gchar *authors[] = { "Igor2", "Alain", NULL };
+	/* Add the compile options button */
+	button = gtk_button_new_from_stock(_("_Options"));
+	/*gtk_widget_set_can_default(button, TRUE);*/
+	gtk_widget_show(button);
+	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(about)->action_area), button, FALSE, TRUE, 0);
+	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX(GTK_DIALOG(about)->action_area), button, TRUE);
+	g_signal_connect(button, "clicked", G_CALLBACK(display_options_dialog), about);
+
+	/* We don't want to maintain a list of authors... So, this is the minimum info */
+	const gchar *authors[] = { "For authors, see the (C) in the main dialog",
+		"GTK HID:", "  Bill Wilson", NULL
+	};
 
 	gtk_about_dialog_set_program_name(about, "pcb-rnd");
 	gtk_about_dialog_set_version(about, VERSION);
-	/*FIXME: pcb_author()  not good here because gchar ** expected : */
-	/*gtk_about_dialog_set_authors (about, pcb_author()); */
 	gtk_about_dialog_set_authors(about, authors);
 
 	gtk_about_dialog_set_copyright(about, pcb_get_info_copyright());
@@ -70,7 +82,7 @@ void pcb_gtk_dlg_about(GtkWidget *top_window)
 
 	gtk_about_dialog_set_website(about, "http://repo.hu/projects/pcb-rnd/");
 	gtk_about_dialog_set_website_label(about, "Visit the PCB-rnd website");
-	gtk_about_dialog_set_documenters(about, authors);
+	gtk_about_dialog_set_documenters(about, NULL);
 	gtk_about_dialog_set_translator_credits(about, _("translator-credits"));
 
 	gtk_dialog_run(GTK_DIALOG(w));

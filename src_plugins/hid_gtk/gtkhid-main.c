@@ -434,7 +434,7 @@ int ghid_close_confirm_dialog()
 
 void ghid_report_dialog(const char *title, const char *msg)
 {
-	pcb_gtk_dlg_report(ghid_port.top_window, title, msg);
+	pcb_gtk_dlg_report(ghid_port.top_window, title, msg, FALSE);
 }
 
 char *ghid_prompt_for(const char *msg, const char *default_string)
