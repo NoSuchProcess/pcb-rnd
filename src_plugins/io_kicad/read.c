@@ -928,6 +928,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 			pcb_printf("layer definitions encountered in unexpected place in kicad layout\n");
 			return -1;
 		} else { /* we are just below the top level or root of the tree, so this must be a layer definitions section */
+			pcb_layergrp_inhibit_inc();
 			pcb_layer_group_setup_default(&PCB->LayerGroups);
 
 			/* set up the hash for implicit layers */
@@ -943,6 +944,7 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 
 			if (res != 0) {
 				pcb_message(PCB_MSG_ERROR, "Internal error: can't find a silk or mask layer\n");
+				pcb_layergrp_inhibit_dec();
 				return -1;
 			}
 
@@ -956,16 +958,19 @@ static int kicad_parse_layer_definitions(read_state_t *st, gsxl_node_t *subtree)
 					pcb_printf("\tlayer #%d layer description/type found:\t%s\n", i, ltype);
 					if (kicad_create_layer(st, lnum, lname, ltype) < 0) {
 						pcb_message(PCB_MSG_ERROR, "Unrecognized layer: %d, %s, %s\n", lnum, lname, ltype);
+						pcb_layergrp_inhibit_dec();
 						return -1;
 					}
 				} else {
 					printf("unexpected board layer definition(s) encountered.\n");
+					pcb_layergrp_inhibit_dec();
 					return -1;
 				}
 			}
 
 			pcb_layergrp_fix_old_outline(&PCB->LayerGroups);
 
+			pcb_layergrp_inhibit_dec();
 			return 0;
 		}
 }
