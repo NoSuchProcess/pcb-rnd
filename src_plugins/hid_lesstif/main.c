@@ -3028,6 +3028,12 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 	height = Vz(height);
 	cx = Vx(cx) - width;
 	cy = Vy(cy) - height;
+
+	if ((delta_angle >= 360.0) || (delta_angle <= -360.0)) {
+		start_angle = 0;
+		delta_angle = 360;
+	}
+
 	if (conf_core.editor.view.flip_x) {
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
