@@ -102,6 +102,10 @@ int pcb_layergrp_move_onto(pcb_layer_stack_t *stack, pcb_layergrp_id_t dst, pcb_
 pcb_layer_group_t *pcb_layergrp_insert_after(pcb_layer_stack_t *stack, pcb_layergrp_id_t where);
 
 
+/* Enable/disable inhibition of layer changed events during layer group updates */
+void pcb_layergrp_inhibit_inc(void);
+void pcb_layergrp_inhibit_dec(void);
+
 /********* OBSOLETE functions, do not use in new code *********/
 /* parses the group definition string which is a colon separated list of
    comma separated layer numbers (1,2,b:4,6,8,t); oldfmt is 0 or 1

@@ -44,6 +44,16 @@ do { \
 	} \
 } while(0)
 
+void pcb_layergrp_inhibit_inc(void)
+{
+	inhibit_notify++;
+}
+
+void pcb_layergrp_inhibit_dec(void)
+{
+	inhibit_notify--;
+}
+
 pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer)
 {
 	return Layer->grp;
