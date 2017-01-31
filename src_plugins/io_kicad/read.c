@@ -275,12 +275,14 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 							}
 						}
 					} else if (m->str != NULL && strcmp("justify", m->str) == 0) {
-						SEEN_NO_DUP(tally, 4);
+						/* SEEN_NO_DUP(tally, 4); */
 						if (m->children != NULL && m->children->str != NULL) {
 							pcb_printf("\ttext justification: '%s'\n", (m->children->str));
 							if (strcmp("mirror", m->children->str) == 0) {
 								mirrored = 1;
+								SEEN_NO_DUP(tally, 4);
 							}
+							/* ignore right or left justification for now */
 						} else {
 							return -1;
 						}
@@ -412,7 +414,9 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 						pcb_printf("\tgr_line layer: '%s'\n", (n->children->str));
 						PCBLayer = kicad_get_layeridx(st, n->children->str);
 						if (PCBLayer < 0) {
-							return -1;
+							pcb_printf("\tNon silk gr_line ignored\n");
+							return 0;
+							/* return -1; */
 						}
 					} else {
 						return -1;
@@ -1095,7 +1099,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				} else {
 					return -1;
 				}
-
+			} else if (n->str != NULL && strcmp("model", n->str) == 0) {
+				pcb_printf("module 3D model found and ignored\n");
 			} else if (n->str != NULL && strcmp("fp_text", n->str) == 0) {
 					pcb_printf("fp_text found\n");
 					featureTally = 0;
@@ -1879,7 +1884,7 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 
 	if (subtree->str != NULL) {
 		printf("Zone element found:\t'%s'\n", subtree->str);
-		for(n = subtree->next,i = 0; n != NULL; n = n->next, i++) {
+		for(n = subtree,i = 0; n != NULL; n = n->next, i++) {
 			if (n->str != NULL && strcmp("net", n->str) == 0) {
 				SEEN_NO_DUP(tally, 0);
 				if (n->children != NULL && n->children->str != NULL) {
