@@ -11,8 +11,6 @@
 	- layer rewrite bug:
 		- autoroute stopped working
 		- gtk: replace the info text
-	- RTT/arc_angles.pcb:
-		- even the UI logic seems to be broken
 	- load data from layout to paste buffer:
 		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
 		- probably IDs are messed too: copy and paste new arc loaded that way a few times and it will disappear after other edits (silk)
