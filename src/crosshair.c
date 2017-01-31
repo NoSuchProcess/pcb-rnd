@@ -65,6 +65,7 @@ static void XORDrawElement(pcb_element_t *, pcb_coord_t, pcb_coord_t);
 static void XORDrawBuffer(pcb_buffer_t *);
 static void XORDrawInsertPointObject(void);
 static void XORDrawAttachedArc(pcb_coord_t);
+static void XORDrawPinViaDRCOutline(pcb_pin_t * pv,pcb_coord_t clearance);
 
 static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
 {
@@ -79,7 +80,7 @@ static void thindraw_moved_pv(pcb_pin_t * pv, pcb_coord_t x, pcb_coord_t y)
 		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
 		moved_pv.Mask = conf_core.design.via_thickness + PCB->Bloat * 2;
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-		pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &moved_pv, pcb_false, pcb_true);
+		XORDrawPinViaDRCOutline(&moved_pv,PCB->Bloat);
 		pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 	}
 }
@@ -504,6 +505,166 @@ static void XORDrawMoveOrCopy(void)
 }
 
 /* ---------------------------------------------------------------------------
+ * draws the DRC Outline of a pad/via shape with the given style and clearance
+ */
+static void 
+draw_pinvia_shape_drc_outline( pcb_hid_gc_t gc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t clearance, int style)
+{
+
+	style = (style-1) & 0x0F;
+
+	struct {double X, Y, angle;} p[8] = {	
+		{0.5, -PCB_TAN_22_5_DEGREE_2,	180.0},
+		{PCB_TAN_22_5_DEGREE_2, -0.5,	270.0},
+		{-PCB_TAN_22_5_DEGREE_2, -0.5, 270.0 },
+		{-0.5, -PCB_TAN_22_5_DEGREE_2,	0.0},
+		{-0.5, PCB_TAN_22_5_DEGREE_2,	0.0},
+		{-PCB_TAN_22_5_DEGREE_2, 0.5,	90.0},
+		{PCB_TAN_22_5_DEGREE_2, 0.5,	90.0},
+		{0.5, PCB_TAN_22_5_DEGREE_2,	180.0}
+	};
+
+	pcb_coord_t		polygon_x[9];
+	pcb_coord_t		polygon_y[9];
+	double				xm[8];
+	double				ym[8];
+	double				xn[8];
+	double				yn[8];
+	double				a[8];
+	int						i;
+	const double	factor	= 2.0;
+
+	/* Constants for Normals and Arc Angles */
+	const double N0 = 0.7071067;
+	const double N1 = 0.44721279658;
+	const double N2 = 0.89442759;
+	const double A0 = 45.0;
+	const double A1 = 26.565;
+	const double A2 = 63.435;
+
+	/* Calculate multipliers*/
+	for (i = 0; i < 8; i++)	{
+		xm[i] = 1;
+		ym[i] = 1;
+	}
+
+	if (style & 1)
+		xm[0] = xm[1] = xm[6] = xm[7] = factor;
+	if (style & 2)
+		xm[2] = xm[3] = xm[4] = xm[5] = factor;
+	if (style & 4)
+		ym[4] = ym[5] = ym[6] = ym[7] = factor;
+	if (style & 8)
+		ym[0] = ym[1] = ym[2] = ym[3] = factor;
+
+	/* Select Edge Normals and Arc Angles */
+	xn[1] = xn[5] = 0.0;
+	yn[3] = yn[7] = 0.0;
+	yn[1] = -1.0;
+	yn[5] = 1.0;
+	xn[3] = -1.0;
+	xn[7] = +1.0;
+
+	switch(style & 9) {
+		case 1 :	xn[0] = N1; yn[0] = -N2; a[0] = A2; a[1] = -A1; break;
+		case 8 :	xn[0] = N2; yn[0] = -N1; a[0] = A1; a[1] = -A2; break;
+		default :	xn[0] = N0; yn[0] = -N0; a[0] = A0; a[1] = -A0; break;
+	}
+
+	switch(style & 10) {	
+		case 2 :	xn[2] = -N1; yn[2] = -N2; a[2] = A1; a[3] = -A2;  break;
+		case 8 :	xn[2] = -N2; yn[2] = -N1; a[2] = A2; a[3] = -A1;  break;
+		default :	xn[2] = -N0; yn[2] = -N0; a[2] = A0; a[3] = -A0;  break;
+	}
+
+	switch(style & 5)	{
+		case 1 :	xn[6] = N1; yn[6] = N2; a[6] = A1; a[7] = -A2; break;
+		case 4 :	xn[6] = N2; yn[6] = N1; a[6] = A2; a[7] = -A1; break;
+		default :	xn[6] = N0; yn[6] = N0; a[6] = A0; a[7] = -A0; break;
+	}
+
+	switch(style & 6)	{
+		case 2 :	xn[4] = -N1; yn[4] = N2; a[4] = A2; a[5] = -A1; break;
+		case 4 :	xn[4] = -N2; yn[4] = N1; a[4] = A1; a[5] = -A2; break;
+		default :	xn[4] = -N0; yn[4] = N0; a[4] = A0; a[5] = -A0; break;
+	}
+
+	/* add line offset */
+	for (i = 0; i < 8; i++) {
+		polygon_x[i] = X + (p[i].X * Thickness) * xm[i];
+		polygon_y[i] = Y + (p[i].Y * Thickness) * ym[i];
+	}
+	polygon_x[8] = polygon_x[0];
+	polygon_y[8] = polygon_y[0];
+
+	pcb_gui->set_line_cap(gc, Round_Cap);
+	pcb_gui->set_line_width(gc, 0);
+
+	/* Draw the outline */
+	for (i = 0; i < 8; i++)	{
+			pcb_gui->draw_line(	gc,
+													polygon_x[i]		+ (xn[i] * clearance), 
+													polygon_y[i]		+ (yn[i] * clearance),  
+													polygon_x[i+1]	+ (xn[i] * clearance),  
+													polygon_y[i+1]	+ (yn[i] * clearance) );
+
+			pcb_gui->draw_arc( gc,polygon_x[i],polygon_y[i],clearance,clearance,p[i].angle,a[i]);
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * draws the DRC Outline of a pad/via with the given clearance
+ */
+static void 
+XORDrawPinViaDRCOutline(pcb_pin_t * pv,pcb_coord_t clearance)
+{
+	int style = PCB_FLAG_SQUARE_GET(pv);
+
+	if (PCB_FLAG_TEST(PCB_FLAG_HOLE, pv) || (clearance == 0))
+		return;
+	
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pv))
+	{
+		
+		if((style==0) || (style==1))
+		{
+			pcb_coord_t w = pv->Thickness;
+			pcb_coord_t l = pv->X - (w/2);
+			pcb_coord_t b = pv->Y - (w/2);
+			pcb_coord_t r = l + w;
+			pcb_coord_t t = b + w;
+			pcb_coord_t lc = l - clearance;
+			pcb_coord_t bc = b - clearance;
+			pcb_coord_t rc = r + clearance;
+			pcb_coord_t tc = t + clearance;
+
+			pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
+			pcb_gui->set_line_width(pcb_crosshair.GC, 0); 
+			pcb_gui->draw_line(pcb_crosshair.GC, rc, t, rc, b);
+			pcb_gui->draw_line(pcb_crosshair.GC, lc, t, lc, b);
+ 			pcb_gui->draw_line(pcb_crosshair.GC, r, tc, l, tc);
+ 			pcb_gui->draw_line(pcb_crosshair.GC, r, bc, l, bc);
+			pcb_gui->draw_arc(pcb_crosshair.GC, r,b,clearance,clearance,180,90);
+			pcb_gui->draw_arc(pcb_crosshair.GC, r,t,clearance,clearance,90,90);
+			pcb_gui->draw_arc(pcb_crosshair.GC, l,b,clearance,clearance,270,90);
+			pcb_gui->draw_arc(pcb_crosshair.GC, l,t,clearance,clearance,0,90);
+		}
+		else
+			draw_pinvia_shape_drc_outline(pcb_crosshair.GC,pv->X,pv->Y,pv->Thickness,clearance,style);
+	}
+	else if (PCB_FLAG_TEST(PCB_FLAG_OCTAGON, pv))
+			draw_pinvia_shape_drc_outline(pcb_crosshair.GC,pv->X,pv->Y,pv->Thickness,clearance,17);
+	else
+	{
+			pcb_coord_t r = (pv->Thickness/2)+clearance;
+
+			pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
+			pcb_gui->set_line_width(pcb_crosshair.GC, 0); 
+			pcb_gui->draw_arc(pcb_crosshair.GC, pv->X, pv->Y, r, r, 0, 360);
+	}			
+}
+
+/* ---------------------------------------------------------------------------
  * draws additional stuff that follows the crosshair
  */
 void pcb_draw_attached(void)
@@ -525,9 +686,8 @@ void pcb_draw_attached(void)
 
 			if (conf_core.editor.show_drc) {
 				/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
-				via.Mask = conf_core.design.via_thickness + PCB->Bloat * 2;
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-				pcb_gui->thindraw_pcb_pv(pcb_crosshair.GC, pcb_crosshair.GC, &via, pcb_false, pcb_true);
+				XORDrawPinViaDRCOutline(&via,PCB->Bloat);
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;
@@ -1377,3 +1537,4 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 		pcb_notify_mark_change(pcb_true);
 	}
 }
+
