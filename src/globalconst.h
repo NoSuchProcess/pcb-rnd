@@ -50,17 +50,17 @@
 /* new array size that allows substrate layers */
 #define PCB_MAX_LAYERGRP     ((PCB_MAX_LAYER+8)*2)    /* max number of layer groups, a.k.a. physical layers: a few extra outer layers per side, pluse one substrate per real layer */
 #define PCB_MIN_LINESIZE     PCB_MIL_TO_COORD(0.01)	/* thickness of lines */
-#define PCB_MAX_LINESIZE     PCB_LARGE_VALUE
+#define PCB_MAX_LINESIZE     ((pcb_coord_t)PCB_LARGE_VALUE)
 #define PCB_MIN_ARCSIZE      PCB_MIL_TO_COORD(0.01)
-#define PCB_MAX_ARCSIZE      PCB_LARGE_VALUE
+#define PCB_MAX_ARCSIZE      ((pcb_coord_t)PCB_LARGE_VALUE)
 #define PCB_MIN_TEXTSCALE    10 /* scaling of text objects in percent */
 #define PCB_MAX_TEXTSCALE    10000
 #define PCB_MIN_PINORVIASIZE PCB_MIL_TO_COORD(20)	/* size of a pin or via */
 #define PCB_MIN_PINORVIAHOLE PCB_MIL_TO_COORD(4)	/* size of a pins or vias drilling hole */
-#define PCB_MAX_PINORVIASIZE PCB_LARGE_VALUE
+#define PCB_MAX_PINORVIASIZE ((pcb_coord_t)PCB_LARGE_VALUE)
 #define PCB_MIN_PINORVIACOPPER PCB_MIL_TO_COORD(4)	/* min difference outer-inner diameter */
 #define PCB_MIN_PADSIZE      PCB_MIL_TO_COORD(1)	/* min size of a pad */
-#define PCB_MAX_PADSIZE      PCB_LARGE_VALUE   /* max size of a pad */
+#define PCB_MAX_PADSIZE      ((pcb_coord_t)PCB_LARGE_VALUE)   /* max size of a pad */
 #define PCB_MIN_DRC_VALUE    PCB_MIL_TO_COORD(0.1)
 #define PCB_MAX_DRC_VALUE    PCB_MIL_TO_COORD(500)
 #define PCB_MIN_DRC_SILK     PCB_MIL_TO_COORD(1)
@@ -73,17 +73,13 @@
 #define PCB_MAX_GRID         PCB_MIL_TO_COORD(1000)
 #define PCB_MAX_FONTPOSITION 255 /* upper limit of characters in my font */
 
-#define PCB_MAX_COORD        PCB_LARGE_VALUE /* coordinate limits */
+#define PCB_MAX_COORD        ((pcb_coord_t)PCB_LARGE_VALUE) /* coordinate limits */
 #define PCB_MIN_SIZE         PCB_MIL_TO_COORD(10) /* lowest width and height of the board */
 #define PCB_MAX_BUFFER       5 /* number of pastebuffers additional changes in menu.c are also required to select more buffers */
 
 #define PCB_DEFAULT_DRILLINGHOLE 40 /* default inner/outer ratio for pins/vias in percent */
 
-#if PCB_MAX_LINESIZE > PCB_MAX_PINORVIASIZE	/* maximum size value */
-#define PCB_MAX_SIZE PCB_MAX_LINESIZE
-#else
-#define PCB_MAX_SIZE PCB_MAX_PINORVIASIZE
-#endif
+#define PCB_MAX_SIZE ((pcb_coord_t)PCB_LARGE_VALUE)
 
 #ifndef PCB_PATH_MAX   /* maximum path length */
 #ifdef PATH_MAX
