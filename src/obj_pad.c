@@ -207,9 +207,10 @@ void *ChangePadClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pa
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pad))
 		return (NULL);
-	value = MIN(PCB_MAX_LINESIZE, value);
 	if (value < 0)
 		value = 0;
+	else
+		value = MIN(PCB_MAX_LINESIZE, value);
 	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
 		value = 0;
 	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)

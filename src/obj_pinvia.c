@@ -415,9 +415,9 @@ void *ChangeViaClearSize(pcb_opctx_t *ctx, pcb_pin_t *Via)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Via))
 		return (NULL);
-	value = MIN(PCB_MAX_LINESIZE, value);
 	if (value < 0)
 		value = 0;
+	value = MIN(PCB_MAX_LINESIZE, value);
 	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
 		value = 0;
 	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)
@@ -470,9 +470,9 @@ void *ChangePinClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pin_t *Pi
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Pin))
 		return (NULL);
-	value = MIN(PCB_MAX_LINESIZE, value);
 	if (value < 0)
 		value = 0;
+	value = MIN(PCB_MAX_LINESIZE, value);
 	if (ctx->chgsize.delta < 0 && value < PCB->Bloat * 2)
 		value = 0;
 	if ((ctx->chgsize.delta > 0 || ctx->chgsize.absolute) && value < PCB->Bloat * 2)

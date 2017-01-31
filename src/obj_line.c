@@ -338,6 +338,8 @@ void *ChangeLineClearSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return (NULL);
+	if (value < 0)
+		value = 0;
 	value = MIN(PCB_MAX_LINESIZE, MAX(value, PCB->Bloat * 2 + 2));
 	if (value != Line->Clearance) {
 		pcb_undo_add_obj_to_clear_size(PCB_TYPE_LINE, Layer, Line, Line);
