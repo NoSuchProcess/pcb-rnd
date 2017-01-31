@@ -34,10 +34,10 @@
 
 /* notify the rest of the code after layer group changes so that the GUI
    and other parts sync up */
-static int suppress_notify = 0;
+static int inhibit_notify = 0;
 #define NOTIFY() \
 do { \
-	if (!suppress_notify) { \
+	if (!inhibit_notify) { \
 		pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL); \
 		if (pcb_gui != NULL) \
 			pcb_gui->invalidate_all(); \
@@ -268,9 +268,9 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_i
 				return &stack->grp[n];
 	}
 
-	suppress_notify++;
+	inhibit_notify++;
 	g = pcb_get_grp_new_intern_(stack, 0);
-	suppress_notify--;
+	inhibit_notify--;
 	g->intern_id = intern_id;
 	NOTIFY();
 	return g;
@@ -278,9 +278,9 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_i
 
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack)
 {
-	suppress_notify++;
+	inhibit_notify++;
 	pcb_layer_group_t *g = pcb_get_grp_new_intern_(stack, 1);
-	suppress_notify--;
+	inhibit_notify--;
 	NOTIFY();
 	return g;
 }
@@ -398,7 +398,7 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 	pcb_layer_group_t *g;
 	int n;
 
-	suppress_notify++;
+	inhibit_notify++;
 
 	/* clear struct */
 	pcb_layer_group_setup_default(LayerGroup);
@@ -452,12 +452,12 @@ int pcb_layer_parse_group_string(const char *grp_str, pcb_layer_stack_t *LayerGr
 	g = pcb_get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
 	pcb_layer_add_in_group_(g, g - LayerGroup->grp, LayerN-1);
 
-	suppress_notify--;
+	inhibit_notify--;
 	return 0;
 
 	/* reset structure on error */
 error:
-	suppress_notify--;
+	inhibit_notify--;
 	memset(LayerGroup, 0, sizeof(pcb_layer_stack_t));
 	return 1;
 }
