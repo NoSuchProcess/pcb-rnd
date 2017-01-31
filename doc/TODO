@@ -12,11 +12,8 @@
 		- autoroute stopped working
 		- gtk: replace the info text
 	- RTT/arc_angles.pcb:
-		- gtk draws non-full-circle
-		- also check lesstif
 		- even the UI logic seems to be broken
-		- maybe centralize the arc angle normlization and do both angles at once? Or do we already have something similar?
-	- load data from layout to paste buffer: 
+	- load data from layout to paste buffer:
 		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
 		- probably IDs are messed too: copy and paste new arc loaded that way a few times and it will disappear after other edits (silk)
 
