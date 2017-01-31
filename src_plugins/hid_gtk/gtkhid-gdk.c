@@ -630,6 +630,11 @@ void ghid_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t 
 	vrx = Vz(xradius);
 	vry = Vz(yradius);
 
+	if ((delta_angle > 360.0) || (delta_angle < -360.0)) {
+		start_angle = 0;
+		delta_angle = 360;
+	}
+
 	if (conf_core.editor.view.flip_x) {
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
