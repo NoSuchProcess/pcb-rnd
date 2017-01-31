@@ -724,6 +724,15 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
+int pcb_element_is_empty(pcb_element_t *Element)
+{
+	return
+		(pinlist_length(&Element->Pin) == 0)
+		&& (padlist_length(&Element->Pad) == 0)
+		&& (linelist_length(&Element->Line) == 0)
+		&& (arclist_length(&Element->Arc) == 0);
+}
+
 /* sets the bounding box of an elements */
 void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font)
 {

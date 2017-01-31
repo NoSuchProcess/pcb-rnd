@@ -62,6 +62,9 @@ void pcb_element_destroy(pcb_element_t * element);
 pcb_line_t *pcb_element_line_alloc(pcb_element_t *Element);
 
 
+/* returns non-zero if the element has no objects in it */
+int pcb_element_is_empty(pcb_element_t *Element);
+
 void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font);
 void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle);
