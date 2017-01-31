@@ -35,6 +35,8 @@
 #include "board.h"
 #include "layer.h"
 #include "data.h"
+#include "search.h"
+#include "compat_misc.h"
 
 /*
  * the board is shared between all routines.
@@ -90,7 +92,24 @@ pcb_bool layer_is_plane[PCB_MAX_LAYER];	/* whether layer is signal or plane laye
 pcb_coord_t layer_clearance[PCB_MAX_LAYER];	/* separation between fill copper and signals on layer */
 
 /* net */
+char *net_name;									/* name of current copper */
 pcb_coord_t net_clearance;			/* distance between PLANE polygon and net copper */
+
+/* padstack */
+/* XXX just implement the bare minimum */
+
+typedef struct padstack_s {
+	char *name;
+	pcb_coord_t thickness;
+	pcb_coord_t clearance;
+	pcb_coord_t mask;
+	pcb_coord_t drill_hole;
+	pcb_bool is_round;						/* round or rectangular */
+	struct padstack_s *next;
+} padstack_t;
+
+padstack_t *padstack_head;
+padstack_t *current_padstack;
 
 /* origin. Chosen so all coordinates are positive. */
 pcb_coord_t origin_x;
@@ -168,6 +187,10 @@ void hyp_init(void)
 		layer_clearance[n] = -1;		/* no separation between fill copper and signals on layer */
 	}
 
+	/* clear padstack */
+	padstack_head = NULL;
+	current_padstack = NULL;
+
 	/* set origin */
 	origin_x = 0;
 	origin_y = 0;
@@ -213,6 +236,352 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 void hyp_error(const char *msg)
 {
 	pcb_message(PCB_MSG_DEBUG, "line %d: %s at '%s'\n", hyylineno, msg, hyytext);
+}
+
+/*
+ * find padstack by name 
+ */
+
+padstack_t *hyp_padstack_by_name(char *padstack_name)
+{
+	padstack_t *i;
+	for (i = padstack_head; i != NULL; i = i->next)
+		if (strcmp(i->name, padstack_name) == 0)
+			return i;
+	return NULL;
+}
+
+/*
+ * add segment to board outline
+ */
+
+void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
+{
+	pcb_layer_id_t outline_id;
+	pcb_layer_t *outline_layer;
+
+	/* get outline layer */
+	outline_id = pcb_layer_by_name("outline");
+	if (outline_id < 0)
+		outline_id = pcb_layer_create(-1, "outline");
+	outline_layer = pcb_get_layer(outline_id);
+
+	if (outline_layer == NULL) {
+		pcb_printf("create outline layer failed.\n");
+		return;
+	}
+
+	/* mark segment as used, so we don't use it twice */
+	s->used = pcb_true;
+
+	/* debugging */
+	if (hyp_debug) {
+		if (forward)
+			pcb_printf("outline: fwd %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x1, s->y1, s->x2, s->y2);
+		else
+			pcb_printf("outline: bwd %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);	/* add segment back to front */
+	}
+
+	if (s->is_arc) {
+		/* counterclockwise arc from (x1, y1) to (x2, y2) */
+		hyp_arc_new(outline_layer, s->x1, s->y1, s->x2, s->y2, s->xc, s->yc, s->r, s->r, pcb_false, 1, 0, pcb_no_flags());
+	}
+	else
+		/* line from (x1, y1) to (x2, y2) */
+		pcb_line_new(outline_layer, s->x1, s->y1, s->x2, s->y2, 1, 0, pcb_no_flags());
+
+	return;
+}
+
+/* 
+ * Check whether point (end_x, end_y) is connected to point (begin_x, begin_y) via un-used segment s and other un-used segments.
+ */
+
+pcb_bool_t hyp_segment_connected(pcb_coord_t begin_x, pcb_coord_t begin_y, pcb_coord_t end_x, pcb_coord_t end_y, outline_t * s)
+{
+	outline_t *i;
+	pcb_bool_t connected;
+
+	connected = (begin_x == end_x) && (begin_y == end_y);	/* trivial case */
+
+	if (!connected) {
+		/* recursive descent */
+		s->used = pcb_true;
+
+		for (i = outline_head; i != NULL; i = i->next) {
+			if (i->used)
+				continue;
+			if ((i->x1 == begin_x) && (i->y1 == begin_y)) {
+				connected = ((i->x2 == end_x) && (i->y2 == end_y)) || hyp_segment_connected(i->x2, i->y2, end_x, end_y, i);
+				if (connected)
+					break;
+			}
+			/* try back-to-front */
+			if ((i->x2 == begin_x) && (i->y2 == begin_y)) {
+				connected = ((i->x1 == end_x) && (i->y1 == end_y)) || hyp_segment_connected(i->x1, i->y1, end_x, end_y, i);
+				if (connected)
+					break;
+			}
+		}
+
+		s->used = pcb_false;
+	}
+
+	return connected;
+}
+
+/* 
+ * Sets (origin_x, origin_y)
+ * Choose origin so that all coordinates are posive. 
+ */
+
+void hyp_set_origin()
+{
+	outline_t *i;
+
+	/* safe initial value */
+	if (outline_head != NULL) {
+		origin_x = outline_head->x1;
+		origin_y = outline_head->y1;
+	}
+	else {
+		origin_x = 0;
+		origin_y = 0;
+	}
+
+	/* choose upper left corner of outline */
+	for (i = outline_head; i != NULL; i = i->next) {
+		/* set origin so all coordinates are positive */
+		if (i->x1 < origin_x)
+			origin_x = i->x1;
+		if (i->x2 < origin_x)
+			origin_x = i->x2;
+		if (i->y1 > origin_y)
+			origin_y = i->y1;
+		if (i->y2 > origin_y)
+			origin_y = i->y2;
+		if (i->is_arc) {
+			if (i->xc - i->r < origin_x)
+				origin_x = i->xc - i->r;
+			if (i->yc + i->r > origin_y)
+				origin_y = i->yc + i->r;
+		}
+	}
+}
+
+/* 
+ * Draw board perimeter.
+ * The first segment is part of the first polygon.
+ * The first polygon of the board perimeter is positive, the rest are holes.
+ * Segments do not necessarily occur in order.
+ */
+
+void hyp_perimeter()
+{
+	pcb_bool_t warn_not_closed;
+	pcb_bool_t segment_found;
+	pcb_bool_t polygon_closed;
+	pcb_coord_t begin_x, begin_y, last_x, last_y;
+	outline_t *i;
+	outline_t *j;
+
+	warn_not_closed = pcb_false;
+
+	/* iterate over perimeter segments and adjust origin */
+	for (i = outline_head; i != NULL; i = i->next) {
+		/* set origin so all coordinates are positive */
+		i->x1 = i->x1 - origin_x;
+		i->y1 = origin_y - i->y1;
+		i->x2 = i->x2 - origin_x;
+		i->y2 = origin_y - i->y2;
+		if (i->is_arc) {
+			i->xc = i->xc - origin_x;
+			i->yc = origin_y - i->yc;
+		}
+	}
+
+	/* iterate over perimeter polygons */
+	while (pcb_true) {
+
+		/* find first free segment */
+		for (i = outline_head; i != NULL; i = i->next)
+			if (i->used == pcb_false)
+				break;
+
+		/* exit if no segments found */
+		if (i == NULL)
+			break;
+
+		/* first point of polygon (begin_x, begin_y) */
+		begin_x = i->x1;
+		begin_y = i->y1;
+
+		/* last point of polygon (last_x, last_y) */
+		last_x = i->x2;
+		last_y = i->y2;
+
+		/* add segment */
+		hyp_perimeter_segment_add(i, pcb_true);
+
+		/* add polygon segments until the polygon is closed */
+		polygon_closed = pcb_false;
+		while (!polygon_closed) {
+
+#undef XXX
+#ifdef XXX
+			pcb_printf("perimeter: last_x = %mm last_y = %mm\n", last_x, last_y);
+			for (i = outline_head; i != NULL; i = i->next)
+				if (!i->used)
+					pcb_printf("perimeter segments available: %s from (%mm, %mm) to (%mm, %mm)\n", i->is_arc ? "arc" : "line", i->x1,
+										 i->y1, i->x2, i->y2);
+#endif
+
+			/* find segment to add to current polygon */
+			segment_found = pcb_false;
+
+			/* XXX prefer closed polygon over open polyline */
+
+			for (i = outline_head; i != NULL; i = i->next) {
+				if (i->used)
+					continue;
+
+				if ((last_x == i->x1) && (last_y == i->y1)) {
+					if (!hyp_segment_connected(i->x2, i->y2, begin_x, begin_y, i))
+						continue;						/* XXX Checkme */
+					/* first point of segment is last point of current edge: add segment to edge */
+					segment_found = pcb_true;
+					hyp_perimeter_segment_add(i, pcb_true);
+					last_x = i->x2;
+					last_y = i->y2;
+				}
+				else if ((last_x == i->x2) && (last_y == i->y2)) {
+					if (!hyp_segment_connected(i->x1, i->y1, begin_x, begin_y, i))
+						continue;						/* XXX Checkme */
+					/* last point of segment is last point of current edge: add segment to edge back to front */
+					segment_found = pcb_true;
+					/* add segment back to front */
+					hyp_perimeter_segment_add(i, pcb_false);
+					last_x = i->x1;
+					last_y = i->y1;
+				}
+				if (segment_found)
+					break;
+			}
+			polygon_closed = (begin_x == last_x) && (begin_y == last_y);
+			if (!polygon_closed && !segment_found)
+				break;									/* can't find anything suitable */
+		}
+		if (polygon_closed) {
+			if (hyp_debug)
+				pcb_printf("outline: closed\n");
+		}
+		else {
+			if (hyp_debug)
+				pcb_printf("outline: open\n");
+			warn_not_closed = pcb_true;
+		}
+	}
+
+	/* free segment memory */
+	for (i = outline_head; i != NULL; i = j) {
+		j = i->next;
+		free(i);
+	}
+	outline_head = outline_tail = NULL;
+
+	if (warn_not_closed)
+		pcb_message(PCB_MSG_DEBUG, "warning: board outline not closed\n");
+
+	return;
+}
+
+/*
+ * Returns the pcb_layer_id of layer "lname". 
+ * If layer lname does not exist, a new copper layer with name "lname" is created.
+ * If the layer name is NULL, a new copper layer with a new, unused layer name is created.
+ */
+
+pcb_layer_id_t hyp_create_layer(char *lname)
+{
+	pcb_layer_id_t layer_id;
+	char new_layer_name[PCB_MAX_LAYER];
+	int n;
+
+	layer_id = -1;
+	if (lname != NULL) {
+		/* we have a layer name. check whether layer already exists */
+		layer_id = pcb_layer_by_name(lname);
+		if (layer_id >= 0)
+			return layer_id;					/* found */
+		/* create new layer */
+		if (hyp_debug)
+			pcb_printf("create layer \"%s\"\n", lname);
+		layer_id = pcb_layer_create(-1, pcb_strdup(lname));
+	}
+	else {
+		/* no layer name given. find unused layer name in range 1..PCB_MAX_LAYER */
+		for (n = 1; n < PCB_MAX_LAYER; n++) {
+			sprintf(new_layer_name, "%i", n);
+			if (pcb_layer_by_name(new_layer_name) < 0) {
+				/* create new layer */
+				if (hyp_debug)
+					pcb_printf("create new layer \"%s\"\n", lname);
+				layer_id = pcb_layer_create(-1, pcb_strdup(new_layer_name));
+				break;
+			}
+		}
+	}
+	/* check if layer valid */
+	if (layer_id < 0) {
+		/* layer creation failed. return the first copper layer you can find. */
+		if (hyp_debug)
+			pcb_printf("running out of layers\n");
+		layer_id = PCB_COMPONENT_SIDE;
+	}
+
+	return layer_id;
+}
+
+/*
+ * convert hyperlynx layer name to pcb layer
+ */
+
+pcb_layer_t *hyp_get_layer(parse_param * h)
+{
+	return pcb_get_layer(hyp_create_layer(h->layer_name));
+}
+
+/*
+ * calculate hyperlynx-style clearance
+ * 
+ * use plane_separation of, in order:
+ * - this copper
+ * - the net this copper belongs to
+ * - the layer this copper is on
+ * - the board
+ * if neither copper, net, layer nor board have plane_separation set, do not set clearance.
+ */
+
+pcb_coord_t hyp_clearance(parse_param * h)
+{
+	pcb_coord_t clearance;
+	pcb_layer_id_t layr_id;
+
+	layr_id = hyp_create_layer(h->layer_name);
+	clearance = -1;
+
+	if (h->plane_separation_set)
+		clearance = xy2coord(h->plane_separation);
+	else if (net_clearance >= 0)
+		clearance = net_clearance;
+	else if (layer_clearance[layr_id] >= 0)
+		clearance = layer_clearance[layr_id];
+	else if (board_clearance >= 0)
+		clearance = board_clearance;
+	else
+		clearance = 0;
+
+	return clearance;
 }
 
 /* exec_* routines are called by parser to interpret hyperlynx file */
@@ -302,7 +671,7 @@ pcb_bool exec_units(parse_param * h)
 
 pcb_bool exec_plane_sep(parse_param * h)
 {
-	board_clearance = m2coord(h->plane_separation);
+	board_clearance = xy2coord(h->plane_separation);
 
 	if (hyp_debug)
 		pcb_printf("plane_sep: default_plane_separation = %mm\n", board_clearance);
@@ -411,250 +780,6 @@ pcb_bool exec_board_attribute(parse_param * h)
 }
 
 /*
- * add segment to board outline
- */
-
-void perimeter_segment_add(outline_t * s, pcb_bool_t forward)
-{
-	pcb_layer_id_t outline_id;
-	pcb_layer_t *outline_layer;
-
-	/* get outline layer */
-	outline_id = pcb_layer_create_old(PCB_LYT_OUTLINE, pcb_false, pcb_false, NULL);
-	if (outline_id < 0)
-		outline_id = pcb_layer_create_old(PCB_LYT_OUTLINE, pcb_true, pcb_false, NULL);
-	outline_layer = pcb_get_layer(outline_id);
-
-	if (outline_layer == NULL) {
-		pcb_printf("create outline layer failed.\n");
-		return;
-	}
-
-	/* mark segment as used, so we don't use it twice */
-	s->used = pcb_true;
-
-	/* debugging */
-	if (hyp_debug) {
-		if (forward)
-			pcb_printf("outline: fwd %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x1, s->y1, s->x2, s->y2);
-		else
-			pcb_printf("outline: bwd %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);	/* add segment back to front */
-	}
-
-	if (s->is_arc) {
-		/* counterclockwise arc from (x1, y1) to (x2, y2) */
-		hyp_arc_new(outline_layer, s->x1, s->y1, s->x2, s->y2, s->xc, s->yc, s->r, s->r, pcb_false, 1, 0, pcb_no_flags());
-	}
-	else
-		/* line from (x1, y1) to (x2, y2) */
-		pcb_line_new(outline_layer, s->x1, s->y1, s->x2, s->y2, 1, 0, pcb_no_flags());
-
-	return;
-}
-
-/* 
- * Check whether point (end_x, end_y) is connected to point (begin_x, begin_y) via un-used segment s and other un-used segments.
- */
-
-pcb_bool_t segment_connected(pcb_coord_t begin_x, pcb_coord_t begin_y, pcb_coord_t end_x, pcb_coord_t end_y, outline_t * s)
-{
-	outline_t *i;
-	pcb_bool_t connected;
-
-	connected = (begin_x == end_x) && (begin_y == end_y);	/* trivial case */
-
-	if (!connected) {
-		/* recursive descent */
-		s->used = pcb_true;
-
-		for (i = outline_head; i != NULL; i = i->next) {
-			if (i->used)
-				continue;
-			if ((i->x1 == begin_x) && (i->y1 == begin_y)) {
-				connected = ((i->x2 == end_x) && (i->y2 == end_y)) || segment_connected(i->x2, i->y2, end_x, end_y, i);
-				if (connected)
-					break;
-			}
-			/* try back-to-front */
-			if ((i->x2 == begin_x) && (i->y2 == begin_y)) {
-				connected = ((i->x1 == end_x) && (i->y1 == end_y)) || segment_connected(i->x1, i->y1, end_x, end_y, i);
-				if (connected)
-					break;
-			}
-		}
-
-		s->used = pcb_false;
-	}
-
-	return connected;
-}
-
-/* 
- * Sets (origin_x, origin_y)
- * Choose origin so that all coordinates are posive. 
- */
-
-void hyp_set_origin()
-{
-	outline_t *i;
-
-	/* safe initial value */
-	if (outline_head != NULL) {
-		origin_x = outline_head->x1;
-		origin_y = outline_head->y1;
-	}
-	else {
-		origin_x = 0;
-		origin_y = 0;
-	}
-
-	/* choose upper left corner of outline */
-	for (i = outline_head; i != NULL; i = i->next) {
-		/* set origin so all coordinates are positive */
-		if (i->x1 < origin_x)
-			origin_x = i->x1;
-		if (i->x2 < origin_x)
-			origin_x = i->x2;
-		if (i->y1 > origin_y)
-			origin_y = i->y1;
-		if (i->y2 > origin_y)
-			origin_y = i->y2;
-		if (i->is_arc) {
-			if (i->xc - i->r < origin_x)
-				origin_x = i->xc - i->r;
-			if (i->yc + i->r > origin_y)
-				origin_y = i->yc + i->r;
-		}
-	}
-}
-
-/* 
- * Draw board perimeter.
- * The first segment is part of the first polygon.
- * The first polygon of the board perimeter is positive, the rest are holes.
- * Segments do not necessarily occur in order.
- */
-
-void hyp_perimeter()
-{
-	pcb_bool_t warn_not_closed;
-	pcb_bool_t segment_found;
-	pcb_bool_t polygon_closed;
-	pcb_coord_t begin_x, begin_y, last_x, last_y;
-	outline_t *i;
-	outline_t *j;
-
-	warn_not_closed = pcb_false;
-
-	/* iterate over perimeter segments and adjust origin */
-	for (i = outline_head; i != NULL; i = i->next) {
-		/* set origin so all coordinates are positive */
-		i->x1 = i->x1 - origin_x;
-		i->y1 = origin_y - i->y1;
-		i->x2 = i->x2 - origin_x;
-		i->y2 = origin_y - i->y2;
-		if (i->is_arc) {
-			i->xc = i->xc - origin_x;
-			i->yc = origin_y - i->yc;
-		}
-	}
-
-	/* iterate over perimeter polygons */
-	while (pcb_true) {
-
-		/* find first free segment */
-		for (i = outline_head; i != NULL; i = i->next)
-			if (i->used == pcb_false)
-				break;
-
-		/* exit if no segments found */
-		if (i == NULL)
-			break;
-
-		/* first point of polygon (begin_x, begin_y) */
-		begin_x = i->x1;
-		begin_y = i->y1;
-
-		/* last point of polygon (last_x, last_y) */
-		last_x = i->x2;
-		last_y = i->y2;
-
-		/* add segment */
-		perimeter_segment_add(i, pcb_true);
-
-		/* add polygon segments until the polygon is closed */
-		polygon_closed = pcb_false;
-		while (!polygon_closed) {
-
-#undef XXX
-#ifdef XXX
-			pcb_printf("perimeter: last_x = %mm last_y = %mm\n", last_x, last_y);
-			for (i = outline_head; i != NULL; i = i->next)
-				if (!i->used)
-					pcb_printf("perimeter segments available: %s from (%mm, %mm) to (%mm, %mm)\n", i->is_arc ? "arc" : "line", i->x1,
-										 i->y1, i->x2, i->y2);
-#endif
-
-			/* find segment to add to current polygon */
-			segment_found = pcb_false;
-
-			/* XXX prefer closed polygon over open polyline */
-
-			for (i = outline_head; i != NULL; i = i->next) {
-				if (i->used)
-					continue;
-
-				if ((last_x == i->x1) && (last_y == i->y1)) {
-					if (!segment_connected(i->x2, i->y2, begin_x, begin_y, i))
-						continue;						/* XXX Checkme */
-					/* first point of segment is last point of current edge: add segment to edge */
-					segment_found = pcb_true;
-					perimeter_segment_add(i, pcb_true);
-					last_x = i->x2;
-					last_y = i->y2;
-				}
-				else if ((last_x == i->x2) && (last_y == i->y2)) {
-					if (!segment_connected(i->x1, i->y1, begin_x, begin_y, i))
-						continue;						/* XXX Checkme */
-					/* last point of segment is last point of current edge: add segment to edge back to front */
-					segment_found = pcb_true;
-					/* add segment back to front */
-					perimeter_segment_add(i, pcb_false);
-					last_x = i->x1;
-					last_y = i->y1;
-				}
-				if (segment_found)
-					break;
-			}
-			polygon_closed = (begin_x == last_x) && (begin_y == last_y);
-			if (!polygon_closed && !segment_found)
-				break;									/* can't find anything suitable */
-		}
-		if (polygon_closed) {
-			if (hyp_debug)
-				pcb_printf("outline: closed\n");
-		}
-		else {
-			if (hyp_debug)
-				pcb_printf("outline: open\n");
-			warn_not_closed = pcb_true;
-		}
-	}
-
-	/* free segment memory */
-	for (i = outline_head; i != NULL; i = j) {
-		j = i->next;
-		free(i);
-	}
-	outline_head = outline_tail = NULL;
-
-	if (warn_not_closed)
-		pcb_message(PCB_MSG_DEBUG, "warning: board outline not closed\n");
-
-	return;
-}
-
-/*
  * Hyperlynx STACKUP section 
  */
 
@@ -706,60 +831,6 @@ pcb_bool exec_options(parse_param * h)
 	if (h->use_die_for_metal)
 		use_die_for_metal = pcb_true;
 	return 0;
-}
-
-/*
- * Returns the pcb_layer_id of layer "lname". 
- * If layer lname does not exist, a new copper layer with name "lname" is created.
- * If the layer name is NULL, a new copper layer with a new, unused layer name is created.
- */
-
-pcb_layer_id_t hyp_create_layer(char *lname)
-{
-	pcb_layer_id_t layer_id;
-	char new_layer_name[PCB_MAX_LAYER];
-	int n;
-
-	return PCB_COMPONENT_SIDE;		/* XXX XXX until layers stabilize */
-
-	layer_id = -1;
-	if (lname != NULL) {
-		/* we have a layer name. check whether layer already exists */
-		layer_id = pcb_layer_by_name(new_layer_name);
-		if (layer_id >= 0)
-			return layer_id;					/* found */
-		/* create new layer */
-		layer_id = pcb_layer_create_old(PCB_LYT_COPPER, pcb_false, pcb_false, lname);
-	}
-	else {
-		/* no layer name given. find unused layer name in range 1..PCB_MAX_LAYER */
-		for (n = 1; n < PCB_MAX_LAYER; n++) {
-			sprintf(new_layer_name, "%i", n);
-			if (pcb_layer_by_name(new_layer_name) < 0) {
-				/* create new layer */
-				layer_id = pcb_layer_create_old(PCB_LYT_COPPER, pcb_false, pcb_false, new_layer_name);
-				break;
-			}
-		}
-	}
-	/* check if layer valid */
-	if (layer_id < 0) {
-		/* layer creation failed. return the first copper layer you can find. */
-		if (hyp_debug)
-			pcb_printf("running out of layers\n");
-		layer_id = PCB_COMPONENT_SIDE;
-	}
-
-	return layer_id;
-}
-
-/*
- * convert hyperlynx layer name to pcb layer
- */
-
-pcb_layer_t *hyp_get_layer(parse_param * h)
-{
-	return pcb_get_layer(hyp_create_layer(h->layer_name));
 }
 
 /*
@@ -821,6 +892,14 @@ pcb_bool exec_plane(parse_param * h)
 
 pcb_bool exec_devices(parse_param * h)
 {
+	char *description = NULL;
+	char *name = NULL;
+	char *value = NULL;
+	pcb_coord_t text_x = 0;
+	pcb_coord_t text_y = 0;
+	pcb_uint8_t text_direction = 0;
+	int text_scale = 100;
+
 	if (hyp_debug) {
 		pcb_printf("device: device_type = \"%s\" ref = \"%s\"", h->device_type, h->ref);
 		if (h->name_set)
@@ -835,6 +914,27 @@ pcb_bool exec_devices(parse_param * h)
 			pcb_printf(" package = \"%s\"", h->package);
 		pcb_printf("\n");
 	}
+
+	/* create pcb element */
+	if (h->name_set)
+		description = pcb_strdup(h->name);
+	else
+		description = pcb_strdup("?");
+	name = pcb_strdup(h->ref);
+	value = pcb_strdup("?");
+	if (h->value_string_set)
+		value = pcb_strdup(h->value_string);
+	if (h->value_float_set) {
+		/* convert double to string */
+		value = (char *) malloc(128);
+		if (value != NULL)
+			pcb_snprintf(value, sizeof(value), "%f", h->value_float);
+	}
+
+	/* place the device at (0.0) for the moment being. when a pin is assigned, move the position to the pin position */
+
+	pcb_element_new(hyp_dest, NULL, &PCB->Font, pcb_no_flags(), description, name, value, text_x, text_y, text_direction,
+									text_scale, pcb_no_flags(), pcb_false);
 
 	return 0;
 }
@@ -912,6 +1012,27 @@ pcb_bool exec_padstack_element(parse_param * h)
 		pcb_printf("\n");
 	}
 
+
+	/* XXX fixme. This reduces the padstack to the pcb_via_new; a very rough approximation of what a padstack is. */
+
+	if (h->padstack_name_set) {
+		current_padstack = malloc(sizeof(padstack_t));
+		if (current_padstack == NULL)
+			return 1;
+		current_padstack->name = pcb_strdup(h->padstack_name);
+		current_padstack->thickness = xy2coord(h->pad_sx);
+		current_padstack->clearance = 0;
+		current_padstack->mask = xy2coord(h->pad_sx);
+		current_padstack->drill_hole = xy2coord(h->drill_size);
+		current_padstack->is_round = (h->pad_shape != 1);
+	}
+
+	if ((current_padstack != NULL) && h->pad_type_set & (h->pad_type == PAD_TYPE_THERMAL_RELIEF)) {
+		current_padstack->clearance = xy2coord(h->thermal_clear_sx) - current_padstack->thickness;
+		if (current_padstack->clearance < 0)
+			current_padstack->clearance = 0;
+	}
+
 	return 0;
 }
 
@@ -920,6 +1041,13 @@ pcb_bool exec_padstack_end(parse_param * h)
 {
 	if (hyp_debug)
 		pcb_printf("padstack_end\n");
+
+	/* add current padstack to list of padstacks */
+	if (current_padstack != NULL) {
+		current_padstack->next = padstack_head;
+		padstack_head = current_padstack;
+		current_padstack = NULL;
+	}
 
 	return 0;
 }
@@ -940,6 +1068,7 @@ pcb_bool exec_net_plane_separation(parse_param * h)
 	if (hyp_debug)
 		pcb_printf("net_plane_separation: plane_separation = %mm\n", xy2coord(h->plane_separation));
 
+	net_name = pcb_strdup(h->net_name);
 	net_clearance = xy2coord(h->plane_separation);
 
 	return 0;
@@ -954,39 +1083,6 @@ pcb_bool exec_net_attribute(parse_param * h)
 }
 
 /*
- * calculate hyperlynx-style clearance
- * 
- * use plane_separation of, in order:
- * - this copper
- * - the net this copper belongs to
- * - the layer this copper is on
- * - the board
- * if neither copper, net, layer nor board have plane_separation set, do not set clearance.
- */
-
-pcb_coord_t hyp_clearance(parse_param * h)
-{
-	pcb_coord_t clearance;
-	pcb_layer_id_t layr_id;
-
-	layr_id = hyp_create_layer(h->layer_name);
-	clearance = -1;
-
-	if (h->plane_separation_set)
-		clearance = xy2coord(h->plane_separation);
-	else if (net_clearance >= 0)
-		clearance = net_clearance;
-	else if (layer_clearance[layr_id] >= 0)
-		clearance = layer_clearance[layr_id];
-	else if (board_clearance >= 0)
-		clearance = board_clearance;
-	else
-		clearance = 0;
-
-	return clearance;
-}
-
-/*
  * SEG subrecord of NET record.
  * line segment 
  */
@@ -994,7 +1090,7 @@ pcb_coord_t hyp_clearance(parse_param * h)
 pcb_bool exec_seg(parse_param * h)
 {
 	if (hyp_debug) {
-		pcb_printf("seg: x1 = %mm y1 = %mm x2 = %mm y2 = %mm ", xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2));
+		pcb_printf("seg: x1 = %mm y1 = %mm x2 = %mm y2 = %mm ", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2));
 		pcb_printf(" width = %mm layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
 		if (h->plane_separation_set)
 			pcb_printf(" plane_separation = %mm ", xy2coord(h->plane_separation));
@@ -1003,7 +1099,7 @@ pcb_bool exec_seg(parse_param * h)
 		pcb_printf("\n");
 	}
 
-	pcb_line_new(hyp_get_layer(h), xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2), xy2coord(h->width),
+	pcb_line_new(hyp_get_layer(h), x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), xy2coord(h->width),
 							 hyp_clearance(h), pcb_no_flags());
 
 	return 0;
@@ -1019,8 +1115,8 @@ pcb_bool exec_arc(parse_param * h)
 /* XXX checkme */
 
 	if (hyp_debug) {
-		pcb_printf("arc: x1 = %mm y1 = %mm x2 = %mm y2 = %mm", xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2));
-		pcb_printf(" xc = %mm yc = %mm r = %mm", xy2coord(h->xc), xy2coord(h->yc), xy2coord(h->r));
+		pcb_printf("arc: x1 = %mm y1 = %mm x2 = %mm y2 = %mm", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2));
+		pcb_printf(" xc = %mm yc = %mm r = %mm", x2coord(h->xc), y2coord(h->yc), xy2coord(h->r));
 		pcb_printf(" width = %mm layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
 		if (h->plane_separation_set)
 			pcb_printf(" plane_separation = %mm", xy2coord(h->plane_separation));
@@ -1029,8 +1125,8 @@ pcb_bool exec_arc(parse_param * h)
 		pcb_printf("\n");
 	}
 
-	hyp_arc_new(hyp_get_layer(h), xy2coord(h->x1), xy2coord(h->y1), xy2coord(h->x2), xy2coord(h->y2), xy2coord(h->xc),
-							xy2coord(h->yc), xy2coord(h->r), xy2coord(h->r), pcb_true, xy2coord(h->width), hyp_clearance(h), pcb_no_flags());
+	hyp_arc_new(hyp_get_layer(h), x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), x2coord(h->xc),
+							y2coord(h->yc), xy2coord(h->r), xy2coord(h->r), pcb_true, xy2coord(h->width), hyp_clearance(h), pcb_no_flags());
 
 	return 0;
 }
@@ -1042,8 +1138,11 @@ pcb_bool exec_arc(parse_param * h)
 
 pcb_bool exec_via(parse_param * h)
 {
+	padstack_t *padstack;
+  pcb_flag_t flags;
+
 	if (hyp_debug) {
-		pcb_printf("via: x = %mm y = %mm", xy2coord(h->x), xy2coord(h->y));
+		pcb_printf("via: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
 		if (h->layer1_name_set)
 			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
 		if (h->layer2_name_set)
@@ -1051,6 +1150,17 @@ pcb_bool exec_via(parse_param * h)
 		pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
 		pcb_printf("\n");
 	}
+
+	padstack = hyp_padstack_by_name(h->padstack_name);
+	if (padstack == NULL) {
+		pcb_printf(" padstack \"%s\" not found. skipping via\n", h->padstack_name);
+		return 0;
+	}
+ 
+  if (padstack->is_round) flags = pcb_no_flags(); else flags = pcb_flag_make(PCB_FLAG_SQUARE); 
+
+	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
+							padstack->drill_hole, "", flags);
 
 	return 0;
 }
@@ -1062,8 +1172,15 @@ pcb_bool exec_via(parse_param * h)
 
 pcb_bool exec_via_v1(parse_param * h)
 {
+	pcb_coord_t thickness;
+	pcb_coord_t clearance;
+	pcb_coord_t mask;
+	pcb_coord_t drill_hole;
+	pcb_bool_t is_round;
+  pcb_flag_t flags;
+
 	if (hyp_debug) {
-		pcb_printf("via: x = %mm y = %mm", xy2coord(h->x), xy2coord(h->y));
+		pcb_printf("via: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
 		pcb_printf(" drill_size = %mm", xy2coord(h->drill_size));
 		if (h->layer1_name_set)
 			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
@@ -1076,6 +1193,16 @@ pcb_bool exec_via_v1(parse_param * h)
 		pcb_printf("\n");
 	}
 
+	thickness = xy2coord(h->pad_sx);
+	clearance = hyp_clearance(h);
+	mask = xy2coord(h->pad1_sx);
+	drill_hole = xy2coord(h->drill_size);
+	is_round = strcmp(h->pad1_shape, "RECT");
+
+  if (is_round) flags = pcb_no_flags(); else flags = pcb_flag_make(PCB_FLAG_SQUARE); 
+
+	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, drill_hole, "", flags);
+
 	return 0;
 }
 
@@ -1086,14 +1213,65 @@ pcb_bool exec_via_v1(parse_param * h)
 
 pcb_bool exec_pin(parse_param * h)
 {
+	pcb_element_t *component;
+  pcb_flag_t flags;
+	padstack_t *padstack;
+	char *component_name = NULL;
+	char *pin_name = NULL;
+	char *dot = NULL;
+	char *pin_net_name = NULL;
+
 	if (hyp_debug) {
-		pcb_printf("pin: x = %mm y = %mm", xy2coord(h->x), xy2coord(h->y));
-		pcb_printf(" pin_reference \"%s\"= ", h->pin_reference);
+		pcb_printf("pin: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
+		pcb_printf(" pin_reference = \"%s\"", h->pin_reference);
 		pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
 		if (h->pin_function_set)
 			pcb_printf(" pin_function = %i", h->pin_function);
 		pcb_printf("\n");
 	}
+
+	if (net_name != NULL)
+		pin_net_name = pcb_strdup(net_name);
+	else
+		pin_net_name = pcb_strdup("?");
+
+	/* h->pin_reference has format 'component_name.pin_name' */
+	component_name = pcb_strdup(h->pin_reference);
+	pin_name = pcb_strdup("?");
+	dot = strrchr(component_name, '.');
+	if (dot != NULL) {
+		*dot = '\0';
+		pin_name = pcb_strdup(dot + 1);
+		if (hyp_debug)
+			pcb_printf("pin: component_name = \"%s\" pin_name = \"%s\"\n", component_name, pin_name);
+	}
+
+	/* find component by name */
+	component = pcb_search_elem_by_name(hyp_dest, component_name);
+	if (component == NULL) {
+		pcb_printf(" component \"%s\" not found. skipping pin \"%s\"\n", component_name, h->pin_reference);
+		return 0;
+	}
+
+#ifdef XXX
+	/* XXX causes crash */
+	/* move component to pin location */
+	pcb_element_move(hyp_dest, component, x2coord(h->x), y2coord(h->y));
+#endif
+
+	/* find padstack */
+	padstack = hyp_padstack_by_name(h->padstack_name);
+	if (padstack == NULL) {
+		pcb_printf(" padstack \"%s\" not found. skipping pin \"%s\"\n", h->padstack_name, h->pin_reference);
+		return 0;
+	}
+
+	/* add new pin */
+
+  if (padstack->is_round) flags = pcb_no_flags(); else flags = pcb_flag_make(PCB_FLAG_SQUARE); 
+
+	pcb_element_pin_new(component, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
+											padstack->drill_hole, pin_net_name, pin_name, flags);
 
 	return 0;
 }
