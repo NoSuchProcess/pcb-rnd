@@ -1015,6 +1015,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int throughHole = 0;
 	int foundRefdes = 0;
 	int refdesScaling  = 100;
+	int moduleEmpty = 1;
 	unsigned long tally = 0, featureTally, required;
 	pcb_coord_t moduleX, moduleY, X, Y, X1, Y1, X2, Y2, centreX, centreY, endX, endY, width, height, Thickness, Clearance, padXsize, padYsize, drill, refdesX, refdesY;
 	pcb_angle_t startAngle = 0.0;
@@ -1312,7 +1313,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		}
 
 		if (moduleValue != NULL && moduleRefdes != NULL && moduleName != NULL && moduleDefined == 0) {
-			moduleDefined = 1;
+			moduleDefined = 1; /* but might be empty, wait and see */
 			printf("now have RefDes %s and Value %s, can now define module/element %s\n", moduleRefdes, moduleValue, moduleName);
 			newModule = pcb_element_new(st->PCB->Data, NULL,
 								 &st->PCB->Font, Flags,
@@ -1520,6 +1521,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					printf("\tcreating new pin %s in element\n", pinName);
 					required = BV(0) | BV(1) | BV(3) | BV(5);
         				if ((featureTally & required) == required) {
+						moduleEmpty = 0;
 						pcb_element_pin_new(newModule, X + moduleX, Y + moduleY, padXsize, Clearance,
 								Clearance, drill, pinName, pinName, Flags); /* using clearance value for arg 5 = mask too */
 					} else {
@@ -1528,7 +1530,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				} else if (newModule != NULL) {
 					printf("\tcreating new pad %s in element\n", pinName);
                                         required = BV(0) | BV(1) | BV(2) | BV(5);
-                                        if ((featureTally & required) == required) {	
+                                        if ((featureTally & required) == required) {
 						if (padXsize >= padYsize) { /* square pad or rectangular pad, wider than tall */
 							Y1 = Y2 = Y;
 							X1 = X - (padXsize - padYsize)/2;
@@ -1549,6 +1551,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						} else {
 							Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 						}
+						moduleEmpty = 0;
 						pcb_element_pad_new(newModule, X1 + moduleX, Y1 + moduleY, X2 + moduleX, Y2 + moduleY, Thickness, Clearance, 
 								Clearance, pinName, pinName, Flags); /* using clearance value for arg 7 = mask too */
 					} else {
@@ -1671,6 +1674,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(3) | BV(6) | BV(8);
 	if (((featureTally & required) == required) && newModule != NULL) { /* need start, end, layer, thickness at a minimum */
+		moduleEmpty = 0;
 		pcb_element_line_new(newModule, X1, Y1, X2, Y2, Thickness);
 		pcb_printf("\tnew fp_line on layer created\n");
 	}
@@ -1822,6 +1826,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	}
         required = BV(0) | BV(6) | BV(8);
         if (((featureTally & required) == required) && newModule != NULL) {
+		moduleEmpty = 0;
 		/* need start, layer, thickness at a minimum */
 		width = height = pcb_distance(centreX, centreY, endX, endY); /* calculate radius of arc */
 		if (width < 1) { /* degenerate case */
@@ -1855,6 +1860,11 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		}
 
 		if (newModule != NULL) {
+			if (moduleEmpty) {
+				Thickness = PCB_MM_TO_COORD(0.200);
+				pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
+				pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
+			}
 			pcb_element_bbox(PCB->Data, newModule, &PCB->Font);
 			return 0; 
 		} else {
