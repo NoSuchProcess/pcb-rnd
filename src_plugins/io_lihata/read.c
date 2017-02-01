@@ -536,8 +536,9 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	lht_node_t *n, *lst;
 	lht_dom_iterator_t it;
 
-	pcb_layer_t *ly = &dt->Layer[dt->LayerN];
-	dt->LayerN++;
+	pcb_layer_t *ly = &dt->Layer[layer_id];
+	if (layer_id >= dt->LayerN)
+		dt->LayerN = layer_id+1;
 
 	ly->Name = pcb_strdup(grp->name);
 
@@ -545,8 +546,8 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	if (pcb != NULL) {
 		int grp_id;
 		parse_int(&grp_id, lht_dom_hash_get(grp, "group"));
-		pcb->Data->Layer[layer_id].grp = grp_id;
-		/*pcb_trace("parse_data_layer name: %d '%s' grp=%d\n", dt->LayerN-1, ly->Name, grp_id);*/
+		dt->Layer[layer_id].grp = grp_id;
+/*		pcb_trace("parse_data_layer name: %d,%d '%s' grp=%d\n", layer_id, dt->LayerN-1, ly->Name, grp_id);*/
 	}
 
 	lst = lht_dom_hash_get(grp, "objects");
@@ -732,25 +733,22 @@ static void layer_fixup(pcb_board_t *pcb)
 
 /*	pcb_trace("NAME: '%s' '%s'\n", pcb->Data->Layer[pcb->Data->LayerN-1].Name,pcb->Data->Layer[pcb->Data->LayerN-2].Name);*/
 
-	for(n = 0; n < pcb->Data->LayerN-2; n++) {
+	for(n = 0; n < pcb->Data->LayerN - 2; n++) {
 		pcb_layer_t *l = &pcb->Data->Layer[n];
-		if (l->grp >= 0) {
+		pcb_layergrp_id_t grp = l->grp;
+		/*pcb_trace("********* l=%d %s g=%ld (top=%ld bottom=%ld)\n", n, l->Name, grp, top_silk, bottom_silk);*/
+		l->grp = -1;
 
-			pcb_layergrp_id_t grp = l->grp;
-/*			pcb_trace("********* l=%d g=%ld (top=%ld bottom=%ld)\n", n, grp, top_silk, bottom_silk);*/
-			l->grp = -1;
-
-			if (grp == bottom_silk)
-				g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
-			else if (grp == top_silk)
-				g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
-			else
-				g = pcb_get_grp_new_intern(&pcb->LayerGroups, grp);
+		if (grp == bottom_silk)
+			g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
+		else if (grp == top_silk)
+			g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
+		else
+			g = pcb_get_grp_new_intern(&pcb->LayerGroups, grp);
 /*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.grp);*/
-			pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, n);
-			if (strcmp(l->Name, "outline") == 0)
-				pcb_layergrp_fix_turn_to_outline(g);
-		}
+		pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, n);
+		if (strcmp(l->Name, "outline") == 0)
+			pcb_layergrp_fix_turn_to_outline(g);
 	}
 
 	pcb_layergrp_fix_old_outline(&pcb->LayerGroups);
