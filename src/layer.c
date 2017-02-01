@@ -549,7 +549,8 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 
 int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 {
-	int l, g;
+	pcb_layer_id_t l;
+	pcb_layergrp_id_t g;
 	pcb_layer_t saved_layer;
 
 	pcb_undo_add_layer_move(old_index, new_index);
