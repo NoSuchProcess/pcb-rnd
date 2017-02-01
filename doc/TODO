@@ -9,7 +9,6 @@
 	- gtk rendering: zoom in much and arcs are rendered a bit larger/smaller [report: Evan]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- layer rewrite bug:
-		- autoroute stopped working
 		- gtk: replace the info text
 	- load data from layout to paste buffer:
 		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
