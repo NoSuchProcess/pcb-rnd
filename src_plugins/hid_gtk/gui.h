@@ -206,14 +206,11 @@ void ghid_status_line_set_text(const gchar * text);
 void ghid_cursor_position_label_set_text(gchar * text);
 void ghid_cursor_position_relative_label_set_text(gchar * text);
 
-void ghid_hand_cursor(void);
-void ghid_point_cursor(void);
-void ghid_watch_cursor(void);
-void ghid_mode_cursor(gint mode);
-void ghid_corner_cursor(void);
-void ghid_restore_cursor(void);
-void ghid_get_pointer(gint *, gint *);
-
+/* in_mouse.c static variables
+*/
+extern GdkPixmap *XC_hand_source, *XC_hand_mask;
+extern GdkPixmap *XC_lock_source, *XC_lock_mask;
+extern GdkPixmap *XC_clock_source, *XC_clock_mask;
 
 /* gui-output-events.c function prototypes.
 */
@@ -353,11 +350,6 @@ void ghid_finish_debug_draw(void);
 
 void ghid_lead_user_to_location(pcb_coord_t x, pcb_coord_t y);
 void ghid_cancel_lead_user(void);
-
-
-extern GdkPixmap *XC_hand_source, *XC_hand_mask;
-extern GdkPixmap *XC_lock_source, *XC_lock_mask;
-extern GdkPixmap *XC_clock_source, *XC_clock_mask;
 
 
 /* Coordinate conversions */
