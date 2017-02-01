@@ -473,7 +473,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 
 	char *end;
 	double val;
-	pcb_coord_t centreX, centreY, endX, endY, width, height, Thickness, Clearance;
+	pcb_coord_t centreX, centreY, endX, endY, width, height, Thickness, Clearance, deltaX, deltaY;
 	pcb_angle_t startAngle = 0.0;
 	pcb_angle_t endAngle= 0.0;
 	pcb_angle_t delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
@@ -611,10 +611,12 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
         required = BV(0) | BV(1) | BV(2) | BV(3); /* | BV(4); not needed for circles */
         if ((tally & required) == required) { /* need start, end, layer, thickness at a minimum */
 		width = height = pcb_distance(centreX, centreY, endX, endY); /* calculate radius of arc */
+		deltaX = endX - centreX;
+		deltaY = endY - centreY;
 		if (width < 1) { /* degenerate case */
 			startAngle = 0;
 		} else {
-			endAngle = 180*atan2(-(endY - centreY), endX - centreX)/M_PI;
+			endAngle = 180+180*atan2(-deltaY, deltaX)/M_PI;
 			pcb_printf("\tcalculated end angle: '%f'\n", endAngle);
 			/* avoid using atan2 with zero parameters */
 		
@@ -622,7 +624,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 				endAngle += 360.0; /*make it 0...360 */
 				pcb_printf("\tadjusted end angle: '%f'\n", endAngle);
 			}
-			startAngle = (endAngle + delta); /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
+			startAngle = (endAngle - delta); /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
 			pcb_printf("\tcalculated start angle: '%f'\n", startAngle);
 			if (startAngle > 360.0) {
 				startAngle -= 360.0;
@@ -1844,17 +1846,18 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
         if (((featureTally & required) == required) && newModule != NULL) {
 		moduleEmpty = 0;
 		/* need start, layer, thickness at a minimum */
+		/* same code used above for gr_arc parsing */
 		width = height = pcb_distance(centreX, centreY, endX, endY); /* calculate radius of arc */
 		if (width < 1) { /* degenerate case */
 			startAngle = 0;
 		} else {
-			endAngle = 180*atan2(-(endY - centreY), endX - centreX)/M_PI; /* avoid using atan2 with zero parameters */
+			endAngle = 180+180*atan2(-(endY - centreY), endX - centreX)/M_PI; /* avoid using atan2 with zero parameters */
 			pcb_printf("\tcalculated end angle: '%f'\n", endAngle);
 			if (endAngle < 0.0) {
 				endAngle += 360.0; /*make it 0...360 */
 				pcb_printf("\tadjusted end angle: '%f'\n", endAngle);
 			}
-			startAngle = (endAngle + delta); /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
+			startAngle = (endAngle - delta); /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
 			pcb_printf("\tcalculated start angle: '%f'\n", startAngle);
 			if (startAngle > 360.0) {
 				startAngle -= 360.0;
