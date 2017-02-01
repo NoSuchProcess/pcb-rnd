@@ -288,8 +288,9 @@ pcb_layer_group_t *pcb_get_grp_new_intern(pcb_layer_stack_t *stack, int intern_i
 
 pcb_layer_group_t *pcb_get_grp_new_misc(pcb_layer_stack_t *stack)
 {
+	pcb_layer_group_t *g;
 	inhibit_notify++;
-	pcb_layer_group_t *g = pcb_get_grp_new_intern_(stack, 1);
+	g = pcb_get_grp_new_intern_(stack, 1);
 	inhibit_notify--;
 	NOTIFY();
 	return g;
