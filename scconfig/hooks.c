@@ -300,11 +300,12 @@ int safe_atoi(const char *s)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int want_glib = 0, want_gtk, want_gd, want_stroke, need_inl = 0;
+	int want_glib = 0, want_gtk, want_gd, want_stroke, need_inl = 0, want_cairo;
 
 	want_gtk    = plug_is_enabled("hid_gtk");
 	want_gd     = plug_is_enabled("export_png") ||  plug_is_enabled("export_nelma") ||  plug_is_enabled("export_gcode");
 	want_stroke = plug_is_enabled("stroke");
+	want_cairo  = plug_is_enabled("export_bboard");
 
 	require("cc/fpic",  0, 1);
 	require("signal/names/*",  0, 0);
@@ -368,6 +369,14 @@ int hook_detect_target()
 			report_repeat("WARNING: Since there's no libgtk2 found, disabling the gtk hid and lib_gtk_common...\n");
 			hook_custom_arg("Disable-hid_gtk", NULL);
 			hook_custom_arg("Disable-lib_gtk_common", NULL);
+		}
+	}
+
+	if (want_cairo) {
+		require("libs/gui/cairo/presents", 0, 0);
+		if (!istrue(get("libs/gui/cairo/presents"))) {
+			report_repeat("WARNING: Since there's no cairo found, disabling the export_bboard plugin...\n");
+			hook_custom_arg("Disable-export_bboard", NULL);
 		}
 	}
 
