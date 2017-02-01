@@ -553,8 +553,6 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 	pcb_layergrp_id_t g;
 	pcb_layer_t saved_layer;
 
-	pcb_undo_add_layer_move(old_index, new_index);
-	pcb_undo_inc_serial();
 
 	if (old_index < -1 || old_index >= pcb_max_layer) {
 		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb_max_layer - 1);
@@ -576,6 +574,9 @@ int pcb_layer_move(pcb_layer_id_t old_index, pcb_layer_id_t new_index)
 		pcb_gui->confirm_dialog("You can't delete the last bottom-side layer\n", "Ok", NULL);
 		return 1;
 	}
+
+	pcb_undo_add_layer_move(old_index, new_index);
+	pcb_undo_inc_serial();
 
 	if (old_index == -1) { /* insert new layer */
 		pcb_layergrp_id_t gid;
