@@ -228,6 +228,18 @@ void hyp_init(void)
 	padstack_head = NULL;
 	current_padstack = NULL;
 
+	/* clear polygon data */
+	polygon_head = NULL;
+	current_polygon = NULL;
+	poly_state = HYP_POLYIDLE;
+
+/* clear polyline data */
+	current_polyline_layer = NULL;
+	current_polyline_xpos = 0;
+	current_polyline_ypos = 0;
+	current_polyline_width = 0;
+	current_polyline_clearance = 0;
+
 	/* set origin */
 	origin_x = 0;
 	origin_y = 0;
@@ -260,8 +272,8 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	retval = hyyparse();
 	fclose(hyyin);
 
-  /* finish setting up polygons */
-  hyp_create_polygons();
+	/* finish setting up polygons */
+	hyp_create_polygons();
 
 	/* add board outline last */
 	hyp_perimeter();
@@ -601,11 +613,11 @@ void hyp_create_polygons()
 
 	/* look up polygon with this id */
 	for (i = polygon_head; i != NULL; i = i->next)
-			if ((i->is_polygon) && (i->polygon != NULL) && (i->layer != NULL)){
-        pcb_add_polygon_on_layer(i->layer, i->polygon);
-        pcb_poly_init_clip(hyp_dest, i->layer, i->polygon);
-       }
- return;
+		if ((i->is_polygon) && (i->polygon != NULL) && (i->layer != NULL)) {
+			pcb_add_polygon_on_layer(i->layer, i->polygon);
+			pcb_poly_init_clip(hyp_dest, i->layer, i->polygon);
+		}
+	return;
 }
 
 /*
