@@ -91,7 +91,7 @@ int pcb_layergrp_del_layer(pcb_layergrp_id_t gid, pcb_layer_id_t lid)
 		if (grp->lid[n] == lid) {
 			int remain = grp->len - n - 1;
 			if (remain > 0)
-				memmove(&grp->lid[n], &grp->lid[n+1], remain * sizeof(int));
+				memmove(&grp->lid[n], &grp->lid[n+1], remain * sizeof(pcb_layer_id_t));
 			grp->len--;
 			layer->grp = -1;
 			NOTIFY();
