@@ -57,19 +57,8 @@
 #include "hid_flags.h"
 
 #define PNG_SCALE_HACK1 0
-
-#ifndef OLD2
-/* do not round, floor() - this is how the old code behaved on the platform we
-   are couting pixels for validation. After the validation we should probably
-   switch to pcb_round() if the 1 pixel errors are within the range */
-#define pcb_hack_round(d) ( \
-		(fabs(d - pcb_round(d)) < 0.00001) ? \
-		d : floor(d) \
-	)
-#else
-#	include "compat_misc.h"
-#	define pcb_hack_round(d) pcb_round(d)
-#endif
+#include "compat_misc.h"
+#define pcb_hack_round(d) pcb_round(d)
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", func); abort()
 
