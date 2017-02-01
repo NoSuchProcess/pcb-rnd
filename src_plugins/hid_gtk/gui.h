@@ -212,9 +212,6 @@ void ghid_watch_cursor(void);
 void ghid_mode_cursor(gint mode);
 void ghid_corner_cursor(void);
 void ghid_restore_cursor(void);
-void ghid_create_abort_dialog(gchar *);
-gboolean ghid_check_abort(void);
-void ghid_end_abort(void);
 void ghid_get_pointer(gint *, gint *);
 
 

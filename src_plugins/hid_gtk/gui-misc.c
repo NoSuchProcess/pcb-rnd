@@ -338,21 +338,6 @@ void ghid_get_user_xy(const char *msg)
 	run_get_location_loop(msg);
 }
 
-	/* XXX The abort dialog isn't implemented yet in the Gtk port
-	 */
-void ghid_create_abort_dialog(char *msg)
-{
-}
-
-gboolean ghid_check_abort(void)
-{
-	return FALSE;									/* Abort isn't implemented, so never abort */
-}
-
-void ghid_end_abort(void)
-{
-}
-
 void ghid_get_pointer(int *x, int *y)
 {
 	gint xp, yp;
