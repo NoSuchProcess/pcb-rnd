@@ -686,12 +686,12 @@ pcb_box_t *pcb_arc_get_ends(pcb_arc_t *Arc); */
 			pcb_arc_get_end(&localArc, 0, &copperStartX, &copperStartY);
 			copperStartX += xOffset;
 			copperStartY += yOffset;
-			if ((currentLayer < 16) || (currentLayer == 28)) { /* a copper arc, i.e. track, or edge cut, is unsupported by kicad, and will be exported as a line */
+			if ((currentLayer < 16) ) { /*|| (currentLayer == 28)) {  a copper arc, i.e. track, but not edge cut, is unsupported by kicad, and will be exported as a line */
 				fprintf(FP, "%*s", indentation, "");
 				pcb_fprintf(FP, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 										copperStartX, copperStartY, xEnd, yEnd,
 										kicad_sexpr_layer_to_text(currentLayer), arc->Thickness); /* neglect (net ___ ) for now */
-			} else if ((currentLayer == 20) || (currentLayer == 21)) { /* a silk arc, or outline */
+			} else if ((currentLayer == 20) || (currentLayer == 21) || (currentLayer == 28)) { /* a silk arc, or outline */
 				fprintf(FP, "%*s", indentation, "");
 				pcb_fprintf(FP, "(gr_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n",
 										xStart, yStart, xEnd, yEnd, arc->Delta,
