@@ -475,6 +475,7 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 	double val;
 	pcb_coord_t centreX, centreY, endX, endY, width, height, Thickness, Clearance;
 	pcb_angle_t startAngle = 0.0;
+	pcb_angle_t endAngle= 0.0;
 	pcb_angle_t delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	int PCBLayer = 0; /* sane default value */
@@ -613,10 +614,25 @@ static int kicad_parse_gr_arc(read_state_t *st, gsxl_node_t *subtree)
 		if (width < 1) { /* degenerate case */
 			startAngle = 0;
 		} else {
-			startAngle = 180*atan2(endY - centreY, endX - centreX)/M_PI;
+			endAngle = 180*atan2(-(endY - centreY), endX - centreX)/M_PI;
+			pcb_printf("\tcalculated end angle: '%f'\n", endAngle);
 			/* avoid using atan2 with zero parameters */
+		
+			if (endAngle < 0.0) {
+				endAngle += 360.0; /*make it 0...360 */
+				pcb_printf("\tadjusted end angle: '%f'\n", endAngle);
+			}
+			startAngle = (endAngle + delta); /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
+			pcb_printf("\tcalculated start angle: '%f'\n", startAngle);
+			if (startAngle > 360.0) {
+				startAngle -= 360.0;
+			}
+			if (startAngle < 0.0) {
+				startAngle += 360.0;
+			}
+			pcb_printf("\tadjusted start angle: '%f'\n", startAngle);
 		}
-		pcb_arc_new( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, -delta, Thickness, Clearance, Flags);
+		pcb_arc_new( &st->PCB->Data->Layer[PCBLayer], centreX, centreY, width, height, startAngle, delta, Thickness, Clearance, Flags);
 		return 0;
 	}
 	return -1;
@@ -1833,19 +1849,22 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			startAngle = 0;
 		} else {
 			endAngle = 180*atan2(-(endY - centreY), endX - centreX)/M_PI; /* avoid using atan2 with zero parameters */
+			pcb_printf("\tcalculated end angle: '%f'\n", endAngle);
 			if (endAngle < 0.0) {
 				endAngle += 360.0; /*make it 0...360 */
+				pcb_printf("\tadjusted end angle: '%f'\n", endAngle);
 			}
-			startAngle = endAngle + delta; /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
+			startAngle = (endAngle + delta); /* geda is 180 degrees out of phase with kicad, and opposite direction rotation */
+			pcb_printf("\tcalculated start angle: '%f'\n", startAngle);
 			if (startAngle > 360.0) {
 				startAngle -= 360.0;
 			}
 			if (startAngle < 0.0) {
 				startAngle += 360.0;
 			}
-
+			pcb_printf("\tadjusted start angle: '%f'\n", startAngle);
 		}
-		pcb_element_arc_new(newModule, moduleX + centreX, moduleY + centreY, width, height, endAngle, delta, Thickness);
+		pcb_element_arc_new(newModule, moduleX + centreX, moduleY + centreY, width, height, startAngle, delta, Thickness); /* was endAngle */
 
 	}
 
