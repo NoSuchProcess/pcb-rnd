@@ -1207,54 +1207,53 @@ static GtkWidget *layer_entry[PCB_MAX_LAYER];
 static gboolean layers_applying;
 
 static const gchar *layer_info_text[] = {
-	N_("<h>Layer Names\n"),
-	N_("You may enter layer names for the layers drawn on the screen.\n"
-		 "The special 'component side' and 'solder side' are layers which\n"
-		 "will be printed out, so they must have in their group at least one\n"
-		 "of the other layers that are drawn on the screen.\n"),
+	N_("<h>Terminology\n"),
+	N_("A layer group is a physical layer of the board. A layer is a logical\n"
+		 "layer that is always part of exactly one layer group. A layer group may\n"
+		 "host zero or more layers. A logical layer is a canvas on which objects\n"
+		 "are drawn. Physical layer groups are listed on the left - group names\n"
+		 "are printed in the cross-section. Logical layers are listed on the right.\n"),
 	"\n",
-	N_("<h>Layer Groups\n"),
-	N_("Each layer on the screen may be in its own group which allows the\n"
-		 "maximum number of board layers.  However, for boards with fewer\n"
-		 "layers, you may group layers together which will then print as a\n"
-		 "single layer on a printout.  This allows a visual color distinction\n"
-		 "to be displayed on the screen for signal groups which will print as\n" "a single layer\n"),
+	N_("<h>Moving layers between groups\n(physical layer stack tab)\n"),
+	N_("Drag and drop a framed layer name. Potential target group is marked with\n"
+		 "horizontal line framing. Currently only copper groups can host layers.\n"),
 	"\n",
-	N_("For example, for a 4 layer board a useful layer group arrangement\n"
-		 "can be to have 3 screen displayed layers grouped into the same group\n"
-		 "as the 'component side' and 'solder side' printout layers.  Then\n"
-		 "groups such as signals, ground, and supply traces can be color\n"
-		 "coded on the screen while printing as a single layer.  For this\n"
-		 "you would select buttons and enter names on the Setup page to\n" "structure four layer groups similar to this:\n"),
+	N_("<h>Moving layer groups\n(physical layer stack tab)\n"),
+	N_("Drag & drop the group by its name. Currently only copper groups can be moved.\n"
+	"\n"),
 	"\n",
-	N_("<b>Group 1:"),
-	"\n\t",
-	N_("solder"),
-	"\n\t",
-	N_("GND-solder"),
-	"\n\t",
-	N_("Vcc-solder"),
-	"\n\t",
-	N_("solder side"),
+	N_("<h>Creating a new group\n(physical layer stack tab)\n"),
+	N_("Drag the 'Add copper group' button and drop it in the layer stack.\n"
+	"\n"),
 	"\n",
-	N_("<b>Group 2:"),
-	"\n\t",
-	N_("component"),
-	"\n\t",
-	N_("GND-component"),
-	"\n\t",
-	N_("Vcc-component"),
-	"\n\t",
-	N_("component side"),
+	N_("<h>Removing a group\n(physical layer stack tab)\n"),
+	N_("Drag the 'Del copper group' button and drop it on the group to be removed.\n"
+		 "Layers in that group are removed too.\n"
+	"\n"),
 	"\n",
-	N_("<b>Group 3:"),
-	"\n\t",
-	N_("signal1"),
+	N_("<h>Changing the display order of logical layers\n(Logical layers tab)\n"),
+	N_("Select the layer in the main window, press the up/down arrow buttons\n"
+		 "on the Logical layers tab. The display order of layers does not affect\n"
+		 "the physical location of the layer, that is determined by the grouping.\n"
+	"\n"),
 	"\n",
-	N_("<b>Group 4:"),
-	"\n\t",
-	N_("signal2"),
-	"\n"
+	N_("<h>Remove a logical layer\n(Logical layers tab)\n"),
+	N_("Select the layer in the main window, press the Delete button\n"
+		 "on the Logical layers tab. The currently selected layer is removed, among\n"
+		 "with all objects hosted by that layer.\n"
+	"\n"),
+	"\n",
+	N_("<h>Change the name of a logical layer\n(Logical layers tab)\n"),
+	N_("Select the layer in the main window, press the Edit button\n"
+		 "on the Logical layers tab.\n"
+	"\n"),
+	"\n",
+	N_("<h>Create a new logical layer\n(Logical layers tab)\n"),
+	N_("Select a layer in the main window, press the New button\n"
+		 "on the Logical layers tab. The new logical layer is inserted\n"
+		 "before the active layer (display order) and into the first (top)\n"
+		 "copper group in the physical stack.\n"
+	"\n")
 };
 
 	/* Construct a layer group string.  Follow logic in WritePCBDataHeader(),
