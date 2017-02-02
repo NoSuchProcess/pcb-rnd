@@ -8,8 +8,6 @@
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
 	- gtk rendering: zoom in much and arcs are rendered a bit larger/smaller [report: Evan]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
-	- layer rewrite bug:
-		- gtk: replace the info text
 	- load data from layout to paste buffer:
 		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
 		- probably IDs are messed too: copy and paste new arc loaded that way a few times and it will disappear after other edits (silk)
