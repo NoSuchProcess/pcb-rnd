@@ -15,7 +15,7 @@ how pcb-rnd represents reality (e.g. copper shapes) in memory.
 
 <h3> 2.1. board </h3>
 <p>
-Each design pcb-rnd handles is a board. The has global properties and hosts
+Each design pcb-rnd handles is a <i>board</i>. The board has global properties and hosts
 layers. Most drawing primitives (objects) are on layers. This section describes
 the most important global properties.
 <p>
@@ -73,7 +73,7 @@ Layer group locations are:
 <ul>
 	<li> top (used to be the "component side" in the age of thru-hole components)
 	<li> bottom (used to be the "solder side" in the age of thru-hole components)
-	<li> internal (sandwiched between other layers)
+	<li> intern (sandwiched between other layers)
 	<li> global (affects all physical layers, thus has no specific location)
 </ul>
 <p>
@@ -121,8 +121,8 @@ A line is specified by its two endpoints, width and clearance:
 <p>
 <img src="obj_line.png" alt="[Line interacting with a polygon]">
 <p>
-A <i>clearance</i> is the gap between a line and the sorrounding polygon
-in the same layer group. The gap is made only if the sorrounding polygon has
+A <i>clearance</i> is the gap between a line and the surrounding polygon
+in the same layer group. The gap is made only if the surrounding polygon has
 the "clearpoly" flag set and the line has the "clearline" flag set. If either
 of these flags is not set, no gap is made - or in pcb-rnd terminology,
 the line is joined to the polygon.
@@ -174,7 +174,7 @@ with the "clearline" flag set will clear all "clearpolys" it is over -
 if there are multiple such polygons overlapping under the objects (on
 the same layer group), all such polygons get the clearance cutout.
 <p>
-If a polygyn is cut into multiple islands, the behaviour depends on the
+If a polygon is cut into multiple islands, the behaviour depends on the
 "fullpoly" flag of the polygon. If it is not set (default), only the largest
 island is kept, else all islands are kept. In the "fullpoly" mode islands
 will have no galvanic connection (unless the user adds vias and connect them
@@ -216,7 +216,7 @@ a hole always punches all layers; there's no pad stack support, the copper
 ring around the hole on each layer have the same sizes.
 <p>
 A copper ring also has a per layer property whether or how it connects to
-the sorrounding polygon on the given layer; this is called the thermal style
+the surrounding polygon on the given layer; this is called the thermal style
 of the via. The following options are available:
 <table border=1>
 	<tr><th>thermal style <th> appearance
@@ -248,7 +248,7 @@ board or loaded into a paste buffer.
 In the footprint form the construct is small and flexible. It describes
 all the physical parts, like pins, pads, silk lines. In the same time a
 footprint leaves many details blank, e.g. it doesn't specify exact layers,
-it doesn't a have font and the refdes is random.
+it doesn't have font and the refdes is random.
 
 <p>
 When the footprint is loaded, it becomes an element. The element inherits all
