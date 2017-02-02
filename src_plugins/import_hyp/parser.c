@@ -98,7 +98,6 @@ char *net_name;									/* name of current copper */
 pcb_coord_t net_clearance;			/* distance between PLANE polygon and net copper */
 
 /* padstack */
-/* XXX just implement the bare minimum */
 
 typedef struct padstack_s {
 	char *name;
@@ -137,7 +136,7 @@ pcb_coord_t current_polyline_ypos = 0;
 pcb_coord_t current_polyline_width = 0;
 pcb_coord_t current_polyline_clearance = 0;
 
-/* The different states we can be in when parsing a polygon:
+/* State machine for polygon parsing:
  * HYP_POLYIDLE idle
  * HYP_POLYGON parsing a polygon
  * HYP_POLYLINE parsing a polyline (sequence of lines and arcs)
@@ -153,7 +152,7 @@ pcb_coord_t origin_x;
 pcb_coord_t origin_y;
 
 /*
- * Conversion from hyperlynx to pcb_coord_t - igor2
+ * Conversion from hyperlynx to pcb_coord_t
  */
 
 /* meter to pcb_coord_t */
@@ -233,7 +232,7 @@ void hyp_init(void)
 	current_polygon = NULL;
 	poly_state = HYP_POLYIDLE;
 
-/* clear polyline data */
+	/* clear polyline data */
 	current_polyline_layer = NULL;
 	current_polyline_xpos = 0;
 	current_polyline_ypos = 0;
@@ -611,7 +610,7 @@ void hyp_create_polygons()
 {
 	hyp_polygon_t *i;
 
-	/* look up polygon with this id */
+	/* loop over all created polygons and close them */
 	for (i = polygon_head; i != NULL; i = i->next)
 		if ((i->is_polygon) && (i->polygon != NULL) && (i->layer != NULL)) {
 			pcb_add_polygon_on_layer(i->layer, i->polygon);
@@ -711,8 +710,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 /* exec_* routines are called by parser to interpret hyperlynx file */
 
 /*
- * Hyperlynx 'BOARD_FILE' section.
- * Hyperlynx file header.
+ * 'BOARD_FILE' record.
  */
 
 pcb_bool exec_board_file(parse_param * h)
@@ -724,9 +722,8 @@ pcb_bool exec_board_file(parse_param * h)
 }
 
 /*
- * Hyperlynx 'VERSION' record.
+ * 'VERSION' record.
  * Specifies version number.
- * Required record; must be first record of the file.
  */
 
 pcb_bool exec_version(parse_param * h)
@@ -741,7 +738,7 @@ pcb_bool exec_version(parse_param * h)
 }
 
 /*
- * Hyperlynx 'DATA_MODE' record.
+ * 'DATA_MODE' record.
  * If DATA_MODE is DETAILED, model can be used for power and signal simulation.
  * If DATA_MODE is SIMPLIFIED, model can be used for signal simulation only.
  */
@@ -755,7 +752,7 @@ pcb_bool exec_data_mode(parse_param * h)
 }
 
 /*
- * Hyperlynx 'UNITS' record.
+ * 'UNITS' record.
  * Specifies measurement system (english/metric) for the rest of the file.
  */
 
@@ -789,8 +786,8 @@ pcb_bool exec_units(parse_param * h)
 }
 
 /*
- * Hyperlynx 'PLANE_SEP' record.
- * Defines default trace to plane separation
+ * 'PLANE_SEP' record.
+ * Defines default trace to plane clearance.
  */
 
 pcb_bool exec_plane_sep(parse_param * h)
@@ -804,9 +801,8 @@ pcb_bool exec_plane_sep(parse_param * h)
 }
 
 /*
- * Hyperlynx 'PERIMETER_SEGMENT' subrecord of 'BOARD' record.
- * Draws linear board outline segment.
- * Linear segment drawn from (x1, y1) to (x2, y2).
+ * 'PERIMETER_SEGMENT' subrecord of 'BOARD' record.
+ * Draws linear board outline segment from (x1, y1) to (x2, y2).
  */
 
 pcb_bool exec_perimeter_segment(parse_param * h)
@@ -848,7 +844,7 @@ pcb_bool exec_perimeter_segment(parse_param * h)
 }
 
 /*
- * Hyperlynx 'PERIMETER_ARC' subrecord of 'BOARD' record.
+ * 'PERIMETER_ARC' subrecord of 'BOARD' record.
  * Draws arc segment of board outline. 
  * Arc drawn counterclockwise from (x1, y1) to (x2, y2) with center (xc, yc) and radius r.
  */
@@ -891,7 +887,7 @@ pcb_bool exec_perimeter_arc(parse_param * h)
 }
 
 /*
- * Hyperlynx 'A' attribute subrecord of 'BOARD' record.
+ * 'A' attribute subrecord of 'BOARD' record.
  * Defines board attributes as name/value pairs.
  */
 
@@ -904,12 +900,7 @@ pcb_bool exec_board_attribute(parse_param * h)
 }
 
 /*
- * Hyperlynx STACKUP section 
- */
-
-/*
- * 'OPTIONS' subrecord of 'STACKUP' record.
- * Defines dielectric constant and loss tangent of metal layers.
+ * STACKUP section 
  */
 
 /*
@@ -947,6 +938,11 @@ void hyp_debug_layer(parse_param * h)
 	return;
 }
 
+/*
+ * 'OPTIONS' subrecord of 'STACKUP' record.
+ * Defines dielectric constant and loss tangent of metal layers.
+ */
+
 pcb_bool exec_options(parse_param * h)
 {
 	/* Use dielectric for metal? */
@@ -958,7 +954,8 @@ pcb_bool exec_options(parse_param * h)
 }
 
 /*
- * signal layer 
+ * SIGNAL subrecord of STACKUP record.
+ * signal layer.
  */
 
 pcb_bool exec_signal(parse_param * h)
@@ -978,6 +975,7 @@ pcb_bool exec_signal(parse_param * h)
 }
 
 /*
+ * DIELECTRIC subrecord of STACKUP record.
  * dielectric layer 
  */
 
@@ -986,10 +984,12 @@ pcb_bool exec_dielectric(parse_param * h)
 	if (hyp_debug)
 		pcb_printf("dielectric layer: ");
 	hyp_debug_layer(h);
+
 	return 0;
 }
 
 /*
+ * PLANE subrecord of STACKUP record.
  * plane layer - a layer which is flooded with copper.
  */
 
@@ -1007,11 +1007,12 @@ pcb_bool exec_plane(parse_param * h)
 	if (hyp_debug)
 		pcb_printf("plane layer: \"%s\"", pcb_layer_name(plane_layer_id));
 	hyp_debug_layer(h);
+
 	return 0;
 }
 
 /*
- * devices
+ * DEVICE record.
  */
 
 pcb_bool exec_devices(parse_param * h)
@@ -1064,7 +1065,8 @@ pcb_bool exec_devices(parse_param * h)
 }
 
 /*
- * supply signals 
+ * SUPPLY record.
+ * marks nets as power supply.
  */
 
 pcb_bool exec_supplies(parse_param * h)
@@ -1077,7 +1079,7 @@ pcb_bool exec_supplies(parse_param * h)
 }
 
 /* 
- * padstacks.
+ * PADSTACK record
  */
 
 pcb_bool exec_padstack_element(parse_param * h)
@@ -1137,7 +1139,7 @@ pcb_bool exec_padstack_element(parse_param * h)
 	}
 
 
-	/* XXX fixme. This reduces the padstack to the pcb_via_new; a very rough approximation of what a padstack is. */
+	/* XXX fixme. This reduces the padstack to a pcb_via_new call; a very basic approximation of what a padstack is. */
 
 	if (h->padstack_name_set) {
 		current_padstack = malloc(sizeof(padstack_t));
@@ -1176,27 +1178,38 @@ pcb_bool exec_padstack_end(parse_param * h)
 	return 0;
 }
 
+/*
+ * NET record.
+ */
 
 pcb_bool exec_net(parse_param * h)
 {
 	if (hyp_debug)
 		pcb_printf("net: net_name = \"%s\"\n", h->net_name);
 
+	net_name = pcb_strdup(h->net_name);
 	net_clearance = -1;
 
 	return 0;
 }
+
+/*
+ * PS subrecord of NET record. Plane separation.
+ */
 
 pcb_bool exec_net_plane_separation(parse_param * h)
 {
 	if (hyp_debug)
 		pcb_printf("net_plane_separation: plane_separation = %mm\n", xy2coord(h->plane_separation));
 
-	net_name = pcb_strdup(h->net_name);
 	net_clearance = xy2coord(h->plane_separation);
 
 	return 0;
 }
+
+/*
+ * A subrecord of NET record. Attribute.
+ */
 
 pcb_bool exec_net_attribute(parse_param * h)
 {
@@ -1207,8 +1220,7 @@ pcb_bool exec_net_attribute(parse_param * h)
 }
 
 /*
- * SEG subrecord of NET record.
- * line segment 
+ * SEG subrecord of NET record. line segment.
  */
 
 pcb_bool exec_seg(parse_param * h)
@@ -1230,8 +1242,7 @@ pcb_bool exec_seg(parse_param * h)
 }
 
 /*
- * SEG subrecord of NET record.
- * arc segment, drawn clockwise.
+ * SEG subrecord of NET record. arc segment, drawn clockwise.
  */
 
 pcb_bool exec_arc(parse_param * h)
@@ -1277,7 +1288,7 @@ pcb_bool exec_via(parse_param * h)
 
 	padstack = hyp_padstack_by_name(h->padstack_name);
 	if (padstack == NULL) {
-		pcb_printf(" padstack \"%s\" not found. skipping via\n", h->padstack_name);
+		pcb_printf("via: padstack \"%s\" not found. skipping.\n", h->padstack_name);
 		return 0;
 	}
 
@@ -1294,7 +1305,7 @@ pcb_bool exec_via(parse_param * h)
 
 /*
  * VIA subrecord of NET record. 
- * Draws deprecated v1.x via.
+ * Draws deprecated v1.x via. Does not use padstack.
  */
 
 pcb_bool exec_via_v1(parse_param * h)
@@ -1324,7 +1335,7 @@ pcb_bool exec_via_v1(parse_param * h)
 	clearance = hyp_clearance(h);
 	mask = xy2coord(h->pad1_sx);
 	drill_hole = xy2coord(h->drill_size);
-	is_round = strcmp(h->pad1_shape, "RECT");
+	is_round = (strcmp(h->pad1_shape, "RECT") != 0);
 
 	if (is_round)
 		flags = pcb_no_flags();
@@ -1379,25 +1390,18 @@ pcb_bool exec_pin(parse_param * h)
 	/* find component by name */
 	component = pcb_search_elem_by_name(hyp_dest, component_name);
 	if (component == NULL) {
-		pcb_printf(" component \"%s\" not found. skipping pin \"%s\"\n", component_name, h->pin_reference);
+		pcb_printf("pin: component \"%s\" not found. skipping pin \"%s\"\n", component_name, h->pin_reference);
 		return 0;
 	}
-
-#ifdef XXX
-	/* XXX causes crash */
-	/* move component to pin location */
-	pcb_element_move(hyp_dest, component, x2coord(h->x), y2coord(h->y));
-#endif
 
 	/* find padstack */
 	padstack = hyp_padstack_by_name(h->padstack_name);
 	if (padstack == NULL) {
-		pcb_printf(" padstack \"%s\" not found. skipping pin \"%s\"\n", h->padstack_name, h->pin_reference);
+		pcb_printf("pin: padstack \"%s\" not found. skipping pin \"%s\"\n", h->padstack_name, h->pin_reference);
 		return 0;
 	}
 
 	/* add new pin */
-
 	if (padstack->is_round)
 		flags = pcb_no_flags();
 	else
@@ -1405,6 +1409,12 @@ pcb_bool exec_pin(parse_param * h)
 
 	pcb_element_pin_new(component, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
 											padstack->drill_hole, pin_net_name, pin_name, flags);
+
+#ifdef XXX
+	/* XXX causes crash */
+	/* move component to pin location */
+	pcb_element_move(hyp_dest, component, x2coord(h->x), y2coord(h->y));
+#endif
 
 	return 0;
 }
@@ -1416,14 +1426,36 @@ pcb_bool exec_pin(parse_param * h)
 
 pcb_bool exec_pad(parse_param * h)
 {
+	pcb_element_t *component;
+	pcb_flag_t flags;
+	char pad_component[] = "hyperlynx_pad";
+	pcb_uint8_t text_direction = 0;
+	int text_scale = 100;
+
 	if (hyp_debug) {
-		pcb_printf("pad: x = %mm y = %mm", xy2coord(h->x), xy2coord(h->y));
+		pcb_printf("pad: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
 		if (h->layer_name_set)
 			pcb_printf(" layer_name = \"%s\"", h->layer_name);
 		pcb_printf(" pad1_shape = \"%s\" pad1_sx = %mm pad1_sy = %mm pad1_angle = %f", h->pad1_shape, xy2coord(h->pad1_sx),
 							 xy2coord(h->pad1_sy), h->pad1_angle);
 		pcb_printf("\n");
 	}
+
+	/* if necessary, create a device to connect the pad to */
+	component = pcb_search_elem_by_name(hyp_dest, pad_component);
+	if (component == NULL)
+		component = pcb_element_new(hyp_dest, NULL, &PCB->Font, pcb_no_flags(), pad_component, pad_component, "?",
+																x2coord(h->x), y2coord(h->y), text_direction, text_scale, pcb_no_flags(), pcb_false);
+
+	/* add new pad */
+	/* XXX fixme. Pad ought to be on a single layer. This puts the pad on all layers. */
+	if (strcmp(h->pad1_shape, "RECT") != 0)
+		flags = pcb_no_flags();
+	else
+		flags = pcb_flag_make(PCB_FLAG_SQUARE);
+
+	pcb_element_pin_new(component, x2coord(h->x), y2coord(h->y), xy2coord(h->pad1_sx), 2 * hyp_clearance(h), xy2coord(h->pad1_sx),
+											0, net_name, "?", flags);
 
 	return 0;
 }
@@ -1731,10 +1763,13 @@ pcb_bool exec_line(parse_param * h)
 			pcb_printf("line: unexpected. continuing.\n");
 		break;
 	case HYP_POLYGON:
+	case HYP_POLYGON_HOLE:
+		/* add new vertex to polygon */
 		if (current_polygon != NULL)
 			pcb_poly_point_new(current_polygon, x2coord(h->x), y2coord(h->y));
 		break;
 	case HYP_POLYLINE:
+		/* add new point to polyline */
 		if (current_polyline_layer != NULL) {
 			pcb_line_new(current_polyline_layer, current_polyline_xpos, current_polyline_ypos, x2coord(h->x), y2coord(h->y),
 									 current_polyline_width, current_polyline_clearance, pcb_no_flags());
@@ -1743,22 +1778,20 @@ pcb_bool exec_line(parse_param * h)
 			current_polyline_ypos = y2coord(h->y);
 		}
 		break;
-	case HYP_POLYGON_HOLE:
-		if (current_polygon != NULL)
-			pcb_poly_point_new(current_polygon, x2coord(h->x), y2coord(h->y));
-		break;
 	case HYP_POLYLINE_HOLE:
 		/* not implemented */
 		break;
 	default:
 		if (hyp_debug)
-			pcb_printf("error\n");
+			pcb_printf("line: error\n");
 	}
+
 	return 0;
 }
 
 /*
- * CURVE subrecord of NET record.
+ * CURVE subrecord of NET record. 
+ * Clockwise from (x1, y1) to (x2, y2).
  */
 
 pcb_bool exec_curve(parse_param * h)
@@ -1766,6 +1799,44 @@ pcb_bool exec_curve(parse_param * h)
 	if (hyp_debug)
 		pcb_printf("curve: x1 = %mm y1 = %mm x2 = %mm y2 = %mm xc = %mm yc = %mm r = %mm\n", x2coord(h->x1), y2coord(h->y1),
 							 x2coord(h->x2), y2coord(h->y2), x2coord(h->xc), y2coord(h->yc), xy2coord(h->r));
+
+	switch (poly_state) {
+	case HYP_POLYIDLE:
+		if (hyp_debug)
+			pcb_printf("curve: unexpected. continuing.\n");
+		break;
+	case HYP_POLYGON:
+	case HYP_POLYGON_HOLE:
+		if (current_polygon != NULL) {
+			/* polygon contains line segments, not arc segments. convert arc segment to line segments. */
+			pcb_poly_point_new(current_polygon, x2coord(h->x2), y2coord(h->y2));	/* 2do XXX */
+		}
+		break;
+	case HYP_POLYLINE:
+		if (current_polyline_layer != NULL) {
+			/* clockwise arc from (x1, y2) to (x2, y2) */
+			hyp_arc_new(current_polyline_layer, x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), x2coord(h->xc),
+									y2coord(h->yc), 2 * xy2coord(h->r), 2 * xy2coord(h->r), pcb_true, current_polyline_width,
+									current_polyline_clearance, pcb_no_flags());
+
+			/* move on */
+			if ((current_polyline_xpos == x2coord(h->x1)) && (current_polyline_ypos == y2coord(h->y1))) {
+				current_polyline_xpos = x2coord(h->x2);
+				current_polyline_ypos = y2coord(h->y2);
+			}
+			else if ((current_polyline_xpos == x2coord(h->x2)) && (current_polyline_ypos == y2coord(h->y2))) {
+				current_polyline_xpos = x2coord(h->x1);
+				current_polyline_ypos = y2coord(h->y1);
+			}
+		}
+		break;
+	case HYP_POLYLINE_HOLE:
+		/* not implemented */
+		break;
+	default:
+		if (hyp_debug)
+			pcb_printf("curve: error\n");
+	}
 
 	return 0;
 }
