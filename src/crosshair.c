@@ -400,11 +400,9 @@ static void XORDrawMoveOrCopy(void)
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
-				XORDrawAttachedLine(line->Point1.X + dx,
-        										line->Point1.Y + dy,
-														line->Point2.X + dx,
- 														line->Point2.Y + dy, 
-														line->Thickness + 2 * (PCB->Bloat + 1) );
+				XORDrawAttachedLine(line->Point1.X + dx, line->Point1.Y + dy,
+					line->Point2.X + dx, line->Point2.Y + dy, 
+					line->Thickness + 2 * (PCB->Bloat + 1) );
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.crosshair);
 			}
 			break;
@@ -677,33 +675,33 @@ XORDrawPinViaDRCOutline(pcb_pin_t * pv,pcb_coord_t clearance)
 static void 
 XORDrawPadDRCOutline(pcb_pad_t * pad,pcb_coord_t clearance)
 {
-  pcb_coord_t x1, y1, x2, y2;
-  pcb_coord_t t = (pad->Thickness / 2);
-  x1 = pad->Point1.X;
-  y1 = pad->Point1.Y;
-  x2 = pad->Point2.X;
-  y2 = pad->Point2.Y;
+	pcb_coord_t x1, y1, x2, y2;
+	pcb_coord_t t = (pad->Thickness / 2);
+	x1 = pad->Point1.X;
+	y1 = pad->Point1.Y;
+	x2 = pad->Point2.X;
+	y2 = pad->Point2.Y;
 
-  pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
-  pcb_gui->set_line_width(pcb_crosshair.GC, 0);
-  
-  if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) {
-    /* slanted square pad */
-    double tx, ty, nx, ny, theta, angle;
+	pcb_gui->set_line_cap(pcb_crosshair.GC, Round_Cap);
+	pcb_gui->set_line_width(pcb_crosshair.GC, 0);
+
+	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, pad)) {
+		/* slanted square pad */
+		double tx, ty, nx, ny, theta, angle;
 		pcb_coord_t cx0, cx1, cx2, cx3;
 		pcb_coord_t cy0, cy1, cy2, cy3;
 
-    if ((x1 == x2) && (y1 == y2))
-      theta = 0;
-    else
-      theta = atan2(y2 - y1, x2 - x1);
+		if ((x1 == x2) && (y1 == y2))
+			theta = 0;
+		else
+			theta = atan2(y2 - y1, x2 - x1);
 
 		angle = (270-(theta * PCB_RAD_TO_DEG));
 
-    /* T is a vector half a thickness long, in the direction of
-       one of the corners.  */
-    tx = t * cos(theta + M_PI / 4) * PCB_SQRT2;
-    ty = t * sin(theta + M_PI / 4) * PCB_SQRT2;
+		/* T is a vector half a thickness long, in the direction of
+		   one of the corners.  */
+		tx = t * cos(theta + M_PI / 4) * PCB_SQRT2;
+		ty = t * sin(theta + M_PI / 4) * PCB_SQRT2;
 
 		/* The normal of one of the edges with length = clearance */
 		nx = cos(theta + M_PI / 2) * clearance;
@@ -723,32 +721,31 @@ XORDrawPadDRCOutline(pcb_pad_t * pad,pcb_coord_t clearance)
 		pcb_gui->draw_arc(pcb_crosshair.GC,cx1,cy1,clearance,clearance,angle-90,90);
 		pcb_gui->draw_arc(pcb_crosshair.GC,cx2,cy2,clearance,clearance,angle-180,90);
 		pcb_gui->draw_arc(pcb_crosshair.GC,cx3,cy3,clearance,clearance,angle-270,90);
-  }
-  else if (x1 == x2 && y1 == y2) {
-    pcb_gui->draw_arc(pcb_crosshair.GC, x1, y1, t + clearance, t + clearance, 0, 360);
-  }
-  else {
-    /* Slanted round-end pads.  */
-    pcb_coord_t dx, dy, ox, oy;
-    double h;
+	}
+	else if (x1 == x2 && y1 == y2) {
+		pcb_gui->draw_arc(pcb_crosshair.GC, x1, y1, t + clearance, t + clearance, 0, 360);
+	}
+	else {
+		/* Slanted round-end pads.  */
+		pcb_coord_t dx, dy, ox, oy;
+		double h;
 
 		t += clearance;
-    dx = x2 - x1;
-    dy = y2 - y1;
-    h = t / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
-    ox = dy * h + 0.5 * SGN(dy);
-    oy = -(dx * h + 0.5 * SGN(dx));
+		dx = x2 - x1;
+		dy = y2 - y1;
+		h = t / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
+		ox = dy * h + 0.5 * SGN(dy);
+		oy = -(dx * h + 0.5 * SGN(dx));
 
-    pcb_gui->draw_line(pcb_crosshair.GC, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
+		pcb_gui->draw_line(pcb_crosshair.GC, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
 
-    if (labs(ox) >= pcb_pixel_slop || coord_abs(oy) >= pcb_pixel_slop) {
-      pcb_angle_t angle = atan2(dx, dy) * 57.295779;
-      pcb_gui->draw_line(pcb_crosshair.GC, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
-      pcb_gui->draw_arc(pcb_crosshair.GC, x1, y1, t, t, angle - 180, 180);
-      pcb_gui->draw_arc(pcb_crosshair.GC, x2, y2, t, t, angle, 180);
-    }
-  }
-
+		if (labs(ox) >= pcb_pixel_slop || coord_abs(oy) >= pcb_pixel_slop) {
+			pcb_angle_t angle = atan2(dx, dy) * 57.295779;
+			pcb_gui->draw_line(pcb_crosshair.GC, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
+			pcb_gui->draw_arc(pcb_crosshair.GC, x1, y1, t, t, angle - 180, 180);
+			pcb_gui->draw_arc(pcb_crosshair.GC, x2, y2, t, t, angle, 180);
+		}
+	}
 }
 
 /* ---------------------------------------------------------------------------
