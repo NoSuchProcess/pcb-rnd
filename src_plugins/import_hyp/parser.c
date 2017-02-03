@@ -635,14 +635,15 @@ pcb_coord_t hyp_clearance(parse_param * h)
 	pcb_coord_t clearance;
 	pcb_layer_id_t layr_id;
 
-	layr_id = hyp_create_layer(h->layer_name);
+	if (h->layer_name_set)
+		layr_id = hyp_create_layer(h->layer_name);
 	clearance = -1;
 
 	if (h->plane_separation_set)
 		clearance = xy2coord(h->plane_separation);
 	else if (net_clearance >= 0)
 		clearance = net_clearance;
-	else if (layer_clearance[layr_id] >= 0)
+	else if (h->layer_name_set && (layer_clearance[layr_id] >= 0))
 		clearance = layer_clearance[layr_id];
 	else if (board_clearance >= 0)
 		clearance = board_clearance;
@@ -716,7 +717,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 pcb_bool exec_board_file(parse_param * h)
 {
 	if (hyp_debug)
-		pcb_printf(PCB_MSG_DEBUG, "board\n");
+		pcb_printf("board:\n");
 
 	return 0;
 }
@@ -1342,7 +1343,7 @@ pcb_bool exec_via_v1(parse_param * h)
 	else
 		flags = pcb_flag_make(PCB_FLAG_SQUARE);
 
-	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, drill_hole, "", flags);
+	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, drill_hole, NULL, flags);
 
 	return 0;
 }
