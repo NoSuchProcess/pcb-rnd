@@ -355,7 +355,6 @@ static const char *pat_elem[] = {"ha:element.*", "*", NULL};
 static const char *pat_text[] = {"ha:text.*", "*", NULL};
 static const char *pat_data[] = {"ha:data", "*", NULL};
 static const char *pat_netlists[] = {"ha:netlists", "*", NULL};
-static const char *pat_objs[] = {"li:objects", "*", NULL};
 static const char *pat_font1[] = {"ha:geda_pcb", "ha:font", "*", NULL};
 static const char *pat_layer[] = {"ha:*", "li:layers", "*", NULL};
 static const char *pat_symbol[] = {"ha:*", "ha:symbols", "*", NULL};
@@ -388,7 +387,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_data,    &style_structi,  r_data},
 	{pat_font1,   &style_structi,  r_font1},
 	{pat_netlists,&style_struct,   r_netlists},
-	{pat_objs,    &style_structi,  NULL},
+	{pat_objects, &style_nlstruct, NULL},
 	{pat_flag,    &style_newline,  NULL},
 
 	{pat_cell,    &style_inline,   NULL},
