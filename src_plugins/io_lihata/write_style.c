@@ -328,12 +328,14 @@ static const char *pat_li_styles[]   = {"li:styles", "*", NULL};
 static const char *pat_ha_meta[]     = {"ha:meta", "*", NULL};
 static const char *pat_ha_data[]     = {"ha:data", "*", NULL};
 static const char *pat_ha_font[]     = {"ha:font", "*", NULL};
+static const char *pat_ha_netlists[] = {"ha:netlists", "*", NULL};
 static lhtpers_rule_t r_root[] = {
 	{pat_attributes,      &style_nlstruct, NULL},
 	{pat_li_styles,       &style_nlstruct, NULL},
 	{pat_ha_meta,         &style_nlstruct, NULL},
 	{pat_ha_data,         &style_nlstruct, NULL},
 	{pat_ha_font,         &style_nlstruct, NULL},
+	{pat_ha_netlists,     &style_nlstruct, NULL},
 	{NULL, NULL, NULL}
 };
 
