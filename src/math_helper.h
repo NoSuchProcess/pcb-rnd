@@ -43,6 +43,7 @@
 #define	PCB_TAN_60_DEGREE		1.732050808	/* tan(60) */
 #define PCB_LN_2_OVER_2		0.346573590
 #define PCB_TO_RADIANS(degrees)	(PCB_M180 * (degrees))
+#define PCB_SQRT2	1.41421356237309504880	/* sqrt(2) */
 
 #define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))

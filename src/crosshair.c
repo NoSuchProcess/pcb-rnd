@@ -276,7 +276,7 @@ static void XORDrawElement(pcb_element_t *Element, pcb_coord_t DX, pcb_coord_t D
 
 			pcb_gui->thindraw_pcb_pad(pcb_crosshair.GC, &moved_pad, pcb_false, pcb_false);
 	
-			// Draw the DRC outline if it is enabled
+			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
 				pcb_gui->set_color(pcb_crosshair.GC, conf_core.appearance.color.cross);
 				XORDrawPadDRCOutline(&moved_pad,PCB->Bloat);
@@ -518,9 +518,6 @@ static void XORDrawMoveOrCopy(void)
 static void 
 draw_pinvia_shape_drc_outline( pcb_hid_gc_t gc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t clearance, int style)
 {
-
-	style = (style-1) & 0x0F;
-
 	struct {double X, Y, angle;} p[8] = {	
 		{0.5, -PCB_TAN_22_5_DEGREE_2,	180.0},
 		{PCB_TAN_22_5_DEGREE_2, -0.5,	270.0},
@@ -549,6 +546,8 @@ draw_pinvia_shape_drc_outline( pcb_hid_gc_t gc, pcb_coord_t X, pcb_coord_t Y, pc
 	const double A0 = 45.0;
 	const double A1 = 26.565;
 	const double A2 = 63.435;
+
+	style = (style-1) & 0x0F;
 
 	/* Calculate multipliers*/
 	for (i = 0; i < 8; i++)	{
@@ -703,8 +702,8 @@ XORDrawPadDRCOutline(pcb_pad_t * pad,pcb_coord_t clearance)
 
     /* T is a vector half a thickness long, in the direction of
        one of the corners.  */
-    tx = t * cos(theta + M_PI / 4) * M_SQRT2;
-    ty = t * sin(theta + M_PI / 4) * M_SQRT2;
+    tx = t * cos(theta + M_PI / 4) * PCB_SQRT2;
+    ty = t * sin(theta + M_PI / 4) * PCB_SQRT2;
 
 		/* The normal of one of the edges with length = clearance */
 		nx = cos(theta + M_PI / 2) * clearance;
