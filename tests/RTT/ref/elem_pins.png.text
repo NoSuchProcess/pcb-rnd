@@ -1,8 +1,11 @@
+r6630
+
 U1
 6 x 6 pixel (5x5) distance from silk inside top corner to pin 1
 pin 1 dimensions 96 x 96 pixels (80x80)
-pin 2 97 pixel (39.166) circle (80.808)
+pin 2 97 pixel circle (80.808)
 pin 1 to pin 2 distance 264 pixels (303.333)
+pin 2 hole 47 pixels (39.167)
 
 U2
 pin 1 extremes 97 pixels (80.833) tall 145 wide (120.833)

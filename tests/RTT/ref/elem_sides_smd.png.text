@@ -1,9 +1,10 @@
 R1
-pad1 61 x 90 pixels (50.833x75)
-pad2 61 x 90 pixels
+pad1 61 x 89 pixels (50.833x74.167)
+pad2 61 x 89 pixels
+pad1 to pad2 81 pixels (67.5)
 
 R2 - on the bottom
-pad1 61 x 90 pixels
-pad2 61 x 90 pixels
+pad1 61 x 89 pixels 
+pad2 61 x 89 pixels
 
 (mils)

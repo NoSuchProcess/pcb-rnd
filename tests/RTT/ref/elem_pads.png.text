@@ -1,9 +1,12 @@
+r6630
+
 R1 pads
-61 x 90 pixels (50.833 x 75)
+61 x 89 pixels (50.833 x 74.167)
+distance between pads 81 pixels (67.5)
 
 U1 pads
 18 x 42 pixels (15 x 35)
-pad 5 upper to nearest silk screen corner 2 x 1 pixels (1.666 x 0.8333)
+pad 5 upper to nearest silk screen corner 2 x 2 pixels (1.667 x 1.667)
 pad 5 distance to pad 4 is 13 pixels (10.833)
 
 (mil)

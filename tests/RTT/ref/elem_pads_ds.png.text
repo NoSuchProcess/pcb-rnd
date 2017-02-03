@@ -1,3 +1,5 @@
+r6630
+
 E1
 2 pads 1 silk line + text (E1)
 
@@ -8,3 +10,5 @@ copper pads 102 pixels (85) long 12 pixels (10) wide
 pad 1 shares it's terminus with the silk line
 
 pad 2's highest point is 114 x 18 pixels (95 x 15) over from the inside corner of pad 1 & the silk line
+
+pad 2's lenght 102 pixels (85) width 12 pixels (10) 
