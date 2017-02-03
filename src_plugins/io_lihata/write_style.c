@@ -27,6 +27,7 @@
 #include "write_style.h"
 
 #define PB_BEGIN     {"*", 2, 2}
+#define PB_BEGINSP   {" *", 3, 3}
 #define PB_BEGINNL   {"\n *", 4, 4}
 #define PB_EMPTY     {"", 1, 1}
 #define PB_SEMICOLON {";", 2, 2}
@@ -63,6 +64,15 @@ static lht_perstyle_t style_inline_tight = {
 
 static lht_perstyle_t style_newline = {
 	/* buff */        {PB_BEGIN, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_NEWLINE},
+	/* has_eq */      1,
+	/* val_brace */   0,
+	/* etype */       0,
+	/* ename */       1,
+	/* name_braced */ 0
+};
+
+static lht_perstyle_t style_newline_sp = {
+	/* buff */        {PB_BEGINSP, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_EMPTY, PB_NEWLINE},
 	/* has_eq */      1,
 	/* val_brace */   0,
 	/* etype */       0,
@@ -129,11 +139,11 @@ static lht_perstyle_t early_nl = {
 };
 
 
-static const char *pat_te_flags[]  = {"te:*", "ha:flags", "*", NULL};
-static const char *pat_te_attr[]   = {"te:*", "ha:attributes", "*", NULL};
+static const char *pat_te_flags[]      = {"te:*", "ha:flags", "*", NULL};
+static const char *pat_te_attr[]       = {"te:*", "ha:attributes", "*", NULL};
 static lhtpers_rule_t r_ilists[]   = {
 	{pat_te_flags,  &style_inline_tight, NULL},
-	{pat_te_attr,   &style_newline, NULL},
+	{pat_te_attr,   &style_newline_sp, NULL},
 	{NULL, NULL, NULL}
 };
 
