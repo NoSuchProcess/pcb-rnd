@@ -1283,8 +1283,14 @@ pcb_bool exec_via(parse_param * h)
 			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
 		if (h->layer2_name_set)
 			pcb_printf(" layer2_name = \"%s\"", h->layer2_name);
-		pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
+		if (h->padstack_name_set)
+			pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
 		pcb_printf("\n");
+	}
+
+	if (!h->padstack_name_set) {
+		pcb_printf("via: padstack not set. skipping via x = %mm y = %mm\n", x2coord(h->x), y2coord(h->y));
+		return 0;
 	}
 
 	padstack = hyp_padstack_by_name(h->padstack_name);
@@ -1319,7 +1325,7 @@ pcb_bool exec_via_v1(parse_param * h)
 	pcb_flag_t flags;
 
 	if (hyp_debug) {
-		pcb_printf("via: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
+		pcb_printf("old via: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
 		pcb_printf(" drill_size = %mm", xy2coord(h->drill_size));
 		if (h->layer1_name_set)
 			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
@@ -1333,7 +1339,7 @@ pcb_bool exec_via_v1(parse_param * h)
 	}
 
 	thickness = xy2coord(h->pad_sx);
-	clearance = hyp_clearance(h);
+	clearance = 2 * hyp_clearance(h);
 	mask = xy2coord(h->pad1_sx);
 	drill_hole = xy2coord(h->drill_size);
 	is_round = (strcmp(h->pad1_shape, "RECT") != 0);
@@ -1366,10 +1372,16 @@ pcb_bool exec_pin(parse_param * h)
 	if (hyp_debug) {
 		pcb_printf("pin: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
 		pcb_printf(" pin_reference = \"%s\"", h->pin_reference);
-		pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
+		if (h->padstack_name_set)
+			pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
 		if (h->pin_function_set)
 			pcb_printf(" pin_function = %i", h->pin_function);
 		pcb_printf("\n");
+	}
+
+	if (!h->padstack_name_set) {
+		pcb_printf("pin: padstack not set. skipping pin \"%s\"\n", h->pin_reference);
+		return 0;
 	}
 
 	if (net_name != NULL)
