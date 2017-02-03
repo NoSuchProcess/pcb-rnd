@@ -39,5 +39,23 @@ arc_offpage.png good r6630
 arc_sizes.png good r6630
 coord_rounding.png good r6630
 clearance.png bad r6630 missing pcb & text file?!
+elem_pads_ds.png good r6630
+elem_pads.png good r6630
+elem_pins.png good r6630
+elem_sides_smd.png good r6630
+elem_sides_trh.png good r6630
+layer_copper.png good r6630
+layer_outline.png good r6630
+layer_spc.png good r6630
+line_f_clear.png good r6630
+line_normal.png good r6630
+line_offpage.png good r6630
+line_overlap1.png good r6630
+line_overlap2.png good r6630
+line_overlap3.png good r6630
+line_overlap4.png good r6630
+line_zerolen.png good r6630
+
+
 
 

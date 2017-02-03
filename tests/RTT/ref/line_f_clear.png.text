@@ -1,4 +1,4 @@
-
+r6630
 
 rectangle
 width 541 pixels (450.833)
@@ -7,12 +7,12 @@ height 541 pixels (450.833)
 veritcal line
 width 12 pixels (10)
 length 312 pixels (260)
-clearance 49/51 pixels (left/right) (40.833/42.5) (fail 40.833 vs 42)
+clearance 49/50 pixels (left/right) (40.833/41.667)
 
 horizontal line
-width 348 pixels (290)
+width 18 pixels (15)
 length 348 pixels (290)
-clearance 14/15 pixels (top/bottom) (11.666/12.5)
+clearance 14/14 pixels (top/bottom) (11.666/12.5)
 
 left diangonal line
 45 degrees
