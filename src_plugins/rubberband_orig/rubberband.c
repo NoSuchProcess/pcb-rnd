@@ -98,11 +98,21 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	double x, y, rad, dist1, dist2;
 	pcb_coord_t t;
 	int n, touches = 0;
+	int have_point1 = 0;
+	int have_point2 = 0;
 
 	t = line->Thickness / 2;
 
+	/* Don't add the line if both ends of it are already in the list. */
 	for(n = 0; n < rbnd->RubberbandN; n++)
-		if (rbnd->Rubberband[n].Line == line)
+		if (rbnd->Rubberband[n].Line == line) {
+			if(rbnd->Rubberband[n].MovedPoint == &line->Point1)
+				have_point1 = 1;
+			if(rbnd->Rubberband[n].MovedPoint == &line->Point2)
+				have_point2 = 1;
+		}
+
+	if(have_point1 && have_point2)
 			return PCB_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
@@ -119,7 +129,8 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 	if (i->radius == 0) {
 		int found = 0;
 
-		if (line->Point1.X + t >= i->box.X1 && line->Point1.X - t <= i->box.X2
+		if (!have_point1
+				&& line->Point1.X + t >= i->box.X1 && line->Point1.X - t <= i->box.X2
 				&& line->Point1.Y + t >= i->box.Y1 && line->Point1.Y - t <= i->box.Y2) {
 			if (((i->box.X1 <= line->Point1.X) &&
 					 (line->Point1.X <= i->box.X2)) || ((i->box.Y1 <= line->Point1.Y) && (line->Point1.Y <= i->box.Y2))) {
@@ -152,7 +163,8 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 				found++;
 			}
 		}
-		if (line->Point2.X + t >= i->box.X1 && line->Point2.X - t <= i->box.X2
+		if (!have_point2
+				&& line->Point2.X + t >= i->box.X1 && line->Point2.X - t <= i->box.X2
 				&& line->Point2.Y + t >= i->box.Y1 && line->Point2.Y - t <= i->box.Y2) {
 			if (((i->box.X1 <= line->Point2.X) &&
 					 (line->Point2.X <= i->box.X2)) || ((i->box.Y1 <= line->Point2.Y) && (line->Point2.Y <= i->box.Y2))) {
@@ -197,14 +209,14 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t * b, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 #ifdef CLOSEST_ONLY							/* keep this to remind me */
-	if (dist1 < dist2)
+	if ((dist1 < dist2) && !have_point1)
 		pcb_rubber_band_create(rbnd, i->layer, line, &line->Point1);
-	else
+	else if(!have_point2)
 		pcb_rubber_band_create(rbnd, i->layer, line, &line->Point2);
 #else
-	if (dist1 <= 0)
+	if ((dist1 <= 0) && !have_point1)
 		pcb_rubber_band_create(rbnd, i->layer, line, &line->Point1);
-	if (dist2 <= 0)
+	if ((dist2 <= 0) && !have_point2)
 		pcb_rubber_band_create(rbnd, i->layer, line, &line->Point2);
 #endif
 	return PCB_R_DIR_FOUND_CONTINUE;
