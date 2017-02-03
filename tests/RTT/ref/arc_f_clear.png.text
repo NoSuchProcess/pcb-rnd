@@ -1,24 +1,25 @@
+r6630
 
 polygone
 width 541 pixels (450.833 mil)
 height 391 pixels (324.833 mil)
-
+----
 small near circle completely in polygon
-width 13 pixels (10 mils)
-clearance on the left 22 pixels (18.333 mil) Wrong
-clearance on the right 25 pixels (20.833 mil)
-clearance on the top 23 pixels (19.166 mil)
-clearance on the bottom 25 pixels (20.833 mil)
+width 13 pixels (10.833 mils)
+clearance on the left 23 pixels (19.166 mil)
+clearance on the right 24 pixels (20 mil)
+clearance on the top 24 pixels (20 mil)
+clearance on the bottom 24 pixels (20 mil)
 
 longer arc completely in polygon
-line width 13 pixels(10 mil)
-width 163 pixels (135.833 mil)
+line width 13 pixels(10.833 mil)
+width 162 pixels (135 mil)
 height 162 pixels (135 mil)
-clearance on the bottom right end 25 pixels (20.833 mil)
-clearance on the top right end 23 pixels (18.166 mil)
-clearance on the end right end 25 pixels (20.833 mil)
-clearance on the right top end 22 pixels (18.333 mil)
-clearance on the left top end 23 pixels (18.166 mil) Wrong
+clearance on the bottom right end 24 pixels (20 mil)
+clearance on the top right end 23 pixels (19.166 mil)
+clearance on the end right end 24 pixels (20 mil)
+clearance on the right top end 23 pixels (19.333 mil)
+clearance on the left top end 23 pixels (19.166 mil)
 
 
 
