@@ -301,9 +301,11 @@ static lhtpers_rule_t r_data[] = {
 };
 
 static const char *pat_width[]   = {"te:width", "*", NULL};
+static const char *pat_height[]  = {"te:height", "*", NULL};
 static const char *pat_delta[]   = {"te:delta", "*", NULL};
 static lhtpers_rule_t r_symbol[] = {
 	{pat_width,      &style_inline, NULL},
+	{pat_height,     &style_inline, NULL},
 	{pat_delta,      &style_inline, NULL},
 	{pat_objects,    &style_nlstruct, NULL},
 	{pat_attributes,       &style_nlstruct, NULL},
