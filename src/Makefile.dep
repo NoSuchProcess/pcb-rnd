@@ -1361,7 +1361,6 @@
  ../src_plugins/lib_gtk_common/util_str.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/win_place.h
-../src_plugins/hid_gtk/menu_lht.o: ../src_plugins/hid_gtk/menu_lht.c
 ../src_plugins/hid_lesstif/dialogs.o: \
  ../src_plugins/hid_lesstif/dialogs.c \
  ../src_plugins/hid_lesstif/xincludes.h ../config.h conf_core.h conf.h \
@@ -2398,6 +2397,8 @@
  ../src_plugins/hid_gtk/gui.h
 ../src_plugins/lib_gtk_common/lib_gtk_common.o: \
  ../src_plugins/lib_gtk_common/lib_gtk_common.c plugins.h
+../src_plugins/lib_gtk_common/menu_lht.o: \
+ ../src_plugins/lib_gtk_common/menu_lht.c
 ../src_plugins/lib_gtk_common/ui_zoompan.o: \
  ../src_plugins/lib_gtk_common/ui_zoompan.c ../config.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \

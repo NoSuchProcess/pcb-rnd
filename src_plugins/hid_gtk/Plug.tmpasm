@@ -14,7 +14,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/gui-output-events.o
 	$(PLUGDIR)/hid_gtk/gui-top-window.o
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
-	$(PLUGDIR)/hid_gtk/menu_lht.o
 	$(PLUGDIR)/hid_gtk/gtk_conf_list.o
 	$(PLUGDIR)/hid_gtk/gschem_accel_label.o
 @]
@@ -25,13 +24,6 @@ switch /local/pcb/hid_gtk/controls
 	default
 		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
 		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
-		put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/hid_gtk/menu_lht.c }
-		append /local/pcb/RULES [@
-### gtk menu embed
-$(PLUGDIR)/hid_gtk/menu_lht.c: pcb-menu-gtk.lht
-	$(CQUOTE) -n hid_gtk_menu_default <pcb-menu-gtk.lht >$(PLUGDIR)/hid_gtk/menu_lht.c
-@]
-
 	end
 end
 

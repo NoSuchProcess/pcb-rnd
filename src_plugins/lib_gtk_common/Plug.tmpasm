@@ -25,6 +25,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_search.o
   $(PLUGDIR)/lib_gtk_common/in_keyboard.o
   $(PLUGDIR)/lib_gtk_common/in_mouse.o
+  $(PLUGDIR)/lib_gtk_common/menu_lht.o
   $(PLUGDIR)/lib_gtk_common/ui_zoompan.o
   $(PLUGDIR)/lib_gtk_common/win_place.o
   $(PLUGDIR)/lib_gtk_common/wt_coord_entry.o
@@ -39,3 +40,16 @@ switch /local/pcb/lib_gtk_common/controls
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;
 end
+
+switch /local/pcb/lib_gtk_common/controls
+	case {disable} end;
+	default
+		put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/hid_gtk/menu_lht.c }
+		append /local/pcb/RULES [@
+### gtk menu embed
+$(PLUGDIR)/lib_gtk_common/menu_lht.c: pcb-menu-gtk.lht
+	$(CQUOTE) -n hid_gtk_menu_default <pcb-menu-gtk.lht >$(PLUGDIR)/lib_gtk_common/menu_lht.c
+@]
+	end
+end
+
