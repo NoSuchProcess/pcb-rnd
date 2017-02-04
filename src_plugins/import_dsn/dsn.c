@@ -33,12 +33,79 @@
 
 #include "board.h"
 #include "data.h"
+#include "polygon.h"
 
 #include "action_helper.h"
 #include "hid.h"
 #include "plugins.h"
 
 static const char *dsn_cookie = "dsn importer";
+
+static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *wire)
+{
+	gsxl_node_t *n, *c;
+	for(n = wire->children; n != NULL; n = n->next) {
+		if (strcmp(n->str, "polyline_path") == 0) {
+			pcb_coord_t x, y, lx, ly, thick;
+			long pn;
+			const char *slayer = n->children->str;
+			const char *sthick = n->children->next->str;
+			pcb_bool succ;
+			pcb_layer_id_t lid;
+			pcb_layer_t *layer;
+
+			thick = pcb_get_value(sthick, "mm", NULL, &succ);
+			if (!succ) {
+				pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because thickness is invalid: %s\n", sthick);
+				continue;
+			}
+
+			lid = pcb_layer_by_name(slayer);
+			if (lid < 0) {
+				pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because layer name is invalid: %s\n", slayer);
+				continue;
+			}
+			layer = PCB->Data->Layer+lid;
+
+			/*printf("- %s\n", slayer);*/
+			for(pn = 0, c = n->children->next->next; c != NULL; pn++, c = c->next->next) {
+				const char *sx = c->str;
+				const char *sy = c->next->str;
+				x = pcb_get_value(sx, "mm", NULL, &succ);
+				if (!succ) {
+					pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sx);
+					continue;
+				}
+				y = pcb_get_value(sy, "mm", NULL, &succ);
+				if (!succ) {
+					pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sy);
+					continue;
+				}
+				(*nlines)++;
+				if (pn > 0) {
+					pcb_line_t *line = pcb_line_new_merge(layer, lx, PCB->MaxHeight - ly,
+						x, PCB->MaxHeight - y, thick, clear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
+/*					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, layer, line);*/
+/*					pcb_printf("LINE: %$mm %$mm .. %$mm %$mm\n", lx, ly, x, y);*/
+				}
+
+				lx = x;
+				ly = y;
+			}
+		}
+		else if (strcmp(n->str, "net") == 0) {
+			/* ignore */
+		}
+		else if (strcmp(n->str, "type") == 0) {
+			/* ignore */
+		}
+		else if (strcmp(n->str, "clearance_class") == 0) {
+			/* ignore */
+		}
+		else
+			pcb_message(PCB_MSG_WARNING, "import_dsn: ignoring unknown wire directive %s\n", n->str);
+	}
+}
 
 static const char load_dsn_syntax[] = "LoadDsnFrom(filename)";
 
@@ -115,9 +182,8 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	/* parse wiring */
 	for(w = wiring->children; w != NULL; w = w->next) {
-		if (strcmp(w->str, "wire") == 0) {
-			nlines++;
-		}
+		if (strcmp(w->str, "wire") == 0)
+			parse_wire(&nlines, clear, w);
 		if (strcmp(w->str, "via") == 0) {
 			nvias++;
 		}
