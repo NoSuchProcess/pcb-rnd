@@ -51,6 +51,7 @@
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/wt_coord_entry.h"
+#include "../src_plugins/lib_gtk_common/wt_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 
 /* needed for a type in GhidGui */
@@ -256,7 +257,7 @@ void ghid_notify_save_pcb(const char *file, pcb_bool done);
 void ghid_notify_filename_changed(void);
 void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui);
 void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui);
-void make_route_style_buttons(GHidRouteStyleSelector * rss);
+void make_route_style_buttons(pcb_gtk_route_style_t * rss);
 
 /* gui-utils.c
 */

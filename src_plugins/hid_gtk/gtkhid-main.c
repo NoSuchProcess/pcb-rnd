@@ -908,8 +908,8 @@ static void RouteStylesChanged(void *user_data, int argc, pcb_event_arg_t argv[]
 	if (!ghidgui || !ghidgui->route_style_selector)
 		return;
 
-	ghid_route_style_selector_sync
-		(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector),
+	pcb_gtk_route_style_sync
+		(GHID_ROUTE_STYLE(ghidgui->route_style_selector),
 		 conf_core.design.line_thickness, conf_core.design.via_drilling_hole, conf_core.design.via_thickness,
 		 conf_core.design.clearance);
 
@@ -930,8 +930,8 @@ static void ev_pcb_changed(void *user_data, int argc, pcb_event_arg_t argv[])
 		return;
 
 	if (ghidgui->route_style_selector) {
-		ghid_route_style_selector_empty(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
-		make_route_style_buttons(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
+		pcb_gtk_route_style_empty(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
+		make_route_style_buttons(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 	}
 	RouteStylesChanged(0, 0, NULL);
 

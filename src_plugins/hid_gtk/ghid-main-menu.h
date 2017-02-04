@@ -2,8 +2,8 @@
 #define GHID_MAIN_MENU_H__
 
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
+#include "../src_plugins/lib_gtk_common/wt_route_style.h"
 
-#include "ghid-route-style-selector.h"
 #include "hid_cfg.h"
 #include "hid_cfg_input.h"
 
@@ -26,7 +26,7 @@ void ghid_main_menu_update_toggle_state(GHidMainMenu * menu,
 void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t * base);
 
 void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, pcb_gtk_layer_selector_t * ls);
-void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteStyleSelector * rss);
+void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, pcb_gtk_route_style_t * rss);
 
 void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip,
 											const char *cookie);

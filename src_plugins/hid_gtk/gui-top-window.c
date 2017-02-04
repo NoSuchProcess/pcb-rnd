@@ -54,7 +54,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "config.h"
 #include "conf_core.h"
 #include <locale.h>
-#include "ghid-route-style-selector.h"
 #include "gui.h"
 #include "hid.h"
 #include "hid_cfg.h"
@@ -323,7 +322,7 @@ void ghid_sync_with_new_layout(void)
 {
 	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
 		pcb_use_route_style(&PCB->RouteStyle.array[0]);
-		ghid_route_style_selector_select_style(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector), &PCB->RouteStyle.array[0]);
+		pcb_gtk_route_style_select_style(GHID_ROUTE_STYLE(ghidgui->route_style_selector), &PCB->RouteStyle.array[0]);
 	}
 
 	ghid_config_handle_units_changed();
@@ -526,7 +525,7 @@ void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui)
 	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu_bar)));
 	gtk_window_add_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
 	gtk_window_add_accel_group
-		(window, ghid_route_style_selector_get_accel_group(GHID_ROUTE_STYLE_SELECTOR(gui->route_style_selector)));
+		(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->route_style_selector)));
 }
 
 /*! \brief Remove menu bar and accelerator groups */
@@ -535,7 +534,7 @@ void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui)
 	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu_bar)));
 	gtk_window_remove_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
 	gtk_window_remove_accel_group
-		(window, ghid_route_style_selector_get_accel_group(GHID_ROUTE_STYLE_SELECTOR(gui->route_style_selector)));
+		(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->route_style_selector)));
 }
 
 /* Refreshes the window title bar and sets the PCB name to the
@@ -664,32 +663,32 @@ void ghid_layer_buttons_update(void)
 }
 
 /*! \brief Called when user clicks OK on route style dialog */
-static void route_styles_edited_cb(GHidRouteStyleSelector * rss, gboolean save, gpointer data)
+static void route_styles_edited_cb(pcb_gtk_route_style_t * rss, gboolean save, gpointer data)
 {
 	conf_setf(CFR_DESIGN, "design/routes", -1, "%s", pcb_route_string_make(&PCB->RouteStyle));
 	if (save)
 		conf_setf(CFR_USER, "design/routes", -1, "%s", pcb_route_string_make(&PCB->RouteStyle));
 	ghid_main_menu_install_route_style_selector
-		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
+		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 }
 
 /*! \brief Called when a route style is selected */
-static void route_style_changed_cb(GHidRouteStyleSelector * rss, pcb_route_style_t * rst, gpointer data)
+static void route_style_changed_cb(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst, gpointer data)
 {
 	pcb_use_route_style(rst);
 	ghid_set_status_line_label();
 }
 
 /*! \brief Configure the route style selector */
-void make_route_style_buttons(GHidRouteStyleSelector * rss)
+void make_route_style_buttons(pcb_gtk_route_style_t * rss)
 {
 	int i;
 
 	/* Make sure the <custom> item is added */
-	ghid_route_style_selector_add_route_style(rss, NULL);
+	pcb_gtk_route_style_add_route_style(rss, NULL);
 
 	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); ++i)
-		ghid_route_style_selector_add_route_style(rss, &PCB->RouteStyle.array[i]);
+		pcb_gtk_route_style_add_route_style(rss, &PCB->RouteStyle.array[i]);
 	g_signal_connect(G_OBJECT(rss), "select_style", G_CALLBACK(route_style_changed_cb), NULL);
 	g_signal_connect(G_OBJECT(rss), "style_edited", G_CALLBACK(route_styles_edited_cb), NULL);
 }
@@ -1064,8 +1063,8 @@ static void ghid_build_pcb_top_window(void)
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
-	ghidgui->route_style_selector = ghid_route_style_selector_new();
-	make_route_style_buttons(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
+	ghidgui->route_style_selector = pcb_gtk_route_style_new();
+	make_route_style_buttons(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 	gtk_box_pack_start(GTK_BOX(hbox), ghidgui->route_style_selector, FALSE, FALSE, 0);
 
 	ghidgui->vbox_middle = gtk_vbox_new(FALSE, 0);
@@ -1448,7 +1447,7 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 	 */
 	ghid_layer_buttons_update();
 	ghid_main_menu_install_route_style_selector
-		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
+		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 
 	if (conf_hid_gtk.plugins.hid_gtk.listen)
 		ghid_create_listener();
@@ -1675,7 +1674,7 @@ static int AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	if (argc > 1)
 		PCB_AFAIL(adjuststyle);
 
-	ghid_route_style_selector_edit_dialog(GHID_ROUTE_STYLE_SELECTOR(ghidgui->route_style_selector));
+  pcb_gtk_route_style_edit_dialog(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 	return 0;
 }
 

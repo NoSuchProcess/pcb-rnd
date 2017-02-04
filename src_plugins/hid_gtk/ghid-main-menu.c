@@ -18,8 +18,8 @@
 #include "conf.h"
 #include "ghid-main-menu.h"
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
+#include "../src_plugins/lib_gtk_common/wt_route_style.h"
 
-#include "ghid-route-style-selector.h"
 #include "gschem_accel_label.h"
 
 
@@ -447,7 +447,7 @@ void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, pcb_gtk_layer_sele
 }
 
 /*! \brief Installs or updates route style selector items */
-void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteStyleSelector * rss)
+void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, pcb_gtk_route_style_t * rss)
 {
 	GList *children, *iter;
 	/* @routestyles */
@@ -459,7 +459,7 @@ void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, GHidRouteSty
 			gtk_container_remove(GTK_CONTAINER(mm->route_style_shell), iter->data);
 		g_list_free(children);
 		/* Install new ones */
-		mm->n_route_styles = ghid_route_style_selector_install_items(rss, mm->route_style_shell, mm->route_style_pos);
+		mm->n_route_styles = pcb_gtk_route_style_install_items(rss, mm->route_style_shell, mm->route_style_pos);
 	}
 }
 
