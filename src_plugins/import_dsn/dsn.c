@@ -81,7 +81,7 @@ static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *w
 					pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sy);
 					continue;
 				}
-				if (y < PCB_MM_TO_COORD(0.01)) /* workaround for broken polyline coords */
+				if ((y < PCB_MM_TO_COORD(0.01)) || (x < PCB_MM_TO_COORD(0.01))) /* workaround for broken polyline coords */
 					continue;
 				(*nlines)++;
 				if (pn > 0) {
