@@ -812,7 +812,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -846,7 +846,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h conf_core.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -880,7 +880,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h conf_core.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -913,7 +913,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h conf_core.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -921,8 +921,8 @@
  ../src_plugins/lib_gtk_common/bu_spin_button.h \
  ../src_plugins/lib_gtk_common/wt_coord_entry.h unit.h pcb-printf.h \
  misc_util.h error.h ../src_plugins/hid_gtk/gschem_accel_label.h
-../src_plugins/hid_gtk/ghid-propedit.o: \
- ../src_plugins/hid_gtk/ghid-propedit.c ../config.h \
+../src_plugins/lib_gtk_common/dlg_propedit.o: \
+ ../src_plugins/lib_gtk_common/dlg_propedit.c ../config.h \
  ../src_plugins/hid_gtk/gui.h board.h const.h macro.h global_typedefs.h \
  pcb_bool.h unit.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -944,7 +944,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -979,7 +979,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1010,7 +1010,7 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1062,7 +1062,7 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1095,7 +1095,7 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1138,7 +1138,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1170,7 +1170,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1213,7 +1213,7 @@
  crosshair.h vtonpoint.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1248,7 +1248,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -1282,7 +1282,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1317,7 +1317,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1354,7 +1354,7 @@
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/../lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-route-style-selector.h \
- route_style.h ../src_plugins/lib_gtk_common/../hid_gtk/ghid-propedit.h \
+ route_style.h ../src_plugins/lib_gtk_common/../lib_gtk_common/dlg_propedit.h \
  event.h compat_misc.h ../src_plugins/lib_gtk_common/../hid_gtk/colors.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/hid_gtk_conf.h conf.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h \
@@ -1388,7 +1388,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1422,7 +1422,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1458,7 +1458,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1493,7 +1493,7 @@
  misc_util.h hid.h drc.h hid_cfg.h hid_cfg_input.h \
  ../src_3rd/liblihata/genht/htip.h hid_cfg.h data.h crosshair.h \
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1534,7 +1534,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h event.h compat_misc.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
  conf.h ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/bu_box.h \
@@ -1565,7 +1565,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/hid_gtk/ghid-route-style-selector.h route_style.h \
- ../src_plugins/hid_gtk/ghid-propedit.h conf_core.h conf.h pcb-printf.h \
+ ../src_plugins/lib_gtk_common/dlg_propedit.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h event.h compat_misc.h \
  ../src_plugins/hid_gtk/colors.h ../src_plugins/hid_gtk/hid_gtk_conf.h \
@@ -2357,7 +2357,7 @@
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/../lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-route-style-selector.h \
- route_style.h ../src_plugins/lib_gtk_common/../hid_gtk/ghid-propedit.h \
+ route_style.h ../src_plugins/lib_gtk_common/../lib_gtk_common/dlg_propedit.h \
  conf_core.h event.h compat_misc.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/colors.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/hid_gtk_conf.h conf.h \
@@ -2422,7 +2422,7 @@
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/../lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/../hid_gtk/ghid-route-style-selector.h \
- route_style.h ../src_plugins/lib_gtk_common/../hid_gtk/ghid-propedit.h \
+ route_style.h ../src_plugins/lib_gtk_common/../lib_gtk_common/dlg_propedit.h \
  conf_core.h conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
  event.h compat_misc.h ../src_plugins/lib_gtk_common/../hid_gtk/colors.h \

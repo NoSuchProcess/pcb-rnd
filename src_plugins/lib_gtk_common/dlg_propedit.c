@@ -3,6 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017 Alain Vigne
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,13 +25,21 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtk.h>
 #include "config.h"
-#include "gui.h"
+
+
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "polygon.h"
 #include "obj_all.h"
+
+#include "bu_box.h"
+#include "compat.h"
+
+/* FIXME: Get rid of that ... means get rid of global  ghidgui */
+#include "../hid_gtk/gui.h"
+
+/*#include "dlg_propedit.h"*/
 
 static char *str_sub(const char *val, char sepi, char sepo)
 {
@@ -42,7 +51,7 @@ static char *str_sub(const char *val, char sepi, char sepo)
 	return tmp;
 }
 
-static void val_combo_changed_cb(GtkComboBox * combo, ghid_propedit_dialog_t *dlg)
+static void val_combo_changed_cb(GtkComboBox * combo, pcb_gtk_dlg_propedit_t * dlg)
 {
 	char *cval, *tmp;
 	GtkTreeIter iter;
@@ -55,7 +64,7 @@ static void val_combo_changed_cb(GtkComboBox * combo, ghid_propedit_dialog_t *dl
 	}
 }
 
-static void val_entry_changed_cb(GtkWidget *entry, ghid_propedit_dialog_t *dlg)
+static void val_entry_changed_cb(GtkWidget * entry, pcb_gtk_dlg_propedit_t * dlg)
 {
 	if (dlg->stock_val == 0)
 		gtk_combo_box_set_active(GTK_COMBO_BOX(dlg->val_box), -1);
@@ -63,31 +72,32 @@ static void val_entry_changed_cb(GtkWidget *entry, ghid_propedit_dialog_t *dlg)
 		dlg->stock_val = 0;
 }
 
-static void val_combo_reset(ghid_propedit_dialog_t *dlg)
+static void val_combo_reset(pcb_gtk_dlg_propedit_t * dlg)
 {
 	gtk_list_store_clear(dlg->vals);
 }
 
-static void val_combo_add(ghid_propedit_dialog_t *dlg, const char *val)
+static void val_combo_add(pcb_gtk_dlg_propedit_t * dlg, const char *val)
 {
 	gtk_list_store_insert_with_values(dlg->vals, NULL, -1, 0, val, -1);
 }
 
 #define NO0(s) pcb_strdup((s) == NULL ? "" : (s))
-void ghid_propedit_prop_add(ghid_propedit_dialog_t *dlg, const char *name, const char *common, const char *min, const char *max, const char *avg)
+void pcb_gtk_dlg_propedit_prop_add(pcb_gtk_dlg_propedit_t * dlg, const char *name, const char *common,
+																	 const char *min, const char *max, const char *avg)
 {
-	gtk_list_store_insert_with_values(dlg->props, &dlg->last_add_iter, -1,  0,pcb_strdup(name),  1,NO0(common),  2,NO0(min),  3,NO0(max),  4,NO0(avg),  -1);
+	gtk_list_store_insert_with_values(dlg->props, &dlg->last_add_iter, -1, 0,
+																		pcb_strdup(name), 1, NO0(common), 2, NO0(min), 3, NO0(max), 4, NO0(avg), -1);
 	dlg->last_add_iter_valid = 1;
 }
 
-static void hdr_add(ghid_propedit_dialog_t *dlg, const char *name, int col)
+static void hdr_add(pcb_gtk_dlg_propedit_t * dlg, const char *name, int col)
 {
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(dlg->tree), -1, name, renderer, "text", col, NULL);
 }
 
-
-static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
+static void list_cursor_changed_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 {
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
@@ -110,7 +120,7 @@ static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	val_combo_reset(dlg);
 
 	val = ghidgui->propedit_query(ghidgui->propedit_pe, "v1st", prop, NULL, 0);
-	while(val != NULL) {
+	while (val != NULL) {
 		tmp = str_sub(val, '\n', '=');
 		val_combo_add(dlg, tmp);
 		free(tmp);
@@ -122,7 +132,7 @@ static void list_cursor_changed_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	free(tmp);
 }
 
-static void do_remove_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
+static void do_remove_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 {
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
@@ -145,21 +155,20 @@ static void do_remove_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	free(prop);
 }
 
-static int keyval_input(char **key, char **val)
+static int keyval_input(char **key, char **val, pcb_gtk_dlg_propedit_t * dlg)
 {
 	GtkWidget *dialog;
 	GtkWidget *content_area;
 	GtkWidget *vbox, *label, *kentry, *ventry;
 	gboolean response;
-	GHidPort *out = &ghid_port;
 
 	dialog = gtk_dialog_new_with_buttons("New attribute",
-																			 GTK_WINDOW(out->top_window),
+																			 GTK_WINDOW(dlg->top_window),
 																			 GTK_DIALOG_MODAL,
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtkc_vbox_new(FALSE, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
 
 	label = gtk_label_new("");
@@ -196,12 +205,11 @@ static int keyval_input(char **key, char **val)
 	return 0;
 }
 
-
-static void do_addattr_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
+static void do_addattr_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 {
 	char *name, *value;
 
-	if (keyval_input(&name, &value)) {
+	if (keyval_input(&name, &value, dlg)) {
 		char *path;
 		if ((name[0] == 'a') && (name[1] == '/')) {
 			path = name;
@@ -209,10 +217,10 @@ static void do_addattr_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 		}
 		else {
 			int len = strlen(name);
-			path = malloc(len+3);
+			path = malloc(len + 3);
 			path[0] = 'a';
 			path[1] = '/';
-			strcpy(path+2, name);
+			strcpy(path + 2, name);
 		}
 		ghidgui->propedit_query(ghidgui->propedit_pe, "vset", path, value, 0);
 		free(path);
@@ -220,7 +228,7 @@ static void do_addattr_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	}
 }
 
-static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
+static void do_apply_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 {
 	GtkTreeSelection *tsel;
 	GtkTreeModel *tm;
@@ -242,16 +250,17 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 
 	typ = ghidgui->propedit_query(ghidgui->propedit_pe, "type", prop, NULL, 0);
 	if (typ != NULL) {
-		if (*typ == 'c') { /* if type of the field if coords, we may need to fix missing units */
+		if (*typ == 'c') {					/* if type of the field if coords, we may need to fix missing units */
 			char *end;
 			strtod(val, &end);
-			while(isspace(*end)) end++;
-			if (*end == '\0') { /* no unit - automatically append current default */
+			while (isspace(*end))
+				end++;
+			if (*end == '\0') {				/* no unit - automatically append current default */
 				int len = strlen(val);
 				char *new_val;
-				new_val = malloc(len+32);
+				new_val = malloc(len + 32);
 				strcpy(new_val, val);
-				sprintf(new_val+len, " %s", conf_core.editor.grid_unit->suffix);
+				sprintf(new_val + len, " %s", conf_core.editor.grid_unit->suffix);
 				free(val);
 				val = new_val;
 			}
@@ -267,7 +276,7 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 			/* get the combo box updated */
 			list_cursor_changed_cb(dlg->tree, dlg);
 			if ((*val == '+') || (*val == '-'))
-				gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), val); /* keep relative values intact for a reapply */
+				gtk_entry_set_text(GTK_ENTRY(dlg->entry_val), val);	/* keep relative values intact for a reapply */
 		}
 		else
 			pcb_message(PCB_MSG_WARNING, "Failed to change any object - %s is possibly invalid value for %s\n", val, prop);
@@ -279,20 +288,18 @@ static void do_apply_cb(GtkWidget *tree, ghid_propedit_dialog_t *dlg)
 	g_free(prop);
 }
 
+/* FIXME: GTK3 incompatible */
 static GdkPixmap *pm;
-static gboolean preview_expose_event(GtkWidget *w, GdkEventExpose *event)
+static gboolean preview_expose_event(GtkWidget * w, GdkEventExpose * event)
 {
 	gdk_draw_drawable(w->window, w->style->fg_gc[gtk_widget_get_state(w)],
-		pm,
-		event->area.x, event->area.y,
-		event->area.x, event->area.y,
-		event->area.width, event->area.height);
+										pm, event->area.x, event->area.y, event->area.x, event->area.y, event->area.width, event->area.height);
 	return FALSE;
 }
 
 static pcb_board_t preview_pcb;
 
-static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
+static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
 {
 	GtkWidget *area = gtk_drawing_area_new();
 	pcb_board_t *old_pcb;
@@ -319,7 +326,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	pcb_font_create_default(&preview_pcb);
 	preview_pcb.ViaOn = 1;
 
-	for(n = 0; n < pcb_max_layer; n++) {
+	for (n = 0; n < pcb_max_layer; n++) {
 		preview_pcb.Data->Layer[n].On = 1;
 		preview_pcb.Data->Layer[n].Color = pcb_strdup(PCB->Data->Layer[n].Color);
 		preview_pcb.Data->Layer[n].Name = pcb_strdup("preview dummy");
@@ -335,25 +342,24 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
 							PCB_MIL_TO_COORD(50), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(20), "", pcb_no_flags());
 
-	pcb_line_new(preview_pcb.Data->Layer+0,
-		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1300),
-		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));
+	pcb_line_new(preview_pcb.Data->Layer + 0,
+							 PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
+							 PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1300),
+							 PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));
 
-	pcb_arc_new(preview_pcb.Data->Layer+0,
-		PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
-		PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100),
-		0.0, 90.0,
-		PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));
+	pcb_arc_new(preview_pcb.Data->Layer + 0,
+							PCB_MIL_TO_COORD(1000), PCB_MIL_TO_COORD(1000),
+							PCB_MIL_TO_COORD(100), PCB_MIL_TO_COORD(100),
+							0.0, 90.0, PCB_MIL_TO_COORD(20), PCB_MIL_TO_COORD(20), pcb_flag_make(PCB_FLAG_CLEARLINE));
 
-		pcb_text_new(preview_pcb.Data->Layer+0, &PCB->Font,
-							PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
+	pcb_text_new(preview_pcb.Data->Layer + 0, &PCB->Font,
+							 PCB_MIL_TO_COORD(850), PCB_MIL_TO_COORD(1150), 0, 100, "Text", pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 	{
 		pcb_polygon_t *v = pcb_poly_new_from_rectangle(preview_pcb.Data->Layer,
-			PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
-			PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
-			pcb_flag_make(PCB_FLAG_CLEARPOLY));
+																									 PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10),
+																									 PCB_MIL_TO_COORD(1200), PCB_MIL_TO_COORD(1200),
+																									 pcb_flag_make(PCB_FLAG_CLEARPOLY));
 		pcb_poly_init_clip(preview_pcb.Data, preview_pcb.Data->Layer, v);
 	}
 
@@ -361,14 +367,13 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	PCB = &preview_pcb;
 
 	zoom1 = 1;
-	cx = PCB_MIL_TO_COORD(1000+300/2*zoom1);
-	cy = PCB_MIL_TO_COORD(1000+400/2*zoom1);
+	cx = PCB_MIL_TO_COORD(1000 + 300 / 2 * zoom1);
+	cy = PCB_MIL_TO_COORD(1000 + 400 / 2 * zoom1);
 	fx = conf_core.editor.view.flip_x;
 	fy = conf_core.editor.view.flip_y;
 	conf_set(CFR_DESIGN, "editor/view/flip_x", -1, "0", POL_OVERWRITE);
 	conf_set(CFR_DESIGN, "editor/view/flip_y", -1, "0", POL_OVERWRITE);
-	pm = ghid_render_pixmap(cx, cy,
-	40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(gport->top_window->window)));
+	pm = ghid_render_pixmap(cx, cy, 40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(gport->top_window->window)));
 	conf_setf(CFR_DESIGN, "editor/view/flip_x", -1, "%d", fx, POL_OVERWRITE);
 	conf_setf(CFR_DESIGN, "editor/view/flip_y", -1, "%d", fy, POL_OVERWRITE);
 
@@ -389,9 +394,7 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	}
 */
 
-
 	PCB = old_pcb;
-
 
 	g_signal_connect(G_OBJECT(area), "expose-event", G_CALLBACK(preview_expose_event), pm);
 	return area;
@@ -403,11 +406,11 @@ static GtkWidget *preview_init(ghid_propedit_dialog_t *dlg)
 	gtk_tree_sortable_set_sort_column_id(sortable, 0, GTK_SORT_ASCENDING);
 }*/
 
-static gint sort_name_cmp(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
+static gint sort_name_cmp(GtkTreeModel * model, GtkTreeIter * a, GtkTreeIter * b, gpointer userdata)
 {
 	gint sortcol = GPOINTER_TO_INT(userdata);
 	gint ret = 0;
-  gchar *name1, *name2;
+	gchar *name1, *name2;
 
 	if (sortcol != 0)
 		return 0;
@@ -422,13 +425,12 @@ static gint sort_name_cmp(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, g
 		ret = -1;
 	else if (name2 == NULL)
 		ret = 1;
-	else if ((*name1 == 'a') && (*name2 == 'p')) /* force attributes to the bottom */
+	else if ((*name1 == 'a') && (*name2 == 'p'))	/* force attributes to the bottom */
 		return 1;
 	else if ((*name1 == 'p') && (*name2 == 'a'))
 		return -1;
 	else
 		ret = strcmp(name1, name2);
-
 
 	g_free(name1);
 	g_free(name2);
@@ -436,7 +438,7 @@ static gint sort_name_cmp(GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, g
 	return ret;
 }
 
-static void make_sortable(GtkTreeModel *liststore)
+static void make_sortable(GtkTreeModel * liststore)
 {
 	GtkTreeSortable *sortable;
 
@@ -446,29 +448,29 @@ static void make_sortable(GtkTreeModel *liststore)
 	gtk_tree_sortable_set_sort_column_id(sortable, 0, GTK_SORT_ASCENDING);
 }
 
-GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
+GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t * dlg, GtkWidget * top_window)
 {
-	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label, *hbx, *dummy, *box_val_edit, *preview;
-	GtkCellRenderer *renderer ;
-	GtkWidget *content_area, *top_window = gport->top_window;
+	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label;
+	GtkWidget *hbx, *dummy, *box_val_edit, *preview;
+	GtkCellRenderer *renderer;
+	GtkWidget *content_area;
 
 	dlg->last_add_iter_valid = 0;
+	dlg->top_window = top_window;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	/*window = gtk_window_new(GTK_WINDOW_TOPLEVEL); */
 	window = gtk_dialog_new_with_buttons(_("Edit Properties"),
 																			 GTK_WINDOW(top_window),
-																			 GTK_DIALOG_DESTROY_WITH_PARENT,
-																			 GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+																			 GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE, GTK_RESPONSE_OK, NULL);
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(window));
 
-	hbox_win = gtk_hbox_new(FALSE, 0);
+	hbox_win = gtkc_hbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(content_area), hbox_win);
 
-
-	vbox_tree = gtk_vbox_new(FALSE, 0);
+	vbox_tree = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_win), vbox_tree, TRUE, TRUE, 4);
-	vbox_edit = gtk_vbox_new(FALSE, 0);
+	vbox_edit = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_win), vbox_edit, TRUE, TRUE, 4);
 
 /***** LEFT *****/
@@ -482,10 +484,10 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	GType ty[5];
 
 	int n;
-	for(n = 0; n < 5; n++)
+	for (n = 0; n < 5; n++)
 		ty[n] = G_TYPE_STRING;
 	dlg->props = gtk_list_store_newv(5, ty);
-	make_sortable((GtkTreeModel *)dlg->props);
+	make_sortable((GtkTreeModel *) dlg->props);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(dlg->tree), GTK_TREE_MODEL(dlg->props));
 
 	hdr_add(dlg, "property", 0);
@@ -495,11 +497,11 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	hdr_add(dlg, "avg", 4);
 
 	/* dummy box to eat up vertical space */
-	hbx = gtk_hbox_new(FALSE, 0);
+	hbx = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tree), hbx, TRUE, TRUE, 4);
 
 	/* list manipulation */
-	hbx = gtk_hbox_new(FALSE, 0);
+	hbx = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tree), hbx, FALSE, TRUE, 4);
 
 	dlg->remove = gtk_button_new_with_label("Remove attribute");
@@ -526,7 +528,7 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 
 	dlg->stock_val = 0;
 	dlg->vals = gtk_list_store_new(1, G_TYPE_STRING);
-	box_val_edit = gtk_vbox_new(FALSE, 0);
+	box_val_edit = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_edit), box_val_edit, FALSE, TRUE, 4);
 
 	/* combo */
@@ -544,17 +546,17 @@ GtkWidget *ghid_propedit_dialog_create(ghid_propedit_dialog_t *dlg)
 	g_signal_connect(G_OBJECT(dlg->entry_val), "changed", G_CALLBACK(val_entry_changed_cb), dlg);
 
 	/* Apply button */
-	hbx = gtk_hbox_new(FALSE, 0);
+	hbx = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_edit), hbx, FALSE, TRUE, 4);
 
-	dummy = gtk_vbox_new(FALSE, 0); /* dummy box to eat up free space on the left */
+	dummy = gtkc_vbox_new(FALSE, 0);	/* dummy box to eat up free space on the left */
 	gtk_box_pack_start(GTK_BOX(hbx), dummy, TRUE, TRUE, 4);
 
 	dlg->apply = gtk_button_new_with_label("Apply");
 	gtk_box_pack_start(GTK_BOX(hbx), dlg->apply, FALSE, TRUE, 4);
 	g_signal_connect(G_OBJECT(dlg->apply), "clicked", G_CALLBACK(do_apply_cb), dlg);
 
-
+	/* Runs the dialog */
 	gtk_widget_show_all(window);
 
 	return window;

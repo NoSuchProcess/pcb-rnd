@@ -35,15 +35,12 @@
 
 #include <gtk/gtk.h>
 #include "ghid-main-menu.h"
-#include "ghid-propedit.h"
 #include "conf_core.h"
 #include "event.h"
 #include "compat_misc.h"
 #include "colors.h"
 
 #include "hid_gtk_conf.h"
-
-
 
 
 /* TODO: REMOVE THIS */
@@ -53,6 +50,7 @@
 #include "../src_plugins/lib_gtk_common/bu_check_button.h"
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
 #include "../src_plugins/lib_gtk_common/wt_coord_entry.h"
+#include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 
 
 	/* Silk and rats lines are the two additional selectable to draw on.
@@ -118,7 +116,7 @@ typedef struct {
 
 	gint settings_mode;
 
-	ghid_propedit_dialog_t propedit_dlg;
+	pcb_gtk_dlg_propedit_t propedit_dlg;
 	GtkWidget *propedit_widget;
 	const char *(*propedit_query)(void *pe, const char *cmd, const char *key, const char *val, int idx);
 	void *propedit_pe;

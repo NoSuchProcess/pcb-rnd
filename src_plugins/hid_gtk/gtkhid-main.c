@@ -625,7 +625,7 @@ static int ghid_propedit_start(void *pe, int num_props,
 															 const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
 {
 
-	ghidgui->propedit_widget = ghid_propedit_dialog_create(&ghidgui->propedit_dlg);
+	ghidgui->propedit_widget = pcb_gtk_dlg_propedit_create(&ghidgui->propedit_dlg, gport->top_window);
 	ghidgui->propedit_query = query;
 	ghidgui->propedit_pe = pe;
 	return 0;
@@ -641,7 +641,7 @@ static void ghid_propedit_end(void *pe)
 static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx, const char *most_common, const char *min,
 																	 const char *max, const char *avg)
 {
-	ghid_propedit_prop_add(&ghidgui->propedit_dlg, propname, most_common, min, max, avg);
+	pcb_gtk_dlg_propedit_prop_add(&ghidgui->propedit_dlg, propname, most_common, min, max, avg);
 }
 
 /* ---------------------------------------------------------------------- */
