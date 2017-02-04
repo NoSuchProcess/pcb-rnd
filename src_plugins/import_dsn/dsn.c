@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <gensexpr/gsxl.h>
 
 #include "board.h"
 #include "data.h"
@@ -47,6 +48,10 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 {
 	const char *fname = NULL;
 	pcb_coord_t clear;
+	FILE *f;
+	gsxl_dom_t dom;
+	int c, seek_quote = 1;
+	gsx_parse_res_t res;
 
 	fname = argc ? argv[0] : 0;
 
@@ -60,8 +65,42 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 			PCB_AFAIL(load_dsn);
 	}
 
-	clear = PCB->RouteStyle.array[0].Clearance * 2;
+	/* load and parse the file into a dom tree */
+	f = fopen(fname, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: can't open %s for read\n", fname);
+		return 1;
+	}
+	gsxl_init(&dom, gsxl_node_t);
+	dom.parse.line_comment_char = '#';
+	do {
+		c = fgetc(f);
+		res = gsxl_parse_char(&dom, c);
 
+		/* Workaround: skip the unbalanced '"' in string_quote */
+		if (seek_quote && (dom.parse.used == 12) && (strncmp(dom.parse.atom, "string_quote", dom.parse.used) == 0)) {
+			do {
+				c = fgetc(f);
+			} while((c != ')') && (c != EOF));
+			res = gsxl_parse_char(&dom, ')');
+			seek_quote = 0;
+		}
+	} while(res == GSX_RES_NEXT);
+	fclose(f);
+
+	if (res != GSX_RES_EOE) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: parse error in %s at %d:%d\n", fname, dom.parse.line, dom.parse.col);
+		gsxl_uninit(&dom);
+		return 1;
+	}
+	gsxl_compact_tree(&dom);
+
+
+	/* parse the tree */
+	clear = PCB->RouteStyle.array[0].Clearance * 2;
+	
+
+	gsxl_uninit(&dom);
 	return 0;
 }
 
