@@ -30,7 +30,6 @@
 #include "conf_core.h"
 
 #include "gui.h"
-#include "gtkhid.h"
 #include "hid_cfg.h"
 
 #include <gdk/gdkkeysyms.h>
@@ -43,6 +42,7 @@
 #include "find.h"
 #include "search.h"
 #include "rats.h"
+#include "gtkhid-main.h"
 
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"

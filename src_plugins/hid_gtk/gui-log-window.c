@@ -36,6 +36,7 @@
 #include "pcb-printf.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
+#include "gtkhid-main.h"
 
 #include "../src_plugins/lib_gtk_common/win_place.h"
 

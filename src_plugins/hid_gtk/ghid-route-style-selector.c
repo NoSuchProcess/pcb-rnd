@@ -11,7 +11,6 @@
 
 #include "config.h"
 #include "conf_core.h"
-#include "gtkhid.h"
 #include "gui.h"
 #include "pcb-printf.h"
 #include "route_style.h"

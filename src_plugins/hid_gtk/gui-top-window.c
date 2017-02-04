@@ -55,7 +55,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "conf_core.h"
 #include <locale.h>
 #include "ghid-route-style-selector.h"
-#include "gtkhid.h"
 #include "gui.h"
 #include "hid.h"
 #include "hid_cfg.h"
@@ -93,6 +92,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "compat_misc.h"
 #include "obj_line.h"
 #include "layer_vis.h"
+#include "gtkhid-main.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"

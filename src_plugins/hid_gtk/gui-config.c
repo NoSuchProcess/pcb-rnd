@@ -31,7 +31,7 @@
 
 #include "gui.h"
 #include "hid.h"
-#include "gtkhid.h"
+#include "gtkhid-main.h"
 
 #include "action_helper.h"
 #include "change.h"

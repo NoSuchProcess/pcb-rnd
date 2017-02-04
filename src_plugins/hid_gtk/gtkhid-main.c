@@ -28,7 +28,7 @@
 #include "compat_nls.h"
 #include "layer_vis.h"
 
-#include "gtkhid.h"
+#include "gtkhid-main.h"
 
 /* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
@@ -75,7 +75,7 @@ void ghid_calibrate(double xval, double yval)
 
 static int ghid_gui_is_up = 0;
 
-void ghid_notify_gui_is_up()
+void ghid_notify_gui_is_up(void)
 {
 	ghid_gui_is_up = 1;
 }

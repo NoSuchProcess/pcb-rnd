@@ -10,7 +10,7 @@
 #include <liblihata/tree.h>
 
 #include "config.h"
-#include "gtkhid.h"
+#include "gtkhid-main.h"
 #include "gui.h"
 #include "pcb-printf.h"
 #include "misc_util.h"
