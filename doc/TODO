@@ -36,9 +36,11 @@
 		- geo speed
 		- regex and string cmp match speed vs. select by name
 
-- gsch2pcb-rnd migration
-	- remove old project file support
-	- remove -m pcb
+
+RELEASE 1.2.2:
+	- gsch2pcb-rnd migration
+		- remove old project file support
+		- remove -m pcb
 
 CLEANUP #5
 - layer group rewrite:
