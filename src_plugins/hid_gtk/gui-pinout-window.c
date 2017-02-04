@@ -30,7 +30,6 @@
 #include "conf_core.h"
 
 #include "gui.h"
-#include "win_place.h"
 
 #include "copy.h"
 #include "data.h"
@@ -39,6 +38,7 @@
 #include "rotate.h"
 
 #include "../src_plugins/lib_gtk_common/wt_preview.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
 
 static void pinout_close_cb(GtkWidget * widget, GtkWidget * top_window)
 {

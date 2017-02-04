@@ -29,8 +29,8 @@
 #include "config.h"
 
 #include "gui.h"
-#include "win_place.h"
 #include "compat_nls.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
 
 static GtkWidget *keyref_window;
 

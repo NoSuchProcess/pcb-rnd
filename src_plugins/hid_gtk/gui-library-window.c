@@ -55,7 +55,6 @@
 #include "conf_core.h"
 
 #include "gui.h"
-#include "win_place.h"
 #include "buffer.h"
 #include "data.h"
 #include "plug_footprint.h"
@@ -66,6 +65,7 @@
 static GtkWidget *library_window;
 
 #include "../src_plugins/lib_gtk_common/wt_preview.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
 #include "gui-library-window.h"
 
 /*! \def LIBRARY_FILTER_INTERVAL

@@ -34,7 +34,6 @@
 #include "pcb-printf.h"
 #include "undo.h"
 #include "gui.h"
-#include "win_place.h"
 #include "gui-drc-window.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
@@ -48,6 +47,7 @@
 #include "layer_vis.h"
 
 #include "../src_plugins/lib_gtk_common/util_str.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
 
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5

@@ -84,7 +84,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "paths.h"
 #include "gui-icons-mode-buttons.data"
 #include "gui-icons-misc.data"
-#include "win_place.h"
 #include "hid_attrib.h"
 #include "hid_actions.h"
 #include "hid_flags.h"
@@ -96,6 +95,9 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
+
+
 static pcb_bool ignore_layer_update;
 
 static GtkWidget *ghid_load_menus(void);

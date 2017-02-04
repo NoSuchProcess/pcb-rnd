@@ -35,7 +35,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "win_place.h"
 
 #include "data.h"
 #include "draw.h"
@@ -52,6 +51,8 @@
 
 #include "gui.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
+
 
 #define NET_HIERARCHY_SEPARATOR "/"
 

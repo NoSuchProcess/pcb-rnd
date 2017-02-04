@@ -22,6 +22,7 @@
 
 #include "config.h"
 #include "win_place.h"
+#include "conf_core.h"
 
 #define CONF_PREFIX "plugins/hid_gtk/window_geometry/"
 static const char *conf_prefix[WPLC_max] = { /* order DOES matter */

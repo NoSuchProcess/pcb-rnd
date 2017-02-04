@@ -30,7 +30,6 @@
 #include <genht/hash.h>
 
 #include "gui.h"
-#include "win_place.h"
 #include "hid.h"
 #include "gtkhid.h"
 
@@ -56,6 +55,8 @@
 #include "../src_plugins/lib_gtk_common/wt_preview.h"
 #include "../src_plugins/lib_gtk_common/bu_entry.h"
 #include "../src_plugins/lib_gtk_common/bu_notebook.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
+
 
 #if 0
 #include <locale.h>

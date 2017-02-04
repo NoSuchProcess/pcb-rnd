@@ -33,10 +33,11 @@
 #include "conf_hid.h"
 
 #include "gui.h"
-#include "win_place.h"
 #include "pcb-printf.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
+
+#include "../src_plugins/lib_gtk_common/win_place.h"
 
 static GtkWidget *log_window, *log_text;
 static gboolean log_show_on_append = FALSE;

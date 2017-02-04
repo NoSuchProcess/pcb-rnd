@@ -1,6 +1,7 @@
 #ifndef GHID_WIN_PLACE
 #define GHID_WIN_PLACE
-#include "gui.h"
+
+#include <gtk/gtk.h>
 
 typedef enum {
 	WPLC_TOP,

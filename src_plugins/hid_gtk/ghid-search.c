@@ -31,7 +31,7 @@
 #include "gui.h"
 #include "compat_misc.h"
 #include "ghid-search.h"
-#include "win_place.h"
+#include "../src_plugins/lib_gtk_common/win_place.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "misc_util.h"
