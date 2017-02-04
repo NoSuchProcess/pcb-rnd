@@ -45,18 +45,6 @@ void ghid_status_line_set_text(const gchar * text)
 		gtk_label_set_markup(GTK_LABEL(ghidgui->status_line_label), text ? text : "");
 }
 
-void ghid_cursor_position_label_set_text(gchar * text)
-{
-	if (ghidgui->cursor_position_absolute_label != NULL)
-		gtk_label_set_markup(GTK_LABEL(ghidgui->cursor_position_absolute_label), text ? text : "");
-}
-
-void ghid_cursor_position_relative_label_set_text(gchar * text)
-{
-	if (ghidgui->cursor_position_relative_label != NULL)
-		gtk_label_set_markup(GTK_LABEL(ghidgui->cursor_position_relative_label), text ? text : "");
-}
-
 /* ---------------------------------------------------------------------------
  * output of status line
  */
@@ -85,34 +73,3 @@ void ghid_set_status_line_label(void)
 	free(text);
 }
 
-/* ---------------------------------------------------------------------------
- * output of cursor position
- */
-void ghid_set_cursor_position_labels(void)
-{
-	char *text, sep = ' ';
-	if (conf_hid_gtk.plugins.hid_gtk.compact_vertical)
-		sep = '\n';
-
-	if (pcb_marked.status) {
-		pcb_coord_t dx = pcb_crosshair.X - pcb_marked.X;
-		pcb_coord_t dy = pcb_crosshair.Y - pcb_marked.Y;
-		pcb_coord_t r = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pcb_marked.X, pcb_marked.Y);
-		double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
-
-
-		text = pcb_strdup_printf(_("%m+r %-mS;%cphi %-.1f;%c%-mS %-mS"), conf_core.editor.grid_unit->allow, r, sep, a, sep, dx, dy);
-		ghid_cursor_position_relative_label_set_text(text);
-		free(text);
-	}
-	else {
-		char text[64];
-		sprintf(text, _("r __.__;%cphi __._;%c__.__ __.__"), sep, sep);
-		ghid_cursor_position_relative_label_set_text(text);
-	}
-
-
-	text = pcb_strdup_printf("%m+%-mS%c%-mS", conf_core.editor.grid_unit->allow, pcb_crosshair.X, sep, pcb_crosshair.Y);
-	ghid_cursor_position_label_set_text(text);
-	free(text);
-}

@@ -97,7 +97,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
 
-
 static pcb_bool ignore_layer_update;
 
 static GtkWidget *ghid_load_menus(void);
@@ -566,81 +565,6 @@ void ghid_window_set_name_label(gchar * name)
 	g_free(filename);
 }
 
-static void grid_units_button_cb(GtkWidget * widget, gpointer data)
-{
-	/* Button only toggles between mm and mil */
-	if (conf_core.editor.grid_unit == get_unit_struct("mm"))
-		pcb_hid_actionl("SetUnits", "mil", NULL);
-	else
-		pcb_hid_actionl("SetUnits", "mm", NULL);
-}
-
-/*
- * The two following callbacks are used to keep the absolute
- * and relative cursor labels from growing and shrinking as you
- * move the cursor around.
- */
-static void absolute_label_size_req_cb(GtkWidget * widget, GtkRequisition * req, gpointer data)
-{
-
-	static gint w = 0;
-	if (req->width > w)
-		w = req->width;
-	else
-		req->width = w;
-}
-
-static void relative_label_size_req_cb(GtkWidget * widget, GtkRequisition * req, gpointer data)
-{
-
-	static gint w = 0;
-	if (req->width > w)
-		w = req->width;
-	else
-		req->width = w;
-}
-
-static void make_cursor_position_labels(GtkWidget * hbox, GHidPort * port)
-{
-	GtkWidget *frame, *label;
-
-	/* The grid units button next to the cursor position labels.
-	 */
-	ghidgui->grid_units_button = gtk_button_new();
-	label = gtk_label_new("");
-	gtk_label_set_markup(GTK_LABEL(label), conf_core.editor.grid_unit->in_suffix);
-	ghidgui->grid_units_label = label;
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_container_add(GTK_CONTAINER(ghidgui->grid_units_button), label);
-	gtk_box_pack_end(GTK_BOX(hbox), ghidgui->grid_units_button, FALSE, TRUE, 0);
-	g_signal_connect(ghidgui->grid_units_button, "clicked", G_CALLBACK(grid_units_button_cb), NULL);
-
-	/* The absolute cursor position label
-	 */
-	frame = gtk_frame_new(NULL);
-	gtk_box_pack_end(GTK_BOX(hbox), frame, FALSE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(frame), 0);
-	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-
-	label = gtk_label_new("");
-	gtk_container_add(GTK_CONTAINER(frame), label);
-	ghidgui->cursor_position_absolute_label = label;
-	g_signal_connect(G_OBJECT(label), "size-request", G_CALLBACK(absolute_label_size_req_cb), NULL);
-
-
-	/* The relative cursor position label
-	 */
-	frame = gtk_frame_new(NULL);
-	gtk_box_pack_end(GTK_BOX(hbox), frame, FALSE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(frame), 0);
-	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
-	label = gtk_label_new(" __.__  __.__ ");
-	gtk_container_add(GTK_CONTAINER(frame), label);
-	ghidgui->cursor_position_relative_label = label;
-	g_signal_connect(G_OBJECT(label), "size-request", G_CALLBACK(relative_label_size_req_cb), NULL);
-
-}
-
 /* \brief Add "virtual layers" to a layer selector */
 static void make_virtual_layer_buttons(GtkWidget * layer_selector)
 {
@@ -1022,20 +946,20 @@ static void do_fix_topbar_theming(void)
 	 * need to grab the GtkStyle associated with an actual menu item to
 	 * get a text color to render with.
 	 */
-	gtk_widget_set_style(ghidgui->cursor_position_relative_label, menu_bar_style);
-	gtk_widget_set_style(ghidgui->cursor_position_absolute_label, menu_bar_style);
+	gtk_widget_set_style(ghidgui->cps.cursor_position_relative_label, menu_bar_style);
+	gtk_widget_set_style(ghidgui->cps.cursor_position_absolute_label, menu_bar_style);
 
 	/* Style the units button as if it were a toolbar button - hopefully
 	 * this isn't too ugly sitting on a background themed as a menu bar.
 	 * It is unlikely any theme defines colours for a GtkButton sitting on
 	 * a menu bar.
 	 */
-	rel_pos_frame = gtk_widget_get_parent(ghidgui->cursor_position_relative_label);
-	abs_pos_frame = gtk_widget_get_parent(ghidgui->cursor_position_absolute_label);
+	rel_pos_frame = gtk_widget_get_parent(ghidgui->cps.cursor_position_relative_label);
+	abs_pos_frame = gtk_widget_get_parent(ghidgui->cps.cursor_position_absolute_label);
 	gtk_widget_set_style(rel_pos_frame, menu_bar_style);
 	gtk_widget_set_style(abs_pos_frame, menu_bar_style);
-	gtk_widget_set_style(ghidgui->grid_units_button, tool_button_style);
-	gtk_widget_set_style(ghidgui->grid_units_label, tool_button_label_style);
+	gtk_widget_set_style(ghidgui->cps.grid_units_button, tool_button_style);
+	gtk_widget_set_style(ghidgui->cps.grid_units_label, tool_button_label_style);
 }
 
 /* Attempt to produce a conststent style for our extra menu-bar items by

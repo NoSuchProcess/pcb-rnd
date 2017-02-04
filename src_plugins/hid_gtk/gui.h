@@ -52,6 +52,9 @@
 #include "../src_plugins/lib_gtk_common/wt_coord_entry.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 
+/* needed for a type in GhidGui */
+#include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
+
 
 	/* Silk and rats lines are the two additional selectable to draw on.
 	   |  gui code in gui-top-window.c and group code in misc.c must agree
@@ -86,14 +89,13 @@
 typedef struct {
 	GtkActionGroup *main_actions, *change_selected_actions, *displayed_name_actions;
 
-	  GtkWidget
-		* status_line_label,
-		*cursor_position_relative_label, *cursor_position_absolute_label, *grid_units_label, *status_line_hbox, *command_combo_box;
+	pcb_gtk_cursor_pos_t cps;
+
+	GtkWidget *status_line_label, *status_line_hbox, *command_combo_box;
 	GtkEntry *command_entry;
 
 	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox, *mode_buttons_frame;
 	GtkWidget *left_toolbar;
-	GtkWidget *grid_units_button;
 	GtkWidget *menu_bar, *layer_selector, *route_style_selector;
 	GtkWidget *mode_toolbar;
 	GtkWidget *mode_toolbar_vbox;
@@ -277,7 +279,6 @@ void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												guint pad, gfloat value, gfloat low, gfloat high,
 												gfloat step0, gfloat step1, void (*cb_func) (), gpointer data);
 
-void ghid_set_cursor_position_labels(void);
 void ghid_set_status_line_label(void);
 
 

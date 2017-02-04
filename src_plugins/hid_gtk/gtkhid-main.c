@@ -133,7 +133,7 @@ void ghid_set_crosshair(int x, int y, int action)
 	ghid_draw_grid_local(x, y);
 
 	if (gport->view.crosshair_x != x || gport->view.crosshair_y != y) {
-		ghid_set_cursor_position_labels();
+		ghid_set_cursor_position_labels(&ghidgui->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
 		gport->view.crosshair_x = x;
 		gport->view.crosshair_y = y;
 
