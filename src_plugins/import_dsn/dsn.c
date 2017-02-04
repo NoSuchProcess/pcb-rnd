@@ -120,7 +120,7 @@ static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *w
 	}
 }
 
-static void parse_via(pcb_coord_t clear, const gsxl_node_t *via)
+static void parse_via(pcb_coord_t clear, const gsxl_node_t *via, dsn_type_t type)
 {
 	const gsxl_node_t *c = via->children->next;
 	const char *name = via->children->str;
@@ -128,6 +128,7 @@ static void parse_via(pcb_coord_t clear, const gsxl_node_t *via)
 	const char *sy = c->next->str;
 	pcb_bool succ;
 	pcb_coord_t x, y, dia, drill;
+	const char *unit = (type == TYPE_PCB) ? "mm" : "nm";
 
 	if (strncmp(name, "via_", 4) != 0) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via with invalid name (prefix): %s\n", name);
@@ -140,12 +141,12 @@ static void parse_via(pcb_coord_t clear, const gsxl_node_t *via)
 		return;
 	}
 
-	x = pcb_get_value(sx, "mm", NULL, &succ);
+	x = pcb_get_value(sx, unit, NULL, &succ);
 	if (!succ) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sx);
 		return;
 	}
-	y = pcb_get_value(sy, "mm", NULL, &succ);
+	y = pcb_get_value(sy, unit, NULL, &succ);
 	if (!succ) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sy);
 		return;
@@ -239,7 +240,7 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				if (strcmp(w->str, "wire") == 0)
 					parse_wire(&nlines, clear, w, type);
 				if (strcmp(w->str, "via") == 0) {
-					parse_via(clear, w);
+					parse_via(clear, w, type);
 					nvias++;
 				}
 			}
@@ -267,6 +268,10 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 				for(w = n->children; w != NULL; w = w->next) {
 					if (strcmp(w->str, "wire") == 0)
 						parse_wire(&nlines, clear, w, type);
+					if (strcmp(w->str, "via") == 0) {
+						parse_via(clear, w, type);
+						nvias++;
+					}
 				}
 			}
 			break;
