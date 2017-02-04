@@ -43,7 +43,7 @@ static const char *dsn_cookie = "dsn importer";
 
 static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *wire)
 {
-	gsxl_node_t *n, *c;
+	const gsxl_node_t *n, *c;
 	for(n = wire->children; n != NULL; n = n->next) {
 		if (strcmp(n->str, "polyline_path") == 0) {
 			pcb_coord_t x, y, lx, ly, thick;
@@ -107,6 +107,40 @@ static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *w
 		else
 			pcb_message(PCB_MSG_WARNING, "import_dsn: ignoring unknown wire directive %s\n", n->str);
 	}
+}
+
+static void parse_via(pcb_coord_t clear, const gsxl_node_t *via)
+{
+	const gsxl_node_t *c = via->children->next;
+	const char *name = via->children->str;
+	const char *sx = c->str;
+	const char *sy = c->next->str;
+	pcb_bool succ;
+	pcb_coord_t x, y, dia, drill;
+
+	if (strncmp(name, "via_", 4) != 0) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via with invalid name (prefix): %s\n", name);
+		return;
+	}
+
+	name += 4;
+	if (sscanf(name, "%ld_%ld", &dia, &drill) != 2) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via with invalid name (diameters): %s\n", name);
+		return;
+	}
+
+	x = pcb_get_value(sx, "mm", NULL, &succ);
+	if (!succ) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sx);
+		return;
+	}
+	y = pcb_get_value(sy, "mm", NULL, &succ);
+	if (!succ) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sy);
+		return;
+	}
+
+	pcb_via_new(PCB->Data, x, PCB->MaxHeight - y, dia, clear, 0, drill, 0, pcb_flag_make(PCB_FLAG_AUTO));
 }
 
 static const char load_dsn_syntax[] = "LoadDsnFrom(filename)";
@@ -187,6 +221,7 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 		if (strcmp(w->str, "wire") == 0)
 			parse_wire(&nlines, clear, w);
 		if (strcmp(w->str, "via") == 0) {
+			parse_via(clear, w);
 			nvias++;
 		}
 	}
