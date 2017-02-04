@@ -1,7 +1,6 @@
 put /local/pcb/mod {lib_gtk_common}
 put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_gtk_common/lib_gtk_common.o
-  $(PLUGDIR)/lib_gtk_common/util_str.o
 @]
 
 put /local/pcb/mod/OBJS_C99 [@
@@ -27,6 +26,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/wt_coord_entry.o
   $(PLUGDIR)/lib_gtk_common/wt_layer_selector.o
   $(PLUGDIR)/lib_gtk_common/wt_preview.o
+  $(PLUGDIR)/lib_gtk_common/util_str.o
 @]
 
 

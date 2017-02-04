@@ -32,6 +32,7 @@
 
 #include "config.h"
 
+#include <string.h>
 #include "bu_text_view.h"
 //#include "compat.h"
 

@@ -29,6 +29,7 @@
  */
 
 #include "config.h"
+#include <string.h>
 #include "util_str.h"
 
 gboolean pcb_gtk_g_strdup(gchar ** dst, const gchar * src)
