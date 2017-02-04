@@ -41,6 +41,9 @@
 #include "../src_plugins/lib_gtk_common/dlg_print.h"
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
 
+const char *ghid_cookie = "gtk hid";
+const char *ghid_menu_cookie = "gtk hid menu";
+
 conf_hid_id_t ghid_conf_id = -1;
 conf_hid_id_t ghid_menuconf_id = -1;
 GdkModifierType ghid_glob_mask;
