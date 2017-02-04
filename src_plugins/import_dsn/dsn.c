@@ -46,61 +46,66 @@ typedef enum {
 	TYPE_SESSION
 } dsn_type_t;
 
+static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_t *n)
+{
+	const gsxl_node_t *c;
+	pcb_coord_t x, y, lx, ly, thick;
+	long pn;
+	const char *slayer = n->children->str;
+	const char *sthick = n->children->next->str;
+	pcb_bool succ;
+	pcb_layer_id_t lid;
+	pcb_layer_t *layer;
+
+	thick = pcb_get_value(sthick, "mm", NULL, &succ);
+	if (!succ) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because thickness is invalid: %s\n", sthick);
+		return;
+	}
+
+	lid = pcb_layer_by_name(slayer);
+	if (lid < 0) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because layer name is invalid: %s\n", slayer);
+		return;
+	}
+	layer = PCB->Data->Layer+lid;
+
+	/*printf("- %s\n", slayer);*/
+	for(pn = 0, c = n->children->next->next; c != NULL; pn++, c = c->next->next) {
+		const char *sx = c->str;
+		const char *sy = c->next->str;
+		x = pcb_get_value(sx, "mm", NULL, &succ);
+		if (!succ) {
+			pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sx);
+			return;
+		}
+		y = pcb_get_value(sy, "mm", NULL, &succ);
+		if (!succ) {
+			pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sy);
+			return;
+		}
+		if ((y < PCB_MM_TO_COORD(0.01)) || (x < PCB_MM_TO_COORD(0.01))) /* workaround for broken polyline coords */
+			return;
+		(*nlines)++;
+		if (pn > 0) {
+			pcb_line_t *line = pcb_line_new_merge(layer, lx, PCB->MaxHeight - ly,
+				x, PCB->MaxHeight - y, thick, clear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
+/*				pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, layer, line);*/
+/*				pcb_printf("LINE: %$mm %$mm .. %$mm %$mm\n", lx, ly, x, y);*/
+		}
+		lx = x;
+		ly = y;
+	}
+}
+
 static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *wire, dsn_type_t type)
 {
-	const gsxl_node_t *n, *c;
+	const gsxl_node_t *n;
 	for(n = wire->children; n != NULL; n = n->next) {
 		if ((type == TYPE_PCB) && (strcmp(n->str, "polyline_path") == 0)) {
-			pcb_coord_t x, y, lx, ly, thick;
-			long pn;
-			const char *slayer = n->children->str;
-			const char *sthick = n->children->next->str;
-			pcb_bool succ;
-			pcb_layer_id_t lid;
-			pcb_layer_t *layer;
-
-			thick = pcb_get_value(sthick, "mm", NULL, &succ);
-			if (!succ) {
-				pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because thickness is invalid: %s\n", sthick);
-				continue;
-			}
-
-			lid = pcb_layer_by_name(slayer);
-			if (lid < 0) {
-				pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because layer name is invalid: %s\n", slayer);
-				continue;
-			}
-			layer = PCB->Data->Layer+lid;
-
-			/*printf("- %s\n", slayer);*/
-			for(pn = 0, c = n->children->next->next; c != NULL; pn++, c = c->next->next) {
-				const char *sx = c->str;
-				const char *sy = c->next->str;
-				x = pcb_get_value(sx, "mm", NULL, &succ);
-				if (!succ) {
-					pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sx);
-					continue;
-				}
-				y = pcb_get_value(sy, "mm", NULL, &succ);
-				if (!succ) {
-					pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sy);
-					continue;
-				}
-				if ((y < PCB_MM_TO_COORD(0.01)) || (x < PCB_MM_TO_COORD(0.01))) /* workaround for broken polyline coords */
-					continue;
-				(*nlines)++;
-				if (pn > 0) {
-					pcb_line_t *line = pcb_line_new_merge(layer, lx, PCB->MaxHeight - ly,
-						x, PCB->MaxHeight - y, thick, clear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
-/*					pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_LINE, layer, line);*/
-/*					pcb_printf("LINE: %$mm %$mm .. %$mm %$mm\n", lx, ly, x, y);*/
-				}
-
-				lx = x;
-				ly = y;
-			}
+			parse_polyline(nlines, clear, n);
 		}
-		if ((type == TYPE_SESSION) && (strcmp(n->str, "path") == 0)) {
+		else if ((type == TYPE_SESSION) && (strcmp(n->str, "path") == 0)) {
 		
 		}
 		else if (strcmp(n->str, "net") == 0) {
