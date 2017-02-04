@@ -1542,6 +1542,10 @@ void ghid_set_status_line_label(void)
 		ghid_set_status_line_label_(ghidgui->status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal); \
 }
 
+void ghid_draw_area_update(GHidPort *port, GdkRectangle *rect)
+{
+	gdk_window_invalidate_rect(gtk_widget_get_window(port->drawing_area), rect, FALSE);
+}
 
 pcb_hid_action_t ghid_main_action_list[] = {
 	{"About", 0, About, about_help, about_syntax}
