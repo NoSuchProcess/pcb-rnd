@@ -27,18 +27,18 @@
 /* This file written by Bill Wilson for the PCB Gtk port */
 
 #include "config.h"
+#include "dlg_pinout.h"
+
 #include "conf_core.h"
-
-#include "gui.h"
-
 #include "copy.h"
 #include "data.h"
 #include "draw.h"
 #include "move.h"
 #include "rotate.h"
+#include "macro.h"
 
-#include "../src_plugins/lib_gtk_common/wt_preview.h"
-#include "../src_plugins/lib_gtk_common/win_place.h"
+#include "wt_preview.h"
+#include "win_place.h"
 
 static void pinout_close_cb(GtkWidget * widget, GtkWidget * top_window)
 {
@@ -46,7 +46,7 @@ static void pinout_close_cb(GtkWidget * widget, GtkWidget * top_window)
 }
 
 
-void ghid_pinout_window_show(GHidPort * out, pcb_element_t * element)
+void ghid_pinout_window_show(void *gport, pcb_element_t *element)
 {
 	GtkWidget *button, *vbox, *hbox, *preview, *top_window;
 	gchar *title;

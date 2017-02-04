@@ -39,6 +39,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_message.h"
 #include "../src_plugins/lib_gtk_common/dlg_print.h"
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
+#include "../src_plugins/lib_gtk_common/dlg_pinout.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 
