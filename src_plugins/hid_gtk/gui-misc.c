@@ -36,29 +36,25 @@
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
 
-
-static void ghid_label_set_markup(GtkWidget * label, const gchar * text)
-{
-	if (label)
-		gtk_label_set_markup(GTK_LABEL(label), text ? text : "");
-}
-
 void ghid_status_line_set_text(const gchar * text)
 {
 	if (ghidgui->command_entry_status_line_active)
 		return;
 
-	ghid_label_set_markup(ghidgui->status_line_label, text);
+	if (ghidgui->status_line_label != NULL)
+		gtk_label_set_markup(GTK_LABEL(ghidgui->status_line_label), text ? text : "");
 }
 
 void ghid_cursor_position_label_set_text(gchar * text)
 {
-	ghid_label_set_markup(ghidgui->cursor_position_absolute_label, text);
+	if (ghidgui->cursor_position_absolute_label != NULL)
+		gtk_label_set_markup(GTK_LABEL(ghidgui->cursor_position_absolute_label), text ? text : "");
 }
 
 void ghid_cursor_position_relative_label_set_text(gchar * text)
 {
-	ghid_label_set_markup(ghidgui->cursor_position_relative_label, text);
+	if (ghidgui->cursor_position_relative_label != NULL)
+		gtk_label_set_markup(GTK_LABEL(ghidgui->cursor_position_relative_label), text ? text : "");
 }
 
 /* ---------------------------------------------------------------------------
