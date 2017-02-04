@@ -46,7 +46,7 @@ typedef enum {
 	TYPE_SESSION
 } dsn_type_t;
 
-static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_t *n)
+static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_t *n, const char *unit, int workaround0)
 {
 	const gsxl_node_t *c;
 	pcb_coord_t x, y, lx, ly, thick;
@@ -57,7 +57,7 @@ static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_
 	pcb_layer_id_t lid;
 	pcb_layer_t *layer;
 
-	thick = pcb_get_value(sthick, "mm", NULL, &succ);
+	thick = pcb_get_value(sthick, unit, NULL, &succ);
 	if (!succ) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because thickness is invalid: %s\n", sthick);
 		return;
@@ -74,17 +74,17 @@ static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_
 	for(pn = 0, c = n->children->next->next; c != NULL; pn++, c = c->next->next) {
 		const char *sx = c->str;
 		const char *sy = c->next->str;
-		x = pcb_get_value(sx, "mm", NULL, &succ);
+		x = pcb_get_value(sx, unit, NULL, &succ);
 		if (!succ) {
 			pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sx);
 			return;
 		}
-		y = pcb_get_value(sy, "mm", NULL, &succ);
+		y = pcb_get_value(sy, unit, NULL, &succ);
 		if (!succ) {
 			pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sy);
 			return;
 		}
-		if ((y < PCB_MM_TO_COORD(0.01)) || (x < PCB_MM_TO_COORD(0.01))) /* workaround for broken polyline coords */
+		if (workaround0 && ((y < PCB_MM_TO_COORD(0.01)) || (x < PCB_MM_TO_COORD(0.01)))) /* workaround for broken polyline coords */
 			return;
 		(*nlines)++;
 		if (pn > 0) {
@@ -102,12 +102,10 @@ static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *w
 {
 	const gsxl_node_t *n;
 	for(n = wire->children; n != NULL; n = n->next) {
-		if ((type == TYPE_PCB) && (strcmp(n->str, "polyline_path") == 0)) {
-			parse_polyline(nlines, clear, n);
-		}
-		else if ((type == TYPE_SESSION) && (strcmp(n->str, "path") == 0)) {
-		
-		}
+		if ((type == TYPE_PCB) && (strcmp(n->str, "polyline_path") == 0))
+			parse_polyline(nlines, clear, n, "mm", 1);
+		else if ((type == TYPE_SESSION) && (strcmp(n->str, "path") == 0))
+			parse_polyline(nlines, clear, n, "nm", 0);
 		else if (strcmp(n->str, "net") == 0) {
 			/* ignore */
 		}
