@@ -2131,6 +2131,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 
 	/* load the file into the dom */
 	gsxl_init(&st.dom, gsxl_node_t);
+	st.dom.parse.line_comment_char = '#';
 	do {
 		c = fgetc(FP);
 	} while((res = gsxl_parse_char(&st.dom, c)) == GSX_RES_NEXT);
