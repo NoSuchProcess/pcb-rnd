@@ -20,7 +20,9 @@
  *
  */
 
+#include <gtk/gtk.h>
+
 /* advanced search dialog */
-void ghid_search_window_show(gboolean raise);
+void ghid_search_window_show(GtkWidget *top_window, gboolean raise);
 
 

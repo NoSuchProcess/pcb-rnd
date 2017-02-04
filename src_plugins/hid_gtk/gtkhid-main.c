@@ -25,7 +25,6 @@
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "layer.h"
-#include "ghid-search.h"
 #include "compat_nls.h"
 #include "layer_vis.h"
 
@@ -40,6 +39,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_message.h"
 #include "../src_plugins/lib_gtk_common/dlg_print.h"
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
+#include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 
 const char *ghid_cookie = "gtk hid";
@@ -1336,7 +1336,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ghid_drc_window_show(raise);
 	}
 	else if (strcmp(a, "7") == 0 || pcb_strcasecmp(a, "search") == 0) {
-		ghid_search_window_show(raise);
+		ghid_search_window_show(gport->top_window, raise);
 	}
 	else {
 		PCB_AFAIL(dowindows);

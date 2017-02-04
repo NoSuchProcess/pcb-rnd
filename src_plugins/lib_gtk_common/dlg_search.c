@@ -22,19 +22,24 @@
 
 /* advanced search dialog */
 
+#include "config.h"
+#include "dlg_search.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include <genlist/gendlist.h>
-#include "config.h"
-#include "gui.h"
+#include <genvector/gds_char.h>
 #include "compat_misc.h"
-#include "ghid-search.h"
-#include "../src_plugins/lib_gtk_common/win_place.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "misc_util.h"
+#include "pcb-printf.h"
+#include "conf_core.h"
+
+#include "win_place.h"
+#include "wt_coord_entry.h"
+#include "bu_box.h"
 
 typedef struct expr1_s expr1_t;
 
@@ -60,6 +65,8 @@ struct expr1_s {
 	gulong sig_append_col;
 
 	char *code;										/* ... to use in the query script */
+
+	GtkWidget *top_window;
 };
 
 typedef struct {
@@ -79,7 +86,7 @@ static void new_col_cb(GtkWidget * button, void *data);
 static void remove_row_cb(GtkWidget * button, void *data);
 static void remove_expr_cb(GtkWidget * button, void *data);
 static void edit_expr_cb(GtkWidget * button, void *data);
-static void expr_wizard_dialog(expr1_t * e);
+static void expr_wizard_dialog(GtkWidget *top_window, expr1_t * e);
 
 static void build_expr1(expr1_t * e, GtkWidget * parent_box)
 {
@@ -115,9 +122,11 @@ static void destroy_expr1(expr1_t * e)
 #	undef destroy
 }
 
-static expr1_t *append_row()
+static expr1_t *append_row(GtkWidget *top_window)
 {
 	expr1_t *e = calloc(sizeof(expr1_t), 1);
+
+	e->top_window = top_window;
 
 	if (gdl_first(&sdlg.wizard) != NULL) {
 		e->and = gtk_label_new("AND");
@@ -153,6 +162,8 @@ static expr1_t *append_row()
 static expr1_t *append_col(expr1_t * row)
 {
 	expr1_t *e = calloc(sizeof(expr1_t), 1);
+
+	e->top_window = row->top_window;
 
 	e->or = gtk_label_new(" OR ");
 	gtk_misc_set_alignment(GTK_MISC(e->or), -1, 1);
@@ -285,7 +296,7 @@ static void rebuild(void)
 /* button callbacks */
 static void new_row_cb(GtkWidget * button, void *data)
 {
-	append_row();
+	append_row(data);
 	gtk_widget_show_all(sdlg.window);
 }
 
@@ -306,7 +317,8 @@ static void remove_expr_cb(GtkWidget * button, void *data)
 
 static void edit_expr_cb(GtkWidget * button, void *data)
 {
-	expr_wizard_dialog((expr1_t *) data);
+	expr1_t *e = (expr1_t *)data;
+	expr_wizard_dialog(e->top_window, e);
 }
 
 static void new_col_cb(GtkWidget * button, void *data)
@@ -333,7 +345,7 @@ static void wizard_toggle_cb(GtkCheckButton * button, void *data)
 
 
 /* Run the expression wizard dialog box */
-#include "ghid-search-tab.h"
+#include "dlg_search_tab.h"
 
 static void expr_wizard_init_model()
 {
@@ -669,7 +681,7 @@ fail:;
 	free(desc);
 }
 
-static void expr_wizard_dialog(expr1_t * e)
+static void expr_wizard_dialog(GtkWidget *top_window, expr1_t * e)
 {
 	GtkWidget *dialog, *vbox, *hbox;
 	GtkCellRenderer *renderer;
@@ -679,7 +691,7 @@ static void expr_wizard_dialog(expr1_t * e)
 
 	/* Create the dialog */
 	dialog = gtk_dialog_new_with_buttons("Expression wizard",
-																			 GTK_WINDOW(gport->top_window),
+																			 GTK_WINDOW(top_window),
 																			 GTK_DIALOG_MODAL,
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
@@ -779,10 +791,10 @@ static void dialog_cb(GtkDialog * dlg, gint response_id, gpointer * data)
 	}
 }
 
-static void ghid_search_window_create()
+static void ghid_search_window_create(GtkWidget *top_window)
 {
 	GtkWidget *vbox_win, *lab, *vbox;
-	GtkWidget *content_area, *top_window = gport->top_window;
+	GtkWidget *content_area;
 	const char *actions[] = { "select", "unselect", NULL };
 	const char **s;
 	int ver;
@@ -845,21 +857,21 @@ static void ghid_search_window_create()
 	gtk_box_pack_start(GTK_BOX(vbox), sdlg.wizard_vbox, TRUE, TRUE, 4);
 
 	sdlg.new_row = gtk_button_new_with_label("Add new row");
-	g_signal_connect(sdlg.new_row, "clicked", G_CALLBACK(new_row_cb), NULL);
+	g_signal_connect(sdlg.new_row, "clicked", G_CALLBACK(new_row_cb), top_window);
 	gtk_box_pack_start(GTK_BOX(vbox), sdlg.new_row, FALSE, FALSE, 0);
 	gtk_button_set_image(GTK_BUTTON(sdlg.new_row), gtk_image_new_from_icon_name("gtk-new", GTK_ICON_SIZE_MENU));
 	gtk_widget_set_tooltip_text(sdlg.new_row, "Append a row of expressions to the query with AND");
 
 
 /* Add one row of wizard to save a click in the most common case */
-	append_row();
+	append_row(top_window);
 
 	gtk_widget_realize(sdlg.window);
 }
 
-void ghid_search_window_show(gboolean raise)
+void ghid_search_window_show(GtkWidget *top_window, gboolean raise)
 {
-	ghid_search_window_create();
+	ghid_search_window_create(top_window);
 	if (sdlg.window == NULL)
 		return;
 	gtk_widget_show_all(sdlg.window);
