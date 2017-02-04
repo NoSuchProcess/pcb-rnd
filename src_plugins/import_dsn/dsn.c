@@ -41,11 +41,16 @@
 
 static const char *dsn_cookie = "dsn importer";
 
-static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *wire)
+typedef enum {
+	TYPE_PCB,
+	TYPE_SESSION
+} dsn_type_t;
+
+static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *wire, dsn_type_t type)
 {
 	const gsxl_node_t *n, *c;
 	for(n = wire->children; n != NULL; n = n->next) {
-		if (strcmp(n->str, "polyline_path") == 0) {
+		if ((type == TYPE_PCB) && (strcmp(n->str, "polyline_path") == 0)) {
 			pcb_coord_t x, y, lx, ly, thick;
 			long pn;
 			const char *slayer = n->children->str;
@@ -94,6 +99,9 @@ static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *w
 				lx = x;
 				ly = y;
 			}
+		}
+		if ((type == TYPE_SESSION) && (strcmp(n->str, "path") == 0)) {
+		
 		}
 		else if (strcmp(n->str, "net") == 0) {
 			/* ignore */
@@ -156,7 +164,8 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	int c, seek_quote = 1;
 	long int nlines = 0, nvias = 0;
 	gsx_parse_res_t res;
-	gsxl_node_t *wiring, *w;
+	gsxl_node_t *wiring, *w, *routes, *nout, *n;
+	dsn_type_t type;
 
 	fname = argc ? argv[0] : 0;
 
@@ -202,28 +211,62 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	/* parse the tree: find wiring */
 	clear = PCB->RouteStyle.array[0].Clearance * 2;
-	if (strcmp(dom.root->str, "PCB") != 0) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr is not a PCB\n");
+	if (strcmp(dom.root->str, "PCB") == 0)
+		type = TYPE_PCB;
+	else if (strcmp(dom.root->str, "session") == 0)
+		type = TYPE_SESSION;
+	else {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr is not a PCB or session\n");
 		goto error;
 	}
 
-	for(wiring = dom.root->children; wiring != NULL; wiring = wiring->next)
-		if (strcmp(wiring->str, "wiring") == 0)
+	switch(type) {
+		case TYPE_PCB:
+			for(wiring = dom.root->children; wiring != NULL; wiring = wiring->next)
+				if (strcmp(wiring->str, "wiring") == 0)
+					break;
+
+			if (wiring == NULL) {
+				pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a wiring section\n");
+				goto error;
+			}
+
+			/* parse wiring */
+			for(w = wiring->children; w != NULL; w = w->next) {
+				if (strcmp(w->str, "wire") == 0)
+					parse_wire(&nlines, clear, w, type);
+				if (strcmp(w->str, "via") == 0) {
+					parse_via(clear, w);
+					nvias++;
+				}
+			}
 			break;
+		case TYPE_SESSION:
+			for(routes = dom.root->children; routes != NULL; routes = routes->next)
+				if (strcmp(routes->str, "routes") == 0)
+					break;
 
-	if (wiring == NULL) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a wiring section\n");
-		goto error;
-	}
+			if (routes == NULL) {
+				pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a routes section\n");
+				goto error;
+			}
 
-	/* parse wiring */
-	for(w = wiring->children; w != NULL; w = w->next) {
-		if (strcmp(w->str, "wire") == 0)
-			parse_wire(&nlines, clear, w);
-		if (strcmp(w->str, "via") == 0) {
-			parse_via(clear, w);
-			nvias++;
-		}
+			for(nout = routes->children; nout != NULL; nout = nout->next)
+				if (strcmp(nout->str, "network_out") == 0)
+					break;
+
+			if (nout == NULL) {
+				pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a network_out section\n");
+				goto error;
+			}
+
+			for(n = nout->children; n != NULL; n = n->next) {
+				for(w = n->children; w != NULL; w = w->next) {
+					if (strcmp(w->str, "wire") == 0)
+						parse_wire(&nlines, clear, w, type);
+				}
+			}
+			break;
 	}
 
 	pcb_message(PCB_MSG_INFO, "import_dsn: loaded %ld wires and %ld vias\n", nlines, nvias);
