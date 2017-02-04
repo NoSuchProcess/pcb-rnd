@@ -175,8 +175,8 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect(
-			"Load a routed dsn file...",
-			"Select dsn file to load.\nThe file could be generated using the tool downloaded from freeroute.net\n",
+			"Load a routed dsn or ses file...",
+			"Select dsn or ses file to load.\nThe file could be generated using the tool downloaded from freeroute.net\n",
 			NULL, /* default file name */
 			".dsn", "dsn", HID_FILESELECT_READ);
 		if (fname == NULL)
