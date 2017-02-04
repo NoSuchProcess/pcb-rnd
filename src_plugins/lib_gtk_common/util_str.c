@@ -45,7 +45,7 @@ gboolean pcb_gtk_g_strdup(gchar ** dst, const gchar * src)
 	return TRUE;
 }
 
-const gchar *pcb_str_strip_left(gchar * s)
+const gchar *pcb_str_strip_left(const gchar * s)
 {
 	const gchar *r = "";
 
