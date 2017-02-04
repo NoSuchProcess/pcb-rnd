@@ -792,6 +792,9 @@ static void redraw_region(GdkRectangle * rect)
 	ctx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ctx.view.X2));
 	ctx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y1));
 	ctx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ctx.view.Y2));
+	
+	ctx.force = 0;
+	ctx.content.elem = NULL;
 
 	eleft = Vx(0);
 	eright = Vx(PCB->MaxWidth);
@@ -829,7 +832,7 @@ static void redraw_region(GdkRectangle * rect)
 
 	ghid_draw_bg_image();
 
-	pcb_hid_expose_all(&ghid_hid, &ctx.view);
+	pcb_hid_expose_all(&ghid_hid, &ctx);
 	ghid_draw_grid();
 
 	/* In some cases we are called with the crosshair still off */
@@ -1206,7 +1209,6 @@ gboolean ghid_preview_draw(GtkWidget * widget, pcb_hid_expose_t expcall, const p
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;
-	render_priv *priv = gport->render_priv;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -1251,7 +1253,7 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	GdkDrawable *save_drawable;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
-	pcb_box_t region;
+	pcb_hid_expose_ctx_t ectx;
 	render_priv *priv = gport->render_priv;
 
 	save_drawable = gport->drawable;
@@ -1279,17 +1281,20 @@ GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height
 	gdk_draw_rectangle(pixmap, priv->bg_gc, TRUE, 0, 0, width, height);
 
 	/* call the drawing routine */
-	region.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
-	region.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
-	region.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
-	region.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
+	ectx.view.X1 = MIN(Px(0), Px(gport->view.canvas_width + 1));
+	ectx.view.Y1 = MIN(Py(0), Py(gport->view.canvas_height + 1));
+	ectx.view.X2 = MAX(Px(0), Px(gport->view.canvas_width + 1));
+	ectx.view.Y2 = MAX(Py(0), Py(gport->view.canvas_height + 1));
 
-	region.X1 = MAX(0, MIN(PCB->MaxWidth, region.X1));
-	region.X2 = MAX(0, MIN(PCB->MaxWidth, region.X2));
-	region.Y1 = MAX(0, MIN(PCB->MaxHeight, region.Y1));
-	region.Y2 = MAX(0, MIN(PCB->MaxHeight, region.Y2));
+	ectx.view.X1 = MAX(0, MIN(PCB->MaxWidth, ectx.view.X1));
+	ectx.view.X2 = MAX(0, MIN(PCB->MaxWidth, ectx.view.X2));
+	ectx.view.Y1 = MAX(0, MIN(PCB->MaxHeight, ectx.view.Y1));
+	ectx.view.Y2 = MAX(0, MIN(PCB->MaxHeight, ectx.view.Y2));
 
-	pcb_hid_expose_all(&ghid_hid, &region);
+	ectx.force = 0;
+	ectx.content.elem = NULL;
+
+	pcb_hid_expose_all(&ghid_hid, &ectx);
 
 	gport->drawable = save_drawable;
 	gport->view = save_view;

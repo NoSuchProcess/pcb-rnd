@@ -40,6 +40,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_message.h"
 #include "../src_plugins/lib_gtk_common/dlg_print.h"
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
+#include "../src_plugins/lib_gtk_common/in_mouse.h"
 
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";

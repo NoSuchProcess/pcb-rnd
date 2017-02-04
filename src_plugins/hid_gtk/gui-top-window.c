@@ -50,6 +50,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 |  we have our own shortcut table and capture the keys and send the events
 |  there in ghid_port_key_press_cb().
 */
+#define _POSIX_SOURCE
 #include "config.h"
 #include "conf_core.h"
 #include <locale.h>
