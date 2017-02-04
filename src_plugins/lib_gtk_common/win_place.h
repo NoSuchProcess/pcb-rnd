@@ -15,6 +15,9 @@ typedef enum {
 	WPLC_max
 } wplc_win_t;
 
+/* Called when geometry changes - should save new geo in the config */
+extern void hid_gtk_wgeo_update(void);
+
 /* Place the window if it's enabled and there are coords in the config. */
 void wplc_place(wplc_win_t id, GtkWidget *win);
 
