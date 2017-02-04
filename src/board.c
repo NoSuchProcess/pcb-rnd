@@ -111,17 +111,18 @@ pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
 
 #include "defpcb_internal.c"
 
-pcb_board_t *pcb_board_new(void)
+pcb_board_t *pcb_board_new(int inhibit_events)
 {
 	pcb_board_t *old, *nw = NULL;
 	int dpcb;
+	unsigned int inh = inhibit_events ? PCB_INHIBIT_BOARD_CHANGED : 0;
 
 	old = PCB;
 	PCB = NULL;
 
 	dpcb = -1;
 	pcb_io_err_inhibit_inc();
-	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, pcb_load_pcb(__path__, NULL, pcb_false, 1 | 0x10));
+	conf_list_foreach_path_first(dpcb, &conf_core.rc.default_pcb_file, pcb_load_pcb(__path__, NULL, pcb_false, 1 | 0x10 | inh));
 	pcb_io_err_inhibit_dec();
 
 	if (dpcb != 0) { /* no default PCB in file, use embedded version */

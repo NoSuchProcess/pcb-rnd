@@ -120,8 +120,9 @@ void pcb_board_free(pcb_board_t *pcb);
 /* creates a new PCB - low level */
 pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames);
 
-/* creates a new PCB - high level (uses a template board) */
-pcb_board_t *pcb_board_new(void);
+/* creates a new PCB - high level (uses a template board); does not generate
+   new board event if inhibit_events is set */
+pcb_board_t *pcb_board_new(int inhibit_events);
 
 /* Called after PCB->Data->LayerN is set.  Returns non-zero on error */
 int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults);

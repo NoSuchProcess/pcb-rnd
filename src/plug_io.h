@@ -112,7 +112,8 @@ int pcb_write_element_data(FILE *f, pcb_data_t *e, const char *fmt);
 FILE *pcb_check_and_open_file(const char *, pcb_bool, pcb_bool, pcb_bool *, pcb_bool *);
 FILE *pcb_open_connection_file(void);
 int pcb_save_pcb(const char *, const char *fmt);
-int pcb_load_pcb(const char *name, const char *fmt, pcb_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) | 0x10: ignore missing file */
+#define PCB_INHIBIT_BOARD_CHANGED 0x20
+int pcb_load_pcb(const char *name, const char *fmt, pcb_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) | 0x10: ignore missing file, | PCB_INHIBIT_BOARD_CHANGED: do not send a board changed event */
 void pcb_enable_autosave(void);
 void pcb_backup(void);
 void pcb_save_in_tmp(void);

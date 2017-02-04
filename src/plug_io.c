@@ -443,7 +443,8 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		}
 	}
 
-	pcb_board_changed(0);
+	if (!(how & PCB_INHIBIT_BOARD_CHANGED))
+		pcb_board_changed(0);
 
 	/* release unused memory */
 	pcb_board_remove(newPCB);

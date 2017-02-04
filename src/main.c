@@ -466,7 +466,7 @@ int main(int argc, char *argv[])
 	pcb_gui->parse_arguments(&hid_argc, &hid_argv);
 
 	/* Create a new PCB object in memory */
-	PCB = pcb_board_new();
+	PCB = pcb_board_new(0);
 
 	if (PCB == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't create an empty layout, exiting\n");
