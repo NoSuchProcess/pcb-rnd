@@ -1034,7 +1034,7 @@ static void ghid_build_pcb_top_window(void)
 	ghidgui->position_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(ghidgui->top_hbox), ghidgui->position_hbox, FALSE, FALSE, 0);
 
-	make_cursor_position_labels(ghidgui->position_hbox, port);
+	make_cursor_position_labels(ghidgui->position_hbox, &ghidgui->cps);
 
 	hbox_middle = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), hbox_middle, TRUE, TRUE, 0);
