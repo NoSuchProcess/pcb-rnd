@@ -22,6 +22,8 @@
  */
 
 #include "config.h"
+#include "ui_zoompan.h"
+
 #include "unit.h"
 #include "action_helper.h"
 #include "error.h"
@@ -32,7 +34,7 @@
 #include "draw.h"
 #include "data.h"
 #include "layer_vis.h"
-#include "ui_zoompan.h"
+#include "bu_status_line.h"
 
 /* defined by the hid (gtk version or render specific): */
 void ghid_pan_common(void);

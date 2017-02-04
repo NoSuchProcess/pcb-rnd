@@ -26,6 +26,8 @@
 #define PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
 
 #include <glib.h>
+#include "unit.h"
+#include "pcb_bool.h"
 
 	/* Go from from the grid units in use (millimeters or mils) to PCB units
 	   |  and back again.
