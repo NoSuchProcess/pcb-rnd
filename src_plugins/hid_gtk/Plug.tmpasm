@@ -9,7 +9,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/gui-command-window.o
 	$(PLUGDIR)/hid_gtk/gui-config.o
 	$(PLUGDIR)/hid_gtk/gui-drc-window.o
-	$(PLUGDIR)/hid_gtk/gui-keyref-window.o
 	$(PLUGDIR)/hid_gtk/gui-library-window.o
 	$(PLUGDIR)/hid_gtk/gui-log-window.o
 	$(PLUGDIR)/hid_gtk/gui-netlist-window.o

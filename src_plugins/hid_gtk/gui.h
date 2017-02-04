@@ -288,9 +288,6 @@ void ghid_command_window_show(gboolean raise);
 gchar *ghid_command_entry_get(const gchar * prompt, const gchar * command);
 void ghid_command_use_command_window_sync(void);
 
-/* gui-keyref-window.c */
-void ghid_keyref_window_show(gboolean raise);
-
 /* gui-library-window.c */
 void ghid_library_window_create(GHidPort * out);
 void ghid_library_window_show(GHidPort * out, gboolean raise);
