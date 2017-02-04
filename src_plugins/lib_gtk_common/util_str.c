@@ -47,12 +47,9 @@ gboolean pcb_gtk_g_strdup(gchar ** dst, const gchar * src)
 
 const gchar *pcb_str_strip_left(const gchar * s)
 {
-	const gchar *r = "";
-
-	if (s) {
-		r = s;
-		while (*r == ' ' || *r == '\t')
-			++r;
+	if (s != NULL) {
+		while ((*s == ' ') || (*s == '\t'))
+			s++;
 	}
-	return r;
+	return s;
 }
