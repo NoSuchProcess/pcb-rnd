@@ -1296,19 +1296,6 @@ static void config_layers_apply(void)
 	/* Nothing to do, changes got carried out right away */
 }
 
-static void layer_name_entry_cb(GtkWidget * entry, gpointer data)
-{
-	gint i = GPOINTER_TO_INT(data);
-	pcb_layer_t *layer;
-	const gchar *name = "";
-
-	layer = &PCB->Data->Layer[i];
-	if (entry)
-		name = pcb_str_strip_left(gtk_entry_get_text(GTK_ENTRY(entry)));
-	if (pcb_gtk_g_strdup((char **) &layer->Name, name))
-		ghid_layer_buttons_update();
-}
-
 static void edit_layer_button_cb(GtkWidget * widget, gchar * data)
 {
 	gchar **argv;
