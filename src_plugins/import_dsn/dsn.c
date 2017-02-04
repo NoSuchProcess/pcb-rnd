@@ -51,7 +51,9 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 	FILE *f;
 	gsxl_dom_t dom;
 	int c, seek_quote = 1;
+	long int nlines = 0, nvias = 0;
 	gsx_parse_res_t res;
+	gsxl_node_t *wiring, *w;
 
 	fname = argc ? argv[0] : 0;
 
@@ -90,16 +92,43 @@ int pcb_act_LoadDsnFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t 
 
 	if (res != GSX_RES_EOE) {
 		pcb_message(PCB_MSG_ERROR, "import_dsn: parse error in %s at %d:%d\n", fname, dom.parse.line, dom.parse.col);
-		gsxl_uninit(&dom);
-		return 1;
+		goto error;
 	}
 	gsxl_compact_tree(&dom);
 
 
-	/* parse the tree */
+	/* parse the tree: find wiring */
 	clear = PCB->RouteStyle.array[0].Clearance * 2;
-	
+	if (strcmp(dom.root->str, "PCB") != 0) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr is not a PCB\n");
+		goto error;
+	}
 
+	for(wiring = dom.root->children; wiring != NULL; wiring = wiring->next)
+		if (strcmp(wiring->str, "wiring") == 0)
+			break;
+
+	if (wiring == NULL) {
+		pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a wiring section\n");
+		goto error;
+	}
+
+	/* parse wiring */
+	for(w = wiring->children; w != NULL; w = w->next) {
+		if (strcmp(w->str, "wire") == 0) {
+			nlines++;
+		}
+		if (strcmp(w->str, "via") == 0) {
+			nvias++;
+		}
+	}
+
+	pcb_message(PCB_MSG_INFO, "import_dsn: loaded %ld wires and %ld vias\n", nlines, nvias);
+
+	gsxl_uninit(&dom);
+	return 0;
+
+	error:;
 	gsxl_uninit(&dom);
 	return 0;
 }
