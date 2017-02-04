@@ -43,12 +43,13 @@
 #include "hid_gtk_conf.h"
 
 
-/* TODO: REMOVE THIS */
+/* TODO: REMOVE THESE */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_text_view.h"
 #include "../src_plugins/lib_gtk_common/bu_check_button.h"
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
+#include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/wt_coord_entry.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 
@@ -199,13 +200,6 @@ void ghid_pack_mode_buttons(void);
 void ghid_layer_buttons_update(void);
 void ghid_layer_buttons_color_update(void);
 
-
-/* gui-misc.c function prototypes
-*/
-void ghid_status_line_set_text(const gchar * text);
-void ghid_cursor_position_label_set_text(gchar * text);
-void ghid_cursor_position_relative_label_set_text(gchar * text);
-
 /* in_mouse.c static variables
 */
 extern GdkPixmap *XC_hand_source, *XC_hand_mask;
@@ -278,9 +272,6 @@ void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												gboolean pack_start, gboolean expand, gboolean fill,
 												guint pad, gfloat value, gfloat low, gfloat high,
 												gfloat step0, gfloat step1, void (*cb_func) (), gpointer data);
-
-void ghid_set_status_line_label(void);
-
 
 /* gui-netlist-window.c */
 void ghid_netlist_window_create(GHidPort * out);

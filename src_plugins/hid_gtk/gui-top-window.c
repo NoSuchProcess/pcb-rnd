@@ -1119,10 +1119,10 @@ static void ghid_build_pcb_top_window(void)
 	ghidgui->status_line_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(ghidgui->vbox_middle), ghidgui->status_line_hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new("");
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_box_pack_start(GTK_BOX(ghidgui->status_line_hbox), label, FALSE, FALSE, 0);
+	label = pcb_gtk_build_status_line_label();
+
 	ghidgui->status_line_label = label;
+	gtk_box_pack_start(GTK_BOX(ghidgui->status_line_hbox), label, FALSE, FALSE, 0);
 
 	/* Depending on user setting, the command_combo_box may get packed into
 	   |  the status_line_hbox, but it will happen on demand the first time

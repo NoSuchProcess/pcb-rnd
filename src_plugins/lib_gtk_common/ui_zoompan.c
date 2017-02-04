@@ -35,7 +35,6 @@
 #include "ui_zoompan.h"
 
 /* defined by the hid (gtk version or render specific): */
-void ghid_set_status_line_label(void);
 void ghid_pan_common(void);
 void ghid_port_ranges_scale(void);
 void ghid_invalidate_all();

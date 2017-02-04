@@ -1522,11 +1522,23 @@ static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return pcb_gtk_act_pan(&gport->view, argc, argv, x, y);
 }
 
-
 static void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
 	pcb_gtk_get_coords(&gport->view, msg, x, y);
 }
+
+void ghid_status_line_set_text(const gchar *text)
+{
+	if (!ghidgui->command_entry_status_line_active)
+		ghid_status_line_set_text_(ghidgui->status_line_label, text);
+}
+
+void ghid_set_status_line_label(void)
+{
+	if (!ghidgui->command_entry_status_line_active) \
+		ghid_set_status_line_label_(ghidgui->status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal); \
+}
+
 
 pcb_hid_action_t ghid_main_action_list[] = {
 	{"About", 0, About, about_help, about_syntax}
