@@ -2094,6 +2094,8 @@ static void config_auto_src_show(lht_node_t * nd)
 		gtk_conf_list_set_list(&auto_tab_widgets.cl, nd);
 		gtk_widget_show(auto_tab_widgets.edit_list);
 		break;
+	case CFN_INCREMENTS:
+		break;
 	}
 	gtk_widget_show(auto_tab_widgets.finalize);
 }
@@ -2164,7 +2166,7 @@ static conf_role_t config_auto_get_edited_role(void)
 	return role;
 }
 
-static conf_auto_set_edited_role(conf_role_t r)
+static void conf_auto_set_edited_role(conf_role_t r)
 {
 	GtkTreePath *p = gtk_tree_path_new_from_indices(r, -1);
 	gtk_tree_view_set_cursor(GTK_TREE_VIEW(auto_tab_widgets.src_t), p, NULL, 0);
