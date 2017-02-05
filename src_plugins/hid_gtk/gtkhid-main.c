@@ -247,9 +247,6 @@ int ghid_progress(int so_far, int total, const char *message)
 	return pcb_gtk_dlg_progress(ghid_port.top_window, so_far, total, message);
 }
 
-
-/* ---------------------------------------------------------------------- */
-
 static int ghid_propedit_start(void *pe, int num_props,
 															 const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
 {
@@ -272,9 +269,6 @@ static void ghid_propedit_add_stat(void *pe, const char *propname, void *propctx
 {
 	pcb_gtk_dlg_propedit_prop_add(&ghidgui->propedit_dlg, propname, most_common, min, max, avg);
 }
-
-/* ---------------------------------------------------------------------- */
-
 
 typedef struct {
 	GtkWidget *del;
