@@ -31,6 +31,7 @@
 #include "gtkhid-main.h"
 
 /* AV: Care to circular includes !!!? */
+#include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/util_block_hook.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
@@ -392,197 +393,6 @@ static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-/* ---------------------------------------------------------------------- */
-
-static char *dup_cwd()
-{
-#if defined (PATH_MAX)
-	char tmp[PATH_MAX + 1];
-#else
-	char tmp[8193];
-#endif
-	return pcb_strdup(getcwd(tmp, sizeof(tmp)));
-}
-
-static int Load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	const char *function;
-	char *name = NULL;
-
-	static gchar *current_element_dir = NULL;
-	static gchar *current_layout_dir = NULL;
-	static gchar *current_netlist_dir = NULL;
-
-	if (!current_element_dir)
-		current_element_dir = dup_cwd();
-	if (!current_layout_dir)
-		current_layout_dir = dup_cwd();
-	if (!current_netlist_dir)
-		current_netlist_dir = dup_cwd();
-
-	/* we've been given the file name */
-	if (argc > 1)
-		return pcb_hid_actionv("LoadFrom", argc, argv);
-
-	function = argc ? argv[0] : "Layout";
-
-	if (pcb_strcasecmp(function, "Netlist") == 0) {
-		name = ghid_dialog_file_select_open(_("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
-	}
-	else if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
-		gchar *path = (gchar *) pcb_fp_default_search_path();
-		name = ghid_dialog_file_select_open(_("Load element to buffer"), &current_element_dir, path);
-	}
-	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0) {
-		name = ghid_dialog_file_select_open(_("Load layout file to buffer"), &current_layout_dir, conf_core.rc.file_path);
-	}
-	else if (pcb_strcasecmp(function, "Layout") == 0) {
-		name = ghid_dialog_file_select_open(_("Load layout file"), &current_layout_dir, conf_core.rc.file_path);
-	}
-
-	if (name) {
-		if (conf_core.rc.verbose)
-			fprintf(stderr, "Load:  Calling LoadFrom(%s, %s)\n", function, name);
-		pcb_hid_actionl("LoadFrom", function, name, NULL);
-		g_free(name);
-	}
-
-	return 0;
-}
-
-
-/* ---------------------------------------------------------------------- */
-static const char save_syntax[] =
-	"Save()\n" "Save(Layout|LayoutAs)\n" "Save(AllConnections|AllUnusedPins|ElementConnections)\n" "Save(PasteBuffer)";
-
-static const char save_help[] = N_("Save layout and/or element data to a user-selected file.");
-
-/* %start-doc actions Save
-
-This action is a GUI front-end to the core's @code{SaveTo} action
-(@pxref{SaveTo Action}).  If you happen to pass a filename, like
-@code{SaveTo}, then @code{SaveTo} is called directly.  Else, the
-user is prompted for a filename to save, and then @code{SaveTo} is
-called with that filename.
-
-%end-doc */
-
-static int Save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	const char *function;
-	char *name, *name_in = NULL;
-	const char *prompt;
-	pcb_io_formats_t avail;
-	const char **formats_param = NULL, **extensions_param = NULL;
-	int fmt, *fmt_param = NULL;
-
-	static gchar *current_dir = NULL;
-
-	if (!current_dir)
-		current_dir = dup_cwd();
-
-	if (argc > 1)
-		return pcb_hid_actionv("SaveTo", argc, argv);
-
-	function = argc ? argv[0] : "Layout";
-
-	if (pcb_strcasecmp(function, "Layout") == 0)
-		if (PCB->Filename)
-			return pcb_hid_actionl("SaveTo", "Layout", PCB->Filename, NULL);
-
-	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
-		int num_fmts, n;
-		prompt = _("Save element as");
-		num_fmts = pcb_io_list(&avail, PCB_IOT_BUFFER, 1, 1, PCB_IOL_EXT_FP);
-		if (num_fmts > 0) {
-			formats_param = (const char **) avail.digest;
-			extensions_param = (const char **) avail.extension;
-			fmt_param = &fmt;
-			fmt = 0;
-			for (n = 0; n < num_fmts; n++) {
-				if (strstr(avail.plug[n]->description, "mainline") != NULL) {
-					fmt = n;
-					name_in = pcb_concat("unnamed.fp", NULL);
-				}
-			}
-		}
-		else {
-			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
-			return -1;
-		}
-	}
-	else {
-		int num_fmts, n;
-		prompt = _("Save layout as");
-		num_fmts = pcb_io_list(&avail, PCB_IOT_PCB, 1, 1, PCB_IOL_EXT_BOARD);
-		if (num_fmts > 0) {
-			formats_param = (const char **) avail.digest;
-			extensions_param = (const char **) avail.extension;
-			fmt_param = &fmt;
-			fmt = 0;
-			if (PCB->Data->loader != NULL) {
-				for (n = 0; n < num_fmts; n++) {
-					if (avail.plug[n] == PCB->Data->loader) {
-						fmt = n;
-						break;
-					}
-				}
-			}
-		}
-		else {
-			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
-			return -1;
-		}
-	}
-
-	{															/* invent an input file name if needed and run the save dialog to get an output file name */
-		if (name_in == NULL) {
-			if (PCB->Filename == NULL)
-				name_in = pcb_concat("unnamed", extensions_param[fmt], NULL);
-			else
-				name_in = pcb_strdup(PCB->Filename);
-		}
-		name =
-			ghid_dialog_file_select_save(prompt, &current_dir, name_in, conf_core.rc.file_path, formats_param, extensions_param,
-																	 fmt_param);
-		free(name_in);
-	}
-
-	if (name) {
-		if (conf_core.rc.verbose)
-			fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, name);
-
-		if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
-			pcb_hid_actionl("PasteBuffer", "Save", name, avail.plug[fmt]->description, "1", NULL);
-
-		}
-		else {
-			const char *sfmt = NULL;
-			/*
-			 * if we got this far and the function is Layout, then
-			 * we really needed it to be a LayoutAs.  Otherwise
-			 * ActionSaveTo() will ignore the new file name we
-			 * just obtained.
-			 */
-			if (fmt_param != NULL)
-				sfmt = avail.plug[fmt]->description;
-			if (pcb_strcasecmp(function, "Layout") == 0)
-				pcb_hid_actionl("SaveTo", "LayoutAs", name, sfmt, NULL);
-			else
-				pcb_hid_actionl("SaveTo", function, name, sfmt, NULL);
-		}
-		g_free(name);
-		pcb_io_list_free(&avail);
-	}
-	else {
-		pcb_io_list_free(&avail);
-		return 1;
-	}
-
-	return 0;
-}
-
-/* ------------------------------------------------------------ */
 
 static const char print_syntax[] = "Print()";
 
@@ -866,48 +676,6 @@ static int Popup(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 }
 
 /* ------------------------------------------------------------ */
-static const char importgui_syntax[] = "ImportGUI()";
-
-static const char importgui_help[] = N_("Asks user which schematics to import into PCB.\n");
-
-/* %start-doc actions ImportGUI
-
-Asks user which schematics to import into PCB.
-
-%end-doc */
-
-
-static int ImportGUI(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	char *name = NULL;
-	static gchar *current_layout_dir = NULL;
-	static int I_am_recursing = 0;
-	int rv;
-
-	if (!current_layout_dir)
-		current_layout_dir = dup_cwd();
-
-	if (I_am_recursing)
-		return 1;
-
-
-	name = ghid_dialog_file_select_open(_("Load schematics"), &current_layout_dir, conf_core.rc.file_path);
-
-#ifdef DEBUG
-	printf("File selected = %s\n", name);
-#endif
-
-	pcb_attrib_put(PCB, "import::src0", name);
-	free(name);
-
-	I_am_recursing = 1;
-	rv = pcb_hid_action("Import");
-	I_am_recursing = 0;
-
-	return rv;
-}
-
-/* ------------------------------------------------------------ */
 static const char savewingeo_syntax[] = "SaveWindowGeometry()";
 
 static const char savewingeo_help[] = N_("Saves window geometry in the config.\n");
@@ -1000,11 +768,11 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"GetXY", "", GetXY, getxy_help, getxy_syntax}
 	,
-	{"ImportGUI", 0, ImportGUI, importgui_help, importgui_syntax}
+	{"ImportGUI", 0, pcb_gtk_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui}
 	,
 	{"LayerGroupsChanged", 0, LayerGroupsChanged}
 	,
-	{"Load", 0, Load}
+	{"Load", 0, pcb_gtk_act_load }
 	,
 	{"Pan", 0, PanAction, pcb_acth_pan, pcb_acts_pan}
 	,
@@ -1016,7 +784,7 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"PrintCalibrate", 0, PrintCalibrate,
 	 printcalibrate_help, printcalibrate_syntax}
 	,
-	{"Save", 0, Save, save_help, save_syntax}
+	{"Save", 0, pcb_gtk_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save}
 	,
 	{"SaveWindowGeometry", 0, SaveWinGeo, savewingeo_help, savewingeo_syntax}
 	,
