@@ -44,17 +44,24 @@ ha:{
 		ha:File {
 			m=F
 			li:submenu {
+				ha:Start New Layout     = { li:a={{<key>f;<key>n}; {Ctrl<Key>n};}; action=New() }
+				ha:Revert                            = { a={<key>f;<key>r};          action=Load(Revert,none); tip=Revert to the layout stored on disk }
+				-
+				ha:Load layout                       = { a={<key>f;<key>o};          action=Load(Layout); tip=Load a layout from a file }
+				-
 				ha:Save Layout                       = { m=S; li:a={{<key>f;<key>s}; {Ctrl<Key>s};};        action=Save(Layout); tip=Saves current layout }
 				ha:Save Layout As...                 = { m=A; li:a={{<key>f;<key>a}; {Shift Ctrl<Key>s};};  action=Save(LayoutAs); tip=Saves current layout into a new file }
 				-
-				ha:Revert                            = { a={<key>f;<key>r};          action=Load(Revert,none); tip=Revert to the layout stored on disk }
-				-
-				ha:Import Schematics                 = {                             action=Import() }
-				ha:Load layout                       = { a={<key>f;<key>o};          action=Load(Layout); tip=Load a layout from a file }
-				ha:Load element data to paste-buffer = {                             li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
-				ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
-				ha:Load netlist file                 = {                             action=Load(Netlist) }
-				ha:Load vendor resource file         = {                             action=LoadVendorFrom() }
+				ha:Import {
+					m=I
+					li:submenu {
+						ha:Import Schematics                 = {                             action=Import() }
+						ha:Load element data to paste-buffer = {                             li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
+						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
+						ha:Load netlist file                 = {                             action=Load(Netlist) }
+						ha:Load vendor resource file         = {                             action=LoadVendorFrom() }
+					}
+				}
 				-
 				ha:Save connection data of {
 					li:submenu {
@@ -64,19 +71,16 @@ ha:{
 						ha:netlist patch for back annotation = {a=Alt Ctrl<Key>b; action=SavePatch() }
 					}
 				}
-				-
 				ha:Print layout...      = { a={<key>f;<key>p}; action=Print()}
 				ha:Export layout...     = { a={<key>f;<key>i}; action=ExportGUI()}
+				-
+				ha:Preferences...       = {               action=DoWindows(Preferences)}
 				ha:Maintenance {
 					li:submenu {
 						ha:Calibrate Printer...           = { action=PrintCalibrate() }
 						ha:Re-scan the footprint library  = { action=fp_rehash() }
 					}
 				}
-				-
-				ha:Start New Layout     = { li:a={{<key>f;<key>n}; {Ctrl<Key>n};}; action=New() }
-				-
-				ha:Preferences...       = {               action=DoWindows(Preferences)}
 				-
 				ha:Quit Program         = { li:a={{<key>f;<key>c}; {Ctrl<Key>q};}; action=Quit() }
 			}
