@@ -32,6 +32,7 @@
 
 /* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
+#include "../src_plugins/lib_gtk_common/util_block_hook.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
 #include "../src_plugins/lib_gtk_common/util_watch.h"
 #include "../src_plugins/lib_gtk_common/dlg_about.h"
@@ -195,62 +196,6 @@ void ghid_set_crosshair(int x, int y, int action)
 
 		break;
 	}
-}
-
-typedef struct {
-	GSource source;
-	void (*func) (pcb_hidval_t user_data);
-	pcb_hidval_t user_data;
-} BlockHookSource;
-
-static gboolean ghid_block_hook_prepare(GSource * source, gint * timeout);
-static gboolean ghid_block_hook_check(GSource * source);
-static gboolean ghid_block_hook_dispatch(GSource * source, GSourceFunc callback, gpointer user_data);
-
-static GSourceFuncs ghid_block_hook_funcs = {
-	ghid_block_hook_prepare,
-	ghid_block_hook_check,
-	ghid_block_hook_dispatch,
-	NULL													/* No destroy notification */
-};
-
-static gboolean ghid_block_hook_prepare(GSource * source, gint * timeout)
-{
-	pcb_hidval_t data = ((BlockHookSource *) source)->user_data;
-	((BlockHookSource *) source)->func(data);
-	return FALSE;
-}
-
-static gboolean ghid_block_hook_check(GSource * source)
-{
-	return FALSE;
-}
-
-static gboolean ghid_block_hook_dispatch(GSource * source, GSourceFunc callback, gpointer user_data)
-{
-	return FALSE;
-}
-
-static pcb_hidval_t ghid_add_block_hook(void (*func) (pcb_hidval_t data), pcb_hidval_t user_data)
-{
-	pcb_hidval_t ret;
-	BlockHookSource *source;
-
-	source = (BlockHookSource *) g_source_new(&ghid_block_hook_funcs, sizeof(BlockHookSource));
-
-	source->func = func;
-	source->user_data = user_data;
-
-	g_source_attach((GSource *) source, NULL);
-
-	ret.ptr = (void *) source;
-	return ret;
-}
-
-static void ghid_stop_block_hook(pcb_hidval_t mlpoll)
-{
-	GSource *source = (GSource *) mlpoll.ptr;
-	g_source_destroy(source);
 }
 
 int ghid_confirm_dialog(const char *msg, ...)
