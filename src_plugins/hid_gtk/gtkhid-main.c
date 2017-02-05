@@ -223,7 +223,6 @@ char *ghid_prompt_for(const char *msg, const char *default_string)
 {
 	char *grv, *rv;
 
-	/*grv = ghid_dialog_input(msg, default_string); */
 	grv = pcb_gtk_dlg_input(msg, default_string, GTK_WINDOW(ghid_port.top_window));
 
 	/* can't assume the caller will do g_free() on it */
