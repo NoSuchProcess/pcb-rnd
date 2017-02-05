@@ -16,9 +16,6 @@
     (layer "inner2"
       (type signal)
     )
-    (layer "outline"
-      (type signal)
-    )
     (layer "solder1"
       (type signal)
     )
