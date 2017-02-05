@@ -737,7 +737,7 @@ LinePoly -> pcb_poly_from_line
 ArcPoly -> pcb_poly_from_arc
 PinPoly -> pcb_poly_from_pin
 BoxPolyBloated -> pcb_poly_from_box_bloated
-frac_circle -> pcb_poly_frac_cicle
+frac_circle -> pcb_poly_frac_circle
 InitClip -> pcb_poly_init_clip
 RestoreToPolygon -> pcb_poly_restore_to_poly
 ClearFromPolygon -> pcb_poly_clear_from_poly
