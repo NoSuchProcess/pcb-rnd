@@ -475,19 +475,19 @@ pcb_polyarea_t *RoundRect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_co
 	v[1] = y1;
 	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
-	pcb_poly_frac_circle(contour, x1, y1, v, 4);
+	pcb_poly_frac_circle_end(contour, x1, y1, v, 4);
 	v[0] = x2;
 	v[1] = y1 - t;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	pcb_poly_frac_circle(contour, x2, y1, v, 4);
+	pcb_poly_frac_circle_end(contour, x2, y1, v, 4);
 	v[0] = x2 + t;
 	v[1] = y2;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	pcb_poly_frac_circle(contour, x2, y2, v, 4);
+	pcb_poly_frac_circle_end(contour, x2, y2, v, 4);
 	v[0] = x1;
 	v[1] = y2 + t;
 	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
-	pcb_poly_frac_circle(contour, x1, y2, v, 4);
+	pcb_poly_frac_circle_end(contour, x1, y2, v, 4);
 	return pcb_poly_from_contour(contour);
 }
 
