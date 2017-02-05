@@ -51,7 +51,7 @@
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/wt_coord_entry.h"
-#include "../src_plugins/lib_gtk_common/wt_route_style.h"
+#include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 
 /* needed for a type in GhidGui */

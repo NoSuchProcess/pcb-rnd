@@ -8,15 +8,74 @@
 
 G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_ROUTE_STYLE_TYPE            (pcb_gtk_route_style_get_type ())
-#define GHID_ROUTE_STYLE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_ROUTE_STYLE_TYPE, pcb_gtk_route_style_t))
-#define GHID_ROUTE_STYLE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GHID_ROUTE_STYLE_TYPE, pcb_gtk_route_style_class_t))
-#define IS_GHID_ROUTE_STYLE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GHID_ROUTE_STYLE_TYPE))
-#define IS_GHID_ROUTE_STYLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GHID_ROUTE_STYLE_TYPE))
-//typedef struct _GHidRouteStyleSelector GHidRouteStyleSelector;
-//typedef struct _GHidRouteStyleSelectorClass GHidRouteStyleSelectorClass;
+#define GHID_ROUTE_STYLE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj),  GHID_ROUTE_STYLE_TYPE, pcb_gtk_route_style_t))
+#define GHID_ROUTE_STYLE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),   GHID_ROUTE_STYLE_TYPE, pcb_gtk_route_style_class_t))
+#define IS_GHID_ROUTE_STYLE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj),  GHID_ROUTE_STYLE_TYPE))
+#define IS_GHID_ROUTE_STYLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),   GHID_ROUTE_STYLE_TYPE))
+/** The widget Object */
+	struct pcb_gtk_route_style_s {
+	GtkVBox parent;
+
+	GSList *button_radio_group;
+	GSList *action_radio_group;
+	GtkWidget *edit_button;
+
+	GtkActionGroup *action_group;
+	GtkAccelGroup *accel_group;
+
+	int hidden_button;						/* whether the hidden button is created         */
+	int selected;									/* index of the currently selected route style  */
+
+	GtkListStore *model;					/* All the route styles                         */
+	struct pcb_gtk_obj_route_style_s *active_style;	/* The current route style    */
+
+	GtkTreeIter new_iter;					/* iter for the <new> item */
+};
+
 typedef struct pcb_gtk_route_style_s pcb_gtk_route_style_t;
+
+/** The widget Class */
+struct pcb_gtk_route_style_class_s {
+	GtkVBoxClass parent_class;
+
+	void (*select_style) (pcb_gtk_route_style_t *, pcb_route_style_t *);
+	void (*style_edited) (pcb_gtk_route_style_t *, gboolean);
+};
+
 typedef struct pcb_gtk_route_style_class_s pcb_gtk_route_style_class_t;
 
+/** Signals exposed by the widget */
+enum {
+	SELECT_STYLE_SIGNAL,
+	STYLE_EDITED_SIGNAL,
+	STYLE_LAST_SIGNAL
+};
+
+/** Columns used for internal data store */
+enum {
+	STYLE_TEXT_COL,
+	STYLE_DATA_COL,
+	STYLE_N_COLS
+};
+
+/** Structure for a single Route Style object */
+struct pcb_gtk_obj_route_style_s {
+	GtkRadioAction *action;
+	GtkWidget *button;
+	GtkWidget *menu_item;
+	GtkTreeRowReference *rref;
+	pcb_route_style_t *rst;
+	gulong sig_id;
+	int hidden;
+};
+typedef struct pcb_gtk_obj_route_style_s pcb_gtk_obj_route_style_t;
+
+/** Structure for "Edit Route Style" Dialog */
+typedef struct pcb_gtk_dlg_route_style_s pcb_gtk_dlg_route_style_t;
+
+/* API */
+
+/** GObject type for this widget */
 GType pcb_gtk_route_style_get_type(void);
 
 /** Creates and returns a new freshly-allocated pcb_gtk_route_style_t object */
@@ -53,9 +112,6 @@ void pcb_gtk_route_style_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_
  */
 gboolean pcb_gtk_route_style_select_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst);
 
-/** Builds and runs the "edit route styles" dialog */
-void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss);
-
 /** Returns the GtkAccelGroup of a route style selector
     \param [in] rss            The selector to be acted on
 
@@ -78,6 +134,9 @@ GtkAccelGroup *pcb_gtk_route_style_get_accel_group(pcb_gtk_route_style_t * rss);
  */
 void pcb_gtk_route_style_sync(pcb_gtk_route_style_t * rss, pcb_coord_t Thick, pcb_coord_t Hole, pcb_coord_t Diameter,
 															pcb_coord_t Clearance);
+
+void pcb_gtk_route_style_copy(int idx);
+
 
 /** Removes all styles from a route style selector */
 void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss);
