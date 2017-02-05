@@ -60,6 +60,8 @@ ha:{
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
 						ha:Load netlist file                 = {                             action=Load(Netlist) }
 						ha:Load vendor resource file         = {                             action=LoadVendorFrom() }
+						ha:Load routed dsn or ses file       = {                             action=LoadDsnFrom() }
+						ha:Load hyp                          = {                             action=LoadHypFrom() }
 					}
 				}
 				-
