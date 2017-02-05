@@ -36,12 +36,18 @@ ha:{
 				ha:Save layout = { m=S; a=Ctrl<Key>s; action=Save(Layout) }
 				ha:Save layout as... = { m=A; a=Shift Ctrl<Key>s; action=Save(LayoutAs) }
 				ha:Revert = { action=Load(Revert,none) }
-				ha:Import Schematics = { action=Import() }
 				ha:Load layout = { action=Load(Layout) }
-				ha:Load element data to paste-buffer = { li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
-				ha:Load layout data to paste-buffer = { li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
-				ha:Load netlist file = { action=Load(Netlist) }
-				ha:Load vendor resource file = { action=LoadVendor() }
+				ha:Import = {
+					li:submenu {
+						ha:Import Schematics                 = { action=Import() }
+						ha:Load element data to paste-buffer = { li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
+						ha:Load layout data to paste-buffer  = { li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
+						ha:Load netlist file                 = { action=Load(Netlist) }
+						ha:Load vendor resource file         = { action=LoadVendor() }
+						ha:Load routed dsn or ses file       = { action=LoadDsnFrom() }
+						ha:Load hyp                          = { action=LoadHypFrom() }
+					}
+				}
 				ha:Print layout... = { action=Print() }
 				ha:Export layout... = { action=ExportGUI() }
 				ha:Maintenance {
