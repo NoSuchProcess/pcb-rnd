@@ -29,6 +29,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/ui_zoompan.o
   $(PLUGDIR)/lib_gtk_common/util_str.o
   $(PLUGDIR)/lib_gtk_common/util_timer.o
+  $(PLUGDIR)/lib_gtk_common/util_watch.o
   $(PLUGDIR)/lib_gtk_common/win_place.o
   $(PLUGDIR)/lib_gtk_common/wt_coord_entry.o
   $(PLUGDIR)/lib_gtk_common/wt_layer_selector.o

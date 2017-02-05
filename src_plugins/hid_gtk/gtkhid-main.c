@@ -33,6 +33,7 @@
 /* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
+#include "../src_plugins/lib_gtk_common/util_watch.h"
 #include "../src_plugins/lib_gtk_common/dlg_about.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
 #include "../src_plugins/lib_gtk_common/dlg_export.h"
@@ -194,75 +195,6 @@ void ghid_set_crosshair(int x, int y, int action)
 
 		break;
 	}
-}
-
-typedef struct {
-	void (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
-	pcb_hidval_t user_data;
-	int fd;
-	GIOChannel *channel;
-	gint id;
-} GuiWatch;
-
-	/* We need a wrapper around the hid file watch to pass the correct flags
-	 */
-static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer data)
-{
-	unsigned int pcb_condition = 0;
-	pcb_hidval_t x;
-	GuiWatch *watch = (GuiWatch *) data;
-
-	if (condition & G_IO_IN)
-		pcb_condition |= PCB_WATCH_READABLE;
-	if (condition & G_IO_OUT)
-		pcb_condition |= PCB_WATCH_WRITABLE;
-	if (condition & G_IO_ERR)
-		pcb_condition |= PCB_WATCH_ERROR;
-	if (condition & G_IO_HUP)
-		pcb_condition |= PCB_WATCH_HANGUP;
-
-	x.ptr = (void *) watch;
-	watch->func(x, watch->fd, pcb_condition, watch->user_data);
-	ghid_mode_cursor(conf_core.editor.mode);
-
-	return TRUE;									/* Leave watch on */
-}
-
-pcb_hidval_t
-ghid_watch_file(int fd, unsigned int condition,
-								void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
-								pcb_hidval_t user_data)
-{
-	GuiWatch *watch = g_new0(GuiWatch, 1);
-	pcb_hidval_t ret;
-	unsigned int glib_condition = 0;
-
-	if (condition & PCB_WATCH_READABLE)
-		glib_condition |= G_IO_IN;
-	if (condition & PCB_WATCH_WRITABLE)
-		glib_condition |= G_IO_OUT;
-	if (condition & PCB_WATCH_ERROR)
-		glib_condition |= G_IO_ERR;
-	if (condition & PCB_WATCH_HANGUP)
-		glib_condition |= G_IO_HUP;
-
-	watch->func = func;
-	watch->user_data = user_data;
-	watch->fd = fd;
-	watch->channel = g_io_channel_unix_new(fd);
-	watch->id = g_io_add_watch(watch->channel, (GIOCondition) glib_condition, ghid_watch, watch);
-
-	ret.ptr = (void *) watch;
-	return ret;
-}
-
-void ghid_unwatch_file(pcb_hidval_t data)
-{
-	GuiWatch *watch = (GuiWatch *) data.ptr;
-
-	g_io_channel_shutdown(watch->channel, TRUE, NULL);
-	g_io_channel_unref(watch->channel);
-	g_free(watch);
 }
 
 typedef struct {
