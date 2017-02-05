@@ -24,7 +24,6 @@
 #include "config.h"
 #include <glib.h>
 #include "util_block_hook.h"
-/*#include "conf_core.h"*/
 
 typedef struct {
 	GSource source;
