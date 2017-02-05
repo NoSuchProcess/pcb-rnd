@@ -275,8 +275,6 @@ static void ghid_attributes(const char *owner, pcb_attribute_list_t * attrs)
 	pcb_gtk_dlg_attributes(ghid_port.top_window, owner, attrs);
 }
 
-
-
 pcb_hid_drc_gui_t ghid_drc_gui = {
 	1,														/* log_drc_overview */
 	0,														/* log_drc_details */
@@ -285,15 +283,11 @@ pcb_hid_drc_gui_t ghid_drc_gui = {
 	ghid_drc_window_throw_dialog,
 };
 
-extern pcb_hid_attribute_t *ghid_get_export_options(int *);
-
-
 /* ------------------------------------------------------------
  *
  * Actions specific to the GTK HID follow from here
  *
  */
-
 
 /* ------------------------------------------------------------ */
 static const char about_syntax[] = "About()";
