@@ -37,6 +37,7 @@
 #include "../src_plugins/lib_gtk_common/util_watch.h"
 #include "../src_plugins/lib_gtk_common/dlg_about.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
+#include "../src_plugins/lib_gtk_common/dlg_confirm.h"
 #include "../src_plugins/lib_gtk_common/dlg_export.h"
 #include "../src_plugins/lib_gtk_common/dlg_input.h"
 #include "../src_plugins/lib_gtk_common/dlg_message.h"
@@ -200,83 +201,17 @@ void ghid_set_crosshair(int x, int y, int action)
 
 int ghid_confirm_dialog(const char *msg, ...)
 {
-	int rv = 0;
+	int res;
 	va_list ap;
-	const char *cancelmsg = NULL, *okmsg = NULL;
-	static gint x = -1, y = -1;
-	GtkWidget *dialog;
-	GHidPort *out = &ghid_port;
-
 	va_start(ap, msg);
-	cancelmsg = va_arg(ap, char *);
-	okmsg = va_arg(ap, char *);
+	res = pcb_gtk_dlg_confirm_open(ghid_port.top_window, msg, ap);
 	va_end(ap);
-
-	if (!cancelmsg) {
-		cancelmsg = _("_Cancel");
-		okmsg = _("_OK");
-	}
-
-	dialog = gtk_message_dialog_new(GTK_WINDOW(out->top_window),
-																	(GtkDialogFlags) (GTK_DIALOG_MODAL |
-																										GTK_DIALOG_DESTROY_WITH_PARENT),
-																	GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, "%s", msg);
-	gtk_dialog_add_button(GTK_DIALOG(dialog), cancelmsg, GTK_RESPONSE_CANCEL);
-	if (okmsg) {
-		gtk_dialog_add_button(GTK_DIALOG(dialog), okmsg, GTK_RESPONSE_OK);
-	}
-
-	if (x != -1) {
-		gtk_window_move(GTK_WINDOW(dialog), x, y);
-	}
-
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK)
-		rv = 1;
-
-	gtk_window_get_position(GTK_WINDOW(dialog), &x, &y);
-
-	gtk_widget_destroy(dialog);
-	return rv;
+	return res;
 }
 
-int ghid_close_confirm_dialog()
+int ghid_close_confirm_dialog(void)
 {
-	gchar *bold_text;
-	gchar *str;
-	const char *msg;
-
-	if (PCB->Filename == NULL) {
-		bold_text = g_strdup_printf(_("Save the changes to layout before closing?"));
-	}
-	else {
-		bold_text = g_strdup_printf(_("Save the changes to layout \"%s\" before closing?"), PCB->Filename);
-	}
-	str = g_strconcat("<big><b>", bold_text, "</b></big>", NULL);
-	g_free(bold_text);
-	msg = _("If you don't save, all your changes will be permanently lost.");
-	str = g_strconcat(str, "\n\n", msg, NULL);
-
-	switch (pcb_gtk_dlg_message(str, GTK_WINDOW(ghid_port.top_window))) {
-	case GTK_RESPONSE_YES:
-		{
-			if (pcb_hid_actionl("Save", NULL)) {	/* Save failed */
-				return 0;								/* Cancel */
-			}
-			else {
-				return 1;								/* Close */
-			}
-		}
-	case GTK_RESPONSE_NO:
-		{
-			return 1;									/* Close */
-		}
-	case GTK_RESPONSE_CANCEL:
-	default:
-		{
-			return 0;									/* Cancel */
-		}
-	}
-	g_free(str);
+	return pcb_gtk_dlg_confirm_close(ghid_port.top_window);
 }
 
 void ghid_report_dialog(const char *title, const char *msg)
