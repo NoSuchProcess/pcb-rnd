@@ -32,6 +32,7 @@
 
 /* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
+#include "../src_plugins/lib_gtk_common/act_print.h"
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/util_block_hook.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
@@ -393,81 +394,11 @@ static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return 0;
 }
 
-
-static const char print_syntax[] = "Print()";
-
-static const char print_help[] = N_("Print the layout.");
-
-/* %start-doc actions Print
-
-This will find the default printing HID, prompt the user for its
-options, and print the layout.
-
-%end-doc */
-
-static int Print(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
-{
-	pcb_hid_t **hids;
-	int i;
-	pcb_hid_t *printer = NULL;
-
-	hids = pcb_hid_enumerate();
-	for (i = 0; hids[i]; i++) {
-		if (hids[i]->printer)
-			printer = hids[i];
-	}
-
-	if (printer == NULL) {
-		pcb_gui->log(_("Can't find a suitable printer HID"));
-		return -1;
-	}
-
-	/* check if layout is empty */
-	if (!pcb_data_is_empty(PCB->Data)) {
-		ghid_dialog_print(printer, NULL, ghid_port.top_window);
-	}
-	else
-		pcb_gui->log(_("Can't print empty layout"));
-
-	return 0;
-}
-
-
 /* ------------------------------------------------------------ */
 
-static pcb_hid_attribute_t printer_calibrate_attrs[] = {
-	{N_("Enter Values here:"), "",
-	 HID_Label, 0, 0, {0, 0, 0}, 0, 0},
-	{N_("x-calibration"), N_("X scale for calibrating your printer"),
-	 HID_Real, 0.5, 25, {0, 0, 1.00}, 0, 0},
-	{N_("y-calibration"), N_("Y scale for calibrating your printer"),
-	 HID_Real, 0.5, 25, {0, 0, 1.00}, 0, 0}
-};
-
-static pcb_hid_attr_val_t printer_calibrate_values[3];
-
-static const char printcalibrate_syntax[] = "PrintCalibrate()";
-
-static const char printcalibrate_help[] = N_("Calibrate the printer.");
-
-/* %start-doc actions PrintCalibrate
-
-This will print a calibration page, which you would measure and type
-the measurements in, so that future printouts will be more precise.
-
-%end-doc */
-
-static int PrintCalibrate(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_print_(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_hid_t *printer = pcb_hid_find_printer();
-	printer->calibrate(0.0, 0.0);
-
-	if (pcb_gui->attribute_dialog(printer_calibrate_attrs, 3,
-																printer_calibrate_values,
-																_("Printer Calibration Values"), _("Enter calibration values for your printer")))
-		return 1;
-	printer->calibrate(printer_calibrate_values[1].real_value, printer_calibrate_values[2].real_value);
-	return 0;
+	return pcb_gtk_act_print(gport->top_window, argc, argv, x, y);
 }
 
 /* ------------------------------------------------------------ */
@@ -778,11 +709,9 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"Popup", 0, Popup, popup_help, popup_syntax}
 	,
-	{"Print", 0, Print,
-	 print_help, print_syntax}
+	{"Print", 0, pcb_gtk_act_print_, pcb_gtk_acth_print, pcb_gtk_acts_print}
 	,
-	{"PrintCalibrate", 0, PrintCalibrate,
-	 printcalibrate_help, printcalibrate_syntax}
+	{"PrintCalibrate", 0, pcb_gtk_act_printcalibrate, pcb_gtk_acth_printcalibrate, pcb_gtk_acts_printcalibrate}
 	,
 	{"Save", 0, pcb_gtk_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save}
 	,
