@@ -21,6 +21,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_message.o
   $(PLUGDIR)/lib_gtk_common/dlg_pinout.o
   $(PLUGDIR)/lib_gtk_common/dlg_print.o
+  $(PLUGDIR)/lib_gtk_common/dlg_progress.o
   $(PLUGDIR)/lib_gtk_common/dlg_propedit.o
   $(PLUGDIR)/lib_gtk_common/dlg_report.o
   $(PLUGDIR)/lib_gtk_common/dlg_search.o
