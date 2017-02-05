@@ -1,0 +1,35 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> what's needed for schematics -&gt; pcb-rnd </H2>
+If a path between a schematics capture program and pcb-rnd is to be implemented,
+the following information needs to be passed:
+<ul>
+	<li> schematics -&gt; pcb (forward annotation)
+		Any file format the schematics tool prefers and delivers at least this
+		set of information:
+		<ul>
+			<li> Each component/part needs an unique identifier, a "refdes", e.g. R1, U4.
+			<li> Each pin/pad needs an unique identifier within it's component/part, so at the end "U4-3" uniquely identifies pin 3 of component U4.
+			<li> Each component/part needs a footprint (a free form text). Optionally arbitrary user specified key=value pairs per part can solve this and a lot more.
+			<li> A list of named networks. Optionally with user specified key=value pairs per network (less important here).
+			<li> A list of component-pin pairs per network.
+			<li> The netlist can be flat or hierarhic.
+		</ul>
+
+	<li> pcb -&gt; schematics (back annotation)
+		pcb-rnd emits a netlist patch described
+		<a href="20150830b_back_ann.html"> here </a>, but it
+		could emit any other format the schematics tool needs. The schematics tool
+		would need to understand the following concepts while reading a back
+		annotation file:
+		<ul>
+			<li> Unique part refdes and pin number, as above
+			<li> Named networks, as above
+			<li> "this is how the network looked like when we started" (net name, list of pins)
+			<li> "the user removed this pin from that network" operation
+			<li> "the user added this pin from that network" operation
+			<li> optional: "the user changed this key=value pair of this part"
+		</ul>
+</ul>
