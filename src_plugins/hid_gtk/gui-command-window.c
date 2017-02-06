@@ -37,6 +37,8 @@
 #include "hid_gtk_conf.h"
 #include "compat_nls.h"
 
+#include "../src_plugins/lib_gtk_common/bu_text_view.h"
+#include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
 
 static GtkWidget *command_window;

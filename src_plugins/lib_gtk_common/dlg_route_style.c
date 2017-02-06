@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "config.h"
 
 #include "compat_misc.h"
@@ -34,13 +35,11 @@
 
 #include "bu_box.h"
 #include "compat.h"
+#include "board.h"
+#include "conf_core.h"
 
-/* FIXME: Get rid of that ... means get rid of global  ghidgui */
-#include "../hid_gtk/gui.h"
-
-/* and replace by this one, at least 
 #include "dlg_route_style.h"
-*/
+#include "wt_coord_entry.h"
 
 /* SIGNAL HANDLERS */
 
@@ -238,14 +237,14 @@ static void delete_button_cb(GtkButton * button, pcb_gtk_dlg_route_style_t * dia
 		return;
 
 	dialog->inhibit_style_change = 1;
-	pcb_gtk_route_style_empty(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
+	pcb_gtk_route_style_empty(dialog->rss);
 
 #warning TODO: some of these should be in core
 	pcb_gtk_route_style_copy(dialog->rss->selected);
 
 	vtroutestyle_remove(&PCB->RouteStyle, dialog->rss->selected, 1);
 	dialog->rss->active_style = NULL;
-	make_route_style_buttons(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
+	make_route_style_buttons(GHID_ROUTE_STYLE(dialog->rss));
 	pcb_trace("Style: %d deleted\n", dialog->rss->selected);
 	pcb_board_set_changed_flag(pcb_true);
 	ghid_window_set_name_label(PCB->Name);

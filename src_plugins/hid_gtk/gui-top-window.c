@@ -92,6 +92,10 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "obj_line.h"
 #include "layer_vis.h"
 #include "gtkhid-main.h"
+
+#include "../src_plugins/lib_gtk_common/bu_box.h"
+#include "../src_plugins/lib_gtk_common/bu_status_line.h"
+#include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
@@ -663,34 +667,13 @@ void ghid_layer_buttons_update(void)
 }
 
 /*! \brief Called when user clicks OK on route style dialog */
-static void route_styles_edited_cb(pcb_gtk_route_style_t * rss, gboolean save, gpointer data)
+void route_styles_edited_cb(pcb_gtk_route_style_t * rss, gboolean save, gpointer data)
 {
 	conf_setf(CFR_DESIGN, "design/routes", -1, "%s", pcb_route_string_make(&PCB->RouteStyle));
 	if (save)
 		conf_setf(CFR_USER, "design/routes", -1, "%s", pcb_route_string_make(&PCB->RouteStyle));
 	ghid_main_menu_install_route_style_selector
 		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE(ghidgui->route_style_selector));
-}
-
-/*! \brief Called when a route style is selected */
-static void route_style_changed_cb(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst, gpointer data)
-{
-	pcb_use_route_style(rst);
-	ghid_set_status_line_label();
-}
-
-/*! \brief Configure the route style selector */
-void make_route_style_buttons(pcb_gtk_route_style_t * rss)
-{
-	int i;
-
-	/* Make sure the <custom> item is added */
-	pcb_gtk_route_style_add_route_style(rss, NULL);
-
-	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); ++i)
-		pcb_gtk_route_style_add_route_style(rss, &PCB->RouteStyle.array[i]);
-	g_signal_connect(G_OBJECT(rss), "select_style", G_CALLBACK(route_style_changed_cb), NULL);
-	g_signal_connect(G_OBJECT(rss), "style_edited", G_CALLBACK(route_styles_edited_cb), NULL);
 }
 
 /*

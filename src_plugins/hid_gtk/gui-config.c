@@ -51,11 +51,17 @@
 #include "compat_nls.h"
 #include "fptr_cast.h"
 #include <liblihata/tree.h>
+
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/wt_preview.h"
+#include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_entry.h"
 #include "../src_plugins/lib_gtk_common/bu_notebook.h"
+#include "../src_plugins/lib_gtk_common/bu_text_view.h"
+#include "../src_plugins/lib_gtk_common/bu_check_button.h"
+#include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
+#include "../src_plugins/lib_gtk_common/bu_spin_button.h"
 
 
 #if 0

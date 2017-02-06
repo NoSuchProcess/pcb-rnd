@@ -42,20 +42,10 @@
 
 #include "hid_gtk_conf.h"
 
-
-/* TODO: REMOVE THESE */
-#include "../src_plugins/lib_gtk_common/ui_zoompan.h"
-#include "../src_plugins/lib_gtk_common/bu_box.h"
-#include "../src_plugins/lib_gtk_common/bu_text_view.h"
-#include "../src_plugins/lib_gtk_common/bu_check_button.h"
-#include "../src_plugins/lib_gtk_common/bu_spin_button.h"
-#include "../src_plugins/lib_gtk_common/bu_status_line.h"
-#include "../src_plugins/lib_gtk_common/wt_coord_entry.h"
-#include "../src_plugins/lib_gtk_common/dlg_route_style.h"
-#include "../src_plugins/lib_gtk_common/dlg_propedit.h"
-
-/* needed for a type in GhidGui */
+/* needed for a type in GhidGui - DO NOT ADD .h files that are not requred for the structs! */
 #include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
+#include "../src_plugins/lib_gtk_common/ui_zoompan.h"
+#include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 
 
 	/* Silk and rats lines are the two additional selectable to draw on.
@@ -254,7 +244,6 @@ void ghid_notify_save_pcb(const char *file, pcb_bool done);
 void ghid_notify_filename_changed(void);
 void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui);
 void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui);
-void make_route_style_buttons(pcb_gtk_route_style_t * rss);
 
 /* gui-utils.c
 */

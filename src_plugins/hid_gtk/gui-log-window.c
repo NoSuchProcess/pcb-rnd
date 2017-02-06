@@ -39,6 +39,7 @@
 #include "gtkhid-main.h"
 
 #include "../src_plugins/lib_gtk_common/win_place.h"
+#include "../src_plugins/lib_gtk_common/bu_text_view.h"
 
 static GtkWidget *log_window, *log_text;
 static gboolean log_show_on_append = FALSE;

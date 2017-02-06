@@ -20,3 +20,6 @@ struct pcb_gtk_dlg_route_style_s {
 
 /** Builds and runs the "edit route style" dialog */
 void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss);
+
+/* Temporary: hid_gtk call back */
+extern void ghid_window_set_name_label(gchar *name);

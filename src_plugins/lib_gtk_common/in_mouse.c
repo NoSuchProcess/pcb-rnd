@@ -34,8 +34,7 @@
 
 #include <gdk/gdkkeysyms.h>
 
-/*FIXME: Get rid of gui.h */
-#include "../src_plugins/hid_gtk/gui.h"
+#include "bu_status_line.h"
 
 pcb_hid_cfg_mouse_t ghid_mouse;
 int ghid_wheel_zoom = 0;

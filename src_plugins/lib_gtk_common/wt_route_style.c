@@ -27,16 +27,16 @@
 #include "config.h"
 #include "conf_core.h"
 
-/*FIXME: Remove... */
-#include "../hid_gtk/gui.h"
-/* and replace with, at least
+#include <gdk/gdkkeysyms.h>
+
 #include "dlg_route_style.h"
-*/
 
 #include "pcb-printf.h"
+#include "board.h"
 #include "compat_nls.h"
 
-#include <gdk/gdkkeysyms.h>
+#include "bu_status_line.h"
+
 
 
 /** Global action creation counter */
@@ -345,4 +345,24 @@ void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss)
 	rss->action_radio_group = NULL;
 	rss->button_radio_group = NULL;
 	rss->hidden_button = 0;
+}
+
+/** Called when a route style is selected */
+static void route_style_changed_cb(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst, gpointer data)
+{
+	pcb_use_route_style(rst);
+	ghid_set_status_line_label();
+}
+
+void make_route_style_buttons(pcb_gtk_route_style_t *rss)
+{
+	int i;
+
+	/* Make sure the <custom> item is added */
+	pcb_gtk_route_style_add_route_style(rss, NULL);
+
+	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); ++i)
+		pcb_gtk_route_style_add_route_style(rss, &PCB->RouteStyle.array[i]);
+	g_signal_connect(G_OBJECT(rss), "select_style", G_CALLBACK(route_style_changed_cb), NULL);
+	g_signal_connect(G_OBJECT(rss), "style_edited", G_CALLBACK(route_styles_edited_cb), NULL);
 }

@@ -52,7 +52,9 @@
 #include "gui.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
-
+#include "../src_plugins/lib_gtk_common/bu_text_view.h"
+#include "../src_plugins/lib_gtk_common/bu_box.h"
+#include "../src_plugins/lib_gtk_common/bu_check_button.h"
 
 #define NET_HIERARCHY_SEPARATOR "/"
 

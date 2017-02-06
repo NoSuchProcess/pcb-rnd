@@ -33,6 +33,7 @@
 /* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/act_print.h"
+#include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/util_block_hook.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"

@@ -141,5 +141,13 @@ void pcb_gtk_route_style_copy(int idx);
 /** Removes all styles from a route style selector */
 void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss);
 
+/**  Configure the route style selector */
+void make_route_style_buttons(pcb_gtk_route_style_t *rss);
+
+
+/* Temporary: call back to hid_gtk */
+extern void route_styles_edited_cb(pcb_gtk_route_style_t *rss, gboolean save, gpointer data);
+
+
 G_END_DECLS											/* keep c++ happy */
 #endif
