@@ -27,9 +27,10 @@
 /* This code was originally written by Bill Wilson for the PCB Gtk port. */
 
 #include "config.h"
-
 #include "in_keyboard.h"
 #include <gdk/gdkkeysyms.h>
+#include <ctype.h>
+#include <string.h>
 
 gboolean ghid_is_modifier_key_sym(gint ksym)
 {
@@ -38,15 +39,14 @@ gboolean ghid_is_modifier_key_sym(gint ksym)
 	return FALSE;
 }
 
-ModifierKeysState ghid_modifier_keys_state(GdkModifierType * state)
+ModifierKeysState ghid_modifier_keys_state(GtkWidget *drawing_area, GdkModifierType *state)
 {
 	GdkModifierType mask;
 	ModifierKeysState mk;
 	gboolean shift, control, mod1;
-	GHidPort *out = &ghid_port;
 
 	if (!state)
-		gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+		gdk_window_get_pointer(gtk_widget_get_window(drawing_area), NULL, NULL, &mask);
 	else
 		mask = *state;
 
@@ -76,6 +76,8 @@ ModifierKeysState ghid_modifier_keys_state(GdkModifierType * state)
 
 gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
 {
+	pcb_gtk_view_t *view = data;
+
 	if (ghid_is_modifier_key_sym(kev->keyval))
 		return FALSE;
 
@@ -106,7 +108,7 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		if (kv == GDK_KEY_ISO_Left_Tab) kv = GDK_KEY_Tab;
 		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, kv, seq, &seq_len);
 		if (slen > 0) {
-			ghid_port.view.has_entered  = 1;
+			view->has_entered  = 1;
 			pcb_hid_cfg_keys_action(seq, slen);
 			return TRUE;
 		}

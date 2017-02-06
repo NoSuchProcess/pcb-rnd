@@ -141,17 +141,6 @@ typedef struct {
 extern GHidPort ghid_port, *gport;
 
 typedef enum {
-	NONE_PRESSED = 0,
-	SHIFT_PRESSED = PCB_M_Shift,
-	CONTROL_PRESSED = PCB_M_Ctrl,
-	MOD1_PRESSED = PCB_M_Mod1,
-	SHIFT_CONTROL_PRESSED = PCB_M_Shift | PCB_M_Ctrl,
-	SHIFT_MOD1_PRESSED = PCB_M_Shift | PCB_M_Mod1,
-	CONTROL_MOD1_PRESSED = PCB_M_Ctrl | PCB_M_Mod1,
-	SHIFT_CONTROL_MOD1_PRESSED = PCB_M_Shift | PCB_M_Ctrl | PCB_M_Mod1
-} ModifierKeysState;
-
-typedef enum {
 	NO_BUTTON_PRESSED,
 	BUTTON1_PRESSED,
 	BUTTON2_PRESSED,
@@ -202,8 +191,6 @@ extern GdkPixmap *XC_clock_source, *XC_clock_mask;
 void ghid_port_ranges_changed(void);
 void ghid_port_ranges_scale(void);
 
-void ghid_note_event_location(GdkEventButton * ev);
-gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
 
 

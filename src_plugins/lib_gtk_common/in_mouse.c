@@ -36,6 +36,9 @@
 
 #include "bu_status_line.h"
 
+#warning TODO: remove this
+#include "../hid_gtk/gui.h"
+
 pcb_hid_cfg_mouse_t ghid_mouse;
 int ghid_wheel_zoom = 0;
 
@@ -56,10 +59,9 @@ GdkPixmap *XC_clock_source, *XC_clock_mask, *XC_hand_source, *XC_hand_mask, *XC_
 #define ICON_Y_HOT 8
 
 
-static GdkCursorType gport_set_cursor(GdkCursorType shape)
+static GdkCursorType gport_set_cursor(GdkCursorType shape, GdkCursorType old_shape)
 {
 	GdkWindow *window;
-	GdkCursorType old_shape = gport->X_cursor_shape;
 	GdkColor fg = { 0, 65535, 65535, 65535 };	/* white */
 	GdkColor bg = { 0, 0, 0, 0 };	/* black */
 
@@ -95,19 +97,19 @@ static GdkCursorType gport_set_cursor(GdkCursorType shape)
 
 void ghid_point_cursor(void)
 {
-	old_cursor = gport_set_cursor(GDK_DRAPED_BOX);
+	old_cursor = gport_set_cursor(GDK_DRAPED_BOX, gport->X_cursor_shape);
 }
 
 void ghid_hand_cursor(void)
 {
-	old_cursor = gport_set_cursor(GDK_HAND2);
+	old_cursor = gport_set_cursor(GDK_HAND2, gport->X_cursor_shape);
 }
 
 void ghid_watch_cursor(void)
 {
 	GdkCursorType tmp;
 
-	tmp = gport_set_cursor(GDK_WATCH);
+	tmp = gport_set_cursor(GDK_WATCH, gport->X_cursor_shape);
 	if (tmp != GDK_WATCH)
 		old_cursor = tmp;
 }
@@ -116,68 +118,68 @@ void ghid_mode_cursor(int mode)
 {
 	switch (mode) {
 	case PCB_MODE_NO:
-		gport_set_cursor((GdkCursorType) CUSTOM_CURSOR_DRAG);
+		gport_set_cursor((GdkCursorType) CUSTOM_CURSOR_DRAG, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_VIA:
-		gport_set_cursor(GDK_ARROW);
+		gport_set_cursor(GDK_ARROW, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_LINE:
-		gport_set_cursor(GDK_PENCIL);
+		gport_set_cursor(GDK_PENCIL, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_ARC:
-		gport_set_cursor(GDK_QUESTION_ARROW);
+		gport_set_cursor(GDK_QUESTION_ARROW, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_ARROW:
-		gport_set_cursor(GDK_LEFT_PTR);
+		gport_set_cursor(GDK_LEFT_PTR, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_POLYGON:
 	case PCB_MODE_POLYGON_HOLE:
-		gport_set_cursor(GDK_SB_UP_ARROW);
+		gport_set_cursor(GDK_SB_UP_ARROW, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_PASTE_BUFFER:
-		gport_set_cursor(GDK_HAND1);
+		gport_set_cursor(GDK_HAND1, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_TEXT:
-		gport_set_cursor(GDK_XTERM);
+		gport_set_cursor(GDK_XTERM, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_RECTANGLE:
-		gport_set_cursor(GDK_UL_ANGLE);
+		gport_set_cursor(GDK_UL_ANGLE, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_THERMAL:
-		gport_set_cursor(GDK_IRON_CROSS);
+		gport_set_cursor(GDK_IRON_CROSS, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_REMOVE:
-		gport_set_cursor(GDK_PIRATE);
+		gport_set_cursor(GDK_PIRATE, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_ROTATE:
 		if (ghid_shift_is_pressed())
-			gport_set_cursor((GdkCursorType) CUSTOM_CURSOR_CLOCKWISE);
+			gport_set_cursor((GdkCursorType) CUSTOM_CURSOR_CLOCKWISE, gport->X_cursor_shape);
 		else
-			gport_set_cursor(GDK_EXCHANGE);
+			gport_set_cursor(GDK_EXCHANGE, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_COPY:
 	case PCB_MODE_MOVE:
-		gport_set_cursor(GDK_CROSSHAIR);
+		gport_set_cursor(GDK_CROSSHAIR, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_INSERT_POINT:
-		gport_set_cursor(GDK_DOTBOX);
+		gport_set_cursor(GDK_DOTBOX, gport->X_cursor_shape);
 		break;
 
 	case PCB_MODE_LOCK:
-		gport_set_cursor((GdkCursorType) CUSTOM_CURSOR_LOCK);
+		gport_set_cursor((GdkCursorType) CUSTOM_CURSOR_LOCK, gport->X_cursor_shape);
 	}
 }
 
@@ -190,12 +192,12 @@ void ghid_corner_cursor(void)
 	else
 		shape = (pcb_crosshair.X >= pcb_crosshair.AttachedBox.Point1.X) ? GDK_LR_ANGLE : GDK_LL_ANGLE;
 	if (gport->X_cursor_shape != shape)
-		gport_set_cursor(shape);
+		gport_set_cursor(shape, gport->X_cursor_shape);
 }
 
 void ghid_restore_cursor(void)
 {
-	gport_set_cursor(old_cursor);
+	gport_set_cursor(old_cursor, gport->X_cursor_shape);
 }
 
 	/* =============================================================== */
@@ -319,7 +321,7 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, voi
 	int button;
 
 	state = (GdkModifierType) (ev->state);
-	mk = ghid_modifier_keys_state(&state);
+	mk = ghid_modifier_keys_state(widget, &state);
 
 	/* X11 gtk hard codes buttons 4, 5, 6, 7 as below in
 	 * gtk+/gdk/x11/gdkevents-x11.c:1121, but quartz and windows have
@@ -353,7 +355,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 
 	ghid_note_event_location(ev);
 	state = (GdkModifierType) (ev->state);
-	mk = ghid_modifier_keys_state(&state);
+	mk = ghid_modifier_keys_state(drawing_area, &state);
 
 	extern GdkModifierType ghid_glob_mask;
 	ghid_glob_mask = state;
@@ -378,7 +380,7 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 
 	ghid_note_event_location(ev);
 	state = (GdkModifierType) (ev->state);
-	mk = ghid_modifier_keys_state(&state);
+	mk = ghid_modifier_keys_state(drawing_area, &state);
 
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release);
 
