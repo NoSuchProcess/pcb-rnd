@@ -1698,6 +1698,8 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	if (argc != 0)
 		PCB_AFAIL(editlayergroups);
 
+#warning TODO: extend the DoWindows action so it opens the right preferences tab
+
 	pcb_hid_actionl("DoWindows", "Preferences", NULL);
 
 	return 0;
