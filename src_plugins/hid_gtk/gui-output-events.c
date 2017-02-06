@@ -111,7 +111,8 @@ void ghid_note_event_location(GdkEventButton * ev)
 	ghid_set_cursor_position_labels(&ghidgui->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
 }
 
-static gboolean ghid_idle_cb(gpointer data)
+#warning TODO: move this to common
+gboolean ghid_idle_cb(gpointer data)
 {
 	if (conf_core.editor.mode == PCB_MODE_NO)
 		pcb_crosshair_set_mode(PCB_MODE_ARROW);
@@ -135,59 +136,6 @@ gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, g
 	g_idle_add(ghid_idle_cb, NULL);
 	return FALSE;
 }
-
-gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data)
-{
-	ModifierKeysState mk;
-	GdkModifierType state;
-
-	GHidPort *out = &ghid_port;
-	GdkModifierType mask;
-
-	/* Reject double and triple click events */
-	if (ev->type != GDK_BUTTON_PRESS)
-		return TRUE;
-
-	ghid_note_event_location(ev);
-	state = (GdkModifierType) (ev->state);
-	mk = ghid_modifier_keys_state(&state);
-
-	extern GdkModifierType ghid_glob_mask;
-	ghid_glob_mask = state;
-
-	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
-
-	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk);
-
-	ghid_invalidate_all();
-	ghid_window_set_name_label(PCB->Name);
-	ghid_set_status_line_label();
-	if (!gport->view.panning)
-		g_idle_add(ghid_idle_cb, NULL);
-	return TRUE;
-}
-
-
-gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data)
-{
-	ModifierKeysState mk;
-	GdkModifierType state;
-
-	ghid_note_event_location(ev);
-	state = (GdkModifierType) (ev->state);
-	mk = ghid_modifier_keys_state(&state);
-
-	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release);
-
-	pcb_adjust_attached_objects();
-	ghid_invalidate_all();
-
-	ghid_window_set_name_label(PCB->Name);
-	ghid_set_status_line_label();
-	g_idle_add(ghid_idle_cb, NULL);
-	return TRUE;
-}
-
 
 gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, GHidPort * out)
 {

@@ -21,3 +21,8 @@ void ghid_get_user_xy(const char *msg);
 
 gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *out);
 
+gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
+gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
+
+/* Temporary call to hid_gtk */
+extern gboolean ghid_idle_cb(gpointer data);

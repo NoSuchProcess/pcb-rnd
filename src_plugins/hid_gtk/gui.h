@@ -215,8 +215,6 @@ void ghid_port_ranges_scale(void);
 void ghid_note_event_location(GdkEventButton * ev);
 gboolean ghid_port_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
-gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
-gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
 
 
 gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPort * out);
