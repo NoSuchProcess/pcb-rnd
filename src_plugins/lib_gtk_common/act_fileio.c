@@ -35,6 +35,8 @@
 #include "plug_footprint.h"
 #include "compat_misc.h"
 #include "conf_core.h"
+#include "board.h"
+#include "data.h"
 
 #include "dlg_file_chooser.h"
 
@@ -51,7 +53,7 @@ static char *dup_cwd()
 	return pcb_strdup(getcwd(tmp, sizeof(tmp)));
 }
 
-int pcb_gtk_act_load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_load(GtkWidget *top_window, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function;
 	char *name = NULL;
@@ -74,17 +76,17 @@ int pcb_gtk_act_load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	function = argc ? argv[0] : "Layout";
 
 	if (pcb_strcasecmp(function, "Netlist") == 0) {
-		name = ghid_dialog_file_select_open(_("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
+		name = ghid_dialog_file_select_open(top_window, _("Load netlist file"), &current_netlist_dir, conf_core.rc.file_path);
 	}
 	else if (pcb_strcasecmp(function, "ElementToBuffer") == 0) {
 		gchar *path = (gchar *) pcb_fp_default_search_path();
-		name = ghid_dialog_file_select_open(_("Load element to buffer"), &current_element_dir, path);
+		name = ghid_dialog_file_select_open(top_window, _("Load element to buffer"), &current_element_dir, path);
 	}
 	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0) {
-		name = ghid_dialog_file_select_open(_("Load layout file to buffer"), &current_layout_dir, conf_core.rc.file_path);
+		name = ghid_dialog_file_select_open(top_window, _("Load layout file to buffer"), &current_layout_dir, conf_core.rc.file_path);
 	}
 	else if (pcb_strcasecmp(function, "Layout") == 0) {
-		name = ghid_dialog_file_select_open(_("Load layout file"), &current_layout_dir, conf_core.rc.file_path);
+		name = ghid_dialog_file_select_open(top_window, _("Load layout file"), &current_layout_dir, conf_core.rc.file_path);
 	}
 
 	if (name) {
@@ -110,7 +112,7 @@ called with that filename.
 
 %end-doc */
 
-int pcb_gtk_act_save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_save(GtkWidget *top_window, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *function;
 	char *name, *name_in = NULL;
@@ -185,9 +187,7 @@ int pcb_gtk_act_save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 			else
 				name_in = pcb_strdup(PCB->Filename);
 		}
-		name =
-			ghid_dialog_file_select_save(prompt, &current_dir, name_in, conf_core.rc.file_path, formats_param, extensions_param,
-																	 fmt_param);
+		name = ghid_dialog_file_select_save(top_window, prompt, &current_dir, name_in, conf_core.rc.file_path, formats_param, extensions_param, fmt_param);
 		free(name_in);
 	}
 
@@ -227,7 +227,7 @@ int pcb_gtk_act_save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 const char pcb_gtk_acts_importgui[] = "ImportGUI()";
 const char pcb_gtk_acth_importgui[] = N_("Asks user which schematics to import into PCB.\n");
-int pcb_gtk_act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+int pcb_gtk_act_importgui(GtkWidget *top_window, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	char *name = NULL;
 	static gchar *current_layout_dir = NULL;
@@ -241,7 +241,7 @@ int pcb_gtk_act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_
 		return 1;
 
 
-	name = ghid_dialog_file_select_open(_("Load schematics"), &current_layout_dir, conf_core.rc.file_path);
+	name = ghid_dialog_file_select_open(top_window, _("Load schematics"), &current_layout_dir, conf_core.rc.file_path);
 
 #ifdef DEBUG
 	printf("File selected = %s\n", name);

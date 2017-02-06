@@ -29,19 +29,21 @@
 
 #include "config.h"
 
+#include "board.h"
+#include "hid.h"
+
 #include "dlg_file_chooser.h"
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename.*/
-gchar *ghid_dialog_file_select_open(const gchar * title, gchar ** path, const gchar * shortcuts)
+gchar *ghid_dialog_file_select_open(GtkWidget *top_window, const gchar *title, gchar **path, const gchar *shortcuts)
 {
 	GtkWidget *dialog;
 	gchar *result = NULL, *folder, *seed;
-	GHidPort *out = &ghid_port;
 	GtkFileFilter *no_filter, *any_filter;
 
 	dialog = gtk_file_chooser_dialog_new(title,
-																			 GTK_WINDOW(out->top_window),
+																			 GTK_WINDOW(top_window),
 																			 GTK_FILE_CHOOSER_ACTION_OPEN,
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
@@ -210,18 +212,16 @@ static void fmt_changed_cb(GtkWidget * combo_box, ghid_save_ctx_t * ctx)
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename. */
-gchar *ghid_dialog_file_select_save(const gchar * title, gchar ** path, const gchar * file, const gchar * shortcuts,
-																		const char **formats, const char **extensions, int *format)
+gchar *ghid_dialog_file_select_save(GtkWindow *top_window, const gchar *title, gchar **path, const gchar *file, const gchar *shortcuts, const char **formats, const char **extensions, int *format)
 {
 	GtkWidget *fmt, *tmp, *fmt_combo;
 	gchar *result = NULL, *folder, *seed;
-	GHidPort *out = &ghid_port;
 	ghid_save_ctx_t ctx;
 
 	ctx.formats = formats;
 	ctx.extensions = extensions;
 	ctx.dialog = gtk_file_chooser_dialog_new(title,
-																					 GTK_WINDOW(out->top_window),
+																					 GTK_WINDOW(top_window),
 																					 GTK_FILE_CHOOSER_ACTION_SAVE,
 																					 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
@@ -308,12 +308,10 @@ static ghid_file_history *recent_dirs = NULL;
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename. */
-gchar *ghid_fileselect(const char *title, const char *descr,
-											 const char *default_file, const char *default_ext, const char *history_tag, int flags)
+gchar *ghid_fileselect(GtkWidget *top_window, const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, int flags)
 {
 	GtkWidget *dialog;
 	gchar *result = NULL;
-	GHidPort *out = &ghid_port;
 	gchar *path = NULL, *base = NULL;
 	int history_pool = -1;
 	int i;
@@ -361,7 +359,7 @@ gchar *ghid_fileselect(const char *title, const char *descr,
 	}
 
 	dialog = gtk_file_chooser_dialog_new(title,
-																			 GTK_WINDOW(out->top_window),
+																			 GTK_WINDOW(top_window),
 																			 (flags & HID_FILESELECT_READ) ?
 																			 GTK_FILE_CHOOSER_ACTION_OPEN :
 																			 GTK_FILE_CHOOSER_ACTION_SAVE,

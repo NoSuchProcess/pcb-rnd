@@ -668,6 +668,21 @@ static void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 	pcb_gtk_get_coords(&gport->view, msg, x, y);
 }
 
+int act_load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_gtk_act_load(ghid_port.top_window, argc, argv, x, y);
+}
+
+int act_save(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_gtk_act_save(ghid_port.top_window, argc, argv, x, y);
+}
+
+int act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_gtk_act_importgui(ghid_port.top_window, argc, argv, x, y);
+}
+
 void ghid_status_line_set_text(const gchar *text)
 {
 	if (!ghidgui->command_entry_status_line_active)
@@ -700,11 +715,11 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"GetXY", "", GetXY, getxy_help, getxy_syntax}
 	,
-	{"ImportGUI", 0, pcb_gtk_act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui}
+	{"ImportGUI", 0, act_importgui, pcb_gtk_acth_importgui, pcb_gtk_acts_importgui}
 	,
 	{"LayerGroupsChanged", 0, LayerGroupsChanged}
 	,
-	{"Load", 0, pcb_gtk_act_load }
+	{"Load", 0, act_load }
 	,
 	{"Pan", 0, PanAction, pcb_acth_pan, pcb_acts_pan}
 	,
@@ -714,7 +729,7 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"PrintCalibrate", 0, pcb_gtk_act_printcalibrate, pcb_gtk_acth_printcalibrate, pcb_gtk_acts_printcalibrate}
 	,
-	{"Save", 0, pcb_gtk_act_save, pcb_gtk_acth_save, pcb_gtk_acts_save}
+	{"Save", 0, act_save, pcb_gtk_acth_save, pcb_gtk_acts_save}
 	,
 	{"SaveWindowGeometry", 0, SaveWinGeo, savewingeo_help, savewingeo_syntax}
 	,
