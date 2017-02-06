@@ -1,6 +1,7 @@
 #include "hid_cfg_input.h"
 
-#include <glib.h>
+#include <gtk/gtk.h>
+#include <gdk/gdkevents.h>
 
 extern pcb_hid_cfg_mouse_t ghid_mouse;
 extern int ghid_wheel_zoom;
@@ -17,3 +18,6 @@ void ghid_corner_cursor(void);
 void ghid_restore_cursor(void);
 
 void ghid_get_user_xy(const char *msg);
+
+gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *out);
+

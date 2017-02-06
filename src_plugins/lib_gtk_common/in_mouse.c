@@ -311,3 +311,33 @@ void ghid_get_user_xy(const char *msg)
 {
 	run_get_location_loop(msg);
 }
+
+/* Mouse scroll wheel events */
+gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *out)
+{
+	ModifierKeysState mk;
+	GdkModifierType state;
+	int button;
+
+	state = (GdkModifierType) (ev->state);
+	mk = ghid_modifier_keys_state(&state);
+
+	/* X11 gtk hard codes buttons 4, 5, 6, 7 as below in
+	 * gtk+/gdk/x11/gdkevents-x11.c:1121, but quartz and windows have
+	 * special mouse scroll events, so this may conflict with a mouse
+	 * who has buttons 4 - 7 that aren't the scroll wheel?
+	 */
+	switch (ev->direction) {
+		case GDK_SCROLL_UP:    button = PCB_MB_SCROLL_UP; break;
+		case GDK_SCROLL_DOWN:  button = PCB_MB_SCROLL_DOWN; break;
+		case GDK_SCROLL_LEFT:  button = PCB_MB_SCROLL_LEFT; break;
+		case GDK_SCROLL_RIGHT: button = PCB_MB_SCROLL_RIGHT; break;
+		default: return FALSE;
+	}
+
+	ghid_wheel_zoom = 1;
+	hid_cfg_mouse_action(&ghid_mouse, button | mk);
+	ghid_wheel_zoom = 0;
+
+	return TRUE;
+}
