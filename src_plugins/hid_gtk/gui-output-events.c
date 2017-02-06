@@ -44,10 +44,9 @@
 #include "rats.h"
 #include "gtkhid-main.h"
 
+#include "../src_plugins/lib_gtk_common/bu_dwg_tooltip.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
-
-#define TOOLTIP_UPDATE_DELAY 200
 
 void ghid_port_ranges_changed(void)
 {
@@ -227,111 +226,9 @@ gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventC
 	return 0;
 }
 
-
-static char *describe_location(pcb_coord_t X, pcb_coord_t Y)
+static gboolean check_object_tooltips(GHidPort *out)
 {
-	void *ptr1, *ptr2, *ptr3;
-	int type;
-	int Range = 0;
-	const char *elename = "";
-	char *pinname;
-	char *netname = NULL;
-	char *description;
-
-	/* check if there are any pins or pads at that position */
-
-	type = pcb_search_obj_by_location(PCB_TYPE_PIN | PCB_TYPE_PAD, &ptr1, &ptr2, &ptr3, X, Y, Range);
-	if (type == PCB_TYPE_NONE)
-		return NULL;
-
-	/* don't mess with silk objects! */
-	if ((type & PCB_SILK_TYPE) && (pcb_layer_flags(pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1)) & PCB_LYT_SILK))
-		return NULL;
-
-	if (type == PCB_TYPE_PIN || type == PCB_TYPE_PAD)
-		elename = (char *) PCB_UNKNOWN(PCB_ELEM_NAME_REFDES((pcb_element_t *) ptr1));
-
-	pinname = pcb_connection_name(type, ptr1, ptr2);
-
-	if (pinname == NULL)
-		return NULL;
-
-	/* Find netlist entry */
-	PCB_MENU_LOOP(&PCB->NetlistLib[PCB_NETLIST_EDITED]);
-	{
-		if (!menu->Name)
-			continue;
-
-		PCB_ENTRY_LOOP(menu);
-		{
-			if (!entry->ListEntry)
-				continue;
-
-			if (strcmp(entry->ListEntry, pinname) == 0) {
-				netname = g_strdup(menu->Name);
-				/* For some reason, the netname has spaces in front of it, strip them */
-				g_strstrip(netname);
-				break;
-			}
-		}
-		PCB_END_LOOP;
-
-		if (netname != NULL)
-			break;
-	}
-	PCB_END_LOOP;
-
-	description = g_strdup_printf("Element name: %s\n"
-																"Pinname : %s\n"
-																"Netname : %s",
-																elename, (pinname != NULL) ? pinname : "--", (netname != NULL) ? netname : "--");
-
-	g_free(netname);
-
-	return description;
-}
-
-static int tooltip_update_timeout_id = 0;
-static gboolean check_object_tooltips(GHidPort * out)
-{
-	char *description;
-
-	/* Make sure the timer is not removed - we are called by the timer and it is
-	   automatically removed because we are returning false */
-	tooltip_update_timeout_id = 0;
-
-	/* check if there are any pins or pads at that position */
-	description = describe_location(out->view.crosshair_x, out->view.crosshair_y);
-
-	if (description == NULL)
-		return FALSE;
-
-	gtk_widget_set_tooltip_text(out->drawing_area, description);
-	g_free(description);
-
-	return FALSE;
-}
-
-static void cancel_tooltip_update()
-{
-	if (tooltip_update_timeout_id)
-		g_source_remove(tooltip_update_timeout_id);
-	tooltip_update_timeout_id = 0;
-}
-
-/* FIXME: If the GHidPort is ever destroyed, we must call
- * cancel_tooltip_update (), otherwise the timeout might
- * fire after the data it utilises has been free'd.
- */
-static void queue_tooltip_update(GHidPort * out)
-{
-	/* Zap the old tool-tip text and force it to be removed from the screen */
-	gtk_widget_set_tooltip_text(out->drawing_area, NULL);
-	gtk_widget_trigger_tooltip_query(out->drawing_area);
-
-	cancel_tooltip_update();
-
-	tooltip_update_timeout_id = g_timeout_add(TOOLTIP_UPDATE_DELAY, (GSourceFunc) check_object_tooltips, out);
+	return pcb_gtk_dwg_tooltip_check_object(out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
 }
 
 gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPort * out)
@@ -353,7 +250,7 @@ gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPor
 	x_prev = y_prev = -1;
 	ghid_note_event_location((GdkEventButton *) ev);
 
-	queue_tooltip_update(out);
+	pcb_gtk_dwg_tooltip_queue(out->drawing_area, (GSourceFunc)check_object_tooltips, out);
 
 	return FALSE;
 }
