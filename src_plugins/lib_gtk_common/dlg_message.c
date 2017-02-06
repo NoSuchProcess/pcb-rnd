@@ -28,6 +28,7 @@
 #include "config.h"
 
 #include "dlg_message.h"
+#include "compat_nls.h"
 
 /** pcb_gtk_dlg_message:
  *  Display a new GtkMessageDialog ...
