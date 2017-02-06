@@ -429,12 +429,9 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss)
 		rst_modify(changed, rst->Clearance, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry)));
 #undef rst_modify
 		save = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_box));
-		if (style == NULL)
-			/*style = ghid_route_style_real_add_route_style(rss, rst, 0); */
-			/* FIXME !!! static. function :(
-			   style = ghid_route_style_real_add_route_style(rss, rst, 0);
-			 */
-			;
+		if (style == NULL){
+			style = ghid_route_style_real_add_route_style(rss, rst, 0);
+		}
 		else {
 			gtk_action_set_label(GTK_ACTION(style->action), rst->name);
 			gtk_list_store_set(rss->model, &iter, STYLE_TEXT_COL, rst->name, -1);

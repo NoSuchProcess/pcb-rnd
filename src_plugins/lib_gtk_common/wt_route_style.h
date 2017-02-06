@@ -144,6 +144,8 @@ void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss);
 /**  Configure the route style selector */
 void make_route_style_buttons(pcb_gtk_route_style_t *rss);
 
+pcb_gtk_dlg_route_style_t *ghid_route_style_real_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data, int hide);
+
 
 /* Temporary: call back to hid_gtk */
 extern void route_styles_edited_cb(pcb_gtk_route_style_t *rss, gboolean save, gpointer data);

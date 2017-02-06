@@ -164,8 +164,7 @@ GtkWidget *pcb_gtk_route_style_new()
     \param [in] rss     The selector to be acted on
     \param [in] data    PCB's route style object that will be edited
  */
-static pcb_gtk_dlg_route_style_t *ghid_route_style_real_add_route_style(pcb_gtk_route_style_t * rss,
-																																				pcb_route_style_t * data, int hide)
+pcb_gtk_dlg_route_style_t *ghid_route_style_real_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data, int hide)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
