@@ -1,6 +1,8 @@
 /*
  *                            COPYRIGHT
  *
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2017 Alain Vigne
  *
