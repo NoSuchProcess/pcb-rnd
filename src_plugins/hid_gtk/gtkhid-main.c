@@ -255,8 +255,8 @@ static int ghid_propedit_start(void *pe, int num_props,
 {
 
 	ghidgui->propedit_widget = pcb_gtk_dlg_propedit_create(&ghidgui->propedit_dlg, gport->top_window);
-	ghidgui->propedit_query = query;
-	ghidgui->propedit_pe = pe;
+	ghidgui->propedit_dlg.propedit_query = query;
+	ghidgui->propedit_dlg.propedit_pe = pe;
 	return 0;
 }
 

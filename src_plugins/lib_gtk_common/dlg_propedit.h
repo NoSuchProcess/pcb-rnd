@@ -40,8 +40,10 @@ typedef struct {
 	/* buttons */
 	GtkWidget *apply, *remove, *addattr;
 
+	/* glue to hid_gtk* */
+	const char *(*propedit_query)(void *pe, const char *cmd, const char *key, const char *val, int idx);
+	void *propedit_pe;
 	GtkWidget *top_window;
-
 } pcb_gtk_dlg_propedit_t;
 
 /** Creates and runs a dialog to edit selected object properties */
@@ -50,3 +52,7 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t * dlg, GtkWidget *
 /** */
 void pcb_gtk_dlg_propedit_prop_add(pcb_gtk_dlg_propedit_t * dlg, const char *name, const char *common,
 																	 const char *min, const char *max, const char *avg);
+
+
+/* Temporary: call back to hid_gtk, will be replaced by a preview call */
+extern GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth);

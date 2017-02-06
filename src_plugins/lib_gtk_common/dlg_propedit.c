@@ -25,21 +25,22 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "config.h"
 
+#include "dlg_propedit.h"
 
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "polygon.h"
 #include "obj_all.h"
+#include "board.h"
+#include "data.h"
+#include "conf_core.h"
+#include "buffer.h"
 
 #include "bu_box.h"
 #include "compat.h"
-
-/* FIXME: Get rid of that ... means get rid of global  ghidgui */
-#include "../hid_gtk/gui.h"
-
-/*#include "dlg_propedit.h"*/
 
 static char *str_sub(const char *val, char sepi, char sepo)
 {
@@ -119,12 +120,12 @@ static void list_cursor_changed_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dl
 
 	val_combo_reset(dlg);
 
-	val = ghidgui->propedit_query(ghidgui->propedit_pe, "v1st", prop, NULL, 0);
+	val = dlg->propedit_query(dlg->propedit_pe, "v1st", prop, NULL, 0);
 	while (val != NULL) {
 		tmp = str_sub(val, '\n', '=');
 		val_combo_add(dlg, tmp);
 		free(tmp);
-		val = ghidgui->propedit_query(ghidgui->propedit_pe, "vnxt", prop, NULL, 0);
+		val = dlg->propedit_query(dlg->propedit_pe, "vnxt", prop, NULL, 0);
 	}
 
 	tmp = str_sub(comm, '\n', '\0');
@@ -149,7 +150,7 @@ static void do_remove_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 
 	gtk_tree_model_get(tm, &iter, 0, &prop, -1);
 
-	if (ghidgui->propedit_query(ghidgui->propedit_pe, "vdel", prop, NULL, 0) != NULL)
+	if (dlg->propedit_query(dlg->propedit_pe, "vdel", prop, NULL, 0) != NULL)
 		gtk_list_store_remove(GTK_LIST_STORE(tm), &iter);
 
 	free(prop);
@@ -222,7 +223,7 @@ static void do_addattr_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 			path[1] = '/';
 			strcpy(path + 2, name);
 		}
-		ghidgui->propedit_query(ghidgui->propedit_pe, "vset", path, value, 0);
+		dlg->propedit_query(dlg->propedit_pe, "vset", path, value, 0);
 		free(path);
 		free(name);
 	}
@@ -248,7 +249,7 @@ static void do_apply_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 
 	val = pcb_strdup(gtk_entry_get_text(GTK_ENTRY(dlg->entry_val)));
 
-	typ = ghidgui->propedit_query(ghidgui->propedit_pe, "type", prop, NULL, 0);
+	typ = dlg->propedit_query(dlg->propedit_pe, "type", prop, NULL, 0);
 	if (typ != NULL) {
 		if (*typ == 'c') {					/* if type of the field if coords, we may need to fix missing units */
 			char *end;
@@ -266,7 +267,7 @@ static void do_apply_cb(GtkWidget * tree, pcb_gtk_dlg_propedit_t * dlg)
 			}
 		}
 
-		if (ghidgui->propedit_query(ghidgui->propedit_pe, "vset", prop, val, 0) != NULL) {
+		if (dlg->propedit_query(dlg->propedit_pe, "vset", prop, val, 0) != NULL) {
 			/* could change values update the table - the new row is already added, remove the old */
 			gtk_list_store_remove(GTK_LIST_STORE(tm), &iter);
 			if (dlg->last_add_iter_valid) {
@@ -373,7 +374,7 @@ static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
 	fy = conf_core.editor.view.flip_y;
 	conf_set(CFR_DESIGN, "editor/view/flip_x", -1, "0", POL_OVERWRITE);
 	conf_set(CFR_DESIGN, "editor/view/flip_y", -1, "0", POL_OVERWRITE);
-	pm = ghid_render_pixmap(cx, cy, 40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(gport->top_window->window)));
+	pm = ghid_render_pixmap(cx, cy, 40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(dlg->top_window->window)));
 	conf_setf(CFR_DESIGN, "editor/view/flip_x", -1, "%d", fx, POL_OVERWRITE);
 	conf_setf(CFR_DESIGN, "editor/view/flip_y", -1, "%d", fy, POL_OVERWRITE);
 

@@ -112,8 +112,6 @@ typedef struct {
 
 	pcb_gtk_dlg_propedit_t propedit_dlg;
 	GtkWidget *propedit_widget;
-	const char *(*propedit_query)(void *pe, const char *cmd, const char *key, const char *val, int idx);
-	void *propedit_pe;
 } GhidGui;
 
 extern GhidGui _ghidgui, *ghidgui;
