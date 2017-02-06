@@ -1,7 +1,9 @@
+r6731
+
 each red polygon is 121x121 pixels (100.833 x 100.833)
 each blue polygon is 121x121 pixels (100.833 x 100.833)
 
-clearance should be exactly 24 pixels (20)
+clearance 23 pixels (19.167)
 copper width 95 pixels (79.166)
 drill width 39 pixels (32.5)
 

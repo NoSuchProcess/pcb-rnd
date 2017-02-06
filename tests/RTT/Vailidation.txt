@@ -57,11 +57,15 @@ line_overlap4.png good r6630
 line_zerolen.png good r6630
 netlist.png good r6630
 netlist_ba.png good r6630
-poly_hole.png bad r6630 +-1mil exceeded (this also failed in the original set i just didn't notice
+poly_hole.png good r6630
 poly_rect.png good r6630
 poly_triangle.png good r6630
-
-
-
+Proto.png good r6731
+rat.png good r6731
+text_rot.png good r6731
+text_scale.png good r6731
+text_sides.png good r6731
+thermal_last.png good r6731
+thermal_layer.png good r6731
 
 

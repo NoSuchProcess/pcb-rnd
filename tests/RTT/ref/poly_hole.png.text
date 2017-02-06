@@ -9,7 +9,7 @@ cutout 29 pixels (24.166) high
 
 upper right triangle
 bottom right corner to bottom right on cutout 31 x 31 pixels
-cutout 58 pixels (48.33) wide (tollerance problem 50 vs 48.333)
+cutout 59 pixels (49.167) wide <- this is not a measurement error. we count the edge pixel
 cutout 30 pixels (25) high
 
 far right piramid
