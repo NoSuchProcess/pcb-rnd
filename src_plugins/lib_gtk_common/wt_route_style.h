@@ -51,6 +51,9 @@ enum {
 	STYLE_LAST_SIGNAL
 };
 
+extern guint ghid_route_style_signals[STYLE_LAST_SIGNAL];
+
+
 /** Columns used for internal data store */
 enum {
 	STYLE_TEXT_COL,

@@ -442,8 +442,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss)
 		gtk_list_store_remove(rss->model, &rss->new_iter);
 		/* Emit change signals */
 		pcb_gtk_route_style_select_style(rss, rst);
-		/*g_signal_emit(rss, ghid_route_style_signals[STYLE_EDITED_SIGNAL], 0, save); */
-		g_signal_emit_by_name(rss, "style-edited", 0, save);
+		g_signal_emit(rss, ghid_route_style_signals[STYLE_EDITED_SIGNAL], 0, save);
 
 		if (changed) {
 			pcb_board_set_changed_flag(pcb_true);

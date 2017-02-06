@@ -43,7 +43,7 @@
 static gint action_count;
 
 static GtkVBox *pcb_gtk_route_style_parent_class;
-static guint ghid_route_style_signals[STYLE_LAST_SIGNAL] = { 0 };
+guint ghid_route_style_signals[STYLE_LAST_SIGNAL] = { 0 };
 
 
 #warning TODO: this should be in core
