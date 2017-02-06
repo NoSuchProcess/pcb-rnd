@@ -119,10 +119,10 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	switch(c)
 	    {
 	    case 's':
-	      x1 = getc (fi) + (getc (fi) * 256);
-	      y1 = getc (fi) + (getc (fi) * 256);
-	      x2 = getc (fi) + (getc (fi) * 256);
-	      y2 = getc (fi) + (getc (fi) * 256);
+	      x1 = 100*(getc (fi) + (getc (fi) * 256));
+	      y1 = 100*(getc (fi) + (getc (fi) * 256));
+	      x2 = 100*(getc (fi) + (getc (fi) * 256));
+	      y2 = 100*(getc (fi) + (getc (fi) * 256));
 
 	      pcb_printf ("s--%i %i %i %i ???\n", x1, y1, x2, y2);
 	      break;
