@@ -3,7 +3,6 @@
 
 #include <gtk/gtk.h>
 
-#include "config.h"
 #include "route_style.h"
 
 G_BEGIN_DECLS										/* keep c++ happy */
@@ -12,14 +11,24 @@ G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_ROUTE_STYLE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),   GHID_ROUTE_STYLE_TYPE, pcb_gtk_route_style_class_t))
 #define IS_GHID_ROUTE_STYLE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj),  GHID_ROUTE_STYLE_TYPE))
 #define IS_GHID_ROUTE_STYLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),   GHID_ROUTE_STYLE_TYPE))
-/** The widget Object */
-	struct pcb_gtk_route_style_s {
+/** Structure for "Edit Route Style" Dialog */
+typedef struct pcb_gtk_dlg_route_style_s pcb_gtk_dlg_route_style_t;
+
+/** The route style selector widget object data. */
+struct pcb_gtk_route_style_s {
+	/*  GTK3 incompatibility : GTK3 prefers a GtkGrid with "orientation" property
+	   set to GTK_ORIENTATION_VERTICAL, and packed children from
+	   the start, using gtk_container_add(GTK_CONTAINER(grid), w);
+	 */
 	GtkVBox parent;
 
 	GSList *button_radio_group;
 	GSList *action_radio_group;
 	GtkWidget *edit_button;
 
+	/*  GTK3 deprecated since version 3.10 Use GAction instead, and associate actions
+	   with GtkActionable widgets. Use GMenuModel for creating menus with gtk_menu_new_from_model().
+	 */
 	GtkActionGroup *action_group;
 	GtkAccelGroup *accel_group;
 
@@ -34,7 +43,7 @@ G_BEGIN_DECLS										/* keep c++ happy */
 
 typedef struct pcb_gtk_route_style_s pcb_gtk_route_style_t;
 
-/** The widget Class */
+/** The route style selector widget Class. */
 struct pcb_gtk_route_style_class_s {
 	GtkVBoxClass parent_class;
 
@@ -44,24 +53,25 @@ struct pcb_gtk_route_style_class_s {
 
 typedef struct pcb_gtk_route_style_class_s pcb_gtk_route_style_class_t;
 
-/** Signals exposed by the widget */
+/** Signals exposed by the widget. */
 enum {
 	SELECT_STYLE_SIGNAL,
 	STYLE_EDITED_SIGNAL,
 	STYLE_LAST_SIGNAL
 };
 
-extern guint ghid_route_style_signals[STYLE_LAST_SIGNAL];
+/** All available GObject signals IDs. */
+extern guint pcb_gtk_route_style_signals_id[STYLE_LAST_SIGNAL];
 
 
-/** Columns used for internal data store */
+/** Columns used for internal data store. */
 enum {
 	STYLE_TEXT_COL,
 	STYLE_DATA_COL,
 	STYLE_N_COLS
 };
 
-/** Structure for a single Route Style object */
+/** Structure for a single Route Style object. */
 struct pcb_gtk_obj_route_style_s {
 	GtkRadioAction *action;
 	GtkWidget *button;
@@ -71,17 +81,15 @@ struct pcb_gtk_obj_route_style_s {
 	gulong sig_id;
 	int hidden;
 };
-typedef struct pcb_gtk_obj_route_style_s pcb_gtk_obj_route_style_t;
 
-/** Structure for "Edit Route Style" Dialog */
-typedef struct pcb_gtk_dlg_route_style_s pcb_gtk_dlg_route_style_t;
+typedef struct pcb_gtk_obj_route_style_s pcb_gtk_obj_route_style_t;
 
 /* API */
 
-/** GObject type for this widget */
+/** GObject type for this widget. */
 GType pcb_gtk_route_style_get_type(void);
 
-/** Creates and returns a new freshly-allocated pcb_gtk_route_style_t object */
+/** Creates and returns a new freshly-allocated \ref pcb_gtk_route_style_t object. */
 GtkWidget *pcb_gtk_route_style_new(void);
 
 /** Installs the "Route Style" menu items.
@@ -90,68 +98,65 @@ GtkWidget *pcb_gtk_route_style_new(void);
     the ordering of these items, since our internal data structure is a hash
     table. This shouldn't be a problem.
 
-    \param [in] rss     The selector to be acted on
-    \param [in] shell   The menu to install the items in
-    \param [in] pos     The position in the menu to install items
+    \param rss     The widget to be acted on
+    \param shell   The menu to install the items in
+    \param pos     The position in the menu to install items
 
     \return the number of items installed
  */
 gint pcb_gtk_route_style_install_items(pcb_gtk_route_style_t * rss, GtkMenuShell * shell, gint pos);
 
-/** Adds a route style to a pcb_gtk_route_style_t.
+/** Adds a PCB route style to a \ref pcb_gtk_route_style_t object.
     Note that the route style object passed to this function will be
-    updated directly.
+    updated directly. (TODO: AV: Check and complete)
 
-    \param [in] rss     The selector to be acted on
-    \param [in] data    PCB's route style object describing the style
+    \param rss     The widget to be acted on
+    \param data    PCB's route style object describing the style
+    \param hide    if TRUE ... (TODO: explain)
  */
-void pcb_gtk_route_style_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data);
+pcb_gtk_obj_route_style_t *pcb_gtk_route_style_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data, int hide);
 
-/** Selects a route style and emits a select-style signal
-    \param [in] rss  The selector to be acted on
-    \param [in] rst  The style to select
+/** Selects a route style and emits a select-style signal.
+    \param rss  The widget to be acted on
+    \param rst  The style to select
 
     \return TRUE if a style was selected, FALSE otherwise
  */
 gboolean pcb_gtk_route_style_select_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst);
 
-/** Returns the GtkAccelGroup of a route style selector
-    \param [in] rss            The selector to be acted on
-
-    \return the accel group of the selector
+/** Returns the GtkAccelGroup of a route style selector widget.
+    \param rss            The widget to be acted on
  */
 GtkAccelGroup *pcb_gtk_route_style_get_accel_group(pcb_gtk_route_style_t * rss);
 
-/** Sets a pcb_gtk_route_style_t selection to given values
-    \par Function Description
+/** Sets a \ref pcb_gtk_route_style_t selection to given values.
     Given the line thickness, via size and clearance values of a route
     style, this function selects a route style with the given values.
     If there is no such style registered with the selector, nothing
     will happen. This function does not emit any signals.
 
-    \param [in] rss        The selector to be acted on
-    \param [in] Thick      pcb_coord_t  to match selection to
-    \param [in] Hole       pcb_coord_t  to match selection to
-    \param [in] Diameter   pcb_coord_t  to match selection to
-    \param [in] Clearance  pcb_coord_t  to match selection to
+    \param rss        The widget to be acted on
+    \param Thick      \ref pcb_coord_t  to match selection to
+    \param Hole       \ref pcb_coord_t  to match selection to
+    \param Diameter   \ref pcb_coord_t  to match selection to
+    \param Clearance  \ref pcb_coord_t  to match selection to
  */
 void pcb_gtk_route_style_sync(pcb_gtk_route_style_t * rss, pcb_coord_t Thick, pcb_coord_t Hole, pcb_coord_t Diameter,
 															pcb_coord_t Clearance);
 
+/** What represents idx ? */
 void pcb_gtk_route_style_copy(int idx);
 
-
-/** Removes all styles from a route style selector */
+/** Removes all styles from a route style widget. */
 void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss);
 
-/**  Configure the route style selector */
-void make_route_style_buttons(pcb_gtk_route_style_t *rss);
-
-pcb_gtk_dlg_route_style_t *ghid_route_style_real_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data, int hide);
+/*TODO: rename this function */
+/**  Configures the route style selector. */
+void make_route_style_buttons(pcb_gtk_route_style_t * rss);
 
 
 /* Temporary: call back to hid_gtk */
-extern void route_styles_edited_cb(pcb_gtk_route_style_t *rss, gboolean save, gpointer data);
+extern void route_styles_edited_cb(pcb_gtk_route_style_t * rss, gboolean save, gpointer data);
 
 
 G_END_DECLS											/* keep c++ happy */

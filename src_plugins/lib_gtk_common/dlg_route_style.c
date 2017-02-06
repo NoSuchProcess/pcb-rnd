@@ -37,6 +37,7 @@
 #include "compat.h"
 #include "board.h"
 #include "conf_core.h"
+#include "error.h"
 
 #include "dlg_route_style.h"
 #include "wt_coord_entry.h"
@@ -429,8 +430,8 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss)
 		rst_modify(changed, rst->Clearance, pcb_gtk_coord_entry_get_value(GHID_COORD_ENTRY(dialog_data.clearance_entry)));
 #undef rst_modify
 		save = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check_box));
-		if (style == NULL){
-			style = ghid_route_style_real_add_route_style(rss, rst, 0);
+		if (style == NULL) {
+			style = pcb_gtk_route_style_add_route_style(rss, rst, 0);
 		}
 		else {
 			gtk_action_set_label(GTK_ACTION(style->action), rst->name);
@@ -442,7 +443,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss)
 		gtk_list_store_remove(rss->model, &rss->new_iter);
 		/* Emit change signals */
 		pcb_gtk_route_style_select_style(rss, rst);
-		g_signal_emit(rss, ghid_route_style_signals[STYLE_EDITED_SIGNAL], 0, save);
+		g_signal_emit(rss, pcb_gtk_route_style_signals_id[STYLE_EDITED_SIGNAL], 0, save);
 
 		if (changed) {
 			pcb_board_set_changed_flag(pcb_true);

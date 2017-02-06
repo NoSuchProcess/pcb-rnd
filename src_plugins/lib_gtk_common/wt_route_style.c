@@ -38,12 +38,11 @@
 #include "bu_status_line.h"
 
 
-
 /** Global action creation counter */
 static gint action_count;
 
 static GtkVBox *pcb_gtk_route_style_parent_class;
-guint ghid_route_style_signals[STYLE_LAST_SIGNAL] = { 0 };
+guint pcb_gtk_route_style_signals_id[STYLE_LAST_SIGNAL] = { 0 };
 
 
 #warning TODO: this should be in core
@@ -61,17 +60,19 @@ void pcb_gtk_route_style_copy(int idx)
 }
 
 /** Launches the Edit dialog */
-static void edit_button_cb(GtkButton * btn, pcb_gtk_route_style_t * rss)
+static void edit_button_cb(GtkButton * btn, gpointer rss)
 {
-	pcb_gtk_route_style_edit_dialog(rss);
+	pcb_gtk_route_style_edit_dialog((pcb_gtk_route_style_t *) rss);
 }
 
 /** Callback for user selection of a route style */
-static void radio_select_cb(GtkToggleAction * action, pcb_gtk_route_style_t * rss)
+static void radio_select_cb(GtkToggleAction * action, gpointer data)
 {
+	pcb_gtk_route_style_t *rss = (pcb_gtk_route_style_t *) data;
+
 	rss->active_style = g_object_get_data(G_OBJECT(action), "route-style");
 	if (gtk_toggle_action_get_active(action))
-		g_signal_emit(rss, ghid_route_style_signals[SELECT_STYLE_SIGNAL], 0, rss->active_style->rst);
+		g_signal_emit(rss, pcb_gtk_route_style_signals_id[SELECT_STYLE_SIGNAL], 0, rss->active_style->rst);
 }
 
 /* CONSTRUCTOR */
@@ -98,13 +99,13 @@ static void ghid_route_style_class_init(pcb_gtk_route_style_class_t * klass)
 
 	pcb_gtk_route_style_parent_class = g_type_class_peek_parent(klass);
 
-	ghid_route_style_signals[SELECT_STYLE_SIGNAL] =
+	pcb_gtk_route_style_signals_id[SELECT_STYLE_SIGNAL] =
 		g_signal_new("select-style",
 								 G_TYPE_FROM_CLASS(klass),
 								 G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 								 G_STRUCT_OFFSET(pcb_gtk_route_style_class_t, select_style),
 								 NULL, NULL, g_cclosure_marshal_VOID__POINTER, G_TYPE_NONE, 1, G_TYPE_POINTER);
-	ghid_route_style_signals[STYLE_EDITED_SIGNAL] =
+	pcb_gtk_route_style_signals_id[STYLE_EDITED_SIGNAL] =
 		g_signal_new("style-edited",
 								 G_TYPE_FROM_CLASS(klass),
 								 G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
@@ -116,6 +117,7 @@ static void ghid_route_style_class_init(pcb_gtk_route_style_class_t * klass)
 
 
 /* PUBLIC FUNCTIONS */
+
 GType pcb_gtk_route_style_get_type(void)
 {
 	static GType rss_type = 0;
@@ -159,12 +161,7 @@ GtkWidget *pcb_gtk_route_style_new()
 	return GTK_WIDGET(rss);
 }
 
-/** FIXME: Remove comments ? Create a new pcb_gtk_route_style_t
-
-    \param [in] rss     The selector to be acted on
-    \param [in] data    PCB's route style object that will be edited
- */
-pcb_gtk_dlg_route_style_t *ghid_route_style_real_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data, int hide)
+pcb_gtk_obj_route_style_t *pcb_gtk_route_style_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data, int hide)
 {
 	GtkTreeIter iter;
 	GtkTreePath *path;
@@ -209,7 +206,14 @@ pcb_gtk_dlg_route_style_t *ghid_route_style_real_add_route_style(pcb_gtk_route_s
 	return new_style;
 }
 
-void pcb_gtk_route_style_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data)
+/** Adds a PCB route style to a \ref pcb_gtk_route_style_t object.
+    Note that the route style object passed to this function will be
+    updated directly.
+
+    \param rss     The widget to be acted on
+    \param data    PCB's route style object describing the style
+ */
+static void add_route_style_with_hidden_check(pcb_gtk_route_style_t * rss, pcb_route_style_t * data)
 {
 	if (!rss->hidden_button) {
 		if (*pcb_custom_route_style.name == '\0') {
@@ -217,11 +221,11 @@ void pcb_gtk_route_style_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_
 			strcpy(pcb_custom_route_style.name, "<custom>");
 			pcb_gtk_route_style_copy(0);
 		}
-		ghid_route_style_real_add_route_style(rss, &pcb_custom_route_style, 1);
+		pcb_gtk_route_style_add_route_style(rss, &pcb_custom_route_style, 1);
 		rss->hidden_button = 1;
 	}
 	if (data != NULL)
-		ghid_route_style_real_add_route_style(rss, data, 0);
+		pcb_gtk_route_style_add_route_style(rss, data, 0);
 }
 
 gint pcb_gtk_route_style_install_items(pcb_gtk_route_style_t * rss, GtkMenuShell * shell, gint pos)
@@ -262,7 +266,7 @@ gboolean pcb_gtk_route_style_select_style(pcb_gtk_route_style_t * rss, pcb_route
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(style->action), TRUE);
 			g_signal_handler_unblock(G_OBJECT(style->action), style->sig_id);
 			rss->active_style = style;
-			g_signal_emit(rss, ghid_route_style_signals[SELECT_STYLE_SIGNAL], 0, rss->active_style->rst);
+			g_signal_emit(rss, pcb_gtk_route_style_signals_id[SELECT_STYLE_SIGNAL], 0, rss->active_style->rst);
 			return TRUE;
 		}
 	}
@@ -346,22 +350,22 @@ void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss)
 	rss->hidden_button = 0;
 }
 
-/** Called when a route style is selected */
+/** Called when a route style is selected. */
 static void route_style_changed_cb(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst, gpointer data)
 {
 	pcb_use_route_style(rst);
 	ghid_set_status_line_label();
 }
 
-void make_route_style_buttons(pcb_gtk_route_style_t *rss)
+void make_route_style_buttons(pcb_gtk_route_style_t * rss)
 {
 	int i;
 
 	/* Make sure the <custom> item is added */
-	pcb_gtk_route_style_add_route_style(rss, NULL);
+	add_route_style_with_hidden_check(rss, NULL);
 
 	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); ++i)
-		pcb_gtk_route_style_add_route_style(rss, &PCB->RouteStyle.array[i]);
+		add_route_style_with_hidden_check(rss, &PCB->RouteStyle.array[i]);
 	g_signal_connect(G_OBJECT(rss), "select_style", G_CALLBACK(route_style_changed_cb), NULL);
 	g_signal_connect(G_OBJECT(rss), "style_edited", G_CALLBACK(route_styles_edited_cb), NULL);
 }
