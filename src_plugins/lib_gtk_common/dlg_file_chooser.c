@@ -31,6 +31,7 @@
 
 #include "board.h"
 #include "hid.h"
+#include "compat_misc.h"
 
 #include "dlg_file_chooser.h"
 
@@ -212,7 +213,7 @@ static void fmt_changed_cb(GtkWidget * combo_box, ghid_save_ctx_t * ctx)
 
 /* ---------------------------------------------- */
 /* Caller must g_free() the returned filename. */
-gchar *ghid_dialog_file_select_save(GtkWindow *top_window, const gchar *title, gchar **path, const gchar *file, const gchar *shortcuts, const char **formats, const char **extensions, int *format)
+gchar *ghid_dialog_file_select_save(GtkWidget *top_window, const gchar *title, gchar **path, const gchar *file, const gchar *shortcuts, const char **formats, const char **extensions, int *format)
 {
 	GtkWidget *fmt, *tmp, *fmt_combo;
 	gchar *result = NULL, *folder, *seed;
