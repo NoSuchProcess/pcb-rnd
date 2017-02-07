@@ -36,10 +36,9 @@
 
 #include "wt_layer_selector.h"
 
-#warning TODO: move this too:
-#include "../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h"
-
 #include "pcb-printf.h"
+
+#include "wt_layer_selector_cr.h"
 
 
 #define INITIAL_ACTION_MAX	40

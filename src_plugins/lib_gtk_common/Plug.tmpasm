@@ -40,6 +40,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/win_place.o
   $(PLUGDIR)/lib_gtk_common/wt_coord_entry.o
   $(PLUGDIR)/lib_gtk_common/wt_layer_selector.o
+  $(PLUGDIR)/lib_gtk_common/wt_layer_selector_cr.o
   $(PLUGDIR)/lib_gtk_common/wt_preview.o
   $(PLUGDIR)/lib_gtk_common/wt_route_style.o
 @]

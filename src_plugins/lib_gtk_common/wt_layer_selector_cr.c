@@ -11,12 +11,11 @@
 #include <gtk/gtk.h>
 
 #include "config.h"
-#include "gui.h"
 #include "compat_nls.h"
 
-#include "ghid-cell-renderer-visibility.h"
+#include "wt_layer_selector_cr.h"
 
-#include "../src_plugins/lib_gtk_common/util_str.h"
+#include "util_str.h"
 
 
 enum {
