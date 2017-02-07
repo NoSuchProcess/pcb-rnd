@@ -45,6 +45,7 @@ ha:{
 						ha:Load netlist file                 = { action=Load(Netlist) }
 						ha:Load vendor resource file         = { action=LoadVendor() }
 						ha:Load routed dsn or ses file       = { action=LoadDsnFrom() }
+						ha:Load MUCS pl file                 = { action=LoadMucsFrom() }
 						ha:Load hyp                          = { action=LoadHypFrom() }
 					}
 				}
