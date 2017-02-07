@@ -174,7 +174,6 @@ PCB_REGISTER_ACTIONS(mucs_action_list, mucs_cookie)
 static void hid_mucs_uninit()
 {
 	pcb_hid_remove_actions_by_cookie(mucs_cookie);
-	conf_unreg_fields("plugins/import_mucs/");
 }
 
 #include "dolists.h"
