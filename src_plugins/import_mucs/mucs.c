@@ -1,10 +1,10 @@
 /*
  *                            COPYRIGHT
  *
- *  PCB, interactive printed circuit board design
+ *  pcb-rnd, interactive printed circuit board design
  *
  *  MUCS unixplot import HID
- *  Copyright (C) 2017 Erich Heinzle 
+ *  pcb-rnd Copyright (C) 2017 Erich Heinzle
  *  Based on up2pcb.cc, a simple unixplot file to pcb syntax converter
  *  Copyright (C) 2001 Luis Claudio Gamboa Lopes
  *  And loosely based on dsn.c
