@@ -66,24 +66,15 @@ geda .pcb
 
 static const char *mucs_cookie = "mucs importer";
 
-/* mucs name */
-#define FREE(x) if((x) != NULL) { free (x); (x) = NULL; }
-
 static const char load_mucs_syntax[] = "LoadMucsFrom(filename)";
-
 static const char load_mucs_help[] = "Loads the specified mucs routing file.";
-
 int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
 	static char *default_file = NULL;
-	char str[200];
 	FILE *fi;
 	char c;
-
-	int ret;
-	pcb_coord_t dim1, dim2, x0 = 0, y0 = 0, x1, y1, x2, y2, r;
-	pcb_coord_t linethick = 0, lineclear, viadiam, viadrill;
+	pcb_coord_t x1, y1, x2, y2, r;
 
 	fname = argc ? argv[0] : 0;
 
@@ -103,7 +94,6 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			default_file = pcb_strdup(fname);
 	}
 
-	lineclear = PCB->RouteStyle.array[0].Clearance * 2;
 	fi = fopen(fname, "r");
 	if (!fi) {
 		pcb_message(PCB_MSG_ERROR, "Can't load mucs unixplot file %s for read\n", fname);
