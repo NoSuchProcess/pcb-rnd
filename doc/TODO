@@ -6,6 +6,9 @@
 	+ in the 45-deg line mode, while DRC enforce settings toggled 'on' can cause isolated trace crossing, violating DRC
 	? `--dump-actions` and `--show-actions` ends with segmentation fault (compile without debug) Can't reproduce [report:miloh]
 	? GTK: redraws the board after tab-flip but it doesn't hit the screen on mac [report:James]
+	- rats not disappearing after routing [report: erich/cm13g09]
+	- changing the Nth layer color in gtk preferences changes the first one on the layer selector [report: Ade]
+	- sigsegv about the <custom> route style [report: Alain]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- load data from layout to paste buffer:
 		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
