@@ -84,9 +84,6 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	int ret;
 	pcb_coord_t dim1, dim2, x0 = 0, y0 = 0, x1, y1, x2, y2, r;
 	pcb_coord_t linethick = 0, lineclear, viadiam, viadrill;
-	char lname[200];
-	pcb_layer_t *rlayer = NULL;
-	pcb_line_t *line = NULL;
 
 	fname = argc ? argv[0] : 0;
 
