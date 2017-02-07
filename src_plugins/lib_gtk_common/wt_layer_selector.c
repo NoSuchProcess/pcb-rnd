@@ -35,9 +35,10 @@
 #include "config.h"
 
 #include "wt_layer_selector.h"
+
+#warning TODO: move this too:
 #include "../src_plugins/hid_gtk/ghid-cell-renderer-visibility.h"
 
-#include "../src_plugins/hid_gtk/gui.h"
 #include "pcb-printf.h"
 
 
