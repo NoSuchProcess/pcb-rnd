@@ -47,7 +47,7 @@ plugin_def("import_edif",     "import edif",               sbuildin, 1)
 plugin_def("import_netlist",  "import netlist",            sbuildin, 1)
 plugin_def("import_dsn",      "specctra .dsn importer",    sbuildin, 1)
 plugin_def("import_hyp",      "hyperlynx .hyp importer",   sdisable, 0)
-plugin_def("import_mucs",     "import mucs routing",       sdisable, 1)
+plugin_def("import_mucs",     "import mucs routing",       sbuildin, 1)
 
 plugin_header("\nExport plugins:\n")
 plugin_def("export_gcode",    "gcode pcb_exporter",            sbuildin, 1)
