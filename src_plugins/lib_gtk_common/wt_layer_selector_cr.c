@@ -1,3 +1,5 @@
+/* COPYRIGHT: missing in the original file inherited from gEDA/PCB:
+   must be the same as in other gtk-related sources. */
 /*! \file <gtk-pcb-cell-render-visibility.c>
  *  \brief Implementation of GtkCellRenderer for layer visibility toggler
  *  \par More Information

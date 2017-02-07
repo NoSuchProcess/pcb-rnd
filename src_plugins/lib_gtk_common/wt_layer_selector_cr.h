@@ -1,6 +1,8 @@
 #ifndef GHID_CELL_RENDERER_VISIBILITY_H__
 #define GHID_CELL_RENDERER_VISIBILITY_H__
 
+/* Cell renderer for the layer selector widget */
+
 #include <glib.h>
 #include <glib-object.h>
 
