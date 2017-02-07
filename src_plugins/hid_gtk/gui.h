@@ -46,6 +46,7 @@
 #include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
+#include "../src_plugins/lib_gtk_common/in_mouse.h"
 
 
 	/* Silk and rats lines are the two additional selectable to draw on.
@@ -130,8 +131,7 @@ typedef struct {
 
 	GdkColormap *colormap;
 
-	GdkCursor *X_cursor;					/* used X cursor */
-	GdkCursorType X_cursor_shape;	/* and its shape */
+	pcb_gtk_mouse_t mouse;
 
 	pcb_gtk_view_t view;
 } GHidPort;

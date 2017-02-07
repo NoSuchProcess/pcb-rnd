@@ -28,6 +28,7 @@
 #include <glib.h>
 #include "unit.h"
 #include "pcb_bool.h"
+#include "in_mouse.h"
 
 	/* Go from from the grid units in use (millimeters or mils) to PCB units
 	   |  and back again.
@@ -100,6 +101,6 @@ extern const char pcb_acts_pan[];
 extern const char pcb_acth_pan[];
 int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
-void pcb_gtk_get_coords(pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y);
+void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y);
 
 #endif

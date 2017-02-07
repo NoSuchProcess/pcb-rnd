@@ -40,7 +40,6 @@
 void ghid_pan_common(void);
 void ghid_port_ranges_scale(void);
 void ghid_invalidate_all();
-void ghid_get_user_xy(const gchar *msg);
 
 double pcb_gtk_clamp_zoom(const pcb_gtk_view_t *vw, double coord_per_px)
 {
@@ -483,10 +482,10 @@ int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t
 }
 
 
-void pcb_gtk_get_coords(pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y)
+void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
 	if (!vw->has_entered && msg)
-		ghid_get_user_xy(msg);
+		ghid_get_user_xy(mouse, msg);
 	if (vw->has_entered) {
 		*x = vw->pcb_x;
 		*y = vw->pcb_y;

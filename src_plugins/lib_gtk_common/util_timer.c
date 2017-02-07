@@ -38,7 +38,7 @@ typedef struct {
 static gboolean ghid_timer(GuiTimer * timer)
 {
 	(*timer->func) (timer->user_data);
-	ghid_mode_cursor(conf_core.editor.mode);
+	ghid_mode_cursor_main(conf_core.editor.mode);
 	return FALSE;									/* Turns timer off */
 }
 

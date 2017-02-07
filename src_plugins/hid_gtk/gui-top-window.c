@@ -714,7 +714,7 @@ static gint n_mode_buttons = G_N_ELEMENTS(mode_buttons);
 static void do_set_mode(int mode)
 {
 	pcb_crosshair_set_mode(mode);
-	ghid_mode_cursor(mode);
+	ghid_mode_cursor(&gport->mouse, mode);
 	ghidgui->settings_mode = mode;
 }
 
@@ -1062,6 +1062,9 @@ static void ghid_build_pcb_top_window(void)
 	gport->drawing_area = gtk_drawing_area_new();
 	ghid_init_drawing_widget(gport->drawing_area, gport);
 
+	gport->mouse.drawing_area = gport->drawing_area;
+	gport->top_window = gport->top_window;
+
 	gtk_widget_add_events(gport->drawing_area, GDK_EXPOSURE_MASK
 												| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
 												| GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_PRESS_MASK
@@ -1159,11 +1162,8 @@ static gulong button_press_handler, button_release_handler, key_press_handler, k
 
 void ghid_interface_input_signals_connect(void)
 {
-	button_press_handler =
-		g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), NULL);
-
-	button_release_handler =
-		g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), NULL);
+	button_press_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), &gport->mouse);
+	button_release_handler = g_signal_connect(G_OBJECT(gport->drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), &gport->mouse);
 
 	key_press_handler =
 		g_signal_connect(G_OBJECT(gport->drawing_area), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghid_port.view);

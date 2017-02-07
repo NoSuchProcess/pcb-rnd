@@ -7,3 +7,7 @@ pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
 void ghid_unwatch_file(pcb_hidval_t data);
 
 
+/* Temporary call backs to hid_gtk: */
+extern void ghid_mode_cursor_main(int mode);
+
+

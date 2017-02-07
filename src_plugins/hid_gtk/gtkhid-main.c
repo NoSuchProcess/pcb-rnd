@@ -74,6 +74,31 @@ void ghid_pan_common(void)
 	ghid_port_ranges_changed();
 }
 
+void ghid_port_button_press_main(void)
+{
+	ghid_invalidate_all();
+	ghid_window_set_name_label(PCB->Name);
+	ghid_set_status_line_label();
+	if (!gport->view.panning)
+		g_idle_add(ghid_idle_cb, NULL);
+}
+
+void ghid_port_button_release_main(void)
+{
+	pcb_adjust_attached_objects();
+	ghid_invalidate_all();
+
+	ghid_window_set_name_label(PCB->Name);
+	ghid_set_status_line_label();
+	g_idle_add(ghid_idle_cb, NULL);
+}
+
+void ghid_mode_cursor_main(int mode)
+{
+	ghid_mode_cursor(&gport->mouse, mode);
+}
+
+
 /* ------------------------------------------------------------ */
 
 void ghid_calibrate(double xval, double yval)
@@ -335,9 +360,9 @@ static void PointCursor(pcb_bool grabbed)
 		return;
 
 	if (grabbed > 0)
-		ghid_point_cursor();
+		ghid_point_cursor(&gport->mouse);
 	else
-		ghid_mode_cursor(conf_core.editor.mode);
+		ghid_mode_cursor(&gport->mouse, conf_core.editor.mode);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -622,7 +647,7 @@ static int SaveWinGeo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 /* ------------------------------------------------------------ */
 static void ghid_Busy(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	ghid_watch_cursor();
+	ghid_watch_cursor(&gport->mouse);
 }
 
 static int Zoom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -665,7 +690,7 @@ static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 static void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
-	pcb_gtk_get_coords(&gport->view, msg, x, y);
+	pcb_gtk_get_coords(&gport->mouse, &gport->view, msg, x, y);
 }
 
 int act_load(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
