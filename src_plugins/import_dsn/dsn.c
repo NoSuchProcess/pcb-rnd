@@ -295,6 +295,7 @@ PCB_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
 
 static void hid_dsn_uninit()
 {
+	pcb_hid_remove_actions_by_cookie(dsn_cookie);
 
 }
 
