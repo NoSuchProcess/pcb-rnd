@@ -6,7 +6,7 @@
  *  MUCS unixplot import HID
  *  Copyright (C) 2017 Erich Heinzle 
  *  Based on up2pcb.cc, a simple unixplot file to pcb syntax converter
- *  Copyright (C) 2001 Luis Claudio Gamb�a Lopes
+ *  Copyright (C) 2001 Luis Claudio Gamboa Lopes
  *  And loosely based on dsn.c
  *  Copyright (C) 2008, 2011 Josh Jordan, Dan McMahill, and Jared Casper
  *
