@@ -328,9 +328,9 @@ void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 	/* debugging */
 	if (hyp_debug) {
 		if (forward)
-			pcb_printf("outline: fwd %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x1, s->y1, s->x2, s->y2);
+			pcb_printf("outline: fwd %s from (%ml, %ml) to (%ml, %ml)\n", s->is_arc ? "arc" : "line", s->x1, s->y1, s->x2, s->y2);
 		else
-			pcb_printf("outline: bwd %s from (%mm, %mm) to (%mm, %mm)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);	/* add segment back to front */
+			pcb_printf("outline: bwd %s from (%ml, %ml) to (%ml, %ml)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);	/* add segment back to front */
 	}
 
 	if (s->is_arc) {
@@ -480,10 +480,10 @@ void hyp_perimeter()
 
 #undef XXX
 #ifdef XXX
-			pcb_printf("perimeter: last_x = %mm last_y = %mm\n", last_x, last_y);
+			pcb_printf("perimeter: last_x = %ml last_y = %ml\n", last_x, last_y);
 			for (i = outline_head; i != NULL; i = i->next)
 				if (!i->used)
-					pcb_printf("perimeter segments available: %s from (%mm, %mm) to (%mm, %mm)\n", i->is_arc ? "arc" : "line", i->x1,
+					pcb_printf("perimeter segments available: %s from (%ml, %ml) to (%ml, %ml)\n", i->is_arc ? "arc " : "line", i->x1,
 										 i->y1, i->x2, i->y2);
 #endif
 
@@ -572,11 +572,11 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 	else {
 		/* no layer name given. find unused layer name in range 1..PCB_MAX_LAYER */
 		for (n = 1; n < PCB_MAX_LAYER; n++) {
-			sprintf(new_layer_name, "%i", n);
+			pcb_sprintf(new_layer_name, "%i", n);
 			if (pcb_layer_by_name(new_layer_name) < 0) {
 				/* create new layer */
 				if (hyp_debug)
-					pcb_printf("create new layer \"%s\"\n", lname);
+					pcb_printf("create auto layer \"%s\"\n", new_layer_name);
 				layer_id = pcb_layer_create(-1, pcb_strdup(new_layer_name));
 				break;
 			}
@@ -688,6 +688,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 
 	delta = end_angle - start_angle;
 
+#undef XXX
 #ifdef XXX
 	if (hyp_debug)
 		pcb_printf("hyp_arc: start_angle: %f end_angle: %f delta: %f\n", start_angle, end_angle, delta);
@@ -701,7 +702,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 		pcb_coord_t x1, y1, x2, y2;
 		pcb_arc_get_end(new_arc, 1, &x1, &y1);
 		pcb_arc_get_end(new_arc, 0, &x2, &y2);
-		pcb_printf("hyp_arc: start_point: (%mm, %mm) end_point: (%mm, %mm)\n", x1, y1, x2, y2);
+		pcb_printf("hyp_arc: start_point: (%ml, %ml) end_point: (%ml, %ml)\n", x1, y1, x2, y2);
 	}
 #endif
 
@@ -796,7 +797,7 @@ pcb_bool exec_plane_sep(parse_param * h)
 	board_clearance = xy2coord(h->plane_separation);
 
 	if (hyp_debug)
-		pcb_printf("plane_sep: default_plane_separation = %mm\n", board_clearance);
+		pcb_printf("plane_sep: default_plane_separation = %ml\n", board_clearance);
 
 	return 0;
 }
@@ -825,7 +826,7 @@ pcb_bool exec_perimeter_segment(parse_param * h)
 	peri_seg->next = NULL;
 
 	if (hyp_debug)
-		pcb_printf("perimeter_segment: x1 = %mm y1 = %mm x2 = %mm y2 = %mm\n", peri_seg->x1, peri_seg->y1, peri_seg->x2,
+		pcb_printf("perimeter_segment: x1 = %ml y1 = %ml x2 = %ml y2 = %ml\n", peri_seg->x1, peri_seg->y1, peri_seg->x2,
 							 peri_seg->y2);
 
 	/* append at end of doubly linked list */
@@ -868,7 +869,7 @@ pcb_bool exec_perimeter_arc(parse_param * h)
 	peri_arc->next = NULL;
 
 	if (hyp_debug)
-		pcb_printf("perimeter_arc: x1 = %mm y1 = %mm x2 = %mm y2 = %mm xc = %mm yc = %mm r = %mm\n", peri_arc->x1, peri_arc->y1,
+		pcb_printf("perimeter_arc: x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", peri_arc->x1, peri_arc->y1,
 							 peri_arc->x2, peri_arc->y2, peri_arc->xc, peri_arc->yc, peri_arc->r);
 
 	/* append at end of doubly linked list */
@@ -912,9 +913,9 @@ void hyp_debug_layer(parse_param * h)
 {
 	if (hyp_debug) {
 		if (h->thickness_set)
-			pcb_printf(" thickness = %mm", z2coord(h->thickness));
+			pcb_printf(" thickness = %ml", z2coord(h->thickness));
 		if (h->plating_thickness_set)
-			pcb_printf(" plating_thickness = %mm", z2coord(h->plating_thickness));
+			pcb_printf(" plating_thickness = %ml", z2coord(h->plating_thickness));
 		if (h->bulk_resistivity_set)
 			pcb_printf(" bulk_resistivity = %f", h->bulk_resistivity);
 		if (h->temperature_coefficient_set)
@@ -932,7 +933,7 @@ void hyp_debug_layer(parse_param * h)
 		if (h->material_name_set)
 			pcb_printf(" material_name = \"%s\"", h->material_name);
 		if (h->plane_separation_set)
-			pcb_printf(" plane_separation = %mm", xy2coord(h->plane_separation));
+			pcb_printf(" plane_separation = %ml", xy2coord(h->plane_separation));
 		pcb_printf("\n");
 	}
 
@@ -1090,7 +1091,7 @@ pcb_bool exec_padstack_element(parse_param * h)
 		if (h->padstack_name_set)
 			pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
 		if (h->drill_size_set)
-			pcb_printf(" drill_size = %mm", xy2coord(h->drill_size));
+			pcb_printf(" drill_size = %ml", xy2coord(h->drill_size));
 		pcb_printf(" layer_name = \"%s\"", h->layer_name);
 		pcb_printf(" pad_shape = %f", h->pad_shape);
 		if (h->pad_shape == 0)
@@ -1101,8 +1102,8 @@ pcb_bool exec_padstack_element(parse_param * h)
 			pcb_printf(" oblong");
 		else
 			pcb_printf(" ?");
-		pcb_printf(" pad_sx = %mm", xy2coord(h->pad_sx));
-		pcb_printf(" pad_sy = %mm", xy2coord(h->pad_sy));
+		pcb_printf(" pad_sx = %ml", xy2coord(h->pad_sx));
+		pcb_printf(" pad_sy = %ml", xy2coord(h->pad_sy));
 		pcb_printf(" pad_angle = %f", h->pad_angle);
 		if (h->pad_type_set & (h->pad_type == PAD_TYPE_THERMAL_RELIEF)) {
 			pcb_printf(" thermal_clear_shape = %f", h->thermal_clear_shape);
@@ -1114,10 +1115,10 @@ pcb_bool exec_padstack_element(parse_param * h)
 				pcb_printf(" oblong");
 			else
 				pcb_printf(" ?");
-			pcb_printf(" pad_sx = %mm", xy2coord(h->pad_sx));
-			pcb_printf(" pad_sy = %mm", xy2coord(h->pad_sy));
-			pcb_printf(" thermal_clear_sx = %mm", xy2coord(h->thermal_clear_sx));
-			pcb_printf(" thermal_clear_sy = %mm", xy2coord(h->thermal_clear_sy));
+			pcb_printf(" pad_sx = %ml", xy2coord(h->pad_sx));
+			pcb_printf(" pad_sy = %ml", xy2coord(h->pad_sy));
+			pcb_printf(" thermal_clear_sx = %ml", xy2coord(h->thermal_clear_sx));
+			pcb_printf(" thermal_clear_sy = %ml", xy2coord(h->thermal_clear_sy));
 			pcb_printf(" thermal_clear_angle = %f", h->thermal_clear_angle);
 		}
 		if (h->pad_type_set) {
@@ -1201,7 +1202,7 @@ pcb_bool exec_net(parse_param * h)
 pcb_bool exec_net_plane_separation(parse_param * h)
 {
 	if (hyp_debug)
-		pcb_printf("net_plane_separation: plane_separation = %mm\n", xy2coord(h->plane_separation));
+		pcb_printf("net_plane_separation: plane_separation = %ml\n", xy2coord(h->plane_separation));
 
 	net_clearance = xy2coord(h->plane_separation);
 
@@ -1227,12 +1228,12 @@ pcb_bool exec_net_attribute(parse_param * h)
 pcb_bool exec_seg(parse_param * h)
 {
 	if (hyp_debug) {
-		pcb_printf("seg: x1 = %mm y1 = %mm x2 = %mm y2 = %mm ", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2));
-		pcb_printf(" width = %mm layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
+		pcb_printf("seg: x1 = %ml y1 = %ml x2 = %ml y2 = %ml ", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2));
+		pcb_printf(" width = %ml layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
 		if (h->plane_separation_set)
-			pcb_printf(" plane_separation = %mm ", xy2coord(h->plane_separation));
+			pcb_printf(" plane_separation = %ml ", xy2coord(h->plane_separation));
 		if (h->left_plane_separation_set)
-			pcb_printf(" left_plane_separation = %mm ", xy2coord(h->left_plane_separation));
+			pcb_printf(" left_plane_separation = %ml ", xy2coord(h->left_plane_separation));
 		pcb_printf("\n");
 	}
 
@@ -1251,13 +1252,13 @@ pcb_bool exec_arc(parse_param * h)
 /* XXX checkme */
 
 	if (hyp_debug) {
-		pcb_printf("arc: x1 = %mm y1 = %mm x2 = %mm y2 = %mm", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2));
-		pcb_printf(" xc = %mm yc = %mm r = %mm", x2coord(h->xc), y2coord(h->yc), xy2coord(h->r));
-		pcb_printf(" width = %mm layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
+		pcb_printf("arc: x1 = %ml y1 = %ml x2 = %ml y2 = %ml", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2));
+		pcb_printf(" xc = %ml yc = %ml r = %ml", x2coord(h->xc), y2coord(h->yc), xy2coord(h->r));
+		pcb_printf(" width = %ml layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
 		if (h->plane_separation_set)
-			pcb_printf(" plane_separation = %mm", xy2coord(h->plane_separation));
+			pcb_printf(" plane_separation = %ml", xy2coord(h->plane_separation));
 		if (h->left_plane_separation_set)
-			pcb_printf(" left_plane_separation = %mm", xy2coord(h->left_plane_separation));
+			pcb_printf(" left_plane_separation = %ml", xy2coord(h->left_plane_separation));
 		pcb_printf("\n");
 	}
 
@@ -1278,7 +1279,7 @@ pcb_bool exec_via(parse_param * h)
 	pcb_flag_t flags;
 
 	if (hyp_debug) {
-		pcb_printf("via: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
+		pcb_printf("via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
 		if (h->layer1_name_set)
 			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
 		if (h->layer2_name_set)
@@ -1289,7 +1290,8 @@ pcb_bool exec_via(parse_param * h)
 	}
 
 	if (!h->padstack_name_set) {
-		pcb_printf("via: padstack not set. skipping via x = %mm y = %mm\n", x2coord(h->x), y2coord(h->y));
+		if (hyp_debug)
+			pcb_printf("via: padstack not set. skipping via x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 		return 0;
 	}
 
@@ -1325,15 +1327,15 @@ pcb_bool exec_via_v1(parse_param * h)
 	pcb_flag_t flags;
 
 	if (hyp_debug) {
-		pcb_printf("old via: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
-		pcb_printf(" drill_size = %mm", xy2coord(h->drill_size));
+		pcb_printf("old via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
+		pcb_printf(" drill_size = %ml", xy2coord(h->drill_size));
 		if (h->layer1_name_set)
 			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
 		if (h->layer2_name_set)
 			pcb_printf(" layer2_name = \"%s\"", h->layer2_name);
-		pcb_printf(" pad1_shape = \"%s\" pad1_sx = %mm pad1_sy = %mm pad1_angle = %f", h->pad1_shape, xy2coord(h->pad1_sx),
+		pcb_printf(" pad1_shape = \"%s\" pad1_sx = %ml pad1_sy = %ml pad1_angle = %f", h->pad1_shape, xy2coord(h->pad1_sx),
 							 xy2coord(h->pad1_sy), h->pad1_angle);
-		pcb_printf(" pad2_shape = \"%s\" pad2_sx = %mm pad2_sy = %mm pad2_angle = %f", h->pad2_shape, xy2coord(h->pad2_sx),
+		pcb_printf(" pad2_shape = \"%s\" pad2_sx = %ml pad2_sy = %ml pad2_angle = %f", h->pad2_shape, xy2coord(h->pad2_sx),
 							 xy2coord(h->pad2_sy), h->pad2_angle);
 		pcb_printf("\n");
 	}
@@ -1370,7 +1372,7 @@ pcb_bool exec_pin(parse_param * h)
 	char *pin_net_name = NULL;
 
 	if (hyp_debug) {
-		pcb_printf("pin: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
+		pcb_printf("pin: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
 		pcb_printf(" pin_reference = \"%s\"", h->pin_reference);
 		if (h->padstack_name_set)
 			pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
@@ -1380,7 +1382,8 @@ pcb_bool exec_pin(parse_param * h)
 	}
 
 	if (!h->padstack_name_set) {
-		pcb_printf("pin: padstack not set. skipping pin \"%s\"\n", h->pin_reference);
+		if (hyp_debug)
+			pcb_printf("pin: padstack not set. skipping pin \"%s\"\n", h->pin_reference);
 		return 0;
 	}
 
@@ -1446,10 +1449,10 @@ pcb_bool exec_pad(parse_param * h)
 	int text_scale = 100;
 
 	if (hyp_debug) {
-		pcb_printf("pad: x = %mm y = %mm", x2coord(h->x), y2coord(h->y));
+		pcb_printf("pad: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
 		if (h->layer_name_set)
 			pcb_printf(" layer_name = \"%s\"", h->layer_name);
-		pcb_printf(" pad1_shape = \"%s\" pad1_sx = %mm pad1_sy = %mm pad1_angle = %f", h->pad1_shape, xy2coord(h->pad1_sx),
+		pcb_printf(" pad1_shape = \"%s\" pad1_sx = %ml pad1_sy = %ml pad1_angle = %f", h->pad1_shape, xy2coord(h->pad1_sx),
 							 xy2coord(h->pad1_sy), h->pad1_angle);
 		pcb_printf("\n");
 	}
@@ -1483,10 +1486,10 @@ pcb_bool exec_useg(parse_param * h)
 	pcb_layergrp_id_t layer1_grp_id, layer2_grp_id;
 
 	if (hyp_debug) {
-		pcb_printf("useg: x1 = %mm y1 = %mm layer1_name = \"%s\"", x2coord(h->x1), y2coord(h->y1), h->layer1_name);
-		pcb_printf(" x2 = %mm y2 = %mm layer2_name = \"%s\"", x2coord(h->x2), y2coord(h->y2), h->layer2_name);
+		pcb_printf("useg: x1 = %ml y1 = %ml layer1_name = \"%s\"", x2coord(h->x1), y2coord(h->y1), h->layer1_name);
+		pcb_printf(" x2 = %ml y2 = %ml layer2_name = \"%s\"", x2coord(h->x2), y2coord(h->y2), h->layer2_name);
 		if (h->zlayer_name_set)
-			pcb_printf(" zlayer_name = \"%s\" width = %mm length = %mm", h->zlayer_name, xy2coord(h->width), xy2coord(h->length));
+			pcb_printf(" zlayer_name = \"%s\" width = %ml length = %ml", h->zlayer_name, xy2coord(h->width), xy2coord(h->length));
 		if (h->impedance_set)
 			pcb_printf(" impedance = %f delay = %f ", h->impedance, h->delay);
 		if (h->resistance_set)
@@ -1527,7 +1530,7 @@ pcb_bool exec_polygon_begin(parse_param * h)
 		if (h->layer_name_set)
 			pcb_printf(" layer_name = \"%s\"", h->layer_name);
 		if (h->width_set)
-			pcb_printf(" width = %mm", xy2coord(h->width));
+			pcb_printf(" width = %ml", xy2coord(h->width));
 		if (h->polygon_type_set) {
 			pcb_printf(" polygon_type = ", h->polygon_type, " ");
 			switch (h->polygon_type) {
@@ -1547,7 +1550,7 @@ pcb_bool exec_polygon_begin(parse_param * h)
 		}
 		if (h->id_set)
 			pcb_printf(" id = %i", h->id);
-		pcb_printf(" x = %mm y = %mm\n", xy2coord(h->x), xy2coord(h->y));
+		pcb_printf(" x = %ml y = %ml\n", xy2coord(h->x), xy2coord(h->y));
 	}
 
 	if (!h->layer_name_set) {
@@ -1612,7 +1615,7 @@ pcb_bool exec_polyvoid_begin(parse_param * h)
 		pcb_printf("polyvoid begin:");
 		if (h->id_set)
 			pcb_printf(" id = %i", h->id);
-		pcb_printf(" x = %mm y = %mm\n", x2coord(h->x), y2coord(h->y));
+		pcb_printf(" x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 	}
 
 	if (!h->id_set) {
@@ -1677,7 +1680,7 @@ pcb_bool exec_polyline_begin(parse_param * h)
 		if (h->layer_name_set)
 			pcb_printf(" layer_name = \"%s\"", h->layer_name);
 		if (h->width_set)
-			pcb_printf(" width = %mm", xy2coord(h->width));
+			pcb_printf(" width = %ml", xy2coord(h->width));
 		if (h->polygon_type_set) {
 			pcb_printf(" polygon_type = ", h->polygon_type, " ");
 			switch (h->polygon_type) {
@@ -1697,7 +1700,7 @@ pcb_bool exec_polyline_begin(parse_param * h)
 		}
 		if (h->id_set)
 			pcb_printf(" id = %i", h->id);
-		pcb_printf(" x = %mm y = %mm\n", x2coord(h->x), y2coord(h->y));
+		pcb_printf(" x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 	}
 
 	if (!h->layer_name_set) {
@@ -1768,7 +1771,7 @@ pcb_bool exec_polyline_end(parse_param * h)
 pcb_bool exec_line(parse_param * h)
 {
 	if (hyp_debug)
-		pcb_printf("line: x = %mm y = %mm\n", x2coord(h->x), y2coord(h->y));
+		pcb_printf("line: x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 
 	switch (poly_state) {
 	case HYP_POLYIDLE:
@@ -1810,7 +1813,7 @@ pcb_bool exec_line(parse_param * h)
 pcb_bool exec_curve(parse_param * h)
 {
 	if (hyp_debug)
-		pcb_printf("curve: x1 = %mm y1 = %mm x2 = %mm y2 = %mm xc = %mm yc = %mm r = %mm\n", x2coord(h->x1), y2coord(h->y1),
+		pcb_printf("curve: x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", x2coord(h->x1), y2coord(h->y1),
 							 x2coord(h->x2), y2coord(h->y2), x2coord(h->xc), y2coord(h->yc), xy2coord(h->r));
 
 	switch (poly_state) {
