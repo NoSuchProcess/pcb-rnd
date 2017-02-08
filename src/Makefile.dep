@@ -947,6 +947,8 @@
  ../src_plugins/lib_gtk_common/dlg_attribute.h \
  ../src_plugins/lib_gtk_common/dlg_confirm.h \
  ../src_plugins/lib_gtk_common/dlg_export.h \
+ ../src_plugins/lib_gtk_common/dlg_file_chooser.h \
+ ../src_plugins/lib_gtk_common/util_str.h \
  ../src_plugins/lib_gtk_common/dlg_input.h \
  ../src_plugins/lib_gtk_common/dlg_message.h \
  ../src_plugins/lib_gtk_common/dlg_print.h \
@@ -1593,8 +1595,8 @@
  obj_rat.h layer_grp.h library.h rats_patch.h board.h font.h box.h \
  math_helper.h move.h misc_util.h data.h crosshair.h vtonpoint.h hid.h \
  error.h drc.h buffer.h error.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h compat_misc.h compat_nls.h \
- action_helper.h hid_actions.h plugins.h dolists.h
+ ../src_3rd/genvector/gds_char.h compat_misc.h action_helper.h \
+ hid_actions.h plugins.h dolists.h
 ../src_plugins/import_netlist/import_netlist.o: \
  ../src_plugins/import_netlist/import_netlist.c ../config.h board.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \

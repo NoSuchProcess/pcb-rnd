@@ -42,6 +42,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
 #include "../src_plugins/lib_gtk_common/dlg_confirm.h"
 #include "../src_plugins/lib_gtk_common/dlg_export.h"
+#include "../src_plugins/lib_gtk_common/dlg_file_chooser.h"
 #include "../src_plugins/lib_gtk_common/dlg_input.h"
 #include "../src_plugins/lib_gtk_common/dlg_message.h"
 #include "../src_plugins/lib_gtk_common/dlg_print.h"
@@ -274,6 +275,12 @@ int ghid_progress(int so_far, int total, const char *message)
 {
 	return pcb_gtk_dlg_progress(ghid_port.top_window, so_far, total, message);
 }
+
+static char *ghid_fileselect(const char *title, const char *descr, const char *default_file, const char *default_ext, const char *history_tag, int flags)
+{
+	return pcb_gtk_fileselect(ghid_port.top_window, title, descr, default_file, default_ext, history_tag, flags);
+}
+
 
 static int ghid_propedit_start(void *pe, int num_props,
 															 const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
