@@ -55,7 +55,7 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	const char *fname = NULL;
 	static char *default_file = NULL;
 	FILE *fi;
-	int c;
+	int c, c2;
 	pcb_coord_t x1, y1, x2, y2, r;
 /*
 	pcb_layer_id_t *layer_list;	
@@ -132,8 +132,8 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			case 'e':
 				break;
 			case 't':
-				while (r != '\0' && r != EOF)
-					r = getc(fi);
+				while (c2 != '\0' && c2 != EOF)
+					c2 = getc(fi);
 				break;
 		}
 	}
