@@ -55,7 +55,7 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	const char *fname = NULL;
 	static char *default_file = NULL;
 	FILE *fi;
-	char c;
+	int c;
 	pcb_coord_t x1, y1, x2, y2, r;
 /*
 	pcb_layer_id_t *layer_list;	
