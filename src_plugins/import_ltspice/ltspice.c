@@ -65,8 +65,65 @@ static int ltspice_hdr_asc(FILE *f)
 	return -1;
 }
 
-static int ltspice_parse_asc(fn)
+#define ltrim(s) while(isspace(*s)) s++
+
+typedef struct {
+	char *refdes;
+	char *value;
+	char *footprint;
+} symattr_t;
+
+
+static void sym_flush(symattr_t *sattr)
 {
+	pcb_trace("ltspice sym: %s %s %s\n", sattr->refdes, sattr->value, sattr->footprint);
+	free(sattr->refdes); sattr->refdes = NULL;
+	free(sattr->value); sattr->value = NULL;
+	free(sattr->footprint); sattr->footprint = NULL;
+}
+
+static int ltspice_parse_asc(FILE *fn)
+{
+	symattr_t sattr;
+	char line[1024];
+
+	memset(&sattr, 0, sizeof(sattr));
+
+	while(fgets(line, sizeof(line), fn) != NULL) {
+		char *end, *s;
+
+		/* remove trailing newline (if we don't we just get an extra empty field at the end) */
+		s = line;
+		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--)
+			*end = '\0';
+
+		if (strncmp(s, "SYMBOL", 6) == 0)
+			sym_flush(&sattr);
+		else if (strncmp(s, "SYMATTR", 7) == 0) {
+			s+=8;
+			ltrim(s);
+			if (strncmp(s, "InstName", 8) == 0) {
+				s+=9;
+				ltrim(s);
+				free(sattr.refdes);
+				sattr.refdes = pcb_strdup(s);
+			}
+			if (strncmp(s, "Value", 5) == 0) {
+				s+=6;
+				ltrim(s);
+				free(sattr.value);
+				sattr.value = pcb_strdup(s);
+			}
+			if (strncmp(s, "Footprint", 9) == 0) {
+				s+=10;
+				ltrim(s);
+				free(sattr.footprint);
+				sattr.footprint = pcb_strdup(s);
+			}
+		}
+	}
+	sym_flush(&sattr);
+	return -1;
 
 }
 
@@ -92,12 +149,12 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 		goto error;
 	}
 
-	if (ltspice_hdr_asc(fn)) {
+	if (ltspice_hdr_asc(fa)) {
 		pcb_message(PCB_MSG_ERROR, "file '%s' doesn't look like a verison 4 asc file\n", fname_asc);
 		goto error;
 	}
 
-	if (ltspice_parse_asc(fn) != 0) goto error;
+	if (ltspice_parse_asc(fa) != 0) goto error;
 
 
 	quit:;
