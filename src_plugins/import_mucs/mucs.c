@@ -132,8 +132,9 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 			case 'e':
 				break;
 			case 't':
-				while (c2 != '\0' && c2 != EOF)
+				do {
 					c2 = getc(fi);
+				} while (c2 != '\0' && c2 != EOF);
 				break;
 		}
 	}
