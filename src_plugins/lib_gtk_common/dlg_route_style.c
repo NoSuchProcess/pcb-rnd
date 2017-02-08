@@ -388,7 +388,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss)
 	}
 	gtk_widget_show_all(dialog);
 	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK) {
-		int changed = 0;
+		int changed = 0, need_rebuild = 0;
 		pcb_route_style_t *rst;
 		pcb_gtk_obj_route_style_t *style;
 		gboolean save;
@@ -399,6 +399,8 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss)
 		if (style == NULL) {
 			int n = vtroutestyle_len(&PCB->RouteStyle);
 			rst = vtroutestyle_get(&PCB->RouteStyle, n, 1);
+			need_rebuild = 1;
+			changed = 1;
 		}
 		else {
 			rst = style->rst;
@@ -441,6 +443,14 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss)
 		/* Cleanup */
 		gtk_widget_destroy(dialog);
 		gtk_list_store_remove(rss->model, &rss->new_iter);
+
+		/* if the style array in core might have been reallocated, we need to update
+		   all our pointers in the rss "cache" */
+		if (need_rebuild) {
+			pcb_gtk_route_style_empty(rss);
+			make_route_style_buttons(GHID_ROUTE_STYLE(rss));
+		}
+
 		/* Emit change signals */
 		pcb_gtk_route_style_select_style(rss, rst);
 		g_signal_emit(rss, pcb_gtk_route_style_signals_id[STYLE_EDITED_SIGNAL], 0, save);
