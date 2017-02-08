@@ -65,7 +65,16 @@ static int ltspice_hdr_asc(FILE *f)
 	return -1;
 }
 
+/* remove leading whitespace */
 #define ltrim(s) while(isspace(*s)) s++
+
+/* remove trailing newline */
+#define rtrim(s, end) \
+	do { \
+		char *end; \
+		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--) \
+			*end = '\0'; \
+	} while(0)
 
 typedef struct {
 	char *refdes;
@@ -82,20 +91,18 @@ static void sym_flush(symattr_t *sattr)
 	free(sattr->footprint); sattr->footprint = NULL;
 }
 
-static int ltspice_parse_asc(FILE *fn)
+static int ltspice_parse_asc(FILE *fa)
 {
 	symattr_t sattr;
 	char line[1024];
 
 	memset(&sattr, 0, sizeof(sattr));
 
-	while(fgets(line, sizeof(line), fn) != NULL) {
-		char *end, *s;
+	while(fgets(line, sizeof(line), fa) != NULL) {
+		char *s;
 
-		/* remove trailing newline (if we don't we just get an extra empty field at the end) */
 		s = line;
-		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--)
-			*end = '\0';
+		rtrim(s, end);
 
 		if (strncmp(s, "SYMBOL", 6) == 0)
 			sym_flush(&sattr);
@@ -123,9 +130,50 @@ static int ltspice_parse_asc(FILE *fn)
 		}
 	}
 	sym_flush(&sattr);
-	return -1;
-
+	return 0;
 }
+
+static int ltspice_parse_net(FILE *fn)
+{
+	char line[1024];
+	enum {
+		MODE_INVALID,
+		MODE_CONN,
+		MODE_PART,
+		MODE_NETNAME,
+	} mode = MODE_INVALID;
+
+	while(fgets(line, sizeof(line), fn) != NULL) {
+		int argc;
+		char **argv, *end, *s;
+
+
+
+		s = line;
+		rtrim(s, end);
+		argc = qparse(s, &argv);
+		if (argc == 1) {
+			if (pcb_strcasecmp(argv[0], "Net Connections Table") == 0) mode = MODE_CONN;
+			else if (pcb_strcasecmp(argv[0], "Part IDs Table") == 0) mode = MODE_PART;
+			else if (pcb_strcasecmp(argv[0], "Net Names Table") == 0) mode = MODE_NETNAME;
+			else mode = MODE_INVALID;
+		}
+		else {
+			switch(mode) {
+				case MODE_INVALID: break;
+				case MODE_CONN:
+					break;
+				case MODE_PART:
+					break;
+				case MODE_NETNAME:
+					break;
+			}
+		}
+		pcb_trace("%d:%d '%s'\n", mode, argc, argv[0]);
+	}
+	return 0;
+}
+
 
 static int ltspice_load(const char *fname_net, const char *fname_asc)
 {
@@ -155,6 +203,7 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 	}
 
 	if (ltspice_parse_asc(fa) != 0) goto error;
+	if (ltspice_parse_net(fn) != 0) goto error;
 
 
 	quit:;
