@@ -49,12 +49,25 @@ static int ltspice_hdr_net(FILE *f)
 		int argc;
 		char **argv;
 
-		/* split and print fields */
 		argc = qparse(s, &argv);
 		if ((argc > 0) && (pcb_strcasecmp(argv[0], "ExpressPCB Netlist") == 0))
 			return 0;
 	}
 	return -1;
+}
+
+static int ltspice_hdr_asc(FILE *f)
+{
+	char s[1024];
+	while(fgets(s, sizeof(s), f) != NULL)
+		if (strncmp(s, "Version 4", 9) == 0)
+			return 0;
+	return -1;
+}
+
+static int ltspice_parse_asc(fn)
+{
+
 }
 
 static int ltspice_load(const char *fname_net, const char *fname_asc)
@@ -78,7 +91,13 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 		pcb_message(PCB_MSG_ERROR, "file '%s' doesn't look like an ExpressPCB netlist\n", fname_net);
 		goto error;
 	}
-/*	if (ltspice_hdr_asc(fn)) goto error;*/
+
+	if (ltspice_hdr_asc(fn)) {
+		pcb_message(PCB_MSG_ERROR, "file '%s' doesn't look like a verison 4 asc file\n", fname_asc);
+		goto error;
+	}
+
+	if (ltspice_parse_asc(fn) != 0) goto error;
 
 
 	quit:;
