@@ -161,12 +161,12 @@ put /local/pcb/OBJS [@
 	../src_3rd/genregex/regex_sei.o
 	../src_3rd/genregex/regex_se.o
 	../src_3rd/genregex/regex.o
+	../src_3rd/qparse/qparse.o
 @]
 
 # We do not compile these in the executable but we need rules for these for utils
 put /local/pcb/OBJS_UTIL [@
 	../src_3rd/genvector/vts0.o
-	../src_3rd/qparse/qparse.o
 @]
 
 # main: action registrations
