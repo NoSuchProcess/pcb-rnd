@@ -5,6 +5,7 @@
  *
  *  LTSpice import HID
  *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017 Erich Heinzle (non passive footprint parsing)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -97,7 +98,7 @@ static int ltspice_parse_asc(FILE *fa)
 
 	while(fgets(line, sizeof(line), fa) != NULL) {
 		char *s;
-
+		int isPassive = 0;
 		s = line;
 		rtrim(s);
 
@@ -111,39 +112,78 @@ static int ltspice_parse_asc(FILE *fa)
 				ltrim(s);
 				free(sattr.refdes);
 				sattr.refdes = pcb_strdup(s);
-			}
-			else if (strncmp(s, "Value", 5) == 0) {
-				s+=6;
-				ltrim(s);
-				free(sattr.value);
-				sattr.value = pcb_strdup(s);
-			}
-			else if (strncmp(s, "SpiceLine", 9) == 0) {
-				char *fp;
-				s+=6;
-				fp = strstr(s, "mfg=");
-				if (fp != NULL) {
-					fp += 4;
-					if (*fp == '"') {
-						char *end;
-						fp++;
-						end = strchr(fp, '"');
-						if (end != NULL)
-							*end = '\0';
-					}
-					if (strncmp(fp, ".pcb-rnd-", 9) == 0)
-						fp += 9;
-					if (strncmp(fp, "pcb-rnd-", 8) == 0)
-						fp += 8;
-					free(sattr.footprint);
-					sattr.footprint = pcb_strdup(fp);
+				/* figure out if device is passive or not, as this affects
+				   subsequent parsing of the "SYMATTR VALUE .... " line */
+				if (strncmp(s, "R", 1) != 0 && strncmp(s, "L", 1) != 0 &&
+					strncmp(s, "C", 1) != 0) {
+					isPassive = 0;
+				}
+				else {
+					isPassive = 1;
 				}
 			}
-			else if (strncmp(s, "Footprint", 9) == 0) {
-				s+=10;
-				ltrim(s);
-				free(sattr.footprint);
-				sattr.footprint = pcb_strdup(s);
+			else {
+				if (strncmp(s, "Value", 5) == 0) {
+					/* we get around non passives having a device quoted with no 
+					mfg= field in the .net file by parsing the device name for
+					an appended .pcb-rnd-TO92 etc...
+					i.e. parse the following: SYMATTR Value 2N2222.pcb-rnd-TO92 */
+					s+=6;
+					ltrim(s);
+					free(sattr.value);
+					if (isPassive) {
+						sattr.value = pcb_strdup(s);
+					}
+					else {
+						char *fp;
+						/*s+=6;*/
+						fp = strstr(s, ".pcb-rnd-");
+						if (fp != NULL) {
+							sattr.value = pcb_strdup(fp);
+							s = fp;							
+							fp += 9;
+							if (*fp == '"') {
+								char *end;
+								fp++;
+								end = strchr(fp, '"');
+								if (end != NULL)
+									*end = '\0';
+							}
+							free(sattr.footprint);
+							sattr.footprint = pcb_strdup(fp);
+                	                	}
+					}
+				}
+				if (strncmp(s, "SpiceLine", 9) == 0) {
+					/* for passives, the SpiceLine include the "mfg=" field */
+					char *fp;
+					s+=6;
+					fp = strstr(s, "mfg=");
+					if (fp != NULL) {
+						fp += 4;
+						if (*fp == '"') {
+							char *end;
+							fp++;
+							end = strchr(fp, '"');
+							if (end != NULL)
+								*end = '\0';
+						}
+						if (strncmp(fp, ".pcb-rnd-", 9) == 0)
+							fp += 9;
+						if (strncmp(fp, "pcb-rnd-", 8) == 0)
+							fp += 8;
+						free(sattr.footprint);
+						sattr.footprint = pcb_strdup(fp);
+					}
+				}
+				/* nothing stops a user inserting 
+				   "SYMATTR Footprint TO92" if keen in the .asc file */
+				if (strncmp(s, "Footprint", 9) == 0) {
+					s+=10;
+					ltrim(s);
+					free(sattr.footprint);
+					sattr.footprint = pcb_strdup(s);
+				}
 			}
 		}
 	}
@@ -243,10 +283,12 @@ int pcb_act_LoadLtspiceFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 	}
 
 	end = strrchr(fname, '.');
-	if (strcmp(end, ".net") == 0)
-		fname_base = pcb_strndup(fname, end - fname);
-	else if (strcmp(end, ".asc") == 0)
-		fname_base = pcb_strndup(fname, end - fname);
+	if (end != NULL) {
+		if (strcmp(end, ".net") == 0)
+			fname_base = pcb_strndup(fname, end - fname);
+		else if (strcmp(end, ".asc") == 0)
+			fname_base = pcb_strndup(fname, end - fname);
+		}
 	else {
 		pcb_message(PCB_MSG_ERROR, "file name '%s' doesn't end in .net or .asc\n", fname);
 		PCB_ACT_FAIL(LoadLtspiceFrom);
