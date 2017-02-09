@@ -86,7 +86,7 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 	}
 
 	while ((c = getc(fi)) != EOF) {
-		pcb_printf("Char: %d \n", c);
+/*		pcb_trace("Char: %d \n", c); */
 		switch (c) {
 			case 's':
 				x1 = 100 * (getc(fi) + (getc(fi) * 256));
