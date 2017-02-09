@@ -53,10 +53,37 @@ static const char *tinycad_cookie = "tinycad importer";
 			*end = '\0'; \
 	} while(0)
 
+typedef struct {
+	char *refdes;
+	char *value;
+	char *footprint;
+} symattr_t;
+
+#define null_empty(s) ((s) == NULL ? "" : (s))
+
+static void sym_flush(symattr_t *sattr)
+{
+	if (sattr->refdes != NULL) {
+		pcb_trace("ltspice sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);
+		if (sattr->footprint == NULL)
+			pcb_message(PCB_MSG_ERROR, "tinycad: not importing refdes=%s: no footprint specified\n", sattr->refdes);
+		else
+			pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+	}
+	free(sattr->refdes); sattr->refdes = NULL;
+	free(sattr->value); sattr->value = NULL;
+	free(sattr->footprint); sattr->footprint = NULL;
+}
+
+
 static int tinycad_parse_net(FILE *fn)
 {
 	char line[1024];
+	symattr_t sattr;
 
+	memset(&sattr, 0, sizeof(sattr));
+
+	pcb_hid_actionl("ElementList", "start", NULL);
 	pcb_hid_actionl("Netlist", "Freeze", NULL);
 	pcb_hid_actionl("Netlist", "Clear", NULL);
 
@@ -86,17 +113,35 @@ static int tinycad_parse_net(FILE *fn)
 				sep = strchr(curr, ',');
 				if (sep != NULL) {
 					*sep = '-';
-					pcb_trace("net-add '%s' '%s'\n", argv[2], curr);
+/*					pcb_trace("net-add '%s' '%s'\n", argv[2], curr);*/
 					pcb_hid_actionl("Netlist", "Add",  argv[2], curr, NULL);
 				}
 			}
-
+		}
+		else if ((argc > 1) && (strcmp(argv[0], "COMPONENT") == 0)) {
+			sym_flush(&sattr);
+			free(sattr.refdes);
+			sattr.refdes = pcb_strdup(argv[1]);
+		}
+		else if ((argc > 3) && (strcmp(argv[0], "OPTION") == 0)) {
+			if (strcmp(argv[3], "..") != 0) {
+				if (strcmp(argv[1], "Package") == 0) {
+					free(sattr.footprint);
+					sattr.footprint = pcb_strdup(argv[3]);
+				}
+				else if (strcmp(argv[1], "Value") == 0) {
+					free(sattr.value);
+					sattr.value = pcb_strdup(argv[3]);
+				}
+			}
 		}
 	}
 
+	sym_flush(&sattr);
 
 	pcb_hid_actionl("Netlist", "Sort", NULL);
 	pcb_hid_actionl("Netlist", "Thaw", NULL);
+	pcb_hid_actionl("ElementList", "Done", NULL);
 
 	return 0;
 }
