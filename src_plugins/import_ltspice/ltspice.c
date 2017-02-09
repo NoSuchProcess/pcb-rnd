@@ -71,7 +71,12 @@ typedef struct {
 
 static void sym_flush(symattr_t *sattr)
 {
-	pcb_trace("ltspice sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);
+/*	pcb_trace("ltspice sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
+
+	if (sattr->footprint == NULL)
+		pcb_message(PCB_MSG_ERROR, "ltspice: not importing refdes=%s: no footprint specified\n", sattr->refdes);
+	else
+		pcb_hid_actionl("ElementList", "Need", sattr->refdes, sattr->footprint, sattr->value, NULL);
 	free(sattr->refdes); sattr->refdes = NULL;
 	free(sattr->value); sattr->value = NULL;
 	free(sattr->footprint); sattr->footprint = NULL;
@@ -83,6 +88,8 @@ static int ltspice_parse_asc(FILE *fa)
 	char line[1024];
 
 	memset(&sattr, 0, sizeof(sattr));
+
+	pcb_hid_actionl("ElementList", "start", NULL);
 
 	while(fgets(line, sizeof(line), fa) != NULL) {
 		char *s;
@@ -122,6 +129,8 @@ static int ltspice_parse_asc(FILE *fa)
 					}
 					if (strncmp(fp, ".pcb-rnd-", 9) == 0)
 						fp += 9;
+					if (strncmp(fp, "pcb-rnd-", 8) == 0)
+						fp += 8;
 					free(sattr.footprint);
 					sattr.footprint = pcb_strdup(fp);
 				}
@@ -135,12 +144,16 @@ static int ltspice_parse_asc(FILE *fa)
 		}
 	}
 	sym_flush(&sattr);
+	pcb_hid_actionl("ElementList", "Done", NULL);
 	return 0;
 }
 
 static int ltspice_parse_net(FILE *fn)
 {
 	char line[1024];
+
+	pcb_hid_actionl("Netlist", "Freeze", NULL);
+	pcb_hid_actionl("Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		int argc;
@@ -152,10 +165,16 @@ static int ltspice_parse_net(FILE *fn)
 		argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);
 		if ((argc > 1) && (strcmp(argv[0], "NET") == 0)) {
 			int n;
-			for(n = 2; n < argc; n++)
-				pcb_trace("net-add '%s' '%s'\n", argv[1], argv[n]);
+			for(n = 2; n < argc; n++) {
+/*				pcb_trace("net-add '%s' '%s'\n", argv[1], argv[n]);*/
+				pcb_hid_actionl("Netlist", "Add",  argv[1], argv[n], NULL);
+			}
 		}
 	}
+
+	pcb_hid_actionl("Netlist", "Sort", NULL);
+	pcb_hid_actionl("Netlist", "Thaw", NULL);
+
 	return 0;
 }
 
@@ -181,6 +200,7 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 		pcb_message(PCB_MSG_ERROR, "file '%s' doesn't look like a verison 4 asc file\n", fname_asc);
 		goto error;
 	}
+
 
 	if (ltspice_parse_asc(fa) != 0) goto error;
 	if (ltspice_parse_net(fn) != 0) goto error;
