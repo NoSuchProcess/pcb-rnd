@@ -744,7 +744,7 @@ void pcb_element_bbox(pcb_data_t *Data, pcb_element_t *Element, pcb_font_t *Font
 	if (pcb_element_is_empty(Element)) {
 		pcb_message(PCB_MSG_ERROR, "Internal error: can not calculate bounding box of empty element. Please report this bug.\n");
 		assert(!"empty elem");
-		return 0;
+		return;
 	}
 
 	/* first update the text objects */
