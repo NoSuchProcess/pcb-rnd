@@ -9,3 +9,12 @@ void qparse_free(int argc, char **argv_ret[]);
 
 /* for C89 - that doesn't have strdup()*/
 char *qparse_strdup(const char *s);
+
+/* More advanced API with more control over the format */
+typedef enum {
+	QPARSE_DOUBLE_QUOTE = 1,
+	QPARSE_SINGLE_QUOTE = 2
+} flags_t;
+
+int qparse2(const char *input, char **argv_ret[], flags_t flg);
+

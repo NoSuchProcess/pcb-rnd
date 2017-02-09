@@ -23,7 +23,8 @@
 
 typedef enum qp_state_e {
 	qp_normal,
-	qp_dquote
+	qp_dquote,
+	qp_squote
 } qp_state_t;
 
 #define qpush(chr) \
@@ -43,6 +44,7 @@ typedef enum qp_state_e {
 		case 't': qpush('\t'); break; \
 		case 'b': qpush('\b'); break; \
 		case '"': qpush('"'); break; \
+		case '\'': qpush('\''); break; \
 		case ' ': qpush(' '); break; \
 		case '\0': break; \
 		default: \
@@ -63,8 +65,7 @@ typedef enum qp_state_e {
 		buff_used = 0; \
 	}
 
-
-int qparse(const char *input, char **argv_ret[])
+int qparse2(const char *input, char **argv_ret[], flags_t flg)
 {
 	int argc;
 	int allocated;
@@ -92,7 +93,16 @@ int qparse(const char *input, char **argv_ret[])
 						qbackslash(*s);
 						break;
 					case '"':
-						state = qp_dquote;
+						if (flg & QPARSE_DOUBLE_QUOTE)
+							state = qp_dquote;
+						else
+							qpush(*s);
+						break;
+					case '\'':
+						if (flg & QPARSE_SINGLE_QUOTE)
+							state = qp_squote;
+						else
+							qpush(*s);
 						break;
 					case ' ':
 					case '\t':
@@ -105,6 +115,7 @@ int qparse(const char *input, char **argv_ret[])
 				}
 				/* End of qp_normal */
 				break;
+
 			case qp_dquote:
 				switch (*s) {
 					case '\\':
@@ -112,6 +123,21 @@ int qparse(const char *input, char **argv_ret[])
 						qbackslash(*s);
 						break;
 					case '"':
+						state = qp_normal;
+						break;
+					default:
+						qpush(*s);
+				}
+				/* End of qp_dquote */
+				break;
+
+			case qp_squote:
+				switch (*s) {
+					case '\\':
+						s++;
+						qbackslash(*s);
+						break;
+					case '\'':
 						state = qp_normal;
 						break;
 					default:
@@ -130,6 +156,12 @@ int qparse(const char *input, char **argv_ret[])
 	*argv_ret = argv;
 	return argc;
 }
+
+int qparse(const char *input, char **argv_ret[])
+{
+	return qparse2(input, argv_ret, QPARSE_DOUBLE_QUOTE);
+}
+
 
 void qparse_free(int argc, char **argv_ret[])
 {
