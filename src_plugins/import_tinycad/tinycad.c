@@ -64,7 +64,7 @@ typedef struct {
 static void sym_flush(symattr_t *sattr)
 {
 	if (sattr->refdes != NULL) {
-/*		pcb_trace("ltspice sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
+/*		pcb_trace("tinycad sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
 		if (sattr->footprint == NULL)
 			pcb_message(PCB_MSG_ERROR, "tinycad: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
