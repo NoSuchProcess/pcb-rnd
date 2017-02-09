@@ -66,16 +66,34 @@ static int tinycad_parse_net(FILE *fn)
 
 		s = line;
 		ltrim(s);
+		if (*s == ';') /* comment */
+			continue;
 		rtrim(s);
 		argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);
 		if ((argc > 1) && (strcmp(argv[0], "NET") == 0)) {
-			int n;
-			for(n = 2; n < argc; n++) {
-/*				pcb_trace("net-add '%s' '%s'\n", argv[1], argv[n]);*/
-				pcb_hid_actionl("Netlist", "Add",  argv[1], argv[n], NULL);
+			char *curr, *next, *sep;
+
+			for(curr = argv[5]; (curr != NULL) && (*curr != '\0'); curr = next) {
+				next = strchr(curr, ')');
+				if (next != NULL) {
+					*next = '\0';
+					next++;
+					if (*next == ',')
+						next++;
+				}
+				if (*curr == '(')
+					curr++;
+				sep = strchr(curr, ',');
+				if (sep != NULL) {
+					*sep = '-';
+					pcb_trace("net-add '%s' '%s'\n", argv[2], curr);
+					pcb_hid_actionl("Netlist", "Add",  argv[2], curr, NULL);
+				}
 			}
+
 		}
 	}
+
 
 	pcb_hid_actionl("Netlist", "Sort", NULL);
 	pcb_hid_actionl("Netlist", "Thaw", NULL);
@@ -102,7 +120,7 @@ static int tinycad_load(const char *fname_net)
 }
 
 static const char pcb_acts_LoadtinycadFrom[] = "LoadTinycadFrom(filename)";
-static const char pcb_acth_LoadtinycadFrom[] = "Loads the specified tinycad .net and .asc file - the netlist must be mentor netlist.";
+static const char pcb_acth_LoadtinycadFrom[] = "Loads the specified tinycad .net file - the netlist must be tinycad netlist output.";
 int pcb_act_LoadtinycadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL;
@@ -126,7 +144,7 @@ int pcb_act_LoadtinycadFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 }
 
 pcb_hid_action_t tinycad_action_list[] = {
-	{"LoadtinycadFrom", 0, pcb_act_LoadtinycadFrom, pcb_acth_LoadtinycadFrom, pcb_acts_LoadtinycadFrom}
+	{"LoadTinycadFrom", 0, pcb_act_LoadtinycadFrom, pcb_acth_LoadtinycadFrom, pcb_acts_LoadtinycadFrom}
 };
 
 PCB_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
