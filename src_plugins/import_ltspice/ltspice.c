@@ -42,20 +42,6 @@
 
 static const char *ltspice_cookie = "ltspice importer";
 
-static int ltspice_hdr_net(FILE *f)
-{
-	char s[1024];
-	while(fgets(s, sizeof(s), f) != NULL) {
-		int argc;
-		char **argv;
-
-		argc = qparse(s, &argv);
-		if ((argc > 0) && (pcb_strcasecmp(argv[0], "ExpressPCB Netlist") == 0))
-			return 0;
-	}
-	return -1;
-}
-
 static int ltspice_hdr_asc(FILE *f)
 {
 	char s[1024];
@@ -69,7 +55,7 @@ static int ltspice_hdr_asc(FILE *f)
 #define ltrim(s) while(isspace(*s)) s++
 
 /* remove trailing newline */
-#define rtrim(s, end) \
+#define rtrim(s) \
 	do { \
 		char *end; \
 		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--) \
@@ -102,7 +88,7 @@ static int ltspice_parse_asc(FILE *fa)
 		char *s;
 
 		s = line;
-		rtrim(s, end);
+		rtrim(s);
 
 		if (strncmp(s, "SYMBOL", 6) == 0)
 			sym_flush(&sattr);
@@ -155,40 +141,20 @@ static int ltspice_parse_asc(FILE *fa)
 static int ltspice_parse_net(FILE *fn)
 {
 	char line[1024];
-	enum {
-		MODE_INVALID,
-		MODE_CONN,
-		MODE_PART,
-		MODE_NETNAME,
-	} mode = MODE_INVALID;
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		int argc;
-		char **argv, *end, *s;
-
-
+		char **argv, *s;
 
 		s = line;
-		rtrim(s, end);
-		argc = qparse(s, &argv);
-		if (argc == 1) {
-			if (pcb_strcasecmp(argv[0], "Net Connections Table") == 0) mode = MODE_CONN;
-			else if (pcb_strcasecmp(argv[0], "Part IDs Table") == 0) mode = MODE_PART;
-			else if (pcb_strcasecmp(argv[0], "Net Names Table") == 0) mode = MODE_NETNAME;
-			else mode = MODE_INVALID;
+		ltrim(s);
+		rtrim(s);
+		argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);
+		if ((argc > 1) && (strcmp(argv[0], "NET") == 0)) {
+			int n;
+			for(n = 2; n < argc; n++)
+				pcb_trace("net-add '%s' '%s'\n", argv[1], argv[n]);
 		}
-		else {
-			switch(mode) {
-				case MODE_INVALID: break;
-				case MODE_CONN:
-					break;
-				case MODE_PART:
-					break;
-				case MODE_NETNAME:
-					break;
-			}
-		}
-		pcb_trace("%d:%d '%s'\n", mode, argc, argv[0]);
 	}
 	return 0;
 }
@@ -211,11 +177,6 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 		return -1;
 	}
 
-	if (ltspice_hdr_net(fn)) {
-		pcb_message(PCB_MSG_ERROR, "file '%s' doesn't look like an ExpressPCB netlist\n", fname_net);
-		goto error;
-	}
-
 	if (ltspice_hdr_asc(fa)) {
 		pcb_message(PCB_MSG_ERROR, "file '%s' doesn't look like a verison 4 asc file\n", fname_asc);
 		goto error;
@@ -223,7 +184,6 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 
 	if (ltspice_parse_asc(fa) != 0) goto error;
 	if (ltspice_parse_net(fn) != 0) goto error;
-
 
 	quit:;
 	fclose(fa);
@@ -236,7 +196,7 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 }
 
 static const char pcb_acts_LoadLtspiceFrom[] = "LoadLtspiceFrom(filename)";
-static const char pcb_acth_LoadLtspiceFrom[] = "Loads the specified ltspice .net and .asc file - the netlist must be an ExpressPCB netlist.";
+static const char pcb_acth_LoadLtspiceFrom[] = "Loads the specified ltspice .net and .asc file - the netlist must be mentor netlist.";
 int pcb_act_LoadLtspiceFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *fname = NULL, *end;
@@ -248,7 +208,7 @@ int pcb_act_LoadLtspiceFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load ltspice net+asc file pair...",
-																"Picks a ltspice net or asc file to load.\n",
+																"Picks a ltspice mentor net or asc file to load.\n",
 																default_file, ".asc", "ltspice", HID_FILESELECT_READ);
 		if (fname == NULL)
 			PCB_ACT_FAIL(LoadLtspiceFrom);
