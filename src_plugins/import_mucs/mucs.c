@@ -93,14 +93,14 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				y1 = 100 * (getc(fi) + (getc(fi) * 256));
 				x2 = 100 * (getc(fi) + (getc(fi) * 256));
 				y2 = 100 * (getc(fi) + (getc(fi) * 256));
-				pcb_printf("s--%i %i %i %i ???\n", x1, y1, x2, y2);
+				pcb_trace("s--%i %i %i %i ???\n", x1, y1, x2, y2);
 				break;
 			case 'l':
 				x1 = (getc(fi) + (getc(fi) * 256));
 				y1 = (getc(fi) + (getc(fi) * 256));
 				x2 = (getc(fi) + (getc(fi) * 256));
 				y2 = (getc(fi) + (getc(fi) * 256));
-				pcb_printf("Line(%d %d %d %d 20 \" \")\n", x1, y1, x2, y2);
+				pcb_trace("Line(%d %d %d %d 20 \" \")\n", x1, y1, x2, y2);
 				/* consider a bounds checking function to censor absurd coord sizes */
 				pcb_line_new(&PCB->Data->Layer[0], PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), PCB_MIL_TO_COORD(x2), PCB_MIL_TO_COORD(y2), PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10), pcb_flag_make(PCB_FLAG_AUTO));
 				break;
@@ -108,13 +108,13 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				x1 = (getc(fi) + (getc(fi) * 256));
 				y1 = (getc(fi) + (getc(fi) * 256));
 				r = (getc(fi) + (getc(fi) * 256));
-				pcb_printf("Via(%d %d 60 25 \"\" \" \")\n", x1, y1);
+				pcb_trace("Via(%d %d 60 25 \"\" \" \")\n", x1, y1);
 				pcb_via_new(PCB->Data, PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), PCB_MIL_TO_COORD(60), PCB_MIL_TO_COORD(10), 0, PCB_MIL_TO_COORD(30), 0, pcb_flag_make(PCB_FLAG_AUTO));
 				break;
 			case 'n':
 				x1 = (getc(fi) + (getc(fi) * 256));
 				y1 = (getc(fi) + (getc(fi) * 256));
-				pcb_printf("Line(%d %d %d %d 20 \" \")\n", x1, y1, x2, y2);
+				pcb_trace("Line(%d %d %d %d 20 \" \")\n", x1, y1, x2, y2);
 				pcb_line_new(&PCB->Data->Layer[0], PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), PCB_MIL_TO_COORD(x2), PCB_MIL_TO_COORD(y2), PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10), pcb_flag_make(PCB_FLAG_AUTO));
 				x2 = x1;
 				y2 = y1;
@@ -125,7 +125,7 @@ int pcb_act_LoadMucsFrom(int argc, const char **argv, pcb_coord_t x, pcb_coord_t
 				x2 = 100 * ((getc(fi) * 256) + getc(fi));
 				y2 = 100 * ((getc(fi) * 256) + getc(fi));
 				r = 100 * ((getc(fi) * 256) + getc(fi));
-				pcb_printf("a--stroke newpath\n%d %d %d %d %d arc\n", x1, y1, x2, y2, r);
+				pcb_trace("a--stroke newpath\n%d %d %d %d %d arc\n", x1, y1, x2, y2, r);
 				break;
 			case 'e':
 				break;
