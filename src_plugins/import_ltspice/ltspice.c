@@ -85,7 +85,7 @@ typedef struct {
 
 static void sym_flush(symattr_t *sattr)
 {
-	pcb_trace("ltspice sym: %s %s %s\n", sattr->refdes, sattr->value, sattr->footprint);
+	pcb_trace("ltspice sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);
 	free(sattr->refdes); sattr->refdes = NULL;
 	free(sattr->value); sattr->value = NULL;
 	free(sattr->footprint); sattr->footprint = NULL;
@@ -115,13 +115,32 @@ static int ltspice_parse_asc(FILE *fa)
 				free(sattr.refdes);
 				sattr.refdes = pcb_strdup(s);
 			}
-			if (strncmp(s, "Value", 5) == 0) {
+			else if (strncmp(s, "Value", 5) == 0) {
 				s+=6;
 				ltrim(s);
 				free(sattr.value);
 				sattr.value = pcb_strdup(s);
 			}
-			if (strncmp(s, "Footprint", 9) == 0) {
+			else if (strncmp(s, "SpiceLine", 9) == 0) {
+				char *fp;
+				s+=6;
+				fp = strstr(s, "mfg=");
+				if (fp != NULL) {
+					fp += 4;
+					if (*fp == '"') {
+						char *end;
+						fp++;
+						end = strchr(fp, '"');
+						if (end != NULL)
+							*end = '\0';
+					}
+					if (strncmp(fp, ".pcb-rnd-", 9) == 0)
+						fp += 9;
+					free(sattr.footprint);
+					sattr.footprint = pcb_strdup(fp);
+				}
+			}
+			else if (strncmp(s, "Footprint", 9) == 0) {
 				s+=10;
 				ltrim(s);
 				free(sattr.footprint);
