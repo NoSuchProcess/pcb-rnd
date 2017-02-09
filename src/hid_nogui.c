@@ -297,16 +297,12 @@ static int nogui_confirm_dialog(const char *msg, ...)
 
 		answer = read_stdin_line();
 
-		if (answer == NULL)
-			continue;
-
-		if (answer[0] == '0' && answer[1] == '\0') {
-			ret = 0;
+		if ((answer == NULL) || (answer[0] == '1' && answer[1] == '\0')) {
+			ret = 1;
 			valid_answer = pcb_true;
 		}
-
-		if (answer[0] == '1' && answer[1] == '\0') {
-			ret = 1;
+		else if (answer[0] == '0' && answer[1] == '\0') {
+			ret = 0;
 			valid_answer = pcb_true;
 		}
 
