@@ -922,6 +922,9 @@ void ghid_netlist_window_update(gboolean init_nodes)
 
 void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	extern int gtkhid_active;
+	if (!gtkhid_active)
+		return;
 	loading_new_netlist = TRUE;
 	ghid_netlist_window_update(TRUE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_all_button), FALSE);
