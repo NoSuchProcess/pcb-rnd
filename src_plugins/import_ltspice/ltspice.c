@@ -69,14 +69,18 @@ typedef struct {
 } symattr_t;
 
 
+#define null_empty(s) ((s) == NULL ? "" : (s))
+
 static void sym_flush(symattr_t *sattr)
 {
 /*	pcb_trace("ltspice sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
 
-	if (sattr->footprint == NULL)
-		pcb_message(PCB_MSG_ERROR, "ltspice: not importing refdes=%s: no footprint specified\n", sattr->refdes);
-	else
-		pcb_hid_actionl("ElementList", "Need", sattr->refdes, sattr->footprint, sattr->value, NULL);
+	if (sattr->refdes != NULL) {
+		if (sattr->footprint == NULL)
+			pcb_message(PCB_MSG_ERROR, "ltspice: not importing refdes=%s: no footprint specified\n", sattr->refdes);
+		else
+			pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+	}
 	free(sattr->refdes); sattr->refdes = NULL;
 	free(sattr->value); sattr->value = NULL;
 	free(sattr->footprint); sattr->footprint = NULL;
