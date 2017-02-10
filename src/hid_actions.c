@@ -271,7 +271,7 @@ another:
 	while (*sp && isspace((int) *sp))
 		sp++;
 
-	if (!*sp) {
+	if ((*sp == '\0') || (*sp == '#')) {
 		retcode = 0;
 		goto cleanup;
 	}
