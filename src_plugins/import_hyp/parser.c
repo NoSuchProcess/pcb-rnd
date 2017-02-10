@@ -680,7 +680,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_
 	end_angle = pcb_normalize_angle(end_angle);
 
 	if (Clockwise)
-		while (start_angle <= end_angle)
+		while (start_angle < end_angle)
 			start_angle += 360;
 	else
 		while (end_angle <= start_angle)
