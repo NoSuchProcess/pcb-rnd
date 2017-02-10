@@ -288,11 +288,9 @@ int pcb_act_LoadLtspiceFrom(int argc, const char **argv, pcb_coord_t x, pcb_coor
 			fname_base = pcb_strndup(fname, end - fname);
 		else if (strcmp(end, ".asc") == 0)
 			fname_base = pcb_strndup(fname, end - fname);
-		}
-	else {
-		pcb_message(PCB_MSG_ERROR, "file name '%s' doesn't end in .net or .asc\n", fname);
-		PCB_ACT_FAIL(LoadLtspiceFrom);
 	}
+	else
+		fname_base = pcb_strdup(fname);
 
 	fname_net = pcb_strdup_printf("%s.net", fname_base);
 	fname_asc = pcb_strdup_printf("%s.asc", fname_base);
