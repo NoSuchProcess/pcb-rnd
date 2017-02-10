@@ -46,6 +46,8 @@ ha:{
 						ha:Load vendor resource file         = { action=LoadVendor() }
 						ha:Load routed dsn or ses file       = { action=LoadDsnFrom() }
 						ha:Load MUCS pl file                 = { action=LoadMucsFrom() }
+						ha:Load TinyCAD .net file            = { action=LoadTinyCADFrom() }
+						ha:Load LTSpice .net and .asc files  = { action=LoadLTSpiceFrom() }
 						ha:Load hyp                          = { action=LoadHypFrom() }
 					}
 				}
