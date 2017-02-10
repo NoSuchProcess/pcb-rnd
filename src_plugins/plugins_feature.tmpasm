@@ -22,7 +22,6 @@ include {../src_plugins/puller/Plug.tmpasm}
 include {../src_plugins/djopt/Plug.tmpasm}
 include {../src_plugins/mincut/Plug.tmpasm}
 include {../src_plugins/gpmi/Plug.tmpasm}
-include {../src_plugins/toporouter/Plug.tmpasm}
 include {../src_plugins/oldactions/Plug.tmpasm}
 include {../src_plugins/fontmode/Plug.tmpasm}
 include {../src_plugins/shand_cmd/Plug.tmpasm}

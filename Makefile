@@ -23,7 +23,6 @@ distclean: FORCE
 	cd src_3rd/genlist && $(MAKE) clean ; true
 	cd src_3rd/genregex && $(MAKE) clean ; true
 	cd src_3rd/genvector && $(MAKE) clean ; true
-	cd src_3rd/gts && $(MAKE) clean ; true
 	cd src_3rd/liblihata && $(MAKE) clean ; true
 	cd src_3rd/liblihata/genht && $(MAKE) clean ; true
 	cd src_3rd/qparse && $(MAKE) clean ; true

@@ -401,13 +401,6 @@ int hook_detect_target()
 	if (want_gtk)
 		want_glib = 1;
 
-	if (plug_is_enabled("toporouter")) {
-		put("/local/gts/enable", strue);
-		want_glib = 1;
-	}
-	else
-		put("/local/gts/enable", sfalse);
-
 	if (plug_is_enabled("export_dsn"))
 		want_glib = 1;
 
@@ -420,10 +413,6 @@ int hook_detect_target()
 			if (want_gtk) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
 				hook_custom_arg("Disable-gtk", NULL);
-			}
-			if (plug_is_enabled("toporouter")) {
-				report_repeat("WARNING: Since GLIB is not found, disabling the toporouter...\n");
-				hook_custom_arg("Disable-toporouter", NULL);
 			}
 			if (plug_is_enabled("puller")) {
 				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
@@ -718,7 +707,6 @@ int hook_generate()
 
 	printf("Generating Makefile.conf (%d)\n", generr |= tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
-	printf("Generating gts/Makefile (%d)\n", generr |= tmpasm("../src_3rd/gts", "Makefile.in", "Makefile"));
 	printf("Generating pcb/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
 
 	/* Has to be after pcb/Makefile so that all the modules are loaded. */
