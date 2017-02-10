@@ -261,7 +261,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> HID without GUI; read actions from stdin. 
-<tr><th align=left>hid_gtk<td>11343
+<tr><th align=left>hid_gtk<td>9755
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
@@ -271,7 +271,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disable
 <td> hid
 <td> GUI: the GTK3 HID, using cairo for rendering 
-<tr><th align=left>hid_lesstif<td>6866
+<tr><th align=left>hid_lesstif<td>6873
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
@@ -281,7 +281,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disable
 <td> hid
 <td> Remote access HID: implement a protocol and use it to relay between a core and a remote HID implementation. 
-<tr><th align=left>import_dsn<td>232
+<tr><th align=left>import_dsn<td>233
 <td bgcolor="lightgreen" > works
 <td > enabled
 <td> import
@@ -291,11 +291,21 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import plugin for netlists in the EDIF format. 
-<tr><th align=left>import_hyp<td>2397
+<tr><th align=left>import_hyp<td>2400
 <td  > WIP
 <td bgcolor="red"> disable
 <td> import
 <td> Import plugin for hyperlynx geometry. 
+<tr><th align=left>import_ltspice<td>506
+<td  > WIP
+<td bgcolor="red"> disable
+<td> import
+<td> Import the netlist and footprints from an ltspice .asc and .net pair of files 
+<tr><th align=left>import_mucs<td>108
+<td bgcolor="lightgreen" > works
+<td > builtin
+<td> import
+<td> Import lines and vias from MUCS unixplot .pl files 
 <tr><th align=left>import_netlist<td>136
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -306,6 +316,11 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Imports element and netlist data from the schematics (or some other source). 
+<tr><th align=left>import_tinycad<td>147
+<td  > WIP
+<td bgcolor="red"> disable
+<td> import
+<td> Import the netlist and footprints from a tinycad netlist. 
 <tr><th align=left>io_kicad<td>3060
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
@@ -336,7 +351,7 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disabled
 <td> (lib)
 <td> S-expression parser lib 
-<tr><th align=left>lib_gtk_common<td>5109
+<tr><th align=left>lib_gtk_common<td>6913
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disabled
 <td> (lib)
@@ -421,12 +436,6 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> (feature)
 <td> Draw teardrops on pins. 
-<tr><th align=left>toporouter<td>6166
-<td bgcolor="red" > fails
-<br> (infinite loop in gts)
-<td bgcolor="red"> disabled
-<td> (feature)
-<td> Automatically route selected or all rats using a topological algorithm. This is the new autorouter from 2009. 
 <tr><th align=left>vendordrill<td>516
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
