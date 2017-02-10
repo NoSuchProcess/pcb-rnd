@@ -721,9 +721,12 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 static void layer_fixup(pcb_board_t *pcb)
 {
 	int n;
-	pcb_layer_group_setup_default(&pcb->LayerGroups);
 	pcb_layergrp_id_t top_silk, bottom_silk;
 	pcb_layer_group_t *g;
+
+	pcb_layergrp_inhibit_inc();
+
+	pcb_layer_group_setup_default(&pcb->LayerGroups);
 
 	/* old silk assumption: last two layers are silk, bottom and top */
 	bottom_silk = pcb->Data->Layer[pcb->Data->LayerN-2].grp;
@@ -758,6 +761,7 @@ static void layer_fixup(pcb_board_t *pcb)
 	pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-2);
 	g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_SILK);
 	pcb_layer_add_in_group_(g, g - pcb->LayerGroups.grp, pcb->Data->LayerN-1);
+	pcb_layergrp_inhibit_dec();
 }
 
 static pcb_data_t *parse_data(pcb_board_t *pcb, lht_node_t *nd)
