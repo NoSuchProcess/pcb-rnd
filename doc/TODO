@@ -1,5 +1,5 @@
 - BUGS
-	- rats not disappearing after routing [report: erich/cm13g09]
+	+ rats not disappearing after routing [report: erich/cm13g09]
 	- cycledrag doesn't work on arc endpoint + line endpoint [report:Ade]
 	- load data from layout to paste buffer:
 		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
