@@ -64,6 +64,10 @@ pcb_hid_attribute_t fidocadj_attribute_list[] = {
 	{"outfile", "Output file name",
 	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_fidocadjfile 0
+
+	{"libfile", "path to PCB.fcl",
+	 HID_String, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_libfile 1
 };
 
 #define NUM_OPTIONS (sizeof(fidocadj_attribute_list)/sizeof(fidocadj_attribute_list[0]))
@@ -83,6 +87,40 @@ static pcb_hid_attribute_t *fidocadj_get_export_options(int *n)
 	if (n)
 		*n = NUM_OPTIONS;
 	return fidocadj_attribute_list;
+}
+
+/* index PCB.fcl so we have a list of known fidocadj footprints */
+static int load_lib(const char *fn)
+{
+	FILE *f;
+	char line[1024];
+	f = fopen(fn, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't open fidocadj PCB library file '%s' for read\n", fn);
+		return -1;
+	}
+	*line = '\0';
+	fgets(line, sizeof(line), f);
+	if (pcb_strncasecmp(line, "[FIDOLIB PCB Footprints]", 24) != 0) {
+		pcb_message(PCB_MSG_ERROR, "'%s' doesn't have the fidocadj lib header\n", fn);
+		fclose(f);
+		return -1;
+	}
+	while(fgets(line, sizeof(line), f) != NULL) {
+		char *end, *s = line;
+
+		if (*line != '[')
+			continue;
+
+		s++;
+		end = strchr(s, ' ');
+		if (end != NULL) {
+			*end = '\0';
+			printf("footprint: '%s'\n", s);
+		}
+	}
+	fclose(f);
+	return 0;
 }
 
 static long int crd(pcb_coord_t c)
@@ -116,17 +154,21 @@ static int layer_map(unsigned int lflg, int *fidoly_next, int *warned, const cha
 static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 {
 	FILE *f;
-	const char *filename;
+	const char *filename, *libfile;
 	int n, fidoly_next;
 	pcb_layer_id_t lid;
 	int layer_warned = 0, hole_warned = 0;
-
 	if (!options) {
 		fidocadj_get_export_options(0);
 		for (n = 0; n < NUM_OPTIONS; n++)
 			fidocadj_values[n] = fidocadj_attribute_list[n].default_val;
 		options = fidocadj_values;
 	}
+
+	libfile = options[HA_libfile].str_value;
+	if ((libfile != NULL) && (*libfile != '\0'))
+		if (load_lib(libfile) != 0)
+			return;
 
 	filename = options[HA_fidocadjfile].str_value;
 	if (!filename)
