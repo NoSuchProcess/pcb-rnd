@@ -44,6 +44,10 @@ RELEASE 1.2.2:
 		- remove -m pcb
 
 CLEANUP #5
+- insonsistencies in UI/terminology:
+	- allow clearance to be set to 0 in the route style [report: miloh]
+	- similar thing on hole size [report: miloh]
+	- report dialog should use the same terminology as route style dialog [report: miloh]
 - layer group rewrite:
 	- remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 - BUG: arcbug1.lht: draw a polygon over the rightmost ^ arc and it will calculate a self-intersecting clearance [report:Evan]
