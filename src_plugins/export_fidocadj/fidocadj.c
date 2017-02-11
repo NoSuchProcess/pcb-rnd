@@ -184,10 +184,10 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 
 		PCB_TEXT_LOOP(ly) {
 			char *s;
-			fprintf(f, "TY %ld %ld %ld %ld %x 0 %d * ",
+			fprintf(f, "TY %ld %ld %ld %ld %d 0 %d * ",
 				crd(text->X), crd(text->X),
 				crd(text->BoundingBox.X2 - text->BoundingBox.X1), crd(text->BoundingBox.Y2 - text->BoundingBox.Y1),
-				text->Direction * 360 / 4, fidoly);
+				text->Direction, fidoly);
 			for(s = text->TextString; *s != '\0'; s++) {
 				if (*s == ' ')
 					fprintf(f, "++");
