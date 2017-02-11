@@ -119,7 +119,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	const char *filename;
 	int n, fidoly_next;
 	pcb_layer_id_t lid;
-	int warned = 0;
+	int layer_warned = 0, hole_warned = 0;
 
 	if (!options) {
 		fidocadj_get_export_options(0);
@@ -144,7 +144,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	for(lid = 0; lid < pcb_max_layer; lid++) {
 		pcb_layer_t *ly = PCB->Data->Layer+lid;
 		unsigned int lflg = pcb_layer_flags(lid);
-		int fidoly = layer_map(lflg, &fidoly_next, &warned, ly->Name);
+		int fidoly = layer_map(lflg, &fidoly_next, &layer_warned, ly->Name);
 
 		if (fidoly < 0)
 			continue;
@@ -167,6 +167,11 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			pcb_vnode_t *v;
 			pcb_pline_t *pl = polygon->Clipped->contours;
 
+			if (polygon->HoleIndexN > 0) {
+				if (!hole_warned)
+					pcb_message(PCB_MSG_ERROR, "FidoCadJ can't handle holes in polygons, ignoring holes for this export - some of the polygons will look different\n");
+				hole_warned = 1;
+			}
 
 			fprintf(f, "PP %ld %ld", crd(pl->head.point[0]), crd(pl->head.point[1]));
 			v = pl->head.next;
