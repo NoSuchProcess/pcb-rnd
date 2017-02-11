@@ -85,11 +85,17 @@ static pcb_hid_attribute_t *fidocadj_get_export_options(int *n)
 	return fidocadj_attribute_list;
 }
 
+static long int crd(pcb_coord_t c)
+{
+	return pcb_round((double)PCB_COORD_TO_MIL(c) * 200.0);
+}
+
 static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 {
 	FILE *f;
 	const char *filename;
-	int n;
+	int n, fidoly;
+	pcb_layer_id_t lid;
 
 	if (!options) {
 		fidocadj_get_export_options(0);
@@ -110,6 +116,21 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 
 	fprintf(f, "[FIDOCAD]\n");
 
+	fidoly = 0;
+	for(lid = 0; lid < pcb_max_layer; lid++) {
+		pcb_layer_t *ly = PCB->Data->Layer+lid;
+		unsigned int lflg = pcb_layer_flags(lid);
+		if ((!(lflg & PCB_LYT_COPPER)) && (!(lflg & PCB_LYT_SILK)))
+			continue;
+		fidoly++;
+		PCB_LINE_LOOP(ly) {
+			fprintf(f, "PL %ld %ld %ld %ld %ld %d\n",
+				crd(line->Point1.X), crd(line->Point1.Y),
+				crd(line->Point2.X), crd(line->Point2.Y),
+				crd(line->Thickness), fidoly);
+		}
+		PCB_END_LOOP;
+	}
 	fclose(f);
 }
 
