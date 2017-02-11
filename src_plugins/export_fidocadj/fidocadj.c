@@ -35,6 +35,8 @@
 #include <math.h>
 #include <time.h>
 
+#include "genht/htsi.h"
+
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
@@ -90,7 +92,7 @@ static pcb_hid_attribute_t *fidocadj_get_export_options(int *n)
 }
 
 /* index PCB.fcl so we have a list of known fidocadj footprints */
-static int load_lib(const char *fn)
+static int load_lib(htsi_t *ht, const char *fn)
 {
 	FILE *f;
 	char line[1024];
@@ -116,7 +118,7 @@ static int load_lib(const char *fn)
 		end = strchr(s, ' ');
 		if (end != NULL) {
 			*end = '\0';
-			printf("footprint: '%s'\n", s);
+			htsi_set(ht, pcb_strdup(s), 1);
 		}
 	}
 	fclose(f);
@@ -155,9 +157,11 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 {
 	FILE *f;
 	const char *filename, *libfile;
-	int n, fidoly_next;
+	int n, fidoly_next, have_lib;
 	pcb_layer_id_t lid;
 	int layer_warned = 0, hole_warned = 0;
+	htsi_t lib_names; /* hash of names found in the library, if have_lib is 1 */
+
 	if (!options) {
 		fidocadj_get_export_options(0);
 		for (n = 0; n < NUM_OPTIONS; n++)
@@ -166,9 +170,14 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	}
 
 	libfile = options[HA_libfile].str_value;
-	if ((libfile != NULL) && (*libfile != '\0'))
-		if (load_lib(libfile) != 0)
-			return;
+	if ((libfile != NULL) && (*libfile != '\0')) {
+		htsi_init(&lib_names, strhash, strkeyeq);
+		have_lib = 1;
+		if (load_lib(&lib_names, libfile) != 0)
+			goto free_lib;
+	}
+	else
+		have_lib = 0;
 
 	filename = options[HA_fidocadjfile].str_value;
 	if (!filename)
@@ -264,6 +273,15 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	PCB_END_LOOP;
 
 	fclose(f);
+
+	free_lib:;
+	if (have_lib) {
+		htsi_entry_t *e;
+		for (e = htsi_first(&lib_names); e; e = htsi_next(&lib_names, e))
+			free(e->key);
+
+		htsi_uninit(&lib_names);
+	}
 }
 
 static void fidocadj_parse_arguments(int *argc, char ***argv)
