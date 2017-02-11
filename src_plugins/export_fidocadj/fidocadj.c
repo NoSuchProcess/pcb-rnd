@@ -90,12 +90,36 @@ static long int crd(pcb_coord_t c)
 	return pcb_round((double)PCB_COORD_TO_MIL(c) * 200.0);
 }
 
+static int layer_map(unsigned int lflg, int *fidoly_next, int *warned, char *lyname)
+{
+	if (lflg & PCB_LYT_COPPER) {
+		if (lflg & PCB_LYT_BOTTOM)
+			return 1;
+		if (lflg & PCB_LYT_TOP)
+			return 2;
+	}
+	if (lflg & PCB_LYT_SILK)
+		return 3;
+
+	(*fidoly_next)++;
+	if (*fidoly_next > 15) {
+		if (!*warned)
+			pcb_message(PCB_MSG_ERROR, "FidoCadJ can't handle this many layers - layer %s is not exported\n", lyname);
+		*warned = 1;
+		return -1;
+	}
+	return *fidoly_next;
+}
+
+
+
 static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 {
 	FILE *f;
 	const char *filename;
-	int n, fidoly;
+	int n, fidoly_next;
 	pcb_layer_id_t lid;
+	int warned = 0;
 
 	if (!options) {
 		fidocadj_get_export_options(0);
@@ -116,13 +140,15 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 
 	fprintf(f, "[FIDOCAD]\n");
 
-	fidoly = 0;
+	fidoly_next = 3;
 	for(lid = 0; lid < pcb_max_layer; lid++) {
 		pcb_layer_t *ly = PCB->Data->Layer+lid;
 		unsigned int lflg = pcb_layer_flags(lid);
-		if ((!(lflg & PCB_LYT_COPPER)) && (!(lflg & PCB_LYT_SILK)))
+		int fidoly = layer_map(lflg, &fidoly_next, &warned, ly->Name);
+
+		if (fidoly < 0)
 			continue;
-		fidoly++;
+
 		PCB_LINE_LOOP(ly) {
 			fprintf(f, "PL %ld %ld %ld %ld %ld %d\n",
 				crd(line->Point1.X), crd(line->Point1.Y),
@@ -130,6 +156,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 				crd(line->Thickness), fidoly);
 		}
 		PCB_END_LOOP;
+
 	}
 	fclose(f);
 }
