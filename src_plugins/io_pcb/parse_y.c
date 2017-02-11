@@ -2216,7 +2216,7 @@ yyreduce:
   case 73:
 #line 869 "parse_y.y" /* yacc.c:1646  */
     {
-				if ((yyvsp[-4].integer) <= 0 || (yyvsp[-4].integer) > PCB_MAX_LAYER + 2)
+				if ((yyvsp[-4].integer) <= 0 || (yyvsp[-4].integer) > PCB_MAX_LAYER)
 				{
 					yyerror("Layernumber out of range");
 					YYABORT;

@@ -867,7 +867,7 @@ layer
 			/* name */
 		: T_LAYER '(' INTEGER STRING opt_string ')' '('
 			{
-				if ($3 <= 0 || $3 > PCB_MAX_LAYER + 2)
+				if ($3 <= 0 || $3 > PCB_MAX_LAYER)
 				{
 					yyerror("Layernumber out of range");
 					YYABORT;
