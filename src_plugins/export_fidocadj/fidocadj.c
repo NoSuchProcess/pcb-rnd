@@ -178,7 +178,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			do {
 				fprintf(f, " %ld %ld", crd(v->point[0]), crd(v->point[1]));
 			} while ((v = v->next) != pl->head.next);
-			fprintf(f, "\n");
+			fprintf(f, " %d\n", fidoly);
 		}
 		PCB_END_LOOP;
 
