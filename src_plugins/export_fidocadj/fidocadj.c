@@ -184,9 +184,10 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 
 		PCB_TEXT_LOOP(ly) {
 			char *s;
+			pcb_coord_t x0 = text->X, sx = text->BoundingBox.X2 - text->BoundingBox.X1;
+			pcb_coord_t y0 = text->Y, sy = text->BoundingBox.Y2 - text->BoundingBox.Y1;
 			fprintf(f, "TY %ld %ld %ld %ld %d 0 %d * ",
-				crd(text->X), crd(text->X),
-				crd(text->BoundingBox.X2 - text->BoundingBox.X1), crd(text->BoundingBox.Y2 - text->BoundingBox.Y1),
+				crd(x0), crd(y0), crd(sx), crd(sy),
 				text->Direction, fidoly);
 			for(s = text->TextString; *s != '\0'; s++) {
 				if (*s == ' ')
