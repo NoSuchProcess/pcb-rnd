@@ -90,7 +90,7 @@ static long int crd(pcb_coord_t c)
 	return pcb_round((double)PCB_COORD_TO_MIL(c) * 200.0);
 }
 
-static int layer_map(unsigned int lflg, int *fidoly_next, int *warned, char *lyname)
+static int layer_map(unsigned int lflg, int *fidoly_next, int *warned, const char *lyname)
 {
 	if (lflg & PCB_LYT_COPPER) {
 		if (lflg & PCB_LYT_BOTTOM)
@@ -156,6 +156,27 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 				crd(line->Thickness), fidoly);
 		}
 		PCB_END_LOOP;
+
+		PCB_ARC_LOOP(ly) {
+#warning TODO: fprintf() some curve using arc->*
+			;
+		}
+		PCB_END_LOOP;
+
+		PCB_POLY_LOOP(ly) {
+			pcb_vnode_t *v;
+			pcb_pline_t *pl = polygon->Clipped->contours;
+
+
+			fprintf(f, "PP %ld %ld", crd(pl->head.point[0]), crd(pl->head.point[1]));
+			v = pl->head.next;
+			do {
+				fprintf(f, " %ld %ld", crd(v->point[0]), crd(v->point[1]));
+			} while ((v = v->next) != pl->head.next);
+			fprintf(f, "\n");
+		}
+		PCB_END_LOOP;
+
 
 	}
 	fclose(f);
