@@ -1460,10 +1460,24 @@ typedef struct {
 static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 {
 	GdkColor new_color;
-	const char *str;
+	const char *str, *lcpath = "appearance/color/layer", *lspath = "appearance/color/layer_selected";
 
 	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), &new_color);
 	str = ghid_get_color_name(&new_color);
+
+	if ((strcmp(ci->cfg->hash_path, lcpath) == 0) || (strcmp(ci->cfg->hash_path, lspath) == 0)) {
+		/* if the design color list is empty, we should create it and copy
+		   all current colors. If we don't, and conf_set() does it for items
+		   lower than ci->idx, it will create all colors with empty string value,
+		   ruining the color table. */
+		if (conf_lht_get_at(CFR_DESIGN, ci->cfg->hash_path, 0) == NULL) {
+			int n;
+			conf_native_t *nat = conf_get_field(ci->cfg->hash_path);
+			if (nat != NULL)
+				for(n = 0; (n < PCB_MAX_LAYER) && (n < nat->array_size); n++)
+					conf_set(CFR_DESIGN, ci->cfg->hash_path, n,  nat->val.color[n], POL_OVERWRITE);
+		}
+	}
 
 	if (conf_set(CFR_DESIGN, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE) == 0) {
 		ghid_set_special_colors(ci->cfg);
