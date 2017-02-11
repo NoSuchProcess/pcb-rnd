@@ -1,0 +1,198 @@
+:author: Alain
+:toc: left
+:icons: font
+:imagesdir: img_route_style
+:stylesdir: ./
+:stylesheet: default.css
+:linkcss:
+
+// Substitutions...
+:prg:     pass:q[`pcb-rnd`]
+:yes:     icon:check[role="green"]
+:no:      icon:times[role="red"]
+
+= Route style GUI design
+
+[abstract]
+== Abstract
+
+This document is a WIP, working document, mixture of many sources of documentation
+linked to the <<img-gtk2_gui, Route Style>> GUI part, as presented to the user.
+
+PCB means PCB/gEDA, or mainline, {prg} is the primary focus for this WIP.
+
+:experimental:
+:numbered:
+== Introduction
+
+=== What is a Route Style
+
+The `menu:Edit[Route Styles]` menu allows you to select a style which is a group
+of line thickness, via diameter, via drill size, and clearance (keepaway)
+(collectively called a _routing style_) to be copied to the _active_ sizes.
+You can also change the names given to the routing styles and adjust their
+values from `menu:Edit[Route Styles > Edit]` menu.
+
+The active sizes are also adjustable from this menu (How ?).
+The active sizes are shown in the status-line and control the initial size of
+new vias, drilling holes, lines, clearances, text-objects and also
+the maximum dimensions of the board layout.
+
+A routing style can be attributed to a net. (How ?, How am I sure all the
+nets/lines/tracks are affected to the selected routing style ?)
+
+=== Using the autorouter
+
+Do we still have the autorouter ? Is what is described next working elsewhere ?
+
+Use routing styles in the netlist to have per-net routing styles.
+Note that the routing style will be used for an entire net.
+This means if you have a wide metal setting for a power net you will need to
+manually route breakouts from any fine pitch parts on their power pins because
+the router will not be able to change to a narrow trace to connect to the part.
+
+== Design intentions
+
+=== {prg} goals
+
+* Alleviate the limitation of 4 only different route styles.
+* Keep track of "current" route style
+
+=== {prg} implementation prior 1.2.1
+
+A radio-button area + extra <<img-gtk2-edit_route, dialog>>
+
+==== Add a new route style
+
+This is ensured via the `<New>` selection
+
+[[img-gtk2-edit_route]]
+.Edit route styles dialog
+image::gtk2-edit_route_styles_001.png[]
+
+Q: No `Add` button: historical reasons. The original code in mainline
+has 4 route styles, hardwired. It can not remove styles.
+We inherited the mechanism of adding style by selecting the `<New>`.
+(In mainline if you add styles more than 4, they are lost on save).
+
+The inherited code tries not to do modifications immediately but only when
+you close the window. This is a common pattern in the gtk hid at the
+moment: all data from core copied to some "hid_gtk-specific" mirror cache
+for the dialog, then the dialog works on the cache and it is copied back
+when you close the dialog.
+
+Igor2 thinks the idea was that the dialogs are modal and if the user says
+cancel, you just don't do the copy-back. It's a lot of extra code and complication.
+The strange <new style> mechanism might be a result of this: the dialog-cache
+is probably not smart enough to hold multiple new styles, but with
+the current mechanism you can add only one new style until you close the dialog.
+
+==== Keep track of current route style
+
+This is ensured via the `<custom>` selection in <<img-gtk2-edit_route, dialog>>.
+
+At the end you are not drawing with the selected style, you are drawing
+with a pen. When you change style, all parameters of the style
+are copied into the pen. However, you can change any parameter of
+the pen with hotkeys, which means you can easily end up drawing with a pen
+that does not match any of the currently existing styles.
+
+Mainline has this too, it's all inherited.
+
+Using such a custom pen is useful when you want to draw a
+single net of some special geometry - it is not worth adding a
+new style, but you may still want to set the temporary pen up properly.
+
+The problem was that when you used such a custom pen, you didn't really
+have a way to see your current setting and besides the `add +5 mils` kind of
+hotkeys, you couldn't really set it up, e.g.
+"I want 80 mil wide traces temporarily"
+was hard to do. So I introduced the `<current>` style, which shows the current
+settings of the pen so it is not hidden anymore.
+
+NOTE: Lapsus here from Igor, who really means <current>. I suggest to rename it <current> ??
+
+This way you can see and change all parameters of the pen, without having to
+create a new style or having to use CLI actions.
+
+Igor2 definitely wants to keep `<custom>` in the gtk2 hid, wants to add it in the
+lesstif hid and wants all new GUI hids to support it the same way.
+
+
+`<current>` mode is indicated by not selecting any style (no radio button selected).
+As long as your pen matches any of the existing style, you are drawing with
+that style and the style is marked in the radio button.
+When you change your pen to something that doesn't match any existing style,
+the radio button turns off.
+
+This is by design, Igor2 likes it, miloh, with whom we coded it likes it too.
+Please do not change this.
+
+PCB Mainline does the same, except:
+
+* you can't see or modify the numeric fields of the `<custom>` style
+  directly (only modification possible is via hotkeys)
+* you can't explicitly switch to the `<custom>` style (you need to make a
+  hotkey-modification of the pen)
+
+But the pen concept exists there too: press kbd:[Ctrl+Shift+V], it will change
+the via drill size of the pen. This will result in a pen not matching
+any existing style -> radio button selection disappears.
+
+=== PCB
+
+mainline has no explicit <custom>, no delete button and has the hardwired number of 4 styles.
+
+=== {prg} Next
+
+Honestly, I don't like it and want to change it (in all dialog boxes,even in gtk2):
+
+* I want the dialog boxes non-modal: you should be able to edit the layout while
+  the route style dialog is open
+* I want changes to happen immediately - so if you change the line
+  width for a style and draw with it, it should have immediate effect
+* I want to add undo code for the route style changes; I think the original
+  idea behind. Combining non-modal dialog and immediate effect makes cancel
+  meaningless, but if the user has the usual, central undo, that's fine.
+
+== GTK2 situation
+
+=== User manual
+
+Document this part... Most of the info are above. Select and create a section
+-> See FIXME.
+
+Especially, document `Attributes`
+
+* what for ?
+* expected key, values ?
+* format ? units ?
+
+[[img-gtk2_gui]]
+.{prg} on an empty design, with Edit Route Style dialog open
+image::gtk2-pcb-rnd_001.png[]
+
+IMPORTANT: Where is `saved "as default"` ? Documentation here ?
+
+=== Short-term improvements ?
+
+This seems to be low priority w.r.t. cairo and GTK3... Am I right ?
+
+== GTK3 design proposal
+
+TODO: A mock-up (screenshot)
+
+A `GtkTreeView`, allowing the direct rename of style, allow sorting, or drag
+and drop the styles to change order.
+
+Can be selected (highlighted) to show the active route style.
+
+`GtkButtonBox` with usual buttons : Add, Delete, Raise, Down ...
+
+Still another dialog is needed for other infos...
+
+== GTK2 retro-fit ?
+
+If so, then trade for a less advanced GtkTreeView
+
+`GtkHButtonBox` i.s.o `GtkButtonBox`.

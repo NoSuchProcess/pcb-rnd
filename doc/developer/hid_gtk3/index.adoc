@@ -1,0 +1,9 @@
+//:toc: left
+:stylesheet: default.css
+:linkcss:
+
+= GTK2 / GTK3 GUI related topics
+
+* `cairo` back-end
+* GTK3 compatibility ?
+* <<route_style.adoc#, Route styles>> dialog + widget. Concepts

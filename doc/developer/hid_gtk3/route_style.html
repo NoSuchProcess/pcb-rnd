@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.5">
+<meta name="author" content="Alain">
+<title>Route style GUI design</title>
+<link rel="stylesheet" href="./default.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Route style GUI design</h1>
+<div class="details">
+<span id="author" class="author">Alain</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_abstract">Abstract</a></li>
+<li><a href="#_introduction">1. Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#_what_is_a_route_style">1.1. What is a Route Style</a></li>
+<li><a href="#_using_the_autorouter">1.2. Using the autorouter</a></li>
+</ul>
+</li>
+<li><a href="#_design_intentions">2. Design intentions</a>
+<ul class="sectlevel2">
+<li><a href="#__code_pcb_rnd_code_goals">2.1. <code>pcb-rnd</code> goals</a></li>
+<li><a href="#__code_pcb_rnd_code_implementation_prior_1_2_1">2.2. <code>pcb-rnd</code> implementation prior 1.2.1</a></li>
+<li><a href="#_pcb">2.3. PCB</a></li>
+<li><a href="#__code_pcb_rnd_code_next">2.4. <code>pcb-rnd</code> Next</a></li>
+</ul>
+</li>
+<li><a href="#_gtk2_situation">3. GTK2 situation</a>
+<ul class="sectlevel2">
+<li><a href="#_user_manual">3.1. User manual</a></li>
+<li><a href="#_short_term_improvements">3.2. Short-term improvements ?</a></li>
+</ul>
+</li>
+<li><a href="#_gtk3_design_proposal">4. GTK3 design proposal</a></li>
+<li><a href="#_gtk2_retro_fit">5. GTK2 retro-fit ?</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_abstract">Abstract</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This document is a WIP, working document, mixture of many sources of documentation
+linked to the <a href="#img-gtk2_gui">Route Style</a> GUI part, as presented to the user.</p>
+</div>
+<div class="paragraph">
+<p>PCB means PCB/gEDA, or mainline, <code>pcb-rnd</code> is the primary focus for this WIP.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_what_is_a_route_style">1.1. What is a Route Style</h3>
+<div class="paragraph">
+<p>The <code><span class="menuseq"><span class="menu">Edit</span>&#160;&#9656; <span class="menuitem">Route Styles</span></span></code> menu allows you to select a style which is a group
+of line thickness, via diameter, via drill size, and clearance (keepaway)
+(collectively called a <em>routing style</em>) to be copied to the <em>active</em> sizes.
+You can also change the names given to the routing styles and adjust their
+values from <code><span class="menuseq"><span class="menu">Edit</span>&#160;&#9656; <span class="submenu">Route Styles</span>&#160;&#9656; <span class="menuitem">Edit</span></span></code> menu.</p>
+</div>
+<div class="paragraph">
+<p>The active sizes are also adjustable from this menu (How ?).
+The active sizes are shown in the status-line and control the initial size of
+new vias, drilling holes, lines, clearances, text-objects and also
+the maximum dimensions of the board layout.</p>
+</div>
+<div class="paragraph">
+<p>A routing style can be attributed to a net. (How ?, How am I sure all the
+nets/lines/tracks are affected to the selected routing style ?)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_autorouter">1.2. Using the autorouter</h3>
+<div class="paragraph">
+<p>Do we still have the autorouter ? Is what is described next working elsewhere ?</p>
+</div>
+<div class="paragraph">
+<p>Use routing styles in the netlist to have per-net routing styles.
+Note that the routing style will be used for an entire net.
+This means if you have a wide metal setting for a power net you will need to
+manually route breakouts from any fine pitch parts on their power pins because
+the router will not be able to change to a narrow trace to connect to the part.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_design_intentions">2. Design intentions</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="__code_pcb_rnd_code_goals">2.1. <code>pcb-rnd</code> goals</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Alleviate the limitation of 4 only different route styles.</p>
+</li>
+<li>
+<p>Keep track of "current" route style</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="__code_pcb_rnd_code_implementation_prior_1_2_1">2.2. <code>pcb-rnd</code> implementation prior 1.2.1</h3>
+<div class="paragraph">
+<p>A radio-button area + extra <a href="#img-gtk2-edit_route">dialog</a></p>
+</div>
+<div class="sect3">
+<h4 id="_add_a_new_route_style">2.2.1. Add a new route style</h4>
+<div class="paragraph">
+<p>This is ensured via the <code>&lt;New&gt;</code> selection</p>
+</div>
+<div id="img-gtk2-edit_route" class="imageblock">
+<div class="content">
+<img src="img_route_style/gtk2-edit_route_styles_001.png" alt="gtk2 edit route styles 001">
+</div>
+<div class="title">Figure 1. Edit route styles dialog</div>
+</div>
+<div class="paragraph">
+<p>Q: No <code>Add</code> button: historical reasons. The original code in mainline
+has 4 route styles, hardwired. It can not remove styles.
+We inherited the mechanism of adding style by selecting the <code>&lt;New&gt;</code>.
+(In mainline if you add styles more than 4, they are lost on save).</p>
+</div>
+<div class="paragraph">
+<p>The inherited code tries not to do modifications immediately but only when
+you close the window. This is a common pattern in the gtk hid at the
+moment: all data from core copied to some "hid_gtk-specific" mirror cache
+for the dialog, then the dialog works on the cache and it is copied back
+when you close the dialog.</p>
+</div>
+<div class="paragraph">
+<p>Igor2 thinks the idea was that the dialogs are modal and if the user says
+cancel, you just don&#8217;t do the copy-back. It&#8217;s a lot of extra code and complication.
+The strange &lt;new style&gt; mechanism might be a result of this: the dialog-cache
+is probably not smart enough to hold multiple new styles, but with
+the current mechanism you can add only one new style until you close the dialog.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_keep_track_of_current_route_style">2.2.2. Keep track of current route style</h4>
+<div class="paragraph">
+<p>This is ensured via the <code>&lt;custom&gt;</code> selection in <a href="#img-gtk2-edit_route">dialog</a>.</p>
+</div>
+<div class="paragraph">
+<p>At the end you are not drawing with the selected style, you are drawing
+with a pen. When you change style, all parameters of the style
+are copied into the pen. However, you can change any parameter of
+the pen with hotkeys, which means you can easily end up drawing with a pen
+that does not match any of the currently existing styles.</p>
+</div>
+<div class="paragraph">
+<p>Mainline has this too, it&#8217;s all inherited.</p>
+</div>
+<div class="paragraph">
+<p>Using such a custom pen is useful when you want to draw a
+single net of some special geometry - it is not worth adding a
+new style, but you may still want to set the temporary pen up properly.</p>
+</div>
+<div class="paragraph">
+<p>The problem was that when you used such a custom pen, you didn&#8217;t really
+have a way to see your current setting and besides the <code>add +5 mils</code> kind of
+hotkeys, you couldn&#8217;t really set it up, e.g.
+"I want 80 mil wide traces temporarily"
+was hard to do. So I introduced the <code>&lt;current&gt;</code> style, which shows the current
+settings of the pen so it is not hidden anymore.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Lapsus here from Igor, who really means &lt;current&gt;. I suggest to rename it &lt;current&gt; ??
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This way you can see and change all parameters of the pen, without having to
+create a new style or having to use CLI actions.</p>
+</div>
+<div class="paragraph">
+<p>Igor2 definitely wants to keep <code>&lt;custom&gt;</code> in the gtk2 hid, wants to add it in the
+lesstif hid and wants all new GUI hids to support it the same way.</p>
+</div>
+<div class="paragraph">
+<p><code>&lt;current&gt;</code> mode is indicated by not selecting any style (no radio button selected).
+As long as your pen matches any of the existing style, you are drawing with
+that style and the style is marked in the radio button.
+When you change your pen to something that doesn&#8217;t match any existing style,
+the radio button turns off.</p>
+</div>
+<div class="paragraph">
+<p>This is by design, Igor2 likes it, miloh, with whom we coded it likes it too.
+Please do not change this.</p>
+</div>
+<div class="paragraph">
+<p>PCB Mainline does the same, except:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>you can&#8217;t see or modify the numeric fields of the <code>&lt;custom&gt;</code> style
+directly (only modification possible is via hotkeys)</p>
+</li>
+<li>
+<p>you can&#8217;t explicitly switch to the <code>&lt;custom&gt;</code> style (you need to make a
+hotkey-modification of the pen)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>But the pen concept exists there too: press <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></span>, it will change
+the via drill size of the pen. This will result in a pen not matching
+any existing style &#8594; radio button selection disappears.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pcb">2.3. PCB</h3>
+<div class="paragraph">
+<p>mainline has no explicit &lt;custom&gt;, no delete button and has the hardwired number of 4 styles.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="__code_pcb_rnd_code_next">2.4. <code>pcb-rnd</code> Next</h3>
+<div class="paragraph">
+<p>Honestly, I don&#8217;t like it and want to change it (in all dialog boxes,even in gtk2):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>I want the dialog boxes non-modal: you should be able to edit the layout while
+the route style dialog is open</p>
+</li>
+<li>
+<p>I want changes to happen immediately - so if you change the line
+width for a style and draw with it, it should have immediate effect</p>
+</li>
+<li>
+<p>I want to add undo code for the route style changes; I think the original
+idea behind. Combining non-modal dialog and immediate effect makes cancel
+meaningless, but if the user has the usual, central undo, that&#8217;s fine.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gtk2_situation">3. GTK2 situation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_user_manual">3.1. User manual</h3>
+<div class="paragraph">
+<p>Document this part&#8230;&#8203; Most of the info are above. Select and create a section
+&#8594; See FIXME.</p>
+</div>
+<div class="paragraph">
+<p>Especially, document <code>Attributes</code></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>what for ?</p>
+</li>
+<li>
+<p>expected key, values ?</p>
+</li>
+<li>
+<p>format ? units ?</p>
+</li>
+</ul>
+</div>
+<div id="img-gtk2_gui" class="imageblock">
+<div class="content">
+<img src="img_route_style/gtk2-pcb-rnd_001.png" alt="gtk2 pcb rnd 001">
+</div>
+<div class="title">Figure 2. <code>pcb-rnd</code> on an empty design, with Edit Route Style dialog open</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Where is <code>saved "as default"</code> ? Documentation here ?
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_short_term_improvements">3.2. Short-term improvements ?</h3>
+<div class="paragraph">
+<p>This seems to be low priority w.r.t. cairo and GTK3&#8230;&#8203; Am I right ?</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gtk3_design_proposal">4. GTK3 design proposal</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TODO: A mock-up (screenshot)</p>
+</div>
+<div class="paragraph">
+<p>A <code>GtkTreeView</code>, allowing the direct rename of style, allow sorting, or drag
+and drop the styles to change order.</p>
+</div>
+<div class="paragraph">
+<p>Can be selected (highlighted) to show the active route style.</p>
+</div>
+<div class="paragraph">
+<p><code>GtkButtonBox</code> with usual buttons : Add, Delete, Raise, Down &#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Still another dialog is needed for other infos&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gtk2_retro_fit">5. GTK2 retro-fit ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If so, then trade for a less advanced GtkTreeView</p>
+</div>
+<div class="paragraph">
+<p><code>GtkHButtonBox</code> i.s.o <code>GtkButtonBox</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-02-11 19:25:04 CET
+</div>
+</div>
+</body>
+</html>
