@@ -272,6 +272,16 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 	}
 	PCB_END_LOOP;
 
+	PCB_ELEMENT_LOOP(PCB->Data) {
+		const char *fp = element->Name[PCB_ELEMNAME_IDX_DESCRIPTION].TextString;
+		if (have_lib && (htsi_get(&lib_names, fp)))
+			fprintf(f, "MC %ld %ld %d 0 %s\n", crd(element->MarkX), crd(element->MarkY), 0, fp);
+		else
+			pcb_message(PCB_MSG_ERROR, "Can't export custom footprint for %s yet\n", element->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
+	}
+	PCB_END_LOOP;
+
+
 	fclose(f);
 
 	free_lib:;
