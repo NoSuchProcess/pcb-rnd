@@ -102,6 +102,7 @@ CLEANUP #5
 	  the same layer group
 
 CLEANUP #6:
+- silent failure on parser error in io_pcb: e.g. missing or non-integer fields of Via[] [report: Erich]
 - core lib splitup:
 	- gsch2pcb: generalize plugin/buildin loading for external tools, check if gsch2pcb can work from plugins
 - lihata board/fp format:
