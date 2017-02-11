@@ -87,7 +87,7 @@ static pcb_hid_attribute_t *fidocadj_get_export_options(int *n)
 
 static long int crd(pcb_coord_t c)
 {
-	return pcb_round((double)PCB_COORD_TO_MIL(c) * 200.0);
+	return pcb_round((double)PCB_COORD_TO_MIL(c) * 5.0);
 }
 
 static int layer_map(unsigned int lflg, int *fidoly_next, int *warned, const char *lyname)
