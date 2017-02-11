@@ -197,9 +197,23 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			fputc('\n', f);
 		}
 		PCB_END_LOOP;
-
-
 	}
+
+	PCB_VIA_LOOP(PCB->Data) {
+		fprintf(f, "pa %ld %ld", crd(via->X), crd(via->Y));
+		if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, via)) {
+			if (!((PCB_FLAG_SQUARE_GET(via) == 0) || (PCB_FLAG_SQUARE_GET(via) == 1))) {
+#warning TODO: find out the orientation
+				fprintf(f, "%ld %ld %ld 2\n", crd(via->Thickness), crd(via->Thickness*2), crd(via->DrillingHole)); /* rounded corner rectangle */
+			}
+			else
+				fprintf(f, "%ld %ld %ld 1\n", crd(via->Thickness), crd(via->Thickness), crd(via->DrillingHole)); /* rectangle with sharp corners */
+		}
+		else
+			fprintf(f, "%ld %ld %ld 0\n", crd(via->Thickness), crd(via->Thickness), crd(via->DrillingHole)); /* circular */
+	}
+	PCB_END_LOOP;
+
 	fclose(f);
 }
 
