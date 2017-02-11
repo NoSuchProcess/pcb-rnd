@@ -1481,13 +1481,14 @@ static void config_color_button_create(GtkWidget * box, conf_native_t * cfg, int
 	hbox = gtk_hbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(box), hbox, FALSE, FALSE, 0);
 
-	if (ci == NULL) {
+	if ((ci == NULL) || (idx > 0)) {
 #warning LEAK: this is never free()d
 		ci = malloc(sizeof(cfg_color_idx_t));
 		ci->cfg = cfg;
 		ci->idx = idx;
 		ci->color = calloc(sizeof(GdkColor), cfg->array_size);
-		conf_hid_set_data(cfg, ghid_conf_id, ci);
+		if (idx == 0)
+			conf_hid_set_data(cfg, ghid_conf_id, ci);
 	}
 
 	ghid_map_color_string(cfg->val.color[idx], &(ci->color[idx]));
