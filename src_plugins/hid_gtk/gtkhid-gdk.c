@@ -614,8 +614,8 @@ void ghid_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t
 
 void ghid_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	gint vrx, vry;
-	gint w, h, radius;
+	gint vrx, vry, vrx2, vry2, tune_x, tune_y;
+	double w, h, radius;
 	render_priv *priv = gport->render_priv;
 
 	w = gport->view.canvas_width * gport->view.coord_per_px;
@@ -629,6 +629,8 @@ void ghid_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t 
 	USE_GC(gc);
 	vrx = Vz(xradius);
 	vry = Vz(yradius);
+	vrx2 = Vz(xradius*2.0);
+	vry2 = Vz(yradius*2.0);
 
 	if ((delta_angle > 360.0) || (delta_angle < -360.0)) {
 		start_angle = 0;
@@ -648,8 +650,17 @@ void ghid_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t 
 	if (start_angle >= 180)
 		start_angle -= 360;
 
+
+	/* we calculated with doubles but the API needs ints; there might be
+	   an error of +-1 in the rounding that may add up when gdk calculates
+	   the endpoint. This hack will fix that error. */
+	tune_x = Vx(cx+xradius) - (Vx(cx - xradius) + vrx2);
+	tune_y = Vy(cy+yradius) - (Vy(cy - yradius) + vry2);
+
 	gdk_draw_arc(gport->drawable, priv->u_gc, 0,
-							 Vx(cx) - vrx, Vy(cy) - vry, vrx * 2, vry * 2, (start_angle + 180) * 64, delta_angle * 64);
+							 Vx(cx - xradius) + tune_x, Vy(cy - yradius) + tune_y,
+							 pcb_round(vrx2), pcb_round(vry2),
+							 (start_angle + 180) * 64, delta_angle * 64);
 }
 
 void ghid_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
