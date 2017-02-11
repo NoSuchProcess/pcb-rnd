@@ -151,7 +151,10 @@ static int layer_map(unsigned int lflg, int *fidoly_next, int *warned, const cha
 	return *fidoly_next;
 }
 
-
+static void write_custom_element(FILE *f, pcb_element_t *e)
+{
+	pcb_message(PCB_MSG_ERROR, "Can't export custom footprint for %s yet\n", e->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
+}
 
 static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 {
@@ -277,7 +280,7 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 		if (have_lib && (htsi_get(&lib_names, fp)))
 			fprintf(f, "MC %ld %ld %d 0 %s\n", crd(element->MarkX), crd(element->MarkY), 0, fp);
 		else
-			pcb_message(PCB_MSG_ERROR, "Can't export custom footprint for %s yet\n", element->Name[PCB_ELEMNAME_IDX_REFDES].TextString);
+			write_custom_element(f, element);
 	}
 	PCB_END_LOOP;
 
