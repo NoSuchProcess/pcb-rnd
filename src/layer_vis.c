@@ -223,7 +223,7 @@ void pcb_layervis_reset_stack(void)
 	pcb_layer_id_t comp;
 	pcb_cardinal_t i;
 
-	assert(PCB->Data->LayerN < PCB_MAX_LAYER);
+	assert(PCB->Data->LayerN <= PCB_MAX_LAYER);
 	for (i = 0; i < pcb_max_layer; i++) {
 		if (!(pcb_layer_flags(i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = i;
