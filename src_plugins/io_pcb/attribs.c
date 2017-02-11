@@ -81,6 +81,8 @@ static void c2a(pcb_board_t *pcb, lht_node_t *tree, const char *path1)
 				gds_t conc;
 				gds_init(&conc);
 				for(i = n->data.list.first; i != NULL; i = i->next) {
+					if (i->data.text.value == NULL)
+						continue;
 					if (i != n->data.list.first)
 						gds_append_str(&conc, LISTSEP);
 					gds_append_str(&conc, i->data.text.value);
