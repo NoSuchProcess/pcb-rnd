@@ -2309,7 +2309,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 		new_val = gtk_entry_get_text(GTK_ENTRY(auto_tab_widgets.edit_string));
 		break;
 	case CFN_COORD:
-		pcb_gtk_coord_entry_get_value_str(auto_tab_widgets.edit_coord, buff, sizeof(buff));
+		pcb_gtk_coord_entry_get_value_str(GHID_COORD_ENTRY(auto_tab_widgets.edit_coord), buff, sizeof(buff));
 		new_val = buff;
 		break;
 	case CFN_INTEGER:
