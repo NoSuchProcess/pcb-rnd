@@ -55,7 +55,7 @@ end
 switch /local/pcb/lib_gtk_common/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/hid_gtk/menu_lht.c }
+		put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/lib_gtk_common/menu_lht.c }
 		append /local/pcb/RULES [@
 ### gtk menu embed
 $(PLUGDIR)/lib_gtk_common/menu_lht.c: pcb-menu-gtk.lht
@@ -63,4 +63,5 @@ $(PLUGDIR)/lib_gtk_common/menu_lht.c: pcb-menu-gtk.lht
 @]
 	end
 end
+
 
