@@ -1,0 +1,52 @@
+digraph gr {
+	rankdir=LR
+	
+	pcbrnd [label="pcb-rnd" style=filled fillcolor=cyan shape=box height=8]
+	kicad [label="KiCad" shape=box]
+	pcb [label="gEDA/PCB" shape=box]
+	freerouting [label="freerouting.net\njava application" shape=box]
+	mucs [label="mucs pcb with autorouter" shape=box]
+
+	batch   [label="hid_batch" shape=diamond]
+	gtk     [label="hid_gtk" shape=diamond]
+	lesstif [label="hid_lesstif" shape=diamond]
+	remote  [label="hid_remote" shape=diamond]
+
+	pcbrnd -> kicad [label="board: legacy format"]
+	pcbrnd -> kicad [label="board: s-expression"]
+	kicad -> pcbrnd [label="board: s-expression"]
+	pcbrnd -> kicad [label="footprint: s-expression"]
+	kicad -> pcbrnd [label="footprint: s-expression"]
+
+	pcbrnd -> pcb [label="board: .pcb"]
+	pcbrnd -> pcb [label="footprint: .fp"]
+	pcb -> pcbrnd [label="board: .pcb"]
+	pcb -> pcbrnd [label="footprint: .fp"]
+
+	pcbrnd -> freerouting [label="export: .dsn"]
+	freerouting -> pcbrnd [label="import: .dsn"]
+	mucs -> pcbrnd [label="import"]
+
+	pcbrnd -> breadboard [label="export: .png"]
+	pcbrnd -> BoM [label="export: text"]
+	pcbrnd -> XY [label="export: .xy\nfor pick and place"]
+	pcbrnd -> gerber [label="export: .gbr, .cnc"]
+	pcbrnd -> ipcd356 [label="export"]
+	pcbrnd -> lpr [label="print"]
+	pcbrnd -> nelma [label="export"]
+	pcbrnd -> png [label="export: bitmap"]
+	pcbrnd -> ps [label="export: .ps, .eps"]
+	pcbrnd -> stat [label="export: statsitics .lht"]
+	pcbrnd -> svg [label="export: .svg"]
+
+	edif -> pcbrnd [label="import"]
+	ltspice -> pcbrnd [label="import: schematics"]
+	netlist -> pcbrnd [label="import: pcb .net"]
+	gschem -> pcbrnd [label="import: schematics"]
+	tinycad -> pcbrnd [label="import: schematics"]
+
+	pcbrnd -> batch [label="hid"]
+	pcbrnd -> gtk [label="hid"]
+	pcbrnd -> lesstif [label="hid"]
+	pcbrnd -> remote [label="hid"]
+}
