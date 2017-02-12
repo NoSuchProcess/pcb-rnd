@@ -64,7 +64,6 @@ switch /local/pcb/mod/CONF
 		put /local/pcb/mod/CONFOUT /local/pcb/mod/CONF
 		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
 		append /local/pcb/CLEANFILES /local/pcb/mod/CONFOUT
-		append /local/pcb/CLEANFILES ?/local/pcb/mod/CLEANFILES
 		append /local/pcb/RULES [@
 # conf generation for @/local/pcb/mod@ '@/local/pcb/mod/CONF@'
 @/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
@@ -72,6 +71,8 @@ switch /local/pcb/mod/CONF
 @]
 		end
 end
+
+append /local/pcb/CLEANFILES ?/local/pcb/mod/CLEANFILES
 
 # explicit rules: .sphash -> .c
 # Space separated list of .sphash input files
@@ -117,5 +118,6 @@ put /local/pcb/mod/CFLAGS {}
 put /local/pcb/mod/YACC {}
 put /local/pcb/mod/LEX {}
 put /local/pcb/mod/SPHASH {}
+put /local/pcb/mod/CLEANFILES {}
 put /local/pcb/mod {}
 
