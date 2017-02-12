@@ -1,0 +1,142 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> The FOS EDA ecosystem and pcb-rnd in it</H2>
+
+<H3> current scene of EDA tools </H3>
+<p>
+There are some large, proprietary EDA tools out there. Most of them are
+monolithic and many of them actively seek legal and technical measures
+against free flow of data - as part of the lock-in model, vendors
+often prefer users to exclusively use their tool once they started to use
+it with a design. <i>It seems most users are happy with this setup.</i>
+<p>
+Sometimes large open source software projects are also built in a monolithic
+approach. It sometimes makes it easier for the users of the above proprietary
+software to switch to a free tool if the free tool has a similar monolithic
+design. However, for smaller, specialized tools, it might be as hard to
+join the flow of such a monolithic free tool, as in the flow of a proprietary tool.
+Not beause of technical measures, but because of how users regard and use
+the software.
+<p>
+An UNIX approach would be to provide a set of tools each doing a small
+part of the job, being able to communicate to eachother, and let the user
+find the workflows (and combinations) that fit their needs. We already have
+such tools available: the gEDA project is a collection of them, but other
+projects like QUCS, PetEd, TinyCAD, nicely fit too. But how could a random
+selection of unrelated tools, developed independently by different people
+compete with an integrated solution? My proposal is: by converting them into
+an <i>ecosystem</i>.
+
+<H3> An EDA ecosystem </H3>
+<p>
+The key is to connect all the little tools in meaningful ways. In an ideal
+worlds, there would a one universal format (like line based plain text in
+UNIX) that all files could operate on. Unfortunately we are not living in
+an ideal world. Still, we could get pairs or even small groups of tools
+to temporarily work together by writing converters and import/export modules.
+Let's just build random bridges between random tools, without worrying about
+how general a given bridge is as long as it fully functions between 2 specific
+tools!
+<p>
+The next thing we'd need to do is to present a large number of examples and
+tutorials explaining how these flows can be used. This would make it easier
+for users to explore the ecosystem and even find new, unexpected ways to use it.
+(This obviously won't be appealing for some users who really just prefer
+an integrated solution with out-of-the-box icons - but we should just target
+the rest of the users with the ecosystem approach.)
+<p>
+Then we should stop worrying about packing and distributing the tools. Let it
+be done by professionals, e.g. package mantainers of Linux distributions. When
+we write pcb-rnd, we should worry about how we import schematics from TinyCAD,
+we should write the import plugin, we should present tutorials and documentaitons
+explainint this flow, but we shouldn't worry too much about how the user gets
+TinyCAD in the first place.
+<p>
+We should also give up some of our idealism. As Peter Clifton said in his
+2016 FOSDEM talk, this approach would end up in n*n converters for n tools.
+But I'd rather have n*n or even n*n/10 converters today than one perfect
+interchange tool that covers it all, earliest shipped in 2094. I believe
+the hardest part of this is <b>accepting alternatives</b>. Different
+projects choose different approaches, different design, different
+programming language, different data models. <i>This is not a bad thing,
+this is a good thing.<i> This is what gives us alternatives. Unfortunately
+this means code duplication, effort duplication, waste of human resources.
+But it's still much much cheaper than the loss we'd induce by forcing
+everyone to work on and use the One True Solution! That said, I don't
+suggest we should just always duplicate everything. I only say that we
+should accept the different goals and constraits of different project and
+accept that a specific piece of code or data can not always be reused as-is
+in another project, even despite of best intention of all parties.
+<p>
+Once we get past our fears of code duplication, and we build the bridges,
+we potentially get a large collection of independent utilities. This sort
+of joins and pools developer resources too. At the end, the sum of all
+developers, users, experience, knowledge, data and code behind such an
+ecosystem. even with the overheads subtracted, can overweight of those
+behind centralized monolithic projects. <i>This is how it could compete with
+those - not on the level of individual tools, but on the level of the whole
+ecosystem.</i>
+<p>
+There are well known examples of this setup. To list only two:
+<ul>
+	<li> the classic UNIX shell tools: shell, grep, sed, awk, tr, make, wc, tail, and a lot more; if we pick one, e.g. grep, and put only that on an alien system (e.g. windows), it is already useful - but it doesn't compete with the native tools found on that system. However, if we consider the whole ecosystem together, it is pretty much competitive. In fact we still use these tools daily.
+	<li> the ecosystems of each bigger modern scripting languages, such as python, perl, ruby, etc. Users and programmers of these languages heavily depend on the rich set of libraries and modules available. The ecosystem is not the interpreter alone, but the interpreter and the number of independently developed modules written by various individuals. Such ecosystems succesfully compete even with commercial "we provide a procedure for every problem" kind of suites.
+</ul>
+
+<H3> What we'd need to do for this today </H3>
+<p>
+Much less than it first seems.
+<p>
+First we need to code the bridges. Do you maintain one of the tools?
+Find what other tools can be input to you and code importers on your side.
+Find what other tools can use your output and code exporters on your side.
+Really, it's that easy. You may want to contact the other tool's team, you
+may request and even get assistance, or you can even build a bridge that takes
+some coding on both sides. But it is not even required: most of the time, the
+simplest import or export module written on one side can solve the problem.
+Or write a converter. Can be a simple foo2bar for a single flow, shared as
+a minitool. If it's useful, it will become the part of the ecosystem.
+<p>
+If you did any of this, you are done with half of the job. We need good PR
+or else noone will know about this new bridge. Write a tutorials, blog
+posts. Show how this specific bridge can be used in a flow to produce
+something useful, even if it is just a blinking LED board.
+<p>
+Let disitrobutions pick up the tools. Let blogs reference your tutorials. Let
+3rd party people collect a bunch of tutorials they found useful in a
+super-tutorial. When someone asks how to do something exotic on some
+public forum, and you know 2..3 tools that can be combined to do it, just
+tell them the solution. Don't mind if they'll be a one-time user of the
+toolchain, for this single shell pipeline to solve this one problem.
+
+<H3> What we are not REQUIRED to do </H3>
+In this section I list what we are not required to do, which doesn't
+mean we don't want to do these, or we can't do these or we shouldn't do these.
+It only means we could just do the cheap part today and worry about these
+tomorrow instead of getting blocked wondering how to solve these.
+<p>
+<b>Centralization:<b> it's not required to have a central organization or
+effort to coordinate such an ecosystem in any way. It may be useful to
+have such coordination in smaller clusters of the ecosystem, tho, but I
+don't think we should worry too much about this at all. If the tools and
+tutorials are available, and people found them useful, there would be multiple
+independent organizations doing the coordination in parallel - just how a 
+number of different Linux distributions package the same software, making sure
+all pieces work together. Both packaging and getting the packages work together
+are totally distribution-specific.
+<p>
+<b>Standardization:</b> e.g. standard, common file formats. Yes, life
+would be much easier if we had these already, but we can proceed without
+them. Let's waste some time today so we still have users by next week when
+we can come up with the common file format multiple tools accept.
+<p>
+<b>Packaging:</b> we don't have to invent our own packaging and distribution
+on the ecosystem-level. We don't need to worry how all the tools will land at
+the user. As long as each tool is easy to get and installed, let the user do
+it, or let 3rd parties (like Linux distributions) do it. We could also
+pack up random collections, but it may cause more trouble when it starts to
+interfere with local installations or distro installation.
+
+
