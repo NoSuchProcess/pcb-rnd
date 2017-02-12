@@ -111,7 +111,7 @@ FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx)
 
 void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
-	if (fctx->backend->fclose != NULL)
+	if ((fctx->backend != NULL) && (fctx->backend->fclose != NULL))
 		fctx->backend->fclose(fctx->backend, f, fctx);
 }
 
