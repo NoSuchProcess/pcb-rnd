@@ -17,11 +17,11 @@ approach. It sometimes makes it easier for the users of the above proprietary
 software to switch to a free tool if the free tool has a similar monolithic
 design. However, for smaller, specialized tools, it might be as hard to
 join the flow of such a monolithic free tool, as in the flow of a proprietary tool.
-Not beause of technical measures, but because of how users regard and use
+Not because of technical measures, but because of how users regard and use
 the software.
 <p>
 An UNIX approach would be to provide a set of tools each doing a small
-part of the job, being able to communicate to eachother, and let the user
+part of the job, being able to communicate to each other, and let the user
 find the workflows (and combinations) that fit their needs. We already have
 such tools available: the gEDA project is a collection of them, but other
 projects like QUCS, PetEd, TinyCAD, nicely fit too. But how could a random
@@ -48,10 +48,10 @@ an integrated solution with out-of-the-box icons - but we should just target
 the rest of the users with the ecosystem approach.)
 <p>
 Then we should stop worrying about packing and distributing the tools. Let it
-be done by professionals, e.g. package mantainers of Linux distributions. When
+be done by professionals, e.g. package maintainers of Linux distributions. When
 we write pcb-rnd, we should worry about how we import schematics from TinyCAD,
-we should write the import plugin, we should present tutorials and documentaitons
-explainint this flow, but we shouldn't worry too much about how the user gets
+we should write the import plugin, we should present tutorials and documentations
+explaining this flow, but we shouldn't worry too much about how the user gets
 TinyCAD in the first place.
 <p>
 We should also give up some of our idealism. As Peter Clifton said in his
@@ -66,7 +66,7 @@ this means code duplication, effort duplication, waste of human resources.
 But it's still much much cheaper than the loss we'd induce by forcing
 everyone to work on and use the One True Solution! That said, I don't
 suggest we should just always duplicate everything. I only say that we
-should accept the different goals and constraits of different project and
+should accept the different goals and constraints of different project and
 accept that a specific piece of code or data can not always be reused as-is
 in another project, even despite of best intention of all parties.
 <p>
@@ -82,7 +82,7 @@ ecosystem.</i>
 There are well known examples of this setup. To list only two:
 <ul>
 	<li> the classic UNIX shell tools: shell, grep, sed, awk, tr, make, wc, tail, and a lot more; if we pick one, e.g. grep, and put only that on an alien system (e.g. windows), it is already useful - but it doesn't compete with the native tools found on that system. However, if we consider the whole ecosystem together, it is pretty much competitive. In fact we still use these tools daily.
-	<li> the ecosystems of each bigger modern scripting languages, such as python, perl, ruby, etc. Users and programmers of these languages heavily depend on the rich set of libraries and modules available. The ecosystem is not the interpreter alone, but the interpreter and the number of independently developed modules written by various individuals. Such ecosystems succesfully compete even with commercial "we provide a procedure for every problem" kind of suites.
+	<li> the ecosystems of each bigger modern scripting languages, such as python, perl, ruby, etc. Users and programmers of these languages heavily depend on the rich set of libraries and modules available. The ecosystem is not the interpreter alone, but the interpreter and the number of independently developed modules written by various individuals. Such ecosystems successfully compete even with commercial "we provide a procedure for every problem" kind of suites.
 </ul>
 
 <H3> What we'd need to do for this today </H3>
@@ -97,14 +97,14 @@ may request and even get assistance, or you can even build a bridge that takes
 some coding on both sides. But it is not even required: most of the time, the
 simplest import or export module written on one side can solve the problem.
 Or write a converter. Can be a simple foo2bar for a single flow, shared as
-a minitool. If it's useful, it will become the part of the ecosystem.
+a mini-tool. If it's useful, it will become the part of the ecosystem.
 <p>
 If you did any of this, you are done with half of the job. We need good PR
-or else noone will know about this new bridge. Write a tutorials, blog
+or else no one will know about this new bridge. Write a tutorials, blog
 posts. Show how this specific bridge can be used in a flow to produce
 something useful, even if it is just a blinking LED board.
 <p>
-Let disitrobutions pick up the tools. Let blogs reference your tutorials. Let
+Let distributions pick up the tools. Let blogs reference your tutorials. Let
 3rd party people collect a bunch of tutorials they found useful in a
 super-tutorial. When someone asks how to do something exotic on some
 public forum, and you know 2..3 tools that can be combined to do it, just
