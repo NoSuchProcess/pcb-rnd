@@ -8,7 +8,7 @@ History and background: there is a lot happening in pcb-rnd these days. A set
 of these seem to nicely connect up and form something that's a big portion
 of the edacore idea, just implemented in a different way. We did not have
 a grand edacore-like plan behind these, they mostly started to happen
-independenclty. But they really happen to connect that way. In the same time
+independently. But they really happen to connect that way. In the same time
 edacore seems to be in hibernation. When I realized this, I contacted
 the edacore people to find out if they are interested in a reboot.
 <p>
@@ -21,7 +21,7 @@ a different name for it.
 <H3> Acceptance and mutual respect </H3>
 <p>
 Before we start, we must accept that we have alternative implementations,
-different projects going in differrent directions. Although this means
+different projects going in different directions. Although this means
 code and effort duplication, <i>this is not a bad thing, this is a good
 thing</i>. Most of us doesn't want to live in a world where there's only
 one EDA software available, even if every development effort is concentrated
@@ -58,7 +58,7 @@ In practice this means if we are to do anything common, shared, we either
 accept the ways of the other projects and come up with a minimal common
 denominator or the common/shared effort will be refused by some (or even most)
 projects we target. This has a few consequences, some requirements we
-must obey while desgining the common:
+must obey while designing the common:
 <ul>
 	<li> It should not interfere with any existing program, code, project
 	<li> It should not try to push excess amount of new concepts and ways onto
@@ -67,7 +67,7 @@ must obey while desgining the common:
 	     kept minimal.
 	<li> Thus we have to live with the idea of code/effort duplication. E.g.
 	     we implement a common library of footprints - it may be a good idea
-	     to alos implement a way to index them and store the result in some
+	     to also implement a way to index them and store the result in some
 	     complex data format. But what if the other program already has a
 	     complex data format for this? What if our hash is an incompatible
 	     idea with their lists? It's better to step back and rethink:
@@ -76,7 +76,7 @@ must obey while desgining the common:
 	     skip it. Less is more.
 	<li> This obviously includes dependencies. If our shared solution depends
 	     on qt, programs using gtk will hate it. If it depends on glib,
-	     programs using minilibs will hate it. If all documenation and comments
+	     programs using minilibs will hate it. If all documentation and comments
 	     are written in Italian, everyone but Italian projects will hate it.
 	     Just reduce such external dependencies, even if this means less
 	     features. Go for a common minimum instead of "would remove some
@@ -98,13 +98,13 @@ must obey while desgining the common:
 These problems are not new. There are good examples on how people
 have solved these in the past - some examples implemented decades
 ago and are still widely used in one form or another! The most trivial
-of these are network protocols: smtp, ftp, http, tcp/ip, the IRC protocol,
+of these are network protocols: SMTP, ftp, HTTP, TCP/IP, the IRC protocol,
 etc. What's common in them:
 <ul>
 	<li> They specify a protocol and not the actual implementation.
 	<li> They are freely accessible as RFCs - no registration, no shopping
 	     carts, no much restrictions; if I wanted to copy the RFC next to my
-	     implementation as a documentation and distrubte the pack, I am free
+	     implementation as a documentation and distribute the pack, I am free
 	     to do so.
 	<li> They try to concentrate on one thing, specify all relevant details
 	     and leave everything up to the user.
@@ -121,7 +121,7 @@ that as the common. Instead, we should:
 	     splines, we lock out a bunch of small players with no curve support.
 	     Don't expect interchange formats to be lossless. Don't expect interchange
 	     formats would <i>replace</i> per project native formats.
-	<li> Preferrably design even the file formats and mechanisms in a modular
+	<li> Preferably design even the file formats and mechanisms in a modular
 	     way, expecting some projects would want to implement only parts of it;
 	     make it work as good as possible in such partial implementations!
 	<li> As an <b>optional</b> extra we may provide a reference implementation
@@ -149,7 +149,7 @@ we don't have much resources, we should spend it where it's spent the best.
 I believe we don't need to do the below in order to get an "edacore" idea work:
 <ul>
 	<li> Common code lib implementations; it's a nice extra, but it's the file 
-	     formt specs that would make it work
+	     format specs that would make it work
 	<li> Some centralized repository, web service, etc. for sharing user content:
 	     once a few tools already have support for "edacore", this will
 	     automatically happen. Someone, or hopefully even multiple people will
@@ -166,7 +166,7 @@ I believe we don't need to do the below in order to get an "edacore" idea work:
 Assume we designed a set of interchange formats and maybe mechanisms and
 we optionally provided some libs and tools.
 <ul>
-	<li> If we can get at least 2 projects using the new format for exchaging
+	<li> If we can get at least 2 projects using the new format for exchanging
 	     data, we are at the same point as with the original n*n converter
 	     <a href="20170212_ecosys.html"> EDA ecosystem </a> idea. We just
 	     wasted some more time on a yet-another-format.
@@ -182,7 +182,7 @@ we optionally provided some libs and tools.
 <p>
 <ul>
 	<li> A common interchange format replacing local native formats
-	<li> A common interchnage format capturing all tiny details that a native
+	<li> A common interchange format capturing all tiny details that a native
 	     format can
 	<li> Proprietary EDA tools cooperating on this on the export-side - they
 	     don't want their users to be able to get the design out of their
