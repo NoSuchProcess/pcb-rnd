@@ -92,9 +92,9 @@ pcb_hid_action_t hyp_action_list[] = {
 
 PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 
-		 static void hid_hyp_uninit()
+static void hid_import_hyp_uninit()
 {
-
+	pcb_hid_remove_actions_by_cookie(hyp_cookie);
 }
 
 #include "dolists.h"
@@ -102,7 +102,7 @@ pcb_uninit_t hid_import_hyp_init()
 {
 #warning TODO: rather register an importer than an action
 	PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
-		return hid_hyp_uninit;
+	return hid_import_hyp_uninit;
 }
 
 /* not truncated */
