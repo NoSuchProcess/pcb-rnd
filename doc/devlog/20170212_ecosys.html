@@ -18,7 +18,7 @@ software to switch to a free tool if the free tool has a similar monolithic
 design. However, for smaller, specialized tools, it might be as hard to
 join the flow of such a monolithic free tool, as in the flow of a proprietary tool.
 Not because of technical measures, but because of how users regard and use
-the software.
+the software.<sup><a href="#footnote1">1</a></sup>
 <p>
 An UNIX approach would be to provide a set of tools each doing a small
 part of the job, being able to communicate to each other, and let the user
@@ -61,7 +61,7 @@ interchange tool that covers it all, earliest shipped in 2094. I believe
 the hardest part of this is <b>accepting alternatives</b>. Different
 projects choose different approaches, different design, different
 programming language, different data models. <i>This is not a bad thing,
-this is a good thing.<i> This is what gives us alternatives. Unfortunately
+this is a good thing.</i> This is what gives us alternatives. Unfortunately
 this means code duplication, effort duplication, waste of human resources.
 But it's still much much cheaper than the loss we'd induce by forcing
 everyone to work on and use the One True Solution! That said, I don't
@@ -117,7 +117,7 @@ mean we don't want to do these, or we can't do these or we shouldn't do these.
 It only means we could just do the cheap part today and worry about these
 tomorrow instead of getting blocked wondering how to solve these.
 <p>
-<b>Centralization:<b> it's not required to have a central organization or
+<b>Centralization:</b> it's not required to have a central organization or
 effort to coordinate such an ecosystem in any way. It may be useful to
 have such coordination in smaller clusters of the ecosystem, tho, but I
 don't think we should worry too much about this at all. If the tools and
@@ -140,3 +140,15 @@ pack up random collections, but it may cause more trouble when it starts to
 interfere with local installations or distro installation.
 
 
+
+<hr>
+Footnotes:
+<br>
+<a id="footnote1"> 1: Some gEDA/PCB users are excited about the new features
+in pcb-rnd. They'd switch. When I ask what keeps them back, I often get
+this answer: "I'll finish my current design in gEDA/PCB but I will try
+pcb-rnd with my next design". Even if pcb-rnd is 100% compatible with gEDA/PCB
+for reading .pcb files. I call it the <i>invisible lock-in</i>: we do not
+have any technical measures that would keep users from switching between
+PCB and pcb-rnd forth and back but they act as if there was. Maybe they
+just got used to this lock-in idea too much with other CADs.
