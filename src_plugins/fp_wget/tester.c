@@ -8,14 +8,14 @@ char *pcb_strdup(const char *s) { return strdup(s); }
 
 pcb_plug_fp_t *pcb_plug_fp_chain = NULL;
 
-library_t ltmp;
-library_t *pcb_fp_mkdir_p(const char *path)
+pcb_library_t ltmp;
+pcb_library_t *pcb_fp_mkdir_p(const char *path)
 {
 	printf("lib mkdir: '%s'\n", path);
 	return (library_t *)&ltmp;
 }
 
-library_t *pcb_fp_append_entry(library_t *parent, const char *name, pcb_fp_type_t type, void *tags[])
+pcb_library_t *pcb_fp_append_entry(library_t *parent, const char *name, pcb_fp_type_t type, void *tags[])
 {
 	printf("lib entry: '%s'\n", name);
 	return (library_t *)&ltmp;
