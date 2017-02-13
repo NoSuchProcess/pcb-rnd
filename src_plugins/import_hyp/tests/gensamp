@@ -55,11 +55,28 @@ print "  (PERIMETER_SEGMENT X1=5.0 Y1=8.0 X2=5.5 Y2=8.5)"
 
 print "}"
 print "{STACKUP"
-print "  (SIGNAL T=0.000700 L=1)"
+print "  (SIGNAL T=0.000700 L=component)"
 print "  (DIELECTRIC T=0.002000 C=4.000000)"
-print "  (PLANE  T=0.000700 L=2 PS=0.001000)"
+print "  (PLANE  T=0.000700 L=solder PS=0.001000)"
 print "}"
 print "{DEVICES"
+print "}"
+
+#
+# PADSTACK. MDEF is shorthand for "all copper layers"
+#
+
+print "{PADSTACK=roundpad, 0.3"
+print "  (MDEF, 0, 0.5, 0.5, 0)"
+print "}"
+print "{PADSTACK=squarepad, 0.3"
+print "  (MDEF, 1, 0.5, 0.5, 0)"
+print "}"
+print "{PADSTACK=oblongpad, 0.3"
+print "  (MDEF, 2, 0.5, 0.5, 0)"
+print "}"
+print "{PADSTACK=nodrill,"
+print "  (MDEF, 0, 0.5, 0.5, 0)"
 print "}"
 
 #
@@ -82,7 +99,7 @@ for x in range (0, max):
   x2 = x0 + r * cos (alpha)
   y2 = y0 + r * sin (alpha)
   w = (x + 1) * 0.1 / max
-  print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=%f L=1)" % ( x1, y1, x2, y2, w)
+  print "  (SEG X1=%f Y1=%f X2=%f Y2=%f W=%f L=component)" % ( x1, y1, x2, y2, w)
   
 print "}"
 
@@ -108,9 +125,19 @@ for a in range (0, max):
     y1 = yc + r * sin (alpha)
     x2 = xc + r * cos (beta)
     y2 = yc + r * sin (beta)
-    print "  (ARC X1=%f Y1=%f X2=%f Y2=%f XC=%f YC=%f R=%f W=%f L=1)" % ( x1, y1, x2, y2, xc, yc, r, w)
+    print "  (ARC X1=%f Y1=%f X2=%f Y2=%f XC=%f YC=%f R=%f W=%f L=component)" % ( x1, y1, x2, y2, xc, yc, r, w)
   
 print "}"
 
+#
+# VIA
+#
+
+print "{NET=viatst"
+print "  (VIA X=13 Y=1 P=roundpad)"
+print "  (VIA X=13 Y=2 P=squarepad)"
+print "  (VIA X=13 Y=3 P=oblongpad)"
+print "  (VIA X=13 Y=4 P=nodrill)"
+print "}"
 
 print "{END}"

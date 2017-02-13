@@ -1244,12 +1244,11 @@ pcb_bool exec_seg(parse_param * h)
 }
 
 /*
- * SEG subrecord of NET record. arc segment, drawn clockwise.
+ * ARC subrecord of NET record. arc segment, drawn clockwise.
  */
 
 pcb_bool exec_arc(parse_param * h)
 {
-/* XXX checkme */
 
 	if (hyp_debug) {
 		pcb_printf("arc: x1 = %ml y1 = %ml x2 = %ml y2 = %ml", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2));
@@ -1465,6 +1464,7 @@ pcb_bool exec_pad(parse_param * h)
 
 	/* add new pad */
 	/* XXX fixme. Pad ought to be on a single layer. This puts the pad on all layers. */
+  /* XXX set flags PCB_COMPONENT_SIDE PCB_SOLDER_SIDE */
 	if (strcmp(h->pad1_shape, "RECT") != 0)
 		flags = pcb_no_flags();
 	else
