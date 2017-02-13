@@ -1,0 +1,194 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> "Edacore" minimum commons</H2>
+<p>
+History and background: there is a lot happening in pcb-rnd these days. A set
+of these seem to nicely connect up and form something that's a big portion
+of the edacore idea, just implemented in a different way. We did not have
+a grand edacore-like plan behind these, they mostly started to happen
+independenclty. But they really happen to connect that way. In the same time
+edacore seems to be in hibernation. When I realized this, I contacted
+the edacore people to find out if they are interested in a reboot.
+<p>
+Naming: they haven't yet answered; for the purpose of this document, I'll
+use the name "edacore", but I mean it more like a concept than as a project
+name or implementation. It may be that it gets realized as a reboot of
+the original edacore and it will be the official name; else we will just find
+a different name for it.
+
+<H3> Acceptance and mutual respect </H3>
+<p>
+Before we start, we must accept that we have alternative implementations,
+different projects going in differrent directions. Although this means
+code and effort duplication, <i>this is not a bad thing, this is a good
+thing</i>. Most of us doesn't want to live in a world where there's only
+one EDA software available, even if every development effort is concentrated
+there. (If you think you do, then rethink it with substituting your favorite
+package with one you really dislike and imagine that's the only one available.)
+<p>
+Respecting the choices of another project seems to be simple in theory, but
+it is important to see a few examples of what we need to accept in practice.
+Else we make decisions tat are unacceptable for one project or another
+too easily. An incomplete list of examples of what differs in another EDA project:
+<ul>
+	<li> It has different goals. Aspects that are extremely important core
+	     concepts here are something to be avoided there.
+	<li> Different data model. Different way the tool models the world. Even,
+	     different subset of the world is modelled by to tool.
+	<li> Obviously, different code. This doesn't seem to be a big issue
+	     until a common effort accidentally starts to depend on it, e.g. because
+	     of the lib API.
+	<li> Different programming languages. Again shouldn't be a big deal, until
+	     you try to provide common code. As edacore spotted too, a plain C lib
+	     seems to be a common minimum for <b>most</b> of the world, but even
+	     there it might be something alien and can easily become a
+	     "why couldn't we just reimplement in OOP/python/ruby/java" question.
+	<li> Different design choices, even beyond the programming language.
+	     For example pcb-rnd walks the minilib way while gEDA/PCB goes for glib.
+	     This has many consequences: pcb-rnd is more portable, less dependent
+	     on GNU, compiles faster. In return we need to ship the minilibs with it
+	     and if someone joins the project they need to learn the APIs. Both choices
+	     are valid in their domain. If we want do anything common, we must make
+	     it neutral to such choices, else it's automatically locked out from
+	     some projects.
+<ul>
+In practice this means if we are to do anything common, shared, we either
+accept the ways of the other projects and come up with a minimal common
+denominator or the common/shared effort will be refused by some (or even most)
+projects we target. This has a few consequences, some requirements we
+must obey while desgining the common:
+<ul>
+	<li> It should not interfere with any existing program, code, project
+	<li> It should not try to push excess amount of new concepts and ways onto
+	     existing projects; there obviously will be some new concepts, as we
+	     are trying to introduce a new shared feature, but it should be actively
+	     kept minimal.
+	<li> Thus we have to live with the idea of code/effort duplication. E.g.
+	     we implement a common library of footprints - it may be a good idea
+	     to alos implement a way to index them and store the result in some
+	     complex data format. But what if the other program already has a
+	     complex data format for this? What if our hash is an incompatible
+	     idea with their lists? It's better to step back and rethink:
+	     do we really <b>have to</b> do the indexing in order to achieve
+	     our goals? If the answer is not "absolutely yes!", we just need
+	     skip it. Less is more.
+	<li> This obviously includes dependencies. If our shared solution depends
+	     on qt, programs using gtk will hate it. If it depends on glib,
+	     programs using minilibs will hate it. If all documenation and comments
+	     are written in Italian, everyone but Italian projects will hate it.
+	     Just reduce such external dependencies, even if this means less
+	     features. Go for a common minimum instead of "would remove some
+	     code duplications and costs only an extra dependency".
+	<li> Free/open source means open <b>from ground up</b>, no exceptions.
+	     An open source hardware is not really free if the schematics
+	     comes in a format that's readable only by a proprietary CAD package.
+	     A library or a file format is not free if it is specified by a standard
+	     that can't be included in the same repository for whatever legal
+	     reasons. Yes, this excludes a lot of ISO and STEP and IPC stuff,
+	     and results in effort duplication while we design our own formats.
+	     But there's no point in making a compromise on this and building
+	     semi-free things then see some projects refusing to depend on it
+	     because of the legal implications.
+</ul>
+
+<H3> What we could do within these limits? </H3>
+<p>
+These problems are not new. There are good examples on how people
+have solved these in the past - some examples implemented decades
+ago and are still widely used in one form or another! The most trivial
+of these are network protocols: smtp, ftp, http, tcp/ip, the IRC protocol,
+etc. What's common in them:
+<ul>
+	<li> They specify a protocol and not the actual implementation.
+	<li> They are freely accessible as RFCs - no registration, no shopping
+	     carts, no much restrictions; if I wanted to copy the RFC next to my
+	     implementation as a documentation and distrubte the pack, I am free
+	     to do so.
+	<li> They try to concentrate on one thing, specify all relevant details
+	     and leave everything up to the user.
+</ul>
+<p>
+This is a pretty important difference compared to the original edacore
+idea (of the 2015 FOSDEM talk). We should try to write a lib and sell
+that as the common. Instead, we should:
+<ul>
+	<li> Define free, open file formats and mechanisms;
+	<li> Design for the common minimum, not for the fancy extras and completeness.
+	     This format is for interchange, and we want to reach every project, not
+	     just the big, complex ones. If the format requires you to implement
+	     splines, we lock out a bunch of small players with no curve support.
+	     Don't expect interchange formats to be lossless. Don't expect interchange
+	     formats would <i>replace</i> per project native formats.
+	<li> Preferrably design even the file formats and mechanisms in a modular
+	     way, expecting some projects would want to implement only parts of it;
+	     make it work as good as possible in such partial implementations!
+	<li> As an <b>optional</b> extra we may provide a reference implementation
+	     (code) lib, or even libs. Some projects would use these, embed these, others
+	     would read the source and yet others would totally ignore them. It's
+	     all fine as long as the lib is not the common but is just an appendix.
+	<li> Provide <b>optional</b>, but out-of-the-box tools. Small, simple, but
+	     useful ones. If we specify a footprint format, provide tools
+	     that parses it, makes checks on it ("lint"), tools that visualize
+	     the footprint (e.g. generate a png). This can be anything from a
+	     web service to command line tools. Best if there are even multiple
+	     interfaces and APIs. This helps projects to adapt the file formats
+	     as they can try it in advance and they see they have debug tools
+	     readily available, still these tools won't interfere with their projects.
+</ul>
+
+In other words: <b>solve the interchange problem, not the code
+duplication problem</b>!
+
+<H3> What we don't need to do? </H3>
+<p>
+We could also do any of these, but to get the project started and be
+useful, we are not required to do them. It's an important consideration:
+we don't have much resources, we should spend it where it's spent the best.
+I believe we don't need to do the below in order to get an "edacore" idea work:
+<ul>
+	<li> Common code lib implementations; it's a nice extra, but it's the file 
+	     formt specs that would make it work
+	<li> Some centralized repository, web service, etc. for sharing user content:
+	     once a few tools already have support for "edacore", this will
+	     automatically happen. Someone, or hopefully even multiple people will
+	     make their public services. Or people will just use github, torrent
+	     or whatever techniques.
+	<li> "Fancy features". Provide the bare minimum. It's a tradeoff between
+	     the "works everywhere" vs. "looks perfect in all little details". If
+	     the user wants the former, an interchange format is for that; for the
+	     latter, use a native format.
+</ul>
+
+<H3> What we could expect from such a project? </H3>
+<p>
+Assume we designed a set of interchange formats and maybe mechanisms and
+we optionally provided some libs and tools.
+<ul>
+	<li> If we can get at least 2 projects using the new format for exchaging
+	     data, we are at the same point as with the original n*n converter
+	     <a href="20170212_ecosys.html"> EDA ecosystem </a> idea. We just
+	     wasted some more time on a yet-another-format.
+	<li> But if 3 or more projects are using it, we may saved some effort already!
+	<li> If that happens, users can build and share libraries more easily.
+	<li> Users will find new ways to combine our tools in the ecosystem - even
+	     unusual ways developers didn't think of, e.g. using schematics cap from
+	     one project and PCB editor from another, even if both projects were
+	     "integrated".
+</ul>
+
+<H3> What we should NOT expect from such a project? </H3>
+<p>
+<ul>
+	<li> A common interchange format replacing local native formats
+	<li> A common interchnage format capturing all tiny details that a native
+	     format can
+	<li> Proprietary EDA tools cooperating on this on the export-side - they
+	     don't want their users to be able to get the design out of their
+	     program, especially not if it's clearly for importing in another
+	<li> Everyone's support - even with the most careful design and the lowest
+	     barriers there will be project that won't like it and won't join. Some
+	     projects will hate it exactly because it's not restrictive enough, e.g.
+	     that it doesn't mandate OOP or SQL or other specific complexities.
+</ul>
