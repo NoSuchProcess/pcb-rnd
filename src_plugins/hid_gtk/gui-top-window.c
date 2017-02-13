@@ -1063,7 +1063,7 @@ static void ghid_build_pcb_top_window(void)
 	ghid_init_drawing_widget(gport->drawing_area, gport);
 
 	gport->mouse.drawing_area = gport->drawing_area;
-	gport->top_window = gport->top_window;
+	gport->mouse.top_window = gport->top_window;
 
 	gtk_widget_add_events(gport->drawing_area, GDK_EXPOSURE_MASK
 												| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
