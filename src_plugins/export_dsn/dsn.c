@@ -579,7 +579,7 @@ static void dsn_parse_arguments(int *argc, char ***argv)
 
 static void hid_dsn_uninit()
 {
-
+	pcb_hid_remove_attributes_by_cookie(dsn_cookie);
 }
 
 #include "dolists.h"

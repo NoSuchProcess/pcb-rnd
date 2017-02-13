@@ -5909,6 +5909,10 @@ static void dxf_progress(int dxf_so_far, int dxf_total, const char *dxf_message)
 
 const char *dxf_cookie = "dxf exporter";
 
+void hid_export_dxf_uninit()
+{
+	pcb_hid_remove_attributes_by_cookie(dxf_cookie);
+}
 
 /*!
  * \brief Call this as soon as possible from main().
@@ -5956,8 +5960,7 @@ pcb_uninit_t hid_export_dxf_init()
 
 	pcb_hid_register_attributes(dxf_options, sizeof(dxf_options) / sizeof(dxf_options[0]), dxf_cookie, 0);
 
-/*	return hid_dxf_uninit();*/
-	return NULL;
+	return hid_export_dxf_uninit;
 }
 
 
