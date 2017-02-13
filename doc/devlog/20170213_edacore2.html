@@ -1,0 +1,57 @@
+<html>
+<body>
+<h1> pcb-rnd <a href="http://repo.hu/projects/pcb-rnd/devlog">devlog</a> </h1>
+
+<H2> "Edacore" - extras </H2>
+I believe an edacore-like idea requires only what's described in
+<a href="20170213_edacore1.html"> this document </a>. Once we have that,
+or if we have enough resources, in parallel to that, we could also
+develop some extras. This document describes some of those extras.
+
+<H3> Services: library repositories  </H3>
+<ul>
+	<li> a repository is a collection of data files in the interchange
+	     and/or other random formats
+	<li> there are existing examples out there, including gedasymbols.org
+	     and random cvs, svn, git repositories of users
+	<li> we shouldn't expect to have a single central service for this;
+	     we may run our own service any time, but it's even better if we design
+	     our formats and tools to let people easily set up their own services
+	<li> such separately ran and maintained repositories would have different
+	     goals and policies; we shall accept that and be happy about that; we
+	     should distribute file formats and tools, not policies and ideologoies.
+</ul>
+
+<H3> How my favorite service would look like </H3>
+<ul>
+	<li> project-neutral - not a gEDA or KiCad or eagle or qucs or ltspice
+	     library, but a generic user library. If done with converters and/or
+	     interchange formats, neither the originator nor the consumer project
+	     would matter.
+	<li> optimized for multiple UIs:
+		<ul>
+			<li> CLI access (e.g. through a VCS client)
+			<li> web access, maybe even web2.0
+			<li> remote repo integration (e.g. pcb-rnd has strong support for this)
+		</ul>
+	<li> backed up by a version control system in the background
+	<li> instead of complex meta-data systems, offer free form tagging, like
+	     openstreetmap does:
+		<ul>
+			<li> tags are free form key=value pairs, both key and value are simple strings
+			<li> let tagging conventions emerge
+			<li> let the these conventions be specified and maintained by the user community
+			<li> do not split the repositry on a per uploader basis - that's the least useful infromation for an end user
+			<li> maybe implement a separate namespace for "signed" tags; e.g. some registered user would validate a few footprints and would tag them "went on copper and looked good"; if it's a signed tag, end users have the chance to validate the source of the tag and other contributors can not change or overwrite this tag
+		</ul>
+	<li> content licensing:
+		<ul>
+			<li> the ToS would say users must not upload footprints not drawn by themselves
+			<li> chose 2..3 reasonable licenses and require the user to specify which one the footprint uses upon upload
+			<li> <b>optionally</b> have a separate distribution and use license
+		</ul>
+	<li> first support footprints and symbols because we have converters for
+	     those; gradually extend to 3d models, FEM, spice, schematics, pcbs
+	     as common formats and/or converters emerge.
+</ul>
+
