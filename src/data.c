@@ -198,7 +198,7 @@ void pcb_data_free(pcb_data_t * data)
 	list_map0(&data->Element, pcb_element_t, pcb_element_free);
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
-	for (layer = data->Layer, i = 0; i < PCB_MAX_LAYER; layer++, i++) {
+	for (layer = data->Layer, i = 0; i < pcb_max_layer; layer++, i++) {
 		pcb_attribute_free(&layer->Attributes);
 		PCB_TEXT_LOOP(layer);
 		{
