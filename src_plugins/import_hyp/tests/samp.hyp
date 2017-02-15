@@ -33,13 +33,13 @@
 }
 {DEVICES
 }
-{PADSTACK=roundpad, 0.3
+{PADSTACK=roundpad, 0.2
   (MDEF, 0, 0.5, 0.5, 0)
 }
-{PADSTACK=squarepad, 0.3
+{PADSTACK=squarepad, 0.2
   (MDEF, 1, 0.5, 0.5, 0)
 }
-{PADSTACK=oblongpad, 0.3
+{PADSTACK=oblongpad, 0.2
   (MDEF, 2, 0.5, 0.5, 0)
 }
 {PADSTACK=nodrill,
@@ -130,5 +130,11 @@
   (VIA X=13 Y=2 P=squarepad)
   (VIA X=13 Y=3 P=oblongpad)
   (VIA X=13 Y=4 P=nodrill)
+}
+{NET=oldviatst
+  (VIA X=14 Y=1 D=0.2 L1=component S1=ROUND S1X=0.5 S1Y=0.5)
+  (VIA X=14 Y=2 D=0.2 L1=component S1=RECT S1X=0.5 S1Y=0.5)
+  (VIA X=14 Y=3 D=0.2 L1=component S1=OBLONG S1X=0.5 S1Y=0.5)
+  (VIA X=14 Y=4 D=0.0 L1=component S1=ROUND S1X=0.5 S1Y=0.5)
 }
 {END}

@@ -1,5 +1,5 @@
 
-The hyperlynx file is read using a bison/flex scanner. The flex scanner is in hyp_l, the bison parser in hyp_y.y.  For each hyperlynx construct the parser calls the corresponding exec_* routine in parser.c. Example: if the parser encounters an arc segment, the symbol in scanner/parser is H_ARC, and the routine in parser.c is called exec_arc. 
+The hyperlynx file is read using a bison/flex scanner. The flex scanner is in hyp_l, the bison parser in hyp_y.y.  For each hyperlynx construct the parser calls the corresponding exec_* routine in parser.c. Example: if the parser encounters an arc segment, the symbol in the scanner/parser is H_ARC, and the routine in parser.c is called exec_arc().
 
 If you need a rough description of the hyperlynx format, download "bird33" from http://www.ibis.org/birds/bird33.txt . Substitute ".IBP file format" with ".HYP file format" and "SUBSTRATE_OUTLINE" with "BOARD" and you have an (old) description of the hyperlynx format.
 
@@ -9,8 +9,9 @@ If you change scanner or parser you need to revalidate. Try loading a collection
 
 The python script "gensamp" creates a sample hyperlynx file which contains line, arc and unrouted segments, polygons with and without holes, polylines with and without arcs, etc.
 
-Coding style:
+Coding style used:
 ~/.indent.pro:
   --line-length128 -brs -br -nce --tab-size2 -ut -npsl -npcs -hnl
 ~/.vimrc:
   set tabstop=2
+

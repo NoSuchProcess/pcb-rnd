@@ -66,13 +66,13 @@ print "}"
 # PADSTACK. MDEF is shorthand for "all copper layers"
 #
 
-print "{PADSTACK=roundpad, 0.3"
+print "{PADSTACK=roundpad, 0.2"
 print "  (MDEF, 0, 0.5, 0.5, 0)"
 print "}"
-print "{PADSTACK=squarepad, 0.3"
+print "{PADSTACK=squarepad, 0.2"
 print "  (MDEF, 1, 0.5, 0.5, 0)"
 print "}"
-print "{PADSTACK=oblongpad, 0.3"
+print "{PADSTACK=oblongpad, 0.2"
 print "  (MDEF, 2, 0.5, 0.5, 0)"
 print "}"
 print "{PADSTACK=nodrill,"
@@ -138,6 +138,17 @@ print "  (VIA X=13 Y=1 P=roundpad)"
 print "  (VIA X=13 Y=2 P=squarepad)"
 print "  (VIA X=13 Y=3 P=oblongpad)"
 print "  (VIA X=13 Y=4 P=nodrill)"
+print "}"
+
+#
+# old-style VIA, compatibility only.
+#
+
+print "{NET=oldviatst"
+print "  (VIA X=14 Y=1 D=0.2 L1=component S1=ROUND S1X=0.5 S1Y=0.5)"
+print "  (VIA X=14 Y=2 D=0.2 L1=component S1=RECT S1X=0.5 S1Y=0.5)"
+print "  (VIA X=14 Y=3 D=0.2 L1=component S1=OBLONG S1X=0.5 S1Y=0.5)"
+print "  (VIA X=14 Y=4 D=0.0 L1=component S1=ROUND S1X=0.5 S1Y=0.5)"
 print "}"
 
 print "{END}"

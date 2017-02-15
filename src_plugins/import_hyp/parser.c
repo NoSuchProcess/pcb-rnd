@@ -105,7 +105,7 @@ typedef struct padstack_s {
 	pcb_coord_t clearance;
 	pcb_coord_t mask;
 	pcb_coord_t drill_hole;
-	pcb_bool is_round;						/* round or rectangular */
+	pcb_flag_t flags;							/* round, rectangular or octagon */
 	struct padstack_s *next;
 } padstack_t;
 
@@ -587,7 +587,11 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 		/* layer creation failed. return the first copper layer you can find. */
 		if (hyp_debug)
 			pcb_printf("running out of layers\n");
-		layer_id = PCB_COMPONENT_SIDE;
+		if (pcb_layer_list(PCB_LYT_COPPER, &layer_id, 1) <= 0) {
+			if (hyp_debug)
+				pcb_printf("fatal: no copper layers.\n");
+			layer_id = 0;
+		}
 	}
 
 	return layer_id;
@@ -1086,6 +1090,12 @@ pcb_bool exec_supplies(parse_param * h)
 
 pcb_bool exec_padstack_element(parse_param * h)
 {
+	/*
+	 * Layer names with special meaning, used in padstack definition:
+	 * MDEF: defines copper pad on all metal layers
+	 * ADEF: defines anti-pad (clearance) on all power planes.
+	 */
+
 	if (hyp_debug) {
 		pcb_printf("padstack_element:");
 		if (h->padstack_name_set)
@@ -1152,7 +1162,12 @@ pcb_bool exec_padstack_element(parse_param * h)
 		current_padstack->clearance = 0;
 		current_padstack->mask = xy2coord(h->pad_sx);
 		current_padstack->drill_hole = xy2coord(h->drill_size);
-		current_padstack->is_round = (h->pad_shape != 1);
+		if (h->pad_shape == 1)
+			current_padstack->flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
+		else if (h->pad_shape == 2)
+			current_padstack->flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
+		else
+			current_padstack->flags = pcb_no_flags();	/* round */
 	}
 
 	if ((current_padstack != NULL) && h->pad_type_set & (h->pad_type == PAD_TYPE_THERMAL_RELIEF)) {
@@ -1275,7 +1290,6 @@ pcb_bool exec_arc(parse_param * h)
 pcb_bool exec_via(parse_param * h)
 {
 	padstack_t *padstack;
-	pcb_flag_t flags;
 
 	if (hyp_debug) {
 		pcb_printf("via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
@@ -1300,13 +1314,8 @@ pcb_bool exec_via(parse_param * h)
 		return 0;
 	}
 
-	if (padstack->is_round)
-		flags = pcb_no_flags();
-	else
-		flags = pcb_flag_make(PCB_FLAG_SQUARE);
-
 	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
-							padstack->drill_hole, "", flags);
+							padstack->drill_hole, "", padstack->flags);
 
 	return 0;
 }
@@ -1322,7 +1331,6 @@ pcb_bool exec_via_v1(parse_param * h)
 	pcb_coord_t clearance;
 	pcb_coord_t mask;
 	pcb_coord_t drill_hole;
-	pcb_bool_t is_round;
 	pcb_flag_t flags;
 
 	if (hyp_debug) {
@@ -1339,16 +1347,17 @@ pcb_bool exec_via_v1(parse_param * h)
 		pcb_printf("\n");
 	}
 
-	thickness = xy2coord(h->pad_sx);
+	thickness = xy2coord(h->pad1_sx);
 	clearance = 2 * hyp_clearance(h);
 	mask = xy2coord(h->pad1_sx);
 	drill_hole = xy2coord(h->drill_size);
-	is_round = (strcmp(h->pad1_shape, "RECT") != 0);
 
-	if (is_round)
-		flags = pcb_no_flags();
+	if (strcmp(h->pad1_shape, "RECT"))
+		current_padstack->flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
+	else if (strcmp(h->pad1_shape, "OBLONG"))
+		current_padstack->flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
 	else
-		flags = pcb_flag_make(PCB_FLAG_SQUARE);
+		current_padstack->flags = pcb_no_flags();	/* round */
 
 	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, drill_hole, NULL, flags);
 
@@ -1363,7 +1372,6 @@ pcb_bool exec_via_v1(parse_param * h)
 pcb_bool exec_pin(parse_param * h)
 {
 	pcb_element_t *component;
-	pcb_flag_t flags;
 	padstack_t *padstack;
 	char *component_name = NULL;
 	char *pin_name = NULL;
@@ -1417,13 +1425,8 @@ pcb_bool exec_pin(parse_param * h)
 	}
 
 	/* add new pin */
-	if (padstack->is_round)
-		flags = pcb_no_flags();
-	else
-		flags = pcb_flag_make(PCB_FLAG_SQUARE);
-
 	pcb_element_pin_new(component, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
-											padstack->drill_hole, pin_net_name, pin_name, flags);
+											padstack->drill_hole, pin_net_name, pin_name, padstack->flags);
 
 #ifdef XXX
 	/* XXX causes crash */
@@ -1463,12 +1466,19 @@ pcb_bool exec_pad(parse_param * h)
 																x2coord(h->x), y2coord(h->y), text_direction, text_scale, pcb_no_flags(), pcb_false);
 
 	/* add new pad */
-	/* XXX fixme. Pad ought to be on a single layer. This puts the pad on all layers. */
-  /* XXX set flags PCB_COMPONENT_SIDE PCB_SOLDER_SIDE */
-	if (strcmp(h->pad1_shape, "RECT") != 0)
-		flags = pcb_no_flags();
+	flags = pcb_no_flags();
+
+	/* pad shape */
+	if (strcmp(h->pad1_shape, "RECT") == 0)
+		pcb_flag_add(flags, PCB_FLAG_SQUARE);
+	else if (strcmp(h->pad1_shape, "OBLONG") == 0)
+		pcb_flag_add(flags, PCB_FLAG_OCTAGON);
+
+	/* pad layer *//* XXX check/fixme */
+	if (pcb_layer_flags(pcb_layer_by_name(h->layer_name)) & PCB_LYT_BOTTOM)
+		pcb_flag_add(flags, PCB_SOLDER_SIDE);
 	else
-		flags = pcb_flag_make(PCB_FLAG_SQUARE);
+		pcb_flag_add(flags, PCB_COMPONENT_SIDE);
 
 	pcb_element_pin_new(component, x2coord(h->x), y2coord(h->y), xy2coord(h->pad1_sx), 2 * hyp_clearance(h), xy2coord(h->pad1_sx),
 											0, net_name, "?", flags);
