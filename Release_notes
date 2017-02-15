@@ -1,13 +1,13 @@
 pcb-rnd 1.2.1
 ~~~~~~~~~~~~~~
 
-With a new peak in num ber of develpers and contributors, version 1.2.1
-introduces a large amount of bugfixes, cleanups and new features that
+With a new peak in number of developers and contributors, version 1.2.1
+introduces a large amount of bug fixes, cleanups and new features that
 can be sorted in the following main groups.
 
 1. Layer model rewrite; pcb-rnd now has a clear separation of physical
 layer and logical layer concepts. There's new, board cross-section GUI
-to visualize and mainpulate the layer stack.
+to visualize and manipulate the layer stack.
 
 2. The hid_gtk refactoring; big, monolithic code blocks are split up in
 smaller, more independent, lib-like modules and are moved to a lib plugin.
@@ -20,9 +20,9 @@ against the input PCB geometry - by now, we know exactly how much error
 the PNG rendering has.
 
 4. UI fixes: better rubber band, xor-outline-while-moving and DRC outline
-visualisation support.
+visualization support.
 
-5. Intorducing the "EDA ecosystem" idea: real working import/export bridges
+5. Introducing the "EDA ecosystem" idea: real working import/export bridges
 or flows to fidocadj, freerouting.net, ltspice, mucs and TinyCAD. Major
 improvements in the KiCad file format compatibility.
 
