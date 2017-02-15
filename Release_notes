@@ -1,20 +1,29 @@
-pcb-rnd 1.2.0
+pcb-rnd 1.2.1
 ~~~~~~~~~~~~~~
-Finally, the long postponed major core cleanup has been implemented. This
-probably has been among the top 5 cleanups in the project history back to
-the 90s.
 
-First, the code is now reorganized to build up around object types
-instead of actions. This means there's an obj_line.c, obj_arc.c, etc.
-that know how to do everything with lines, arc, etc. The old code had
-everything built around actions, so there was move.c, rotate.c, etc.,
-that knew how to move, rotate, etc. all object types. The new
-organization makes it much simpler to change how objects behave or to
-introduce new objects.
+With a new peak in num ber of develpers and contributors, version 1.2.1
+introduces a large amount of bugfixes, cleanups and new features that
+can be sorted in the following main groups.
 
-The second part of the cleanup was to add pcb_ and PCB_ prefix to global
-symbols in core API. This will allow us to split core into libs with
-external, public API later, without risking name clashes. This will provide
-better code reuse and cleaner, more stable API to external plugins.
+1. Layer model rewrite; pcb-rnd now has a clear separation of physical
+layer and logical layer concepts. There's new, board cross-section GUI
+to visualize and mainpulate the layer stack.
 
-Among with the large cleanup, a lot of bugs have been found and fixed.
+2. The hid_gtk refactoring; big, monolithic code blocks are split up in
+smaller, more independent, lib-like modules and are moved to a lib plugin.
+This paves the road for a modular setup to support multiple graphic
+renderings and maybe even different gtk versions.
+
+3. Automated testing and validation: a new infrastructure for automated
+testing of exporters is added. The reference PNG files are manually validated
+against the input PCB geometry - by now, we know exactly how much error
+the PNG rendering has.
+
+4. UI fixes: better rubber band, xor-outline-while-moving and DRC outline
+visualisation support.
+
+5. Intorducing the "EDA ecosystem" idea: real working import/export bridges
+or flows to fidocadj, freerouting.net, ltspice, mucs and TinyCAD. Major
+improvements in the KiCad file format compatibility.
+
+6. The toporouter got removed in favor of the new routers for now.
