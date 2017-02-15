@@ -1,3 +1,132 @@
+pcb-rnd 1.2.1 (r5903)
+~~~~~~~~~~~~~~~~~~~~~
+	[layer]
+		-Cleanup: better layer group support; clear separation of physical and logical layers; real and explicit layer stack concept
+		-Fix: remove silk and component and solder assumptuion from crosshair and search
+		-Fix: auto enforce drc only on copper layers, remove silk assumption
+		-Fix: autorouter refuses to route on outline; also remove silk assumptions
+		-Fix: teardrop works only on copper layers
+		-Add: cross-section view: an userfriendly, a common, HID-independent mechanism for layer group edit
+
+	[random i/o and the ecosystem concept]
+		-Add: export_fidocadj
+		-Rewrite: import_dsn, proper parser
+		-Add: import_ltspice
+		-Add: import_mucs
+		-Add: import_tinycad
+		-Add: import_ltspice: parse a mentor netlist
+		-Workaround: SVG: near-360 degree arcs break some of the rendering engines
+
+	[core]
+		-Add: accept # comments in action scripts
+		-Add: self contained pcb-rnd executable: embedded font and default.pcb
+		-Fix: Draw the correct pin/via shape when the SQUARE flag is set in thin-draw mode
+		-Fix: NoHolesValid cache bit set bug that made silk polys disappear
+		-Fix: do not attempt to calculate bbox of empty elements - throw an error instead and ignore the element (or even assert, in --debug)
+		-Fix: don't depend on layer name for outline
+		-Fix: don't let negative clearance happen
+		-Fix: layer max assert off-by-1 - really allow 16 layers
+		-Fix: polygon arc rounding error when drawing clearance around a pad
+		-Fix: polygon drawn using the poly tool caused crash on save due to overwriting the list-administration when copying corsshair-poly to newly allocated layer poly
+		-Fix: redraw after pin number/name change to get the change displayed
+		-Fix: refuse to create attribute with NULL or empty name
+		-Fix: remove arc endpoint should remove the arc, just like with lines
+		-Fix: when deriving default file name of the board, don't truncate hardwired .pcb, try all io's file extensions until the first that is there
+
+	[arc]
+		-Fix: arc-in-box macro uses the real bounding box of arcs so an arc can be selected by a positive selection box just barely embedding it
+
+	[doc]
+		-Fix: html validation and cleanups
+
+	[drc]
+		-Add: Draw DRC outline of pads when enabled
+		-Fix: Draw DRC outline when moving lines
+		-Fix: Improve the drawing of the DRC outline around pins and vias
+		-Fix: When moving an Arc, draw the DRC outline if enabled. Draw the Arc as an outline instead of thin
+		-Fix: When moving vias, draw the DRC outline when enabled 
+
+	[dynstyle]
+		-Fix: when a new style is created, the gtk-side cache needs to be regenerated
+
+
+	[export_gerber]
+		-Add: copy hackvana extensions from mainline
+		-Fix: eagle file suffix bug made top layer and bottom copper layer clash with top and bottom silk
+
+	[export_png]
+		-Fix: notice gc color and cap style changes and update the brush
+		-Fix: properly draw corner case: full-circle arcs
+		-Fix: scale rouding bugs
+		-Fix: use gc for zero-length arcs too
+
+	[gsch2pcb-rnd]
+		-Fix: don't depend on scconfig objects, use pcb_concat() instead of str_concat()
+		-Fix: stop fighting with src/ for compiling the src_3rd/ objects, just call src/ for doing that
+
+	[hid_gtk]
+		-Split: hid_gtk common parts into a lib (lib_gtk_common)
+		-Fix: arc delta angle > 360 means full curcle, don't modulo
+		-Fix: arc endpoint rounding error when drawing with gdk (reported by Evan)
+		-Fix: don't run the netlist window if gtkhid is not yet active (batch mode)
+		-Fix: set the right layer color when changing layer colors - store the context struct for each layer index separately (more memory leaks...)
+		-Del: unused ghid_dialog_confirm_all() and ghid_dialog_confirm()
+		-Del: utf8 dup string is not even used anywhere
+		-Del: free_glist_and_data() is not in use, get rid of it
+		-Del: dead code: ghid message dialog: we use the log now, that should be the only one way to inform the user
+		-Del: unused abort functions
+		-Del: gui-keyref dialog (outdated, hardwired, unaccessible)
+		-Change: About dialog is more gtkish and uses the pcb-rnd logo
+		-Change: disable mnemonics for main menus because mnemonics lets gtk steal our keyboard input
+
+	[hid_lesstif]
+		-Fix: arc delta angle > 360 is always a full circle, don't modulo
+		-Fix: don't try to change cursor shape for being busy if the hid is not running
+		-Fix: typo in the menu config for show_mask made solder mask unable to display
+
+	[io_kicad]
+		-Change: use the new, simpler layer creation API
+		-Fix: refuse to use any negative layer
+		-Fix: residual arc format parsing errors; homeomorphic linear mappings R us.
+		-Fix: empty altium2kicad element definitions now imported with a 1nm line at the module centroid
+		-Fix: fixed non cummutative symmetry operations when importing fp_arc and gr_arc elements
+		-Fix: fixed off by one tree traversal error for polygonal zones
+		-Add: Kicad supports arcs on the Edge.Cut layer, now implemented
+		-Add: accept # comments when reading a KiCad s-expr file
+		-Add: improved handling of SMD layer definitions board
+
+	[io_lihata]
+		-Fix: default output formatting (indentation bugs)
+		-Fix: properly load the outline layer, even if it appears to be in group -1
+		-Fix: translate the new, rich layer group table to the old, dummy format for saving v1
+
+	[io_pcb]
+		-Fix: don't attempt to save attrib with NULL value
+		-Fix: layer number boundary check bug (the legacy +2)
+
+	[poly]
+		-Fix: poly clipped out of existence can come back without an assert
+		-Fix: when priting 'cleared out of exitence' message, use mm for coords
+
+	[res]
+		-Add: all new importes in the import menu
+		-Change: default file menu rearranged, import options grouped in a submenu to keep things simpler
+
+	[rubberband]
+		-Add: Support rubberbanding of lines attached to an arc
+		-Fix: Allow both ends of a line to be included in a rubberband move
+
+	[scconfig]
+		-Add: detect and use -std=c99 if available, some versions of gcc doesn't go for that by default - we also want to avoid accidentally using extensions in C99 code
+		-Add: detect cairo for the breadboard exporter
+		-Fix: allow parallel build
+		-Fix: mod CLEANFILES takes effect now
+		-Fix: when compiling with --debug, display debug symbols as implicit-enabled in the summary
+
+	[toporouter]
+		-Del: remove toporouter and gts - we have better alternatives now
+
+
 pcb-rnd 1.2.0 (r5967)
 ~~~~~~~~~~~~~~~~~~~~~
 	[unravel]
