@@ -1,4 +1,4 @@
-pcb-rnd 1.2.1 (r5903)
+pcb-rnd 1.2.1 (r6916)
 ~~~~~~~~~~~~~~~~~~~~~
 	[layer]
 		-Cleanup: better layer group support; clear separation of physical and logical layers; real and explicit layer stack concept
