@@ -323,6 +323,31 @@ static inline int Vz(pcb_coord_t z)
 	return pcb_round((double)z / gport->view.coord_per_px + 0.5);
 }
 
+static inline double Vxd(pcb_coord_t x)
+{
+	double rv;
+	if (conf_core.editor.view.flip_x)
+		rv = (PCB->MaxWidth - x - gport->view.x0) / gport->view.coord_per_px;
+	else
+		rv = (x - gport->view.x0) / gport->view.coord_per_px;
+	return rv;
+}
+
+static inline double Vyd(pcb_coord_t y)
+{
+	double rv;
+	if (conf_core.editor.view.flip_y)
+		rv = (PCB->MaxHeight - y - gport->view.y0) / gport->view.coord_per_px;
+	else
+		rv = (y - gport->view.y0) / gport->view.coord_per_px;
+	return rv;
+}
+
+static inline double Vzd(pcb_coord_t z)
+{
+	return (double)z / gport->view.coord_per_px;
+}
+
 static inline pcb_coord_t Px(int x)
 {
 	pcb_coord_t rv = x * gport->view.coord_per_px + gport->view.x0;
