@@ -44,12 +44,14 @@ static const char *tedax_cookie = "tedax importer";
 /* remove leading whitespace */
 #define ltrim(s) while(isspace(*s)) s++
 
-/* remove trailing newline */
+/* remove trailing newline;; trailing backslash is an error */
 #define rtrim(s) \
 	do { \
 		char *end; \
 		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--) \
 			*end = '\0'; \
+		if (*end == '\\') \
+			return -1; \
 	} while(0)
 
 typedef struct {
@@ -74,11 +76,67 @@ static void sym_flush(symattr_t *sattr)
 	free(sattr->footprint); sattr->footprint = NULL;
 }
 
+static int tedax_getline(FILE *f, char *buff, int buff_size, char *argv[], int argv_size)
+{
+	int argc;
+
+	for(;;) {
+		char *s, *o;
+
+		if (fgets(buff, buff_size, f) == NULL)
+			return -1;
+
+		s = buff;
+		if (*s == '#') /* comment */
+			continue;
+		ltrim(s);
+		rtrim(s);
+		if (*s == '\0') /* empty line */
+			continue;
+
+		/* argv split */
+		for(argc = 0, o = argv[0] = s; *s != '\0';) {
+			if (*s == '\\') {
+				s++;
+				*o = *s;
+				o++;
+				s++;
+				continue;
+			}
+			if ((argc+1 < argv_size) && ((*s == ' ') || (*s == '\t'))) {
+				*s = '\0';
+				s++;
+				o++;
+				while((*s == ' ') || (*s == '\t'))
+					s++;
+				argc++;
+				argv[argc] = o;
+			}
+			else {
+				*o = *s;
+				s++;
+				o++;
+			}
+		}
+		return argc+1; /* valid line, split up */
+	}
+
+	return -1; /* can't get here */
+}
 
 static int tedax_parse_net(FILE *fn)
 {
-	char line[1024];
+	char line[520];
+	char *argv[16];
+	int argc;
 	symattr_t sattr;
+
+	/* look for the header */
+	if (tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 2)
+		return -1;
+	if ((argv[1] == NULL) || (strcmp(argv[0], "tEDAx") != 0) || (strcmp(argv[1], "v1") != 0))
+		return -1;
+
 
 	memset(&sattr, 0, sizeof(sattr));
 
@@ -86,15 +144,12 @@ static int tedax_parse_net(FILE *fn)
 	pcb_hid_actionl("Netlist", "Freeze", NULL);
 	pcb_hid_actionl("Netlist", "Clear", NULL);
 
-	while(fgets(line, sizeof(line), fn) != NULL) {
-		int argc;
-		char **argv, *s;
 
-		s = line;
-		if (*s == '#') /* comment */
-			continue;
-		ltrim(s);
-		rtrim(s);
+	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+		int n;
+		printf("line %d\n", argc);
+		for(n = 0; n < argc; n++)
+			printf(" '%s'\n", argv[n]);
 /*		argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);*/
 /*		if ((argc > 1) && (strcmp(argv[0], "COMPONENT") == 0)) {*/
 	}
