@@ -1,5 +1,5 @@
 Import the netlist and footprints from a tedax netlist.
 
-#state: WIP
-#default: disable
+#state: works
+#default: buildin
 #implements: import
