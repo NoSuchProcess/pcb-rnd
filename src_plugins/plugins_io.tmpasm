@@ -8,6 +8,7 @@ include {../src_plugins/import_hyp/Plug.tmpasm}
 include {../src_plugins/import_mucs/Plug.tmpasm}
 include {../src_plugins/import_ltspice/Plug.tmpasm}
 include {../src_plugins/import_tinycad/Plug.tmpasm}
+include {../src_plugins/import_tedax/Plug.tmpasm}
 
 include {../src_plugins/export_ps/Plug.tmpasm}
 include {../src_plugins/export_lpr/Plug.tmpasm}
