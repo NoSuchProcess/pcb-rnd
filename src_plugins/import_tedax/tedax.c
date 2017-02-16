@@ -143,7 +143,6 @@ static int tedax_parse_net(FILE *fn)
 	pcb_hid_actionl("Netlist", "Clear", NULL);
 
 	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
-		int n;
 		if (strcmp(argv[0], "footprint") == 0) {
 			fp_t *fp = htsp_get2(&fps, argv[1], sizeof(fp_t));
 			fp->footprint = pcb_strdup(argv[2]);
