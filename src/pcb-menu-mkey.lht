@@ -55,7 +55,8 @@ ha:{
 				ha:Import {
 					m=I
 					li:submenu {
-						ha:Import Schematics                 = {                             action=Import() }
+						ha:Import gschem schematics          = {                             action=Import() }
+						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom() }
 						ha:Load element data to paste-buffer = {                             li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
 						ha:Load netlist file                 = {                             action=Load(Netlist) }
