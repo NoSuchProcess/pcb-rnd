@@ -2,6 +2,7 @@ plugin_header("\nLibrary plugins:\n")
 plugin_def("lib_gensexpr",    "#s-expression library",     sdisable, 0)
 plugin_def("lib_legacy_func", "legacy functions",          sbuildin, 1)
 plugin_def("lib_gtk_common",  "all-hid_gtk common code",   sdisable, 0)
+plugin_def("lib_gtk_config",  "hid_gtk preferences dialog",sdisable, 0)
 
 plugin_header("\nFeature plugins:\n")
 plugin_def("gpmi",            "GPMI scripting",            sbuildin, 1)
