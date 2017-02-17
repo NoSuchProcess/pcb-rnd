@@ -187,7 +187,7 @@ static int tedax_parse_net(FILE *fn)
 	for (e = htsp_first(&fps); e; e = htsp_next(&fps, e)) {
 		fp_t *fp = e->value;
 
-		pcb_trace("tedax fp: refdes=%s val=%s fp=%s\n", e->key, fp->value, fp->footprint);
+/*		pcb_trace("tedax fp: refdes=%s val=%s fp=%s\n", e->key, fp->value, fp->footprint);*/
 		if (fp->footprint == NULL)
 			pcb_message(PCB_MSG_ERROR, "tedax: not importing refdes=%s: no footprint specified\n", e->key);
 		else
