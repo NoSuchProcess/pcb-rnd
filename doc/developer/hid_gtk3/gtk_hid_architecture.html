@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.5">
+<meta name="author" content="Alain, Igor2">
+<title>GTK HID architecture</title>
+<link rel="stylesheet" href="./default.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>GTK HID architecture</h1>
+<div class="details">
+<span id="author" class="author">Alain, Igor2</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_situation_code_pcb_rnd_code_v1_2_1">Situation @ <code>pcb-rnd</code> v1.2.1</a></li>
+<li><a href="#_drawing_primitives_using_gdkx">Drawing primitives using GDKx</a>
+<ul class="sectlevel2">
+<li><a href="#_gdk2">GDK2</a></li>
+<li><a href="#_gdk3">GDK3</a></li>
+<li><a href="#_cairo_interaction">Cairo Interaction</a></li>
+<li><a href="#_open_gl">Open GL</a></li>
+<li><a href="#_very_modern_gdk3">Very modern GDK3</a></li>
+</ul>
+</li>
+<li><a href="#_plans_for_code_pcb_rnd_code_v1_2_2">Plans for <code>pcb-rnd</code> v1.2.2 ?</a>
+<ul class="sectlevel2">
+<li><a href="#_roadmap_short_term">Roadmap (short term)</a></li>
+<li><a href="#_names_proposal">Names proposal</a></li>
+</ul>
+</li>
+<li><a href="#_road_blocks_ahead">Road blocks ahead</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_situation_code_pcb_rnd_code_v1_2_1">Situation @ <code>pcb-rnd</code> v1.2.1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The HIDs are plug-ins, GTK2 one is called <code>hid_gtk</code>.</p>
+</div>
+<div class="paragraph">
+<p>First, get an instance of the main HID structure <code>pcb_hid_t</code>.
+This structure is general enough. Nothing too entangled to GTK2 nor GTK3 there.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c" data-lang="c">pcb_hid_t pcb_gui = pcb_hid_find_gui ()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Q: How GTK HID is initialized ?</p>
+</div>
+<div class="paragraph">
+<p>A?: <code>hid_hid_gtk_init ()</code> in <code>&lt;hid_gtk/gtkhid-main.c&gt;</code></p>
+</div>
+<div class="paragraph">
+<p>The GUI seems to start building from <code>ghid_do_export ()</code></p>
+</div>
+<div class="paragraph">
+<p>There are 2 big structures for GTK2 GUI:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c" data-lang="c">GhidGui _ghidgui, *ghidgui = &amp;_ghidgui;
+
+GHidPort ghid_port, *gport;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>GTK3 compatibility within these 2 structures:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. <code>GhidGui</code> structure study (portion)</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">GTK3 compatible</th>
+<th class="tableblock halign-left valign-top">GTK3 replacement</th>
+<th class="tableblock halign-left valign-top">GTK2 compatible ?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GtkWidget</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="green">OK</font></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GtkObject</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GObject</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">could be</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkPixmap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkPixbuf</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">could be</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GtkAction</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GAction (gio)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">could be (not desired)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GtkActionGroup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GActionGroup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font> (not desired)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GtkEntry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="green">OK</font></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GTimeVal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="green">OK</font> (glib)</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 2. <code>GHidPort</code> structure study (portion)</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">GTK3 compatible</th>
+<th class="tableblock halign-left valign-top">GTK3 replacement</th>
+<th class="tableblock halign-left valign-top">GTK2 compatible ?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GtkWidget</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="green">OK</font></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkPixmap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkPixbuf</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">could be</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkDrawable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cairo surface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font> (not desired)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkColor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkRGBA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font><sup>1</sup></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkColormap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkVisual</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font><sup>1</sup></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><sup>1</sup> An abstracted structure will be put in place (almost completed)</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_drawing_primitives_using_gdkx">Drawing primitives using GDKx</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_gdk2">GDK2</h3>
+<div class="paragraph">
+<p><code>pcb-rnd</code> v1.2.1 is using <code>gdk_draw&#8230;&#8203;</code> functions, on an already abstracted
+<code>pcb_hid_t</code> intance of <code>hid_gc_s</code> structure.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 3. <code>hid_gc_s</code> structure study (portion)</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">GTK3 compatible</th>
+<th class="tableblock halign-left valign-top">GTK3 replacement</th>
+<th class="tableblock halign-left valign-top">GTK2 compatible ?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GdkGC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cairo context</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">could be (not desired)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Indirectly, a <code>GdkGC</code> needs a <code>GdkDrawable</code> which is also deprecated in GTK3.
+A good replacement is a <code>GdkWindow</code>. Unfortunately <code>pcb-rnd</code> is making more use
+of deprecated <code>GdkPixmap</code> objects.</p>
+</div>
+<div class="paragraph">
+<p><code>gdk_draw_line</code> has been deprecated since version 2.22. Use <code>cairo_line_to</code>
+ and <code>cairo_stroke</code> instead. <code>gdk_gc_new</code> has been deprecated since version 2.22.
+ Use Cairo for rendering.</p>
+</div>
+<div class="paragraph">
+<p>Cairo needs also a context</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c" data-lang="c">cairo_line_to (cairo_t *cr,
+               double x,
+               double y);
+cairo_t *
+cairo_create (cairo_surface_t *target);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and then pops-up the <strong>Cairo Surface</strong> !</p>
+</div>
+<div class="paragraph">
+<p>A <code>cairo_surface_t</code> represents an image, either as the destination of a
+drawing operation or as source when drawing onto another surface.</p>
+</div>
+<div class="paragraph">
+<p>Problem with <code>GdkPixmap</code>. Use now <code>GdkWindow</code> !</p>
+</div>
+<div class="paragraph">
+<p>GDK does not wrap the cairo API, instead it allows to create cairo contexts
+which can be used to draw on <code>GdkWindow</code>. Additional functions allow use
+GdkRectangles with cairo and to use GdkColors, GdkRGBAs, GdkPixbufs
+and GdkWindows as sources for drawing operations.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gdk3">GDK3</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_cairo_interaction">Cairo Interaction</h3>
+<div class="paragraph">
+<p>Cairo is a graphics library that supports vector graphics and image compositing
+that can be used with GDK. GTK+ does all of its drawing using cairo.
+But I guess, it is also the case with late GDK2 !</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_open_gl">Open GL</h3>
+<div class="paragraph">
+<p><code>GdkGLContext</code> is an object representing the platform-specific OpenGL drawing context.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_very_modern_gdk3">Very modern GDK3</h3>
+<div class="paragraph">
+<p><code>GdkDrawingContext</code> is an object that represents the current drawing state of a <code>GdkWindow</code>.
+It&#8217;s possible to use a <code>GdkDrawingContext</code> to draw on a <code>GdkWindow</code> via
+rendering API like Cairo or OpenGL.</p>
+</div>
+<div class="paragraph">
+<p>Since: 3.22</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_plans_for_code_pcb_rnd_code_v1_2_2">Plans for <code>pcb-rnd</code> v1.2.2 ?</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>What we must have:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>the old gtk2 HID, with pixmaps and all the existing obsolete code - for
+existing/old systems. We won&#8217;t remove or change this, there&#8217;s absolutely
+no reason to risk running on older systems. We probably won&#8217;t remove
+it in any time soon, because some people love to run real OLD systems.</p>
+</li>
+<li>
+<p>whichever gtk HID with <strong>gl</strong> rendering; let&#8217;s say <em>gtk2+gl</em>, because gtk2 is
+what we have working today. This seems to be real appealing for many users.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p><a id="future"></a> What extras we could have and totally makes sense:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>the new, gtk3 HID, with Cairo for sw rendering, because as far as
+I understand there&#8217;s no other option for sw rendering in gtk3</p>
+</li>
+<li>
+<p>the new, gtk3 HID with <strong>gl</strong> rendering</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>What we could temporarily have, if it helped us on our way to <a href="#future">previous</a>:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>a temporary, hidden, development <em>gtk2+cairo</em> implementation so
+that cairo can be done in something that&#8217;s already there before
+gtk3 happens. This must not interfere with the gdk/pixmap implementation.
+This must not remain for long in the repo, and must be converted into
+the <em>gtk3+cairo</em> hid ASAP.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>What we shouldn&#8217;t have because it doesn&#8217;t make much sense but increases the
+confusion and development/maintainance costs:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>a permanent, advertised gtk2+cairo HID. gtk2 works perfectly fine with
+existing installation and the existing code. Cairo can only add slowdown
+to this and introduces new build risks. Old systems don&#8217;t need cairo to work.
+New systems will have gtk3 sooner or layer anyway. Other than a few "obsolete"
+marks in the manual, there&#8217;s absolutely no issue with a <em>gtk2+pixmap</em>.</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_roadmap_short_term">Roadmap (short term)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>keep pushing the <code>lib_gtk_common</code> split, trying to isolate general concepts
+from low-level GDK2 / GDK3 details.</p>
+</li>
+<li>
+<p>Name policy on object / functions in <code>lib_gtk_common</code> ?</p>
+</li>
+<li>
+<p>Agree on names for "top" level objects / structures, and start implementation
+in <code>hid_gtk3</code> for those high level structures.</p>
+</li>
+<li>
+<p>Open thinking about infrastructure for menus and actions, but don&#8217;t change a thing yet.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_names_proposal">Names proposal</h3>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Before</th>
+<th class="tableblock halign-left valign-top">After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GhidGui</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_gtk_gui_t</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">extern GhidGui _ghidgui, *ghidgui;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_gtk_gui_t _pcb_gtk_gui, *pcb_gtk_gui;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GHidPort</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_gtk_viewport_t</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">extern GHidPort ghid_port, *gport;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pcb_gtk_viewport_t _pcb_gtk_viewport *pcb_gtk_viewport</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_road_blocks_ahead">Road blocks ahead</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Thinking about:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menus</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Actions</p>
+</li>
+<li>
+<p>Short cut, multi-key shortcuts</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Suggests more use of GIO : <a href="https://developer.gnome.org/gio/stable/ch01.html" class="bare">https://developer.gnome.org/gio/stable/ch01.html</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-02-17 08:47:35 CET
+</div>
+</div>
+</body>
+</html>

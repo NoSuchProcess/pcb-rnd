@@ -1,0 +1,195 @@
+:author: Alain, Igor2
+:toc: left
+:icons: font
+//:imagesdir: img_route_style
+:stylesdir: ./
+:stylesheet: default.css
+:linkcss:
+
+// Substitutions...
+:prg:     pass:q[`pcb-rnd`]
+//:yes:     icon:check[role="green"]
+//:no:      icon:times[role="red"]
+:yes:     pass:q[<font color="green">OK</font>]
+:no:      pass:q[<font color="red">NO</font>]
+
+= GTK HID architecture
+
+== Situation @ {prg} v1.2.1
+The HIDs are plug-ins, GTK2 one is called `hid_gtk`.
+
+First, get an instance of the main HID structure `pcb_hid_t`.
+This structure is general enough. Nothing too entangled to GTK2 nor GTK3 there.
+```c
+pcb_hid_t pcb_gui = pcb_hid_find_gui ()
+```
+
+Q: How GTK HID is initialized ?
+
+A?: `hid_hid_gtk_init ()` in `<hid_gtk/gtkhid-main.c>`
+
+The GUI seems to start building from `ghid_do_export ()`
+
+There are 2 big structures for GTK2 GUI:
+```c
+GhidGui _ghidgui, *ghidgui = &_ghidgui;
+
+GHidPort ghid_port, *gport;
+```
+
+GTK3 compatibility within these 2 structures:
+
+.`GhidGui` structure study (portion)
+[options="header"]
+|===
+|  Type           | GTK3 compatible | GTK3 replacement  | GTK2 compatible ?
+| GtkWidget       | {yes}           |                   |
+| GtkObject       | {no}            | GObject           | could be
+| GdkPixmap       | {no}            | GdkPixbuf         | could be
+| GtkAction       | deprecated      | GAction (gio)     | could be (not desired)
+| GtkActionGroup  | {no}            | GActionGroup      | {no} (not desired)
+| GtkEntry        | {yes}           |                   |
+| GTimeVal        | {yes} (glib)    |                   |
+|===
+
+
+.`GHidPort` structure study (portion)
+[options="header"]
+|===
+|  Type         | GTK3 compatible | GTK3 replacement | GTK2 compatible ?
+| GtkWidget     | {yes}           |                  |
+| GdkPixmap     | {no}            | GdkPixbuf        | could be
+| GdkDrawable   | {no}            | Cairo surface    | {no} (not desired)
+| GdkColor      | {no}            | GdkRGBA          | {no}^1^
+| GdkColormap   | {no}            | GdkVisual        | {no}^1^
+|===
+^1^ An abstracted structure will be put in place (almost completed)
+
+
+== Drawing primitives using GDKx
+=== GDK2
+{prg} v1.2.1 is using `gdk_draw...` functions, on an already abstracted
+`pcb_hid_t` intance of `hid_gc_s` structure.
+
+.`hid_gc_s` structure study (portion)
+[options="header"]
+|===
+|  Type         | GTK3 compatible | GTK3 replacement | GTK2 compatible ?
+| GdkGC         | {no}            | Cairo context    | could be (not desired)
+|===
+
+Indirectly, a `GdkGC` needs a `GdkDrawable` which is also deprecated in GTK3.
+A good replacement is a `GdkWindow`. Unfortunately {prg} is making more use
+of deprecated `GdkPixmap` objects.
+
+`gdk_draw_line` has been deprecated since version 2.22. Use `cairo_line_to`
+ and `cairo_stroke` instead. `gdk_gc_new` has been deprecated since version 2.22.
+ Use Cairo for rendering.
+
+Cairo needs also a context
+```c
+cairo_line_to (cairo_t *cr,
+               double x,
+               double y);
+cairo_t *
+cairo_create (cairo_surface_t *target);
+```
+and then pops-up the *Cairo Surface* !
+
+A `cairo_surface_t` represents an image, either as the destination of a
+drawing operation or as source when drawing onto another surface.
+
+Problem with `GdkPixmap`. Use now `GdkWindow` !
+
+GDK does not wrap the cairo API, instead it allows to create cairo contexts
+which can be used to draw on `GdkWindow`. Additional functions allow use
+GdkRectangles with cairo and to use GdkColors, GdkRGBAs, GdkPixbufs
+and GdkWindows as sources for drawing operations.
+
+=== GDK3
+=== Cairo Interaction
+Cairo is a graphics library that supports vector graphics and image compositing
+that can be used with GDK. GTK+ does all of its drawing using cairo.
+But I guess, it is also the case with late GDK2 !
+
+=== Open GL
+`GdkGLContext` is an object representing the platform-specific OpenGL drawing context.
+
+=== Very modern GDK3
+`GdkDrawingContext` is an object that represents the current drawing state of a `GdkWindow`.
+It's possible to use a `GdkDrawingContext` to draw on a `GdkWindow` via
+rendering API like Cairo or OpenGL.
+
+Since: 3.22
+
+== Plans for {prg} v1.2.2 ?
+
+//Please note that I don't see much sense in doing a gtk2+cairo.
+//I don't say we can't do it as a temporary option, but I say it would be a waste of time.
+//My reasoning:
+
+. What we must have:
+
+.. the old gtk2 HID, with pixmaps and all the existing obsolete code - for
+existing/old systems. We won't remove or change this, there's absolutely
+no reason to risk running on older systems. We probably won't remove
+it in any time soon, because some people love to run real OLD systems.
+
+.. whichever gtk HID with *gl* rendering; let's say _gtk2+gl_, because gtk2 is
+what we have working today. This seems to be real appealing for many users.
+
+
+. [[future]] What extras we could have and totally makes sense:
+
+.. the new, gtk3 HID, with Cairo for sw rendering, because as far as
+I understand there's no other option for sw rendering in gtk3
+
+.. the new, gtk3 HID with *gl* rendering
+
+. What we could temporarily have, if it helped us on our way to <<future, previous>>:
+
+.. a temporary, hidden, development _gtk2+cairo_ implementation so
+that cairo can be done in something that's already there before
+gtk3 happens. This must not interfere with the gdk/pixmap implementation.
+This must not remain for long in the repo, and must be converted into
+the _gtk3+cairo_ hid ASAP.
+
+. What we shouldn't have because it doesn't make much sense but increases the
+confusion and development/maintainance costs:
+
+.. a permanent, advertised gtk2+cairo HID. gtk2 works perfectly fine with
+existing installation and the existing code. Cairo can only add slowdown
+to this and introduces new build risks. Old systems don't need cairo to work.
+New systems will have gtk3 sooner or layer anyway. Other than a few "obsolete"
+marks in the manual, there's absolutely no issue with a _gtk2+pixmap_.
+
+=== Roadmap (short term)
+
+* keep pushing the `lib_gtk_common` split, trying to isolate general concepts
+  from low-level GDK2 / GDK3 details.
+* Name policy on object / functions in `lib_gtk_common` ?
+* Agree on names for "top" level objects / structures, and start implementation
+  in `hid_gtk3` for those high level structures.
+* Open thinking about infrastructure for menus and actions, but don't change a thing yet.
+
+=== Names proposal
+[options="header"]
+|===
+| Before                              | After
+| GhidGui                             | pcb_gtk_gui_t
+| extern GhidGui _ghidgui, *ghidgui;  | pcb_gtk_gui_t _pcb_gtk_gui, *pcb_gtk_gui;
+| GHidPort                            | pcb_gtk_viewport_t
+| extern GHidPort ghid_port, *gport;  | pcb_gtk_viewport_t _pcb_gtk_viewport *pcb_gtk_viewport
+|===
+
+== Road blocks ahead
+
+Thinking about:
+
+* Menus
+** Actions
+** Short cut, multi-key shortcuts
+
+Suggests more use of GIO : https://developer.gnome.org/gio/stable/ch01.html
+
+

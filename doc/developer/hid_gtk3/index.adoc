@@ -1,9 +1,21 @@
-//:toc: left
+:toc: left
 :stylesheet: default.css
 :linkcss:
 
 = GTK2 / GTK3 GUI related topics
 
-* `cairo` back-end
-* GTK3 compatibility ?
-* <<route_style.adoc#, Route styles>> dialog + widget. Concepts
+* My understanding/roadmap for <<gtk_hid_architecture.adoc#, GTK HID architecture>>.
+
+* Multi-key keyboard shortcuts
+
+* Menus, Actions
+
+//* `cairo` back-end versus GDK
+//** Prefer `GdkPixbuf`  to `GdkPixmap` or `GdkBitmap`
+//** Get rid of `gdk_drawable...` ; use cairo surfaces
+
+* Custom widgets
+** <<route_style.adoc#, Route styles>> dialog + widget. Concepts
+** Layer selection
+
+* GTK3 new design ?
