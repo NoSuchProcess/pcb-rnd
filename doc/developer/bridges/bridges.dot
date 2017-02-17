@@ -42,7 +42,9 @@ digraph gr {
 	edif -> pcbrnd [label="import"]
 	ltspice -> pcbrnd [label="import: schematics"]
 	netlist -> pcbrnd [label="import: pcb .net"]
-	gschem -> pcbrnd [label="import: schematics"]
+	lepton -> pcbrnd [label="import: schematics"]
+	gEDA -> pcbrnd [label="import: schematics"]
+	pcbrnd -> gEDA [label="back annotation"]
 	tinycad -> pcbrnd [label="import: schematics"]
 
 	pcbrnd -> batch [label="hid"]
