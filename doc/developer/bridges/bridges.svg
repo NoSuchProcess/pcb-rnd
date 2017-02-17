@@ -37,23 +37,23 @@
 </g>
 <!-- pcbrnd&#45;&gt;kicad -->
 <g id="edge6" class="edge"><title>pcbrnd&#45;&gt;kicad</title>
-<path fill="none" stroke="black" d="M514.16,-985.342C519.7,-994.525 525.639,-1001.89 532,-1007 586.049,-1050.43 626.596,-1039.2 688,-1007 742.066,-978.65 775.196,-911.044 790.294,-872.73"/>
-<polygon fill="black" stroke="black" points="793.631,-873.8 793.912,-863.209 787.088,-871.314 793.631,-873.8"/>
-<text text-anchor="middle" x="610" y="-1040.4" font-family="Times Roman,serif" font-size="14.00">board: legacy format</text>
+<path fill="none" stroke="black" d="M514.058,-920.266C519.685,-929.678 525.663,-937.111 532,-942 586.896,-984.35 623.035,-966.221 688,-942 725.731,-927.933 759.197,-894.798 779.506,-871.176"/>
+<polygon fill="black" stroke="black" points="782.393,-873.18 786.126,-863.264 777.024,-868.688 782.393,-873.18"/>
+<text text-anchor="middle" x="610" y="-972.4" font-family="Times Roman,serif" font-size="14.00">board: legacy format</text>
 </g>
 <!-- pcbrnd&#45;&gt;kicad -->
 <g id="edge8" class="edge"><title>pcbrnd&#45;&gt;kicad</title>
-<path fill="none" stroke="black" d="M519.711,-928.872C523.647,-934.282 527.742,-938.715 532,-942 586.896,-984.35 623.035,-966.221 688,-942 725.731,-927.933 759.197,-894.798 779.506,-871.176"/>
-<polygon fill="black" stroke="black" points="522.474,-926.703 514.058,-920.266 516.623,-930.546 522.474,-926.703"/>
-<polygon fill="black" stroke="black" points="782.393,-873.18 786.126,-863.264 777.024,-868.688 782.393,-873.18"/>
-<text text-anchor="middle" x="610" y="-972.4" font-family="Times Roman,serif" font-size="14.00">board: s&#45;expression</text>
+<path fill="none" stroke="black" d="M519.887,-864.444C523.824,-869.735 527.865,-873.993 532,-877 600.778,-927.027 706.744,-890.032 762.594,-864.263"/>
+<polygon fill="black" stroke="black" points="522.678,-862.322 514.194,-855.976 516.868,-866.228 522.678,-862.322"/>
+<polygon fill="black" stroke="black" points="764.225,-867.364 771.767,-859.923 761.231,-861.036 764.225,-867.364"/>
+<text text-anchor="middle" x="610" y="-906.4" font-family="Times Roman,serif" font-size="14.00">board: s&#45;expression</text>
 </g>
 <!-- pcbrnd&#45;&gt;kicad -->
 <g id="edge10" class="edge"><title>pcbrnd&#45;&gt;kicad</title>
-<path fill="none" stroke="black" d="M519.958,-849.662C523.892,-854.89 527.911,-859.078 532,-862 600.7,-911.101 706.343,-882.212 762.263,-861.113"/>
-<polygon fill="black" stroke="black" points="522.777,-847.583 514.257,-841.285 516.99,-851.521 522.777,-847.583"/>
-<polygon fill="black" stroke="black" points="763.726,-864.3 771.78,-857.416 761.191,-857.775 763.726,-864.3"/>
-<text text-anchor="middle" x="610" y="-893.4" font-family="Times Roman,serif" font-size="14.00">footprint: s&#45;expression</text>
+<path fill="none" stroke="black" d="M521.274,-798.959C524.701,-802.143 528.275,-805.164 532,-808 567.224,-834.816 695.887,-842.202 761.282,-844.232"/>
+<polygon fill="black" stroke="black" points="523.564,-796.301 514.001,-791.74 518.633,-801.269 523.564,-796.301"/>
+<polygon fill="black" stroke="black" points="761.493,-847.74 771.588,-844.524 761.691,-840.742 761.493,-847.74"/>
+<text text-anchor="middle" x="610" y="-845.4" font-family="Times Roman,serif" font-size="14.00">footprint: s&#45;expression</text>
 </g>
 <!-- pcb -->
 <g id="node3" class="node"><title>pcb</title>
@@ -62,17 +62,17 @@
 </g>
 <!-- pcbrnd&#45;&gt;pcb -->
 <g id="edge12" class="edge"><title>pcbrnd&#45;&gt;pcb</title>
-<path fill="none" stroke="black" d="M521.967,-804.61C525.181,-807.226 528.524,-809.695 532,-812 589.785,-850.315 621.874,-832.844 688,-812 693.174,-810.369 693.208,-807.543 698,-805 713.116,-796.977 730.253,-789.763 746.107,-783.785"/>
-<polygon fill="black" stroke="black" points="524.062,-801.792 514.241,-797.816 519.439,-807.048 524.062,-801.792"/>
-<polygon fill="black" stroke="black" points="747.606,-786.963 755.784,-780.226 745.19,-780.393 747.606,-786.963"/>
-<text text-anchor="middle" x="610" y="-839.4" font-family="Times Roman,serif" font-size="14.00">board: .pcb</text>
+<path fill="none" stroke="black" d="M522.018,-740.174C525.233,-742.619 528.56,-744.902 532,-747 597.181,-786.748 688.564,-783.437 746.002,-775.879"/>
+<polygon fill="black" stroke="black" points="524.198,-737.436 514.253,-733.782 519.749,-742.84 524.198,-737.436"/>
+<polygon fill="black" stroke="black" points="746.551,-779.336 755.967,-774.48 745.578,-772.404 746.551,-779.336"/>
+<text text-anchor="middle" x="610" y="-785.4" font-family="Times Roman,serif" font-size="14.00">board: .pcb</text>
 </g>
 <!-- pcbrnd&#45;&gt;pcb -->
 <g id="edge14" class="edge"><title>pcbrnd&#45;&gt;pcb</title>
-<path fill="none" stroke="black" d="M521.938,-722.098C525.193,-724.567 528.547,-726.877 532,-729 597.165,-769.063 687.884,-773.126 745.269,-770.78"/>
-<polygon fill="black" stroke="black" points="524.008,-719.269 514.051,-715.649 519.577,-724.688 524.008,-719.269"/>
-<polygon fill="black" stroke="black" points="745.765,-774.26 755.582,-770.274 745.423,-767.268 745.765,-774.26"/>
-<text text-anchor="middle" x="610" y="-775.4" font-family="Times Roman,serif" font-size="14.00">footprint: .fp</text>
+<path fill="none" stroke="black" d="M522.694,-676.522C525.765,-678.464 528.871,-680.299 532,-682 594.883,-716.189 619.962,-699.773 688,-722 692.55,-723.486 693.55,-724.237 698,-726 713.67,-732.207 730.713,-738.909 746.3,-745.02"/>
+<polygon fill="black" stroke="black" points="524.393,-673.447 514.139,-670.782 520.493,-679.26 524.393,-673.447"/>
+<polygon fill="black" stroke="black" points="745.205,-748.35 755.793,-748.739 747.758,-741.832 745.205,-748.35"/>
+<text text-anchor="middle" x="610" y="-726.4" font-family="Times Roman,serif" font-size="14.00">footprint: .fp</text>
 </g>
 <!-- freerouting -->
 <g id="node4" class="node"><title>freerouting</title>
@@ -82,9 +82,10 @@
 </g>
 <!-- pcbrnd&#45;&gt;freerouting -->
 <g id="edge16" class="edge"><title>pcbrnd&#45;&gt;freerouting</title>
-<path fill="none" stroke="black" d="M514.159,-673.033C519.908,-676.528 525.872,-679.579 532,-682 594.637,-706.743 672.117,-704.146 727.632,-697.216"/>
-<polygon fill="black" stroke="black" points="728.28,-700.66 737.734,-695.877 727.36,-693.721 728.28,-700.66"/>
-<text text-anchor="middle" x="610" y="-706.4" font-family="Times Roman,serif" font-size="14.00">.dsn</text>
+<path fill="none" stroke="black" d="M523.841,-618.432C585.392,-633.046 668.931,-652.88 727.962,-666.896"/>
+<polygon fill="black" stroke="black" points="524.554,-615.004 514.016,-616.099 522.937,-621.814 524.554,-615.004"/>
+<polygon fill="black" stroke="black" points="727.414,-670.363 737.952,-669.268 729.031,-663.552 727.414,-670.363"/>
+<text text-anchor="middle" x="610" y="-661.4" font-family="Times Roman,serif" font-size="14.00">.dsn</text>
 </g>
 <!-- gEDA -->
 <g id="node6" class="node"><title>gEDA</title>
@@ -93,7 +94,7 @@
 <text text-anchor="middle" x="800" y="-586.4" font-family="Times Roman,serif" font-size="14.00">(gschem, gnetlist)</text>
 </g>
 <!-- pcbrnd&#45;&gt;gEDA -->
-<g id="edge54" class="edge"><title>pcbrnd&#45;&gt;gEDA</title>
+<g id="edge52" class="edge"><title>pcbrnd&#45;&gt;gEDA</title>
 <path fill="none" stroke="black" d="M514.196,-594.636C520.217,-594.379 526.212,-594.161 532,-594 601.307,-592.076 618.684,-592.454 688,-594 698.249,-594.229 709.021,-594.575 719.667,-594.981"/>
 <polygon fill="black" stroke="black" points="719.684,-598.484 729.815,-595.386 719.963,-591.489 719.684,-598.484"/>
 <text text-anchor="middle" x="610" y="-598.4" font-family="Times Roman,serif" font-size="14.00">back annotation</text>
@@ -104,7 +105,7 @@
 <text text-anchor="middle" x="800" y="-496.9" font-family="Times Roman,serif" font-size="14.00">hid_batch</text>
 </g>
 <!-- pcbrnd&#45;&gt;batch -->
-<g id="edge58" class="edge"><title>pcbrnd&#45;&gt;batch</title>
+<g id="edge56" class="edge"><title>pcbrnd&#45;&gt;batch</title>
 <path fill="none" stroke="black" d="M522.915,-499.715C525.876,-497.994 528.905,-496.414 532,-495 604.124,-462.034 698.967,-475.611 754.333,-488.377"/>
 <polygon fill="black" stroke="black" points="520.765,-496.936 514.238,-505.282 524.545,-502.828 520.765,-496.936"/>
 <polygon fill="black" stroke="black" points="753.657,-491.814 764.197,-490.74 755.288,-485.007 753.657,-491.814"/>
@@ -115,7 +116,7 @@
 <text text-anchor="middle" x="800" y="-417.9" font-family="Times Roman,serif" font-size="14.00">hid_gtk</text>
 </g>
 <!-- pcbrnd&#45;&gt;gtk -->
-<g id="edge60" class="edge"><title>pcbrnd&#45;&gt;gtk</title>
+<g id="edge58" class="edge"><title>pcbrnd&#45;&gt;gtk</title>
 <path fill="none" stroke="black" d="M522.034,-472.084C525.257,-469.56 528.579,-467.189 532,-465 593.315,-425.766 678.215,-418.224 735.912,-418.413"/>
 <polygon fill="black" stroke="black" points="519.619,-469.542 514.224,-478.661 524.128,-474.896 519.619,-469.542"/>
 <polygon fill="black" stroke="black" points="735.961,-421.914 745.999,-418.525 736.039,-414.914 735.961,-421.914"/>
@@ -126,7 +127,7 @@
 <text text-anchor="middle" x="800" y="-338.9" font-family="Times Roman,serif" font-size="14.00">hid_lesstif</text>
 </g>
 <!-- pcbrnd&#45;&gt;lesstif -->
-<g id="edge62" class="edge"><title>pcbrnd&#45;&gt;lesstif</title>
+<g id="edge60" class="edge"><title>pcbrnd&#45;&gt;lesstif</title>
 <path fill="none" stroke="black" d="M521.485,-420.47C524.856,-417.148 528.359,-413.983 532,-411 583.666,-368.67 658.344,-352.266 715.753,-346.111"/>
 <polygon fill="black" stroke="black" points="518.69,-418.329 514.318,-427.98 523.754,-423.162 518.69,-418.329"/>
 <polygon fill="black" stroke="black" points="716.291,-349.575 725.898,-345.109 715.603,-342.609 716.291,-349.575"/>
@@ -137,7 +138,7 @@
 <text text-anchor="middle" x="800" y="-259.9" font-family="Times Roman,serif" font-size="14.00">hid_remote</text>
 </g>
 <!-- pcbrnd&#45;&gt;remote -->
-<g id="edge64" class="edge"><title>pcbrnd&#45;&gt;remote</title>
+<g id="edge62" class="edge"><title>pcbrnd&#45;&gt;remote</title>
 <path fill="none" stroke="black" d="M520.839,-352.531C524.396,-348.526 528.114,-344.675 532,-341 580.86,-294.796 655.603,-276.063 713.754,-268.592"/>
 <polygon fill="black" stroke="black" points="517.961,-350.515 514.193,-360.417 523.314,-355.026 517.961,-350.515"/>
 <polygon fill="black" stroke="black" points="714.526,-272.025 724.04,-267.365 713.696,-265.074 714.526,-272.025"/>
@@ -148,7 +149,7 @@
 <text text-anchor="middle" x="114" y="-1305.9" font-family="Times Roman,serif" font-size="14.00">breadboard</text>
 </g>
 <!-- pcbrnd&#45;&gt;breadboard -->
-<g id="edge22" class="edge"><title>pcbrnd&#45;&gt;breadboard</title>
+<g id="edge20" class="edge"><title>pcbrnd&#45;&gt;breadboard</title>
 <path fill="none" stroke="black" d="M400.802,-1031.18C386.673,-1140.18 369.878,-1232.2 352,-1252 311.505,-1296.85 242.641,-1309.78 189.375,-1312.41"/>
 <polygon fill="black" stroke="black" points="189.142,-1308.92 179.283,-1312.8 189.409,-1315.91 189.142,-1308.92"/>
 <text text-anchor="middle" x="291" y="-1312.4" font-family="Times Roman,serif" font-size="14.00">.png</text>
@@ -159,7 +160,7 @@
 <text text-anchor="middle" x="114" y="-1226.9" font-family="Times Roman,serif" font-size="14.00">BoM</text>
 </g>
 <!-- pcbrnd&#45;&gt;BoM -->
-<g id="edge24" class="edge"><title>pcbrnd&#45;&gt;BoM</title>
+<g id="edge22" class="edge"><title>pcbrnd&#45;&gt;BoM</title>
 <path fill="none" stroke="black" d="M404.542,-1031.09C391.82,-1093.41 374.791,-1144.94 352,-1170 302.219,-1224.73 210.65,-1233.3 156.764,-1233.13"/>
 <polygon fill="black" stroke="black" points="156.559,-1229.63 146.513,-1233 156.465,-1236.63 156.559,-1229.63"/>
 <text text-anchor="middle" x="291" y="-1231.4" font-family="Times Roman,serif" font-size="14.00">text</text>
@@ -170,7 +171,7 @@
 <text text-anchor="middle" x="114" y="-1147.9" font-family="Times Roman,serif" font-size="14.00">XY</text>
 </g>
 <!-- pcbrnd&#45;&gt;XY -->
-<g id="edge26" class="edge"><title>pcbrnd&#45;&gt;XY</title>
+<g id="edge24" class="edge"><title>pcbrnd&#45;&gt;XY</title>
 <path fill="none" stroke="black" d="M377.325,-1031.05C369.734,-1050.66 361.318,-1066.5 352,-1077 325.077,-1107.34 210.199,-1133.42 150.444,-1145.24"/>
 <polygon fill="black" stroke="black" points="149.455,-1141.87 140.308,-1147.22 150.792,-1148.74 149.455,-1141.87"/>
 <text text-anchor="middle" x="291" y="-1147.4" font-family="Times Roman,serif" font-size="14.00">.xy</text>
@@ -182,7 +183,7 @@
 <text text-anchor="middle" x="114" y="-1068.9" font-family="Times Roman,serif" font-size="14.00">gerber</text>
 </g>
 <!-- pcbrnd&#45;&gt;gerber -->
-<g id="edge28" class="edge"><title>pcbrnd&#45;&gt;gerber</title>
+<g id="edge26" class="edge"><title>pcbrnd&#45;&gt;gerber</title>
 <path fill="none" stroke="black" d="M369.975,-948.524C364.276,-961.241 358.279,-971.658 352,-979 304.665,-1034.35 220.356,-1057.36 165.839,-1066.75"/>
 <polygon fill="black" stroke="black" points="164.995,-1063.34 155.687,-1068.4 166.119,-1070.25 164.995,-1063.34"/>
 <text text-anchor="middle" x="291" y="-1054.4" font-family="Times Roman,serif" font-size="14.00">.gbr, .cnc</text>
@@ -193,7 +194,7 @@
 <text text-anchor="middle" x="114" y="-989.9" font-family="Times Roman,serif" font-size="14.00">ipcd356</text>
 </g>
 <!-- pcbrnd&#45;&gt;ipcd356 -->
-<g id="edge30" class="edge"><title>pcbrnd&#45;&gt;ipcd356</title>
+<g id="edge28" class="edge"><title>pcbrnd&#45;&gt;ipcd356</title>
 <path fill="none" stroke="black" d="M369.952,-887.14C364.167,-898.99 358.165,-908.563 352,-915 305.035,-964.03 226.969,-982.641 173.123,-989.699"/>
 <polygon fill="black" stroke="black" points="172.533,-986.245 163.028,-990.925 173.377,-993.194 172.533,-986.245"/>
 </g>
@@ -203,7 +204,7 @@
 <text text-anchor="middle" x="114" y="-910.9" font-family="Times Roman,serif" font-size="14.00">lpr</text>
 </g>
 <!-- pcbrnd&#45;&gt;lpr -->
-<g id="edge32" class="edge"><title>pcbrnd&#45;&gt;lpr</title>
+<g id="edge30" class="edge"><title>pcbrnd&#45;&gt;lpr</title>
 <path fill="none" stroke="black" d="M369.867,-798.21C364.325,-805.564 358.378,-812.539 352,-819 296.069,-875.658 202.262,-899.993 150.704,-909.524"/>
 <polygon fill="black" stroke="black" points="149.918,-906.108 140.676,-911.289 151.132,-913.002 149.918,-906.108"/>
 <text text-anchor="middle" x="291" y="-892.4" font-family="Times Roman,serif" font-size="14.00">print</text>
@@ -214,7 +215,7 @@
 <text text-anchor="middle" x="114" y="-831.9" font-family="Times Roman,serif" font-size="14.00">nelma</text>
 </g>
 <!-- pcbrnd&#45;&gt;nelma -->
-<g id="edge34" class="edge"><title>pcbrnd&#45;&gt;nelma</title>
+<g id="edge32" class="edge"><title>pcbrnd&#45;&gt;nelma</title>
 <path fill="none" stroke="black" d="M369.967,-739.84C364.333,-746.019 358.347,-751.796 352,-757 297.239,-801.898 215.984,-821.635 164.01,-830.058"/>
 <polygon fill="black" stroke="black" points="163.373,-826.615 154.022,-831.596 164.438,-833.533 163.373,-826.615"/>
 </g>
@@ -224,7 +225,7 @@
 <text text-anchor="middle" x="114" y="-752.9" font-family="Times Roman,serif" font-size="14.00">png</text>
 </g>
 <!-- pcbrnd&#45;&gt;png -->
-<g id="edge36" class="edge"><title>pcbrnd&#45;&gt;png</title>
+<g id="edge34" class="edge"><title>pcbrnd&#45;&gt;png</title>
 <path fill="none" stroke="black" d="M369.849,-669.318C364.017,-673.557 358.04,-677.51 352,-681 286.786,-718.687 200.537,-740.215 151.795,-750.166"/>
 <polygon fill="black" stroke="black" points="151.111,-746.733 141.985,-752.115 152.475,-753.599 151.111,-746.733"/>
 <text text-anchor="middle" x="291" y="-734.4" font-family="Times Roman,serif" font-size="14.00">bitmap</text>
@@ -235,7 +236,7 @@
 <text text-anchor="middle" x="114" y="-594.9" font-family="Times Roman,serif" font-size="14.00">ps</text>
 </g>
 <!-- pcbrnd&#45;&gt;ps -->
-<g id="edge38" class="edge"><title>pcbrnd&#45;&gt;ps</title>
+<g id="edge36" class="edge"><title>pcbrnd&#45;&gt;ps</title>
 <path fill="none" stroke="black" d="M369.822,-555.831C363.928,-553.51 357.948,-551.514 352,-550 299.454,-536.623 280.623,-530.574 230,-550 224.418,-552.142 225.107,-555.891 220,-559 197.809,-572.509 170.299,-582.726 148.867,-589.452"/>
 <polygon fill="black" stroke="black" points="147.742,-586.136 139.186,-592.384 149.771,-592.835 147.742,-586.136"/>
 <text text-anchor="middle" x="291" y="-554.4" font-family="Times Roman,serif" font-size="14.00">.ps, .eps</text>
@@ -246,7 +247,7 @@
 <text text-anchor="middle" x="114" y="-673.9" font-family="Times Roman,serif" font-size="14.00">stat</text>
 </g>
 <!-- pcbrnd&#45;&gt;stat -->
-<g id="edge40" class="edge"><title>pcbrnd&#45;&gt;stat</title>
+<g id="edge38" class="edge"><title>pcbrnd&#45;&gt;stat</title>
 <path fill="none" stroke="black" d="M369.925,-621.15C363.877,-622.848 357.843,-624.488 352,-626 282.384,-644.019 200.257,-661.041 152.945,-670.442"/>
 <polygon fill="black" stroke="black" points="152.243,-667.012 143.112,-672.385 153.601,-673.88 152.243,-667.012"/>
 <text text-anchor="middle" x="291" y="-658.4" font-family="Times Roman,serif" font-size="14.00">statsitics .lht</text>
@@ -257,16 +258,10 @@
 <text text-anchor="middle" x="114" y="-515.9" font-family="Times Roman,serif" font-size="14.00">svg</text>
 </g>
 <!-- pcbrnd&#45;&gt;svg -->
-<g id="edge42" class="edge"><title>pcbrnd&#45;&gt;svg</title>
+<g id="edge40" class="edge"><title>pcbrnd&#45;&gt;svg</title>
 <path fill="none" stroke="black" d="M369.895,-520.306C364.151,-516.682 358.172,-513.516 352,-511 284.579,-483.516 197.31,-498.098 149.392,-509.88"/>
 <polygon fill="black" stroke="black" points="148.323,-506.541 139.503,-512.411 150.058,-513.323 148.323,-506.541"/>
 <text text-anchor="middle" x="291" y="-515.4" font-family="Times Roman,serif" font-size="14.00">.svg</text>
-</g>
-<!-- freerouting&#45;&gt;pcbrnd -->
-<g id="edge18" class="edge"><title>freerouting&#45;&gt;pcbrnd</title>
-<path fill="none" stroke="black" d="M737.81,-668.949C721.599,-665.042 704.149,-660.85 688,-657 633.408,-643.984 571.96,-629.496 524.134,-618.256"/>
-<polygon fill="black" stroke="black" points="524.678,-614.789 514.143,-615.909 523.077,-621.603 524.678,-614.789"/>
-<text text-anchor="middle" x="610" y="-661.4" font-family="Times Roman,serif" font-size="14.00">.dsn</text>
 </g>
 <!-- mucs -->
 <g id="node5" class="node"><title>mucs</title>
@@ -274,13 +269,13 @@
 <text text-anchor="middle" x="114" y="-430.9" font-family="Times Roman,serif" font-size="14.00">mucs pcb with autorouter</text>
 </g>
 <!-- mucs&#45;&gt;pcbrnd -->
-<g id="edge20" class="edge"><title>mucs&#45;&gt;pcbrnd</title>
+<g id="edge18" class="edge"><title>mucs&#45;&gt;pcbrnd</title>
 <path fill="none" stroke="black" d="M211.561,-431.479C257.176,-434.018 310.459,-443.326 352,-469 355.448,-471.131 358.797,-473.448 362.049,-475.924"/>
 <polygon fill="black" stroke="black" points="359.976,-478.751 369.927,-482.387 364.415,-473.339 359.976,-478.751"/>
 <text text-anchor="middle" x="291" y="-473.4" font-family="Times Roman,serif" font-size="14.00">import</text>
 </g>
 <!-- gEDA&#45;&gt;pcbrnd -->
-<g id="edge52" class="edge"><title>gEDA&#45;&gt;pcbrnd</title>
+<g id="edge50" class="edge"><title>gEDA&#45;&gt;pcbrnd</title>
 <path fill="none" stroke="black" d="M729.76,-583.372C717.971,-578.164 706.746,-571.229 698,-562 687.458,-550.876 700.308,-538.131 688,-529 632.317,-487.69 597.581,-506.499 532,-529 529.053,-530.011 526.127,-531.163 523.233,-532.434"/>
 <polygon fill="black" stroke="black" points="521.566,-529.352 514.102,-536.872 524.626,-535.648 521.566,-529.352"/>
 <text text-anchor="middle" x="610" y="-533.4" font-family="Times Roman,serif" font-size="14.00">schematics</text>
@@ -292,7 +287,7 @@
 <text text-anchor="middle" x="114" y="-340.4" font-family="Times Roman,serif" font-size="14.00">(gschem, gnetlist)</text>
 </g>
 <!-- lepton&#45;&gt;pcbrnd -->
-<g id="edge50" class="edge"><title>lepton&#45;&gt;pcbrnd</title>
+<g id="edge48" class="edge"><title>lepton&#45;&gt;pcbrnd</title>
 <path fill="none" stroke="black" d="M184.051,-353.031C235.591,-356.523 304.639,-368.874 352,-407 355.647,-409.936 359.154,-413.054 362.526,-416.329"/>
 <polygon fill="black" stroke="black" points="360.225,-418.985 369.693,-423.74 365.257,-414.119 360.225,-418.985"/>
 <text text-anchor="middle" x="291" y="-411.4" font-family="Times Roman,serif" font-size="14.00">schematics</text>
@@ -303,7 +298,7 @@
 <text text-anchor="middle" x="114" y="-266.9" font-family="Times Roman,serif" font-size="14.00">LTSpce</text>
 </g>
 <!-- ltspice&#45;&gt;pcbrnd -->
-<g id="edge46" class="edge"><title>ltspice&#45;&gt;pcbrnd</title>
+<g id="edge44" class="edge"><title>ltspice&#45;&gt;pcbrnd</title>
 <path fill="none" stroke="black" d="M146.239,-270.089C196.695,-270.45 294.482,-278.6 352,-332 356.222,-335.92 360.429,-341.379 364.588,-348.06"/>
 <polygon fill="black" stroke="black" points="361.803,-350.237 369.828,-357.154 367.868,-346.742 361.803,-350.237"/>
 <text text-anchor="middle" x="291" y="-336.4" font-family="Times Roman,serif" font-size="14.00">schematics</text>
@@ -314,7 +309,7 @@
 <text text-anchor="middle" x="114" y="-187.9" font-family="Times Roman,serif" font-size="14.00">TinyCAD</text>
 </g>
 <!-- tinycad&#45;&gt;pcbrnd -->
-<g id="edge56" class="edge"><title>tinycad&#45;&gt;pcbrnd</title>
+<g id="edge54" class="edge"><title>tinycad&#45;&gt;pcbrnd</title>
 <path fill="none" stroke="black" d="M152.717,-190.43C205.198,-190.514 298.486,-198.85 352,-252 356.483,-256.453 360.821,-262.382 365.009,-269.525"/>
 <polygon fill="black" stroke="black" points="362.009,-271.335 369.856,-278.453 368.161,-267.995 362.009,-271.335"/>
 <text text-anchor="middle" x="291" y="-256.4" font-family="Times Roman,serif" font-size="14.00">schematics</text>
@@ -327,7 +322,7 @@
 <text text-anchor="middle" x="1004" y="-242.9" font-family="Times Roman,serif" font-size="14.00" fill="#aaaaaa">(work in progress)</text>
 </g>
 <!-- remote&#45;&gt;web -->
-<g id="edge66" class="edge"><title>remote&#45;&gt;web</title>
+<g id="edge64" class="edge"><title>remote&#45;&gt;web</title>
 <path fill="none" stroke="black" d="M903.708,-264C909.901,-264 916.086,-264 922.171,-264"/>
 <polygon fill="black" stroke="black" points="903.641,-260.5 893.641,-264 903.641,-267.5 903.641,-260.5"/>
 <polygon fill="black" stroke="black" points="922.301,-267.5 932.301,-264 922.301,-260.5 922.301,-267.5"/>
@@ -338,7 +333,7 @@
 <text text-anchor="middle" x="114" y="-108.9" font-family="Times Roman,serif" font-size="14.00">edif</text>
 </g>
 <!-- edif&#45;&gt;pcbrnd -->
-<g id="edge44" class="edge"><title>edif&#45;&gt;pcbrnd</title>
+<g id="edge42" class="edge"><title>edif&#45;&gt;pcbrnd</title>
 <path fill="none" stroke="black" d="M142.623,-113.287C192.812,-115.423 296.61,-127.405 352,-188 356.66,-193.098 361.122,-199.685 365.391,-207.514"/>
 <polygon fill="black" stroke="black" points="362.298,-209.153 369.947,-216.484 368.539,-205.983 362.298,-209.153"/>
 </g>
@@ -348,7 +343,7 @@
 <text text-anchor="middle" x="114" y="-29.9" font-family="Times Roman,serif" font-size="14.00">netlist</text>
 </g>
 <!-- netlist&#45;&gt;pcbrnd -->
-<g id="edge48" class="edge"><title>netlist&#45;&gt;pcbrnd</title>
+<g id="edge46" class="edge"><title>netlist&#45;&gt;pcbrnd</title>
 <path fill="none" stroke="black" d="M155.677,-32.9982C209.315,-34.1319 301.583,-44.7131 352,-100 363.341,-112.437 373.302,-132.292 382.043,-157.072"/>
 <polygon fill="black" stroke="black" points="378.815,-158.452 385.333,-166.805 385.446,-156.21 378.815,-158.452"/>
 <text text-anchor="middle" x="291" y="-104.4" font-family="Times Roman,serif" font-size="14.00">pcb .net</text>

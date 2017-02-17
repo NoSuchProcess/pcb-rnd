@@ -75,8 +75,7 @@ digraph gr {
 	pcbrnd -> pcb [label="board: .pcb" dir=both]
 	pcbrnd -> pcb [label="footprint: .fp" dir=both]
 
-	pcbrnd -> freerouting [label=".dsn"]
-	freerouting -> pcbrnd [label=".dsn"]
+	pcbrnd -> freerouting [label=".dsn" dir=both]
 	mucs -> pcbrnd [label="import"]
 
 	pcbrnd -> breadboard [label=".png"]
