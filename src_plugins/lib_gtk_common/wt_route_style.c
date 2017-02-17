@@ -22,8 +22,9 @@
  */
 
 /** Implementation of pcb_gtk_route_style_t widget.
-    This widget is calling another Dialog, upon clicking `Edit` button */
+    This widget is calling another Dialog, upon "Edit" clicked button */
 
+#include "config.h"
 #include "conf_core.h"
 
 #include <gdk/gdkkeysyms.h>
@@ -47,15 +48,15 @@ guint pcb_gtk_route_style_signals_id[STYLE_LAST_SIGNAL] = { 0 };
 #warning TODO: this should be in core
 void pcb_gtk_route_style_copy(int idx)
 {
-	pcb_route_style_t *rst;
+	pcb_route_style_t *drst;
 
 	if ((idx < 0) || (idx >= vtroutestyle_len(&PCB->RouteStyle)))
 		return;
-	rst = PCB->RouteStyle.array + idx;
-	pcb_custom_route_style.Thick = rst->Thick;
-	pcb_custom_route_style.Clearance = rst->Clearance;
-	pcb_custom_route_style.Diameter = rst->Diameter;
-	pcb_custom_route_style.Hole = rst->Hole;
+	drst = PCB->RouteStyle.array + idx;
+	pcb_custom_route_style.Thick = drst->Thick;
+	pcb_custom_route_style.Clearance = drst->Clearance;
+	pcb_custom_route_style.Diameter = drst->Diameter;
+	pcb_custom_route_style.Hole = drst->Hole;
 }
 
 /** Launches the Edit dialog */

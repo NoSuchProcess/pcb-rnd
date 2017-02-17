@@ -2,9 +2,10 @@ act_*: actions
 util_*: generic, non-UI related utilities
 ui_*: ui logic related, but gtk-free utilities
 wt_*: custom widgets, cell renderers for gtk - must work in both gtk2 and gtk3
-dlg_*: dialog boxes, preferably one per file
+dlg_*: dialog boxes, preferrably one per file
 bu_*: builders, building a part of a bigger gui portion
 in_*: input handling (gtk-specific)
 win_*: windowing related utils
 
 Any of these may depend on glib.
+
