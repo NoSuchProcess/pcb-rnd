@@ -12,6 +12,7 @@ digraph gr {
 	ltspice [label="LTSpce" shape=box]
 	tinycad [label="TinyCAD" shape=box]
 	web [label="JavaScript based\nweb application\n(work in progress)" shape=box color="#aaaaaa" fontcolor="#aaaaaa"]
+	fidocadj [label="FidoCadj\nartistic PCBs\n(experimental support)" shape=box]
 
 
 	subgraph cluster_HID {
@@ -65,12 +66,13 @@ digraph gr {
 		kicad
 		pcb
 		freerouting
+		fidocadj
 	}
 
 	pcbrnd -> kicad [label="board: legacy format"]
 	pcbrnd -> kicad [label="board: s-expression" dir=both]
 	pcbrnd -> kicad [label="footprint: s-expression" dir=both]
-
+	pcbrnd -> fidocadj [label="board" dir=both]
 
 	pcbrnd -> pcb [label="board: .pcb" dir=both]
 	pcbrnd -> pcb [label="footprint: .fp" dir=both]
@@ -94,8 +96,7 @@ digraph gr {
 	ltspice -> pcbrnd [label="schematics"]
 	netlist -> pcbrnd [label="pcb .net"]
 	lepton -> pcbrnd [label="schematics"]
-	gEDA -> pcbrnd [label="schematics"]
-	pcbrnd -> gEDA [label="back annotation" weight=10]
+	gEDA -> pcbrnd [label="schematics\nback annotation" dir=both]
 	tinycad -> pcbrnd [label="schematics"]
 
 	pcbrnd -> batch [dir=both]
