@@ -29,6 +29,7 @@
 #include "layer_vis.h"
 
 #include "gtkhid-main.h"
+#include "gui-config.h"
 
 /* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/act_fileio.h"

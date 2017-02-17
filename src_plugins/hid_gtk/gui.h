@@ -162,7 +162,6 @@ void ghid_sync_with_new_layout(void);
 
 void ghid_change_selected_update_menu_actions(void);
 
-void ghid_config_window_show();
 void ghid_config_handle_units_changed(void);
 void ghid_config_start_backup_timer(void);
 void ghid_config_text_scale_update(void);

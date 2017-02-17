@@ -25,13 +25,23 @@
 
 #include "config.h"
 #include "conf_core.h"
+#include "gui-config.h"
+
+/* Temporary, will be gone soon: */
+#include "gui.h"
+
 
 #include <stdlib.h>
 #include <genht/hash.h>
 
-#include "gui.h"
+#include "board.h"
+#include "data.h"
+#include "event.h"
+#include "layer.h"
+
 #include "hid.h"
 #include "gtkhid-main.h"
+#include "colors.h"
 
 #include "action_helper.h"
 #include "change.h"
