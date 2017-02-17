@@ -80,7 +80,12 @@ static int tedax_getline(FILE *f, char *buff, int buff_size, char *argv[], int a
 		for(argc = 0, o = argv[0] = s; *s != '\0';) {
 			if (*s == '\\') {
 				s++;
-				*o = *s;
+				switch(*s) {
+					case 'r': *o = '\r'; break;
+					case 'n': *o = '\n'; break;
+					case 't': *o = '\t'; break;
+					default: *o = *s;
+				}
 				o++;
 				s++;
 				continue;
