@@ -9,7 +9,7 @@ digraph gr {
 	mucs [label="mucs pcb with autorouter" shape=box]
 	gEDA [label="gEDA/gaf\n(gschem, gnetlist)" shape=box]
 	lepton [label="lepton-eda\n(gschem, gnetlist)" shape=box]
-	ltspice [label="LTSpce" shape=box]
+	ltspice [label="LTSpice" shape=box]
 	tinycad [label="TinyCAD" shape=box]
 	web [label="JavaScript based\nweb application\n(work in progress)" shape=box color="#aaaaaa" fontcolor="#aaaaaa"]
 	fidocadj [label="FidoCadj\nartistic PCBs\n(experimental support)" shape=box]

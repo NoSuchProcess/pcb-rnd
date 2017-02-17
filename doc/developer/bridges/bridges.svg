@@ -305,7 +305,7 @@
 <!-- ltspice -->
 <g id="node8" class="node"><title>ltspice</title>
 <polygon fill="none" stroke="black" points="146,-289 82,-289 82,-253 146,-253 146,-289"/>
-<text text-anchor="middle" x="114" y="-266.9" font-family="Times Roman,serif" font-size="14.00">LTSpce</text>
+<text text-anchor="middle" x="114" y="-266.9" font-family="Times Roman,serif" font-size="14.00">LTSpice</text>
 </g>
 <!-- ltspice&#45;&gt;pcbrnd -->
 <g id="edge46" class="edge"><title>ltspice&#45;&gt;pcbrnd</title>
