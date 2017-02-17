@@ -163,20 +163,20 @@ static int tedax_parse_net(FILE *fn)
 	pcb_hid_actionl("Netlist", "Clear", NULL);
 
 	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
-		if (strcmp(argv[0], "footprint") == 0) {
+		if ((argc == 3) && (strcmp(argv[0], "footprint") == 0)) {
 			fp_t *fp = htsp_get2(&fps, argv[1], sizeof(fp_t));
 			fp->footprint = pcb_strdup(argv[2]);
 		}
-		else if (strcmp(argv[0], "value") == 0) {
+		else if ((argc == 3) && (strcmp(argv[0], "value") == 0)) {
 			fp_t *fp = htsp_get2(&fps, argv[1], sizeof(fp_t));
 			fp->value = pcb_strdup(argv[2]);
 		}
-		else if (strcmp(argv[0], "conn") == 0) {
+		else if ((argc == 4) && (strcmp(argv[0], "conn") == 0)) {
 			char id[512];
 			sprintf(id, "%s-%s", argv[2], argv[3]);
 			pcb_hid_actionl("Netlist", "Add",  argv[1], id, NULL);
 		}
-		else if ((argc > 1) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "netlist") == 0))
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "netlist") == 0))
 			break;
 	}
 
