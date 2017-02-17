@@ -11,7 +11,7 @@ G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_ROUTE_STYLE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),   GHID_ROUTE_STYLE_TYPE, pcb_gtk_route_style_class_t))
 #define IS_GHID_ROUTE_STYLE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj),  GHID_ROUTE_STYLE_TYPE))
 #define IS_GHID_ROUTE_STYLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),   GHID_ROUTE_STYLE_TYPE))
-/** Structure for "Edit Route Style" Dialog */
+/** Data handled by `Edit Route Style` Dialog. */
 typedef struct pcb_gtk_dlg_route_style_s pcb_gtk_dlg_route_style_t;
 
 /** The route style selector widget object data. */
@@ -26,7 +26,7 @@ struct pcb_gtk_route_style_s {
 	GSList *action_radio_group;
 	GtkWidget *edit_button;
 
-	/*  GTK3 deprecated since version 3.10 Use GAction instead, and associate actions
+	/*  GTK3 deprecated since version 3.10. Use GAction instead, and associate actions
 	   with GtkActionable widgets. Use GMenuModel for creating menus with gtk_menu_new_from_model().
 	 */
 	GtkActionGroup *action_group;
@@ -40,17 +40,17 @@ struct pcb_gtk_route_style_s {
 
 	GtkTreeIter new_iter;					/* iter for the <new> item */
 };
-
+/** The route style selector widget. */
 typedef struct pcb_gtk_route_style_s pcb_gtk_route_style_t;
 
-/** The route style selector widget Class. */
+/** The route style selector widget Class data. */
 struct pcb_gtk_route_style_class_s {
 	GtkVBoxClass parent_class;
 
 	void (*select_style) (pcb_gtk_route_style_t *, pcb_route_style_t *);
 	void (*style_edited) (pcb_gtk_route_style_t *, gboolean);
 };
-
+/** The route style selector widget Class. */
 typedef struct pcb_gtk_route_style_class_s pcb_gtk_route_style_class_t;
 
 /** Signals exposed by the widget. */
@@ -81,7 +81,7 @@ struct pcb_gtk_obj_route_style_s {
 	gulong sig_id;
 	int hidden;
 };
-
+/** A route style GUI object, linked to a \ref pcb_route_style_t. */
 typedef struct pcb_gtk_obj_route_style_s pcb_gtk_obj_route_style_t;
 
 /* API */
@@ -106,21 +106,23 @@ GtkWidget *pcb_gtk_route_style_new(void);
  */
 gint pcb_gtk_route_style_install_items(pcb_gtk_route_style_t * rss, GtkMenuShell * shell, gint pos);
 
-/** Adds a PCB route style to a \ref pcb_gtk_route_style_t object.
+/** Adds a PCB route style to a \ref pcb_gtk_route_style_t widget.
     Note that the route style object passed to this function will be
-    updated directly. (TODO: AV: Check and complete)
+    updated directly.
 
-    \param rss     The widget to be acted on
-    \param data    PCB's route style object describing the style
-    \param hide    if TRUE ... (TODO: explain)
+    \param rss      The widget to be acted on
+    \param data     PCB's route style object describing the style
+    \param hide     if `TRUE`, the newly created object is hidden
+
+    \return         a new GUI object
  */
 pcb_gtk_obj_route_style_t *pcb_gtk_route_style_add_route_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * data, int hide);
 
-/** Selects a route style and emits a select-style signal.
+/** Selects a route style and emits a `select-style` signal.
     \param rss  The widget to be acted on
     \param rst  The style to select
 
-    \return TRUE if a style was selected, FALSE otherwise
+    \return     `TRUE` if a style was selected, `FALSE` otherwise
  */
 gboolean pcb_gtk_route_style_select_style(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst);
 
@@ -144,7 +146,11 @@ GtkAccelGroup *pcb_gtk_route_style_get_accel_group(pcb_gtk_route_style_t * rss);
 void pcb_gtk_route_style_sync(pcb_gtk_route_style_t * rss, pcb_coord_t Thick, pcb_coord_t Hole, pcb_coord_t Diameter,
 															pcb_coord_t Clearance);
 
-/** What represents idx ? */
+/** Retrieves the \p idx n-th route styles element, and copies it
+   in \ref pcb_custom_route_style
+
+   \param idx A value between 0 and `len(route_styles_array)`
+ */
 void pcb_gtk_route_style_copy(int idx);
 
 /** Removes all styles from a route style widget. */
@@ -155,7 +161,7 @@ void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss);
 void make_route_style_buttons(pcb_gtk_route_style_t * rss);
 
 
-/* Temporary: call back to hid_gtk */
+/** Temporary: call back to hid_gtk */
 extern void route_styles_edited_cb(pcb_gtk_route_style_t * rss, gboolean save, gpointer data);
 
 
