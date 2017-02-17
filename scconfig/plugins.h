@@ -87,6 +87,7 @@ plugin_dep("export_lpr", "export_ps")
 plugin_dep("export_xy", "export_bom")
 plugin_dep("io_kicad", "lib_gensexpr")
 plugin_dep("hid_gtk", "lib_gtk_common")
+plugin_dep("hid_gtk", "lib_gtk_config")
 plugin_dep("hid_gtk", "draw_csect")
 plugin_dep("hid_lesstif", "draw_csect")
 
