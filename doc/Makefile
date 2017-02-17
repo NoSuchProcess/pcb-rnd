@@ -4,7 +4,8 @@ KEYLIST=../util/keylist.sh
 DEBLIST=../util/devhelpers/deblist.sh
 
 all: keys.html keys_mkey.html features/debian_list.html
-	./Autostyle.sh *.html features/*.html
+	ROOT="" ./Autostyle.sh *.html
+	ROOT="../" ./Autostyle.sh features/*.html
 
 keys.html: $(MENU_RES) $(KEYLIST)
 	$(KEYLIST) $(MENU_RES) > keys.html

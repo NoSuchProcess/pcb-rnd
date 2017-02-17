@@ -2,7 +2,7 @@
 
 autostyle()
 {
-	awk -v "template=$1" '
+	awk -v "template=$1" -v "root=$ROOT" '
 	BEGIN {
 		while((getline < template) > 0) {
 			if (parse_auto(RES, $0)) {
@@ -12,12 +12,18 @@ autostyle()
 					reset_curr = 1
 			}
 			if (curr != "")
-				AUTO[curr] = AUTO[curr] $0 "\n"
+				AUTO[curr] = AUTO[curr] var_subs($0) "\n"
 			if (reset_curr) {
 				curr = ""
 				reset_curr = 0
 			}
 		}
+	}
+
+	function var_subs(s)
+	{
+		gsub("[$]ROOT[$]", root, s)
+		return s
 	}
 
 	function parse_auto(RES, line     ,tmp)

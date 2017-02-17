@@ -36,6 +36,7 @@ RELEASE 1.2.2:
 		- remove -m pcb
 
 CLEANUP #5
+- io_pcb: new, optional "layer tag" field in mainline's file format
 - insonsistencies in UI/terminology:
 	- allow clearance to be set to 0 in the route style [report: miloh]
 	- similar thing on hole size [report: miloh]
