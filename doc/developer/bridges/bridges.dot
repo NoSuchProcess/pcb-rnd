@@ -1,54 +1,110 @@
 digraph gr {
 	rankdir=LR
+	nodesep=0.6
 	
-	pcbrnd [label="pcb-rnd" style=filled fillcolor=cyan shape=box height=8]
+	pcbrnd [label="pcb-rnd" style=filled fillcolor=cyan shape=box height=12 width=2]
 	kicad [label="KiCad" shape=box]
 	pcb [label="gEDA/PCB" shape=box]
 	freerouting [label="freerouting.net\njava application" shape=box]
 	mucs [label="mucs pcb with autorouter" shape=box]
+	gEDA [label="gEDA/gaf\n(gschem, gnetlist)" shape=box]
+	lepton [label="lepton-eda\n(gschem, gnetlist)" shape=box]
+	ltspice [label="LTSpce" shape=box]
+	tinycad [label="TinyCAD" shape=box]
+	web [label="JavaScript based\nweb application\n(work in progress)" shape=box color="#aaaaaa" fontcolor="#aaaaaa"]
 
-	batch   [label="hid_batch" shape=diamond]
-	gtk     [label="hid_gtk" shape=diamond]
-	lesstif [label="hid_lesstif" shape=diamond]
-	remote  [label="hid_remote" shape=diamond]
+
+	subgraph cluster_HID {
+		label = "HID - user interface"
+		style=filled
+		color="#dddddd"
+
+		batch   [label="hid_batch" shape=diamond]
+		gtk     [label="hid_gtk" shape=diamond]
+		lesstif [label="hid_lesstif" shape=diamond]
+		remote  [label="hid_remote" shape=diamond]
+	}
+
+	subgraph cluster_import {
+		label = "import only"
+		style=filled
+		color="#dddddd"
+
+		lepton
+		mucs
+		edif
+		ltspice
+		netlist
+		tinycad
+	}
+
+	subgraph cluster_export {
+		label = "export only"
+		style=filled
+		color="#dddddd"
+
+		breadboard
+		BoM
+		XY
+		gerber
+		ipcd356
+		lpr
+		nelma
+		png
+		ps
+		stat
+		svg
+	}
+
+	subgraph cluster_ie {
+		label = "import and export"
+		style=filled
+		color="#dddddd"
+
+		gEDA
+		kicad
+		pcb
+		freerouting
+	}
 
 	pcbrnd -> kicad [label="board: legacy format"]
-	pcbrnd -> kicad [label="board: s-expression"]
-	kicad -> pcbrnd [label="board: s-expression"]
-	pcbrnd -> kicad [label="footprint: s-expression"]
-	kicad -> pcbrnd [label="footprint: s-expression"]
+	pcbrnd -> kicad [label="board: s-expression" dir=both]
+	pcbrnd -> kicad [label="footprint: s-expression" dir=both]
 
-	pcbrnd -> pcb [label="board: .pcb"]
-	pcbrnd -> pcb [label="footprint: .fp"]
-	pcb -> pcbrnd [label="board: .pcb"]
-	pcb -> pcbrnd [label="footprint: .fp"]
 
-	pcbrnd -> freerouting [label="export: .dsn"]
-	freerouting -> pcbrnd [label="import: .dsn"]
+	pcbrnd -> pcb [label="board: .pcb" dir=both]
+	pcbrnd -> pcb [label="footprint: .fp" dir=both]
+
+	pcbrnd -> freerouting [label=".dsn"]
+	freerouting -> pcbrnd [label=".dsn"]
 	mucs -> pcbrnd [label="import"]
 
-	pcbrnd -> breadboard [label="export: .png"]
-	pcbrnd -> BoM [label="export: text"]
-	pcbrnd -> XY [label="export: .xy\nfor pick and place"]
-	pcbrnd -> gerber [label="export: .gbr, .cnc"]
-	pcbrnd -> ipcd356 [label="export"]
+	pcbrnd -> breadboard [label=".png"]
+	pcbrnd -> BoM [label="text"]
+	pcbrnd -> XY [label=".xy\nfor pick and place"]
+	pcbrnd -> gerber [label=".gbr, .cnc"]
+	pcbrnd -> ipcd356
 	pcbrnd -> lpr [label="print"]
-	pcbrnd -> nelma [label="export"]
-	pcbrnd -> png [label="export: bitmap"]
-	pcbrnd -> ps [label="export: .ps, .eps"]
-	pcbrnd -> stat [label="export: statsitics .lht"]
-	pcbrnd -> svg [label="export: .svg"]
+	pcbrnd -> nelma
+	pcbrnd -> png [label="bitmap"]
+	pcbrnd -> ps [label=".ps, .eps"]
+	pcbrnd -> stat [label="statsitics .lht"]
+	pcbrnd -> svg [label=".svg"]
 
-	edif -> pcbrnd [label="import"]
-	ltspice -> pcbrnd [label="import: schematics"]
-	netlist -> pcbrnd [label="import: pcb .net"]
-	lepton -> pcbrnd [label="import: schematics"]
-	gEDA -> pcbrnd [label="import: schematics"]
-	pcbrnd -> gEDA [label="back annotation"]
-	tinycad -> pcbrnd [label="import: schematics"]
+	edif -> pcbrnd
+	ltspice -> pcbrnd [label="schematics"]
+	netlist -> pcbrnd [label="pcb .net"]
+	lepton -> pcbrnd [label="schematics"]
+	gEDA -> pcbrnd [label="schematics"]
+	pcbrnd -> gEDA [label="back annotation" weight=10]
+	tinycad -> pcbrnd [label="schematics"]
 
-	pcbrnd -> batch [label="hid"]
-	pcbrnd -> gtk [label="hid"]
-	pcbrnd -> lesstif [label="hid"]
-	pcbrnd -> remote [label="hid"]
+	pcbrnd -> batch [dir=both]
+	pcbrnd -> gtk [dir=both]
+	pcbrnd -> lesstif [dir=both]
+	pcbrnd -> remote [dir=both]
+
+	remote -> web [dir=both]
+
+	ps -> pcbrnd [weight=1000 style=invis]
 }
