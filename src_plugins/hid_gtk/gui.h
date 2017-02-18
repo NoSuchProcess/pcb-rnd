@@ -38,21 +38,6 @@
 #include "board.h"
 #include "event.h"
 
-/*
- * Used to intercept "special" hotkeys that gtk doesn't usually pass
- * on to the menu hotkeys.  We catch them and put them back where we
- * want them.
- */
-
-/* The modifier keys */
-
-/* The actual keys */
-#define GHID_KEY_TAB      0x81
-#define GHID_KEY_UP       0x82
-#define GHID_KEY_DOWN     0x83
-#define GHID_KEY_LEFT     0x84
-#define GHID_KEY_RIGHT    0x85
-
 typedef struct {
 	GtkActionGroup *main_actions, *change_selected_actions, *displayed_name_actions;
 
