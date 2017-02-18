@@ -67,7 +67,7 @@ static GtkTreeModel *node_model;
 static GtkTreeView *node_treeview;
 static GtkTreeSelection *node_selection;
 
-static gboolean selection_holdoff;
+static pcb_bool selection_holdoff;
 
 static pcb_lib_menu_t *selected_net;
 static pcb_lib_menu_t *node_selected_net;
@@ -88,7 +88,7 @@ static pcb_lib_menu_t *node_selected_net;
    |  The netlist window code has a public interface providing hooks so PCB
    |  code can control the net and node treeviews:
    |
-   |	ghid_get_net_from_node_name gchar *node_name, gboolean enabled_only)
+   |	ghid_get_net_from_node_name gchar *node_name, pcb_bool enabled_only)
    |		Given a node name (eg C101-1), walk through the nets in the net
    |		data model and search each net for the given node_name.  If found
    |		and enabled_only is true, make the net treeview scroll to and
@@ -101,7 +101,7 @@ static pcb_lib_menu_t *node_selected_net;
    |		look up the node, the net the node belongs to will also be
    |		highlighted in the net treeview.
    |
-   |	ghid_netlist_window_update(gboolean init_nodes)
+   |	ghid_netlist_window_update(pcb_bool init_nodes)
    |		PCB calls this to tell the gui netlist code the layout net has
    |		changed and the gui data structures (net and optionally node data
    |		models) should be rebuilt.
@@ -311,7 +311,7 @@ enum {
 static GtkTreeModel *net_model = NULL;
 static GtkTreeView *net_treeview;
 
-static gboolean loading_new_netlist;
+static pcb_bool loading_new_netlist;
 
 static GtkTreeModel *net_model_create(void)
 {
@@ -474,7 +474,7 @@ static void net_selection_changed_cb(GtkTreeSelection * selection, gpointer data
 static void netlist_disable_all_cb(GtkToggleButton * button, gpointer data)
 {
 	GtkTreeIter iter;
-	gboolean active = gtk_toggle_button_get_active(button);
+	pcb_bool active = gtk_toggle_button_get_active(button);
 	pcb_lib_menu_t *menu;
 
 	/* Get each net iter and change the NET_ENABLED_COLUMN to a "*" or ""
@@ -497,7 +497,7 @@ static void netlist_select_cb(GtkWidget * widget, gpointer data)
 	pcb_lib_entry_t *entry;
 	pcb_connection_t conn;
 	gint i;
-	gboolean select_flag = GPOINTER_TO_INT(data);
+	pcb_bool select_flag = GPOINTER_TO_INT(data);
 
 	if (!selected_net)
 		return;
@@ -568,7 +568,7 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 	pcb_bool found;
 } node_get_node_from_name_state;
 
-static gboolean node_get_node_from_name_helper(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data)
+static pcb_bool node_get_node_from_name_helper(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data)
 {
 	pcb_lib_menu_t *net;
 	pcb_lib_entry_t *node;
@@ -766,7 +766,7 @@ void ghid_netlist_window_create(void)
 	gtk_widget_realize(netlist_window);
 }
 
-void ghid_netlist_window_show(gboolean raise)
+void ghid_netlist_window_show(pcb_bool raise)
 {
 	ghid_netlist_window_create();
 	gtk_widget_show_all(netlist_window);
@@ -776,20 +776,20 @@ void ghid_netlist_window_show(gboolean raise)
 }
 
 struct ggnfnn_task {
-	gboolean enabled_only;
+	pcb_bool enabled_only;
 	const gchar *node_name;
 	pcb_lib_menu_t *found_net;
 	GtkTreeIter iter;
 };
 
-static gboolean hunt_named_node(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data)
+static pcb_bool hunt_named_node(GtkTreeModel * model, GtkTreePath * path, GtkTreeIter * iter, gpointer data)
 {
 	struct ggnfnn_task *task = (struct ggnfnn_task *) data;
 	pcb_lib_menu_t *net;
 	pcb_lib_entry_t *node;
 	gchar *str;
 	gint j;
-	gboolean is_disabled;
+	pcb_bool is_disabled;
 
 	/* We only want to inspect leaf nodes in the tree */
 	if (gtk_tree_model_iter_has_child(model, iter))
@@ -815,7 +815,7 @@ static gboolean hunt_named_node(GtkTreeModel * model, GtkTreePath * path, GtkTre
 	return FALSE;
 }
 
-pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, gboolean enabled_only)
+pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, pcb_bool enabled_only)
 {
 	GtkTreePath *path;
 	struct ggnfnn_task task;
@@ -899,7 +899,7 @@ void ghid_netlist_highlight_node(const gchar * node_name)
 /* If code in PCB should change the netlist, call this to update
    |  what's in the netlist window.
 */
-void ghid_netlist_window_update(gboolean init_nodes)
+void ghid_netlist_window_update(pcb_bool init_nodes)
 {
 	GtkTreeModel *model;
 
