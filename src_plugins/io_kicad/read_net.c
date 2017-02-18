@@ -108,11 +108,11 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 			else if_strval(n, footprint)
 		}
 		if (ref == NULL) {
-			pcb_message(PCB_MSG_ERROR, "eechema: ignoring component with no refdes\n");
+			pcb_message(PCB_MSG_WARNING, "eechema: ignoring component with no refdes\n");
 			continue;
 		}
 		if (footprint == NULL) {
-			pcb_message(PCB_MSG_ERROR, "eechema: ignoring component %s with no footprint\n", ref);
+			pcb_message(PCB_MSG_WARNING, "eechema: ignoring component %s with no footprint\n", ref);
 			continue;
 		}
 		pcb_hid_actionl("ElementList", "Need", ref, footprint, value == NULL ? "" : value, NULL);
