@@ -3,7 +3,8 @@ digraph gr {
 	nodesep=0.6
 	
 	pcbrnd [label="pcb-rnd" style=filled fillcolor=cyan shape=box height=12 width=2]
-	kicad [label="KiCad" shape=box]
+	kicad [label="KiCad\npcbnew" shape=box]
+	eeschema [label="KiCad\neeschema" shape=box]
 	pcb [label="gEDA/PCB" shape=box]
 	freerouting [label="freerouting.net\njava application" shape=box]
 	mucs [label="mucs pcb with autorouter" shape=box]
@@ -13,7 +14,6 @@ digraph gr {
 	tinycad [label="TinyCAD" shape=box]
 	web [label="JavaScript based\nweb application\n(work in progress)" shape=box color="#aaaaaa" fontcolor="#aaaaaa"]
 	fidocadj [label="FidoCadj\nartistic PCBs\n(experimental support)" shape=box]
-
 
 	subgraph cluster_HID {
 		label = "HID - user interface"
@@ -37,6 +37,7 @@ digraph gr {
 		ltspice
 		netlist
 		tinycad
+		eeschema
 	}
 
 	subgraph cluster_export {
@@ -73,6 +74,8 @@ digraph gr {
 	pcbrnd -> kicad [label="board: s-expression" dir=both]
 	pcbrnd -> kicad [label="footprint: s-expression" dir=both]
 	pcbrnd -> fidocadj [label="board" dir=both]
+
+	eeschema -> pcbrnd [label="netlist"]
 
 	pcbrnd -> pcb [label="board: .pcb" dir=both]
 	pcbrnd -> pcb [label="footprint: .fp" dir=both]
