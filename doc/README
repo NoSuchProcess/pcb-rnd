@@ -1,5 +1,4 @@
-pcb-rnd "diff" documentation: this directory contains documentation
-on the features that differ from the original pcb version it was forked from.
+pcb-rnd documentation: work in progress.
 
 Most notable subdirectories:
 	developer/          documentation for developers
