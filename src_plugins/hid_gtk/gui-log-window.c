@@ -29,6 +29,7 @@
 
 #include "config.h"
 #include <ctype.h>
+#include <stdarg.h>
 
 #include "gui-log-window.h"
 
@@ -46,7 +47,7 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 static GtkWidget *log_window, *log_text;
-static gboolean log_show_on_append = FALSE;
+static pcb_bool log_show_on_append = FALSE;
 
 /* Remember user window resizes. */
 static gint log_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
@@ -99,7 +100,7 @@ void ghid_log_window_create()
 	gtk_widget_realize(log_window);
 }
 
-void ghid_log_window_show(gboolean raise)
+void ghid_log_window_show(pcb_bool raise)
 {
 	ghid_log_window_create();
 	gtk_widget_show_all(log_window);
