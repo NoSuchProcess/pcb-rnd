@@ -93,6 +93,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "obj_line.h"
 #include "layer_vis.h"
 #include "gtkhid-main.h"
+#include "ghid-main-menu.h"
 
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"

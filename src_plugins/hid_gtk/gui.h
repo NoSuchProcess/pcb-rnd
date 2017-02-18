@@ -26,14 +26,9 @@
 #define PCB_HID_GTK_GHID_H
 
 #include "hid.h"
-#include "hid_cfg.h"
-#include "hid_cfg_input.h"
 
 #include <gtk/gtk.h>
-#include "ghid-main-menu.h"
 #include "conf_core.h"
-#include "event.h"
-#include "compat_misc.h"
 
 /* needed for a type in GhidGui - DO NOT ADD .h files that are not requred for the structs! */
 #include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
@@ -42,6 +37,7 @@
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 
 #include "board.h"
+#include "event.h"
 
 
 	/* Silk and rats lines are the two additional selectable to draw on.
@@ -290,6 +286,8 @@ void ghid_cancel_lead_user(void);
 
 
 /* Coordinate conversions */
+#include "compat_misc.h"
+
 /* Px converts view->pcb, Vx converts pcb->view */
 static inline int Vx(pcb_coord_t x)
 {
