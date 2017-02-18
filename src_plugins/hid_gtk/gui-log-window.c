@@ -28,8 +28,9 @@
 */
 
 #include "config.h"
-
 #include <ctype.h>
+
+#include "gui-log-window.h"
 
 #include "conf_core.h"
 #include "conf_hid.h"

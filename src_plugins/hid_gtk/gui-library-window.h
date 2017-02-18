@@ -56,4 +56,7 @@ struct _GhidLibraryWindow {
 
 GType ghid_library_window_get_type(void);
 
+void ghid_library_window_create(GHidPort * out);
+void ghid_library_window_show(GHidPort * out, gboolean raise);
+
 #endif /* PCB_HID_GTK_GUI_LIBRARY_WINDOW_H */

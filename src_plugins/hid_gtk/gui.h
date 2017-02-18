@@ -173,24 +173,6 @@ void ghid_netlist_window_update(gboolean init_nodes);
 pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * name, gboolean);
 void ghid_netlist_highlight_node(const gchar * name);
 
-
-/* gui-command-window.c */
-void ghid_handle_user_command(gboolean raise);
-void ghid_command_window_show(gboolean raise);
-gchar *ghid_command_entry_get(const gchar * prompt, const gchar * command);
-void ghid_command_use_command_window_sync(void);
-
-/* gui-library-window.c */
-void ghid_library_window_create(GHidPort * out);
-void ghid_library_window_show(GHidPort * out, gboolean raise);
-
-
-/* gui-log-window.c */
-void ghid_log_window_create();
-void ghid_log_window_show(gboolean raise);
-void ghid_log(const char *fmt, ...);
-void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args);
-
 /* gtkhid-gdk.c AND gtkhid-gl.c */
 int ghid_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer, unsigned int flags, int is_empty);
 pcb_hid_gc_t ghid_make_gc(void);

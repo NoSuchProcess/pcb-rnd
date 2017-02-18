@@ -27,6 +27,7 @@
 /* This file written by Bill Wilson for the PCB Gtk port */
 
 #include "config.h"
+#include "gui-command-window.h"
 #include "conf_core.h"
 
 #include "gui.h"
