@@ -27,10 +27,6 @@
 #include "conf_core.h"
 #include "gui-config.h"
 
-/* Temporary, will be gone soon: */
-#include "gui.h"
-
-
 #include <stdlib.h>
 #include <genht/hash.h>
 
