@@ -542,7 +542,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ghid_netlist_window_show(gport, raise);
 	}
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
-		ghid_config_window_show();
+		ghid_config_window_show(gport);
 	}
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
 		ghid_drc_window_show(raise);

@@ -329,7 +329,7 @@ void ghid_handle_units_changed(void)
 	ghid_set_cursor_position_labels(&ghidgui->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
 	gtk_label_set_markup(GTK_LABEL(ghidgui->cps.grid_units_label), text);
 	free(text);
-	ghid_config_handle_units_changed();
+	ghid_config_handle_units_changed(gport);
 }
 
 
