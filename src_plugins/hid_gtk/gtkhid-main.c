@@ -38,7 +38,6 @@
 #include "gui-top-window.h"
 #include "gui-netlist-window.h"
 
-/* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/act_print.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
