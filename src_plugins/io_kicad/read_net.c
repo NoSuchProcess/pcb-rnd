@@ -71,26 +71,25 @@ static void sym_flush(symattr_t *sattr)
 #endif
 
 
-static int eeschema_parse_net(FILE *fn)
+static int eeschema_parse_net(gsxl_dom_t *dom)
 {
-#if 0
-	symattr_t sattr;
-
-	memset(&sattr, 0, sizeof(sattr));
+/*	symattr_t sattr;
+	memset(&sattr, 0, sizeof(sattr));*/
 
 	pcb_hid_actionl("ElementList", "start", NULL);
 	pcb_hid_actionl("Netlist", "Freeze", NULL);
 	pcb_hid_actionl("Netlist", "Clear", NULL);
 
-	pcb_hid_actionl("Netlist", "Add",  argv[2], curr, NULL);
+
+	printf("dom=%p\n", dom);
+
+/*	pcb_hid_actionl("Netlist", "Add",  argv[2], curr, NULL);*/
 
 	pcb_hid_actionl("Netlist", "Sort", NULL);
 	pcb_hid_actionl("Netlist", "Thaw", NULL);
 	pcb_hid_actionl("ElementList", "Done", NULL);
 
 	return 0;
-#endif
-	return -1;
 }
 
 
@@ -98,7 +97,9 @@ static int eeschema_parse_net(FILE *fn)
 static int eeschema_load(const char *fname_net)
 {
 	FILE *fn;
-	int ret = 0;
+	gsxl_dom_t dom;
+	int c, ret = 0;
+	gsx_parse_res_t res;
 
 	fn = fopen(fname_net, "r");
 	if (fn == NULL) {
@@ -106,9 +107,27 @@ static int eeschema_load(const char *fname_net)
 		return -1;
 	}
 
-	ret = eeschema_parse_net(fn);
+	gsxl_init(&dom, gsxl_node_t);
 
+	dom.parse.line_comment_char = '#';
+	do {
+		c = fgetc(fn);
+	} while((res = gsxl_parse_char(&dom, c)) == GSX_RES_NEXT);
 	fclose(fn);
+
+	if (res == GSX_RES_EOE) {
+		/* compact and simplify the tree */
+		gsxl_compact_tree(&dom);
+
+		/* recursively parse the dom */
+		ret = eeschema_parse_net(&dom);
+	}
+	else
+		ret = -1;
+
+	/* clean up */
+	gsxl_uninit(&dom);
+
 	return ret;
 }
 
