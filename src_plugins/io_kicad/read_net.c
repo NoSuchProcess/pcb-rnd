@@ -30,7 +30,6 @@
 
 #include <assert.h>
 #include <gensexpr/gsxl.h>
-#include "compat_misc.h"
 
 #include "read_net.h"
 
