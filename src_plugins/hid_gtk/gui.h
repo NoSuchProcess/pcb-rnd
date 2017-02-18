@@ -150,13 +150,6 @@ gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPor
 
 gint ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, GHidPort * out);
 
-/* gui-drc-window.c */
-void ghid_drc_window_show(gboolean raise);
-void ghid_drc_window_reset_message(void);
-void ghid_drc_window_append_violation(pcb_drc_violation_t * violation);
-void ghid_drc_window_append_messagev(const char *fmt, va_list va);
-int ghid_drc_window_throw_dialog(void);
-
 /* In gui-top-window.c  */
 void ghid_update_toggle_flags(void);
 void ghid_notify_save_pcb(const char *file, pcb_bool done);
@@ -164,12 +157,7 @@ void ghid_notify_filename_changed(void);
 void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui);
 void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui);
 
-/* gui-utils.c
-*/
-gboolean ghid_control_is_pressed(void);
-gboolean ghid_mod1_is_pressed(void);
-gboolean ghid_shift_is_pressed(void);
-
+/* ***  */
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
 
 void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,

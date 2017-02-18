@@ -90,4 +90,10 @@ GType ghid_violation_renderer_get_type(void);
 
 GtkCellRenderer *ghid_violation_renderer_new(void);
 
+void ghid_drc_window_show(gboolean raise);
+void ghid_drc_window_reset_message(void);
+void ghid_drc_window_append_violation(pcb_drc_violation_t * violation);
+void ghid_drc_window_append_messagev(const char *fmt, va_list va);
+int ghid_drc_window_throw_dialog(void);
+
 #endif /* PCB_HID_GTK_GUI_DRC_WINDOW_H */

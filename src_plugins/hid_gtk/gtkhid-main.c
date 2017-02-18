@@ -31,6 +31,7 @@
 
 #include "gtkhid-main.h"
 #include "ghid-main-menu.h"
+#include "gui-drc-window.h"
 
 /* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
