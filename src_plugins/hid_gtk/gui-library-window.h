@@ -21,6 +21,7 @@
 #ifndef PCB_HID_GTK_GUI_LIBRARY_WINDOW_H
 #define PCB_HID_GTK_GUI_LIBRARY_WINDOW_H
 
+#include <gtk/gtk.h>
 
 /*
  * GhidLibraryWindow
