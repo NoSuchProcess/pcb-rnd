@@ -31,6 +31,7 @@
 
 #include "gui.h"
 #include "hid_cfg.h"
+#include "gui-top-window.h"
 
 #include <gdk/gdkkeysyms.h>
 

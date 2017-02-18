@@ -52,6 +52,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 */
 #define _POSIX_SOURCE
 #include "config.h"
+#include "gui-top-window.h"
 #include "conf_core.h"
 #include <locale.h>
 #include "data.h"

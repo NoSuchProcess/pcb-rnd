@@ -148,13 +148,6 @@ gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPor
 
 gint ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, GHidPort * out);
 
-/* In gui-top-window.c  */
-void ghid_update_toggle_flags(void);
-void ghid_notify_save_pcb(const char *file, pcb_bool done);
-void ghid_notify_filename_changed(void);
-void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui);
-void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui);
-
 /* ***  */
 void ghid_draw_area_update(GHidPort * out, GdkRectangle * rect);
 
@@ -164,11 +157,6 @@ void ghid_range_control(GtkWidget * box, GtkWidget ** scale_res,
 												gboolean pack_start, gboolean expand, gboolean fill,
 												guint pad, gfloat value, gfloat low, gfloat high,
 												gfloat step0, gfloat step1, void (*cb_func) (), gpointer data);
-
-/* gui-netlist-window.c */
-void ghid_netlist_window_create(GHidPort * out);
-void ghid_netlist_window_show(GHidPort * out, gboolean raise);
-void ghid_netlist_window_update(gboolean init_nodes);
 
 pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * name, gboolean);
 void ghid_netlist_highlight_node(const gchar * name);

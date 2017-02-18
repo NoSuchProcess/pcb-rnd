@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include "gui-command-window.h"
+#include "gui-top-window.h"
 #include "conf_core.h"
 
 #include "gui.h"

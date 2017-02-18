@@ -29,6 +29,7 @@
  */
 
 #include "config.h"
+#include "gui-netlist-window.h"
 #include "conf_core.h"
 
 #include <stdio.h>
