@@ -21,6 +21,7 @@
 #include "ghid-main-menu.h"
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/wt_route_style.h"
+#include "../src_plugins/lib_gtk_common/in_keyboard.h"
 
 #include "gschem_accel_label.h"
 

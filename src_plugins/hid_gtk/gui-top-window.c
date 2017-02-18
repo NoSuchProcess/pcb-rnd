@@ -116,7 +116,6 @@ GhidGui _ghidgui, *ghidgui = &_ghidgui;
 GHidPort ghid_port, *gport;
 
 pcb_hid_cfg_t *ghid_cfg = NULL;
-pcb_hid_cfg_keys_t ghid_keymap;
 
 /*! \brief callback for ghid_main_menu_update_toggle_state () */
 void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag)

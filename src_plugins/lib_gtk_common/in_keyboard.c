@@ -32,6 +32,8 @@
 #include <ctype.h>
 #include <string.h>
 
+pcb_hid_cfg_keys_t ghid_keymap;
+
 gboolean ghid_is_modifier_key_sym(gint ksym)
 {
 	if (ksym == GDK_KEY_Shift_R || ksym == GDK_KEY_Shift_L || ksym == GDK_KEY_Control_R || ksym == GDK_KEY_Control_L)

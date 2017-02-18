@@ -870,6 +870,8 @@
  misc_util.h error.h conf.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h hid_cfg.h \
+ ../src_plugins/lib_gtk_common/in_keyboard.h \
+ ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/hid_gtk/gschem_accel_label.h
 ../src_plugins/hid_gtk/gschem_accel_label.o: \
  ../src_plugins/hid_gtk/gschem_accel_label.c ../config.h \
