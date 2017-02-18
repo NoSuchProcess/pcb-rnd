@@ -150,11 +150,6 @@ gint ghid_port_window_motion_cb(GtkWidget * widget, GdkEventMotion * ev, GHidPor
 
 gint ghid_port_drawing_area_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, GHidPort * out);
 
-
-/* gui-dialog.c function prototypes.
-*/
-#define		GUI_DIALOG_RESPONSE_ALL	1
-
 /* gui-drc-window.c */
 void ghid_drc_window_show(gboolean raise);
 void ghid_drc_window_reset_message(void);
