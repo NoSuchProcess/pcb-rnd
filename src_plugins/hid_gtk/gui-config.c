@@ -400,7 +400,7 @@ static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer d
 	/* Can't toggle into command window mode if the status line command
 	   |  entry is active.
 	 */
-	if (ghidgui->command_entry_status_line_active) {
+	if (ghid_command_entry_is_active()) {
 		holdoff = TRUE;
 		gtk_toggle_button_set_active(button, FALSE);
 		holdoff = FALSE;
