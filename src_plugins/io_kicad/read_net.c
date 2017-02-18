@@ -45,6 +45,16 @@
 #include "plugins.h"
 #include "hid.h"
 
+#define if_strval(node, name) \
+	if (strcmp(node->str, #name) == 0) { \
+		if (name != NULL) { \
+			pcb_message(PCB_MSG_ERROR, "Invalid eechema: multiple %s subtrees\n", name); \
+			return -1; \
+		} \
+		if (node->children != NULL) \
+			name = node->children->str; \
+	}
+
 #define if_subtree(node, name) \
 	if (strcmp(node->str, #name) == 0) { \
 		if (name != NULL) { \
@@ -63,7 +73,7 @@
 
 static int eeschema_parse_net(gsxl_dom_t *dom)
 {
-	gsxl_node_t *n, *version = NULL, *components = NULL, *nets = NULL;
+	gsxl_node_t *c, *n, *version = NULL, *components = NULL, *nets = NULL;
 
 	/* check the header */
 	if (strcmp(dom->root->str, "export") != 0) {
@@ -87,8 +97,25 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 	}
 
 	pcb_hid_actionl("ElementList", "start", NULL);
-
-/*			pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);*/
+	for(c = components->children; c != NULL; c = c->next) {
+		const char *ref = NULL, *value = NULL, *footprint = NULL;
+		if (strcmp(c->str, "comp") != 0)
+			continue;
+		for(n = c->children; n != NULL; n = n->next) {
+			if_strval(n, ref)
+			else if_strval(n, value)
+			else if_strval(n, footprint)
+		}
+		if (ref == NULL) {
+			pcb_message(PCB_MSG_ERROR, "eechema: ignoring component with no refdes\n");
+			continue;
+		}
+		if (footprint == NULL) {
+			pcb_message(PCB_MSG_ERROR, "eechema: ignoring component %s with no footprint\n", ref);
+			continue;
+		}
+		pcb_hid_actionl("ElementList", "Need", ref, footprint, value == NULL ? "" : value, NULL);
+	}
 
 	pcb_hid_actionl("ElementList", "Done", NULL);
 
