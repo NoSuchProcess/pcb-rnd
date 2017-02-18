@@ -72,11 +72,6 @@
 #include "../src_plugins/hid_gtk/gtkhid-main.h"
 #include "../src_plugins/lib_gtk_common/colors.h"
 
-
-#if 0
-#include <locale.h>
-#endif
-
 /* Ugly hack: save a copy of gport on window construct in case we need to
    reconstruct */
 static void *priv_copy_gport;
