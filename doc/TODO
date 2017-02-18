@@ -4,6 +4,7 @@
 	- load data from layout to paste buffer:
 		- settings and even layer visibility gets messed up - there shall be no change in any of those at all
 		- probably IDs are messed too: copy and paste new arc loaded that way a few times and it will disappear after other edits (silk)
+	- make ; make clean -> error messages for removing non-existing files [report: Dima]
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
