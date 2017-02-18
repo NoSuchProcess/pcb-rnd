@@ -1,9 +1,7 @@
-Pcb-rnd is a fork of geda/PCB with some major improvements.
+Pcb-rnd is a modular PCB layout editor.
+
 It is hosted at http://repo.hu/projects/pcb-rnd
 Soruce code: svn://repo.hu/pcb-rnd/trunk
-
-Pcb is a CAD (computer aided design) program for the physical
-design of printed circuit boards.
 
 For installing the release refer to the file 'INSTALL'.
 For additional information read the manual (doc-orig/pcb.pdf) 
@@ -14,6 +12,8 @@ Contact:
 	email:       pcb-rnd (a) igor2.repo.hu
 	chat & IRC:  http://repo.hu/projects/pcb-rnd/irc.html
 
+
+Pcb-rnd was forked from gEDA/PCB in 2013
 -------------------------------------------------------------------------
                             COPYRIGHT
 
