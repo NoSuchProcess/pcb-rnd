@@ -135,12 +135,6 @@ void ghid_pack_mode_buttons(void);
 void ghid_layer_buttons_update(void);
 void ghid_layer_buttons_color_update(void);
 
-/* in_mouse.c static variables
-*/
-extern GdkPixmap *XC_hand_source, *XC_hand_mask;
-extern GdkPixmap *XC_lock_source, *XC_lock_mask;
-extern GdkPixmap *XC_clock_source, *XC_clock_mask;
-
 /* gui-output-events.c function prototypes.
 */
 void ghid_port_ranges_changed(void);

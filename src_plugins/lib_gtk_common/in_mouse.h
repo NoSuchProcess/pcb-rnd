@@ -33,6 +33,10 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, voi
 gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
 gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
 
+extern GdkPixmap *XC_hand_source, *XC_hand_mask;
+extern GdkPixmap *XC_lock_source, *XC_lock_mask;
+extern GdkPixmap *XC_clock_source, *XC_clock_mask;
+
 /* Temporary calls to hid_gtk */
 extern gboolean ghid_idle_cb(gpointer data);
 extern int ghid_shift_is_pressed();
