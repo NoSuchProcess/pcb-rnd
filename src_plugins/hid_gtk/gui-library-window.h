@@ -22,6 +22,7 @@
 #define PCB_HID_GTK_GUI_LIBRARY_WINDOW_H
 
 #include <gtk/gtk.h>
+#include "hid.h"
 
 /*
  * GhidLibraryWindow
@@ -52,12 +53,18 @@ struct _GhidLibraryWindow {
 	GtkEntry *entry_filter;
 	GtkButton *button_clear;
 	guint filter_timeout;
+
+	void *gport;
 };
 
 
 GType ghid_library_window_get_type(void);
 
-void ghid_library_window_create(void);
-void ghid_library_window_show(gboolean raise);
+void ghid_library_window_create(void *gport);
+void ghid_library_window_show(void *gport, gboolean raise);
+
+/* Temporary back references to hid_gtk */
+gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
+void ghid_init_drawing_widget(GtkWidget * widget, void *gport);
 
 #endif /* PCB_HID_GTK_GUI_LIBRARY_WINDOW_H */

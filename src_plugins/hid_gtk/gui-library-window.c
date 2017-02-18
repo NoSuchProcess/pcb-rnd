@@ -53,6 +53,7 @@
 
 #include "config.h"
 #include <ctype.h>
+#include <assert.h>
 #include "gui-library-window.h"
 #include "conf_core.h"
 
@@ -73,8 +74,8 @@ static GtkWidget *library_window;
 
 #include "gui-library-window.h"
 
-#warning TODO: remove this
-#include "gui.h"
+#warning TODO: figure how to pass gport from create() to the constructor
+static void *construct_gport_copy = NULL;
 
 /*! \def LIBRARY_FILTER_INTERVAL
  *  \brief The time interval between request and actual filtering
@@ -138,7 +139,7 @@ static void library_window_callback_response(GtkDialog * dialog, gint arg1, gpoi
  *  It does not show the dialog, use ghid_library_window_show for that.
  *
  */
-void ghid_library_window_create(void)
+void ghid_library_window_create(void *gport)
 {
 	GtkWidget *current_tab, *entry_filter;
 	GtkNotebook *notebook;
@@ -146,6 +147,7 @@ void ghid_library_window_create(void)
 	if (library_window)
 		return;
 
+	construct_gport_copy = gport;
 	library_window = (GtkWidget *) g_object_new(GHID_TYPE_LIBRARY_WINDOW, NULL);
 
 	g_signal_connect(library_window, "response", G_CALLBACK(library_window_callback_response), NULL);
@@ -177,9 +179,9 @@ void ghid_library_window_create(void)
  *  already created, and presents it to the user (brings it to the
  *  front with focus).
  */
-void ghid_library_window_show(gboolean raise)
+void ghid_library_window_show(void *gport, gboolean raise)
 {
-	ghid_library_window_create();
+	ghid_library_window_create(gport);
 	gtk_widget_show_all(library_window);
 	if (raise)
 		gtk_window_present(GTK_WINDOW(library_window));
@@ -791,11 +793,12 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 																			"top-padding", 5,
 																			"bottom-padding", 5, "xscale", 1.0, "yscale", 1.0, "xalign", 0.5, "yalign", 0.5, NULL));
 
+	assert(construct_gport_copy != NULL);
 #warning gl TODO: this wont work with gl: use pcb_gtk_preview_pinout_new() instead and set *-request separately, because _new() has side effects
 	preview = (GtkWidget *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
 																			 /* GhidPinoutPreview */
 																			 "element-data", NULL,
-																			 "gport", gport,
+																			 "gport", construct_gport_copy,
 																			 "init-widget", ghid_init_drawing_widget,
 																			 "expose", ghid_preview_expose,
 																			 "kind", PCB_GTK_PREVIEW_PINOUT,
