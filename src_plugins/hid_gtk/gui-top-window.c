@@ -138,7 +138,7 @@ void menu_toggle_update_cb(GtkAction * act, const char *tflag, const char *aflag
 /*! \brief sync the menu checkboxes with actual pcb state */
 void ghid_update_toggle_flags()
 {
-	ghid_main_menu_update_toggle_state(GHID_MAIN_MENU(ghidgui->menu_bar), menu_toggle_update_cb);
+	ghid_main_menu_update_toggle_state(GHID_MAIN_MENU(ghidgui->menu.menu_bar), menu_toggle_update_cb);
 }
 
 static void h_adjustment_changed_cb(GtkAdjustment * adj, GhidGui * g)
@@ -561,7 +561,7 @@ static void layer_selector_toggle_callback(pcb_gtk_layer_selector_t * ls, int la
 /*! \brief Install menu bar and accelerator groups */
 void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui)
 {
-	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu_bar)));
+	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu.menu_bar)));
 	gtk_window_add_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
 	gtk_window_add_accel_group
 		(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->route_style_selector)));
@@ -570,7 +570,7 @@ void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui)
 /*! \brief Remove menu bar and accelerator groups */
 void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui)
 {
-	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu_bar)));
+	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu.menu_bar)));
 	gtk_window_remove_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
 	gtk_window_remove_accel_group
 		(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->route_style_selector)));
@@ -688,7 +688,7 @@ void ghid_layer_buttons_update(void)
 	pcb_gtk_layer_selector_delete_layers(GHID_LAYER_SELECTOR(ghidgui->layer_selector), get_layer_delete);
 	make_layer_buttons(ghidgui->layer_selector);
 	make_virtual_layer_buttons(ghidgui->layer_selector);
-	ghid_main_menu_install_layer_selector(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_LAYER_SELECTOR(ghidgui->layer_selector));
+	ghid_main_menu_install_layer_selector(GHID_MAIN_MENU(ghidgui->menu.menu_bar), GHID_LAYER_SELECTOR(ghidgui->layer_selector));
 
 	/* Sync selected layer with PCB's state */
 	if (PCB->RatDraw)
@@ -708,7 +708,7 @@ void route_styles_edited_cb(pcb_gtk_route_style_t * rss, gboolean save, gpointer
 	if (save)
 		conf_setf(CFR_USER, "design/routes", -1, "%s", pcb_route_string_make(&PCB->RouteStyle));
 	ghid_main_menu_install_route_style_selector
-		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE(ghidgui->route_style_selector));
+		(GHID_MAIN_MENU(ghidgui->menu.menu_bar), GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 }
 
 /*
@@ -934,8 +934,8 @@ static void get_widget_styles(GtkStyle ** menu_bar_style, GtkStyle ** tool_butto
 	gtk_container_add(GTK_CONTAINER(tool_button), tool_button_label);
 
 	/* Grab the various styles we need */
-	gtk_widget_ensure_style(ghidgui->menu_bar);
-	*menu_bar_style = gtk_widget_get_style(ghidgui->menu_bar);
+	gtk_widget_ensure_style(ghidgui->menu.menu_bar);
+	*menu_bar_style = gtk_widget_get_style(ghidgui->menu.menu_bar);
 
 	gtk_widget_ensure_style(tool_button);
 	*tool_button_style = gtk_widget_get_style(tool_button);
@@ -1043,8 +1043,8 @@ static void ghid_build_pcb_top_window(void)
 	g_signal_connect(G_OBJECT(ghidgui->layer_selector), "select_layer", G_CALLBACK(layer_selector_select_callback), NULL);
 	g_signal_connect(G_OBJECT(ghidgui->layer_selector), "toggle_layer", G_CALLBACK(layer_selector_toggle_callback), NULL);
 	/* Build main menu */
-	ghidgui->menu_bar = ghid_load_menus();
-	gtk_box_pack_start(GTK_BOX(ghidgui->menubar_toolbar_vbox), ghidgui->menu_bar, FALSE, FALSE, 0);
+	ghidgui->menu.menu_bar = ghid_load_menus();
+	gtk_box_pack_start(GTK_BOX(ghidgui->menubar_toolbar_vbox), ghidgui->menu.menu_bar, FALSE, FALSE, 0);
 
 	make_mode_buttons_and_toolbar(&ghidgui->mode_buttons_frame, &ghidgui->mode_toolbar, &ghidgui->mode_toolbar_vbox);
 	gtk_box_pack_start(GTK_BOX(ghidgui->menubar_toolbar_vbox), ghidgui->mode_toolbar_vbox, FALSE, FALSE, 0);
@@ -1465,7 +1465,7 @@ void ghid_do_export(pcb_hid_attr_val_t * options)
 	 */
 	ghid_layer_buttons_update();
 	ghid_main_menu_install_route_style_selector
-		(GHID_MAIN_MENU(ghidgui->menu_bar), GHID_ROUTE_STYLE(ghidgui->route_style_selector));
+		(GHID_MAIN_MENU(ghidgui->menu.menu_bar), GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 
 	if (conf_hid_gtk.plugins.hid_gtk.listen)
 		ghid_create_listener();
@@ -1508,7 +1508,7 @@ static gboolean get_layer_visible_cb(int id)
 
 void ghid_LayersChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (!ghidgui || !ghidgui->menu_bar || PCB == NULL)
+	if (!ghidgui || !ghidgui->menu.menu_bar || PCB == NULL)
 		return;
 
 	ghid_layer_buttons_update();
@@ -1635,7 +1635,7 @@ pcb_hid_action_t gtk_topwindow_action_list[] = {
 
 PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 
-		 static GtkWidget *ghid_load_menus(void)
+static GtkWidget *ghid_load_menus(void)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;

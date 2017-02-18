@@ -13,7 +13,6 @@
 
 #include "config.h"
 #include "gtkhid-main.h"
-#include "gui.h"
 #include "pcb-printf.h"
 #include "misc_util.h"
 #include "error.h"
@@ -480,7 +479,7 @@ GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu * menu)
 static GtkWidget *new_popup(lht_node_t * menu_item)
 {
 	GtkWidget *new_menu = gtk_menu_new();
-/*	GHidMainMenu *menu  = GHID_MAIN_MENU(ghidgui->menu_bar);*/
+/*	GHidMainMenu *menu  = GHID_MAIN_MENU(ctx->menu_bar);*/
 
 	g_object_ref_sink(new_menu);
 	menu_item->user_data = handle_alloc(new_menu, new_menu);
@@ -489,14 +488,15 @@ static GtkWidget *new_popup(lht_node_t * menu_item)
 }
 
 /* Menu widget create callback: create a main menu, popup or submenu as descending the path */
-static int ghid_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t * parent,
+static int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int is_main, lht_node_t * parent,
 																	 lht_node_t * menu_item)
 {
+	pcb_gtk_menu_ctx_t *ctx = ctx_;
 	int is_popup = (strncmp(path, "/popups", 7) == 0);
 	menu_handle_t *ph = parent->user_data;
-	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ghidgui->menu_bar) : ph->widget;
+	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ctx->menu_bar) : ph->widget;
 
-	ghid_main_menu_real_add_node(GHID_MAIN_MENU(ghidgui->menu_bar), GTK_MENU_SHELL(w), menu_item);
+	ghid_main_menu_real_add_node(GHID_MAIN_MENU(ctx->menu_bar), GTK_MENU_SHELL(w), menu_item);
 
 /* make sure new menu items appear on screen */
 	gtk_widget_show_all(w);
@@ -522,10 +522,9 @@ static int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 }
 
 /* Create a new menu by path */
-void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip,
-											const char *cookie)
+void pcb_gtk_menu_create_menu(pcb_gtk_menu_ctx_t *ctx, const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
-	pcb_hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, NULL);
+	pcb_hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, ctx);
 }
 
 int ghid_remove_menu(const char *menu_path)

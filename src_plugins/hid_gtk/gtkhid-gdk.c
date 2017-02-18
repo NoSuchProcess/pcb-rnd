@@ -886,7 +886,7 @@ void ghid_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pc
 
 void ghid_invalidate_all()
 {
-	if (ghidgui && ghidgui->menu_bar) {
+	if (ghidgui && ghidgui->menu.menu_bar) {
 		redraw_region(NULL);
 		ghid_screen_update();
 	}

@@ -4,6 +4,7 @@
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/wt_route_style.h"
 
+#include "conf.h"
 #include "hid_cfg.h"
 #include "hid_cfg_input.h"
 
@@ -15,6 +16,10 @@ G_BEGIN_DECLS										/* keep c++ happy */
 #define IS_GHID_MAIN_MENU_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GHID_MAIN_MENU_TYPE))
 typedef struct _GHidMainMenu GHidMainMenu;
 typedef struct _GHidMainMenuClass GHidMainMenuClass;
+
+typedef struct pcb_gtk_menu_ctx_s {
+	GtkWidget *menu_bar;
+} pcb_gtk_menu_ctx_t;
 
 GType ghid_main_menu_get_type(void);
 GtkWidget *ghid_main_menu_new(GCallback action_cb);
@@ -28,11 +33,13 @@ void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t * base);
 void ghid_main_menu_install_layer_selector(GHidMainMenu * mm, pcb_gtk_layer_selector_t * ls);
 void ghid_main_menu_install_route_style_selector(GHidMainMenu * mm, pcb_gtk_route_style_t * rss);
 
-void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip,
-											const char *cookie);
+void pcb_gtk_menu_create_menu(pcb_gtk_menu_ctx_t *ctx, const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie);
 int ghid_remove_menu(const char *menu_path);
 
 extern pcb_hid_cfg_t *ghid_cfg;
+
+/* Temporary back references to hid_gtk: */
+void ghid_confchg_checkbox(conf_native_t *cfg);
 
 G_END_DECLS											/* keep c++ happy */
 #endif

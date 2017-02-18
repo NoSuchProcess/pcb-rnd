@@ -290,6 +290,11 @@ static char *ghid_fileselect(const char *title, const char *descr, const char *d
 }
 
 
+void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
+{
+	pcb_gtk_menu_create_menu(&ghidgui->menu, menu_path, action, mnemonic, accel, tip, cookie);
+}
+
 static int ghid_propedit_start(void *pe, int num_props,
 															 const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
 {

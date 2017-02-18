@@ -35,6 +35,8 @@
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 
+#include "ghid-main-menu.h"
+
 #include "board.h"
 #include "event.h"
 
@@ -42,13 +44,14 @@ typedef struct {
 	GtkActionGroup *main_actions, *change_selected_actions, *displayed_name_actions;
 
 	pcb_gtk_cursor_pos_t cps;
+	pcb_gtk_menu_ctx_t menu;
 
 	GtkWidget *status_line_label, *status_line_hbox, *command_combo_box;
 	GtkEntry *command_entry;
 
 	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox, *mode_buttons_frame;
 	GtkWidget *left_toolbar;
-	GtkWidget *menu_bar, *layer_selector, *route_style_selector;
+	GtkWidget *layer_selector, *route_style_selector;
 	GtkWidget *mode_toolbar;
 	GtkWidget *mode_toolbar_vbox;
 	GtkWidget *vbox_middle;
