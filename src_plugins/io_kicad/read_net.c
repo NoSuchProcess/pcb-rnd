@@ -45,49 +45,63 @@
 #include "plugins.h"
 #include "hid.h"
 
-#if 0
-typedef struct {
-	char *refdes;
-	char *value;
-	char *footprint;
-} symattr_t;
-
-#define null_empty(s) ((s) == NULL ? "" : (s))
-
-static void sym_flush(symattr_t *sattr)
-{
-	if (sattr->refdes != NULL) {
-/*		pcb_trace("eeschema sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
-		if (sattr->footprint == NULL)
-			pcb_message(PCB_MSG_ERROR, "eeschema: not importing refdes=%s: no footprint specified\n", sattr->refdes);
-		else
-			pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+#define if_subtree(node, name) \
+	if (strcmp(node->str, #name) == 0) { \
+		if (name != NULL) { \
+			pcb_message(PCB_MSG_ERROR, "Invalid eechema: multiple %s subtrees\n", name); \
+			return -1; \
+		} \
+		name = node; \
 	}
-	free(sattr->refdes); sattr->refdes = NULL;
-	free(sattr->value); sattr->value = NULL;
-	free(sattr->footprint); sattr->footprint = NULL;
-}
 
-#endif
+#define req_subtree(name) \
+	if (name == NULL) { \
+		pcb_message(PCB_MSG_ERROR, "Invalid eechema: missing %s subtree\n", name); \
+		return -1; \
+	} \
 
 
 static int eeschema_parse_net(gsxl_dom_t *dom)
 {
-/*	symattr_t sattr;
-	memset(&sattr, 0, sizeof(sattr));*/
+	gsxl_node_t *n, *version = NULL, *components = NULL, *nets = NULL;
+
+	/* check the header */
+	if (strcmp(dom->root->str, "export") != 0) {
+		pcb_message(PCB_MSG_ERROR, "Invalid eechema netlist header: not an export\n");
+		return -1;
+	}
+
+	for(n = dom->root->children; n != NULL; n = n->next) {
+		if_subtree(n, version)
+		else if_subtree(n, components)
+		else if_subtree(n, nets)
+	}
+
+	req_subtree(version);
+	req_subtree(components);
+	req_subtree(nets);
+
+	if ((version->children == NULL) || (strcmp(version->children->str, "D") != 0)) {
+		pcb_message(PCB_MSG_ERROR, "Invalid eechema version: expected 'D', got '%s'\n", version->children->str);
+		return -1;
+	}
 
 	pcb_hid_actionl("ElementList", "start", NULL);
+
+/*			pcb_hid_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);*/
+
+	pcb_hid_actionl("ElementList", "Done", NULL);
+
+
 	pcb_hid_actionl("Netlist", "Freeze", NULL);
 	pcb_hid_actionl("Netlist", "Clear", NULL);
-
-
-	printf("dom=%p\n", dom);
 
 /*	pcb_hid_actionl("Netlist", "Add",  argv[2], curr, NULL);*/
 
 	pcb_hid_actionl("Netlist", "Sort", NULL);
 	pcb_hid_actionl("Netlist", "Thaw", NULL);
-	pcb_hid_actionl("ElementList", "Done", NULL);
+
+	printf("dom=%p\n", dom);
 
 	return 0;
 }
