@@ -93,8 +93,6 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "layer_vis.h"
 #include "gtkhid-main.h"
 
-#include "gui-config.h"
-
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
@@ -103,6 +101,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
+#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
 static pcb_bool ignore_layer_update;
 

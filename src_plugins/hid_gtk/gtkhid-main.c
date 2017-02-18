@@ -29,7 +29,6 @@
 #include "layer_vis.h"
 
 #include "gtkhid-main.h"
-#include "gui-config.h"
 
 /* AV: Care to circular includes !!!? */
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
@@ -52,6 +51,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_pinout.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
+#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";

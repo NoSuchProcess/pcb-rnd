@@ -4,6 +4,7 @@ put /local/pcb/mod/OBJS [@
 @]
 
 put /local/pcb/mod/OBJS_C99 [@
+	$(PLUGDIR)/lib_gtk_config/gui-config.o
 @]
 
 

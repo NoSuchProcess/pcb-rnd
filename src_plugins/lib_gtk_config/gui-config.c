@@ -25,7 +25,7 @@
 
 #include "config.h"
 #include "conf_core.h"
-#include "gui-config.h"
+#include "lib_gtk_config.h"
 
 #include <stdlib.h>
 #include <genht/hash.h>
@@ -36,8 +36,6 @@
 #include "layer.h"
 
 #include "hid.h"
-#include "gtkhid-main.h"
-#include "colors.h"
 
 #include "action_helper.h"
 #include "change.h"
@@ -48,8 +46,6 @@
 #include "hid_attrib.h"
 #include "conf.h"
 #include "misc_util.h"
-#include "hid_gtk_conf.h"
-#include "gtk_conf_list.h"
 #include "paths.h"
 #include "plug_footprint.h"
 #include "stub_draw_csect.h"
@@ -68,6 +64,12 @@
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
+
+#warning TODO: remove these
+#include "../src_plugins/hid_gtk/gtkhid-main.h"
+#include "../src_plugins/hid_gtk/colors.h"
+#include "../src_plugins/hid_gtk/hid_gtk_conf.h"
+#include "../src_plugins/hid_gtk/gtk_conf_list.h"
 
 
 #if 0
