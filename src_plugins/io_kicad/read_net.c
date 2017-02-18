@@ -72,7 +72,7 @@
 
 static int eeschema_parse_net(gsxl_dom_t *dom)
 {
-	gsxl_node_t *c, *n, *version = NULL, *components = NULL, *nets = NULL;
+	gsxl_node_t *i, *net, *c, *n, *version = NULL, *components = NULL, *nets = NULL;
 
 	/* check the header */
 	if (strcmp(dom->root->str, "export") != 0) {
@@ -95,7 +95,9 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 		return -1;
 	}
 
+	/* Load the elements */
 	pcb_hid_actionl("ElementList", "start", NULL);
+
 	for(c = components->children; c != NULL; c = c->next) {
 		const char *ref = NULL, *value = NULL, *footprint = NULL;
 		if (strcmp(c->str, "comp") != 0)
@@ -118,16 +120,55 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 
 	pcb_hid_actionl("ElementList", "Done", NULL);
 
+	/* Load the netlist */
 
 	pcb_hid_actionl("Netlist", "Freeze", NULL);
 	pcb_hid_actionl("Netlist", "Clear", NULL);
 
-/*	pcb_hid_actionl("Netlist", "Add",  argv[2], curr, NULL);*/
+	for(net = nets->children; net != NULL; net = net->next) {
+		const char *netname = NULL, *code = NULL, *name = NULL, *footprint = NULL;
+		char refpin[256];
+
+		if (strcmp(net->str, "net") != 0)
+			continue;
+
+		for(n = net->children; n != NULL; n = n->next) {
+			if_strval(n, code)
+			else if_strval(n, name)
+			else if (strcmp(n->str, "node") == 0) {
+				const char *ref = NULL, *pin = NULL;
+
+				/* load node params */
+				for(i = n->children; i != NULL; i = i->next) {
+					if_strval(i, ref)
+					else if_strval(i, pin)
+				}
+
+				/* find out the net name */
+				if (netname == NULL) {
+					if ((name != NULL) && (*name != '\0'))
+						netname = name;
+					else
+						netname = code;
+				}
+				if (netname == NULL) {
+					pcb_message(PCB_MSG_WARNING, "eechema: ignoring pins of incomplete net\n");
+					continue;
+				}
+
+				/* do the binding */
+				if ((ref == NULL) || (pin == NULL)) {
+					pcb_message(PCB_MSG_WARNING, "eechema: ignoring incomplete connection to net %s: refdes=%s pin=%s \n", netname, ref, pin);
+					continue;
+				}
+				pcb_snprintf(refpin, sizeof(refpin), "%s-%s", ref, pin);
+				pcb_hid_actionl("Netlist", "Add",  netname, refpin, NULL);
+			}
+		}
+	}
 
 	pcb_hid_actionl("Netlist", "Sort", NULL);
 	pcb_hid_actionl("Netlist", "Thaw", NULL);
-
-	printf("dom=%p\n", dom);
 
 	return 0;
 }
