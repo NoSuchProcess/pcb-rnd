@@ -28,7 +28,6 @@
 #include "hid.h"
 
 #include <gtk/gtk.h>
-#include "conf_core.h"
 
 /* needed for a type in GhidGui - DO NOT ADD .h files that are not requred for the structs! */
 #include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
@@ -287,6 +286,7 @@ void ghid_cancel_lead_user(void);
 
 /* Coordinate conversions */
 #include "compat_misc.h"
+#include "conf_core.h"
 
 /* Px converts view->pcb, Vx converts pcb->view */
 static inline int Vx(pcb_coord_t x)
