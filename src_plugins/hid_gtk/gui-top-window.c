@@ -372,7 +372,7 @@ void ghid_notify_filename_changed(void)
 }
 
 
-/* ---------------------------------------------------------------------------
+/* --------------------------------------------------------------------------- */
 
 	/* Silk and rats lines are the two additional selectable to draw on.
 	   |  gui code in gui-top-window.c and group code in misc.c must agree
