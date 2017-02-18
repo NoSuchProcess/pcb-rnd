@@ -27,6 +27,7 @@
 #include "config.h"
 #include "conf_core.h"
 
+#include "board.h"
 #include "data.h"
 #include "error.h"
 #include "search.h"
@@ -34,7 +35,6 @@
 #include "layer.h"
 #include "pcb-printf.h"
 #include "undo.h"
-#include "gui.h"
 #include "gui-drc-window.h"
 #include "hid_actions.h"
 #include "compat_nls.h"

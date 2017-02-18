@@ -36,7 +36,6 @@
 #include "conf_core.h"
 #include "conf_hid.h"
 
-#include "gui.h"
 #include "pcb-printf.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
@@ -72,7 +71,7 @@ void ghid_log_window_create()
 	GtkWidget *vbox, *hbox, *button;
 	extern int gtkhid_active;
 
-	if ((log_window) || (ghidgui == NULL) || (!gtkhid_active))
+	if ((log_window) || (!gtkhid_active))
 		return;
 
 	log_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);

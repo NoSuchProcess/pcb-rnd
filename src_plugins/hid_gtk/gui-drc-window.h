@@ -97,4 +97,7 @@ void ghid_drc_window_append_violation(pcb_drc_violation_t * violation);
 void ghid_drc_window_append_messagev(const char *fmt, va_list va);
 int ghid_drc_window_throw_dialog(void);
 
+/* Temporary back reference to hid_gtk */
+GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth);
+
 #endif /* PCB_HID_GTK_GUI_DRC_WINDOW_H */

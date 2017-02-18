@@ -17,6 +17,7 @@
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 extern pcb_hid_t ghid_hid;
+void ghid_cancel_lead_user(void);
 
 /* Sets priv->u_gc to the "right" GC to use (wrt mask or window)
 */

@@ -31,7 +31,6 @@
 #include "gui-top-window.h"
 #include "conf_core.h"
 
-#include "gui.h"
 #include <gdk/gdkkeysyms.h>
 
 #include "crosshair.h"

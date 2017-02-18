@@ -36,10 +36,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+#include "board.h"
 #include "data.h"
 #include "draw.h"
+#include "event.h"
 #include "error.h"
+#include "macro.h"
+#include "const.h"
 #include "find.h"
 #include "rats.h"
 #include "remove.h"
@@ -50,7 +53,6 @@
 #include "compat_nls.h"
 #include "obj_all.h"
 
-#include "gui.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_common/bu_text_view.h"
