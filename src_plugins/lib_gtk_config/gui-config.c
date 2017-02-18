@@ -45,6 +45,7 @@
 #include "pcb-printf.h"
 #include "hid_attrib.h"
 #include "conf.h"
+#include "conf_hid.h"
 #include "misc_util.h"
 #include "paths.h"
 #include "plug_footprint.h"
@@ -67,9 +68,6 @@
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
-
-#warning TODO: remove these
-#include "../src_plugins/hid_gtk/gtkhid-main.h"
 #include "../src_plugins/lib_gtk_common/colors.h"
 
 /* Ugly hack: save a copy of gport on window construct in case we need to

@@ -132,8 +132,6 @@ void ghid_conf_load_post_wgeo(void *user_data, int argc, pcb_event_arg_t argv[])
 
 void ghid_mode_buttons_update(void);
 void ghid_pack_mode_buttons(void);
-void ghid_layer_buttons_update(void);
-void ghid_layer_buttons_color_update(void);
 
 /* gui-output-events.c function prototypes.
 */

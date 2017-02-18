@@ -2,7 +2,6 @@
 #define PCB_GTKHID_MAIN_H
 
 #include "conf_hid.h"
-extern conf_hid_id_t ghid_conf_id;
 
 void ghid_notify_gui_is_up(void);
 extern int gtkhid_active;

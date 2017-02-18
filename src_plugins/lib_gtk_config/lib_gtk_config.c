@@ -24,8 +24,20 @@
  *
  */
 
+#include "config.h"
+
 #include <stdlib.h>
+#include "lib_gtk_config.h"
 #include "plugins.h"
+
+static const char *lib_gtk_config_cookie = "lib_gtk_config";
+
+conf_hid_id_t ghid_conf_id = -1;
+
+void pcb_gtk_conf_init(void)
+{
+	ghid_conf_id = conf_hid_reg(lib_gtk_config_cookie, NULL);
+}
 
 pcb_uninit_t hid_lib_gtk_config_init(void)
 {

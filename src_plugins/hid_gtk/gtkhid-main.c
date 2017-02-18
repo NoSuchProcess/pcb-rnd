@@ -60,7 +60,6 @@
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
 
-conf_hid_id_t ghid_conf_id = -1;
 conf_hid_id_t ghid_menuconf_id = -1;
 GdkModifierType ghid_glob_mask;
 
@@ -936,8 +935,7 @@ pcb_uninit_t hid_hid_gtk_init()
 /*	ghid_hid.propedit_add_prop = ghid_propedit_add_prop;*/
 /*	ghid_hid.propedit_add_value = ghid_propedit_add_value;*/
 
-
-	ghid_conf_id = conf_hid_reg(ghid_cookie, NULL);
+	pcb_gtk_conf_init();
 	ghid_menuconf_id = conf_hid_reg(ghid_menu_cookie, NULL);
 	ghid_conf_regs();
 
