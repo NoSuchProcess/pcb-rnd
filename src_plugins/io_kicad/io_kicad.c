@@ -28,8 +28,10 @@
 #include "plug_io.h"
 #include "write.h"
 #include "read.h"
+#include "read_net.h"
 
 static pcb_plug_io_t io_kicad;
+static const char *kicad_cookie = "kicad plugin";
 
 int io_kicad_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
@@ -43,10 +45,20 @@ int io_kicad_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 	return 100;
 }
 
+pcb_hid_action_t eeschema_action_list[] = {
+	{"LoadEeschemaFrom", 0, pcb_act_LoadeeschemaFrom, pcb_acth_LoadeeschemaFrom, pcb_acts_LoadeeschemaFrom}
+};
+
+PCB_REGISTER_ACTIONS(eeschema_action_list, kicad_cookie)
+
+
 static void hid_io_kicad_uninit(void)
 {
 	/* Runs once when the plugin is unloaded. TODO: free plugin-globals here. */
+	pcb_hid_remove_actions_by_cookie(kicad_cookie);
 }
+
+#include "dolists.h"
 
 pcb_uninit_t hid_io_kicad_init(void)
 {
@@ -70,6 +82,8 @@ pcb_uninit_t hid_io_kicad_init(void)
 
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
+
+	PCB_REGISTER_ACTIONS(eeschema_action_list, kicad_cookie);
 
 	/* TODO: Alloc plugin-globals here. */
 
