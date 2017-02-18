@@ -6,8 +6,8 @@
 
 #include "config.h"
 
-/*#include <glib.h>
-#include <glib-object.h>*/
+#include <glib.h>
+#include <glib-object.h>
 #include <gtk/gtk.h>
 #include <liblihata/tree.h>
 
