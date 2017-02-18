@@ -52,6 +52,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
@@ -946,7 +947,7 @@ pcb_uninit_t hid_hid_gtk_init()
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	conf_reg_field(conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
-#include "hid_gtk_conf_fields.h"
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf_fields.h"
 
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, ghid_conf_save_pre_wgeo, NULL, ghid_cookie);
 	pcb_event_bind(PCB_EVENT_LOAD_POST, ghid_conf_load_post_wgeo, NULL, ghid_cookie);

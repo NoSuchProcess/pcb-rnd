@@ -48,6 +48,7 @@
 
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5

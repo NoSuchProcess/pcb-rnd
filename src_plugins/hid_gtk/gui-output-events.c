@@ -48,6 +48,7 @@
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 void ghid_port_ranges_changed(void)
 {

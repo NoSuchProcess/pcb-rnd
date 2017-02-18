@@ -40,8 +40,6 @@
 #include "compat_misc.h"
 #include "colors.h"
 
-#include "hid_gtk_conf.h"
-
 /* needed for a type in GhidGui - DO NOT ADD .h files that are not requred for the structs! */
 #include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"

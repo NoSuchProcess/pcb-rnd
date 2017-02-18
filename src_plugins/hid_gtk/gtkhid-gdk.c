@@ -12,6 +12,8 @@
 #include "hid_helper.h"
 #include "hid_color.h"
 
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+
 extern pcb_hid_t ghid_hid;
 
 /* Sets priv->u_gc to the "right" GC to use (wrt mask or window)

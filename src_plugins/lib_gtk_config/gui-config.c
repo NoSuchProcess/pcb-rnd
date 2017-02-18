@@ -55,6 +55,7 @@
 #include <liblihata/tree.h>
 
 #include "gtk_conf_list.h"
+#include "hid_gtk_conf.h"
 
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/wt_preview.h"
@@ -70,7 +71,6 @@
 #warning TODO: remove these
 #include "../src_plugins/hid_gtk/gtkhid-main.h"
 #include "../src_plugins/hid_gtk/colors.h"
-#include "../src_plugins/hid_gtk/hid_gtk_conf.h"
 
 
 #if 0

@@ -67,6 +67,8 @@ static GtkWidget *library_window;
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/wt_preview.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+
 #include "gui-library-window.h"
 
 /*! \def LIBRARY_FILTER_INTERVAL

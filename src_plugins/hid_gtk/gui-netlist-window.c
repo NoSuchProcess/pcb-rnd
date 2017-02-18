@@ -55,6 +55,7 @@
 #include "../src_plugins/lib_gtk_common/bu_text_view.h"
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_check_button.h"
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 #define NET_HIERARCHY_SEPARATOR "/"
 

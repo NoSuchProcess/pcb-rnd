@@ -24,6 +24,8 @@
 #include "hid/common/hidgl.h"
 #include "hid_draw_helpers.h"
 
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+
 extern pcb_hid_t ghid_hid;
 
 static pcb_hid_gc_t current_gc = NULL;

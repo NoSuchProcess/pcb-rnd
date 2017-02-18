@@ -13,7 +13,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
 	$(PLUGDIR)/hid_gtk/gschem_accel_label.o
 @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/hid_gtk/hid_gtk_conf.h}
 
 switch /local/pcb/hid_gtk/controls
 	case {disable} end;

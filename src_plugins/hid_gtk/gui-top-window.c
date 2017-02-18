@@ -102,6 +102,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
+#include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 static pcb_bool ignore_layer_update;
 
