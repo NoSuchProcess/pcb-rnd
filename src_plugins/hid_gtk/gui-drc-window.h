@@ -27,6 +27,7 @@
 #ifndef PCB_HID_GTK_GUI_DRC_WINDOW_H
 #define PCB_HID_GTK_GUI_DRC_WINDOW_H
 
+#include <gtk/gtk.h>
 
 #define GHID_TYPE_DRC_VIOLATION           (ghid_drc_violation_get_type())
 #define GHID_DRC_VIOLATION(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_DRC_VIOLATION, GhidDrcViolation))
