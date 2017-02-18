@@ -25,7 +25,6 @@
 #ifndef PCB_HID_GTK_GHID_H
 #define PCB_HID_GTK_GHID_H
 
-#include "config.h"
 #include "hid.h"
 #include "hid_cfg.h"
 #include "hid_cfg_input.h"

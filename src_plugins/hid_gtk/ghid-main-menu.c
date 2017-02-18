@@ -4,6 +4,8 @@
  *  This widget is the main pcb menu.
  */
 
+#include "config.h"
+
 /*#include <glib.h>
 #include <glib-object.h>*/
 #include <gtk/gtk.h>

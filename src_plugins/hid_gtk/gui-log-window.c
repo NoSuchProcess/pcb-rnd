@@ -27,8 +27,10 @@
 /* This file written by Bill Wilson for the PCB Gtk port
 */
 
-#include <ctype.h>
 #include "config.h"
+
+#include <ctype.h>
+
 #include "conf_core.h"
 #include "conf_hid.h"
 

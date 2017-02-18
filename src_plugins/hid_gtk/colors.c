@@ -28,6 +28,9 @@
  *
  */
 
+#include "config.h"
+
+
 /* FIXME: Find a way to get rid of GHidPort *out and gui.h */
 #include "gui.h"
 

@@ -48,6 +48,8 @@ Modifications:
 	- helper call that creates a menu item with label and accel label
 */
 
+#include "config.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include "config.h"
