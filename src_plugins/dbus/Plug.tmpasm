@@ -18,6 +18,8 @@ $(PLUGDIR)/dbus/dbus-introspect.h: $(PLUGDIR)/dbus/dbus.xml
 	mv @/local/tmp@ $(PLUGDIR)/dbus/dbus-introspect.h
 @]
 
+	put /local/pcb/mod/CLEANFILES { $(PLUGDIR)/dbus/dbus-introspect.h }
+
 	end
 end
 
