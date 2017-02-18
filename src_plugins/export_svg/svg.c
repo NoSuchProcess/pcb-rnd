@@ -581,6 +581,9 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	pcb_coord_t x1, y1, x2, y2, diff = 0;
 	pcb_angle_t sa, ea;
 
+	if (width == 0) /* degenerate case: do not draw r=0 arc, some rendering engines may not like that */
+		return;
+
 	TRX(cx); TRY(cy);
 
 	/* calculate start and end angles considering flip */
