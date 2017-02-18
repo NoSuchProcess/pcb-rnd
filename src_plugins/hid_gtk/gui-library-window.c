@@ -52,11 +52,13 @@
  */
 
 #include "config.h"
+#include <ctype.h>
+#include "gui-library-window.h"
 #include "conf_core.h"
 
-#include "gui.h"
 #include "buffer.h"
 #include "data.h"
+#include "const.h"
 #include "plug_footprint.h"
 #include "compat_nls.h"
 
@@ -70,6 +72,9 @@ static GtkWidget *library_window;
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 #include "gui-library-window.h"
+
+#warning TODO: remove this
+#include "gui.h"
 
 /*! \def LIBRARY_FILTER_INTERVAL
  *  \brief The time interval between request and actual filtering
@@ -133,7 +138,7 @@ static void library_window_callback_response(GtkDialog * dialog, gint arg1, gpoi
  *  It does not show the dialog, use ghid_library_window_show for that.
  *
  */
-void ghid_library_window_create(GHidPort * out)
+void ghid_library_window_create(void)
 {
 	GtkWidget *current_tab, *entry_filter;
 	GtkNotebook *notebook;
@@ -172,9 +177,9 @@ void ghid_library_window_create(GHidPort * out)
  *  already created, and presents it to the user (brings it to the
  *  front with focus).
  */
-void ghid_library_window_show(GHidPort * out, gboolean raise)
+void ghid_library_window_show(gboolean raise)
 {
-	ghid_library_window_create(out);
+	ghid_library_window_create();
 	gtk_widget_show_all(library_window);
 	if (raise)
 		gtk_window_present(GTK_WINDOW(library_window));
@@ -734,7 +739,7 @@ static GtkWidget *create_lib_treeview(GhidLibraryWindow * library_window)
 }
 
 
-static GObject *library_window_constructor(GType type, guint n_construct_properties, GObjectConstructParam * construct_params)
+static GObject *library_window_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
 {
 	GObject *object;
 	GhidLibraryWindow *library_window;

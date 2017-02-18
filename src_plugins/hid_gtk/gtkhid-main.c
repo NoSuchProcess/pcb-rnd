@@ -540,7 +540,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
 	}
 	else if (strcmp(a, "2") == 0 || pcb_strcasecmp(a, "Library") == 0) {
-		ghid_library_window_show(gport, raise);
+		ghid_library_window_show(raise);
 	}
 	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
 		ghid_log_window_show(raise);
