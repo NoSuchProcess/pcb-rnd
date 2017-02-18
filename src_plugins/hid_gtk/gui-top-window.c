@@ -93,6 +93,8 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "layer_vis.h"
 #include "gtkhid-main.h"
 
+#include "gui-config.h"
+
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
@@ -320,6 +322,17 @@ static void update_board_mtime_from_disk(void)
 	ghidgui->last_seen_mtime = ghidgui->our_mtime;
 }
 
+void ghid_handle_units_changed(void)
+{
+	char *text = pcb_strdup_printf("<b>%s</b>",
+																 conf_core.editor.grid_unit->in_suffix);
+	ghid_set_cursor_position_labels(&ghidgui->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
+	gtk_label_set_markup(GTK_LABEL(ghidgui->cps.grid_units_label), text);
+	free(text);
+	ghid_config_handle_units_changed();
+}
+
+
 	/* Sync toggle states that were saved with the layout and notify the
 	   |  config code to update Settings values it manages.
 	 */
@@ -330,7 +343,7 @@ void ghid_sync_with_new_layout(void)
 		pcb_gtk_route_style_select_style(GHID_ROUTE_STYLE(ghidgui->route_style_selector), &PCB->RouteStyle.array[0]);
 	}
 
-	ghid_config_handle_units_changed();
+	ghid_handle_units_changed();
 
 	ghid_window_set_name_label(PCB->Name);
 	ghid_set_status_line_label();

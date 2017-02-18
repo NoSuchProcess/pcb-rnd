@@ -576,6 +576,9 @@ Sets the display units to millimeters.
 
 %end-doc */
 
+#warning TODO: move this to a header
+extern void ghid_handle_units_changed(void);
+
 static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const pcb_unit_t *new_unit;
@@ -588,7 +591,7 @@ static int SetUnits(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_attrib_put(PCB, "PCB::grid::unit", argv[0]);
 	}
 
-	ghid_config_handle_units_changed();
+	ghid_handle_units_changed();
 
 	ghid_set_status_line_label();
 

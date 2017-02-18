@@ -1650,12 +1650,6 @@ static GtkWidget *config_page_create(GtkTreeStore * tree, GtkTreeIter * iter, Gt
 
 void ghid_config_handle_units_changed(void)
 {
-	char *text = pcb_strdup_printf("<b>%s</b>",
-																 conf_core.editor.grid_unit->in_suffix);
-	ghid_set_cursor_position_labels(&ghidgui->cps, conf_hid_gtk.plugins.hid_gtk.compact_vertical);
-	gtk_label_set_markup(GTK_LABEL(ghidgui->cps.grid_units_label), text);
-	free(text);
-
 	if (config_sizes_vbox) {
 		gtk_widget_destroy(config_sizes_vbox);
 		config_sizes_vbox = NULL;
