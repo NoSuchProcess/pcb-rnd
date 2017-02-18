@@ -54,6 +54,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "config.h"
 #include "conf_core.h"
 #include <locale.h>
+#include "data.h"
 #include "gui.h"
 #include "hid.h"
 #include "hid_cfg.h"

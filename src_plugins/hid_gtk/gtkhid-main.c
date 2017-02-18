@@ -11,6 +11,7 @@
 #include "crosshair.h"
 #include "error.h"
 #include "draw.h"
+#include "data.h"
 #include "gui.h"
 #include "hid_nogui.h"
 #include "hid_draw_helpers.h"

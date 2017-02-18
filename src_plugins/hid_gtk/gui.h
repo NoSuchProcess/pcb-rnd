@@ -26,12 +26,9 @@
 #define PCB_HID_GTK_GHID_H
 
 #include "config.h"
-#include "board.h"
 #include "hid.h"
 #include "hid_cfg.h"
 #include "hid_cfg_input.h"
-
-#include "data.h"
 
 #include <gtk/gtk.h>
 #include "ghid-main-menu.h"
@@ -44,6 +41,8 @@
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
+
+#include "board.h"
 
 
 	/* Silk and rats lines are the two additional selectable to draw on.
