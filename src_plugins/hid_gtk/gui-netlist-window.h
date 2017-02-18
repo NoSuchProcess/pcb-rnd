@@ -1,5 +1,5 @@
-#include "gui.h"
+#include <glib.h>
 
-void ghid_netlist_window_create(GHidPort * out);
-void ghid_netlist_window_show(GHidPort * out, gboolean raise);
+void ghid_netlist_window_create(void);
+void ghid_netlist_window_show(gboolean raise);
 void ghid_netlist_window_update(gboolean init_nodes);

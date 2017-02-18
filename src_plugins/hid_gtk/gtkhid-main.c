@@ -547,7 +547,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ghid_log_window_show(raise);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
-		ghid_netlist_window_show(gport, raise);
+		ghid_netlist_window_show(raise);
 	}
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
 		ghid_config_window_show(gport);

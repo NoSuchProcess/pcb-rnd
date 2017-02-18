@@ -601,7 +601,7 @@ pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** no
 	/* Have to force the netlist window created because we need the treeview
 	   |  models constructed to do the search.
 	 */
-	ghid_netlist_window_create(gport);
+	ghid_netlist_window_create();
 
 	/* Now walk through node entries of each net in the net model looking for
 	   |  the node_name.
@@ -637,13 +637,13 @@ static void netlist_close_cb(GtkWidget * widget, gpointer data)
 }
 
 
-static void netlist_destroy_cb(GtkWidget * widget, GHidPort * out)
+static void netlist_destroy_cb(GtkWidget * widget, void *data)
 {
 	selected_net = NULL;
 	netlist_window = NULL;
 }
 
-void ghid_netlist_window_create(GHidPort * out)
+void ghid_netlist_window_create(void)
 {
 	GtkWidget *vbox, *hbox, *button, *label, *sep;
 	GtkTreeView *treeview;
@@ -661,7 +661,7 @@ void ghid_netlist_window_create(GHidPort * out)
 		return;
 
 	netlist_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	g_signal_connect(G_OBJECT(netlist_window), "destroy", G_CALLBACK(netlist_destroy_cb), out);
+	g_signal_connect(G_OBJECT(netlist_window), "destroy", G_CALLBACK(netlist_destroy_cb), NULL);
 	gtk_window_set_title(GTK_WINDOW(netlist_window), _("pcb-rnd Netlist"));
 	gtk_window_set_wmclass(GTK_WINDOW(netlist_window), "PCB_Netlist", "PCB");
 	g_signal_connect(G_OBJECT(netlist_window), "configure_event", G_CALLBACK(netlist_window_configure_event_cb), NULL);
@@ -766,9 +766,9 @@ void ghid_netlist_window_create(GHidPort * out)
 	gtk_widget_realize(netlist_window);
 }
 
-void ghid_netlist_window_show(GHidPort * out, gboolean raise)
+void ghid_netlist_window_show(gboolean raise)
 {
-	ghid_netlist_window_create(out);
+	ghid_netlist_window_create();
 	gtk_widget_show_all(netlist_window);
 	ghid_netlist_window_update(TRUE);
 	if (raise)
@@ -827,7 +827,7 @@ pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, gboolean en
 	   |  models constructed so we can find the pcb_lib_menu_t pointer the
 	   |  caller wants.
 	 */
-	ghid_netlist_window_create(gport);
+	ghid_netlist_window_create();
 
 	/* If no netlist is loaded the window doesn't appear. */
 	if (netlist_window == NULL)
@@ -904,7 +904,7 @@ void ghid_netlist_window_update(gboolean init_nodes)
 	GtkTreeModel *model;
 
 	/* Make sure there is something to update */
-	ghid_netlist_window_create(gport);
+	ghid_netlist_window_create();
 
 	model = net_model;
 	net_model = net_model_create();
@@ -940,7 +940,7 @@ show the window if it isn't already shown.";
 
 static gint GhidNetlistShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	ghid_netlist_window_create(gport);
+	ghid_netlist_window_create();
 	if (argc > 0)
 		ghid_netlist_highlight_node(argv[0]);
 	return 0;
@@ -952,7 +952,7 @@ static const char netlistpresent_help[] = "Presents the netlist window.";
 
 static gint GhidNetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	ghid_netlist_window_show(gport, TRUE);
+	ghid_netlist_window_show(TRUE);
 	return 0;
 }
 
