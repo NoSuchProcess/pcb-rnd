@@ -70,7 +70,7 @@
 
 #warning TODO: remove these
 #include "../src_plugins/hid_gtk/gtkhid-main.h"
-#include "../src_plugins/hid_gtk/colors.h"
+#include "../src_plugins/lib_gtk_common/colors.h"
 
 
 #if 0

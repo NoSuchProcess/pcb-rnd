@@ -35,7 +35,7 @@
  * GdkColor for GTK2
  * GdkRGBA  for GTK3
  */
-/*#include "colors.h"*/
+#include "../src_plugins/lib_gtk_common/colors.h"
 
 const gchar *ghid_get_color_name(GdkColor * color)
 {

@@ -38,7 +38,6 @@
 #include "conf_core.h"
 #include "event.h"
 #include "compat_misc.h"
-#include "colors.h"
 
 /* needed for a type in GhidGui - DO NOT ADD .h files that are not requred for the structs! */
 #include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"

@@ -838,12 +838,12 @@
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h conf_core.h \
  conf.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h list_conf.h \
- event.h compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ event.h compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
- ../src_plugins/lib_gtk_common/in_mouse.h
+ ../src_plugins/lib_gtk_common/in_mouse.h \
+ ../src_plugins/lib_gtk_common/colors.h
 ../src_plugins/hid_gtk/ghid-main-menu.o: \
  ../src_plugins/hid_gtk/ghid-main-menu.c ../src_3rd/liblihata/tree.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -869,8 +869,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h conf_core.h \
- event.h compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ event.h compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -904,8 +903,7 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h event.h \
- compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -937,8 +935,7 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h event.h \
- compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -992,8 +989,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h event.h \
- compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -1027,8 +1023,7 @@
  crosshair.h vtonpoint.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h event.h \
- compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -1063,8 +1058,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h event.h \
- compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -1099,8 +1093,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h event.h \
- compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -1135,8 +1128,7 @@
  ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h event.h \
- compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -1171,8 +1163,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h event.h \
- compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -1208,8 +1199,7 @@
  vtonpoint.h hid.h buffer.h ../src_plugins/hid_gtk/ghid-main-menu.h \
  ../src_plugins/lib_gtk_common/wt_layer_selector.h \
  ../src_plugins/lib_gtk_common/wt_route_style.h route_style.h event.h \
- compat_misc.h ../src_plugins/hid_gtk/colors.h \
- ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
+ compat_misc.h ../src_plugins/lib_gtk_common/bu_cursor_pos.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
  ../src_plugins/lib_gtk_common/dlg_propedit.h \
@@ -2575,7 +2565,7 @@
  ../src_plugins/lib_gtk_common/win_place.h \
  ../src_plugins/lib_gtk_common/bu_spin_button.h \
  ../src_plugins/hid_gtk/gtkhid-main.h conf_hid.h \
- ../src_plugins/hid_gtk/colors.h
+ ../src_plugins/lib_gtk_common/colors.h
 ../src_plugins/lib_gtk_config/lib_gtk_config.o: \
  ../src_plugins/lib_gtk_config/lib_gtk_config.c plugins.h
 ../src_plugins/lib_legacy_func/lib_legacy_func.o: \
