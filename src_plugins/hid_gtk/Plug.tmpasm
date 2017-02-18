@@ -11,7 +11,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/gui-output-events.o
 	$(PLUGDIR)/hid_gtk/gui-top-window.o
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o
-	$(PLUGDIR)/hid_gtk/gtk_conf_list.o
 	$(PLUGDIR)/hid_gtk/gschem_accel_label.o
 @]
 put /local/pcb/mod/CONF {$(PLUGDIR)/hid_gtk/hid_gtk_conf.h}
