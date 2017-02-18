@@ -277,7 +277,7 @@ void ghid_command_use_command_window_sync(void)
 	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE this will get called from
 	   |  ActionCommand() to show the command window.
 	 */
-void ghid_command_window_show(gboolean raise)
+void ghid_command_window_show(pcb_bool raise)
 {
 	GtkWidget *vbox, *vbox1, *hbox, *button, *expander, *text;
 	gint i;
@@ -329,7 +329,7 @@ void ghid_command_window_show(gboolean raise)
 }
 
 
-static gboolean command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointer data)
+static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointer data)
 {
 	gint ksym = kev->keyval;
 
@@ -348,7 +348,7 @@ static gboolean command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointe
 	   |  conf_hid_gtk.plugins.hid_gtk.use_command_window is FALSE.  The command_combo_box is already
 	   |  packed into the status line label hbox in this case.
 	 */
-gchar *ghid_command_entry_get(const gchar * prompt, const gchar * command)
+char *ghid_command_entry_get(const char *prompt, const char *command)
 {
 	gchar *s;
 	gint escape_sig_id;
@@ -413,7 +413,7 @@ gchar *ghid_command_entry_get(const gchar * prompt, const gchar * command)
 }
 
 
-void ghid_handle_user_command(gboolean raise)
+void ghid_handle_user_command(pcb_bool raise)
 {
 	char *command;
 	static char *previous = NULL;
