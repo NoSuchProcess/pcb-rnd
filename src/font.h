@@ -60,7 +60,7 @@ struct pcb_fontkit_s {          /* a set of unrelated fonts */
 	pcb_font_id_t last_id;        /* highest font id ever seen in this kit */
 };
 
-/* Look up font. If not found: Return NULL (fallback=0), or return the
+/* Look up font. If not found: return NULL (fallback=0), or return the
    default font (fallback=1) */
 pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback);
 
