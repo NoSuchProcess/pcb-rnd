@@ -198,7 +198,7 @@ static void print_font(pcb_font_t *f, const char *prefix)
 	}
 
 	name = f->name == NULL ? "<anon>" : f->name;
-	pcb_printf("%s: %s; dim: %$$mm * %$$mm glyphs: %d (letter: %d, digit: %d)\n", prefix, name, f->MaxWidth, f->MaxHeight, g, gletter, gdigit);
+	pcb_printf("%s: %d %s; dim: %$$mm * %$$mm glyphs: %d (letter: %d, digit: %d)\n", prefix, f->id, name, f->MaxWidth, f->MaxHeight, g, gletter, gdigit);
 }
 
 static const char dump_fonts_syntax[] = "dumpfonts()\n";
