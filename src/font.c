@@ -193,7 +193,10 @@ pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
 	if (id == 0)
 		return &pcb->fontkit.dflt;
 
-	return &pcb->fontkit.dflt; /* temporary, compatibility solution */
+	if (pcb->fontkit.hash_inited)
+		return htip_get(&pcb->fontkit.fonts, id);
+
+	return NULL;
 }
 
 static void hash_setup(pcb_fontkit_t *fk)
