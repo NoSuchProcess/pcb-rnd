@@ -78,7 +78,7 @@ int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	res = pcb_parse_font(fnt, fname);
 	if (res != 0) {
 		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): failed to load font from %s\n", fname);
-#warning TODO: remove allocation
+		pcb_del_font(&PCB->fontkit, fnt->id);
 		return 1;
 	}
 
