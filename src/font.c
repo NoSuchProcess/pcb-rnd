@@ -52,15 +52,15 @@ typedef struct embf_font_s {
 
 #include "font_internal.c"
 
-static void pcb_font_load_internal(pcb_board_t *pcb)
+static void pcb_font_load_internal(pcb_font_t *font)
 {
 	int n, l;
-	memset(&pcb->Font, 0, sizeof(pcb->Font));
-	pcb->Font.MaxWidth  = embf_maxx - embf_minx;
-	pcb->Font.MaxHeight = embf_maxy - embf_miny;
+	memset(font, 0, sizeof(pcb_font_t));
+	font->MaxWidth  = embf_maxx - embf_minx;
+	font->MaxHeight = embf_maxy - embf_miny;
 	for(n = 0; n < sizeof(embf_font) / sizeof(embf_font[0]); n++) {
 		if (embf_font[n].delta != 0) {
-			pcb_symbol_t *s = pcb->Font.Symbol + n;
+			pcb_symbol_t *s = font->Symbol + n;
 			embf_line_t *lines = embf_font[n].lines;
 
 			for(l = 0; l < embf_font[n].num_lines; l++) {
@@ -76,7 +76,7 @@ static void pcb_font_load_internal(pcb_board_t *pcb)
 			s->Delta = PCB_MIL_TO_COORD(embf_font[n].delta);
 		}
 	}
-	pcb_font_set_info(&pcb->Font);
+	pcb_font_set_info(font);
 }
 
 /* parses a file with font information and installs it into the provided PCB
@@ -94,7 +94,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		gds_t buff;
 		s = conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
 		pcb_message(PCB_MSG_WARNING, _("Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n"), s);
-		pcb_font_load_internal(pcb);
+		pcb_font_load_internal(&pcb->Font);
 		gds_uninit(&buff);
 	}
 }
