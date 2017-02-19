@@ -87,6 +87,7 @@ pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X,
 	text->Flags = Flags;
 	text->Scale = Scale;
 	text->TextString = pcb_strdup(TextString);
+	text->fid = PCBFont->id;
 
 	pcb_add_text_on_layer(Layer, text, PCBFont);
 
