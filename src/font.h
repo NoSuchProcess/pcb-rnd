@@ -3,6 +3,7 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
