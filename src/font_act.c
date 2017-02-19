@@ -28,7 +28,7 @@
 #include "action_helper.h"
 
 
-static const char pcb_acts_load_font_from[] = "LoadFontFrom()";
+static const char pcb_acts_load_font_from[] = "LoadFontFrom([file, id])";
 static const char pcb_acth_load_font_from[] = "Load PCB font from a file";
 
 int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
@@ -36,6 +36,7 @@ int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	const char *fname, *sid;
 	static char *default_file = NULL;
 	pcb_font_id_t fid;
+	pcb_font_t *fnt;
 
 	fname = (argc > 0) ? argv[0] : NULL;
 	sid = (argc > 1) ? argv[1] : NULL;
@@ -52,9 +53,8 @@ int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			return 1;
 		}
 	}
-	else {
-#warning TODO: allocate a new
-	}
+	else
+		fid = -1; /* auto-allocate a new ID */
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect("Load PCB font file...",
@@ -68,7 +68,13 @@ int pcb_act_load_font_from(int argc, const char **argv, pcb_coord_t x, pcb_coord
 		}
 	}
 
-	abort();
+	fnt = pcb_new_font(&PCB->fontkit, fid, NULL);
+	if (fnt == NULL) {
+		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): unable to allocate font\n");
+		return 1;
+	}
+	printf("fnt=%p\n", fnt);
+	return 0;
 }
 
 
