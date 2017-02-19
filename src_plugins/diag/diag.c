@@ -210,7 +210,7 @@ static int pcb_act_DumpFonts(int argc, const char **argv, pcb_coord_t x, pcb_coo
 	if (PCB->fontkit.hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
-			print_font(&PCB->fontkit.dflt, " Extra  ");
+			print_font(e->value, " Extra  ");
 	}
 	else
 		printf(" <no extra font loaded>\n");
