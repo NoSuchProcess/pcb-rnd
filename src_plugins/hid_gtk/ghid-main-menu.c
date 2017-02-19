@@ -43,7 +43,6 @@ static menu_handle_t *handle_alloc(GtkWidget * widget, GtkWidget * destroy)
 struct _GHidMainMenu {
 	GtkMenuBar parent;
 
-	GtkActionGroup *action_group;
 	GtkAccelGroup *accel_group;
 
 	gint layer_view_pos;
@@ -213,7 +212,6 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 	if (action) {
 		GtkWidget *item;
 		gtk_action_set_accel_group(action, menu->accel_group);
-/*		gtk_action_group_add_action_with_accel(menu->action_group, action, accel);*/
 		gtk_action_connect_accelerator(action);
 		g_signal_connect(G_OBJECT(action), "activate", menu->action_cb, (gpointer) n_action);
 		g_object_set_data(G_OBJECT(action), "resource", (gpointer) sub_res);
@@ -335,7 +333,6 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb)
 	GHidMainMenu *mm = g_object_new(GHID_MAIN_MENU_TYPE, NULL);
 
 	mm->accel_group = gtk_accel_group_new();
-	mm->action_group = gtk_action_group_new("MainMenu");
 
 	mm->layer_view_pos = 0;
 	mm->layer_pick_pos = 0;
