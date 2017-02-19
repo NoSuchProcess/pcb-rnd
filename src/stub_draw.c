@@ -32,10 +32,14 @@
 void dummy_draw_text(pcb_hid_gc_t gc, const char *str)
 {
 	pcb_text_t t;
+
+	pcb_gui->set_color(gc, "#FF0000");
+
 	t.X = 0;
 	t.Y = 0;
 	t.TextString = str;
 	t.Direction = 0;
+	t.fid = 0; /* use the default font */
 	t.Scale = 150;
 	t.Flags = pcb_no_flags();
 	DrawTextLowLevel(&t, 0);
