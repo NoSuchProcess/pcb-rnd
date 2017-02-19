@@ -33,11 +33,28 @@
 #include "build_run.h"
 #include "data.h"
 #include "draw.h"
+#include "font.h"
 #include "obj_all.h"
 #include "plugins.h"
 #include "stub_draw.h"
 
 #include "obj_text_draw.h"
+
+static pcb_text_t *dtext(int x, int y, pcb_font_id_t fid, const char *txt)
+{
+	static pcb_text_t t;
+
+	t.X = PCB_MM_TO_COORD(x);
+	t.Y = PCB_MM_TO_COORD(y);
+	t.TextString = (char *)txt;
+	t.Direction = 0;
+	t.Scale = 100;
+	t.fid = fid;
+	t.Flags = pcb_no_flags();
+	DrawTextLowLevel(&t, 0);
+	return &t;
+}
+
 
 static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 {
