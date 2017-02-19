@@ -825,9 +825,6 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 	if (nd->type != LHT_HASH)
 		return -1;
 
-	/* TODO: support only one, hard-wired font for now */
-	nd = lht_dom_hash_get(nd, "geda_pcb");
-
 	parse_coord(&font->MaxHeight, lht_dom_hash_get(nd, "cell_height"));
 	parse_coord(&font->MaxWidth, lht_dom_hash_get(nd, "cell_width"));
 
@@ -859,6 +856,35 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 
 	return 0;
 }
+
+static int parse_fontkit(pcb_fontkit_t *fk, lht_node_t *nd)
+{
+	lht_node_t *n;
+	lht_dom_iterator_t it;
+
+	if (nd->type != LHT_HASH)
+		return -1;
+
+	for(n = lht_dom_first(&it, nd); n != NULL; n = lht_dom_next(&it)) {
+		pcb_font_t *f;
+
+		if (strcmp(n->name, "geda_pcb") != 0) {
+			char *end;
+			int id = strtol(n->name, &end, 10);
+			if (*end != '\0')
+				continue; /* ingore fonts with invalid name for now - maybe it'd be safer to read the ID field */
+			f = pcb_new_font(fk, id, NULL);
+		}
+		else
+			f = &fk->dflt;
+
+#warning TODO: check return val
+		parse_font(f, n);
+	}
+
+	return 0;
+}
+
 
 static void post_ids_assign(vtptr_t *ids)
 {
@@ -1030,7 +1056,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "font");
-	if ((sub != NULL) && (parse_font(pcb_font(PCB, 0, 1), sub) != 0))
+	if ((sub != NULL) && (parse_fontkit(&PCB->fontkit, sub) != 0))
 		return -1;
 	PCB->fontkit.valid = 1;
 
