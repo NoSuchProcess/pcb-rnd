@@ -212,6 +212,9 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 	if (id == 0)
 		return NULL;
 
+	if (id < 0)
+		id = fk->last_id + 1;
+
 	hash_setup(fk);
 
 	/* do not attempt to overwrite/reuse existing font of the same ID, rather report error */
@@ -223,6 +226,9 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 	htip_set(&fk->fonts, id, f);
 	f->name = pcb_strdup(name);
 	f->id = id;
+
+	if (f->id > fk->last_id)
+		fk->last_id = f->id;
 
 	return f;
 }
@@ -248,4 +254,5 @@ void pcb_fontkit_free(pcb_fontkit_t *fk)
 		htip_uninit(&fk->fonts);
 		fk->hash_inited = 0;
 	}
+	fk->last_id = 0;
 }
