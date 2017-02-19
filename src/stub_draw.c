@@ -45,6 +45,16 @@ void dummy_draw_text(pcb_hid_gc_t gc, const char *str)
 	DrawTextLowLevel(&t, 0);
 }
 
+static pcb_bool dummy_mouse(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+{
+	return 0;
+}
+
+static void dummy_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
+{
+}
+
+
 /****** fab ******/
 
 int dummy_DrawFab_overhang(void)
@@ -69,18 +79,10 @@ static void dummy_draw_csect(pcb_hid_gc_t gc)
 	dummy_draw_text(gc, "Can't render the fab layer: the draw_csect plugin is not compiled and/or not loaded");
 }
 
-static pcb_bool dummy_mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
-{
-	return 0;
-}
-
-static void dummy_csect_overlay(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx)
-{
-}
 
 void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc) = dummy_draw_csect;
-pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse_csect;
-void (*pcb_stub_draw_csect_overlay)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx) = dummy_csect_overlay;
+pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
+void (*pcb_stub_draw_csect_overlay)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx) = dummy_overlay;
 
 
 /****** font selector GUI ******/
@@ -90,5 +92,5 @@ static void dummy_draw_fontsel(pcb_hid_gc_t gc)
 }
 
 void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc) = dummy_draw_fontsel;
-pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse_csect;
+pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
 
