@@ -3742,6 +3742,21 @@ font.o: font.c ../config.h ../src_3rd/liblihata/genht/hash.h font.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/genvector/vtp0.h list_conf.h error.h plug_io.h paths.h \
  compat_nls.h compat_misc.h font_internal.c
+font_act.o: font_act.c ../config.h board.h const.h macro.h \
+ global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
+ obj_all_list.h obj_arc_list.h obj_common.h \
+ ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
+ obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
+ obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h \
+ ../src_3rd/liblihata/genht/htip.h ../src_3rd/liblihata/genht/ht.h \
+ ../src_3rd/liblihata/genht/ht_inlines.h box.h math_helper.h move.h \
+ misc_util.h ht_element.h ../src_3rd/liblihata/genht/ht.h obj_poly_list.h \
+ obj_poly.h polyarea.h obj_text_list.h obj_rat_list.h obj_rat.h \
+ layer_grp.h library.h rats_patch.h hid.h error.h drc.h action_helper.h
 fptr_cast.o: fptr_cast.c ../config.h fptr_cast.h
 free_atexit.o: free_atexit.c ../config.h
 funchash.o: funchash.c ../src_3rd/liblihata/genht/htpi.h \
