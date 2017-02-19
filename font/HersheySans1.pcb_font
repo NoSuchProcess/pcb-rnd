@@ -1,6 +1,7 @@
-#Hershey Sans 1 Stroke Font v1.0
-#ported to gEDA PCB
-#by Erich S. Heinzle 2014
+##name:Hershey Sans 1 Stroke Font v1.0
+##source:https://github.com/evil-mad/EggBot/blob/master/inkscape_driver/hersheydata.py
+##ported_by:Erich S. Heinzle 2014
+##license:TODO
 #
 Symbol[' ' 1800]
 (
