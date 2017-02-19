@@ -34,6 +34,7 @@ typedef struct pcb_connection_s pcb_connection_t;
 typedef struct pcb_box_s pcb_box_t;
 typedef struct pcb_box_list_s pcb_box_list_t;
 typedef struct pcb_font_s pcb_font_t;
+typedef struct pcb_fontkit_s pcb_fontkit_t;
 typedef struct pcb_line_s pcb_line_t;
 typedef struct pcb_arc_s pcb_arc_t;
 typedef struct pcb_point_s pcb_point_t;

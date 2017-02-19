@@ -185,3 +185,27 @@ pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_c
 	return (line);
 }
 
+
+pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
+{
+#if 0
+	if (id == 0)
+		return pcb->fontkit->dflt;
+
+	return pcb->fontkit->dflt; /* temporary, compatibility solution */
+#endif
+	return &pcb->Font;
+}
+
+static void pcb_font_free(pcb_font_t *f)
+{
+	int i;
+	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
+		free(f->Symbol[i].Line);
+}
+
+void pcb_fontkit_free(pcb_fontkit_t *fk)
+{
+/*	pcb_font_free(fontkit->dflt);*/
+	pcb_font_free(&PCB->Font);
+}

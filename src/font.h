@@ -48,10 +48,24 @@ struct pcb_font_s {          /* complete set of symbols */
 	pcb_bool Valid;
 };
 
+struct pcb_fontkit_s {          /* a set of unrelated fonts */
+	pcb_font_t dflt;              /* default, fallback font, also the sysfont */
+};
+
+typedef int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
+
+/* Look up font. If not found: Return NULL (fallback=0), or return the
+   default font (fallback=1) */
+pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback);
+
 void pcb_font_create_default(pcb_board_t *pcb);
 void pcb_font_set_info(pcb_font_t *Ptr);
 
 pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
+
+
+/*** font kit handling ***/
+void pcb_fontkit_free(pcb_fontkit_t *fk);
 
 #endif
 
