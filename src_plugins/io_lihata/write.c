@@ -571,16 +571,26 @@ static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 static lht_node_t *build_font(pcb_font_t *font)
 {
 	lht_node_t *syms, *ndt, *frt;
+	char *sid, sidbuff[64];
 	int n;
 
 	frt = lht_dom_node_alloc(LHT_HASH, "font");
 
-	/* TODO: support only one, hard-wired font for now but make room for extensions */
-	ndt = lht_dom_node_alloc(LHT_HASH, "geda_pcb");
+	if (font->id > 0) {
+		sprintf(sidbuff, "%ld", font->id);
+		sid = sidbuff;
+	}
+	else
+		sid = "geda_pcb"; /* special case for comaptibility: font 0 is the geda_pcb font */
+
+	ndt = lht_dom_node_alloc(LHT_HASH, sid);
 	lht_dom_hash_put(frt, ndt);
 
 	lht_dom_hash_put(ndt, build_textf("cell_height", CFMT, font->MaxHeight));
 	lht_dom_hash_put(ndt, build_textf("cell_width", CFMT, font->MaxWidth));
+	lht_dom_hash_put(ndt, build_textf("id", "%ld", font->id));
+	if (font->name != NULL)
+		lht_dom_hash_put(ndt, build_text("name", font->name));
 /*	lht_dom_hash_put(ndt, build_symbol(&font->DefaultSymbol)); */
 
 
@@ -601,6 +611,7 @@ static lht_node_t *build_font(pcb_font_t *font)
 	}
 	return frt;
 }
+
 
 static lht_node_t *build_styles(vtroutestyle_t *styles)
 {
