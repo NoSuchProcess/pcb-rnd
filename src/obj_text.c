@@ -221,7 +221,7 @@ void *AddTextToBuffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
 
-	return (pcb_text_new(layer, pcb_font(PCB, 0, 1), Text->X, Text->Y, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg)));
+	return (pcb_text_new(layer, pcb_font(PCB, Text->fid, 1), Text->X, Text->Y, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg)));
 }
 
 /* moves a text to buffer without allocating memory for the name */
@@ -256,7 +256,7 @@ void *ChangeTextSize(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		Text->Scale = value;
-		pcb_text_bbox(pcb_font(PCB, 0, 1), Text);
+		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
 		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 		DrawText(Layer, Text);
@@ -279,7 +279,7 @@ void *ChangeTextName(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	Text->TextString = ctx->chgname.new_name;
 
 	/* calculate size of the bounding box */
-	pcb_text_bbox(pcb_font(PCB, 0, 1), Text);
+	pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
 	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text, 0);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, Layer, Text);
 	DrawText(Layer, Text);
@@ -327,7 +327,7 @@ void *CopyText(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_text_t *text;
 
-	text = pcb_text_new(Layer, pcb_font(PCB, 0, 1), Text->X + ctx->copy.DeltaX,
+	text = pcb_text_new(Layer, pcb_font(PCB, Text->fid, 1), Text->X + ctx->copy.DeltaX,
 											 Text->Y + ctx->copy.DeltaY, Text->Direction, Text->Scale, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
 	DrawText(Layer, text);
 	pcb_undo_add_obj_to_create(PCB_TYPE_TEXT, Layer, text, text);
@@ -367,7 +367,7 @@ void *MoveTextToLayerLowLevel(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t
 		PCB_FLAG_CLEAR(PCB_FLAG_ONSOLDER, text);
 
 	/* re-calculate the bounding box (it could be mirrored now) */
-	pcb_text_bbox(pcb_font(PCB, 0, 1), text);
+	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 	if (!Destination->text_tree)
 		Destination->text_tree = pcb_r_create_tree(NULL, 0, 0);
 	pcb_r_insert_entry(Destination->text_tree, (pcb_box_t *) text, 0);
@@ -469,7 +469,7 @@ void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text)
 	text->X = PCB_SWAP_X(text->X);
 	text->Y = PCB_SWAP_Y(text->Y);
 	PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
-	pcb_text_bbox(pcb_font(PCB, 0, 1), text);
+	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 	pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
 }
 
@@ -483,7 +483,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 	pcb_coord_t x = 0;
 	unsigned char *string = (unsigned char *) Text->TextString;
 	pcb_cardinal_t n;
-	pcb_font_t *font = pcb_font(PCB, 0, 1);
+	pcb_font_t *font = pcb_font(PCB, Text->fid, 1);
 
 	while (string && *string) {
 		/* draw lines if symbol is valid and data is present */
@@ -526,7 +526,7 @@ void DrawTextLowLevel(pcb_text_t *Text, pcb_coord_t min_line_width)
 		}
 		else {
 			/* the default symbol is a filled box */
-			pcb_font_t *font = pcb_font(PCB, 0, 1);
+			pcb_font_t *font = pcb_font(PCB, Text->fid, 1);
 			pcb_box_t defaultsymbol = font->DefaultSymbol;
 			pcb_coord_t size = (defaultsymbol.X2 - defaultsymbol.X1) * 6 / 5;
 

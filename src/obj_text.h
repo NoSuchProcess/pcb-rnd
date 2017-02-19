@@ -30,12 +30,14 @@
 #define PCB_OBJ_TEXT_H
 
 #include "obj_common.h"
+#include "font.h"
 
 struct pcb_text_s {
 	PCB_ANYOBJECTFIELDS;
 	int Scale;                    /* text scaling in percent */
 	pcb_coord_t X, Y;                   /* origin */
 	pcb_uint8_t Direction;
+	pcb_font_id_t fid;
 	char *TextString;             /* string */
 	void *Element;
 	gdl_elem_t link;              /* a text is in a list of a layer or an element */
