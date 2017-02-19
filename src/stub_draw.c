@@ -88,7 +88,7 @@ void (*pcb_stub_draw_csect_overlay)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *
 /****** font selector GUI ******/
 static void dummy_draw_fontsel(pcb_hid_gc_t gc)
 {
-
+	dummy_draw_text(gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
 }
 
 void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc) = dummy_draw_fontsel;
