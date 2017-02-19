@@ -183,13 +183,50 @@ static int pcb_act_DumpLayers(int argc, const char **argv, pcb_coord_t x, pcb_co
 }
 
 
+static void print_font(pcb_font_t *f, const char *prefix)
+{
+	int n, g = 0, gletter = 0, gdigit = 0;
+	const char *name;
+
+	/* count valid glyphs and classes */
+	for(n = 0; n < PCB_MAX_FONTPOSITION + 1; n++) {
+		if (f->Symbol[n].Valid) {
+			g++;
+			if (isalpha(n)) gletter++;
+			if (isdigit(n)) gdigit++;
+		}
+	}
+
+	name = f->name == NULL ? "<anon>" : f->name;
+	pcb_printf("%s: %s; dim: %$$mm * %$$mm glyphs: %d (letter: %d, digit: %d)\n", prefix, name, f->MaxWidth, f->MaxHeight, g, gletter, gdigit);
+}
+
+static const char dump_fonts_syntax[] = "dumpfonts()\n";
+static const char dump_fonts_help[] = "Print info about fonts";
+static int pcb_act_DumpFonts(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	printf("Font summary:\n");
+	print_font(&PCB->fontkit.dflt, " Default");
+	if (PCB->fontkit.hash_inited) {
+		htip_entry_t *e;
+		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
+			print_font(&PCB->fontkit.dflt, " Extra  ");
+	}
+	else
+		printf(" <no extra font loaded>\n");
+}
+
+
 pcb_hid_action_t diag_action_list[] = {
 	{"dumpconf", 0, pcb_act_DumpConf,
 	 dump_conf_help, dump_conf_syntax},
 	{"dumplayers", 0, pcb_act_DumpLayers,
 	 dump_layers_help, dump_layers_syntax},
+	{"dumpfonts", 0, pcb_act_DumpFonts,
+	 dump_fonts_help, dump_fonts_syntax},
 	{"EvalConf", 0, pcb_act_EvalConf,
 	 eval_conf_help, eval_conf_syntax}
+
 };
 
 static const char *diag_cookie = "diag plugin";
