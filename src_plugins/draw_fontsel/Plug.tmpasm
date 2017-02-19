@@ -1,0 +1,10 @@
+put /local/pcb/mod {draw_fontsel}
+append /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/draw_fontsel/draw_fontsel.o
+@]
+
+switch /local/pcb/draw_fontsel/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
