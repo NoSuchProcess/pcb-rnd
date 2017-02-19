@@ -28,6 +28,18 @@
 #include "obj_text.h"
 #include "obj_text_draw.h"
 
+/****** common code ******/
+void dummy_draw_text(pcb_hid_gc_t gc, const char *str)
+{
+	pcb_text_t t;
+	t.X = 0;
+	t.Y = 0;
+	t.TextString = str;
+	t.Direction = 0;
+	t.Scale = 150;
+	t.Flags = pcb_no_flags();
+	DrawTextLowLevel(&t, 0);
+}
 
 /****** fab ******/
 
@@ -38,14 +50,7 @@ int dummy_DrawFab_overhang(void)
 
 void dummy_DrawFab(pcb_hid_gc_t gc)
 {
-	pcb_text_t t;
-	t.X = 0;
-	t.Y = 0;
-	t.TextString = "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded";
-	t.Direction = 0;
-	t.Scale = 150;
-	t.Flags = pcb_no_flags();
-	DrawTextLowLevel(&t, 0);
+	dummy_draw_text(gc, "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded");
 }
 
 int (*pcb_stub_draw_fab_overhang)(void) = dummy_DrawFab_overhang;
@@ -57,14 +62,7 @@ void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc) = dummy_DrawFab;
 
 static void dummy_draw_csect(pcb_hid_gc_t gc)
 {
-	pcb_text_t t;
-	t.X = 0;
-	t.Y = 0;
-	t.TextString = "Can't render the fab layer: the draw_csect plugin is not compiled and/or not loaded";
-	t.Direction = 0;
-	t.Scale = 150;
-	t.Flags = pcb_no_flags();
-	DrawTextLowLevel(&t, 0);
+	dummy_draw_text(gc, "Can't render the fab layer: the draw_csect plugin is not compiled and/or not loaded");
 }
 
 static pcb_bool dummy_mouse_csect(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
