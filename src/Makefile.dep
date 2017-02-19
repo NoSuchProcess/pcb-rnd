@@ -972,7 +972,7 @@
  plug_footprint.h vtlibrary.h plug_io.h misc_util.h layer.h compat_nls.h \
  layer_vis.h ../src_plugins/hid_gtk/gtkhid-main.h conf_hid.h \
  ../src_plugins/hid_gtk/gui-drc-window.h \
- ../src_plugins/hid_gtk/gui-log-window.h \
+ ../src_plugins/lib_gtk_common/dlg_log.h \
  ../src_plugins/hid_gtk/gui-library-window.h \
  ../src_plugins/hid_gtk/gui-command-window.h \
  ../src_plugins/hid_gtk/gui-top-window.h \
@@ -1089,9 +1089,9 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h hid_cfg.h \
  ../src_plugins/lib_gtk_common/win_place.h \
  ../src_plugins/lib_gtk_config/hid_gtk_conf.h conf.h
-../src_plugins/hid_gtk/gui-log-window.o: \
- ../src_plugins/hid_gtk/gui-log-window.c ../config.h \
- ../src_plugins/hid_gtk/gui-log-window.h pcb_bool.h error.h conf_core.h \
+../src_plugins/lib_gtk_common/dlg_log.o: \
+ ../src_plugins/lib_gtk_common/dlg_log.c ../config.h \
+ ../src_plugins/lib_gtk_common/dlg_log.h pcb_bool.h error.h conf_core.h \
  conf.h global_typedefs.h pcb_bool.h unit.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
