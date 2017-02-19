@@ -74,6 +74,7 @@ extern	int				pcb_lineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
 extern	conf_role_t yy_settings_dest;
 extern pcb_flag_t yy_pcb_flags;
+extern int *yyFontkitValid;
 
 static char *layer_group_string;
 
@@ -176,7 +177,8 @@ parsepcb
 				}
 				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
 					LayerFlag[i] = pcb_false;
-				yyFont = &yyPCB->Font;
+				yyFont = &yyPCB->fontkit.dflt;
+				yyFontkitValid = &yyPCB->fontkit.valid;
 				yyData = yyPCB->Data;
 				yyData->pcb = yyPCB;
 				yyData->LayerN = 0;
@@ -266,14 +268,14 @@ parsefont
 					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
-				yyFont->Valid = pcb_false;
+				*yyFontkitValid = pcb_false;
 				for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
 					free (yyFont->Symbol[i].Line);
 				memset(yyFont->Symbol, 0, sizeof(yyFont->Symbol));
 			}
 		  symbols
 			{
-				yyFont->Valid = pcb_true;
+				*yyFontkitValid = pcb_true;
 		  		pcb_font_set_info(yyFont);
 			}
 		;

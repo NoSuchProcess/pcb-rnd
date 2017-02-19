@@ -71,7 +71,7 @@ static void text_at(pcb_hid_gc_t gc, int x, int y, int align, const char *fmt, .
 	int w = 0, i;
 	pcb_text_t t;
 	va_list a;
-	pcb_font_t *font = &PCB->Font;
+	pcb_font_t *font = pcb_font(PCB, 0, 1);
 	va_start(a, fmt);
 	vsprintf(tmp, fmt, a);
 	va_end(a);

@@ -367,7 +367,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 	PCB = newPCB;
 
 	/* mark the default font invalid to know if the file has one */
-	newPCB->Font.Valid = pcb_false;
+	newPCB->fontkit.valid = pcb_false;
 
 	switch(how & 0x0F) {
 		case 0: settings_dest = CFR_DESIGN; break;
@@ -393,10 +393,10 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		}
 
 		/* enable default font if necessary */
-		if (!PCB->Font.Valid) {
+		if (!PCB->fontkit.valid) {
 			if ((require_font) && (!PCB->is_footprint))
 				pcb_message(PCB_MSG_WARNING, _("File '%s' has no font information, using default font\n"), new_filename);
-			PCB->Font.Valid = pcb_true;
+			PCB->fontkit.valid = pcb_true;
 		}
 
 		/* clear 'changed flag' */

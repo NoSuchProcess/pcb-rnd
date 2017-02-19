@@ -524,7 +524,7 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 
 #warning TODO: get the font
 	if (ly != NULL)
-		pcb_add_text_on_layer(ly, text, &PCB->Font);
+		pcb_add_text_on_layer(ly, text, pcb_font(PCB, 0, 1));
 	if (el != NULL)
 		text->Element = el;
 
@@ -694,7 +694,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	/* Make sure we use some sort of font */
 	if (pcb == NULL)
 		pcb = PCB;
-	pcb_element_bbox(dt, elem, &pcb->Font);
+	pcb_element_bbox(dt, elem, pcb_font(PCB, 0, 1));
 	return 0;
 }
 
@@ -857,7 +857,6 @@ static int parse_font(pcb_font_t *font, lht_node_t *nd)
 		}
 	}
 
-	font->Valid = 1;
 	return 0;
 }
 
@@ -1031,8 +1030,10 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		return -1;
 
 	sub = lht_dom_hash_get(nd, "font");
-	if ((sub != NULL) && (parse_font(&pcb->Font, sub) != 0))
+	if ((sub != NULL) && (parse_font(pcb_font(PCB, 0, 1), sub) != 0))
 		return -1;
+	PCB->fontkit.valid = 1;
+
 
 	sub = lht_dom_hash_get(nd, "styles");
 	if ((sub != NULL) && (parse_styles(&pcb->RouteStyle, sub) != 0))

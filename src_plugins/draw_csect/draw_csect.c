@@ -273,7 +273,7 @@ static pcb_coord_t create_button(pcb_hid_gc_t gc, int x, int y, const char *labe
 {
 	pcb_text_t *t;
 	t = dtext_bg(gc, x, y, 200, 0, label, COLOR_BG, COLOR_ANNOT);
-	pcb_text_bbox(&PCB->Font, t);
+	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 	dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 	box->X1 = t->BoundingBox.X1;
 	box->Y1 = PCB_MM_TO_COORD(y);
@@ -367,7 +367,7 @@ static void draw_csect(pcb_hid_gc_t gc)
 				if (lid == drag_lid)
 					continue;
 				t = dtext_bg(gc, x, y, 200, 0, l->Name, COLOR_BG, l->Color);
-				pcb_text_bbox(&PCB->Font, t);
+				pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 				x += PCB_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
 				dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 				reg_layer_coords(lid, t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2+PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(y+4));

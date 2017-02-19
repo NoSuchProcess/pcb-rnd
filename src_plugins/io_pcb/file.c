@@ -317,7 +317,7 @@ static void WritePCBFontData(FILE * FP)
 	pcb_line_t *line;
 	pcb_font_t *font;
 
-	for (font = &PCB->Font, i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
+	for (font = pcb_font(PCB, 0, 1), i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
 		if (!font->Symbol[i].Valid)
 			continue;
 
@@ -595,7 +595,7 @@ void PreLoadElementPCB()
 	if (!yyPCB)
 		return;
 
-	yyFont = &yyPCB->Font;
+	yyFont = &yyPCB->fontkit.dflt;
 	yyData = yyPCB->Data;
 	yyData->pcb = yyPCB;
 	yyData->LayerN = 0;

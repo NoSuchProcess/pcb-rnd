@@ -777,7 +777,7 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	lht_dom_hash_put(brd->root, build_board_meta(pcb));
 	lht_dom_hash_put(brd->root, build_data(pcb->Data));
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
-	lht_dom_hash_put(brd->root, build_font(&pcb->Font));
+	lht_dom_hash_put(brd->root, build_font(&pcb->fontkit.dflt));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
 	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->NetlistLib, pcb->NetlistPatches, PCB_NUM_NETLISTS));
 	lht_dom_hash_put(brd->root, build_conf());

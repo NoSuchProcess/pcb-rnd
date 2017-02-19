@@ -52,8 +52,7 @@ void pcb_board_free(pcb_board_t * pcb)
 	pcb_data_free(pcb->Data);
 	free(pcb->Data);
 	/* release font symbols */
-	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
-		free(pcb->Font.Symbol[i].Line);
+	pcb_fontkit_free(&pcb->fontkit);
 	for (i = 0; i < PCB_NUM_NETLISTS; i++)
 		pcb_lib_free(&(pcb->NetlistLib[i]));
 	vtroutestyle_uninit(&pcb->RouteStyle);

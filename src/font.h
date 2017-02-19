@@ -45,11 +45,11 @@ struct pcb_font_s {          /* complete set of symbols */
 	pcb_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
 	pcb_box_t DefaultSymbol;     /* the default symbol is a filled box */
 	pcb_symbol_t Symbol[PCB_MAX_FONTPOSITION + 1];
-	pcb_bool Valid;
 };
 
 struct pcb_fontkit_s {          /* a set of unrelated fonts */
 	pcb_font_t dflt;              /* default, fallback font, also the sysfont */
+	pcb_bool valid;
 };
 
 typedef int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */

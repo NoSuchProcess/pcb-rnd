@@ -111,7 +111,7 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	lwidth = PCB->Data->Layer + 2;
 	lgrid = PCB->Data->Layer + 3;
 
-	font = &PCB->Font;
+	font = pcb_font(PCB, 0, 1);
 	for (s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
 		pcb_coord_t ox = (s % 16 + 1) * CELL_SIZE;
 		pcb_coord_t oy = (s / 16 + 1) * CELL_SIZE;
@@ -169,7 +169,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	gdl_iterator_t it;
 	pcb_layer_t *lfont, *lwidth;
 
-	font = &PCB->Font;
+	font = pcb_font(PCB, 0, 1);
 	lfont = PCB->Data->Layer + 0;
 	lwidth = PCB->Data->Layer + 2;
 
@@ -189,7 +189,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
 		oy = (s / 16 + 1) * CELL_SIZE;
-		symbol = &PCB->Font.Symbol[s];
+		symbol = &font->Symbol[s];
 
 		x1 -= ox;
 		y1 -= oy;
@@ -212,7 +212,7 @@ static int FontSave(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;
-		symbol = &PCB->Font.Symbol[s];
+		symbol = &font->Symbol[s];
 
 		x1 -= ox;
 

@@ -79,6 +79,7 @@ pcb_element_t *	yyElement;
 pcb_font_t *	yyFont;
 conf_role_t yy_settings_dest;
 pcb_flag_t yy_pcb_flags;
+int *yyFontkitValid;
 
 static int parse_number (void);
 
@@ -323,7 +324,8 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	yy_settings_dest = CFR_invalid;
 	yyPCB = NULL;
 	yyData = Ptr;
-	yyFont = &PCB->Font;
+	yyFont = pcb_font(PCB, 0, 1);
+	yyFontkitValid = NULL;
 	yyElement = NULL;
 
 	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st);
@@ -366,6 +368,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yyPCB = Ptr;
 	yyData = NULL;
 	yyFont = NULL;
+	yyFontkitValid = NULL;
 	yyElement = NULL;
 	yy_settings_dest = settings_dest;
 	if (settings_dest != CFR_invalid)
@@ -436,9 +439,10 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
  */
 int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 {
-	int r = 0;
+	int r = 0, valid;
 	yyPCB = NULL;
 	yyFont = Ptr;
+	yyFontkitValid = &valid;
 	yyElement = NULL;
 
 	yy_settings_dest = CFR_invalid;

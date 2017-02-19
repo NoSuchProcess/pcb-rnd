@@ -86,7 +86,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 {
 	int res = -1;
 	pcb_io_err_inhibit_inc();
-	conf_list_foreach_path_first(res, &conf_core.rc.default_font_file, pcb_parse_font(&pcb->Font, __path__));
+	conf_list_foreach_path_first(res, &conf_core.rc.default_font_file, pcb_parse_font(&pcb->fontkit.dflt, __path__));
 	pcb_io_err_inhibit_dec();
 
 	if (res != 0) {
@@ -94,7 +94,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		gds_t buff;
 		s = conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
 		pcb_message(PCB_MSG_WARNING, _("Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n"), s);
-		pcb_font_load_internal(&pcb->Font);
+		pcb_font_load_internal(&pcb->fontkit.dflt);
 		gds_uninit(&buff);
 	}
 }
@@ -188,13 +188,10 @@ pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_c
 
 pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
 {
-#if 0
 	if (id == 0)
-		return pcb->fontkit->dflt;
+		return &pcb->fontkit.dflt;
 
-	return pcb->fontkit->dflt; /* temporary, compatibility solution */
-#endif
-	return &pcb->Font;
+	return &pcb->fontkit.dflt; /* temporary, compatibility solution */
 }
 
 static void pcb_font_free(pcb_font_t *f)
@@ -206,6 +203,5 @@ static void pcb_font_free(pcb_font_t *f)
 
 void pcb_fontkit_free(pcb_fontkit_t *fk)
 {
-/*	pcb_font_free(fontkit->dflt);*/
-	pcb_font_free(&PCB->Font);
+	pcb_font_free(&fk->dflt);
 }

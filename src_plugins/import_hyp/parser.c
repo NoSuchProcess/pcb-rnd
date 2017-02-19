@@ -1064,7 +1064,7 @@ pcb_bool exec_devices(parse_param * h)
 
 	/* place the device at (0.0) for the moment being. when a pin is assigned, move the position to the pin position */
 
-	pcb_element_new(hyp_dest, NULL, &PCB->Font, pcb_no_flags(), description, name, value, text_x, text_y, text_direction,
+	pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), description, name, value, text_x, text_y, text_direction,
 									text_scale, pcb_no_flags(), pcb_false);
 
 	return 0;
@@ -1462,7 +1462,7 @@ pcb_bool exec_pad(parse_param * h)
 	/* if necessary, create a device to connect the pad to */
 	component = pcb_search_elem_by_name(hyp_dest, pad_component);
 	if (component == NULL)
-		component = pcb_element_new(hyp_dest, NULL, &PCB->Font, pcb_no_flags(), pad_component, pad_component, "?",
+		component = pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), pad_component, pad_component, "?",
 																x2coord(h->x), y2coord(h->y), text_direction, text_scale, pcb_no_flags(), pcb_false);
 
 	/* add new pad */

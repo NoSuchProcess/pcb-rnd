@@ -192,7 +192,7 @@ void *ChangePadSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad)
 		Pad->Mask += value - Pad->Thickness;
 		Pad->Thickness = value;
 		/* SetElementBB updates all associated rtrees */
-		pcb_element_bbox(PCB->Data, Element, &PCB->Font);
+		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 		DrawPad(Pad);
 		return (Pad);
@@ -223,7 +223,7 @@ void *ChangePadClearSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pa
 	pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 	Pad->Clearance = value;
 	/* SetElementBB updates all associated rtrees */
-	pcb_element_bbox(PCB->Data, Element, &PCB->Font);
+	pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, Pad);
 	DrawPad(Pad);
 	return Pad;
@@ -311,7 +311,7 @@ void *ChangePadMaskSize(pcb_opctx_t *ctx, pcb_element_t *Element, pcb_pad_t *Pad
 		ErasePad(Pad);
 		pcb_r_delete_entry(PCB->Data->pad_tree, &Pad->BoundingBox);
 		Pad->Mask = value;
-		pcb_element_bbox(PCB->Data, Element, &PCB->Font);
+		pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 		DrawPad(Pad);
 		return (Pad);
 	}

@@ -298,7 +298,8 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(1) | BV(2) | BV(3);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-		if (&st->PCB->Font == NULL) {
+#warning TODO: this will never be NULL; what are we trying to check here?
+		if (&st->PCB->fontkit.dflt == NULL) {
 			pcb_font_create_default(st->PCB);
 		}
 
@@ -336,7 +337,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 			}
 		}
 
-		pcb_text_new( &st->PCB->Data->Layer[PCBLayer], &st->PCB->Font, X, Y, direction, scaling, text, Flags);
+		pcb_text_new( &st->PCB->Data->Layer[PCBLayer], pcb_font(st->PCB, 0, 1), X, Y, direction, scaling, text, Flags);
 		return 0; /* create new font */
 	}
 	return -1;
@@ -1287,7 +1288,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	}
 	required = BV(0) | BV(1) | BV(4) | BV(7) | BV(8);
 	if ((tally & required) == required) { /* has location, layer, size and stroke thickness at a minimum */
-		if (&st->PCB->Font == NULL) {
+#warning TODO: this will never be NULL; what are we trying to check here?
+		if (&st->PCB->fontkit.dflt == NULL) {
 			pcb_font_create_default(st->PCB);
 		}
 
@@ -1334,7 +1336,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			moduleDefined = 1; /* but might be empty, wait and see */
 			printf("now have RefDes %s and Value %s, can now define module/element %s\n", moduleRefdes, moduleValue, moduleName);
 			newModule = pcb_element_new(st->PCB->Data, NULL,
-								 &st->PCB->Font, Flags,
+								 pcb_font(st->PCB, 0, 1), Flags,
 								 moduleName, moduleRefdes, moduleValue,
 								 moduleX, moduleY, direction,
 								 refdesScaling, TextFlags,  pcb_false); /*pcb_flag_t TextFlags, pcb_bool uniqueName) */
@@ -1887,7 +1889,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				pcb_element_line_new(newModule, moduleX, moduleY, moduleX+1, moduleY+1, Thickness);
 				pcb_printf("\tEmpty Module!! 1nm line created at module centroid.\n");
 			}
-			pcb_element_bbox(PCB->Data, newModule, &PCB->Font);
+			pcb_element_bbox(PCB->Data, newModule, pcb_font(PCB, 0, 1));
 			return 0; 
 		} else {
 			return -1;

@@ -663,7 +663,7 @@ int write_kicad_legacy_layout_arcs(FILE * FP, pcb_cardinal_t number,
 int write_kicad_legacy_layout_text(FILE * FP, pcb_cardinal_t number,
 																		 pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
 {
-	pcb_font_t *myfont = &PCB->Font;
+	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
 	pcb_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
 	pcb_coord_t defaultStrokeThickness = 100*2540; /* use 100 mil as default 100% stroked font line thickness */
 	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */ 

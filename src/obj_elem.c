@@ -274,7 +274,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	if (Buffer->Data->pcb == 0)
 		Buffer->Data->pcb = PCB;
 
-	Element = pcb_element_new(PCB->Data, NULL, &PCB->Font, pcb_no_flags(),
+	Element = pcb_element_new(PCB->Data, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(),
 														 NULL, NULL, NULL, PCB_PASTEBUFFER->X,
 														 PCB_PASTEBUFFER->Y, 0, 100, pcb_flag_make(PCB_SWAP_IDENT ? PCB_FLAG_ONSOLDER : PCB_FLAG_NO), pcb_false);
 	if (!Element)
@@ -393,7 +393,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	Element->MarkY = Buffer->Y;
 	if (PCB_SWAP_IDENT)
 		PCB_FLAG_SET(PCB_FLAG_ONSOLDER, Element);
-	pcb_element_bbox(PCB->Data, Element, &PCB->Font);
+	pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 	pcb_buffer_clear(Buffer);
 	pcb_move_obj_to_buffer(Buffer->Data, PCB->Data, PCB_TYPE_ELEMENT, Element, Element, Element);
 	pcb_set_buffer_bbox(Buffer);
@@ -452,7 +452,7 @@ void pcb_element_rotate(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t X,
 	PCB_END_LOOP;
 
 	pcb_rotate(&Element->MarkX, &Element->MarkY, X, Y, cosa, sina);
-	pcb_element_bbox(Data, Element, &PCB->Font);
+	pcb_element_bbox(Data, Element, pcb_font(PCB, 0, 1));
 	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
@@ -504,7 +504,7 @@ char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_
 	pcb_r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
 
 	Element->Name[which].TextString = new_name;
-	pcb_text_bbox(&PCB->Font, &Element->Name[which]);
+	pcb_text_bbox(pcb_font(PCB, 0, 1), &Element->Name[which]);
 
 	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
 
@@ -523,7 +523,7 @@ pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_eleme
 		pcb_element_destroy(Dest);
 
 	/* both coordinates and flags are the same */
-	Dest = pcb_element_new(Data, Dest, &PCB->Font,
+	Dest = pcb_element_new(Data, Dest, pcb_font(PCB, 0, 1),
 													pcb_flag_mask(Src->Flags, PCB_FLAG_FOUND),
 													PCB_ELEM_NAME_DESCRIPTION(Src), PCB_ELEM_NAME_REFDES(Src),
 													PCB_ELEM_NAME_VALUE(Src), PCB_ELEM_TEXT_DESCRIPTION(Src).X + dx,
@@ -566,7 +566,7 @@ pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_eleme
 	Dest->MarkX = Src->MarkX + dx;
 	Dest->MarkY = Src->MarkY + dy;
 
-	pcb_element_bbox(Data, Dest, &PCB->Font);
+	pcb_element_bbox(Data, Dest, pcb_font(PCB, 0, 1));
 	return (Dest);
 }
 
@@ -720,7 +720,7 @@ void pcb_element_mirror(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t yo
 	/* now toggle the solder-side flag */
 	PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, Element);
 	/* this inserts all of the rtree data too */
-	pcb_element_bbox(Data, Element, &PCB->Font);
+	pcb_element_bbox(Data, Element, pcb_font(PCB, 0, 1));
 	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
@@ -1128,7 +1128,7 @@ void pcb_element_rotate90(pcb_data_t *Data, pcb_element_t *Element, pcb_coord_t 
 	PCB_END_LOOP;
 	PCB_COORD_ROTATE90(Element->MarkX, Element->MarkY, X, Y, Number);
 	/* SetElementBoundingBox reenters the rtree data */
-	pcb_element_bbox(Data, Element, &PCB->Font);
+	pcb_element_bbox(Data, Element, pcb_font(PCB, 0, 1));
 	pcb_poly_clear_from_poly(Data, PCB_TYPE_ELEMENT, Element, Element);
 }
 
@@ -1286,7 +1286,7 @@ void *MoveElementToBuffer(pcb_opctx_t *ctx, pcb_element_t * element)
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND, pad);
 	}
 	PCB_END_LOOP;
-	pcb_element_bbox(ctx->buffer.dst, element, &PCB->Font);
+	pcb_element_bbox(ctx->buffer.dst, element, pcb_font(PCB, 0, 1));
 	/*
 	 * Now clear the from the polygons in the destination
 	 */
@@ -1415,7 +1415,7 @@ void *ChangeElementClearSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 				pad->Thickness = value;
 			}
 			/* SetElementBB updates all associated rtrees */
-			pcb_element_bbox(PCB->Data, Element, &PCB->Font);
+			pcb_element_bbox(PCB->Data, Element, pcb_font(PCB, 0, 1));
 
 			pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_PAD, Element, pad);
 			DrawPad(pad);
@@ -1482,7 +1482,7 @@ void *ChangeElementNameSize(pcb_opctx_t *ctx, pcb_element_t *Element)
 			pcb_undo_add_obj_to_size(PCB_TYPE_ELEMENT_NAME, Element, text, text);
 			pcb_r_delete_entry(PCB->Data->name_tree[n], (pcb_box_t *) text);
 			text->Scale = value;
-			pcb_text_bbox(&PCB->Font, text);
+			pcb_text_bbox(pcb_font(PCB, 0, 1), text);
 			pcb_r_insert_entry(PCB->Data->name_tree[n], (pcb_box_t *) text, 0);
 		}
 		PCB_END_LOOP;
