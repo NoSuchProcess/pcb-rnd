@@ -257,3 +257,16 @@ void pcb_fontkit_free(pcb_fontkit_t *fk)
 	}
 	fk->last_id = 0;
 }
+
+int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id)
+{
+	htip_entry_t *e;
+
+	if ((id == 0) || (!fk->hash_inited) || (htip_get(&fk->fonts, id) == NULL))
+		return -1;
+
+	e = htip_popentry(&fk->fonts, id);
+	pcb_font_free(e->value);
+	return 0;
+}
+

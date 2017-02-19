@@ -73,6 +73,8 @@ pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_c
 /*** font kit handling ***/
 void pcb_fontkit_free(pcb_fontkit_t *fk);
 pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name);
+int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id);
+
 
 #endif
 
