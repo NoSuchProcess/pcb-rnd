@@ -42,7 +42,7 @@ typedef struct symbol_s {     /* a single symbol */
 	pcb_coord_t Width, Height, Delta; /* size of cell, distance to next symbol */
 } pcb_symbol_t;
 
-typedef int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
+typedef long int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
 
 struct pcb_font_s {          /* complete set of symbols */
 	pcb_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
@@ -54,8 +54,8 @@ struct pcb_font_s {          /* complete set of symbols */
 
 struct pcb_fontkit_s {          /* a set of unrelated fonts */
 	pcb_font_t dflt;              /* default, fallback font, also the sysfont */
-	pcb_bool valid;
 	htip_t fonts;
+	pcb_bool valid, hash_inited;
 };
 
 /* Look up font. If not found: Return NULL (fallback=0), or return the
@@ -70,6 +70,7 @@ pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_c
 
 /*** font kit handling ***/
 void pcb_fontkit_free(pcb_fontkit_t *fk);
+pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name);
 
 #endif
 

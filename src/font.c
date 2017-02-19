@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <string.h>
+#include <genht/hash.h>
 
 #include "font.h"
 #include "board.h"
@@ -37,6 +38,7 @@
 #include "plug_io.h"
 #include "paths.h"
 #include "compat_nls.h"
+#include "compat_misc.h"
 
 #define STEP_SYMBOLLINE 10
 
@@ -185,7 +187,6 @@ pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_c
 	return (line);
 }
 
-
 pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
 {
 	if (id == 0)
@@ -194,14 +195,56 @@ pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
 	return &pcb->fontkit.dflt; /* temporary, compatibility solution */
 }
 
+static void hash_setup(pcb_fontkit_t *fk)
+{
+	if (fk->hash_inited)
+		return;
+
+	htip_init(&fk->fonts, longhash, longkeyeq);
+	fk->hash_inited = 1;
+}
+
+pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
+{
+	pcb_font_t *f;
+
+	if (id == 0)
+		return NULL;
+
+	hash_setup(fk);
+
+	/* do not attempt to overwrite/reuse existing font of the same ID, rather report error */
+	f = htip_get(&fk->fonts, id);
+	if (f != NULL)
+		return NULL;
+
+	f = calloc(sizeof(pcb_font_t), 1);
+	htip_set(&fk->fonts, id, f);
+	f->name = pcb_strdup(name);
+	f->id = id;
+
+	return f;
+}
+
+
 static void pcb_font_free(pcb_font_t *f)
 {
 	int i;
 	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
 		free(f->Symbol[i].Line);
+	free(f->name);
+	f->name = NULL;
+	f->id = -1;
 }
 
 void pcb_fontkit_free(pcb_fontkit_t *fk)
 {
 	pcb_font_free(&fk->dflt);
+	if (fk->hash_inited) {
+		htip_entry_t *e;
+		for (e = htip_first(&fk->fonts); e; e = htip_next(&fk->fonts, e))
+			pcb_font_free(e->value);
+		htip_uninit(&fk->fonts);
+		fk->hash_inited = 0;
+	}
 }
