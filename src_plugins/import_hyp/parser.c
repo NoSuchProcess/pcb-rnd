@@ -1158,9 +1158,9 @@ pcb_bool exec_padstack_element(parse_param * h)
 		if (current_padstack == NULL)
 			return 1;
 		current_padstack->name = pcb_strdup(h->padstack_name);
-		current_padstack->thickness = xy2coord(h->pad_sx);
+		current_padstack->thickness = (xy2coord(h->pad_sx) + xy2coord(h->pad_sy)) * 0.5;
 		current_padstack->clearance = 0;
-		current_padstack->mask = xy2coord(h->pad_sx);
+		current_padstack->mask = current_padstack->thickness;
 		current_padstack->drill_hole = xy2coord(h->drill_size);
 		if (h->pad_shape == 1)
 			current_padstack->flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
@@ -1171,7 +1171,8 @@ pcb_bool exec_padstack_element(parse_param * h)
 	}
 
 	if ((current_padstack != NULL) && h->pad_type_set & (h->pad_type == PAD_TYPE_THERMAL_RELIEF)) {
-		current_padstack->clearance = xy2coord(h->thermal_clear_sx) - current_padstack->thickness;
+		current_padstack->clearance =
+			(xy2coord(h->thermal_clear_sx) + xy2coord(h->thermal_clear_sy)) * 0.5 - current_padstack->thickness;
 		if (current_padstack->clearance < 0)
 			current_padstack->clearance = 0;
 	}
@@ -1291,21 +1292,15 @@ pcb_bool exec_via(parse_param * h)
 {
 	padstack_t *padstack;
 
+	/* detect old-style v1.0 via */
+	if (!h->padstack_name_set)
+		return exec_via_v1(h);
+
 	if (hyp_debug) {
 		pcb_printf("via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
-		if (h->layer1_name_set)
-			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
-		if (h->layer2_name_set)
-			pcb_printf(" layer2_name = \"%s\"", h->layer2_name);
 		if (h->padstack_name_set)
 			pcb_printf(" padstack_name = \"%s\"", h->padstack_name);
 		pcb_printf("\n");
-	}
-
-	if (!h->padstack_name_set) {
-		if (hyp_debug)
-			pcb_printf("via: padstack not set. skipping via x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
-		return 0;
 	}
 
 	padstack = hyp_padstack_by_name(h->padstack_name);
@@ -1314,8 +1309,10 @@ pcb_bool exec_via(parse_param * h)
 		return 0;
 	}
 
+	/* XXX buried and blind vias not implemented yet */
+
 	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
-							padstack->drill_hole, "", padstack->flags);
+							padstack->drill_hole, NULL, padstack->flags);
 
 	return 0;
 }
@@ -1330,34 +1327,78 @@ pcb_bool exec_via_v1(parse_param * h)
 	pcb_coord_t thickness;
 	pcb_coord_t clearance;
 	pcb_coord_t mask;
-	pcb_coord_t drill_hole;
+	pcb_coord_t drill_hole = 0;
+	char *shape = NULL;
 	pcb_flag_t flags;
 
 	if (hyp_debug) {
-		pcb_printf("old via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
-		pcb_printf(" drill_size = %ml", xy2coord(h->drill_size));
+		pcb_printf("old_via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
+		if (h->drill_size_set)
+			pcb_printf(" drill_size = %ml", xy2coord(h->drill_size));
 		if (h->layer1_name_set)
 			pcb_printf(" layer1_name = \"%s\"", h->layer1_name);
 		if (h->layer2_name_set)
 			pcb_printf(" layer2_name = \"%s\"", h->layer2_name);
-		pcb_printf(" pad1_shape = \"%s\" pad1_sx = %ml pad1_sy = %ml pad1_angle = %f", h->pad1_shape, xy2coord(h->pad1_sx),
-							 xy2coord(h->pad1_sy), h->pad1_angle);
-		pcb_printf(" pad2_shape = \"%s\" pad2_sx = %ml pad2_sy = %ml pad2_angle = %f", h->pad2_shape, xy2coord(h->pad2_sx),
-							 xy2coord(h->pad2_sy), h->pad2_angle);
+		if (h->via_pad_shape_set)
+			pcb_printf(" via_pad_shape = \"%s\"", h->via_pad_shape);
+		if (h->via_pad_sx_set)
+			pcb_printf(" via_pad_sx = \"%ml\"", xy2coord(h->via_pad_sx));
+		if (h->via_pad_sy_set)
+			pcb_printf(" via_pad_sy = \"%ml\"", xy2coord(h->via_pad_sy));
+		if (h->via_pad_angle_set)
+			pcb_printf(" via_pad_angle = \"%f\"", h->via_pad_angle);
+		if (h->via_pad1_shape_set)
+			pcb_printf(" via_pad1_shape = \"%s\"", h->via_pad1_shape);
+		if (h->via_pad1_sx_set)
+			pcb_printf(" via_pad1_sx = \"%ml\"", xy2coord(h->via_pad1_sx));
+		if (h->via_pad1_sy_set)
+			pcb_printf(" via_pad1_sy = \"%ml\"", xy2coord(h->via_pad1_sy));
+		if (h->via_pad1_angle_set)
+			pcb_printf(" via_pad1_angle = \"%f\"", h->via_pad1_angle);
+		if (h->via_pad2_shape_set)
+			pcb_printf(" via_pad2_shape = \"%s\"", h->via_pad2_shape);
+		if (h->via_pad2_sx_set)
+			pcb_printf(" via_pad2_sx = \"%ml\"", xy2coord(h->via_pad2_sx));
+		if (h->via_pad2_sy_set)
+			pcb_printf(" via_pad1_sy = \"%ml\"", xy2coord(h->via_pad2_sy));
+		if (h->via_pad2_angle_set)
+			pcb_printf(" via_pad2_angle = \"%f\"", h->via_pad2_angle);
 		pcb_printf("\n");
 	}
 
-	thickness = xy2coord(h->pad1_sx);
-	clearance = 2 * hyp_clearance(h);
-	mask = xy2coord(h->pad1_sx);
-	drill_hole = xy2coord(h->drill_size);
-
-	if (strcmp(h->pad1_shape, "RECT"))
-		current_padstack->flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
-	else if (strcmp(h->pad1_shape, "OBLONG"))
-		current_padstack->flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
+	if (h->via_pad_sx_set && h->via_pad_sy_set)
+		mask = thickness = (xy2coord(h->via_pad_sx) + xy2coord(h->via_pad_sy)) * 0.5;
+	else if (h->via_pad1_sx_set && h->via_pad1_sy_set)
+		mask = thickness = (xy2coord(h->via_pad1_sx) + xy2coord(h->via_pad1_sy)) * 0.5;
+	else if (h->via_pad2_sx_set && h->via_pad2_sy_set)
+		mask = thickness = (xy2coord(h->via_pad2_sx) + xy2coord(h->via_pad2_sy)) * 0.5;
 	else
-		current_padstack->flags = pcb_no_flags();	/* round */
+		mask = thickness = 0;
+
+	clearance = 2 * hyp_clearance(h);
+
+	if (h->drill_size_set)
+		drill_hole = xy2coord(h->drill_size);
+	else
+		drill_hole = 0;
+
+	if (h->via_pad_shape_set)
+		shape = h->via_pad_shape;
+	else if (h->via_pad1_shape_set)
+		shape = h->via_pad1_shape;
+	else if (h->via_pad2_shape_set)
+		shape = h->via_pad2_shape;
+	else
+		shape = NULL;
+
+	if ((shape != NULL) && (strcmp(shape, "RECT") == 0))
+		flags = pcb_flag_make(PCB_FLAG_SQUARE);	/* rectangular */
+	else if ((shape != NULL) && (strcmp(shape, "OBLONG") == 0))
+		flags = pcb_flag_make(PCB_FLAG_OCTAGON);	/* oblong */
+	else
+		flags = pcb_no_flags();			/* round */
+
+	/* XXX buried and blind vias not implemented yet */
 
 	pcb_via_new(hyp_dest, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, drill_hole, NULL, flags);
 
@@ -1444,6 +1485,9 @@ pcb_bool exec_pin(parse_param * h)
 
 pcb_bool exec_pad(parse_param * h)
 {
+	pcb_coord_t thickness;
+	pcb_coord_t clearance;
+	pcb_coord_t mask;
 	pcb_element_t *component;
 	pcb_flag_t flags;
 	char pad_component[] = "hyperlynx_pad";
@@ -1454,34 +1498,45 @@ pcb_bool exec_pad(parse_param * h)
 		pcb_printf("pad: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
 		if (h->layer_name_set)
 			pcb_printf(" layer_name = \"%s\"", h->layer_name);
-		pcb_printf(" pad1_shape = \"%s\" pad1_sx = %ml pad1_sy = %ml pad1_angle = %f", h->pad1_shape, xy2coord(h->pad1_sx),
-							 xy2coord(h->pad1_sy), h->pad1_angle);
+		if (h->via_pad_shape_set)
+			pcb_printf(" via_pad_shape = \"%s\"", h->via_pad_shape);
+		if (h->via_pad_sx_set)
+			pcb_printf(" via_pad_sx = \"%ml\"", xy2coord(h->via_pad_sx));
+		if (h->via_pad_sy_set)
+			pcb_printf(" via_pad_sy = \"%ml\"", xy2coord(h->via_pad_sy));
+		if (h->via_pad_angle_set)
+			pcb_printf(" via_pad_angle = \"%f\"", h->via_pad_angle);
 		pcb_printf("\n");
 	}
 
 	/* if necessary, create a device to connect the pad to */
 	component = pcb_search_elem_by_name(hyp_dest, pad_component);
 	if (component == NULL)
-		component = pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), pad_component, pad_component, "?",
+		component = pcb_element_new(hyp_dest, NULL, &PCB->Font, pcb_no_flags(), pad_component, pad_component, "?",
 																x2coord(h->x), y2coord(h->y), text_direction, text_scale, pcb_no_flags(), pcb_false);
 
 	/* add new pad */
 	flags = pcb_no_flags();
 
 	/* pad shape */
-	if (strcmp(h->pad1_shape, "RECT") == 0)
+	if (h->via_pad_shape_set && (h->via_pad_shape != NULL) && (strcmp(h->via_pad_shape, "RECT") == 0))
 		pcb_flag_add(flags, PCB_FLAG_SQUARE);
-	else if (strcmp(h->pad1_shape, "OBLONG") == 0)
+	else if (h->via_pad_shape_set && (h->via_pad_shape != NULL) && (strcmp(h->via_pad_shape, "OBLONG") == 0))
 		pcb_flag_add(flags, PCB_FLAG_OCTAGON);
 
-	/* pad layer *//* XXX check/fixme */
-	if (pcb_layer_flags(pcb_layer_by_name(h->layer_name)) & PCB_LYT_BOTTOM)
+	if (h->layer_name_set && (h->layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(h->layer_name)) & PCB_LYT_BOTTOM))
 		pcb_flag_add(flags, PCB_SOLDER_SIDE);
 	else
 		pcb_flag_add(flags, PCB_COMPONENT_SIDE);
 
-	pcb_element_pin_new(component, x2coord(h->x), y2coord(h->y), xy2coord(h->pad1_sx), 2 * hyp_clearance(h), xy2coord(h->pad1_sx),
-											0, net_name, "?", flags);
+	if (h->via_pad_sx_set && h->via_pad_sy_set)
+		mask = thickness = (xy2coord(h->via_pad_sx) + xy2coord(h->via_pad_sy)) * 0.5;
+	else
+		mask = thickness = 0;
+
+	clearance = 2 * hyp_clearance(h);
+
+	pcb_element_pin_new(component, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, 0, net_name, "?", flags);
 
 	return 0;
 }
@@ -1805,7 +1860,7 @@ pcb_bool exec_line(parse_param * h)
 		}
 		break;
 	case HYP_POLYLINE_HOLE:
-		/* not implemented */
+		/* hole in polyline not implemented */
 		break;
 	default:
 		if (hyp_debug)
