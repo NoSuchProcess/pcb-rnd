@@ -80,3 +80,13 @@ void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc) = dummy_draw_csect;
 pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse_csect;
 void (*pcb_stub_draw_csect_overlay)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx) = dummy_csect_overlay;
 
+
+/****** font selector GUI ******/
+static void dummy_draw_fontsel(pcb_hid_gc_t gc)
+{
+
+}
+
+void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc) = dummy_draw_fontsel;
+pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse_csect;
+
