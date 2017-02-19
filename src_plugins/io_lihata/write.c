@@ -570,11 +570,9 @@ static lht_node_t *build_symbol(pcb_symbol_t *sym, const char *name)
 
 static lht_node_t *build_font(pcb_font_t *font)
 {
-	lht_node_t *syms, *ndt, *frt;
+	lht_node_t *syms, *ndt;
 	char *sid, sidbuff[64];
 	int n;
-
-	frt = lht_dom_node_alloc(LHT_HASH, "font");
 
 	if (font->id > 0) {
 		sprintf(sidbuff, "%ld", font->id);
@@ -584,7 +582,6 @@ static lht_node_t *build_font(pcb_font_t *font)
 		sid = "geda_pcb"; /* special case for comaptibility: font 0 is the geda_pcb font */
 
 	ndt = lht_dom_node_alloc(LHT_HASH, sid);
-	lht_dom_hash_put(frt, ndt);
 
 	lht_dom_hash_put(ndt, build_textf("cell_height", CFMT, font->MaxHeight));
 	lht_dom_hash_put(ndt, build_textf("cell_width", CFMT, font->MaxWidth));
@@ -609,6 +606,29 @@ static lht_node_t *build_font(pcb_font_t *font)
 		}
 		lht_dom_hash_put(syms, build_symbol(&font->Symbol[n], sname));
 	}
+	return ndt;
+}
+
+static lht_node_t *build_fontkit(pcb_fontkit_t *fk)
+{
+	lht_node_t *syms, *ndt, *frt;
+
+	frt = lht_dom_node_alloc(LHT_HASH, "font");
+
+	/* write the default font first - it's always there */
+	ndt = build_font(&fk->dflt);
+	lht_dom_hash_put(frt, ndt);
+
+	/* write extra fonts, if there are */
+	if (fk->hash_inited) {
+		htip_entry_t *e;
+		for(e = htip_first(&fk->fonts); e; e = htip_next(&fk->fonts, e)) {
+			ndt = build_font(e->value);
+			lht_dom_hash_put(frt, ndt);
+		}
+	}
+
+
 	return frt;
 }
 
@@ -788,7 +808,7 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	lht_dom_hash_put(brd->root, build_board_meta(pcb));
 	lht_dom_hash_put(brd->root, build_data(pcb->Data));
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
-	lht_dom_hash_put(brd->root, build_font(&pcb->fontkit.dflt));
+	lht_dom_hash_put(brd->root, build_fontkit(&pcb->fontkit));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
 	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->NetlistLib, pcb->NetlistPatches, PCB_NUM_NETLISTS));
 	lht_dom_hash_put(brd->root, build_conf());
