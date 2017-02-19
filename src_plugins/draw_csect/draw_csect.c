@@ -61,6 +61,7 @@ static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 	t.TextString = (char *)txt;
 	t.Direction = dir;
 	t.Scale = scale;
+	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
 	DrawTextLowLevel(&t, 0);
 	return &t;
@@ -76,6 +77,7 @@ static pcb_text_t *dtext_(pcb_coord_t x, pcb_coord_t y, int scale, int dir, cons
 	t.TextString = (char *)txt;
 	t.Direction = dir;
 	t.Scale = scale;
+	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
 	DrawTextLowLevel(&t, th);
 	return &t;
@@ -91,6 +93,7 @@ static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, c
 	t.TextString = (char *)txt;
 	t.Direction = dir;
 	t.Scale = scale;
+	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
 
 	pcb_gui->set_color(gc, bgcolor);
