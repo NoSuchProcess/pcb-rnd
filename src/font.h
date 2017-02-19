@@ -27,6 +27,7 @@
 #ifndef PCB_FONT_H
 #define PCB_FONT_H
 
+#include <genht/htip.h>
 #include "global_typedefs.h"
 #include "box.h"
 
@@ -41,18 +42,21 @@ typedef struct symbol_s {     /* a single symbol */
 	pcb_coord_t Width, Height, Delta; /* size of cell, distance to next symbol */
 } pcb_symbol_t;
 
+typedef int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
+
 struct pcb_font_s {          /* complete set of symbols */
 	pcb_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
 	pcb_box_t DefaultSymbol;     /* the default symbol is a filled box */
 	pcb_symbol_t Symbol[PCB_MAX_FONTPOSITION + 1];
+	char *name;
+	pcb_font_id_t id;
 };
 
 struct pcb_fontkit_s {          /* a set of unrelated fonts */
 	pcb_font_t dflt;              /* default, fallback font, also the sysfont */
 	pcb_bool valid;
+	htip_t fonts;
 };
-
-typedef int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
 
 /* Look up font. If not found: Return NULL (fallback=0), or return the
    default font (fallback=1) */
