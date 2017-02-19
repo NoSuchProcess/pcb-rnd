@@ -32,7 +32,7 @@
 #include <math.h>
 #include <memory.h>
 #include <limits.h>
-
+#include <assert.h>
 
 #include "data.h"
 #include "draw.h"
@@ -67,12 +67,22 @@ static const char fontedit_help[] = "Convert the current font to a PCB for editi
 
 %end-doc */
 
+static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
+{
+	pcb_layer_id_t lid;
+
+	assert(grp >= 0);
+	lid = pcb_layer_create(grp, lname);
+	assert(lid >= 0);
+	return &PCB->Data->Layer[lid];
+}
+
 static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 {
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid;
-	pcb_layergrp_id_t gtop, gbottom;
+	pcb_layergrp_id_t grp[4];
 	int s, l;
 
 	if (pcb_hid_actionl("New", "Font", 0))
@@ -85,31 +95,34 @@ static int FontEdit(int argc, const char **argv, pcb_coord_t Ux, pcb_coord_t Uy)
 	conf_set_design("design/min_wid", "%s", "1"); PCB->minWid = 1;
 	conf_set_design("design/min_slk", "%s", "1"); PCB->minSlk = 1;
 
-	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_BOTTOM, &gbottom, 1) > 0)
-		pcb_layer_move_to_group(gbottom, 1);
 
-	if (pcb_layer_group_list(PCB_LYT_SILK | PCB_LYT_TOP, &gtop, 1) > 0)
-		pcb_layer_move_to_group(gtop, 0);
-
-	while (PCB->Data->LayerN > 4)
-		pcb_layer_move(4, -1);
-	for (l = 0; l < 4; l++) {
-		pcb_layer_move_to_group(l, l);
-	}
 	PCB->MaxWidth = CELL_SIZE * 18;
 	PCB->MaxHeight = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
 	PCB->Grid = PCB_MIL_TO_COORD(5);
-	PCB->Data->Layer[0].Name = pcb_strdup("Font");
-	PCB->Data->Layer[1].Name = pcb_strdup("OrigFont");
-	PCB->Data->Layer[2].Name = pcb_strdup("Width");
-	PCB->Data->Layer[3].Name = pcb_strdup("Grid");
+
+	/* create the layer stack and logical layers */
+	pcb_layergrp_inhibit_inc();
+	pcb_layers_reset();
+	pcb_layer_group_setup_default(&PCB->LayerGroups);
+	pcb_get_grp_new_intern(&PCB->LayerGroups, 1);
+	pcb_get_grp_new_intern(&PCB->LayerGroups, 2);
+
+	assert(pcb_layer_group_list(PCB_LYT_COPPER, grp, 4) == 4);
+	lfont  = make_layer(grp[0], "Font");
+	lorig  = make_layer(grp[1], "OrigFont");
+	lwidth = make_layer(grp[2], "Width");
+	lgrid  = make_layer(grp[3], "Grid");
+
+	assert(pcb_layer_group_list(PCB_LYT_SILK, grp, 2) == 2);
+	make_layer(grp[0], "Silk");
+	make_layer(grp[1], "Silk");
+
+	pcb_layergrp_inhibit_dec();
+
+	/* Inform the rest about the board change (layer stack, size) */
 	pcb_event(PCB_EVENT_BOARD_CHANGED, NULL);
 	pcb_event(PCB_EVENT_LAYERS_CHANGED, NULL);
 
-	lfont = PCB->Data->Layer + 0;
-	lorig = PCB->Data->Layer + 1;
-	lwidth = PCB->Data->Layer + 2;
-	lgrid = PCB->Data->Layer + 3;
 
 	font = pcb_font(PCB, 0, 1);
 	for (s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
