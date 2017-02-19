@@ -35,7 +35,8 @@ typedef enum { PAD_TYPE_METAL, PAD_TYPE_ANTIPAD, PAD_TYPE_THERMAL_RELIEF } pad_t
 typedef enum { PIN_SIM_IN, PIN_SIM_OUT, PIN_SIM_BOTH } pin_function_enum;
 
 typedef enum { POLYGON_TYPE_POUR, POLYGON_TYPE_PLANE, POLYGON_TYPE_COPPER, POLYGON_TYPE_PAD,
-		POLYGON_TYPE_ANTIPAD } polygon_type_enum;
+	POLYGON_TYPE_ANTIPAD
+} polygon_type_enum;
 
 typedef struct {
 	double vers;									/* version of the hyp file format */
@@ -117,14 +118,30 @@ typedef struct {
 	pcb_bool layer1_name_set;
 	char *layer2_name;
 	pcb_bool layer2_name_set;
-	char *pad1_shape;
-	double pad1_sx;
-	double pad1_sy;
-	double pad1_angle;
-	char *pad2_shape;
-	double pad2_sx;
-	double pad2_sy;
-	double pad2_angle;
+	char *via_pad_shape;
+	pcb_bool via_pad_shape_set;
+	double via_pad_sx;
+	pcb_bool via_pad_sx_set;
+	double via_pad_sy;
+	pcb_bool via_pad_sy_set;
+	double via_pad_angle;
+	pcb_bool via_pad_angle_set;
+	char *via_pad1_shape;
+	pcb_bool via_pad1_shape_set;
+	double via_pad1_sx;
+	pcb_bool via_pad1_sx_set;
+	double via_pad1_sy;
+	pcb_bool via_pad1_sy_set;
+	double via_pad1_angle;
+	pcb_bool via_pad1_angle_set;
+	char *via_pad2_shape;
+	pcb_bool via_pad2_shape_set;
+	double via_pad2_sx;
+	pcb_bool via_pad2_sx_set;
+	double via_pad2_sy;
+	pcb_bool via_pad2_sy_set;
+	double via_pad2_angle;
+	pcb_bool via_pad2_angle_set;
 
 	/* pin subrecord of net */
 	char *pin_reference;
