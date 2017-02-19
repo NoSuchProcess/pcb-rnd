@@ -548,7 +548,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ghid_library_window_show(gport, raise);
 	}
 	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
-		ghid_log_window_show(raise);
+		pcb_gtk_dlg_log_show(raise);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
 		ghid_netlist_window_show(raise);
@@ -916,8 +916,8 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_hid.add_block_hook = ghid_add_block_hook;
 	ghid_hid.stop_block_hook = ghid_stop_block_hook;
 
-	ghid_hid.log = ghid_log;
-	ghid_hid.logv = ghid_logv;
+	ghid_hid.log = pcb_gtk_log;
+	ghid_hid.logv = pcb_gtk_logv;
 	ghid_hid.confirm_dialog = ghid_confirm_dialog;
 	ghid_hid.close_confirm_dialog = ghid_close_confirm_dialog;
 	ghid_hid.report_dialog = ghid_report_dialog;
