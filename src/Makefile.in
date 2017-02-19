@@ -124,8 +124,7 @@ put /local/pcb/OBJS [@
 	search.o
 	select.o
 	select_act.o
-	stub_draw_csect.o
-	stub_draw_fab.o
+	stub_draw.o
 	stub_mincut.o
 	stub_stroke.o
 	stub_vendor.o

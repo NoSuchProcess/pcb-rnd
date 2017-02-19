@@ -32,7 +32,7 @@
 #include "conf_core.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
-#include "stub_draw_fab.h"
+#include "stub_draw.h"
 
 const char *ps_cookie = "ps HID";
 

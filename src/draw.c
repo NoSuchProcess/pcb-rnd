@@ -37,8 +37,7 @@
 #include "draw.h"
 #include "rotate.h"
 #include "rtree.h"
-#include "stub_draw_fab.h"
-#include "stub_draw_csect.h"
+#include "stub_draw.h"
 #include "obj_all.h"
 #include "layer_ui.h"
 

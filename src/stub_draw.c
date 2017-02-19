@@ -1,8 +1,8 @@
 /*
  *                            COPYRIGHT
  *
- *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  PCB, interactive printed circuit board design
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,14 +18,42 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
+ *  Contact addresses for paper mail and Email:
+ *  Thomas Nau, Schlehenweg 15, 88471 Baustetten, Germany
+ *  Thomas.Nau@rz.uni-ulm.de
+ *
  */
-
-/* stub for drawing cross section of the board */
-
 #include "config.h"
-#include "stub_draw_csect.h"
+#include "stub_draw.h"
 #include "obj_text.h"
 #include "obj_text_draw.h"
+
+
+/****** fab ******/
+
+int dummy_DrawFab_overhang(void)
+{
+	return 0;
+}
+
+void dummy_DrawFab(pcb_hid_gc_t gc)
+{
+	pcb_text_t t;
+	t.X = 0;
+	t.Y = 0;
+	t.TextString = "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded";
+	t.Direction = 0;
+	t.Scale = 150;
+	t.Flags = pcb_no_flags();
+	DrawTextLowLevel(&t, 0);
+}
+
+int (*pcb_stub_draw_fab_overhang)(void) = dummy_DrawFab_overhang;
+void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc) = dummy_DrawFab;
+
+
+/****** csect - cross section of the board ******/
+
 
 static void dummy_draw_csect(pcb_hid_gc_t gc)
 {

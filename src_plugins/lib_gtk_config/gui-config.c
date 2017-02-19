@@ -49,7 +49,7 @@
 #include "misc_util.h"
 #include "paths.h"
 #include "plug_footprint.h"
-#include "stub_draw_csect.h"
+#include "stub_draw.h"
 #include "compat_misc.h"
 #include "compat_nls.h"
 #include "fptr_cast.h"

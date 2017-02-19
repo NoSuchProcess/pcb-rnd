@@ -35,7 +35,7 @@
 #include "draw.h"
 #include "obj_all.h"
 #include "plugins.h"
-/*#include "stub_draw_fontsel.h"*/
+#include "stub_draw.h"
 
 #include "obj_text_draw.h"
 

@@ -36,7 +36,7 @@
 #include "../report/drill.h"
 #include "obj_all.h"
 #include "plugins.h"
-#include "stub_draw_fab.h"
+#include "stub_draw.h"
 #include "draw_fab_conf.h"
 
 #include "obj_text_draw.h"

@@ -23,28 +23,22 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
-#include "config.h"
-#include "stub_draw_fab.h"
-#include "obj_text.h"
-#include "obj_text_draw.h"
 
-int dummy_DrawFab_overhang(void)
-{
-	return 0;
-}
+/* drawing the fab layer is a plugin now */
 
-void dummy_DrawFab(pcb_hid_gc_t gc)
-{
-	pcb_text_t t;
-	t.X = 0;
-	t.Y = 0;
-	t.TextString = "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded";
-	t.Direction = 0;
-	t.Scale = 150;
-	t.Flags = pcb_no_flags();
-	DrawTextLowLevel(&t, 0);
-}
+#ifndef PCB_STUB_DRAW_FAB_H
+#define PCB_STUB_DRAW_FAB_H
 
-int (*pcb_stub_draw_fab_overhang)(void) = dummy_DrawFab_overhang;
-void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc) = dummy_DrawFab;
+#include "hid.h"
+#include "pcb_bool.h"
 
+/* fab */
+extern int (*pcb_stub_draw_fab_overhang)(void);
+extern void (*pcb_stub_draw_fab)(pcb_hid_gc_t gc);
+
+/* csect */
+extern void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc);
+extern pcb_bool (*pcb_stub_draw_csect_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
+extern void (*pcb_stub_draw_csect_overlay)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx);
+
+#endif

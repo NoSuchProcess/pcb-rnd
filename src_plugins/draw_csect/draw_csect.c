@@ -28,7 +28,7 @@
 #include "data.h"
 #include "draw.h"
 #include "plugins.h"
-#include "stub_draw_csect.h"
+#include "stub_draw.h"
 #include "compat_misc.h"
 #include "hid_actions.h"
 

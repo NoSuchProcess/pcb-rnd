@@ -233,7 +233,7 @@ static PreviewData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 
 /***************** instance for layer group edit **********************/
 
-#include "stub_draw_csect.h"
+#include "stub_draw.h"
 
 static PreviewData *layergrp_edit = NULL;
 
