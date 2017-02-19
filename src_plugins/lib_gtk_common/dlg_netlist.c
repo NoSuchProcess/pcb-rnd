@@ -29,7 +29,7 @@
  */
 
 #include "config.h"
-#include "gui-netlist-window.h"
+#include "dlg_netlist.h"
 #include "conf_core.h"
 
 #include <stdio.h>
@@ -53,12 +53,18 @@
 #include "compat_nls.h"
 #include "obj_all.h"
 
-#include "../src_plugins/lib_gtk_common/util_str.h"
-#include "../src_plugins/lib_gtk_common/win_place.h"
-#include "../src_plugins/lib_gtk_common/bu_text_view.h"
-#include "../src_plugins/lib_gtk_common/bu_box.h"
-#include "../src_plugins/lib_gtk_common/bu_check_button.h"
+#include "util_str.h"
+#include "win_place.h"
+#include "bu_text_view.h"
+#include "bu_box.h"
+#include "bu_check_button.h"
+
+/** TODO temporary */
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+
+/** \file   dlg_netlist.c
+    \brief  Manages the _Netlist_ non-modal dialog/window.
+ */
 
 #define NET_HIERARCHY_SEPARATOR "/"
 
@@ -75,56 +81,56 @@ static pcb_lib_menu_t *selected_net;
 static pcb_lib_menu_t *node_selected_net;
 
 
-/* The Netlist window displays all the layout nets in a left treeview
-   |  When one of the nets is selected, all of its nodes (or connections)
-   |  will be displayed in a right treeview.  If a "Select on layout" button
-   |  is pressed, the net that is selected in the left treeview will be
-   |  drawn selected on the layout.
-   |
-   |  Gtk separates the data model from the view in its treeview widgets so
-   |  here we maintain two data models.  The net data model has pointers to
-   |  all the nets in the layout and the node data model keeps pointers to all
-   |  the nodes for the currently selected net.  By updating the data models
-   |  the net and node gtk treeviews handle displaying the results.
-   |
-   |  The netlist window code has a public interface providing hooks so PCB
-   |  code can control the net and node treeviews:
-   |
-   |	ghid_get_net_from_node_name gchar *node_name, pcb_bool enabled_only)
-   |		Given a node name (eg C101-1), walk through the nets in the net
-   |		data model and search each net for the given node_name.  If found
-   |		and enabled_only is true, make the net treeview scroll to and
-   |		highlight (select) the found net.  Return the found net.
-   |
-   |	ghid_netlist_highlight_node()
-   |		Given some PCB internal pointers (not really a good gui api here)
-   |		look up a node name determined by the pointers and highlight the node
-   |		in the node treeview.  By using ghid_get_net_from_node_name() to
-   |		look up the node, the net the node belongs to will also be
-   |		highlighted in the net treeview.
-   |
-   |	ghid_netlist_window_update(pcb_bool init_nodes)
-   |		PCB calls this to tell the gui netlist code the layout net has
-   |		changed and the gui data structures (net and optionally node data
-   |		models) should be rebuilt.
+/** The Netlist window displays all the layout nets in a left treeview.
+    When one of the nets is selected, all of its nodes (or connections)
+    will be displayed in a right treeview.  If a "Select on layout" button
+    is pressed, the net that is selected in the left treeview will be
+    drawn selected on the layout.
+
+    Gtk separates the data model from the view in its treeview widgets so
+    here we maintain two data models.  The net data model has pointers to
+    all the nets in the layout and the node data model keeps pointers to all
+    the nodes for the currently selected net.  By updating the data models
+    the net and node gtk treeviews handle displaying the results.
+
+    The netlist window code has a public interface providing hooks so PCB
+    code can control the net and node treeviews:
+
+    ghid_get_net_from_node_name gchar *node_name, pcb_bool enabled_only)
+      Given a node name (eg C101-1), walk through the nets in the net
+      data model and search each net for the given node_name.  If found
+      and enabled_only is true, make the net treeview scroll to and
+      highlight (select) the found net.  Return the found net.
+
+    ghid_netlist_highlight_node()
+      Given some PCB internal pointers (not really a good gui api here)
+      look up a node name determined by the pointers and highlight the node
+      in the node treeview.  By using ghid_get_net_from_node_name() to
+      look up the node, the net the node belongs to will also be
+      highlighted in the net treeview.
+
+    ghid_netlist_window_update(pcb_bool init_nodes)
+      PCB calls this to tell the gui netlist code the layout net has
+      changed and the gui data structures (net and optionally node data
+      models) should be rebuilt.
 */
 
 
-/* -------- The netlist nodes (pcb_lib_entry_t) data model ----------
-   |  Each time a net is selected in the left treeview, this node model
-   |  is recreated containing all the nodes (pins/pads) that are connected
-   |  to the net.  Loading the new model will update the right treeview with
-   |  all the new node names (C100-1, R100-1, etc).
-   |
-   |  The terminology is a bit confusing because the PCB netlist data
-   |  structures are generic structures used for library elements, netlist
-   |  data, and possibly other things also.  The mapping is that
-   |  the layout netlist data structure is a pcb_lib_t which
-   |  contains an allocated array of pcb_lib_menu_t structs.  Each of these
-   |  structs represents a net in the netlist and contains an array
-   |  of pcb_lib_entry_t structs which represent the nodes connecting to
-   |  the net.  So we have:
-   |
+/** -------- The netlist nodes (pcb_lib_entry_t) data model ----------
+    Each time a net is selected in the left treeview, this node model
+    is recreated containing all the nodes (pins/pads) that are connected
+    to the net.  Loading the new model will update the right treeview with
+    all the new node names (C100-1, R100-1, etc).
+
+    The terminology is a bit confusing because the PCB netlist data
+    structures are generic structures used for library elements, netlist
+    data, and possibly other things also.  The mapping is that
+    the layout netlist data structure is a pcb_lib_t which
+    contains an allocated array of pcb_lib_menu_t structs.  Each of these
+    structs represents a net in the netlist and contains an array
+    of pcb_lib_entry_t structs which represent the nodes connecting to
+    the net.  So we have:
+
    |                      Nets              Nodes
    |       pcb_lib_t    pcb_lib_menu_t   pcb_lib_entry_t
    | -------------------------------------------------------
@@ -150,8 +156,8 @@ enum {
 	N_NODE_COLUMNS
 };
 
-/* Given a net in the netlist (a pcb_lib_menu_t) put all the Entry[]
-   |  names (the nodes) into a newly created node tree model.
+/** Given a net in the netlist (a pcb_lib_menu_t) put all the Entry[]
+    names (the nodes) into a newly created node tree model.
 */
 static GtkTreeModel *node_model_create(pcb_lib_menu_t * menu)
 {
@@ -175,9 +181,9 @@ static GtkTreeModel *node_model_create(pcb_lib_menu_t * menu)
 	return GTK_TREE_MODEL(store);
 }
 
-/* When there's a new node to display in the node treeview, call this.
-   |  Create a new model containing the nodes of the given net, insert
-   |  the model into the treeview and unref the old model.
+/** When there's a new node to display in the node treeview, call this.
+    Create a new model containing the nodes of the given net, insert
+    the model into the treeview and unref the old model.
 */
 static void node_model_update(pcb_lib_menu_t * menu)
 {
@@ -194,8 +200,8 @@ static void node_model_update(pcb_lib_menu_t * menu)
 
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(node_model), NODE_NAME_COLUMN, GTK_SORT_ASCENDING);
 
-	/* We could be using gtk_list_store_clear() on the same model, but it's
-	   |  just as easy that we've created a new one and here unref the old one.
+	/*  We could be using gtk_list_store_clear() on the same model, but it's
+	   just as easy that we've created a new one and here unref the old one.
 	 */
 	if (model)
 		g_object_unref(G_OBJECT(model));
@@ -213,8 +219,7 @@ static void toggle_pin_selected(pcb_lib_entry_t * entry)
 	pcb_draw_obj(conn.type, conn.ptr1, conn.ptr2);
 }
 
-
-/* Callback when the user clicks on a PCB node in the right node treeview.
+/** Callback when the user clicks on a PCB node in the right node treeview.
  */
 static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer data)
 {
@@ -229,14 +234,14 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	if (selection_holdoff)				/* PCB is highlighting, user is not selecting */
 		return;
 
-	/* Toggle off the previous selection.  Look up node_name to make sure
-	   |  it still exists.  This toggling can get out of sync if a node is
-	   |  toggled selected, then the net that includes the node is selected
-	   |  then unselected.
+	/*  Toggle off the previous selection.  Look up node_name to make sure
+	   it still exists.  This toggling can get out of sync if a node is
+	   toggled selected, then the net that includes the node is selected
+	   then unselected.
 	 */
 	if ((node = node_get_node_from_name(node_name, &node_net)) != NULL) {
-		/* If net node belongs to has been highlighted/unhighighed, toggling
-		   |  if off here will get our on/off toggling out of sync.
+		/*  If net node belongs to has been highlighted/unhighighed, toggling
+		   if off here will get our on/off toggling out of sync.
 		 */
 		if (node_net == node_selected_net) {
 			toggle_pin_selected(node);
@@ -254,17 +259,16 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 		return;
 	}
 
-	/* From the treeview row, extract the node pointer stored there and
-	   |  we've got a pointer to the pcb_lib_entry_t (node) the row
-	   |  represents.
+	/*  From the treeview row, extract the node pointer stored there and
+	   we've got a pointer to the pcb_lib_entry_t (node) the row
+	   represents.
 	 */
 	gtk_tree_model_get(model, &iter, NODE_LIBRARY_COLUMN, &node, -1);
 
 	pcb_gtk_g_strdup(&node_name, node->ListEntry);
 	node_selected_net = selected_net;
 
-	/* Now just toggle a select of the node on the layout
-	 */
+	/* Now just toggle a select of the node on the layout     */
 	toggle_pin_selected(node);
 	pcb_undo_inc_serial();
 
@@ -291,7 +295,6 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 			}
 		}
 }
-
 
 /* -------- The net (pcb_lib_menu_t) data model ----------
  */
@@ -413,8 +416,7 @@ static GtkTreeModel *net_model_create(void)
 	return model;
 }
 
-
-/* Called when the user double clicks on a net in the left treeview.
+/** Called when the user double clicks on a net in the left treeview.
  */
 static void net_selection_double_click_cb(GtkTreeView * treeview, GtkTreePath * path, GtkTreeViewColumn * col, gpointer data)
 {
@@ -446,7 +448,7 @@ static void net_selection_double_click_cb(GtkTreeView * treeview, GtkTreePath * 
 	}
 }
 
-/* Called when the user clicks on a net in the left treeview.
+/** Called when the user clicks on a net in the left treeview.
  */
 static void net_selection_changed_cb(GtkTreeSelection * selection, gpointer data)
 {
@@ -463,9 +465,9 @@ static void net_selection_changed_cb(GtkTreeSelection * selection, gpointer data
 		return;
 	}
 
-	/* Get a pointer, net, to the pcb_lib_menu_t of the newly selected
-	   |  netlist row, and create a new node model from the net entries
-	   |  and insert that model into the node view.  Delete old entry model.
+	/*  Get a pointer, net, to the pcb_lib_menu_t of the newly selected
+	   netlist row, and create a new node model from the net entries
+	   and insert that model into the node view.  Delete old entry model.
 	 */
 	gtk_tree_model_get(model, &iter, NET_LIBRARY_COLUMN, &net, -1);
 	node_model_update(net);
@@ -479,8 +481,8 @@ static void netlist_disable_all_cb(GtkToggleButton * button, gpointer data)
 	pcb_bool active = gtk_toggle_button_get_active(button);
 	pcb_lib_menu_t *menu;
 
-	/* Get each net iter and change the NET_ENABLED_COLUMN to a "*" or ""
-	   |  to flag it as disabled or enabled based on toggle button state.
+	/*  Get each net iter and change the NET_ENABLED_COLUMN to a "*" or ""
+	   to flag it as disabled or enabled based on toggle button state.
 	 */
 	if (gtk_tree_model_get_iter_first(net_model, &iter))
 		do {
@@ -492,7 +494,7 @@ static void netlist_disable_all_cb(GtkToggleButton * button, gpointer data)
 		while (gtk_tree_model_iter_next(net_model, &iter));
 }
 
-/* Select on the layout the current net treeview selection
+/** Select on the layout the current net treeview selection
  */
 static void netlist_select_cb(GtkWidget * widget, gpointer data)
 {
@@ -563,7 +565,8 @@ static void netlist_rip_up_cb(GtkWidget * widget, gpointer data)
 
 }
 
- /**/ typedef struct {
+/** ? */
+typedef struct {
 	pcb_lib_entry_t *ret_val;
 	pcb_lib_menu_t *node_net;
 	const gchar *node_name;
@@ -593,38 +596,12 @@ static pcb_bool node_get_node_from_name_helper(GtkTreeModel * model, GtkTreePath
 	return FALSE;
 }
 
-pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** node_net)
-{
-	node_get_node_from_name_state state;
-
-	if (!node_name)
-		return NULL;
-
-	/* Have to force the netlist window created because we need the treeview
-	   |  models constructed to do the search.
-	 */
-	ghid_netlist_window_create();
-
-	/* Now walk through node entries of each net in the net model looking for
-	   |  the node_name.
-	 */
-	state.found = 0;
-	state.node_name = node_name;
-	gtk_tree_model_foreach(net_model, node_get_node_from_name_helper, &state);
-	if (state.found) {
-		if (node_net)
-			*node_net = state.node_net;
-		return state.ret_val;
-	}
-	return NULL;
-}
-
- /**/
-/* ---------- Manage the GUI treeview of the data models -----------
+/** ---------- Manage the GUI treeview of the data models -----------
  */
 static gint netlist_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	wplc_config_event(widget, &hid_gtk_wgeo.netlist_x, &hid_gtk_wgeo.netlist_y, &hid_gtk_wgeo.netlist_width, &hid_gtk_wgeo.netlist_height);
+	wplc_config_event(widget, &hid_gtk_wgeo.netlist_x, &hid_gtk_wgeo.netlist_y, &hid_gtk_wgeo.netlist_width,
+										&hid_gtk_wgeo.netlist_height);
 	return FALSE;
 }
 
@@ -638,14 +615,13 @@ static void netlist_close_cb(GtkWidget * widget, gpointer data)
 	ghid_cancel_lead_user();
 }
 
-
 static void netlist_destroy_cb(GtkWidget * widget, void *data)
 {
 	selected_net = NULL;
 	netlist_window = NULL;
 }
 
-void ghid_netlist_window_create(void)
+static void ghid_netlist_window_create(void)
 {
 	GtkWidget *vbox, *hbox, *button, *label, *sep;
 	GtkTreeView *treeview;
@@ -768,6 +744,33 @@ void ghid_netlist_window_create(void)
 	gtk_widget_realize(netlist_window);
 }
 
+/* A forward declaration is needed here... Could it be avoided ? */
+pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** node_net)
+{
+	node_get_node_from_name_state state;
+
+	if (!node_name)
+		return NULL;
+
+	/*  Have to force the netlist window created because we need the treeview
+	   models constructed to do the search.
+	 */
+	ghid_netlist_window_create();
+
+	/*  Now walk through node entries of each net in the net model looking for
+	   the node_name.
+	 */
+	state.found = 0;
+	state.node_name = node_name;
+	gtk_tree_model_foreach(net_model, node_get_node_from_name_helper, &state);
+	if (state.found) {
+		if (node_net)
+			*node_net = state.node_net;
+		return state.ret_val;
+	}
+	return NULL;
+}
+
 void ghid_netlist_window_show(pcb_bool raise)
 {
 	ghid_netlist_window_create();
@@ -777,6 +780,7 @@ void ghid_netlist_window_show(pcb_bool raise)
 		gtk_window_present(GTK_WINDOW(netlist_window));
 }
 
+/** ggnfnn ??? */
 struct ggnfnn_task {
 	pcb_bool enabled_only;
 	const gchar *node_name;
@@ -817,6 +821,8 @@ static pcb_bool hunt_named_node(GtkTreeModel * model, GtkTreePath * path, GtkTre
 	return FALSE;
 }
 
+/* API */
+
 pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, pcb_bool enabled_only)
 {
 	GtkTreePath *path;
@@ -825,9 +831,9 @@ pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, pcb_bool en
 	if (!node_name)
 		return NULL;
 
-	/* Have to force the netlist window created because we need the treeview
-	   |  models constructed so we can find the pcb_lib_menu_t pointer the
-	   |  caller wants.
+	/*  Have to force the netlist window created because we need the treeview
+	   models constructed so we can find the pcb_lib_menu_t pointer the
+	   caller wants.
 	 */
 	ghid_netlist_window_create();
 
@@ -839,15 +845,15 @@ pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, pcb_bool en
 	task.node_name = node_name;
 	task.found_net = NULL;
 
-	/* Now walk through node entries of each net in the net model looking for
-	   |  the node_name.
+	/*  Now walk through node entries of each net in the net model looking for
+	   the node_name.
 	 */
 	gtk_tree_model_foreach(net_model, hunt_named_node, &task);
 
-	/* We are asked to highlight the found net if enabled_only is TRUE.
-	   |  Set holdoff TRUE since this is just a highlight and user is not
-	   |  expecting normal select action to happen?  Or should the node
-	   |  treeview also get updated?  Original PCB code just tries to highlight.
+	/*  We are asked to highlight the found net if enabled_only is TRUE.
+	   Set holdoff TRUE since this is just a highlight and user is not
+	   expecting normal select action to happen?  Or should the node
+	   treeview also get updated?  Original PCB code just tries to highlight.
 	 */
 	if (task.found_net && enabled_only) {
 		selection_holdoff = TRUE;
@@ -859,9 +865,10 @@ pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, pcb_bool en
 	return task.found_net;
 }
 
-/* PCB LookupConnection code in find.c calls this if it wants a node
-   |  and its net highlighted.
+/** PCB LookupConnection code in find.c calls this if it wants a node
+    and its net highlighted.
 */
+/** \todo is this retired ? */
 void ghid_netlist_highlight_node(const gchar * node_name)
 {
 	GtkTreePath *path;
@@ -875,9 +882,9 @@ void ghid_netlist_highlight_node(const gchar * node_name)
 	if ((net = ghid_get_net_from_node_name(node_name, TRUE)) == NULL)
 		return;
 
-	/* We've found the net containing the node, so update the node treeview
-	   |  to contain the nodes from the net.  Then we have to find the node
-	   |  in the new node model so we can highlight it.
+	/*  We've found the net containing the node, so update the node treeview
+	   to contain the nodes from the net.  Then we have to find the node
+	   in the new node model so we can highlight it.
 	 */
 	node_model_update(net);
 
@@ -898,9 +905,6 @@ void ghid_netlist_highlight_node(const gchar * node_name)
 		while (gtk_tree_model_iter_next(node_model, &iter));
 }
 
-/* If code in PCB should change the netlist, call this to update
-   |  what's in the netlist window.
-*/
 void ghid_netlist_window_update(pcb_bool init_nodes)
 {
 	GtkTreeModel *model;
@@ -924,6 +928,9 @@ void ghid_netlist_window_update(pcb_bool init_nodes)
 		node_model_update((&PCB->NetlistLib[PCB_NETLIST_EDITED])->Menu);
 }
 
+/* Actions ? */
+
+/** static ? */
 void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	extern int gtkhid_active;
@@ -958,6 +965,7 @@ static gint GhidNetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_c
 	return 0;
 }
 
+/** Action ? */
 pcb_hid_action_t ghid_netlist_action_list[] = {
 	{"NetlistShow", 0, GhidNetlistShow,
 	 netlistshow_help, netlistshow_syntax}

@@ -35,7 +35,6 @@
 #include "gui-library-window.h"
 #include "gui-command-window.h"
 #include "gui-top-window.h"
-#include "gui-netlist-window.h"
 
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/act_print.h"
@@ -52,6 +51,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_input.h"
 #include "../src_plugins/lib_gtk_common/dlg_log.h"
 #include "../src_plugins/lib_gtk_common/dlg_message.h"
+#include "../src_plugins/lib_gtk_common/dlg_netlist.h"
 #include "../src_plugins/lib_gtk_common/dlg_print.h"
 #include "../src_plugins/lib_gtk_common/dlg_progress.h"
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
