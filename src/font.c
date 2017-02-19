@@ -196,6 +196,9 @@ pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
 	if (pcb->fontkit.hash_inited)
 		return htip_get(&pcb->fontkit.fonts, id);
 
+	if (fallback)
+		return &pcb->fontkit.dflt;
+
 	return NULL;
 }
 
