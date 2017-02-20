@@ -94,8 +94,10 @@ typedef struct {
 	int y1, y2;
 	pcb_font_id_t fid;
 } font_coord_t;
+
 font_coord_t font_coord[MAX_FONT];
 int font_coords;
+int font_new_y1, font_new_y2;
 
 static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 {
@@ -127,6 +129,7 @@ static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 {
 	int y = 10;
+	pcb_text_t *t;
 
 	pcb_gui->set_color(gc, "#FF0000");
 	dtext(0, 0, 300, 0, "Select font");
@@ -139,13 +142,21 @@ static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
 			pcb_draw_font(gc, e->value, 10, &y);
 	}
+
+	/* New font */
+	pcb_gui->set_color(gc, "#000000");
+	t = dtext(5, y, 250, 0, "[Load font from file]");
+	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+	font_new_y1 = y;
+	y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
+	font_new_y2 = y;
+
 }
 
-static pcb_font_id_t lookup_fid_for_coord(pcb_coord_t y)
+static pcb_font_id_t lookup_fid_for_coord(int ymm)
 {
-	int n, ymm;
+	int n;
 
-	ymm = PCB_COORD_TO_MM(y);
 	for(n = 0; n < font_coords; n++)
 		if ((ymm >= font_coord[n].y1) && (ymm <= font_coord[n].y2))
 			return font_coord[n].fid;
@@ -155,13 +166,20 @@ static pcb_font_id_t lookup_fid_for_coord(pcb_coord_t y)
 static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
 {
 	pcb_font_id_t fid;
+	int ymm;
+
 	switch(kind) {
 		case PCB_HID_MOUSE_PRESS:
-			fid = lookup_fid_for_coord(y);
+			ymm = PCB_COORD_TO_MM(y);
+			fid = lookup_fid_for_coord(ymm);
 			if (fid >= 0) {
 				char sval[128];
 				sprintf(sval, "%ld", fid);
 				conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
+				return 1;
+			}
+			else if ((ymm >= font_new_y1) && (ymm <= font_new_y2)) {
+				pcb_hid_actionl("LoadFontFrom", NULL); /* modal, blocking */
 				return 1;
 			}
 	}
