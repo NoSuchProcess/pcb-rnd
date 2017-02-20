@@ -39,6 +39,7 @@
 #include "stub_draw.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include "conf_core.h"
 
 #include "obj_text.h"
 #include "obj_text_draw.h"
@@ -58,8 +59,37 @@ static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char 
 	return &t;
 }
 
+/* draw a line of a specific thickness */
+static void dline(int x1, int y1, int x2, int y2, float thick)
+{
+	pcb_line_t l;
+	l.Point1.X = PCB_MM_TO_COORD(x1);
+	l.Point1.Y = PCB_MM_TO_COORD(y1);
+	l.Point2.X = PCB_MM_TO_COORD(x2);
+	l.Point2.Y = PCB_MM_TO_COORD(y2);
+	l.Thickness = PCB_MM_TO_COORD(thick);
+	_draw_line(&l);
+}
 
-static void pcb_draw_font(pcb_font_t *f, int x, int *y)
+static void dchkbox(pcb_hid_gc_t gc, int x0, int y0, int checked)
+{
+	int w = 2, h = 2;
+	float th = 0.1, th2 = 0.4;
+
+	pcb_gui->set_color(gc, "#000000");
+	dline(x0, y0, x0+w, y0, th);
+	dline(x0+w, y0, x0+w, y0+h, th);
+	dline(x0+w, y0+h, x0, y0+h, th);
+	dline(x0, y0+h, x0, y0, th);
+	if (checked) {
+		pcb_gui->set_color(gc, "#AA0033");
+		dline(x0, y0, x0+w, y0+h, th2);
+		dline(x0, y0+h, x0+w, y0, th2);
+	}
+}
+
+
+static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 {
 	char txt[256];
 	pcb_text_t *t;
@@ -68,8 +98,11 @@ static void pcb_draw_font(pcb_font_t *f, int x, int *y)
 	nm = (f->name == NULL) ? "<anonymous>" : f->name;
 	pcb_snprintf(txt, sizeof(txt), "#%d [abc ABC 123] %s", f->id, nm);
 
+	dchkbox(gc, x-4, *y, (f->id == conf_core.design.text_font_id));
+
+	pcb_gui->set_color(gc, "#000000");
 	t = dtext(x, *y, 200, f->id, txt);
-	pcb_text_bbox(pcb_font(PCB, t->fid, 1), t);
+	pcb_text_bbox(pcb_font(PCB, f->id, 1), t);
 
 	*y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
 }
@@ -82,13 +115,13 @@ static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 	pcb_gui->set_color(gc, "#FF0000");
 	dtext(0, 0, 300, 0, "Select font");
 
-	pcb_gui->set_color(gc, "#000000");
-	pcb_draw_font(&PCB->fontkit.dflt, 10, &y);
+
+	pcb_draw_font(gc, &PCB->fontkit.dflt, 10, &y);
 
 	if (PCB->fontkit.hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
-			pcb_draw_font(e->value, 10, &y);
+			pcb_draw_font(gc, e->value, 10, &y);
 	}
 
 }
