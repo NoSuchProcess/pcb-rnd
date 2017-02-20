@@ -8,6 +8,7 @@
 
 - Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
+	- ind: multiple fonts: second font indents incorrectly
 	- ind: indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
 	- keep numeric format: test all
 	- keep unknown subtrees
