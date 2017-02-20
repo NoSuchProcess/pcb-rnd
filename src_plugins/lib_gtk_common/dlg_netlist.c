@@ -109,7 +109,7 @@ static pcb_lib_menu_t *node_selected_net;
       look up the node, the net the node belongs to will also be
       highlighted in the net treeview.
 
-    ghid_netlist_window_update(pcb_bool init_nodes)
+    pcb_gtk_dlg_netlist_update(pcb_bool init_nodes)
       PCB calls this to tell the gui netlist code the layout net has
       changed and the gui data structures (net and optionally node data
       models) should be rebuilt.
@@ -771,11 +771,11 @@ pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** no
 	return NULL;
 }
 
-void ghid_netlist_window_show(pcb_bool raise)
+void pcb_gtk_dlg_netlist_show(pcb_bool raise)
 {
 	ghid_netlist_window_create();
 	gtk_widget_show_all(netlist_window);
-	ghid_netlist_window_update(TRUE);
+	pcb_gtk_dlg_netlist_update(TRUE);
 	if (raise)
 		gtk_window_present(GTK_WINDOW(netlist_window));
 }
@@ -905,7 +905,7 @@ void ghid_netlist_highlight_node(const gchar * node_name)
 		while (gtk_tree_model_iter_next(node_model, &iter));
 }
 
-void ghid_netlist_window_update(pcb_bool init_nodes)
+void pcb_gtk_dlg_netlist_update(pcb_bool init_nodes)
 {
 	GtkTreeModel *model;
 
@@ -930,14 +930,14 @@ void ghid_netlist_window_update(pcb_bool init_nodes)
 
 /* Actions ? */
 
-/** static ? */
+/** Why a prototype is in gtkhid-main.c ? What is a good name for that ? */
 void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	extern int gtkhid_active;
 	if (!gtkhid_active)
 		return;
 	loading_new_netlist = TRUE;
-	ghid_netlist_window_update(TRUE);
+	pcb_gtk_dlg_netlist_update(TRUE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_all_button), FALSE);
 	loading_new_netlist = FALSE;
 }
@@ -961,7 +961,7 @@ static const char netlistpresent_help[] = "Presents the netlist window.";
 
 static gint GhidNetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	ghid_netlist_window_show(TRUE);
+	pcb_gtk_dlg_netlist_show(TRUE);
 	return 0;
 }
 

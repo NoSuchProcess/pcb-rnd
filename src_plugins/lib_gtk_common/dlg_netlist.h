@@ -7,13 +7,13 @@
 /** Creates or raises the _Netlist_ window dialog.
     \param raise    if `TRUE`, presents the window.
  */
-void ghid_netlist_window_show(pcb_bool raise);
+void pcb_gtk_dlg_netlist_show(pcb_bool raise);
 
 /** If code in PCB should change the netlist, call this to update
     what's in the netlist window.
     \param init_nodes    ?
 */
-void ghid_netlist_window_update(pcb_bool init_nodes);
+void pcb_gtk_dlg_netlist_update(pcb_bool init_nodes);
 
 /* Temporary back references to hid_gtk */
 void ghid_invalidate_all();
