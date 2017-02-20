@@ -99,6 +99,7 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
+#include "../src_plugins/lib_gtk_common/dlg_fontsel.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
@@ -1723,12 +1724,22 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	return 0;
 }
 
+
+static const char pcb_acts_fontsel[] = "FontSel()\n";
+static const char pcb_acth_fontsel[] = "Select the font to draw new text with.";
+static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_gtk_dlg_fontsel(gport->top_window, NULL, 0);
+}
+
 /* ------------------------------------------------------------ */
 
 pcb_hid_action_t ghid_menu_action_list[] = {
 	{"AdjustStyle", 0, AdjustStyle, adjuststyle_help, adjuststyle_syntax}
 	,
 	{"EditLayerGroups", 0, EditLayerGroups, editlayergroups_help, editlayergroups_syntax}
+	,
+	{"fontsel", 0, pcb_act_fontsel, pcb_acth_fontsel, pcb_acts_fontsel}
 };
 
 PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)

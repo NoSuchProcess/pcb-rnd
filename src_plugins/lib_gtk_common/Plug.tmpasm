@@ -20,6 +20,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(PLUGDIR)/lib_gtk_common/dlg_confirm.o
   $(PLUGDIR)/lib_gtk_common/dlg_export.o
   $(PLUGDIR)/lib_gtk_common/dlg_file_chooser.o
+  $(PLUGDIR)/lib_gtk_common/dlg_fontsel.o
   $(PLUGDIR)/lib_gtk_common/dlg_input.o
   $(PLUGDIR)/lib_gtk_common/dlg_log.o
   $(PLUGDIR)/lib_gtk_common/dlg_message.o
