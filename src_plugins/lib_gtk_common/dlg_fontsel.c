@@ -33,6 +33,23 @@
 #include "wt_preview.h"
 #include "stub_draw.h"
 
+typedef struct {
+	GtkDialog *dialog;
+	pcb_font_t *fnt;
+} pcb_gtk_dlg_fontsel_t;
+
+static int dlg_fontsel_global_latch = 0;
+
+static void fontsel_close_cb(gpointer ctx_)
+{
+	pcb_gtk_dlg_fontsel_t *ctx = ctx_;
+	gtk_widget_destroy(ctx->dialog);
+	if (ctx->fnt == NULL)
+		dlg_fontsel_global_latch = 0;
+	free(ctx);
+}
+
+
 void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_font_t *fnt, int modal)
 {
 	GtkWidget *w;
@@ -40,16 +57,26 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_font_t *fnt, in
 	GtkWidget *content_area, *prv;
 	GtkWidget *vbox;
 	pcb_layer_id_t lid;
+	pcb_gtk_dlg_fontsel_t *ctx;
+
+	if (fnt == NULL) {
+		if (dlg_fontsel_global_latch) /* do not open the global font selector twice */
+			return;
+		dlg_fontsel_global_latch = 1;
+	}
+
+	ctx = malloc(sizeof(pcb_gtk_dlg_fontsel_t));
+	ctx->fnt = fnt;
 
 	w = gtk_dialog_new_with_buttons("PCB - font selector",
 																	GTK_WINDOW(top_window),
 																	GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE, GTK_RESPONSE_NONE, NULL);
-	dialog = GTK_DIALOG(w);
+	ctx->dialog = dialog = GTK_DIALOG(w);
 	gtk_dialog_set_default_response(dialog, GTK_RESPONSE_CLOSE);
 
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 
-	g_signal_connect_swapped(GTK_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy), GTK_OBJECT(dialog));
+	g_signal_connect_swapped(GTK_OBJECT(dialog), "response", G_CALLBACK(fontsel_close_cb), ctx);
 	gtk_window_set_role(GTK_WINDOW(w), "PCB_Dialog");
 
 	content_area = gtk_dialog_get_content_area(dialog);
