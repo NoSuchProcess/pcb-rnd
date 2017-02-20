@@ -688,7 +688,7 @@ void pcb_hid_expose_layer(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
 			pcb_gui->end_layer();
 		}
 	}
-	if (lflg & PCB_LYT_FONTSEL) {
+	else if (lflg & PCB_LYT_FONTSEL) {
 		if ((pcb_layer_gui_set_vlayer(PCB_VLY_FONTSEL, 0)) || (e->force)) {
 			pcb_stub_draw_fontsel(Output.fgGC);
 			pcb_gui->end_layer();
