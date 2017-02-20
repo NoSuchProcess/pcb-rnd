@@ -993,7 +993,7 @@
  plug_footprint.h vtlibrary.h plug_io.h misc_util.h layer.h compat_nls.h \
  layer_vis.h ../src_plugins/hid_gtk/gtkhid-main.h conf_hid.h \
  ../src_plugins/hid_gtk/gui-drc-window.h \
- ../src_plugins/hid_gtk/gui-library-window.h \
+ ../src_plugins/lib_gtk_common/wt_library.h \
  ../src_plugins/hid_gtk/gui-command-window.h \
  ../src_plugins/hid_gtk/gui-top-window.h \
  ../src_plugins/lib_gtk_common/act_fileio.h \
@@ -1083,9 +1083,9 @@
  ../src_plugins/lib_gtk_common/util_str.h \
  ../src_plugins/lib_gtk_common/win_place.h \
  ../src_plugins/lib_gtk_config/hid_gtk_conf.h conf.h
-../src_plugins/hid_gtk/gui-library-window.o: \
- ../src_plugins/hid_gtk/gui-library-window.c ../config.h \
- ../src_plugins/hid_gtk/gui-library-window.h hid.h error.h drc.h unit.h \
+../src_plugins/lib_gtk_common/wt_library.o: \
+ ../src_plugins/lib_gtk_common/wt_library.c ../config.h \
+ ../src_plugins/lib_gtk_common/wt_library.h hid.h error.h drc.h unit.h \
  global_typedefs.h pcb_bool.h attrib.h layer.h globalconst.h \
  obj_all_list.h obj_arc_list.h obj_common.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \

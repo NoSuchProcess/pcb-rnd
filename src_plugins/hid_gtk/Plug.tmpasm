@@ -5,7 +5,6 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(PLUGDIR)/hid_gtk/gtkhid-main.o
 	$(PLUGDIR)/hid_gtk/gui-command-window.o
 	$(PLUGDIR)/hid_gtk/gui-drc-window.o
-	$(PLUGDIR)/hid_gtk/gui-library-window.o
 	$(PLUGDIR)/hid_gtk/gui-output-events.o
 	$(PLUGDIR)/hid_gtk/gui-top-window.o
 	$(PLUGDIR)/hid_gtk/gtkhid-gdk.o

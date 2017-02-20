@@ -32,7 +32,6 @@
 #include "gtkhid-main.h"
 #include "ghid-main-menu.h"
 #include "gui-drc-window.h"
-#include "gui-library-window.h"
 #include "gui-command-window.h"
 #include "gui-top-window.h"
 
@@ -57,6 +56,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_report.h"
 #include "../src_plugins/lib_gtk_common/dlg_pinout.h"
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
+#include "../src_plugins/lib_gtk_common/wt_library.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"

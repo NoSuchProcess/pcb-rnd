@@ -18,14 +18,14 @@
  */
 
 
-#ifndef PCB_HID_GTK_GUI_LIBRARY_WINDOW_H
-#define PCB_HID_GTK_GUI_LIBRARY_WINDOW_H
+#ifndef PCB_GTK_LIBRARY_WINDOW_H
+#define PCB_GTK_LIBRARY_WINDOW_H
 
 #include <gtk/gtk.h>
 #include "hid.h"
 
-/*
- * GhidLibraryWindow
+/**
+    GhidLibraryWindow is a subclass of GtkDialog
  */
 
 #define GHID_TYPE_LIBRARY_WINDOW           (ghid_library_window_get_type())
@@ -34,14 +34,17 @@
 #define GHID_IS_LIBRARY_WINDOW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GHID_TYPE_LIBRARY_WINDOW))
 #define GHID_GET_LIBRARY_WINDOW_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  GHID_TYPE_LIBRARY, GhidLibraryWindowClass))
 
+/** */
 typedef struct _GhidLibraryWindowClass GhidLibraryWindowClass;
+/** */
 typedef struct _GhidLibraryWindow GhidLibraryWindow;
 
-
+/** */
 struct _GhidLibraryWindowClass {
 	GtkDialogClass parent_class;
 };
 
+/** */
 struct _GhidLibraryWindow {
 	GtkDialog parent_instance;
 
@@ -57,14 +60,18 @@ struct _GhidLibraryWindow {
 	void *gport;
 };
 
-
+/** */
 GType ghid_library_window_get_type(void);
 
+/** */
 void ghid_library_window_create(void *gport);
+
+/** */
 void ghid_library_window_show(void *gport, gboolean raise);
 
 /* Temporary back references to hid_gtk */
-gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
+gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall,
+														 const pcb_hid_expose_ctx_t * ctx);
 void ghid_init_drawing_widget(GtkWidget * widget, void *gport);
 
-#endif /* PCB_HID_GTK_GUI_LIBRARY_WINDOW_H */
+#endif /* PCB_GTK_LIBRARY_WINDOW_H */

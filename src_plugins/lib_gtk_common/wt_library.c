@@ -3,6 +3,8 @@
  *
  *  PCB, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  pcb-rnd, interactive printed circuit board design
+ *  Copyright (C) 2017 Alain Vigne
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +25,9 @@
  *  Thomas.Nau@rz.uni-ulm.de
  *
  */
+
+/** Implementation of \ref fixme_library widget.
+    This widget is calling another Dialog, upon "Edit" clicked button */
 
 /* This file originally from the PCB Gtk port by Bill Wilson. It has
  * since been combined with modified code from the gEDA project:
@@ -54,7 +59,7 @@
 #include "config.h"
 #include <ctype.h>
 #include <assert.h>
-#include "gui-library-window.h"
+#include "wt_library.h"
 #include "conf_core.h"
 
 #include "buffer.h"
@@ -65,38 +70,49 @@
 
 #include <gdk/gdkkeysyms.h>
 
-static GtkWidget *library_window;
+#include "bu_box.h"
+#include "compat.h"
+#include "wt_preview.h"
+#include "win_place.h"
 
-#include "../src_plugins/lib_gtk_common/bu_box.h"
-#include "../src_plugins/lib_gtk_common/wt_preview.h"
-#include "../src_plugins/lib_gtk_common/win_place.h"
+/** TODO temporary */
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-#include "gui-library-window.h"
+/** \todo Open an empty file. Launch the Netlist window ... then :
+(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_widget_show_all: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_tree_view_set_model: assertion 'GTK_IS_TREE_VIEW (tree_view)' failed
+Error: can't update netlist window: there is no netlist loaded.
+
+(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_window_present_with_time: assertion 'GTK_IS_WINDOW (window)' failed
+*/
+
+static GtkWidget *library_window;
+
 
 #warning TODO: figure how to pass gport from create() to the constructor
 static void *construct_gport_copy = NULL;
 
-/*! \def LIBRARY_FILTER_INTERVAL
- *  \brief The time interval between request and actual filtering
- *
- *  This constant is the time-lag between user modifications in the
- *  filter entry and the actual evaluation of the filter which
- *  ultimately update the display. It helps reduce the frequency of
- *  evaluation of the filter as user types.
- *
- *  Unit is milliseconds.
+/** The time interval between request and actual filtering
+
+    This constant is the time-lag between user modifications in the
+    filter entry and the actual evaluation of the filter which
+    ultimately update the display. It helps reduce the frequency of
+    evaluation of the filter as user types.
+
+    Unit is milliseconds.
  */
 #define LIBRARY_FILTER_INTERVAL 200
 
-
+/** */
 static gint library_window_configure_event_cb(GtkWidget * widget, GdkEventConfigure * ev, gpointer data)
 {
-	wplc_config_event(widget, &hid_gtk_wgeo.library_x, &hid_gtk_wgeo.library_y, &hid_gtk_wgeo.library_width, &hid_gtk_wgeo.library_height);
+	wplc_config_event(widget, &hid_gtk_wgeo.library_x, &hid_gtk_wgeo.library_y, &hid_gtk_wgeo.library_width,
+										&hid_gtk_wgeo.library_height);
 	return FALSE;
 }
 
-
+/** */
 enum {
 	MENU_NAME_COLUMN,							/* Text to display in the tree     */
 	MENU_ENTRY_COLUMN,						/* Pointer to the library_t */
@@ -104,17 +120,15 @@ enum {
 };
 
 
-/*! \brief Process the response returned by the library dialog.
- *  \par Function Description
- *  This function handles the response <B>arg1</B> of the library
- *  dialog <B>dialog</B>.
- *
- *  Parameter <B>user_data</B> is a pointer on the relevant toplevel
- *  structure.
- *
- *  \param [in] dialog    The library dialog.
- *  \param [in] arg1      The response ID.
- *  \param [in] user_data
+/** Processes the response returned by the library dialog.
+
+    This function handles the response \p arg1 of the library \p dialog .
+
+    Parameter \p user_data is a pointer on the relevant toplevel structure.
+
+    \param dialog        The library dialog.
+    \param arg1          The response ID.
+    \param user_data     pointer to ??FIXME??
  */
 static void library_window_callback_response(GtkDialog * dialog, gint arg1, gpointer user_data)
 {
@@ -132,12 +146,8 @@ static void library_window_callback_response(GtkDialog * dialog, gint arg1, gpoi
 	}
 }
 
-
-/*! \brief Creates a library dialog.
- *  \par Function Description
- *  This function create the library dialog if it is not already created.
- *  It does not show the dialog, use ghid_library_window_show for that.
- *
+/** Creates the library dialog if it is not already created.
+    It does not show the dialog, use FIXME ghid_library_window_show for that.
  */
 void ghid_library_window_create(void *gport)
 {
@@ -155,7 +165,7 @@ void ghid_library_window_create(void *gport)
 	gtk_window_set_default_size(GTK_WINDOW(library_window), hid_gtk_wgeo.library_width, hid_gtk_wgeo.library_height);
 
 	gtk_window_set_title(GTK_WINDOW(library_window), _("pcb-rnd Library"));
-	gtk_window_set_wmclass(GTK_WINDOW(library_window), "PCB_Library", "PCB");
+	gtk_window_set_role(GTK_WINDOW(library_window), "PCB_Library");
 
 	wplc_place(WPLC_LIBRARY, library_window);
 
@@ -173,11 +183,8 @@ void ghid_library_window_create(void *gport)
 	}
 }
 
-/*! \brief Show the library dialog.
- *  \par Function Description
- *  This function show the library dialog, creating it if it is not
- *  already created, and presents it to the user (brings it to the
- *  front with focus).
+/** Shows the library dialog, creating it if it is not already created, and
+    presents it to the user (brings it to the front with focus).
  */
 void ghid_library_window_show(void *gport, gboolean raise)
 {
@@ -189,16 +196,14 @@ void ghid_library_window_show(void *gport, gboolean raise)
 
 static GObjectClass *library_window_parent_class = NULL;
 
+/** Determines visibility of items of the library treeview.
+    This is the function used to filter entries of the footprint
+    selection tree.
 
-/*! \brief Determines visibility of items of the library treeview.
- *  \par Function Description
- *  This is the function used to filter entries of the footprint
- *  selection tree.
- *
- *  \param [in] model The current selection in the treeview.
- *  \param [in] iter  An iterator on a footprint or folder in the tree.
- *  \param [in] data  The library dialog.
- *  \returns TRUE if item should be visible, FALSE otherwise.
+    \param model    The current selection in the treeview.
+    \param iter     An iterator on a footprint or folder in the tree.
+    \param data     The library dialog.
+    \returns        `TRUE` if item should be visible, `FALSE` otherwise.
  */
 static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter * iter, gpointer data)
 {
@@ -291,7 +296,7 @@ static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter 
 							next++;
 					}
 					need = pcb_fp_tag(tag, 0);
-					fprintf(stderr, "TAG: '%s' %p\n", tag, (void *)need);
+					fprintf(stderr, "TAG: '%s' %p\n", tag, (void *) need);
 					if (need == NULL) {
 						ret = FALSE;
 						break;
@@ -321,16 +326,13 @@ static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter 
 	return ret;
 }
 
+/** Handles activation (e.g. double-clicking) of a component row.
+    As a convenience to the user `,` expand `/` contract any node with children.
 
-/*! \brief Handles activation (e.g. double-clicking) of a component row
- *  \par Function Description
- *  Component row activated handler:
- *  As a convenince to the user, expand / contract any node with children.
- *
- *  \param [in] tree_view The component treeview.
- *  \param [in] path      The GtkTreePath to the activated row.
- *  \param [in] column    The GtkTreeViewColumn in which the activation occurre
- *  \param [in] user_data The component selection dialog.
+    \param tree_view     The component treeview.
+    \param path          The GtkTreePath to the activated row.
+    \param column        The GtkTreeViewColumn in which the activation occurre
+    \param user_data     The component selection dialog.
  */
 static void tree_row_activated(GtkTreeView * tree_view, GtkTreePath * path, GtkTreeViewColumn * column, gpointer user_data)
 {
@@ -349,15 +351,15 @@ static void tree_row_activated(GtkTreeView * tree_view, GtkTreePath * path, GtkT
 		gtk_tree_view_expand_row(tree_view, path, FALSE);
 }
 
-/*! \brief Handles CTRL-C keypress in the TreeView
- *  \par Function Description
- *  Keypress activation handler:
- *  If CTRL-C is pressed, copy footprint name into the clipboard.
- *
- *  \param [in] tree_view The component treeview.
- *  \param [in] event     The GdkEventKey with keypress info.
- *  \param [in] user_data Not used.
- *  \return TRUE if CTRL-C event was handled, FALSE otherwise.
+/** Handles CTRL-C keypress in the TreeView.
+
+    Keypress activation handler:
+    If CTRL-C is pressed, copy footprint name into the clipboard.
+
+    \param tree_view     The component treeview.
+    \param event         The GdkEventKey with keypress info.
+    \param user_data     Not used.
+    \return              `TRUE` if CTRL-C event was handled, `FALSE` otherwise.
  */
 static gboolean tree_row_key_pressed(GtkTreeView * tree_view, GdkEventKey * event, gpointer user_data)
 {
@@ -394,15 +396,15 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 	GString *pt;
 	char *fullp;
 
-	/* -1 flags this is an element file part and the file path is in
-	   |  entry->AllocateMemory.
+	/*  -1 flags this is an element file part and the file path is in
+	   entry->AllocateMemory.
 	 */
 	if (name == NULL) {
 		if ((entry == NULL) || (entry->type != LIB_FOOTPRINT))
 			return;
 		fullp = entry->data.fp.loc_info;
 	}
-		pcb_crosshair_set_mode(PCB_MODE_ARROW);
+	pcb_crosshair_set_mode(PCB_MODE_ARROW);
 	if (pcb_element_load_to_buffer(PCB_PASTEBUFFER, name == NULL ? fullp : name))
 		pcb_crosshair_set_mode(PCB_MODE_PASTE_BUFFER);
 
@@ -432,16 +434,16 @@ static void library_window_preview_refresh(GhidLibraryWindow * library_window, c
 	gtk_label_set_text(GTK_LABEL(library_window->preview_text), g_string_free(pt, FALSE));
 }
 
-/*! \brief Handles changes in the treeview selection.
- *  \par Function Description
- *  This is the callback function that is called every time the user
- *  select a row the library treeview of the dialog.
- *
- *  If the selection is not a selection of a footprint, it does
- *  nothing. Otherwise it updates the preview and Element data.
- *
- *  \param [in] selection The current selection in the treeview.
- *  \param [in] user_data The library dialog.
+/** Handles changes in the treeview selection.
+
+    This is the callback function that is called every time the user
+    select a row the library treeview of the dialog.
+
+    If the selection is not a selection of a footprint, it does
+    nothing. Otherwise it updates the preview and Element data.
+
+    \param selection     The current selection in the treeview.
+    \param user_data     The library dialog.
  */
 static void library_window_callback_tree_selection_changed(GtkTreeSelection * selection, gpointer user_data)
 {
@@ -461,16 +463,16 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 	library_window_preview_refresh(library_window, NULL, entry);
 }
 
-/*! \brief Requests re-evaluation of the filter.
- *  \par Function Description
- *  This is the timeout function for the filtering of footprint
- *  in the tree of the dialog.
- *
- *  The timeout this callback is attached to is removed after the
- *  function.
- *
- *  \param [in] data The library dialog.
- *  \returns FALSE to remove the timeout.
+/** Requests re-evaluation of the filter.
+
+    This is the timeout function for the filtering of footprint
+    in the tree of the dialog.
+
+    The timeout this callback is attached to is removed after the
+    function.
+
+    \param data     The library dialog.
+    \returns        `FALSE` to remove the timeout.
  */
 static gboolean library_window_filter_timeout(gpointer data)
 {
@@ -498,26 +500,22 @@ static gboolean library_window_filter_timeout(gpointer data)
 			/* filter text is empty, collapse expanded tree */
 			gtk_tree_view_collapse_all(library_window->libtreeview);
 		}
-
-
-
 	}
-
 
 	/* return FALSE to remove the source */
 	return FALSE;
 }
 
-/*! \brief Callback function for the changed signal of the filter entry.
- *  \par Function Description
- *  This function monitors changes in the entry filter of the dialog.
- *
- *  It specifically manages the sensitivity of the clear button of the
- *  entry depending on its contents. It also requests an update of the
- *  footprint list by re-evaluating filter at every changes.
- *
- *  \param [in] editable  The filter text entry.
- *  \param [in] user_data The library dialog.
+/** Callback function for the changed signal of the filter entry.
+
+    This function monitors changes in the entry filter of the dialog.
+
+    It specifically manages the sensitivity of the clear button of the
+    entry depending on its contents. It also requests an update of the
+    footprint list by re-evaluating filter at every changes.
+
+    \param editable      The filter text entry.
+    \param user_data     The library dialog.
  */
 static void library_window_callback_filter_entry_changed(GtkEditable * editable, gpointer user_data)
 {
@@ -541,16 +539,16 @@ static void library_window_callback_filter_entry_changed(GtkEditable * editable,
 
 }
 
-/*! \brief Handles a click on the clear button.
- *  \par Function Description
- *  This is the callback function called every time the user press the
- *  clear button associated with the filter.
- *
- *  It resets the filter entry, indirectly causing re-evaluation
- *  of the filter on the list of symbols to update the display.
- *
- *  \param [in] editable  The filter text entry.
- *  \param [in] user_data The library dialog.
+/** Handles a click on the clear button.
+   
+    This is the callback function called every time the user press the
+    clear button associated with the filter.
+  
+    It resets the filter entry, indirectly causing re-evaluation
+    of the filter on the list of symbols to update the display.
+  
+    \param editable      The filter text entry.
+    \param user_data     The library dialog.
  */
 static void library_window_callback_filter_button_clicked(GtkButton * button, gpointer user_data)
 {
@@ -561,19 +559,19 @@ static void library_window_callback_filter_button_clicked(GtkButton * button, gp
 
 }
 
-/* \brief Create the tree model for the "Library" view.
- * \par Function Description
- * Creates a tree where the branches are the available library
- * sources and the leaves are the footprints.
+/** Creates the tree model for the "Library" view.
+
+    Creates a tree where the branches are the available library
+    sources and the leaves are the footprints.
  */
-static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore *tree, GhidLibraryWindow *library_window, pcb_fplibrary_t *parent, GtkTreeIter *iter_parent)
+static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore * tree, GhidLibraryWindow * library_window,
+																									 pcb_fplibrary_t * parent, GtkTreeIter * iter_parent)
 {
 	GtkTreeIter p_iter;
 	pcb_fplibrary_t *menu;
 	int n;
 
-	for(menu = parent->data.dir.children.array, n = 0; n < parent->data.dir.children.used; n++, menu++)
-	{
+	for (menu = parent->data.dir.children.array, n = 0; n < parent->data.dir.children.used; n++, menu++) {
 		gtk_tree_store_append(tree, &p_iter, iter_parent);
 		gtk_tree_store_set(tree, &p_iter, MENU_NAME_COLUMN, menu->name, MENU_ENTRY_COLUMN, menu, -1);
 		if (menu->type == LIB_DIR)
@@ -583,7 +581,7 @@ static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore *tree, GhidLibra
 	return (GtkTreeModel *) tree;
 }
 
-static GtkTreeModel *create_lib_tree_model(GhidLibraryWindow *library_window)
+static GtkTreeModel *create_lib_tree_model(GhidLibraryWindow * library_window)
 {
 	GtkTreeStore *tree = gtk_tree_store_new(N_MENU_COLUMNS, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_POINTER);
 	return create_lib_tree_model_recurse(tree, library_window, &pcb_library, NULL);
@@ -613,8 +611,7 @@ static void library_window_callback_refresh_library(GtkButton * button, gpointer
 }
 #endif
 
-
-/*! \brief Creates the treeview for the "Library" view */
+/** Creates the treeview for the "Library" view */
 static GtkWidget *create_lib_treeview(GhidLibraryWindow * library_window)
 {
 	GtkWidget *libtreeview, *vbox, *scrolled_win, *label, *hbox, *entry, *button;
@@ -626,6 +623,7 @@ static GtkWidget *create_lib_treeview(GhidLibraryWindow * library_window)
 	/* -- library selection view -- */
 
 	/* vertical box for footprint selection and search entry */
+	/* GTK3 issue there ? */
 	vbox = GTK_WIDGET(g_object_new(GTK_TYPE_VBOX,
 																 /* GtkContainer */
 																 "border-width", 5,
@@ -740,8 +738,8 @@ static GtkWidget *create_lib_treeview(GhidLibraryWindow * library_window)
 	return vbox;
 }
 
-
-static GObject *library_window_constructor(GType type, guint n_construct_properties, GObjectConstructParam *construct_params)
+/** */
+static GObject *library_window_constructor(GType type, guint n_construct_properties, GObjectConstructParam * construct_params)
 {
 	GObject *object;
 	GhidLibraryWindow *library_window;
@@ -800,15 +798,14 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 																			 "element-data", NULL,
 																			 "gport", construct_gport_copy,
 																			 "init-widget", ghid_init_drawing_widget,
-																			 "expose", ghid_preview_expose,
-																			 "kind", PCB_GTK_PREVIEW_PINOUT,
+																			 "expose", ghid_preview_expose, "kind", PCB_GTK_PREVIEW_PINOUT,
 																			 /* GtkWidget */
 																			 "width-request", 150, "height-request", 150, NULL);
 
 	preview_text = gtk_label_new("");
 
 	{
-		GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
+		GtkWidget *vbox = gtkc_vbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), preview, TRUE, TRUE, 0);
 		gtk_box_pack_end(GTK_BOX(vbox), preview_text, FALSE, FALSE, 0);
 
@@ -827,7 +824,6 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	gtk_box_pack_start(GTK_BOX(content_area), hpaned, TRUE, TRUE, 0);
 	gtk_widget_show_all(hpaned);
 
-
 	/* now add buttons in the action area */
 	gtk_dialog_add_buttons(GTK_DIALOG(library_window),
 												 /*  - close button */
@@ -836,6 +832,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 	return object;
 }
 
+/** */
 static void library_window_finalize(GObject * object)
 {
 	GhidLibraryWindow *library_window = GHID_LIBRARY_WINDOW(object);
@@ -848,7 +845,7 @@ static void library_window_finalize(GObject * object)
 	G_OBJECT_CLASS(library_window_parent_class)->finalize(object);
 }
 
-
+/** */
 static void library_window_class_init(GhidLibraryWindowClass * klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
@@ -859,6 +856,7 @@ static void library_window_class_init(GhidLibraryWindowClass * klass)
 	library_window_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
 }
 
+/* API */
 
 GType ghid_library_window_get_type()
 {
