@@ -85,7 +85,7 @@ static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 	if (PCB->fontkit.hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
-			pcb_draw_font(&PCB->fontkit.dflt, 10, &y);
+			pcb_draw_font(e->value, 10, &y);
 	}
 
 }
