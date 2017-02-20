@@ -65,7 +65,7 @@ static void pcb_draw_font(pcb_font_t *f, int x, int *y)
 	pcb_text_t *t;
 	pcb_snprintf(txt, sizeof(txt), "#%d [abc ABC 123] %s\n", f->id, f->name);
 
-	t = dtext(x, *y, 100, f->id, txt);
+	t = dtext(x, *y, 200, f->id, txt);
 	pcb_text_bbox(pcb_font(PCB, t->fid, 1), t);
 
 	*y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
@@ -76,8 +76,10 @@ static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 {
 	int y = 10;
 
-	dtext(0, 0, 150, 0, "Select font");
+	pcb_gui->set_color(gc, "#FF0000");
+	dtext(0, 0, 300, 0, "Select font");
 
+	pcb_gui->set_color(gc, "#000000");
 	pcb_draw_font(&PCB->fontkit.dflt, 10, &y);
 
 	if (PCB->fontkit.hash_inited) {
