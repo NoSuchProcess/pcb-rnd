@@ -37,10 +37,13 @@
 #include "obj_all.h"
 #include "plugins.h"
 #include "stub_draw.h"
+#include "pcb-printf.h"
+#include "compat_misc.h"
 
+#include "obj_text.h"
 #include "obj_text_draw.h"
 
-static pcb_text_t *dtext(int x, int y, pcb_font_id_t fid, const char *txt)
+static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char *txt)
 {
 	static pcb_text_t t;
 
@@ -48,7 +51,7 @@ static pcb_text_t *dtext(int x, int y, pcb_font_id_t fid, const char *txt)
 	t.Y = PCB_MM_TO_COORD(y);
 	t.TextString = (char *)txt;
 	t.Direction = 0;
-	t.Scale = 100;
+	t.Scale = scale;
 	t.fid = fid;
 	t.Flags = pcb_no_flags();
 	DrawTextLowLevel(&t, 0);
@@ -56,8 +59,33 @@ static pcb_text_t *dtext(int x, int y, pcb_font_id_t fid, const char *txt)
 }
 
 
+static void pcb_draw_font(pcb_font_t *f, int x, int *y)
+{
+	char txt[256];
+	pcb_text_t *t;
+	pcb_snprintf(txt, sizeof(txt), "#%d [abc ABC 123] %s\n", f->id, f->name);
+
+	t = dtext(x, *y, 100, f->id, txt);
+	pcb_text_bbox(pcb_font(PCB, t->fid, 1), t);
+
+	*y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
+}
+
+
 static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 {
+	int y = 10;
+
+	dtext(0, 0, 150, 0, "Select font");
+
+	pcb_draw_font(&PCB->fontkit.dflt, 10, &y);
+
+	if (PCB->fontkit.hash_inited) {
+		htip_entry_t *e;
+		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
+			pcb_draw_font(&PCB->fontkit.dflt, 10, &y);
+	}
+
 }
 
 static void hid_draw_fontsel_uninit(void)
