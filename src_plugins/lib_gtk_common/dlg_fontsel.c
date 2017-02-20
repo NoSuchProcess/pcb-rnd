@@ -63,6 +63,7 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_font_t *fnt, in
 		p = (pcb_gtk_preview_t *) prv;
 /*		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
 		p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
+		gtk_widget_set_size_request(prv, 200, 200);
 	}
 
 
