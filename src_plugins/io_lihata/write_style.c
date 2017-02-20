@@ -270,12 +270,14 @@ static lhtpers_rule_t r_polygon[] = {
 static const char *pat_string[] = {"te:string", "*", NULL};
 static const char *pat_role[]   = {"te:role", "*", NULL};
 static const char *pat_scale[]  = {"te:scale", "*", NULL};
+static const char *pat_fid[]    = {"te:fid", "*", NULL};
 static const char *pat_direct[] = {"te:direction", "*", NULL};
 static lhtpers_rule_t r_text[] = {
 	{pat_string,     &style_inline, NULL},
 	{pat_x,          &style_inline, NULL},
 	{pat_y,          &style_inline, NULL},
 	{pat_scale,      &style_inline, NULL},
+	{pat_fid,        &style_inline, NULL},
 	{pat_direct,     &style_inline, NULL},
 	{pat_role,       &style_inline, NULL},
 	{lhtpers_early_end, &early_nl, NULL},
