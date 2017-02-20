@@ -26,9 +26,6 @@
  *
  */
 
-/** Implementation of \ref fixme_library widget.
-    This widget is calling another Dialog, upon "Edit" clicked button */
-
 /* This file originally from the PCB Gtk port by Bill Wilson. It has
  * since been combined with modified code from the gEDA project:
  *
@@ -78,14 +75,16 @@
 /** TODO temporary */
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
-/** \todo Open an empty file. Launch the Netlist window ... then :
-(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_widget_show_all: assertion 'GTK_IS_WIDGET (widget)' failed
-
-(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_tree_view_set_model: assertion 'GTK_IS_TREE_VIEW (tree_view)' failed
-Error: can't update netlist window: there is no netlist loaded.
-
-(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_window_present_with_time: assertion 'GTK_IS_WINDOW (window)' failed
+/** \todo Open an empty file. Launch the Netlist window ... then : \n <tt>
+(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_widget_show_all: assertion 'GTK_IS_WIDGET (widget)' failed \n
+(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_tree_view_set_model: assertion 'GTK_IS_TREE_VIEW (tree_view)' failed \n
+Error: can't update netlist window: there is no netlist loaded. \n
+(pcb-rnd:14394): Gtk-CRITICAL **: IA__gtk_window_present_with_time: assertion 'GTK_IS_WINDOW (window)' failed </tt>
 */
+
+/** \file   wt_library.c
+    \brief  Implementation of \ref pcb_gtk_library_t widget.
+ */
 
 static GtkWidget *library_window;
 
@@ -93,7 +92,7 @@ static GtkWidget *library_window;
 #warning TODO: figure how to pass gport from create() to the constructor
 static void *construct_gport_copy = NULL;
 
-/** The time interval between request and actual filtering
+/** The time interval between request and actual filtering.
 
     This constant is the time-lag between user modifications in the
     filter entry and the actual evaluation of the filter which
@@ -146,54 +145,6 @@ static void library_window_callback_response(GtkDialog * dialog, gint arg1, gpoi
 	}
 }
 
-/** Creates the library dialog if it is not already created.
-    It does not show the dialog, use FIXME ghid_library_window_show for that.
- */
-void ghid_library_window_create(void *gport)
-{
-	GtkWidget *current_tab, *entry_filter;
-	GtkNotebook *notebook;
-
-	if (library_window)
-		return;
-
-	construct_gport_copy = gport;
-	library_window = (GtkWidget *) g_object_new(GHID_TYPE_LIBRARY_WINDOW, NULL);
-
-	g_signal_connect(library_window, "response", G_CALLBACK(library_window_callback_response), NULL);
-	g_signal_connect(G_OBJECT(library_window), "configure_event", G_CALLBACK(library_window_configure_event_cb), NULL);
-	gtk_window_set_default_size(GTK_WINDOW(library_window), hid_gtk_wgeo.library_width, hid_gtk_wgeo.library_height);
-
-	gtk_window_set_title(GTK_WINDOW(library_window), _("pcb-rnd Library"));
-	gtk_window_set_role(GTK_WINDOW(library_window), "PCB_Library");
-
-	wplc_place(WPLC_LIBRARY, library_window);
-
-	gtk_widget_realize(library_window);
-
-	gtk_editable_select_region(GTK_EDITABLE(GHID_LIBRARY_WINDOW(library_window)->entry_filter), 0, -1);
-
-	/* Set the focus to the filter entry only if it is in the current
-	   displayed tab */
-	notebook = GTK_NOTEBOOK(GHID_LIBRARY_WINDOW(library_window)->viewtabs);
-	current_tab = gtk_notebook_get_nth_page(notebook, gtk_notebook_get_current_page(notebook));
-	entry_filter = GTK_WIDGET(GHID_LIBRARY_WINDOW(library_window)->entry_filter);
-	if (gtk_widget_is_ancestor(entry_filter, current_tab)) {
-		gtk_widget_grab_focus(entry_filter);
-	}
-}
-
-/** Shows the library dialog, creating it if it is not already created, and
-    presents it to the user (brings it to the front with focus).
- */
-void ghid_library_window_show(void *gport, gboolean raise)
-{
-	ghid_library_window_create(gport);
-	gtk_widget_show_all(library_window);
-	if (raise)
-		gtk_window_present(GTK_WINDOW(library_window));
-}
-
 static GObjectClass *library_window_parent_class = NULL;
 
 /** Determines visibility of items of the library treeview.
@@ -207,7 +158,7 @@ static GObjectClass *library_window_parent_class = NULL;
  */
 static gboolean lib_model_filter_visible_func(GtkTreeModel * model, GtkTreeIter * iter, gpointer data)
 {
-	GhidLibraryWindow *library_window = (GhidLibraryWindow *) data;
+	pcb_gtk_library_t *library_window = (pcb_gtk_library_t *) data;
 	const gchar *compname;
 	gchar *compname_upper, *text_upper, *pattern;
 	const gchar *text_;
@@ -391,7 +342,7 @@ static gboolean tree_row_key_pressed(GtkTreeView * tree_view, GdkEventKey * even
 	return TRUE;
 }
 
-static void library_window_preview_refresh(GhidLibraryWindow * library_window, const char *name, pcb_fplibrary_t * entry)
+static void library_window_preview_refresh(pcb_gtk_library_t * library_window, const char *name, pcb_fplibrary_t * entry)
 {
 	GString *pt;
 	char *fullp;
@@ -449,7 +400,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
 {
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	GhidLibraryWindow *library_window = (GhidLibraryWindow *) user_data;
+	pcb_gtk_library_t *library_window = (pcb_gtk_library_t *) user_data;
 	pcb_fplibrary_t *entry = NULL;
 
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -476,7 +427,7 @@ static void library_window_callback_tree_selection_changed(GtkTreeSelection * se
  */
 static gboolean library_window_filter_timeout(gpointer data)
 {
-	GhidLibraryWindow *library_window = GHID_LIBRARY_WINDOW(data);
+	pcb_gtk_library_t *library_window = GHID_LIBRARY_WINDOW(data);
 	GtkTreeModel *model;
 
 	/* resets the source id in library_window */
@@ -519,7 +470,7 @@ static gboolean library_window_filter_timeout(gpointer data)
  */
 static void library_window_callback_filter_entry_changed(GtkEditable * editable, gpointer user_data)
 {
-	GhidLibraryWindow *library_window = GHID_LIBRARY_WINDOW(user_data);
+	pcb_gtk_library_t *library_window = GHID_LIBRARY_WINDOW(user_data);
 	GtkWidget *button;
 	gboolean sensitive;
 
@@ -540,19 +491,19 @@ static void library_window_callback_filter_entry_changed(GtkEditable * editable,
 }
 
 /** Handles a click on the clear button.
-   
+
     This is the callback function called every time the user press the
     clear button associated with the filter.
-  
+
     It resets the filter entry, indirectly causing re-evaluation
     of the filter on the list of symbols to update the display.
-  
+
     \param editable      The filter text entry.
     \param user_data     The library dialog.
  */
 static void library_window_callback_filter_button_clicked(GtkButton * button, gpointer user_data)
 {
-	GhidLibraryWindow *library_window = GHID_LIBRARY_WINDOW(user_data);
+	pcb_gtk_library_t *library_window = GHID_LIBRARY_WINDOW(user_data);
 
 	/* clears text in text entry for filter */
 	gtk_entry_set_text(library_window->entry_filter, "");
@@ -564,7 +515,7 @@ static void library_window_callback_filter_button_clicked(GtkButton * button, gp
     Creates a tree where the branches are the available library
     sources and the leaves are the footprints.
  */
-static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore * tree, GhidLibraryWindow * library_window,
+static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore * tree, pcb_gtk_library_t * library_window,
 																									 pcb_fplibrary_t * parent, GtkTreeIter * iter_parent)
 {
 	GtkTreeIter p_iter;
@@ -581,7 +532,7 @@ static GtkTreeModel *create_lib_tree_model_recurse(GtkTreeStore * tree, GhidLibr
 	return (GtkTreeModel *) tree;
 }
 
-static GtkTreeModel *create_lib_tree_model(GhidLibraryWindow * library_window)
+static GtkTreeModel *create_lib_tree_model(pcb_gtk_library_t * library_window)
 {
 	GtkTreeStore *tree = gtk_tree_store_new(N_MENU_COLUMNS, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_POINTER);
 	return create_lib_tree_model_recurse(tree, library_window, &pcb_library, NULL);
@@ -595,7 +546,7 @@ static GtkTreeModel *create_lib_tree_model(GhidLibraryWindow * library_window)
  */
 static void library_window_callback_refresh_library(GtkButton * button, gpointer user_data)
 {
-	GhidLibraryWindow *library_window = GHID_LIBRARY_WINDOW(user_data);
+	pcb_gtk_library_t *library_window = GHID_LIBRARY_WINDOW(user_data);
 	GtkTreeModel *model;
 
 	/* Rescan the libraries for symbols */
@@ -612,7 +563,7 @@ static void library_window_callback_refresh_library(GtkButton * button, gpointer
 #endif
 
 /** Creates the treeview for the "Library" view */
-static GtkWidget *create_lib_treeview(GhidLibraryWindow * library_window)
+static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 {
 	GtkWidget *libtreeview, *vbox, *scrolled_win, *label, *hbox, *entry, *button;
 	GtkTreeModel *child_model, *model;
@@ -742,7 +693,7 @@ static GtkWidget *create_lib_treeview(GhidLibraryWindow * library_window)
 static GObject *library_window_constructor(GType type, guint n_construct_properties, GObjectConstructParam * construct_params)
 {
 	GObject *object;
-	GhidLibraryWindow *library_window;
+	pcb_gtk_library_t *library_window;
 	GtkWidget *content_area;
 	GtkWidget *hpaned, *notebook;
 	GtkWidget *libview;
@@ -835,7 +786,7 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 /** */
 static void library_window_finalize(GObject * object)
 {
-	GhidLibraryWindow *library_window = GHID_LIBRARY_WINDOW(object);
+	pcb_gtk_library_t *library_window = GHID_LIBRARY_WINDOW(object);
 
 	if (library_window->filter_timeout != 0) {
 		g_source_remove(library_window->filter_timeout);
@@ -846,7 +797,7 @@ static void library_window_finalize(GObject * object)
 }
 
 /** */
-static void library_window_class_init(GhidLibraryWindowClass * klass)
+static void library_window_class_init(pcb_gtk_library_class_t * klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 
@@ -858,19 +809,19 @@ static void library_window_class_init(GhidLibraryWindowClass * klass)
 
 /* API */
 
-GType ghid_library_window_get_type()
+GType pcb_gtk_library_get_type()
 {
 	static GType library_window_type = 0;
 
 	if (!library_window_type) {
 		static const GTypeInfo library_window_info = {
-			sizeof(GhidLibraryWindowClass),
+			sizeof(pcb_gtk_library_class_t),
 			NULL,											/* base_init */
 			NULL,											/* base_finalize */
 			(GClassInitFunc) library_window_class_init,
 			NULL,											/* class_finalize */
 			NULL,											/* class_data */
-			sizeof(GhidLibraryWindow),
+			sizeof(pcb_gtk_library_t),
 			0,												/* n_preallocs */
 			NULL											/* instance_init */
 		};
@@ -879,4 +830,46 @@ GType ghid_library_window_get_type()
 	}
 
 	return library_window_type;
+}
+
+void pcb_gtk_library_create(void *gport)
+{
+	GtkWidget *current_tab, *entry_filter;
+	GtkNotebook *notebook;
+
+	if (library_window)
+		return;
+
+	construct_gport_copy = gport;
+	library_window = (GtkWidget *) g_object_new(GHID_TYPE_LIBRARY_WINDOW, NULL);
+
+	g_signal_connect(library_window, "response", G_CALLBACK(library_window_callback_response), NULL);
+	g_signal_connect(G_OBJECT(library_window), "configure_event", G_CALLBACK(library_window_configure_event_cb), NULL);
+	gtk_window_set_default_size(GTK_WINDOW(library_window), hid_gtk_wgeo.library_width, hid_gtk_wgeo.library_height);
+
+	gtk_window_set_title(GTK_WINDOW(library_window), _("pcb-rnd Library"));
+	gtk_window_set_role(GTK_WINDOW(library_window), "PCB_Library");
+
+	wplc_place(WPLC_LIBRARY, library_window);
+
+	gtk_widget_realize(library_window);
+
+	gtk_editable_select_region(GTK_EDITABLE(GHID_LIBRARY_WINDOW(library_window)->entry_filter), 0, -1);
+
+	/* Set the focus to the filter entry only if it is in the current
+	   displayed tab */
+	notebook = GTK_NOTEBOOK(GHID_LIBRARY_WINDOW(library_window)->viewtabs);
+	current_tab = gtk_notebook_get_nth_page(notebook, gtk_notebook_get_current_page(notebook));
+	entry_filter = GTK_WIDGET(GHID_LIBRARY_WINDOW(library_window)->entry_filter);
+	if (gtk_widget_is_ancestor(entry_filter, current_tab)) {
+		gtk_widget_grab_focus(entry_filter);
+	}
+}
+
+void pcb_gtk_library_show(void *gport, gboolean raise)
+{
+	pcb_gtk_library_create(gport);
+	gtk_widget_show_all(library_window);
+	if (raise)
+		gtk_window_present(GTK_WINDOW(library_window));
 }

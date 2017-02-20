@@ -24,28 +24,24 @@
 #include <gtk/gtk.h>
 #include "hid.h"
 
-/**
-    GhidLibraryWindow is a subclass of GtkDialog
- */
-
-#define GHID_TYPE_LIBRARY_WINDOW           (ghid_library_window_get_type())
-#define GHID_LIBRARY_WINDOW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_LIBRARY_WINDOW, GhidLibraryWindow))
-#define GHID_LIBRARY_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass),  GHID_TYPE_LIBRARY_WINDOW, GhidLibraryWindowClass))
+#define GHID_TYPE_LIBRARY_WINDOW           (pcb_gtk_library_get_type())
+#define GHID_LIBRARY_WINDOW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_LIBRARY_WINDOW, pcb_gtk_library_t))
+#define GHID_LIBRARY_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass),  GHID_TYPE_LIBRARY_WINDOW, pcb_gtk_library_class_t))
 #define GHID_IS_LIBRARY_WINDOW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GHID_TYPE_LIBRARY_WINDOW))
-#define GHID_GET_LIBRARY_WINDOW_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  GHID_TYPE_LIBRARY, GhidLibraryWindowClass))
+#define GHID_GET_LIBRARY_WINDOW_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  GHID_TYPE_LIBRARY, pcb_gtk_library_class_t))
 
-/** */
-typedef struct _GhidLibraryWindowClass GhidLibraryWindowClass;
-/** */
-typedef struct _GhidLibraryWindow GhidLibraryWindow;
+/** The _library_ widget Class. A subclass of GtkDialogClass. */
+typedef struct pcb_gtk_library_class_s pcb_gtk_library_class_t;
+/** The _library_ widget. */
+typedef struct pcb_gtk_library_s pcb_gtk_library_t;
 
-/** */
-struct _GhidLibraryWindowClass {
+/** The widget Class data. */
+struct pcb_gtk_library_class_s {
 	GtkDialogClass parent_class;
 };
 
-/** */
-struct _GhidLibraryWindow {
+/** The widget data. */
+struct pcb_gtk_library_s {
 	GtkDialog parent_instance;
 
 	GtkWidget *hpaned;
@@ -60,14 +56,20 @@ struct _GhidLibraryWindow {
 	void *gport;
 };
 
-/** */
-GType ghid_library_window_get_type(void);
+/** \return     the GType identifier associated with \ref pcb_gtk_library_t. */
+GType pcb_gtk_library_get_type(void);
 
-/** */
-void ghid_library_window_create(void *gport);
+/** Creates the _library_ dialog if it is not already created.
+    It does not show the dialog ; use \ref pcb_gtk_library_show () for that. */
+void pcb_gtk_library_create(void *gport);
 
-/** */
-void ghid_library_window_show(void *gport, gboolean raise);
+/** Shows the _library_ dialog, creating it if it is not already created, and
+    presents it to the user (brings it to the front with focus), depending on 
+    \p raise.
+    \param gport    Temporary ?
+    \param raise    if `TRUE`, presents the window.
+ */
+void pcb_gtk_library_show(void *gport, gboolean raise);
 
 /* Temporary back references to hid_gtk */
 gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall,
