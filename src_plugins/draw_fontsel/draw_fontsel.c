@@ -157,8 +157,12 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 	switch(kind) {
 		case PCB_HID_MOUSE_PRESS:
 			fid = lookup_fid_for_coord(y);
-			if (fid >= 0)
-				pcb_trace("CLICK on %d\n", fid);
+			if (fid >= 0) {
+				char sval[128];
+				sprintf(sval, "%ld", fid);
+				conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
+				return 1;
+			}
 	}
 	return 0;
 }
