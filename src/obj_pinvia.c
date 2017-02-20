@@ -886,6 +886,7 @@ static void _draw_pv_name(pcb_pin_t * pv)
 	text.Scale = 56 * pv->Thickness / PCB_FONT_CAPHEIGHT;
 	text.X = box.X1;
 	text.Y = box.Y1;
+	text.fid = 0;
 	text.Direction = vert ? 1 : 0;
 
 	if (pcb_gui->gui)

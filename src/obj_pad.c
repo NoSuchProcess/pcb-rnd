@@ -365,6 +365,7 @@ static void draw_pad_name(pcb_pad_t * pad)
 	text.Scale = 90 * pad->Thickness / PCB_FONT_CAPHEIGHT;
 	text.X = box.X1;
 	text.Y = box.Y1;
+	text.fid = 0;
 	text.Direction = vert ? 1 : 0;
 
 	DrawTextLowLevel(&text, 0);
