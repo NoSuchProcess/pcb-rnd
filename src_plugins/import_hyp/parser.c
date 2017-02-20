@@ -97,6 +97,18 @@ pcb_coord_t layer_clearance[PCB_MAX_LAYER];	/* separation between fill copper an
 char *net_name;									/* name of current copper */
 pcb_coord_t net_clearance;			/* distance between PLANE polygon and net copper */
 
+/* devices */
+
+typedef struct device_s {
+	char *ref;
+	char *name;										/* optional */
+	char *value;									/* optional */
+	char *layer_name;
+	struct device_s *next;
+} device_t;
+
+device_t *device_head;
+
 /* padstack */
 
 typedef struct padstack_s {
@@ -227,6 +239,9 @@ void hyp_init(void)
 	padstack_head = NULL;
 	current_padstack = NULL;
 
+	/* clear devices */
+	device_head = NULL;
+
 	/* clear polygon data */
 	polygon_head = NULL;
 	current_polygon = NULL;
@@ -300,6 +315,60 @@ padstack_t *hyp_padstack_by_name(char *padstack_name)
 		if (strcmp(i->name, padstack_name) == 0)
 			return i;
 	return NULL;
+}
+
+/*
+ * find hyperlynx device by name 
+ */
+
+device_t *hyp_device_by_name(char *device_name)
+{
+	device_t *i;
+	for (i = device_head; i != NULL; i = i->next)
+		if (strcmp(i->ref, device_name) == 0)
+			return i;
+	return NULL;
+}
+
+/*
+ * create pcb element by name
+ * parameters: name, (x, y) coordinates of element text.
+ */
+
+pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_element_t *elem;
+	pcb_flag_t flags;
+	pcb_uint8_t text_direction = 0;
+	int text_scale = 100;
+
+	flags = pcb_no_flags();
+	/* does the device already exist? */
+	elem = pcb_search_elem_by_name(hyp_dest, element_name);
+	if (elem == NULL) {
+		/* device needs to be created. Search in DEVICE records. */
+		device_t *dev = hyp_device_by_name(element_name);
+		if (dev != NULL) {
+			/* device on component or solder side? */
+			if ((dev->layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(dev->layer_name)) & PCB_LYT_BOTTOM))
+				pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
+			/* create */
+			if (hyp_debug)
+				pcb_printf("creating device \"%s\".\n", dev->ref);
+			elem =
+				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), flags, dev->name, dev->ref, dev->value, x, y, text_direction,
+												text_scale, pcb_no_flags(), pcb_false);
+		}
+		else {
+			/* no device with this name exists, and no such device has been listed in a DEVICE record. Let's create the device anyhow so we can continue. Assume device is on component side. */
+			pcb_printf("device \"%s\" not specified in DEVICE record. continuing.\n", element_name);
+			elem =
+				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), element_name, element_name, NULL, x, y, text_direction,
+												text_scale, pcb_no_flags(), pcb_false);
+		}
+	}
+
+	return elem;
 }
 
 /*
@@ -1023,13 +1092,8 @@ pcb_bool exec_plane(parse_param * h)
 
 pcb_bool exec_devices(parse_param * h)
 {
-	char *description = NULL;
-	char *name = NULL;
-	char *value = NULL;
-	pcb_coord_t text_x = 0;
-	pcb_coord_t text_y = 0;
-	pcb_uint8_t text_direction = 0;
-	int text_scale = 100;
+	device_t *new_device;
+	char value[128];
 
 	if (hyp_debug) {
 		pcb_printf("device: device_type = \"%s\" ref = \"%s\"", h->device_type, h->ref);
@@ -1046,26 +1110,31 @@ pcb_bool exec_devices(parse_param * h)
 		pcb_printf("\n");
 	}
 
-	/* create pcb element */
+	/* add device to list  */
+	new_device = malloc(sizeof(device_t));
+
+	new_device->ref = pcb_strdup(h->ref);
+
+	new_device->name = NULL;
 	if (h->name_set)
-		description = pcb_strdup(h->name);
-	else
-		description = pcb_strdup("?");
-	name = pcb_strdup(h->ref);
-	value = pcb_strdup("?");
+		new_device->name = pcb_strdup(h->name);
+
+
+	new_device->value = NULL;
 	if (h->value_string_set)
-		value = pcb_strdup(h->value_string);
-	if (h->value_float_set) {
+		new_device->value = pcb_strdup(h->value_string);
+	else if (h->value_float_set) {
 		/* convert double to string */
-		value = (char *) malloc(128);
-		if (value != NULL)
-			pcb_snprintf(value, sizeof(value), "%f", h->value_float);
+		pcb_snprintf(value, sizeof(value), "%f", h->value_float);
+		new_device->value = pcb_strdup(value);
 	}
 
-	/* place the device at (0.0) for the moment being. when a pin is assigned, move the position to the pin position */
+	new_device->layer_name = NULL;
+	if (h->layer_name_set)
+		new_device->layer_name = pcb_strdup(h->layer_name);
 
-	pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), description, name, value, text_x, text_y, text_direction,
-									text_scale, pcb_no_flags(), pcb_false);
+	new_device->next = device_head;
+	device_head = new_device;
 
 	return 0;
 }
@@ -1412,9 +1481,9 @@ pcb_bool exec_via_v1(parse_param * h)
 
 pcb_bool exec_pin(parse_param * h)
 {
-	pcb_element_t *component;
+	pcb_element_t *device;
 	padstack_t *padstack;
-	char *component_name = NULL;
+	char *device_name = NULL;
 	char *pin_name = NULL;
 	char *dot = NULL;
 	char *pin_net_name = NULL;
@@ -1440,21 +1509,22 @@ pcb_bool exec_pin(parse_param * h)
 	else
 		pin_net_name = pcb_strdup("?");
 
-	/* h->pin_reference has format 'component_name.pin_name' */
-	component_name = pcb_strdup(h->pin_reference);
+	/* h->pin_reference has format 'device_name.pin_name' */
+	device_name = pcb_strdup(h->pin_reference);
 	pin_name = pcb_strdup("?");
-	dot = strrchr(component_name, '.');
+	dot = strrchr(device_name, '.');
 	if (dot != NULL) {
 		*dot = '\0';
 		pin_name = pcb_strdup(dot + 1);
 		if (hyp_debug)
-			pcb_printf("pin: component_name = \"%s\" pin_name = \"%s\"\n", component_name, pin_name);
+			pcb_printf("pin: device_name = \"%s\" pin_name = \"%s\"\n", device_name, pin_name);
 	}
 
-	/* find component by name */
-	component = pcb_search_elem_by_name(hyp_dest, component_name);
-	if (component == NULL) {
-		pcb_printf("pin: component \"%s\" not found. skipping pin \"%s\"\n", component_name, h->pin_reference);
+	/* find device by name */
+	device = hyp_create_element_by_name(device_name, x2coord(h->x), y2coord(h->y));
+
+	if (device == NULL) {
+		pcb_printf("pin: device \"%s\" not found. skipping pin \"%s\"\n", device_name, h->pin_reference);
 		return 0;
 	}
 
@@ -1465,15 +1535,11 @@ pcb_bool exec_pin(parse_param * h)
 		return 0;
 	}
 
-	/* add new pin */
-	pcb_element_pin_new(component, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
-											padstack->drill_hole, pin_net_name, pin_name, padstack->flags);
+	/* what if padstack = single layer & no drill ?  SMD XXX */
 
-#ifdef XXX
-	/* XXX causes crash */
-	/* move component to pin location */
-	pcb_element_move(hyp_dest, component, x2coord(h->x), y2coord(h->y));
-#endif
+	/* add new pin */
+	pcb_element_pin_new(device, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
+											padstack->drill_hole, pin_net_name, pin_name, padstack->flags);
 
 	return 0;
 }
@@ -1488,11 +1554,9 @@ pcb_bool exec_pad(parse_param * h)
 	pcb_coord_t thickness;
 	pcb_coord_t clearance;
 	pcb_coord_t mask;
-	pcb_element_t *component;
+	pcb_element_t *device;
 	pcb_flag_t flags;
-	char pad_component[] = "hyperlynx_pad";
-	pcb_uint8_t text_direction = 0;
-	int text_scale = 100;
+	char hyperlynx_pad[] = "hyperlynx_pad";
 
 	if (hyp_debug) {
 		pcb_printf("pad: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
@@ -1509,11 +1573,12 @@ pcb_bool exec_pad(parse_param * h)
 		pcb_printf("\n");
 	}
 
-	/* if necessary, create a device to connect the pad to */
-	component = pcb_search_elem_by_name(hyp_dest, pad_component);
-	if (component == NULL)
-		component = pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), pad_component, pad_component, "?",
-																x2coord(h->x), y2coord(h->y), text_direction, text_scale, pcb_no_flags(), pcb_false);
+	/* if necessary, create an element to connect the pad to */
+	device = hyp_create_element_by_name(hyperlynx_pad, x2coord(h->x), y2coord(h->y));
+	if (device == NULL) {
+		pcb_printf("pad: can't create element. skipping pad.\n");
+		return 0;
+	}
 
 	/* add new pad */
 	flags = pcb_no_flags();
@@ -1525,18 +1590,16 @@ pcb_bool exec_pad(parse_param * h)
 		pcb_flag_add(flags, PCB_FLAG_OCTAGON);
 
 	if (h->layer_name_set && (h->layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(h->layer_name)) & PCB_LYT_BOTTOM))
-		pcb_flag_add(flags, PCB_SOLDER_SIDE);
-	else
-		pcb_flag_add(flags, PCB_COMPONENT_SIDE);
+		pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
 
 	if (h->via_pad_sx_set && h->via_pad_sy_set)
 		mask = thickness = (xy2coord(h->via_pad_sx) + xy2coord(h->via_pad_sy)) * 0.5;
 	else
 		mask = thickness = 0;
 
-	clearance = 2 * hyp_clearance(h);
+	clearance = 2 * hyp_clearance(h); /* XXX hyp_layer_clearance */
 
-	pcb_element_pin_new(component, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, 0, net_name, "?", flags);
+	pcb_element_pin_new(device, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, 0, net_name, "?", flags);
 
 	return 0;
 }

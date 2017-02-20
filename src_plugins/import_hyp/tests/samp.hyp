@@ -32,6 +32,7 @@
   (PLANE  T=0.000700 L=solder PS=0.001000)
 }
 {DEVICES
+  (? REF=U1 NAME=BC548 L=component)
 }
 {PADSTACK=roundpad, 0.2
   (MDEF, 0, 0.5, 0.5, 0)
@@ -130,11 +131,22 @@
   (VIA X=13 Y=2 P=squarepad)
   (VIA X=13 Y=3 P=oblongpad)
   (VIA X=13 Y=4 P=nodrill)
+  (SEG X1=13 Y1=1 X2=13 Y2=2 W=0.1 L=component)
+  (SEG X1=13 Y1=2 X2=13 Y2=3 W=0.1 L=component)
+  (SEG X1=13 Y1=3 X2=13 Y2=4 W=0.1 L=component)
 }
 {NET=oldviatst
   (VIA X=14 Y=1 D=0.2 L1=component S1=ROUND S1X=0.5 S1Y=0.5)
-  (VIA X=14 Y=2 D=0.2 L1=component S1=RECT S1X=0.5 S1Y=0.5)
-  (VIA X=14 Y=3 D=0.2 L1=component S1=OBLONG S1X=0.5 S1Y=0.5)
-  (VIA X=14 Y=4 D=0.0 L1=component S1=ROUND S1X=0.5 S1Y=0.5)
+  (VIA X=14 Y=2 D=0.2 L1=component L2=solder S1=RECT S1X=0.5 S1Y=0.5)
+  (VIA X=14 Y=3 D=0.2 L1=component L2=solder S1=OBLONG S1X=0.5 S1Y=0.5)
+  (VIA X=14 Y=4 D=0.0 L1=component L2=solder S1=ROUND S1X=0.5 S1Y=0.5)
+  (SEG X1=14 Y1=1 X2=14 Y2=2 W=0.1 L=component)
+  (SEG X1=14 Y1=2 X2=14 Y2=3 W=0.1 L=component)
+  (SEG X1=14 Y1=3 X2=14 Y2=4 W=0.1 L=component)
+}
+{NET=pintst
+  (PIN X=15 Y=1 R=U1.1 P=squarepad)
+  (PIN X=16 Y=1 R=U1.2 P=roundpad)
+  (PIN X=17 Y=1 R=U1.3 P=roundpad)
 }
 {END}

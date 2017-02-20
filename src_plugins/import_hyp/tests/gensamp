@@ -60,6 +60,7 @@ print "  (DIELECTRIC T=0.002000 C=4.000000)"
 print "  (PLANE  T=0.000700 L=solder PS=0.001000)"
 print "}"
 print "{DEVICES"
+print "  (? REF=U1 NAME=BC548 L=component)"
 print "}"
 
 #
@@ -138,6 +139,9 @@ print "  (VIA X=13 Y=1 P=roundpad)"
 print "  (VIA X=13 Y=2 P=squarepad)"
 print "  (VIA X=13 Y=3 P=oblongpad)"
 print "  (VIA X=13 Y=4 P=nodrill)"
+print "  (SEG X1=13 Y1=1 X2=13 Y2=2 W=0.1 L=component)"
+print "  (SEG X1=13 Y1=2 X2=13 Y2=3 W=0.1 L=component)"
+print "  (SEG X1=13 Y1=3 X2=13 Y2=4 W=0.1 L=component)"
 print "}"
 
 #
@@ -146,9 +150,19 @@ print "}"
 
 print "{NET=oldviatst"
 print "  (VIA X=14 Y=1 D=0.2 L1=component S1=ROUND S1X=0.5 S1Y=0.5)"
-print "  (VIA X=14 Y=2 D=0.2 L1=component S1=RECT S1X=0.5 S1Y=0.5)"
-print "  (VIA X=14 Y=3 D=0.2 L1=component S1=OBLONG S1X=0.5 S1Y=0.5)"
-print "  (VIA X=14 Y=4 D=0.0 L1=component S1=ROUND S1X=0.5 S1Y=0.5)"
+print "  (VIA X=14 Y=2 D=0.2 L1=component L2=solder S1=RECT S1X=0.5 S1Y=0.5)"
+print "  (VIA X=14 Y=3 D=0.2 L1=component L2=solder S1=OBLONG S1X=0.5 S1Y=0.5)"
+print "  (VIA X=14 Y=4 D=0.0 L1=component L2=solder S1=ROUND S1X=0.5 S1Y=0.5)"
+print "  (SEG X1=14 Y1=1 X2=14 Y2=2 W=0.1 L=component)"
+print "  (SEG X1=14 Y1=2 X2=14 Y2=3 W=0.1 L=component)"
+print "  (SEG X1=14 Y1=3 X2=14 Y2=4 W=0.1 L=component)"
+print "}"
+
+print "{NET=pintst"
+# a through-hole transistor
+print "  (PIN X=15 Y=1 R=U1.1 P=squarepad)"
+print "  (PIN X=16 Y=1 R=U1.2 P=roundpad)"
+print "  (PIN X=17 Y=1 R=U1.3 P=roundpad)"
 print "}"
 
 print "{END}"
