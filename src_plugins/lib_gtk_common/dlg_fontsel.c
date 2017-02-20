@@ -29,13 +29,16 @@
 #include "dlg_fontsel.h"
 #include "compat.h"
 #include "bu_box.h"
+#include "layer.h"
+#include "wt_preview.h"
 
-void pcb_gtk_dlg_fontsel(GtkWidget *top_window, pcb_font_t *fnt, int modal)
+void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_font_t *fnt, int modal)
 {
 	GtkWidget *w;
 	GtkDialog *dialog;
-	GtkWidget *content_area;
+	GtkWidget *content_area, *prv;
 	GtkWidget *vbox;
+	pcb_layer_id_t lid;
 
 	w = gtk_dialog_new_with_buttons("PCB - font selector",
 																	GTK_WINDOW(top_window),
@@ -52,6 +55,16 @@ void pcb_gtk_dlg_fontsel(GtkWidget *top_window, pcb_font_t *fnt, int modal)
 
 	vbox = gtkc_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(content_area), vbox, TRUE, TRUE, 0);
+
+	if (pcb_layer_list(PCB_LYT_FONTSEL, &lid, 1) > 0) {
+		pcb_gtk_preview_t *p;
+		prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
+		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
+		p = (pcb_gtk_preview_t *) prv;
+/*		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
+		p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
+	}
+
 
 	gtk_widget_show_all(w);
 	gtk_window_set_modal(GTK_WINDOW(dialog), modal);

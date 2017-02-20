@@ -1729,7 +1729,7 @@ static const char pcb_acts_fontsel[] = "FontSel()\n";
 static const char pcb_acth_fontsel[] = "Select the font to draw new text with.";
 static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_gtk_dlg_fontsel(gport->top_window, NULL, 0);
+	pcb_gtk_dlg_fontsel(gport, gport->top_window, NULL, 0);
 }
 
 /* ------------------------------------------------------------ */
