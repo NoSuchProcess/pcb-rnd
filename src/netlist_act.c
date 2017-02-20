@@ -118,6 +118,12 @@ static int pcb_netlist_add(int patch, const char *netname, const char *pinname)
 	pcb_lib_menu_t *net = NULL;
 	pcb_lib_entry_t *pin = NULL;
 
+	if ((netname == NULL) || (pinname == NULL))
+		return -1;
+
+	if ((*netname == '\0') || (*pinname == '\0'))
+		return -1;
+
 	for (ni = 0; ni < netlist->MenuN; ni++) {
 		if (strcmp(netlist->Menu[ni].Name + 2, netname) == 0) {
 			net = &(netlist->Menu[ni]);
