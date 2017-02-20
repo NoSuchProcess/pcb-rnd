@@ -44,6 +44,7 @@ pcb_virt_layer_t pcb_virt_layers[] = {
 	{"plated-drill",   PCB_LYT_VIRTUAL + 6, PCB_LYT_VIRTUAL | PCB_LYT_PDRILL },
 	{"unplated-drill", PCB_LYT_VIRTUAL + 7, PCB_LYT_VIRTUAL | PCB_LYT_UDRILL },
 	{"csect",          PCB_LYT_VIRTUAL + 8, PCB_LYT_VIRTUAL | PCB_LYT_CSECT | PCB_LYT_LOGICAL },
+	{"fontsel",        PCB_LYT_VIRTUAL + 9, PCB_LYT_VIRTUAL | PCB_LYT_FONTSEL | PCB_LYT_LOGICAL | PCB_LYT_NOEXPORT },
 	{ NULL, 0 },
 };
 
@@ -311,6 +312,7 @@ pcb_layer_id_t pcb_layer_create_old(pcb_layer_type_t type, pcb_bool reuse_layer,
 			case PCB_LYT_PDRILL:
 			case PCB_LYT_UI:
 			case PCB_LYT_CSECT:
+			case PCB_LYT_FONTSEL:
 			case PCB_LYT_SUBSTRATE:
 			case PCB_LYT_MISC:
 				return -1; /* do not create virtual layers */
@@ -388,6 +390,7 @@ pcb_layer_id_t pcb_layer_create_old(pcb_layer_type_t type, pcb_bool reuse_layer,
 			case PCB_LYT_PDRILL:
 			case PCB_LYT_UI:
 			case PCB_LYT_CSECT:
+			case PCB_LYT_FONTSEL:
 			case PCB_LYT_SUBSTRATE:
 			case PCB_LYT_MISC:
 				return -1; /* do not create virtual layers */

@@ -146,6 +146,8 @@ static int remote_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 {
 	if (flags & PCB_LYT_UI) /* do not draw UI layers yet, we didn't create them */
 		return 0;
+	if (flags & PCB_LYT_NOEXPORT)
+		return 0;
 	if (flags & PCB_LYT_CSECT) /* do not draw cross-sect, we didn't create them */
 		return 0;
 	if (group >= 0)

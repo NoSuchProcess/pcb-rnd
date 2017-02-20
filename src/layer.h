@@ -56,10 +56,12 @@ typedef enum {
 	PCB_LYT_CSECT    = 0x00100000, /* (virtual) cross-section drawing (displaying layer groups) */
 	PCB_LYT_SUBSTRATE= 0x00200000, /* substrate / insulator */
 	PCB_LYT_MISC     = 0x00400000, /* misc physical layers (e.g. adhesive) */
+	PCB_LYT_FONTSEL  = 0x00800000, /* (virtual) font selector */
 	PCB_LYT_ANYTHING = 0x00FFFF00, /* MASK: layers consist anything */
 
 	/* misc properties */
 	PCB_LYT_VIRTUAL  = 0x01000000, /* the layer is not in the layer array (generated layer) */
+	PCB_LYT_NOEXPORT = 0x02000000, /* should not show up in any of the exports */
 	PCB_LYT_ANYPROP  = 0x7F000000  /* MASK: misc layer properties */
 } pcb_layer_type_t;
 
@@ -73,6 +75,7 @@ typedef enum {
 	PCB_VLY_PLATED_DRILL,
 	PCB_VLY_UNPLATED_DRILL,
 	PCB_VLY_CSECT,
+	PCB_VLY_FONTSEL,
 
 	/* for determining the range, do not use */
 	PCB_VLY_end,
