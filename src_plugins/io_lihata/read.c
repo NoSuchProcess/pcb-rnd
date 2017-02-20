@@ -516,6 +516,8 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_flags(&text->Flags, lht_dom_hash_get(obj, "flags"), PCB_TYPE_TEXT);
 	parse_int(&text->Scale, lht_dom_hash_get(obj, "scale"));
+	parse_int(&tmp, lht_dom_hash_get(obj, "fid"));
+	text->fid = tmp;
 	parse_int(&tmp, lht_dom_hash_get(obj, "direction"));
 	text->Direction = tmp;
 	parse_coord(&text->X, lht_dom_hash_get(obj, "x"));
