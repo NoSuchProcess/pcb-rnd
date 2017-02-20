@@ -43,6 +43,7 @@
 
 #include "obj_text.h"
 #include "obj_text_draw.h"
+#include "obj_line_draw.h"
 
 static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char *txt)
 {
