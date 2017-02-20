@@ -190,11 +190,14 @@ pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_c
 
 pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback)
 {
-	if (id == 0)
+	if (id >= 0)
 		return &pcb->fontkit.dflt;
 
-	if (pcb->fontkit.hash_inited)
-		return htip_get(&pcb->fontkit.fonts, id);
+	if (pcb->fontkit.hash_inited) {
+		pcb_font_t *f = htip_get(&pcb->fontkit.fonts, id);
+		if (f != NULL)
+			return f;
+	}
 
 	if (fallback)
 		return &pcb->fontkit.dflt;
