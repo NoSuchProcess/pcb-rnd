@@ -88,12 +88,20 @@ static void dchkbox(pcb_hid_gc_t gc, int x0, int y0, int checked)
 	}
 }
 
+#define MAX_FONT 128
+typedef struct {
+	int y1, y2;
+	pcb_font_id_t fid;
+} font_coord_t;
+font_coord_t font_coord[MAX_FONT];
+int font_coords;
 
 static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 {
 	char txt[256];
 	pcb_text_t *t;
 	const char *nm;
+	int y_old = *y;
 
 	nm = (f->name == NULL) ? "<anonymous>" : f->name;
 	pcb_snprintf(txt, sizeof(txt), "#%d [abc ABC 123] %s", f->id, nm);
@@ -105,6 +113,13 @@ static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 	pcb_text_bbox(pcb_font(PCB, f->id, 1), t);
 
 	*y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
+
+	if (font_coords < MAX_FONT) {
+		font_coord[font_coords].y1 = y_old;
+		font_coord[font_coords].y2 = *y;
+		font_coord[font_coords].fid = f->id;
+		font_coords++;
+	}
 }
 
 
@@ -115,7 +130,7 @@ static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 	pcb_gui->set_color(gc, "#FF0000");
 	dtext(0, 0, 300, 0, "Select font");
 
-
+	font_coords = 0;
 	pcb_draw_font(gc, &PCB->fontkit.dflt, 10, &y);
 
 	if (PCB->fontkit.hash_inited) {
@@ -123,7 +138,29 @@ static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
 			pcb_draw_font(gc, e->value, 10, &y);
 	}
+}
 
+static pcb_font_id_t lookup_fid_for_coord(pcb_coord_t y)
+{
+	int n, ymm;
+
+	ymm = PCB_COORD_TO_MM(y);
+	for(n = 0; n < font_coords; n++)
+		if ((ymm >= font_coord[n].y1) && (ymm <= font_coord[n].y2))
+			return font_coord[n].fid;
+	return -1;
+}
+
+static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_font_id_t fid;
+	switch(kind) {
+		case PCB_HID_MOUSE_PRESS:
+			fid = lookup_fid_for_coord(y);
+			if (fid >= 0)
+				pcb_trace("CLICK on %d\n", fid);
+	}
+	return 0;
 }
 
 static void hid_draw_fontsel_uninit(void)
@@ -133,5 +170,7 @@ static void hid_draw_fontsel_uninit(void)
 pcb_uninit_t hid_draw_fontsel_init(void)
 {
 	pcb_stub_draw_fontsel = pcb_draw_fontsel;
+	pcb_stub_draw_fontsel_mouse_ev = pcb_mouse_fontsel;
+
 	return hid_draw_fontsel_uninit;
 }

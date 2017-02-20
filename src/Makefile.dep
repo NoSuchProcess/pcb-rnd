@@ -335,7 +335,11 @@
  layer_grp.h library.h rats_patch.h board.h build_run.h data.h \
  crosshair.h vtonpoint.h hid.h error.h drc.h buffer.h draw.h font.h \
  obj_all.h plugins.h stub_draw.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h compat_misc.h obj_text.h obj_text_draw.h
+ ../src_3rd/genvector/gds_char.h compat_misc.h conf_core.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/liblihata/genht/htsp.h ../src_3rd/genvector/vtp0.h \
+ list_conf.h obj_text.h obj_text_draw.h
 ../src_plugins/export_bboard/bboard.o: \
  ../src_plugins/export_bboard/bboard.c ../config.h math_helper.h board.h \
  const.h macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h \
@@ -2250,7 +2254,7 @@
  ../src_plugins/lib_gtk_common/in_mouse.h hid_cfg_input.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- hid_cfg.h
+ hid_cfg.h stub_draw.h hid.h
 ../src_plugins/lib_gtk_common/dlg_input.o: \
  ../src_plugins/lib_gtk_common/dlg_input.c ../config.h \
  ../src_plugins/lib_gtk_common/dlg_input.h

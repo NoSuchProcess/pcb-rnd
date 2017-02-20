@@ -31,6 +31,7 @@
 #include "bu_box.h"
 #include "layer.h"
 #include "wt_preview.h"
+#include "stub_draw.h"
 
 void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_font_t *fnt, int modal)
 {
@@ -61,8 +62,8 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_font_t *fnt, in
 		prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
 		p = (pcb_gtk_preview_t *) prv;
-/*		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;
-		p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
+		p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;
+/*		p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
 		gtk_widget_set_size_request(prv, 200, 200);
 	}
 
