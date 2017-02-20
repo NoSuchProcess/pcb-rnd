@@ -94,6 +94,6 @@ static void hid_draw_fontsel_uninit(void)
 
 pcb_uninit_t hid_draw_fontsel_init(void)
 {
-/*	pcb_stub_draw_fontsel = DrawFab;*/
+	pcb_stub_draw_fontsel = pcb_draw_fontsel;
 	return hid_draw_fontsel_uninit;
 }
