@@ -503,6 +503,7 @@ ha:{
 				ha:Message Log = { action=DoWindows(Log) }
 				ha:Netlist = { action=DoWindows(Netlist) }
 				ha:Pinout = { a=Shift<Key>d; action=Display(Pinout) }
+				ha:Font selector  = { a=Ctrl Shift<Key>f; action=FontSel() }
 			}
 		} # Window
 

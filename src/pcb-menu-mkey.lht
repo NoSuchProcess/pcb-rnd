@@ -557,6 +557,7 @@ ha:{
 				ha:Netlist        = { action=DoWindows(Netlist) }
 				ha:Command Entry  = { a={<Key>:}; action=Command() }
 				ha:Pinout         = { a=Shift<Key>d; action=Display(Pinout) }
+				ha:Font selector  = { a=Ctrl Shift<Key>f; action=FontSel() }
 				-
 				ha:About...       = { a={<key>h;<key>a}; action=About() }
 			}
