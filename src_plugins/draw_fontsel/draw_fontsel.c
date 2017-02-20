@@ -63,7 +63,10 @@ static void pcb_draw_font(pcb_font_t *f, int x, int *y)
 {
 	char txt[256];
 	pcb_text_t *t;
-	pcb_snprintf(txt, sizeof(txt), "#%d [abc ABC 123] %s\n", f->id, f->name);
+	const char *nm;
+
+	nm = (f->name == NULL) ? "<anonymous>" : f->name;
+	pcb_snprintf(txt, sizeof(txt), "#%d [abc ABC 123] %s", f->id, nm);
 
 	t = dtext(x, *y, 200, f->id, txt);
 	pcb_text_bbox(pcb_font(PCB, t->fid, 1), t);
