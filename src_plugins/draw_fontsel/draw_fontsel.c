@@ -98,6 +98,7 @@ typedef struct {
 font_coord_t font_coord[MAX_FONT];
 int font_coords;
 int font_new_y1, font_new_y2;
+int font_del_y1, font_del_y2;
 
 static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 {
@@ -151,6 +152,14 @@ static void pcb_draw_fontsel(pcb_hid_gc_t gc)
 	y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
 	font_new_y2 = y;
 
+	/* Del font */
+	pcb_gui->set_color(gc, "#550000");
+	t = dtext(5, y, 250, 0, "[Remove current font]");
+	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+	font_del_y1 = y;
+	y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
+	font_del_y2 = y;
+
 }
 
 static pcb_font_id_t lookup_fid_for_coord(int ymm)
@@ -180,6 +189,15 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 			}
 			else if ((ymm >= font_new_y1) && (ymm <= font_new_y2)) {
 				pcb_hid_actionl("LoadFontFrom", NULL); /* modal, blocking */
+				return 1;
+			}
+			else if ((ymm >= font_del_y1) && (ymm <= font_del_y2)) {
+				if (conf_core.design.text_font_id == 0) {
+					pcb_message(PCB_MSG_ERROR, "Can not remove the default font.\n");
+					return 0;
+				}
+				pcb_del_font(&PCB->fontkit, conf_core.design.text_font_id);
+				conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE);
 				return 1;
 			}
 	}
