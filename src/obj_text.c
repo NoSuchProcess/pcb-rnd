@@ -111,16 +111,15 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	unsigned char *s = (unsigned char *) Text->TextString;
 	int i;
 	int space;
+	pcb_coord_t minx, miny, maxx, maxy, tx;
+	pcb_coord_t min_final_radius;
+	pcb_coord_t min_unscaled_radius;
+	pcb_bool first_time = pcb_true;
 
 	if (FontPtr == NULL)
 		FontPtr = pcb_font(PCB, Text->fid, 1);
 
 	symbol = FontPtr->Symbol;
-
-	pcb_coord_t minx, miny, maxx, maxy, tx;
-	pcb_coord_t min_final_radius;
-	pcb_coord_t min_unscaled_radius;
-	pcb_bool first_time = pcb_true;
 
 	minx = miny = maxx = maxy = tx = 0;
 
