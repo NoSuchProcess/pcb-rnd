@@ -340,7 +340,7 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 	pcb_element_t *elem;
 	pcb_flag_t flags;
 	pcb_uint8_t text_direction = 0;
-	int text_scale = 100;
+	int text_scale = 250;
 
 	flags = pcb_no_flags();
 	/* does the device already exist? */
@@ -351,7 +351,7 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 		if (dev != NULL) {
 			/* device on component or solder side? */
 			if ((dev->layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(dev->layer_name)) & PCB_LYT_BOTTOM))
-				pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
+				flags = pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
 			/* create */
 			if (hyp_debug)
 				pcb_printf("creating device \"%s\".\n", dev->ref);
@@ -363,8 +363,8 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 			/* no device with this name exists, and no such device has been listed in a DEVICE record. Let's create the device anyhow so we can continue. Assume device is on component side. */
 			pcb_printf("device \"%s\" not specified in DEVICE record. continuing.\n", element_name);
 			elem =
-				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), element_name, element_name, NULL, x, y, text_direction,
-												text_scale, pcb_no_flags(), pcb_false);
+				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), element_name, element_name, NULL, x, y,
+												text_direction, text_scale, pcb_no_flags(), pcb_false);
 		}
 	}
 
@@ -1541,6 +1541,9 @@ pcb_bool exec_pin(parse_param * h)
 	pcb_element_pin_new(device, x2coord(h->x), y2coord(h->y), padstack->thickness, padstack->clearance, padstack->mask,
 											padstack->drill_hole, pin_net_name, pin_name, padstack->flags);
 
+	/* update */
+	pcb_element_bbox(hyp_dest, device, pcb_font(PCB, 0, 1));
+
 	return 0;
 }
 
@@ -1585,21 +1588,25 @@ pcb_bool exec_pad(parse_param * h)
 
 	/* pad shape */
 	if (h->via_pad_shape_set && (h->via_pad_shape != NULL) && (strcmp(h->via_pad_shape, "RECT") == 0))
-		pcb_flag_add(flags, PCB_FLAG_SQUARE);
+		flags = pcb_flag_add(flags, PCB_FLAG_SQUARE);
 	else if (h->via_pad_shape_set && (h->via_pad_shape != NULL) && (strcmp(h->via_pad_shape, "OBLONG") == 0))
-		pcb_flag_add(flags, PCB_FLAG_OCTAGON);
+		flags = pcb_flag_add(flags, PCB_FLAG_OCTAGON);
 
 	if (h->layer_name_set && (h->layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(h->layer_name)) & PCB_LYT_BOTTOM))
-		pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
+		flags = pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
 
 	if (h->via_pad_sx_set && h->via_pad_sy_set)
 		mask = thickness = (xy2coord(h->via_pad_sx) + xy2coord(h->via_pad_sy)) * 0.5;
 	else
 		mask = thickness = 0;
 
-	clearance = 2 * hyp_clearance(h); /* XXX hyp_layer_clearance */
+	clearance = 2 * hyp_clearance(h);	/* XXX hyp_layer_clearance */
 
+	/* create */
 	pcb_element_pin_new(device, x2coord(h->x), y2coord(h->y), thickness, clearance, mask, 0, net_name, "?", flags);
+
+	/* update */
+	pcb_element_bbox(hyp_dest, device, pcb_font(PCB, 0, 1));
 
 	return 0;
 }
@@ -1625,7 +1632,7 @@ pcb_bool exec_useg(parse_param * h)
 		pcb_printf("\n");
 	}
 
-  /* XXX fixme. want to put an unrouted segment between two layers, not two layer groups. */
+	/* XXX fixme. want to put an unrouted segment between two layers, not two layer groups. */
 	/* lookup layer group begin and end layer are on */
 	layer1_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer1_name));
 	layer2_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer2_name));
@@ -2042,7 +2049,7 @@ pcb_bool exec_key(parse_param * h)
 pcb_bool exec_end(parse_param * h)
 {
 	if (hyp_debug)
-		pcb_printf("end\n");
+		pcb_printf("end.\n");
 
 	return 0;
 }

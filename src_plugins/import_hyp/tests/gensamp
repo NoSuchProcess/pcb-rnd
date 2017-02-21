@@ -160,9 +160,9 @@ print "}"
 
 print "{NET=pintst"
 # a through-hole transistor
-print "  (PIN X=15 Y=1 R=U1.1 P=squarepad)"
-print "  (PIN X=15 Y=2 R=U1.2 P=roundpad)"
-print "  (PIN X=15 Y=3 R=U1.3 P=roundpad)"
+print "  (PIN X=15 Y=1 R=U1.1 P=roundpad)"
+print "  (PIN X=15 Y=2 R=U1.2 P=squarepad)"
+print "  (PIN X=15 Y=3 R=U1.3 P=oblongpad)"
 print "}"
 
 print "{NET=padtst"

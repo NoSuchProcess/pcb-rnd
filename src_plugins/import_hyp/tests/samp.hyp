@@ -145,9 +145,9 @@
   (SEG X1=14 Y1=3 X2=14 Y2=4 W=0.1 L=component)
 }
 {NET=pintst
-  (PIN X=15 Y=1 R=U1.1 P=squarepad)
-  (PIN X=15 Y=2 R=U1.2 P=roundpad)
-  (PIN X=15 Y=3 R=U1.3 P=roundpad)
+  (PIN X=15 Y=1 R=U1.1 P=roundpad)
+  (PIN X=15 Y=2 R=U1.2 P=squarepad)
+  (PIN X=15 Y=3 R=U1.3 P=oblongpad)
 }
 {NET=padtst
   (PAD X=16 Y=1 L=component S=ROUND SX=0.5 SY=0.5)
