@@ -480,10 +480,12 @@ void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text)
 
 void pcb_text_set_font(pcb_layer_t *layer, pcb_text_t *text, pcb_font_id_t fid)
 {
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, layer, text);
 	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
 	text->fid = fid;
 	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 	pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, layer, text);
 }
 
 /*** draw ***/
