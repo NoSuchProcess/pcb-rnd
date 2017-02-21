@@ -192,6 +192,7 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 				}
 				else {
 					fontsel_txt->fid = fid;
+					pcb_gui->invalidate_all();
 				}
 				return 1;
 			}
