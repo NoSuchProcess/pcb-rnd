@@ -80,8 +80,10 @@ pcb_font_t *	yyFont;
 conf_role_t yy_settings_dest;
 pcb_flag_t yy_pcb_flags;
 int *yyFontkitValid;
+int yy_parse_tags;
 
 static int parse_number (void);
+static void add_tag(char *line);
 
 /* ---------------------------------------------------------------------------
  * an external prototypes
@@ -197,6 +199,7 @@ in	{ return T_IN; }
 						*p2 = '\0';
 						return(STRING);
 					}
+##.*				{ if (yy_parse_tags) { add_tag(yytext); }}
 #.*					{}
 [ \t]+				{}
 [\n]				{
@@ -222,7 +225,6 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 #ifdef FLEX_SCANNER
 	static	pcb_bool	firsttime = pcb_true;
 #endif
-
 	if (Pipe == NULL) {
 	if (PCB_EMPTY_STRING_P(Executable))
 	  {
@@ -321,6 +323,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	int ret;
 	pcb_fp_fopen_ctx_t st;
 
+	yy_parse_tags = 0;
 	yy_settings_dest = CFR_invalid;
 	yyPCB = NULL;
 	yyData = Ptr;
@@ -365,6 +368,7 @@ do { \
 int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
 {
 	int retval;
+	yy_parse_tags = 0;
 	yyPCB = Ptr;
 	yyData = NULL;
 	yyFont = NULL;
@@ -440,6 +444,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 {
 	int r = 0, valid;
+	yy_parse_tags = 1;
 	yyPCB = NULL;
 	yyFont = Ptr;
 	yyFontkitValid = &valid;
@@ -461,3 +466,23 @@ parse_number ()
   pcb_lval.number = strtod ((char *) yytext, NULL);
   return FLOATING;
 }
+
+static void add_tag(char *line)
+{
+	char *key, *val;
+	while((*line == '#') || isspace(*line)) line++;
+	key = line;
+	val = strchr(line, ':');
+	if (val != NULL) {
+		*val = '\0';
+		val++;
+	}
+	if (yyFont != NULL) {
+/*		printf("tag:%s=%s:\n", key,val); */
+		if (strcmp(key, "name") == 0) {
+			free(yyFont->name);
+			yyFont->name = pcb_strdup(val);
+		}
+	}
+}
+
