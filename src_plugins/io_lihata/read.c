@@ -526,7 +526,7 @@ static int parse_pcb_text(pcb_layer_t *ly, pcb_element_t *el, lht_node_t *obj)
 
 #warning TODO: get the font
 	if (ly != NULL)
-		pcb_add_text_on_layer(ly, text, pcb_font(PCB, 0, 1));
+		pcb_add_text_on_layer(ly, text, pcb_font(PCB, text->fid, 1));
 	if (el != NULL)
 		text->Element = el;
 
