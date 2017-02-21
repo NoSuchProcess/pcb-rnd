@@ -43,7 +43,7 @@ static int dlg_fontsel_global_latch = 0;
 static void fontsel_close_cb(gpointer ctx_)
 {
 	pcb_gtk_dlg_fontsel_t *ctx = ctx_;
-	gtk_widget_destroy(ctx->dialog);
+	gtk_widget_destroy(GTK_WIDGET(ctx->dialog));
 	if (ctx->txt == NULL)
 		dlg_fontsel_global_latch = 0;
 	free(ctx);
