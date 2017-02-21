@@ -56,6 +56,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text);
 void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text);
+void pcb_text_set_font(pcb_layer_t *layer, pcb_text_t *text, pcb_font_id_t fid);
 
 
 #define pcb_text_move(t,dx,dy)                                       \
