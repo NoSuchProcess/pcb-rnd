@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef PCB_HID_GTK_GUI_DRC_WINDOW_H
-#define PCB_HID_GTK_GUI_DRC_WINDOW_H
+#ifndef PCB_GTK_DLG_DRC_H
+#define PCB_GTK_DLG_DRC_H
 
 #include <gtk/gtk.h>
 
@@ -38,11 +38,12 @@
 typedef struct _GhidDrcViolationClass GhidDrcViolationClass;
 typedef struct _GhidDrcViolation GhidDrcViolation;
 
-
+/** */
 struct _GhidDrcViolationClass {
 	GObjectClass parent_class;
 };
 
+/** A _DRC violation_ object encapsulates data needed to describe a DRC error. */
 struct _GhidDrcViolation {
 	GObject parent_instance;
 
@@ -60,12 +61,12 @@ struct _GhidDrcViolation {
 	GdkDrawable *pixmap;
 };
 
-
+/** \return     the GType identifier associated with \ref FIXME. */
 GType ghid_drc_violation_get_type(void);
 
 GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation, GdkDrawable * pixmap);
 
-
+/*TODO: split in dlg_drc_cr.h */
 #define GHID_TYPE_VIOLATION_RENDERER           (ghid_violation_renderer_get_type())
 #define GHID_VIOLATION_RENDERER(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_VIOLATION_RENDERER, GhidViolationRenderer))
 #define GHID_VIOLATION_RENDERER_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  GHID_TYPE_VIOLATION_RENDERER, GhidViolationRendererClass))
@@ -75,7 +76,7 @@ GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation, GdkDra
 typedef struct _GhidViolationRendererClass GhidViolationRendererClass;
 typedef struct _GhidViolationRenderer GhidViolationRenderer;
 
-
+/** */
 struct _GhidViolationRendererClass {
 	GtkCellRendererTextClass parent_class;
 };
@@ -86,7 +87,7 @@ struct _GhidViolationRenderer {
 	GhidDrcViolation *violation;
 };
 
-
+/** \return     the GType identifier associated with \ref FIXME. */
 GType ghid_violation_renderer_get_type(void);
 
 GtkCellRenderer *ghid_violation_renderer_new(void);
@@ -100,4 +101,4 @@ int ghid_drc_window_throw_dialog(void);
 /* Temporary back reference to hid_gtk */
 GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth);
 
-#endif /* PCB_HID_GTK_GUI_DRC_WINDOW_H */
+#endif /* PCB_GTK_DLG_DRC_H */

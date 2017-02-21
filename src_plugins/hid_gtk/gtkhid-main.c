@@ -31,7 +31,6 @@
 
 #include "gtkhid-main.h"
 #include "ghid-main-menu.h"
-#include "gui-drc-window.h"
 #include "gui-command-window.h"
 #include "gui-top-window.h"
 
@@ -45,6 +44,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_about.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
 #include "../src_plugins/lib_gtk_common/dlg_confirm.h"
+#include "../src_plugins/lib_gtk_common/dlg_drc.h"
 #include "../src_plugins/lib_gtk_common/dlg_export.h"
 #include "../src_plugins/lib_gtk_common/dlg_file_chooser.h"
 #include "../src_plugins/lib_gtk_common/dlg_input.h"

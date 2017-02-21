@@ -35,7 +35,7 @@
 #include "layer.h"
 #include "pcb-printf.h"
 #include "undo.h"
-#include "gui-drc-window.h"
+#include "dlg_drc.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
 #include "obj_all.h"
@@ -47,9 +47,15 @@
 #include "obj_poly_draw.h"
 #include "layer_vis.h"
 
-#include "../src_plugins/lib_gtk_common/util_str.h"
-#include "../src_plugins/lib_gtk_common/win_place.h"
+#include "util_str.h"
+#include "win_place.h"
+
+/** TODO temporary */
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+
+/** \file   dlg_drc.c
+    \brief  Implementation of \ref FIXME dialog.
+ */
 
 #define VIOLATION_PIXMAP_PIXEL_SIZE   100
 #define VIOLATION_PIXMAP_PIXEL_BORDER 5
@@ -417,8 +423,6 @@ static void ghid_drc_violation_class_init(GhidViolationRendererClass * klass)
 																	g_param_spec_object("pixmap", "", "", GDK_TYPE_DRAWABLE, G_PARAM_WRITABLE));
 }
 
-
-
 /*! \brief Function to retrieve GhidViolationRenderer's GType identifier.
  *
  *  \par Function Description
@@ -452,6 +456,7 @@ GType ghid_drc_violation_get_type()
 	return ghid_drc_violation_type;
 }
 
+/* API */
 
 GhidDrcViolation *ghid_drc_violation_new(pcb_drc_violation_t * violation, GdkDrawable * pixmap)
 {
@@ -480,7 +485,6 @@ enum {
 
 static GObjectClass *ghid_violation_renderer_parent_class = NULL;
 
-
 /*! \brief GObject finalise handler
  *
  *  \par Function Description
@@ -498,7 +502,6 @@ static void ghid_violation_renderer_finalize(GObject * object)
 
 	G_OBJECT_CLASS(ghid_violation_renderer_parent_class)->finalize(object);
 }
-
 
 /*! \brief GObject property setter function
  *
@@ -561,7 +564,6 @@ static void ghid_violation_renderer_set_property(GObject * object, guint propert
 	free(markup);
 }
 
-
 /*! \brief GObject property getter function
  *
  *  \par Function Description
@@ -594,7 +596,6 @@ ghid_violation_renderer_get_size(GtkCellRenderer * cell,
 	if (height != NULL)
 		*height = MAX(*height, VIOLATION_PIXMAP_PIXEL_SIZE);
 }
-
 
 static void
 ghid_violation_renderer_render(GtkCellRenderer * cell,
@@ -638,7 +639,6 @@ ghid_violation_renderer_render(GtkCellRenderer * cell,
 										cell_area->y + VIOLATION_PIXMAP_PIXEL_BORDER, -1, -1);
 }
 
-
 /*! \brief GType class initialiser for GhidViolationRenderer
  *
  *  \par Function Description
@@ -664,7 +664,6 @@ static void ghid_violation_renderer_class_init(GhidViolationRendererClass * klas
 	g_object_class_install_property(gobject_class, PROP_VIOLATION,
 																	g_param_spec_object("violation", "", "", GHID_TYPE_DRC_VIOLATION, G_PARAM_WRITABLE));
 }
-
 
 /*! \brief Function to retrieve GhidViolationRenderer's GType identifier.
  *
@@ -699,7 +698,6 @@ GType ghid_violation_renderer_get_type()
 
 	return ghid_violation_renderer_type;
 }
-
 
 /*! \brief Convenience function to create a new violation renderer
  *
