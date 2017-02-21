@@ -1576,7 +1576,7 @@ pcb_bool exec_pad(parse_param * h)
 	/* if necessary, create an element to connect the pad to */
 	device = hyp_create_element_by_name(hyperlynx_pad, x2coord(h->x), y2coord(h->y));
 	if (device == NULL) {
-		pcb_printf("pad: can't create element. skipping pad.\n");
+		pcb_printf("pad: can't create device. skipping pad.\n");
 		return 0;
 	}
 
@@ -1625,6 +1625,7 @@ pcb_bool exec_useg(parse_param * h)
 		pcb_printf("\n");
 	}
 
+  /* XXX fixme. want to put an unrouted segment between two layers, not two layer groups. */
 	/* lookup layer group begin and end layer are on */
 	layer1_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer1_name));
 	layer2_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer2_name));

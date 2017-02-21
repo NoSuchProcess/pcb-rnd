@@ -146,7 +146,18 @@
 }
 {NET=pintst
   (PIN X=15 Y=1 R=U1.1 P=squarepad)
-  (PIN X=16 Y=1 R=U1.2 P=roundpad)
-  (PIN X=17 Y=1 R=U1.3 P=roundpad)
+  (PIN X=15 Y=2 R=U1.2 P=roundpad)
+  (PIN X=15 Y=3 R=U1.3 P=roundpad)
+}
+{NET=padtst
+  (PAD X=16 Y=1 L=component S=ROUND SX=0.5 SY=0.5)
+  (PAD X=16 Y=2 L=component S=RECT SX=0.5 SY=0.5)
+  (PAD X=16 Y=3 L=component S=OBLONG SX=0.5 SY=0.5)
+}
+{NET=usegtst
+  (USEG X1=17 Y1=1 L1=component X2=18 Y2=1 L2=component ZL=component ZW=0.1 ZLEN=2 )
+  (USEG X1=17 Y1=2 L1=component X2=18 Y2=2 L2=component Z=50 D=1e-12 R=5 )
+  (USEG X1=17 Y1=3 L1=component X2=18 Y2=3 L2=solder ZL=component ZW=0.1 ZLEN=2 )
+  (USEG X1=17 Y1=4 L1=component X2=18 Y2=4 L2=solder Z=50 D=1e-12 R=5 )
 }
 {END}

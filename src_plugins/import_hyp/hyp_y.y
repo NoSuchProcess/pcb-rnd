@@ -539,15 +539,20 @@ pin_function
   | H_F '=' H_SIM_BOTH { h.pin_function = PIN_SIM_BOTH; h.pin_function_set = pcb_true; }
   ;
 
-pad
-  : '(' H_PAD { new_record(); } /* deprecated hyperlynx v1.x only */
-    coord_point
-    layer_name
-    H_S '=' H_STRING  { h.via_pad_shape = yylval.strval; h.via_pad_shape_set = pcb_true; }
-    H_SX '=' H_FLOAT  { h.via_pad_sx = yylval.floatval; h.via_pad_sx_set = pcb_true; }
-    H_SY '=' H_FLOAT  { h.via_pad_sy = yylval.floatval; h.via_pad_sy_set = pcb_true; }
-    H_A '=' H_FLOAT   { h.via_pad_angle = yylval.floatval; h.via_pad_angle_set = pcb_true; }
-    ')' { if (exec_pad(&h)) YYERROR; } ;
+pad /* deprecated hyperlynx v1.x only */
+  : '(' H_PAD { new_record(); } coord_point pad_param_list ')' { if (exec_pad(&h)) YYERROR; } ;
+
+pad_param_list
+  : pad_param_list pad_param
+  | pad_param
+  ;
+
+pad_param
+  : layer_name
+  | H_S '=' H_STRING  { h.via_pad_shape = yylval.strval; h.via_pad_shape_set = pcb_true; }
+  | H_SX '=' H_FLOAT  { h.via_pad_sx = yylval.floatval; h.via_pad_sx_set = pcb_true; }
+  | H_SY '=' H_FLOAT  { h.via_pad_sy = yylval.floatval; h.via_pad_sy_set = pcb_true; }
+  | H_A '=' H_FLOAT   { h.via_pad_angle = yylval.floatval; h.via_pad_angle_set = pcb_true; }
   ;
 
 useg
