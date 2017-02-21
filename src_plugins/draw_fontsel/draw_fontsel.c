@@ -100,17 +100,20 @@ int font_coords;
 int font_new_y1, font_new_y2;
 int font_del_y1, font_del_y2;
 
+pcb_text_t *fontsel_txt = NULL;
+
 static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 {
 	char txt[256];
 	pcb_text_t *t;
 	const char *nm;
 	int y_old = *y;
+	pcb_font_id_t target_fid = (fontsel_txt == NULL) ? conf_core.design.text_font_id : fontsel_txt->fid;
 
 	nm = (f->name == NULL) ? "<anonymous>" : f->name;
 	pcb_snprintf(txt, sizeof(txt), "#%d [abc ABC 123] %s", f->id, nm);
 
-	dchkbox(gc, x-4, *y, (f->id == conf_core.design.text_font_id));
+	dchkbox(gc, x-4, *y, (f->id == target_fid));
 
 	pcb_gui->set_color(gc, "#000000");
 	t = dtext(x, *y, 200, f->id, txt);
@@ -182,9 +185,14 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 			ymm = PCB_COORD_TO_MM(y);
 			fid = lookup_fid_for_coord(ymm);
 			if (fid >= 0) {
-				char sval[128];
-				sprintf(sval, "%ld", fid);
-				conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
+				if (fontsel_txt == NULL) {
+					char sval[128];
+					sprintf(sval, "%ld", fid);
+					conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
+				}
+				else {
+					fontsel_txt->fid = fid;
+				}
 				return 1;
 			}
 			else if ((ymm >= font_new_y1) && (ymm <= font_new_y2)) {
@@ -212,6 +220,7 @@ pcb_uninit_t hid_draw_fontsel_init(void)
 {
 	pcb_stub_draw_fontsel = pcb_draw_fontsel;
 	pcb_stub_draw_fontsel_mouse_ev = pcb_mouse_fontsel;
+	pcb_stub_draw_fontsel_text_obj = &fontsel_txt;
 
 	return hid_draw_fontsel_uninit;
 }

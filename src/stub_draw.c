@@ -91,6 +91,8 @@ static void dummy_draw_fontsel(pcb_hid_gc_t gc)
 	dummy_draw_text(gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
 }
 
+static *dummy_fontsel_text;
+
 void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc) = dummy_draw_fontsel;
 pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
-
+pcb_text_t **pcb_stub_draw_fontsel_text_obj = &dummy_fontsel_text;

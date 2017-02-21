@@ -58,12 +58,22 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_text_t *txt, in
 	GtkWidget *vbox;
 	pcb_layer_id_t lid;
 	pcb_gtk_dlg_fontsel_t *ctx;
+	pcb_text_t *old_txt;
 
 	if (txt == NULL) {
 		if (dlg_fontsel_global_latch) /* do not open the global font selector twice */
 			return;
 		dlg_fontsel_global_latch = 1;
 	}
+	else {
+		if (!modal) {
+			pcb_message(PCB_MSG_ERROR, "text-targeted fontsel dialogs must be modal because of the global-var API on the txt object.\n");
+			return;
+		}
+	}
+
+	old_txt = *pcb_stub_draw_fontsel_text_obj;
+	*pcb_stub_draw_fontsel_text_obj = txt;
 
 	ctx = malloc(sizeof(pcb_gtk_dlg_fontsel_t));
 	ctx->txt = txt;
@@ -97,4 +107,5 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_text_t *txt, in
 
 	gtk_widget_show_all(w);
 	gtk_window_set_modal(GTK_WINDOW(dialog), modal);
+	*pcb_stub_draw_fontsel_text_obj = old_txt;
 }

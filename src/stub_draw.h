@@ -31,6 +31,7 @@
 
 #include "hid.h"
 #include "pcb_bool.h"
+#include "global_typedefs.h"
 
 /* fab */
 extern int (*pcb_stub_draw_fab_overhang)(void);
@@ -44,5 +45,6 @@ extern void (*pcb_stub_draw_csect_overlay)(pcb_hid_t *hid, const pcb_hid_expose_
 /* fontsel */
 extern void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc);
 extern pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
+extern pcb_text_t **pcb_stub_draw_fontsel_text_obj;
 
 #endif
