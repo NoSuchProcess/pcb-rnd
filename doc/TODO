@@ -10,7 +10,6 @@
 - fontsel:
 	- lesstif
 	- replace font in slot (even in default)
-	- parse tags
 	- ttf import?
 
 - Lihata persistent save:
