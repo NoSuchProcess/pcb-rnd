@@ -35,7 +35,7 @@
 
 typedef struct {
 	GtkDialog *dialog;
-	pcb_text_t *txt
+	pcb_text_t *txt, *old_txt;
 } pcb_gtk_dlg_fontsel_t;
 
 static int dlg_fontsel_global_latch = 0;
@@ -46,6 +46,7 @@ static void fontsel_close_cb(gpointer ctx_)
 	gtk_widget_destroy(GTK_WIDGET(ctx->dialog));
 	if (ctx->txt == NULL)
 		dlg_fontsel_global_latch = 0;
+	*pcb_stub_draw_fontsel_text_obj = ctx->old_txt;
 	free(ctx);
 }
 
@@ -58,7 +59,6 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_text_t *txt, in
 	GtkWidget *vbox;
 	pcb_layer_id_t lid;
 	pcb_gtk_dlg_fontsel_t *ctx;
-	pcb_text_t *old_txt;
 
 	if (txt == NULL) {
 		if (dlg_fontsel_global_latch) /* do not open the global font selector twice */
@@ -72,11 +72,12 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_text_t *txt, in
 		}
 	}
 
-	old_txt = *pcb_stub_draw_fontsel_text_obj;
-	*pcb_stub_draw_fontsel_text_obj = txt;
 
 	ctx = malloc(sizeof(pcb_gtk_dlg_fontsel_t));
 	ctx->txt = txt;
+
+	ctx->old_txt = *pcb_stub_draw_fontsel_text_obj;
+	*pcb_stub_draw_fontsel_text_obj = txt;
 
 	w = gtk_dialog_new_with_buttons("PCB - font selector",
 																	GTK_WINDOW(top_window),
@@ -107,5 +108,4 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_text_t *txt, in
 
 	gtk_widget_show_all(w);
 	gtk_window_set_modal(GTK_WINDOW(dialog), modal);
-	*pcb_stub_draw_fontsel_text_obj = old_txt;
 }
