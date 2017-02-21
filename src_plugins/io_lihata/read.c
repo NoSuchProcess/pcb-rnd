@@ -1053,15 +1053,14 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	if ((sub != NULL) && (parse_meta(pcb, sub) != 0))
 		return -1;
 
-	sub = lht_dom_hash_get(nd, "data");
-	if ((sub != NULL) && ((parse_data(pcb, sub)) == NULL))
-		return -1;
-
 	sub = lht_dom_hash_get(nd, "font");
 	if ((sub != NULL) && (parse_fontkit(&PCB->fontkit, sub) != 0))
 		return -1;
 	PCB->fontkit.valid = 1;
 
+	sub = lht_dom_hash_get(nd, "data");
+	if ((sub != NULL) && ((parse_data(pcb, sub)) == NULL))
+		return -1;
 
 	sub = lht_dom_hash_get(nd, "styles");
 	if ((sub != NULL) && (parse_styles(&pcb->RouteStyle, sub) != 0))
