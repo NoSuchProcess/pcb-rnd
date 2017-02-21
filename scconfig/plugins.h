@@ -91,6 +91,8 @@ plugin_dep("hid_gtk", "lib_gtk_common")
 plugin_dep("hid_gtk", "lib_gtk_config")
 plugin_dep("hid_gtk", "draw_csect")
 plugin_dep("hid_lesstif", "draw_csect")
+plugin_dep("hid_gtk", "draw_fontsel")
+plugin_dep("hid_lesstif", "draw_fontsel")
 
 /* for the uniq name lib: */
 plugin_dep("io_kicad_legacy", "io_kicad")
