@@ -107,10 +107,15 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 /* creates the bounding box of a text object */
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 {
-	pcb_symbol_t *symbol = FontPtr->Symbol;
+	pcb_symbol_t *symbol;
 	unsigned char *s = (unsigned char *) Text->TextString;
 	int i;
 	int space;
+
+	if (FontPtr == NULL)
+		FontPtr = pcb_font(PCB, Text->fid, 1);
+
+	symbol = FontPtr->Symbol;
 
 	pcb_coord_t minx, miny, maxx, maxy, tx;
 	pcb_coord_t min_final_radius;
