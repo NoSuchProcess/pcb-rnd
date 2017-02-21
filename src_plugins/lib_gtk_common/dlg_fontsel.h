@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include "obj_text.h"
+#include "global_typedefs.h"
 #include "hid.h"
 
 void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_text_t *txt, int modal);
