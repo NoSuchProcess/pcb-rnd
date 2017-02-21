@@ -102,6 +102,7 @@ int font_new_y1, font_new_y2;
 int font_del_y1, font_del_y2;
 
 pcb_text_t *fontsel_txt = NULL;
+pcb_layer_t *fontsel_layer = NULL;
 
 static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 {
@@ -192,6 +193,7 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 					conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
 				}
 				else {
+#warning TODO: this should be a change function (and change action) in core
 					fontsel_txt->fid = fid;
 					pcb_gui->invalidate_all();
 				}
@@ -223,6 +225,7 @@ pcb_uninit_t hid_draw_fontsel_init(void)
 	pcb_stub_draw_fontsel = pcb_draw_fontsel;
 	pcb_stub_draw_fontsel_mouse_ev = pcb_mouse_fontsel;
 	pcb_stub_draw_fontsel_text_obj = &fontsel_txt;
+	pcb_stub_draw_fontsel_layer_obj = &fontsel_layer;
 
 	return hid_draw_fontsel_uninit;
 }

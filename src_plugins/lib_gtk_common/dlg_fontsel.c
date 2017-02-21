@@ -36,6 +36,7 @@
 typedef struct {
 	GtkDialog *dialog;
 	pcb_text_t *txt, *old_txt;
+	pcb_layer_t *layer, *old_layer;
 } pcb_gtk_dlg_fontsel_t;
 
 static int dlg_fontsel_global_latch = 0;
@@ -47,11 +48,12 @@ static void fontsel_close_cb(gpointer ctx_)
 	if (ctx->txt == NULL)
 		dlg_fontsel_global_latch = 0;
 	*pcb_stub_draw_fontsel_text_obj = ctx->old_txt;
+	*pcb_stub_draw_fontsel_layer_obj = ctx->old_layer;
 	free(ctx);
 }
 
 
-void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_text_t *txt, int modal)
+void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_layer_t *txtly, pcb_text_t *txt, int modal)
 {
 	GtkWidget *w;
 	GtkDialog *dialog;
@@ -77,7 +79,9 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_text_t *txt, in
 	ctx->txt = txt;
 
 	ctx->old_txt = *pcb_stub_draw_fontsel_text_obj;
+	ctx->old_layer = *pcb_stub_draw_fontsel_layer_obj;
 	*pcb_stub_draw_fontsel_text_obj = txt;
+	*pcb_stub_draw_fontsel_layer_obj = txtly;
 
 	w = gtk_dialog_new_with_buttons("PCB - font selector",
 																	GTK_WINDOW(top_window),

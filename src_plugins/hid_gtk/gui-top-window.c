@@ -1739,14 +1739,14 @@ static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			pcb_gui->get_coords(_("Select an Object"), &x, &y);
 			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 /*				pcb_undo_save_serial();*/
-				pcb_gtk_dlg_fontsel(gport, gport->top_window, ptr2, 1);
+				pcb_gtk_dlg_fontsel(gport, gport->top_window, ptr1, ptr2, 1);
 			}
 		}
 		else
 			PCB_ACT_FAIL(fontsel);
 	}
 	else
-		pcb_gtk_dlg_fontsel(gport, gport->top_window, NULL, 0);
+		pcb_gtk_dlg_fontsel(gport, gport->top_window, NULL, NULL, 0);
 	return 0;
 }
 
