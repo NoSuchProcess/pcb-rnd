@@ -193,8 +193,7 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 					conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
 				}
 				else {
-#warning TODO: this should be a change function (and change action) in core
-					fontsel_txt->fid = fid;
+					pcb_text_set_font(fontsel_layer, fontsel_txt, fid);
 					pcb_gui->invalidate_all();
 				}
 				return 1;
