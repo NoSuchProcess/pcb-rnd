@@ -108,6 +108,7 @@ ha:{
 				ha:Select all visible           = { a=Alt<Key>a;        action=Select(All) }
 				-
 				ha:Edit name of {
+					ha:Change font on layout        = { li:a={{<key>e;<key>f};}   action=FontSel(Object) }
 					li:submenu {
 						ha:text on layout             = { li:a={{<key>e;<key>x}; {<Key>n};}; action=ChangeName(Object) }
 						ha:pin on layout              = { a=Shift Ctrl<Key>n;                action=ChangeName(Object, Number) }

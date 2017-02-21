@@ -179,6 +179,7 @@ ha:{
 				ha: Change text on layout = { a=Shift Ctrl<Key>n; action=ChangeName(Object, Number) }
 				ha: Edit name of layout = { action=ChangeName(Layout) }
 				ha: Edit name of active layer = { action=ChangeName(Layer) }
+				ha: Change font on layout = { a=Alt Ctrl<Key>f;   action=FontSel(Object) }
 				ha:Edit Attributes... = { foreground=grey50; sensitive=false }
 				ha: Layout = { action=Attributes(Layout) }
 				ha: CurrentLayer = { action=Attributes(Layer) }

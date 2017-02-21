@@ -107,6 +107,7 @@ ha:{
 				ha:Unselect all                 = { a=Shift Alt<Key>a;  action=Unselect(All) }
 				ha:Select all visible           = { a=Alt<Key>a;        action=Select(All) }
 				-
+				ha:Change font on layout        = { a=Alt Ctrl<Key>f;   action=FontSel(Object) }
 				ha:Edit name of {
 					li:submenu {
 						ha:text on layout             = { a=<Key>n;           action=ChangeName(Object) }
