@@ -10,7 +10,6 @@
 - fontsel:
 	- lesstif
 	- replace font in slot (even in default)
-	- change font on an existing text (modal)
 	- parse tags
 	- ttf import?
 
