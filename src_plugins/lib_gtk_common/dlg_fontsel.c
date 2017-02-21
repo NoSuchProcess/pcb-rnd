@@ -35,7 +35,7 @@
 
 typedef struct {
 	GtkDialog *dialog;
-	pcb_font_t *fnt;
+	pcb_text_t *txt
 } pcb_gtk_dlg_fontsel_t;
 
 static int dlg_fontsel_global_latch = 0;
@@ -44,13 +44,13 @@ static void fontsel_close_cb(gpointer ctx_)
 {
 	pcb_gtk_dlg_fontsel_t *ctx = ctx_;
 	gtk_widget_destroy(ctx->dialog);
-	if (ctx->fnt == NULL)
+	if (ctx->txt == NULL)
 		dlg_fontsel_global_latch = 0;
 	free(ctx);
 }
 
 
-void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_font_t *fnt, int modal)
+void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_text_t *txt, int modal)
 {
 	GtkWidget *w;
 	GtkDialog *dialog;
@@ -59,14 +59,14 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_font_t *fnt, in
 	pcb_layer_id_t lid;
 	pcb_gtk_dlg_fontsel_t *ctx;
 
-	if (fnt == NULL) {
+	if (txt == NULL) {
 		if (dlg_fontsel_global_latch) /* do not open the global font selector twice */
 			return;
 		dlg_fontsel_global_latch = 1;
 	}
 
 	ctx = malloc(sizeof(pcb_gtk_dlg_fontsel_t));
-	ctx->fnt = fnt;
+	ctx->txt = txt;
 
 	w = gtk_dialog_new_with_buttons("PCB - font selector",
 																	GTK_WINDOW(top_window),
