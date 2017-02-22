@@ -35,6 +35,7 @@
 #include "obj_pad_list.h"
 #include "obj_pinvia_list.h"
 #include "obj_text.h"
+#include "font.h"
 
 
 struct pcb_element_s {
@@ -107,6 +108,7 @@ void pcb_element_text_set(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, 
    string is returned, and must be properly freed by the caller.  */
 char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Element, int which, char *new_name);
 
+void pcb_element_text_set_font(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which, pcb_font_id_t fid);
 void pcb_element_text_update(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which);
 
 

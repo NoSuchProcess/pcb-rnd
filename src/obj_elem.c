@@ -527,6 +527,19 @@ void pcb_element_text_update(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *
 		DrawElementName(Element);
 }
 
+void pcb_element_text_set_font(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which, pcb_font_id_t fid)
+{
+	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
+		EraseElementName(Element);
+
+	pcb_r_delete_entry(data->name_tree[which], &Element->Name[which].BoundingBox);
+	Element->Name[which].fid = fid;
+	pcb_text_bbox(pcb_font(PCB, 0, 1), &Element->Name[which]);
+	pcb_r_insert_entry(data->name_tree[which], &Element->Name[which].BoundingBox, 0);
+
+	if (pcb && which == PCB_ELEMNAME_IDX_VISIBLE())
+		DrawElementName(Element);
+}
 
 /* copies data from one element to another and creates the destination; if necessary */
 pcb_element_t *pcb_element_copy(pcb_data_t *Data, pcb_element_t *Dest, pcb_element_t *Src, pcb_bool uniqueName, pcb_coord_t dx, pcb_coord_t dy)
