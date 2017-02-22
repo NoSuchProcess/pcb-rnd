@@ -107,6 +107,9 @@ void pcb_element_text_set(pcb_text_t *Text, pcb_font_t *PCBFont, pcb_coord_t X, 
    string is returned, and must be properly freed by the caller.  */
 char *pcb_element_text_change(pcb_board_t * pcb, pcb_data_t * data, pcb_element_t *Element, int which, char *new_name);
 
+void pcb_element_text_update(pcb_board_t *pcb, pcb_data_t *data, pcb_element_t *Element, int which);
+
+
 
 /* ---------------------------------------------------------------------------
  * access macros for elements name structure
