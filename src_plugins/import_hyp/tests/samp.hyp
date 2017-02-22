@@ -153,11 +153,14 @@
   (PAD X=16 Y=1 L=component S=ROUND SX=0.5 SY=0.5)
   (PAD X=16 Y=2 L=component S=RECT SX=0.5 SY=0.5)
   (PAD X=16 Y=3 L=component S=OBLONG SX=0.5 SY=0.5)
+  (PAD X=17 Y=1 L=solder S=ROUND SX=0.5 SY=0.5)
+  (PAD X=17 Y=2 L=solder S=RECT SX=0.5 SY=0.5)
+  (PAD X=17 Y=3 L=solder S=OBLONG SX=0.5 SY=0.5)
 }
 {NET=usegtst
-  (USEG X1=17 Y1=1 L1=component X2=18 Y2=1 L2=component ZL=component ZW=0.1 ZLEN=2 )
-  (USEG X1=17 Y1=2 L1=component X2=18 Y2=2 L2=component Z=50 D=1e-12 R=5 )
-  (USEG X1=17 Y1=3 L1=component X2=18 Y2=3 L2=solder ZL=component ZW=0.1 ZLEN=2 )
-  (USEG X1=17 Y1=4 L1=component X2=18 Y2=4 L2=solder Z=50 D=1e-12 R=5 )
+  (USEG X1=18 Y1=1 L1=component X2=19 Y2=1 L2=component ZL=component ZW=0.1 ZLEN=2 )
+  (USEG X1=18 Y1=2 L1=component X2=19 Y2=2 L2=component Z=50 D=1e-12 R=5 )
+  (USEG X1=18 Y1=3 L1=component X2=19 Y2=3 L2=solder ZL=component ZW=0.1 ZLEN=2 )
+  (USEG X1=18 Y1=4 L1=component X2=19 Y2=4 L2=solder Z=50 D=1e-12 R=5 )
 }
 {END}

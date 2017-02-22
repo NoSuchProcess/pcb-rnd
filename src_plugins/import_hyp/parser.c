@@ -68,6 +68,8 @@ outline_t *outline_tail;
 void hyp_set_origin();					/* set origin so all coordinates are positive */
 void hyp_perimeter();						/* add board outline to pcb */
 void hyp_create_polygons();			/* add all created polygons to pcb */
+void hyp_create_device_outlines();	/* add silkscreen outlines to all devices on board */
+unsigned int hyp_layer_flag(char *); /* set "solder side" flag if on bottom layer */ 
 
 int hyp_debug;									/* logging on/off switch */
 
@@ -289,6 +291,9 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 	/* finish setting up polygons */
 	hyp_create_polygons();
 
+	/* create device outlines */
+	hyp_create_device_outlines();
+
 	/* add board outline last */
 	hyp_perimeter();
 
@@ -340,7 +345,7 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 	pcb_element_t *elem;
 	pcb_flag_t flags;
 	pcb_uint8_t text_direction = 0;
-	int text_scale = 250;
+	int text_scale = 500;
 
 	flags = pcb_no_flags();
 	/* does the device already exist? */
@@ -350,21 +355,20 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 		device_t *dev = hyp_device_by_name(element_name);
 		if (dev != NULL) {
 			/* device on component or solder side? */
-			if ((dev->layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(dev->layer_name)) & PCB_LYT_BOTTOM))
-				flags = pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
+		  flags = pcb_flag_add(flags, hyp_layer_flag(dev->layer_name));
 			/* create */
 			if (hyp_debug)
 				pcb_printf("creating device \"%s\".\n", dev->ref);
 			elem =
 				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), flags, dev->name, dev->ref, dev->value, x, y, text_direction,
-												text_scale, pcb_no_flags(), pcb_false);
+												text_scale, flags, pcb_false);
 		}
 		else {
 			/* no device with this name exists, and no such device has been listed in a DEVICE record. Let's create the device anyhow so we can continue. Assume device is on component side. */
 			pcb_printf("device \"%s\" not specified in DEVICE record. continuing.\n", element_name);
 			elem =
-				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), pcb_no_flags(), element_name, element_name, NULL, x, y,
-												text_direction, text_scale, pcb_no_flags(), pcb_false);
+				pcb_element_new(hyp_dest, NULL, pcb_font(PCB, 0, 1), flags, element_name, element_name, NULL, x, y,
+												text_direction, text_scale, flags, pcb_false);
 		}
 	}
 
@@ -616,6 +620,44 @@ void hyp_perimeter()
 }
 
 /*
+ * create device outlines and clean up device reference text. 
+ * call after all devices have been created.
+ */
+
+void hyp_create_device_outlines()
+{
+	device_t *i;
+	pcb_element_t *elem;
+	pcb_coord_t x1, x2, y1, y2;
+
+	for (i = device_head; i != NULL; i = i->next) {
+		elem = pcb_search_elem_by_name(hyp_dest, i->ref);
+		if (elem == NULL)
+			continue;
+
+		/* XXX check if all this can be done without looking inside element. easiest solution would be to put this as a routine in obj_elem.c */
+
+		/* get bounding box of device */
+		x1 = elem->BoundingBox.X1;
+		x2 = elem->BoundingBox.X2;
+		y1 = elem->BoundingBox.Y1;
+		y2 = elem->BoundingBox.Y2;
+
+		/* draw rectangle around device on silkscreen */
+		pcb_element_line_new(elem, x1, y1, x1, y2, 1);
+		pcb_element_line_new(elem, x1, y2, x2, y2, 1);
+		pcb_element_line_new(elem, x2, y2, x2, y1, 1);
+		pcb_element_line_new(elem, x2, y1, x1, y1, 1);
+
+		/* put text bottom left */
+		PCB_ELEM_TEXT_REFDES(elem).X = x1;
+		PCB_ELEM_TEXT_REFDES(elem).Y = y2;
+
+		pcb_element_bbox(hyp_dest, elem, pcb_font(PCB, 0, 1));
+	}
+}
+
+/*
  * Returns the pcb_layer_id of layer "lname". 
  * If layer lname does not exist, a new copper layer with name "lname" is created.
  * If the layer name is NULL, a new copper layer with a new, unused layer name is created.
@@ -673,6 +715,18 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 pcb_layer_t *hyp_get_layer(parse_param * h)
 {
 	return pcb_get_layer(hyp_create_layer(h->layer_name));
+}
+
+/*
+ * return PCB_FLAG_ONSOLDER if layer_name is name of bottom layer
+ */
+
+unsigned int hyp_layer_flag(char *layer_name)
+{
+	if ((layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(layer_name)) & PCB_LYT_BOTTOM))
+		return PCB_FLAG_ONSOLDER;
+	else
+		return PCB_FLAG_NO;
 }
 
 /*
@@ -1583,17 +1637,15 @@ pcb_bool exec_pad(parse_param * h)
 		return 0;
 	}
 
-	/* add new pad */
-	flags = pcb_no_flags();
-
 	/* pad shape */
+	flags = pcb_no_flags();				/* round */
 	if (h->via_pad_shape_set && (h->via_pad_shape != NULL) && (strcmp(h->via_pad_shape, "RECT") == 0))
 		flags = pcb_flag_add(flags, PCB_FLAG_SQUARE);
 	else if (h->via_pad_shape_set && (h->via_pad_shape != NULL) && (strcmp(h->via_pad_shape, "OBLONG") == 0))
 		flags = pcb_flag_add(flags, PCB_FLAG_OCTAGON);
 
-	if (h->layer_name_set && (h->layer_name != NULL) && (pcb_layer_flags(pcb_layer_by_name(h->layer_name)) & PCB_LYT_BOTTOM))
-		flags = pcb_flag_add(flags, PCB_FLAG_ONSOLDER);
+	if (h->layer_name_set) 
+		flags = pcb_flag_add(flags, hyp_layer_flag(h->layer_name));
 
 	if (h->via_pad_sx_set && h->via_pad_sy_set)
 		mask = thickness = (xy2coord(h->via_pad_sx) + xy2coord(h->via_pad_sy)) * 0.5;
