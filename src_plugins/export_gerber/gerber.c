@@ -83,6 +83,7 @@ static int current_mask;
 static int flash_drills;
 static int copy_outline_mode;
 static int name_style;
+static int want_cross_sect;
 static pcb_layer_t *outline_layer;
 
 enum ApertureShape {
@@ -344,6 +345,9 @@ Print file names and aperture counts on stdout.
 	{"name-style", "Naming style for individual gerber files",
 	 HID_Enum, 0, 0, {0, 0, 0}, name_style_names, 0},
 #define HA_name_style 4
+	{"cross-sect", "Export the cross section layer",
+	 HID_Boolean, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_cross_sect 5
 };
 
 #define NUM_OPTIONS (sizeof(gerber_options)/sizeof(gerber_options[0]))
@@ -547,6 +551,8 @@ static void gerber_do_export(pcb_hid_attr_val_t * options)
 	copy_outline_mode = options[HA_copy_outline].int_value;
 	name_style = options[HA_name_style].int_value;
 
+	want_cross_sect = options[HA_cross_sect].int_value;
+
 #warning layer TODO: this assumes there is only one outline layer; instead of this, just use a boolthat says whether we had an outline layer and redo the search
 	outline_layer = NULL;
 
@@ -633,6 +639,9 @@ static int gerber_set_layer_group(pcb_layergrp_id_t group, pcb_layer_id_t layer,
 /*		printf("  nope: invis %d or assy %d\n", (flags & PCB_LYT_INVIS), (flags & PCB_LYT_ASSY));*/
 		return 0;
 	}
+
+	if ((flags & PCB_LYT_CSECT) && (!want_cross_sect))
+		return 0;
 
 	if ((group >= 0) && (group < pcb_max_group)) {
 		group_name = PCB->LayerGroups.grp[group].name;
