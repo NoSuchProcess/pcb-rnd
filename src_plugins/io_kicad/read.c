@@ -883,7 +883,7 @@ pcb_hid_actionl("dumpcsect", NULL);*/
 				pcb_layergrp_fix_turn_to_outline(g);
 				id = pcb_layer_create(g - PCB->LayerGroups.grp, lname);
 			}
-			else if ((strcmp(ltype, "signal") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
+			else if ((strcmp(ltype, "signal") == 0) || (strcmp(ltype, "power") == 0) || (strncmp(lname, "Dwgs.", 4) == 0) || (strncmp(lname, "Cmts.", 4) == 0) || (strncmp(lname, "Eco", 3) == 0)) {
 				/* Create a new inner layer for signals and for emulating misc layers */
 				pcb_layer_group_t *g = pcb_get_grp_new_intern(&PCB->LayerGroups, -1);
 				id = pcb_layer_create(g - PCB->LayerGroups.grp, lname);
