@@ -1651,7 +1651,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 						SEEN_NO_DUP(featureTally, 7);
 						PCBLayer = kicad_get_layeridx(st, l->children->str);
 						if (PCBLayer < 0) {
-							return -1;
+							pcb_message(PCB_MSG_ERROR, "\tline layer not defined for module line, line ignored.\n");
+							return 0;
 						}
 					} else {
 						return -1;
