@@ -449,6 +449,8 @@ static int kicad_parse_gr_line(read_state_t *st, gsxl_node_t *subtree)
 					} else {
 						return -1;
 					}
+			} else if (n->str != NULL && strcmp("tstamp", n->str) == 0) { /* unlikely to be used or seen */
+				/* ignore */
 			} else {
 				if (n->str != NULL) {
 					printf("Unknown gr_line argument %s:", n->str);
