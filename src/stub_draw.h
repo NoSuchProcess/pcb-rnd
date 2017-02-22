@@ -47,5 +47,6 @@ extern void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc);
 extern pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(void *widget, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
 extern pcb_text_t **pcb_stub_draw_fontsel_text_obj;
 extern pcb_layer_t **pcb_stub_draw_fontsel_layer_obj;
+extern int *pcb_stub_draw_fontsel_text_type;
 
 #endif

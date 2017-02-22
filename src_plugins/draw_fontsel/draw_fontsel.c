@@ -34,6 +34,7 @@
 #include "data.h"
 #include "draw.h"
 #include "font.h"
+#include "const.h"
 #include "hid_actions.h"
 #include "obj_all.h"
 #include "plugins.h"
@@ -103,6 +104,7 @@ int font_del_y1, font_del_y2;
 
 pcb_text_t *fontsel_txt = NULL;
 pcb_layer_t *fontsel_layer = NULL;
+int fontsel_txt_type = 0;
 
 static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y)
 {
@@ -193,7 +195,14 @@ static pcb_bool pcb_mouse_fontsel(void *widget, pcb_hid_mouse_ev_t kind, pcb_coo
 					conf_set(CFR_DESIGN, "design/text_font_id", 0, sval, POL_OVERWRITE);
 				}
 				else {
-					pcb_text_set_font(fontsel_layer, fontsel_txt, fid);
+					switch(fontsel_txt_type) {
+						case PCB_TYPE_TEXT:
+							pcb_text_set_font(fontsel_layer, fontsel_txt, fid);
+							break;
+						case PCB_TYPE_ELEMENT_NAME:
+							pcb_message(PCB_MSG_ERROR, "Can't change element name font yet\n");
+							break;
+					}
 					pcb_gui->invalidate_all();
 				}
 				return 1;
@@ -225,6 +234,7 @@ pcb_uninit_t hid_draw_fontsel_init(void)
 	pcb_stub_draw_fontsel_mouse_ev = pcb_mouse_fontsel;
 	pcb_stub_draw_fontsel_text_obj = &fontsel_txt;
 	pcb_stub_draw_fontsel_layer_obj = &fontsel_layer;
+	pcb_stub_draw_fontsel_text_type = &fontsel_txt_type;
 
 	return hid_draw_fontsel_uninit;
 }

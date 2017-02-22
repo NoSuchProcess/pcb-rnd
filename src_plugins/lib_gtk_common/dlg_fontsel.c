@@ -32,11 +32,13 @@
 #include "layer.h"
 #include "wt_preview.h"
 #include "stub_draw.h"
+#include "const.h"
 
 typedef struct {
 	GtkDialog *dialog;
 	pcb_text_t *txt, *old_txt;
 	pcb_layer_t *layer, *old_layer;
+	int old_type;
 } pcb_gtk_dlg_fontsel_t;
 
 static int dlg_fontsel_global_latch = 0;
@@ -49,11 +51,12 @@ static void fontsel_close_cb(gpointer ctx_)
 		dlg_fontsel_global_latch = 0;
 	*pcb_stub_draw_fontsel_text_obj = ctx->old_txt;
 	*pcb_stub_draw_fontsel_layer_obj = ctx->old_layer;
+	*pcb_stub_draw_fontsel_text_type = ctx->old_type;
 	free(ctx);
 }
 
 
-void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_layer_t *txtly, pcb_text_t *txt, int modal)
+void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_layer_t *txtly, pcb_text_t *txt, int type, int modal)
 {
 	GtkWidget *w;
 	GtkDialog *dialog;
@@ -68,6 +71,8 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_layer_t *txtly,
 		dlg_fontsel_global_latch = 1;
 	}
 	else {
+		if ((type != PCB_TYPE_TEXT) && (type != PCB_TYPE_ELEMENT_NAME))
+			return;
 		if (!modal) {
 			pcb_message(PCB_MSG_ERROR, "text-targeted fontsel dialogs must be modal because of the global-var API on the txt object.\n");
 			return;
@@ -80,8 +85,10 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_layer_t *txtly,
 
 	ctx->old_txt = *pcb_stub_draw_fontsel_text_obj;
 	ctx->old_layer = *pcb_stub_draw_fontsel_layer_obj;
+	ctx->old_type = *pcb_stub_draw_fontsel_text_type;
 	*pcb_stub_draw_fontsel_text_obj = txt;
 	*pcb_stub_draw_fontsel_layer_obj = txtly;
+	*pcb_stub_draw_fontsel_text_type = type;
 
 	w = gtk_dialog_new_with_buttons("PCB - font selector",
 																	GTK_WINDOW(top_window),
