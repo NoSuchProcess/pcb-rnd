@@ -35,6 +35,7 @@
 #include "compat_nls.h"
 #include "undo.h"
 #include "polygon.h"
+#include "event.h"
 
 #include "obj_text.h"
 #include "obj_text_op.h"
@@ -599,4 +600,25 @@ void EraseText(pcb_layer_t *Layer, pcb_text_t *Text)
 void DrawText(pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_draw_invalidate(Text);
+}
+
+/*** init ***/
+static const char *text_cookie = "obj_text";
+
+static void pcb_text_font_chg(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if ((argc < 2) || (argv[1].type != PCB_EVARG_INT))
+		return;
+
+	pcb_trace("font change %d\n", argv[1].d.i);
+}
+
+void pcb_text_init(void)
+{
+	pcb_event_bind(PCB_EVENT_FONT_CHANGED, pcb_text_font_chg, NULL, text_cookie);
+}
+
+void pcb_text_uninit(void)
+{
+	pcb_event_unbind_allcookie(text_cookie);
 }

@@ -57,6 +57,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "conf_core.h"
 #include "vtptr.h"
 #include "layer_vis.h"
+#include "obj_text.h"
 
 #include "hid_actions.h"
 #include "hid_init.h"
@@ -233,6 +234,7 @@ void pcb_main_uninit(void)
 
 	pcb_plugins_uninit();
 	pcb_hid_uninit();
+	pcb_text_uninit();
 	pcb_events_uninit();
 
 	pcb_strflg_uninit_buf();
@@ -398,6 +400,7 @@ int main(int argc, char *argv[])
 	atexit(pcb_emergency_save);
 
 	pcb_events_init();
+	pcb_text_init();
 
 	pcb_buildin_init();
 	pcb_hid_init();

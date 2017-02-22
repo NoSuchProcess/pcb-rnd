@@ -40,6 +40,7 @@
 #include "paths.h"
 #include "compat_nls.h"
 #include "compat_misc.h"
+#include "event.h"
 
 #define STEP_SYMBOLLINE 10
 
@@ -240,6 +241,8 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 	if (f->id > fk->last_id)
 		fk->last_id = f->id;
 
+	pcb_event(PCB_EVENT_FONT_CHANGED, "i", f->id);
+
 	return f;
 }
 
@@ -276,6 +279,7 @@ int pcb_del_font(pcb_fontkit_t *fk, pcb_font_id_t id)
 
 	e = htip_popentry(&fk->fonts, id);
 	pcb_font_free(e->value);
+	pcb_event(PCB_EVENT_FONT_CHANGED, "i", id);
 	return 0;
 }
 
