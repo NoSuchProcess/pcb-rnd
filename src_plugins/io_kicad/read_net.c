@@ -47,7 +47,7 @@
 #define if_strval(node, name) \
 	if (strcmp(node->str, #name) == 0) { \
 		if (name != NULL) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid eechema: multiple %s subtrees\n", name); \
+			pcb_message(PCB_MSG_ERROR, "Invalid eechema: multiple %s subtrees\n", #name); \
 			return -1; \
 		} \
 		if (node->children != NULL) \
@@ -57,7 +57,7 @@
 #define if_subtree(node, name) \
 	if (strcmp(node->str, #name) == 0) { \
 		if (name != NULL) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid eechema: multiple %s subtrees\n", name); \
+			pcb_message(PCB_MSG_ERROR, "Invalid eechema: multiple %s subtrees\n", #name); \
 			return -1; \
 		} \
 		name = node; \
@@ -65,7 +65,7 @@
 
 #define req_subtree(name) \
 	if (name == NULL) { \
-		pcb_message(PCB_MSG_ERROR, "Invalid eechema: missing %s subtree\n", name); \
+		pcb_message(PCB_MSG_ERROR, "Invalid eechema: missing %s subtree\n", #name); \
 		return -1; \
 	} \
 
