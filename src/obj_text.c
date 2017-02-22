@@ -36,6 +36,7 @@
 #include "undo.h"
 #include "polygon.h"
 #include "event.h"
+#include "layer.h"
 
 #include "obj_text.h"
 #include "obj_text_op.h"
@@ -489,6 +490,15 @@ void pcb_text_set_font(pcb_layer_t *layer, pcb_text_t *text, pcb_font_id_t fid)
 	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, layer, text);
 }
 
+void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
+{
+	pcb_poly_restore_to_poly(PCB->Data, PCB_TYPE_TEXT, layer, text);
+	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
+	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
+	pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text, 0);
+	pcb_poly_clear_from_poly(PCB->Data, PCB_TYPE_TEXT, layer, text);
+}
+
 /*** draw ***/
 
 /* ---------------------------------------------------------------------------
@@ -607,10 +617,27 @@ static const char *text_cookie = "obj_text";
 
 static void pcb_text_font_chg(void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	pcb_font_id_t fid;
+	int need_redraw = 0;
+
 	if ((argc < 2) || (argv[1].type != PCB_EVARG_INT))
 		return;
 
-	pcb_trace("font change %d\n", argv[1].d.i);
+	fid = argv[1].d.i;
+
+	LAYER_LOOP(PCB->Data, pcb_max_layer); {
+		PCB_TEXT_LOOP(layer); {
+			if (text->fid == fid) {
+				pcb_text_update(layer, text);
+				need_redraw = 1;
+			}
+		} PCB_END_LOOP;
+	} PCB_END_LOOP;
+
+	if (need_redraw)
+		pcb_gui->invalidate_all(); /* can't just redraw the text, as the old text may have been bigger, before the change! */
+
+	pcb_trace("font change %d\n", fid);
 }
 
 void pcb_text_init(void)
