@@ -33,6 +33,7 @@
 #include "error.h"
 #include "pcb-printf.h"
 #include "compat_misc.h"
+#include <gensexpr/gsxl.h>
 
 #include "action_helper.h"
 #include "hid_actions.h"
@@ -41,10 +42,161 @@
 
 static const char *mentor_sch_cookie = "mentor_sch importer";
 
+/* Return the nth child's string of the subtree called subtree_name under node */
+static const char *get_by_name(gsxl_node_t *node, const char *subtree_name, int child_idx)
+{
+	gsxl_node_t *n;
+	for(n = node->children; n != NULL; n = n->next) {
+		if (strcmp(n->str, subtree_name) == 0) {
+			for(n = n->children; (n != NULL) && (child_idx > 0); n = n->next, child_idx--) ;
+			if (n == NULL)
+				return NULL;
+			return n->str;
+		}
+	}
+	return NULL;
+}
+
+static int parse_netlist_instance(gsxl_node_t *inst)
+{
+	gsxl_node_t *n;
+	const char *refdes = NULL;
+
+	printf("inst %s\n", inst->children->str);
+
+	for(n = inst->children; n != NULL; n = n->next) {
+		if (strcmp(n->str, "designator") == 0) {
+			refdes = n->children->str;
+			printf(" refdes=%s\n", refdes);
+		}
+		else if (strcmp(n->str, "property") == 0) {
+			const char *key, *val;
+			key = get_by_name(n, "rename", 1);
+			val = get_by_name(n, "string", 0);
+			printf(" property '%s'='%s'\n", key, val);
+		}
+	}
+}
+
+static int parse_netlist_net(gsxl_node_t *net)
+{
+	gsxl_node_t *n, *p;
+	const char *netname = get_by_name(net, "rename", 1);
+
+	printf("net %s\n", netname);
+	for(n = net->children; n != NULL; n = n->next) {
+		if (strcmp(n->str, "joined") == 0) {
+			for(p = n->children; p != NULL; p = p->next) {
+				if (strcmp(p->str, "portRef") == 0) {
+					const char *part, *pin;
+					pin = p->children->str;
+					part = get_by_name(p, "instanceRef", 0);
+					if ((part != NULL) && (pin != NULL))
+						printf(" %s %s\n", part, pin);
+				}
+			}
+		}
+	}
+
+}
+
+
+static int parse_netlist_view(gsxl_node_t *view)
+{
+	gsxl_node_t *contents, *n;
+	int res = 0;
+	for(contents = view->children; contents != NULL; contents = contents->next) {
+		if (strcmp(contents->str, "contents") == 0) {
+			printf("--- view\n");
+			for(n = contents->children; n != NULL; n = n->next) {
+				if (strcmp(n->str, "instance") == 0)
+					res |= parse_netlist_instance(n);
+				if (strcmp(n->str, "net") == 0)
+					res |= parse_netlist_net(n);
+			}
+		}
+	}
+	return res;
+}
+
+static int mentor_parse_tree(gsxl_dom_t *dom)
+{
+	gsxl_node_t *view, *cell, *library, *vtype;
+
+	/* check the header */
+	if (strcmp(dom->root->str, "edif") != 0) {
+		pcb_message(PCB_MSG_ERROR, "Invalid mentor edf header: not an EDIF file\n");
+		return -1;
+	}
+
+	for(library = dom->root->children; library != NULL; library = library->next) {
+		if (strcmp(library->str, "library") == 0) {
+			if (strcmp(library->children->str, "hierarchical") == 0) {
+				for(cell = library->children; cell != NULL; cell = cell->next) {
+					if (strcmp(cell->str, "cell") == 0) {
+						for(view = cell->children; view != NULL; view = view->next) {
+							if (strcmp(view->children->str, "v1") == 0) {
+								vtype = view->children->next;
+								if ((strcmp(vtype->str, "viewType") == 0) && (strcmp(vtype->children->str, "netlist") == 0))
+									parse_netlist_view(view);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+/*	for(n = library->children; n != NULL; n = n->next) {
+		printf("n=%s\n", n->str);
+		if (strcmp(n->str, "cell") == 0) { 
+			printf("cell\n");
+		}
+	}*/
+
+
+	return -1;
+}
+
 
 static int mentor_sch_load(const char *fname_net)
 {
-	return -1;
+	FILE *fn;
+	gsxl_dom_t dom;
+	int c, ret = 0;
+	gsx_parse_res_t res;
+
+	fn = fopen(fname_net, "r");
+	if (fn == NULL) {
+		pcb_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
+		return -1;
+	}
+
+	gsxl_init(&dom, gsxl_node_t);
+
+	dom.parse.line_comment_char = '#';
+	do {
+		c = fgetc(fn);
+	} while((res = gsxl_parse_char(&dom, c)) == GSX_RES_NEXT);
+	fclose(fn);
+
+	if (res == GSX_RES_EOE) {
+		/* compact and simplify the tree */
+		gsxl_compact_tree(&dom);
+
+		/* recursively parse the dom */
+		ret = mentor_parse_tree(&dom);
+	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "Invalid mentor edf: not a valid s-expression file near %d:%d\n", dom.parse.line, dom.parse.col);
+		ret = -1;
+	}
+
+	/* clean up */
+	gsxl_uninit(&dom);
+
+	return ret;
+
 }
 
 static const char pcb_acts_Loadmentor_schFrom[] = "LoadMentorFrom(filename)";
