@@ -634,6 +634,16 @@ static void pcb_text_font_chg(void *user_data, int argc, pcb_event_arg_t argv[])
 		} PCB_END_LOOP;
 	} PCB_END_LOOP;
 
+	PCB_ELEMENT_LOOP(PCB->Data); {
+		PCB_ELEMENT_PCB_TEXT_LOOP(element); {
+			if (text->fid == fid) {
+				pcb_element_text_update(PCB, PCB->Data, element, n);
+				need_redraw = 1;
+			}
+		} PCB_END_LOOP;
+	} PCB_END_LOOP;
+
+
 	if (need_redraw)
 		pcb_gui->invalidate_all(); /* can't just redraw the text, as the old text may have been bigger, before the change! */
 
