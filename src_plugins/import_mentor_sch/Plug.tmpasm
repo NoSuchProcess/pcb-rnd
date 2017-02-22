@@ -1,0 +1,8 @@
+put /local/pcb/mod {import_mentor_sch}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_mentor_sch/mentor_sch.o @]
+
+switch /local/pcb/import_mentor_sch/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

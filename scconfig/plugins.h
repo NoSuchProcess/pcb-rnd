@@ -51,6 +51,8 @@ plugin_def("import_hyp",      "hyperlynx .hyp importer",   sdisable, 0)
 plugin_def("import_mucs",     "import mucs routing",       sbuildin, 1)
 plugin_def("import_ltspice",  "import ltspice .net+.asc",  sbuildin, 1)
 plugin_def("import_tinycad",  "import tinycad .net",       sbuildin, 1)
+plugin_def("import_mentor_sch","import mentor graphics sch",sdisable, 0)
+
 plugin_def("import_tedax",    "import tEDAx netlist",      sbuildin, 1)
 
 plugin_header("\nExport plugins:\n")
