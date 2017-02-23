@@ -353,7 +353,7 @@ pcb_element_t *hyp_create_element_by_name(char *element_name, pcb_coord_t x, pcb
 	pcb_element_t *elem;
 	pcb_flag_t flags;
 	pcb_uint8_t text_direction = 0;
-	int text_scale = 500;
+	int text_scale = 100;
 
 	flags = pcb_no_flags();
 	/* does the device already exist? */
@@ -651,6 +651,12 @@ void hyp_element_silkscreen_new(pcb_data_t * Data, pcb_element_t * Element, pcb_
 	/* put text bottom left */
 	PCB_ELEM_TEXT_REFDES(Element).X = x1;
 	PCB_ELEM_TEXT_REFDES(Element).Y = y2;
+
+	PCB_ELEM_TEXT_DESCRIPTION(Element).X = x1;
+	PCB_ELEM_TEXT_DESCRIPTION(Element).Y = y2;
+
+	PCB_ELEM_TEXT_VALUE(Element).X = x1;
+	PCB_ELEM_TEXT_VALUE(Element).Y = y2;
 
 	/* update */
 	pcb_element_bbox(Data, Element, Font);
@@ -1718,9 +1724,11 @@ pcb_bool exec_pad(parse_param * h)
 		}
 	}
 
+  /* XXX ought to rotate pad along h->via_pad_angle, if h->via_pad_angle_set */
+
 	mask = thickness;
 
-	pcb_element_pad_new(device, x1, y1, x2, y2, thickness, clearance, mask, net_name, "?", flags);
+	pcb_element_pad_new(device, x1, y1, x2, y2, thickness, clearance, mask, net_name, NULL, flags);
 
 	/* update */
 	pcb_element_bbox(hyp_dest, device, pcb_font(PCB, 0, 1));
@@ -1749,14 +1757,14 @@ pcb_bool exec_useg(parse_param * h)
 		pcb_printf("\n");
 	}
 
-	/* XXX fixme. want to put an unrouted segment between two layers, not two layer groups. */
+	/* XXX fixme. I want to put an unrouted segment between two layers, not two layer groups. */
 	/* lookup layer group begin and end layer are on */
 	layer1_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer1_name));
 	layer2_grp_id = pcb_layer_get_group(hyp_create_layer(h->layer2_name));
 
 	if ((layer1_grp_id == -1) || (layer2_grp_id == -1)) {
 		if (hyp_debug)
-			pcb_printf("skipping unrouted segment\n");
+			pcb_printf("useg: skipping unrouted segment\n");
 		return 0;
 	}
 
