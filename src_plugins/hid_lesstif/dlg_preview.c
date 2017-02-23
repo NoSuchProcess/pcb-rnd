@@ -179,7 +179,7 @@ static void show_layer_unmap(Widget w, PreviewData * pd, void *v)
 }
 
 
-static PreviewData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
+static PreviewData *lesstif_show_layer(pcb_layer_id_t layer, const char *title, int modal)
 {
 	double scale;
 	Widget da;
@@ -205,6 +205,9 @@ static PreviewData *lesstif_show_layer(pcb_layer_id_t layer, const char *title)
 	pd->form = XmCreateFormDialog(mainwind, XmStrCast(title), stdarg_args, stdarg_n);
 	pd->window = 0;
 	XtAddCallback(pd->form, XmNunmapCallback, (XtCallbackProc) show_layer_unmap, (XtPointer) pd);
+
+	if (modal)
+		XtVaSetValues(pd->form, XmNdialogStyle, XmDIALOG_PRIMARY_APPLICATION_MODAL, NULL);
 
 	scale = sqrt(200.0 * 200.0 / ((pd->right - pd->left + 1.0) * (pd->bottom - pd->top + 1.0)));
 
@@ -249,7 +252,7 @@ void lesstif_show_layergrp_edit(void)
 	if (layergrp_edit != NULL)
 		return;
 	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
-		layergrp_edit = lesstif_show_layer(lid, "Layer groups");
+		layergrp_edit = lesstif_show_layer(lid, "Layer groups", 0);
 		layergrp_edit->mouse_ev = pcb_stub_draw_csect_mouse_ev;
 		layergrp_edit->overlay_draw = pcb_stub_draw_csect_overlay;
 		layergrp_edit->pre_close = layergrp_pre_close;
@@ -274,7 +277,7 @@ static void lesstif_show_fontsel_global()
 	if (fontsel_glob != NULL)
 		return;
 	if (pcb_layer_list(PCB_LYT_FONTSEL, &lid, 1) > 0) {
-		fontsel_glob = lesstif_show_layer(lid, "Pen font selection");
+		fontsel_glob = lesstif_show_layer(lid, "Pen font selection", 0);
 		fontsel_glob->mouse_ev = pcb_stub_draw_fontsel_mouse_ev;
 		fontsel_glob->overlay_draw = NULL;
 		fontsel_glob->pre_close = fontsel_pre_close_glob;
@@ -294,12 +297,36 @@ static void fontsel_pre_close_loc(struct PreviewData *pd)
 static void lesstif_show_fontsel_local(pcb_layer_t *txtly, pcb_text_t *txt, int type)
 {
 	pcb_layer_id_t lid;
-	if (pcb_layer_list(PCB_LYT_FONTSEL, &lid, 1) > 0) {
-		fontsel_glob = lesstif_show_layer(lid, "Change font of text object");
-		fontsel_glob->mouse_ev = pcb_stub_draw_fontsel_mouse_ev;
-		fontsel_glob->overlay_draw = NULL;
-		fontsel_glob->pre_close = fontsel_pre_close_loc;
+	pcb_text_t *old_txt;
+	pcb_layer_t *old_layer;
+	int old_type;
+
+	if (pcb_layer_list(PCB_LYT_FONTSEL, &lid, 1) <= 0)
+		return;
+
+	old_txt = *pcb_stub_draw_fontsel_text_obj;
+	old_layer = *pcb_stub_draw_fontsel_layer_obj;
+	old_type = *pcb_stub_draw_fontsel_text_type;
+
+	*pcb_stub_draw_fontsel_text_obj = txt;
+	*pcb_stub_draw_fontsel_layer_obj = txtly;
+	*pcb_stub_draw_fontsel_text_type = type;
+
+	fontsel_loc = lesstif_show_layer(lid, "Change font of text object", 1);
+	fontsel_loc->mouse_ev = pcb_stub_draw_fontsel_mouse_ev;
+	fontsel_loc->overlay_draw = NULL;
+	fontsel_loc->pre_close = fontsel_pre_close_loc;
+
+
+	while (fontsel_loc != NULL) {
+		XEvent e;
+		XtAppNextEvent(app_context, &e);
+		XtDispatchEvent(&e);
 	}
+
+	*pcb_stub_draw_fontsel_text_obj = old_txt;
+	*pcb_stub_draw_fontsel_layer_obj = old_layer;
+	*pcb_stub_draw_fontsel_text_type = old_type;
 }
 
 void lesstif_show_fontsel_edit(pcb_layer_t *txtly, pcb_text_t *txt, int type)
