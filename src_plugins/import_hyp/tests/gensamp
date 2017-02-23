@@ -54,10 +54,13 @@ print "  (PERIMETER_ARC X1=5.5 Y1=8.5 X2=5.0 Y2=8.0 XC=5.0 YC=8.5 R=0.5)"
 print "  (PERIMETER_SEGMENT X1=5.0 Y1=8.0 X2=5.5 Y2=8.5)"
 
 print "}"
+
+print "{PLANE_SEP=0.254}"
+
 print "{STACKUP"
 print "  (SIGNAL T=0.000700 L=component)"
 print "  (DIELECTRIC T=0.002000 C=4.000000)"
-print "  (PLANE  T=0.000700 L=solder PS=0.001000)"
+print "  (PLANE  T=0.000700 L=solder PS=0.508)"
 print "}"
 print "{DEVICES"
 print "  (? REF=U1 NAME=BC548 L=component)"
