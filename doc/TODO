@@ -15,7 +15,6 @@
 	- don't force builtin for dependant libs
 
 - fontsel:
-	- lesstif
 	- replace font in slot (even in default)
 	- ttf import?
 
