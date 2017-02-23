@@ -25,6 +25,9 @@
 #include "misc_util.h"
 #include "compat_nls.h"
 #include "compat_misc.h"
+#include "search.h"
+#include "action_helper.h"
+#include "change.h"
 
 static int ok;
 
@@ -1245,13 +1248,30 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 }
 
 
-static const char fontsel_syntax[] = "EditLayerGroups()";
-static const char fontsel_help[] = "Let the user change fonts";
-extern void lesstif_show_fontsel_edit(void);
-static int FontSel(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+static const char pcb_acts_fontsel[] = "EditLayerGroups()";
+static const char pcb_acth_fontsel[] = "Let the user change fonts";
+extern void lesstif_show_fontsel_edit(pcb_layer_t *txtly, pcb_text_t *txt, int type);
+static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	lesstif_show_fontsel_edit();
-	return 1;
+	if (argc > 1)
+		PCB_ACT_FAIL(fontsel);
+
+	if (argc > 0) {
+		if (pcb_strcasecmp(argv[0], "Object") == 0) {
+			int type;
+			void *ptr1, *ptr2, *ptr3;
+			pcb_gui->get_coords(_("Select an Object"), &x, &y);
+			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
+/*				pcb_undo_save_serial();*/
+				lesstif_show_fontsel_edit(ptr1, ptr2, type);
+			}
+		}
+		else
+			PCB_ACT_FAIL(fontsel);
+	}
+	else
+		lesstif_show_fontsel_edit(NULL, NULL, 0);
+	return 0;
 }
 
 /* ------------------------------------------------------------ */
@@ -1687,8 +1707,8 @@ pcb_hid_action_t lesstif_dialog_action_list[] = {
 	{"EditLayerGroups", 0, EditLayerGroups,
 	 editlayergroups_help, editlayergroups_syntax}
 	,
-	{"FontSel", 0, FontSel,
-	 fontsel_help, fontsel_syntax}
+	{"FontSel", 0, pcb_act_fontsel,
+	 pcb_acth_fontsel, pcb_acts_fontsel}
 	,
 	{"ImportGUI", 0, ImportGUI,
 	 importgui_help, importgui_syntax}
