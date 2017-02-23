@@ -241,14 +241,22 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			pcb_coord_t x0 = text->X, sx = text->BoundingBox.X2 - text->BoundingBox.X1;
 			pcb_coord_t y0 = text->Y, sy = text->BoundingBox.Y2 - text->BoundingBox.Y1;
 			switch(text->Direction) {
-				case 0: x0 += sx; break;
-				case 1: y0 += sy; break;
-				case 2: x0 -= sx; break;
-				case 3: y0 -= sy; break;
+				case 0:
+					/*x0 += sx;*/
+					break;
+				case 1: 
+					/*y0 += sy;*/
+					break;
+				case 2: 
+					/*x0 -= sx;*/
+					break;
+				case 3: 
+					/*y0 -= sy;*/
+					break;
 			}
-			fprintf(f, "TY %ld %ld %ld %ld %d 0 %d * ",
-				crd(x0), crd(y0), crd(sx), crd(sy),
-				text->Direction, fidoly);
+			fprintf(f, "TY %ld %ld %ld %ld %d 1 %d * ", /* 1 = bold */
+				crd(x0), crd(y0), 2*crd(sy)/5, 2*crd(sx)/5, /* scaling voodoo */
+				90*(text->Direction), fidoly);
 			for(s = text->TextString; *s != '\0'; s++) {
 				if (*s == ' ')
 					fprintf(f, "++");
