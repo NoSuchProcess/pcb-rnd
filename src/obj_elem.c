@@ -299,15 +299,15 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	PCB_END_LOOP;
 
 	for (onsolder = 0; onsolder < 2; onsolder++) {
-		int silk_layer;
+		pcb_layergrp_id_t side_grp;
 		int onsolderflag;
 
 		if ((!onsolder) == (!PCB_SWAP_IDENT)) {
-			silk_layer = gtop;
+			side_grp = gtop;
 			onsolderflag = PCB_FLAG_NO;
 		}
 		else {
-			silk_layer = gbottom;
+			side_grp = gbottom;
 			onsolderflag = PCB_FLAG_ONSOLDER;
 		}
 
@@ -322,7 +322,7 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 	    } \
 
 		/* get the component-side SM pads */
-		group = pcb_layer_get_group(silk_layer);
+		group = pcb_layer_get_group(side_grp);
 		PCB_COPPER_GROUP_LOOP(Buffer->Data, group);
 		{
 			char num[8];
