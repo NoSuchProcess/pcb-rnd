@@ -261,7 +261,7 @@ static int polygon_is_rectangle(pcb_polygon_t *poly)
 pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 {
 	pcb_element_t *Element;
-	pcb_layergrp_id_t group, gbottom, gtop;
+	pcb_layergrp_id_t gbottom, gtop;
 	pcb_cardinal_t pin_n = 1;
 	pcb_bool hasParts = pcb_false, crooked = pcb_false;
 	int onsolder;
@@ -321,9 +321,8 @@ pcb_bool pcb_element_convert_from_buffer(pcb_buffer_t *Buffer)
 		   "you wanted\n")); \
 	    } \
 
-		/* get the component-side SM pads */
-		group = pcb_layer_get_group(side_grp);
-		PCB_COPPER_GROUP_LOOP(Buffer->Data, group);
+		/* get the side SM pads on the side we are dealing with (first component then solder) */
+		PCB_COPPER_GROUP_LOOP(Buffer->Data, side_grp);
 		{
 			char num[8];
 			PCB_LINE_LOOP(layer);
