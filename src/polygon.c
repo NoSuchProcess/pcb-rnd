@@ -1013,16 +1013,6 @@ static pcb_r_dir_t text_sub_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static int Group(pcb_data_t *Data, pcb_layer_id_t layer)
-{
-	pcb_cardinal_t i, j;
-	for (i = 0; i < pcb_max_group; i++)
-		for (j = 0; j < ((pcb_board_t *) (Data->pcb))->LayerGroups.grp[i].len; j++)
-			if (layer == ((pcb_board_t *) (Data->pcb))->LayerGroups.grp[i].lid[j])
-				return i;
-	return i;
-}
-
 static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polygon, const pcb_box_t * here, pcb_coord_t expand)
 {
 	int r = 0, seen;
@@ -1039,7 +1029,7 @@ static int clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_polygon_t * polyg
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon))
 		return 0;
 
-	group = Group(Data, pcb_layer_id(Data, Layer));
+	group = pcb_layer_get_group_(Layer);
 	gflg = pcb_layergrp_flags(group);
 	info.solder = (gflg & PCB_LYT_BOTTOM);
 	info.data = Data;
