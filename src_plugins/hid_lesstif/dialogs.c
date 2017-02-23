@@ -1244,6 +1244,16 @@ static int EditLayerGroups(int argc, const char **argv, pcb_coord_t x, pcb_coord
 	return 1;
 }
 
+
+static const char fontsel_syntax[] = "EditLayerGroups()";
+static const char fontsel_help[] = "Let the user change fonts";
+extern void lesstif_show_fontsel_edit(void);
+static int FontSel(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	lesstif_show_fontsel_edit();
+	return 1;
+}
+
 /* ------------------------------------------------------------ */
 
 typedef struct {
@@ -1676,6 +1686,9 @@ pcb_hid_action_t lesstif_dialog_action_list[] = {
 	,
 	{"EditLayerGroups", 0, EditLayerGroups,
 	 editlayergroups_help, editlayergroups_syntax}
+	,
+	{"FontSel", 0, FontSel,
+	 fontsel_help, fontsel_syntax}
 	,
 	{"ImportGUI", 0, ImportGUI,
 	 importgui_help, importgui_syntax}

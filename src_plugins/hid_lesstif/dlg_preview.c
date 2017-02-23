@@ -255,3 +255,28 @@ void lesstif_show_layergrp_edit(void)
 		layergrp_edit->pre_close = layergrp_pre_close;
 	}
 }
+
+/***************** instance for font selection **********************/
+
+#include "stub_draw.h"
+
+static PreviewData *fontsel_edit = NULL;
+
+static void fontsel_pre_close(struct PreviewData *pd)
+{
+	if (pd == fontsel_edit)
+		fontsel_edit = NULL;
+}
+
+void lesstif_show_fontsel_edit(void)
+{
+	pcb_layer_id_t lid;
+	if (fontsel_edit != NULL)
+		return;
+	if (pcb_layer_list(PCB_LYT_FONTSEL, &lid, 1) > 0) {
+		fontsel_edit = lesstif_show_layer(lid, "Pen font selection");
+		fontsel_edit->mouse_ev = pcb_stub_draw_fontsel_mouse_ev;
+		fontsel_edit->overlay_draw = NULL;
+		fontsel_edit->pre_close = fontsel_pre_close;
+	}
+}
