@@ -894,6 +894,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.preview_expose = ghid_preview_expose;
 	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
 	ghidgui->common.set_status_line_label = ghid_set_status_line_label;
+	ghidgui->common.note_event_location = ghid_note_event_location;
 
 	ghid_port.view.com = &ghidgui->common;
 

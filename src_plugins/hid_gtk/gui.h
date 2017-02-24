@@ -142,6 +142,7 @@ void ghid_pack_mode_buttons(void);
 */
 void ghid_port_ranges_changed(void);
 void ghid_port_ranges_scale(void);
+void ghid_note_event_location(GdkEventButton *ev);
 
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
 

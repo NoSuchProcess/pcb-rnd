@@ -90,7 +90,7 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		static int seq_len = 0;
 		unsigned short int kv = kev->keyval;
 
-		ghid_note_event_location(NULL);
+		view->com->note_event_location(NULL);
 
 		extern GdkModifierType ghid_glob_mask;
 		ghid_glob_mask = state;
