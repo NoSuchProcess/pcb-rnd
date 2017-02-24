@@ -394,6 +394,7 @@ void pcb_release_mode(void)
 		pcb_notify_mode();
 		pcb_buffer_clear(PCB_PASTEBUFFER);
 		pcb_buffer_set_number(Note.Buffer);
+		pcb_undo_inc_serial();
 		Note.Moving = pcb_false;
 		Note.Hit = 0;
 	}
