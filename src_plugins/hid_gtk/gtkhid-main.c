@@ -888,7 +888,7 @@ pcb_uninit_t hid_hid_gtk_init()
 #endif
 
 	/* Set up the glue struct to lib_gtk_common */
-	ghidgui->common.gport = gport;
+	ghidgui->common.gport = &ghid_port;
 	ghidgui->common.render_pixmap = ghid_render_pixmap;
 
 
