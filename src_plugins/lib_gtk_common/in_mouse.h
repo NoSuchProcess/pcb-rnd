@@ -2,6 +2,7 @@
 #define PCB_GTK_IN_MOUSE_H
 
 #include "hid_cfg_input.h"
+#include "glue.h"
 
 #include <gtk/gtk.h>
 #include <gdk/gdkevents.h>
@@ -10,6 +11,7 @@ typedef struct pcb_gtk_mouse_s {
 	GtkWidget *drawing_area, *top_window;
 	GdkCursor *X_cursor;          /* used X cursor */
 	GdkCursorType X_cursor_shape; /* and its shape */
+	pcb_gtk_common_t *com;
 } pcb_gtk_mouse_t;
 
 extern pcb_hid_cfg_mouse_t ghid_mouse;
@@ -36,16 +38,5 @@ gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * 
 extern GdkPixmap *XC_hand_source, *XC_hand_mask;
 extern GdkPixmap *XC_lock_source, *XC_lock_mask;
 extern GdkPixmap *XC_clock_source, *XC_clock_mask;
-
-/* Temporary calls to hid_gtk */
-extern gboolean ghid_idle_cb(gpointer data);
-extern int ghid_shift_is_pressed();
-extern void ghid_interface_input_signals_disconnect(void);
-extern void ghid_interface_input_signals_connect(void);
-extern void ghid_interface_set_sensitive(gboolean sensitive);
-extern void ghid_port_button_press_main(void);
-extern void ghid_port_button_release_main(void);
-extern void ghid_status_line_set_text(const gchar *text);
-extern void ghid_set_status_line_label(void);
 
 #endif

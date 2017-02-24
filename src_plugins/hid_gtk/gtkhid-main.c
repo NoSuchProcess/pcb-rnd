@@ -896,7 +896,18 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.set_status_line_label = ghid_set_status_line_label;
 	ghidgui->common.note_event_location = ghid_note_event_location;
 
+	ghidgui->common.idle_cb = ghid_idle_cb;
+	ghidgui->common.shift_is_pressed = ghid_shift_is_pressed;
+	ghidgui->common.interface_input_signals_disconnect = ghid_interface_input_signals_disconnect;
+	ghidgui->common.interface_input_signals_connect = ghid_interface_input_signals_connect;
+	ghidgui->common.interface_set_sensitive = ghid_interface_set_sensitive;
+	ghidgui->common.port_button_press_main = ghid_port_button_press_main;
+	ghidgui->common.port_button_release_main = ghid_port_button_release_main;
+	ghidgui->common.status_line_set_text = ghid_status_line_set_text;
+
+
 	ghid_port.view.com = &ghidgui->common;
+	ghid_port.mouse.com = &ghidgui->common;
 
 	memset(&ghid_hid, 0, sizeof(pcb_hid_t));
 

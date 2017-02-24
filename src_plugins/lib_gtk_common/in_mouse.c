@@ -167,7 +167,7 @@ void ghid_mode_cursor(pcb_gtk_mouse_t *ctx, int mode)
 		break;
 
 	case PCB_MODE_ROTATE:
-		if (ghid_shift_is_pressed())
+		if (ctx->com->shift_is_pressed())
 			gport_set_cursor(ctx, (GdkCursorType) CUSTOM_CURSOR_CLOCKWISE);
 		else
 			gport_set_cursor(ctx, GDK_EXCHANGE);
@@ -207,10 +207,15 @@ void ghid_restore_cursor(pcb_gtk_mouse_t *ctx)
 	/* =============================================================== */
 static gboolean got_location;
 
+typedef struct {
+	GMainLoop *loop;
+	pcb_gtk_common_t *com;
+} loop_ctx_t;
+
 /*  If user hits a key instead of the mouse button, we'll abort unless
     it's the enter key (which accepts the current crosshair location).
  */
-static gboolean loop_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, GMainLoop ** loop)
+static gboolean loop_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, loop_ctx_t *lctx)
 {
 	gint ksym = kev->keyval;
 
@@ -219,14 +224,14 @@ static gboolean loop_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, G
 
 	switch (ksym) {
 	case GDK_KEY_Return:					/* Accept cursor location */
-		if (g_main_loop_is_running(*loop))
-			g_main_loop_quit(*loop);
+		if (g_main_loop_is_running(lctx->loop))
+			g_main_loop_quit(lctx->loop);
 		break;
 
 	default:											/* Abort */
 		got_location = FALSE;
-		if (g_main_loop_is_running(*loop))
-			g_main_loop_quit(*loop);
+		if (g_main_loop_is_running(lctx->loop))
+			g_main_loop_quit(lctx->loop);
 		break;
 	}
 	return TRUE;
@@ -235,11 +240,11 @@ static gboolean loop_key_press_cb(GtkWidget * drawing_area, GdkEventKey * kev, G
 /*  User hit a mouse button in the Output drawing area, so quit the loop
     and the cursor values when the button was pressed will be used.
  */
-static gboolean loop_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, GMainLoop ** loop)
+static gboolean loop_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, loop_ctx_t *lctx)
 {
-	if (g_main_loop_is_running(*loop))
-		g_main_loop_quit(*loop);
-	ghid_note_event_location(ev);
+	if (g_main_loop_is_running(lctx->loop))
+		g_main_loop_quit(lctx->loop);
+	lctx->com->note_event_location(ev);
 	return TRUE;
 }
 
@@ -251,7 +256,7 @@ static gboolean loop_button_press_cb(GtkWidget * drawing_area, GdkEventButton * 
 static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * message)
 {
 	static int getting_loc = 0;
-	GMainLoop *loop;
+	loop_ctx_t lctx;
 	gulong button_handler, key_handler;
 	gint oldObjState, oldLineState, oldBoxState;
 
@@ -263,7 +268,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 		return pcb_false;
 
 	getting_loc = 1;
-	ghid_status_line_set_text(message);
+	ctx->com->status_line_set_text(message);
 
 	oldObjState = pcb_crosshair.AttachedObject.State;
 	oldLineState = pcb_crosshair.AttachedLine.State;
@@ -280,24 +285,25 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	   control interface insensitive so all the user can do is hit a key
 	   or mouse button in the Output drawing area.
 	 */
-	ghid_interface_input_signals_disconnect();
-	ghid_interface_set_sensitive(FALSE);
+	ctx->com->interface_input_signals_disconnect();
+	ctx->com->interface_set_sensitive(FALSE);
 
 	got_location = TRUE;					/* Will be unset by hitting most keys */
 	button_handler =
-		g_signal_connect(G_OBJECT(ctx->drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &loop);
-	key_handler = g_signal_connect(G_OBJECT(ctx->top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &loop);
+		g_signal_connect(G_OBJECT(ctx->drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
+	key_handler = g_signal_connect(G_OBJECT(ctx->top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
 
-	loop = g_main_loop_new(NULL, FALSE);
-	g_main_loop_run(loop);
+	lctx.loop = g_main_loop_new(NULL, FALSE);
+	lctx.com = ctx->com;
+	g_main_loop_run(lctx.loop);
 
-	g_main_loop_unref(loop);
+	g_main_loop_unref(lctx.loop);
 
 	g_signal_handler_disconnect(ctx->drawing_area, button_handler);
 	g_signal_handler_disconnect(ctx->top_window, key_handler);
 
-	ghid_interface_input_signals_connect();	/* return to normal */
-	ghid_interface_set_sensitive(TRUE);
+	ctx->com->interface_input_signals_connect();	/* return to normal */
+	ctx->com->interface_set_sensitive(TRUE);
 
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_crosshair.AttachedObject.State = oldObjState;
@@ -306,7 +312,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	pcb_notify_crosshair_change(pcb_true);
 	ghid_restore_cursor(ctx);
 
-	ghid_set_status_line_label();
+	ctx->com->set_status_line_label();
 
 	getting_loc = 0;
 	return got_location;
@@ -352,13 +358,13 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 	ModifierKeysState mk;
 	GdkModifierType state;
 	GdkModifierType mask;
-/*	pcb_gtk_mouse_t *ctx = gdata;*/
+	pcb_gtk_mouse_t *ctx = data;
 
 	/* Reject double and triple click events */
 	if (ev->type != GDK_BUTTON_PRESS)
 		return TRUE;
 
-	ghid_note_event_location(ev);
+	ctx->com->note_event_location(ev);
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(drawing_area, &state);
 
@@ -369,7 +375,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk);
 
-	ghid_port_button_press_main();
+	ctx->com->port_button_press_main();
 
 	return TRUE;
 }
@@ -378,15 +384,15 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 {
 	ModifierKeysState mk;
 	GdkModifierType state;
-/*	pcb_gtk_mouse_t *ctx = data;*/
+	pcb_gtk_mouse_t *ctx = data;
 
-	ghid_note_event_location(ev);
+	ctx->com->note_event_location(ev);
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(drawing_area, &state);
 
 	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release);
 
-	ghid_port_button_release_main();
+	ctx->com->port_button_release_main();
 	return TRUE;
 }
 

@@ -2484,23 +2484,23 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
  ../src_3rd/liblihata/genht/ht.h ../src_3rd/liblihata/genht/ht_inlines.h \
- ../src_3rd/liblihata/genht/htip.h hid_cfg.h const.h board.h const.h \
- macro.h global_typedefs.h pcb_bool.h unit.h vtroutestyle.h attrib.h \
- ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
+ ../src_3rd/liblihata/genht/htip.h hid_cfg.h \
+ ../src_plugins/lib_gtk_common/glue.h hid.h error.h drc.h unit.h \
+ global_typedefs.h pcb_bool.h attrib.h layer.h globalconst.h \
  obj_all_list.h obj_arc_list.h obj_common.h \
  ../src_3rd/liblihata/genht/hash.h ../src_3rd/genlist/gendlist.h flag.h \
  obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  obj_elem_list.h obj_elem.h obj_line_list.h obj_line.h obj_pad_list.h \
  obj_pad.h obj_pinvia_list.h obj_pinvia.h obj_text.h font.h box.h \
- math_helper.h move.h misc_util.h ht_element.h \
+ math_helper.h macro.h move.h misc_util.h ht_element.h \
  ../src_3rd/liblihata/genht/ht.h obj_poly_list.h obj_poly.h polyarea.h \
- obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h library.h \
- rats_patch.h board.h crosshair.h vtonpoint.h hid.h error.h drc.h \
+ obj_text_list.h obj_rat_list.h obj_rat.h layer_grp.h const.h board.h \
+ const.h vtroutestyle.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h library.h rats_patch.h board.h \
+ crosshair.h vtonpoint.h hid.h \
  ../src_plugins/lib_gtk_common/in_keyboard.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
- ../src_plugins/lib_gtk_common/glue.h hid.h \
  ../src_plugins/lib_gtk_common/bu_status_line.h
 ../src_plugins/lib_gtk_common/lib_gtk_common.o: \
  ../src_plugins/lib_gtk_common/lib_gtk_common.c plugins.h
@@ -2587,8 +2587,9 @@
  obj_rat.h layer_grp.h ../src_plugins/lib_gtk_common/in_mouse.h \
  hid_cfg_input.h ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/liblihata/genht/htsp.h \
- hid_cfg.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ hid_cfg.h ../src_plugins/lib_gtk_common/glue.h conf_core.h conf.h \
+ pcb-printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h list_conf.h
 ../src_plugins/lib_gtk_common/win_place.o: \

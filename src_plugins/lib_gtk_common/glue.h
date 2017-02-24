@@ -19,8 +19,17 @@ typedef struct pcb_gtk_common_s {
 
 	void (*window_set_name_label)(gchar *name);
 	void (*set_status_line_label)(void);
+	void (*status_line_set_text)(const gchar *text);
 
 	void (*note_event_location)(GdkEventButton *ev);
+	gboolean (*idle_cb)(gpointer data);
+	int (*shift_is_pressed)();
+	void (*interface_input_signals_disconnect)(void);
+	void (*interface_input_signals_connect)(void);
+	void (*interface_set_sensitive)(gboolean sensitive);
+	void (*port_button_press_main)(void);
+	void (*port_button_release_main)(void);
+
 } pcb_gtk_common_t;
 
 #endif
