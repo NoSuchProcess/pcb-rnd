@@ -1415,7 +1415,8 @@ void ghid_parse_arguments(int *argc, char ***argv)
 	icon = gdk_pixbuf_new_from_xpm_data((const gchar **) icon_bits);
 	gtk_window_set_default_icon(icon);
 
-	window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	ghidgui->common.top_window = window = gport->top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+
 	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
 
 	wplc_place(WPLC_TOP, window);
@@ -1739,14 +1740,14 @@ static int pcb_act_fontsel(int argc, const char **argv, pcb_coord_t x, pcb_coord
 			pcb_gui->get_coords(_("Select an Object"), &x, &y);
 			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_TYPE_NONE) {
 /*				pcb_undo_save_serial();*/
-				pcb_gtk_dlg_fontsel(gport, gport->top_window, ptr1, ptr2, type, 1);
+				pcb_gtk_dlg_fontsel(&ghidgui->common, ptr1, ptr2, type, 1);
 			}
 		}
 		else
 			PCB_ACT_FAIL(fontsel);
 	}
 	else
-		pcb_gtk_dlg_fontsel(gport, gport->top_window, NULL, NULL, 0, 0);
+		pcb_gtk_dlg_fontsel(&ghidgui->common, NULL, NULL, 0, 0);
 	return 0;
 }
 

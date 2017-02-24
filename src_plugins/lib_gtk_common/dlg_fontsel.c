@@ -56,7 +56,7 @@ static void fontsel_close_cb(gpointer ctx_)
 }
 
 
-void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_layer_t *txtly, pcb_text_t *txt, int type, int modal)
+void pcb_gtk_dlg_fontsel(pcb_gtk_common_t *com, pcb_layer_t *txtly, pcb_text_t *txt, int type, int modal)
 {
 	GtkWidget *w;
 	GtkDialog *dialog;
@@ -91,7 +91,7 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_layer_t *txtly,
 	*pcb_stub_draw_fontsel_text_type = type;
 
 	w = gtk_dialog_new_with_buttons("PCB - font selector",
-																	GTK_WINDOW(top_window),
+																	GTK_WINDOW(com->top_window),
 																	GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE, GTK_RESPONSE_NONE, NULL);
 	ctx->dialog = dialog = GTK_DIALOG(w);
 	gtk_dialog_set_default_response(dialog, GTK_RESPONSE_CLOSE);
@@ -108,7 +108,7 @@ void pcb_gtk_dlg_fontsel(void *gport, GtkWidget *top_window, pcb_layer_t *txtly,
 
 	if (pcb_layer_list(PCB_LYT_FONTSEL, &lid, 1) > 0) {
 		pcb_gtk_preview_t *p;
-		prv = pcb_gtk_preview_layer_new(gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
+		prv = pcb_gtk_preview_layer_new(com->gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
 		p = (pcb_gtk_preview_t *) prv;
 		p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;
