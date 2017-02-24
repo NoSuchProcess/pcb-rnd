@@ -212,6 +212,8 @@ void pcb_gtk_logv(enum pcb_message_level level, const char *fmt, va_list args)
 	free(msg);
 }
 
+#warning TODO: let the caller do the action registration, and provide only functions and help/syntax texts here, like in act_*
+
 /** Action ? */
 pcb_hid_action_t ghid_log_action_list[] = {
 	{"LogShowOnAppend", 0, GhidLogShowOnAppend,
