@@ -1657,6 +1657,7 @@ void undo_dump()
 {
 	size_t n;
 	int last_serial = -2;
+	printf("Serial=%d\n", Serial);
 	for(n = 0; n < UndoN; n++) {
 		if (last_serial != UndoList[n].Serial) {
 			printf("--- serial=%d\n", UndoList[n].Serial);
