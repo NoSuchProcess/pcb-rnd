@@ -131,7 +131,13 @@ int ghid_shift_is_pressed()
 		return 0;
 
 	gdk_window_get_pointer(gtk_widget_get_window(out->drawing_area), NULL, NULL, &mask);
+
+#ifdef PCB_WORKAROUND_GTK_SHIFT
+	/* On some systems the above query fails and we need to return the last known state instead */
+	return ghid_glob_mask & GDK_SHIFT_MASK;
+#else
 	return (mask & GDK_SHIFT_MASK) ? TRUE : FALSE;
+#endif
 }
 
 int ghid_control_is_pressed()
