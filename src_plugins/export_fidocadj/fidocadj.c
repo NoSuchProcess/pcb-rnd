@@ -245,9 +245,9 @@ static void fidocadj_do_export(pcb_hid_attr_val_t * options)
 			 * giving sx = (4189+800)/(5333+800) ~= 0.813
 			 */
 			pcb_coord_t x0 = text->X;
-			pcb_coord_t sx = text->BoundingBox.X2 - text->BoundingBox.X1;
+			/*pcb_coord_t sx = text->BoundingBox.X2 - text->BoundingBox.X1; unused */
 			pcb_coord_t y0 = text->Y;
-			pcb_coord_t sy = text->BoundingBox.Y2 - text->BoundingBox.Y1;
+			/* pcb_coord_t sy = text->BoundingBox.Y2 - text->BoundingBox.Y1; unused */
 			pcb_coord_t glyphy = 5789*(text->Scale); /* (ascent+descent)*Scale */
 			pcb_coord_t glyphx = 813*(glyphy/1000); /* based on 'm' glyph dimensions */
 			glyphy = 10*glyphy/7;  /* empirically determined */
