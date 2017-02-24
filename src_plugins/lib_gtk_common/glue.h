@@ -2,6 +2,7 @@
 #define PCB_GTK_COMMON_GLUE_H
 
 #include <gtk/gtk.h>
+#include "hid.h"
 
 /** The HID using pcb_gtk_common needs to fill in this struct and pass it
     on to most of the calls. This is the only legal way pcb_gtk_common can
@@ -15,6 +16,8 @@ typedef struct pcb_gtk_common_s {
 
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
 	gboolean (*preview_expose)(GtkWidget *widget, GdkEventExpose *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
+
+	void (*window_set_name_label)(gchar *name);
 
 } pcb_gtk_common_t;
 

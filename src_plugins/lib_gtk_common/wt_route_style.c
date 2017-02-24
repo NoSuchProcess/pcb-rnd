@@ -60,9 +60,10 @@ void pcb_gtk_route_style_copy(int idx)
 }
 
 /** Launches the Edit dialog */
-static void edit_button_cb(GtkButton * btn, gpointer rss)
+static void edit_button_cb(GtkButton * btn, gpointer rss_)
 {
-	pcb_gtk_route_style_edit_dialog((pcb_gtk_route_style_t *) rss);
+	pcb_gtk_route_style_t *rss = rss_;
+	pcb_gtk_route_style_edit_dialog(rss->com, rss);
 }
 
 /** Callback for user selection of a route style */
@@ -141,10 +142,11 @@ GType pcb_gtk_route_style_get_type(void)
 	return rss_type;
 }
 
-GtkWidget *pcb_gtk_route_style_new()
+GtkWidget *pcb_gtk_route_style_new(pcb_gtk_common_t *com)
 {
 	pcb_gtk_route_style_t *rss = g_object_new(GHID_ROUTE_STYLE_TYPE, NULL);
 
+	rss->com = com;
 	rss->active_style = NULL;
 	rss->action_radio_group = NULL;
 	rss->button_radio_group = NULL;

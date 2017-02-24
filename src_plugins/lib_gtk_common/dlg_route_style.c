@@ -272,7 +272,7 @@ static void _table_attach(GtkWidget * table, gint row, const gchar * label, GtkW
 	_table_attach_(table, row, label, *entry);
 }
 
-void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss)
+void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_t *rss)
 {
 	GtkTreePath *path;
 	GtkTreeIter iter;
@@ -457,7 +457,7 @@ void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss)
 
 		if (changed) {
 			pcb_board_set_changed_flag(pcb_true);
-			ghid_window_set_name_label(PCB->Name);
+			com->window_set_name_label(PCB->Name);
 		}
 	}
 	else {

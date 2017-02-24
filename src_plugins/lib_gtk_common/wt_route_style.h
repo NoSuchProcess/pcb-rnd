@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 
 #include "route_style.h"
+#include "glue.h"
 
 G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_ROUTE_STYLE_TYPE            (pcb_gtk_route_style_get_type ())
@@ -39,6 +40,8 @@ struct pcb_gtk_route_style_s {
 	struct pcb_gtk_obj_route_style_s *active_style;	/* The current route style    */
 
 	GtkTreeIter new_iter;					/* iter for the <new> item */
+
+	pcb_gtk_common_t *com;
 };
 
 typedef struct pcb_gtk_route_style_s pcb_gtk_route_style_t;
@@ -90,7 +93,7 @@ typedef struct pcb_gtk_obj_route_style_s pcb_gtk_obj_route_style_t;
 GType pcb_gtk_route_style_get_type(void);
 
 /** Creates and returns a new freshly-allocated \ref pcb_gtk_route_style_t object. */
-GtkWidget *pcb_gtk_route_style_new(void);
+GtkWidget *pcb_gtk_route_style_new(pcb_gtk_common_t *com);
 
 /** Installs the "Route Style" menu items.
     Takes a menu shell and installs menu items for route style selection in

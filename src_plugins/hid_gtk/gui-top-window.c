@@ -1082,7 +1082,7 @@ static void ghid_build_pcb_top_window(void)
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
-	ghidgui->route_style_selector = pcb_gtk_route_style_new();
+	ghidgui->route_style_selector = pcb_gtk_route_style_new(&ghidgui->common);
 	make_route_style_buttons(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 	gtk_box_pack_start(GTK_BOX(hbox), ghidgui->route_style_selector, FALSE, FALSE, 0);
 
@@ -1694,7 +1694,8 @@ static int AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	if (argc > 1)
 		PCB_AFAIL(adjuststyle);
 
-  pcb_gtk_route_style_edit_dialog(GHID_ROUTE_STYLE(ghidgui->route_style_selector));
+	ghidgui->route_style_selector = &ghidgui->common;
+  pcb_gtk_route_style_edit_dialog(&ghidgui->common, GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 	return 0;
 }
 

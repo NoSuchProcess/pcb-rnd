@@ -1,5 +1,6 @@
 /* Very linked to the widget ! */
 #include "wt_route_style.h"
+#include "glue.h"
 
 struct pcb_gtk_dlg_route_style_s {
 	pcb_gtk_route_style_t *rss;
@@ -21,7 +22,5 @@ struct pcb_gtk_dlg_route_style_s {
 /** Builds and runs the "edit route style" dialog.
     \param  rss the route style selector widget linked to this dialog.
  */
-void pcb_gtk_route_style_edit_dialog(pcb_gtk_route_style_t * rss);
+void pcb_gtk_route_style_edit_dialog(pcb_gtk_common_t *com, pcb_gtk_route_style_t *rss);
 
-/* Temporary: hid_gtk call back */
-extern void ghid_window_set_name_label(gchar * name);
