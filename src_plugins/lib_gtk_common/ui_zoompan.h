@@ -29,6 +29,7 @@
 #include "unit.h"
 #include "pcb_bool.h"
 #include "in_mouse.h"
+#include "glue.h"
 
 	/* Go from from the grid units in use (millimeters or mils) to PCB units
 	   |  and back again.
@@ -62,6 +63,8 @@ typedef struct {
 	gboolean panning;
 	pcb_coord_t pcb_x, pcb_y;						/* PCB coordinates of the mouse pointer */
 	pcb_coord_t crosshair_x, crosshair_y;	/* PCB coordinates of the crosshair     */
+
+	pcb_gtk_common_t *com;
 } pcb_gtk_view_t;
 
 /* take coord_per_px and validate it against other view parameters. Return
@@ -102,8 +105,5 @@ extern const char pcb_acth_pan[];
 int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y);
-
-/* Temporary back references to HID */
-extern void ghid_set_status_line_label(void);
 
 #endif

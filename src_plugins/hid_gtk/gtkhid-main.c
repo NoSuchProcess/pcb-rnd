@@ -893,6 +893,9 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.init_drawing_widget = ghid_init_drawing_widget;
 	ghidgui->common.preview_expose = ghid_preview_expose;
 	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
+	ghidgui->common.set_status_line_label = ghid_set_status_line_label;
+
+	ghid_port.view.com = &ghidgui->common;
 
 	memset(&ghid_hid, 0, sizeof(pcb_hid_t));
 

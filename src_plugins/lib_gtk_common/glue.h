@@ -18,6 +18,7 @@ typedef struct pcb_gtk_common_s {
 	gboolean (*preview_expose)(GtkWidget *widget, GdkEventExpose *ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
 
 	void (*window_set_name_label)(gchar *name);
+	void (*set_status_line_label)(void);
 
 } pcb_gtk_common_t;
 

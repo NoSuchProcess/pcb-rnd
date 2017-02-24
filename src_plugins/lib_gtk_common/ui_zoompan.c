@@ -146,7 +146,7 @@ static void ghid_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coor
 
 	pcb_gtk_pan_common(v);
 
-	ghid_set_status_line_label();
+	v->com->set_status_line_label();
 }
 
 
