@@ -108,7 +108,7 @@ void pcb_gtk_dlg_fontsel(pcb_gtk_common_t *com, pcb_layer_t *txtly, pcb_text_t *
 
 	if (pcb_layer_list(PCB_LYT_FONTSEL, &lid, 1) > 0) {
 		pcb_gtk_preview_t *p;
-		prv = pcb_gtk_preview_layer_new(com->gport, ghid_init_drawing_widget, ghid_preview_expose, lid);
+		prv = pcb_gtk_preview_layer_new(com->gport, com->init_drawing_widget, com->preview_expose, lid);
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
 		p = (pcb_gtk_preview_t *) prv;
 		p->mouse_cb = pcb_stub_draw_fontsel_mouse_ev;

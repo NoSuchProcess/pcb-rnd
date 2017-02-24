@@ -890,7 +890,8 @@ pcb_uninit_t hid_hid_gtk_init()
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = &ghid_port;
 	ghidgui->common.render_pixmap = ghid_render_pixmap;
-
+	ghidgui->common.init_drawing_widget = ghid_init_drawing_widget;
+	ghidgui->common.preview_expose = ghid_preview_expose;
 
 	memset(&ghid_hid, 0, sizeof(pcb_hid_t));
 
