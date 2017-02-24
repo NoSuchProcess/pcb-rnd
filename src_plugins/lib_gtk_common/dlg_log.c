@@ -44,7 +44,6 @@
 #include "bu_text_view.h"
 #include "compat.h"
 
-/*TODO temporary ? */
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 /** \file   dlg_log.c

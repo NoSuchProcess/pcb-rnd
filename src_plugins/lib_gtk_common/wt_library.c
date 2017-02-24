@@ -72,7 +72,6 @@
 #include "wt_preview.h"
 #include "win_place.h"
 
-/** TODO temporary */
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 /** \todo Open an empty file. Launch the Netlist window ... then : \n <tt>

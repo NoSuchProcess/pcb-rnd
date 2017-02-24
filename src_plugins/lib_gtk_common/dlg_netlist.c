@@ -59,7 +59,6 @@
 #include "bu_box.h"
 #include "bu_check_button.h"
 
-/** TODO temporary */
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 /** \file   dlg_netlist.c
