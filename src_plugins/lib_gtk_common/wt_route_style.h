@@ -157,7 +157,7 @@ void make_route_style_buttons(pcb_gtk_route_style_t * rss);
 
 /* Temporary: call back to hid_gtk */
 extern void route_styles_edited_cb(pcb_gtk_route_style_t * rss, gboolean save, gpointer data);
-
+extern void ghid_set_status_line_label(void);
 
 G_END_DECLS											/* keep c++ happy */
 #endif

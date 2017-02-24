@@ -5,7 +5,3 @@ void ghid_status_line_set_text_(GtkWidget *status_line_label, const gchar * text
 
 void ghid_set_status_line_label_(GtkWidget *status_line_label, int compat_horiz);
 
-/* implemented in hid_gtk* glue layer: */
-
-extern void ghid_status_line_set_text(const gchar *text);
-extern void ghid_set_status_line_label(void);

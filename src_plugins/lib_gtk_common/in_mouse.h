@@ -45,5 +45,7 @@ extern void ghid_interface_input_signals_connect(void);
 extern void ghid_interface_set_sensitive(gboolean sensitive);
 extern void ghid_port_button_press_main(void);
 extern void ghid_port_button_release_main(void);
+extern void ghid_status_line_set_text(const gchar *text);
+extern void ghid_set_status_line_label(void);
 
 #endif

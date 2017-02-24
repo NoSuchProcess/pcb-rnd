@@ -103,4 +103,7 @@ int pcb_gtk_act_pan(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coord_t
 
 void pcb_gtk_get_coords(pcb_gtk_mouse_t *mouse, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t * x, pcb_coord_t * y);
 
+/* Temporary back references to HID */
+extern void ghid_set_status_line_label(void);
+
 #endif
