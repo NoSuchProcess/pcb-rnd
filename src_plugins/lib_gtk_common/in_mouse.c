@@ -205,11 +205,10 @@ void ghid_restore_cursor(pcb_gtk_mouse_t *ctx)
 }
 
 	/* =============================================================== */
-static gboolean got_location;
-
 typedef struct {
 	GMainLoop *loop;
 	pcb_gtk_common_t *com;
+	gboolean got_location;
 } loop_ctx_t;
 
 /*  If user hits a key instead of the mouse button, we'll abort unless
@@ -229,7 +228,7 @@ static gboolean loop_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, loo
 		break;
 
 	default:											/* Abort */
-		got_location = FALSE;
+		lctx->got_location = FALSE;
 		if (g_main_loop_is_running(lctx->loop))
 			g_main_loop_quit(lctx->loop);
 		break;
@@ -288,7 +287,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	ctx->com->interface_input_signals_disconnect();
 	ctx->com->interface_set_sensitive(FALSE);
 
-	got_location = TRUE;					/* Will be unset by hitting most keys */
+	lctx.got_location = TRUE;   /* Will be unset by hitting most keys */
 	button_handler =
 		g_signal_connect(G_OBJECT(ctx->drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
 	key_handler = g_signal_connect(G_OBJECT(ctx->top_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
@@ -315,7 +314,7 @@ static gboolean run_get_location_loop(pcb_gtk_mouse_t *ctx, const gchar * messag
 	ctx->com->set_status_line_label();
 
 	getting_loc = 0;
-	return got_location;
+	return lctx.got_location;
 }
 
 void ghid_get_user_xy(pcb_gtk_mouse_t *ctx, const char *msg)
