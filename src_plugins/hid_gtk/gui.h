@@ -139,6 +139,7 @@ void ghid_mode_buttons_update(void);
 void ghid_pack_mode_buttons(void);
 
 void ghid_status_line_set_text(const gchar *text);
+void ghid_set_status_line_label(void);
 
 /* gui-output-events.c function prototypes.
 */
