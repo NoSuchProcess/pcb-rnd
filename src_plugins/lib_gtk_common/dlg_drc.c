@@ -619,7 +619,7 @@ ghid_violation_renderer_render(GtkCellRenderer * cell,
 		return;
 
 	if (violation->pixmap == NULL) {
-		GdkPixmap *pixmap = ghid_render_pixmap(violation->x_coord,
+		GdkPixmap *pixmap = renderer->common->render_pixmap(violation->x_coord,
 																					 violation->y_coord,
 																					 VIOLATION_PIXMAP_PCB_SIZE / pixmap_size,
 																					 pixmap_size, pixmap_size,
@@ -706,17 +706,18 @@ GType ghid_violation_renderer_get_type()
  *
  *  \return  The GhidViolationRenderer created.
  */
-GtkCellRenderer *ghid_violation_renderer_new(void)
+GtkCellRenderer *ghid_violation_renderer_new(pcb_gtk_common_t *common)
 {
 	GhidViolationRenderer *renderer;
 
 	renderer = (GhidViolationRenderer *) g_object_new(GHID_TYPE_VIOLATION_RENDERER, "ypad", 6, NULL);
+	renderer->common = common;
 
 	return GTK_CELL_RENDERER(renderer);
 }
 
 
-void ghid_drc_window_show(gboolean raise)
+void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise)
 {
 	GtkWidget *vbox, *hbox, *button, *scrolled_window;
 	GtkCellRenderer *violation_renderer;
@@ -759,7 +760,7 @@ void ghid_drc_window_show(gboolean raise)
 																							_("No."),	/* TITLE */
 																							violation_renderer, "text", DRC_VIOLATION_NUM_COL, NULL);
 
-	violation_renderer = ghid_violation_renderer_new();
+	violation_renderer = ghid_violation_renderer_new(common);
 	gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(drc_list), -1,	/* APPEND */
 																							_("Violation details"),	/* TITLE */
 																							violation_renderer, "violation", DRC_VIOLATION_OBJ_COL, NULL);
@@ -784,13 +785,13 @@ void ghid_drc_window_show(gboolean raise)
 	gtk_widget_show_all(drc_window);
 }
 
-void ghid_drc_window_append_violation(pcb_drc_violation_t * violation)
+void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violation_t * violation)
 {
 	GhidDrcViolation *violation_obj;
 	GtkTreeIter iter;
 
 	/* Ensure the required structures are setup */
-	ghid_drc_window_show(FALSE);
+	ghid_drc_window_show(common, FALSE);
 
 	num_violations++;
 
@@ -809,8 +810,8 @@ void ghid_drc_window_reset_message(void)
 	num_violations = 0;
 }
 
-int ghid_drc_window_throw_dialog(void)
+int ghid_drc_window_throw_dialog(pcb_gtk_common_t *common)
 {
-	ghid_drc_window_show(TRUE);
+	ghid_drc_window_show(common, TRUE);
 	return 1;
 }

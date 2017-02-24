@@ -28,6 +28,7 @@
 #define PCB_GTK_DLG_DRC_H
 
 #include <gtk/gtk.h>
+#include "glue.h"
 
 #define GHID_TYPE_DRC_VIOLATION           (ghid_drc_violation_get_type())
 #define GHID_DRC_VIOLATION(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_DRC_VIOLATION, GhidDrcViolation))
@@ -85,20 +86,18 @@ struct _GhidViolationRenderer {
 	GtkCellRendererText parent_instance;
 
 	GhidDrcViolation *violation;
+	pcb_gtk_common_t *common;
 };
 
 /** \return     the GType identifier associated with \ref FIXME. */
 GType ghid_violation_renderer_get_type(void);
 
-GtkCellRenderer *ghid_violation_renderer_new(void);
+GtkCellRenderer *ghid_violation_renderer_new(pcb_gtk_common_t *common);
 
-void ghid_drc_window_show(gboolean raise);
+void ghid_drc_window_show(pcb_gtk_common_t *common, gboolean raise);
 void ghid_drc_window_reset_message(void);
-void ghid_drc_window_append_violation(pcb_drc_violation_t * violation);
+void ghid_drc_window_append_violation(pcb_gtk_common_t *common, pcb_drc_violation_t * violation);
 void ghid_drc_window_append_messagev(const char *fmt, va_list va);
-int ghid_drc_window_throw_dialog(void);
-
-/* Temporary back reference to hid_gtk */
-GdkPixmap *ghid_render_pixmap(int cx, int cy, double zoom, int width, int height, int depth);
+int ghid_drc_window_throw_dialog(pcb_gtk_common_t *common);
 
 #endif /* PCB_GTK_DLG_DRC_H */

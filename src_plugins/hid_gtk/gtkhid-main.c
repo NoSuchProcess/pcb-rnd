@@ -330,12 +330,23 @@ static void ghid_attributes(const char *owner, pcb_attribute_list_t * attrs)
 	pcb_gtk_dlg_attributes(ghid_port.top_window, owner, attrs);
 }
 
+
+static void ghid_drc_window_append_violation_glue(pcb_drc_violation_t *violation)
+{
+	ghid_drc_window_append_violation(&ghidgui->common, violation);
+}
+
+static int ghid_drc_window_throw_dialog_glue()
+{
+	return ghid_drc_window_throw_dialog(&ghidgui->common);
+}
+
 pcb_hid_drc_gui_t ghid_drc_gui = {
 	1,														/* log_drc_overview */
 	0,														/* log_drc_details */
 	ghid_drc_window_reset_message,
-	ghid_drc_window_append_violation,
-	ghid_drc_window_throw_dialog,
+	ghid_drc_window_append_violation_glue,
+	ghid_drc_window_throw_dialog_glue,
 };
 
 /* ------------------------------------------------------------
@@ -564,7 +575,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		ghid_config_window_show(gport);
 	}
 	else if (strcmp(a, "6") == 0 || pcb_strcasecmp(a, "DRC") == 0) {
-		ghid_drc_window_show(raise);
+		ghid_drc_window_show(&ghidgui->common, raise);
 	}
 	else if (strcmp(a, "7") == 0 || pcb_strcasecmp(a, "search") == 0) {
 		ghid_search_window_show(gport->top_window, raise);
@@ -878,6 +889,8 @@ pcb_uninit_t hid_hid_gtk_init()
 
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->common.gport = gport;
+	ghidgui->common.render_pixmap = ghid_render_pixmap;
+
 
 	memset(&ghid_hid, 0, sizeof(pcb_hid_t));
 
