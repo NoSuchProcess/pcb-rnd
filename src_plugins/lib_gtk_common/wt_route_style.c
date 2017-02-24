@@ -289,7 +289,7 @@ void pcb_gtk_route_style_sync(pcb_gtk_route_style_t * rss,
 	int target, n;
 
 	/* Always update the label - even if there's no style, the current settings need to show */
-	ghid_set_status_line_label();
+	rss->com->set_status_line_label();
 
 	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(rss->model), &iter))
 		return;
@@ -356,7 +356,7 @@ void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss)
 static void route_style_changed_cb(pcb_gtk_route_style_t * rss, pcb_route_style_t * rst, gpointer data)
 {
 	pcb_use_route_style(rst);
-	ghid_set_status_line_label();
+	rss->com->set_status_line_label();
 }
 
 

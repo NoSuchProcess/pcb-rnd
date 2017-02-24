@@ -156,8 +156,4 @@ void pcb_gtk_route_style_empty(pcb_gtk_route_style_t * rss);
 /**  Configures the route style selector. */
 void make_route_style_buttons(pcb_gtk_route_style_t * rss);
 
-
-/* Temporary: call back to hid_gtk */
-extern void ghid_set_status_line_label(void);
-
 #endif
