@@ -3,7 +3,6 @@
 
 #include <gtk/gtk.h>
 
-G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_LAYER_SELECTOR_TYPE            (pcb_gtk_layer_selector_get_type ())
 #define GHID_LAYER_SELECTOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_LAYER_SELECTOR_TYPE, pcb_gtk_layer_selector_t))
 #define GHID_LAYER_SELECTOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GHID_LAYER_SELECTOR_TYPE, pcb_gtk_layer_selector_class_t))
@@ -140,5 +139,4 @@ void pcb_gtk_layer_selector_delete_layers(pcb_gtk_layer_selector_t * ls, gboolea
  */
 void pcb_gtk_layer_selector_show_layers(pcb_gtk_layer_selector_t * ls, gboolean(*callback) (int user_id));
 
-G_END_DECLS											/* keep c++ happy */
 #endif

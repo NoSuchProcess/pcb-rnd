@@ -6,7 +6,6 @@
 #include "route_style.h"
 #include "glue.h"
 
-G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_ROUTE_STYLE_TYPE            (pcb_gtk_route_style_get_type ())
 #define GHID_ROUTE_STYLE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj),  GHID_ROUTE_STYLE_TYPE, pcb_gtk_route_style_t))
 #define GHID_ROUTE_STYLE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),   GHID_ROUTE_STYLE_TYPE, pcb_gtk_route_style_class_t))
@@ -162,5 +161,4 @@ void make_route_style_buttons(pcb_gtk_route_style_t * rss);
 extern void route_styles_edited_cb(pcb_gtk_route_style_t * rss, gboolean save, gpointer data);
 extern void ghid_set_status_line_label(void);
 
-G_END_DECLS											/* keep c++ happy */
 #endif

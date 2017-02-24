@@ -9,7 +9,6 @@
 
 #include "unit.h"
 
-G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_COORD_ENTRY_TYPE            (pcb_gtk_coord_entry_get_type ())
 #define GHID_COORD_ENTRY(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_COORD_ENTRY_TYPE, pcb_gtk_coord_entry_t))
 #define GHID_COORD_ENTRY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GHID_COORD_ENTRY_TYPE, pcb_gtk_coord_entry_class_t))
@@ -45,5 +44,4 @@ int pcb_gtk_coord_entry_get_value_str(pcb_gtk_coord_entry_t * ce, char *out, int
 /** Sets a pcb_gtk_coord_entry_t's value, in pcb coords */
 void pcb_gtk_coord_entry_set_value(pcb_gtk_coord_entry_t * ce, pcb_coord_t val);
 
-G_END_DECLS											/* keep c++ happy */
 #endif
