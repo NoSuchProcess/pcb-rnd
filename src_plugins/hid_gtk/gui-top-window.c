@@ -1694,7 +1694,6 @@ static int AdjustStyle(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y
 	if (argc > 1)
 		PCB_AFAIL(adjuststyle);
 
-	ghidgui->route_style_selector = &ghidgui->common;
   pcb_gtk_route_style_edit_dialog(&ghidgui->common, GHID_ROUTE_STYLE(ghidgui->route_style_selector));
 	return 0;
 }
