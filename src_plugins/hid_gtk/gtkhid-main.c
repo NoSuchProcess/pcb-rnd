@@ -895,7 +895,6 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.window_set_name_label = ghid_window_set_name_label;
 	ghidgui->common.set_status_line_label = ghid_set_status_line_label;
 	ghidgui->common.note_event_location = ghid_note_event_location;
-
 	ghidgui->common.idle_cb = ghid_idle_cb;
 	ghidgui->common.shift_is_pressed = ghid_shift_is_pressed;
 	ghidgui->common.interface_input_signals_disconnect = ghid_interface_input_signals_disconnect;
@@ -904,7 +903,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.port_button_press_main = ghid_port_button_press_main;
 	ghidgui->common.port_button_release_main = ghid_port_button_release_main;
 	ghidgui->common.status_line_set_text = ghid_status_line_set_text;
-
+	ghidgui->common.route_styles_edited_cb = ghid_route_styles_edited_cb;
 
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse.com = &ghidgui->common;

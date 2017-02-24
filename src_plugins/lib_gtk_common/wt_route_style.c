@@ -359,6 +359,18 @@ static void route_style_changed_cb(pcb_gtk_route_style_t * rss, pcb_route_style_
 	ghid_set_status_line_label();
 }
 
+
+static void route_styles_edited_cb(pcb_gtk_route_style_t *rss, gboolean save, gpointer data)
+{
+	pcb_gtk_common_t *com = data;
+
+	conf_setf(CFR_DESIGN, "design/routes", -1, "%s", pcb_route_string_make(&PCB->RouteStyle));
+	if (save)
+		conf_setf(CFR_USER, "design/routes", -1, "%s", pcb_route_string_make(&PCB->RouteStyle));
+
+	com->route_styles_edited_cb();
+}
+
 void make_route_style_buttons(pcb_gtk_route_style_t * rss)
 {
 	int i;
@@ -369,5 +381,5 @@ void make_route_style_buttons(pcb_gtk_route_style_t * rss)
 	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); ++i)
 		add_route_style_with_hidden_check(rss, &PCB->RouteStyle.array[i]);
 	g_signal_connect(G_OBJECT(rss), "select_style", G_CALLBACK(route_style_changed_cb), NULL);
-	g_signal_connect(G_OBJECT(rss), "style_edited", G_CALLBACK(route_styles_edited_cb), NULL);
+	g_signal_connect(G_OBJECT(rss), "style_edited", G_CALLBACK(route_styles_edited_cb), rss->com);
 }

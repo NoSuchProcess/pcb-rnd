@@ -30,6 +30,7 @@ typedef struct pcb_gtk_common_s {
 	void (*port_button_press_main)(void);
 	void (*port_button_release_main)(void);
 
+	void (*route_styles_edited_cb)(void);
 } pcb_gtk_common_t;
 
 #endif

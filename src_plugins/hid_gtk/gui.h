@@ -143,6 +143,7 @@ void ghid_status_line_set_text(const gchar *text);
 /* gui-output-events.c function prototypes.
 */
 gboolean ghid_idle_cb(gpointer data);
+void ghid_route_styles_edited_cb(void);
 void ghid_port_ranges_changed(void);
 void ghid_port_ranges_scale(void);
 void ghid_note_event_location(GdkEventButton *ev);
