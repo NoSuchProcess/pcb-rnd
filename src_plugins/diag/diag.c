@@ -216,6 +216,16 @@ static int pcb_act_DumpFonts(int argc, const char **argv, pcb_coord_t x, pcb_coo
 		printf(" <no extra font loaded>\n");
 }
 
+#ifndef NDEBUG
+static const char dump_undo_syntax[] = "dumpfonts()\n";
+static const char dump_undo_help[] = "Print info about fonts";
+static int pcb_act_DumpUndo(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	printf("Undo:\n");
+	undo_dump();
+}
+#endif
+
 
 pcb_hid_action_t diag_action_list[] = {
 	{"dumpconf", 0, pcb_act_DumpConf,
@@ -224,6 +234,10 @@ pcb_hid_action_t diag_action_list[] = {
 	 dump_layers_help, dump_layers_syntax},
 	{"dumpfonts", 0, pcb_act_DumpFonts,
 	 dump_fonts_help, dump_fonts_syntax},
+#ifndef NDEBUG
+	{"dumpundo", 0, pcb_act_DumpUndo,
+	 dump_undo_help, dump_undo_syntax},
+#endif
 	{"EvalConf", 0, pcb_act_EvalConf,
 	 eval_conf_help, eval_conf_syntax}
 
