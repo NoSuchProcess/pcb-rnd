@@ -34,6 +34,7 @@
 #include "gui-command-window.h"
 #include "gui-top-window.h"
 
+#include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/act_print.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
@@ -874,6 +875,9 @@ pcb_uninit_t hid_hid_gtk_init()
 #undef REST_OF_PATH
 	printf("\"Share\" installation path is \"%s\"\n", "share_dir_todo12");
 #endif
+
+	/* Set up the glue struct to lib_gtk_common */
+	ghidgui->common.gport = gport;
 
 	memset(&ghid_hid, 0, sizeof(pcb_hid_t));
 

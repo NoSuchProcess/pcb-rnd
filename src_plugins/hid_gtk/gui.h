@@ -34,6 +34,7 @@
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
+#include "../src_plugins/lib_gtk_common/glue.h"
 
 #include "ghid-main-menu.h"
 
@@ -43,6 +44,7 @@
 typedef struct {
 	GtkActionGroup *main_actions, *change_selected_actions, *displayed_name_actions;
 
+	pcb_gtk_common_t common;
 	pcb_gtk_cursor_pos_t cps;
 	pcb_gtk_menu_ctx_t menu;
 
