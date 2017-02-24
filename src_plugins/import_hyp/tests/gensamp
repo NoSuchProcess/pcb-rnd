@@ -184,4 +184,28 @@ print "  (USEG X1=18 Y1=3 L1=component X2=19 Y2=3 L2=solder ZL=component ZW=0.1 
 print "  (USEG X1=18 Y1=4 L1=component X2=19 Y2=4 L2=solder Z=50 D=1e-12 R=5 )"
 print "}"
 
+x0 = 6.0
+y0 = 5.0
+l = 2.0
+h = 0.5
+r = h/2.0
+w = h/4.0
+
+print "{NET=polylinetst"
+print "  {POLYGON L=component W=0.05 ID=1 X=%f Y=%f" % (x0-w, y0-w)
+print "     (LINE X=%f Y=%f)" % (x0+w, y0-w)
+print "     (LINE X=%f Y=%f)" % (x0+w, y0+w)
+print "     (LINE X=%f Y=%f)" % (x0-w, y0+w)
+print "     (LINE X=%f Y=%f)" % (x0-w, y0-w)
+print "  }"
+print "  {POLYLINE L=component W=0.1 ID=1 X=%f Y=%f" % (x0, y0)
+for a in range (0, 8, 2):
+  print "    (LINE X=%f Y=%f)" % ( x0+l, y0+a*h)
+  print "    (CURVE X1=%f Y1=%f X2=%f Y2=%f XC=%f YC=%f R=%f)" % ( x0+l, y0+a*h, x0+l, y0+(a+1)*h, x0+l, y0+(a+0.5)*h, r)
+  print "    (LINE X=%f Y=%f)" % ( x0, y0+(a+1)*h)
+  print "    (CURVE X1=%f Y1=%f X2=%f Y2=%f XC=%f YC=%f R=%f)" % ( x0, y0+(a+2)*h, x0, y0+(a+1)*h, x0, y0+(a+1.5)*h, r)
+
+print "  }"
+print "}"
+
 print "{END}"

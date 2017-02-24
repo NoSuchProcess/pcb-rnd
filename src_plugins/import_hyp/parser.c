@@ -1316,7 +1316,12 @@ pcb_bool exec_padstack_element(parse_param * h)
 		if (current_padstack == NULL)
 			return 1;
 		current_padstack->name = pcb_strdup(h->padstack_name);
-		current_padstack->thickness = (xy2coord(h->pad_sx) + xy2coord(h->pad_sy)) * 0.5;
+
+		if (h->pad_sx < h->pad_sy)
+			current_padstack->thickness = xy2coord(h->pad_sx);
+		else
+			current_padstack->thickness = xy2coord(h->pad_sy);
+
 		current_padstack->clearance = 0;
 		current_padstack->mask = current_padstack->thickness;
 		current_padstack->drill_hole = xy2coord(h->drill_size);
@@ -1724,7 +1729,7 @@ pcb_bool exec_pad(parse_param * h)
 		}
 	}
 
-  /* XXX ought to rotate pad along h->via_pad_angle, if h->via_pad_angle_set */
+	/* XXX ought to rotate pad along h->via_pad_angle, if h->via_pad_angle_set */
 
 	mask = thickness;
 
@@ -2093,7 +2098,7 @@ pcb_bool exec_curve(parse_param * h)
 		if (current_polyline_layer != NULL) {
 			/* clockwise arc from (x1, y2) to (x2, y2) */
 			hyp_arc_new(current_polyline_layer, x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), x2coord(h->xc),
-									y2coord(h->yc), 2 * xy2coord(h->r), 2 * xy2coord(h->r), pcb_true, current_polyline_width,
+									y2coord(h->yc), xy2coord(h->r), xy2coord(h->r), pcb_false, current_polyline_width,
 									current_polyline_clearance, pcb_no_flags());
 
 			/* move on */
@@ -2174,7 +2179,7 @@ pcb_bool exec_key(parse_param * h)
 pcb_bool exec_end(parse_param * h)
 {
 	if (hyp_debug)
-		pcb_printf("end.\n");
+		pcb_printf("end:\n");
 
 	return 0;
 }
