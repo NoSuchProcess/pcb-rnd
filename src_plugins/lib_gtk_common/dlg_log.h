@@ -9,17 +9,12 @@
  */
 void pcb_gtk_dlg_log_show(pcb_bool raise);
 
-/** A vararg function (variable number of arguments), calling \ref pcb_gtk_logv ().
-    \param fmt  The format used.
- */
-void pcb_gtk_log(const char *fmt, ...);
-
 /** Logs a new message.
     \param level    The message level (warning, etc...)
     \param fmt      A PCB format used to format \p args.
     \param args     A variable list of arguments.
  */
-void pcb_gtk_logv(enum pcb_message_level level, const char *fmt, va_list args);
+void pcb_gtk_logv(int hid_active, enum pcb_message_level level, const char *fmt, va_list args);
 
 
 /* Actions */

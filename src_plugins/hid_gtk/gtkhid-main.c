@@ -890,6 +890,20 @@ static void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[]
 	pcb_gtk_netlist_changed(&ghidgui->common, user_data, argc, argv);
 }
 
+void ghid_log(const char *fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	pcb_gtk_logv(gtkhid_active, PCB_MSG_INFO, fmt, ap);
+	va_end(ap);
+}
+
+void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args)
+{
+	pcb_gtk_logv(gtkhid_active, level, fmt, args);
+}
+
+
 pcb_uninit_t hid_hid_gtk_init()
 {
 #ifdef WIN32
@@ -992,8 +1006,8 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_hid.add_block_hook = ghid_add_block_hook;
 	ghid_hid.stop_block_hook = ghid_stop_block_hook;
 
-	ghid_hid.log = pcb_gtk_log;
-	ghid_hid.logv = pcb_gtk_logv;
+	ghid_hid.log = ghid_log;
+	ghid_hid.logv = ghid_logv;
 	ghid_hid.confirm_dialog = ghid_confirm_dialog;
 	ghid_hid.close_confirm_dialog = ghid_close_confirm_dialog;
 	ghid_hid.report_dialog = ghid_report_dialog;

@@ -88,9 +88,8 @@ static void log_destroy_cb(GtkWidget * widget, gpointer data)
 static void ghid_log_window_create()
 {
 	GtkWidget *vbox, *hbox, *button;
-	extern int gtkhid_active;
 
-	if ((log_window) || (!gtkhid_active))
+	if (log_window)
 		return;
 
 	log_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -133,12 +132,11 @@ static void ghid_log_append_string_(enum pcb_message_level level, gchar * msg)
 		pcb_hid_actionl("DoWindows", "Log", "false", NULL);
 }
 
-static void ghid_log_append_string(enum pcb_message_level level, gchar * s)
+static void ghid_log_append_string(enum pcb_message_level level, gchar *s, int hid_active)
 {
-	extern int gtkhid_active;
 	log_pending_t *m, *next;
 
-	if (!gtkhid_active) {
+	if (!hid_active) {
 		/* GUI not initialized yet - save these messages for later
 		   NOTE: no need to free this at quit: the GUI will be inited and then it'll be freed */
 		m = malloc(sizeof(log_pending_t) + strlen(s));
@@ -192,17 +190,9 @@ void pcb_gtk_dlg_log_show(pcb_bool raise)
 		gtk_window_present(GTK_WINDOW(log_window));
 }
 
-void pcb_gtk_log(const char *fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	pcb_gtk_logv(PCB_MSG_INFO, fmt, ap);
-	va_end(ap);
-}
-
-void pcb_gtk_logv(enum pcb_message_level level, const char *fmt, va_list args)
+void pcb_gtk_logv(int hid_active, enum pcb_message_level level, const char *fmt, va_list args)
 {
 	char *msg = pcb_strdup_vprintf(fmt, args);
-	ghid_log_append_string(level, msg);
+	ghid_log_append_string(level, msg, hid_active);
 	free(msg);
 }
