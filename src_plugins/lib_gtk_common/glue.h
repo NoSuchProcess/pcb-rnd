@@ -40,6 +40,7 @@ typedef struct pcb_gtk_common_s {
 	void (*lead_user_to_location)(pcb_coord_t x, pcb_coord_t y);
 	void (*pan_common)(void);
 	void (*port_ranges_scale)(void);
+	void (*pack_mode_buttons)(void);
 
 } pcb_gtk_common_t;
 

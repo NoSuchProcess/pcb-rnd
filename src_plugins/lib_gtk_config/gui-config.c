@@ -230,6 +230,7 @@ void ghid_config_init(void)
 typedef struct {
 	conf_role_t dst_role;
 	conf_role_t src_role;
+	pcb_gtk_common_t *com;
 } save_ctx_t;
 
 static void ghid_config_window_close(void);
@@ -306,8 +307,8 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 
 	if (need_update) {
 		/* do all the gui updates */
-		ghid_set_status_line_label();
-		ghid_pack_mode_buttons();
+		ctx->com->set_status_line_label();
+		ctx->com->pack_mode_buttons();
 
 	}
 
@@ -341,13 +342,15 @@ void config_any_replace(save_ctx_t * ctx, const char **paths)
 */
 static GtkWidget *config_window;
 
-static void config_user_role_section(GtkWidget * vbox, void (*save_cb) (GtkButton * widget, save_ctx_t * sctx))
+static void config_user_role_section(pcb_gtk_common_t *com, GtkWidget * vbox, void (*save_cb) (GtkButton * widget, save_ctx_t * sctx))
 {
 	GtkWidget *config_color_warn_label, *button, *hbox, *vbox2;
-	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_binary };
-	static save_ctx_t ctx_all2user = { CFR_USER, CFR_binary };
-	static save_ctx_t ctx_all2file = { CFR_file, CFR_binary };
-	static save_ctx_t ctx_int2design = { CFR_DESIGN, CFR_INTERNAL };
+	static save_ctx_t ctx_all2project = { CFR_PROJECT, CFR_binary, NULL };
+	static save_ctx_t ctx_all2user = { CFR_USER, CFR_binary, NULL };
+	static save_ctx_t ctx_all2file = { CFR_file, CFR_binary, NULL };
+	static save_ctx_t ctx_int2design = { CFR_DESIGN, CFR_INTERNAL, NULL };
+
+	ctx_all2project.com = ctx_all2user.com = ctx_all2file.com = ctx_int2design.com = com;
 
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
@@ -408,18 +411,20 @@ static void config_command_window_toggle_cb(GtkToggleButton * button, gpointer d
 
 static void config_compact_horizontal_toggle_cb(GtkToggleButton * button, gpointer data)
 {
+	pcb_gtk_common_t *com = data;
 	gboolean active = gtk_toggle_button_get_active(button);
 
 	conf_setf(CFR_DESIGN, "plugins/hid_gtk/compact_horizontal", -1, "%d", active);
-	ghid_set_status_line_label();
+	com->set_status_line_label();
 }
 
 static void config_compact_vertical_toggle_cb(GtkToggleButton * button, gpointer data)
 {
+	pcb_gtk_common_t *com = data;
 	gboolean active = gtk_toggle_button_get_active(button);
 
 	conf_setf(CFR_DESIGN, "plugins/hid_gtk/compact_vertical", -1, "%d", active);
-	ghid_pack_mode_buttons();
+	com->pack_mode_buttons();
 }
 
 static GtkWidget *pref_auto_place_lab;
@@ -495,12 +500,12 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 
 	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_horizontal,
 															TRUE, FALSE, FALSE, 2,
-															config_compact_horizontal_toggle_cb, NULL,
+															config_compact_horizontal_toggle_cb, com,
 															_("Alternate window layout to allow smaller horizontal size"));
 
 	ghid_check_button_connected(vbox, NULL, conf_hid_gtk.plugins.hid_gtk.compact_vertical,
 															TRUE, FALSE, FALSE, 2,
-															config_compact_vertical_toggle_cb, NULL,
+															config_compact_vertical_toggle_cb, com,
 															_("Alternate window layout to allow smaller vertical size"));
 
 	ghid_check_button_connected(vbox, NULL, conf_core.editor.auto_place,
@@ -525,7 +530,7 @@ static void config_general_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(tab_vbox, config_general_save);
+	config_user_role_section(com, tab_vbox, config_general_save);
 }
 
 	/* -------------- The Sizes config page ----------------
@@ -551,10 +556,11 @@ static void config_sizes_apply(void)
 		pcb_board_resize(conf_core.design.max_width, conf_core.design.max_height);
 }
 
-static void text_spin_button_cb(GtkSpinButton * spin, void *dst)
+static void text_spin_button_cb(GtkSpinButton * spin, void *data)
 {
+	pcb_gtk_common_t *com = data;
 	conf_setf(CFR_DESIGN, "design/text_scale", -1, "%d", gtk_spin_button_get_value_as_int(spin));
-	ghid_set_status_line_label();
+	com->set_status_line_label();
 }
 
 static void coord_entry_cb(pcb_gtk_coord_entry_t * ce, void *dst)
@@ -630,7 +636,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 3);
 	ghid_table_spin_button(table, 0, 0, &config_text_spin_button,
 												 conf_core.design.text_scale,
-												 PCB_MIN_TEXTSCALE, PCB_MAX_TEXTSCALE, 10.0, 10.0, 0, 0, text_spin_button_cb, NULL, FALSE, "%");
+												 PCB_MIN_TEXTSCALE, PCB_MAX_TEXTSCALE, 10.0, 10.0, 0, 0, text_spin_button_cb, com, FALSE, "%");
 
 
 	/* ---- DRC Sizes ---- */
@@ -668,7 +674,7 @@ static void config_sizes_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com)
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(tab_vbox, config_sizes_save);
+	config_user_role_section(com, tab_vbox, config_sizes_save);
 
 	gtk_widget_show_all(config_sizes_vbox);
 }
@@ -1018,7 +1024,7 @@ static void config_increments_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t 
 
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(tab_vbox, config_increments_save);
+	config_user_role_section(com, tab_vbox, config_increments_save);
 }
 
 	/* -------------- The Library config page ----------------
@@ -1207,7 +1213,7 @@ static void config_library_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *co
 	entry = gtk_conf_list_widget(&library_cl);
 	gtk_box_pack_start(GTK_BOX(vbox), entry, TRUE, TRUE, 4);
 
-	config_user_role_section(tab_vbox, config_library_save);
+	config_user_role_section(com, tab_vbox, config_library_save);
 }
 
 
@@ -1440,7 +1446,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 /* -- common */
 	vbox = gtk_vbox_new(TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tab_vbox), vbox, TRUE, TRUE, 0);
-	config_user_role_section(tab_vbox, config_layers_save);
+	config_user_role_section(com, tab_vbox, config_layers_save);
 }
 
 void ghid_config_layer_name_update(gchar * name, gint layer)
@@ -1461,6 +1467,7 @@ typedef struct {
 	int idx;
 	GdkColor *color;
 	GtkWidget *button;
+	pcb_gtk_common_t *com;
 } cfg_color_idx_t;
 
 static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
@@ -1488,11 +1495,11 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 	if (conf_set(CFR_DESIGN, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE) == 0) {
 		ghid_set_special_colors(ci->cfg);
 		ghid_layer_buttons_color_update();
-		ghid_invalidate_all();
+		ci->com->invalidate_all();
 	}
 }
 
-static void config_color_button_create(GtkWidget * box, conf_native_t * cfg, int idx)
+static void config_color_button_create(pcb_gtk_common_t *com, GtkWidget *box, conf_native_t *cfg, int idx)
 {
 	GtkWidget *hbox, *label;
 	gchar *title;
@@ -1521,6 +1528,7 @@ static void config_color_button_create(GtkWidget * box, conf_native_t * cfg, int
 	gtk_box_pack_start(GTK_BOX(hbox), ci->button, FALSE, FALSE, 0);
 	label = gtk_label_new(cfg->description);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	ci->com = com;
 	g_signal_connect(G_OBJECT(ci->button), "color-set", G_CALLBACK(config_color_set_cb), ci);
 }
 
@@ -1538,7 +1546,7 @@ void config_color_button_update(conf_native_t * cfg, int idx)
 	}
 }
 
-void config_colors_tab_create_scalar(GtkWidget * parent_vbox, const char *path_prefix, int selected)
+void config_colors_tab_create_scalar(pcb_gtk_common_t *com, GtkWidget *parent_vbox, const char *path_prefix, int selected)
 {
 	htsp_entry_t *e;
 	int pl = strlen(path_prefix);
@@ -1548,12 +1556,12 @@ void config_colors_tab_create_scalar(GtkWidget * parent_vbox, const char *path_p
 		if ((strncmp(e->key, path_prefix, pl) == 0) && (cfg->type == CFN_COLOR) && (cfg->array_size == 1)) {
 			int is_selected = (strstr(e->key, "_selected") != NULL);
 			if (is_selected == selected)
-				config_color_button_create(parent_vbox, cfg, 0);
+				config_color_button_create(com, parent_vbox, cfg, 0);
 		}
 	}
 }
 
-void config_colors_tab_create_array(GtkWidget * parent_vbox, const char *path)
+void config_colors_tab_create_array(pcb_gtk_common_t *com, GtkWidget * parent_vbox, const char *path)
 {
 	conf_native_t *cfg = conf_get_field(path);
 	int n;
@@ -1561,7 +1569,7 @@ void config_colors_tab_create_array(GtkWidget * parent_vbox, const char *path)
 		return;
 
 	for (n = 0; n < cfg->used; n++)
-		config_color_button_create(parent_vbox, cfg, n);
+		config_color_button_create(com, parent_vbox, cfg, n);
 }
 
 void config_colors_save(GtkButton * widget, save_ctx_t * ctx)
@@ -1594,7 +1602,7 @@ static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 	gtk_container_add(GTK_CONTAINER(expander), vbox);
 	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
 
-	config_colors_tab_create_scalar(vbox, "appearance/color", 0);
+	config_colors_tab_create_scalar(com, vbox, "appearance/color", 0);
 
 	/* ---- Layer colors ---- */
 	expander = gtk_expander_new(_("Layer colors"));
@@ -1603,7 +1611,7 @@ static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 	gtk_container_add(GTK_CONTAINER(expander), vbox);
 	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
 
-	config_colors_tab_create_array(vbox, "appearance/color/layer");
+	config_colors_tab_create_array(com, vbox, "appearance/color/layer");
 
 	/* ---- Selected colors ---- */
 	expander = gtk_expander_new(_("Selected colors"));
@@ -1612,10 +1620,10 @@ static void config_colors_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 	gtk_container_add(GTK_CONTAINER(expander), vbox);
 	vbox = ghid_category_vbox(vbox, NULL, 0, 2, TRUE, FALSE);
 
-	config_colors_tab_create_scalar(vbox, "appearance/color", 1);
+	config_colors_tab_create_scalar(com, vbox, "appearance/color", 1);
 
-	config_colors_tab_create_array(vbox, "appearance/color/layer_selected");
-	config_user_role_section(config_colors_vbox, config_colors_save);
+	config_colors_tab_create_array(com, vbox, "appearance/color/layer_selected");
+	config_user_role_section(com, config_colors_vbox, config_colors_save);
 
 	gtk_widget_show_all(config_colors_vbox);
 }
@@ -1792,7 +1800,7 @@ static void config_page_update_auto(void *data);
 /* Evaluates to 1 if the user canedit the config for this role */
 #define EDITABLE_ROLE(role) ((role == CFR_USER)  || (role == CFR_DESIGN) || (role == CFR_CLI) || ((role == CFR_PROJECT) && (PCB != NULL) && (PCB->Filename != NULL)))
 
-static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
+static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, const char *basename)
 {
 	GtkWidget *vbox, *src, *src_left, *src_right, *w;
 
@@ -1919,7 +1927,7 @@ static void config_auto_tab_create(GtkWidget * tab_vbox, const char *basename)
 
 		auto_tab_widgets.btn_apply = w = gtk_button_new_with_label("Apply");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
-		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_apply_cb), NULL);
+		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_apply_cb), com);
 
 		auto_tab_widgets.btn_reset = w = gtk_button_new_with_label("Reset");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
@@ -2297,6 +2305,7 @@ static void config_auto_save(conf_role_t role)
 
 static void config_auto_apply_cb(GtkButton * btn, void *data)
 {
+	pcb_gtk_common_t *com = data;
 	conf_native_t *nat = auto_tab_widgets.nat;
 	conf_role_t role = config_auto_get_edited_role();
 	char buff[128];
@@ -2376,7 +2385,7 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 #warning TODO: conf hooks should solve these
 		ghid_set_special_colors(nat);
 		ghid_layer_buttons_color_update();
-		ghid_invalidate_all();
+		com->invalidate_all();
 	}
 }
 
@@ -2548,7 +2557,7 @@ static int config_tree_auto_cmp(const void *v1, const void *v2)
 
 
 /* Automatically create a subtree using the central config field hash */
-static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, void *gport)
+static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, pcb_gtk_common_t *com)
 {
 	htsp_t *dirs;
 	htsp_entry_t *e;
@@ -2563,7 +2572,7 @@ static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, vo
 		vbox = gtk_vbox_new(FALSE, 0);
 		gtk_notebook_append_page(config_notebook, vbox, NULL);
 		auto_page = gtk_notebook_get_n_pages(config_notebook) - 1;
-		config_auto_tab_create(vbox, "auto");
+		config_auto_tab_create(com, vbox, "auto");
 	}
 
 	/* remember the parent for each dir */
@@ -2594,7 +2603,7 @@ static void config_tree_auto(GtkTreeStore * model, GtkTreeIter * main_parent, vo
 		*basename = '\0';
 		basename++;
 		parent = config_tree_auto_mkdirp(model, main_parent, dirs, path);
-		config_tree_leaf_(model, parent, basename, NULL, &iter, gport);
+		config_tree_leaf_(model, parent, basename, NULL, &iter, com->gport);
 		gtk_tree_store_set(model, &iter, CONFIG_PAGE_COLUMN, auto_page, CONFIG_PAGE_UPDATE_CB, config_page_update_auto,
 											 CONFIG_PAGE_DATA, e->value, -1);
 	}
@@ -2662,7 +2671,7 @@ void ghid_config_window_show(pcb_gtk_common_t *com)
 	config_tree_leaf(model, &user_pov, _("Layers"), config_layers_tab_create, com);
 	config_tree_leaf(model, &user_pov, _("Colors"), config_colors_tab_create, com);
 
-	config_tree_auto(model, &config_pov, com->gport);
+	config_tree_auto(model, &config_pov, com);
 
 	/* Create the tree view */
 	gui_config_treeview = treeview = GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(model)));

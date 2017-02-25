@@ -957,6 +957,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.pan_common = ghid_pan_common;
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
 	ghidgui->common.preview_draw = ghid_preview_draw;
+	ghidgui->common.pack_mode_buttons = ghid_pack_mode_buttons;
 
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse.com = &ghidgui->common;
