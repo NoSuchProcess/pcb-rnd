@@ -505,6 +505,7 @@ GtkWidget *pcb_gtk_preview_layer_new(pcb_gtk_common_t *com, pcb_gtk_init_drawing
 	prv->view.width = PCB_MM_TO_COORD(110);
 	prv->view.height = PCB_MM_TO_COORD(110);
 	prv->view.coord_per_px = PCB_MM_TO_COORD(0.25);
+	prv->view.com = com;
 
 	update_expose_data(prv);
 
