@@ -248,7 +248,7 @@ static void delete_button_cb(GtkButton * button, pcb_gtk_dlg_route_style_t * dia
 	make_route_style_buttons(GHID_ROUTE_STYLE(dialog->rss));
 	pcb_trace("Style: %d deleted\n", dialog->rss->selected);
 	pcb_board_set_changed_flag(pcb_true);
-	ghid_window_set_name_label(PCB->Name);
+	dialog->rss->com->window_set_name_label(PCB->Name);
 	add_new_iter(dialog->rss);
 	dialog->inhibit_style_change = 0;
 	pcb_gtk_route_style_select_style(dialog->rss, &pcb_custom_route_style);
