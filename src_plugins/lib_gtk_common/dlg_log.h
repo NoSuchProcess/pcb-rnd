@@ -21,7 +21,10 @@ void pcb_gtk_log(const char *fmt, ...);
  */
 void pcb_gtk_logv(enum pcb_message_level level, const char *fmt, va_list args);
 
-/* Temporary back reference to hid_gtk */
-extern const char *ghid_cookie;
+
+/* Actions */
+extern const char pcb_gtk_acts_logshowonappend[];
+extern const char pcb_gtk_acth_logshowonappend[];
+int pcb_gtk_act_logshowonappend(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y);
 
 #endif /* PCB_GTK_DLG_LOG_H */

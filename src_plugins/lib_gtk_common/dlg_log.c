@@ -169,13 +169,9 @@ static void ghid_log_append_string(enum pcb_message_level level, gchar * s)
 	ghid_log_append_string_(level, s);
 }
 
-static const char logshowonappend_syntax[] = "LogShowOnAppend(true|false)";
-
-static const char logshowonappend_help[] = "If true, the log window will be \
-shown whenever something is appended to it. \
-If false, the log will still be updated, but the window won't be shown.";
-
-static gint GhidLogShowOnAppend(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+const char pcb_gtk_acts_logshowonappend[] = "LogShowOnAppend(true|false)";
+const char pcb_gtk_acth_logshowonappend[] = "If true, the log window will be shown whenever something is appended to it. If false, the log will still be updated, but the window won't be shown.";
+int pcb_gtk_act_logshowonappend(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
 	const char *a = argc == 1 ? argv[0] : "";
 
@@ -210,15 +206,3 @@ void pcb_gtk_logv(enum pcb_message_level level, const char *fmt, va_list args)
 	ghid_log_append_string(level, msg);
 	free(msg);
 }
-
-#warning TODO: let the caller do the action registration, and provide only functions and help/syntax texts here, like in act_*
-
-/** Action ? */
-pcb_hid_action_t ghid_log_action_list[] = {
-	{"LogShowOnAppend", 0, GhidLogShowOnAppend,
-	 logshowonappend_help, logshowonappend_syntax}
-	,
-};
-
-/** */
-PCB_REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)

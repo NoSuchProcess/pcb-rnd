@@ -798,6 +798,8 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	,
 	{"Load", 0, act_load }
 	,
+	{"LogShowOnAppend", 0, pcb_gtk_act_logshowonappend, pcb_gtk_acth_logshowonappend, pcb_gtk_acts_logshowonappend}
+	,
 	{"NetlistShow", 0, GhidNetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow}
 	,
 	{"NetlistPresent", 0, GhidNetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent}
@@ -1050,7 +1052,6 @@ int gtkhid_active = 0;
 void gtkhid_begin(void)
 {
 	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-		PCB_REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
 		PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 		PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)
 		gtkhid_active = 1;
