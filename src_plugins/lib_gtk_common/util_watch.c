@@ -88,7 +88,7 @@ pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_common_t *com, int fd, unsigned int cond
 	return ret;
 }
 
-void ghid_unwatch_file(pcb_hidval_t data)
+void pcb_gtk_unwatch_file(pcb_hidval_t data)
 {
 	GuiWatch *watch = (GuiWatch *) data.ptr;
 

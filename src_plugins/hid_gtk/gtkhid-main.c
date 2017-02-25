@@ -958,7 +958,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghid_hid.add_timer = ghid_add_timer;
 	ghid_hid.stop_timer = ghid_stop_timer;
 	ghid_hid.watch_file = ghid_watch_file;
-	ghid_hid.unwatch_file = ghid_unwatch_file;
+	ghid_hid.unwatch_file = pcb_gtk_unwatch_file;
 	ghid_hid.add_block_hook = ghid_add_block_hook;
 	ghid_hid.stop_block_hook = ghid_stop_block_hook;
 
