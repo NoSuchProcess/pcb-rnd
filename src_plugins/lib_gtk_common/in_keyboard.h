@@ -29,7 +29,6 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 
 extern pcb_hid_cfg_keys_t ghid_keymap;
 
-/* Temporary glue: */
-extern GdkModifierType ghid_glob_mask;
+extern GdkModifierType pcb_gtk_glob_mask;
 
 #endif

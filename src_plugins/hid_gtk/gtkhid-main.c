@@ -67,7 +67,6 @@ const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
 
 conf_hid_id_t ghid_menuconf_id = -1;
-GdkModifierType ghid_glob_mask;
 
 static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)
 {
@@ -136,7 +135,7 @@ int ghid_shift_is_pressed()
 
 #ifdef PCB_WORKAROUND_GTK_SHIFT
 	/* On some systems the above query fails and we need to return the last known state instead */
-	return ghid_glob_mask & GDK_SHIFT_MASK;
+	return pcb_gtk_glob_mask & GDK_SHIFT_MASK;
 #else
 	return (mask & GDK_SHIFT_MASK) ? TRUE : FALSE;
 #endif
@@ -154,7 +153,7 @@ int ghid_control_is_pressed()
 
 #ifdef PCB_WORKAROUND_GTK_CTRL
 	/* On some systems the above query fails and we need to return the last known state instead */
-	return ghid_glob_mask & GDK_CONTROL_MASK;
+	return pcb_gtk_glob_mask & GDK_CONTROL_MASK;
 #else
 	return (mask & GDK_CONTROL_MASK) ? TRUE : FALSE;
 #endif
