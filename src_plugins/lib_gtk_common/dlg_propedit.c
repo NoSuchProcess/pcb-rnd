@@ -164,7 +164,7 @@ static int keyval_input(char **key, char **val, pcb_gtk_dlg_propedit_t * dlg)
 	gboolean response;
 
 	dialog = gtk_dialog_new_with_buttons("New attribute",
-																			 GTK_WINDOW(dlg->top_window),
+																			 GTK_WINDOW(dlg->com->top_window),
 																			 GTK_DIALOG_MODAL,
 																			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
@@ -374,7 +374,7 @@ static GtkWidget *preview_init(pcb_gtk_dlg_propedit_t * dlg)
 	fy = conf_core.editor.view.flip_y;
 	conf_set(CFR_DESIGN, "editor/view/flip_x", -1, "0", POL_OVERWRITE);
 	conf_set(CFR_DESIGN, "editor/view/flip_y", -1, "0", POL_OVERWRITE);
-	pm = ghid_render_pixmap(cx, cy, 40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(dlg->top_window->window)));
+	pm = dlg->com->render_pixmap(cx, cy, 40000 * zoom1, 300, 400, gdk_drawable_get_depth(GDK_DRAWABLE(dlg->com->top_window->window)));
 	conf_setf(CFR_DESIGN, "editor/view/flip_x", -1, "%d", fx, POL_OVERWRITE);
 	conf_setf(CFR_DESIGN, "editor/view/flip_y", -1, "%d", fy, POL_OVERWRITE);
 
@@ -449,7 +449,7 @@ static void make_sortable(GtkTreeModel * liststore)
 	gtk_tree_sortable_set_sort_column_id(sortable, 0, GTK_SORT_ASCENDING);
 }
 
-GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t * dlg, GtkWidget * top_window)
+GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t *dlg, pcb_gtk_common_t *com)
 {
 	GtkWidget *window, *vbox_tree, *vbox_edit, *hbox_win, *label;
 	GtkWidget *hbx, *dummy, *box_val_edit, *preview;
@@ -457,11 +457,11 @@ GtkWidget *pcb_gtk_dlg_propedit_create(pcb_gtk_dlg_propedit_t * dlg, GtkWidget *
 	GtkWidget *content_area;
 
 	dlg->last_add_iter_valid = 0;
-	dlg->top_window = top_window;
+	dlg->com = com;
 
 	/*window = gtk_window_new(GTK_WINDOW_TOPLEVEL); */
 	window = gtk_dialog_new_with_buttons(_("Edit Properties"),
-																			 GTK_WINDOW(top_window),
+																			 GTK_WINDOW(com->top_window),
 																			 GTK_DIALOG_DESTROY_WITH_PARENT, GTK_STOCK_CLOSE, GTK_RESPONSE_OK, NULL);
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(window));

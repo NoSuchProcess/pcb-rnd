@@ -306,8 +306,7 @@ void ghid_create_menu(const char *menu_path, const char *action, const char *mne
 static int ghid_propedit_start(void *pe, int num_props,
 															 const char *(*query) (void *pe, const char *cmd, const char *key, const char *val, int idx))
 {
-
-	ghidgui->propedit_widget = pcb_gtk_dlg_propedit_create(&ghidgui->propedit_dlg, gport->top_window);
+	ghidgui->propedit_widget = pcb_gtk_dlg_propedit_create(&ghidgui->propedit_dlg, &ghidgui->common);
 	ghidgui->propedit_dlg.propedit_query = query;
 	ghidgui->propedit_dlg.propedit_pe = pe;
 	return 0;
