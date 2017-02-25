@@ -1,22 +1,10 @@
 :author: Alain, Igor2
-:toc: left
-:icons: font
-//:imagesdir: img_route_style
-:stylesdir: ./
-:stylesheet: default.css
-:linkcss:
-
-// Substitutions...
-:prg:     pass:q[`pcb-rnd`]
-//:yes:     icon:check[role="green"]
-//:no:      icon:times[role="red"]
-:yes:     pass:q[<font color="green">OK</font>]
-:no:      pass:q[<font color="red">NO</font>]
+include::adoc_common_attributes.adoc[]
 
 = GTK HID architecture
 
 == Situation @ {prg} v1.2.1
-The HIDs are plug-ins, GTK2 one is called `hid_gtk`.
+The HIDs are plug-ins, sitting in `src_plugins/hid_*` ; GTK2 one is called `hid_gtk`.
 
 First, get an instance of the main HID structure `pcb_hid_t`.
 This structure is general enough. Nothing too entangled to GTK2 nor GTK3 there.
@@ -181,6 +169,11 @@ marks in the manual, there's absolutely no issue with a _gtk2+pixmap_.
 | GHidPort                            | pcb_gtk_viewport_t
 | extern GHidPort ghid_port, *gport;  | pcb_gtk_viewport_t _pcb_gtk_viewport *pcb_gtk_viewport
 |===
+
+=== `glue.h`
+FIXME: draw relationships between "top level" structures, and common, config
+
+Detail common GTK2/GTK3 features ; distinguish between low level GTK2/3 ones.
 
 == Road blocks ahead
 

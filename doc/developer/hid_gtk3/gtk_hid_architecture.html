@@ -8,6 +8,7 @@
 <meta name="author" content="Alain, Igor2">
 <title>GTK HID architecture</title>
 <link rel="stylesheet" href="./default.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
@@ -32,6 +33,7 @@
 <ul class="sectlevel2">
 <li><a href="#_roadmap_short_term">Roadmap (short term)</a></li>
 <li><a href="#_names_proposal">Names proposal</a></li>
+<li><a href="#__code_glue_h_code"><code>glue.h</code></a></li>
 </ul>
 </li>
 <li><a href="#_road_blocks_ahead">Road blocks ahead</a></li>
@@ -43,7 +45,7 @@
 <h2 id="_situation_code_pcb_rnd_code_v1_2_1">Situation @ <code>pcb-rnd</code> v1.2.1</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The HIDs are plug-ins, GTK2 one is called <code>hid_gtk</code>.</p>
+<p>The HIDs are plug-ins, sitting in <code>src_plugins/hid_*</code> ; GTK2 one is called <code>hid_gtk</code>.</p>
 </div>
 <div class="paragraph">
 <p>First, get an instance of the main HID structure <code>pcb_hid_t</code>.
@@ -95,19 +97,19 @@ GHidPort ghid_port, *gport;</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GtkWidget</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="green">OK</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GtkObject</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GObject</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">could be</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkPixmap</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkPixbuf</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">could be</p></td>
 </tr>
@@ -119,19 +121,19 @@ GHidPort ghid_port, *gport;</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GtkActionGroup</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GActionGroup</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font> (not desired)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span> (not desired)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GtkEntry</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="green">OK</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GTimeVal</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="green">OK</font> (glib)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span> (glib)</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -156,33 +158,33 @@ GHidPort ghid_port, *gport;</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GtkWidget</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="green">OK</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon green"><i class="fa fa-check"></i></span></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkPixmap</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkPixbuf</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">could be</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkDrawable</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cairo surface</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font> (not desired)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span> (not desired)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkColor</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkRGBA</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font><sup>1</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span><sup>1</sup></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkColormap</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkVisual</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font><sup>1</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span><sup>1</sup></p></td>
 </tr>
 </tbody>
 </table>
@@ -219,7 +221,7 @@ GHidPort ghid_port, *gport;</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GdkGC</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><font color="red">NO</font></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="icon red"><i class="fa fa-times"></i></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cairo context</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">could be (not desired)</p></td>
 </tr>
@@ -416,6 +418,15 @@ in <code>hid_gtk3</code> for those high level structures.</p>
 </tbody>
 </table>
 </div>
+<div class="sect2">
+<h3 id="__code_glue_h_code"><code>glue.h</code></h3>
+<div class="paragraph">
+<p>FIXME: draw relationships between "top level" structures, and common, config</p>
+</div>
+<div class="paragraph">
+<p>Detail common GTK2/GTK3 features ; distinguish between low level GTK2/3 ones.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -449,7 +460,7 @@ in <code>hid_gtk3</code> for those high level structures.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-17 08:47:35 CET
+Last updated 2017-02-25 08:36:07 CET
 </div>
 </div>
 </body>
