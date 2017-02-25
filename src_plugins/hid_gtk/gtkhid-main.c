@@ -31,7 +31,6 @@
 
 #include "gtkhid-main.h"
 #include "ghid-main-menu.h"
-#include "gui-command-window.h"
 #include "gui-top-window.h"
 #include "render.h"
 
@@ -45,6 +44,7 @@
 #include "../src_plugins/lib_gtk_common/util_watch.h"
 #include "../src_plugins/lib_gtk_common/dlg_about.h"
 #include "../src_plugins/lib_gtk_common/dlg_attribute.h"
+#include "../src_plugins/lib_gtk_common/dlg_command.h"
 #include "../src_plugins/lib_gtk_common/dlg_confirm.h"
 #include "../src_plugins/lib_gtk_common/dlg_drc.h"
 #include "../src_plugins/lib_gtk_common/dlg_export.h"
@@ -454,7 +454,7 @@ static int LayerGroupsChanged(int argc, const char **argv, pcb_coord_t x, pcb_co
 
 static int Command(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	ghid_handle_user_command(TRUE);
+	ghid_handle_user_command(&ghidgui->cmd, TRUE);
 	return 0;
 }
 
@@ -761,13 +761,13 @@ int act_importgui(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 
 void ghid_status_line_set_text(const gchar *text)
 {
-	if (!ghidgui->command_entry_status_line_active)
+	if (!ghidgui->cmd.command_entry_status_line_active)
 		ghid_status_line_set_text_(ghidgui->status_line_label, text);
 }
 
 void ghid_set_status_line_label(void)
 {
-	if (!ghidgui->command_entry_status_line_active) \
+	if (!ghidgui->cmd.command_entry_status_line_active) \
 		ghid_set_status_line_label_(ghidgui->status_line_label, conf_hid_gtk.plugins.hid_gtk.compact_horizontal); \
 }
 
@@ -905,7 +905,58 @@ void ghid_logv(enum pcb_message_level level, const char *fmt, va_list args)
 
 int ghid_command_entry_is_active(void)
 {
-	return ghidgui->command_entry_status_line_active;
+	return ghidgui->cmd.command_entry_status_line_active;
+}
+
+static void command_pack_in_status_line(void)
+{
+	gtk_box_pack_start(GTK_BOX(ghidgui->status_line_hbox), ghidgui->cmd.command_combo_box, FALSE, FALSE, 0);
+}
+
+static void command_post_entry(void)
+{
+	ghid_interface_input_signals_connect();
+	ghid_interface_set_sensitive(TRUE);
+	ghid_install_accel_groups(GTK_WINDOW(gport->top_window), ghidgui);
+	gtk_widget_grab_focus(gport->drawing_area);
+}
+
+static void command_pre_entry(void)
+{
+	ghid_remove_accel_groups(GTK_WINDOW(gport->top_window), ghidgui);
+	ghid_interface_input_signals_disconnect();
+	ghid_interface_set_sensitive(FALSE);
+}
+
+	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window toggles, the config code calls
+	   |  this to ensure the command_combo_box is set up for living in the
+	   |  right place.
+	 */
+static void command_use_command_window_sync(pcb_gtk_command_t *ctx)
+{
+	/* The combo box will be NULL and not living anywhere until the
+	   |  first command entry.
+	 */
+	if (!ctx->command_combo_box)
+		return;
+
+	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
+		gtk_container_remove(GTK_CONTAINER(ghidgui->status_line_hbox), ctx->command_combo_box);
+	else {
+		/* Destroy the window (if it's up) which floats the command_combo_box
+		   |  so we can pack it back into the status line hbox.  If the window
+		   |  wasn't up, the command_combo_box was already floating.
+		 */
+		command_window_close_cb(ctx);
+		gtk_widget_hide(ctx->command_combo_box);
+		command_pack_in_status_line();
+	}
+}
+
+
+void ghid_command_use_command_window_sync(void)
+{
+	command_use_command_window_sync(&ghidgui->cmd);
 }
 
 pcb_uninit_t hid_hid_gtk_init()
@@ -970,8 +1021,15 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.command_entry_is_active = ghid_command_entry_is_active;
 	ghidgui->common.command_use_command_window_sync = ghid_command_use_command_window_sync;
 
+	ghidgui->cmd.com = &ghidgui->common;
+	ghidgui->cmd.pack_in_status_line = command_pack_in_status_line;
+	ghidgui->cmd.post_entry = command_post_entry;
+	ghidgui->cmd.pre_entry = command_pre_entry;
+
+
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse.com = &ghidgui->common;
+
 
 	memset(&ghid_hid, 0, sizeof(pcb_hid_t));
 

@@ -27,19 +27,19 @@
 /* This file written by Bill Wilson for the PCB Gtk port */
 
 #include "config.h"
-#include "gui-command-window.h"
-#include "gui-top-window.h"
+#include "dlg_command.h"
 #include "conf_core.h"
 
 #include <gdk/gdkkeysyms.h>
 
+#include "board.h"
 #include "crosshair.h"
 #include "hid_actions.h"
 #include "compat_nls.h"
 
-#include "../src_plugins/lib_gtk_common/bu_text_view.h"
-#include "../src_plugins/lib_gtk_common/bu_status_line.h"
-#include "../src_plugins/lib_gtk_common/util_str.h"
+#include "bu_text_view.h"
+#include "bu_status_line.h"
+#include "util_str.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
 
@@ -141,7 +141,7 @@ static const gchar *command_ref_text[] = {
 	   |  same allocated string can go in both the history list and the combo list.
 	   |  If removed from both lists, a string can be freed.
 	 */
-static void command_history_add(gchar * cmd)
+static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 {
 	GList *list;
 	gchar *s;
@@ -158,8 +158,8 @@ static void command_history_add(gchar * cmd)
 		if (!strcmp(cmd, s)) {
 			history_list = g_list_remove(history_list, s);
 			history_list = g_list_prepend(history_list, s);
-			gtk_combo_box_remove_text(GTK_COMBO_BOX(ghidgui->command_combo_box), i);
-			gtk_combo_box_prepend_text(GTK_COMBO_BOX(ghidgui->command_combo_box), s);
+			gtk_combo_box_remove_text(GTK_COMBO_BOX(ctx->command_combo_box), i);
+			gtk_combo_box_prepend_text(GTK_COMBO_BOX(ctx->command_combo_box), s);
 			return;
 		}
 	}
@@ -168,14 +168,14 @@ static void command_history_add(gchar * cmd)
 	 */
 	s = g_strdup(cmd);
 	history_list = g_list_prepend(history_list, s);
-	gtk_combo_box_prepend_text(GTK_COMBO_BOX(ghidgui->command_combo_box), s);
+	gtk_combo_box_prepend_text(GTK_COMBO_BOX(ctx->command_combo_box), s);
 
 	/* And keep the lists trimmed!
 	 */
 	if (g_list_length(history_list) > conf_hid_gtk.plugins.hid_gtk.history_size) {
 		s = (gchar *) g_list_nth_data(history_list, conf_hid_gtk.plugins.hid_gtk.history_size);
 		history_list = g_list_remove(history_list, s);
-		gtk_combo_box_remove_text(GTK_COMBO_BOX(ghidgui->command_combo_box), conf_hid_gtk.plugins.hid_gtk.history_size);
+		gtk_combo_box_remove_text(GTK_COMBO_BOX(ctx->command_combo_box), conf_hid_gtk.plugins.hid_gtk.history_size);
 		g_free(s);
 	}
 }
@@ -190,14 +190,15 @@ static void command_history_add(gchar * cmd)
 	 */
 static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 {
+	pcb_gtk_command_t *ctx = data;
 	gchar *command;
 
-	/*command = g_strdup(ghid_entry_get_text(GTK_WIDGET(ghidgui->command_entry))); */
-	command = g_strdup(pcb_str_strip_left(gtk_entry_get_text(GTK_ENTRY(ghidgui->command_entry))));
-	gtk_entry_set_text(ghidgui->command_entry, "");
+	/*command = g_strdup(ghid_entry_get_text(GTK_WIDGET(ctx->command_entry))); */
+	command = g_strdup(pcb_str_strip_left(gtk_entry_get_text(GTK_ENTRY(ctx->command_entry))));
+	gtk_entry_set_text(ctx->command_entry, "");
 
 	if (*command)
-		command_history_add(command);
+		command_history_add(ctx, command);
 
 	if (conf_hid_gtk.plugins.hid_gtk.use_command_window) {
 		pcb_hid_parse_command(command);
@@ -219,24 +220,24 @@ static void command_entry_activate_cb(GtkWidget * widget, gpointer data)
 	   |  Since it's never destroyed, the combo history strings never need
 	   |  rebuilding and history is maintained if the combo box location is moved.
 	 */
-static void command_combo_box_entry_create(void)
+static void command_combo_box_entry_create(pcb_gtk_command_t *ctx)
 {
-	ghidgui->command_combo_box = gtk_combo_box_entry_new_text();
-	ghidgui->command_entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(ghidgui->command_combo_box)));
+	ctx->command_combo_box = gtk_combo_box_entry_new_text();
+	ctx->command_entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(ctx->command_combo_box)));
 
-	gtk_entry_set_width_chars(ghidgui->command_entry, 40);
-	gtk_entry_set_activates_default(ghidgui->command_entry, TRUE);
+	gtk_entry_set_width_chars(ctx->command_entry, 40);
+	gtk_entry_set_activates_default(ctx->command_entry, TRUE);
 
-	g_signal_connect(G_OBJECT(ghidgui->command_entry), "activate", G_CALLBACK(command_entry_activate_cb), NULL);
+	g_signal_connect(G_OBJECT(ctx->command_entry), "activate", G_CALLBACK(command_entry_activate_cb), ctx);
 
-	g_object_ref(G_OBJECT(ghidgui->command_combo_box));	/* so can move it */
+	g_object_ref(G_OBJECT(ctx->command_combo_box)); /* so can move it */
 }
 
-static void command_window_close_cb(void)
+void command_window_close_cb(pcb_gtk_command_t *ctx)
 {
 	if (command_window) {
-		gtk_container_remove(GTK_CONTAINER(combo_vbox),	/* Float it */
-												 ghidgui->command_combo_box);
+		gtk_container_remove(GTK_CONTAINER(combo_vbox), /* Float it */
+			ctx->command_combo_box);
 		gtk_widget_destroy(command_window);
 	}
 	combo_vbox = NULL;
@@ -248,35 +249,10 @@ static void command_destroy_cb(GtkWidget * widget, gpointer data)
 	command_window = NULL;
 }
 
-	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window toggles, the config code calls
-	   |  this to ensure the command_combo_box is set up for living in the
-	   |  right place.
-	 */
-void ghid_command_use_command_window_sync(void)
-{
-	/* The combo box will be NULL and not living anywhere until the
-	   |  first command entry.
-	 */
-	if (!ghidgui->command_combo_box)
-		return;
-
-	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
-		gtk_container_remove(GTK_CONTAINER(ghidgui->status_line_hbox), ghidgui->command_combo_box);
-	else {
-		/* Destroy the window (if it's up) which floats the command_combo_box
-		   |  so we can pack it back into the status line hbox.  If the window
-		   |  wasn't up, the command_combo_box was already floating.
-		 */
-		command_window_close_cb();
-		gtk_widget_hide(ghidgui->command_combo_box);
-		gtk_box_pack_start(GTK_BOX(ghidgui->status_line_hbox), ghidgui->command_combo_box, FALSE, FALSE, 0);
-	}
-}
-
 	/* If conf_hid_gtk.plugins.hid_gtk.use_command_window is TRUE this will get called from
 	   |  ActionCommand() to show the command window.
 	 */
-void ghid_command_window_show(pcb_bool raise)
+void ghid_command_window_show(pcb_gtk_command_t *ctx, pcb_bool raise)
 {
 	GtkWidget *vbox, *vbox1, *hbox, *button, *expander, *text;
 	gint i;
@@ -296,10 +272,10 @@ void ghid_command_window_show(pcb_bool raise)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
 	gtk_container_add(GTK_CONTAINER(command_window), vbox);
 
-	if (!ghidgui->command_combo_box)
-		command_combo_box_entry_create();
+	if (!ctx->command_combo_box)
+		command_combo_box_entry_create(ctx);
 
-	gtk_box_pack_start(GTK_BOX(vbox), ghidgui->command_combo_box, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), ctx->command_combo_box, FALSE, FALSE, 0);
 	combo_vbox = vbox;
 
 	/* Make the command reference scrolled text view.  Use high level
@@ -321,7 +297,7 @@ void ghid_command_window_show(pcb_bool raise)
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbox), GTK_BUTTONBOX_END);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 3);
 	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(command_window_close_cb), NULL);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(command_window_close_cb), ctx);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	gtk_widget_show_all(command_window);
@@ -347,46 +323,44 @@ static pcb_bool command_escape_cb(GtkWidget * widget, GdkEventKey * kev, gpointe
 	   |  conf_hid_gtk.plugins.hid_gtk.use_command_window is FALSE.  The command_combo_box is already
 	   |  packed into the status line label hbox in this case.
 	 */
-char *ghid_command_entry_get(const char *prompt, const char *command)
+char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const char *command)
 {
 	gchar *s;
 	gint escape_sig_id;
-	GHidPort *out = &ghid_port;
 
 	/* If this is the first user command entry, we have to create the
 	   |  command_combo_box and pack it into the status_line_hbox.
 	 */
-	if (!ghidgui->command_combo_box) {
-		command_combo_box_entry_create();
-		gtk_box_pack_start(GTK_BOX(ghidgui->status_line_hbox), ghidgui->command_combo_box, FALSE, FALSE, 0);
+	if (!ctx->command_combo_box) {
+		command_combo_box_entry_create(ctx);
+		ctx->pack_in_status_line();
 	}
 
 	/* Make the prompt bold and set the label before showing the combo to
 	   |  avoid window resizing wider.
 	 */
 	s = g_strdup_printf("<b>%s</b>", prompt ? prompt : "");
-	ghid_status_line_set_text(s);
+	ctx->com->status_line_set_text(s);
 	g_free(s);
 
 	/* Flag so output drawing area won't try to get focus away from us and
 	   |  so resetting the status line label can be blocked when resize
 	   |  callbacks are invokded from the resize caused by showing the combo box.
 	 */
-	ghidgui->command_entry_status_line_active = TRUE;
+	ctx->command_entry_status_line_active = TRUE;
 
-	gtk_entry_set_text(ghidgui->command_entry, command ? command : "");
-	gtk_widget_show_all(ghidgui->command_combo_box);
+	gtk_entry_set_text(ctx->command_entry, command ? command : "");
+	gtk_widget_show_all(ctx->command_combo_box);
 
 	/* Remove the top window accel group so keys intended for the entry
 	   |  don't get intercepted by the menu system.  Set the interface
 	   |  insensitive so all the user can do is enter a command, grab focus
 	   |  and connect a handler to look for the escape key.
 	 */
-	ghid_remove_accel_groups(GTK_WINDOW(gport->top_window), ghidgui);
-	ghid_interface_input_signals_disconnect();
-	ghid_interface_set_sensitive(FALSE);
-	gtk_widget_grab_focus(GTK_WIDGET(ghidgui->command_entry));
-	escape_sig_id = g_signal_connect(G_OBJECT(ghidgui->command_entry), "key_press_event", G_CALLBACK(command_escape_cb), NULL);
+	ctx->pre_entry();
+
+	gtk_widget_grab_focus(GTK_WIDGET(ctx->command_entry));
+	escape_sig_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_escape_cb), NULL);
 
 	ghid_entry_loop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(ghid_entry_loop);
@@ -394,34 +368,31 @@ char *ghid_command_entry_get(const char *prompt, const char *command)
 	g_main_loop_unref(ghid_entry_loop);
 	ghid_entry_loop = NULL;
 
-	ghidgui->command_entry_status_line_active = FALSE;
+	ctx->command_entry_status_line_active = FALSE;
 
 	/* Restore the damage we did before entering the loop.
 	 */
-	g_signal_handler_disconnect(ghidgui->command_entry, escape_sig_id);
-	ghid_interface_input_signals_connect();
-	ghid_interface_set_sensitive(TRUE);
-	ghid_install_accel_groups(GTK_WINDOW(gport->top_window), ghidgui);
+	g_signal_handler_disconnect(ctx->command_entry, escape_sig_id);
 
 	/* Restore the status line label and give focus back to the drawing area
 	 */
-	gtk_widget_hide(ghidgui->command_combo_box);
-	gtk_widget_grab_focus(out->drawing_area);
+	gtk_widget_hide(ctx->command_combo_box);
+	ctx->post_entry();
 
 	return command_entered;
 }
 
 
-void ghid_handle_user_command(pcb_bool raise)
+void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
 {
 	char *command;
 	static char *previous = NULL;
 
 	if (conf_hid_gtk.plugins.hid_gtk.use_command_window)
-		ghid_command_window_show(raise);
+		ghid_command_window_show(ctx, raise);
 	else {
 		command =
-			ghid_command_entry_get(_("Enter command:"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *) "");
+			ghid_command_entry_get(ctx, _("Enter command:"), (conf_core.editor.save_last_command && previous) ? previous : (gchar *) "");
 		if (command != NULL) {
 			/* copy new comand line to save buffer */
 			g_free(previous);
@@ -435,6 +406,6 @@ void ghid_handle_user_command(pcb_bool raise)
 			g_free(command);
 		}
 	}
-	ghid_window_set_name_label(PCB->Name);
-	ghid_set_status_line_label();
+	ctx->com->window_set_name_label(PCB->Name);
+	ctx->com->set_status_line_label();
 }

@@ -215,7 +215,7 @@ gint ghid_port_window_enter_cb(GtkWidget * widget, GdkEventCrossing * ev, GHidPo
 		return FALSE;
 	}
 
-	if (!ghidgui->command_entry_status_line_active) {
+	if (!ghidgui->cmd.command_entry_status_line_active) {
 		out->view.has_entered = TRUE;
 		/* Make sure drawing area has keyboard focus when we are in it.
 		 */

@@ -33,6 +33,7 @@
 #include "../src_plugins/lib_gtk_common/bu_cursor_pos.h"
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/dlg_propedit.h"
+#include "../src_plugins/lib_gtk_common/dlg_command.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
 
@@ -47,9 +48,9 @@ typedef struct {
 	pcb_gtk_common_t common;
 	pcb_gtk_cursor_pos_t cps;
 	pcb_gtk_menu_ctx_t menu;
+	pcb_gtk_command_t cmd;
 
-	GtkWidget *status_line_label, *status_line_hbox, *command_combo_box;
-	GtkEntry *command_entry;
+	GtkWidget *status_line_label, *status_line_hbox;
 
 	GtkWidget *top_hbox, *top_bar_background, *menu_hbox, *position_hbox, *menubar_toolbar_vbox, *mode_buttons_frame;
 	GtkWidget *left_toolbar;
@@ -69,7 +70,7 @@ typedef struct {
 
 	gchar *name_label_string;
 
-	gboolean adjustment_changed_holdoff, command_entry_status_line_active, in_popup;
+	gboolean adjustment_changed_holdoff, in_popup;
 
 	gboolean small_label_markup, creating;
 
