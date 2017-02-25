@@ -17,7 +17,5 @@ void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int i
 /* temporary back reference to hid_gtk */
 void ghid_pack_mode_buttons(void);
 int ghid_command_entry_is_active(void);
-void ghid_init_drawing_widget(GtkWidget * widget, void *gport);
 void ghid_command_use_command_window_sync(void);
-gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall, const pcb_hid_expose_ctx_t *ctx);
-void ghid_layer_buttons_color_update(void);
+

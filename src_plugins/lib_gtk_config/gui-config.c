@@ -1387,7 +1387,7 @@ static void config_layers_tab_create(GtkWidget * tab_vbox, pcb_gtk_common_t *com
 	vbox = ghid_notebook_page(tabs, _("Physical layer stack"), 0, 6);
 	if (pcb_layer_list(PCB_LYT_CSECT, &lid, 1) > 0) {
 		pcb_gtk_preview_t *p;
-		prv = pcb_gtk_preview_layer_new(com, ghid_init_drawing_widget, ghid_preview_expose, lid);
+		prv = pcb_gtk_preview_layer_new(com, com->init_drawing_widget, com->preview_expose, lid);
 		gtk_box_pack_start(GTK_BOX(vbox), prv, TRUE, TRUE, 0);
 		p = (pcb_gtk_preview_t *) prv;
 		p->mouse_cb = pcb_stub_draw_csect_mouse_ev;

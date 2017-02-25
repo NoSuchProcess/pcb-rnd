@@ -148,6 +148,7 @@ void ghid_route_styles_edited_cb(void);
 void ghid_port_ranges_changed(void);
 void ghid_port_ranges_scale(void);
 void ghid_note_event_location(GdkEventButton *ev);
+void ghid_layer_buttons_color_update(void);
 
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, gpointer data);
 
