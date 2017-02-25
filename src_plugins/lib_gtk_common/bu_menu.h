@@ -9,7 +9,6 @@
 #include "hid_cfg_input.h"
 #include "conf_hid.h"
 
-G_BEGIN_DECLS										/* keep c++ happy */
 #define GHID_MAIN_MENU_TYPE            (ghid_main_menu_get_type ())
 #define GHID_MAIN_MENU(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_MAIN_MENU_TYPE, GHidMainMenu))
 #define GHID_MAIN_MENU_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GHID_MAIN_MENU_TYPE, GHidMainMenuClass))
@@ -42,5 +41,4 @@ int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int 
 /* Temporary back references to hid_gtk: */
 void ghid_confchg_checkbox(conf_native_t *cfg);
 
-G_END_DECLS											/* keep c++ happy */
 #endif

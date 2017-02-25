@@ -38,7 +38,6 @@
 #ifndef __GSCHEM_ACCEL_LABEL_H__
 #define __GSCHEM_ACCEL_LABEL_H__
 
-G_BEGIN_DECLS
 #define GSCHEM_TYPE_ACCEL_LABEL            (gschem_accel_label_get_type ())
 #define GSCHEM_ACCEL_LABEL(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GSCHEM_TYPE_ACCEL_LABEL, GschemAccelLabel))
 #define GSCHEM_ACCEL_LABEL_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GSCHEM_TYPE_ACCEL_LABEL, GschemAccelLabelClass))
@@ -73,5 +72,4 @@ GtkWidget *gtk_menu_item_new_gschem(const char *label, const char *accel_label);
 /* private */
 gchar *_gschem_accel_label_class_get_accelerator_label(GschemAccelLabelClass * klass, guint accelerator_key, GdkModifierType accelerator_mods);
 
-G_END_DECLS
 #endif /* __GSCHEM_ACCEL_LABEL_H__ */
