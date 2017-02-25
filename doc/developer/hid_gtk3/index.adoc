@@ -1,12 +1,11 @@
-:toc: left
-:stylesheet: default.css
-:linkcss:
+:author: Alain
+include::adoc_common_attributes.adoc[]
 
 = GTK2 / GTK3 GUI related topics
 
 * My understanding/roadmap for <<gtk_hid_architecture.adoc#, GTK HID architecture>>.
 
-* Multi-key keyboard shortcuts
+//* Multi-key keyboard shortcuts
 
 * Menus, Actions
 
@@ -19,3 +18,9 @@
 ** Layer selection
 
 * GTK3 new design ?
+
+== Developer tips
+
+* `\#include` directives <<includes_directives.adoc#, policy>>.
+
+* Policy about copyrights ?

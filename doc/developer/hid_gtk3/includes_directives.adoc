@@ -1,0 +1,77 @@
+:author: Alain, Igor2
+include::adoc_common_attributes.adoc[]
+
+= `#include` directives
+
+Rules applied to {prg}, especially in directories:
+
+```sh
+src_plugins
+├── hid_gtk
+├── hid_gtk3
+├── lib_gtk_common
+├── lib_gtk_config
+```
+== In `.h` files
+
+[[h_inc_all]]
+=== Rule {counter:rh}
+TIP: Look at the `.h` file only ; `#include` everything you need in that given file,
+     directly, to let the compiler understands the structures and function
+     protoypes used there.
+
+=== Rule {counter:rh}
+TIP: Don't be afraid to have indirect `#include`s (`fileA` is including
+`fileB` and `fileC`, but `fileB` already includes `fileC`)
+
+Here, do both includes, not only `fileB`.
+
+=== Rule {counter:rh}
+TIP: Circular `#include` ? : `fileA` includes `fileB` which itself includes `fileA`...
+It's perfectly fine ;)
+
+=== Rule {counter:rh}
+TIP: Frame your `.h` code with a `#define` allowing single definition if multiple calls.
+Example:
+----
+#ifdef  PCB_FILEA_H
+#define PCB_FILEA_H
+
+the code
+
+#endif  /* PCB_FILEA_H */
+----
+
+=== Rule {counter:rh}
+TIP:  Name those define `PCB_GTK...` according to following table:
+
+[options="header",cols="2*m"]
+|===
+| Directory       | Prefix
+| lib_gtk_common  | PCB_GTK_
+| lib_gtk_config  | PCB_GTK_
+| hid_gtk         | PCB_GTK2_
+| hid_gtk3        | PCB_GTK3_
+|===
+
+
+== In `.c` files
+
+=== Rule {counter:rc}
+IMPORTANT: `#include "config.h"` first...
+
+This is an essential mechanism for porting.
+
+=== Rule {counter:rc}
+TIP: If the file is `fileA.c`, then `#include "fileA.h"`
+
+=== Rule {counter:rc}
+TIP: refer to `.h` <<h_inc_all, rules>> that can be applied to `.c` files.
+
+=== Rule {counter:rc}
+CAUTION: please do _not_ remove `obj_elem.h` in favor of `obj_all.h` - `obj_all.h` is
+a temporary construct that will be gone...
+
+//=== Rule {counter:rc}
+//TIP:  Obviously, directly `#include` everything you need in that  file to let the
+//      compiler understands your code.
