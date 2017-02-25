@@ -68,7 +68,6 @@
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
 #include "../src_plugins/lib_gtk_common/win_place.h"
 #include "../src_plugins/lib_gtk_common/bu_spin_button.h"
-#include "../src_plugins/lib_gtk_common/colors.h"
 
 /* Ugly hack: save a copy of gport on window construct in case we need to
    reconstruct */
@@ -218,8 +217,6 @@ typedef struct {
 	enum ConfigType type;
 	void *value;
 } ConfigAttribute;
-
-extern void ghid_set_special_colors(conf_native_t * cfg);
 
 void ghid_config_init(void)
 {
@@ -1476,7 +1473,7 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 	const char *str, *lcpath = "appearance/color/layer", *lspath = "appearance/color/layer_selected";
 
 	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), &new_color);
-	str = ghid_get_color_name(&new_color);
+	str = ci->com->get_color_name(&new_color);
 
 	if ((strcmp(ci->cfg->hash_path, lcpath) == 0) || (strcmp(ci->cfg->hash_path, lspath) == 0)) {
 		/* if the design color list is empty, we should create it and copy
@@ -1493,8 +1490,8 @@ static void config_color_set_cb(GtkWidget * button, cfg_color_idx_t * ci)
 	}
 
 	if (conf_set(CFR_DESIGN, ci->cfg->hash_path, ci->idx, str, POL_OVERWRITE) == 0) {
-		ghid_set_special_colors(ci->cfg);
-		ghid_layer_buttons_color_update();
+		ci->com->set_special_colors(ci->cfg);
+		ci->com->layer_buttons_color_update();
 		ci->com->invalidate_all();
 	}
 }
@@ -1518,7 +1515,7 @@ static void config_color_button_create(pcb_gtk_common_t *com, GtkWidget *box, co
 			conf_hid_set_data(cfg, ghid_conf_id, ci);
 	}
 
-	ghid_map_color_string(cfg->val.color[idx], &(ci->color[idx]));
+	com->map_color_string(cfg->val.color[idx], &(ci->color[idx]));
 
 	title = g_strdup_printf(_("pcb-rnd %s Color"), cfg->description);
 	ci->button = gtk_color_button_new_with_color(&(ci->color[idx]));
@@ -1532,16 +1529,16 @@ static void config_color_button_create(pcb_gtk_common_t *com, GtkWidget *box, co
 	g_signal_connect(G_OBJECT(ci->button), "color-set", G_CALLBACK(config_color_set_cb), ci);
 }
 
-void config_color_button_update(conf_native_t * cfg, int idx)
+void config_color_button_update(pcb_gtk_common_t *com, conf_native_t *cfg, int idx)
 {
 	if (idx < 0) {
 		for (idx = 0; idx < cfg->array_size; idx++)
-			config_color_button_update(cfg, idx);
+			config_color_button_update(com, cfg, idx);
 	}
 	else {
 		cfg_color_idx_t *ci = conf_hid_get_data(cfg, ghid_conf_id);
 
-		ghid_map_color_string(cfg->val.color[idx], &(ci->color[idx]));
+		com->map_color_string(cfg->val.color[idx], &(ci->color[idx]));
 		gtk_color_button_set_color(GTK_COLOR_BUTTON(ci->button), &(ci->color[idx]));
 	}
 }
@@ -1842,7 +1839,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 		}
 		gtk_tree_view_set_model(GTK_TREE_VIEW(auto_tab_widgets.src_t), GTK_TREE_MODEL(auto_tab_widgets.src_l));
 		gtk_box_pack_start(GTK_BOX(src_left), auto_tab_widgets.src_t, FALSE, FALSE, 4);
-		g_signal_connect(G_OBJECT(auto_tab_widgets.src_t), "cursor-changed", G_CALLBACK(config_auto_src_changed_cb), NULL);
+		g_signal_connect(G_OBJECT(auto_tab_widgets.src_t), "cursor-changed", G_CALLBACK(config_auto_src_changed_cb), com);
 	}
 
 
@@ -1861,18 +1858,18 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 		auto_tab_widgets.edit_idx_adj = GTK_ADJUSTMENT(gtk_adjustment_new(10, 0,	/* min */
 																																			4, 1, 1,	/* steps */
 																																			0.0));
-		g_signal_connect(G_OBJECT(auto_tab_widgets.edit_idx_adj), "value-changed", G_CALLBACK(config_auto_idx_changed_cb), NULL);
+		g_signal_connect(G_OBJECT(auto_tab_widgets.edit_idx_adj), "value-changed", G_CALLBACK(config_auto_idx_changed_cb), com);
 		auto_tab_widgets.edit_idx = gtk_spin_button_new(auto_tab_widgets.edit_idx_adj, 1, 4);
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), auto_tab_widgets.edit_idx, FALSE, FALSE, 4);
 
 
 		w = gtk_button_new_with_label("Append item");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), w, FALSE, FALSE, 0);
-		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_create_cb), NULL);
+		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_create_cb), com);
 
 		w = gtk_button_new_with_label("Remove item");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.edit_idx_box), w, FALSE, FALSE, 0);
-		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_remove_cb), NULL);
+		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_idx_remove_cb), com);
 
 	}
 
@@ -1931,7 +1928,7 @@ static void config_auto_tab_create(pcb_gtk_common_t *com, GtkWidget *tab_vbox, c
 
 		auto_tab_widgets.btn_reset = w = gtk_button_new_with_label("Reset");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
-		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_reset_cb), NULL);
+		g_signal_connect(GTK_OBJECT(w), "clicked", G_CALLBACK(config_auto_reset_cb), com);
 
 		auto_tab_widgets.btn_remove = w = gtk_button_new_with_label("Remove");
 		gtk_box_pack_start(GTK_BOX(auto_tab_widgets.finalize), w, FALSE, FALSE, 0);
@@ -2008,7 +2005,7 @@ static lht_node_t *config_auto_get_nth(const lht_node_t * list, int idx)
 }
 
 /* set up all source edit widgets for a lihata source node */
-static void config_auto_src_show(lht_node_t * nd)
+static void config_auto_src_show(pcb_gtk_common_t *com, lht_node_t *nd)
 {
 	conf_native_t *nat = auto_tab_widgets.nat;
 	char *tmp;
@@ -2085,7 +2082,7 @@ static void config_auto_src_show(lht_node_t * nd)
 		}
 		break;
 	case CFN_COLOR:
-		ghid_map_color_string(nd->data.text.value, &auto_tab_widgets.color);
+		com->map_color_string(nd->data.text.value, &auto_tab_widgets.color);
 		gtk_color_button_set_color(GTK_COLOR_BUTTON(auto_tab_widgets.edit_color), &auto_tab_widgets.color);
 		gtk_widget_show(auto_tab_widgets.edit_color);
 		break;
@@ -2193,6 +2190,7 @@ static void conf_auto_set_edited_role(conf_role_t r)
 /* Update the conf item edit section; called when a source is clicked */
 static void config_auto_src_changed_cb(GtkTreeView * tree, void *data)
 {
+	pcb_gtk_common_t *com = data;
 	int role = config_auto_get_edited_role(), idx, len = 0;
 	lht_node_t *nd;
 	int allow_idx = 0;
@@ -2202,7 +2200,7 @@ static void config_auto_src_changed_cb(GtkTreeView * tree, void *data)
 	if (role != CFR_invalid) {
 		nd = conf_lht_get_at(role, auto_tab_widgets.nat->hash_path, 0);
 		if (nd != NULL) {
-			config_auto_src_show(nd);
+			config_auto_src_show(com, nd);
 			gtk_widget_hide(auto_tab_widgets.btn_create);
 			allow_idx = 0;
 			if (nd->type == LHT_LIST) {
@@ -2246,15 +2244,16 @@ static void config_auto_src_changed_cb(GtkTreeView * tree, void *data)
 
 static void config_auto_idx_changed_cb(GtkTreeView * tree, void *data)
 {
+	pcb_gtk_common_t *com = data;
 	int role = config_auto_get_edited_role();
 	if (role != CFR_invalid) {
 		lht_node_t *nd = conf_lht_get_at(role, auto_tab_widgets.nat->hash_path, 0);
 		if (nd != NULL)
-			config_auto_src_show(nd);
+			config_auto_src_show(com, nd);
 	}
 }
 
-static void config_auto_idx_deladd_cb(int del)
+static void config_auto_idx_deladd_cb(pcb_gtk_common_t *com, int del)
 {
 	int role = config_auto_get_edited_role();
 	if (role != CFR_invalid) {
@@ -2264,19 +2263,21 @@ static void config_auto_idx_deladd_cb(int del)
 		}
 		else
 			conf_set(role, auto_tab_widgets.nat->hash_path, -1, "", POL_APPEND);
-		config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), NULL);
+		config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), com);
 		config_auto_res_show();
 	}
 }
 
 static void config_auto_idx_create_cb(GtkButton * btn, void *data)
 {
-	config_auto_idx_deladd_cb(0);
+	pcb_gtk_common_t *com = data;
+	config_auto_idx_deladd_cb(com, 0);
 }
 
 static void config_auto_idx_remove_cb(GtkButton * btn, void *data)
 {
-	config_auto_idx_deladd_cb(1);
+	pcb_gtk_common_t *com = data;
+	config_auto_idx_deladd_cb(com, 1);
 }
 
 static void config_auto_save(conf_role_t role)
@@ -2383,15 +2384,16 @@ static void config_auto_apply_cb(GtkButton * btn, void *data)
 	config_page_update_auto(nat);
 	if (update_clr) {
 #warning TODO: conf hooks should solve these
-		ghid_set_special_colors(nat);
-		ghid_layer_buttons_color_update();
+		com->set_special_colors(nat);
+		com->layer_buttons_color_update();
 		com->invalidate_all();
 	}
 }
 
 static void config_auto_reset_cb(GtkButton * btn, void *data)
 {
-	config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), NULL);
+	pcb_gtk_common_t *com = data;
+	config_auto_src_changed_cb(GTK_TREE_VIEW(auto_tab_widgets.src_t), com);
 }
 
 static void config_auto_remove_cb(GtkButton * btn, void *data)

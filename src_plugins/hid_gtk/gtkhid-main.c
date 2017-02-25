@@ -60,6 +60,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_search.h"
 #include "../src_plugins/lib_gtk_common/dlg_library.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
+#include "../src_plugins/lib_gtk_common/colors.h"
 #include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
 
@@ -958,6 +959,10 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.port_ranges_scale = ghid_port_ranges_scale;
 	ghidgui->common.preview_draw = ghid_preview_draw;
 	ghidgui->common.pack_mode_buttons = ghid_pack_mode_buttons;
+	ghidgui->common.get_color_name = ghid_get_color_name;
+	ghidgui->common.map_color_string = ghid_map_color_string;
+	ghidgui->common.set_special_colors = ghid_set_special_colors;
+	ghidgui->common.layer_buttons_color_update = ghid_layer_buttons_color_update;
 
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse.com = &ghidgui->common;

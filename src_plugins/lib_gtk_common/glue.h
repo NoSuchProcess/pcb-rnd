@@ -3,6 +3,7 @@
 
 #include <gtk/gtk.h>
 #include "hid.h"
+#include "conf.h"
 
 /** The HID using pcb_gtk_common needs to fill in this struct and pass it
     on to most of the calls. This is the only legal way pcb_gtk_common can
@@ -41,6 +42,11 @@ typedef struct pcb_gtk_common_s {
 	void (*pan_common)(void);
 	void (*port_ranges_scale)(void);
 	void (*pack_mode_buttons)(void);
+
+	const gchar *(*get_color_name)(GdkColor * color);
+	void (*map_color_string)(const char *color_string, GdkColor * color);
+	void (*set_special_colors)(conf_native_t *cfg);
+	void (*layer_buttons_color_update)(void);
 
 } pcb_gtk_common_t;
 
