@@ -930,10 +930,7 @@
  ../src_plugins/lib_gtk_common/in_keyboard.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h unit.h pcb_bool.h \
  ../src_plugins/lib_gtk_common/in_mouse.h \
- ../src_plugins/hid_gtk/gschem_accel_label.h
-../src_plugins/hid_gtk/gschem_accel_label.o: \
- ../src_plugins/hid_gtk/gschem_accel_label.c ../config.h \
- ../src_plugins/hid_gtk/gschem_accel_label.h compat_nls.h
+ ../src_plugins/lib_gtk_common/wt_accel_label.h
 ../src_plugins/hid_gtk/gtkhid-gdk.o: ../src_plugins/hid_gtk/gtkhid-gdk.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h unit.h \
  pcb-printf.h ../src_3rd/genvector/gds_char.h \
@@ -2638,6 +2635,9 @@
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h
+../src_plugins/lib_gtk_common/wt_accel_label.o: \
+ ../src_plugins/lib_gtk_common/wt_accel_label.c ../config.h \
+ ../src_plugins/lib_gtk_common/wt_accel_label.h compat_nls.h
 ../src_plugins/lib_gtk_common/wt_coord_entry.o: \
  ../src_plugins/lib_gtk_common/wt_coord_entry.c ../config.h \
  ../src_plugins/lib_gtk_common/wt_coord_entry.h unit.h pcb-printf.h \

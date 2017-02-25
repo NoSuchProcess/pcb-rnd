@@ -22,7 +22,7 @@
 #include "../src_plugins/lib_gtk_common/wt_route_style.h"
 #include "../src_plugins/lib_gtk_common/in_keyboard.h"
 
-#include "gschem_accel_label.h"
+#include "../src_plugins/lib_gtk_common/wt_accel_label.h"
 
 
 static int action_counter;
