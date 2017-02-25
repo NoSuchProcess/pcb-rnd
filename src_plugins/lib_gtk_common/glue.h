@@ -31,6 +31,8 @@ typedef struct pcb_gtk_common_s {
 	void (*port_button_release_main)(void);
 
 	void (*route_styles_edited_cb)(void);
+
+	void (*mode_cursor_main)(int mode);
 } pcb_gtk_common_t;
 
 #endif

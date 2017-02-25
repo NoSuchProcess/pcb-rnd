@@ -856,6 +856,12 @@ static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_
 	return ghid_attribute_dialog(ghid_port.top_window, attrs, n_attrs, results, title, descr);
 }
 
+pcb_hidval_t ghid_watch_file(pcb_gtk_common_t *com, int fd, unsigned int condition,
+								void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+								pcb_hidval_t user_data)
+{
+	return pcb_gtk_watch_file(&ghidgui->common, fd, condition, func, user_data);
+}
 
 pcb_uninit_t hid_hid_gtk_init()
 {
@@ -904,6 +910,7 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.port_button_release_main = ghid_port_button_release_main;
 	ghidgui->common.status_line_set_text = ghid_status_line_set_text;
 	ghidgui->common.route_styles_edited_cb = ghid_route_styles_edited_cb;
+	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
 
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse.com = &ghidgui->common;

@@ -32,6 +32,7 @@ typedef struct {
 	int fd;
 	GIOChannel *channel;
 	gint id;
+	pcb_gtk_common_t *com;
 } GuiWatch;
 
 	/* We need a wrapper around the hid file watch to pass the correct flags
@@ -54,12 +55,12 @@ static gboolean ghid_watch(GIOChannel * source, GIOCondition condition, gpointer
 	x.ptr = (void *) watch;
 	watch->func(x, watch->fd, pcb_condition, watch->user_data);
 
-	ghid_mode_cursor_main(conf_core.editor.mode);
+	watch->com->mode_cursor_main(conf_core.editor.mode);
 
 	return TRUE;									/* Leave watch on */
 }
 
-pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
+pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_common_t *com, int fd, unsigned int condition,
 								void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								pcb_hidval_t user_data)
 {
@@ -81,6 +82,7 @@ pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
 	watch->fd = fd;
 	watch->channel = g_io_channel_unix_new(fd);
 	watch->id = g_io_add_watch(watch->channel, (GIOCondition) glib_condition, ghid_watch, watch);
+	watch->com = com;
 
 	ret.ptr = (void *) watch;
 	return ret;
