@@ -358,8 +358,7 @@ void ghid_install_accel_groups(GtkWindow * window, GhidGui * gui)
 {
 	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu.menu_bar)));
 	gtk_window_add_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
-	gtk_window_add_accel_group
-		(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->route_style_selector)));
+	gtk_window_add_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->route_style_selector)));
 }
 
 /*! \brief Remove menu bar and accelerator groups */
@@ -367,8 +366,7 @@ void ghid_remove_accel_groups(GtkWindow * window, GhidGui * gui)
 {
 	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(gui->menu.menu_bar)));
 	gtk_window_remove_accel_group(window, pcb_gtk_layer_selector_get_accel_group(GHID_LAYER_SELECTOR(gui->layer_selector)));
-	gtk_window_remove_accel_group
-		(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->route_style_selector)));
+	gtk_window_remove_accel_group(window, pcb_gtk_route_style_get_accel_group(GHID_ROUTE_STYLE(gui->route_style_selector)));
 }
 
 /* Refreshes the window title bar and sets the PCB name to the
