@@ -87,10 +87,6 @@ Error: can't update netlist window: there is no netlist loaded. \n
 
 static GtkWidget *library_window;
 
-
-#warning TODO: figure how to pass gport from create() to the constructor
-static void *construct_gport_copy = NULL;
-
 /** The time interval between request and actual filtering.
 
     This constant is the time-lag between user modifications in the
@@ -688,7 +684,9 @@ static GtkWidget *create_lib_treeview(pcb_gtk_library_t * library_window)
 	return vbox;
 }
 
-/** */
+#warning TODO: figure how this can be passed to the constructor without a global var
+static pcb_gtk_common_t *lwcom;
+
 static GObject *library_window_constructor(GType type, guint n_construct_properties, GObjectConstructParam * construct_params)
 {
 	GObject *object;
@@ -741,14 +739,13 @@ static GObject *library_window_constructor(GType type, guint n_construct_propert
 																			"top-padding", 5,
 																			"bottom-padding", 5, "xscale", 1.0, "yscale", 1.0, "xalign", 0.5, "yalign", 0.5, NULL));
 
-	assert(construct_gport_copy != NULL);
 #warning gl TODO: this wont work with gl: use pcb_gtk_preview_pinout_new() instead and set *-request separately, because _new() has side effects
 	preview = (GtkWidget *) g_object_new(GHID_TYPE_PINOUT_PREVIEW,
 																			 /* GhidPinoutPreview */
 																			 "element-data", NULL,
-																			 "gport", construct_gport_copy,
-																			 "init-widget", ghid_init_drawing_widget,
-																			 "expose", ghid_preview_expose, "kind", PCB_GTK_PREVIEW_PINOUT,
+																			 "gport", lwcom->gport,
+																			 "init-widget", lwcom->init_drawing_widget,
+																			 "expose", lwcom->preview_expose, "kind", PCB_GTK_PREVIEW_PINOUT,
 																			 /* GtkWidget */
 																			 "width-request", 150, "height-request", 150, NULL);
 
@@ -831,7 +828,7 @@ GType pcb_gtk_library_get_type()
 	return library_window_type;
 }
 
-void pcb_gtk_library_create(void *gport)
+void pcb_gtk_library_create(pcb_gtk_common_t *com)
 {
 	GtkWidget *current_tab, *entry_filter;
 	GtkNotebook *notebook;
@@ -839,7 +836,7 @@ void pcb_gtk_library_create(void *gport)
 	if (library_window)
 		return;
 
-	construct_gport_copy = gport;
+	lwcom = com;
 	library_window = (GtkWidget *) g_object_new(GHID_TYPE_LIBRARY_WINDOW, NULL);
 
 	g_signal_connect(library_window, "response", G_CALLBACK(library_window_callback_response), NULL);
@@ -863,11 +860,12 @@ void pcb_gtk_library_create(void *gport)
 	if (gtk_widget_is_ancestor(entry_filter, current_tab)) {
 		gtk_widget_grab_focus(entry_filter);
 	}
+	lwcom = NULL;
 }
 
-void pcb_gtk_library_show(void *gport, gboolean raise)
+void pcb_gtk_library_show(pcb_gtk_common_t *com, gboolean raise)
 {
-	pcb_gtk_library_create(gport);
+	pcb_gtk_library_create(com);
 	gtk_widget_show_all(library_window);
 	if (raise)
 		gtk_window_present(GTK_WINDOW(library_window));

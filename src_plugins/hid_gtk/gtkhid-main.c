@@ -563,7 +563,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
 	}
 	else if (strcmp(a, "2") == 0 || pcb_strcasecmp(a, "Library") == 0) {
-		pcb_gtk_library_show(gport, raise);
+		pcb_gtk_library_show(&ghidgui->common, raise);
 	}
 	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
 		pcb_gtk_dlg_log_show(raise);

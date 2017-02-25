@@ -23,6 +23,7 @@
 
 #include <gtk/gtk.h>
 #include "hid.h"
+#include "glue.h"
 
 #define GHID_TYPE_LIBRARY_WINDOW           (pcb_gtk_library_get_type())
 #define GHID_LIBRARY_WINDOW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_TYPE_LIBRARY_WINDOW, pcb_gtk_library_t))
@@ -61,7 +62,7 @@ GType pcb_gtk_library_get_type(void);
 
 /** Creates the _library_ dialog if it is not already created.
     It does not show the dialog ; use \ref pcb_gtk_library_show () for that. */
-void pcb_gtk_library_create(void *gport);
+void pcb_gtk_library_create(pcb_gtk_common_t *com);
 
 /** Shows the _library_ dialog, creating it if it is not already created, and
     presents it to the user (brings it to the front with focus), depending on 
@@ -69,11 +70,6 @@ void pcb_gtk_library_create(void *gport);
     \param gport    Temporary ?
     \param raise    if `TRUE`, presents the window.
  */
-void pcb_gtk_library_show(void *gport, gboolean raise);
-
-/* Temporary back references to hid_gtk */
-gboolean ghid_preview_expose(GtkWidget * widget, GdkEventExpose * ev, pcb_hid_expose_t expcall,
-														 const pcb_hid_expose_ctx_t * ctx);
-void ghid_init_drawing_widget(GtkWidget * widget, void *gport);
+void pcb_gtk_library_show(pcb_gtk_common_t *com, gboolean raise);
 
 #endif /* PCB_GTK_LIBRARY_WINDOW_H */
