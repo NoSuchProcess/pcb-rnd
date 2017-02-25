@@ -844,9 +844,9 @@ PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 #include <winreg.h>
 #endif
 
-		 pcb_hid_t ghid_hid;
+pcb_hid_t ghid_hid;
 
-		 static void init_conf_watch(conf_hid_callbacks_t * cbs, const char *path, void (*func) (conf_native_t *))
+static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func) (conf_native_t *))
 {
 	conf_native_t *n = conf_get_field(path);
 	if (n != NULL) {
