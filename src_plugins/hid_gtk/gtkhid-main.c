@@ -863,6 +863,12 @@ pcb_hidval_t ghid_watch_file(pcb_gtk_common_t *com, int fd, unsigned int conditi
 	return pcb_gtk_watch_file(&ghidgui->common, fd, condition, func, user_data);
 }
 
+pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+{
+	return pcb_gtk_add_timer(&ghidgui->common, func, milliseconds, user_data);
+}
+
+
 pcb_uninit_t hid_hid_gtk_init()
 {
 #ifdef WIN32

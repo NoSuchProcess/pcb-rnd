@@ -30,6 +30,7 @@ typedef struct {
 	void (*func) (pcb_hidval_t);
 	guint id;
 	pcb_hidval_t user_data;
+	pcb_gtk_common_t *com;
 } GuiTimer;
 
 	/* We need a wrapper around the hid timer because a gtk timer needs
@@ -38,17 +39,18 @@ typedef struct {
 static gboolean ghid_timer(GuiTimer * timer)
 {
 	(*timer->func) (timer->user_data);
-	ghid_mode_cursor_main(conf_core.editor.mode);
+	timer->com->mode_cursor_main(conf_core.editor.mode);
 	return FALSE;									/* Turns timer off */
 }
 
-pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+pcb_hidval_t pcb_gtk_add_timer(pcb_gtk_common_t *com, void (*func) (pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	GuiTimer *timer = g_new0(GuiTimer, 1);
 	pcb_hidval_t ret;
 
 	timer->func = func;
 	timer->user_data = user_data;
+	timer->com = com;
 	timer->id = g_timeout_add(milliseconds, (GSourceFunc) ghid_timer, timer);
 	ret.ptr = (void *) timer;
 	return ret;
