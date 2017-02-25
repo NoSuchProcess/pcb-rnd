@@ -77,7 +77,7 @@ static void pcb_gtk_pan_common(pcb_gtk_view_t *v)
 	 */
 	pcb_gtk_coords_event2pcb(v, event_x, event_y, &v->pcb_x, &v->pcb_y);
 
-	ghid_pan_common();
+	v->com->pan_common();
 }
 
 pcb_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)
@@ -134,13 +134,12 @@ static void ghid_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coor
 
 	v->coord_per_px = new_zoom;
 	pcb_pixel_slop = new_zoom;
-	ghid_port_ranges_scale();
+	v->com->port_ranges_scale();
 
 	v->x0 = SIDE_X(center_x) - xtmp * v->width;
 	v->y0 = SIDE_Y(center_y) - ytmp * v->height;
 
 	pcb_gtk_pan_common(v);
-
 	v->com->set_status_line_label();
 }
 
@@ -174,7 +173,7 @@ static void pcb_gtk_flip_view(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord
 
 	pcb_draw_inhibit_dec();
 
-	ghid_invalidate_all();
+	v->com->invalidate_all();
 }
 
 void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int widget_x, int widget_y)
@@ -397,7 +396,7 @@ int pcb_gtk_swap_sides(pcb_gtk_view_t *vw, int argc, const char **argv, pcb_coor
 
 	pcb_draw_inhibit_dec();
 
-	ghid_invalidate_all();
+	vw->com->invalidate_all();
 
 	return 0;
 }
