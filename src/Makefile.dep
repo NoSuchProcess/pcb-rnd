@@ -939,7 +939,8 @@
  rats_patch.h board.h event.h compat_misc.h hid_draw_helpers.h \
  hid_attrib.h hid_helper.h hid_color.h \
  ../src_plugins/lib_gtk_common/colors.h \
- ../src_plugins/lib_gtk_config/hid_gtk_conf.h
+ ../src_plugins/lib_gtk_config/hid_gtk_conf.h \
+ ../src_plugins/lib_gtk_config/lib_gtk_config.h
 ../src_plugins/hid_gtk/gtkhid-main.o: \
  ../src_plugins/hid_gtk/gtkhid-main.c ../config.h conf_core.h conf.h \
  global_typedefs.h pcb_bool.h unit.h pcb-printf.h \

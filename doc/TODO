@@ -8,7 +8,6 @@
 	- layer group edition bug (csect): delete a group with more than 1 layer and the 2nd? layer is not removed (stays on the layer selector side bar) [report: Evan]
 	- gtk preferences window: csesct doens't grow as much as it should, vertically
 	- gtk preferences window: can't size down to x600 [report: miloh]
-	- CRASH: gtk preferences window: change the grid color
 	- cross section on export should draw with double font, but should print file names
 
 - plugin breakage:

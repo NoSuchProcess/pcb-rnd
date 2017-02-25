@@ -15,6 +15,7 @@
 
 #include "../src_plugins/lib_gtk_common/colors.h"
 #include "../src_plugins/lib_gtk_config/hid_gtk_conf.h"
+#include "../src_plugins/lib_gtk_config/lib_gtk_config.h"
 
 extern pcb_hid_t ghid_hid;
 void ghid_cancel_lead_user(void);
@@ -446,7 +447,7 @@ static void set_special_grid_color(void)
 	conf_setf(CFR_DESIGN, "appearance/color/grid", -1, "#%02x%02x%02x", red, green, blue);
 	ghid_map_color_string(conf_core.appearance.color.grid, &gport->grid_color);
 
-	config_color_button_update(conf_get_field("appearance/color/grid"), -1);
+	config_color_button_update(&ghidgui->common, conf_get_field("appearance/color/grid"), -1);
 
 	if (priv->grid_gc)
 		gdk_gc_set_foreground(priv->grid_gc, &gport->grid_color);
