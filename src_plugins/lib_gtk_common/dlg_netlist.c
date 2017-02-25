@@ -147,7 +147,7 @@ static pcb_lib_menu_t *node_selected_net;
    | names would be nodes C101-1, R101-2, etc
 */
 
-pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** node_net);
+static pcb_lib_entry_t *node_get_node_from_name(pcb_gtk_common_t *com, gchar *node_name, pcb_lib_menu_t **node_net);
 
 enum {
 	NODE_NAME_COLUMN,							/* Name to show in the treeview         */
@@ -229,6 +229,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	pcb_connection_t conn;
 	pcb_coord_t x, y;
 	static gchar *node_name;
+	pcb_gtk_common_t *com = data;
 
 	if (selection_holdoff)				/* PCB is highlighting, user is not selecting */
 		return;
@@ -238,13 +239,13 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	   toggled selected, then the net that includes the node is selected
 	   then unselected.
 	 */
-	if ((node = node_get_node_from_name(node_name, &node_net)) != NULL) {
+	if ((node = node_get_node_from_name(com, node_name, &node_net)) != NULL) {
 		/*  If net node belongs to has been highlighted/unhighighed, toggling
 		   if off here will get our on/off toggling out of sync.
 		 */
 		if (node_net == node_selected_net) {
 			toggle_pin_selected(node);
-			ghid_cancel_lead_user();
+			com->cancel_lead_user();
 		}
 		g_free(node_name);
 		node_name = NULL;
@@ -254,7 +255,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 	 */
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter)) {
 		if (node)
-			ghid_invalidate_all();
+			com->invalidate_all();
 		return;
 	}
 
@@ -280,7 +281,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 				x = pin->X;
 				y = pin->Y;
 				pcb_gui->set_crosshair(x, y, 0);
-				ghid_lead_user_to_location(x, y);
+				com->lead_user_to_location(x, y);
 				break;
 			}
 		case PCB_TYPE_PAD:
@@ -289,7 +290,7 @@ static void node_selection_changed_cb(GtkTreeSelection * selection, gpointer dat
 				x = pad->Point1.X + (pad->Point2.X - pad->Point1.X) / 2;
 				y = pad->Point1.Y + (pad->Point2.Y - pad->Point2.Y) / 2;
 				pcb_gui->set_crosshair(x, y, 0);
-				ghid_lead_user_to_location(x, y);
+				com->lead_user_to_location(x, y);
 				break;
 			}
 		}
@@ -606,12 +607,14 @@ static gint netlist_window_configure_event_cb(GtkWidget * widget, GdkEventConfig
 
 static void netlist_close_cb(GtkWidget * widget, gpointer data)
 {
+	pcb_gtk_common_t *com = data;
+
 	gtk_widget_destroy(netlist_window);
 	selected_net = NULL;
 	netlist_window = NULL;
 
 	/* For now, we are the only consumer of this API, so we can just do this */
-	ghid_cancel_lead_user();
+	com->cancel_lead_user();
 }
 
 static void netlist_destroy_cb(GtkWidget * widget, void *data)
@@ -620,7 +623,7 @@ static void netlist_destroy_cb(GtkWidget * widget, void *data)
 	netlist_window = NULL;
 }
 
-static void ghid_netlist_window_create(void)
+static void ghid_netlist_window_create(pcb_gtk_common_t *com)
 {
 	GtkWidget *vbox, *hbox, *button, *label, *sep;
 	GtkTreeView *treeview;
@@ -697,7 +700,7 @@ static void ghid_netlist_window_create(void)
 
 	selection = ghid_scrolled_selection(treeview, hbox,
 																			GTK_SELECTION_SINGLE,
-																			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC, node_selection_changed_cb, NULL);
+																			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC, node_selection_changed_cb, com);
 	node_selection = selection;
 
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -735,7 +738,7 @@ static void ghid_netlist_window_create(void)
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbox), GTK_BUTTONBOX_END);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
 	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(netlist_close_cb), NULL);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(netlist_close_cb), com);
 	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
 	wplc_place(WPLC_NETLIST, netlist_window);
@@ -744,7 +747,7 @@ static void ghid_netlist_window_create(void)
 }
 
 /* A forward declaration is needed here... Could it be avoided ? */
-pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** node_net)
+static pcb_lib_entry_t *node_get_node_from_name(pcb_gtk_common_t *com, gchar *node_name, pcb_lib_menu_t **node_net)
 {
 	node_get_node_from_name_state state;
 
@@ -754,7 +757,7 @@ pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** no
 	/*  Have to force the netlist window created because we need the treeview
 	   models constructed to do the search.
 	 */
-	ghid_netlist_window_create();
+	ghid_netlist_window_create(com);
 
 	/*  Now walk through node entries of each net in the net model looking for
 	   the node_name.
@@ -770,11 +773,11 @@ pcb_lib_entry_t *node_get_node_from_name(gchar * node_name, pcb_lib_menu_t ** no
 	return NULL;
 }
 
-void pcb_gtk_dlg_netlist_show(pcb_bool raise)
+void pcb_gtk_dlg_netlist_show(pcb_gtk_common_t *com, pcb_bool raise)
 {
-	ghid_netlist_window_create();
+	ghid_netlist_window_create(com);
 	gtk_widget_show_all(netlist_window);
-	pcb_gtk_dlg_netlist_update(TRUE);
+	pcb_gtk_dlg_netlist_update(com, TRUE);
 	if (raise)
 		gtk_window_present(GTK_WINDOW(netlist_window));
 }
@@ -822,7 +825,7 @@ static pcb_bool hunt_named_node(GtkTreeModel * model, GtkTreePath * path, GtkTre
 
 /* API */
 
-pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, pcb_bool enabled_only)
+pcb_lib_menu_t *ghid_get_net_from_node_name(pcb_gtk_common_t *com, const gchar * node_name, pcb_bool enabled_only)
 {
 	GtkTreePath *path;
 	struct ggnfnn_task task;
@@ -834,7 +837,7 @@ pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, pcb_bool en
 	   models constructed so we can find the pcb_lib_menu_t pointer the
 	   caller wants.
 	 */
-	ghid_netlist_window_create();
+	ghid_netlist_window_create(com);
 
 	/* If no netlist is loaded the window doesn't appear. */
 	if (netlist_window == NULL)
@@ -868,7 +871,7 @@ pcb_lib_menu_t *ghid_get_net_from_node_name(const gchar * node_name, pcb_bool en
     and its net highlighted.
 */
 /** \todo is this retired ? */
-void ghid_netlist_highlight_node(const gchar * node_name)
+void ghid_netlist_highlight_node(pcb_gtk_common_t *com, const gchar *node_name)
 {
 	GtkTreePath *path;
 	GtkTreeIter iter;
@@ -878,7 +881,7 @@ void ghid_netlist_highlight_node(const gchar * node_name)
 	if (!node_name)
 		return;
 
-	if ((net = ghid_get_net_from_node_name(node_name, TRUE)) == NULL)
+	if ((net = ghid_get_net_from_node_name(com, node_name, TRUE)) == NULL)
 		return;
 
 	/*  We've found the net containing the node, so update the node treeview
@@ -904,12 +907,12 @@ void ghid_netlist_highlight_node(const gchar * node_name)
 		while (gtk_tree_model_iter_next(node_model, &iter));
 }
 
-void pcb_gtk_dlg_netlist_update(pcb_bool init_nodes)
+void pcb_gtk_dlg_netlist_update(pcb_gtk_common_t *com, pcb_bool init_nodes)
 {
 	GtkTreeModel *model;
 
 	/* Make sure there is something to update */
-	ghid_netlist_window_create();
+	ghid_netlist_window_create(com);
 
 	model = net_model;
 	net_model = net_model_create();
@@ -929,49 +932,28 @@ void pcb_gtk_dlg_netlist_update(pcb_bool init_nodes)
 
 /* Actions ? */
 
-/** Why a prototype is in gtkhid-main.c ? What is a good name for that ? */
-void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_gtk_netlist_changed(pcb_gtk_common_t *com, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	extern int gtkhid_active;
-	if (!gtkhid_active)
-		return;
 	loading_new_netlist = TRUE;
-	pcb_gtk_dlg_netlist_update(TRUE);
+	pcb_gtk_dlg_netlist_update(com, TRUE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_all_button), FALSE);
 	loading_new_netlist = FALSE;
 }
 
-static const char netlistshow_syntax[] = "NetlistShow(pinname|netname)";
-
-static const char netlistshow_help[] = "Selects the given pinname or netname in the netlist window. Does not \
-show the window if it isn't already shown.";
-
-static gint GhidNetlistShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+const char pcb_gtk_acts_netlistshow[] = "NetlistShow(pinname|netname)";
+const char pcb_gtk_acth_netlistshow[] = "Selects the given pinname or netname in the netlist window. Does not show the window if it isn't already shown.";
+gint pcb_gtk_act_netlistshow(pcb_gtk_common_t *com, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	ghid_netlist_window_create();
+	ghid_netlist_window_create(com);
 	if (argc > 0)
-		ghid_netlist_highlight_node(argv[0]);
+		ghid_netlist_highlight_node(com, argv[0]);
 	return 0;
 }
 
-static const char netlistpresent_syntax[] = "NetlistPresent()";
-
-static const char netlistpresent_help[] = "Presents the netlist window.";
-
-static gint GhidNetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+const char pcb_gtk_acts_netlistpresent[] = "NetlistPresent()";
+const char pcb_gtk_acth_netlistpresent[] = "Presents the netlist window.";
+gint pcb_gtk_act_netlistpresent(pcb_gtk_common_t *com, int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_gtk_dlg_netlist_show(TRUE);
+	pcb_gtk_dlg_netlist_show(com, TRUE);
 	return 0;
 }
-
-/** Action ? */
-pcb_hid_action_t ghid_netlist_action_list[] = {
-	{"NetlistShow", 0, GhidNetlistShow,
-	 netlistshow_help, netlistshow_syntax}
-	,
-	{"NetlistPresent", 0, GhidNetlistPresent,
-	 netlistpresent_help, netlistpresent_syntax}
-	,
-};
-
-PCB_REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)

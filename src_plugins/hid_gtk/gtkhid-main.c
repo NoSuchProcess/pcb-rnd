@@ -33,6 +33,7 @@
 #include "ghid-main-menu.h"
 #include "gui-command-window.h"
 #include "gui-top-window.h"
+#include "render.h"
 
 #include "../src_plugins/lib_gtk_common/glue.h"
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
@@ -569,7 +570,7 @@ static int DoWindows(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 		pcb_gtk_dlg_log_show(raise);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
-		pcb_gtk_dlg_netlist_show(raise);
+		pcb_gtk_dlg_netlist_show(&ghidgui->common, raise);
 	}
 	else if (strcmp(a, "5") == 0 || pcb_strcasecmp(a, "Preferences") == 0) {
 		ghid_config_window_show(gport);
@@ -729,6 +730,16 @@ static int PanAction(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
 	return pcb_gtk_act_pan(&gport->view, argc, argv, x, y);
 }
 
+static int GhidNetlistShow(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_gtk_act_netlistshow(&ghidgui->common, argc, argv, x, y);
+}
+
+static int GhidNetlistPresent(int argc, const char **argv, pcb_coord_t x, pcb_coord_t y)
+{
+	return pcb_gtk_act_netlistpresent(&ghidgui->common, argc, argv, x, y);
+}
+
 static void ghid_get_coords(const char *msg, pcb_coord_t * x, pcb_coord_t * y)
 {
 	pcb_gtk_get_coords(&gport->mouse, &gport->view, msg, x, y);
@@ -786,6 +797,10 @@ pcb_hid_action_t ghid_main_action_list[] = {
 	{"LayerGroupsChanged", 0, LayerGroupsChanged}
 	,
 	{"Load", 0, act_load }
+	,
+	{"NetlistShow", 0, GhidNetlistShow, pcb_gtk_acth_netlistshow, pcb_gtk_acts_netlistshow}
+	,
+	{"NetlistPresent", 0, GhidNetlistPresent, pcb_gtk_acth_netlistpresent, pcb_gtk_acts_netlistpresent}
 	,
 	{"Pan", 0, PanAction, pcb_acth_pan, pcb_acts_pan}
 	,
@@ -848,15 +863,13 @@ void hid_hid_gtk_uninit()
 	conf_hid_unreg(ghid_menu_cookie);
 }
 
-void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[]);
-
 static int ghid_attribute_dialog_(pcb_hid_attribute_t * attrs, int n_attrs, pcb_hid_attr_val_t * results, const char *title,
 																	const char *descr)
 {
 	return ghid_attribute_dialog(ghid_port.top_window, attrs, n_attrs, results, title, descr);
 }
 
-pcb_hidval_t ghid_watch_file(pcb_gtk_common_t *com, int fd, unsigned int condition,
+pcb_hidval_t ghid_watch_file(int fd, unsigned int condition,
 								void (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								pcb_hidval_t user_data)
 {
@@ -868,6 +881,13 @@ pcb_hidval_t ghid_add_timer(void (*func) (pcb_hidval_t user_data), unsigned long
 	return pcb_gtk_add_timer(&ghidgui->common, func, milliseconds, user_data);
 }
 
+static void GhidNetlistChanged(void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	if (!gtkhid_active)
+		return;
+
+	pcb_gtk_netlist_changed(&ghidgui->common, user_data, argc, argv);
+}
 
 pcb_uninit_t hid_hid_gtk_init()
 {
@@ -917,6 +937,9 @@ pcb_uninit_t hid_hid_gtk_init()
 	ghidgui->common.status_line_set_text = ghid_status_line_set_text;
 	ghidgui->common.route_styles_edited_cb = ghid_route_styles_edited_cb;
 	ghidgui->common.mode_cursor_main = ghid_mode_cursor_main;
+	ghidgui->common.invalidate_all = ghid_invalidate_all;
+	ghidgui->common.cancel_lead_user = ghid_cancel_lead_user;
+	ghidgui->common.lead_user_to_location = ghid_lead_user_to_location;
 
 	ghid_port.view.com = &ghidgui->common;
 	ghid_port.mouse.com = &ghidgui->common;
@@ -1027,7 +1050,6 @@ int gtkhid_active = 0;
 void gtkhid_begin(void)
 {
 	PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
-		PCB_REGISTER_ACTIONS(ghid_netlist_action_list, ghid_cookie)
 		PCB_REGISTER_ACTIONS(ghid_log_action_list, ghid_cookie)
 		PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 		PCB_REGISTER_ACTIONS(ghid_menu_action_list, ghid_cookie)

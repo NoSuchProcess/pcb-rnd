@@ -33,6 +33,11 @@ typedef struct pcb_gtk_common_s {
 	void (*route_styles_edited_cb)(void);
 
 	void (*mode_cursor_main)(int mode);
+
+	void (*invalidate_all)();
+	void (*cancel_lead_user)(void);
+	void (*lead_user_to_location)(pcb_coord_t x, pcb_coord_t y);
+
 } pcb_gtk_common_t;
 
 #endif
