@@ -1,0 +1,12 @@
+:toc: left
+:icons: font
+:stylesdir: ./
+:stylesheet: default.css
+:linkcss:
+
+// Substitutions...
+:prg:     pass:q[`pcb-rnd`]
+:yes:     icon:check[role="green"]
+:no:      icon:times[role="red"]
+//:yes:     pass:q[<font color="green">OK</font>]
+//:no:      pass:q[<font color="red">NO</font>]

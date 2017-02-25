@@ -1,15 +1,5 @@
 :author: Alain
-:toc: left
-:icons: font
-:imagesdir: img_route_style
-:stylesdir: ./
-:stylesheet: default.css
-:linkcss:
-
-// Substitutions...
-:prg:     pass:q[`pcb-rnd`]
-:yes:     icon:check[role="green"]
-:no:      icon:times[role="red"]
+include::adoc_common_attributes.adoc[]
 
 = Route style GUI design
 
