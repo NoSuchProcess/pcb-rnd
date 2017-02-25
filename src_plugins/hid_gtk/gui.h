@@ -36,8 +36,7 @@
 #include "../src_plugins/lib_gtk_common/dlg_command.h"
 #include "../src_plugins/lib_gtk_common/in_mouse.h"
 #include "../src_plugins/lib_gtk_common/glue.h"
-
-#include "ghid-main-menu.h"
+#include "../src_plugins/lib_gtk_common/bu_menu.h"
 
 #include "board.h"
 #include "event.h"
@@ -142,8 +141,8 @@ void ghid_pack_mode_buttons(void);
 void ghid_status_line_set_text(const gchar *text);
 void ghid_set_status_line_label(void);
 
-/* gui-output-events.c function prototypes.
-*/
+/* gui-output-events.c function prototypes. */
+extern pcb_hid_cfg_t *ghid_cfg;
 gboolean ghid_idle_cb(gpointer data);
 void ghid_route_styles_edited_cb(void);
 void ghid_port_ranges_changed(void);

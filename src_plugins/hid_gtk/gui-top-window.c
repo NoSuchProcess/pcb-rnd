@@ -94,10 +94,10 @@ I NEED TO DO THE STATUS LINE THING.for example shift - alt - v to change the
 #include "obj_line.h"
 #include "layer_vis.h"
 #include "gtkhid-main.h"
-#include "ghid-main-menu.h"
 
 #include "../src_plugins/lib_gtk_common/bu_box.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
+#include "../src_plugins/lib_gtk_common/bu_menu.h"
 #include "../src_plugins/lib_gtk_common/dlg_route_style.h"
 #include "../src_plugins/lib_gtk_common/dlg_fontsel.h"
 #include "../src_plugins/lib_gtk_common/util_str.h"
@@ -1633,6 +1633,7 @@ pcb_hid_action_t gtk_topwindow_action_list[] = {
 
 PCB_REGISTER_ACTIONS(gtk_topwindow_action_list, ghid_cookie)
 
+#warning TODO: move this to common, get &ghidgui->menu as arg
 static GtkWidget *ghid_load_menus(void)
 {
 	const lht_node_t *mr;
@@ -1648,7 +1649,7 @@ static GtkWidget *ghid_load_menus(void)
 	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/main_menu");
 	if (mr != NULL) {
 		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
-		ghid_main_menu_add_node(GHID_MAIN_MENU(menu_bar), mr);
+		ghid_main_menu_add_node(&ghidgui->menu, GHID_MAIN_MENU(menu_bar), mr);
 	}
 
 	mr = pcb_hid_cfg_get_menu(ghid_cfg, "/popups");
@@ -1656,7 +1657,7 @@ static GtkWidget *ghid_load_menus(void)
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
 			for (n = mr->data.list.first; n != NULL; n = n->next)
-				ghid_main_menu_add_popup_node(GHID_MAIN_MENU(menu_bar), n);
+				ghid_main_menu_add_popup_node(&ghidgui->menu, GHID_MAIN_MENU(menu_bar), n);
 		}
 		else
 			pcb_hid_cfg_error(mr, "/popups should be a list");

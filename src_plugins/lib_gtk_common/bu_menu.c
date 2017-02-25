@@ -11,18 +11,15 @@
 #include <gtk/gtk.h>
 #include <liblihata/tree.h>
 
-#include "config.h"
-#include "gtkhid-main.h"
 #include "pcb-printf.h"
 #include "misc_util.h"
 #include "error.h"
 #include "conf.h"
-#include "ghid-main-menu.h"
-#include "../src_plugins/lib_gtk_common/wt_layer_selector.h"
-#include "../src_plugins/lib_gtk_common/wt_route_style.h"
-#include "../src_plugins/lib_gtk_common/in_keyboard.h"
-
-#include "../src_plugins/lib_gtk_common/wt_accel_label.h"
+#include "bu_menu.h"
+#include "wt_layer_selector.h"
+#include "wt_route_style.h"
+#include "in_keyboard.h"
+#include "wt_accel_label.h"
 
 
 static int action_counter;
@@ -72,10 +69,9 @@ struct _GHidMainMenuClass {
 
 /* LHT HANDLER */
 
-void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * base);
+void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * base);
 
-extern conf_hid_id_t ghid_menuconf_id;
-static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * sub_res)
+static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * sub_res)
 {
 	const char *tmp_val;
 	gchar mnemonic = 0;
@@ -143,7 +139,7 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 		   them recursively. */
 		n = pcb_hid_cfg_menu_field(sub_res, PCB_MF_SUBMENU, NULL);
 		for (n = n->data.list.first; n != NULL; n = n->next)
-			ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(submenu), n);
+			ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(submenu), n);
 	}
 	else {
 		/* NON-SUBMENU: MENU ITEM */
@@ -170,11 +166,11 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
 				static int cbs_inited = 0;
 				if (!cbs_inited) {
 					memset(&cbs, 0, sizeof(conf_hid_callbacks_t));
-					cbs.val_change_post = ghid_confchg_checkbox;
+					cbs.val_change_post = ctx->confchg_checkbox;
 					cbs_inited = 1;
 				}
 /*				pcb_trace("conf_hid_set for %s -> %s\n", checked, nat->hash_path);*/
-				conf_hid_set_cb(nat, ghid_menuconf_id, &cbs);
+				conf_hid_set_cb(nat, ctx->ghid_menuconf_id, &cbs);
 			}
 			else {
 				if ((update_on == NULL) || (*update_on != '\0'))	/* warn if update_on is not explicitly empty */
@@ -234,13 +230,13 @@ static GtkAction *ghid_add_menu(GHidMainMenu * menu, GtkMenuShell * shell, lht_n
  *  \param [in] shall   The base menu shell (a menu bar or popup menu)
  *  \param [in] base    The base of the menu item subtree
  * */
-void ghid_main_menu_real_add_node(GHidMainMenu * menu, GtkMenuShell * shell, lht_node_t * base)
+void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *base)
 {
 	switch (base->type) {
 	case LHT_HASH:								/* leaf submenu */
 		{
 			GtkAction *action = NULL;
-			action = ghid_add_menu(menu, shell, base);
+			action = ghid_add_menu(ctx, menu, shell, base);
 			if (action) {
 				const char *val;
 
@@ -351,7 +347,7 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb)
 }
 
 /*! \brief Turn a lht node into the main menu */
-void ghid_main_menu_add_node(GHidMainMenu * menu, const lht_node_t * base)
+void ghid_main_menu_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const lht_node_t *base)
 {
 	lht_node_t *n;
 	if (base->type != LHT_LIST) {
@@ -359,12 +355,12 @@ void ghid_main_menu_add_node(GHidMainMenu * menu, const lht_node_t * base)
 		abort();
 	}
 	for (n = base->data.list.first; n != NULL; n = n->next) {
-		ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(menu), n);
+		ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(menu), n);
 	}
 }
 
 /*! \brief Turn a lihata node into a popup menu */
-void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t * base)
+void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, lht_node_t *base)
 {
 	lht_node_t *submenu, *i;
 	GtkWidget *new_menu;
@@ -380,7 +376,7 @@ void ghid_main_menu_add_popup_node(GHidMainMenu * menu, lht_node_t * base)
 	base->user_data = handle_alloc(new_menu, new_menu);
 
 	for (i = submenu->data.list.first; i != NULL; i = i->next)
-		ghid_main_menu_real_add_node(menu, GTK_MENU_SHELL(new_menu), i);
+		ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(new_menu), i);
 
 	gtk_widget_show_all(new_menu);
 }
@@ -485,22 +481,21 @@ static GtkWidget *new_popup(lht_node_t * menu_item)
 }
 
 /* Menu widget create callback: create a main menu, popup or submenu as descending the path */
-static int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int is_main, lht_node_t * parent,
-																	 lht_node_t * menu_item)
+int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *menu_item)
 {
 	pcb_gtk_menu_ctx_t *ctx = ctx_;
 	int is_popup = (strncmp(path, "/popups", 7) == 0);
 	menu_handle_t *ph = parent->user_data;
 	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ctx->menu_bar) : ph->widget;
 
-	ghid_main_menu_real_add_node(GHID_MAIN_MENU(ctx->menu_bar), GTK_MENU_SHELL(w), menu_item);
+	ghid_main_menu_real_add_node(ctx, GHID_MAIN_MENU(ctx->menu_bar), GTK_MENU_SHELL(w), menu_item);
 
 /* make sure new menu items appear on screen */
 	gtk_widget_show_all(w);
 	return 0;
 }
 
-static int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
+int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 {
 	menu_handle_t *h = nd->user_data;
 	if (h != NULL) {
@@ -516,15 +511,4 @@ static int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 	}
 #endif
 	return 0;
-}
-
-/* Create a new menu by path */
-void pcb_gtk_menu_create_menu(pcb_gtk_menu_ctx_t *ctx, const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
-{
-	pcb_hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, ctx);
-}
-
-int ghid_remove_menu(const char *menu_path)
-{
-	return pcb_hid_cfg_remove_menu(ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
 }

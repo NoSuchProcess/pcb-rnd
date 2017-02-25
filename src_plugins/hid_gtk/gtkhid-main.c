@@ -30,7 +30,6 @@
 #include "layer_vis.h"
 
 #include "gtkhid-main.h"
-#include "ghid-main-menu.h"
 #include "gui-top-window.h"
 #include "render.h"
 
@@ -38,6 +37,7 @@
 #include "../src_plugins/lib_gtk_common/act_fileio.h"
 #include "../src_plugins/lib_gtk_common/act_print.h"
 #include "../src_plugins/lib_gtk_common/bu_status_line.h"
+#include "../src_plugins/lib_gtk_common/bu_menu.h"
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
 #include "../src_plugins/lib_gtk_common/util_block_hook.h"
 #include "../src_plugins/lib_gtk_common/util_timer.h"
@@ -66,8 +66,6 @@
 
 const char *ghid_cookie = "gtk hid";
 const char *ghid_menu_cookie = "gtk hid menu";
-
-conf_hid_id_t ghid_menuconf_id = -1;
 
 static void ghid_get_view_size(pcb_coord_t * width, pcb_coord_t * height)
 {
@@ -297,6 +295,16 @@ static char *ghid_fileselect(const char *title, const char *descr, const char *d
 	return pcb_gtk_fileselect(ghid_port.top_window, title, descr, default_file, default_ext, history_tag, flags);
 }
 
+/* Create a new menu by path */
+static void pcb_gtk_menu_create_menu(pcb_gtk_menu_ctx_t *ctx, const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
+{
+	pcb_hid_cfg_create_menu(ghid_cfg, menu_path, action, mnemonic, accel, tip, cookie, ghid_create_menu_widget, ctx);
+}
+
+static int ghid_remove_menu(const char *menu_path)
+{
+	return pcb_hid_cfg_remove_menu(ghid_cfg, menu_path, ghid_remove_menu_widget, NULL);
+}
 
 void ghid_create_menu(const char *menu_path, const char *action, const char *mnemonic, const char *accel, const char *tip, const char *cookie)
 {
@@ -835,6 +843,7 @@ PCB_REGISTER_ACTIONS(ghid_main_action_list, ghid_cookie)
 #include <windows.h>
 #include <winreg.h>
 #endif
+
 		 pcb_hid_t ghid_hid;
 
 		 static void init_conf_watch(conf_hid_callbacks_t * cbs, const char *path, void (*func) (conf_native_t *))
@@ -1107,7 +1116,8 @@ pcb_uninit_t hid_hid_gtk_init()
 /*	ghid_hid.propedit_add_value = ghid_propedit_add_value;*/
 
 	pcb_gtk_conf_init();
-	ghid_menuconf_id = conf_hid_reg(ghid_menu_cookie, NULL);
+	ghidgui->menu.ghid_menuconf_id = conf_hid_reg(ghid_menu_cookie, NULL);
+	ghidgui->menu.confchg_checkbox = ghid_confchg_checkbox;
 	ghid_conf_regs();
 
 	ghid_hid.create_menu = ghid_create_menu;
